@@ -2,116 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2AB33729B1
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:52:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD533729B2
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:52:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhEDLxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 07:53:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44454 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230089AbhEDLxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 07:53:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 511A360240;
-        Tue,  4 May 2021 11:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620129125;
-        bh=CYlTF8vPOUGmP1yrj7WXGHoZZMuyrNVYYEyGYgffhQQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=s9USfbjjXhLtVfch5jWn/Z3G+U9DCpzZ6IpciENXXJSVOTDjJrWwokOxltdsRqO9h
-         bIaG6mNG27BKjX4+ieMquX/Y/eV0kQzpzl5x0UoWcn74Ndr3OgCbqYVkCdxhIzsNPg
-         MKWro3VGJKzDzSRui4MFkqT7CH4OvAGM9cKqU7Jk9y+f4uMmOj0gSNkCvvxyOr+s5j
-         eD9kibxr/8N5vQkT/GR0dE2bNqIIZD8vwl3NybBdkSMO2yujuewgGkxWk23f/RUYa4
-         BLTc2oqbzXas8Zeif/sZGypzN4Xwa06Or8VEJH/ZkVXt7OBL56kDav35SJ+3VpjV//
-         UjpKR1w+nJJwQ==
-Date:   Tue, 4 May 2021 12:51:30 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Joe Burmeister <joe.burmeister@devtank.co.uk>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
-        linux-rpi-kernel@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        nsaenz@kernel.org, phil@raspberrypi.com
-Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
- beyond limit.
-Message-ID: <20210504115130.GA7094@sirena.org.uk>
-References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
- <c087ba2c-7839-02d1-a522-b104d8ffb8d2@gmail.com>
- <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
- <271ad212-a606-620e-3f0c-d6bff272be3c@gmail.com>
- <380624c4-82f3-0e6e-8cdb-8a9732636db8@devtank.co.uk>
- <20210423115724.GB5507@sirena.org.uk>
- <672e8d77-ee5c-f10f-0bd3-f8708dfc24c8@devtank.co.uk>
- <20210423162055.GE5507@sirena.org.uk>
- <20210501195135.GA18501@wunner.de>
+        id S230248AbhEDLxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 07:53:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51336 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhEDLxJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 07:53:09 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7697EC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 04:52:14 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id v5so1973745ljg.12
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 04:52:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=GW6GUuONPABrx2BFXGJh0SjTmP9t0U63hpuN8y3MW9g=;
+        b=paTEGtC0YjJRHiY0XOtzrdDks/f7ssjpY2ykEb4lVja6Dqw4GK5Ga52klAdM+1Xw7q
+         wYk4uJ3b66kTTbKWcExYHyV7cA6ddteEovzt2gq7WMb8k1tQQ+t+CZhER7EnYfCuVLyE
+         gixMlraFmO9yfKx3OiiWGqbzYZZlZxOf3e2OHWIksJhCEvvXXF5XWCZGgHkfeV4+Elwh
+         GFLYTE331XE1cE+y7dQ5fgbQHsaQ49Ibr8UQ8XuGj/A1Xj/Vx2rLBcsoniWxhsiyIHVP
+         Xp63OAGUA4dE/iV8sNsZkXYE4o6EuWihVaPxnDP4v5joLhgNVGbLmlQGXPk7L2H+TGfP
+         UbpQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to;
+        bh=GW6GUuONPABrx2BFXGJh0SjTmP9t0U63hpuN8y3MW9g=;
+        b=tvgP5Pj879AN+B19THBW/lDmeHpQlSF6jWJ95RNVQb490mmSgN3HEO4xDNPZTsc5iA
+         XFvGysDGYFPAlSbJk3F2MSMCod0aZXTrMr5nhX28D5FwUB+0OE3qNIJCUvxA4Vzu+Oen
+         jlqhh+VCHQpFlO5Wrxw0Zg604yVB98XnXp5YP6FCRYzKczdgiYc2ofdlel+JYywposTm
+         9vhE9GiN2RF75CrZc10p1Fe2EGiZn1Du/nfPyH3d7N5dD/6S6NEFySLQgM9nfjIuF9Nd
+         XT2WTx473QmVl5dIcEMPBu/SjC9Ta8jgydb27+pqW6b7VIUqwmlmVEPnReaH04wBJVFi
+         +/rw==
+X-Gm-Message-State: AOAM531quZJrtR0Pq+Kzwi5fqoaBFcflXHaMkW3iACSdqKHG9KOTXLRG
+        fZIJC93/NSipBX2ouwBwQzbDT/Fyi+cATjBV+MFJS4pm7M9lZA==
+X-Google-Smtp-Source: ABdhPJwMvWaROJxTzyqUMWt9k4L0D4nP4H1qFA1CD+B6GTbN3tnsxm5nrOc/d15IqhKbm1BGUA/tOjYmKar7oUPcKMs=
+X-Received: by 2002:a2e:9606:: with SMTP id v6mr16780985ljh.79.1620129132801;
+ Tue, 04 May 2021 04:52:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="+QahgC5+KEYLbs62"
-Content-Disposition: inline
-In-Reply-To: <20210501195135.GA18501@wunner.de>
-X-Cookie: MY income is ALL disposable!
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CABPxzYKjxW+P_cMLmZgtQN7nbCB3zzksYQWpChC70tbVb6VJCA@mail.gmail.com>
+In-Reply-To: <CABPxzYKjxW+P_cMLmZgtQN7nbCB3zzksYQWpChC70tbVb6VJCA@mail.gmail.com>
+From:   Krishna Chaitanya <chaitanya.mgit@gmail.com>
+Date:   Tue, 4 May 2021 17:22:01 +0530
+Message-ID: <CABPxzY+USNoiFDO8VYtLzFDK-0+PU1wD8ah7KGPWGZ+uEStH-g@mail.gmail.com>
+Subject: Re: Module versioning + Missing CRC in symvers + export tracepoints
+To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        mmarek@suse.cz, arnd@arndb.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---+QahgC5+KEYLbs62
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On Sat, May 01, 2021 at 09:51:35PM +0200, Lukas Wunner wrote:
-> On Fri, Apr 23, 2021 at 05:20:55PM +0100, Mark Brown wrote:
-> > Part of the issue here is that there has been some variation in how
-> > num_chipselect is interpreted with regard to GPIO based chip selects
-> > over time.  It *should* be redundant, I'm not clear why it's in the
-> > generic bindings at all but that's lost to history AFAICT.
-
-> It seems num_chipselect is meant to be set to the maximum number of
-> *native* chipselects supported by the controller.  Which is overwritten
-> if GPIO chipselects are used.
-
-This gets fun with the controllers that have for various reasons open
-coded some or all of the GPIO chip select handling.
-
-> I failed to appreciate that when I changed num_chipselects for
-> spi-bcm2835.c with commit 571e31fa60b3.  That single line change
-> in the commit ought to be reverted.
-
-> And the kernel-doc ought to be amended because the crucial detail
-> that num_chipselect needs to be set to the maximum *native* chipselects
-> isn't mentioned anywhere.
-
-Can you send patches for these please?
-
-> > The best thing would be to have it not have a single array of chip
-> > select specific data and instead store everything in the controller_data
-> > that's there per-device.
-
-> Unfortunately that's non-trivial.  The slave-specific data is DMA-mapped.
-> It could be DMA-mapped in ->setup but there's no ->unsetup to DMA-unmap
-> the memory once the slave is removed.  Note that the slave could be removed
-> dynamically with a DT overlay, not just when the controller is unbound.
-
-> So we'd need a new ->unsetup hook at the very least to make this work.
-
-There's the cleanup() callback which seems to fit?
-
---+QahgC5+KEYLbs62
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCRNUEACgkQJNaLcl1U
-h9DsmQf/UKHAwxHaMURxnn5hgYu8xFWNaqLHCJM2/x2xMcPvDWe1QWDAtzr7CXg8
-BsQ9qd/qGyPFHQyyJVbYK7ahxIkVFdhTkASvHGmn4uGAyKVN2QNNM5Miom5diVzA
-U88F61K/5WkDEcG5y85IoZKMTKlcUxL11VlWBMCYvYLNzky6iWpWlt8MPj+TBVmu
-QNIhRRVNEEMFEBNcg7YNHkdf+farFIu8oCaRmxFGSGLFZNx5FOBIsHL/y6djiCMZ
-CotSqF62zku4CDADQDFVHMzpl4JOcqWqItfl4sir3QIux6aV6KJvLDK2V7lj4noo
-8VIITEOCIcvfIDGRZt6wANRN3FV/sw==
-=QRb8
------END PGP SIGNATURE-----
-
---+QahgC5+KEYLbs62--
+On Tue, Apr 20, 2021 at 6:26 PM Krishna Chaitanya
+<chaitanya.mgit@gmail.com> wrote:
+>
+> Hi,
+>
+> I am seeing an issue of no CRC being generated in the Module.symvers for a
+> driver module even when CONFIG_MODVERSIONS Is enabled, this causes
+> modpost warnings about missing versioning.
+>
+> The module in questions only exports tracepoint related symbols (as
+> struct tracepoint is
+> part of the module CRC), I have seen this with other modules also e.g.
+> iwlwifi with CONFIG_MODVERSIONS.
+>
+> Though I am trying on 5.12.-rc2, also, seeing this issue with older kernels with
+> CONFIG_MODVERSIONS enabled e.g. 4.15.0, Below are a couple of snippets
+> to demonstrate the issue.
+>
+> modpost warnings
+> ===============
+>
+> WARNING: modpost: EXPORT symbol "__tracepoint_iwlwifi_dev_ucode_event"
+> [drivers/net/wireless/intel/iwlwifi//iwlwifi.ko] version generation
+> failed, symbol will not be versioned.
+> WARNING: modpost: EXPORT symbol "iwl_remove_notification"
+> [drivers/net/wireless/intel/iwlwifi//iwlwifi.ko] version generation
+> failed, symbol will not be versioned.
+>
+>
+> Module.symvers (after modpost)
+> ==============
+> 0x00000000      iwl_remove_notification
+> drivers/net/wireless/intel/iwlwifi//iwlwifi     EXPORT_SYMBOL_GPL
+> 0x00000000      __tracepoint_iwlwifi_dev_ucode_event
+> drivers/net/wireless/intel/iwlwifi//iwlwifi     EXPORT_SYMBOL
+>
+> Any ideas?
+Adding people from this
+https://patchwork.kernel.org/project/linux-kbuild/patch/CA+55aFxCKgTrh1gS-cMyhBa0QoLW2DL2+DYxOAcA-Bd15H15vg@mail.gmail.com/
+thread to throw some light on non-asm version of the issue.
