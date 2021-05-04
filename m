@@ -2,89 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CDA372ADC
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:23:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58FDE372AE2
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231168AbhEDNYY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:24:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230413AbhEDNYW (ORCPT
+        id S231182AbhEDNZh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:25:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56957 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230460AbhEDNZg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:24:22 -0400
-Received: from mail-wm1-x332.google.com (mail-wm1-x332.google.com [IPv6:2a00:1450:4864:20::332])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70B9FC061574;
-        Tue,  4 May 2021 06:23:26 -0700 (PDT)
-Received: by mail-wm1-x332.google.com with SMTP id j3-20020a05600c4843b02901484662c4ebso1273908wmo.0;
-        Tue, 04 May 2021 06:23:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=UkcPfOw1zL7OvDlpQg+xfIeD/O5P0yQ5Qy64lO5GzLE=;
-        b=XPCII7ygCpVlBB1aHHi7dBrAaN5FLXYlUwmw9fncUPCKLKfSx9crjfvejvPxvSnY2B
-         c02c/GpUPnM4v/JWuqo6oOHhCTa+JgIHQ+EdLetMdrPIefIo74IoEvr2cvvj6efSZCBa
-         OKEVArk8xYxaWJICqo9Tn8mgNwpPfTXC0v7GmqiY9fnF8Rjcyeyp9zb1zq+OObsu0z7U
-         WqyZafWtoxPEQjpup4Qdbvi0OZbwFfQD+lZBgNLRsJIL5MKEASSum3nXn8G7GzoBxapQ
-         tvyiVsT8yD5lvZ6cMS1yGszIXS+vpPhaFu+SC2Pv/F7/jbr69Wr8L7v4/g866ZHdfHdl
-         tDSA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=UkcPfOw1zL7OvDlpQg+xfIeD/O5P0yQ5Qy64lO5GzLE=;
-        b=p3ROswm8v3gZh7qzLoG0gjwncTDNWR2lrc5eJkZsTNY8i7hnPWKKD6jcXFiMJZvLaN
-         Haof6NmaQA2GTgyJ3iwZysxvZgnJ08OvlISZbMlUy+HK4wC1wCnsWYkXCCNsHcnNo3RH
-         +mfcaBSwMEm0KjfUaFgKkgafHlNNvOsvo3ddSQ9uFeJhinUxiJvmaZ2s465s19C5e4Vx
-         mlC05nx/a+CW3zxZJXBU4oOmUAnL10TNKKxdb1+YV5/gZX3SkCrnHJEUK81ywgY8C3pp
-         1YOI/u0Kbs/KpUH5tnYfwREE5F+j62eTcOLcM2IeNpgj1uFvQrfltKNbUCBA4+kICtzv
-         P5iA==
-X-Gm-Message-State: AOAM533uVUKJYVjA8iDLyhxACbWYFWPt8uPrdDsJLFNnAyYIGwnltxId
-        AgRMmemHiFJXX91HQNal8n8=
-X-Google-Smtp-Source: ABdhPJybyw5+qxLuhY8SjLukCL9vB80At/hiQZhhXOVq30HUvzM9xmsWN3hkfXGdJDnswRJz4fWCyw==
-X-Received: by 2002:a7b:c38d:: with SMTP id s13mr3945898wmj.43.1620134605114;
-        Tue, 04 May 2021 06:23:25 -0700 (PDT)
-Received: from localhost.localdomain ([197.2.237.199])
-        by smtp.gmail.com with ESMTPSA id f24sm2546301wmb.32.2021.05.04.06.23.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 06:23:24 -0700 (PDT)
-From:   Khaled ROMDHANI <khaledromdhani216@gmail.com>
-To:     sfrench@samba.org
-Cc:     Khaled ROMDHANI <khaledromdhani216@gmail.com>,
-        linux-cifs@vger.kernel.org, samba-technical@lists.samba.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: [PATCH-next] fs/cifs: Fix resource leak
-Date:   Tue,  4 May 2021 14:22:57 +0100
-Message-Id: <20210504132257.23632-1-khaledromdhani216@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        Tue, 4 May 2021 09:25:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620134681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc; bh=w1fOeXoOxkv4q7kPVArjLqc2Z8NlzwfSU/aJlxE6T/s=;
+        b=KGxWfis2su59aDllRzCN553M4e+gcHd9qPgrTlPJhMX7DCxM+YcfXEaVXf9d5sJi4lAuIc
+        xdDcdL2cLMNJsVoapuj/2MuJvR4vMqUXllckX0eluIm4SLfAvEv62Scy/ZiupHp74TzZad
+        RHWH1p6/kGMe1ShaaGGC/gDhj/N4Y24=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-551-NcwNeNhdMRWRN2HYGk9oWQ-1; Tue, 04 May 2021 09:24:39 -0400
+X-MC-Unique: NcwNeNhdMRWRN2HYGk9oWQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0DEE7107ACE6;
+        Tue,  4 May 2021 13:24:37 +0000 (UTC)
+Received: from llong.com (ovpn-115-230.rdu2.redhat.com [10.10.115.230])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3110060C16;
+        Tue,  4 May 2021 13:24:31 +0000 (UTC)
+From:   Waiman Long <longman@redhat.com>
+To:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org, Waiman Long <longman@redhat.com>
+Subject: [PATCH v2 0/2] mm: memcg/slab: Fix objcg pointer array handling problem
+Date:   Tue,  4 May 2021 09:23:48 -0400
+Message-Id: <20210504132350.4693-1-longman@redhat.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The -EIO error return path is leaking memory allocated
-to page. Fix this by invoking the free_dentry_path before
-the return.
+ v2:
+  - Take suggestion from Vlastimil to use a new set of kmalloc-cg-* to
+    handle the objcg pointer array allocation and freeing problems.
 
-Addresses-Coverity: ("Resource leak")
-Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
----
- fs/cifs/link.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Since the merging of the new slab memory controller in v5.9,
+the page structure stores a pointer to objcg pointer array for
+slab pages. When the slab has no used objects, it can be freed in
+free_slab() which will call kfree() to free the objcg pointer array in
+memcg_alloc_page_obj_cgroups(). If it happens that the objcg pointer
+array is the last used object in its slab, that slab may then be freed
+which may caused kfree() to be called again.
 
-diff --git a/fs/cifs/link.c b/fs/cifs/link.c
-index 1cbe7ec73728..1485c6095ba1 100644
---- a/fs/cifs/link.c
-+++ b/fs/cifs/link.c
-@@ -686,8 +686,10 @@ cifs_symlink(struct user_namespace *mnt_userns, struct inode *inode,
- 	void *page = alloc_dentry_path();
- 	struct inode *newinode = NULL;
- 
--	if (unlikely(cifs_forced_shutdown(cifs_sb)))
-+	if (unlikely(cifs_forced_shutdown(cifs_sb))) {
-+		free_dentry_path(page);
- 		return -EIO;
-+	}
- 
- 	xid = get_xid();
- 
+With the right workload, the slab cache may be set up in a way that
+allows the recursive kfree() calling loop to nest deep enough to
+cause a kernel stack overflow and panic the system. In fact, we have
+a reproducer that can cause kernel stack overflow on a s390 system
+involving kmalloc-rcl-256 and kmalloc-rcl-128 slabs with the following
+kfree() loop recursively called 74 times:
+
+  [  285.520739]  [<000000000ec432fc>] kfree+0x4bc/0x560
+  [  285.520740]  [<000000000ec43466>] __free_slab+0xc6/0x228
+  [  285.520741]  [<000000000ec41fc2>] __slab_free+0x3c2/0x3e0
+  [  285.520742]  [<000000000ec432fc>] kfree+0x4bc/0x560
+					:
+While investigating this issue, I also found an issue on the allocation
+side. If the objcg pointer array happen to come from the same slab or
+a circular dependency linkage is formed with multiple slabs, those
+affected slabs can never be freed again.
+
+This patch series addresses these two issues by introducing a new
+set of kmalloc-cg-<n> caches split from kmalloc-<n> caches. The new
+set will only contain non-reclaimable and non-dma objects that are
+accounted in memory cgroups whereas the old set are now for unaccounted
+objects only. By making this split, all the objcg pointer arrays will
+come from the kmalloc-<n> caches, but those caches will never hold any
+objcg pointer array. As a result, deeply nested kfree() call and the
+unfreeable slab problems are now gone.
+
+Waiman Long (2):
+  mm: memcg/slab: Properly set up gfp flags for objcg pointer array
+  mm: memcg/slab: Create a new set of kmalloc-cg-<n> caches
+
+ include/linux/slab.h | 15 +++++++++++++++
+ mm/memcontrol.c      |  8 ++++++++
+ mm/slab.h            |  1 -
+ mm/slab_common.c     | 23 +++++++++++++++--------
+ 4 files changed, 38 insertions(+), 9 deletions(-)
+
 -- 
-2.17.1
+2.18.1
 
