@@ -2,147 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DCA00372FA3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:18:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF18372FA7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:20:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232260AbhEDSTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 14:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53438 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbhEDSTc (ORCPT
+        id S232183AbhEDSVa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 14:21:30 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:30918 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231635AbhEDSV0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 14:19:32 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3145C061574;
-        Tue,  4 May 2021 11:18:36 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id h4so10404775wrt.12;
-        Tue, 04 May 2021 11:18:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=PD5o2x4hC2GrLVKj0hWBxU0ZJAM2QadXrf4CT3uKJY0=;
-        b=NicJKt0aAFERTlInOdfuxj8quLQnDuiKaczfIeDGyaDx25gGyIx+I2b1lQ4kjQN8Np
-         Sn65HSVLpPprv37w3QDmXoGjgtU1KM/mM8KvEfVIdwXJKmQeDhF4DBauv6EZ5TTXvNAa
-         Z4QuwhBSjjvEjyhtFc105g8362ipAaxCdxqSplA0VhBLug1ilfKjKBjHb/Cn6AzUEpEx
-         iR87RMamzHaQnT+H5nYCaHU1nyGvCgJX3L6JV+IPLRNbQgjn6gMr8JR6zfP8zcIxzjBg
-         dOT0kPz+bQBySRunKAGy0kLlyBQ++nnuJCcrtoToSggSjYK8RFc/n+89WaDqs05GoBGs
-         YqoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PD5o2x4hC2GrLVKj0hWBxU0ZJAM2QadXrf4CT3uKJY0=;
-        b=MJO2rDr6GGZaIpsXlVu1Ruzj0HxQ1JQvUNUg54VapSGL9Iq/AMp3nkI1SkYY5EeT1u
-         q0wpVjfu6llaiKnFhsiD0NVFlJVNbURgUfTElJ9e09Rl9xAFnmfPM32c2XJ9R3zsVdNJ
-         bguOv6LT3f6qeNVzggdtnr1xGJyFmOE5KOM8T4XocjEL3l6xH1pMHCoeCviZ0DwAFHS5
-         9CZZNhSBMBXjO3vdSA+1fNwcvKnBSxMxRCiaay+uUoxCiA4Jnffhd+aqT7sh4a/kmSb1
-         sgDe19Jvsxw6Mx9Fop0XuSsUqSlK8rAguBVWGJfpwe5emhTE4sCa5i1Ev+U/e5jyDRne
-         ZldQ==
-X-Gm-Message-State: AOAM533xQQdJiY9xzXt4hsN3zzJNF1QERzMTrIXUmyN0lhBorSyTfuLC
-        816N6aclIx1dPpkyaWvaGfM=
-X-Google-Smtp-Source: ABdhPJw6AN3YjhvdFUKGQS4mdGLgJA9ItQB8xfXkmTTu9QrFlJQ+fp3YvQZmhopirc+hRKnEjI7OjA==
-X-Received: by 2002:a5d:590a:: with SMTP id v10mr33403207wrd.306.1620152315506;
-        Tue, 04 May 2021 11:18:35 -0700 (PDT)
-Received: from skbuf ([86.127.41.210])
-        by smtp.gmail.com with ESMTPSA id c5sm16513668wrs.73.2021.05.04.11.18.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 11:18:35 -0700 (PDT)
-Date:   Tue, 4 May 2021 21:18:33 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     xiaoliang.yang_1@nxp.com, Arvid.Brodin@xdin.com,
-        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
-        allan.nielsen@microchip.com, andre.guedes@linux.intel.com,
-        claudiu.manoil@nxp.com, colin.king@canonical.com,
-        davem@davemloft.net, idosch@mellanox.com,
-        ivan.khoronzhuk@linaro.org, jiri@mellanox.com,
-        joergen.andreasen@microchip.com, leoyang.li@nxp.com,
-        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
-        michael.chan@broadcom.com, mingkai.hu@nxp.com,
-        netdev@vger.kernel.org, po.liu@nxp.com, saeedm@mellanox.com,
-        vinicius.gomes@intel.com, vladimir.oltean@nxp.com,
-        yuehaibing@huawei.com
-Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for
- TAS config
-Message-ID: <20210504181833.w2pecbp2qpuiactv@skbuf>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
- <20210504170514.10729-1-michael@walle.cc>
+        Tue, 4 May 2021 14:21:26 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 144I76re007189;
+        Tue, 4 May 2021 20:20:28 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=yI6Ml2clRXcMJtwies2mHdCV4zB6gRnE8QVI0zDSqis=;
+ b=tisRkZr/wrgdeQPj0Eo0EGJxkyeO64LlJfodSp5ujquOubFeb263JMs4Nl89NfzQqHVE
+ 8el9w6Xh26K1TOjEkpgXC9N2gUljUiIiQ4AQpChCbbFUb4OmkZUTSBEzAys9wofQx/oP
+ 48dfcItsx5QvknAiJgIT7zbgECxYweMIcuGtQ/q3Eb3+fn54jfyam3iI3UjcWiOH62hQ
+ WuVjVyBhWsLu11hPO4c5gFmnVc9SZn3jGwdLPCBCBe5Lm+RiumvTXHMruUkatLj+GWlU
+ ACQeHH8mUPj0/lcDbACKL6uREgoOgvgoGp5doEMi254bBGDApZXaDSVPYiM7RCFh7G5I fw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38akujyuf1-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 May 2021 20:20:28 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 5947F10002A;
+        Tue,  4 May 2021 20:20:27 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 43C12226568;
+        Tue,  4 May 2021 20:20:27 +0200 (CEST)
+Received: from lmecxl0889.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May
+ 2021 20:20:26 +0200
+Subject: Re: [PATCH] rpmsg: char: Remove useless includes
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>
+CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>
+References: <20210429080639.6379-1-arnaud.pouliquen@foss.st.com>
+ <20210503174238.GD1699665@xps15>
+ <b2f6b9ca-9dc2-920b-941d-175779bc1034@foss.st.com>
+ <20210504170530.GD1734971@xps15>
+From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Message-ID: <7170fdd0-00cd-1486-7b4c-41040ecfff6f@foss.st.com>
+Date:   Tue, 4 May 2021 20:20:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504170514.10729-1-michael@walle.cc>
+In-Reply-To: <20210504170530.GD1734971@xps15>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.75.127.48]
+X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-04_12:2021-05-04,2021-05-04 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Michael,
 
-On Tue, May 04, 2021 at 07:05:14PM +0200, Michael Walle wrote:
-> Hi,
+
+On 5/4/21 7:05 PM, Mathieu Poirier wrote:
+> Hi Arnaud,
 > 
-> > ALWAYS_GUARD_BAND_SCH_Q bit in TAS config register is descripted as
-> > this:
-> > 	0: Guard band is implemented for nonschedule queues to schedule
-> > 	   queues transition.
-> > 	1: Guard band is implemented for any queue to schedule queue
-> > 	   transition.
-> > 
-> > The driver set guard band be implemented for any queue to schedule queue
-> > transition before, which will make each GCL time slot reserve a guard
-> > band time that can pass the max SDU frame. Because guard band time could
-> > not be set in tc-taprio now, it will use about 12000ns to pass 1500B max
-> > SDU. This limits each GCL time interval to be more than 12000ns.
-> > 
-> > This patch change the guard band to be only implemented for nonschedule
-> > queues to schedule queues transition, so that there is no need to reserve
-> > guard band on each GCL. Users can manually add guard band time for each
-> > schedule queues in their configuration if they want.
+> [...]
+> 
+>>
+>> I started by this one and then I got carried away tested the other include...
+>> You are right, I just don't follow her the first rule of the "submit checklist"
+>>
+>> "If you use a facility then #include the file that defines/declares that
+>> facility. Don’t depend on other header files pulling in ones that you use."
+>>
+>> That said I just have a doubt for uapi/linux/rpmsg.h that will be include
+>> by rpmsg.h[2], as these includes are part of the rpmsg framework API, should we
+>> keep both, considering the rule as strict?
+> 
+> I red the last paragraph several times I can't understand what you are
+> trying to convey.  Please rephrase, provide more context or detail exactly where
+> you think we have a problem.
+
+There is no problem, just a question before sending an update.
+
+As you mention the #include "rpmsg_internal.h" line can be removed, I plan to
+send a patch V2 for this.
+
+That's said before sending a new version I would like to propose to also remove
+the #include  <uapi/linux/rpmsg.h> line.
+
+The rational to remove it is that include/rpmsg.h would already include
+<uapi/linux/rpmsg.h> in 5.13 [2]. And looking at some frameworks (e.g I2C, TTY)
+the drivers seem to include only the include/xxx.h and not the uapi/linux/xxx.h
+in such case.
+
+So my question is should I remove  #include  <uapi/linux/rpmsg.h> line? Or do
+you prefer that i keep it?
+
+Hope it is more clear... else please just forget my proposal, I wouldn't want
+you to waste too much time for a point of detail.
+
+Thanks,
+Arnaud
+
+> 
+> Thanks,
+> Mathieu
 > 
 > 
-> As explained in another mail in this thread, all queues are marked as
-> scheduled. So this is actually a no-op, correct? It doesn't matter if
-> it set or not set for now. Dunno why we even care for this bit then.
-
-It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the available throughput when set.
-
-> > Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-> > ---
-> >  drivers/net/dsa/ocelot/felix_vsc9959.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> > index 789fe08cae50..2473bebe48e6 100644
-> > --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-> > +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> > @@ -1227,8 +1227,12 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
-> >  	if (taprio->num_entries > VSC9959_TAS_GCL_ENTRY_MAX)
-> >  		return -ERANGE;
-> >  
-> > -	ocelot_rmw(ocelot, QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port) |
-> > -		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
-> > +	/* Set port num and disable ALWAYS_GUARD_BAND_SCH_Q, which means set
-> > +	 * guard band to be implemented for nonschedule queues to schedule
-> > +	 * queues transition.
-> > +	 */
-> > +	ocelot_rmw(ocelot,
-> > +		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port),
-> >  		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM_M |
-> >  		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
-> >  		   QSYS_TAS_PARAM_CFG_CTRL);
-> 
-> Anyway, I don't think this the correct place for this:
->  (1) it isn't per port, but a global bit, but here its done per port.
-
-I don't understand. According to the documentation, selecting the port
-whose time-aware shaper you are configuring is done through
-QSYS::TAS_PARAM_CFG_CTRL.PORT_NUM.
-
->  (2) rmw, I presume is read-modify-write. and there is one bit CONFIG_CHAGE
->      which is set by software and cleared by hardware. What happens if it
-> 	 will be cleared right after we read it. Then it will be set again, no?
-> 
-> So if we really care about this bit, shouldn't this be moved to switch
-> initialization then?
-
-May I know what drew your attention to this patch? Is there something wrong?
+>>
+>> [1] https://www.kernel.org/doc/html/latest/process/submit-checklist.html
+>> [2]
+>> https://patchwork.kernel.org/project/linux-remoteproc/patch/20210311140413.31725-3-arnaud.pouliquen@foss.st.com/
+>>
+>> Thanks,
+>> Arnaud
+>>
+>>>
+>>> Thanks,
+>>> Mathieu
+>>>
+>>>>  
+>>>>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+>>>>  
+>>>> -- 
+>>>> 2.17.1
+>>>>
