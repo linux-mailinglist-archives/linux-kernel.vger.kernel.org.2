@@ -2,76 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D72C372C60
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:48:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F3E372C6D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:50:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231151AbhEDOtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:49:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41038 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230313AbhEDOtY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:49:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3FCE2613C4;
-        Tue,  4 May 2021 14:48:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620139709;
-        bh=bSJNWoPTxsmjw9lgwCAD+AS0aeK+yfFlLEQuCSSvXnQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NzdVl1vE/HpTNbvRa+04w8VtolgUimmr0osBl+n8x5D8Y4ujpeOeofDBS6nB0uz3r
-         K34SZzHcYShda3uAJZhQ5mRKKYxACPdQgh3fX9S/AvZhqY+rRyvcSE9U9mpgM8yBoc
-         1qkXPBibcPsHxqmuJOVU/tPGzkNBsMjq5EZZ+WEZNAO3w4O7b3xxYCOp+jVV0W8gJm
-         wKSC//OV80HwQAwzU5ac4hjHCDwCLPR6OZzksW/7g//0vTWAzeTEg+/HGyrr0Q388M
-         9rmqNyGBWPv1qG1SbavfsqJWJThNd6e5zqeH3AVxCTEe1+6gcqyc3MTviacEwwTj7c
-         4fEnzC231ZJ/g==
-Received: by mail-qt1-f179.google.com with SMTP id t7so1512240qtn.3;
-        Tue, 04 May 2021 07:48:29 -0700 (PDT)
-X-Gm-Message-State: AOAM531biKX+wwzOc44lt6U2YTVonJVMOgnHf6nOHNJ4RN5Y80XEPRqE
-        1TVFgTP0/3BZzOtRhdWssGO94WhPcX0FMx8bKA==
-X-Google-Smtp-Source: ABdhPJx5atFlFwZpc+7ej9uT8D56VLMBLPhSM6lU+FgDf8UJdvAVnLaysl19h3fODAoht/lkSZv/rL3FKvgD/I3SVDk=
-X-Received: by 2002:ac8:5d52:: with SMTP id g18mr23270245qtx.380.1620139708372;
- Tue, 04 May 2021 07:48:28 -0700 (PDT)
+        id S231495AbhEDOvH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:51:07 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:27394 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S230388AbhEDOvF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 10:51:05 -0400
+Received: from pps.filterd (m0098419.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 144EZQd5193436;
+        Tue, 4 May 2021 10:50:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=5TIt36ZcJu4V/FWOJS4qMQXOoQ4JkSCPRpiyX/VDPrg=;
+ b=MAKrfSCIODZlN7kPKSQ3wTHj4/hIU403bJY5bNRbcK95ihFyXKS8/RCzo3wmo88GaHbF
+ XTuILo6dLGZGE64+zAlgDmqIF2MwPqAC+np3N4lwf1Ecl6hJt/B5bkw194fCXb3W/sk4
+ RQ5RTxi4JfOR/Pa/e7zEvQroR31gzpidBRK+2YEkxc8GgWZ0ekmLF/SvySTBrYkYeBID
+ X200MG8CO92J1wWpFKWuxDCgd9uyATfcVZf1DOOMJsQVz9/tywsqZcKDnnxNvTNmGP0r
+ rp0ZN7WQnnFw+5eYTDx8UGRgoZYpGfnaxqXpixoajGamXs5FbK53EGf+QAhkiWYXwAJu Gg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38b7gmhwmn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 May 2021 10:50:00 -0400
+Received: from m0098419.ppops.net (m0098419.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 144EafUL002904;
+        Tue, 4 May 2021 10:50:00 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38b7gmhwkx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 May 2021 10:50:00 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 144EWcc7029383;
+        Tue, 4 May 2021 14:49:58 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 388x8hh8xm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 May 2021 14:49:58 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 144EnuC458393062
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 4 May 2021 14:49:56 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 49F91A405B;
+        Tue,  4 May 2021 14:49:56 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 88F56A4054;
+        Tue,  4 May 2021 14:49:54 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.38.211])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Tue,  4 May 2021 14:49:54 +0000 (GMT)
+Message-ID: <10f9ab52c487b9dcde000f8aee77c8e04979a485.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 07/12] evm: Allow xattr/attr operations for portable
+ signatures
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "mjg59@google.com" <mjg59@google.com>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Tue, 04 May 2021 10:49:53 -0400
+In-Reply-To: <f26f4b6fd3074bb4a6f0f0ff4911a202@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-8-roberto.sassu@huawei.com>
+         <75e8a4f70dfbbfa4cf5b923ab0ac92768e1e2de5.camel@linux.ibm.com>
+         <f26f4b6fd3074bb4a6f0f0ff4911a202@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: DvcGGYHomvZgiaAjGNMQvTV8mfY5ocYu
+X-Proofpoint-ORIG-GUID: Mk-5nBQCpihp5UoTGEdxsRivgCGSLpSc
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-References: <20210427111526.1772293-1-acourbot@chromium.org>
- <20210427111526.1772293-9-acourbot@chromium.org> <CAPBb6MWhP+uJSHzMHuH93fxgFosw=FPUoHOLuDX1ZYGunWX11g@mail.gmail.com>
-In-Reply-To: <CAPBb6MWhP+uJSHzMHuH93fxgFosw=FPUoHOLuDX1ZYGunWX11g@mail.gmail.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Tue, 4 May 2021 09:48:16 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqL5ZZvq48c-3Dw70N8cqH1wNC-N9muAX41oD6OQ4E+Uig@mail.gmail.com>
-Message-ID: <CAL_JsqL5ZZvq48c-3Dw70N8cqH1wNC-N9muAX41oD6OQ4E+Uig@mail.gmail.com>
-Subject: Re: [PATCH v4 08/15] dt-bindings: media: document mediatek,mt8183-vcodec-dec
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Yunfei Dong <yunfei.dong@mediatek.com>,
-        Andrew-CT Chen <andrew-ct.chen@mediatek.com>,
-        Tiffany Lin <tiffany.lin@mediatek.com>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-04_08:2021-05-04,2021-05-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ suspectscore=0 spamscore=0 adultscore=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 malwarescore=0 impostorscore=0 mlxlogscore=999
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105040110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 7:56 AM Alexandre Courbot <acourbot@chromium.org> wrote:
->
-> Hi Rob,
->
-> On Tue, Apr 27, 2021 at 8:16 PM Alexandre Courbot <acourbot@chromium.org> wrote:
-> >
-> > MT8183's decoder is instantiated similarly to MT8173's.
->
-> Gentle ping on this, could we get your Acked-by for this minor change?
+On Tue, 2021-05-04 at 14:28 +0000, Roberto Sassu wrote:
+> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > Sent: Monday, May 3, 2021 2:13 AM
+> > Hi Roberto,
+> > 
+> > > diff --git a/include/linux/integrity.h b/include/linux/integrity.h
+> > > index 2271939c5c31..2ea0f2f65ab6 100644
+> > > --- a/include/linux/integrity.h
+> > > +++ b/include/linux/integrity.h
+> > >
+> > > @@ -238,9 +241,12 @@ static enum integrity_status
+> > evm_verify_hmac(struct dentry *dentry,
+> > >  		break;
+> > >  	}
+> > >
+> > > -	if (rc)
+> > > -		evm_status = (rc == -ENODATA) ?
+> > > -				INTEGRITY_NOXATTRS : INTEGRITY_FAIL;
+> > > +	if (rc) {
+> > > +		evm_status = INTEGRITY_NOXATTRS;
+> > > +		if (rc != -ENODATA)
+> > > +			evm_status = evm_immutable ?
+> > > +				     INTEGRITY_FAIL_IMMUTABLE :
+> > INTEGRITY_FAIL;
+> > 
+> > The original code made an exception for the -ENODATA case.   Using a
+> > ternary operator made sense in that case.   Inverting the test makes
+> > the code less readable.  Please use the standard "if" statement
+> > instead.
+> 
+> Did I understand correctly that the code should be:
+> 
+>                 evm_status = INTEGRITY_NOXATTRS;
+>                 if (rc != -ENODA
+>                         evm_status = INTEGRITY_FAIL;
+>                         if (evm_immutable)
+>                                 evm_status = INTEGRITY_FAIL_IMMUTABLE;
+>                 }
+> 
+ 
+                if (rc == -ENODATA)
+                        evm_status = INTEGRITY_NOXATTRS;
+                else if (evm_status == evm_immutable)
+                        evm_status = INTEGRITY_FAIL_IMMUTABLE;
+                else
+                        evm_status = INTEGRITY_FAIL;
 
-First, please don't ping for replies during the merge window. Second,
-if you want to be sure of getting a response, you have to CC the DT
-list and then you can check PW and see where you are in my queue[1].
-Third, my ack really isn't needed on a simple compatible string
-addition.
+I think keeping it simple makes it really clear that ENODATA is an
+exception.
 
-In any case,
+thanks,
 
-Acked-by: Rob Herring <robh@kernel.org>
+Mimi
 
-Rob
