@@ -2,571 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0E3373139
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:08:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC11D373141
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:13:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232762AbhEDUIx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:08:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49662 "EHLO
+        id S232696AbhEDUOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:14:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50798 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229960AbhEDUIv (ORCPT
+        with ESMTP id S232684AbhEDUOG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:08:51 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CB74C061761
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:07:55 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id p17so5924783plf.12
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:07:55 -0700 (PDT)
+        Tue, 4 May 2021 16:14:06 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B58EC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:13:11 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id v20so5942328plo.10
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:13:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=VMwgtHBCRDn+LkFyuADHWdcyq5/VtHtoFRjI/wlF+DU=;
-        b=j6PQbKdFSjDQJJNzPIqEtCftJyE4SfSidXWudXKP5NAaA3O36L4WSWF94emKAI5wwI
-         12VLlHHk6/4rfsqz78tEXRKOD2nlwAMdk2e6zw3rmhchKKd2+jPhPPt6ZnGsX8A3O1zr
-         rLLyrEQwn8np/Skr9SOTtiVVCQVIx6CuNLP1zOW+OUO+trT5t89zZ1m9G3CLEfkWkFGt
-         Z15z4fd0OEAVEBU7EVCh2naHBfgnuOaw9CGjihtPjD1/OuUg7oGZP1LDIc6WS6CyLKI/
-         PaJf/uBrGQBxEWIm6g1g3mkvgoPZ1k6UunG8lTmzUqoEKuOLtSCWEW7g/vb1c8EnS4uu
-         y3nA==
+        bh=hOpr5X5iLUsxQXZMfgFtFQv/OPJaI291sQPjBVYL6i4=;
+        b=qjyvmlpGQP5Uyw4BFXCTRuaCPMBPrTNd6RKSeKxciqdRz3ek0UeoVOP4X7Gns7xbOK
+         NiiEgRKp6Yi68+g0d7L+hE2maO66CrmPO6igUJSUvbSagSQvZZnbqA02K6AeiQWtTIFR
+         5OiCHldYWl0fj0bfppGp9WVJLxxuOotzbbzUt8KwikHRd5twDZMeXYBuD/4jN+b1sG7D
+         K8L008O3d/b4JV7XI5gBT9VdIqz7jfpoV7YWYDeOGTjfEb4hF3yCdjySDn+FK1SqEWEW
+         oqkVJHzWk2wr10/X/Oy9htxYknp91nC6gy066Ie+rOBCqyXM+/63fqljO1stMtf3T2jN
+         Pccw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=VMwgtHBCRDn+LkFyuADHWdcyq5/VtHtoFRjI/wlF+DU=;
-        b=k1WyHW9SNCOZ6jPrfvgVdso0vlFd/3w810fvpmpCii9L5U1zRyeDoB5DouXOaAk7Hm
-         w5CryDdMQwzwpxibYqlEhxU4XlFz5ygSQSz9mSjsfAIH/t248s34NXMxXb+zohJwBmhR
-         l6WQ3NQXRP6CL++C7p8WIf79D5OK7hK0ixYGkagCiI8PoPqUslLDFa+2HPz0ZBiuZQrn
-         cvR/YfvOSMrHZ2pEVSViW1A2WU1DJGgZsH1Nf+p+jyHNY6KUfXxUXArLmaxHj2Rvuw0A
-         mZ2rtPnV5LfECafr/zkbPH5Dgzi7w85NSMbzyQRcpkR1xYTm2VxlXuHspRnF7WFC5QAs
-         EQfg==
-X-Gm-Message-State: AOAM5325pgkN2QaU+E8r5BAsBTihh0aTIAzu3aufUcEeqDH6Ge73+xoH
-        eS7UK18zdhugrAUuBbBxUnn3dg==
-X-Google-Smtp-Source: ABdhPJy/ZMD+yiFdoJBZMDm4FGaIPzK6wjD9/Ku8sBXst9JTopJNsPrwoMmdBet+gstjZBp6/ai+rQ==
-X-Received: by 2002:a17:902:ce89:b029:ed:3aeb:2c50 with SMTP id f9-20020a170902ce89b02900ed3aeb2c50mr28265505plg.43.1620158874729;
-        Tue, 04 May 2021 13:07:54 -0700 (PDT)
-Received: from google.com ([2620:15c:2cb:201:10d7:bc55:1441:1248])
-        by smtp.gmail.com with ESMTPSA id a13sm4260359pgm.43.2021.05.04.13.07.53
+        bh=hOpr5X5iLUsxQXZMfgFtFQv/OPJaI291sQPjBVYL6i4=;
+        b=Y5+bTAwAIbLYNzXNaRH3/hXb8zXEHH84ijxce5g6QcnaXB4clDopBdMLQS5FcdJRm3
+         IwLl2t495QAjub/BEV3PMciOWobFQ6jla1BSh7JSvruLt2DwJaxFZn9veIi2IOfK1aYr
+         VJiddySOT1vy3dDl2OK4d0VGdLizCtClovMPOPbbcZ2O8h0xZJR/tTC0j536/13yEeyo
+         c7Ns022YsR9rdQgJoJdiynXK7q9A6l01peGLG2Lo32o7En/r3hjkZs2gI7OslG/rGf0M
+         f2SJFUe2hskGPOzomfQTkoxNBqrf2BeLMiFmxq3dSBtnnpayPUzpaENQBQYIZXRqTdRz
+         Zyjw==
+X-Gm-Message-State: AOAM531h49ssDT3EMhrU/t4MWQsw0QoesNwVC5WivBqIk2TykeEaW+o2
+        Hyu3IFcprtwLYeiKEwR0tSlznQ==
+X-Google-Smtp-Source: ABdhPJzZlpmByhkmegFWPDJejjwukrIiTVDPdra8aVzO6A1dV9z/mY4C3DyvcX/IXw8Jyd5TeU80IA==
+X-Received: by 2002:a17:902:9893:b029:ee:e8a8:688c with SMTP id s19-20020a1709029893b02900eee8a8688cmr7097120plp.84.1620159185570;
+        Tue, 04 May 2021 13:13:05 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id md21sm5168152pjb.3.2021.05.04.13.13.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 13:07:54 -0700 (PDT)
-Date:   Tue, 4 May 2021 13:07:48 -0700
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     David Gow <davidgow@google.com>
-Cc:     Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Daniel Latypov <dlatypov@google.com>
-Subject: Re: [RFC v2 3/4] kunit: tool: add support for QEMU
-Message-ID: <YJGplIw5COtzKqso@google.com>
-References: <20210429205109.2847831-1-brendanhiggins@google.com>
- <20210429205109.2847831-4-brendanhiggins@google.com>
- <CABVgOSnrSD64aTRsBqTTB4A26whcxegT0_DK3MjThsHnWeFdqA@mail.gmail.com>
+        Tue, 04 May 2021 13:13:04 -0700 (PDT)
+Date:   Tue, 4 May 2021 20:13:01 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH v2 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
+Message-ID: <YJGqzZ/8CS8mSx2c@google.com>
+References: <20210429211833.3361994-1-bgardon@google.com>
+ <20210429211833.3361994-8-bgardon@google.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CABVgOSnrSD64aTRsBqTTB4A26whcxegT0_DK3MjThsHnWeFdqA@mail.gmail.com>
+In-Reply-To: <20210429211833.3361994-8-bgardon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 02:08:41PM +0800, David Gow wrote:
-> On Fri, Apr 30, 2021 at 4:51 AM Brendan Higgins
-> <brendanhiggins@google.com> wrote:
-> >
-> > Add basic support to run QEMU via kunit_tool. Add support for i386,
-> > x86_64, arm, arm64, and a bunch more.
-> >
-> > Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
+On Thu, Apr 29, 2021, Ben Gardon wrote:
+> If the TDP MMU is in use, wait to allocate the rmaps until the shadow
+> MMU is actually used. (i.e. a nested VM is launched.) This saves memory
+> equal to 0.2% of guest memory in cases where the TDP MMU is used and
+> there are no nested guests involved.
 > 
-> I've tested this out on a few architectures (x86-32, ppc64, etc), and
-> it all seems to work pretty well. I've got quite a few comments below.
-> The main one -- the location of the qemu configs -- is basically
-> echoing what Daniel said and what you've done on the Gerrit version,
-> but I felt was worth having on the record.
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>  arch/x86/include/asm/kvm_host.h | 11 +++++++
+>  arch/x86/kvm/mmu/mmu.c          | 21 +++++++++++--
+>  arch/x86/kvm/mmu/mmu_internal.h |  2 +-
+>  arch/x86/kvm/x86.c              | 54 ++++++++++++++++++++++++++++++---
+>  4 files changed, 80 insertions(+), 8 deletions(-)
 > 
-> Otherwise, a bunch of nitpicks around missing places cross_compile
-> should be supported.
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 3900dcf2439e..b8633ed00a6a 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -1124,6 +1124,15 @@ struct kvm_arch {
+>  #endif /* CONFIG_X86_64 */
+>  
+>  	bool shadow_mmu_active;
+> +
+> +	/*
+> +	 * If set, the rmap should be allocated for any newly created or
+> +	 * modified memslots. If allocating rmaps lazily, this may be set
+> +	 * before the rmaps are allocated for existing memslots, but
+> +	 * shadow_mmu_active will not be set until after the rmaps are fully
+> +	 * allocated.
+> +	 */
+> +	bool alloc_memslot_rmaps;
+
+Maybe "need_rmaps" or "need_memslot_rmaps"?
+
+>  };
+>  
+>  struct kvm_vm_stat {
+> @@ -1855,4 +1864,6 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
+>  
+>  int kvm_cpu_dirty_log_size(void);
+>  
+> +int alloc_all_memslots_rmaps(struct kvm *kvm);
+> +
+>  #endif /* _ASM_X86_KVM_HOST_H */
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index e252af46f205..b2a6585bd978 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3125,9 +3125,17 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
+>  	return ret;
+>  }
+>  
+> -void activate_shadow_mmu(struct kvm *kvm)
+> +int activate_shadow_mmu(struct kvm *kvm)
+>  {
+> +	int r;
+> +
+> +	r = alloc_all_memslots_rmaps(kvm);
+> +	if (r)
+> +		return r;
+> +
+>  kvm->arch.shadow_mmu_active = true;
+
+If shadow_mmu_active goes away, so does this helper.
+
+> +
+> +	return 0;
+>  }
+>  
+>  static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
+> @@ -3300,7 +3308,9 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>  		}
+>  	}
+>  
+> -	activate_shadow_mmu(vcpu->kvm);
+> +	r = activate_shadow_mmu(vcpu->kvm);
+> +	if (r)
+> +		return r;
+>  
+>  	write_lock(&vcpu->kvm->mmu_lock);
+>  	r = make_mmu_pages_available(vcpu);
+> @@ -5491,7 +5501,12 @@ void kvm_mmu_init_vm(struct kvm *kvm)
+>  	struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
+>  
+>  	if (!kvm_mmu_init_tdp_mmu(kvm))
+> -		activate_shadow_mmu(kvm);
+> +		/*
+> +		 * No memslots can have been allocated at this point.
+> +		 * activate_shadow_mmu won't actually need to allocate
+> +		 * rmaps, so it cannot fail.
+> +		 */
+> +		WARN_ON(activate_shadow_mmu(kvm));
+
+This is where I really don't like calling the full flow.  VM init is already
+special, I don't see any harm in open coding the setting of the flag.  This also
+provides a good place to document that the smp_store/load business is unnecessary
+since there can't be users.
+
+>  	node->track_write = kvm_mmu_pte_write;
+>  	node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
+> -static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+> +int alloc_memslots_rmaps(struct kvm *kvm, struct kvm_memslots *slots)
+> +{
+> +	struct kvm_memory_slot *slot;
+> +	int r = 0;
+> +
+> +	kvm_for_each_memslot(slot, slots) {
+> +		r = alloc_memslot_rmap(kvm, slot, slot->npages);
+> +		if (r)
+> +			break;
+> +	}
+> +	return r;
+> +}
+
+Just open code this in the caller, it's literally one line of code and the
+indentation isn't bad.
+
+> +
+> +int alloc_all_memslots_rmaps(struct kvm *kvm)
+> +{
+> +	struct kvm_memslots *slots;
+> +	int r = 0;
+> +	int i;
+> +
+> +	mutex_lock(&kvm->slots_arch_lock);
+> +	kvm->arch.alloc_memslot_rmaps = true;
+> +
+> +	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+> +		slots = __kvm_memslots(kvm, i);
+> +		r = alloc_memslots_rmaps(kvm, slots);
+> +		if (r)
+
+It'd be easier just to destroy the rmaps on failure and then do:
+
+	if (kvm->arch.needs_memslots_rmaps)
+		return;
+
+	mutex_lock(&kvm->slots_arch_lock);
+
+	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
+		kvm_for_each_memslot(slot, __kvm_memslots(kvm, i)) {
+			r = alloc_memslot_rmap(kvm, slot, slot->npages);
+				break;
+		}
+	}
+
+	if (!r)
+		smp_store_release(kvm->arch.needs_memslots_rmaps, true);
+	else
+		kvm_free_rmaps(kvm);
+	mutex_unlock(&kvm->slots_arch_lock);
+
+
+and make alloc_memslot_rmap() a pure allocator (no checks on whether it should
+actually do allocations), i.e. push the check to the memslot flow:
+
+static int kvm_alloc_memslot_metadata(struct kvm *kvm,
+				      struct kvm_memory_slot *slot,
+				      unsigned long npages)
+{
+	int i;
+	int r;
+
+	/*
+	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
+	 * old arrays will be freed by __kvm_set_memory_region() if installing
+	 * the new memslot is successful.
+	 */
+	memset(&slot->arch, 0, sizeof(slot->arch));
+
+	if (kvm->arch.needs_memslots_rmaps) {
+		r = alloc_memslot_rmap(kvm, slot, npages);
+		if (r)
+			return r;
+	}
+
+
+With that, there's no need for the separate shadow_mmu_active flag, and you can
+do s/activate_shadow_mmu/kvm_activate_rmaps or so.
+
+
+> +			break;
+> +	}
+> +	mutex_unlock(&kvm->slots_arch_lock);
+> +	return r;
+> +}
+> +
+> +static int kvm_alloc_memslot_metadata(struct kvm *kvm,
+> +				      struct kvm_memory_slot *slot,
+>  				      unsigned long npages)
+>  {
+>  	int i;
+> @@ -10881,7 +10927,7 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>  	 */
+>  	memset(&slot->arch, 0, sizeof(slot->arch));
+>  
+> -	r = alloc_memslot_rmap(slot, npages);
+> +	r = alloc_memslot_rmap(kvm, slot, npages);
+>  	if (r)
+>  		return r;
+>  
+> @@ -10954,7 +11000,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
+>  				enum kvm_mr_change change)
+>  {
+>  	if (change == KVM_MR_CREATE || change == KVM_MR_MOVE)
+> -		return kvm_alloc_memslot_metadata(memslot,
+> +		return kvm_alloc_memslot_metadata(kvm, memslot,
+>  						  mem->memory_size >> PAGE_SHIFT);
+>  	return 0;
+>  }
+> -- 
+> 2.31.1.527.g47e6f16901-goog
 > 
-> Still, great to see this happening: it's nice to be able to test on
-> non-UML architectures more easily.
-> 
-> Tested-by: David Gow <davidgow@google.com>
-
-Sweet, thanks!
-
-> -- David
-> 
-> > ---
-> >  tools/testing/kunit/kunit.py           |  33 +++-
-> >  tools/testing/kunit/kunit_config.py    |   2 +-
-> >  tools/testing/kunit/kunit_kernel.py    | 207 +++++++++++++++++++++----
-> >  tools/testing/kunit/kunit_tool_test.py |  15 +-
-> >  4 files changed, 217 insertions(+), 40 deletions(-)
-> >
-> > diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-> > index d5144fcb03acd..07ef80062873b 100755
-> > --- a/tools/testing/kunit/kunit.py
-> > +++ b/tools/testing/kunit/kunit.py
-> > @@ -70,10 +70,10 @@ def build_tests(linux: kunit_kernel.LinuxSourceTree,
-> >         kunit_parser.print_with_timestamp('Building KUnit Kernel ...')
-> >
-> >         build_start = time.time()
-> > -       success = linux.build_um_kernel(request.alltests,
-> > -                                       request.jobs,
-> > -                                       request.build_dir,
-> > -                                       request.make_options)
-> > +       success = linux.build_kernel(request.alltests,
-> > +                                    request.jobs,
-> > +                                    request.build_dir,
-> > +                                    request.make_options)
-> >         build_end = time.time()
-> >         if not success:
-> >                 return KunitResult(KunitStatus.BUILD_FAILURE,
-> > @@ -187,6 +187,14 @@ def add_common_opts(parser) -> None:
-> >                              help='Path to Kconfig fragment that enables KUnit tests',
-> >                              metavar='kunitconfig')
-> >
-> > +       parser.add_argument('--arch',
-> > +                           help='Specifies the architecture to run tests under.',
-> > +                           type=str, default='um', metavar='arch')
-> 
-> It'd be nice to note explicitly that non-'um' values here will run under qemu.
-
-Good point. Will fix.
-
-> > +
-> > +       parser.add_argument('--cross_compile',
-> > +                           help='Sets make\'s CROSS_COMPILE variable.',
-> > +                           metavar='cross_compile')
-> > +
-> 
-> It'd be nice to have a slightly more detailed description here (that
-> its the compiler name's prefix or something).
-
-How about?:
-
-Sets make's CROSS_COMPILE variable; it should be set to a toolchain path
-prefix (the prefix of gcc and other tools in your toolchain, for example
-`sparc64-linux-gnu-` if you have the sparc toolchain installed on your
-system, or `$HOME/toolchains/microblaze/gcc-9.2.0-nolibc/microblaze-linux/bin/microblaze-linux-`
-if you have downloaded the microblaze toolchain from the 0-day website
-to a directory in your home directory called `toolchains`).
-
-> >  def add_build_opts(parser) -> None:
-> >         parser.add_argument('--jobs',
-> >                             help='As in the make command, "Specifies  the number of '
-> > @@ -268,7 +276,10 @@ def main(argv, linux=None):
-> >                         os.mkdir(cli_args.build_dir)
-> >
-> >                 if not linux:
-> > -                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
-> > +                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> > +                                       kunitconfig_path=cli_args.kunitconfig,
-> > +                                       arch=cli_args.arch,
-> > +                                       cross_compile=cli_args.cross_compile)
-> >
-> >                 request = KunitRequest(cli_args.raw_output,
-> >                                        cli_args.timeout,
-> > @@ -287,7 +298,9 @@ def main(argv, linux=None):
-> >                         os.mkdir(cli_args.build_dir)
-> >
-> >                 if not linux:
-> > -                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
-> > +                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> > +                                       kunitconfig_path=cli_args.kunitconfig,
-> > +                                       arch=cli_args.arch)
-> >
-> >                 request = KunitConfigRequest(cli_args.build_dir,
-> >                                              cli_args.make_options)
-> > @@ -299,7 +312,9 @@ def main(argv, linux=None):
-> >                         sys.exit(1)
-> >         elif cli_args.subcommand == 'build':
-> >                 if not linux:
-> > -                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir, kunitconfig_path=cli_args.kunitconfig)
-> > +                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> > +                                       kunitconfig_path=cli_args.kunitconfig,
-> > +                                       arch=cli_args.arch)
-> 
-> Why aren't we passing cross_compile through here? It's pretty
-> important for the 'build' step.
-
-Good catch. Will fix.
-
-> >
-> >                 request = KunitBuildRequest(cli_args.jobs,
-> >                                             cli_args.build_dir,
-> > @@ -313,7 +328,9 @@ def main(argv, linux=None):
-> >                         sys.exit(1)
-> >         elif cli_args.subcommand == 'exec':
-> >                 if not linux:
-> > -                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir)
-> > +                       linux = kunit_kernel.LinuxSourceTree(cli_args.build_dir,
-> > +                                       kunitconfig_path=cli_args.kunitconfig,
-> > +                                       arch=cli_args.arch)
-> >
-> >                 exec_request = KunitExecRequest(cli_args.timeout,
-> >                                                 cli_args.build_dir,
-> > diff --git a/tools/testing/kunit/kunit_config.py b/tools/testing/kunit/kunit_config.py
-> > index 1e2683dcc0e7a..07d76be392544 100644
-> > --- a/tools/testing/kunit/kunit_config.py
-> > +++ b/tools/testing/kunit/kunit_config.py
-> > @@ -53,7 +53,7 @@ class Kconfig(object):
-> >                 return True
-> >
-> >         def write_to_file(self, path: str) -> None:
-> > -               with open(path, 'w') as f:
-> > +               with open(path, 'a+') as f:
-> >                         for entry in self.entries():
-> >                                 f.write(str(entry) + '\n')
-> >
-> > diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-> > index 7d5b77967d48f..b8b3b76aaa17e 100644
-> > --- a/tools/testing/kunit/kunit_kernel.py
-> > +++ b/tools/testing/kunit/kunit_kernel.py
-> > @@ -15,6 +15,8 @@ from typing import Iterator
-> >
-> >  from contextlib import ExitStack
-> >
-> > +from collections import namedtuple
-> > +
-> >  import kunit_config
-> >  import kunit_parser
-> >
-> > @@ -40,6 +42,10 @@ class BuildError(Exception):
-> >  class LinuxSourceTreeOperations(object):
-> >         """An abstraction over command line operations performed on a source tree."""
-> >
-> > +       def __init__(self, linux_arch, cross_compile):
-> > +               self._linux_arch = linux_arch
-> > +               self._cross_compile = cross_compile
-> > +
-> >         def make_mrproper(self) -> None:
-> >                 try:
-> >                         subprocess.check_output(['make', 'mrproper'], stderr=subprocess.STDOUT)
-> > @@ -48,12 +54,18 @@ class LinuxSourceTreeOperations(object):
-> >                 except subprocess.CalledProcessError as e:
-> >                         raise ConfigError(e.output.decode())
-> >
-> > +       def make_arch_qemuconfig(self, build_dir):
-> > +               pass
-> > +
-> >         def make_olddefconfig(self, build_dir, make_options) -> None:
-> > -               command = ['make', 'ARCH=um', 'olddefconfig']
-> > +               command = ['make', 'ARCH=' + self._linux_arch, 'olddefconfig']
-> > +               if self._cross_compile:
-> > +                       command += ['CROSS_COMPILE=' + self._cross_compile]
-> >                 if make_options:
-> >                         command.extend(make_options)
-> >                 if build_dir:
-> >                         command += ['O=' + build_dir]
-> > +               print(' '.join(command))
-> >                 try:
-> >                         subprocess.check_output(command, stderr=subprocess.STDOUT)
-> >                 except OSError as e:
-> > @@ -61,6 +73,154 @@ class LinuxSourceTreeOperations(object):
-> >                 except subprocess.CalledProcessError as e:
-> >                         raise ConfigError(e.output.decode())
-> >
-> > +       def make(self, jobs, build_dir, make_options) -> None:
-> > +               command = ['make', 'ARCH=' + self._linux_arch, '--jobs=' + str(jobs)]
-> > +               if make_options:
-> > +                       command.extend(make_options)
-> > +               if self._cross_compile:
-> > +                       command += ['CROSS_COMPILE=' + self._cross_compile]
-> > +               if build_dir:
-> > +                       command += ['O=' + build_dir]
-> > +               print(' '.join(command))
-> > +               try:
-> > +                       proc = subprocess.Popen(command,
-> > +                                               stderr=subprocess.PIPE,
-> > +                                               stdout=subprocess.DEVNULL)
-> > +               except OSError as e:
-> > +                       raise BuildError('Could not call execute make: ' + e)
-> > +               except subprocess.CalledProcessError as e:
-> > +                       raise BuildError(e.output)
-> > +               _, stderr = proc.communicate()
-> > +               if proc.returncode != 0:
-> > +                       raise BuildError(stderr.decode())
-> > +               if stderr:  # likely only due to build warnings
-> > +                       print(stderr.decode())
-> > +
-> > +       def run(self, params, timeout, build_dir, outfile) -> None:
-> > +               pass
-> > +
-> > +
-> > +QemuArchParams = namedtuple('QemuArchParams', ['linux_arch',
-> > +                                              'qemuconfig',
-> > +                                              'qemu_arch',
-> > +                                              'kernel_path',
-> > +                                              'kernel_command_line',
-> > +                                              'extra_qemu_params'])
-> > +
-> > +
-> > +QEMU_ARCHS = {
-> > +       'i386'          : QemuArchParams(linux_arch='i386',
-> > +                               qemuconfig='CONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y',
-> 
-> I'm not keen on these configs being condensed like this in the source.
-> As mentioned below, moving the QemuArchParams to a separate file
-> helps, but even then it'd be nice to at least have each entry on a
-> separate line like with 'arm' below.
-
-Good to note. I was not sure about the multiline strings, part of me
-thought they were an improvement. Part of me thought they were horribly
-ugly.
-
-> The other option would be to have this as a path to a separate
-> Kconfig/.kunitconfig file with these configs, rather than having them
-> inline here. I fear that could lead to every architecture needing
-> several support files, though some (e.g. x86/x86_64/alpha/sparc) could
-> share a file.
-
-Yeah, I went back and forth on it. Part of me thinks it is nice to have
-all your configs in one place. The other part of me agrees with what you
-said here. I think I will stick with the way I am doing it now for no
-other reason than that's the way I already have it. If someone feels
-strongly though, I would be happy to change it.
-
-> > +                               qemu_arch='x86_64',
-> > +                               kernel_path='arch/x86/boot/bzImage',
-> > +                               kernel_command_line='console=ttyS0',
-> > +                               extra_qemu_params=['']),
-> > +       'x86_64'        : QemuArchParams(linux_arch='x86_64',
-> > +                               qemuconfig='CONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y',
-> > +                               qemu_arch='x86_64',
-> > +                               kernel_path='arch/x86/boot/bzImage',
-> > +                               kernel_command_line='console=ttyS0',
-> > +                               extra_qemu_params=['']),
-> > +       'arm'           : QemuArchParams(linux_arch='arm',
-> > +                               qemuconfig='''CONFIG_ARCH_VIRT=y
-> > +CONFIG_SERIAL_AMBA_PL010=y
-> > +CONFIG_SERIAL_AMBA_PL010_CONSOLE=y
-> > +CONFIG_SERIAL_AMBA_PL011=y
-> > +CONFIG_SERIAL_AMBA_PL011_CONSOLE=y''',
-> > +                               qemu_arch='arm',
-> > +                               kernel_path='arch/arm/boot/zImage',
-> > +                               kernel_command_line='console=ttyAMA0',
-> > +                               extra_qemu_params=['-machine virt']),
-> > +       'arm64'         : QemuArchParams(linux_arch='arm64',
-> > +                               qemuconfig='''CONFIG_SERIAL_AMBA_PL010=y
-> > +CONFIG_SERIAL_AMBA_PL010_CONSOLE=y
-> > +CONFIG_SERIAL_AMBA_PL011=y
-> > +CONFIG_SERIAL_AMBA_PL011_CONSOLE=y''',
-> > +                               qemu_arch='aarch64',
-> > +                               kernel_path='arch/arm64/boot/Image.gz',
-> > +                               kernel_command_line='console=ttyAMA0',
-> > +                               extra_qemu_params=['-machine virt', '-cpu cortex-a57']),
-> > +       'alpha'         : QemuArchParams(linux_arch='alpha',
-> > +                               qemuconfig='CONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y',
-> > +                               qemu_arch='alpha',
-> > +                               kernel_path='arch/alpha/boot/vmlinux',
-> > +                               kernel_command_line='console=ttyS0',
-> > +                               extra_qemu_params=['']),
-> > +       'powerpc'       : QemuArchParams(linux_arch='powerpc',
-> > +                               qemuconfig='CONFIG_PPC64=y\nCONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y\nCONFIG_HVC_CONSOLE=y',
-> > +                               qemu_arch='ppc64',
-> > +                               kernel_path='vmlinux',
-> > +                               kernel_command_line='console=ttyS0',
-> > +                               extra_qemu_params=['-M pseries', '-cpu power8']),
-> > +       'riscv'         : QemuArchParams(linux_arch='riscv',
-> > +                               qemuconfig='CONFIG_SOC_VIRT=y\nCONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y\nCONFIG_SERIAL_OF_PLATFORM=y\nCONFIG_SERIAL_EARLYCON_RISCV_SBI=y',
-> > +                               qemu_arch='riscv64',
-> > +                               kernel_path='arch/riscv/boot/Image',
-> > +                               kernel_command_line='console=ttyS0',
-> > +                               extra_qemu_params=['-machine virt', '-cpu rv64', '-bios opensbi-riscv64-generic-fw_dynamic.bin']),
-> > +       's390'          : QemuArchParams(linux_arch='s390',
-> > +                               qemuconfig='CONFIG_EXPERT=y\nCONFIG_TUNE_ZEC12=y\nCONFIG_NUMA=y\nCONFIG_MODULES=y',
-> > +                               qemu_arch='s390x',
-> > +                               kernel_path='arch/s390/boot/bzImage',
-> > +                               kernel_command_line='console=ttyS0',
-> > +                               extra_qemu_params=[
-> > +                                               '-machine s390-ccw-virtio',
-> > +                                               '-cpu qemu',]),
-> > +       'sparc'         : QemuArchParams(linux_arch='sparc',
-> > +                               qemuconfig='CONFIG_SERIAL_8250=y\nCONFIG_SERIAL_8250_CONSOLE=y',
-> > +                               qemu_arch='sparc',
-> > +                               kernel_path='arch/sparc/boot/zImage',
-> > +                               kernel_command_line='console=ttyS0 mem=256M',
-> > +                               extra_qemu_params=['-m 256']),
-> > +}
-> 
-> So, as mentioned, I agree with Daniel in thinking that this really
-> doesn't belong here. Ideally, I think these configs should be
-> specified somewhere else, either as a (alas, very long) series of
-> command-line arguments, or in a separate file. Moving them to a single
-> 'qemu_configs.py' as Daniel mentioned would be an improvement, but
-> IMHO still falls well short of ideal. I think each config should be in
-> its own file, as there are several reasons someone might want to have
-> multiple different configs for a given architecture and we'll want
-> people to be able to add/remove these easily in their own
-> environments.
-> 
-> The proposed solution of having each config in a separate file --
-> which we discussed offline -- is a big improvement:
-> https://kunit-review.googlesource.com/c/linux/+/4489
-
-Good to know, I will incorporate it into the next revision.
-
-> I still think that the python format here is a bit verbose and ugly,
-> but it's probably worth it compared to adding a parser for a whole new
-> type of config file.
-
-That's where I am at with it. I feel as though I have added enough
-parsers to the kernel tree. :-)
-
-> Similarly, I'm not sure about keeping a separate
-> qemu_configs.py around with the builtin defaults rather than just
-> having them all as separate files all the time. (Even appreciating
-> that that requires some filename magic to find the correct file.)
-> These are all more nitpicky though.
-
-This raises an excellent point, what should we do with the --arch flag
-if we add the --qemu_config flag?
-
-The only reason I just added --qemu_config without touching the existing
-configs was just because I was being lazy; nevertheless, my original
-plan was just to drop --arch entirely and just expect the user to know
-that to run KUnit on i386 you need:
-
-tools/testing/kunit/kunit.py run --qemu_config=./tools/testing/kunit/qemu_configs/i386.py
-
-and to run KUnit on arm you need:
-
-tools/testing/kunit/kunit.py run --qemu_config=./tools/testing/kunit/qemu_configs/arm.py --cross_compile=arm-linux-gnueabihf-
-
-(or something like that).
-
-Is that OK, or as you hint, should we do some file system magic so that
-you have the option of
-
-tools/testing/kunit/kunit.py run --qemu_config=./tools/testing/kunit/qemu_configs/i386.py
-
-OR
-
-tools/testing/kunit/kunit.py run --arch=i386
-
-?
-
-My preference is for the former since it is more explicit about what it
-is doing.
-
-> > +
-> > +class LinuxSourceTreeOperationsQemu(LinuxSourceTreeOperations):
-> > +
-> > +       def __init__(self, qemu_arch_params, cross_compile):
-> > +               super().__init__(linux_arch=qemu_arch_params.linux_arch,
-> > +                                cross_compile=cross_compile)
-> > +               self._qemuconfig = qemu_arch_params.qemuconfig
-> > +               self._qemu_arch = qemu_arch_params.qemu_arch
-> > +               self._kernel_path = qemu_arch_params.kernel_path
-> > +               print(self._kernel_path)
-> > +               self._kernel_command_line = qemu_arch_params.kernel_command_line + ' kunit_shutdown=reboot'
-> > +               self._extra_qemu_params = qemu_arch_params.extra_qemu_params
-> > +
-> > +       def make_arch_qemuconfig(self, build_dir):
-> > +               qemuconfig = kunit_config.Kconfig()
-> > +               qemuconfig.parse_from_string(self._qemuconfig)
-> > +               qemuconfig.write_to_file(get_kconfig_path(build_dir))
-> > +
-> > +       def run(self, params, timeout, build_dir, outfile):
-> > +               kernel_path = os.path.join(build_dir, self._kernel_path)
-> > +               qemu_command = ['qemu-system-' + self._qemu_arch,
-> > +                               '-nodefaults',
-> > +                               '-m', '1024',
-> > +                               '-kernel', kernel_path,
-> > +                               '-append', '\'' + ' '.join(params + [self._kernel_command_line]) + '\'',
-> > +                               '-no-reboot',
-> > +                               '-nographic',
-> > +                               '-serial stdio'] + self._extra_qemu_params
-> > +               print(' '.join(qemu_command))
-> > +               with open(outfile, 'w') as output:
-> > +                       process = subprocess.Popen(' '.join(qemu_command),
-> > +                                                  stdin=subprocess.PIPE,
-> > +                                                  stdout=output,
-> > +                                                  stderr=subprocess.STDOUT,
-> > +                                                  text=True, shell=True)
-> > +               try:
-> > +                       process.wait(timeout=timeout)
-> > +               except Exception as e:
-> > +                       print(e)
-> > +                       process.terminate()
-> > +               return process
-> > +
-> > +class LinuxSourceTreeOperationsUml(LinuxSourceTreeOperations):
-> > +       """An abstraction over command line operations performed on a source tree."""
-> > +
-> > +       def __init__(self):
-> > +               super().__init__(linux_arch='um', cross_compile=None)
-> > +
-> 
-> Why is cross_compile None here? Shouldn't it be possible to cross
-> compile UML kernels? (This should, I think, be possible for i386 on an
-> x86_64 host, for instance.)
-
-Fair point. Will fix.
-
-> >         def make_allyesconfig(self, build_dir, make_options) -> None:
-> >                 kunit_parser.print_with_timestamp(
-> >                         'Enabling all CONFIGs for UML...')
-> > @@ -83,32 +243,16 @@ class LinuxSourceTreeOperations(object):
-> >                 kunit_parser.print_with_timestamp(
-> >                         'Starting Kernel with all configs takes a few minutes...')
-> >
-> > -       def make(self, jobs, build_dir, make_options) -> None:
-> > -               command = ['make', 'ARCH=um', '--jobs=' + str(jobs)]
-> > -               if make_options:
-> > -                       command.extend(make_options)
-> > -               if build_dir:
-> > -                       command += ['O=' + build_dir]
-> > -               try:
-> > -                       proc = subprocess.Popen(command,
-> > -                                               stderr=subprocess.PIPE,
-> > -                                               stdout=subprocess.DEVNULL)
-> > -               except OSError as e:
-> > -                       raise BuildError('Could not call make command: ' + str(e))
-> > -               _, stderr = proc.communicate()
-> > -               if proc.returncode != 0:
-> > -                       raise BuildError(stderr.decode())
-> > -               if stderr:  # likely only due to build warnings
-> > -                       print(stderr.decode())
-> > -
-> > -       def linux_bin(self, params, timeout, build_dir) -> None:
-> > +       def run(self, params, timeout, build_dir, outfile):
-> >                 """Runs the Linux UML binary. Must be named 'linux'."""
-> >                 linux_bin = get_file_path(build_dir, 'linux')
-> >                 outfile = get_outfile_path(build_dir)
-> >                 with open(outfile, 'w') as output:
-> >                         process = subprocess.Popen([linux_bin] + params,
-> > +                                                  stdin=subprocess.PIPE,
-> >                                                    stdout=output,
-> > -                                                  stderr=subprocess.STDOUT)
-> > +                                                  stderr=subprocess.STDOUT,
-> > +                                                  text=True)
-> >                         process.wait(timeout)
-> >
-> >  def get_kconfig_path(build_dir) -> str:
-> > @@ -123,10 +267,17 @@ def get_outfile_path(build_dir) -> str:
-> >  class LinuxSourceTree(object):
-> >         """Represents a Linux kernel source tree with KUnit tests."""
-> >
-> > -       def __init__(self, build_dir: str, load_config=True, kunitconfig_path='') -> None:
-> > +       def __init__(self, build_dir: str, load_config=True, kunitconfig_path='', arch=None, cross_compile=None) -> None:
-> >                 signal.signal(signal.SIGINT, self.signal_handler)
-> > -
-> > -               self._ops = LinuxSourceTreeOperations()
-> > +               self._ops = None
-> > +               if arch is None or arch == 'um':
-> > +                       self._arch = 'um'
-> > +                       self._ops = LinuxSourceTreeOperationsUml()
-> 
-> Again, we should probably pass cross_compile through here.
-
-Yep. Will do.
-
-[...]
