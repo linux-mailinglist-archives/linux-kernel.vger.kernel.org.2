@@ -2,81 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2FA9372749
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:33:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FEE37275E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:39:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhEDId6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:33:58 -0400
-Received: from imap3.hz.codethink.co.uk ([176.9.8.87]:49130 "EHLO
-        imap3.hz.codethink.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229875AbhEDIdt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:33:49 -0400
-X-Greylist: delayed 2138 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 May 2021 04:33:48 EDT
-Received: from cpc79921-stkp12-2-0-cust288.10-2.cable.virginm.net ([86.16.139.33] helo=[192.168.0.18])
-        by imap3.hz.codethink.co.uk with esmtpsa  (Exim 4.92 #3 (Debian))
-        id 1ldpvR-0000zx-0F; Tue, 04 May 2021 08:57:01 +0100
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-To:     Joe Perches <joe@perches.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-riscv@lists.infradead.org, linuxppc-dev@lists.ozlabs.org
-References: <20210501151538.145449-1-masahiroy@kernel.org>
- <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
- <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
-From:   Ben Dooks <ben.dooks@codethink.co.uk>
-Organization: Codethink Limited.
-Message-ID: <65cda2bb-1b02-6ebc-0ea2-c48927524aa0@codethink.co.uk>
-Date:   Tue, 4 May 2021 08:56:59 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230121AbhEDIkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:40:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40334 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230061AbhEDIhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 04:37:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 52435613B3;
+        Tue,  4 May 2021 08:36:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620117385;
+        bh=P4R0wIusFfi+tbxKIZS7tgEnt8ABZzayysHovlokyMo=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bIPqeI8pW4RBFXUepre+PYKq1BHhmvJ8C6VpOjZxh6kF+0XT6h8eqrIvVbE/eQfhQ
+         DpqV+H2if46G4y+VWTPXKdUdvyoephpaqXzg3O+hvkhTJH3AvfpjtPHlcwSMmXkehY
+         4KH/zPjsTHKa5MImDS81sei29P9hyeYRSiqAdFgYSFOEp3sNzXxC06kr/eOBBONFY9
+         INf71MfINptRxTHQk+e0XvfqiwbXMu8zXAItR9rGfwBHn8qAG6jGtPeD9ErfF9478W
+         bDg3r5cI6UyBQv42V9jjT0ZWTCcfuL9BEnXDo52lj1fjemB+Sl6zlrwgy8VkRO7Onp
+         I/BenehoI9oSw==
+Received: by wens.tw (Postfix, from userid 1000)
+        id 2BA645FBFA; Tue,  4 May 2021 16:36:23 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
+Cc:     Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] arm64: dts: rockchip: rk3328: Enable USB3 on some SBCs
+Date:   Tue,  4 May 2021 16:36:12 +0800
+Message-Id: <20210504083616.9654-1-wens@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 02/05/2021 03:41, Joe Perches wrote:
-> On Sat, 2021-05-01 at 17:52 +0200, Miguel Ojeda wrote:
->> On Sat, May 1, 2021 at 5:17 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>>
->>> More cleanups will be possible as follow-up patches, but this one must
->>> be agreed and applied to the mainline first.
->>
->> +1 This will allow me to remove the __has_attribute hack in
->> include/linux/compiler_attributes.h.
-> 
-> Why not raise the minimum gcc compiler version even higher?
-> 
-> https://gcc.gnu.org/releases.html
+From: Chen-Yu Tsai <wens@csie.org>
 
-Some of us are a bit stuck as either customer refuses to upgrade
-their build infrastructure or has paid for some old but safety
-blessed version of gcc. These often lag years behind the recent
-gcc releases :(
+Hi everyone,
 
+Here are some patches that enable USB3 on RK3328 SBCs that I own. The
+changes are quite straightforward, except for the NanoPi R2S, which
+has a USB3 Ethernet chip attached. I am aware that there's already a
+patch [1] for that. This is my spin on things using the USB device
+binding, with comments on how the USB ports are arranged, that I had
+done but couldn't find the time to send out.
+
+The last patch also results in some warnings from checkpatch.pl:
+
+    WARNING: DT compatible string "usbbda,8153" appears un-documented -- 
+	check ./Documentation/devicetree/bindings/
+    #88: FILE: arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts:398:
+    +               compatible = "usbbda,8153";
+
+    WARNING: DT compatible string vendor "usbbda" appears un-documented -- 
+	check ./Documentation/devicetree/bindings/vendor-prefixes.yaml
+    #88: FILE: arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts:398:
+    +               compatible = "usbbda,8153";
+
+At least the first warning should be covered by the USB device binding
+
+    Documentation/devicetree/bindings/usb/usb-device.yaml
+
+while we probably should add an exception to vendor-prefixes.yaml for
+the second warning.
+
+Please let me know what you think.
+
+
+Regards
+ChenYu
+
+[1] https://lore.kernel.org/linux-rockchip/20210405093423.16149-1-cnsztl@gmail.com/
+
+
+Cameron Nemo (1):
+  arm64: dts: rockchip: rk3328: Enable USB3 for Rock64
+
+Chen-Yu Tsai (3):
+  arm64: dts: rockchip: rk3328: Enable USB3 for ROC-RK3328-CC
+  arm64: dts: rockchip: rk3328: Enable USB3 for Rock Pi E
+  arm64: dts: rockchip: rk3328: Enable USB3 Ethernet on NanoPi R2S
+
+ .../boot/dts/rockchip/rk3328-nanopi-r2s.dts   | 32 +++++++++++++++++++
+ .../arm64/boot/dts/rockchip/rk3328-roc-cc.dts |  5 +++
+ .../boot/dts/rockchip/rk3328-rock-pi-e.dts    |  5 +++
+ .../arm64/boot/dts/rockchip/rk3328-rock64.dts |  5 +++
+ 4 files changed, 47 insertions(+)
 
 -- 
-Ben Dooks				http://www.codethink.co.uk/
-Senior Engineer				Codethink - Providing Genius
+2.31.1
 
-https://www.codethink.co.uk/privacy.html
