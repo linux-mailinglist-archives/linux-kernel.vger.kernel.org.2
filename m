@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 490BE373059
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD2FD37306A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232439AbhEDTIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:08:50 -0400
-Received: from mga17.intel.com ([192.55.52.151]:38656 "EHLO mga17.intel.com"
+        id S232549AbhEDTJL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:09:11 -0400
+Received: from mga17.intel.com ([192.55.52.151]:38664 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232065AbhEDTIX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:08:23 -0400
-IronPort-SDR: SofH/Poc41IR21xjvuly5ZR085G+TSVktqZthzswU36QjurIB5/NSvqdsMwutZIf8o2qyk672l
- eS8QODJqd80w==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="178269905"
+        id S231604AbhEDTIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 15:08:24 -0400
+IronPort-SDR: crraK8QE7BAdhi6/lwAVbA2FFye/kPOd2Lj7XxIARS9YjByR5YfVfklH9CnDbdej+MWud7CHSf
+ 1AAqxjgpSGCQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="178269908"
 X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="178269905"
+   d="scan'208";a="178269908"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 12:07:17 -0700
-IronPort-SDR: Mx/j1/4XE3+IyWKhH6tc5iBLzyUbD5r2rBBywE9dZ0HjsJTxkrfQF32M+d9temv00HEYLgQDoG
- ljr4xTXVTlxA==
+IronPort-SDR: dDkFuyKk0UREXRiBmg3rV/awumu+rtPp948/d8x2PE4l3KeP27DZWkUa3XOgsivucZ/0IsTT+U
+ lGngrRE0Hdtg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="618591743"
+   d="scan'208";a="618591746"
 Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
   by fmsmga006.fm.intel.com with ESMTP; 04 May 2021 12:07:17 -0700
 From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
@@ -41,9 +41,9 @@ Cc:     "H. Peter Anvin" <hpa@zytor.com>, Ashok Raj <ashok.raj@intel.com>,
         linux-kernel@vger.kernel.org,
         Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
         Andi Kleen <andi.kleen@intel.com>
-Subject: [RFC PATCH v5 09/16] watchdog/hardlockup/hpet: Group packages receiving IPIs when needed
-Date:   Tue,  4 May 2021 12:05:19 -0700
-Message-Id: <20210504190526.22347-10-ricardo.neri-calderon@linux.intel.com>
+Subject: [RFC PATCH v5 10/16] watchdog/hardlockup/hpet: Adjust timer expiration on the number of monitored groups
+Date:   Tue,  4 May 2021 12:05:20 -0700
+Message-Id: <20210504190526.22347-11-ricardo.neri-calderon@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com>
 References: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com>
@@ -51,32 +51,25 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to keep the HPET interrupts of the hardlockup detector at a rate
-of one per second or less frequent, the HPET timer only targets one of
-the CPUs monitored by the detector. This is the handling CPU. The rest of
-the CPUs are monitored via an IPI issued by the handling CPUs.
-Furthermore, the monitored CPUs are partitioned into groups. Groups are
-targeted by the HPET timer in a round-robin manner. A group is composed of
-of all the CPUs in a physical package.
+The CPUs monitored by the HPET hardlockup detector are partitioned into
+groups based on their location in a given package. The HPET timer only
+targets a single CPU per package (or group of packages) at expiration. The
+rest of the CPUs in the group are monitored via an IPI issued by the
+handling CPU.
 
-There may be situations in which it is not possible to keep the
-aforementioned HPET interrupt rate. This may happen if, for instance,
-watchdog_thresh is set to 1 second and there are more than one package in
-the system. In such case, the HPET timer should expire 1/nr_packages
-seconds.
+Each monitored CPU must be checked for hardlockups every watch_thresh
+seconds. This also means that each group of CPUs must be monitored in the
+same interval. Therefore, the HPET timer expiration is determined by the
+watch_thresh divided by the number of groups to monitor.
 
-It is possible to keep the HPET timer expiration at one second or less
-frequent if the packages receiving the IPI are grouped together. Hence,
-in the example above, all packages would be grouped together.
+Add a new member, hpet_hld_data::ticks_per_group represents the number of
+times the HPET timer must tick before interrupting the handling CPU. Derive
+this value from the frequency of the HPET timer and the number of groups of
+CPUs.
 
-This approach has the drawback of having to issue IPIs across packages
-However, these cases should be rare: only when there are more packages
-than the value of watchdog_thresh in seconds.
-
-Implement functionality to use the logic above: when the hardlockup
-detector is enabled in a CPU, check if grouping is necessary based in the
-value of watchdog_thresh. When updating target_cpumask, do it as many
-times as packages in the group.
+Furthermore, update the timer expiration whenever there is a change
+in the number of monitored CPUs. Namely, when enabling or disabling the
+hardlockup detector in a given CPU.
 
 Cc: "H. Peter Anvin" <hpa@zytor.com>
 Cc: Ashok Raj <ashok.raj@intel.com>
@@ -89,152 +82,148 @@ Cc: x86@kernel.org
 Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 ---
 Changes since v4:
- * Introduced this patch.
+ * Reworked computation for the number of package groups instead of the
+   number of CPUs.
+ * Renamed local variable temp as ticks in update_ticks_per_group().
+   (Andi)
 
 Changes since v3:
- * N/A
+ * None
 
 Changes since v2:
- * N/A
+ * Since the round-robin mechanism set the affinity of the HPET timer
+   interrupt is in use again, it also becomes necessary to adjust
+   the timer expiration.
 
 Changes since v1:
- *N/A
+ * Dropped this patch as there was no need to readjust the timer
+   expiration when the HPET timer only targets a single CPU.
 ---
- arch/x86/include/asm/hpet.h         |  6 +++
- arch/x86/kernel/watchdog_hld_hpet.c | 75 ++++++++++++++++++++++++-----
- 2 files changed, 68 insertions(+), 13 deletions(-)
+ arch/x86/include/asm/hpet.h         |  3 ++
+ arch/x86/kernel/watchdog_hld_hpet.c | 47 +++++++++++++++++++++++++++--
+ 2 files changed, 48 insertions(+), 2 deletions(-)
 
 diff --git a/arch/x86/include/asm/hpet.h b/arch/x86/include/asm/hpet.h
-index 8aea54f412e0..bb76f54effe4 100644
+index bb76f54effe4..738fcf256b14 100644
 --- a/arch/x86/include/asm/hpet.h
 +++ b/arch/x86/include/asm/hpet.h
-@@ -104,6 +104,10 @@ extern void hpet_unregister_irq_handler(rtc_irq_handler handler);
+@@ -102,6 +102,8 @@ extern void hpet_unregister_irq_handler(rtc_irq_handler handler);
+  * @has_periodic:		The HPET channel supports periodic mode
+  * @channel:			HPET channel assigned to the detector
   * @ticks_per_second:		Frequency of the HPET timer
++ * @ticks_per_group:		HPET ticks per group that must elapse before
++ *				the timer expires
   * @irq:			IRQ number assigned to the HPET channel
   * @handling_cpu:		CPU handling the HPET interrupt
-+ * @pkgs_per_group:		Number of physical packages in a group of CPUs
-+ *				receiving an IPI
-+ * @nr_groups:			Number of groups into which @monitored_cpumask
-+ *				is partitioned
-  * @msi_msg:			MSI message to be written it the HPET registers
-  * @affinity_work:		Used to update the affinity of the detector
-  *				interrupts, both IPI and NMI.
-@@ -121,6 +125,8 @@ struct hpet_hld_data {
+  * @pkgs_per_group:		Number of physical packages in a group of CPUs
+@@ -123,6 +125,7 @@ struct hpet_hld_data {
+ 	bool		has_periodic;
+ 	u32		channel;
  	u64		ticks_per_second;
++	u64		ticks_per_group;
  	int		irq;
  	u32		handling_cpu;
-+	u32		pkgs_per_group;
-+	u32		nr_groups;
- 	struct msi_msg	msi_msg;
- 	struct irq_work	affinity_work;
- 	cpumask_var_t	monitored_cpumask;
+ 	u32		pkgs_per_group;
 diff --git a/arch/x86/kernel/watchdog_hld_hpet.c b/arch/x86/kernel/watchdog_hld_hpet.c
-index a363f3cd45dd..04b354a35e68 100644
+index 04b354a35e68..bf3ee354907f 100644
 --- a/arch/x86/kernel/watchdog_hld_hpet.c
 +++ b/arch/x86/kernel/watchdog_hld_hpet.c
-@@ -235,26 +235,71 @@ static void update_ipi_target_cpumask(struct hpet_hld_data *hdata)
- retry:
- 	cpumask_clear(hdata->target_cpumask);
+@@ -48,18 +48,26 @@ static void kick_timer(struct hpet_hld_data *hdata, bool force)
+ 	 * are able to update the comparator before the counter reaches such new
+ 	 * value.
+ 	 *
++	 * Each CPU must be monitored every watch_thresh seconds. In order to
++	 * keep the HPET channel interrupt under 1 per second, CPUs are targeted
++	 * by groups. Each group is target separately.
++	 *
++	 *   ticks_per_group = watch_thresh * ticks_per_second / nr_groups
++	 *
++	 * as computed in update_ticks_per_group().
++	 *
+ 	 * Let it wrap around if needed.
+ 	 */
  
--	next_cpu = get_first_cpu_in_next_pkg(next_cpu, hdata);
--	if (next_cpu < 0 || next_cpu >= nr_cpu_ids) {
--		/*
--		 * If a CPU in a next package was not identified,
--		 * fallback to the first monitored CPU instead of
--		 * bailing out.
--		 */
--		next_cpu = cpumask_first(hdata->monitored_cpumask);
--		goto retry;
-+	for (i = 0 ; i < hdata->pkgs_per_group; i++) {
-+		next_cpu = get_first_cpu_in_next_pkg(next_cpu, hdata);
-+		if (next_cpu < 0 || next_cpu >= nr_cpu_ids) {
-+			/*
-+			 * If a CPU in a next package was not identified,
-+			 * fallback to the first monitored CPU instead of
-+			 * bailing out.
-+			 */
-+			next_cpu = cpumask_first(hdata->monitored_cpumask);
-+			goto retry;
-+		}
-+
-+		/* Select all the CPUs in the same package as @next_cpu */
-+		cpumask_or(hdata->target_cpumask, hdata->target_cpumask,
-+			   topology_core_cpumask(next_cpu));
+ 	count = hpet_readl(HPET_COUNTER);
+-	new_compare = count + watchdog_thresh * hdata->ticks_per_second;
++	new_compare = count + watchdog_thresh * hdata->ticks_per_group;
+ 
+ 	if (!hdata->has_periodic) {
+ 		hpet_writel(new_compare, HPET_Tn_CMP(hdata->channel));
+ 		return;
  	}
  
--	/* Select all the CPUs in the same package as @next_cpu */
--	cpumask_or(hdata->target_cpumask, hdata->target_cpumask,
--		   topology_core_cpumask(next_cpu));
--
- 	/* Only select the CPUs that need to be monitored */
- 	cpumask_and(hdata->target_cpumask, hdata->target_cpumask,
- 		    hdata->monitored_cpumask);
+-	period = watchdog_thresh * hdata->ticks_per_second;
++	period = watchdog_thresh * hdata->ticks_per_group;
+ 	hpet_set_comparator_periodic(hdata->channel, (u32)new_compare,
+ 				     (u32)period);
+ }
+@@ -411,6 +419,27 @@ static int setup_hpet_irq(struct hpet_hld_data *hdata)
+ 	return ret;
  }
  
 +/**
-+ * count_monitored_packages() - Count the packages with monitored CPUs
-+ * @hdata:	A data structure with the monitored cpumask
++ * update_ticks_per_group() - Update the number of HPET ticks CPU group
++ * @hdata:     struct with the timer's the ticks-per-second and CPU mask
 + *
-+ * Return the number of packages with at least one CPU in the monitored_cpumask
-+ * of @hdata
++ * From the overall ticks-per-second of the timer, compute the number of ticks
++ * after which the timer should expire to monitor each CPU every watch_thresh
++ * seconds. The monitored CPUs have been partitioned into groups, and the HPET
++ * channel targets one group at a time.
 + */
-+static u32 count_monitored_packages(struct hpet_hld_data *hdata)
++static void update_ticks_per_group(struct hpet_hld_data *hdata)
 +{
-+	int c = cpumask_first(hdata->monitored_cpumask);
-+	u16 start_id, id;
-+	u32 nr_pkgs = 0;
++	u64 ticks = hdata->ticks_per_second;
 +
-+	start_id = topology_physical_package_id(c);
++	/* Only update if there are CPUs to monitor. */
++	if (!hdata->nr_groups)
++		return;
 +
-+	do {
-+		nr_pkgs++;
-+		c = get_first_cpu_in_next_pkg(c, hdata);
-+		id = topology_physical_package_id(c);
-+	} while (start_id != id);
-+
-+	return nr_pkgs;
++	do_div(ticks, hdata->nr_groups);
++	hdata->ticks_per_group = ticks;
 +}
 +
-+static void setup_cpu_groups(struct hpet_hld_data *hdata)
-+{
-+	u32 monitored_pkgs = count_monitored_packages(hdata);
-+
-+	hdata->pkgs_per_group = 0;
-+	hdata->nr_groups = U32_MAX;
-+
-+	/*
-+	 * To keep the HPET timer to fire each 1 second or less frequently,
-+	 * the condition watchdog_thresh >= nr_groups nust be met. Thus,
-+	 * group together one or more packages until such condition is reached.
-+	 */
-+	while (watchdog_thresh < hdata->nr_groups) {
-+		hdata->pkgs_per_group++;
-+		hdata->nr_groups = DIV_ROUND_UP(monitored_pkgs,
-+						hdata->pkgs_per_group);
-+	}
-+}
-+
- static void update_timer_irq_affinity(struct irq_work *work)
- {
- 	struct hpet_hld_data *hdata = container_of(work, struct hpet_hld_data,
-@@ -378,6 +423,8 @@ void hardlockup_detector_hpet_enable(unsigned int cpu)
- {
+ /**
+  * hardlockup_detector_hpet_enable() - Enable the hardlockup detector
+  * @cpu:	CPU Index in which the watchdog will be enabled.
+@@ -424,6 +453,7 @@ void hardlockup_detector_hpet_enable(unsigned int cpu)
  	cpumask_set_cpu(cpu, hld_data->monitored_cpumask);
  
-+	setup_cpu_groups(hld_data);
-+
+ 	setup_cpu_groups(hld_data);
++	update_ticks_per_group(hld_data);
+ 
  	update_ipi_target_cpumask(hld_data);
  
- 	/*
-@@ -421,6 +468,8 @@ void hardlockup_detector_hpet_disable(unsigned int cpu)
- 	hld_data->handling_cpu = cpumask_first(hld_data->monitored_cpumask);
+@@ -436,7 +466,14 @@ void hardlockup_detector_hpet_enable(unsigned int cpu)
+ 		update_msi_destid(hld_data);
+ 		kick_timer(hld_data, true);
+ 		enable_timer(hld_data);
++		return;
+ 	}
++
++	/*
++	 * Kick timer in case the number of monitored CPUs requires a change in
++	 * the timer period.
++	 */
++	kick_timer(hld_data, hld_data->has_periodic);
+ }
+ 
+ /**
+@@ -469,9 +506,15 @@ void hardlockup_detector_hpet_disable(unsigned int cpu)
  	update_msi_destid(hld_data);
  
-+	setup_cpu_groups(hld_data);
-+
+ 	setup_cpu_groups(hld_data);
++	update_ticks_per_group(hld_data);
+ 
  	update_ipi_target_cpumask(hld_data);
  
++	/*
++	 * Kick timer in case the number of monitored CPUs requires a change in
++	 * the timer period.
++	 */
++	kick_timer(hld_data, hld_data->has_periodic);
  	enable_timer(hld_data);
+ }
+ 
 -- 
 2.17.1
 
