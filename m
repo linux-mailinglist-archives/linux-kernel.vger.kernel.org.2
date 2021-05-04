@@ -2,94 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1C9A3727FD
+	by mail.lfdr.de (Postfix) with ESMTP id 663233727FC
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230186AbhEDJTK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 05:19:10 -0400
-Received: from bmailout2.hostsharing.net ([83.223.78.240]:51487 "EHLO
-        bmailout2.hostsharing.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhEDJTJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230166AbhEDJTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Tue, 4 May 2021 05:19:09 -0400
-Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
-        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 4A2472800BD97;
-        Tue,  4 May 2021 11:17:54 +0200 (CEST)
-Received: by h08.hostsharing.net (Postfix, from userid 100393)
-        id 397F82CCEE; Tue,  4 May 2021 11:17:54 +0200 (CEST)
-Date:   Tue, 4 May 2021 11:17:54 +0200
-From:   Lukas Wunner <lukas@wunner.de>
-To:     Saravana Kannan <saravanak@google.com>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] spi: Fix spi device unregister flow
-Message-ID: <20210504091754.GA22045@wunner.de>
-References: <20210426235638.1285530-1-saravanak@google.com>
- <20210503100733.GA8114@wunner.de>
- <CAGETcx8qPg9NUS6BJLEJCZ-2La32_NPeaMf1GDArcWT6tsf_AQ@mail.gmail.com>
- <20210503175600.GA3864@wunner.de>
- <CAGETcx_Z9kjzjTaNUBgKNte8UZcT5HJ5tjkmRmFqddy78Nj9Qw@mail.gmail.com>
+Received: from mga04.intel.com ([192.55.52.120]:63075 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230158AbhEDJTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 05:19:07 -0400
+IronPort-SDR: mxWGmA0n1XCdf2m4OJQI+/o9Ce3xfdQHNnaeACLdO9a/I3xAOwHfAn2rpPcrFej1QE+F2PK/bQ
+ 5SkrTpvEPucw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="195884067"
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="195884067"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 02:18:00 -0700
+IronPort-SDR: 7draSFrfvY/hi9a8M9XFlwwgRXE1qfj2CvQILS/v7WyYJkAJ8oSaPm5EuEcdH+6i7wDqYGwWcB
+ KAWKm7gjPL2Q==
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="396062620"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 02:17:58 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ldrBj-009VMz-Qd; Tue, 04 May 2021 12:17:55 +0300
+Date:   Tue, 4 May 2021 12:17:55 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Geert Uytterhoeven <geert+renesas@glider.be>
+Cc:     Yicong Yang <yangyicong@hisilicon.com>,
+        Wei Xu <xuwei5@hisilicon.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Dmitry Osipenko <digetx@gmail.com>, linux-i2c@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] i2c: I2C_HISI should depend on ACPI
+Message-ID: <YJERQ8WYOvR+kucp@smile.fi.intel.com>
+References: <22d124a7f12f2c8b280a9cc7f3b766351c9a8d64.1620119167.git.geert+renesas@glider.be>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAGETcx_Z9kjzjTaNUBgKNte8UZcT5HJ5tjkmRmFqddy78Nj9Qw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <22d124a7f12f2c8b280a9cc7f3b766351c9a8d64.1620119167.git.geert+renesas@glider.be>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 11:15:50AM -0700, Saravana Kannan wrote:
-> On Mon, May 3, 2021 at 10:56 AM Lukas Wunner <lukas@wunner.de> wrote:
-> > Without your patch:
-> >
-> > spi_unregister_device()
-> >   device_unregister()
-> >     device_del()
-> >       bus_remove_device()
-> >         device_release_driver() # access to physical SPI device in ->remove()
-> >     put_device()
-> >       kobject_put()
-> >         kref_put()
-> >           kobject_release()
-> >             kobject_cleanup()
-> >               device_release()
-> >                 spidev_release()
-> >                   spi->controller->cleanup() # controller_state freed
-> >
-> > With your patch:
-> >
-> > spi_unregister_device()
-> >   spi_cleanup()
-> >     spi->controller->cleanup() # controller_state freed
-> >   device_unregister()
-> >     device_del()
-> >       bus_remove_device()
-> >         device_release_driver() # access to physical SPI device in ->remove()
-[...]
-> So, it looks like the fix is simple. We just need to move
-> spi_cleanup() to the bottom of spi_unregister_device(). I'll send a
-> patch for that rather than reverting this and bringing back the other
-> bugs.
+On Tue, May 04, 2021 at 11:06:32AM +0200, Geert Uytterhoeven wrote:
+> The HiSilicon Kunpeng I2C controller driver relies on ACPI to probe for
+> its presence.  Hence add a dependency on ACPI, to prevent asking the
+> user about this driver when configuring a kernel without ACPI firmware
+> support.
 
-That would result in a use-after-free if the call to device_unregister()
-indeed releases the last ref to the spi_device (which I'd expect is
-usually the case).
+As promised, okay from me.
+Thanks!
 
-However, something like this might work (in spi_unregister_device()):
+> Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
+> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+> ---
+> v2:
+>   - Drop dependency on ARCH_HISI, as this is a public IP which doesn't
+>     specifically depend on ARCH_HISI.
+> ---
+>  drivers/i2c/busses/Kconfig | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
+> index b5b4e0d0ff4dd0bc..226c0b79eac030fa 100644
+> --- a/drivers/i2c/busses/Kconfig
+> +++ b/drivers/i2c/busses/Kconfig
+> @@ -647,7 +647,7 @@ config I2C_HIGHLANDER
+>  
+>  config I2C_HISI
+>  	tristate "HiSilicon I2C controller"
+> -	depends on ARM64 || COMPILE_TEST
+> +	depends on (ARM64 && ACPI) || COMPILE_TEST
+>  	help
+>  	  Say Y here if you want to have Hisilicon I2C controller support
+>  	  available on the Kunpeng Server.
+> -- 
+> 2.25.1
+> 
 
-	device_del(&spi->dev);
-	spi_cleanup(spi);
-	put_device(&spi->dev);
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks,
 
-Lukas
