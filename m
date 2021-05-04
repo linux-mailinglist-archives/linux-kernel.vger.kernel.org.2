@@ -2,102 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06E62372813
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:27:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 60EAB372814
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230100AbhEDJ2D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 05:28:03 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:38055 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229903AbhEDJ1v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 05:27:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1620120417; x=1651656417;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=VQ/a1Lg4gGku2HtYE9KiPPHcFeBRAiUZ7AcJxQWzW+Q=;
-  b=JO32lqMePlVa4DhCvqXnr4OhifXuULHGBi/rB7jNO4ZC0IPer68pi06t
-   3VyazDc6pwYQkoIhjT3emNIdEDWS1ENC5TErj3qeC3wuKq0BPUqBb4Kg3
-   CKf+ftRDNdNuxZXv7I396I/JrvSJnrDKxln+mGNbzmY1ZiFZrSPdxjh2C
-   M=;
-X-IronPort-AV: E=Sophos;i="5.82,272,1613433600"; 
-   d="scan'208";a="132879461"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1a-821c648d.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 04 May 2021 09:26:34 +0000
-Received: from EX13MTAUWC002.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1a-821c648d.us-east-1.amazon.com (Postfix) with ESMTPS id 0A329A04E5;
-        Tue,  4 May 2021 09:26:26 +0000 (UTC)
-Received: from EX13D20UWC001.ant.amazon.com (10.43.162.244) by
- EX13MTAUWC002.ant.amazon.com (10.43.162.240) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Tue, 4 May 2021 09:26:26 +0000
-Received: from [10.85.99.170] (10.43.162.28) by EX13D20UWC001.ant.amazon.com
- (10.43.162.244) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May
- 2021 09:26:21 +0000
-Message-ID: <b4434730-9cd1-1d41-d012-f7beff7e351b@amazon.com>
-Date:   Tue, 4 May 2021 11:26:20 +0200
+        id S230115AbhEDJ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 05:28:18 -0400
+Received: from foss.arm.com ([217.140.110.172]:56158 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229903AbhEDJ2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 05:28:17 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B177ED1;
+        Tue,  4 May 2021 02:27:22 -0700 (PDT)
+Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D042B3F73B;
+        Tue,  4 May 2021 02:27:20 -0700 (PDT)
+Date:   Tue, 4 May 2021 10:27:15 +0100
+From:   Vincent Donnefort <vincent.donnefort@arm.com>
+To:     Pierre.Gondois@arm.com
+Cc:     linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
+        qperret@qperret.net, dietmar.eggemann@arm.com, Lukasz.Luba@arm.com,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com
+Subject: Re: [PATCH v2 2/2] sched/fair: Fix negative energy delta in
+ find_energy_efficient_cpu()
+Message-ID: <20210504092714.GA100203@e120877-lin.cambridge.arm.com>
+References: <20210429101948.31224-1-Pierre.Gondois@arm.com>
+ <20210429101948.31224-3-Pierre.Gondois@arm.com>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:89.0)
- Gecko/20100101 Thunderbird/89.0
-Subject: Re: [PATCH v4] KVM: x86: Fix KVM_GET_CPUID2 ioctl to return cpuid
- entries count
-Content-Language: en-US
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        "Denis V. Lunev" <den@openvz.org>,
-        Sean Christopherson <seanjc@google.com>,
-        Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
-CC:     <linux-kernel@vger.kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        "Vitaly Kuznetsov" <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        "Jim Mattson" <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Borislav Petkov" <bp@alien8.de>, <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Shuah Khan <shuah@kernel.org>,
-        Aaron Lewis <aaronlewis@google.com>,
-        "Andrew Jones" <drjones@redhat.com>,
-        Oliver Upton <oupton@google.com>,
-        Like Xu <like.xu@linux.intel.com>, <kvm@vger.kernel.org>,
-        <linux-doc@vger.kernel.org>, <linux-kselftest@vger.kernel.org>
-References: <20210428172729.3551-1-valeriy.vdovin@virtuozzo.com>
- <YIoFFl72VSeuhCRt@google.com>
- <0d68dbc3-8462-7763-fbad-f3b895fcf6e6@redhat.com>
- <be7eedf7-03a2-f998-079d-b18101b8b187@openvz.org>
- <63e54361-0018-ad3b-fb2b-e5dba6a0f221@redhat.com>
- <048b3f3a-379d-cff3-20b6-fc74dd12a98f@openvz.org>
- <514b5373-c07b-ad34-5fba-f8850faf6d68@redhat.com>
-From:   Alexander Graf <graf@amazon.com>
-In-Reply-To: <514b5373-c07b-ad34-5fba-f8850faf6d68@redhat.com>
-X-Originating-IP: [10.43.162.28]
-X-ClientProxiedBy: EX13D16UWC004.ant.amazon.com (10.43.162.72) To
- EX13D20UWC001.ant.amazon.com (10.43.162.244)
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429101948.31224-3-Pierre.Gondois@arm.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpPbiAwNC4wNS4yMSAxMDoyMSwgUGFvbG8gQm9uemluaSB3cm90ZToKPiAKPiBPbiAwNC8wNS8y
-MSAxMDoxNSwgRGVuaXMgVi4gTHVuZXYgd3JvdGU6Cj4+IEFzIGZhciBhcyBJIHVuZGVyc3RhbmQg
-b25seSBzb21lIHRlc3Rpbmcgd2l0aGluIGtlcm5lbCBub3cuCj4+IFRob3VnaCB3ZSBoYXZlIHBs
-YW5zIHRvIGV4cG9zZSBpdCBmb3IgUUFQSSBhcyB0aGUgc2VyaWVzCj4+IGluIFFFTVUKPj4gwqDC
-oCBbUEFUQ0ggMS8yXSBxYXBpOiBmaXggZXJyb3IgaGFuZGxpbmcgZm9yIHgtdnotcXVlcnktY3B1
-LW1vZGVsLWNwdWlkCj4+IMKgwqAgW1BBVENIIDIvMl0gcWFwaTogYmxhY2tsaXN0ZWQgeC12ei1x
-dWVyeS1jcHUtbW9kZWwtY3B1aWQgaW4gdGVzdHMKPj4gaXMgbm90IGNvbWluZyBpbiBhIGdvb2Qg
-d2F5Lgo+PiBUaGUgaWRlYSB3YXMgdG8gYXZvaWQgbWFudWFsIGNvZGUgcmV3b3JrIGluIFFFTVUg
-YW5kCj4+IGV4cG9zZSBjb2xsZWN0ZWQgbW9kZWwgYXQgbGVhc3QgZm9yIGRlYnVnLgo+IAo+IEtW
-TV9HRVRfQ1BVSUQyIGFzIGEgVk0gaW9jdGwgY2Fubm90IGV4cG9zZSB0aGUgd2hvbGUgdHJ1dGgg
-YWJvdXQgQ1BVSUQKPiBlaXRoZXIsIHNpbmNlIGl0IGRvZXNuJ3QgaGFuZGxlIHRoZSBUU1hfQ1RS
-TF9DUFVJRF9DTEVBUiBiaXQuwqAgR2l2ZW4KPiB0aGF0IFFFTVUgZG9lc24ndCBuZWVkIEtWTV9H
-RVRfQ1BVSUQyOyBpdCBvbmx5IG5lZWRzIHRvIHNhdmUgd2hhdGV2ZXIgaXQKPiBwYXNzZWQgdG8g
-S1ZNX1NFVF9DUFVJRDIuCgpXaGF0IGlmIHdlIGluc3RlYWQgZGVmbGVjdCBDUFVJRCBpbnRvIHVz
-ZXIgc3BhY2Ugc28gaXQgY2FuIGVtdWxhdGUgaXQgaW4gCndoYXRldmVyIHdheSBpdCBsaWtlcz8g
-SXMgdGhlIHBlcmZvcm1hbmNlIGRpZmZlcmVuY2UgZ29pbmcgdG8gYmUgCnJlbGV2YW50PyBBcmUg
-cGVvcGxlIHN0aWxsIHVzaW5nIGNwdWlkIGFzIGJhcnJpZXIgdGhlc2UgZGF5cz8KCgpBbGV4CgoK
-CkFtYXpvbiBEZXZlbG9wbWVudCBDZW50ZXIgR2VybWFueSBHbWJICktyYXVzZW5zdHIuIDM4CjEw
-MTE3IEJlcmxpbgpHZXNjaGFlZnRzZnVlaHJ1bmc6IENocmlzdGlhbiBTY2hsYWVnZXIsIEpvbmF0
-aGFuIFdlaXNzCkVpbmdldHJhZ2VuIGFtIEFtdHNnZXJpY2h0IENoYXJsb3R0ZW5idXJnIHVudGVy
-IEhSQiAxNDkxNzMgQgpTaXR6OiBCZXJsaW4KVXN0LUlEOiBERSAyODkgMjM3IDg3OQoKCg==
+On Thu, Apr 29, 2021 at 11:19:48AM +0100, Pierre.Gondois@arm.com wrote:
+> From: Pierre Gondois <Pierre.Gondois@arm.com>
+> 
+> find_energy_efficient_cpu() (feec()) searches the best energy CPU
+> to place a task on. To do so, compute_energy() estimates the energy
+> impact of placing the task on a CPU, based on CPU and task utilization
+> signals.
+> 
+> Utilization signals can be concurrently updated while evaluating a
+> performance domain (pd). In some cases, this leads to having a
+> 'negative delta', i.e. placing the task in the pd is seen as an
+> energy gain. Thus, any further energy comparison is biased.
+> 
+> In case of a 'negative delta', return prev_cpu since:
+> 1. a 'negative delta' happens in less than 0.5% of feec() calls,
+>    on a Juno with 6 CPUs (4 little, 2 big)
+> 2. it is unlikely to have two consecutive 'negative delta' for
+>    a task, so if the first call fails, feec() will correctly
+>    place the task in the next feec() call
+> 3. EAS current behavior tends to select prev_cpu if the task
+>    doesn't raise the OPP of its current pd. prev_cpu is EAS's
+>    generic decision
+> 4. prev_cpu should be preferred to returning an error code.
+>    In the latter case, select_idle_sibling() would do the placement,
+>    selecting a big (and not energy efficient) CPU. As 3., the task
+>    would potentially reside on the big CPU for a long time
+> 
+> Reported-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> Suggested-by: Xuewen Yan <xuewen.yan@unisoc.com>
+> Signed-off-by: Pierre Gondois <Pierre.Gondois@arm.com>
+> ---
 
+I've been testing this patch on the Google's Pixel4, with a modified kernel that
+we are using to evalute mailine performance and energy consumption for a
+"real-life" mobile usage.
+
+As always, I ran the Work2.0 workload from PCMark on Android. With that setup I
+haven't observed any statistically significant performance change neither any CPU
+Idle residency modification. Nevertheless, this code protected against ~600 bad
+computations (and by extent bad placements) during a single PCMark iteration
+and by looking at the traces, this is saving from spurious wake-ups that would
+otherwise happen on the biggest CPUs of the system.
+
++ Reviewed-by: Vincent Donnefort <vincent.donnefort@arm.com>
