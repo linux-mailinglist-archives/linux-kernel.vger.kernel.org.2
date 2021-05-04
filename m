@@ -2,92 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA4143732A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 685E53732A5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:14:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhEDXG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 19:06:29 -0400
-Received: from mail-yb1-f169.google.com ([209.85.219.169]:39530 "EHLO
-        mail-yb1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230475AbhEDXG3 (ORCPT
+        id S231160AbhEDXOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 19:14:37 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:60436 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229960AbhEDXOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 19:06:29 -0400
-Received: by mail-yb1-f169.google.com with SMTP id z1so230534ybf.6
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 16:05:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PvfEJxx8T5Gfb4a+lHvIlRpfFqDd/U5kxfg9D9O09eY=;
-        b=iQgdt7g+Lq7U6bEq7BsRpjV3hoIlERNFZrC9yLZfqsq9wVTlGzCBX6OQ7uT5LCBf/o
-         T2kVHbp1IuD3oqTOQnTtX+ZoNeqP88eGkvqa4mrjtVitbnHSuYuySxwzr7XZfBp//4CM
-         kzSSyU1x6K/GBBEorJp98eor9yvZfCQFkrr/7efTfAo0ZR5yNsQlHX6uacURPWP3eBfG
-         bDns/cbkalcVbqvlvSCTuTzfJD57S+d2dVN1pkCIqsjewYJMOK0YGNT5FXBPhszkLIC8
-         1QqxkgXbgMlgEGIOul+PrQJWgIZSCpHeuzXzv8wxDdRR7GRyb6akI/F1mdj4ZirmwNcw
-         IR8A==
-X-Gm-Message-State: AOAM533MKCZGojZ7zh39VRWaZyMO98Q/kgvfpFQS5dzstsTQ6E4LhfKL
-        wKKEs642M1onpLDOyZJ58/tu1nzXC1AX6PPCiYw=
-X-Google-Smtp-Source: ABdhPJyFVsMqrnR6x8IusJFQG/jF2WyzHDJgRmzBvPLGzHsLYzJQWw41sT7jkiUxcF/LHIbYy8fC+7DQvf0rZc7kRwA=
-X-Received: by 2002:a25:bc08:: with SMTP id i8mr36987237ybh.146.1620169533255;
- Tue, 04 May 2021 16:05:33 -0700 (PDT)
+        Tue, 4 May 2021 19:14:36 -0400
+Received: from [192.168.254.32] (unknown [47.187.223.33])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 596C820B7178;
+        Tue,  4 May 2021 16:13:40 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 596C820B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620170021;
+        bh=iPiRNYpjRwzimrh0K0tYcnGX1TG+68HNv8cU+qTFNlE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=MHuTR0PCggMxKIWmmSaj3Dkz01I4Csml3R14Taa2MwE5x0SRFnY4FdtVQb7ULnW2d
+         m+1Q7clUEvTyxL4XXv1SEZ8Qf2Ok2fgI8qBqjfxB4qeKGLDgL2gZAS+xz8O5bVjv+i
+         /IknZDpVFHJpXgCGE0Z/5oFwcmKkm74n9etbKHJY=
+Subject: Re: [RFC PATCH v3 1/4] arm64: Introduce stack trace reliability
+ checks in the unwinder
+To:     Josh Poimboeuf <jpoimboe@redhat.com>
+Cc:     broonie@kernel.org, mark.rutland@arm.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
+ <20210503173615.21576-1-madvenka@linux.microsoft.com>
+ <20210503173615.21576-2-madvenka@linux.microsoft.com>
+ <20210504215248.oi3zay3memgqri33@treble>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <b000767b-26ca-01a9-a109-c9fc3357f832@linux.microsoft.com>
+Date:   Tue, 4 May 2021 18:13:39 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
- <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
- <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
- <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
- <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com> <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <alpine.DEB.2.21.2105020346520.2587@angie.orcam.me.uk> <YJAK1C1uLknYGYrH@mit.edu>
-In-Reply-To: <YJAK1C1uLknYGYrH@mit.edu>
-From:   Greg Stark <stark@mit.edu>
-Date:   Tue, 4 May 2021 19:04:56 -0400
-Message-ID: <CAM-w4HOJqDUyK9HXjtqD3K2ja1Wt=u2s5waQ1wqm7jHy0P5V-A@mail.gmail.com>
-Subject: Re: Very slow clang kernel config ..
-To:     "Theodore Ts'o" <tytso@mit.edu>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Stellard <tstellar@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210504215248.oi3zay3memgqri33@treble>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 May 2021 at 10:39, Theodore Ts'o <tytso@mit.edu> wrote:
->
-> That was because memory was *incredibly* restrictive in those days.
-> My first Linux server had one gig of memory, and so shared libraries
-> provided a huge performance boost --- because otherwise systems would
-> be swapping or paging their brains out.
 
-(I assume you mean 1 megabyte?)
-I have 16G and the way modern programs are written I'm still having
-trouble avoiding swap thrashing...
 
-This is always a foolish argument though. Regardless of the amount of
-resources available we always want to use it as efficiently as
-possible. The question is not whether we have more memory today than
-before, but whether the time and power saved in reducing memory usage
-(and memory bandwidth usage) is more or less than other resource costs
-being traded off and whether that balance has changed.
+On 5/4/21 4:52 PM, Josh Poimboeuf wrote:
+> On Mon, May 03, 2021 at 12:36:12PM -0500, madvenka@linux.microsoft.com wrote:
+>> @@ -44,6 +44,8 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+>>  	unsigned long fp = frame->fp;
+>>  	struct stack_info info;
+>>  
+>> +	frame->reliable = true;
+>> +
+> 
+> Why set 'reliable' to true on every invocation of unwind_frame()?
+> Shouldn't it be remembered across frames?
+> 
 
-> However, these days, many if not most developers aren't capable of the
-> discpline needed to maintained the ABI stability needed for shared
-> libraries to work well.
+This is mainly for debug purposes in case a caller wants to print the whole stack and also
+print which functions are unreliable. For livepatch, it does not make any difference. It will
+quit as soon as it encounters an unreliable frame.
 
-I would argue you have cause and effect reversed here. The reason
-developers don't understand ABI (or even API) compatibility is
-*because* they're used to people just static linking (or vendoring).
-If people pushed back the world would be a better place.
+> Also, it looks like there are several error scenarios where it returns
+> -EINVAL but doesn't set 'reliable' to false.
+> 
 
--- 
-greg
+I wanted to make a distinction between an error situation (like stack corruption where unwinding
+has to stop) and an unreliable situation (where unwinding can still proceed). E.g., when a
+stack trace is taken for informational purposes or debug purposes, the unwinding will try to
+proceed until either the stack trace ends or an error happens.
+
+Madhavan
