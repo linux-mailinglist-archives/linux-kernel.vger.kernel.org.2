@@ -2,76 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57C4F3727CB
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:07:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28F063727CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:08:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhEDJH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 05:07:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230003AbhEDJHy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 05:07:54 -0400
-Received: from baptiste.telenet-ops.be (baptiste.telenet-ops.be [IPv6:2a02:1800:120:4::f00:13])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61BCBC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 02:06:36 -0700 (PDT)
-Received: from ramsan.of.borg ([IPv6:2a02:1810:ac12:ed20:1ca1:e52f:3ec5:3ac5])
-        by baptiste.telenet-ops.be with bizsmtp
-        id 0Z6a2500N3aEpPb01Z6arB; Tue, 04 May 2021 11:06:35 +0200
-Received: from rox.of.borg ([192.168.97.57])
-        by ramsan.of.borg with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ldr0j-002j3B-Ov; Tue, 04 May 2021 11:06:33 +0200
-Received: from geert by rox.of.borg with local (Exim 4.93)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1ldr0j-00H702-CC; Tue, 04 May 2021 11:06:33 +0200
-From:   Geert Uytterhoeven <geert+renesas@glider.be>
-To:     Yicong Yang <yangyicong@hisilicon.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Dmitry Osipenko <digetx@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Geert Uytterhoeven <geert+renesas@glider.be>
-Subject: [PATCH v2] i2c: I2C_HISI should depend on ACPI
-Date:   Tue,  4 May 2021 11:06:32 +0200
-Message-Id: <22d124a7f12f2c8b280a9cc7f3b766351c9a8d64.1620119167.git.geert+renesas@glider.be>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S230072AbhEDJJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 05:09:05 -0400
+Received: from foss.arm.com ([217.140.110.172]:55944 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229905AbhEDJJE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 05:09:04 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 60D0DED1;
+        Tue,  4 May 2021 02:08:09 -0700 (PDT)
+Received: from e120189.arm.com (unknown [10.57.63.61])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id EAC933F73B;
+        Tue,  4 May 2021 02:08:05 -0700 (PDT)
+From:   Pierre Gondois <Pierre.Gondois@arm.com>
+To:     linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
+        qperret@qperret.net, Lukasz.Luba@arm.com, dietmar.eggemann@arm.com
+Cc:     Vincent.Donnefort@arm.com, Pierre Gondois <Pierre.Gondois@arm.com>,
+        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, rostedt@goodmis.org,
+        bsegall@google.com, mgorman@suse.de, bristot@redhat.com
+Subject: [PATCH v3 0/2] sched/fair: find_energy_efficient_cpu() enhancements
+Date:   Tue,  4 May 2021 10:07:41 +0100
+Message-Id: <20210504090743.9688-1-Pierre.Gondois@arm.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HiSilicon Kunpeng I2C controller driver relies on ACPI to probe for
-its presence.  Hence add a dependency on ACPI, to prevent asking the
-user about this driver when configuring a kernel without ACPI firmware
-support.
+V2:
+ - Split the patch in 2. [Quentin]
+ - Add testing results to the cover-letter. [Dietmar]
+ - Put back 'rcu_read_unlock()' to unlock the rcu
+   earlier. [Dietmar]
+ - Various comments. [Dietmar/Quentin]
 
-Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
-Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
----
-v2:
-  - Drop dependency on ARCH_HISI, as this is a public IP which doesn't
-    specifically depend on ARCH_HISI.
----
- drivers/i2c/busses/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+V3:
+ - Layout/phrasing. [Dietmar]
 
-diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-index b5b4e0d0ff4dd0bc..226c0b79eac030fa 100644
---- a/drivers/i2c/busses/Kconfig
-+++ b/drivers/i2c/busses/Kconfig
-@@ -647,7 +647,7 @@ config I2C_HIGHLANDER
- 
- config I2C_HISI
- 	tristate "HiSilicon I2C controller"
--	depends on ARM64 || COMPILE_TEST
-+	depends on (ARM64 && ACPI) || COMPILE_TEST
- 	help
- 	  Say Y here if you want to have Hisilicon I2C controller support
- 	  available on the Kunpeng Server.
+This patchset prevents underflows in find_energy_efficient_cpu().
+This is done in the second patch:
+sched/fair: Fix negative energy delta in find_energy_efficient_cpu()
+
+The first patch:
+sched/fair: Only compute base_energy_pd if necessary
+prevents an unnecessary call to compute_energy() if no CPU is available
+in a performance domain (pd).
+When looping over the pds, it also allows to gather the calls
+to compute_energy(), reducing the chances of having utilization signals
+being concurrently updated and having a 'negative delta'.
+
+The energy tests of the initial EAS enablement at:
+https://lkml.kernel.org/r/20181203095628.11858-1-quentin.perret@arm.com
+have been executed using LISA on a Juno-r2 (2xA57 + 4xA53).
+
+To recall the test:
+"10 iterations of between 10 and 50 periodic rt-app tasks (16ms period, 
+5% duty-cycle) for 30 seconds with energy measurement. Unit is Joules. 
+The goal is to save energy, so lower is better."
+"Energy is measured with the onboard energy meter. Numbers include 
+consumption of big and little CPUs."
+
++----------+-----------------+-------------------------+
+|          | Without patches | With patches            |
++----------+--------+--------+------------------+------+
+| Tasks nb |  Mean  |    CI* | Mean             |  CI* |
++----------+--------+--------+------------------+------+
+|       10 |   6.57 |   0.24 |   6.46 (-1.63%)  | 0.27 |
+|       20 |  12.44 |   0.21 |  12.44 (-0.01%)  | 0.14 |
+|       30 |  19.10 |   0.78 |  18.75 (-1.85%)  | 0.15 |
+|       40 |  27.27 |   0.53 |  27.35 (+0.31%)  | 0.33 |
+|       50 |  36.55 |   0.42 |  36.28 (-0.74%)  | 0.42 |
++----------+-----------------+-------------------------+
+CI: confidence interval
+
+For each line, the intervals of values w/ w/o the patches are 
+overlapping (consider Mean +/- CI). Thus, the energy results shouldn't 
+have been impacted.
+
+Pierre Gondois (2):
+  sched/fair: Only compute base_energy_pd if necessary
+  sched/fair: Fix negative energy delta in find_energy_efficient_cpu()
+
+ kernel/sched/fair.c | 68 ++++++++++++++++++++++++++-------------------
+ 1 file changed, 39 insertions(+), 29 deletions(-)
+
 -- 
-2.25.1
+2.17.1
 
