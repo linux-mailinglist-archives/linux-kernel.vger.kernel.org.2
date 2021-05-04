@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 64E8E37319A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17D4B37319C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231796AbhEDUrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230425AbhEDUro (ORCPT
+        id S232371AbhEDUtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:49:08 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:64918 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230150AbhEDUtH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:47:44 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DD2C061761
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:46:49 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id v13so5992678ple.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:46:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2a6/ygkzqCiFjkJMxmFt1kL/6eCE5jLq9rBe6PegP00=;
-        b=dgMyecZDYvD3M4Hgvkv4Eu1S1UQfVURdbejOrJeu/cZwL/dwCUBxxdFaEWnf0U0vJZ
-         +HWphRk3stxZ1S89xn0/ClD1xNWSAVt0dTge88IvveKgMbVDEndWvtKGAz/jx6rAgrya
-         7yvvFTqcqsMBT13EEWc6PPYrXE7WorzwgUOds=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2a6/ygkzqCiFjkJMxmFt1kL/6eCE5jLq9rBe6PegP00=;
-        b=glq68FBOODy9lIpdalESX5Psl/UFma+2K82s3k6DZSENMijldzjXzinUOPZP3ptGxf
-         yrJPF1RSBLP3qE62dVTY+y4x6bY5A7OvAHUleOXRqs+huFAAMQYnYivdtZYtr+lQKz8l
-         MN346VLUbRS7ujekdVPK8/y7ukUpKKXU1qala/COn6cRJOWC7l2D+45rfVuarfkkPIs6
-         UhntFDiBas1WmjbuEc46WfmwNwyMPF/D8LeD9IUN51QTbC8HRgUexxyNn779WwfnAR6H
-         pFB8KibrdBt0ct9XccYPBlwWXoCccP1r5nNejD8jfB8csLsjNjcFfOmUgaAJJP1mhJJm
-         RwLQ==
-X-Gm-Message-State: AOAM530uF6npzXTCobXdvaSl0cQX7slLs95cPON7mik1UY89bizwrXcH
-        BpIv6rbbBJyufMjLup74F0mxQQ==
-X-Google-Smtp-Source: ABdhPJyfDVB4g3z0knD/LwR+gvIZ+Ero9hTSfnK7mpY7h82mp2xp8TGDseNPtwycdtUH1CxfgbvBYQ==
-X-Received: by 2002:a17:902:eac2:b029:ee:a909:4f9f with SMTP id p2-20020a170902eac2b02900eea9094f9fmr23875075pld.8.1620161208800;
-        Tue, 04 May 2021 13:46:48 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:4c2f:1f84:af45:6245])
-        by smtp.gmail.com with UTF8SMTPSA id w1sm4500412pgp.31.2021.05.04.13.46.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 13:46:48 -0700 (PDT)
-Date:   Tue, 4 May 2021 13:46:47 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     Rajeshwari <rkambl@codeaurora.org>
-Cc:     amitk@kernel.org, thara.gopinath@linaro.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, rui.zhang@intel.com,
-        daniel.lezcano@linaro.org, robh+dt@kernel.org,
-        linux-pm@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanm@codeaurora.org, manafm@codeaurora.org
-Subject: Re: [PATCH V3 2/3] arm64: dts: qcom: SC7280:  Add device node
- support for TSENS
-Message-ID: <YJGyt/OBBVVzdX2+@google.com>
-References: <1619778592-8112-1-git-send-email-rkambl@codeaurora.org>
- <1619778592-8112-3-git-send-email-rkambl@codeaurora.org>
- <YJAz1iDM+cNAAcCX@google.com>
+        Tue, 4 May 2021 16:49:07 -0400
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 144KlW6k031795;
+        Wed, 5 May 2021 05:47:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 144KlW6k031795
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1620161252;
+        bh=m5JrldgIlUzDPQw5tCAmJQCeVUpmSZmtNrwSFdv7t0c=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=WCoZAgsUXZ9InMGX429e0xhUb/2XOaMydB46P5STOK5XEsho8Q7ELlSONI2am4EyE
+         4gw/B4uWECCOncD9lhQl3K3m1IvxeQo6ku8MvT/F7/km9c2Iy8lpMx2/mGAAlS0xxH
+         pTYhLdfGfzhveMRmh+vp/Qsby+9Yf6RAw/WlW11Xs5KmFJ6UsqsQYWvCLIw8sy4wbB
+         6VFa+0fFzImA0okQEzZxVerJRoy2uzlWIoBirsCQakeCuYE/XIWC9iQo/7BylQsYqq
+         ZDC7hrZQMfSqEUxcCObF/W4y7MeFjZGkMzruPOiB3ZRtmyagnKyHQREcinlTm/yLiP
+         PeLQJ98nO71XQ==
+X-Nifty-SrcIP: [209.85.214.181]
+Received: by mail-pl1-f181.google.com with SMTP id e2so5993040plh.8;
+        Tue, 04 May 2021 13:47:32 -0700 (PDT)
+X-Gm-Message-State: AOAM53088LcKmjNoqdGKaCochQZi2slVQvo2RX9yngJn0z4MjsxbpyhB
+        cC/B5UGcOKhiAXPTfu2ZhMvKyRpjMd++zn2JCTI=
+X-Google-Smtp-Source: ABdhPJwdo8JYmppansdASpwWYG/jSTUXvcQJN0yFdwrAghR6Mkq4NZvSVaKxfBuu2t3CkalV4BgU5gOtF7YvGUfe0lQ=
+X-Received: by 2002:a17:902:8bcb:b029:ec:a192:21cf with SMTP id
+ r11-20020a1709028bcbb02900eca19221cfmr28236178plo.71.1620161251576; Tue, 04
+ May 2021 13:47:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YJAz1iDM+cNAAcCX@google.com>
+References: <20200614144341.1077495-1-masahiroy@kernel.org>
+ <20200614144341.1077495-2-masahiroy@kernel.org> <70868660127bd13dcc47e94108483ff15827378c.camel@sipsolutions.net>
+In-Reply-To: <70868660127bd13dcc47e94108483ff15827378c.camel@sipsolutions.net>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Wed, 5 May 2021 05:46:54 +0900
+X-Gmail-Original-Message-ID: <CAK7LNASRSOBy_bqUvMqk-m8WVaHPfwM8xEbiTGtcB2B2-3GBhQ@mail.gmail.com>
+Message-ID: <CAK7LNASRSOBy_bqUvMqk-m8WVaHPfwM8xEbiTGtcB2B2-3GBhQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kconfig: unify cc-option and as-option
+To:     Johannes Berg <johannes@sipsolutions.net>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Changbin Du <changbin.du@intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 10:33:10AM -0700, Matthias Kaehlcke wrote:
-> On Fri, Apr 30, 2021 at 03:59:51PM +0530, Rajeshwari wrote:
-> > Adding device node for TSENS controller and critical interrupt support in SC7280.
-> > 
-> > Signed-off-by: Rajeshwari <rkambl@codeaurora.org>
-> 
-> Please add tags from previous versions, like my 'Reviewed-by' from v2,
-> unless a patch underwent major changes.
-> 
-> Please also add a change log for v > 1, even if it just says 'no changes'
-> for some patches in the series.
+On Wed, May 5, 2021 at 5:17 AM Johannes Berg <johannes@sipsolutions.net> wrote:
+>
+> Hi,
+>
+> So... I realized it's been a while:
+>
+> On Sun, 2020-06-14 at 23:43 +0900, Masahiro Yamada wrote:
+> > cc-option and as-option are almost the same; both pass the flag to
+> > $(CC). The main difference is the cc-option stops before the assemble
+> > stage (-S option) whereas as-option stops after it (-c option).
+> >
+>
+> But, I had noticed for a while now that M= build for an out-of-tree
+> driver were causing some trouble. Not really completely "out-of-tree"
+> but rather backported (https://backports.wiki.kernel.org/).
+>
+> And then I finally narrowed it down to this commit, specifically this:
+>
+> >  # Return y if the compiler supports <flag>, n otherwise
+> > -cc-option = $(success,$(CC) -Werror $(CLANG_FLAGS) $(1) -S -x c /dev/null -o /dev/null)
+> > +cc-option = $(success,mkdir .tmp_$$$$; trap "rm -rf .tmp_$$$$" EXIT; $(CC) -Werror $(CLANG_FLAGS) $(1) -c -x c /dev/null -o .tmp_$$$$/tmp.o)
+>
+> What happens is that we're doing
+>
+>  make -C /path/to/kernel M=/path/to/driver
+>
+> But /path/to/kernel may be the installed distro kernel headers, and thus
+> not be writable to the user doing the driver compile. Obviously, the
+> user may need to 'sudo' anyway to install the result, but if just test-
+> compiling, or even as better practice to not run everything as root,
+> this ".tmp_$$" dir cannot be created.
+>
+> IOW, this broke compiler option detection when KBUILD_EXTMOD=/M= is
+> used. It seems this is still supported (documented in kbuild docs), so
+> I'm kind of hoping it could be fixed? But OTOH, I really don't know how,
+> perhaps just using "mktemp -d" here instead of the hardcoded temp dir?
+>
+> Thanks,
+> johannes
+>
 
-Forgot to re-add this:
 
-Reviewed-by: Matthias Kaehlcke <mka@chromium.org>
+ - This commit touches scripts/Kconfig.include.
+ - External module builds (M= builds) never invoke Kconfig
+
+Putting these two together, your claim is really odd.
+If external module builds invoke Kconfig,
+your kernel is already broken.
+
+If you claim this is an issue,
+please describe how to reproduce it in *upstream* kernel.
+I do not know (or care about) your backport kernel.
+
+
+--
+Best Regards
+Masahiro Yamada
