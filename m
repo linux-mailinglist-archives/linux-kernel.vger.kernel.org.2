@@ -2,118 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A449B372B53
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 941CD372B49
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:46:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231343AbhEDNrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:47:45 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:45610 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhEDNrj (ORCPT
+        id S231281AbhEDNrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:47:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:38476 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230478AbhEDNrH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:47:39 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 144DdSbh170143;
-        Tue, 4 May 2021 13:46:22 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=qax4kFS52O+5Ogi0OjJfY41ys+uMhtGCBa/bfkovZF4=;
- b=PhJWRyf6JdXXXkAPbiO6tzH7k5sDToxDnZQC9XBGvzjMFXGoaO53vyKIuOLK+zpiXujb
- UgoTOGmc1bHSyt1+30Hq5+BCvwMhy4/eclR3GUHaMK29mZLZqCVv86jwzHMaZ5PkN/Gg
- TS7i9Xy3rLiiwZDyBhdKoxRbn6aRBJ7bO+Fpik76mHEnkuoXb6kQh/JgpD/2AI/n3ATt
- Xca3LvLl7LV/WtLcO7mhd7jVV94b7rKxQl8K+92+mKuc2K3HxU6ZsQcxtR64FhiLpLZZ
- WqGkIMQ02V6strBKSPhL74mSARl1M0z+P97bZFJQOwCJTs0rPQifSt6Ke3JwtZ07zden +w== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 388vgbq3bv-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 04 May 2021 13:46:21 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 144DjOMr022173;
-        Tue, 4 May 2021 13:46:21 GMT
+        Tue, 4 May 2021 09:47:07 -0400
+Received: from pps.filterd (m0187473.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 144DiPCN007508;
+        Tue, 4 May 2021 09:46:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ content-transfer-encoding : mime-version; s=pp1;
+ bh=USYFsrusWFxT3Qxhq4iFumDkqaNvL/dcdiSFURy7vwk=;
+ b=HJpGo/AYQyTWjvaxeFr0ue7JEMRWBXqgTP9GZsBDEM+KQ8yP6NO4LpdgitvEtpFet4yZ
+ T4WVIcIsqZX5Ybq+r4e5pAQR2ZdC8np1klqpZqs+Wc+xu1e54VlVaRkGzMRqx/Qm4Tku
+ Hjh0KUI0Epd6cijXX6ZNMhcKfqNORZ8Ax5WtbM22BUD7QcY0oSBuu4n3GwMrPfUrXrop
+ tZeQIth/Ea6PCAeF7HLHlvHqhic091YHt8nyJIld+Qxqe6AbU/XFM+KSKU0YnHnrbQwj
+ h5PGZfbx2xB9H1ak9J1Ffrac/G7B7DqpB6lzynW6iBY4vFY7e0oqyR5B3hrxKMy5ggK2 pA== 
 Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 388w1e2mtx-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 04 May 2021 13:46:21 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 144DkK7C027415;
-        Tue, 4 May 2021 13:46:20 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3030.oracle.com with ESMTP id 388w1e2mta-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 04 May 2021 13:46:20 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 144DkGYn024650;
-        Tue, 4 May 2021 13:46:16 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 04 May 2021 13:46:16 +0000
-Date:   Tue, 4 May 2021 16:44:45 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Khaled ROMDHANI <khaledromdhani216@gmail.com>
-Cc:     sfrench@samba.org, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH-next] fs/cifs: Fix resource leak
-Message-ID: <20210504134244.GW1981@kadam>
-References: <20210504124343.22611-1-khaledromdhani216@gmail.com>
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38b7dn81ep-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 May 2021 09:46:07 -0400
+Received: from m0187473.ppops.net (m0187473.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 144DiIt5007378;
+        Tue, 4 May 2021 09:46:07 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38b7dn81dd-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 May 2021 09:46:06 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 144DitvQ023463;
+        Tue, 4 May 2021 13:46:04 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 388xm8gpew-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 04 May 2021 13:46:04 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 144Dk1kk31457602
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 4 May 2021 13:46:01 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4C68652051;
+        Tue,  4 May 2021 13:46:01 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.211.38.211])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with ESMTP id A2C1252050;
+        Tue,  4 May 2021 13:45:59 +0000 (GMT)
+Message-ID: <02426b1486616544230d0804de21cd9e78a0a00e.camel@linux.ibm.com>
+Subject: Re: [PATCH v5 06/12] evm: Ignore
+ INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS if conditions are safe
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Roberto Sassu <roberto.sassu@huawei.com>,
+        "mjg59@google.com" <mjg59@google.com>
+Cc:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Tue, 04 May 2021 09:45:58 -0400
+In-Reply-To: <1869963c94574fd1b026b304acdd308e@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-7-roberto.sassu@huawei.com>
+         <b8790b57e289980d4fe1133d15203ce016d2319d.camel@linux.ibm.com>
+         <c12f18094cc0479faa3f0f152b4964de@huawei.com>
+         <33cad84d2f894ed5a05a3bd6854f73a0@huawei.com>
+         <a2ca7317b672c63a40743268b641dd73661c3329.camel@linux.ibm.com>
+         <1869963c94574fd1b026b304acdd308e@huawei.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-14.el8) 
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: we5ICwBpig5bvP9a2bZCG3O26IgnNOk8
+X-Proofpoint-ORIG-GUID: q0uot74SQAkCwksYxzBNaRI42DYE6IYi
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504124343.22611-1-khaledromdhani216@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: IR7c1IK6ySKxeSh7-qqEaUn_7D9ONOVD
-X-Proofpoint-ORIG-GUID: IR7c1IK6ySKxeSh7-qqEaUn_7D9ONOVD
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9974 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxlogscore=999
- suspectscore=0 priorityscore=1501 phishscore=0 malwarescore=0
- impostorscore=0 clxscore=1011 bulkscore=0 spamscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105040102
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-04_07:2021-05-04,2021-05-04 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 adultscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=0 phishscore=0 mlxscore=0
+ priorityscore=1501 clxscore=1015 malwarescore=0 lowpriorityscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105040101
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 01:43:43PM +0100, Khaled ROMDHANI wrote:
-> The -EIO error return path is leaking memory allocated
-> to page. Fix this by invoking the free_dentry_path before
-> the return.
+On Tue, 2021-05-04 at 13:16 +0000, Roberto Sassu wrote:
+> > From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> > Sent: Monday, May 3, 2021 4:35 PM
+> > On Mon, 2021-05-03 at 14:15 +0000, Roberto Sassu wrote:
+> > 
+> > > > > >  	if (evm_status != INTEGRITY_PASS)
+> > > > > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
+> > > > > d_backing_inode(dentry),
+> > > > > >  				    dentry->d_name.name,
+> > > > > "appraise_metadata",
+> > > > > > @@ -515,7 +535,8 @@ int evm_inode_setattr(struct dentry *dentry,
+> > > > struct
+> > > > > iattr *attr)
+> > > > > >  		return 0;
+> > > > > >  	evm_status = evm_verify_current_integrity(dentry);
+> > > > > >  	if ((evm_status == INTEGRITY_PASS) ||
+> > > > > > -	    (evm_status == INTEGRITY_NOXATTRS))
+> > > > > > +	    (evm_status == INTEGRITY_NOXATTRS) ||
+> > > > > > +	    (evm_ignore_error_safe(evm_status)))
+> > > > >
+> > > > > It would also remove the INTEGRITY_NOXATTRS test duplication here.
+> > > >
+> > > > Ok.
+> > >
+> > > Actually, it does not seem a duplication. Currently, INTEGRITY_NOXATTRS
+> > > is ignored also when the HMAC key is loaded.
+> > 
+> > The existing INTEGRITY_NOXATTRS exemption is more general and includes
+> > the new case of when EVM HMAC is disabled.  The additional exemption is
+> > only needed for INTEGRITY_NOLABEL, when EVM HMAC is disabled.
 > 
-> Addresses-Coverity: ("Resource leak")
-> Signed-off-by: Khaled ROMDHANI <khaledromdhani216@gmail.com>
-
-Add a Fixes tag.
-
-Fixes: 583248493f78 ("cifs: add shutdown support")
-
-> ---
->  fs/cifs/link.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+> Unfortunately, evm_ignore_error_safe() is called by both evm_protect_xattr()
+> and evm_inode_setattr(). The former requires an exemption also for
+> INTEGRITY_NOXATTRS.
 > 
-> diff --git a/fs/cifs/link.c b/fs/cifs/link.c
-> index 1cbe7ec73728..1485c6095ba1 100644
-> --- a/fs/cifs/link.c
-> +++ b/fs/cifs/link.c
-> @@ -686,8 +686,10 @@ cifs_symlink(struct user_namespace *mnt_userns, struct inode *inode,
->  	void *page = alloc_dentry_path();
->  	struct inode *newinode = NULL;
->  
-> -	if (unlikely(cifs_forced_shutdown(cifs_sb)))
-> +	if (unlikely(cifs_forced_shutdown(cifs_sb))) {
-> +		free_dentry_path(page);
->  		return -EIO;
-> +	}
+> I would keep the function as it is. In the worst case, when the status is
+> INTEGRITY_NOXATTRS in evm_inode_setattr(), the function will not
+> be called.
 
-Better to move the allocation here.  Avoid calling functions which can
-fail in the declaration block.  Better to test for NULL directly instead
-of hiding the test inside the build_path_from_dentry() function.
+Right, which is another reason for replacing evm_ignore_eror_safe()
+with (is_)evm_hmac_disabled() and inlining the error tests.
 
-	page = alloc_dentry_path();
-	if (!page)
-		return -ENOMEM;
+thanks,
 
-The error handling in this function is slightly unweildy...
-
-regards,
-dan carpenter
+Mimi
 
