@@ -2,110 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB251372A17
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:31:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F1C5372A1E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhEDMch (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:32:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhEDMcf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:32:35 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A72AC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 05:31:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=9Q2Tl348rX3wm0zCEE028a6mHAZuedaCAfijiKQsq7o=; b=q3y201nDiFQ3QHlrEznT0p4WLo
-        CY07pfMGkKT93AEalnZS4ISlhZjlbuQ/hsjLnWB4tzyJ/Tep0nMNCqqFLJsyHHuv3eSedjuL9uU9U
-        nx9vGzoz94C9Hq/ojIFPwmyUKqcE6wB471f3Keqn8m2fPHH1k0arDy0DLoSS9UP/U21yiei4273zB
-        LA2g9DhFIGfKik6jb1waVATbyYVrx6bC+kp1qqrsd6g5WLDU0/RuNP37cDgm2ph6OW4SGMEskiDrR
-        7D8W1BcWv3w8CdtHrivCRYdTwF/+a/CFdoQyV3JG9kc8c90eq2zehyw2xbx+c/QA4DKYAC7ElF7uM
-        woAeruew==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lduD5-00GBeR-Nq; Tue, 04 May 2021 12:31:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5120D30022A;
-        Tue,  4 May 2021 14:31:30 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id E85552026F4B8; Tue,  4 May 2021 14:31:29 +0200 (CEST)
-Date:   Tue, 4 May 2021 14:31:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH 1/8] tick/nohz: Evaluate the CPU expression after the
- static key
-Message-ID: <YJE+oXuZ7KxxSMLK@hirez.programming.kicks-ass.net>
-References: <20210422120158.33629-1-frederic@kernel.org>
- <20210422120158.33629-2-frederic@kernel.org>
+        id S230401AbhEDMcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:32:52 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:52298 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230110AbhEDMcq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 08:32:46 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1lduD8-002Tjq-Qa; Tue, 04 May 2021 14:31:34 +0200
+Date:   Tue, 4 May 2021 14:31:34 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Colin Foster <colin.foster@in-advantage.com>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "supporter:OCELOT ETHERNET SWITCH DRIVER" 
+        <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OCELOT ETHERNET SWITCH DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [RFC PATCH vN net-next 2/2] net: mscc: ocelot: add support for
+ VSC75XX SPI control
+Message-ID: <YJE+prMCIMiQm26Z@lunn.ch>
+References: <20210504051130.1207550-1-colin.foster@in-advantage.com>
+ <20210504051130.1207550-2-colin.foster@in-advantage.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210422120158.33629-2-frederic@kernel.org>
+In-Reply-To: <20210504051130.1207550-2-colin.foster@in-advantage.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 02:01:51PM +0200, Frederic Weisbecker wrote:
-> From: Peter Zijlstra <peterz@infradead.org>
-> 
-> When tick_nohz_full_cpu() is called with smp_processor_id(), the latter
-> is unconditionally evaluated whether the static key is on or off. It is
-> not necessary in the off-case though, so make sure the cpu expression
-> is executed at the last moment.
-> 
-> Illustrate with the following test function:
-> 
-> 	int tick_nohz_test(void)
-> 	{
-> 		return tick_nohz_full_cpu(smp_processor_id());
-> 	}
-> 
-> The resulting code before was:
-> 
-> 	mov    %gs:0x7eea92d1(%rip),%eax   # smp_processor_id() fetch
-> 	nopl   0x0(%rax,%rax,1)
-> 	xor    %eax,%eax
-> 	retq
-> 	cmpb   $0x0,0x29d393a(%rip)        # <tick_nohz_full_running>
-> 	je     tick_nohz_test+0x29         # jump to below eax clear
-> 	mov    %eax,%eax
-> 	bt     %rax,0x29d3936(%rip)        # <tick_nohz_full_mask>
-> 	setb   %al
-> 	movzbl %al,%eax
-> 	retq
-> 	xor    %eax,%eax
-> 	retq
-> 
-> Now it becomes:
-> 
-> 	nopl   0x0(%rax,%rax,1)
-> 	xor    %eax,%eax
-> 	retq
-> 	cmpb   $0x0,0x29d3871(%rip)        # <tick_nohz_full_running>
-> 	je     tick_nohz_test+0x29         # jump to below eax clear
-> 	mov    %gs:0x7eea91f0(%rip),%eax   # smp_processor_id() fetch, after static key
-> 	mov    %eax,%eax
-> 	bt     %rax,0x29d3866(%rip)        # <tick_nohz_full_mask>
-> 	setb   %al
-> 	movzbl %al,%eax
-> 	retq
-> 	xor    %eax,%eax
-> 	retq
-> 
-> Not-Yet-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+On Mon, May 03, 2021 at 10:11:27PM -0700, Colin Foster wrote:
+> Add support for control for VSC75XX chips over SPI control. Starting with the
+> VSC9959 code, this will utilize a spi bus instead of PCIe or memory-mapped IO to
+> control the chip.
 
-Signed-off-by: Peter Zijlstra <peterz@infradead.org>
+Hi Colin
 
-Thanks for writing the Changelog.
+Please fix your subject line for the next version. vN should of been
+v1. The number is important so we can tell revisions apart.
+
+> 
+> Signed-off-by: Colin Foster <colin.foster@in-advantage.com>
+> ---
+>  arch/arm/boot/dts/rpi-vsc7512-spi-overlay.dts |  124 ++
+>  drivers/net/dsa/ocelot/Kconfig                |   11 +
+>  drivers/net/dsa/ocelot/Makefile               |    5 +
+>  drivers/net/dsa/ocelot/felix_vsc7512_spi.c    | 1214 +++++++++++++++++
+>  include/soc/mscc/ocelot.h                     |   15 +
+
+Please split this patch up. The DT overlay will probably be merged via
+ARM SOC, not netdev. You also need to document the device tree
+binding, as a separate patch.
+
+> +	fragment@3 {
+> +		target = <&spi0>;
+> +		__overlay__ {
+> +			#address-cells = <1>;
+> +			#size-cells = <0>;
+> +			cs-gpios = <&gpio 8 1>;
+> +			status = "okay";
+> +
+> +			vsc7512: vsc7512@0{
+> +				compatible = "mscc,vsc7512";
+> +				spi-max-frequency = <250000>;
+> +				reg = <0>;
+> +
+> +				ports {
+> +					#address-cells = <1>;
+> +					#size-cells = <0>;
+> +
+> +					port@0 {
+> +						reg = <0>;
+> +						ethernet = <&ethernet>;
+> +						phy-mode = "internal";
+> +
+> +						fixed-link {
+> +							speed = <1000>;
+> +							full-duplex;
+> +						};
+> +					};
+> +
+> +					port@1 {
+> +						reg = <1>;
+> +						label = "swp1";
+> +						status = "disabled";
+> +					};
+> +
+> +					port@2 {
+> +						reg = <2>;
+> +						label = "swp2";
+> +						status = "disabled";
+> +					};
+
+I'm surprised all the ports are disabled. I could understand that for
+a DTSI file, but a DTS overlay?
+
+> +++ b/drivers/net/dsa/ocelot/felix_vsc7512_spi.c
+> @@ -0,0 +1,1214 @@
+> +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
+> +/* Copyright 2017 Microsemi Corporation
+> + * Copyright 2018-2019 NXP Semiconductors
+> + */
+> +#include <soc/mscc/ocelot_qsys.h>
+> +#include <soc/mscc/ocelot_vcap.h>
+> +#include <soc/mscc/ocelot_ptp.h>
+> +#include <soc/mscc/ocelot_sys.h>
+> +#include <soc/mscc/ocelot.h>
+> +#include <linux/spi/spi.h>
+> +#include <linux/packing.h>
+> +#include <linux/pcs-lynx.h>
+> +#include <net/pkt_sched.h>
+> +#include <linux/iopoll.h>
+> +#include <linux/kconfig.h>
+> +#include <linux/mdio.h>
+> +#include "felix.h"
+> +
+> +#define VSC7512_TAS_GCL_ENTRY_MAX 63
+> +
+> +// Note: These addresses and offsets are all shifted down
+> +// by two. This is because the SPI protocol needs them to
+> +// be before they get sent out.
+> +//
+> +// An alternative is to keep them standardized, but then
+> +// a separate spi_bus regmap would need to be defined.
+> +//
+> +// That might be optimal though. The 'Read' protocol of
+> +// the VSC driver might be much quicker if we add padding
+> +// bytes, which I don't think regmap supports.
+
+C style comments please.
+
+> +static void vsc7512_phylink_validate(struct ocelot *ocelot, int port,
+> +				     unsigned long *supported,
+> +				     struct phylink_link_state *state)
+> +{
+> +	struct ocelot_port *ocelot_port = ocelot->ports[port];
+> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = {
+> +		0,
+> +	};
+
+This function seems out of place. Why would SPI access change what the
+ports are capable of doing? Please split this up into more
+patches. Keep the focus of this patch as being adding SPI support.
+
+	 Andrew
