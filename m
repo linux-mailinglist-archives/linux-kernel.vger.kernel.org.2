@@ -2,237 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B6DC37307E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:12:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C036373071
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:11:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbhEDTMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:12:43 -0400
-Received: from mga12.intel.com ([192.55.52.136]:18330 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232108AbhEDTMh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:12:37 -0400
-IronPort-SDR: lU9RgXe944TDXg6GwSX3wo3fOYQwt4GT7K9dAAAm1UHa6o6e4INCyN+Zgbngr7oKBpfE+YCmdX
- 6/MtyZx2oYSw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="177599157"
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="177599157"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 12:11:41 -0700
-IronPort-SDR: L+c1poPB/6U0UrTibGWyGf6yG6X42kx+7mMI6iJsAfAi+PloL+6GLUjp0nmMu6l3ZK7X6CUq1A
- GWav4vbSnuow==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="396245307"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga007.fm.intel.com with ESMTP; 04 May 2021 12:11:41 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     woodhouse@vger.kernel.org, Jacob Pan <jacob.jun.pan@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        iommu@lists.linux-foundation.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Ashok Raj <ashok.raj@intel.com>,
-        Andi Kleen <andi.kleen@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: [RFC PATCH v5 7/7] x86/watchdog/hardlockup/hpet: Support interrupt remapping
-Date:   Tue,  4 May 2021 12:10:49 -0700
-Message-Id: <20210504191049.22661-8-ricardo.neri-calderon@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210504191049.22661-1-ricardo.neri-calderon@linux.intel.com>
-References: <20210504191049.22661-1-ricardo.neri-calderon@linux.intel.com>
+        id S232183AbhEDTMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:12:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231694AbhEDTMA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 15:12:00 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53D05C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:11:04 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id b15so8990419pfl.4
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:11:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=TxzHRwKZbDTKhAa3rqkFK95SxSm1x12WqGIcE5Es6j4=;
+        b=AFowgdU/OmbKbthBcKzRkr7Y5AT78+GPyr1ojZ6S//j2d0LhJwRPyFipq4OnJPXA31
+         JeZhy6Y+9i8KtY5CAN+rWgw/VqGDruzdEsEoJ7pS+Uor11OL2HFIlbFKLeqP2ltwvE8R
+         RYuDwduyL+BQXtaXUWttDjQtueH2mbSfaHgpaFLVX4R1k6YaZmPm06w0KqJqpZdXmyKr
+         YVXEAjmwq8yAUEcgZ9aB++GswYH+79ZBdpz5eDPWKgE5SRDelgoMn47a+6oS3ka4anC5
+         Y46lOpAz0ztEwzucbXqJbdo/KNtP7CvbHQYVW7VlMrgGqrAnHFLkp4jFhd+vS9PbOLOW
+         Qhrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=TxzHRwKZbDTKhAa3rqkFK95SxSm1x12WqGIcE5Es6j4=;
+        b=A6Brfxu+YRIry1nfE2EUHbW4qlDt1HofOjYjMAJnIv5EXlL5T2Fa19K9xLO+yAny2q
+         ZiWglI5Y8aAWsbkIMth1AYEyGqbFDE4OWs2DfrYr0zNbun4XoW/oK86kjCMqxwkC9yL8
+         S7natMQ06pW9SmA6uo738P99v9PFGFzocjJBz6y1F9Www62E3KrLYTtt95rSAxhFQ9mg
+         HUTAIcrQcf0VytMpoN6B2ZmRAa87B/ZCdIZZV4hb01rRUtzyTGEU1kUWxSwhD1GY0awy
+         49ABukoBLsng5oev11mFcUAdyiHqZxmg6Y4ZtCSaXis1IcBUEljUClPYBMC7SBfGnTWh
+         y7BQ==
+X-Gm-Message-State: AOAM530ZW20Rc0lg7sQN5hkzkxXux+xhFfu9ryE5XRhHU33SyGvqFkN3
+        10JvhyPl4uxI5IrQRBMVxDv4LeYwp4w=
+X-Google-Smtp-Source: ABdhPJwesoeSKj4IzrFaOZdUqefGTqzsYZhBL0PG4+uoscVLKtLuvnTlt8c7QlURYqfUFwALg//c1Q==
+X-Received: by 2002:a17:90a:d24a:: with SMTP id o10mr6848029pjw.138.1620155464463;
+        Tue, 04 May 2021 12:11:04 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id i126sm12638288pfc.20.2021.05.04.12.11.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 12:11:03 -0700 (PDT)
+Subject: Re: [PATCH v8 0/3] ARM: Implement MODULE_PLT support in FTRACE
+To:     Qais Yousef <qais.yousef@arm.com>,
+        Alexander Sverdlin <alexander.sverdlin@nokia.com>
+Cc:     linux-arm-kernel@lists.infradead.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, Ard Biesheuvel <ardb@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+References: <20210330114035.18575-1-alexander.sverdlin@nokia.com>
+ <20210409153309.wbebto3eufui35qs@e107158-lin>
+ <be48adb2-c838-1a9b-37bc-da783f3d5dd3@nokia.com>
+ <20210412110810.t7pqkwawn5zmqbca@e107158-lin.cambridge.arm.com>
+ <b26651f2-a5ca-ff5d-23e4-05b7eb7d9583@gmail.com>
+ <20210419223448.vummlz37nyc3a64i@e107158-lin.cambridge.arm.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <761c79cf-8709-6da6-cdb7-9e03e25f0272@gmail.com>
+Date:   Tue, 4 May 2021 12:11:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210419223448.vummlz37nyc3a64i@e107158-lin.cambridge.arm.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When interrupt remapping is enabled in the system, the MSI interrupt
-address and data fields must follow a special format that the IOMMU
-defines.
+On 4/19/21 3:34 PM, Qais Yousef wrote:
+> On 04/19/21 14:54, Florian Fainelli wrote:
+>>
+>>
+>> On 4/12/2021 4:08 AM, Qais Yousef wrote:
+>>> Hi Alexander
+>>>
+>>> Fixing Ard's email as the Linaro one keeps bouncing back. Please fix that in
+>>> your future postings.
+>>>
+>>> On 04/12/21 08:28, Alexander Sverdlin wrote:
+>>>> Hi!
+>>>>
+>>>> On 09/04/2021 17:33, Qais Yousef wrote:
+>>>>> I still think the ifdefery in patch 3 is ugly. Any reason my suggestion didn't
+>>>>> work out for you? I struggle to see how this is better and why it was hard to
+>>>>> incorporate my suggestion.
+>>>>>
+>>>>> For example
+>>>>>
+>>>>> 	-       old = ftrace_call_replace(ip, adjust_address(rec, addr));
+>>>>> 	+#ifdef CONFIG_ARM_MODULE_PLTS
+>>>>> 	+       /* mod is only supplied during module loading */
+>>>>> 	+       if (!mod)
+>>>>> 	+               mod = rec->arch.mod;
+>>>>> 	+       else
+>>>>> 	+               rec->arch.mod = mod;
+>>>>> 	+#endif
+>>>>> 	+
+>>>>> 	+       old = ftrace_call_replace(ip, aaddr,
+>>>>> 	+                                 !IS_ENABLED(CONFIG_ARM_MODULE_PLTS) || !mod);
+>>>>> 	+#ifdef CONFIG_ARM_MODULE_PLTS
+>>>>> 	+       if (!old && mod) {
+>>>>> 	+               aaddr = get_module_plt(mod, ip, aaddr);
+>>>>> 	+               old = ftrace_call_replace(ip, aaddr, true);
+>>>>> 	+       }
+>>>>> 	+#endif
+>>>>> 	+
+>>>>>
+>>>>> There's an ifdef, followed by a code that embeds
+>>>>> !IS_ENABLED(CONFIG_ARM_MODULE_PLTS) followed by another ifdef :-/
+>>>>
+>>>> No, it's actually two small ifdefed blocks added before and after an original call,
+>>>> which parameters have been modified as well. The issue with arch.mod was explained
+>>>> by Steven Rostedt, maybe you've missed his email.
+>>>
+>>> If you're referring to arch.mod having to be protected by the ifdef I did
+>>> address that. Please look at my patch.
+>>>
+>>> My comment here refers to the ugliness of this ifdefery. Introducing 2 simple
+>>> wrapper functions would address that as I've demonstrated in my
+>>> suggestion/patch.
+>>
+>> What is the plan to move forward with this patch series, should v8 be
+>> submitted into RMK's patch tracker and improved upon from there, or do
+>> you feel like your suggestion needs to be addressed right away?
+> 
+> There's no objection from my side to submitting this and improve later.
 
-However, the HPET hardlockup detector must rely on the interrupt
-subsystem to have the interrupt remapping drivers allocate, activate,
-and set the affinity of HPET timer interrupt. Hence, it must use
-request_irq() to use such functionality.
+OK, thanks! Alexander, do you mind sending these patches to RMK's patch
+tracker: https://www.armlinux.org.uk/developer/patches/?
 
-In x86 there is not an IRQF_NMI flag to indicate to the interrupt
-subsystem the delivery mode of the interrupt. A previous changset added
-functionality to detect the interrupt of the HPET hardlockup detector
-and fixup the delivery mode accordingly.
-
-Also, since request_irq() is used, a non-NMI interrupt handler must be
-defined. Even if it is not needed.
-
-When Interrupt Remapping is enabled, use the new facility to ensure
-interrupt is plumbed properly to work with interrupt remapping.
-
-Cc: Ashok Raj <ashok.raj@intel.com>
-Cc: Andi Kleen <andi.kleen@intel.com>
-Cc: Borislav Petkov <bp@suse.de>
-Cc: David Woodhouse <dwmw2@infradead.org> (supporter:INTEL IOMMU (VT-d))
-Cc: "Ravi V. Shankar" <ravi.v.shankar@intel.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Jacob Pan <jacob.jun.pan@intel.com>
-Cc: Lu Baolu <baolu.lu@linux.intel.com> (supporter:INTEL IOMMU (VT-d))
-Cc: Stephane Eranian <eranian@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: iommu@lists.linux-foundation.org (open list:INTEL IOMMU (VT-d))
-Cc: x86@kernel.org
-Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
----
-Changes since v4:
- * Use request_irq() to obtain an IRTE for the HPET hardlockup detector
-   instead of the custom interfaces previously implemented in the
-   interrupt remapping drivers.
- * Simplified detection of interrupt remapping by checking the parent
-   of the HPET irq domain.
- * Stopped using the HPET magic fields of struct irq_alloc_info. They
-   were removed in commit 2bf1e7bcedb8 ("x86/msi: Consolidate HPET
-   allocation")
- * Rephrased commit message for clarity. (Ashok)
- * Clarified error message of non-NMI handler. (Ashok)
-
-Changes since v3:
- * None
-
-Changes since v2:
- * None
-
-Changes since v1:
- * Introduced this patch. Added custom functions in the Intel IOMMU driver
-   to allocate an IRTE for the HPET hardlockup detector.
----
- arch/x86/include/asm/hpet.h         |  2 ++
- arch/x86/kernel/hpet.c              |  3 ++
- arch/x86/kernel/watchdog_hld_hpet.c | 48 +++++++++++++++++++++++++----
- 3 files changed, 47 insertions(+), 6 deletions(-)
-
-diff --git a/arch/x86/include/asm/hpet.h b/arch/x86/include/asm/hpet.h
-index 5bf675970d4b..d130285ddc96 100644
---- a/arch/x86/include/asm/hpet.h
-+++ b/arch/x86/include/asm/hpet.h
-@@ -109,6 +109,7 @@ extern void hpet_unregister_irq_handler(rtc_irq_handler handler);
-  * @tsc_ticks_per_group:	TSC ticks that must elapse for each group of
-  *				monitored CPUs.
-  * @irq:			IRQ number assigned to the HPET channel
-+ * @int_remap_enabled:		True if interrupt remapping is enabled
-  * @handling_cpu:		CPU handling the HPET interrupt
-  * @pkgs_per_group:		Number of physical packages in a group of CPUs
-  *				receiving an IPI
-@@ -133,6 +134,7 @@ struct hpet_hld_data {
- 	u64		tsc_next;
- 	u64		tsc_ticks_per_group;
- 	int		irq;
-+	bool		intr_remap_enabled;
- 	u32		handling_cpu;
- 	u32		pkgs_per_group;
- 	u32		nr_groups;
-diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
-index 3e43e0f348b8..ff4abdef5e15 100644
---- a/arch/x86/kernel/hpet.c
-+++ b/arch/x86/kernel/hpet.c
-@@ -1464,6 +1464,9 @@ struct hpet_hld_data *hpet_hld_get_timer(void)
- 	if (!hpet_domain)
- 		goto err;
- 
-+	if (hpet_domain->parent != x86_vector_domain)
-+		hld_data->intr_remap_enabled = true;
-+
- 	hc->mode = HPET_MODE_NMI_WATCHDOG;
- 	irq = hpet_assign_irq(hpet_domain, hc, hc->num);
- 	if (irq <= 0)
-diff --git a/arch/x86/kernel/watchdog_hld_hpet.c b/arch/x86/kernel/watchdog_hld_hpet.c
-index 3fd2405b31fa..265641d001ac 100644
---- a/arch/x86/kernel/watchdog_hld_hpet.c
-+++ b/arch/x86/kernel/watchdog_hld_hpet.c
-@@ -176,6 +176,14 @@ static int update_msi_destid(struct hpet_hld_data *hdata)
- {
- 	u32 destid;
- 
-+	if (hdata->intr_remap_enabled) {
-+		int ret;
-+
-+		ret = irq_set_affinity(hdata->irq,
-+				       cpumask_of(hdata->handling_cpu));
-+		return ret;
-+	}
-+
- 	destid = apic->calc_dest_apicid(hdata->handling_cpu);
- 	/*
- 	 * HPET only supports a 32-bit MSI address register. Thus, only
-@@ -393,26 +401,52 @@ static int hardlockup_detector_nmi_handler(unsigned int type,
- 	return NMI_DONE;
- }
- 
-+/*
-+ * When interrupt remapping is enabled, we request the irq for the detector
-+ * using request_irq() and then we fixup the delivery mode to NMI using
-+ * is_hpet_irq_hardlockup_detector(). If the latter fails, we will see a non-
-+ * NMI interrupt.
-+ *
-+ */
-+static irqreturn_t hardlockup_detector_irq_handler(int irq, void *data)
-+{
-+	pr_err_once("Received a non-NMI interrupt. The HLD detector always uses NMIs!\n");
-+	return IRQ_HANDLED;
-+}
-+
- /**
-  * setup_irq_msi_mode() - Configure the timer to deliver an MSI interrupt
-  * @data:	Data associated with the instance of the HPET timer to configure
-  *
-  * Configure the HPET timer to deliver interrupts via the Front-
-  * Side Bus.
-+ *
-+ * Returns:
-+ * 0 success. An error code if setup was unsuccessful.
-  */
--static void setup_irq_msi_mode(struct hpet_hld_data *hdata)
-+static int setup_irq_msi_mode(struct hpet_hld_data *hdata)
- {
-+	s32 ret;
- 	u32 v;
- 
--	compose_msi_msg(hdata);
--	hpet_writel(hdata->msi_msg.data, HPET_Tn_ROUTE(hdata->channel));
--	hpet_writel(hdata->msi_msg.address_lo,
--		    HPET_Tn_ROUTE(hdata->channel) + 4);
-+	if (hdata->intr_remap_enabled) {
-+		ret = request_irq(hld_data->irq, hardlockup_detector_irq_handler,
-+				  IRQF_TIMER, "hpet_hld", hld_data);
-+		if (ret)
-+			return ret;
-+	} else {
-+		compose_msi_msg(hdata);
-+		hpet_writel(hdata->msi_msg.data, HPET_Tn_ROUTE(hdata->channel));
-+		hpet_writel(hdata->msi_msg.address_lo,
-+			    HPET_Tn_ROUTE(hdata->channel) + 4);
-+	}
- 
- 	v = hpet_readl(HPET_Tn_CFG(hdata->channel));
- 	v |= HPET_TN_FSB;
- 
- 	hpet_writel(v, HPET_Tn_CFG(hdata->channel));
-+
-+	return 0;
- }
- 
- /**
-@@ -430,7 +464,9 @@ static int setup_hpet_irq(struct hpet_hld_data *hdata)
- {
- 	int ret;
- 
--	setup_irq_msi_mode(hdata);
-+	ret = setup_irq_msi_mode(hdata);
-+	if (ret)
-+		return ret;
- 
- 	ret = register_nmi_handler(NMI_WATCHDOG,
- 				   hardlockup_detector_nmi_handler, 0,
+Thank you!
 -- 
-2.17.1
-
+Florian
