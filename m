@@ -2,136 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36278373230
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:03:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98C05373235
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:05:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232974AbhEDWE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 18:04:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47100 "EHLO
+        id S232997AbhEDWGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 18:06:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229868AbhEDWEZ (ORCPT
+        with ESMTP id S232985AbhEDWGJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 18:04:25 -0400
-Received: from mail-ed1-x52d.google.com (mail-ed1-x52d.google.com [IPv6:2a00:1450:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C50D0C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:03:29 -0700 (PDT)
-Received: by mail-ed1-x52d.google.com with SMTP id i24so12207790edy.8
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:03:29 -0700 (PDT)
+        Tue, 4 May 2021 18:06:09 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF67C061761
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:05:12 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso9640214otb.13
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:05:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=/ZgEI9aWWkFYIE59QHU2kpFOTpigrU9CKjmSZ5dbE/Y=;
-        b=r8nZe8HMfAQSeJLCiGPHnnuFnmyndNESig7RAjHBt2l2t3c0hRDvafMeLlcn7yw8hI
-         HTz6z3h8+eKdD19GuRxU23njZfqUvlqnXFivPBXOO5yoRsudfy38FOYGqjtrS4weSpnL
-         biP9bhytjQ074E6wNwT0WZld8lTbtgsq1kOUlyyLuyEU/Y9Xgs9Ebmj8NHf4uULGIq8z
-         27MewYhD1K2j3vB7Fmo00950QnNwky/1cLLxcgMHSFlav+vEp2ZvkTzU4suo2LwZRvoy
-         coNcAhIo8VPKwdHvCgIwd2iSYRt/X8jCZLcPYnLLFOtd/rpOoES149+z0hztUUB+ez4p
-         hnBw==
+         :cc;
+        bh=bUX+fmvBWZ7MZX/eB50i8/ErJ0LDxPwc8AG9r8drP3E=;
+        b=rbZN4R3LNUElHNoq86nZOXGZrt/77ppLVA7dfYsuZktEgdzL8Z5lVft97a2Qqc81ZT
+         HTsioWhoOv0AtxTWxd4ssatl8Xn9rELCa6fX1sOLMWLfQLeBliCQnVAJp55nq1y3iX36
+         KfkjpC9xPq/9dipNYt3q0RoPqVsMR2q13awl/8LY2rjuYvQ+0nBxsCAYaIQoWT8IjHIK
+         auE4iv8tVmNW/OJ/EhWt3PB5w6rKfdhtNzFjZGaQr8v851k+jQvNzluu6HQDNHt1H0Kx
+         TH4qWjPZQs6LZg6T3ynapkrHbZ+tcuxLKk8SSGpMgcqy4+7IKOXveZp534+A2cOv4IdF
+         xTyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=/ZgEI9aWWkFYIE59QHU2kpFOTpigrU9CKjmSZ5dbE/Y=;
-        b=r2Pf+Mt4vsTiwxITJZ518GAPiHgIIudGzVkuVVTZaPSkitDFVQPKlkiii7QF6At+dA
-         L7LLNPCREkeBTOrF/UXkuTmGJKItLmB0dKtAhMwRECHfYjzmn4izuWlrcqq3aoShWWcm
-         vHcPkIXbjsjuFaGHRPuifjqMDJJyNk1aRFGyGRjyjT5p7mGw96YdkIZyBQk1EJJfENGH
-         p5gUgv4lj7/47M2yanud4cXhe8h4CIGGFA+j11jLz6nynpufu4lQxGVvXXtKcVSCnRQV
-         Lmr6BmnS9ZhqTRTuBbJzDXpolxeVKa0lSSmLXXu2ndp0rrW30je0TdIaAW8LoLxB1gvM
-         JDHQ==
-X-Gm-Message-State: AOAM533FEdPk1dGJBJ/Jt/qCIcBKjQoie0a2b3VgUMDPCrIwfSs7V0tN
-        yw7bjZHh1qFV88v0ZZh6bAzFWgYIDzWnaBUlODM=
-X-Google-Smtp-Source: ABdhPJzlYPbhRz/qi3HLCWJ3xtHL2f+uNruVqOL3UrpLLSjaQm1E60DcAi3awCSS3hSTwcYhBLp+rK20rGPDrhQzXjE=
-X-Received: by 2002:a05:6402:1354:: with SMTP id y20mr10025342edw.115.1620165808504;
- Tue, 04 May 2021 15:03:28 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=bUX+fmvBWZ7MZX/eB50i8/ErJ0LDxPwc8AG9r8drP3E=;
+        b=D4w2U17hytYlq6d+sW1xtOoj0vjMQ3wwjLBnyVMAj9XREmiUKs4lNOhT/M3YIfMEGq
+         kKhCCu7jnMIIYBgdqkCJNWdOHAEQxQsMrT/d7vNCwKUInY4liP8FjIRK0zMg6+fDgl1z
+         BI52LDLQlgAet4a8yWOVxo5GEuvT4/h73qHXwUnG9TlD7j87B6T8bIp9nqdWS1xOVUE2
+         wE1ppOqkpLRO3mZyFnxOZztbWP7xCGVG+Hy935rfU6U5PMGQ1HGz1SfK0GWMxPnd3zod
+         6WP6S/37WqJosndVLLdBnyxEsMmTAQ6odpqcVdpESzBNNzhyeG8Z7oxk0+ovreNjwNA1
+         D2hQ==
+X-Gm-Message-State: AOAM530mk4LZgJKKY42Tg1vI1Ueef2gZoCwGC8fLv/W8pucz9uDJqGJ4
+        8L1QnZseRDOfP2oOETYpUCDXRqbGo359FJuPpB/pjA==
+X-Google-Smtp-Source: ABdhPJxnW/mCtJ4lEreTQ7KO/p9+Ge0zM6xJ1dL9j6kkun07AsqbTc7or7bVSiCMpy/URBG+MwV8nVlTOvskSlBNnv4=
+X-Received: by 2002:a9d:60c8:: with SMTP id b8mr21322801otk.17.1620165911656;
+ Tue, 04 May 2021 15:05:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <e4r4g4R-yjH.A.CJE.0pVkgB@appolonius> <20210504183009.GV6564@kitsune.suse.cz>
- <CABkfQAHfjfBFqnVPzg1w5JFOErr=AsLpQgwzwpUJ2Uc_-cmD_w@mail.gmail.com>
- <20210504190452.GW6564@kitsune.suse.cz> <CABkfQAFpTYFgiA-h+5DBiky3CMtdj71n5+usGGtrTHsYB1xruA@mail.gmail.com>
-In-Reply-To: <CABkfQAFpTYFgiA-h+5DBiky3CMtdj71n5+usGGtrTHsYB1xruA@mail.gmail.com>
-From:   Adrien Grassein <adrien.grassein@gmail.com>
-Date:   Wed, 5 May 2021 00:03:14 +0200
-Message-ID: <CABkfQAHMUF2u1HKbkk6PfXS=YmYgRWqBBP86Awc34sy1FgT-vA@mail.gmail.com>
-Subject: Re: ERROR: modpost: "drm_display_mode_to_videomode"
- [drivers/gpu/drm/bridge/lontium-lt8912b.ko] undefined!
-To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Robert Foss <robert.foss@linaro.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>
+References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
+ <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+ <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
+ <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m1r1irpc5v.fsf@fess.ebiederm.org>
+ <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
+ <m1czuapjpx.fsf@fess.ebiederm.org> <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
+ <m14kfjh8et.fsf_-_@fess.ebiederm.org> <m1tuni8ano.fsf_-_@fess.ebiederm.org>
+In-Reply-To: <m1tuni8ano.fsf_-_@fess.ebiederm.org>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 5 May 2021 00:05:00 +0200
+Message-ID: <CANpmjNM5sYihM_9P5YHx06BooqLDhK96cMHGKaf61nCcoDJBdw@mail.gmail.com>
+Subject: Re: [PATCH v3 00/12] signal: sort out si_trapno and si_perf
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fixed proposed at:
-https://lore.kernel.org/dri-devel/20210504220207.4004511-1-adrien.grassein@=
-gmail.com/T/#u
+On Tue, 4 May 2021 at 23:13, Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> This set of changes sorts out the ABI issues with SIGTRAP TRAP_PERF, and
+> hopefully will can get merged before any userspace code starts using the
+> new ABI.
+>
+> The big ideas are:
+> - Placing the asserts first to prevent unexpected ABI changes
+> - si_trapno becomming ordinary fault subfield.
+> - struct signalfd_siginfo is almost full
+>
+> This set of changes starts out with Marco's static_assert changes and
+> additional one of my own that enforces the fact that the alignment of
+> siginfo_t is also part of the ABI.  Together these build time
+> checks verify there are no unexpected ABI changes in the changes
+> that follow.
+>
+> The field si_trapno is changed to become an ordinary extension of the
+> _sigfault member of siginfo.
+>
+> The code is refactored a bit and then si_perf_type is added along side
+> si_perf_data in the _perf subfield of _sigfault of siginfo_t.
+>
+> Finally the signalfd_siginfo fields are removed as they appear to be
+> filling up the structure without userspace actually being able to use
+> them.
+>
+> v2: https://lkml.kernel.org/r/m14kfjh8et.fsf_-_@fess.ebiederm.org
+> v1: https://lkml.kernel.org/r/m1zgxfs7zq.fsf_-_@fess.ebiederm.org
+>
+> Eric W. Biederman (9):
+>       signal: Verify the alignment and size of siginfo_t
+>       siginfo: Move si_trapno inside the union inside _si_fault
+>       signal: Implement SIL_FAULT_TRAPNO
+>       signal: Use dedicated helpers to send signals with si_trapno set
+>       signal: Remove __ARCH_SI_TRAPNO
+>       signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
+>       signal: Factor force_sig_perf out of perf_sigtrap
+>       signal: Deliver all of the siginfo perf data in _perf
+>       signalfd: Remove SIL_FAULT_PERF_EVENT fields from signalfd_siginfo
+>
+> Marco Elver (3):
+>       sparc64: Add compile-time asserts for siginfo_t offsets
+>       arm: Add compile-time asserts for siginfo_t offsets
+>       arm64: Add compile-time asserts for siginfo_t offsets
+
+I can't seem to see the rest of them in my inbox. LKML also is missing
+them: https://lore.kernel.org/linux-api/m1tuni8ano.fsf_-_@fess.ebiederm.org/
+
+Something must have swallowed them. Could you resend?
+I'll then test in the morning.
 
 Thanks,
-
-Le mar. 4 mai 2021 =C3=A0 21:19, Adrien Grassein
-<adrien.grassein@gmail.com> a =C3=A9crit :
->
-> Ok thanks,
->
-> I will investigate this.
->
-> Le mar. 4 mai 2021 =C3=A0 21:04, Michal Such=C3=A1nek <msuchanek@suse.de>=
- a =C3=A9crit :
-> >
-> > Hello,
-> >
-> > I have only one from ppc64, the other architectures don't have the
-> > problem or fail earlier.
-> >
-> > Thanks
-> >
-> > Michal
-> >
-> > On Tue, May 04, 2021 at 08:45:01PM +0200, Adrien Grassein wrote:
-> > > Hello,
-> > >
-> > > I think this is self-evident but could you please send the config to =
-confirm?
-> > >
-> > > Thanks,
-> > >
-> > > Le mar. 4 mai 2021 =C3=A0 20:30, Michal Such=C3=A1nek <msuchanek@suse=
-.de> a =C3=A9crit :
-> > > >
-> > > > Hello,
-> > > >
-> > > > I get errors about missing symbol in the lontium-lt8912b module.
-> > > >
-> > > > Is the problem self-evident or do you need the config as well?
-> > > >
-> > > > I don't need the driver for anything, it was just auto-enabled beca=
-use
-> > > > it's new and the change has not been reviewed.
-> > > >
-> > > > Thanks
-> > > >
-> > > > Michal
-> > > > >
-> > > > > Last output:
-> > > > >   WRAP    arch/powerpc/boot/zImage.maple
-> > > > >   WRAP    arch/powerpc/boot/zImage.pseries
-> > > > > make[2]: *** Deleting file 'modules-only.symvers'
-> > > > >   MODPOST modules-only.symvers
-> > > > > ERROR: modpost: "drm_display_mode_to_videomode" [drivers/gpu/drm/=
-bridge/lontium-lt8912b.ko] undefined!
-> > > > > make[2]: *** [../scripts/Makefile.modpost:150: modules-only.symve=
-rs] Error 1
-> > > > > make[1]: *** [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12.0.1=
-3670.g5e321ded302d/linux-5.12-13670-g5e321ded302d/Makefile:1770: modules] E=
-rror 2
-> > > > > make: *** [../Makefile:215: __sub-make] Error 2
-> > > > > error: Bad exit status from /var/tmp/rpm-tmp.q1oSIp (%build)
+-- Marco
