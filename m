@@ -2,233 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F07F7372FC9
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:30:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB15372FB0
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:25:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232514AbhEDSbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 14:31:37 -0400
-Received: from mx0a-000eb902.pphosted.com ([205.220.165.212]:40272 "EHLO
-        mx0a-000eb902.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232183AbhEDSbK (ORCPT
+        id S231473AbhEDS00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 14:26:26 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:39393 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230385AbhEDS00 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 14:31:10 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 May 2021 14:31:10 EDT
-Received: from pps.filterd (m0220294.ppops.net [127.0.0.1])
-        by mx0a-000eb902.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 144I9h13023800;
-        Tue, 4 May 2021 13:23:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=garmin.com; h=from : to : cc :
- subject : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=pps1;
- bh=s+HR9JQYUp+nkFXI9Gvgl9YT5FYywAz7O3lXDrLaiW4=;
- b=YkOXwF5hEivWTNou1MWiJYjCLjERdMwVvsGE0GDe3g7ZrIqtpOS2ujLHsteNUKXoPmm8
- QphcZ9+xRXBsqoJVhh/6GYh8eTj6En5ciZAnaoa9In9En8Sgi6gGbu6OQEsGvRh/svP7
- oim/hWNbka6C4ZXmOU5zddhacH50hpPxDsktHZ7RfExgWt77DrXktB0RlE94FlPu5uLX
- 76PIB9qIPpjsXkN7of0/u+gRQ/VlvXPy//avdjTbzICLrnIwROEqofM8rUM+TjYx2L0q
- 0AGItmZLcn9VToUO+0zGULEpmyNbmgCCnnXOVMVGEvYm/QCVz3zj5vkfcrZYTZMrvXoJ Yw== 
-Received: from nam04-dm6-obe.outbound.protection.outlook.com (mail-dm6nam08lp2041.outbound.protection.outlook.com [104.47.73.41])
-        by mx0a-000eb902.pphosted.com with ESMTP id 38awtsha9v-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 May 2021 13:23:30 -0500
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ibg76+Y18BtrvXFRUEDdzWD8SWhE1yb9TNJPOBAkKqKgGPCA6IMgXDp/M6L01FOnh4ACbKfqeeyIfnEtbApRXwPG+MOi6ltyoq5CuLkceHpwoFSieeVvKxcBEENDjdnqoeXj6+NHB8nod6VmmdLexm+0eL1wcYAcsnWxkn9e3BfBLENwVOnCaPQMcoCuOACgfwnnT49Dc3ySxn1WCzHmhwUJtA89APLSaNJGzHnavArgLoMFvLvvJVVDj0JtN6mnRZCi22xzLCJoYD6eBT/6jPxoiYo1uNCzdusbhFzAGBtPara8wxZN9OeNgt/AhxSxbKOimSTx/kAiqOXtF5k1mg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+HR9JQYUp+nkFXI9Gvgl9YT5FYywAz7O3lXDrLaiW4=;
- b=N2XCsfkmv9wpB3wxDSEpIEGoXfSQrdalU1VaSVmRQLwU4tR76PiQGosOE5rD4WLeIs+b1uh2xto0pbxsJjbVN6it0CYIU3U4eRs3ETyjAFrNzxtVnl3VlAXjqiPxJ2WyDgpTUbW1R744fW+RWkNvhThbrC1kq8imOrWBAjLN8OSa6IP92LFPA1PoGRR9MZXJxzhNar3TEJiXdBZ/hUgZsddyWzG4G0D07yXLsgDwh/49Jdz3i0dtXE2uIBJKDu7iQUg+xDnxlKXeHZPeOnjljJCPXTo5OB+Rp47J+O8iOBbtcqGXCYifEZGq+UDA5WN+hUYMhz2xDKBBea03gqdUng==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 204.77.163.244) smtp.rcpttodomain=nvidia.com smtp.mailfrom=garmin.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=garmin.com; dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=garmin.onmicrosoft.com; s=selector1-garmin-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=s+HR9JQYUp+nkFXI9Gvgl9YT5FYywAz7O3lXDrLaiW4=;
- b=g49CpVfLImxCyAS1317l0pX7EFpLEjsFQwJqZGvJ/DDLLngZ98HCRE9X6syHezoPBZ5i0HQReiMX+kJvSMcmUZ9jKJ+aUnO85/vF4NeZcE3f5z8qDbNmM/09M72MRcJEgdfF/te0MD4e2gQuKFY78A6NyLUvyynnftT65ldsTk5c7ZjY+Rbbwo3dyEgWEMunZQp/KEop8uOJU/0+cOh2cwTSkrGfGv7YFwexl0RUt1h6291iNGV8Ha7LNLvfERk+tC/GAwR88aueJVXlK0w99hsX654E5whKZFC30G4mPMUsfXTr9VL5VdrYDuwZKzt//OZBpz2UuytUi1iOe3TboQ==
-Received: from DM5PR12CA0072.namprd12.prod.outlook.com (2603:10b6:3:103::34)
- by CO6PR04MB7747.namprd04.prod.outlook.com (2603:10b6:5:35b::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.43; Tue, 4 May
- 2021 18:23:27 +0000
-Received: from DM6NAM10FT005.eop-nam10.prod.protection.outlook.com
- (2603:10b6:3:103:cafe::ea) by DM5PR12CA0072.outlook.office365.com
- (2603:10b6:3:103::34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend
- Transport; Tue, 4 May 2021 18:23:27 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 204.77.163.244)
- smtp.mailfrom=garmin.com; nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=pass action=none header.from=garmin.com;
-Received-SPF: Pass (protection.outlook.com: domain of garmin.com designates
- 204.77.163.244 as permitted sender) receiver=protection.outlook.com;
- client-ip=204.77.163.244; helo=edgetransport.garmin.com;
-Received: from edgetransport.garmin.com (204.77.163.244) by
- DM6NAM10FT005.mail.protection.outlook.com (10.13.152.87) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4087.27 via Frontend Transport; Tue, 4 May 2021 18:23:26 +0000
-Received: from OLAWPA-EXMB4.ad.garmin.com (10.5.144.25) by
- olawpa-edge1.garmin.com (10.60.4.227) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id
- 15.1.2106.2; Tue, 4 May 2021 13:21:43 -0500
-Received: from huangjoseph-vm1.ad.garmin.com (10.5.84.15) by
- OLAWPA-EXMB4.ad.garmin.com (10.5.144.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.4; Tue, 4 May 2021 13:23:25 -0500
-From:   Joseph Huang <Joseph.Huang@garmin.com>
-To:     Roopa Prabhu <roopa@nvidia.com>,
-        Nikolay Aleksandrov <nikolay@nvidia.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        <bridge@lists.linux-foundation.org>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     Joseph Huang <Joseph.Huang@garmin.com>
-Subject: [PATCH 6/6] bridge: Always multicast_flood Reports
-Date:   Tue, 4 May 2021 14:22:59 -0400
-Message-ID: <20210504182259.5042-7-Joseph.Huang@garmin.com>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210504182259.5042-1-Joseph.Huang@garmin.com>
-References: <20210504182259.5042-1-Joseph.Huang@garmin.com>
+        Tue, 4 May 2021 14:26:26 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620152731; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=AGxnYvOgR2pNLyl/9J+8rJW0dfDmPrj1VhzVa4Wrq/c=;
+ b=urQa+qeIGXdpnPalWTp9EOSbAkDc5cjCGWghHgOJo8sYNggnvmoXIep75EohbtZ0dUq3Jcw8
+ RY8SauaHIYuVeTodhUqIW8a+jsaDjty2oetiitWJDeVbrDBVNv/UtZ3q66gvl7T4Q0Y3v3hm
+ AKebreGkvdL5QJ1e+LLXfVoEAz0=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 60919188c39407c327cff0ac (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 May 2021 18:25:12
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 91604C433D3; Tue,  4 May 2021 18:25:11 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id BF320C433F1;
+        Tue,  4 May 2021 18:25:10 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: OLAWPA-EXMB2.ad.garmin.com (10.5.144.24) To
- OLAWPA-EXMB4.ad.garmin.com (10.5.144.25)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 55dd95ce-3845-4e18-4f60-08d90f29b5f6
-X-MS-TrafficTypeDiagnostic: CO6PR04MB7747:
-X-Microsoft-Antispam-PRVS: <CO6PR04MB7747EC623AD0F1651EA35A5CFB5A9@CO6PR04MB7747.namprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: /J9bcrp1w7TI+xXe4b+VXEYX/i6pKdtqnRB83bQHHvdkNqW1Mskc3MstCZEZkbRc7RHvinlGmmUQwdENw2LRI3zApuczIUFqRYeBHwtszp9NiaLTsuN29eLFDiHPx5iIEDqXyDi4wY7gj0UI7h3qr2ioDugw7+86yTppLtEkZTNm8kGXJUMWJIUukCkL0jgeVqPJVjq10QBMNuBckg4RYx/a14p7vjPz9HzDaeb6YvKVvgHkJzgT2Aq1DLT9s68TnGT8jcDMe+WDpprSYvPl2fowwMoEKm9IOusRt6ahLgfAoUAJgih3CNTk+bmF2QolR/6IGTH5BFTDpN6jhZ6Ip3Q+tMJGlDiujrumQ6ErYYfz1lDab8zmldAhXMfI7TRuoX5gPr95+kT/4pO5XI/uSA9tqT6+PTBb4MlkrTro7msWnjRn+zW1NEizVjMd6uo7iGDRq8MFGfiRTCne53XfJ9WLJ2oyIjsdgcde0TndsvmjtKpJyr0NaZne5Eruz6kNS5KJPa8djLgOxvhCsYSltnTi2PIw+itcctHA6q+iA3Z1hrUcQrG1rbMHRkxQfg644nBEM0VDYk+LnCHrv8maN6Ema8r7jjG/I68/+qzVn+jhuoUgn15u9Ws/U9aH1mjuurkR8cd7fKhtnuDmQGsquVZPUzwNC8zheCXLwW3yxNY=
-X-Forefront-Antispam-Report: CIP:204.77.163.244;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:edgetransport.garmin.com;PTR:extedge.garmin.com;CAT:NONE;SFS:(396003)(136003)(39860400002)(346002)(376002)(46966006)(36840700001)(36756003)(8676002)(2906002)(7696005)(7636003)(110136005)(107886003)(47076005)(5660300002)(70206006)(8936002)(4326008)(86362001)(83380400001)(356005)(478600001)(66574015)(336012)(36860700001)(82310400003)(26005)(82740400003)(2616005)(70586007)(316002)(1076003)(426003)(6666004)(186003);DIR:OUT;SFP:1102;
-X-OriginatorOrg: garmin.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 18:23:26.9390
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 55dd95ce-3845-4e18-4f60-08d90f29b5f6
-X-MS-Exchange-CrossTenant-Id: 38d0d425-ba52-4c0a-a03e-2a65c8e82e2d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=38d0d425-ba52-4c0a-a03e-2a65c8e82e2d;Ip=[204.77.163.244];Helo=[edgetransport.garmin.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM6NAM10FT005.eop-nam10.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO6PR04MB7747
-X-Proofpoint-GUID: q5A2TvumHL--EkTtLClzzAkS-xBxjDEO
-X-Proofpoint-ORIG-GUID: q5A2TvumHL--EkTtLClzzAkS-xBxjDEO
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-04_12:2021-05-04,2021-05-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 mlxscore=0 spamscore=0 adultscore=0 bulkscore=0
- phishscore=0 malwarescore=0 impostorscore=0 mlxlogscore=999 clxscore=1015
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105040121
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 04 May 2021 23:55:10 +0530
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     bjorn.andersson@linaro.org, viresh.kumar@linaro.org,
+        swboyd@chromium.org, agross@kernel.org, robh+dt@kernel.org,
+        rjw@rjwysocki.net, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org, mka@chromium.org
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
+In-Reply-To: <20210504144215.svmrmmsy4jtoixzv@bogus>
+References: <1619792901-32701-1-git-send-email-sibis@codeaurora.org>
+ <1619792901-32701-3-git-send-email-sibis@codeaurora.org>
+ <20210504144215.svmrmmsy4jtoixzv@bogus>
+Message-ID: <1fc9fb8d9a94909ff9b7b76d598bd266@codeaurora.org>
+X-Sender: sibis@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify the forwarding path so that IGMPv1/2/MLDv1 Reports are always
-flooded by br_multicast_flood, regardless of the check done
-by br_multicast_querier_exists.
+Hey Sudeep,
 
-This patch fixes the problems where after a system boots up, the first
-couple of Reports are not handled properly in that:
+Thanks for the review!
 
-1) the Report from the Host is being flooded (via br_flood) to all
-   bridge ports, and
-2) if the mrouter port's mcast_flood is disabled, the Reports received
-   from other hosts will not be forwarded to the Querier.
+On 2021-05-04 20:12, Sudeep Holla wrote:
+> On Fri, Apr 30, 2021 at 07:58:21PM +0530, Sibi Sankar wrote:
+>> Add OPP tables required to scale DDR/L3 per freq-domain on SC7280 
+>> SoCs.
+>> 
+>> Signed-off-by: Sibi Sankar <sibis@codeaurora.org>
+>> ---
+>>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 135 
+>> +++++++++++++++++++++++++++++++++++
+>>  1 file changed, 135 insertions(+)
+>> 
+>> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi 
+>> b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> index 0bb835aeae33..90220cecb368 100644
+>> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+>> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> 
+> 
+> [...]
+> 
+>> @@ -248,6 +273,116 @@
+>>  		};
+>>  	};
+>> 
+>> +	cpu0_opp_table: cpu0_opp_table {
+>> +		compatible = "operating-points-v2";
+>> +		opp-shared;
+>> +
+>> +		cpu0_opp1: opp-300000000 {
+>> +			opp-hz = /bits/ 64 <300000000>;
+>> +			opp-peak-kBps = <800000 9600000>;
+>> +		};
+>> +
+>> +		cpu0_opp2: opp-691200000 {
+>> +			opp-hz = /bits/ 64 <691200000>;
+>> +			opp-peak-kBps = <800000 17817600>;
+>> +		};
+>> +
+>> +		cpu0_opp3: opp-806400000 {
+>> +			opp-hz = /bits/ 64 <806400000>;
+>> +			opp-peak-kBps = <800000 20889600>;
+>> +		};
+>> +
+>> +		cpu0_opp4: opp-940800000 {
+>> +			opp-hz = /bits/ 64 <940800000>;
+>> +			opp-peak-kBps = <1804000 24576000>;
+>> +		};
+>> +
+>> +		cpu0_opp5: opp-1152000000 {
+>> +			opp-hz = /bits/ 64 <1152000000>;
+>> +			opp-peak-kBps = <2188000 27033600>;
+>> +		};
+>> +
+>> +		cpu0_opp6: opp-1324800000 {
+>> +			opp-hz = /bits/ 64 <1324800000>;
+>> +			opp-peak-kBps = <2188000 33792000>;
+>> +		};
+>> +
+>> +		cpu0_opp7: opp-1516800000 {
+>> +			opp-hz = /bits/ 64 <1516800000>;
+>> +			opp-peak-kBps = <3072000 38092800>;
+>> +		};
+>> +
+>> +		cpu0_opp8: opp-1651200000 {
+>> +			opp-hz = /bits/ 64 <1651200000>;
+>> +			opp-peak-kBps = <3072000 41779200>;
+>> +		};
+>> +
+>> +		cpu0_opp9: opp-1804800000 {
+>> +			opp-hz = /bits/ 64 <1804800000>;
+>> +			opp-peak-kBps = <4068000 48537600>;
+>> +		};
+>> +
+>> +		cpu0_opp10: opp-1958400000 {
+>> +			opp-hz = /bits/ 64 <1958400000>;
+>> +			opp-peak-kBps = <4068000 48537600>;
+>> +		};
+>> +	};
+>> +
+> 
+> NACK, this breaks if there is a mismatch from what is read from the 
+> hardware
+> and what is presented in this table above. Either add it from the some
+> bootloader or other boot code to this table reading from the 
+> hardware/firmware
+> or find a way to link them without this.
+> 
+> Sorry I had warned long back about this when such links were discussed 
+> as
+> part of interconnect binding.
 
-Signed-off-by: Joseph Huang <Joseph.Huang@garmin.com>
----
- net/bridge/br_device.c    | 5 +++--
- net/bridge/br_input.c     | 5 +++--
- net/bridge/br_multicast.c | 3 +++
- net/bridge/br_private.h   | 3 +++
- 4 files changed, 12 insertions(+), 4 deletions(-)
+Not sure why this warrants a NACK,
+as this was consensus for mapping
+cpu freq to DDR/L3 bandwidth votes.
+(We use the same solution on SDM845
+and SC7180). The opp tables are
+optional and when specified puts in
+votes for DDR/L3. In the future the
+table can be safely dropped when more
+useful devfreq governors are upstreamed.
 
-diff --git a/net/bridge/br_device.c b/net/bridge/br_device.c
-index e8b626cc6bfd..ff75ba242f38 100644
---- a/net/bridge/br_device.c
-+++ b/net/bridge/br_device.c
-@@ -88,8 +88,9 @@ netdev_tx_t br_dev_xmit(struct sk_buff *skb, struct net_device *dev)
- 		}
- 
- 		mdst = br_mdb_get(br, skb, vid);
--		if ((mdst || BR_INPUT_SKB_CB_MROUTERS_ONLY(skb)) &&
--		    br_multicast_querier_exists(br, eth_hdr(skb), mdst))
-+		if (((mdst || BR_INPUT_SKB_CB_MROUTERS_ONLY(skb)) &&
-+		    br_multicast_querier_exists(br, eth_hdr(skb), mdst)) ||
-+		    BR_INPUT_SKB_CB_FORCE_MC_FLOOD(skb))
- 			br_multicast_flood(mdst, skb, false, true);
- 		else
- 			br_flood(br, skb, BR_PKT_MULTICAST, false, true);
-diff --git a/net/bridge/br_input.c b/net/bridge/br_input.c
-index 8875e953ac53..572d7f20477f 100644
---- a/net/bridge/br_input.c
-+++ b/net/bridge/br_input.c
-@@ -129,8 +129,9 @@ int br_handle_frame_finish(struct net *net, struct sock *sk, struct sk_buff *skb
- 	switch (pkt_type) {
- 	case BR_PKT_MULTICAST:
- 		mdst = br_mdb_get(br, skb, vid);
--		if ((mdst || BR_INPUT_SKB_CB_MROUTERS_ONLY(skb)) &&
--		    br_multicast_querier_exists(br, eth_hdr(skb), mdst)) {
-+		if (((mdst || BR_INPUT_SKB_CB_MROUTERS_ONLY(skb)) &&
-+		    br_multicast_querier_exists(br, eth_hdr(skb), mdst)) ||
-+		    BR_INPUT_SKB_CB_FORCE_MC_FLOOD(skb)) {
- 			if ((mdst && mdst->host_joined) ||
- 			    br_multicast_is_router(br)) {
- 				local_rcv = true;
-diff --git a/net/bridge/br_multicast.c b/net/bridge/br_multicast.c
-index b7d9c491abe0..dfdbe19f3e93 100644
---- a/net/bridge/br_multicast.c
-+++ b/net/bridge/br_multicast.c
-@@ -3231,6 +3231,7 @@ static int br_multicast_ipv4_rcv(struct net_bridge *br,
- 	case IGMP_HOST_MEMBERSHIP_REPORT:
- 	case IGMPV2_HOST_MEMBERSHIP_REPORT:
- 		BR_INPUT_SKB_CB(skb)->mrouters_only = 1;
-+		BR_INPUT_SKB_CB(skb)->force_mc_flood = 1;
- 		err = br_ip4_multicast_add_group(br, port, ih->group, vid, src,
- 						 true);
- 		break;
-@@ -3294,6 +3295,7 @@ static int br_multicast_ipv6_rcv(struct net_bridge *br,
- 	case ICMPV6_MGM_REPORT:
- 		src = eth_hdr(skb)->h_source;
- 		BR_INPUT_SKB_CB(skb)->mrouters_only = 1;
-+		BR_INPUT_SKB_CB(skb)->force_mc_flood = 1;
- 		err = br_ip6_multicast_add_group(br, port, &mld->mld_mca, vid,
- 						 src, true);
- 		break;
-@@ -3325,6 +3327,7 @@ int br_multicast_rcv(struct net_bridge *br, struct net_bridge_port *port,
- 	BR_INPUT_SKB_CB(skb)->igmp = 0;
- 	BR_INPUT_SKB_CB(skb)->mrouters_only = 0;
- 	BR_INPUT_SKB_CB(skb)->force_flood = 0;
-+	BR_INPUT_SKB_CB(skb)->force_mc_flood = 0;
- 
- 	if (!br_opt_get(br, BROPT_MULTICAST_ENABLED))
- 		return 0;
-diff --git a/net/bridge/br_private.h b/net/bridge/br_private.h
-index 59af599d48eb..6d4f20d7f482 100644
---- a/net/bridge/br_private.h
-+++ b/net/bridge/br_private.h
-@@ -492,6 +492,7 @@ struct br_input_skb_cb {
- 	u8 igmp;
- 	u8 mrouters_only:1;
- 	u8 force_flood:1;
-+	u8 force_mc_flood:1;
- #endif
- 	u8 proxyarp_replied:1;
- 	u8 src_port_isolated:1;
-@@ -512,9 +513,11 @@ struct br_input_skb_cb {
- #ifdef CONFIG_BRIDGE_IGMP_SNOOPING
- # define BR_INPUT_SKB_CB_MROUTERS_ONLY(__skb)	(BR_INPUT_SKB_CB(__skb)->mrouters_only)
- # define BR_INPUT_SKB_CB_FORCE_FLOOD(__skb)		(BR_INPUT_SKB_CB(__skb)->force_flood)
-+# define BR_INPUT_SKB_CB_FORCE_MC_FLOOD(__skb)	(BR_INPUT_SKB_CB(__skb)->force_mc_flood)
- #else
- # define BR_INPUT_SKB_CB_MROUTERS_ONLY(__skb)	(0)
- # define BR_INPUT_SKB_CB_FORCE_FLOOD(__skb)		(0)
-+# define BR_INPUT_SKB_CB_FORCE_MC_FLOOD(__skb)	(0)
- #endif
- 
- #define br_printk(level, br, format, args...)	\
+cpufreq: qcom: Don't add frequencies without an OPP
+
+I guess your main concern for breakage
+is ^^ commit? The original design is
+to list a super set of frequencies
+supported by all variants of the SoC
+along with the required DDR/L3 bandwidth
+values. When we run into non-documented
+frequency we just wouldn't put in bw
+votes for it which should be fine since
+the entire opp_table is optional. If
+this is the reason for the NACK I can
+try get it reverted with Matthias's ack.
+
+
 -- 
-2.17.1
-
+Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
+a Linux Foundation Collaborative Project.
