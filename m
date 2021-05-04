@@ -2,76 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C0583729F6
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:17:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25AAA3729FF
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:22:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230343AbhEDMSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:18:33 -0400
-Received: from www.zeus03.de ([194.117.254.33]:37330 "EHLO mail.zeus03.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhEDMSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:18:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
-        from:to:cc:subject:date:message-id:mime-version
-        :content-transfer-encoding; s=k1; bh=2yyPH8se0+nZ6UbxlCbOuNBeCyT
-        1VfdEGO0/Rfn1+qg=; b=mg0cGIDNFEcN4pT7dU/bz4dBMh0S9LiKBCzdfA/hjsK
-        +ufW3tbvlzqhIVQyLYQcVzgp2d/IR2N56shr+N/Odo1PYijxOBKOSRxur1iz+sDu
-        743jJG6gUkDAvDFQiKm/K1Cbnatdvt6vnjx5FoipsXBOsp2+4u5bXyYnCJD9VIzw
-        =
-Received: (qmail 1352815 invoked from network); 4 May 2021 14:17:35 +0200
-Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 4 May 2021 14:17:35 +0200
-X-UD-Smtp-Session: l3s3148p1@n3zPD4DBqIsgAwDPXxOMAJUzfx/HAvHg
-From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-renesas-soc@vger.kernel.org,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>
-Subject: [PATCH] debugfs: only accept read attributes for blobs
-Date:   Tue,  4 May 2021 14:17:20 +0200
-Message-Id: <20210504121721.43385-1-wsa+renesas@sang-engineering.com>
-X-Mailer: git-send-email 2.30.0
+        id S230289AbhEDMXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:23:40 -0400
+Received: from 2.mo52.mail-out.ovh.net ([178.33.105.233]:44856 "EHLO
+        2.mo52.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230188AbhEDMXk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 08:23:40 -0400
+Received: from mxplan5.mail.ovh.net (unknown [10.108.4.240])
+        by mo52.mail-out.ovh.net (Postfix) with ESMTPS id CD06B275188;
+        Tue,  4 May 2021 14:22:40 +0200 (CEST)
+Received: from kaod.org (37.59.142.101) by DAG8EX1.mxp5.local (172.16.2.71)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 4 May 2021
+ 14:22:38 +0200
+Authentication-Results: garm.ovh; auth=pass (GARM-101G0043eda4e7a-de7c-4853-8406-edae349cf2a7,
+                    233BADB9E061AA125F593C9F78707CF28220F307) smtp.auth=groug@kaod.org
+X-OVh-ClientIp: 78.197.208.248
+Date:   Tue, 4 May 2021 14:22:36 +0200
+From:   Greg Kurz <groug@kaod.org>
+To:     Christoph Hellwig <hch@lst.de>
+CC:     Michael Ellerman <mpe@ellerman.id.au>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, <kvm@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        "Paul Mackerras" <paulus@samba.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        <linux-api@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
+        <qemu-devel@nongnu.org>, <qemu-ppc@nongnu.org>
+Subject: Re: remove the nvlink2 pci_vfio subdriver v2
+Message-ID: <20210504142236.76994047@bahia.lan>
+In-Reply-To: <20210326061311.1497642-1-hch@lst.de>
+References: <20210326061311.1497642-1-hch@lst.de>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [37.59.142.101]
+X-ClientProxiedBy: DAG5EX1.mxp5.local (172.16.2.41) To DAG8EX1.mxp5.local
+ (172.16.2.71)
+X-Ovh-Tracer-GUID: 316f1bea-914e-41ab-a4e8-46202395b6d3
+X-Ovh-Tracer-Id: 4363706565853223297
+X-VR-SPAMSTATE: OK
+X-VR-SPAMSCORE: -100
+X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdefiedgheefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfhisehtjeeftdertddvnecuhfhrohhmpefirhgvghcumfhurhiiuceoghhrohhugheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeetgffffffggfekgeffteekhffhueelffdvhedvgfdthfeiudetvddulefgveevteenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtohepqhgvmhhuqdhpphgtsehnohhnghhnuhdrohhrgh
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Blobs can only be read. So, keep only 'read' file attributes because the
-others will not work and only confuse users.
+On Fri, 26 Mar 2021 07:13:09 +0100
+Christoph Hellwig <hch@lst.de> wrote:
 
-Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
----
+> Hi all,
+> 
+> the nvlink2 vfio subdriver is a weird beast.  It supports a hardware
+> feature without any open source component - what would normally be
+> the normal open source userspace that we require for kernel drivers,
+> although in this particular case user space could of course be a
+> kernel driver in a VM.  It also happens to be a complete mess that
+> does not properly bind to PCI IDs, is hacked into the vfio_pci driver
+> and also pulles in over 1000 lines of code always build into powerpc
+> kernels that have Power NV support enabled.  Because of all these
+> issues and the lack of breaking userspace when it is removed I think
+> the best idea is to simply kill.
+> 
+> Changes since v1:
+>  - document the removed subtypes as reserved
+>  - add the ACK from Greg
+> 
+> Diffstat:
+>  arch/powerpc/platforms/powernv/npu-dma.c     |  705 ---------------------------
+>  b/arch/powerpc/include/asm/opal.h            |    3 
+>  b/arch/powerpc/include/asm/pci-bridge.h      |    1 
+>  b/arch/powerpc/include/asm/pci.h             |    7 
+>  b/arch/powerpc/platforms/powernv/Makefile    |    2 
+>  b/arch/powerpc/platforms/powernv/opal-call.c |    2 
+>  b/arch/powerpc/platforms/powernv/pci-ioda.c  |  185 -------
+>  b/arch/powerpc/platforms/powernv/pci.c       |   11 
+>  b/arch/powerpc/platforms/powernv/pci.h       |   17 
+>  b/arch/powerpc/platforms/pseries/pci.c       |   23 
+>  b/drivers/vfio/pci/Kconfig                   |    6 
+>  b/drivers/vfio/pci/Makefile                  |    1 
+>  b/drivers/vfio/pci/vfio_pci.c                |   18 
+>  b/drivers/vfio/pci/vfio_pci_private.h        |   14 
+>  b/include/uapi/linux/vfio.h                  |   38 -
 
-I was confused for a second, thinking blobs can be written to. I will
-fix the few in-kernel users doing it wrong seperately.
 
- fs/debugfs/file.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+Hi Christoph,
 
-diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
-index 686e0ad28788..d6aa6e04b7af 100644
---- a/fs/debugfs/file.c
-+++ b/fs/debugfs/file.c
-@@ -890,7 +890,8 @@ static const struct file_operations fops_blob = {
- /**
-  * debugfs_create_blob - create a debugfs file that is used to read a binary blob
-  * @name: a pointer to a string containing the name of the file to create.
-- * @mode: the permission that the file should have
-+ * @mode: the read permission that the file should have (other permissions are
-+ * 	  masked out)
-  * @parent: a pointer to the parent dentry for this file.  This should be a
-  *          directory dentry if set.  If this parameter is %NULL, then the
-  *          file will be created in the root of the debugfs filesystem.
-@@ -914,7 +915,7 @@ struct dentry *debugfs_create_blob(const char *name, umode_t mode,
- 				   struct dentry *parent,
- 				   struct debugfs_blob_wrapper *blob)
- {
--	return debugfs_create_file_unsafe(name, mode, parent, blob, &fops_blob);
-+	return debugfs_create_file_unsafe(name, mode & S_IRUGO, parent, blob, &fops_blob);
- }
- EXPORT_SYMBOL_GPL(debugfs_create_blob);
- 
--- 
-2.30.0
+FYI, these uapi changes break build of QEMU.
+
+I guess QEMU people should take some action before this percolates
+to the QEMU source tree.
+
+Cc'ing relevant QEMU lists to bring the discussion there.
+
+Cheers,
+
+--
+Greg
+
+>  drivers/vfio/pci/vfio_pci_nvlink2.c          |  490 ------------------
+>  16 files changed, 12 insertions(+), 1511 deletions(-)
 
