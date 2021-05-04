@@ -2,121 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDE9372894
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 12:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA6CA372899
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 12:16:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhEDKPd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 06:15:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58078 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhEDKPa (ORCPT
+        id S230202AbhEDKQw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 4 May 2021 06:16:52 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:34656 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229947AbhEDKQv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 06:15:30 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66941C061761
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 03:14:31 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id i13so6962334pfu.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 03:14:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:subject:to:cc:references:in-reply-to:mime-version
-         :message-id:content-transfer-encoding;
-        bh=7iDm+iy2vv0gvGhRKV9ucXH0e1bBgrE+86qry7t/ENk=;
-        b=oM+ogurNOu4EOIZYwS8ZYM5Y409XYeBzXlWzgGM/pFIGDYlVjmuHgsP3Pkmc8aeDa4
-         zaXjsBCEilPgNNHXLevQnq5Trb/duTBGWwcODXkYn3Q+uUimppR2Q4pecRdp7pDrQETM
-         3fkTSwMRnnKj3d0EkQUGHebEefKSCtbGH4C1L2JsWsF6tGnW42yeLyFAnCw134HnYZg5
-         Hy1D6jBkzyXwftlsAQbjzRBValsXd41hoM0wJJtOgvdy+CbwNnlt+8EUowFXXRg30G74
-         0flltxjqjiDWfffqf/TV8anjqD5eIEAjdVswqdE4gea6hvSkqFOgJ7VZEAmfotVKMgbN
-         kImg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:subject:to:cc:references:in-reply-to
-         :mime-version:message-id:content-transfer-encoding;
-        bh=7iDm+iy2vv0gvGhRKV9ucXH0e1bBgrE+86qry7t/ENk=;
-        b=gpydkY1ZzI49YG16hAkuPRo9JZBQfFU/d7yrKyk/E2tDbYg5n6Wb9B0P6YzPu6AIXX
-         YupCtRsyQ9KVUd+WgTcFZyyjt/YMga0DrVfcA081teFvMsd+5g1UqR5I4RXxPabpNLxu
-         os9NkyGHR3uBgCtQ34NnQ9GNT0toyna6UAJXROCpghlnVBIAyYCbVjqxxXLWmdoUbqqo
-         xUbfkEBQdRMt0RK3BmLyCtIAn8alqGzMfgaZ+ttX1jGxDxvQ5hVh2ao5bG7XIXD8VB+w
-         eDUS8Fxq7rzgFp/BDcWOqAgwbDWlO+MSq3XEdf+P8sfFBSJ8mxHwdLFvhCov4EiLqS5L
-         IUtg==
-X-Gm-Message-State: AOAM530MMGesYTZU/eE29ESL0IA8nO/nb+p/XeYZOtjHdwnKzN7qHgtE
-        46Se2Cjh+idkNiHyGi7zsTjs+rD2vm4=
-X-Google-Smtp-Source: ABdhPJwiTsfdvzaek4HRxZWtS8iwwUxU5lEhEvjHJfL72LY74TF7US11zYha5XrWIvKQImAPlfz+IA==
-X-Received: by 2002:a63:2d47:: with SMTP id t68mr22775932pgt.416.1620123271078;
-        Tue, 04 May 2021 03:14:31 -0700 (PDT)
-Received: from localhost ([61.68.127.20])
-        by smtp.gmail.com with ESMTPSA id bx12sm3117557pjb.1.2021.05.04.03.14.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 03:14:30 -0700 (PDT)
-Date:   Tue, 04 May 2021 20:14:25 +1000
-From:   Nicholas Piggin <npiggin@gmail.com>
-Subject: Re: [PATCH 2/2] powerpc/paca: Remove mm_ctx_id and
- mm_ctx_slb_addr_limit
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <f38728dbe96df5fef84c868640def5f6d7c114bc.1620060357.git.christophe.leroy@csgroup.eu>
-        <cc8bc507cce433bc9bbfe86f6fc22b29ce21d461.1620060357.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <cc8bc507cce433bc9bbfe86f6fc22b29ce21d461.1620060357.git.christophe.leroy@csgroup.eu>
+        Tue, 4 May 2021 06:16:51 -0400
+Received: from chickenburger.collabora.co.uk (chickenburger.collabora.co.uk [46.235.227.242])
+        by bhuna.collabora.co.uk (Postfix) with ESMTP id ED5DA1F42458;
+        Tue,  4 May 2021 11:15:54 +0100 (BST)
+From:   "Ezequiel Garcia" <ezequiel.garcia@collabora.com>
+In-Reply-To: <20210501013448.GA4001859@robh.at.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+X-Forward: 190.2.109.197
+Date:   Tue, 04 May 2021 11:15:54 +0100
+Cc:     "Benjamin Gaignard" <benjamin.gaignard@collabora.com>,
+        joro@8bytes.org, will@kernel.org, heiko@sntech.de,
+        xxm@rock-chips.com, iommu@lists.linux-foundation.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com
+To:     "Rob Herring" <robh@kernel.org>
 MIME-Version: 1.0
-Message-Id: <1620123253.cqvw3t8th6.astroid@bobo.none>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Message-ID: <4bee-60911f00-11-7473f580@227440849>
+Subject: =?utf-8?q?Re=3A?= [PATCH v2 2/4] =?utf-8?q?dt-bindings=3A?=
+ =?utf-8?q?_iommu=3A?==?utf-8?q?_rockchip=3A?= Add compatible for v2
+User-Agent: SOGoMail 5.0.1
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Excerpts from Christophe Leroy's message of May 4, 2021 2:46 am:
-> mm_ctx_id and mm_ctx_slb_addr_limit are not used anymore.
->=20
-> Remove them.
->=20
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Hi Rob,
+ 
+On Friday, April 30, 2021 22:34 -03, Rob Herring <robh@kernel.org> wrote: 
+ 
+> On Thu, Apr 22, 2021 at 04:16:00PM +0200, Benjamin Gaignard wrote:
+> > Add compatible for the second version of IOMMU hardware block.
+> > RK356x IOMMU can also be link to a power domain.
+> > 
+> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> > ---
+> > version 2:
+> >  - Add power-domains property
+> > 
+> >  .../devicetree/bindings/iommu/rockchip,iommu.yaml          | 7 ++++++-
+> >  1 file changed, 6 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+> > index 0db208cf724a..e54353ccd1ec 100644
+> > --- a/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+> > +++ b/Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+> > @@ -19,7 +19,9 @@ description: |+
+> >  
+> >  properties:
+> >    compatible:
+> > -    const: rockchip,iommu
+> > +    enum:
+> > +      - rockchip,iommu
+> > +      - rockchip,iommu-v2
+> 
+> This should be SoC specific.
+> 
 
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+It seems iommu-v2 is really the name Rockchip gives to this IOMMU IP core.
+Can we keep the "rockchip,iommu-v2" compatible, and add SoC-specific ones, as we normally do:
 
-> ---
->  arch/powerpc/include/asm/paca.h | 2 --
->  arch/powerpc/kernel/paca.c      | 2 --
->  2 files changed, 4 deletions(-)
->=20
-> diff --git a/arch/powerpc/include/asm/paca.h b/arch/powerpc/include/asm/p=
-aca.h
-> index ec18ac818e3a..ecc8d792a431 100644
-> --- a/arch/powerpc/include/asm/paca.h
-> +++ b/arch/powerpc/include/asm/paca.h
-> @@ -149,11 +149,9 @@ struct paca_struct {
->  #endif /* CONFIG_PPC_BOOK3E */
-> =20
->  #ifdef CONFIG_PPC_BOOK3S
-> -	mm_context_id_t mm_ctx_id;
->  #ifdef CONFIG_PPC_MM_SLICES
->  	unsigned char mm_ctx_low_slices_psize[BITS_PER_LONG / BITS_PER_BYTE];
->  	unsigned char mm_ctx_high_slices_psize[SLICE_ARRAY_SIZE];
-> -	unsigned long mm_ctx_slb_addr_limit;
->  #else
->  	u16 mm_ctx_user_psize;
->  	u16 mm_ctx_sllp;
-> diff --git a/arch/powerpc/kernel/paca.c b/arch/powerpc/kernel/paca.c
-> index 7f5aae3c387d..9bd30cac852b 100644
-> --- a/arch/powerpc/kernel/paca.c
-> +++ b/arch/powerpc/kernel/paca.c
-> @@ -346,10 +346,8 @@ void copy_mm_to_paca(struct mm_struct *mm)
->  #ifdef CONFIG_PPC_BOOK3S
->  	mm_context_t *context =3D &mm->context;
-> =20
-> -	get_paca()->mm_ctx_id =3D context->id;
->  #ifdef CONFIG_PPC_MM_SLICES
->  	VM_BUG_ON(!mm_ctx_slb_addr_limit(context));
-> -	get_paca()->mm_ctx_slb_addr_limit =3D mm_ctx_slb_addr_limit(context);
->  	memcpy(&get_paca()->mm_ctx_low_slices_psize, mm_ctx_low_slices(context)=
-,
->  	       LOW_SLICE_ARRAY_SZ);
->  	memcpy(&get_paca()->mm_ctx_high_slices_psize, mm_ctx_high_slices(contex=
-t),
-> --=20
-> 2.25.0
->=20
->=20
+compatible = "rockchip,rk3568-iommu", "rockchip,iommu-v2";
+
+Just like we'd do with any peripheral:
+
+compatible = "st,stm32-dwmac", "snps,dwmac-3.50a";
+
+Thanks!
+Ezequiel
+
