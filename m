@@ -2,196 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16709373086
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:12:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C4E037308D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:14:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232480AbhEDTNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:13:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232080AbhEDTN3 (ORCPT
+        id S232217AbhEDTPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:15:16 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:58312 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231604AbhEDTPP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:13:29 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B00C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:12:32 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id p64-20020a2529430000b02904f838e5bd13so151826ybp.20
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:12:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=DPQoY+5BFGMPSoMOLLW+zrHnpLhcIS8wpMva4HHTy1Q=;
-        b=DmMzNprx4BqDHLMu8jBGuQmT//Eu8g141YmQyTsvDtwk6nFFzYg5OXgfbEfG2s0agV
-         N6LUzBZMgiYungbu2izdEpHDJ9zxekANw/+uVWYeao+5At9AkFgvyxlIJGX0j/rPFjF1
-         iMLva4cQ68XAkNkqz6H7lxzKLQ4+/rubhsEBpVCjA88UtXfOOGEIgyAuL8PF1Ij6r2Cc
-         YLpRYABfwULyKk9/XFMyrdOv6AMceith4AywxPtRg3AVXWlBW5T8/CXGPQtPc3mkFNtD
-         eIEhLgXYFBOmt0vHNTzoCTAhOhFnkFMje2ItjxZLuXUElo10KpOQ4GrNgcJJQswjB8BZ
-         j7lQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=DPQoY+5BFGMPSoMOLLW+zrHnpLhcIS8wpMva4HHTy1Q=;
-        b=c4sxGY/7Rc54znwUKxAr8aU8f9tdMs3pyYlGD3/kJfZ6d0tKTEElRpJl32Z/NZHTeJ
-         J/qIkq8vayUndxirxFI5FPabDM+2ideXzNzXYEO9ZHsQBUfIhnuluEBXy7Dko3CcXcNC
-         0a2d1c0Zlf2EjtlrbiHbtxD5XP4UvtdAmv6BYjYthWAZCVtt37NMZehfKwn/p3xkhrNL
-         EdoqqHpOhiZPg2UQOQlscVh3ne7gWq0ssWnW+Q6/Mc1OoX7b3yfNEkMgHc+HGxv8z8NB
-         t1F+gRNJEKi10vs27ytEzhdYMxOB3dD24x0h0PA5pJq12FrHbJTp4wzy2DaJIInefsLu
-         aWUA==
-X-Gm-Message-State: AOAM53123GMiq2nJEi0JdsHR0fACnVaM2OPrm2txtSVuXlWVBiYRhg8I
-        uNUfImH8/tVRXGjmFSCxhxKlFA9X7iPu
-X-Google-Smtp-Source: ABdhPJzYMNj5d0iA145d5Ox3Cz69OkPKW1/6qR9n7oxIpGfTwIyFVEQ98t5cbgS+AFcsWyUlfxxj374Nkt5J
-X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:6f05:c90a:7892:8680])
- (user=irogers job=sendgmr) by 2002:a25:b223:: with SMTP id
- i35mr34061518ybj.429.1620155551491; Tue, 04 May 2021 12:12:31 -0700 (PDT)
-Date:   Tue,  4 May 2021 12:12:27 -0700
-Message-Id: <20210504191227.793712-1-irogers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH] perf arm: Fix off-by-one directory paths.
-From:   Ian Rogers <irogers@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 4 May 2021 15:15:15 -0400
+Received: from [192.168.254.32] (unknown [47.187.223.33])
+        by linux.microsoft.com (Postfix) with ESMTPSA id F1D5E20B7178;
+        Tue,  4 May 2021 12:14:19 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com F1D5E20B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620155660;
+        bh=NT93qR5y4vJEyN4TlNFBZ7epv4aqQ9wRwRPw+CZEeh0=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=c4Tu84/wv4NIzOPdh8fTtWgwZHEwqPxQdHhJSjz1xd7HvjwI9ScVDcvHvbJF16QuD
+         xacGTdmjxVwMCyloctrINa9KX9kO/eV0zszLDjgO71fR6lOUexVEiKp5niDkeBTGhY
+         CIS7a8e2TaWWqVKaxS4Yv6x8082R2iAnK/a9pez8=
+Subject: Re: [RFC PATCH v3 1/4] arm64: Introduce stack trace reliability
+ checks in the unwinder
+To:     Mark Brown <broonie@kernel.org>
+Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
+ <20210503173615.21576-1-madvenka@linux.microsoft.com>
+ <20210503173615.21576-2-madvenka@linux.microsoft.com>
+ <20210504155056.GB7094@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <66680284-8c80-1434-6c49-d86a47767168@linux.microsoft.com>
+Date:   Tue, 4 May 2021 14:14:19 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+MIME-Version: 1.0
+In-Reply-To: <20210504155056.GB7094@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Relative path include works in the regular build due to -I paths but may
-fail in other situations.
 
-Signed-off-by: Ian Rogers <irogers@google.com>
----
- tools/perf/arch/arm/util/auxtrace.c         |  8 +++----
- tools/perf/arch/arm/util/cs-etm.c           | 24 ++++++++++-----------
- tools/perf/arch/arm/util/perf_regs.c        |  2 +-
- tools/perf/arch/arm/util/pmu.c              |  2 +-
- tools/perf/arch/arm/util/unwind-libdw.c     |  6 +++---
- tools/perf/arch/arm/util/unwind-libunwind.c |  4 ++--
- 6 files changed, 23 insertions(+), 23 deletions(-)
 
-diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
-index b187bddbd01a..7ed57222465e 100644
---- a/tools/perf/arch/arm/util/auxtrace.c
-+++ b/tools/perf/arch/arm/util/auxtrace.c
-@@ -8,10 +8,10 @@
- #include <linux/coresight-pmu.h>
- #include <linux/zalloc.h>
- 
--#include "../../util/auxtrace.h"
--#include "../../util/debug.h"
--#include "../../util/evlist.h"
--#include "../../util/pmu.h"
-+#include "../../../util/auxtrace.h"
-+#include "../../../util/debug.h"
-+#include "../../../util/evlist.h"
-+#include "../../../util/pmu.h"
- #include "cs-etm.h"
- #include "arm-spe.h"
- 
-diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-index d942f118d32c..67c7fb8d7eb0 100644
---- a/tools/perf/arch/arm/util/cs-etm.c
-+++ b/tools/perf/arch/arm/util/cs-etm.c
-@@ -16,19 +16,19 @@
- #include <linux/zalloc.h>
- 
- #include "cs-etm.h"
--#include "../../util/debug.h"
--#include "../../util/record.h"
--#include "../../util/auxtrace.h"
--#include "../../util/cpumap.h"
--#include "../../util/event.h"
--#include "../../util/evlist.h"
--#include "../../util/evsel.h"
--#include "../../util/perf_api_probe.h"
--#include "../../util/evsel_config.h"
--#include "../../util/pmu.h"
--#include "../../util/cs-etm.h"
-+#include "../../../util/debug.h"
-+#include "../../../util/record.h"
-+#include "../../../util/auxtrace.h"
-+#include "../../../util/cpumap.h"
-+#include "../../../util/event.h"
-+#include "../../../util/evlist.h"
-+#include "../../../util/evsel.h"
-+#include "../../../util/perf_api_probe.h"
-+#include "../../../util/evsel_config.h"
-+#include "../../../util/pmu.h"
-+#include "../../../util/cs-etm.h"
- #include <internal/lib.h> // page_size
--#include "../../util/session.h"
-+#include "../../../util/session.h"
- 
- #include <errno.h>
- #include <stdlib.h>
-diff --git a/tools/perf/arch/arm/util/perf_regs.c b/tools/perf/arch/arm/util/perf_regs.c
-index 2864e2e3776d..2833e101a7c6 100644
---- a/tools/perf/arch/arm/util/perf_regs.c
-+++ b/tools/perf/arch/arm/util/perf_regs.c
-@@ -1,5 +1,5 @@
- // SPDX-License-Identifier: GPL-2.0
--#include "../../util/perf_regs.h"
-+#include "../../../util/perf_regs.h"
- 
- const struct sample_reg sample_reg_masks[] = {
- 	SMPL_REG_END
-diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
-index bbc297a7e2e3..b8b23b9dc598 100644
---- a/tools/perf/arch/arm/util/pmu.c
-+++ b/tools/perf/arch/arm/util/pmu.c
-@@ -10,7 +10,7 @@
- #include <linux/string.h>
- 
- #include "arm-spe.h"
--#include "../../util/pmu.h"
-+#include "../../../util/pmu.h"
- 
- struct perf_event_attr
- *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
-diff --git a/tools/perf/arch/arm/util/unwind-libdw.c b/tools/perf/arch/arm/util/unwind-libdw.c
-index 36ba4c69c3c5..b7692cb0c733 100644
---- a/tools/perf/arch/arm/util/unwind-libdw.c
-+++ b/tools/perf/arch/arm/util/unwind-libdw.c
-@@ -1,8 +1,8 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <elfutils/libdwfl.h>
--#include "../../util/unwind-libdw.h"
--#include "../../util/perf_regs.h"
--#include "../../util/event.h"
-+#include "../../../util/unwind-libdw.h"
-+#include "../../../util/perf_regs.h"
-+#include "../../../util/event.h"
- 
- bool libdw__arch_set_initial_registers(Dwfl_Thread *thread, void *arg)
- {
-diff --git a/tools/perf/arch/arm/util/unwind-libunwind.c b/tools/perf/arch/arm/util/unwind-libunwind.c
-index 3a550225dfaf..438906bf0014 100644
---- a/tools/perf/arch/arm/util/unwind-libunwind.c
-+++ b/tools/perf/arch/arm/util/unwind-libunwind.c
-@@ -3,8 +3,8 @@
- #include <errno.h>
- #include <libunwind.h>
- #include "perf_regs.h"
--#include "../../util/unwind.h"
--#include "../../util/debug.h"
-+#include "../../../util/unwind.h"
-+#include "../../../util/debug.h"
- 
- int libunwind__arch_reg_id(int regnum)
- {
--- 
-2.31.1.607.g51e8a6a459-goog
+On 5/4/21 10:50 AM, Mark Brown wrote:
+> On Mon, May 03, 2021 at 12:36:12PM -0500, madvenka@linux.microsoft.com wrote:
+> 
+>> +	/*
+>> +	 * First, make sure that the return address is a proper kernel text
+>> +	 * address. A NULL or invalid return address probably means there's
+>> +	 * some generated code which __kernel_text_address() doesn't know
+>> +	 * about. Mark the stack trace as not reliable.
+>> +	 */
+>> +	if (!__kernel_text_address(frame->pc)) {
+>> +		frame->reliable = false;
+>> +		return 0;
+>> +	}
+> 
+> Do we want the return here?  It means that...
+> 
+>> +
+>>  #ifdef CONFIG_FUNCTION_GRAPH_TRACER
+>>  	if (tsk->ret_stack &&
+>> -		(ptrauth_strip_insn_pac(frame->pc) == (unsigned long)return_to_handler)) {
+>> +		frame->pc == (unsigned long)return_to_handler) {
+>>  		struct ftrace_ret_stack *ret_stack;
+>>  		/*
+>>  		 * This is a case where function graph tracer has
+>> @@ -103,11 +117,10 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+>>  		if (WARN_ON_ONCE(!ret_stack))
+>>  			return -EINVAL;
+>>  		frame->pc = ret_stack->ret;
+>> +		frame->pc = ptrauth_strip_insn_pac(frame->pc);
+>>  	}
+> 
+> ...we skip this handling in the case where we're not in kernel code.  I
+> don't know off hand if that's a case that can happen right now but it
+> seems more robust to run through this and anything else we add later,
+> even if it's not relevant now changes either in the unwinder itself or
+> resulting from some future work elsewhere may mean it later becomes
+> important.  Skipping futher reliability checks is obviously fine if
+> we've already decided things aren't reliable but this is more than just
+> a reliability check.
+> 
+
+AFAICT, currently, all the functions that the unwinder checks do have
+valid kernel text addresses. However, I don't think there is any harm
+in letting it fall through and make all the checks. So, I will remove the
+return statement.
+
+Thanks!
+
+Madhavan
 
