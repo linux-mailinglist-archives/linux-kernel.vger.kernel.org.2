@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B77E8372EC8
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:19:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E807372EA5
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:18:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232370AbhEDRTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:19:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232233AbhEDRTV (ORCPT
+        id S232123AbhEDRSs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:18:48 -0400
+Received: from smtp06.smtpout.orange.fr ([80.12.242.128]:23476 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232063AbhEDRSn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:19:21 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9BF4C061353
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:18 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a7-20020a5b00070000b02904ed415d9d84so12561608ybp.0
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=la9oY1bxuLYI2LhjbikVYGCKhsj27XYDlkUaBPeOjcE=;
-        b=jn7iGmXk2tM9WVcHBi3kVdO4RzzftrZfQjnK+KwLY8ldx7zkeKX1Ji8siS6FGY4sOb
-         hweay/CtK/y3qJ+aMkl1CKVsa8O4blH0Z4ObvgtaA2EAlo2umn8s6Yh6lEjq/vkfVOmF
-         AK9du+htAn4roZgYlRNomur8QSNZN5lnsPUhd8pyzyLcBrUpSHk5yIC2W8XPaQ8UU0Wa
-         MyUHUKhTVHjSOjjUBrcay/jqEBB7LOLLdxPljAg5aA0jtOfrTs3W+zClQqkcPIj//3SO
-         rJJBBQCpm9MsJldnED0rOfmLYLzH9G9mmBS54TnM4bqZvRA+SMbAbru+RuE520OCxPQ7
-         5mHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=la9oY1bxuLYI2LhjbikVYGCKhsj27XYDlkUaBPeOjcE=;
-        b=oLf5tuZxrlV7YulKubgMGUey0/b0P1OWpc2TGKEbCAEEds71DzHRHrxhWxcyIi0P/n
-         jJ5yZlAE1tGJlkApjvH7Qi7u3MDNuSt0EyVEX13emouPlz1kf7h7zAj8aOTAN1Cn6jDJ
-         Nu/A6/6R6ej/xV4VRNfyJ1vew39iG7+R3MbBjBjX/UvT0mRkNuBY5XFAtvc3L03kMVpd
-         iURGavW50O/HF3zYOR6z8g/+5DjMuRP8poJeVUKiC3ZHXllve3K2q8omIDe9JG8+oFss
-         p6ev8OzeIijB4iOk2GMko9PK0VRwk0sUvo8rxgaOiWUDZq8NtA5R4nP3u8gS0CgvlmvX
-         H0Aw==
-X-Gm-Message-State: AOAM533qYYZ/dKd15jOpZRg4jn/KvYczlknedYpev+45vPM9notqVPLo
-        M2DpOmlJc7LV3pgIvBLYauknLN+MV6A=
-X-Google-Smtp-Source: ABdhPJwwHw598d//FTS6A9v+yJFz6d3uPtTa/zkCcvmZHBETLX5230DxHwzzjkufCXdGKaG2q1I+ZkEAJBc=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:a05:6902:120a:: with SMTP id
- s10mr34885283ybu.91.1620148698033; Tue, 04 May 2021 10:18:18 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 10:17:34 -0700
-In-Reply-To: <20210504171734.1434054-1-seanjc@google.com>
-Message-Id: <20210504171734.1434054-16-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210504171734.1434054-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH 15/15] KVM: x86: Hide RDTSCP and RDPID if MSR_TSC_AUX probing failed
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Tue, 4 May 2021 13:18:43 -0400
+Received: from localhost.localdomain ([86.243.172.93])
+        by mwinf5d41 with ME
+        id 0hHl2500221Fzsu03hHlrD; Tue, 04 May 2021 19:17:46 +0200
+X-ME-Helo: localhost.localdomain
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Tue, 04 May 2021 19:17:46 +0200
+X-ME-IP: 86.243.172.93
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To:     thierry.reding@gmail.com, lorenzo.pieralisi@arm.com,
+        robh@kernel.org, bhelgaas@google.com, jonathanh@nvidia.com
+Cc:     linux-tegra@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Subject: [PATCH 1/3] PCI: tegra: Fix OF node reference leak
+Date:   Tue,  4 May 2021 19:17:42 +0200
+Message-Id: <55b11e9a7fa2987fbc0869d68ae59888954d65e2.1620148539.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If probing MSR_TSC_AUX failed, hide RDTSCP and RDPID, and WARN if either
-feature was reported as supported.  In theory, such a scenario should
-never happen as both Intel and AMD state that MSR_TSC_AUX is available if
-RDTSCP or RDPID is supported.  But, KVM injects #GP on MSR_TSC_AUX
-accesses if probing failed, faults on WRMSR(MSR_TSC_AUX) may be fatal to
-the guest (because they happen during early CPU bringup), and KVM itself
-has effectively misreported RDPID support in the past.
+Commit 9e38e690ace3 ("PCI: tegra: Fix OF node reference leak") has fixed
+some node reference leaks in this function but missed some of them.
 
-Note, this also has the happy side effect of omitting MSR_TSC_AUX from
-the list of MSRs that are exposed to userspace if probing the MSR fails.
+In fact, having 'port' referenced in the 'rp' structure is not enough to
+prevent the leak, until 'rp' is actually added in the 'pcie->ports' list.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
+Add the missing 'goto err_node_put' accordingly.
+
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 ---
- arch/x86/kvm/cpuid.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/pci/controller/pci-tegra.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index c96f79c9fff2..bf0f74ce4974 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -567,6 +567,21 @@ void kvm_set_cpu_caps(void)
- 		F(ACE2) | F(ACE2_EN) | F(PHE) | F(PHE_EN) |
- 		F(PMM) | F(PMM_EN)
- 	);
-+
-+	/*
-+	 * Hide RDTSCP and RDPID if either feature is reported as supported but
-+	 * probing MSR_TSC_AUX failed.  This is purely a sanity check and
-+	 * should never happen, but the guest will likely crash if RDTSCP or
-+	 * RDPID is misreported, and KVM has botched MSR_TSC_AUX emulation in
-+	 * the past, e.g. the sanity check may fire if this instance of KVM is
-+	 * running as L1 on top of an older, broken KVM.
-+	 */
-+	if (WARN_ON((kvm_cpu_cap_has(X86_FEATURE_RDTSCP) ||
-+		     kvm_cpu_cap_has(X86_FEATURE_RDPID)) &&
-+		     !kvm_is_supported_user_return_msr(MSR_TSC_AUX))) {
-+		kvm_cpu_cap_clear(X86_FEATURE_RDTSCP);
-+		kvm_cpu_cap_clear(X86_FEATURE_RDPID);
-+	}
- }
- EXPORT_SYMBOL_GPL(kvm_set_cpu_caps);
+diff --git a/drivers/pci/controller/pci-tegra.c b/drivers/pci/controller/pci-tegra.c
+index 8069bd9232d4..006bf0346dec 100644
+--- a/drivers/pci/controller/pci-tegra.c
++++ b/drivers/pci/controller/pci-tegra.c
+@@ -2193,13 +2193,15 @@ static int tegra_pcie_parse_dt(struct tegra_pcie *pcie)
+ 		rp->np = port;
+ 
+ 		rp->base = devm_pci_remap_cfg_resource(dev, &rp->regs);
+-		if (IS_ERR(rp->base))
+-			return PTR_ERR(rp->base);
++		if (IS_ERR(rp->base)) {
++			err = PTR_ERR(rp->base);
++			goto err_node_put;
++		}
+ 
+ 		label = devm_kasprintf(dev, GFP_KERNEL, "pex-reset-%u", index);
+ 		if (!label) {
+-			dev_err(dev, "failed to create reset GPIO label\n");
+-			return -ENOMEM;
++			err = -ENOMEM;
++			goto err_node_put;
+ 		}
+ 
+ 		/*
+@@ -2217,7 +2219,8 @@ static int tegra_pcie_parse_dt(struct tegra_pcie *pcie)
+ 			} else {
+ 				dev_err(dev, "failed to get reset GPIO: %ld\n",
+ 					PTR_ERR(rp->reset_gpio));
+-				return PTR_ERR(rp->reset_gpio);
++				err = PTR_ERR(rp->reset_gpio);
++				goto err_node_put;
+ 			}
+ 		}
  
 -- 
-2.31.1.527.g47e6f16901-goog
+2.30.2
 
