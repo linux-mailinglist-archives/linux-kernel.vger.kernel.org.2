@@ -2,120 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30379372DDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14F18372DE6
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:19:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231734AbhEDQSP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:18:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34782 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231635AbhEDQSM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:18:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 24BD6611AD;
-        Tue,  4 May 2021 16:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620145037;
-        bh=5iqslF9Ox5+6piOrlgLcA9pBk2hRz/fYWDXpJnNRAgw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MrWKbXNUmyeEvTiJ8kpXvrwolwGcpIzYHuC/CgbJhUN8dEJFoHorrHoP1l5O6AFgH
-         z8NmAzQ0TBLovEYuuwPaJX+D33i+pLq560Mx7Wrpeq7OnZ5OPblXXPOui/inPSyWvf
-         Rw2kIcEt0tycmNacxCV8UuDQ+XZNUmpMMsmHD85A=
-Date:   Tue, 4 May 2021 18:17:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: rtl8723bs: use generic kernel error codes
-Message-ID: <YJFziyZHnbsWdTFn@kroah.com>
-References: <c94e5865e59d35fe0e39d5cd46d71ad4a752ddd4.1620144194.git-series.hello@bryanbrattlof.com>
+        id S231744AbhEDQUR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 12:20:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54664 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231523AbhEDQUP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 12:20:15 -0400
+Received: from mail-ed1-x52a.google.com (mail-ed1-x52a.google.com [IPv6:2a00:1450:4864:20::52a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0E13C061574;
+        Tue,  4 May 2021 09:19:20 -0700 (PDT)
+Received: by mail-ed1-x52a.google.com with SMTP id i24so11108460edy.8;
+        Tue, 04 May 2021 09:19:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=60fjmSbWautEiAXXZ/arvBTCpd67qkAETXpwdXksLGM=;
+        b=qFthUpilO16l5BBY7830dFNGPY803Hw8e+Eye/onLP8kMF/PyMLQVAglHZ/BRoZpUy
+         8Zy9hEVal3Hu63EPztEAlNQhEkOdTpz3qtqsgegeTfzwfyJgphG/hgv9h1X/dVsvZgaD
+         aCiIAJuYjbGOs1xv0FXP9BeBQTHfyCsI4Mz9Re+mtGsmPNcZK4B65VysSNebcz1n4P6F
+         MtbWl29/mpRg0uW7w7mFE3RxIYduBBt7pRm77TGEYzRhCoSoULZkV0k/64huszWwPxn8
+         MGpuMX4hrUPy4YdXFpLj5LViNUsROaAnWr1g6fbHIZUbTtQVAvnkTqr7CPJWXMkAutRW
+         MMrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=60fjmSbWautEiAXXZ/arvBTCpd67qkAETXpwdXksLGM=;
+        b=eLbQJYahVj9890nNrHhfEU/2ZYrKS6D5fEkkXKlgHHnSBZJNW4IqirD3uKYeKn+Yfe
+         C7c4z+CLKzEbziGygeIeVdbE034VXX92vzYGkYy9Y0gkhe19bFN/X5NnQYlYEl62BWU9
+         hy68P7LLMbr8nYgxM0aCU/XU/eXShTqvEWszYyz2L3aIHZ5K9cSd0Qe4knmeZ909NL2q
+         nFHSfw9gJsPXcrmXHLAjDyolRHfxNZPww5r+eU0kCAEtf2NB7nGgYEU4EUR0VwuWRj0u
+         4h/kwS+rB4zsBZlZTD5mLInS54NAO65VzelQLnr+kn6BXv8MxutB5Nz4kZY58JoTqo+x
+         cYQQ==
+X-Gm-Message-State: AOAM532n+vTw1O5Vr563/HugM1ge0SGQxCdRuBnBgskfesZkfaZXoCXQ
+        kq2pbZsGn11UYfdlIFSpEkaMSCyNR1VXnA==
+X-Google-Smtp-Source: ABdhPJxhAo3H1iYkoqJEJEahFcx35MkC2p0i2yMzVazAbR2jkzD9gR8K9ooHj8koXp2JKDOUamMMPQ==
+X-Received: by 2002:aa7:d594:: with SMTP id r20mr26285506edq.242.1620145159294;
+        Tue, 04 May 2021 09:19:19 -0700 (PDT)
+Received: from [192.168.2.2] (81-204-249-205.fixed.kpn.net. [81.204.249.205])
+        by smtp.gmail.com with ESMTPSA id h15sm1618678ejs.72.2021.05.04.09.19.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 09:19:18 -0700 (PDT)
+Subject: Re: [RFC PATCH v1] dt-bindings: mmc: snps,dwcmshc-sdhci: fix
+ rockchip,txclk-tapnum
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     heiko@sntech.de, shawn.lin@rock-chips.com, ulf.hansson@linaro.org,
+        Jisheng.Zhang@synaptics.com, linux-mmc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20210430072138.6537-1-jbx6244@gmail.com>
+ <CAL_JsqKnD1t7oRDY5sTi3TjJ0vbFK0tQcVj1qCw_jiOfOQh=mA@mail.gmail.com>
+From:   Johan Jonker <jbx6244@gmail.com>
+Message-ID: <4b67c50e-558a-ab76-b8df-531691129837@gmail.com>
+Date:   Tue, 4 May 2021 18:19:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux i686; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c94e5865e59d35fe0e39d5cd46d71ad4a752ddd4.1620144194.git-series.hello@bryanbrattlof.com>
+In-Reply-To: <CAL_JsqKnD1t7oRDY5sTi3TjJ0vbFK0tQcVj1qCw_jiOfOQh=mA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 04:07:48PM +0000, Bryan Brattlof wrote:
-> The current _FAIL and _SUCCESS error codes are defined as:
-> 
->         #define _FAIL    0
-> 	#define _SUCCESS 1
-> 
-> which adds complexity (and confusion) when interacting with other
-> submodules in the kernel. These definitions can be removed and replaced
-> with the kernel's generic error codes.
-> 
-> Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
-> ---
->  drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
->  drivers/staging/rtl8723bs/os_dep/sdio_intf.c  | 11 +++++------
->  2 files changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/staging/rtl8723bs/include/drv_types.h
-> index 83d43e5726dd..5b702ff432ae 100644
-> --- a/drivers/staging/rtl8723bs/include/drv_types.h
-> +++ b/drivers/staging/rtl8723bs/include/drv_types.h
-> @@ -385,7 +385,7 @@ struct adapter {
->  	void *xmitThread;
->  	void *recvThread;
-> 
-> -	u32 (*intf_init)(struct dvobj_priv *dvobj);
-> +	int (*intf_init)(struct dvobj_priv *dvobj);
->  	void (*intf_deinit)(struct dvobj_priv *dvobj);
->  	int (*intf_alloc_irq)(struct dvobj_priv *dvobj);
->  	void (*intf_free_irq)(struct dvobj_priv *dvobj);
-> diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> index d2bf444117b8..e26c51d847b6 100644
-> --- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> +++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
-> @@ -112,7 +112,7 @@ static void sdio_free_irq(struct dvobj_priv *dvobj)
->  	}
->  }
-> 
-> -static u32 sdio_init(struct dvobj_priv *dvobj)
-> +static int sdio_init(struct dvobj_priv *dvobj)
->  {
->  	struct sdio_data *psdio_data;
->  	struct sdio_func *func;
-> @@ -139,12 +139,11 @@ static u32 sdio_init(struct dvobj_priv *dvobj)
->  	psdio_data->tx_block_mode = 1;
->  	psdio_data->rx_block_mode = 1;
-> 
-> +	return err;
-> +
->  release:
->  	sdio_release_host(func);
-> -
-> -	if (err)
-> -		return _FAIL;
-> -	return _SUCCESS;
-> +	return err;
->  }
-
-You just changed the logic here, are you SURE that was ok to do?
 
 
-> 
->  static void sdio_deinit(struct dvobj_priv *dvobj)
-> @@ -186,7 +185,7 @@ static struct dvobj_priv *sdio_dvobj_init(struct sdio_func *func)
->  	psdio = &dvobj->intf_data;
->  	psdio->func = func;
-> 
-> -	if (sdio_init(dvobj) != _SUCCESS)
-> +	if (sdio_init(dvobj) < 0)
->  		goto free_dvobj;
-> 
->  	rtw_reset_continual_io_error(dvobj);
-> 
-> base-commit: 9ccce092fc64d19504fa54de4fd659e279cc92e7
-> --
-> git-series 0.9.1
-> 
+On 5/4/21 12:40 AM, Rob Herring wrote:
+> On Fri, Apr 30, 2021 at 2:21 AM Johan Jonker <jbx6244@gmail.com> wrote:
+>>
+>> A test with the command below gives this error:
+>> mmc@fe310000: rockchip,txclk-tapnum: missing size tag in [[8]]
+>>
+>> With this added to a dts file:
+>> rockchip,txclk-tapnum = <0x8>;
+>>
+>> A look at the driver shows that:
+>> DLL_TXCLK_TAPNUM_DEFAULT        0x8
+>>
+>> Adding the default value to the dts files is not needed.
+>> Every clock is divided into 32 taps equally and
+>> the max value is 31.
+>>
+>> Fix rockchip,txclk-tapnum property in snps,dwcmshc-sdhci.yaml by
+>> adding a minimum, maximum and default.
+>>
+>> In the driver the function of_property_read_u8() is used,
+>> but with dtbs_check the notifications only disappear in YAML
+>> by changing uint8 to uint32.
 > 
 
-And that's all to remove the need for these crazy error values?  If so,
-why not also remove the #defines for them as well?
+> Did you check what value the driver sees when you put 8 in the dts. I
+> expect it will be 0 because you are reading the 1st byte in big
+> endian.
+> 
 
-thanks,
+Hi,
 
-greg k-h
+Thanks for info.
+A test with a dummy module shows that of_property_read_u8() read a 0
+instead of 8.
+There are approx 23 of_property_read_u8() functions in use in the
+mainline kernel. Do they need a recheck?
+
+Johan
+
+=== other Rockchip recheck examples
+
+drivers/mmc/host/sdhci-of-dwcmshc.c
+
+	if (of_property_read_u8(mmc_dev(host->mmc)->of_node,
+"rockchip,txclk-tapnum",
+				&priv->txclk_tapnum))
+
+drivers/pci/controller/pcie-rockchip-ep.c
+
+	err = of_property_read_u8(dev->of_node, "max-functions",
+				  &ep->epc->max_functions);
+
+=== dts test
+	dummy {
+		compatible = "dummy";
+		rockchip,dummy0x8 =        <0x8>;
+		rockchip,dummy0x11223344 = <0x11223344>;
+	};
+
+=== driver probe
+	of_property_read_u8(np,  "rockchip,dummy0x8", &tmp8);
+	printk("u8 : 0x%08x\n", tmp8);
+	of_property_read_u32(np, "rockchip,dummy0x8", &tmp32);
+	printk("u32: 0x%08x\n", tmp32);
+
+	of_property_read_u8(np,  "rockchip,dummy0x11223344", &tmp8);
+	printk("u8 : 0x%08x\n", tmp8);
+	of_property_read_u32(np, "rockchip,dummy0x11223344", &tmp32);
+	printk("u32: 0x%08x\n", tmp32);
+
+=== dmesg
+[   18.089694] u8 : 0x00000000
+[   18.090123] u32: 0x00000008
+[   18.090494] u8 : 0x00000011
+[   18.090865] u32: 0x11223344
+
+
+>> The driver has no limit check for rockchip,txclk-tapnum.
+>>
+>> make ARCH=arm64 dtbs_check
+>>
+>> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+>> ---
+>>  Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+>> index e6c9a2f77..f43d8d829 100644
+>> --- a/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+>> +++ b/Documentation/devicetree/bindings/mmc/snps,dwcmshc-sdhci.yaml
+>> @@ -48,7 +48,10 @@ properties:
+>>
+>>    rockchip,txclk-tapnum:
+>>      description: Specify the number of delay for tx sampling.
+>> -    $ref: /schemas/types.yaml#/definitions/uint8
+>> +    $ref: /schemas/types.yaml#/definitions/uint32
+>> +    minimum: 0
+>> +    maximum: 31
+>> +    default: 8
+>>
+>>
+>>  required:
+>> --
+>> 2.11.0
+>>
