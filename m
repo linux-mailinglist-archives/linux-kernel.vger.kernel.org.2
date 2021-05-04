@@ -2,60 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C6B3372FC6
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:30:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DA39372FC8
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:30:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232412AbhEDSb1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 14:31:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34166 "EHLO mail.kernel.org"
+        id S232486AbhEDSbc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 14:31:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33182 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232252AbhEDSbD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 14:31:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 3043D61164;
-        Tue,  4 May 2021 18:30:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620153008;
-        bh=WZ19CPiUvauP5vec+PmmiBjmaoX4QTxP9u3o4IH6YB4=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=kM+dzKhkqrv5+N1zq6iHFIcoZsZ0BbfDp2d5IoLTXP7evpjAYgN7ZsqbQtA9mJqeH
-         p132yRYdq6wFxSZ7D6ckXLp5eapPEOBLskrmIh5a6P5TX/R/ytTQ2Kkevbi8TsJ+p4
-         pdbVstxSVy1WvfpRe5cWKYGV0dpfb5zOIQmFB1BjnfvnHMrL1zgNjuDuTv0/8hy1Jx
-         AfjcBsDKNiFdoYMsJ4SbKCtG9vjpjd5ko8hh3nKz3eSXg88f9GLcmrijelDiZv8onY
-         a9IzIrk0Pu9f/2Wc2Y9huqoEmwuN6OyT39Mm7YmEsbc8mLax3CkBIC/+AhHpl2EhF/
-         p4IMXKBFcfYJw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 29CC560987;
-        Tue,  4 May 2021 18:30:08 +0000 (UTC)
-Subject: Re: [GIT PULL]: dmaengine updates for v5.13-rc1
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YJF4nAJ/XXY9qUuI@vkoul-mobl.Dlink>
-References: <YJF4nAJ/XXY9qUuI@vkoul-mobl.Dlink>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YJF4nAJ/XXY9qUuI@vkoul-mobl.Dlink>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-5.13-rc1
-X-PR-Tracked-Commit-Id: 0bde4444ec44b8e64bbd4af72fcaef58bcdbd4ce
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: e4adffb8daf476a01e7b4a55f586dc8c26e81392
-Message-Id: <162015300816.4220.12306215502197225721.pr-tracker-bot@kernel.org>
-Date:   Tue, 04 May 2021 18:30:08 +0000
-To:     Vinod Koul <vkoul@kernel.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        dma <dmaengine@vger.kernel.org>
+        id S232289AbhEDSbI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 14:31:08 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3AA9EAF79;
+        Tue,  4 May 2021 18:30:12 +0000 (UTC)
+Date:   Tue, 4 May 2021 20:30:09 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Adrien Grassein <adrien.grassein@gmail.com>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Subject: ERROR: modpost: "drm_display_mode_to_videomode"
+ [drivers/gpu/drm/bridge/lontium-lt8912b.ko] undefined!
+Message-ID: <20210504183009.GV6564@kitsune.suse.cz>
+References: <e4r4g4R-yjH.A.CJE.0pVkgB@appolonius>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e4r4g4R-yjH.A.CJE.0pVkgB@appolonius>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 4 May 2021 22:08:52 +0530:
+Hello,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/dmaengine.git tags/dmaengine-5.13-rc1
+I get errors about missing symbol in the lontium-lt8912b module.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/e4adffb8daf476a01e7b4a55f586dc8c26e81392
+Is the problem self-evident or do you need the config as well?
 
-Thank you!
+I don't need the driver for anything, it was just auto-enabled because
+it's new and the change has not been reviewed.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Thanks
+
+Michal
+> 
+> Last output:
+>   WRAP    arch/powerpc/boot/zImage.maple
+>   WRAP    arch/powerpc/boot/zImage.pseries
+> make[2]: *** Deleting file 'modules-only.symvers'
+>   MODPOST modules-only.symvers
+> ERROR: modpost: "drm_display_mode_to_videomode" [drivers/gpu/drm/bridge/lontium-lt8912b.ko] undefined!
+> make[2]: *** [../scripts/Makefile.modpost:150: modules-only.symvers] Error 1
+> make[1]: *** [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12.0.13670.g5e321ded302d/linux-5.12-13670-g5e321ded302d/Makefile:1770: modules] Error 2
+> make: *** [../Makefile:215: __sub-make] Error 2
+> error: Bad exit status from /var/tmp/rpm-tmp.q1oSIp (%build)
