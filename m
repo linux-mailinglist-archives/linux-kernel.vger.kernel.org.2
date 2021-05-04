@@ -2,65 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EBA3372824
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:39:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E16FD372828
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230033AbhEDJks (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 05:40:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50506 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229883AbhEDJkq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 05:40:46 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 792D4C061574;
-        Tue,  4 May 2021 02:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cbJaT3WauSqqefXiQhipxL5QKWvgRRw7UQHpsath+Uk=; b=Fh34MW0SJTuy07liXxCF50N1v5
-        UsnNeTvC+HKGbxyV5M1xr2rQelNWMXX9IWoY6Tbzyx0oYm7eXDki2pHgQEx4um74tCoQ7/J2c/3O2
-        IT0vqGHPLWuxKpHv5s4Ro9DMP2G1JaIjotX5SMqxYOvvUXIaboSoepUfRxlxPVTvS30lxOIAY9wWj
-        2VZnjiI7aDjJSf4xdI5yFB+pZC2YtdmyWdpUX/yrqvXNiJ2W4fhmnDPqQ432A5Q24tqH03jnfBBd/
-        GR1C3IcSA9c5RkJGXVfvXIzs14PCtbByXnfcDNOAVmRa6kzy6l75DJnJXHN5WsRK0IIMqmiK7n4+o
-        jJrpY65g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ldrWl-00Ftkl-44; Tue, 04 May 2021 09:39:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 017023001D0;
-        Tue,  4 May 2021 11:39:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AAB992026F4BB; Tue,  4 May 2021 11:39:37 +0200 (CEST)
-Date:   Tue, 4 May 2021 11:39:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        iommu@lists.linux-foundation.org, mingo@redhat.com,
-        joro@8bytes.org, Jon.Grimm@amd.com, amonakov@ispras.ru,
-        David Coe <david.coe@live.co.uk>
-Subject: Re: [PATCH] x86/events/amd/iommu: Fix invalid Perf result due to
- IOMMU PMC power-gating
-Message-ID: <YJEWWbEeDm0rUyC+@hirez.programming.kicks-ass.net>
-References: <20210504065236.4415-1-suravee.suthikulpanit@amd.com>
+        id S230092AbhEDJmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 05:42:51 -0400
+Received: from mga05.intel.com ([192.55.52.43]:62423 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229883AbhEDJmr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 05:42:47 -0400
+IronPort-SDR: 74YS3uIK1X1b5HC8FkhXPYr4HMhAprg8YSsYW5jLiKr9Iyke1KaMyPtSc4FZ2BYzXgGmAV89jF
+ OlWZvhF3FAhQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="283349582"
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="283349582"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 02:41:53 -0700
+IronPort-SDR: sU4PVJe6GtdbV7YJEGJRCukzA44tIFHj0qbCVsUAyr5k7WbJdlTTZ7Cu+pW2E3xGVvkyE4Xtkw
+ 1UmswrcCtc2Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="427713958"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by orsmga007.jf.intel.com with SMTP; 04 May 2021 02:41:49 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Tue, 04 May 2021 12:41:48 +0300
+Date:   Tue, 4 May 2021 12:41:48 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] Add missing check
+Message-ID: <YJEW3J0+RQPo22AD@intel.com>
+References: <20210503182148.851790-1-wse@tuxedocomputers.com>
+ <20210503182148.851790-3-wse@tuxedocomputers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210504065236.4415-1-suravee.suthikulpanit@amd.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210503182148.851790-3-wse@tuxedocomputers.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 01:52:36AM -0500, Suravee Suthikulpanit wrote:
+On Mon, May 03, 2021 at 08:21:46PM +0200, Werner Sembach wrote:
+> Add a missing check that could potentially lead to an unarchivable mode being
+> validated.
+> 
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> ---
+> 
+> >From 54fa706f0a5f260a32af5d18b9622ceebb94c12e Mon Sep 17 00:00:00 2001
+> From: Werner Sembach <wse@tuxedocomputers.com>
+> Date: Mon, 3 May 2021 14:42:36 +0200
+> Subject: [PATCH 2/4] Add missing check
 
-> 2. Since AMD IOMMU PMU does not support interrupt mode, the logic
->    can be simplified to always start counting with value zero,
->    and accumulate the counter value when stopping without the need
->    to keep track and reprogram the counter with the previously read
->    counter value.
+I guess you did something a bit wonky with git format-patch/send-mail?
 
-This relies on the hardware counter being the full 64bit wide, is it?
+> 
+> ---
+>  drivers/gpu/drm/i915/display/intel_hdmi.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> index 576d3d910d06..ce165ef28e88 100644
+> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> @@ -1913,7 +1913,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
+>  		clock *= 2;
+>  	}
+>  
+> -	if (drm_mode_is_420_only(&connector->display_info, mode))
+> +	if (connector->ycbcr_420_allowed && drm_mode_is_420_only(&connector->display_info, mode))
+
+This one shouldn't be necessary. drm_mode_validate_ycbcr420() has
+already checked it for us.
+
+>  		clock /= 2;
+>  
+>  	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
+> -- 
+> 2.25.1
+
+-- 
+Ville Syrjälä
+Intel
