@@ -2,165 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE6A372D79
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:01:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ABAA372D83
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:03:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231495AbhEDQCs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:02:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37874 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230501AbhEDQCq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:02:46 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 72B2FAFDC;
-        Tue,  4 May 2021 16:01:50 +0000 (UTC)
-Subject: Re: [PATCH v2 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
- caches
-To:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210504132350.4693-1-longman@redhat.com>
- <20210504132350.4693-3-longman@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <3c952b24-94e4-3c54-b668-cac778ff5a77@suse.cz>
-Date:   Tue, 4 May 2021 18:01:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231618AbhEDQEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 12:04:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50948 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230512AbhEDQET (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 12:04:19 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BAD6C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 09:03:23 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id a2so9027716qkh.11
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 09:03:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=dIOWH66Cx8mA3aM3owLmeDsaR0Qvv/BPBihgQluVabY=;
+        b=N7vhy+wKmsKSwvOsGp63AkANedpUsRceEU0hcwGYEm+Rlqua8SiysvqAj37yA360Zw
+         0x99rV1akaN0PMjN6//2pbDApPCCsA4Ybm/yRzQAyLAvU0R5lBuEHlZiu+7SiPtYiCt8
+         Y7nzK0L53gSF4hVggXz5/SCYIG2PMz4P5bXgds9QKw+grhr8qvbBbz9b3bBUqn177vtF
+         +iy9MF6xB1mkUuMHMGqN/Hf4h6Tgc3R2gzzd4GK6l5oavVJ6dBythqhcB69HuFxPjtTr
+         hSFGbZZMDZLqjWZ0UMVo54DEwaq1zEVaVpMPCc5+SHn7kJbaJb6foTQiI/2EpV9zH/HK
+         g4Bw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=dIOWH66Cx8mA3aM3owLmeDsaR0Qvv/BPBihgQluVabY=;
+        b=ppPnexBzfNYOKPLt1ND6UMiQmutCIdRpTBm/IHo2j3QaSsfI8Dx5l2cdbY7dWFYdB7
+         ussgjnWvCXTTasv6h9XwjK3AQtxw/3HQUF9FeGs0XMt8CK8xGaugn4nE0jGw6VvRLeTU
+         Helnp/pmDbNT3jz/IF7WX1hSPhMiX+hGsxsVEyoDOpGJd4LseBCejBHGPRGqcZrEfzcU
+         EvC9kzvkohve4/dt6HqqkhbwMj3p9J06teh2t/hvmoWTxt4SNkvIUKiZ0qZ1BvOizYj4
+         JFqzex2qSCXubdUWGIek7VB4mZG46J2Jzqfm9eKv8sguoRBF8pUorwKc0/bl5yWxIOsI
+         tVxQ==
+X-Gm-Message-State: AOAM533Ar204rbO69s3GpPsjJ8Lsn3bLzGmVkKI/IkKPjXgyGA1d+Qb+
+        GtfLp7HWwayTge26oyI9+f1jyVAbZNwLB++9Rn4=
+X-Google-Smtp-Source: ABdhPJy0pkoUVEHMKEGqgdkkbMYnYgxded+T2uBOh8seUtO4OAcintWC8vDCG0lBGpu9mDldabxnGDCC5nUkpB7Ct50=
+X-Received: by 2002:a37:a051:: with SMTP id j78mr8870098qke.216.1620144202637;
+ Tue, 04 May 2021 09:03:22 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210504132350.4693-3-longman@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Received: by 2002:a0c:ec52:0:0:0:0:0 with HTTP; Tue, 4 May 2021 09:03:22 -0700 (PDT)
+Reply-To: michellegoodman035@gmail.com
+From:   Shayma <shaymamarwan02@gmail.com>
+Date:   Tue, 4 May 2021 17:03:22 +0100
+Message-ID: <CAPmjDRM=pYf__2SYFaHuySnAv7vbiJ55-2kHRma9HP+U6Vskig@mail.gmail.com>
+Subject: Hallo
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/4/21 3:23 PM, Waiman Long wrote:
-> There are currently two problems in the way the objcg pointer array
-> (memcg_data) in the page structure is being allocated and freed.
-> 
-> On its allocation, it is possible that the allocated objcg pointer
-> array comes from the same slab that requires memory accounting. If this
-> happens, the slab will never become empty again as there is at least
-> one object left (the obj_cgroup array) in the slab.
-> 
-> When it is freed, the objcg pointer array object may be the last one
-> in its slab and hence causes kfree() to be called again. With the
-> right workload, the slab cache may be set up in a way that allows the
-> recursive kfree() calling loop to nest deep enough to cause a kernel
-> stack overflow and panic the system.
-> 
-> One way to solve this problem is to split the kmalloc-<n> caches
-> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
-> (KMALLOC_NORMAL) caches for non-accounted objects only and a new set of
-> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
-> the other caches can allow a mix of accounted and non-accounted objects.
-> 
-> With this change, all the objcg pointer array objects will come from
-> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
-> both the recursive kfree() problem and non-freeable slab problem
-> are gone.
-> 
-> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
-> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
-> will include the newly added caches without change.
-
-Great, thanks I hope there would be also benefits to objcg arrays not
-created for all the normal caches anymore (possibly poorly used due to
-mix of accounted and non-accounted objects in the same cache) and perhaps
-it's possible for you to quantify the reduction of those?
-
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-
-...
-
-> @@ -321,6 +328,14 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
->  
->  static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
->  {
-> +#ifdef CONFIG_MEMCG_KMEM
-> +	/*
-> +	 * KMALLOC_CGROUP for non-reclaimable and non-DMA object with
-> +	 * accounting enabled.
-> +	 */
-> +	if ((flags & (__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)) == __GFP_ACCOUNT)
-> +		return KMALLOC_CGROUP;
-> +#endif
-
-This function was designed so that KMALLOC_NORMAL would be the first tested and
-returned possibility, as it's expected to be the most common. What about the
-following on top?
-
-----8<----
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index fca03c22ea7c..418c5df0305b 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -328,30 +328,40 @@ kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
- 
- static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
- {
--#ifdef CONFIG_MEMCG_KMEM
- 	/*
--	 * KMALLOC_CGROUP for non-reclaimable and non-DMA object with
--	 * accounting enabled.
-+	 * The most common case is KMALLOC_NORMAL, so test for it
-+	 * with a single branch for all flags that might affect it
- 	 */
--	if ((flags & (__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)) == __GFP_ACCOUNT)
--		return KMALLOC_CGROUP;
-+	if (likely((flags & (__GFP_RECLAIMABLE
-+#ifdef CONFIG_MEMCG_KMEM
-+			     | __GFP_ACCOUNT
- #endif
- #ifdef CONFIG_ZONE_DMA
--	/*
--	 * The most common case is KMALLOC_NORMAL, so test for it
--	 * with a single branch for both flags.
--	 */
--	if (likely((flags & (__GFP_DMA | __GFP_RECLAIMABLE)) == 0))
-+			     | __GFP_DMA
-+#endif
-+			    )) == 0))
- 		return KMALLOC_NORMAL;
- 
-+#ifdef CONFIG_MEMCG_KMEM
- 	/*
--	 * At least one of the flags has to be set. If both are, __GFP_DMA
--	 * is more important.
-+	 * KMALLOC_CGROUP for non-reclaimable and non-DMA object with
-+	 * accounting enabled.
- 	 */
--	return flags & __GFP_DMA ? KMALLOC_DMA : KMALLOC_RECLAIM;
--#else
--	return flags & __GFP_RECLAIMABLE ? KMALLOC_RECLAIM : KMALLOC_NORMAL;
-+	if ((flags & (__GFP_ACCOUNT | __GFP_RECLAIMABLE
-+#ifdef CONFIG_ZONE_DMA
-+		      | __GFP_DMA
-+#endif
-+		     )) == __GFP_ACCOUNT)
-+		return KMALLOC_CGROUP;
- #endif
-+
-+#ifdef CONFIG_ZONE_DMA
-+	if (flags & __GFP_DMA)
-+		return KMALLOC_DMA;
-+#endif
-+
-+	/* if we got here, it has to be __GFP_RECLAIMABLE */
-+	return KMALLOC_RECLAIM;
- }
- 
- /*
+Hallo liebe Hoffnung, hast du bitte meine Nachricht erhalten?
+Ich brauche eine sofortige Antwort
+Danke
+Michelle
