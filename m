@@ -2,110 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C890372628
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:04:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A44C37262C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:05:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhEDHFc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 03:05:32 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:20460 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229721AbhEDHFc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 03:05:32 -0400
-Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 14474HG1148126;
-        Tue, 4 May 2021 03:04:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=r2ME6H6lhBrw1IN5ZZtG9XfZxaqmoLe/vkQHSKs9uwU=;
- b=FjPK9GoXSqkPDufiM5JI5is+s0GSnuy/w8NuQBPjlMKhLL0IdwBHwh5j09SIVSZaAF2l
- g5qEciChc6L3Wdwcrycca41cc2YHXWVft+vhHkThXCLrdYaEFd0m+xyriIvMmeU0DHXL
- iLdC5u5pa+tjpn9MnuRwQ0hnM3CXB9wCb5m7RWBugKowMw1Ev+mH4xwzchkWzMJNrvE8
- Izciuze7OpncgzF7oxGUHNbz+jKBPVoxWJFa0dDGtjhEzqSYyIreOxMqyL5wmI2FkC4A
- DBWWVpAt6pTIlQLp6TOS0TDtXxuxSgxSOTSBbvHGVbHCNQ4STPuz6P8wJ/kISb4GwPMI zA== 
-Received: from ppma03fra.de.ibm.com (6b.4a.5195.ip4.static.sl-reverse.com [149.81.74.107])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38b1hj80r1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 May 2021 03:04:17 -0400
-Received: from pps.filterd (ppma03fra.de.ibm.com [127.0.0.1])
-        by ppma03fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 1446rRDm011658;
-        Tue, 4 May 2021 07:04:05 GMT
-Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
-        by ppma03fra.de.ibm.com with ESMTP id 388xm88jv8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 May 2021 07:04:05 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 14473akc29360402
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 4 May 2021 07:03:36 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1433911C04A;
-        Tue,  4 May 2021 07:04:02 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id CC61C11C05C;
-        Tue,  4 May 2021 07:04:01 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.18.121])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Tue,  4 May 2021 07:04:01 +0000 (GMT)
-Subject: Re: [PATCH v3] pseries/drmem: update LMBs after LPM
-To:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org
-Cc:     nathanl@linux.ibm.com, linuxppc-dev@lists.ozlabs.org,
-        linux-kernel@vger.kernel.org
-References: <20210428094758.28665-1-ldufour@linux.ibm.com>
- <87fsz95qso.fsf@linux.ibm.com>
- <9d29bf8c-9e97-c179-6897-8e25fa4eb516@linux.ibm.com>
- <271ef351-b89c-ba68-3b6d-baa24cc0021b@linux.ibm.com>
- <c87e17d3-8956-9eb0-6f8a-ae316ea75f7e@linux.ibm.com>
- <1eac9540-e8b4-53be-1f27-4c36f92c8a5e@linux.ibm.com>
- <bdc510ff-f9f6-b032-0f0d-52a274fb9dab@linux.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <f8b12753-5f4c-c64f-0847-3d52dc464ce2@linux.ibm.com>
-Date:   Tue, 4 May 2021 09:03:56 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        id S229904AbhEDHGC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 03:06:02 -0400
+Received: from mga07.intel.com ([134.134.136.100]:36026 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229724AbhEDHF6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 03:05:58 -0400
+IronPort-SDR: VnmrzpnN4O79AsalqmuqVp+Fo97xxkodRxbtDpTzC+hWa1ToN/mP5b3Abj1POaDS4xroTe7+a2
+ DctQET4+StsQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="261865858"
+X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
+   d="scan'208";a="261865858"
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 00:05:02 -0700
+IronPort-SDR: GaDhKoIBigS1Z0K5rRO7EHY7k9mm1tKd686w6NuQ80QaA34bL6mvTx4d/k2sy1VrYpAxa6r4xe
+ rfWGejD30YQw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
+   d="scan'208";a="450895149"
+Received: from nntpat99-84.inn.intel.com ([10.125.99.84])
+  by fmsmga004.fm.intel.com with ESMTP; 04 May 2021 00:04:57 -0700
+From:   Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jiri Olsa <jolsa@redhat.com>, Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>
+Subject: [PATCH v5 00/20] Introduce threaded trace streaming for basic perf record operation
+Date:   Tue,  4 May 2021 10:04:35 +0300
+Message-Id: <cover.1619781188.git.alexey.v.bayduraev@linux.intel.com>
+X-Mailer: git-send-email 2.19.0
 MIME-Version: 1.0
-In-Reply-To: <bdc510ff-f9f6-b032-0f0d-52a274fb9dab@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: Vu9wfwbCv4MvyX7AzWmC0v68poH9B0D1
-X-Proofpoint-GUID: Vu9wfwbCv4MvyX7AzWmC0v68poH9B0D1
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-04_02:2021-05-04,2021-05-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- lowpriorityscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
- spamscore=0 malwarescore=0 bulkscore=0 impostorscore=0 mlxscore=0
- phishscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2105040052
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 03/05/2021 à 22:44, Tyrel Datwyler a écrit :
-> On 5/3/21 10:28 AM, Laurent Dufour wrote:
->> Le 01/05/2021 à 01:58, Tyrel Datwyler a écrit :
->>> On 4/30/21 9:13 AM, Laurent Dufour wrote:
->>>> Le 29/04/2021 à 21:12, Tyrel Datwyler a écrit :
->>>>> On 4/29/21 3:27 AM, Aneesh Kumar K.V wrote:
->>>>>> Laurent Dufour <ldufour@linux.ibm.com> writes:
->>>>>>
-> 
-> Snip
-> 
->>>
->>> As of today I don't have a problem with your patch. This was more of me pointing
->>> out things that I think are currently wrong with our memory hotplug
->>> implementation, and that we need to take a long hard look at it down the road.
->>
->> I do agree, there is a lot of odd things there to address in this area.
->> If you're ok with that patch, do you mind to add a reviewed-by?
->>
-> 
-> Can you send a v4 with the fix for the duplicate update included?
+Changes in v5:
+- fixed leaks in record__init_thread_masks_spec()
+- fixed leaks after failed realloc
+- replaced "%m" to strerror()
+- added masks examples to the documentation
+- captured Acked-by: tags by Andi Kleen
+- do not allow --thread option for full_auxtrace mode 
+- split patch 06/12 to 06/20 and 07/20
+- split patch 08/12 to 09/20 and 10/20
+- split patches 11/12 and 11/12 to 13/20-20/20
 
-Of course !
-I wrote it last week, but let in the to-be-sent list, my mistake.
+v4: https://lore.kernel.org/lkml/6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com/
+
+Changes in v4:
+- renamed 'comm' structure to 'pipes'
+- moved thread fd/maps messages to verbose=2
+- fixed leaks during allocation of thread_data structures
+- fixed leaks during allocation of thread masks
+- fixed possible fails when releasing thread masks
+
+v3: https://lore.kernel.org/lkml/7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com/
+
+Changes in v3:
+- avoided skipped redundant patch 3/15
+- applied "data file" and "data directory" terms allover the patch set
+- captured Acked-by: tags by Namhyung Kim
+- avoided braces where don't needed
+- employed thread local variable for serial trace streaming 
+- added specs for --thread option - core, socket, numa and user defined
+- added parallel loading of data directory files similar to the prototype [1]
+
+v2: https://lore.kernel.org/lkml/1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com/
+
+Changes in v2:
+- explicitly added credit tags to patches 6/15 and 15/15,
+  additionally to cites [1], [2]
+- updated description of 3/15 to explicitly mention the reason
+  to open data directories in read access mode (e.g. for perf report)
+- implemented fix for compilation error of 2/15
+- explicitly elaborated on found issues to be resolved for
+  threaded AUX trace capture
+
+v1: https://lore.kernel.org/lkml/810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com/
+
+Patch set provides parallel threaded trace streaming mode for basic
+perf record operation. Provided mode mitigates profiling data losses
+and resolves scalability issues of serial and asynchronous (--aio)
+trace streaming modes on multicore server systems. The design and
+implementation are based on the prototype [1], [2].
+
+Parallel threaded mode executes trace streaming threads that read kernel
+data buffers and write captured data into several data files located at
+data directory. Layout of trace streaming threads and their mapping to data
+buffers to read can be configured using a value of --thread command line
+option. Specification value provides masks separated by colon so the masks
+define cpus to be monitored by one thread and thread affinity mask is
+separated by slash. <cpus mask 1>/<affinity mask 1>:<cpu mask 2>/<affinity mask 2>
+specifies parallel threads layout that consists of two threads with
+corresponding assigned cpus to be monitored. Specification value can be
+a string e.g. "cpu", "core" or "socket" meaning creation of data streaming
+thread for monitoring every cpu, whole core or socket. The option provided
+with no or empty value defaults to "cpu" layout creating data streaming
+thread for every cpu being monitored. Specification masks are filtered
+by the mask provided via -C option.
+
+Parallel streaming mode is compatible with Zstd compression/decompression
+(--compression-level) and external control commands (--control). The mode
+is not enabled for pipe mode. The mode is not enabled for AUX area tracing,
+related and derived modes like --snapshot or --aux-sample. --switch-output-*
+and --timestamp-filename options are not enabled for parallel streaming.
+Initial intent to enable AUX area tracing faced the need to define some
+optimal way to store index data in data directory. --switch-output-* and
+--timestamp-filename use cases are not clear for data directories.
+Asynchronous(--aio) trace streaming and affinity (--affinity) modes are
+mutually exclusive to parallel streaming mode.
+
+Basic analysis of data directories is provided in perf report mode.
+Raw dump and aggregated reports are available for data directories,
+still with no memory consumption optimizations.
+
+Tested:
+
+tools/perf/perf record -o prof.data --threads -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads= -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=cpu -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=core -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=socket -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=numa -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 2,5 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 3,4 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=core -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=numa -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 --compression-level=3 -- matrix.gcc.g.O3
+tools/perf/perf record -o prof.data --threads -a
+tools/perf/perf record -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+tools/perf/perf record --threads -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+
+tools/perf/perf report -i prof.data
+tools/perf/perf report -i prof.data --call-graph=callee
+tools/perf/perf report -i prof.data --stdio --header
+tools/perf/perf report -i prof.data -D --header
+
+[1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+[2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+
+---
+
+Alexey Bayduraev (20):
+  perf record: introduce thread affinity and mmap masks
+  perf record: introduce thread specific data array
+  perf record: introduce thread local variable
+  perf record: stop threads in the end of trace streaming
+  perf record: start threads in the beginning of trace streaming
+  perf record: introduce data file at mmap buffer object
+  perf record: introduce data transferred and compressed stats
+  perf record: init data file at mmap buffer object
+  tools lib: introduce bitmap_intersects() operation
+  perf record: introduce --threads=<spec> command line option
+  perf record: document parallel data streaming mode
+  perf report: output data file name in raw trace dump
+  perf session: move reader structure to the top
+  perf session: introduce reader_state in reader object
+  perf session: introduce reader objects in session object
+  perf session: introduce decompressor into trace reader object
+  perf session: move init into reader__init function
+  perf session: move map/unmap into reader__mmap function
+  perf session: load single file for analysis
+  perf session: load data directory files for analysis
+
+ tools/include/linux/bitmap.h             |   11 +
+ tools/lib/api/fd/array.c                 |   17 +
+ tools/lib/api/fd/array.h                 |    1 +
+ tools/lib/bitmap.c                       |   14 +
+ tools/perf/Documentation/perf-record.txt |   30 +
+ tools/perf/builtin-inject.c              |    3 +-
+ tools/perf/builtin-record.c              | 1066 ++++++++++++++++++++--
+ tools/perf/util/evlist.c                 |   16 +
+ tools/perf/util/evlist.h                 |    1 +
+ tools/perf/util/mmap.c                   |    6 +
+ tools/perf/util/mmap.h                   |    6 +
+ tools/perf/util/ordered-events.h         |    1 +
+ tools/perf/util/record.h                 |    2 +
+ tools/perf/util/session.c                |  491 +++++++---
+ tools/perf/util/session.h                |    5 +
+ tools/perf/util/tool.h                   |    3 +-
+ 16 files changed, 1474 insertions(+), 199 deletions(-)
+
+-- 
+2.19.0
+
