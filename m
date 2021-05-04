@@ -2,87 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22E76372D03
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 021C9372D0A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:34:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231274AbhEDPfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:35:10 -0400
-Received: from mga12.intel.com ([192.55.52.136]:63269 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230112AbhEDPfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:35:09 -0400
-IronPort-SDR: c1beQtbq4vXTdqQV4EwhTSx6vCpn53YNaMliRQKMIaf0vsUxfGml1+kMFtsxf3yEgfTqTCWsed
- k4pejmIYg7GA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="177547955"
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="177547955"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 08:34:14 -0700
-IronPort-SDR: KulzZHe3YtLAXjSxtUelZ9opEwFO35+T05pzWl2uTlqinDA3g9oZjpQ2dAIs4byJZf/Ps938c7
- Y9T5F6dxvtNA==
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="463271730"
-Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.209.47.237]) ([10.209.47.237])
-  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 08:34:13 -0700
-Subject: Re: [PATCH] stackdepot: Use a raw spinlock in stack depot
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <20210504024358.894950-1-ak@linux.intel.com>
- <CACT4Y+a5g5JeLJFPJEUxPFbMLXGkYEAJkK3MBctnn7UA-iTkXA@mail.gmail.com>
-From:   Andi Kleen <ak@linux.intel.com>
-Message-ID: <77634a8e-74ab-4e95-530e-c2c46db8baa7@linux.intel.com>
-Date:   Tue, 4 May 2021 08:34:13 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231358AbhEDPfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:35:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230112AbhEDPfV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:35:21 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF408C061574;
+        Tue,  4 May 2021 08:34:25 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso1260473ote.1;
+        Tue, 04 May 2021 08:34:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4jLpWtZCHYr5J+Yz2qAb7LAorGFHZkc9BwK/PNvj/98=;
+        b=WjvNMIXP3m1ryVSy7NgFFGUY2gIHL/sXp7cA5GgFYTkOmMU9VbS47Y1FW11IWnS9Lw
+         gKEdSRWsvbsaQFPe6fv6WQdQZhjIqPx6kquW7O9gJfoSFJqgzo+cNmwKnJFLJq9lhm0z
+         n9XlfCROnh1/A0YVS0iwJMdN1qvzipJDc2tHTBc18MbiqeUD+/wXUOyN/hooCmCAy2Sg
+         5SjPlVlIOmPRm7wEOhkYiQkuQf3YUyctuxx2JiHKQa1JC8iO00SmdphbTY7kT725YNjb
+         bnAgisSEBKpxMziw1PO5mq9TUcDJJKCBNMWZbCd6OZeQwzeZR6ZYlxfHCW+gkB3PNuJ/
+         f/IQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=4jLpWtZCHYr5J+Yz2qAb7LAorGFHZkc9BwK/PNvj/98=;
+        b=pY5rAIjtLa2Lho7VbWunwaWbKwGZwvhSsbVvdARSydZsJcLvFOVDQNToP7RfTibFvd
+         lr0mSc1J+mrGWOaLTHkuh/g2NqmbZUqoEueibuiiJ1aPCNAHvc/nfECQnvAcZ5JeMsvk
+         tO4cG1DKER2qiAtcMTdNk/mL4Nr+iiUkHayBarSOE6nfo7mDeNVAR58kzHsdwuMnCFZ6
+         JoeJJ194GBY3tuCsTa6TczhloSKw/E65JoWYyhh2SjEzZyukslVcF8PU7Fzzwxxf+C6y
+         hejeMmvuC5sfhcf01vRFWyecdogjU70pLGYbyx2/GzXzcORBhNYdUw6fCWp4PPYCf+Uf
+         uDhw==
+X-Gm-Message-State: AOAM532sUp4xf68lRE5flnkjkzBYlPZV+ISd133Ljm0misOhAOXLKzaA
+        mEgSRoEH31A/xYvu1cT1lT8=
+X-Google-Smtp-Source: ABdhPJzRmuHlbWh7GkvstASQoMXpyAcEMBt/5kCELlWiJ9lyjIxM7rd0ynAZaW8/P2fsNZlxP3egOg==
+X-Received: by 2002:a05:6830:34a1:: with SMTP id c33mr7064795otu.217.1620142465151;
+        Tue, 04 May 2021 08:34:25 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c7sm714754oot.42.2021.05.04.08.34.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 08:34:24 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Tue, 4 May 2021 08:34:22 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] iio: am2315: Make am2315_acpi_id depend on CONFIG_ACPI
+Message-ID: <20210504153422.GA2117112@roeck-us.net>
+References: <20210504143019.2085111-1-linux@roeck-us.net>
+ <CAHp75Vc99LzOpe1EeTwoM+wkwyZkTamj6-=MSe_MBZ1+XUcebg@mail.gmail.com>
+ <CAHp75VeLyxbwbDtCca5goCEWn7vbQ9d_Fb01dWj1CP8eBb9jJA@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <CACT4Y+a5g5JeLJFPJEUxPFbMLXGkYEAJkK3MBctnn7UA-iTkXA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeLyxbwbDtCca5goCEWn7vbQ9d_Fb01dWj1CP8eBb9jJA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Andy,
 
-> So why is this a false positive that we just need to silence?
-> I see LOCKDEP is saying we are doing something wrong, and your
-> description just describes how we are doing something wrong :)
-> If this is a special false positive case, it would be good to have a
-> comment on DEFINE_RAW_SPINLOCK explaining why we are using it.
->
-> I wonder why we never saw this on syzbot. Is it an RT kernel or some
-> other special config?
+On Tue, May 04, 2021 at 06:15:44PM +0300, Andy Shevchenko wrote:
+> On Tue, May 4, 2021 at 6:11 PM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Tue, May 4, 2021 at 5:41 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > >
+> > > With CONFIG_ACPI=n and -Werror, 0-day reports:
+> > >
+> > > drivers/iio/humidity/am2315.c:259:36: error:
+> > >         'am2315_acpi_id' defined but not used
+> >
+> > ...
+> >
+> > > +#ifdef CONFIG_ACPI
+> > >  static const struct acpi_device_id am2315_acpi_id[] = {
+> > >         {"AOS2315", 0},
+> >
+> > This is a fake ID according to the specification. Do we have any proof
+> > that it's being used in the wild?
+> > If no, I prefer to drop this ID section entirely.
+> >
+> > If yes, needs a comment which device is using it (however it may be
+> > out of the scope of this fix).
+> 
+> Googling shows zarro results.
+> 
+> (Yes, I know about meta-acpi project and I may fix it there, but it
+> may not be considered as a "being in the wild")
+> 
+> So, please, remove the entire section.
+> 
+I'll send v2.
 
-This happened in a special configuration that triggered ACPI errors at 
-boot time.
+> Feel free to add any tag from me (Rb, Ack)
+> 
+Since the change is substantial, I don't feel comfortable doing that.
+I'll copy you on v2 and let you add the tags yourself.
 
-It's probably not something that is normally executed, as well as syzbot is
+Thanks,
+Guenter
 
-probably not exercising bootup anyways.
-
-> A similar issue was discussed recently for RT kernel:
-> https://groups.google.com/g/kasan-dev/c/MyHh8ov-ciU/m/nahiuqFLAQAJ
-> And I think it may be fixable in the same way -- make stackdepot not
-> allocate in contexts where it's not OK to allocate.
-
-
-Yes that's a good idea. I've seen also other errors about the allocator 
-triggered
-
-by stack depot being in the wrong context. Probably doing that would be 
-the right
-
-fix. But I actually tried to switch depot to GFP_ATOMIC allocations 
-(from GFP_NOWAIT),
-
-but it didn't help, so I'm not fully sure what needs to be changed.
-
--Andi
-
-
+> > >         {}
+> > >  };
+> > > -
+> > >  MODULE_DEVICE_TABLE(acpi, am2315_acpi_id);
+> > > +#endif
+> 
+> 
+> -- 
+> With Best Regards,
+> Andy Shevchenko
