@@ -2,149 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E3D2372D57
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 474EA372D5C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231519AbhEDPyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:54:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48664 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231274AbhEDPyV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:54:21 -0400
-Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A741CC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 08:53:25 -0700 (PDT)
-Received: by mail-lj1-x22b.google.com with SMTP id w4so3087084ljw.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 08:53:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XVnIyduqThWIuCSGmh6rkTvxRGJjTH2vw8gJzQUQqCk=;
-        b=dPZVHdVaqUDQqirKTBXog102xqhau6F+cdFhgg66hNUFeXGQ3MrsQZ5wHxXgN6uo3s
-         Toz3aiZBRHppQQNK07cct1a8+yyoVZhgyoEVnQ1mJepF8F/wyr+fFIUWbpglgntON38j
-         gjVZedE1O9Ahj3dNS0hcyZDzDjLr1aS/M8QXc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XVnIyduqThWIuCSGmh6rkTvxRGJjTH2vw8gJzQUQqCk=;
-        b=SgoAoxvl8zLvrHGDicSz8TZV+2KX2NxZEsCLLS6vnofrYN+m6NECbZOSABQVm0Y510
-         D7lKjV5Uh7YeWVL89lAXjbSIz+eFf7Peo8kKYIEajh3OosEG6YlP9j11Nfm87RLAs8Hk
-         3RRvAhNrcddB6gEZwB1TY0RYJCvtPIQ8kBrdXF8G8pDjWMrDSBJED0d4POFCvYvpRvqA
-         0DdTRDFQNb/l0h+1a06lMRiEjCdctQru7A9s4850Uc7TDZcUDHPW2Dh4OZ1P/USPZVL0
-         RJUNy89jtBAGa/KlZ6coz3sWB8UGjE40HrLr1fdcD1YMhv1Bhu5jy6Tg8P+JK3qr4Gad
-         Kylg==
-X-Gm-Message-State: AOAM531AUmLI3A/ajSi97m9lsbmIk6o1dy81jGHNxYeHmeXzh4SUF/bw
-        VODF7JKjfu6WXwq20jHs6RdmzI/LBATtj6fJ
-X-Google-Smtp-Source: ABdhPJyIgKJkJr6WsIqYhqO7dGdjzQeqW44ct9e5HETVd/AsAh0UK3BHYA5hZ96Gt5HMBt1RKJRcUw==
-X-Received: by 2002:a05:651c:8f:: with SMTP id 15mr13033442ljq.164.1620143603908;
-        Tue, 04 May 2021 08:53:23 -0700 (PDT)
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com. [209.85.167.54])
-        by smtp.gmail.com with ESMTPSA id u13sm296875lfk.193.2021.05.04.08.53.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 08:53:23 -0700 (PDT)
-Received: by mail-lf1-f54.google.com with SMTP id 12so13943268lfq.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 08:53:22 -0700 (PDT)
-X-Received: by 2002:a19:c30b:: with SMTP id t11mr17206391lff.421.1620143602614;
- Tue, 04 May 2021 08:53:22 -0700 (PDT)
+        id S231559AbhEDPy1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:54:27 -0400
+Received: from mail-dm3nam07on2081.outbound.protection.outlook.com ([40.107.95.81]:33281
+        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231274AbhEDPyZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:54:25 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RpSLLCCttapERRxue9VMJ2EURH3ITNrdDjQiWp1x/S+nPPX4VeIIkyVNQauj/XoXbGw1Iq8D4JHG2lHGsmbMCr9spxebLr6Ltu69+EUK+moVTY3Q7DN1GGSk7+mA8rsPvLFgHCm3XJ3ZTmMiYOuo8Whgt6jsM4kPTlKBMFyQTQ41NjGRTTs/H2xRoSveA6DKURQ0UcKeM3EljFJPrvE4Br+xhcx89AoCe+3YSUFPUtLr8j/rlU647AqE8O07Io+96q7tTGC/JhRdB2hA+ssRsDUPyxzc7mm1AhClkO62zDKkYAwqCucge1Xj7vZSk9lVMszUllaENKNjsqd6blVTPQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9fk7vSHH76rCwRJ/dvveQNZmwI29ddZ/htCxCI1e734=;
+ b=PueQIbwLJJ2IzsdO2a0sbaPUQEg/eORwUqtbfa7bAfKPf31NHVTihEGRvj8Xnmd57vg0RhIwpFyTU/nAAsxl1zFkgsNzg73z2LzdDmoQiXHrfVl2RM7bzvCe85uVpEhDVv48v8Ut35JeMYawg65P9DxPSIjW7ojLfuH5nZ5WGVVyOi8nLv1vu0p0vdNi3vc+0URY6gtZM1CJNlrAiaeQ9Pe0Eahn7NcCBOMtGPxh/ea5FGHjXHmQAyhCyH/23HhNN5arItM6MljKiAZCIIFXha/GJ8JVY6j8Ba3LtpQkUK/rRyLp+IVEDw+k67bQJNEg+ad84kh56Qabd/Gi7DQTtA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9fk7vSHH76rCwRJ/dvveQNZmwI29ddZ/htCxCI1e734=;
+ b=uafKNoQfDhUwIC1aPK/LHrYNrr0jDr/RoagpbKTShou75zgF3v/XLHTYC+tLYhjaFtkbJ+94HdHCpd7OBKa7BuW2oHTtBxmN0Mfo1Qz7jz80qWZMMuc1BOma6wkk6OjAGPe7M93+ql7/ZC9eCwkSgyI1slO5tRwSedv/53hVNNyGUfOlDVQnIutu8kQzNRCdMiMV5/NHRsGYQuBj4r3NKGkcGMGA+91WM6pjQqo0KHRGyrACIsZUztKn2O73RsVt6TN3KUj5PMaUEMCe4AaJwjAixCYGkS79eLpjU3zZjNWbIcSC+lnqccOwJMCOHL4KVzvRtirLlp+zjQ0d8sQVvg==
+Authentication-Results: kaod.org; dkim=none (message not signed)
+ header.d=none;kaod.org; dmarc=none action=none header.from=nvidia.com;
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
+ by BYAPR12MB2902.namprd12.prod.outlook.com (2603:10b6:a03:12f::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.41; Tue, 4 May
+ 2021 15:53:29 +0000
+Received: from BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::81ef:d824:43ae:aef5]) by BY5PR12MB3827.namprd12.prod.outlook.com
+ ([fe80::81ef:d824:43ae:aef5%4]) with mapi id 15.20.4087.044; Tue, 4 May 2021
+ 15:53:29 +0000
+Date:   Tue, 4 May 2021 12:53:27 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Greg Kurz <groug@kaod.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        kvm@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Paul Mackerras <paulus@samba.org>, linux-api@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, qemu-devel@nongnu.org,
+        qemu-ppc@nongnu.org
+Subject: Re: remove the nvlink2 pci_vfio subdriver v2
+Message-ID: <20210504155327.GA94750@nvidia.com>
+References: <20210326061311.1497642-1-hch@lst.de>
+ <20210504142236.76994047@bahia.lan>
+ <YJFFG1tSP0dUCxcX@kroah.com>
+ <20210504152034.18e41ec3@bahia.lan>
+ <YJFY7NjEBtCSlJHw@phenom.ffwll.local>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJFY7NjEBtCSlJHw@phenom.ffwll.local>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0202.namprd13.prod.outlook.com
+ (2603:10b6:208:2be::27) To BY5PR12MB3827.namprd12.prod.outlook.com
+ (2603:10b6:a03:1ab::16)
 MIME-Version: 1.0
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
- <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
- <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk> <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
- <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
- <8735v3jujv.ffs@nanos.tec.linutronix.de> <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
- <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org> <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
- <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk> <4d0bb1e7-acbd-4afb-e6d6-a2e7f78ccaaa@samba.org>
-In-Reply-To: <4d0bb1e7-acbd-4afb-e6d6-a2e7f78ccaaa@samba.org>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Tue, 4 May 2021 08:53:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whEFPg-2br0ptKxHUBrD4L+0stgEM=5Ck2uuMUEkUtjhw@mail.gmail.com>
-Message-ID: <CAHk-=whEFPg-2br0ptKxHUBrD4L+0stgEM=5Ck2uuMUEkUtjhw@mail.gmail.com>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Stefan Metzmacher <metze@samba.org>
-Cc:     Jens Axboe <axboe@kernel.dk>, Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0202.namprd13.prod.outlook.com (2603:10b6:208:2be::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.8 via Frontend Transport; Tue, 4 May 2021 15:53:28 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ldxMV-000QaC-2L; Tue, 04 May 2021 12:53:27 -0300
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 690aaf03-92dd-4e81-f1e5-08d90f14c294
+X-MS-TrafficTypeDiagnostic: BYAPR12MB2902:
+X-Microsoft-Antispam-PRVS: <BYAPR12MB2902250DC07AB2848DE5A2D5C25A9@BYAPR12MB2902.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: yhtRYdliGrikzJDXHFlkvW/Ivx07rePzDou9hJVVmWT41FeSTzweZsBFukYbSBQ0DI7XBkQmXuFkVGmS043Iy4TbgEISo0ORgAQe+q3LyjYHra5noGVrynvEWy+P2SI9xOeLHvC3xjIetEtMeSc9QxMhyUVmQSoLi6Ese5BK8k26mXxyHsObSL5i2YoW7h5BuhBuffzWQzCLXPtNQT9BnhBP01gO6GWCrNxxA8P/d9JuRUlOA8lATDiyFnjBRmORj6YUEnqjL/nLMHOAI28FKxuvnIbxSZ3t1PndZ2RGrA333+O8dOfinrJGbFUNVUptgSsRI1q6HlY7Psx+s3tNbV8CuqookIyf5HDgpo4ctjaF5eSwDHE0ckMwJN51SpzEsAOmi8OSwlyUMxXGuXhZ8NO9LA0qSi5VU6YtL6aVZiROJmANoMPuu4iW0kC/EtXQXUypWxTGwF61l1LShhjtWuClzy9MU4faCHkLV+q7PxngPR99xr1Ua/gB52S86q4Gu1VVPXqEqTKQK3UY/Ey/+eMI4fY+0eezpkMoP+DiiaMOIcSWX1edkkTlf/HWDki4lf0hv5pkQRnbcC3vfqiabO+zt6FR4SySC6Ltsujewl7IMwm7+a2Ai5bFUsLyCftPj9gtDT93pD/de/Qa5PLqcw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(376002)(396003)(136003)(186003)(5660300002)(9786002)(316002)(26005)(921005)(9746002)(8936002)(7416002)(426003)(38100700002)(86362001)(36756003)(1076003)(2616005)(83380400001)(478600001)(2906002)(66556008)(66946007)(8676002)(33656002)(110136005)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hJIT1eMQQ1VtxmcUhDOLrmaTtzO1A46C1nUWXmxA5JeL7wZBvLLh+cG+82Ex?=
+ =?us-ascii?Q?0SXZYrgRXDS33cft2NglMlsTLk7fZZ8R43ox4WIBGOksI+MMk8VZ3vjSlkN2?=
+ =?us-ascii?Q?mlyqC2kruSPYRzW1sXNL7F8GzWKr/IC/UWOz7QuvUcAS0HjnYmUnoPak3/Gn?=
+ =?us-ascii?Q?6GagQUhEjVAEa84R7+FCA9tAU5ls3hapu/knAJOA7p2J2KSfqcxuMX3ptlwW?=
+ =?us-ascii?Q?UXB+ZSe7nFdCyosBEGPnmezypkZ0Uxwkql/fKtQM3tJC93q0OxZCQraa9liT?=
+ =?us-ascii?Q?jaQpJWuC1vWjJBRVLVG6rED7sm0Tof7kBfu61XtSGX10e+sttTGdfmsHCsTx?=
+ =?us-ascii?Q?qQKuzRFCia3yx3wSu7er+iYMyutz0Kc2u2NyxR0cq7STR7s6HjZ6i0++HFz1?=
+ =?us-ascii?Q?Ob1WLUgrMijv6soLZfAQrhahM7608wUpC7Y9rUnDZMWFsXIcVq+i6tsoVhiK?=
+ =?us-ascii?Q?WXY2BAvRZUNEgcfSJzoTC78Z7q9XyUX6r8jw3qMFeOUTEe7rdY4oXyXMzbMT?=
+ =?us-ascii?Q?ndHMSoqfpQ5Q2FeR2kJiDAVtNZ0B1gsKZ7ReTKfnxU58pWkA2DVxC3WNFxhy?=
+ =?us-ascii?Q?rG0yn8FOxUhbeV/1rt0+lH4GJ7vI1FUorLr/a5eLNZh61EUOlF/3qEeOgWSb?=
+ =?us-ascii?Q?rRRJ2+IgEN9UjZLB9JbCvJVFEwHrf89XQV/C5lexGW4CB8k3We+pz31GtSeH?=
+ =?us-ascii?Q?lg6jzVIQ7RNBx+qg2Q1v57DQNIvpZ8dwGnuJWozVn+1pOSdy3r3ry5yqyU+P?=
+ =?us-ascii?Q?gFc8nuVlYfoZIQc/vDpywMjuYVHAiCDNZpgqVGZavm4x8xTJgzxDLnyhuQxk?=
+ =?us-ascii?Q?6o1CunrN1UzUe1IMPsBg2sWA843q11MVSlYP6jpmW5THfw8e+seydSVgCztd?=
+ =?us-ascii?Q?pGnMmrbdBLy+0uY9NHkjN0MHv6XwBoT0JsD/VYErFCL0Nu9j22An6d1u+lfb?=
+ =?us-ascii?Q?Wz4zGPjt+cPTeId71LBPm5e9owVgfGhbD2inv4dB/WEVBjUJfPsZD+uE23C5?=
+ =?us-ascii?Q?7+bjZkWjeuBSVwD9hMEEDc6/E/+3rV1kQyvIYdlSk9JWceZzsdYf3ceepmG1?=
+ =?us-ascii?Q?ZJ/TeNnhFu0Cq31R0AK6NuHu4CLBWAYjmRTsikW963yrWCx1EUzGsFnhCM/e?=
+ =?us-ascii?Q?me8mgr6LCarPw4XRUri1N7iT+gmh0oO0qp2DFYXkdoESaqPiJT+2NXbOqHY8?=
+ =?us-ascii?Q?yG4ma6Gja1rgXYZF/IoQixhEYSN4PVVtB3yr2DjUX6RXJwOpKYhjkc0B5Z1F?=
+ =?us-ascii?Q?lT7B0H0lDZ8TvX72EVAxF4RoikqwJ2prncPsMIXMVbyQSWFFMeBuOVgYo3Ve?=
+ =?us-ascii?Q?SpKB5QZuQLu+eiPxtoLd4GCS?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 690aaf03-92dd-4e81-f1e5-08d90f14c294
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3827.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 15:53:29.1007
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2Q6wZfryuVkoYYO6BQJhlFugkryk3hUvlGTHxvfhlE6/dJyvBuNIFUM8r9FS2f1K
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2902
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 4:39 AM Stefan Metzmacher <metze@samba.org> wrote:
->
-> I'm currently testing this (moving things to the end and resetting ->ip = 0 too)
+On Tue, May 04, 2021 at 04:23:40PM +0200, Daniel Vetter wrote:
 
-This part is not right (or at least very questionable):
+> Just my 2cents from drm (where we deprecate old gunk uapi quite often):
+> Imo it's best to keep the uapi headers as-is, but exchange the
+> documentation with a big "this is removed, never use again" warning:
 
-> +       if (!ret && unlikely(p->flags & PF_IO_WORKER)) {
+We in RDMA have been doing the opposite, the uapi headers are supposed
+to reflect the current kernel. This helps make the kernel
+understandable.
 
-That testing "ret" is misleading, in my opinion.
+When userspace needs backwards compat to ABI that the current kernel
+doesn't support then userspace has distinct copies of that information
+in some compat location. It has happened a few times over the last 15
+years.
 
-If PF_IO_WORKER is set, there is no way we  wouldn't want to do the
-kthread_frame_init().
+We keep full copies of the current kernel headers in the userspace
+source tree, when the kernel headers change in a compile incompatible
+way we fix everything while updating to the new kernel headers.
 
-Now, ret can never be non-zero, because PF_IO_WORKER will never have
-CLONE_SETTLS set, so this is kind of moot, but it does mean that the
-test for 'ret' is just pointless, and makes the code look like it
-would care.
+> - it's good to know which uapi numbers (like parameter extensions or
+>   whatever they are in this case) are defacto reserved, because there are
+>   binaries (qemu in this) that have code acting on them out there.
 
-For similar reasons, we probably don't want to go down to the whole
-io_bitmap_share() case - the IO bitmap only makes sense in user space,
-so going through all that code is pointless, but also would make
-people think it might be relevant (and we _would_ copy the io bitmap
-pointer and increment the ref if the real user thread had one, so we'd
-do all that pointless stuff that doesn't actually matter).
+Numbers and things get marked reserved or the like
 
-So don't move that code down. It's best done right after the register
-initialization.
+> Anyway feel free to ignore since this might be different than drivers/gpu.
 
-Moving it down to below the setting of 'gs' for the 32-bit case is ok,
-though. I think my original patch had it above it, but technically it
-makes sense to do it below - that's when all the register state really
-is initialized.
-
-As to:
-
-> +               childregs->ip = 0;
-> [..]
-> which means the output looks like this:
->
-> (gdb) info threads
->   Id   Target Id                  Frame
-> * 1    LWP 4863 "io_uring-cp-for" syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
->   2    LWP 4864 "iou-mgr-4863"    0x0000000000000000 in ?? ()
->   3    LWP 4865 "iou-wrk-4863"    0x0000000000000000 in ?? ()
-> (gdb) thread 3
-> [Switching to thread 3 (LWP 4865)]
-> #0  0x0000000000000000 in ?? ()
-> (gdb) bt
-> #0  0x0000000000000000 in ?? ()
-> Backtrace stopped: Cannot access memory at address 0x0
-
-Yeah, that's probably sensible.
-
-I'm not sure it's a bad idea to show the IO thread as being in the
-original system call - that makes perfect sense to me too, but I guess
-it could go either way. So I don't think it's wrong to clear the user
-space ->ip.
-
-> What do you think? Should I post that as v2 if my final testing doesn't find any problem?
-
-Yes, please, with the above "move the IO thread return up a bit"
-comment, please do post a tested version with some nice commit log,
-and we can close this issue.
-
-It even looks like gdb will be cleaned up too. Yay. But I think having
-that separate test for PF_IO_WORKER is a good idea regardless, since
-it just makes clear that an IO worker isn't the same thing as a kernel
-thread in that code.
-
-         Linus
+AFAIK drives/gpu has a lot wider userspace, rdma manages this OK
+because we only have one library package that provides the user/kernel
+interface.
+ 
+Jason
