@@ -2,100 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2261372AC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:16:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9C68372AC7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:17:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhEDNRC convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 4 May 2021 09:17:02 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:2993 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbhEDNRA (ORCPT
+        id S230523AbhEDNR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41828 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230373AbhEDNR5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:17:00 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.226])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZKnd07R0z6xhr1;
-        Tue,  4 May 2021 21:05:09 +0800 (CST)
-Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 4 May 2021 15:16:03 +0200
-Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
- fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
- Tue, 4 May 2021 15:16:03 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     Mimi Zohar <zohar@linux.ibm.com>,
-        "mjg59@google.com" <mjg59@google.com>
-CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v5 06/12] evm: Ignore INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS
- if conditions are safe
-Thread-Topic: [PATCH v5 06/12] evm: Ignore
- INTEGRITY_NOLABEL/INTEGRITY_NOXATTRS if conditions are safe
-Thread-Index: AQHXK5xdbQY13c/E0Ea5lrgi3mZG3arQ6VCAgAChtnCAAGkoMP//5ewAgAGXDOA=
-Date:   Tue, 4 May 2021 13:16:03 +0000
-Message-ID: <1869963c94574fd1b026b304acdd308e@huawei.com>
-References: <20210407105252.30721-1-roberto.sassu@huawei.com>
-         <20210407105252.30721-7-roberto.sassu@huawei.com>
-         <b8790b57e289980d4fe1133d15203ce016d2319d.camel@linux.ibm.com>
-         <c12f18094cc0479faa3f0f152b4964de@huawei.com>
-         <33cad84d2f894ed5a05a3bd6854f73a0@huawei.com>
- <a2ca7317b672c63a40743268b641dd73661c3329.camel@linux.ibm.com>
-In-Reply-To: <a2ca7317b672c63a40743268b641dd73661c3329.camel@linux.ibm.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.221.98.153]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        Tue, 4 May 2021 09:17:57 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 471F7C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 06:17:02 -0700 (PDT)
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1lduv4-00019t-6c; Tue, 04 May 2021 15:16:58 +0200
+Subject: Re: [PATCH 12/13] ARM: dts: stm32: fix DSI port node on STM32MP15
+To:     Arnd Bergmann <arnd@arndb.de>,
+        Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, Marek Vasut <marex@denx.de>,
+        Jagan Teki <jagan@amarulasolutions.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Marcin Sloniewski <marcin.sloniewski@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        DTML <devicetree@vger.kernel.org>,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Jakub Kicinski <kuba@kernel.org>
+References: <20210415101037.1465-1-alexandre.torgue@foss.st.com>
+ <20210415101037.1465-13-alexandre.torgue@foss.st.com>
+ <ececc78c-4fca-bb93-ef62-5d107501d963@pengutronix.de>
+ <96da49dc-f24d-aa12-e1d8-39b5a5b6fbc9@foss.st.com>
+ <CAK8P3a1bGAUbqTGqyz+PB=7fuVLkJce0awtx1Z9PE3uiX6uysQ@mail.gmail.com>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <5f12a950-ec62-89b4-e22f-4b4a84048f8f@pengutronix.de>
+Date:   Tue, 4 May 2021 15:16:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.0
 MIME-Version: 1.0
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAK8P3a1bGAUbqTGqyz+PB=7fuVLkJce0awtx1Z9PE3uiX6uysQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
-> Sent: Monday, May 3, 2021 4:35 PM
-> On Mon, 2021-05-03 at 14:15 +0000, Roberto Sassu wrote:
+Hello Arnd,
+
+On 19.04.21 15:57, Arnd Bergmann wrote:
+> On Thu, Apr 15, 2021 at 2:23 PM Alexandre TORGUE
+> <alexandre.torgue@foss.st.com> wrote:
+>> On 4/15/21 12:43 PM, Ahmad Fatoum wrote:
+>>> I think my rationale for the patch above was sound, so I think the checker
+>>> taking offense at the DSI cells here should be considered a false positive.
+>>
+>> If it's a "false positive" warning then we need to find a way to not
+>> print it out. Else, it'll be difficult to distinguish which warnings are
+>> "normal" and which are not. This question could also be applied to patch[3].
+>>
+>> Arnd, Rob what is your feeling about this case ?
 > 
-> > > > >  	if (evm_status != INTEGRITY_PASS)
-> > > > >  		integrity_audit_msg(AUDIT_INTEGRITY_METADATA,
-> > > > d_backing_inode(dentry),
-> > > > >  				    dentry->d_name.name,
-> > > > "appraise_metadata",
-> > > > > @@ -515,7 +535,8 @@ int evm_inode_setattr(struct dentry *dentry,
-> > > struct
-> > > > iattr *attr)
-> > > > >  		return 0;
-> > > > >  	evm_status = evm_verify_current_integrity(dentry);
-> > > > >  	if ((evm_status == INTEGRITY_PASS) ||
-> > > > > -	    (evm_status == INTEGRITY_NOXATTRS))
-> > > > > +	    (evm_status == INTEGRITY_NOXATTRS) ||
-> > > > > +	    (evm_ignore_error_safe(evm_status)))
-> > > >
-> > > > It would also remove the INTEGRITY_NOXATTRS test duplication here.
-> > >
-> > > Ok.
-> >
-> > Actually, it does not seem a duplication. Currently, INTEGRITY_NOXATTRS
-> > is ignored also when the HMAC key is loaded.
+> I don't have a strong opinion on this either way, but I would just
+> not apply this one for 5.13 in this case. Rob, Alexandre, please
+> let me know if I should apply the other patches before the
+> merge window, I usually don't mind taking bugfixes late before the
+> merge window, but I still want some level of confidence that they
+> are actually correct.
 > 
-> The existing INTEGRITY_NOXATTRS exemption is more general and includes
-> the new case of when EVM HMAC is disabled.  The additional exemption is
-> only needed for INTEGRITY_NOLABEL, when EVM HMAC is disabled.
+> Ahmad, if you feel strongly about this particular issue, would you like
+> to suggest a patch for the checker?
 
-Unfortunately, evm_ignore_error_safe() is called by both evm_protect_xattr()
-and evm_inode_setattr(). The former requires an exemption also for
-INTEGRITY_NOXATTRS.
+The check is certainly useful. If it's not feasible to fix the checker (e.g.
+because it analyzes standalone DTSIs), I am fine with reverting my commit
+with an indication that this is to avoid triggering a dt-validate false
+positive.
 
-I would keep the function as it is. In the worst case, when the status is
-INTEGRITY_NOXATTRS in evm_inode_setattr(), the function will not
-be called.
+I am not familiar with dt-validate's inner workings to offer a patch.
 
-Roberto
+Cheers,
+Ahmad
 
-HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
-Managing Director: Li Peng, Li Jian, Shi Yanli
+> 
+>         Arnd
+> 
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
