@@ -2,72 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AF87372D0E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:35:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7C40372D11
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:35:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhEDPgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:36:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbhEDPgQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:36:16 -0400
-Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB1DC061574;
-        Tue,  4 May 2021 08:35:21 -0700 (PDT)
-Received: from zn.tnic (p200300ec2f0c8400351ab2c4e1964d4a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8400:351a:b2c4:e196:4d4a])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 519341EC050F;
-        Tue,  4 May 2021 17:35:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620142518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=9YS8rpRnHR92Rd5/l+wwPCakLldpm8xdN3Lf3MsyQh8=;
-        b=NHbqzZHE9oHZ2K47IzFD2XP14aByJ1lvs5bM7HgyFKtKbiwF1K79ObjEsABzG4WJrebBfz
-        EP92t1w0sl6vKwjOyFHBQpVp+FWSYh9BRi/PGWLg9s/A7TB8qsgpwb4eTBwOPtuKCLmA31
-        Dz9/uaTfrC7Ad3jrnULYWcHldJ7cUnQ=
-Date:   Tue, 4 May 2021 17:35:16 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Stefan Metzmacher <metze@samba.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-Message-ID: <YJFptPyDtow//5LU@zn.tnic>
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
- <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net>
+        id S231368AbhEDPgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:36:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34846 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230525AbhEDPga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:36:30 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 16D266117A;
+        Tue,  4 May 2021 15:35:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620142535;
+        bh=hhfKkwz5Ywn4nN/RmEd1cPVeO9AW02H04RPdfoM57uY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Y0/xyyesqv6C9gOA93UpLqGbAsNfCWiH+EhgRVB0Uj5rZZUcWWfguasiIMFrau5Xr
+         uoYoDmendc/zySgD5d0o/a/ztubIm52QVyLPrCtohLpL/394YLQt9iqlwg4F4pF2SP
+         WsrEl0hVSUOiBrBwEzhRC4ViBULbytil2QCYKenM=
+Date:   Tue, 4 May 2021 17:35:33 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Jari Ruusu <jariruusu@protonmail.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Jiri Kosina <jkosina@suse.cz>,
+        Kalle Valo <kvalo@codeaurora.org>
+Subject: Re: [PATCH 5.10 1/2] iwlwifi: Fix softirq/hardirq disabling in
+ iwl_pcie_gen2_enqueue_hcmd()
+Message-ID: <YJFpxY6iFHMiPHFE@kroah.com>
+References: <20210430141910.473289618@linuxfoundation.org>
+ <20210430141910.521897363@linuxfoundation.org>
+ <608CFF6A.4BC054A3@users.sourceforge.net>
+ <YI6HFNNvzuHnv5VU@kroah.com>
+ <bO2GF-6sC-I4NbFif7JoGUpuRpAV-rHEMwtLsKfN9SCsA0lwB1NgEV4OC7Xd5fdoq3UPcZ6-uh2VDSe1Xtovy8ti3k5vmOsiMVTdfTgl0Yw=@protonmail.com>
+ <YJD2uTdQonXymbn6@kroah.com>
+ <npSsinT79DB6Ze8QTkmLcuOTyVwRcy2FbOf0tDjpEHbTxKdYmLar8Br66_ypLjzZ86sIJKnSbUHeehagPR6RqxsJsKdWW_vWnXOUEhMC14g=@protonmail.com>
+ <YJFNyOGrF8RcTTlc@kroah.com>
+ <g5YP678olZEf3yQNX2ptK3X6DceFoemqwzEgSJclx_dHFAJfbJBWznYtB74u5g69Onx_6QZkLF-K2muYLa3qsotkPpxbHYuz4Hrs94olZ7c=@protonmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net>
+In-Reply-To: <g5YP678olZEf3yQNX2ptK3X6DceFoemqwzEgSJclx_dHFAJfbJBWznYtB74u5g69Onx_6QZkLF-K2muYLa3qsotkPpxbHYuz4Hrs94olZ7c=@protonmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 10:39:23AM +0200, Peter Zijlstra wrote:
-> Anybody on toolchains that can help get GDB fixed?
+On Tue, May 04, 2021 at 02:22:51PM +0000, Jari Ruusu wrote:
+> On Tuesday, May 4, 2021 4:36 PM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > On Tue, May 04, 2021 at 01:05:56PM +0000, Jari Ruusu wrote:
+> > > second patch is upstream commit e7020bb068d8be50a92f48e36b236a1a1ef9282e.
+> >
+> > This is not in any newer stable trees, and it was not obvious what you
+> > were doing here at all.
+> 
+> That patch is in 5.10 + 5.11 + 5.12
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.10.y&id=2a442f11407ec9c9bc9b84d7155484f2b60d01f9
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.11.y&id=a9315228c1d4b1ced803761e81ef761d97f3e2fa
+> 
+> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.12.y&id=f935c64a0c87d86730efd6e1e168555460234d04
 
-In the meantime, Tom is looking at fixing this, in case people wanna try
-gdb patches or give him a test case or so...
+{sigh}
 
-https://sourceware.org/bugzilla/show_bug.cgi?id=27822
+It's been a long week, I forgot to update my database of what commit is
+in what stable release, my fault.
 
-Thx.
+Can you resend your backports here now, and properly let us know what
+kernel they belong into (again, the subject line is very confusing.)
 
--- 
-Regards/Gruss,
-    Boris.
+thanks,
 
-https://people.kernel.org/tglx/notes-about-netiquette
+greg k-h
