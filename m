@@ -2,109 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B966372EE1
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:26:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787A3372EDF
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:26:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231250AbhEDR1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:27:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231258AbhEDR1O (ORCPT
+        id S231175AbhEDR1G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:27:06 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:59941 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230289AbhEDR1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:27:14 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D38C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:26:16 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id t4so14447982ejo.0
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:26:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rxPQs6Mc/0XgO0iPTxIWTDm1QwB91U+obNxE6TB3puk=;
-        b=HSqaJrWOLagPy9VeCugMJRSqJH/RCVf4WnZv8AGdSA/g/g8gJ4ddCdfqzdjQpho/ep
-         b+g8nDxDr5nXus+K6ZPidzG7zFFn2sJFMHfUXAUcv+BLUryxfHKI66wRKJmV6+2Ts51w
-         QE1KVgsIh/P+qQ2Vo2nC20cGmK6aVvqR9Y6yATf6CoFsVM1OvxZNmgi6ULvdqtN2OQG3
-         /a76ijrzglhwkrHfPINjg55fMOMvudZ4zQP3dBmhK6EveROGh+E2yp269tA0LgtbQW9C
-         mqyfjPeQ2xfoMslqTTUQh191C7CHc0I7RYji2/7JgiFxTWnvfZI0zcOsAHqwrkl793rX
-         E9Iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rxPQs6Mc/0XgO0iPTxIWTDm1QwB91U+obNxE6TB3puk=;
-        b=AaYyVVJIHrqsha1YHZxeLQ97SB/YGijv/FnzVouCYmMIqpDK/JkJEGllshm38MNJih
-         XEogJKcFG5YalFLsEsspxSTDxHjG2E0OlLl2YitLd9PaYzA9uPPEvqOFVZEQEwLEonqc
-         MrJ1kUG6zbRN+MhD5S0uLIFMXYa6WM9UK/ymIHPvMaetrrydq791B1+2VFd6Mw+QbWZi
-         4aSKH36qondk15BKzm3SIuYqu2lNjl3VUOGBCJFyHdfKDDfP6I2p3vyLyHWME/Bsn/+/
-         FpIxJHljiIEs2qoQ4/MzauQ8/w1JzwhOUiLtxg8S/lHch5Dfq2MnqgCBMxU/V8KHXSgu
-         bcDA==
-X-Gm-Message-State: AOAM533RaI4210K4/x9z5AmTA0JSalCUdwSHREl+Om/ypn+H6tbg2jN4
-        gNq/MaSJ0Q7wJhwZyM9YDvJeLQoEF/fOfrng7PjqPw==
-X-Google-Smtp-Source: ABdhPJyFNCokH6hoCachY2WucnKHo93RfBLcmZHm+pw764hTXNO5Lz696SFDbY3yUhOyP+Y3MBPIAfDivYvaBqO83Vo=
-X-Received: by 2002:a17:906:11d4:: with SMTP id o20mr23126097eja.247.1620149175224;
- Tue, 04 May 2021 10:26:15 -0700 (PDT)
+        Tue, 4 May 2021 13:27:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
+  t=1620149169; x=1651685169;
+  h=subject:to:cc:references:from:message-id:date:
+   mime-version:in-reply-to:content-transfer-encoding;
+  bh=tELHJYEjlyIrHvp1LCUAoAaqANLGV9YKPvNdul3uko0=;
+  b=Njz1UxDMhYsSVjlunpff3y57LyKydDi7PyUHJmmlHHRqCdQsa6qPIsmO
+   ECOgD4KYm0AaIO5W4L/nUdX1EulkAnm864Y9aEho7h+XiieGX4Tfqhk69
+   gpLztAscOCA8YxqtN7TYNpxg8bASUpVgFH6NO/cnLzW4JMhFOcjuIsBgy
+   0=;
+Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 04 May 2021 10:26:09 -0700
+X-QCInternal: smtphost
+Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
+  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 May 2021 10:26:09 -0700
+Received: from [10.226.59.216] (10.80.80.8) by nasanexm03e.na.qualcomm.com
+ (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May 2021
+ 10:26:08 -0700
+Subject: Re: [PATCH v1 2/6] bus: mhi: core: Set BHI and BHIe pointers to NULL
+ in clean-up
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        <manivannan.sadhasivam@linaro.org>
+CC:     <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
+        <linux-kernel@vger.kernel.org>, <loic.poulain@linaro.org>,
+        <linux-wireless@vger.kernel.org>, <kvalo@codeaurora.org>,
+        <ath11k@lists.infradead.org>
+References: <1618598825-18629-1-git-send-email-bbhatt@codeaurora.org>
+ <1618598825-18629-3-git-send-email-bbhatt@codeaurora.org>
+From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
+Message-ID: <55df55c8-5799-e581-1dbb-8291243bf37d@quicinc.com>
+Date:   Tue, 4 May 2021 11:26:08 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210429211833.3361994-1-bgardon@google.com> <20210429211833.3361994-2-bgardon@google.com>
- <e9090079-2255-5a70-f909-89f6f65c12ed@redhat.com>
-In-Reply-To: <e9090079-2255-5a70-f909-89f6f65c12ed@redhat.com>
-From:   Ben Gardon <bgardon@google.com>
-Date:   Tue, 4 May 2021 10:26:03 -0700
-Message-ID: <CANgfPd9O3d9b+WYgo+ke1Jx50=ep_f-ZC1gRqUET6PDsLxW+Gw@mail.gmail.com>
-Subject: Re: [PATCH v2 1/7] KVM: x86/mmu: Track if shadow MMU active
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1618598825-18629-3-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.80.80.8]
+X-ClientProxiedBy: nasanexm03a.na.qualcomm.com (10.85.0.103) To
+ nasanexm03e.na.qualcomm.com (10.85.0.48)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 6:42 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->
-> On 29/04/21 23:18, Ben Gardon wrote:
-> > +void activate_shadow_mmu(struct kvm *kvm)
-> > +{
-> > +     kvm->arch.shadow_mmu_active = true;
-> > +}
-> > +
->
-> I think there's no lock protecting both the write and the read side.
-> Therefore this should be an smp_store_release, and all checks in
-> patch 2 should be an smp_load_acquire.
+On 4/16/2021 12:47 PM, Bhaumik Bhatt wrote:
+> Set the BHI and BHIe pointers to NULL as part of clean-up. This
+> makes sure that stale pointers are not accessed after powering
+> MHI down.
+> 
+> Suggested-by: Hemant Kumar <hemantk@codeaurora.org>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+> ---
 
-That makes sense.
-
->
-> Also, the assignments to slot->arch.rmap in patch 4 (alloc_memslot_rmap)
-> should be an rcu_assign_pointer, while __gfn_to_rmap must be changed like so:
->
-> +       struct kvm_rmap_head *head;
-> ...
-> -       return &slot->arch.rmap[level - PG_LEVEL_4K][idx];
-> +       head = srcu_dereference(slot->arch.rmap[level - PG_LEVEL_4K], &kvm->srcu,
-> +                                lockdep_is_held(&kvm->slots_arch_lock));
-> +       return &head[idx];
-
-I'm not sure I fully understand why this becomes necessary after patch
-4. Isn't it already needed since the memslots are protected by RCU? Or
-is there already a higher level rcu dereference?
-
-__kvm_memslots already does an srcu dereference, so is there a path
-where we aren't getting the slots from that function where this is
-needed?
-
-I wouldn't say that the rmaps are protected by RCU in any way that
-separate from the memslots.
-
->
-> Paolo
->
+Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
