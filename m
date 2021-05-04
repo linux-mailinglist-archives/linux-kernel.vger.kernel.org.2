@@ -2,106 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A20372CBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:08:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D801D372CBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:08:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231139AbhEDPI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:08:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35775 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230086AbhEDPI5 (ORCPT
+        id S231274AbhEDPJv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:09:51 -0400
+Received: from relay10.mail.gandi.net ([217.70.178.230]:40801 "EHLO
+        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhEDPJu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:08:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620140882;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GxqMjtSqo6UrPkylZIMzzPAOqGJHe0mXIntTdhhqWP4=;
-        b=LcEX/yDB78tqYjqOP3pdkzew5q4f1+fEbvzCdtO3PNtyI7/T9ouH14yJUzaCkdpcv8MLLs
-        xoIgbejzk62Vf2EsIxyADy1BXKOpG+JuNUyaPXt1vj2gDsKLcj5tw1pbQI+H31NiBB2Ftj
-        NoezB4YM8176KI/2rZyLTc430GhZgUc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-240-KysDyyTGNYefwM_iafrb4Q-1; Tue, 04 May 2021 11:08:00 -0400
-X-MC-Unique: KysDyyTGNYefwM_iafrb4Q-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F203F18BA280;
-        Tue,  4 May 2021 15:07:58 +0000 (UTC)
-Received: from krava (unknown [10.40.192.136])
-        by smtp.corp.redhat.com (Postfix) with SMTP id F3BC85D6B1;
-        Tue,  4 May 2021 15:07:56 +0000 (UTC)
-Date:   Tue, 4 May 2021 17:07:56 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v1 2/2] perf header: Support hybrid CPU_PMU_CAPS
-Message-ID: <YJFjTCsk9dCd6QP7@krava>
-References: <20210430074602.3028-1-yao.jin@linux.intel.com>
- <20210430074602.3028-2-yao.jin@linux.intel.com>
+        Tue, 4 May 2021 11:09:50 -0400
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay10.mail.gandi.net (Postfix) with ESMTPSA id 07D82240003;
+        Tue,  4 May 2021 15:08:52 +0000 (UTC)
+Date:   Tue, 4 May 2021 17:08:52 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Colin Foster <colin.foster@in-advantage.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "supporter:OCELOT ETHERNET SWITCH DRIVER" 
+        <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OCELOT ETHERNET SWITCH DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [RFC PATCH vN net-next 2/2] net: mscc: ocelot: add support for
+ VSC75XX SPI control
+Message-ID: <YJFjhH+HmVc/tLDI@piout.net>
+References: <20210504051130.1207550-1-colin.foster@in-advantage.com>
+ <20210504051130.1207550-2-colin.foster@in-advantage.com>
+ <YJE+prMCIMiQm26Z@lunn.ch>
+ <20210504125942.nx5b6j2cy34qyyhm@skbuf>
+ <YJFST3Q13Kp/Eqa1@piout.net>
+ <20210504143633.gju4sgjntihndpy6@skbuf>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210430074602.3028-2-yao.jin@linux.intel.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+In-Reply-To: <20210504143633.gju4sgjntihndpy6@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 03:46:02PM +0800, Jin Yao wrote:
-> On hybrid platform, it may have several cpu pmus, such as,
-> "cpu_core" and "cpu_atom". The CPU_PMU_CAPS feature in perf
-> header needs to be improved to support multiple cpu pmus.
+
+
+On 04/05/2021 14:36:34+0000, Vladimir Oltean wrote:
+> On Tue, May 04, 2021 at 03:55:27PM +0200, Alexandre Belloni wrote:
+> > On 04/05/2021 12:59:43+0000, Vladimir Oltean wrote:
+> > > > > +static void vsc7512_phylink_validate(struct ocelot *ocelot, int port,
+> > > > > +				     unsigned long *supported,
+> > > > > +				     struct phylink_link_state *state)
+> > > > > +{
+> > > > > +	struct ocelot_port *ocelot_port = ocelot->ports[port];
+> > > > > +	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = {
+> > > > > +		0,
+> > > > > +	};
+> > > > 
+> > > > This function seems out of place. Why would SPI access change what the
+> > > > ports are capable of doing? Please split this up into more
+> > > > patches. Keep the focus of this patch as being adding SPI support.
+> > > 
+> > > What is going on is that this is just the way in which the drivers are
+> > > structured. Colin is not really "adding SPI support" to any of the
+> > > existing DSA switches that are supported (VSC9953, VSC9959) as much as
+> > > "adding support for a new switch which happens to be controlled over
+> > > SPI" (VSC7512).
+> > 
+> > Note that this should not only be about vsc7512 as the whole ocelot
+> > family (vsc7511, vsc7512, vsc7513 and vsc7514) can be connected over
+> > spi. Also, they can all be used in a DSA configuration, over PCIe, just
+> > like Felix.
 > 
-> The new layout in header is defined as:
+> I see. From the Linux device driver model's perspective, a SPI driver
+> for VSC7512 is still different than an MMIO driver for the same hardware
+> is, and that is working a bit against us. I don't know much about regmap
+> for SPI, specifically how are the protocol buffers constructed, and if
+> it's easy or not to have a driver-specified hook in which the memory
+> address for the SPI reads and writes is divided by 4. If I understand
+> correctly, that's about the only major difference between a VSC7512
+> driver for SPI vs MMIO, and would allow reusing the same regmaps as e.g.
+> the ones in drivers/net/ethernet/ocelot_vsc7514.c. Avoiding duplication
+> for the rest could be handled with a lot of EXPORT_SYMBOL, although
+> right now, I am not sure that is quite mandated yet. I know that the
+> hardware is capable of a lot more flexibility than what the Linux
+> drivers currently make of, but let's not think of overly complex ways of
+> managing that entire complexity space unless somebody actually needs it.
 > 
-> <nr_caps>
-> <caps string>
-> <caps string>
-> <pmu name>
-> <nr of rest pmus>
 
-not sure why is the 'nr of rest pmus' needed
+I've been thinking about defining the .reg_read and .reg_write functions
+of the regmap_config to properly abstract accesses and leave the current
+ocelot core as it is.
 
-the current format is:
+> As to phylink, I had some old patches converting ocelot to phylink in
+> the blind, but given the fact that I don't have any vsc7514 board and I
+> was relying on Horatiu to test them, those patches didn't land anywhere
+> and would be quite obsolete now.
+> I don't know how similar VSC7512 (Colin's chip) and VSC7514 (the chip
+> supported by the switchdev ocelot) are in terms of hardware interfaces.
+> If the answer is "not very", then this is a bit of a moot point, but if
+> they are, then ocelot might first have to be converted to phylink, and
+> then its symbols exported such that DSA can use them too.
+> 
 
-        u32 nr_cpu_pmu_caps;
-        {
-                char    name[];
-                char    value[];
-        } [nr_cpu_pmu_caps]
+VSC7512 and VSC7514 are exactly the same chip. VSC7514 has the MIPS
+CPU enabled.
+
+> What Colin appears to be doing differently to all other Ocelot/Felix
+> drivers is that he has a single devm_regmap_init_spi() in felix_spi_probe.
+> Whereas everyone else uses a separate devm_regmap_init_mmio() per each
+> memory region, tucked away in ocelot_regmap_init(). I still haven't
+> completely understood why that is, but this is the reason why he needs
+> the "offset" passed to all I/O accessors: since he uses a single regmap,
+> the offset is what accesses one memory region or another in his case.
+> 
+
+Yes, this is the main pain point. You only have one chip select so from
+the regmap point of view, there is only one region. I'm wondering
+whether we could actually register multiple regmap for a single SPI
+device (and then do the offsetting in .reg_read/.reg_write) which would
+help.
 
 
-I guess we could extend it to:
-
-        u32 nr_cpu_pmu_caps;
-        {
-                char    name[];
-                char    value[];
-        } [nr_cpu_pmu_caps]
-	char pmu_name[]
-
-        u32 nr_cpu_pmu_caps;
-        {
-                char    name[];
-                char    value[];
-        } [nr_cpu_pmu_caps]
-	char pmu_name[]
-
-	...
-
-and we could detect the old format by checking that there's no
-pmu name.. but maybe I'm missing something, I did not check deeply,
-please let me know
-
-also would be great to move the format change and storing hybrid
-pmus in separate patches
-
-thanks,
-jirka
-
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
