@@ -2,92 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09062373173
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE9837318F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232848AbhEDUfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:35:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhEDUfj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:35:39 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712FCC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:34:44 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id m124so3393585pgm.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:34:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xZh5Y3Pycejv1m9DWOP0dUEdTVZDmfy7scOMGuocpyg=;
-        b=kP7KQ8L++la08rXy0f24IUWv9yJx2B4qP8piKRHt0V3W7mIVBti15CahRBjU8dIvFk
-         EcC5CO7iRcuhDI8NZKAKeIYoSCcwMpDGlyZ7ilXIRDJ+QFfopLO8C/slNQ+ODojZI5+y
-         A8TeVg5aJNN2xUsaG7j9Lx/leW8nwtg/JJEi9wBvDx290+Hs7zRVYLK0Oaozl+uoxJrH
-         Xf80QGNVe7y6xqGhNoFhXrPXgcHOLiE5qj3lZh0Nex0bG2oqCF+JbQKBbVw33bvsV0RC
-         pVKJsUTaAQYZ89MApjbQF/j2uCRXwnu6XTMfh3PuKljhumO9uxD3B6NXoXCAw3qeDUYo
-         qXQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xZh5Y3Pycejv1m9DWOP0dUEdTVZDmfy7scOMGuocpyg=;
-        b=cFcFPbdVnc7dCUmJNTsEZYDGXwwZC4PTDPI8cNW9uEojshfsBmZxLLtWfAHbLilzL6
-         ZT1MRT6rtWHehTj9WHjGn5izujkuKTQAk1OWmcyRVBziqiJ//2J2HEcOhC6hT0mZEidD
-         XIHN8ZRONctRWEao9/QJC6K8Zl/+3TvfxrSBS7liE2XcAZuKW54AxLPv8+LLvV0GXoTl
-         1ugjMDQaoLUVSNTixKSG9rhLGtkFSQmKK5wncMMN7ItPYsL4mPYPWyzaGCybaRhi9tGy
-         7bki+z58zOlQ75RCsRg1LJGUZF6RJaimgy7RRS3o2WYShSZWX+tgAtcgjq1TY+GZQSSj
-         YibA==
-X-Gm-Message-State: AOAM531/oj1cRCDKo/JSlafCxSBQ+eT1GMt7Ix1RkDjgJL+Tb5cd4+r+
-        u0kM+ftvU8rr1See6cuJMLKbMw==
-X-Google-Smtp-Source: ABdhPJzvj6EcxdAWXmzI3GNIGv4C0d0+HRyWo9CIsE81c0KJW4DU0MMTI9WXnFS7ZU/3/P2i3V7UlQ==
-X-Received: by 2002:aa7:8703:0:b029:261:4680:9723 with SMTP id b3-20020aa787030000b029026146809723mr25418581pfo.70.1620160483887;
-        Tue, 04 May 2021 13:34:43 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id q27sm7807452pfl.41.2021.05.04.13.34.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 13:34:42 -0700 (PDT)
-Date:   Tue, 4 May 2021 20:34:39 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH v2 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
-Message-ID: <YJGv34BOxa8YJvRy@google.com>
-References: <20210429211833.3361994-1-bgardon@google.com>
- <20210429211833.3361994-8-bgardon@google.com>
- <YJGqzZ/8CS8mSx2c@google.com>
- <781d2549-bbb1-23a2-44bf-58379ba23054@redhat.com>
+        id S232710AbhEDUmJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:42:09 -0400
+Received: from albireo.enyo.de ([37.24.231.21]:43426 "EHLO albireo.enyo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230150AbhEDUmI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 16:42:08 -0400
+X-Greylist: delayed 332 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 May 2021 16:42:07 EDT
+Received: from [172.17.203.2] (port=38747 helo=deneb.enyo.de)
+        by albireo.enyo.de ([172.17.140.2]) with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        id 1le1lb-0004Rz-97; Tue, 04 May 2021 20:35:39 +0000
+Received: from fw by deneb.enyo.de with local (Exim 4.92)
+        (envelope-from <fw@deneb.enyo.de>)
+        id 1le1lb-0003zU-5D; Tue, 04 May 2021 22:35:39 +0200
+From:   Florian Weimer <fw@deneb.enyo.de>
+To:     "Vladislav K. Valtchev" <vladislav.valtchev@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-gcc@vger.kernel.org,
+        linux-toolchains@vger.kernel.org
+Subject: Re: GCC, unaligned access and UB in the Linux kernel
+References: <c8fa8ea79ffaa5c87dac9ea16e12088c94a35faf.camel@gmail.com>
+Date:   Tue, 04 May 2021 22:35:39 +0200
+In-Reply-To: <c8fa8ea79ffaa5c87dac9ea16e12088c94a35faf.camel@gmail.com>
+        (Vladislav K. Valtchev's message of "Tue, 04 May 2021 21:07:46 +0300")
+Message-ID: <877dkekzj8.fsf@mid.deneb.enyo.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <781d2549-bbb1-23a2-44bf-58379ba23054@redhat.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021, Paolo Bonzini wrote:
-> On 04/05/21 22:13, Sean Christopherson wrote:
-> > > +	/*
-> > > +	 * If set, the rmap should be allocated for any newly created or
-> > > +	 * modified memslots. If allocating rmaps lazily, this may be set
-> > > +	 * before the rmaps are allocated for existing memslots, but
-> > > +	 * shadow_mmu_active will not be set until after the rmaps are fully
-> > > +	 * allocated.
-> > > +	 */
-> > > +	bool alloc_memslot_rmaps;
-> > Maybe "need_rmaps" or "need_memslot_rmaps"?
-> > 
-> 
-> Since we're bikeshedding I prefer "memslots_have_rmaps" or something not too
-> distant from that.
+* Vladislav K. Valtchev:
 
-Works for me.
+> Hi everyone,
+>
+> I noticed that in the Linux kernel we have a define called
+> CONFIG_HAVE_EFFICIENT_UNALIGNED_ACCESS that's used in a fair amount of places
+> with the following purpose: when it's set, unaligned access is supported by the
+> CPU so we can do it directly, otherwise fall-back to some logic where a byte at
+> the time is read/written. For example, check the implementation of
+> do_strncpy_from_user():
+> https://elixir.bootlin.com/linux/latest/source/lib/strncpy_from_user.c#L15
+>
+>
+> That's nice and seems to work today as expected, but there's one problem:
+> unaligned access is UB according to the ISO C standard, no matter if the
+> architecture supports it or not. Also, GCC doesn't have any option similar to "-
+> fno-strict-aliasing" to make unaligned access non-UB. At the moment, they won't
+> consider introducing such an option either. Check this bug:
+>
+> https://gcc.gnu.org/bugzilla/show_bug.cgi?id=93031
+>
+> Starting from GCC 8.x, the compiler introduced some new optimizations that
+> assume correct alignment which can break some code[1]. However, unaligned access
+> like the following [from do_strncpy_from_user()]:
+>
+>     *(unsigned long *)(dst+res) = c;
+>
+> Still generate correct instructions because:
+>
+>   1. There's no aliasing involved [1]
+>   2. SIMD instructions are not allowed in the kernel [2]
+>
+> But that doesn't mean at all that things won't change in the future. At any
+> point, some optimization in a newer compiler might generate incorrect code even
+> for the above-mentioned example. Therefore, while I understand compiler
+> engineers' point of view (they provide a compiler with an ISO-compliant
+> behaviour), I'm concerned about the correctness of all the code that assumes
+> unaligned access (on some architectures) in C is just fine. 
+>
+> Mitigations
+> ------------
+> In my understanding, the simplest way to force GCC to emit a single MOV
+> instruction with unaligned access, without risking any kind of UB, is to use
+> __builtin_memcpy(). It works great, but it requires fixing the code in many
+> places. Also, maybe using get_unaligned()/put_unaligned() is the right thing to
+> do? The problem is that the put_unaligned_* inline functions don't use
+> __builtin_memcpy() and are defined like:
+>
+>    static __always_inline void put_unaligned_le32(u32 val, void *p)
+>    {
+>    	*((__le32 *)p) = cpu_to_le32(val);
+>    }
+>
+> So, still UB. To make the compiler happy, maybe we should make them use
+> __builtin_memcpy()?
+>
+>
+> Conclusion
+> -------------
+> What do you think about all of this? I realize that this is not a big urgent
+> problem *right now*, but at some point it might become one. How do you believe
+> this problem should be addressed in Linux? 
+>
+>
+> Thanks,
+> Vlad
+>
+>
+>
+> Footnotes
+> ---------------------------------------------------
+> [1] If aliasing is involved, even with -fno-strict-aliasing, unaligned access
+> WILL break some code, today. Check the following example:
+>
+>    int h(int *p, int *q){
+>      *p = 1;
+>      *q = 1;
+>      return *p;
+>    }
+>
+>    typedef __attribute__((__may_alias__)) int I;
+>
+>    I k(I *p, I *q){
+>      *p = 1;
+>      *q = 1;
+>      return *p;
+>    }
+>
+> Starting from GCC 8.1, both h() and k() will always return 1, when compiled with
+> -O2, even with -fno-strict-aliasing.
+>
+> [2] Some SIMD instructions have alignment requirements that recent compilers
+> might just start to assume to be true, in my current understanding. In general,
+> SIMD instructions can be emitted automatically by the compiler because of auto-
+> vectorization. But, fortunately, that *cannot* happen in the kernel because we
+> build with -fno-mmx, -fno-sse, -fno-avx etc.
+
+Cc:ing linux-toolchains.
+
+__attribute__ ((aligned (1))) can be used to reduce alignment, similar
+to attribute packed on structs.  If that doesn't work for partially
+overlapping accesses, that's probably a compiler bug.
