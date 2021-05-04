@@ -2,92 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6377E3730FB
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:45:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B273730EE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:38:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232571AbhEDTqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:46:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34941 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232535AbhEDTqU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:46:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620157525;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=tfzPIb13S4HHhK8UG3dOlIDhClIn947SERNDpuf2glM=;
-        b=aRS34sM2B2HFZ5xwWaxCXAzCsTbjORkzDMaU7qddkENRmuRnJIJ55t72SG4DGSOnzU1XA7
-        D7rRgaB1+QQ6x+VqbvGAsihtGXfRDf2dwtJ/UQFmcvHgWx1zYWE89CWQDF5IxyxTKecnto
-        g0Qy/3eciQsJJ1ARiKsxjHOrFgYf+5g=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-64-95LXqmt8NnO-MJdM86Agog-1; Tue, 04 May 2021 15:45:21 -0400
-X-MC-Unique: 95LXqmt8NnO-MJdM86Agog-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S232537AbhEDTjU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:39:20 -0400
+Received: from mta-02.yadro.com ([89.207.88.252]:33588 "EHLO mta-01.yadro.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232153AbhEDTjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 15:39:18 -0400
+Received: from localhost (unknown [127.0.0.1])
+        by mta-01.yadro.com (Postfix) with ESMTP id 6650C41292;
+        Tue,  4 May 2021 19:38:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=yadro.com; h=
+        content-transfer-encoding:mime-version:user-agent:content-type
+        :content-type:organization:references:in-reply-to:date:date:from
+        :from:subject:subject:message-id:received:received:received; s=
+        mta-01; t=1620157101; x=1621971502; bh=w9q0QAHmTKlfG/3GMTCTMNhc+
+        XaGrbBBQtfB40X4qro=; b=rU4j4XlGU1MmmfG8bvCvrFC6C4aLO2/LUuyDyaE7m
+        Df2xfStkzAvDi4po4Vus2eWO4xNAc+okcIlrZ1hPTI0s2SVc7R7KrqpgTq44wdR0
+        YzmRSDXoUv/6OGvUS44yvI0bkM95vB2R+nWaYIxNGN81dgHTAlhENuuj82w8n2SE
+        uE=
+X-Virus-Scanned: amavisd-new at yadro.com
+Received: from mta-01.yadro.com ([127.0.0.1])
+        by localhost (mta-01.yadro.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id oFJNUfFZy_eE; Tue,  4 May 2021 22:38:21 +0300 (MSK)
+Received: from T-EXCH-03.corp.yadro.com (t-exch-03.corp.yadro.com [172.17.100.103])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5D53801B13;
-        Tue,  4 May 2021 19:45:19 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-112-137.ams2.redhat.com [10.36.112.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1088E5C1B4;
-        Tue,  4 May 2021 19:45:15 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Cc:     Zack Weinberg <zackw@panix.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
-        bpf <bpf@vger.kernel.org>,
-        Joseph Myers <joseph@codesourcery.com>,
-        David Laight <David.Laight@aculab.com>
-Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
-        <20210504110519.16097-1-alx.manpages@gmail.com>
-        <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
-        <YJFZHW2afbAMVOmE@kroah.com>
-        <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
-        <YJFxArfp8wN3ILJb@kroah.com>
-        <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
-        <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
-Date:   Tue, 04 May 2021 21:45:31 +0200
-In-Reply-To: <6740a229-842e-b368-86eb-defc786b3658@gmail.com> (Alejandro
-        Colomar's message of "Tue, 4 May 2021 20:54:07 +0200")
-Message-ID: <87r1imgu5g.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        by mta-01.yadro.com (Postfix) with ESMTPS id 37F06412EE;
+        Tue,  4 May 2021 22:38:20 +0300 (MSK)
+Received: from localhost.localdomain (10.199.0.6) by T-EXCH-03.corp.yadro.com
+ (172.17.100.103) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384_P384) id 15.1.669.32; Tue, 4 May
+ 2021 22:38:20 +0300
+Message-ID: <8dbdf071f9f2041b92cabfa417487a3ec3e9647e.camel@yadro.com>
+Subject: Re: [PATCH 4/4] hwmon: vcnl3020: add hwmon driver for intrusion
+ sensor
+From:   Ivan Mikhaylov <i.mikhaylov@yadro.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        "Jean Delvare" <jdelvare@suse.com>, <linux-kernel@vger.kernel.org>,
+        <linux-iio@vger.kernel.org>, <linux-hwmon@vger.kernel.org>
+Date:   Tue, 4 May 2021 22:46:53 +0300
+In-Reply-To: <20210430163831.GA3163069@roeck-us.net>
+References: <20210430152419.261757-1-i.mikhaylov@yadro.com>
+         <20210430152419.261757-5-i.mikhaylov@yadro.com>
+         <20210430163831.GA3163069@roeck-us.net>
+Organization: YADRO
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.199.0.6]
+X-ClientProxiedBy: T-EXCH-01.corp.yadro.com (172.17.10.101) To
+ T-EXCH-03.corp.yadro.com (172.17.100.103)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Alejandro Colomar:
+On Fri, 2021-04-30 at 09:38 -0700, Guenter Roeck wrote:
+> On Fri, Apr 30, 2021 at 06:24:19PM +0300, Ivan Mikhaylov wrote:
+> > Intrusion status detection via Interrupt Status Register.
+> > 
+> > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
+> 
+> I think this should, if at all, be handled using the
+> iio->hwmon bridge (or, in other words, require a solution
+> which is not chip specific).
 
-> The thing is, in all of those threads, the only reasons to avoid
-> <stdint.h> types in the kernel (at least, the only explicitly
-> mentioned ones) are (a bit simplified, but this is the general idea of
-> those threads):
->
-> * Possibly breaking something in such a big automated change.
-> * Namespace collision with userspace (the C standard allows defining
->   uint32_t for nefarious purposes as long as you don't include
->  <stdint.h>.   POSIX prohibits that, though)
-> * Uglier
+Thanks a lot for suggestion, it's actually looks what's needed here instead of
+this driver. Anyways, there is no IIO_PROXIMITY support inside supported types
+in iio_hwmon.c. Should I add additional case inside this driver for
+IIO_PROXIMITY type?
 
-__u64 can't be formatted with %llu on all architectures.  That's not
-true for uint64_t, where you have to use %lu on some architectures to
-avoid compiler warnings (and technically undefined behavior).  There are
-preprocessor macros to get the expected format specifiers, but they are
-clunky.  I don't know if the problem applies to uint32_t.  It does
-happen with size_t and ptrdiff_t on 32-bit targets (both vary between
-int and long).
+> I am also not sure if "proximity" is really appropriate to use
+> for intrusion detection in the sense of hardware monitoring.
+> This would require a proximity sensor within a chassis, which
+> would be both overkill and unlikely to happen in the real world.
+> "Intrusion", in hardware monitoring context, means "someone
+> opened the chassis", not "someone got [too] close".
+> 
 
-Thanks,
-Florian
+I'm not sure either but it exists :) And it's exactly for this purpose:
+"someone opened the chassis", "how near/far is cover?".
 
