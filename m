@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD65A3731D7
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:21:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB2883731E1
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232841AbhEDVWV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 17:22:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37818 "EHLO
+        id S232889AbhEDVYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 17:24:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbhEDVWU (ORCPT
+        with ESMTP id S232782AbhEDVYp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 17:22:20 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBAD3C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 14:21:23 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id e15so300136pfv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 14:21:23 -0700 (PDT)
+        Tue, 4 May 2021 17:24:45 -0400
+Received: from mail-lj1-x234.google.com (mail-lj1-x234.google.com [IPv6:2a00:1450:4864:20::234])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77D59C061574;
+        Tue,  4 May 2021 14:23:49 -0700 (PDT)
+Received: by mail-lj1-x234.google.com with SMTP id b7so9194869ljr.4;
+        Tue, 04 May 2021 14:23:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4S1+Lbb8bvwn24O+HnZVKhqiDbYHj3lTo0d9nlGMzgM=;
-        b=fjBm8NWZyZrrrmTh4i/iwxvRLRliD4H91N+StjRX/d2QvPkwf9XfrIc4OLPo7Nk3ZM
-         3ZaJrol/7huD1AfK6eL/IRpAWWcHWBbm94tDjzA14DatkaizFoLqjjwkeN3N7DCXxa1U
-         3mwCmfM5HdaHw5Wy/h/7mC3KC4Jb/LRcTUg+ZAlwfH64lozCnCKyBmEhwRENfrXGO5Yk
-         JvBgf6Ke6ySB3Du32CeQzimW5Wct4JirV7YwupXG2s9UW+ktdZnnBe1Ihd9byZyqXLAs
-         9c5chEpuO+Mo8SS6EzazcjKwRkEOZYx4LBe/YZdgquhiLc6GVd8RQQUZwFiWTi+OZB6L
-         Ko+Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=t8wotz3AhGgeTQp5SZs5xSv5MZsNA5QgTSconl9j5TM=;
+        b=bu10H0MIFzOEkwtjWen71MackfzXsnWN6MZXNRc/W/GcLULK6ZhoaOh5oaLH+41zu+
+         VwdEsKswhub4hu2UYG4wp+ZpuOwqPyZHoR+k5bCwf7o4/3rkUu3LE21z8mEsrL3JiKPa
+         Zdx7srKYQ8Gp5kF5UUIfL63XhseNUY+E+okCJGV6LuiwOfp5gx8wL0Vb1aI/c1hJQDU7
+         mOoMesB+BBckt+Q944oLu3rDaKRXF6+mCis9CzbXFkKRmMWwFjE7jW7VEov5fl2cNb5C
+         mO8H2pbIidyO9uUYH76fmbw+M7Ltzq61yV1uy9yKh6foDNMy+xAsFdNJvcbMujalmED1
+         Y6Ww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4S1+Lbb8bvwn24O+HnZVKhqiDbYHj3lTo0d9nlGMzgM=;
-        b=FwfADU68rlK9CVSsz8pWc/0MhFeBk0sxgOx3lLlbndQVXF6qhWFgxHIa46l+JcgyAT
-         /nAfBxwr5Ag+sJn9apRuVu5gHDnPrg2M9CcMDbJ1sgiUQO0bd0/QXBqRqjgUEQcLhvlz
-         udorttFHHGr52mD9tJqdyiAYVUNuvw/3MGoWxhaRBtw8pS8mtg3+W1yiOdEsEJLgqe2S
-         Ozc+n2DV/rJ5FHtHqDe/d9BVaZLVUUoQbRjf8YSVr2WHt/R21SZg+2fUJG2kFqeo6Qpu
-         OoTKOz4Xxyefm/K3lS1i/4w8tPa9Ae2tVI+9oQYH9zISylQQY5Qi26S1VyYEx365/E93
-         gFSw==
-X-Gm-Message-State: AOAM532awVTpghXgpX0FP9RLIlnROcuaagWb+bAdLNU7SkwjQtqzMv1d
-        I3I4uJgmnGzN5fLkHezQsS6Irw==
-X-Google-Smtp-Source: ABdhPJzKycDUQzzAG49OCmTkpVYLW7MJG5CSlMgiOymwYu2KzmryxRvfQ1Tnc7LfqojxKpLRTphYrw==
-X-Received: by 2002:a63:5b0e:: with SMTP id p14mr24914000pgb.110.1620163283320;
-        Tue, 04 May 2021 14:21:23 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id t19sm13584936pfg.100.2021.05.04.14.21.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 14:21:22 -0700 (PDT)
-Date:   Tue, 4 May 2021 21:21:18 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Maxim Levitsky <mlevitsk@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>
-Subject: Re: [PATCH] KVM/VMX: Invoke NMI non-IST entry instead of IST entry
-Message-ID: <YJG6ztbGjtuctec4@google.com>
-References: <20210426230949.3561-1-jiangshanlai@gmail.com>
- <20210426230949.3561-3-jiangshanlai@gmail.com>
- <87bl9rk23k.ffs@nanos.tec.linutronix.de>
- <878s4vk1l9.ffs@nanos.tec.linutronix.de>
- <875yzzjxth.ffs@nanos.tec.linutronix.de>
- <87wnseis8v.ffs@nanos.tec.linutronix.de>
- <87r1imi8i1.ffs@nanos.tec.linutronix.de>
- <44e20d7cdbf0ffdb7d9dce7d480f86a6f14d16c1.camel@redhat.com>
- <ae801539-592a-af9a-55a1-3a4b8309ff1e@redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=t8wotz3AhGgeTQp5SZs5xSv5MZsNA5QgTSconl9j5TM=;
+        b=id4mH/sXdi0P2A+ine7yjfA738Mip2fxCP0OvqMTOjHvAZOWs/EC4oVjuVMQac+Guk
+         IlZSt4JiwYnUG8EFI+/Y+EPJ72W3TWzqE1ZT9LpYTYRpIzDC+k8L3pfTJQW+z7hfjHn1
+         EKIv4xkj5AnXYgEKrfX1JNG+HtusobpDNb5FJ1FiOULeIvI7fz3nFmV0BLjWg5MqqR6z
+         uuwC+2jycU6MVMoKJ+G0A0cVUF8LqHkaeiMmL454PW28h8XMQAzIH5aFfvVZ3VHpldWm
+         zQPyMOE5l9IaBeBMKK4KanFr9cfS/HKNCA8JiXn4AYc+SGYamZDA7uZqZHqDPHKMowm7
+         QMqg==
+X-Gm-Message-State: AOAM532iHk5osvImHe66FrJoaE4WmwldgNLj4T/qFSRXWzhwjKJbrxDn
+        suYr7qNepKNoA3IkmdrRZLeBsJO0PpMcfViNptY=
+X-Google-Smtp-Source: ABdhPJxNURHBTrrBxV0JDij/y6syf0fcI1QGRqpV/yO5lQyEdW71DJjeS5K7n35sHBs2PkzJqrKd5X+lXQYlbWyXvpc=
+X-Received: by 2002:a2e:a489:: with SMTP id h9mr8855179lji.21.1620163428021;
+ Tue, 04 May 2021 14:23:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae801539-592a-af9a-55a1-3a4b8309ff1e@redhat.com>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <20210504110519.16097-1-alx.manpages@gmail.com> <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+ <YJFZHW2afbAMVOmE@kroah.com> <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
+ <YJFxArfp8wN3ILJb@kroah.com> <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+ <6740a229-842e-b368-86eb-defc786b3658@gmail.com> <8a184afe-14b7-ed15-eb6a-960ea05251d1@iogearbox.net>
+ <CAKCAbMidJ=UhsMumDcwiqvkGEG5SROPnv=OA379w_=0dZk5W5g@mail.gmail.com>
+In-Reply-To: <CAKCAbMidJ=UhsMumDcwiqvkGEG5SROPnv=OA379w_=0dZk5W5g@mail.gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 4 May 2021 14:23:36 -0700
+Message-ID: <CAADnVQ+bPMsfva8YyAfvmXATDcykSkznskEtQueu=GKhOnYeZQ@mail.gmail.com>
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+To:     Zack Weinberg <zackw@panix.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>,
+        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        Joseph Myers <joseph@codesourcery.com>,
+        David Laight <David.Laight@aculab.com>,
+        David Miller <davem@davemloft.net>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021, Paolo Bonzini wrote:
-> On 04/05/21 23:05, Maxim Levitsky wrote:
-> > Does this mean that we still rely on hardware NMI masking to be activated?
-> 
-> No, the NMI code already handles reentrancy at both the assembly and C
-> levels.
-> 
-> > Or in other words, that is we still can't have an IRET between VM exit and
-> > the entry to the NMI handler?
-> 
-> No, because NMIs are not masked on VM exit.  This in fact makes things
-> potentially messy; unlike with AMD's CLGI/STGI, only MSRs and other things
-> that Intel thought can be restored atomically with the VM exit.
+On Tue, May 4, 2021 at 1:33 PM Zack Weinberg <zackw@panix.com> wrote:
+> the information that should
+> appear in the manpages is the information that is most relevant to
+> user space programmers.
 
-FWIW, NMIs are masked if the VM-Exit was due to an NMI.
+The bpf programs are compiled for the kernel and run in the kernel.
+Hence bpf man pages must reflect the kernel.
+Also there is BTF where type names are part of the verification process.
+if a user decides to rename a type it will be rejected by the kernel verifier.
