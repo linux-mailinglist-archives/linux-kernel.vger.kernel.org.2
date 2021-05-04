@@ -2,210 +2,291 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512093728CD
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 12:23:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98BBE3728D1
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 12:25:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230361AbhEDKYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 06:24:33 -0400
-Received: from mail-dm6nam12on2079.outbound.protection.outlook.com ([40.107.243.79]:39124
-        "EHLO NAM12-DM6-obe.outbound.protection.outlook.com"
+        id S230357AbhEDK0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 06:26:23 -0400
+Received: from mail-db8eur05on2136.outbound.protection.outlook.com ([40.107.20.136]:14544
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230338AbhEDKYM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 06:24:12 -0400
+        id S230153AbhEDK0U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 06:26:20 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PkwCri5PqRDrxZMN0hlEb1IbtCoN0yu4Tvn2fw5cUbk+BXA55zFrTT0iki2gynoScpkGpfDouLpjCYBn7W26MGSape+p4SpxkkWXtB2TCoDSJtuLHjvNwceKHA+z++EzbMkFtXeOluCydqTHFydmvFW5iliHiNjwWLlB3szay1jtMECWVctSlvH2xoAHQEO6sw+eYyi7f36SWTcsDSgfwwXG2NVDl0nr36HXvckn3PkLdgla7u79eUPBIfRS9g+aLIR8hQrGDJu5NlPJJ7yqjwes47gnTRpDPhPn0NnFq92KQutgFgsFgxbP5Haqm8u6eNlKMpT/5Y2J87yZAjF+bw==
+ b=ba+2TTQ5YqYrA3bXPGEtojET/zQNXt+HGi4M2J5Rrf78TQyJ18KjazM5h/yST2rY4fCOQIGdVD6PSMpLUWwXEsvd90nVTygZQs2uBMhqPOt9O9w1Zzb1StUCinMKTWGU9y7xkloyH0UPd392jioW31SoRVNvIb56/cXKs7gdenNafgB3DymiMqHNOeoNeACKvCpO80QayiZLYZbh5JaxzBBRaMny9JmrXvT2+89P1+NpIBvnt3dSUh06e0UgqZ8eRdliifvC5vMc8XPw+IB2hjAd4qtc0QgGTvGENZp9Imla1IUrGlRWVBhqMXZ7EpBIcbHA7pup3piFkTT5oSo8Og==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BbSIYtBiWGmu7mZvmS/YkpSyVRIFytYBz9fMtp0Mn1Q=;
- b=FPOPYk3M/ubhsFQ4ZFJfEGB9Tm8oRz75BqIW3qE6HPChkIzp9bGvoo6PASXUpS5p16Y7D7Q4h5VWyj+e7MVxutnYDohwWMcXVATW8Ky2Vs02lout0mtqt/aI5WJAsyGeHgxCdBFNkbbqphR2iK50Zbq6DaR1a8yimlEojiN22SeOjNE0rZRmamXltqRZ6xXYrI/4eDE1NqiD2fmUwftXQBMp7kUB3NJplrC+Q+stp1vvYvi1D/Yn31X4Nd0WX+AK9G4hn8vfg4yf+hJNu/047HqETb7tVAqZonvyeJooU1vDYQt8uhZRMN1w2LDYW3GL1duoyHfKLeBky4WyXDf7Dg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=kernel.org smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ bh=BeDXaaOQbgfhbNJ6Rs76NG1K3oIS9143j6eY9am+iiM=;
+ b=LCqLS7pOI/BrAp+Gt9fEzsuTCT1Aooi12OD+fzVABmEY1SYfsBn8nfJhdGJ3UlCYiZio9seoHvHErxY8F9emSbDQPF3Q9VRqhhov/K+LGotILTLUO/q8suZQo/p0wPv71fceLua8fjh2zUzL7hbFZt1V2SeIRV1NBSp1QGckCP1FvwxFrgSosAa5oLV3oBRdXOwR8WnE99awarI00tF1aBQhv+XRrMvIvgw7ReYzELy/MQnDnTEx91HdzddUneHIBE5bGxSUkhywxVMsEKnZjLVpf3GG8S9khiPhn/pAuo7UVBLO5fJNHuJFXecO7MyGQN55HoCMerCJeyYvH+NR0A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BbSIYtBiWGmu7mZvmS/YkpSyVRIFytYBz9fMtp0Mn1Q=;
- b=VO9QrQWavTW0HDHZapK8Q4qP3+8TCo4tptcZ17qQ4Mc9A1wadmIxPAjSte2WrvApC9eLuCxEdVgPPe0VeeCcU0vC7Xkv6TiP8jjyAs25D/tpz/2ZhROVS5yA5FyJuI2V0qrV0DKHpKjBn5LbuurFKw/dDRXqXOv50AIQK+Usm14=
-Received: from BN8PR12CA0011.namprd12.prod.outlook.com (2603:10b6:408:60::24)
- by BN6PR02MB2417.namprd02.prod.outlook.com (2603:10b6:404:52::15) with
+ bh=BeDXaaOQbgfhbNJ6Rs76NG1K3oIS9143j6eY9am+iiM=;
+ b=Yk0g/366YFHGIAP9KXUe2AmlgHMAmCRRcKITIuq4nnRs/9oEZlucBVG6Ltv9c07iLUtm/SWMCRfAeH5fcauAuFe0CbQfBhkQEZ9neUpukhjOuxZGEfQA7BXg1lCYh/3e5Ypp51YZihh/RfwNtSSjKy/Zwry9NoHLDAQVAU8Kd3A=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM8PR10MB4625.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:356::18) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.41; Tue, 4 May
- 2021 10:23:12 +0000
-Received: from BN1NAM02FT015.eop-nam02.prod.protection.outlook.com
- (2603:10b6:408:60:cafe::43) by BN8PR12CA0011.outlook.office365.com
- (2603:10b6:408:60::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend
- Transport; Tue, 4 May 2021 10:23:12 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch02.xlnx.xilinx.com;
-Received: from xsj-pvapexch02.xlnx.xilinx.com (149.199.62.198) by
- BN1NAM02FT015.mail.protection.outlook.com (10.13.2.132) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4065.21 via Frontend Transport; Tue, 4 May 2021 10:23:12 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Tue, 4 May 2021 03:22:58 -0700
-Received: from smtp.xilinx.com (172.19.127.96) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Tue, 4 May 2021 03:22:58 -0700
-Envelope-to: git@xilinx.com,
- mdf@kernel.org,
- trix@redhat.com,
- robh+dt@kernel.org,
- arnd@arndb.de,
- gregkh@linuxfoundation.org,
- linus.walleij@linaro.org,
- zou_wei@huawei.com,
- linux-fpga@vger.kernel.org,
- devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- chinnikishore369@gmail.com
-Received: from [10.140.6.60] (port=35290 helo=xhdnavam40.xilinx.com)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <nava.manne@xilinx.com>)
-        id 1ldsCe-000192-OU; Tue, 04 May 2021 03:22:57 -0700
-From:   Nava kishore Manne <nava.manne@xilinx.com>
-To:     <mdf@kernel.org>, <trix@redhat.com>, <robh+dt@kernel.org>,
-        <michal.simek@xilinx.com>, <arnd@arndb.de>,
-        <rajan.vaja@xilinx.com>, <gregkh@linuxfoundation.org>,
-        <linus.walleij@linaro.org>, <amit.sunil.dhamne@xilinx.com>,
-        <tejas.patel@xilinx.com>, <zou_wei@huawei.com>,
-        <manish.narani@xilinx.com>,
-        <lakshmi.sai.krishna.potthuri@xilinx.com>, <nava.manne@xilinx.com>,
-        <wendy.liang@xilinx.com>, <linux-fpga@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>, <git@xilinx.com>,
-        <chinnikishore369@gmail.com>
-Subject: [RFC PATCH 4/4] fpga: zynqmp: Add user-key encrypted FPGA Image loading support
-Date:   Tue, 4 May 2021 15:52:27 +0530
-Message-ID: <20210504102227.15475-5-nava.manne@xilinx.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210504102227.15475-1-nava.manne@xilinx.com>
-References: <20210504102227.15475-1-nava.manne@xilinx.com>
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38; Tue, 4 May
+ 2021 10:25:23 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87%7]) with mapi id 15.20.4087.044; Tue, 4 May 2021
+ 10:25:23 +0000
+Subject: Re: [PATCH V2 4/4] soc: imx: Add blk-ctl driver for i.MX8MM
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        p.zabel@pengutronix.de, l.stach@pengutronix.de, krzk@kernel.org,
+        agx@sigxcpu.org, marex@denx.de, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ping.bai@nxp.com, aford173@gmail.com,
+        abel.vesa@nxp.com, Peng Fan <peng.fan@nxp.com>
+References: <20210430052746.10815-1-peng.fan@oss.nxp.com>
+ <20210430052746.10815-5-peng.fan@oss.nxp.com>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+Message-ID: <a175b195-d7dc-8865-304e-9c3a5795f6f6@kontron.de>
+Date:   Tue, 4 May 2021 12:25:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210430052746.10815-5-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [89.244.177.213]
+X-ClientProxiedBy: AM6P195CA0034.EURP195.PROD.OUTLOOK.COM
+ (2603:10a6:209:81::47) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-EOPAttributedMessage: 0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.27] (89.244.177.213) by AM6P195CA0034.EURP195.PROD.OUTLOOK.COM (2603:10a6:209:81::47) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend Transport; Tue, 4 May 2021 10:25:22 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6502a95d-6585-4c42-f0d4-08d90ee69f6d
-X-MS-TrafficTypeDiagnostic: BN6PR02MB2417:
-X-Microsoft-Antispam-PRVS: <BN6PR02MB2417E900891B558AFAFB7095C25A9@BN6PR02MB2417.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:480;
+X-MS-Office365-Filtering-Correlation-Id: 26389b9b-5e18-45b4-78e4-08d90ee6ed21
+X-MS-TrafficTypeDiagnostic: AM8PR10MB4625:
+X-Microsoft-Antispam-PRVS: <AM8PR10MB4625AFB8D031D707E0D10641E95A9@AM8PR10MB4625.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:551;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: BY2VTevOB0UE3h8aS0r32qgPMCvPm09pu3KBqCDERd0o8RKd6wVbMfpvqyf5uR1P3IvdysrHIklzCUkp4GkbDB6lbheSxkFydLHPF4pgAfjaPDnR6cVWdQTtEJ74CkRThSFjnuilV+W3IF1NsPd9+UEFivXoFatgwJrFlqN8TK7ZF2trUVGhhW9DDruFLA7svAp8H1rKjsA/ZWCCKNwzELBZdVHpWzEr+YxrpMp48cDMxztEarwnqQMAaS0PvnKR7D34Db9UJg3C8MtY07pVKv0frDbrMSeolTAGwhtIarPR8d/FeKanSCE7u7XhvKA7gmtRGrGNKBWMJgEzEOlNaUHOejoMUUcw1yP+XICrvPQ3ZaEadvVhdu5k8LweEHJBD2/O/OG81NI5s4pXt375jiMEU8cwFY2WFzMZYql4UTXO3qS9IiAFzVu27wGRPkT9xSEryEgzgZGynwx12u16uvEjneIJMMmNvO18kyheNy5XU12q5YrMwxuEiO7DO7fMU7ekrQaBBTLCF3HjxH438os4kTTznozQ/5J9RLcc0C7emznVkUuFIi6kY1UKGGWF3QZMiTOSE5J0AemMeUy8tCLtu5/ZsJBYvBuSjJ6Se2KB5taG68J9yLjNGcrbOVFccm4YKTF3Grsrb8hobNfEhkRqVpjA9QoxVzngQ7TYRiVHiAtcgUTmZNrGp5znl+e6pkHartMlCUeJcnT8oFAgPXaueeDWeWtGhE4z698dTqaz81RaCpPLtlO+iyFWAl94
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch02.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(396003)(39850400004)(136003)(376002)(346002)(46966006)(36840700001)(47076005)(921005)(7696005)(2616005)(316002)(82310400003)(6666004)(70586007)(8936002)(70206006)(82740400003)(7416002)(356005)(5660300002)(36906005)(26005)(478600001)(110136005)(36756003)(7636003)(83380400001)(1076003)(426003)(36860700001)(186003)(2906002)(9786002)(336012)(8676002)(102446001)(2101003)(83996005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 10:23:12.8275
+X-Microsoft-Antispam-Message-Info: Z9kKIRm8Ohy7fdHLd/AeU6+8rvgHm3j+dlcn2Mkj1VoWrwhNLbE9I7OP7v6074C72U1Po7D8e/+AncMPN0KPFUdo1GXx0g/okHixiyD/RrcsGb1Z41/IPGyOZ2s5aXY0WeS1HNTT1T1YDuccUZiL1wdyCo+DC+w4aIQJQ9kJ0wuwC3Tp9WlY5NzwUi97CcVhtzWA5XqZ1lYsIecK4SmrQdZYek9rGR4WYuBJ8YwcRjxFvf1TgkkXpOfwWxKDCIcmYrQoFwO7PVsSzzmT0mYf7gkmZTHuKxTZklu9KTlQ9NVxLLho41yIuQmsc8eukvy+xDe9M4VaGag/NP0vGp7alEJSJpyTLlVVRkf5JUoAccRl9hksbPKV3NEIfVk0Paplq4R7hOalkYOwChHczSMBpVbbiak23I6XJo9d4Ptg9SWLZVqhrshAE1acr6AYE6Zu0Dz9LVkwswpUw1WMRk9WUm84ucQjC6xbHwToDVDNC/fMcKCFSnuQkuow1ALU/59sirEQzq0QqVxHrR4r2JRSnRSM5yHuW7fwezqbwvsvlbRT6o/To/iApOdvRurwWHI0WHemCuBkUFSZO+pj/DWs2sGmgv+GzJ1klxYBv60jlIWqA5WSWIvbfFg0EsSOifmAeWYgwUboKoRjrEM4slW3CVXHJWIIp2gvthHLjE7R7m6qlm8qczLtHrJPPET5q7ZR
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(83380400001)(7416002)(4326008)(6486002)(31696002)(66476007)(498600001)(5660300002)(66946007)(2906002)(66556008)(16526019)(956004)(186003)(36756003)(26005)(53546011)(31686004)(38100700002)(8676002)(2616005)(16576012)(8936002)(44832011)(86362001)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?TVlrdFNiUzU4ZExYcUNlMXhRSHNaRWtiR2F5bTFpR3YvSVhCcUREbC9VeGFq?=
+ =?utf-8?B?b3YwYllzK0lUM0cwbEgvWDBmbXJyczVmK3RuQlRFeURNcjFoS0JibzNpMHhj?=
+ =?utf-8?B?Sm0yb3M2Q1VvMXNQVVlDYlp1eDAyZGFnRi9LVUxBUXc5MVBDdURYN01rZ09k?=
+ =?utf-8?B?d3FVV0xaV1VOZ2lkbVV0bHcrdlFsOXRjYlR0ODRqL2NocDVyS1dxQnNCamN6?=
+ =?utf-8?B?RUhDNTdpV3pQa0h1ZEo0NnhUa2JtZzl5RU1KNVJNbkl4b1d4bzJtR1EwdzBy?=
+ =?utf-8?B?bzhYRFhkNHhYZFZTQW5ONjRkaElNamVnSDl5eThaWWtNY201cW9GYjBUYTNt?=
+ =?utf-8?B?NHM2Z1F6eVNrN3pWQnF6SnhpamNjRWczL2tkcHpnRmxHM21JeTN3RnJ3NnFW?=
+ =?utf-8?B?UVhiWjFPODVSOHVhV0ZuVElZQkNMcnBKbTYyTHhxN1h3eDZnT254ZGdVMFl4?=
+ =?utf-8?B?Smp4bmxSSkZQeE41Q0pKTnJJVXh3MFQ5STFrOGlhN09RdGM5OU5YWmxpOWVu?=
+ =?utf-8?B?dUtvWWpnUmprQ3pBQ0wxeXRSdlU4MStMaFBPMURBN29jTVhadCtiaFFlY2JO?=
+ =?utf-8?B?bHdrMExxb2tTSHl2ZENrbTgwMUEwK2J0YXlHWlRHYmlGRllZOUk5d3lxd1hu?=
+ =?utf-8?B?MFJoMm5uM2ltMnFtbFNBQzVvQTNIcG10Tm9kUjF4dVdpS3JVelFZN1JJMjJE?=
+ =?utf-8?B?OWNwRHBYdUdFMmVjVFpLc0lTTmNnMFRuV1cyZDdibUgvbnBNcGViU0o4UVdM?=
+ =?utf-8?B?aW1FWmk0ZjZHbkFNeEI4MHYyL2RsOGcwZHBMQWt4bEdUTmxCRXJMaVZxalZw?=
+ =?utf-8?B?VTAxRlZhclo1cFhVTDgvTklnSWU4WmJlSFZKZ3kwbDFycEZvSEdTaFFwTUdw?=
+ =?utf-8?B?UVd6OVRDWnJpaGVyeW5OZ2JLZlNxOVBSemhoYzdnaFF3d212emtMTXhhRGpv?=
+ =?utf-8?B?UmdrMEM1YzA5Qy9lTURSOW1wUytjUm54NEVldlVqaEtjbHc1WTJKK0VYSVlW?=
+ =?utf-8?B?WXFmWFhPb2ZjaFN3VE5McVFjeCsxSVY0eXhCbkZZa3pZQ1NpRmh6VUFuaElr?=
+ =?utf-8?B?K2l6TkJkL3doMnN2LzlFSjNVSG96amFVelJQWFZ2dmJlU1BuU3J2TC9idGlM?=
+ =?utf-8?B?OXlKUmxCVXMxTE81Z1oxY0lEcjJPZks3VWRPODJhVjZ5NHJlOEZFOU55YkVu?=
+ =?utf-8?B?MFFHcjJ3aXF0TEV1MzVLRlVRZzRISG1nWUp1WDFUWEpUbk5SRHlLbGlHNG1U?=
+ =?utf-8?B?LzdOOGRHUUJtNlZ1bE1FWWRDbjhseXRNZEJLak0vT0JndHlXUWJyUDlqVWJx?=
+ =?utf-8?B?allqaHRYV2JubzdMWktJdWNOTnRidlFUTmdWNlRLNWlBUUpNZE40M1Z4SVVO?=
+ =?utf-8?B?MlJqOW1JRFZhclV5R2ZDSGFFV0xEU1E4RkRxRGJlZDQyY1dFYkQxOUFCR0dD?=
+ =?utf-8?B?U2tOT3JEZmxmeG43Tmsraytzd1I4cmtnUGROMDVyRmZ2TmN3VTdXOFV3Rm00?=
+ =?utf-8?B?eUJLZmZRT3hSdGtyMC9tVzBSTXNSVm5ncjFnR3UwemEyTXY4SHBOZk53NS92?=
+ =?utf-8?B?ajRJek0rWEMzRFFaU3B1T1RzbWJoNGswRU1QMVFrVzlhL1dxSlpjSVFueDBT?=
+ =?utf-8?B?djNMMDYxTVpNZFJxcTlaYmVkdzhkK083MUNiS3FFeGYrUkh4TEtkQUNjWERB?=
+ =?utf-8?B?b29nT0w2ejV2NjJNbm13YUhWNTZoT0R4UmlLK2pXeTA4clJLSkltOEtBNEl6?=
+ =?utf-8?Q?yibW0ugjiLwAFK54rTYq640Sdu7FdFlsWIQ0fxK?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26389b9b-5e18-45b4-78e4-08d90ee6ed21
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 10:25:23.4585
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6502a95d-6585-4c42-f0d4-08d90ee69f6d
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch02.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT015.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR02MB2417
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: K4Q3jgczwoK4TJb+c12HYfl6E5fM97xO3FvKqfeS/UBvSsxQDWQsbb4pkhwSaAb8bDUgw2+ZWVtlGji9oFCEx4D/k7mCLn52siLop46rwLI=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB4625
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support to load the user-key encrypted FPGA
-Image loading to the Xilinx ZynqMP Soc.
+On 30.04.21 07:27, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> The i.MX8MM SoC has dispmix BLK-CTL and vpumix BLK-CTL, so we add
+> that support in this driver.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>   drivers/soc/imx/Makefile         |   2 +-
+>   drivers/soc/imx/blk-ctl-imx8mm.c | 138 +++++++++++++++++++++++++++++++
+>   2 files changed, 139 insertions(+), 1 deletion(-)
+>   create mode 100644 drivers/soc/imx/blk-ctl-imx8mm.c
+> 
+> diff --git a/drivers/soc/imx/Makefile b/drivers/soc/imx/Makefile
+> index d3d2b49a386c..c260b962f495 100644
+> --- a/drivers/soc/imx/Makefile
+> +++ b/drivers/soc/imx/Makefile
+> @@ -4,4 +4,4 @@ obj-$(CONFIG_ARCH_MXC) += soc-imx.o
+>   endif
+>   obj-$(CONFIG_HAVE_IMX_GPC) += gpc.o
+>   obj-$(CONFIG_IMX_GPCV2_PM_DOMAINS) += gpcv2.o
+> -obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o
+> +obj-$(CONFIG_SOC_IMX8M) += soc-imx8m.o blk-ctl.o blk-ctl-imx8mm.o
+> diff --git a/drivers/soc/imx/blk-ctl-imx8mm.c b/drivers/soc/imx/blk-ctl-imx8mm.c
+> new file mode 100644
+> index 000000000000..77e0a5d3fdac
+> --- /dev/null
+> +++ b/drivers/soc/imx/blk-ctl-imx8mm.c
+> @@ -0,0 +1,138 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright 2021 NXP
+> + */
+> +
+> +#include <dt-bindings/clock/imx8mm-clock.h>
+> +#include <dt-bindings/power/imx8mm-power.h>
+> +#include <linux/clk.h>
+> +#include <linux/err.h>
+> +#include <linux/io.h>
+> +#include <linux/module.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_device.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/slab.h>
+> +#include <linux/types.h>
+> +#include <linux/pm_domain.h>
+> +#include <linux/regmap.h>
+> +
+> +#include "blk-ctl.h"
+> +
+> +#define MEDIA_BLK_BUS_RSTN_BLK_SYNC_SFT_EN			BIT(6)
+> +#define MEDIA_BLK_MIPI_DSI_I_PRESETN_SFT_EN			BIT(5)
+> +#define MEDIA_BLK_MIPI_CSI_I_PRESETN_SFT_EN			BIT(4)
+> +#define MEDIA_BLK_CAMERA_PIXEL_RESET_N_SFT_EN			BIT(3)
+> +#define MEDIA_BLK_CSI_BRIDGE_SFT_EN				GENMASK(2, 0)
+> +
+> +#define MEDIA_BLK_BUS_PD_MASK					BIT(12)
+> +#define MEDIA_BLK_MIPI_CSI_PD_MASK				GENMASK(11, 10)
+> +#define MEDIA_BLK_MIPI_DSI_PD_MASK				GENMASK(9, 8)
+> +#define MEDIA_BLK_LCDIF_PD_MASK					GENMASK(7, 6)
+> +#define MEDIA_BLK_CSI_BRIDGE_PD_MASK				GENMASK(5, 0)
+> +
+> +static struct imx_blk_ctl_hw imx8mm_dispmix_blk_ctl_pds[] = {
+> +	IMX_BLK_CTL_PD("CSI_BRIDGE", "dispmix", IMX8MM_BLK_CTL_DISPMIX_CSI_BRIDGE, 0x4,
+> +		       MEDIA_BLK_CSI_BRIDGE_PD_MASK, 0, MEDIA_BLK_CSI_BRIDGE_SFT_EN,
+> +		       IMX_BLK_CTL_PD_RESET),
+> +	IMX_BLK_CTL_PD("LCDIF", "dispmix", IMX8MM_BLK_CTL_DISPMIX_LCDIF, 0x4,
+> +		       MEDIA_BLK_LCDIF_PD_MASK, -1, -1, 0),
+> +	IMX_BLK_CTL_PD("MIPI_DSI", "mipi", IMX8MM_BLK_CTL_DISPMIX_MIPI_DSI, 0x4,
+> +		       MEDIA_BLK_MIPI_DSI_PD_MASK, 0, MEDIA_BLK_MIPI_DSI_I_PRESETN_SFT_EN,
+> +		       IMX_BLK_CTL_PD_RESET),
+> +	IMX_BLK_CTL_PD("MIPI_CSI", "mipi", IMX8MM_BLK_CTL_DISPMIX_MIPI_CSI, 0x4,
+> +		       MEDIA_BLK_MIPI_CSI_PD_MASK, 0,
+> +		       MEDIA_BLK_MIPI_CSI_I_PRESETN_SFT_EN | MEDIA_BLK_CAMERA_PIXEL_RESET_N_SFT_EN,
+> +		       IMX_BLK_CTL_PD_RESET)
+> +};
+> +
+> +static struct imx_blk_ctl_hw imx8mm_vpumix_blk_ctl_pds[] = {
+> +	IMX_BLK_CTL_PD("VPU_BLK_CTL_G2", "vpu-g2", IMX8MM_BLK_CTL_G2_PD, 0x4,
+> +		       BIT(0), 0, BIT(0), IMX_BLK_CTL_PD_RESET),
+> +	IMX_BLK_CTL_PD("VPU_BLK_CTL_G1", "vpu-g1", IMX8MM_BLK_CTL_G1_PD, 0x4,
+> +		       BIT(1), 0, BIT(1), IMX_BLK_CTL_PD_RESET),
+> +	IMX_BLK_CTL_PD("VPU_BLK_CTL_H1", "vpu-h1", IMX8MM_BLK_CTL_H1_PD, 0x4,
+> +		       BIT(2), 0, BIT(2), IMX_BLK_CTL_PD_HANDSHAKE | IMX_BLK_CTL_PD_RESET),
+> +};
+> +
+> +static const struct regmap_config imx8mm_blk_ctl_regmap_config = {
+> +	.reg_bits		= 32,
+> +	.reg_stride		= 4,
+> +	.val_bits		= 32,
+> +	.max_register		= 0x30,
+> +	.fast_io		= true,
+> +};
+> +
+> +static const struct imx_blk_ctl_dev_data imx8mm_vpumix_blk_ctl_dev_data = {
+> +	.pds = imx8mm_vpumix_blk_ctl_pds,
+> +	.pds_num = ARRAY_SIZE(imx8mm_vpumix_blk_ctl_pds),
+> +	.hw_hsk = IMX_BLK_CTL_PD(NULL, NULL, IMX8MM_BLK_CTL_H1_PD, 0x4, BIT(2), 0, BIT(2),
+> +				 IMX_BLK_CTL_PD_HANDSHAKE),
+> +	.config = imx8mm_blk_ctl_regmap_config,
+> +	.active_pd_names = (char*[]){"vpumix", "g1", "g2", "h1"},
+> +	.num_active_pd = 4,
+> +};
+> +
+> +static const struct imx_blk_ctl_dev_data imx8mm_dispmix_blk_ctl_dev_data = {
+> +	.pds = imx8mm_dispmix_blk_ctl_pds,
+> +	.pds_num = ARRAY_SIZE(imx8mm_dispmix_blk_ctl_pds),
+> +	.hw_hsk = IMX_BLK_CTL_PD(NULL, NULL, -1, 0x4, MEDIA_BLK_BUS_PD_MASK, 0,
+> +				 MEDIA_BLK_BUS_RSTN_BLK_SYNC_SFT_EN,
+> +				 IMX_BLK_CTL_PD_HANDSHAKE | IMX_BLK_CTL_PD_RESET),
+> +	.config = imx8mm_blk_ctl_regmap_config,
+> +	.active_pd_names = (char*[]){"dispmix", "mipi"},
+> +	.num_active_pd = 2,
+> +};
+> +
+> +static int imx8mm_blk_ctl_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
+> +	struct regmap *regmap;
+> +	struct resource *res;
+> +	struct imx_blk_ctl *ctl;
+> +	void __iomem *base;
+> +
+> +	ctl = devm_kzalloc(dev, sizeof(*ctl), GFP_KERNEL);
+> +	if (!ctl)
+> +		return -ENOMEM;
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	base = devm_ioremap_resource(dev, res);
 
-Signed-off-by: Nava kishore Manne <nava.manne@xilinx.com>
----
- drivers/fpga/zynqmp-fpga.c           | 24 ++++++++++++++++++++++--
- include/linux/firmware/xlnx-zynqmp.h |  2 ++
- 2 files changed, 24 insertions(+), 2 deletions(-)
+This could be simplified by using devm_platform_ioremap_resource().
 
-diff --git a/drivers/fpga/zynqmp-fpga.c b/drivers/fpga/zynqmp-fpga.c
-index 125743c9797f..565ebe9e1610 100644
---- a/drivers/fpga/zynqmp-fpga.c
-+++ b/drivers/fpga/zynqmp-fpga.c
-@@ -22,6 +22,8 @@
-  */
- struct zynqmp_fpga_priv {
- 	struct device *dev;
-+	const char *key_buf;
-+	size_t key_size;
- 	u32 flags;
- };
- 
-@@ -33,6 +35,8 @@ static int zynqmp_fpga_ops_write_init(struct fpga_manager *mgr,
- 
- 	priv = mgr->priv;
- 	priv->flags = info->flags;
-+	priv->key_buf = info->enc_key_buf;
-+	priv->key_size = info->enc_key_buf_size;
- 
- 	return 0;
- }
-@@ -41,9 +45,9 @@ static int zynqmp_fpga_ops_write(struct fpga_manager *mgr,
- 				 const char *buf, size_t size)
- {
- 	struct zynqmp_fpga_priv *priv;
--	dma_addr_t dma_addr;
-+	dma_addr_t dma_addr, key_addr;
- 	u32 eemi_flags = 0;
--	char *kbuf;
-+	char *kbuf, *key_kbuf;
- 	int ret;
- 
- 	priv = mgr->priv;
-@@ -54,13 +58,29 @@ static int zynqmp_fpga_ops_write(struct fpga_manager *mgr,
- 
- 	memcpy(kbuf, buf, size);
- 
-+	if (priv->flags & FPGA_MGR_ENCRYPTED_USER_KEY_BITSTREAM) {
-+		eemi_flags |= XILINX_ZYNQMP_PM_FPGA_ENC_USER_KEY;
-+		key_kbuf = dma_alloc_coherent(priv->dev, size, &key_addr,
-+					      GFP_KERNEL);
-+		if (!key_kbuf)
-+			return -ENOMEM;
-+		memcpy(key_kbuf, priv->key_buf, priv->key_size);
-+	}
-+
- 	wmb(); /* ensure all writes are done before initiate FW call */
- 
- 	if (priv->flags & FPGA_MGR_PARTIAL_RECONFIG)
- 		eemi_flags |= XILINX_ZYNQMP_PM_FPGA_PARTIAL;
- 
-+	if (priv->flags & FPGA_MGR_ENCRYPTED_USER_KEY_BITSTREAM)
-+		ret = zynqmp_pm_fpga_enc_key_load(key_addr, priv->key_size);
-+
- 	ret = zynqmp_pm_fpga_load(dma_addr, size, eemi_flags);
- 
-+	if (priv->flags & FPGA_MGR_ENCRYPTED_USER_KEY_BITSTREAM)
-+		dma_free_coherent(priv->dev, priv->key_size,
-+				  key_kbuf, key_addr);
-+
- 	dma_free_coherent(priv->dev, size, kbuf, dma_addr);
- 
- 	return ret;
-diff --git a/include/linux/firmware/xlnx-zynqmp.h b/include/linux/firmware/xlnx-zynqmp.h
-index 7aa9ad40ff53..a767386d930a 100644
---- a/include/linux/firmware/xlnx-zynqmp.h
-+++ b/include/linux/firmware/xlnx-zynqmp.h
-@@ -56,9 +56,11 @@
-  * Firmware FPGA Manager flags
-  * XILINX_ZYNQMP_PM_FPGA_FULL:	FPGA full reconfiguration
-  * XILINX_ZYNQMP_PM_FPGA_PARTIAL: FPGA partial reconfiguration
-+ * XILINX_ZYNQMP_PM_FPGA_ENC_USER_KEY: User-key Encrypted FPGA reconfiguration
-  */
- #define XILINX_ZYNQMP_PM_FPGA_FULL	0x0U
- #define XILINX_ZYNQMP_PM_FPGA_PARTIAL	BIT(0)
-+#define XILINX_ZYNQMP_PM_FPGA_ENC_USER_KEY	BIT(3)
- 
- enum pm_api_id {
- 	PM_GET_API_VERSION = 1,
--- 
-2.17.1
-
+> +	if (IS_ERR(base))
+> +		return PTR_ERR(base);
+> +
+> +	regmap = devm_regmap_init_mmio(dev, base, &dev_data->config);
+> +	if (IS_ERR(regmap))
+> +		return PTR_ERR(regmap);
+> +
+> +	ctl->regmap = regmap;
+> +	ctl->dev = dev;
+> +	atomic_set(&ctl->power_count, 0);
+> +
+> +	ctl->num_clks = devm_clk_bulk_get_all(dev, &ctl->clks);
+> +	if (ctl->num_clks < 0)
+> +		return ctl->num_clks;
+> +
+> +	dev_set_drvdata(dev, ctl);
+> +	ctl->dev_data = of_device_get_match_data(dev);
+> +
+> +	return imx_blk_ctl_register(dev);
+> +}
+> +
+> +static const struct of_device_id imx_blk_ctl_of_match[] = {
+> +	{ .compatible = "fsl,imx8mm-vpumix-blk-ctl", .data = &imx8mm_vpumix_blk_ctl_dev_data },
+> +	{ .compatible = "fsl,imx8mm-dispmix-blk-ctl", .data = &imx8mm_dispmix_blk_ctl_dev_data },
+> +	{ /* Sentinel */ }
+> +};
+> +MODULE_DEVICE_TABLE(of, imx_blk_ctl_of_match);
+> +
+> +static struct platform_driver imx_blk_ctl_driver = {
+> +	.probe = imx8mm_blk_ctl_probe,
+> +	.driver = {
+> +		.name = "imx8mm-blk-ctl",
+> +		.of_match_table = of_match_ptr(imx_blk_ctl_of_match),
+> +		.pm = &imx_blk_ctl_pm_ops,
+> +	},
+> +};
+> +module_platform_driver(imx_blk_ctl_driver);
+> 
