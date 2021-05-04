@@ -2,75 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7C40372D11
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90A0C372D1B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:37:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231368AbhEDPgb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:36:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34846 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230525AbhEDPga (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:36:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 16D266117A;
-        Tue,  4 May 2021 15:35:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620142535;
-        bh=hhfKkwz5Ywn4nN/RmEd1cPVeO9AW02H04RPdfoM57uY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y0/xyyesqv6C9gOA93UpLqGbAsNfCWiH+EhgRVB0Uj5rZZUcWWfguasiIMFrau5Xr
-         uoYoDmendc/zySgD5d0o/a/ztubIm52QVyLPrCtohLpL/394YLQt9iqlwg4F4pF2SP
-         WsrEl0hVSUOiBrBwEzhRC4ViBULbytil2QCYKenM=
-Date:   Tue, 4 May 2021 17:35:33 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jari Ruusu <jariruusu@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 5.10 1/2] iwlwifi: Fix softirq/hardirq disabling in
- iwl_pcie_gen2_enqueue_hcmd()
-Message-ID: <YJFpxY6iFHMiPHFE@kroah.com>
-References: <20210430141910.473289618@linuxfoundation.org>
- <20210430141910.521897363@linuxfoundation.org>
- <608CFF6A.4BC054A3@users.sourceforge.net>
- <YI6HFNNvzuHnv5VU@kroah.com>
- <bO2GF-6sC-I4NbFif7JoGUpuRpAV-rHEMwtLsKfN9SCsA0lwB1NgEV4OC7Xd5fdoq3UPcZ6-uh2VDSe1Xtovy8ti3k5vmOsiMVTdfTgl0Yw=@protonmail.com>
- <YJD2uTdQonXymbn6@kroah.com>
- <npSsinT79DB6Ze8QTkmLcuOTyVwRcy2FbOf0tDjpEHbTxKdYmLar8Br66_ypLjzZ86sIJKnSbUHeehagPR6RqxsJsKdWW_vWnXOUEhMC14g=@protonmail.com>
- <YJFNyOGrF8RcTTlc@kroah.com>
- <g5YP678olZEf3yQNX2ptK3X6DceFoemqwzEgSJclx_dHFAJfbJBWznYtB74u5g69Onx_6QZkLF-K2muYLa3qsotkPpxbHYuz4Hrs94olZ7c=@protonmail.com>
+        id S230427AbhEDPis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230137AbhEDPir (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:38:47 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79F65C061574;
+        Tue,  4 May 2021 08:37:51 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso8592997otm.4;
+        Tue, 04 May 2021 08:37:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QlDyXERSA3mqDt2SGmoa9P7kir9FDUTLkXcYxUPKU9c=;
+        b=c/v8xnMOy4JB5kzPFInCWiJU21cDQZBGzjbN0itH3QLhqCiwXxzOwiGJgfxdxnU0bx
+         4Ns+eZjm7d/qWyBjgi8iwsC+TD1XX4CMU/5BNgiPqcBOj70aBq0l2LvSNXZT7wtLGK2G
+         0SQuIkz6C6fWUqTCgrd8aAJTqQmSXrNtQofBp4eIEt5wQ5nACLjHxq/QkllisSIiV+7F
+         y3TxWoJokes5M0v1k17ii3kJ/JXrNCVF3WflTS7Cww/vShYi2iFJ9gD4T4ehoqcvGs7h
+         p+sOy3y63DmeTREwNkWQu8Qlu+aFy9MerXRsgOMWnjkCMX8tpOVj7HBrSR+vZcO2/6UN
+         GHtg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=QlDyXERSA3mqDt2SGmoa9P7kir9FDUTLkXcYxUPKU9c=;
+        b=QIWVflBi24t4qOyZtEIHR4v4WEGfCEJm0u0babnuBEG1qXqASTDg4bdxmxhr0oIugC
+         dNSglbND7CS5sfglY72Dt1AtZnPWusj+PuZ3FEwVHo4hshMj6Do55NXRciJk+t3C0OHf
+         7BYwrFJVv3YbExOw0GB0rUn4947WRl0cqUI34RhFOxN/yBzbDkHwcxSRJofUy6q0oVBj
+         0Cu1mdoHs0aAidWIlbyISJYtntcevmYRKHjMvNoe5zNkGjmWS990oR/G548+nOuEguUU
+         a+2/Aqac44xGDrTvYla/+72C2jsQlJGiqtF82MPq1DClp6mR3ELphI1gGNSC2+oEt5ZQ
+         425g==
+X-Gm-Message-State: AOAM530UoaFjPfQgGhz5zlUY+hFrrw91xfvYEm417oM8qKbal3mu0n9t
+        WknwlcKxugsN1g5hxBeuIas=
+X-Google-Smtp-Source: ABdhPJyG9G6OYaagCoWJrnF9GqfMipPU4WzAUT+rRVrmRYtoDBttqMJJqu3m0NSB+q30frPOLFxsiw==
+X-Received: by 2002:a9d:4f03:: with SMTP id d3mr18674826otl.361.1620142670829;
+        Tue, 04 May 2021 08:37:50 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c25sm870419otf.22.2021.05.04.08.37.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 08:37:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: [PATCH v2] iio: am2315: Remove ACPI support
+Date:   Tue,  4 May 2021 08:37:46 -0700
+Message-Id: <20210504153746.2129428-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <g5YP678olZEf3yQNX2ptK3X6DceFoemqwzEgSJclx_dHFAJfbJBWznYtB74u5g69Onx_6QZkLF-K2muYLa3qsotkPpxbHYuz4Hrs94olZ7c=@protonmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 02:22:51PM +0000, Jari Ruusu wrote:
-> On Tuesday, May 4, 2021 4:36 PM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > On Tue, May 04, 2021 at 01:05:56PM +0000, Jari Ruusu wrote:
-> > > second patch is upstream commit e7020bb068d8be50a92f48e36b236a1a1ef9282e.
-> >
-> > This is not in any newer stable trees, and it was not obvious what you
-> > were doing here at all.
-> 
-> That patch is in 5.10 + 5.11 + 5.12
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.10.y&id=2a442f11407ec9c9bc9b84d7155484f2b60d01f9
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.11.y&id=a9315228c1d4b1ced803761e81ef761d97f3e2fa
-> 
-> https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=linux-5.12.y&id=f935c64a0c87d86730efd6e1e168555460234d04
+With CONFIG_ACPI=n and -Werror, 0-day reports:
 
-{sigh}
+drivers/iio/humidity/am2315.c:259:36: error:
+	'am2315_acpi_id' defined but not used
 
-It's been a long week, I forgot to update my database of what commit is
-in what stable release, my fault.
+According to Andy Shevchenko, the ACPI ID used in this driver is fake
+and does not really exist. Remove it and with it ACPI support from
+the driver.
 
-Can you resend your backports here now, and properly let us know what
-kernel they belong into (again, the subject line is very confusing.)
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+v2: Instead of making am2315_acpi_id depend on CONFIG_ACPI,
+    remove ACPI support entirely.
 
-thanks,
+ drivers/iio/humidity/am2315.c | 9 ---------
+ 1 file changed, 9 deletions(-)
 
-greg k-h
+diff --git a/drivers/iio/humidity/am2315.c b/drivers/iio/humidity/am2315.c
+index 23bc9c784ef4..8d7ec2f5acf8 100644
+--- a/drivers/iio/humidity/am2315.c
++++ b/drivers/iio/humidity/am2315.c
+@@ -7,7 +7,6 @@
+  * 7-bit I2C address: 0x5C.
+  */
+ 
+-#include <linux/acpi.h>
+ #include <linux/delay.h>
+ #include <linux/i2c.h>
+ #include <linux/kernel.h>
+@@ -256,17 +255,9 @@ static const struct i2c_device_id am2315_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, am2315_i2c_id);
+ 
+-static const struct acpi_device_id am2315_acpi_id[] = {
+-	{"AOS2315", 0},
+-	{}
+-};
+-
+-MODULE_DEVICE_TABLE(acpi, am2315_acpi_id);
+-
+ static struct i2c_driver am2315_driver = {
+ 	.driver = {
+ 		.name = "am2315",
+-		.acpi_match_table = ACPI_PTR(am2315_acpi_id),
+ 	},
+ 	.probe =            am2315_probe,
+ 	.id_table =         am2315_i2c_id,
+-- 
+2.25.1
+
