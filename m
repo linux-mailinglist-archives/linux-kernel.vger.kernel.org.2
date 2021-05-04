@@ -2,91 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2473F372EDB
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:24:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B966372EE1
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:26:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230439AbhEDRZi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:25:38 -0400
-Received: from mail-40135.protonmail.ch ([185.70.40.135]:54144 "EHLO
-        mail-40135.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230289AbhEDRZi (ORCPT
+        id S231250AbhEDR1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:27:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41598 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231258AbhEDR1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:25:38 -0400
-Date:   Tue, 04 May 2021 17:24:33 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1620149081;
-        bh=4VXUpqUkQHnQnHXSQVZldgHqnsafUJMYO36/7cP3I44=;
-        h=Date:To:From:Cc:Reply-To:Subject:From;
-        b=eSbIrYpHihhLoFfhYrocltw8AKCHo97bh2r4Av2mubvrcDvjOoVifAQkLJ5uX/OLy
-         uBgSoaqTz+RHbOuc7uOOR3rfFacSpmAHpgCX4yF3+kceituh8tIyETgGVAHYLFp84r
-         8ekwY8CWO7GDhYecsIPmY3NclDVDz1eOv88KBHLc=
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Jari Ruusu <jariruusu@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Kalle Valo <kvalo@codeaurora.org>
-Reply-To: Jari Ruusu <jariruusu@protonmail.com>
-Subject: Backport for 5.4 and 4.19, iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
-Message-ID: <E086D-ihTz8oxFCOfQojcsu3VO58JvDu-mjy-aXhRSgqf2BfyAm-YD5ZKQBbvt0yQOFbGKzf9vtUWGTtNX5qPLNboxTBcUT2mmaEagFCR4Q=@protonmail.com>
+        Tue, 4 May 2021 13:27:14 -0400
+Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A3D38C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:26:16 -0700 (PDT)
+Received: by mail-ej1-x630.google.com with SMTP id t4so14447982ejo.0
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:26:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rxPQs6Mc/0XgO0iPTxIWTDm1QwB91U+obNxE6TB3puk=;
+        b=HSqaJrWOLagPy9VeCugMJRSqJH/RCVf4WnZv8AGdSA/g/g8gJ4ddCdfqzdjQpho/ep
+         b+g8nDxDr5nXus+K6ZPidzG7zFFn2sJFMHfUXAUcv+BLUryxfHKI66wRKJmV6+2Ts51w
+         QE1KVgsIh/P+qQ2Vo2nC20cGmK6aVvqR9Y6yATf6CoFsVM1OvxZNmgi6ULvdqtN2OQG3
+         /a76ijrzglhwkrHfPINjg55fMOMvudZ4zQP3dBmhK6EveROGh+E2yp269tA0LgtbQW9C
+         mqyfjPeQ2xfoMslqTTUQh191C7CHc0I7RYji2/7JgiFxTWnvfZI0zcOsAHqwrkl793rX
+         E9Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rxPQs6Mc/0XgO0iPTxIWTDm1QwB91U+obNxE6TB3puk=;
+        b=AaYyVVJIHrqsha1YHZxeLQ97SB/YGijv/FnzVouCYmMIqpDK/JkJEGllshm38MNJih
+         XEogJKcFG5YalFLsEsspxSTDxHjG2E0OlLl2YitLd9PaYzA9uPPEvqOFVZEQEwLEonqc
+         MrJ1kUG6zbRN+MhD5S0uLIFMXYa6WM9UK/ymIHPvMaetrrydq791B1+2VFd6Mw+QbWZi
+         4aSKH36qondk15BKzm3SIuYqu2lNjl3VUOGBCJFyHdfKDDfP6I2p3vyLyHWME/Bsn/+/
+         FpIxJHljiIEs2qoQ4/MzauQ8/w1JzwhOUiLtxg8S/lHch5Dfq2MnqgCBMxU/V8KHXSgu
+         bcDA==
+X-Gm-Message-State: AOAM533RaI4210K4/x9z5AmTA0JSalCUdwSHREl+Om/ypn+H6tbg2jN4
+        gNq/MaSJ0Q7wJhwZyM9YDvJeLQoEF/fOfrng7PjqPw==
+X-Google-Smtp-Source: ABdhPJyFNCokH6hoCachY2WucnKHo93RfBLcmZHm+pw764hTXNO5Lz696SFDbY3yUhOyP+Y3MBPIAfDivYvaBqO83Vo=
+X-Received: by 2002:a17:906:11d4:: with SMTP id o20mr23126097eja.247.1620149175224;
+ Tue, 04 May 2021 10:26:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+References: <20210429211833.3361994-1-bgardon@google.com> <20210429211833.3361994-2-bgardon@google.com>
+ <e9090079-2255-5a70-f909-89f6f65c12ed@redhat.com>
+In-Reply-To: <e9090079-2255-5a70-f909-89f6f65c12ed@redhat.com>
+From:   Ben Gardon <bgardon@google.com>
+Date:   Tue, 4 May 2021 10:26:03 -0700
+Message-ID: <CANgfPd9O3d9b+WYgo+ke1Jx50=ep_f-ZC1gRqUET6PDsLxW+Gw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/7] KVM: x86/mmu: Track if shadow MMU active
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
-upstream commit e7020bb068d8be50a92f48e36b236a1a1ef9282e,
-backport for linux-5.4.y and linux-4.19.y (booted and ping tested)
-Signed-off-by: Jari Ruusu <jariruusu@protonmail.com>
+On Mon, May 3, 2021 at 6:42 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 29/04/21 23:18, Ben Gardon wrote:
+> > +void activate_shadow_mmu(struct kvm *kvm)
+> > +{
+> > +     kvm->arch.shadow_mmu_active = true;
+> > +}
+> > +
+>
+> I think there's no lock protecting both the write and the read side.
+> Therefore this should be an smp_store_release, and all checks in
+> patch 2 should be an smp_load_acquire.
 
---- a/drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c
-+++ b/drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c
-@@ -705,6 +705,7 @@ static int iwl_pcie_gen2_enqueue_hcmd(struct iwl_trans =
-*trans,
- =09const u8 *cmddata[IWL_MAX_CMD_TBS_PER_TFD];
- =09u16 cmdlen[IWL_MAX_CMD_TBS_PER_TFD];
- =09struct iwl_tfh_tfd *tfd;
-+=09unsigned long flags2;
+That makes sense.
 
- =09copy_size =3D sizeof(struct iwl_cmd_header_wide);
- =09cmd_size =3D sizeof(struct iwl_cmd_header_wide);
-@@ -773,14 +774,14 @@ static int iwl_pcie_gen2_enqueue_hcmd(struct iwl_tran=
-s *trans,
- =09=09goto free_dup_buf;
- =09}
+>
+> Also, the assignments to slot->arch.rmap in patch 4 (alloc_memslot_rmap)
+> should be an rcu_assign_pointer, while __gfn_to_rmap must be changed like so:
+>
+> +       struct kvm_rmap_head *head;
+> ...
+> -       return &slot->arch.rmap[level - PG_LEVEL_4K][idx];
+> +       head = srcu_dereference(slot->arch.rmap[level - PG_LEVEL_4K], &kvm->srcu,
+> +                                lockdep_is_held(&kvm->slots_arch_lock));
+> +       return &head[idx];
 
--=09spin_lock_bh(&txq->lock);
-+=09spin_lock_irqsave(&txq->lock, flags2);
+I'm not sure I fully understand why this becomes necessary after patch
+4. Isn't it already needed since the memslots are protected by RCU? Or
+is there already a higher level rcu dereference?
 
- =09idx =3D iwl_pcie_get_cmd_index(txq, txq->write_ptr);
- =09tfd =3D iwl_pcie_get_tfd(trans, txq, txq->write_ptr);
- =09memset(tfd, 0, sizeof(*tfd));
+__kvm_memslots already does an srcu dereference, so is there a path
+where we aren't getting the slots from that function where this is
+needed?
 
- =09if (iwl_queue_space(trans, txq) < ((cmd->flags & CMD_ASYNC) ? 2 : 1)) {
--=09=09spin_unlock_bh(&txq->lock);
-+=09=09spin_unlock_irqrestore(&txq->lock, flags2);
+I wouldn't say that the rmaps are protected by RCU in any way that
+separate from the memslots.
 
- =09=09IWL_ERR(trans, "No space in command queue\n");
- =09=09iwl_op_mode_cmd_queue_full(trans->op_mode);
-@@ -915,7 +916,7 @@ static int iwl_pcie_gen2_enqueue_hcmd(struct iwl_trans =
-*trans,
- =09spin_unlock_irqrestore(&trans_pcie->reg_lock, flags);
-
- out:
--=09spin_unlock_bh(&txq->lock);
-+=09spin_unlock_irqrestore(&txq->lock, flags2);
- free_dup_buf:
- =09if (idx < 0)
- =09=09kfree(dup_buf);
-
---
-Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
-80 8132 F189
-
+>
+> Paolo
+>
