@@ -2,286 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC11D373141
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:13:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A96D2373143
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:16:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232696AbhEDUOJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:14:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50798 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232684AbhEDUOG (ORCPT
+        id S231825AbhEDURD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:17:03 -0400
+Received: from lithops.sigma-star.at ([195.201.40.130]:37384 "EHLO
+        lithops.sigma-star.at" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230328AbhEDURB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:14:06 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B58EC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:13:11 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id v20so5942328plo.10
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:13:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hOpr5X5iLUsxQXZMfgFtFQv/OPJaI291sQPjBVYL6i4=;
-        b=qjyvmlpGQP5Uyw4BFXCTRuaCPMBPrTNd6RKSeKxciqdRz3ek0UeoVOP4X7Gns7xbOK
-         NiiEgRKp6Yi68+g0d7L+hE2maO66CrmPO6igUJSUvbSagSQvZZnbqA02K6AeiQWtTIFR
-         5OiCHldYWl0fj0bfppGp9WVJLxxuOotzbbzUt8KwikHRd5twDZMeXYBuD/4jN+b1sG7D
-         K8L008O3d/b4JV7XI5gBT9VdIqz7jfpoV7YWYDeOGTjfEb4hF3yCdjySDn+FK1SqEWEW
-         oqkVJHzWk2wr10/X/Oy9htxYknp91nC6gy066Ie+rOBCqyXM+/63fqljO1stMtf3T2jN
-         Pccw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hOpr5X5iLUsxQXZMfgFtFQv/OPJaI291sQPjBVYL6i4=;
-        b=Y5+bTAwAIbLYNzXNaRH3/hXb8zXEHH84ijxce5g6QcnaXB4clDopBdMLQS5FcdJRm3
-         IwLl2t495QAjub/BEV3PMciOWobFQ6jla1BSh7JSvruLt2DwJaxFZn9veIi2IOfK1aYr
-         VJiddySOT1vy3dDl2OK4d0VGdLizCtClovMPOPbbcZ2O8h0xZJR/tTC0j536/13yEeyo
-         c7Ns022YsR9rdQgJoJdiynXK7q9A6l01peGLG2Lo32o7En/r3hjkZs2gI7OslG/rGf0M
-         f2SJFUe2hskGPOzomfQTkoxNBqrf2BeLMiFmxq3dSBtnnpayPUzpaENQBQYIZXRqTdRz
-         Zyjw==
-X-Gm-Message-State: AOAM531h49ssDT3EMhrU/t4MWQsw0QoesNwVC5WivBqIk2TykeEaW+o2
-        Hyu3IFcprtwLYeiKEwR0tSlznQ==
-X-Google-Smtp-Source: ABdhPJzZlpmByhkmegFWPDJejjwukrIiTVDPdra8aVzO6A1dV9z/mY4C3DyvcX/IXw8Jyd5TeU80IA==
-X-Received: by 2002:a17:902:9893:b029:ee:e8a8:688c with SMTP id s19-20020a1709029893b02900eee8a8688cmr7097120plp.84.1620159185570;
-        Tue, 04 May 2021 13:13:05 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id md21sm5168152pjb.3.2021.05.04.13.13.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 13:13:04 -0700 (PDT)
-Date:   Tue, 4 May 2021 20:13:01 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH v2 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
-Message-ID: <YJGqzZ/8CS8mSx2c@google.com>
-References: <20210429211833.3361994-1-bgardon@google.com>
- <20210429211833.3361994-8-bgardon@google.com>
+        Tue, 4 May 2021 16:17:01 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id E636E616B584;
+        Tue,  4 May 2021 22:16:02 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id nF_cEsHtKrhB; Tue,  4 May 2021 22:16:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 7E19F616B581;
+        Tue,  4 May 2021 22:16:02 +0200 (CEST)
+Received: from lithops.sigma-star.at ([127.0.0.1])
+        by localhost (lithops.sigma-star.at [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id h1XM32xtwEee; Tue,  4 May 2021 22:16:02 +0200 (CEST)
+Received: from lithops.sigma-star.at (lithops.sigma-star.at [195.201.40.130])
+        by lithops.sigma-star.at (Postfix) with ESMTP id 486B7608A38A;
+        Tue,  4 May 2021 22:16:02 +0200 (CEST)
+Date:   Tue, 4 May 2021 22:16:02 +0200 (CEST)
+From:   Richard Weinberger <richard@nod.at>
+To:     torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-mtd <linux-mtd@lists.infradead.org>
+Message-ID: <1258125270.55580.1620159361990.JavaMail.zimbra@nod.at>
+Subject: [GIT PULL] JFFS2, UBI and UBIFS changes for 5.13
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429211833.3361994-8-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [195.201.40.130]
+X-Mailer: Zimbra 8.8.12_GA_3807 (ZimbraWebClient - FF78 (Linux)/8.8.12_GA_3809)
+Thread-Index: e8eii+QRwXewm5Jz3riefse6I71Cfg==
+Thread-Topic: JFFS2, UBI and UBIFS changes for 5.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021, Ben Gardon wrote:
-> If the TDP MMU is in use, wait to allocate the rmaps until the shadow
-> MMU is actually used. (i.e. a nested VM is launched.) This saves memory
-> equal to 0.2% of guest memory in cases where the TDP MMU is used and
-> there are no nested guests involved.
-> 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  arch/x86/include/asm/kvm_host.h | 11 +++++++
->  arch/x86/kvm/mmu/mmu.c          | 21 +++++++++++--
->  arch/x86/kvm/mmu/mmu_internal.h |  2 +-
->  arch/x86/kvm/x86.c              | 54 ++++++++++++++++++++++++++++++---
->  4 files changed, 80 insertions(+), 8 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index 3900dcf2439e..b8633ed00a6a 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1124,6 +1124,15 @@ struct kvm_arch {
->  #endif /* CONFIG_X86_64 */
->  
->  	bool shadow_mmu_active;
-> +
-> +	/*
-> +	 * If set, the rmap should be allocated for any newly created or
-> +	 * modified memslots. If allocating rmaps lazily, this may be set
-> +	 * before the rmaps are allocated for existing memslots, but
-> +	 * shadow_mmu_active will not be set until after the rmaps are fully
-> +	 * allocated.
-> +	 */
-> +	bool alloc_memslot_rmaps;
+Linus,
 
-Maybe "need_rmaps" or "need_memslot_rmaps"?
+The following changes since commit d434405aaab7d0ebc516b68a8fc4100922d7f5ef:
 
->  };
->  
->  struct kvm_vm_stat {
-> @@ -1855,4 +1864,6 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
->  
->  int kvm_cpu_dirty_log_size(void);
->  
-> +int alloc_all_memslots_rmaps(struct kvm *kvm);
-> +
->  #endif /* _ASM_X86_KVM_HOST_H */
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index e252af46f205..b2a6585bd978 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3125,9 +3125,17 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  	return ret;
->  }
->  
-> -void activate_shadow_mmu(struct kvm *kvm)
-> +int activate_shadow_mmu(struct kvm *kvm)
->  {
-> +	int r;
-> +
-> +	r = alloc_all_memslots_rmaps(kvm);
-> +	if (r)
-> +		return r;
-> +
->  kvm->arch.shadow_mmu_active = true;
+  Linux 5.12-rc7 (2021-04-11 15:16:13 -0700)
 
-If shadow_mmu_active goes away, so does this helper.
+are available in the Git repository at:
 
-> +
-> +	return 0;
->  }
->  
->  static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
-> @@ -3300,7 +3308,9 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
->  		}
->  	}
->  
-> -	activate_shadow_mmu(vcpu->kvm);
-> +	r = activate_shadow_mmu(vcpu->kvm);
-> +	if (r)
-> +		return r;
->  
->  	write_lock(&vcpu->kvm->mmu_lock);
->  	r = make_mmu_pages_available(vcpu);
-> @@ -5491,7 +5501,12 @@ void kvm_mmu_init_vm(struct kvm *kvm)
->  	struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
->  
->  	if (!kvm_mmu_init_tdp_mmu(kvm))
-> -		activate_shadow_mmu(kvm);
-> +		/*
-> +		 * No memslots can have been allocated at this point.
-> +		 * activate_shadow_mmu won't actually need to allocate
-> +		 * rmaps, so it cannot fail.
-> +		 */
-> +		WARN_ON(activate_shadow_mmu(kvm));
+  git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.13-rc1
 
-This is where I really don't like calling the full flow.  VM init is already
-special, I don't see any harm in open coding the setting of the flag.  This also
-provides a good place to document that the smp_store/load business is unnecessary
-since there can't be users.
+for you to fetch changes up to 9a29f7f020e06f14eb126bcb84a7f0d166415824:
 
->  	node->track_write = kvm_mmu_pte_write;
->  	node->track_flush_slot = kvm_mmu_invalidate_zap_pages_in_memslot;
-> -static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
-> +int alloc_memslots_rmaps(struct kvm *kvm, struct kvm_memslots *slots)
-> +{
-> +	struct kvm_memory_slot *slot;
-> +	int r = 0;
-> +
-> +	kvm_for_each_memslot(slot, slots) {
-> +		r = alloc_memslot_rmap(kvm, slot, slot->npages);
-> +		if (r)
-> +			break;
-> +	}
-> +	return r;
-> +}
+  ubi: Remove unnecessary struct declaration (2021-04-15 22:01:25 +0200)
 
-Just open code this in the caller, it's literally one line of code and the
-indentation isn't bad.
+----------------------------------------------------------------
+This pull request contains changes for JFFS2, UBI and UBIFS
 
-> +
-> +int alloc_all_memslots_rmaps(struct kvm *kvm)
-> +{
-> +	struct kvm_memslots *slots;
-> +	int r = 0;
-> +	int i;
-> +
-> +	mutex_lock(&kvm->slots_arch_lock);
-> +	kvm->arch.alloc_memslot_rmaps = true;
-> +
-> +	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-> +		slots = __kvm_memslots(kvm, i);
-> +		r = alloc_memslots_rmaps(kvm, slots);
-> +		if (r)
+JFFS2:
+- Use splice_write()
+- Fix for a slab-out-of-bounds bug
 
-It'd be easier just to destroy the rmaps on failure and then do:
+UBI:
+- Fix for clang related warnings
+- Code cleanup
 
-	if (kvm->arch.needs_memslots_rmaps)
-		return;
+UBIFS:
+- Fix for inode rebirth at replay
+- Set s_uuid
+- Use zstd for default filesystem
 
-	mutex_lock(&kvm->slots_arch_lock);
+----------------------------------------------------------------
+Arnd Bergmann (1):
+      jffs2: avoid Wempty-body warnings
 
-	for (i = 0; i < KVM_ADDRESS_SPACE_NUM; i++) {
-		kvm_for_each_memslot(slot, __kvm_memslots(kvm, i)) {
-			r = alloc_memslot_rmap(kvm, slot, slot->npages);
-				break;
-		}
-	}
+Guochun Mao (1):
+      ubifs: Only check replay with inode type to judge if inode linked
 
-	if (!r)
-		smp_store_release(kvm->arch.needs_memslots_rmaps, true);
-	else
-		kvm_free_rmaps(kvm);
-	mutex_unlock(&kvm->slots_arch_lock);
+Gustavo A. R. Silva (1):
+      ubi: Fix fall-through warnings for Clang
 
+Joel Stanley (1):
+      jffs2: Hook up splice_write callback
 
-and make alloc_memslot_rmap() a pure allocator (no checks on whether it should
-actually do allocations), i.e. push the check to the memslot flow:
+Martin Devera (1):
+      ubifs: Report max LEB count at mount time
 
-static int kvm_alloc_memslot_metadata(struct kvm *kvm,
-				      struct kvm_memory_slot *slot,
-				      unsigned long npages)
-{
-	int i;
-	int r;
+Rui Salvaterra (1):
+      ubifs: Default to zstd compression
 
-	/*
-	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
-	 * old arrays will be freed by __kvm_set_memory_region() if installing
-	 * the new memslot is successful.
-	 */
-	memset(&slot->arch, 0, sizeof(slot->arch));
+Steffen Trumtrar (1):
+      ubifs: Set s_uuid in super block to support ima/evm uuid options
 
-	if (kvm->arch.needs_memslots_rmaps) {
-		r = alloc_memslot_rmap(kvm, slot, npages);
-		if (r)
-			return r;
-	}
+Wan Jiabing (1):
+      ubi: Remove unnecessary struct declaration
 
+lizhe (1):
+      jffs2: Fix kasan slab-out-of-bounds problem
 
-With that, there's no need for the separate shadow_mmu_active flag, and you can
-do s/activate_shadow_mmu/kvm_activate_rmaps or so.
-
-
-> +			break;
-> +	}
-> +	mutex_unlock(&kvm->slots_arch_lock);
-> +	return r;
-> +}
-> +
-> +static int kvm_alloc_memslot_metadata(struct kvm *kvm,
-> +				      struct kvm_memory_slot *slot,
->  				      unsigned long npages)
->  {
->  	int i;
-> @@ -10881,7 +10927,7 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->  	 */
->  	memset(&slot->arch, 0, sizeof(slot->arch));
->  
-> -	r = alloc_memslot_rmap(slot, npages);
-> +	r = alloc_memslot_rmap(kvm, slot, npages);
->  	if (r)
->  		return r;
->  
-> @@ -10954,7 +11000,7 @@ int kvm_arch_prepare_memory_region(struct kvm *kvm,
->  				enum kvm_mr_change change)
->  {
->  	if (change == KVM_MR_CREATE || change == KVM_MR_MOVE)
-> -		return kvm_alloc_memslot_metadata(memslot,
-> +		return kvm_alloc_memslot_metadata(kvm, memslot,
->  						  mem->memory_size >> PAGE_SHIFT);
->  	return 0;
->  }
-> -- 
-> 2.31.1.527.g47e6f16901-goog
-> 
+ drivers/mtd/ubi/build.c |  1 +
+ drivers/mtd/ubi/ubi.h   |  2 --
+ fs/jffs2/file.c         |  1 +
+ fs/jffs2/scan.c         |  2 +-
+ fs/jffs2/summary.h      | 16 ++++++++--------
+ fs/ubifs/replay.c       |  3 ++-
+ fs/ubifs/sb.c           |  3 +++
+ fs/ubifs/super.c        |  6 ++++--
+ 8 files changed, 20 insertions(+), 14 deletions(-)
