@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D5D037317D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:36:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 241A2373182
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:36:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232169AbhEDUhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:37:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232841AbhEDUhM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:37:12 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0B0C06138A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:36:14 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id m190so35470pga.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:36:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=u5wx41z50pCB3+EhCZHMkwVSScXyhuneIJqUcIw0yxo=;
-        b=X50cSRFP/zhaGlqtpXk5ERLSQ3V/fLVmzPvQ0svEtG42GKZ5bZU0Otm9tX8X16D/6R
-         tH7kkO25tK5gE32+2NETMJz713wkX1slowKJj5HLN5ZLm1O9SMAKKW4eGoHHjH+/Yx6n
-         GPwLScjAKKkrsQhVeJWB2s84UkF4Ahqk+/v9PPWRm+X8PsRn1jedNhyfkuvGpeP/uPQU
-         flxq3h+cjEgq3FuMZuBgqOIXb9UtcANXI3RaJ0XgCMBG9EqYpLyCpQ4H8+2IL0iTdlS6
-         gZouv77UQEyjiRAefIG+qoJBOUhs/ULQIcQaDR0qDKfu2rDtAFnQA8OmKZcusmOD8Swh
-         sYRw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=u5wx41z50pCB3+EhCZHMkwVSScXyhuneIJqUcIw0yxo=;
-        b=d+UAP6GRoM7vHVupSyI1KcP4V357XlWJun0idlN87JSjLC4DzEAED5Hgq31B0SgEb9
-         JLR3+K04YOy3uZegJPC6od93cG/XAzf+Bl0SBtmQlp4i9pSGMYOxhtzppQ6eJDm0rQOH
-         Wh1sx5qCiyttwCraS91KomErxtzrgJ/JQdeATThfIKwtYrtuVO5GiOkvhH1AZSvlXRhz
-         tFUUR0ae/H4faleimNSQK51Yro1lSE8QwWij2CqYN94Q9Z7W9+aLqEAF95eFIwmvQsnc
-         yonI4QG1htN09gW6Vt/8PsutOLxd053cljaCL/QsMkPg5V71AddRzk7TCKAhMF4tjRo3
-         YqRA==
-X-Gm-Message-State: AOAM531DMHmYMHAadDVieXSCyBt1kFrLMyzqhXti9tI4WJUzyGQ/O6bf
-        DjtwC/M29yjlAtURMa8xzouriQaIx+42Gg==
-X-Google-Smtp-Source: ABdhPJyED65rMQLUeYEl+sOxFJ98lFAokv9/xtsH+mYINfeH+YUCj0/ep3IgwticVbBLKeZPTFNnpg==
-X-Received: by 2002:a63:5757:: with SMTP id h23mr7111744pgm.279.1620160574215;
-        Tue, 04 May 2021 13:36:14 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id v123sm12979793pfb.80.2021.05.04.13.36.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 13:36:13 -0700 (PDT)
-Date:   Tue, 4 May 2021 20:36:09 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
-        Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH v2 1/7] KVM: x86/mmu: Track if shadow MMU active
-Message-ID: <YJGwOfzTtj4kJIVp@google.com>
-References: <20210429211833.3361994-1-bgardon@google.com>
- <20210429211833.3361994-2-bgardon@google.com>
- <YJGmpOzaFy9E0f5T@google.com>
- <edfadb98-b86e-6d03-bdfc-9025fac73dee@redhat.com>
+        id S232884AbhEDUhk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:37:40 -0400
+Received: from mail.z3ntu.xyz ([128.199.32.197]:44098 "EHLO mail.z3ntu.xyz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231258AbhEDUhf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 16:37:35 -0400
+Received: from localhost.localdomain (84-115-212-105.cable.dynamic.surfer.at [84.115.212.105])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 027D9C5BAA;
+        Tue,  4 May 2021 20:36:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1620160598; bh=v7KS54rjbA7c8/lAm9fiEi2aczYGkzowPPL9lMfTfo0=;
+        h=From:To:Cc:Subject:Date;
+        b=FkylBnEvCXL5q8IDcQ+q4Jc9QoRSO4npwenCE+iIZaTo468GHhmeDS10jB1tL5Y9U
+         /OlljZ7/0Ro35fDtEkpwo187gewaYVXulQQB4rNZXn2mCSG3nCh0bLcS26zPdUi3Hp
+         0EZKp6DuM/LD0ehC8v+Ym19OnxXsEtQ58ZSnXvcw=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     linux-arm-msm@vger.kernel.org
+Cc:     ~postmarketos/upstreaming@lists.sr.ht, Luca Weiss <luca@z3ntu.xyz>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] soc: qcom: socinfo: Add more IDs
+Date:   Tue,  4 May 2021 22:36:13 +0200
+Message-Id: <20210504203612.95056-1-luca@z3ntu.xyz>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <edfadb98-b86e-6d03-bdfc-9025fac73dee@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021, Paolo Bonzini wrote:
-> On 04/05/21 21:55, Sean Christopherson wrote:
-> > But, I think we we can avoid bikeshedding by simply eliminating this flag.  More
-> > in later patches.
-> 
-> Are you thinking of checking slot->arch.rmap[0] directly?  That should work
-> indeed.
-> 
-> > > -	kvm_mmu_init_tdp_mmu(kvm);
-> > > +	if (!kvm_mmu_init_tdp_mmu(kvm))
-> > > +		activate_shadow_mmu(kvm);
-> > Doesn't come into play yet, but I would strongly prefer to open code setting the
-> > necessary flag instead of relying on the helper to never fail.
-> > 
-> 
-> You mean
-> 
-> kvm->arch.shadow_mmu_active = !kvm_mmu_init_tdp_mmu(kvm);
-> 
-> (which would assign to alloc_memslot_rmaps instead if shadow_mmu_active is
-> removed)?  That makes sense.
+Add the IDs for the following families of chips: 8064, 8226, 8610, 8625Q
 
-Ya, that or:
+Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
+---
+ drivers/soc/qcom/socinfo.c | 27 +++++++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
-	if (kvm_mmu_init_tdp_mmu(kvm))
-		kvm->arch.memslots_have_rmaps = true;
+diff --git a/drivers/soc/qcom/socinfo.c b/drivers/soc/qcom/socinfo.c
+index f6cfb79338f0..63f14a2a4ef2 100644
+--- a/drivers/soc/qcom/socinfo.c
++++ b/drivers/soc/qcom/socinfo.c
+@@ -195,11 +195,30 @@ static const struct soc_id soc_id[] = {
+ 	{ 139, "APQ8060AB" },
+ 	{ 140, "MSM8260AB" },
+ 	{ 141, "MSM8660AB" },
++	{ 145, "MSM8626" },
++	{ 147, "MSM8610" },
++	{ 153, "APQ8064AB" },
++	{ 158, "MSM8226" },
++	{ 159, "MSM8526" },
++	{ 161, "MSM8110" },
++	{ 162, "MSM8210" },
++	{ 163, "MSM8810" },
++	{ 164, "MSM8212" },
++	{ 165, "MSM8612" },
++	{ 166, "MSM8112" },
++	{ 168, "MSM8225Q" },
++	{ 169, "MSM8625Q" },
++	{ 170, "MSM8125Q" },
++	{ 172, "APQ8064AA" },
+ 	{ 178, "APQ8084" },
+ 	{ 184, "APQ8074" },
+ 	{ 185, "MSM8274" },
+ 	{ 186, "MSM8674" },
+ 	{ 194, "MSM8974PRO" },
++	{ 198, "MSM8126" },
++	{ 199, "APQ8026" },
++	{ 200, "MSM8926" },
++	{ 205, "MSM8326" },
+ 	{ 206, "MSM8916" },
+ 	{ 207, "MSM8994" },
+ 	{ 208, "APQ8074-AA" },
+@@ -213,6 +232,14 @@ static const struct soc_id soc_id[] = {
+ 	{ 216, "MSM8674PRO" },
+ 	{ 217, "MSM8974-AA" },
+ 	{ 218, "MSM8974-AB" },
++	{ 219, "APQ8028" },
++	{ 220, "MSM8128" },
++	{ 221, "MSM8228" },
++	{ 222, "MSM8528" },
++	{ 223, "MSM8628" },
++	{ 224, "MSM8928" },
++	{ 225, "MSM8510" },
++	{ 226, "MSM8512" },
+ 	{ 233, "MSM8936" },
+ 	{ 239, "MSM8939" },
+ 	{ 240, "APQ8036" },
+-- 
+2.31.1
 
-I don't have a preference between the two variants.
