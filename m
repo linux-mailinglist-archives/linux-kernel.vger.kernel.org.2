@@ -2,124 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 152F13724D4
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 06:12:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 399D23724CB
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 06:03:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229781AbhEDENu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 00:13:50 -0400
-Received: from mail-vi1eur05on2078.outbound.protection.outlook.com ([40.107.21.78]:27360
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229499AbhEDENr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 00:13:47 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UD5xIEfmK06jU+REbk5/Nn0PJsm8jJUMcRuBCD0GxqRVGE7STVzHlfJgWvnCmEpWO/4vjXqH1rNPFOEr8k04TOaZq4gF5YqitFK/tzqqG3gNgvTmCdMtNcvDYRYi4ugJQrohrtA0BuUjf5KzqTeUVUEHOl3Ve75d+5FuwtDrBd4uHie5cmT2EurIHuF6ij0NbUjzyUlu3joGwssyFLeoQssEkaJYdUa/cwnUBnd2yjZyoNC6sYLoi3f3CIKPgQ3J7HWqvVZLByKTNcEqie+/4iKCjjy64WIiITxZfQvbKKDkrHiWrduNls22aeiVF2/DEtn6ObbjiZtb5IwP8UcYKA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dPEJ/lG8JU2bVyaakuHpugrhFip501JmG2op396PoF0=;
- b=HiKeo0rKoTGbCQ7MBEhKRswwiyr3b6eSpmR30h0ffa0KXqcruF3sl+UX6MV9aefrFR25mhNI1BCc2G0g+WJw/JJ53mRW1BCUkBFGP3POLgu4RFC4wqX8/SkWBb00zJx/kOuMOMkLtGfZWIbogv3NBZivQ/WvB45gXm+2/h+ZTOts825AbmAWVs2Q4zbnruoyCpvcvY37IV4QDSSa6eBFjDTCsioPSTY+XPK4TYomT7y5QUXrkx4E55/rDAiDuHd56mLOp724yb3soA2XdID1W4Ee4IEsORfJ3d4DLKuGGkaNxHKkU5UIQ1q59BTKvWlQ7SC57/CRjdaZci2d9HZ3Sg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dPEJ/lG8JU2bVyaakuHpugrhFip501JmG2op396PoF0=;
- b=Zvdc7++YtBsB+4kJo+uICyabU4/ZaIrjypeGs4fTspKN3jAlX17dWtNoSjsR212jC637tZmjSSrikjfitLVoAoZBzoS2VZT37zrOkiwWfMgoq+lSa23W6P4cO0UJZFBU7l2k686cypmA5yMrMwN7hgiDlrIVMX5T8d2NB0Mb/ak=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com (2603:10a6:20b:113::22)
- by AM6PR04MB5703.eurprd04.prod.outlook.com (2603:10a6:20b:a3::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38; Tue, 4 May
- 2021 04:12:51 +0000
-Received: from AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::20f0:2b28:70c3:fb0]) by AM7PR04MB7046.eurprd04.prod.outlook.com
- ([fe80::20f0:2b28:70c3:fb0%4]) with mapi id 15.20.4087.044; Tue, 4 May 2021
- 04:12:51 +0000
-From:   Liu Ying <victor.liu@nxp.com>
-To:     linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc:     tzimmermann@suse.de
-Subject: [PATCH] MAINTAINERS: Fix file name for simple framebuffers' drm driver
-Date:   Tue,  4 May 2021 11:56:51 +0800
-Message-Id: <1620100611-30978-1-git-send-email-victor.liu@nxp.com>
-X-Mailer: git-send-email 2.7.4
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: HK2PR04CA0090.apcprd04.prod.outlook.com
- (2603:1096:202:15::34) To AM7PR04MB7046.eurprd04.prod.outlook.com
- (2603:10a6:20b:113::22)
+        id S229737AbhEDEEL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 00:04:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229499AbhEDEEG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 00:04:06 -0400
+Received: from mail-il1-x135.google.com (mail-il1-x135.google.com [IPv6:2607:f8b0:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4DB3EC061574
+        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 21:03:12 -0700 (PDT)
+Received: by mail-il1-x135.google.com with SMTP id h6so5302132ila.7
+        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 21:03:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=56mc9V9A73cEiKQwEt/CmT2tfj/Xb7ZTWRyNvK3LPcU=;
+        b=sjWwmwPLHvAZ5OYHc8laaQYJ21h6DUy3a/1ZbzgvzYBL1ettIr/V1Cda+PHn6Ur1bg
+         2TNC/juaaivWrbPCDKEXruL5l+jEg2iWLD2viU7ONt/7oMJQxYhKwYMC8toQQ8BymCah
+         pDHDsCeU1JtG7utkSDDiS3o3kQmYwjw7y7jdBAVwmZgNqHYlXRcsQdh/zTWFLMRkZhqe
+         khaOLGwoJ9kaQ0L5KF7nt2PfuwSqsy5zvq6NUna1Y+LUuLXlCpTPh66tMZU/dtKPCe6t
+         XXDjme+ultGz/SXeYKpqZ1Omm+KnStWrmCtnr4HshaFWTL3YHKT4LhLCohAbniuX5wPv
+         WNtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=56mc9V9A73cEiKQwEt/CmT2tfj/Xb7ZTWRyNvK3LPcU=;
+        b=Je9YIArbmMLmi41YY7b7MFcTd37WLozJd1p6IWi55IyKkYBxewQu+1LRI1bGWxj4vU
+         XQN8cODUJtADGz3Rla129p7SfVhpophxux0v4ZLSYm/FFV1iqL6t65E5ZW0ILlDJhUZ9
+         Vj6Kbd7IxksaBAKSNZe63ewRFksIA68eD5ON/SO/IgYl28Qh5wzko4K3+IZoctfC0j3T
+         ZaiPRGO5BKygOozAWLY8LvyCEtl4KKbAXlu6gV8/pRaktUy3vNE6LUhSIdLzI/7m8ebE
+         pxdn1Zp9f6r/IwZbWld2M6Do+9p082GWzu/jvMxKlU4JtS/yM6YARmPEZwIBsNDU3EmV
+         Je8Q==
+X-Gm-Message-State: AOAM530bd98AFl4Xf9JtFrYcXGA8qIvl3DcXCnpb3HcKsX40DxB5Okid
+        CbsmgMGBFDY50X7M7dI9ughy+NuAKA0SEKH/hg8pfA==
+X-Google-Smtp-Source: ABdhPJxYw4qW/PxhIAcTsJBYVxgjOPDbZGLD0/ZW+c9jDDL5xLTlCYuGYFR46HXp51APom4CyuALzoxPZmKV/tvT+ME=
+X-Received: by 2002:a05:6e02:13d3:: with SMTP id v19mr18182359ilj.56.1620100991437;
+ Mon, 03 May 2021 21:03:11 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by HK2PR04CA0090.apcprd04.prod.outlook.com (2603:1096:202:15::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4087.44 via Frontend Transport; Tue, 4 May 2021 04:12:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 9b7a4306-35b6-45f2-954f-08d90eb2e221
-X-MS-TrafficTypeDiagnostic: AM6PR04MB5703:
-X-Microsoft-Antispam-PRVS: <AM6PR04MB570354D16A628C3BFAF16068985A9@AM6PR04MB5703.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: nliwRr8DwSESFWo/6P/1MIqnBT6hyouM+6jeacGa4/p/vzsABDVzpWFSwvgrFBSNYSmuD7jJFJdjIl1O/97X7VTqdWGswvVRoCyXn9A71LSf8Z4HjyX3BE48/ruYV2Luy0P5QZYPtvWJTs9D9bQoN3KYpvrxW7Mg3QNxDbQkbhTAXJeibptzmdXhx2VTvWjKb01U/FmIbDk6+nWO9L309j6/kMXEbcrAveLwtE7HAv2F0lJ3ngrufzD/O2FdG5yw/MKwCbez4BszScNCyHneKF05na+LHNcP01PasBtwlhLItNwKteQjaoEoN+MdIvYgvsjyZF04OocCP111Qa4Lgn4DgOwXZAqMbFYP7mprar3ryCMdG/zNJf4p0dDgPNFSPLefm0QTWjL4qn92A3sjOCisnSMzAcMdzvpk2jpEXGm1iNUuMjKou1qbXxbYnnNdkz/tIXFQxYV3YCbCyLErt7FfZpzcoqrTWoCAGzQAEHjXiOdy6taLDTtZU/8LKxI4EOgvbCcSwiPPNu2IRD6tAnRweGOP223e24WGhgWqnafHfZs2YeiUgPArW0ReJelv2dvY0FFEJGV9czm/Xg+dg9izW03eswofiXcrG4WxRYcS/HRfM+kLRz5eIJPu5dKtTzOHqmSJ2OO4gyl7Wh67Ws3zAv5WweBn8E2iXa8h3pIzdnJJNUFGPWX+yT29vP9d
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM7PR04MB7046.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(39860400002)(136003)(366004)(5660300002)(8936002)(6486002)(38100700002)(8676002)(38350700002)(316002)(83380400001)(4744005)(36756003)(956004)(6512007)(478600001)(66946007)(26005)(6666004)(66476007)(6506007)(4326008)(66556008)(52116002)(86362001)(16526019)(2616005)(2906002)(186003)(69590400013);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?w76mClu1AQoLB4elqi+JccSW2Wfk1F+GOGsijORK96k58aUA/Ng/iF2Ei9dt?=
- =?us-ascii?Q?pi/4D19GD299BVw7c7tjhWAvuffXzpggH9iHXYxltWDj2CyoRVlv97bIcyfV?=
- =?us-ascii?Q?D4RUOTA6k26Ll2aCxx+s6S5Cez02482QY4R67Rhd5F8wqkTRQ4+ZwU5bPTqH?=
- =?us-ascii?Q?vUUkgNitjmzizpnC5f0Q7Q8x0FuLSxDcFwjvW5ZWyBLx9+Ea/zHsIlE7Mpts?=
- =?us-ascii?Q?mRzCb4rzbHjlxDC9zsGIVPqO/WZXuhp2dO49btKECH89aTnIxqyatr3BSkoI?=
- =?us-ascii?Q?pprhZWYi9O5CDRew1fDMUvu/QbmFI0uk7GRACHinMVK/lZhjccJSDnUvxx6O?=
- =?us-ascii?Q?BJ3OvdaR6FiO+x6nFZzbY92JteOpbLA0OWM/U3a3GCM4mMOIlIt8F18dJ6L9?=
- =?us-ascii?Q?8uXID1ftzJWN1CZ6blUp+L+wRRvDFOYv603fJq7EWH1Iu9dh/jtltFMOlr1Q?=
- =?us-ascii?Q?5yOxZULUVaCNZQjL1/XoZZ5r6uOi1DL7zC9FfZlCxFb4AJbeKuB6qK4VWMRU?=
- =?us-ascii?Q?8SQ+2ZDS+SxmvkQ9JdyI8osPDkr+Yp/DWnJg9KHCwM2/xBAO1rW80/Uyx3Cv?=
- =?us-ascii?Q?so7J8a/zji1mL1/TWrzXB06vGhgfWzptJebq8CYjlrydsHFz9J5s7mLtnr4W?=
- =?us-ascii?Q?lTyPaQpPY2r1+j5e/6R2oHtq7InIOTEUoa5vMdj5n9phYhL6j/ylYDOKKGYn?=
- =?us-ascii?Q?WeJpT0ndMISf+gHn32wGxpTn8v45diRzHwrKRxikrndRW1WTQCGqtOiVmFcr?=
- =?us-ascii?Q?NIcaWbTDF0Hts51/6Kr1776rYDvaelL7xzJLDN7ock+vjTHo9fpQNNDB7uX0?=
- =?us-ascii?Q?aDIb4r6DXc4gML6ap6UZdawmGuiN5KH56GVGK3fJK2su7UbGepe08ftPHfv3?=
- =?us-ascii?Q?rBgT+/ezKHAIVP3uerKMKIhHyKhPjgl9Q3XD6CIwYtsV0iiw+B2vld+yoGw6?=
- =?us-ascii?Q?j2f6IAbQq/jdfE7tvqTdz+kF0/DZ2G+aWGV4oVycRDS5FwpZGvSMBGLuPULn?=
- =?us-ascii?Q?5ZWpMCc5y/1X6W6CAZs24z+U2a4g0ABXpQq8m5/13+fz4QBedBwyiQkY2Wi9?=
- =?us-ascii?Q?4f6MOgImJwbZejX7iMR6JK9XCf0kv7kP1gmAFns4ywQl3AwgI43km8GM98T2?=
- =?us-ascii?Q?fRCKuKd9TPISYsckJsKoNbDx6orYlgWu+gSR9/RBPzLJZG2npWgARzJ4aw51?=
- =?us-ascii?Q?BbR82HdJwRtR5vwR0rX4a5gP75TP+e6i4Z4IDp1eCGqlmn5XGyglSEOoYCpB?=
- =?us-ascii?Q?gihO1GyrrT2/WyIzjIpbNhKH44sEivsU8j7Veo4VdAkgC+I9Wud0boZv8sF4?=
- =?us-ascii?Q?hcDL8veLA0BKez8whFRG+L5l?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b7a4306-35b6-45f2-954f-08d90eb2e221
-X-MS-Exchange-CrossTenant-AuthSource: AM7PR04MB7046.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 04:12:51.4387
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YULqSssWRGoDESMbDiKNgsew4VSt52/4StfKu+TR0nxTrDHTyoqNVBGypgXsop1IA5bWSApXBl3GxP5kuxwGLg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM6PR04MB5703
+References: <m14kfjh8et.fsf_-_@fess.ebiederm.org> <20210503203814.25487-1-ebiederm@xmission.com>
+ <20210503203814.25487-10-ebiederm@xmission.com> <m1o8drfs1m.fsf@fess.ebiederm.org>
+ <CANpmjNNOK6Mkxkjx5nD-t-yPQ-oYtaW5Xui=hi3kpY_-Y0=2JA@mail.gmail.com> <m1lf8vb1w8.fsf@fess.ebiederm.org>
+In-Reply-To: <m1lf8vb1w8.fsf@fess.ebiederm.org>
+From:   Peter Collingbourne <pcc@google.com>
+Date:   Mon, 3 May 2021 21:03:00 -0700
+Message-ID: <CAMn1gO7+wMzHoGtp2t3=jJxRmPAGEbhnUDFLQQ0vFXZ2NP8stg@mail.gmail.com>
+Subject: Re: [PATCH 10/12] signal: Redefine signinfo so 64bit fields are possible
+To:     "Eric W. Biederman" <ebiederm@xmission.com>
+Cc:     Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
+        Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The file name for simple framebuffers' drm driver should be
-'simpledrm.c' rather than 'simplekms.c'. This patch fixes it.
+On Mon, May 3, 2021 at 8:42 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
+>
+> Marco Elver <elver@google.com> writes:
+>
+> > On Mon, 3 May 2021 at 23:04, Eric W. Biederman <ebiederm@xmission.com> wrote:
+> >> "Eric W. Beiderman" <ebiederm@xmission.com> writes:
+> >> > From: "Eric W. Biederman" <ebiederm@xmission.com>
+> >> >
+> >> > The si_perf code really wants to add a u64 field.  This change enables
+> >> > that by reorganizing the definition of siginfo_t, so that a 64bit
+> >> > field can be added without increasing the alignment of other fields.
+> >
+> > If you can, it'd be good to have an explanation for this, because it's
+> > not at all obvious -- some future archeologist will wonder how we ever
+> > came up with this definition of siginfo...
+> >
+> > (I see the trick here is that before the union would have changed
+> > alignment, introducing padding after the 3 ints -- but now because the
+> > 3 ints are inside the union the union's padding no longer adds padding
+> > for these ints.  Perhaps you can explain it better than I can. Also
+> > see below.)
+>
+> Yes.  The big idea is adding a 64bit field into the second union
+> in the _sigfault case will increase the alignment of that second
+> union to 64bit.
+>
+> In the 64bit case the alignment is already 64bit so it is not an
+> issue.
+>
+> In the 32bit case there are 3 ints followed by a pointer.  When the
+> 64bit member is added the alignment of _segfault becomes 64bit.  That
+> 64bit alignment after 3 ints changes the location of the 32bit pointer.
+>
+> By moving the 3 preceding ints into _segfault that does not happen.
+>
+>
+>
+> There remains one very subtle issue that I think isn't a problem
+> but I would appreciate someone else double checking me.
+>
+>
+> The old definition of siginfo_t on 32bit almost certainly had 32bit
+> alignment.  With the addition of a 64bit member siginfo_t gains 64bit
+> alignment.  This difference only matters if the 64bit field is accessed.
+> Accessing a 64bit field with 32bit alignment will cause unaligned access
+> exceptions on some (most?) architectures.
+>
+> For the 64bit field to be accessed the code needs to be recompiled with
+> the new headers.  Which implies that when everything is recompiled
+> siginfo_t will become 64bit aligned.
+>
+>
+> So the change should be safe unless someone is casting something with
+> 32bit alignment into siginfo_t.
 
-Signed-off-by: Liu Ying <victor.liu@nxp.com>
----
- MAINTAINERS | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+How about if someone has a field of type siginfo_t as an element of a
+struct? For example:
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 4d10ad6586042..7a9879c14742b 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -5770,7 +5770,7 @@ M:	Thomas Zimmermann <tzimmermann@suse.de>
- L:	dri-devel@lists.freedesktop.org
- S:	Maintained
- T:	git git://anongit.freedesktop.org/drm/drm-misc
--F:	drivers/gpu/drm/tiny/simplekms.c
-+F:	drivers/gpu/drm/tiny/simpledrm.c
- 
- DRM DRIVER FOR SIS VIDEO CARDS
- S:	Orphan / Obsolete
--- 
-2.25.1
+struct foo {
+  int x;
+  siginfo_t y;
+};
 
+With this change wouldn't the y field move from offset 4 to offset 8?
+
+Peter
