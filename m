@@ -2,168 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C12B43731CC
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:14:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 850893731CE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:16:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232830AbhEDVOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 17:14:52 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:40958 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231445AbhEDVOv (ORCPT
+        id S232875AbhEDVRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 17:17:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232860AbhEDVRw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 17:14:51 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1le2Ma-001fqZ-FW; Tue, 04 May 2021 15:13:52 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1le2MZ-00HGan-CR; Tue, 04 May 2021 15:13:52 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <YIpkvGrBFGlB5vNj@elver.google.com>
-        <m11rat9f85.fsf@fess.ebiederm.org>
-        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
-        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
-        <m1r1irpc5v.fsf@fess.ebiederm.org>
-        <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
-        <m1czuapjpx.fsf@fess.ebiederm.org>
-        <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
-        <m14kfjh8et.fsf_-_@fess.ebiederm.org>
-Date:   Tue, 04 May 2021 16:13:47 -0500
-In-Reply-To: <m14kfjh8et.fsf_-_@fess.ebiederm.org> (Eric W. Biederman's
-        message of "Mon, 03 May 2021 15:25:14 -0500")
-Message-ID: <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Tue, 4 May 2021 17:17:52 -0400
+Received: from mail-il1-x12d.google.com (mail-il1-x12d.google.com [IPv6:2607:f8b0:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B85E5C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 14:16:56 -0700 (PDT)
+Received: by mail-il1-x12d.google.com with SMTP id e2so8566ilr.1
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 14:16:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NO76g2V6YO9liWnh4UbX1vxV8zjs7Pw4ACyPlVCyUgY=;
+        b=FxUEulgNjm630aSSiUIdWNw+5aClOyUoVxmAZPKeNQbuP+r6214kJ1TXDXcZGcvzJ6
+         yVhu1OQilQw9gJ7+VE3diVVksHZN8aV4qoQ3olrWU29HfoXxFQT0QcnPAvZd6EuYOavH
+         XN4Tzf5PmgJugVixxb/fS3RJzh1F7MKD7B9b+hiizf8GGFFN1ChpYONsA+JCtSALwVeK
+         gjEjG7go/wJr46tA+lU7c74kbFQjSAaf2VJONJjm+hi8qib/bkEogLZ9LJUaiJg2CcE3
+         /miK/WGaphVKGlLNRYqbXqCCBqR5oU2r3cDoTpUP+oinSgd2FRQSy27EZwWAAloDeT2z
+         9HVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NO76g2V6YO9liWnh4UbX1vxV8zjs7Pw4ACyPlVCyUgY=;
+        b=iO/3KDxp7hky4/yxQ7CNoLh+4eo1AHQnS5CT/yMvIVtwBakcELQz6nwEZKvF7mD2bN
+         /U+Ili/rL74D76vdX8cNe868YF4jQ/fOAIi+2vuE2kz88h8Ar//MSSfZ/JeW7mSOdr3K
+         VwT2RaQXIURZ4lR7UR1/zFvasRDAnjm+ch2rIIbrnSI2bpxxo26PK2D99Dnm2bBN6Ytm
+         uS9FPmF3j4pYwafOjf8QRGfCQzDI4PlGqQFG5852bsbdX5ZY5u4E/e2W/ndUQ2M2QiJ5
+         V6KKBQ61SRECSI3iVIEf4PipOLAUbM8yb77+/bYTo03wklPrg5KR3ld/dboK7W6aIQIG
+         yHCA==
+X-Gm-Message-State: AOAM530xHJrZ8zuoMY7+RaYt4AOqNhxTsJzRgawD9Mi2aEXDDMBfRLMf
+        JTuQ1eH1ZQ2NFYEkIEibrUtirHR/s7Z5vREV7Yw+aw==
+X-Google-Smtp-Source: ABdhPJyjGp6M1Ccx/0P616YGwvLUxrAlDyzng4BCHiM33P2X481G4H2BSk3AI94JS7I+h/glGqhDeO+lcPn9qc4fr5c=
+X-Received: by 2002:a05:6e02:1a8d:: with SMTP id k13mr3708510ilv.31.1620163015905;
+ Tue, 04 May 2021 14:16:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1le2MZ-00HGan-CR;;;mid=<m1tuni8ano.fsf_-_@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18t2On/7dJt0RgDhiKTS9M48FC5+jx0m4U=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.6 required=8.0 tests=ALL_TRUSTED,BAYES_20,
-        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,T_TM2_M_HEADER_IN_MSG,
-        T_TooManySym_01 autolearn=disabled version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_20 BODY: Bayes spam probability is 5 to 20%
-        *      [score: 0.1758]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 470 ms - load_scoreonly_sql: 0.16 (0.0%),
-        signal_user_changed: 15 (3.2%), b_tie_ro: 12 (2.6%), parse: 2.2 (0.5%),
-         extract_message_metadata: 8 (1.8%), get_uri_detail_list: 3.8 (0.8%),
-        tests_pri_-1000: 7 (1.6%), tests_pri_-950: 2.1 (0.4%), tests_pri_-900:
-        1.70 (0.4%), tests_pri_-90: 72 (15.3%), check_bayes: 69 (14.7%),
-        b_tokenize: 14 (3.1%), b_tok_get_all: 10 (2.2%), b_comp_prob: 3.8
-        (0.8%), b_tok_touch_all: 37 (7.8%), b_finish: 1.32 (0.3%),
-        tests_pri_0: 333 (70.7%), check_dkim_signature: 1.09 (0.2%),
-        check_dkim_adsp: 2.6 (0.6%), poll_dns_idle: 0.84 (0.2%), tests_pri_10:
-        2.2 (0.5%), tests_pri_500: 12 (2.6%), rewrite_mail: 0.00 (0.0%)
-Subject: [PATCH v3 00/12] signal: sort out si_trapno and si_perf
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+References: <20210429104707.203055-1-pbonzini@redhat.com> <20210429104707.203055-3-pbonzini@redhat.com>
+ <YIxkTZsblAzUzsf7@google.com> <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
+ <YJF/3d+VBfJKqXV4@google.com> <f7300393-6527-005f-d824-eed5f7f2f8a8@redhat.com>
+ <YJGvrYWLQwiRSNLt@google.com> <55db8e64-763b-9ecc-9c9a-6d840628e763@redhat.com>
+In-Reply-To: <55db8e64-763b-9ecc-9c9a-6d840628e763@redhat.com>
+From:   Steve Rutherford <srutherford@google.com>
+Date:   Tue, 4 May 2021 14:16:20 -0700
+Message-ID: <CABayD+eAJjVjoh9GAnvC9z64pL9GnpHomCqXtw_=EPDr=vz7hA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS hypercall
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ashish Kalra <ashish.kalra@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        X86 ML <x86@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 4, 2021 at 1:56 PM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 04/05/21 22:33, Sean Christopherson wrote:
+> > On Tue, May 04, 2021, Paolo Bonzini wrote:
+> >> On 04/05/21 19:09, Sean Christopherson wrote:
+> >>> On Sat, May 01, 2021, Paolo Bonzini wrote:
+> >>>> - make it completely independent from migration, i.e. it's just a facet of
+> >>>> MSR_KVM_PAGE_ENC_STATUS saying whether the bitmap is up-to-date.  It would
+> >>>> use CPUID bit as the encryption status bitmap and have no code at all in KVM
+> >>>> (userspace needs to set up the filter and implement everything).
+> >>>
+> >>> If the bit is purely a "page encryption status is up-to-date", what about
+> >>> overloading KVM_HC_PAGE_ENC_STATUS to handle that status update as well?   That
+> >>> would eliminate my biggest complaint about having what is effectively a single
+> >>> paravirt feature split into two separate, but intertwined chunks of ABI.
+> >>
+> >> It's true that they are intertwined, but I dislike not having a way to read
+> >> the current state.
+> >
+> >  From the guest?
+>
+> Yes, host userspace obviously doesn't need one since it's implemented
+> through an MSR filter.  It may not be really necessary to read it, but
+> it's a bit jarring compared to how the rest of the PV APIs uses MSRs.
+>
+> Also from a debugging/crashdump point of view the VMM may have an
+> established way to read an MSR from a vCPU, but it won't work if you
+> come up with a new way to set the state.
 
-This set of changes sorts out the ABI issues with SIGTRAP TRAP_PERF, and
-hopefully will can get merged before any userspace code starts using the
-new ABI.
+Agreed on the preference for an MSR. I particularly appreciate that it
+reduces the kernel footprint for these changes.
 
-The big ideas are:
-- Placing the asserts first to prevent unexpected ABI changes
-- si_trapno becomming ordinary fault subfield.
-- struct signalfd_siginfo is almost full
 
-This set of changes starts out with Marco's static_assert changes and
-additional one of my own that enforces the fact that the alignment of
-siginfo_t is also part of the ABI.  Together these build time
-checks verify there are no unexpected ABI changes in the changes
-that follow.
-
-The field si_trapno is changed to become an ordinary extension of the
-_sigfault member of siginfo.
-
-The code is refactored a bit and then si_perf_type is added along side
-si_perf_data in the _perf subfield of _sigfault of siginfo_t.
-
-Finally the signalfd_siginfo fields are removed as they appear to be
-filling up the structure without userspace actually being able to use
-them.
-
-v2: https://lkml.kernel.org/r/m14kfjh8et.fsf_-_@fess.ebiederm.org
-v1: https://lkml.kernel.org/r/m1zgxfs7zq.fsf_-_@fess.ebiederm.org
-
-Eric W. Biederman (9):
-      signal: Verify the alignment and size of siginfo_t
-      siginfo: Move si_trapno inside the union inside _si_fault
-      signal: Implement SIL_FAULT_TRAPNO
-      signal: Use dedicated helpers to send signals with si_trapno set
-      signal: Remove __ARCH_SI_TRAPNO
-      signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
-      signal: Factor force_sig_perf out of perf_sigtrap
-      signal: Deliver all of the siginfo perf data in _perf
-      signalfd: Remove SIL_FAULT_PERF_EVENT fields from signalfd_siginfo
-
-Marco Elver (3):
-      sparc64: Add compile-time asserts for siginfo_t offsets
-      arm: Add compile-time asserts for siginfo_t offsets
-      arm64: Add compile-time asserts for siginfo_t offsets
-
- arch/alpha/include/uapi/asm/siginfo.h              |   2 -
- arch/alpha/kernel/osf_sys.c                        |   2 +-
- arch/alpha/kernel/signal.c                         |   4 +-
- arch/alpha/kernel/traps.c                          |  24 ++---
- arch/alpha/mm/fault.c                              |   4 +-
- arch/arm/kernel/signal.c                           |  39 +++++++
- arch/arm64/kernel/signal.c                         |  39 +++++++
- arch/arm64/kernel/signal32.c                       |  39 +++++++
- arch/mips/include/uapi/asm/siginfo.h               |   2 -
- arch/sparc/include/uapi/asm/siginfo.h              |   3 -
- arch/sparc/kernel/process_64.c                     |   2 +-
- arch/sparc/kernel/signal32.c                       |  37 +++++++
- arch/sparc/kernel/signal_64.c                      |  36 +++++++
- arch/sparc/kernel/sys_sparc_32.c                   |   2 +-
- arch/sparc/kernel/sys_sparc_64.c                   |   2 +-
- arch/sparc/kernel/traps_32.c                       |  22 ++--
- arch/sparc/kernel/traps_64.c                       |  44 ++++----
- arch/sparc/kernel/unaligned_32.c                   |   2 +-
- arch/sparc/mm/fault_32.c                           |   2 +-
- arch/sparc/mm/fault_64.c                           |   2 +-
- arch/x86/kernel/signal_compat.c                    |  15 ++-
- fs/signalfd.c                                      |  23 ++---
- include/linux/compat.h                             |  10 +-
- include/linux/sched/signal.h                       |  13 +--
- include/linux/signal.h                             |   3 +-
- include/uapi/asm-generic/siginfo.h                 |  20 ++--
- include/uapi/linux/signalfd.h                      |   4 +-
- kernel/events/core.c                               |  11 +-
- kernel/signal.c                                    | 113 +++++++++++++--------
- .../selftests/perf_events/sigtrap_threads.c        |  12 +--
- 30 files changed, 373 insertions(+), 160 deletions(-)
+Steve
