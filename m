@@ -2,88 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A66F372F48
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBCD8372F4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232197AbhEDRyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:54:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47712 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232222AbhEDRyO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:54:14 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A1D4C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:53:18 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso9047380otl.0
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:53:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zBVMDvBEgjOjeMHbsEdTwYO7oiRFE8elSZdEfzu5kjo=;
-        b=Hwj5AUvMrkRZauysJ4VIPZwfbnyHCjpUlARF9+kvnwXT7wKAuwkiCxrkcYY3bdDBFn
-         TEUc9RwalezA/Ckl+j7dqQymKma/SAYUwK6AZOImiV1IE93bVdcOVHcVLfFeoXtIFSjO
-         WyHBfaAyMJTsNoGt94zojRlK4hvKRV5Ben96Dd/KEqG/L93A93JlgiO5/MJ2FkiKokPO
-         LP0HemyBSPR8eJiHlwoMtgTUvV3pAn0H4u8Mhgg+MQX5P45th0DljBpemVYxJyuoxshY
-         Au9dpfeGBkduOEELK7ULyvyGjy53epUFFrz1yA9X6WHSYSNU7nc5bdsIuKUpL/ggN3+k
-         LcJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zBVMDvBEgjOjeMHbsEdTwYO7oiRFE8elSZdEfzu5kjo=;
-        b=EtOjA9cWFI7NeX5ieylfHyM5sTOGzCqtnXu3Dj6LUlGhk6+JtyzccbuTAzs8gzMD7D
-         BLhWBRAGATNFUatemFwzzdm0nM+ZAcpHqgfM9+AzvJJ29OKl6DEvsh/2RR1gsbiDT989
-         tlLwrvPoux4Y4xd4ntxjvvAolHTt22YUjhuUio6Yg69rE1zjO43uEV2+sKkc0Vy943VG
-         zhF8AS76QV7RADkvcMb1o5Pq8JVk/xG4vpVgMRB/SQuD8zSYnsNABFfJTUtPejLeuv6B
-         jwhJpw6cMk7XHU/17UhwmB/LYZzNfEhKLXw84E2V7Xrt6Y4aCGoquDhQkUAnG9qcERgr
-         Mo5g==
-X-Gm-Message-State: AOAM531nBIWt7ir7xJGdNuWVKxlgNTlDFYapadyhYoa87szAT7LCITDY
-        PIVYpGUHygvZVCa/jYV6NCpDzlrsXkMAsNNEjIdVcA==
-X-Google-Smtp-Source: ABdhPJybH8tugiuOvAR59PbiEySOPnTUmRDfAz8EGG36kg/E0g04w83cO+/0DMLypHj9WwWuxaOMfd0B90CRESZwTus=
-X-Received: by 2002:a9d:1b4d:: with SMTP id l71mr20519674otl.241.1620150797159;
- Tue, 04 May 2021 10:53:17 -0700 (PDT)
+        id S232138AbhEDR5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:57:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49760 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230285AbhEDR5e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 13:57:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7416F61076;
+        Tue,  4 May 2021 17:56:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620150997;
+        bh=GEHj4bfA2qK0agu2/aTvuXZ4ztOXSkpgNUkIjTGXWgo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QmKwdX9CwO7xEZAkyD+O7KS465kxbRonWmYRid7adAVThMcZCeTBVe3CKFawBh7jm
+         MNXOsAvYfqd2AjeE/iyHv7iQl8Yp+dt8uz7DBnOnQBeMht5mjmQWTmj1JKeg4Ozd88
+         3NLzAFWlVMqbAtKzE12tVQCFsa889KATgUlA14Yc=
+Date:   Tue, 4 May 2021 19:56:35 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: rtl8723bs: use generic kernel error codes
+Message-ID: <YJGK06THHi5aGFGo@kroah.com>
+References: <c94e5865e59d35fe0e39d5cd46d71ad4a752ddd4.1620144194.git-series.hello@bryanbrattlof.com>
+ <YJFziyZHnbsWdTFn@kroah.com>
+ <20210504174530.3kog7zq6tuk3wnlk@bryanbrattlof.com>
 MIME-Version: 1.0
-References: <20210504171734.1434054-1-seanjc@google.com> <20210504171734.1434054-2-seanjc@google.com>
- <CALMp9eToSSQ=8Dy4Vt5-GYEB4YB9c6-LTp8c60C97LOY9ufdjg@mail.gmail.com>
-In-Reply-To: <CALMp9eToSSQ=8Dy4Vt5-GYEB4YB9c6-LTp8c60C97LOY9ufdjg@mail.gmail.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 4 May 2021 10:53:06 -0700
-Message-ID: <CALMp9eQEP32pqFMtn2WZy1B_Aq1x-J52WhF2tC0dNd0vrdhmPg@mail.gmail.com>
-Subject: Re: [PATCH 01/15] KVM: VMX: Do not adverise RDPID if ENABLE_RDTSCP
- control is unsupported
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210504174530.3kog7zq6tuk3wnlk@bryanbrattlof.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 10:37 AM Jim Mattson <jmattson@google.com> wrote:
->
-> On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
+On Tue, May 04, 2021 at 05:45:37PM +0000, Bryan Brattlof wrote:
+> Sorry for the spam Greg I dropped the mailing lists from the first
+> email.  :(
+> 
+> On Tue, May 04, 2021 at 06:17:15PM +0200, Greg Kroah-Hartman wrote:
+> >On Tue, May 04, 2021 at 04:07:48PM +0000, Bryan Brattlof wrote:
+> 
+> <snip>
+> 
+> >> @@ -139,12 +139,11 @@ static u32 sdio_init(struct dvobj_priv *dvobj)
+> >>  	psdio_data->tx_block_mode = 1;
+> >>  	psdio_data->rx_block_mode = 1;
+> >>
+> >> +	return err;
+> >> +
+> >>  release:
+> >>  	sdio_release_host(func);
+> >> -
+> >> -	if (err)
+> >> -		return _FAIL;
+> >> -	return _SUCCESS;
+> >> +	return err;
+> >>  }
 > >
-> > Clear KVM's RDPID capability if the ENABLE_RDTSCP secondary exec control is
-> > unsupported.  Despite being enumerated in a separate CPUID flag, RDPID is
-> > bundled under the same VMCS control as RDTSCP and will #UD in VMX non-root
-> > if ENABLE_RDTSCP is not enabled.
+> >You just changed the logic here, are you SURE that was ok to do?
 > >
-> > Fixes: 41cd02c6f7f6 ("kvm: x86: Expose RDPID in KVM_GET_SUPPORTED_CPUID")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
->
-> But KVM will happily emulate RDPID if the instruction causes a #UD
-> VM-exit, won't it? See commit fb6d4d340e05 (KVM: x86: emulate RDPID).
+> 
+> I can't say my brain didn't bleed a little trying to keep this straight
+> in my head while walking through this. (For what ever reason my brain
+> sees negative integers as False) ¯\_(ツ)_/¯
+> 
+> Both the sdio_enable_func() and sdio_set_block_size() will return a
+> negative integer if they fail, which we evaluate as True, allowing us to
+> jump to release, free the card and propagate the error backwards.
+> 
+> If everything worked, we'll skip all the jumps until we get to the first
+> 'return err;' statement, returning our 0 for success.
+> 
+> Inside sdio_dvobj_init() if we see 'anything below 0' (This probably
+> should be changed to 'anything True') we jump to free_dvobj where we
+> free the dvobj and return NULL
+> 
+> If I've looked at this long enough I don't thing I changed the logic.
+> 
+> Hopefully. :)
 
-Oh, after reading the second patch, I now see why this is needed.
+So you need to document this really well, showing that the function
+whose error you changed, is being evaluated here now differently too.
 
-You mispelled 'advertise' in the summary line.
+> >>  static void sdio_deinit(struct dvobj_priv *dvobj)
+> >> @@ -186,7 +185,7 @@ static struct dvobj_priv *sdio_dvobj_init(struct sdio_func *func)
+> >>  	psdio = &dvobj->intf_data;
+> >>  	psdio->func = func;
+> >>
+> >> -	if (sdio_init(dvobj) != _SUCCESS)
+> >> +	if (sdio_init(dvobj) < 0)
+> >>  		goto free_dvobj;
+> >>
+> >>  	rtw_reset_continual_io_error(dvobj);
+> >>
+> >> base-commit: 9ccce092fc64d19504fa54de4fd659e279cc92e7
+> >> --
+> >> git-series 0.9.1
+> >>
+> >>
+> >
+> >And that's all to remove the need for these crazy error values?  If so,
+> >why not also remove the #defines for them as well?
+> >
+> 
+> I might have over sold this patch. :)
+> 
+> There are quite a few functions like this still here that need to be
+> converted before we can get rid of the _SUCCESS and _FAIL definitions.
+> 
+> Would it be better if I bundled these up in a series?
 
-Reviewed-by: Jim Mattson <jmattson@google.com>
+Do it one function "call-chain" at a time, and yes, a series would be
+great.
+
+thanks,
+
+greg k-h
