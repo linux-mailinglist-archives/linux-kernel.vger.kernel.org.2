@@ -2,97 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91FEE37275E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18FDD37275F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230121AbhEDIkg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:40:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40334 "EHLO mail.kernel.org"
+        id S230166AbhEDIki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:40:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40344 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230061AbhEDIhT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:37:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 52435613B3;
+        id S230108AbhEDIhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 04:37:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 67AD7613C4;
         Tue,  4 May 2021 08:36:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620117385;
-        bh=P4R0wIusFfi+tbxKIZS7tgEnt8ABZzayysHovlokyMo=;
-        h=From:To:Cc:Subject:Date:From;
-        b=bIPqeI8pW4RBFXUepre+PYKq1BHhmvJ8C6VpOjZxh6kF+0XT6h8eqrIvVbE/eQfhQ
-         DpqV+H2if46G4y+VWTPXKdUdvyoephpaqXzg3O+hvkhTJH3AvfpjtPHlcwSMmXkehY
-         4KH/zPjsTHKa5MImDS81sei29P9hyeYRSiqAdFgYSFOEp3sNzXxC06kr/eOBBONFY9
-         INf71MfINptRxTHQk+e0XvfqiwbXMu8zXAItR9rGfwBHn8qAG6jGtPeD9ErfF9478W
-         bDg3r5cI6UyBQv42V9jjT0ZWTCcfuL9BEnXDo52lj1fjemB+Sl6zlrwgy8VkRO7Onp
-         I/BenehoI9oSw==
+        bh=FTUYwzBsfmH9HtTIoXaIZ7BmgshUPslDQNyHscw0au8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=Wj85VQOMIqoP6o1odMBeCc74EpJjcuxewMDwf2J8Nt/K+Ko5H659agmD0TAPXvhRQ
+         WWkmUs7JwENIPVTB9RB5kGsvd6EhA41C99XOekyd9q2ZS1i7y3dXBFxtUFixZdC89G
+         9f1sfTCq6KoOiyR7CgzCVD1qTOHPb0DUbzXrZ2JVZuggXBYkl+R9qtlMCRRYq2RwgT
+         r2M6DDcfTlAG8H03u08su9GW2sdBJ/1PbNPCS/bXch3uYjYKb/9e4kfpq1yaCI4B8U
+         TT8hDv/8rjwm5+F6faMivN5oeZLpINXimzR/pC1jaMwXUIPd5zt69qNoCCHukPQdlI
+         nqEkUr16HifcA==
 Received: by wens.tw (Postfix, from userid 1000)
-        id 2BA645FBFA; Tue,  4 May 2021 16:36:23 +0800 (CST)
+        id 380F55FB8B; Tue,  4 May 2021 16:36:23 +0800 (CST)
 From:   Chen-Yu Tsai <wens@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
+Cc:     Cameron Nemo <cnemo@tutanota.com>, devicetree@vger.kernel.org,
         linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/4] arm64: dts: rockchip: rk3328: Enable USB3 on some SBCs
-Date:   Tue,  4 May 2021 16:36:12 +0800
-Message-Id: <20210504083616.9654-1-wens@kernel.org>
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Chen-Yu Tsai <wens@csie.org>
+Subject: [PATCH 1/4] arm64: dts: rockchip: rk3328: Enable USB3 for Rock64
+Date:   Tue,  4 May 2021 16:36:13 +0800
+Message-Id: <20210504083616.9654-2-wens@kernel.org>
 X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210504083616.9654-1-wens@kernel.org>
+References: <20210504083616.9654-1-wens@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+From: Cameron Nemo <cnemo@tutanota.com>
 
-Hi everyone,
+Enable USB3 nodes for the rk3328-based PINE Rock64 board.
 
-Here are some patches that enable USB3 on RK3328 SBCs that I own. The
-changes are quite straightforward, except for the NanoPi R2S, which
-has a USB3 Ethernet chip attached. I am aware that there's already a
-patch [1] for that. This is my spin on things using the USB device
-binding, with comments on how the USB ports are arranged, that I had
-done but couldn't find the time to send out.
+The separate power regulator is not added as it is controlled by the
+same GPIO line as the existing VBUS regulators, so it is already
+enabled. Also there is no port representation to tie the regulator to.
 
-The last patch also results in some warnings from checkpatch.pl:
+Signed-off-by: Heiko Stuebner <heiko@sntech.de>
+Signed-off-by: Cameron Nemo <cnemo@tutanota.com>
+[wens@csie.org: Rewrote commit message]
+[wens@csie.org: Rebased onto v5.12]
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+---
+ arch/arm64/boot/dts/rockchip/rk3328-rock64.dts | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-    WARNING: DT compatible string "usbbda,8153" appears un-documented -- 
-	check ./Documentation/devicetree/bindings/
-    #88: FILE: arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts:398:
-    +               compatible = "usbbda,8153";
-
-    WARNING: DT compatible string vendor "usbbda" appears un-documented -- 
-	check ./Documentation/devicetree/bindings/vendor-prefixes.yaml
-    #88: FILE: arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts:398:
-    +               compatible = "usbbda,8153";
-
-At least the first warning should be covered by the USB device binding
-
-    Documentation/devicetree/bindings/usb/usb-device.yaml
-
-while we probably should add an exception to vendor-prefixes.yaml for
-the second warning.
-
-Please let me know what you think.
-
-
-Regards
-ChenYu
-
-[1] https://lore.kernel.org/linux-rockchip/20210405093423.16149-1-cnsztl@gmail.com/
-
-
-Cameron Nemo (1):
-  arm64: dts: rockchip: rk3328: Enable USB3 for Rock64
-
-Chen-Yu Tsai (3):
-  arm64: dts: rockchip: rk3328: Enable USB3 for ROC-RK3328-CC
-  arm64: dts: rockchip: rk3328: Enable USB3 for Rock Pi E
-  arm64: dts: rockchip: rk3328: Enable USB3 Ethernet on NanoPi R2S
-
- .../boot/dts/rockchip/rk3328-nanopi-r2s.dts   | 32 +++++++++++++++++++
- .../arm64/boot/dts/rockchip/rk3328-roc-cc.dts |  5 +++
- .../boot/dts/rockchip/rk3328-rock-pi-e.dts    |  5 +++
- .../arm64/boot/dts/rockchip/rk3328-rock64.dts |  5 +++
- 4 files changed, 47 insertions(+)
-
+diff --git a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
+index 3bef1f39bc6e..1b0f7e4551ea 100644
+--- a/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
++++ b/arch/arm64/boot/dts/rockchip/rk3328-rock64.dts
+@@ -381,6 +381,11 @@ &usb20_otg {
+ 	status = "okay";
+ };
+ 
++&usbdrd3 {
++	dr_mode = "host";
++	status = "okay";
++};
++
+ &usb_host0_ehci {
+ 	status = "okay";
+ };
 -- 
 2.31.1
 
