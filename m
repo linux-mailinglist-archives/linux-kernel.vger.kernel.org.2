@@ -2,87 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EF6837314A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:17:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 730A837314C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:18:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231601AbhEDUSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:18:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230301AbhEDUSn (ORCPT
+        id S231702AbhEDUTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:19:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53235 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230301AbhEDUTs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:18:43 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 916D0C061574;
-        Tue,  4 May 2021 13:17:48 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1le1U4-004AHK-M9; Tue, 04 May 2021 22:17:32 +0200
-Message-ID: <70868660127bd13dcc47e94108483ff15827378c.camel@sipsolutions.net>
-Subject: Re: [PATCH 2/2] kconfig: unify cc-option and as-option
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kbuild@vger.kernel.org
-Cc:     Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Date:   Tue, 04 May 2021 22:17:30 +0200
-In-Reply-To: <20200614144341.1077495-2-masahiroy@kernel.org>
-References: <20200614144341.1077495-1-masahiroy@kernel.org>
-         <20200614144341.1077495-2-masahiroy@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Tue, 4 May 2021 16:19:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620159532;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=QJf7ER3TDUPpx69gjjjuRZbp8LhbACyEKSP42GGHdNw=;
+        b=Huq45OuJwddEpbAzCtZKTeBWSowrF2yvBSYTJQFxKEFrM1g8+dda3S87MBePDaoxWMg3cd
+        bQBljwUoNajYHELugxL64RmJifGqYPDzPQPPoazYXwoKmBTFokjKJIFr4g0ZhiZ1vQmDxW
+        9W9Bzo17lChxowufouQ1BvuCcQkbRno=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-14-2-reaFVqPZ2jMy3HppmZDg-1; Tue, 04 May 2021 16:18:50 -0400
+X-MC-Unique: 2-reaFVqPZ2jMy3HppmZDg-1
+Received: by mail-ed1-f70.google.com with SMTP id i17-20020a50fc110000b0290387c230e257so6977429edr.0
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:18:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=QJf7ER3TDUPpx69gjjjuRZbp8LhbACyEKSP42GGHdNw=;
+        b=W590yUWASmCJyzEG6yJzzLqnVHwxjZOahoCggiPBxp/qipphmd31fMczByrZJRk8EM
+         KJJ52aBkJKdyHcHvB0kPriSe5FPM/Z9WoLJe2TYnrXT1rlGs2mS01CJ2Lws1iNU7ALqV
+         Frdyal1zRgODmswj3p1C8I9G+wxr+RP9SNBxIswIGoxBHk3asF384IasEt1bWijJxDMz
+         aCsb/ZAJvZKLJ8qEayaKuz2Is7khCx/h4xqMwQ56P1uQJ6V1vTGCuHRjPAARiAmNWmZH
+         EuuDlk290osGJr/m2lmmE7zum2HrAXRSCPabmxqN9gOoVwxCAQT2W1PJ0TtSs7sinxKD
+         vnWg==
+X-Gm-Message-State: AOAM530srDOal4KjjOSyAKr3Y8TMQCTkIwnEm8etovEwAZZN6lHvIgu+
+        iHJ8lT9AXrLrYMitXssTfOew+nHdI3cku5yApAUaD0EzWU7l6EYFmQTEwvugpMIKNH9SqVFR9up
+        863qKf9ZoW7VMnQ6FecqPqwda
+X-Received: by 2002:a17:906:e105:: with SMTP id gj5mr24371327ejb.388.1620159528937;
+        Tue, 04 May 2021 13:18:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxPW3cE3OvV+sifWvUG52jfXFijecUpZWkEi4GWpuQsW03z9NVNRFBAl8LL0HoXyCoYIPnvbw==
+X-Received: by 2002:a17:906:e105:: with SMTP id gj5mr24371314ejb.388.1620159528740;
+        Tue, 04 May 2021 13:18:48 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id o20sm14995116eds.65.2021.05.04.13.18.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 13:18:48 -0700 (PDT)
+To:     Ben Gardon <bgardon@google.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
+        Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+References: <20210429211833.3361994-1-bgardon@google.com>
+ <20210429211833.3361994-2-bgardon@google.com>
+ <e9090079-2255-5a70-f909-89f6f65c12ed@redhat.com>
+ <CANgfPd9O3d9b+WYgo+ke1Jx50=ep_f-ZC1gRqUET6PDsLxW+Gw@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v2 1/7] KVM: x86/mmu: Track if shadow MMU active
+Message-ID: <34fe30b6-0d4b-f1e8-9abd-6cb0a0765492@redhat.com>
+Date:   Tue, 4 May 2021 22:18:40 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <CANgfPd9O3d9b+WYgo+ke1Jx50=ep_f-ZC1gRqUET6PDsLxW+Gw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-malware-bazaar: not-scanned
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-So... I realized it's been a while:
-
-On Sun, 2020-06-14 at 23:43 +0900, Masahiro Yamada wrote:
-> cc-option and as-option are almost the same; both pass the flag to
-> $(CC). The main difference is the cc-option stops before the assemble
-> stage (-S option) whereas as-option stops after it (-c option).
+On 04/05/21 19:26, Ben Gardon wrote:
+> On Mon, May 3, 2021 at 6:42 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>>
+>> On 29/04/21 23:18, Ben Gardon wrote:
+>>> +void activate_shadow_mmu(struct kvm *kvm)
+>>> +{
+>>> +     kvm->arch.shadow_mmu_active = true;
+>>> +}
+>>> +
+>>
+>> I think there's no lock protecting both the write and the read side.
+>> Therefore this should be an smp_store_release, and all checks in
+>> patch 2 should be an smp_load_acquire.
 > 
+> That makes sense.
+> 
+>>
+>> Also, the assignments to slot->arch.rmap in patch 4 (alloc_memslot_rmap)
+>> should be an rcu_assign_pointer, while __gfn_to_rmap must be changed like so:
+>>
+>> +       struct kvm_rmap_head *head;
+>> ...
+>> -       return &slot->arch.rmap[level - PG_LEVEL_4K][idx];
+>> +       head = srcu_dereference(slot->arch.rmap[level - PG_LEVEL_4K], &kvm->srcu,
+>> +                                lockdep_is_held(&kvm->slots_arch_lock));
+>> +       return &head[idx];
+> 
+> I'm not sure I fully understand why this becomes necessary after patch
+> 4. Isn't it already needed since the memslots are protected by RCU? Or
+> is there already a higher level rcu dereference?
+> 
+> __kvm_memslots already does an srcu dereference, so is there a path
+> where we aren't getting the slots from that function where this is
+> needed?
 
-But, I had noticed for a while now that M= build for an out-of-tree
-driver were causing some trouble. Not really completely "out-of-tree"
-but rather backported (https://backports.wiki.kernel.org/).
+There are two point of views:
 
-And then I finally narrowed it down to this commit, specifically this:
+1) the easier one is just CONFIG_PROVE_RCU debugging: the rmaps need to 
+be accessed under RCU because the memslots can disappear as soon as 
+kvm->srcu is unlocked.
 
->  # Return y if the compiler supports <flag>, n otherwise
-> -cc-option = $(success,$(CC) -Werror $(CLANG_FLAGS) $(1) -S -x c /dev/null -o /dev/null)
-> +cc-option = $(success,mkdir .tmp_$$$$; trap "rm -rf .tmp_$$$$" EXIT; $(CC) -Werror $(CLANG_FLAGS) $(1) -c -x c /dev/null -o .tmp_$$$$/tmp.o)
+2) the harder one (though at this point I'm better at figuring out these 
+ordering bugs than "traditional" mutex races) is what the happens before 
+relation[1] looks like.  Consider what happens if the rmaps are 
+allocated by *another thread* after the slots have been fetched.
 
-What happens is that we're doing
+thread 1		thread 2		thread 3
+allocate memslots
+rcu_assign_pointer
+			slots = srcu_dereference
+						allocate rmap
+						rcu_assign_pointer
+			head = slot->arch.rmap[]
 
- make -C /path/to/kernel M=/path/to/driver
+Here, thread 3 is allocating the rmaps in the SRCU-protected 
+kvm_memslots; those rmaps that didn't exist at the time thread 1 did the 
+rcu_assign_pointer (which synchronizes with thread 2's srcu_dereference 
+that retrieves slots), hence they were not covered by the release 
+semantics of that rcu_assign_pointer and the "consume" semantics of the 
+corresponding srcu_dereference.  Therefore, thread 2 needs another 
+srcu_dereference when retrieving them.
 
-But /path/to/kernel may be the installed distro kernel headers, and thus
-not be writable to the user doing the driver compile. Obviously, the
-user may need to 'sudo' anyway to install the result, but if just test-
-compiling, or even as better practice to not run everything as root,
-this ".tmp_$$" dir cannot be created.
+Paolo
 
-IOW, this broke compiler option detection when KBUILD_EXTMOD=/M= is
-used. It seems this is still supported (documented in kbuild docs), so
-I'm kind of hoping it could be fixed? But OTOH, I really don't know how,
-perhaps just using "mktemp -d" here instead of the hardcoded temp dir?
+[1] https://lwn.net/Articles/844224/
 
-Thanks,
-johannes
+> I wouldn't say that the rmaps are protected by RCU in any way that
+> separate from the memslots.
 
