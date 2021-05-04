@@ -2,186 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70A57372A09
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FF7A372A0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:26:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230246AbhEDM1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:27:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhEDM1R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:27:17 -0400
-Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C29C061574;
-        Tue,  4 May 2021 05:26:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
-         s=42; h=Date:Message-ID:Cc:To:From;
-        bh=ZbfDCAxqtj0cfVzLcBzaHYoyu3xyh+hGqRNR2qCY/MU=; b=spQexJEC9bVqjX/s2JORxAuyUW
-        2s4vZyLrSYkF/fdR7LnU7q3LrTLHEcXLK8TDZF1vXAzgwqlmo65keQIV5UAmHHuiX1gzEwSKu1tfj
-        grMKaiPMF6fPc7mQz2BZyZRzXB4mcS8++8t6Ln2CYjvTQcxEpB8T4V2hnUq83FpUKmOtyqwZU8VBi
-        QB5IgXaMTsStKbf0796hMttd7X8V3bkBjmJN/3rYPDsrXA7WmEXTUv1UywwF5MeeKyedlOjb+8fqy
-        HJjWIxXVdEeJOSqF46ZBFwLtVwFS+6jMR+vaKZApvtR6xa6gstAESjV43t33O+VR+wTN60jvhBnka
-        sgWl2dki1QocQzXnt6xhjocq0M1z9nt92H4KqdJUVcojSI0873mDooxK0DmY9ZfZ3nUi56cw9kRA5
-        eqBgG89EQ/kV9NIGiYUD7DNKfJenWgQSUE9rxbdaQckRd3uYO2AgBC8+rA8xV6KKlmRf2fHKYxbvp
-        b4UmfH8H4mTRjLRIMyBQzwHr;
-Received: from [127.0.0.2] (localhost [127.0.0.1])
-        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
-        (Exim)
-        id 1ldu82-0005QC-VK; Tue, 04 May 2021 12:26:19 +0000
-From:   Stefan Metzmacher <metze@samba.org>
-To:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>
-Cc:     linux-trace-devel@vger.kernel.org,
-        io-uring <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <293cfb1d-8a53-21e1-83c1-cdb6e2f32c65@samba.org>
-Subject: Re: Tracing busy processes/threads freezes/stalls the whole machine
-Message-ID: <92e31509-c32e-9f2f-633a-e0ad3d3d1f1b@samba.org>
+        id S230307AbhEDM1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:27:21 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:37189 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230110AbhEDM1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 08:27:20 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FZJwv0lN3z9sVw;
+        Tue,  4 May 2021 14:26:23 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id W02um0mNf2a2; Tue,  4 May 2021 14:26:23 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FZJwt6jHxz9sVv;
+        Tue,  4 May 2021 14:26:22 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id BCB318B78D;
+        Tue,  4 May 2021 14:26:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id oT_wBGJrwVnn; Tue,  4 May 2021 14:26:22 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7B7628B7A8;
+        Tue,  4 May 2021 14:26:21 +0200 (CEST)
+Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
+To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Joe Perches <joe@perches.com>,
+        Ben Dooks <ben.dooks@codethink.co.uk>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Will Deacon <will@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <20210501151538.145449-1-masahiroy@kernel.org>
+ <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
+ <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
+ <65cda2bb-1b02-6ebc-0ea2-c48927524aa0@codethink.co.uk>
+ <CANiq72mk84uay--BWOLT4zF12-rat9erohKazB8SpTPoVCTX1A@mail.gmail.com>
+ <20210504092225.GS6564@kitsune.suse.cz>
+ <CANiq72kHwAeQ+vhFqg9tiQA-QHEK_xvP_Sro-_c5LJ2XDzjzxQ@mail.gmail.com>
+ <20210504121713.GT6564@kitsune.suse.cz>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <529aef7c-30b1-f6c5-4610-34bd869e4ad4@csgroup.eu>
 Date:   Tue, 4 May 2021 14:26:18 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <293cfb1d-8a53-21e1-83c1-cdb6e2f32c65@samba.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <20210504121713.GT6564@kitsune.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+ linux-kernel
 
-I just retested with 5.12 final:
 
-As long as I give the VM more than one cpu, I can easily reproduce the problem with:
-
-> while true; do cat linux-image-5.12.0-rc8-dbg_5.12.0-rc8-22_amd64.deb > /dev/null; done
-> and
-> pidofcat=$(pidof cat); echo $pidofcat; trace-cmd record -e all -P $pidofcat
-
-On a single cpu VM it doesn't seem to trigger.
-
-Is anyone else able to reproduce this?
-
-Any ideas how to debug this?
-
-It's really annoying to fear a machine freeze when trying to trace problems
-on recent kernels...
-
-Thanks for any possible hint...
-metze
-
-Am 22.04.21 um 16:26 schrieb Stefan Metzmacher:
+Le 04/05/2021 à 14:17, Michal Suchánek a écrit :
+> On Tue, May 04, 2021 at 02:09:24PM +0200, Miguel Ojeda wrote:
+>> On Tue, May 4, 2021 at 11:22 AM Michal Suchánek <msuchanek@suse.de> wrote:
+>>>
+>>> Except it makes answering the question "Is this bug we see on this
+>>> ancient system still present in upstream?" needlessly more difficult to
+>>> answer.
+>>
+>> Can you please provide some details? If you are talking about testing
+>> a new kernel image in the ancient system "as-is", why wouldn't you
+>> build it in a newer system? If you are talking about  particular
+>> problems about bisecting (kernel, compiler) pairs etc., details would
+>> also be welcome.
 > 
-> Hi Steven, hi Ingo,
-> 
-> I recently tried to analyze the performance of Samba using io-uring.
-> 
-> I was using ubuntu 20.04 with the 5.10.0-1023-oem kernel, which is based on v5.10.25, see:
-> https://kernel.ubuntu.com/git/kernel-ppa/mirror/ubuntu-oem-5.10-focal.git/log/?h=oem-5.10-prep
-> trace-cmd is at version 2.8.3-4build1.
-> 
-> In order to find the bottleneck I tried to use (trace-cmd is at version 2.8.3-4build1):
-> 
->   trace-cmd -e all -P ${pid_of_io_uring_worker}
-> 
-> As a result the server was completely dead immediately.
-> 
-> I tried to reproduce this in a virtual machine (inside virtualbox).
-> 
-> I used a modified 'io_uring-cp' that loops forever, see:
-> https://github.com/metze-samba/liburing/commit/5e98efed053baf03521692e786c1c55690b04d8e
-> 
-> When I run './io_uring-cp-forever link-cp.c file',
-> I see a 'io_wq_manager' and a 'io_wqe_worker-0' kernel thread,
-> while './io_uring-cp-forever link-cp.c file' as well as 'io_wqe_worker-0'
-> consume about 25% cpu each.
-> 
-> When I run 'trace-cmd -e all -P $pid' for 'io_wqe_worker-0' or 'io_wq_manager'
-> I can reproduce the problem, then I found that the same seems to happen for
-> also for other kernel threads e.g. '[kworker/1:1-events]', it seems that
-> it happens for all kernel threads, which are not completely idle.
-> 
-> Which this:
-> 
->  From 'top':
->    1341 root      20   0    2512    576    508 S  33,4   0,1   0:10.39 io_uring-cp-for
->    1343 root      20   0       0      0      0 R  29,8   0,0   0:08.43 io_wqe_worker-0
->       7 root      20   0       0      0      0 I   0,3   0,0   0:00.31 kworker/0:1-events
-> 
->    PID 5 is [kworker/0:0-ata_sff]
-> 
-> # trace-cmd record -e all -P 5'
-> Hit Ctrl^C to stop recording
-> ^CCPU0 data recorded at offset=0x7b8000
->     0 bytes in size
-> CPU1 data recorded at offset=0x7b8000
->     69632 bytes in size
-> 
-> # But
-> # trace-cmd record -e all -P 7
-> => machine unresponsive (no blinking cursor on the console anymore)
-> On the host 'top' shows that the VirtualBoxVM cpu emulator thread 'EMT-1'
-> uses 100% cpu, so I guess the guest kernel is in something like an endless
-> recursion loop. Maybe a trace function recursing to itself?
-> 
-> On the same VM I tried a 5.12rc8 kernel and there I can also reproduce the
-> problem.
-> 
-> I also managed to reproduce the problem without io-uring, just using:
-> 
->  while true; do cat linux-image-5.12.0-rc8-dbg_5.12.0-rc8-22_amd64.deb > /dev/null; done
-> 
-> in order to keep some kernel threads moving.
-> This happens with 5.12rc8 and 5.10.0-1023-oem, but I was not able to
-> reproduce any of this using the 5.8.0-50-generic kernel, see
-> https://kernel.ubuntu.com/git/ubuntu/ubuntu-focal.git/log/?h=Ubuntu-hwe-5.8-5.8.0-50.56_20.04.1
-> 
-> I was also able to reproduce this with a ubuntu 21.04 vm using
-> the 5.11.0-14-generic kernel, see:
-> https://kernel.ubuntu.com/git/ubuntu/ubuntu-hirsute.git/log/?h=Ubuntu-5.11.0-14.15
-> On this one I only managed to reproduce the problem with
-> './io_uring-cp-forever link-cp.c file', but not with
-> 'while true; do cat linux-image-5.12.0-rc8-dbg_5.12.0-rc8-22_amd64.deb > /dev/null; done'
-> 
-> 
-> So it seems the problem was introduced after 5.8 and is not really related to
-> io-uring. And it may not be purely related to kernel threads.
-> 
-> With this on 5.12-rc8 (again):
-> 
->   └─tmux: server,903
->       ├─bash,904
->       │   └─io_uring-cp-for,925 link-cp.c file
->       │       ├─{iou-mgr-925},926
->       │       └─{iou-wrk-925},927
->       └─bash,929
->           └─pstree,938 -a -t -p
-> 
-> I was able to to trace once:
-> 
-> root@ub1704-166:~# trace-cmd record -e all -P 925
-> Hit Ctrl^C to stop recording
-> ^CCPU0 data recorded at offset=0x7b8000
->     10842112 bytes in size
-> CPU1 data recorded at offset=0x120f000
->     36450304 bytes in size
-> 
-> But the 2nd run reproduced the problem:
-> root@ub1704-166:~# trace-cmd record -e all -P 925
-> 
-> I was also able to reproduce it with:
-> 
-> while true; do cat linux-image-5.12.0-rc8-dbg_5.12.0-rc8-22_amd64.deb > /dev/null; done
-> and
-> pidofcat=$(pidof cat); echo $pidofcat; trace-cmd record -e all -P $pidofcat
-> 
-> So it seems any busy thread (user or kernel) triggers the problem.
-> 
-> Any ideas what has changed after 5.8?
-> 
-> Thanks!
-> metze
+> Yes, bisecting comes to mind. If you need to switch the userspace as
+> well the bisection results are not that solid. You may not be even able
+> to bisect because the workload does not exist on a new system at all.
+> Crafting a minimal test case that can be forward-ported to a new system
+> is not always trivial - if you understood the problem to that extent you
+> might not even need to bisect it in the first place.
 > 
 
+But you don't need to switch the userspace or the complete build tools to build a kernel with a 
+newer toolchain.
+
+All you have to do is take one from https://mirrors.edge.kernel.org/pub/tools/crosstool/
+
+I'm doing everything under CentOS 6, and using one of those tools allows me to build latest kernel 
+without breaking anything else.
