@@ -2,141 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89ED5373000
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:52:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CEFB373007
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:54:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231924AbhEDSxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 14:53:35 -0400
-Received: from mail2.protonmail.ch ([185.70.40.22]:16536 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231228AbhEDSxe (ORCPT
+        id S232006AbhEDSzL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 14:55:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230402AbhEDSzJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 14:53:34 -0400
-Date:   Tue, 04 May 2021 18:52:29 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
-        s=protonmail3; t=1620154357;
-        bh=aZt2y1a82UUZe+5SKJ6IIdvo7HmXqLUCztxzxL4vZWI=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=nH9o0N0wc3EsuCAEnAfly4U9sEAqU5AFBuU1TZHY4RAoZZiIJwPi1f1OeJixYk0Iq
-         voMnlb0jqd1As5ZH+VgsLRpPXJtkbEdqyvqoNkX68fkI2ONznlTF1iKzRgAe2VXkCu
-         xxpsEOrmvPybbsfL444GAkvtG7hONxB5HomJg0FQ4gpsBbFRqZfIqHHsZMnLxOUnPK
-         qyLDcYDs6JT/vtHzIwb2KPBTBE7N5969KffE4Pt3s2oCJTSkvsle6jPsSV/6mDdf6N
-         13vGfQKyzEo4MReOndRMVaySTtLievvJpLheHUhJkQRvST9ozXVmPM+3nmxgvb6OyY
-         f6blJKXV3d0pg==
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Bryan Brattlof <hello@bryanbrattlof.com>
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
-Subject: Re: [PATCH] staging: rtl8723bs: use generic kernel error codes
-Message-ID: <20210504185221.zloowjyqyc5eyptq@bryanbrattlof.com>
-In-Reply-To: <YJGK06THHi5aGFGo@kroah.com>
-References: <c94e5865e59d35fe0e39d5cd46d71ad4a752ddd4.1620144194.git-series.hello@bryanbrattlof.com> <YJFziyZHnbsWdTFn@kroah.com> <20210504174530.3kog7zq6tuk3wnlk@bryanbrattlof.com> <YJGK06THHi5aGFGo@kroah.com>
+        Tue, 4 May 2021 14:55:09 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8199AC061574;
+        Tue,  4 May 2021 11:54:14 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id l2so10524469wrm.9;
+        Tue, 04 May 2021 11:54:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=HxMXsLzGFWPlqcnxGJAcfYyhmw/u7Ltv81Kt77fU+Nk=;
+        b=fA7KY7gp+sCW16alMT7Z3vAgBtQw9YAMnxSt6feaQyLIIN5rIIH3DWMxFvucXK39vV
+         h6FjCUBQcFXo2vJ8OAQ9XMxNfcaaEkXNBRCymbRrgs58N/WzWU39g3YPkHRX/+t0BJaV
+         S8Ysj4QFrnik0fzEhW2MmH9IdAuBkpiTq49rNfdcj/vAW5CjF4TwsvxFqX8NKPTrUspA
+         /9SA6oKAwk9lKDaw9HBPXLz+C7VwO4lnuX5Q0QSyW4xR1H85szd8piJT7KsxW68LyRuT
+         VYjbXAz36TcGPZsaY8yPybJCM/JQtlFR+M5nX9jHahu4lmCQM0cmIlmhzdk5dWrC6z5T
+         XwpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=HxMXsLzGFWPlqcnxGJAcfYyhmw/u7Ltv81Kt77fU+Nk=;
+        b=Mb/9HISt8yEeDFGMQenoPu7pU33SM0b2QBqV7+p/An8ceDxBHvpacYeKY/U1h4/pGT
+         LNJ3Ss3GS0yoUzaex1zXsGU5+hCTpenkZzuefJ8/X6Bzy2c3rzOyxKaLBj+2/rfVquJR
+         n/sCCEybYEPx1uP2hcW59ueFQ30lSWl+mtQ9vdyezonWMVx7/ZLpvpe6Q2Jym6a1V/l/
+         5h54IG0lqgj9GgHGP+yxbfNZON1uKSGrniPTEJMRC/HO4CqfdiUfdK54LJV+VZJcO70C
+         d+GGuAnRhYxO82w/xZNdmWZBODERy9IevNyPp83BHGPqgmji5bm/tqLg2kvHI9lEhMON
+         khAQ==
+X-Gm-Message-State: AOAM5305UtrO1WlDxR1p6VmhMRc/WClqUdusbbH8B0nokDsQ/3Co0Ca0
+        5SXl4k4oKziB6KwsRKvGlzk=
+X-Google-Smtp-Source: ABdhPJyr9Zc+yVazfOU4v9PmQblwpqV8RqeIwvsbaDL/Z8TPZjN1iEfmuearj6IrLpvwWWmlxTsZcg==
+X-Received: by 2002:adf:f7d2:: with SMTP id a18mr35220529wrq.198.1620154453241;
+        Tue, 04 May 2021 11:54:13 -0700 (PDT)
+Received: from [192.168.0.237] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id j7sm3422098wmi.21.2021.05.04.11.54.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 11:54:12 -0700 (PDT)
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+To:     Zack Weinberg <zackw@panix.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        Joseph Myers <joseph@codesourcery.com>,
+        David Laight <David.Laight@aculab.com>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <20210504110519.16097-1-alx.manpages@gmail.com>
+ <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+ <YJFZHW2afbAMVOmE@kroah.com> <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
+ <YJFxArfp8wN3ILJb@kroah.com>
+ <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
+Date:   Tue, 4 May 2021 20:54:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+In-Reply-To: <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 07:56:35PM +0200, Greg Kroah-Hartman wrote:
->On Tue, May 04, 2021 at 05:45:37PM +0000, Bryan Brattlof wrote:
->> Sorry for the spam Greg I dropped the mailing lists from the first
->> email.  :(
->>
->> On Tue, May 04, 2021 at 06:17:15PM +0200, Greg Kroah-Hartman wrote:
->> >On Tue, May 04, 2021 at 04:07:48PM +0000, Bryan Brattlof wrote:
->>
->> <snip>
->>
->> >> @@ -139,12 +139,11 @@ static u32 sdio_init(struct dvobj_priv *dvobj)
->> >>  =09psdio_data->tx_block_mode =3D 1;
->> >>  =09psdio_data->rx_block_mode =3D 1;
->> >>
->> >> +=09return err;
->> >> +
->> >>  release:
->> >>  =09sdio_release_host(func);
->> >> -
->> >> -=09if (err)
->> >> -=09=09return _FAIL;
->> >> -=09return _SUCCESS;
->> >> +=09return err;
->> >>  }
->> >
->> >You just changed the logic here, are you SURE that was ok to do?
->> >
->>
->> I can't say my brain didn't bleed a little trying to keep this straight
->> in my head while walking through this. (For what ever reason my brain
->> sees negative integers as False) =C2=AF\_(=E3=83=84)_/=C2=AF
->>
->> Both the sdio_enable_func() and sdio_set_block_size() will return a
->> negative integer if they fail, which we evaluate as True, allowing us to
->> jump to release, free the card and propagate the error backwards.
->>
->> If everything worked, we'll skip all the jumps until we get to the first
->> 'return err;' statement, returning our 0 for success.
->>
->> Inside sdio_dvobj_init() if we see 'anything below 0' (This probably
->> should be changed to 'anything True') we jump to free_dvobj where we
->> free the dvobj and return NULL
->>
->> If I've looked at this long enough I don't thing I changed the logic.
->>
->> Hopefully. :)
->
->So you need to document this really well, showing that the function
->whose error you changed, is being evaluated here now differently too.
->
+Hi Greg, Daniel,
 
-Sounds good. Ill update the commit log
+On 5/4/21 6:06 PM, Greg KH wrote:
+ > There's a very old post from Linus where he describes the difference
+ > between things like __u32 and uint32_t.  They are not the same, they
+ > live in different namespaces, and worlds, and can not always be swapped
+ > out for each other on all arches.>
+ > Dig it up if you are curious, but for user/kernel apis you HAVE to use
+ > the __uNN and can not use uintNN_t variants, so don't try to mix/match
+ > them, it's good to just follow the kernel standard please.
+I found these:
 
->
->> >>  static void sdio_deinit(struct dvobj_priv *dvobj)
->> >> @@ -186,7 +185,7 @@ static struct dvobj_priv *sdio_dvobj_init(struct =
-sdio_func *func)
->> >>  =09psdio =3D &dvobj->intf_data;
->> >>  =09psdio->func =3D func;
->> >>
->> >> -=09if (sdio_init(dvobj) !=3D _SUCCESS)
->> >> +=09if (sdio_init(dvobj) < 0)
->> >>  =09=09goto free_dvobj;
->> >>
->> >>  =09rtw_reset_continual_io_error(dvobj);
->> >>
->> >> base-commit: 9ccce092fc64d19504fa54de4fd659e279cc92e7
->> >> --
->> >> git-series 0.9.1
->> >>
->> >>
->> >
->> >And that's all to remove the need for these crazy error values?  If so,
->> >why not also remove the #defines for them as well?
->> >
->>
->> I might have over sold this patch. :)
->>
->> There are quite a few functions like this still here that need to be
->> converted before we can get rid of the _SUCCESS and _FAIL definitions.
->>
->> Would it be better if I bundled these up in a series?
->
->Do it one function "call-chain" at a time, and yes, a series would be
->great.
->
+* [RFC] Splitting kernel headers and deprecating __KERNEL__ 
+<https://lore.kernel.org/lkml/Pine.LNX.4.58.0412140734340.3279@ppc970.osdl.org/T/>
 
-Thanks Greg! I'll bundle this up into a series.
+* coding style 
+<https://lore.kernel.org/lkml/alpine.LFD.0.98.0706160840290.14121@woody.linux-foundation.org/>
+
+* [patch] Small input fixes for 2.5.29 
+<https://lore.kernel.org/lkml/Pine.LNX.4.33.0207301417190.2051-100000@penguin.transmeta.com/T/>
+
+I already knew the first one, and now found the other two.  If there's 
+any other thread that is relevant, I couldn't find it.
+
+The thing is, in all of those threads, the only reasons to avoid 
+<stdint.h> types in the kernel (at least, the only explicitly mentioned 
+ones) are (a bit simplified, but this is the general idea of those threads):
+
+* Possibly breaking something in such a big automated change.
+* Namespace collision with userspace (the C standard allows defining 
+uint32_t for nefarious purposes as long as you don't include <stdint.h>. 
+  POSIX prohibits that, though)
+* Uglier
+
+But
+
+* The manual pages only document the variable size and signedness by 
+using either '__u32' or 'uint32_t'.  We state that the variable is an 
+unsigned integer of exactly 32 bits; nothing more and nothing less.  It 
+doesn't specify that those types are defined in <linux/bpf.h> (or 
+whatever header a specific manual page uses).  In fact, in uint32_t(3) 
+we clearly state the headers that shall provide the type.  In the end, 
+the kernel will receive a 32 bit number.  I'm not exactly sure about 
+what is wrong with this.  Is there any magic in the kernel/user 
+interface beyond what the standard and the compiler define that I ignore?
+
+* At that time (~2004), the C99 and POSIX.1-2001 standards were quite 
+young, and it was likely to find code that defined uint32_t.  Currently, 
+it is hard to find something that compiles without C99, and even if C99 
+allows you to define uint32_t as long as you don't include <stdint.h>, 
+it would be really stupid to do so.  And POSIX, which completely 
+prohibits defining uint32_t, is also very present in Linux and other 
+UNIX systems.  So we can probably guarantee that using <stdint.h> in the 
+kernel wouldn't break anything.  But yet this isn't trying to do so. 
+This is only about the manual pages.
+
+I haven't read it in any of those threads, but suspect that the static 
+analyzer used for the kernel might use extra information from the 
+different 'u32'/'__u32' type names to do some extra checks.  Does it?
+
+ > and can not always be swapped out for each other on all arches.
+
+Really?  'uint32_t' is defined as "an unsigned integer type of a fixed 
+width of exactly 32 bits".  How is that different from '[__]u32'? 
+Aren't the kernel types guaranteed to be unsigned integers of exactly 32 
+bits?  AFAICT, they are 100% binary compatible; and if not, it's 
+probably a kernel bug.
+
+Yes there are archs that don't provide 64 bit integers (I ignore if any 
+of the archs supported by Linux does though), but if an arch doesn't 
+provide 'uint64_t', it will neither be possible to have '__u64'.
+
+[
+        uintN_t
+               Include: <stdint.h>.  Alternatively, <inttypes.h>.
+
+               uint8_t, uint16_t, uint32_t, uint64_t
+
+               An unsigned integer type of a fixed width  of  ex‐
+               actly  N  bits, N being the value specified in its
+               type name.  According to the C language  standard,
+               they  shall  be  capable  of storing values in the
+               range [0, UINTN_MAX], substituting N by the appro‐
+               priate number.
+
+               According   to   POSIX,   uint8_t,  uint16_t,  and
+               uint32_t are required; uint64_t is  only  required
+               in implementations that provide integer types with
+               width 64; and all other types of this form are op‐
+               tional.
+
+] -- uint32_t(3)
+
+
+ >
+ > So consider this my:
+ >
+ > Nacked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+ >
+ > as well.
+Okay.
+
+On 5/4/21 6:08 PM, Daniel Borkmann wrote:
+ >
+ > But what /problem/ is this really solving? Why bother to change this 
+/now/
+ > after so many years?! I think this is causing more confusion than solving
+ > anything, really. Moreover, what are you doing with all the
+ > __{le,be}{16,32,64}
+ > types in uapi? Anyway, NAK for bpf.2 specifically, and the idea 
+generally..
+ >
+
+I'm trying to clarify the manual pages as much as possible, by using 
+standard conventions and similar structure all around the pages.  Not 
+everyone understands kernel conventions.  Basically, Zack said very much 
+what I had in mind with this patch.
+
+
+Thanks for your reviews!
+
+Regards,
+
+Alex
 
 --
-~Bryan
-
->
->thanks,
->
->greg k-h
-
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
