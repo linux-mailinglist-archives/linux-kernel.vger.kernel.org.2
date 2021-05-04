@@ -2,511 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C2EB372724
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4A0C372726
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:25:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229996AbhEDIZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:25:18 -0400
-Received: from mail-io1-f70.google.com ([209.85.166.70]:51857 "EHLO
-        mail-io1-f70.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229831AbhEDIZQ (ORCPT
+        id S230049AbhEDIZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:25:57 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:64096 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229846AbhEDIZ4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:25:16 -0400
-Received: by mail-io1-f70.google.com with SMTP id h7-20020a5d9e070000b029041a1f6bccc8so5111121ioh.18
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 01:24:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=rZlQiT/EvKC5TRiLPOyAwlgSL8LRkj9ewxAB0Hzy/rk=;
-        b=rGeDebLj1xXosJp53w3ihHShjOrZba3ZsRmunQSNK2nbc9BbB+5mSYGDxHWDD0NAZo
-         CCg4d+BLalcZEewL7cWirmBMjEoKGxX8MArYWQd+WTfZg+j91Fuyx/U0BmiSpi2khnBy
-         1kRTGfYM8SAJQkpPSvUOOMM5JWOnCnzS2Knj0937PZ0PmgKB69kjbO8a5aagjncCNFkd
-         HvpMxIUP0dN3WnfhULXMO12sqecnMAXWp8IYV7ugeI2SLW1vSnlkefBTDMYLx/nQoVUw
-         6joGg7kYeOunS8taqVb4WoPp5kgIPndu+Xly6WGZKA71YSUYCKBm/fSaXnbLymf+BNZd
-         D59A==
-X-Gm-Message-State: AOAM531/tMTvL5cXL0qm8q1ts4Gm+uVkGN9buaspbLenqxbhd7fOCJjd
-        8UJCcooLdMWvJkkZKkgUiFZLufV1DpQsW6OepOLdVuunwMwe
-X-Google-Smtp-Source: ABdhPJyjyrSuUspM5PohO9rQtij0Hvr4obsC0k4FNLbKTGZrGlW32p95ixipMcEpMBKBmN4gHw+v+v89CHQcsRI76qkeu8/vMf1x
+        Tue, 4 May 2021 04:25:56 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620116701; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=hGiADiVYbn1GAyE0o74yZslVUqdaLzGRe9aZ/mqTyvQ=; b=I9NB4W4nFejx2msUGoy7cGLR0Ana4IJDXsmtuSypiqj7Y+IHs0H8l9fCJtWZcwL3GptW+w07
+ PGZoAl7WoDU1lllHJpjwO01zsaQplEk5bhqc79v+Qb28QqKZNprhAJhCk7GH82A4B3RfR63+
+ i0V7YWY9BB7pNtJ5BqJaDUsYkZo=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 609104cd8166b7eff79b17de (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 May 2021 08:24:45
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C0DF3C4323A; Tue,  4 May 2021 08:24:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.61.52] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2F360C433D3;
+        Tue,  4 May 2021 08:24:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 2F360C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v2] usb: dwc3: gadget: Avoid canceling current request for
+ queuing error
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jackp@codeaurora.org" <jackp@codeaurora.org>
+References: <1620091264-418-1-git-send-email-wcheng@codeaurora.org>
+ <5b46e4a1-93ef-2d17-048b-5b4ceba358ae@synopsys.com>
+ <513e6c16-9586-c78e-881b-08e0a73c50a8@codeaurora.org>
+ <e12fc396-76e6-9506-31c8-cfdee3fb7577@synopsys.com>
+ <7ef627cf-3f8f-8a52-52c4-ac67ab48b87d@codeaurora.org>
+ <5c06dc0a-4274-b6f0-3844-bd8afa1a59f9@synopsys.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <be826457-bcd5-3dc3-0f71-faa3ac60ac63@codeaurora.org>
+Date:   Tue, 4 May 2021 01:24:42 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:20c2:: with SMTP id 2mr20846657ilq.120.1620116660425;
- Tue, 04 May 2021 01:24:20 -0700 (PDT)
-Date:   Tue, 04 May 2021 01:24:20 -0700
-In-Reply-To: <0000000000001d488205c1702d78@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000a17bf05c17cceed@google.com>
-Subject: Re: [syzbot] memory leak in nf_hook_entries_grow (2)
-From:   syzbot <syzbot+050de9f900eb45b94ef9@syzkaller.appspotmail.com>
-To:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5c06dc0a-4274-b6f0-3844-bd8afa1a59f9@synopsys.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
 
-HEAD commit:    5e321ded Merge tag 'for-5.13/parisc' of git://git.kernel.o..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13f88f43d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=38b336f6420141fd
-dashboard link: https://syzkaller.appspot.com/bug?extid=050de9f900eb45b94ef9
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=113d2ca5d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=167fa069d00000
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+050de9f900eb45b94ef9@syzkaller.appspotmail.com
+On 5/3/2021 10:22 PM, Thinh Nguyen wrote:
+> Wesley Cheng wrote:
+>>
+>>
+>> On 5/3/2021 8:12 PM, Thinh Nguyen wrote:
+>>> Hi Wesley,
+>>>
+>>> Wesley Cheng wrote:
+>>>>
+>>>>
+>>>> On 5/3/2021 7:20 PM, Thinh Nguyen wrote:
+>>>>> Hi,
+>>>>>
+>>>>> Wesley Cheng wrote:
+>>>>>> If an error is received when issuing a start or update transfer
+>>>>>> command, the error handler will stop all active requests (including
+>>>>>> the current USB request), and call dwc3_gadget_giveback() to notify
+>>>>>> function drivers of the requests which have been stopped.  Avoid
+>>>>>> having to cancel the current request which is trying to be queued, as
+>>>>>> the function driver will handle the EP queue error accordingly.
+>>>>>> Simply unmap the request as it was done before, and allow previously
+>>>>>> started transfers to be cleaned up.
+>>>>>>
+>>>>
+>>>> Hi Thinh,
+>>>>
+>>>>>
+>>>>> It looks like you're still letting dwc3 stopping and cancelling all the
+>>>>> active requests instead letting the function driver doing the dequeue.
+>>>>>
+>>>>
+>>>> Yeah, main issue isn't due to the function driver doing dequeue, but
+>>>> having cleanup (ie USB request free) if there is an error during
+>>>> usb_ep_queue().
+>>>>
+>>>> The function driver in question at the moment is the f_fs driver in AIO
+>>>> mode.  When async IO is enabled in the FFS driver, every time it queues
+>>>> a packet, it will allocate a io_data struct beforehand.  If the
+>>>> usb_ep_queue() fails it will free this io_data memory.  Problem is that,
+>>>> since the DWC3 gadget calls the completion with -ECONNRESET, the FFS
+>>>> driver will also schedule a work item (within io_data struct) to handle
+>>>> the completion.  So you end up with a flow like below
+>>>>
+>>>> allocate io_data (ffs)
+>>>>  --> usb_ep_queue()
+>>>>    --> __dwc3_gadget_kick_transfer()
+>>>>    --> dwc3_send_gadget_ep_cmd(EINVAL)
+>>>>    --> dwc3_gadget_ep_cleanup_cancelled_requests()
+>>>>    --> dwc3_gadget_giveback(ECONNRESET)
+>>>> ffs completion callback
+>>>> queue work item within io_data
+>>>>  --> usb_ep_queue returns EINVAL
+>>>> ffs frees io_data
+>>>> ...
+>>>>
+>>>> work scheduled
+>>>>  --> NULL pointer/memory fault as io_data is freed
+>>
+>> Hi Thinh,
+>>
+>>>
+>>> sounds like a race issue.
+>>>
+>>
+>> It'll always happen if usb_ep_queue() fails with an error. Sorry for not
+>> clarifying, but the "..." represents executing in a different context
+>> :). Anything above the "..." is in the same context.
+>>>>
+>>>>> BTW, what kinds of command and error do you see in your setup and for
+>>>>> what type endpoint? I'm thinking of letting the function driver to
+>>>>> dequeue the requests instead of letting dwc3 automatically
+>>>>> ending/cancelling the queued requests. However, it's a bit tricky to do
+>>>>> that if the error is -ETIMEDOUT since we're not sure if the controller
+>>>>> had already cached the TRBs.
+>>>>>
+>>>>
+>>>> Happens on bulk EPs so far, but I think it wouldn't matter as long as
+>>>> its over the FFS interface. (and using async IO transfers)
+>>>
+>>> Do you know which command and error code? It's strange if
+>>> UPDATE_TRANSFER command failed.
+>>>
+>>
+>> Sorry for missing that part of the question.  It is a no xfer resource
+>> error on a start transfer command.  So far this happens on low system
+>> memory test cases, so there may be some sequences that were missed,
+>> which led to this particular command error.
+>>
+>> Thanks
+>> Wesley Cheng
 
-BUG: memory leak
-unreferenced object 0xffff88811bef9340 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 28.900s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 00 b2 ed 1b 81 88 ff ff  ..B.............
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
+Hi Thinh,
 
-BUG: memory leak
-unreferenced object 0xffff88811c525e80 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 28.900s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 50 b2 ed 1b 81 88 ff ff  ..B.....P.......
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
+> 
+> No xfer resource usually means that the driver attempted to send
+> START_TRANSFER without waiting for END_TRANSFER command to complete.
+> This may be a dwc3 driver issue. Did you check this?
+> 
+> Thanks,
+> Thinh
+> 
+> 
 
-BUG: memory leak
-unreferenced object 0xffff88811bef9340 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 28.980s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 00 b2 ed 1b 81 88 ff ff  ..B.............
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
+Yes, we know the reason why this happens, and its due to one of the
+downstream changes we had that led to the scenario above.  Although,
+that has been fixed, I still believe the error path is a potential
+scenario we'd still want to address.
 
-BUG: memory leak
-unreferenced object 0xffff88811c525e80 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 28.980s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 50 b2 ed 1b 81 88 ff ff  ..B.....P.......
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
+I think the returning success always on dwc3_gadget_ep_queue(), and
+allowing the error in the completion handler/giveback at the function
+driver level to do the cleanup is a feasible solution.  Doesn't change
+the flow of the DWC3 gadget, and so far all function drivers we've used
+handle this in the correct manner.
 
-BUG: memory leak
-unreferenced object 0xffff88811bef9340 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.060s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 00 b2 ed 1b 81 88 ff ff  ..B.............
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
+Thanks
+Wesley Cheng
 
-BUG: memory leak
-unreferenced object 0xffff88811c525e80 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.060s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 50 b2 ed 1b 81 88 ff ff  ..B.....P.......
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
+>>
+>>>>
+>>>>> This seems to add more complexity and I don't have a good solution to
+>>>>> it. Since you're already cancelling all the active request anyway, what
+>>>>> do you think of always letting dwc3_gadget_ep_queue() to go through with
+>>>>> success, but report failure through request completion?
+>>>>>
+>>>>
+>>>> We do have something similar as well downstream (returning success
+>>>> always on dwc3_gadget_ep_queue()) and its been working for us also.
+>>>> Problem is we don't test the ISOC path much, so this is the only type of
+>>>> EP that might come into question...
+>>>>
+>>>
+>>> It should be similiar with isoc. I can't think of a potential issue yet.
+>>>
+>>>> Coming up with a way to address the concerns you brought up was a bit
+>>>> difficult as there were scenarios we needed to consider.  next_request()
+>>>> doesn't always have to be the request being queued (even if ep queue
+>>>> triggered it).  There was no easy way to determine if kick transfer was
+>>>> due to ep queue, but even if there was, we'd need to remember the
+>>>> previous point as well.
+>>>>
+>>>
+>>> Yeah, there are a few pitfalls. I don't have a good solution to it if we
+>>> want to return failure immediately and let the function driver handle
+>>> the dequeue (if it wants to).
+>>>
+>>> Thanks,
+>>> Thinh
+>>>
+>>
+> 
 
-BUG: memory leak
-unreferenced object 0xffff88811bef9340 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.130s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 00 b2 ed 1b 81 88 ff ff  ..B.............
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
-
-BUG: memory leak
-unreferenced object 0xffff88811c525e80 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.130s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 50 b2 ed 1b 81 88 ff ff  ..B.....P.......
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
-
-BUG: memory leak
-unreferenced object 0xffff88811bef9340 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.210s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 00 b2 ed 1b 81 88 ff ff  ..B.............
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
-
-BUG: memory leak
-unreferenced object 0xffff88811c525e80 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.210s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 50 b2 ed 1b 81 88 ff ff  ..B.....P.......
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
-
-BUG: memory leak
-unreferenced object 0xffff88811bef9340 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.290s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 00 b2 ed 1b 81 88 ff ff  ..B.............
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
-
-BUG: memory leak
-unreferenced object 0xffff88811c525e80 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.290s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 50 b2 ed 1b 81 88 ff ff  ..B.....P.......
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
-
-BUG: memory leak
-unreferenced object 0xffff88811bef9340 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.370s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 00 b2 ed 1b 81 88 ff ff  ..B.............
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
-
-BUG: memory leak
-unreferenced object 0xffff88811c525e80 (size 64):
-  comm "syz-executor097", pid 8413, jiffies 4294971728 (age 29.370s)
-  hex dump (first 32 bytes):
-    01 00 00 00 00 00 00 00 20 a8 a5 83 ff ff ff ff  ........ .......
-    80 ef 42 1c 81 88 ff ff 50 b2 ed 1b 81 88 ff ff  ..B.....P.......
-  backtrace:
-    [<ffffffff8146f731>] kmalloc_node include/linux/slab.h:579 [inline]
-    [<ffffffff8146f731>] kvmalloc_node+0x61/0xf0 mm/util.c:587
-    [<ffffffff8381dc4b>] kvmalloc include/linux/mm.h:797 [inline]
-    [<ffffffff8381dc4b>] kvzalloc include/linux/mm.h:805 [inline]
-    [<ffffffff8381dc4b>] allocate_hook_entries_size net/netfilter/core.c:61 [inline]
-    [<ffffffff8381dc4b>] nf_hook_entries_grow+0x31b/0x370 net/netfilter/core.c:128
-    [<ffffffff8381dfad>] __nf_register_net_hook+0x8d/0x290 net/netfilter/core.c:407
-    [<ffffffff8381e26f>] nf_register_net_hook+0xbf/0x100 net/netfilter/core.c:541
-    [<ffffffff8381e309>] nf_register_net_hooks+0x59/0xc0 net/netfilter/core.c:557
-    [<ffffffff83a58262>] arpt_register_table+0x152/0x1e0 net/ipv4/netfilter/arp_tables.c:1548
-    [<ffffffff83a5a88d>] arptable_filter_table_init+0x3d/0x60 net/ipv4/netfilter/arptable_filter.c:50
-    [<ffffffff838ba3b9>] xt_find_table_lock+0x189/0x290 net/netfilter/x_tables.c:1244
-    [<ffffffff838ba4e7>] xt_request_find_table_lock+0x27/0xb0 net/netfilter/x_tables.c:1275
-    [<ffffffff83a593c2>] get_info+0xd2/0x430 net/ipv4/netfilter/arp_tables.c:807
-    [<ffffffff83a59944>] do_arpt_get_ctl+0x224/0x520 net/ipv4/netfilter/arp_tables.c:1443
-    [<ffffffff838201c7>] nf_getsockopt+0x57/0x80 net/netfilter/nf_sockopt.c:116
-    [<ffffffff839889aa>] ip_getsockopt net/ipv4/ip_sockglue.c:1777 [inline]
-    [<ffffffff839889aa>] ip_getsockopt+0xfa/0x140 net/ipv4/ip_sockglue.c:1756
-    [<ffffffff8399ce7b>] tcp_getsockopt+0x4b/0x80 net/ipv4/tcp.c:4251
-    [<ffffffff8366fa03>] __sys_getsockopt+0x133/0x2f0 net/socket.c:2161
-    [<ffffffff8366fbe2>] __do_sys_getsockopt net/socket.c:2176 [inline]
-    [<ffffffff8366fbe2>] __se_sys_getsockopt net/socket.c:2173 [inline]
-    [<ffffffff8366fbe2>] __x64_sys_getsockopt+0x22/0x30 net/socket.c:2173
-
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-write to /proc/sys/kernel/hung_task_check_interval_secs failed: No such file or directory
-write to /proc/sys/kernel/softlockup_all_cpu_backtrace failed: No such file or directory
-
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
