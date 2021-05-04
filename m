@@ -2,73 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52173372AA4
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C54B372AAB
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:09:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230447AbhEDNHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:07:07 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:27905 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230430AbhEDNHF (ORCPT
+        id S230460AbhEDNKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:10:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24270 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230410AbhEDNKC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:07:05 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-254-S47yBnNyPoWWbbm-WTLYvw-1; Tue, 04 May 2021 14:06:08 +0100
-X-MC-Unique: S47yBnNyPoWWbbm-WTLYvw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Tue, 4 May 2021 14:06:07 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Tue, 4 May 2021 14:06:06 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Josh Poimboeuf' <jpoimboe@redhat.com>,
-        Andy Lutomirski <luto@kernel.org>
-CC:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        David Kaplan <David.Kaplan@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        "David Woodhouse" <dwmw2@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        "Jann Horn" <jannh@google.com>
-Subject: =?utf-8?B?UkU6IERvIHdlIG5lZWQgdG8gZG8gYW55dGhpbmcgYWJvdXQgImRlYWQgwrVv?=
- =?utf-8?Q?ps=3F"?=
-Thread-Topic: =?utf-8?B?RG8gd2UgbmVlZCB0byBkbyBhbnl0aGluZyBhYm91dCAiZGVhZCDCtW9wcz8i?=
-Thread-Index: AQHXQJPfT/BF58foiEK8tzGQU0UglarTSoNQ
-Date:   Tue, 4 May 2021 13:06:06 +0000
-Message-ID: <5937e5a2f1014e2da4a07e249745ceb1@AcuMS.aculab.com>
-References: <CALCETrXRvhqw0fibE6qom3sDJ+nOa_aEJQeuAjPofh=8h1Cujg@mail.gmail.com>
- <20210503233010.x5lzpw4dq3gueg47@treble>
- <CALCETrVwFrpZU-6C=AVurVPk4ahV2yjqyhFeYbL_0OtBNJnZ=w@mail.gmail.com>
- <20210504031616.covixup7rhdil3yq@treble>
-In-Reply-To: <20210504031616.covixup7rhdil3yq@treble>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Tue, 4 May 2021 09:10:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620133747;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=I+a3Gqq/AQH86AQgX5MsIHGOIG8nweku9Ika1zopWOs=;
+        b=OrG7CH+dmKwc0rUWbsSyQE7YIRE0F/5PFJaLBOPNH5Z2pG8jUaTfcSqdBZT96ognY1tHoB
+        jhaMzv84G/lbK3ws3khdEujkoV42CDNjso0GTwWsEXkTJ7GEBRJBE1J7qAdiI8632ybV0p
+        7Hrl7l5vpMeXRF2BHmrO+lC9arQYPDM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-433-sAMffVlyOI2oanb_IGH7cQ-1; Tue, 04 May 2021 09:09:03 -0400
+X-MC-Unique: sAMffVlyOI2oanb_IGH7cQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4102964157;
+        Tue,  4 May 2021 13:09:01 +0000 (UTC)
+Received: from gondolin.fritz.box (ovpn-113-126.ams2.redhat.com [10.36.113.126])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 37B075D72F;
+        Tue,  4 May 2021 13:08:53 +0000 (UTC)
+Date:   Tue, 4 May 2021 15:08:51 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        qemu-devel@nongnu.org, Daniel Vetter <daniel@ffwll.ch>,
+        kvm@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Greg Kurz <groug@kaod.org>, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Jason Gunthorpe <jgg@nvidia.com>, linux-api@vger.kernel.org,
+        qemu-ppc@nongnu.org, linuxppc-dev@lists.ozlabs.org
+Subject: Re: remove the nvlink2 pci_vfio subdriver v2
+Message-ID: <20210504150851.54e278f8.cohuck@redhat.com>
+In-Reply-To: <20210504130039.GA7711@lst.de>
+References: <20210326061311.1497642-1-hch@lst.de>
+        <20210504142236.76994047@bahia.lan>
+        <YJFFG1tSP0dUCxcX@kroah.com>
+        <20210504130039.GA7711@lst.de>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSm9zaCBQb2ltYm9ldWYNCj4gU2VudDogMDQgTWF5IDIwMjEgMDQ6MTYNCi4uLg0KPiBJ
-IHdhcyBhY3R1YWxseSB0aGlua2luZyBtb3JlIGFsb25nIHRoZSBsaW5lcyBvZg0KPiANCj4gCXZh
-bCA9IDA7DQo+IA0KPiAJaWYgKHVzZXJfc3VwcGxpZWRfaWR4IDwgQVJSQVlfU0laRSkgLy8gdHJh
-aW5lZCB0byBzcGVjdWxhdGl2ZWx5IGJlICd0cnVlJw0KPiAJCXZhbCA9IGJvcmluZ19ub25fc2Vj
-cmV0X2FycmF5W3VzZXJfc3VwcGxpZWRfaWR4XTsNCj4gDQo+IAlpZiAodmFsICYgMSkNCj4gCQlk
-b19zb21ldGhpbmcoKTsNCj4gDQo+IEluIG90aGVyIHdvcmRzLCB0aGUgdmljdGltIGNvZGUgd291
-bGRuJ3QgYmUgYWNjZXNzaW5nIHRoZSBzZWNyZXQNCj4gaW50ZW50aW9uYWxseS4gIFNvIHRoZXJl
-J3Mgbm8gcmVhc29uIGZvciBpdCB0byBhdm9pZCBkb2luZw0KPiBkYXRhLWRlcGVuZGVudCBicmFu
-Y2hlcy4NCg0KSXNuJ3QgdGhhdCBvbmUgb2YgdGhlIHZlcnkgYm9yaW5nIHN0YW5kYXJkIHNwZWN0
-cmUgY2FzZXM/DQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFkZHJlc3MgTGFrZXNpZGUsIEJy
-YW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywgTUsxIDFQVCwgVUsNClJlZ2lz
-dHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
+On Tue, 4 May 2021 15:00:39 +0200
+Christoph Hellwig <hch@lst.de> wrote:
+
+> On Tue, May 04, 2021 at 02:59:07PM +0200, Greg Kroah-Hartman wrote:
+> > > Hi Christoph,
+> > > 
+> > > FYI, these uapi changes break build of QEMU.  
+> > 
+> > What uapi changes?
+> > 
+> > What exactly breaks?
+> > 
+> > Why does QEMU require kernel driver stuff?  
+> 
+> Looks like it pull in the uapi struct definitions unconditionally
+> instead of having a local copy.  We could fix that by just putting
+> them back, but to me this seems like a rather broken configuration
+> in qemu when it pulls in headers from the running/installed kernel
+> without any feature checks before using them.
+> 
+
+It is not pulling them from the installed kernel, but from a
+development version to get new definitions. Removing things in the
+kernel requires workarounds in QEMU until it can remove those things as
+well. It is not a dumb update...
 
