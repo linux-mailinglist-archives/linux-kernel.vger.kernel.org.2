@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8351372E9C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:17:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28397372EA2
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:18:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232039AbhEDRSj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:18:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39534 "EHLO
+        id S232065AbhEDRSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:18:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231683AbhEDRSi (ORCPT
+        with ESMTP id S232055AbhEDRSl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:18:38 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 76BE5C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:17:43 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id g184-20020a3784c10000b02902e385de9adaso8027329qkd.3
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:17:43 -0700 (PDT)
+        Tue, 4 May 2021 13:18:41 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96761C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:17:45 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id p138-20020a2542900000b02904f7975752e7so9020161yba.16
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:17:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=2xWZdvogf0ze6g50j9Z7ywuPrceLwwW3g11yg2g3TOs=;
-        b=SmbCPjuSQLSJNYSCAdiifnXtT/H2AqQdTpZINcEF/GfIcUtCzvYZjSYKvxQr4162hD
-         kj9ZAGJTnxgB3dSb0COCqb10XIlyOqpmfOj5LZcjJB8vHUp+siIFwCfaViiQ5IV3++xp
-         xrVcVf8esLJnkhfNGkLSdivxNqkxVFWaXP5fbP63rQ+8AW3I0lNo2g/f5ypcM/ij+pYI
-         5Z/iIv0+hgMICMEkPSt1Pkrk62Ji5SooQ33z8NC9lcbU8EiW7tRJ8M6BFvJXEpvdifJT
-         RKhi+zeuiI2+Wj1RfEzML/Eolp6rKf+/Sg+yu5osyK9toW9SL4x055MzPOj0z2sr19uc
-         6lqg==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=GQeYPNBasLogl534ND9Q7MqGb65bHRch8YH0hNcQgdE=;
+        b=Ojd4yjrIuWqLjcbV/Te/47XOZv/fcPnbpUUqoPh30f3y+iIiXxDPItFNyUrNyDYDh9
+         0iNgVWksjbSECQHZUKcdEhJPFncNrqDVrdGJwBXHUia2e34lFnP5Ip4hsPAmdJvd+RA+
+         2i9yloFDGIZVo10i5Pp3hn/Z7G8jh/W6zNmh3+bco+SFOrOYqegQ3BQirXlgUSWXaW+X
+         KitiQ0UW+swuGRkFbepxHXx2yzzXEaGvPsnRuUKF/cZqVWvSVD+ezisiIXbDPLDLVDjB
+         r0t5vcEHZhRSGqZJja1qf7r11kzkptlCj6VgLav0iBk8LHrDVhmu54dicOvxlqKCstL5
+         /Vfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=2xWZdvogf0ze6g50j9Z7ywuPrceLwwW3g11yg2g3TOs=;
-        b=pHipjtfQjkuK3sGGUnth+CKmiplUPhT1blxFXW6ycau50KcP8dV6At9tImNkGnJ4Zi
-         tUoi7jJKGQZKDYIgL5ZNkDh5HMH5jnEuOvL7gz4WhVD/MEU9OqTbHOKo0Pw9afWyP354
-         V4zEP/UURPt9Zo/e2Bc9yIUMlnHrYytFKWMxh5UWKCdVx0oZrkkJS2Mrr4DBoSGQlVMw
-         9IwKJAyk/x4LBZ0V1jKa1x4UkQ5XpT/0BrUB0YOp5gIS2S2jI08wYntcFJSylFxkyI2m
-         HZEZFFEKQMOiByBzQIsDp5ffQJz1D+5GqgA2wYhn9MFaJaR/UAAQio6ITM5OHfIIzluH
-         ffHA==
-X-Gm-Message-State: AOAM533dIg9DMWPHWWaOKsE5F210woR26AwtDQO5i9LILmJ3Y0squvWB
-        vWgfz0VJ23v7VtlhW7nkWIEQX/pC+4Y=
-X-Google-Smtp-Source: ABdhPJwt+/Q+KjHniWgBRhccJXjTUe7IsrkwWMn8aXCHIW6G12CoJJY+nIbZ5i4yEccmX/qSaYnPw8KZxKU=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=GQeYPNBasLogl534ND9Q7MqGb65bHRch8YH0hNcQgdE=;
+        b=NYPBQohtkd9N3jhQ2VDeWWIJs6C+vTQZ1PKjjiQhACOeT3pZf74WDPIeDBy0zuEEJL
+         O+1qc1FybkZ7XrGdSB+pEYraj8gnMmfYFeGLxnHdaJAjzgYxyioP0BRNPxu9LQO6n/vM
+         ZYpnyfavfMITQ1wK8uJ9PnB4ADgzhgCwsVH42j+vRfFXujpz5QAzXZ49rKzuFONEQic5
+         APDQIlY5oYt6G/LH+8V8JldjZu4ahG2SbMYc0pxIds7OS1uWoSlr4raPHi5AqHrkwJJW
+         qA4mCYI5uHZ1zF1j5mPFlTt1SarSJ/mdzK+Iaq1JvypGPPYQjPo3qPHfCpfR3j4Pb1VX
+         pNXA==
+X-Gm-Message-State: AOAM533d5kBiTOuSifhwsej/YZImPs4F59M8pTMwUKHFwIz/DSES0p8k
+        XucoLAAotBnjKJ7KP4cbe2w61vlhd6U=
+X-Google-Smtp-Source: ABdhPJxlSOlcX5fvKMS9Z8Y/32xdFNS3BueN6Hhz6HUJ3ejXJluoaat8wBgsB528Ps/FO0WpSewliWx1IYg=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:a0c:c488:: with SMTP id u8mr26264785qvi.47.1620148662633;
- Tue, 04 May 2021 10:17:42 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a5b:c52:: with SMTP id d18mr34112608ybr.401.1620148664836;
+ Tue, 04 May 2021 10:17:44 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 10:17:19 -0700
-Message-Id: <20210504171734.1434054-1-seanjc@google.com>
+Date:   Tue,  4 May 2021 10:17:20 -0700
+In-Reply-To: <20210504171734.1434054-1-seanjc@google.com>
+Message-Id: <20210504171734.1434054-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210504171734.1434054-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH 00/15] KVM: x86: RDPID/RDTSCP fixes and uret MSR cleanups
+Subject: [PATCH 01/15] KVM: VMX: Do not adverise RDPID if ENABLE_RDTSCP
+ control is unsupported
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -64,67 +68,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is a continuation of a less ambitious effort to unify MSR_TSC_AUX
-handling across SVM and VMX.  Reiji pointed out that MSR_TSC_AUX exists if
-RDTSCP *or* RDPID is supported, and things went downhill from there. 
+Clear KVM's RDPID capability if the ENABLE_RDTSCP secondary exec control is
+unsupported.  Despite being enumerated in a separate CPUID flag, RDPID is
+bundled under the same VMCS control as RDTSCP and will #UD in VMX non-root
+if ENABLE_RDTSCP is not enabled.
 
-The first half of this series fixes a variety of RDTSCP and RDPID related
-bugs.
+Fixes: 41cd02c6f7f6 ("kvm: x86: Expose RDPID in KVM_GET_SUPPORTED_CPUID")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/vmx/vmx.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-The second half of the series cleans up VMX's user return MSR framework
-and consolidates more of the uret logic into common x86.
-
-The last two patches leverage the uret MSR cleanups to move MSR_TSC_AUX
-handling to common x86 and add sanity checks to guard against misreporting
-of RDPID and/or RDTSCP support.
-
-This will conflict with my vCPU RESET/INIT cleanup series.  Feel free to
-punt the conflicts to me.
-
-Other "fun" things to tackle:
-
- - The kernel proper also botches RDPID vs. RDTSCP, as MSR_TSC_AUX is
-   configured if RDTSCP is supported, but is consumed if RDPID is
-   supported.  I'll send this fix separately.
-
- - Commit 844d69c26d83 ("KVM: SVM: Delay restoration of host MSR_TSC_AUX
-   until return to userspace") unwittingly fixed a bug where KVM would
-   write MSR_TSC_AUX with the guest's value when svm->guest_state_loaded
-   is false, which could lead to running the host with the guest's value.
-   The bug only exists in 5.12 (maybe 5.11 too?), so crafting a fix for
-   stable won't be too awful.
-
-Sean Christopherson (15):
-  KVM: VMX: Do not adverise RDPID if ENABLE_RDTSCP control is
-    unsupported
-  KVM: x86: Emulate RDPID only if RDTSCP is supported
-  KVM: SVM: Inject #UD on RDTSCP when it should be disabled in the guest
-  KVM: x86: Move RDPID emulation intercept to its own enum
-  KVM: VMX: Disable preemption when probing user return MSRs
-  KVM: SVM: Probe and load MSR_TSC_AUX regardless of RDTSCP support in
-    host
-  KVM: x86: Add support for RDPID without RDTSCP
-  KVM: VMX: Configure list of user return MSRs at module init
-  KVM: VMX: Use flag to indicate "active" uret MSRs instead of sorting
-    list
-  KVM: VMX: Use common x86's uret MSR list as the one true list
-  KVM: VMX: Disable loading of TSX_CTRL MSR the more conventional way
-  KVM: x86: Export the number of uret MSRs to vendor modules
-  KVM: x86: Move uret MSR slot management to common x86
-  KVM: x86: Tie Intel and AMD behavior for MSR_TSC_AUX to guest CPU
-    model
-  KVM: x86: Hide RDTSCP and RDPID if MSR_TSC_AUX probing failed
-
- arch/x86/include/asm/kvm_host.h |   9 +-
- arch/x86/kvm/cpuid.c            |  18 ++-
- arch/x86/kvm/emulate.c          |   2 +-
- arch/x86/kvm/kvm_emulate.h      |   1 +
- arch/x86/kvm/svm/svm.c          |  50 +++-----
- arch/x86/kvm/vmx/vmx.c          | 217 ++++++++++++++++----------------
- arch/x86/kvm/vmx/vmx.h          |  12 +-
- arch/x86/kvm/x86.c              | 101 ++++++++++++---
- 8 files changed, 245 insertions(+), 165 deletions(-)
-
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 10b610fc7bbc..82404ee2520e 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -7377,9 +7377,11 @@ static __init void vmx_set_cpu_caps(void)
+ 	if (!cpu_has_vmx_xsaves())
+ 		kvm_cpu_cap_clear(X86_FEATURE_XSAVES);
+ 
+-	/* CPUID 0x80000001 */
+-	if (!cpu_has_vmx_rdtscp())
++	/* CPUID 0x80000001 and 0x7 (RDPID) */
++	if (!cpu_has_vmx_rdtscp()) {
+ 		kvm_cpu_cap_clear(X86_FEATURE_RDTSCP);
++		kvm_cpu_cap_clear(X86_FEATURE_RDPID);
++	}
+ 
+ 	if (cpu_has_vmx_waitpkg())
+ 		kvm_cpu_cap_check_and_set(X86_FEATURE_WAITPKG);
 -- 
 2.31.1.527.g47e6f16901-goog
 
