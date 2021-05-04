@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 059073732E1
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:39:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 060E33732E2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:41:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231558AbhEDXkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 19:40:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
+        id S230520AbhEDXmH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 19:42:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229705AbhEDXkH (ORCPT
+        with ESMTP id S229563AbhEDXmG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 19:40:07 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9666DC061574;
-        Tue,  4 May 2021 16:39:11 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FZbs75QKkz9sRR;
-        Wed,  5 May 2021 09:39:07 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620171547;
-        bh=1/63ulrN9a6j+3PMmtVqcCCKOdXQXQ3gqOZsun/dszg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=TuWVl1//knfCsLiixwBzUT/uMmIzQo798yznRn0lPlOYo+xxGPKIcrjGpWJ3Q4w3F
-         ZUN3RQVBCPdBOOG/SiegIKdHd/9mkwQK1BeeQe+EjeoWBm+wi1w2NhGvLRQvJe6NWE
-         ywzQaC/luF7f68ARzU9BNB7k3uOuwR3pp8FE28bAeBOm1hl44wCE2J5Qn8bLHdwVpb
-         8GcPksrZfKyEqCHpqmLWCrH5TQrEN5epxqB0ZedT/3PDvFk/qy3HuO2Y2XBuLM+6F8
-         fEGxcd+K7w2whgezQnru3kMB0otpFKkffwPz/3Ioy0CeCxylEVoBGKpWlzXTtTFVf9
-         +7lESZWgW2zHQ==
-Date:   Wed, 5 May 2021 09:39:07 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Alex Deucher <alexdeucher@gmail.com>
-Cc:     Jude Shih <shenshih@amd.com>, Hanghong Ma <Hanghong.Ma@amd.com>,
-        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
-        Daniel Wheeler <daniel.wheeler@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20210505093907.6e6c9556@canb.auug.org.au>
+        Tue, 4 May 2021 19:42:06 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF2DC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 16:41:09 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id g13so6489730qts.4
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 16:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=t2PuuUA12ZEnJWsd6YLi9cc3wxXcwVJFuOyD1wnS6OM=;
+        b=lfUuBISTNjMU2nNcTHdIF+xZuIElaVTvaO6wuKTjajiX3PNM84R738EXu7NLKBmOfW
+         7r/j0y/A2l57gG8bJApOh3nmpYz4mGWkbbse04MF6Cg3BkboWK0oM8sVt+YTfFuhDL7o
+         MedoTV4MYGWJFbYhLF2H+vW4dZkRvSDWZcu/y4WEeGnIgKbXThENvOERjTuMmigeR5mP
+         OR+QOVeFNE/z8qCJrAS6ih3a/BHvJTS2UlvpLkejXOGkRx7NR5iabA8FR6RitKvBXjxR
+         oUxWEGADdvlT/rBo2kdTTaRA9iazfDl220pHURV7M7nOtTLovb3UXD8DWc7nkWnKnjY6
+         eWdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=t2PuuUA12ZEnJWsd6YLi9cc3wxXcwVJFuOyD1wnS6OM=;
+        b=CeQ9UWJo5fg9ZplCwjC/Wmk9Grw1B2bbSu7gUSHI5aEaTN+N9INbPeILSrOoKfMjGS
+         cXpgbaqeC957AgYK/u2WjLXmtmSc+I+CptkFwVEAtdoGbdn8YGwqMAVdcpSl/IVDqkoM
+         xyv4AE4/TYsJmzZNOMTT5crAwaFM/2+/tOgxHN0LfF2hHWd71urU6h0sXuUdhOCzOIbd
+         KZHcyrNddQQUTIe+HoL5UOLUAfXz1Qp3CuykNa9s/2iVWXGM5CE+B0MkmFL2C1/tRdsy
+         DCWfRDUVkAXcsG5JCIoY2x62dzmG55loW9dAERgPPENJIcTRO9qtiRw1zWBbq3+B6YGm
+         swTg==
+X-Gm-Message-State: AOAM530whbKWetU6AFwG4k27uDjI+kktAmgpaz33i+wQX0nTbgSqhdXF
+        0Q1os11I3aQOdkJFtldjWgbagZ5+TCL0/mqXTpU=
+X-Google-Smtp-Source: ABdhPJzIVG394i7YFja0PQAdH0lIoZJJoet3XGWrFEJKjKQ2BUl0XjTgnsyYT+TArS+0tqFFtVetnnWkNy4t7NinJEQ=
+X-Received: by 2002:ac8:58c3:: with SMTP id u3mr24701148qta.311.1620171668693;
+ Tue, 04 May 2021 16:41:08 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/uoWibIRRTmuuaR4irsuighH";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Sender: drjohndon2004@gmail.com
+Received: by 2002:a0c:a2a6:0:0:0:0:0 with HTTP; Tue, 4 May 2021 16:41:08 -0700 (PDT)
+From:   "Mr. Dabire Basole" <mrdabirebsole@gmail.com>
+Date:   Tue, 4 May 2021 16:41:08 -0700
+X-Google-Sender-Auth: rYEKh-txO0fA80N18LotVgYvhho
+Message-ID: <CA+9mUkwexno+toov9Rz3=ZLhPQgabCQKSq2K-MOWOyw-SVW=tg@mail.gmail.com>
+Subject: PERSONAL TREAT AS URGENT.
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/uoWibIRRTmuuaR4irsuighH
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Dear Friend,
 
-Hi all,
+Greetings!
 
-After merging the amdgpu tree, today's linux-next build (x86_64
-allmodconfig) produced this warning:
+How are you with your family today? I hope both of you are in good
+health decently, I know that this message might meet you in utmost
+surprise as we never know each other before. I am Mr. Dabire Basole a
+banker by profession, I need your urgent assist in transferring the
+sum of USD$18.6 ( Eighteen Million Six Hundred Thousand United State Dollars)
+into your account. It is 100% risk free and under this achievement you are
+entitled to receive 50% of the total cash and 50% will be for me.
+More details will be sent to you on confirmation of your interest.
+Please if you are real interest on my proposer, just providing me your
+following information details such as:
 
-At top level:
-drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:633:13: warning=
-: 'dm_dmub_outbox1_low_irq' defined but not used [-Wunused-function]
-  633 | static void dm_dmub_outbox1_low_irq(void *interrupt_params)
-      |             ^~~~~~~~~~~~~~~~~~~~~~~
+(1)NAME..............
+(2)AGE:................
+(3)SEX:.....................
+(4)PHONE NUMBER:.................
+(5)OCCUPATION:................ .....
+(6)YOUR COUNTRY:.....................
 
-Introduced by commit
+Yours sincerely,
 
-  77a49c458931 ("drm/amd/display: Support for DMUB AUX")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/uoWibIRRTmuuaR4irsuighH
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCR2xsACgkQAVBC80lX
-0Gxc/Af/fpymtBkfnbeKPntSiGdoUneMZD3565qgJIdcEFyEN72TPokk7ycAUl0N
-KY++AGSYhm9pHYNASCbjb+1kFtwyhnNIQS1Tl/KiaaTeAUImHbykb+ZDZ0g7O7pY
-Gtcw8AA9PCMZGwS2KY2f4uW9twR92p0sx6B7x8dxO8Q6RMmkNxeynO/GfhpAop5Q
-NhW81cVm5+Pz5afHwRFxRZ7t1ChqS+PvKkKGCsfM5dkh6osUYmTitlhMp0wyJxkk
-CMQ/EakcJtGHKXiv66gDKmUrzVI4uf1qQ8yTrXKr0D9VsG/Atzoz5dJ0CmUDcviZ
-V3TzFkPCJJRpVc00VfWITizVq8qKzw==
-=43Sb
------END PGP SIGNATURE-----
-
---Sig_/uoWibIRRTmuuaR4irsuighH--
+Mr.  Dabire Basole.
