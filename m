@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B569372D90
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:06:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAEC9372D94
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhEDQHs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:07:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:27045 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231274AbhEDQHn (ORCPT
+        id S231613AbhEDQIu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 12:08:50 -0400
+Received: from mail-40134.protonmail.ch ([185.70.40.134]:47771 "EHLO
+        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231274AbhEDQIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:07:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620144408;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GVIxTT9uSFfUO3j3YO7sGQ1PTKDOjdIH+lYA0YgyIyA=;
-        b=dycdF2qfxM8IDOjcyT5dLckHXobifrVzvi1XMcrJcXoY7l33XxFth5lB/vlpctVH8cqZ9D
-        fwtoH6Br8bf6dPnOOOOowwYpuxq2AyCETLBFJSL6Tabwguygo7XVz+60soI/L7CnceH9uG
-        QjbhscPjEyklitlvQ07trZQmahML5R4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-78-I7M62cUEMh-U8VfpQ2FvKw-1; Tue, 04 May 2021 12:06:46 -0400
-X-MC-Unique: I7M62cUEMh-U8VfpQ2FvKw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BF23E107ACCA;
-        Tue,  4 May 2021 16:06:44 +0000 (UTC)
-Received: from gondolin.fritz.box (ovpn-113-126.ams2.redhat.com [10.36.113.126])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5C81219C71;
-        Tue,  4 May 2021 16:06:39 +0000 (UTC)
-Date:   Tue, 4 May 2021 18:06:36 +0200
-From:   Cornelia Huck <cohuck@redhat.com>
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     kvm@vger.kernel.org, groug@kaod.org, hch@lst.de,
-        gregkh@linuxfoundation.org, daniel@ffwll.ch,
-        linux-kernel@vger.kernel.org, linux-api@vger.kernel.org,
-        qemu-devel@nongnu.org, linuxppc-dev@lists.ozlabs.org,
-        qemu-ppc@nongnu.org
-Subject: Re: [PATCH] vfio/pci: Revert nvlink removal uAPI breakage
-Message-ID: <20210504180636.6251eaf1.cohuck@redhat.com>
-In-Reply-To: <162014341432.3807030.11054087109120670135.stgit@omen>
-References: <162014341432.3807030.11054087109120670135.stgit@omen>
-Organization: Red Hat GmbH
+        Tue, 4 May 2021 12:08:50 -0400
+Date:   Tue, 04 May 2021 16:07:48 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1620144473;
+        bh=izMrQ29i9o8lR9msxy7VHUJ0aaa/lS+KxRCqJNJ4ZUE=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=gwexdwPe7LPbdOmPuDeoG6NiUzMDP2OJpjhIhq6Yf89xir95BgSQiYcQcEhfpZ67j
+         bJdlpSHgL20cfyaqARoCum8VgdWG5fzXLh2yeVRsJ3cN6uGYbpF3+YEHNRUzbhpS9s
+         YDJc9kv/kU2SXK6XGUkaQR3Vr0zgjOxAsYQTbohH0Ut+yXaBcZQ6tknfUCL0A1Xncd
+         ec1ivs540D+nNk72VOBSp0wM6ZdyBd9Cyxh60cDtk/+A6SR19aa1vTMz8gaSEQdKzJ
+         VX2phk8qNhhn1Digu5dZ4TeVmY3qAJPehmafJTAMskV54LSWfeObtvH1+s3kXvwyaP
+         G5h5mMuGctLKQ==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     Bryan Brattlof <hello@bryanbrattlof.com>,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: [PATCH] staging: rtl8723bs: use generic kernel error codes
+Message-ID: <c94e5865e59d35fe0e39d5cd46d71ad4a752ddd4.1620144194.git-series.hello@bryanbrattlof.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 04 May 2021 09:52:02 -0600
-Alex Williamson <alex.williamson@redhat.com> wrote:
+The current _FAIL and _SUCCESS error codes are defined as:
 
-> Revert the uAPI changes from the below commit with notice that these
-> regions and capabilities are no longer provided.
-> 
-> Fixes: b392a1989170 ("vfio/pci: remove vfio_pci_nvlink2")
-> Reported-by: Greg Kurz <groug@kaod.org>
-> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-> ---
-> 
-> Greg (Kurz), please double check this resolves the issue.  Thanks!
-> 
->  include/uapi/linux/vfio.h |   46 +++++++++++++++++++++++++++++++++++++++++----
->  1 file changed, 42 insertions(+), 4 deletions(-)
+        #define _FAIL    0
+=09#define _SUCCESS 1
 
-I had already hacked up a QEMU patch that moved the definitions into
-local headers, but this one is less of a hassle. (Code compiles fine
-after doing a headers update.)
+which adds complexity (and confusion) when interacting with other
+submodules in the kernel. These definitions can be removed and replaced
+with the kernel's generic error codes.
 
-Reviewed-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Bryan Brattlof <hello@bryanbrattlof.com>
+---
+ drivers/staging/rtl8723bs/include/drv_types.h |  2 +-
+ drivers/staging/rtl8723bs/os_dep/sdio_intf.c  | 11 +++++------
+ 2 files changed, 6 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/staging/rtl8723bs/include/drv_types.h b/drivers/stagin=
+g/rtl8723bs/include/drv_types.h
+index 83d43e5726dd..5b702ff432ae 100644
+--- a/drivers/staging/rtl8723bs/include/drv_types.h
++++ b/drivers/staging/rtl8723bs/include/drv_types.h
+@@ -385,7 +385,7 @@ struct adapter {
+ =09void *xmitThread;
+ =09void *recvThread;
+
+-=09u32 (*intf_init)(struct dvobj_priv *dvobj);
++=09int (*intf_init)(struct dvobj_priv *dvobj);
+ =09void (*intf_deinit)(struct dvobj_priv *dvobj);
+ =09int (*intf_alloc_irq)(struct dvobj_priv *dvobj);
+ =09void (*intf_free_irq)(struct dvobj_priv *dvobj);
+diff --git a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c b/drivers/staging=
+/rtl8723bs/os_dep/sdio_intf.c
+index d2bf444117b8..e26c51d847b6 100644
+--- a/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
++++ b/drivers/staging/rtl8723bs/os_dep/sdio_intf.c
+@@ -112,7 +112,7 @@ static void sdio_free_irq(struct dvobj_priv *dvobj)
+ =09}
+ }
+
+-static u32 sdio_init(struct dvobj_priv *dvobj)
++static int sdio_init(struct dvobj_priv *dvobj)
+ {
+ =09struct sdio_data *psdio_data;
+ =09struct sdio_func *func;
+@@ -139,12 +139,11 @@ static u32 sdio_init(struct dvobj_priv *dvobj)
+ =09psdio_data->tx_block_mode =3D 1;
+ =09psdio_data->rx_block_mode =3D 1;
+
++=09return err;
++
+ release:
+ =09sdio_release_host(func);
+-
+-=09if (err)
+-=09=09return _FAIL;
+-=09return _SUCCESS;
++=09return err;
+ }
+
+ static void sdio_deinit(struct dvobj_priv *dvobj)
+@@ -186,7 +185,7 @@ static struct dvobj_priv *sdio_dvobj_init(struct sdio_f=
+unc *func)
+ =09psdio =3D &dvobj->intf_data;
+ =09psdio->func =3D func;
+
+-=09if (sdio_init(dvobj) !=3D _SUCCESS)
++=09if (sdio_init(dvobj) < 0)
+ =09=09goto free_dvobj;
+
+ =09rtw_reset_continual_io_error(dvobj);
+
+base-commit: 9ccce092fc64d19504fa54de4fd659e279cc92e7
+--
+git-series 0.9.1
 
