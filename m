@@ -2,84 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60EAB372814
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:27:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC8B2372819
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:30:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230115AbhEDJ2S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 05:28:18 -0400
-Received: from foss.arm.com ([217.140.110.172]:56158 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229903AbhEDJ2R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 05:28:17 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9B177ED1;
-        Tue,  4 May 2021 02:27:22 -0700 (PDT)
-Received: from e120877-lin.cambridge.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D042B3F73B;
-        Tue,  4 May 2021 02:27:20 -0700 (PDT)
-Date:   Tue, 4 May 2021 10:27:15 +0100
-From:   Vincent Donnefort <vincent.donnefort@arm.com>
-To:     Pierre.Gondois@arm.com
-Cc:     linux-kernel@vger.kernel.org, xuewen.yan@unisoc.com,
-        qperret@qperret.net, dietmar.eggemann@arm.com, Lukasz.Luba@arm.com,
-        mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, rostedt@goodmis.org,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com
-Subject: Re: [PATCH v2 2/2] sched/fair: Fix negative energy delta in
- find_energy_efficient_cpu()
-Message-ID: <20210504092714.GA100203@e120877-lin.cambridge.arm.com>
-References: <20210429101948.31224-1-Pierre.Gondois@arm.com>
- <20210429101948.31224-3-Pierre.Gondois@arm.com>
+        id S229999AbhEDJay (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 05:30:54 -0400
+Received: from mail1.protonmail.ch ([185.70.40.18]:38564 "EHLO
+        mail1.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229903AbhEDJax (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 05:30:53 -0400
+Date:   Tue, 04 May 2021 09:29:43 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1620120596;
+        bh=8iedi1sBuOfuU+AkuHmOzKPH2PiTW40aDNApIMiPXLA=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=tAiyHvRC8v8kPq68agftdrYPHDxDVNL7m4bPC7JlHMKGC8VOcVvgzDhHnEDilDOGQ
+         wOIzmq7e59KCBq+O2mcWmQFdfko89fvthHPX8BlVJ3K8UjGHpp9677/lZd3+DwWihW
+         ySBr9RH/6OcaFlob4DSW6VB8XvCWxfg293MAPBBuGJb7Cs6nrBOwhPSWSRA7KkHG4U
+         jXzhFWc5FZPlbg6BO45/YgDUuz1rBG0R+5QCmR32EkJ/oyf6b2iufODTMdQBuK8dSf
+         rZuFyvoMjozWTMPVbOaHnEWcS/JsbAvEgy1IlsalVXfKuU7RNelAkP0cJ26qji1ibV
+         MwepNZanJfCpg==
+To:     Peter Xu <peterx@redhat.com>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Herrmann <dh.herrmann@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        "tytso@mit.edu" <tytso@mit.edu>
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: Sealed memfd & no-fault mmap
+Message-ID: <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr>
+In-Reply-To: <20210429183836.GF8339@xz-x1>
+References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr> <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com> <20210429154807.hptls4vnmq2svuea@box> <20210429183836.GF8339@xz-x1>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429101948.31224-3-Pierre.Gondois@arm.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 11:19:48AM +0100, Pierre.Gondois@arm.com wrote:
-> From: Pierre Gondois <Pierre.Gondois@arm.com>
-> 
-> find_energy_efficient_cpu() (feec()) searches the best energy CPU
-> to place a task on. To do so, compute_energy() estimates the energy
-> impact of placing the task on a CPU, based on CPU and task utilization
-> signals.
-> 
-> Utilization signals can be concurrently updated while evaluating a
-> performance domain (pd). In some cases, this leads to having a
-> 'negative delta', i.e. placing the task in the pd is seen as an
-> energy gain. Thus, any further energy comparison is biased.
-> 
-> In case of a 'negative delta', return prev_cpu since:
-> 1. a 'negative delta' happens in less than 0.5% of feec() calls,
->    on a Juno with 6 CPUs (4 little, 2 big)
-> 2. it is unlikely to have two consecutive 'negative delta' for
->    a task, so if the first call fails, feec() will correctly
->    place the task in the next feec() call
-> 3. EAS current behavior tends to select prev_cpu if the task
->    doesn't raise the OPP of its current pd. prev_cpu is EAS's
->    generic decision
-> 4. prev_cpu should be preferred to returning an error code.
->    In the latter case, select_idle_sibling() would do the placement,
->    selecting a big (and not energy efficient) CPU. As 3., the task
->    would potentially reside on the big CPU for a long time
-> 
-> Reported-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> Suggested-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> Signed-off-by: Pierre Gondois <Pierre.Gondois@arm.com>
-> ---
+On Tuesday, April 27th, 2021 at 6:51 PM, Linus Torvalds <torvalds@linux-fou=
+ndation.org> wrote:
 
-I've been testing this patch on the Google's Pixel4, with a modified kernel that
-we are using to evalute mailine performance and energy consumption for a
-"real-life" mobile usage.
+> Hmm. It doesn't look too hard to do. The biggest problem is actually
+> that we've run out of flags in the vma (on 32-bit architectures), but
+> you could try this UNTESTED patch that just does the MAP_NOFAULT thing
+> unconditionally.
 
-As always, I ran the Work2.0 workload from PCMark on Android. With that setup I
-haven't observed any statistically significant performance change neither any CPU
-Idle residency modification. Nevertheless, this code protected against ~600 bad
-computations (and by extent bad placements) during a single PCMark iteration
-and by looking at the traces, this is saving from spurious wake-ups that would
-otherwise happen on the biggest CPUs of the system.
+Oh, thanks for the patch! Will test.
 
-+ Reviewed-by: Vincent Donnefort <vincent.donnefort@arm.com>
+> Side note: this will only ever work for non-shared mappings. That's
+> fundamental. We won't add an anonymous page to a shared mapping, and
+> do_anonymous_page() does verify that. So a MAP_SHARED mappign will
+> still return SIGBUS even with this patch (although it's not obvious
+> from the patch - the VM_FAULT_SIGBUS will just be re-created by
+> do_anonymous_page()).
+>
+> So if you want a _shared_ mapping to honor __MAP_NOFAULT and insert
+> random anonymous pages into it, I think the answer is "no, that's not
+> going to be viable".
+>
+> So _if_ this works for you, and if it's ok that only MAP_PRIVATE can
+> have __MAP_NOFAULT, and if Kirill/Peter/Will don't say "Oh, Linus,
+> you're completely off your rocker and clearly need to be taking your
+> meds", something like this - if we figure out the conditional bit -
+> might be doable.
+
+Hm, that's unfortunate. For the use-case of a Wayland compositor this
+doesn't seem like a complete show-stopper: in 90% of cases the compositor
+only needs a read-only mapping. Wayland clients submit buffers they're
+rendered pixels to, compositors only need to read them. So the compositor
+could map with MAP_PRIVATE and still get up-to-date pages from a client
+process I think.
+
+The remaining 10% is when the compositor needs a writable mapping for
+things like screen capture. It doesn't seem like a SIGBUS handler can
+be avoided in this case then=E2=80=A6 Oh well.
+
+> That's a fair number of "ifs".
+>
+> Ok, back to the merge window for me, I'll be throwing away this crazy
+> untested patch immediately after hitting "send". This is very much a
+> "throw the idea over to other people" patch, in other words.
+
+Got it. I'll take over the patch if this is a good way forward.
+
