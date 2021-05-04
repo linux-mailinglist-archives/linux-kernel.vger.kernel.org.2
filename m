@@ -2,130 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15163729ED
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6FF13729F3
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:17:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230256AbhEDMQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:16:28 -0400
-Received: from foss.arm.com ([217.140.110.172]:57392 "EHLO foss.arm.com"
+        id S230306AbhEDMSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:18:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:33668 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230253AbhEDMQZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:16:25 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B1595ED1;
-        Tue,  4 May 2021 05:15:30 -0700 (PDT)
-Received: from [10.57.59.124] (unknown [10.57.59.124])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EE4C13F73B;
-        Tue,  4 May 2021 05:15:26 -0700 (PDT)
-Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when
- setting the hint
-To:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Nitesh Lal <nilal@redhat.com>, Marc Zyngier <maz@kernel.org>
-References: <20210501021832.743094-1-jesse.brandeburg@intel.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com>
-Date:   Tue, 4 May 2021 13:15:22 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230188AbhEDMSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 08:18:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A0178AE5E;
+        Tue,  4 May 2021 12:17:15 +0000 (UTC)
+Date:   Tue, 4 May 2021 14:17:13 +0200
+From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Ben Dooks <ben.dooks@codethink.co.uk>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Miguel Ojeda <ojeda@kernel.org>, Will Deacon <will@kernel.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Joe Perches <joe@perches.com>,
+        Paul Mackerras <paulus@samba.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
+Message-ID: <20210504121713.GT6564@kitsune.suse.cz>
+References: <20210501151538.145449-1-masahiroy@kernel.org>
+ <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
+ <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
+ <65cda2bb-1b02-6ebc-0ea2-c48927524aa0@codethink.co.uk>
+ <CANiq72mk84uay--BWOLT4zF12-rat9erohKazB8SpTPoVCTX1A@mail.gmail.com>
+ <20210504092225.GS6564@kitsune.suse.cz>
+ <CANiq72kHwAeQ+vhFqg9tiQA-QHEK_xvP_Sro-_c5LJ2XDzjzxQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210501021832.743094-1-jesse.brandeburg@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CANiq72kHwAeQ+vhFqg9tiQA-QHEK_xvP_Sro-_c5LJ2XDzjzxQ@mail.gmail.com>
+User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-01 03:18, Jesse Brandeburg wrote:
-> It was pointed out by Nitesh that the original work I did in 2014
-> to automatically set the interrupt affinity when requesting a
-> mask is no longer necessary. The kernel has moved on and no
-> longer has the original problem, BUT the original patch
-> introduced a subtle bug when booting a system with reserved or
-> excluded CPUs. Drivers calling this function with a mask value
-> that included a CPU that was currently or in the future
-> unavailable would generally not update the hint.
+On Tue, May 04, 2021 at 02:09:24PM +0200, Miguel Ojeda wrote:
+> On Tue, May 4, 2021 at 11:22 AM Michal Suchánek <msuchanek@suse.de> wrote:
+> >
+> > Except it makes answering the question "Is this bug we see on this
+> > ancient system still present in upstream?" needlessly more difficult to
+> > answer.
 > 
-> I'm sure there are a million ways to solve this, but the simplest
-> one is to just remove a little code that tries to force the
-> affinity, as Nitesh has shown it fixes the bug and doesn't seem
-> to introduce immediate side effects.
+> Can you please provide some details? If you are talking about testing
+> a new kernel image in the ancient system "as-is", why wouldn't you
+> build it in a newer system? If you are talking about  particular
+> problems about bisecting (kernel, compiler) pairs etc., details would
+> also be welcome.
 
-Unfortunately, I think there are quite a few other drivers now relying 
-on this behaviour, since they are really using irq_set_affinity_hint() 
-as a proxy for irq_set_affinity(). Partly since the latter isn't 
-exported to modules, but also I have a vague memory of it being said 
-that it's nice to update the user-visible hint to match when the 
-affinity does have to be forced to something specific.
+Yes, bisecting comes to mind. If you need to switch the userspace as
+well the bisection results are not that solid. You may not be even able
+to bisect because the workload does not exist on a new system at all.
+Crafting a minimal test case that can be forward-ported to a new system
+is not always trivial - if you understood the problem to that extent you
+might not even need to bisect it in the first place.
 
-Robin.
+Thanks
 
-> While I'm here, introduce a kernel-doc for the hint function.
-> 
-> Ref: https://lore.kernel.org/lkml/CAFki+L=_dd+JgAR12_eBPX0kZO2_6=1dGdgkwHE=u=K6chMeLQ@mail.gmail.com/
-> Cc: netdev@vger.kernel.org
-> Fixes: 4fe7ffb7e17c ("genirq: Fix null pointer reference in irq_set_affinity_hint()")
-> Fixes: e2e64a932556 ("genirq: Set initial affinity in irq_set_affinity_hint()")
-> Reported-by: Nitesh Lal <nilal@redhat.com>
-> Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
-> ---
-> 
-> !!! NOTE: Compile tested only, would appreciate feedback
-> 
-> ---
->   kernel/irq/manage.c | 13 ++++++++++---
->   1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
-> index e976c4927b25..a31df64662d5 100644
-> --- a/kernel/irq/manage.c
-> +++ b/kernel/irq/manage.c
-> @@ -456,6 +456,16 @@ int __irq_set_affinity(unsigned int irq, const struct cpumask *mask, bool force)
->   	return ret;
->   }
->   
-> +/**
-> + * 	irq_set_affinity_hint - set the hint for an irq
-> + *	@irq:	Interrupt for which to set the hint
-> + *	@m:	Mask to indicate which CPUs to suggest for the interrupt, use
-> + *		NULL here to indicate to clear the value.
-> + *
-> + *	Use this function to recommend which CPU should handle the
-> + *	interrupt to any userspace that uses /proc/irq/nn/smp_affinity_hint
-> + *	in order to align interrupts. Pass NULL as the mask to clear the hint.
-> + */
->   int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
->   {
->   	unsigned long flags;
-> @@ -465,9 +475,6 @@ int irq_set_affinity_hint(unsigned int irq, const struct cpumask *m)
->   		return -EINVAL;
->   	desc->affinity_hint = m;
->   	irq_put_desc_unlock(desc, flags);
-> -	/* set the initial affinity to prevent every interrupt being on CPU0 */
-> -	if (m)
-> -		__irq_set_affinity(irq, m, false);
->   	return 0;
->   }
->   EXPORT_SYMBOL_GPL(irq_set_affinity_hint);
-> 
-> base-commit: 765822e1569a37aab5e69736c52d4ad4a289eba6
-> 
+Michal
