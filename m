@@ -2,122 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B9FB372607
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 08:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7EA37260E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 08:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229893AbhEDG7G convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 4 May 2021 02:59:06 -0400
-Received: from relay10.mail.gandi.net ([217.70.178.230]:46183 "EHLO
-        relay10.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229721AbhEDG7D (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 02:59:03 -0400
-Received: from xps13 (lfbn-tou-1-1325-59.w90-89.abo.wanadoo.fr [90.89.138.59])
-        (Authenticated sender: miquel.raynal@bootlin.com)
-        by relay10.mail.gandi.net (Postfix) with ESMTPSA id E1695240002;
-        Tue,  4 May 2021 06:58:06 +0000 (UTC)
-Date:   Tue, 4 May 2021 08:58:05 +0200
-From:   Miquel Raynal <miquel.raynal@bootlin.com>
-To:     mdalam@codeaurora.org
-Cc:     mani@kernel.org, boris.brezillon@collabora.com,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        sricharan@codeaurora.org
-Subject: Re: [PATCH] mtd: rawnand: qcom: avoid write to obsolete register
-Message-ID: <20210504085805.73e60979@xps13>
-In-Reply-To: <2667b47434a8f2892ea3d5f304380960@codeaurora.org>
-References: <1619205694-25645-1-git-send-email-mdalam@codeaurora.org>
-        <2667b47434a8f2892ea3d5f304380960@codeaurora.org>
-Organization: Bootlin
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S229918AbhEDG7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 02:59:49 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:24183 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229838AbhEDG7r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 02:59:47 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620111533; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=SP4OX5V85Stf/3lWPp2l71R2s4ZE0w97l0D80tD7ZOk=; b=dk3EDp/YiI3n/qLbS4Z4OR3dFtnwiejXiUseg7C/xKo+CxNK+bsRlDOOtXlvTOhOl8AFyUEI
+ z9nSOc0+FKRcGQVVkzSR9cxLplLmGO+fG8dNTFcRRFOqnduYJMewgg7WFf/I3+QwBpfl0ytV
+ PNHrpBhqVb7X8+4AkgLoVndu4oc=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6090f0ac2cbba88980bdcae5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 May 2021 06:58:52
+ GMT
+Sender: sibis=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 19C26C4323A; Tue,  4 May 2021 06:58:52 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-87.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: sibis)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id DAC77C4338A;
+        Tue,  4 May 2021 06:58:47 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org DAC77C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sibis@codeaurora.org
+From:   Sibi Sankar <sibis@codeaurora.org>
+To:     bjorn.andersson@linaro.org, dianders@chromium.org, mka@chromium.org
+Cc:     viresh.kumar@linaro.org, sboyd@kernel.org, agross@kernel.org,
+        robh+dt@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        Sibi Sankar <sibis@codeaurora.org>
+Subject: [PATCH v2 0/2] DDR/L3 Scaling support on SC7280 SoCs
+Date:   Tue,  4 May 2021 12:28:28 +0530
+Message-Id: <1620111510-31455-1-git-send-email-sibis@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+The patch series adds support for DDR/L3 Scaling on SC7280 SoCs.
 
-mdalam@codeaurora.org wrote on Mon, 03 May 2021 20:24:54 +0530:
+V2:
+ * Add a new opp table for cpu 7 to account for the additional frequencies
+   supported by it.
 
-> On 2021-04-24 00:51, Md Sadre Alam wrote:
-> > QPIC_EBI2_ECC_BUF_CFG register got obsolete from QPIC V2.0 onwards.
-> > Avoid writing this register if QPIC version is V2.0 or newer.
-> > 
-> > Signed-off-by: Md Sadre Alam <mdalam@codeaurora.org>
-> > ---
-> >  drivers/mtd/nand/raw/qcom_nandc.c | 17 +++++++++++------
-> >  1 file changed, 11 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/mtd/nand/raw/qcom_nandc.c
-> > b/drivers/mtd/nand/raw/qcom_nandc.c
-> > index fd4c318..8c5205c 100644
-> > --- a/drivers/mtd/nand/raw/qcom_nandc.c
-> > +++ b/drivers/mtd/nand/raw/qcom_nandc.c
-> > @@ -714,7 +714,8 @@ static void update_rw_regs(struct qcom_nand_host
-> > *host, int num_cw, bool read)
-> >  	nandc_set_reg(nandc, NAND_DEV0_CFG0, cfg0);
-> >  	nandc_set_reg(nandc, NAND_DEV0_CFG1, cfg1);
-> >  	nandc_set_reg(nandc, NAND_DEV0_ECC_CFG, ecc_bch_cfg);
-> > -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
-> > +	if (!nandc->props->qpic_v2)
-> > +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, host->ecc_buf_cfg);
-> >  	nandc_set_reg(nandc, NAND_FLASH_STATUS, host->clrflashstatus);
-> >  	nandc_set_reg(nandc, NAND_READ_STATUS, host->clrreadstatus);
-> >  	nandc_set_reg(nandc, NAND_EXEC_CMD, 1);
-> > @@ -1083,7 +1084,8 @@ static void config_nand_page_read(struct
-> > qcom_nand_controller *nandc)
-> >  {
-> >  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
-> >  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
-> > -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
-> > +	if (!nandc->props->qpic_v2)
-> > +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1, 0);
-> >  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1, 0);
-> >  	write_reg_dma(nandc, NAND_ERASED_CW_DETECT_CFG, 1,
-> >  		      NAND_ERASED_CW_SET | NAND_BAM_NEXT_SGL);
-> > @@ -1132,8 +1134,9 @@ static void config_nand_page_write(struct
-> > qcom_nand_controller *nandc)
-> >  {
-> >  	write_reg_dma(nandc, NAND_ADDR0, 2, 0);
-> >  	write_reg_dma(nandc, NAND_DEV0_CFG0, 3, 0);
-> > -	write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
-> > -		      NAND_BAM_NEXT_SGL);
-> > +	if (!nandc->props->qpic_v2)
-> > +		write_reg_dma(nandc, NAND_EBI2_ECC_BUF_CFG, 1,
-> > +			      NAND_BAM_NEXT_SGL);
-> >  }
-> > 
-> >  /*
-> > @@ -1187,7 +1190,8 @@ static int nandc_param(struct qcom_nand_host > *host)
-> >  					| 2 << WR_RD_BSY_GAP
-> >  					| 0 << WIDE_FLASH
-> >  					| 1 << DEV0_CFG1_ECC_DISABLE);
-> > -	nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << > ECC_CFG_ECC_DISABLE);
-> > +	if (!nandc->props->qpic_v2)
-> > +		nandc_set_reg(nandc, NAND_EBI2_ECC_BUF_CFG, 1 << > ECC_CFG_ECC_DISABLE);
-> > 
-> >  	/* configure CMD1 and VLD for ONFI param probing in QPIC v1 */
-> >  	if (!nandc->props->qpic_v2) {
-> > @@ -2628,7 +2632,8 @@ static int qcom_nand_attach_chip(struct nand_chip > *chip)
-> >  				| ecc_mode << ECC_MODE
-> >  				| host->ecc_bytes_hw << ECC_PARITY_SIZE_BYTES_BCH;
-> > 
-> > -	host->ecc_buf_cfg = 0x203 << NUM_STEPS;
-> > +	if (!nandc->props->qpic_v2)
-> > +		host->ecc_buf_cfg = 0x203 << NUM_STEPS;
-> > 
-> >  	host->clrflashstatus = FS_READY_BSY_N;
-> >  	host->clrreadstatus = 0xc0;  
-> 
-> 
-> ping! Hi Miquel could you review this change and let me know if more info needed.
+Depends on the following patch series:
+L3 Provider Support: https://lore.kernel.org/lkml/1618556290-28303-1-git-send-email-okukatla@codeaurora.org/
+CPUfreq Support: https://lore.kernel.org/lkml/1618020280-5470-2-git-send-email-tdas@codeaurora.org/
+RPMH Provider Support: https://lore.kernel.org/lkml/1619517059-12109-1-git-send-email-okukatla@codeaurora.org/
 
-Come on, that's only 6 days of work and we are in the middle of the
-merge window... 
+It also depends on L3 and cpufreq dt nodes from the ^^ series to not have
+overlapping memory regions.
 
-BTW "avoid write to" in the title is incorrect "writing to" would be
-nicer.
+Sibi Sankar (2):
+  cpufreq: blacklist SC7280 in cpufreq-dt-platdev
+  arm64: dts: qcom: sc7280: Add cpu OPP tables
 
-Thanks,
-Miquèl
+ arch/arm64/boot/dts/qcom/sc7280.dtsi | 215 +++++++++++++++++++++++++++++++++++
+ drivers/cpufreq/cpufreq-dt-platdev.c |   1 +
+ 2 files changed, 216 insertions(+)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
