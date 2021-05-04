@@ -2,178 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D76D9372EC3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:19:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DAB9372E9D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:18:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232487AbhEDRTe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:19:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39680 "EHLO
+        id S232053AbhEDRSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:18:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232304AbhEDRTK (ORCPT
+        with ESMTP id S232043AbhEDRSj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:19:10 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8D238C06134C
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:11 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id i62-20020a3786410000b02902e4f9ff4af8so8026478qkd.8
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:11 -0700 (PDT)
+        Tue, 4 May 2021 13:18:39 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B27BFC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:17:44 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id u20so9298702qku.10
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:17:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=EJVLUy9Wu1XMVquYiQb1OEBFSqdA144hYS1qNH/p6ok=;
-        b=GaRByPbJVmtgHWnYspoS8Dyjsh95eo63qw5bARG4QFcCgvqBFPaPZgkMwhIudspGV3
-         XxsQJfbuP47evZwpOW+90yLQ54UiDMP0KpyTMEay5IS3EmorT3z2HvoZ8/5HY+58ZT7D
-         kJ1Q9SUEAN74G/9VOxqFRd6SHA+CU6zjz/rfMNmqlbPWQ3VkFDZQnYgRzUciw+sZiZRW
-         QFVzh75tN13ns60wE+2IufukKRoZ2SteQiTMAvH8QOhuRZ86Q7W4fN6vNVaPCs6TWYY+
-         gDXEUjdS1PRaApRNuzzRf8V8/kPKZjXAdFlxHvSdFGggSKInJtBXv+eGNm05UHzp+n+t
-         TkJA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4RwyehG38JsKD/EL1cHF9aUCKECHFf4iXyx7IfSeRco=;
+        b=lV9pNu1ALFgRJuH/a8BPUcC7sm4Cr3vz7ftGYoqy4deMX7Y/v2pj4Dp4Lvsbg8aFlP
+         sj/JAdjnrJ31J3yfRabtpEb1MLTmH6Aq16boUMdmZZByMy+13P3eQcUo8rUdK7ELXj25
+         x9vmtxFSyoLE48wzUosIZpewe1kZJ+C20WwdD1wU6NzsId5rI1RFYIvkY1klKbiAicbC
+         LrAdqAvJ0ybDqvPIxytGPyZqTI3yf+qXVjPNDAQOQcarZZOVriVWpi85U20k00g/z6eR
+         +7QzKffzEExlgvNdjZlU1Bym0YWn6Cum833brbZi0EKren2GD3knxzJRyw25gvhOV9NV
+         /zWg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=EJVLUy9Wu1XMVquYiQb1OEBFSqdA144hYS1qNH/p6ok=;
-        b=KasEDrzJre9YPKfBM7FKoAgZGszl1EFvDKYG+iHWA1lGbUrnHPUKIvuBxza5PLlvy6
-         73XvgjS5gOQcGRSfU+j7TKRVWRTCDAgn+fbUx8kPeqMvIJMAxafVj8HVM3c6/of/Ia+m
-         w417tTn+e/boctW96THnIVnxlIm+P41993utfeAFLemk/EFFszOo0WisBJwajYMtYKuu
-         GOMP9jnEYtCvbxi06+gRqjV6K8DvP5hkXaaahvvyu41cVC1KzZCYoJ+AeoLa99N3nMri
-         XR1/66IGYsnKO4T3NOB3Jv7v9X4SATkDuErYIxSZa+tn7amnFjIZe34UYl5DtLuFsE5y
-         TVYg==
-X-Gm-Message-State: AOAM5323myWrBhsZvdHioO3Xj5EOMYcPRc8KlXsa0GJ9qMWme2JlYIVN
-        wbHXVsMx59t6+OmDEK3lT5YgzcByRwI=
-X-Google-Smtp-Source: ABdhPJyhVg/bmFC4ZCuJps+AFIdNNG3bxydLRShSlFwsS1FMASCi+Phzl7sFcSPLPYREl0r4GH/DbMxTvP4=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:a0c:e486:: with SMTP id n6mr24367135qvl.21.1620148690729;
- Tue, 04 May 2021 10:18:10 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 10:17:31 -0700
-In-Reply-To: <20210504171734.1434054-1-seanjc@google.com>
-Message-Id: <20210504171734.1434054-13-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210504171734.1434054-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH 12/15] KVM: x86: Export the number of uret MSRs to vendor modules
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4RwyehG38JsKD/EL1cHF9aUCKECHFf4iXyx7IfSeRco=;
+        b=XUP3xLmJwIirm2Ao11W4XFOFLuATRne6yZqvQ5Hz+zXdJx3RRBgiA31aTHbniTllJ+
+         jgkcVxVx0cA6EnGd+LyJSnhwPrHz0YEjmF4PcRIqg6UsTsc6Ufg0TtubcQxlH5W5vAfo
+         wQoLq7fmaPhf6t8+Ob2wzyiNcyj1eGXjo+POfOIwBuEc3ddNr8TqSwfdrogSFi1BNTWn
+         c98B4kAqgbNuuYsDOPoxTrhtNau0HtfV0XCYOYJdJ1f/MlFccoV9+l0mCo+0+xKD+bYJ
+         buk+roO88i3TE30VVSQv9rncuD9Iia/iuDelFvhPzPyyS6xnsWNqmozuiWeYS8KvEXK+
+         EXgA==
+X-Gm-Message-State: AOAM532eEUfjKb+FXxTgwKexYJoLlfZ/htbHxPvBlTNFgdfZ9HaaH/kf
+        ZYcBxaB1LZ+tzrBrV+YGtzgmUjHgw+qaLp1Bc9/okw==
+X-Google-Smtp-Source: ABdhPJz8WHrf5I6qtxHqMtb+rsFYczLKHuarGrf0WWbVAf58rsMGc3lhssIq/U/iXRflcV2jBag+UTMrVjW579yyBxs=
+X-Received: by 2002:a05:620a:89d:: with SMTP id b29mr27216870qka.231.1620148663606;
+ Tue, 04 May 2021 10:17:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210504024358.894950-1-ak@linux.intel.com> <CACT4Y+a5g5JeLJFPJEUxPFbMLXGkYEAJkK3MBctnn7UA-iTkXA@mail.gmail.com>
+ <77634a8e-74ab-4e95-530e-c2c46db8baa7@linux.intel.com>
+In-Reply-To: <77634a8e-74ab-4e95-530e-c2c46db8baa7@linux.intel.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Tue, 4 May 2021 19:17:31 +0200
+Message-ID: <CACT4Y+a1mjOfiud=WBVaP-96rovKQmW9_AaV+y=NFAKQJy_Kwg@mail.gmail.com>
+Subject: Re: [PATCH] stackdepot: Use a raw spinlock in stack depot
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrey Konovalov <andreyknvl@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Split out and export the number of configured user return MSRs so that
-VMX can iterate over the set of MSRs without having to do its own tracking.
-Keep the list itself internal to x86 so that vendor code still has to go
-through the "official" APIs to add/modify entries.
+On Tue, May 4, 2021 at 5:34 PM Andi Kleen <ak@linux.intel.com> wrote:
+> > So why is this a false positive that we just need to silence?
+> > I see LOCKDEP is saying we are doing something wrong, and your
+> > description just describes how we are doing something wrong :)
+> > If this is a special false positive case, it would be good to have a
+> > comment on DEFINE_RAW_SPINLOCK explaining why we are using it.
+> >
+> > I wonder why we never saw this on syzbot. Is it an RT kernel or some
+> > other special config?
+>
+> This happened in a special configuration that triggered ACPI errors at
+> boot time.
+>
+> It's probably not something that is normally executed, as well as syzbot is
+>
+> probably not exercising bootup anyways.
+>
+> > A similar issue was discussed recently for RT kernel:
+> > https://groups.google.com/g/kasan-dev/c/MyHh8ov-ciU/m/nahiuqFLAQAJ
+> > And I think it may be fixable in the same way -- make stackdepot not
+> > allocate in contexts where it's not OK to allocate.
+>
+>
+> Yes that's a good idea. I've seen also other errors about the allocator
+> triggered
+>
+> by stack depot being in the wrong context. Probably doing that would be
+> the right
+>
+> fix. But I actually tried to switch depot to GFP_ATOMIC allocations
+> (from GFP_NOWAIT),
+>
+> but it didn't help, so I'm not fully sure what needs to be changed.
 
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/include/asm/kvm_host.h |  1 +
- arch/x86/kvm/x86.c              | 29 +++++++++++++----------------
- 2 files changed, 14 insertions(+), 16 deletions(-)
-
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index c9452472ed55..10663610f105 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1419,6 +1419,7 @@ struct kvm_arch_async_pf {
- 	bool direct_map;
- };
- 
-+extern u32 __read_mostly kvm_nr_uret_msrs;
- extern u64 __read_mostly host_efer;
- extern bool __read_mostly allow_smaller_maxphyaddr;
- extern struct kvm_x86_ops kvm_x86_ops;
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 90ef340565a4..2fd46e917666 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -184,11 +184,6 @@ module_param(pi_inject_timer, bint, S_IRUGO | S_IWUSR);
-  */
- #define KVM_MAX_NR_USER_RETURN_MSRS 16
- 
--struct kvm_user_return_msrs_global {
--	int nr;
--	u32 msrs[KVM_MAX_NR_USER_RETURN_MSRS];
--};
--
- struct kvm_user_return_msrs {
- 	struct user_return_notifier urn;
- 	bool registered;
-@@ -198,7 +193,9 @@ struct kvm_user_return_msrs {
- 	} values[KVM_MAX_NR_USER_RETURN_MSRS];
- };
- 
--static struct kvm_user_return_msrs_global __read_mostly user_return_msrs_global;
-+u32 __read_mostly kvm_nr_uret_msrs;
-+EXPORT_SYMBOL_GPL(kvm_nr_uret_msrs);
-+static u32 __read_mostly kvm_uret_msrs_list[KVM_MAX_NR_USER_RETURN_MSRS];
- static struct kvm_user_return_msrs __percpu *user_return_msrs;
- 
- #define KVM_SUPPORTED_XCR0     (XFEATURE_MASK_FP | XFEATURE_MASK_SSE \
-@@ -330,10 +327,10 @@ static void kvm_on_user_return(struct user_return_notifier *urn)
- 		user_return_notifier_unregister(urn);
- 	}
- 	local_irq_restore(flags);
--	for (slot = 0; slot < user_return_msrs_global.nr; ++slot) {
-+	for (slot = 0; slot < kvm_nr_uret_msrs; ++slot) {
- 		values = &msrs->values[slot];
- 		if (values->host != values->curr) {
--			wrmsrl(user_return_msrs_global.msrs[slot], values->host);
-+			wrmsrl(kvm_uret_msrs_list[slot], values->host);
- 			values->curr = values->host;
- 		}
- 	}
-@@ -358,9 +355,9 @@ EXPORT_SYMBOL_GPL(kvm_probe_user_return_msr);
- void kvm_define_user_return_msr(unsigned slot, u32 msr)
- {
- 	BUG_ON(slot >= KVM_MAX_NR_USER_RETURN_MSRS);
--	user_return_msrs_global.msrs[slot] = msr;
--	if (slot >= user_return_msrs_global.nr)
--		user_return_msrs_global.nr = slot + 1;
-+	kvm_uret_msrs_list[slot] = msr;
-+	if (slot >= kvm_nr_uret_msrs)
-+		kvm_nr_uret_msrs = slot + 1;
- }
- EXPORT_SYMBOL_GPL(kvm_define_user_return_msr);
- 
-@@ -368,8 +365,8 @@ int kvm_find_user_return_msr(u32 msr)
- {
- 	int i;
- 
--	for (i = 0; i < user_return_msrs_global.nr; ++i) {
--		if (user_return_msrs_global.msrs[i] == msr)
-+	for (i = 0; i < kvm_nr_uret_msrs; ++i) {
-+		if (kvm_uret_msrs_list[i] == msr)
- 			return i;
- 	}
- 	return -1;
-@@ -383,8 +380,8 @@ static void kvm_user_return_msr_cpu_online(void)
- 	u64 value;
- 	int i;
- 
--	for (i = 0; i < user_return_msrs_global.nr; ++i) {
--		rdmsrl_safe(user_return_msrs_global.msrs[i], &value);
-+	for (i = 0; i < kvm_nr_uret_msrs; ++i) {
-+		rdmsrl_safe(kvm_uret_msrs_list[i], &value);
- 		msrs->values[i].host = value;
- 		msrs->values[i].curr = value;
- 	}
-@@ -399,7 +396,7 @@ int kvm_set_user_return_msr(unsigned slot, u64 value, u64 mask)
- 	value = (value & mask) | (msrs->values[slot].host & ~mask);
- 	if (value == msrs->values[slot].curr)
- 		return 0;
--	err = wrmsrl_safe(user_return_msrs_global.msrs[slot], value);
-+	err = wrmsrl_safe(kvm_uret_msrs_list[slot], value);
- 	if (err)
- 		return 1;
- 
--- 
-2.31.1.527.g47e6f16901-goog
-
+We may not allocate at all, see may_prealloc idea here:
+https://groups.google.com/g/kasan-dev/c/MyHh8ov-ciU/m/k1LXBmonAQAJ
