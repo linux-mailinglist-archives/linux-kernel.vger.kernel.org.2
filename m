@@ -2,144 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9429C3729AE
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:49:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2AB33729B1
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:52:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhEDLuq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 07:50:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230089AbhEDLup (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 07:50:45 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAC29C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 04:49:49 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id y9so5726364ljn.6
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 04:49:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ojk0uBlcSQA0tRoIr6v61EVqnolFhG0EuiHG8D7GLow=;
-        b=KRpkSYzoZGwaGRkN1Ey+Rwmni9zy8TzJkmZmJlhT50ctyokurFobZoDpzNdvR9utBz
-         6edivwHlBmDU9f2ra+TjMK49Jno1YE67rkr1P/ynF50TEx970UsvxhLJyqN0LYcpegoX
-         tY4A1zehnbDfzQ1Gev+bbHwDiBW/oxeyHCdr0MxvVKM17vGTqP0+XRYSrNWnEa7f9ydW
-         Z+MNQZOEf1FWMdnue7sJo5hZVAlDIgZ2jW2TmnYpQu0M0yHFe7l8/gE3ipoBP8ZWW+Ia
-         ETAbUmmqWSl8m0rWlGJnAolXBSsXK1UZUwmVAI7ySiyQZGhKpB3nuQjK0c2eVBVEp6l0
-         N+4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=Ojk0uBlcSQA0tRoIr6v61EVqnolFhG0EuiHG8D7GLow=;
-        b=PgYCZvZ6fwAxB2ufjsso7hcm/usd8j/EuUieTEM4tOQPcUXN0ImPmXZGuribCSWdbc
-         DeF03Law9cxOCmhrmTR+EwXATwxR3lttOiQmLqjnFKHXyhYV3tLpd4c3bL29zlGEPTeV
-         Gbd5kYfCaGYwBtux1nyOrH/MC8hemZT7urWi6Rht/FHAzx/nP9gVGP8xfJ88XJhMN7RT
-         Ay79nKsc3YrV4gw6QIgsNI6MZb/2FdbErwg2uuTypJ0QJglClMEHyJFd5sTQgGFQLL+I
-         YY07fkBRPZ8XsLNYByfs3MHZL4JK73SSUi+MGisC8qezASGao7GIjvLXU7D/G6wTt2ky
-         eBHg==
-X-Gm-Message-State: AOAM531z9SqR+yQta3RrSqz06GwPg+EZSNcQnrGDMTrpxl6gYanowe1S
-        nfztW5FS59lb4783w4iaIASoycygVct5DnhXRwc=
-X-Google-Smtp-Source: ABdhPJzKy8vHzqdQTks+QG264+LYBuuRJGMOCERQ0ZNnynfSFFtqj6L8fAwYj4DjOWElRFvobvgwqKrkgXeerUKCAs4=
-X-Received: by 2002:a2e:b88b:: with SMTP id r11mr17094355ljp.227.1620128988341;
- Tue, 04 May 2021 04:49:48 -0700 (PDT)
+        id S230213AbhEDLxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 07:53:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44454 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230089AbhEDLxA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 07:53:00 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 511A360240;
+        Tue,  4 May 2021 11:52:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620129125;
+        bh=CYlTF8vPOUGmP1yrj7WXGHoZZMuyrNVYYEyGYgffhQQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s9USfbjjXhLtVfch5jWn/Z3G+U9DCpzZ6IpciENXXJSVOTDjJrWwokOxltdsRqO9h
+         bIaG6mNG27BKjX4+ieMquX/Y/eV0kQzpzl5x0UoWcn74Ndr3OgCbqYVkCdxhIzsNPg
+         MKWro3VGJKzDzSRui4MFkqT7CH4OvAGM9cKqU7Jk9y+f4uMmOj0gSNkCvvxyOr+s5j
+         eD9kibxr/8N5vQkT/GR0dE2bNqIIZD8vwl3NybBdkSMO2yujuewgGkxWk23f/RUYa4
+         BLTc2oqbzXas8Zeif/sZGypzN4Xwa06Or8VEJH/ZkVXt7OBL56kDav35SJ+3VpjV//
+         UjpKR1w+nJJwQ==
+Date:   Tue, 4 May 2021 12:51:30 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Lukas Wunner <lukas@wunner.de>
+Cc:     Joe Burmeister <joe.burmeister@devtank.co.uk>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list@broadcom.com, linux-spi@vger.kernel.org,
+        linux-rpi-kernel@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        nsaenz@kernel.org, phil@raspberrypi.com
+Subject: Re: [PATCH] spi: bcm2835: Fix buffer overflow with CS able to go
+ beyond limit.
+Message-ID: <20210504115130.GA7094@sirena.org.uk>
+References: <20210420083402.6950-1-joe.burmeister@devtank.co.uk>
+ <c087ba2c-7839-02d1-a522-b104d8ffb8d2@gmail.com>
+ <7c9f9376-1a80-b624-7b9e-0f6d04437c02@devtank.co.uk>
+ <271ad212-a606-620e-3f0c-d6bff272be3c@gmail.com>
+ <380624c4-82f3-0e6e-8cdb-8a9732636db8@devtank.co.uk>
+ <20210423115724.GB5507@sirena.org.uk>
+ <672e8d77-ee5c-f10f-0bd3-f8708dfc24c8@devtank.co.uk>
+ <20210423162055.GE5507@sirena.org.uk>
+ <20210501195135.GA18501@wunner.de>
 MIME-Version: 1.0
-References: <20210504090743.9688-1-Pierre.Gondois@arm.com> <d06dbab5-60cf-a558-0ded-2d224aca89fd@arm.com>
-In-Reply-To: <d06dbab5-60cf-a558-0ded-2d224aca89fd@arm.com>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Tue, 4 May 2021 19:49:29 +0800
-Message-ID: <CAB8ipk8ozBDFP7GfRMLZVdjO8D5e+OuFKOOQg1zkEgb9g3Qdug@mail.gmail.com>
-Subject: Re: [PATCH v3 0/2] sched/fair: find_energy_efficient_cpu() enhancements
-To:     Pierre Gondois <pierre.gondois@arm.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Xuewen Yan <xuewen.yan@unisoc.com>, qperret@qperret.net,
-        Lukasz.Luba@arm.com, Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Vincent.Donnefort@arm.com, Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="+QahgC5+KEYLbs62"
+Content-Disposition: inline
+In-Reply-To: <20210501195135.GA18501@wunner.de>
+X-Cookie: MY income is ALL disposable!
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pierre=EF=BC=8C
 
-The two patches look good to me.
+--+QahgC5+KEYLbs62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Thanks
-Xuewen Yan
+On Sat, May 01, 2021 at 09:51:35PM +0200, Lukas Wunner wrote:
+> On Fri, Apr 23, 2021 at 05:20:55PM +0100, Mark Brown wrote:
+> > Part of the issue here is that there has been some variation in how
+> > num_chipselect is interpreted with regard to GPIO based chip selects
+> > over time.  It *should* be redundant, I'm not clear why it's in the
+> > generic bindings at all but that's lost to history AFAICT.
 
-On Tue, May 4, 2021 at 5:11 PM Pierre Gondois <pierre.gondois@arm.com> wrot=
-e:
->
-> Hi Xuewen,
->
-> Please let me know if you have some comments,
-> Pierre
->
-> On 5/4/21 10:07 AM, Pierre Gondois wrote:
-> > V2:
-> >   - Split the patch in 2. [Quentin]
-> >   - Add testing results to the cover-letter. [Dietmar]
-> >   - Put back 'rcu_read_unlock()' to unlock the rcu
-> >     earlier. [Dietmar]
-> >   - Various comments. [Dietmar/Quentin]
-> >
-> > V3:
-> >   - Layout/phrasing. [Dietmar]
-> >
-> > This patchset prevents underflows in find_energy_efficient_cpu().
-> > This is done in the second patch:
-> > sched/fair: Fix negative energy delta in find_energy_efficient_cpu()
-> >
-> > The first patch:
-> > sched/fair: Only compute base_energy_pd if necessary
-> > prevents an unnecessary call to compute_energy() if no CPU is available
-> > in a performance domain (pd).
-> > When looping over the pds, it also allows to gather the calls
-> > to compute_energy(), reducing the chances of having utilization signals
-> > being concurrently updated and having a 'negative delta'.
-> >
-> > The energy tests of the initial EAS enablement at:
-> > https://lkml.kernel.org/r/20181203095628.11858-1-quentin.perret@arm.com
-> > have been executed using LISA on a Juno-r2 (2xA57 + 4xA53).
-> >
-> > To recall the test:
-> > "10 iterations of between 10 and 50 periodic rt-app tasks (16ms period,
-> > 5% duty-cycle) for 30 seconds with energy measurement. Unit is Joules.
-> > The goal is to save energy, so lower is better."
-> > "Energy is measured with the onboard energy meter. Numbers include
-> > consumption of big and little CPUs."
-> >
-> > +----------+-----------------+-------------------------+
-> > |          | Without patches | With patches            |
-> > +----------+--------+--------+------------------+------+
-> > | Tasks nb |  Mean  |    CI* | Mean             |  CI* |
-> > +----------+--------+--------+------------------+------+
-> > |       10 |   6.57 |   0.24 |   6.46 (-1.63%)  | 0.27 |
-> > |       20 |  12.44 |   0.21 |  12.44 (-0.01%)  | 0.14 |
-> > |       30 |  19.10 |   0.78 |  18.75 (-1.85%)  | 0.15 |
-> > |       40 |  27.27 |   0.53 |  27.35 (+0.31%)  | 0.33 |
-> > |       50 |  36.55 |   0.42 |  36.28 (-0.74%)  | 0.42 |
-> > +----------+-----------------+-------------------------+
-> > CI: confidence interval
-> >
-> > For each line, the intervals of values w/ w/o the patches are
-> > overlapping (consider Mean +/- CI). Thus, the energy results shouldn't
-> > have been impacted.
-> >
-> > Pierre Gondois (2):
-> >    sched/fair: Only compute base_energy_pd if necessary
-> >    sched/fair: Fix negative energy delta in find_energy_efficient_cpu()
-> >
-> >   kernel/sched/fair.c | 68 ++++++++++++++++++++++++++------------------=
--
-> >   1 file changed, 39 insertions(+), 29 deletions(-)
-> >
+> It seems num_chipselect is meant to be set to the maximum number of
+> *native* chipselects supported by the controller.  Which is overwritten
+> if GPIO chipselects are used.
+
+This gets fun with the controllers that have for various reasons open
+coded some or all of the GPIO chip select handling.
+
+> I failed to appreciate that when I changed num_chipselects for
+> spi-bcm2835.c with commit 571e31fa60b3.  That single line change
+> in the commit ought to be reverted.
+
+> And the kernel-doc ought to be amended because the crucial detail
+> that num_chipselect needs to be set to the maximum *native* chipselects
+> isn't mentioned anywhere.
+
+Can you send patches for these please?
+
+> > The best thing would be to have it not have a single array of chip
+> > select specific data and instead store everything in the controller_data
+> > that's there per-device.
+
+> Unfortunately that's non-trivial.  The slave-specific data is DMA-mapped.
+> It could be DMA-mapped in ->setup but there's no ->unsetup to DMA-unmap
+> the memory once the slave is removed.  Note that the slave could be removed
+> dynamically with a DT overlay, not just when the controller is unbound.
+
+> So we'd need a new ->unsetup hook at the very least to make this work.
+
+There's the cleanup() callback which seems to fit?
+
+--+QahgC5+KEYLbs62
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCRNUEACgkQJNaLcl1U
+h9DsmQf/UKHAwxHaMURxnn5hgYu8xFWNaqLHCJM2/x2xMcPvDWe1QWDAtzr7CXg8
+BsQ9qd/qGyPFHQyyJVbYK7ahxIkVFdhTkASvHGmn4uGAyKVN2QNNM5Miom5diVzA
+U88F61K/5WkDEcG5y85IoZKMTKlcUxL11VlWBMCYvYLNzky6iWpWlt8MPj+TBVmu
+QNIhRRVNEEMFEBNcg7YNHkdf+farFIu8oCaRmxFGSGLFZNx5FOBIsHL/y6djiCMZ
+CotSqF62zku4CDADQDFVHMzpl4JOcqWqItfl4sir3QIux6aV6KJvLDK2V7lj4noo
+8VIITEOCIcvfIDGRZt6wANRN3FV/sw==
+=QRb8
+-----END PGP SIGNATURE-----
+
+--+QahgC5+KEYLbs62--
