@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70353372954
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:00:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93424372957
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:00:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbhEDLBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 07:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40032 "EHLO
+        id S230413AbhEDLBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 07:01:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230335AbhEDLB3 (ORCPT
+        with ESMTP id S230306AbhEDLB3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 May 2021 07:01:29 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBC86C06138F
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 04:00:22 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id q2so7020814pfh.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 04:00:22 -0700 (PDT)
+Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC2FBC061345
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 04:00:26 -0700 (PDT)
+Received: by mail-pf1-x42f.google.com with SMTP id c17so7056548pfn.6
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 04:00:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sifive.com; s=google;
         h=from:to:subject:date:message-id:in-reply-to:references:mime-version
          :content-transfer-encoding;
-        bh=ddtby8u0R33cOntLLPoDYh0e5Ss2FvGJIP/FJDn2Hhw=;
-        b=nK5+3Wxx25GLN15WqSNbNa5E54rLfzDmxI0Zyx+4kxtndBZjOqgHRKxtXL3xzmFwaZ
-         Phwr9DqBdn5N7mGOmyv5OVMBDiycI3bwe4kmUT5N8tKLOL7bgc5jidxVdlwNJqwMST4f
-         5kmFSaa5emm/cbP02gIoypUR2fqhWCiBXj/inYl9Bly2gCUaZqnLwNIwb1dLY4g1TkD7
-         DSwJBHHniJ1KdhlV+ruBUzWylUsCtf0/B9DydDYuEifaBV6bQqHHjIcqFFXgxtyrfjNo
-         jv+J6BXLmSqBSaHPUuinLISxMkYQAX7fvQ9umKbFBwmn/yQOvdwIyRZ3P/FbZk9dCBLY
-         8UNA==
+        bh=/8pWgDAkL2aH5HxBeFWnGEqaMXG/w/n3EThO0NrEYI8=;
+        b=gh/OHnpKwH6RKRNye83k3AGygPaflR2nHxihaD22pHgHno+5ENGuL+zrFTPIwwWA98
+         nL8BHptQYSNKHAE1o3NFCdjBjxI8atrCq8dXOqROOh2jm/P5ecP6+nNfFrQwqhXDWqy+
+         3sY8dVrZUnxoZhUIpgcwywXdSfEJUSNTTlxTeUz0bJ60nA78imSm9nBSvDSSdN34Gqnk
+         2kgs3IeR0RKW4PsUudP/BYAGX9tofthv7T/Q8BNTKkgSnMFUsgM5FppWFp590FCbKqLW
+         kS5S2jsLcIpLQcVsmSpP0vfDwVz66dXbE8BRwXeHRwYoK7lsolbpnAG+w31+flZpTc8/
+         FAEA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=ddtby8u0R33cOntLLPoDYh0e5Ss2FvGJIP/FJDn2Hhw=;
-        b=CNRlMNOa6xFRn72nv4+fG4zJgNiULqQ/1nosnS6q4DvNx7cWL9StH67r4DOnRysQmi
-         HDSf04tQKP8dkNxu6E5LTtrZwv6JUXcIzxuDjnAOqwkgYVcHOh44xS0CeR7syY1/IVKf
-         97RgfMfoJk+rP9bsDlTcayW7O/1yfF2SoPApymBMYCu1jfPHOqQqJFbYgX1rCZwGOdOq
-         xwUTlWfMo6yR+t0nlUzVvSYgRA8nTk+OVrCpYfpkrEmIj4Wc7GO4LlD8kYgLRnAtg3OL
-         E8dGaO4Bn2vEuKu76MC5aPIRdfoR1buzDcznDAlSgLgGvibclTj/ktsKwbp7EnEabjfB
-         YukQ==
-X-Gm-Message-State: AOAM532O1VWegkZcRHrV+0qlM6cRibIcI3P9CIj8Or0FXhHtt7gQLrLQ
-        HZKgeC7c6Dm7QCqS+afv1Z1+AQ==
-X-Google-Smtp-Source: ABdhPJymWl5vUOYmViNUkZVNeRXaMKCprW0D+gm1Enp4gVbzlNWrhrkUq2lBvFxo/96g4Yx2hNgPHw==
-X-Received: by 2002:a17:90a:e64e:: with SMTP id ep14mr26936300pjb.103.1620126021903;
-        Tue, 04 May 2021 04:00:21 -0700 (PDT)
+        bh=/8pWgDAkL2aH5HxBeFWnGEqaMXG/w/n3EThO0NrEYI8=;
+        b=fehdvP7LhUDnczcjkK4+lqqhSOQJF7R8vqV4TCRqrdjHcKINRH4b1uDBBP9PhQTSmt
+         S9Sx3vOxpHATf61XlogDb6HlrrjOkbZ9uQmMLGU0aN4ZPfu+lTtp4VupNVIf3WKiavv5
+         NzzcBnDGRxoZi48td3nbNut/Mt4tFgvSwrepYctHV7vJQdLJT36GI5xPpj2Z4/RHbnZh
+         GVeL+okutYJyOCF05qi7eOEIu/ebXjW7mwaogNousofYbJVSzzkg81JSb0bXPTboLIlc
+         Ecy337D1umVrJCr7NqawxNYBN8mFG9m9QZYHVrRYt6zdusbDBmtn+fZr9fpiTcQE0MpD
+         14lg==
+X-Gm-Message-State: AOAM533MXeCUP0k4hLAx1Td7k+UdyceX0Xk5JnWK+dlQxxku0LKwHQh1
+        XE4Qg/PU3Z7EvV05XX/OQ3kL3Q==
+X-Google-Smtp-Source: ABdhPJzx7MRK7z4DjDkyawneHjJP95Uic1KfKF3GSUDWjeuLP93J/B6bqQwBntv0ppCaTb0kt4n3mw==
+X-Received: by 2002:a63:e63:: with SMTP id 35mr22406556pgo.27.1620126025696;
+        Tue, 04 May 2021 04:00:25 -0700 (PDT)
 Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id k17sm11762529pfa.68.2021.05.04.04.00.18
+        by smtp.gmail.com with ESMTPSA id k17sm11762529pfa.68.2021.05.04.04.00.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 04:00:21 -0700 (PDT)
+        Tue, 04 May 2021 04:00:25 -0700 (PDT)
 From:   Greentime Hu <greentime.hu@sifive.com>
 To:     greentime.hu@sifive.com, paul.walmsley@sifive.com, hes@sifive.com,
         erik.danie@sifive.com, zong.li@sifive.com, bhelgaas@google.com,
@@ -59,9 +59,9 @@ To:     greentime.hu@sifive.com, paul.walmsley@sifive.com, hes@sifive.com,
         linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-clk@vger.kernel.org, helgaas@kernel.org
-Subject: [PATCH v6 2/6] clk: sifive: Use reset-simple in prci driver for PCIe driver
-Date:   Tue,  4 May 2021 18:59:36 +0800
-Message-Id: <20210504105940.100004-3-greentime.hu@sifive.com>
+Subject: [PATCH v6 3/6] MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
+Date:   Tue,  4 May 2021 18:59:37 +0800
+Message-Id: <20210504105940.100004-4-greentime.hu@sifive.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210504105940.100004-1-greentime.hu@sifive.com>
 References: <20210504105940.100004-1-greentime.hu@sifive.com>
@@ -71,98 +71,32 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We use reset-simple in this patch so that pcie driver can use
-devm_reset_control_get() to get this reset data structure and use
-reset_control_deassert() to deassert pcie_power_up_rst_n.
+Here add maintainer information for SiFive FU740 PCIe driver.
 
 Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-Reviewed-by: Philipp Zabel <p.zabel@pengutronix.de>
-Acked-by: Stephen Boyd <sboyd@kernel.org>
 ---
- drivers/clk/sifive/Kconfig       |  2 ++
- drivers/clk/sifive/sifive-prci.c | 13 +++++++++++++
- drivers/clk/sifive/sifive-prci.h |  4 ++++
- drivers/reset/Kconfig            |  1 +
- 4 files changed, 20 insertions(+)
+ MAINTAINERS | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-diff --git a/drivers/clk/sifive/Kconfig b/drivers/clk/sifive/Kconfig
-index 1c14eb20c066..9132c3c4aa86 100644
---- a/drivers/clk/sifive/Kconfig
-+++ b/drivers/clk/sifive/Kconfig
-@@ -10,6 +10,8 @@ if CLK_SIFIVE
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 9450e052f1b1..295711c81bef 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -13699,6 +13699,14 @@ S:	Maintained
+ F:	Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
+ F:	drivers/pci/controller/dwc/*imx6*
  
- config CLK_SIFIVE_PRCI
- 	bool "PRCI driver for SiFive SoCs"
-+	select RESET_CONTROLLER
-+	select RESET_SIMPLE
- 	select CLK_ANALOGBITS_WRPLL_CLN28HPC
- 	help
- 	  Supports the Power Reset Clock interface (PRCI) IP block found in
-diff --git a/drivers/clk/sifive/sifive-prci.c b/drivers/clk/sifive/sifive-prci.c
-index 9997a3fa4a38..0d79ba31a793 100644
---- a/drivers/clk/sifive/sifive-prci.c
-+++ b/drivers/clk/sifive/sifive-prci.c
-@@ -588,6 +588,19 @@ static int sifive_prci_probe(struct platform_device *pdev)
- 	if (IS_ERR(pd->va))
- 		return PTR_ERR(pd->va);
- 
-+	pd->reset.rcdev.owner = THIS_MODULE;
-+	pd->reset.rcdev.nr_resets = PRCI_RST_NR;
-+	pd->reset.rcdev.ops = &reset_simple_ops;
-+	pd->reset.rcdev.of_node = pdev->dev.of_node;
-+	pd->reset.active_low = true;
-+	pd->reset.membase = pd->va + PRCI_DEVICESRESETREG_OFFSET;
-+	spin_lock_init(&pd->reset.lock);
++PCI DRIVER FOR FU740
++M:	Paul Walmsley <paul.walmsley@sifive.com>
++M:	Greentime Hu <greentime.hu@sifive.com>
++L:	linux-pci@vger.kernel.org
++S:	Maintained
++F:	Documentation/devicetree/bindings/pci/sifive,fu740-pcie.yaml
++F:	drivers/pci/controller/dwc/pcie-fu740.c
 +
-+	r = devm_reset_controller_register(&pdev->dev, &pd->reset.rcdev);
-+	if (r) {
-+		dev_err(dev, "could not register reset controller: %d\n", r);
-+		return r;
-+	}
- 	r = __prci_register_clocks(dev, pd, desc);
- 	if (r) {
- 		dev_err(dev, "could not register clocks: %d\n", r);
-diff --git a/drivers/clk/sifive/sifive-prci.h b/drivers/clk/sifive/sifive-prci.h
-index 022c67cf053c..91658a88af4e 100644
---- a/drivers/clk/sifive/sifive-prci.h
-+++ b/drivers/clk/sifive/sifive-prci.h
-@@ -11,6 +11,7 @@
- 
- #include <linux/clk/analogbits-wrpll-cln28hpc.h>
- #include <linux/clk-provider.h>
-+#include <linux/reset/reset-simple.h>
- #include <linux/platform_device.h>
- 
- /*
-@@ -121,6 +122,8 @@
- #define PRCI_DEVICESRESETREG_CHIPLINK_RST_N_MASK			\
- 		(0x1 << PRCI_DEVICESRESETREG_CHIPLINK_RST_N_SHIFT)
- 
-+#define PRCI_RST_NR						7
-+
- /* CLKMUXSTATUSREG */
- #define PRCI_CLKMUXSTATUSREG_OFFSET				0x2c
- #define PRCI_CLKMUXSTATUSREG_TLCLKSEL_STATUS_SHIFT		1
-@@ -221,6 +224,7 @@
-  */
- struct __prci_data {
- 	void __iomem *va;
-+	struct reset_simple_data reset;
- 	struct clk_hw_onecell_data hw_clks;
- };
- 
-diff --git a/drivers/reset/Kconfig b/drivers/reset/Kconfig
-index 4171c6f76385..0f40dadf5705 100644
---- a/drivers/reset/Kconfig
-+++ b/drivers/reset/Kconfig
-@@ -197,6 +197,7 @@ config RESET_SIMPLE
- 	   - RCC reset controller in STM32 MCUs
- 	   - Allwinner SoCs
- 	   - ZTE's zx2967 family
-+	   - SiFive FU740 SoCs
- 
- config RESET_STM32MP157
- 	bool "STM32MP157 Reset Driver" if COMPILE_TEST
+ PCI DRIVER FOR INTEL VOLUME MANAGEMENT DEVICE (VMD)
+ M:	Jonathan Derrick <jonathan.derrick@intel.com>
+ L:	linux-pci@vger.kernel.org
 -- 
 2.31.1
 
