@@ -2,136 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1534F372B4F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:46:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC914372B4B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:46:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231313AbhEDNrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:47:31 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:45528 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230478AbhEDNr1 (ORCPT
+        id S231297AbhEDNrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:47:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48330 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhEDNrS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:47:27 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 144DdSbg170143;
-        Tue, 4 May 2021 13:46:20 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=79Ai/Di0JCvnrw4CopF3XPt9cikg1GNfNQSqF6ynUFM=;
- b=HkiCmQrTrnMteOwB+9CRTDgvPAnwlWI49kpEh/dLQ2M+ENs3Gn33pnXv6D25zC5n9BlV
- oQZGemP2702sh8ayWph0KJwjhZPeT3+alqI+WnTF6vfjfHzzxZ4G2q9Cgp2YTcInrYYC
- DX9Ql9cjSU+CwwaRNs5/PVRCkVcAoiA6zJpVlrn6IirspsB6WC557+fKl7EchzzO8VHK
- G9nEb1OpXx5nLM5Pp7iJ7903GaVJP6JuAODiOWZX2uzVH5lJZ2Phq/AA4xCFt+122XKq
- fP2MNpP1fEOjmJO2UGFDCudNvw1Rq1QqmNQ+wt6fkPDrdD3Ws9onlpLB0VcpqGTpG6yG vQ== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 388vgbq3bn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 04 May 2021 13:46:20 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 144DkE25023944;
-        Tue, 4 May 2021 13:46:20 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 388xt44awe-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 04 May 2021 13:46:20 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 144DkJGJ025229;
-        Tue, 4 May 2021 13:46:19 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by aserp3020.oracle.com with ESMTP id 388xt44aur-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 04 May 2021 13:46:19 +0000
-Received: from abhmp0015.oracle.com (abhmp0015.oracle.com [141.146.116.21])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 144DkFS8021541;
-        Tue, 4 May 2021 13:46:16 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Tue, 04 May 2021 13:46:15 +0000
-Date:   Tue, 4 May 2021 16:46:06 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     outreachy-kernel@googlegroups.com,
-        David Kershner <david.kershner@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        sparmaintainer@unisys.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH v7] staging: unisys: visorhba: Convert module from IDR to
- XArray
-Message-ID: <20210504134606.GR21598@kadam>
-References: <20210504133253.32269-1-fmdefrancesco@gmail.com>
+        Tue, 4 May 2021 09:47:18 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4618C061574;
+        Tue,  4 May 2021 06:46:22 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id s25so11247702lji.0;
+        Tue, 04 May 2021 06:46:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=hJ5QyVIpYQ1X+QkoXdJD/TF6wPHqmqX75c0eCSUXBCw=;
+        b=uP+BqWmIIwkdG04CgC0QKtbS/4UeHN3LCEM5GfAlywyjqgPR5U0gjkNDT3LodIV9dX
+         onHCbYWXzclxEQgv2xh0AfrjDMyrAJRgm/KfbVHEKpNRgZv8iIv9xr9peLBgI/NJiCel
+         ESzYINl2PveHv8+lscqCCQVCmQhSCade1aY8L8oBAMUpV8Z857Z5VTLCWycSbh4+f14W
+         lKOBt3vLc/6gXk2w9V6G8rid5f9ELj1Hr7ZQtdXmQ0EICOLnMC6DdZAiyUmCOPyf7zMe
+         RES1LmbjT+RqhTL0eYChPItY7h0wBWGdbPgJyfna48xRkqUOFvr++RH/xLXGKzRkGLrT
+         ZTkQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=hJ5QyVIpYQ1X+QkoXdJD/TF6wPHqmqX75c0eCSUXBCw=;
+        b=jJ5rSaZ4QltxOxM1ZU7aOaGVqURA5d/v/gDWKhfEu+zJ7j2AwpV8MgkYpwgPogUXR0
+         d3xuXpFFyJN9NL4PtZbxRJLFJzbJZOJmsT3GPdE23xQtnii9qe81xLkyPsbMnzG+Hei5
+         a/Fr6JPjVeb/oiK+/0BpfWG0HD/QM8WJuFBuy3blAsMfPq3HQPO6kguJh43rO/joyJ9k
+         gYSirgNYg9Igi3tOPhiApmvg3sgX9ZNDUo/fS7mwJPhzATdmbWGFPj0z4XGMjRG7wVs2
+         wYVmBe066B/3EEyZQoVZkCYmmsqXTdCwuGxkuUytUZnUEks3HeTM+gy/ABQIhmszbqqX
+         CZBA==
+X-Gm-Message-State: AOAM530TEMXFYmEOjlHe3fijWj+ZxZQ1WaZ+p2b9ARIgBL/pG2EGsD79
+        fWl9eTswc1OvCuZw881W2JLoEHsR+LF4rw==
+X-Google-Smtp-Source: ABdhPJyoKjScTmdFdxo74elK7xIxGuv/w/Dmi1x6DDXrxlqvP9VsEcq5Esvqg+sT1qPJ8VAQKWjkYQ==
+X-Received: by 2002:a2e:b0cb:: with SMTP id g11mr3999585ljl.261.1620135981201;
+        Tue, 04 May 2021 06:46:21 -0700 (PDT)
+Received: from pc638.lan (h5ef52e3d.seluork.dyn.perspektivbredband.net. [94.245.46.61])
+        by smtp.gmail.com with ESMTPSA id w4sm270300lfu.105.2021.05.04.06.46.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 06:46:20 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc638.lan>
+Date:   Tue, 4 May 2021 15:46:18 +0200
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>, RCU <rcu@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Daniel Axtens <dja@axtens.net>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Neeraj Upadhyay <neeraju@codeaurora.org>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Theodore Y . Ts'o" <tytso@mit.edu>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Oleksiy Avramchenko <oleksiy.avramchenko@sonymobile.com>
+Subject: Re: [PATCH v1 4/5] kvfree_rcu: Refactor kfree_rcu_monitor() function
+Message-ID: <20210504134618.GA2468@pc638.lan>
+References: <20210428134422.1894-1-urezki@gmail.com>
+ <20210428134422.1894-4-urezki@gmail.com>
+ <20210503181214.GA2270@pc638.lan>
+ <20210503225213.GA975577@paulmck-ThinkPad-P17-Gen-1>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210504133253.32269-1-fmdefrancesco@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: S0RvSQDvwrHl6c0aq3BIib0UyHTi6b-p
-X-Proofpoint-ORIG-GUID: S0RvSQDvwrHl6c0aq3BIib0UyHTi6b-p
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9974 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxlogscore=999
- suspectscore=0 priorityscore=1501 phishscore=0 malwarescore=0
- impostorscore=0 clxscore=1011 bulkscore=0 spamscore=0 adultscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105040102
+In-Reply-To: <20210503225213.GA975577@paulmck-ThinkPad-P17-Gen-1>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 03:32:53PM +0200, Fabio M. De Francesco wrote:
-> +static int setup_scsitaskmgmt_handles(struct xarray *xa, struct uiscmdrsp *cmdrsp,
->  				       wait_queue_head_t *event, int *result)
->  {
-> -	/* specify the event that has to be triggered when this */
-> -	/* cmd is complete */
-> -	cmdrsp->scsitaskmgmt.notify_handle =
-> -		simple_idr_get(idrtable, event, lock);
-> -	cmdrsp->scsitaskmgmt.notifyresult_handle =
-> -		simple_idr_get(idrtable, result, lock);
-> +	int ret;
-> +	u32 id;
-> +
-> +	/* specify the event that has to be triggered when this cmd is complete */
-> +	ret = xa_alloc_irq(xa, &id, event, xa_limit_32b, GFP_KERNEL);
-> +	if (ret) 
-> +		return ret;
-> +	else
-> +		cmdrsp->scsitaskmgmt.notify_handle = id;
-> +	ret = xa_alloc_irq(xa, &id, result, xa_limit_32b, GFP_KERNEL);
-> +	if (ret) {
-> +		xa_erase_irq(xa, cmdrsp->scsitaskmgmt.notify_handle);
-> +		return ret;
-> +	} else
-> +		cmdrsp->scsitaskmgmt.notifyresult_handle = id;
+On Mon, May 03, 2021 at 03:52:13PM -0700, Paul E. McKenney wrote:
+> On Mon, May 03, 2021 at 08:12:14PM +0200, Uladzislau Rezki wrote:
+> > Hello, Paul.
+> > 
+> > > Rearm the monitor work directly from its own function that
+> > > is kfree_rcu_monitor(). So this patch puts the invocation
+> > > timing control in one place.
+> > > 
+> > > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> > > ---
+> > >  kernel/rcu/tree.c | 35 +++++++++++++++++++++--------------
+> > >  1 file changed, 21 insertions(+), 14 deletions(-)
+> > > 
+> > > diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> > > index e44d6f8c56f0..229e909ad437 100644
+> > > --- a/kernel/rcu/tree.c
+> > > +++ b/kernel/rcu/tree.c
+> > > @@ -3415,37 +3415,44 @@ static inline bool queue_kfree_rcu_work(struct kfree_rcu_cpu *krcp)
+> > >  	return !repeat;
+> > >  }
+> > >  
+> > > -static inline void kfree_rcu_drain_unlock(struct kfree_rcu_cpu *krcp,
+> > > -					  unsigned long flags)
+> > > +/*
+> > > + * This function queues a new batch. If success or nothing to
+> > > + * drain it returns 1. Otherwise 0 is returned indicating that
+> > > + * a reclaim kthread has not processed a previous batch.
+> > > + */
+> > > +static inline int kfree_rcu_drain(struct kfree_rcu_cpu *krcp)
+> > >  {
+> > > +	unsigned long flags;
+> > > +	int ret;
+> > > +
+> > > +	raw_spin_lock_irqsave(&krcp->lock, flags);
+> > > +
+> > >  	// Attempt to start a new batch.
+> > > -	if (queue_kfree_rcu_work(krcp)) {
+> > > +	ret = queue_kfree_rcu_work(krcp);
+> > > +	if (ret)
+> > >  		// Success! Our job is done here.
+> > >  		krcp->monitor_todo = false;
+> > > -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > -		return;
+> > > -	}
+> > >  
+> > >  	// Previous RCU batch still in progress, try again later.
+> > > -	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+> > >  	raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > +	return ret;
+> > >  }
+> > >  
+> > >  /*
+> > >   * This function is invoked after the KFREE_DRAIN_JIFFIES timeout.
+> > > - * It invokes kfree_rcu_drain_unlock() to attempt to start another batch.
+> > > + * It invokes kfree_rcu_drain() to attempt to start another batch.
+> > >   */
+> > >  static void kfree_rcu_monitor(struct work_struct *work)
+> > >  {
+> > > -	unsigned long flags;
+> > >  	struct kfree_rcu_cpu *krcp = container_of(work, struct kfree_rcu_cpu,
+> > >  						 monitor_work.work);
+> > >  
+> > > -	raw_spin_lock_irqsave(&krcp->lock, flags);
+> > > -	if (krcp->monitor_todo)
+> > > -		kfree_rcu_drain_unlock(krcp, flags);
+> > > -	else
+> > > -		raw_spin_unlock_irqrestore(&krcp->lock, flags);
+> > > +	if (kfree_rcu_drain(krcp))
+> > > +		return;
+> > > +
+> > > +	// Not success. A previous batch is still in progress.
+> > > +	// Rearm a work to repeat an attempt of starting another batch.
+> > > +	schedule_delayed_work(&krcp->monitor_work, KFREE_DRAIN_JIFFIES);
+> > >  }
+> > >  
+> > >  static enum hrtimer_restart
+> > > -- 
+> > > 2.20.1
+> > > 
+> > 
+> > Please see below a v2 of this patch. The main difference between v1
+> > is that, the monitor work now is open-coded, thus some extra inline
+> > functions were eliminated:
+> > 
+> > >From 7d153a640a4f791cbfd9b546e32f90fb2c60c480 Mon Sep 17 00:00:00 2001
+> > From: "Uladzislau Rezki (Sony)" <urezki@gmail.com>
+> > Date: Wed, 21 Apr 2021 13:22:52 +0200
+> > Subject: [PATCH v2] kvfree_rcu: Refactor kfree_rcu_monitor()
+> > 
+> > Currently we have three functions which depend on each other.
+> > Two of them are quite tiny and the last one where the most
+> > work is done. All of them are related to queuing RCU batches
+> > to reclaim objects after a GP.
+> > 
+> > 1. kfree_rcu_monitor(). It consist of few lines. It acquires
+> >    the spin-lock and calls "drain" function.
+> > 
+> > 2. kfree_rcu_drain_unlock(). It also consists of few lines of
+> >    code. It calls a func. to queue the batch. If not success
+> >    rearm the monitor work to repeat an attempt one more time.
+> > 
+> > 3. queue_kfree_rcu_work(). Main core part is implemented here.
+> >    In short, it attempts to start a new batch to free objects
+> >    after a GP.
+> > 
+> > Since there are no external users of [2] and [3] functions we
+> > can eliminate both by moving all logic directly into [1]. That
+> > makes the kfree_rcu_monitor() to be open-coded what is easier
+> > to follow thus becomes less complicated.
+> > 
+> > Apart of that, replace comments which start with "/*" to "//"
+> > format to make it unified across the file.
+> > 
+> > Signed-off-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+> 
+> Queued and pushed as shown below.  Nice diffstat!  ;-)
+> 
+After such refactoring everything seems has been settled :)
 
-This else statement is not required.  Please use the checkpatch script.
+Thanks.
 
-	if (ret) {
-		xa_erase_irq(xa, cmdrsp->scsitaskmgmt.notify_handle);
-		return ret;
-	}
-	cmdrsp->scsitaskmgmt.notifyresult_handle = id;
-
-
-> +
-> +	return 0;
->  }
->  
-
-[ snip ]
-
-> @@ -1096,7 +1080,7 @@ static void visorhba_remove(struct visor_device *dev)
->  	scsi_remove_host(scsihost);
->  	scsi_host_put(scsihost);
->  
-> -	idr_destroy(&devdata->idr);
-> +	xa_destroy(&devdata->xa);
-
-Don't add this.  Matthew explained this earlier.
-
->  
->  	dev_set_drvdata(&dev->device, NULL);
->  	debugfs_remove(devdata->debugfs_info);
-
-regards,
-dan carpenter
+--
+Vlad Rezki
