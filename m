@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6847D372EB5
+	by mail.lfdr.de (Postfix) with ESMTP id DA02A372EB6
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232334AbhEDRTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:19:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
+        id S232172AbhEDRTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:19:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232172AbhEDRSz (ORCPT
+        with ESMTP id S232183AbhEDRS5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:18:55 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1048EC061761
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:00 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id t1-20020a0ca6810000b029019e892416e6so8160781qva.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:00 -0700 (PDT)
+        Tue, 4 May 2021 13:18:57 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BF60C06138C
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:02 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id i201-20020a25d1d20000b02904ed4c01f82bso12702935ybg.20
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=BGCQSILYAU01VvgA8TaO/AwM6Dcj3M5kpkKiJ9GwIVo=;
-        b=VoB1ZQZUQTZDbAWIb7z6YLsP1EcMmTZaJ21TOhoo/VBB8DHbA/WYo7YmRUtOh+XWCL
-         JHH+uUsd40UADuqDaFksTVfYQXRNeuI4xpnKVKdCjrsCWjSuUczwY6PkZMyaLmFMJt4p
-         r9AXFSCo3QBnt2KcWe/W6aHmzAKDQl/I3vDLGVJT/HxrAwj5sgyIP2ptWLQWgXHQGU3E
-         IZX8NGOJp4EBjwcMDGh964qDz/CTANPH1FckHRPrhLRkchsqqXBoWKAhbisk7iqXuUFC
-         NtGAe0bVUIP024/Lo487nX7s+aMm0dtH3OVvl7VW6NKxgP/fNmzSOLn+VYLYU1ZxX+Cf
-         fVjA==
+        bh=BuFmFez9jUwRrnImsJ+azB1vrZijd6DUJ5M+cWbALfs=;
+        b=PIfalVHC3CmdnOo5mB3aYhbwxb1wXrQpggHTflDbp6Uh83tVVd+KOzlWt1oSBY493K
+         9FnzGeEcc9Y9Ro58Pc567FMkCbJYMGyMy0Z7EYWWrenzyg5qKNzMevOGakrh7kFzJEXx
+         9pCf8KAH845t6dr/gtKuc7T5Ct6jH6xiu/BEhzgd2wOPw6acO9Chl0Mw+ZElTupOYZmm
+         pBccjs7Knx/aXfVGK2S1pYOL+rSYV0xi1jndG2/aSrRJ6mWrkPwsGxRxL8Vi/6hJhg0R
+         l7wFb1vxrSi5NtojsrOULz6I4wCiWaIAImJA+yclYjN5OFuBIo+QSVYozmmVXrB5TroK
+         E+BA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=BGCQSILYAU01VvgA8TaO/AwM6Dcj3M5kpkKiJ9GwIVo=;
-        b=g2kslwnICLaTaekpby8YNB+4ncUYAhArZA9Aj+1ktxpV6/tS1IF9zcl2P+R0gO/qXS
-         RH5jufjznAO3tphoFsK8ESqLeQ9c+C+tfZpIA33S+wTO2ZSkg6QNIv8x8UYq0nYOGmLC
-         owlnRBZOdDeese5rMw367FENykXZaZWFK/imArFGQ12Idm7Hs7n4p8l0HhYNlQL/G+4M
-         pebm6GFO63KBB5TnEoPnLUIbfqR/5+fugx/P4eQ46RSxyxGYYfI7q9McvVtY4J4+nmLF
-         +fg0EMqzrkA7MepcbcBu+iEVC/6HOBCt6Zb7izycQZgVITJa8aqKZKxZuHVeFn5V6ArZ
-         ftsQ==
-X-Gm-Message-State: AOAM530bqfAYxIM303Tofzd/9EMHLDF95bL1t7Om5fQzOpa5ChG61Vax
-        NiTA3ZY9C4a2d/Ok+UHeRRtEmkMqhLI=
-X-Google-Smtp-Source: ABdhPJzYd4vDWCMOY7/UC0i1nOs93WMze7d08OhFnwiOaXeQ9VuyOuNTqKK6zWp1RgoaybpJN7R/mxKxMS4=
+        bh=BuFmFez9jUwRrnImsJ+azB1vrZijd6DUJ5M+cWbALfs=;
+        b=Pvf/iAPX7eqqYARL6C3mXk56bEEGPqVtkSxqHVtdPSoreq9In6nqEjua2MHxo3Rmdu
+         9FWuMkzCYC8+pmEqsa/m4fS4aFyar71UlFcRmLXDnmkH6FQsleY3oj56nc0AsCqA4IDF
+         s8kC2mZ227WBjCZZrmk2Wxtimt13mzt9kpeg3thPJJyD7Ge3ghDPtzv9+ENLOrA2GuzS
+         jVv3vWL+N0whlG0m742wrUraSQl8i5N6G3wLvqrb3k8zLEp0/nlRmATRIN8c21rHfdkZ
+         vHQlCOtvvfFBQEplDgCm+HLgwzskeKB9mEOoCKc0l41+rqkzr6lIQmU3SvILDaI7m74a
+         tO+A==
+X-Gm-Message-State: AOAM530vVLjRDV8GsSOiBKhSgz46kipBzL0FTKUhxyBQbvLNTgHQBFOc
+        Yp05ycfQXlq9JXC5Q3oepMzC4exD4GM=
+X-Google-Smtp-Source: ABdhPJxM3Dh5e52Zged/McORpx1LmcgL4PsGFgtMVfeMjkfKzXR2ggkHVyGPixQ/p2PxcnWIM9V1rgaNfDU=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:ad4:5fc6:: with SMTP id jq6mr5885999qvb.43.1620148679153;
- Tue, 04 May 2021 10:17:59 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a5b:802:: with SMTP id x2mr35901294ybp.28.1620148681694;
+ Tue, 04 May 2021 10:18:01 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 10:17:26 -0700
+Date:   Tue,  4 May 2021 10:17:27 -0700
 In-Reply-To: <20210504171734.1434054-1-seanjc@google.com>
-Message-Id: <20210504171734.1434054-8-seanjc@google.com>
+Message-Id: <20210504171734.1434054-9-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210504171734.1434054-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH 07/15] KVM: x86: Add support for RDPID without RDTSCP
+Subject: [PATCH 08/15] KVM: VMX: Configure list of user return MSRs at module init
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,121 +67,168 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow userspace to enable RDPID for a guest without also enabling RDTSCP.
-Aside from checking for RDPID support in the obvious flows, VMX also needs
-to set ENABLE_RDTSCP=1 when RDPID is exposed.
+Configure the list of user return MSRs that are actually supported at
+module init instead of reprobing the list of possible MSRs every time a
+vCPU is created.  Curating the list on a per-vCPU basis is pointless; KVM
+is completely hosed if the set of supported MSRs changes after module init,
+or if the set of MSRs differs per physical PCU.
 
-For the record, there is no known scenario where enabling RDPID without
-RDTSCP is desirable.  But, both AMD and Intel architectures allow for the
-condition, i.e. this is purely to make KVM more architecturally accurate.
+The per-vCPU lists also increase complexity (see __vmx_find_uret_msr()) and
+creates corner cases that _should_ be impossible, but theoretically exist
+in KVM, e.g. advertising RDTSCP to userspace without actually being able to
+virtualize RDTSCP if probing MSR_TSC_AUX fails.
 
-Fixes: 41cd02c6f7f6 ("kvm: x86: Expose RDPID in KVM_GET_SUPPORTED_CPUID")
-Cc: stable@vger.kernel.org
-Reported-by: Reiji Watanabe <reijiw@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/svm.c |  6 ++++--
- arch/x86/kvm/vmx/vmx.c | 27 +++++++++++++++++++++++----
- arch/x86/kvm/x86.c     |  3 ++-
- 3 files changed, 29 insertions(+), 7 deletions(-)
+ arch/x86/kvm/vmx/vmx.c | 61 ++++++++++++++++++++++++++++--------------
+ arch/x86/kvm/vmx/vmx.h | 10 ++++++-
+ 2 files changed, 50 insertions(+), 21 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index b3153d40cc4d..231b9650d864 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -2669,7 +2669,8 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		if (tsc_aux_uret_slot < 0)
- 			return 1;
- 		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
- 			return 1;
- 		msr_info->data = svm->tsc_aux;
- 		break;
-@@ -2891,7 +2892,8 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 			return 1;
- 
- 		if (!msr->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
- 			return 1;
- 
- 		/*
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 990ee339a05f..42e4bbaa299a 100644
+index 42e4bbaa299a..68454b0de2b1 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -1788,7 +1788,8 @@ static void setup_msrs(struct vcpu_vmx *vmx)
- 	if (update_transition_efer(vmx))
- 		vmx_setup_uret_msr(vmx, MSR_EFER);
+@@ -461,7 +461,7 @@ static unsigned long host_idt_base;
+  * support this emulation, IA32_STAR must always be included in
+  * vmx_uret_msrs_list[], even in i386 builds.
+  */
+-static const u32 vmx_uret_msrs_list[] = {
++static u32 vmx_uret_msrs_list[] = {
+ #ifdef CONFIG_X86_64
+ 	MSR_SYSCALL_MASK, MSR_LSTAR, MSR_CSTAR,
+ #endif
+@@ -469,6 +469,12 @@ static const u32 vmx_uret_msrs_list[] = {
+ 	MSR_IA32_TSX_CTRL,
+ };
  
--	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP))
-+	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP)  ||
-+	    guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDPID))
- 		vmx_setup_uret_msr(vmx, MSR_TSC_AUX);
++/*
++ * Number of user return MSRs that are actually supported in hardware.
++ * vmx_uret_msrs_list is modified when KVM is loaded to drop unsupported MSRs.
++ */
++static int vmx_nr_uret_msrs;
++
+ #if IS_ENABLED(CONFIG_HYPERV)
+ static bool __read_mostly enlightened_vmcs = true;
+ module_param(enlightened_vmcs, bool, 0444);
+@@ -700,9 +706,16 @@ static inline int __vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
+ {
+ 	int i;
  
- 	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL);
-@@ -1994,7 +1995,8 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		break;
- 	case MSR_TSC_AUX:
- 		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
- 			return 1;
- 		goto find_uret_msr;
- 	case MSR_IA32_DEBUGCTLMSR:
-@@ -2314,7 +2316,8 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 		break;
- 	case MSR_TSC_AUX:
- 		if (!msr_info->host_initiated &&
--		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
-+		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
- 			return 1;
- 		/* Check reserved bit, higher 32 bits should be zero */
- 		if ((data >> 32) != 0)
-@@ -4368,7 +4371,23 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
- 						  xsaves_enabled, false);
+-	for (i = 0; i < vmx->nr_uret_msrs; ++i)
++	/*
++	 * Note, vmx->guest_uret_msrs is the same size as vmx_uret_msrs_list,
++	 * but is ordered differently.  The MSR is matched against the list of
++	 * supported uret MSRs using "slot", but the index that is returned is
++	 * the index into guest_uret_msrs.
++	 */
++	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
+ 		if (vmx_uret_msrs_list[vmx->guest_uret_msrs[i].slot] == msr)
+ 			return i;
++	}
+ 	return -1;
+ }
+ 
+@@ -6929,18 +6942,10 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+ 			goto free_vpid;
  	}
  
--	vmx_adjust_sec_exec_feature(vmx, &exec_control, rdtscp, RDTSCP);
-+	/*
-+	 * RDPID is also gated by ENABLE_RDTSCP, turn on the control if either
-+	 * feature is exposed to the guest.  This creates a virtualization hole
-+	 * if both are supported in hardware but only one is exposed to the
-+	 * guest, but letting the guest execute RDTSCP or RDPID when either one
-+	 * is advertised is preferable to emulating the advertised instruction
-+	 * in KVM on #UD, and obviously better than incorrectly injecting #UD.
-+	 */
-+	if (cpu_has_vmx_rdtscp()) {
-+		bool rdpid_or_rdtscp_enabled =
-+			guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) ||
-+			guest_cpuid_has(vcpu, X86_FEATURE_RDPID);
-+
-+		vmx_adjust_secondary_exec_control(vmx, &exec_control,
-+						  SECONDARY_EXEC_ENABLE_RDTSCP,
-+						  rdpid_or_rdtscp_enabled, false);
-+	}
- 	vmx_adjust_sec_exec_feature(vmx, &exec_control, invpcid, INVPCID);
+-	BUILD_BUG_ON(ARRAY_SIZE(vmx_uret_msrs_list) != MAX_NR_USER_RETURN_MSRS);
++	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
++		vmx->guest_uret_msrs[i].data = 0;
  
- 	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdrand, RDRAND);
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index e304447be42d..b4516d303413 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -5978,7 +5978,8 @@ static void kvm_init_msr_list(void)
- 				continue;
+-	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i) {
+-		u32 index = vmx_uret_msrs_list[i];
+-		int j = vmx->nr_uret_msrs;
+-
+-		if (kvm_probe_user_return_msr(index))
+-			continue;
+-
+-		vmx->guest_uret_msrs[j].slot = i;
+-		vmx->guest_uret_msrs[j].data = 0;
+-		switch (index) {
++		switch (vmx_uret_msrs_list[i]) {
+ 		case MSR_IA32_TSX_CTRL:
+ 			/*
+ 			 * TSX_CTRL_CPUID_CLEAR is handled in the CPUID
+@@ -6954,15 +6959,14 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+ 			 * host so that TSX remains always disabled.
+ 			 */
+ 			if (boot_cpu_has(X86_FEATURE_RTM))
+-				vmx->guest_uret_msrs[j].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
++				vmx->guest_uret_msrs[i].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
+ 			else
+-				vmx->guest_uret_msrs[j].mask = 0;
++				vmx->guest_uret_msrs[i].mask = 0;
  			break;
- 		case MSR_TSC_AUX:
--			if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
-+			if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP) &&
-+			    !kvm_cpu_cap_has(X86_FEATURE_RDPID))
- 				continue;
+ 		default:
+-			vmx->guest_uret_msrs[j].mask = -1ull;
++			vmx->guest_uret_msrs[i].mask = -1ull;
  			break;
- 		case MSR_IA32_UMWAIT_CONTROL:
+ 		}
+-		++vmx->nr_uret_msrs;
+ 	}
+ 
+ 	err = alloc_loaded_vmcs(&vmx->vmcs01);
+@@ -7821,17 +7825,34 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
+ 	.vcpu_deliver_sipi_vector = kvm_vcpu_deliver_sipi_vector,
+ };
+ 
++static __init void vmx_setup_user_return_msrs(void)
++{
++	u32 msr;
++	int i;
++
++	BUILD_BUG_ON(ARRAY_SIZE(vmx_uret_msrs_list) != MAX_NR_USER_RETURN_MSRS);
++
++	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i) {
++		msr = vmx_uret_msrs_list[i];
++
++		if (kvm_probe_user_return_msr(msr))
++			continue;
++
++		kvm_define_user_return_msr(vmx_nr_uret_msrs, msr);
++		vmx_uret_msrs_list[vmx_nr_uret_msrs++] = msr;
++	}
++}
++
+ static __init int hardware_setup(void)
+ {
+ 	unsigned long host_bndcfgs;
+ 	struct desc_ptr dt;
+-	int r, i, ept_lpage_level;
++	int r, ept_lpage_level;
+ 
+ 	store_idt(&dt);
+ 	host_idt_base = dt.address;
+ 
+-	for (i = 0; i < ARRAY_SIZE(vmx_uret_msrs_list); ++i)
+-		kvm_define_user_return_msr(i, vmx_uret_msrs_list[i]);
++	vmx_setup_user_return_msrs();
+ 
+ 	if (setup_vmcs_config(&vmcs_config, &vmx_capability) < 0)
+ 		return -EIO;
+diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+index 008cb87ff088..d71ed8b425c5 100644
+--- a/arch/x86/kvm/vmx/vmx.h
++++ b/arch/x86/kvm/vmx/vmx.h
+@@ -245,8 +245,16 @@ struct vcpu_vmx {
+ 	u32                   idt_vectoring_info;
+ 	ulong                 rflags;
+ 
++	/*
++	 * User return MSRs are always emulated when enabled in the guest, but
++	 * only loaded into hardware when necessary, e.g. SYSCALL #UDs outside
++	 * of 64-bit mode or if EFER.SCE=1, thus the SYSCALL MSRs don't need to
++	 * be loaded into hardware if those conditions aren't met.
++	 * nr_active_uret_msrs tracks the number of MSRs that need to be loaded
++	 * into hardware when running the guest.  guest_uret_msrs[] is resorted
++	 * whenever the number of "active" uret MSRs is modified.
++	 */
+ 	struct vmx_uret_msr   guest_uret_msrs[MAX_NR_USER_RETURN_MSRS];
+-	int                   nr_uret_msrs;
+ 	int                   nr_active_uret_msrs;
+ 	bool                  guest_uret_msrs_loaded;
+ #ifdef CONFIG_X86_64
 -- 
 2.31.1.527.g47e6f16901-goog
 
