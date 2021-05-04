@@ -2,116 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E617A372A46
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:43:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97D2D372A4D
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:45:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230376AbhEDMon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34450 "EHLO
+        id S230380AbhEDMqg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:46:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhEDMol (ORCPT
+        with ESMTP id S230256AbhEDMqf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:44:41 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B684C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 05:43:47 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620132225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BR3v2+p903dGyaTnMIq3ixCFpMkgOvkdYdpyOkK9gWA=;
-        b=YGpYnDubeYG4hztg6Ab9SMmTMvPkQnJ+39Xc91UX1nvVlQRdSkpj6YLRaHf+ZSA9+AU72G
-        gKfXtHbWoUDv5aB5S2E7vvewUGiz/F+h9a2ZEXre+KsKAhtadRFKCup5O/hzvksW0HRjGH
-        rh3mPaT4kOyaX2ciYp1whIQXkshvinHoI+pvfVz+HSXcxPsa/PPOI/LoQsOj2+cgBZ/J8r
-        8GUBpgEBftxyBbTrex3kgHJ9LgZmYy5HYw33rj14Ert4J4Gg4cS4sKPtswOMVhWJs9YhwW
-        J1xt2Lmdkzm2tUv97S1z2u9ggh7ll2hOWx8DVllI8mY0jrTIHIdeR3ROpQrg4Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620132225;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BR3v2+p903dGyaTnMIq3ixCFpMkgOvkdYdpyOkK9gWA=;
-        b=S1B4Qb8VmFFB8YO1vKikYM+tXoOcZz1BocPDW/Hx7/m2cG9qidy0SVZkSAV5eNpCQOJ2Oa
-        WX+qTtFezIHDrNBQ==
-To:     Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Lai Jiangshan <laijs@linux.alibaba.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>
-Subject: Re: [PATCH 2/4] x86/entry: Use asm_noist_exc_nmi() for NMI in early booting stage
-In-Reply-To: <875yzzjxth.ffs@nanos.tec.linutronix.de>
-References: <20210426230949.3561-1-jiangshanlai@gmail.com> <20210426230949.3561-3-jiangshanlai@gmail.com> <87bl9rk23k.ffs@nanos.tec.linutronix.de> <878s4vk1l9.ffs@nanos.tec.linutronix.de> <875yzzjxth.ffs@nanos.tec.linutronix.de>
-Date:   Tue, 04 May 2021 14:43:44 +0200
-Message-ID: <87wnseis8v.ffs@nanos.tec.linutronix.de>
+        Tue, 4 May 2021 08:46:35 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A516BC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 05:45:39 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id v123so6947014ioe.10
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 05:45:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
+        b=FTmI5s68xPhqC+jCMsT1lZJcLiRjfapqjlaUi27kNKoPVauvvghXlXSaKh/JY+LBbJ
+         kJgVeRYyh+v9NZS8lS7Pr59tD7v0y43zgLX2AGxRTyYa/z3TDx3Kp4y2gOmx/pY0FR8Z
+         yCPRkjC3t3ZiJzokLAcm6wasme0D8/ZCxfj8mBcTxZmHp2HVR4yh9fPmNQLUC8qQhoZR
+         tXoMyZzWLRDaH2YUMJOS6DvFefWZLH9flbbX9e+QNbaoC92RetERpXPrDbiN9AvTwiyf
+         kD3e5p6h2AzcCA1pfQOzxvh8TQPrNVRl5gkpiYN2mHBMXK4GjRLo5+ntreEVkYoopE3X
+         FTdw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=yLUuWTNGS1KnT8fHdHJgwMCnNQ8uwH9tKJBb7oX0NdM=;
+        b=ipN7OdSzqWV44unX1QK/NOpTrn3llWHCIHR8bS7T0nqY3wW/3YsqcVF1co2bLoBZux
+         EKaajmyXvO9UWfIAC0woS/lxVqVjEzOs0pLogkNG28KOQG3GvbyJAvz+4e0A/Hmy2UEv
+         LlAh2xFCFmotrLmwH8wIMVMV2hCzVPRqYxU/yLgaZ+NtMFAMtqBZ03S37P7hs9Gvjgug
+         8R/emKde2x8WhpHrdEyZX3XlL5f/iuakw5tujlxRH2OMjbfy/26snZKhlw93TdtK9zAC
+         tbQcDsiRVyNb8nNYXDrwa93DByEQUd2Jcu51rBrG4noYoiW6/YLglT1OQI4c2AD76pdW
+         EKBw==
+X-Gm-Message-State: AOAM530N20rJZP1pX9YPeDpIFKryqaemF7vOFoMiDwO1e4bar0f4+ckF
+        /gmx7JTQZJIkiU6wbgamApIBpHmxS2G+iS4MkmM=
+X-Google-Smtp-Source: ABdhPJwrSE50s7iisTuSi5HX1zltVszUR6cS4gaSuYwgtyJ6eCgbWlybBcHKeBmyupPd43A7jZTHAe9ufFy1z973CwQ=
+X-Received: by 2002:a6b:7f4a:: with SMTP id m10mr18765073ioq.70.1620132339019;
+ Tue, 04 May 2021 05:45:39 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+Sender: allenthomasbarry14@gmail.com
+Received: by 2002:a6b:da08:0:0:0:0:0 with HTTP; Tue, 4 May 2021 05:45:38 -0700 (PDT)
+From:   Alexandra Kelly <alexandrakelly779@gmail.com>
+Date:   Tue, 4 May 2021 13:45:38 +0100
+X-Google-Sender-Auth: JiVjBbFB_G2ODE4SZgoTPUMw3fY
+Message-ID: <CAKq3gBPkLkpnFLLzG-5KD77owfebDB+Qa0Ljohgv23V0t1dmcQ@mail.gmail.com>
+Subject: Urgent Response
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03 2021 at 23:45, Thomas Gleixner wrote:
-> The problem was introduced in 4.14 with b70543a0b2b6 ("x86/idt: Move
-> regular trap init to tables").
->
-> Before that trap_init() installed an IST gate right away, but looking
-> deeper this was broken forever because there is a hen and egg problem.
->
-> ISTs only work after TSS is initialized and the ordering here is:
->
-> trap_init()
->   init_idt()
->   cpu_init()
->     init_tss()
->
-> So the original code had a race window between init_idt() and
-> init_tss(). Any IST using exception in that window goes south because
-> TSS is not initialized.
->
-> b70543a0b2b6 traded the above with that NMI issue. All other
-> exceptions are fine...
->
-> I'll think about it tomorrow some more...
+Dear friend,
 
-It does not really matter which way around we do it. Even if we do that
-noist dance then still any NMI hitting _before_ init_idt() is going to
-lala land. So having this tiny step in between is more or less cosmetic.
+I am contacting you independently of my investigation in
+my bank and no one is informed of this communication. I need your
+urgent assistance in transferring the sum of $5.3 million dollars to
+your private account,that belongs to one of our foreign customers who
+died a longtime with his supposed NEXT OF KIN since July 22, 2003. The
+money has been here in our Bank lying dormant for years now without
+anybody coming for the claim of it.
 
-And just for completness sake, I don't see a reason why we have to set
-up the idt gates _before_ the TSS muck, i.e. before cpu_init().
-
-The only thing cpu_init() needs working which is not installed in the
-early_idt is #GP because some cpu init code uses rd/wrmsrl_safe(). But
-that's pretty much all of it.
-
-So this wants a proper cleanup and not some paper over it with an extra
-step and I don't see a reason why any of this should be backported
-simply because it does not matter at all whether the early idt which
-only populates a few essential gates is active for a bit longer.
-
-So what we need is a solution for that KVM wreckage but that can be
-stand alone.
-
-Thanks,
-
-        tglx
-
-
-
+I want to release the money to you as the relative to our deceased
+customer , the Banking laws here does not allow such money to stay
+more than 18 years, because the money will be recalled to the Bank
+treasury account as unclaimed fund. I am ready to share with you 40%
+for you and 60% will be kept for me, by indicating your interest i
+will send you the full details on how the business will be executed, i
+will be waiting for your urgent response.
