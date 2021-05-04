@@ -2,153 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C713372672
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:19:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28BD5372678
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229976AbhEDHUO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 03:20:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39850 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229839AbhEDHUL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 03:20:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AA610611AC;
-        Tue,  4 May 2021 07:19:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620112757;
-        bh=QjGrbrutC+YFzoPgv/+mQZsmR02oRa2BIrxlsDN48c0=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Y4i4/5FAkAGmAQv2thbwrlE1XxAV01TzEZeBh0I/u6PRn4sA8EWc0gFqFUrIEh8yI
-         KSaayxMdV+F+9n6qqCBWwFegs6egfCZB8VMbdavgD/MSMfclOujaFCfSyk9MRG4rpY
-         +chACu6z49pYjZuAVeAGDR0RViS05sIZThx6GsOJ1a+1y/Z1XAT8rTqkRDLQZK2cOK
-         Yq9GaKVU7QcyoX0AbAPwpW9RCsJ150iHJgdi0+LicM1jOn30xOzWMQGZP+z6fqqDX9
-         /eu67nMAuSCMH+0hmevQ64fsJoQhAlo80BqXmJjo1cZM3gy/w7kynCWapuB+MF7KHz
-         J457KT/tyEr/A==
-Date:   Tue, 4 May 2021 09:19:10 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-Subject: Re: [PATCH v4 14/79] media: am437x: fix pm_runtime_get_sync() usage
- count
-Message-ID: <20210504091910.71c1b045@coco.lan>
-In-Reply-To: <20210430173646.00007de1@Huawei.com>
-References: <cover.1619621413.git.mchehab+huawei@kernel.org>
-        <13b31912c93b56426660106d673d3c1a5be63170.1619621413.git.mchehab+huawei@kernel.org>
-        <20210430173646.00007de1@Huawei.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S230016AbhEDHVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 03:21:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48086 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229839AbhEDHVH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 03:21:07 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E825C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 00:20:13 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id x8so7651797qkl.2
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 00:20:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=JggnRH2z+C5c6q5fwkNF9u7IZivIlxcnTgChvJQFvSA=;
+        b=csBKU8aJUh6TfQKqWkRRJuwzqfCx/gxbV1DQ6d4id1eoGXBhg76xsbhY2fA34UDX22
+         sZhPa7vaekhSABqSq3q7znGNkTGTxRXlf8Kiac//bM/Z3oVYKoZXXB9zyWWTH7tsAue2
+         1B3yweWVmqGH2oSfzokpJ9flNMRRfs9Ch/TZUvIWlFbtChX6zJmSSKrgWOdoAyamxI4t
+         MWCSaYfX4b6HMUDdhbJ98JhjtDEInNQGjQWG3kd5N5U5xZzC2NZbKSwi8I2ED9rQfmrz
+         7UAGrCn8PAB1iTBuS+TzkQAplICSN9l3apNNyz3X/NdhP+azrqtYr3WMCOS/YtBXCUbQ
+         fB6g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=JggnRH2z+C5c6q5fwkNF9u7IZivIlxcnTgChvJQFvSA=;
+        b=Mz7pORKk9ucdLQGLzYV1w1wxKT1J81L6oB97MnZlwCxT7k2qbuQsnX9OifEFKA8Gbf
+         8MA0lp0q1qYpM99jTGJkOZI8s70iplYQrPfsmDiWT10WHIs9Yn6JzrCacq1T/K+CNrQU
+         V18w7pXJGftOBpkr0cOb8WjdNHCuXL01gXRzXCXQOZfB60fJuYYFiOf89YaLPY95o5N/
+         fccM3MlcgNQhoLizalL8RiTvUWGVnJz3HUKvLoVnC4SFzmKghouE2Ut50LGBgGm/DC9U
+         AGutrJFPhPFAbpr7B7CxoP3YVWT0h+mCq55mDt4Ku/BuT5v3F6YvBoRYZDuo4J5lXUqf
+         QMhw==
+X-Gm-Message-State: AOAM532r44N86eIPuJV4ppQa4k9dlwvgo7G1AzBxqNvjwJP/+UvLgdpA
+        GWhKWEI3FxTyxPgfzjLfH7769+KqXcfK9mNWe7I8+w==
+X-Google-Smtp-Source: ABdhPJwSV0cJLUMNNy0lL94PwJnsWKOoPmVIkjaGTOqFfwKqrXom5YgkvcZWXnSt5nztkk0zIFsVQOCkdjO4/mVSk1Q=
+X-Received: by 2002:a05:620a:29c4:: with SMTP id s4mr20672337qkp.401.1620112812489;
+ Tue, 04 May 2021 00:20:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210406092634.50465-1-greentime.hu@sifive.com> <20210503164023.GA919777@bjorn-Precision-5520>
+In-Reply-To: <20210503164023.GA919777@bjorn-Precision-5520>
+From:   Greentime Hu <greentime.hu@sifive.com>
+Date:   Tue, 4 May 2021 15:20:00 +0800
+Message-ID: <CAHCEeh+cMrEnHNG3W3ZNzdgT-m7BMorDawF6D8qkFYGg=RJMOw@mail.gmail.com>
+Subject: Re: [PATCH v5 0/6] Add SiFive FU740 PCIe host controller driver support
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, hes@sifive.com,
+        Erik Danie <erik.danie@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, robh+dt@kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, alex.dewar90@gmail.com,
+        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
+        vidyas@nvidia.com, jh80.chung@samsung.com,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 30 Apr 2021 17:36:46 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> escreveu:
+Bjorn Helgaas <helgaas@kernel.org> =E6=96=BC 2021=E5=B9=B45=E6=9C=884=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8A=E5=8D=8812:40=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Tue, Apr 06, 2021 at 05:26:28PM +0800, Greentime Hu wrote:
+> > This patchset includes SiFive FU740 PCIe host controller driver. We als=
+o
+> > add pcie_aux clock and pcie_power_on_reset controller to prci driver fo=
+r
+> > PCIe driver to use it.
+>
+> I dropped this series because of the build problem I mentioned [1].
+> It will not be included in v5.13 unless the build problem is fixed
+> ASAP.
+>
+> [1] https://lore.kernel.org/r/20210428194713.GA314975@bjorn-Precision-552=
+0
+>
 
-> On Wed, 28 Apr 2021 16:51:35 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > The pm_runtime_get_sync() internally increments the
-> > dev->power.usage_count without decrementing it, even on errors.
-> > Replace it by the new pm_runtime_resume_and_get(), introduced by:
-> > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> > in order to properly decrement the usage counter and avoid memory
-> > leaks.
-> > 
-> > While here, ensure that the driver will check if PM runtime
-> > resumed at vpfe_initialize_device().
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> 
-> resume and suspend carrying regardless needs a comment I think.
-> (see below)
-> > ---
-> >  drivers/media/platform/am437x/am437x-vpfe.c | 22 +++++++++++++++------
-> >  1 file changed, 16 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/media/platform/am437x/am437x-vpfe.c b/drivers/media/platform/am437x/am437x-vpfe.c
-> > index 6cdc77dda0e4..bced526f30f2 100644
-> > --- a/drivers/media/platform/am437x/am437x-vpfe.c
-> > +++ b/drivers/media/platform/am437x/am437x-vpfe.c
-> > @@ -1021,7 +1021,9 @@ static int vpfe_initialize_device(struct vpfe_device *vpfe)
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > -	pm_runtime_get_sync(vpfe->pdev);
-> > +	ret = pm_runtime_resume_and_get(vpfe->pdev);
-> > +	if (ret < 0)
-> > +		return ret;
-> >  
-> >  	vpfe_config_enable(&vpfe->ccdc, 1);
-> >  
-> > @@ -2443,7 +2445,11 @@ static int vpfe_probe(struct platform_device *pdev)
-> >  	pm_runtime_enable(&pdev->dev);
-> >  
-> >  	/* for now just enable it here instead of waiting for the open */
-> > -	pm_runtime_get_sync(&pdev->dev);
-> > +	ret = pm_runtime_resume_and_get(&pdev->dev);
-> > +	if (ret < 0) {
-> > +		vpfe_err(vpfe, "Unable to resume device.\n");
-> > +		goto probe_out_v4l2_unregister;
-> > +	}
-> >  
-> >  	vpfe_ccdc_config_defaults(ccdc);
-> >  
-> > @@ -2527,10 +2533,11 @@ static int vpfe_suspend(struct device *dev)
-> >  {
-> >  	struct vpfe_device *vpfe = dev_get_drvdata(dev);
-> >  	struct vpfe_ccdc *ccdc = &vpfe->ccdc;
-> > +	int ret;
-> >  
-> >  	/* only do full suspend if streaming has started */
-> >  	if (vb2_start_streaming_called(&vpfe->buffer_queue)) {
-> > -		pm_runtime_get_sync(dev);
-> > +		ret = pm_runtime_resume_and_get(dev);  
-> 
-> Carrying on when you know the resume failed, seems interesting enough to
-> deserve a comment in the code.  Not sure you can usefully do anything
-> but it seems likely a lot of the calls that follow will fail.
+Hi all,
 
-This driver indeed has a different behavior. What most drivers do is to
-either resume RPM when a V4L2 devnode is opened, or when the device
-starts to stream. This one does, instead, at probing time. 
+This build failed in x86_64 is because CONFIG_GPIOLIB is disabled in
+the testing config.
 
-It even has a comment there which implies that this is something that may
-require changes in the future:
+diff --git a/drivers/pci/controller/dwc/Kconfig
+b/drivers/pci/controller/dwc/Kconfig
+index 0a37d21ed64e..56b66e1fed53 100644
+--- a/drivers/pci/controller/dwc/Kconfig
++++ b/drivers/pci/controller/dwc/Kconfig
+@@ -323,6 +323,7 @@ config PCIE_FU740
+        depends on PCI_MSI_IRQ_DOMAIN
+        depends on SOC_SIFIVE || COMPILE_TEST
+        select PCIE_DW_HOST
++       select GPIOLIB
+        help
+          Say Y here if you want PCIe controller support for the SiFive
+          FU740.
 
-    static int vpfe_probe(struct platform_device *pdev)
-    {
-...
-	/* for now just enable it here instead of waiting for the open */
-	ret = pm_runtime_resume_and_get(&pdev->dev);
+After applying this change, it can build pass.
 
-After probe, the driver just assumes that RPM is not suspended during its 
-entire lifetime (except suspend/resuume).
-
-I can't even see a check at vpfe_open() or at vpfe_start_streaming()
-that would cause the functions to fail if, for whatever reason, RPM is
-suspended there[1], or if a command sent to the hardware failed.
-
-[1] The only place where there's a check is at v4l2_subdev_call(),
-    asking sensors to start streaming. If those are on a different
-    power domain, a valid sensor answer call won't ensure that 
-    am437x VPFE is operational.
-
-Yet, suspend/resume only checks if videobuf2 started its streaming
-logic. if streaming was started, suspend/resume logic tries ensure
-that the hardware will be ready to be suspended, restoring it to
-the previous state before at resume time, but neither one of those
-has a check to see if the commands were succeeded, just like the
-logic at vpfe_start_streaming().
-
--
-
-In summary, I'll add a comment there, but fixing it would require 
-adding error checks on several places (open, start_streaming,
-resume and suspend).
-
-Thanks,
-Mauro
+> > This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon =
+R5
+> > 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based o=
+n
+> > v5.11 Linux kernel.
+> >
+> > Changes in v5:
+> >  - Fix typo in comments
+> >  - Keep comments style consistent
+> >  - Refine some error handling codes
+> >  - Remove unneeded header file including
+> >  - Merge fu740_pcie_ltssm_enable implementation to fu740_pcie_start_lin=
+k
+> >
+> > Changes in v4:
+> >  - Fix Wunused-but-set-variable warning in prci driver
+> >
+> > Changes in v3:
+> >  - Remove items that has been defined
+> >  - Refine format of sifive,fu740-pcie.yaml
+> >  - Replace perstn-gpios with the common one
+> >  - Change DBI mapping space to 2GB from 4GB
+> >  - Refine drivers/reset/Kconfig
+> >
+> > Changes in v2:
+> >  - Refine codes based on reviewers' feedback
+> >  - Remove define and use the common one
+> >  - Replace __raw_writel with writel_relaxed
+> >  - Split fu740_phyregreadwrite to write function
+> >  - Use readl_poll_timeout in stead of while loop checking
+> >  - Use dwc common codes
+> >  - Use gpio descriptors and the gpiod_* api.
+> >  - Replace devm_ioremap_resource with devm_platform_ioremap_resource_by=
+name
+> >  - Replace devm_reset_control_get with devm_reset_control_get_exclusive
+> >  - Add more comments for delay and sleep
+> >  - Remove "phy ? x : y" expressions
+> >  - Refine code logic to remove possible infinite loop
+> >  - Replace magic number with meaningful define
+> >  - Remove fu740_pcie_pm_ops
+> >  - Use builtin_platform_driver
+> >
+> > Greentime Hu (5):
+> >   clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
+> >   clk: sifive: Use reset-simple in prci driver for PCIe driver
+> >   MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
+> >   dt-bindings: PCI: Add SiFive FU740 PCIe host controller
+> >   riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
+> >
+> > Paul Walmsley (1):
+> >   PCI: fu740: Add SiFive FU740 PCIe host controller driver
+> >
+> >  .../bindings/pci/sifive,fu740-pcie.yaml       | 113 +++++++
+> >  MAINTAINERS                                   |   8 +
+> >  arch/riscv/boot/dts/sifive/fu740-c000.dtsi    |  33 ++
+> >  drivers/clk/sifive/Kconfig                    |   2 +
+> >  drivers/clk/sifive/fu740-prci.c               |  11 +
+> >  drivers/clk/sifive/fu740-prci.h               |   2 +-
+> >  drivers/clk/sifive/sifive-prci.c              |  54 +++
+> >  drivers/clk/sifive/sifive-prci.h              |  13 +
+> >  drivers/pci/controller/dwc/Kconfig            |   9 +
+> >  drivers/pci/controller/dwc/Makefile           |   1 +
+> >  drivers/pci/controller/dwc/pcie-fu740.c       | 308 ++++++++++++++++++
+> >  drivers/reset/Kconfig                         |   1 +
+> >  include/dt-bindings/clock/sifive-fu740-prci.h |   1 +
+> >  13 files changed, 555 insertions(+), 1 deletion(-)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/sifive,fu740-=
+pcie.yaml
+> >  create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
+> >
+> > --
+> > 2.30.2
+> >
