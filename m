@@ -2,111 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25AAA3729FF
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:22:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 473FE372A05
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230289AbhEDMXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:23:40 -0400
-Received: from 2.mo52.mail-out.ovh.net ([178.33.105.233]:44856 "EHLO
-        2.mo52.mail-out.ovh.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230188AbhEDMXk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:23:40 -0400
-Received: from mxplan5.mail.ovh.net (unknown [10.108.4.240])
-        by mo52.mail-out.ovh.net (Postfix) with ESMTPS id CD06B275188;
-        Tue,  4 May 2021 14:22:40 +0200 (CEST)
-Received: from kaod.org (37.59.142.101) by DAG8EX1.mxp5.local (172.16.2.71)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Tue, 4 May 2021
- 14:22:38 +0200
-Authentication-Results: garm.ovh; auth=pass (GARM-101G0043eda4e7a-de7c-4853-8406-edae349cf2a7,
-                    233BADB9E061AA125F593C9F78707CF28220F307) smtp.auth=groug@kaod.org
-X-OVh-ClientIp: 78.197.208.248
-Date:   Tue, 4 May 2021 14:22:36 +0200
-From:   Greg Kurz <groug@kaod.org>
-To:     Christoph Hellwig <hch@lst.de>
-CC:     Michael Ellerman <mpe@ellerman.id.au>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Jason Gunthorpe <jgg@nvidia.com>, <kvm@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        "Paul Mackerras" <paulus@samba.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        <linux-api@vger.kernel.org>, <linuxppc-dev@lists.ozlabs.org>,
-        <qemu-devel@nongnu.org>, <qemu-ppc@nongnu.org>
-Subject: Re: remove the nvlink2 pci_vfio subdriver v2
-Message-ID: <20210504142236.76994047@bahia.lan>
-In-Reply-To: <20210326061311.1497642-1-hch@lst.de>
-References: <20210326061311.1497642-1-hch@lst.de>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S230263AbhEDMZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:25:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54138 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230110AbhEDMZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 08:25:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 54735613B4;
+        Tue,  4 May 2021 12:24:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620131064;
+        bh=vArYzEMEwRqDbMRFkfiHNa4Cgeb/07wrYgojfXEM6ig=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=f8ApvRPhpj1ghZ3GYlONwF21yByVn6tOlm5gExHU9CgVbE38i4gVlkktgw2fcqEBT
+         2BI1Kc+8aoqMzhiK+LgMM/mkS/TOu4WchUA47NAZFl56Od8RreTRfQOpguR2XoJgc2
+         0ojolL9ZtF/h6+OfVzabe/ChOlHh35FJ8K09aqkFtpcDgj6RQm88Axlyp5z1fqHelY
+         S7CNTilkyJ2Cgs79Vz8LRogTJt2ixK1EkztsdanK089ZE6wdtQB/Kj5eplasCOxeGc
+         y7osxn+gPLsTO5KkTVn073nXPICN6pUipqsNZOOte8gfA4ULES81Kz9N2FB/7R1JP/
+         bHMrKkSRsKxBw==
+Date:   Tue, 4 May 2021 15:24:19 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Greentime Hu <greentime.hu@sifive.com>
+Cc:     paul.walmsley@sifive.com, hes@sifive.com, erik.danie@sifive.com,
+        zong.li@sifive.com, bhelgaas@google.com, robh+dt@kernel.org,
+        aou@eecs.berkeley.edu, mturquette@baylibre.com, sboyd@kernel.org,
+        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
+        alex.dewar90@gmail.com, khilman@baylibre.com,
+        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
+        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
+        helgaas@kernel.org
+Subject: Re: [PATCH v6 1/6] clk: sifive: Add pcie_aux clock in prci driver
+ for PCIe driver
+Message-ID: <YJE886bhppqes5LQ@unreal>
+References: <20210504105940.100004-1-greentime.hu@sifive.com>
+ <20210504105940.100004-2-greentime.hu@sifive.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [37.59.142.101]
-X-ClientProxiedBy: DAG5EX1.mxp5.local (172.16.2.41) To DAG8EX1.mxp5.local
- (172.16.2.71)
-X-Ovh-Tracer-GUID: 316f1bea-914e-41ab-a4e8-46202395b6d3
-X-Ovh-Tracer-Id: 4363706565853223297
-X-VR-SPAMSTATE: OK
-X-VR-SPAMSCORE: -100
-X-VR-SPAMCAUSE: gggruggvucftvghtrhhoucdtuddrgeduledrvdefiedgheefucetufdoteggodetrfdotffvucfrrhhofhhilhgvmecuqfggjfdpvefjgfevmfevgfenuceurghilhhouhhtmecuhedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurhepfffhvffukfgjfhfogggtgfhisehtjeeftdertddvnecuhfhrohhmpefirhgvghcumfhurhiiuceoghhrohhugheskhgrohgurdhorhhgqeenucggtffrrghtthgvrhhnpeetgffffffggfekgeffteekhffhueelffdvhedvgfdthfeiudetvddulefgveevteenucfkpheptddrtddrtddrtddpfeejrdehledrudegvddruddtudenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhhouggvpehsmhhtphdqohhuthdphhgvlhhopehmgihplhgrnhehrdhmrghilhdrohhvhhdrnhgvthdpihhnvghtpedtrddtrddtrddtpdhmrghilhhfrhhomhepghhrohhugheskhgrohgurdhorhhgpdhrtghpthhtohepqhgvmhhuqdhpphgtsehnohhnghhnuhdrohhrgh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504105940.100004-2-greentime.hu@sifive.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 26 Mar 2021 07:13:09 +0100
-Christoph Hellwig <hch@lst.de> wrote:
-
-> Hi all,
+On Tue, May 04, 2021 at 06:59:35PM +0800, Greentime Hu wrote:
+> We add pcie_aux clock in this patch so that pcie driver can use
+> clk_prepare_enable() and clk_disable_unprepare() to enable and disable
+> pcie_aux clock.
 > 
-> the nvlink2 vfio subdriver is a weird beast.  It supports a hardware
-> feature without any open source component - what would normally be
-> the normal open source userspace that we require for kernel drivers,
-> although in this particular case user space could of course be a
-> kernel driver in a VM.  It also happens to be a complete mess that
-> does not properly bind to PCI IDs, is hacked into the vfio_pci driver
-> and also pulles in over 1000 lines of code always build into powerpc
-> kernels that have Power NV support enabled.  Because of all these
-> issues and the lack of breaking userspace when it is removed I think
-> the best idea is to simply kill.
+> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> Acked-by: Stephen Boyd <sboyd@kernel.org>
+> ---
+>  drivers/clk/sifive/fu740-prci.c               | 11 +++++
+>  drivers/clk/sifive/fu740-prci.h               |  2 +-
+>  drivers/clk/sifive/sifive-prci.c              | 41 +++++++++++++++++++
+>  drivers/clk/sifive/sifive-prci.h              |  9 ++++
+>  include/dt-bindings/clock/sifive-fu740-prci.h |  1 +
+>  5 files changed, 63 insertions(+), 1 deletion(-)
 > 
-> Changes since v1:
->  - document the removed subtypes as reserved
->  - add the ACK from Greg
-> 
-> Diffstat:
->  arch/powerpc/platforms/powernv/npu-dma.c     |  705 ---------------------------
->  b/arch/powerpc/include/asm/opal.h            |    3 
->  b/arch/powerpc/include/asm/pci-bridge.h      |    1 
->  b/arch/powerpc/include/asm/pci.h             |    7 
->  b/arch/powerpc/platforms/powernv/Makefile    |    2 
->  b/arch/powerpc/platforms/powernv/opal-call.c |    2 
->  b/arch/powerpc/platforms/powernv/pci-ioda.c  |  185 -------
->  b/arch/powerpc/platforms/powernv/pci.c       |   11 
->  b/arch/powerpc/platforms/powernv/pci.h       |   17 
->  b/arch/powerpc/platforms/pseries/pci.c       |   23 
->  b/drivers/vfio/pci/Kconfig                   |    6 
->  b/drivers/vfio/pci/Makefile                  |    1 
->  b/drivers/vfio/pci/vfio_pci.c                |   18 
->  b/drivers/vfio/pci/vfio_pci_private.h        |   14 
->  b/include/uapi/linux/vfio.h                  |   38 -
+> diff --git a/drivers/clk/sifive/fu740-prci.c b/drivers/clk/sifive/fu740-prci.c
+> index 764d1097aa51..53f6e00a03b9 100644
+> --- a/drivers/clk/sifive/fu740-prci.c
+> +++ b/drivers/clk/sifive/fu740-prci.c
+> @@ -72,6 +72,12 @@ static const struct clk_ops sifive_fu740_prci_hfpclkplldiv_clk_ops = {
+>  	.recalc_rate = sifive_prci_hfpclkplldiv_recalc_rate,
 
+<...>
 
-Hi Christoph,
+> +/* PCIE AUX clock APIs for enable, disable. */
+> +int sifive_prci_pcie_aux_clock_is_enabled(struct clk_hw *hw)
 
-FYI, these uapi changes break build of QEMU.
+It should be bool
 
-I guess QEMU people should take some action before this percolates
-to the QEMU source tree.
+> +{
+> +	struct __prci_clock *pc = clk_hw_to_prci_clock(hw);
+> +	struct __prci_data *pd = pc->pd;
+> +	u32 r;
+> +
+> +	r = __prci_readl(pd, PRCI_PCIE_AUX_OFFSET);
+> +
+> +	if (r & PRCI_PCIE_AUX_EN_MASK)
+> +		return 1;
+> +	else
+> +		return 0;
+> +}
 
-Cc'ing relevant QEMU lists to bring the discussion there.
+and here simple "return r & PRCI_PCIE_AUX_EN_MASK;"
 
-Cheers,
+> +
+> +int sifive_prci_pcie_aux_clock_enable(struct clk_hw *hw)
+> +{
+> +	struct __prci_clock *pc = clk_hw_to_prci_clock(hw);
+> +	struct __prci_data *pd = pc->pd;
+> +	u32 r __maybe_unused;
+> +
+> +	if (sifive_prci_pcie_aux_clock_is_enabled(hw))
+> +		return 0;
 
---
-Greg
+You actually call to this new function only once, put your
+__prci_readl() here.
 
->  drivers/vfio/pci/vfio_pci_nvlink2.c          |  490 ------------------
->  16 files changed, 12 insertions(+), 1511 deletions(-)
-
+Thanks
