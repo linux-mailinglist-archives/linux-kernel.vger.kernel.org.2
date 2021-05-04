@@ -2,95 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E45372443
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 03:31:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59511372450
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 03:48:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhEDBc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 21:32:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57170 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhEDBc1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 21:32:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id ADF6A6101B
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 01:31:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620091893;
-        bh=K8vSP43hXBPaf8WuOBWx0dY70MfoRQlMOLSA9/M19w8=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YyFRW08W1KqlNYAH6sqVmJAIqAoh+BJkY8VNjd7EpbikOoLJuP/vsOduyJeFPOzq5
-         f3xVZsTQnfU3b26Ra9mzOXeTQ8rgy+m38YvJZ00bVl7Ptk166+Lg+9Mkpvj0LP9Qmt
-         gzluIwDVn8lKnYM8GqoT5N4VSGBSJ9qtQhFcRvvwJCC86PpFNXXmpFGAKIPk8NLzAy
-         k69sjFUqvXlIHsnc6OZg/fcW7jH/5Jv9/3gbrM+LUDgcSZFWAe4E30K+5I/GZyth6C
-         O9dgIhg0eDgorRDmqLcwiacDH3egYfC21Vf0w9aTX6jWkg+EGMjnySzw3aNXjXt1Bj
-         E6MCE4idgf9dg==
-Received: by mail-ej1-f47.google.com with SMTP id m12so10695591eja.2
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 18:31:33 -0700 (PDT)
-X-Gm-Message-State: AOAM533Ib/N3YDgNeD+VC7pVXbuHZW5/D4aEOXai28zb2i07xIrb9XmE
-        vM86PiOXQbZpqFm3RTbx4V09Uu+a4L8aeHEO2iG7DA==
-X-Google-Smtp-Source: ABdhPJyC0rDJkhOsqx6P1zeIhkietoOvs/0pyrT9F38SUm49ZWAL9NsuXK3iTuZdiEPs+LgmcRdVWj0S0LILvYfEGM0=
-X-Received: by 2002:a17:906:4f91:: with SMTP id o17mr19184065eju.503.1620091892166;
- Mon, 03 May 2021 18:31:32 -0700 (PDT)
+        id S229721AbhEDBtE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 21:49:04 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:11938 "EHLO
+        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229603AbhEDBtD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 21:49:03 -0400
+Received: from mail.aspeedtech.com ([192.168.0.24])
+        by twspam01.aspeedtech.com with ESMTP id 1441YjVt019378;
+        Tue, 4 May 2021 09:34:45 +0800 (GMT-8)
+        (envelope-from steven_lee@aspeedtech.com)
+Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
+ (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May
+ 2021 09:46:26 +0800
+Date:   Tue, 4 May 2021 09:46:23 +0800
+From:   Steven Lee <steven_lee@aspeedtech.com>
+To:     Rob Herring <robh@kernel.org>
+CC:     "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        "Ryan Chen" <ryanchen.aspeed@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, Ryan Chen <ryan_chen@aspeedtech.com>,
+        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
+        Andrew Jeffery <andrew@aj.id.au>,
+        Rob Herring <robh+dt@kernel.org>,
+        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
+        "Ulf Hansson" <ulf.hansson@linaro.org>,
+        Joel Stanley <joel@jms.id.au>,
+        "Hongweiz@ami.com" <Hongweiz@ami.com>
+Subject: Re: [PATCH v2 1/3] dt-bindings: mmc: sdhci-of-aspeed: Add
+ description for AST2600 EVB.
+Message-ID: <20210504014622.GB20079@aspeedtech.com>
+References: <20210503014336.20256-1-steven_lee@aspeedtech.com>
+ <20210503014336.20256-2-steven_lee@aspeedtech.com>
+ <1620055245.319540.1846827.nullmailer@robh.at.kernel.org>
 MIME-Version: 1.0
-References: <CALCETrXRvhqw0fibE6qom3sDJ+nOa_aEJQeuAjPofh=8h1Cujg@mail.gmail.com>
- <20210503233010.x5lzpw4dq3gueg47@treble>
-In-Reply-To: <20210503233010.x5lzpw4dq3gueg47@treble>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Mon, 3 May 2021 18:31:21 -0700
-X-Gmail-Original-Message-ID: <CALCETrVwFrpZU-6C=AVurVPk4ahV2yjqyhFeYbL_0OtBNJnZ=w@mail.gmail.com>
-Message-ID: <CALCETrVwFrpZU-6C=AVurVPk4ahV2yjqyhFeYbL_0OtBNJnZ=w@mail.gmail.com>
-Subject: =?UTF-8?Q?Re=3A_Do_we_need_to_do_anything_about_=22dead_=C2=B5ops=3F=22?=
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Andy Lutomirski <luto@kernel.org>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Kaplan <David.Kaplan@amd.com>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+In-Reply-To: <1620055245.319540.1846827.nullmailer@robh.at.kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Originating-IP: [192.168.100.253]
+X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
+ (192.168.0.24)
+X-DNSRBL: 
+X-MAIL: twspam01.aspeedtech.com 1441YjVt019378
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 4:30 PM Josh Poimboeuf <jpoimboe@redhat.com> wrote:
->
-> On Sat, May 01, 2021 at 09:26:33AM -0700, Andy Lutomirski wrote:
-> > Hi all-
-> >
-> > The "I See Dead =C2=B5ops" paper that is all over the Internet right no=
-w is
-> > interesting, and I think we should discuss the extent to which we
-> > should do anything about it.  I think there are two separate issues:
-> >
-> > First, should we (try to) flush the =C2=B5op cache across privilege
-> > boundaries?  I suspect we could find ways to do this, but I don't
-> > really see the point.  A sufficiently capable attacker (i.e. one who
-> > can execute their own code in the dangerous speculative window or one
-> > who can find a capable enough string of gadgets) can put secrets into
-> > the TLB, various cache levels, etc.  The =C2=B5op cache is a nice piece=
- of
-> > analysis, but I don't think it's qualitatively different from anything
-> > else that we don't flush.  Am I wrong?
->
-> Wouldn't this type of gadget (half-v1 gadget + value-dependent-branch)
-> would be much more likely to occur than a traditional Spectre v1
-> (half-v1 gadget + value-addressed-load)?
+The 05/03/2021 23:20, Rob Herring wrote:
+> On Mon, 03 May 2021 09:43:34 +0800, Steven Lee wrote:
+> > Add the description for describing the AST 2600 EVB reference design of
+> > GPIO regulators and provide the example in the document.
+> > 
+> > AST2600-A2 EVB has the reference design for enabling SD bus
+> > power and toggling SD bus signal voltage by GPIO pins.
+> > 
+> > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to
+> > power load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is
+> > connected to a 1.8v and a 3.3v power load switch that providing
+> > signal voltage to
+> > SD1 bus.
+> > 
+> > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
+> > disabled.
+> > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1
+> > signal voltage is 3.3v. Otherwise, 1.8v power load switch will be
+> > enabled, SD1 signal voltage becomes 1.8v.
+> > 
+> > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
+> > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and
+> > GPIOV3 as power-switch-gpio.
+> > 
+> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
+> > ---
+> >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 99 +++++++++++++++++++
+> >  1 file changed, 99 insertions(+)
+> > 
+> 
+> My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+> on your patch (DT_CHECKER_FLAGS is new in v5.13):
+> 
+> yamllint warnings/errors:
+> ./Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml:97:5: [error] syntax error: expected <block end>, but found '<scalar>' (syntax)
+> 
+> dtschema/dtc warnings/errors:
+> make[1]: *** Deleting file 'Documentation/devicetree/bindings/mmc/aspeed,sdhci.example.dts'
+> Traceback (most recent call last):
+>   File "/usr/local/bin/dt-extract-example", line 45, in <module>
+>     binding = yaml.load(open(args.yamlfile, encoding='utf-8').read())
+>   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/main.py", line 421, in load
+>     return constructor.get_single_data()
+>   File "/usr/local/lib/python3.8/dist-packages/ruamel/yaml/constructor.py", line 109, in get_single_data
+>     node = self.composer.get_single_node()
+>   File "_ruamel_yaml.pyx", line 706, in _ruamel_yaml.CParser.get_single_node
+>   File "_ruamel_yaml.pyx", line 724, in _ruamel_yaml.CParser._compose_document
+>   File "_ruamel_yaml.pyx", line 775, in _ruamel_yaml.CParser._compose_node
+>   File "_ruamel_yaml.pyx", line 891, in _ruamel_yaml.CParser._compose_mapping_node
+>   File "_ruamel_yaml.pyx", line 904, in _ruamel_yaml.CParser._parse_next_event
+> ruamel.yaml.parser.ParserError: while parsing a block mapping
+>   in "<unicode string>", line 5, column 1
+> did not find expected key
+>   in "<unicode string>", line 97, column 5
+> make[1]: *** [Documentation/devicetree/bindings/Makefile:20: Documentation/devicetree/bindings/mmc/aspeed,sdhci.example.dts] Error 1
+> make[1]: *** Waiting for unfinished jobs....
+> ./Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml:  while parsing a block mapping
+>   in "<unicode string>", line 5, column 1
+> did not find expected key
+>   in "<unicode string>", line 97, column 5
+> /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml: ignoring, error parsing file
+> warning: no schema found in file: ./Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
+> make: *** [Makefile:1414: dt_binding_check] Error 2
+> 
+> See https://patchwork.ozlabs.org/patch/1472993
+> 
+> This check can fail if there are any dependencies. The base for a patch
+> series is generally the most recent rc1.
+> 
+> If you already ran 'make dt_binding_check' and didn't see the above
+> error(s), then make sure 'yamllint' is installed and dt-schema is up to
+> date:
+> 
+> pip3 install dtschema --upgrade
+> 
+> Please check and re-submit.
+> 
 
-I don't fully believe this.  It's certainly the case that:
+Thanks for the log and the information, I will install the package
+and do the check before re-submiting the patch.
 
-if (mispredicted as false)
-  return;
-secret =3D some_secret();
-if (secret =3D=3D 42)
-  do_something();
-
-will leak the fact that the secret is 42 into the =C2=B5op cache, but it
-will also leak it into the icache and lots of other things.  I see
-nothing new here.  That being said, it's probably still worth
-investigating the gadgets.
-
->
-> Also, in section V.A., they identified 37 gadgets.  Has anybody looked
-> at those yet?
-
-Not I.
