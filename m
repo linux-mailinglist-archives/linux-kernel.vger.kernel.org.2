@@ -2,69 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 512B0372F11
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:41:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8BC0F372F14
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:42:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231845AbhEDRmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:42:32 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:22586 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230425AbhEDRmb (ORCPT
+        id S231963AbhEDRnD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:43:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45184 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230425AbhEDRnC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:42:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1620150096; x=1651686096;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=ek1NDbSmNE2dBVRUjlUYh6SnWrzq5ADKqO2/Os5bhv8=;
-  b=GdIhcYe3ymh+5OVVnwyCeB7QROg9u/MRGP2g/uBV9iSgjrNj65Z1gLF7
-   PHw6NfD0nx0XXsOUuTr6xN97oIgyNIr1O4Lw71aj0x8CdVBPWGVWpdVqC
-   Q+7MVe+KQ8EOmVQiw6PtYsBcnXyw1daCe+wgperPVnaS37G0B9/2U/XfF
-   c=;
-Received: from unknown (HELO ironmsg04-sd.qualcomm.com) ([10.53.140.144])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 04 May 2021 10:41:36 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg04-sd.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 May 2021 10:41:36 -0700
-Received: from [10.226.59.216] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May 2021
- 10:41:35 -0700
-Subject: Re: [PATCH v8 2/9] bus: mhi: core: Clear context for stopped channels
- from remove()
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        <manivannan.sadhasivam@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
-        <linux-kernel@vger.kernel.org>, <carl.yin@quectel.com>,
-        <naveen.kumar@quectel.com>, <loic.poulain@linaro.org>
-References: <1617311778-1254-1-git-send-email-bbhatt@codeaurora.org>
- <1617311778-1254-3-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-Message-ID: <2d540a2a-0152-1357-67c2-b6047e423dd9@quicinc.com>
-Date:   Tue, 4 May 2021 11:41:34 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Tue, 4 May 2021 13:43:02 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8FA0AC061574;
+        Tue,  4 May 2021 10:42:07 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id h11so8564702pfn.0;
+        Tue, 04 May 2021 10:42:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SglDWfuEzwD2ZuEt5Yy/WwMNvHiyKUl+FRTkRohMPAQ=;
+        b=TVbHP+Q3oP1gC/blTdNXdztQyAMtGnwSUEA1Hi0IjaNnXWtKXYL9i5L3uQrrJxBpXY
+         JikpDT2GWp+NTiEXz531RMHpCTZ5HaLt1I7iWnqkQgcAt2nZdbccFife2Cq9/oco0Iqm
+         GapluggfxiSUKjiK41TYnN7r2D2/PNYjtWwo/ngsYchBF08yatD21yK2AhOxsiuDPeg9
+         c5FteI2OukDusV/zd4udZ6qH0kOuZB0z769rmGmPL7GDLjaEBnTOD80jspwpeHncaA9s
+         YQT8DgLO01Espgr2Z/t1C5Ak9UouAxAyOsx1e2j+PUKG49Uy3V5LVtQtLRLip4icYHw4
+         TBgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SglDWfuEzwD2ZuEt5Yy/WwMNvHiyKUl+FRTkRohMPAQ=;
+        b=S7DOmzxGRKcLxTVsuksAC7keefQv05rw9sB1pAaW5SwlB+lg86cZl5z/XjXgb3K8Y6
+         o7n/qFLoMqtJVGcDJa7/i/WplYG2wszNeEXE1gGvu+IuIayNSoWzTF5qkdBN6btenJUF
+         bi4qPUPVSeypvgdsZNvlcIcmmHWx5BPyST9OdJKKtlN48HsczctezGnAxC8jXJ0UmOWw
+         NZ/wa2MW/H3RXk4DgRmY9w8k/ndZWNlrps/7NrNjQ/IBhdA/GLrasB8Dy3NQg/qiUH/q
+         q/O2JQpc7lXyr0oQfzeYO/6iWE8yqmyAm0qkIocl7GrBtV0XmIjczxAQD03aol2D+m/A
+         7sxA==
+X-Gm-Message-State: AOAM5308ZtsGjVqy6ggzD/r9X57c6YoWFlizLGwdQFtiGkpu1OdogrTn
+        R3beMNTzrVIAPNOjFn02Y9YwFDqKKMs9QVyjKHQ=
+X-Google-Smtp-Source: ABdhPJzkwRKKoqIThn0Dd6gmy2yZ+6nezkkhd1L/O0RirTqwlLCde363PaXstRJiascjOSrDR7EoJ07QqJWdQzWFCW8=
+X-Received: by 2002:a17:90a:246:: with SMTP id t6mr14358173pje.228.1620150127211;
+ Tue, 04 May 2021 10:42:07 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617311778-1254-3-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03g.na.qualcomm.com (10.85.0.49) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
+References: <20210502193216.24872-1-brgl@bgdev.pl> <CAHk-=whSWp3exv8tZ2th5im_P7HF=c6iuOOVb9iSrNrd6405WA@mail.gmail.com>
+ <YJBA1iYK7npit9vn@zeniv-ca.linux.org.uk> <YJCpnvKUNx+Tc+vg@zeniv-ca.linux.org.uk>
+ <CAMRc=Mdh9LvUQCxcyt7ZBjitDB2noVnOptft_VORDhffxJaeCA@mail.gmail.com> <YJGFsrPBoQsKj+JZ@zeniv-ca.linux.org.uk>
+In-Reply-To: <YJGFsrPBoQsKj+JZ@zeniv-ca.linux.org.uk>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 4 May 2021 20:41:51 +0300
+Message-ID: <CAHp75VcbWE+2d=LpkwLGcLEdO14vhhPVk2bD0+jKKnXiGoeZXQ@mail.gmail.com>
+Subject: Re: [GIT PULL] gpio: updates for v5.13
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/2021 3:16 PM, Bhaumik Bhatt wrote:
-> If a channel was explicitly stopped but not reset and a driver
-> remove is issued, clean up the channel context such that it is
-> reflected on the device. This move is useful if a client driver
-> module is unloaded or a device crash occurs with the host having
-> placed the channel in a stopped state.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+On Tue, May 4, 2021 at 8:35 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+> On Tue, May 04, 2021 at 04:17:02PM +0200, Bartosz Golaszewski wrote:
 
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+...
+
+> So I would like to see the specifics on that as well.  _Before_ signing
+> up on anything, including "we can fix it up after merge".
+
+Bart, I think we need to split your PR to the patches w/o configfs et
+al and submit to Linus to avoid missing a merge window. This stuff can
+be queued later as an additional part in case being ready.
+
+-- 
+With Best Regards,
+Andy Shevchenko
