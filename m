@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F2F372F35
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:50:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93A31372F37
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:50:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232065AbhEDRuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:50:54 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:11154 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231773AbhEDRux (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:50:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620150598; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=qfmvNh2uq9Iyuj3t9hwn8y2SD3Ym7HRAA7nKvwMbgCE=; b=ZHvjNJfaIpNZs+Q9poXM4N9+P289rzTObGcUaTOZLIhkqDFQcw/eWLYA4gYlTIM7PbwVehpw
- OvOLj8SbnQfbwSG9AWmiFEgA1c3/7YRej0HEmDl2f7hycLkPPWooE9gylx/EasxXhqVaG9uW
- zuxWUuH9Ot5CIwNlH9/vhec/9pU=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60918935f34440a9d47565f7 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 May 2021 17:49:41
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A043CC433D3; Tue,  4 May 2021 17:49:41 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3D13CC433D3;
-        Tue,  4 May 2021 17:49:39 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3D13CC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v8 7/9] bus: mhi: core: Check channel execution
- environment before issuing reset
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        linux-kernel@vger.kernel.org, carl.yin@quectel.com,
-        naveen.kumar@quectel.com, loic.poulain@linaro.org
-References: <1617311778-1254-1-git-send-email-bbhatt@codeaurora.org>
- <1617311778-1254-8-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <b1ed89a0-101a-d7b3-a9dc-2035bf21829b@codeaurora.org>
-Date:   Tue, 4 May 2021 11:49:38 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S231908AbhEDRvT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:51:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231773AbhEDRvS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 13:51:18 -0400
+Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E25C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:50:22 -0700 (PDT)
+Received: by mail-oi1-x233.google.com with SMTP id e25so9588147oii.2
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:50:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DCkRHCN61kfizqWJXP1PWNpclqjzIE2ZjByqn8qit3M=;
+        b=TJ5hcE62aB70t3wRgov2kIHjvIshRaIKwKhsS6AKdPP57RDYO/z30LoU/rF67pU0XU
+         IX8UJLBud9zuRfHTIlVO/nC7FH2uePijzicdHzldgmLPR59XrR5NnW8i/dr6td/UiKEe
+         +2l5dD8yXCQ14uQwkasfUugjgt3fHHCqDtcmA4+c0Nx9+AsX+DWmpKYLE7ndkYCluTGP
+         Ff/X1Cz7eEwgxJONcOl06k3gXPXPGY3nmZXgc4RpwISc5vPk4pewq0R4oddwgpc43Kxu
+         igyvApR6auWvoSXDFL3RbIDTX4Q1sGlY/YD01BsPMY3+n+ohgtbTvxm91vcssZbXIWUP
+         Fi5Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DCkRHCN61kfizqWJXP1PWNpclqjzIE2ZjByqn8qit3M=;
+        b=qRwees55nkjM4iR/5urQmQSc5Rm6X/AVyQaBwkTBYkSurgPbfLnf7TFjjZ8i+ltGDN
+         bvQXhYOYqmIqPWs3q6n24VYIveqSjdWyrTK1Ao+iR3Kra6g7u4oFkAY5QrsAESTHyilT
+         /CdPo5GBWqpOwB0pf9XmiKNM5I9GSkLgpsBFSGDlSGLwQeAUq6ybuAKkaFTrVgRl7aF9
+         2846iKzMAae/DuqKdczvRmBnyDKcB6VtzWGXTKU2QosI3EvpL5KhORyA/bMLozAt2Fil
+         eAFXbBXGhon1cMErpMCXLoZ6TYeU4oWAQpiG3MD0LKh87RuSt9hz2NuDb0/ttKvU1BrJ
+         9mLw==
+X-Gm-Message-State: AOAM5324CQJi8K8mkhKYOYUEmbM6F13TMYDEd/esuRW6nanWn0igedPF
+        WxPo6jiaqr9rw4S/ltCAFzpIDhsSev3ABZ8JGX7ynQ==
+X-Google-Smtp-Source: ABdhPJzF70u/lwIhgpkw/qWojuBy7ba9HmvvzYL4q9yPwPYvQ7BSZD6+KuS92/zihXTjnwbz8wZQPTVc2liKABG/L08=
+X-Received: by 2002:aca:3cd6:: with SMTP id j205mr18533711oia.28.1620150621183;
+ Tue, 04 May 2021 10:50:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1617311778-1254-8-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210504171734.1434054-1-seanjc@google.com> <20210504171734.1434054-3-seanjc@google.com>
+In-Reply-To: <20210504171734.1434054-3-seanjc@google.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Tue, 4 May 2021 10:50:10 -0700
+Message-ID: <CALMp9eTqoiiwDdXZQ=MYpaEp-g1z=1SeAqqk6TNU9MFeRJayWQ@mail.gmail.com>
+Subject: Re: [PATCH 02/15] KVM: x86: Emulate RDPID only if RDTSCP is supported
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/2021 3:16 PM, Bhaumik Bhatt wrote:
-> A client can attempt to unprepare certain channels for transfer even
-> after the execution environment they are supposed to run in has changed.
-> In the event that happens, the device need not be notified of the reset
-> and the host can proceed with clean up for the channel context and
-> memory allocated for it on the host as the device will no longer be able
-> to respond to such a request.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
-> Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> ---
-
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-
-
--- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
+>
+> Do not advertise emulation support for RDPID if RDTSCP is unsupported.
+> RDPID emulation subtly relies on MSR_TSC_AUX to exist in hardware, as
+> both vmx_get_msr() and svm_get_msr() will return an error if the MSR is
+> unsupported, i.e. ctxt->ops->get_msr() will fail and the emulator will
+> inject a #UD.
+>
+> Note, RDPID emulation also relies on RDTSCP being enabled in the guest,
+> but this is a KVM bug and will eventually be fixed.
+>
+> Fixes: fb6d4d340e05 ("KVM: x86: emulate RDPID")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+Reviewed by: Jim Mattson <jmattson@google.com>
