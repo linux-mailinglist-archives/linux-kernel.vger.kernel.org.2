@@ -2,194 +2,313 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22AB1372481
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 04:44:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64EFE372483
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 04:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229697AbhEDCpE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 22:45:04 -0400
-Received: from mga04.intel.com ([192.55.52.120]:58606 "EHLO mga04.intel.com"
+        id S229713AbhEDCqp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 22:46:45 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:18737 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhEDCpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 22:45:02 -0400
-IronPort-SDR: sawiYbD0NsaUfrw73s3jfRXoJyDWK+hjp8d6C4AvczahBakfFphdpVtWhPOtkr+GmX3SRUylAC
- 0ulPnXQdjwog==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="195829052"
-X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
-   d="scan'208";a="195829052"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 19:44:08 -0700
-IronPort-SDR: HOQvrJNCq9x8o3EE+vjwtRb8UnLMt8z4ZiaBYlpl/Re9ws++wKu9BGlfVOS++acy5PGLDqdgFP
- 4CjBmqso5/Ng==
-X-IronPort-AV: E=Sophos;i="5.82,271,1613462400"; 
-   d="scan'208";a="433057486"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2021 19:44:07 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrey Konovalov <andreyknvl@gmail.com>,
-        Dmitry Vyukov <dvyukov@google.com>, peterz@infradead.org,
-        akpm@linux-foundation.org
-Subject: [PATCH] stackdepot: Use a raw spinlock in stack depot
-Date:   Mon,  3 May 2021 19:43:58 -0700
-Message-Id: <20210504024358.894950-1-ak@linux.intel.com>
-X-Mailer: git-send-email 2.25.4
+        id S229499AbhEDCqn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 3 May 2021 22:46:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620096349; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=gl9fW/kwjNj+fYrBaRMW5GDpzrUZ0b0icIY50/FnmT4=; b=Zw5V0ncq8KEmj87xOv2gkVOAYGXUqAhDrJN+GdOjnWqzoqttNbM3F9nnZVKAogw2u40ny83C
+ MGBPvChXz+7WFMSPvolc0qGyk2Fm4k3ljBA+3Snyk8aWgIpAE5Dy23LpWgeYvoO0uT01j0Id
+ fW6TSfbBytb/8E9MOOOIoeqNWTM=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
+ 6090b55b9a9ff96d950e2737 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 May 2021 02:45:47
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 797E7C43460; Tue,  4 May 2021 02:45:47 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.110.61.52] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AAEC5C433D3;
+        Tue,  4 May 2021 02:45:45 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org AAEC5C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v2] usb: dwc3: gadget: Avoid canceling current request for
+ queuing error
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        "balbi@kernel.org" <balbi@kernel.org>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jackp@codeaurora.org" <jackp@codeaurora.org>
+References: <1620091264-418-1-git-send-email-wcheng@codeaurora.org>
+ <5b46e4a1-93ef-2d17-048b-5b4ceba358ae@synopsys.com>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <513e6c16-9586-c78e-881b-08e0a73c50a8@codeaurora.org>
+Date:   Mon, 3 May 2021 19:45:44 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <5b46e4a1-93ef-2d17-048b-5b4ceba358ae@synopsys.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In some cases kasan with lockdep complains about its own use of the stack
-depot lock. I think it happens when the kasan usage is nested inside a
-raw spinlock and it happens to create a new stack depot.
 
-Make the stackdepot lock raw too
 
-Example trace:
+On 5/3/2021 7:20 PM, Thinh Nguyen wrote:
+> Hi,
+> 
+> Wesley Cheng wrote:
+>> If an error is received when issuing a start or update transfer
+>> command, the error handler will stop all active requests (including
+>> the current USB request), and call dwc3_gadget_giveback() to notify
+>> function drivers of the requests which have been stopped.  Avoid
+>> having to cancel the current request which is trying to be queued, as
+>> the function driver will handle the EP queue error accordingly.
+>> Simply unmap the request as it was done before, and allow previously
+>> started transfers to be cleaned up.
+>>
 
-[    1.156154] ACPI Error: No handler or method for GPE 01, disabling event (20210105/evgpe-839)
-[    1.156235] =============================
-[    1.156238] [ BUG: Invalid wait context ]
-[    1.156242] 5.12.0-00071-gb34886074b65 #45 Not tainted
-[    1.156249] -----------------------------
-[    1.156252] swapper/0/1 is trying to lock:
-[    1.156258] ffffffff8535e158 (depot_lock){..-.}-{3:3}, at: stack_depot_save+0x162/0x450
-[    1.156288] other info that might help us debug this:
-[    1.156292] context-{5:5}
-[    1.156297] 3 locks held by swapper/0/1:
-[    1.156304]  #0: ffff888100838658 (*(&acpi_gbl_gpe_lock)){....}-{3:3}, at: acpi_ev_detect_gpe+0xa8/0x3e6
-[    1.156333]  #1: ffffffff85133dc0 (rcu_read_lock){....}-{1:3}, at: __queue_work+0xd5/0x1010
-[    1.156363]  #2: ffff88815a04ec18 (&pool->lock){....}-{2:2}, at: __queue_work+0x258/0x1010
-[    1.156391] stack backtrace:
-[    1.156395] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.12.0-00071-gb34886074b65 #45
-[    1.156407] Call Trace:
-[    1.156413]  dump_stack+0xfa/0x151
-[    1.156427]  __lock_acquire.cold+0x366/0x41f
-[    1.156450]  ? orc_find+0x233/0x3c0
-[    1.156462]  ? __sanitizer_cov_trace_pc+0x1d/0x50
-[    1.156476]  ? lockdep_hardirqs_on_prepare+0x3e0/0x3e0
-[    1.156491]  ? ret_from_fork+0x1f/0x30
-[    1.156503]  ? deref_stack_reg+0x90/0x90
-[    1.156516]  lock_acquire+0x194/0x690
-[    1.156528]  ? stack_depot_save+0x162/0x450
-[    1.156541]  ? rcu_read_unlock+0x40/0x40
-[    1.156553]  ? arch_stack_walk+0x88/0xf0
-[    1.156566]  ? ret_from_fork+0x1f/0x30
-[    1.156579]  _raw_spin_lock_irqsave+0x3b/0x60
-[    1.156591]  ? stack_depot_save+0x162/0x450
-[    1.156603]  stack_depot_save+0x162/0x450
-[    1.156616]  kasan_save_stack+0x32/0x40
-[    1.156629]  ? kasan_save_stack+0x1b/0x40
-[    1.156642]  ? kasan_record_aux_stack+0xbc/0xe0
-[    1.156653]  ? insert_work+0x4b/0x2e0
-[    1.156665]  ? __queue_work+0x4cf/0x1010
-[    1.156677]  ? queue_work_on+0xb3/0xc0
-[    1.156689]  ? acpi_os_execute+0x1ca/0x340
-[    1.156701]  ? acpi_ev_gpe_dispatch+0x208/0x273
-[    1.156713]  ? acpi_ev_detect_gpe+0x35e/0x3e6
-[    1.156724]  ? acpi_ev_gpe_detect+0x269/0x334
-[    1.156736]  ? acpi_update_all_gpes+0x1cf/0x206
-[    1.156748]  ? acpi_scan_init+0x2a8/0x702
-[    1.156761]  ? acpi_init+0x230/0x2ba
-[    1.156773]  ? do_one_initcall+0xf0/0x540
-[    1.156784]  ? kernel_init_freeable+0x38e/0x412
-[    1.156796]  ? kernel_init+0x12/0x1cf
-[    1.156807]  ? ret_from_fork+0x1f/0x30
-[    1.156818]  ? kmem_cache_alloc_trace+0xf1/0x850
-[    1.156831]  ? lockdep_hardirqs_on_prepare+0x3e0/0x3e0
-[    1.156844]  ? lockdep_hardirqs_on_prepare+0x3e0/0x3e0
-[    1.156858]  ? acpi_scan_init+0x2a8/0x702
-[    1.156870]  ? do_one_initcall+0xf0/0x540
-[    1.156881]  ? kernel_init+0x12/0x1cf
-[    1.156892]  ? ret_from_fork+0x1f/0x30
-[    1.156903]  ? _raw_spin_unlock+0x1f/0x30
-[    1.156915]  ? lock_acquire+0x194/0x690
-[    1.156927]  ? __queue_work+0x258/0x1010
-[    1.156940]  ? rcu_read_unlock+0x40/0x40
-[    1.156952]  ? lock_is_held_type+0x98/0x110
-[    1.156964]  ? lock_is_held_type+0x98/0x110
-[    1.156977]  ? rcu_read_lock_sched_held+0xa1/0xe0
-[    1.156991]  kasan_record_aux_stack+0xbc/0xe0
-[    1.157003]  insert_work+0x4b/0x2e0
-[    1.157016]  __queue_work+0x4cf/0x1010
-[    1.157031]  queue_work_on+0xb3/0xc0
-[    1.157044]  acpi_os_execute+0x1ca/0x340
-[    1.157056]  acpi_ev_gpe_dispatch+0x208/0x273
-[    1.157069]  acpi_ev_detect_gpe+0x35e/0x3e6
-[    1.157082]  ? acpi_ev_gpe_dispatch+0x273/0x273
-[    1.157096]  ? lockdep_hardirqs_on_prepare+0x273/0x3e0
-[    1.157109]  ? _raw_spin_unlock_irqrestore+0x2d/0x40
-[    1.157122]  acpi_ev_gpe_detect+0x269/0x334
-[    1.157136]  ? acpi_bus_init+0x7ee/0x7ee
-[    1.157148]  acpi_update_all_gpes+0x1cf/0x206
-[    1.157161]  ? acpi_get_gpe_device+0x182/0x182
-[    1.157174]  ? acpi_get_table+0x11f/0x1f5
-[    1.157186]  ? write_comp_data+0x2a/0x80
-[    1.157199]  acpi_scan_init+0x2a8/0x702
-[    1.157212]  ? acpi_match_madt+0xc4/0xc4
-[    1.157225]  ? __sanitizer_cov_trace_pc+0x1d/0x50
-[    1.157239]  ? __pci_mmcfg_init+0x91/0x21f
-[    1.157251]  ? __sanitizer_cov_trace_pc+0x1d/0x50
-[    1.157265]  acpi_init+0x230/0x2ba
-[    1.157277]  ? acpi_bus_init+0x7ee/0x7ee
-[    1.157290]  ? rcu_read_lock_bh_held+0xc0/0xc0
-[    1.157304]  ? write_comp_data+0x2a/0x80
-[    1.157332]  do_one_initcall+0xf0/0x540
-[    1.157357]  ? perf_trace_initcall_level+0x3e0/0x3e0
-[    1.157370]  ? rcu_read_lock_sched_held+0xa1/0xe0
-[    1.157384]  ? rcu_read_lock_bh_held+0xc0/0xc0
-[    1.157398]  ? __kmalloc+0x1ae/0x380
-[    1.157410]  ? write_comp_data+0x2a/0x80
-[    1.157424]  kernel_init_freeable+0x38e/0x412
-[    1.157437]  ? rest_init+0x381/0x381
-[    1.157462]  kernel_init+0x12/0x1cf
-[    1.157474]  ret_from_fork+0x1f/0x30
+Hi Thinh,
 
-Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-Cc: Alexander Potapenko <glider@google.com>
-Cc: Andrey Konovalov <andreyknvl@gmail.com>
-Cc: Dmitry Vyukov <dvyukov@google.com>
-Cc: peterz@infradead.org
-Cc: akpm@linux-foundation.org
-Signed-off-by: Andi Kleen <ak@linux.intel.com>
----
- lib/stackdepot.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> It looks like you're still letting dwc3 stopping and cancelling all the
+> active requests instead letting the function driver doing the dequeue.
+> 
 
-diff --git a/lib/stackdepot.c b/lib/stackdepot.c
-index 49f67a0c6e5d..df9179f4f441 100644
---- a/lib/stackdepot.c
-+++ b/lib/stackdepot.c
-@@ -71,7 +71,7 @@ static void *stack_slabs[STACK_ALLOC_MAX_SLABS];
- static int depot_index;
- static int next_slab_inited;
- static size_t depot_offset;
--static DEFINE_SPINLOCK(depot_lock);
-+static DEFINE_RAW_SPINLOCK(depot_lock);
- 
- static bool init_stack_slab(void **prealloc)
- {
-@@ -305,7 +305,7 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
- 			prealloc = page_address(page);
- 	}
- 
--	spin_lock_irqsave(&depot_lock, flags);
-+	raw_spin_lock_irqsave(&depot_lock, flags);
- 
- 	found = find_stack(*bucket, entries, nr_entries, hash);
- 	if (!found) {
-@@ -329,7 +329,7 @@ depot_stack_handle_t stack_depot_save(unsigned long *entries,
- 		WARN_ON(!init_stack_slab(&prealloc));
- 	}
- 
--	spin_unlock_irqrestore(&depot_lock, flags);
-+	raw_spin_unlock_irqrestore(&depot_lock, flags);
- exit:
- 	if (prealloc) {
- 		/* Nobody used this memory, ok to free it. */
+Yeah, main issue isn't due to the function driver doing dequeue, but
+having cleanup (ie USB request free) if there is an error during
+usb_ep_queue().
+
+The function driver in question at the moment is the f_fs driver in AIO
+mode.  When async IO is enabled in the FFS driver, every time it queues
+a packet, it will allocate a io_data struct beforehand.  If the
+usb_ep_queue() fails it will free this io_data memory.  Problem is that,
+since the DWC3 gadget calls the completion with -ECONNRESET, the FFS
+driver will also schedule a work item (within io_data struct) to handle
+the completion.  So you end up with a flow like below
+
+allocate io_data (ffs)
+ --> usb_ep_queue()
+   --> __dwc3_gadget_kick_transfer()
+   --> dwc3_send_gadget_ep_cmd(EINVAL)
+   --> dwc3_gadget_ep_cleanup_cancelled_requests()
+   --> dwc3_gadget_giveback(ECONNRESET)
+ffs completion callback
+queue work item within io_data
+ --> usb_ep_queue returns EINVAL
+ffs frees io_data
+...
+
+work scheduled
+ --> NULL pointer/memory fault as io_data is freed
+
+> BTW, what kinds of command and error do you see in your setup and for
+> what type endpoint? I'm thinking of letting the function driver to
+> dequeue the requests instead of letting dwc3 automatically
+> ending/cancelling the queued requests. However, it's a bit tricky to do
+> that if the error is -ETIMEDOUT since we're not sure if the controller
+> had already cached the TRBs.
+> 
+
+Happens on bulk EPs so far, but I think it wouldn't matter as long as
+its over the FFS interface. (and using async IO transfers)
+
+> This seems to add more complexity and I don't have a good solution to
+> it. Since you're already cancelling all the active request anyway, what
+> do you think of always letting dwc3_gadget_ep_queue() to go through with
+> success, but report failure through request completion?
+> 
+
+We do have something similar as well downstream (returning success
+always on dwc3_gadget_ep_queue()) and its been working for us also.
+Problem is we don't test the ISOC path much, so this is the only type of
+EP that might come into question...
+
+Coming up with a way to address the concerns you brought up was a bit
+difficult as there were scenarios we needed to consider.  next_request()
+doesn't always have to be the request being queued (even if ep queue
+triggered it).  There was no easy way to determine if kick transfer was
+due to ep queue, but even if there was, we'd need to remember the
+previous point as well.
+
+Thanks
+Wesley Cheng
+
+> Hi Felipe, can you also chime in?
+> 
+> Thanks,
+> Thinh
+> 
+> 
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+>> ---
+>> Changes in v2:
+>>  - Addressed feedback received by making sure the logic only applies to a req
+>>    which is being queued, decrementing the enqueue pointer, and only clearing
+>>    the HWO bit.
+>>
+>>  drivers/usb/dwc3/gadget.c | 75 +++++++++++++++++++++++++++++++++++++++++------
+>>  1 file changed, 66 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+>> index dd80e5c..c8ddbe1 100644
+>> --- a/drivers/usb/dwc3/gadget.c
+>> +++ b/drivers/usb/dwc3/gadget.c
+>> @@ -140,6 +140,29 @@ int dwc3_gadget_set_link_state(struct dwc3 *dwc, enum dwc3_link_state state)
+>>  }
+>>  
+>>  /**
+>> + * dwc3_ep_dec_trb - decrement a trb index.
+>> + * @index: Pointer to the TRB index to increment.
+>> + *
+>> + * The index should never point to the link TRB. After decrementing,
+>> + * if index is zero, wrap around to the TRB before the link TRB.
+>> + */
+>> +static void dwc3_ep_dec_trb(u8 *index)
+>> +{
+>> +	(*index)--;
+>> +	if (*index < 0)
+>> +		*index = DWC3_TRB_NUM - 1;
+>> +}
+>> +
+>> +/**
+>> + * dwc3_ep_dec_enq - decrement endpoint's enqueue pointer
+>> + * @dep: The endpoint whose enqueue pointer we're decrementing
+>> + */
+>> +static void dwc3_ep_dec_enq(struct dwc3_ep *dep)
+>> +{
+>> +	dwc3_ep_dec_trb(&dep->trb_enqueue);
+>> +}
+>> +
+>> +/**
+>>   * dwc3_ep_inc_trb - increment a trb index.
+>>   * @index: Pointer to the TRB index to increment.
+>>   *
+>> @@ -1352,7 +1375,26 @@ static int dwc3_prepare_trbs(struct dwc3_ep *dep)
+>>  
+>>  static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep);
+>>  
+>> -static int __dwc3_gadget_kick_transfer(struct dwc3_ep *dep)
+>> +static void dwc3_gadget_ep_revert_trbs(struct dwc3_ep *dep, struct dwc3_request *req)
+>> +{
+>> +	int i;
+>> +
+>> +	if (!req->trb)
+>> +		return;
+>> +
+>> +	for (i = 0; i < req->num_trbs; i++) {
+>> +		struct dwc3_trb *trb;
+>> +
+>> +		trb = &dep->trb_pool[dep->trb_enqueue];
+>> +		trb->ctrl &= ~DWC3_TRB_CTRL_HWO;
+>> +		dwc3_ep_dec_enq(dep);
+>> +	}
+>> +
+>> +	req->num_trbs = 0;
+>> +}
+>> +
+>> +static int __dwc3_gadget_kick_transfer(struct dwc3_ep *dep,
+>> +				       struct dwc3_request *queued_req)
+>>  {
+>>  	struct dwc3_gadget_ep_cmd_params params;
+>>  	struct dwc3_request		*req;
+>> @@ -1410,8 +1452,23 @@ static int __dwc3_gadget_kick_transfer(struct dwc3_ep *dep)
+>>  
+>>  		dwc3_stop_active_transfer(dep, true, true);
+>>  
+>> -		list_for_each_entry_safe(req, tmp, &dep->started_list, list)
+>> -			dwc3_gadget_move_cancelled_request(req, DWC3_REQUEST_STATUS_DEQUEUED);
+>> +		/*
+>> +		 * In order to ensure the logic is applied to a request being
+>> +		 * queued by dwc3_gadget_ep_queue(), it needs to explicitly
+>> +		 * check that req is the same as queued_req (request being
+>> +		 * queued).  If so, then just unmap and decrement the enqueue
+>> +		 * pointer, as the usb_ep_queue() error handler in the function
+>> +		 * driver will handle cleaning up the USB request.
+>> +		 */
+>> +		list_for_each_entry_safe(req, tmp, &dep->started_list, list) {
+>> +			if (req == queued_req) {
+>> +				dwc3_gadget_ep_revert_trbs(dep, req);
+>> +				dwc3_gadget_del_and_unmap_request(dep, req, ret);
+>> +			} else {
+>> +				dwc3_gadget_move_cancelled_request(req,
+>> +								   DWC3_REQUEST_STATUS_DEQUEUED);
+>> +			}
+>> +		}
+>>  
+>>  		/* If ep isn't started, then there's no end transfer pending */
+>>  		if (!(dep->flags & DWC3_EP_END_TRANSFER_PENDING))
+>> @@ -1546,7 +1603,7 @@ static int dwc3_gadget_start_isoc_quirk(struct dwc3_ep *dep)
+>>  	dep->start_cmd_status = 0;
+>>  	dep->combo_num = 0;
+>>  
+>> -	return __dwc3_gadget_kick_transfer(dep);
+>> +	return __dwc3_gadget_kick_transfer(dep, NULL);
+>>  }
+>>  
+>>  static int __dwc3_gadget_start_isoc(struct dwc3_ep *dep)
+>> @@ -1593,7 +1650,7 @@ static int __dwc3_gadget_start_isoc(struct dwc3_ep *dep)
+>>  	for (i = 0; i < DWC3_ISOC_MAX_RETRIES; i++) {
+>>  		dep->frame_number = DWC3_ALIGN_FRAME(dep, i + 1);
+>>  
+>> -		ret = __dwc3_gadget_kick_transfer(dep);
+>> +		ret = __dwc3_gadget_kick_transfer(dep, NULL);
+>>  		if (ret != -EAGAIN)
+>>  			break;
+>>  	}
+>> @@ -1684,7 +1741,7 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+>>  		}
+>>  	}
+>>  
+>> -	return __dwc3_gadget_kick_transfer(dep);
+>> +	return __dwc3_gadget_kick_transfer(dep, req);
+>>  }
+>>  
+>>  static int dwc3_gadget_ep_queue(struct usb_ep *ep, struct usb_request *request,
+>> @@ -1893,7 +1950,7 @@ int __dwc3_gadget_ep_set_halt(struct dwc3_ep *dep, int value, int protocol)
+>>  
+>>  		if ((dep->flags & DWC3_EP_DELAY_START) &&
+>>  		    !usb_endpoint_xfer_isoc(dep->endpoint.desc))
+>> -			__dwc3_gadget_kick_transfer(dep);
+>> +			__dwc3_gadget_kick_transfer(dep, NULL);
+>>  
+>>  		dep->flags &= ~DWC3_EP_DELAY_START;
+>>  	}
+>> @@ -2992,7 +3049,7 @@ static bool dwc3_gadget_endpoint_trbs_complete(struct dwc3_ep *dep,
+>>  		(list_empty(&dep->pending_list) || status == -EXDEV))
+>>  		dwc3_stop_active_transfer(dep, true, true);
+>>  	else if (dwc3_gadget_ep_should_continue(dep))
+>> -		if (__dwc3_gadget_kick_transfer(dep) == 0)
+>> +		if (__dwc3_gadget_kick_transfer(dep, NULL) == 0)
+>>  			no_started_trb = false;
+>>  
+>>  out:
+>> @@ -3106,7 +3163,7 @@ static void dwc3_gadget_endpoint_command_complete(struct dwc3_ep *dep,
+>>  
+>>  	if ((dep->flags & DWC3_EP_DELAY_START) &&
+>>  	    !usb_endpoint_xfer_isoc(dep->endpoint.desc))
+>> -		__dwc3_gadget_kick_transfer(dep);
+>> +		__dwc3_gadget_kick_transfer(dep, NULL);
+>>  
+>>  	dep->flags &= ~DWC3_EP_DELAY_START;
+>>  }
+>>
+> 
+
 -- 
-2.25.4
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
