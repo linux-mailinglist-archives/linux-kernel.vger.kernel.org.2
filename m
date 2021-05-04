@@ -2,58 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F29FD372688
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:24:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D88037268A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 09:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhEDHZk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 03:25:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229977AbhEDHZi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 03:25:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id DA2B1611AD;
-        Tue,  4 May 2021 07:24:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620113084;
-        bh=+PhNuSZLMjrB2Xee53utVbBCJ/x1qE6Pvl9ZxiVp2H8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cuNtEppOGcBfaMo+M2lkG7CbAwJ6aXrCmkBxzPyng3Xi0vxMrFea3AF0NNpEeVTgR
-         0gvdr+kaKfeeqwKX/jz0G7gt98Q/dL9xvPblbFa0ExuzSQ3B42tPMsSTI9/PgWFZuz
-         HbdJGxE0jZfjxgohy/IAe4YI7beg7ykj9drkHNmo=
-Date:   Tue, 4 May 2021 09:24:41 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Jari Ruusu <jariruusu@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Kalle Valo <kvalo@codeaurora.org>
-Subject: Re: [PATCH 5.10 1/2] iwlwifi: Fix softirq/hardirq disabling in
- iwl_pcie_gen2_enqueue_hcmd()
-Message-ID: <YJD2uTdQonXymbn6@kroah.com>
-References: <20210430141910.473289618@linuxfoundation.org>
- <20210430141910.521897363@linuxfoundation.org>
- <608CFF6A.4BC054A3@users.sourceforge.net>
- <YI6HFNNvzuHnv5VU@kroah.com>
- <bO2GF-6sC-I4NbFif7JoGUpuRpAV-rHEMwtLsKfN9SCsA0lwB1NgEV4OC7Xd5fdoq3UPcZ6-uh2VDSe1Xtovy8ti3k5vmOsiMVTdfTgl0Yw=@protonmail.com>
+        id S230122AbhEDH0O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 03:26:14 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:18342 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229607AbhEDH0M (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 03:26:12 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FZBBV3vbRzCqrD;
+        Tue,  4 May 2021 15:22:42 +0800 (CST)
+Received: from [10.174.179.57] (10.174.179.57) by
+ DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 4 May 2021 15:25:09 +0800
+To:     <davem@davemloft.net>, <kuba@kernel.org>,
+        <christian.brauner@ubuntu.com>, <jamorris@linux.microsoft.com>,
+        <jingxiangfeng@huawei.com>, <orcohen2006@gmail.com>,
+        <gustavoars@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+From:   Kemeng Shi <shikemeng@huawei.com>
+Subject: [PATCH] cleancode: add space around '&'
+Message-ID: <ed093244-1ac3-8163-eb45-1e85fef46d32@huawei.com>
+Date:   Tue, 4 May 2021 15:25:09 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bO2GF-6sC-I4NbFif7JoGUpuRpAV-rHEMwtLsKfN9SCsA0lwB1NgEV4OC7Xd5fdoq3UPcZ6-uh2VDSe1Xtovy8ti3k5vmOsiMVTdfTgl0Yw=@protonmail.com>
+Content-Type: text/plain; charset="gbk"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.179.57]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 11:27:07AM +0000, Jari Ruusu wrote:
-> On Sunday, May 2, 2021 2:03 PM, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> > If you could provide backported patches to those kernels you think this
-> > is needed to, I can take them directly. Otherwise running sed isn't
-> > always the easiest thing to do on my end :)
-> 
-> iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_enqueue_hcmd()
-> upstream commit 2800aadc18a64c96b051bcb7da8a7df7d505db3f,
-> backport for linux-4.4.y (compile tested only)
-> Signed-off-by: Jari Ruusu <jariruusu@protonmail.com>
+add space around '&'
 
-All now queued up, thanks.
+Signed-off-by: Kemeng Shi <shikemeng@huawei.com>
+---
+ net/unix/af_unix.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-greg k-h
+diff --git a/net/unix/af_unix.c b/net/unix/af_unix.c
+index 5a31307ceb76..c0808dd19e98 100644
+--- a/net/unix/af_unix.c
++++ b/net/unix/af_unix.c
+@@ -1635,7 +1635,7 @@ static int unix_dgram_sendmsg(struct socket *sock, struct msghdr *msg,
+ 		return err;
+
+ 	err = -EOPNOTSUPP;
+-	if (msg->msg_flags&MSG_OOB)
++	if (msg->msg_flags & MSG_OOB)
+ 		goto out;
+
+ 	if (msg->msg_namelen) {
+-- 
+2.23.0
+
+-- 
+Best wishes
+Kemeng Shi
