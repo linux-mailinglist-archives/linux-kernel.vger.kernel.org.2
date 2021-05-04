@@ -2,96 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 895FF3730EA
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D40243730EF
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232463AbhEDTij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:38:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56994 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232153AbhEDTii (ORCPT
+        id S232570AbhEDTkT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:40:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232153AbhEDTkS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:38:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620157063;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=5iVVgUy0SDXv9IYkz7ttlGefErcwuOblVtEJb+SJtaU=;
-        b=iwwzeaZHGj+ILOKvrK8qUNMTJO924tzIE4Be6lSI7ZtnkKe76vVFLhBbIzS5yBdfp+8T0v
-        8ePKJAKU6acBKQrIQJwCfdO1I1gtK6NMzERZc4JjHdNyXoHfQh9z7gzUdnvlr5SEw/sPxk
-        cZCEHZ+TRok1E3395ahq8zlOSOo5uJo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-299-nwk_SFf_OLOEv7wl5inw4Q-1; Tue, 04 May 2021 15:37:39 -0400
-X-MC-Unique: nwk_SFf_OLOEv7wl5inw4Q-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EEF5E107ACCA;
-        Tue,  4 May 2021 19:37:37 +0000 (UTC)
-Received: from krava (unknown [10.40.192.45])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 7D1BF5D9DD;
-        Tue,  4 May 2021 19:37:35 +0000 (UTC)
-Date:   Tue, 4 May 2021 21:37:34 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v1 1/2] perf header: Support HYBRID_TOPOLOGY feature
-Message-ID: <YJGifgASdDD7T8Xc@krava>
-References: <20210430074602.3028-1-yao.jin@linux.intel.com>
- <YJFgrKB9ZavgbA1P@krava>
- <YJGgYSXcJbZ2n3H3@kernel.org>
+        Tue, 4 May 2021 15:40:18 -0400
+Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA40EC061574;
+        Tue,  4 May 2021 12:39:21 -0700 (PDT)
+Received: by mail-wr1-x42d.google.com with SMTP id l2so10640387wrm.9;
+        Tue, 04 May 2021 12:39:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GDyWX0q7nbyvuzEr5U4jc0HN+67Caz0FfP8gT+cK9CI=;
+        b=aXymTqrJX5ndGEh0jKK+icbf6rvTAkZPknIFPTjoPU+LsKPY8wmIKr47uiQnvw6UQV
+         jXairnmn44SEEtETHV/uZnWM9Dl3l6n+ePHgNKiBrppVAESTIYpze3ntxzhxvRGIGm+F
+         u6p0Lu9BTl2jbtXZFrD5r8SeM/eR1YK18voshYYsE6jSkXEhQK3X0tGsOnVb0/LaFnAD
+         xD4N+w0cZQTpW3NePqfbuQdo1KZKZb02upMjK5GvHyqMlRMZkmLeHkQQbCo30PVRJhSh
+         BPjaaXct+fz0P6hvbok9UM5ehZ0bjnItABBzjLTyH9Lz6i+sv2EjHKDJPpZZjOh+bDpv
+         fzjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GDyWX0q7nbyvuzEr5U4jc0HN+67Caz0FfP8gT+cK9CI=;
+        b=Crdj/vgvBb/zvSMR1D/WwfwIlngApZ50Y0v7ukNOAMdh/64vOGFeLtLhIMo0mkrYz/
+         PduYMLPESeB2vxZyjmMWP9BRZRz2H+fm85mYauYpPu876sbIMWcr1LMGQ/dHwSg2VapX
+         LN/4ZYkGbbCadg0YgfIeue9n2zGX9R8neHi7XsGzQB0TITNwGart2X9ZiiBjjhqAB4Ri
+         1JGl9ae28JPyWBSYHRhL0h3OMufLXAVh5/iHMjQOkqn9JKjMYE622wSx847f4UNN03uC
+         9Bwt/MQ9c6AFH+tQHGMBu2RZJgZ2QGdwv+a4cwS7fwNqGJtLem+tfRY0fqSsaoBbTpc3
+         +Fbg==
+X-Gm-Message-State: AOAM531+bsg0Fr/3qJWnL4JMK7yN2YV1O30Y9LbKTt5AOdtx8q/r+ph5
+        1AIkKB1tRrhFvpi4bERGBrDGAdAyc0sMuHb5fn5jRbZoRAJNgQ==
+X-Google-Smtp-Source: ABdhPJzw2M+VQweZcHVDuN3fz4HlHtVDrzhc2eQ7ho9FCcN3ovlIwvTDxuYgzfaiq5WPRRTPy50crSd9zLqC72Yz7PM=
+X-Received: by 2002:adf:ed43:: with SMTP id u3mr27027448wro.334.1620157160659;
+ Tue, 04 May 2021 12:39:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJGgYSXcJbZ2n3H3@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20210503.134721.2149322673805635760.davem@davemloft.net> <20210504191923.32313-1-msuchanek@suse.de>
+In-Reply-To: <20210504191923.32313-1-msuchanek@suse.de>
+From:   Lijun Pan <lijunp213@gmail.com>
+Date:   Tue, 4 May 2021 14:39:10 -0500
+Message-ID: <CAOhMmr4tYOuTVNquU5oZ=1G7vVR4mz+5q8Gb8Zy96PBioLPnUA@mail.gmail.com>
+Subject: Re: [PATCH v2 net-next resend] ibmvnic: remove default label from
+ to_string switch
+To:     Michal Suchanek <msuchanek@suse.de>
+Cc:     netdev@vger.kernel.org, Dany Madden <drt@linux.ibm.com>,
+        Sukadev Bhattiprolu <sukadev@linux.ibm.com>,
+        Thomas Falcon <tlfalcon@linux.ibm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 04:28:33PM -0300, Arnaldo Carvalho de Melo wrote:
-> Em Tue, May 04, 2021 at 04:56:44PM +0200, Jiri Olsa escreveu:
-> > On Fri, Apr 30, 2021 at 03:46:01PM +0800, Jin Yao wrote:
-> > > It would be useful to let user know the hybrid topology.
-> > > Adding HYBRID_TOPOLOGY feature in header to indicate the
-> > > core cpus and the atom cpus.
-> 
-> > > With this patch,
-> 
-> > > For the perf.data generated on hybrid platform,
-> > > reports the hybrid cpu list.
-> 
-> > >   root@otcpl-adl-s-2:~# perf report --header-only -I
-> > >   ...
-> > >   # cpu_core cpu list : 0-15
-> > >   # cpu_atom cpu list : 16-23
-> 
-> > hum, should we print 'hybrid:' or something to make
-> > sure its not confused with something else? like
->  
-> >   # hybrid cpu_core cpu list : 0-15
-> >   # hybrid cpu_atom cpu list : 16-23
-> 
-> But this _core/_atom already got to be enough? I disagreed with that
-> naming, but neverthless having one or the other present in an output is
-> a clear mark of this hybrid topology.
-> 
-> I.e having that extra hybrid string that wouldn't add information to the
-> output.
+On Tue, May 4, 2021 at 2:19 PM Michal Suchanek <msuchanek@suse.de> wrote:
+>
+> This way the compiler warns when a new value is added to the enum but
+> not to the string translation like:
+>
+> drivers/net/ethernet/ibm/ibmvnic.c: In function 'adapter_state_to_string':
+> drivers/net/ethernet/ibm/ibmvnic.c:832:2: warning: enumeration value 'VNIC_FOOBAR' not handled in switch [-Wswitch]
+>   switch (state) {
+>   ^~~~~~
+> drivers/net/ethernet/ibm/ibmvnic.c: In function 'reset_reason_to_string':
+> drivers/net/ethernet/ibm/ibmvnic.c:1935:2: warning: enumeration value 'VNIC_RESET_FOOBAR' not handled in switch [-Wswitch]
+>   switch (reason) {
+>   ^~~~~~
+>
+> Signed-off-by: Michal Suchanek <msuchanek@suse.de>
+> Acked-by: Lijun Pan <lijunp213@gmail.com>
+> ---
+> v2: Fix typo in commit message
+> ---
 
-sure when you know that cpu_core/cpu_atom are hybrid pmus ;-)
-and I guess other arch will come with other names 
+Hi Michal,
 
-jirka
+Thank you for reposting the patch and including the Ack-by tag. I
+think you need to wait till next Tuesday or so when net-next reopens,
+then you can repost the patch.
+http://vger.kernel.org/~davem/net-next.html.
 
-> 
-> IMHO.
-> 
-> - Arnaldo
-> 
-
+Thanks,
+Lijun
