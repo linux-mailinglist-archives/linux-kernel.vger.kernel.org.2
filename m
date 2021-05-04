@@ -2,192 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC273373299
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 735C837329C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:04:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhEDXEQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 19:04:16 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:56644 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbhEDXEP (ORCPT
+        id S230509AbhEDXFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 19:05:13 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:57963 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230313AbhEDXFM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 19:04:15 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620169399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ll/PI4F/FVWkSEpqvRhq/+/IfArUdPCmgxQCahW3Q3M=;
-        b=bA7TtUpy/VkWS1LYnlQ8VPaObfNtx7ewqZbJgB5Tg6hFjPki3RG1ZAEV24kBg5QP5vTFR6
-        qbabswYvNGCQlIas1dckpYV9HQ+awsOR5m+D4b7wL+CxS4F4pEoBTkjd66/JXo9iswdkVi
-        uaMq9PckdldwUYtmKnN+eqslJALyoM77mFCq3+sN0f96cFl+Lsh6ZgOrgXH4JPRwLX/fw+
-        N/upsUArXqTsu669S4r+mfxIhBez18YqekBzal9/gLz5Gjsy7AOmyPOGEQf6mogqetKdmq
-        ISKjbIsBXOZ/8/6cXGcnw0JVnDm6n15FWi11mo30tb4mP/i/NNvzbLJgvuIa+w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620169399;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ll/PI4F/FVWkSEpqvRhq/+/IfArUdPCmgxQCahW3Q3M=;
-        b=ZOtoHv13IU/mSywRedzAxnTRdphnFF8B7Do7UiUO4rjVFd53PtqHXsYUbJzGN3lnENbXiG
-        zj5CY/++GeQ1rzAg==
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>
-Cc:     "woodhouse\, Jacob Pan" <jacob.jun.pan@intel.com>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        Stephane Eranian <eranian@google.com>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>,
-        iommu@lists.linux-foundation.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Andi Kleen <andi.kleen@intel.com>,
-        David Woodhouse <dwmw2@infradead.org>
-Subject: Re: [RFC PATCH v5 5/7] iommu/vt-d: Fixup delivery mode of the HPET hardlockup interrupt
-In-Reply-To: <20210504191049.22661-6-ricardo.neri-calderon@linux.intel.com>
-References: <20210504191049.22661-1-ricardo.neri-calderon@linux.intel.com> <20210504191049.22661-6-ricardo.neri-calderon@linux.intel.com>
-Date:   Wed, 05 May 2021 01:03:18 +0200
-Message-ID: <87lf8uhzk9.ffs@nanos.tec.linutronix.de>
+        Tue, 4 May 2021 19:05:12 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620169457; h=Message-ID: References: In-Reply-To: Reply-To:
+ Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=n8UfbbC1ipgkRcc5b6HF51NbS+0PW0JqK6XaicMOO5Y=;
+ b=Vu3IkNFOeULn3kGKTuvPRVa9exTZ3QOF+biyt77y5RToCzfO3akO/VqrOdRP1wCs6NfwME9v
+ qQhCX8vtRMQYxIuTrC/JgPWmtjqvlCwk0x8C+h1ki46pJvnhTVGfhJXyK98yeHHJ4vLGvA5j
+ 1fv7jtvsg/pzuTF6OGbm74lkgIc=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 6091d2ee8807bcde1d87d2ce (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 May 2021 23:04:14
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BC60EC433F1; Tue,  4 May 2021 23:04:14 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A1CBC433D3;
+        Tue,  4 May 2021 23:04:12 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 04 May 2021 16:04:12 -0700
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     Jeffrey Hugo <quic_jhugo@quicinc.com>
+Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
+        hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org
+Subject: Re: [PATCH v1 3/6] bus: mhi: Add MMIO region length to controller
+ structure
+Organization: Qualcomm Innovation Center, Inc.
+Reply-To: bbhatt@codeaurora.org
+Mail-Reply-To: bbhatt@codeaurora.org
+In-Reply-To: <83589a09-e1a0-4611-a844-0ea52ca036b9@quicinc.com>
+References: <1618598825-18629-1-git-send-email-bbhatt@codeaurora.org>
+ <1618598825-18629-4-git-send-email-bbhatt@codeaurora.org>
+ <83589a09-e1a0-4611-a844-0ea52ca036b9@quicinc.com>
+Message-ID: <928a29dca0d2b141d4e21b7878c1c42e@codeaurora.org>
+X-Sender: bbhatt@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04 2021 at 12:10, Ricardo Neri wrote:
-> In x86 there is not an IRQF_NMI flag that can be used to indicate the
+Hi Jeff,
 
-There exists no IRQF_NMI flag at all. No architecture provides that.
-
-> delivery mode when requesting an interrupt (via request_irq()). Thus,
-> there is no way for the interrupt remapping driver to know and set
-> the delivery mode.
-
-There is no support for this today. So what?
-
-> Hence, when allocating an interrupt, check if such interrupt belongs to
-> the HPET hardlockup detector and fixup the delivery mode accordingly.
-
-What?
-
-> +		/*
-> +		 * If we find the HPET hardlockup detector irq, fixup the
-> +		 * delivery mode.
-> +		 */
-> +		if (is_hpet_irq_hardlockup_detector(info))
-> +			irq_cfg->delivery_mode = APIC_DELIVERY_MODE_NMI;
-
-Again. We are not sticking some random device checks into that
-code. It's wrong and I explained it to you before.
-
-  https://lore.kernel.org/lkml/alpine.DEB.2.21.1906161042080.1760@nanos.tec.linutronix.de/
-
-But I'm happy to repeat it again:
-
-  "No. This is horrible hackery violating all the layering which we carefully
-   put into place to avoid exactly this kind of sprinkling conditionals into
-   all code pathes.
-
-   With some thought the existing irqdomain hierarchy can be used to achieve
-   the same thing without tons of extra functions and conditionals."
-
-So the outcome of thought and using the irqdomain hierarchy is:
-
-   Replacing an hpet specific conditional in one place with an hpet
-   specific conditional in a different place.
-
-Impressive.
-
-hpet_assign_irq(...., bool nmi)
-  init_info(info)
-    ...
-    if (nmi)
-        info.flags |= X86_IRQ_ALLOC_AS_NMI;
-  
-   irq_domain_alloc_irqs(domain, 1, NUMA_NO_NODE, &info)
-     intel_irq_remapping_alloc(..., info)
-       irq_domain_alloc_irq_parents(..., info)
-         x86_vector_alloc_irqs(..., info)
-         {   
-           if (info->flags & X86_IRQ_ALLOC_AS_NMI && nr_irqs != 1)
-                  return -EINVAL;
-
-           for (i = 0; i < nr_irqs; i++) {
-             ....
-             if (info->flags & X86_IRQ_ALLOC_AS_NMI) {
-                 irq_cfg_setup_nmi(apicd);
-                 continue;
-             }
-             ...
-         }
-
-irq_cfg_setup_nmi() sets irq_cfg->delivery_mode and whatever is required
-and everything else just works. Of course this needs a few other minor
-tweaks but none of those introduces random hpet quirks all over the
-place. Not convoluted enough, right?
-
-But that solves none of other problems. Let me summarize again which
-options or non-options we have:
-
-    1) Selective IPIs from NMI context cannot work
-
-       As explained in the other thread.
-
-    2) Shorthand IPI allbutself from NMI
-    
-       This should work, but that obviously does not take the watchdog
-       cpumask into account.
-
-       Also this only works when IPI shorthand mode is enabled. See
-       apic_smt_update() for details.
-
-    3) Sending the IPIs from irq_work
-
-       This would solve the problem, but if the CPU which is the NMI
-       target is really stuck in an interrupt disabled region then the
-       IPIs won't be sent.
-
-       OTOH, if that's the case then the CPU which was processing the
-       NMI will continue to be stuck until the next NMI hits which
-       will detect that the CPU is stuck which is a good enough
-       reason to send a shorthand IPI to all CPUs ignoring the
-       watchdog cpumask.
-
-       Same limitation vs. shorthand mode as #2
-
-    4) Changing affinity of the HPET NMI from NMI
-
-       As we established two years ago that cannot work with interrupt
-       remapping
-
-    5) Changing affinity of the HPET NMI from irq_work
-
-       Same issues as #3
-
-Anything else than #2 is just causing more problems than it solves, but
-surely the NOHZ_FULL/isolation people might have opinions on this.
-
-OTOH, as this is opt-in, anything which wants a watchdog mask which is
-not the full online set, has to accept that HPET has these restrictions.
-
-And that's exactly what I suggested two years ago:
-
- https://lore.kernel.org/lkml/alpine.DEB.2.21.1906172343120.1963@nanos.tec.linutronix.de/
-
-  "It definitely would be worthwhile to experiment with that. if we
-   could use shorthands (also for regular IPIs) that would be a great
-   improvement in general and would nicely solve that NMI issue. Beware
-   of the dragons though."
-
-As a consequence of this conversation I implemented shorthand IPIs...
-
-But I haven't seen any mentioning that this has been tried, why the
-approach was not chosen or any discussion about that matter.
-
-Not that I'm surprised.
+On 2021-05-04 10:28 AM, Jeffrey Hugo wrote:
+> On 4/16/2021 12:47 PM, Bhaumik Bhatt wrote:
+>> Make controller driver specify the MMIO register region length
+>> for range checking of BHI or BHIe space. This can help validate
+>> that offsets are in acceptable memory region or not and avoid any
+>> boot-up issues due to BHI or BHIe memory accesses.
+>> 
+>> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+>> ---
+>>   include/linux/mhi.h | 2 ++
+>>   1 file changed, 2 insertions(+)
+>> 
+>> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
+>> index 944aa3a..ad53b24 100644
+>> --- a/include/linux/mhi.h
+>> +++ b/include/linux/mhi.h
+>> @@ -293,6 +293,7 @@ struct mhi_controller_config {
+>>    * @mhi_dev: MHI device instance for the controller
+>>    * @debugfs_dentry: MHI controller debugfs directory
+>>    * @regs: Base address of MHI MMIO register space (required)
+>> + * @reg_len: Length of the MHI MMIO region (required)
+>>    * @bhi: Points to base of MHI BHI register space
+>>    * @bhie: Points to base of MHI BHIe register space
+>>    * @wake_db: MHI WAKE doorbell register address
+>> @@ -375,6 +376,7 @@ struct mhi_controller {
+>>   	struct mhi_device *mhi_dev;
+>>   	struct dentry *debugfs_dentry;
+>>   	void __iomem *regs;
+>> +	size_t reg_len;
+> 
+> Didn't Mani make sure this struct was packed using pahole when things
+> were first upstreamed?  Feels like sticking this in the middle of a
+> bunch of void * entries will add some padding.  Am I wrong?
+> 
+OK. I missed out on this detail. I can move this size_t entry in v2.
+>>   	void __iomem *bhi;
+>>   	void __iomem *bhie;
+>>   	void __iomem *wake_db;
+>> 
 
 Thanks,
-
-        tglx
+Bhaumik
+---
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
+Forum,
+a Linux Foundation Collaborative Project
