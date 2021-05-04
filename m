@@ -2,165 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 340EE372FDC
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:38:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35BB2372FE3
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:45:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231887AbhEDSj3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 14:39:29 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:42901 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhEDSj1 (ORCPT
+        id S231473AbhEDSqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 14:46:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59316 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231147AbhEDSqK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 14:39:27 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id AFCC92224F;
-        Tue,  4 May 2021 20:38:29 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620153511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0ruN1QyPa5pgzTAYW8qLgIogd+nOCmxbmXWTOvYv6Kc=;
-        b=ceJkiKjZIahSfr0KijAN7qNEH/jCOpLKquM9/3RINl3bo1izvtbgLUC7s7vNjCYc3+u7LH
-        4t+PvcRX44a2hH+UseSAW4o0+iXulDQ9OTGX4RwCgMAaNMfbcgCAJyr/UVLZZS0zNh0LBT
-        xRNiHXhYPWr34v4IJ7Qpd/t1Qss/sxo=
+        Tue, 4 May 2021 14:46:10 -0400
+Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30604C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 11:45:14 -0700 (PDT)
+Received: by mail-ej1-x62d.google.com with SMTP id r9so14768023ejj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 11:45:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=NbVhIMCFX3/Rv7gGknfj4DjPNAhT1jyy7BEtshdUxfA=;
+        b=N9xM6Bk1NBWAseAORN2s9DOxf3Fq6twnoX2y0i6lWMiboT+uq/8PdPaiKnhl0Vl9Sk
+         BOeApmAA7nJfhiJMo8k7D77ZkdUnR81QgSQVjNa3TR5ffOgBU61jFDcecRAK6ORGbWp8
+         rfbiP/iCfecgUqpWL4Gc4VnX5EFaMjXCXNQnJF3k3BAp/XPROMErnWZHB0rrsIaJ0K2u
+         ipH20rUur4aT8ovXovGD6o2MJxmMQCgxNlHsHP9S+rA8trXw9KEC84ERv3xSDLbG7vD4
+         4eYgya1RPsGS6BNNgPJwE+73D4JfZzmTThUwywFTF2YN/IgGP2Q5cAw4PGb52yc+nvNx
+         41og==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=NbVhIMCFX3/Rv7gGknfj4DjPNAhT1jyy7BEtshdUxfA=;
+        b=gRvTDbl6Okc2zDlLROLT1y1ClIs+m7EZ5X3U73W+igxRIldh+JT8KhATmHkY8O/ELo
+         sbHvmSYrRFmmRlqIByISRDcEvFY6BvCNW0ssTPdTPrTzC3ZzlXHhvbZS98x6/A8VJN7M
+         se4aqN/Xz76A3k8F0ud7umPE8lS2Vo0lJdESKmW6LM8SDL/2/PJ/xz3RlVmT2RxUb6Mc
+         2+BGK21U8ymORULzfroOVAXTln38HNEMzKuOByaRyCKaEhvgGBPcfHMiNQ9PfjrgErm7
+         0WgtE6wbAjFZuM1rMWKsy0olmrGUQ6cBGY9oeqBWUXl+fFcnR1RKqUd0zjqyj6rnVyqG
+         1Qvg==
+X-Gm-Message-State: AOAM531AddfEtMdlMW2cBEHN1Qv33AaaXDSfjDKXoQu86Lgspq58yrs8
+        8Xwo5jjc4Jp5Hwnk1g0mJ3F5pnVWmlKnveOT2gg=
+X-Google-Smtp-Source: ABdhPJyL1F/F0cIowY5BgY+sCzN06aktYN1M8TCokPWxDC48r3XBpQiezqj52lg6w+qZ3JYBwRDcZork07pte8DJZoo=
+X-Received: by 2002:a17:906:ae0a:: with SMTP id le10mr23592854ejb.86.1620153912945;
+ Tue, 04 May 2021 11:45:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 04 May 2021 20:38:29 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     xiaoliang.yang_1@nxp.com, Arvid.Brodin@xdin.com,
-        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
-        allan.nielsen@microchip.com, andre.guedes@linux.intel.com,
-        claudiu.manoil@nxp.com, colin.king@canonical.com,
-        davem@davemloft.net, idosch@mellanox.com,
-        ivan.khoronzhuk@linaro.org, jiri@mellanox.com,
-        joergen.andreasen@microchip.com, leoyang.li@nxp.com,
-        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
-        michael.chan@broadcom.com, mingkai.hu@nxp.com,
-        netdev@vger.kernel.org, po.liu@nxp.com, saeedm@mellanox.com,
-        vinicius.gomes@intel.com, vladimir.oltean@nxp.com,
-        yuehaibing@huawei.com
-Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for TAS
- config
-In-Reply-To: <20210504181833.w2pecbp2qpuiactv@skbuf>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
- <20210504170514.10729-1-michael@walle.cc>
- <20210504181833.w2pecbp2qpuiactv@skbuf>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <c7618025da6723418c56a54fe4683bd7@walle.cc>
-X-Sender: michael@walle.cc
+References: <e4r4g4R-yjH.A.CJE.0pVkgB@appolonius> <20210504183009.GV6564@kitsune.suse.cz>
+In-Reply-To: <20210504183009.GV6564@kitsune.suse.cz>
+From:   Adrien Grassein <adrien.grassein@gmail.com>
+Date:   Tue, 4 May 2021 20:45:01 +0200
+Message-ID: <CABkfQAHfjfBFqnVPzg1w5JFOErr=AsLpQgwzwpUJ2Uc_-cmD_w@mail.gmail.com>
+Subject: Re: ERROR: modpost: "drm_display_mode_to_videomode"
+ [drivers/gpu/drm/bridge/lontium-lt8912b.ko] undefined!
+To:     =?UTF-8?Q?Michal_Such=C3=A1nek?= <msuchanek@suse.de>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Vladimir,
+Hello,
 
-Am 2021-05-04 20:18, schrieb Vladimir Oltean:
-> On Tue, May 04, 2021 at 07:05:14PM +0200, Michael Walle wrote:
->> Hi,
->> 
->> > ALWAYS_GUARD_BAND_SCH_Q bit in TAS config register is descripted as
->> > this:
->> > 	0: Guard band is implemented for nonschedule queues to schedule
->> > 	   queues transition.
->> > 	1: Guard band is implemented for any queue to schedule queue
->> > 	   transition.
->> >
->> > The driver set guard band be implemented for any queue to schedule queue
->> > transition before, which will make each GCL time slot reserve a guard
->> > band time that can pass the max SDU frame. Because guard band time could
->> > not be set in tc-taprio now, it will use about 12000ns to pass 1500B max
->> > SDU. This limits each GCL time interval to be more than 12000ns.
->> >
->> > This patch change the guard band to be only implemented for nonschedule
->> > queues to schedule queues transition, so that there is no need to reserve
->> > guard band on each GCL. Users can manually add guard band time for each
->> > schedule queues in their configuration if they want.
->> 
->> 
->> As explained in another mail in this thread, all queues are marked as
->> scheduled. So this is actually a no-op, correct? It doesn't matter if
->> it set or not set for now. Dunno why we even care for this bit then.
-> 
-> It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the available
-> throughput when set.
+I think this is self-evident but could you please send the config to confir=
+m?
 
-Ahh, I see now. All queues are "scheduled" but the guard band only 
-applies
-for "non-scheduled" -> "scheduled" transitions. So the guard band is 
-never
-applied, right? Is that really what we want?
+Thanks,
 
->> > Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
->> > ---
->> >  drivers/net/dsa/ocelot/felix_vsc9959.c | 8 ++++++--
->> >  1 file changed, 6 insertions(+), 2 deletions(-)
->> >
->> > diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
->> > index 789fe08cae50..2473bebe48e6 100644
->> > --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
->> > +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
->> > @@ -1227,8 +1227,12 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
->> >  	if (taprio->num_entries > VSC9959_TAS_GCL_ENTRY_MAX)
->> >  		return -ERANGE;
->> >
->> > -	ocelot_rmw(ocelot, QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port) |
->> > -		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
->> > +	/* Set port num and disable ALWAYS_GUARD_BAND_SCH_Q, which means set
->> > +	 * guard band to be implemented for nonschedule queues to schedule
->> > +	 * queues transition.
->> > +	 */
->> > +	ocelot_rmw(ocelot,
->> > +		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port),
->> >  		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM_M |
->> >  		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
->> >  		   QSYS_TAS_PARAM_CFG_CTRL);
->> 
->> Anyway, I don't think this the correct place for this:
->>  (1) it isn't per port, but a global bit, but here its done per port.
-> 
-> I don't understand. According to the documentation, selecting the port
-> whose time-aware shaper you are configuring is done through
-> QSYS::TAS_PARAM_CFG_CTRL.PORT_NUM.
-
-According to the LS1028A RM:
-
-   PORT_NUM
-   Specifies the port number to which the TAS_PARAMS register 
-configurations
-   (CFG_REG_1 to CFG_REG_5, TIME_INTERVAL and GATE_STATE) need to be 
-applied.
-
-I guess this work together with CONFIG_CHANGE and applies the mentions 
-registers
-in an atomic way (or at a given time). There is no mention of the
-ALWAYS_GUARD_BAND_SCH_Q bit nor the register TAS_PARAM_CFG_CTRL.
-
-But the ALWAYS_GUARD_BAND_SCH_Q mention its "Global configuration". That
-together with the fact that it can't be read back (unless I'm missing
-something), led me to the conclusion that this bit is global for the 
-whole
-switch. I may be wrong.
-
-But in any case, (2) is more severe IMHO.
-
->>  (2) rmw, I presume is read-modify-write. and there is one bit 
->> CONFIG_CHAGE
->>      which is set by software and cleared by hardware. What happens if 
->> it
->> 	 will be cleared right after we read it. Then it will be set again, 
->> no?
->> 
->> So if we really care about this bit, shouldn't this be moved to switch
->> initialization then?
-> 
-> May I know what drew your attention to this patch? Is there something 
-> wrong?
-
--michael
+Le mar. 4 mai 2021 =C3=A0 20:30, Michal Such=C3=A1nek <msuchanek@suse.de> a=
+ =C3=A9crit :
+>
+> Hello,
+>
+> I get errors about missing symbol in the lontium-lt8912b module.
+>
+> Is the problem self-evident or do you need the config as well?
+>
+> I don't need the driver for anything, it was just auto-enabled because
+> it's new and the change has not been reviewed.
+>
+> Thanks
+>
+> Michal
+> >
+> > Last output:
+> >   WRAP    arch/powerpc/boot/zImage.maple
+> >   WRAP    arch/powerpc/boot/zImage.pseries
+> > make[2]: *** Deleting file 'modules-only.symvers'
+> >   MODPOST modules-only.symvers
+> > ERROR: modpost: "drm_display_mode_to_videomode" [drivers/gpu/drm/bridge=
+/lontium-lt8912b.ko] undefined!
+> > make[2]: *** [../scripts/Makefile.modpost:150: modules-only.symvers] Er=
+ror 1
+> > make[1]: *** [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12.0.13670.g=
+5e321ded302d/linux-5.12-13670-g5e321ded302d/Makefile:1770: modules] Error 2
+> > make: *** [../Makefile:215: __sub-make] Error 2
+> > error: Bad exit status from /var/tmp/rpm-tmp.q1oSIp (%build)
