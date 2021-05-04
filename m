@@ -2,68 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6963A372F17
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:43:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BC3372F18
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:44:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhEDRov (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:44:51 -0400
-Received: from alexa-out-sd-01.qualcomm.com ([199.106.114.38]:55953 "EHLO
-        alexa-out-sd-01.qualcomm.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230331AbhEDRot (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:44:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=quicinc.com; i=@quicinc.com; q=dns/txt; s=qcdkim;
-  t=1620150234; x=1651686234;
-  h=subject:to:cc:references:from:message-id:date:
-   mime-version:in-reply-to:content-transfer-encoding;
-  bh=U3GLipCjgI2eLHosYx9PUnpP0j7sShIr3djY0YdLDcI=;
-  b=MdJYqpq3H/OTeoQ1ScKPmjlDHQhDw6GrTvsQKiWmeOIR/N13eMw8K0dR
-   +I8wx1K4EILg1mVYw4WHhNZSXeli49olCtfqBusOSQ/Pm63FmBOBS2flS
-   IauqTsYgRd9Z1vWC5uYOfhDBcdGNvorSekj6QbI0g/lvVMhgqtRg0qdZh
-   Y=;
-Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
-  by alexa-out-sd-01.qualcomm.com with ESMTP; 04 May 2021 10:43:54 -0700
-X-QCInternal: smtphost
-Received: from nasanexm03e.na.qualcomm.com ([10.85.0.48])
-  by ironmsg-SD-alpha.qualcomm.com with ESMTP/TLS/AES256-SHA; 04 May 2021 10:43:54 -0700
-Received: from [10.226.59.216] (10.80.80.8) by nasanexm03e.na.qualcomm.com
- (10.85.0.48) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Tue, 4 May 2021
- 10:43:53 -0700
-Subject: Re: [PATCH v8 3/9] bus: mhi: core: Improvements to the channel
- handling state machine
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        <manivannan.sadhasivam@linaro.org>
-CC:     <linux-arm-msm@vger.kernel.org>, <hemantk@codeaurora.org>,
-        <linux-kernel@vger.kernel.org>, <carl.yin@quectel.com>,
-        <naveen.kumar@quectel.com>, <loic.poulain@linaro.org>
-References: <1617311778-1254-1-git-send-email-bbhatt@codeaurora.org>
- <1617311778-1254-4-git-send-email-bbhatt@codeaurora.org>
-From:   Jeffrey Hugo <quic_jhugo@quicinc.com>
-Message-ID: <770e6e03-905f-887a-2f32-19a2eb9e3cbd@quicinc.com>
-Date:   Tue, 4 May 2021 11:43:52 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S231944AbhEDRpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:45:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40056 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230331AbhEDRph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 13:45:37 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9249C61166;
+        Tue,  4 May 2021 17:44:39 +0000 (UTC)
+Date:   Tue, 4 May 2021 18:44:37 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Steven Price <steven.price@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: Re: [PATCH v11 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
+Message-ID: <YJGIBTor+blelKKT@arm.com>
+References: <20210416154309.22129-1-steven.price@arm.com>
+ <20210416154309.22129-6-steven.price@arm.com>
+ <20210427175844.GB17872@arm.com>
+ <340d35c2-46ed-35ea-43fa-e5cb64c27230@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1617311778-1254-4-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.80.80.8]
-X-ClientProxiedBy: nasanexm03d.na.qualcomm.com (10.85.0.91) To
- nasanexm03e.na.qualcomm.com (10.85.0.48)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <340d35c2-46ed-35ea-43fa-e5cb64c27230@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/2021 3:16 PM, Bhaumik Bhatt wrote:
-> Improve the channel handling state machine such that all commands
-> go through a common function and a validation process to ensure
-> that the state machine is not violated in any way and adheres to
-> the MHI specification. Using this common function allows MHI to
-> eliminate some unnecessary debug messages and code duplication.
+On Thu, Apr 29, 2021 at 05:06:07PM +0100, Steven Price wrote:
+> On 27/04/2021 18:58, Catalin Marinas wrote:
+> > On Fri, Apr 16, 2021 at 04:43:08PM +0100, Steven Price wrote:
+> > > diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+> > > index 24223adae150..2b85a047c37d 100644
+> > > --- a/arch/arm64/include/uapi/asm/kvm.h
+> > > +++ b/arch/arm64/include/uapi/asm/kvm.h
+> > > @@ -184,6 +184,20 @@ struct kvm_vcpu_events {
+> > >   	__u32 reserved[12];
+> > >   };
+> > > +struct kvm_arm_copy_mte_tags {
+> > > +	__u64 guest_ipa;
+> > > +	__u64 length;
+> > > +	union {
+> > > +		void __user *addr;
+> > > +		__u64 padding;
+> > > +	};
+> > > +	__u64 flags;
+> > > +	__u64 reserved[2];
+> > > +};
+[...]
+> > Maybe add the two reserved
+> > values to the union in case we want to store something else in the
+> > future.
 > 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> ---
+> I'm not sure what you mean here. What would the reserved fields be unioned
+> with? And surely they are no longer reserved in that case?
 
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+In case you want to keep the structure size the same for future
+expansion and the expansion only happens via the union, you'd add some
+padding in there just in case. We do this for struct siginfo with an
+_si_pad[] array in the union.
+
+-- 
+Catalin
