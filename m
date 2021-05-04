@@ -2,89 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 663233727FC
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:18:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5234F372802
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 11:20:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230166AbhEDJTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 05:19:09 -0400
-Received: from mga04.intel.com ([192.55.52.120]:63075 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230158AbhEDJTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 05:19:07 -0400
-IronPort-SDR: mxWGmA0n1XCdf2m4OJQI+/o9Ce3xfdQHNnaeACLdO9a/I3xAOwHfAn2rpPcrFej1QE+F2PK/bQ
- 5SkrTpvEPucw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9973"; a="195884067"
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="195884067"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 02:18:00 -0700
-IronPort-SDR: 7draSFrfvY/hi9a8M9XFlwwgRXE1qfj2CvQILS/v7WyYJkAJ8oSaPm5EuEcdH+6i7wDqYGwWcB
- KAWKm7gjPL2Q==
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="396062620"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 02:17:58 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1ldrBj-009VMz-Qd; Tue, 04 May 2021 12:17:55 +0300
-Date:   Tue, 4 May 2021 12:17:55 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Yicong Yang <yangyicong@hisilicon.com>,
-        Wei Xu <xuwei5@hisilicon.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Dmitry Osipenko <digetx@gmail.com>, linux-i2c@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] i2c: I2C_HISI should depend on ACPI
-Message-ID: <YJERQ8WYOvR+kucp@smile.fi.intel.com>
-References: <22d124a7f12f2c8b280a9cc7f3b766351c9a8d64.1620119167.git.geert+renesas@glider.be>
+        id S229955AbhEDJVZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 05:21:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229703AbhEDJVX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 05:21:23 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 009F0C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 02:20:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=P3y2DFaDAO2518AHnPLoOuXHnOylXMn+Tq53Ow0ilZE=; b=Z86u6UVjMJU+z8lI+a7gVTfipW
+        zxs2IPPrLL/3oYz/rLcT+DqGqLMFUCRtwWRba9iNPTUnOjcNHC7G5Eg4klzYraioF3XZFGmvsXnyl
+        E4uixeSwDdJ/NObm5WD0wEbowh1EspAUuOcQCVaryUFQF7gu8GOqRdZkLU+nzgLL8PS3p+/nq9Bhj
+        oNT2NANS/5GNVV1O1zvHXL7a1XFQjOMgw2OQToMMhO5YxpPloyjKkuif5bhZ5GkerWElfutDpCHeS
+        aYthOMeG2tk+lapZEY0aTXUro4AHK+khS3qDsYDzvGDi18CHeRGma/reHhrtcDuhXOL5l7RGrAO/X
+        4BYKnF1Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldrDZ-00GO1w-Ii; Tue, 04 May 2021 09:19:52 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 901363001D0;
+        Tue,  4 May 2021 11:19:48 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 72B2820264CB3; Tue,  4 May 2021 11:19:48 +0200 (CEST)
+Date:   Tue, 4 May 2021 11:19:48 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Waiman Long <longman@redhat.com>, Ingo Molnar <mingo@redhat.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        linux-kernel@vger.kernel.org, Borislav Petkov <bp@suse.de>,
+        Ali Saidi <alisaidi@amazon.com>,
+        Steve Capper <steve.capper@arm.com>
+Subject: Re: [PATCH] locking/qrwlock: queued_write_lock_slowpath() cleanup
+Message-ID: <YJERtJD012uGlp4C@hirez.programming.kicks-ass.net>
+References: <20210426185017.19815-1-longman@redhat.com>
+ <20210427075659.GA6675@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <22d124a7f12f2c8b280a9cc7f3b766351c9a8d64.1620119167.git.geert+renesas@glider.be>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20210427075659.GA6675@willie-the-truck>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 11:06:32AM +0200, Geert Uytterhoeven wrote:
-> The HiSilicon Kunpeng I2C controller driver relies on ACPI to probe for
-> its presence.  Hence add a dependency on ACPI, to prevent asking the
-> user about this driver when configuring a kernel without ACPI firmware
-> support.
+On Tue, Apr 27, 2021 at 08:56:59AM +0100, Will Deacon wrote:
+> On Mon, Apr 26, 2021 at 02:50:17PM -0400, Waiman Long wrote:
+> > Make the code more readable by replacing the atomic_cmpxchg_acquire()
+> > by an equivalent atomic_try_cmpxchg_acquire() and change atomic_add()
+> > to atomic_or().
+> > 
+> > For architectures that use qrwlock, I do not find one that has an
+> > atomic_add() defined but not an atomic_or().  I guess it should be fine
+> > by changing atomic_add() to atomic_or().
+> > 
+> > Note that the previous use of atomic_add() isn't wrong as only one
+> > writer that is the wait_lock owner can set the waiting flag and the
+> > flag will be cleared later on when acquiring the write lock.
+> 
+> Right, there's no functional change here.
+> 
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Signed-off-by: Waiman Long <longman@redhat.com>
 
-As promised, okay from me.
+> Acked-by: Will Deacon <will@kernel.org>
+
 Thanks!
-
-> Fixes: d62fbdb99a85730a ("i2c: add support for HiSilicon I2C controller")
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
-> ---
-> v2:
->   - Drop dependency on ARCH_HISI, as this is a public IP which doesn't
->     specifically depend on ARCH_HISI.
-> ---
->  drivers/i2c/busses/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/i2c/busses/Kconfig b/drivers/i2c/busses/Kconfig
-> index b5b4e0d0ff4dd0bc..226c0b79eac030fa 100644
-> --- a/drivers/i2c/busses/Kconfig
-> +++ b/drivers/i2c/busses/Kconfig
-> @@ -647,7 +647,7 @@ config I2C_HIGHLANDER
->  
->  config I2C_HISI
->  	tristate "HiSilicon I2C controller"
-> -	depends on ARM64 || COMPILE_TEST
-> +	depends on (ARM64 && ACPI) || COMPILE_TEST
->  	help
->  	  Say Y here if you want to have Hisilicon I2C controller support
->  	  available on the Kunpeng Server.
-> -- 
-> 2.25.1
-> 
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
