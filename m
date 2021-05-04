@@ -2,128 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C976037311E
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6998A373124
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:02:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232650AbhEDUAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:00:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232615AbhEDUAG (ORCPT
+        id S232675AbhEDUDR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:03:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50409 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232582AbhEDUDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:00:06 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98E8C061574;
-        Tue,  4 May 2021 12:59:10 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id v12so10681130wrq.6;
-        Tue, 04 May 2021 12:59:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=DrWNrfi+Ew4LFUqUpxDkLKZY4953siWYFeGLtwXjn7A=;
-        b=QE+7SVJwjgYciwmKm9KJ3PY+qk14muy5KhsoBY6CxPqNYCB/3EW7hITS/9jUc+hNev
-         eC1J6uUPUJ1K8aMJZFPaedCgd0W7KOBvWVOlteC0wcOGz05FFw5VptHLgRvMxfFbWXOn
-         /lqYoLuS7wfqkDhCf71GFCG31oZOgi6OeXkslJCmvYt5PRtc2zA8KRUS+/PNI5vEntjv
-         Ni2YjnYHjt9RZggtvIfXfTm9bnPiQ9VpW/1Q7Bj0UhQd4BJSBC9DdG3FoEiLAK6mG9Ra
-         JxO5nnZ5gH65gA/mtu3gIVC6RCJ1AHsM5+9MiTcOfjku52Rv30TcR42tCOiJ0lTrLBCi
-         5Clw==
+        Tue, 4 May 2021 16:03:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620158538;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=VE7sisr51bWaASPhEsNZ/WxzuZMuCTfCXf9ed9Dm2Lw=;
+        b=P9bdSKVD92RGMQWbFhkGmorsbIQWIw6CXJ6oF4UirhGOry3Bhv5whxq6bTXVwesnDu9i2Z
+        PACBbnB7ZW/ZdfF9Z3P3apCuhZbjZ004W6G4JUvXi9+9aVD39PiVH8Axqb1ABLXppNg9pR
+        M4wXUyYZcZcVsQ3K8VvAdTjaxyuSFu4=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-295-_kuK15OsOISvx9jGq1Cwrw-1; Tue, 04 May 2021 16:02:16 -0400
+X-MC-Unique: _kuK15OsOISvx9jGq1Cwrw-1
+Received: by mail-qk1-f200.google.com with SMTP id p133-20020a37428b0000b02902de31dd8da3so8365267qka.1
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:02:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=DrWNrfi+Ew4LFUqUpxDkLKZY4953siWYFeGLtwXjn7A=;
-        b=oRJYbmItkqxdMFX68NkwEhCJiW5MmdTV3VFoNHgzqa4foIGshnKURjWeTnJ78MxN7N
-         L+DAxHlYNMz0c57hdF26yMyClnurZ1IUlktapi7JdN1EmBQ0IkShcoV1vqIHyPV1Uc34
-         x+2st6VApjKzazZeUNZlm4e7edeZAR24MdVU/kKIK3tKQQe2a2dI35apqe4q1423Wi3n
-         fvLWTrGDUOKCjlgs9ZWNqu3keoLHM31gx0PrnWvmOzUJKFluIawgHC6rS1xGaEXET9/v
-         aFLhwNiJSEqgi+oDR0ebt1ttdvBs3L/kXwtSOSUU7shbj4BHwFFaEUBEFdtuNEXJmU/5
-         gEFA==
-X-Gm-Message-State: AOAM533wCjS/lALEiF8oT6RyB/Vcy0UDy1g5kvJqF2e+nUCUvj+ZpEcE
-        2nxNZoYve9ZOQOGq/2sRmW0=
-X-Google-Smtp-Source: ABdhPJx8/T5dui/MKJ9f8IBJbNOXe96bYqrulWjqjgmOC+4G26OcBLa/GwDB3uSESgK9l9w+4GTsZg==
-X-Received: by 2002:a05:6000:186f:: with SMTP id d15mr33984740wri.400.1620158349706;
-        Tue, 04 May 2021 12:59:09 -0700 (PDT)
-Received: from [192.168.0.237] ([170.253.36.171])
-        by smtp.gmail.com with ESMTPSA id x17sm3426158wmc.11.2021.05.04.12.59.08
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=VE7sisr51bWaASPhEsNZ/WxzuZMuCTfCXf9ed9Dm2Lw=;
+        b=lQl4VQURHzwrNL4h1/8OEKwIGUtn81i9V9c+kADfhXEeky/UwLRwvBBNh7sevzg6iM
+         83N5JZtn2a2uW3J/p3nKI3MGdQFrCHSGrzNXwVFPyPwMH+F3IR9Veu/IFPNn1y5CQDUq
+         jNhkieteEw29EFFx8TaSSSn9KQFv/3cNH+wL0QxlPVI/LNTGO3qgog25sxIm+mp+Brjn
+         fgTHwsdA1iZw4KN2PAYCxz/BNiiJlXL7n1M3nGNb7UwWMin3h7YyYOBvn3haUbvEpOJC
+         jmtl6SmTObvtgy6ugGqFFAPRenBjL0ESR5HGuhLgh42mVaH6kx8ZjDjT9rUcK+ZyV/LS
+         B+6g==
+X-Gm-Message-State: AOAM530l7eIZYiQ0wbVUnRcAHPAE+QGFgoqA6r4ayvh+On8EjoSNxk2c
+        q9YsWOV83UhLEEoEfetcUfx96a56XjDh2nV+9xc3aL1KNgLtGdVFfOlTYr6SaHfPKZ1UjpQd6Z6
+        yUDhjiH1+l3PjKa0HjvYewnyv
+X-Received: by 2002:a37:8906:: with SMTP id l6mr27594724qkd.198.1620158536437;
+        Tue, 04 May 2021 13:02:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzew9UQi58ZCeX2QWSS7d98RivIluTCwTthqw1aP/iQD40qJkD8jFbyDdr63EWdkEgiv7Xbpg==
+X-Received: by 2002:a37:8906:: with SMTP id l6mr27594691qkd.198.1620158536155;
+        Tue, 04 May 2021 13:02:16 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id t6sm2442450qkh.29.2021.05.04.13.02.14
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 12:59:09 -0700 (PDT)
-Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Zack Weinberg <zackw@panix.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
+        Tue, 04 May 2021 13:02:15 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v2 1/2] mm: memcg/slab: Properly set up gfp flags for
+ objcg pointer array
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
         LKML <linux-kernel@vger.kernel.org>,
-        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
-        bpf <bpf@vger.kernel.org>,
-        Joseph Myers <joseph@codesourcery.com>,
-        David Laight <David.Laight@aculab.com>
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <20210504110519.16097-1-alx.manpages@gmail.com>
- <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
- <YJFZHW2afbAMVOmE@kroah.com> <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
- <YJFxArfp8wN3ILJb@kroah.com>
- <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
- <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
- <87r1imgu5g.fsf@oldenburg.str.redhat.com>
-From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-Message-ID: <0d9a795a-7c6a-3889-af31-2223dc216d15@gmail.com>
-Date:   Tue, 4 May 2021 21:59:06 +0200
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+References: <20210504132350.4693-1-longman@redhat.com>
+ <20210504132350.4693-2-longman@redhat.com>
+ <CALvZod438=YKZtV0qckoaMkdL1seu5PiLnvPPQyRzA0S60-TpQ@mail.gmail.com>
+Message-ID: <267501a0-f416-4058-70d3-e32eeec3d6da@redhat.com>
+Date:   Tue, 4 May 2021 16:02:14 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <87r1imgu5g.fsf@oldenburg.str.redhat.com>
+In-Reply-To: <CALvZod438=YKZtV0qckoaMkdL1seu5PiLnvPPQyRzA0S60-TpQ@mail.gmail.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Florian,
-
-On 5/4/21 9:45 PM, Florian Weimer wrote:
-> * Alejandro Colomar:
-> 
->> The thing is, in all of those threads, the only reasons to avoid
->> <stdint.h> types in the kernel (at least, the only explicitly
->> mentioned ones) are (a bit simplified, but this is the general idea of
->> those threads):
+On 5/4/21 3:37 PM, Shakeel Butt wrote:
+> On Tue, May 4, 2021 at 6:24 AM Waiman Long <longman@redhat.com> wrote:
+>> Since the merging of the new slab memory controller in v5.9, the page
+>> structure may store a pointer to obj_cgroup pointer array for slab pages.
+>> Currently, only the __GFP_ACCOUNT bit is masked off. However, the array
+>> is not readily reclaimable and doesn't need to come from the DMA buffer.
+>> So those GFP bits should be masked off as well.
 >>
->> * Possibly breaking something in such a big automated change.
->> * Namespace collision with userspace (the C standard allows defining
->>    uint32_t for nefarious purposes as long as you don't include
->>   <stdint.h>.   POSIX prohibits that, though)
->> * Uglier
-> 
-> __u64 can't be formatted with %llu on all architectures.  That's not
-> true for uint64_t, where you have to use %lu on some architectures to
-> avoid compiler warnings (and technically undefined behavior).  There are
-> preprocessor macros to get the expected format specifiers, but they are
-> clunky.  I don't know if the problem applies to uint32_t.  It does
-> happen with size_t and ptrdiff_t on 32-bit targets (both vary between
-> int and long).
-> 
+>> Do the flag bit clearing at memcg_alloc_page_obj_cgroups() to make sure
+>> that it is consistently applied no matter where it is called.
+>>
+>> Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   mm/memcontrol.c | 8 ++++++++
+>>   mm/slab.h       | 1 -
+>>   2 files changed, 8 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index c100265dc393..5e3b4f23b830 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -2863,6 +2863,13 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
+>>   }
+>>
+>>   #ifdef CONFIG_MEMCG_KMEM
+>> +/*
+>> + * The allocated objcg pointers array is not accounted directly.
+>> + * Moreover, it should not come from DMA buffer and is not readily
+>> + * reclaimable. So those GFP bits should be masked off.
+>> + */
+>> +#define OBJCGS_CLEAR_MASK      (__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
+> What about __GFP_DMA32? Does it matter? It seems like DMA32 requests
+> go to normal caches.
 
-Hmmm, that's interesting.  It looks like Linux always uses long long for 
-64 bit types, while glibc uses 'long' as long as it's possible, and only 
-uses 'long long' when necessary.  Assignment is still 100% valid both 
-ways and binary compatibility also 100% (AFAIK), given they're the same 
-length and signedness, but pointers are incompatible.  That's something 
-to note, even though in this case there are no pointers involved, so no 
-incompatibilities.  Maybe the kernel and glibc could use the same rules 
-to improve compatibility, but that's out of the scope of this.
+I included __GFP_DMA32 in my first draft patch. However, __GFP_DMA32 is 
+not considered in determining the right kmalloc_type() (patch 2), so I 
+took it out to make it consistent. I can certainly add it back.
 
-Thanks,
+Cheers,
+Longman
 
-Alex
-
-
--- 
-Alejandro Colomar
-Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
-http://www.alejandro-colomar.es/
