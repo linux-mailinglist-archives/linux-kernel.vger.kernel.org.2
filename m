@@ -2,142 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CD95372C1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:35:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555FC372C2B
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:36:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhEDOgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:36:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57972 "EHLO mail.kernel.org"
+        id S231612AbhEDOhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:37:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59088 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231126AbhEDOgN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:36:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0369B613CC;
-        Tue,  4 May 2021 14:35:18 +0000 (UTC)
+        id S231182AbhEDOhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 10:37:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D7BF610A5;
+        Tue,  4 May 2021 14:36:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620138918;
-        bh=9ZtBEC0XYgFjUhKlLdRO0G8aZQVeAPm5gU3FvbURgNI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=h0KOgursxmzw4sVUAVaDfHBs66qmCEIiCjxswvd6kqY3cj2hsRNSF3WvAwJTO286S
-         qW+XBOWKnJrcwGa20y7JomKYpbrwSzEKeku4IVjJ7edBkbRDFACKjJsWE1lq1YNURh
-         jD7exZS37Q3/EbbTz6RnB+MRoGkRdcKuf/dfUoNEqQ5WBeAFOrlkpuoo4n11V80bF0
-         CV5XGbUnfdXR+3IZ5BLSQvh6IqAmsDyB3ADLYtI81EeGYXlKWHVBmSJ1VfDjjp3XAt
-         lLoSp/muYSrSTE1u++/VRVj6rAlGteww6J6cJcSTizuKaqRyDJKV1LXSHg48RVzJih
-         tJhpXKaJwm52Q==
-Received: by mail-ej1-f46.google.com with SMTP id y7so13501590ejj.9;
-        Tue, 04 May 2021 07:35:17 -0700 (PDT)
-X-Gm-Message-State: AOAM5308EBpE77TPt44FmX4dNHQVYFikal7YzAvJFeOnuRIv+aZdye0K
-        cCytKyWczM55CGnnHLuSGmAVn1+LlF1nIUP9Qw==
-X-Google-Smtp-Source: ABdhPJwrXSHJlK+c9A8BGCApjGExqZKLfC0iqptDV3LyvQikAcUut5OrhYKxptbz6VWBzAfQFR/aPczv/DY3nVrYeYY=
-X-Received: by 2002:a17:907:161e:: with SMTP id hb30mr21030769ejc.360.1620138916277;
- Tue, 04 May 2021 07:35:16 -0700 (PDT)
+        s=k20201202; t=1620138982;
+        bh=FbzoPsiNxjhsjnPK+N6/oR3IDqDoEqDwJhfk1QDqlbQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SzQCPFzb/+UXZVq0VhM/kp1P578zmBsE+/iCFR+gziZe/8/oFL8i1tiEg4GDI5Or8
+         nYS2RRbuwARzXXmGy0qiVgmkXf2tmXTTlbEf68N8Y4BheOrxI6uKNDiKpPMAuTSA/y
+         Zlm+XGfejfYlFy5KVwJJMK5xBlagOOZV7q1I/jDSSdjPrAANmzwPozT7f6j7o6IgNw
+         AkKT6cHJofXM6BznpzLeTZnF4mcNq5dDXgHXXHI9tPQ36j4FwHwt4+qRuhHqLIhAFt
+         nJ/lQSoaks0U6GJcuAd5ZM5DL+uoureoGwTV/sgFpXoCdtbHmIX58juIj5AFbdkT/H
+         f5TnB4s2zVHUQ==
+Date:   Tue, 4 May 2021 07:36:20 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Chao Yu <yuchao0@huawei.com>
+Cc:     linux-f2fs-devel@lists.sourceforge.net,
+        linux-kernel@vger.kernel.org, chao@kernel.org,
+        Yunlei He <heyunlei@hihonor.com>
+Subject: Re: [PATCH v2] f2fs: reduce expensive checkpoint trigger frequency
+Message-ID: <YJFb5GWijGzHOAV6@google.com>
+References: <20210425011053.44436-1-yuchao0@huawei.com>
+ <YIbzwPGOJoKZvFnv@google.com>
+ <3338f2bc-6985-c1a4-9f3d-e59a474027f9@huawei.com>
 MIME-Version: 1.0
-References: <20210503144635.2297386-1-boqun.feng@gmail.com>
- <20210503144635.2297386-2-boqun.feng@gmail.com> <YJDYrn7Nt+xyHbyr@kernel.org>
-In-Reply-To: <YJDYrn7Nt+xyHbyr@kernel.org>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 4 May 2021 09:34:54 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLMAyUEZgLjiKmNL2ioTYJwj-TbTWFJmEi7pynKZHXmoQ@mail.gmail.com>
-Message-ID: <CAL_JsqLMAyUEZgLjiKmNL2ioTYJwj-TbTWFJmEi7pynKZHXmoQ@mail.gmail.com>
-Subject: Re: [RFC v2 1/7] PCI: Introduce pci_host_bridge::domain_nr
-To:     Mike Rapoport <rppt@kernel.org>, Boqun Feng <boqun.feng@gmail.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Marc Zyngier <maz@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
-        Gregory Clement <gregory.clement@bootlin.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jon Derrick <jonathan.derrick@intel.com>,
-        Sunil Muthuswamy <sunilmut@microsoft.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-hyperv@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3338f2bc-6985-c1a4-9f3d-e59a474027f9@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 12:16 AM Mike Rapoport <rppt@kernel.org> wrote:
->
-> On Mon, May 03, 2021 at 10:46:29PM +0800, Boqun Feng wrote:
-> > Currently we retrieve the PCI domain number of the host bridge from the
-> > bus sysdata (or pci_config_window if PCI_DOMAINS_GENERIC=y). Actually
-> > we have the information at PCI host bridge probing time, and it makes
-> > sense that we store it into pci_host_bridge. One benefit of doing so is
-> > the requirement for supporting PCI on Hyper-V for ARM64, because the
-> > host bridge of Hyper-V doesnt' have pci_config_window, whereas ARM64 is
-> > a PCI_DOMAINS_GENERIC=y arch, so we cannot retrieve the PCI domain
-> > number from pci_config_window on ARM64 Hyper-V guest.
-> >
-> > As the preparation for ARM64 Hyper-V PCI support, we introduce the
-> > domain_nr in pci_host_bridge, and set it properly at probing time, then
-> > for PCI_DOMAINS_GENERIC=y archs, bus domain numbers are set by the
-> > bridge domain_nr.
-> >
-> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
-> > ---
-> >  arch/arm/kernel/bios32.c              |  2 ++
-> >  arch/arm/mach-dove/pcie.c             |  2 ++
-> >  arch/arm/mach-mv78xx0/pcie.c          |  2 ++
-> >  arch/arm/mach-orion5x/pci.c           |  2 ++
-> >  arch/arm64/kernel/pci.c               |  3 +--
-> >  arch/mips/pci/pci-legacy.c            |  2 ++
-> >  arch/mips/pci/pci-xtalk-bridge.c      |  2 ++
-> >  drivers/pci/controller/pci-ftpci100.c |  2 ++
-> >  drivers/pci/controller/pci-mvebu.c    |  2 ++
-> >  drivers/pci/pci.c                     |  4 ++--
-> >  drivers/pci/probe.c                   |  7 ++++++-
-> >  include/linux/pci.h                   | 11 ++++++++---
-> >  12 files changed, 33 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
-> > index e7ef2b5bea9c..4942cd681e41 100644
-> > --- a/arch/arm/kernel/bios32.c
-> > +++ b/arch/arm/kernel/bios32.c
-> > @@ -471,6 +471,8 @@ static void pcibios_init_hw(struct device *parent, struct hw_pci *hw,
-> >                               bridge->sysdata = sys;
-> >                               bridge->busnr = sys->busnr;
-> >                               bridge->ops = hw->ops;
-> > +                             if (IS_ENABLED(CONFIG_PCI_DOMAINS_GENERIC))
-> > +                                     bridge->domain_nr = pci_bus_find_domain_nr(sys, parent);
-> >
-> >                               ret = pci_scan_root_bus_bridge(bridge);
-> >                       }
-> > diff --git a/arch/arm/mach-dove/pcie.c b/arch/arm/mach-dove/pcie.c
-> > index ee91ac6b5ebf..92eb8484b49b 100644
-> > --- a/arch/arm/mach-dove/pcie.c
-> > +++ b/arch/arm/mach-dove/pcie.c
-> > @@ -167,6 +167,8 @@ dove_pcie_scan_bus(int nr, struct pci_host_bridge *bridge)
-> >       bridge->sysdata = sys;
-> >       bridge->busnr = sys->busnr;
-> >       bridge->ops = &pcie_ops;
-> > +     if (IS_ENABLED(CONFIG_PCI_DOMAINS_GENERIC))
-> > +             bridge->domain_nr = pci_bus_find_domain_nr(sys, NULL);
->
-> The check for CONFIG_PCI_DOMAINS_GENERIC is excessive because there is a
-> stub for pci_bus_find_domain_nr().
->
-> I'm not an expert in PCI, but maybe the repeated assignment of
-> bridge->domain_nr can live in the generic code, say, in
-> pci_scan_root_bus_bridge(). E.g. it will set the domain_nr when it is zero.
+On 04/27, Chao Yu wrote:
+> On 2021/4/27 1:09, Jaegeuk Kim wrote:
+> > On 04/25, Chao Yu wrote:
+> > > We may trigger high frequent checkpoint for below case:
+> > > 1. mkdir /mnt/dir1; set dir1 encrypted
+> > > 2. touch /mnt/file1; fsync /mnt/file1
+> > > 3. mkdir /mnt/dir2; set dir2 encrypted
+> > > 4. touch /mnt/file2; fsync /mnt/file2
+> > > ...
+> > > 
+> > > Although, newly created dir and file are not related, due to
+> > > commit bbf156f7afa7 ("f2fs: fix lost xattrs of directories"), we will
+> > > trigger checkpoint whenever fsync() comes after a new encrypted dir
+> > > created.
+> > > 
+> > > In order to avoid such condition, let's record an entry including
+> > > directory's ino into global cache when we initialize encryption policy
+> > > in a checkpointed directory, and then only trigger checkpoint() when
+> > > target file's parent has non-persisted encryption policy, for the case
+> > > its parent is not checkpointed, need_do_checkpoint() has cover that
+> > > by verifying it with f2fs_is_checkpointed_node().
+> > > 
+> > > Reported-by: Yunlei He <heyunlei@hihonor.com>
+> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
+> > > ---
+> > > v2:
+> > > - fix to set ENC_DIR_INO only for encrypted directory
+> > >   fs/f2fs/f2fs.h              | 2 ++
+> > >   fs/f2fs/file.c              | 3 +++
+> > >   fs/f2fs/xattr.c             | 6 ++++--
+> > >   include/trace/events/f2fs.h | 3 ++-
+> > >   4 files changed, 11 insertions(+), 3 deletions(-)
+> > > 
+> > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> > > index b9d5317db0a7..0fe881309a20 100644
+> > > --- a/fs/f2fs/f2fs.h
+> > > +++ b/fs/f2fs/f2fs.h
+> > > @@ -246,6 +246,7 @@ enum {
+> > >   	APPEND_INO,		/* for append ino list */
+> > >   	UPDATE_INO,		/* for update ino list */
+> > >   	TRANS_DIR_INO,		/* for trasactions dir ino list */
+> > > +	ENC_DIR_INO,		/* for encrypted dir ino list */
+> > >   	FLUSH_INO,		/* for multiple device flushing */
+> > >   	MAX_INO_ENTRY,		/* max. list */
+> > >   };
+> > > @@ -1090,6 +1091,7 @@ enum cp_reason_type {
+> > >   	CP_FASTBOOT_MODE,
+> > >   	CP_SPEC_LOG_NUM,
+> > >   	CP_RECOVER_DIR,
+> > > +	CP_ENC_DIR,
+> > >   };
+> > >   enum iostat_type {
+> > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> > > index a595050c56d3..62af29ec0879 100644
+> > > --- a/fs/f2fs/file.c
+> > > +++ b/fs/f2fs/file.c
+> > > @@ -218,6 +218,9 @@ static inline enum cp_reason_type need_do_checkpoint(struct inode *inode)
+> > >   		f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+> > >   							TRANS_DIR_INO))
+> > >   		cp_reason = CP_RECOVER_DIR;
+> > > +	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+> > > +							ENC_DIR_INO))
+> > > +		cp_reason = CP_ENC_DIR;
+> > >   	return cp_reason;
+> > >   }
+> > > diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
+> > > index c8f34decbf8e..70615d504f7e 100644
+> > > --- a/fs/f2fs/xattr.c
+> > > +++ b/fs/f2fs/xattr.c
+> > > @@ -630,6 +630,7 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+> > >   			const char *name, const void *value, size_t size,
+> > >   			struct page *ipage, int flags)
+> > >   {
+> > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+> > >   	struct f2fs_xattr_entry *here, *last;
+> > >   	void *base_addr, *last_base_addr;
+> > >   	int found, newsize;
+> > > @@ -745,8 +746,9 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+> > >   			!strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT))
+> > >   		f2fs_set_encrypted_inode(inode);
+> > >   	f2fs_mark_inode_dirty_sync(inode, true);
+> > > -	if (!error && S_ISDIR(inode->i_mode))
+> > > -		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
+> > > +	if (!error && S_ISDIR(inode->i_mode) && f2fs_encrypted_file(inode) &&
+> > > +			f2fs_is_checkpointed_node(sbi, inode->i_ino))
+> > > +		f2fs_add_ino_entry(sbi, inode->i_ino, ENC_DIR_INO);
+> > 
+> > What will happen, if we need to checkpoint xattr_nid on this directory?
+> 
+> need_do_checkpoint()
+> 
+> a)	else if (!f2fs_is_checkpointed_node(sbi, F2FS_I(inode)->i_pino))
+> 		cp_reason = CP_NODE_NEED_CP;
 
-Yes. There's zero reason h/w drivers should care what the domain_nr is.
+This will change the current behavior which does checkpoint regardless of the
+parent being checkpointed. If i_pino was checkpointed but xnid wasn't, can we
+get xnid being checkpointed?
 
-There's another issue with domains you should be aware of:
-
-https://lore.kernel.org/linux-pci/20210425152155.mstuxndsoqdbdape@pali/
-
-That may need to be fixed first because deferred probing could cause
-the domain to increment each time you retry probe.
-
-Rob
+> 
+> b)	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+> 							ENC_DIR_INO))
+> 		cp_reason = CP_ENC_DIR;
+> 
+> If parent is not checkpointed, after converting parent to encrypted directory
+> and create the file in parent, fsync this file will trigger checkpoint() due
+> to a)
+> 
+> If parent is checkpointed, after converting parent to encrypted directory
+> and create the file in parent, fsync this file will trigger checkpoint() due
+> to b)
+> 
+> Am I missing any cases?
+> 
+> Thanks,
+> 
+> > 
+> > >   same:
+> > >   	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
+> > > diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+> > > index 56b113e3cd6a..ca0cf12226e9 100644
+> > > --- a/include/trace/events/f2fs.h
+> > > +++ b/include/trace/events/f2fs.h
+> > > @@ -145,7 +145,8 @@ TRACE_DEFINE_ENUM(CP_RESIZE);
+> > >   		{ CP_NODE_NEED_CP,	"node needs cp" },		\
+> > >   		{ CP_FASTBOOT_MODE,	"fastboot mode" },		\
+> > >   		{ CP_SPEC_LOG_NUM,	"log type is 2" },		\
+> > > -		{ CP_RECOVER_DIR,	"dir needs recovery" })
+> > > +		{ CP_RECOVER_DIR,	"dir needs recovery" },		\
+> > > +		{ CP_ENC_DIR,		"persist encryption policy" })
+> > >   #define show_shutdown_mode(type)					\
+> > >   	__print_symbolic(type,						\
+> > > -- 
+> > > 2.29.2
+> > .
+> > 
