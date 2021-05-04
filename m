@@ -2,80 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6FF13729F3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:17:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C0583729F6
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:17:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230306AbhEDMSM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:18:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33668 "EHLO mx2.suse.de"
+        id S230343AbhEDMSd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:18:33 -0400
+Received: from www.zeus03.de ([194.117.254.33]:37330 "EHLO mail.zeus03.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230188AbhEDMSL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:18:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A0178AE5E;
-        Tue,  4 May 2021 12:17:15 +0000 (UTC)
-Date:   Tue, 4 May 2021 14:17:13 +0200
-From:   Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Ben Dooks <ben.dooks@codethink.co.uk>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        id S230110AbhEDMSc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 08:18:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=sang-engineering.com; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=k1; bh=2yyPH8se0+nZ6UbxlCbOuNBeCyT
+        1VfdEGO0/Rfn1+qg=; b=mg0cGIDNFEcN4pT7dU/bz4dBMh0S9LiKBCzdfA/hjsK
+        +ufW3tbvlzqhIVQyLYQcVzgp2d/IR2N56shr+N/Odo1PYijxOBKOSRxur1iz+sDu
+        743jJG6gUkDAvDFQiKm/K1Cbnatdvt6vnjx5FoipsXBOsp2+4u5bXyYnCJD9VIzw
+        =
+Received: (qmail 1352815 invoked from network); 4 May 2021 14:17:35 +0200
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 4 May 2021 14:17:35 +0200
+X-UD-Smtp-Session: l3s3148p1@n3zPD4DBqIsgAwDPXxOMAJUzfx/HAvHg
+From:   Wolfram Sang <wsa+renesas@sang-engineering.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-renesas-soc@vger.kernel.org,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>, Will Deacon <will@kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Joe Perches <joe@perches.com>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-Message-ID: <20210504121713.GT6564@kitsune.suse.cz>
-References: <20210501151538.145449-1-masahiroy@kernel.org>
- <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
- <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
- <65cda2bb-1b02-6ebc-0ea2-c48927524aa0@codethink.co.uk>
- <CANiq72mk84uay--BWOLT4zF12-rat9erohKazB8SpTPoVCTX1A@mail.gmail.com>
- <20210504092225.GS6564@kitsune.suse.cz>
- <CANiq72kHwAeQ+vhFqg9tiQA-QHEK_xvP_Sro-_c5LJ2XDzjzxQ@mail.gmail.com>
+        "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: [PATCH] debugfs: only accept read attributes for blobs
+Date:   Tue,  4 May 2021 14:17:20 +0200
+Message-Id: <20210504121721.43385-1-wsa+renesas@sang-engineering.com>
+X-Mailer: git-send-email 2.30.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CANiq72kHwAeQ+vhFqg9tiQA-QHEK_xvP_Sro-_c5LJ2XDzjzxQ@mail.gmail.com>
-User-Agent: Mutt/1.11.3 (2019-02-01)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 02:09:24PM +0200, Miguel Ojeda wrote:
-> On Tue, May 4, 2021 at 11:22 AM Michal Suchánek <msuchanek@suse.de> wrote:
-> >
-> > Except it makes answering the question "Is this bug we see on this
-> > ancient system still present in upstream?" needlessly more difficult to
-> > answer.
-> 
-> Can you please provide some details? If you are talking about testing
-> a new kernel image in the ancient system "as-is", why wouldn't you
-> build it in a newer system? If you are talking about  particular
-> problems about bisecting (kernel, compiler) pairs etc., details would
-> also be welcome.
+Blobs can only be read. So, keep only 'read' file attributes because the
+others will not work and only confuse users.
 
-Yes, bisecting comes to mind. If you need to switch the userspace as
-well the bisection results are not that solid. You may not be even able
-to bisect because the workload does not exist on a new system at all.
-Crafting a minimal test case that can be forward-ported to a new system
-is not always trivial - if you understood the problem to that extent you
-might not even need to bisect it in the first place.
+Signed-off-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+---
 
-Thanks
+I was confused for a second, thinking blobs can be written to. I will
+fix the few in-kernel users doing it wrong seperately.
 
-Michal
+ fs/debugfs/file.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fs/debugfs/file.c b/fs/debugfs/file.c
+index 686e0ad28788..d6aa6e04b7af 100644
+--- a/fs/debugfs/file.c
++++ b/fs/debugfs/file.c
+@@ -890,7 +890,8 @@ static const struct file_operations fops_blob = {
+ /**
+  * debugfs_create_blob - create a debugfs file that is used to read a binary blob
+  * @name: a pointer to a string containing the name of the file to create.
+- * @mode: the permission that the file should have
++ * @mode: the read permission that the file should have (other permissions are
++ * 	  masked out)
+  * @parent: a pointer to the parent dentry for this file.  This should be a
+  *          directory dentry if set.  If this parameter is %NULL, then the
+  *          file will be created in the root of the debugfs filesystem.
+@@ -914,7 +915,7 @@ struct dentry *debugfs_create_blob(const char *name, umode_t mode,
+ 				   struct dentry *parent,
+ 				   struct debugfs_blob_wrapper *blob)
+ {
+-	return debugfs_create_file_unsafe(name, mode, parent, blob, &fops_blob);
++	return debugfs_create_file_unsafe(name, mode & S_IRUGO, parent, blob, &fops_blob);
+ }
+ EXPORT_SYMBOL_GPL(debugfs_create_blob);
+ 
+-- 
+2.30.0
+
