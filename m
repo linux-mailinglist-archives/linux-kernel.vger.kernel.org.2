@@ -2,65 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0AF372D39
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:46:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E567372D41
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231414AbhEDPr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:47:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39748 "EHLO mail.kernel.org"
+        id S231432AbhEDPtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:49:47 -0400
+Received: from msg-2.mailo.com ([213.182.54.12]:58072 "EHLO msg-2.mailo.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230401AbhEDPr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:47:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1831860BD3;
-        Tue,  4 May 2021 15:46:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620143192;
-        bh=HjWdlGi51gxgMbxhNStXncgZHq51SkoVHiNnYwf6fMM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lAPGmaSMFz8brn0DX/cZkjHNSWTlHdENIaczx9iKbXXSTNjt9oCaQF9gmqG5dfTxR
-         wKQxHtviDPxFpf+MVmQXvF2k6ByJ/QC3jT2tVF4bbIgvzvdrRJF7IiT+ndCmtTzcHX
-         AOUkg38T0mHwHJKeDl+7j7kY+S8CWep3cNC8Tjbo=
-Date:   Tue, 4 May 2021 17:46:29 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        outreachy-kernel@googlegroups.com,
-        David Kershner <david.kershner@unisys.com>,
-        sparmaintainer@unisys.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [Outreachy kernel] Re: [PATCH v7] staging: unisys: visorhba:
- Convert module from IDR to XArray
-Message-ID: <YJFsVTA/DTLvfWQG@kroah.com>
-References: <20210504133253.32269-1-fmdefrancesco@gmail.com>
- <3550993.e1xmc6yJDa@linux.local>
- <20210504140119.GH1847222@casper.infradead.org>
- <810075373.q0sU067TuV@linux.local>
+        id S230256AbhEDPtq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:49:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mailo.com; s=mailo;
+        t=1620143321; bh=i/DscfyocaLXVPs/tq8JAhNd8zHh2Pe2i8Xk7pjc6tw=;
+        h=X-EA-Auth:Date:From:To:Cc:Subject:Message-ID:References:
+         MIME-Version:Content-Type:In-Reply-To;
+        b=SaqjVcCDXUJFTlvrG+JFn/T9gKzU8LYdN88S+/1wWVpDpqks3bibcQdAu6NgTWRGE
+         I1HgCFr02pr8dPbWU2nohTDyVP2FVObN9UPrduoHja6OXrrkle5IUSbwzEy9htlOHs
+         B8adLEkja898epS1QCzZR/6Qj6Zzdy2joRq/XwW8=
+Received: by b-5.in.mailobj.net [192.168.90.15] with ESMTP
+        via ip-206.mailobj.net [213.182.55.206]
+        Tue,  4 May 2021 17:48:41 +0200 (CEST)
+X-EA-Auth: ASSLxZ0NBX1lWQ7iVfQIVWKVqHIffGnrW3jbI3eWgAd6GVbDR26vByddwu1ZsTT3EQT/jNXpwthNMtJMvt7VVMiZx+p7/4S8
+Date:   Tue, 4 May 2021 21:18:36 +0530
+From:   Deepak R Varma <drv@mailo.com>
+To:     Sakari Ailus <sakari.ailus@linux.intel.com>
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: media: atomisp: pci: reposition braces as per
+ coding style
+Message-ID: <YJFs1KspK2aapNSk@dU2104>
+References: <YIwk3KbVGRPJwKa4@dU2104>
+ <20210430163327.GI3@paasikivi.fi.intel.com>
+ <YIw4pUzTOHV6E9WZ@dU2104>
+ <20210430171241.GJ3@paasikivi.fi.intel.com>
+ <YIw7vsy+bYzFIQC0@dU2104>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <810075373.q0sU067TuV@linux.local>
+In-Reply-To: <YIw7vsy+bYzFIQC0@dU2104>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 04:38:11PM +0200, Fabio M. De Francesco wrote:
+On Fri, Apr 30, 2021 at 10:48:12PM +0530, Deepak R Varma wrote:
+> On Fri, Apr 30, 2021 at 08:12:41PM +0300, Sakari Ailus wrote:
+> > Hi Deepak,
+> > 
+> > On Fri, Apr 30, 2021 at 10:34:37PM +0530, Deepak R Varma wrote:
+> > > On Fri, Apr 30, 2021 at 07:33:27PM +0300, Sakari Ailus wrote:
+> > > > Hi Deepak,
+> > > > 
+> > > > If you're touching all these lines, I might do a little more. Please see
+> > > > the comments below.
+> > > > 
+> > > Hello Sakari,
+> > > I can definitely include other changes, but then it will be many different
+> > > types of changes into a single patch. Will that be okay?
+> > > 
+> > > I was planning to address one issue per patch as I think the volume of
+> > > change is going to be high.  I mentioned that in the notes section of the patch
+> > > message.
+> > 
+> > I think I'd split the patch into smaller chunks if the result becomes too
+> > big but I don't think it's necessary yet.
+> > 
+> > Splitting different kinds of simple cleanups into several patches takes
+> > longer time to review when they're touching the same piece of code. As the
+> > chunks in these patches have virtually no dependencies to other chunks,
+> > it's fine to do several kinds of cleanups at once.
 > 
-> As far as (1) and (2) are regarded, I've been told that when one modifies code 
-> she/he should not diverge from the style of the subsystem/driver maintainer/
-> author. If you look at visorhba_main.c, you'll find a lot of unnecessary 
-> 'else' and 'if (success)'...
+> Okay, sure. That sounds good to me. I will include other related
+> improvements in the same area and send split patch set accordingly. I will
+> include this patch in the patch set.
+
+Hello Sakari and all,
+I have sent in the changes as suggested in a patch set with 5 individual
+patches. I will wait for your review and feedback before I work on other
+files.
+
+Thank you,
+deepak.
+
 > 
-> So what are the general rules one should follow when changing (trivial) Linux 
-> code? Please note that my question has no other (hidden) purposes than 
-> learning to work properly with the Linux community and to reduce the 
-> unnecessary noise consequential to submitting a high number of patch versions.
+> Thank you for the guidance.
+> deepak.
+> 
+> > 
+> > -- 
+> > Kind regards,
+> > 
+> > Sakari Ailus
 
-"trivial" changes should only be done in subsystems that welcome it.
 
-drivers/staging/ welcomes it, anything other than that, you need to ask
-the maintainer.
-
-thanks,
-
-greg k-h
