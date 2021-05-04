@@ -2,118 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B281372E72
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A22D3372E76
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231956AbhEDRG0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:06:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36772 "EHLO
+        id S231959AbhEDRGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:06:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhEDRGZ (ORCPT
+        with ESMTP id S231964AbhEDRG2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:06:25 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52424C061574;
-        Tue,  4 May 2021 10:05:30 -0700 (PDT)
-Received: from mwalle01.fritz.box (unknown [IPv6:2a02:810c:c200:2e91:fa59:71ff:fe9b:b851])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id AEC572224F;
-        Tue,  4 May 2021 19:05:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620147925;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=P86yv15f5mdm2USC11n29XyVm3m0pHGOL8lHax5UfAo=;
-        b=Fi1Uy/OfiVn/WtcWORzbuNlvppU4ai3v/qDfJlNJBckhlDecjfVcfpyJc3sj2SXidmVhPj
-        ht8G4bRsQVTp3YSO2PgHA0w58vhaJwua9fvjmT9lSu4mpO8xu2X8rJJuC8k3Hy2ry6jPzm
-        meV87A6vQxvBIpjazxkqzSpP6hzjS6k=
-From:   Michael Walle <michael@walle.cc>
-To:     xiaoliang.yang_1@nxp.com
-Cc:     Arvid.Brodin@xdin.com, UNGLinuxDriver@microchip.com,
-        alexandre.belloni@bootlin.com, allan.nielsen@microchip.com,
-        andre.guedes@linux.intel.com, claudiu.manoil@nxp.com,
-        colin.king@canonical.com, davem@davemloft.net, idosch@mellanox.com,
-        ivan.khoronzhuk@linaro.org, jiri@mellanox.com,
-        joergen.andreasen@microchip.com, leoyang.li@nxp.com,
-        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
-        michael.chan@broadcom.com, mingkai.hu@nxp.com,
-        netdev@vger.kernel.org, po.liu@nxp.com, saeedm@mellanox.com,
-        vinicius.gomes@intel.com, vladimir.oltean@nxp.com,
-        yuehaibing@huawei.com, michael@walle.cc,
-        Vladimir Oltean <olteanv@gmail.com>
-Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for TAS config
-Date:   Tue,  4 May 2021 19:05:14 +0200
-Message-Id: <20210504170514.10729-1-michael@walle.cc>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
+        Tue, 4 May 2021 13:06:28 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1776C061763
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:05:33 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id q2so8292147pfh.13
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:05:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=+bVzPOaiGSpT9fPHodrAVpiteIe5e+Ae3qWhGcxKKAU=;
+        b=kcQjh8UyCfHGDomwiT3CD9fJ4Uv6ynvJ7yVxBkSenSh8/4pBwX/ns1e1cqz5XvCt/J
+         /X4r5KTma3914e56sEW0xfNH34HnbCTLcPEzZ9r7is5j1IwB1+pAPOPz5gZE99F7gCvA
+         cmmJJlz3vPjEvTlna0gqbOGhjr6wyeKFP62zoJqbJ8weQppTiyYcolnZchUtGL8d2C3k
+         0eSZ8sCHZHpI6ZSH5PnWrhBEPlvPaaQvYHF2rl8AORhX2pHVCzlOY9wpSdRX115Q262l
+         vDWP34a0V73sWmZYN06/h8xDekYUalDNee9IxYJvQLy9a3OtYWkM12efk+irjATRNXQZ
+         fGew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=+bVzPOaiGSpT9fPHodrAVpiteIe5e+Ae3qWhGcxKKAU=;
+        b=JiBRUHWNa+FQ0IcPoVPIuXizF7wezgOquOpa4i7e5+FQ99dv31a9zDLRkLyhpcQvYN
+         ixZRTuvIGya6WMGnIL5iXEJOaq3DsMU6oEKJjvx8hqU4bITrWM5KHJwd40G/bWqrtnQe
+         wuBspn12eyGMxNkUcWYbdvuudZT6hfVNbXGq8PB9i6x4OVNxIeSNFSXgqdZ0wzB4U52U
+         p4GWfAaNyZD5NI6rb/5naPEzqu17lkc9GbkAY3KrX0CIiO4n/rwnzUELc8LdWvqrIPo9
+         19fGZtiJkPEOrf7sAH4jKoGDQXFzWYTLtUQK6H+A7eIAb6gtb2BAv33t0QBWqPi0Cn+s
+         BUuA==
+X-Gm-Message-State: AOAM5320LnRVi2AsWvySfNnmUoBU23LJ1/jBIi2KlazL6jyBIJDReESP
+        HE2JbS9m8LvXepY32A72XXB9WfFa69sfrQ==
+X-Google-Smtp-Source: ABdhPJwrzlIkkQtOwdmep59o++iyB2NlituPGYpI1BN/yYBGd2NSCYsW91QD+1JkXKZU8+AcR+A8qQ==
+X-Received: by 2002:a63:5c41:: with SMTP id n1mr2160215pgm.333.1620147933177;
+        Tue, 04 May 2021 10:05:33 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id x9sm13848080pfq.197.2021.05.04.10.05.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 10:05:32 -0700 (PDT)
+Date:   Tue, 4 May 2021 11:05:30 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH] rpmsg: char: Remove useless includes
+Message-ID: <20210504170530.GD1734971@xps15>
+References: <20210429080639.6379-1-arnaud.pouliquen@foss.st.com>
+ <20210503174238.GD1699665@xps15>
+ <b2f6b9ca-9dc2-920b-941d-175779bc1034@foss.st.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <b2f6b9ca-9dc2-920b-941d-175779bc1034@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hi Arnaud,
 
-> ALWAYS_GUARD_BAND_SCH_Q bit in TAS config register is descripted as
-> this:
-> 	0: Guard band is implemented for nonschedule queues to schedule
-> 	   queues transition.
-> 	1: Guard band is implemented for any queue to schedule queue
-> 	   transition.
+[...]
+
 > 
-> The driver set guard band be implemented for any queue to schedule queue
-> transition before, which will make each GCL time slot reserve a guard
-> band time that can pass the max SDU frame. Because guard band time could
-> not be set in tc-taprio now, it will use about 12000ns to pass 1500B max
-> SDU. This limits each GCL time interval to be more than 12000ns.
+> I started by this one and then I got carried away tested the other include...
+> You are right, I just don't follow her the first rule of the "submit checklist"
 > 
-> This patch change the guard band to be only implemented for nonschedule
-> queues to schedule queues transition, so that there is no need to reserve
-> guard band on each GCL. Users can manually add guard band time for each
-> schedule queues in their configuration if they want.
-
-
-As explained in another mail in this thread, all queues are marked as
-scheduled. So this is actually a no-op, correct? It doesn't matter if
-it set or not set for now. Dunno why we even care for this bit then.
-
-> Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-> ---
->  drivers/net/dsa/ocelot/felix_vsc9959.c | 8 ++++++--
->  1 file changed, 6 insertions(+), 2 deletions(-)
+> "If you use a facility then #include the file that defines/declares that
+> facility. Don’t depend on other header files pulling in ones that you use."
 > 
-> diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> index 789fe08cae50..2473bebe48e6 100644
-> --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-> +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> @@ -1227,8 +1227,12 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
->  	if (taprio->num_entries > VSC9959_TAS_GCL_ENTRY_MAX)
->  		return -ERANGE;
->  
-> -	ocelot_rmw(ocelot, QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port) |
-> -		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
-> +	/* Set port num and disable ALWAYS_GUARD_BAND_SCH_Q, which means set
-> +	 * guard band to be implemented for nonschedule queues to schedule
-> +	 * queues transition.
-> +	 */
-> +	ocelot_rmw(ocelot,
-> +		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port),
->  		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM_M |
->  		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
->  		   QSYS_TAS_PARAM_CFG_CTRL);
+> That said I just have a doubt for uapi/linux/rpmsg.h that will be include
+> by rpmsg.h[2], as these includes are part of the rpmsg framework API, should we
+> keep both, considering the rule as strict?
 
-Anyway, I don't think this the correct place for this:
- (1) it isn't per port, but a global bit, but here its done per port.
- (2) rmw, I presume is read-modify-write. and there is one bit CONFIG_CHAGE
-     which is set by software and cleared by hardware. What happens if it
-	 will be cleared right after we read it. Then it will be set again, no?
+I red the last paragraph several times I can't understand what you are
+trying to convey.  Please rephrase, provide more context or detail exactly where
+you think we have a problem.
 
-So if we really care about this bit, shouldn't this be moved to switch
-initialization then?
+Thanks,
+Mathieu
 
--michael
+
+> 
+> [1] https://www.kernel.org/doc/html/latest/process/submit-checklist.html
+> [2]
+> https://patchwork.kernel.org/project/linux-remoteproc/patch/20210311140413.31725-3-arnaud.pouliquen@foss.st.com/
+> 
+> Thanks,
+> Arnaud
+> 
+> > 
+> > Thanks,
+> > Mathieu
+> > 
+> >>  
+> >>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
+> >>  
+> >> -- 
+> >> 2.17.1
+> >>
