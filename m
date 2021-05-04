@@ -2,109 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5E7C37252F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 06:42:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC6837253A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 06:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229806AbhEDEnX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 00:43:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40166 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229715AbhEDEnV (ORCPT
+        id S229773AbhEDE6U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 00:58:20 -0400
+Received: from wnew1-smtp.messagingengine.com ([64.147.123.26]:46269 "EHLO
+        wnew1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229724AbhEDE6S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 00:43:21 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF7DC06174A
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 21:42:26 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id g7-20020a9d5f870000b02902a5831ad705so7142481oti.10
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 21:42:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=11Nzt21PGgG7EY1Zm8LPZ6J+bFs0Dr0fBy2u4R0XE/M=;
-        b=eMDxI/J5JXLmmKxTyVqOM4RrALRwtyMIm7+ZVgBG5CshybG7FGuLkpX5f0siwUVD/Y
-         HoFLI68bUSlqWKu34+h4BOf+B3SG6I0D93xctqrZUs8i1JCfWEqKvdEQ8AyQH2KDklLw
-         8hkXj1MLvgoLX3BWvOfcXqJ54hj5dHndfr7ic=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=11Nzt21PGgG7EY1Zm8LPZ6J+bFs0Dr0fBy2u4R0XE/M=;
-        b=CpF0bE/8IN0qhKe+7nAJb2v2J92pCGlos9hGi709huwP2Lu9EVVdaw2X71OJIrVr09
-         a8XKrNuzaPh8sNPOT9cnohdmq86S8D6eqsZnH6MoNu4dVAQHIi8nsjIqCgsLcW0zWdNZ
-         MBu9uXjQ7b0xccVGNWtP7vkPsz/ejBUgPnKvx4bBARghAeZEtxWdj7nCGzfiiMMca5Kk
-         4Sa/rcnjcCKRM8n0RjxaA8+35QGm/kI2tXa/uq44wTt2N496Jg//24ejSC6mzvyokvw2
-         CrB0Y1ZEKHizckFxRuA9SAXvLvkYsf8Bx3l3v2aFDsXwEC/Jd21rknIJ9J7prvwgga7L
-         bNyg==
-X-Gm-Message-State: AOAM532qIEv+vSx3G32eqs7EgXqr5vyLCZP48NCFzshxeXEi3oywpmK2
-        lprqn8Dk3hHfQb0wb4XxTKmrofTSL89/sbqvbQc4vQ==
-X-Google-Smtp-Source: ABdhPJxCezCWHhNH1naSml5SlQdlnfQJrJxORDMFSaHhNEWOV1BLyNy+3WNmkZObBEETMxJdHv/XU00MVUB6ixxxRwc=
-X-Received: by 2002:a9d:5e19:: with SMTP id d25mr17278425oti.308.1620103346067;
- Mon, 03 May 2021 21:42:26 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Mon, 3 May 2021 21:42:25 -0700
-MIME-Version: 1.0
-In-Reply-To: <1619048258-8717-4-git-send-email-khsieh@codeaurora.org>
-References: <1619048258-8717-1-git-send-email-khsieh@codeaurora.org> <1619048258-8717-4-git-send-email-khsieh@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Mon, 3 May 2021 21:42:25 -0700
-Message-ID: <CAE-0n50EW8evqt1NtbjEbSS71CzSAzXR21-FvCrTmvsaj+GGHQ@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] drm/msm/dp: check main link status before start
- aux read
-To:     Kuogee Hsieh <khsieh@codeaurora.org>, robdclark@gmail.com,
-        sean@poorly.run
-Cc:     abhinavk@codeaurora.org, aravindh@codeaurora.org, airlied@linux.ie,
-        daniel@ffwll.ch, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
+        Tue, 4 May 2021 00:58:18 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id 69C2F1CEF;
+        Tue,  4 May 2021 00:57:23 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Tue, 04 May 2021 00:57:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=SsZnSIMoGPyH7u6t6vj4jPYRyQ5gfYi
+        BhdMheE37CI8=; b=CyYE9dLZ48XgkfdVejydQeVfPPZ5IkyIXJZ2jgMVP2UObdh
+        vXML/5aSrkZdRoqi3I19JIJ9Asp40be+yPRh0GuAfbrUCHKkTfiH7hi9It5GSOTO
+        uvhx3SYEQJbZq5S6wr6SJNzxhpyaW5Xn3bTA6ZZUwTOhNEOeJmBouuby+EtJr2Hv
+        +ccaqJcqT8aAiF+bsKjo+ymyr8v46mz6NBFk2aX1N0+bgxrHk+2zvUtsc8y81duu
+        5o66kz0QpsYR7Td2cggnO91qijo7G4hTkG1xMZfHCJsUFqbx44jVBbxQNTNwFnyZ
+        0oqEXgL0ypL1g7og4ygUMv4j/mywBah4uSUd7/A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=SsZnSI
+        MoGPyH7u6t6vj4jPYRyQ5gfYiBhdMheE37CI8=; b=CE9RxnUrjtUnZC2LT1930B
+        uCDXqKXShB8bX3WNw9LolnKOEf7EO4V48MkGrQ74+9J5atrAS0tKFXGK+/mQKb/e
+        1qsIlxgyqvj/ANcx9R/wgZw24bkRSUs57i0kQkhAzEPHGn3BippwCSsTz4UXxaDs
+        fCC/x7Gqh9mI7IyCBETdYEsghfMZ2nSex4ypbJsPEPWFBRe8bX0DXMqSPOKYcSmd
+        HBh0aMa6OCVeLnpnWqrHCwk5neyWdQBLMrMdTBJP7kgwKR7oqXyvQsU5ZTDQ/V4a
+        MbjzlnNU1zEthSsiL+VPN4Kyabc/4B6mYVTccHlkKgL+3Vo6LxLe/ftQ/j+zjlSQ
+        ==
+X-ME-Sender: <xms:MdSQYH58tcURsx7VerhqqNUz6xdqm7s9V0f4GK9AMHaQvDWL_cZoEQ>
+    <xme:MdSQYM5RPYz4P7X-GybvBBxSjHxN91wgwgdqQvdjoQGXSXtAMsCKvOoV3KuzA_fnk
+    pmGGAGOk1chSYj5Yw>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefhedgledtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepvefgvdevfeelfeejgeegfeevjeejhfdvtdeffeejgeetueelgfekudek
+    teeiteejnecuffhomhgrihhnpehrshhtrdgttgdpkhgvrhhnvghlrdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvgifsegr
+    jhdrihgurdgruh
+X-ME-Proxy: <xmx:MdSQYOdA49JK3hy--HJlzc5JGuFU41tjBPPcyWXrN6C5cI381DecCA>
+    <xmx:MdSQYIKY6WK6KCLto0aLEqwls8XdREFkgVMoCx8MI8EELEKaiLED9Q>
+    <xmx:MdSQYLJ_loxPstTw4puNre7Edw_2b5OGPK_GiWWYq2DvnmNBzsDIsQ>
+    <xmx:M9SQYC8xkJJAvEpOKcfM8bMy0jgEExp2xGQijjRLPdrxb0nz5Wy7Mny7TF0>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 7A20EA00079; Tue,  4 May 2021 00:57:21 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-442-g5daca166b9-fm-20210428.001-g5daca166
+Mime-Version: 1.0
+Message-Id: <e899781c-304c-4494-a544-e3950e928e55@www.fastmail.com>
+In-Reply-To: <20210503163409.31944-1-rdunlap@infradead.org>
+References: <20210503163409.31944-1-rdunlap@infradead.org>
+Date:   Tue, 04 May 2021 14:27:01 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Randy Dunlap" <rdunlap@infradead.org>,
         linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Cc:     "kbuild test robot" <lkp@intel.com>, linux-aspeed@lists.ozlabs.org,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Stefan M Schaeckeler" <sschaeck@cisco.com>,
+        "Borislav Petkov" <bp@suse.de>, linux-edac@vger.kernel.org,
+        "Arnd Bergmann" <arnd@kernel.org>
+Subject: Re: [PATCH] EDAC: aspeed: print resource_size_t using %pa
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Kuogee Hsieh (2021-04-21 16:37:37)
-> Maybe when the cable is disconnected the DP phy should be shutdown and
-> some bit in the phy could effectively "cut off" the aux channel and then
-> NAKs would start coming through here in the DP controller I/O register
-> space. This patch have DP aux channel read/write to return NAK immediately
-> if DP controller connection status is in unplugged state.
->
-> Changes in V4:
-> -- split this patch as stand alone patch
->
-> Signed-off-by: Kuogee Hsieh <khsieh@codeaurora.org>
+
+
+On Tue, 4 May 2021, at 02:04, Randy Dunlap wrote:
+> Fix build warnings for using "%x" to print resource_size_t in 2 places.
+> resource_size_t can be either of u32 or u64. We have a special format
+> "%pa" for printing a resource_size_t, which is the same as a phys_addr_t.
+> See Documentation/core-api/printk-formats.rst.
+> 
+>   CC      drivers/edac/aspeed_edac.o
+> ../drivers/edac/aspeed_edac.c: In function 'init_csrows':
+> ../drivers/edac/aspeed_edac.c:257:21: warning: format '%x' expects 
+> argument of type 'unsigned int', but argument 4 has type 
+> 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> ../drivers/edac/aspeed_edac.c:257:21: warning: format '%x' expects 
+> argument of type 'unsigned int', but argument 5 has type 
+> 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> 
+> Fixes: 9b7e6242ee4e ("EDAC, aspeed: Add an Aspeed AST2500 EDAC driver")
+> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Troy Lee <troy_lee@aspeedtech.com>
+> Cc: Stefan Schaeckeler <sschaeck@cisco.com>
+> Cc: linux-edac@vger.kernel.org
+> Cc: Borislav Petkov <bp@alien8.de>
+> Cc: Borislav Petkov <bp@suse.de>
+> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> Cc: Tony Luck <tony.luck@intel.com>
+> Cc: linux-aspeed@lists.ozlabs.org
 > ---
->  drivers/gpu/drm/msm/dp/dp_aux.c | 5 +++++
->  1 file changed, 5 insertions(+)
->
-> diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-> index 7c22bfe..fae3806 100644
-> --- a/drivers/gpu/drm/msm/dp/dp_aux.c
-> +++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-> @@ -343,6 +343,11 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
->
->         mutex_lock(&aux->mutex);
->
-> +       if (!dp_catalog_link_is_connected(aux->catalog)) {
-> +               ret = -ETIMEDOUT;
-> +               goto unlock_exit;
-> +       }
-> +
->         aux->native = msg->request & (DP_AUX_NATIVE_WRITE & DP_AUX_NATIVE_READ);
->
->         /* Ignore address only message */
+> Found in linux-next but applies to mainline.
 
-Can the code check for aux timeouts? So instead of blindly completing
-'aux->comp' we would do the transfer, and then dp_aux_cmd_fifo_tx()
-would check to see if the completion was completed from the irq
-handler because of a timeout or a nack, etc. I think the code is
-probably racy, given that dp_aux_isr() is called from irq context, and
-aux_error_num is set from the irq context and tested in non-irq context.
-This code needs a spinlock and then to check the isr bits to figure out
-if it should tell the upper layers that the address was wrong, or there
-was a nack or a timeout, etc.
+> 
+>  drivers/edac/aspeed_edac.c |    8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
+> 
+> --- linux-next-20210503.orig/drivers/edac/aspeed_edac.c
+> +++ linux-next-20210503/drivers/edac/aspeed_edac.c
+> @@ -234,6 +234,7 @@ static int init_csrows(struct mem_ctl_in
+>  	u32 nr_pages, dram_type;
+>  	struct dimm_info *dimm;
+>  	struct device_node *np;
+> +	resource_size_t rsize;
+>  	struct resource r;
+>  	u32 reg04;
+>  	int rc;
+> @@ -254,11 +255,12 @@ static int init_csrows(struct mem_ctl_in
+>  		return rc;
+>  	}
+>  
+> -	dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> -		r.start, resource_size(&r), PAGE_SHIFT);
+> +	rsize = resource_size(&r);
+> +	dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> r.start=0x%pa, resource_size=0x%pa, PAGE_SHIFT macro=0x%x\n",
+> +		&r.start, &rsize, PAGE_SHIFT);
 
-I don't think we need to check the link to see if it is connected, just
-look at the irq bits to see if the response was bad and letting higher
-layers know that should quickly cut off the transactions.
+Arnd posted a fix a few days back that feels more intuitive, though 
+probably could have cleaned up the grammar:
+
+https://lore.kernel.org/lkml/20210421135500.3518661-1-arnd@kernel.org/
+
+Andrew
