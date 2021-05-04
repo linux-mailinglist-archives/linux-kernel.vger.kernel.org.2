@@ -2,275 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2DEC372DC5
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10D45372DCB
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:14:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhEDQO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:14:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53216 "EHLO
+        id S231908AbhEDQOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 12:14:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53354 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231827AbhEDQNz (ORCPT
+        with ESMTP id S231690AbhEDQO0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:13:55 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29CD8C06138D
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 09:12:56 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id p12so11877981ljg.1
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 09:12:56 -0700 (PDT)
+        Tue, 4 May 2021 12:14:26 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43AE6C061348
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 09:13:31 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id g7-20020a9d5f870000b02902a5831ad705so8669572oti.10
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 09:13:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=xyxXmo/h/dfhEx4WikBIp+kaYZCmt7Npv/WLTwwg9eE=;
-        b=B/8bDkEWNw9lcVCx0PtUoNt7PqWM7Aqe72ivfqWbaPh/eRdVEWPCMbeBiURN09vtPv
-         eaLYG1oyLwLPVMdxeXNeKPyW05JULHoQwN3dH6snp0j1X19uxyrqUwx6HaVGZBoMD9xu
-         nFmncr3Kqjzwlcv+yI2wJkwzznLVr11iLd/je9Z99ASGJ4voNXdXTYGdTFevulbCj1z9
-         fxiI3xiIaZktMJ9K2TUEi7421g/Zer+60ExIyh+lQH5B/govXJXoc51+OAFt02P/PtUW
-         j5NIOgCMyKbHK7fcgHnLaMOdwTCSqJnuHfZCe/mKb19n8PFe4YugrbhJVmK8W6qWGXBN
-         iS/A==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3wRKaltWU+JFnZ/hG1tIlEiOTvi8Xhm6Fr3GYe0oO4M=;
+        b=jA2rD37U0ZLBrvXb2KILcxRKLjTuQZ1y6nhFpadkHkfxqkO3O43zPUhyWarbRFz+Nn
+         VaQ3WO7HWHIKEZ1lrivt2csRxyY0WMht8Zj0lCVT32oEqw58xf+zOvINjXiX9veZxtm5
+         Oc+uLHs2Oh4LKO/pKydiVQKOjOZlj5sd7xNpbER201yVT5vGarBqM8uk8TfX+KvvnFTX
+         8jVDv+qKqv3O7jvqZMGqCZpwOPYYzqomI7fI1rNGgdHC5RqzthR5SlkFWA1yFM9Lbvcl
+         Qp5i2quIN/XHUEm+XZJdVQ3LqbwsTTgFJTOUTOoI0DyEO8pwcABbAsF+4q9XcCcNYVP8
+         u3kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=xyxXmo/h/dfhEx4WikBIp+kaYZCmt7Npv/WLTwwg9eE=;
-        b=cU980XRjkvD8gXEQwfLzPdTS8Py1RD2bqBGN0GUmOUySDhw0/YApG27QTiGPxwX15l
-         mOKP4xDAkptUFcUMGxRrWXAHdomsGle5tlkADXXeIPQIq/lMybYTqYH6LPYBby8VH2ie
-         ZDwMbuBaigpgCBLUOkxVMVmsqOUONpm4L8AmVVxlwm+8HiOG0VcFUqSVv6sU1tlAJTnT
-         vCs2LMSfm2kUvkR/PrAjVouAdRBSrDZwyL0WgsblnkTWWQtjpxLa0kLJ6OtswbV6eoHV
-         c0ZfljLepD8cuGE5qkXHq7qNIaHZwgt6P+g1bp7SlO1ZcOyH8kuINcSUhgHdionMXaIF
-         vXmw==
-X-Gm-Message-State: AOAM531YRalicp7NWVdNitchSsdjSNCAYWcbVMELrtYus4jNFP+Rq7XK
-        kk8j+jCsyXk8h/S1lkYSv9d/hg==
-X-Google-Smtp-Source: ABdhPJzDqhFP0LwJ32oqCrgAn+o3dx2QbgOiI/z/xlyYdNewtvYHfnYoBbUK3lz6+2cgvEPXHgckJA==
-X-Received: by 2002:a2e:a544:: with SMTP id e4mr18016480ljn.452.1620144774558;
-        Tue, 04 May 2021 09:12:54 -0700 (PDT)
-Received: from localhost.localdomain (h-98-128-180-197.NA.cust.bahnhof.se. [98.128.180.197])
-        by smtp.gmail.com with ESMTPSA id s20sm164193ljs.116.2021.05.04.09.12.52
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3wRKaltWU+JFnZ/hG1tIlEiOTvi8Xhm6Fr3GYe0oO4M=;
+        b=tBIJubl0atxmWrUErzLUwvwcpIM+Z4MvFin23R30tjJZMeZdjPagJDocFGTF1HII9w
+         js1y3uQy0hSn1LLiK9Fxb9U4ETrPv5mF+bpkQ4CpG1Po7C81OZEUhOeavsSGsaVasdZ2
+         FiixUSsNDj+tJ/nkl9P22tighqnPjgXQR08xhuB/IGBu4ugm2P9u/cevY1lbf5VF0Zlu
+         nYS5W3DdEWACIphZSUfWcdPavyr3dC2sWnjEWHJaIJn/oX8ZhkVbblvr+3SFM//n3Puv
+         KUFa8mVLCPnTYe82S9wDMt/WfwgEDjJsBCKpzv5+KblEhXxWHYpq4YN7ulgM3GcKWF6p
+         iq6Q==
+X-Gm-Message-State: AOAM531K2EAw7ZxMXRGYF5j3tqnJjXpdehLe4A+rvl0xzdSa7qooccOZ
+        87ZjLQ2vrYsuIjDKSZT1CJGwpw==
+X-Google-Smtp-Source: ABdhPJy+Wbpig9dvXrYjUC7ApSdIhLL8bzonH2lnEjnjc21qQR5xN3P6IwXPzDbdvpZzsYl/HHbbrA==
+X-Received: by 2002:a05:6830:2086:: with SMTP id y6mr19982990otq.356.1620144810641;
+        Tue, 04 May 2021 09:13:30 -0700 (PDT)
+Received: from yoga (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
+        by smtp.gmail.com with ESMTPSA id z9sm856289otj.44.2021.05.04.09.13.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 09:12:53 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 11/11] mmc: core: Add support for Power Off Notification for SD cards
-Date:   Tue,  4 May 2021 18:12:22 +0200
-Message-Id: <20210504161222.101536-12-ulf.hansson@linaro.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210504161222.101536-1-ulf.hansson@linaro.org>
-References: <20210504161222.101536-1-ulf.hansson@linaro.org>
+        Tue, 04 May 2021 09:13:30 -0700 (PDT)
+Date:   Tue, 4 May 2021 11:13:27 -0500
+From:   Bjorn Andersson <bjorn.andersson@linaro.org>
+To:     Pavel Machek <pavel@ucw.cz>,
+        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>
+Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Martin Botka <martin.botka1@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
+Message-ID: <20210504161327.GF2484@yoga>
+References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
+ <20201021201224.3430546-3-bjorn.andersson@linaro.org>
+ <20201029181357.GE26053@duo.ucw.cz>
+ <YIn50NW+Pimqfsih@builder.lan>
+ <20210429211223.GA5480@amd>
+ <20210429212920.GB2484@yoga>
+ <YJFridMwwMV1K98m@mobian>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJFridMwwMV1K98m@mobian>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rather than only deselecting the SD card via a CMD7, before we cut power to
-it at system suspend, at runtime suspend or at shutdown, let's add support
-for a graceful power off sequence via enabling the SD Power Off
-Notification feature.
+On Tue 04 May 10:43 CDT 2021, Pavel Machek wrote:
 
-Note that, the Power Off Notification feature was added in the SD spec
-v4.x, which is several years ago. However, it's still a bit unclear how
-often the SD card vendors decides to implement support for it. To validate
-these changes a Sandisk Extreme PRO A2 64GB has been used, which seems to
-work nicely.
+> Hi!
+> 
+> > > > One such example is the laptop in front of me, which has 3 channels
+> > > > wired to an RGB LED and 1 channel wired as a backlight control signal
+> > > > (i.e. using pwm-backlight).  Another example is a devboard where the
+> > > > 4 channels are wired to 4 LEDs.
+> > > 
+> > > Ok, so this is actually important. In this case you should have PWM
+> > > layer, exporting PWMs, and then rgb-LED driver that takes three of
+> > > those PWMs and turns them into LED, no?
+> > > 
+> > > And ... surprise ... that is likely to help other people, as LEDs
+> > > connected to PWMs are quite common.
+> > > 
+> > > Hmm.?
+> > > 
+> > > If you can't do this for some reason, you should probably explain in
+> > > the changelog, because this is going to be FAQ.
+> > > 
+> > 
+> > This is exactly what the downstream implementation does and in the case
+> > of a solid color LED this works fine.
+> > 
+> > But the hardware has a shared chunk of memory where you can write
+> > duty-cycle values, then for each PWM channel you can specify the
+> > start/stop index and pace for the PWM to read and update the configured
+> > duty-cycle. This is how the hardware implements pattern support.
+> 
+> Ok.
+> 
+> > So downstream they have (last time I looked at the code) an addition in
+> > the PWM API where the LED driver can inform the PWM driver part about
+> > the indices to use. Naturally I don't think that's a good idea.
+> 
+> Dunno. Is it bad idea?
+> 
+> pattern support for other PWMs (vibration?) seems useful, too. Yes, it
+> means more discussion and extending PWMs properly..
+> 
 
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
----
- drivers/mmc/core/sd.c  | 136 ++++++++++++++++++++++++++++++++++++++++-
- include/linux/mmc/sd.h |   1 +
- 2 files changed, 134 insertions(+), 3 deletions(-)
+@Thierry, @Lee, @Uwe, are you interested in extending the PWM api with
+some sort of support for specifying an array of "duty_cycle" and some
+property for how fast the hardware should cycle through those duty
+cycles? (And I need a bit/bool to indicate if the pattern should run
+once of be repeated)
 
-diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index 702d7c1a0aec..760aa86bd54d 100644
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -66,6 +66,13 @@ static const unsigned int sd_au_size[] = {
- 		__res & __mask;						\
- 	})
- 
-+#define SD_POWEROFF_NOTIFY_TIMEOUT_MS 2000
-+
-+struct sd_busy_data {
-+	struct mmc_card *card;
-+	u8 *reg_buf;
-+};
-+
- /*
-  * Given the decoded CSD structure, decode the raw CID to our CID structure.
-  */
-@@ -996,6 +1003,66 @@ static bool mmc_sd_card_using_v18(struct mmc_card *card)
- 	       (SD_MODE_UHS_SDR50 | SD_MODE_UHS_SDR104 | SD_MODE_UHS_DDR50);
- }
- 
-+static int sd_write_ext_reg(struct mmc_card *card, u8 fno, u8 page, u16 offset,
-+			    u8 reg_data)
-+{
-+	struct mmc_host *host = card->host;
-+	struct mmc_request mrq = {};
-+	struct mmc_command cmd = {};
-+	struct mmc_data data = {};
-+	struct scatterlist sg;
-+	u8 *reg_buf;
-+
-+	reg_buf = kzalloc(512, GFP_KERNEL);
-+	if (!reg_buf)
-+		return -ENOMEM;
-+
-+	mrq.cmd = &cmd;
-+	mrq.data = &data;
-+
-+	/*
-+	 * Arguments of CMD49:
-+	 * [31:31] MIO (0 = memory).
-+	 * [30:27] FNO (function number).
-+	 * [26:26] MW - mask write mode (0 = disable).
-+	 * [25:18] page number.
-+	 * [17:9] offset address.
-+	 * [8:0] length (0 = 1 byte).
-+	 */
-+	cmd.arg = fno << 27 | page << 18 | offset << 9;
-+
-+	/* The first byte in the buffer is the data to be written. */
-+	reg_buf[0] = reg_data;
-+
-+	data.flags = MMC_DATA_WRITE;
-+	data.blksz = 512;
-+	data.blocks = 1;
-+	data.sg = &sg;
-+	data.sg_len = 1;
-+	sg_init_one(&sg, reg_buf, 512);
-+
-+	cmd.opcode = SD_WRITE_EXTR_SINGLE;
-+	cmd.flags = MMC_RSP_R1 | MMC_CMD_ADTC;
-+
-+	mmc_set_data_timeout(&data, card);
-+	mmc_wait_for_req(host, &mrq);
-+
-+	kfree(reg_buf);
-+
-+	/*
-+	 * Note that, the SD card is allowed to signal busy on DAT0 up to 1s
-+	 * after the CMD49. Although, let's leave this to be managed by the
-+	 * caller.
-+	 */
-+
-+	if (cmd.error)
-+		return cmd.error;
-+	if (data.error)
-+		return data.error;
-+
-+	return 0;
-+}
-+
- static int sd_read_ext_reg(struct mmc_card *card, u8 fno, u8 page,
- 			   u16 offset, u16 len, u8 *reg_buf)
- {
-@@ -1446,21 +1513,84 @@ static void mmc_sd_detect(struct mmc_host *host)
- 	}
- }
- 
-+static int sd_can_poweroff_notify(struct mmc_card *card)
-+{
-+	return card->ext_power.feature_support & SD_EXT_POWER_OFF_NOTIFY;
-+}
-+
-+static int sd_busy_poweroff_notify_cb(void *cb_data, bool *busy)
-+{
-+	struct sd_busy_data *data = cb_data;
-+	struct mmc_card *card = data->card;
-+	int err;
-+
-+	/*
-+	 * Read the status register for the power management function. It's at
-+	 * one byte offset and is one byte long. The Power Off Notification
-+	 * Ready is bit 0.
-+	 */
-+	err = sd_read_ext_reg(card, card->ext_power.fno, card->ext_power.page,
-+			      card->ext_power.offset + 1, 1, data->reg_buf);
-+	if (err) {
-+		pr_warn("%s: error %d reading status reg of PM func\n",
-+			mmc_hostname(card->host), err);
-+		return err;
-+	}
-+
-+	*busy = !(data->reg_buf[0] & 0x1);
-+	return 0;
-+}
-+
-+static int sd_poweroff_notify(struct mmc_card *card)
-+{
-+	struct sd_busy_data cb_data;
-+	u8 *reg_buf;
-+	int err;
-+
-+	reg_buf = kzalloc(512, GFP_KERNEL);
-+	if (!reg_buf)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Set the Power Off Notification bit in the power management settings
-+	 * register at 2 bytes offset.
-+	 */
-+	err = sd_write_ext_reg(card, card->ext_power.fno, card->ext_power.page,
-+			       card->ext_power.offset + 2, 0x1);
-+	if (err) {
-+		pr_warn("%s: error %d writing Power Off Notify bit\n",
-+			mmc_hostname(card->host), err);
-+		goto out;
-+	}
-+
-+	cb_data.card = card;
-+	cb_data.reg_buf = reg_buf;
-+	err = __mmc_poll_for_busy(card, SD_POWEROFF_NOTIFY_TIMEOUT_MS,
-+				  &sd_busy_poweroff_notify_cb, &cb_data);
-+
-+out:
-+	kfree(reg_buf);
-+	return err;
-+}
-+
- static int _mmc_sd_suspend(struct mmc_host *host)
- {
-+	struct mmc_card *card = host->card;
- 	int err = 0;
- 
- 	mmc_claim_host(host);
- 
--	if (mmc_card_suspended(host->card))
-+	if (mmc_card_suspended(card))
- 		goto out;
- 
--	if (!mmc_host_is_spi(host))
-+	if (sd_can_poweroff_notify(card))
-+		err = sd_poweroff_notify(card);
-+	else if (!mmc_host_is_spi(host))
- 		err = mmc_deselect_cards(host);
- 
- 	if (!err) {
- 		mmc_power_off(host);
--		mmc_card_set_suspended(host->card);
-+		mmc_card_set_suspended(card);
- 	}
- 
- out:
-diff --git a/include/linux/mmc/sd.h b/include/linux/mmc/sd.h
-index 43bfc5c39ad4..6727576a8755 100644
---- a/include/linux/mmc/sd.h
-+++ b/include/linux/mmc/sd.h
-@@ -31,6 +31,7 @@
- 
-   /* class 11 */
- #define SD_READ_EXTR_SINGLE      48   /* adtc [31:0]             R1  */
-+#define SD_WRITE_EXTR_SINGLE     49   /* adtc [31:0]             R1  */
- 
- /* OCR bit definitions */
- #define SD_OCR_S18R		(1 << 24)    /* 1.8V switching request */
--- 
-2.25.1
+The (current) use case relates to being able to alter the duty cycle
+over time to create "effects" such as pulsing an LED.
 
+> > Additionally, representing this as individual PWM channels means we're
+> > loosing the grouping that now comes from the description of multicolor
+> > LEDs, which serves the basis for synchronizing the pattern traversal
+> > between the involved channels.
+> 
+> Yes, keeping grouping would be nice, but perhaps pattern API for PWMs
+> can do that too?
+> 
+
+I don't think it's viable to push this concept down to the PWM core, the
+LED framework needs to know which channels are grouped as LEDs (and
+which aren't) and the thing that drives the hardware needs to know which
+channels to sync with when starting the pattern. So afaict we'd have to
+describe these properties in two places - or ignore some properties of
+the problem.
+
+> You can have solid-color-only driver now, with patterns being added
+> as discussion with PWM people progresses...
+> 
+
+I don't see how that would work, the overall design of the driver and
+the devicetree binding depends heavily on this fundamental decision.
+
+Regards,
+Bjorn
