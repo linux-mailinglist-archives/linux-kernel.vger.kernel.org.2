@@ -2,181 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C447372BDF
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:19:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A2A6372BE5
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231538AbhEDOUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:20:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55790 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbhEDOUI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:20:08 -0400
-Received: from mail-qk1-x729.google.com (mail-qk1-x729.google.com [IPv6:2607:f8b0:4864:20::729])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9454CC061574;
-        Tue,  4 May 2021 07:19:13 -0700 (PDT)
-Received: by mail-qk1-x729.google.com with SMTP id k127so8623066qkc.6;
-        Tue, 04 May 2021 07:19:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:from:to:cc
-         :subject:references:in-reply-to;
-        bh=2v+PY/DAMA8vmNn3TQ91BPzBhWhF+ZptksoCplGwUkY=;
-        b=k9yxjde5Zhy2Nx3fhzIfcXJrAJRjBKOY2SNJrfAmVkrteFQmEPmbtZOo3CiYFglUu2
-         PGRxpAAOeslqTIcMOwvaEu0xBg9Icmfo8D/eI/01LUHoz+npy/NDfEaU3lvi3lQEVkJm
-         BWabGq6/a7h6AALjWlISalSRlpQEW5+aqGxLD/nNqM8qxgimWJ7I42G6AJ+x0YKtAs2p
-         mhxU4l+1f/12KV1ZnuCqX7zoSoZfHDsNxH3hr9bM/XRSy8bl1apKlM6cVdFtqBuqo/2z
-         RNrhl5LyLUqLPqsl79B+PzlMHXoLVaKHUL8jow/GuMuEpgTox+MCsFHgkHPNiiB0dAby
-         glqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:from:to:cc:subject:references:in-reply-to;
-        bh=2v+PY/DAMA8vmNn3TQ91BPzBhWhF+ZptksoCplGwUkY=;
-        b=lFvjvVsUxxI41bqCafXpHHJHUcI1Z46uou86z84Q5NYHhE83gGMXXnSlgVocn7wtMi
-         E0CQVwr6VYtxI95kJfjH/maQZD64WL8FwmyvVJaVEeGkXWV/0/lt6sGjtsmw5hqMU9mv
-         GyW9I+HWMi8uMWiQQf3aK4dzlPSqpV68ejZFl2jfuPbiwH+bnIyOxhHzQE5fW6QAwv9T
-         Lxi2C4/Woz/TtcwzAZL864OW/af0JE6b1vjmwRuaqvhe7Op7eOhaqN5Sl0NABdjkCWFY
-         vVrxyGcEofAi62BDsmkqEq700kZkfIPqNiTvf57vBCDhYfAJ8WwI0OhkxWrH8IMohLcZ
-         1ohQ==
-X-Gm-Message-State: AOAM532sB0IEHxbw/PuMX4lfUVNVoJu/S3/eBhXmzAPtC3RxwBU/pJty
-        lEmhP3v0AWmtuqFvGGeembY=
-X-Google-Smtp-Source: ABdhPJw2wUPWLyMxgXKRCzMrKl4BPGyIYq8EVs3xGCwGIJZhOpOmI7bc24cvpu6lBFMTZqUSTEXrug==
-X-Received: by 2002:a37:e94:: with SMTP id 142mr24864109qko.49.1620137952871;
-        Tue, 04 May 2021 07:19:12 -0700 (PDT)
-Received: from localhost (198-48-202-89.cpe.pppoe.ca. [198.48.202.89])
-        by smtp.gmail.com with ESMTPSA id s25sm10574790qkj.34.2021.05.04.07.19.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 07:19:11 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Tue, 04 May 2021 10:19:10 -0400
-Message-Id: <CB4IYZR8TSJ5.3UUOMXJHTHYD4@shaak>
-From:   "Liam Beguin" <liambeguin@gmail.com>
-To:     "Liam Beguin" <liambeguin@gmail.com>, <mturquette@baylibre.com>,
-        <sboyd@kernel.org>
-Cc:     <julia.lawall@inria.fr>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <robh+dt@kernel.org>
-Subject: Re: [PATCH v5 0/3] add support for the lmk04832
-References: <20210423004057.283926-1-liambeguin@gmail.com>
-In-Reply-To: <20210423004057.283926-1-liambeguin@gmail.com>
+        id S231561AbhEDOVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:21:05 -0400
+Received: from mga11.intel.com ([192.55.52.93]:8795 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231393AbhEDOVE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 10:21:04 -0400
+IronPort-SDR: Dl+3wmrQTGKQe1LSktxUyMlLjxVjrBAjRjgTlp4lf+7Hz/U36bQFiAl6QINunNaDc6f1k9wvso
+ 5CxQGuo7vbhQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="194850852"
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="194850852"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 07:19:53 -0700
+IronPort-SDR: qkkek3nBW/8NP07FnHrQYnmKgZfSSISUdWCRAkwIrf5d8HXsXJ2e3cGRvxkM0XktglkpQAVGCE
+ lLuF3QqPa6Wg==
+X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
+   d="scan'208";a="406127072"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 07:19:49 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1ldvtq-009YfE-5z; Tue, 04 May 2021 17:19:46 +0300
+Date:   Tue, 4 May 2021 17:19:46 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc:     Timo =?iso-8859-1?B?U2NobPzfbGVy?= <schluessler@krause.de>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        linux-can@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Tim Harvey <tharvey@gateworks.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: Null pointer dereference in mcp251x driver when resuming from
+ sleep
+Message-ID: <YJFYAisb9xFUt15W@smile.fi.intel.com>
+References: <d031629f-4a28-70cd-4f27-e1866c7e1b3f@kontron.de>
+ <YI/+OP4z787Tmd05@smile.fi.intel.com>
+ <YI//GqCv0nkvtQ54@smile.fi.intel.com>
+ <YJAAn+H9nQl425QN@smile.fi.intel.com>
+ <66f07d90-e459-325c-8d5d-9f255a0d8c8f@kontron.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <66f07d90-e459-325c-8d5d-9f255a0d8c8f@kontron.de>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu Apr 22, 2021 at 8:40 PM EDT, Liam Beguin wrote:
-> From: Liam Beguin <lvb@xiphos.com>
->
-> Hi,
->
-> The LMK04832 is an ultra-high performance clock conditioner with JEDEC
-> JESD204B support and is also pin compatible with the LMK0482x family of
-> devices.
->
-> This driver adds initial support to configure the LMK04832 clocks using
-> the clock framework.
->
-> This has been tested on a system using JESD204B subclass 1.
->
-> At the moment, the VCO rate has to be set manually from the devicetree
-> and a dclk (or sclk) rate change isn't propagated to the VCO
-> automatically.
->
-> Changes since v1:
-> - add yaml devicetree documentation,
-> - add links to datasheet,
-> - use {u8,u16,u32} instead of Uint_ variants,
-> - drop redundant debugfs code,
-> - use a pointer to device_info instead of struct copy,
-> - add of_device_id table,
-> - add support for SYSREF digital delay and JESD204B subclass 1
->
-> Changes since v2:
-> - fix dt-bindings documentation, apologies for the broken build
-> - fix property vendor prefixes
-> - split dt-bindings into a separate patch
->
-> Changes since v3:
-> - add missing properties in dt-bindings
->
-> Changes since v3:
-> - address coccicheck comments
-> - update dt-bindings
->
+On Tue, May 04, 2021 at 03:54:00PM +0200, Frieder Schrempf wrote:
+> On 03.05.21 15:54, Andy Shevchenko wrote:
+> > On Mon, May 03, 2021 at 04:48:10PM +0300, Andy Shevchenko wrote:
+> > > On Mon, May 03, 2021 at 04:44:24PM +0300, Andy Shevchenko wrote:
+> > > > On Mon, May 03, 2021 at 03:11:40PM +0200, Frieder Schrempf wrote:
+> > > > > Hi,
+> > > > > 
+> > > > > with kernel 5.10.x and 5.12.x I'm getting a null pointer dereference
+> > > > > exception from the mcp251x driver when I resume from sleep (see trace
+> > > > > below).
+> > > > > 
+> > > > > As far as I can tell this was working fine with 5.4. As I currently don't
+> > > > > have the time to do further debugging/bisecting, for now I want to at least
+> > > > > report this here.
+> > > > > 
+> > > > > Maybe there is someone around who could already give a wild guess for what
+> > > > > might cause this just by looking at the trace/code!?
+> > > > 
+> > > > Does revert of c7299fea6769 ("spi: Fix spi device unregister flow") help?
+> > > 
+> > > Other than that, bisecting will take not more than 3-4 iterations only:
+> > > % git log --oneline v5.4..v5.10.34 -- drivers/net/can/spi/mcp251x.c
+> > > 3292c4fc9ce2 can: mcp251x: fix support for half duplex SPI host controllers
+> > > e0e25001d088 can: mcp251x: add support for half duplex controllers
+> > > 74fa565b63dc can: mcp251x: Use readx_poll_timeout() helper
+> > > 2d52dabbef60 can: mcp251x: add GPIO support
+> > > cfc24a0aa7a1 can: mcp251x: sort include files alphabetically
+> > > df561f6688fe treewide: Use fallthrough pseudo-keyword
+> > 
+> > > 8ce8c0abcba3 can: mcp251x: only reset hardware as required
+> > 
+> > And only smoking gun by analyzing the code is the above. So, for the first I
+> > would simply check before that commit and immediately after (15-30 minutes of
+> > work). (I would do it myself if I had a hardware at hand...)
+> 
+> Thanks for pointing that out. Indeed when I revert this commit it works fine
+> again.
+> 
+> When I look at the change I see that queue_work(priv->wq,
+> &priv->restart_work) is called in two cases, when the interface is brought
+> up after resume and now also when the device is only powered up after resume
+> but the interface stays down.
+> 
+> The latter is a problem if the device was never brought up before, as the
+> workqueue is only allocated and initialized in mcp251x_open().
+> 
+> To me it looks like a proper fix would be to just move the workqueue init to
+> the probe function to make sure it is available when resuming even if the
+> interface was never up before.
+> 
+> I will try this and send a patch if it looks good.
 
-Hi Stephen,
+Sounds like a plan!
 
-Did you get a chance to have another look at this?
+-- 
+With Best Regards,
+Andy Shevchenko
 
-Thanks,
-Liam
-
->
-> Thanks for your time,
-> Liam
->
-> Liam Beguin (3):
-> clk: add support for the lmk04832
-> clk: lmk04832: add support for digital delay
-> dt-bindings: clock: add ti,lmk04832 bindings
->
-> .../bindings/clock/ti,lmk04832.yaml | 209 +++
-> drivers/clk/Kconfig | 7 +
-> drivers/clk/Makefile | 1 +
-> drivers/clk/clk-lmk04832.c | 1596 +++++++++++++++++
-> 4 files changed, 1813 insertions(+)
-> create mode 100644
-> Documentation/devicetree/bindings/clock/ti,lmk04832.yaml
-> create mode 100644 drivers/clk/clk-lmk04832.c
->
-> Range-diff against v4:
-> 1: cb6a8ea514d8 ! 1: 11461912b3c4 clk: add support for the lmk04832
-> @@ drivers/clk/clk-lmk04832.c (new)
-> + if (ret) {
-> + dev_err(lmk->dev, "missing reg property in child: %s\n",
-> + child->full_name);
-> ++ of_node_put(child);
-> + goto err_disable_oscin;
-> + }
-> +
-> @@ drivers/clk/clk-lmk04832.c (new)
-> +
-> + lmk->clkout[reg].sysref =3D
-> + of_property_read_bool(child, "ti,clkout-sysref");
-> -+ };
-> ++ }
-> +
-> + lmk->regmap =3D devm_regmap_init_spi(spi, &regmap_config);
-> + if (IS_ERR(lmk->regmap)) {
-> 2: 8464eac02aab =3D 2: 01b64b5af4ed clk: lmk04832: add support for digita=
-l
-> delay
-> 3: a2c4e8d53d1c ! 3: 96b514765de0 dt-bindings: clock: add ti,lmk04832
-> bindings
-> @@ Documentation/devicetree/bindings/clock/ti,lmk04832.yaml (new)
-> + const: 1
-> +
-> + spi-max-frequency:
-> -+ $ref: /schemas/types.yaml#/definitions/uint32
-> -+ description:
-> -+ Maximum SPI clocking speed of the device in Hz.
-> ++ maximum: 5000000
-> +
-> + clocks:
-> + items:
-> @@ Documentation/devicetree/bindings/clock/ti,lmk04832.yaml (new)
-> + required:
-> + - reg
-> +
-> ++ additionalProperties: false
-> ++
-> +required:
-> + - compatible
-> + - reg
->
-> base-commit: f40ddce88593482919761f74910f42f4b84c004b
-> --
-> 2.30.1.489.g328c10930387
 
