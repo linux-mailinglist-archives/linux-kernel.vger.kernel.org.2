@@ -2,150 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A50137305B
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:08:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 42FE8373061
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232443AbhEDTJE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:09:04 -0400
-Received: from mga17.intel.com ([192.55.52.151]:38664 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232116AbhEDTIY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:08:24 -0400
-IronPort-SDR: r4x4kS/cZ/nhe6qoXeNLU00cmc+2+LdEL7cifaOir6DehFN9bZcUiGZgvn1T9yf2UXCDngO4zl
- IN+GUQupTo+g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="178269915"
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="178269915"
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 12:07:18 -0700
-IronPort-SDR: C8jKyzyJxmEiqdnxm50esgsms5hZVzaSXDJumriaTarr52BNXgJYgdsklsLRhuKESVcY8fbp+D
- 1xo5yPZhZQ+g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="618591767"
-Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga006.fm.intel.com with ESMTP; 04 May 2021 12:07:18 -0700
-From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, Ashok Raj <ashok.raj@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Andi Kleen <andi.kleen@intel.com>
-Subject: [RFC PATCH v5 16/16] x86/tsc: Switch to perf-based hardlockup detector if TSC become unstable
-Date:   Tue,  4 May 2021 12:05:26 -0700
-Message-Id: <20210504190526.22347-17-ricardo.neri-calderon@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com>
-References: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com>
+        id S232310AbhEDTJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:09:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232164AbhEDTI0 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 15:08:26 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5852C06174A;
+        Tue,  4 May 2021 12:07:31 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id 76so7883899qkn.13;
+        Tue, 04 May 2021 12:07:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2GHL/SEgSOnHu9ybvCk72F3enffJ+oqaNygEn1HzTJQ=;
+        b=R/JSj+Dq8U4sMWy39msHdEPCd1+/8QkjFJzCgo9juFXOdyk+28I00LwgvPv+Xr+y7j
+         WXlmoz2Gfl6ONsLx0fos5mxA2xQAQd8SVe0TZ4Flfx3qzQ6VYn6vETPlL8CqknDmt0x0
+         QtubWFpTsVcu5yPprtY+P+VPBlQ1XDqh65SxL79kJqYNDwLlLTK4vnZRcekDM250bwqp
+         q92Uf3pg1Xl4MEwW79HKIILwpw946eRGwhUGC/F2mr3FXZZFIdKVgyOhoSMqyu7yzNPh
+         gIUEKQN5j+O6OSfvBY8G4+WtexXpdsTqcnfNHSDttNjxAH/sbyMdg7D0cyAUWTp9JgRP
+         gN9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2GHL/SEgSOnHu9ybvCk72F3enffJ+oqaNygEn1HzTJQ=;
+        b=aLlO/K9lt/cVd+V09WIn7Vk9m3G54ZQg5rA4MjGAbUbpH2TyX89B3npeAr9fXdh9qD
+         hDQ1BkCiaCYvgWWqDNQ5UNGSyykM3Bm99gJe5PJ0SiNQiYI9/mzu3Ark16TbdKaJSP+h
+         b0eQtJLZjaAMW/ymK6v5Lx1u/cNEj3+tPYChTnfep/kCVv3SnbzBwa4sxG8btND2C4Zs
+         Mtv2liUVp36XI5nmTGNaaMosMNpsoR8ghoQXIfK68IetYajKp5kGKV1inwk/s59RHUBt
+         WY3uR2XsPVqppyOBqaASNgs9C+ZHkRKgKGE1mM79tKpQBhqsnsI5a1oQmMJaam5IUfvP
+         HiZg==
+X-Gm-Message-State: AOAM5309V7p8htFzvD3xq9Vzbsp+UtKP+yctqcjFmXSEHhkPxnzpgtUv
+        Sws2njZ22HO3LEZWPSqoS3Z2GoW9+sbCcQ==
+X-Google-Smtp-Source: ABdhPJziMVhIhR3ZpRonQ8FNTyJsfiu4+N+8fWV2sAyiXHXK7nZ/i3jAPnq2rNc6ZpbDnyT2DsOxOg==
+X-Received: by 2002:a37:6850:: with SMTP id d77mr22571773qkc.57.1620155250886;
+        Tue, 04 May 2021 12:07:30 -0700 (PDT)
+Received: from ?IPv6:2804:14c:125:811b:fbbc:3360:40c4:fb64? ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
+        by smtp.gmail.com with ESMTPSA id t1sm3059094qto.78.2021.05.04.12.07.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 12:07:30 -0700 (PDT)
+Subject: Re: [PATCH] media: em28xx: Fix possible memory leak of em28xx struct
+To:     Shuah Khan <skhan@linuxfoundation.org>, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        hverkuil-cisco@xs4all.nl
+References: <20210503173716.21652-1-igormtorrente@gmail.com>
+ <dc285959-080a-3809-2f3e-e1de3440374a@linuxfoundation.org>
+From:   Igor Torrente <igormtorrente@gmail.com>
+Message-ID: <e5fa7752-a6d4-7d5b-160c-c92a38fed0e6@gmail.com>
+Date:   Tue, 4 May 2021 16:07:27 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
+MIME-Version: 1.0
+In-Reply-To: <dc285959-080a-3809-2f3e-e1de3440374a@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The HPET-based hardlockup detector relies on the TSC to determine if an
-observed NMI interrupt was originated by HPET timer. Hence, this detector
-can no longer be used with an unstable TSC.
 
-In such case, permanently stop the HPET-based hardlockup detector and
-start the perf-based detector.
 
-Add stub versions of hardlockup_detector_switch_to_perf() to be used when
-the HPET hardlockup detector and/or when CONFIG_HPET_TIMER are not
-selected.
+On 5/3/21 5:06 PM, Shuah Khan wrote:
+> Hi Igor,
+> 
+> On 5/3/21 11:37 AM, Igor Matheus Andrade Torrente wrote:
+>> The em28xx struct kref isn't being decreased after an error in the
+>> em28xx_ir_init, leading to a possible memory leak.
+>>
+>> A kref_put is added to the error handler code.
+>>
+>> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+>> ---
+>>   drivers/media/usb/em28xx/em28xx-input.c | 7 +++++--
+>>   1 file changed, 5 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/media/usb/em28xx/em28xx-input.c 
+>> b/drivers/media/usb/em28xx/em28xx-input.c
+>> index 5aa15a7a49de..b89527014cad 100644
+>> --- a/drivers/media/usb/em28xx/em28xx-input.c
+>> +++ b/drivers/media/usb/em28xx/em28xx-input.c
+>> @@ -720,7 +720,8 @@ static int em28xx_ir_init(struct em28xx *dev)
+>>               dev->board.has_ir_i2c = 0;
+>>               dev_warn(&dev->intf->dev,
+>>                    "No i2c IR remote control device found.\n");
+>> -            return -ENODEV;
+>> +            err = -ENODEV;
+>> +            goto ref_put;
+> 
+> This doesn't look right. em28xx_init_buttons() is already happened and
+> em28xx_shutdown_buttons() needs to be done from fini. fini needs to run
+> with this ref. If ref is released here, device might be released before
+> em28xx_shutdown_buttons() can run leading to potential use-after-free
+> 
 
-Cc: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Ashok Raj <ashok.raj@intel.com>
-Cc: Andi Kleen <andi.kleen@intel.com>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Stephane Eranian <eranian@google.com>
-Cc: "Ravi V. Shankar" <ravi.v.shankar@intel.com>
-Cc: x86@kernel.org
-Suggested-by: Thomas Gleixner <tglx@linutronix.de>
-Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Thanks for the feedback.
+
+I sent a patch V2 that I think fix the problem pointed out.
+
+>>           }
+>>       }
+>> @@ -735,7 +736,7 @@ static int em28xx_ir_init(struct em28xx *dev)
+>>       ir = kzalloc(sizeof(*ir), GFP_KERNEL);
+>>       if (!ir)
+>> -        return -ENOMEM;
+>> +        goto ref_put;
+> 
+> This doesn't look right. Same comment as above. fini accounts for null
+> ir.
+> 
+>        em28xx_shutdown_buttons(dev);
+> 
+>         /* skip detach on non attached boards */
+>         if (!ir)
+>                 goto ref_put;
+> 
+> 
+>>       rc = rc_allocate_device(RC_DRIVER_SCANCODE);
+>>       if (!rc)
+>>           goto error;
+>> @@ -839,6 +840,8 @@ static int em28xx_ir_init(struct em28xx *dev)
+>>       dev->ir = NULL;
+>>       rc_free_device(rc);
+>>       kfree(ir);
+>> +ref_put:
+>> +    kref_put(&dev->ref, em28xx_free_device);
+>>       return err;
+>>   }
+>>
+> 
+> thanks,
+> -- Shuah
+
+Best regard,
 ---
-Changes since v4:
- * Added a stub version of hardlockup_detector_switch_to_perf() for
-   !CONFIG_HPET_TIMER. (lkp)
- * Reconfigure the whole lockup detector instead of unconditionally
-   starting the perf-based hardlockup detector.
-
-Changes since v3:
- * None
-
-Changes since v2:
- * Introduced this patch.
-
-Changes since v1:
- * N/A
----
- arch/x86/include/asm/hpet.h    | 3 +++
- arch/x86/kernel/tsc.c          | 2 ++
- arch/x86/kernel/watchdog_hld.c | 6 ++++++
- 3 files changed, 11 insertions(+)
-
-diff --git a/arch/x86/include/asm/hpet.h b/arch/x86/include/asm/hpet.h
-index 1ff7436c1ce6..df11c7d4af44 100644
---- a/arch/x86/include/asm/hpet.h
-+++ b/arch/x86/include/asm/hpet.h
-@@ -148,18 +148,21 @@ extern int hardlockup_detector_hpet_init(void);
- extern void hardlockup_detector_hpet_stop(void);
- extern void hardlockup_detector_hpet_enable(unsigned int cpu);
- extern void hardlockup_detector_hpet_disable(unsigned int cpu);
-+extern void hardlockup_detector_switch_to_perf(void);
- #else
- static inline int hardlockup_detector_hpet_init(void)
- { return -ENODEV; }
- static inline void hardlockup_detector_hpet_stop(void) {}
- static inline void hardlockup_detector_hpet_enable(unsigned int cpu) {}
- static inline void hardlockup_detector_hpet_disable(unsigned int cpu) {}
-+static inline void hardlockup_detector_switch_to_perf(void) {}
- #endif /* CONFIG_X86_HARDLOCKUP_DETECTOR_HPET */
- 
- #else /* CONFIG_HPET_TIMER */
- 
- static inline int hpet_enable(void) { return 0; }
- static inline int is_hpet_enabled(void) { return 0; }
-+static inline void hardlockup_detector_switch_to_perf(void) {}
- #define hpet_readl(a) 0
- #define default_setup_hpet_msi	NULL
- 
-diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
-index 57ec01192180..86ac13a83884 100644
---- a/arch/x86/kernel/tsc.c
-+++ b/arch/x86/kernel/tsc.c
-@@ -1174,6 +1174,8 @@ void mark_tsc_unstable(char *reason)
- 
- 	clocksource_mark_unstable(&clocksource_tsc_early);
- 	clocksource_mark_unstable(&clocksource_tsc);
-+
-+	hardlockup_detector_switch_to_perf();
- }
- 
- EXPORT_SYMBOL_GPL(mark_tsc_unstable);
-diff --git a/arch/x86/kernel/watchdog_hld.c b/arch/x86/kernel/watchdog_hld.c
-index 8947a7644421..a4415ad4aa85 100644
---- a/arch/x86/kernel/watchdog_hld.c
-+++ b/arch/x86/kernel/watchdog_hld.c
-@@ -78,3 +78,9 @@ void watchdog_nmi_stop(void)
- 	if (detector_type == X86_HARDLOCKUP_DETECTOR_HPET)
- 		hardlockup_detector_hpet_stop();
- }
-+
-+void hardlockup_detector_switch_to_perf(void)
-+{
-+	detector_type = X86_HARDLOCKUP_DETECTOR_PERF;
-+	lockup_detector_reconfigure();
-+}
--- 
-2.17.1
-
+Igor M. A. Torrente
