@@ -2,117 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 804FA372974
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:14:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7248737297E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:21:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhEDLO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 07:14:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42948 "EHLO
+        id S230149AbhEDLVz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 07:21:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229953AbhEDLOy (ORCPT
+        with ESMTP id S230043AbhEDLVy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 07:14:54 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 382F9C061574;
-        Tue,  4 May 2021 04:13:51 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id n138so12733905lfa.3;
-        Tue, 04 May 2021 04:13:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pB5B5vGNh7JfHcktCPrIN1oKnZroXbXhhazB4fhfugs=;
-        b=oNSPNdRDAz8qH2TjdHNrrOZBUXHAk1AW+N8S5H5ogqryWPMQi9KOocAneEwqXpTVXs
-         ylKiI0NgwCfGfIoXSWwQdH4/AOTIOkG100mic0aTxvilePSoeJN+/tqw33mqhTyqhLWr
-         pUexxleUqI4xWy9RMKG0S2uYGTthjNBPanajP/2M4fW96bUFRAtz+Rjr68oh8jc0+pt5
-         8GmTHFMcqtxZ43bdxsjmrIZYmXc4i2gyZrND40eG3FqwmI/m5l1lX+OYHNv8RK7HTqB+
-         C2QIafQceFabyo4Qh8nP1M+aTYm9WIZiL3QaA6EL6rkPIGen1YyNWFWhTXZTppFMas3/
-         l99A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pB5B5vGNh7JfHcktCPrIN1oKnZroXbXhhazB4fhfugs=;
-        b=cKQYisWozTlupnipSQHDh761ubUMlw81F/v25IdZhs5d9imzmXVy37FuiJGtLpxahX
-         Dp/Lwp5Wf67NxpYhkmlJzKs56YXkbF2P+C35HcmvlsO47xPEidKZwBCkUSsxZwUyrYM6
-         SxFuVhGLKKeM7Rltj7kWieqwjzyLLY1Kxp/KIZwFA9l7AHjiLKHbKymZA0VALBspYYEk
-         rm0wLBntzVqP4CTXn16mcz6Ys8eYrafLXmzItw/ZdZkyxRfiyEX2V6hzetAFuIYua93T
-         je81Px1NPqgy4NsD3qFcbupQkTKj0R7k40JasaQvIiILJ+qmMoDzcYUDedvaaawBHw3b
-         KzWw==
-X-Gm-Message-State: AOAM530yLQxObyndB/uhpOpa2odtuH5lbp1OcqTa0TrzlcJ0O/aky9JF
-        nQIFklRJZcgUPHou4Z2SII5sbLl5InYTVU0a1pY=
-X-Google-Smtp-Source: ABdhPJwino+fPpYKDcNU5mJ2NOppWmanyJi54pdQ9f4VBW0ZqjvyHhzOM6wB4bkRrL+B73I+G1rGBG1feXbg2jYRiMQ=
-X-Received: by 2002:ac2:4308:: with SMTP id l8mr15510685lfh.223.1620126829233;
- Tue, 04 May 2021 04:13:49 -0700 (PDT)
+        Tue, 4 May 2021 07:21:54 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A3BC06174A;
+        Tue,  4 May 2021 04:20:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=iBL4wdk0hhtcp9IJCKPORLOWrfs/6Ue7vXO+EKvQ+U4=; b=jRYVtQEvL1LjLX9sOdEIZ3Pg5v
+        lQcWFUeGo26VBne1KPVPxMpUkCVBr0WUHqsfLlJmFYMs3cl3ShoRT/WNl8xN/RREl4d897cswWTcL
+        YuPKl90SPVXTjl6i6HXCbCQ8KaOTAXWe0+Nl8HjnDk72i2T/n8LvaoAKERArZl++X46h0fNZpM+Nk
+        nGdy7fNsNc1fQwOK+mJmbJHEKqyDP+DpxSXLCPwDk/bACv7Q8zuGyNa5dN0IwzsZvF5dK2QSwbCHw
+        CfgE6uM5zjMF34lbAbUv9ET/hjVtatihzy0uPoSEqCEyWi3tDW4p2uO/mNuFXFOvKbiGhOB2c5rii
+        mqlIUmXw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldt6c-00G3x1-5J; Tue, 04 May 2021 11:20:46 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1CED230022A;
+        Tue,  4 May 2021 13:20:44 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C46A12027BB34; Tue,  4 May 2021 13:20:44 +0200 (CEST)
+Date:   Tue, 4 May 2021 13:20:44 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Chengming Zhou <zhouchengming@bytedance.com>,
+        Muchun Song <songmuchun@bytedance.com>,
+        Rik van Riel <riel@surriel.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] psi: fix psi state corruption when schedule() races with
+ cgroup move
+Message-ID: <YJEuDJS0e9qF6CGn@hirez.programming.kicks-ass.net>
+References: <20210503174917.38579-1-hannes@cmpxchg.org>
 MIME-Version: 1.0
-References: <20210430052746.10815-1-peng.fan@oss.nxp.com> <20210430052746.10815-5-peng.fan@oss.nxp.com>
-In-Reply-To: <20210430052746.10815-5-peng.fan@oss.nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Tue, 4 May 2021 08:13:37 -0300
-Message-ID: <CAOMZO5A4JOP0zST75bO9Ww7pxJjJSYHE9HmWCJb7DjYYd-Y80Q@mail.gmail.com>
-Subject: Re: [PATCH V2 4/4] soc: imx: Add blk-ctl driver for i.MX8MM
-To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
-        Marek Vasut <marex@denx.de>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Ping Bai <ping.bai@nxp.com>,
-        Schrempf Frieder <frieder.schrempf@kontron.de>,
-        Adam Ford <aford173@gmail.com>, Abel Vesa <abel.vesa@nxp.com>,
-        Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210503174917.38579-1-hannes@cmpxchg.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+On Mon, May 03, 2021 at 01:49:17PM -0400, Johannes Weiner wrote:
+> 4117cebf1a9f ("psi: Optimize task switch inside shared cgroups")
+> introduced a race condition that corrupts internal psi state. This
+> manifests as kernel warnings, sometimes followed by bogusly high IO
+> pressure:
+> 
+>   psi: task underflow! cpu=1 t=2 tasks=[0 0 0 0] clear=c set=0
+>   (schedule() decreasing RUNNING and ONCPU, both of which are 0)
+> 
+>   psi: incosistent task state! task=2412744:systemd cpu=17 psi_flags=e clear=3 set=0
+>   (cgroup_move_task() clearing MEMSTALL and IOWAIT, but task is MEMSTALL | RUNNING | ONCPU)
+> 
+> What the offending commit does is batch the two psi callbacks in
+> schedule() to reduce the number of cgroup tree updates. When prev is
+> deactivated and removed from the runqueue, nothing is done in psi at
+> first; when the task switch completes, TSK_RUNNING and TSK_IOWAIT are
+> updated along with TSK_ONCPU.
+> 
+> However, the deactivation and the task switch inside schedule() aren't
+> atomic: pick_next_task() may drop the rq lock for load balancing. When
+> this happens, cgroup_move_task() can run after the task has been
+> physically dequeued, but the psi updates are still pending. Since it
+> looks at the task's scheduler state, it doesn't move everything to the
+> new cgroup that the task switch that follows is about to clear from
+> it. cgroup_move_task() will leak the TSK_RUNNING count in the old
+> cgroup, and psi_sched_switch() will underflow it in the new cgroup.
+> 
+> A similar thing can happen for iowait. TSK_IOWAIT is usually set when
+> a p->in_iowait task is dequeued, but again this update is deferred to
+> the switch. cgroup_move_task() can see an unqueued p->in_iowait task
+> and move a non-existent TSK_IOWAIT. This results in the inconsistent
+> task state warning, as well as a counter underflow that will result in
+> permanent IO ghost pressure being reported.
+> 
+> Fix this bug by making cgroup_move_task() use task->psi_flags instead
+> of looking at the potentially mismatching scheduler state.
+> 
+> [ We used the scheduler state historically in order to not rely on
+>   task->psi_flags for anything but debugging. But that ship has sailed
+>   anyway, and this is simpler and more robust.
+> 
+>   We previously already batched TSK_ONCPU clearing with the
+>   TSK_RUNNING update inside the deactivation call from schedule(). But
+>   that ordering was safe and didn't result in TSK_ONCPU corruption:
+>   unlike most places in the scheduler, cgroup_move_task() only checked
+>   task_current() and handled TSK_ONCPU if the task was still queued. ]
+> 
+> Fixes: 4117cebf1a9f ("psi: Optimize task switch inside shared cgroups")
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-On Fri, Apr 30, 2021 at 1:56 AM Peng Fan (OSS) <peng.fan@oss.nxp.com> wrote:
-
-> +static int imx8mm_blk_ctl_probe(struct platform_device *pdev)
-> +{
-> +       struct device *dev = &pdev->dev;
-> +       const struct imx_blk_ctl_dev_data *dev_data = of_device_get_match_data(dev);
-> +       struct regmap *regmap;
-> +       struct resource *res;
-> +       struct imx_blk_ctl *ctl;
-> +       void __iomem *base;
-> +
-> +       ctl = devm_kzalloc(dev, sizeof(*ctl), GFP_KERNEL);
-> +       if (!ctl)
-> +               return -ENOMEM;
-> +
-> +       res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
-> +       base = devm_ioremap_resource(dev, res);
-> +       if (IS_ERR(base))
-> +               return PTR_ERR(base);
-> +
-> +       regmap = devm_regmap_init_mmio(dev, base, &dev_data->config);
-> +       if (IS_ERR(regmap))
-> +               return PTR_ERR(regmap);
-> +
-> +       ctl->regmap = regmap;
-> +       ctl->dev = dev;
-> +       atomic_set(&ctl->power_count, 0);
-> +
-> +       ctl->num_clks = devm_clk_bulk_get_all(dev, &ctl->clks);
-> +       if (ctl->num_clks < 0)
-> +               return ctl->num_clks;
-> +
-> +       dev_set_drvdata(dev, ctl);
-> +       ctl->dev_data = of_device_get_match_data(dev);
-
-No need to call of_device_get_match_data() twice. You could do:
-
-ctl->dev_data = dev_data;
+Thanks! queued for sched/urgent.
