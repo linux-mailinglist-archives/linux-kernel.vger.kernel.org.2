@@ -2,110 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D69E9372DEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:20:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1272E372DF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:23:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231800AbhEDQVD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:21:03 -0400
-Received: from mga07.intel.com ([134.134.136.100]:31417 "EHLO mga07.intel.com"
+        id S231721AbhEDQY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 12:24:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42038 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231523AbhEDQVC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:21:02 -0400
-IronPort-SDR: gPzaO0HU4yaVX9ij0LSMDnOJQg0MEz/adti3TjuK2q8HxFEQ+9xT89vaWYROCxRLhkjTJ8Gwe6
- wLVpBiG7wz3g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="261967950"
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="261967950"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 09:20:06 -0700
-IronPort-SDR: FE31X0f0O1HmtVya2wHzkb2m+mH92c3O29UDYShex4/bS8cRaxxOvxXCVAHn64M0HmX4ZXzTcL
- vnP6nVihO/fg==
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="468576361"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 09:20:06 -0700
-Date:   Tue, 4 May 2021 09:22:55 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210504092255.76c387f8@jacob-builder>
-In-Reply-To: <20210428204606.GX1370958@nvidia.com>
-References: <20210421175203.GN1370958@nvidia.com>
-        <20210421133312.15307c44@redhat.com>
-        <20210421230301.GP1370958@nvidia.com>
-        <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210422121020.GT1370958@nvidia.com>
-        <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210423114944.GF1370958@nvidia.com>
-        <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210426123817.GQ1370958@nvidia.com>
-        <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210428204606.GX1370958@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231523AbhEDQY1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 12:24:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 46957611AD;
+        Tue,  4 May 2021 16:23:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620145412;
+        bh=OjTM3wjN3EUalqu7VP3gGcczRSciVlWRIKa7hPRIbmw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=WIKvK7ezck0cLI8tML9ClP7dOnYY3ZnzY+99TcsSBkwttohmLHSOaNFDPxgXTtm4l
+         MCCyZGfCB1d7PDTDQkNlGwWzvGoBIjS4Z3f9Db7z3BPDACcnQGeZJCYHdAK34Phl08
+         Mjq6MzT1qYp/lhNeSSDoI/Z8bkQ2/bLgdhfkzz26WUiDgmrxI26epnFeYXlKJ0FqBN
+         AMzj+om8OFAuNGpGPLvueA7ZPG0d/sxoEIDQDa9LPMguAUi1BxVEzIWWBUJQz6RHa2
+         wQQsFGF5VzcOo82pFVJ0tEztkbiOLkBz8KDblQnjpCc5UR/axyx09GrkN5Xditg7W5
+         rYjg5Ugi4kpng==
+Date:   Tue, 4 May 2021 11:23:31 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Leon Romanovsky <leon@kernel.org>
+Cc:     Greentime Hu <greentime.hu@sifive.com>, paul.walmsley@sifive.com,
+        hes@sifive.com, erik.danie@sifive.com, zong.li@sifive.com,
+        bhelgaas@google.com, robh+dt@kernel.org, aou@eecs.berkeley.edu,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
+        alex.dewar90@gmail.com, khilman@baylibre.com,
+        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
+        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v6 1/6] clk: sifive: Add pcie_aux clock in prci driver
+ for PCIe driver
+Message-ID: <20210504162331.GA1122904@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJE886bhppqes5LQ@unreal>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
-
-On Wed, 28 Apr 2021 17:46:06 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-
-> > > I think the name IOASID is fine for the uAPI, the kernel version can
-> > > be called ioasid_id or something.  
+On Tue, May 04, 2021 at 03:24:19PM +0300, Leon Romanovsky wrote:
+> On Tue, May 04, 2021 at 06:59:35PM +0800, Greentime Hu wrote:
+> > We add pcie_aux clock in this patch so that pcie driver can use
+> > clk_prepare_enable() and clk_disable_unprepare() to enable and disable
+> > pcie_aux clock.
 > > 
-> > ioasid is already an id and then ioasid_id just adds confusion. Another
-> > point is that ioasid is currently used to represent both PCI PASID and
-> > ARM substream ID in the kernel. It implies that if we want to separate
-> > ioasid and pasid in the uAPI the 'pasid' also needs to be replaced with
-> > another general term usable for substream ID. Are we making the
-> > terms too confusing here?  
+> > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> > Acked-by: Stephen Boyd <sboyd@kernel.org>
+> > ---
+> >  drivers/clk/sifive/fu740-prci.c               | 11 +++++
+> >  drivers/clk/sifive/fu740-prci.h               |  2 +-
+> >  drivers/clk/sifive/sifive-prci.c              | 41 +++++++++++++++++++
+> >  drivers/clk/sifive/sifive-prci.h              |  9 ++++
+> >  include/dt-bindings/clock/sifive-fu740-prci.h |  1 +
+> >  5 files changed, 63 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/clk/sifive/fu740-prci.c b/drivers/clk/sifive/fu740-prci.c
+> > index 764d1097aa51..53f6e00a03b9 100644
+> > --- a/drivers/clk/sifive/fu740-prci.c
+> > +++ b/drivers/clk/sifive/fu740-prci.c
+> > @@ -72,6 +72,12 @@ static const struct clk_ops sifive_fu740_prci_hfpclkplldiv_clk_ops = {
+> >  	.recalc_rate = sifive_prci_hfpclkplldiv_recalc_rate,
 > 
-> This is why I also am not so sure about exposing the PASID in the API
-> because it is ultimately a HW specific item.
+> <...>
 > 
-> As I said to David, one avenue is to have some generic uAPI that is
-> very general and keep all this deeply detailed stuff, that really only
-> matters for qemu, as part of a more HW specific vIOMMU driver
-> interface.
-I think it is not just for QEMU. I am assuming you meant PASID is
-needed for guest driver to program assigned but not mediated devices.
+> > +/* PCIE AUX clock APIs for enable, disable. */
+> > +int sifive_prci_pcie_aux_clock_is_enabled(struct clk_hw *hw)
+> 
+> It should be bool
 
-User space drivers may also need to get the real HW PASID to program it on
-to the HW. So this uAPI need to provide some lookup functionality. Perhaps
-the kernel generic version can be called ioasid_hw_id?
+It's used via this function pointer:
 
-So we have the following per my understanding:
-- IOASID: a userspace logical number which identifies a page table, this can
-be a first level (GVA-GPA), or a second level (GPA->HPA) page table.
-- PASID: strictly defined in PCIe term
-- Substream ID: strictly defined in ARM SMMUv3 spec.
-- IOASID_HW_ID: a generic ID backed by PASID, Substream ID, or any other
-		 HW IDs used to tag DMA
+  struct clk_ops {
+    int             (*is_enabled)(struct clk_hw *hw);
 
-Is that right?
+so I think "int" is actually appropriate here.
 
-Thanks,
+There are some weird/interesting bool vs int usages nearby, though:
 
-Jacob
+  "bool __is_clk_gate_enabled()" goes to some trouble to convert
+  int to bool ("return (reg_val & bit_mask) != 0;"), and then
+  kona_peri_clk_is_enabled() converts the bool back to int ("return
+  is_clk_gate_enabled(bcm_clk->ccu, gate) ? 1 : 0;").
+
+  "int lpc32xx_clk_gate_is_enabled()" actually returns a bool that is
+  implicitly converted to int.
+
+  Many *_is_enabled() functions return !!(...) where !! is an
+  int-to-bool conversion that is arguably unnecessary and again
+  results in an implicit conversion to int.
+
+I don't see any *problems* with any of these; it just seems like a
+little more mental effort to think about all the explicit and implicit
+conversions going on.
+
+> > +int sifive_prci_pcie_aux_clock_enable(struct clk_hw *hw)
+> > +{
+> > +	struct __prci_clock *pc = clk_hw_to_prci_clock(hw);
+> > +	struct __prci_data *pd = pc->pd;
+> > +	u32 r __maybe_unused;
+> > +
+> > +	if (sifive_prci_pcie_aux_clock_is_enabled(hw))
+> > +		return 0;
+> 
+> You actually call to this new function only once, put your
+> __prci_readl() here.
+
+Both sifive_prci_pcie_aux_clock_enable() and
+sifive_prci_pcie_aux_clock_is_enabled() are used via the clk_ops
+function pointers.
+
+Maybe sifive_prci_pcie_aux_clock_is_enabled() could be replaced by the
+__prci_readl() here, but I don't know enough about clk_ops internals
+to know.
+
+Bjorn
