@@ -2,58 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B06E372EB4
+	by mail.lfdr.de (Postfix) with ESMTP id 6847D372EB5
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:19:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232289AbhEDRTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39632 "EHLO
+        id S232334AbhEDRTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39646 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232164AbhEDRSx (ORCPT
+        with ESMTP id S232172AbhEDRSz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:18:53 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90C44C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:17:57 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id g29-20020a25b11d0000b02904f44adeb480so12526958ybj.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:17:57 -0700 (PDT)
+        Tue, 4 May 2021 13:18:55 -0400
+Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1048EC061761
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:00 -0700 (PDT)
+Received: by mail-qv1-xf49.google.com with SMTP id t1-20020a0ca6810000b029019e892416e6so8160781qva.9
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=x+NCaDzYaJB+NMadtQ9JUPGNk0j6WFjhbI1X+ndrCYA=;
-        b=GYxeu56pESpHnymBBR37hcoL+erzIi1Cs2Fcie4S/JXxyz05HzWd8tfYRy2rUHxVD6
-         eJtObUcSxC1FczqzDMUZNwHyfxJ21cyb6kmOP30GXeH7chJrTDIyg1/pQ8A4ErT237jt
-         2e2nygFpJqozYZiDrgVQKjorHBF3s7zyrtYOS40HX12yiEZsf7gbjcIrrnB8RRb2Sb/1
-         IreqbcFdIOSmU8aPz9ZhCeTCCRo0nmbb1RMCNevhOVOLeKFsE+rMuzbbGGOlpMIq7REm
-         Vdn5utrZ4eXb4F5kpCx95zET+f3Sbv23kgnex9h7n5Y4dcZuPqjKfCZY9I6OvmHqqdb1
-         /eGA==
+        bh=BGCQSILYAU01VvgA8TaO/AwM6Dcj3M5kpkKiJ9GwIVo=;
+        b=VoB1ZQZUQTZDbAWIb7z6YLsP1EcMmTZaJ21TOhoo/VBB8DHbA/WYo7YmRUtOh+XWCL
+         JHH+uUsd40UADuqDaFksTVfYQXRNeuI4xpnKVKdCjrsCWjSuUczwY6PkZMyaLmFMJt4p
+         r9AXFSCo3QBnt2KcWe/W6aHmzAKDQl/I3vDLGVJT/HxrAwj5sgyIP2ptWLQWgXHQGU3E
+         IZX8NGOJp4EBjwcMDGh964qDz/CTANPH1FckHRPrhLRkchsqqXBoWKAhbisk7iqXuUFC
+         NtGAe0bVUIP024/Lo487nX7s+aMm0dtH3OVvl7VW6NKxgP/fNmzSOLn+VYLYU1ZxX+Cf
+         fVjA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=x+NCaDzYaJB+NMadtQ9JUPGNk0j6WFjhbI1X+ndrCYA=;
-        b=kFG1VP+8pS5kOoHzJmBRoPWdHg/wXa/DLC0wJ8N1DFDNSeuS7leDLmTBi+RvGQ7BS2
-         Nyaf1b3pSbUayR2Gu0Pf0+w+UfmDwHSyUBaN0HXnYXg3ffkH1LGaAWxFmLIPHo8Vbi5Y
-         uHhd1y+Kf0jGfh7Vq+gaLI8pRJyR4JMTeDSrbA+IbdmIMPTdlaM1FuA3lqAO8DoT+kFH
-         V3BUD/cb2IovrC1HseWnTl5dlXZyR6PLgJXYP30/abF7GPRlE1lrfuj3EUX60sDo3t9M
-         li2MXRwKlKPVKzjvr4Vf2bLmRpLW8NIMS3xkc4TGIJQNT2F7AzxzRkQMDvHmF5M9Nwit
-         oBpg==
-X-Gm-Message-State: AOAM530hm5IWHsYofEV4fcMr0FfuB3MpeDyE9wv3oVAehUyl1SBlt38r
-        JI+n+X0kHkzK0MNRv1UaO6VyQlZ02Qs=
-X-Google-Smtp-Source: ABdhPJx6D43kn5MV0I4+HM7Y77hYMTE0j8mAoTlwNGlkhP8mTP6+0FnyQn2hkMtruWcNfQViYps2vJMB3uo=
+        bh=BGCQSILYAU01VvgA8TaO/AwM6Dcj3M5kpkKiJ9GwIVo=;
+        b=g2kslwnICLaTaekpby8YNB+4ncUYAhArZA9Aj+1ktxpV6/tS1IF9zcl2P+R0gO/qXS
+         RH5jufjznAO3tphoFsK8ESqLeQ9c+C+tfZpIA33S+wTO2ZSkg6QNIv8x8UYq0nYOGmLC
+         owlnRBZOdDeese5rMw367FENykXZaZWFK/imArFGQ12Idm7Hs7n4p8l0HhYNlQL/G+4M
+         pebm6GFO63KBB5TnEoPnLUIbfqR/5+fugx/P4eQ46RSxyxGYYfI7q9McvVtY4J4+nmLF
+         +fg0EMqzrkA7MepcbcBu+iEVC/6HOBCt6Zb7izycQZgVITJa8aqKZKxZuHVeFn5V6ArZ
+         ftsQ==
+X-Gm-Message-State: AOAM530bqfAYxIM303Tofzd/9EMHLDF95bL1t7Om5fQzOpa5ChG61Vax
+        NiTA3ZY9C4a2d/Ok+UHeRRtEmkMqhLI=
+X-Google-Smtp-Source: ABdhPJzYd4vDWCMOY7/UC0i1nOs93WMze7d08OhFnwiOaXeQ9VuyOuNTqKK6zWp1RgoaybpJN7R/mxKxMS4=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:a25:3103:: with SMTP id x3mr34207809ybx.8.1620148676838;
- Tue, 04 May 2021 10:17:56 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:ad4:5fc6:: with SMTP id jq6mr5885999qvb.43.1620148679153;
+ Tue, 04 May 2021 10:17:59 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 10:17:25 -0700
+Date:   Tue,  4 May 2021 10:17:26 -0700
 In-Reply-To: <20210504171734.1434054-1-seanjc@google.com>
-Message-Id: <20210504171734.1434054-7-seanjc@google.com>
+Message-Id: <20210504171734.1434054-8-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210504171734.1434054-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH 06/15] KVM: SVM: Probe and load MSR_TSC_AUX regardless of
- RDTSCP support in host
+Subject: [PATCH 07/15] KVM: x86: Add support for RDPID without RDTSCP
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,96 +67,121 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Probe MSR_TSC_AUX whether or not RDTSCP is supported in the host, and
-if probing succeeds, load the guest's MSR_TSC_AUX into hardware prior to
-VMRUN.  Because SVM doesn't support interception of RDPID, RDPID cannot
-be disallowed in the guest (without resorting to binary translation).
-Leaving the host's MSR_TSC_AUX in hardware would leak the host's value to
-the guest if RDTSCP is not supported.
+Allow userspace to enable RDPID for a guest without also enabling RDTSCP.
+Aside from checking for RDPID support in the obvious flows, VMX also needs
+to set ENABLE_RDTSCP=1 when RDPID is exposed.
 
-Note, there is also a kernel bug that prevents leaking the host's value.
-The host kernel initializes MSR_TSC_AUX if and only if RDTSCP is
-supported, even though the vDSO usage consumes MSR_TSC_AUX via RDPID.
-I.e. if RDTSCP is not supported, there is no host value to leak.  But,
-if/when the host kernel bug is fixed, KVM would start leaking MSR_TSC_AUX
-in the case where hardware supports RDPID but RDTSCP is unavailable for
-whatever reason.
+For the record, there is no known scenario where enabling RDPID without
+RDTSCP is desirable.  But, both AMD and Intel architectures allow for the
+condition, i.e. this is purely to make KVM more architecturally accurate.
 
-Probing MSR_TSC_AUX will also allow consolidating the probe and define
-logic in common x86, and will make it simpler to condition the existence
-of MSR_TSX_AUX (from the guest's perspective) on RDTSCP *or* RDPID.
-
-Fixes: AMD CPUs
+Fixes: 41cd02c6f7f6 ("kvm: x86: Expose RDPID in KVM_GET_SUPPORTED_CPUID")
 Cc: stable@vger.kernel.org
+Reported-by: Reiji Watanabe <reijiw@google.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/svm.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ arch/x86/kvm/svm/svm.c |  6 ++++--
+ arch/x86/kvm/vmx/vmx.c | 27 +++++++++++++++++++++++----
+ arch/x86/kvm/x86.c     |  3 ++-
+ 3 files changed, 29 insertions(+), 7 deletions(-)
 
 diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index 8f2b184270c0..b3153d40cc4d 100644
+index b3153d40cc4d..231b9650d864 100644
 --- a/arch/x86/kvm/svm/svm.c
 +++ b/arch/x86/kvm/svm/svm.c
-@@ -212,7 +212,7 @@ DEFINE_PER_CPU(struct svm_cpu_data *, svm_data);
-  * RDTSCP and RDPID are not used in the kernel, specifically to allow KVM to
-  * defer the restoration of TSC_AUX until the CPU returns to userspace.
-  */
--#define TSC_AUX_URET_SLOT	0
-+static int tsc_aux_uret_slot __read_mostly = -1;
- 
- static const u32 msrpm_ranges[] = {0, 0xc0000000, 0xc0010000};
- 
-@@ -959,8 +959,10 @@ static __init int svm_hardware_setup(void)
- 		kvm_tsc_scaling_ratio_frac_bits = 32;
- 	}
- 
--	if (boot_cpu_has(X86_FEATURE_RDTSCP))
--		kvm_define_user_return_msr(TSC_AUX_URET_SLOT, MSR_TSC_AUX);
-+	if (!kvm_probe_user_return_msr(MSR_TSC_AUX)) {
-+		tsc_aux_uret_slot = 0;
-+		kvm_define_user_return_msr(tsc_aux_uret_slot, MSR_TSC_AUX);
-+	}
- 
- 	/* Check for pause filtering support */
- 	if (!boot_cpu_has(X86_FEATURE_PAUSEFILTER)) {
-@@ -1454,8 +1456,8 @@ static void svm_prepare_guest_switch(struct kvm_vcpu *vcpu)
- 		}
- 	}
- 
--	if (static_cpu_has(X86_FEATURE_RDTSCP))
--		kvm_set_user_return_msr(TSC_AUX_URET_SLOT, svm->tsc_aux, -1ull);
-+	if (likely(tsc_aux_uret_slot >= 0))
-+		kvm_set_user_return_msr(tsc_aux_uret_slot, svm->tsc_aux, -1ull);
- 
- 	svm->guest_state_loaded = true;
- }
-@@ -2664,7 +2666,7 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
- 			msr_info->data |= (u64)svm->sysenter_esp_hi << 32;
- 		break;
- 	case MSR_TSC_AUX:
--		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
-+		if (tsc_aux_uret_slot < 0)
+@@ -2669,7 +2669,8 @@ static int svm_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		if (tsc_aux_uret_slot < 0)
  			return 1;
  		if (!msr_info->host_initiated &&
- 		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
-@@ -2885,7 +2887,7 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 		svm->sysenter_esp_hi = guest_cpuid_is_intel(vcpu) ? (data >> 32) : 0;
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+ 			return 1;
+ 		msr_info->data = svm->tsc_aux;
  		break;
- 	case MSR_TSC_AUX:
--		if (!boot_cpu_has(X86_FEATURE_RDTSCP))
-+		if (tsc_aux_uret_slot < 0)
+@@ -2891,7 +2892,8 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
  			return 1;
  
  		if (!msr->host_initiated &&
-@@ -2908,7 +2910,7 @@ static int svm_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr)
- 		 * guest via direct_access_msrs, and switch it via user return.
- 		 */
- 		preempt_disable();
--		r = kvm_set_user_return_msr(TSC_AUX_URET_SLOT, data, -1ull);
-+		r = kvm_set_user_return_msr(tsc_aux_uret_slot, data, -1ull);
- 		preempt_enable();
- 		if (r)
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
  			return 1;
+ 
+ 		/*
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 990ee339a05f..42e4bbaa299a 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -1788,7 +1788,8 @@ static void setup_msrs(struct vcpu_vmx *vmx)
+ 	if (update_transition_efer(vmx))
+ 		vmx_setup_uret_msr(vmx, MSR_EFER);
+ 
+-	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP))
++	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP)  ||
++	    guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDPID))
+ 		vmx_setup_uret_msr(vmx, MSR_TSC_AUX);
+ 
+ 	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL);
+@@ -1994,7 +1995,8 @@ static int vmx_get_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		break;
+ 	case MSR_TSC_AUX:
+ 		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+ 			return 1;
+ 		goto find_uret_msr;
+ 	case MSR_IA32_DEBUGCTLMSR:
+@@ -2314,7 +2316,8 @@ static int vmx_set_msr(struct kvm_vcpu *vcpu, struct msr_data *msr_info)
+ 		break;
+ 	case MSR_TSC_AUX:
+ 		if (!msr_info->host_initiated &&
+-		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP))
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) &&
++		    !guest_cpuid_has(vcpu, X86_FEATURE_RDPID))
+ 			return 1;
+ 		/* Check reserved bit, higher 32 bits should be zero */
+ 		if ((data >> 32) != 0)
+@@ -4368,7 +4371,23 @@ static void vmx_compute_secondary_exec_control(struct vcpu_vmx *vmx)
+ 						  xsaves_enabled, false);
+ 	}
+ 
+-	vmx_adjust_sec_exec_feature(vmx, &exec_control, rdtscp, RDTSCP);
++	/*
++	 * RDPID is also gated by ENABLE_RDTSCP, turn on the control if either
++	 * feature is exposed to the guest.  This creates a virtualization hole
++	 * if both are supported in hardware but only one is exposed to the
++	 * guest, but letting the guest execute RDTSCP or RDPID when either one
++	 * is advertised is preferable to emulating the advertised instruction
++	 * in KVM on #UD, and obviously better than incorrectly injecting #UD.
++	 */
++	if (cpu_has_vmx_rdtscp()) {
++		bool rdpid_or_rdtscp_enabled =
++			guest_cpuid_has(vcpu, X86_FEATURE_RDTSCP) ||
++			guest_cpuid_has(vcpu, X86_FEATURE_RDPID);
++
++		vmx_adjust_secondary_exec_control(vmx, &exec_control,
++						  SECONDARY_EXEC_ENABLE_RDTSCP,
++						  rdpid_or_rdtscp_enabled, false);
++	}
+ 	vmx_adjust_sec_exec_feature(vmx, &exec_control, invpcid, INVPCID);
+ 
+ 	vmx_adjust_sec_exec_exiting(vmx, &exec_control, rdrand, RDRAND);
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index e304447be42d..b4516d303413 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5978,7 +5978,8 @@ static void kvm_init_msr_list(void)
+ 				continue;
+ 			break;
+ 		case MSR_TSC_AUX:
+-			if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP))
++			if (!kvm_cpu_cap_has(X86_FEATURE_RDTSCP) &&
++			    !kvm_cpu_cap_has(X86_FEATURE_RDPID))
+ 				continue;
+ 			break;
+ 		case MSR_IA32_UMWAIT_CONTROL:
 -- 
 2.31.1.527.g47e6f16901-goog
 
