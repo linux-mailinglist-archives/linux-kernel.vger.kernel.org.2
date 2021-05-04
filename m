@@ -2,124 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0240437323C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:10:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D62937323D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233007AbhEDWLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 18:11:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
+        id S232919AbhEDWMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 18:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232424AbhEDWLM (ORCPT
+        with ESMTP id S232424AbhEDWMo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 18:11:12 -0400
-Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41ADC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:10:15 -0700 (PDT)
-Received: by mail-pl1-x632.google.com with SMTP id h20so35384plr.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:10:15 -0700 (PDT)
+        Tue, 4 May 2021 18:12:44 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 084B0C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:11:48 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id p12so213451pgj.10
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:11:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1aLXxHaj5Rq1Gy8Fen+iPQHGbUG29jIsimexipAVSW8=;
-        b=FAcOMbmD+46OKFgqYORs2t18fQo8LRey2ieRuWIH6JxAgIUWEmUNoIa6xAot1j9nSr
-         oCzB/3WcSa32AOBgQQDaaGO59Bq0qQHqkNVBjKVWRC0eFx4SodCgw0AGvEBkUYGgaVXK
-         VZIh8jAitG5nKodsUh9MdzxhNi8BJ3QBad1hRddDtVAhqhXhT6rg+sEpfS/JZlWF5Qd9
-         LVqVqNSAzV8Ip2KZ8zOO+PB/JievXM+0j6Zhtjvp64pUgQ2FHmVZLGTRp8wqka5fbXvb
-         jvFVccAQjMZIoq4a7n77JcFdGHSh8NLu+EWubkYDkDbJIepAEAyPwxyhPq8A/XH12/jR
-         nsfg==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=X24lUXlMEhpG08QpqR1PXTQYsmjAZVq0k2CHWE7HhVY=;
+        b=X61PxexQtJUyrYRZSK0xCUjkBWVWmqhbPHTL7U8gdl1OQpo3CTBNZnV/wez9UyhXDJ
+         1g4Lu29fx9+u7UNRTBfbuGMl8k+ogE1ofqlzgh0y+/qzYdLYOpSrDSUZ3N29aQAJct0x
+         eOoQAahlK7FUSxosC99+uipbZwlR1oIrZWKGontQ83L+1dHR6SBurmfpyUwNDgrDDlYg
+         nwr0jjoo3JSJ1lQRvLO8AfHplkHL+Gy2vz2gnkbA2ZbZUxFuggwdrKw8LHAW3ZvQUTkg
+         suhIP1eg15yp+4j25ZuBVsAjiZs2g7OURRvAO755z9kAfU3P1WlFGQY8IhFui61lyzUL
+         Nt4g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1aLXxHaj5Rq1Gy8Fen+iPQHGbUG29jIsimexipAVSW8=;
-        b=uMUHcj+wT0wPUIN+OdfltTJzEnL2YPyRRWRKKeidM5MKJLw1G5S3WOfJNW3kYgD9Eh
-         5MzD+yU4gQceLorSXUTSzE76lx1CSS28mtogE9X6k8s2sx/KjO2DYfz3BYG+/E8fl3gI
-         4JqYst8MaW/Des6CNgNWPrvsHlcuLOlPJosMCUkvx2JHvgvKWQc++YWnGyZQunhewsMu
-         /fBZkmXn0YcBjusfZkpdpWNohNLyE+Hr9dQa9+VUJYwBSSGP+O8pBlsJvQMasXq55998
-         y+PTQs8EytxfpKBPq592jtw1JRwNHrSvkDUwHwkstP21y46auE/Ffm7RTWz3rw889YLP
-         tv/Q==
-X-Gm-Message-State: AOAM531FT0qKKbt2y7TXG78CTxnUeeV7C1zIP+2Uvz25nZIEHeHRwOcp
-        6uwPuqF+0h1iPYv8206HnHA4yg==
-X-Google-Smtp-Source: ABdhPJwF1qhw48/+7vzyhb89hqtof1Kr7Sj9/41FiQ+OKc8PlVYJC/94C6mpLxAM35Ty1D2+UrhJhw==
-X-Received: by 2002:a17:902:9697:b029:ee:c7db:deea with SMTP id n23-20020a1709029697b02900eec7dbdeeamr16969279plp.83.1620166214999;
-        Tue, 04 May 2021 15:10:14 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id 128sm13064700pfy.194.2021.05.04.15.10.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 15:10:14 -0700 (PDT)
-Date:   Tue, 4 May 2021 22:10:10 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
- disabled in the guest
-Message-ID: <YJHGQgEE3mqUhbAc@google.com>
-References: <20210504171734.1434054-1-seanjc@google.com>
- <20210504171734.1434054-4-seanjc@google.com>
- <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
- <YJHCadSIQ/cK/RAw@google.com>
- <CALMp9eSeeuXUXz+0J17b7Dk8pyy3XPgqUXKC5-V8Q7SRd7ykgA@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=X24lUXlMEhpG08QpqR1PXTQYsmjAZVq0k2CHWE7HhVY=;
+        b=JbI7c1tD0G8JvwYUeGFiAMHchq34PMbZaueOTPhwLb+zDlB7YiTI+7fS/1rdT/06QA
+         XH/SU2145z5k/mSo0TbXd2BO7rJNteJev0y6NhVgNpde3puVOTJh4dsHnGeVf3/dTbE+
+         UNAP9CIcIOjand3lT3iOFDdNeyOiWC3ys13wh0x6VZxyVgEthN9hyyHqr53uDIZq8g0z
+         XGS4CF8OcAUoG4u1kYXTyYUn3a/ASZlDHmiJ11Y7Zrg4nCVVXsubKM6rf/KGoOHk3QxD
+         UF/tgZZvXTF0yl/JaJYG7yqnP0bunwC22RXSHwmUHnJdMNGbSgOwzas/yRAnJkUVY/qY
+         1iaA==
+X-Gm-Message-State: AOAM531QHMYhT7lQadT336wtl+24FcHasr++nQyfpf6tu6D7CKnHrHk3
+        RehTskT4fTR2vCHWexBvwYGDrWAUxOT8FklG42SK0Q==
+X-Google-Smtp-Source: ABdhPJxBDaBz2DRw8kqPKeDKfQ4d46qBSNpg+xnZ9QTKG26vZ10umSbISFR3+PaN/BYlWh1v6oWwRWAfY8yFbDKC4qg=
+X-Received: by 2002:a65:63c5:: with SMTP id n5mr7588258pgv.271.1620166307446;
+ Tue, 04 May 2021 15:11:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALMp9eSeeuXUXz+0J17b7Dk8pyy3XPgqUXKC5-V8Q7SRd7ykgA@mail.gmail.com>
+References: <20210430131733.192414-1-rsaripal@amd.com> <20210430131733.192414-2-rsaripal@amd.com>
+ <CAAeT=Fw-nt5h3DhRCQr8Ma71NiP7dHB+WD2hie_55SpCHR=mDQ@mail.gmail.com>
+ <e53887f8-c09d-28db-5041-bf8822370c46@amd.com> <CAAeT=FyAmSxKy5cpGLBH_kqDohXeQOdi4r02KjQO_vycq=4y=Q@mail.gmail.com>
+ <d64b9e19-7124-640f-0ca1-7abc7816d642@amd.com>
+In-Reply-To: <d64b9e19-7124-640f-0ca1-7abc7816d642@amd.com>
+From:   Reiji Watanabe <reijiw@google.com>
+Date:   Tue, 4 May 2021 15:11:31 -0700
+Message-ID: <CAAeT=FwYNJfHUzQjSpJD8oexNfR9CLa2oPx4Umh6=97xpkA7fA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] x86/cpufeatures: Implement Predictive Store
+ Forwarding control.
+To:     "Saripalli, RK" <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, tglx@linutronix.de,
+        mingo@redhat.com, Borislav Petkov <bp@alien8.de>, hpa@zytor.com,
+        Jonathan Corbet <corbet@lwn.net>, bsd@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021, Jim Mattson wrote:
-> On Tue, May 4, 2021 at 2:53 PM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > On Tue, May 04, 2021, Jim Mattson wrote:
-> > > On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
-> > > >
-> > > > Intercept RDTSCP to inject #UD if RDTSC is disabled in the guest.
-> > > >
-> > > > Note, SVM does not support intercepting RDPID.  Unlike VMX's
-> > > > ENABLE_RDTSCP control, RDTSCP interception does not apply to RDPID.  This
-> > > > is a benign virtualization hole as the host kernel (incorrectly) sets
-> > > > MSR_TSC_AUX if RDTSCP is supported, and KVM loads the guest's MSR_TSC_AUX
-> > > > into hardware if RDTSCP is supported in the host, i.e. KVM will not leak
-> > > > the host's MSR_TSC_AUX to the guest.
-> > > >
-> > > > But, when the kernel bug is fixed, KVM will start leaking the host's
-> > > > MSR_TSC_AUX if RDPID is supported in hardware, but RDTSCP isn't available
-> > > > for whatever reason.  This leak will be remedied in a future commit.
-> > > >
-> > > > Fixes: 46896c73c1a4 ("KVM: svm: add support for RDTSCP")
-> > > > Cc: stable@vger.kernel.org
-> > > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > > ---
-> > > ...
-> > > > @@ -4007,8 +4017,7 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
-> > > >         svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
-> > > >                              guest_cpuid_has(vcpu, X86_FEATURE_NRIPS);
-> > > >
-> > > > -       /* Check again if INVPCID interception if required */
-> > > > -       svm_check_invpcid(svm);
-> > > > +       svm_recalc_instruction_intercepts(vcpu, svm);
-> > >
-> > > Does the right thing happen here if the vCPU is in guest mode when
-> > > userspace decides to toggle the CPUID.80000001H:EDX.RDTSCP bit on or
-> > > off?
-> >
-> > I hate our terminology.  By "guest mode", do you mean running the vCPU, or do
-> > you specifically mean running in L2?
-> 
-> I mean is_guest_mode(vcpu) is true (i.e. running L2).
+> Boris / Reiji, I am wondering if I have answered all the questions on these latest patches.
+> Just checking to see if there are any more changes needed.
 
-No, it will not do the right thing, whatever "right thing" even means in this
-context.  That's a pre-existing issue, e.g. INVCPID handling is also wrong.
-I highly doubt VMX does, or even can, do the right thing either.
+All the questions from me were answered and I don't have any
+other comment/question for the latest patch (assuming that
+the patch will be updated based on the comment from Tom).
 
-I'm pretty sure I lobbied in the past to disallow KVM_SET_CPUID* if the vCPU is
-in guest mode since it's impossible to do the right thing without forcing an
-exit to L1, e.g. changing MAXPHYSADDR will allow running L2 with an illegal
-CR3, ditto for various CR4 bits.
+FYI.
+I was going to ask you a question about x86_spec_ctrl_mask.
+But, since it is used only for KVM (although x86_spec_ctrl_mask
+is defined/used only in arch/x86/kernel/cpu/bugs.c),
+I plan to ask you about it once your KVM patch gets updated
+rather than this patch.
+
+Thanks,
+Reiji
