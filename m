@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BE26372EBE
+	by mail.lfdr.de (Postfix) with ESMTP id CE8E9372EC0
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:19:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbhEDRT1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:19:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39634 "EHLO
+        id S232435AbhEDRT3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:19:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39656 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232229AbhEDRTD (ORCPT
+        with ESMTP id S232227AbhEDRTD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 May 2021 13:19:03 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF557C061344
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:04 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id h17-20020a0cb4d10000b02901c51890529dso6771404qvf.18
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:04 -0700 (PDT)
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A77BC061349
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:18:07 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id g29-20020a25b11d0000b02904f44adeb480so12527316ybj.13
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:18:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=rLxHu6ur1nnGAfhjZTDq/vOPrU25QwD4j6qC952iens=;
-        b=XLTGauuasYQDrfDo0C+Tj+Gx4uHJ3NazgHV23+Kc3qBnAQcTkbb/mNSz0siFv0jp4d
-         AKXvXaovhVqyrLLsFlq4XB0WIgTTcw6W4RwefPhbI9cSmxi9QuUxOtkiset6gQsi0Cly
-         gmQf9quYOsxwPVCmeKfZHPI7r+W2XiOt4u+Yp9oyNvwtEZ6JxtlFvpiHR2HFjsyEFwAf
-         kKatzGYF+mm/8caQJioDiIYpvERIFCRglo3986Y8naW/nYnw6KG+qHvRKle7nb/bqMvS
-         Ir4TSNkEzIujxrI53+O2j7VlSh0kmH7ysLlmszmn8bxndd/Pu+24H9fZSxWIeg6JORIF
-         l4Pw==
+        bh=ui+JXTkoxDdvwTCRiewZGYRxlMDy8e9kXT2BE3xqXtU=;
+        b=S3hEGvhbPEekD+aCXuLlUiynkTyC45PVD7hjC6JATa85ouheGVuvmafHDWknN9bH/s
+         XukGjXIT/clrheeK5PifQDXlfpG6fG7rBlb8UktuxQkUsPW3PiadJTVSrLxKAmTrnUev
+         WpUzkfX12zPAXP9fxSSbmpNL3sCjYqndEI4ySMMBgbsGDHoXLvjhnXsZH4SZKdmqkKff
+         n0/jgK+xmFOM6n/pSEW5O+1ChTwgCiqrq05+Ccc2xBl1DDfnQi32k+IeDkPMST0TP1SO
+         tSyJtMoHzKCOf2zqouTt8k8ASBnRwqUhuACf6M71tEjt9bVEYhz358TzJ6IdPeoZQN9I
+         QKFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=rLxHu6ur1nnGAfhjZTDq/vOPrU25QwD4j6qC952iens=;
-        b=HDFhX4+8dXoZcqB5kLlKIHDCfaS+7FIixfC8mGYjooeFsgC+UvEdbZqwl/pbQ56nrv
-         ETrZ7dPZHBdOcWtRLFgegw+oFkMSm2am+Bfqt+PwGjojtYPYSaba/cYP8N6FO+/2qc+2
-         eJwDmW5HdSiqkI3H8bx4bD6yAh9kSVFJK550MwKOBHptKuiOr7uyNx8gG7OKg/rJ9PiA
-         cYTzFvA2on5yKg8qBtQ2XQVwUUFkfzutpCFJrBv7mOf8OE5XqeeT8kZdj9lid+pPsIif
-         YIndJtjOYyY8yCNuUrlPeyNIMhw6PG1aS88xIn02V99DW2IE/aQTCXACJLfMd453nIYE
-         OTlg==
-X-Gm-Message-State: AOAM531g4oxjCPPk+mxESjQLeZ0+9fANtIdRVJfg1/Mre0ZSHjvwLWxD
-        Lcqdl3T0+TSqmMhXfkUqo44BHdGPw9I=
-X-Google-Smtp-Source: ABdhPJyTEKiVJfglk9hr9Q5KTagcSToFUaeeof7MhHoT10+7kKLUl9DID6mdMDzkS9DwPiuPmiqvxYfHwNU=
+        bh=ui+JXTkoxDdvwTCRiewZGYRxlMDy8e9kXT2BE3xqXtU=;
+        b=HkQ4H4ZIrcnNVvq3pXJ5k17pm1BmaFNctBV+MZhfYJ4lYbKQ/1hR4woYeF50p5rcDR
+         eUP8+7rFNrhmY5f8vw0ZqzwKRaDKCYpkRLw3vqRFxadq6flC4JMJOiqbljT2OkY981El
+         RG1HstBQuoZNQW+tnlbeuakn8qtFhoO38HiDDJlR2ril6zowfV5qlHVfy6BQFn0/LceK
+         Cyr2AXN0l0dmRuKjxc2TmhNnlIVmpHok1Fp5qZzeg16VVqghmZ3IIQTLkZ5nxtxXdxJ+
+         Y+/+5YBr2Ca5hh7oVW61aBUeszRb1COV58w1aAvUQb1Cfw/Js9oQEWlWGXRXObV5MBUx
+         aTYQ==
+X-Gm-Message-State: AOAM533lURW+FIk0Q4XkUKlu/FazVhaz1KFo5w9pVp89uUYrzfxiv1w+
+        oTKKSGTWbYhrNdUI1LQc2MS1djm0N6U=
+X-Google-Smtp-Source: ABdhPJypHZ1VkL2AY0aogZQv1fR5oFfAY2i3dt5Xcgm+D9QA2gWxFmOgsndFRP9+IHwaAAJoB/Y0iGLTguI=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:a0c:df08:: with SMTP id g8mr27360414qvl.12.1620148683932;
- Tue, 04 May 2021 10:18:03 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:c801:: with SMTP id y1mr37699490ybf.250.1620148686337;
+ Tue, 04 May 2021 10:18:06 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 10:17:28 -0700
+Date:   Tue,  4 May 2021 10:17:29 -0700
 In-Reply-To: <20210504171734.1434054-1-seanjc@google.com>
-Message-Id: <20210504171734.1434054-10-seanjc@google.com>
+Message-Id: <20210504171734.1434054-11-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210504171734.1434054-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH 09/15] KVM: VMX: Use flag to indicate "active" uret MSRs
- instead of sorting list
+Subject: [PATCH 10/15] KVM: VMX: Use common x86's uret MSR list as the one
+ true list
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -68,205 +68,209 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Explicitly flag a uret MSR as needing to be loaded into hardware instead of
-resorting the list of "active" MSRs and tracking how many MSRs in total
-need to be loaded.  The only benefit to sorting the list is that the loop
-to load MSRs during vmx_prepare_switch_to_guest() doesn't need to iterate
-over all supported uret MRS, only those that are active.  But that is a
-pointless optimization, as the most common case, running a 64-bit guest,
-will load the vast majority of MSRs.  Not to mention that a single WRMSR is
-far more expensive than iterating over the list.
+Drop VMX's global list of user return MSRs now that VMX doesn't resort said
+list to isolate "active" MSRs, i.e. now that VMX's list and x86's list have
+the same MSRs in the same order.
 
-Providing a stable list order obviates the need to track a given MSR's
-"slot" in the per-CPU list of user return MSRs; all lists simply use the
-same ordering.  Future patches will take advantage of the stable order to
-further simplify the related code.
+In addition to eliminating the redundant list, this will also allow moving
+more of the list management into common x86.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/vmx/vmx.c | 80 ++++++++++++++++++++++--------------------
- arch/x86/kvm/vmx/vmx.h |  2 +-
- 2 files changed, 42 insertions(+), 40 deletions(-)
+ arch/x86/include/asm/kvm_host.h |  1 +
+ arch/x86/kvm/vmx/vmx.c          | 97 ++++++++++++++-------------------
+ arch/x86/kvm/x86.c              | 12 ++++
+ 3 files changed, 53 insertions(+), 57 deletions(-)
 
+diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+index a02c9bf3f7f1..c9452472ed55 100644
+--- a/arch/x86/include/asm/kvm_host.h
++++ b/arch/x86/include/asm/kvm_host.h
+@@ -1778,6 +1778,7 @@ int kvm_pv_send_ipi(struct kvm *kvm, unsigned long ipi_bitmap_low,
+ 		    unsigned long icr, int op_64_bit);
+ 
+ void kvm_define_user_return_msr(unsigned index, u32 msr);
++int kvm_find_user_return_msr(u32 msr);
+ int kvm_probe_user_return_msr(u32 msr);
+ int kvm_set_user_return_msr(unsigned index, u64 val, u64 mask);
+ 
 diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 68454b0de2b1..6caabcd5037e 100644
+index 6caabcd5037e..4b432d2bbd06 100644
 --- a/arch/x86/kvm/vmx/vmx.c
 +++ b/arch/x86/kvm/vmx/vmx.c
-@@ -458,8 +458,9 @@ static unsigned long host_idt_base;
-  * Though SYSCALL is only supported in 64-bit mode on Intel CPUs, kvm
-  * will emulate SYSCALL in legacy mode if the vendor string in guest
-  * CPUID.0:{EBX,ECX,EDX} is "AuthenticAMD" or "AMDisbetter!" To
-- * support this emulation, IA32_STAR must always be included in
-- * vmx_uret_msrs_list[], even in i386 builds.
-+ * support this emulation, MSR_STAR is included in the list for i386,
-+ * but is never loaded into hardware.  MSR_CSTAR is also never loaded
-+ * into hardware and is here purely for emulation purposes.
-  */
- static u32 vmx_uret_msrs_list[] = {
- #ifdef CONFIG_X86_64
-@@ -702,18 +703,12 @@ static bool is_valid_passthrough_msr(u32 msr)
+@@ -454,26 +454,7 @@ static inline void vmx_segment_cache_clear(struct vcpu_vmx *vmx)
+ 
+ static unsigned long host_idt_base;
+ 
+-/*
+- * Though SYSCALL is only supported in 64-bit mode on Intel CPUs, kvm
+- * will emulate SYSCALL in legacy mode if the vendor string in guest
+- * CPUID.0:{EBX,ECX,EDX} is "AuthenticAMD" or "AMDisbetter!" To
+- * support this emulation, MSR_STAR is included in the list for i386,
+- * but is never loaded into hardware.  MSR_CSTAR is also never loaded
+- * into hardware and is here purely for emulation purposes.
+- */
+-static u32 vmx_uret_msrs_list[] = {
+-#ifdef CONFIG_X86_64
+-	MSR_SYSCALL_MASK, MSR_LSTAR, MSR_CSTAR,
+-#endif
+-	MSR_EFER, MSR_TSC_AUX, MSR_STAR,
+-	MSR_IA32_TSX_CTRL,
+-};
+-
+-/*
+- * Number of user return MSRs that are actually supported in hardware.
+- * vmx_uret_msrs_list is modified when KVM is loaded to drop unsupported MSRs.
+- */
++/* Number of user return MSRs that are actually supported in hardware. */
+ static int vmx_nr_uret_msrs;
+ 
+ #if IS_ENABLED(CONFIG_HYPERV)
+@@ -703,22 +684,11 @@ static bool is_valid_passthrough_msr(u32 msr)
  	return r;
  }
  
--static inline int __vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
-+static inline int __vmx_find_uret_msr(u32 msr)
+-static inline int __vmx_find_uret_msr(u32 msr)
+-{
+-	int i;
+-
+-	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
+-		if (vmx_uret_msrs_list[i] == msr)
+-			return i;
+-	}
+-	return -1;
+-}
+-
+ struct vmx_uret_msr *vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
  {
  	int i;
  
--	/*
--	 * Note, vmx->guest_uret_msrs is the same size as vmx_uret_msrs_list,
--	 * but is ordered differently.  The MSR is matched against the list of
--	 * supported uret MSRs using "slot", but the index that is returned is
--	 * the index into guest_uret_msrs.
--	 */
- 	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
--		if (vmx_uret_msrs_list[vmx->guest_uret_msrs[i].slot] == msr)
-+		if (vmx_uret_msrs_list[i] == msr)
- 			return i;
- 	}
- 	return -1;
-@@ -723,7 +718,7 @@ struct vmx_uret_msr *vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
- {
- 	int i;
- 
--	i = __vmx_find_uret_msr(vmx, msr);
-+	i = __vmx_find_uret_msr(msr);
+-	i = __vmx_find_uret_msr(msr);
++	i = kvm_find_user_return_msr(msr);
  	if (i >= 0)
  		return &vmx->guest_uret_msrs[i];
  	return NULL;
-@@ -732,13 +727,14 @@ struct vmx_uret_msr *vmx_find_uret_msr(struct vcpu_vmx *vmx, u32 msr)
- static int vmx_set_guest_uret_msr(struct vcpu_vmx *vmx,
- 				  struct vmx_uret_msr *msr, u64 data)
- {
-+	unsigned int slot = msr - vmx->guest_uret_msrs;
- 	int ret = 0;
- 
- 	u64 old_msr_data = msr->data;
- 	msr->data = data;
--	if (msr - vmx->guest_uret_msrs < vmx->nr_active_uret_msrs) {
-+	if (msr->load_into_hardware) {
- 		preempt_disable();
--		ret = kvm_set_user_return_msr(msr->slot, msr->data, msr->mask);
-+		ret = kvm_set_user_return_msr(slot, msr->data, msr->mask);
- 		preempt_enable();
- 		if (ret)
- 			msr->data = old_msr_data;
-@@ -1090,7 +1086,7 @@ static bool update_transition_efer(struct vcpu_vmx *vmx)
+@@ -1086,7 +1056,7 @@ static bool update_transition_efer(struct vcpu_vmx *vmx)
  		return false;
  	}
  
--	i = __vmx_find_uret_msr(vmx, MSR_EFER);
-+	i = __vmx_find_uret_msr(MSR_EFER);
+-	i = __vmx_find_uret_msr(MSR_EFER);
++	i = kvm_find_user_return_msr(MSR_EFER);
  	if (i < 0)
  		return false;
  
-@@ -1252,11 +1248,14 @@ void vmx_prepare_switch_to_guest(struct kvm_vcpu *vcpu)
- 	 */
- 	if (!vmx->guest_uret_msrs_loaded) {
- 		vmx->guest_uret_msrs_loaded = true;
--		for (i = 0; i < vmx->nr_active_uret_msrs; ++i)
--			kvm_set_user_return_msr(vmx->guest_uret_msrs[i].slot,
-+		for (i = 0; i < vmx_nr_uret_msrs; ++i) {
-+			if (!vmx->guest_uret_msrs[i].load_into_hardware)
-+				continue;
-+
-+			kvm_set_user_return_msr(i,
- 						vmx->guest_uret_msrs[i].data,
- 						vmx->guest_uret_msrs[i].mask);
+@@ -6922,6 +6892,7 @@ static void vmx_free_vcpu(struct kvm_vcpu *vcpu)
+ 
+ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+ {
++	struct vmx_uret_msr *tsx_ctrl;
+ 	struct vcpu_vmx *vmx;
+ 	int i, cpu, err;
+ 
+@@ -6946,29 +6917,25 @@ static int vmx_create_vcpu(struct kvm_vcpu *vcpu)
+ 
+ 	for (i = 0; i < vmx_nr_uret_msrs; ++i) {
+ 		vmx->guest_uret_msrs[i].data = 0;
 -
-+		}
+-		switch (vmx_uret_msrs_list[i]) {
+-		case MSR_IA32_TSX_CTRL:
+-			/*
+-			 * TSX_CTRL_CPUID_CLEAR is handled in the CPUID
+-			 * interception.  Keep the host value unchanged to avoid
+-			 * changing CPUID bits under the host kernel's feet.
+-			 *
+-			 * hle=0, rtm=0, tsx_ctrl=1 can be found with some
+-			 * combinations of new kernel and old userspace.  If
+-			 * those guests run on a tsx=off host, do allow guests
+-			 * to use TSX_CTRL, but do not change the value on the
+-			 * host so that TSX remains always disabled.
+-			 */
+-			if (boot_cpu_has(X86_FEATURE_RTM))
+-				vmx->guest_uret_msrs[i].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
+-			else
+-				vmx->guest_uret_msrs[i].mask = 0;
+-			break;
+-		default:
+-			vmx->guest_uret_msrs[i].mask = -1ull;
+-			break;
+-		}
++		vmx->guest_uret_msrs[i].mask = -1ull;
++	}
++	tsx_ctrl = vmx_find_uret_msr(vmx, MSR_IA32_TSX_CTRL);
++	if (tsx_ctrl) {
++		/*
++		 * TSX_CTRL_CPUID_CLEAR is handled in the CPUID interception.
++		 * Keep the host value unchanged to avoid changing CPUID bits
++		 * under the host kernel's feet.
++		 *
++		 * hle=0, rtm=0, tsx_ctrl=1 can be found with some combinations
++		 * of new kernel and old userspace.  If those guests run on a
++		 * tsx=off host, do allow guests to use TSX_CTRL, but do not
++		 * change the value on the host so that TSX remains always
++		 * disabled.
++		 */
++		if (boot_cpu_has(X86_FEATURE_RTM))
++			vmx->guest_uret_msrs[i].mask = ~(u64)TSX_CTRL_CPUID_CLEAR;
++		else
++			vmx->guest_uret_msrs[i].mask = 0;
  	}
  
-     	if (vmx->nested.need_vmcs12_to_shadow_sync)
-@@ -1763,19 +1762,16 @@ static void vmx_queue_exception(struct kvm_vcpu *vcpu)
- 	vmx_clear_hlt(vcpu);
- }
+ 	err = alloc_loaded_vmcs(&vmx->vmcs01);
+@@ -7829,6 +7796,22 @@ static struct kvm_x86_ops vmx_x86_ops __initdata = {
  
--static void vmx_setup_uret_msr(struct vcpu_vmx *vmx, unsigned int msr)
-+static void vmx_setup_uret_msr(struct vcpu_vmx *vmx, unsigned int msr,
-+			       bool load_into_hardware)
+ static __init void vmx_setup_user_return_msrs(void)
  {
--	struct vmx_uret_msr tmp;
--	int from, to;
-+	struct vmx_uret_msr *uret_msr;
- 
--	from = __vmx_find_uret_msr(vmx, msr);
--	if (from < 0)
-+	uret_msr = vmx_find_uret_msr(vmx, msr);
-+	if (!uret_msr)
- 		return;
--	to = vmx->nr_active_uret_msrs++;
- 
--	tmp = vmx->guest_uret_msrs[to];
--	vmx->guest_uret_msrs[to] = vmx->guest_uret_msrs[from];
--	vmx->guest_uret_msrs[from] = tmp;
-+	uret_msr->load_into_hardware = load_into_hardware;
- }
- 
- /*
-@@ -1785,30 +1781,36 @@ static void vmx_setup_uret_msr(struct vcpu_vmx *vmx, unsigned int msr)
-  */
- static void setup_msrs(struct vcpu_vmx *vmx)
- {
--	vmx->guest_uret_msrs_loaded = false;
--	vmx->nr_active_uret_msrs = 0;
- #ifdef CONFIG_X86_64
-+	bool load_syscall_msrs;
-+
- 	/*
- 	 * The SYSCALL MSRs are only needed on long mode guests, and only
- 	 * when EFER.SCE is set.
- 	 */
--	if (is_long_mode(&vmx->vcpu) && (vmx->vcpu.arch.efer & EFER_SCE)) {
--		vmx_setup_uret_msr(vmx, MSR_STAR);
--		vmx_setup_uret_msr(vmx, MSR_LSTAR);
--		vmx_setup_uret_msr(vmx, MSR_SYSCALL_MASK);
--	}
-+	load_syscall_msrs = is_long_mode(&vmx->vcpu) &&
-+			    (vmx->vcpu.arch.efer & EFER_SCE);
-+
-+	vmx_setup_uret_msr(vmx, MSR_STAR, load_syscall_msrs);
-+	vmx_setup_uret_msr(vmx, MSR_LSTAR, load_syscall_msrs);
-+	vmx_setup_uret_msr(vmx, MSR_SYSCALL_MASK, load_syscall_msrs);
- #endif
--	if (update_transition_efer(vmx))
--		vmx_setup_uret_msr(vmx, MSR_EFER);
-+	vmx_setup_uret_msr(vmx, MSR_EFER, update_transition_efer(vmx));
- 
--	if (guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP)  ||
--	    guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDPID))
--		vmx_setup_uret_msr(vmx, MSR_TSC_AUX);
-+	vmx_setup_uret_msr(vmx, MSR_TSC_AUX,
-+			   guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDTSCP) ||
-+			   guest_cpuid_has(&vmx->vcpu, X86_FEATURE_RDPID));
- 
--	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL);
-+	vmx_setup_uret_msr(vmx, MSR_IA32_TSX_CTRL, true);
- 
- 	if (cpu_has_vmx_msr_bitmap())
- 		vmx_update_msr_bitmap(&vmx->vcpu);
 +
 +	/*
-+	 * The set of MSRs to load may have changed, reload MSRs before the
-+	 * next VM-Enter.
++	 * Though SYSCALL is only supported in 64-bit mode on Intel CPUs, kvm
++	 * will emulate SYSCALL in legacy mode if the vendor string in guest
++	 * CPUID.0:{EBX,ECX,EDX} is "AuthenticAMD" or "AMDisbetter!" To
++	 * support this emulation, MSR_STAR is included in the list for i386,
++	 * but is never loaded into hardware.  MSR_CSTAR is also never loaded
++	 * into hardware and is here purely for emulation purposes.
 +	 */
-+	vmx->guest_uret_msrs_loaded = false;
++	const u32 vmx_uret_msrs_list[] = {
++	#ifdef CONFIG_X86_64
++		MSR_SYSCALL_MASK, MSR_LSTAR, MSR_CSTAR,
++	#endif
++		MSR_EFER, MSR_TSC_AUX, MSR_STAR,
++		MSR_IA32_TSX_CTRL,
++	};
+ 	u32 msr;
+ 	int i;
+ 
+@@ -7841,7 +7824,7 @@ static __init void vmx_setup_user_return_msrs(void)
+ 			continue;
+ 
+ 		kvm_define_user_return_msr(vmx_nr_uret_msrs, msr);
+-		vmx_uret_msrs_list[vmx_nr_uret_msrs++] = msr;
++		vmx_nr_uret_msrs++;
+ 	}
  }
  
- static u64 vmx_write_l1_tsc_offset(struct kvm_vcpu *vcpu, u64 offset)
-diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-index d71ed8b425c5..16e4e457ba23 100644
---- a/arch/x86/kvm/vmx/vmx.h
-+++ b/arch/x86/kvm/vmx/vmx.h
-@@ -36,7 +36,7 @@ struct vmx_msrs {
- };
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index b4516d303413..90ef340565a4 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -364,6 +364,18 @@ void kvm_define_user_return_msr(unsigned slot, u32 msr)
+ }
+ EXPORT_SYMBOL_GPL(kvm_define_user_return_msr);
  
- struct vmx_uret_msr {
--	unsigned int slot; /* The MSR's slot in kvm_user_return_msrs. */
-+	bool load_into_hardware;
- 	u64 data;
- 	u64 mask;
- };
++int kvm_find_user_return_msr(u32 msr)
++{
++	int i;
++
++	for (i = 0; i < user_return_msrs_global.nr; ++i) {
++		if (user_return_msrs_global.msrs[i] == msr)
++			return i;
++	}
++	return -1;
++}
++EXPORT_SYMBOL_GPL(kvm_find_user_return_msr);
++
+ static void kvm_user_return_msr_cpu_online(void)
+ {
+ 	unsigned int cpu = smp_processor_id();
 -- 
 2.31.1.527.g47e6f16901-goog
 
