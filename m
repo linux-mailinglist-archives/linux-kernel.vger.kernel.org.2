@@ -2,123 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021C9372D0A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:34:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF87372D0E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231358AbhEDPfY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:35:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44454 "EHLO
+        id S230518AbhEDPgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:36:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230112AbhEDPfV (ORCPT
+        with ESMTP id S230112AbhEDPgQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:35:21 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF408C061574;
-        Tue,  4 May 2021 08:34:25 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso1260473ote.1;
-        Tue, 04 May 2021 08:34:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=4jLpWtZCHYr5J+Yz2qAb7LAorGFHZkc9BwK/PNvj/98=;
-        b=WjvNMIXP3m1ryVSy7NgFFGUY2gIHL/sXp7cA5GgFYTkOmMU9VbS47Y1FW11IWnS9Lw
-         gKEdSRWsvbsaQFPe6fv6WQdQZhjIqPx6kquW7O9gJfoSFJqgzo+cNmwKnJFLJq9lhm0z
-         n9XlfCROnh1/A0YVS0iwJMdN1qvzipJDc2tHTBc18MbiqeUD+/wXUOyN/hooCmCAy2Sg
-         5SjPlVlIOmPRm7wEOhkYiQkuQf3YUyctuxx2JiHKQa1JC8iO00SmdphbTY7kT725YNjb
-         bnAgisSEBKpxMziw1PO5mq9TUcDJJKCBNMWZbCd6OZeQwzeZR6ZYlxfHCW+gkB3PNuJ/
-         f/IQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=4jLpWtZCHYr5J+Yz2qAb7LAorGFHZkc9BwK/PNvj/98=;
-        b=pY5rAIjtLa2Lho7VbWunwaWbKwGZwvhSsbVvdARSydZsJcLvFOVDQNToP7RfTibFvd
-         lr0mSc1J+mrGWOaLTHkuh/g2NqmbZUqoEueibuiiJ1aPCNAHvc/nfECQnvAcZ5JeMsvk
-         tO4cG1DKER2qiAtcMTdNk/mL4Nr+iiUkHayBarSOE6nfo7mDeNVAR58kzHsdwuMnCFZ6
-         JoeJJ194GBY3tuCsTa6TczhloSKw/E65JoWYyhh2SjEzZyukslVcF8PU7Fzzwxxf+C6y
-         hejeMmvuC5sfhcf01vRFWyecdogjU70pLGYbyx2/GzXzcORBhNYdUw6fCWp4PPYCf+Uf
-         uDhw==
-X-Gm-Message-State: AOAM532sUp4xf68lRE5flnkjkzBYlPZV+ISd133Ljm0misOhAOXLKzaA
-        mEgSRoEH31A/xYvu1cT1lT8=
-X-Google-Smtp-Source: ABdhPJzRmuHlbWh7GkvstASQoMXpyAcEMBt/5kCELlWiJ9lyjIxM7rd0ynAZaW8/P2fsNZlxP3egOg==
-X-Received: by 2002:a05:6830:34a1:: with SMTP id c33mr7064795otu.217.1620142465151;
-        Tue, 04 May 2021 08:34:25 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id c7sm714754oot.42.2021.05.04.08.34.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 08:34:24 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Tue, 4 May 2021 08:34:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
+        Tue, 4 May 2021 11:36:16 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DB1DC061574;
+        Tue,  4 May 2021 08:35:21 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0c8400351ab2c4e1964d4a.dip0.t-ipconnect.de [IPv6:2003:ec:2f0c:8400:351a:b2c4:e196:4d4a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 519341EC050F;
+        Tue,  4 May 2021 17:35:18 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620142518;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=9YS8rpRnHR92Rd5/l+wwPCakLldpm8xdN3Lf3MsyQh8=;
+        b=NHbqzZHE9oHZ2K47IzFD2XP14aByJ1lvs5bM7HgyFKtKbiwF1K79ObjEsABzG4WJrebBfz
+        EP92t1w0sl6vKwjOyFHBQpVp+FWSYh9BRi/PGWLg9s/A7TB8qsgpwb4eTBwOPtuKCLmA31
+        Dz9/uaTfrC7Ad3jrnULYWcHldJ7cUnQ=
+Date:   Tue, 4 May 2021 17:35:16 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stefan Metzmacher <metze@samba.org>,
+        Jens Axboe <axboe@kernel.dk>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] iio: am2315: Make am2315_acpi_id depend on CONFIG_ACPI
-Message-ID: <20210504153422.GA2117112@roeck-us.net>
-References: <20210504143019.2085111-1-linux@roeck-us.net>
- <CAHp75Vc99LzOpe1EeTwoM+wkwyZkTamj6-=MSe_MBZ1+XUcebg@mail.gmail.com>
- <CAHp75VeLyxbwbDtCca5goCEWn7vbQ9d_Fb01dWj1CP8eBb9jJA@mail.gmail.com>
+        io-uring <io-uring@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+Message-ID: <YJFptPyDtow//5LU@zn.tnic>
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
+ <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+ <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHp75VeLyxbwbDtCca5goCEWn7vbQ9d_Fb01dWj1CP8eBb9jJA@mail.gmail.com>
+In-Reply-To: <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Tue, May 04, 2021 at 10:39:23AM +0200, Peter Zijlstra wrote:
+> Anybody on toolchains that can help get GDB fixed?
 
-On Tue, May 04, 2021 at 06:15:44PM +0300, Andy Shevchenko wrote:
-> On Tue, May 4, 2021 at 6:11 PM Andy Shevchenko
-> <andy.shevchenko@gmail.com> wrote:
-> >
-> > On Tue, May 4, 2021 at 5:41 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> > >
-> > > With CONFIG_ACPI=n and -Werror, 0-day reports:
-> > >
-> > > drivers/iio/humidity/am2315.c:259:36: error:
-> > >         'am2315_acpi_id' defined but not used
-> >
-> > ...
-> >
-> > > +#ifdef CONFIG_ACPI
-> > >  static const struct acpi_device_id am2315_acpi_id[] = {
-> > >         {"AOS2315", 0},
-> >
-> > This is a fake ID according to the specification. Do we have any proof
-> > that it's being used in the wild?
-> > If no, I prefer to drop this ID section entirely.
-> >
-> > If yes, needs a comment which device is using it (however it may be
-> > out of the scope of this fix).
-> 
-> Googling shows zarro results.
-> 
-> (Yes, I know about meta-acpi project and I may fix it there, but it
-> may not be considered as a "being in the wild")
-> 
-> So, please, remove the entire section.
-> 
-I'll send v2.
+In the meantime, Tom is looking at fixing this, in case people wanna try
+gdb patches or give him a test case or so...
 
-> Feel free to add any tag from me (Rb, Ack)
-> 
-Since the change is substantial, I don't feel comfortable doing that.
-I'll copy you on v2 and let you add the tags yourself.
+https://sourceware.org/bugzilla/show_bug.cgi?id=27822
 
-Thanks,
-Guenter
+Thx.
 
-> > >         {}
-> > >  };
-> > > -
-> > >  MODULE_DEVICE_TABLE(acpi, am2315_acpi_id);
-> > > +#endif
-> 
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+-- 
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
