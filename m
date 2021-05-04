@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 730A837314C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:18:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D67137314E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:19:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231702AbhEDUTt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:19:49 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53235 "EHLO
+        id S231959AbhEDUUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:20:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54955 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230301AbhEDUTs (ORCPT
+        by vger.kernel.org with ESMTP id S231750AbhEDUUO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:19:48 -0400
+        Tue, 4 May 2021 16:20:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620159532;
+        s=mimecast20190719; t=1620159558;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=QJf7ER3TDUPpx69gjjjuRZbp8LhbACyEKSP42GGHdNw=;
-        b=Huq45OuJwddEpbAzCtZKTeBWSowrF2yvBSYTJQFxKEFrM1g8+dda3S87MBePDaoxWMg3cd
-        bQBljwUoNajYHELugxL64RmJifGqYPDzPQPPoazYXwoKmBTFokjKJIFr4g0ZhiZ1vQmDxW
-        9W9Bzo17lChxowufouQ1BvuCcQkbRno=
+        bh=XT5wmldVjcj9qzq2rbcAVF3LYdtWWQb01hB//6q8U0E=;
+        b=bqAyKmwEHiq6DP2cmhHzQ9qgFLavH3abSpTeQh+CHW1Zns5Jnxhq44vRmVVNd0+th/OQ5Y
+        sQrJVHu4wJgMg26TcBANKihXQz7aKVVO3+PGEhAS/XMms8RGmqLfzAuY3jWxyEOizIUWVc
+        PVhrCqSxsd7la2dqd7mNPqksbJegA4c=
 Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
  [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-14-2-reaFVqPZ2jMy3HppmZDg-1; Tue, 04 May 2021 16:18:50 -0400
-X-MC-Unique: 2-reaFVqPZ2jMy3HppmZDg-1
-Received: by mail-ed1-f70.google.com with SMTP id i17-20020a50fc110000b0290387c230e257so6977429edr.0
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:18:49 -0700 (PDT)
+ us-mta-574-oDBK-wU1PqGAwnbCRvvScw-1; Tue, 04 May 2021 16:19:15 -0400
+X-MC-Unique: oDBK-wU1PqGAwnbCRvvScw-1
+Received: by mail-ed1-f70.google.com with SMTP id q18-20020a0564025192b02903888712212fso6815906edd.19
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:19:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=QJf7ER3TDUPpx69gjjjuRZbp8LhbACyEKSP42GGHdNw=;
-        b=W590yUWASmCJyzEG6yJzzLqnVHwxjZOahoCggiPBxp/qipphmd31fMczByrZJRk8EM
-         KJJ52aBkJKdyHcHvB0kPriSe5FPM/Z9WoLJe2TYnrXT1rlGs2mS01CJ2Lws1iNU7ALqV
-         Frdyal1zRgODmswj3p1C8I9G+wxr+RP9SNBxIswIGoxBHk3asF384IasEt1bWijJxDMz
-         aCsb/ZAJvZKLJ8qEayaKuz2Is7khCx/h4xqMwQ56P1uQJ6V1vTGCuHRjPAARiAmNWmZH
-         EuuDlk290osGJr/m2lmmE7zum2HrAXRSCPabmxqN9gOoVwxCAQT2W1PJ0TtSs7sinxKD
-         vnWg==
-X-Gm-Message-State: AOAM530srDOal4KjjOSyAKr3Y8TMQCTkIwnEm8etovEwAZZN6lHvIgu+
-        iHJ8lT9AXrLrYMitXssTfOew+nHdI3cku5yApAUaD0EzWU7l6EYFmQTEwvugpMIKNH9SqVFR9up
-        863qKf9ZoW7VMnQ6FecqPqwda
-X-Received: by 2002:a17:906:e105:: with SMTP id gj5mr24371327ejb.388.1620159528937;
-        Tue, 04 May 2021 13:18:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxPW3cE3OvV+sifWvUG52jfXFijecUpZWkEi4GWpuQsW03z9NVNRFBAl8LL0HoXyCoYIPnvbw==
-X-Received: by 2002:a17:906:e105:: with SMTP id gj5mr24371314ejb.388.1620159528740;
-        Tue, 04 May 2021 13:18:48 -0700 (PDT)
+        bh=XT5wmldVjcj9qzq2rbcAVF3LYdtWWQb01hB//6q8U0E=;
+        b=UajaNAUAaP1g/2LGl757RWJfxeoPlsPNml9YFCURWT5ZxenxYBbNcs1WvmOzeclJUl
+         MXGPTMaWvie1VmWIpsyorIeIu3UX0UI8vdY0JSRr9XwQfrLWKKIyPeaJTe9vk7W1NAPE
+         K8EQKmN++f7romZaTHRvBaB6jiiIH5b20F93eQHrYNk/FjiPHpW54jyrrDqhwnPJMLle
+         9VW1ZKXtB1zmccdegy2eeTe7Jc5Ms6ECVVA5frxyK7keO1Q4x6RB9C51D9Ao2FuNzIc4
+         trjlbF3x5DswkWiHfCMhp8aVHONMkiJkLxBwWxicDaUyC9xjlBso/fw1I9Vh6DcjXPAT
+         Ev7A==
+X-Gm-Message-State: AOAM533WHP8aWn6PCE8n5REy1fpbkrlX589ZSlMAu+2tymMG/DGinpLR
+        Ku4NJaGDQy9AFExJF8bJeMlddGV2+U2ZqUbV3uLabuAnsSNU+M4f02xvZuh3IyJinwzQZCx8MRB
+        ur0yGgLoSOi9emvFkXbcp9azH
+X-Received: by 2002:a17:906:f0d1:: with SMTP id dk17mr24298930ejb.256.1620159554133;
+        Tue, 04 May 2021 13:19:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx7qgPDq/WT4usRYakJCroraJvYEIPirrEpNH9of0IyZWOEVewfiFFivXTogMTwWuarhK6EJQ==
+X-Received: by 2002:a17:906:f0d1:: with SMTP id dk17mr24298918ejb.256.1620159553980;
+        Tue, 04 May 2021 13:19:13 -0700 (PDT)
 Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id o20sm14995116eds.65.2021.05.04.13.18.46
+        by smtp.gmail.com with ESMTPSA id m9sm2013860ejj.53.2021.05.04.13.19.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 13:18:48 -0700 (PDT)
-To:     Ben Gardon <bgardon@google.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
+        Tue, 04 May 2021 13:19:13 -0700 (PDT)
+Subject: Re: [PATCH v2 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
+To:     Sean Christopherson <seanjc@google.com>,
+        Ben Gardon <bgardon@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
         Junaid Shahid <junaids@google.com>,
         Jim Mattson <jmattson@google.com>,
         Yulei Zhang <yulei.kernel@gmail.com>,
@@ -64,90 +64,35 @@ Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Xiao Guangrong <xiaoguangrong.eric@gmail.com>
 References: <20210429211833.3361994-1-bgardon@google.com>
- <20210429211833.3361994-2-bgardon@google.com>
- <e9090079-2255-5a70-f909-89f6f65c12ed@redhat.com>
- <CANgfPd9O3d9b+WYgo+ke1Jx50=ep_f-ZC1gRqUET6PDsLxW+Gw@mail.gmail.com>
+ <20210429211833.3361994-8-bgardon@google.com> <YJGqzZ/8CS8mSx2c@google.com>
 From:   Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v2 1/7] KVM: x86/mmu: Track if shadow MMU active
-Message-ID: <34fe30b6-0d4b-f1e8-9abd-6cb0a0765492@redhat.com>
-Date:   Tue, 4 May 2021 22:18:40 +0200
+Message-ID: <781d2549-bbb1-23a2-44bf-58379ba23054@redhat.com>
+Date:   Tue, 4 May 2021 22:19:12 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <CANgfPd9O3d9b+WYgo+ke1Jx50=ep_f-ZC1gRqUET6PDsLxW+Gw@mail.gmail.com>
+In-Reply-To: <YJGqzZ/8CS8mSx2c@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/05/21 19:26, Ben Gardon wrote:
-> On Mon, May 3, 2021 at 6:42 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
->>
->> On 29/04/21 23:18, Ben Gardon wrote:
->>> +void activate_shadow_mmu(struct kvm *kvm)
->>> +{
->>> +     kvm->arch.shadow_mmu_active = true;
->>> +}
->>> +
->>
->> I think there's no lock protecting both the write and the read side.
->> Therefore this should be an smp_store_release, and all checks in
->> patch 2 should be an smp_load_acquire.
+On 04/05/21 22:13, Sean Christopherson wrote:
+>> +	/*
+>> +	 * If set, the rmap should be allocated for any newly created or
+>> +	 * modified memslots. If allocating rmaps lazily, this may be set
+>> +	 * before the rmaps are allocated for existing memslots, but
+>> +	 * shadow_mmu_active will not be set until after the rmaps are fully
+>> +	 * allocated.
+>> +	 */
+>> +	bool alloc_memslot_rmaps;
+> Maybe "need_rmaps" or "need_memslot_rmaps"?
 > 
-> That makes sense.
-> 
->>
->> Also, the assignments to slot->arch.rmap in patch 4 (alloc_memslot_rmap)
->> should be an rcu_assign_pointer, while __gfn_to_rmap must be changed like so:
->>
->> +       struct kvm_rmap_head *head;
->> ...
->> -       return &slot->arch.rmap[level - PG_LEVEL_4K][idx];
->> +       head = srcu_dereference(slot->arch.rmap[level - PG_LEVEL_4K], &kvm->srcu,
->> +                                lockdep_is_held(&kvm->slots_arch_lock));
->> +       return &head[idx];
-> 
-> I'm not sure I fully understand why this becomes necessary after patch
-> 4. Isn't it already needed since the memslots are protected by RCU? Or
-> is there already a higher level rcu dereference?
-> 
-> __kvm_memslots already does an srcu dereference, so is there a path
-> where we aren't getting the slots from that function where this is
-> needed?
 
-There are two point of views:
-
-1) the easier one is just CONFIG_PROVE_RCU debugging: the rmaps need to 
-be accessed under RCU because the memslots can disappear as soon as 
-kvm->srcu is unlocked.
-
-2) the harder one (though at this point I'm better at figuring out these 
-ordering bugs than "traditional" mutex races) is what the happens before 
-relation[1] looks like.  Consider what happens if the rmaps are 
-allocated by *another thread* after the slots have been fetched.
-
-thread 1		thread 2		thread 3
-allocate memslots
-rcu_assign_pointer
-			slots = srcu_dereference
-						allocate rmap
-						rcu_assign_pointer
-			head = slot->arch.rmap[]
-
-Here, thread 3 is allocating the rmaps in the SRCU-protected 
-kvm_memslots; those rmaps that didn't exist at the time thread 1 did the 
-rcu_assign_pointer (which synchronizes with thread 2's srcu_dereference 
-that retrieves slots), hence they were not covered by the release 
-semantics of that rcu_assign_pointer and the "consume" semantics of the 
-corresponding srcu_dereference.  Therefore, thread 2 needs another 
-srcu_dereference when retrieving them.
+Since we're bikeshedding I prefer "memslots_have_rmaps" or something not 
+too distant from that.
 
 Paolo
-
-[1] https://lwn.net/Articles/844224/
-
-> I wouldn't say that the rmaps are protected by RCU in any way that
-> separate from the memslots.
 
