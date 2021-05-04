@@ -2,132 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DD4A37295F
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F34CB372963
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:01:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230518AbhEDLBu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 07:01:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230373AbhEDLBg (ORCPT
+        id S230460AbhEDLCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 07:02:15 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:18000 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230252AbhEDLCH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 07:01:36 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D13F4C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 04:00:37 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id v191so7015083pfc.8
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 04:00:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Bd4fUtUUCN/HpB11MmfQQGuVzm8gcsXHLL3mbp/tsMI=;
-        b=gxf7CzRhIEg7zRxAYGfW3O9gQpoV2/SC9xkdYvQf3t+rCcVcsEqdhkegYCDClL06IQ
-         nNCvHtQnt2tAtCMP/3gx3r/XxbYswP6vnXZO7suvBW7X1mwBvhXuau0m/XuWNLv38/9N
-         eN2AN9ttEI4gDJ29x+0pSaSXv9wc6K3vB9XcRHoBhtLXHIvV0LRs8BVDfsScBrgeZPeM
-         UkHPGcCTozEn+KaHV4WeUqZ/IVdH4zhep8U4PtnPDLCrTNih8FfDVVXd4Olpfl6YQIZg
-         1rKIEmXBw6aeSdAIgAfCF2wCnbsGLCur1hSjinLYVbLNDDxRlcn86lav+MEPJfQknkDK
-         hbuw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Bd4fUtUUCN/HpB11MmfQQGuVzm8gcsXHLL3mbp/tsMI=;
-        b=YECsqnYqNnnUi74k5v7YEjda2PSAxurusTJrxzQbjm3xq4RrUSN62E4y5s27NQVSdy
-         DyHZL5NssxW3zNWvEF9z2PvQahVAEVh4s3XWl4XdeNaOeIGs4OXkBqDGyhAeo6sIphFZ
-         3xERvsQVOAfNmN3MyHUsJvjys12VgJZrcdWX0vy/3/49fzJsd4O4yfUlor64cR4nEoqg
-         2Vmg1Cp35KCIfeGiaG6vhwwwkChMgzjaJzBrs3D//buAHZDkHsMZWLx353cuqDy4awTV
-         TOu3xePtQmuohyG6/6QkBpzdA1Ugcm0q+9lJ78inF2tg6pLeudTQlqE1/4+JB1ic0YK+
-         ShHA==
-X-Gm-Message-State: AOAM5312IafiMwVumMKe0/PyfJoEYh2Yw0cpG3Eh7ahN9QoBd1mUtnlE
-        u/72wMY2v2tVfeKf6OJWSjfoWQ==
-X-Google-Smtp-Source: ABdhPJz46MtHcSpwQA7kaeKNf5SD74WureuuZMKtrRm8c5ReJSIREFjLSWxpGsBIBtCzVJDkaWsUTg==
-X-Received: by 2002:a63:1d19:: with SMTP id d25mr22535208pgd.169.1620126037434;
-        Tue, 04 May 2021 04:00:37 -0700 (PDT)
-Received: from hsinchu02.internal.sifive.com (114-34-229-221.HINET-IP.hinet.net. [114.34.229.221])
-        by smtp.gmail.com with ESMTPSA id k17sm11762529pfa.68.2021.05.04.04.00.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 04:00:37 -0700 (PDT)
-From:   Greentime Hu <greentime.hu@sifive.com>
-To:     greentime.hu@sifive.com, paul.walmsley@sifive.com, hes@sifive.com,
-        erik.danie@sifive.com, zong.li@sifive.com, bhelgaas@google.com,
-        robh+dt@kernel.org, aou@eecs.berkeley.edu, mturquette@baylibre.com,
-        sboyd@kernel.org, lorenzo.pieralisi@arm.com,
-        p.zabel@pengutronix.de, alex.dewar90@gmail.com,
-        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
-        vidyas@nvidia.com, jh80.chung@samsung.com,
-        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-clk@vger.kernel.org, helgaas@kernel.org
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>
-Subject: [PATCH v6 6/6] riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
-Date:   Tue,  4 May 2021 18:59:40 +0800
-Message-Id: <20210504105940.100004-7-greentime.hu@sifive.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210504105940.100004-1-greentime.hu@sifive.com>
-References: <20210504105940.100004-1-greentime.hu@sifive.com>
+        Tue, 4 May 2021 07:02:07 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FZGyp5TtYzPxFH;
+        Tue,  4 May 2021 18:57:54 +0800 (CST)
+Received: from SWX921481.china.huawei.com (10.126.200.189) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Tue, 4 May 2021 19:00:59 +0800
+From:   Barry Song <song.bao.hua@hisilicon.com>
+To:     <peterz@infradead.org>, <valentin.schneider@arm.com>,
+        <corbet@lwn.net>
+CC:     <linux-doc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, Barry Song <song.bao.hua@hisilicon.com>
+Subject: [PATCH] Documentation: scheduler: sched_debug_verbose cmdline should be sched_verbose
+Date:   Tue, 4 May 2021 22:53:43 +1200
+Message-ID: <20210504105344.31344-1-song.bao.hua@hisilicon.com>
+X-Mailer: git-send-email 2.21.0.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.126.200.189]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-Acked-by: Palmer Dabbelt <palmerdabbelt@google.com>
----
- arch/riscv/boot/dts/sifive/fu740-c000.dtsi | 33 ++++++++++++++++++++++
- 1 file changed, 33 insertions(+)
+The cmdline should include sched_verbose but not sched_debug_verbose
+as sched_debug_verbose is only the variant name in code.
 
-diff --git a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-index eeb4f8c3e0e7..8eef82e4199f 100644
---- a/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-+++ b/arch/riscv/boot/dts/sifive/fu740-c000.dtsi
-@@ -159,6 +159,7 @@ prci: clock-controller@10000000 {
- 			reg = <0x0 0x10000000 0x0 0x1000>;
- 			clocks = <&hfclk>, <&rtcclk>;
- 			#clock-cells = <1>;
-+			#reset-cells = <1>;
- 		};
- 		uart0: serial@10010000 {
- 			compatible = "sifive,fu740-c000-uart", "sifive,uart0";
-@@ -289,5 +290,37 @@ gpio: gpio@10060000 {
- 			clocks = <&prci PRCI_CLK_PCLK>;
- 			status = "disabled";
- 		};
-+		pcie@e00000000 {
-+			compatible = "sifive,fu740-pcie";
-+			#address-cells = <3>;
-+			#size-cells = <2>;
-+			#interrupt-cells = <1>;
-+			reg = <0xe 0x00000000 0x0 0x80000000>,
-+			      <0xd 0xf0000000 0x0 0x10000000>,
-+			      <0x0 0x100d0000 0x0 0x1000>;
-+			reg-names = "dbi", "config", "mgmt";
-+			device_type = "pci";
-+			dma-coherent;
-+			bus-range = <0x0 0xff>;
-+			ranges = <0x81000000  0x0 0x60080000  0x0 0x60080000 0x0 0x10000>,      /* I/O */
-+				 <0x82000000  0x0 0x60090000  0x0 0x60090000 0x0 0xff70000>,    /* mem */
-+				 <0x82000000  0x0 0x70000000  0x0 0x70000000 0x0 0x1000000>,    /* mem */
-+				 <0xc3000000 0x20 0x00000000 0x20 0x00000000 0x20 0x00000000>;  /* mem prefetchable */
-+			num-lanes = <0x8>;
-+			interrupts = <56>, <57>, <58>, <59>, <60>, <61>, <62>, <63>, <64>;
-+			interrupt-names = "msi", "inta", "intb", "intc", "intd";
-+			interrupt-parent = <&plic0>;
-+			interrupt-map-mask = <0x0 0x0 0x0 0x7>;
-+			interrupt-map = <0x0 0x0 0x0 0x1 &plic0 57>,
-+					<0x0 0x0 0x0 0x2 &plic0 58>,
-+					<0x0 0x0 0x0 0x3 &plic0 59>,
-+					<0x0 0x0 0x0 0x4 &plic0 60>;
-+			clock-names = "pcie_aux";
-+			clocks = <&prci PRCI_CLK_PCIE_AUX>;
-+			pwren-gpios = <&gpio 5 0>;
-+			reset-gpios = <&gpio 8 0>;
-+			resets = <&prci 4>;
-+			status = "okay";
-+		};
- 	};
- };
+Fixes: 9406415f46 ("sched/debug: Rename the sched_debug parameter to sched_verbose")
+Signed-off-by: Barry Song <song.bao.hua@hisilicon.com>
+---
+ Documentation/scheduler/sched-domains.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Documentation/scheduler/sched-domains.rst b/Documentation/scheduler/sched-domains.rst
+index 14ea2f2..84dcdcd 100644
+--- a/Documentation/scheduler/sched-domains.rst
++++ b/Documentation/scheduler/sched-domains.rst
+@@ -74,7 +74,7 @@ for a given topology level by creating a sched_domain_topology_level array and
+ calling set_sched_topology() with this array as the parameter.
+ 
+ The sched-domains debugging infrastructure can be enabled by enabling
+-CONFIG_SCHED_DEBUG and adding 'sched_debug_verbose' to your cmdline. If you
++CONFIG_SCHED_DEBUG and adding 'sched_verbose' to your cmdline. If you
+ forgot to tweak your cmdline, you can also flip the
+ /sys/kernel/debug/sched/verbose knob. This enables an error checking parse of
+ the sched domains which should catch most possible errors (described above). It
 -- 
-2.31.1
+1.8.3.1
 
