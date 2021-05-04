@@ -2,108 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70C89373215
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:53:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D623B373217
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232938AbhEDVyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 17:54:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232923AbhEDVyq (ORCPT
+        id S232559AbhEDV5d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 17:57:33 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39716 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232254AbhEDV5a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 17:54:46 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE607C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 14:53:50 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id v13so6089136ple.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 14:53:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=FsMJe2qKChbQLfpmmI2er2bhYru7z7dSUmbB+MQYcyA=;
-        b=PGoh0QzzOP4PWKgVUJgFGMnPDB9z/qJcSqqffhmjm4s/x5sxxsSaZAmxrbq5mKPW4L
-         JmwSJzcfYvkb2ch2/dsk3/8nY2UDwC9PdQ26CCxFkFv57DMlvSQrrD/UvcxslTN2srD0
-         qGLVKOzczAmBiJcYf0KMNxFZQJwILjDiYjEpZ2zk/PkkZD7nFWsJ5xBz46AbGBP/css+
-         T0mGQvtT0ZTewdlOK9YMnvEXz6arFOAiJR8e9xEgf6yaiDWKXp0YwZCwt/JTFGZvXzma
-         nuYBxQeGtkjs8jusd/8gTRL5dyKI+gSypuoeSuS/sqVNEY0XqPxrlJLSsq6Fp48gEn9r
-         eg0g==
+        Tue, 4 May 2021 17:57:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620165394;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=35MCkg8lIjxu3w+Nhjw8LO1uMN40Ae2wEaumOo5OJ64=;
+        b=NhB6b2xKDfMNlF9NPRrlSQi0uwMhBIXr0/4DgHdxY6CA8oRqiniRc67fnTHlJnT6xhvuEU
+        iWTZZkO7kCnVuALZvjc18Am8CE6I6ZnExq++6iccoJaggkjmaCIWcEpTW2pQfU00F2clES
+        3Xq7QyoLO0LD4hJxJwdhZIHVvAVietA=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-f1n3f6-DO764EIQmqHdAgw-1; Tue, 04 May 2021 17:56:32 -0400
+X-MC-Unique: f1n3f6-DO764EIQmqHdAgw-1
+Received: by mail-ej1-f69.google.com with SMTP id v1-20020a1709064001b02903a60e5b4521so1426605ejj.23
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 14:56:32 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=FsMJe2qKChbQLfpmmI2er2bhYru7z7dSUmbB+MQYcyA=;
-        b=awtZ+utEFYu9n0Ik+RVMh3HyBGexiT5QvYu2FOFqj37j2WlFoyYFODffzcbz84IeoU
-         zLvQWzr9z6Cc9vPLM5OkJIcj/YVzopyWy9jlZC1dr5Ke26YRgGkqA3q9NA0AF9v2OuYf
-         tQ0O6aJHCo/g7SEabMtdZBEIUyF615M3VB1XYOCyUmcOlwWA6nu6ZdSEkXqqAHDKJwUR
-         FFGy/wjm4JXdsTzMvcMPQfKpZMZm8U4kvSXHLgiSphVk5ppf/4os0TOvErRAramhvvr6
-         wEKf2JxMdDdeKF+xF5ath8SRA3R3+FqOxYB/LsiMyWO7QIErlWKLe2rwO6Cw1Jc+gzNy
-         HtiQ==
-X-Gm-Message-State: AOAM530XWACSMrAc+KsLcBy7eyl1jW+/jVv8XH3oiCt8bc3x6I7YD/JR
-        GsvLkILsdMP10WSCXjt+kq6NCg==
-X-Google-Smtp-Source: ABdhPJyIfszxo0bx3Jkguq3ZGyfAq1tH8gsNHrt6Rmn0FlLPMa9UdSaaKIKxu3FAamS9VYMkfrvs8g==
-X-Received: by 2002:a17:902:9a84:b029:ec:7fd5:193e with SMTP id w4-20020a1709029a84b02900ec7fd5193emr28456943plp.62.1620165230295;
-        Tue, 04 May 2021 14:53:50 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id i126sm12898036pfc.20.2021.05.04.14.53.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 14:53:49 -0700 (PDT)
-Date:   Tue, 4 May 2021 21:53:45 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=35MCkg8lIjxu3w+Nhjw8LO1uMN40Ae2wEaumOo5OJ64=;
+        b=KRuPQdIzORNr5xkRe+9ub/CvYJ/a60/tJ3Ny87MkrxqeJ5zAyDvpNixI/leCDipBS7
+         i22ccNxpw4zEInrfoMOabao9+zm/EN+wp9sglRcW77H05a90OQtzpPwgh1YlKcf5Gue7
+         YuticUmv7070lIOxLD7ZPaJd7pzYcylGO88BFbKKHrLdm7rx7tjZTs2vAOsDjvvU08SC
+         EyAo/E8LM97neLROkI5Y5rck+S1FNgDS8F06iMSmW3I2p7boaWij6MpdTNwYXkHtkSTx
+         IFdcWkPuParlH07RoJVNhg08ksjAp0vE7RFy/iUawgOETBNSgyCnHfQqxy2RquzusxSU
+         poQA==
+X-Gm-Message-State: AOAM533lOGm+n3q5Uif1MYo1PJRDi/Xt5YhCA2jibrKiJ2eeKQZxYrzr
+        3tArrZcDJC+o/jtZoGE5zZeQYFMd3r4nEdZn/53tR72Nmo2VQxGohpU3PQv3u1zCDID5DMpHPZg
+        mmuRf4cGT9NZuG9E2/tQIVfpu
+X-Received: by 2002:a17:906:85da:: with SMTP id i26mr24666450ejy.287.1620165391690;
+        Tue, 04 May 2021 14:56:31 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwGZJwGOt/aIRwDYPFToyovMvFSaobj/kKF52SOnsxzPRmiVfQO92sEnYoz5nSNupv6Mr46Xw==
+X-Received: by 2002:a17:906:85da:: with SMTP id i26mr24666438ejy.287.1620165391527;
+        Tue, 04 May 2021 14:56:31 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id gn36sm1982567ejc.23.2021.05.04.14.56.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 14:56:30 -0700 (PDT)
+Subject: Re: [PATCH] KVM/VMX: Invoke NMI non-IST entry instead of IST entry
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org,
+        Lai Jiangshan <laijs@linux.alibaba.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
         Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
- disabled in the guest
-Message-ID: <YJHCadSIQ/cK/RAw@google.com>
-References: <20210504171734.1434054-1-seanjc@google.com>
- <20210504171734.1434054-4-seanjc@google.com>
- <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Juergen Gross <JGross@suse.com>,
+        Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>
+References: <YJG6ztbGjtuctec4@google.com>
+ <38B9D60F-F24F-4910-B2DF-2A57F1060452@amacapital.net>
+ <625057c7-ea40-4f37-8bea-cddecfe1b855@redhat.com>
+ <YJHBxvR2mqsSX0pU@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <5d7ca301-a0b2-d389-3bc2-feb304c9f5b5@redhat.com>
+Date:   Tue, 4 May 2021 23:56:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
+In-Reply-To: <YJHBxvR2mqsSX0pU@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021, Jim Mattson wrote:
-> On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
-> >
-> > Intercept RDTSCP to inject #UD if RDTSC is disabled in the guest.
-> >
-> > Note, SVM does not support intercepting RDPID.  Unlike VMX's
-> > ENABLE_RDTSCP control, RDTSCP interception does not apply to RDPID.  This
-> > is a benign virtualization hole as the host kernel (incorrectly) sets
-> > MSR_TSC_AUX if RDTSCP is supported, and KVM loads the guest's MSR_TSC_AUX
-> > into hardware if RDTSCP is supported in the host, i.e. KVM will not leak
-> > the host's MSR_TSC_AUX to the guest.
-> >
-> > But, when the kernel bug is fixed, KVM will start leaking the host's
-> > MSR_TSC_AUX if RDPID is supported in hardware, but RDTSCP isn't available
-> > for whatever reason.  This leak will be remedied in a future commit.
-> >
-> > Fixes: 46896c73c1a4 ("KVM: svm: add support for RDTSCP")
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > ---
-> ...
-> > @@ -4007,8 +4017,7 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
-> >         svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
-> >                              guest_cpuid_has(vcpu, X86_FEATURE_NRIPS);
-> >
-> > -       /* Check again if INVPCID interception if required */
-> > -       svm_check_invpcid(svm);
-> > +       svm_recalc_instruction_intercepts(vcpu, svm);
+On 04/05/21 23:51, Sean Christopherson wrote:
+> On Tue, May 04, 2021, Paolo Bonzini wrote:
+>> On 04/05/21 23:23, Andy Lutomirski wrote:
+>>>> On May 4, 2021, at 2:21 PM, Sean Christopherson <seanjc@google.com> wrote:
+>>>> FWIW, NMIs are masked if the VM-Exit was due to an NMI.
+>>
+>> Huh, indeed:  "An NMI causes subsequent NMIs to be blocked, but only after
+>> the VM exit completes".
+>>
+>>> Then this whole change is busted, since nothing will unmask NMIs. Revert it?
+>> Looks like the easiest way out indeed.
 > 
-> Does the right thing happen here if the vCPU is in guest mode when
-> userspace decides to toggle the CPUID.80000001H:EDX.RDTSCP bit on or
-> off?
+> I've no objection to reverting to intn, but what does reverting versus handling
+> NMI on the kernel stack have to do with NMIs being blocked on VM-Exit due to NMI?
+> I'm struggling mightily to connect the dots.
 
-I hate our terminology.  By "guest mode", do you mean running the vCPU, or do
-you specifically mean running in L2?
+Nah, you're right: vmx_do_interrupt_nmi_irqoff will not call the handler 
+directly, rather it calls the IDT entrypoint which *will* do an IRET and 
+unmask NMIs.  I trusted Andy too much on this one. :)
+
+Thomas's posted patch ("[PATCH] KVM/VMX: Invoke NMI non-IST entry 
+instead of IST entry") looks good.
+
+Paolo
+
