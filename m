@@ -2,108 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473FE372A05
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70A57372A09
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 14:26:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230263AbhEDMZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 08:25:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230110AbhEDMZS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 08:25:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 54735613B4;
-        Tue,  4 May 2021 12:24:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620131064;
-        bh=vArYzEMEwRqDbMRFkfiHNa4Cgeb/07wrYgojfXEM6ig=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=f8ApvRPhpj1ghZ3GYlONwF21yByVn6tOlm5gExHU9CgVbE38i4gVlkktgw2fcqEBT
-         2BI1Kc+8aoqMzhiK+LgMM/mkS/TOu4WchUA47NAZFl56Od8RreTRfQOpguR2XoJgc2
-         0ojolL9ZtF/h6+OfVzabe/ChOlHh35FJ8K09aqkFtpcDgj6RQm88Axlyp5z1fqHelY
-         S7CNTilkyJ2Cgs79Vz8LRogTJt2ixK1EkztsdanK089ZE6wdtQB/Kj5eplasCOxeGc
-         y7osxn+gPLsTO5KkTVn073nXPICN6pUipqsNZOOte8gfA4ULES81Kz9N2FB/7R1JP/
-         bHMrKkSRsKxBw==
-Date:   Tue, 4 May 2021 15:24:19 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Greentime Hu <greentime.hu@sifive.com>
-Cc:     paul.walmsley@sifive.com, hes@sifive.com, erik.danie@sifive.com,
-        zong.li@sifive.com, bhelgaas@google.com, robh+dt@kernel.org,
-        aou@eecs.berkeley.edu, mturquette@baylibre.com, sboyd@kernel.org,
-        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
-        alex.dewar90@gmail.com, khilman@baylibre.com,
-        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
-        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org,
-        helgaas@kernel.org
-Subject: Re: [PATCH v6 1/6] clk: sifive: Add pcie_aux clock in prci driver
- for PCIe driver
-Message-ID: <YJE886bhppqes5LQ@unreal>
-References: <20210504105940.100004-1-greentime.hu@sifive.com>
- <20210504105940.100004-2-greentime.hu@sifive.com>
+        id S230246AbhEDM1S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 08:27:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58762 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230110AbhEDM1R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 08:27:17 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91C29C061574;
+        Tue,  4 May 2021 05:26:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Date:Message-ID:Cc:To:From;
+        bh=ZbfDCAxqtj0cfVzLcBzaHYoyu3xyh+hGqRNR2qCY/MU=; b=spQexJEC9bVqjX/s2JORxAuyUW
+        2s4vZyLrSYkF/fdR7LnU7q3LrTLHEcXLK8TDZF1vXAzgwqlmo65keQIV5UAmHHuiX1gzEwSKu1tfj
+        grMKaiPMF6fPc7mQz2BZyZRzXB4mcS8++8t6Ln2CYjvTQcxEpB8T4V2hnUq83FpUKmOtyqwZU8VBi
+        QB5IgXaMTsStKbf0796hMttd7X8V3bkBjmJN/3rYPDsrXA7WmEXTUv1UywwF5MeeKyedlOjb+8fqy
+        HJjWIxXVdEeJOSqF46ZBFwLtVwFS+6jMR+vaKZApvtR6xa6gstAESjV43t33O+VR+wTN60jvhBnka
+        sgWl2dki1QocQzXnt6xhjocq0M1z9nt92H4KqdJUVcojSI0873mDooxK0DmY9ZfZ3nUi56cw9kRA5
+        eqBgG89EQ/kV9NIGiYUD7DNKfJenWgQSUE9rxbdaQckRd3uYO2AgBC8+rA8xV6KKlmRf2fHKYxbvp
+        b4UmfH8H4mTRjLRIMyBQzwHr;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1ldu82-0005QC-VK; Tue, 04 May 2021 12:26:19 +0000
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>
+Cc:     linux-trace-devel@vger.kernel.org,
+        io-uring <io-uring@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <293cfb1d-8a53-21e1-83c1-cdb6e2f32c65@samba.org>
+Subject: Re: Tracing busy processes/threads freezes/stalls the whole machine
+Message-ID: <92e31509-c32e-9f2f-633a-e0ad3d3d1f1b@samba.org>
+Date:   Tue, 4 May 2021 14:26:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504105940.100004-2-greentime.hu@sifive.com>
+In-Reply-To: <293cfb1d-8a53-21e1-83c1-cdb6e2f32c65@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 06:59:35PM +0800, Greentime Hu wrote:
-> We add pcie_aux clock in this patch so that pcie driver can use
-> clk_prepare_enable() and clk_disable_unprepare() to enable and disable
-> pcie_aux clock.
++ linux-kernel
+
+I just retested with 5.12 final:
+
+As long as I give the VM more than one cpu, I can easily reproduce the problem with:
+
+> while true; do cat linux-image-5.12.0-rc8-dbg_5.12.0-rc8-22_amd64.deb > /dev/null; done
+> and
+> pidofcat=$(pidof cat); echo $pidofcat; trace-cmd record -e all -P $pidofcat
+
+On a single cpu VM it doesn't seem to trigger.
+
+Is anyone else able to reproduce this?
+
+Any ideas how to debug this?
+
+It's really annoying to fear a machine freeze when trying to trace problems
+on recent kernels...
+
+Thanks for any possible hint...
+metze
+
+Am 22.04.21 um 16:26 schrieb Stefan Metzmacher:
 > 
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> Acked-by: Stephen Boyd <sboyd@kernel.org>
-> ---
->  drivers/clk/sifive/fu740-prci.c               | 11 +++++
->  drivers/clk/sifive/fu740-prci.h               |  2 +-
->  drivers/clk/sifive/sifive-prci.c              | 41 +++++++++++++++++++
->  drivers/clk/sifive/sifive-prci.h              |  9 ++++
->  include/dt-bindings/clock/sifive-fu740-prci.h |  1 +
->  5 files changed, 63 insertions(+), 1 deletion(-)
+> Hi Steven, hi Ingo,
 > 
-> diff --git a/drivers/clk/sifive/fu740-prci.c b/drivers/clk/sifive/fu740-prci.c
-> index 764d1097aa51..53f6e00a03b9 100644
-> --- a/drivers/clk/sifive/fu740-prci.c
-> +++ b/drivers/clk/sifive/fu740-prci.c
-> @@ -72,6 +72,12 @@ static const struct clk_ops sifive_fu740_prci_hfpclkplldiv_clk_ops = {
->  	.recalc_rate = sifive_prci_hfpclkplldiv_recalc_rate,
+> I recently tried to analyze the performance of Samba using io-uring.
+> 
+> I was using ubuntu 20.04 with the 5.10.0-1023-oem kernel, which is based on v5.10.25, see:
+> https://kernel.ubuntu.com/git/kernel-ppa/mirror/ubuntu-oem-5.10-focal.git/log/?h=oem-5.10-prep
+> trace-cmd is at version 2.8.3-4build1.
+> 
+> In order to find the bottleneck I tried to use (trace-cmd is at version 2.8.3-4build1):
+> 
+>   trace-cmd -e all -P ${pid_of_io_uring_worker}
+> 
+> As a result the server was completely dead immediately.
+> 
+> I tried to reproduce this in a virtual machine (inside virtualbox).
+> 
+> I used a modified 'io_uring-cp' that loops forever, see:
+> https://github.com/metze-samba/liburing/commit/5e98efed053baf03521692e786c1c55690b04d8e
+> 
+> When I run './io_uring-cp-forever link-cp.c file',
+> I see a 'io_wq_manager' and a 'io_wqe_worker-0' kernel thread,
+> while './io_uring-cp-forever link-cp.c file' as well as 'io_wqe_worker-0'
+> consume about 25% cpu each.
+> 
+> When I run 'trace-cmd -e all -P $pid' for 'io_wqe_worker-0' or 'io_wq_manager'
+> I can reproduce the problem, then I found that the same seems to happen for
+> also for other kernel threads e.g. '[kworker/1:1-events]', it seems that
+> it happens for all kernel threads, which are not completely idle.
+> 
+> Which this:
+> 
+>  From 'top':
+>    1341 root      20   0    2512    576    508 S  33,4   0,1   0:10.39 io_uring-cp-for
+>    1343 root      20   0       0      0      0 R  29,8   0,0   0:08.43 io_wqe_worker-0
+>       7 root      20   0       0      0      0 I   0,3   0,0   0:00.31 kworker/0:1-events
+> 
+>    PID 5 is [kworker/0:0-ata_sff]
+> 
+> # trace-cmd record -e all -P 5'
+> Hit Ctrl^C to stop recording
+> ^CCPU0 data recorded at offset=0x7b8000
+>     0 bytes in size
+> CPU1 data recorded at offset=0x7b8000
+>     69632 bytes in size
+> 
+> # But
+> # trace-cmd record -e all -P 7
+> => machine unresponsive (no blinking cursor on the console anymore)
+> On the host 'top' shows that the VirtualBoxVM cpu emulator thread 'EMT-1'
+> uses 100% cpu, so I guess the guest kernel is in something like an endless
+> recursion loop. Maybe a trace function recursing to itself?
+> 
+> On the same VM I tried a 5.12rc8 kernel and there I can also reproduce the
+> problem.
+> 
+> I also managed to reproduce the problem without io-uring, just using:
+> 
+>  while true; do cat linux-image-5.12.0-rc8-dbg_5.12.0-rc8-22_amd64.deb > /dev/null; done
+> 
+> in order to keep some kernel threads moving.
+> This happens with 5.12rc8 and 5.10.0-1023-oem, but I was not able to
+> reproduce any of this using the 5.8.0-50-generic kernel, see
+> https://kernel.ubuntu.com/git/ubuntu/ubuntu-focal.git/log/?h=Ubuntu-hwe-5.8-5.8.0-50.56_20.04.1
+> 
+> I was also able to reproduce this with a ubuntu 21.04 vm using
+> the 5.11.0-14-generic kernel, see:
+> https://kernel.ubuntu.com/git/ubuntu/ubuntu-hirsute.git/log/?h=Ubuntu-5.11.0-14.15
+> On this one I only managed to reproduce the problem with
+> './io_uring-cp-forever link-cp.c file', but not with
+> 'while true; do cat linux-image-5.12.0-rc8-dbg_5.12.0-rc8-22_amd64.deb > /dev/null; done'
+> 
+> 
+> So it seems the problem was introduced after 5.8 and is not really related to
+> io-uring. And it may not be purely related to kernel threads.
+> 
+> With this on 5.12-rc8 (again):
+> 
+>   └─tmux: server,903
+>       ├─bash,904
+>       │   └─io_uring-cp-for,925 link-cp.c file
+>       │       ├─{iou-mgr-925},926
+>       │       └─{iou-wrk-925},927
+>       └─bash,929
+>           └─pstree,938 -a -t -p
+> 
+> I was able to to trace once:
+> 
+> root@ub1704-166:~# trace-cmd record -e all -P 925
+> Hit Ctrl^C to stop recording
+> ^CCPU0 data recorded at offset=0x7b8000
+>     10842112 bytes in size
+> CPU1 data recorded at offset=0x120f000
+>     36450304 bytes in size
+> 
+> But the 2nd run reproduced the problem:
+> root@ub1704-166:~# trace-cmd record -e all -P 925
+> 
+> I was also able to reproduce it with:
+> 
+> while true; do cat linux-image-5.12.0-rc8-dbg_5.12.0-rc8-22_amd64.deb > /dev/null; done
+> and
+> pidofcat=$(pidof cat); echo $pidofcat; trace-cmd record -e all -P $pidofcat
+> 
+> So it seems any busy thread (user or kernel) triggers the problem.
+> 
+> Any ideas what has changed after 5.8?
+> 
+> Thanks!
+> metze
+> 
 
-<...>
-
-> +/* PCIE AUX clock APIs for enable, disable. */
-> +int sifive_prci_pcie_aux_clock_is_enabled(struct clk_hw *hw)
-
-It should be bool
-
-> +{
-> +	struct __prci_clock *pc = clk_hw_to_prci_clock(hw);
-> +	struct __prci_data *pd = pc->pd;
-> +	u32 r;
-> +
-> +	r = __prci_readl(pd, PRCI_PCIE_AUX_OFFSET);
-> +
-> +	if (r & PRCI_PCIE_AUX_EN_MASK)
-> +		return 1;
-> +	else
-> +		return 0;
-> +}
-
-and here simple "return r & PRCI_PCIE_AUX_EN_MASK;"
-
-> +
-> +int sifive_prci_pcie_aux_clock_enable(struct clk_hw *hw)
-> +{
-> +	struct __prci_clock *pc = clk_hw_to_prci_clock(hw);
-> +	struct __prci_data *pd = pc->pd;
-> +	u32 r __maybe_unused;
-> +
-> +	if (sifive_prci_pcie_aux_clock_is_enabled(hw))
-> +		return 0;
-
-You actually call to this new function only once, put your
-__prci_readl() here.
-
-Thanks
