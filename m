@@ -2,151 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1BF0B372FD3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36FE7372FD6
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:37:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231491AbhEDShK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 14:37:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhEDShJ (ORCPT
+        id S231579AbhEDSi3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 14:38:29 -0400
+Received: from mailbackend.panix.com ([166.84.1.89]:33091 "EHLO
+        mailbackend.panix.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230086AbhEDSi2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 14:37:09 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60B68C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 11:36:13 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id y30so8254820pgl.7
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 11:36:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=55w7T2sV+Xo6jhtEWO67o8KmaHssUdC9yij/eIhn6tA=;
-        b=g0u5lhzRmf0TZmK+1IUsZ5/8UR/NFxlZrXEvH8JFYy7gW2sztuzlW75oDTAOP0Oros
-         6wTQkctB6aAzWHj9OdFvmEnJLUwWZ1NoDYKt6Kv6THJaIZAEdUaEkflW3Fj8+oGdlZ1L
-         uhLbMq2caPKeHUTbE+djFuMSGaE/xqGtnMXUMqENji1OQZscX2hmf6hZXpnW8y+pOMpZ
-         kpitSrBzdlvGKwMhs4NLYAFQFE9th8J4DtgWG5kwRHDUuC9eL8nork7OL75I3iDUaYdy
-         BS34Fnt7hhLa2X02GswRs+RM4NrSXF4BD74gj8wUbiQbDcjo9TJs0X23Zzc+YVMI4dNy
-         N+lA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=55w7T2sV+Xo6jhtEWO67o8KmaHssUdC9yij/eIhn6tA=;
-        b=hfRa4gJ0tCgEwl6KFiuQkI/2wrHtmA+F1MtOV0/OI7mIGWOvMyMWOBYuHsHuupSnhc
-         n9uZTfDej4dKPHdpXRFOAlHhB9Qk5b2CU2vjvpOmHZkwdpY56jvD6+asxR5QRsPV9+es
-         tjR91OiXy9o/U4bRwYJ7oRTTxL+vcgu/5w1iQhC1x+n5/9pomq1SmZURShAbVxJ+zCpg
-         7gGOzbDTlzsyConElLzOeX+bhkuQwzG4gGyVTjiTzN45ENtWu7d97x0B0SOwXGYsgYac
-         N7mOJjmNrMJc0ErM+jGDMK8OnllZFUgA7R/oevLlkCtw1we2HRZnrq9OH4odrwGYtyF5
-         WcgQ==
-X-Gm-Message-State: AOAM533J8A/oWcskcDPXGX/bWdSzsUGuIeCnvUCZ/nfUti2yOx9bANN+
-        JLOkyrrpdebsKQauw3pqK21QyQ==
-X-Google-Smtp-Source: ABdhPJx3EcGkWkmq55Pl22QZhAf8HwIgf11UYrBlNWLWKIjbaiYFtSPhk+vfwlUm5CfNdTP1kqUsuw==
-X-Received: by 2002:a17:90a:280d:: with SMTP id e13mr6943359pjd.191.1620153372638;
-        Tue, 04 May 2021 11:36:12 -0700 (PDT)
-Received: from google.com ([2620:15c:2cb:201:10d7:bc55:1441:1248])
-        by smtp.gmail.com with ESMTPSA id g4sm4170933pgu.46.2021.05.04.11.36.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 11:36:12 -0700 (PDT)
-Date:   Tue, 4 May 2021 11:36:06 -0700
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     David Gow <davidgow@google.com>
-Cc:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, shuah@kernel.org,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v8] fat: Add KUnit tests for checksums and timestamps
-Message-ID: <YJGUFrc8PJ0LAKiF@google.com>
-References: <20210416065623.882364-1-davidgow@google.com>
+        Tue, 4 May 2021 14:38:28 -0400
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
+        by mailbackend.panix.com (Postfix) with ESMTPSA id 4FZT981qdjz23wL;
+        Tue,  4 May 2021 14:37:32 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=panix.com; s=panix;
+        t=1620153452; bh=6hZEbCz9pLVG1Juo29+y3XUezTwzfWrbH9RvIsLfcoo=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc;
+        b=LquIxEHA/iFAS5hUtC8wK8rXXjzTNILhmxmXsNbWhp/zOwnSlfIDLuUAJRDxn7E8Q
+         TkzRiehkjUpwkXiKG6V4xMMQ4ulHB6gy/lS+fGAJZWRYBqTwcSIzofySvcUE8f+rt1
+         P1QN4Mn71eW9jBDkBeBTgnPAnnOyjFRyjyRzx4yQ=
+Received: by mail-yb1-f177.google.com with SMTP id r8so13471020ybb.9;
+        Tue, 04 May 2021 11:37:32 -0700 (PDT)
+X-Gm-Message-State: AOAM531qF5cIiYnwvnUhhOkLFDnA19oeR6Yc5kK4NfLO+l/oiFMUhWrZ
+        8FZQLm5hKhEPoreBsYr3MuXVQVX4r3Ij+vRKewY=
+X-Google-Smtp-Source: ABdhPJzAtel3Wjk4eFZrc/WMEdVxWLfDG8PgEo5dUpee4xL8hswSsjwHJ7QmuV+aRCkJcqQx4KVXGIYAeHMUaO2Go6Y=
+X-Received: by 2002:a25:7355:: with SMTP id o82mr37025773ybc.368.1620153451776;
+ Tue, 04 May 2021 11:37:31 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210416065623.882364-1-davidgow@google.com>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <20210504110519.16097-1-alx.manpages@gmail.com> <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+ <YJFZHW2afbAMVOmE@kroah.com> <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com> <YJFxArfp8wN3ILJb@kroah.com>
+In-Reply-To: <YJFxArfp8wN3ILJb@kroah.com>
+From:   Zack Weinberg <zackw@panix.com>
+Date:   Tue, 4 May 2021 14:37:20 -0400
+X-Gmail-Original-Message-ID: <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+Message-ID: <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Joseph Myers <joseph@codesourcery.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 15, 2021 at 11:56:23PM -0700, David Gow wrote:
-> Add some basic sanity-check tests for the fat_checksum() function and
-> the fat_time_unix2fat() and fat_time_fat2unix() functions. These unit
-> tests verify these functions return correct output for a number of test
-> inputs.
-> 
-> These tests were inspored by -- and serve a similar purpose to -- the
-                   ^^^^^^^^
-        I am guessing this is supposed to be "inspired".
+On Tue, May 4, 2021 at 12:06 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> On Tue, May 04, 2021 at 05:53:29PM +0200, Alejandro Colomar (man-pages) wrote:
+> > On 5/4/21 4:24 PM, Greg KH wrote:
+> > > I agree, the two are not the same type at all, this change should not be
+> > > accepted.
+> >
+> > I get that in the kernel you don't use the standard fixed-width types (with
+> > some exceptions), probably not to mess with code that relies on <stdint.h>
+> > not being included (I hope there's not much code that relies on this in
+> > 2021, but who knows).
+> >
+> > But, there is zero difference between these types, from the point of view of
+> > the compiler.  There's 100% compatibility between those types, and you're
+> > able to mix'n'match them.  See some example below.
+...
+> There's a very old post from Linus where he describes the difference
+> between things like __u32 and uint32_t.  They are not the same, they
+> live in different namespaces, and worlds, and can not always be swapped
+> out for each other on all arches.
+>
+> Dig it up if you are curious, but for user/kernel apis you HAVE to use
+> the __uNN and can not use uintNN_t variants, so don't try to mix/match
+> them, it's good to just follow the kernel standard please.
+...
+> Nacked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
-> timestamp parsing KUnit tests in ext4[1].
-> 
-> Note that, unlike fat_time_unix2fat, fat_time_fat2unix wasn't previously
-> exported, so this patch exports it as well. This is required for the
-> case where we're building the fat and fat_test as modules.
-> 
-> [1]:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/inode-test.c
-> 
-> Signed-off-by: David Gow <davidgow@google.com>
-> Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+Speaking from the C library's perspective, I'm going to push back
+pretty hard on this NAK, for several reasons.
 
-Aside from the nit above, and the *potential* nit and question below.
-Everything here looks good to me.
+First, this is a proposed change to the manpages, not the headers
+themselves.  Manpage documentation of C structs is *not* expected to
+match the actual declaration in the headers.  The documented field
+type is usually assignment-compatible with the actual type, but not
+always.  There's no guarantee whatsoever that the fields are in the
+same order as the header, or that the listed set of fields is
+complete.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+I would say that as long as any value of type __u32 can be stored in a
+variable of type uint32_t without data loss, and vice versa, there is
+no reason why manpages should *have to* use __u32 in preference to
+uint32_t, and that in the absence of such a reason, the standard type
+should be used.
 
-> ---
-> 
-> It's been a while, but this hopefully is a final version of the FAT KUnit
-> patchset. It has a number of changes to keep it up-to-date with current
-> KUnit standards, notably the use of parameterised tests and the addition
-> of a '.kunitconfig' file to allow for easy testing. It also fixes an
-> endianness tagging issue picked up by the kernel test robot under sparse
-> on pa-risc.
-> 
-> Cheers,
-> -- David
+Second, it's true that __u32 and uint32_t are in different namespaces,
+and it may well be necessary for uapi <linux/*.h> headers to use the
+__uNN names in order to preserve the C standard's distinction between
+the program and the implementation, but that's *not* a reason for
+documentation aimed at writers of user-space programs to use the
+__uNN names.  In fact, it is exactly the opposite!  User space program
+authors should, all else equal, be *discouraged* from using the __uNN
+names, and avoiding their use in manpages is one way to do that.
 
-[...]
+Third, if there does in fact exist a situation where __uNN and
+uintNN_t are *not* assignment compatible, THAT IS A BUG IN THE KERNEL.
+Frankly, it would be such a catastrophic bug that I think Linus has to
+have been *wrong*.  We would have noticed the problems long ago if he
+were right.
 
-> diff --git a/fs/fat/fat_test.c b/fs/fat/fat_test.c
-> new file mode 100644
-> index 000000000000..febd25f57d4b
-> --- /dev/null
-> +++ b/fs/fat/fat_test.c
-> @@ -0,0 +1,197 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * KUnit tests for FAT filesystems.
-> + *
-> + * Copyright (C) 2020 Google LLC.
+I'm going to have to ask you to produce hard evidence for your claim
+that __uNN and uintNN_t are not (always) assignment compatible, and
+hard evidence why that can't be fixed within the kernel, or else
+withdraw your objection.
 
-Nit: I know you wrote this last year, but I have had other maintainers
-tell me the Copyright date should be set to when the final version of
-the patch is sent out.
-
-I personally don't care, and I don't think you should resend this patch
-just for that, but figured I would mention.
-
-> + * Author: David Gow <davidgow@google.com>
-> + */
-> +
-> +#include <kunit/test.h>
-> +
-> +#include "fat.h"
-> +
-> +static void fat_checksum_test(struct kunit *test)
-> +{
-> +	/* With no extension. */
-> +	KUNIT_EXPECT_EQ(test, fat_checksum("VMLINUX    "), (u8)44);
-> +	/* With 3-letter extension. */
-> +	KUNIT_EXPECT_EQ(test, fat_checksum("README  TXT"), (u8)115);
-> +	/* With short (1-letter) extension. */
-> +	KUNIT_EXPECT_EQ(test, fat_checksum("ABCDEFGHA  "), (u8)98);
-
-How do you get the magic values? Or is this just supposed to be a
-regression test?
-
-Not going to pretend I understand FAT, but everything else in this test
-makes sense from a logical/testing/readability point of view.
-
-Cheers!
-
-[...]
+zw
