@@ -2,109 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83858372BF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:24:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61997372BFF
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:28:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231608AbhEDOZ3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:25:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50368 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230213AbhEDOZ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:25:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AD51A61139;
-        Tue,  4 May 2021 14:24:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620138271;
-        bh=ycWmHLZjK6dBz/CdYVAAPEioACpMjp23uaaK/mz8nGo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=cBDeDGOY6Rypqd5DRRCWrXFYPTAYIIst+QK6QDTL1xeA2S+E5erqgD0gsn6+dNkur
-         P1bSlDSSUZUzKPGHcfeoPAegcg7ftfbfb4qITPdceAO+fUIqxe6bauwmOPD2B2OX/g
-         pH3atu5DylpNJclmPEZUlXnsKngAxbgkUnrObGGU=
-Date:   Tue, 4 May 2021 16:24:29 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc:     Alejandro Colomar <alx.manpages@gmail.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
-        bpf <bpf@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        Zack Weinberg <zackw@panix.com>,
-        Joseph Myers <joseph@codesourcery.com>
-Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
-Message-ID: <YJFZHW2afbAMVOmE@kroah.com>
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
- <20210504110519.16097-1-alx.manpages@gmail.com>
- <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+        id S230346AbhEDO3T convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Tue, 4 May 2021 10:29:19 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2994 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230213AbhEDO3R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 10:29:17 -0400
+Received: from fraeml708-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZMVx5nz0z6wl3H;
+        Tue,  4 May 2021 22:22:33 +0800 (CST)
+Received: from fraeml714-chm.china.huawei.com (10.206.15.33) by
+ fraeml708-chm.china.huawei.com (10.206.15.36) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 4 May 2021 16:28:20 +0200
+Received: from fraeml714-chm.china.huawei.com ([10.206.15.33]) by
+ fraeml714-chm.china.huawei.com ([10.206.15.33]) with mapi id 15.01.2176.012;
+ Tue, 4 May 2021 16:28:20 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     Mimi Zohar <zohar@linux.ibm.com>,
+        "mjg59@google.com" <mjg59@google.com>
+CC:     "linux-integrity@vger.kernel.org" <linux-integrity@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v5 07/12] evm: Allow xattr/attr operations for portable
+ signatures
+Thread-Topic: [PATCH v5 07/12] evm: Allow xattr/attr operations for portable
+ signatures
+Thread-Index: AQHXK5xd0AHnuLl5+keiWE38ndTKp6rQ6VqAgAKhvZA=
+Date:   Tue, 4 May 2021 14:28:20 +0000
+Message-ID: <f26f4b6fd3074bb4a6f0f0ff4911a202@huawei.com>
+References: <20210407105252.30721-1-roberto.sassu@huawei.com>
+         <20210407105252.30721-8-roberto.sassu@huawei.com>
+ <75e8a4f70dfbbfa4cf5b923ab0ac92768e1e2de5.camel@linux.ibm.com>
+In-Reply-To: <75e8a4f70dfbbfa4cf5b923ab0ac92768e1e2de5.camel@linux.ibm.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.221.98.153]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 07:12:01AM -0700, Alexei Starovoitov wrote:
-> On Tue, May 4, 2021 at 4:05 AM Alejandro Colomar <alx.manpages@gmail.com> wrote:
-> >
-> > Some manual pages are already using C99 syntax for integral
-> > types 'uint32_t', but some aren't.  There are some using kernel
-> > syntax '__u32'.  Fix those.
-> >
-> > Some pages also document attributes, using GNU syntax
-> > '__attribute__((xxx))'.  Update those to use the shorter and more
-> > portable C11 keywords such as 'alignas()' when possible, and C2x
-> > syntax '[[gnu::xxx]]' elsewhere, which hasn't been standardized
-> > yet, but is already implemented in GCC, and available through
-> > either --std=c2x or any of the --std=gnu... options.
-> >
-> > The standard isn't very clear on how to use alignas() or
-> > [[]]-style attributes, so the following link is useful in the case
-> > of 'alignas()' and '[[gnu::aligned()]]':
-> > <https://stackoverflow.com/q/67271825/6872717>
-> >
-> > Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
-> > Cc: LKML <linux-kernel@vger.kernel.org>
-> > Cc: glibc <libc-alpha@sourceware.org>
-> > Cc: GCC <gcc-patches@gcc.gnu.org>
-> > Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-> > Cc: bpf <bpf@vger.kernel.org>
-> > Cc: David Laight <David.Laight@ACULAB.COM>
-> > Cc: Zack Weinberg <zackw@panix.com>
-> > Cc: Joseph Myers <joseph@codesourcery.com>
-> > ---
-> >  man2/bpf.2 | 49 ++++++++++++++++++++++++-------------------------
-> >  1 file changed, 24 insertions(+), 25 deletions(-)
-> >
-> > diff --git a/man2/bpf.2 b/man2/bpf.2
-> > index 6e1ffa198..04b8fbcef 100644
-> > --- a/man2/bpf.2
-> > +++ b/man2/bpf.2
-> > @@ -186,41 +186,40 @@ commands:
-> >  .PP
-> >  .in +4n
-> >  .EX
-> > -union bpf_attr {
-> > +union [[gnu::aligned(8)]] bpf_attr {
-> >      struct {    /* Used by BPF_MAP_CREATE */
-> > -        __u32         map_type;
-> > -        __u32         key_size;    /* size of key in bytes */
-> > -        __u32         value_size;  /* size of value in bytes */
-> > -        __u32         max_entries; /* maximum number of entries
-> > -                                      in a map */
-> > +        uint32_t    map_type;
-> > +        uint32_t    key_size;    /* size of key in bytes */
-> > +        uint32_t    value_size;  /* size of value in bytes */
-> > +        uint32_t    max_entries; /* maximum number of entries
-> > +                                    in a map */
+> From: Mimi Zohar [mailto:zohar@linux.ibm.com]
+> Sent: Monday, May 3, 2021 2:13 AM
+> Hi Roberto,
 > 
-> For the same reasons as explained earlier:
-> Nacked-by: Alexei Starovoitov <ast@kernel.org>
+> > diff --git a/include/linux/integrity.h b/include/linux/integrity.h
+> > index 2271939c5c31..2ea0f2f65ab6 100644
+> > --- a/include/linux/integrity.h
+> > +++ b/include/linux/integrity.h
+> >
+> > @@ -238,9 +241,12 @@ static enum integrity_status
+> evm_verify_hmac(struct dentry *dentry,
+> >  		break;
+> >  	}
+> >
+> > -	if (rc)
+> > -		evm_status = (rc == -ENODATA) ?
+> > -				INTEGRITY_NOXATTRS : INTEGRITY_FAIL;
+> > +	if (rc) {
+> > +		evm_status = INTEGRITY_NOXATTRS;
+> > +		if (rc != -ENODATA)
+> > +			evm_status = evm_immutable ?
+> > +				     INTEGRITY_FAIL_IMMUTABLE :
+> INTEGRITY_FAIL;
+> 
+> The original code made an exception for the -ENODATA case.   Using a
+> ternary operator made sense in that case.   Inverting the test makes
+> the code less readable.  Please use the standard "if" statement
+> instead.
 
-I agree, the two are not the same type at all, this change should not be
-accepted.
+Did I understand correctly that the code should be:
 
-thanks,
+                evm_status = INTEGRITY_NOXATTRS;
+                if (rc != -ENODATA) {
+                        evm_status = INTEGRITY_FAIL;
+                        if (evm_immutable)
+                                evm_status = INTEGRITY_FAIL_IMMUTABLE;
+                }
 
-greg k-h
+Thanks
+
+Roberto
+
+HUAWEI TECHNOLOGIES Duesseldorf GmbH, HRB 56063
+Managing Director: Li Peng, Li Jian, Shi Yanli
+
+> thanks,
+> 
+> Mimi
+
