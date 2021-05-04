@@ -2,177 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 911B0372DCF
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:14:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69BB5372DD5
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 18:15:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231951AbhEDQOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 12:14:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53224 "EHLO
+        id S231717AbhEDQP6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 12:15:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53700 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231829AbhEDQOj (ORCPT
+        with ESMTP id S231538AbhEDQP5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 12:14:39 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5589EC06138F
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 09:13:42 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ldxg0-0003NR-2y; Tue, 04 May 2021 18:13:36 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1ldxfz-0004c0-6D; Tue, 04 May 2021 18:13:35 +0200
-Date:   Tue, 4 May 2021 18:13:34 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Sean Anderson <sean.anderson@seco.com>,
-        Rob Herring <robh@kernel.org>
-Cc:     Michal Simek <michal.simek@xilinx.com>, linux-pwm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        Lee Jones <lee.jones@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>
-Subject: Re: [PATCH 2/2] pwm: Add support for Xilinx AXI Timer
-Message-ID: <20210504161334.tzylwyiz4k2tcztq@pengutronix.de>
-References: <20210503214413.3145015-1-sean.anderson@seco.com>
- <20210503214413.3145015-2-sean.anderson@seco.com>
- <20210504085112.edyy6loprfzejrjl@pengutronix.de>
- <dc6d9f40-a913-90c4-9675-0f84f789ab61@xilinx.com>
- <71694d6a-21d8-2b31-0e66-2dfea52a6390@seco.com>
+        Tue, 4 May 2021 12:15:57 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65B9DC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 09:15:02 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id 10so8142802pfl.1
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 09:15:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fzqlNtdsBiBaV00EBDfKVyKk5AQAycDnav35PwKqWQ0=;
+        b=D2IFQQaetYGhTlhtgYsrBpNy8AToFBTXn0Gu4DMlO8jGiDLYp7MFoZkzLYYHGnJgd7
+         Qf4CTsMEAqskVg6SBDu5oORhrj8S2g2cXmuLusfAuQtdoyJqKpXJ0HrOMyhP0AZYmdac
+         M5v7vFPzePGp9Ona1e0nU8oycCySo2taxrJZ0EUmWqpSwu5LYXYBykeXCgawdmI5x+Xu
+         gFQPcvq0Ia5frivFVfhAsAK8DSY5a8ySOEgbUn903V2dJlDXN67YxSZGi+cXVtVbytDh
+         rwfFEE9xUHvNtrtN6ial9ZjztakMB1ZGt81T/AirJEjW2S1jFEfIFDRyvAYutHw4TjW1
+         7w4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fzqlNtdsBiBaV00EBDfKVyKk5AQAycDnav35PwKqWQ0=;
+        b=uO0Gdd47WtqMAzUb/sJxusZJ7jXgqLLhfOk7GxtmnIHfmm3rnXVO5B5U8u3JH0PvOp
+         FkyaaHDjwrk7ZWN1FF3XIi5DLreZiKUv+7ySYugWqK0QO2xagUXdit81gygsC9JEiN7O
+         jsGxszofVUlgY8vszglYjgQXgIugLX1Q46KcDGGmIPnJnUnFkqTDu1wTtnu7TqQTnzlv
+         LuSNNyecELEIWDDxyK3Huaf/2dW/QTaYvsNdF5tHGUGjHhNfB855D6cq38UlJRWaZul0
+         n+OAgtDzBnUB8pcPw/dreXIj6yItCzQ/abdFX9nCkP81lWx6A7LWnzS+kKAq8rhU2ENt
+         Rw6Q==
+X-Gm-Message-State: AOAM531cWOTNaklYCnZ6sVEIRSeHYNiZGORYXgv3KeQFRDIe7zUw2nTA
+        7zra5oKGryhzkbbEyI2qTVy+Dg==
+X-Google-Smtp-Source: ABdhPJzCk9y60famhhKa+5OcfdcaNqL3o85Okqtd0ZbjfAs/He9D8jwde3CanKiE0X0WJz5Ebsg2xQ==
+X-Received: by 2002:a17:90a:d582:: with SMTP id v2mr30182424pju.88.1620144901956;
+        Tue, 04 May 2021 09:15:01 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id 204sm2607767pfw.158.2021.05.04.09.15.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 09:15:01 -0700 (PDT)
+Date:   Tue, 4 May 2021 10:14:59 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v3 3/6] rpmsg: Update rpmsg_chrdev_register_device
+ function
+Message-ID: <20210504161459.GC1734971@xps15>
+References: <20210429135507.8264-1-arnaud.pouliquen@foss.st.com>
+ <20210429135507.8264-4-arnaud.pouliquen@foss.st.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fsu5b2qmawl4p2fd"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <71694d6a-21d8-2b31-0e66-2dfea52a6390@seco.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210429135507.8264-4-arnaud.pouliquen@foss.st.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 29, 2021 at 03:55:04PM +0200, Arnaud Pouliquen wrote:
+> The rpmsg_chrdev driver has been replaced by the rpmsg_ctrl driver
+> for the /dev/rpmsg_ctrlX devices management. The reference for the
+> driver override is now the rpmsg_ctrl.
+> 
+> Update the rpmsg_chrdev_register_device function to reflect the update,
+> and rename the function to use the rpmsg_ctrldev prefix.
+> 
+> The platform drivers are updated accordingly.
+> 
+> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> Reviewed-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+> ---
+>  drivers/rpmsg/qcom_glink_native.c | 2 +-
+>  drivers/rpmsg/qcom_smd.c          | 2 +-
+>  drivers/rpmsg/rpmsg_ctrl.c        | 2 +-
+>  drivers/rpmsg/rpmsg_internal.h    | 8 ++++----
+>  drivers/rpmsg/virtio_rpmsg_bus.c  | 2 +-
+>  5 files changed, 8 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+> index 05533c71b10e..7d7e809800ec 100644
+> --- a/drivers/rpmsg/qcom_glink_native.c
+> +++ b/drivers/rpmsg/qcom_glink_native.c
+> @@ -1642,7 +1642,7 @@ static int qcom_glink_create_chrdev(struct qcom_glink *glink)
+>  	rpdev->dev.parent = glink->dev;
+>  	rpdev->dev.release = qcom_glink_device_release;
+>  
+> -	return rpmsg_chrdev_register_device(rpdev);
+> +	return rpmsg_ctrldev_register_device(rpdev);
+>  }
+>  
+>  struct qcom_glink *qcom_glink_native_probe(struct device *dev,
+> diff --git a/drivers/rpmsg/qcom_smd.c b/drivers/rpmsg/qcom_smd.c
+> index 8da1b5cb31b3..d223e438d17c 100644
+> --- a/drivers/rpmsg/qcom_smd.c
+> +++ b/drivers/rpmsg/qcom_smd.c
+> @@ -1113,7 +1113,7 @@ static int qcom_smd_create_chrdev(struct qcom_smd_edge *edge)
+>  	qsdev->rpdev.dev.parent = &edge->dev;
+>  	qsdev->rpdev.dev.release = qcom_smd_release_device;
+>  
+> -	return rpmsg_chrdev_register_device(&qsdev->rpdev);
+> +	return rpmsg_ctrldev_register_device(&qsdev->rpdev);
+>  }
+>  
+>  /*
+> diff --git a/drivers/rpmsg/rpmsg_ctrl.c b/drivers/rpmsg/rpmsg_ctrl.c
+> index 6b4d705b2dfd..6749e26b68fc 100644
+> --- a/drivers/rpmsg/rpmsg_ctrl.c
+> +++ b/drivers/rpmsg/rpmsg_ctrl.c
+> @@ -173,7 +173,7 @@ static struct rpmsg_driver rpmsg_ctrldev_driver = {
+>  	.probe = rpmsg_ctrldev_probe,
+>  	.remove = rpmsg_ctrldev_remove,
+>  	.drv = {
+> -		.name = "rpmsg_chrdev",
+> +		.name = "rpmsg_ctrl",
+>  	},
+>  };
+>  
+> diff --git a/drivers/rpmsg/rpmsg_internal.h b/drivers/rpmsg/rpmsg_internal.h
+> index a76c344253bf..8c500a8f29aa 100644
+> --- a/drivers/rpmsg/rpmsg_internal.h
+> +++ b/drivers/rpmsg/rpmsg_internal.h
+> @@ -82,16 +82,16 @@ struct rpmsg_device *rpmsg_create_channel(struct rpmsg_device *rpdev,
+>  int rpmsg_release_channel(struct rpmsg_device *rpdev,
+>  			  struct rpmsg_channel_info *chinfo);
+>  /**
+> - * rpmsg_chrdev_register_device() - register chrdev device based on rpdev
+> + * rpmsg_ctrl_register_device() - register a char device for control based on rpdev
 
---fsu5b2qmawl4p2fd
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+rpmsg_ctrldev_register_device()
 
-Hello Sean,
-
-[Adding Rob to the list of recipents, as he for sure has a valuable
-opinion on this matter.]
-
-On Tue, May 04, 2021 at 11:57:20AM -0400, Sean Anderson wrote:
-> On 5/4/21 8:32 AM, Michal Simek wrote:
-> > On 5/4/21 10:51 AM, Uwe Kleine-K=F6nig wrote:
-> >> On Mon, May 03, 2021 at 05:44:13PM -0400, Sean Anderson wrote:
-> >>> This adds PWM support for Xilinx LogiCORE IP AXI soft timers commonly
-> >>> found on Xilinx FPGAs. There is another driver for this device located
-> >>> at arch/microblaze/kernel/timer.c, but it is only used for timekeepin=
-g.
-> >>> This driver was written with reference to Xilinx DS764 for v1.03.a [1=
-].
-> >>>
-> >>> [1] https://www.xilinx.com/support/documentation/ip_documentation/axi=
-_timer/v1_03_a/axi_timer_ds764.pdf
-> >>>
-> >>> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
-> >>> ---
-> >>>
-> >>>   arch/arm64/configs/defconfig |   1 +
-> >>>   drivers/pwm/Kconfig          |  11 ++
-> >>>   drivers/pwm/Makefile         |   1 +
-> >>>   drivers/pwm/pwm-xilinx.c     | 322 ++++++++++++++++++++++++++++++++=
-+++
-> >>>   4 files changed, 335 insertions(+)
-> >>>   create mode 100644 drivers/pwm/pwm-xilinx.c
-> >>>
-> >>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defcon=
-fig
-> >>> index 08c6f769df9a..81794209f287 100644
-> >>> --- a/arch/arm64/configs/defconfig
-> >>> +++ b/arch/arm64/configs/defconfig
-> >>> @@ -1083,6 +1083,7 @@ CONFIG_PWM_SAMSUNG=3Dy
-> >>>   CONFIG_PWM_SL28CPLD=3Dm
-> >>>   CONFIG_PWM_SUN4I=3Dm
-> >>>   CONFIG_PWM_TEGRA=3Dm
-> >>> +CONFIG_PWM_XILINX=3Dm
-> >>>   CONFIG_SL28CPLD_INTC=3Dy
-> >>>   CONFIG_QCOM_PDC=3Dy
-> >>>   CONFIG_RESET_IMX7=3Dy
-> >>
-> >> I think this should go into a separate patch once this driver is
-> >> accepted. This can then go via the ARM people.
-> >>
-> >>> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> >>> index d3371ac7b871..01e62928f4bf 100644
-> >>> --- a/drivers/pwm/Kconfig
-> >>> +++ b/drivers/pwm/Kconfig
-> >>> @@ -628,4 +628,15 @@ config PWM_VT8500
-> >>>   	  To compile this driver as a module, choose M here: the module
-> >>>   	  will be called pwm-vt8500.
-> >>>
-> >>> +config PWM_XILINX
-> >>> +	tristate "Xilinx AXI Timer PWM support"
-> >>> +	depends on !MICROBLAZE
-> >>
-> >> I don't understand this dependency.
-> >
-> > The dependency is clear here because microblaze has already driver for
-> > this timer here arch/microblaze/kernel/timer.c.
-
-Then at least add a comment.
-
-> > And that's exactly pointing to the way how this should be done.
-> > IP itself is single or dual timer and in case of dual timer you can
-> > select if there is pwm output and use it for PWM generation.
-> >
-> > It means it is timer with PMW together.
-> > I didn't have a time but Uwe likely knows this better how to design it.
-> >
-> > I see that gpio-mvebu driver instantiate pwm driver. Maybe that's the
-> > way to go.
->=20
-> I think drivers/clocksource/samsung_pwm_timer.c and
-> drivers/pwm/pwm-samsung.c provide another example for how to go about
-> this.
-
-I recently had a similar problem (with code that isn't (yet) in
-mainline), where a timer can be used as a counter. I chose to change the
-compatible. Transferred to this example this would mean to use e.g.
-
-	static const struct of_device_id xilinx_pwm_of_match[] =3D {
-		{ .compatible =3D "xlnx,xps-timer-pwm-1.00.a" },
-		...
-	};
-
-and if you want to use the hardware as a PWM, you overwrite the
-compatible in your machine.dts.
-
-Not sure however that this is nice enough to be accepted by the dt
-people?!
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---fsu5b2qmawl4p2fd
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCRcqsACgkQwfwUeK3K
-7AntOwf/anwLjThveWM2RlDIDXOZhGyF/r12T+TxL+rYZV0ZVE4hAVwbdCeLY93X
-+hqUjyyoDbzhgbQm+4HmZ1NDOA3SfcAB9yszmf619NPTW+gPnEo/a6EDPwsWkbKB
-gRtCKV4i5wMkpP2RpvkoCE7rFoQFjfvQc4TboS1Zv6gUw7PLtK1UsVY1SRfwu8kG
-+ZGO5CEST71AelWYpAVB5g6Z3a8mgPT55k6JI4GsFJ/93y6Uhd/fBHxLwEU9GzO1
-48cXF50tBjWYfqxFfNsWpuUOiAYa/mLiy7uQ0LtnGWF1LVruEY9L8oA1PgeVUwL+
-fRrQvlWGbXoC1eitrWwTr5Z8Si+A6A==
-=0mp3
------END PGP SIGNATURE-----
-
---fsu5b2qmawl4p2fd--
+>   * @rpdev:	prepared rpdev to be used for creating endpoints
+>   *
+>   * This function wraps rpmsg_register_device() preparing the rpdev for use as
+>   * basis for the rpmsg chrdev.
+>   */
+> -static inline int rpmsg_chrdev_register_device(struct rpmsg_device *rpdev)
+> +static inline int rpmsg_ctrldev_register_device(struct rpmsg_device *rpdev)
+>  {
+> -	strcpy(rpdev->id.name, "rpmsg_chrdev");
+> -	rpdev->driver_override = "rpmsg_chrdev";
+> +	strcpy(rpdev->id.name, "rpmsg_ctrl");
+> +	rpdev->driver_override = "rpmsg_ctrl";
+>  
+>  	return rpmsg_register_device(rpdev);
+>  }
+> diff --git a/drivers/rpmsg/virtio_rpmsg_bus.c b/drivers/rpmsg/virtio_rpmsg_bus.c
+> index 8e49a3bacfc7..e42234a3e2ab 100644
+> --- a/drivers/rpmsg/virtio_rpmsg_bus.c
+> +++ b/drivers/rpmsg/virtio_rpmsg_bus.c
+> @@ -840,7 +840,7 @@ static struct rpmsg_device *rpmsg_virtio_add_ctrl_dev(struct virtio_device *vdev
+>  	rpdev_ctrl->dev.release = virtio_rpmsg_release_device;
+>  	rpdev_ctrl->little_endian = virtio_is_little_endian(vrp->vdev);
+>  
+> -	err = rpmsg_chrdev_register_device(rpdev_ctrl);
+> +	err = rpmsg_ctrldev_register_device(rpdev_ctrl);
+>  	if (err) {
+>  		kfree(vch);
+>  		return ERR_PTR(err);
+> -- 
+> 2.17.1
+> 
