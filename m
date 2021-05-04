@@ -2,126 +2,222 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEFD3372D27
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74250372D28
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:41:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230525AbhEDPmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45976 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230212AbhEDPmO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:42:14 -0400
-Received: from mail-pg1-x52e.google.com (mail-pg1-x52e.google.com [IPv6:2607:f8b0:4864:20::52e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18B0CC061574;
-        Tue,  4 May 2021 08:41:19 -0700 (PDT)
-Received: by mail-pg1-x52e.google.com with SMTP id m12so7428759pgr.9;
-        Tue, 04 May 2021 08:41:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AcUxvaCbAOLh4AlyCzmhyfXKWCTwPYDbe5Zz5zCH/D8=;
-        b=t9WVU9252cu7KcDpbozPrwzOpZDLAQwn0nzyAkfQwR30LRsOlIh105vndYvE2ADuhx
-         TNB3rwB09OzqR4lRGw7kT87Z3bnJaC22Ditx85BF8OwDuuZ6f2W+1G9hxakdR9OgnYlS
-         fFYEBOuB2Q8Iluo+dYMd/Wd/z3CK7uSp+08+XEvFX+T/iPfNzCR7QcLSa9Ufj4obI1NV
-         zK1SsiGqj/ZOi93YPnSCVR0gw80pmQdKiXuLrPK9eimDVXgjbpiD8ovXiZt1H/1PfCEX
-         1mpSCn/4HuLkFld2aHuag/8vN9cRBSPKSNPEjPQz7KjPStmcIjGR4bwmp8dn+VD7tc1S
-         ZBWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AcUxvaCbAOLh4AlyCzmhyfXKWCTwPYDbe5Zz5zCH/D8=;
-        b=HxSUVmXew6QpMOlP49/6BKkCQSH1rocGJxePuIGlNDeYpH7EGjPhj3GZ3QEjOE6ghX
-         SkounXWQBI7s6/2RoZ0zkhgwVYchKM6Pu3z1af1svR9MDjLuVBQlTdgS7vUMR29GB53A
-         B9PJkDdHLmuXga7dQUwwiGparEIZvt3TeR+GW71kE/9ZFaWcwbdpKm7JCTdlrkRSV5JR
-         6o4Vj9XgYnMWPFDKYP/1HkhhmCI6JX/VHKFY88OWCZIm5dmNY+kPG2E2IPV71LKTFM3y
-         A8Ix8RqDOtDj6vWOKHrZvp8NGRLRX2sBamdT07Iw3qzaOXR0fxpBbRBvN4hAbDL/YUFG
-         1SHQ==
-X-Gm-Message-State: AOAM533RPqlID16YixV7NHYmR97Szyz9zs0tTTMyL/VN5nMFc1AVpfOy
-        OovKPN1kZjxLFKftbezvY6TM2cm3RzCRrVUM+0o=
-X-Google-Smtp-Source: ABdhPJwgR/PkoUd+maCDKleOQtjvme79ufD/7Z0q8u8RQNDo/Sqpb+8N+sG2KMLd27vPzx1PWO5oyzKJa2lPG5XniFI=
-X-Received: by 2002:a17:90a:d90c:: with SMTP id c12mr5979262pjv.129.1620142878358;
- Tue, 04 May 2021 08:41:18 -0700 (PDT)
+        id S231362AbhEDPmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:42:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37288 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231357AbhEDPmS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:42:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6093611AB;
+        Tue,  4 May 2021 15:41:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620142883;
+        bh=/AslvWxxJL6oX+kpSE1utdE9ZH2fdXaU6WVdssGLtQo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=R0TJA+wWYSo+H8o1tUNNVXCWICmX6XFJFf/wFPg5Qt3CX+Zs9/QC/nB82bUiLzspU
+         An4XbLZamCo76HAVNDgHJBHwpnJWBVUk29ft1FPS6ln7j9Qkvee4WsO6xh2KnUfq+B
+         CapqNF3bUZmHajGjGUVQ2ZbO3pqRfu3XoS+r/3nglyC3u87V55I/aHK+b8QEw8ELEk
+         njL4MG1pLmrS0kQmUpSxuhQEmuKoxv80RqmE/9KTWO9CG8JGqSpzlX5oXS38ar+LCY
+         UaOmb1TClq7I27C0g3Dxgtngo6KJX1FlU39NuoU/43pHEzGrmmDUbNvaAkwNm5Nn2A
+         +tEh+Y49A70Rw==
+Date:   Tue, 4 May 2021 08:41:21 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Daejun Park <daejun7.park@samsung.com>
+Cc:     "chao@kernel.org" <chao@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>,
+        Chao Yu <yuchao0@huawei.com>
+Subject: Re: [PATCH] f2fs: refactoring nat and sit functions
+Message-ID: <YJFrIVkghu4Nw87l@google.com>
+References: <CGME20210429065038epcms2p538390e44af97feae43437fb97aa0759e@epcms2p5>
+ <20210429065038epcms2p538390e44af97feae43437fb97aa0759e@epcms2p5>
 MIME-Version: 1.0
-References: <20210504153746.2129428-1-linux@roeck-us.net>
-In-Reply-To: <20210504153746.2129428-1-linux@roeck-us.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 4 May 2021 18:41:02 +0300
-Message-ID: <CAHp75VfJ=7B3UBMns1fm7apDmCC4eakeumw4dJYdRXd5wEGkpQ@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: am2315: Remove ACPI support
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429065038epcms2p538390e44af97feae43437fb97aa0759e@epcms2p5>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 6:37 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> With CONFIG_ACPI=n and -Werror, 0-day reports:
->
-> drivers/iio/humidity/am2315.c:259:36: error:
->         'am2315_acpi_id' defined but not used
->
-> According to Andy Shevchenko, the ACPI ID used in this driver is fake
-> and does not really exist. Remove it and with it ACPI support from
-> the driver.
+On 04/29, Daejun Park wrote:
+> This patch separates the APIs for nat and sit.
+> 
+> f2fs_lookup_journal_in_cursum -> f2fs_lookup_journal_{nats|sits}_in_cursum
+> __has_cursum_space -> __has_{nats|sits}_in_cursum_space
 
-As I have found zarro evidences, I agree with removal. We must not
-create fake ACPI IDs on our owns. If anybody will find a device that
-is using this broken ID for real, then we may add it back.
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+I don't get why we need this?
 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> 
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
 > ---
-> v2: Instead of making am2315_acpi_id depend on CONFIG_ACPI,
->     remove ACPI support entirely.
->
->  drivers/iio/humidity/am2315.c | 9 ---------
->  1 file changed, 9 deletions(-)
->
-> diff --git a/drivers/iio/humidity/am2315.c b/drivers/iio/humidity/am2315.c
-> index 23bc9c784ef4..8d7ec2f5acf8 100644
-> --- a/drivers/iio/humidity/am2315.c
-> +++ b/drivers/iio/humidity/am2315.c
-> @@ -7,7 +7,6 @@
->   * 7-bit I2C address: 0x5C.
->   */
->
-> -#include <linux/acpi.h>
->  #include <linux/delay.h>
->  #include <linux/i2c.h>
->  #include <linux/kernel.h>
-> @@ -256,17 +255,9 @@ static const struct i2c_device_id am2315_i2c_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, am2315_i2c_id);
->
-> -static const struct acpi_device_id am2315_acpi_id[] = {
-> -       {"AOS2315", 0},
-> -       {}
-> -};
-> -
-> -MODULE_DEVICE_TABLE(acpi, am2315_acpi_id);
-> -
->  static struct i2c_driver am2315_driver = {
->         .driver = {
->                 .name = "am2315",
-> -               .acpi_match_table = ACPI_PTR(am2315_acpi_id),
->         },
->         .probe =            am2315_probe,
->         .id_table =         am2315_i2c_id,
-> --
+>  fs/f2fs/f2fs.h    | 16 +++++++++++-----
+>  fs/f2fs/node.c    | 11 +++++------
+>  fs/f2fs/segment.c | 46 +++++++++++++++++++++++++++-------------------
+>  3 files changed, 43 insertions(+), 30 deletions(-)
+> 
+> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+> index b9d5317db0a7..e264fedacc9e 100644
+> --- a/fs/f2fs/f2fs.h
+> +++ b/fs/f2fs/f2fs.h
+> @@ -416,11 +416,15 @@ static inline int update_sits_in_cursum(struct f2fs_journal *journal, int i)
+>  	return before;
+>  }
+>  
+> -static inline bool __has_cursum_space(struct f2fs_journal *journal,
+> -							int size, int type)
+> +static inline bool __has_nats_in_cursum_space(struct f2fs_journal *journal,
+> +					      int size)
+> +{
+> +	return size <= MAX_NAT_JENTRIES(journal);
+> +}
+> +
+> +static inline bool __has_sits_in_cursum_space(struct f2fs_journal *journal,
+> +					      int size)
+>  {
+> -	if (type == NAT_JOURNAL)
+> -		return size <= MAX_NAT_JENTRIES(journal);
+>  	return size <= MAX_SIT_JENTRIES(journal);
+>  }
+>  
+> @@ -3420,7 +3424,9 @@ void f2fs_wait_on_block_writeback_range(struct inode *inode, block_t blkaddr,
+>  								block_t len);
+>  void f2fs_write_data_summaries(struct f2fs_sb_info *sbi, block_t start_blk);
+>  void f2fs_write_node_summaries(struct f2fs_sb_info *sbi, block_t start_blk);
+> -int f2fs_lookup_journal_in_cursum(struct f2fs_journal *journal, int type,
+> +int f2fs_lookup_journal_sits_in_cursum(struct f2fs_journal *journal,
+> +			unsigned int val, int alloc);
+> +int f2fs_lookup_journal_nats_in_cursum(struct f2fs_journal *journal,
+>  			unsigned int val, int alloc);
+>  void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc);
+>  int f2fs_fix_curseg_write_pointer(struct f2fs_sb_info *sbi);
+> diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+> index e67ce5f13b98..cb295eb8ed91 100644
+> --- a/fs/f2fs/node.c
+> +++ b/fs/f2fs/node.c
+> @@ -554,7 +554,7 @@ int f2fs_get_node_info(struct f2fs_sb_info *sbi, nid_t nid,
+>  
+>  	/* Check current segment summary */
+>  	down_read(&curseg->journal_rwsem);
+> -	i = f2fs_lookup_journal_in_cursum(journal, NAT_JOURNAL, nid, 0);
+> +	i = f2fs_lookup_journal_nats_in_cursum(journal, nid, 0);
+>  	if (i >= 0) {
+>  		ne = nat_in_journal(journal, i);
+>  		node_info_from_raw_nat(ni, &ne);
+> @@ -2891,7 +2891,7 @@ static int __flush_nat_entry_set(struct f2fs_sb_info *sbi,
+>  	 * #2, flush nat entries to nat page.
+>  	 */
+>  	if (enabled_nat_bits(sbi, cpc) ||
+> -		!__has_cursum_space(journal, set->entry_cnt, NAT_JOURNAL))
+> +		!__has_nats_in_cursum_space(journal, set->entry_cnt))
+>  		to_journal = false;
+>  
+>  	if (to_journal) {
+> @@ -2914,8 +2914,8 @@ static int __flush_nat_entry_set(struct f2fs_sb_info *sbi,
+>  		f2fs_bug_on(sbi, nat_get_blkaddr(ne) == NEW_ADDR);
+>  
+>  		if (to_journal) {
+> -			offset = f2fs_lookup_journal_in_cursum(journal,
+> -							NAT_JOURNAL, nid, 1);
+> +			offset = f2fs_lookup_journal_nats_in_cursum(journal,
+> +							nid, 1);
+>  			f2fs_bug_on(sbi, offset < 0);
+>  			raw_ne = &nat_in_journal(journal, offset);
+>  			nid_in_journal(journal, offset) = cpu_to_le32(nid);
+> @@ -2985,8 +2985,7 @@ int f2fs_flush_nat_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+>  	 * into nat entry set.
+>  	 */
+>  	if (enabled_nat_bits(sbi, cpc) ||
+> -		!__has_cursum_space(journal,
+> -			nm_i->nat_cnt[DIRTY_NAT], NAT_JOURNAL))
+> +		!__has_nats_in_cursum_space(journal, nm_i->nat_cnt[DIRTY_NAT]))
+>  		remove_nats_in_journal(sbi);
+>  
+>  	while ((found = __gang_lookup_nat_set(nm_i,
+> diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+> index efac388d2468..63bfbc2603ae 100644
+> --- a/fs/f2fs/segment.c
+> +++ b/fs/f2fs/segment.c
+> @@ -4013,25 +4013,33 @@ void f2fs_write_node_summaries(struct f2fs_sb_info *sbi, block_t start_blk)
+>  	write_normal_summaries(sbi, start_blk, CURSEG_HOT_NODE);
+>  }
+>  
+> -int f2fs_lookup_journal_in_cursum(struct f2fs_journal *journal, int type,
+> +int f2fs_lookup_journal_nats_in_cursum(struct f2fs_journal *journal,
+>  					unsigned int val, int alloc)
+>  {
+>  	int i;
+>  
+> -	if (type == NAT_JOURNAL) {
+> -		for (i = 0; i < nats_in_cursum(journal); i++) {
+> -			if (le32_to_cpu(nid_in_journal(journal, i)) == val)
+> -				return i;
+> -		}
+> -		if (alloc && __has_cursum_space(journal, 1, NAT_JOURNAL))
+> -			return update_nats_in_cursum(journal, 1);
+> -	} else if (type == SIT_JOURNAL) {
+> -		for (i = 0; i < sits_in_cursum(journal); i++)
+> -			if (le32_to_cpu(segno_in_journal(journal, i)) == val)
+> -				return i;
+> -		if (alloc && __has_cursum_space(journal, 1, SIT_JOURNAL))
+> -			return update_sits_in_cursum(journal, 1);
+> -	}
+> +	for (i = 0; i < nats_in_cursum(journal); i++)
+> +		if (le32_to_cpu(nid_in_journal(journal, i)) == val)
+> +			return i;
+> +
+> +	if (alloc && __has_nats_in_cursum_space(journal, 1))
+> +		return update_nats_in_cursum(journal, 1);
+> +
+> +	return -1;
+> +}
+> +
+> +int f2fs_lookup_journal_sits_in_cursum(struct f2fs_journal *journal,
+> +					unsigned int val, int alloc)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < sits_in_cursum(journal); i++)
+> +		if (le32_to_cpu(segno_in_journal(journal, i)) == val)
+> +			return i;
+> +
+> +	if (alloc && __has_sits_in_cursum_space(journal, 1))
+> +		return update_sits_in_cursum(journal, 1);
+> +
+>  	return -1;
+>  }
+>  
+> @@ -4174,7 +4182,7 @@ void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+>  	 * entries, remove all entries from journal and add and account
+>  	 * them in sit entry set.
+>  	 */
+> -	if (!__has_cursum_space(journal, sit_i->dirty_sentries, SIT_JOURNAL) ||
+> +	if (!__has_sits_in_cursum_space(journal, sit_i->dirty_sentries) ||
+>  								!to_journal)
+>  		remove_sits_in_journal(sbi);
+>  
+> @@ -4192,7 +4200,7 @@ void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+>  		unsigned int segno = start_segno;
+>  
+>  		if (to_journal &&
+> -			!__has_cursum_space(journal, ses->entry_cnt, SIT_JOURNAL))
+> +			!__has_sits_in_cursum_space(journal, ses->entry_cnt))
+>  			to_journal = false;
+>  
+>  		if (to_journal) {
+> @@ -4220,8 +4228,8 @@ void f2fs_flush_sit_entries(struct f2fs_sb_info *sbi, struct cp_control *cpc)
+>  			}
+>  
+>  			if (to_journal) {
+> -				offset = f2fs_lookup_journal_in_cursum(journal,
+> -							SIT_JOURNAL, segno, 1);
+> +				offset = f2fs_lookup_journal_sits_in_cursum(
+> +						journal, segno, 1);
+>  				f2fs_bug_on(sbi, offset < 0);
+>  				segno_in_journal(journal, offset) =
+>  							cpu_to_le32(segno);
+> -- 
 > 2.25.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
