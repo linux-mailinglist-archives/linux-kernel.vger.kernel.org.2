@@ -2,126 +2,495 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E19953725DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 08:33:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D55A73725E9
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 08:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229862AbhEDGe2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 02:34:28 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:40733 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229724AbhEDGe1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 02:34:27 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FZ95j6mwJz9sVX;
-        Tue,  4 May 2021 08:33:29 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id RGDPogYyxA6u; Tue,  4 May 2021 08:33:29 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FZ95j5hZJz9sVW;
-        Tue,  4 May 2021 08:33:29 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 8088B8B78D;
-        Tue,  4 May 2021 08:33:29 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id keUR0x4FyadH; Tue,  4 May 2021 08:33:29 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C34068B763;
-        Tue,  4 May 2021 08:33:27 +0200 (CEST)
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-To:     Arnd Bergmann <arnd@arndb.de>,
-        Matthew Wilcox <willy@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Segher Boessenkool <segher@kernel.crashing.org>,
-        Joe Perches <joe@perches.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Will Deacon <will@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-References: <20210501151538.145449-1-masahiroy@kernel.org>
- <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
- <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com>
- <20210502183030.GF10366@gate.crashing.org>
- <81a926a3bdb70debe3ae2b13655ea8d249fb9991.camel@perches.com>
- <20210502203253.GH10366@gate.crashing.org>
- <CAHk-=wjGJskk5EwnDCccs6DcLytE2yx76+P_W-n1-B5zq0M3KA@mail.gmail.com>
- <20210502223007.GZ1847222@casper.infradead.org>
- <YI+nhMcPSTs/5Ydp@ada-deb-carambola.ifak-system.com>
- <CAK8P3a0kV4ZfMEFh0DcMDjXqxA0yhj8a8CL-YFGV6B4pszHeGg@mail.gmail.com>
- <YJDb9uLQBgoy94Ub@ada-deb-carambola.ifak-system.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <6615493a-252c-ee40-a9fa-27cf5ad8922b@csgroup.eu>
-Date:   Tue, 4 May 2021 08:33:28 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229886AbhEDGmr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 02:42:47 -0400
+Received: from mail-ej1-f50.google.com ([209.85.218.50]:39544 "EHLO
+        mail-ej1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229724AbhEDGmp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 02:42:45 -0400
+Received: by mail-ej1-f50.google.com with SMTP id f24so11444224ejc.6;
+        Mon, 03 May 2021 23:41:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language;
+        bh=Di3skEk5y7vZ/aW8oQoeIdwL0Pobr8PBPO/bQgtIcrc=;
+        b=ILsweTASyOgbDxzmuN63m8P+Cr1Lf6+IWwvsd1IBYSPnaLajZe5mgEEHDHjHHUE/fF
+         tBhrVBBEEyI8szxIHtwHAqKW1LZCwRcjkcZFPHKYQvJUaivxfSPvbRdz1Rg/SiRNYE57
+         2DBYsNLu+0xtaKOvCHW7IonRktUy8aKaASjE1YA6qIR6+1m+HN+z5gTzPfctAzZlZVl3
+         hvlYxvdgV4UInrjOCMyYneF1nxetcTkc5qvAvnXHzZkltahD0VgHXYPju4AD00bpgWcN
+         ReK55dN0H6Tp/Istek+21Rz6KBB2VU6fZPCkhY5oIZAVDEPpI8RSizVFaOC0VFR2QXd9
+         m8ag==
+X-Gm-Message-State: AOAM53086Ib8Ggvfjvi4JoDwAI/a9B8EnBEEEQNWcW4e9R8kDxSa+KU/
+        peAyi0nZuK3YipuVLPai9xuel73Fi8pz4Q==
+X-Google-Smtp-Source: ABdhPJwQtp60Ze255Q6DdfRdIB/Jor8t+PUxPIO4v+HOVJH6cGQgIgdPAhE1K2k4Y9uzuYFAN4WM+A==
+X-Received: by 2002:a17:906:abcc:: with SMTP id kq12mr3816495ejb.97.1620110509941;
+        Mon, 03 May 2021 23:41:49 -0700 (PDT)
+Received: from [192.168.1.49] (185-219-167-24-static.vivo.cz. [185.219.167.24])
+        by smtp.gmail.com with ESMTPSA id z4sm12910440edb.97.2021.05.03.23.41.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 03 May 2021 23:41:48 -0700 (PDT)
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
+        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
+References: <20210426121401.GO15381@kitsune.suse.cz>
+ <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
+ <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
+ <20210430174723.GP15381@kitsune.suse.cz>
+ <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+ <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
+ <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
+ <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org> <YI/LgjLxo9VCN/d+@krava>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <8c3cbd22-eb26-ea8b-c8bb-35a629d6d2d8@kernel.org>
+Date:   Tue, 4 May 2021 08:41:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <YJDb9uLQBgoy94Ub@ada-deb-carambola.ifak-system.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <YI/LgjLxo9VCN/d+@krava>
+Content-Type: multipart/mixed;
+ boundary="------------2F0676AC09266ADBA754999C"
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------2F0676AC09266ADBA754999C
+Content-Type: text/plain; charset=iso-8859-2; format=flowed
+Content-Transfer-Encoding: 8bit
 
-
-Le 04/05/2021 Ã  07:30, Alexander Dahl a Ã©critÂ :
-> Hello Arnd,
-> 
-> Am Mon, May 03, 2021 at 11:25:21AM +0200 schrieb Arnd Bergmann:
->> On Mon, May 3, 2021 at 9:35 AM Alexander Dahl <ada@thorsis.com> wrote:
->>>
->>> Desktops and servers are all nice, however I just want to make you
->>> aware, there are embedded users forced to stick to older cross
->>> toolchains for different reasons as well, e.g. in industrial
->>> environment. :-)
->>>
->>> This is no show stopper for us, I just wanted to let you be aware.
+On 03. 05. 21, 12:08, Jiri Olsa wrote:
+> On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
+>> CCing pahole people.
 >>
->> Can you be more specific about what scenarios you are thinking of,
->> what the motivations are for using an old compiler with a new kernel
->> on embedded systems, and what you think a realistic maximum
->> time would be between compiler updates?
+>> On 03. 05. 21, 9:59, Jiri Slaby wrote:
+>>> On 03. 05. 21, 8:11, Jiri Slaby wrote:
+>>>>>>>>> looks like vfs_truncate did not get into BTF data,
+>>>>>>>>> I'll try to reproduce
+>>>>>
+>>>>> _None_ of the functions are generated by pahole -J from
+>>>>> debuginfo on ppc64. debuginfo appears to be correct. Neither
+>>>>> pahole -J fs/open.o works correctly. collect_functions in
+>>>>> dwarves seems to be defunct on ppc64... "functions" array is
+>>>>> bogus (so find_function -- the bsearch -- fails).
+>>>>
+>>>> It's not that bogus. I forgot an asterisk:
+>>>>> #0  find_function (btfe=0x100269f80, name=0x10024631c
+>>>>> "stream_open") at
+>>>>> /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
+>>>>> (gdb) p (*functions)@84
+>>>>> $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
+>>>>> = 75232, size = 72, sh_addr = 65536, generated = false}, {
+>>>>>      name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
+>>>>> size = 216, sh_addr = 65536, generated = false}, {
+>>>>>      name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
+>>>>> 80816, size = 232, sh_addr = 65536, generated = false}, {
+>>>>>      name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
+>>>>> 74304, size = 100, sh_addr = 65536, generated = false}, {
+>>>> ...
+>>>>>      name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
+>>>>> 72, sh_addr = 65536, generated = false}, {
+>>>> ...
+>>>>>      name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
+>>>>> 544, sh_addr = 65536, generated = false}}
+>>>>
+>>>> The dot makes the difference, of course. The question is why is it
+>>>> there? I keep looking into it. Only if someone has an immediate
+>>>> idea...
+>>>
+>>> Well, .vfs_truncate is in .text (and contains an ._mcount call). And
+>>> vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
+>>> excludes all functions without the ._mcount call, is_ftrace_func later
+>>> returns false for such functions and they are filtered before the BTF
+>>> processing.
+>>>
+>>> Technically, get_vmlinux_addrs looks at a list of functions between
+>>> __start_mcount_loc and __stop_mcount_loc and considers only the listed.
+>>>
+>>> I don't know what the correct fix is (exclude .opd functions from the
+>>> filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
+>>> this too.
+>>
+>> Attaching a patch for pahole which fixes the issue, but I have no idea
+>> whether it is the right fix at all.
 > 
-> One reason might be certification. For certain industrial applications
-> like support for complex field bus protocols, you need to get your
-> devices tested by an external partner running extensive test suites.
-> This is time consuming and expensive.
+> hi,
+> we're considering to disable ftrace filter completely,
+> I guess that would solve this issue for ppc as well
 > 
-> Changing the toolchain of your system then, would be a massive change
-> which would require recertification, while you could argue just
-> updating a single component like the kernel and building everything
-> again, does not require the whole testing process again.
+>    https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
 
-Not sure to follow you.
+Right, the attached patch fixes it for me too.
 
-Our company provides systems for Air Trafic Control, so we have the same kind of assurance quality 
-process, but then I can't understand why you would need to upgrade your kernel at all.
+-- 
+js
 
-Today our system is based on GCC 5 and Kernel 4.14. At the time being we are using GCC 5.5 (Latest 
-GCC 5) and kernel 4.14.232 (Latest 4.14.y). Kernel 4.14 is maintained until 2024.
+--------------2F0676AC09266ADBA754999C
+Content-Type: text/x-patch; charset=UTF-8;
+ name="0001-remove-ftrace-filter.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="0001-remove-ftrace-filter.patch"
 
-The day we do an upgrade, we upgrade everything including the tool chain then we go for another 6 
-years without major changes/re-qualification, because we can't afford a new qualitication every now 
-and then.
+From b0128f1ec6a234c5b40c40d73d55708d34f1a428 Mon Sep 17 00:00:00 2001
+From: Jiri Slaby <jslaby@suse.cz>
+Date: Tue, 4 May 2021 08:09:50 +0200
+Subject: [PATCH] remove ftrace filter
+
+Functions in the .opd section on ppc64 are currently ignored as they
+don't contain mcount calls -- they are excluded by the ftrace filter.
+Therefore, pahole cannot produce a .BTF section from vmlinux and kernel
+build fails on ppc64.
+
+Remove the ftrace filter completely as was discussed:
+ https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
+ https://lore.kernel.org/bpf/YI%2FLgjLxo9VCN%2Fd+@krava/
+---
+ btf_encoder.c | 272 +-------------------------------------------------
+ 1 file changed, 5 insertions(+), 267 deletions(-)
+
+diff --git a/btf_encoder.c b/btf_encoder.c
+index 80e896961d4e..ba83bb088efa 100644
+--- a/btf_encoder.c
++++ b/btf_encoder.c
+@@ -27,17 +27,8 @@
+  */
+ #define KSYM_NAME_LEN 128
+ 
+-struct funcs_layout {
+-	unsigned long mcount_start;
+-	unsigned long mcount_stop;
+-	unsigned long mcount_sec_idx;
+-};
+-
+ struct elf_function {
+ 	const char	*name;
+-	unsigned long	 addr;
+-	unsigned long	 size;
+-	unsigned long	 sh_addr;
+ 	bool		 generated;
+ };
+ 
+@@ -98,250 +89,11 @@ static int collect_function(struct btf_elf *btfe, GElf_Sym *sym,
+ 	}
+ 
+ 	functions[functions_cnt].name = name;
+-	functions[functions_cnt].addr = elf_sym__value(sym);
+-	functions[functions_cnt].size = elf_sym__size(sym);
+-	functions[functions_cnt].sh_addr = sh.sh_addr;
+ 	functions[functions_cnt].generated = false;
+ 	functions_cnt++;
+ 	return 0;
+ }
+ 
+-static int addrs_cmp(const void *_a, const void *_b)
+-{
+-	const __u64 *a = _a;
+-	const __u64 *b = _b;
+-
+-	if (*a == *b)
+-		return 0;
+-	return *a < *b ? -1 : 1;
+-}
+-
+-static int get_vmlinux_addrs(struct btf_elf *btfe, struct funcs_layout *fl,
+-			     __u64 **paddrs, __u64 *pcount)
+-{
+-	__u64 *addrs, count, offset;
+-	unsigned int addr_size, i;
+-	Elf_Data *data;
+-	GElf_Shdr shdr;
+-	Elf_Scn *sec;
+-
+-	/* Initialize for the sake of all error paths below. */
+-	*paddrs = NULL;
+-	*pcount = 0;
+-
+-	if (!fl->mcount_start || !fl->mcount_stop)
+-		return 0;
+-
+-	/*
+-	 * Find mcount addressed marked by __start_mcount_loc
+-	 * and __stop_mcount_loc symbols and load them into
+-	 * sorted array.
+-	 */
+-	sec = elf_getscn(btfe->elf, fl->mcount_sec_idx);
+-	if (!sec || !gelf_getshdr(sec, &shdr)) {
+-		fprintf(stderr, "Failed to get section(%lu) header.\n",
+-			fl->mcount_sec_idx);
+-		return -1;
+-	}
+-
+-	/* Get address size from processed file's ELF class. */
+-	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
+-
+-	offset = fl->mcount_start - shdr.sh_addr;
+-	count  = (fl->mcount_stop - fl->mcount_start) / addr_size;
+-
+-	data = elf_getdata(sec, 0);
+-	if (!data) {
+-		fprintf(stderr, "Failed to get section(%lu) data.\n",
+-			fl->mcount_sec_idx);
+-		return -1;
+-	}
+-
+-	addrs = malloc(count * sizeof(addrs[0]));
+-	if (!addrs) {
+-		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
+-		return -1;
+-	}
+-
+-	if (addr_size == sizeof(__u64)) {
+-		memcpy(addrs, data->d_buf + offset, count * addr_size);
+-	} else {
+-		for (i = 0; i < count; i++)
+-			addrs[i] = (__u64) *((__u32 *) (data->d_buf + offset + i * addr_size));
+-	}
+-
+-	*paddrs = addrs;
+-	*pcount = count;
+-	return 0;
+-}
+-
+-static int
+-get_kmod_addrs(struct btf_elf *btfe, __u64 **paddrs, __u64 *pcount)
+-{
+-	__u64 *addrs, count;
+-	unsigned int addr_size, i;
+-	GElf_Shdr shdr_mcount;
+-	Elf_Data *data;
+-	Elf_Scn *sec;
+-
+-	/* Initialize for the sake of all error paths below. */
+-	*paddrs = NULL;
+-	*pcount = 0;
+-
+-	/* get __mcount_loc */
+-	sec = elf_section_by_name(btfe->elf, &btfe->ehdr, &shdr_mcount,
+-				  "__mcount_loc", NULL);
+-	if (!sec) {
+-		if (btf_elf__verbose) {
+-			printf("%s: '%s' doesn't have __mcount_loc section\n", __func__,
+-			       btfe->filename);
+-		}
+-		return 0;
+-	}
+-
+-	data = elf_getdata(sec, NULL);
+-	if (!data) {
+-		fprintf(stderr, "Failed to data for __mcount_loc section.\n");
+-		return -1;
+-	}
+-
+-	/* Get address size from processed file's ELF class. */
+-	addr_size = gelf_getclass(btfe->elf) == ELFCLASS32 ? 4 : 8;
+-
+-	count = data->d_size / addr_size;
+-
+-	addrs = malloc(count * sizeof(addrs[0]));
+-	if (!addrs) {
+-		fprintf(stderr, "Failed to allocate memory for ftrace addresses.\n");
+-		return -1;
+-	}
+-
+-	if (addr_size == sizeof(__u64)) {
+-		memcpy(addrs, data->d_buf, count * addr_size);
+-	} else {
+-		for (i = 0; i < count; i++)
+-			addrs[i] = (__u64) *((__u32 *) (data->d_buf + i * addr_size));
+-	}
+-
+-	/*
+-	 * We get Elf object from dwfl_module_getelf function,
+-	 * which performs all possible relocations, including
+-	 * __mcount_loc section.
+-	 *
+-	 * So addrs array now contains relocated values, which
+-	 * we need take into account when we compare them to
+-	 * functions values, see comment in setup_functions
+-	 * function.
+-	 */
+-	*paddrs = addrs;
+-	*pcount = count;
+-	return 0;
+-}
+-
+-static int is_ftrace_func(struct elf_function *func, __u64 *addrs, __u64 count)
+-{
+-	__u64 start = func->addr;
+-	__u64 addr, end = func->addr + func->size;
+-
+-	/*
+-	 * The invariant here is addr[r] that is the smallest address
+-	 * that is >= than function start addr. Except the corner case
+-	 * where there is no such r, but for that we have a final check
+-	 * in the return.
+-	 */
+-	size_t l = 0, r = count - 1, m;
+-
+-	/* make sure we don't use invalid r */
+-	if (count == 0)
+-		return false;
+-
+-	while (l < r) {
+-		m = l + (r - l) / 2;
+-		addr = addrs[m];
+-
+-		if (addr >= start) {
+-			/* we satisfy invariant, so tighten r */
+-			r = m;
+-		} else {
+-			/* m is not good enough as l, maybe m + 1 will be */
+-			l = m + 1;
+-		}
+-	}
+-
+-	return start <= addrs[r] && addrs[r] < end;
+-}
+-
+-static int setup_functions(struct btf_elf *btfe, struct funcs_layout *fl)
+-{
+-	__u64 *addrs, count, i;
+-	int functions_valid = 0;
+-	bool kmod = false;
+-
+-	/*
+-	 * Check if we are processing vmlinux image and
+-	 * get mcount data if it's detected.
+-	 */
+-	if (get_vmlinux_addrs(btfe, fl, &addrs, &count))
+-		return -1;
+-
+-	/*
+-	 * Check if we are processing kernel module and
+-	 * get mcount data if it's detected.
+-	 */
+-	if (!addrs) {
+-		if (get_kmod_addrs(btfe, &addrs, &count))
+-			return -1;
+-		kmod = true;
+-	}
+-
+-	if (!addrs) {
+-		if (btf_elf__verbose)
+-			printf("ftrace symbols not detected, falling back to DWARF data\n");
+-		delete_functions();
+-		return 0;
+-	}
+-
+-	qsort(addrs, count, sizeof(addrs[0]), addrs_cmp);
+-	qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
+-
+-	/*
+-	 * Let's got through all collected functions and filter
+-	 * out those that are not in ftrace.
+-	 */
+-	for (i = 0; i < functions_cnt; i++) {
+-		struct elf_function *func = &functions[i];
+-		/*
+-		 * For vmlinux image both addrs[x] and functions[x]::addr
+-		 * values are final address and are comparable.
+-		 *
+-		 * For kernel module addrs[x] is final address, but
+-		 * functions[x]::addr is relative address within section
+-		 * and needs to be relocated by adding sh_addr.
+-		 */
+-		if (kmod)
+-			func->addr += func->sh_addr;
+-
+-		/* Make sure function is within ftrace addresses. */
+-		if (is_ftrace_func(func, addrs, count)) {
+-			/*
+-			 * We iterate over sorted array, so we can easily skip
+-			 * not valid item and move following valid field into
+-			 * its place, and still keep the 'new' array sorted.
+-			 */
+-			if (i != functions_valid)
+-				functions[functions_valid] = functions[i];
+-			functions_valid++;
+-		}
+-	}
+-
+-	functions_cnt = functions_valid;
+-	free(addrs);
+-
+-	if (btf_elf__verbose)
+-		printf("Found %d functions!\n", functions_cnt);
+-	return 0;
+-}
+-
+ static struct elf_function *find_function(const struct btf_elf *btfe,
+ 					  const char *name)
+ {
+@@ -620,23 +372,8 @@ static int collect_percpu_var(struct btf_elf *btfe, GElf_Sym *sym,
+ 	return 0;
+ }
+ 
+-static void collect_symbol(GElf_Sym *sym, struct funcs_layout *fl,
+-			   size_t sym_sec_idx)
+-{
+-	if (!fl->mcount_start &&
+-	    !strcmp("__start_mcount_loc", elf_sym__name(sym, btfe->symtab))) {
+-		fl->mcount_start = sym->st_value;
+-		fl->mcount_sec_idx = sym_sec_idx;
+-	}
+-
+-	if (!fl->mcount_stop &&
+-	    !strcmp("__stop_mcount_loc", elf_sym__name(sym, btfe->symtab)))
+-		fl->mcount_stop = sym->st_value;
+-}
+-
+ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+ {
+-	struct funcs_layout fl = { };
+ 	Elf32_Word sym_sec_idx;
+ 	uint32_t core_id;
+ 	GElf_Sym sym;
+@@ -650,7 +387,6 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+ 			return -1;
+ 		if (collect_function(btfe, &sym, sym_sec_idx))
+ 			return -1;
+-		collect_symbol(&sym, &fl, sym_sec_idx);
+ 	}
+ 
+ 	if (collect_percpu_vars) {
+@@ -661,9 +397,11 @@ static int collect_symbols(struct btf_elf *btfe, bool collect_percpu_vars)
+ 			printf("Found %d per-CPU variables!\n", percpu_var_cnt);
+ 	}
+ 
+-	if (functions_cnt && setup_functions(btfe, &fl)) {
+-		fprintf(stderr, "Failed to filter DWARF functions\n");
+-		return -1;
++	if (functions_cnt) {
++		qsort(functions, functions_cnt, sizeof(functions[0]), functions_cmp);
++
++		if (btf_elf__verbose)
++			printf("Found %d functions!\n", functions_cnt);
+ 	}
+ 
+ 	return 0;
+-- 
+2.31.1
 
 
-So really, I can't see your approach.
-
-Christophe
+--------------2F0676AC09266ADBA754999C--
