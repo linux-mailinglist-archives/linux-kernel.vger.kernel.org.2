@@ -2,179 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB2C8372489
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 04:50:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61FB4372493
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 04:56:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229714AbhEDCvQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 22:51:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44396 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229687AbhEDCvP (ORCPT
+        id S229723AbhEDC5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 22:57:32 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:36256 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229665AbhEDC5b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 22:51:15 -0400
-Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 722A0C061574
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 19:50:21 -0700 (PDT)
-Received: by mail-pl1-x634.google.com with SMTP id h20so4023501plr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 03 May 2021 19:50:21 -0700 (PDT)
+        Mon, 3 May 2021 22:57:31 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1442tD3G098512;
+        Tue, 4 May 2021 02:56:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : content-type :
+ mime-version; s=corp-2020-01-29;
+ bh=galAmgIzb2D78cm6ZPkcD7+N7j6Z8w3zY6QM+mMts/Q=;
+ b=HoUI3CamZohEPDmPSv3LELVvk9ZgY2f0RbMWmhP4scYE9aAuTZPK4PaduaLQXGeuOdhL
+ D4Svr/Yk3QPeBgzE9+WvmsbbYM8gM3UMIhjbuphOc9CVxexuchn6wXRPcXXC374lGKb6
+ 1OGvl7KWAF3U7WlSj57ggcgIDWlTXCM3c6OK/thUWJpVVlwtS5Hg2e3+N7lBUG3A9AOh
+ XXxluVk8UdiURsehxrSq5hyovBDjLat2Btt3XBk4cgnYB3OPswElU6i6dbRJpXyx14s+
+ ebzqtVaBojHYm6QJzm6psD0UvOvvv7fKJpLwBG4fFCr4GqUWhZQ8TiVKwJTJ9U81l3Kr OA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 388xxmwfdf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 04 May 2021 02:56:19 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1442tCGo161779;
+        Tue, 4 May 2021 02:56:18 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+        by userp3030.oracle.com with ESMTP id 388v3vrfuj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Tue, 04 May 2021 02:56:18 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GrM9TPCwkb0TbM+PUvMQOKtwILt65LhbPOunpQNbmP6T7J2nkQx0AbSflfQHM0do9gWBy6yEB7+O6st0CaDy95MEO+iZ7D1W9QbDLR242TFC2R4OWqK0ZvdXtK6Q/VWrp9Swyn4C3cv2BO22kv+X8Js40JKTzklNpScHl9cTPu7UZK+pzRee8RXq3DJrIfIxaUiX82iTtp6VsXgdJKTErHHwDUWwkL8Ft7QLhsoaMili9au/mDz+33RyQtSxLVVCDQybrZhTv6u181HwSbB6Lm/6LkjcfYc1bUvrO7htsKLWH6burusyYKlTcDTPsdjs0Y5vBA25WhD2o7UiErhEuA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=galAmgIzb2D78cm6ZPkcD7+N7j6Z8w3zY6QM+mMts/Q=;
+ b=b00RW6Qkf8kfI0/bQK5UlDDtFLbtFGcmoJGZzpY8t+6fCkqeeRkdQM4fukKL7PJsknDL+CW7i8n++sym1arwbtzNRee11x7K//YnAEsW45kYrfpPx8XyDOJI9mWln/vR3qhYPa7htJmLnwr3zkKwv/JXglbL5h7R3TiCC7IBk6/msGGOrqTHzJLh963jIYRTDGgCXL4K26YiDY6MWvkl0k8FKbd+4m8ANown1f6ATHe4EbtYMVIDROlK1kVlyRko8OLDiVbaufq1y094B7c7rvubzpoA+vB2JWoT+GMBng2feOZlCQWvDDGFGKQr2MMW1PVr+q2VeLDFmeZjrG4Kmw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=bs2uDwxwq1zZi6hfXlJFHm5DU97INKbe3KBPR4vz8kc=;
-        b=xOCEKg+lkLAZgc8KF/dua6pJchU9Z4xAuGC3A0C/3oS3nfZXIYBXgNaJp9QBxdy/d+
-         YFt3d/kpVMxS9Y5QbXmMy5y6K5NmsOG2R03vhIE06/K9xW2VNhG4dB0pbG3+QBIfSdFk
-         FSzlu0cYHuKTrWJITlRyrwvW0EZhMeKAueucCt5J1Fh4w7aOQ0+EQ/Vyew2cO8j4YzWr
-         sUlymfbl/zAj5OvyJ7PsFpVQWTm5DIMz8gqC/IA6HyieQARsfqJx/AOiyYoa9EALMGXr
-         J6DoF+fe5Hil85itNf2RhIzM82bulKeSgmC7UfrOMh+Cd5HepZTmMol8b3//FXoou0PE
-         afBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=bs2uDwxwq1zZi6hfXlJFHm5DU97INKbe3KBPR4vz8kc=;
-        b=eohcQVKXZ9yYoh0BKlzxNBUm3sZ9Ida8i6T7UoQg97HUMfxkSYkXDcqg7ZG0+vP8/S
-         9+xAqCeXL0Bl7KvHt3TdGjTC/wlUZbbzf7VIK9uDdDguDUriLCECafV6bJmFRlfm8K87
-         jH9HWdVSyQiEvUOV+dhkF7BAEiZxc8GYPnEV0kAEA6UUKEuAGwGmRsjjCRaL+LFlhwzK
-         2wgMTQl1PxmxRMAA6dZx8PghqwPhcKNHKGsr+L4+M9bx/iW6+fuiFYFqCLuLLuyoezEw
-         EJwQFS9IOcaYEjI/o8RNBLtpmQulRBBkbC/bsiNPiPQMOpbLiPtW9pVFviq4sPxLdqzL
-         6n5g==
-X-Gm-Message-State: AOAM533RBkdOVPxWvIjq0dyKCEqz8b56r7PGKy+LR77JZmjhyyXj/fTB
-        iobi6Rw3FYWF2SB7qi7eJG+jrA==
-X-Google-Smtp-Source: ABdhPJykzi/Xftd7waKsIZaby04AB8Rz3GDQ8P0D/r3gYwmA4nMIpiXC7yprmG34l3ljPjvcqP5FcQ==
-X-Received: by 2002:a17:902:a514:b029:ed:18b0:1d10 with SMTP id s20-20020a170902a514b02900ed18b01d10mr23776152plq.7.1620096620904;
-        Mon, 03 May 2021 19:50:20 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id c16sm1143556pgl.79.2021.05.03.19.50.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 03 May 2021 19:50:20 -0700 (PDT)
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Stefan Metzmacher <metze@samba.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
- <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <CALCETrV9bCenqzzaW6Ra18tCvNP-my09decTjmLDVZZAQxR6VA@mail.gmail.com>
- <CAHk-=wgo6XEz3VQ9ntqzWLR3-hm1YXrXUz4_heDs4wcLe9NYvA@mail.gmail.com>
- <d26e3a82-8a2c-7354-d36b-cac945c208c7@kernel.dk>
- <CALCETrWmhquicE2C=G2Hmwfj4VNypXVxY-K3CWOkyMe9Edv88A@mail.gmail.com>
- <CAHk-=wgqK0qUskrzeWXmChErEm32UiOaUmynWdyrjAwNzkDKaw@mail.gmail.com>
- <8735v3jujv.ffs@nanos.tec.linutronix.de>
- <CAHk-=wi4Dyg_Z70J_hJbtFLPQDG+Zx3dP2jB5QrOdZC6W6j4Gw@mail.gmail.com>
- <12710fda-1732-ee55-9ac1-0df9882aa71b@samba.org>
- <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <59ea3b5a-d7b3-b62e-cc83-1f32a83c4ac2@kernel.dk>
-Date:   Mon, 3 May 2021 20:50:19 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=galAmgIzb2D78cm6ZPkcD7+N7j6Z8w3zY6QM+mMts/Q=;
+ b=hMHw2VqqUnl/QvYppduQs/VdfwSttCGchwXs6o40FjcAtybM+Vdwni8WRlFE9KAZY8zNCT9scs6rYmmerXjAfMRMgYPJ51rHVZWoml3GE7T7f6zyqijA+dVwUYSJVV9oP/1wTjELG4In/yMqAJDi0hz6nOc+SAqBfjD7dyIGdwU=
+Authentication-Results: embeddedor.com; dkim=none (message not signed)
+ header.d=none;embeddedor.com; dmarc=none action=none header.from=oracle.com;
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com (2603:10b6:510:3d::12)
+ by PH0PR10MB4696.namprd10.prod.outlook.com (2603:10b6:510:3d::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.40; Tue, 4 May
+ 2021 02:56:16 +0000
+Received: from PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::9ce3:6a25:939f:c688]) by PH0PR10MB4759.namprd10.prod.outlook.com
+ ([fe80::9ce3:6a25:939f:c688%4]) with mapi id 15.20.4087.044; Tue, 4 May 2021
+ 02:56:16 +0000
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v3][next] scsi: aacraid: Replace one-element array with
+ flexible-array member
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq17dkfky0x.fsf@ca-mkp.ca.oracle.com>
+References: <20210421185611.GA105224@embeddedor>
+        <d26823dd-5248-4965-cc30-f9e6294536ee@embeddedor.com>
+Date:   Mon, 03 May 2021 22:56:13 -0400
+In-Reply-To: <d26823dd-5248-4965-cc30-f9e6294536ee@embeddedor.com> (Gustavo
+        A. R. Silva's message of "Mon, 3 May 2021 19:19:25 -0500")
+Content-Type: text/plain
+X-Originating-IP: [138.3.200.58]
+X-ClientProxiedBy: SN1PR12CA0085.namprd12.prod.outlook.com
+ (2603:10b6:802:21::20) To PH0PR10MB4759.namprd10.prod.outlook.com
+ (2603:10b6:510:3d::12)
 MIME-Version: 1.0
-In-Reply-To: <CAHk-=wiR7c-UHh_3Rj-EU8=AbURKchnMFJWW7=5EH=qEUDT8wg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from ca-mkp.ca.oracle.com (138.3.200.58) by SN1PR12CA0085.namprd12.prod.outlook.com (2603:10b6:802:21::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25 via Frontend Transport; Tue, 4 May 2021 02:56:15 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 476b16b8-7fd1-4f49-1126-08d90ea82f3f
+X-MS-TrafficTypeDiagnostic: PH0PR10MB4696:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <PH0PR10MB4696C893F3E7B47E20CE01D58E5A9@PH0PR10MB4696.namprd10.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4502;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 76Ib0tCalqToucTlMQtv4G/rpTlVn8ftRKAbk4ctXlVBrUb/ae2UT14jAZYpia2fkBCchV/rmgZlNKDA85/gTqo0v7cw44i8h6ymndTYU8l0wFDauVEQ6KKIq1fTRaHCmhNsGKRK257evaUpTiV1eRI+bPTDFMznnRKGiyPYDbdX4ZcvGEZzhHHsLRlyxK9CqAsu8G9qNTgV9RBg6kxIy+qRtt7SL7Aud8/Ngwfw3LwVpGcTJGXspP1cZb7CUURuimNGlvZmLgjxx2CX5Q8AsBy9FT8W0aEIr12dNSXolKWhLrPtLNCfmtX/x/mSgYBnfC77N26tru6ij1pU5EyjbZnnljFoMStpHETYQ59ax1cJ9tPFSgGjH6aix87zo3mZNwz4desvx2MMjzQYb/NeaKA31uFsmf8xSs/V/xuWuyR0wiwXd2Bd48XShntlsC/qhnUAolo/+y2X79FRRyeQIFg8pJzUGUUVDppkMDLjONnyAViQvluveH8Isge6uTp4Xi+bSkRHqb/5fk7LHmnRB1RqVGI/OJDW34+ydirME7IkdGdi3Z69/5VF5yiFDcWNErO42GWh/UMnXCqvSK8wxvfhPLudcMJ9np4tKSrfy2mEmf0dJQ5Pcz4tUeS+vsrBKMcWszV5lIdouBNqWgsj9nLao5DDEQ901CY7CNikqFk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB4759.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(366004)(39860400002)(396003)(16526019)(186003)(956004)(7696005)(2906002)(86362001)(8676002)(4326008)(26005)(55016002)(316002)(478600001)(54906003)(66946007)(38100700002)(38350700002)(6916009)(558084003)(8936002)(5660300002)(66476007)(66556008)(52116002)(36916002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?gVLlILLCA5Y5CVbsoUzN1tMYWXjQBgwdIDiLIUavd1Y2qTJtFC5ReweJJcw9?=
+ =?us-ascii?Q?VOsif3CuTzyWnT7CTXN5GOa+dUQDj9xkAIRCP+l8VR3KOgQRLLvJOl2n5lX3?=
+ =?us-ascii?Q?1/pPTi3WglHy8fhiVpGGgty7daHS0/QQgli7Fonrn3PPancQ3jpTj1dC43tx?=
+ =?us-ascii?Q?MCatG3KnTcHCpbpBzO4aPuJ5cieJtAJZdzlquYjL8AG6+MG070RH8+Xyt+P7?=
+ =?us-ascii?Q?TzB9BiO4zuyF2LJLp8h46NJq9MYJEI1K9VvC+hktWNCb41C3wJBdaFMY4i5L?=
+ =?us-ascii?Q?LVRRvi3gbfLf7MuYzfp9SkYwOohxgR/RtOID7WJp8QS6/dSIp+71GJYXI1oQ?=
+ =?us-ascii?Q?uV2PRW2rNYbyvD4/kw96RZnSYCSan9O8JPAi5smp1Gd+gNdCUsSJ3x3s4AOz?=
+ =?us-ascii?Q?a3IfFtOhqAXaOF3HFKX1K8Kkfo684aUObmcKILWioIJ3bftauzCIQ5B65X+h?=
+ =?us-ascii?Q?J7XMZg9PzjUoRPu6O7mfMTKX3DoqN9OKZTb2BVh5vnZ1bsD9Psn9kQQgo1Bi?=
+ =?us-ascii?Q?MDXrczn1WFz6wKFsoa5AkBg88R0G9s97SNtlcVG3c0GEBXpjtyXhhEiISQBI?=
+ =?us-ascii?Q?D04YLbUPNQT0QnHjXNTvhSlsm3LcduDCH/mgsPb7/DywCAxGeUrJQEUNVAj2?=
+ =?us-ascii?Q?kxOQ6NwjHWbL5g1kyoYv7Wc8mFOVNjFQUK1DhrsFWQfMu8/YbICrzaqQMGA0?=
+ =?us-ascii?Q?kdueFoWxC9z/tYnr8H85Sd/K4uYHYETfCWGzFC9iXN4LQVAdaNQ6MjPDxCxs?=
+ =?us-ascii?Q?LNI+NzKC1JoILs4B5fP4enPH+6uwBQzTpOaQFGrTY0F6uWbnYk78hQSM7GLY?=
+ =?us-ascii?Q?/93himoOk2Ivf+29fbJjnUxQ5iP8mxYnDoZ4zbq7aGl+ch3Xn1B118dgqFDJ?=
+ =?us-ascii?Q?meOaBq8JZwtMF1bGCXA7VPYhVCZbTviF/vqerhtygFBuqLdkmtVUHWW52wmz?=
+ =?us-ascii?Q?GyXcukHaa9JeRyFsqCZHCENAiby/aDJem3KvTr4wUjlO8KHbHRLKm0SgZMep?=
+ =?us-ascii?Q?Go89IpJH4Pk0xV0nnhk+8S2xKYvVDKMazAKWhCFWmMAz+oRcrzxv30h4KhV0?=
+ =?us-ascii?Q?m7ha+IQ/ttJiIVFbmr23lzMa8nA0gb/lX94iGlGrBhzJRvwZwtQmryE5T23N?=
+ =?us-ascii?Q?wHaVlMhtLbMx1iGenqEAwUXwdThCM/FKaabcFFEOYDSlYvle2/1uRsjfaxG+?=
+ =?us-ascii?Q?hG8DpUVZu6hp4Q+HE9umtWgri4xywVHywZe5wkY3r8DeRJINkkd6nKuxkOe3?=
+ =?us-ascii?Q?QJYz+OBl0sUp6mm5ylf1ysIKM/mtDG6iu7x+jtGMQOHrnKWCDL7RC8yTPVt+?=
+ =?us-ascii?Q?2PV3HiOwt4hg+ZXBpeYzKM/b?=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 476b16b8-7fd1-4f49-1126-08d90ea82f3f
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB4759.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 02:56:16.0458
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tnKoD6hNElI+fNv6A+Ow/alITbzvEEijfSBG8lcDyVe91VsXeKzkskTy39+OVhI2nxO2ahzJ9cs6zv9lnMtlLkhgrRKHojCEsGSnEas9jxc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR10MB4696
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9973 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0 phishscore=0
+ malwarescore=0 suspectscore=0 mlxscore=0 spamscore=0 mlxlogscore=683
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2105040021
+X-Proofpoint-GUID: 3zsNHXhdkm2_SbsLJGOpwP96KEsnIixC
+X-Proofpoint-ORIG-GUID: 3zsNHXhdkm2_SbsLJGOpwP96KEsnIixC
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9973 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 spamscore=0
+ suspectscore=0 phishscore=0 clxscore=1015 lowpriorityscore=0
+ mlxlogscore=877 priorityscore=1501 impostorscore=0 mlxscore=0 adultscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105040021
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 5:48 PM, Linus Torvalds wrote:
-> On Mon, May 3, 2021 at 4:27 PM Stefan Metzmacher <metze@samba.org> wrote:
->>
->> If I remember correctly gdb showed bogus addresses for the backtraces of the io_threads,
->> as some regs where not cleared.
-> 
-> Yeah, so that patch will make the IO thread have the user stack
-> pointer point to the original user stack, but that stack will
-> obviously be used by the original thread which means that it will
-> contain random stuff on it.
-> 
-> Doing a
-> 
->         childregs->sp = 0;
-> 
-> is probably a good idea for that PF_IO_WORKER case, since it really
-> doesn't have - or need - a user stack.
-> 
-> Of course, it doesn't really have - or need - any of the other user
-> registers either, but once you fill in the segment stuff to make gdb
-> happy, you might as well fill it all in using the same code that the
-> regular case does.
 
-I tested the below, which is the two combined, with a case that
-deliberately has two types of io threads - one for SQPOLL submission,
-and one that was created due to async work being needed. gdb attaches
-just fine to the creator, with a slight complaint:
+Gustavo,
 
-Attaching to process 370
-[New LWP 371]
-[New LWP 372]
-Error while reading shared library symbols for /usr/lib/libpthread.so.0:
-Cannot find user-level thread for LWP 372: generic error
-0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
-(gdb) info threads
-  Id   Target Id             Frame 
-* 1    LWP 370 "io_uring"    0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 ()
-   from /usr/lib/libc.so.6
-  2    LWP 371 "iou-sqp-370" 0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
-  3    LWP 372 "io_uring"    0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 ()
-   from /usr/lib/libc.so.6
+> Friendly ping: could you take this patch, please? :)
 
-(gdb) thread 2
-[Switching to thread 2 (LWP 371)]
-#0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
-(gdb) bt
-#0  0x00007f1a746a7a9d in syscall () from /usr/lib/libc.so.6
-Backtrace stopped: Cannot access memory at address 0x0
-
-(gdb) thread 1
-[Switching to thread 1 (LWP 370)]
-#0  0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
-(gdb) bt
-#0  0x00007f1a74675125 in clock_nanosleep@GLIBC_2.2.5 () from /usr/lib/libc.so.6
-#1  0x00007f1a7467a357 in nanosleep () from /usr/lib/libc.so.6
-#2  0x00007f1a7467a28e in sleep () from /usr/lib/libc.so.6
-#3  0x000055bd41e929ba in main (argc=<optimized out>, argv=<optimized out>)
-    at t/io_uring.c:658
-
-which looks very reasonable to me - no backtraces for the io threads, and
-no arch complaints.
-
-
-diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
-index 43cbfc84153a..58987bce90e2 100644
---- a/arch/x86/kernel/process.c
-+++ b/arch/x86/kernel/process.c
-@@ -156,7 +156,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- #endif
- 
- 	/* Kernel thread ? */
--	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
-+	if (unlikely(p->flags & PF_KTHREAD)) {
- 		memset(childregs, 0, sizeof(struct pt_regs));
- 		kthread_frame_init(frame, sp, arg);
- 		return 0;
-@@ -168,6 +168,12 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
- 	if (sp)
- 		childregs->sp = sp;
- 
-+	if (unlikely(p->flags & PF_IO_WORKER)) {
-+		childregs->sp = 0;
-+		kthread_frame_init(frame, sp, arg);
-+		return 0;
-+	}
-+
- #ifdef CONFIG_X86_32
- 	task_user_gs(p) = get_user_gs(current_pt_regs());
- #endif
-
+Applied to 5.14/scsi-staging, thanks!
 
 -- 
-Jens Axboe
-
+Martin K. Petersen	Oracle Linux Engineering
