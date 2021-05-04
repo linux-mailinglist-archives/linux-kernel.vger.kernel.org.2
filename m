@@ -2,111 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52588372E81
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:10:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE6DF372E80
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:09:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231993AbhEDRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:10:53 -0400
-Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21322 "EHLO
-        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231589AbhEDRKt (ORCPT
+        id S231982AbhEDRKu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:10:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37776 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231928AbhEDRKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Tue, 4 May 2021 13:10:49 -0400
-ARC-Seal: i=1; a=rsa-sha256; t=1620148182; cv=none; 
-        d=zohomail.com; s=zohoarc; 
-        b=JGbDoXdCLlqGA1OO5uC8QlBGaIQQT/WUwHts9dFRO/tUTk364G4JggA9DvqR5zpBdOS39btX08RRLuJFXANwy+ZNESQJjDCEKZuU4HWC+npwksC5RCgmkXO4Z1XZJzbcH4g0yoXAljGGFhQgQa/V9GVOojUBJvm6d/tgukHV8C8=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-        t=1620148182; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
-        bh=bP5q0oCy6JjgM/bUrdYdiiOBH0QufNCdsTsJImsXwQs=; 
-        b=lC9k/Kf2JokY3mMPUumOYxyWinTtfhLf8ZD2sMHgeMeJXhNDOaNfdEQm3XJVU3Or3Zx/xnWjsoxAp8eGUwjRiy2nzsdxvQep5628JFTRJzsQrYZ7jJCHpcsJR4Lri+TOqiw+oNYGK7x+Vy+trfMh29fHuRpxX5t/Iy4TKbSrUz0=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-        dkim=pass  header.i=anirudhrb.com;
-        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
-        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1620148182;
-        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
-        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
-        bh=bP5q0oCy6JjgM/bUrdYdiiOBH0QufNCdsTsJImsXwQs=;
-        b=bHkpEaY3QRRksQpbitMoxmi0wyZsZkvywxg8OLsKVNP/9tueaWk59cdk1OUbwanG
-        MjQuAbZU5/zf4Qxnl1WDTN0ncMjAR7FcxguF23kbJMTDRu+Rq/wLfKR48mrPItd+o+s
-        8zu2kNKlMZLHbClbt5jF+5TL2+xpVrSB5BuPNR5o=
-Received: from localhost.localdomain (49.207.214.96 [49.207.214.96]) by mx.zohomail.com
-        with SMTPS id 1620148175776768.7889874703077; Tue, 4 May 2021 10:09:35 -0700 (PDT)
-From:   Anirudh Rayabharam <mail@anirudhrb.com>
-To:     Mike Isely <isely@pobox.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc:     gregkh@linuxfoundation.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        Anirudh Rayabharam <mail@anirudhrb.com>,
-        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 resend] media: pvrusb2: fix warning in pvr2_i2c_core_done
-Date:   Tue,  4 May 2021 22:38:58 +0530
-Message-Id: <20210504170858.23826-1-mail@anirudhrb.com>
-X-Mailer: git-send-email 2.26.2
+Received: from mail-pl1-x634.google.com (mail-pl1-x634.google.com [IPv6:2607:f8b0:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1578C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:09:54 -0700 (PDT)
+Received: by mail-pl1-x634.google.com with SMTP id y2so5423920plr.5
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Apx1mPPo9jw/DJuFJCfp1cuIUyNCtJscROEa9WeUops=;
+        b=iG8yuyjj3NEBh1SqCU8M9JffkR8pCwPcnuH0m7vDo3ondigxJXorbh1Pi91xJDWadu
+         Y/76aELlhAnKrGShMNapHEYxB31edsVGsdbLRnkKy+bhOCkuOe8fy0UT+Qm+qMHGmFd0
+         LkcLkT2tdsMFXazYapkFLgX+sAZlCRRQr101i4syKA8Lmnq7Dv5Td2FWjYf0A/GJ+M6I
+         yK5bYbMqdZ0JWup+yR2XJPGcDWi5JGRldJDr5MbtOrmISmJf94KM+1Ym00gjKi/yA90M
+         NRiv2oveh8iBy0Q7xx0OcTU1hPDdVJUJMFVx2KIX4Wv9g69TRejkyA7ugYspstU8sAF7
+         Aocg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Apx1mPPo9jw/DJuFJCfp1cuIUyNCtJscROEa9WeUops=;
+        b=qJWLBSOolTJ5KVIRqXh5sDwjrdoh3J1a5E6/ryoo+Z0p+y7QtR9aZVZNO9Lnpqlaht
+         EZPsBjjI/fwA9dLdtjhbcV7GTkXTlHwA45XQ9lMSv/ll6DQSXs0qvhH8COw+W6cqGa0h
+         gUp7GW8mgLdJl6ptGkkhxe/mnZC5JKj+uQsGajoy2qAq6ndOGfC2E4Xx+4T5f8I+5Jtc
+         fjCQ5jFZR5eZChtZwAtgmXeZA1mBASGTBEjpX1TTEP1dQGfBN6UWDGYEaIBpLrNu2pfp
+         9VEhZNFBY8Pl4HkPqXO9Oq7ROQ0/osGQHfWrID2Wr5nZsdq4j5kSlISzEKwuITw3CpoD
+         05IA==
+X-Gm-Message-State: AOAM531R7DrNFtnp12KtIQZqh7O9DmFgm3JwHdA5e87ePQF363lMBcbc
+        TNVXMi6eiFR+t1u96RE7pieY8Q==
+X-Google-Smtp-Source: ABdhPJwseKiZuqCpuvF5P24NikxzpjspdnX4lap/dpWFtDHUHsQBhTSbgNowcR9B15ig34yjMDUlxg==
+X-Received: by 2002:a17:902:9893:b029:ee:e8a8:688c with SMTP id s19-20020a1709029893b02900eee8a8688cmr6335873plp.84.1620148193646;
+        Tue, 04 May 2021 10:09:53 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id w1sm6648874pfj.46.2021.05.04.10.09.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 10:09:53 -0700 (PDT)
+Date:   Tue, 4 May 2021 17:09:49 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, ashish.kalra@amd.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org
+Subject: Re: [PATCH v3 2/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
+ hypercall
+Message-ID: <YJF/3d+VBfJKqXV4@google.com>
+References: <20210429104707.203055-1-pbonzini@redhat.com>
+ <20210429104707.203055-3-pbonzini@redhat.com>
+ <YIxkTZsblAzUzsf7@google.com>
+ <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-ZohoMailClient: External
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has reported the following warning in pvr2_i2c_done:
+On Sat, May 01, 2021, Paolo Bonzini wrote:
+> - make it completely independent from migration, i.e. it's just a facet of
+> MSR_KVM_PAGE_ENC_STATUS saying whether the bitmap is up-to-date.  It would
+> use CPUID bit as the encryption status bitmap and have no code at all in KVM
+> (userspace needs to set up the filter and implement everything).
 
-	sysfs group 'power' not found for kobject '1-0043'
+If the bit is purely a "page encryption status is up-to-date", what about
+overloading KVM_HC_PAGE_ENC_STATUS to handle that status update as well?   That
+would eliminate my biggest complaint about having what is effectively a single
+paravirt feature split into two separate, but intertwined chunks of ABI.
 
-When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
-not unregistered along with the USB and v4l2 teardown. As part of the USB
-device disconnect, the sysfs files of the subdevices are also deleted.
-So, by the time pvr_i2c_core_done is called by pvr_context_destroy, the
-sysfs files have been deleted.
+#define KVM_HC_PAGE_ENC_UPDATE		12
 
-To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
-the device deregistration code shared by calling pvr_hdw_disconnect from
-pvr2_hdw_destroy.
+#define KVM_HC_PAGE_ENC_REGION_UPDATE	0 /* encrypted vs. plain text */
+#define KVM_HC_PAGE_ENC_STATUS_UPDATE	1 /* up-to-date vs. stale */
 
-Reported-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-Tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
-Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
----
+		ret = -KVM_ENOSYS;
+		if (!vcpu->kvm->arch.hypercall_exit_enabled)
+		        break;
 
-syzbot test run result:
-https://groups.google.com/g/syzkaller-bugs/c/ZRtPuAv8k7g/m/_MIsLKJtAAAJ
+		ret = -EINVAL;
+		if (a0 == KVM_HC_PAGE_ENC_REGION_UPDATE) {
+			u64 gpa = a1, npages = a2;
 
-Changes in v2:
-- Corrected typos in the patch description
-- Added the received "Reviewed-by:" tags 
-- Retain the call to v4l2_device_unregister() in pvr2_hdw_destroy()
-  since pvr2_hdw_disconnect doesn't call it as pointed out by Hans.
+			if (!PAGE_ALIGNED(gpa) || !npages ||
+			    gpa_to_gfn(gpa) + npages <= gpa_to_gfn(gpa))
+				break;
+		} else if (a0 != KVM_HC_PAGE_ENC_STATUS_UPDATE) {
+			break;
+		}
 
----
- drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-index f4a727918e35..d38dee1792e4 100644
---- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-+++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
-@@ -2676,9 +2676,8 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
- 		pvr2_stream_destroy(hdw->vid_stream);
- 		hdw->vid_stream = NULL;
- 	}
--	pvr2_i2c_core_done(hdw);
- 	v4l2_device_unregister(&hdw->v4l2_dev);
--	pvr2_hdw_remove_usb_stuff(hdw);
-+	pvr2_hdw_disconnect(hdw);
- 	mutex_lock(&pvr2_unit_mtx);
- 	do {
- 		if ((hdw->unit_number >= 0) &&
-@@ -2705,6 +2704,7 @@ void pvr2_hdw_disconnect(struct pvr2_hdw *hdw)
- {
- 	pvr2_trace(PVR2_TRACE_INIT,"pvr2_hdw_disconnect(hdw=%p)",hdw);
- 	LOCK_TAKE(hdw->big_lock);
-+	pvr2_i2c_core_done(hdw);
- 	LOCK_TAKE(hdw->ctl_lock);
- 	pvr2_hdw_remove_usb_stuff(hdw);
- 	LOCK_GIVE(hdw->ctl_lock);
--- 
-2.26.2
+		vcpu->run->exit_reason        = KVM_EXIT_HYPERCALL;
+		vcpu->run->hypercall.nr       = KVM_HC_PAGE_ENC_STATUS;
+		vcpu->run->hypercall.args[0]  = a0;
+		vcpu->run->hypercall.args[1]  = a1;
+		vcpu->run->hypercall.args[2]  = a2;
+		vcpu->run->hypercall.args[3]  = a3;
+		vcpu->run->hypercall.longmode = op_64_bit;
+		vcpu->arch.complete_userspace_io = complete_hypercall_exit;
+		return 0;
 
