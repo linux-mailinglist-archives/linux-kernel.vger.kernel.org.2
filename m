@@ -2,29 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21B18373050
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:07:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F260737304E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:07:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232183AbhEDTI2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:08:28 -0400
+        id S232109AbhEDTIY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:08:24 -0400
 Received: from mga17.intel.com ([192.55.52.151]:38652 "EHLO mga17.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231840AbhEDTIW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:08:22 -0400
-IronPort-SDR: X9k/b0QxdfeYTLeoRKvDyMET6lGMzni/HkD2biTOCXWnC8hKLKgdQB/+7oZnif7vjINpXZPdEn
- ZiuGHnGDUJyg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="178269885"
+        id S231604AbhEDTIS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 15:08:18 -0400
+IronPort-SDR: uTJhcXAtNOmgdfvJHJa8f+UsRg2IuuNkGFPauCoZMdpMZADCSLGJKC9bHSJTq8eSy7ItpekILD
+ en+sg0jKS08g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="178269886"
 X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="178269885"
+   d="scan'208";a="178269886"
 Received: from fmsmga006.fm.intel.com ([10.253.24.20])
   by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 12:07:16 -0700
-IronPort-SDR: A8qvP7HzhUIRa/2j6bdn46m+Z6qHcWYDZDeE1kDaqKGVKAQApH5FOQYt9sRuyfZLKxkDhKwJDf
- pSnbeIQOX2gQ==
+IronPort-SDR: VnEEtfP1kQ2EZthY9pdNHw4wZo6XrztQjFJatnkkViV9Ux8La1ZoZdsfpPI2C2v7iVDXq47oIq
+ FJmEUWxtibMA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="618591712"
+   d="scan'208";a="618591716"
 Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga006.fm.intel.com with ESMTP; 04 May 2021 12:07:15 -0700
+  by fmsmga006.fm.intel.com with ESMTP; 04 May 2021 12:07:16 -0700
 From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 To:     Thomas Gleixner <tglx@linutronix.de>,
         Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>
@@ -39,310 +39,72 @@ Cc:     "H. Peter Anvin" <hpa@zytor.com>, Ashok Raj <ashok.raj@intel.com>,
         "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
         Ricardo Neri <ricardo.neri@intel.com>, x86@kernel.org,
         linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Subject: [RFC PATCH v5 00/16] x86: Implement an HPET-based hardlockup detector
-Date:   Tue,  4 May 2021 12:05:10 -0700
-Message-Id: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com>
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Andi Kleen <andi.kleen@intel.com>
+Subject: [RFC PATCH v5 01/16] x86/hpet: Expose hpet_writel() in header
+Date:   Tue,  4 May 2021 12:05:11 -0700
+Message-Id: <20210504190526.22347-2-ricardo.neri-calderon@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com>
+References: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+In order to allow hpet_writel() to be used by other components (e.g.,
+the HPET-based hardlockup detector), expose it in the HPET header file.
 
-This is the long overdue fifth attempt to implement a hardlockup detector
-that uses an HPET channel. Previous versions can be found in [1], [2],
-[3], and [4]. I will soon post in the IOMMU mailing list a separate series
-to deal with interrupt remapping. Thus, x86 reviewers may hold off on their
-review momentarily while the IOMMU experts decide on whether what I propose
-makes sense.
-
-This RFC series has been reviewed by Tony Luck <tony.luck@intel.com>
-
-== Introduction ==
-
-In CPU architectures that do not have an NMI watchdog, one can be
-constructed using a counter of the Performance Monitoring Unit (PMU).
-Counters in the PMU have high granularity and high visibility of the CPU.
-These capabilities and their limited number make these counters precious
-resources. Unfortunately, the perf-based hardlockup detector permanently
-consumes one of these counters per CPU. These counters could be freed
-if the hardlockup detector were driven by another timer.
-
-The hardlockup detector runs relatively infrequently and does not require
-visibility of the CPU activity (in addition to detect locked-up CPUs). A
-timer that is external to the CPU (e.g., in the chipset) can be used to
-drive the detector.
-
-A key requirement is that the timer needs to be capable of issuing a
-non-maskable interrupt to the CPU. In most cases, this can be achieved
-by tweaking the delivery mode of the interrupt. It is especially
-straightforward for MSI interrupts.
-
-This implementation uses an HPET timer to deliver an NMI interrupt via
-an MSI message.
-
-== Details of this implementation
-
-Unlike the perf-based hardlockup detector, this implementation is
-driven by a single timer. Driving the detector with a single timer brings
-certain complexities to the implementation: accessing the HPET timer is
-slow, and the frequency and the affinity of the timer interrupt needs to be
-adjusted periodically. These operations need to happen in addition to
-servicing the NMI. In order to address these complexities, this design
-meets the following goals:
-
-  * Minimize updates to the affinity of the HPET timer interrupt and do
-    it outside of NMI context.
-
-  * Avoid races with System Management Mode that may lead to see the HPET
-    count stall or run backwards.
-
-  * Minimize the number of reads and writes to the HPET registers.
-
-Also, as per feedback from Thomas Gleixner,
-
-  * Do not implement an IRQF_NMI to request an NMI interrupt for x86 due
-    to the difficulty of identifying its source.
-
-In order to meet the goals above, I implemented what Thomas suggested [5]:
-a detector that mixes inter-processor interrupts (IPIs) and updating the
-affinity of the HPET interrupt in a round-robin fashion.
-
-The CPUs that the hardlockup detector monitors are partitioned into groups.
-A CPU from such group, the handling CPU, handles the NMI interrupt from the
-HPET timer and then issues an NMI IPI to the rest of the CPUs in the group.
-Each of the CPUs looks for hardlockups upon reception of the NMI. To
-minimize IPIs among packages, a group constitutes all the CPUs in a
-package.
-
-Since the monitored CPUs now have been partitioned in groups, the HPET
-timer needs to target the handling CPU of each group. Hence, the affinity
-of the HPET timer is updated in round-robin manner to sequentially target
-each group of CPUs. Each group of CPUs will be monitored every 1 second or
-less frequently. This is the frequency of the HPET timer interrupt. In the
-unlikely case of having more packages than the value watch_thresh, several
-packages will be grouped together to keep the HPET timer interrupt at 1
-second.
-
-In order to avoid reading HPET registers in every NMI, the time-stamp
-counter is used to determine whether the HPET caused the interrupt. At
-every timer expiration, we compute the value the time-stamp counter is
-expected to have the next time the timer expires. I have found
-experimentally that expected TSC value consistently has an error of less
-than 1%.
-
-== Parts of this series ==
-
-For clarity, patches are grouped as follows:
-
- 1) HPET updates. Patches 1-3 prepare the HPET code to accommodate the
-    new detector: rework periodic programming, reserve and configure a
-    timer for the detector and expose a few existing functions.
-
- 3) NMI watchdog. Patches 4-6 updates the existing hardlockup detector
-    to uncouple it from perf, and introduces a new NMI handler category
-    intended to run after the NMI_LOCAL handlers.
-
- 4) New HPET-based hardlockup detector. Patches 7-11 includes changes to
-    probe the hardware resources, configure the interrupt, and rotate the
-    destination of the interrupts among all monitored CPUs.
-
- 5) Hardlockup detector management. Patches 12-16 is a collection of
-    miscellaneous patches to determine when to use the HPET hardlockup
-    detector and stop it if necessary. It also includes an x86-specific
-    shim hardlockup detector that selects between the perf- and hpet-based
-    implementations. It also switches back to the perf implementation if
-    the TSC becomes unstable.
-
-== Testing ==
-
-I tested this series in both client and server systems, single-package and
-dual-package systems. I let the system run normally and observed the NMI
-interrupts keep coming by inspecting the file /proc/interrupts.
-
-I also implemented a test module to hog a CPU and observed the detector
-complain about soft and hardlockups.
-
-Lastly, I wrote a script to keep only one CPU online at a time in a round-
-robin manner by doing 500 back-to-back CPU hotplug online/offline 500
-times. During the test, I set /proc/sys/kernel/watchdog_thresh to 1 second.
-The HPET-based hardlockup detector is still functional after the test. I
-used the latest master branch from the tip tree.
-
-The tests above were performed with interrupt remapping both enabled and
-disabled.
-
-Thanks and BR,
-Ricardo
-
+Cc: "H. Peter Anvin" <hpa@zytor.com>
+Cc: Ashok Raj <ashok.raj@intel.com>
+Cc: Andi Kleen <andi.kleen@intel.com>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Stephane Eranian <eranian@google.com>
+Cc: Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>
+Cc: "Ravi V. Shankar" <ravi.v.shankar@intel.com>
+Cc: x86@kernel.org
+Signed-off-by: Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+---
 Changes since v4:
- * Added commentary on the tests performed on this feature. (Andi)
- * Added a stub version of hardlockup_detector_switch_to_perf() for
-   !CONFIG_HPET_TIMER. (lkp)
- * Use switch to select the type of x86 hardlockup detector. (Andi)
- * Renamed a local variable in update_ticks_per_group(). (Andi)
- * Made this hardlockup detector available to X86_32.
- * Reworked logic to kick the HPET timer to remove a local variable.
-   (Andi)
- * Added a comment on what type of timer channel will be assigned to the
-   detector. (Andi)
- * Reworded help comment in the X86_HARDLOCKUP_DETECTOR_HPET Kconfig
-   option. (Andi)
- * Removed unnecessary switch to level interrupt mode when disabling the
-   timer. (Andi)
- * Disabled the HPET timer to avoid a race between an incoming interrupt
-   and an update of the MSI destination ID. (Ashok)
- * Renamed hpet_hardlockup_detector_get_timer() as hpet_hld_get_timer()
- * Added commentary on an undocumented udelay() when programming an
-   HPET channel in periodic mode. (Ashok)
- * Reworked code to use new enumeration apic_delivery_modes and reworked
-   MSI message composition fields [6].
- * Partitioned monitored CPUs into groups. Each CPU in the group is
-   inspected for hardlockups using an IPI.
- * Use a round-robin mechanism to update the affinity of the HPET timer.
-   Affinity is updated every watchdog_thresh seconds to target the
-   handling CPU of the group.
- * Moved update of the HPET interrupt affinity to an irq_work. (Thomas
-   Gleixner).
- * Updated expiration of the HPET timer and the expected value of the
-   TSC based on the number of groups of monitored CPUs.
- * Renamed hpet_set_comparator() to hpet_set_comparator_periodic() to
-   remove decision logic for periodic case. (Thomas Gleixner)
- * Reworked timer reservation to use Thomas' rework on HPET channel
-   management[7].
- * Removed hard-coded channel number for the hardlockup detector.
- * Provided more details on the sequence of HPET channel reservation.
-   (Thomas Gleixner)
- * Only reserve a channel for the hardlockup detector if enabled via
-   kernel command line. The function reserving the channel is called from
-   hardlockup detector. (Thomas Gleixner)
- * Dropped hpet_hld_data::enabled_cpus and instead use cpumask_weight().
- * Renamed hpet_hld_data::cpu_monitored_mask to
-   hld_data_data.cpu_monitored_mask and converted it to cpumask_var_t.
- * Flushed out any outstanding interrupt before enabling the HPET channel.
- * Removed unnecessary MSI_DATA_LEVEL_ASSERT from the MSI message.
- * Added comments in hardlockup_detector_nmi_handler() to explain how
-   CPUs are targeted for an IPI.
- * Updated code to only issue an IPI when needed (i.e., there are CPUs in
-   the group other than the handling CPU).
- * Reworked hardlockup_detector_hpet_init() for readability.
- * Now reserve the cpumasks in the hardlockup detector code and not in the
-   generic HPET code.
- * Handle the case of watchdog_thresh = 0 when disabling the detector.
+ * Dropped exposing hpet_readq() as it is not needed.
 
-Change since v3:
- * Fixed yet another bug in periodic programming of the HPET timer that
-   prevented the system from booting.
- * Fixed computation of HPET frequency to use hpet_readl() only.
- * Added a missing #include in the watchdog_hld_hpet.c
- * Fixed various typos and grammar errors (Randy Dunlap)
+Changes since v3:
+ * None
 
 Changes since v2:
- * Added functionality to switch to the perf-based hardlockup
-   detector if the TSC becomes unstable (Thomas Gleixner).
- * Brought back the round-robin mechanism proposed in v1 (this time not
-   using the interrupt subsystem). This also requires computing
-   expiration times as in v1 (Andi Kleen, Stephane Eranian).
- * Fixed a bug in which using a periodic timer was not working(thanks
-   to Suravee Suthikulpanit!).
- * In this version, I incorporate support for interrupt remapping in the
-   last 4 patches so that they can be reviewed separately if needed.
- * Removed redundant documentation of functions (Thomas Gleixner).
- * Added a new category of NMI handler, NMI_WATCHDOG, which executes after
-   NMI_LOCAL handlers (Andi Kleen).
- * Updated handling of "nmi_watchdog" to support comma-separated
-   arguments.
- * Undid split of the generic hardlockup detector into a separate file
-   (Thomas Gleixner).
- * Added a new intermediate symbol CONFIG_HARDLOCKUP_DETECTOR_CORE to
-   select generic parts of the detector (Paul E. McKenney,
-   Thomas Gleixner).
- * Removed use of struct cpumask in favor of a variable length array in
-   conjunction with kzalloc (Peter Zijlstra).
- * Added CPU as argument hardlockup_detector_hpet_enable()/disable()
-   (Thomas Gleixner).
- * Remove unnecessary export of function declarations, flags, and bit
-   fields (Thomas Gleixner).
- * Removed  unnecessary check for FSB support when reserving timer for the
-   detector (Thomas Gleixner).
- * Separated TSC code from HPET code in kick_timer() (Thomas Gleixner).
- * Reworked condition to check if the expected TSC value is within the
-   error margin to avoid conditional (Peter Zijlstra).
- * Removed TSC error margin from struct hld_data; use global variable
-   instead (Peter Zijlstra).
- * Removed previously introduced watchdog_get_allowed_cpumask*() and
-   reworked hardlockup_detector_hpet_enable()/disable() to not need
-   access to watchdog_allowed_mask (Thomas Gleixner).
+ * None
 
 Changes since v1:
+ * None
+---
+ arch/x86/include/asm/hpet.h | 1 +
+ arch/x86/kernel/hpet.c      | 2 +-
+ 2 files changed, 2 insertions(+), 1 deletion(-)
 
- * Removed reads to HPET registers at every NMI. Instead use the time-stamp
-   counter to infer the interrupt source (Thomas Gleixner, Andi Kleen).
- * Do not target CPUs in a round-robin manner. Instead, the HPET timer
-   always targets the same CPU; other CPUs are monitored via an
-   interprocessor interrupt.
- * Removed use of generic irq code to set interrupt affinity and NMI
-   delivery. Instead, configure the interrupt directly in HPET registers
-   (Thomas Gleixner).
- * Removed the proposed ops structure for NMI watchdogs. Instead, split
-   the existing implementation into a generic library and perf-specific
-   infrastructure (Thomas Gleixner, Nicholas Piggin).
- * Added an x86-specific shim hardlockup detector that selects between
-   HPET and perf infrastructures as needed (Nicholas Piggin).
- * Removed locks taken in NMI and !NMI context. This was wrong and is no
-   longer needed (Thomas Gleixner).
- * Fixed unconditional return NMI_HANDLED when the HPET timer is programmed
-   for FSB/MSI delivery (Peter Zijlstra).
-
-[1]. https://lore.kernel.org/lkml/1528851463-21140-1-git-send-email-ricardo.neri-calderon@linux.intel.com/
-[2]. https://lore.kernel.org/lkml/1551283518-18922-1-git-send-email-ricardo.neri-calderon@linux.intel.com/
-[3]. https://lore.kernel.org/lkml/1557842534-4266-1-git-send-email-ricardo.neri-calderon@linux.intel.com/
-[4]. https://lore.kernel.org/lkml/1558660583-28561-1-git-send-email-ricardo.neri-calderon@linux.intel.com/
-[5]. https://lore.kernel.org/lkml/alpine.DEB.2.21.1906172343120.1963@nanos.tec.linutronix.de/
-[6]. https://lore.kernel.org/r/20201024213535.443185-6-dwmw2@infradead.org
-[7]. https://lore.kernel.org/lkml/20190623132340.463097504@linutronix.de/
-
-Ricardo Neri (16):
-  x86/hpet: Expose hpet_writel() in header
-  x86/hpet: Add helper function hpet_set_comparator_periodic()
-  x86/hpet: Reserve an HPET channel for the hardlockup detector
-  watchdog/hardlockup: Define a generic function to detect hardlockups
-  watchdog/hardlockup: Decouple the hardlockup detector from perf
-  x86/nmi: Add an NMI_WATCHDOG NMI handler category
-  x86/watchdog/hardlockup: Add an HPET-based hardlockup detector
-  x86/watchdog/hardlockup/hpet: Introduce a target_cpumask
-  watchdog/hardlockup/hpet: Group packages receiving IPIs when needed
-  watchdog/hardlockup/hpet: Adjust timer expiration on the number of
-    monitored groups
-  x86/watchdog/hardlockup/hpet: Determine if HPET timer caused NMI
-  watchdog/hardlockup: Use parse_option_str() to handle "nmi_watchdog"
-  watchdog/hardlockup/hpet: Only enable the HPET watchdog via a boot
-    parameter
-  x86/watchdog: Add a shim hardlockup detector
-  watchdog: Expose lockup_detector_reconfigure()
-  x86/tsc: Switch to perf-based hardlockup detector if TSC become
-    unstable
-
- .../admin-guide/kernel-parameters.txt         |   8 +-
- arch/x86/Kconfig.debug                        |  14 +
- arch/x86/include/asm/hpet.h                   |  67 ++
- arch/x86/include/asm/nmi.h                    |   1 +
- arch/x86/kernel/Makefile                      |   2 +
- arch/x86/kernel/hpet.c                        | 124 +++-
- arch/x86/kernel/nmi.c                         |  10 +
- arch/x86/kernel/tsc.c                         |   2 +
- arch/x86/kernel/watchdog_hld.c                |  86 +++
- arch/x86/kernel/watchdog_hld_hpet.c           | 633 ++++++++++++++++++
- include/linux/nmi.h                           |   8 +-
- kernel/Makefile                               |   2 +-
- kernel/watchdog.c                             |  12 +-
- kernel/watchdog_hld.c                         |  50 +-
- lib/Kconfig.debug                             |   4 +
- 15 files changed, 982 insertions(+), 41 deletions(-)
- create mode 100644 arch/x86/kernel/watchdog_hld.c
- create mode 100644 arch/x86/kernel/watchdog_hld_hpet.c
-
+diff --git a/arch/x86/include/asm/hpet.h b/arch/x86/include/asm/hpet.h
+index ab9f3dd87c80..be9848f0883f 100644
+--- a/arch/x86/include/asm/hpet.h
++++ b/arch/x86/include/asm/hpet.h
+@@ -72,6 +72,7 @@ extern int is_hpet_enabled(void);
+ extern int hpet_enable(void);
+ extern void hpet_disable(void);
+ extern unsigned int hpet_readl(unsigned int a);
++extern void hpet_writel(unsigned int d, unsigned int a);
+ extern void force_hpet_resume(void);
+ 
+ #ifdef CONFIG_HPET_EMULATE_RTC
+diff --git a/arch/x86/kernel/hpet.c b/arch/x86/kernel/hpet.c
+index 08651a4e6aa0..326af9a55129 100644
+--- a/arch/x86/kernel/hpet.c
++++ b/arch/x86/kernel/hpet.c
+@@ -78,7 +78,7 @@ inline unsigned int hpet_readl(unsigned int a)
+ 	return readl(hpet_virt_address + a);
+ }
+ 
+-static inline void hpet_writel(unsigned int d, unsigned int a)
++inline void hpet_writel(unsigned int d, unsigned int a)
+ {
+ 	writel(d, hpet_virt_address + a);
+ }
 -- 
 2.17.1
 
