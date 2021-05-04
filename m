@@ -2,200 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDC85372FFC
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:50:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89ED5373000
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 20:52:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231926AbhEDSvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 14:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60578 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230480AbhEDSvk (ORCPT
+        id S231924AbhEDSxf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 14:53:35 -0400
+Received: from mail2.protonmail.ch ([185.70.40.22]:16536 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231228AbhEDSxe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 14:51:40 -0400
-Received: from mail-ej1-x62d.google.com (mail-ej1-x62d.google.com [IPv6:2a00:1450:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88E83C061574;
-        Tue,  4 May 2021 11:50:44 -0700 (PDT)
-Received: by mail-ej1-x62d.google.com with SMTP id gx5so14750060ejb.11;
-        Tue, 04 May 2021 11:50:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=HD/mkMjodnRFmictHOrutu0YoPz+m1hT1YUAXAZ3Sh0=;
-        b=JH7tiMQILg7kciiIT6pFlUB3Spg+A1ApjeFiaJuI6XOeGWZQ3SFEyY4cINMmcIn1Ey
-         uk6lv0CGcShBEa9HKp/Yc2ZQ1SiB+5ISEkt2LDh180XIXrdT4vZhtU6AwwVEg5w57rzh
-         F+FZWcrz0UgTyTzMe2cIFnsbcwup6CUXIJEvnFtnnBMu3WnddmJuMFQLyQOkDAWqht9n
-         5FbqA0VpVHxxLxH1mg2FviDAoQUPv7QlFztXlVYgUGMiLOVFCup54kPES7sTKZDvGzrL
-         5cB8l+k/xLOdGRRJaEzQSP0UEu447phdjDIDAve9tOnYD/Q4aIzvcqKyTinb78ow1sev
-         vORQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HD/mkMjodnRFmictHOrutu0YoPz+m1hT1YUAXAZ3Sh0=;
-        b=ihDVSICq6FWEUMLMeam25O2YBeBS7RN3uaTVek+C+bxtyvNHkaXKIB0XP19/hwNC+1
-         Ukq+B+QOWUSUfRhxbY1wKYe4pHT5IpJKn4ykXCuu/ty2SJ1q14nM0Y9mS0b5wKc7Zn/J
-         mgQ4DTtJUVjKgNLm3/stBBi9C+bmH9myxjpH6XpMY6jgoglGZymPzgRwqDejcTN2QaSv
-         xdoiRX5Nf47EY/iA1ywm2Hw4nrbfT5zpQdVvcrKqO/CDr2AGfixsQaginxNSQrMElA1M
-         kwPb0uZledD2pyysqRNKIvKSRMjQmoMCXB1jz/8Wij1nK9U1Dpq0I8xdmpCad2n9JpXs
-         ASCw==
-X-Gm-Message-State: AOAM532Mo+MJ2W8Zyh5AQG6J4MUeOtdubrMZ7JpBD9vAnbPjZH79ANWG
-        RuAHhQTn0gkAS8Nz/WWXFgQ=
-X-Google-Smtp-Source: ABdhPJzcjQHQMnF9WLF7sHEbN/vG8PkEE2XVu6knQWbKAYQhketZVsci2KxIERYXNVU2OPzwyLjJmA==
-X-Received: by 2002:a17:907:1ca8:: with SMTP id nb40mr9639315ejc.181.1620154242974;
-        Tue, 04 May 2021 11:50:42 -0700 (PDT)
-Received: from skbuf ([86.127.41.210])
-        by smtp.gmail.com with ESMTPSA id i8sm14656794edu.64.2021.05.04.11.50.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 11:50:42 -0700 (PDT)
-Date:   Tue, 4 May 2021 21:50:40 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Michael Walle <michael@walle.cc>
-Cc:     xiaoliang.yang_1@nxp.com, Arvid.Brodin@xdin.com,
-        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
-        allan.nielsen@microchip.com, andre.guedes@linux.intel.com,
-        claudiu.manoil@nxp.com, colin.king@canonical.com,
-        davem@davemloft.net, idosch@mellanox.com,
-        ivan.khoronzhuk@linaro.org, jiri@mellanox.com,
-        joergen.andreasen@microchip.com, leoyang.li@nxp.com,
-        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
-        michael.chan@broadcom.com, mingkai.hu@nxp.com,
-        netdev@vger.kernel.org, po.liu@nxp.com, saeedm@mellanox.com,
-        vinicius.gomes@intel.com, vladimir.oltean@nxp.com,
-        yuehaibing@huawei.com
-Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for
- TAS config
-Message-ID: <20210504185040.ftkub3ropuacmyel@skbuf>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
- <20210504170514.10729-1-michael@walle.cc>
- <20210504181833.w2pecbp2qpuiactv@skbuf>
- <c7618025da6723418c56a54fe4683bd7@walle.cc>
+        Tue, 4 May 2021 14:53:34 -0400
+Date:   Tue, 04 May 2021 18:52:29 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bryanbrattlof.com;
+        s=protonmail3; t=1620154357;
+        bh=aZt2y1a82UUZe+5SKJ6IIdvo7HmXqLUCztxzxL4vZWI=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=nH9o0N0wc3EsuCAEnAfly4U9sEAqU5AFBuU1TZHY4RAoZZiIJwPi1f1OeJixYk0Iq
+         voMnlb0jqd1As5ZH+VgsLRpPXJtkbEdqyvqoNkX68fkI2ONznlTF1iKzRgAe2VXkCu
+         xxpsEOrmvPybbsfL444GAkvtG7hONxB5HomJg0FQ4gpsBbFRqZfIqHHsZMnLxOUnPK
+         qyLDcYDs6JT/vtHzIwb2KPBTBE7N5969KffE4Pt3s2oCJTSkvsle6jPsSV/6mDdf6N
+         13vGfQKyzEo4MReOndRMVaySTtLievvJpLheHUhJkQRvST9ozXVmPM+3nmxgvb6OyY
+         f6blJKXV3d0pg==
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+From:   Bryan Brattlof <hello@bryanbrattlof.com>
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Reply-To: Bryan Brattlof <hello@bryanbrattlof.com>
+Subject: Re: [PATCH] staging: rtl8723bs: use generic kernel error codes
+Message-ID: <20210504185221.zloowjyqyc5eyptq@bryanbrattlof.com>
+In-Reply-To: <YJGK06THHi5aGFGo@kroah.com>
+References: <c94e5865e59d35fe0e39d5cd46d71ad4a752ddd4.1620144194.git-series.hello@bryanbrattlof.com> <YJFziyZHnbsWdTFn@kroah.com> <20210504174530.3kog7zq6tuk3wnlk@bryanbrattlof.com> <YJGK06THHi5aGFGo@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c7618025da6723418c56a54fe4683bd7@walle.cc>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 08:38:29PM +0200, Michael Walle wrote:
-> Hi Vladimir,
-> 
-> Am 2021-05-04 20:18, schrieb Vladimir Oltean:
-> > On Tue, May 04, 2021 at 07:05:14PM +0200, Michael Walle wrote:
-> > > Hi,
-> > > 
-> > > > ALWAYS_GUARD_BAND_SCH_Q bit in TAS config register is descripted as
-> > > > this:
-> > > > 	0: Guard band is implemented for nonschedule queues to schedule
-> > > > 	   queues transition.
-> > > > 	1: Guard band is implemented for any queue to schedule queue
-> > > > 	   transition.
-> > > >
-> > > > The driver set guard band be implemented for any queue to schedule queue
-> > > > transition before, which will make each GCL time slot reserve a guard
-> > > > band time that can pass the max SDU frame. Because guard band time could
-> > > > not be set in tc-taprio now, it will use about 12000ns to pass 1500B max
-> > > > SDU. This limits each GCL time interval to be more than 12000ns.
-> > > >
-> > > > This patch change the guard band to be only implemented for nonschedule
-> > > > queues to schedule queues transition, so that there is no need to reserve
-> > > > guard band on each GCL. Users can manually add guard band time for each
-> > > > schedule queues in their configuration if they want.
-> > > 
-> > > 
-> > > As explained in another mail in this thread, all queues are marked as
-> > > scheduled. So this is actually a no-op, correct? It doesn't matter if
-> > > it set or not set for now. Dunno why we even care for this bit then.
-> > 
-> > It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the available
-> > throughput when set.
-> 
-> Ahh, I see now. All queues are "scheduled" but the guard band only applies
-> for "non-scheduled" -> "scheduled" transitions. So the guard band is never
-> applied, right? Is that really what we want?
+On Tue, May 04, 2021 at 07:56:35PM +0200, Greg Kroah-Hartman wrote:
+>On Tue, May 04, 2021 at 05:45:37PM +0000, Bryan Brattlof wrote:
+>> Sorry for the spam Greg I dropped the mailing lists from the first
+>> email.  :(
+>>
+>> On Tue, May 04, 2021 at 06:17:15PM +0200, Greg Kroah-Hartman wrote:
+>> >On Tue, May 04, 2021 at 04:07:48PM +0000, Bryan Brattlof wrote:
+>>
+>> <snip>
+>>
+>> >> @@ -139,12 +139,11 @@ static u32 sdio_init(struct dvobj_priv *dvobj)
+>> >>  =09psdio_data->tx_block_mode =3D 1;
+>> >>  =09psdio_data->rx_block_mode =3D 1;
+>> >>
+>> >> +=09return err;
+>> >> +
+>> >>  release:
+>> >>  =09sdio_release_host(func);
+>> >> -
+>> >> -=09if (err)
+>> >> -=09=09return _FAIL;
+>> >> -=09return _SUCCESS;
+>> >> +=09return err;
+>> >>  }
+>> >
+>> >You just changed the logic here, are you SURE that was ok to do?
+>> >
+>>
+>> I can't say my brain didn't bleed a little trying to keep this straight
+>> in my head while walking through this. (For what ever reason my brain
+>> sees negative integers as False) =C2=AF\_(=E3=83=84)_/=C2=AF
+>>
+>> Both the sdio_enable_func() and sdio_set_block_size() will return a
+>> negative integer if they fail, which we evaluate as True, allowing us to
+>> jump to release, free the card and propagate the error backwards.
+>>
+>> If everything worked, we'll skip all the jumps until we get to the first
+>> 'return err;' statement, returning our 0 for success.
+>>
+>> Inside sdio_dvobj_init() if we see 'anything below 0' (This probably
+>> should be changed to 'anything True') we jump to free_dvobj where we
+>> free the dvobj and return NULL
+>>
+>> If I've looked at this long enough I don't thing I changed the logic.
+>>
+>> Hopefully. :)
+>
+>So you need to document this really well, showing that the function
+>whose error you changed, is being evaluated here now differently too.
+>
 
-Xiaoliang explained that yes, this is what we want. If the end user
-wants a guard band they can explicitly add a "sched-entry 00" in the
-tc-taprio config.
+Sounds good. Ill update the commit log
 
-> > > > Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-> > > > ---
-> > > >  drivers/net/dsa/ocelot/felix_vsc9959.c | 8 ++++++--
-> > > >  1 file changed, 6 insertions(+), 2 deletions(-)
-> > > >
-> > > > diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> > > > index 789fe08cae50..2473bebe48e6 100644
-> > > > --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
-> > > > +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
-> > > > @@ -1227,8 +1227,12 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
-> > > >  	if (taprio->num_entries > VSC9959_TAS_GCL_ENTRY_MAX)
-> > > >  		return -ERANGE;
-> > > >
-> > > > -	ocelot_rmw(ocelot, QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port) |
-> > > > -		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
-> > > > +	/* Set port num and disable ALWAYS_GUARD_BAND_SCH_Q, which means set
-> > > > +	 * guard band to be implemented for nonschedule queues to schedule
-> > > > +	 * queues transition.
-> > > > +	 */
-> > > > +	ocelot_rmw(ocelot,
-> > > > +		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port),
-> > > >  		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM_M |
-> > > >  		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
-> > > >  		   QSYS_TAS_PARAM_CFG_CTRL);
-> > > 
-> > > Anyway, I don't think this the correct place for this:
-> > >  (1) it isn't per port, but a global bit, but here its done per port.
-> > 
-> > I don't understand. According to the documentation, selecting the port
-> > whose time-aware shaper you are configuring is done through
-> > QSYS::TAS_PARAM_CFG_CTRL.PORT_NUM.
-> 
-> According to the LS1028A RM:
-> 
->   PORT_NUM
->   Specifies the port number to which the TAS_PARAMS register configurations
->   (CFG_REG_1 to CFG_REG_5, TIME_INTERVAL and GATE_STATE) need to be applied.
-> 
-> I guess this work together with CONFIG_CHANGE and applies the mentions
-> registers
-> in an atomic way (or at a given time). There is no mention of the
-> ALWAYS_GUARD_BAND_SCH_Q bit nor the register TAS_PARAM_CFG_CTRL.
-> 
-> But the ALWAYS_GUARD_BAND_SCH_Q mention its "Global configuration". That
-> together with the fact that it can't be read back (unless I'm missing
-> something), led me to the conclusion that this bit is global for the whole
-> switch. I may be wrong.
+>
+>> >>  static void sdio_deinit(struct dvobj_priv *dvobj)
+>> >> @@ -186,7 +185,7 @@ static struct dvobj_priv *sdio_dvobj_init(struct =
+sdio_func *func)
+>> >>  =09psdio =3D &dvobj->intf_data;
+>> >>  =09psdio->func =3D func;
+>> >>
+>> >> -=09if (sdio_init(dvobj) !=3D _SUCCESS)
+>> >> +=09if (sdio_init(dvobj) < 0)
+>> >>  =09=09goto free_dvobj;
+>> >>
+>> >>  =09rtw_reset_continual_io_error(dvobj);
+>> >>
+>> >> base-commit: 9ccce092fc64d19504fa54de4fd659e279cc92e7
+>> >> --
+>> >> git-series 0.9.1
+>> >>
+>> >>
+>> >
+>> >And that's all to remove the need for these crazy error values?  If so,
+>> >why not also remove the #defines for them as well?
+>> >
+>>
+>> I might have over sold this patch. :)
+>>
+>> There are quite a few functions like this still here that need to be
+>> converted before we can get rid of the _SUCCESS and _FAIL definitions.
+>>
+>> Would it be better if I bundled these up in a series?
+>
+>Do it one function "call-chain" at a time, and yes, a series would be
+>great.
+>
 
-Sorry, I don't understand what you mean to say here.
+Thanks Greg! I'll bundle this up into a series.
 
-> But in any case, (2) is more severe IMHO.
-> 
-> > >  (2) rmw, I presume is read-modify-write. and there is one bit CONFIG_CHAGE
-> > >      which is set by software and cleared by hardware. What happens if it
-> > > 	 will be cleared right after we read it. Then it will be set again, no?
-> > > 
-> > > So if we really care about this bit, shouldn't this be moved to switch
-> > > initialization then?
+--
+~Bryan
 
-Sorry, again, I don't understand. Let me copy here the procedure from
-vsc9959_qos_port_tas_set():
+>
+>thanks,
+>
+>greg k-h
 
-	ocelot_rmw(ocelot, QSYS_TAS_PARAM_CFG_CTRL_CONFIG_CHANGE,
-		   QSYS_TAS_PARAM_CFG_CTRL_CONFIG_CHANGE,
-		   QSYS_TAS_PARAM_CFG_CTRL); <- set the CONFIG_CHANGE bit, keep everything else the same
-
-	ret = readx_poll_timeout(vsc9959_tas_read_cfg_status, ocelot, val,
-				 !(val & QSYS_TAS_PARAM_CFG_CTRL_CONFIG_CHANGE),
-				 10, 100000); <- spin until CONFIG_CHANGE clears
-
-Should there have been a mutex at the beginning of vsc9959_qos_port_tas_set,
-ensuring that two independent user space processes configuring the TAS
-of two ports cannot access the global config registers concurrently?
-Probably, although my guess is that currently, the global rtnetlink
-mutex prevents this from happening in practice.
-
-> > May I know what drew your attention to this patch? Is there something
-> > wrong?
-
-^ question still remains
