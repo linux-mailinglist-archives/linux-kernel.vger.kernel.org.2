@@ -2,194 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF5953730F7
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6377E3730FB
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232518AbhEDTop (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:44:45 -0400
-Received: from mail-lf1-f54.google.com ([209.85.167.54]:42924 "EHLO
-        mail-lf1-f54.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232145AbhEDToo (ORCPT
+        id S232571AbhEDTqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:46:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34941 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232535AbhEDTqU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:44:44 -0400
-Received: by mail-lf1-f54.google.com with SMTP id c11so15005441lfi.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:43:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XECX9L88R5n0fWFQf600RELq+nS/7DtQUpWyy5dmED4=;
-        b=c1OFNYZqjC4qJyLBKyLDuia6HyMqqdrCiYrcoIb1qTQSqhRTd3kAD51yp/YySNuHCa
-         3SsOG74XYGNX7EE2fi1z7yVavBJm204VMRaLJ9mCQFH/VpV+xFfXuCzlZU5weNKY/7vI
-         yhpTzPdFsjoibX6R5+HlpSfRw4uQ+Nn227mXWiObk1GeJ8+fEP9UdBIvrtbp4e9Z2c1s
-         0B8DWimAs11ZAAqUPshtoazVBfxiZb2SljKb9OqY1wuVurZnWocre1bmsxM7PAQZnA5+
-         aPDIs814HdbM7909zxV1B4z6U1OcNbvuTbRERYNi0X5h4gP62kNXkzq6227qxADr3S/o
-         ChIQ==
-X-Gm-Message-State: AOAM530gbDqEANlzG4JjwpBkjDFwJg2b8c9r/1b60zPrGdhRJDNC+qa6
-        S2vWbTg6NSt+H4MTBG3gNjPXztGArM9dqEuVLLE=
-X-Google-Smtp-Source: ABdhPJwmSBq/8WiPJhQaKb9qGYeYTRPmMCL0b024Q48LXoklraLDU0og9IZwaI6WsBCoXknfRu6h1GSuhWFDTZq29NU=
-X-Received: by 2002:ac2:499e:: with SMTP id f30mr6439021lfl.635.1620157428439;
- Tue, 04 May 2021 12:43:48 -0700 (PDT)
+        Tue, 4 May 2021 15:46:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620157525;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=tfzPIb13S4HHhK8UG3dOlIDhClIn947SERNDpuf2glM=;
+        b=aRS34sM2B2HFZ5xwWaxCXAzCsTbjORkzDMaU7qddkENRmuRnJIJ55t72SG4DGSOnzU1XA7
+        D7rRgaB1+QQ6x+VqbvGAsihtGXfRDf2dwtJ/UQFmcvHgWx1zYWE89CWQDF5IxyxTKecnto
+        g0Qy/3eciQsJJ1ARiKsxjHOrFgYf+5g=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-64-95LXqmt8NnO-MJdM86Agog-1; Tue, 04 May 2021 15:45:21 -0400
+X-MC-Unique: 95LXqmt8NnO-MJdM86Agog-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D5D53801B13;
+        Tue,  4 May 2021 19:45:19 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-112-137.ams2.redhat.com [10.36.112.137])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 1088E5C1B4;
+        Tue,  4 May 2021 19:45:15 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Cc:     Zack Weinberg <zackw@panix.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        Joseph Myers <joseph@codesourcery.com>,
+        David Laight <David.Laight@aculab.com>
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+        <20210504110519.16097-1-alx.manpages@gmail.com>
+        <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+        <YJFZHW2afbAMVOmE@kroah.com>
+        <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
+        <YJFxArfp8wN3ILJb@kroah.com>
+        <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+        <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
+Date:   Tue, 04 May 2021 21:45:31 +0200
+In-Reply-To: <6740a229-842e-b368-86eb-defc786b3658@gmail.com> (Alejandro
+        Colomar's message of "Tue, 4 May 2021 20:54:07 +0200")
+Message-ID: <87r1imgu5g.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-References: <20210504191227.793712-1-irogers@google.com>
-In-Reply-To: <20210504191227.793712-1-irogers@google.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Tue, 4 May 2021 12:43:37 -0700
-Message-ID: <CAM9d7chEbYU6mnCsAo7+rGH7PCtJy8NT7BedLBT8Lda8fbjy5A@mail.gmail.com>
-Subject: Re: [PATCH] perf arm: Fix off-by-one directory paths.
-To:     Ian Rogers <irogers@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>, Leo Yan <leo.yan@linaro.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        Stephane Eranian <eranian@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ian,
+* Alejandro Colomar:
 
-On Tue, May 4, 2021 at 12:12 PM Ian Rogers <irogers@google.com> wrote:
+> The thing is, in all of those threads, the only reasons to avoid
+> <stdint.h> types in the kernel (at least, the only explicitly
+> mentioned ones) are (a bit simplified, but this is the general idea of
+> those threads):
 >
-> Relative path include works in the regular build due to -I paths but may
-> fail in other situations.
+> * Possibly breaking something in such a big automated change.
+> * Namespace collision with userspace (the C standard allows defining
+>   uint32_t for nefarious purposes as long as you don't include
+>  <stdint.h>.   POSIX prohibits that, though)
+> * Uglier
 
-Right, can we simply change them all to have a relative path from the
-$(srctree)/tools/perf ?  I think it'd be cleaner and easier to maintain.
+__u64 can't be formatted with %llu on all architectures.  That's not
+true for uint64_t, where you have to use %lu on some architectures to
+avoid compiler warnings (and technically undefined behavior).  There are
+preprocessor macros to get the expected format specifiers, but they are
+clunky.  I don't know if the problem applies to uint32_t.  It does
+happen with size_t and ptrdiff_t on 32-bit targets (both vary between
+int and long).
 
 Thanks,
-Namhyung
+Florian
 
->
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->  tools/perf/arch/arm/util/auxtrace.c         |  8 +++----
->  tools/perf/arch/arm/util/cs-etm.c           | 24 ++++++++++-----------
->  tools/perf/arch/arm/util/perf_regs.c        |  2 +-
->  tools/perf/arch/arm/util/pmu.c              |  2 +-
->  tools/perf/arch/arm/util/unwind-libdw.c     |  6 +++---
->  tools/perf/arch/arm/util/unwind-libunwind.c |  4 ++--
->  6 files changed, 23 insertions(+), 23 deletions(-)
->
-> diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
-> index b187bddbd01a..7ed57222465e 100644
-> --- a/tools/perf/arch/arm/util/auxtrace.c
-> +++ b/tools/perf/arch/arm/util/auxtrace.c
-> @@ -8,10 +8,10 @@
->  #include <linux/coresight-pmu.h>
->  #include <linux/zalloc.h>
->
-> -#include "../../util/auxtrace.h"
-> -#include "../../util/debug.h"
-> -#include "../../util/evlist.h"
-> -#include "../../util/pmu.h"
-> +#include "../../../util/auxtrace.h"
-> +#include "../../../util/debug.h"
-> +#include "../../../util/evlist.h"
-> +#include "../../../util/pmu.h"
->  #include "cs-etm.h"
->  #include "arm-spe.h"
->
-> diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
-> index d942f118d32c..67c7fb8d7eb0 100644
-> --- a/tools/perf/arch/arm/util/cs-etm.c
-> +++ b/tools/perf/arch/arm/util/cs-etm.c
-> @@ -16,19 +16,19 @@
->  #include <linux/zalloc.h>
->
->  #include "cs-etm.h"
-> -#include "../../util/debug.h"
-> -#include "../../util/record.h"
-> -#include "../../util/auxtrace.h"
-> -#include "../../util/cpumap.h"
-> -#include "../../util/event.h"
-> -#include "../../util/evlist.h"
-> -#include "../../util/evsel.h"
-> -#include "../../util/perf_api_probe.h"
-> -#include "../../util/evsel_config.h"
-> -#include "../../util/pmu.h"
-> -#include "../../util/cs-etm.h"
-> +#include "../../../util/debug.h"
-> +#include "../../../util/record.h"
-> +#include "../../../util/auxtrace.h"
-> +#include "../../../util/cpumap.h"
-> +#include "../../../util/event.h"
-> +#include "../../../util/evlist.h"
-> +#include "../../../util/evsel.h"
-> +#include "../../../util/perf_api_probe.h"
-> +#include "../../../util/evsel_config.h"
-> +#include "../../../util/pmu.h"
-> +#include "../../../util/cs-etm.h"
->  #include <internal/lib.h> // page_size
-> -#include "../../util/session.h"
-> +#include "../../../util/session.h"
->
->  #include <errno.h>
->  #include <stdlib.h>
-> diff --git a/tools/perf/arch/arm/util/perf_regs.c b/tools/perf/arch/arm/util/perf_regs.c
-> index 2864e2e3776d..2833e101a7c6 100644
-> --- a/tools/perf/arch/arm/util/perf_regs.c
-> +++ b/tools/perf/arch/arm/util/perf_regs.c
-> @@ -1,5 +1,5 @@
->  // SPDX-License-Identifier: GPL-2.0
-> -#include "../../util/perf_regs.h"
-> +#include "../../../util/perf_regs.h"
->
->  const struct sample_reg sample_reg_masks[] = {
->         SMPL_REG_END
-> diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
-> index bbc297a7e2e3..b8b23b9dc598 100644
-> --- a/tools/perf/arch/arm/util/pmu.c
-> +++ b/tools/perf/arch/arm/util/pmu.c
-> @@ -10,7 +10,7 @@
->  #include <linux/string.h>
->
->  #include "arm-spe.h"
-> -#include "../../util/pmu.h"
-> +#include "../../../util/pmu.h"
->
->  struct perf_event_attr
->  *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
-> diff --git a/tools/perf/arch/arm/util/unwind-libdw.c b/tools/perf/arch/arm/util/unwind-libdw.c
-> index 36ba4c69c3c5..b7692cb0c733 100644
-> --- a/tools/perf/arch/arm/util/unwind-libdw.c
-> +++ b/tools/perf/arch/arm/util/unwind-libdw.c
-> @@ -1,8 +1,8 @@
->  // SPDX-License-Identifier: GPL-2.0
->  #include <elfutils/libdwfl.h>
-> -#include "../../util/unwind-libdw.h"
-> -#include "../../util/perf_regs.h"
-> -#include "../../util/event.h"
-> +#include "../../../util/unwind-libdw.h"
-> +#include "../../../util/perf_regs.h"
-> +#include "../../../util/event.h"
->
->  bool libdw__arch_set_initial_registers(Dwfl_Thread *thread, void *arg)
->  {
-> diff --git a/tools/perf/arch/arm/util/unwind-libunwind.c b/tools/perf/arch/arm/util/unwind-libunwind.c
-> index 3a550225dfaf..438906bf0014 100644
-> --- a/tools/perf/arch/arm/util/unwind-libunwind.c
-> +++ b/tools/perf/arch/arm/util/unwind-libunwind.c
-> @@ -3,8 +3,8 @@
->  #include <errno.h>
->  #include <libunwind.h>
->  #include "perf_regs.h"
-> -#include "../../util/unwind.h"
-> -#include "../../util/debug.h"
-> +#include "../../../util/unwind.h"
-> +#include "../../../util/debug.h"
->
->  int libunwind__arch_reg_id(int regnum)
->  {
-> --
-> 2.31.1.607.g51e8a6a459-goog
->
