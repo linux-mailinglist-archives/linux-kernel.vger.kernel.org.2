@@ -2,120 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31F803731AB
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C38873731AF
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232785AbhEDUyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59986 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229542AbhEDUyo (ORCPT
+        id S232684AbhEDU5b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:57:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32098 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231796AbhEDU53 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:54:44 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02A2CC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:53:48 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620161626;
+        Tue, 4 May 2021 16:57:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620161793;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=p0d+wC9ngM2LGyyQqRCKJ9/0SOMWmZ5kn2xSFhbIYHM=;
-        b=ReKj41rkHJXOC1+AZYE02fANJ/GDymegOHysZVTsn+ph2qWbtxNvqaZ8QivawM3qQhV0KC
-        tAuhpbsEDg3FAjhqaVE1a3GNFYe6Cyhj+M4NKsypS7BQ1siDI5PjP1I4VR/3c/UxslYVCN
-        C9BHnJAOWYZhxQpi78M21IMwdMrEMb7uQMdaDZeS3YrRk86Py5U7DeZlTlx2eVtkUK0P/Q
-        Fy2vG7ivo7X8CdzpDLafQwDW5KFjZuwKcgPUncPaDEv8FPzvwXMghSwI5189c8UKqP7Kd6
-        5G3kto4u36urhgkGv0FCipjDyWI9vnxGwN5NgDOMSkkNAATSjBvP7mDWGfQ8TA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620161626;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p0d+wC9ngM2LGyyQqRCKJ9/0SOMWmZ5kn2xSFhbIYHM=;
-        b=+5skIosHLbcUBt3Ln8R+NyVdnFJfX7rKIdC5NrctrASPvd4ORD27gsRuhzIwKnMZxYLvyR
-        zSHdA6kYpQ5mx+Dg==
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Ingo Molnar <mingo@kernel.org>, Borislav Petkov <bp@suse.de>
-Cc:     "H. Peter Anvin" <hpa@zytor.com>, Ashok Raj <ashok.raj@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Tony Luck <tony.luck@intel.com>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        "Peter Zijlstra \(Intel\)" <peterz@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Stephane Eranian <eranian@google.com>,
-        Suravee Suthikulpanit <Suravee.Suthikulpanit@amd.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>, x86@kernel.org,
-        linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
-        Andi Kleen <andi.kleen@intel.com>
-Subject: Re: [RFC PATCH v5 07/16] x86/watchdog/hardlockup: Add an HPET-based hardlockup detector
-In-Reply-To: <20210504190526.22347-8-ricardo.neri-calderon@linux.intel.com>
-References: <20210504190526.22347-1-ricardo.neri-calderon@linux.intel.com> <20210504190526.22347-8-ricardo.neri-calderon@linux.intel.com>
-Date:   Tue, 04 May 2021 22:53:46 +0200
-Message-ID: <87o8dqi5k5.ffs@nanos.tec.linutronix.de>
+        bh=GEOG2LrQF2aVluADfXxyAse1VlnB/ZrzEuAypGjwwE8=;
+        b=OVXTaN/PFFreBJ77zsG5oxOEVAz1f7y21LHAXrdPfbiM1ZKXip33i3Y9P94Rat6j3J3Ni5
+        givze/nlqbCm+PuGQTVC9ujP69Db0Z7xHlHvX8GO6J8RwAfGy7QfeV2/s1bqqExB6H6SzV
+        ga9ldPqdOi3PTHO/bpkR4Al6RizL0I8=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-7-2IGEn0GoMReUMni0cerH3w-1; Tue, 04 May 2021 16:56:32 -0400
+X-MC-Unique: 2IGEn0GoMReUMni0cerH3w-1
+Received: by mail-ej1-f70.google.com with SMTP id n9-20020a1709062e09b02903a5f7e2caf4so2545362eji.19
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:56:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GEOG2LrQF2aVluADfXxyAse1VlnB/ZrzEuAypGjwwE8=;
+        b=EvBKmg8raJoI6nHrbUXyF3alX6zGEbSO/yhg3aJPLP2UQ8lVWZjMFlCJTRh1BAAxS0
+         QH/I+Rp3MN4NObFSrQAp8PM1O2YaQHoEvJqUybBDSdk8f7pfcCzG3hBNQVVWjXweIhXR
+         aJYn6f3mly+5iN6G5dglA6oHxJqAiLnP+zz0ubX3u0mRdQu6gUXWw2dWc4ZM4oS6Fm9q
+         2tKmEIiR3+rn5neXjCRBnv2HXFU4tHgElmdmYIZ73djDpOlBaZFNWD5KMaryVB+Vh0an
+         zxpENeEarxDfzkJEgKbluXYGucVOxu+ED+Wm6Cn/3o6WlUV/rkLdhIFjyEImhua069Ls
+         4Yew==
+X-Gm-Message-State: AOAM53399HyeRAbIowZTmpqZoOrHPQj2DvjKLxQRvTB4+dyz+j/DkJHL
+        vRjhcLubq2bN3XLR2gEQesXbkREwmb6DYZDw4ow2lY9pFM6WwdlgUyvPOgGMq3xpplqMd5BHoLB
+        xhNJ+vp7lEWiSxkZ48DYvsMyz
+X-Received: by 2002:a50:9e0b:: with SMTP id z11mr28449862ede.228.1620161790882;
+        Tue, 04 May 2021 13:56:30 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzN/MalCk4maG2dMLpXNujfcse6dFnpyiMkfWSbK4DZq5k8xkPvID7cUhfcn/20LwN1PReJIw==
+X-Received: by 2002:a50:9e0b:: with SMTP id z11mr28449848ede.228.1620161790715;
+        Tue, 04 May 2021 13:56:30 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id k5sm14839855edj.84.2021.05.04.13.56.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 13:56:30 -0700 (PDT)
+Subject: Re: [PATCH v3 2/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
+ hypercall
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
+        thomas.lendacky@amd.com, ashish.kalra@amd.com,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
+        x86@kernel.org
+References: <20210429104707.203055-1-pbonzini@redhat.com>
+ <20210429104707.203055-3-pbonzini@redhat.com> <YIxkTZsblAzUzsf7@google.com>
+ <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
+ <YJF/3d+VBfJKqXV4@google.com>
+ <f7300393-6527-005f-d824-eed5f7f2f8a8@redhat.com>
+ <YJGvrYWLQwiRSNLt@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <55db8e64-763b-9ecc-9c9a-6d840628e763@redhat.com>
+Date:   Tue, 4 May 2021 22:56:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YJGvrYWLQwiRSNLt@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ricardo,
+On 04/05/21 22:33, Sean Christopherson wrote:
+> On Tue, May 04, 2021, Paolo Bonzini wrote:
+>> On 04/05/21 19:09, Sean Christopherson wrote:
+>>> On Sat, May 01, 2021, Paolo Bonzini wrote:
+>>>> - make it completely independent from migration, i.e. it's just a facet of
+>>>> MSR_KVM_PAGE_ENC_STATUS saying whether the bitmap is up-to-date.  It would
+>>>> use CPUID bit as the encryption status bitmap and have no code at all in KVM
+>>>> (userspace needs to set up the filter and implement everything).
+>>>
+>>> If the bit is purely a "page encryption status is up-to-date", what about
+>>> overloading KVM_HC_PAGE_ENC_STATUS to handle that status update as well?   That
+>>> would eliminate my biggest complaint about having what is effectively a single
+>>> paravirt feature split into two separate, but intertwined chunks of ABI.
+>>
+>> It's true that they are intertwined, but I dislike not having a way to read
+>> the current state.
+> 
+>  From the guest?
 
-On Tue, May 04 2021 at 12:05, Ricardo Neri wrote:
-> +static int hardlockup_detector_nmi_handler(unsigned int type,
-> +					   struct pt_regs *regs)
-> +{
-> +	struct hpet_hld_data *hdata = hld_data;
-> +	int cpu = smp_processor_id();
-> +
-> +	if (is_hpet_wdt_interrupt(hdata)) {
-> +		/*
-> +		 * Make a copy of the target mask. We need this as once a CPU
-> +		 * gets the watchdog NMI it will clear itself from ipi_cpumask.
-> +		 * Also, target_cpumask will be updated in a workqueue for the
-> +		 * next NMI IPI.
-> +		 */
-> +		cpumask_copy(hld_data->ipi_cpumask, hld_data->monitored_cpumask);
-> +		/*
-> +		 * Even though the NMI IPI will be sent to all CPUs but self,
-> +		 * clear the CPU to identify a potential unrelated NMI.
-> +		 */
-> +		cpumask_clear_cpu(cpu, hld_data->ipi_cpumask);
-> +		if (cpumask_weight(hld_data->ipi_cpumask))
-> +			apic->send_IPI_mask_allbutself(hld_data->ipi_cpumask,
-> +						       NMI_VECTOR);
+Yes, host userspace obviously doesn't need one since it's implemented 
+through an MSR filter.  It may not be really necessary to read it, but 
+it's a bit jarring compared to how the rest of the PV APIs uses MSRs.
 
-How is this supposed to work correctly?
+Also from a debugging/crashdump point of view the VMM may have an 
+established way to read an MSR from a vCPU, but it won't work if you 
+come up with a new way to set the state.
 
-x2apic_cluster:
- x2apic_send_IPI_mask_allbutself()
-  __x2apic_send_IPI_mask()
-    	tmpmsk = this_cpu_cpumask_var_ptr(ipi_mask);
-	cpumask_copy(tmpmsk, mask);
+Paolo
 
-So if an NMI hits right after or in the middle of the cpumask_copy()
-then the IPI sent from that NMI overwrites tmpmask and when its done
-then tmpmask is empty. Similar to when it hits in the middle of
-processing, just with the difference that maybe a few IPIs have been
-sent already. But the not yet sent ones are lost...
-
-Also anything which ends up in __default_send_IPI_dest_field() is
-borked:
-
-__default_send_IPI_dest_field()
-	cfg = __prepare_ICR2(mask);
-	native_apic_mem_write(APIC_ICR2, cfg);
-
-          <- NMI hits and invokes IPI which invokes __default_send_IPI_dest_field()...
-
-	cfg = __prepare_ICR(0, vector, dest);
-	native_apic_mem_write(APIC_ICR, cfg);
-        
-IOW, when the NMI returns ICR2 has been overwritten and the interrupted
-IPI goes into lala land.
-
-Thanks,
-
-        tglx
