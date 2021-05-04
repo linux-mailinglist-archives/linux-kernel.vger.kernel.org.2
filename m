@@ -2,262 +2,346 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CE63731F5
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:33:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FF9C3731FE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:41:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232906AbhEDVeA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 17:34:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40370 "EHLO
+        id S232894AbhEDVmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 17:42:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42110 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232684AbhEDVd7 (ORCPT
+        with ESMTP id S230490AbhEDVmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 17:33:59 -0400
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on0614.outbound.protection.outlook.com [IPv6:2a01:111:f400:fe1e::614])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09F7EC061574;
-        Tue,  4 May 2021 14:33:04 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N0e7q6Z+owFkx1F8hRKZ/pHIiioo6qGxUZT5AshMTZ0i5GoPZGCF52CyBMGQWoewx5pfUxLJtJMFhSZJp8RNWH2oeK54ApLZbRD2GOAnRAnWVuRdJOgA6gwUz4txoL4r9x44WIn39kBg2ZD+XrVNB3CLB3MEA+LyefWD54KVO7r6MXXUzlQvNlwiykpbhD2D6tCVjKCbDAGP8+VL/uRj5qToiAa0CJB8cAz28u8ZiVyPGQKZ2MknxKuEeL0kCEK73ZmOXU6ZBVC3FrDWDTBqH4pGSGvnxNBrGoRT9ntIMWtD7bROoNQVKxdAFZ8FJGTvn3iE6OjcfrexW3HtAz4ahg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TmwkJHo2PkYhKDi43/6W0+vEP9Hl73r6aMyfVpSNTqo=;
- b=WDazq8UDeUT4laEAbVx5GIPBnZ2kKdbCQoG49A1C8TQo+WXUarMiZvk4Ha4aGVnNFTBCweGC/M13yubHNfLLexniII/jsQF6j9V7jPlniGrOxeGQdo+EBcvw5h3SLX6BuszkRPdAGvR5NQC1+aD0CD5bj/tAnq/ZPqKPu7RM+drVsnhNiY3zaxYoEYkMfthV77yxH/m1AlUB58+xPkW9Tzj1mqWT/VjdXAtmonAnA6l2DK9Dl1kNwHwBXehYiBiVKbv8JZIuMyk9AI5SAKc0KlEp5ElVZGgfLCarBwVq+GZyF16gUeyuBYzJ+FOcjD65JoP3TydQkO8BFFf5diR2GA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TmwkJHo2PkYhKDi43/6W0+vEP9Hl73r6aMyfVpSNTqo=;
- b=ldZh0JsySDwMaJQEUAyBQP6PGyh8Ov7vjOXTIvXB0XVtLLwsrtrueOzAquraIyBIJ4/hWoU7AraCAU1tYgNbHzhzLcWCZk/tQWWDZ/CyjyO87D1HjuCjg3ayMRjFhRHUcpnqctTAlM4bIorz2FK1+yylnb8Bo6BMkllmSgWBn2k=
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
- by VI1PR04MB6016.eurprd04.prod.outlook.com (2603:10a6:803:d3::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.35; Tue, 4 May
- 2021 21:33:00 +0000
-Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::f0c0:cb99:d153:e39b]) by VI1PR04MB5136.eurprd04.prod.outlook.com
- ([fe80::f0c0:cb99:d153:e39b%7]) with mapi id 15.20.4087.044; Tue, 4 May 2021
- 21:33:00 +0000
-From:   Vladimir Oltean <vladimir.oltean@nxp.com>
-To:     Michael Walle <michael@walle.cc>
-CC:     Vladimir Oltean <olteanv@gmail.com>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
-        "alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
-        "allan.nielsen@microchip.com" <allan.nielsen@microchip.com>,
-        Claudiu Manoil <claudiu.manoil@nxp.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "idosch@mellanox.com" <idosch@mellanox.com>,
-        "joergen.andreasen@microchip.com" <joergen.andreasen@microchip.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Po Liu <po.liu@nxp.com>,
-        "vinicius.gomes@intel.com" <vinicius.gomes@intel.com>
-Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for TAS
- config
-Thread-Topic: [net-next] net: dsa: felix: disable always guard band bit for
- TAS config
-Thread-Index: AQHXNQV6MaXTJHA0EU+NCfdT047Zd6rTpUEAgAAUfICAAAWSgIAAA2cAgAAE2ACAAAKygIAAEk+AgAATgYA=
-Date:   Tue, 4 May 2021 21:33:00 +0000
-Message-ID: <20210504213259.l5rbnyhxrrbkykyg@skbuf>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
- <20210504170514.10729-1-michael@walle.cc>
- <20210504181833.w2pecbp2qpuiactv@skbuf>
- <c7618025da6723418c56a54fe4683bd7@walle.cc>
- <20210504185040.ftkub3ropuacmyel@skbuf>
- <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
- <20210504191739.73oejybqb6z7dlxr@skbuf>
- <d933eef300cb1e1db7d36ca2cb876ef6@walle.cc>
-In-Reply-To: <d933eef300cb1e1db7d36ca2cb876ef6@walle.cc>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: walle.cc; dkim=none (message not signed)
- header.d=none;walle.cc; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [86.127.41.210]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e43fe896-769f-47b1-1371-08d90f443117
-x-ms-traffictypediagnostic: VI1PR04MB6016:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <VI1PR04MB601614C3E4CD4FFC235C5CA2E05A9@VI1PR04MB6016.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: Jw51q7CiXeGjPGeqdIxKYcAzg0aoZe3XWseXhvHQ0ddypReUXUM9J7CbXI7iwZynLYCjISD7g6kgvNd8QeF3TXG9gMkEjpewWz3MWzdz4/CwptgF+qlzSITaZGjFse48I9rNj81iifewGa7aHAUeZ6swANfPV5qbyTk7K2JlLaERxyXzjoES3TivDZlpolbA8YnAcTnP4x4Yw7kCN5rV71+5WPI9HRQ1KJN/yHos7Zyx+U9wEervPdDc0Hj97RdXrFXPl6Y64Vsl8fL8GqNnHUDfcEpB5uUdHdsZYYAhP8J8mqCjlIcg7JskP3WIqrBgpukYcLrKFOIJjB6m/Q7wOs3k2xIDRQlwnO85TRSzqpIQQlJT+WhF34L+eDLWheSIoJwn7KHHPCib9sWlgU0d/Q4g8V/5HgfCXGS6pnPtONg/XcBcn0kikZz1VEACBHUC4DsUvT4OHg8UWJSZZuffTGj2ReWuQoIX5B6vPO16XvQiX62pkiM+nNfOk/J2qmIKXLFW3NPgf+DeICXjIGPmKBdEAr6xerkj1hbOOnU1RmiXIy1XtgKWzLQ2FivYNM2au/Ia+LstONt0avg0UMsyoDdpM0ubrr3TLzWbK8wLhTc=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(346002)(366004)(39860400002)(376002)(136003)(396003)(6506007)(64756008)(66556008)(86362001)(7416002)(44832011)(71200400001)(66476007)(122000001)(4326008)(66946007)(76116006)(66446008)(5660300002)(8676002)(6512007)(8936002)(9686003)(38100700002)(26005)(6916009)(83380400001)(186003)(316002)(33716001)(1076003)(54906003)(478600001)(6486002)(2906002);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?3DpOJEuLI1hBuqZx9A2nvSddapn0mFhBHi16d5ubgfmVa1j9mtGIXvzwRVZd?=
- =?us-ascii?Q?jJks7SKrGVRTXtSI778GuXqgNOLng9nEE8jVHsy0iXok/qHHBGFEomk/WWOL?=
- =?us-ascii?Q?jBO7HzjaDYDN961waHiLXVTkM0unazYsGoqlSLBhpZ7EzKWNJX2vR94Q+ibO?=
- =?us-ascii?Q?0lJaJ+aNg4VhM2QhQCn+qqpck3ZiwxV2NiQ+WZryeJ2O3y1BTtyaam1zoN+U?=
- =?us-ascii?Q?SVR5KSHnQgPHZv7nqiP9rT5mu9fZ+Phv2MWYjrKmtJDv3C9Z5iGftC8XbjT4?=
- =?us-ascii?Q?/2dWAW8tnVDF/QjvswSHOuvutD4BNDWrE8F+GsL3Ro1pJTmTn6IQATCH8sM2?=
- =?us-ascii?Q?ZyNy97xldu9F7em2vwlNOU7RcpdFpIC6WLhhoAJy1UfZPEc56fIkHVQao1dE?=
- =?us-ascii?Q?SQBqpDmp5XnTQE2Tdsta2W7LNmHRzEXCgYzfxWbs5Bx8AfEB66+/jIFEaEpY?=
- =?us-ascii?Q?HfU7eGSYzxiauhfWu+6KWe1Sw99bEcuov+WQiOH6KdqTl/nua1mRMq96TB5n?=
- =?us-ascii?Q?rqxiac+PGQXlx1RYpGM+J18O28vrCO2iLTp/9bsBWjV8r5POg0yXbDnCIPEg?=
- =?us-ascii?Q?6+9R4qiRzCEwt30+q9hHNcBa8QKCSo7qJu7DYA/TRktKiI/i+xIFPNV2+YuF?=
- =?us-ascii?Q?TSVSzsmZUtoyndmRUDQWyrR/U4ziz1BJTp0oGdVh70zz9LAM2IYx3VeMs/VG?=
- =?us-ascii?Q?kD/rufoY8nP0psPM+ADy1hmD/SrG52HPbV5ai3ddk7Dl6CY1lnbbHbPl1DoG?=
- =?us-ascii?Q?CnFje8XGz1N542jUGb5ioWRs4zgqAkCnAOLa3mcprw1Z7yGhFVANTy9GxKxk?=
- =?us-ascii?Q?nNlfc1glLWKpFPwGXNOx8mAOfq9UYLB1OCLamW3JW9M1K6wNbz+XOjnseim6?=
- =?us-ascii?Q?Ee0MtDGgyGOUIxkZMEKf2SnywfG359aSScigfzvn6lrDhcZAfa5WnkS9Ekkw?=
- =?us-ascii?Q?mOcLMnnRUnwlqPemG98aRwWxXg409NKS5qGiWOtu3bYa7OfAfoukq4nbB/Nw?=
- =?us-ascii?Q?ypWv13Ek2+7zBmz1RhQ7oiGu37YKFYKU+dxzBcSnwCbqsqEVhzuCD1r547uu?=
- =?us-ascii?Q?uygrSp/c819mTaMQvnKiz0IDoa6UjuKLNP5ZsQ3vYLetbpuskSFmfB88DFgk?=
- =?us-ascii?Q?Wm2XHjBK0W8sm903/irZPfy1A/stDfh1Ja8r3w2OM7Luog6UNPk6EoSQYPeN?=
- =?us-ascii?Q?OQNoIo+5O7hVXvgufDVyQxdfdci0c/lX21Ni/miRYbrTXMjQ905pwhyh/mZf?=
- =?us-ascii?Q?pIT+jxUgmdyo8FAOvvfokz9ATsZSgrdpjDcyoVIqX6GxRAkWS/dJVnoRecL7?=
- =?us-ascii?Q?6uM7/yBF1AXZBhuedjg5gGR8?=
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <1A18000EA60C9C4AA768EA3867047092@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        Tue, 4 May 2021 17:42:04 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BCE0C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 14:41:09 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id b11-20020a7bc24b0000b0290148da0694ffso2221570wmj.2
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 14:41:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eByLdTcR3kZYZ2FEQ5tF/oEz6aYvsLFRSIL/hHsDCj8=;
+        b=HEU7xgnEeSJKZA10SG15z/tUFEeng59skCTFZGeFo483ED7ffK0z2R9X9D+gd9UaqD
+         xNTjRp9fNhadqiXTxK9mSnYYXtat4PqRr1BKwjFN8KE1lSqrfnBJYdH6iUdyqJ/HhsAO
+         8Hk3Ws3QyWveXCDj24yKTHAoe5G/eMlaFO2eMH4b8TsmSPbrSXSNEtm7Xan8UxpQd81n
+         acUY2QRwnX3C9CJ9I6OlJQOmL0jJDbeP20qZYb0B7zQRZ1wBnFLoGDbONANiyjv34VVv
+         idJJp4eWkabdkcJRNVIqWq+TFC20Rj0gk9X93ME4ZNEcY/xdUh5KBLYFgqKlGZK9Y05E
+         W6rQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eByLdTcR3kZYZ2FEQ5tF/oEz6aYvsLFRSIL/hHsDCj8=;
+        b=qOTRRyysbBVjjX7C5DTffAQzNP//18QO4H9MoAe6TQM6PjSpqfK8D8ui1dG824bBVx
+         bMGt7hjOYd+0YqD7LbaOXcVPOZ+Dht76sntx+AheNU2SbRIxvtA21RSBVfw1SHvmok6M
+         7G264sYSy/RnTICIc1C7eQnuYDB7l06AP9HnCtGH6rA1FsP6cqUjIxzHe3H39OQo4acr
+         nsRv3UnPVq20qkG/hX8bGmVpCGmqx4WqPJCM3h4WGPJcpl6J2wY/+DjMyHKt452AUvQy
+         GWCBk3tN/JK4DpkUSwpmww+owY+tFQkYOjSDrYNTm574kXTE2mV8uXCSfxxafPhqKlWA
+         u8bA==
+X-Gm-Message-State: AOAM531I3J1dq7/BIKaHHsf/4Cc9fmn5IeWEYdMRZK+b1nnZnplJLt6U
+        PH+ZAbKJMyzVa3/FL+NE9isic11PgYUhZO5sKQ0W+g==
+X-Google-Smtp-Source: ABdhPJxInnJUwirxn1R4K6Kn8JSrmc1DqOKYjB0Jq55eQQoc6tF4Mv9zWdfD9HfS+zqRS4a3xzH62yV4vWeiiA2Wly8=
+X-Received: by 2002:a1c:cc0b:: with SMTP id h11mr6406330wmb.87.1620164466796;
+ Tue, 04 May 2021 14:41:06 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e43fe896-769f-47b1-1371-08d90f443117
-X-MS-Exchange-CrossTenant-originalarrivaltime: 04 May 2021 21:33:00.3975
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: /znIgBk+plJtsUZF2rb/vuh8eheLubS99c6/q4OJgcBzDVfcCO3iD/l3d9IHwhBT9GjlkYo1BJhTnNSsE5qjtg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB6016
+References: <20210311000837.3630499-1-robh@kernel.org> <20210311000837.3630499-7-robh@kernel.org>
+In-Reply-To: <20210311000837.3630499-7-robh@kernel.org>
+From:   Ian Rogers <irogers@google.com>
+Date:   Tue, 4 May 2021 14:40:52 -0700
+Message-ID: <CAP-5=fUEu1EO7GreYYjZ178BH_riYYa0HdY4GZhi=0DdjkCMJg@mail.gmail.com>
+Subject: Re: [PATCH v6 06/10] libperf: Add support for user space counter access
+To:     Rob Herring <robh@kernel.org>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[ trimmed the CC list, as this is most likely spam for most people ]
+On Wed, Mar 10, 2021 at 4:08 PM Rob Herring <robh@kernel.org> wrote:
+>
+> x86 and arm64 can both support direct access of event counters in
+> userspace. The access sequence is less than trivial and currently exists
+> in perf test code (tools/perf/arch/x86/tests/rdpmc.c) with copies in
+> projects such as PAPI and libpfm4.
+>
+> In order to support usersapce access, an event must be mmapped first
+> with perf_evsel__mmap(). Then subsequent calls to perf_evsel__read()
+> will use the fast path (assuming the arch supports it).
+>
+> Signed-off-by: Rob Herring <robh@kernel.org>
+> ---
+> v6:
+>  - Adapt to mmap changes adding MMAP NULL check
+> v5:
+>  - Make raw count s64 instead of u64 so that counter width shifting
+>    works
+>  - Adapt to mmap changes
+> v4:
+>  - Update perf_evsel__mmap size to pages
+> v3:
+>  - Split out perf_evsel__mmap() to separate patch
+> ---
+>  tools/lib/perf/evsel.c                 |  4 ++
+>  tools/lib/perf/include/internal/mmap.h |  3 +
+>  tools/lib/perf/mmap.c                  | 88 ++++++++++++++++++++++++++
+>  tools/lib/perf/tests/test-evsel.c      | 65 +++++++++++++++++++
+>  4 files changed, 160 insertions(+)
+>
+> diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+> index 1057e9b15528..4d67343d36c9 100644
+> --- a/tools/lib/perf/evsel.c
+> +++ b/tools/lib/perf/evsel.c
+> @@ -242,6 +242,10 @@ int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+>         if (FD(evsel, cpu, thread) < 0)
+>                 return -EINVAL;
+>
+> +       if (MMAP(evsel, cpu, thread) &&
+> +           !perf_mmap__read_self(MMAP(evsel, cpu, thread), count))
+> +               return 0;
+> +
+>         if (readn(FD(evsel, cpu, thread), count->values, size) <= 0)
+>                 return -errno;
+>
+> diff --git a/tools/lib/perf/include/internal/mmap.h b/tools/lib/perf/include/internal/mmap.h
+> index be7556e0a2b2..5e3422f40ed5 100644
+> --- a/tools/lib/perf/include/internal/mmap.h
+> +++ b/tools/lib/perf/include/internal/mmap.h
+> @@ -11,6 +11,7 @@
+>  #define PERF_SAMPLE_MAX_SIZE (1 << 16)
+>
+>  struct perf_mmap;
+> +struct perf_counts_values;
+>
+>  typedef void (*libperf_unmap_cb_t)(struct perf_mmap *map);
+>
+> @@ -52,4 +53,6 @@ void perf_mmap__put(struct perf_mmap *map);
+>
+>  u64 perf_mmap__read_head(struct perf_mmap *map);
+>
+> +int perf_mmap__read_self(struct perf_mmap *map, struct perf_counts_values *count);
+> +
+>  #endif /* __LIBPERF_INTERNAL_MMAP_H */
+> diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
+> index 79d5ed6c38cc..915469f00cf4 100644
+> --- a/tools/lib/perf/mmap.c
+> +++ b/tools/lib/perf/mmap.c
+> @@ -8,9 +8,11 @@
+>  #include <linux/perf_event.h>
+>  #include <perf/mmap.h>
+>  #include <perf/event.h>
+> +#include <perf/evsel.h>
+>  #include <internal/mmap.h>
+>  #include <internal/lib.h>
+>  #include <linux/kernel.h>
+> +#include <linux/math64.h>
+>  #include "internal.h"
+>
+>  void perf_mmap__init(struct perf_mmap *map, struct perf_mmap *prev,
+> @@ -273,3 +275,89 @@ union perf_event *perf_mmap__read_event(struct perf_mmap *map)
+>
+>         return event;
+>  }
+> +
+> +#if defined(__i386__) || defined(__x86_64__)
+> +static u64 read_perf_counter(unsigned int counter)
+> +{
+> +       unsigned int low, high;
+> +
+> +       asm volatile("rdpmc" : "=a" (low), "=d" (high) : "c" (counter));
+> +
+> +       return low | ((u64)high) << 32;
+> +}
+> +
+> +static u64 read_timestamp(void)
+> +{
+> +       unsigned int low, high;
+> +
+> +       asm volatile("rdtsc" : "=a" (low), "=d" (high));
+> +
+> +       return low | ((u64)high) << 32;
+> +}
+> +#else
+> +static u64 read_perf_counter(unsigned int counter) { return 0; }
+> +static u64 read_timestamp(void) { return 0; }
+> +#endif
+> +
+> +int perf_mmap__read_self(struct perf_mmap *map, struct perf_counts_values *count)
+> +{
+> +       struct perf_event_mmap_page *pc = map->base;
+> +       u32 seq, idx, time_mult = 0, time_shift = 0;
+> +       u64 cnt, cyc = 0, time_offset = 0, time_cycles = 0, time_mask = ~0ULL;
+> +
+> +       if (!pc || !pc->cap_user_rdpmc)
+> +               return -1;
+> +
+> +       do {
+> +               seq = READ_ONCE(pc->lock);
+> +               barrier();
+> +
+> +               count->ena = READ_ONCE(pc->time_enabled);
+> +               count->run = READ_ONCE(pc->time_running);
+> +
+> +               if (pc->cap_user_time && count->ena != count->run) {
+> +                       cyc = read_timestamp();
+> +                       time_mult = READ_ONCE(pc->time_mult);
+> +                       time_shift = READ_ONCE(pc->time_shift);
+> +                       time_offset = READ_ONCE(pc->time_offset);
+> +
+> +                       if (pc->cap_user_time_short) {
+> +                               time_cycles = READ_ONCE(pc->time_cycles);
+> +                               time_mask = READ_ONCE(pc->time_mask);
+> +                       }
 
-On Tue, May 04, 2021 at 10:23:11PM +0200, Michael Walle wrote:
-> Am 2021-05-04 21:17, schrieb Vladimir Oltean:
-> > On Tue, May 04, 2021 at 09:08:00PM +0200, Michael Walle wrote:
-> > > > > > > As explained in another mail in this thread, all queues are m=
-arked as
-> > > > > > > scheduled. So this is actually a no-op, correct? It doesn't m=
-atter if
-> > > > > > > it set or not set for now. Dunno why we even care for this bi=
-t then.
-> > > > > >
-> > > > > > It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the availabl=
-e
-> > > > > > throughput when set.
-> > > > >
-> > > > > Ahh, I see now. All queues are "scheduled" but the guard band onl=
-y
-> > > > > applies
-> > > > > for "non-scheduled" -> "scheduled" transitions. So the guard band=
- is
-> > > > > never
-> > > > > applied, right? Is that really what we want?
-> > > >
-> > > > Xiaoliang explained that yes, this is what we want. If the end user
-> > > > wants a guard band they can explicitly add a "sched-entry 00" in th=
-e
-> > > > tc-taprio config.
-> > >=20
-> > > You're disabling the guard band, then. I figured, but isn't that
-> > > suprising for the user? Who else implements taprio? Do they do it in
-> > > the
-> > > same way? I mean this behavior is passed right to the userspace and
-> > > have
-> > > a direct impact on how it is configured. Of course a user can add it
-> > > manually, but I'm not sure that is what we want here. At least it
-> > > needs
-> > > to be documented somewhere. Or maybe it should be a switchable option=
-.
-> > >=20
-> > > Consider the following:
-> > > sched-entry S 01 25000
-> > > sched-entry S fe 175000
-> > > basetime 0
-> > >=20
-> > > Doesn't guarantee, that queue 0 is available at the beginning of
-> > > the cycle, in the worst case it takes up to
-> > > <begin of cycle> + ~12.5us until the frame makes it through (given
-> > > gigabit and 1518b frames).
-> > >=20
-> > > Btw. there are also other implementations which don't need a guard
-> > > band (because they are store-and-forward and cound the remaining
-> > > bytes). So yes, using a guard band and scheduling is degrading the
-> > > performance.
-> >=20
-> > What is surprising for the user, and I mentioned this already in anothe=
-r
-> > thread on this patch, is that the Felix switch overruns the time gate (=
-a
-> > packet taking 2 us to transmit will start transmission even if there is
-> > only 1 us left of its time slot, delaying the packets from the next tim=
-e
-> > slot by 1 us). I guess that this is why the ALWAYS_GUARD_BAND_SCH_Q bit
-> > exists, as a way to avoid these overruns, but it is a bit of a poor too=
-l
-> > for that job. Anyway, right now we disable it and live with the
-> > overruns.
->=20
-> We are talking about the same thing here. Why is that a poor tool?
+Nit, this is now out of sync with the comment code in perf_event.h.
 
-It is a poor tool because it revolves around the idea of "scheduled
-queues" and "non-scheduled queues".
+> +               }
+> +
+> +               idx = READ_ONCE(pc->index);
+> +               cnt = READ_ONCE(pc->offset);
+> +               if (pc->cap_user_rdpmc && idx) {
+> +                       s64 evcnt = read_perf_counter(idx - 1);
+> +                       u16 width = READ_ONCE(pc->pmc_width);
+> +
+> +                       evcnt <<= 64 - width;
+> +                       evcnt >>= 64 - width;
+> +                       cnt += evcnt;
+> +               } else
+> +                       return -1;
+> +
+> +               barrier();
+> +       } while (READ_ONCE(pc->lock) != seq);
+> +
+> +       if (count->ena != count->run) {
+> +               u64 delta;
+> +
+> +               /* Adjust for cap_usr_time_short, a nop if not */
+> +               cyc = time_cycles + ((cyc - time_cycles) & time_mask);
+> +
+> +               delta = time_offset + mul_u64_u32_shr(cyc, time_mult, time_shift);
+> +
+> +               count->ena += delta;
+> +               if (idx)
+> +                       count->run += delta;
+> +
+> +               cnt = mul_u64_u64_div64(cnt, count->ena, count->run);
 
-Consider the following tc-taprio schedule:
+Does this still suffer the divide by zero if multiplexing hasn't run
+the counter? If so, we still need to add something like:
+https://lore.kernel.org/lkml/CAP-5=fVRdqvswtyQMg5cB+ntTGda+SAYskjTQednEH-AeZo13g@mail.gmail.com/
 
-	sched-entry S 81 2000 # TC 7 and 0 open, all others closed
-	sched-entry S 82 2000 # TC 7 and 1 open, all others closed
-	sched-entry S 84 2000 # TC 7 and 2 open, all others closed
-	sched-entry S 88 2000 # TC 7 and 3 open, all others closed
-	sched-entry S 90 2000 # TC 7 and 4 open, all others closed
-	sched-entry S a0 2000 # TC 7 and 5 open, all others closed
-	sched-entry S c0 2000 # TC 7 and 6 open, all others closed
+> +       }
+> +
+> +       count->val = cnt;
+> +
+> +       return 0;
+> +}
+> diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+> index 0ad82d7a2a51..54fb4809b9ee 100644
+> --- a/tools/lib/perf/tests/test-evsel.c
+> +++ b/tools/lib/perf/tests/test-evsel.c
+> @@ -120,6 +120,69 @@ static int test_stat_thread_enable(void)
+>         return 0;
+>  }
+>
+> +static int test_stat_user_read(int event)
+> +{
+> +       struct perf_counts_values counts = { .val = 0 };
+> +       struct perf_thread_map *threads;
+> +       struct perf_evsel *evsel;
+> +       struct perf_event_mmap_page *pc;
+> +       struct perf_event_attr attr = {
+> +               .type   = PERF_TYPE_HARDWARE,
+> +               .config = event,
+> +       };
 
-Otherwise said, traffic class 7 should be able to send any time it
-wishes.
+A nit, previously test-evsel was able to run and pass on a hypervisor.
+As now there is a reliance on hardware events the evsel open fails on
+a hypervisor. It'd be nice if we could detect running on a hypervisor
+and test software events in that case.
 
-With the ALWAYS_GUARD_BAND_SCH_Q bit, there will be hiccups in packet
-transmission for TC 7. For example, at the end of every time slot,
-the hardware will insert a guard band for TC 7 because there is a
-scheduled-queue-to-scheduled-queue transition, and it has been told to
-do that. But a packet with TC 7 should be transmitted at any time,
-because that's what we told the port to do!
+Thanks,
+Ian
 
-Alternatively, we could tell the switch that TC 7 is "scheduled", and
-the others are "not scheduled". Then it would implement the guard band
-at the end of TCs 0-6, but it wouldn't for packets sent in TC 7. But
-when you look at the overall schedule I described above, it kinds looks
-like TCs 0-6 are the ones that are "scheduled" and TC 7 looks like the
-one which isn't "scheduled" but can send at any time it pleases.
-
-Odd, just odd. It's clear that someone had something in mind, it's just
-not clear what. I would actually appreciate if somebody from Microchip
-could chime in and say "no, you're wrong", and then explain.
-
-> > FWIW, the ENETC does not overrun the time gate, the SJA1105 does. You
-> > can't really tell just by looking at the driver code, just by testing.
-> > It's a bit of a crapshoot.
->=20
-> I was speaking of other switches, I see there is also a hirschmann
-> switch (hellcreek) supported in linux, for example.
->=20
-> Shouldn't the goal to make the configuration of the taprio qdisc
-> independent of the switch. If on one you'll have to manually define the
-> guard band by inserting dead-time scheduler entries and on another this
-> is already handled by the hardware (like it would be with
-> ALWAYS_GUARD_BAND_SCH_Q or if it doesn't need it at all), this goal
-> isn't met.
->=20
-> Also what do you expect if you use the following configuration:
-> sched-entry S 01 5000
-> sched-entry S fe <some large number>
->=20
-> Will queue 0 be able to send traffic? To me, with this patch, it seems
-> to me that this isn't always the case anymore. If there is a large packet
-> just sent at the end of the second cycle, the first might even be skipped
-> completely.
-> Will a user of the taprio (without knowledge of the underlying switch)
-> assume that it can send traffic up to ~600 bytes? I'd say yes.
-
-Yeah, I think that if a switch overruns a packet's reserved time gate,
-then the above tc-taprio schedule is as good as not having any. I didn't
-say that overruns are not a problem, I just said that the ALWAYS_blah_blah
-bit isn't as silver-bullet for a solution as you think.=
+> +       int err, i;
+> +
+> +       threads = perf_thread_map__new_dummy();
+> +       __T("failed to create threads", threads);
+> +
+> +       perf_thread_map__set_pid(threads, 0, 0);
+> +
+> +       evsel = perf_evsel__new(&attr);
+> +       __T("failed to create evsel", evsel);
+> +
+> +       err = perf_evsel__open(evsel, NULL, threads);
+> +       __T("failed to open evsel", err == 0);
+> +
+> +       err = perf_evsel__mmap(evsel, 0);
+> +       __T("failed to mmap evsel", err == 0);
+> +
+> +       pc = perf_evsel__mmap_base(evsel, 0, 0);
+> +
+> +#if defined(__i386__) || defined(__x86_64__) || defined(__aarch64__)
+> +       __T("userspace counter access not supported", pc->cap_user_rdpmc);
+> +       __T("userspace counter access not enabled", pc->index);
+> +       __T("userspace counter width not set", pc->pmc_width >= 32);
+> +#endif
+> +
+> +       perf_evsel__read(evsel, 0, 0, &counts);
+> +       __T("failed to read value for evsel", counts.val != 0);
+> +
+> +       for (i = 0; i < 5; i++) {
+> +               volatile int count = 0x10000 << i;
+> +               __u64 start, end, last = 0;
+> +
+> +               __T_VERBOSE("\tloop = %u, ", count);
+> +
+> +               perf_evsel__read(evsel, 0, 0, &counts);
+> +               start = counts.val;
+> +
+> +               while (count--) ;
+> +
+> +               perf_evsel__read(evsel, 0, 0, &counts);
+> +               end = counts.val;
+> +
+> +               __T("invalid counter data", (end - start) > last);
+> +               last = end - start;
+> +               __T_VERBOSE("count = %llu\n", end - start);
+> +       }
+> +
+> +       perf_evsel__close(evsel);
+> +       perf_evsel__delete(evsel);
+> +
+> +       perf_thread_map__put(threads);
+> +       return 0;
+> +}
+> +
+>  int main(int argc, char **argv)
+>  {
+>         __T_START;
+> @@ -129,6 +192,8 @@ int main(int argc, char **argv)
+>         test_stat_cpu();
+>         test_stat_thread();
+>         test_stat_thread_enable();
+> +       test_stat_user_read(PERF_COUNT_HW_INSTRUCTIONS);
+> +       test_stat_user_read(PERF_COUNT_HW_CPU_CYCLES);
+>
+>         __T_END;
+>         return tests_failed == 0 ? 0 : -1;
+> --
+> 2.27.0
+>
