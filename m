@@ -2,57 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C868737272B
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:25:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40802372733
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:26:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230061AbhEDI0L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:26:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230056AbhEDI0K (ORCPT
+        id S230121AbhEDI1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:27:40 -0400
+Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:21893 "EHLO
+        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229875AbhEDI1j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:26:10 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:12e:520::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CCD0BC061574;
-        Tue,  4 May 2021 01:25:15 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1ldqMe-0002nh-9T; Tue, 04 May 2021 10:25:08 +0200
-Date:   Tue, 4 May 2021 10:25:08 +0200
-From:   Florian Westphal <fw@strlen.de>
-To:     syzbot <syzbot+050de9f900eb45b94ef9@syzkaller.appspotmail.com>
-Cc:     coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
-        kadlec@netfilter.org, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, pablo@netfilter.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] memory leak in nf_hook_entries_grow (2)
-Message-ID: <20210504082508.GA1019@breakpoint.cc>
-References: <0000000000001d488205c1702d78@google.com>
+        Tue, 4 May 2021 04:27:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1620116805; x=1651652805;
+  h=from:to:cc:subject:date:message-id:mime-version;
+  bh=31dOGfcg2GObswIUd+iAQCyOWXV3Asmut6GnIm4jpIg=;
+  b=O1UXWtmUAQWlo8bueA+5YyzToydGDmoenp0mpVcoHs0RM8eiAT8HVJQU
+   z1w9U08H6YdnSlwfRCHsxWrCNUHHbipUEjcR4nQgyELi8jqgZ61qLO0Dr
+   uweln/w4LEPSmUBwbu/ivrmpp/KUw/tzlpiu7uZdmWx043e8mb1uM0JQp
+   0=;
+X-IronPort-AV: E=Sophos;i="5.82,271,1613433600"; 
+   d="scan'208";a="132862651"
+Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-2b-baacba05.us-west-2.amazon.com) ([10.25.36.210])
+  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 04 May 2021 08:26:27 +0000
+Received: from EX13D28EUC003.ant.amazon.com (pdx1-ws-svc-p6-lb9-vlan2.pdx.amazon.com [10.236.137.194])
+        by email-inbound-relay-2b-baacba05.us-west-2.amazon.com (Postfix) with ESMTPS id 34731A1CDB;
+        Tue,  4 May 2021 08:26:26 +0000 (UTC)
+Received: from uc8bbc9586ea454.ant.amazon.com (10.43.161.85) by
+ EX13D28EUC003.ant.amazon.com (10.43.164.43) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Tue, 4 May 2021 08:26:20 +0000
+From:   Siddharth Chandrasekaran <sidcha@amazon.de>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>
+CC:     Siddharth Chandrasekaran <sidcha@amazon.de>, <kvm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH v2] KVM: x86: Hoist input checks in kvm_add_msr_filter()
+Date:   Tue, 4 May 2021 10:25:59 +0200
+Message-ID: <20210504082600.3668-1-sidcha@amazon.de>
+X-Mailer: git-send-email 2.17.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000001d488205c1702d78@google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.85]
+X-ClientProxiedBy: EX13D35UWB001.ant.amazon.com (10.43.161.47) To
+ EX13D28EUC003.ant.amazon.com (10.43.164.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot <syzbot+050de9f900eb45b94ef9@syzkaller.appspotmail.com> wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    9ccce092 Merge tag 'for-linus-5.13-ofs-1' of git://git.ker..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=141aec93d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=5ab124e5617a0cfa
-> dashboard link: https://syzkaller.appspot.com/bug?extid=050de9f900eb45b94ef9
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14bd921ed00000
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+050de9f900eb45b94ef9@syzkaller.appspotmail.com
+In ioctl KVM_X86_SET_MSR_FILTER, input from user space is validated
+after a memdup_user(). For invalid inputs we'd memdup and then call
+kfree unnecessarily. Hoist input validation to avoid kfree altogether.
 
-#syz dup: linux-next test error: WARNING in __nf_unregister_net_hook
+Signed-off-by: Siddharth Chandrasekaran <sidcha@amazon.de>
+---
+ arch/x86/kvm/x86.c | 26 +++++++-------------------
+ 1 file changed, 7 insertions(+), 19 deletions(-)
 
-(The memory leak is the consequence if the WARNING).
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index ee0dc58ac3a5..c4fc0c46927a 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -5390,14 +5390,18 @@ static void kvm_free_msr_filter(struct kvm_x86_msr_filter *msr_filter)
+ static int kvm_add_msr_filter(struct kvm_x86_msr_filter *msr_filter,
+ 			      struct kvm_msr_filter_range *user_range)
+ {
+-	struct msr_bitmap_range range;
+ 	unsigned long *bitmap = NULL;
+ 	size_t bitmap_size;
+-	int r;
+ 
+ 	if (!user_range->nmsrs)
+ 		return 0;
+ 
++	if (user_range->flags & ~(KVM_MSR_FILTER_READ | KVM_MSR_FILTER_WRITE))
++		return -EINVAL;
++
++	if (!user_range->flags)
++		return -EINVAL;
++
+ 	bitmap_size = BITS_TO_LONGS(user_range->nmsrs) * sizeof(long);
+ 	if (!bitmap_size || bitmap_size > KVM_MSR_FILTER_MAX_BITMAP_SIZE)
+ 		return -EINVAL;
+@@ -5406,31 +5410,15 @@ static int kvm_add_msr_filter(struct kvm_x86_msr_filter *msr_filter,
+ 	if (IS_ERR(bitmap))
+ 		return PTR_ERR(bitmap);
+ 
+-	range = (struct msr_bitmap_range) {
++	msr_filter->ranges[msr_filter->count] = (struct msr_bitmap_range) {
+ 		.flags = user_range->flags,
+ 		.base = user_range->base,
+ 		.nmsrs = user_range->nmsrs,
+ 		.bitmap = bitmap,
+ 	};
+-
+-	if (range.flags & ~(KVM_MSR_FILTER_READ | KVM_MSR_FILTER_WRITE)) {
+-		r = -EINVAL;
+-		goto err;
+-	}
+-
+-	if (!range.flags) {
+-		r = -EINVAL;
+-		goto err;
+-	}
+-
+-	/* Everything ok, add this range identifier. */
+-	msr_filter->ranges[msr_filter->count] = range;
+ 	msr_filter->count++;
+ 
+ 	return 0;
+-err:
+-	kfree(bitmap);
+-	return r;
+ }
+ 
+ static int kvm_vm_ioctl_set_msr_filter(struct kvm *kvm, void __user *argp)
+-- 
+2.17.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
