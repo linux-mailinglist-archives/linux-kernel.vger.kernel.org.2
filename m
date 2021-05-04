@@ -2,124 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D14337324B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:24:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D1437324F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233050AbhEDWZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 18:25:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51626 "EHLO
+        id S233052AbhEDWa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 18:30:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52764 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232963AbhEDWZN (ORCPT
+        with ESMTP id S232667AbhEDWaZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 18:25:13 -0400
-Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73C39C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:24:16 -0700 (PDT)
-Received: by mail-oo1-xc2e.google.com with SMTP id i20-20020a4a8d940000b02901bc71746525so56854ook.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:24:16 -0700 (PDT)
+        Tue, 4 May 2021 18:30:25 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3CA1C061574;
+        Tue,  4 May 2021 15:29:27 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id t4so15637192ejo.0;
+        Tue, 04 May 2021 15:29:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=G/mynJyVd6OqUtlJeADQl+MoXNb+9GbiDjZ8MMglkq0=;
-        b=ZzZ3kUkX93v63Jb3vme8k9OXJxDVZy2d4Qc3VpSVGzi0IxBMOWHLm2TYMxFI0esBWD
-         T35MJNUTB1WP34XtEKngIQ25gkZvtXppq/TpEP8vVy20dd0y3yPLwrZ8ky1JpQdp9gBw
-         6MdWseZzEbo1Q1OEfHl3kJgQNaUwubelotgMRyfIEmsIJhbb2+6qHUe6sO+YCtfomzcX
-         pNN+o/vIUNia2nxYuc59jkTt0wUs32NPVlscVUQzImJsbAIQrRct9CIpwZmx6w9jZZpp
-         gKq8XKbXx1EN2kfVUmXfD+qjEzPsVvdUmez2s4W3AkJnSJf+I94xyeyWP9cjWiJObCjA
-         REaQ==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YV5eZFougkqLFomRpziIWM5ZZI90CmJhUMytWBI8Wm4=;
+        b=XMyAkG6Y8BBvmy4eZNbFoGF1BgPKQF24DTQOH5xFmmrpBKMXRVB1wodi8AHTLlca19
+         5pBslCHVmY6oQheq5Px1uOIT1bVdMsNPX9UcAfHiqLUNFC3b4Lek7Rhjk75tsMwaE6Qd
+         sGGhKpZXQlMGc15XqWC/rCxucRwRQzX52QuA8LbHkHfk16/rEJrxPJIjonAs4lTAAfEC
+         u2eGavg6VSIdLhx2FbvuuYGsk9DOsRJA6kgU+N1bwUaHZweQBKjIt0YAclfFeZHK46Aa
+         3b4+vo1FhS4eA8OfaYKKZffpN3q1fX6szqJzYeEOafotzyGPMCUqCHPx/TIpu01fOx6d
+         4aYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G/mynJyVd6OqUtlJeADQl+MoXNb+9GbiDjZ8MMglkq0=;
-        b=t+KHL9uLwtnNLwLoSXENXh6jaC+Y94/ab7VlPpPJxP3XJhYsQIO6Bz1l+upbiie9DK
-         ogZ605lgoJItaerJWNxuWDoXxwbjZZLI3YMvqB0civrOZVRDVQG9bakKgnRTaqNTaFDy
-         3Yt65nRk98BV7xMzQQElQTWv8AyejTaARUTMoC3+sGr5no9ymknA9EYQPzMTwjFZkWWn
-         Cno2RCz4Szpb7mVufR37pf6+Ne5pTH4qzbFIc9Jf5UME66T3wgxygdiK5Q0ViUZm5Pjy
-         /PbKDulMn0rfoWaDVEcIm2Wp/h4TLPQ7+Gjk/tqO09RR48YGjYcABHHvWXneffkKY0E5
-         Jdjg==
-X-Gm-Message-State: AOAM531/s0mEw+9bDb0mj7VVgDgupSxWJp6eyK5159XNSkj3IiGrDr4K
-        3/cTg4ai50PGMH3KmDtK0JuDi3VVafIQPll7zwuooA==
-X-Google-Smtp-Source: ABdhPJxo1sYC258Xmtlr84Guf3FGfzlmaAS4Bfv2FWjEz/7XUJt0x/Hw0EWXImD8YubRD/UmQPLLXeL5grngKF8MWhs=
-X-Received: by 2002:a4a:ea94:: with SMTP id r20mr7794217ooh.81.1620167055541;
- Tue, 04 May 2021 15:24:15 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=YV5eZFougkqLFomRpziIWM5ZZI90CmJhUMytWBI8Wm4=;
+        b=F0adHzPz5jPsw5U3DLs7D6lxkfl/PhoX95fB+Tqo+UtVoq5QmB9VO6vOWtdeknTIB5
+         Wid3ymrQLVFAt3qgIo7qztAgfqyvXfADFJ/cOPL+Ttvy0hDicdVnFW+4JGiLFNz0d3Hj
+         pOKWFzkJIn1cTtn+E+WVtc6pNnl9TVUci1j+PVEtrqbvZJYIH6CHuWiazuVkkLSNHFTX
+         0AyastbXQvF8l3+TRUt8AaR7FOhHe+Xhmigdu2PcSPE7vB5/4LgwbAh6yp9xjGSV2Ru1
+         /JU4FRQf3GQOWdg9eOIRL+F07177SxUMyXpeDJDcG90Z/Lei1a0hP+UCdE4Alwwm2rdd
+         JNuw==
+X-Gm-Message-State: AOAM531rIjqRixPGLcizcCEOBfq1XWaNvwRuZ51N4s2j1Av4HWT9MSln
+        INmFIyuyw7T7J/71ekxfaEvsiWgY+/ugaQ==
+X-Google-Smtp-Source: ABdhPJwDRLwfeG7iRZnAPhequ5WtwT6q9xZ18zcF7CL72wsQgiB3X9HVmrszzDxtIt3/v32hAuJfEQ==
+X-Received: by 2002:a17:907:960b:: with SMTP id gb11mr14542966ejc.123.1620167366514;
+        Tue, 04 May 2021 15:29:26 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.googlemail.com with ESMTPSA id q12sm2052946ejy.91.2021.05.04.15.29.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 15:29:25 -0700 (PDT)
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Ansuel Smith <ansuelsmth@gmail.com>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [RFC PATCH net-next v3 01/20] net: mdio: ipq8064: clean whitespaces in define
+Date:   Wed,  5 May 2021 00:28:55 +0200
+Message-Id: <20210504222915.17206-1-ansuelsmth@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-References: <20210504171734.1434054-1-seanjc@google.com> <20210504171734.1434054-4-seanjc@google.com>
- <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
- <YJHCadSIQ/cK/RAw@google.com> <CALMp9eSeeuXUXz+0J17b7Dk8pyy3XPgqUXKC5-V8Q7SRd7ykgA@mail.gmail.com>
- <YJHGQgEE3mqUhbAc@google.com>
-In-Reply-To: <YJHGQgEE3mqUhbAc@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 4 May 2021 15:24:04 -0700
-Message-ID: <CALMp9eT9HMKs_JcQHLsyc9MxFLFaAt9Ve8ev=inH-+8NeHtayw@mail.gmail.com>
-Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
- disabled in the guest
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 3:10 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, May 04, 2021, Jim Mattson wrote:
-> > On Tue, May 4, 2021 at 2:53 PM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > On Tue, May 04, 2021, Jim Mattson wrote:
-> > > > On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
-> > > > >
-> > > > > Intercept RDTSCP to inject #UD if RDTSC is disabled in the guest.
-> > > > >
-> > > > > Note, SVM does not support intercepting RDPID.  Unlike VMX's
-> > > > > ENABLE_RDTSCP control, RDTSCP interception does not apply to RDPID.  This
-> > > > > is a benign virtualization hole as the host kernel (incorrectly) sets
-> > > > > MSR_TSC_AUX if RDTSCP is supported, and KVM loads the guest's MSR_TSC_AUX
-> > > > > into hardware if RDTSCP is supported in the host, i.e. KVM will not leak
-> > > > > the host's MSR_TSC_AUX to the guest.
-> > > > >
-> > > > > But, when the kernel bug is fixed, KVM will start leaking the host's
-> > > > > MSR_TSC_AUX if RDPID is supported in hardware, but RDTSCP isn't available
-> > > > > for whatever reason.  This leak will be remedied in a future commit.
-> > > > >
-> > > > > Fixes: 46896c73c1a4 ("KVM: svm: add support for RDTSCP")
-> > > > > Cc: stable@vger.kernel.org
-> > > > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > > > ---
-> > > > ...
-> > > > > @@ -4007,8 +4017,7 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
-> > > > >         svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
-> > > > >                              guest_cpuid_has(vcpu, X86_FEATURE_NRIPS);
-> > > > >
-> > > > > -       /* Check again if INVPCID interception if required */
-> > > > > -       svm_check_invpcid(svm);
-> > > > > +       svm_recalc_instruction_intercepts(vcpu, svm);
-> > > >
-> > > > Does the right thing happen here if the vCPU is in guest mode when
-> > > > userspace decides to toggle the CPUID.80000001H:EDX.RDTSCP bit on or
-> > > > off?
-> > >
-> > > I hate our terminology.  By "guest mode", do you mean running the vCPU, or do
-> > > you specifically mean running in L2?
-> >
-> > I mean is_guest_mode(vcpu) is true (i.e. running L2).
->
-> No, it will not do the right thing, whatever "right thing" even means in this
-> context.  That's a pre-existing issue, e.g. INVCPID handling is also wrong.
-> I highly doubt VMX does, or even can, do the right thing either.
->
-> I'm pretty sure I lobbied in the past to disallow KVM_SET_CPUID* if the vCPU is
-> in guest mode since it's impossible to do the right thing without forcing an
-> exit to L1, e.g. changing MAXPHYSADDR will allow running L2 with an illegal
-> CR3, ditto for various CR4 bits.
+Fix mixed whitespace and tab for define spacing.
 
-With that caveat understood,
+Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+---
+ drivers/net/mdio/mdio-ipq8064.c | 25 +++++++++++++------------
+ 1 file changed, 13 insertions(+), 12 deletions(-)
 
-Reviewed-by: Jim Mattson <jmattson@google.com>
+diff --git a/drivers/net/mdio/mdio-ipq8064.c b/drivers/net/mdio/mdio-ipq8064.c
+index 1bd18857e1c5..fb1614242e13 100644
+--- a/drivers/net/mdio/mdio-ipq8064.c
++++ b/drivers/net/mdio/mdio-ipq8064.c
+@@ -15,25 +15,26 @@
+ #include <linux/mfd/syscon.h>
+ 
+ /* MII address register definitions */
+-#define MII_ADDR_REG_ADDR                       0x10
+-#define MII_BUSY                                BIT(0)
+-#define MII_WRITE                               BIT(1)
+-#define MII_CLKRANGE_60_100M                    (0 << 2)
+-#define MII_CLKRANGE_100_150M                   (1 << 2)
+-#define MII_CLKRANGE_20_35M                     (2 << 2)
+-#define MII_CLKRANGE_35_60M                     (3 << 2)
+-#define MII_CLKRANGE_150_250M                   (4 << 2)
+-#define MII_CLKRANGE_250_300M                   (5 << 2)
++#define MII_ADDR_REG_ADDR			0x10
++#define MII_BUSY				BIT(0)
++#define MII_WRITE				BIT(1)
++#define MII_CLKRANGE(x)				((x) << 2)
++#define MII_CLKRANGE_60_100M			MII_CLKRANGE(0)
++#define MII_CLKRANGE_100_150M			MII_CLKRANGE(1)
++#define MII_CLKRANGE_20_35M			MII_CLKRANGE(2)
++#define MII_CLKRANGE_35_60M			MII_CLKRANGE(3)
++#define MII_CLKRANGE_150_250M			MII_CLKRANGE(4)
++#define MII_CLKRANGE_250_300M			MII_CLKRANGE(5)
+ #define MII_CLKRANGE_MASK			GENMASK(4, 2)
+ #define MII_REG_SHIFT				6
+ #define MII_REG_MASK				GENMASK(10, 6)
+ #define MII_ADDR_SHIFT				11
+ #define MII_ADDR_MASK				GENMASK(15, 11)
+ 
+-#define MII_DATA_REG_ADDR                       0x14
++#define MII_DATA_REG_ADDR			0x14
+ 
+-#define MII_MDIO_DELAY_USEC                     (1000)
+-#define MII_MDIO_RETRY_MSEC                     (10)
++#define MII_MDIO_DELAY_USEC			(1000)
++#define MII_MDIO_RETRY_MSEC			(10)
+ 
+ struct ipq8064_mdio {
+ 	struct regmap *base; /* NSS_GMAC0_BASE */
+-- 
+2.30.2
+
