@@ -2,117 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735C837329C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:04:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA4143732A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:05:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhEDXFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 19:05:13 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:57963 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230313AbhEDXFM (ORCPT
+        id S231140AbhEDXG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 19:06:29 -0400
+Received: from mail-yb1-f169.google.com ([209.85.219.169]:39530 "EHLO
+        mail-yb1-f169.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230475AbhEDXG3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 19:05:12 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620169457; h=Message-ID: References: In-Reply-To: Reply-To:
- Subject: Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=n8UfbbC1ipgkRcc5b6HF51NbS+0PW0JqK6XaicMOO5Y=;
- b=Vu3IkNFOeULn3kGKTuvPRVa9exTZ3QOF+biyt77y5RToCzfO3akO/VqrOdRP1wCs6NfwME9v
- qQhCX8vtRMQYxIuTrC/JgPWmtjqvlCwk0x8C+h1ki46pJvnhTVGfhJXyK98yeHHJ4vLGvA5j
- 1fv7jtvsg/pzuTF6OGbm74lkgIc=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6091d2ee8807bcde1d87d2ce (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 May 2021 23:04:14
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BC60EC433F1; Tue,  4 May 2021 23:04:14 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0A1CBC433D3;
-        Tue,  4 May 2021 23:04:12 +0000 (UTC)
+        Tue, 4 May 2021 19:06:29 -0400
+Received: by mail-yb1-f169.google.com with SMTP id z1so230534ybf.6
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 16:05:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PvfEJxx8T5Gfb4a+lHvIlRpfFqDd/U5kxfg9D9O09eY=;
+        b=iQgdt7g+Lq7U6bEq7BsRpjV3hoIlERNFZrC9yLZfqsq9wVTlGzCBX6OQ7uT5LCBf/o
+         T2kVHbp1IuD3oqTOQnTtX+ZoNeqP88eGkvqa4mrjtVitbnHSuYuySxwzr7XZfBp//4CM
+         kzSSyU1x6K/GBBEorJp98eor9yvZfCQFkrr/7efTfAo0ZR5yNsQlHX6uacURPWP3eBfG
+         bDns/cbkalcVbqvlvSCTuTzfJD57S+d2dVN1pkCIqsjewYJMOK0YGNT5FXBPhszkLIC8
+         1QqxkgXbgMlgEGIOul+PrQJWgIZSCpHeuzXzv8wxDdRR7GRyb6akI/F1mdj4ZirmwNcw
+         IR8A==
+X-Gm-Message-State: AOAM533MKCZGojZ7zh39VRWaZyMO98Q/kgvfpFQS5dzstsTQ6E4LhfKL
+        wKKEs642M1onpLDOyZJ58/tu1nzXC1AX6PPCiYw=
+X-Google-Smtp-Source: ABdhPJyFVsMqrnR6x8IusJFQG/jF2WyzHDJgRmzBvPLGzHsLYzJQWw41sT7jkiUxcF/LHIbYy8fC+7DQvf0rZc7kRwA=
+X-Received: by 2002:a25:bc08:: with SMTP id i8mr36987237ybh.146.1620169533255;
+ Tue, 04 May 2021 16:05:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Tue, 04 May 2021 16:04:12 -0700
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     Jeffrey Hugo <quic_jhugo@quicinc.com>
-Cc:     manivannan.sadhasivam@linaro.org, linux-arm-msm@vger.kernel.org,
-        hemantk@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
-        kvalo@codeaurora.org, ath11k@lists.infradead.org
-Subject: Re: [PATCH v1 3/6] bus: mhi: Add MMIO region length to controller
- structure
-Organization: Qualcomm Innovation Center, Inc.
-Reply-To: bbhatt@codeaurora.org
-Mail-Reply-To: bbhatt@codeaurora.org
-In-Reply-To: <83589a09-e1a0-4611-a844-0ea52ca036b9@quicinc.com>
-References: <1618598825-18629-1-git-send-email-bbhatt@codeaurora.org>
- <1618598825-18629-4-git-send-email-bbhatt@codeaurora.org>
- <83589a09-e1a0-4611-a844-0ea52ca036b9@quicinc.com>
-Message-ID: <928a29dca0d2b141d4e21b7878c1c42e@codeaurora.org>
-X-Sender: bbhatt@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
+ <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
+ <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
+ <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
+ <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
+ <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
+ <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
+ <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com> <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
+ <alpine.DEB.2.21.2105020346520.2587@angie.orcam.me.uk> <YJAK1C1uLknYGYrH@mit.edu>
+In-Reply-To: <YJAK1C1uLknYGYrH@mit.edu>
+From:   Greg Stark <stark@mit.edu>
+Date:   Tue, 4 May 2021 19:04:56 -0400
+Message-ID: <CAM-w4HOJqDUyK9HXjtqD3K2ja1Wt=u2s5waQ1wqm7jHy0P5V-A@mail.gmail.com>
+Subject: Re: Very slow clang kernel config ..
+To:     "Theodore Ts'o" <tytso@mit.edu>
+Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tom Stellard <tstellar@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Serge Guelton <sguelton@redhat.com>,
+        Sylvestre Ledru <sylvestre@mozilla.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jeff,
+On Mon, 3 May 2021 at 10:39, Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> That was because memory was *incredibly* restrictive in those days.
+> My first Linux server had one gig of memory, and so shared libraries
+> provided a huge performance boost --- because otherwise systems would
+> be swapping or paging their brains out.
 
-On 2021-05-04 10:28 AM, Jeffrey Hugo wrote:
-> On 4/16/2021 12:47 PM, Bhaumik Bhatt wrote:
->> Make controller driver specify the MMIO register region length
->> for range checking of BHI or BHIe space. This can help validate
->> that offsets are in acceptable memory region or not and avoid any
->> boot-up issues due to BHI or BHIe memory accesses.
->> 
->> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
->> ---
->>   include/linux/mhi.h | 2 ++
->>   1 file changed, 2 insertions(+)
->> 
->> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
->> index 944aa3a..ad53b24 100644
->> --- a/include/linux/mhi.h
->> +++ b/include/linux/mhi.h
->> @@ -293,6 +293,7 @@ struct mhi_controller_config {
->>    * @mhi_dev: MHI device instance for the controller
->>    * @debugfs_dentry: MHI controller debugfs directory
->>    * @regs: Base address of MHI MMIO register space (required)
->> + * @reg_len: Length of the MHI MMIO region (required)
->>    * @bhi: Points to base of MHI BHI register space
->>    * @bhie: Points to base of MHI BHIe register space
->>    * @wake_db: MHI WAKE doorbell register address
->> @@ -375,6 +376,7 @@ struct mhi_controller {
->>   	struct mhi_device *mhi_dev;
->>   	struct dentry *debugfs_dentry;
->>   	void __iomem *regs;
->> +	size_t reg_len;
-> 
-> Didn't Mani make sure this struct was packed using pahole when things
-> were first upstreamed?  Feels like sticking this in the middle of a
-> bunch of void * entries will add some padding.  Am I wrong?
-> 
-OK. I missed out on this detail. I can move this size_t entry in v2.
->>   	void __iomem *bhi;
->>   	void __iomem *bhie;
->>   	void __iomem *wake_db;
->> 
+(I assume you mean 1 megabyte?)
+I have 16G and the way modern programs are written I'm still having
+trouble avoiding swap thrashing...
 
-Thanks,
-Bhaumik
----
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora 
-Forum,
-a Linux Foundation Collaborative Project
+This is always a foolish argument though. Regardless of the amount of
+resources available we always want to use it as efficiently as
+possible. The question is not whether we have more memory today than
+before, but whether the time and power saved in reducing memory usage
+(and memory bandwidth usage) is more or less than other resource costs
+being traded off and whether that balance has changed.
+
+> However, these days, many if not most developers aren't capable of the
+> discpline needed to maintained the ABI stability needed for shared
+> libraries to work well.
+
+I would argue you have cause and effect reversed here. The reason
+developers don't understand ABI (or even API) compatibility is
+*because* they're used to people just static linking (or vendoring).
+If people pushed back the world would be a better place.
+
+-- 
+greg
