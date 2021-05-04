@@ -2,142 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10D5B373116
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C976037311E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:59:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232657AbhEDT4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46840 "EHLO
+        id S232650AbhEDUAH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:00:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47672 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232582AbhEDT4R (ORCPT
+        with ESMTP id S232615AbhEDUAG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:56:17 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37DDBC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:55:22 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id m11so35447pfc.11
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:55:22 -0700 (PDT)
+        Tue, 4 May 2021 16:00:06 -0400
+Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E98E8C061574;
+        Tue,  4 May 2021 12:59:10 -0700 (PDT)
+Received: by mail-wr1-x42f.google.com with SMTP id v12so10681130wrq.6;
+        Tue, 04 May 2021 12:59:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=V9MXCUfkwjmTe3RnQ5lcnKM97SAruzdIHvAHJ/7SbBM=;
-        b=gDxUZXMjj4gmp5w7OneOA+ybUb5VLB6rrAPPS0IlGoniTArDiPJtz+fjyJG5pgsAMk
-         KVjvhbAGD2sm8co6/oxomB+WqEb34rpQzg9VqgC7Pxglu9zYWstkxG+O4KcWxYMINqEE
-         Z+RuLPQiCNVqp5L26RB3hDzYZcckTcsvVLcM9ivk8Quwc1EvIaHqbPP51FfNUayEGBtl
-         0o0RFgUZ0GWIP+D0EunIYE6tDOi/TzlAW8yQ3iu5z5Ff2RWfpZBNmalCU/lKEAlnVOFu
-         zZzrNLFp0Ybndoegu82z6OGV4CV3nuSkGn55WMkjI2P16/OfYTpz8d+NxnQro74LTSW7
-         Wq5Q==
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=DrWNrfi+Ew4LFUqUpxDkLKZY4953siWYFeGLtwXjn7A=;
+        b=QE+7SVJwjgYciwmKm9KJ3PY+qk14muy5KhsoBY6CxPqNYCB/3EW7hITS/9jUc+hNev
+         eC1J6uUPUJ1K8aMJZFPaedCgd0W7KOBvWVOlteC0wcOGz05FFw5VptHLgRvMxfFbWXOn
+         /lqYoLuS7wfqkDhCf71GFCG31oZOgi6OeXkslJCmvYt5PRtc2zA8KRUS+/PNI5vEntjv
+         Ni2YjnYHjt9RZggtvIfXfTm9bnPiQ9VpW/1Q7Bj0UhQd4BJSBC9DdG3FoEiLAK6mG9Ra
+         JxO5nnZ5gH65gA/mtu3gIVC6RCJ1AHsM5+9MiTcOfjku52Rv30TcR42tCOiJ0lTrLBCi
+         5Clw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=V9MXCUfkwjmTe3RnQ5lcnKM97SAruzdIHvAHJ/7SbBM=;
-        b=bPQlanEk+zNy/4w6UPbDxuRR8TV2igNrwDDen4psRKAPr751Q1M40USpA42HbuigLp
-         vjAy21Mf+8TzXyco/nxaJhzL0skPTwmLQqN3g/fxfiTaK8MDpNBWT3WWbe9zZG0Rtnx8
-         DbcskpEVhRMcx0qOIlXlYVyIOUAaMb2bzDD6a6Y9wq9zAyl/XtlObeLEymfMIp031Wyx
-         FVEtGB8ZZh/N2vAdXvw6uh3/M/bkXe2BlGFh8fk8oby9HE0RUyLrQoVICl5lhuOJEJlP
-         w4JhuImcTAZTA/FgtvOUwTzTk4NwRwku3rbxCRmVXuSXcE1pfxabZ+13vQVb0EmePkZS
-         JHMg==
-X-Gm-Message-State: AOAM530CweVdTbOi9ehiLmJDvxwwOvwyDlWrjqbK3nqVp8lOZwrDZl3X
-        kvLw7YCCrZlNUGeWC2i1oycJYw==
-X-Google-Smtp-Source: ABdhPJxa4R2eqYOmzom07zcVSSH/UwYdjTwtJKrJZ4ws+px9kF2HWI7h/Tqs4dOTngLsuXaKVJoJNA==
-X-Received: by 2002:a63:796:: with SMTP id 144mr24646749pgh.246.1620158121499;
-        Tue, 04 May 2021 12:55:21 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id j10sm13484582pfn.207.2021.05.04.12.55.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 12:55:20 -0700 (PDT)
-Date:   Tue, 4 May 2021 19:55:16 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Ben Gardon <bgardon@google.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Peter Xu <peterx@redhat.com>, Peter Shier <pshier@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH v2 1/7] KVM: x86/mmu: Track if shadow MMU active
-Message-ID: <YJGmpOzaFy9E0f5T@google.com>
-References: <20210429211833.3361994-1-bgardon@google.com>
- <20210429211833.3361994-2-bgardon@google.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=DrWNrfi+Ew4LFUqUpxDkLKZY4953siWYFeGLtwXjn7A=;
+        b=oRJYbmItkqxdMFX68NkwEhCJiW5MmdTV3VFoNHgzqa4foIGshnKURjWeTnJ78MxN7N
+         L+DAxHlYNMz0c57hdF26yMyClnurZ1IUlktapi7JdN1EmBQ0IkShcoV1vqIHyPV1Uc34
+         x+2st6VApjKzazZeUNZlm4e7edeZAR24MdVU/kKIK3tKQQe2a2dI35apqe4q1423Wi3n
+         fvLWTrGDUOKCjlgs9ZWNqu3keoLHM31gx0PrnWvmOzUJKFluIawgHC6rS1xGaEXET9/v
+         aFLhwNiJSEqgi+oDR0ebt1ttdvBs3L/kXwtSOSUU7shbj4BHwFFaEUBEFdtuNEXJmU/5
+         gEFA==
+X-Gm-Message-State: AOAM533wCjS/lALEiF8oT6RyB/Vcy0UDy1g5kvJqF2e+nUCUvj+ZpEcE
+        2nxNZoYve9ZOQOGq/2sRmW0=
+X-Google-Smtp-Source: ABdhPJx8/T5dui/MKJ9f8IBJbNOXe96bYqrulWjqjgmOC+4G26OcBLa/GwDB3uSESgK9l9w+4GTsZg==
+X-Received: by 2002:a05:6000:186f:: with SMTP id d15mr33984740wri.400.1620158349706;
+        Tue, 04 May 2021 12:59:09 -0700 (PDT)
+Received: from [192.168.0.237] ([170.253.36.171])
+        by smtp.gmail.com with ESMTPSA id x17sm3426158wmc.11.2021.05.04.12.59.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 12:59:09 -0700 (PDT)
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+To:     Florian Weimer <fweimer@redhat.com>
+Cc:     Zack Weinberg <zackw@panix.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        Joseph Myers <joseph@codesourcery.com>,
+        David Laight <David.Laight@aculab.com>
+References: <20210423230609.13519-1-alx.manpages@gmail.com>
+ <20210504110519.16097-1-alx.manpages@gmail.com>
+ <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+ <YJFZHW2afbAMVOmE@kroah.com> <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
+ <YJFxArfp8wN3ILJb@kroah.com>
+ <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
+ <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
+ <87r1imgu5g.fsf@oldenburg.str.redhat.com>
+From:   "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
+Message-ID: <0d9a795a-7c6a-3889-af31-2223dc216d15@gmail.com>
+Date:   Tue, 4 May 2021 21:59:06 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429211833.3361994-2-bgardon@google.com>
+In-Reply-To: <87r1imgu5g.fsf@oldenburg.str.redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021, Ben Gardon wrote:
-> Add a field to each VM to track if the shadow / legacy MMU is actually
-> in use. If the shadow MMU is not in use, then that knowledge opens the
-> door to other optimizations which will be added in future patches.
+Hi Florian,
+
+On 5/4/21 9:45 PM, Florian Weimer wrote:
+> * Alejandro Colomar:
 > 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->  arch/x86/include/asm/kvm_host.h |  2 ++
->  arch/x86/kvm/mmu/mmu.c          | 10 +++++++++-
->  arch/x86/kvm/mmu/mmu_internal.h |  2 ++
->  arch/x86/kvm/mmu/tdp_mmu.c      |  6 ++++--
->  arch/x86/kvm/mmu/tdp_mmu.h      |  4 ++--
->  5 files changed, 19 insertions(+), 5 deletions(-)
+>> The thing is, in all of those threads, the only reasons to avoid
+>> <stdint.h> types in the kernel (at least, the only explicitly
+>> mentioned ones) are (a bit simplified, but this is the general idea of
+>> those threads):
+>>
+>> * Possibly breaking something in such a big automated change.
+>> * Namespace collision with userspace (the C standard allows defining
+>>    uint32_t for nefarious purposes as long as you don't include
+>>   <stdint.h>.   POSIX prohibits that, though)
+>> * Uglier
 > 
-> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-> index ad22d4839bcc..3900dcf2439e 100644
-> --- a/arch/x86/include/asm/kvm_host.h
-> +++ b/arch/x86/include/asm/kvm_host.h
-> @@ -1122,6 +1122,8 @@ struct kvm_arch {
->  	 */
->  	spinlock_t tdp_mmu_pages_lock;
->  #endif /* CONFIG_X86_64 */
-> +
-> +	bool shadow_mmu_active;
+> __u64 can't be formatted with %llu on all architectures.  That's not
+> true for uint64_t, where you have to use %lu on some architectures to
+> avoid compiler warnings (and technically undefined behavior).  There are
+> preprocessor macros to get the expected format specifiers, but they are
+> clunky.  I don't know if the problem applies to uint32_t.  It does
+> happen with size_t and ptrdiff_t on 32-bit targets (both vary between
+> int and long).
+> 
 
-I'm not a fan of the name, "shadow mmu" in KVM almost always means shadow paging
-of some form, whereas this covers both shadow paging and legacy TDP support.
+Hmmm, that's interesting.  It looks like Linux always uses long long for 
+64 bit types, while glibc uses 'long' as long as it's possible, and only 
+uses 'long long' when necessary.  Assignment is still 100% valid both 
+ways and binary compatibility also 100% (AFAIK), given they're the same 
+length and signedness, but pointers are incompatible.  That's something 
+to note, even though in this case there are no pointers involved, so no 
+incompatibilities.  Maybe the kernel and glibc could use the same rules 
+to improve compatibility, but that's out of the scope of this.
 
-But, I think we we can avoid bikeshedding by simply eliminating this flag.  More
-in later patches.
+Thanks,
 
->  };
->  
->  struct kvm_vm_stat {
-> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> index 930ac8a7e7c9..3975272321d0 100644
-> --- a/arch/x86/kvm/mmu/mmu.c
-> +++ b/arch/x86/kvm/mmu/mmu.c
-> @@ -3110,6 +3110,11 @@ static int fast_page_fault(struct kvm_vcpu *vcpu, gpa_t cr2_or_gpa,
->  	return ret;
->  }
->  
-> +void activate_shadow_mmu(struct kvm *kvm)
-> +{
-> +	kvm->arch.shadow_mmu_active = true;
-> +}
-> +
->  static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
->  			       struct list_head *invalid_list)
->  {
-> @@ -3280,6 +3285,8 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
->  		}
->  	}
->  
-> +	activate_shadow_mmu(vcpu->kvm);
-> +
->  	write_lock(&vcpu->kvm->mmu_lock);
->  	r = make_mmu_pages_available(vcpu);
->  	if (r < 0)
-> @@ -5467,7 +5474,8 @@ void kvm_mmu_init_vm(struct kvm *kvm)
->  {
->  	struct kvm_page_track_notifier_node *node = &kvm->arch.mmu_sp_tracker;
->  
-> -	kvm_mmu_init_tdp_mmu(kvm);
-> +	if (!kvm_mmu_init_tdp_mmu(kvm))
-> +		activate_shadow_mmu(kvm);
+Alex
 
-Doesn't come into play yet, but I would strongly prefer to open code setting the
-necessary flag instead of relying on the helper to never fail.
+
+-- 
+Alejandro Colomar
+Linux man-pages comaintainer; https://www.kernel.org/doc/man-pages/
+http://www.alejandro-colomar.es/
