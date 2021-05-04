@@ -2,133 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E80713730E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 895FF3730EA
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232430AbhEDTi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42924 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232153AbhEDTi0 (ORCPT
+        id S232463AbhEDTij (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:38:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56994 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232153AbhEDTii (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:38:26 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79BD9C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:37:31 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id z9so10526213lfu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:37:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=btYsPAMNSGmXffsSk7+VR60HmUlYSHIt+oz7jjLh4E8=;
-        b=qm3h49sUOH2s6tvF7KNhGDE1XdJRjRppqoGSbXNvcIvjPgsmygPRL+Huz/bo6LwJJk
-         /0FRs5hMe3DuFnhdCHSW6+PF81z+rW7Yt1/7pBaFsY8xruoFVGCDcCF3ric6+eGNMf26
-         QJi7EdjlGvaBNdL89o5778YfWQd2Lkstsx85AT0wSngk1QGxewfEqdZBOCTYlqRsu9jH
-         X9EGZsayyWCKd39XPQumXqjjs0V/gicwgCK+mb4TGO6nhk+gLJK9zX6SjCWoDh5tJOWU
-         viTvPxRimjGbUel53oqUg7BoKFeJM8s4RDOXTvYSemwmre0bTiaM5Gf4FCkfmH0nKTmb
-         m5Dg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=btYsPAMNSGmXffsSk7+VR60HmUlYSHIt+oz7jjLh4E8=;
-        b=TbNusL7PO7JN5pyK8RT2m0N3Cx0iRo5Fvl8IWxImwRfu+cPuoYW5AAs0FPksPEfe6Z
-         10rSXBEQsFpwRwbxRp160u8rfQjxJWEVaMBTtg92o3if0cRwG4VN+M4M1HnT2IZTCptE
-         nMqxvsGt8igmG//w1s0mYE2X0IjpgzFSs7uZMlPid/8wamPnCtLchrro6wHYC9bqhItJ
-         TWtpzOs7DA1NeFtXrl23Bm4UHmuP56jFVHdpa+Yo5VgM9awJNT4tlQhav9S1k7ML+OsK
-         YzmiYpuHjbYFr1efpY5eLYwlyK7QtHVU/AMqCk0K+pC5/5UQiBabxAfPJwTKIl9bSQlE
-         br5g==
-X-Gm-Message-State: AOAM530LAN1SIS7KPK8Y5EPfYjTNbqxZksl4UHkxXTXI4winTydTETVA
-        L4l73RGs+avUuhI/ImVkrfOREL//8X4O8C1J/x4Q8g==
-X-Google-Smtp-Source: ABdhPJwlb9KA8U4u+KoRPFZ8uOLR3ragJIioyKxSSJZgFafWkkxACRJsoZDnRYbmY44M0lLfIIhm8avycXHH9tNpfNs=
-X-Received: by 2002:a05:6512:acd:: with SMTP id n13mr17648346lfu.432.1620157049746;
- Tue, 04 May 2021 12:37:29 -0700 (PDT)
+        Tue, 4 May 2021 15:38:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620157063;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=5iVVgUy0SDXv9IYkz7ttlGefErcwuOblVtEJb+SJtaU=;
+        b=iwwzeaZHGj+ILOKvrK8qUNMTJO924tzIE4Be6lSI7ZtnkKe76vVFLhBbIzS5yBdfp+8T0v
+        8ePKJAKU6acBKQrIQJwCfdO1I1gtK6NMzERZc4JjHdNyXoHfQh9z7gzUdnvlr5SEw/sPxk
+        cZCEHZ+TRok1E3395ahq8zlOSOo5uJo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-299-nwk_SFf_OLOEv7wl5inw4Q-1; Tue, 04 May 2021 15:37:39 -0400
+X-MC-Unique: nwk_SFf_OLOEv7wl5inw4Q-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EEF5E107ACCA;
+        Tue,  4 May 2021 19:37:37 +0000 (UTC)
+Received: from krava (unknown [10.40.192.45])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 7D1BF5D9DD;
+        Tue,  4 May 2021 19:37:35 +0000 (UTC)
+Date:   Tue, 4 May 2021 21:37:34 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
+        peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v1 1/2] perf header: Support HYBRID_TOPOLOGY feature
+Message-ID: <YJGifgASdDD7T8Xc@krava>
+References: <20210430074602.3028-1-yao.jin@linux.intel.com>
+ <YJFgrKB9ZavgbA1P@krava>
+ <YJGgYSXcJbZ2n3H3@kernel.org>
 MIME-Version: 1.0
-References: <20210504132350.4693-1-longman@redhat.com> <20210504132350.4693-2-longman@redhat.com>
-In-Reply-To: <20210504132350.4693-2-longman@redhat.com>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Tue, 4 May 2021 12:37:18 -0700
-Message-ID: <CALvZod438=YKZtV0qckoaMkdL1seu5PiLnvPPQyRzA0S60-TpQ@mail.gmail.com>
-Subject: Re: [PATCH v2 1/2] mm: memcg/slab: Properly set up gfp flags for
- objcg pointer array
-To:     Waiman Long <longman@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJGgYSXcJbZ2n3H3@kernel.org>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 6:24 AM Waiman Long <longman@redhat.com> wrote:
->
-> Since the merging of the new slab memory controller in v5.9, the page
-> structure may store a pointer to obj_cgroup pointer array for slab pages.
-> Currently, only the __GFP_ACCOUNT bit is masked off. However, the array
-> is not readily reclaimable and doesn't need to come from the DMA buffer.
-> So those GFP bits should be masked off as well.
->
-> Do the flag bit clearing at memcg_alloc_page_obj_cgroups() to make sure
-> that it is consistently applied no matter where it is called.
->
-> Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  mm/memcontrol.c | 8 ++++++++
->  mm/slab.h       | 1 -
->  2 files changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c100265dc393..5e3b4f23b830 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2863,6 +2863,13 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
->  }
->
->  #ifdef CONFIG_MEMCG_KMEM
-> +/*
-> + * The allocated objcg pointers array is not accounted directly.
-> + * Moreover, it should not come from DMA buffer and is not readily
-> + * reclaimable. So those GFP bits should be masked off.
-> + */
-> +#define OBJCGS_CLEAR_MASK      (__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
+On Tue, May 04, 2021 at 04:28:33PM -0300, Arnaldo Carvalho de Melo wrote:
+> Em Tue, May 04, 2021 at 04:56:44PM +0200, Jiri Olsa escreveu:
+> > On Fri, Apr 30, 2021 at 03:46:01PM +0800, Jin Yao wrote:
+> > > It would be useful to let user know the hybrid topology.
+> > > Adding HYBRID_TOPOLOGY feature in header to indicate the
+> > > core cpus and the atom cpus.
+> 
+> > > With this patch,
+> 
+> > > For the perf.data generated on hybrid platform,
+> > > reports the hybrid cpu list.
+> 
+> > >   root@otcpl-adl-s-2:~# perf report --header-only -I
+> > >   ...
+> > >   # cpu_core cpu list : 0-15
+> > >   # cpu_atom cpu list : 16-23
+> 
+> > hum, should we print 'hybrid:' or something to make
+> > sure its not confused with something else? like
+>  
+> >   # hybrid cpu_core cpu list : 0-15
+> >   # hybrid cpu_atom cpu list : 16-23
+> 
+> But this _core/_atom already got to be enough? I disagreed with that
+> naming, but neverthless having one or the other present in an output is
+> a clear mark of this hybrid topology.
+> 
+> I.e having that extra hybrid string that wouldn't add information to the
+> output.
 
-What about __GFP_DMA32? Does it matter? It seems like DMA32 requests
-go to normal caches.
+sure when you know that cpu_core/cpu_atom are hybrid pmus ;-)
+and I guess other arch will come with other names 
 
-> +
->  int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
->                                  gfp_t gfp, bool new_page)
->  {
-> @@ -2870,6 +2877,7 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
->         unsigned long memcg_data;
->         void *vec;
->
-> +       gfp &= ~OBJCGS_CLEAR_MASK;
->         vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
->                            page_to_nid(page));
->         if (!vec)
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 18c1927cd196..b3294712a686 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -309,7 +309,6 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
->         if (!memcg_kmem_enabled() || !objcg)
->                 return;
->
-> -       flags &= ~__GFP_ACCOUNT;
->         for (i = 0; i < size; i++) {
->                 if (likely(p[i])) {
->                         page = virt_to_head_page(p[i]);
-> --
-> 2.18.1
->
+jirka
+
+> 
+> IMHO.
+> 
+> - Arnaldo
+> 
+
