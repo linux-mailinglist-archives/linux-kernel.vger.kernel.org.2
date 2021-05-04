@@ -2,69 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23F4B372BEB
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 865EA372BEE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:23:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231546AbhEDOXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:23:50 -0400
-Received: from mail-40132.protonmail.ch ([185.70.40.132]:24283 "EHLO
-        mail-40132.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231393AbhEDOXt (ORCPT
+        id S231573AbhEDOYk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:24:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56790 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231393AbhEDOYj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:23:49 -0400
-X-Greylist: delayed 97250 seconds by postgrey-1.27 at vger.kernel.org; Tue, 04 May 2021 10:23:48 EDT
-Date:   Tue, 04 May 2021 14:22:51 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1620138172;
-        bh=j/Piey25x5wTKkcS2omjRTtsTy4ygKZu9xmZybpv4I0=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=qtZubhb+ReF4/oBIQKURLtV8i7jbCDw4U3xOsdmHuU1b0MQYwCw2gR3CfGJrNYgrK
-         o5i4SNr49XZzlYtBfc8cwIn8XZeAD9LRobrnEn82qTU7V/Chw0mHvf5ito8UYtwNfr
-         6SFZ8QwZnNWyxpxRSimkqfFS+rpM57mXEhm+zA2U=
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-From:   Jari Ruusu <jariruusu@protonmail.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "stable@vger.kernel.org" <stable@vger.kernel.org>,
-        Jiri Kosina <jkosina@suse.cz>,
-        Kalle Valo <kvalo@codeaurora.org>
-Reply-To: Jari Ruusu <jariruusu@protonmail.com>
-Subject: Re: [PATCH 5.10 1/2] iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
-Message-ID: <g5YP678olZEf3yQNX2ptK3X6DceFoemqwzEgSJclx_dHFAJfbJBWznYtB74u5g69Onx_6QZkLF-K2muYLa3qsotkPpxbHYuz4Hrs94olZ7c=@protonmail.com>
-In-Reply-To: <YJFNyOGrF8RcTTlc@kroah.com>
-References: <20210430141910.473289618@linuxfoundation.org> <20210430141910.521897363@linuxfoundation.org> <608CFF6A.4BC054A3@users.sourceforge.net> <YI6HFNNvzuHnv5VU@kroah.com> <bO2GF-6sC-I4NbFif7JoGUpuRpAV-rHEMwtLsKfN9SCsA0lwB1NgEV4OC7Xd5fdoq3UPcZ6-uh2VDSe1Xtovy8ti3k5vmOsiMVTdfTgl0Yw=@protonmail.com> <YJD2uTdQonXymbn6@kroah.com> <npSsinT79DB6Ze8QTkmLcuOTyVwRcy2FbOf0tDjpEHbTxKdYmLar8Br66_ypLjzZ86sIJKnSbUHeehagPR6RqxsJsKdWW_vWnXOUEhMC14g=@protonmail.com> <YJFNyOGrF8RcTTlc@kroah.com>
+        Tue, 4 May 2021 10:24:39 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BADEC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 07:23:44 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id y7so13438116ejj.9
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:23:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ensQSDTh3BO9iGPVrV6EYBnSBYEfz7lspMmgWRr6tEM=;
+        b=A/agEr85m2gTABKwkX7MweJdDLUWMMy/uuv8cOATtF0IOSbqQGQWqB7WVO/2i6CTej
+         A/xEN0wabqwjnysRyxUsM6987Nm7ZjOXb3ElY7BOmpcbi2Nz6d878YWmh7i2EiFYeKva
+         NM7Q/fRoU0PTIKl2uxcCG8z+XO6JfxPjFQ6us=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=ensQSDTh3BO9iGPVrV6EYBnSBYEfz7lspMmgWRr6tEM=;
+        b=Ji0pMH66a/EYnkgyWMYV7Hk5UR9ZSDwk+URjN5FeDuT2lh05Zo7syrNgWpDJynINCv
+         kLV9SLddc02IG3SZ8VyUMUD+i2gc597sMWwFzMfolyLq17yGikfG9L7mGS4r4qoKi6U6
+         QArrzmaNqSeLNIJjE8lh/iTtfs2qS8fpeMlKjd/qHv+FjK/KHWoiGSlV44yQP8VxppZI
+         RBo9KxrXeKgDhOlRCpHzL96dN314GP+ss1fQoPqblVjnRoZ034a0qrtz4UGrz9MPCev/
+         /UN4rEsseelW90oegiR2Gddad+1LN7qMOViaBnJ5Iu13e3sRAGDSy5d8t06Xaa0geaUD
+         naYw==
+X-Gm-Message-State: AOAM531AbXS555BcE3YfHMhQSe9VcZOZWCFhFNdLlo1W6Jme3/b9FX5k
+        MBeTQNeZUXeQ1Bw1UgMrCvVQYA==
+X-Google-Smtp-Source: ABdhPJzaM96uclt2Tpt863I3ZtqPW7KYS209iLyt378polAbgvCVI1aPL30//Pa3FZcXPaOgGHkVGA==
+X-Received: by 2002:a17:906:194d:: with SMTP id b13mr22253337eje.83.1620138223252;
+        Tue, 04 May 2021 07:23:43 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id t14sm1462204ejc.121.2021.05.04.07.23.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 07:23:42 -0700 (PDT)
+Date:   Tue, 4 May 2021 16:23:40 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, kvm@vger.kernel.org,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-api@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, qemu-devel@nongnu.org,
+        qemu-ppc@nongnu.org
+Subject: Re: remove the nvlink2 pci_vfio subdriver v2
+Message-ID: <YJFY7NjEBtCSlJHw@phenom.ffwll.local>
+Mail-Followup-To: Greg Kurz <groug@kaod.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, kvm@vger.kernel.org,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
+        linux-api@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        qemu-devel@nongnu.org, qemu-ppc@nongnu.org
+References: <20210326061311.1497642-1-hch@lst.de>
+ <20210504142236.76994047@bahia.lan>
+ <YJFFG1tSP0dUCxcX@kroah.com>
+ <20210504152034.18e41ec3@bahia.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504152034.18e41ec3@bahia.lan>
+X-Operating-System: Linux phenom 5.10.32scarlett+ 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, May 4, 2021 4:36 PM, Greg Kroah-Hartman <gregkh@linuxfoundation=
-.org> wrote:
-> On Tue, May 04, 2021 at 01:05:56PM +0000, Jari Ruusu wrote:
-> > second patch is upstream commit e7020bb068d8be50a92f48e36b236a1a1ef9282=
-e.
->
-> This is not in any newer stable trees, and it was not obvious what you
-> were doing here at all.
+On Tue, May 04, 2021 at 03:20:34PM +0200, Greg Kurz wrote:
+> On Tue, 4 May 2021 14:59:07 +0200
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> 
+> > On Tue, May 04, 2021 at 02:22:36PM +0200, Greg Kurz wrote:
+> > > On Fri, 26 Mar 2021 07:13:09 +0100
+> > > Christoph Hellwig <hch@lst.de> wrote:
+> > > 
+> > > > Hi all,
+> > > > 
+> > > > the nvlink2 vfio subdriver is a weird beast.  It supports a hardware
+> > > > feature without any open source component - what would normally be
+> > > > the normal open source userspace that we require for kernel drivers,
+> > > > although in this particular case user space could of course be a
+> > > > kernel driver in a VM.  It also happens to be a complete mess that
+> > > > does not properly bind to PCI IDs, is hacked into the vfio_pci driver
+> > > > and also pulles in over 1000 lines of code always build into powerpc
+> > > > kernels that have Power NV support enabled.  Because of all these
+> > > > issues and the lack of breaking userspace when it is removed I think
+> > > > the best idea is to simply kill.
+> > > > 
+> > > > Changes since v1:
+> > > >  - document the removed subtypes as reserved
+> > > >  - add the ACK from Greg
+> > > > 
+> > > > Diffstat:
+> > > >  arch/powerpc/platforms/powernv/npu-dma.c     |  705 ---------------------------
+> > > >  b/arch/powerpc/include/asm/opal.h            |    3 
+> > > >  b/arch/powerpc/include/asm/pci-bridge.h      |    1 
+> > > >  b/arch/powerpc/include/asm/pci.h             |    7 
+> > > >  b/arch/powerpc/platforms/powernv/Makefile    |    2 
+> > > >  b/arch/powerpc/platforms/powernv/opal-call.c |    2 
+> > > >  b/arch/powerpc/platforms/powernv/pci-ioda.c  |  185 -------
+> > > >  b/arch/powerpc/platforms/powernv/pci.c       |   11 
+> > > >  b/arch/powerpc/platforms/powernv/pci.h       |   17 
+> > > >  b/arch/powerpc/platforms/pseries/pci.c       |   23 
+> > > >  b/drivers/vfio/pci/Kconfig                   |    6 
+> > > >  b/drivers/vfio/pci/Makefile                  |    1 
+> > > >  b/drivers/vfio/pci/vfio_pci.c                |   18 
+> > > >  b/drivers/vfio/pci/vfio_pci_private.h        |   14 
+> > > >  b/include/uapi/linux/vfio.h                  |   38 -
+> > > 
+> > > 
+> > > Hi Christoph,
+> > > 
+> > > FYI, these uapi changes break build of QEMU.
+> > 
+> > What uapi changes?
+> > 
+> 
+> All macros and structure definitions that are being removed
+> from include/uapi/linux/vfio.h by patch 1.
 
-That patch is in 5.10 + 5.11 + 5.12
+Just my 2cents from drm (where we deprecate old gunk uapi quite often):
+Imo it's best to keep the uapi headers as-is, but exchange the
+documentation with a big "this is removed, never use again" warning:
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=
-=3Dlinux-5.10.y&id=3D2a442f11407ec9c9bc9b84d7155484f2b60d01f9
+- it occasionally serves as a good lesson for how to not do uapi (whatever
+  the reasons really are in the specific case)
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=
-=3Dlinux-5.11.y&id=3Da9315228c1d4b1ced803761e81ef761d97f3e2fa
+- it's good to know which uapi numbers (like parameter extensions or
+  whatever they are in this case) are defacto reserved, because there are
+  binaries (qemu in this) that have code acting on them out there.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/commit/?h=
-=3Dlinux-5.12.y&id=3Df935c64a0c87d86730efd6e1e168555460234d04
+The only exception where we completely nuke the structs and #defines is
+when uapi has been only used by testcases. Which we know, since we defacto
+limit our stable uapi guarantee to the canonical open&upstream userspace
+drivers only (for at least the driver-specific stuff, the cross-driver
+interfaces are hopeless).
 
---
-Jari Ruusu=C2=A0 4096R/8132F189 12D6 4C3A DCDA 0AA4 27BD=C2=A0 ACDF F073 3C=
-80 8132 F189
+Anyway feel free to ignore since this might be different than drivers/gpu.
 
+Cheers, Daniel
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
