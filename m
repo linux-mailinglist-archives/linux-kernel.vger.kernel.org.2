@@ -2,98 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A601373085
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:12:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16709373086
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:12:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232170AbhEDTNb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:13:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37310 "EHLO
+        id S232480AbhEDTNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:13:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37320 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232049AbhEDTN0 (ORCPT
+        with ESMTP id S232080AbhEDTN3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:13:26 -0400
-Received: from mail-oi1-x233.google.com (mail-oi1-x233.google.com [IPv6:2607:f8b0:4864:20::233])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE80C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:12:29 -0700 (PDT)
-Received: by mail-oi1-x233.google.com with SMTP id d21so7749373oic.11
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:12:29 -0700 (PDT)
+        Tue, 4 May 2021 15:13:29 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56B00C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 12:12:32 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id p64-20020a2529430000b02904f838e5bd13so151826ybp.20
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 12:12:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TPDeFE2c5Z76UvfNrVUjfTjEKbAvB781/8qEcRhYZ1A=;
-        b=m7JXTIDzCRbD7Q0oeh8pOdJ5IV8K1Iq6vnxUIO2HTHoH8Grv+ZS8GntIPA+88v8FkJ
-         qgn/EEMFJdPXK7sdH89yo6MHyHis/YtR62DpdPytSG6DXdd4lCLrJPhivSf8FFRDisG6
-         95vg7J+aA8RPYLRbaICbd+62mjAVbK2+p6/OxyCPxXdfaRCAzi0JPUDW34+yii56dmj6
-         QphCg8AnPHGX+LQnfGcDHXM7oOAA56UnDRC9BshzzVAwvy7WjFzikBYjuVUrJXHYZlLr
-         wWYEJIGyY9hTRPVzM759mZ/9mt/z6zVeXhes4qEH6Wj+9o3oEkkIysdREvnCirpvQhv0
-         pFIQ==
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=DPQoY+5BFGMPSoMOLLW+zrHnpLhcIS8wpMva4HHTy1Q=;
+        b=DmMzNprx4BqDHLMu8jBGuQmT//Eu8g141YmQyTsvDtwk6nFFzYg5OXgfbEfG2s0agV
+         N6LUzBZMgiYungbu2izdEpHDJ9zxekANw/+uVWYeao+5At9AkFgvyxlIJGX0j/rPFjF1
+         iMLva4cQ68XAkNkqz6H7lxzKLQ4+/rubhsEBpVCjA88UtXfOOGEIgyAuL8PF1Ij6r2Cc
+         YLpRYABfwULyKk9/XFMyrdOv6AMceith4AywxPtRg3AVXWlBW5T8/CXGPQtPc3mkFNtD
+         eIEhLgXYFBOmt0vHNTzoCTAhOhFnkFMje2ItjxZLuXUElo10KpOQ4GrNgcJJQswjB8BZ
+         j7lQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TPDeFE2c5Z76UvfNrVUjfTjEKbAvB781/8qEcRhYZ1A=;
-        b=pvBjglAIpxrQRaf/OQZzncjr1oM6/tdGeXbmJiGPfgy+hZVcg1RuK1jfoCWc/Hr11/
-         gtRP8vmg2MeJstx3guQxj6aFZm1C1axkkvzvEcWEDkhgXRmWMZIYqxoVBO7bua94jtlA
-         KRmu7HewjxgqwgC7aIbXoiENn/vujtDpbJS91mnbjpN+0DU3IEH8iv8NEktcjLfclSjr
-         AaZjWxGCOQJr8Ipzf3qmQ0M9Asmzn2sDY/d5Ps6w6ceKDmgSYxIHAnFtzpBqOaEqMXz4
-         I9+hi8Ow0LnGw5A97PMULY+qCQefnDKmX/kkvct8SgkE/hy0TpjM5ZGpWgr7zK+8vxU5
-         dzxg==
-X-Gm-Message-State: AOAM5307iEit1tRlZnFMw8YhP24wzs04dGMPit8bbzxfukyPozZe/T73
-        QmPYm3DfhFYJ32GMlz08VmILJ0wzL94WGsj5r5U=
-X-Google-Smtp-Source: ABdhPJwHSTqjMM40PaZIK54FPHCHCVkrKAa7q6CSOKlSwlSvjS557Wz7M3OFOc+h6Q3dlx1eNVXDCCkVgaTOyRChhsI=
-X-Received: by 2002:aca:fc50:: with SMTP id a77mr13095451oii.123.1620155549069;
- Tue, 04 May 2021 12:12:29 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210503050608.2158996-1-keescook@chromium.org>
-In-Reply-To: <20210503050608.2158996-1-keescook@chromium.org>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Tue, 4 May 2021 15:12:17 -0400
-Message-ID: <CADnq5_OtqZ5KPQsd=sOniOGEhTJTjyKm2KoLdbwG_MWORp31pA@mail.gmail.com>
-Subject: Re: [PATCH 0/2] drm/radeon: Fix off-by-one power_state index heap overwrite
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Alex Deucher <alexander.deucher@amd.com>,
-        "Erhard F." <erhard_f@mailbox.org>,
-        David Airlie <airlied@linux.ie>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=DPQoY+5BFGMPSoMOLLW+zrHnpLhcIS8wpMva4HHTy1Q=;
+        b=c4sxGY/7Rc54znwUKxAr8aU8f9tdMs3pyYlGD3/kJfZ6d0tKTEElRpJl32Z/NZHTeJ
+         J/qIkq8vayUndxirxFI5FPabDM+2ideXzNzXYEO9ZHsQBUfIhnuluEBXy7Dko3CcXcNC
+         0a2d1c0Zlf2EjtlrbiHbtxD5XP4UvtdAmv6BYjYthWAZCVtt37NMZehfKwn/p3xkhrNL
+         EdoqqHpOhiZPg2UQOQlscVh3ne7gWq0ssWnW+Q6/Mc1OoX7b3yfNEkMgHc+HGxv8z8NB
+         t1F+gRNJEKi10vs27ytEzhdYMxOB3dD24x0h0PA5pJq12FrHbJTp4wzy2DaJIInefsLu
+         aWUA==
+X-Gm-Message-State: AOAM53123GMiq2nJEi0JdsHR0fACnVaM2OPrm2txtSVuXlWVBiYRhg8I
+        uNUfImH8/tVRXGjmFSCxhxKlFA9X7iPu
+X-Google-Smtp-Source: ABdhPJzYMNj5d0iA145d5Ox3Cz69OkPKW1/6qR9n7oxIpGfTwIyFVEQ98t5cbgS+AFcsWyUlfxxj374Nkt5J
+X-Received: from irogers.svl.corp.google.com ([2620:15c:2cd:202:6f05:c90a:7892:8680])
+ (user=irogers job=sendgmr) by 2002:a25:b223:: with SMTP id
+ i35mr34061518ybj.429.1620155551491; Tue, 04 May 2021 12:12:31 -0700 (PDT)
+Date:   Tue,  4 May 2021 12:12:27 -0700
+Message-Id: <20210504191227.793712-1-irogers@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+Subject: [PATCH] perf arm: Fix off-by-one directory paths.
+From:   Ian Rogers <irogers@google.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Leo Yan <leo.yan@linaro.org>,
+        John Garry <john.garry@huawei.com>,
+        Will Deacon <will@kernel.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Cc:     Stephane Eranian <eranian@google.com>,
+        Ian Rogers <irogers@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 1:06 AM Kees Cook <keescook@chromium.org> wrote:
->
-> Hi,
->
-> This is an attempt at fixing a bug[1] uncovered by the relocation of
-> the slab freelist pointer offset, as well as some related clean-ups.
->
-> I don't have hardware to do runtime testing, but it builds. ;)
->
-> -Kees
->
-> [1] https://bugzilla.kernel.org/show_bug.cgi?id=211537
->
-> Kees Cook (2):
->   drm/radeon: Fix off-by-one power_state index heap overwrite
->   drm/radeon: Avoid power table parsing memory leaks
+Relative path include works in the regular build due to -I paths but may
+fail in other situations.
 
-Applied.  Thanks!
+Signed-off-by: Ian Rogers <irogers@google.com>
+---
+ tools/perf/arch/arm/util/auxtrace.c         |  8 +++----
+ tools/perf/arch/arm/util/cs-etm.c           | 24 ++++++++++-----------
+ tools/perf/arch/arm/util/perf_regs.c        |  2 +-
+ tools/perf/arch/arm/util/pmu.c              |  2 +-
+ tools/perf/arch/arm/util/unwind-libdw.c     |  6 +++---
+ tools/perf/arch/arm/util/unwind-libunwind.c |  4 ++--
+ 6 files changed, 23 insertions(+), 23 deletions(-)
 
-Alex
+diff --git a/tools/perf/arch/arm/util/auxtrace.c b/tools/perf/arch/arm/util/auxtrace.c
+index b187bddbd01a..7ed57222465e 100644
+--- a/tools/perf/arch/arm/util/auxtrace.c
++++ b/tools/perf/arch/arm/util/auxtrace.c
+@@ -8,10 +8,10 @@
+ #include <linux/coresight-pmu.h>
+ #include <linux/zalloc.h>
+ 
+-#include "../../util/auxtrace.h"
+-#include "../../util/debug.h"
+-#include "../../util/evlist.h"
+-#include "../../util/pmu.h"
++#include "../../../util/auxtrace.h"
++#include "../../../util/debug.h"
++#include "../../../util/evlist.h"
++#include "../../../util/pmu.h"
+ #include "cs-etm.h"
+ #include "arm-spe.h"
+ 
+diff --git a/tools/perf/arch/arm/util/cs-etm.c b/tools/perf/arch/arm/util/cs-etm.c
+index d942f118d32c..67c7fb8d7eb0 100644
+--- a/tools/perf/arch/arm/util/cs-etm.c
++++ b/tools/perf/arch/arm/util/cs-etm.c
+@@ -16,19 +16,19 @@
+ #include <linux/zalloc.h>
+ 
+ #include "cs-etm.h"
+-#include "../../util/debug.h"
+-#include "../../util/record.h"
+-#include "../../util/auxtrace.h"
+-#include "../../util/cpumap.h"
+-#include "../../util/event.h"
+-#include "../../util/evlist.h"
+-#include "../../util/evsel.h"
+-#include "../../util/perf_api_probe.h"
+-#include "../../util/evsel_config.h"
+-#include "../../util/pmu.h"
+-#include "../../util/cs-etm.h"
++#include "../../../util/debug.h"
++#include "../../../util/record.h"
++#include "../../../util/auxtrace.h"
++#include "../../../util/cpumap.h"
++#include "../../../util/event.h"
++#include "../../../util/evlist.h"
++#include "../../../util/evsel.h"
++#include "../../../util/perf_api_probe.h"
++#include "../../../util/evsel_config.h"
++#include "../../../util/pmu.h"
++#include "../../../util/cs-etm.h"
+ #include <internal/lib.h> // page_size
+-#include "../../util/session.h"
++#include "../../../util/session.h"
+ 
+ #include <errno.h>
+ #include <stdlib.h>
+diff --git a/tools/perf/arch/arm/util/perf_regs.c b/tools/perf/arch/arm/util/perf_regs.c
+index 2864e2e3776d..2833e101a7c6 100644
+--- a/tools/perf/arch/arm/util/perf_regs.c
++++ b/tools/perf/arch/arm/util/perf_regs.c
+@@ -1,5 +1,5 @@
+ // SPDX-License-Identifier: GPL-2.0
+-#include "../../util/perf_regs.h"
++#include "../../../util/perf_regs.h"
+ 
+ const struct sample_reg sample_reg_masks[] = {
+ 	SMPL_REG_END
+diff --git a/tools/perf/arch/arm/util/pmu.c b/tools/perf/arch/arm/util/pmu.c
+index bbc297a7e2e3..b8b23b9dc598 100644
+--- a/tools/perf/arch/arm/util/pmu.c
++++ b/tools/perf/arch/arm/util/pmu.c
+@@ -10,7 +10,7 @@
+ #include <linux/string.h>
+ 
+ #include "arm-spe.h"
+-#include "../../util/pmu.h"
++#include "../../../util/pmu.h"
+ 
+ struct perf_event_attr
+ *perf_pmu__get_default_config(struct perf_pmu *pmu __maybe_unused)
+diff --git a/tools/perf/arch/arm/util/unwind-libdw.c b/tools/perf/arch/arm/util/unwind-libdw.c
+index 36ba4c69c3c5..b7692cb0c733 100644
+--- a/tools/perf/arch/arm/util/unwind-libdw.c
++++ b/tools/perf/arch/arm/util/unwind-libdw.c
+@@ -1,8 +1,8 @@
+ // SPDX-License-Identifier: GPL-2.0
+ #include <elfutils/libdwfl.h>
+-#include "../../util/unwind-libdw.h"
+-#include "../../util/perf_regs.h"
+-#include "../../util/event.h"
++#include "../../../util/unwind-libdw.h"
++#include "../../../util/perf_regs.h"
++#include "../../../util/event.h"
+ 
+ bool libdw__arch_set_initial_registers(Dwfl_Thread *thread, void *arg)
+ {
+diff --git a/tools/perf/arch/arm/util/unwind-libunwind.c b/tools/perf/arch/arm/util/unwind-libunwind.c
+index 3a550225dfaf..438906bf0014 100644
+--- a/tools/perf/arch/arm/util/unwind-libunwind.c
++++ b/tools/perf/arch/arm/util/unwind-libunwind.c
+@@ -3,8 +3,8 @@
+ #include <errno.h>
+ #include <libunwind.h>
+ #include "perf_regs.h"
+-#include "../../util/unwind.h"
+-#include "../../util/debug.h"
++#include "../../../util/unwind.h"
++#include "../../../util/debug.h"
+ 
+ int libunwind__arch_reg_id(int regnum)
+ {
+-- 
+2.31.1.607.g51e8a6a459-goog
 
->
->  drivers/gpu/drm/radeon/radeon_atombios.c | 26 ++++++++++++++++--------
->  1 file changed, 18 insertions(+), 8 deletions(-)
->
-> --
-> 2.25.1
->
-> _______________________________________________
-> dri-devel mailing list
-> dri-devel@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/dri-devel
