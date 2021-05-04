@@ -2,85 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5FFD372AB1
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:10:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D146372AB5
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230478AbhEDNLE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:11:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40282 "EHLO
+        id S230477AbhEDNN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:13:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40908 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230410AbhEDNLD (ORCPT
+        with ESMTP id S230373AbhEDNN4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:11:03 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32CC7C061574;
-        Tue,  4 May 2021 06:10:08 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id p4so7376728pfo.3;
-        Tue, 04 May 2021 06:10:08 -0700 (PDT)
+        Tue, 4 May 2021 09:13:56 -0400
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2A70C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 06:13:00 -0700 (PDT)
+Received: by mail-ej1-x62b.google.com with SMTP id r9so13094622ejj.3
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 06:13:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ZK9OQEQteIofKk7KMwkfpXDx0mveLAlNQFksjWalI30=;
-        b=fHSPTNymgM+HWGgy6W3XBaxTUpQt9pp5QF3gGArRLc1z/Rsw/rlm01RPpnbtltZb3S
-         NNheorZQS05COj8OtXz7h6Z4A9hfrFQPYsYV/3IZT60i/9oewL8e1ZgwZDUMnIEvjTBa
-         hA+/YR5yyGYSPKh5g+J6hWdMGghF+3CmUwmI+0sO7EIBBKFCNZmIzA1GM3IKM11BnYSB
-         2MEGivyYt1DmsZrKAvELkAdMitwUhNNK2ariVXkjxs5osfw8xnsvf7YZuH2IX06jzTEt
-         0lDCjLOtfmqAgs/UkkS5XEy8iZAbFu8Kxr0rO1r1NXoD9C0A/uPzajtAH2FQQWi3PKqZ
-         kowQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HzckpB2RAMOBd5T4XWzNGlvU9ohIMVxQWJop+FdQAYs=;
+        b=qfmDDx80AO89QhPMNuePmFAqmebjkbPHO2EpWFp99nDuilRO6a59EQUVmoLPMyzdaU
+         v5G4mquyA++4WMo6CDXfNTraDgbG5rt+utBVzbXr/qixbm5l2HiT4KUouIFPtILb8HeK
+         GLciEiIubQIOwHlE+nC08O2nnJypexEm8D8QE/kPcBgmtQEeW13f17uBtvesTz92Z14D
+         S9Pe301Z9ffvr5MOidmf9nhopoDzl7/Xq7TcdDoq+nxUU6su1zlUSSKgJmp2gVVkg+gI
+         3v0lBi1TkXnaDWyWsEefp8kjIesTyAx3QwOTcpSnJ2HZYqX6AliVAhoOYgM3h8YUHnQf
+         KWaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZK9OQEQteIofKk7KMwkfpXDx0mveLAlNQFksjWalI30=;
-        b=BGkoxE+ApjvhaBoWuQZGF7i6sLX4sf7BtSEkgLYabUin8s7cHw1bAPJQAPK7UocQ8L
-         HUl5aLbzW6JobMI7CPsN7UVOTy+9NkTaIc/z9+bBlIrUTaimDaito+Oi/C/lgWXM7UZn
-         7Rwl+kGymqbNP89RdEJedkdYhAUr8xImnqNmHyv4UZ4P58xVvtufHT9ANBQmCyx5a/PY
-         wDplwnr2FVQZ2ZYZJ5BAg7A2YfSgSunmMEUnPMs1WegJEceGPtc2/RPLlsT1+O5FCvXh
-         kJhPIetinqKL/nlMN44l/1ly7XB7hzuTz+nrxoMSPZd1iOlXWw0iKGrk/uGlwXUhHpLC
-         hMTw==
-X-Gm-Message-State: AOAM533eGtxN3owuP0AO57WhcdAQVbjljqk9/AOCT3e643qrQ9uiTB14
-        Gm6QrB3BaVHIOHfI1G6jg8gOuC2Dax/sMBxmr4CFd2Am1aVBlQ==
-X-Google-Smtp-Source: ABdhPJzEzjsS0Ss0IItsofLKar1xLd8nHsjEFk0WLYaflZBMU7XX8/1GR/ro+iRvGAkSIlnrxEKTUPlt0MfH5yc1K6U=
-X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
- g136-20020a62528e0000b02901f5c5eea487mr23542898pfb.7.1620133807633; Tue, 04
- May 2021 06:10:07 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=HzckpB2RAMOBd5T4XWzNGlvU9ohIMVxQWJop+FdQAYs=;
+        b=nsJH3ttEdAmRqQG4ZogDXkWprKu/cets6j2I5xnofw0dSYld7lxcVkwe4U5ujlXJOV
+         Ok4GyD+XuDiGB9lK4CCyywYyt/fnQwWN1kBUhlrI8Gc973Q/ZUGtCVd5rLuzkC7fvnlP
+         UhaL+IgY/RXO/VoMewZCAXWodgf4DSvbFUoZ+0OCz+KJWnv5KtS2NOoOMUWup+QqQj6J
+         hFKYooajHQHfA+6g0p7NUt713OMzQ/XPxIHSH4Szoq6hvaal5O+PQHwWwUxmyiXVDWda
+         1QLy2BqzSGFFFAQ7UxB6+esytgG0VuOVPVNnRqi0QjzpAvYxDDtXWo93a2k3HXc8Tn8L
+         TsWw==
+X-Gm-Message-State: AOAM533b4D06IYnDzVDAQ7zNienWucstl5IkQkUMGTxTaPnQS4v/RhMb
+        hJvQPsgSCz9wNl0X75g5d3y3eyTZ/XOEAw==
+X-Google-Smtp-Source: ABdhPJyZ0axJrad/YH/LldGphACiWaTCACu6P1qlfjXlOsmgeXWaxGIGwgzX2b5Ew2o+7MzHndymmQ==
+X-Received: by 2002:a17:907:2176:: with SMTP id rl22mr17569409ejb.155.1620133979277;
+        Tue, 04 May 2021 06:12:59 -0700 (PDT)
+Received: from agape ([5.171.72.210])
+        by smtp.gmail.com with ESMTPSA id u6sm1404735ejn.14.2021.05.04.06.12.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 06:12:58 -0700 (PDT)
+From:   Fabio Aiuto <fabioaiuto83@gmail.com>
+To:     gregkh@linuxfoundation.org
+Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] staging: rtl8723bs: use in-kernel aes encryption
+Date:   Tue,  4 May 2021 15:12:54 +0200
+Message-Id: <cover.1620133620.git.fabioaiuto83@gmail.com>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20210504123139.45101-1-wsa+renesas@sang-engineering.com>
- <CAHp75VdqEa+mRDzwUVix7bY=2R=O0WOwXuLjv=mE4MGGOobYBw@mail.gmail.com> <20210504125130.GA43834@ninjato>
-In-Reply-To: <20210504125130.GA43834@ninjato>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 4 May 2021 16:09:51 +0300
-Message-ID: <CAHp75VfHsMg78vTxEw910ez+28OeNEhzwUQehOHkZxAqePkadQ@mail.gmail.com>
-Subject: Re: [PATCH] platform/x86: samsung-laptop: set debugfs blobs to read only
-To:     Wolfram Sang <wsa+renesas@sang-engineering.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Corentin Chary <corentin.chary@gmail.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        Mark Gross <mgross@linux.intel.com>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 3:51 PM Wolfram Sang
-<wsa+renesas@sang-engineering.com> wrote:
-> > > Those blobs can only be read. So, don't confuse users with 'writable'
-> > > flags.
-> >
-> > Wouldn't it make sense at the same time to convert ugly namings to
-> > octal permissions?
->
-> I think this is out-of-scpoe for this patch. While I also use octals
-> personally, I don't feel strongly about it and let others use what they
-> prefer.
+This patchset replaces the private AES routines used to
+encrypt data with in-kernel ones.
 
-Linus has (had?) a strong opinion about it. My point is to reduce the
-churn since two patches fixing the very same parameter in a row seems
-too much to me.
-https://lwn.net/Articles/696227/
+Fabio Aiuto (3):
+  staging: rtl8723bs: align argument position in a new line
+  staging: rtl8723bs: use in-kernel aes encryption in OMAC1 routines
+  staging: rtl8723bs: use in-kernel aes encryption
+
+ drivers/staging/rtl8723bs/core/rtw_security.c | 327 +-----------------
+ .../staging/rtl8723bs/include/rtw_security.h  |   1 +
+ 2 files changed, 15 insertions(+), 313 deletions(-)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.20.1
+
