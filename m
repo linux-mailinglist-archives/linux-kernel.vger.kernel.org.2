@@ -2,168 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC813731E9
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:28:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C0F23731F2
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:32:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232870AbhEDV3U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 17:29:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39356 "EHLO
+        id S232884AbhEDVdv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 17:33:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40330 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232684AbhEDV3S (ORCPT
+        with ESMTP id S232684AbhEDVdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 17:29:18 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA83C061574;
-        Tue,  4 May 2021 14:28:23 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id x188so336964pfd.7;
-        Tue, 04 May 2021 14:28:23 -0700 (PDT)
+        Tue, 4 May 2021 17:33:50 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7322CC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 14:32:55 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id g38so14127000ybi.12
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 14:32:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=rC//UL0/if2O+6rVcbTRHyqn0UdJ7E2Vf9+qwJ26TeM=;
-        b=fZlfWZAbu4AwQZ+NbeVjgm9DgtC+xgb9ILAqOypUGFJMQZENNfA6hVJlQmsvs+jOmp
-         P3SNIZBWZWZvYe+DBJcv7K62+tBq14nGIoZBIN4kJIjhIx4+ho2cUB7XyP1HokNJZcFt
-         PhWqcEOsMBo72RBlIM17dUoZvgZvKD8tH4BDaymN75s7Md0OKA9MW7e8uGdh0+HVMVnm
-         cCBwJItqb8rU9OTuI8yvZODDhCpCZIS+et81uYC6rsFqIkBemc3kQsURT+jZe4k2zbPS
-         Df+AEL69PeaH5UqKAee8GpQ4brRGvt75oLLqktk7Z3AxlWdEdpa5jC+MrbgOYOV0PCeb
-         UB1g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eQ92J3zGhDndMNfx+X1VxssfAKQc44gkgZYOFajMJdE=;
+        b=Cf24OFEDjG1xG7O2CHYyjbgmcJ8PlFIkTXu0cANmNBRnW9ZhHu3zzjZn62nbXL7beF
+         S1PX7EgOz2MvQDovSgRxnRBFYhCTSmAWk8Y2ojzzFdktLkKgK0uJMveGrRoxG7T9hPcb
+         HNVyZHnZIjBN7m3zqiM4xPbjxUcxGlqX4G6ZkDHBoLDjCmhqs5Ow9EW0abCxqvbQEY1V
+         EuC2iZXRjL2TyWZQLVJ6AU0x2yGWhkHNs5qVY+wdbBQ5f4cnA66BVchdNZjl0OigNg6T
+         DHxJDz0fWNq7ntZd4/17kSThIKAMkRiZS0cpXZYIT/ymJJIGKXAbIbJVspoQ6Em3uk0l
+         QtUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=rC//UL0/if2O+6rVcbTRHyqn0UdJ7E2Vf9+qwJ26TeM=;
-        b=k2SaF1qcbT+RjDdDHjhI6/v+OHAIZHnOomB4Sh/VxSzGkZReXGlLS3GcvN7c+NGgoR
-         dvDVaoepHRIGJtJmXDCN3wuKtZ0PRcxgseBiyqefWXR+efepgPyj48XPFhODrSdD2klT
-         Cdd+rPPtxUF8H7g35N3ZkOY05DDXyE7jhqnf2cv5NKfC9p262X57udywt3dy+LP+IqkL
-         4a4Fy90oyhk8YA/7SjGuvfqiXXZAIl/p9pqKi3HrhacOVXLFEqjIVbZQwfp0VJR9Mg2q
-         RYBD62ga15IdlD76od3sPyKlILD+szNkkHEuQ7GpJlnZJgJiY+86l+gdYytK8QifnWCK
-         +WBw==
-X-Gm-Message-State: AOAM531znHSL6UQCMJ5MHRSg3PZI0IaEa5//85zOS7bMs78f6EC5hav7
-        fKYvgRQ9tFWyZwQExYhEKkw=
-X-Google-Smtp-Source: ABdhPJychChkEZvwblfM+Ev1M/+OJ/hC+QsmiOLtnzW6WN20OXxgWF5ZG9aLWujmqKLsAwx4PycEUA==
-X-Received: by 2002:aa7:80c9:0:b029:249:cac5:e368 with SMTP id a9-20020aa780c90000b0290249cac5e368mr25276068pfn.12.1620163703116;
-        Tue, 04 May 2021 14:28:23 -0700 (PDT)
-Received: from [192.168.1.41] (097-090-198-083.res.spectrum.com. [97.90.198.83])
-        by smtp.gmail.com with ESMTPSA id c134sm8571790pfb.135.2021.05.04.14.28.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 14:28:22 -0700 (PDT)
-Subject: Re: KASAN: use-after-free Read in v4l2_fh_open
-To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        mchehab@kernel.org
-References: <00000000000017937c05bb617f1d@google.com>
-From:   SyzScope <syzscope@gmail.com>
-Message-ID: <471c3801-2fe9-59bd-b2ad-9877dae05484@gmail.com>
-Date:   Tue, 4 May 2021 14:28:21 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eQ92J3zGhDndMNfx+X1VxssfAKQc44gkgZYOFajMJdE=;
+        b=madSo1UGTjqJ7Me7DVF5nvMWrySWbHHn21IqG5iQHEu6CrnJSjoQCBptVUCkNPrQE7
+         83k5EK6uTuEfl4Ty3OqQ4hlbGXbZoHhukt27qWgfaK9+CkkLVl0oJqQhrp+l/w4FYQjC
+         JVgwb8k1RT3aAb107pX0oREqebljLlDy5XkKHfTVf44RU+By78as7irFwPIwnOavSH6R
+         mo0emZ34s+VSQj0e4cJTQ0gBmDmtJzuqtiX/EC1phvJA8PW097UtKSCPR24rjkDSS8lP
+         okJ/VpiG3gHEFM9K1bQfrpH4ALabx9BCsRqC+D9DmXaWHUFndjYugkOfFjeUZ4JY/8nq
+         74fQ==
+X-Gm-Message-State: AOAM532InI+TIn8mEKuFdvO2uCJEWKU7nICsqT4XcNe4cXCK9b8MIC8x
+        /O9QBjNc1uu5U8s+eBJ8bwFsP9wPvTF2+i1FYvEckAGxxKqjUz7j
+X-Google-Smtp-Source: ABdhPJz6/UFxS8ArkGHPjqj0qixbiVc+irOv5IaEcFciy2IO9EMns0H1joe8jGqP1H7BIdiSx3xhmm3QuE5k6nMiw3o=
+X-Received: by 2002:a25:9942:: with SMTP id n2mr38988639ybo.230.1620163974661;
+ Tue, 04 May 2021 14:32:54 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <00000000000017937c05bb617f1d@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
+ <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
+ <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
+ <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
+ <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
+ <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
+ <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
+ <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
+ <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com> <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
+ <20210502093123.GC12293@localhost>
+In-Reply-To: <20210502093123.GC12293@localhost>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 4 May 2021 23:32:42 +0200
+Message-ID: <CANiq72=aK-JJhpnZdeeGBtADrnXhyEp1Whw5+5rK6a4u85PhxA@mail.gmail.com>
+Subject: Re: Very slow clang kernel config ..
+To:     Adrian Bunk <bunk@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Tom Stellard <tstellar@redhat.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Serge Guelton <sguelton@redhat.com>,
+        Sylvestre Ledru <sylvestre@mozilla.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Sun, May 2, 2021 at 11:31 AM Adrian Bunk <bunk@kernel.org> wrote:
+>
+> Some of the new language ecosystems like Go or Rust do not offer
+> shared libraries.
 
-This is SyzScope, a research project that aims to reveal high-risk 
-primitives from a seemingly low-risk bug (UAF/OOB read, WARNING, BUG, etc.).
+This is a bit misleading. Rust offers shared libraries, including the
+option to offer a C ABI.
 
-We are currently testing seemingly low-risk bugs on syzbot's open 
-section(https://syzkaller.appspot.com/upstream), and try to reach out to 
-kernel developers as long as SyzScope discovers any high-risk primitives.
+The problem are generics which, like C++ templates, cannot be swapped
+at runtime. Distributions have had to deal with the STL, Boost, etc.
+all these years too.
 
-Please let us know if SyzScope indeed helps, and any suggestions/feedback.
+In fact, Rust improves things a bit: there are no headers that need to
+be parsed from scratch every time.
 
-Regrading the bug "KASAN: use-after-free Read in v4l2_fh_open", SyzScope 
-reports 1 memory write capability.
+> What happens if you use a program provided by your distribution that is
+> written in Rust and handles untrusted input in a way that it might be
+> vulnerable to exploits based on one of these CVEs?
+>
+> The program has a known vulnerability that will likely stay unfixed.
 
-The detailed comments can be found at 
-https://sites.google.com/view/syzscope/kasan-use-after-free-read-in-v4l2_fh_open
+Why? I fail to see what is the issue rebuilding (or relinking) all
+packages except distributions lacking enough compute resources.
 
-On 2/15/2021 7:18 AM, syzbot wrote:
-
-> Hello,
->
-> syzbot found the following issue on:
->
-> HEAD commit:    291009f6 Merge tag 'pm-5.11-rc8' of git://git.kernel.org/p..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=17260814d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6a218c95bd23063a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b2391895514ed9ef4a8e
-> compiler:       Debian clang version 11.0.1-2
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ec5814d00000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17179dd4d00000
->
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b2391895514ed9ef4a8e@syzkaller.appspotmail.com
->
-> ==================================================================
-> BUG: KASAN: use-after-free in v4l2_fh_init drivers/media/v4l2-core/v4l2-fh.c:25 [inline]
-> BUG: KASAN: use-after-free in v4l2_fh_open+0xc7/0x430 drivers/media/v4l2-core/v4l2-fh.c:63
-> Read of size 8 at addr ffff8880228b88b8 by task v4l_id/18349
->
-> CPU: 1 PID: 18349 Comm: v4l_id Not tainted 5.11.0-rc7-syzkaller #0
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-> Call Trace:
->   __dump_stack lib/dump_stack.c:79 [inline]
->   dump_stack+0x137/0x1be lib/dump_stack.c:120
->   print_address_description+0x5f/0x3a0 mm/kasan/report.c:230
->   __kasan_report mm/kasan/report.c:396 [inline]
->   kasan_report+0x15e/0x200 mm/kasan/report.c:413
->   v4l2_fh_init drivers/media/v4l2-core/v4l2-fh.c:25 [inline]
->   v4l2_fh_open+0xc7/0x430 drivers/media/v4l2-core/v4l2-fh.c:63
->   em28xx_v4l2_open+0x15c/0xa60 drivers/media/usb/em28xx/em28xx-video.c:2163
->   v4l2_open+0x229/0x360 drivers/media/v4l2-core/v4l2-dev.c:423
->   chrdev_open+0x4a0/0x570 fs/char_dev.c:414
->   do_dentry_open+0x7cb/0x1010 fs/open.c:817
->   do_open fs/namei.c:3254 [inline]
->   path_openat+0x2791/0x37a0 fs/namei.c:3371
->   do_filp_open+0x191/0x3a0 fs/namei.c:3398
->   do_sys_openat2+0xba/0x380 fs/open.c:1172
->   do_sys_open fs/open.c:1188 [inline]
->   __do_sys_open fs/open.c:1196 [inline]
->   __se_sys_open fs/open.c:1192 [inline]
->   __x64_sys_open+0x1af/0x1e0 fs/open.c:1192
->   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> RIP: 0033:0x7fdd62b00840
-> Code: 73 01 c3 48 8b 0d 68 77 20 00 f7 d8 64 89 01 48 83 c8 ff c3 66 0f 1f 44 00 00 83 3d 89 bb 20 00 00 75 10 b8 02 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 31 c3 48 83 ec 08 e8 1e f6 ff ff 48 89 04 24
-> RSP: 002b:00007ffe8bb255b8 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-> RAX: ffffffffffffffda RBX: 00007ffe8bb25728 RCX: 00007fdd62b00840
-> RDX: 00007fdd62aecea0 RSI: 0000000000000000 RDI: 00007ffe8bb26f1c
-> RBP: 0000000000000003 R08: 0000000000000000 R09: 0000000000000000
-> R10: 0000000000000002 R11: 0000000000000246 R12: 000055f8a7dee8d0
-> R13: 00007ffe8bb25720 R14: 0000000000000000 R15: 0000000000000000
->
-> The buggy address belongs to the page:
-> page:00000000b7dd9778 refcount:0 mapcount:-128 mapping:0000000000000000 index:0x0 pfn:0x228b8
-> flags: 0xfff00000000000()
-> raw: 00fff00000000000 ffffea0000580108 ffff88813fffb910 0000000000000000
-> raw: 0000000000000000 0000000000000002 00000000ffffff7f 0000000000000000
-> page dumped because: kasan: bad access detected
->
-> Memory state around the buggy address:
->   ffff8880228b8780: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->   ffff8880228b8800: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->> ffff8880228b8880: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->                                          ^
->   ffff8880228b8900: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->   ffff8880228b8980: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-> ==================================================================
->
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
->
-> syzbot will keep track of this issue. See:
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> syzbot can test patches for this issue, for details see:
-> https://goo.gl/tpsmEJ#testing-patches
->
+Cheers,
+Miguel
