@@ -2,79 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85BC3372F18
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62AA7372F1C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:45:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231944AbhEDRpi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:45:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40056 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230331AbhEDRph (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:45:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9249C61166;
-        Tue,  4 May 2021 17:44:39 +0000 (UTC)
-Date:   Tue, 4 May 2021 18:44:37 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v11 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
-Message-ID: <YJGIBTor+blelKKT@arm.com>
-References: <20210416154309.22129-1-steven.price@arm.com>
- <20210416154309.22129-6-steven.price@arm.com>
- <20210427175844.GB17872@arm.com>
- <340d35c2-46ed-35ea-43fa-e5cb64c27230@arm.com>
+        id S231977AbhEDRqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:46:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45876 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231485AbhEDRqG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 13:46:06 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3751EC061574;
+        Tue,  4 May 2021 10:45:10 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id m190so729539pga.2;
+        Tue, 04 May 2021 10:45:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=yo7iw/aOz/NRIIOLGrRcbviwePUzqQyKeSCxTrIBDSA=;
+        b=s9kZKJQ0EX2XEBDiKCiHe/tx/6DdPMkLPgBpQ0v7zdYKSt5EkUTPbLtO4EdewOzSUi
+         JPFYPmUM3tTbAPfUQwl8A69LUH+cA45K7111OG8NLvSeb25J3AXficDMu5HzhjszfQrN
+         Z175wzysVHTZoyIaicrAFlRi64Y4V+NME/GxdPsG4BuZblBU9oJrCI23BnvNpRax204m
+         s9dY36ARQCAcK4i7Y/CzygVTQVe7UsvNg81m7IgcpM5APGZXdF9Bt8rgNMucFOFPuw6E
+         HGMxy8s0bYpA6YbGNt957JKn0ow8pjgHTZGO/LIk/Z7OLe2B/mSVtO7tiKcEeX/qSWq5
+         q0Jg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=yo7iw/aOz/NRIIOLGrRcbviwePUzqQyKeSCxTrIBDSA=;
+        b=pN3cLR/TX3e30ro5XZvc0GWgj7oEqKS2u6VGtZCuk/boOa0GWKvg7qtkcZt1vb4hSQ
+         xG1ytC1RIUfrTE1JWicvxPSh1piqO1D3CvnIjq4tB7GzrWzSB6xJLEoe8OaY3oIx4sYP
+         Gla0yTdR2qeNkqtZko5uuhkPwRPjMjTSCHkWCD6S1pU1tkyc8R5ItSkQzaX9C/bRhx5Z
+         tB4SDFFca1zMe3P/sMD8YIwXkthmRwpNuiaHq0AJn779Wmcf9rPZUrdzsT04xBS7wfe+
+         DNTFoTVOeg02oOQWoWFDBL+TO7koCQfIVKEqdYuoHwH3nOZV3IeeXYZ97iMd49mTpQYP
+         AV2Q==
+X-Gm-Message-State: AOAM532NAD/FzE+sbXRZFLiCZKkob3rgzF2fZkG1wkLTJgJsFHDMYQwO
+        mwruRUKjTwa8PH67YJtheMr4W1Lo14qJAEfZlhSGOv/Gi6s=
+X-Google-Smtp-Source: ABdhPJxRFqwJvhMUxW497JMgtWx24glCVWVYae5KEibChdvkqAAuRGZENQaEDjyOx2ICja5ai3Wyrn8/bs2EcnxrN3A=
+X-Received: by 2002:a17:90a:bd13:: with SMTP id y19mr6769684pjr.181.1620150309791;
+ Tue, 04 May 2021 10:45:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <340d35c2-46ed-35ea-43fa-e5cb64c27230@arm.com>
+References: <20210504174019.2134652-1-linux@roeck-us.net>
+In-Reply-To: <20210504174019.2134652-1-linux@roeck-us.net>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 4 May 2021 20:44:53 +0300
+Message-ID: <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
+Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on CONFIG_ACPI
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 05:06:07PM +0100, Steven Price wrote:
-> On 27/04/2021 18:58, Catalin Marinas wrote:
-> > On Fri, Apr 16, 2021 at 04:43:08PM +0100, Steven Price wrote:
-> > > diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
-> > > index 24223adae150..2b85a047c37d 100644
-> > > --- a/arch/arm64/include/uapi/asm/kvm.h
-> > > +++ b/arch/arm64/include/uapi/asm/kvm.h
-> > > @@ -184,6 +184,20 @@ struct kvm_vcpu_events {
-> > >   	__u32 reserved[12];
-> > >   };
-> > > +struct kvm_arm_copy_mte_tags {
-> > > +	__u64 guest_ipa;
-> > > +	__u64 length;
-> > > +	union {
-> > > +		void __user *addr;
-> > > +		__u64 padding;
-> > > +	};
-> > > +	__u64 flags;
-> > > +	__u64 reserved[2];
-> > > +};
-[...]
-> > Maybe add the two reserved
-> > values to the union in case we want to store something else in the
-> > future.
-> 
-> I'm not sure what you mean here. What would the reserved fields be unioned
-> with? And surely they are no longer reserved in that case?
+On Tue, May 4, 2021 at 8:40 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>
+> With CONFIG_ACPI=n and -Werror, 0-day reports:
+>
+> drivers/iio/chemical/bme680_i2c.c:46:36: error:
+>         'bme680_acpi_match' defined but not used
 
-In case you want to keep the structure size the same for future
-expansion and the expansion only happens via the union, you'd add some
-padding in there just in case. We do this for struct siginfo with an
-_si_pad[] array in the union.
+> Given the other patch, question of course is if this ACPI ID
+> is real. A Google search suggests that this might not be the case.
+> Should we remove it as well ? STK8312 has the same problem.
+
+For this one definitely removal. Looking into the code it suggests a
+cargo cult taken that time by a few contributors to invent fake ACPI
+IDs while submitting new drivers.
+Feel free to add my tag or if you wish me I'll add it explicitly.
 
 -- 
-Catalin
+With Best Regards,
+Andy Shevchenko
