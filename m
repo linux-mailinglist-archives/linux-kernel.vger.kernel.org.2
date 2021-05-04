@@ -2,112 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A22D3372E76
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52588372E81
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231959AbhEDRGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:06:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231964AbhEDRG2 (ORCPT
+        id S231993AbhEDRKx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:10:53 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21322 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231589AbhEDRKt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:06:28 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1776C061763
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:05:33 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id q2so8292147pfh.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 10:05:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+bVzPOaiGSpT9fPHodrAVpiteIe5e+Ae3qWhGcxKKAU=;
-        b=kcQjh8UyCfHGDomwiT3CD9fJ4Uv6ynvJ7yVxBkSenSh8/4pBwX/ns1e1cqz5XvCt/J
-         /X4r5KTma3914e56sEW0xfNH34HnbCTLcPEzZ9r7is5j1IwB1+pAPOPz5gZE99F7gCvA
-         cmmJJlz3vPjEvTlna0gqbOGhjr6wyeKFP62zoJqbJ8weQppTiyYcolnZchUtGL8d2C3k
-         0eSZ8sCHZHpI6ZSH5PnWrhBEPlvPaaQvYHF2rl8AORhX2pHVCzlOY9wpSdRX115Q262l
-         vDWP34a0V73sWmZYN06/h8xDekYUalDNee9IxYJvQLy9a3OtYWkM12efk+irjATRNXQZ
-         fGew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+bVzPOaiGSpT9fPHodrAVpiteIe5e+Ae3qWhGcxKKAU=;
-        b=JiBRUHWNa+FQ0IcPoVPIuXizF7wezgOquOpa4i7e5+FQ99dv31a9zDLRkLyhpcQvYN
-         ixZRTuvIGya6WMGnIL5iXEJOaq3DsMU6oEKJjvx8hqU4bITrWM5KHJwd40G/bWqrtnQe
-         wuBspn12eyGMxNkUcWYbdvuudZT6hfVNbXGq8PB9i6x4OVNxIeSNFSXgqdZ0wzB4U52U
-         p4GWfAaNyZD5NI6rb/5naPEzqu17lkc9GbkAY3KrX0CIiO4n/rwnzUELc8LdWvqrIPo9
-         19fGZtiJkPEOrf7sAH4jKoGDQXFzWYTLtUQK6H+A7eIAb6gtb2BAv33t0QBWqPi0Cn+s
-         BUuA==
-X-Gm-Message-State: AOAM5320LnRVi2AsWvySfNnmUoBU23LJ1/jBIi2KlazL6jyBIJDReESP
-        HE2JbS9m8LvXepY32A72XXB9WfFa69sfrQ==
-X-Google-Smtp-Source: ABdhPJwrzlIkkQtOwdmep59o++iyB2NlituPGYpI1BN/yYBGd2NSCYsW91QD+1JkXKZU8+AcR+A8qQ==
-X-Received: by 2002:a63:5c41:: with SMTP id n1mr2160215pgm.333.1620147933177;
-        Tue, 04 May 2021 10:05:33 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id x9sm13848080pfq.197.2021.05.04.10.05.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 10:05:32 -0700 (PDT)
-Date:   Tue, 4 May 2021 11:05:30 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH] rpmsg: char: Remove useless includes
-Message-ID: <20210504170530.GD1734971@xps15>
-References: <20210429080639.6379-1-arnaud.pouliquen@foss.st.com>
- <20210503174238.GD1699665@xps15>
- <b2f6b9ca-9dc2-920b-941d-175779bc1034@foss.st.com>
+        Tue, 4 May 2021 13:10:49 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1620148182; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=JGbDoXdCLlqGA1OO5uC8QlBGaIQQT/WUwHts9dFRO/tUTk364G4JggA9DvqR5zpBdOS39btX08RRLuJFXANwy+ZNESQJjDCEKZuU4HWC+npwksC5RCgmkXO4Z1XZJzbcH4g0yoXAljGGFhQgQa/V9GVOojUBJvm6d/tgukHV8C8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1620148182; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=bP5q0oCy6JjgM/bUrdYdiiOBH0QufNCdsTsJImsXwQs=; 
+        b=lC9k/Kf2JokY3mMPUumOYxyWinTtfhLf8ZD2sMHgeMeJXhNDOaNfdEQm3XJVU3Or3Zx/xnWjsoxAp8eGUwjRiy2nzsdxvQep5628JFTRJzsQrYZ7jJCHpcsJR4Lri+TOqiw+oNYGK7x+Vy+trfMh29fHuRpxX5t/Iy4TKbSrUz0=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1620148182;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=bP5q0oCy6JjgM/bUrdYdiiOBH0QufNCdsTsJImsXwQs=;
+        b=bHkpEaY3QRRksQpbitMoxmi0wyZsZkvywxg8OLsKVNP/9tueaWk59cdk1OUbwanG
+        MjQuAbZU5/zf4Qxnl1WDTN0ncMjAR7FcxguF23kbJMTDRu+Rq/wLfKR48mrPItd+o+s
+        8zu2kNKlMZLHbClbt5jF+5TL2+xpVrSB5BuPNR5o=
+Received: from localhost.localdomain (49.207.214.96 [49.207.214.96]) by mx.zohomail.com
+        with SMTPS id 1620148175776768.7889874703077; Tue, 4 May 2021 10:09:35 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Mike Isely <isely@pobox.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc:     gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 resend] media: pvrusb2: fix warning in pvr2_i2c_core_done
+Date:   Tue,  4 May 2021 22:38:58 +0530
+Message-Id: <20210504170858.23826-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <b2f6b9ca-9dc2-920b-941d-175779bc1034@foss.st.com>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaud,
+syzbot has reported the following warning in pvr2_i2c_done:
 
-[...]
+	sysfs group 'power' not found for kobject '1-0043'
 
-> 
-> I started by this one and then I got carried away tested the other include...
-> You are right, I just don't follow her the first rule of the "submit checklist"
-> 
-> "If you use a facility then #include the file that defines/declares that
-> facility. Don’t depend on other header files pulling in ones that you use."
-> 
-> That said I just have a doubt for uapi/linux/rpmsg.h that will be include
-> by rpmsg.h[2], as these includes are part of the rpmsg framework API, should we
-> keep both, considering the rule as strict?
+When the device is disconnected (pvr_hdw_disconnect), the i2c adapter is
+not unregistered along with the USB and v4l2 teardown. As part of the USB
+device disconnect, the sysfs files of the subdevices are also deleted.
+So, by the time pvr_i2c_core_done is called by pvr_context_destroy, the
+sysfs files have been deleted.
 
-I red the last paragraph several times I can't understand what you are
-trying to convey.  Please rephrase, provide more context or detail exactly where
-you think we have a problem.
+To fix this, unregister the i2c adapter too in pvr_hdw_disconnect. Make
+the device deregistration code shared by calling pvr_hdw_disconnect from
+pvr2_hdw_destroy.
 
-Thanks,
-Mathieu
+Reported-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
+Tested-by: syzbot+e74a998ca8f1df9cc332@syzkaller.appspotmail.com
+Reviewed-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+---
 
+syzbot test run result:
+https://groups.google.com/g/syzkaller-bugs/c/ZRtPuAv8k7g/m/_MIsLKJtAAAJ
 
-> 
-> [1] https://www.kernel.org/doc/html/latest/process/submit-checklist.html
-> [2]
-> https://patchwork.kernel.org/project/linux-remoteproc/patch/20210311140413.31725-3-arnaud.pouliquen@foss.st.com/
-> 
-> Thanks,
-> Arnaud
-> 
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> >>  
-> >>  #define RPMSG_DEV_MAX	(MINORMASK + 1)
-> >>  
-> >> -- 
-> >> 2.17.1
-> >>
+Changes in v2:
+- Corrected typos in the patch description
+- Added the received "Reviewed-by:" tags 
+- Retain the call to v4l2_device_unregister() in pvr2_hdw_destroy()
+  since pvr2_hdw_disconnect doesn't call it as pointed out by Hans.
+
+---
+ drivers/media/usb/pvrusb2/pvrusb2-hdw.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+index f4a727918e35..d38dee1792e4 100644
+--- a/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
++++ b/drivers/media/usb/pvrusb2/pvrusb2-hdw.c
+@@ -2676,9 +2676,8 @@ void pvr2_hdw_destroy(struct pvr2_hdw *hdw)
+ 		pvr2_stream_destroy(hdw->vid_stream);
+ 		hdw->vid_stream = NULL;
+ 	}
+-	pvr2_i2c_core_done(hdw);
+ 	v4l2_device_unregister(&hdw->v4l2_dev);
+-	pvr2_hdw_remove_usb_stuff(hdw);
++	pvr2_hdw_disconnect(hdw);
+ 	mutex_lock(&pvr2_unit_mtx);
+ 	do {
+ 		if ((hdw->unit_number >= 0) &&
+@@ -2705,6 +2704,7 @@ void pvr2_hdw_disconnect(struct pvr2_hdw *hdw)
+ {
+ 	pvr2_trace(PVR2_TRACE_INIT,"pvr2_hdw_disconnect(hdw=%p)",hdw);
+ 	LOCK_TAKE(hdw->big_lock);
++	pvr2_i2c_core_done(hdw);
+ 	LOCK_TAKE(hdw->ctl_lock);
+ 	pvr2_hdw_remove_usb_stuff(hdw);
+ 	LOCK_GIVE(hdw->ctl_lock);
+-- 
+2.26.2
+
