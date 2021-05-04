@@ -2,170 +2,382 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E712372E89
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A33B372E92
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 19:16:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231770AbhEDRNs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 13:13:48 -0400
-Received: from mail-mw2nam08on2053.outbound.protection.outlook.com ([40.107.101.53]:49729
-        "EHLO NAM04-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231445AbhEDRNq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 13:13:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EAJvT0XhxdIFrouPw4ncDYIO6OhWBJ+AVOcXxhgX78GfLXTrrLlj+dX/ZNTOALByqLefzUfjpwBWNYJwVK+1uLpx50wLpuWeRBq6M2OhXHNhZDukJVDnuQwq5+si/7SaCoLfNUTabFqkZAcyR07lITM9GIyvCQvccvS3B1LT4x35gkxz3hjahbOlkkZ1dRkX6InICDHo5mmzsqAma4pksq7X9hRer73d2Id7WBZdI6QvNJhMpHOkmrz+9MivgH8tvLW/pMBIm/zR5FR3M1rtt4XfyuD5Bz2YQ6UZmwkK8zntEA8gfTNLfgAQmCIAKnSoY3uf+WY2e06D9BWRadXOXw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mSN88xX3Q2gZJBWMT5TmWuPPEFp8pVrPLrRXRc5cYjY=;
- b=R4rtGbXued6IwNcrxVC62mVSi+1cMaAKwVIyzuE3PqsnhXn27uTy5VJQzY6xnG7qkbucHN566jlMMC75qJ8OESvI33ySnxztTt93F6quWo8wkufVITSUdPoeRbhFEuW6xvRm2met86LFi0mFHJ7DTVnYG7K9xNXhjYJ+2To9PsEGxHEtVpYnl1tdnxFXhq2vMAMLHgx5+5LfhFYzXWJXERlR6MlFbNGdW7v3TKpGXdrRjFzfPEAMH0+msc6AviYMIo10jD3Ylhva8c67Z1265nQ/DQMa0TQxuuUpP1SvDvOj4bAXoW3cG9Y+Zjm7D6zJw3vyUYkJyhstQlkdaPgvyg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mSN88xX3Q2gZJBWMT5TmWuPPEFp8pVrPLrRXRc5cYjY=;
- b=UQH54ZmBFbgVuE3S29LjyLeixlh1mOvD7ZoTE9uO0av480uA+fYkQ3X8Mb6a1WnjtmQd5XPjDrDJ10efDXbSRPonlJI62k+TxvSwUL4Vqka3hRki9uJ5T6rPnWCfTeCtpZJaHMdG9J7ZsjPYtqRDo2I5YVz9mnQ2gMhtzNLTzfQ5ASSQK3qeaV614a4tF8VMXxddp3MI0KzJcAnGIEPE0X4Qi9r+J2cJj9NIgq2hmWE6SBznbNKO6CoR5OdoUq9mMzcm1ZBb8noOWRa4d0vhboDTOH1YPlZMDPAMwPsEqxklLGIx/kbcz3E5YIdoaXJZbySUcHqceMC+uU9f27qUlA==
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=nvidia.com;
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com (2603:10b6:a03:1ab::16)
- by BY5PR12MB4033.namprd12.prod.outlook.com (2603:10b6:a03:213::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.41; Tue, 4 May
- 2021 17:12:48 +0000
-Received: from BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::81ef:d824:43ae:aef5]) by BY5PR12MB3827.namprd12.prod.outlook.com
- ([fe80::81ef:d824:43ae:aef5%4]) with mapi id 15.20.4087.044; Tue, 4 May 2021
- 17:12:48 +0000
-Date:   Tue, 4 May 2021 14:12:46 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     David Gibson <david@gibson.dropbear.id.au>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210504171246.GZ1370958@nvidia.com>
-References: <20210421230301.GP1370958@nvidia.com>
- <20210422111337.6ac3624d@redhat.com>
- <20210422175715.GA1370958@nvidia.com>
- <20210422133747.23322269@redhat.com>
- <20210422200024.GC1370958@nvidia.com>
- <20210422163808.2d173225@redhat.com>
- <20210422233950.GD1370958@nvidia.com>
- <YIecXkaEGNgICePO@yekko.fritz.box>
- <20210427171212.GD1370958@nvidia.com>
- <MWHPR11MB1886F0818D30329172C420758C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <MWHPR11MB1886F0818D30329172C420758C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: MN2PR10CA0017.namprd10.prod.outlook.com
- (2603:10b6:208:120::30) To BY5PR12MB3827.namprd12.prod.outlook.com
- (2603:10b6:a03:1ab::16)
+        id S232013AbhEDRQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 13:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39118 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231834AbhEDRQw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 13:16:52 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D23EC06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 10:15:57 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1ldyeH-0001PQ-I3; Tue, 04 May 2021 19:15:53 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1ldyeG-0001B0-J2; Tue, 04 May 2021 19:15:52 +0200
+Date:   Tue, 4 May 2021 19:15:52 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        michal.simek@xilinx.com, Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+Subject: Re: [PATCH 2/2] pwm: Add support for Xilinx AXI Timer
+Message-ID: <20210504171552.uccctqzbcffiqhu7@pengutronix.de>
+References: <20210503214413.3145015-1-sean.anderson@seco.com>
+ <20210503214413.3145015-2-sean.anderson@seco.com>
+ <20210504085112.edyy6loprfzejrjl@pengutronix.de>
+ <2ef7de6f-4d17-e81a-11bc-27eb382577a7@seco.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by MN2PR10CA0017.namprd10.prod.outlook.com (2603:10b6:208:120::30) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27 via Frontend Transport; Tue, 4 May 2021 17:12:48 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1ldybG-000URZ-LO; Tue, 04 May 2021 14:12:46 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cd8c98e3-5e4f-4de0-17d8-08d90f1fd76c
-X-MS-TrafficTypeDiagnostic: BY5PR12MB4033:
-X-Microsoft-Antispam-PRVS: <BY5PR12MB4033E6C37C28FA0FAEFB0627C25A9@BY5PR12MB4033.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: dkn5RTC4t1kMuXM+36rt6QLW4jHPIjLVN+meovfjWfEY1O1dAtccx54tEa8xDVvfYqH16tSLsD+3VZbUVrow1j/oO5p1M4/JYo7YI31/d30AINiCFMZCa26RyU7dCJUaQVd84X6U1UH45Pb2PkqxZKEo0I6JnnkYeON/YpYzscOA9KpSBTHSJhwGF0fn0sCRLGusgp7E93UAq+pABDRSEymdzA/vKOSwfWafr2BPBAGJRCDPB3HHesgKxFWg6SM53DNmHmTxN79Ty4ZKrAeBkG5n64ZLcFPCp32ut5WTldZ3icwiHcwCKXs6UM2GEdKXOLIzaooT1gBYlL8VkPJICZ+nNC7vH6LiW2Q+w/8HJ2m6+x/3Iv38kQWsSrigSmVLRbyXuun25edqK1cqSrF24J/0qys1fzpBAca5gOq4HHA2j7cBH4LgT2/aGSy589z+aOKDG6DgRcSTtZRhM/etO6tEE3CDxotXbvEDxcXV1w7w284QXtZIGl27TLtnJhaeEkUjnQCVdPE7dirs8w+yPosrhD5CDPLgomx12VJXhhu2wWAT+g5trs08h7HwjOCo9VcMw6KlC4Kjxm/rcjSgkS77+r6O+r8r0LiP/tTdNdB7Wp/OS4RDDCzxVKe3Yd4q+UQEXIRP3ephfM3pdjk16w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB3827.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(39860400002)(376002)(366004)(346002)(2906002)(6916009)(4326008)(66556008)(186003)(7416002)(8936002)(1076003)(2616005)(86362001)(36756003)(26005)(426003)(54906003)(8676002)(66476007)(33656002)(478600001)(9746002)(9786002)(316002)(38100700002)(5660300002)(66946007)(21314003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?YHQwH98q+c9gLafb8f6tHdF2NNbJV0V9MxfL1LykRBq3Pt/W6TOfKK9iTz5B?=
- =?us-ascii?Q?REGlt3woz9vQBJqmh60sQ7XGcV86/LDUDw8q6RM3jJypCj6jjfxubGRqjkrF?=
- =?us-ascii?Q?hIKo6hYzQlgQgmiOzY7mcrAeo4g3gBmZlfKpoPYc2+Dwk+vUQ2dOrLsOpYU8?=
- =?us-ascii?Q?iNC9hJnJmHuZgGAT93IrfD+DM5UwfHqPf46CzduJUtuxoIe6GMiw6tRZQeY8?=
- =?us-ascii?Q?8C7f3LMyBVVsIiEYrvzOkhjgR+Hsnga7jD8XiIjDEiK0Ywhj38s/Npa0CZTq?=
- =?us-ascii?Q?UlDIu62SsZfXa9CCZcn+XYczTT6q/mgystttT1tIkPrMUtCJFY10ukgHQpu/?=
- =?us-ascii?Q?E/3U098iVmKHs++m/8FC51iNPWJj8+sPUWoNJzMqBbgjnktSO7nZjPyat9q4?=
- =?us-ascii?Q?0nN0h6H4WnjPbafxxIkEANDrg2Ge1vTqvQf7agYuX9pIsJm2NwVBRHHz3j9e?=
- =?us-ascii?Q?pWNVL7OivyFzFcaPWtxU1JeCs0NyrpoXQO4erHpEkVDSEVRjYk1oxdo4vTrv?=
- =?us-ascii?Q?QB4iDQyD5LX1FNimTk4ABOyw5zTTFuxEMZdccmMNlaZ7x1CQ9Jr4aAxq9hAi?=
- =?us-ascii?Q?TyHgFkNRt4dpf0OBHr60tFeQRsnZjNtUd4tmO0zdE2c1vS/C8EzgbMFgC0S2?=
- =?us-ascii?Q?rV26huv93zgM9hX5vmxLPP7trxBqWmFzWufLSrbVCiSeDviWj+M7ox4/9+EU?=
- =?us-ascii?Q?jBTUHJCiFA3TAczYEMCgp992SqTSRS/Mb30oAPJEDTUQDiL7L3IEgLiqmMj9?=
- =?us-ascii?Q?fSHdTE1sIiiQHOjemnxHPKgy+iNDKb/WxQf332MoFJ0T+queMlgOZlURK/dQ?=
- =?us-ascii?Q?OURMvDYIay3HKwQTFyfcXVQCAwA4a+Yp9XeZRMAI5+2nsv+MdBLYaVNnO98c?=
- =?us-ascii?Q?JuktXU8XngryGtKswSv6WPEbd82RJVVqHs8s5fF4d/SEHqfl2MW49J0LpWZY?=
- =?us-ascii?Q?Hgak22KbMuyyTNGi8Zd0nTLiik0uQwTjg7ajTVzR0Uencq2j+5ytg1eANLWJ?=
- =?us-ascii?Q?NesVsuEot5g9uZtA0pI+OHTPzT1E/Pt0JjCTc83tdAJw6aWiBuUAMYHAYJ99?=
- =?us-ascii?Q?x5KQ02SyDPWbCsXSTShWNiYHh24GGrcJX8wWNlBbKD8ENQ8G+HQjyd1t655o?=
- =?us-ascii?Q?RxXHDTW11biKTuUKBWIAingOYbQb2YWIyfLgNZYsACBLolRH33sLmnYRvtzQ?=
- =?us-ascii?Q?VAx9i4kJonPj0PiNrmgr+W2WbX+PiX5lUeCyJ2oszbNNRT2Go5oDXSMdsHpW?=
- =?us-ascii?Q?NHgnQ8AjtWoC+EaD8Z3mfvG2Lzt0z/Pgcsz7YRMY2tUKaHVFjyNf7zAgBZkI?=
- =?us-ascii?Q?5/jXjT5XsBL0KhZDiL4GGhYR?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cd8c98e3-5e4f-4de0-17d8-08d90f1fd76c
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB3827.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 May 2021 17:12:48.4882
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aaNVvhyjwnneGeQyz/PVMbbT0mZP/yKdac88I9etK9sgwvaW/iCFfR8PlQ4fZH1U
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4033
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="2z6f7s3waobdksi5"
+Content-Disposition: inline
+In-Reply-To: <2ef7de6f-4d17-e81a-11bc-27eb382577a7@seco.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 06:58:19AM +0000, Tian, Kevin wrote:
-> > From: Jason Gunthorpe <jgg@nvidia.com>
-> > Sent: Wednesday, April 28, 2021 1:12 AM
-> > 
-> [...] 
-> > > As Alex says, if this line fails because of the group restrictions,
-> > > that's not great because it's not very obvious what's gone wrong.
-> > 
-> > Okay, that is fair, but let's solve that problem directly. For
-> > instance netlink has been going in the direction of adding a "extack"
-> > from the kernel which is a descriptive error string. If the failing
-> > ioctl returned the string:
-> > 
-> >   "cannot join this device to the IOASID because device XXX in the
-> >    same group #10 is in use"
-> > 
-> > Would you agree it is now obvious what has gone wrong? In fact would
-> > you agree this is a lot better user experience than what applications
-> > do today even though they have the group FD?
-> > 
-> 
-> Currently all the discussions are around implicit vs. explicit uAPI semantics
-> on the group restriction. However if we look beyond group the implicit 
-> semantics might be inevitable when dealing with incompatible iommu
-> domains. An existing example of iommu incompatibility is IOMMU_
-> CACHE. 
 
-I still think we need to get rid of these incompatibilities
-somehow. Having multiple HW incompatible IOASID in the same platform
-is just bad all around.
+--2z6f7s3waobdksi5
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When modeling in userspace IOMMU_CACHE sounds like it is a property of
-each individual IOASID, not an attribute that requires a new domain.
+Hello Sean,
 
-People that want to create cache bypass IOASID's should just ask for
-that that directly.
+On Tue, May 04, 2021 at 10:46:39AM -0400, Sean Anderson wrote:
+> On 5/4/21 4:51 AM, Uwe Kleine-K=F6nig wrote:
+> > On Mon, May 03, 2021 at 05:44:13PM -0400, Sean Anderson wrote:
+> >> This adds PWM support for Xilinx LogiCORE IP AXI soft timers commonly
+> >> found on Xilinx FPGAs. There is another driver for this device located
+> >> at arch/microblaze/kernel/timer.c, but it is only used for timekeeping.
+> >> This driver was written with reference to Xilinx DS764 for v1.03.a [1].
+> >>
+> >> [1] https://www.xilinx.com/support/documentation/ip_documentation/axi_=
+timer/v1_03_a/axi_timer_ds764.pdf
+> >>
+> >> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> >> ---
+> >>
+> >>   arch/arm64/configs/defconfig |   1 +
+> >>   drivers/pwm/Kconfig          |  11 ++
+> >>   drivers/pwm/Makefile         |   1 +
+> >>   drivers/pwm/pwm-xilinx.c     | 322 +++++++++++++++++++++++++++++++++=
+++
+> >>   4 files changed, 335 insertions(+)
+> >>   create mode 100644 drivers/pwm/pwm-xilinx.c
+> >>
+> >> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconf=
+ig
+> >> index 08c6f769df9a..81794209f287 100644
+> >> --- a/arch/arm64/configs/defconfig
+> >> +++ b/arch/arm64/configs/defconfig
+> >> @@ -1083,6 +1083,7 @@ CONFIG_PWM_SAMSUNG=3Dy
+> >>   CONFIG_PWM_SL28CPLD=3Dm
+> >>   CONFIG_PWM_SUN4I=3Dm
+> >>   CONFIG_PWM_TEGRA=3Dm
+> >> +CONFIG_PWM_XILINX=3Dm
+> >>   CONFIG_SL28CPLD_INTC=3Dy
+> >>   CONFIG_QCOM_PDC=3Dy
+> >>   CONFIG_RESET_IMX7=3Dy
+> >
+> > I think this should go into a separate patch once this driver is
+> > accepted. This can then go via the ARM people.
+>=20
+> Sure.
+>=20
+> >
+> >> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+> >> index d3371ac7b871..01e62928f4bf 100644
+> >> --- a/drivers/pwm/Kconfig
+> >> +++ b/drivers/pwm/Kconfig
+> >> @@ -628,4 +628,15 @@ config PWM_VT8500
+> >>   	  To compile this driver as a module, choose M here: the module
+> >>   	  will be called pwm-vt8500.
+> >>
+> >> +config PWM_XILINX
+> >> +	tristate "Xilinx AXI Timer PWM support"
+> >> +	depends on !MICROBLAZE
+> >
+> > I don't understand this dependency.
+>=20
+> As noted in the commit message, there is already a driver for this
+> device for microblaze systems. To prevent conflicts, this driver is
+> disabled on microblaze.
 
-Jason
+OK, already understood that after reading the other replies to this
+thread. As noted there, please add a comment describing the problem. You
+probably also need some more dependencies, at least COMMON_CLK for
+clk_rate_exclusive_get() and probably also HAS_IOMEM for readl/writel.
+
+> >> +#include <asm/io.h>
+> >> +#include <linux/clk.h>
+> >> +#include <linux/device.h>
+> >> +#include <linux/debugfs.h>
+> >> +#include <linux/module.h>
+> >> +#include <linux/platform_device.h>
+> >> +#include <linux/pwm.h>
+> >> +
+> >> +#define TCSR0	0x00
+> >> +#define TLR0	0x04
+> >> +#define TCR0	0x08
+> >> +#define TCSR1	0x10
+> >> +#define TLR1	0x14
+> >> +#define TCR1	0x18
+> >> +
+> >> +#define TCSR_MDT	BIT(0)
+> >> +#define TCSR_UDT	BIT(1)
+> >> +#define TCSR_GENT	BIT(2)
+> >> +#define TCSR_CAPT	BIT(3)
+> >> +#define TCSR_ARHT	BIT(4)
+> >> +#define TCSR_LOAD	BIT(5)
+> >> +#define TCSR_ENIT	BIT(6)
+> >> +#define TCSR_ENT	BIT(7)
+> >> +#define TCSR_TINT	BIT(8)
+> >> +#define TCSR_PWMA	BIT(9)
+> >> +#define TCSR_ENALL	BIT(10)
+> >> +#define TCSR_CASC	BIT(11)
+> >
+> > I'd like to see a prefix for these defines, something like XILINX_PWM_
+> > maybe?
+>=20
+> I don't think that's necessary, since these defines are used only for
+> this file. In particular, adding a prefix like that would significantly
+> lengthen lines which add several flags.
+
+This is something where Thierry and I don't agree, so you can at least
+expect support for your point. Still I see a value that is usually worth
+the additional horizontal space.
+
+The prefix would make it obvious that this is a local symbol. It also
+helps to jump to the right definition if you use ctags or something
+similar.
+
+The most affected code lines are probably:
+
++	return !(~tcsr0 & TCSR_SET || tcsr0 & (TCSR_CLEAR | TCSR_CASC) ||
++		 ~tcsr1 & TCSR_SET || tcsr1 & TCSR_CLEAR);
+
+which IMHO is already hard to read and adding a newline after each ||
+doesn't hurt.
+
+Or write it as:
+
+	#define XILINX_PWM_TCSR_RUN_SET			\
+			(XILINX_PWM_TCSR_GENT |		\
+			 XILINX_PWM_TCSR_ARHT |		\
+			 XILINX_PWM_TCSR_ENT |		\
+			 XILINX_PWM_TCSR_PWMA)
+
+	#define XILINX_PWM_TCSR_RUN_CLEAR		\
+			 (XILINX_PWM_TCSR_MDT | \
+			 XILINX_PWM_TCSR_LOAD)
+
+	#define XILINX_PWM_TCSR_RUN_MASK		\
+			(XILINX_PWM_TCSR_RUN_SET | XILINX_PWM_TCSR_RUN_CLEAR)
+
+
+	...
+
+	/*
+	 * Both TCSR registers must be setup according to the running
+	 * value, TCSR0 must also have the CASC bit set.
+	 */
+	if ((tcsr0 & XILINX_PWM_TCSR_RUN_MASK) !=3D XILINX_PWM_TCSR_RUN_SET ||
+	    !(tcsr0 & TCSR_CASC) ||
+	    (tcsr1 & XILINX_PWM_TCSR_RUN_MASK) !=3D XILINX_PWM_TCSR_RUN_SET)
+
+which IMHO is better understandable and still fits the line length.
+(Or simplify the check to only test for a single bit?)
+
++			tcsr0 =3D (TCSR_SET & ~TCSR_ENT) | (tcsr0 & TCSR_UDT);
++			tcsr1 =3D TCSR_SET | TCSR_ENALL | (tcsr1 & TCSR_UDT);
+
+is similar. I wonder if it makes sense to drop ENT from the default bit
+mask and if after that xilinx_pwm_is_enabled() yields true. I also don't
+understand the semantic of the UDT bit. You never modify it. Assuming it
+has a relevant meaning the driver's behaviour depends on the value the
+bootloader initialized that bit to?
+
+So these lines might need some explanation anyhow and having to write it
+over several lines doesn't actually hurt.
+
+	bool enabled =3D xilinx_pwm_is_enabled(readl(pwm->regs + TCSR0),
+					     readl(pwm->regs + TCSR1));
+
+could be rewritten as
+
+	u32 tcsr0 =3D readl(pwm->regs + XILINX_PWM_TCSR0);
+	u32 tcsr1 =3D readl(pwm->regs + XILINX_PWM_TCSR1);
+	bool enabled =3D xilinx_pwm_is_enabled(tcsr0, tcsr1);
+
+which IMHO reads better and the required horizontal space is even less
+than with your lines even tough I have added a prefix.
+
+> >> +static int xilinx_pwm_apply(struct pwm_chip *chip, struct pwm_device =
+*unused,
+> >> +			    const struct pwm_state *state)
+> >> +{
+> >> +	struct xilinx_pwm_device *pwm =3D xilinx_pwm_chip_to_device(chip);
+> >> +	u32 tlr0, tlr1;
+> >> +	u32 tcsr0 =3D readl(pwm->regs + TCSR0);
+> >> +	u32 tcsr1 =3D readl(pwm->regs + TCSR1);
+> >> +	bool enabled =3D xilinx_pwm_is_enabled(tcsr0, tcsr1);
+> >> +
+> >> +	if (state->polarity !=3D PWM_POLARITY_NORMAL)
+> >> +		return -EINVAL;
+> >> +
+> >> +	if (!enabled && state->enabled)
+> >> +		clk_rate_exclusive_get(pwm->clk);
+> >
+> > Missing error checking.
+>=20
+> This cannot fail.
+
+Oh indeed. IMHO it should be changed to return void and the comment
+"Returns 0 on success, -EERROR otherwise" should be adapted to reality.
+
+> >> +	tlr1 =3D xilinx_pwm_calc_tlr(pwm, tcsr1, state->duty_cycle);
+> >> +	writel(tlr0, pwm->regs + TLR0);
+> >> +	writel(tlr1, pwm->regs + TLR1);
+> >
+> > How does the hardware behave here? E.g. can it happen that after writing
+> > TLR0 we can see a cycle with the new period but the old duty_cycle? Does
+> > it complete the currently running period?
+>=20
+> TLR is the value loaded into TCR when the counter resets. I believe this
+> happens at the rising edge for TCR0 and at the falling edge for TCR1,
+> but the exact behavior is not documented. Therefore, changing the value
+> of TLR will not affect the current cycle.
+
+So we might still get a mixed period if the counter resets between the
+two writel commands, right?
+
+> > If state->enabled =3D=3D 0 you want to disable first to prevent that the
+> > (maybe) new values for period and duty_cycle are emitted by the
+> > hardware.
+> >
+> >> +	if (state->enabled) {
+> >> +		/* Only touch the TCSRs if we aren't already running */
+> >> +		if (!enabled) {
+> >> +			/* Load TLR into TCR */
+> >> +			writel(tcsr0 | TCSR_LOAD, pwm->regs + TCSR0);
+> >> +			writel(tcsr1 | TCSR_LOAD, pwm->regs + TCSR1);
+> >> +			/* Enable timers all at once with ENALL */
+> >> +			tcsr0 =3D (TCSR_SET & ~TCSR_ENT) | (tcsr0 & TCSR_UDT);
+> >> +			tcsr1 =3D TCSR_SET | TCSR_ENALL | (tcsr1 & TCSR_UDT);
+> >> +			writel(tcsr0, pwm->regs + TCSR0);
+> >> +			writel(tcsr1, pwm->regs + TCSR1);
+> >> +		}
+> >> +	} else {
+> >> +		writel(tcsr0 & ~TCSR_ENT, pwm->regs + TCSR0);
+> >> +		writel(tcsr1 & ~TCSR_ENT, pwm->regs + TCSR1);
+> >
+> > How does the hardware behave on disable? Does it always emit a low
+> > level? Does it complete the currently running period?
+>=20
+> I don't know. My suspicion is that the output stops at whatever its
+> current value is.
+
+Would be great if you could find out that. Please document that in the
+Limitations paragraph at the top of the driver.
+=20
+> > This is unusual to have in a driver. Something like memtool[1] should
+> > work just fine, then you don't need this debugfs file. Together with pwm
+> > tracing this should be good enough.
+>=20
+> I didn't have memtool on my test system, so I added this. I can remove
+> it from the next patch if you'd like.
+
+Yes, please remove it. (And install memtool or one of its alternatives
+:-).
+
+> >> +	pwm->clk =3D devm_clk_get(dev, NULL);
+> >> +	if (IS_ERR(pwm->clk))
+> >> +		return dev_err_probe(dev, PTR_ERR(pwm->clk), "missing clock\n");
+> >> +
+> >> +	ret =3D clk_prepare_enable(pwm->clk);
+> >> +	if (ret) {
+> >> +		dev_err(dev, "clock enable failed\n");
+> >> +		return ret;
+> >
+> > You can use dev_err_probe here, too, for consistency.
+>=20
+> Ok. Though in this case we will never get -EPROBE_DEFER from
+> clk_prepare_enable, so dev_err_probe is not as useful.
+
+Everything it does here is useful, and the overhead is only the check
+against -EPROBE_DEFER. In return you get consistent error handling and
+the messages are also all in the same format. (And compared to your
+version the error message also gives a hint about the actual problem as
+it emits the error code.)
+
+> >> +static int xilinx_pwm_remove(struct platform_device *pdev)
+> >> +{
+> >> +	struct xilinx_pwm_device *pwm =3D platform_get_drvdata(pdev);
+> >> +	bool enabled =3D xilinx_pwm_is_enabled(readl(pwm->regs + TCSR0),
+> >> +					     readl(pwm->regs + TCSR1));
+> >> +
+> >> +	if (enabled)
+> >> +		clk_rate_exclusive_put(pwm->clk);
+
+Note that I misunderstood what clk_rate_exclusive_put does. This only
+drops the lock on the clock that prevents that others modify the clock
+rate. So that call is fine.
+
+> > This looks wrong. You should rely on the consumer that they disable the
+> > PWM.
+>=20
+> What about a PWM regulator with always-on?
+
+So in general: What do you think should happen? When the remove function
+is called the PWM regulator driver is already gone, so there is no way
+to get the information that the PWM should stay on ...
+=20
+> >> +	clk_disable_unprepare(pwm->clk);
+
+=2E.. and still you stop the PWM here (or does that only affect access to
+its registers?)
+
+So it's a delicate topic and there isn't the single right thing to do
+here. So usually I request to free all resources allocated in .probe()
+and otherwise leave the hardware alone. Now that I understood
+clk_rate_exclusive_put() the status quo is fine for me. Just call
+pwmchip_remove first and only then release the resources needed to
+operate the PWM.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--2z6f7s3waobdksi5
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCRgUUACgkQwfwUeK3K
+7AkQewf+Iy5tpEXhkQbtRxo6PdqBalrdTjEgXUrjnGoNujiGYX4Th4xNWhEhQKSP
+cctHR1gMKLKySjJW6YSJ1Ml/jsP/u/ENR29eH63kUCNP6H7jzxNjYi83XIzxtcDG
++HT67ZgoVMu4S4oSZ2oM5QfpQcTzPr0AXIKRQICYf1Z7VFzB/UBScV5nnoJQqbs7
+89mog9aOIHUq871YDdeUsR/e/03R1cqxKyUYernXq2CUPty/FllRvg7GAK8OtYDE
++p3C3vxY5pCiqT26Pd1glWzf3juMsEfGtT2X1U2lmqAikhgFBNz7REE8a0xWzN9B
+D3DqMukQbJeRljBcb16BTFImn2o2+A==
+=SLfk
+-----END PGP SIGNATURE-----
+
+--2z6f7s3waobdksi5--
