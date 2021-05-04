@@ -2,83 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B793372D37
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:44:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B0AF372D39
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231446AbhEDPpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:45:00 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:49126 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231438AbhEDPo4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:44:56 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id EC6C71C0B87; Tue,  4 May 2021 17:43:59 +0200 (CEST)
-Date:   Tue, 4 May 2021 17:43:56 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Enzo Matsumiya <ematsumiya@suse.de>
-Cc:     Hannes Reinecke <hare@suse.de>, linux-leds@vger.kernel.org,
-        linux-block@vger.kernel.org, u.kleine-koenig@pengutronix.de,
-        Jens Axboe <axboe@kernel.dk>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] leds: trigger: implement block trigger
-Message-ID: <YJFrvI4I2qe7UyMW@mobian>
-References: <20210430183216.27458-1-ematsumiya@suse.de>
- <20210430183216.27458-3-ematsumiya@suse.de>
- <7e8da9ec-b3e3-0329-d54c-bb44c4064f0d@suse.de>
- <20210503101134.GB6621@amd>
- <20210503165615.maqgm5e2gq554hcm@hyori>
+        id S231414AbhEDPr2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:47:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39748 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230401AbhEDPr1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:47:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1831860BD3;
+        Tue,  4 May 2021 15:46:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620143192;
+        bh=HjWdlGi51gxgMbxhNStXncgZHq51SkoVHiNnYwf6fMM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lAPGmaSMFz8brn0DX/cZkjHNSWTlHdENIaczx9iKbXXSTNjt9oCaQF9gmqG5dfTxR
+         wKQxHtviDPxFpf+MVmQXvF2k6ByJ/QC3jT2tVF4bbIgvzvdrRJF7IiT+ndCmtTzcHX
+         AOUkg38T0mHwHJKeDl+7j7kY+S8CWep3cNC8Tjbo=
+Date:   Tue, 4 May 2021 17:46:29 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        outreachy-kernel@googlegroups.com,
+        David Kershner <david.kershner@unisys.com>,
+        sparmaintainer@unisys.com, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [Outreachy kernel] Re: [PATCH v7] staging: unisys: visorhba:
+ Convert module from IDR to XArray
+Message-ID: <YJFsVTA/DTLvfWQG@kroah.com>
+References: <20210504133253.32269-1-fmdefrancesco@gmail.com>
+ <3550993.e1xmc6yJDa@linux.local>
+ <20210504140119.GH1847222@casper.infradead.org>
+ <810075373.q0sU067TuV@linux.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210503165615.maqgm5e2gq554hcm@hyori>
+In-Reply-To: <810075373.q0sU067TuV@linux.local>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 2021-05-03 13:56:15, Enzo Matsumiya wrote:
-> On 05/03, Pavel Machek wrote:
-> > > As already commented on, this for_each_blk() construct is not a good idea.
-> > > Infact, I guess it would be better if you could invert the logic:
-> > > Not having the block trigger enumerating all devices, but rather let the
-> > > devices register with the block trigger.
-> > > That would have the benefit that one could choose which block device should
-> > > be handled by the LED trigger subsystem, _and_ you would avoid the need for
-> > > a for_each_blk() construct.
-> > > Thing is, I don't think that all block devices should be handled by the LED
-> > > trigger; eg for things like 'loop' or 'ramdisk' it is very
-> > > >questionable.
-> > 
-> > > Downside is that you would need to modify the drivers, but realistically
-> > > there are only very few drivers which should be modified; I would go for
-> > > nvme-pci and the sd driver for starters. Maybe floppy, but arguably that can
-> > > omitted as one has a very good audio indicator for floppy accesses
-> > > :-)
-> > 
-> > And we already have disk activity trigger. Maybe NVMe and SD needs to
-> > be modified to use it?
+On Tue, May 04, 2021 at 04:38:11PM +0200, Fabio M. De Francesco wrote:
 > 
-> TBH I haven't thought of that. My initial idea was to actually offer
-> maximum flexibility to the user, so exposing all block devices on the
-> system [*], being able to set any LED available as an indicator for each
-> of those.
+> As far as (1) and (2) are regarded, I've been told that when one modifies code 
+> she/he should not diverge from the style of the subsystem/driver maintainer/
+> author. If you look at visorhba_main.c, you'll find a lot of unnecessary 
+> 'else' and 'if (success)'...
 > 
-> But, indeed, just using ledtrig-disk in NVMe and SD might just be
-> simpler.
-> 
-> 
-> [*] - again, I see now this was a bad idea and will be changed in a
-> possible next version
+> So what are the general rules one should follow when changing (trivial) Linux 
+> code? Please note that my question has no other (hidden) purposes than 
+> learning to work properly with the Linux community and to reduce the 
+> unnecessary noise consequential to submitting a high number of patch versions.
 
-Sounds like there should be no new version. Modify NVMe/SD if
-required, instead.
+"trivial" changes should only be done in subsystems that welcome it.
 
-Oh and disk-activity LED trigger blinks when disk is fully loaded. I
-believe that is a bug and I'd not mind if it was fixed. I probably
-have local patch that needs cleaning up somewhere.
+drivers/staging/ welcomes it, anything other than that, you need to ask
+the maintainer.
 
-Best regards,
-								Pavel
+thanks,
 
--- 
+greg k-h
