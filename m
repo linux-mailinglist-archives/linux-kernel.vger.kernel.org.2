@@ -2,119 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C062372C31
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61591372C33
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:39:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231350AbhEDOjM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:39:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60104 "EHLO
+        id S231396AbhEDOkP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:40:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231127AbhEDOjL (ORCPT
+        with ESMTP id S231336AbhEDOkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:39:11 -0400
-Received: from mail-ej1-x630.google.com (mail-ej1-x630.google.com [IPv6:2a00:1450:4864:20::630])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADA37C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 07:38:15 -0700 (PDT)
-Received: by mail-ej1-x630.google.com with SMTP id w3so13552234ejc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:38:15 -0700 (PDT)
+        Tue, 4 May 2021 10:40:13 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F39D2C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 07:39:17 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id y32so7111540pga.11
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:39:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=0Z5D40mY54B3wfJNIwzdry65d4frpdouUa5/Vn7+nC4=;
-        b=THiE6sx5F1Jt1Q46OoMR1OUvw/mLdHS1Txc5IbyMsFnhEaVj254Ts9TWOeYFEotf4w
-         Zy1yV8EOzSIcj13Wu03GShkDdUg/HDRTFZ7IF8YV7EGtmeG2xi03oOMSbbvY4pAa2Yx8
-         Nt3ko999+qHYdONNiwiPUQD4tWxe7yI/OMZ6UQ4CyB43uu67+P0E6WzlAuO74nz2pUfE
-         q31xcUSDKiAvqROSdFQ/6aoGFxCx1CqPcVJSxYhqyzB7lEOM58NqWdEJZmMbAj83lq1A
-         50EcjTC+tKdVX2R4TeJEpMTgEpJWbMfUUQ+HRe0upQObwq9xMMai+7pAH5OoLQ5wbJY8
-         ajXg==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fJxUztk87HDlZdXytL1WDKfEHMztqMj95QbnZpVdIm8=;
+        b=LXY7otbqzp7kKh/WGFZ2KREYsyxMjV+ElUKfdrO2x79Hqa3npPows9h2lsddQzIuH7
+         ch//Xg+YKtwOVuI+LjH2KlgILE1GwyJSZ4YDx5SSeFddlp9AjxXwlDS0SaypGA/IsMBV
+         LbXWj8uKfYK6vf1k1Cj+JYv3agBtKNMf9Kd9c=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=0Z5D40mY54B3wfJNIwzdry65d4frpdouUa5/Vn7+nC4=;
-        b=e28Va9V6f6D1dtJa3S1wIfPv/N/qTOOgxws227YQoyFnn412laIx08VW5/usKAX3rh
-         UUrOM2HZVQBbWIy0Q5suY2txRCY01F/F1ix3Gjk6MIXD6+MlJtuiT5BF3WLMTQrnhv+W
-         pkq33PKFHcMxK5/LnKUmdQpHAB+Dt5jY/k2W3ThIQrwXB9jIF6d/TumWfh+gkmlJpJDM
-         tFO3Fu24gIj3DfzFtqQHtnY/gBUSKikPW57avsq5ZbBna6WxQZwyEDH5sl1W4uOXiqUN
-         9B87nCnXdXL3PWqsUsPaafZnCr5y6lTQCEFwrNzETkhNu8Q2jz4XrbQZ4RKm6ELr8sCH
-         QT1w==
-X-Gm-Message-State: AOAM531hAyIGzylRUxLkkWzOj+vfum6T6yy/LKrnSpPtuWg7j4R+YFfA
-        03W7jlFNDmAck0rcXEGRss4=
-X-Google-Smtp-Source: ABdhPJxpwcwemKlTUN6Gg0sSWeEW0gVTFmNbMFQKYu7PcsAG+WURifeW/Xjxah+OvBWAyiv0/hkl5Q==
-X-Received: by 2002:a17:907:1b1e:: with SMTP id mp30mr22540827ejc.532.1620139094307;
-        Tue, 04 May 2021 07:38:14 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id dj17sm11129322edb.7.2021.05.04.07.38.12
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fJxUztk87HDlZdXytL1WDKfEHMztqMj95QbnZpVdIm8=;
+        b=V9uEMC7AdjS8pp82Pg44wULc2kdP9FZOqKNXbxCEw7psvUVI98bU15mCU3aB6kdl9C
+         5TbMcjzf3BRt790HCJbLL4WQTU5UukQ01L110eZpHpRtb+JrOTpMoXz1RuDH0faI+CGL
+         ig8jvXd+Zlr+ySKHHqR8Yl23FsIXPQ/q7GYUWT2xEeRd7VO6j0qQzfHOHwe0/qKeGSN8
+         5AHO/iYrL+vTZma/x9v2jCPU0wL6TRDLcEGfrdw8vntpvD4rneJNNyTgNPq0CXOM1Es1
+         t9NI+xvNDh8wzXlQdYvTkSnh7VdPFSDjBj+PuC6so1x1VhBf/VG2NFJo/ZFRibQozz0J
+         AYzw==
+X-Gm-Message-State: AOAM530f0f3UUUOFUQuaNcBcFCPPpRLRLaOqnTY0Wqpn4dPl+GBCQI38
+        RQouwhZEfPyhyhPEx6glpSSOxA==
+X-Google-Smtp-Source: ABdhPJw7Jmt/AjPrttnmGcoLR0aC0LG87RUcyje7PjcMVtIZ+7a1Xg0Vhkc7A8l0u/emqKYNa4+E7g==
+X-Received: by 2002:a62:3892:0:b029:250:4fac:7e30 with SMTP id f140-20020a6238920000b02902504fac7e30mr24502740pfa.81.1620139157421;
+        Tue, 04 May 2021 07:39:17 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:a592:ac50:b17b:5c43])
+        by smtp.gmail.com with ESMTPSA id c6sm3948908pjs.11.2021.05.04.07.39.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 07:38:13 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     outreachy-kernel@googlegroups.com,
-        David Kershner <david.kershner@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        sparmaintainer@unisys.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Subject: Re: [Outreachy kernel] Re: [PATCH v7] staging: unisys: visorhba: Convert module from IDR to XArray
-Date:   Tue, 04 May 2021 16:38:11 +0200
-Message-ID: <810075373.q0sU067TuV@linux.local>
-In-Reply-To: <20210504140119.GH1847222@casper.infradead.org>
-References: <20210504133253.32269-1-fmdefrancesco@gmail.com> <3550993.e1xmc6yJDa@linux.local> <20210504140119.GH1847222@casper.infradead.org>
+        Tue, 04 May 2021 07:39:17 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Andrzej Hajda <a.hajda@samsung.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Cc:     Steev Klimaszewski <steev@kali.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        kernel test robot <lkp@intel.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/bridge: ti-sn65dsi86: Remove __exit from GPIO sub-driver remove helper
+Date:   Tue,  4 May 2021 07:38:54 -0700
+Message-Id: <20210504073845.1.Ibf4194f4252846edaa0c6a6c7b86588f75ad5529@changeid>
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, May 4, 2021 4:01:19 PM CEST Matthew Wilcox wrote:
-> On Tue, May 04, 2021 at 03:58:02PM +0200, Fabio M. De Francesco wrote:
-> > On Tuesday, May 4, 2021 3:42:16 PM CEST Matthew Wilcox wrote:
-> > > On Tue, May 04, 2021 at 03:32:53PM +0200, Fabio M. De Francesco wrote:
-> > > > Changes from v6; Added a call to xa_destroy() that I had forgotten.
-> > > 
-> > > What?  No!  Go back and re-read what I wrote about this previously.
-> > 
-> > I remember that explanation you gave me some days ago for not using it. 
-But I
-> > was mislead by a comment ("Do we not have to call xa_destroy()?") by Dan 
-and
-> > your "Correct" soon after the above comment. So I thought that I had
-> > misunderstand and the put back that call to xa_destroy(). I lost something 
-in
-> > following the flow of the reviews, I suppose.
-> 
-> English doesn't have the equivalent of the French 'si' or German 'doch',
-> unfortunately.  I imagine Italian does.
->
-Yes, Italian does :-) Despite this, I still think that English is less prone 
-to give raise to misunderstandings (obviously, if_and_only_if one knows how to 
-use the language).
+The ti_sn_gpio_unregister() is not just called from the remove path
+but also from the error handling of the init path. That means it can't
+have the __exit annotation.
 
-Back to the style of the code... in particular to (1) avoid unnecessary 
-'else', and to (2) check for failure (i.e., not for success) (3) don't 
-(always) trust checkpatch.pl because often people don't want their code 
-changed according to its output.
+Fixes: bf73537f411b ("drm/bridge: ti-sn65dsi86: Break GPIO and MIPI-to-eDP bridge into sub-drivers")
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
 
-Start with (3): Steven Rostedt refused to apply a patch that I did upon a  
-checkpatch warning: "replace "unsigned" with "unsigned int". He says he's 
-perfectly comfortable with 'unsigned' and that he _prefers_ 'unsigned'. That's 
-OK, I think; no problem.
+ drivers/gpu/drm/bridge/ti-sn65dsi86.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-As far as (1) and (2) are regarded, I've been told that when one modifies code 
-she/he should not diverge from the style of the subsystem/driver maintainer/
-author. If you look at visorhba_main.c, you'll find a lot of unnecessary 
-'else' and 'if (success)'...
-
-So what are the general rules one should follow when changing (trivial) Linux 
-code? Please note that my question has no other (hidden) purposes than 
-learning to work properly with the Linux community and to reduce the 
-unnecessary noise consequential to submitting a high number of patch versions.
-
-Thanks a lot for any help,
-
-Fabio
-
-
+diff --git a/drivers/gpu/drm/bridge/ti-sn65dsi86.c b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+index db027528febd..bb0a0e1c6341 100644
+--- a/drivers/gpu/drm/bridge/ti-sn65dsi86.c
++++ b/drivers/gpu/drm/bridge/ti-sn65dsi86.c
+@@ -1251,7 +1251,7 @@ static int __init ti_sn_gpio_register(void)
+ 	return auxiliary_driver_register(&ti_sn_gpio_driver);
+ }
+ 
+-static void __exit ti_sn_gpio_unregister(void)
++static void ti_sn_gpio_unregister(void)
+ {
+ 	auxiliary_driver_unregister(&ti_sn_gpio_driver);
+ }
+-- 
+2.31.1.527.g47e6f16901-goog
 
