@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 620E8372C02
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:29:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76356372C0C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:30:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230411AbhEDOaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:30:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        id S231620AbhEDObT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:31:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58352 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230213AbhEDOaJ (ORCPT
+        with ESMTP id S230373AbhEDObS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:30:09 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9B8C061574;
-        Tue,  4 May 2021 07:29:14 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so7709930oth.5;
-        Tue, 04 May 2021 07:29:14 -0700 (PDT)
+        Tue, 4 May 2021 10:31:18 -0400
+Received: from mail-oo1-xc31.google.com (mail-oo1-xc31.google.com [IPv6:2607:f8b0:4864:20::c31])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1ABDCC061574;
+        Tue,  4 May 2021 07:30:23 -0700 (PDT)
+Received: by mail-oo1-xc31.google.com with SMTP id u48-20020a4a97330000b02901fa060b8066so2043620ooi.8;
+        Tue, 04 May 2021 07:30:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=eKIZAu6/2NdM8fHlgkE+KZQqouzZp51NLAhVcolSIcE=;
-        b=ShojezARwH1uaeTtN3VENf1RsdHgYRRDzCLnqNZoJ5xANav8dLHe59dCObS3LW7oVR
-         sss3ADBtYFRFC3LdfJbp7TvbT2kYTTCJE2J48jPFCRanYOjsD3kogYxwaQfpfs99pRgF
-         HMK303LDXhBkXFZ32L9X2ehbfl1UWWsAuZ8P/nUUj+240fGg1DO0x6GK15dq/riwNYeb
-         aafpBSYS6aQy2TrZ/HhhvsbaW0xO2iVGk1a7cvQqrEXfxVPdaaFAV7wKKfHusrCw0zaq
-         lNdzMNQADc/pwkfis9vVIuyFNLjL01BesNpG6FOxQGBvywFqcfV2Y2b2o9bOE0Y05d5J
-         Nv/Q==
+        bh=MqiQvHVfJfAAUDigmjSoNJwQtL8DRDCYC39y1AeutfM=;
+        b=LHgZ1taEvehqS/8XoOABNyFp08TZkQd4hoSIAXqvuR69lfYw/K+nOYjFv53gl5wDNb
+         DQ8HrRRpEfH1BBysvURFZe1k5DpkjlnjCBFj1GbUssjAuWYqiXzJH8C6iVCbaJ889n3F
+         YoazXNhVbjL5ae2xlW2G39gm+4T4knNOSXUvObCya8DRxnDxO9JZRpw7+EjEuZb4+LrQ
+         zrTTLwlUODKzxFk0Tc6Vj+DEEdJk5K3z2aCZ2LG2/WfXdaxhC+5avqpfkFHOtzAhv/SU
+         YH+w2SHynA5c2AvkEqSBfJ1mWG01LPpsZRpPa/Z8w4lD95WmfZGgou1/xsF/rVDzvWmp
+         JDCA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
          :mime-version:content-transfer-encoding;
-        bh=eKIZAu6/2NdM8fHlgkE+KZQqouzZp51NLAhVcolSIcE=;
-        b=rNRxZsUyBq3uTfAiKitzkHBmpMywkulBU6G0VdCpqO3BLyMKKCHMDnpHkTlsCA9VcO
-         3Fkf/vcWVJHtLctwQdcWg71bPiZhqNhpgR2bJDY/RloZXM6bWgKKlPXkXDblwOrBmUNO
-         saJ5XmxvAAvsG6edWrbigHApFnZDcbaTHBOmIF7A1zNzyjRbovluCLdVnHWNOo4eHBJM
-         Q+Vwq2rufRbfnqa2N5eev0qITQU0sx7burUzKaBlAg+h4ONlnEO5tyg3L3E3XeRhb+mW
-         gQI0j+DbdL03ns1VUk+Vt5xcq2Roy8OqKmux3nRouECo6HTXI563uDujoXL8SF3h953z
-         stOA==
-X-Gm-Message-State: AOAM532TspFpAcio7AEZ1jTyPXkCl+36NCIYmml5SQvS+le1oIBOiP7A
-        vFhI+uW48oyeaqpFDbvUWPA=
-X-Google-Smtp-Source: ABdhPJwixsPL4gUes21e2Ym9ZiEjlDDpj7aBAgzY2n98I2gq+SjsQaNx1v6L61j1SitQH65pU7hlXQ==
-X-Received: by 2002:a05:6830:1f27:: with SMTP id e7mr19351128oth.341.1620138553582;
-        Tue, 04 May 2021 07:29:13 -0700 (PDT)
+        bh=MqiQvHVfJfAAUDigmjSoNJwQtL8DRDCYC39y1AeutfM=;
+        b=LZycGEjJgT+uT6SFIriDpBOF5wMGWU2jZuH+DTFWR/6Q0aqveiieLniC5Wh6LsSq6D
+         2ncvD1tHbQuAVOXpeg69oMvdM3ituroPxcTq9eD9gSF1a4DaPqb62+TRIIFSNTcsiDSJ
+         +4MbgU2T+JhFXUeCKnOEIeNZlWuYrKglzBzeDppNzYKpeQgFLGhHsuZ8wUNHWJMqpDcf
+         AYgaWTx8dRZGL6RrHtUaxA7csk7zLFoyE110r8RLt43Pk50LQzGhXT6BTsLwiCzhNWQj
+         GFF6v+uPAf9GY652L6dhAZFAJ2Mqioyl6IY01EB7GyTglMfCzMczEZ3qvpb4pFjTwgHZ
+         25ng==
+X-Gm-Message-State: AOAM532iWHXvGeEcQ8cRBJ+NShFFvBvXwti8yZ0o/LrI2xtQFNk89BWJ
+        AjKcF1MO/h63SUNYXxymTZGcWwPwO5U=
+X-Google-Smtp-Source: ABdhPJzochAhFF6KL6MPRkZsKj/FB1DGzH871TqQ8wBtcol1YEJmEvg1hI5tDe8w3YFFGhYSfNHGfQ==
+X-Received: by 2002:a4a:d48b:: with SMTP id o11mr20088876oos.2.1620138622522;
+        Tue, 04 May 2021 07:30:22 -0700 (PDT)
 Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id a15sm660543oid.39.2021.05.04.07.29.12
+        by smtp.gmail.com with ESMTPSA id m25sm666928oih.15.2021.05.04.07.30.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 07:29:12 -0700 (PDT)
+        Tue, 04 May 2021 07:30:22 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     dri-devel@lists.freedesktop.org
-Cc:     linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
         Guenter Roeck <linux@roeck-us.net>,
         kernel test robot <lkp@intel.com>
-Subject: [PATCH] fbmem: Mark proc_fb_seq_ops as __maybe_unused
-Date:   Tue,  4 May 2021 07:29:10 -0700
-Message-Id: <20210504142910.2084722-1-linux@roeck-us.net>
+Subject: [PATCH] iio: am2315: Make am2315_acpi_id depend on CONFIG_ACPI
+Date:   Tue,  4 May 2021 07:30:19 -0700
+Message-Id: <20210504143019.2085111-1-linux@roeck-us.net>
 X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -64,32 +64,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With CONFIG_PROC_FS=n and -Werror, 0-day reports:
+With CONFIG_ACPI=n and -Werror, 0-day reports:
 
-drivers/video/fbdev/core/fbmem.c:736:36: error:
-	'proc_fb_seq_ops' defined but not used
-
-Mark it as __maybe_unused.
+drivers/iio/humidity/am2315.c:259:36: error:
+	'am2315_acpi_id' defined but not used
 
 Reported-by: kernel test robot <lkp@intel.com>
 Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
- drivers/video/fbdev/core/fbmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/iio/humidity/am2315.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
-index 372b52a2befa..52c606c0f8a2 100644
---- a/drivers/video/fbdev/core/fbmem.c
-+++ b/drivers/video/fbdev/core/fbmem.c
-@@ -733,7 +733,7 @@ static int fb_seq_show(struct seq_file *m, void *v)
- 	return 0;
- }
+diff --git a/drivers/iio/humidity/am2315.c b/drivers/iio/humidity/am2315.c
+index 23bc9c784ef4..e876b039c38f 100644
+--- a/drivers/iio/humidity/am2315.c
++++ b/drivers/iio/humidity/am2315.c
+@@ -256,12 +256,13 @@ static const struct i2c_device_id am2315_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, am2315_i2c_id);
  
--static const struct seq_operations proc_fb_seq_ops = {
-+static const struct __maybe_unused seq_operations proc_fb_seq_ops = {
- 	.start	= fb_seq_start,
- 	.next	= fb_seq_next,
- 	.stop	= fb_seq_stop,
++#ifdef CONFIG_ACPI
+ static const struct acpi_device_id am2315_acpi_id[] = {
+ 	{"AOS2315", 0},
+ 	{}
+ };
+-
+ MODULE_DEVICE_TABLE(acpi, am2315_acpi_id);
++#endif
+ 
+ static struct i2c_driver am2315_driver = {
+ 	.driver = {
 -- 
 2.25.1
 
