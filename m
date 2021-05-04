@@ -2,106 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72EE5373219
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF44837321F
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:57:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232935AbhEDV5t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 17:57:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45570 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232633AbhEDV5t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 17:57:49 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B0CB9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 14:56:53 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id c36-20020a05683034a4b02902a5b84b1d12so9283032otu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 14:56:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=uGuTUwlkCU+unXsaphWAxRTUlNrZZHZiZSNJtWbfPBQ=;
-        b=vWwxWX0UTtXl061UlBeiTDrqFuwyTDrjgAX7XxZrmYUB4lVjEIF7T6ooJQN4I3b6Ie
-         Iyg5WyVoT8twTMq4Tardwo/JIw6SJCdXcFvqQaUzThSLLVaeWuLVvzS3UjDnDSMHJEZN
-         lYx8u/KPLKOILDKz++ecoW7Y/19nGB7WaNBlHJKz/eV9uYgzY6rreyr9KxSqlNxMYQ3O
-         GDkusYWjbZALyYFT4kHLko5mjBZiv0xyal6zh+bLa/RoOWq/mSW+utJRXjAl9nUCgkwY
-         /XHhk+UPH27vUO4R1DJqZfJNObvoAOTHVw9HWVNwJHSq4VXq9MpAzOKJjXsNMQn4/js6
-         xzmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=uGuTUwlkCU+unXsaphWAxRTUlNrZZHZiZSNJtWbfPBQ=;
-        b=KXUGspd2+ZFETZKSPDNALGOELoDaPj6BOt9MP8+VM6/6uSG/VHr38sT1mozZ6FycV9
-         iidXY8PzmoUpPEX9ATgJd1ABFtZhPF3nvG7k4K8CHjdEo10SSbBKpMHgmufrLmOHF+vV
-         KYl/drIy4x9+WoZHSC4zmZORu5zKFL0h6V86+a6nfM5FemN8DAFyqrXjTuSYBLBjq3w9
-         sy5PFUWXzOp5Fx8h+6Gbz3QasCNeYt9JtZozZtLwG5sOdaW8ItXwjpwXulonStu2r4ZH
-         vbbc82piHP2rLv4n7D5aeQUEn3ds11VgnYcVLrBkIItx25IkOo1vCYu4dNPjmKKehamY
-         UKQQ==
-X-Gm-Message-State: AOAM5312XMs9lzuJ3GOFQFSn/LBrydaVndsIRGwiP6aUchQEGmu/B3IF
-        Swybemf4JQ7c9FzvOTQpThZMJny6FO4h1sj37RRJtg==
-X-Google-Smtp-Source: ABdhPJyASYQLxFV5V0swUjhcthTkFcI4nluyDdofQy5i4OJEZao8OF2155TuBCm1bzUq/CdJQV9gOI490wTJe+JcMgk=
-X-Received: by 2002:a05:6830:16c8:: with SMTP id l8mr21049151otr.56.1620165411726;
- Tue, 04 May 2021 14:56:51 -0700 (PDT)
+        id S232979AbhEDV6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 17:58:18 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:33981 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232943AbhEDV6O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 17:58:14 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FZYbc2jZWz9s1l;
+        Wed,  5 May 2021 07:57:15 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620165437;
+        bh=Z52JiiQfTABgnfHHVJHvgoGp+g+Oua5xSDj1AGuuASI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=lsrbw5qsBdRFOh96zVHYNOlTt69DhNo7+loozTYHpaiQApIWI1dwJfLnQx622GVL+
+         lRE3YqoHXnsEXIndmmkhYlLwvgJ81+gQfA5e51QkaBO87ibXSfNb6ssxHmgCKRhPVW
+         l+yhU7RqUdCdEeTkF4JhPTV260okaaiOgDN2ulyxOlNqxZ/oFowSWekAic4k/e6CnQ
+         FW3W0LV5Z0S1fuCjiTIea9QinML/oowxdpcB5G6Gs/bIk0ftaRxaJZ8CmdDgfJbdkg
+         2Qvx9v8ND0xqpGiglds2nNKfzO3dbOhUQBQlIre6dPTmlwdFEjRLW3NE2XQiula4gt
+         GDWdHcTgzo/Lg==
+Date:   Wed, 5 May 2021 07:57:14 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     David Miller <davem@davemloft.net>,
+        Networking <netdev@vger.kernel.org>
+Cc:     Or Cohen <orcohen@paloaltonetworks.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the net tree
+Message-ID: <20210505075714.7cd28130@canb.auug.org.au>
 MIME-Version: 1.0
-References: <20210504171734.1434054-1-seanjc@google.com> <20210504171734.1434054-4-seanjc@google.com>
- <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com> <YJHCadSIQ/cK/RAw@google.com>
-In-Reply-To: <YJHCadSIQ/cK/RAw@google.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Tue, 4 May 2021 14:56:40 -0700
-Message-ID: <CALMp9eSeeuXUXz+0J17b7Dk8pyy3XPgqUXKC5-V8Q7SRd7ykgA@mail.gmail.com>
-Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
- disabled in the guest
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/dgkxTrnwME5ETf1ocP/9nZG";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 2:53 PM Sean Christopherson <seanjc@google.com> wrote:
->
-> On Tue, May 04, 2021, Jim Mattson wrote:
-> > On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
-> > >
-> > > Intercept RDTSCP to inject #UD if RDTSC is disabled in the guest.
-> > >
-> > > Note, SVM does not support intercepting RDPID.  Unlike VMX's
-> > > ENABLE_RDTSCP control, RDTSCP interception does not apply to RDPID.  This
-> > > is a benign virtualization hole as the host kernel (incorrectly) sets
-> > > MSR_TSC_AUX if RDTSCP is supported, and KVM loads the guest's MSR_TSC_AUX
-> > > into hardware if RDTSCP is supported in the host, i.e. KVM will not leak
-> > > the host's MSR_TSC_AUX to the guest.
-> > >
-> > > But, when the kernel bug is fixed, KVM will start leaking the host's
-> > > MSR_TSC_AUX if RDPID is supported in hardware, but RDTSCP isn't available
-> > > for whatever reason.  This leak will be remedied in a future commit.
-> > >
-> > > Fixes: 46896c73c1a4 ("KVM: svm: add support for RDTSCP")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Sean Christopherson <seanjc@google.com>
-> > > ---
-> > ...
-> > > @@ -4007,8 +4017,7 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
-> > >         svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
-> > >                              guest_cpuid_has(vcpu, X86_FEATURE_NRIPS);
-> > >
-> > > -       /* Check again if INVPCID interception if required */
-> > > -       svm_check_invpcid(svm);
-> > > +       svm_recalc_instruction_intercepts(vcpu, svm);
-> >
-> > Does the right thing happen here if the vCPU is in guest mode when
-> > userspace decides to toggle the CPUID.80000001H:EDX.RDTSCP bit on or
-> > off?
->
-> I hate our terminology.  By "guest mode", do you mean running the vCPU, or do
-> you specifically mean running in L2?
+--Sig_/dgkxTrnwME5ETf1ocP/9nZG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I mean is_guest_mode(vcpu) is true (i.e. running L2).
+Hi all,
+
+In commit
+
+  c61760e6940d ("net/nfc: fix use-after-free llcp_sock_bind/connect")
+
+Fixes tag
+
+  Fixes: c33b1cc62 ("nfc: fix refcount leak in llcp_sock_bind()")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+
+This is probably not worth rebasing to fix.  In the future this can be
+avoided by setting core.abbrev to 12 (or more) or (for git v2.11 or later)
+just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/dgkxTrnwME5ETf1ocP/9nZG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCRwzoACgkQAVBC80lX
+0GwTFwf9HWW54cHYx9AJNAJshYVQxYBVTazhC9l93YRvIp0QDmq6m+bS/8ZUBpuo
+XBPqkmVVwZixbilvGXs6ZzLiC0TjF1UAoJ618s/7ar1hiTUMgGl6oGi+zI38ecGi
+DDkMVm7qJG41J2QyqiZUmcVopeM/HbspGjtVzhbHLnacyazkmwf9mxu62nWSlIe4
+8568j5MhF0PGhUpA65dbwdMI6Cz63zyiDqUnL9nXAiF4Xk3Piw49DA82SIqXL1n8
+mmtQdeMlTsF3iOsw7M2lLmv4ouLQ5I3QYOqv2+ASou+kAQ3NEh6T04iCfs9GadQG
+qJBVG7aiA0RfrlBx/3wJt3ZctionZw==
+=m32/
+-----END PGP SIGNATURE-----
+
+--Sig_/dgkxTrnwME5ETf1ocP/9nZG--
