@@ -2,101 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFBAC372761
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:39:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BB59372762
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:40:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhEDIkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:40:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
+        id S230220AbhEDIkw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:40:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37186 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhEDIkJ (ORCPT
+        with ESMTP id S230122AbhEDIk2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:40:09 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A920C061574;
-        Tue,  4 May 2021 01:38:44 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id t94so11139478ybi.3;
-        Tue, 04 May 2021 01:38:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y8qb2bfAFrI9QM8sR79PgwC4m456KUQvtxQw7QErVO0=;
-        b=heYaieXDiOzidFq+kRcjvjjBmYI/4xzMD4IZ1Yw76TNQUNkDgLOIYrp8Bys7niIi+O
-         jvSzvlHAX5/hbPR7mdg8Mr3KtVFEXJixdX0zDUsRdWPm2M6sI96KtXYPzM4z98Sk6HbK
-         IclA9mcqDUz7trpk3h4rJfxcBfa44/1jzoziaYOQVlXYek/pEzc7jPCbtcmkJIT+9VUH
-         WT0HpfKiSiMrkqlHze4lvrBlnkSpkcOokMm27Bo95W5SsjuKtg5kMxCDmKeB7yAkY8kq
-         yjjrUt79LeHM1TFBZ+4oGyOBeB8Esqx0U2hDdis4OHVxSJOXEo006EcEEdIvOFlYc3Lc
-         5pTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y8qb2bfAFrI9QM8sR79PgwC4m456KUQvtxQw7QErVO0=;
-        b=Z9W6+OddH8BApb3IJtaohFCJLKUh7gCBG1KlSf6uu9aPwuY3E2eXzc5JX49z9VNMA3
-         zAZAqDcSUIQqA/T3IsVggsD2+ECaBmoGOzIBYF4cfGuQLYAVKwiYqK028nd7wSG26GYk
-         +AuZjID8nY1nvnTowfwEFF9pf4TALOR/tvvAp/6xQLKBXBuWx413F97tFEydzpxQHoYu
-         /Ej4pnDvb3Jve4pKWbYm8BQUzRyusYna1kUimHD1gXztat/7hijkJpQpEDp+jmigKWbe
-         L3lvYUizxszA3TMrIru6rhpzU7HIzAQp5sqW9p1HgwhzIlq631PElvDdHUvrDRbyW+b5
-         txrA==
-X-Gm-Message-State: AOAM531hnSkCsyak6833FdGjM+oAEcET6ekGKWPT4Bx0B2dc1NlrhzRh
-        /IvIr7g1oqM5mxXQmA3Ol2HeU0R50JoJLMgyVYSLDLrnZdSWo9p1
-X-Google-Smtp-Source: ABdhPJwgJRTy4oD3Q4bEwMIiI0PESgNj4LF3XmVCbNwY/lWmcIYnmds0Q6QwiZMB0/f4EUTpPAx1ux8l25XkeS6oEUM=
-X-Received: by 2002:a25:880f:: with SMTP id c15mr31896545ybl.247.1620117523381;
- Tue, 04 May 2021 01:38:43 -0700 (PDT)
+        Tue, 4 May 2021 04:40:28 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 149BFC06174A;
+        Tue,  4 May 2021 01:39:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=jHj0U851XAR8dHLCObZjvsMxkhCDRfe/hly+/JhNV6I=; b=i58/6+bhGSraSN+KcG3X89rTmB
+        fhTwqUp8GO7z5KV9/cXXwo6ImpdHjCATymAK8Ue9U0dVBfSj1CLBLUMc5kETh3WNRiIOBLrxsfdXs
+        ujSOJWFg0jIArJcvyOYUzLQYiE/qI2pyNISmOZEvUGx3YmgYp1IWCgmYdLJdcFMs8pyKVAmMs+mIY
+        b+WI2qaeBU3bQv+Sonsso7Y1wLYCCF6G3JdAWTUSff0UrDccxrwcHrgEZc9nT2cVWs+SPjy25YGS0
+        nwzG4eG2t5AU+NvsJAG+aCx+dVqFPIXHqyEq14SjsNIt04zVYAtlI+e1qM4GWCm/CYOWmBiVowWSE
+        unLQnalg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1ldqaT-00Floj-Gh; Tue, 04 May 2021 08:39:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BDE55300036;
+        Tue,  4 May 2021 10:39:23 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id ACADB20D77EF8; Tue,  4 May 2021 10:39:23 +0200 (CEST)
+Date:   Tue, 4 May 2021 10:39:23 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Stefan Metzmacher <metze@samba.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+Message-ID: <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net>
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
+ <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
 MIME-Version: 1.0
-References: <20210501151538.145449-1-masahiroy@kernel.org> <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
- <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com> <65cda2bb-1b02-6ebc-0ea2-c48927524aa0@codethink.co.uk>
-In-Reply-To: <65cda2bb-1b02-6ebc-0ea2-c48927524aa0@codethink.co.uk>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Tue, 4 May 2021 10:38:32 +0200
-Message-ID: <CANiq72mk84uay--BWOLT4zF12-rat9erohKazB8SpTPoVCTX1A@mail.gmail.com>
-Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
-To:     Ben Dooks <ben.dooks@codethink.co.uk>
-Cc:     Joe Perches <joe@perches.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Mackerras <paulus@samba.org>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 9:57 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
->
-> Some of us are a bit stuck as either customer refuses to upgrade
-> their build infrastructure or has paid for some old but safety
-> blessed version of gcc. These often lag years behind the recent
-> gcc releases :(
 
-In those scenarios, why do you need to build mainline? Aren't your
-customers using longterm or frozen kernels? If they are paying for
-certified GCC images, aren't they already paying for supported kernel
-images from some vendor too?
++ linux-toolchains
 
-I understand where you are coming from -- I have also dealt with
-projects/machines running ancient, unsupported software/toolchains for
-various reasons; but nobody expected upstream (and in particular the
-mainline kernel source) to support them. In the cases I experienced,
-those use cases require not touching anything at all, and when the
-time came of doing so, everything would be updated at once,
-re-certified/validated as needed and frozen again.
+On Mon, May 03, 2021 at 12:14:45PM -0700, Linus Torvalds wrote:
+> On Mon, May 3, 2021 at 9:05 AM Andy Lutomirski <luto@amacapital.net> wrote:
+> >
+> > Linus, what is the actual effect of allowing gdb to attach these threads?  Can we instead make all the regset ops do:
+> >
+> > if (not actually a user thread) return -EINVAL;
+> 
+> I don't think it matters - the end result ends up  being the same, ie
+> gdb gets confused about whether the (parent) thread is a 32-bit or
+> 64-bit one.
+> 
+> So the basic issue is
+> 
+>  (a) we want the IO threads to look exactly like normal user threads
+> as far as the kernel is concerned, because we had way too many bugs
+> due to special cases.
+> 
+>  (b) but that means that they are also visible to user space, and then
+> gdb has this odd thing where it takes the 64-bit vs 32-bit data for
+> the whole process from one thread, and picks the worst possible thread
+> to do it (ie explicitly not even the main thread, so usually the IO
+> thread!)
+> 
+> That (a) ended up really being critical. The issues with special cases
+> were just horrendous, both for security issues (ie "make them kernel
+> threads but carry user credentials" just caused lots of problems) but
+> also for various just random other state handling issues (signal state
+> in particular).
+> 
+> So generally, the IO threads are now 100% normal threads - it's
+> literally just that they never return to user space because they are
+> always just doing the IO offload on the kernel side.
+> 
+> That part is lovely, but part of the "100% IO threads" really is that
+> they share the signal struct too, which in turn means that they very
+> much show up as normal threads. Again, not a problem: they really
+> _are_ normal threads for all intents and purposes.
+> 
+> But then that (b) issue means that gdb gets confused by them. I
+> personally think that's just a pure gdb mis-feature, but I also think
+> that "hey, if we just make the register state look like the main
+> thread, and unconfuse gdb that way, problem solved".
+> 
+> So I'd actually rather not make these non-special threads any more
+> special at all. And I strongly suspect that making ptrace() not work
+> on them will just confuse gdb even more - so it would make them just
+> unnecessarily special in the kernel, for no actual gain.
+> 
+> Is the right thing to do to fix gdb to not look at irrelevant thread B
+> when deciding whether thread A is 64-bit or not? Yeah, that seems like
+> obviously the RightThing(tm) to me.
+> 
+> But at the same time, this is arguably about "regression", although at
+> the same time it's "gdb doesn't understand new user programs that use
+> new features, film at 11", so I think that argument is partly bogus
+> too.
+> 
+> So my personal preference would be:
+> 
+>  - make those threads look even more like user threads, even if that
+> means giving them pointless user segment data that the threads
+> themselves will never use
+> 
+>    So I think Stefan's patch is reasonable, if not pretty. Literally
+> becasue of that "make these threads look even more normal"
+> 
+>  - ALSO fix gdb that is doing obviously garbage stupid things
+> 
+> But I'm obviously not involved in that "ALSO fix gdb" part, and
+> arguably the kernel hack then makes it more likely that gdb will
+> continue doing its insane broken thing.
 
-Cheers,
-Miguel
+Anybody on toolchains that can help get GDB fixed?
