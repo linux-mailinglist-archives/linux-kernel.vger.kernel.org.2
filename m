@@ -2,127 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54ABC372713
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8B2837271C
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:21:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229961AbhEDIV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:21:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:21351 "EHLO
+        id S230071AbhEDIWs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:22:48 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37279 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229872AbhEDIVz (ORCPT
+        by vger.kernel.org with ESMTP id S230032AbhEDIWr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:21:55 -0400
+        Tue, 4 May 2021 04:22:47 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620116460;
+        s=mimecast20190719; t=1620116513;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=tMP1xx5RM3W39LPjwsE6CWlx07bFQEOIwnlzCme4Sl4=;
-        b=ASAKeVCpqA2IHOK5TWmUTc2lmSGpMKZ9Cah3GoH9d2HdE0Nf18dpVlwTXbp9CzMB7KWWhs
-        V7UmKUIdY3OEHhsGPY3p31H0xNRxZCRkn1HBxAxowl1WOb+nrVK/dmVXjbq3+5efCepPRj
-        1vgb53y0Z3kJEx9/IQKwxFD84IAbuqA=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-558-_hzC5RdpMP-VF3tosaZEIw-1; Tue, 04 May 2021 04:20:59 -0400
-X-MC-Unique: _hzC5RdpMP-VF3tosaZEIw-1
-Received: by mail-wm1-f70.google.com with SMTP id j128-20020a1c55860000b02901384b712094so159585wmb.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 01:20:59 -0700 (PDT)
+        bh=GhadwQE+exPzSFPPwlRcTnkbJ2oOmGADkphoNgd5n4k=;
+        b=KKWqNzHwG/uLBxKaPz92thgixkQhg0WG1tsXJ+Y+F8j/JGQNXNhOwptFAQ2sYj1MEMIWLG
+        QJslHxhvWSJM+m16E1hPE3uTODHeiH5IDw+OaE56Udd0VNZQhiJSk+VtM/DOMqw+TLHvJa
+        rpotwfHAWvLZDWWvpjC5shC9eszDLqg=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-86-FjCO7xIIPWC6Mwp8TcNOwA-1; Tue, 04 May 2021 04:21:50 -0400
+X-MC-Unique: FjCO7xIIPWC6Mwp8TcNOwA-1
+Received: by mail-ed1-f71.google.com with SMTP id s20-20020a0564025214b029038752a2d8f3so6043413edd.2
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 01:21:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=tMP1xx5RM3W39LPjwsE6CWlx07bFQEOIwnlzCme4Sl4=;
-        b=ZpDKcCg3XTSKGSo441fj6ubCviTlKZX27FB6w1EZCMGfWt5VJPzPDZ8uLcvodKCo4W
-         +FoHLdv/HjGct4+8rnp2Vfj3BtCYfhBKCLvDXoSMx3n0KffkY1mdu29XyKAlWBzhiuFY
-         WeKsE1cJXWm9fc6O2KkCINTmsfuW6n52qgz7rmbwrd4tc0Ko9ZWV8705XdzjlGewlJbw
-         pSZX8Zva1kDbDDOZYfBVp3mZftCMQcyVdjweD4wfGDYRYWLtXxm9/sRhFMP6iPj135Nj
-         gFLsBumE177os0C00a/iTtDYgLLH/0lYDUyMG859w6/R8uOGH82469Zki7PD4BwL9aMa
-         tl0w==
-X-Gm-Message-State: AOAM53101wuEWT9NRu/YMSiSAS/pseRJKMG/VawyXMlAJs6f3OS6f2w+
-        seVoAsVJXim5fqVnd81OFC/cI9vfJo/QAzI/qB2F7tIimNKjOo3FGK++5VGN0214Sl1d6DugSDq
-        ldntOBl6WqUel3G3SdiSrhlzmCSyJB2jD1bsTSjCdYX/cOz/NZfRPwEpJDeeMfkOrQmlBQQ==
-X-Received: by 2002:a1c:38c4:: with SMTP id f187mr2604821wma.144.1620116458276;
-        Tue, 04 May 2021 01:20:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwTbu5ekU7D/8mrl31/CpdYXkrj1VnJHihiA9z9xrr3YZFmIJDwfjFftMechzR6ujZAAVINxg==
-X-Received: by 2002:a1c:38c4:: with SMTP id f187mr2604801wma.144.1620116457988;
-        Tue, 04 May 2021 01:20:57 -0700 (PDT)
-Received: from redhat.com ([2a10:800a:cdef:0:114d:2085:61e4:7b41])
-        by smtp.gmail.com with ESMTPSA id l66sm1845078wmf.20.2021.05.04.01.20.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 01:20:57 -0700 (PDT)
-Date:   Tue, 4 May 2021 04:20:56 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel test robot <lkp@intel.com>,
-        Jason Wang <jasowang@redhat.com>, Eli Cohen <elic@nvidia.com>,
-        virtualization@lists.linux-foundation.org
-Subject: [PATCH 2/2] virtio_pci_modern: correct sparse tags for notify
-Message-ID: <20210504082034.118581-2-mst@redhat.com>
-References: <20210504082034.118581-1-mst@redhat.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=GhadwQE+exPzSFPPwlRcTnkbJ2oOmGADkphoNgd5n4k=;
+        b=dRjgQIG/dqCKQSt7Dx41GEK3ehQPimubp3hY/J1MdmrCDrWMCMj1fyYVN9ppZnsmC1
+         w8cv1inYYIWMlBnztW+0L7dj8KVZsOMem46OwHe9Kdb1cUSbdroiFLfYm33qb2fB2W3s
+         ccGnDtKOrzRSa59oqkpMyFNZH3jTc4M/wvyO4joMhv6GMLHHD7U3BCU7/lTLnFhhibKC
+         UzUqlIYYh82NynVGTG59lZ28Oq5UXEHEcbpSTIQZrkesAX1aSg1P1pu9cqzYSJO9X+Jc
+         ajDYYPC4aItZdPdHmbCbdKJaRdV+uug/KtevpsU8nLlkBTn7tCBRvrzNGVK7Ha2hLKee
+         Rd7Q==
+X-Gm-Message-State: AOAM5325oVrkAUI0+2g09kqRjfTwaRCW6vEoYvJpVuhbKHYYTHcNnX78
+        3d/Z5Q/k+G1n9rDGlnGeclld5FXeh0JjT5CdOxe/BaiWZhjpcgnrK2th+PiidpVUoFDYia8iZX0
+        xWWaHVWUw/0mmdjtFkX+6gJCD
+X-Received: by 2002:aa7:c30c:: with SMTP id l12mr24469557edq.217.1620116509419;
+        Tue, 04 May 2021 01:21:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzaVeUuxtPavqNx+CwxlQ0X1+K+Hn5qr9xpndSgFIyEPL3es3Is06zysstjxyTbN1yZ/OOt8A==
+X-Received: by 2002:aa7:c30c:: with SMTP id l12mr24469533edq.217.1620116509277;
+        Tue, 04 May 2021 01:21:49 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id ch30sm13593625edb.92.2021.05.04.01.21.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 01:21:48 -0700 (PDT)
+Subject: Re: [PATCH v4] KVM: x86: Fix KVM_GET_CPUID2 ioctl to return cpuid
+ entries count
+To:     "Denis V. Lunev" <den@openvz.org>,
+        Sean Christopherson <seanjc@google.com>,
+        Valeriy Vdovin <valeriy.vdovin@virtuozzo.com>
+Cc:     linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Aaron Lewis <aaronlewis@google.com>,
+        Alexander Graf <graf@amazon.com>,
+        Andrew Jones <drjones@redhat.com>,
+        Oliver Upton <oupton@google.com>,
+        Like Xu <like.xu@linux.intel.com>, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20210428172729.3551-1-valeriy.vdovin@virtuozzo.com>
+ <YIoFFl72VSeuhCRt@google.com>
+ <0d68dbc3-8462-7763-fbad-f3b895fcf6e6@redhat.com>
+ <be7eedf7-03a2-f998-079d-b18101b8b187@openvz.org>
+ <63e54361-0018-ad3b-fb2b-e5dba6a0f221@redhat.com>
+ <048b3f3a-379d-cff3-20b6-fc74dd12a98f@openvz.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <514b5373-c07b-ad34-5fba-f8850faf6d68@redhat.com>
+Date:   Tue, 4 May 2021 10:21:47 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504082034.118581-1-mst@redhat.com>
-X-Mailer: git-send-email 2.27.0.106.g8ac3dc51b1
-X-Mutt-Fcc: =sent
+In-Reply-To: <048b3f3a-379d-cff3-20b6-fc74dd12a98f@openvz.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When switching virtio_pci_modern to use a helper for mappings we lost an
-__iomem tag. Restore it.
+On 04/05/21 10:15, Denis V. Lunev wrote:
+> As far as I understand only some testing within kernel now.
+> Though we have plans to expose it for QAPI as the series
+> in QEMU
+>    [PATCH 1/2] qapi: fix error handling for x-vz-query-cpu-model-cpuid
+>    [PATCH 2/2] qapi: blacklisted x-vz-query-cpu-model-cpuid in tests
+> is not coming in a good way.
+> The idea was to avoid manual code rework in QEMU and
+> expose collected model at least for debug.
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 9e3bb9b79a71 ("virtio_pci_modern: introduce helper to map vq notify area")
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
- drivers/virtio/virtio_pci_modern_dev.c | 9 ++++-----
- include/linux/virtio_pci_modern.h      | 4 ++--
- 2 files changed, 6 insertions(+), 7 deletions(-)
+KVM_GET_CPUID2 as a VM ioctl cannot expose the whole truth about CPUID 
+either, since it doesn't handle the TSX_CTRL_CPUID_CLEAR bit.  Given 
+that QEMU doesn't need KVM_GET_CPUID2; it only needs to save whatever it 
+passed to KVM_SET_CPUID2.
 
-diff --git a/drivers/virtio/virtio_pci_modern_dev.c b/drivers/virtio/virtio_pci_modern_dev.c
-index ae87b3fa8858..54f297028586 100644
---- a/drivers/virtio/virtio_pci_modern_dev.c
-+++ b/drivers/virtio/virtio_pci_modern_dev.c
-@@ -605,8 +605,8 @@ static u16 vp_modern_get_queue_notify_off(struct virtio_pci_modern_device *mdev,
-  *
-  * Returns the address of the notification area
-  */
--void *vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
--			      u16 index, resource_size_t *pa)
-+void __iomem *vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
-+				      u16 index, resource_size_t *pa)
- {
- 	u16 off = vp_modern_get_queue_notify_off(mdev, index);
- 
-@@ -624,10 +624,9 @@ void *vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
- 		if (pa)
- 			*pa = mdev->notify_pa +
- 			      off * mdev->notify_offset_multiplier;
--		return (void __force *)mdev->notify_base +
--			off * mdev->notify_offset_multiplier;
-+		return mdev->notify_base + off * mdev->notify_offset_multiplier;
- 	} else {
--		return (void __force *)vp_modern_map_capability(mdev,
-+		return vp_modern_map_capability(mdev,
- 				       mdev->notify_map_cap, 2, 2,
- 				       off * mdev->notify_offset_multiplier, 2,
- 				       NULL, pa);
-diff --git a/include/linux/virtio_pci_modern.h b/include/linux/virtio_pci_modern.h
-index cdfabbefacdf..6a95b58fd0f4 100644
---- a/include/linux/virtio_pci_modern.h
-+++ b/include/linux/virtio_pci_modern.h
-@@ -101,8 +101,8 @@ void vp_modern_set_queue_size(struct virtio_pci_modern_device *mdev,
- u16 vp_modern_get_queue_size(struct virtio_pci_modern_device *mdev,
- 			     u16 idx);
- u16 vp_modern_get_num_queues(struct virtio_pci_modern_device *mdev);
--void *vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
--                              u16 index, resource_size_t *pa);
-+void __iomem * vp_modern_map_vq_notify(struct virtio_pci_modern_device *mdev,
-+				       u16 index, resource_size_t *pa);
- int vp_modern_probe(struct virtio_pci_modern_device *mdev);
- void vp_modern_remove(struct virtio_pci_modern_device *mdev);
- #endif
--- 
-MST
+Paolo
 
