@@ -2,348 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2FAFE372BBB
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D28CB372BBE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:12:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231473AbhEDOMZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:12:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27979 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231411AbhEDOMX (ORCPT
+        id S231487AbhEDONO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:13:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231393AbhEDONK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:12:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620137488;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0+t0xOrtGLTv8ZdJeDhoC1So3Unr3E5PmFkWvCjuPoM=;
-        b=h7H6uty75OUStXDpK8LTSXljjSK3GaoCYVzIGlpVrxMicSxVb/l4Lo7tQ0pvM0m6lF4qMn
-        0z5xZ5k8TcE0b9og1KuC76frqd9k07Bh5y/GcvL3MD7rKkqXeeVI0chF2ReFlQIVAAi+Z0
-        D5kR4BzWzK+GQ/QDQQAB8WdA2niTVY0=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-577-MfJSdPXjNQO8DsN8GWbHDw-1; Tue, 04 May 2021 10:11:26 -0400
-X-MC-Unique: MfJSdPXjNQO8DsN8GWbHDw-1
-Received: by mail-qk1-f200.google.com with SMTP id p133-20020a37428b0000b02902de31dd8da3so7603994qka.1
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:11:26 -0700 (PDT)
+        Tue, 4 May 2021 10:13:10 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF305C061574;
+        Tue,  4 May 2021 07:12:14 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id c3so9443444lfs.7;
+        Tue, 04 May 2021 07:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QTDqIV7/k9DScfd/QwCSAXbGgOt4/aGNOklhhuChvNM=;
+        b=AGnjSPU5vDFxQnP8n3dvBczS1CaaMqkCegNn25+aOcgU4QpTmICPVDdvKTeZJ6jWWH
+         +WMoy1CGZRZvKA1ikD3Bil0OWgQWEHLezy0CKQu6uS3CK43m6h0u9jZiG7HEp0be0nc+
+         B72MtZmPSNnBNk5S9QaZJ0Vs092yUmcvClwaIxWBVtrcxLson1ZAdKj/opFc/m3g+ycD
+         wZChMvdDXsN9kFQADbEil59mFFjAixQZ1QkirXOGCd0zbHgrqdhTKVzd8epAp7eJB2EU
+         U8o9Y96Dy7AQnU1zL+Np1A/ZEuukct3tJPkQDPP2G2dj/uSgOQCSlRcSDW0T6V46QuzO
+         1U5w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=0+t0xOrtGLTv8ZdJeDhoC1So3Unr3E5PmFkWvCjuPoM=;
-        b=hVnLs2khAXV4f5NW9xl/K7HMPoknnr9RLXEYjyX4cA4OYNnTUJUNERqBRjrIiX4qE1
-         du+sx7iZ/xzeTbEWIxfrvlEQBwrse1mJMMpdBfh2Ty8rHhU5d5UfCBptDhRz1/Bz6cSI
-         tChTNDbu8mQI3FYnJq70sBXheeBPsu1qNyPEODJXnwOoj9zyOcS8kygBmn5go4hBoOlX
-         7RniA01+rEnFiw/kAoQReV1Ad9IIGn0nzlrINb6tM/Euj1NDgeZouDas2PIUupk4A1IR
-         6LmXPCahcUm3KCZe1TdyA0MhoFyc+4nSL2M88z6rpu+j0dok9wTUwJdZsrjQafeR5l+t
-         GXgw==
-X-Gm-Message-State: AOAM531i81xYqPwNcw3IaTROBAyJGuMh+6oZclFrXgMdKVLeWC9Nyzmc
-        4vPM0f7rNsGdpp+NvHan1D+yY6kOq2phsy13JIb9/R0YR18i/VhYiX6Io1xWa3JvmA4i7xVHaDL
-        HJIpQFSMrC3GbBTDe6nABJQw6
-X-Received: by 2002:a0c:a404:: with SMTP id w4mr26017822qvw.45.1620137486213;
-        Tue, 04 May 2021 07:11:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw41P/PLWZsCRJf70qrTmI90b0S4l7u+kMDbmNzEmyaCW7kLNtYLwJgJESo2S4Oq1C+dkUdpA==
-X-Received: by 2002:a0c:a404:: with SMTP id w4mr26017800qvw.45.1620137486002;
-        Tue, 04 May 2021 07:11:26 -0700 (PDT)
-Received: from localhost.localdomain (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id q67sm11290821qkb.89.2021.05.04.07.11.23
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 07:11:25 -0700 (PDT)
-Subject: Re: [PATCH V5 XRT Alveo 18/20] fpga: xrt: DDR calibration driver
-To:     Lizhi Hou <lizhi.hou@xilinx.com>, linux-kernel@vger.kernel.org
-Cc:     linux-fpga@vger.kernel.org, maxz@xilinx.com,
-        sonal.santan@xilinx.com, yliu@xilinx.com, michal.simek@xilinx.com,
-        stefanos@xilinx.com, devicetree@vger.kernel.org, mdf@kernel.org,
-        robh@kernel.org, Max Zhen <max.zhen@xilinx.com>
-References: <20210427205431.23896-1-lizhi.hou@xilinx.com>
- <20210427205431.23896-19-lizhi.hou@xilinx.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <43575631-b2fd-a0fb-6147-6c3984e93a72@redhat.com>
-Date:   Tue, 4 May 2021 07:11:22 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QTDqIV7/k9DScfd/QwCSAXbGgOt4/aGNOklhhuChvNM=;
+        b=QmOOZODvaqhfxVKvEUC+lX6JSTdURm/OuH5K8G5myKRq3hDTdqTkNaaYWTrFlv9DRM
+         bI67Cy7BVS+A+OqxsErgzygiI6HinjwgXFuzcYtLvFhkyf1YvW546MwVGUUU0c11ryBo
+         TOxJUhHEW/NOXtl8l4pngiZkUwEoGdIaiCLUCnzUxDZRd09kM+176NmuUZS+VPOOKoFe
+         7HcMKWMNY50km3ttaAsSejXsm0Rmytg0SeOW+4o08DY2B/iySh+wbYUMlDiWq+Lmbcmx
+         oMxs0uonGAVVPixFkPQlExA06NTGfvxSf6CDgGPBEtuU+ySaE9p8Q+SFc9trPpnC7BkN
+         R2kQ==
+X-Gm-Message-State: AOAM530frRiQGxt/SSYc++k7UyMpghEVCXsmDO9pJcr1LEQ4c975zGmZ
+        GTEI8hxISp32qKbbBuvsUFJfARw0xnEteouhsFk=
+X-Google-Smtp-Source: ABdhPJxQFkUhvT82spmdlrtrb+tk7HQF+yOJcDpm93nb5OLIvaQOCU9vjN7QJ8uZh4g1UFv1A19bsALcRpiHSZY9B7Q=
+X-Received: by 2002:ac2:5b1a:: with SMTP id v26mr4491543lfn.534.1620137532998;
+ Tue, 04 May 2021 07:12:12 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210427205431.23896-19-lizhi.hou@xilinx.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210423230609.13519-1-alx.manpages@gmail.com> <20210504110519.16097-1-alx.manpages@gmail.com>
+In-Reply-To: <20210504110519.16097-1-alx.manpages@gmail.com>
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date:   Tue, 4 May 2021 07:12:01 -0700
+Message-ID: <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
+Subject: Re: [RFC v2] bpf.2: Use standard types and attributes
+To:     Alejandro Colomar <alx.manpages@gmail.com>
+Cc:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
+        bpf <bpf@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        Zack Weinberg <zackw@panix.com>,
+        Joseph Myers <joseph@codesourcery.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 4/27/21 1:54 PM, Lizhi Hou wrote:
-> Add DDR calibration driver. DDR calibration is a hardware function
-> discovered by walking firmware metadata. A xrt device node will
-> be created for it. Hardware provides DDR calibration status through
-> this function.
+On Tue, May 4, 2021 at 4:05 AM Alejandro Colomar <alx.manpages@gmail.com> wrote:
 >
-> Signed-off-by: Sonal Santan <sonal.santan@xilinx.com>
-> Signed-off-by: Max Zhen <max.zhen@xilinx.com>
-> Signed-off-by: Lizhi Hou <lizhi.hou@xilinx.com>
-
-v4 was ok, please add my Reviewed-by line
-
-Reviewed-by: Tom Rix <trix@redhat.com>
-
+> Some manual pages are already using C99 syntax for integral
+> types 'uint32_t', but some aren't.  There are some using kernel
+> syntax '__u32'.  Fix those.
+>
+> Some pages also document attributes, using GNU syntax
+> '__attribute__((xxx))'.  Update those to use the shorter and more
+> portable C11 keywords such as 'alignas()' when possible, and C2x
+> syntax '[[gnu::xxx]]' elsewhere, which hasn't been standardized
+> yet, but is already implemented in GCC, and available through
+> either --std=c2x or any of the --std=gnu... options.
+>
+> The standard isn't very clear on how to use alignas() or
+> [[]]-style attributes, so the following link is useful in the case
+> of 'alignas()' and '[[gnu::aligned()]]':
+> <https://stackoverflow.com/q/67271825/6872717>
+>
+> Signed-off-by: Alejandro Colomar <alx.manpages@gmail.com>
+> Cc: LKML <linux-kernel@vger.kernel.org>
+> Cc: glibc <libc-alpha@sourceware.org>
+> Cc: GCC <gcc-patches@gcc.gnu.org>
+> Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+> Cc: bpf <bpf@vger.kernel.org>
+> Cc: David Laight <David.Laight@ACULAB.COM>
+> Cc: Zack Weinberg <zackw@panix.com>
+> Cc: Joseph Myers <joseph@codesourcery.com>
 > ---
->   .../fpga/xrt/include/xleaf/ddr_calibration.h  |  28 +++
->   drivers/fpga/xrt/lib/xleaf/ddr_calibration.c  | 210 ++++++++++++++++++
->   2 files changed, 238 insertions(+)
->   create mode 100644 drivers/fpga/xrt/include/xleaf/ddr_calibration.h
->   create mode 100644 drivers/fpga/xrt/lib/xleaf/ddr_calibration.c
+>  man2/bpf.2 | 49 ++++++++++++++++++++++++-------------------------
+>  1 file changed, 24 insertions(+), 25 deletions(-)
 >
-> diff --git a/drivers/fpga/xrt/include/xleaf/ddr_calibration.h b/drivers/fpga/xrt/include/xleaf/ddr_calibration.h
-> new file mode 100644
-> index 000000000000..878740c26ca2
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/include/xleaf/ddr_calibration.h
-> @@ -0,0 +1,28 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * Authors:
-> + *	Cheng Zhen <maxz@xilinx.com>
-> + */
-> +
-> +#ifndef _XRT_DDR_CALIBRATION_H_
-> +#define _XRT_DDR_CALIBRATION_H_
-> +
-> +#include "xleaf.h"
-> +#include <linux/xrt/xclbin.h>
-> +
-> +/*
-> + * Memory calibration driver leaf calls.
-> + */
-> +enum xrt_calib_results {
-> +	XRT_CALIB_UNKNOWN = 0,
-> +	XRT_CALIB_SUCCEEDED,
-> +	XRT_CALIB_FAILED,
-> +};
-> +
-> +enum xrt_calib_leaf_cmd {
-> +	XRT_CALIB_RESULT = XRT_XLEAF_CUSTOM_BASE, /* See comments in xleaf.h */
-> +};
-> +
-> +#endif	/* _XRT_DDR_CALIBRATION_H_ */
-> diff --git a/drivers/fpga/xrt/lib/xleaf/ddr_calibration.c b/drivers/fpga/xrt/lib/xleaf/ddr_calibration.c
-> new file mode 100644
-> index 000000000000..36a0937c9195
-> --- /dev/null
-> +++ b/drivers/fpga/xrt/lib/xleaf/ddr_calibration.c
-> @@ -0,0 +1,210 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * Xilinx Alveo FPGA memory calibration driver
-> + *
-> + * Copyright (C) 2020-2021 Xilinx, Inc.
-> + *
-> + * memory calibration
-> + *
-> + * Authors:
-> + *      Lizhi Hou<Lizhi.Hou@xilinx.com>
-> + */
-> +#include <linux/delay.h>
-> +#include <linux/regmap.h>
-> +#include "xclbin-helper.h"
-> +#include "metadata.h"
-> +#include "xleaf/ddr_calibration.h"
-> +
-> +#define XRT_CALIB	"xrt_calib"
-> +
-> +#define XRT_CALIB_STATUS_REG		0
-> +#define XRT_CALIB_READ_RETRIES		20
-> +#define XRT_CALIB_READ_INTERVAL		500 /* ms */
-> +
-> +XRT_DEFINE_REGMAP_CONFIG(calib_regmap_config);
-> +
-> +struct calib_cache {
-> +	struct list_head	link;
-> +	const char		*ep_name;
-> +	char			*data;
-> +	u32			data_size;
-> +};
-> +
-> +struct calib {
-> +	struct xrt_device	*xdev;
-> +	struct regmap		*regmap;
-> +	struct mutex		lock; /* calibration dev lock */
-> +	struct list_head	cache_list;
-> +	u32			cache_num;
-> +	enum xrt_calib_results	result;
-> +};
-> +
-> +static void __calib_cache_clean_nolock(struct calib *calib)
-> +{
-> +	struct calib_cache *cache, *temp;
-> +
-> +	list_for_each_entry_safe(cache, temp, &calib->cache_list, link) {
-> +		vfree(cache->data);
-> +		list_del(&cache->link);
-> +		vfree(cache);
-> +	}
-> +	calib->cache_num = 0;
-> +}
-> +
-> +static void calib_cache_clean(struct calib *calib)
-> +{
-> +	mutex_lock(&calib->lock);
-> +	__calib_cache_clean_nolock(calib);
-> +	mutex_unlock(&calib->lock);
-> +}
-> +
-> +static int calib_calibration(struct calib *calib)
-> +{
-> +	u32 times = XRT_CALIB_READ_RETRIES;
-> +	u32 status;
-> +	int ret;
-> +
-> +	while (times != 0) {
-> +		ret = regmap_read(calib->regmap, XRT_CALIB_STATUS_REG, &status);
-> +		if (ret) {
-> +			xrt_err(calib->xdev, "failed to read status reg %d", ret);
-> +			return ret;
-> +		}
-> +
-> +		if (status & BIT(0))
-> +			break;
-> +		msleep(XRT_CALIB_READ_INTERVAL);
-> +		times--;
-> +	}
-> +
-> +	if (!times) {
-> +		xrt_err(calib->xdev,
-> +			"MIG calibration timeout after bitstream download");
-> +		return -ETIMEDOUT;
-> +	}
-> +
-> +	xrt_info(calib->xdev, "took %dms", (XRT_CALIB_READ_RETRIES - times) *
-> +		 XRT_CALIB_READ_INTERVAL);
-> +	return 0;
-> +}
-> +
-> +static void xrt_calib_event_cb(struct xrt_device *xdev, void *arg)
-> +{
-> +	struct calib *calib = xrt_get_drvdata(xdev);
-> +	struct xrt_event *evt = (struct xrt_event *)arg;
-> +	enum xrt_events e = evt->xe_evt;
-> +	enum xrt_subdev_id id;
-> +	int ret;
-> +
-> +	id = evt->xe_subdev.xevt_subdev_id;
-> +
-> +	switch (e) {
-> +	case XRT_EVENT_POST_CREATION:
-> +		if (id == XRT_SUBDEV_UCS) {
-> +			ret = calib_calibration(calib);
-> +			if (ret)
-> +				calib->result = XRT_CALIB_FAILED;
-> +			else
-> +				calib->result = XRT_CALIB_SUCCEEDED;
-> +		}
-> +		break;
-> +	default:
-> +		xrt_dbg(xdev, "ignored event %d", e);
-> +		break;
-> +	}
-> +}
-> +
-> +static void xrt_calib_remove(struct xrt_device *xdev)
-> +{
-> +	struct calib *calib = xrt_get_drvdata(xdev);
-> +
-> +	calib_cache_clean(calib);
-> +}
-> +
-> +static int xrt_calib_probe(struct xrt_device *xdev)
-> +{
-> +	void __iomem *base = NULL;
-> +	struct resource *res;
-> +	struct calib *calib;
-> +	int err = 0;
-> +
-> +	calib = devm_kzalloc(&xdev->dev, sizeof(*calib), GFP_KERNEL);
-> +	if (!calib)
-> +		return -ENOMEM;
-> +
-> +	calib->xdev = xdev;
-> +	xrt_set_drvdata(xdev, calib);
-> +
-> +	res = xrt_get_resource(xdev, IORESOURCE_MEM, 0);
-> +	if (!res) {
-> +		err = -EINVAL;
-> +		goto failed;
-> +	}
-> +
-> +	base = devm_ioremap_resource(&xdev->dev, res);
-> +	if (IS_ERR(base)) {
-> +		err = PTR_ERR(base);
-> +		goto failed;
-> +	}
-> +
-> +	calib->regmap = devm_regmap_init_mmio(&xdev->dev, base, &calib_regmap_config);
-> +	if (IS_ERR(calib->regmap)) {
-> +		xrt_err(xdev, "Map iomem failed");
-> +		err = PTR_ERR(calib->regmap);
-> +		goto failed;
-> +	}
-> +
-> +	mutex_init(&calib->lock);
-> +	INIT_LIST_HEAD(&calib->cache_list);
-> +
-> +	return 0;
-> +
-> +failed:
-> +	return err;
-> +}
-> +
-> +static int
-> +xrt_calib_leaf_call(struct xrt_device *xdev, u32 cmd, void *arg)
-> +{
-> +	struct calib *calib = xrt_get_drvdata(xdev);
-> +	int ret = 0;
-> +
-> +	switch (cmd) {
-> +	case XRT_XLEAF_EVENT:
-> +		xrt_calib_event_cb(xdev, arg);
-> +		break;
-> +	case XRT_CALIB_RESULT: {
-> +		enum xrt_calib_results *r = (enum xrt_calib_results *)arg;
-> +		*r = calib->result;
-> +		break;
-> +	}
-> +	default:
-> +		xrt_err(xdev, "unsupported cmd %d", cmd);
-> +		ret = -EINVAL;
-> +	}
-> +	return ret;
-> +}
-> +
-> +static struct xrt_dev_endpoints xrt_calib_endpoints[] = {
-> +	{
-> +		.xse_names = (struct xrt_dev_ep_names[]) {
-> +			{ .ep_name = XRT_MD_NODE_DDR_CALIB },
-> +			{ NULL },
-> +		},
-> +		.xse_min_ep = 1,
-> +	},
-> +	{ 0 },
-> +};
-> +
-> +static struct xrt_driver xrt_calib_driver = {
-> +	.driver = {
-> +		.name = XRT_CALIB,
-> +	},
-> +	.subdev_id = XRT_SUBDEV_CALIB,
-> +	.endpoints = xrt_calib_endpoints,
-> +	.probe = xrt_calib_probe,
-> +	.remove = xrt_calib_remove,
-> +	.leaf_call = xrt_calib_leaf_call,
-> +};
-> +
-> +XRT_LEAF_INIT_FINI_FUNC(calib);
+> diff --git a/man2/bpf.2 b/man2/bpf.2
+> index 6e1ffa198..04b8fbcef 100644
+> --- a/man2/bpf.2
+> +++ b/man2/bpf.2
+> @@ -186,41 +186,40 @@ commands:
+>  .PP
+>  .in +4n
+>  .EX
+> -union bpf_attr {
+> +union [[gnu::aligned(8)]] bpf_attr {
+>      struct {    /* Used by BPF_MAP_CREATE */
+> -        __u32         map_type;
+> -        __u32         key_size;    /* size of key in bytes */
+> -        __u32         value_size;  /* size of value in bytes */
+> -        __u32         max_entries; /* maximum number of entries
+> -                                      in a map */
+> +        uint32_t    map_type;
+> +        uint32_t    key_size;    /* size of key in bytes */
+> +        uint32_t    value_size;  /* size of value in bytes */
+> +        uint32_t    max_entries; /* maximum number of entries
+> +                                    in a map */
 
+For the same reasons as explained earlier:
+Nacked-by: Alexei Starovoitov <ast@kernel.org>
