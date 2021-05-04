@@ -2,102 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF37C372D1D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:39:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8B2A372D2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230494AbhEDPjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:39:55 -0400
-Received: from mga14.intel.com ([192.55.52.115]:43996 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230112AbhEDPjy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:39:54 -0400
-IronPort-SDR: SoVxsb2A2CctvZ6e9DjudQiFmiv/DsPwZcf5uBoBc/oh6kHN77sv2RAhyekFWmuCOEiFq7klCP
- AsiV1nkkkcvQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="197624568"
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="197624568"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 08:38:59 -0700
-IronPort-SDR: eVcqlKDXCpii3jZkhwnN7a0J/3G3igfAg57JBIW0V3O+usbdg9PgdLmu68B05/OGA2lKj1bKla
- JssfZGxXOk+Q==
-X-IronPort-AV: E=Sophos;i="5.82,272,1613462400"; 
-   d="scan'208";a="427815781"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 08:38:59 -0700
-Date:   Tue, 4 May 2021 08:41:48 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     "Tian, Kevin" <kevin.tian@intel.com>
-Cc:     Jason Gunthorpe <jgg@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210504084148.4f61d0b5@jacob-builder>
-In-Reply-To: <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <20210421162307.GM1370958@nvidia.com>
-        <20210421105451.56d3670a@redhat.com>
-        <20210421175203.GN1370958@nvidia.com>
-        <20210421133312.15307c44@redhat.com>
-        <20210421230301.GP1370958@nvidia.com>
-        <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210422121020.GT1370958@nvidia.com>
-        <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210423114944.GF1370958@nvidia.com>
-        <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210426123817.GQ1370958@nvidia.com>
-        <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S231396AbhEDPoE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:44:04 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:48860 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230512AbhEDPoC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:44:02 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 878731C0B87; Tue,  4 May 2021 17:43:06 +0200 (CEST)
+Date:   Tue, 4 May 2021 17:43:05 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe Kleine-K?nig <u.kleine-koenig@pengutronix.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Martin Botka <martin.botka1@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
+Message-ID: <YJFridMwwMV1K98m@mobian>
+References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
+ <20201021201224.3430546-3-bjorn.andersson@linaro.org>
+ <20201029181357.GE26053@duo.ucw.cz>
+ <YIn50NW+Pimqfsih@builder.lan>
+ <20210429211223.GA5480@amd>
+ <20210429212920.GB2484@yoga>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429212920.GB2484@yoga>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kevin,
+Hi!
 
-On Wed, 28 Apr 2021 06:34:11 +0000, "Tian, Kevin" <kevin.tian@intel.com>
-wrote:
-
+> > > One such example is the laptop in front of me, which has 3 channels
+> > > wired to an RGB LED and 1 channel wired as a backlight control signal
+> > > (i.e. using pwm-backlight).  Another example is a devboard where the
+> > > 4 channels are wired to 4 LEDs.
 > > 
-> > (also looking at ioasid.c, why do we need such a thin and odd wrapper
-> > around xarray?)
-> >   
+> > Ok, so this is actually important. In this case you should have PWM
+> > layer, exporting PWMs, and then rgb-LED driver that takes three of
+> > those PWMs and turns them into LED, no?
+> > 
+> > And ... surprise ... that is likely to help other people, as LEDs
+> > connected to PWMs are quite common.
+> > 
+> > Hmm.?
+> > 
+> > If you can't do this for some reason, you should probably explain in
+> > the changelog, because this is going to be FAQ.
+> > 
 > 
-> I'll leave it to Jean and Jacob.
-I am not sure whether you are referring to the current ioasid.c or the
-changes proposed in this patchset. I added a per VM/ioasid_set
-(also per /dev/ioasid fd) xarray to store guest-host PASID mapping.
+> This is exactly what the downstream implementation does and in the case
+> of a solid color LED this works fine.
+> 
+> But the hardware has a shared chunk of memory where you can write
+> duty-cycle values, then for each PWM channel you can specify the
+> start/stop index and pace for the PWM to read and update the configured
+> duty-cycle. This is how the hardware implements pattern support.
 
-The current code has a xarray for the allocators.
+Ok.
 
-struct ioasid_allocator_data {
-	struct ioasid_allocator_ops *ops;
-	struct list_head list;
-	struct list_head slist;
-#define IOASID_ALLOCATOR_CUSTOM BIT(0) /* Needs framework to track results */
-	unsigned long flags;
-	struct xarray xa;
-	struct rcu_head rcu;
-};
+> So downstream they have (last time I looked at the code) an addition in
+> the PWM API where the LED driver can inform the PWM driver part about
+> the indices to use. Naturally I don't think that's a good idea.
 
-Could you elaborate?
+Dunno. Is it bad idea?
 
-Thanks,
+pattern support for other PWMs (vibration?) seems useful, too. Yes, it
+means more discussion and extending PWMs properly..
 
-Jacob
+> Additionally, representing this as individual PWM channels means we're
+> loosing the grouping that now comes from the description of multicolor
+> LEDs, which serves the basis for synchronizing the pattern traversal
+> between the involved channels.
+
+Yes, keeping grouping would be nice, but perhaps pattern API for PWMs
+can do that too?
+
+You can have solid-color-only driver now, with patterns being added
+as discussion with PWM people progresses...
+
+Best regards,
+									Pavel
+
+-- 
