@@ -2,97 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36445372CB9
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A20372CBB
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:08:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230398AbhEDPH0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:07:26 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:33507 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230086AbhEDPHZ (ORCPT
+        id S231139AbhEDPI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:08:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35775 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230086AbhEDPI5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:07:25 -0400
-Received: by mail-oi1-f181.google.com with SMTP id t8so9089883oij.0;
-        Tue, 04 May 2021 08:06:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ZoAjfrltSVyzvHATSeL3gfPA6CxQb+8qG4ggVE86NF4=;
-        b=pW1VPaG0RvrooohH5oP+KMyJzW4ZcmLxQvKJCYKQQHs6osToay/4x39O9qOswENULW
-         yiIjBYtq+M6L0m1NSYmAy0wV+sZsFEJzRijDg8TUtkLzcH9/1WuJ+ucTPjvpyykzdldY
-         oP6HAvk3rppuIUf3vcI0Ga3ZkSTtqJLzPn8twIpJnpMpEVYcV92Md91m4c56J/2NDCaF
-         WDj4t8o58fL/j+5XF1pXvqlaWAtHu+F50jlNYii/KZiqsoMsoxa+P+Ityv6omWiU3D7a
-         4NF+O3qjOp7gPs4zYvZB5l/mqtzO2dpNppKywZhGagrZt6+XfJmmSwlcGYrKEUIyGt5B
-         FECg==
-X-Gm-Message-State: AOAM531jhgC3/C7v5/8IOMHtOzTVfMRqDnWmJrWQEQR7F/dukIUKi14Y
-        X3fLw1z20Z0oS9ccGODgbcMw9A8gAlXFnEEV244=
-X-Google-Smtp-Source: ABdhPJwVsXKxb3GOizSOvfMCjDGsNHTB3bqdiC6ZUtdfFWJdsnaPFHeqKA75hPeaVxAyaYI8wOgsXoF7XIrl9NTEgxQ=
-X-Received: by 2002:aca:5fc3:: with SMTP id t186mr17430830oib.69.1620140787763;
- Tue, 04 May 2021 08:06:27 -0700 (PDT)
+        Tue, 4 May 2021 11:08:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620140882;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GxqMjtSqo6UrPkylZIMzzPAOqGJHe0mXIntTdhhqWP4=;
+        b=LcEX/yDB78tqYjqOP3pdkzew5q4f1+fEbvzCdtO3PNtyI7/T9ouH14yJUzaCkdpcv8MLLs
+        xoIgbejzk62Vf2EsIxyADy1BXKOpG+JuNUyaPXt1vj2gDsKLcj5tw1pbQI+H31NiBB2Ftj
+        NoezB4YM8176KI/2rZyLTc430GhZgUc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-240-KysDyyTGNYefwM_iafrb4Q-1; Tue, 04 May 2021 11:08:00 -0400
+X-MC-Unique: KysDyyTGNYefwM_iafrb4Q-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id F203F18BA280;
+        Tue,  4 May 2021 15:07:58 +0000 (UTC)
+Received: from krava (unknown [10.40.192.136])
+        by smtp.corp.redhat.com (Postfix) with SMTP id F3BC85D6B1;
+        Tue,  4 May 2021 15:07:56 +0000 (UTC)
+Date:   Tue, 4 May 2021 17:07:56 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Jin Yao <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v1 2/2] perf header: Support hybrid CPU_PMU_CAPS
+Message-ID: <YJFjTCsk9dCd6QP7@krava>
+References: <20210430074602.3028-1-yao.jin@linux.intel.com>
+ <20210430074602.3028-2-yao.jin@linux.intel.com>
 MIME-Version: 1.0
-References: <20210502172326.2060025-1-keescook@chromium.org>
- <0fefece0-f8a1-6ee1-114f-0a2bb412b986@redhat.com> <YJAN/nwldJKwTV/V@kroah.com>
-In-Reply-To: <YJAN/nwldJKwTV/V@kroah.com>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Tue, 4 May 2021 17:06:10 +0200
-Message-ID: <CAJZ5v0ioc1t62C68g7twcJRQixiB2uxCpcW3QFu6Rpwu15jUzw@mail.gmail.com>
-Subject: Re: [PATCH] Revert "ACPI: custom_method: fix memory leaks"
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Mark Langsdorf <mlangsdo@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Wenwen Wang <wenwen@cs.uga.edu>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210430074602.3028-2-yao.jin@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 4:51 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> On Mon, May 03, 2021 at 08:17:14AM -0500, Mark Langsdorf wrote:
-> > In 5/2/21 12:23 PM, Kees Cook wrote:
-> > > This reverts commit 03d1571d9513369c17e6848476763ebbd10ec2cb.
-> > >
-> > > While /sys/kernel/debug/acpi/custom_method is already a privileged-only
-> > > API providing proxied arbitrary write access to kernel memory[1][2],
-> > > with existing race conditions[3] in buffer allocation and use that could
-> > > lead to memory leaks and use-after-free conditions, the above commit
-> > > appears to accidentally make the use-after-free conditions even easier
-> > > to accomplish. ("buf" is a global variable and prior kfree()s would set
-> > > buf back to NULL.)
-> > >
-> > > This entire interface needs to be reworked (if not entirely removed).
-> > >
-> > > [1] https://lore.kernel.org/lkml/20110222193250.GA23913@outflux.net/
-> > > [2] https://lore.kernel.org/lkml/201906221659.B618D83@keescook/
-> > > [3] https://lore.kernel.org/lkml/20170109231323.GA89642@beast/
-> > >
-> > > Cc: Wenwen Wang <wenwen@cs.uga.edu>
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> >
-> > I have two patches submitted to linux-acpi to fix the most obvious bugs in
-> > the current driver.  I don't think that just reverting this patch in its
-> > entirety is a good solution: it still leaves the buf allocated in -EINVAL,
-> > as well as the weird case where a not fully consumed buffer can be
-> > reallocated without being freed on a subsequent call.
-> >
-> > https://lore.kernel.org/linux-acpi/20210427185434.34885-1-mlangsdo@redhat.com/
-> >
-> > https://lore.kernel.org/linux-acpi/20210423152818.97077-1-mlangsdo@redhat.com/
-> >
-> > I support rewriting this driver in its entirety, but reverting one bad patch
-> > to leave it in a different buggy state is less than ideal.
->
-> It's buggy now, and root-only, so it's a low bar at the moment :)
+On Fri, Apr 30, 2021 at 03:46:02PM +0800, Jin Yao wrote:
+> On hybrid platform, it may have several cpu pmus, such as,
+> "cpu_core" and "cpu_atom". The CPU_PMU_CAPS feature in perf
+> header needs to be improved to support multiple cpu pmus.
+> 
+> The new layout in header is defined as:
+> 
+> <nr_caps>
+> <caps string>
+> <caps string>
+> <pmu name>
+> <nr of rest pmus>
 
-So dropping it completely may be a better choice.
+not sure why is the 'nr of rest pmus' needed
 
-IMO let's let the Mark's commits go in now and we'll see later.
+the current format is:
 
-Thanks!
+        u32 nr_cpu_pmu_caps;
+        {
+                char    name[];
+                char    value[];
+        } [nr_cpu_pmu_caps]
+
+
+I guess we could extend it to:
+
+        u32 nr_cpu_pmu_caps;
+        {
+                char    name[];
+                char    value[];
+        } [nr_cpu_pmu_caps]
+	char pmu_name[]
+
+        u32 nr_cpu_pmu_caps;
+        {
+                char    name[];
+                char    value[];
+        } [nr_cpu_pmu_caps]
+	char pmu_name[]
+
+	...
+
+and we could detect the old format by checking that there's no
+pmu name.. but maybe I'm missing something, I did not check deeply,
+please let me know
+
+also would be great to move the format change and storing hybrid
+pmus in separate patches
+
+thanks,
+jirka
+
