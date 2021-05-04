@@ -2,178 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555FC372C2B
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E34BA372C2E
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:36:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231612AbhEDOhS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:37:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59088 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231182AbhEDOhR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:37:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6D7BF610A5;
-        Tue,  4 May 2021 14:36:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620138982;
-        bh=FbzoPsiNxjhsjnPK+N6/oR3IDqDoEqDwJhfk1QDqlbQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=SzQCPFzb/+UXZVq0VhM/kp1P578zmBsE+/iCFR+gziZe/8/oFL8i1tiEg4GDI5Or8
-         nYS2RRbuwARzXXmGy0qiVgmkXf2tmXTTlbEf68N8Y4BheOrxI6uKNDiKpPMAuTSA/y
-         Zlm+XGfejfYlFy5KVwJJMK5xBlagOOZV7q1I/jDSSdjPrAANmzwPozT7f6j7o6IgNw
-         AkKT6cHJofXM6BznpzLeTZnF4mcNq5dDXgHXXHI9tPQ36j4FwHwt4+qRuhHqLIhAFt
-         nJ/lQSoaks0U6GJcuAd5ZM5DL+uoureoGwTV/sgFpXoCdtbHmIX58juIj5AFbdkT/H
-         f5TnB4s2zVHUQ==
-Date:   Tue, 4 May 2021 07:36:20 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org,
-        Yunlei He <heyunlei@hihonor.com>
-Subject: Re: [PATCH v2] f2fs: reduce expensive checkpoint trigger frequency
-Message-ID: <YJFb5GWijGzHOAV6@google.com>
-References: <20210425011053.44436-1-yuchao0@huawei.com>
- <YIbzwPGOJoKZvFnv@google.com>
- <3338f2bc-6985-c1a4-9f3d-e59a474027f9@huawei.com>
+        id S231635AbhEDOhe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:37:34 -0400
+Received: from mail-eopbgr10078.outbound.protection.outlook.com ([40.107.1.78]:1347
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231316AbhEDOhc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 10:37:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BO4Tof2ph3Z0h6auBIU8rq/DL0J/HzjyqYPbT+SPD8C93xqoLRPMjQBDKAt1D59TlCI1TpOTHI9fmDFl+w+5pAQju+gP5gU2IoprIkiRSJc/pcHTyO370NyNcqBi7Q8xwh7pMC1hwRcle+n5c73jfPlOjCjz0LC9kYwuLZBO7ovSAVtr9S/jJBLVOm40sj6ZjEzXHIn9xy8PBNOnz2yCKmEn1FD6Pu9H6NjFDqKtW26xOkdq7FYDX6vpsYuMrMnhDkwECwjnot/ZJ5dD7eIc+SzRC2Lg0+KRX8uD0Z6cpbr5iBq+1Jp+nkFd6iv8Dyoyjoy13FreBac5WNB7xHTDZQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gymCQqz87OhwqB4Dg1suFAkIMnas3GbD+WsBN4yJTTM=;
+ b=D7exX779hQyYsBuCBhCHlynELacFTaneR+u2CfIMAtuWZztS23DfgH6uVlGv16/5fQb1BM6lyCG6xFuje2e+6bntYGAGdTOB+DpLE5NY5e1b01EwtO1UHbOAqEtVcIhu2zuQbJFoTOr1Nn0D9CAoHUheEuU7agaRQBKK7g7IoyxgrNZ+R/s+YwdVw2AwH6qUVoXP0LixwNRI936qNOl1UC8mQOMdzt7TRHxdNgJ/q5S9tr+lbtCPsrGZkddgsvGED1eu98bybdrKIYpJum+pHCAdYYUTkfLpTPUCZtTqrzZQuDkwZsavoFuXnhzOW+d6061BDF0o3SfAwzzBBu/8FQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gymCQqz87OhwqB4Dg1suFAkIMnas3GbD+WsBN4yJTTM=;
+ b=PIaBBskVnWJbOC9KRdE2C+wbsWuG2wuqi+/pF7gXos29NutOTBTxHoAhNwFzAddQZIc+nEeFTvXI1flH8ZV77RJxb/MUzn6QBXmIolSYCN+PL91K8xzd/og7d/rr4heN6BGwFUCA7l1V5Vur9n7TtTTs9FATUQshEsSNMAfV4CY=
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com (2603:10a6:803:55::19)
+ by VI1PR04MB5854.eurprd04.prod.outlook.com (2603:10a6:803:e2::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.21; Tue, 4 May
+ 2021 14:36:34 +0000
+Received: from VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::f0c0:cb99:d153:e39b]) by VI1PR04MB5136.eurprd04.prod.outlook.com
+ ([fe80::f0c0:cb99:d153:e39b%7]) with mapi id 15.20.4087.044; Tue, 4 May 2021
+ 14:36:34 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+CC:     Andrew Lunn <andrew@lunn.ch>,
+        Colin Foster <colin.foster@in-advantage.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        "supporter:OCELOT ETHERNET SWITCH DRIVER" 
+        <UNGLinuxDriver@microchip.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        "open list:OCELOT ETHERNET SWITCH DRIVER" <netdev@vger.kernel.org>
+Subject: Re: [RFC PATCH vN net-next 2/2] net: mscc: ocelot: add support for
+ VSC75XX SPI control
+Thread-Topic: [RFC PATCH vN net-next 2/2] net: mscc: ocelot: add support for
+ VSC75XX SPI control
+Thread-Index: AQHXQKP/w6NmRV8LhkOQoP6VPcP45arTQY4AgAAH3ACAAA+UgIAAC3uA
+Date:   Tue, 4 May 2021 14:36:34 +0000
+Message-ID: <20210504143633.gju4sgjntihndpy6@skbuf>
+References: <20210504051130.1207550-1-colin.foster@in-advantage.com>
+ <20210504051130.1207550-2-colin.foster@in-advantage.com>
+ <YJE+prMCIMiQm26Z@lunn.ch> <20210504125942.nx5b6j2cy34qyyhm@skbuf>
+ <YJFST3Q13Kp/Eqa1@piout.net>
+In-Reply-To: <YJFST3Q13Kp/Eqa1@piout.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: bootlin.com; dkim=none (message not signed)
+ header.d=none;bootlin.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [86.127.41.210]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ed5d19f1-7894-4ffd-a792-08d90f0a0475
+x-ms-traffictypediagnostic: VI1PR04MB5854:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <VI1PR04MB5854B5DF7DB50759DFF69C3EE05A9@VI1PR04MB5854.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: HxKDylaJIHDlfQPLOe9lKNJKqZy8VSmKFvWwzaZdrQ0BTNQp69Wp9M0eHmaiJFzb0ICia+xWyknWA3TfR2sYeJOLdJFWBI7T3JRBnB4qvxUWkYh6lI7UENHPiOktn3ICKXLgcLBLJmd3g9216gLxPzSaX8nyjUzucKE+mM3ecVCO8evZPf+n18YJPD16AmMkoPvRPCq3Q9uxTfjbdracnIZMlWnILHwG+/zkR+i6A1xvpDAUzUNLmztmxYdIGz1voBMS8L+tlSw+Ms3J9DIiNRMwb+NK9uTlgFK4E7Hfjs+/VXljAPoMeg+byzu+rbTZLZYbrWjJbW5F3ZJ2Oy8ATXszCt23MXua9k0vvO8RHy0lLprM4xWQ9pr8FkGvSYubqxayYM3LDPhQX0vA37/eENfVWLtx8Fopahe4ZdTTC1Q+xhJ3YSDW8+9095KaJ/AGjachh/FZEp2RdsiVAl7FJgX6wKR+a+iHiyCzXipxuH3IvePLJwBxyZdZJSMSq8PRtCBjHyO8uGbFZh+WT5wq8J1GgXz89qHrVmAPFI5UpnNJJ4dX9XYscRz8Wh1xF7BndR2HpeKK4+gX9Xphtj8lSGHVUfL5mrLrz8PvOa44hZw=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5136.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(7916004)(4636009)(396003)(346002)(366004)(136003)(39850400004)(376002)(6916009)(26005)(186003)(6506007)(8936002)(2906002)(66556008)(6512007)(33716001)(5660300002)(44832011)(86362001)(64756008)(76116006)(66446008)(6486002)(71200400001)(66476007)(91956017)(7416002)(9686003)(38100700002)(66946007)(1076003)(478600001)(83380400001)(8676002)(316002)(4326008)(54906003)(122000001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?zLSznDMVpZBGy7QUMrVpSYFuvHHj2cepWZXjhpTI9cDP1IwsFepILa+wI6bB?=
+ =?us-ascii?Q?gL/wqd6CJ0iPY7AGoc7wDBcmBTil1gbl0Ghd2GZNV4pPKpKSbDmro8e6DcMc?=
+ =?us-ascii?Q?7JsEPYSzd9ur0D2qzkUQY88iKx2YpJu444Gtz0Xn4VUvxs7Gu8nsHlm+jaIz?=
+ =?us-ascii?Q?NFSMq25S2BF+eu2hHEhcI9g4w+BItvlDBqL+9wgzXUlYRXds6WyxPTfC98gf?=
+ =?us-ascii?Q?UWUESKnVDFxki58wEQK9GI6hh8WqqaTdHoY+7eclEsXEJwBuuB4X8sgCWyPH?=
+ =?us-ascii?Q?7+ETcdimTsIccX/iXQ+HMyD02CqYdj2DuE7uu2i926igd86QKvnhG8KpyL92?=
+ =?us-ascii?Q?EZHytHM73oLtGAAlm1HWlivd8wGogB4SHUfT6RArAeqIt59jm60cuhTSZOc+?=
+ =?us-ascii?Q?Lfb0bJyXP3g+csrPuh2EqySrA5kpfg1rTjqViqyWBNeZEwWZEmtzS+fMUsal?=
+ =?us-ascii?Q?UQPACacgugfg3q1d3ic8PPyg5eRl3T55aOABk2pRh3Igta0hZycNrWH7FsKW?=
+ =?us-ascii?Q?p1fknBrjvYUFbEhiG2G/069ryoMgWSupq9n/xlvyBIXeWhIQx8ntxe961QJe?=
+ =?us-ascii?Q?TwtM4Wx58kwouLW3RX2zQnhkrkGwHVW2zxvBSYWLswgthOxQ1IqpM0hA1Swk?=
+ =?us-ascii?Q?zVnezWBv6Mn38XBwa5YyCaOnqoJ7YCUDFbetyKo96t6W3aQ1eD3ZPbuIxY/V?=
+ =?us-ascii?Q?6t6Fq0ELWCKavACWeST5+i5TYMHs18q5khXlzSH0e+quyu+6spqEunXaz9E1?=
+ =?us-ascii?Q?APtNYzMHMCwi42vc5Vj1JU+68SzgimDHqFsR1JhVf5alDMPcYFJ+tWGC2WwX?=
+ =?us-ascii?Q?QPoCtGF0sm6anau+051UcjPYVQgPTqn8I4A563+BdUReejtd/XmpiS+YGHRs?=
+ =?us-ascii?Q?i15KkTTGXxfwzSjaYZRDxnQkKJ/4hUWrZZblb8tVUWugWHGkxIBoUeRPHC67?=
+ =?us-ascii?Q?IDmeEcujTvlF5YAuegCpv26X7XJmcHFavIW4ytkKEBBf4lqTWrxTORSRxVth?=
+ =?us-ascii?Q?xtJIPsKXqLRmE8GkD//6VIyNfTKJnPFZ+Ljri0uKGQec81RNGkbevQQBb/ZN?=
+ =?us-ascii?Q?TtgFFwoFmftDwXIDdsMqN+f5F6Ubcqb9iBwdZnQ+ZYXbsHeyeMTOGCvf+r8X?=
+ =?us-ascii?Q?iY5Ee06zPqYEjU8Z2Rs1jjKXIXPdPPsZg1pocUsTK4DrHUkULyyECFhYhDve?=
+ =?us-ascii?Q?m8vEaPV88nQqqB7JJ8UzCDaJXXe+6N1jrlAGq2YOBamJwLFA7P3Ujy5PIPxI?=
+ =?us-ascii?Q?QE8qhEq2eAJa1GQhRcDA03tD/zYRejHw24hVEauQysyeVHSlHEijdSWbGnWd?=
+ =?us-ascii?Q?nvOCn3WHke1m81zkFDo2BJh8?=
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <78776726A1DC1644A2756BBC809027F1@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <3338f2bc-6985-c1a4-9f3d-e59a474027f9@huawei.com>
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5136.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ed5d19f1-7894-4ffd-a792-08d90f0a0475
+X-MS-Exchange-CrossTenant-originalarrivaltime: 04 May 2021 14:36:34.6636
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: FThTSoe2jnC9V90Fuz5K8oUiiWygJcZmzKKNoQlUxqsYNgu0vWmUh0WSRkSv4XPGlpUqDk1FHRAdpBq01sVCHg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5854
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/27, Chao Yu wrote:
-> On 2021/4/27 1:09, Jaegeuk Kim wrote:
-> > On 04/25, Chao Yu wrote:
-> > > We may trigger high frequent checkpoint for below case:
-> > > 1. mkdir /mnt/dir1; set dir1 encrypted
-> > > 2. touch /mnt/file1; fsync /mnt/file1
-> > > 3. mkdir /mnt/dir2; set dir2 encrypted
-> > > 4. touch /mnt/file2; fsync /mnt/file2
-> > > ...
-> > > 
-> > > Although, newly created dir and file are not related, due to
-> > > commit bbf156f7afa7 ("f2fs: fix lost xattrs of directories"), we will
-> > > trigger checkpoint whenever fsync() comes after a new encrypted dir
-> > > created.
-> > > 
-> > > In order to avoid such condition, let's record an entry including
-> > > directory's ino into global cache when we initialize encryption policy
-> > > in a checkpointed directory, and then only trigger checkpoint() when
-> > > target file's parent has non-persisted encryption policy, for the case
-> > > its parent is not checkpointed, need_do_checkpoint() has cover that
-> > > by verifying it with f2fs_is_checkpointed_node().
-> > > 
-> > > Reported-by: Yunlei He <heyunlei@hihonor.com>
-> > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > ---
-> > > v2:
-> > > - fix to set ENC_DIR_INO only for encrypted directory
-> > >   fs/f2fs/f2fs.h              | 2 ++
-> > >   fs/f2fs/file.c              | 3 +++
-> > >   fs/f2fs/xattr.c             | 6 ++++--
-> > >   include/trace/events/f2fs.h | 3 ++-
-> > >   4 files changed, 11 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > > index b9d5317db0a7..0fe881309a20 100644
-> > > --- a/fs/f2fs/f2fs.h
-> > > +++ b/fs/f2fs/f2fs.h
-> > > @@ -246,6 +246,7 @@ enum {
-> > >   	APPEND_INO,		/* for append ino list */
-> > >   	UPDATE_INO,		/* for update ino list */
-> > >   	TRANS_DIR_INO,		/* for trasactions dir ino list */
-> > > +	ENC_DIR_INO,		/* for encrypted dir ino list */
-> > >   	FLUSH_INO,		/* for multiple device flushing */
-> > >   	MAX_INO_ENTRY,		/* max. list */
-> > >   };
-> > > @@ -1090,6 +1091,7 @@ enum cp_reason_type {
-> > >   	CP_FASTBOOT_MODE,
-> > >   	CP_SPEC_LOG_NUM,
-> > >   	CP_RECOVER_DIR,
-> > > +	CP_ENC_DIR,
-> > >   };
-> > >   enum iostat_type {
-> > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > index a595050c56d3..62af29ec0879 100644
-> > > --- a/fs/f2fs/file.c
-> > > +++ b/fs/f2fs/file.c
-> > > @@ -218,6 +218,9 @@ static inline enum cp_reason_type need_do_checkpoint(struct inode *inode)
-> > >   		f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
-> > >   							TRANS_DIR_INO))
-> > >   		cp_reason = CP_RECOVER_DIR;
-> > > +	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
-> > > +							ENC_DIR_INO))
-> > > +		cp_reason = CP_ENC_DIR;
-> > >   	return cp_reason;
-> > >   }
-> > > diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
-> > > index c8f34decbf8e..70615d504f7e 100644
-> > > --- a/fs/f2fs/xattr.c
-> > > +++ b/fs/f2fs/xattr.c
-> > > @@ -630,6 +630,7 @@ static int __f2fs_setxattr(struct inode *inode, int index,
-> > >   			const char *name, const void *value, size_t size,
-> > >   			struct page *ipage, int flags)
-> > >   {
-> > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> > >   	struct f2fs_xattr_entry *here, *last;
-> > >   	void *base_addr, *last_base_addr;
-> > >   	int found, newsize;
-> > > @@ -745,8 +746,9 @@ static int __f2fs_setxattr(struct inode *inode, int index,
-> > >   			!strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT))
-> > >   		f2fs_set_encrypted_inode(inode);
-> > >   	f2fs_mark_inode_dirty_sync(inode, true);
-> > > -	if (!error && S_ISDIR(inode->i_mode))
-> > > -		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
-> > > +	if (!error && S_ISDIR(inode->i_mode) && f2fs_encrypted_file(inode) &&
-> > > +			f2fs_is_checkpointed_node(sbi, inode->i_ino))
-> > > +		f2fs_add_ino_entry(sbi, inode->i_ino, ENC_DIR_INO);
-> > 
-> > What will happen, if we need to checkpoint xattr_nid on this directory?
-> 
-> need_do_checkpoint()
-> 
-> a)	else if (!f2fs_is_checkpointed_node(sbi, F2FS_I(inode)->i_pino))
-> 		cp_reason = CP_NODE_NEED_CP;
+On Tue, May 04, 2021 at 03:55:27PM +0200, Alexandre Belloni wrote:
+> On 04/05/2021 12:59:43+0000, Vladimir Oltean wrote:
+> > > > +static void vsc7512_phylink_validate(struct ocelot *ocelot, int po=
+rt,
+> > > > +				     unsigned long *supported,
+> > > > +				     struct phylink_link_state *state)
+> > > > +{
+> > > > +	struct ocelot_port *ocelot_port =3D ocelot->ports[port];
+> > > > +	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) =3D {
+> > > > +		0,
+> > > > +	};
+> > >=20
+> > > This function seems out of place. Why would SPI access change what th=
+e
+> > > ports are capable of doing? Please split this up into more
+> > > patches. Keep the focus of this patch as being adding SPI support.
+> >=20
+> > What is going on is that this is just the way in which the drivers are
+> > structured. Colin is not really "adding SPI support" to any of the
+> > existing DSA switches that are supported (VSC9953, VSC9959) as much as
+> > "adding support for a new switch which happens to be controlled over
+> > SPI" (VSC7512).
+>=20
+> Note that this should not only be about vsc7512 as the whole ocelot
+> family (vsc7511, vsc7512, vsc7513 and vsc7514) can be connected over
+> spi. Also, they can all be used in a DSA configuration, over PCIe, just
+> like Felix.
 
-This will change the current behavior which does checkpoint regardless of the
-parent being checkpointed. If i_pino was checkpointed but xnid wasn't, can we
-get xnid being checkpointed?
+I see. From the Linux device driver model's perspective, a SPI driver
+for VSC7512 is still different than an MMIO driver for the same hardware
+is, and that is working a bit against us. I don't know much about regmap
+for SPI, specifically how are the protocol buffers constructed, and if
+it's easy or not to have a driver-specified hook in which the memory
+address for the SPI reads and writes is divided by 4. If I understand
+correctly, that's about the only major difference between a VSC7512
+driver for SPI vs MMIO, and would allow reusing the same regmaps as e.g.
+the ones in drivers/net/ethernet/ocelot_vsc7514.c. Avoiding duplication
+for the rest could be handled with a lot of EXPORT_SYMBOL, although
+right now, I am not sure that is quite mandated yet. I know that the
+hardware is capable of a lot more flexibility than what the Linux
+drivers currently make of, but let's not think of overly complex ways of
+managing that entire complexity space unless somebody actually needs it.
 
-> 
-> b)	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
-> 							ENC_DIR_INO))
-> 		cp_reason = CP_ENC_DIR;
-> 
-> If parent is not checkpointed, after converting parent to encrypted directory
-> and create the file in parent, fsync this file will trigger checkpoint() due
-> to a)
-> 
-> If parent is checkpointed, after converting parent to encrypted directory
-> and create the file in parent, fsync this file will trigger checkpoint() due
-> to b)
-> 
-> Am I missing any cases?
-> 
-> Thanks,
-> 
-> > 
-> > >   same:
-> > >   	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
-> > > diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-> > > index 56b113e3cd6a..ca0cf12226e9 100644
-> > > --- a/include/trace/events/f2fs.h
-> > > +++ b/include/trace/events/f2fs.h
-> > > @@ -145,7 +145,8 @@ TRACE_DEFINE_ENUM(CP_RESIZE);
-> > >   		{ CP_NODE_NEED_CP,	"node needs cp" },		\
-> > >   		{ CP_FASTBOOT_MODE,	"fastboot mode" },		\
-> > >   		{ CP_SPEC_LOG_NUM,	"log type is 2" },		\
-> > > -		{ CP_RECOVER_DIR,	"dir needs recovery" })
-> > > +		{ CP_RECOVER_DIR,	"dir needs recovery" },		\
-> > > +		{ CP_ENC_DIR,		"persist encryption policy" })
-> > >   #define show_shutdown_mode(type)					\
-> > >   	__print_symbolic(type,						\
-> > > -- 
-> > > 2.29.2
-> > .
-> > 
+As to phylink, I had some old patches converting ocelot to phylink in
+the blind, but given the fact that I don't have any vsc7514 board and I
+was relying on Horatiu to test them, those patches didn't land anywhere
+and would be quite obsolete now.
+I don't know how similar VSC7512 (Colin's chip) and VSC7514 (the chip
+supported by the switchdev ocelot) are in terms of hardware interfaces.
+If the answer is "not very", then this is a bit of a moot point, but if
+they are, then ocelot might first have to be converted to phylink, and
+then its symbols exported such that DSA can use them too.
+
+What Colin appears to be doing differently to all other Ocelot/Felix
+drivers is that he has a single devm_regmap_init_spi() in felix_spi_probe.
+Whereas everyone else uses a separate devm_regmap_init_mmio() per each
+memory region, tucked away in ocelot_regmap_init(). I still haven't
+completely understood why that is, but this is the reason why he needs
+the "offset" passed to all I/O accessors: since he uses a single regmap,
+the offset is what accesses one memory region or another in his case.
+
+I see Colin uses some regmap accesses in order to set up the SPI bus
+interface:
+
+felix_spi_probe
+-> felix_spi_init_bus
+
+before the ocelot hardware library is up and running, which is at this
+point:
+
+felix_spi_probe
+-> dsa_register_switch
+   -> felix_setup
+      -> ocelot_init
+
+I suspect that if Colin could defer his felix_spi_init_bus work until
+some later point, such as until vsc7512_reset, then he could preserve
+the existing code structure, with one regmap per register region as
+opposed to a single regmap.
+
+By the way, I am not opposed to more refactoring being done to the felix
+driver itself, for example if ocelot_init needs to be done before
+dsa_register_switch, I'm in favor of that if it's helpful. There is a
+comment on top of felix_setup() which is no longer true, it reads:
+
+/* Hardware initialization done here so that we can allocate structures wit=
+h
+ * devm without fear of dsa_register_switch returning -EPROBE_DEFER and cau=
+sing
+ * us to allocate structures twice (leak memory) and map PCI memory twice
+ * (which will not work).
+ */
+
+What was actually wrong there has been solved in the meantime by commit
+b4024c9e5c57 ("felix: Fix initialization of ioremap resources"). So now
+there isn't any problem with EPROBE_DEFER, we can initialize the regmap
+anywhere.=
