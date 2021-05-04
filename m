@@ -2,183 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2E60373280
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:34:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF34A373285
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbhEDWdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 18:33:06 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18436 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233461AbhEDWcL (ORCPT
+        id S229868AbhEDWel (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 18:34:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53724 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhEDWeg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 18:32:11 -0400
-Received: from pps.filterd (m0098420.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 144M5KD9150438;
-        Tue, 4 May 2021 18:30:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : in-reply-to : references : date : message-id : mime-version :
- content-type; s=pp1; bh=X7EVs3vkSqYsqjf3PI8lzf7fThEuBAD5q5VbGWf7eM4=;
- b=mbf0n7RGEreK1ld2oa0c+Xj9WBbfK02pGMypjjPJ9Lh1Uat+TIa5NeXtHX4HOD8KsnK9
- 0+PxMMEW0ambti7qdN+sDSg1xIcYnvgh+69Rpa8i7JiwaggNidq8pzoVR83lLmGfWa+5
- WPdb53zM9XCpO5NFvpGlKrDgZ+/TQFLEgfMyMU12JN/97CTY4VNskCv4TS8IfQb11N4G
- JzLceJeI+vYUa6r7oi6pNXvb8wyVXPg17DcmXMHX6VBt2ngVTpi0fUP+4XAc+LajGayH
- eDEJINSSH122Sv/KyhQFU10Zhxny+J0Gm/6dOEyQX4p5a8wc45hE4nnH3gZfC4or3mDk xg== 
-Received: from ppma02dal.us.ibm.com (a.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.10])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38bea7h2wn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 May 2021 18:30:50 -0400
-Received: from pps.filterd (ppma02dal.us.ibm.com [127.0.0.1])
-        by ppma02dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 144MRurg005510;
-        Tue, 4 May 2021 22:30:50 GMT
-Received: from b03cxnp08028.gho.boulder.ibm.com (b03cxnp08028.gho.boulder.ibm.com [9.17.130.20])
-        by ppma02dal.us.ibm.com with ESMTP id 38bedy899d-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 04 May 2021 22:30:49 +0000
-Received: from b03ledav002.gho.boulder.ibm.com (b03ledav002.gho.boulder.ibm.com [9.17.130.233])
-        by b03cxnp08028.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 144MUmhZ24969514
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Tue, 4 May 2021 22:30:48 GMT
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 66B88136069;
-        Tue,  4 May 2021 22:30:48 +0000 (GMT)
-Received: from b03ledav002.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 46EB5136051;
-        Tue,  4 May 2021 22:30:48 +0000 (GMT)
-Received: from localhost (unknown [9.211.126.236])
-        by b03ledav002.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Tue,  4 May 2021 22:30:48 +0000 (GMT)
-From:   Nathan Lynch <nathanl@linux.ibm.com>
-To:     Laurent Dufour <ldufour@linux.ibm.com>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Tyrel Datwyler <tyreld@linux.ibm.com>, mpe@ellerman.id.au,
-        benh@kernel.crashing.org, paulus@samba.org
-Subject: Re: [PATCH v4] pseries/drmem: update LMBs after LPM
-In-Reply-To: <20210504092038.8514-1-ldufour@linux.ibm.com>
-References: <20210504092038.8514-1-ldufour@linux.ibm.com>
-Date:   Tue, 04 May 2021 17:30:47 -0500
-Message-ID: <87bl9qf7xk.fsf@linux.ibm.com>
+        Tue, 4 May 2021 18:34:36 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B9DEC061574;
+        Tue,  4 May 2021 15:33:40 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id h11so690815pfn.0;
+        Tue, 04 May 2021 15:33:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=N/iQQC7fp/dtYGOuSg6VYXx30On1O4Podmv44Ld28t8=;
+        b=cRTWCW0YlQcO68lQFrrYGCgLtQegbYPyhazNFTL3zL/R64bBPmvH0h5Tu9vqfIBhaF
+         5KQaPkKxiejgQSJLD35yHwKXO0kqounJlwAw12ms9nnlolkco/OLqwvBLIhVZ3C8JiL9
+         8QerknFPKHi/YlICqWSzmNX6BblRirN0iXoFDw4ZIy8Hr59eS6FCsdDuzxZtcEE+Se7S
+         tF/BiljZhJZJA8XSMtEuRt9vzw2v9nvF3If9rwpc+sblXIiv5OGLf4zcqo44zSfNuLPS
+         ZlrFjXr20bvOQdxkEgH4wAMqttnO4rhW1AwDhYnHNV++ihpOU8IzPzEwjUlM8cXiLYNM
+         iGPw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=N/iQQC7fp/dtYGOuSg6VYXx30On1O4Podmv44Ld28t8=;
+        b=qdKOfoOAXLcYie070TYkw+jvFz1uqVskwQpx3a/usPK1OavC/N8KIWz1YL+mdYPYNO
+         qplEKjQUMvOM62IvvAfA6tRo3Ls2ft8rmDgM4WJmZWyt/ZWD4K1+HqX0ZKJ3obR6M8mX
+         4a/89vH8NSJSWoWXrsPm/+4jQ1nU5WXLx+0InmMlurwGylS/VOrS38OTRkyKs9dUpt9w
+         Odc9B7zVz662Td1lMDcv13cgoQBC8r6qbUocgR8AZCZsRaPxKwizQQIdr61OLkAmU3Rm
+         Hy4waQSj71Qrhv5qfm9CsLGLehoZil78gOnBIjzjbbTUekqLf/IOQ4AXiNViZZ+ccQj9
+         a+1Q==
+X-Gm-Message-State: AOAM5337T5p+uBzXLT6Rw2BiysUEdHLXyiJxW7u1McofKsD8vH7tIoFM
+        Q4mnjdTMvTkT/If8ezgLRl0=
+X-Google-Smtp-Source: ABdhPJxeUdey3txVslmafHpEU1z7jkArZjP7M9glN+el45WexOPrS6npD8eEng0OPRAMcqu3zUpE0A==
+X-Received: by 2002:a63:f443:: with SMTP id p3mr25493518pgk.378.1620167619709;
+        Tue, 04 May 2021 15:33:39 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id j16sm5013761pgh.69.2021.05.04.15.33.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 15:33:39 -0700 (PDT)
+Subject: Re: [RFC PATCH net-next v3 17/20] net: phy: phylink: permit to pass
+ dev_flags to phylink_connect_phy
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Nicolas Ferre <nicolas.ferre@microchip.com>,
+        Claudiu Beznea <claudiu.beznea@microchip.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Giuseppe Cavallaro <peppe.cavallaro@st.com>,
+        Alexandre Torgue <alexandre.torgue@foss.st.com>,
+        Jose Abreu <joabreu@synopsys.com>,
+        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org
+References: <20210504222915.17206-1-ansuelsmth@gmail.com>
+ <20210504222915.17206-17-ansuelsmth@gmail.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <79cd97fe-02e8-4373-75a5-78ad0179c42b@gmail.com>
+Date:   Tue, 4 May 2021 15:33:36 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: RMKxhb73Agy0zbJ4y_iF5_HQfHVijSth
-X-Proofpoint-ORIG-GUID: RMKxhb73Agy0zbJ4y_iF5_HQfHVijSth
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-04_15:2021-05-04,2021-05-04 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 clxscore=1015
- malwarescore=0 priorityscore=1501 adultscore=0 suspectscore=0 bulkscore=0
- spamscore=0 lowpriorityscore=0 impostorscore=0 mlxlogscore=999 mlxscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2105040148
+In-Reply-To: <20210504222915.17206-17-ansuelsmth@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Laurent,
+On 5/4/21 3:29 PM, Ansuel Smith wrote:
+> Add support for phylink_connect_phy to pass dev_flags to the PHY driver.
+> Change any user of phylink_connect_phy to pass 0 as dev_flags by
+> default.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 
-Bear with me while I work through the commit message:
+I do not think that this patch and the next one are necessary at all,
+because phylink_of_phy_connect() already supports passing a dev_flags.
 
-Laurent Dufour <ldufour@linux.ibm.com> writes:
-> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
-> updated by the hypervisor in the case the NUMA topology of the LPAR's
-> memory is updated.
-
-Yes, the RTAS functions ibm,update-nodes and ibm,update-properties,
-which the OS invokes after resuming, may bring in updated properties
-under the ibm,dynamic-reconfiguration-memory node, including the
-ibm,associativity-lookup-arrays property.
-
-> This is caught by the kernel,
-
-"Caught" makes me think this is an error condition, as in catching an
-exception. I guess "handled" better conveys your meaning?
-
-> but the memory's node is updated because
-> there is no way to move a memory block between nodes.
-
-"The memory's node" refers the ibm,dynamic-reconfiguration-memory DT
-node, yes? Or is it referring to Linux's NUMA nodes? ("move a memory
-block between nodes" in your statement here refers to Linux's NUMA
-nodes, that much is clear to me.)
-
-I am failing to follow the cause->effect relationship stated. True,
-changing a block's node assignment while it's in use isn't safe. I don't
-see why that implies that "the memory's node is updated"? In fact this
-seems contradictory.
-
-This statement makes more sense to me if I change it to "the memory's
-node is _not_ updated" -- is this what you intended?
-
-> If later a memory block is added or removed, drmem_update_dt() is called
-> and it is overwriting the DT node to match the added or removed LMB.
-
-I understand this, but I will expand on it.
-
-dlpar_memory()
-  -> dlpar_memory_add_by_count()
-    -> dlpar_add_lmb()
-      -> update_lmb_associativity_index()
-        ... lmb->aa_index = <value>
-  -> drmem_update_dt()
-
-update_lmb_associativity_index() retrieves the firmware description of
-the new block, and sets the aa_index of the matching entry in the
-drmem_info array to the value matching the firmware description.
-
-Then, drmem_update_dt() walks the drmem_info array and synthesizes a new
-/ibm,dynamic-reconfiguration-memory/ibm,dynamic-memory-v2 property based
-on the recently updated information in that array.
-
-> But the LMB's associativity node has not been updated after the DT
-> node update and thus the node is overwritten by the Linux's topology
-> instead of the hypervisor one.
-
-So, an example of the problem is:
-
-1. VM migrates. On resume, ibm,associativity-lookup-arrays is changed
-   via ibm,update-properties. Entries in the drmem_info array remain
-   unchanged, with aa_index values that correspond to the source
-   system's ibm,associativity-lookup-arrays property, now inaccessible.
-
-2. A memory block is added. We look up the new block's entry in the
-   drmem_info array, and set the aa_index to the value matching the
-   current ibm,associativity-lookup-arrays.
-
-3. Then, the ibm,associativity-lookup-arrays property is completely
-   regenerated from the drmem_info array, which reflects a mixture of
-   information from the source and destination systems.
-
-Do I understand correctly?
-
-
-> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
-> updated to force an update of the LMB's associativity. However, ignore the
-> call to that hook when the update has been triggered by drmem_update_dt().
-> Because, in that case, the LMB tree has been used to set the DT property
-> and thus it doesn't need to be updated back. Since drmem_update_dt() is
-> called under the protection of the device_hotplug_lock and the hook is
-> called in the same context, use a simple boolean variable to detect that
-> call.
-
-This strikes me as almost a revert of e978a3ccaa71 ("powerpc/pseries:
-remove obsolete memory hotplug DT notifier code").
-
-I'd rather avoid smuggling through global state information that ought
-to be passed in function parameters, if it should be passed around at
-all. Despite having (IMO) relatively simple responsibilities, this code
-is difficult to change and review; adding this property makes it
-worse. If the structure of the code is pushing us toward this kind of
-compromise, then the code probably needs more fundamental changes.
-
-I'm probably forgetting something -- can anyone remind me why we need an
-array of these:
-
-struct drmem_lmb {
-	u64     base_addr;
-	u32     drc_index;
-	u32     aa_index;
-	u32     flags;
-};
-
-which is just a less efficient representation of what's already in the
-device tree? If we got rid of it, would this problem disappear?
+That means that you should be representing the switch's internal MDIO
+bus in the Device Tree and then describe how each port of the switch
+connects to the internal PHY on that same bus. Once you do that the
+logic in net/dsa/slave.c will call phylink_of_phy_connect() and all you
+will have to do is implement dsa_switch_ops::get_phy_flags. Can you try
+that?
+-- 
+Florian
