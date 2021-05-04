@@ -2,319 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC48B372B1A
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:33:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BE85372B22
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:35:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231243AbhEDNd4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:33:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbhEDNdy (ORCPT
+        id S231216AbhEDNgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:36:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22652 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230478AbhEDNgV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:33:54 -0400
-Received: from mail-ed1-x52b.google.com (mail-ed1-x52b.google.com [IPv6:2a00:1450:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EEA9C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 06:32:59 -0700 (PDT)
-Received: by mail-ed1-x52b.google.com with SMTP id j28so10418426edy.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 06:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vRyId4VgDqthd+b4OLsO7RNwvt7TF0PANqkiy/Ygc58=;
-        b=svUhGK1SE+xSvGmtwvlThhZm4PovQUlxvMPqdClC24upyZNj7CdsaDlp+pmm3EfQzt
-         AN5mkhsnZddllk/1gC+RcK1ZkJHNHr80/yJAQ9i+r2EOlbv0lVTmTwIDVIQwjT8YBAkd
-         XdYwrYD3PzmBd59zqKz5O4LKNSFIbp6uP2SZuZmbkTBBakH9YGfZLOqpiV53eWwTG7DW
-         OVNomcSAr/Lp5zNOnNTfEqMHrEm6zncffXDCK5B9EpDITXMs5jBe7YxSbcs8ZT8LTJ7l
-         y23dw/14UVi/KYlwhcz9uU+fq4p9N+TT1YR7rB/498gRg9dkaiO841GKx2biK8VZopTv
-         8bsg==
+        Tue, 4 May 2021 09:36:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620135326;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=1esyjlWDDZ6g1mqcvxLgs907ppKN4y78vJLAEW1xlVU=;
+        b=QFm9GBijSoLgRKLItEP9/F+QdalbWJjhlttcPJagd/5Xp5s4+r9dMxiDRcMgHqtMEhRlj2
+        9Hrvrsi+nHiNNMA4amFpu/P8hB3wtPCYT6mAbS6h6577y4wMwKVjz8IyUO8l9zifF5Yygp
+        HKIE5uB6/pX9giBHqcR4p6coTgFFhTw=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-575-jtTUGg4QP1G33chcDqAs8g-1; Tue, 04 May 2021 09:35:23 -0400
+X-MC-Unique: jtTUGg4QP1G33chcDqAs8g-1
+Received: by mail-pg1-f198.google.com with SMTP id j19-20020a63fc130000b029020f623342e0so5145273pgi.10
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 06:35:23 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vRyId4VgDqthd+b4OLsO7RNwvt7TF0PANqkiy/Ygc58=;
-        b=Dt0UZ9CdwxSY/nSymD4czlbfYXXCtmi3URly9sCPnzXqW9rfP9E40gS3Jg9gPNDO0r
-         EZkfr5hnPk/6tLBtcxGZnTg5427rjfzPVZhqb4OxBq9cck2I4fcZ1tGtBVZYi5+QHTbT
-         FIvR50kN+jv16RkhD46Xuh142l/Bqb4si0ovQJ/ZpkJHnM9yAY7MyPUpqfgXLW3U9aTq
-         8qtE8QT5IDh6Kw+wgXIFMgCwK6RW5ICjMRnMVw4LGzlBve/Uyfr9JO5uj8Gwsb6WdC0b
-         bYupl5TT0EYaQ7YXFL3jr+FXmvsjKqBolYjvW88qCRhSIPGpS0+eiTFh5XdHRLXGl1iI
-         S4gg==
-X-Gm-Message-State: AOAM533pcw+xIpMF3AZGVrv+22+MeF8fKVCRpYNZBpuCQuTcZJ6N+6DP
-        J9nKBKz8IIhX7SwTXRnml+0=
-X-Google-Smtp-Source: ABdhPJxmjiyqkFXyn3aCBXtzW2v6iGqHaLTo3c9/jzq4soDJbiNjuoopQwpWVG0btbQk2F5Xl9X+bA==
-X-Received: by 2002:aa7:cd90:: with SMTP id x16mr25657083edv.182.1620135178245;
-        Tue, 04 May 2021 06:32:58 -0700 (PDT)
-Received: from linux.local (host-79-52-107-152.retail.telecomitalia.it. [79.52.107.152])
-        by smtp.gmail.com with ESMTPSA id z11sm1404698ejc.122.2021.05.04.06.32.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 06:32:57 -0700 (PDT)
-From:   "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-To:     outreachy-kernel@googlegroups.com,
-        David Kershner <david.kershner@unisys.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        sparmaintainer@unisys.com, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Fabio M. De Francesco" <fmdefrancesco@gmail.com>
-Subject: [PATCH v7] staging: unisys: visorhba: Convert module from IDR to XArray
-Date:   Tue,  4 May 2021 15:32:53 +0200
-Message-Id: <20210504133253.32269-1-fmdefrancesco@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=1esyjlWDDZ6g1mqcvxLgs907ppKN4y78vJLAEW1xlVU=;
+        b=ED6Dtr2th0MVCS+bZWnfsKncaueSLbmMo3waO18dI08JBKhn/rWLDbQQC9k5sz8ZYd
+         xOEd7QifhLZpFwxM66zauakPuEzh34sRW75zteOfscmfMnv/J32al/ZI6nFyZIjxxCW8
+         bppMhQv9GD1R9EEKRDfty1fFSRq8g52thqaFC85ZP2vavAFKzAO1s5hOc8mNUEWvgGTl
+         bqQblJnpl7hX9i3f5qOKlEVhe3KKJU6jw2p+TPhIxcvZDJzmbA6cOPCyIPWfTaTVp7ga
+         x4NSPzvu/CAnvIrXy0q7Aum/nxPV9ajLkeiBjIdEhMx7TRqy3wUI51w1osOjgV4M67xx
+         PM4w==
+X-Gm-Message-State: AOAM530xUrftfHoIqL1QYwxbS3DcYbpYeW60Lf/gRBaBUrB/X5knItov
+        eQnIy1U06HVMN4gliscD3nP+z52Oj8psclJcOmuVNpiDU7sDYntslBZtW3ovgHeIDSAycqrnIr3
+        PzROB4OTGEvlPbu7GTqTUwjPMP8dsOW0prlixDXhe
+X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr28239502pjr.234.1620135322823;
+        Tue, 04 May 2021 06:35:22 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwvXnq+hEu0eaHHUrq6r/PYuNDcNF/Zk54+QK/BLkYR2HpKvds8yeQ9rk74C3zK9PCbHQUTMfjs2PcFmC4mnKQ=
+X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr28239483pjr.234.1620135322603;
+ Tue, 04 May 2021 06:35:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1615224800.git.nabijaczleweli@nabijaczleweli.xyz>
+ <20210420131741.kdgxquhwqureih7c@tarta.nabijaczleweli.xyz>
+ <nycvar.YFH.7.76.2105031110480.28378@cbobk.fhfr.pm> <CAO-hwJ+HhKU7EzPZGOtPePT_h7OUaJ=QfWi7eAcxsfRaDtQuvg@mail.gmail.com>
+ <CAO-hwJKLYTqQ9qZ8LZGabze_NjNfwAq2_V-28LFewjOC=EK8rw@mail.gmail.com> <20210503130015.d2qnahrrfyv3odqj@tarta.nabijaczleweli.xyz>
+In-Reply-To: <20210503130015.d2qnahrrfyv3odqj@tarta.nabijaczleweli.xyz>
+From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
+Date:   Tue, 4 May 2021 15:35:11 +0200
+Message-ID: <CAO-hwJK31jSRrB4H39x980GVN6X0Stn3awohXn50d-gHp7XgzA@mail.gmail.com>
+Subject: Re: [PATCH v2 0/4] Stylus-on-touchscreen device support
+To:     =?UTF-8?B?0L3QsNCx?= <nabijaczleweli@nabijaczleweli.xyz>
+Cc:     Jiri Kosina <jikos@kernel.org>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Converted visorhba from IDR to XArray. The abstract data type XArray is
-more memory-efficient, parallelizable and cache friendly. It takes
-advantage of RCU to perform lookups without locking. Furthermore, IDR is
-deprecated because XArray has a better (cleaner and more consistent)
-API.
+On Mon, May 3, 2021 at 3:00 PM =D0=BD=D0=B0=D0=B1 <nabijaczleweli@nabijaczl=
+eweli.xyz> wrote:
+>
+> On Mon, May 03, 2021 at 11:52:43AM +0200, Benjamin Tissoires wrote:
+> > On Mon, May 3, 2021 at 11:39 AM Benjamin Tissoires
+> > <benjamin.tissoires@redhat.com> wrote:
+> > >
+> > > On Mon, May 3, 2021 at 11:11 AM Jiri Kosina <jikos@kernel.org> wrote:
+> > > >
+> > > > On Tue, 20 Apr 2021, =D0=BD=D0=B0=D0=B1 wrote:
+> > > >
+> > > > > > This patchset adds support for stylus-on-touchscreen devices as=
+ found on
+> > > > > > the OneMix 3 Pro and Dell Inspiron 15 7000 2-in-1 (7591), among=
+ others;
+> > > > > > with it, they properly behave like a drawing tablet.
+> > > > > >
+> > > > > > Patches 2 and 4 funxionally depend on patch 1.
+> > > > > > Patch 4 needs patch 3 to apply.
+> > > > > >
+> > > > > > The output of this patchset and the need for a kernel, rather t=
+han
+> > > > > > userspace, patch was previously discussed here:
+> > > > > >   https://gitlab.freedesktop.org/libinput/libinput/-/merge_requ=
+ests/558#note_792834
+> > > > > >
+> > > > > > Changes in v2:
+> > > > > > Patch 4 now ANDs the secondary button with the tip switch,
+> > > > > > since it's otherwise borderline useless to the user.
+> > > > > >
+> > > > > > Ahelenia Ziemia=C5=84ska (4):
+> > > > > >   HID: multitouch: require Finger field to mark Win8 reports as=
+ MT
+> > > > > >   HID: multitouch: set Stylus suffix for Stylus-application dev=
+ices, too
+> > > > > >   HID: input: replace outdated HID numbers+comments with macros
+> > > > > >   HID: input: work around Win8 stylus-on-touchscreen reporting
+> > > > > >
+> > > > > >  drivers/hid/hid-input.c      | 54 ++++++++++++++++++++++++++++=
+++++++--
+> > > > > >  drivers/hid/hid-multitouch.c | 18 +++++++-----
+> > > > > >  2 files changed, 62 insertions(+), 10 deletions(-)
+> > > > > >
+> > > > > > --
+> > > > > > 2.20.1
+> > > > >
+> > > > > Bumping this after a monthish =E2=80=92 is it missing something? =
+Am I?
+> > > >
+> > > > Benjamin had concerns about regressions and wanted to run a full ba=
+ttery
+> > > > of testing on it.
+> > > >
+> > > > Benjamin, is there any outcome of that, please?
+> > > >
+> > >
+> > > Sorry, no real outcome here.
+> > >
+> > > I ran the test suite, and there were no errors, until I realized that
+> > > there are no tests regarding tablets, so it can't detect any
+> > > regressions here.
+> > > And then, the usual happens, no time to actually work on the test sui=
+te... :(
+> > >
+> > > I'll do a "normal" review soon (i.e. today)
+> > >
+> >
+> > So I did a quick pass at the patches:
+> > - 1/4 -> I think this one is safe and could go as it is, maybe with
+> > CC: stable on it. Any regressions should have been caught by the
+> > testsuite, so that's a good one.
+> > - 2/4 and 3/4 -> Ack on those 2 too, note stable material, but not
+> > necessary v5.13 material
+> > - 4/4 -> I honestly have no idea if the patch is correct or not. I
+> > would hold on this one until we have proper tests for those.
+> >
+> > Jiri, would you be ok to split the series as this?
+>
+> Splitting 2/4 away from 1/4 presents a minor cosmetic problem:
+> since 1/4 no longer tags the stylus-on-touchscreen device as MT,
+> the device name turns from "GXTP7386:00 27C6:0113 Stylus"
+> to "GXTP7386:00 27C6:0113", so the user is left with
+> two identically-named devices, the first of which corresponds
+> to the touchscreen, and the second to the stylus.
+>
+> Granted, it might also append "Stylus" to names that could contain it,
+> but I haven't managed to trace where hdev->name is born to determine if
+> that's a concern.
+>
+> > =D0=BD=D0=B0=D0=B1, would you be OK to work on the test suite at
+> > https://gitlab.freedesktop.org/libevdev/hid-tools so we can move
+> > forward for your last patch?
+> >
+> > The problem I see on the last patch is that it is touching a generic
+> > path and is not trivial. So adding tests would have 3 benefits:
+> > - we ensure we are doing the correct thing
+> > - we ensure we are not breaking existing devices (to some extent,
+> > given that the tests are non written for the tablets)
+> > - we ensure we are not breaking that in the future.
+>
+> I'd be more than happy to add tests of some sort, but reading the
+> repository and tests/ under it has me positively stumped,
+> not a clue where an entry-point would be, or how I'd instrument a
+> reasonable test around my rdesc, so some sort of vague guidance
+> to that end would be greatly appreciated.
+>
 
-Signed-off-by: Fabio M. De Francesco <fmdefrancesco@gmail.com>
----
+Sorry, it was a little bit harsh to ask this from scratch.
 
-Changes from v6; Added a call to xa_destroy() that I had forgotten.
-Fixed taking locks with interrupts disabled (use xa_erase_irq()). 
-Replaced checking for success with checking for failure. Issues detected 
-by Dan Carpenter and Matthew Wilcox.
-Changes from v5: As suggested by Matthew Wilcox, reworded the commit
-message, modified setup_scsitaskmgmt_handles() to manage and return errors,
-used 'xa_limit_32b' as the range of indexes (because there is no need to
-use 0 as a marker of no allocation).
-Changes from v4: Fixed some issues detected by Matthew Wilcox and Fabio
-Aiuto.
-Changes from v3: Matthew Wilcox found that the XArray was not
-initialized: now it is. Changed types handles from u64 to u32 because
-they can't work as arguments of xa_alloc_irq() and u32 is enough large
-for storing XArray indexes.
-Changes from v2: Some residual errors from v1 were not fixed in v2. Now
-they have been removed.
-Changes from v1: After a first review by Matthew Wilcox, who found a
-series of errors and gave suggestions on how to fix them, I rewrote a
-larger part of the patch.
+I created an initial MR you can work on top of it:
+https://gitlab.freedesktop.org/libevdev/hid-tools/-/merge_requests/115
 
- .../staging/unisys/visorhba/visorhba_main.c   | 102 ++++++++----------
- 1 file changed, 43 insertions(+), 59 deletions(-)
+Basically, you need to add your device in `tests/test_tablet.py` (like
+all the other devices). You probably also need to add more tests to
+the two I added, to expose the bug.
 
-diff --git a/drivers/staging/unisys/visorhba/visorhba_main.c b/drivers/staging/unisys/visorhba/visorhba_main.c
-index 4455d26f7c96..61b2b133ec33 100644
---- a/drivers/staging/unisys/visorhba/visorhba_main.c
-+++ b/drivers/staging/unisys/visorhba/visorhba_main.c
-@@ -6,10 +6,10 @@
- 
- #include <linux/debugfs.h>
- #include <linux/kthread.h>
--#include <linux/idr.h>
- #include <linux/module.h>
- #include <linux/seq_file.h>
- #include <linux/visorbus.h>
-+#include <linux/xarray.h>
- #include <scsi/scsi.h>
- #include <scsi/scsi_host.h>
- #include <scsi/scsi_cmnd.h>
-@@ -82,8 +82,7 @@ struct visorhba_devdata {
- 	 * allows us to pass int handles back-and-forth between us and
- 	 * iovm, instead of raw pointers
- 	 */
--	struct idr idr;
--
-+	struct xarray xa;
- 	struct dentry *debugfs_dir;
- 	struct dentry *debugfs_info;
- };
-@@ -182,71 +181,49 @@ static struct uiscmdrsp *get_scsipending_cmdrsp(struct visorhba_devdata *ddata,
- 	return NULL;
- }
- 
--/*
-- * simple_idr_get - Associate a provided pointer with an int value
-- *		    1 <= value <= INT_MAX, and return this int value;
-- *		    the pointer value can be obtained later by passing
-- *		    this int value to idr_find()
-- * @idrtable: The data object maintaining the pointer<-->int mappings
-- * @p:	      The pointer value to be remembered
-- * @lock:     A spinlock used when exclusive access to idrtable is needed
-- *
-- * Return: The id number mapped to pointer 'p', 0 on failure
-- */
--static unsigned int simple_idr_get(struct idr *idrtable, void *p,
--				   spinlock_t *lock)
--{
--	int id;
--	unsigned long flags;
--
--	idr_preload(GFP_KERNEL);
--	spin_lock_irqsave(lock, flags);
--	id = idr_alloc(idrtable, p, 1, INT_MAX, GFP_NOWAIT);
--	spin_unlock_irqrestore(lock, flags);
--	idr_preload_end();
--	/* failure */
--	if (id < 0)
--		return 0;
--	/* idr_alloc() guarantees > 0 */
--	return (unsigned int)(id);
--}
--
- /*
-  * setup_scsitaskmgmt_handles - Stash the necessary handles so that the
-  *				completion processing logic for a taskmgmt
-  *				cmd will be able to find who to wake up
-  *				and where to stash the result
-- * @idrtable: The data object maintaining the pointer<-->int mappings
-- * @lock:     A spinlock used when exclusive access to idrtable is needed
-+ * @xa:       The data object maintaining the pointer<-->int mappings
-  * @cmdrsp:   Response from the IOVM
-  * @event:    The event handle to associate with an id
-  * @result:   The location to place the result of the event handle into
-  */
--static void setup_scsitaskmgmt_handles(struct idr *idrtable, spinlock_t *lock,
--				       struct uiscmdrsp *cmdrsp,
-+static int setup_scsitaskmgmt_handles(struct xarray *xa, struct uiscmdrsp *cmdrsp,
- 				       wait_queue_head_t *event, int *result)
- {
--	/* specify the event that has to be triggered when this */
--	/* cmd is complete */
--	cmdrsp->scsitaskmgmt.notify_handle =
--		simple_idr_get(idrtable, event, lock);
--	cmdrsp->scsitaskmgmt.notifyresult_handle =
--		simple_idr_get(idrtable, result, lock);
-+	int ret;
-+	u32 id;
-+
-+	/* specify the event that has to be triggered when this cmd is complete */
-+	ret = xa_alloc_irq(xa, &id, event, xa_limit_32b, GFP_KERNEL);
-+	if (ret) 
-+		return ret;
-+	else
-+		cmdrsp->scsitaskmgmt.notify_handle = id;
-+	ret = xa_alloc_irq(xa, &id, result, xa_limit_32b, GFP_KERNEL);
-+	if (ret) {
-+		xa_erase_irq(xa, cmdrsp->scsitaskmgmt.notify_handle);
-+		return ret;
-+	} else
-+		cmdrsp->scsitaskmgmt.notifyresult_handle = id;
-+
-+	return 0;
- }
- 
- /*
-  * cleanup_scsitaskmgmt_handles - Forget handles created by
-  *				  setup_scsitaskmgmt_handles()
-- * @idrtable: The data object maintaining the pointer<-->int mappings
-+ * @xa: The data object maintaining the pointer<-->int mappings
-  * @cmdrsp:   Response from the IOVM
-  */
--static void cleanup_scsitaskmgmt_handles(struct idr *idrtable,
-+static void cleanup_scsitaskmgmt_handles(struct xarray *xa,
- 					 struct uiscmdrsp *cmdrsp)
- {
--	if (cmdrsp->scsitaskmgmt.notify_handle)
--		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notify_handle);
--	if (cmdrsp->scsitaskmgmt.notifyresult_handle)
--		idr_remove(idrtable, cmdrsp->scsitaskmgmt.notifyresult_handle);
-+	xa_erase_irq(xa, cmdrsp->scsitaskmgmt.notify_handle);
-+	xa_erase_irq(xa, cmdrsp->scsitaskmgmt.notifyresult_handle);
- }
- 
- /*
-@@ -269,6 +246,7 @@ static int forward_taskmgmt_command(enum task_mgmt_types tasktype,
- 	int notifyresult = 0xffff;
- 	wait_queue_head_t notifyevent;
- 	int scsicmd_id;
-+	int ret;
- 
- 	if (devdata->serverdown || devdata->serverchangingstate)
- 		return FAILED;
-@@ -284,8 +262,14 @@ static int forward_taskmgmt_command(enum task_mgmt_types tasktype,
- 
- 	/* issue TASK_MGMT_ABORT_TASK */
- 	cmdrsp->cmdtype = CMD_SCSITASKMGMT_TYPE;
--	setup_scsitaskmgmt_handles(&devdata->idr, &devdata->privlock, cmdrsp,
--				   &notifyevent, &notifyresult);
-+
-+	ret = setup_scsitaskmgmt_handles(&devdata->xa, cmdrsp,
-+					 &notifyevent, &notifyresult);
-+	if (ret) {
-+		dev_dbg(&scsidev->sdev_gendev,
-+		        "visorhba: setup_scsitaskmgmt_handles returned %d\n", ret);
-+		return FAILED;
-+	}
- 
- 	/* save destination */
- 	cmdrsp->scsitaskmgmt.tasktype = tasktype;
-@@ -311,14 +295,14 @@ static int forward_taskmgmt_command(enum task_mgmt_types tasktype,
- 	dev_dbg(&scsidev->sdev_gendev,
- 		"visorhba: taskmgmt type=%d success; result=0x%x\n",
- 		 tasktype, notifyresult);
--	cleanup_scsitaskmgmt_handles(&devdata->idr, cmdrsp);
-+	cleanup_scsitaskmgmt_handles(&devdata->xa, cmdrsp);
- 	return SUCCESS;
- 
- err_del_scsipending_ent:
- 	dev_dbg(&scsidev->sdev_gendev,
- 		"visorhba: taskmgmt type=%d not executed\n", tasktype);
- 	del_scsipending_ent(devdata, scsicmd_id);
--	cleanup_scsitaskmgmt_handles(&devdata->idr, cmdrsp);
-+	cleanup_scsitaskmgmt_handles(&devdata->xa, cmdrsp);
- 	return FAILED;
- }
- 
-@@ -654,13 +638,13 @@ DEFINE_SHOW_ATTRIBUTE(info_debugfs);
-  * Service Partition returned the result of the task management
-  * command. Wake up anyone waiting for it.
-  */
--static void complete_taskmgmt_command(struct idr *idrtable,
-+static void complete_taskmgmt_command(struct xarray *xa,
- 				      struct uiscmdrsp *cmdrsp, int result)
- {
- 	wait_queue_head_t *wq =
--		idr_find(idrtable, cmdrsp->scsitaskmgmt.notify_handle);
-+		xa_load(xa, cmdrsp->scsitaskmgmt.notify_handle);
- 	int *scsi_result_ptr =
--		idr_find(idrtable, cmdrsp->scsitaskmgmt.notifyresult_handle);
-+		xa_load(xa, cmdrsp->scsitaskmgmt.notifyresult_handle);
- 	if (unlikely(!(wq && scsi_result_ptr))) {
- 		pr_err("visorhba: no completion context; cmd will time out\n");
- 		return;
-@@ -708,7 +692,7 @@ static void visorhba_serverdown_complete(struct visorhba_devdata *devdata)
- 			break;
- 		case CMD_SCSITASKMGMT_TYPE:
- 			cmdrsp = pendingdel->sent;
--			complete_taskmgmt_command(&devdata->idr, cmdrsp,
-+			complete_taskmgmt_command(&devdata->xa, cmdrsp,
- 						  TASK_MGMT_FAILED);
- 			break;
- 		default:
-@@ -905,7 +889,7 @@ static void drain_queue(struct uiscmdrsp *cmdrsp,
- 			if (!del_scsipending_ent(devdata,
- 						 cmdrsp->scsitaskmgmt.handle))
- 				break;
--			complete_taskmgmt_command(&devdata->idr, cmdrsp,
-+			complete_taskmgmt_command(&devdata->xa, cmdrsp,
- 						  cmdrsp->scsitaskmgmt.result);
- 		} else if (cmdrsp->cmdtype == CMD_NOTIFYGUEST_TYPE)
- 			dev_err_once(&devdata->dev->device,
-@@ -1053,7 +1037,7 @@ static int visorhba_probe(struct visor_device *dev)
- 	if (err)
- 		goto err_debugfs_info;
- 
--	idr_init(&devdata->idr);
-+	xa_init(&devdata->xa);
- 
- 	devdata->cmdrsp = kmalloc(sizeof(*devdata->cmdrsp), GFP_ATOMIC);
- 	visorbus_enable_channel_interrupts(dev);
-@@ -1096,7 +1080,7 @@ static void visorhba_remove(struct visor_device *dev)
- 	scsi_remove_host(scsihost);
- 	scsi_host_put(scsihost);
- 
--	idr_destroy(&devdata->idr);
-+	xa_destroy(&devdata->xa);
- 
- 	dev_set_drvdata(&dev->device, NULL);
- 	debugfs_remove(devdata->debugfs_info);
--- 
-2.31.1
+Hopefully, just doing that should expose the bug. If not, you'll need
+to subclass PenDigitizer and override the `event()` function to
+actually match what is sent on the wire when you request a high level
+`Pen()` event.
+
+To run the test suite, we are using `pytest`, which means it is all
+automagic: `sudo pytest -k 'tablet' -v` will run every `test_*` pytest
+finds with the `tablet` string in it. You can be more specific by just
+running your device by issuing `sudo pytest -k 'tablet and
+VENDOR_VID_PID' -v` (replace VENDOR_VID_PID with the name of the
+class).
+
+Note also that the patch 2 here will probably make the `test_creation`
+fail as this one checks for the name. We will need a separate MR for
+this depending on how the patches end up being included in the kernel
+tree.
+
+Hope this helps.
+
+Cheers,
+Benjamin
 
