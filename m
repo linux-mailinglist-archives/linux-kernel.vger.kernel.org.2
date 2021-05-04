@@ -2,98 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CD533729B2
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A15363729BE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:56:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhEDLxK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 07:53:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51336 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230110AbhEDLxJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 07:53:09 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7697EC061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 04:52:14 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id v5so1973745ljg.12
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 04:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=GW6GUuONPABrx2BFXGJh0SjTmP9t0U63hpuN8y3MW9g=;
-        b=paTEGtC0YjJRHiY0XOtzrdDks/f7ssjpY2ykEb4lVja6Dqw4GK5Ga52klAdM+1Xw7q
-         wYk4uJ3b66kTTbKWcExYHyV7cA6ddteEovzt2gq7WMb8k1tQQ+t+CZhER7EnYfCuVLyE
-         gixMlraFmO9yfKx3OiiWGqbzYZZlZxOf3e2OHWIksJhCEvvXXF5XWCZGgHkfeV4+Elwh
-         GFLYTE331XE1cE+y7dQ5fgbQHsaQ49Ibr8UQ8XuGj/A1Xj/Vx2rLBcsoniWxhsiyIHVP
-         Xp63OAGUA4dE/iV8sNsZkXYE4o6EuWihVaPxnDP4v5joLhgNVGbLmlQGXPk7L2H+TGfP
-         UbpQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to;
-        bh=GW6GUuONPABrx2BFXGJh0SjTmP9t0U63hpuN8y3MW9g=;
-        b=tvgP5Pj879AN+B19THBW/lDmeHpQlSF6jWJ95RNVQb490mmSgN3HEO4xDNPZTsc5iA
-         XFvGysDGYFPAlSbJk3F2MSMCod0aZXTrMr5nhX28D5FwUB+0OE3qNIJCUvxA4Vzu+Oen
-         jlqhh+VCHQpFlO5Wrxw0Zg604yVB98XnXp5YP6FCRYzKczdgiYc2ofdlel+JYywposTm
-         9vhE9GiN2RF75CrZc10p1Fe2EGiZn1Du/nfPyH3d7N5dD/6S6NEFySLQgM9nfjIuF9Nd
-         XT2WTx473QmVl5dIcEMPBu/SjC9Ta8jgydb27+pqW6b7VIUqwmlmVEPnReaH04wBJVFi
-         +/rw==
-X-Gm-Message-State: AOAM531quZJrtR0Pq+Kzwi5fqoaBFcflXHaMkW3iACSdqKHG9KOTXLRG
-        fZIJC93/NSipBX2ouwBwQzbDT/Fyi+cATjBV+MFJS4pm7M9lZA==
-X-Google-Smtp-Source: ABdhPJwMvWaROJxTzyqUMWt9k4L0D4nP4H1qFA1CD+B6GTbN3tnsxm5nrOc/d15IqhKbm1BGUA/tOjYmKar7oUPcKMs=
-X-Received: by 2002:a2e:9606:: with SMTP id v6mr16780985ljh.79.1620129132801;
- Tue, 04 May 2021 04:52:12 -0700 (PDT)
+        id S230256AbhEDL5N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 07:57:13 -0400
+Received: from mx-out.tlen.pl ([193.222.135.148]:14829 "EHLO mx-out.tlen.pl"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230089AbhEDL5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 07:57:11 -0400
+Received: (wp-smtpd smtp.tlen.pl 30375 invoked from network); 4 May 2021 13:56:12 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=o2.pl; s=1024a;
+          t=1620129372; bh=ZflAlwfVgQ8t4U6A4utcxhrvXLX4YAaPe8kf3JeY4cs=;
+          h=From:To:Cc:Subject;
+          b=fI5VwxFsFHPXveN919uY3zU3lWOLBf9m3QSXoR40QV5eqFRWv8eEnw3a3oUbH7jGu
+           lNZ7c+1XlgXUHJfzeOGSw5IPcE1xQoYWUHNlgSKx3LMRo+7e/SGg+9IZ85cX5B7F4l
+           OqB6Ke+PI1kETSOdvblnm5ZobCGHFSTf8N0Xk01M=
+Received: from 89-64-47-21.dynamic.chello.pl (HELO localhost.localdomain) (arek_koz@o2.pl@[89.64.47.21])
+          (envelope-sender <arek_koz@o2.pl>)
+          by smtp.tlen.pl (WP-SMTPD) with ECDHE-RSA-AES256-GCM-SHA384 encrypted SMTP
+          for <gregkh@linuxfoundation.org>; 4 May 2021 13:56:12 +0200
+From:   "Arkadiusz Kozdra (Arusekk)" <arek_koz@o2.pl>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-fsdevel@vger.kernel.org,
+        "Arkadiusz Kozdra (Arusekk)" <arek_koz@o2.pl>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: [PATCH v3] proc: Use seq_read_iter for /proc/*/maps
+Date:   Tue,  4 May 2021 13:53:58 +0200
+Message-Id: <20210504115358.20741-1-arek_koz@o2.pl>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <YIqFcHj3O2t+JJak@kroah.com>
+References: <YIqFcHj3O2t+JJak@kroah.com>
 MIME-Version: 1.0
-References: <CABPxzYKjxW+P_cMLmZgtQN7nbCB3zzksYQWpChC70tbVb6VJCA@mail.gmail.com>
-In-Reply-To: <CABPxzYKjxW+P_cMLmZgtQN7nbCB3zzksYQWpChC70tbVb6VJCA@mail.gmail.com>
-From:   Krishna Chaitanya <chaitanya.mgit@gmail.com>
-Date:   Tue, 4 May 2021 17:22:01 +0530
-Message-ID: <CABPxzY+USNoiFDO8VYtLzFDK-0+PU1wD8ah7KGPWGZ+uEStH-g@mail.gmail.com>
-Subject: Re: Module versioning + Missing CRC in symvers + export tracepoints
-To:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        mmarek@suse.cz, arnd@arndb.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-WP-MailID: 59b837cc2ea74145e071cd5bd1b8498e
+X-WP-AV: skaner antywirusowy Poczty o2
+X-WP-SPAM: NO 0000004 [QSex]                               
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 20, 2021 at 6:26 PM Krishna Chaitanya
-<chaitanya.mgit@gmail.com> wrote:
->
-> Hi,
->
-> I am seeing an issue of no CRC being generated in the Module.symvers for a
-> driver module even when CONFIG_MODVERSIONS Is enabled, this causes
-> modpost warnings about missing versioning.
->
-> The module in questions only exports tracepoint related symbols (as
-> struct tracepoint is
-> part of the module CRC), I have seen this with other modules also e.g.
-> iwlwifi with CONFIG_MODVERSIONS.
->
-> Though I am trying on 5.12.-rc2, also, seeing this issue with older kernels with
-> CONFIG_MODVERSIONS enabled e.g. 4.15.0, Below are a couple of snippets
-> to demonstrate the issue.
->
-> modpost warnings
-> ===============
->
-> WARNING: modpost: EXPORT symbol "__tracepoint_iwlwifi_dev_ucode_event"
-> [drivers/net/wireless/intel/iwlwifi//iwlwifi.ko] version generation
-> failed, symbol will not be versioned.
-> WARNING: modpost: EXPORT symbol "iwl_remove_notification"
-> [drivers/net/wireless/intel/iwlwifi//iwlwifi.ko] version generation
-> failed, symbol will not be versioned.
->
->
-> Module.symvers (after modpost)
-> ==============
-> 0x00000000      iwl_remove_notification
-> drivers/net/wireless/intel/iwlwifi//iwlwifi     EXPORT_SYMBOL_GPL
-> 0x00000000      __tracepoint_iwlwifi_dev_ucode_event
-> drivers/net/wireless/intel/iwlwifi//iwlwifi     EXPORT_SYMBOL
->
-> Any ideas?
-Adding people from this
-https://patchwork.kernel.org/project/linux-kbuild/patch/CA+55aFxCKgTrh1gS-cMyhBa0QoLW2DL2+DYxOAcA-Bd15H15vg@mail.gmail.com/
-thread to throw some light on non-asm version of the issue.
+Since seq_read_iter looks mature enough to be used for /proc/<pid>/maps,
+re-allow applications to perform zero-copy data forwarding from it.
+
+Some executable-inspecting tools (e.g. pwntools) rely on patching entry
+point instructions with minimal machine code that uses sendfile to read
+/proc/self/maps to stdout.  The sendfile call allows them to do it
+without excessive allocations, which would change the mappings, and
+therefore distort the information.
+
+This is inspired by the series by Cristoph Hellwig (linked).
+
+Link: https://lore.kernel.org/lkml/20201104082738.1054792-1-hch@lst.de/
+Fixes: 36e2c7421f02 ("fs: don't allow splice read/write without explicit ops")
+Cc: Alexey Dobriyan <adobriyan@gmail.com>
+Cc: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Christoph Hellwig <hch@lst.de>
+Signed-off-by: Arkadiusz Kozdra (Arusekk) <arek_koz@o2.pl>
+---
+v3:
+  - Only commit message changed.
+  - Clarify what tools use this.
+  - Do not mention performance.
+
+The average execution time of a patched static ELF outputting to a pipe
+(the use case of pwntools inspecting mappings of an executable)
+was varying both before and after ca. 3.43ms +-0.05ms (I decided that
+the performance impact is not worth mentioning in the commit message).
+
+I think that the change should probably marginally improve speed, but
+it will most likely also affect the memory footprint and as such likely
+minimally decrease power consumption (I suppose it would only be
+measurable when the mappings description grows many pages long).
+Speed might be more affected in pathological cases like a close-to-OOM
+scenario, but I was unable to test this reliably.
+I did my tests under qemu-system-x86_64 on a Ryzen 4500 host without
+kvm, with default kernel config.
+
+If someone wants to also test this feature of pwntools for themselves,
+it can be used as follows and should print something other than None:
+
+    $ pip install pwntools
+    $ python3
+    >>> from pwn import *
+    >>> print(ELF("/bin/true").libc)
+
+Sorry for the delay, but it took me much time to figure out some
+low-overhead timing methods.
+
+Does this change need selftests?  It looks like it should never break
+again if it only uses common code hopefully tested elsewhere.
+
+ fs/proc/task_mmu.c   | 3 ++-
+ fs/proc/task_nommu.c | 3 ++-
+ 2 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
+index e862cab69583..06282294ddb8 100644
+--- a/fs/proc/task_mmu.c
++++ b/fs/proc/task_mmu.c
+@@ -351,7 +351,8 @@ static int pid_maps_open(struct inode *inode, struct file *file)
+ 
+ const struct file_operations proc_pid_maps_operations = {
+ 	.open		= pid_maps_open,
+-	.read		= seq_read,
++	.read_iter	= seq_read_iter,
++	.splice_read    = generic_file_splice_read,
+ 	.llseek		= seq_lseek,
+ 	.release	= proc_map_release,
+ };
+diff --git a/fs/proc/task_nommu.c b/fs/proc/task_nommu.c
+index a6d21fc0033c..e55e79fd0175 100644
+--- a/fs/proc/task_nommu.c
++++ b/fs/proc/task_nommu.c
+@@ -295,7 +295,8 @@ static int pid_maps_open(struct inode *inode, struct file *file)
+ 
+ const struct file_operations proc_pid_maps_operations = {
+ 	.open		= pid_maps_open,
+-	.read		= seq_read,
++	.read_iter	= seq_read_iter,
++	.splice_read	= generic_file_splice_read,
+ 	.llseek		= seq_lseek,
+ 	.release	= map_release,
+ };
+-- 
+2.31.1
+
