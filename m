@@ -2,127 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9707B372C08
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 620E8372C02
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 16:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230334AbhEDOaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 10:30:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:29597 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230213AbhEDOaT (ORCPT
+        id S230411AbhEDOaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 10:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58082 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230213AbhEDOaJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 10:30:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620138563;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/C/wTNOTCb+yGfszfpaIVYIq+8oCD0tOIWtXOH684UQ=;
-        b=UZ1bmByBTwT4BUjD3GBEA+6eQ60Vol5wOpIi0IsZxKLseqB86Fa1Vvgp+B9SeokIPh+ody
-        I70JSHUG95AcvknojMj8B7LlawK9XhQm/x80HJkTwfHXZXjqAu8L6hRNtm0hWIbD4pjkTC
-        AdmI1bxe06jXEBao2Wr9CkX6k5kgkTk=
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com
- [209.85.218.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-WFDM9k2mN-CBKpl5Ua-o0g-1; Tue, 04 May 2021 10:29:22 -0400
-X-MC-Unique: WFDM9k2mN-CBKpl5Ua-o0g-1
-Received: by mail-ej1-f72.google.com with SMTP id h9-20020a1709063c09b0290393e97fec0fso3182322ejg.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 07:29:22 -0700 (PDT)
+        Tue, 4 May 2021 10:30:09 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2E9B8C061574;
+        Tue,  4 May 2021 07:29:14 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so7709930oth.5;
+        Tue, 04 May 2021 07:29:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eKIZAu6/2NdM8fHlgkE+KZQqouzZp51NLAhVcolSIcE=;
+        b=ShojezARwH1uaeTtN3VENf1RsdHgYRRDzCLnqNZoJ5xANav8dLHe59dCObS3LW7oVR
+         sss3ADBtYFRFC3LdfJbp7TvbT2kYTTCJE2J48jPFCRanYOjsD3kogYxwaQfpfs99pRgF
+         HMK303LDXhBkXFZ32L9X2ehbfl1UWWsAuZ8P/nUUj+240fGg1DO0x6GK15dq/riwNYeb
+         aafpBSYS6aQy2TrZ/HhhvsbaW0xO2iVGk1a7cvQqrEXfxVPdaaFAV7wKKfHusrCw0zaq
+         lNdzMNQADc/pwkfis9vVIuyFNLjL01BesNpG6FOxQGBvywFqcfV2Y2b2o9bOE0Y05d5J
+         Nv/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/C/wTNOTCb+yGfszfpaIVYIq+8oCD0tOIWtXOH684UQ=;
-        b=Eppbeadbp+tFIvysAcZSZjiZ0hUpGYTHNZ6EQDFgLstPUnk0lQNofOTHeKg47uene4
-         KHpEUYiJCEL+ys2yA98DqGbHptyszL5ObmXXvvKHAvFG/Ywkz0O3Gaeeur2TH+67d55N
-         RiN1LCx7bJohJKK9RZLv3HvMYUI2weGqdK/t5b3WUC5ZcfvKobBt6DdMY0PfKJUnHjZk
-         xOnCHV5NFKSFyK8WAaKi6hKRui5y28C6azUKpvPoxoC/WJTqRtfnJTpBF0vU3algFpc5
-         1ha2jAxufbUsR0gm4HlIgXMGhA6NxpAVcEM/TUu5Wz6eNe0dRGvj7kVsNCAVfuJ9df3I
-         ZsOg==
-X-Gm-Message-State: AOAM533Q9BOMhyLNmH+RIajVB0a6zLHedvaOCRuEn58HTCJZVqzw0YnL
-        CrhIN0QIgIYD+nv3+i6WQyQBb/fquTK8eD9QGXLAijVyibFhLLmWiZuaJePmVV/vbcIxoDTZEUM
-        x2c5WXoKvXLUlMdpuMLm84KGPX9OlV4zjg9sAN8We
-X-Received: by 2002:a17:906:9a02:: with SMTP id ai2mr22704484ejc.279.1620138561161;
-        Tue, 04 May 2021 07:29:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyBQGqUZtw6piWjtshZQhonbqeKOMWr75L9XDey1rFpJCXv1AQK+Jw5/m9KuadTFtTp9gtXISJlA+uPKf1wTjE=
-X-Received: by 2002:a17:906:9a02:: with SMTP id ai2mr22704467ejc.279.1620138560926;
- Tue, 04 May 2021 07:29:20 -0700 (PDT)
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=eKIZAu6/2NdM8fHlgkE+KZQqouzZp51NLAhVcolSIcE=;
+        b=rNRxZsUyBq3uTfAiKitzkHBmpMywkulBU6G0VdCpqO3BLyMKKCHMDnpHkTlsCA9VcO
+         3Fkf/vcWVJHtLctwQdcWg71bPiZhqNhpgR2bJDY/RloZXM6bWgKKlPXkXDblwOrBmUNO
+         saJ5XmxvAAvsG6edWrbigHApFnZDcbaTHBOmIF7A1zNzyjRbovluCLdVnHWNOo4eHBJM
+         Q+Vwq2rufRbfnqa2N5eev0qITQU0sx7burUzKaBlAg+h4ONlnEO5tyg3L3E3XeRhb+mW
+         gQI0j+DbdL03ns1VUk+Vt5xcq2Roy8OqKmux3nRouECo6HTXI563uDujoXL8SF3h953z
+         stOA==
+X-Gm-Message-State: AOAM532TspFpAcio7AEZ1jTyPXkCl+36NCIYmml5SQvS+le1oIBOiP7A
+        vFhI+uW48oyeaqpFDbvUWPA=
+X-Google-Smtp-Source: ABdhPJwixsPL4gUes21e2Ym9ZiEjlDDpj7aBAgzY2n98I2gq+SjsQaNx1v6L61j1SitQH65pU7hlXQ==
+X-Received: by 2002:a05:6830:1f27:: with SMTP id e7mr19351128oth.341.1620138553582;
+        Tue, 04 May 2021 07:29:13 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id a15sm660543oid.39.2021.05.04.07.29.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 07:29:12 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     dri-devel@lists.freedesktop.org
+Cc:     linux-fbdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] fbmem: Mark proc_fb_seq_ops as __maybe_unused
+Date:   Tue,  4 May 2021 07:29:10 -0700
+Message-Id: <20210504142910.2084722-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210501021832.743094-1-jesse.brandeburg@intel.com> <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com>
-In-Reply-To: <16d8ca67-30c6-bb4b-8946-79de8629156e@arm.com>
-From:   Nitesh Lal <nilal@redhat.com>
-Date:   Tue, 4 May 2021 10:29:09 -0400
-Message-ID: <CAFki+L=D8aS_jub0KHAkfsnvvJ_w8_mMYbaHeZ-GkQF1s_0WDQ@mail.gmail.com>
-Subject: Re: [PATCH tip:irq/core v1] genirq: remove auto-set of the mask when
- setting the hint
-To:     Robin Murphy <robin.murphy@arm.com>
-Cc:     Jesse Brandeburg <jesse.brandeburg@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        intel-wired-lan@lists.osuosl.org, jbrandeb@kernel.org,
-        "frederic@kernel.org" <frederic@kernel.org>,
-        "juri.lelli@redhat.com" <juri.lelli@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>, abelits@marvell.com,
-        "linux-api@vger.kernel.org" <linux-api@vger.kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
-        "stephen@networkplumber.org" <stephen@networkplumber.org>,
-        "rppt@linux.vnet.ibm.com" <rppt@linux.vnet.ibm.com>,
-        "jinyuqi@huawei.com" <jinyuqi@huawei.com>,
-        "zhangshaokun@hisilicon.com" <zhangshaokun@hisilicon.com>,
-        netdev@vger.kernel.org, chris.friesen@windriver.com,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 8:15 AM Robin Murphy <robin.murphy@arm.com> wrote:
->
-> On 2021-05-01 03:18, Jesse Brandeburg wrote:
-> > It was pointed out by Nitesh that the original work I did in 2014
-> > to automatically set the interrupt affinity when requesting a
-> > mask is no longer necessary. The kernel has moved on and no
-> > longer has the original problem, BUT the original patch
-> > introduced a subtle bug when booting a system with reserved or
-> > excluded CPUs. Drivers calling this function with a mask value
-> > that included a CPU that was currently or in the future
-> > unavailable would generally not update the hint.
-> >
-> > I'm sure there are a million ways to solve this, but the simplest
-> > one is to just remove a little code that tries to force the
-> > affinity, as Nitesh has shown it fixes the bug and doesn't seem
-> > to introduce immediate side effects.
->
-> Unfortunately, I think there are quite a few other drivers now relying
-> on this behaviour, since they are really using irq_set_affinity_hint()
-> as a proxy for irq_set_affinity().
+With CONFIG_PROC_FS=n and -Werror, 0-day reports:
 
-That's true.
+drivers/video/fbdev/core/fbmem.c:736:36: error:
+	'proc_fb_seq_ops' defined but not used
 
-> Partly since the latter isn't
-> exported to modules, but also I have a vague memory of it being said
-> that it's nice to update the user-visible hint to match when the
-> affinity does have to be forced to something specific.
+Mark it as __maybe_unused.
 
-If you see the downside of it we are forcing the affinity to match the hint
-mask without considering the default SMP affinity mask.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/video/fbdev/core/fbmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Also, we are repeating things here. First, we set certain mask for a device
-IRQ via request_irq code path which does consider the default SMP mask but
-then we are letting the driver over-write it.
-
-If we want to set the IRQ mask in a certain way then it should be done at
-the time of initial setup itself.
-
-Do you know about a workload/use case that can show the benefit of
-this behavior? As then we can try fixing it in the right way.
-
---
-Thanks
-Nitesh
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index 372b52a2befa..52c606c0f8a2 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -733,7 +733,7 @@ static int fb_seq_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
+-static const struct seq_operations proc_fb_seq_ops = {
++static const struct __maybe_unused seq_operations proc_fb_seq_ops = {
+ 	.start	= fb_seq_start,
+ 	.next	= fb_seq_next,
+ 	.stop	= fb_seq_stop,
+-- 
+2.25.1
 
