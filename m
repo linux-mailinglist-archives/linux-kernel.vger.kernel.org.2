@@ -2,70 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC6EE37298D
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:29:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78A2D372989
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 13:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230181AbhEDL3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 07:29:54 -0400
-Received: from foss.arm.com ([217.140.110.172]:57058 "EHLO foss.arm.com"
+        id S230126AbhEDL31 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 07:29:27 -0400
+Received: from foss.arm.com ([217.140.110.172]:57040 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229903AbhEDL3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 07:29:51 -0400
+        id S229903AbhEDL3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 07:29:24 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5C159D6E;
-        Tue,  4 May 2021 04:28:56 -0700 (PDT)
-Received: from e123427-lin.arm.com (unknown [10.57.46.190])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 908CA3F73B;
-        Tue,  4 May 2021 04:28:51 -0700 (PDT)
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        paul.walmsley@sifive.com, devicetree@vger.kernel.org,
-        linux-pci@vger.kernel.org, hayashi.kunihiko@socionext.com,
-        sboyd@kernel.org, vidyas@nvidia.com, aou@eecs.berkeley.edu,
-        helgaas@kernel.org, linux-clk@vger.kernel.org, bhelgaas@google.com,
-        zong.li@sifive.com, hes@sifive.com, alex.dewar90@gmail.com,
-        erik.danie@sifive.com, jh80.chung@samsung.com,
-        Greentime Hu <greentime.hu@sifive.com>,
-        mturquette@baylibre.com, p.zabel@pengutronix.de,
-        robh+dt@kernel.org, khilman@baylibre.com
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-Subject: Re: [PATCH v6 0/6] Add SiFive FU740 PCIe host controller driver support
-Date:   Tue,  4 May 2021 12:28:45 +0100
-Message-Id: <162012762098.17915.18389066004997041156.b4-ty@arm.com>
-X-Mailer: git-send-email 2.26.1
-In-Reply-To: <20210504105940.100004-1-greentime.hu@sifive.com>
-References: <20210504105940.100004-1-greentime.hu@sifive.com>
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0593AD6E;
+        Tue,  4 May 2021 04:28:30 -0700 (PDT)
+Received: from [10.163.77.186] (unknown [10.163.77.186])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 570D13F73B;
+        Tue,  4 May 2021 04:28:28 -0700 (PDT)
+Subject: Re: [PATCH] mm/ioremap: Fix iomap_max_page_shift
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <0d615a242c4470462da547dc332e4ec5f00479dd.1619855673.git.christophe.leroy@csgroup.eu>
+From:   Anshuman Khandual <anshuman.khandual@arm.com>
+Message-ID: <21a38d63-a229-17e4-7a70-bde7101cd6fd@arm.com>
+Date:   Tue, 4 May 2021 16:59:16 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <0d615a242c4470462da547dc332e4ec5f00479dd.1619855673.git.christophe.leroy@csgroup.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 May 2021 18:59:34 +0800, Greentime Hu wrote:
-> This patchset includes SiFive FU740 PCIe host controller driver. We also
-> add pcie_aux clock and pcie_power_on_reset controller to prci driver for
-> PCIe driver to use it.
+
+
+On 5/1/21 1:28 PM, Christophe Leroy wrote:
+> iomap_max_page_shift is expected to contain a page shift,
+> so it can't be a 'bool', has to be an 'unsigned int'
 > 
-> This is tested with e1000e: Intel(R) PRO/1000 Network Card, AMD Radeon R5
-> 230 graphics card and SP M.2 PCIe Gen 3 SSD in SiFive Unmatched based on
-> v5.11 Linux kernel.
+> And fix the default values: P4D_SHIFT is when huge iomap is allowed.
 > 
-> [...]
+> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Fixes: bbc180a5adb0 ("mm: HUGE_VMAP arch support cleanup")
 
-Applied to pci/risc-v, thanks.
+Reviewed-by: Anshuman Khandual <anshuman.khandual@arm.com>
 
-[1/6] clk: sifive: Add pcie_aux clock in prci driver for PCIe driver
-      https://git.kernel.org/lpieralisi/pci/c/c61287bf17
-[2/6] clk: sifive: Use reset-simple in prci driver for PCIe driver
-      https://git.kernel.org/lpieralisi/pci/c/e4d368e0b6
-[3/6] MAINTAINERS: Add maintainers for SiFive FU740 PCIe driver
-      https://git.kernel.org/lpieralisi/pci/c/2da0dd5e30
-[4/6] dt-bindings: PCI: Add SiFive FU740 PCIe host controller
-      https://git.kernel.org/lpieralisi/pci/c/43cea116be
-[5/6] PCI: fu740: Add SiFive FU740 PCIe host controller driver
-      https://git.kernel.org/lpieralisi/pci/c/d5f9eb3dbb
-[6/6] riscv: dts: Add PCIe support for the SiFive FU740-C000 SoC
-      https://git.kernel.org/lpieralisi/pci/c/dc69e229c1
-
-Thanks,
-Lorenzo
+> ---
+>  mm/ioremap.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/mm/ioremap.c b/mm/ioremap.c
+> index d1dcc7e744ac..2f7193c6a99e 100644
+> --- a/mm/ioremap.c
+> +++ b/mm/ioremap.c
+> @@ -16,16 +16,16 @@
+>  #include "pgalloc-track.h"
+>  
+>  #ifdef CONFIG_HAVE_ARCH_HUGE_VMAP
+> -static bool __ro_after_init iomap_max_page_shift = PAGE_SHIFT;
+> +static unsigned int __ro_after_init iomap_max_page_shift = P4D_SHIFT;
+>  
+>  static int __init set_nohugeiomap(char *str)
+>  {
+> -	iomap_max_page_shift = P4D_SHIFT;
+> +	iomap_max_page_shift = PAGE_SHIFT;
+>  	return 0;
+>  }
+>  early_param("nohugeiomap", set_nohugeiomap);
+>  #else /* CONFIG_HAVE_ARCH_HUGE_VMAP */
+> -static const bool iomap_max_page_shift = PAGE_SHIFT;
+> +static const unsigned int iomap_max_page_shift = PAGE_SHIFT;
+>  #endif	/* CONFIG_HAVE_ARCH_HUGE_VMAP */
+>  
+>  int ioremap_page_range(unsigned long addr,
+> 
