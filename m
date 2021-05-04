@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4B1372922
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 12:41:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B4437292A
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 12:45:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230253AbhEDKlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 06:41:40 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:53765 "EHLO pegase2.c-s.fr"
+        id S230153AbhEDKqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 06:46:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45936 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230202AbhEDKlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 06:41:39 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FZGZz2zDSz9sVs;
-        Tue,  4 May 2021 12:40:43 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 0E2klIs5KUQ6; Tue,  4 May 2021 12:40:43 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FZGZz22Nyz9sVq;
-        Tue,  4 May 2021 12:40:43 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 02E7E8B7A2;
-        Tue,  4 May 2021 12:40:42 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id n--sAVAbfbtx; Tue,  4 May 2021 12:40:42 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5A8FA8B7A1;
-        Tue,  4 May 2021 12:40:42 +0200 (CEST)
-Subject: Re: [PATCH 1/2] powerpc/asm-offset: Remove unused items related to
- paca
-To:     Nicholas Piggin <npiggin@gmail.com>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Paul Mackerras <paulus@samba.org>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-References: <f38728dbe96df5fef84c868640def5f6d7c114bc.1620060357.git.christophe.leroy@csgroup.eu>
- <1620121538.q0b7uiea5y.astroid@bobo.none>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <9b07e9c1-b004-a814-278b-c6a1f7b616e3@csgroup.eu>
-Date:   Tue, 4 May 2021 12:40:44 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229959AbhEDKqJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 06:46:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 198BC611AB;
+        Tue,  4 May 2021 10:45:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620125114;
+        bh=MQBVXYI4JNJL3H8Ev1c0zij2OqljXom3tPD8zsNDclQ=;
+        h=From:To:Cc:Subject:Date:From;
+        b=OCUS/xwUUPxUBs02l4upzMUXrg3f73KSpVjWAeJiTI9k09G8M4pQ0U1gcF7yFzOJL
+         /ZgMRZ1diVtiLPRZi4vyrshSKxgjR4goDBvSqSCPPR2HHS6ctYQ403wnkybFi59zxk
+         fSH74eS24ZmWZZEQXXYFvjKr9VMFz/yZYK1G2KIAg654P2lbUj3P47BdexCj6zfGrv
+         QPn6J9X5IBytFRP14rUKWAo536E0Ntf19J5yVEk2IEXDh0R53LoROxlths9AISKd6A
+         R9fsVjCGlOHU5aAB8mELrqG6MJADdjk1fLthc23PRkZavxgmGor/LmX8JH/21dX2af
+         6jDzA3zGA2MHQ==
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     stable@vger.kernel.org
+Cc:     Arnd Bergmann <arnd@arndb.de>, kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] [stable v5.4] avoid __memcat_p link failure
+Date:   Tue,  4 May 2021 12:44:33 +0200
+Message-Id: <20210504104441.1317138-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-In-Reply-To: <1620121538.q0b7uiea5y.astroid@bobo.none>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Arnd Bergmann <arnd@arndb.de>
 
+The kernel test robot reports a link error when the stm driver is a
+loadable module on any v5.4 kernel:
 
-Le 04/05/2021 à 12:14, Nicholas Piggin a écrit :
-> Excerpts from Christophe Leroy's message of May 4, 2021 2:46 am:
->> PACA_SIZE, PACACONTEXTID, PACALOWSLICESPSIZE, PACAHIGHSLICEPSIZE,
->> PACA_SLB_ADDR_LIMIT, MMUPSIZEDEFSIZE, PACASLBCACHE, PACASLBCACHEPTR,
->> PACASTABRR, PACAVMALLOCSLLP, MMUPSIZESLLP, PACACONTEXTSLLP,
->> PACALPPACAPTR, LPPACA_DTLIDX and PACA_DTL_RIDX are not used anymore
->> by ASM code.
-> 
-> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-> 
-> Also I think SIGSEGV, NMI_MASK, THREAD_DBCR0, KUAP?, TI_FLAGS,
-> TI_PREEMPT, [ID]CACHEL1*, STACK_REGS_KUAP, EXC_LVL_SIZE, KVM_NEED_FLUSH,
-> KVM_FWNMI, VCPU_DEC, VCPU_SPMC, HSTATE_XICS_PHYS, HSTATE_SAVED_XIRR,
-> PPC_DBELL_MSGTYPE I think. While we're cleaning it up.
+> ERROR: "__memcat_p" [drivers/hwtracing/stm/stm_core.ko] undefined!
 
-Yes, thanks for checking.
+This was fixed in mainline with commit 7273ad2b08f8 ("kbuild: link
+lib-y objects to vmlinux forcibly when CONFIG_MODULES=y"), which
+is fairly intrusive.
 
-I think we can safely remove KUAP.
+Fix the v5.4 specific issue with a minimal subset of that patch,
+linking only the failing object into the kernel. Kernels before v4.20
+are not affected.
 
-But we can't remove EXC_LVL_SIZE, it is used in kernel/head_booke.h which is probably included in 
-head_44x.S and head_fsl_booke.S
+Reported-by: kernel test robot <lkp@intel.com>
+Link: https://groups.google.com/g/clang-built-linux/c/H-PrABqYShg
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ lib/Makefile | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Christophe
+diff --git a/lib/Makefile b/lib/Makefile
+index c5892807e06f..3b8977aed1b4 100644
+--- a/lib/Makefile
++++ b/lib/Makefile
+@@ -31,7 +31,7 @@ lib-y := ctype.o string.o vsprintf.o cmdline.o \
+ 	 flex_proportions.o ratelimit.o show_mem.o \
+ 	 is_single_threaded.o plist.o decompress.o kobject_uevent.o \
+ 	 earlycpio.o seq_buf.o siphash.o dec_and_lock.o \
+-	 nmi_backtrace.o nodemask.o win_minmax.o memcat_p.o
++	 nmi_backtrace.o nodemask.o win_minmax.o
+ 
+ lib-$(CONFIG_PRINTK) += dump_stack.o
+ lib-$(CONFIG_MMU) += ioremap.o
+@@ -46,7 +46,7 @@ obj-y += bcd.o sort.o parser.o debug_locks.o random32.o \
+ 	 bsearch.o find_bit.o llist.o memweight.o kfifo.o \
+ 	 percpu-refcount.o rhashtable.o \
+ 	 once.o refcount.o usercopy.o errseq.o bucket_locks.o \
+-	 generic-radix-tree.o
++	 generic-radix-tree.o memcat_p.o
+ obj-$(CONFIG_STRING_SELFTEST) += test_string.o
+ obj-y += string_helpers.o
+ obj-$(CONFIG_TEST_STRING_HELPERS) += test-string_helpers.o
+-- 
+2.29.2
+
