@@ -2,53 +2,329 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37838372781
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11655372787
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:47:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230130AbhEDIre (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:47:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhEDIrd (ORCPT
+        id S230131AbhEDIsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:48:33 -0400
+Received: from mail-41103.protonmail.ch ([185.70.41.103]:29401 "EHLO
+        mail-41103.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230023AbhEDIsc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:47:33 -0400
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [IPv6:2a01:488:42:1000:50ed:8234::])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C441AC061574;
-        Tue,  4 May 2021 01:46:38 -0700 (PDT)
-Received: from ip4d14bd53.dynamic.kabel-deutschland.de ([77.20.189.83] helo=[192.168.66.200]); authenticated
-        by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        id 1ldqhP-0008QM-7x; Tue, 04 May 2021 10:46:35 +0200
-To:     Jonathan Corbet <corbet@lwn.net>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <dd13f10c30e79e550215e53a8103406daec4e593.1618482489.git.linux@leemhuis.info>
- <e1d2e16a-60b8-0a55-20d4-53db11e6821c@leemhuis.info>
- <875yzzh1bm.fsf@meer.lwn.net>
-From:   Thorsten Leemhuis <linux@leemhuis.info>
-Subject: Re: [PATCH v1] docs: reporting-issues.rst: CC subsystem and
- maintainers on regressions
-Message-ID: <7f91a4bd-ca35-ff8e-cc99-4aff627e9aa8@leemhuis.info>
-Date:   Tue, 4 May 2021 10:46:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Tue, 4 May 2021 04:48:32 -0400
+Received: from mail-02.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by mail-41103.protonmail.ch (Postfix) with ESMTPS id 4FZD4S61c2z4wxq1;
+        Tue,  4 May 2021 08:47:36 +0000 (UTC)
+Authentication-Results: mail-41103.protonmail.ch;
+        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="yAZ0Jxu0"
+Date:   Tue, 04 May 2021 08:47:24 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1620118051;
+        bh=IZvCPGXEf0mgKXFVcKK/jrGvuQ6n62UUPxJOGbO2Hwk=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=yAZ0Jxu05ITyubDni2y/MDhePlElzL+PXMkWXtiEVtgOOaMDBmgXQW4N9YkBGVKX4
+         JYG2uuSD9fq0ZYaidRAEBA0K/pi1+xZvdlta4s74ssYGc74I5Jpt4Kwn+KKHl+hqO0
+         7eiVcjvkrXwp6xSZO2F6pxv31zRiorv4iadjG8ec=
+To:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "dmitry.torokhov@gmail.com" <dmitry.torokhov@gmail.com>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "phone-devel@vger.kernel.org" <phone-devel@vger.kernel.org>,
+        "~postmarketos/upstreaming@lists.sr.ht" 
+        <~postmarketos/upstreaming@lists.sr.ht>
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH 1/2] Input: cypress-sf - Add Cypress StreetFighter touchkey driver
+Message-ID: <ocb1SNCqWH2dOajA4VYTx5jo9jZ67pS6FTejJN82OnPIUdmqBXL62kjGDQ-ZIMPnmhm3C16FCJz94cs82kGFmFBq7mERwqtHhwr7BgZC_w0=@protonmail.com>
 MIME-Version: 1.0
-In-Reply-To: <875yzzh1bm.fsf@meer.lwn.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-BS
-Content-Transfer-Encoding: 8bit
-X-bounce-key: webpack.hosteurope.de;linux@leemhuis.info;1620117998;58375697;
-X-HE-SMSGID: 1ldqhP-0008QM-7x
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04.05.21 00:58, Jonathan Corbet wrote:
-> Thorsten Leemhuis <linux@leemhuis.info> writes:
-> 
->> Hi Jonathan. Wondering if this slipped through the cracks, as I haven't
->> heart anything (or did I miss it?). Would IMHO have been nice to have in
->> 5.13 as well, but it's not crucial.
-> 
-> Hmm...I was sure I'd applied this one, guess not.  Sorry.  Applied now,
-> I'll push it Linusward shortly.
+This adds support for Cypress StreetFighter touchkey controllers such as sf=
+3155.
+This driver supports enabling regulators and generating input events.
+---
+ drivers/input/keyboard/Kconfig      |  10 ++
+ drivers/input/keyboard/Makefile     |   1 +
+ drivers/input/keyboard/cypress-sf.c | 220 ++++++++++++++++++++++++++++
+ 3 files changed, 231 insertions(+)
+ create mode 100644 drivers/input/keyboard/cypress-sf.c
 
-No worries & many thx! Ciao, Thorsten
+diff --git a/drivers/input/keyboard/Kconfig b/drivers/input/keyboard/Kconfi=
+g
+index 32d15809ae58..9348cd604843 100644
+--- a/drivers/input/keyboard/Kconfig
++++ b/drivers/input/keyboard/Kconfig
+@@ -791,4 +791,14 @@ config KEYBOARD_MTK_PMIC
+ =09  To compile this driver as a module, choose M here: the
+ =09  module will be called pmic-keys.
+
++config KEYBOARD_CYPRESS_SF
++=09tristate "Cypress StreetFighter touchkey support"
++=09depends on I2C
++=09help
++=09  Say Y here if you want to enable support for Cypress StreetFighter
++=09  touchkeys.
++
++=09  To compile this driver as a module, choose M here: the
++=09  module will be called cypress-sf.
++
+ endif
+diff --git a/drivers/input/keyboard/Makefile b/drivers/input/keyboard/Makef=
+ile
+index 1d689fdd5c00..e3c8648f834e 100644
+--- a/drivers/input/keyboard/Makefile
++++ b/drivers/input/keyboard/Makefile
+@@ -17,6 +17,7 @@ obj-$(CONFIG_KEYBOARD_BCM)=09=09+=3D bcm-keypad.o
+ obj-$(CONFIG_KEYBOARD_CAP11XX)=09=09+=3D cap11xx.o
+ obj-$(CONFIG_KEYBOARD_CLPS711X)=09=09+=3D clps711x-keypad.o
+ obj-$(CONFIG_KEYBOARD_CROS_EC)=09=09+=3D cros_ec_keyb.o
++obj-$(CONFIG_KEYBOARD_CYPRESS_SF)=09+=3D cypress-sf.o
+ obj-$(CONFIG_KEYBOARD_DAVINCI)=09=09+=3D davinci_keyscan.o
+ obj-$(CONFIG_KEYBOARD_DLINK_DIR685)=09+=3D dlink-dir685-touchkeys.o
+ obj-$(CONFIG_KEYBOARD_EP93XX)=09=09+=3D ep93xx_keypad.o
+diff --git a/drivers/input/keyboard/cypress-sf.c b/drivers/input/keyboard/c=
+ypress-sf.c
+new file mode 100644
+index 000000000000..f0b52cede249
+--- /dev/null
++++ b/drivers/input/keyboard/cypress-sf.c
+@@ -0,0 +1,220 @@
++// SPDX-License-Identifier: GPL-2.0-only
++
++#include <linux/bitops.h>
++#include <linux/device.h>
++#include <linux/i2c.h>
++#include <linux/regulator/consumer.h>
++#include <linux/interrupt.h>
++#include <linux/pm.h>
++#include <linux/input.h>
++#include <linux/module.h>
++
++#define CYPRESS_SF_DEV_NAME "cypress-sf"
++
++#define CYPRESS_SF_REG_FW_VERSION=090x46
++#define CYPRESS_SF_REG_HW_VERSION=090x48
++#define CYPRESS_SF_REG_BUTTON_STATUS=090x4a
++
++struct cypress_sf_data {
++=09struct i2c_client *client;
++=09struct input_dev *input_dev;
++=09struct regulator_bulk_data regulators[2];
++=09u32 *keycodes;
++=09unsigned long keystates;
++=09int num_keys;
++};
++
++static irqreturn_t cypress_sf_irq_handler(int irq, void *devid)
++{
++=09struct cypress_sf_data *touchkey =3D devid;
++=09unsigned long keystates;
++=09bool curr_state, new_state;
++=09int key;
++
++=09keystates =3D i2c_smbus_read_byte_data(touchkey->client,
++=09=09=09=09=09CYPRESS_SF_REG_BUTTON_STATUS);
++=09if (keystates < 0) {
++=09=09dev_err(&touchkey->client->dev, "Failed to read button status");
++=09=09return IRQ_NONE;
++=09}
++
++=09for(key =3D 0; key < touchkey->num_keys; ++key) {
++=09=09curr_state =3D test_bit(key, &touchkey->keystates);
++=09=09new_state =3D test_bit(key, &keystates);
++
++=09=09if(curr_state ^ new_state) {
++=09=09=09dev_dbg(&touchkey->client->dev,\
++=09=09=09=09"Key %d changed to %d", key, new_state);
++=09=09=09input_report_key(touchkey->input_dev,
++=09=09=09=09=09touchkey->keycodes[key],
++=09=09=09=09=09new_state);
++=09=09}
++=09}
++=09input_sync(touchkey->input_dev);
++=09touchkey->keystates =3D keystates;
++
++=09return IRQ_HANDLED;
++}
++
++static int cypress_sf_probe(struct i2c_client *client,
++=09=09=09=09const struct i2c_device_id *id)
++{
++=09struct cypress_sf_data *touchkey;
++=09u8 hw_version;
++=09u16 fw_version;
++=09int ret;
++=09int i;
++
++=09touchkey =3D devm_kzalloc(&client->dev, sizeof(*touchkey), GFP_KERNEL);
++=09if(!touchkey)
++=09=09return -ENOMEM;
++
++=09touchkey->client =3D client;
++=09i2c_set_clientdata(client, touchkey);
++
++=09touchkey->regulators[0].supply =3D "vdd";
++=09touchkey->regulators[1].supply =3D "avdd";
++
++=09ret =3D devm_regulator_bulk_get(&client->dev,
++=09=09=09=09=09ARRAY_SIZE(touchkey->regulators),
++=09=09=09=09=09touchkey->regulators);
++=09if(ret) {
++=09=09dev_err(&client->dev, "Failed to get regulators: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09touchkey->num_keys =3D of_property_count_elems_of_size(client->dev.of_n=
+ode,
++=09=09=09=09=09=09=09"linux,keycodes",
++=09=09=09=09=09=09=09sizeof(u32));
++=09if(touchkey->num_keys < 0)
++=09=09/* Default key count */
++=09=09touchkey->num_keys =3D 2;
++
++=09touchkey->keycodes =3D devm_kzalloc(&client->dev,
++=09=09=09=09sizeof(u32) * touchkey->num_keys, GFP_KERNEL);
++=09if(!touchkey->keycodes)
++=09=09return -ENOMEM;
++
++=09ret =3D of_property_read_u32_array(client->dev.of_node, "linux,keycodes=
+",
++=09=09=09=09=09=09touchkey->keycodes, touchkey->num_keys);
++
++=09if(touchkey->num_keys < 0) {
++=09=09/* Default keycodes */
++=09=09touchkey->keycodes[0] =3D KEY_BACK;
++=09=09touchkey->keycodes[1] =3D KEY_MENU;
++=09}
++
++=09ret =3D regulator_bulk_enable(ARRAY_SIZE(touchkey->regulators),
++=09=09=09=09=09touchkey->regulators);
++=09if(ret) {
++=09=09dev_err(&client->dev, "Failed to enable regulators: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09touchkey->input_dev =3D devm_input_allocate_device(&client->dev);
++=09if(!touchkey->input_dev) {
++=09=09dev_err(&client->dev, "Failed to allocate input device\n");
++=09=09return -ENOMEM;
++=09}
++
++=09touchkey->input_dev->name =3D CYPRESS_SF_DEV_NAME;
++=09touchkey->input_dev->id.bustype =3D BUS_I2C;
++
++=09hw_version =3D i2c_smbus_read_byte_data(touchkey->client,
++=09=09=09=09CYPRESS_SF_REG_HW_VERSION);
++=09fw_version =3D i2c_smbus_read_word_data(touchkey->client,
++=09=09=09=09CYPRESS_SF_REG_FW_VERSION);
++=09if(hw_version < 0 || fw_version < 0)
++=09=09dev_warn(&client->dev, "Failed to read versions\n");
++=09else
++=09=09dev_info(&client->dev, "HW version %d, FW version %d\n",
++=09=09=09=09hw_version, fw_version);
++
++=09for(i =3D 0; i < touchkey->num_keys; ++i)
++=09=09input_set_capability(touchkey->input_dev, EV_KEY,
++=09=09=09=09=09touchkey->keycodes[i]);
++
++=09ret =3D input_register_device(touchkey->input_dev);
++=09if(ret) {
++=09=09dev_err(&client->dev,
++=09=09=09"Failed to register input device: %d\n", ret);
++=09=09return ret;
++=09}
++
++=09ret =3D devm_request_threaded_irq(&client->dev, client->irq,
++=09=09=09=09=09NULL, cypress_sf_irq_handler,
++=09=09=09=09=09IRQF_ONESHOT,
++=09=09=09=09=09CYPRESS_SF_DEV_NAME, touchkey);
++=09if(ret) {
++=09=09dev_err(&client->dev,
++=09=09=09"Failed to register threaded irq: %d", ret);
++=09=09return ret;
++=09}
++
++=09return 0;
++};
++
++static int __maybe_unused cypress_sf_suspend(struct device *dev) {
++=09struct i2c_client *client =3D to_i2c_client(dev);
++=09struct cypress_sf_data *touchkey =3D i2c_get_clientdata(client);
++=09int ret;
++
++=09disable_irq(client->irq);
++=09ret =3D regulator_bulk_disable(ARRAY_SIZE(touchkey->regulators),
++=09=09=09=09=09touchkey->regulators);
++=09if(ret) {
++=09=09dev_err(dev, "Failed to disable regulators: %d", ret);
++=09=09enable_irq(client->irq);
++=09=09return ret;
++=09}
++=09dev_dbg(dev, "Suspended device");
++
++=09return 0;
++}
++
++static int __maybe_unused cypress_sf_resume(struct device *dev) {
++=09struct i2c_client *client =3D to_i2c_client(dev);
++=09struct cypress_sf_data *touchkey =3D i2c_get_clientdata(client);
++=09int ret;
++
++=09ret =3D regulator_bulk_enable(ARRAY_SIZE(touchkey->regulators),
++=09=09=09=09=09touchkey->regulators);
++=09if(ret) {
++=09=09dev_err(dev, "Failed to enable regulators: %d", ret);
++=09=09return ret;
++=09}
++=09enable_irq(client->irq);
++=09dev_dbg(dev, "Resumed device");
++
++=09return 0;
++}
++
++static SIMPLE_DEV_PM_OPS(cypress_sf_pm_ops,
++=09=09=09 cypress_sf_suspend, cypress_sf_resume);
++
++static struct i2c_device_id cypress_sf_id_table[] =3D {
++=09{ CYPRESS_SF_DEV_NAME, 0 },
++=09{ }
++};
++MODULE_DEVICE_TABLE(i2c, cypress_sf_id_table);
++
++static const struct of_device_id cypress_sf_of_match[] =3D {
++=09{ .compatible =3D "cypress,sf3155", },
++=09{ },
++};
++MODULE_DEVICE_TABLE(of, cypress_sf_of_match);
++
++static struct i2c_driver cypress_sf_driver =3D {
++=09.driver =3D {
++=09=09.name =3D CYPRESS_SF_DEV_NAME,
++=09=09.pm =3D &cypress_sf_pm_ops,
++=09=09.of_match_table =3D of_match_ptr(cypress_sf_of_match),
++=09},
++=09.id_table =3D cypress_sf_id_table,
++=09.probe =3D cypress_sf_probe,
++};
++module_i2c_driver(cypress_sf_driver);
++
++MODULE_AUTHOR("Yassine Oudjana <y.oudjana@protonmail.com>");
++MODULE_DESCRIPTION("Cypress StreetFighter Touchkey Driver");
++MODULE_LICENSE("GPL v2");
+--
+2.31.1
+
