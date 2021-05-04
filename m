@@ -2,135 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214E337254C
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 07:08:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0B0C372550
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 07:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229786AbhEDFJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 01:09:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45722 "EHLO
+        id S229832AbhEDFLA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 01:11:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46126 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229724AbhEDFJH (ORCPT
+        with ESMTP id S229724AbhEDFK6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 01:09:07 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04BB1C061574;
-        Mon,  3 May 2021 22:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=/l3ME+YyFSdYbM3W3a/AxJLnYEq4c0HL5DB1Few+tsY=; b=fnIuE8Usqiz+a4CZLKnOkXfjVJ
-        L1km8jYZPUtgQgMylkarrD2aaff0nMK2iBLrcye228unywIpAk28B6ZRcp+n/0j5rIgXtKLrXrzhu
-        9zFLC1afNQX2M+mCCRPoqQ/ujWWgiB85ACOVoji/gIzTvvtlQQEX1ashC0STdrMwE1s9OqskC6IBB
-        GzQ97qD1RHNTxqpNq+7Vu38eN5uEP0zL0OLsdTsDZA8Sd3kM8XqO3oFBefCWmI0DYBWxYZnWPbSM5
-        vEWAYh4teTS/J6fCCSuPTx9hCFbYqvOOSj/vAMjckWZvALOOUeEOXu/G+CxR/Bc0+ti3H6bi/Zej6
-        D2EiXx0Q==;
-Received: from [2601:1c0:6280:3f0::df68]
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1ldnHp-00G88E-81; Tue, 04 May 2021 05:08:00 +0000
-Subject: Re: [PATCH] EDAC: aspeed: print resource_size_t using %pa
-To:     Andrew Jeffery <andrew@aj.id.au>, linux-kernel@vger.kernel.org
-Cc:     kbuild test robot <lkp@intel.com>, linux-aspeed@lists.ozlabs.org,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Stefan M Schaeckeler <sschaeck@cisco.com>,
-        Borislav Petkov <bp@suse.de>, linux-edac@vger.kernel.org,
-        Arnd Bergmann <arnd@kernel.org>
-References: <20210503163409.31944-1-rdunlap@infradead.org>
- <e899781c-304c-4494-a544-e3950e928e55@www.fastmail.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <892dfd15-a8f7-9db9-86bb-9630e88e0e3c@infradead.org>
-Date:   Mon, 3 May 2021 22:07:53 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
-MIME-Version: 1.0
-In-Reply-To: <e899781c-304c-4494-a544-e3950e928e55@www.fastmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Tue, 4 May 2021 01:10:58 -0400
+Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 810CAC061574;
+        Mon,  3 May 2021 22:10:03 -0700 (PDT)
+Received: by mail-pf1-x42b.google.com with SMTP id p4so6271748pfo.3;
+        Mon, 03 May 2021 22:10:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=nN558CuJoYAqyxjGw9iC6a952PyhhCiEntUbao0fqtw=;
+        b=f5nlQJk/X8xswjtgGBa/nPro4ITYg0HtrtYa0SMIxXiv9PlLFBSJubJAiVtCAvWgGy
+         3yaEIqm2fy1mh+a7WWtD8NAaBp4jVCQj6TWU2n5NFeDHfG7Vya8FCSYLFox7hjEUDHHF
+         hjQIW4cAZwegc7phXf63L5avbwzL6hzQUxpQ1wFaJFPpaeVi5+pluFefMH143Mz20X2N
+         daQ1AfT+3TCTgW8gdRY7GA4etwxxwd1qIFqzBfZdXOeXPojduCQYxgp1yLVCkGyskJYb
+         T8HYQTNLaa49rVxpphTJBThzgbgNCx7txZtyBHrF2hPMWPV/ULK2b2W6BjxR64nqUckG
+         T20Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=nN558CuJoYAqyxjGw9iC6a952PyhhCiEntUbao0fqtw=;
+        b=GGvzcG7CI5wWpl8XKUlPtuxjM6QPquZnZRXp11XltTjvCn9y0khPPCJ+leMwouvLPf
+         wKch+KIiB8bN8R0RUiT6u7su6ioyZZD2ZmcS2nlWlAvUuk44TdvZNx/wlDNSArVcJ6Y/
+         2OQWz2RloTxVZNojpaTNXH1J3VW/8sp4vjyGVmWsbvH0yj+MjjYnecfSDrNO3tLAnwva
+         9kcJydPogBM7L0nAH8Y/cF1WvT1BhDAMmn2QB4Bv4skBuGEz8wHLx5GabvtLZSNkyDm7
+         1qn6h4upp1tMXDk7Y9u93QYrJUSKfB2SiQ4bHtQdaEh3/iHHsFwtTx7/xspvo9pxkkAv
+         viSA==
+X-Gm-Message-State: AOAM532wkb8jXdmkmKhQSSYlObLsD0Lg1tcwlCqzb6gl4NxdN/R+DkVT
+        Lu0Tv43tcxuj1OoQDiK8VTY6Sv6I1ZqwVw==
+X-Google-Smtp-Source: ABdhPJxIvgqU5Bhm45ywaPKkil788kyQIAKjvpt/dwodzS/XN83o5sfMYL3mkmVQiCLj9uyKVLZ4gA==
+X-Received: by 2002:a63:ce41:: with SMTP id r1mr21676946pgi.222.1620105003061;
+        Mon, 03 May 2021 22:10:03 -0700 (PDT)
+Received: from localhost.localdomain ([63.143.61.57])
+        by smtp.gmail.com with ESMTPSA id 3sm10457815pff.132.2021.05.03.22.09.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 03 May 2021 22:10:02 -0700 (PDT)
+From:   dillon.minfei@gmail.com
+To:     festevam@gmail.com, shawnguo@kernel.org, s.riedmueller@phytec.de,
+        matthias.schiffer@ew.tq-group.com, leoyang.li@nxp.com,
+        arnd@arndb.de, olof@lixom.net, s.hauer@pengutronix.de,
+        kernel@pengutronix.de, prabhakar.csengg@gmail.com,
+        mchehab@kernel.org, mchehab+huawei@kernel.org
+Cc:     krzysztof.kozlowski@canonical.com, krzk@kernel.org,
+        robh+dt@kernel.org, linux@rempel-privat.de,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, Dillon Min <dillon.minfei@gmail.com>
+Subject: [PATCH v5 0/4] arm: imx: Add i.mx6q DaSheng COM-9XX SBC board support
+Date:   Tue,  4 May 2021 13:09:49 +0800
+Message-Id: <1620104993-5850-1-git-send-email-dillon.minfei@gmail.com>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 9:57 PM, Andrew Jeffery wrote:
-> 
-> 
-> On Tue, 4 May 2021, at 02:04, Randy Dunlap wrote:
->> Fix build warnings for using "%x" to print resource_size_t in 2 places.
->> resource_size_t can be either of u32 or u64. We have a special format
->> "%pa" for printing a resource_size_t, which is the same as a phys_addr_t.
->> See Documentation/core-api/printk-formats.rst.
->>
->>   CC      drivers/edac/aspeed_edac.o
->> ../drivers/edac/aspeed_edac.c: In function 'init_csrows':
->> ../drivers/edac/aspeed_edac.c:257:21: warning: format '%x' expects 
->> argument of type 'unsigned int', but argument 4 has type 
->> 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
->>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
->> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
->>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
->> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
->>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
->> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
->> ../drivers/edac/aspeed_edac.c:257:21: warning: format '%x' expects 
->> argument of type 'unsigned int', but argument 5 has type 
->> 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
->>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
->> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
->>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
->> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
->>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
->> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
->>
->> Fixes: 9b7e6242ee4e ("EDAC, aspeed: Add an Aspeed AST2500 EDAC driver")
->> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
->> Reported-by: kernel test robot <lkp@intel.com>
->> Cc: Troy Lee <troy_lee@aspeedtech.com>
->> Cc: Stefan Schaeckeler <sschaeck@cisco.com>
->> Cc: linux-edac@vger.kernel.org
->> Cc: Borislav Petkov <bp@alien8.de>
->> Cc: Borislav Petkov <bp@suse.de>
->> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
->> Cc: Tony Luck <tony.luck@intel.com>
->> Cc: linux-aspeed@lists.ozlabs.org
->> ---
->> Found in linux-next but applies to mainline.
-> 
->>
->>  drivers/edac/aspeed_edac.c |    8 +++++---
->>  1 file changed, 5 insertions(+), 3 deletions(-)
->>
->> --- linux-next-20210503.orig/drivers/edac/aspeed_edac.c
->> +++ linux-next-20210503/drivers/edac/aspeed_edac.c
->> @@ -234,6 +234,7 @@ static int init_csrows(struct mem_ctl_in
->>  	u32 nr_pages, dram_type;
->>  	struct dimm_info *dimm;
->>  	struct device_node *np;
->> +	resource_size_t rsize;
->>  	struct resource r;
->>  	u32 reg04;
->>  	int rc;
->> @@ -254,11 +255,12 @@ static int init_csrows(struct mem_ctl_in
->>  		return rc;
->>  	}
->>  
->> -	dev_dbg(mci->pdev, "dt: /memory node resources: first page 
->> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
->> -		r.start, resource_size(&r), PAGE_SHIFT);
->> +	rsize = resource_size(&r);
->> +	dev_dbg(mci->pdev, "dt: /memory node resources: first page 
->> r.start=0x%pa, resource_size=0x%pa, PAGE_SHIFT macro=0x%x\n",
->> +		&r.start, &rsize, PAGE_SHIFT);
-> 
-> Arnd posted a fix a few days back that feels more intuitive, though 
-> probably could have cleaned up the grammar:
-> 
-> https://lore.kernel.org/lkml/20210421135500.3518661-1-arnd@kernel.org/
+From: Dillon Min <dillon.minfei@gmail.com>
 
-Oh, that's fine. I just missed it. :(
+This patchset aims to add kernel support on DaSheng COM-8XX SBC board
+optimize ov2659 driver to handle xvclk on/off at proper stage to save power
 
-thanks.
+changes based on linux master branch, since commit id:
+89698becf06d341a700913c3d89ce2a914af69a2
+
+The DaSheng Com-9xx is and ARM based signle board computer (SBC)
+featuring:
+- i.MX6Q
+- 2GiB LPDDR3 DRAM
+- 8GiB eMMC 5.0 FLASH
+- 4MiB SPI Flash
+- USB 2.0 Host/Device
+- Multiple multi-protocol RS232/RS485 Serial ports
+- microSD socket
+- 5V DC power input
+- HDMI1.4a,1080p@60
+- RGMIIx1 Gigabit Ethernet
+- CSI0x1, connect with ov2659
+
+---
+
+v5:
+- change my git author name from lower case to higher case.thanks prabhakar
+- add 'Acked-by: Lad Prabhakar <prabhakar.csengg@gmail.com>' for [PATCH v4 4/4]
+- v4 link:
+  https://lore.kernel.org/lkml/1618976938-20834-1-git-send-email-dillon.minfei@gmail.com/
+
+v4:
+all changes are on '[PATCH v3 3/4] arm: dts: imx: Add i.mx6q DaSheng COM-9XX
+SBC board support'
+- change 'green' to 'led-0', fix dtbs_check warrning
+- change 'pmic: pfuze100@8' to 'pfuze100: pmic@8', fix dtbs_check warrning
+- use GPIO_ACTIVE_HIGH instead of 0, from Fabio's suggestion, thanks
+- change 'flash: m25p80@0' to 'm25p80: flash@0'
+- move 'MX6QDL_PAD_GPIO_0__CCM_CLKO1' to pinctrl_ov2659{}
+- move 'MX6QDL_PAD_NANDF_D0__GPIO2_IO00, MX6QDL_PAD_NANDF_D1__GPIO2_IO01'
+  to pinctrl_usdhc2_gpioio{}
+- remove unused hoggrp
+- use wdog2, instead of wdog1 for external reset
+- v3 link:
+  https://lore.kernel.org/lkml/1618459535-8141-1-git-send-email-dillon.minfei@gmail.com/
+
+v3:
+- optimize commit message for patch v3 ov2659 part
+- move 'imx6q-ds.dtb' after 'imx6q-dms-ba16.dtb' to follow the alphabetical
+  order(arch/arm/boot/dts/Makefile)
+- move 'ds,imx6q-sbc' after 'dmo,imx6q-edmqmx6' to follow the alphabetical
+  order. (Documentation/devicetree/bindings/arm/fsl.yaml)
+- move v2 patch 4 to v3 patch 1
+- add 'Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>'
+  for [PATCH v3 1/4]
+- v2 link:
+  https://lore.kernel.org/lkml/1618383117-17179-1-git-send-email-dillon.minfei@gmail.com/
+
+v2:
+- add "[PATCH v2 4/4] dt-bindings: add dasheng vendor prefix" to fix
+  checkpatch.pl warning.
+
+
+Dillon Min (4):
+  dt-bindings: add dasheng vendor prefix
+  dt-bindings: arm: imx: Add i.mx6q DaSheng COM-9XX SBC
+  arm: dts: imx: Add i.mx6q DaSheng COM-9XX SBC board support
+  media: i2c: ov2659: Use clk_{prepare_enable,disable_unprepare}() to
+    set xvclk on/off
+
+ Documentation/devicetree/bindings/arm/fsl.yaml     |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm/boot/dts/Makefile                         |   1 +
+ arch/arm/boot/dts/imx6q-ds.dts                     |  17 +
+ arch/arm/boot/dts/imx6qdl-ds.dtsi                  | 460 +++++++++++++++++++++
+ drivers/media/i2c/ov2659.c                         |  24 +-
+ 6 files changed, 499 insertions(+), 6 deletions(-)
+ create mode 100644 arch/arm/boot/dts/imx6q-ds.dts
+ create mode 100644 arch/arm/boot/dts/imx6qdl-ds.dtsi
+
 -- 
-~Randy
+1.9.1
 
