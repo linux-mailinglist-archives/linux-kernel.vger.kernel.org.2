@@ -2,97 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551EB372CED
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F1BD372CF7
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:31:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230396AbhEDPam (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:30:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58354 "EHLO mail.kernel.org"
+        id S231147AbhEDPcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:32:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59894 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230212AbhEDPal (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:30:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BDA060FDC;
-        Tue,  4 May 2021 15:29:42 +0000 (UTC)
-Date:   Tue, 4 May 2021 16:29:40 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Steven Price <steven.price@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-Subject: Re: [PATCH v11 1/6] arm64: mte: Sync tags for pages where PTE is
- untagged
-Message-ID: <20210504152938.GC8078@arm.com>
-References: <20210416154309.22129-1-steven.price@arm.com>
- <20210416154309.22129-2-steven.price@arm.com>
- <20210427174357.GA17872@arm.com>
- <0ab0017c-1eaf-201e-587f-101e03da6b80@arm.com>
+        id S230193AbhEDPci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:32:38 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D39B610FA;
+        Tue,  4 May 2021 15:31:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620142303;
+        bh=oKmsd9bot90Pfy//TFn+A9MEIZp+so+1aFWQQcmfOsA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=mf49REO47RdZ+qg74EScE2J991TdYrQklg/imZPFsn2659v6c/dV6/U0arj29aAKJ
+         eyjX72WkpfY5w3HeCesfmfRSVWmai+oyI+XpvLeD6nxy6dLORctu8R0zexxiuiJM6M
+         hl2byM0dl5WMqBG06W3q0CR7ZzapjySmvV+vNKjA=
+Date:   Tue, 4 May 2021 17:31:40 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Kees Cook <keescook@chromium.org>, Wenwen Wang <wenwen@cs.uga.edu>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <lenb@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Mark Langsdorf <mlangsdo@redhat.com>
+Subject: Re: [PATCH] Revert "ACPI: custom_method: fix memory leaks"
+Message-ID: <YJFo3GGxaEX037V4@kroah.com>
+References: <20210502172326.2060025-1-keescook@chromium.org>
+ <YI+CHjLBg/ob6ei4@kroah.com>
+ <CAJZ5v0hohYm319Geqeb4xgJd+mn+G-Y6oWj2j_JifyaccMsh7Q@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <0ab0017c-1eaf-201e-587f-101e03da6b80@arm.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAJZ5v0hohYm319Geqeb4xgJd+mn+G-Y6oWj2j_JifyaccMsh7Q@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 29, 2021 at 05:06:05PM +0100, Steven Price wrote:
-> On 27/04/2021 18:43, Catalin Marinas wrote:
-> > On Fri, Apr 16, 2021 at 04:43:04PM +0100, Steven Price wrote:
-> > > diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-> > > index e17b96d0e4b5..cf4b52a33b3c 100644
-> > > --- a/arch/arm64/include/asm/pgtable.h
-> > > +++ b/arch/arm64/include/asm/pgtable.h
-> > > @@ -312,7 +312,7 @@ static inline void set_pte_at(struct mm_struct *mm, unsigned long addr,
-> > >   		__sync_icache_dcache(pte);
-> > >   	if (system_supports_mte() &&
-> > > -	    pte_present(pte) && pte_tagged(pte) && !pte_special(pte))
-> > > +	    pte_present(pte) && (pte_val(pte) & PTE_USER) && !pte_special(pte))
-> > 
-> > I would add a pte_user() macro here or, if we restore the tags only when
-> > the page is readable, use pte_access_permitted(pte, false). Also add a
-> > comment why we do this.
+On Tue, May 04, 2021 at 04:59:40PM +0200, Rafael J. Wysocki wrote:
+> On Mon, May 3, 2021 at 6:55 AM Greg Kroah-Hartman
+> <gregkh@linuxfoundation.org> wrote:
+> >
+> > On Sun, May 02, 2021 at 10:23:26AM -0700, Kees Cook wrote:
+> > > This reverts commit 03d1571d9513369c17e6848476763ebbd10ec2cb.
+> > >
+> > > While /sys/kernel/debug/acpi/custom_method is already a privileged-only
+> > > API providing proxied arbitrary write access to kernel memory[1][2],
+> > > with existing race conditions[3] in buffer allocation and use that could
+> > > lead to memory leaks and use-after-free conditions, the above commit
+> > > appears to accidentally make the use-after-free conditions even easier
+> > > to accomplish. ("buf" is a global variable and prior kfree()s would set
+> > > buf back to NULL.)
+> > >
+> > > This entire interface needs to be reworked (if not entirely removed).
+> > >
+> > > [1] https://lore.kernel.org/lkml/20110222193250.GA23913@outflux.net/
+> > > [2] https://lore.kernel.org/lkml/201906221659.B618D83@keescook/
+> > > [3] https://lore.kernel.org/lkml/20170109231323.GA89642@beast/
+> > >
+> > > Cc: Wenwen Wang <wenwen@cs.uga.edu>
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > > ---
+> > >  drivers/acpi/custom_method.c | 5 +----
+> > >  1 file changed, 1 insertion(+), 4 deletions(-)
+> > >
+> > > diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
+> > > index 7b54dc95d36b..36d95a02cd30 100644
+> > > --- a/drivers/acpi/custom_method.c
+> > > +++ b/drivers/acpi/custom_method.c
+> > > @@ -53,10 +53,8 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
+> > >       if ((*ppos > max_size) ||
+> > >           (*ppos + count > max_size) ||
+> > >           (*ppos + count < count) ||
+> > > -         (count > uncopied_bytes)) {
+> > > -             kfree(buf);
+> > > +         (count > uncopied_bytes))
+> > >               return -EINVAL;
+> > > -     }
+> > >
+> > >       if (copy_from_user(buf + (*ppos), user_buf, count)) {
+> > >               kfree(buf);
+> > > @@ -76,7 +74,6 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
+> > >               add_taint(TAINT_OVERRIDDEN_ACPI_TABLE, LOCKDEP_NOW_UNRELIABLE);
+> > >       }
+> > >
+> > > -     kfree(buf);
+> > >       return count;
+> > >  }
+> > >
+> > > --
+> >
+> > Thanks for the revert, I'll queue it up on my larger "umn.edu reverts"
+> > branch that I'll be sending out for review in a day or so.
 > 
-> pte_access_permitted() looks like it describes what we want (user space can
-> access the memory). I'll add the following comment:
-> 
->  /*
->   * If the PTE would provide user space will access to the tags
+> This will conflict with the material that I'm going to push on
+> Thursday that includes the two commits mentioned by Mark elsewhere in
+> this thread.
 
-I think drop "will".
+I'll drop this from my patch series now that you all have this covered.
 
->   * associated with it then ensure that the MTE tags are synchronised.
->   * Exec-only mappings don't expose tags (instruction fetches don't
->   * check tags).
->   */
+thanks!
 
-Sounds fine.
-
-> > There's also the pte_user_exec() case which may not have the PTE_USER
-> > set (exec-only permission) but I don't think it matters. We don't do tag
-> > checking on instruction fetches, so if the user adds a PROT_READ to it,
-> > it would go through set_pte_at() again. I'm not sure KVM does anything
-> > special with exec-only mappings at stage 2, I suspect they won't be
-> > accessible by the guest (but needs checking).
-> 
-> It comes down to the behaviour of get_user_pages(). AFAICT that will fail if
-> the memory is exec-only, so no stage 2 mapping will be created. Which of
-> course means the guest can't do anything with that memory. That certainly
-> seems like the only sane behaviour even without MTE.
-
-That's my understanding as well. The get_user_pages_fast() path uses
-pte_access_permitted() and should return false. The slower
-get_user_pages() relies on checking the vma flags and it checks for
-VM_READ.
-
--- 
-Catalin
+greg k-h
