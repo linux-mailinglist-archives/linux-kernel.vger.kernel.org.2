@@ -2,146 +2,223 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 42FE8373061
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:08:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C8F8373063
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 21:08:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232310AbhEDTJP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 15:09:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232164AbhEDTI0 (ORCPT
+        id S232611AbhEDTJQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 15:09:16 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:45519 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232450AbhEDTI6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 15:08:26 -0400
-Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5852C06174A;
-        Tue,  4 May 2021 12:07:31 -0700 (PDT)
-Received: by mail-qk1-x72c.google.com with SMTP id 76so7883899qkn.13;
-        Tue, 04 May 2021 12:07:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=2GHL/SEgSOnHu9ybvCk72F3enffJ+oqaNygEn1HzTJQ=;
-        b=R/JSj+Dq8U4sMWy39msHdEPCd1+/8QkjFJzCgo9juFXOdyk+28I00LwgvPv+Xr+y7j
-         WXlmoz2Gfl6ONsLx0fos5mxA2xQAQd8SVe0TZ4Flfx3qzQ6VYn6vETPlL8CqknDmt0x0
-         QtubWFpTsVcu5yPprtY+P+VPBlQ1XDqh65SxL79kJqYNDwLlLTK4vnZRcekDM250bwqp
-         q92Uf3pg1Xl4MEwW79HKIILwpw946eRGwhUGC/F2mr3FXZZFIdKVgyOhoSMqyu7yzNPh
-         gIUEKQN5j+O6OSfvBY8G4+WtexXpdsTqcnfNHSDttNjxAH/sbyMdg7D0cyAUWTp9JgRP
-         gN9Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2GHL/SEgSOnHu9ybvCk72F3enffJ+oqaNygEn1HzTJQ=;
-        b=aLlO/K9lt/cVd+V09WIn7Vk9m3G54ZQg5rA4MjGAbUbpH2TyX89B3npeAr9fXdh9qD
-         hDQ1BkCiaCYvgWWqDNQ5UNGSyykM3Bm99gJe5PJ0SiNQiYI9/mzu3Ark16TbdKaJSP+h
-         b0eQtJLZjaAMW/ymK6v5Lx1u/cNEj3+tPYChTnfep/kCVv3SnbzBwa4sxG8btND2C4Zs
-         Mtv2liUVp36XI5nmTGNaaMosMNpsoR8ghoQXIfK68IetYajKp5kGKV1inwk/s59RHUBt
-         WY3uR2XsPVqppyOBqaASNgs9C+ZHkRKgKGE1mM79tKpQBhqsnsI5a1oQmMJaam5IUfvP
-         HiZg==
-X-Gm-Message-State: AOAM5309V7p8htFzvD3xq9Vzbsp+UtKP+yctqcjFmXSEHhkPxnzpgtUv
-        Sws2njZ22HO3LEZWPSqoS3Z2GoW9+sbCcQ==
-X-Google-Smtp-Source: ABdhPJziMVhIhR3ZpRonQ8FNTyJsfiu4+N+8fWV2sAyiXHXK7nZ/i3jAPnq2rNc6ZpbDnyT2DsOxOg==
-X-Received: by 2002:a37:6850:: with SMTP id d77mr22571773qkc.57.1620155250886;
-        Tue, 04 May 2021 12:07:30 -0700 (PDT)
-Received: from ?IPv6:2804:14c:125:811b:fbbc:3360:40c4:fb64? ([2804:14c:125:811b:fbbc:3360:40c4:fb64])
-        by smtp.gmail.com with ESMTPSA id t1sm3059094qto.78.2021.05.04.12.07.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 12:07:30 -0700 (PDT)
-Subject: Re: [PATCH] media: em28xx: Fix possible memory leak of em28xx struct
-To:     Shuah Khan <skhan@linuxfoundation.org>, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        hverkuil-cisco@xs4all.nl
-References: <20210503173716.21652-1-igormtorrente@gmail.com>
- <dc285959-080a-3809-2f3e-e1de3440374a@linuxfoundation.org>
-From:   Igor Torrente <igormtorrente@gmail.com>
-Message-ID: <e5fa7752-a6d4-7d5b-160c-c92a38fed0e6@gmail.com>
-Date:   Tue, 4 May 2021 16:07:27 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Tue, 4 May 2021 15:08:58 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 32C572224F;
+        Tue,  4 May 2021 21:08:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1620155281;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4QGBSbicqLJQJZ17cGGki/cHo+2xPsDzUqYYr7kWQGI=;
+        b=ZToFfr/Pyy6rucbem/d+/lMBNbteLciIJ23xYYW1wnuff+UkorF47/UmtyjqdHtifJaFVY
+        d23CE/nmvzyzJIPo9miRnxS9bHtYHGutAT79jOATUxHx9y0OiwDNWtGJvHbb4BnrK8NkL4
+        YJnx6DkmSrGU/3RVfsi/8RjGA6jvbfA=
 MIME-Version: 1.0
-In-Reply-To: <dc285959-080a-3809-2f3e-e1de3440374a@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Tue, 04 May 2021 21:08:00 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     xiaoliang.yang_1@nxp.com, Arvid.Brodin@xdin.com,
+        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
+        allan.nielsen@microchip.com, andre.guedes@linux.intel.com,
+        claudiu.manoil@nxp.com, colin.king@canonical.com,
+        davem@davemloft.net, idosch@mellanox.com,
+        ivan.khoronzhuk@linaro.org, jiri@mellanox.com,
+        joergen.andreasen@microchip.com, leoyang.li@nxp.com,
+        linux-kernel@vger.kernel.org, m-karicheri2@ti.com,
+        michael.chan@broadcom.com, mingkai.hu@nxp.com,
+        netdev@vger.kernel.org, po.liu@nxp.com, saeedm@mellanox.com,
+        vinicius.gomes@intel.com, vladimir.oltean@nxp.com,
+        yuehaibing@huawei.com
+Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for TAS
+ config
+In-Reply-To: <20210504185040.ftkub3ropuacmyel@skbuf>
+References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
+ <20210504170514.10729-1-michael@walle.cc>
+ <20210504181833.w2pecbp2qpuiactv@skbuf>
+ <c7618025da6723418c56a54fe4683bd7@walle.cc>
+ <20210504185040.ftkub3ropuacmyel@skbuf>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Am 2021-05-04 20:50, schrieb Vladimir Oltean:
+> On Tue, May 04, 2021 at 08:38:29PM +0200, Michael Walle wrote:
+>> Hi Vladimir,
+>> 
+>> Am 2021-05-04 20:18, schrieb Vladimir Oltean:
+>> > On Tue, May 04, 2021 at 07:05:14PM +0200, Michael Walle wrote:
+>> > > Hi,
+>> > >
+>> > > > ALWAYS_GUARD_BAND_SCH_Q bit in TAS config register is descripted as
+>> > > > this:
+>> > > > 	0: Guard band is implemented for nonschedule queues to schedule
+>> > > > 	   queues transition.
+>> > > > 	1: Guard band is implemented for any queue to schedule queue
+>> > > > 	   transition.
+>> > > >
+>> > > > The driver set guard band be implemented for any queue to schedule queue
+>> > > > transition before, which will make each GCL time slot reserve a guard
+>> > > > band time that can pass the max SDU frame. Because guard band time could
+>> > > > not be set in tc-taprio now, it will use about 12000ns to pass 1500B max
+>> > > > SDU. This limits each GCL time interval to be more than 12000ns.
+>> > > >
+>> > > > This patch change the guard band to be only implemented for nonschedule
+>> > > > queues to schedule queues transition, so that there is no need to reserve
+>> > > > guard band on each GCL. Users can manually add guard band time for each
+>> > > > schedule queues in their configuration if they want.
+>> > >
+>> > >
+>> > > As explained in another mail in this thread, all queues are marked as
+>> > > scheduled. So this is actually a no-op, correct? It doesn't matter if
+>> > > it set or not set for now. Dunno why we even care for this bit then.
+>> >
+>> > It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the available
+>> > throughput when set.
+>> 
+>> Ahh, I see now. All queues are "scheduled" but the guard band only 
+>> applies
+>> for "non-scheduled" -> "scheduled" transitions. So the guard band is 
+>> never
+>> applied, right? Is that really what we want?
+> 
+> Xiaoliang explained that yes, this is what we want. If the end user
+> wants a guard band they can explicitly add a "sched-entry 00" in the
+> tc-taprio config.
+
+You're disabling the guard band, then. I figured, but isn't that
+suprising for the user? Who else implements taprio? Do they do it in the
+same way? I mean this behavior is passed right to the userspace and have
+a direct impact on how it is configured. Of course a user can add it
+manually, but I'm not sure that is what we want here. At least it needs
+to be documented somewhere. Or maybe it should be a switchable option.
+
+Consider the following:
+sched-entry S 01 25000
+sched-entry S fe 175000
+basetime 0
+
+Doesn't guarantee, that queue 0 is available at the beginning of
+the cycle, in the worst case it takes up to
+<begin of cycle> + ~12.5us until the frame makes it through (given
+gigabit and 1518b frames).
+
+Btw. there are also other implementations which don't need a guard
+band (because they are store-and-forward and cound the remaining
+bytes). So yes, using a guard band and scheduling is degrading the
+performance.
 
 
-On 5/3/21 5:06 PM, Shuah Khan wrote:
-> Hi Igor,
+>> > > > Signed-off-by: Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
+>> > > > ---
+>> > > >  drivers/net/dsa/ocelot/felix_vsc9959.c | 8 ++++++--
+>> > > >  1 file changed, 6 insertions(+), 2 deletions(-)
+>> > > >
+>> > > > diff --git a/drivers/net/dsa/ocelot/felix_vsc9959.c b/drivers/net/dsa/ocelot/felix_vsc9959.c
+>> > > > index 789fe08cae50..2473bebe48e6 100644
+>> > > > --- a/drivers/net/dsa/ocelot/felix_vsc9959.c
+>> > > > +++ b/drivers/net/dsa/ocelot/felix_vsc9959.c
+>> > > > @@ -1227,8 +1227,12 @@ static int vsc9959_qos_port_tas_set(struct ocelot *ocelot, int port,
+>> > > >  	if (taprio->num_entries > VSC9959_TAS_GCL_ENTRY_MAX)
+>> > > >  		return -ERANGE;
+>> > > >
+>> > > > -	ocelot_rmw(ocelot, QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port) |
+>> > > > -		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
+>> > > > +	/* Set port num and disable ALWAYS_GUARD_BAND_SCH_Q, which means set
+>> > > > +	 * guard band to be implemented for nonschedule queues to schedule
+>> > > > +	 * queues transition.
+>> > > > +	 */
+>> > > > +	ocelot_rmw(ocelot,
+>> > > > +		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM(port),
+>> > > >  		   QSYS_TAS_PARAM_CFG_CTRL_PORT_NUM_M |
+>> > > >  		   QSYS_TAS_PARAM_CFG_CTRL_ALWAYS_GUARD_BAND_SCH_Q,
+>> > > >  		   QSYS_TAS_PARAM_CFG_CTRL);
+>> > >
+>> > > Anyway, I don't think this the correct place for this:
+>> > >  (1) it isn't per port, but a global bit, but here its done per port.
+>> >
+>> > I don't understand. According to the documentation, selecting the port
+>> > whose time-aware shaper you are configuring is done through
+>> > QSYS::TAS_PARAM_CFG_CTRL.PORT_NUM.
+>> 
+>> According to the LS1028A RM:
+>> 
+>>   PORT_NUM
+>>   Specifies the port number to which the TAS_PARAMS register 
+>> configurations
+>>   (CFG_REG_1 to CFG_REG_5, TIME_INTERVAL and GATE_STATE) need to be 
+>> applied.
+>> 
+>> I guess this work together with CONFIG_CHANGE and applies the mentions
+>> registers
+>> in an atomic way (or at a given time). There is no mention of the
+>> ALWAYS_GUARD_BAND_SCH_Q bit nor the register TAS_PARAM_CFG_CTRL.
+>> 
+>> But the ALWAYS_GUARD_BAND_SCH_Q mention its "Global configuration". 
+>> That
+>> together with the fact that it can't be read back (unless I'm missing
+>> something), led me to the conclusion that this bit is global for the 
+>> whole
+>> switch. I may be wrong.
 > 
-> On 5/3/21 11:37 AM, Igor Matheus Andrade Torrente wrote:
->> The em28xx struct kref isn't being decreased after an error in the
->> em28xx_ir_init, leading to a possible memory leak.
->>
->> A kref_put is added to the error handler code.
->>
->> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
->> ---
->>   drivers/media/usb/em28xx/em28xx-input.c | 7 +++++--
->>   1 file changed, 5 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/media/usb/em28xx/em28xx-input.c 
->> b/drivers/media/usb/em28xx/em28xx-input.c
->> index 5aa15a7a49de..b89527014cad 100644
->> --- a/drivers/media/usb/em28xx/em28xx-input.c
->> +++ b/drivers/media/usb/em28xx/em28xx-input.c
->> @@ -720,7 +720,8 @@ static int em28xx_ir_init(struct em28xx *dev)
->>               dev->board.has_ir_i2c = 0;
->>               dev_warn(&dev->intf->dev,
->>                    "No i2c IR remote control device found.\n");
->> -            return -ENODEV;
->> +            err = -ENODEV;
->> +            goto ref_put;
-> 
-> This doesn't look right. em28xx_init_buttons() is already happened and
-> em28xx_shutdown_buttons() needs to be done from fini. fini needs to run
-> with this ref. If ref is released here, device might be released before
-> em28xx_shutdown_buttons() can run leading to potential use-after-free
-> 
+> Sorry, I don't understand what you mean to say here.
 
-Thanks for the feedback.
+I doubt that ALWAYS_GUARD_BAND_SCH_Q is a per-port setting. But that is
+only a guess. One would have to check with the IP vendor.
 
-I sent a patch V2 that I think fix the problem pointed out.
+>> But in any case, (2) is more severe IMHO.
+>> 
+>> > >  (2) rmw, I presume is read-modify-write. and there is one bit CONFIG_CHAGE
+>> > >      which is set by software and cleared by hardware. What happens if it
+>> > > 	 will be cleared right after we read it. Then it will be set again, no?
+>> > >
+>> > > So if we really care about this bit, shouldn't this be moved to switch
+>> > > initialization then?
+> 
+> Sorry, again, I don't understand. Let me copy here the procedure from
+> vsc9959_qos_port_tas_set():
+> 
+> 	ocelot_rmw(ocelot, QSYS_TAS_PARAM_CFG_CTRL_CONFIG_CHANGE,
+> 		   QSYS_TAS_PARAM_CFG_CTRL_CONFIG_CHANGE,
+> 		   QSYS_TAS_PARAM_CFG_CTRL); <- set the CONFIG_CHANGE bit, keep
+> everything else the same
+> 
+> 	ret = readx_poll_timeout(vsc9959_tas_read_cfg_status, ocelot, val,
+> 				 !(val & QSYS_TAS_PARAM_CFG_CTRL_CONFIG_CHANGE),
+> 				 10, 100000); <- spin until CONFIG_CHANGE clears
+> 
+> Should there have been a mutex at the beginning of 
+> vsc9959_qos_port_tas_set,
+> ensuring that two independent user space processes configuring the TAS
+> of two ports cannot access the global config registers concurrently?
+> Probably, although my guess is that currently, the global rtnetlink
+> mutex prevents this from happening in practice.
 
->>           }
->>       }
->> @@ -735,7 +736,7 @@ static int em28xx_ir_init(struct em28xx *dev)
->>       ir = kzalloc(sizeof(*ir), GFP_KERNEL);
->>       if (!ir)
->> -        return -ENOMEM;
->> +        goto ref_put;
-> 
-> This doesn't look right. Same comment as above. fini accounts for null
-> ir.
-> 
->        em28xx_shutdown_buttons(dev);
-> 
->         /* skip detach on non attached boards */
->         if (!ir)
->                 goto ref_put;
-> 
-> 
->>       rc = rc_allocate_device(RC_DRIVER_SCANCODE);
->>       if (!rc)
->>           goto error;
->> @@ -839,6 +840,8 @@ static int em28xx_ir_init(struct em28xx *dev)
->>       dev->ir = NULL;
->>       rc_free_device(rc);
->>       kfree(ir);
->> +ref_put:
->> +    kref_put(&dev->ref, em28xx_free_device);
->>       return err;
->>   }
->>
-> 
-> thanks,
-> -- Shuah
+Ah ok, I missed that.
 
-Best regard,
----
-Igor M. A. Torrente
+> 
+>> > May I know what drew your attention to this patch? Is there something
+>> > wrong?
+
+See private mail.
+
+-michael
