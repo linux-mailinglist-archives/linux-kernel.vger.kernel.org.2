@@ -2,91 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8060372CCC
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:12:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA8D7372CCE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230492AbhEDPNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39554 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230256AbhEDPNE (ORCPT
+        id S231182AbhEDPO3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:14:29 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:57623 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S230246AbhEDPO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:13:04 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C30B1C061574;
-        Tue,  4 May 2021 08:12:09 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id y32so7261423pga.11;
-        Tue, 04 May 2021 08:12:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x9tO99wYmUPUL8e5HvCoeHBJ4bw+/HvN6akOU6g8NTM=;
-        b=ElfQg2pki3F8R+EWtBgQdKxdDAtzXU7CvPoJ23bPBLPb+Xqu7YEvGX5jxQEcj00OQh
-         ntnVy6ggDcDtm2xpd/n5cs3gNp/IMLvv/fBdScdgae82F5aVhX/VuzLSPgCtq9h0WZ9N
-         WeIbzAPQklM1E/FMG1GECms62k2kajBZznl9OplIR5TQ2eQvnAieIjPDOr+Ya8G0i3HF
-         yyfH5+5faDLNXaA0YqdYgJ9GoUXKum+O4N35qAD07rJtMbui/cj73GhxMory6n2F2Vj9
-         DD3O/O8Jm12Qyvdzwm46SLZSYEC6VParW2sOuEPB5KSOTjA63HxsZDHHjDCdmoUhMOFC
-         l93A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x9tO99wYmUPUL8e5HvCoeHBJ4bw+/HvN6akOU6g8NTM=;
-        b=sNYL0IgSI6IfRO/iSd8ghmmv2qytWHlSBCREzrbOfRyhQ0K9N0mKnibfEJHFCUrIIQ
-         M8LJhPvres670c0gqhHqXHm3w/PV2lMIqhR0dkwzybE1EEvO007js1dHUR2x0YKLHLv1
-         xdMBlCHMo1yQVXJwCwL4SJgRP1wCKVs7cRCTBdFqbzQOMrFDhrLe32cSU6Q3wMatPIsI
-         4NjumLktoQ2LOSDIafP3HYqGKbi3eZtAEd0ZnWHveUcYA4G/n8zentT0aAvjC13n75Ne
-         TlHCoBkk5CU1O76xrj1fDoO7wwFRfkZ8+OcuI7FfQSrHHB7cnWjn8M2wUq9A0Wt41gUQ
-         daUQ==
-X-Gm-Message-State: AOAM530GkHKGUt7x0jOdyFixYCkWsSZjYGeVeyJzS0mTEiQKWXoB7UsD
-        UuTfszIwLcBKfedQXAJ31e+f6h/xJ68CyzvSaCs=
-X-Google-Smtp-Source: ABdhPJywDhvVxVOAzIDP34AGM9Fyu/0mrR4V6lPnqtCnAKgIquwxJiUj0LO0AxR6HFJ589/7DWlR9eJilihJV+JHE+k=
-X-Received: by 2002:a17:90a:bd13:: with SMTP id y19mr5917480pjr.181.1620141129232;
- Tue, 04 May 2021 08:12:09 -0700 (PDT)
+        Tue, 4 May 2021 11:14:27 -0400
+Received: (qmail 660129 invoked by uid 1000); 4 May 2021 11:13:31 -0400
+Date:   Tue, 4 May 2021 11:13:31 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Guido Kiener <Guido.Kiener@rohde-schwarz.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "dpenkler@gmail.com" <dpenkler@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: Re: [syzbot] INFO: rcu detected stall in tx
+Message-ID: <20210504151331.GB657070@rowland.harvard.edu>
+References: <a4f1b9d202c5445e8c714b3181b84830@rohde-schwarz.com>
 MIME-Version: 1.0
-References: <20210504143019.2085111-1-linux@roeck-us.net>
-In-Reply-To: <20210504143019.2085111-1-linux@roeck-us.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Tue, 4 May 2021 18:11:53 +0300
-Message-ID: <CAHp75Vc99LzOpe1EeTwoM+wkwyZkTamj6-=MSe_MBZ1+XUcebg@mail.gmail.com>
-Subject: Re: [PATCH] iio: am2315: Make am2315_acpi_id depend on CONFIG_ACPI
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a4f1b9d202c5445e8c714b3181b84830@rohde-schwarz.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 5:41 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> With CONFIG_ACPI=n and -Werror, 0-day reports:
->
-> drivers/iio/humidity/am2315.c:259:36: error:
->         'am2315_acpi_id' defined but not used
+On Mon, May 03, 2021 at 09:56:05PM +0000, Guido Kiener wrote:
+> Hi all,
+> 
+> Dave and I discussed the "self-detected stall on CPU" caused by the usbtmc driver.
+> 
+> What happened?
+> The callback handler usbtmc_interrupt(struct urb *urb) for the INT pipe receives an erroneous urb with status -EPROTO (-71).
+> See https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/usb/class/usbtmc.c?h=v5.12#n2340
+> -EPROTO does not abort/shutdown the pipe and the urb is resubmitted to receive the next packet. However the callback handler usbtmc_interrupt is called again with the same erroneous status -EPROTO and this seems to result in an endless loop.
+> According to https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/driver-api/usb/error-codes.rst?h=v5.12#n177
+> the error -EPROTO indicates a hardware problem or a bad cable.
+> 
+> Most usb drivers do not react in a specific way on this hardware problems and resubmit the urb. We assume these drivers will run into the same endless loop. Some other driver samples are:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/usb/class/cdc-acm.c?h=v5.12#n379
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/hid/usbhid/usbmouse.c?h=v5.12#n65
+> 
+> Possible solutions:
+> Hardware defects or bad cables seems to be a common problem for most usb drivers and I assume we do not want to fix this problem in all class specific drivers, but in lower level host drivers, e.g:
+> 1. Using a counter and close the pipe after some detected errors
+> 2. Delay the resubmission of the urb to avoid high cpu usage
+> 3. Do nothing, since it is just a rare problem.
+> 
+> We've never seen this problem in our products and we do not dare to change anything.
 
-...
+Drivers are not consistent in the way they handle these errors, as you 
+have seen.  A few try to take active measures, such as retrys with 
+increasing timeouts.  Many drivers just ignore them, which is not a very 
+good idea.
 
-> +#ifdef CONFIG_ACPI
->  static const struct acpi_device_id am2315_acpi_id[] = {
->         {"AOS2315", 0},
+The general feeling among kernel USB developers is that a -EPROTO, 
+-EILSEQ, or -ETIME error should be regarded as fatal, much the same as 
+an unplug event.  The driver should avoid resubmitting URBs and just 
+wait to be unbound from the device.
 
-This is a fake ID according to the specification. Do we have any proof
-that it's being used in the wild?
-If no, I prefer to drop this ID section entirely.
+If you would like to audit drivers and fix them up to behave this way, 
+that would be great.
 
-If yes, needs a comment which device is using it (however it may be
-out of the scope of this fix).
+(FYI, by far the most common causes of these errors are: The user has 
+unplugged the USB cable, or the device's firmware has crashed.  It is 
+quite rare for the cause to be intermittent, although not entirely 
+unheard of -- for example, someone once reported errors resulting from 
+EM or power-line interference caused by flickering fluorescent lights or 
+something of that sort.  It's pretty safe to ignore this possibility.)
 
->         {}
->  };
-> -
->  MODULE_DEVICE_TABLE(acpi, am2315_acpi_id);
-> +#endif
-
--- 
-With Best Regards,
-Andy Shevchenko
+Alan Stern
