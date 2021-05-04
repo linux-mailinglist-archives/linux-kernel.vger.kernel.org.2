@@ -2,108 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F1BD372CF7
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:31:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 969D3372CFD
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 17:33:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231147AbhEDPcj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 11:32:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230193AbhEDPci (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 11:32:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3D39B610FA;
-        Tue,  4 May 2021 15:31:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620142303;
-        bh=oKmsd9bot90Pfy//TFn+A9MEIZp+so+1aFWQQcmfOsA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mf49REO47RdZ+qg74EScE2J991TdYrQklg/imZPFsn2659v6c/dV6/U0arj29aAKJ
-         eyjX72WkpfY5w3HeCesfmfRSVWmai+oyI+XpvLeD6nxy6dLORctu8R0zexxiuiJM6M
-         hl2byM0dl5WMqBG06W3q0CR7ZzapjySmvV+vNKjA=
-Date:   Tue, 4 May 2021 17:31:40 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Kees Cook <keescook@chromium.org>, Wenwen Wang <wenwen@cs.uga.edu>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Mark Langsdorf <mlangsdo@redhat.com>
-Subject: Re: [PATCH] Revert "ACPI: custom_method: fix memory leaks"
-Message-ID: <YJFo3GGxaEX037V4@kroah.com>
-References: <20210502172326.2060025-1-keescook@chromium.org>
- <YI+CHjLBg/ob6ei4@kroah.com>
- <CAJZ5v0hohYm319Geqeb4xgJd+mn+G-Y6oWj2j_JifyaccMsh7Q@mail.gmail.com>
+        id S231237AbhEDPe3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 11:34:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30203 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230112AbhEDPe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 11:34:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620142412;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=HLdHIElXsh+Br5DFDsP1+YjonXAJx6g75JUakM7EhX0=;
+        b=W7/bSoaEHRa2sJJsJaigph9G50tS8iwXHGXNMMpGRAvx5RyjkDyGx4crbI5ceD53cIScDv
+        liNs6G5shs9tAupqA507dUwvV3vC+8jQTPVvUm8++MfP3VMD3NpnQVYFK03osmOE+aAdcm
+        CnRvO6gCkVVktK08sAXf1dCCgXvRbWs=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-586-oGqKZBKrOxqxLaLvFcQSeQ-1; Tue, 04 May 2021 11:33:28 -0400
+X-MC-Unique: oGqKZBKrOxqxLaLvFcQSeQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C45CF1922039;
+        Tue,  4 May 2021 15:33:26 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 13D425C230;
+        Tue,  4 May 2021 15:33:25 +0000 (UTC)
+Date:   Tue, 4 May 2021 09:33:24 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Jason Gunthorpe <jgg@nvidia.com>, <kvm@vger.kernel.org>,
+        David Airlie <airlied@linux.ie>,
+        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
+        "Paul Mackerras" <paulus@samba.org>,
+        Daniel Vetter <daniel@ffwll.ch>, <linux-api@vger.kernel.org>,
+        <linuxppc-dev@lists.ozlabs.org>, <qemu-devel@nongnu.org>,
+        <qemu-ppc@nongnu.org>
+Subject: Re: remove the nvlink2 pci_vfio subdriver v2
+Message-ID: <20210504093324.4f0cafc7@redhat.com>
+In-Reply-To: <20210504161131.2ed74d7b@bahia.lan>
+References: <20210326061311.1497642-1-hch@lst.de>
+        <20210504142236.76994047@bahia.lan>
+        <YJFFG1tSP0dUCxcX@kroah.com>
+        <20210504152034.18e41ec3@bahia.lan>
+        <YJFMZ8KYVCDwUBPU@kroah.com>
+        <20210504161131.2ed74d7b@bahia.lan>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0hohYm319Geqeb4xgJd+mn+G-Y6oWj2j_JifyaccMsh7Q@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 04:59:40PM +0200, Rafael J. Wysocki wrote:
-> On Mon, May 3, 2021 at 6:55 AM Greg Kroah-Hartman
-> <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Sun, May 02, 2021 at 10:23:26AM -0700, Kees Cook wrote:
-> > > This reverts commit 03d1571d9513369c17e6848476763ebbd10ec2cb.
-> > >
-> > > While /sys/kernel/debug/acpi/custom_method is already a privileged-only
-> > > API providing proxied arbitrary write access to kernel memory[1][2],
-> > > with existing race conditions[3] in buffer allocation and use that could
-> > > lead to memory leaks and use-after-free conditions, the above commit
-> > > appears to accidentally make the use-after-free conditions even easier
-> > > to accomplish. ("buf" is a global variable and prior kfree()s would set
-> > > buf back to NULL.)
-> > >
-> > > This entire interface needs to be reworked (if not entirely removed).
-> > >
-> > > [1] https://lore.kernel.org/lkml/20110222193250.GA23913@outflux.net/
-> > > [2] https://lore.kernel.org/lkml/201906221659.B618D83@keescook/
-> > > [3] https://lore.kernel.org/lkml/20170109231323.GA89642@beast/
-> > >
-> > > Cc: Wenwen Wang <wenwen@cs.uga.edu>
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > ---
-> > >  drivers/acpi/custom_method.c | 5 +----
-> > >  1 file changed, 1 insertion(+), 4 deletions(-)
-> > >
-> > > diff --git a/drivers/acpi/custom_method.c b/drivers/acpi/custom_method.c
-> > > index 7b54dc95d36b..36d95a02cd30 100644
-> > > --- a/drivers/acpi/custom_method.c
-> > > +++ b/drivers/acpi/custom_method.c
-> > > @@ -53,10 +53,8 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
-> > >       if ((*ppos > max_size) ||
-> > >           (*ppos + count > max_size) ||
-> > >           (*ppos + count < count) ||
-> > > -         (count > uncopied_bytes)) {
-> > > -             kfree(buf);
-> > > +         (count > uncopied_bytes))
-> > >               return -EINVAL;
-> > > -     }
-> > >
-> > >       if (copy_from_user(buf + (*ppos), user_buf, count)) {
-> > >               kfree(buf);
-> > > @@ -76,7 +74,6 @@ static ssize_t cm_write(struct file *file, const char __user * user_buf,
-> > >               add_taint(TAINT_OVERRIDDEN_ACPI_TABLE, LOCKDEP_NOW_UNRELIABLE);
-> > >       }
-> > >
-> > > -     kfree(buf);
-> > >       return count;
-> > >  }
-> > >
-> > > --
-> >
-> > Thanks for the revert, I'll queue it up on my larger "umn.edu reverts"
-> > branch that I'll be sending out for review in a day or so.
+On Tue, 4 May 2021 16:11:31 +0200
+Greg Kurz <groug@kaod.org> wrote:
+
+> On Tue, 4 May 2021 15:30:15 +0200
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
 > 
-> This will conflict with the material that I'm going to push on
-> Thursday that includes the two commits mentioned by Mark elsewhere in
-> this thread.
+> > On Tue, May 04, 2021 at 03:20:34PM +0200, Greg Kurz wrote:  
+> > > On Tue, 4 May 2021 14:59:07 +0200
+> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> > >   
+> > > > On Tue, May 04, 2021 at 02:22:36PM +0200, Greg Kurz wrote:  
+> > > > > On Fri, 26 Mar 2021 07:13:09 +0100
+> > > > > Christoph Hellwig <hch@lst.de> wrote:
+> > > > >   
+> > > > > > Hi all,
+> > > > > > 
+> > > > > > the nvlink2 vfio subdriver is a weird beast.  It supports a hardware
+> > > > > > feature without any open source component - what would normally be
+> > > > > > the normal open source userspace that we require for kernel drivers,
+> > > > > > although in this particular case user space could of course be a
+> > > > > > kernel driver in a VM.  It also happens to be a complete mess that
+> > > > > > does not properly bind to PCI IDs, is hacked into the vfio_pci driver
+> > > > > > and also pulles in over 1000 lines of code always build into powerpc
+> > > > > > kernels that have Power NV support enabled.  Because of all these
+> > > > > > issues and the lack of breaking userspace when it is removed I think
+> > > > > > the best idea is to simply kill.
+> > > > > > 
+> > > > > > Changes since v1:
+> > > > > >  - document the removed subtypes as reserved
+> > > > > >  - add the ACK from Greg
+> > > > > > 
+> > > > > > Diffstat:
+> > > > > >  arch/powerpc/platforms/powernv/npu-dma.c     |  705 ---------------------------
+> > > > > >  b/arch/powerpc/include/asm/opal.h            |    3 
+> > > > > >  b/arch/powerpc/include/asm/pci-bridge.h      |    1 
+> > > > > >  b/arch/powerpc/include/asm/pci.h             |    7 
+> > > > > >  b/arch/powerpc/platforms/powernv/Makefile    |    2 
+> > > > > >  b/arch/powerpc/platforms/powernv/opal-call.c |    2 
+> > > > > >  b/arch/powerpc/platforms/powernv/pci-ioda.c  |  185 -------
+> > > > > >  b/arch/powerpc/platforms/powernv/pci.c       |   11 
+> > > > > >  b/arch/powerpc/platforms/powernv/pci.h       |   17 
+> > > > > >  b/arch/powerpc/platforms/pseries/pci.c       |   23 
+> > > > > >  b/drivers/vfio/pci/Kconfig                   |    6 
+> > > > > >  b/drivers/vfio/pci/Makefile                  |    1 
+> > > > > >  b/drivers/vfio/pci/vfio_pci.c                |   18 
+> > > > > >  b/drivers/vfio/pci/vfio_pci_private.h        |   14 
+> > > > > >  b/include/uapi/linux/vfio.h                  |   38 -  
+> > > > > 
+> > > > > 
+> > > > > Hi Christoph,
+> > > > > 
+> > > > > FYI, these uapi changes break build of QEMU.  
+> > > > 
+> > > > What uapi changes?
+> > > >   
+> > > 
+> > > All macros and structure definitions that are being removed
+> > > from include/uapi/linux/vfio.h by patch 1.
+> > >   
+> > > > What exactly breaks?
+> > > >   
+> > > 
+> > > These macros and types are used by the current QEMU code base.
+> > > Next time the QEMU source tree updates its copy of the kernel
+> > > headers, the compilation of affected code will fail.  
+> > 
+> > So does QEMU use this api that is being removed, or does it just have
+> > some odd build artifacts of the uapi things?
+> >   
+> 
+> These are region subtypes definition and associated capabilities.
+> QEMU basically gets information on VFIO regions from the kernel
+> driver and for those regions with a nvlink2 subtype, it tries
+> to extract some more nvlink2 related info.
 
-I'll drop this from my patch series now that you all have this covered.
 
-thanks!
+Urgh, let's put the uapi header back in place with a deprecation
+notice.  Userspace should never have a dependency on the existence of a
+given region, but clearly will have code to parse the data structure
+describing that region.  I'll post a patch.  Thanks,
 
-greg k-h
+Alex
+
