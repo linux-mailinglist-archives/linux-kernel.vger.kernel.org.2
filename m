@@ -2,114 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C5E4372B04
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:29:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46103372B09
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 15:30:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231186AbhEDNaS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 09:30:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44584 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231135AbhEDNaQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 09:30:16 -0400
-Received: from mail-yb1-xb2c.google.com (mail-yb1-xb2c.google.com [IPv6:2607:f8b0:4864:20::b2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD82C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 06:29:21 -0700 (PDT)
-Received: by mail-yb1-xb2c.google.com with SMTP id r8so12114506ybb.9
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 06:29:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/BRhTEpnUP9fxfD+K9LGEgYyn57sT/mfo8VpaW+h4gg=;
-        b=zliUgqxPji85MVuM2cxAmdIGtLCvTweTUHzYvjqkyKw1DFdDKq1FgLiw7mV9pHwZsK
-         UNYPWJ8+d1pv3FHKwG+OH5uACLhSBfrX5oUh5tEeyGl1cSRpz40BunyzXFyCXT2NNmVY
-         9XkgSQwzpmQWggXaG9OzAErU5CCPo5vc28rxA00FE8xrZUISN9W7KnFZxzrShWZ4IyWH
-         0zHXDQAFrYohnLuRoHW9kJ5IMg4giaOwn5NnzlagJ7xjhIMX41k1UugAvKn+9fpmGMQi
-         +pgHNzCz7T726HaoYWMzFwmIThbkuxMzph2vv4CsK/fZQNjKt8F+7S2Uz6cFMHr4QvbF
-         JwtA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/BRhTEpnUP9fxfD+K9LGEgYyn57sT/mfo8VpaW+h4gg=;
-        b=T5VdZyCFLHMzuKXhfFhREaLqq1wgwtHO6C9zhfEspX1yk6Pd6e3S7CRdBk3w468wuk
-         I8S9m4Y2AdOdFo/lVIAc6ImW1VmIdzsZoX07hlUzALwMOG6uwdw4bFU/T5xM7ZUItDX4
-         7aodv0RGqUbAh0awDtdG8/R+fdt3pcjZdzpG+VH79cHPJW+li/fS3eCBQMwiuRVJYoc8
-         L57wntQIxUWH0332KQOVViQPUJi2js45/GhsQ12DVyWKDlg8ePkVtnhdBoWRPLgMkgCC
-         jNR0NvNMy3YuJyd2gzeb6cNH4Mu//KAjq8Lqeb5nQEHHw2ES90N3ZsdtPusPwz7aZNJC
-         erZA==
-X-Gm-Message-State: AOAM531iAUc/p2g70FLpa067skPj86VFsFlfi/yxU6xk5d30gl2jLKlw
-        Ka96XWHRbvB99hD5khruv3hg7ikYsgFX1+KO364pgQ==
-X-Google-Smtp-Source: ABdhPJwjcqLzq5cHFekTHgpc3kqBBbnRLj4YJ8atyXG840GdCFl/o7yDSxXGW3nl7DG4qFazGfogmf6GNa3C7phTrw4=
-X-Received: by 2002:a25:c681:: with SMTP id k123mr35487853ybf.303.1620134960204;
- Tue, 04 May 2021 06:29:20 -0700 (PDT)
+        id S231135AbhEDNbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 09:31:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57490 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231126AbhEDNbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 09:31:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 0354A611AC;
+        Tue,  4 May 2021 13:30:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620135017;
+        bh=K7jOMW5zxYrXVgqj4YX3jlgoXwGfte8Q1gPc0IQQxmg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rtsctj9Ov4ebaVfqmb8gRZiVYEWb9O63QSOpgigHe4Bfem/KRiz924DWKfJrXCA1x
+         W4d/PdSPAuO3zWlqN2xdW0Ro5Srwxz2EwzPkSRaNhB9OEvbctTVDx4HN9Behn8Fwwp
+         nhrWTmovaEXCGQD5zqQXRd2b0oKZ8L3sVy0jARV8=
+Date:   Tue, 4 May 2021 15:30:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Greg Kurz <groug@kaod.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>, kvm@vger.kernel.org,
+        David Airlie <airlied@linux.ie>, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Paul Mackerras <paulus@samba.org>,
+        Daniel Vetter <daniel@ffwll.ch>, linux-api@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, qemu-devel@nongnu.org,
+        qemu-ppc@nongnu.org
+Subject: Re: remove the nvlink2 pci_vfio subdriver v2
+Message-ID: <YJFMZ8KYVCDwUBPU@kroah.com>
+References: <20210326061311.1497642-1-hch@lst.de>
+ <20210504142236.76994047@bahia.lan>
+ <YJFFG1tSP0dUCxcX@kroah.com>
+ <20210504152034.18e41ec3@bahia.lan>
 MIME-Version: 1.0
-References: <20210504125909.16108-1-srinivas.kandagatla@linaro.org>
-In-Reply-To: <20210504125909.16108-1-srinivas.kandagatla@linaro.org>
-From:   Amit Pundir <amit.pundir@linaro.org>
-Date:   Tue, 4 May 2021 18:58:44 +0530
-Message-ID: <CAMi1Hd0Fxj2Y_ZheFGveCpz1XWHhOOx3UYz7xW4-8RVAN1TPAg@mail.gmail.com>
-Subject: Re: [PATCH] soundwire: qcom: fix handling of qcom,ports-block-pack-mode
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Vinod Koul <vkoul@kernel.org>, yung-chuan.liao@linux.intel.com,
-        pierre-louis.bossart@linux.intel.com, sanyog.r.kale@intel.com,
-        alsa-devel@alsa-project.org, lkml <linux-kernel@vger.kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        John Stultz <john.stultz@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504152034.18e41ec3@bahia.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 May 2021 at 18:29, Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
-> Support to "qcom,ports-block-pack-mode" was added at later stages
-> to support a variant of Qualcomm SoundWire controllers available
-> on Apps processor. However the older versions of the SoundWire
-> controller which are embedded in WCD Codecs do not need this property.
->
-> So returning on error for those cases will break boards like DragonBoard
-> DB845c and Lenovo Yoga C630.
->
-> This patch fixes error handling on this property considering older usecases.
+On Tue, May 04, 2021 at 03:20:34PM +0200, Greg Kurz wrote:
+> On Tue, 4 May 2021 14:59:07 +0200
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> 
+> > On Tue, May 04, 2021 at 02:22:36PM +0200, Greg Kurz wrote:
+> > > On Fri, 26 Mar 2021 07:13:09 +0100
+> > > Christoph Hellwig <hch@lst.de> wrote:
+> > > 
+> > > > Hi all,
+> > > > 
+> > > > the nvlink2 vfio subdriver is a weird beast.  It supports a hardware
+> > > > feature without any open source component - what would normally be
+> > > > the normal open source userspace that we require for kernel drivers,
+> > > > although in this particular case user space could of course be a
+> > > > kernel driver in a VM.  It also happens to be a complete mess that
+> > > > does not properly bind to PCI IDs, is hacked into the vfio_pci driver
+> > > > and also pulles in over 1000 lines of code always build into powerpc
+> > > > kernels that have Power NV support enabled.  Because of all these
+> > > > issues and the lack of breaking userspace when it is removed I think
+> > > > the best idea is to simply kill.
+> > > > 
+> > > > Changes since v1:
+> > > >  - document the removed subtypes as reserved
+> > > >  - add the ACK from Greg
+> > > > 
+> > > > Diffstat:
+> > > >  arch/powerpc/platforms/powernv/npu-dma.c     |  705 ---------------------------
+> > > >  b/arch/powerpc/include/asm/opal.h            |    3 
+> > > >  b/arch/powerpc/include/asm/pci-bridge.h      |    1 
+> > > >  b/arch/powerpc/include/asm/pci.h             |    7 
+> > > >  b/arch/powerpc/platforms/powernv/Makefile    |    2 
+> > > >  b/arch/powerpc/platforms/powernv/opal-call.c |    2 
+> > > >  b/arch/powerpc/platforms/powernv/pci-ioda.c  |  185 -------
+> > > >  b/arch/powerpc/platforms/powernv/pci.c       |   11 
+> > > >  b/arch/powerpc/platforms/powernv/pci.h       |   17 
+> > > >  b/arch/powerpc/platforms/pseries/pci.c       |   23 
+> > > >  b/drivers/vfio/pci/Kconfig                   |    6 
+> > > >  b/drivers/vfio/pci/Makefile                  |    1 
+> > > >  b/drivers/vfio/pci/vfio_pci.c                |   18 
+> > > >  b/drivers/vfio/pci/vfio_pci_private.h        |   14 
+> > > >  b/include/uapi/linux/vfio.h                  |   38 -
+> > > 
+> > > 
+> > > Hi Christoph,
+> > > 
+> > > FYI, these uapi changes break build of QEMU.
+> > 
+> > What uapi changes?
+> > 
+> 
+> All macros and structure definitions that are being removed
+> from include/uapi/linux/vfio.h by patch 1.
+> 
+> > What exactly breaks?
+> > 
+> 
+> These macros and types are used by the current QEMU code base.
+> Next time the QEMU source tree updates its copy of the kernel
+> headers, the compilation of affected code will fail.
 
-Tested on Xiaomi Pocophone F1 (sdm845).
+So does QEMU use this api that is being removed, or does it just have
+some odd build artifacts of the uapi things?
 
-Tested-by: Amit Pundir <amit.pundir@linaro.org>
+What exactly is the error messages here?
 
->
-> Fixes: 5943e4fb14e3 ("soundwire: qcom: check of_property_read status")
-> Reported-by: Amit Pundir <amit.pundir@linaro.org>
-> Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-> ---
->  drivers/soundwire/qcom.c | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/soundwire/qcom.c b/drivers/soundwire/qcom.c
-> index 2827085a323b..0ef79d60e88e 100644
-> --- a/drivers/soundwire/qcom.c
-> +++ b/drivers/soundwire/qcom.c
-> @@ -1150,8 +1150,16 @@ static int qcom_swrm_get_port_config(struct qcom_swrm_ctrl *ctrl)
->
->         ret = of_property_read_u8_array(np, "qcom,ports-block-pack-mode",
->                                         bp_mode, nports);
-> -       if (ret)
-> -               return ret;
-> +       if (ret) {
-> +               u32 version;
-> +
-> +               ctrl->reg_read(ctrl, SWRM_COMP_HW_VERSION, &version);
-> +
-> +               if (version <= 0x01030000)
-> +                       memset(bp_mode, SWR_INVALID_PARAM, QCOM_SDW_MAX_PORTS);
-> +               else
-> +                       return ret;
-> +       }
->
->         memset(hstart, SWR_INVALID_PARAM, QCOM_SDW_MAX_PORTS);
->         of_property_read_u8_array(np, "qcom,ports-hstart", hstart, nports);
-> --
-> 2.21.0
->
+And if we put the uapi .h file stuff back, is that sufficient for qemu
+to work, as it should be checking at runtime what the kernel has / has
+not anyway, right?
+
+thanks,
+
+greg k-h
