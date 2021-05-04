@@ -2,93 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D69F373170
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:33:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09062373173
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 22:34:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232839AbhEDUev (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 16:34:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55442 "EHLO
+        id S232848AbhEDUfk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 16:35:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231786AbhEDUet (ORCPT
+        with ESMTP id S231445AbhEDUfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 16:34:49 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5C52C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:33:54 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id h11so398611pfn.0
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:33:54 -0700 (PDT)
+        Tue, 4 May 2021 16:35:39 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 712FCC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 13:34:44 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id m124so3393585pgm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 13:34:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=C/Cj5I1mlYbC1jzOSOOF25th5Igc+hh3GZ0g8FBcqEI=;
-        b=iJK5pVK/mFTAX9dUEyWr8HZrmhDgXZDtAgyBPKUHMH/tfsSqh7lV8WkaqvRkVAayYJ
-         dMIWinGEclPrkiRLO5JznMDfhYa4SPPNcgv3nwymb8py/lcXiUTUqh0JUiobhbBfyUBw
-         gQXwAeCxMotR5IXMRTtcTZF13yvlBcqS1IeFgBTDZ1Hf8zcInRNc7vx1LKBnU3OKgMUW
-         /D6CW0Xdhkg09ACm8LsbGTZHsDR28PW/8DPcEyqiShwOdjIsDZfkO9wSvvvrE3WOCS5N
-         D/XA11bS2yDyGl9Rum8ifYdKmgwhh6iHHSBHmSSeyTa2P8MCaVhgWFhAfPntNpUMwSP/
-         9k7A==
+        bh=xZh5Y3Pycejv1m9DWOP0dUEdTVZDmfy7scOMGuocpyg=;
+        b=kP7KQ8L++la08rXy0f24IUWv9yJx2B4qP8piKRHt0V3W7mIVBti15CahRBjU8dIvFk
+         EcC5CO7iRcuhDI8NZKAKeIYoSCcwMpDGlyZ7ilXIRDJ+QFfopLO8C/slNQ+ODojZI5+y
+         A8TeVg5aJNN2xUsaG7j9Lx/leW8nwtg/JJEi9wBvDx290+Hs7zRVYLK0Oaozl+uoxJrH
+         Xf80QGNVe7y6xqGhNoFhXrPXgcHOLiE5qj3lZh0Nex0bG2oqCF+JbQKBbVw33bvsV0RC
+         pVKJsUTaAQYZ89MApjbQF/j2uCRXwnu6XTMfh3PuKljhumO9uxD3B6NXoXCAw3qeDUYo
+         qXQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=C/Cj5I1mlYbC1jzOSOOF25th5Igc+hh3GZ0g8FBcqEI=;
-        b=ogSYWujxHtiJUbKfy0tgPjzq3HLYS+ow+Rlml/n9Jj/7Fk5fzucXikFNmJRBXQEeLE
-         JCDOsaG8LIcLYjcw/5EFEqDRipOShKHnTJCaKRSa+bqKvfg3PZnluo5wLhSjvEhSD5Tc
-         Wbxd4QgaIyZQAXYxNbL7gPFMcVkfPUfRsvrzzigqLGYxRZ9UNSonfX32j92kly4H+2JM
-         OFxjAJxodAQSj3XBaHhxNlBbDwxEmz/jEyKtkCW+79EEoKQabw1ZwGoHcnmWDM1m7qs7
-         9oCu4hazPCDhHd8V1AO+GyPKMaceA4bqh2lPXuN+g2CDEAXYCtnKpzMcb3xofnWMOud6
-         z0yQ==
-X-Gm-Message-State: AOAM530n4wn6/aGVKKertCWWT7FdO/KZfEv7zGhbnrKeTRZ09Is1WYus
-        FXG+RPKJtWhLXgfn5CmojNO62A==
-X-Google-Smtp-Source: ABdhPJwCWZtzZv/BwmPQtdaiVrP1zcRE4DkGiKPJIPVLifXrJtC4yE4WMvk10tD+y6F4JF/C+shn6g==
-X-Received: by 2002:a17:90b:33c4:: with SMTP id lk4mr7487384pjb.225.1620160434179;
-        Tue, 04 May 2021 13:33:54 -0700 (PDT)
+        bh=xZh5Y3Pycejv1m9DWOP0dUEdTVZDmfy7scOMGuocpyg=;
+        b=cFcFPbdVnc7dCUmJNTsEZYDGXwwZC4PTDPI8cNW9uEojshfsBmZxLLtWfAHbLilzL6
+         ZT1MRT6rtWHehTj9WHjGn5izujkuKTQAk1OWmcyRVBziqiJ//2J2HEcOhC6hT0mZEidD
+         XIHN8ZRONctRWEao9/QJC6K8Zl/+3TvfxrSBS7liE2XcAZuKW54AxLPv8+LLvV0GXoTl
+         1ugjMDQaoLUVSNTixKSG9rhLGtkFSQmKK5wncMMN7ItPYsL4mPYPWyzaGCybaRhi9tGy
+         7bki+z58zOlQ75RCsRg1LJGUZF6RJaimgy7RRS3o2WYShSZWX+tgAtcgjq1TY+GZQSSj
+         YibA==
+X-Gm-Message-State: AOAM531/oj1cRCDKo/JSlafCxSBQ+eT1GMt7Ix1RkDjgJL+Tb5cd4+r+
+        u0kM+ftvU8rr1See6cuJMLKbMw==
+X-Google-Smtp-Source: ABdhPJzvj6EcxdAWXmzI3GNIGv4C0d0+HRyWo9CIsE81c0KJW4DU0MMTI9WXnFS7ZU/3/P2i3V7UlQ==
+X-Received: by 2002:aa7:8703:0:b029:261:4680:9723 with SMTP id b3-20020aa787030000b029026146809723mr25418581pfo.70.1620160483887;
+        Tue, 04 May 2021 13:34:43 -0700 (PDT)
 Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id k14sm15371273pjg.0.2021.05.04.13.33.53
+        by smtp.gmail.com with ESMTPSA id q27sm7807452pfl.41.2021.05.04.13.34.42
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 13:33:53 -0700 (PDT)
-Date:   Tue, 4 May 2021 20:33:49 +0000
+        Tue, 04 May 2021 13:34:42 -0700 (PDT)
+Date:   Tue, 4 May 2021 20:34:39 +0000
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        srutherford@google.com, joro@8bytes.org, brijesh.singh@amd.com,
-        thomas.lendacky@amd.com, ashish.kalra@amd.com,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Borislav Petkov <bp@suse.de>,
-        x86@kernel.org
-Subject: Re: [PATCH v3 2/2] KVM: X86: Introduce KVM_HC_PAGE_ENC_STATUS
- hypercall
-Message-ID: <YJGvrYWLQwiRSNLt@google.com>
-References: <20210429104707.203055-1-pbonzini@redhat.com>
- <20210429104707.203055-3-pbonzini@redhat.com>
- <YIxkTZsblAzUzsf7@google.com>
- <c4bf8a05-ec0d-9723-bb64-444fe1f088b5@redhat.com>
- <YJF/3d+VBfJKqXV4@google.com>
- <f7300393-6527-005f-d824-eed5f7f2f8a8@redhat.com>
+Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, Peter Xu <peterx@redhat.com>,
+        Peter Shier <pshier@google.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jim Mattson <jmattson@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
+Subject: Re: [PATCH v2 7/7] KVM: x86/mmu: Lazily allocate memslot rmaps
+Message-ID: <YJGv34BOxa8YJvRy@google.com>
+References: <20210429211833.3361994-1-bgardon@google.com>
+ <20210429211833.3361994-8-bgardon@google.com>
+ <YJGqzZ/8CS8mSx2c@google.com>
+ <781d2549-bbb1-23a2-44bf-58379ba23054@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <f7300393-6527-005f-d824-eed5f7f2f8a8@redhat.com>
+In-Reply-To: <781d2549-bbb1-23a2-44bf-58379ba23054@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, May 04, 2021, Paolo Bonzini wrote:
-> On 04/05/21 19:09, Sean Christopherson wrote:
-> > On Sat, May 01, 2021, Paolo Bonzini wrote:
-> > > - make it completely independent from migration, i.e. it's just a facet of
-> > > MSR_KVM_PAGE_ENC_STATUS saying whether the bitmap is up-to-date.  It would
-> > > use CPUID bit as the encryption status bitmap and have no code at all in KVM
-> > > (userspace needs to set up the filter and implement everything).
+> On 04/05/21 22:13, Sean Christopherson wrote:
+> > > +	/*
+> > > +	 * If set, the rmap should be allocated for any newly created or
+> > > +	 * modified memslots. If allocating rmaps lazily, this may be set
+> > > +	 * before the rmaps are allocated for existing memslots, but
+> > > +	 * shadow_mmu_active will not be set until after the rmaps are fully
+> > > +	 * allocated.
+> > > +	 */
+> > > +	bool alloc_memslot_rmaps;
+> > Maybe "need_rmaps" or "need_memslot_rmaps"?
 > > 
-> > If the bit is purely a "page encryption status is up-to-date", what about
-> > overloading KVM_HC_PAGE_ENC_STATUS to handle that status update as well?   That
-> > would eliminate my biggest complaint about having what is effectively a single
-> > paravirt feature split into two separate, but intertwined chunks of ABI.
 > 
-> It's true that they are intertwined, but I dislike not having a way to read
-> the current state.
+> Since we're bikeshedding I prefer "memslots_have_rmaps" or something not too
+> distant from that.
 
-From the guest?
+Works for me.
