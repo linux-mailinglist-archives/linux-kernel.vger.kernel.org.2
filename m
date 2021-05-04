@@ -2,121 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 403933731BD
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD82E3731C2
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232783AbhEDVHi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 17:07:38 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:36254 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232169AbhEDVHh (ORCPT
+        id S232830AbhEDVIQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 17:08:16 -0400
+Received: from out3-smtp.messagingengine.com ([66.111.4.27]:60431 "EHLO
+        out3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231445AbhEDVIO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 17:07:37 -0400
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 144L6KSO007194;
-        Wed, 5 May 2021 06:06:20 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 144L6KSO007194
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1620162380;
-        bh=xH0gW8TIeRQ8tN9XJTi1yPD7TLUHwwx+t4BRo+ku79Y=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GPGV3MeGMmJzWCdCZwBoOHWTrmpok99tPeu0DMgrCa76RNYuUeA8K10d/ztQv0gSW
-         03OEOFThMV6PERSQhb3iAlqYk0OvFM4uRRzD5GSWpXs/2jWxXYtzd0s0yt5c8arLVO
-         xkYuaIvKPEbkGhzBpSnYE9SdUEF1qZhDMAF7vcv9uoaSLgVvDkW0tNPwbB7ZMIUAzC
-         OAF4a1M+WzqGBwV4Bzr/pjLOItVaCEWMunMncdrGbClxxXIDHLhU34bvpPjK1tNX2k
-         ZUfEBsdHLeB4Qbtrm/CF+Mysf+qKtkqlwxDvqVHloZGu6LAQMzR3+ZXLJLcm6oLa1T
-         E0sjGG/K9puYw==
-X-Nifty-SrcIP: [209.85.214.174]
-Received: by mail-pl1-f174.google.com with SMTP id t21so6040449plo.2;
-        Tue, 04 May 2021 14:06:20 -0700 (PDT)
-X-Gm-Message-State: AOAM532NyOUEOdUNdMem4n9S5g/L7DBefJz3xGAEWGUvhhadQZG4bYJh
-        VZL9dTYmEdXOCgICVibGhGCYt2EKQc2ybcA29KQ=
-X-Google-Smtp-Source: ABdhPJzyB94b1kwA/O+ruJPLuSO6YoAFXW7PUOP5JUwD8XWHPMDU+HssucioEE7dJgWQJ0GjppREmzjDhpIk3O2THII=
-X-Received: by 2002:a17:902:8bcb:b029:ec:a192:21cf with SMTP id
- r11-20020a1709028bcbb02900eca19221cfmr28303036plo.71.1620162379584; Tue, 04
- May 2021 14:06:19 -0700 (PDT)
+        Tue, 4 May 2021 17:08:14 -0400
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
+        by mailout.nyi.internal (Postfix) with ESMTP id 5A0635C004F;
+        Tue,  4 May 2021 17:07:18 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Tue, 04 May 2021 17:07:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=
+        from:to:cc:subject:date:message-id:mime-version
+        :content-transfer-encoding; s=fm3; bh=iFFbmOLf/h3Zw+C5EIJiz80rZk
+        Y5zLat2o7ZrmaK1cc=; b=Q7ej9+PvuQ3oXGi4D+XbGDejqO44VkHTuGljHe2rcw
+        bTC6WYqRQFGco289+KoqT0w9hgth/kRImKRV0sAjFaeQXEUlklk7owidPZ/PEmlv
+        BkjJXMaFOMY6guEOKslP8wq38cLmfM9nIFT+O395AMC0f+rpv8ApfQBB9VEO6zz+
+        ryG66Wme+Q2OmKmtIxO7wQtx21b6fLnISG+RnmXheL2nFJ0glVcDp1ImlpVDIYAK
+        aVq0zUL6BTMt/NRIklOVcqJ9ImfSiUfVRR0DrxfHyXQ/M0Mwkr5Dbsf7VBVh+/iH
+        mCSLtYb7b/oO6H7qtoXglHjkJyxCGMnxW8bFfa4M2DuQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:subject:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=iFFbmOLf/h3Zw+C5E
+        IJiz80rZkY5zLat2o7ZrmaK1cc=; b=UkDJwjvkBtiX39fUA295U7alLlZsSepnB
+        P8f2YjDyPob6vN84nc+EEP+Wf86LiVlly/S//EATIm9VVeVW+uYgtA/2UuqGIqq9
+        5BQogUDMjiZ51uiCdthWVzVygjQxMsECCquaypYP7c7f8YANozLZ5lKkrvaXOeki
+        02Vq6U4+6AkhIt3w/H8UeWQJQiUe1pUBQhZxeZF/Gu8udQTm0Ybz5YcQbpjRCFbv
+        KUi1P9Jq1pSSe8taqEfGLMRKfcSyAbLZpNOp/6g9nO9rFADFYO03fXu9QpBAAhmu
+        FcOiW4RgP0EKWftfp7rzHsomuDgdCNGKB6jQSDYAQp/zoFHY+Vv9g==
+X-ME-Sender: <xms:hbeRYJGOI0qrHwYbZyKdmkPSWbNMCwIhxiL8fnCR3-ThPAxCUQzT2w>
+    <xme:hbeRYOUV3PaoiANeUGR1CpPDCe0msHlmIeGAAr_vXL81rrQm5hvgUhgcqWcZl6Ebz
+    23yKKKYX2z1HnHSfg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefiedgudehkecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefhvffufffkofgggfestdekredtredttdenucfhrhhomheptehlhihsshgr
+    ucftohhsshcuoehhihesrghlhihsshgrrdhisheqnecuggftrfgrthhtvghrnhephedvff
+    fghfetieejgfetfedtgffhvdehueehvdejudfggefgleejgfelfeevgfefnecukfhppeek
+    gedrudekgedrvddviedrkedunecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomhepqhihlhhishhssegvvhgvrdhqhihlihhsshdrnhgvth
+X-ME-Proxy: <xmx:hbeRYLJo3ZON7V_Tcgx-5GONWLSVw2t5r5MYqOghosaMrKLK9z7lnw>
+    <xmx:hbeRYPHrUAYY9gLWaytsrOFewkDKyp7MQetXuz6Zcs7IyhG1NXmoZQ>
+    <xmx:hbeRYPW_3iAQOlrcUMSXtzZs_MrnpWChoFkgGDz6NNJUMZFrb0xmXQ>
+    <xmx:hreRYGckJfd9BxlqkY68kPb9ZcKiEWGVmC4KatYDRlIDKkGthInCMw>
+Received: from eve.qyliss.net (p54b8e251.dip0.t-ipconnect.de [84.184.226.81])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Tue,  4 May 2021 17:07:17 -0400 (EDT)
+Received: by eve.qyliss.net (Postfix, from userid 1000)
+        id B6ADB1122; Tue,  4 May 2021 21:07:15 +0000 (UTC)
+From:   Alyssa Ross <hi@alyssa.is>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        linux-doc@vger.kernel.org
+Subject: [PATCH] docs: vfio: fix typo
+Date:   Tue,  4 May 2021 21:06:51 +0000
+Message-Id: <20210504210651.1316078-1-hi@alyssa.is>
+X-Mailer: git-send-email 2.31.0
 MIME-Version: 1.0
-References: <20200614144341.1077495-1-masahiroy@kernel.org>
- <20200614144341.1077495-2-masahiroy@kernel.org> <70868660127bd13dcc47e94108483ff15827378c.camel@sipsolutions.net>
- <CAK7LNASRSOBy_bqUvMqk-m8WVaHPfwM8xEbiTGtcB2B2-3GBhQ@mail.gmail.com> <58e4bd69c15fd0e0cf3de32e8ed53296d34c7e1e.camel@sipsolutions.net>
-In-Reply-To: <58e4bd69c15fd0e0cf3de32e8ed53296d34c7e1e.camel@sipsolutions.net>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Wed, 5 May 2021 06:05:42 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAROdVMPQq4Qn_M=OWzJrfqNOc4fyMicNKdnCqu7G9rFgw@mail.gmail.com>
-Message-ID: <CAK7LNAROdVMPQq4Qn_M=OWzJrfqNOc4fyMicNKdnCqu7G9rFgw@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kconfig: unify cc-option and as-option
-To:     Johannes Berg <johannes@sipsolutions.net>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Changbin Du <changbin.du@intel.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 5:52 AM Johannes Berg <johannes@sipsolutions.net> wrote:
->
-> On Wed, 2021-05-05 at 05:46 +0900, Masahiro Yamada wrote:
-> >
-> >  - This commit touches scripts/Kconfig.include.
-> >  - External module builds (M= builds) never invoke Kconfig
-> >
-> > Putting these two together, your claim is really odd.
->
-> Hmm.
->
-> > If external module builds invoke Kconfig,
-> > your kernel is already broken.
->
-> Well, it's not about the kernel, that's just the normal upstream (or
-> perhaps distribution) kernel.
->
-> Anyway, you're right, it's much simpler. The problem isn't invoking M=
-> or something like that, that happens much later and sent me on the
-> completely wrong track.
->
-> The problem is simply doing
->
->         make kernelversion
->
-> to determine the version of a tree that's not writable to the user, e.g.
->
->         make -C /lib/modules/$(uname -r)/build/ kernelversion
->
-> Which basically also means that it's harmless, since the version is of
-> course not affected by cc-option.
+Signed-off-by: Alyssa Ross <hi@alyssa.is>
+---
+ Documentation/driver-api/vfio.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-It was fixed.
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=805b2e1d427aab4bb27fa7c51ebb9db7547551b1
-
-
-
-If you want to make it work without that commit,
-
-   make -C /lib/modules/$(uname -r)/build/ kernelversion M=/tmp
-
-will work.
-
-Pass a writable directory to M=.
-M= build never touches the kernel source tree.
-
-
-
-> johannes
->
-
-
+diff --git a/Documentation/driver-api/vfio.rst b/Documentation/driver-api/vfio.rst
+index decc68cb8114a..606eed8823cea 100644
+--- a/Documentation/driver-api/vfio.rst
++++ b/Documentation/driver-api/vfio.rst
+@@ -2,7 +2,7 @@
+ VFIO - "Virtual Function I/O" [1]_
+ ==================================
+ 
+-Many modern system now provide DMA and interrupt remapping facilities
++Many modern systems now provide DMA and interrupt remapping facilities
+ to help ensure I/O devices behave within the boundaries they've been
+ allotted.  This includes x86 hardware with AMD-Vi and Intel VT-d,
+ POWER systems with Partitionable Endpoints (PEs) and embedded PowerPC
 -- 
-Best Regards
-Masahiro Yamada
+2.31.0
+
