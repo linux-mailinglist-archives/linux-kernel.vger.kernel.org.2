@@ -2,90 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F9EA3724D3
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 06:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2497A3724D8
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 06:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229773AbhEDENj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 00:13:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:52159 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229499AbhEDENi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 00:13:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620101564;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q0ACPl1VAdSU0nEf3aeUyaeDiPkRpjs8Y0P3JP67Ni0=;
-        b=D5dbvAj1l5sglm3Mi9ygLcLa4nGTUk+d2MCdhOFRU5FqU6fbDrjW8zkOdceKsaIvMrfj4+
-        fh8kRWaRkhI0HpqoA1FVhYmea4VTKqEYpRg4RqPXjqua6rGwXqyBFTZ57qhqKKeRAkA0oP
-        Qj608UUZRdd0rcUPdlGMEwGyDrx7eJs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-120-zOEBaDekOs6qeQkHdqsHnA-1; Tue, 04 May 2021 00:12:42 -0400
-X-MC-Unique: zOEBaDekOs6qeQkHdqsHnA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id A80F2801AD9;
-        Tue,  4 May 2021 04:12:40 +0000 (UTC)
-Received: from treble (ovpn-115-93.rdu2.redhat.com [10.10.115.93])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 81C191A874;
-        Tue,  4 May 2021 04:12:35 +0000 (UTC)
-Date:   Mon, 3 May 2021 23:12:35 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        David Laight <David.Laight@aculab.com>,
-        Mark Rutland <mark.rutland@arm.com>
-Subject: Re: [PATCH v3] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Message-ID: <20210504041235.25mq7il525oiimc6@treble>
-References: <1d06ed6485b66b9f674900368b63d7ef79f666ca.1599756789.git.jpoimboe@redhat.com>
- <20200914195354.yghlqlwtqz7mqteb@treble>
- <20200923033848.GD3421308@ZenIV.linux.org.uk>
- <20210503233154.lhumcispdgj5dgaz@treble>
- <YJCVzX2aZmu8GaD/@zeniv-ca.linux.org.uk>
+        id S229795AbhEDER6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 00:17:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229499AbhEDER5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 00:17:57 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3980E61186;
+        Tue,  4 May 2021 04:17:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620101823;
+        bh=o6bzGyR/7bsRfnO0+aNVpGB5YWfLgC/3PIVf/41nDM0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=Q+1PwRv70pQbWWpiebMnyXuxFP4Rl6TJAj0zZR4swW8eTU7D+e03Zu5RhRU8Ooq2C
+         HZhviqCvI3JNE48XdbT1ZE1kAdn8/iLwPhjvzhLm1PfPwsuRhXKE4Vu6UcaHYza97N
+         0LlhOZR0w6goBXHP7zDa+L47wIEwbYhQwdPREt3myftotS3h0DqLxlWF967sooTRPd
+         r7OMRZoSCX9q3xnX8VMHlRFaDE+tHwArqvT1lDZtQiciP0KlnPSBkXtyAVRCFkgclZ
+         Lt4IzEwUAWSGtmwqefHaeryKPywJYHqz3IzI1mZI7ExRdi+HBDevZQos/h5pQW1SkP
+         iNbzJRD0Nvc3A==
+Received: by wens.tw (Postfix, from userid 1000)
+        id 4B92D5FBFA; Tue,  4 May 2021 12:17:00 +0800 (CST)
+From:   Chen-Yu Tsai <wens@kernel.org>
+To:     Kevin Hilman <khilman@baylibre.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc:     Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] arm64: dts: meson-gxbb: nanopi-k2: Enable Bluetooth
+Date:   Tue,  4 May 2021 12:16:59 +0800
+Message-Id: <20210504041659.22495-1-wens@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <YJCVzX2aZmu8GaD/@zeniv-ca.linux.org.uk>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 12:31:09AM +0000, Al Viro wrote:
-> On Mon, May 03, 2021 at 06:31:54PM -0500, Josh Poimboeuf wrote:
-> > On Wed, Sep 23, 2020 at 04:38:48AM +0100, Al Viro wrote:
-> > > On Mon, Sep 14, 2020 at 02:53:54PM -0500, Josh Poimboeuf wrote:
-> > > > Al,
-> > > > 
-> > > > This depends on Christoph's set_fs() removal patches.  Would you be
-> > > > willing to take this in your tree?
-> > > 
-> > > in #uaccess.x86 and #for-next
-> > 
-> > Hm, I think this got dropped somehow.   Will repost.
-> 
-> Ow...  #uaccess.x86 got dropped from -next at some point, mea culpa.
-> What I have is b4674e334bb4; it's 5.8-based (well, 5.9-rc1).  It
-> missed post-5.9 merge window and got lost.  Could you rebase to
-> to more or less current tree and repost?
+From: Chen-Yu Tsai <wens@csie.org>
 
-No problem, I'll refresh it against the latest.
+The NanoPi K2 has a AP6212 WiFi+BT combo module. The WiFi portion is
+already enabled. The BT part is connected via UART and I2S.
 
+Enable the UART and add a device node describing the Bluetooth portion
+of the module.
+
+Signed-off-by: Chen-Yu Tsai <wens@csie.org>
+---
+Changes since v1:
+  - added uart-has-rtscts property
+  - added alias for uart_A
+
+Hi Neil, Martin,
+
+I dropped your review-bys since I added the UART alias and I'm not sure
+what the policy for those are.
+
+ChenYu
+---
+ .../boot/dts/amlogic/meson-gxbb-nanopi-k2.dts      | 14 +++++++++++++-
+ 1 file changed, 13 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts b/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
+index 7273eed5292c..f017a263784f 100644
+--- a/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
++++ b/arch/arm64/boot/dts/amlogic/meson-gxbb-nanopi-k2.dts
+@@ -15,6 +15,7 @@ / {
+ 
+ 	aliases {
+ 		serial0 = &uart_AO;
++		serial1 = &uart_A;
+ 		ethernet0 = &ethmac;
+ 	};
+ 
+@@ -385,9 +386,20 @@ &uart_AO {
+ 
+ /* Bluetooth on AP6212 */
+ &uart_A {
+-	status = "disabled";
++	status = "okay";
+ 	pinctrl-0 = <&uart_a_pins>, <&uart_a_cts_rts_pins>;
+ 	pinctrl-names = "default";
++	uart-has-rtscts;
++
++	bluetooth {
++		compatible = "brcm,bcm43438-bt";
++		clocks = <&wifi_32k>;
++		clock-names = "lpo";
++		vbat-supply = <&vddio_ao3v3>;
++		vddio-supply = <&vddio_ao18>;
++		host-wakeup-gpios = <&gpio GPIOX_21 GPIO_ACTIVE_HIGH>;
++		shutdown-gpios = <&gpio GPIOX_20 GPIO_ACTIVE_HIGH>;
++	};
+ };
+ 
+ /* 40-pin CON1 */
 -- 
-Josh
+2.31.1
 
