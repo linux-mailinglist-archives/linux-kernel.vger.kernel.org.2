@@ -2,237 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA932373213
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:53:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70C89373215
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 23:53:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232921AbhEDVyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 17:54:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36052 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231478AbhEDVyj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 17:54:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 63A1AAFD0;
-        Tue,  4 May 2021 21:53:43 +0000 (UTC)
+        id S232938AbhEDVyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 17:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44896 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232923AbhEDVyq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 17:54:46 -0400
+Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE607C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 14:53:50 -0700 (PDT)
+Received: by mail-pl1-x633.google.com with SMTP id v13so6089136ple.9
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 14:53:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=FsMJe2qKChbQLfpmmI2er2bhYru7z7dSUmbB+MQYcyA=;
+        b=PGoh0QzzOP4PWKgVUJgFGMnPDB9z/qJcSqqffhmjm4s/x5sxxsSaZAmxrbq5mKPW4L
+         JmwSJzcfYvkb2ch2/dsk3/8nY2UDwC9PdQ26CCxFkFv57DMlvSQrrD/UvcxslTN2srD0
+         qGLVKOzczAmBiJcYf0KMNxFZQJwILjDiYjEpZ2zk/PkkZD7nFWsJ5xBz46AbGBP/css+
+         T0mGQvtT0ZTewdlOK9YMnvEXz6arFOAiJR8e9xEgf6yaiDWKXp0YwZCwt/JTFGZvXzma
+         nuYBxQeGtkjs8jusd/8gTRL5dyKI+gSypuoeSuS/sqVNEY0XqPxrlJLSsq6Fp48gEn9r
+         eg0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=FsMJe2qKChbQLfpmmI2er2bhYru7z7dSUmbB+MQYcyA=;
+        b=awtZ+utEFYu9n0Ik+RVMh3HyBGexiT5QvYu2FOFqj37j2WlFoyYFODffzcbz84IeoU
+         zLvQWzr9z6Cc9vPLM5OkJIcj/YVzopyWy9jlZC1dr5Ke26YRgGkqA3q9NA0AF9v2OuYf
+         tQ0O6aJHCo/g7SEabMtdZBEIUyF615M3VB1XYOCyUmcOlwWA6nu6ZdSEkXqqAHDKJwUR
+         FFGy/wjm4JXdsTzMvcMPQfKpZMZm8U4kvSXHLgiSphVk5ppf/4os0TOvErRAramhvvr6
+         wEKf2JxMdDdeKF+xF5ath8SRA3R3+FqOxYB/LsiMyWO7QIErlWKLe2rwO6Cw1Jc+gzNy
+         HtiQ==
+X-Gm-Message-State: AOAM530XWACSMrAc+KsLcBy7eyl1jW+/jVv8XH3oiCt8bc3x6I7YD/JR
+        GsvLkILsdMP10WSCXjt+kq6NCg==
+X-Google-Smtp-Source: ABdhPJyIfszxo0bx3Jkguq3ZGyfAq1tH8gsNHrt6Rmn0FlLPMa9UdSaaKIKxu3FAamS9VYMkfrvs8g==
+X-Received: by 2002:a17:902:9a84:b029:ec:7fd5:193e with SMTP id w4-20020a1709029a84b02900ec7fd5193emr28456943plp.62.1620165230295;
+        Tue, 04 May 2021 14:53:50 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id i126sm12898036pfc.20.2021.05.04.14.53.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 14:53:49 -0700 (PDT)
+Date:   Tue, 4 May 2021 21:53:45 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
+ disabled in the guest
+Message-ID: <YJHCadSIQ/cK/RAw@google.com>
+References: <20210504171734.1434054-1-seanjc@google.com>
+ <20210504171734.1434054-4-seanjc@google.com>
+ <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
 MIME-Version: 1.0
-Date:   Tue, 04 May 2021 14:53:33 -0700
-From:   Davidlohr Bueso <dbueso@suse.de>
-To:     Varad Gautam <varad.gautam@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Matthias von Faber <matthias.vonfaber@aox-tech.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: Re: [PATCH] ipc/mqueue: Avoid relying on a stack reference past its
- expiry
-In-Reply-To: <20210504155534.17270-1-varad.gautam@suse.com>
-References: <20210504155534.17270-1-varad.gautam@suse.com>
-User-Agent: Roundcube Webmail
-Message-ID: <4959eb8d8c14b00113370ae86dc7c9f5@suse.de>
-X-Sender: dbueso@suse.de
-Organization: SUSE Labs
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-04 08:55, Varad Gautam wrote:
-> do_mq_timedreceive calls wq_sleep with a stack local address. The
-> sender (do_mq_timedsend) uses this address to later call
-> pipelined_send.
+On Tue, May 04, 2021, Jim Mattson wrote:
+> On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > Intercept RDTSCP to inject #UD if RDTSC is disabled in the guest.
+> >
+> > Note, SVM does not support intercepting RDPID.  Unlike VMX's
+> > ENABLE_RDTSCP control, RDTSCP interception does not apply to RDPID.  This
+> > is a benign virtualization hole as the host kernel (incorrectly) sets
+> > MSR_TSC_AUX if RDTSCP is supported, and KVM loads the guest's MSR_TSC_AUX
+> > into hardware if RDTSCP is supported in the host, i.e. KVM will not leak
+> > the host's MSR_TSC_AUX to the guest.
+> >
+> > But, when the kernel bug is fixed, KVM will start leaking the host's
+> > MSR_TSC_AUX if RDPID is supported in hardware, but RDTSCP isn't available
+> > for whatever reason.  This leak will be remedied in a future commit.
+> >
+> > Fixes: 46896c73c1a4 ("KVM: svm: add support for RDTSCP")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > ---
+> ...
+> > @@ -4007,8 +4017,7 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> >         svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
+> >                              guest_cpuid_has(vcpu, X86_FEATURE_NRIPS);
+> >
+> > -       /* Check again if INVPCID interception if required */
+> > -       svm_check_invpcid(svm);
+> > +       svm_recalc_instruction_intercepts(vcpu, svm);
 > 
-> This leads to a very hard to trigger race where a do_mq_timedreceive 
-> call
-> might return and leave do_mq_timedsend to rely on an invalid address,
-> causing the following crash:
-> 
-> [  240.739977] RIP: 0010:wake_q_add_safe+0x13/0x60
-> [  240.739991] Call Trace:
-> [  240.739999]  __x64_sys_mq_timedsend+0x2a9/0x490
-> [  240.740003]  ? auditd_test_task+0x38/0x40
-> [  240.740007]  ? auditd_test_task+0x38/0x40
-> [  240.740011]  do_syscall_64+0x80/0x680
-> [  240.740017]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> [  240.740019] RIP: 0033:0x7f5928e40343
-> 
-> The race occurs as:
-> 
-> 1. do_mq_timedreceive calls wq_sleep with the address of
-> `struct ext_wait_queue` on function stack (aliased as `ewq_addr` here)
-> - it holds a valid `struct ext_wait_queue *` as long as the stack has
-> not been overwritten.
-> 
-> 2. `ewq_addr` gets added to info->e_wait_q[RECV].list in wq_add, and
-> do_mq_timedsend receives it via wq_get_first_waiter(info, RECV) to call
-> __pipelined_op.
-> 
-> 3. Sender calls __pipelined_op::smp_store_release(&this->state, 
-> STATE_READY).
-> Here is where the race window begins. (`this` is `ewq_addr`.)
-> 
-> 4. If the receiver wakes up now in do_mq_timedreceive::wq_sleep, it
-> will see `state == STATE_READY` and break. `ewq_addr` gets removed from
-> info->e_wait_q[RECV].list.
-> 
-> 5. do_mq_timedreceive returns, and `ewq_addr` is no longer guaranteed
-> to be a `struct ext_wait_queue *` since it was on do_mq_timedreceive's
-> stack. (Although the address may not get overwritten until another
-> function happens to touch it, which means it can persist around for an
-> indefinite time.)
-> 
-> 6. do_mq_timedsend::__pipelined_op() still believes `ewq_addr` is a
-> `struct ext_wait_queue *`, and uses it to find a task_struct to pass
-> to the wake_q_add_safe call. In the lucky case where nothing has
-> overwritten `ewq_addr` yet, `ewq_addr->task` is the right task_struct.
-> In the unlucky case, __pipelined_op::wake_q_add_safe gets handed a
-> bogus address as the receiver's task_struct causing the crash.
-> 
-> do_mq_timedsend::__pipelined_op() should not dereference `this` after
-> setting STATE_READY, as the receiver counterpart is now free to return.
-> Change __pipelined_op to call wake_q_add_safe on the receiver's
-> task_struct returned by get_task_struct, instead of dereferencing
-> `this` which sits on the receiver's stack.
-> 
-> Fixes: c5b2cbdbdac563 ("ipc/mqueue.c: update/document memory barriers")
+> Does the right thing happen here if the vCPU is in guest mode when
+> userspace decides to toggle the CPUID.80000001H:EDX.RDTSCP bit on or
+> off?
 
-Right, historically we've always ensured that the waker does the state 
-ready
-write as the last operation, with or without lockless wake_qs. And this 
-commit
-broke this:
-
-@@ -923,16 +988,11 @@ static inline void __pipelined_op(struct 
-wake_q_head *wake_q,
-                                   struct ext_wait_queue *this)
-  {
-         list_del(&this->list);
--       wake_q_add(wake_q, this->task);
--       /*
--        * Rely on the implicit cmpxchg barrier from wake_q_add such
--        * that we can ensure that updating receiver->state is the last
--        * write operation: As once set, the receiver can continue,
--        * and if we don't have the reference count from the wake_q,
--        * yet, at that point we can later have a use-after-free
--        * condition and bogus wakeup.
--        */
--       this->state = STATE_READY;
-+       get_task_struct(this->task);
-+
-+       /* see MQ_BARRIER for purpose/pairing */
-+       smp_store_release(&this->state, STATE_READY);
-+       wake_q_add_safe(wake_q, this->task);
-  }
-
-.. so while addressing the race against get_task_struct() vs wakee exit 
-we ended
-up breaking the case where the task returns before the task is added to 
-the wake_q
-(which actually we explicitly re-orded :). So at this point we know that 
-the
-->state = STATE_READY must be done after the whole of the wake_q 
-addition operation.
-
-Instead, how about the following which closes the race altogether and 
-simplifies the
-code. This basically goes back to a correct version of fa6004ad4528
-(ipc/mqueue: Implement lockless pipelined wakeups). And by correct I 
-mean keeping the
-smp_store_release() which ensures the proper wakeup semantics.
-
-Thanks,
-Davidlohr
-
-diff --git a/ipc/mqueue.c b/ipc/mqueue.c
-index 8031464ed4ae..43f0ae61c40b 100644
---- a/ipc/mqueue.c
-+++ b/ipc/mqueue.c
-@@ -76,14 +76,15 @@ struct posix_msg_tree_node {
-   *   acquiring info->lock.
-   *
-   * MQ_BARRIER:
-- * To achieve proper release/acquire memory barrier pairing, the state 
-is set to
-- * STATE_READY with smp_store_release(), and it is read with READ_ONCE 
-followed
-- * by smp_acquire__after_ctrl_dep(). In addition, wake_q_add_safe() is 
-used.
-+ * To achieve proper release/acquire memory barrier pairing, the state 
-is
-+ * set to STATE_READY with smp_store_release() such that it is the last 
-write
-+ * operation, in which afterwards the blocked task can immediately 
-return and
-+ * exit. It is read with READ_ONCE followed by 
-smp_acquire__after_ctrl_dep().
-   *
-   * This prevents the following races:
-   *
-- * 1) With the simple wake_q_add(), the task could be gone already 
-before
-- *    the increase of the reference happens
-+ * 1) With the wake_q_add(), the task could be gone already before
-+ *    the increase of the reference happens:
-   * Thread A
-   *				Thread B
-   * WRITE_ONCE(wait.state, STATE_NONE);
-@@ -97,10 +98,27 @@ struct posix_msg_tree_node {
-   * sys_exit()
-   *				get_task_struct() // UaF
-   *
-- * Solution: Use wake_q_add_safe() and perform the get_task_struct() 
-before
-+ *
-+ * 2) With the wake_q_add(), the waiter task could have returned from 
-the
-+ *    syscall and overwritten it's task-allocated waiter before the 
-sender
-+ *    can be added to the wake_q:
-+ * Thread A
-+ *				Thread B
-+ * WRITE_ONCE(wait.state, STATE_NONE);
-+ * schedule_hrtimeout()
-+ *                              ->state = STATE_READY
-+ * <timeout returns>
-+ * if (wait.state == STATE_READY) return;
-+ * sysret to user space
-+ * overwrite receiver's stack
-+ *				wake_q_add(A)
-+ *				if (cmpxchg()) // corrupted waiter
-+ *
-+ * Solution: Use wake_q_add() and queue the task for wakeup before
-   * the smp_store_release() that does ->state = STATE_READY.
-   *
-- * 2) Without proper _release/_acquire barriers, the woken up task
-+ *
-+ * 3) Without proper _release/_acquire barriers, the woken up task
-   *    could read stale data
-   *
-   * Thread A
-@@ -116,7 +134,7 @@ struct posix_msg_tree_node {
-   *
-   * Solution: use _release and _acquire barriers.
-   *
-- * 3) There is intentionally no barrier when setting current->state
-+ * 4) There is intentionally no barrier when setting current->state
-   *    to TASK_INTERRUPTIBLE: spin_unlock(&info->lock) provides the
-   *    release memory barrier, and the wakeup is triggered when holding
-   *    info->lock, i.e. spin_lock(&info->lock) provided a pairing
-@@ -1005,11 +1023,9 @@ static inline void __pipelined_op(struct 
-wake_q_head *wake_q,
-  				  struct ext_wait_queue *this)
-  {
-  	list_del(&this->list);
--	get_task_struct(this->task);
--
-+	wake_q_add(wake_q, this->task);
-  	/* see MQ_BARRIER for purpose/pairing */
-  	smp_store_release(&this->state, STATE_READY);
--	wake_q_add_safe(wake_q, this->task);
-  }
-
-  /* pipelined_send() - send a message directly to the task waiting in
+I hate our terminology.  By "guest mode", do you mean running the vCPU, or do
+you specifically mean running in L2?
