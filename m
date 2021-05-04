@@ -2,118 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AB4E3732DC
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 059073732E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 01:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbhEDXjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 19:39:37 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:14507 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231521AbhEDXjG (ORCPT
+        id S231558AbhEDXkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 19:40:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39774 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229705AbhEDXkH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 19:39:06 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620171491; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=2NJ2FCJ5eygsO7NmVQKBkrCnohRdJRzGE0EKHDhDgYA=; b=s9oVFwJyxuU5oMDvcdxL8NlQMNQbDVgKTJMpGBr3qqH/rYXVKPBPhpOkgSGxnT7iCvPcWCFe
- oZube4QynKKqcGqJCZDSI48+PZvNtfF6nzcnia/TUmqB7cQDeoYUk/9A1dfNsSmnVq6kTpBr
- HxIHy0xgJ/SgftRCPliMaD7tvvo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6091dae2f34440a9d4e2d121 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Tue, 04 May 2021 23:38:10
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 75AC6C4338A; Tue,  4 May 2021 23:38:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        Tue, 4 May 2021 19:40:07 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9666DC061574;
+        Tue,  4 May 2021 16:39:11 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 89D26C43217;
-        Tue,  4 May 2021 23:38:09 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 89D26C43217
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
-        kvalo@codeaurora.org, ath11k@lists.infradead.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v2 6/6] bus: mhi: core: Add range checks for BHI and BHIe
-Date:   Tue,  4 May 2021 16:37:58 -0700
-Message-Id: <1620171478-35679-7-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620171478-35679-1-git-send-email-bbhatt@codeaurora.org>
-References: <1620171478-35679-1-git-send-email-bbhatt@codeaurora.org>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FZbs75QKkz9sRR;
+        Wed,  5 May 2021 09:39:07 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620171547;
+        bh=1/63ulrN9a6j+3PMmtVqcCCKOdXQXQ3gqOZsun/dszg=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TuWVl1//knfCsLiixwBzUT/uMmIzQo798yznRn0lPlOYo+xxGPKIcrjGpWJ3Q4w3F
+         ZUN3RQVBCPdBOOG/SiegIKdHd/9mkwQK1BeeQe+EjeoWBm+wi1w2NhGvLRQvJe6NWE
+         ywzQaC/luF7f68ARzU9BNB7k3uOuwR3pp8FE28bAeBOm1hl44wCE2J5Qn8bLHdwVpb
+         8GcPksrZfKyEqCHpqmLWCrH5TQrEN5epxqB0ZedT/3PDvFk/qy3HuO2Y2XBuLM+6F8
+         fEGxcd+K7w2whgezQnru3kMB0otpFKkffwPz/3Ioy0CeCxylEVoBGKpWlzXTtTFVf9
+         +7lESZWgW2zHQ==
+Date:   Wed, 5 May 2021 09:39:07 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Alex Deucher <alexdeucher@gmail.com>
+Cc:     Jude Shih <shenshih@amd.com>, Hanghong Ma <Hanghong.Ma@amd.com>,
+        Nicholas Kazlauskas <Nicholas.Kazlauskas@amd.com>,
+        Daniel Wheeler <daniel.wheeler@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: build warning after merge of the amdgpu tree
+Message-ID: <20210505093907.6e6c9556@canb.auug.org.au>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/uoWibIRRTmuuaR4irsuighH";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When obtaining the BHI or BHIe offsets during the power up
-preparation phase, range checks are missing. These can help
-controller drivers avoid accessing any address outside of the
-MMIO region. Ensure that mhi_cntrl->reg_len is set before MHI
-registration as it is a required field and range checks will
-fail without it.
+--Sig_/uoWibIRRTmuuaR4irsuighH
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
----
- drivers/bus/mhi/core/init.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+Hi all,
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 1cc2f22..86ad06e 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -885,7 +885,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
- 	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
- 	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
- 	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
--	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs || !mhi_cntrl->irq)
-+	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs ||
-+	    !mhi_cntrl->irq || !mhi_cntrl->reg_len)
- 		return -EINVAL;
- 
- 	ret = parse_config(mhi_cntrl, config);
-@@ -1077,6 +1078,12 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
- 		dev_err(dev, "Error getting BHI offset\n");
- 		goto error_reg_offset;
- 	}
-+
-+	if (bhi_off >= mhi_cntrl->reg_len) {
-+		dev_err(dev, "BHI offset is out of range\n");
-+		ret = -EINVAL;
-+		goto error_reg_offset;
-+	}
- 	mhi_cntrl->bhi = mhi_cntrl->regs + bhi_off;
- 
- 	if (mhi_cntrl->fbc_download || mhi_cntrl->rddm_size) {
-@@ -1086,6 +1093,12 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
- 			dev_err(dev, "Error getting BHIE offset\n");
- 			goto error_reg_offset;
- 		}
-+
-+		if (bhie_off >= mhi_cntrl->reg_len) {
-+			dev_err(dev, "BHIe offset is out of range\n");
-+			ret = -EINVAL;
-+			goto error_reg_offset;
-+		}
- 		mhi_cntrl->bhie = mhi_cntrl->regs + bhie_off;
- 	}
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+After merging the amdgpu tree, today's linux-next build (x86_64
+allmodconfig) produced this warning:
 
+At top level:
+drivers/gpu/drm/amd/amdgpu/../display/amdgpu_dm/amdgpu_dm.c:633:13: warning=
+: 'dm_dmub_outbox1_low_irq' defined but not used [-Wunused-function]
+  633 | static void dm_dmub_outbox1_low_irq(void *interrupt_params)
+      |             ^~~~~~~~~~~~~~~~~~~~~~~
+
+Introduced by commit
+
+  77a49c458931 ("drm/amd/display: Support for DMUB AUX")
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/uoWibIRRTmuuaR4irsuighH
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCR2xsACgkQAVBC80lX
+0Gxc/Af/fpymtBkfnbeKPntSiGdoUneMZD3565qgJIdcEFyEN72TPokk7ycAUl0N
+KY++AGSYhm9pHYNASCbjb+1kFtwyhnNIQS1Tl/KiaaTeAUImHbykb+ZDZ0g7O7pY
+Gtcw8AA9PCMZGwS2KY2f4uW9twR92p0sx6B7x8dxO8Q6RMmkNxeynO/GfhpAop5Q
+NhW81cVm5+Pz5afHwRFxRZ7t1ChqS+PvKkKGCsfM5dkh6osUYmTitlhMp0wyJxkk
+CMQ/EakcJtGHKXiv66gDKmUrzVI4uf1qQ8yTrXKr0D9VsG/Atzoz5dJ0CmUDcviZ
+V3TzFkPCJJRpVc00VfWITizVq8qKzw==
+=43Sb
+-----END PGP SIGNATURE-----
+
+--Sig_/uoWibIRRTmuuaR4irsuighH--
