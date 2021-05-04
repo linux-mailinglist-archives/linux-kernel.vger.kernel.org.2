@@ -2,131 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98C05373235
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0240437323C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 00:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232997AbhEDWGL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 18:06:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47488 "EHLO
+        id S233007AbhEDWLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 18:11:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbhEDWGJ (ORCPT
+        with ESMTP id S232424AbhEDWLM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 18:06:09 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEF67C061761
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:05:12 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso9640214otb.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:05:12 -0700 (PDT)
+        Tue, 4 May 2021 18:11:12 -0400
+Received: from mail-pl1-x632.google.com (mail-pl1-x632.google.com [IPv6:2607:f8b0:4864:20::632])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C41ADC061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 15:10:15 -0700 (PDT)
+Received: by mail-pl1-x632.google.com with SMTP id h20so35384plr.4
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 15:10:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bUX+fmvBWZ7MZX/eB50i8/ErJ0LDxPwc8AG9r8drP3E=;
-        b=rbZN4R3LNUElHNoq86nZOXGZrt/77ppLVA7dfYsuZktEgdzL8Z5lVft97a2Qqc81ZT
-         HTsioWhoOv0AtxTWxd4ssatl8Xn9rELCa6fX1sOLMWLfQLeBliCQnVAJp55nq1y3iX36
-         KfkjpC9xPq/9dipNYt3q0RoPqVsMR2q13awl/8LY2rjuYvQ+0nBxsCAYaIQoWT8IjHIK
-         auE4iv8tVmNW/OJ/EhWt3PB5w6rKfdhtNzFjZGaQr8v851k+jQvNzluu6HQDNHt1H0Kx
-         TH4qWjPZQs6LZg6T3ynapkrHbZ+tcuxLKk8SSGpMgcqy4+7IKOXveZp534+A2cOv4IdF
-         xTyA==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=1aLXxHaj5Rq1Gy8Fen+iPQHGbUG29jIsimexipAVSW8=;
+        b=FAcOMbmD+46OKFgqYORs2t18fQo8LRey2ieRuWIH6JxAgIUWEmUNoIa6xAot1j9nSr
+         oCzB/3WcSa32AOBgQQDaaGO59Bq0qQHqkNVBjKVWRC0eFx4SodCgw0AGvEBkUYGgaVXK
+         VZIh8jAitG5nKodsUh9MdzxhNi8BJ3QBad1hRddDtVAhqhXhT6rg+sEpfS/JZlWF5Qd9
+         LVqVqNSAzV8Ip2KZ8zOO+PB/JievXM+0j6Zhtjvp64pUgQ2FHmVZLGTRp8wqka5fbXvb
+         jvFVccAQjMZIoq4a7n77JcFdGHSh8NLu+EWubkYDkDbJIepAEAyPwxyhPq8A/XH12/jR
+         nsfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bUX+fmvBWZ7MZX/eB50i8/ErJ0LDxPwc8AG9r8drP3E=;
-        b=D4w2U17hytYlq6d+sW1xtOoj0vjMQ3wwjLBnyVMAj9XREmiUKs4lNOhT/M3YIfMEGq
-         kKhCCu7jnMIIYBgdqkCJNWdOHAEQxQsMrT/d7vNCwKUInY4liP8FjIRK0zMg6+fDgl1z
-         BI52LDLQlgAet4a8yWOVxo5GEuvT4/h73qHXwUnG9TlD7j87B6T8bIp9nqdWS1xOVUE2
-         wE1ppOqkpLRO3mZyFnxOZztbWP7xCGVG+Hy935rfU6U5PMGQ1HGz1SfK0GWMxPnd3zod
-         6WP6S/37WqJosndVLLdBnyxEsMmTAQ6odpqcVdpESzBNNzhyeG8Z7oxk0+ovreNjwNA1
-         D2hQ==
-X-Gm-Message-State: AOAM530mk4LZgJKKY42Tg1vI1Ueef2gZoCwGC8fLv/W8pucz9uDJqGJ4
-        8L1QnZseRDOfP2oOETYpUCDXRqbGo359FJuPpB/pjA==
-X-Google-Smtp-Source: ABdhPJxnW/mCtJ4lEreTQ7KO/p9+Ge0zM6xJ1dL9j6kkun07AsqbTc7or7bVSiCMpy/URBG+MwV8nVlTOvskSlBNnv4=
-X-Received: by 2002:a9d:60c8:: with SMTP id b8mr21322801otk.17.1620165911656;
- Tue, 04 May 2021 15:05:11 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1aLXxHaj5Rq1Gy8Fen+iPQHGbUG29jIsimexipAVSW8=;
+        b=uMUHcj+wT0wPUIN+OdfltTJzEnL2YPyRRWRKKeidM5MKJLw1G5S3WOfJNW3kYgD9Eh
+         5MzD+yU4gQceLorSXUTSzE76lx1CSS28mtogE9X6k8s2sx/KjO2DYfz3BYG+/E8fl3gI
+         4JqYst8MaW/Des6CNgNWPrvsHlcuLOlPJosMCUkvx2JHvgvKWQc++YWnGyZQunhewsMu
+         /fBZkmXn0YcBjusfZkpdpWNohNLyE+Hr9dQa9+VUJYwBSSGP+O8pBlsJvQMasXq55998
+         y+PTQs8EytxfpKBPq592jtw1JRwNHrSvkDUwHwkstP21y46auE/Ffm7RTWz3rw889YLP
+         tv/Q==
+X-Gm-Message-State: AOAM531FT0qKKbt2y7TXG78CTxnUeeV7C1zIP+2Uvz25nZIEHeHRwOcp
+        6uwPuqF+0h1iPYv8206HnHA4yg==
+X-Google-Smtp-Source: ABdhPJwF1qhw48/+7vzyhb89hqtof1Kr7Sj9/41FiQ+OKc8PlVYJC/94C6mpLxAM35Ty1D2+UrhJhw==
+X-Received: by 2002:a17:902:9697:b029:ee:c7db:deea with SMTP id n23-20020a1709029697b02900eec7dbdeeamr16969279plp.83.1620166214999;
+        Tue, 04 May 2021 15:10:14 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id 128sm13064700pfy.194.2021.05.04.15.10.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 15:10:14 -0700 (PDT)
+Date:   Tue, 4 May 2021 22:10:10 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Xiaoyao Li <xiaoyao.li@intel.com>,
+        Reiji Watanabe <reijiw@google.com>
+Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
+ disabled in the guest
+Message-ID: <YJHGQgEE3mqUhbAc@google.com>
+References: <20210504171734.1434054-1-seanjc@google.com>
+ <20210504171734.1434054-4-seanjc@google.com>
+ <CALMp9eSvXRJm-KxCGKOkgPO=4wJPBi5wDFLbCCX91UtvGJ1qBg@mail.gmail.com>
+ <YJHCadSIQ/cK/RAw@google.com>
+ <CALMp9eSeeuXUXz+0J17b7Dk8pyy3XPgqUXKC5-V8Q7SRd7ykgA@mail.gmail.com>
 MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
- <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m1r1irpc5v.fsf@fess.ebiederm.org>
- <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
- <m1czuapjpx.fsf@fess.ebiederm.org> <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
- <m14kfjh8et.fsf_-_@fess.ebiederm.org> <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-In-Reply-To: <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 5 May 2021 00:05:00 +0200
-Message-ID: <CANpmjNM5sYihM_9P5YHx06BooqLDhK96cMHGKaf61nCcoDJBdw@mail.gmail.com>
-Subject: Re: [PATCH v3 00/12] signal: sort out si_trapno and si_perf
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CALMp9eSeeuXUXz+0J17b7Dk8pyy3XPgqUXKC5-V8Q7SRd7ykgA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 May 2021 at 23:13, Eric W. Biederman <ebiederm@xmission.com> wrote:
->
-> This set of changes sorts out the ABI issues with SIGTRAP TRAP_PERF, and
-> hopefully will can get merged before any userspace code starts using the
-> new ABI.
->
-> The big ideas are:
-> - Placing the asserts first to prevent unexpected ABI changes
-> - si_trapno becomming ordinary fault subfield.
-> - struct signalfd_siginfo is almost full
->
-> This set of changes starts out with Marco's static_assert changes and
-> additional one of my own that enforces the fact that the alignment of
-> siginfo_t is also part of the ABI.  Together these build time
-> checks verify there are no unexpected ABI changes in the changes
-> that follow.
->
-> The field si_trapno is changed to become an ordinary extension of the
-> _sigfault member of siginfo.
->
-> The code is refactored a bit and then si_perf_type is added along side
-> si_perf_data in the _perf subfield of _sigfault of siginfo_t.
->
-> Finally the signalfd_siginfo fields are removed as they appear to be
-> filling up the structure without userspace actually being able to use
-> them.
->
-> v2: https://lkml.kernel.org/r/m14kfjh8et.fsf_-_@fess.ebiederm.org
-> v1: https://lkml.kernel.org/r/m1zgxfs7zq.fsf_-_@fess.ebiederm.org
->
-> Eric W. Biederman (9):
->       signal: Verify the alignment and size of siginfo_t
->       siginfo: Move si_trapno inside the union inside _si_fault
->       signal: Implement SIL_FAULT_TRAPNO
->       signal: Use dedicated helpers to send signals with si_trapno set
->       signal: Remove __ARCH_SI_TRAPNO
->       signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
->       signal: Factor force_sig_perf out of perf_sigtrap
->       signal: Deliver all of the siginfo perf data in _perf
->       signalfd: Remove SIL_FAULT_PERF_EVENT fields from signalfd_siginfo
->
-> Marco Elver (3):
->       sparc64: Add compile-time asserts for siginfo_t offsets
->       arm: Add compile-time asserts for siginfo_t offsets
->       arm64: Add compile-time asserts for siginfo_t offsets
+On Tue, May 04, 2021, Jim Mattson wrote:
+> On Tue, May 4, 2021 at 2:53 PM Sean Christopherson <seanjc@google.com> wrote:
+> >
+> > On Tue, May 04, 2021, Jim Mattson wrote:
+> > > On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
+> > > >
+> > > > Intercept RDTSCP to inject #UD if RDTSC is disabled in the guest.
+> > > >
+> > > > Note, SVM does not support intercepting RDPID.  Unlike VMX's
+> > > > ENABLE_RDTSCP control, RDTSCP interception does not apply to RDPID.  This
+> > > > is a benign virtualization hole as the host kernel (incorrectly) sets
+> > > > MSR_TSC_AUX if RDTSCP is supported, and KVM loads the guest's MSR_TSC_AUX
+> > > > into hardware if RDTSCP is supported in the host, i.e. KVM will not leak
+> > > > the host's MSR_TSC_AUX to the guest.
+> > > >
+> > > > But, when the kernel bug is fixed, KVM will start leaking the host's
+> > > > MSR_TSC_AUX if RDPID is supported in hardware, but RDTSCP isn't available
+> > > > for whatever reason.  This leak will be remedied in a future commit.
+> > > >
+> > > > Fixes: 46896c73c1a4 ("KVM: svm: add support for RDTSCP")
+> > > > Cc: stable@vger.kernel.org
+> > > > Signed-off-by: Sean Christopherson <seanjc@google.com>
+> > > > ---
+> > > ...
+> > > > @@ -4007,8 +4017,7 @@ static void svm_vcpu_after_set_cpuid(struct kvm_vcpu *vcpu)
+> > > >         svm->nrips_enabled = kvm_cpu_cap_has(X86_FEATURE_NRIPS) &&
+> > > >                              guest_cpuid_has(vcpu, X86_FEATURE_NRIPS);
+> > > >
+> > > > -       /* Check again if INVPCID interception if required */
+> > > > -       svm_check_invpcid(svm);
+> > > > +       svm_recalc_instruction_intercepts(vcpu, svm);
+> > >
+> > > Does the right thing happen here if the vCPU is in guest mode when
+> > > userspace decides to toggle the CPUID.80000001H:EDX.RDTSCP bit on or
+> > > off?
+> >
+> > I hate our terminology.  By "guest mode", do you mean running the vCPU, or do
+> > you specifically mean running in L2?
+> 
+> I mean is_guest_mode(vcpu) is true (i.e. running L2).
 
-I can't seem to see the rest of them in my inbox. LKML also is missing
-them: https://lore.kernel.org/linux-api/m1tuni8ano.fsf_-_@fess.ebiederm.org/
+No, it will not do the right thing, whatever "right thing" even means in this
+context.  That's a pre-existing issue, e.g. INVCPID handling is also wrong.
+I highly doubt VMX does, or even can, do the right thing either.
 
-Something must have swallowed them. Could you resend?
-I'll then test in the morning.
-
-Thanks,
--- Marco
+I'm pretty sure I lobbied in the past to disallow KVM_SET_CPUID* if the vCPU is
+in guest mode since it's impossible to do the right thing without forcing an
+exit to L1, e.g. changing MAXPHYSADDR will allow running L2 with an illegal
+CR3, ditto for various CR4 bits.
