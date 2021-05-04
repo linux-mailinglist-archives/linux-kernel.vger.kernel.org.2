@@ -2,131 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94303372760
+	by mail.lfdr.de (Postfix) with ESMTP id DFBAC372761
 	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 10:39:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhEDIkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 04:40:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40336 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230097AbhEDIhU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 04:37:20 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57CA8613C0;
-        Tue,  4 May 2021 08:36:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620117385;
-        bh=wDdTO8tC8Zdg5fvkSijmtyx/2c1fdbnwL+BFdPq35v8=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=nz6peFjPqrrphuzcV4JUJPy0nDAOSH1h3PtxT10nllAGyQ/XDU+x6uDBRxaYK3daM
-         jHiVkXyUNrnvkwC22dF7nXXenRvLH8bwupoGiyYmcqCKGVyWKh5vqKZwmrFUinnUEG
-         zN3AWY6dxB5s4jKJ4/0AWE44nrh2eKoC9GYwu+RxOrWo5Kn4TqeH+PuRyASNo/BsEr
-         DFIynW+U7qCKNLoKssZaHuwn47aj6SkHmJNIrvRYLxYIS7htKnZYGTHAmhRlOyyR/F
-         mSq0HZHgANpaeqrFpPdPBXfnPckj1NLr4J56P/QsUUXd2akbcBUNu8A7WyGYXmoq0G
-         AI8qnvjl6knNg==
-Received: by wens.tw (Postfix, from userid 1000)
-        id 473345FCC8; Tue,  4 May 2021 16:36:23 +0800 (CST)
-From:   Chen-Yu Tsai <wens@kernel.org>
-To:     Rob Herring <robh+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>
-Cc:     Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
-        linux-rockchip@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] arm64: dts: rockchip: rk3328: Enable USB3 Ethernet on NanoPi R2S
-Date:   Tue,  4 May 2021 16:36:16 +0800
-Message-Id: <20210504083616.9654-5-wens@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210504083616.9654-1-wens@kernel.org>
-References: <20210504083616.9654-1-wens@kernel.org>
+        id S230108AbhEDIkq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 04:40:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37008 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhEDIkJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 04:40:09 -0400
+Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A920C061574;
+        Tue,  4 May 2021 01:38:44 -0700 (PDT)
+Received: by mail-yb1-xb2b.google.com with SMTP id t94so11139478ybi.3;
+        Tue, 04 May 2021 01:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Y8qb2bfAFrI9QM8sR79PgwC4m456KUQvtxQw7QErVO0=;
+        b=heYaieXDiOzidFq+kRcjvjjBmYI/4xzMD4IZ1Yw76TNQUNkDgLOIYrp8Bys7niIi+O
+         jvSzvlHAX5/hbPR7mdg8Mr3KtVFEXJixdX0zDUsRdWPm2M6sI96KtXYPzM4z98Sk6HbK
+         IclA9mcqDUz7trpk3h4rJfxcBfa44/1jzoziaYOQVlXYek/pEzc7jPCbtcmkJIT+9VUH
+         WT0HpfKiSiMrkqlHze4lvrBlnkSpkcOokMm27Bo95W5SsjuKtg5kMxCDmKeB7yAkY8kq
+         yjjrUt79LeHM1TFBZ+4oGyOBeB8Esqx0U2hDdis4OHVxSJOXEo006EcEEdIvOFlYc3Lc
+         5pTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Y8qb2bfAFrI9QM8sR79PgwC4m456KUQvtxQw7QErVO0=;
+        b=Z9W6+OddH8BApb3IJtaohFCJLKUh7gCBG1KlSf6uu9aPwuY3E2eXzc5JX49z9VNMA3
+         zAZAqDcSUIQqA/T3IsVggsD2+ECaBmoGOzIBYF4cfGuQLYAVKwiYqK028nd7wSG26GYk
+         +AuZjID8nY1nvnTowfwEFF9pf4TALOR/tvvAp/6xQLKBXBuWx413F97tFEydzpxQHoYu
+         /Ej4pnDvb3Jve4pKWbYm8BQUzRyusYna1kUimHD1gXztat/7hijkJpQpEDp+jmigKWbe
+         L3lvYUizxszA3TMrIru6rhpzU7HIzAQp5sqW9p1HgwhzIlq631PElvDdHUvrDRbyW+b5
+         txrA==
+X-Gm-Message-State: AOAM531hnSkCsyak6833FdGjM+oAEcET6ekGKWPT4Bx0B2dc1NlrhzRh
+        /IvIr7g1oqM5mxXQmA3Ol2HeU0R50JoJLMgyVYSLDLrnZdSWo9p1
+X-Google-Smtp-Source: ABdhPJwgJRTy4oD3Q4bEwMIiI0PESgNj4LF3XmVCbNwY/lWmcIYnmds0Q6QwiZMB0/f4EUTpPAx1ux8l25XkeS6oEUM=
+X-Received: by 2002:a25:880f:: with SMTP id c15mr31896545ybl.247.1620117523381;
+ Tue, 04 May 2021 01:38:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210501151538.145449-1-masahiroy@kernel.org> <CANiq72k1hB3X6+Nc_iu=f=BoB-F9JW2j_B4ZMcv8_UpW5QQ2Og@mail.gmail.com>
+ <3943bc020f6227c8801907317fc113aa13ad4bad.camel@perches.com> <65cda2bb-1b02-6ebc-0ea2-c48927524aa0@codethink.co.uk>
+In-Reply-To: <65cda2bb-1b02-6ebc-0ea2-c48927524aa0@codethink.co.uk>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Tue, 4 May 2021 10:38:32 +0200
+Message-ID: <CANiq72mk84uay--BWOLT4zF12-rat9erohKazB8SpTPoVCTX1A@mail.gmail.com>
+Subject: Re: [PATCH] Raise the minimum GCC version to 5.2
+To:     Ben Dooks <ben.dooks@codethink.co.uk>
+Cc:     Joe Perches <joe@perches.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Will Deacon <will@kernel.org>, Miguel Ojeda <ojeda@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chen-Yu Tsai <wens@csie.org>
+On Tue, May 4, 2021 at 9:57 AM Ben Dooks <ben.dooks@codethink.co.uk> wrote:
+>
+> Some of us are a bit stuck as either customer refuses to upgrade
+> their build infrastructure or has paid for some old but safety
+> blessed version of gcc. These often lag years behind the recent
+> gcc releases :(
 
-The NanoPi R2S has a Realtek RTL8153B USB 3.0 Ethernet chip connected
-to the USB 3.0 pins of the RK3328 SoC. Power to the chip is controlled
-by a GPIO line toggled transistor switch, which is not a full-blown
-voltage regulator.
+In those scenarios, why do you need to build mainline? Aren't your
+customers using longterm or frozen kernels? If they are paying for
+certified GCC images, aren't they already paying for supported kernel
+images from some vendor too?
 
-At least in Linux, the USB 3.0 XHCI controller has two ports: the first
-port is for legacy USB 2.0 and slower, while the second port is for USB
-3.0. Since the Ethernet chip supports USB 3.0, it should be described
-as connected to the second port.
+I understand where you are coming from -- I have also dealt with
+projects/machines running ancient, unsupported software/toolchains for
+various reasons; but nobody expected upstream (and in particular the
+mainline kernel source) to support them. In the cases I experienced,
+those use cases require not touching anything at all, and when the
+time came of doing so, everything would be updated at once,
+re-certified/validated as needed and frozen again.
 
-Add the device nodes for the power switch and Ethernet chip, and enable
-the USB 3.0 controller. The USB device node follows the standard USB
-device binding.
-
-Signed-off-by: Chen-Yu Tsai <wens@csie.org>
----
- .../boot/dts/rockchip/rk3328-nanopi-r2s.dts   | 32 +++++++++++++++++++
- 1 file changed, 32 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
-index f807bc066ccb..64cf07ee3d10 100644
---- a/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3328-nanopi-r2s.dts
-@@ -14,6 +14,7 @@ / {
- 	compatible = "friendlyarm,nanopi-r2s", "rockchip,rk3328";
- 
- 	aliases {
-+		ethernet1 = &rtl8153;
- 		mmc0 = &sdmmc;
- 	};
- 
-@@ -101,6 +102,18 @@ vdd_5v: vdd-5v {
- 		regulator-min-microvolt = <5000000>;
- 		regulator-max-microvolt = <5000000>;
- 	};
-+
-+	vdd_5v_lan: vdd-5v-lan {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&gpio2 RK_PC6 GPIO_ACTIVE_HIGH>;
-+		pinctrl-0 = <&lan_vdd_pin>;
-+		pinctrl-names = "default";
-+		regulator-name = "vdd_5v_lan";
-+		regulator-always-on;
-+		regulator-boot-on;
-+		vin-supply = <&vdd_5v>;
-+	};
- };
- 
- &cpu0 {
-@@ -309,6 +322,12 @@ wan_led_pin: wan-led-pin {
- 		};
- 	};
- 
-+	lan {
-+		lan_vdd_pin: lan-vdd-pin {
-+			rockchip,pins = <2 RK_PC6 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
- 	pmic {
- 		pmic_int_l: pmic-int-l {
- 			rockchip,pins = <1 RK_PD0 RK_FUNC_GPIO &pcfg_pull_up>;
-@@ -368,6 +387,19 @@ &usb20_otg {
- 	dr_mode = "host";
- };
- 
-+&usbdrd3 {
-+	dr_mode = "host";
-+	status = "okay";
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	/* Second port is for USB 3.0 */
-+	rtl8153: device@2 {
-+		compatible = "usbbda,8153";
-+		reg = <2>;
-+	};
-+};
-+
- &usb_host0_ehci {
- 	status = "okay";
- };
--- 
-2.31.1
-
+Cheers,
+Miguel
