@@ -2,187 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA5323723DA
-	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 02:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A655A3723DE
+	for <lists+linux-kernel@lfdr.de>; Tue,  4 May 2021 02:21:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhEDAUX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 3 May 2021 20:20:23 -0400
-Received: from gateway21.websitewelcome.com ([192.185.45.212]:45687 "EHLO
-        gateway21.websitewelcome.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229602AbhEDAUW (ORCPT
+        id S229634AbhEDAW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 3 May 2021 20:22:27 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:34645 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229497AbhEDAW0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 3 May 2021 20:20:22 -0400
-Received: from cm12.websitewelcome.com (cm12.websitewelcome.com [100.42.49.8])
-        by gateway21.websitewelcome.com (Postfix) with ESMTP id 89B8D400D9C18
-        for <linux-kernel@vger.kernel.org>; Mon,  3 May 2021 19:19:26 -0500 (CDT)
-Received: from gator4166.hostgator.com ([108.167.133.22])
-        by cmsmtp with SMTP
-        id dimcl80aM1cHedimcl6es9; Mon, 03 May 2021 19:19:26 -0500
-X-Authority-Reason: nr=8
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=Ig3CIZ/xmFOthwSo8EhRMfGFFJSSDrU9KPABQLO3bKw=; b=aCCPuf0rrTzuThkDJZ/b5GIA2p
-        s3MQoip/HAnHcpu36zFanRHfJXuAHeS6aNB9xrUMOK5rgw8MyAPB201Dr3d06X7pXcBM9Q9hy7ZI7
-        xKxTWvkiZMVPuBDthn4XqnCAaLAJ6+Z9DVE5wzUlBr1qANp3JTjQzVS8JkxlbH/gcZ08vasjhcG8K
-        A3CHwZX3Jf5f+UERSOTEUEIfNWsyNJQeSv9EvDRIPmGtzNimjj1p5B/wkZndMaD32Bf2EPnHFT+bu
-        avcZ8lyKUB/a94W4ZbnUq6GExQIBu0eYQPLzmVEn1Kr9/huDBUhkoMdgqL8l+LjrBNxNYD1/x+C3d
-        9VFynPOA==;
-Received: from 187-162-31-110.static.axtel.net ([187.162.31.110]:48728 helo=[192.168.15.8])
-        by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <gustavo@embeddedor.com>)
-        id 1ldimZ-001mFB-0t; Mon, 03 May 2021 19:19:23 -0500
-Subject: Re: [PATCH v3][next] scsi: aacraid: Replace one-element array with
- flexible-array member
-To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>
-References: <20210421185611.GA105224@embeddedor>
-From:   "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Message-ID: <d26823dd-5248-4965-cc30-f9e6294536ee@embeddedor.com>
-Date:   Mon, 3 May 2021 19:19:25 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <20210421185611.GA105224@embeddedor>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 187.162.31.110
-X-Source-L: No
-X-Exim-ID: 1ldimZ-001mFB-0t
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: 187-162-31-110.static.axtel.net ([192.168.15.8]) [187.162.31.110]:48728
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 6
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
+        Mon, 3 May 2021 20:22:26 -0400
+Received: by mail-ot1-f47.google.com with SMTP id x54-20020a05683040b6b02902a527443e2fso6782252ott.1;
+        Mon, 03 May 2021 17:21:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
+         :message-id;
+        bh=qk17av8ylT7nTRT/OdFPJlBQ48CwuoHsabscyy4bQjE=;
+        b=kNwgyXv/qB5SgstY/9J1rM9+5fEXxpwDsEHsdVLkLm+bKDeJra6SoZYXtMaN81MNsa
+         uxcSBVvT7PWvWlLFBr3S9LCx3u7LdJVqcjdw7Y+WRWN1wQzM3KG8IOlAfFFrRIBuqdEm
+         JNMyJZ+MqCvkYPy92lXCUPiFKsA1pC6clrsqPvm/Lrn42qhqKRnIDJTIgrc+S5HNH6U0
+         mBa1GlfJcRYZvnEuqsGpxjn/KHzV4OFD3O3n6sccY/ckGVvaIHQnvVxTcTC8QBBEoRk7
+         no017lh4aPDgYDIlnXOZ3k7gd20M0j6jKUVD1QHSKTpNUMqUGo5rfGyvEUICwFdB0sO/
+         jjDg==
+X-Gm-Message-State: AOAM533n1MssxoVamK1YvaMxjG3nPIIJNZ7fc1jH/yt/hDRKK8wW71lZ
+        m4cIo+LTY27DfnLjA3OzbZ6dBQHi/Q==
+X-Google-Smtp-Source: ABdhPJzR7C4zsTJkn3epaX40FJyeTmbpmbGNlu4sfQGUmspSrTLSv9tXZ/Tv1qfRVkb5aNf4pJoXhQ==
+X-Received: by 2002:a9d:6e97:: with SMTP id a23mr17287778otr.280.1620087691123;
+        Mon, 03 May 2021 17:21:31 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q14sm370834ota.12.2021.05.03.17.21.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 03 May 2021 17:21:30 -0700 (PDT)
+Received: (nullmailer pid 2706595 invoked by uid 1000);
+        Tue, 04 May 2021 00:21:29 -0000
+From:   Rob Herring <robh@kernel.org>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     michal.simek@xilinx.com, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+In-Reply-To: <20210503214413.3145015-1-sean.anderson@seco.com>
+References: <20210503214413.3145015-1-sean.anderson@seco.com>
+Subject: Re: [PATCH 1/2] dt-bindings: pwm: Add Xilinx AXI Timer
+Date:   Mon, 03 May 2021 19:21:29 -0500
+Message-Id: <1620087689.365270.2706594.nullmailer@robh.at.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Martin,
-
-Friendly ping: could you take this patch, please? :)
-
-Thanks!
---
-Gustavo
-
-On 4/21/21 13:56, Gustavo A. R. Silva wrote:
-> There is a regular need in the kernel to provide a way to declare having
-> a dynamically sized set of trailing elements in a structure. Kernel code
-> should always use “flexible array members”[1] for these cases. The older
-> style of one-element or zero-length arrays should no longer be used[2].
+On Mon, 03 May 2021 17:44:12 -0400, Sean Anderson wrote:
+> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
+> a "soft" block, so it has many parameters which would not be
+> configurable in most hardware. This binding is usually automatically
+> generated by Xilinx's tools, so the names and values of properties
+> must be kept as they are.
 > 
-> Refactor the code according to the use of a flexible-array member in
-> struct aac_raw_io2 instead of one-element array, and use the
-> struct_size() helper.
-> 
-> Also, this helps with the ongoing efforts to enable -Warray-bounds by
-> fixing the following warnings:
-> 
-> drivers/scsi/aacraid/aachba.c: In function ‘aac_build_sgraw2’:
-> drivers/scsi/aacraid/aachba.c:3970:18: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  3970 |     if (rio2->sge[j].length % (i*PAGE_SIZE)) {
->       |         ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:3974:27: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  3974 |     nseg_new += (rio2->sge[j].length / (i*PAGE_SIZE));
->       |                  ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:4011:28: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  4011 |   for (j = 0; j < rio2->sge[i].length / (pages * PAGE_SIZE); ++j) {
->       |                   ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:4012:24: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  4012 |    addr_low = rio2->sge[i].addrLow + j * pages * PAGE_SIZE;
->       |               ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:4014:33: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  4014 |    sge[pos].addrHigh = rio2->sge[i].addrHigh;
->       |                        ~~~~~~~~~^~~
-> drivers/scsi/aacraid/aachba.c:4015:28: warning: array subscript 1 is above array bounds of ‘struct sge_ieee1212[1]’ [-Warray-bounds]
->  4015 |    if (addr_low < rio2->sge[i].addrLow)
->       |                   ~~~~~~~~~^~~
-> 
-> [1] https://en.wikipedia.org/wiki/Flexible_array_member
-> [2] https://www.kernel.org/doc/html/v5.9/process/deprecated.html#zero-length-and-one-element-arrays
-> 
-> Link: https://github.com/KSPP/linux/issues/79
-> Link: https://github.com/KSPP/linux/issues/109
-> Build-tested-by: kernel test robot <lkp@intel.com>
-> Link: https://lore.kernel.org/lkml/60414244.ur4%2FkI+fBF1ohKZs%25lkp@intel.com/
-> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
 > ---
-> Changes in v3:
->  - Use (nseg_new-1)*sizeof(struct sge_ieee1212) to calculate
->    size in call to memcpy() in order to avoid any confusion.
 > 
-> Changes in v2:
->  - Add code comment for clarification.
+>  .../bindings/pwm/xlnx,axi-timer.yaml          | 91 +++++++++++++++++++
+>  1 file changed, 91 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
 > 
->  drivers/scsi/aacraid/aachba.c  | 10 +++++-----
->  drivers/scsi/aacraid/aacraid.h |  2 +-
->  2 files changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/scsi/aacraid/aachba.c b/drivers/scsi/aacraid/aachba.c
-> index f1f62b5da8b7..46b8dffce2dd 100644
-> --- a/drivers/scsi/aacraid/aachba.c
-> +++ b/drivers/scsi/aacraid/aachba.c
-> @@ -1235,8 +1235,8 @@ static int aac_read_raw_io(struct fib * fib, struct scsi_cmnd * cmd, u64 lba, u3
->  		if (ret < 0)
->  			return ret;
->  		command = ContainerRawIo2;
-> -		fibsize = sizeof(struct aac_raw_io2) +
-> -			((le32_to_cpu(readcmd2->sgeCnt)-1) * sizeof(struct sge_ieee1212));
-> +		fibsize = struct_size(readcmd2, sge,
-> +				     le32_to_cpu(readcmd2->sgeCnt));
->  	} else {
->  		struct aac_raw_io *readcmd;
->  		readcmd = (struct aac_raw_io *) fib_data(fib);
-> @@ -1366,8 +1366,8 @@ static int aac_write_raw_io(struct fib * fib, struct scsi_cmnd * cmd, u64 lba, u
->  		if (ret < 0)
->  			return ret;
->  		command = ContainerRawIo2;
-> -		fibsize = sizeof(struct aac_raw_io2) +
-> -			((le32_to_cpu(writecmd2->sgeCnt)-1) * sizeof(struct sge_ieee1212));
-> +		fibsize = struct_size(writecmd2, sge,
-> +				      le32_to_cpu(writecmd2->sgeCnt));
->  	} else {
->  		struct aac_raw_io *writecmd;
->  		writecmd = (struct aac_raw_io *) fib_data(fib);
-> @@ -3998,7 +3998,7 @@ static int aac_convert_sgraw2(struct aac_raw_io2 *rio2, int pages, int nseg, int
->  	if (aac_convert_sgl == 0)
->  		return 0;
->  
-> -	sge = kmalloc_array(nseg_new, sizeof(struct sge_ieee1212), GFP_ATOMIC);
-> +	sge = kmalloc_array(nseg_new, sizeof(*sge), GFP_ATOMIC);
->  	if (sge == NULL)
->  		return -ENOMEM;
->  
-> diff --git a/drivers/scsi/aacraid/aacraid.h b/drivers/scsi/aacraid/aacraid.h
-> index e3e4ecbea726..3733df77bc65 100644
-> --- a/drivers/scsi/aacraid/aacraid.h
-> +++ b/drivers/scsi/aacraid/aacraid.h
-> @@ -1929,7 +1929,7 @@ struct aac_raw_io2 {
->  	u8		bpComplete;	/* reserved for F/W use */
->  	u8		sgeFirstIndex;	/* reserved for F/W use */
->  	u8		unused[4];
-> -	struct sge_ieee1212	sge[1];
-> +	struct sge_ieee1212	sge[];
->  };
->  
->  #define CT_FLUSH_CACHE 129
-> 
+
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
+
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.example.dt.yaml: example-0: timer@800e0000:reg:0: [0, 2148401152, 0, 65536] is too long
+	From schema: /usr/local/lib/python3.8/dist-packages/dtschema/schemas/reg.yaml
+
+See https://patchwork.ozlabs.org/patch/1473421
+
+This check can fail if there are any dependencies. The base for a patch
+series is generally the most recent rc1.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
