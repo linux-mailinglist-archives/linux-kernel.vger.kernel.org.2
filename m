@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 923F4373A04
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:06:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A30DD373A10
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:06:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233389AbhEEMGz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:06:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45220 "EHLO mail.kernel.org"
+        id S232710AbhEEMHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:07:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45880 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233324AbhEEMGf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:06:35 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 42ACB6121F;
-        Wed,  5 May 2021 12:05:38 +0000 (UTC)
+        id S233360AbhEEMGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:06:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 155DC6121F;
+        Wed,  5 May 2021 12:05:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216338;
-        bh=QgL1a5yDJ1BUuv0Uie1Mx4jgjQLxIkBf+JoR0BcRjX0=;
+        s=korg; t=1620216350;
+        bh=IR59B1/Wcfn5Ssfa6oOZhUSeq5lF1vIKGuJmgzsVMPo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=qTdu3Wu6rMNO0PVYdIah+40HG6vTfkbzEbavLWgZD1TV2Ninzy+Fnvi2xVFLvpAfI
-         kMSTk/ztR+K0q+2ZgWZcUdAfc5kUvA6ZZ57OIJJVvhn0zXxKku0kSiwyLJm5wMAMTG
-         6rdeIgbwo90g8FBx5Krkiy/gYH7B0brygserz+sY=
+        b=HwaENEmbSlIsTHhYgO5MvQVA4aGt66i7JIhRKRMB0tRsfHQAJ1PC3a0GWS9KRiZ8r
+         I6DQYDPxNhxKatcKQTdWtHMj5k1dnT8WrCbMp6ic2tHzM1sMzi8Pl6XhRfkSFwcM3/
+         1q5ovZJ9wNiEPTN9gOj12HF+Av1dWzpDkxoLsI/I=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        George Kennedy <george.kennedy@oracle.com>
-Subject: [PATCH 4.19 03/15] ACPI: x86: Call acpi_boot_table_init() after acpi_table_upgrade()
-Date:   Wed,  5 May 2021 14:05:08 +0200
-Message-Id: <20210505120503.892153375@linuxfoundation.org>
+        stable@vger.kernel.org,
+        syzbot+4993e4a0e237f1b53747@syzkaller.appspotmail.com,
+        Phillip Potter <phil@philpotter.co.uk>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 4.19 04/15] net: usb: ax88179_178a: initialize local variables before use
+Date:   Wed,  5 May 2021 14:05:09 +0200
+Message-Id: <20210505120503.923736092@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210505120503.781531508@linuxfoundation.org>
 References: <20210505120503.781531508@linuxfoundation.org>
@@ -40,49 +41,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+From: Phillip Potter <phil@philpotter.co.uk>
 
-commit 6998a8800d73116187aad542391ce3b2dd0f9e30 upstream.
+commit bd78980be1a68d14524c51c4b4170782fada622b upstream.
 
-Commit 1a1c130ab757 ("ACPI: tables: x86: Reserve memory occupied by
-ACPI tables") attempted to address an issue with reserving the memory
-occupied by ACPI tables, but it broke the initrd-based table override
-mechanism relied on by multiple users.
+Use memset to initialize local array in drivers/net/usb/ax88179_178a.c, and
+also set a local u16 and u32 variable to 0. Fixes a KMSAN found uninit-value bug
+reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=00371c73c72f72487c1d0bfe0cc9d00de339d5aa
 
-To restore the initrd-based ACPI table override functionality, move
-the acpi_boot_table_init() invocation in setup_arch() on x86 after
-the acpi_table_upgrade() one.
-
-Fixes: 1a1c130ab757 ("ACPI: tables: x86: Reserve memory occupied by ACPI tables")
-Reported-by: Hans de Goede <hdegoede@redhat.com>
-Tested-by: Hans de Goede <hdegoede@redhat.com>
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: George Kennedy <george.kennedy@oracle.com>
+Reported-by: syzbot+4993e4a0e237f1b53747@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/x86/kernel/setup.c |    5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+ drivers/net/usb/ax88179_178a.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
---- a/arch/x86/kernel/setup.c
-+++ b/arch/x86/kernel/setup.c
-@@ -1097,9 +1097,6 @@ void __init setup_arch(char **cmdline_p)
+--- a/drivers/net/usb/ax88179_178a.c
++++ b/drivers/net/usb/ax88179_178a.c
+@@ -307,12 +307,12 @@ static int ax88179_read_cmd(struct usbne
+ 	int ret;
  
- 	cleanup_highmap();
- 
--	/* Look for ACPI tables and reserve memory occupied by them. */
--	acpi_boot_table_init();
--
- 	memblock_set_current_limit(ISA_END_ADDRESS);
- 	e820__memblock_setup();
- 
-@@ -1179,6 +1176,8 @@ void __init setup_arch(char **cmdline_p)
- 	reserve_initrd();
- 
- 	acpi_table_upgrade();
-+	/* Look for ACPI tables and reserve memory occupied by them. */
-+	acpi_boot_table_init();
- 
- 	vsmp_init();
- 
+ 	if (2 == size) {
+-		u16 buf;
++		u16 buf = 0;
+ 		ret = __ax88179_read_cmd(dev, cmd, value, index, size, &buf, 0);
+ 		le16_to_cpus(&buf);
+ 		*((u16 *)data) = buf;
+ 	} else if (4 == size) {
+-		u32 buf;
++		u32 buf = 0;
+ 		ret = __ax88179_read_cmd(dev, cmd, value, index, size, &buf, 0);
+ 		le32_to_cpus(&buf);
+ 		*((u32 *)data) = buf;
 
 
