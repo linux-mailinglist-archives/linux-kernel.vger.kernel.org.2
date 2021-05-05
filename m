@@ -2,127 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A070374834
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:50:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11DF5374839
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:54:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234792AbhEESv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:51:26 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:48890 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229810AbhEESvV (ORCPT
+        id S234196AbhEESzF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:55:05 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49891 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230329AbhEESzC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:51:21 -0400
-Received: from [192.168.254.32] (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 06D4B20B7178;
-        Wed,  5 May 2021 11:50:23 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 06D4B20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620240624;
-        bh=kdKkY7eSHYwD6hrRi/UdcXOQVSFRpccQtWXGd1J6oXY=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=TIEQxhBZ7/Q9tha6zkSmmrwMxBADv7Y0shGW4XfvQ0o+wVONt4tL3B8klFzpjz7PW
-         w5QulVEGQoBaxDvkUYygJ5/bPH197esxuKPy01IudqOa3O1fOhIZuSYXp34R0CgCl3
-         dZwQQmF67Jp7N/NF9qtsfjLaMNB9lX8uHxVJqpbM=
-Subject: Re: [RFC PATCH v3 2/4] arm64: Check the return PC against unreliable
- code sections
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-3-madvenka@linux.microsoft.com>
- <20210504160508.GC7094@sirena.org.uk>
- <1bd2b177-509a-21d9-e349-9b2388db45eb@linux.microsoft.com>
- <0f72c4cb-25ef-ee23-49e4-986542be8673@linux.microsoft.com>
- <20210505164648.GC4541@sirena.org.uk>
- <9781011e-2d99-7f46-592c-621c66ea66c3@linux.microsoft.com>
-Message-ID: <8ea6a81a-2e19-f752-408c-21dea1078f9b@linux.microsoft.com>
-Date:   Wed, 5 May 2021 13:50:23 -0500
+        Wed, 5 May 2021 14:55:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620240845;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xzcUJiTSMQjqP53U/sK3VcFgjGCdL+Yqx50eNS1EYWE=;
+        b=YUUKtBJaIT4mFCIKtMx/Le+oWLhAR2+CByg60fIUl9+3fsmHGOxN+W42pMiYY7CiIXkv4R
+        brVXYKpT8+QWCp56pCTGlCnRb1y2vslim3W21HQ1ffMSCXh+9SSqLBOcgqbanSU7KZ+Zuk
+        g5aQoN9r99UPKTE/UJth16nRMHpripk=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-109-zcHc-Q0RNoSC9-v5vhIcLQ-1; Wed, 05 May 2021 14:54:03 -0400
+X-MC-Unique: zcHc-Q0RNoSC9-v5vhIcLQ-1
+Received: by mail-qv1-f72.google.com with SMTP id h12-20020a0cf44c0000b02901c0e9c3e1d0so2387881qvm.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 11:54:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=xzcUJiTSMQjqP53U/sK3VcFgjGCdL+Yqx50eNS1EYWE=;
+        b=dy2QH1AbwMpfVAGDauAvyGnYS0ZONFooEcq6fsYwx3jUd9o+NAPEP1DvLbjclTDwSY
+         itCItRChUAQK3iK217Jx5x469g5TAWNinQJ0tVdP9/AnrCrs0xmx5dMznD10JqNIQijr
+         PLQKGAbQ7hR8FM3ArT0xvSKb38LTKjWlsnF+0IuuShQx+gIilk9KCmKYHDFcIkuoYE7d
+         krMPLxFnWTCKqLTFjR0yLfM1m7hJ+DedhuMg/yKyw4Nbu8aAU2UrJYde5lha+plaqzC2
+         lgFF5bDKYHOarAp/RNBVPwsKCCK0NAw2JbKsnsoeawXFN6AiJVTvMX1hVs2f2yvn1c9N
+         qxHA==
+X-Gm-Message-State: AOAM530hT7WO0411JFah+9t3cFXZIJNn5l2zbN2DG7ZVSYW60xbwB+Ne
+        lNLm4ptfw5a7cL1AQ3yHiKfsa72WFTdpUm81CihNvmylKtpP5VZfJdN/OIjSIut1P5CvN491FQK
+        rDsLI5fFNFKQoCU20haeZgmAG
+X-Received: by 2002:ac8:5913:: with SMTP id 19mr28709917qty.391.1620240842521;
+        Wed, 05 May 2021 11:54:02 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxO9L95zKwtf/j36yscG23peB8+9h3FxtVHS9v2zg95NN6AFM2hHQYZwFdzzRPV5GbCvpEyEQ==
+X-Received: by 2002:ac8:5913:: with SMTP id 19mr28709906qty.391.1620240842344;
+        Wed, 05 May 2021 11:54:02 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id f7sm93995qtm.41.2021.05.05.11.54.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 11:54:01 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505154613.17214-1-longman@redhat.com>
+ <20210505154613.17214-3-longman@redhat.com>
+ <YJLWN6bNBYyKRPEN@carbon.DHCP.thefacebook.com>
+ <f14a263b-10ea-ef2b-eefa-066591a4b637@redhat.com>
+Message-ID: <5d1683d2-1023-1d1c-91e7-b68549debe1d@redhat.com>
+Date:   Wed, 5 May 2021 14:54:00 -0400
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <9781011e-2d99-7f46-592c-621c66ea66c3@linux.microsoft.com>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <f14a263b-10ea-ef2b-eefa-066591a4b637@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/5/21 1:48 PM, Madhavan T. Venkataraman wrote:
-> 
-> 
-> On 5/5/21 11:46 AM, Mark Brown wrote:
->> On Tue, May 04, 2021 at 02:32:35PM -0500, Madhavan T. Venkataraman wrote:
+On 5/5/21 2:11 PM, Waiman Long wrote:
+> On 5/5/21 1:30 PM, Roman Gushchin wrote:
+>
 >>
->>> If you prefer, I could do something like this:
->>>
->>> check_pc:
->>> 	if (!__kernel_text_address(frame->pc))
->>> 		frame->reliable = false;
->>>
->>> 	range = lookup_range(frame->pc);
->>>
->>> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
->>> 	if (tsk->ret_stack &&
->>> 		frame->pc == (unsigned long)return_to_handler) {
->>> 		...
->>> 		frame->pc = ret_stack->ret;
->>> 		frame->pc = ptrauth_strip_insn_pac(frame->pc);
->>> 		goto check_pc;
->>> 	}
->>> #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
->>
->>> Is that acceptable?
->>
->> I think that works even if it's hard to love the goto, might want some
->> defensiveness to ensure we can't somehow end up in an infinite loop with
->> a sufficiently badly formed stack.
->>
-> 
-> I could do something like this:
-> 
-> - Move all frame->pc checking code into a function called check_frame_pc().
-> 
-> 	bool	check_frame_pc(frame)
-> 	{
-> 		Do all the checks including function graph
-> 		return frame->pc changed
-> 	}
-> 
-> - Then, in unwind_frame()
-> 
-> unwind_frame()
-> {
-> 	int	i;
-> 	...
-> 
-> 	for (i = 0; i < MAX_CHECKS; i++) {
-> 		if (!check_frame(tsk, frame))
+>> Btw, I wonder if we also need a change in the slab caches merging 
+>> procedure?
+>> KMALLOC_NORMAL caches should not be merged with caches which can 
+>> potentially
+>> include accounted objects.
+>
+> Thank for catching this omission.
+>
+> I will take a look and modify the merging procedure in a new patch. 
+> Accounting is usually specified at kmem_cache_create() time. Though, I 
+> did find one instance of setting ACCOUNT flag in kmem_cache_alloc(), I 
+> will ignore this case and merge accounted, but unreclaimable caches to 
+> KMALLOC_CGROUP. 
 
-Small typo in the last statement - It should be check_frame_pc().
+In mm/slab_common.c:
 
-Sorry.
+#define SLAB_MERGE_SAME (SLAB_RECLAIM_ACCOUNT | SLAB_CACHE_DMA | \
+                          SLAB_CACHE_DMA32 | SLAB_ACCOUNT)
 
-Madhavan
+struct kmem_cache *find_mergeable(unsigned int size, unsigned int align,
+   :
+                 if ((flags & SLAB_MERGE_SAME) != (s->flags & 
+SLAB_MERGE_SAME))
+                         continue;
 
-> 			break;
-> 	}
-> 
-> 	if (i == MAX_CHECKS)
-> 		frame->reliable = false;
-> 	return 0;
-> }
-> 
-> The above would take care of future cases like kretprobe_trampoline().
-> 
-> If this is acceptable, then the only question is - what should be the value of
-> MAX_CHECKS (I will rename it to something more appropriate)?
-> 
-> Madhavan
-> 
+By making sure kmalloc-cg-* has SLAB_ACCOUNT bit set, a kmemcache 
+created with with SLAB_ACCOUNT may merge with kmalloc-cg-* whereas one 
+without SLAB_ACCOUNT may merge with kmalloc-* for now. So the current 
+code should work fine for most cases. Though, if the ACCOUNT flag is set 
+at kmem_cache_alloc() and the cache happens to be merged into kmalloc-*, 
+we will have the rare case that an objcg pointer array may have to be 
+added to a kmalloc-* cache. However, this is not a common practice, and 
+the three cases (not one, sorry) that I found so far is in
+
+arch/x86/kvm/x86.c:     ctxt = kmem_cache_zalloc(x86_emulator_cache, 
+GFP_KERNEL_ACCOUNT);
+fs/hostfs/hostfs_kern.c:        hi = 
+kmem_cache_alloc(hostfs_inode_cache, GFP_KERNEL_ACCOUNT);
+virt/kvm/kvm_main.c:    vcpu = kmem_cache_zalloc(kvm_vcpu_cache, 
+GFP_KERNEL_ACCOUNT);
+
+We will have to advise against doing that.
+
+Cheers,
+Longman
+
+
