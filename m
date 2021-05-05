@@ -2,129 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62C893747D0
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AACC374799
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:06:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235742AbhEESFk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:05:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57922 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235911AbhEESEe (ORCPT
+        id S234839AbhEESAT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:00:19 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:46934 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234467AbhEESAJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:04:34 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E296EC04682F
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:55:23 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id g38so3780849ybi.12
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:55:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JRrWDm6hzoXBYkMYgzRKxH03l5/cMdlHpkGRxjVY6Vc=;
-        b=eQKGx1guDvHwxN5vTy0GDXI58bnIFoJ0vFbeT43gm2kxemZAHNKxXjR+6J2fEvdWyS
-         0iJBNRookiebnuLF9MaEFtDfcmO1JhwGICRlMFglMOBbup0HVeQcQl/b7+aUUVu89+rL
-         uEt0JPUFptZSyQvf16g3d9BRHJVqU2PGcD2eo5OpAZBL0RJdp696Xjs699Cb9AMUQLdf
-         iwyQcx8oiQ6gCxsVMkSvZMI3Xj0qMaHE03MsOrQ0sBiGDQcg76Rawzf/IPv+MrUAkRB1
-         0Ox2xBfa4LIONi8LqCF3ubT4Bi8BOosO9QOewt1+22tt5hJf/2c3pl7URDok2BZEtGgv
-         P2Cw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JRrWDm6hzoXBYkMYgzRKxH03l5/cMdlHpkGRxjVY6Vc=;
-        b=aMds1Wme7nGS2yrnGZ/+4jhPdOPtxah9ITesnnQsxcgVRFkc2TofW5tTejW2TGKGuw
-         80Yqmkf3QX5bqtuT70TrMSjnv5rWvATj2Uh78fo9k96tEVZmFGbm8TORCkzQRq/bfA/I
-         GJTzNgRwF6HBJO0V/wZA915oNv8iQREnwHZEkL9izmKaN6NeGkxCQLWBrsbo8YfzEs3E
-         8zCHtPw1LADeBkkgga4xuwj/hy4mxsIU1Uu++1kiuKnl3O926CuML09FNVK/YIXpxfZZ
-         TV4I+rIgEf7v5USdMErnCJ0cDPR5RDs5hmfxVDj2oERYWLZR3JEXFlNhFxtmC/KvUOhn
-         vdRg==
-X-Gm-Message-State: AOAM531lMIFAGVvGkXo7sp5bi42vWuLtbRd8h3U3LC90GKDUpOqihTwi
-        tc/EALaGO+6fMdDrx8z+iFHZY5vb/H5awtZpFEE=
-X-Google-Smtp-Source: ABdhPJwVMxbf8vlQIwVEJFRANO+gao9C76bvFSL0nqB9yuRBDcc47EIYjnT8+B25t/jdiKCU7AgSkcSJK7oJgcOVlko=
-X-Received: by 2002:a25:bc8b:: with SMTP id e11mr44494005ybk.115.1620237323235;
- Wed, 05 May 2021 10:55:23 -0700 (PDT)
+        Wed, 5 May 2021 14:00:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620237553; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+BjkNn+3Ba4ARGu+ji5DOjmbN1E4+hK1wXgxOFBY4Rs=; b=LkjZoY3Fs7F5oYCC6zMi/MGr1gOf9TGHIuGWqgsDiB0O6T4ACMPEMdbDqzJktyUq0C9qzzCX
+ cfA2zDKTFd9GoTs0BgFAXUfcfcI1es3YZRl5LCns2vblps8hi4Kron+Nmvf426ItBys9QDSi
+ ipKQlT18cM1aqCTxqdbGJ+Zd+BE=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-east-1.postgun.com with SMTP id
+ 6092dceb853c0a2c46b88485 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 May 2021 17:59:07
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C271BC43146; Wed,  5 May 2021 17:59:06 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.53.212] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 23338C4338A;
+        Wed,  5 May 2021 17:59:04 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 23338C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH v2] usb: dwc3: gadget: Avoid canceling current request for
+ queuing error
+To:     Felipe Balbi <balbi@kernel.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
+Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jackp@codeaurora.org" <jackp@codeaurora.org>
+References: <1620091264-418-1-git-send-email-wcheng@codeaurora.org>
+ <5b46e4a1-93ef-2d17-048b-5b4ceba358ae@synopsys.com>
+ <513e6c16-9586-c78e-881b-08e0a73c50a8@codeaurora.org>
+ <8735v1ibj4.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <49c5e3eb-7c2b-a83b-2406-a620d91b827a@codeaurora.org>
+Date:   Wed, 5 May 2021 10:59:04 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
- <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
- <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
- <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
- <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
- <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com> <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <20210502093123.GC12293@localhost> <CANiq72=aK-JJhpnZdeeGBtADrnXhyEp1Whw5+5rK6a4u85PhxA@mail.gmail.com>
- <5256ed6b6f7d423daeb36fcbfc837fbc@AcuMS.aculab.com> <CANiq72mq-SP5n_0cVr+eaP19xqJTP15V+JKUeqLiT910x=3NdA@mail.gmail.com>
- <3ab89c4f8b1d455ba46781b392ef0b2d@AcuMS.aculab.com> <CANiq72kPx48wTKCfgohwb2CbAf=SG3gyhv3htd3n_17aGAq2FA@mail.gmail.com>
- <42fdc9f1b4b44136b4eeffa0957ebc3e@AcuMS.aculab.com>
-In-Reply-To: <42fdc9f1b4b44136b4eeffa0957ebc3e@AcuMS.aculab.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 5 May 2021 19:55:12 +0200
-Message-ID: <CANiq72mX-F_EX0pydAgmHBMFEM5EPzCo8gqxS6h_YmmQ8u1POA@mail.gmail.com>
-Subject: Re: Very slow clang kernel config ..
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Adrian Bunk <bunk@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Stellard <tstellar@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <8735v1ibj4.fsf@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 6:25 PM David Laight <David.Laight@aculab.com> wrote:
+
+
+On 5/5/2021 5:57 AM, Felipe Balbi wrote:
+> 
+> Hi,
+> 
+> Wesley Cheng <wcheng@codeaurora.org> writes:
+>> On 5/3/2021 7:20 PM, Thinh Nguyen wrote:
+>>> Hi,
+>>>
+>>> Wesley Cheng wrote:
+>>>> If an error is received when issuing a start or update transfer
+>>>> command, the error handler will stop all active requests (including
+>>>> the current USB request), and call dwc3_gadget_giveback() to notify
+>>>> function drivers of the requests which have been stopped.  Avoid
+>>>> having to cancel the current request which is trying to be queued, as
+>>>> the function driver will handle the EP queue error accordingly.
+>>>> Simply unmap the request as it was done before, and allow previously
+>>>> started transfers to be cleaned up.
+>>>>
+>>
+>> Hi Thinh,
+>>
+>>>
+>>> It looks like you're still letting dwc3 stopping and cancelling all the
+>>> active requests instead letting the function driver doing the dequeue.
+>>>
+>>
+>> Yeah, main issue isn't due to the function driver doing dequeue, but
+>> having cleanup (ie USB request free) if there is an error during
+>> usb_ep_queue().
+>>
+>> The function driver in question at the moment is the f_fs driver in AIO
+>> mode.  When async IO is enabled in the FFS driver, every time it queues
+>> a packet, it will allocate a io_data struct beforehand.  If the
+>> usb_ep_queue() fails it will free this io_data memory.  Problem is that,
+>> since the DWC3 gadget calls the completion with -ECONNRESET, the FFS
+>> driver will also schedule a work item (within io_data struct) to handle
+>> the completion.  So you end up with a flow like below
+>>
+>> allocate io_data (ffs)
+>>  --> usb_ep_queue()
+>>    --> __dwc3_gadget_kick_transfer()
+>>    --> dwc3_send_gadget_ep_cmd(EINVAL)
+>>    --> dwc3_gadget_ep_cleanup_cancelled_requests()
+>>    --> dwc3_gadget_giveback(ECONNRESET)
+>> ffs completion callback
+>> queue work item within io_data
+>>  --> usb_ep_queue returns EINVAL
+>> ffs frees io_data
+>> ...
+>>
+>> work scheduled
+>>  --> NULL pointer/memory fault as io_data is freed
+> 
+> I have some vague memory of discussing (something like) this with Alan
+> Stern long ago and the conclusion was that the gadget driver should
+> handle cases such as this. OTOH, we're returning failure during
+> usb_ep_queue() which tells me there's something with dwc3 (perhaps not
+> exclusively, but that's yet to be shown).
+> 
+
+Hi Felipe,
+
+> If I understood the whole thing correctly, we want everything except the
+> current request (the one that failed START or UPDATE transfer) to go
+> through giveback(). This really tells me that we're not handling error
+> case in kick_transfer and/or prepare_trbs() correctly.
+> 
+
+We don't want the request passed in usb_ep_queue() to be calling
+giveback() IF DONE IN the usb_ep_queue() context only.
+
+> I also don't want to pass another argument to kick_transfer because it
+> should be unnecessary: the current request should *always* be the last
+> one in the list. Therefore we should rely on something like
+> list_last_entry() followed by list_for_each_entry_safe_reverse() to
+> handle this without a special case.
+> 
+> ret = dwc3_send_gadget_ep_cmd();
+> if (ret < 0) {
+> 	current = list_last_entry();
+> 
+> 	unmap(current);
+>         for_each_trb_in(current) {
+>         	clear_HWO(trb);
+>         }
+> 
+> 	list_for_entry_safe_reverse() {
+>         	move_cancelled();
+>         }
+> }
 >
-> But it is the customer's customer who comes back to you saying
-> that something in your library is broken.
-> This is when you really don't what static linking - ever.
+Nice, thanks for the suggestion and info!  Problem we have is that kick
+transfer is being used elsewhere, for example, during the TRB complete path:
 
-In that case, you need to refer them to your (direct) customer. I
-understand where you are coming from (e.g. Microsoft also encourages
-developers to avoid static linking their CRT), but there is no good
-solution for that -- some of your direct customers will require you
-provide the version for static linking nevertheless, so your only
-approach would be gating access to the static version somehow.
+static bool dwc3_gadget_endpoint_trbs_complete(struct dwc3_ep *dep,
+		const struct dwc3_event_depevt *event, int status)
+{
+...
+	else if (dwc3_gadget_ep_should_continue(dep))
+		if (__dwc3_gadget_kick_transfer(dep) == 0)
+			no_started_trb = false;
 
-> Static linking is much worse because different parts of the 'system'
-> are provided by different people.
-> With a little care a C shared library can be implemented by different
-> companies while still meeting the same ABI.
+So in these types of calls, we would still want ALL requests to be
+cancelled w/ giveback() called, so that the completion() callbacks can
+cleanup/free those requests accordingly.
 
-I assume you are talking about things like program plugins in the form
-of shared libraries (e.g. a different renderers in 3D suites,
-different chess engines, mods in a videogame, etc.).
+If we went and only unmapped the last entry (and removed it from any
+list), then no one would clean it up as it is outside of the
+usb_ep_queue() context, and not within any of the DWC3 lists.
 
-In that case, well, if you really need a customer of yours to swap
-libraries without rebuilding the host program, because you want other
-companies to provide plugins, then obviously static linking is not the
-way to go. But shared libraries are just one possible solution in that
-space anyway, there is also IPC of different kinds, bytecode VMs,
-interpreters, etc.
+Thanks
+Wesley Cheng
 
-> It this case it was done to give the software engineers some
-> experience of writing C++.
-> Technically it was a big mistake.
->
-> Bad C++ is also infinitely worse that bad C.
-> Exception handling (which you might think of as a gain)
-> is very easy to get badly wrong.
-> Class member overloads make it impossible to work out where data is used.
-> Function overloads are sometimes nice - but unnecessary.
-
-Agreed! While, in general, this applies to any language, it is
-specially dangerous in languages with UB. And, among those, C++ is
-very complex, which in turn can produce very subtle UB issues. This
-was understood by Rust designers, and the language is an attempt to
-minimize UB while, at the same time, providing higher-level features
-than C.
-
-Cheers,
-Miguel
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
