@@ -2,117 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE531374B89
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:54:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B970C374B92
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:55:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230309AbhEEWzY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:55:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38476 "EHLO
+        id S230046AbhEEW4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229711AbhEEWzT (ORCPT
+        with ESMTP id S229893AbhEEW4c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:55:19 -0400
-Received: from mail-qt1-x82a.google.com (mail-qt1-x82a.google.com [IPv6:2607:f8b0:4864:20::82a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 885CDC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 15:54:22 -0700 (PDT)
-Received: by mail-qt1-x82a.google.com with SMTP id f15so2594543qtv.5
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 15:54:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=q0zaKRzVGTfWicFKwAlACr051DkRY61aB+V34lEP+IA=;
-        b=j//dnuDqqgd1N5DOil+G4gzmT2ik8uFoLeEhVq+HpkRWkz4y7xDWHyiP4LF77UzSB/
-         vKwools9QClihcN9Mop6spO30pPbEfXMt5YxnKxoYgUzKn09yW0gANLO9ipUbm7izU7W
-         Z4lcJiv2mBnf8KssxDIHZeZ9hVUwSAehuuywggg4TmaZbdkzzFCtHcY32HoKxGW7lbK0
-         0Ixx8OUlqM3wQ3EITck0/gPsfD7ZCi+msx191keWX/4G89grao/VJuEecz/kpZYg8Iiw
-         HE8SDOado5mFDuoafp/E3flRCIC5N72u2rtTfzWvJmPSJnRSN0aYaxhaJC367CKdHz9T
-         Ebkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=q0zaKRzVGTfWicFKwAlACr051DkRY61aB+V34lEP+IA=;
-        b=Pua5EDBKAYOWEb2SvQ0vaS0Qsh3h/0tZrpnDQSV02yXGJ4YF/K1g7/pMaCMjpKxUPr
-         woG+IAc36SLnOe1cMygsClG8ADrOTiUcRsecuownAXC+GuyS0SXqC/FR1XHWjA+Wa+Bg
-         bRxt6+FKgPxsE4Vpmjr/KMqaCnYeXXxiT1HTX+cuq3NCH76Uj9Qk5hqiorASoKWY9KU9
-         16vJFcI5hnocX7u4Csde79qIrvybgDPzsY1wW0xRMs6OwIFmIaV65L8nWmEM/tREf6+6
-         jYK6PkJ7QUIgfw9ZSFNPLaGbaAkObRDeVak+8e61O0+s79RlvkkG22fE/XGmi4W5RL19
-         rQQQ==
-X-Gm-Message-State: AOAM53192Wwr1yfxlSp0VHV6IntP70c/T6sA10mvlnmyXsXR6aS6dC5L
-        nMNhoIVqMGiipqk4VblZrMUj+A==
-X-Google-Smtp-Source: ABdhPJxV4JR7XYvl9CET37aFz6TdncEItz78NEQmI3EZzHqQXLhOb8abvNkaRYc9/Jd6307iu7d5zQ==
-X-Received: by 2002:ac8:6f79:: with SMTP id u25mr960182qtv.166.1620255261363;
-        Wed, 05 May 2021 15:54:21 -0700 (PDT)
-Received: from [192.168.1.93] (pool-71-163-245-5.washdc.fios.verizon.net. [71.163.245.5])
-        by smtp.gmail.com with ESMTPSA id x13sm627365qtf.32.2021.05.05.15.54.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 15:54:20 -0700 (PDT)
-Subject: Re: [Patch v4 0/7] Add support for AEAD algorithms in Qualcomm Crypto
- Engine driver
-From:   Thara Gopinath <thara.gopinath@linaro.org>
-To:     herbert@gondor.apana.org.au, davem@davemloft.net,
-        bjorn.andersson@linaro.org
-Cc:     ebiggers@google.com, ardb@kernel.org, sivaprak@codeaurora.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org
-References: <20210429150707.3168383-1-thara.gopinath@linaro.org>
-Message-ID: <48d51bb5-a107-4756-4767-f62131d28505@linaro.org>
-Date:   Wed, 5 May 2021 18:54:18 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 5 May 2021 18:56:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE92EC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 15:55:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
+        Reply-To:Cc:Content-ID:Content-Description;
+        bh=6Sib80IUnQYmSYbcXgX9QZ+o6dCexEvCaj2tu9CyIiE=; b=fO4xzBUKzr8Ys3fOwaXwpyE2fO
+        qriwIxij2JK6KMB1Z+BMxJ0aezEntGAtC5oWlQ7PWd2leGaLBlMmvQuh868xMoc/zYwlQAAwp2Zj9
+        0GfIXKDIykxIexFfZLIOMXnM0nqZ3G8g0rac/SClHS/qtjBao0e8gAQj4vpu0JwXJf2BJBxSt7gZR
+        1aUNo4DEvlrIt4nfOvUFdaBaITU5WdZIj8KzxUoZJRYavrq5HM2LmbrE3DLyC67DMIz7zm9ueo4ca
+        9yMxrcJRGIoAqyUHe+kg/++ybGlXXXfm85Gx5kF0LvyWDr4fVzfYomQV+7a5fW8gltYGeRzXSwGEz
+        MUZ0RG9Q==;
+Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.253])
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1leQPl-001146-T9; Wed, 05 May 2021 22:55:09 +0000
+Subject: Re: [PATCH] Fixed typos in all directories of Documentation/ABI/
+To:     Carlos Bilbao <bilbao@vt.edu>, corbet@lwn.net, hdegoede@redhat.com,
+        mchehab+huawei@kernel.org, Jonathan.Cameron@huawei.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        Stephen Hemminger <sthemmin@microsoft.com>
+References: <2219636.ElGaqSPkdT@iron-maiden>
+ <de6f22e2-3f3c-0ce3-a73d-fb881646f1e8@infradead.org>
+ <4341223.LvFx2qVVIh@iron-maiden> <1810583.tdWV9SEqCh@iron-maiden>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <70a547bd-1c64-611e-f487-3f1dd76f9526@infradead.org>
+Date:   Wed, 5 May 2021 15:54:42 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210429150707.3168383-1-thara.gopinath@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1810583.tdWV9SEqCh@iron-maiden>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 4/29/21 11:07 AM, Thara Gopinath wrote:
-> Enable support for AEAD algorithms in Qualcomm CE driver.  The first three
-> patches in this series are cleanups and add a few missing pieces required
-> to add support for AEAD algorithms.  Patch 4 introduces supported AEAD
-> transformations on Qualcomm CE.  Patches 5 and 6 implements the h/w
-> infrastructure needed to enable and run the AEAD transformations on
-> Qualcomm CE.  Patch 7 adds support to queue fallback algorithms in case of
-> unsupported special inputs.
+On 5/5/21 3:28 PM, Carlos Bilbao wrote:
+> Fix the following typos in the Documentation/ABI/ directory:
 > 
-> This patch series has been tested with in kernel crypto testing module
-> tcrypt.ko with fuzz tests enabled as well.
+> - In file obsolete/sysfs-cpuidle, change "obselete" for "obsolete".
+> 
+> - In file removed/sysfs-kernel-uids, change "propotional" for "proportional".
+> 
+> - In directory stable/, fix the following words: "associtated" for "associated",
+>   "hexidecimal" for "hexadecimal", "vlue" for "value", "csed" for "caused" and 
+>   "wrtie" for "write". This updates a total of five files.
+> 
+> - In directory testing/, fix the following words: "subystem" for "subsystem", 
+>   isochrnous" for "isochronous", "Desctiptors" for "Descriptors", "picutre" for 
+>   "picture", "capture" for "capture", "occured" for "ocurred", "connnected" for 
+>   "connected","agressively" for "aggressively","manufacturee" for "manufacturer"
+>   and "transaction" for "transaction", "malformatted" for "malformed","internel"
+>   for "internal", "writtento" for "written to", "specificed" for "specified", 
+>   "beyound" for "beyond", "Symetric" for "Symmetric". This updates a total of 
+>   eleven files.
+> 
+> Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
 
-Hi Herbert,
+Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
 
-I have fixed all the review comments on this series and fuzz tests pass 
-as well. Do you think this can be merged ?
+> ---
+
+This patch should have something here (below the --- line) like:
+
+v2: corrections from v1 and additions to the file <whatever the new file is>
+
+It should also have a modified Subject line: (e.g.)
+
+[PATCH v2] Documentation: ABI: fix typos in all directories
+
+Anyway, the changes look good to me.
+
+Thanks.
+
+>  Documentation/ABI/obsolete/sysfs-cpuidle            |  2 +-
+>  Documentation/ABI/removed/sysfs-kernel-uids         |  2 +-
+>  Documentation/ABI/stable/sysfs-bus-vmbus            |  2 +-
+>  Documentation/ABI/stable/sysfs-bus-xen-backend      |  2 +-
+>  Documentation/ABI/stable/sysfs-driver-dma-idxd      |  2 +-
+>  Documentation/ABI/stable/sysfs-driver-mlxreg-io     |  4 ++--
+>  Documentation/ABI/testing/configfs-iio              |  2 +-
+>  Documentation/ABI/testing/configfs-most             |  8 ++++----
+>  Documentation/ABI/testing/configfs-usb-gadget       |  2 +-
+>  Documentation/ABI/testing/configfs-usb-gadget-uvc   |  4 ++--
+>  Documentation/ABI/testing/debugfs-driver-genwqe     |  2 +-
+>  Documentation/ABI/testing/debugfs-driver-habanalabs |  2 +-
+>  Documentation/ABI/testing/sysfs-bus-fsi             |  2 +-
+>  Documentation/ABI/testing/sysfs-bus-pci             |  2 +-
+>  Documentation/ABI/testing/sysfs-devices-system-cpu  | 10 +++++-----
+>  Documentation/ABI/testing/sysfs-driver-ufs          |  4 ++--
+>  Documentation/ABI/testing/sysfs-fs-f2fs             |  2 +-
+>  17 files changed, 27 insertions(+), 27 deletions(-)
+> 
+
 
 -- 
-Warm Regards
-Thara
-> 
-> Thara Gopinath (7):
->    crypto: qce: common: Add MAC failed error checking
->    crypto: qce: common: Make result dump optional
->    crypto: qce: Add mode for rfc4309
->    crypto: qce: Add support for AEAD algorithms
->    crypto: qce: common: Clean up qce_auth_cfg
->    crypto: qce: common: Add support for AEAD algorithms
->    crypto: qce: aead: Schedule fallback algorithm
-> 
->   drivers/crypto/Kconfig      |  15 +
->   drivers/crypto/qce/Makefile |   1 +
->   drivers/crypto/qce/aead.c   | 841 ++++++++++++++++++++++++++++++++++++
->   drivers/crypto/qce/aead.h   |  56 +++
->   drivers/crypto/qce/common.c | 196 ++++++++-
->   drivers/crypto/qce/common.h |   9 +-
->   drivers/crypto/qce/core.c   |   4 +
->   7 files changed, 1102 insertions(+), 20 deletions(-)
->   create mode 100644 drivers/crypto/qce/aead.c
->   create mode 100644 drivers/crypto/qce/aead.h
-> 
-
+~Randy
 
