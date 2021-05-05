@@ -2,61 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF97B374B02
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:09:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54FB374B08
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:11:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233487AbhEEWKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:10:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51138 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhEEWKl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:10:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 62919613D6;
-        Wed,  5 May 2021 22:09:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620252584;
-        bh=MrFPJWMFWa2Yv9X0RL/C0HOz8fh7sy6Uvwm9FYcYjag=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HsZXp4zUwt0UoBrKcTcj6EsxJQg9uZZYCxa4FRbrCpAmBwzWySsLoqBR4DcWc++kN
-         DTH8r+R2tQ9HEFB+csGOwEc2tvq9g7oEx3tvuaWz2a0oH87B2q6ueKrQEMWia8EE4i
-         uu1VqX//aBuEXL+uDX4zREvvz85UCtUgHfHih2g1lJVr+9eI9uDzMpSh1YIzSFkcdY
-         hYAtXrMu8H3q+6iueFg2WdAEgsD4ugtQsNRWc/vP8G0ieyR4C14zW4YF/O9bgwKVFP
-         EEdJVvL06zCIDXNGisyAO0AzgffRJ/RdrDocj4Sq6Wp34s4DozFNC8Kgh7CK9d3oFB
-         XG50JVFe9yhHA==
-Date:   Wed, 5 May 2021 15:09:42 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH v2 00/17]  Enable Qualcomm Crypto Engine on sm8250
-Message-ID: <YJMXpi1V/2vTdJKD@gmail.com>
-References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
+        id S233694AbhEEWMs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:12:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57012 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233504AbhEEWMr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 18:12:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABC1C061574;
+        Wed,  5 May 2021 15:11:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Bfddk5G/yEPhchklhRITjMOlFo2bM+jpufSuMTlextA=; b=pGaBTVjWyxSL+WrViv8GWI3PkU
+        zHY/Bj8ectHuslJl7xPfFxHFYnL1EhLgYrjv4ilxF+Q3/HHmLC503s2R4hTi1Dkk/NzkqMJyOxdY/
+        eGKcP6o5Ah7TU2qbOL9nDXxeN7BB5JTkQ2ytRSvqiyn//IB6/k7mXF8SERyqR4wZ1QP9ZE66Uz8S+
+        gbF5lPYf75BY+Q92E8N5j+EEpna8QKw8BefVt6PxC8s8CaW8lamgIXKPyTgBMCl9Kx2gWP3nsfc6j
+        8XQjwqHYJxydwU/pCvZo5HJtwBmHpzd5QC+aizzsDUbIaKWsR3yKj7O5N9DD8n+hUbi7fdHsVYQ+L
+        X1DNYw0Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1lePjM-000yeC-In; Wed, 05 May 2021 22:11:16 +0000
+Date:   Wed, 5 May 2021 23:10:56 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 92/96] iomap: Convert iomap_write_begin and
+ iomap_write_end to folios
+Message-ID: <20210505221056.GK1847222@casper.infradead.org>
+References: <20210505150628.111735-93-willy@infradead.org>
+ <202105060511.863ZVBcq-lkp@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
+In-Reply-To: <202105060511.863ZVBcq-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 03:07:14AM +0530, Bhupesh Sharma wrote:
-> 
-> Tested the enabled crypto algorithms with cryptsetup test utilities
-> on sm8250-mtp and RB5 board (see [1]).
-> 
+On Thu, May 06, 2021 at 05:36:54AM +0800, kernel test robot wrote:
+> config: nds32-defconfig (attached as .config)
+>    fs/iomap/buffered-io.c: In function '__iomap_write_end':
+> >> fs/iomap/buffered-io.c:645:2: error: implicit declaration of function 'flush_dcache_folio'; did you mean 'flush_dcache_page'? [-Werror=implicit-function-declaration]
+>      645 |  flush_dcache_folio(folio);
+>          |  ^~~~~~~~~~~~~~~~~~
+>          |  flush_dcache_page
+>    cc1: some warnings being treated as errors
 
-Does this driver also pass the crypto self-tests, including the fuzz tests
-(CONFIG_CRYPTO_MANAGER_EXTRA_TESTS=y)?
+Argh, nds32 doesn't (always) include asm-generic/cacheflush.h, so it
+doesn't pick up the generic implementation of flush_dcache_folio().
+Copy-and-pasted it to nds32.
 
-- Eric
+Thanks.
