@@ -2,129 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CC093733DB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 05:14:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3CB343733E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 05:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230483AbhEEDPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 23:15:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229617AbhEEDPT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 23:15:19 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DC9C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 20:14:23 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id s123-20020a3777810000b02902e9adec2313so255649qkc.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 20:14:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=6FMbAN7t12G/Juix+b9gMTv2kzO3C2P3Q5jEJeo40h4=;
-        b=RHKxy0nzZMKiiaUNg6+cDehHN1wDU7unHEmn9ng1SCsYUPc5cgsHrvLITgnMZ1z4KW
-         Xxg6wWzJHuuNnH8Z8YgFLdgnR9usVQNw94dFxzmTppUq2f2QRHago0bOsPsGuIPpU1Jh
-         LDz/07RjTFR73vDyiU2iBzST+K6dUns+UGNRnOrEGy3Ho0Y07Z2FeFNC60eBbmo5hShK
-         OxTnwzCMwmYS/i06DGdcQ943ZH/38mYOm1S3137p6HcT+KOpEjT+eEct4p1gcKjUtIV6
-         /6o0VO0lhc7yP1W4RLwDNzYt6Wdotd4KnpEI7n8ZtnNAoWkcz8iyhjYM1733toOiVMLi
-         f+7A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=6FMbAN7t12G/Juix+b9gMTv2kzO3C2P3Q5jEJeo40h4=;
-        b=K9vx6T2QMMdyYz5Kspx/lA0tG0il9H6fnuXcBJXFZD8rdJh6ql7GM6SA4OrzFM+cq1
-         5YR/TFpVfFCrtHgP0jJAI7b5u+ymzf65YN1ltpA1CidM7K+PV/4j4eY+pQNzwf+ggG5M
-         /wcjHbF4gEJbHfH/Sv8xgdIxzMEDmSg+Mh2fxmxRjPOGXFI5kKw3mS36Bigw//ZYiwIb
-         PkOgEl/jL/RbYGgBTDz5G1ESYu0wmXDlF9ZUIa2dfKT8Y4Jylccbxp2bWF8+am9kw0pg
-         5nIXJ/+v6K4dqORJPlHcBtZ+sVj/fQX+HUlZPZi1lME50PtjiIJR216VXjas27OUCYQ1
-         zsbw==
-X-Gm-Message-State: AOAM530fd7CBuA9/ZHw2swEpQ6QDHfeIhbDtJU1bWqiR+nmJDpDdKBq5
-        7XltwGjxqzYZ0AkyOQR7EZoNym3GPixjKws=
-X-Google-Smtp-Source: ABdhPJxG9O+6Dqmq1pl0275GQdNWC3CuGBrHDFQUp40IO934UlNUR9csN1vCxTHLw+4ZGeFupcfTnE2b5niSMR4=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:423c:41e9:e02e:706e])
- (user=saravanak job=sendgmr) by 2002:a05:6214:583:: with SMTP id
- bx3mr19001972qvb.38.1620184462756; Tue, 04 May 2021 20:14:22 -0700 (PDT)
-Date:   Tue,  4 May 2021 20:14:16 -0700
-Message-Id: <20210505031416.30128-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH v1] spi: Don't have controller clean up spi device before
- driver unbind
-From:   Saravana Kannan <saravanak@google.com>
-To:     Mark Brown <broonie@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     Lukas Wunner <lukas@wunner.de>, kernel-team@android.com,
-        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        id S231265AbhEEDTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 23:19:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51168 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229617AbhEEDTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 23:19:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AD894610D2;
+        Wed,  5 May 2021 03:18:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620184695;
+        bh=Yghl4ypXK+j7lyqNCoh5WbRJtmqgHJ2laHlMxQtz0s8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=uVjAfnF/WXpH1TPEIGy/i/G3JAKA17KbBCzozV5KollxF0cZAfRdi7MMFXvx65yf0
+         dmEsRfgoaT1Q1UdQnzYqZT9eH8Y76PO90pXDfYx9xnIw+qRBKUL/Xp7ll9z15ug1QF
+         p0hxJX7KvDCxkbEhbPsEHr8tl9zSPg+rn40tANFVydFCK6AkLRC3A9dp8MS+iwG2ZJ
+         J15PDApPhfGgR6VXttCZe0zyWpORADkE+uizBc1IlpHk1LGlX+4dFsKdVJnt5kukNt
+         U8AAq63Bjd5znz3fQO38BqA+SoIM5Pd/ky8dSZLL43W1cJhbhcglSmb0ZESkfZJeHF
+         gG0vKfsKzXE6w==
+Date:   Wed, 5 May 2021 06:18:12 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Evan Green <evgreen@chromium.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-integrity@vger.kernel.org, linux-pm@vger.kernel.org,
+        keyrings@vger.kernel.org, zohar@linux.ibm.com,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Jonathan Corbet <corbet@lwn.net>, rjw@rjwysocki.net
+Subject: Re: [PATCH 0/9] Enable hibernation when Lockdown is enabled
+Message-ID: <YJIOdNdWTClIXYZz@kernel.org>
+References: <20210220013255.1083202-1-matthewgarrett@google.com>
+ <CAE=gft4HnQKP3RK1hOGpThccLPanQzWpssCsEyUQGLbTMpzrFw@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE=gft4HnQKP3RK1hOGpThccLPanQzWpssCsEyUQGLbTMpzrFw@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a spi device is unregistered and triggers a driver unbind, the
-driver might need to access the spi device. So, don't have the
-controller clean up the spi device before the driver is unbound. Clean
-up the spi device after the driver is unbound.
+On Tue, May 04, 2021 at 02:56:35PM -0700, Evan Green wrote:
+> Does anyone know if this series is abandoned, or is Matthew planning
+> to do another spin? Email to matthewgarrett@google.com bounces.
+> 
+> -Evan
 
-Fixes: c7299fea6769 ("spi: Fix spi device unregister flow")
-Reported-by: Lukas Wunner <lukas@wunner.de>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
-Lukas,
+Good question.
 
-Can you test this out please?
+It could be that because James' patches did not end up to 5.12, but 5.13
+instead, Matthew has just put this into hold for a while.
 
-Thanks,
-Saravana
+I mean the review comments I gave, were relatively cosmetic.
 
- drivers/spi/spi.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+If I was the author, that's at least I might have done...
 
-diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
-index 2350d131871b..b856f4a1e3a4 100644
---- a/drivers/spi/spi.c
-+++ b/drivers/spi/spi.c
-@@ -401,6 +401,12 @@ static int spi_probe(struct device *dev)
- 	return ret;
- }
- 
-+static void spi_cleanup(struct spi_device *spi)
-+{
-+	if (spi->controller->cleanup)
-+		spi->controller->cleanup(spi);
-+}
-+
- static int spi_remove(struct device *dev)
- {
- 	const struct spi_driver		*sdrv = to_spi_driver(dev->driver);
-@@ -415,6 +421,7 @@ static int spi_remove(struct device *dev)
- 				 ERR_PTR(ret));
- 	}
- 
-+	spi_cleanup(to_spi_device(dev));
- 	dev_pm_domain_detach(dev, true);
- 
- 	return 0;
-@@ -554,12 +561,6 @@ static int spi_dev_check(struct device *dev, void *data)
- 	return 0;
- }
- 
--static void spi_cleanup(struct spi_device *spi)
--{
--	if (spi->controller->cleanup)
--		spi->controller->cleanup(spi);
--}
--
- /**
-  * spi_add_device - Add spi_device allocated with spi_alloc_device
-  * @spi: spi_device to register
-@@ -714,8 +715,6 @@ void spi_unregister_device(struct spi_device *spi)
- 	if (!spi)
- 		return;
- 
--	spi_cleanup(spi);
--
- 	if (spi->dev.of_node) {
- 		of_node_clear_flag(spi->dev.of_node, OF_POPULATED);
- 		of_node_put(spi->dev.of_node);
--- 
-2.31.1.527.g47e6f16901-goog
+/Jarkko
 
