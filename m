@@ -2,174 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AC383747AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C27A0374762
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:05:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235508AbhEESB7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:01:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56224 "EHLO
+        id S234572AbhEERy4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:54:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235398AbhEESBr (ORCPT
+        with ESMTP id S235196AbhEERxb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:01:47 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 516F5C0612B1;
-        Wed,  5 May 2021 10:39:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=GoWNWzBBq6+8thZPTfyvM1uVttt68WlD6Sz8J/pM0fU=; b=DyHoyNHd3z5LqQgnPtPPv8+3tR
-        jJdqeBmJg540V1XXfNm/UU9uPqGqhYr/zQIuQ3iQXsnzipi0fNxtpFWo+67RoEQZ/uJEoj2+06pmQ
-        MbpxbiqdsXbNoK8EV5WT4sMgAyfEIEzwC3wTsQLnCs2e8dafxFIV6F1UHhGGpm0UGVBPQZm2ULK99
-        ZWdPxND0aLNVhkwSHvmDDyIRRZUaIL48JtBfu2/oxdKZf7eSBaSM2XWkipEcChI2/xxQ99TH3N+hw
-        5dR8P5PCpC/KwFtmNWN1HoN3GCmeSSoBPLij8t0zO2kD9TlyWEAVi8crVm16pF5MADtmUhkfl1UIU
-        sISSjdxw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1leLRJ-000f1a-62; Wed, 05 May 2021 17:37:26 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 96/96] iomap: Convert iomap_do_writepage to use a folio
-Date:   Wed,  5 May 2021 16:06:28 +0100
-Message-Id: <20210505150628.111735-97-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210505150628.111735-1-willy@infradead.org>
-References: <20210505150628.111735-1-willy@infradead.org>
+        Wed, 5 May 2021 13:53:31 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 442DCC07E5E9
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:24:10 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 9D63EC800B1;
+        Wed,  5 May 2021 19:24:09 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id I5elOUaPq9BT; Wed,  5 May 2021 19:24:09 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300E37f39860005A4018A54f094b9.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:5a4:18a:54f0:94b9])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 53CC3C800A8;
+        Wed,  5 May 2021 19:24:09 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     wse@tuxedocomputers.com, ville.syrjala@linux.intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 2/3] Restructure output format computation for better expandability
+Date:   Wed,  5 May 2021 19:24:00 +0200
+Message-Id: <20210505172401.1453178-3-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210505172401.1453178-1-wse@tuxedocomputers.com>
+References: <20210505172401.1453178-1-wse@tuxedocomputers.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Writeback an entire folio at a time, and adjust some of the variables
-to have more familiar names.
+Couples the decission between RGB and YCbCr420 mode and the check if the port
+clock can archive the required frequency. Other checks and configuration steps
+that where previously done in between can also be done before or after.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+This allows for are cleaner implementation of retrying different color
+encodings.
+
+Slight change in behaviour: If YCbCr420 is not allowed but display is YCbCr420
+only it no longer fails, but just prints an error and tries to fallback on RGB.
+
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 ---
- fs/iomap/buffered-io.c | 49 +++++++++++++++++++-----------------------
- 1 file changed, 22 insertions(+), 27 deletions(-)
+Imho an error message in when YCbCR420 not allowed meets YCbCr420 only can be
+a usefull bugfinding tool for cases of blackscreen on exotic configurations.
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 4ea256de9d04..2dfeb7fa5f03 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -1301,9 +1301,8 @@ iomap_add_to_ioend(struct inode *inode, loff_t pos, struct folio *folio,
- static int
- iomap_writepage_map(struct iomap_writepage_ctx *wpc,
- 		struct writeback_control *wbc, struct inode *inode,
--		struct page *page, u64 end_offset)
-+		struct folio *folio, loff_t end_pos)
- {
--	struct folio *folio = page_folio(page);
- 	struct iomap_page *iop = to_iomap_page(folio);
- 	struct iomap_ioend *ioend, *next;
- 	unsigned len = i_blocksize(inode);
-@@ -1321,7 +1320,7 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
- 	 * invalid, grab a new one.
- 	 */
- 	for (i = 0; i < nblocks; i++, pos += len) {
--		if (pos >= end_offset)
-+		if (pos >= end_pos)
- 			break;
- 		if (iop && !test_bit(i, iop->uptodate))
- 			continue;
-@@ -1403,16 +1402,15 @@ iomap_writepage_map(struct iomap_writepage_ctx *wpc,
- static int
- iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
- {
-+	struct folio *folio = page_folio(page);
- 	struct iomap_writepage_ctx *wpc = data;
--	struct inode *inode = page->mapping->host;
--	pgoff_t end_index;
--	u64 end_offset;
--	loff_t offset;
-+	struct inode *inode = folio->mapping->host;
-+	loff_t end_pos, isize;
- 
--	trace_iomap_writepage(inode, page_offset(page), PAGE_SIZE);
-+	trace_iomap_writepage(inode, folio_offset(folio), folio_size(folio));
- 
- 	/*
--	 * Refuse to write the page out if we are called from reclaim context.
-+	 * Refuse to write the folio out if we are called from reclaim context.
- 	 *
- 	 * This avoids stack overflows when called from deeply used stacks in
- 	 * random callers for direct reclaim or memcg reclaim.  We explicitly
-@@ -1426,10 +1424,10 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
- 		goto redirty;
- 
- 	/*
--	 * Is this page beyond the end of the file?
-+	 * Is this folio beyond the end of the file?
- 	 *
--	 * The page index is less than the end_index, adjust the end_offset
--	 * to the highest offset that this page should represent.
-+	 * The folio index is less than the end_index, adjust the end_pos
-+	 * to the highest offset that this folio should represent.
- 	 * -----------------------------------------------------
- 	 * |			file mapping	       | <EOF> |
- 	 * -----------------------------------------------------
-@@ -1438,11 +1436,9 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
- 	 * |     desired writeback range    |      see else    |
- 	 * ---------------------------------^------------------|
- 	 */
--	offset = i_size_read(inode);
--	end_index = offset >> PAGE_SHIFT;
--	if (page->index < end_index)
--		end_offset = (loff_t)(page->index + 1) << PAGE_SHIFT;
--	else {
-+	isize = i_size_read(inode);
-+	end_pos = folio_offset(folio) + folio_size(folio);
-+	if (end_pos - 1 >= isize) {
- 		/*
- 		 * Check whether the page to write out is beyond or straddles
- 		 * i_size or not.
-@@ -1454,7 +1450,8 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
- 		 * |				    |      Straddles     |
- 		 * ---------------------------------^-----------|--------|
- 		 */
--		unsigned offset_into_page = offset & (PAGE_SIZE - 1);
-+		size_t poff = offset_in_folio(folio, isize);
-+		pgoff_t end_index = isize >> PAGE_SHIFT;
- 
- 		/*
- 		 * Skip the page if it is fully outside i_size, e.g. due to a
-@@ -1473,8 +1470,8 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
- 		 * if the page to write is totally beyond the i_size or if it's
- 		 * offset is just equal to the EOF.
- 		 */
--		if (page->index > end_index ||
--		    (page->index == end_index && offset_into_page == 0))
-+		if (folio->index > end_index ||
-+		    (folio->index == end_index && poff == 0))
- 			goto redirty;
- 
- 		/*
-@@ -1485,17 +1482,15 @@ iomap_do_writepage(struct page *page, struct writeback_control *wbc, void *data)
- 		 * memory is zeroed when mapped, and writes to that region are
- 		 * not written out to the file."
- 		 */
--		zero_user_segment(page, offset_into_page, PAGE_SIZE);
--
--		/* Adjust the end_offset to the end of file */
--		end_offset = offset;
-+		zero_user_segment(&folio->page, poff, folio_size(folio));
-+		end_pos = isize;
- 	}
- 
--	return iomap_writepage_map(wpc, wbc, inode, page, end_offset);
-+	return iomap_writepage_map(wpc, wbc, inode, folio, end_pos);
- 
- redirty:
--	redirty_page_for_writepage(wbc, page);
--	unlock_page(page);
-+	folio_redirty_for_writepage(wbc, folio);
-+	folio_unlock(folio);
- 	return 0;
+I'm unsure if this should be a warning instead.
+
+From 883678ef703b6bb15cd2883eb2c5ce27d07911d3 Mon Sep 17 00:00:00 2001
+From: Werner Sembach <wse@tuxedocomputers.com>
+Date: Mon, 3 May 2021 15:30:40 +0200
+Subject: [PATCH 2/3] Restructure output format computation for better
+ expandability
+
+---
+ drivers/gpu/drm/i915/display/intel_hdmi.c | 65 ++++++++++++-----------
+ 1 file changed, 34 insertions(+), 31 deletions(-)
+
+diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+index 576d3d910d06..b0201d4f27eb 100644
+--- a/drivers/gpu/drm/i915/display/intel_hdmi.c
++++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+@@ -1999,29 +1999,6 @@ static bool hdmi_deep_color_possible(const struct intel_crtc_state *crtc_state,
+ 					      INTEL_OUTPUT_FORMAT_YCBCR420);
  }
  
+-static int
+-intel_hdmi_ycbcr420_config(struct intel_crtc_state *crtc_state,
+-			   const struct drm_connector_state *conn_state)
+-{
+-	struct drm_connector *connector = conn_state->connector;
+-	struct drm_i915_private *i915 = to_i915(connector->dev);
+-	const struct drm_display_mode *adjusted_mode =
+-		&crtc_state->hw.adjusted_mode;
+-
+-	if (!drm_mode_is_420_only(&connector->display_info, adjusted_mode))
+-		return 0;
+-
+-	if (!connector->ycbcr_420_allowed) {
+-		drm_err(&i915->drm,
+-			"Platform doesn't support YCBCR420 output\n");
+-		return -EINVAL;
+-	}
+-
+-	crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+-
+-	return intel_pch_panel_fitting(crtc_state, conn_state);
+-}
+-
+ static int intel_hdmi_compute_bpc(struct intel_encoder *encoder,
+ 				  struct intel_crtc_state *crtc_state,
+ 				  int clock)
+@@ -2128,6 +2105,30 @@ static bool intel_hdmi_has_audio(struct intel_encoder *encoder,
+ 		return intel_conn_state->force_audio == HDMI_AUDIO_ON;
+ }
+ 
++static int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
++				     struct intel_crtc_state *crtc_state,
++				     const struct drm_connector_state *conn_state)
++{
++	struct drm_connector *connector = conn_state->connector;
++	struct drm_i915_private *i915 = to_i915(connector->dev);
++	const struct drm_display_mode *adjusted_mode = &crtc_state->hw.adjusted_mode;
++	int ret;
++	bool ycbcr_420_only;
++
++	ycbcr_420_only = drm_mode_is_420_only(&connector->display_info, adjusted_mode);
++	if (connector->ycbcr_420_allowed && ycbcr_420_only)
++		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
++	else {
++		if (!connector->ycbcr_420_allowed && ycbcr_420_only)
++			drm_err(&i915->drm, "Display only supports YCbCr420 output, but connector does not allow it. Fallback to RGB, but this will likely fail.\n");
++		crtc_state->output_format = INTEL_OUTPUT_FORMAT_RGB;
++	}
++
++	ret = intel_hdmi_compute_clock(encoder, crtc_state);
++
++	return ret;
++}
++
+ int intel_hdmi_compute_config(struct intel_encoder *encoder,
+ 			      struct intel_crtc_state *pipe_config,
+ 			      struct drm_connector_state *conn_state)
+@@ -2152,23 +2153,25 @@ int intel_hdmi_compute_config(struct intel_encoder *encoder,
+ 	if (adjusted_mode->flags & DRM_MODE_FLAG_DBLCLK)
+ 		pipe_config->pixel_multiplier = 2;
+ 
+-	ret = intel_hdmi_ycbcr420_config(pipe_config, conn_state);
+-	if (ret)
+-		return ret;
+-
+-	pipe_config->limited_color_range =
+-		intel_hdmi_limited_color_range(pipe_config, conn_state);
+-
+ 	if (HAS_PCH_SPLIT(dev_priv) && !HAS_DDI(dev_priv))
+ 		pipe_config->has_pch_encoder = true;
+ 
+ 	pipe_config->has_audio =
+ 		intel_hdmi_has_audio(encoder, pipe_config, conn_state);
+ 
+-	ret = intel_hdmi_compute_clock(encoder, pipe_config);
++	ret = intel_hdmi_compute_output_format(encoder, pipe_config, conn_state);
+ 	if (ret)
+ 		return ret;
+ 
++	if (pipe_config->output_format == INTEL_OUTPUT_FORMAT_YCBCR420) {
++		ret = intel_pch_panel_fitting(pipe_config, conn_state);
++		if (ret)
++			return ret;
++	}
++
++	pipe_config->limited_color_range =
++		intel_hdmi_limited_color_range(pipe_config, conn_state);
++
+ 	if (conn_state->picture_aspect_ratio)
+ 		adjusted_mode->picture_aspect_ratio =
+ 			conn_state->picture_aspect_ratio;
 -- 
-2.30.2
+2.25.1
 
