@@ -2,67 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA3E7373B4B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:33:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC431373B5E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233371AbhEEMeE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:34:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42570 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhEEMeC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:34:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8AB31610FB;
-        Wed,  5 May 2021 12:33:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620217986;
-        bh=WRPI8uSvBQAHJQ3atlPtvokxA0AWzk1rFNxT0nzJCFU=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=RZoEErko5le4MAz5NTu/Tb35/ZzyOi447kBNz0XY8Ijv85gotH4g5yU9Wk8Qyz+bi
-         bBtBFzJITyZeQaQAmRqE32BUFBUj6cvodUU5kgASSKFWYEJF4kzGryzapIO64q18cL
-         H0HwhKpU+j+lqpNSRpMWgH9vvbPgkO2B7+nv3uj5LlUJp16ZfkpEMhY6Q5LdNmC0oB
-         zfPcltkGRjKG1PDqpIisxr17g6WrzJ4hyVTOEMw3GKObXKMerjwgt40uYERiDT4JhR
-         aNU9tVOxwOvNWRQIJxOraGC8R7YngeFfcNnJkQnYycVKk9inWl6cjpz8rLrUKebasm
-         vJsgFX0IhOtug==
-Date:   Wed, 5 May 2021 14:33:02 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Michael Zaidman <michael.zaidman@gmail.com>
-cc:     dan.carpenter@oracle.com, benjamin.tissoires@redhat.com,
-        wsa@kernel.org, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, linux-i2c@vger.kernel.org
-Subject: Re: [PATCH] HID: ft260: check data size in ft260_smbus_write()
-In-Reply-To: <20210413151200.2174-1-michael.zaidman@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2105051432470.28378@cbobk.fhfr.pm>
-References: <20210413151200.2174-1-michael.zaidman@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S233357AbhEEMgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:36:04 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3028 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232144AbhEEMf7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:35:59 -0400
+Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZwqm29Rbz70gJQ;
+        Wed,  5 May 2021 20:24:04 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 5 May 2021 14:35:01 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 13:35:00 +0100
+Date:   Wed, 5 May 2021 13:33:21 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+Subject: Re: [PATCH 19/25] media: s5p-jpeg: fix pm_runtime_get_sync() usage
+ count
+Message-ID: <20210505133321.000031f7@Huawei.com>
+In-Reply-To: <534deda71f3cf5f865611aa839a5279e43ebe1c9.1620207353.git.mchehab+huawei@kernel.org>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <534deda71f3cf5f865611aa839a5279e43ebe1c9.1620207353.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 13 Apr 2021, Michael Zaidman wrote:
+On Wed, 5 May 2021 11:42:09 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-> Fixes: 98189a0adfa0 ("HID: ft260: add usb hid to i2c host bridge driver")
+> The pm_runtime_get_sync() internally increments the
+> dev->power.usage_count without decrementing it, even on errors.
+> Replace it by the new pm_runtime_resume_and_get(), introduced by:
+> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> in order to properly decrement the usage counter, avoiding
+> a potential PM usage counter leak.
 > 
-> The SMbus block transaction limits the number of bytes transferred to 32,
-> but nothing prevents a user from specifying via ioctl a larger data size
-> than the ft260 can handle in a single transfer.
+> As a plus, pm_runtime_resume_and_get() doesn't return
+> positive numbers, so the return code validation can
+> be removed.
 > 
-> i2cdev_ioctl_smbus()
->    --> i2c_smbus_xfer
->        --> __i2c_smbus_xfer
->            --> ft260_smbus_xfer
->                --> ft260_smbus_write
-> 
-> This patch adds data size checking in the ft260_smbus_write().
-> 
-> Signed-off-by: Michael Zaidman <michael.zaidman@gmail.com>
-> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Acked-by: Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-I have moved the 'Fixes:' tag to place where it belongs, and applied. 
-Thanks,
-
--- 
-Jiri Kosina
-SUSE Labs
+> ---
+>  drivers/media/platform/s5p-jpeg/jpeg-core.c | 5 +----
+>  1 file changed, 1 insertion(+), 4 deletions(-)
+> 
+> diff --git a/drivers/media/platform/s5p-jpeg/jpeg-core.c b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+> index 026111505f5a..d402e456f27d 100644
+> --- a/drivers/media/platform/s5p-jpeg/jpeg-core.c
+> +++ b/drivers/media/platform/s5p-jpeg/jpeg-core.c
+> @@ -2566,11 +2566,8 @@ static void s5p_jpeg_buf_queue(struct vb2_buffer *vb)
+>  static int s5p_jpeg_start_streaming(struct vb2_queue *q, unsigned int count)
+>  {
+>  	struct s5p_jpeg_ctx *ctx = vb2_get_drv_priv(q);
+> -	int ret;
+>  
+> -	ret = pm_runtime_get_sync(ctx->jpeg->dev);
+> -
+> -	return ret > 0 ? 0 : ret;
+> +	return pm_runtime_resume_and_get(ctx->jpeg->dev);
+>  }
+>  
+>  static void s5p_jpeg_stop_streaming(struct vb2_queue *q)
 
