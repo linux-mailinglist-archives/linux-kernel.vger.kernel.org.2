@@ -2,60 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0C0E374700
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D86374704
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238028AbhEERhK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:37:10 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45348 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237508AbhEERek (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:34:40 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 09265AD8A;
-        Wed,  5 May 2021 17:33:36 +0000 (UTC)
-Subject: Re: [PATCH v9 08/96] mm: Fix struct page layout on 32-bit systems
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org,
-        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-References: <20210505150628.111735-1-willy@infradead.org>
- <20210505150628.111735-9-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <e676d72e-b09d-d9d8-81e5-57a7a35aa310@suse.cz>
-Date:   Wed, 5 May 2021 19:33:35 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S238330AbhEERhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:37:39 -0400
+Received: from relay8-d.mail.gandi.net ([217.70.183.201]:50489 "EHLO
+        relay8-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237973AbhEERfe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:35:34 -0400
+X-Originating-IP: 90.65.108.55
+Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
+        (Authenticated sender: alexandre.belloni@bootlin.com)
+        by relay8-d.mail.gandi.net (Postfix) with ESMTPSA id F23E01BF203;
+        Wed,  5 May 2021 17:34:31 +0000 (UTC)
+Date:   Wed, 5 May 2021 19:34:30 +0200
+From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Alessandro Zummo <a.zummo@towertech.it>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rtc: imxdi: add wakeup support
+Message-ID: <YJLXJgiMw6u4+rtF@piout.net>
+References: <20210430093210.7034-1-martin@kaiser.cx>
+ <20210505163009.14252-1-martin@kaiser.cx>
 MIME-Version: 1.0
-In-Reply-To: <20210505150628.111735-9-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505163009.14252-1-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 5:05 PM, Matthew Wilcox (Oracle) wrote:
-> 32-bit architectures which expect 8-byte alignment for 8-byte integers
-> and need 64-bit DMA addresses (arm, mips, ppc) had their struct page
-> inadvertently expanded in 2019.  When the dma_addr_t was added, it forced
-> the alignment of the union to 8 bytes, which inserted a 4 byte gap between
-> 'flags' and the union.
-> 
-> Fix this by storing the dma_addr_t in one or two adjacent unsigned longs.
-> This restores the alignment to that of an unsigned long.  We always
-> store the low bits in the first word to prevent the PageTail bit from
-> being inadvertently set on a big endian platform.  If that happened,
-> get_user_pages_fast() racing against a page which was freed and
-> reallocated to the page_pool could dereference a bogus compound_head(),
-> which would be hard to trace back to this cause.
-> 
-> Fixes: c25fff7171be ("mm: add dma_addr_t to struct page")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Acked-by: Ilias Apalodimas <ilias.apalodimas@linaro.org>
-> Acked-by: Jesper Dangaard Brouer <brouer@redhat.com>
+Hi,
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+On 05/05/2021 18:30:09+0200, Martin Kaiser wrote:
+> The DryIce-based RTC supports alarms that trigger an interrupt.
+> 
+> Add an option to configure this interrupt as a wakeup source that wakes the
+> system up from standby mode.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+> v2:
+>  - unconditionally declare rtc-imxdi as wakeup source
+>  - use dev_pm_set_wake_irq instead of manually coding suspend and resume
+> 
+> simple test (no need to configure the wakeup source via sysfs any more)
+> 
+>    [root@board ]# rtcwake -s 3 -m mem
+>    wakeup from "mem" at Fri Apr 30 09:23:52 2021
+>    ...
+>    [root@board ]#
+> 
+>  drivers/rtc/rtc-imxdi.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/rtc/rtc-imxdi.c b/drivers/rtc/rtc-imxdi.c
+> index c1806f4d68e7..4b712e5ab08a 100644
+> --- a/drivers/rtc/rtc-imxdi.c
+> +++ b/drivers/rtc/rtc-imxdi.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/delay.h>
+>  #include <linux/module.h>
+>  #include <linux/platform_device.h>
+> +#include <linux/pm_wakeirq.h>
+>  #include <linux/rtc.h>
+>  #include <linux/sched.h>
+>  #include <linux/spinlock.h>
+> @@ -811,6 +812,9 @@ static int __init dryice_rtc_probe(struct platform_device *pdev)
+>  
+>  	platform_set_drvdata(pdev, imxdi);
+>  
+> +	device_init_wakeup(&pdev->dev, true);
+> +	dev_pm_set_wake_irq(&pdev->dev, norm_irq);
+> +
 
+That's nice and concise ;) I'll apply that once -rc1 is released
+
+
+-- 
+Alexandre Belloni, co-owner and COO, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
