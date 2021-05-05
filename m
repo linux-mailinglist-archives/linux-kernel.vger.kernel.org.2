@@ -2,79 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F418F373667
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EC51373669
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232034AbhEEIjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 04:39:49 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:40504 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230490AbhEEIjr (ORCPT
+        id S232073AbhEEIkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 04:40:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25876 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231836AbhEEIkE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 04:39:47 -0400
-Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C9ECC2CF;
-        Wed,  5 May 2021 10:38:48 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1620203929;
-        bh=QdqoNvph4DT3PiPWxxcQ72QkJnI2p554Kaxscdfp82U=;
-        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=bbUUuwfLhb1szjyCIUvFrBFEhlODc5k1bWnH2TVW94jpf0mwsDMV7rXVF4wGJfn1S
-         /okzETMj9agF17aPlIIGk/IpfBXHaHGBj5He3hfsJBZQMpPZjnpaB0yun2OU66MZWg
-         urOqPldpCQZXlBSgNzlqjGUWZmC6kM7IYpGLqxdE=
-Reply-To: kieran.bingham+renesas@ideasonboard.com
-Subject: Re: [PATCH 1/3] Fix spelling error from "eleminate" to "eliminate"
-To:     Sean Gloumeau <sajgloumeau@gmail.com>,
-        Jiri Kosina <trivial@kernel.org>
-Cc:     David Woodhouse <dwmw2@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org, Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Gloumeau <sajgloumeau@protonmail.com>
-References: <cover.1620185393.git.sajgloumeau@gmail.com>
- <21caf628a8aeec21ea9d3f06c95f712a7e7ce7fa.1620185393.git.sajgloumeau@gmail.com>
-From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
-Organization: Ideas on Board
-Message-ID: <3fc4016e-53a9-fd30-3073-5b8955f49be9@ideasonboard.com>
-Date:   Wed, 5 May 2021 09:38:46 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 5 May 2021 04:40:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620203947;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FJa5ydz4i8EsQ94xAojwWDLMbwtwM5GZrOeFOOHVi0Q=;
+        b=Rj8gXCOTJ754Uzvk6f3rULCqf4ldEneHAAJGQbCVO1KXOIq/6G5aeMBR+LoSmmJ6riO8Ih
+        k586tWvzdQmdpbVvbtkdw+RA5QKb9h+UwIdMFECi3vfjzIGRUfqcObYcfSHIQACStTypGe
+        LN9t6Kf8o8ev40mU8ssqa54WSRZzA1Y=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-426-2yLuOdXKMUCqzB6EDGIzBg-1; Wed, 05 May 2021 04:39:06 -0400
+X-MC-Unique: 2yLuOdXKMUCqzB6EDGIzBg-1
+Received: by mail-ed1-f71.google.com with SMTP id bm3-20020a0564020b03b0290387c8b79486so485312edb.20
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 01:39:06 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=FJa5ydz4i8EsQ94xAojwWDLMbwtwM5GZrOeFOOHVi0Q=;
+        b=AyhyfCXzHto3ZXc3caO8/Zbl3lx4keAGz/ay4n8FuprR2Mjq+SHpfOmjN0kwC8F7vr
+         c7Wb1d0exkJYh6mvDYm3+EuArxWd8JRVk1abk9ITsDAUM0sesiss1sd7CwNQGUs7e0KU
+         Nxv9NY7ppPzKwrR4SO1be32Oo49L4M/eAWBpjuQC58sIjvcVly8FWSf4h7WNF6EMoNPa
+         WE/Aw0D/Zlstqb0q4XD3ArBTpdrGSxWto9Nq2foIA+6UqxD5Yu7iYBavhNsiuDIOhcAE
+         gv5x5KCtdjvyF/Vjr4DugZ0L7pguf3UOTvsw+WNrz/QXbMd6Q1gqeEeR/efVvTsVqCcH
+         iCSw==
+X-Gm-Message-State: AOAM531wFMXQQ6Y2s73lrki/0lo4Thc4JfnMyoQeIM3HLT4wLShi8xtx
+        DIxoF69oXqRQEh7c4vOW1ruRHvwPDyAfzPaa+7Qk36gcKObT76Stx8JKQW/JwbrGokkV30ocI5P
+        AES/9fbmH73XfQz2rImPaq6rI
+X-Received: by 2002:aa7:cd8b:: with SMTP id x11mr31387348edv.87.1620203945170;
+        Wed, 05 May 2021 01:39:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3m+uU9dKkJ+kklt2l/bRewI7zVD5mVPNT92N2B523Npe0ogPIXLahfcu3CQ2Lheo+iDZpHQ==
+X-Received: by 2002:aa7:cd8b:: with SMTP id x11mr31387324edv.87.1620203944991;
+        Wed, 05 May 2021 01:39:04 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id h27sm15807054edz.1.2021.05.05.01.39.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 01:39:04 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Maxim Levitsky <mlevitsk@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH 1/4] KVM: nVMX: Always make an attempt to map eVMCS
+ after migration
+In-Reply-To: <d56429a80d9c6118370c722d5b3a90b5669e2411.camel@redhat.com>
+References: <20210503150854.1144255-1-vkuznets@redhat.com>
+ <20210503150854.1144255-2-vkuznets@redhat.com>
+ <d56429a80d9c6118370c722d5b3a90b5669e2411.camel@redhat.com>
+Date:   Wed, 05 May 2021 10:39:03 +0200
+Message-ID: <87a6p9y3q0.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <21caf628a8aeec21ea9d3f06c95f712a7e7ce7fa.1620185393.git.sajgloumeau@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sean,
+Maxim Levitsky <mlevitsk@redhat.com> writes:
 
-Thank you for the patch,
+> On Mon, 2021-05-03 at 17:08 +0200, Vitaly Kuznetsov wrote:
+>> When enlightened VMCS is in use and nested state is migrated with
+>> vmx_get_nested_state()/vmx_set_nested_state() KVM can't map evmcs
+>> page right away: evmcs gpa is not 'struct kvm_vmx_nested_state_hdr'
+>> and we can't read it from VP assist page because userspace may decide
+>> to restore HV_X64_MSR_VP_ASSIST_PAGE after restoring nested state
+>> (and QEMU, for example, does exactly that). To make sure eVMCS is
+>> mapped /vmx_set_nested_state() raises KVM_REQ_GET_NESTED_STATE_PAGES
+>> request.
+>> 
+>> Commit f2c7ef3ba955 ("KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES
+>> on nested vmexit") added KVM_REQ_GET_NESTED_STATE_PAGES clearing to
+>> nested_vmx_vmexit() to make sure MSR permission bitmap is not switched
+>> when an immediate exit from L2 to L1 happens right after migration (caused
+>> by a pending event, for example). Unfortunately, in the exact same
+>> situation we still need to have eVMCS mapped so
+>> nested_sync_vmcs12_to_shadow() reflects changes in VMCS12 to eVMCS.
+>> 
+>> As a band-aid, restore nested_get_evmcs_page() when clearing
+>> KVM_REQ_GET_NESTED_STATE_PAGES in nested_vmx_vmexit(). The 'fix' is far
+>> from being ideal as we can't easily propagate possible failures and even if
+>> we could, this is most likely already too late to do so. The whole
+>> 'KVM_REQ_GET_NESTED_STATE_PAGES' idea for mapping eVMCS after migration
+>> seems to be fragile as we diverge too much from the 'native' path when
+>> vmptr loading happens on vmx_set_nested_state().
+>> 
+>> Fixes: f2c7ef3ba955 ("KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES on nested vmexit")
+>> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+>> ---
+>>  arch/x86/kvm/vmx/nested.c | 29 +++++++++++++++++++----------
+>>  1 file changed, 19 insertions(+), 10 deletions(-)
+>> 
+>> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+>> index 1e069aac7410..2febb1dd68e8 100644
+>> --- a/arch/x86/kvm/vmx/nested.c
+>> +++ b/arch/x86/kvm/vmx/nested.c
+>> @@ -3098,15 +3098,8 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
+>>  			nested_vmx_handle_enlightened_vmptrld(vcpu, false);
+>>  
+>>  		if (evmptrld_status == EVMPTRLD_VMFAIL ||
+>> -		    evmptrld_status == EVMPTRLD_ERROR) {
+>> -			pr_debug_ratelimited("%s: enlightened vmptrld failed\n",
+>> -					     __func__);
+>> -			vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+>> -			vcpu->run->internal.suberror =
+>> -				KVM_INTERNAL_ERROR_EMULATION;
+>> -			vcpu->run->internal.ndata = 0;
+>> +		    evmptrld_status == EVMPTRLD_ERROR)
+>>  			return false;
+>> -		}
+>>  	}
+>>  
+>>  	return true;
+>> @@ -3194,8 +3187,16 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+>>  
+>>  static bool vmx_get_nested_state_pages(struct kvm_vcpu *vcpu)
+>>  {
+>> -	if (!nested_get_evmcs_page(vcpu))
+>> +	if (!nested_get_evmcs_page(vcpu)) {
+>> +		pr_debug_ratelimited("%s: enlightened vmptrld failed\n",
+>> +				     __func__);
+>> +		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+>> +		vcpu->run->internal.suberror =
+>> +			KVM_INTERNAL_ERROR_EMULATION;
+>> +		vcpu->run->internal.ndata = 0;
+>> +
+>>  		return false;
+>> +	}
+>
+> Hi!
+>
+> Any reason to move the debug prints out of nested_get_evmcs_page?
+>
 
-On 05/05/2021 05:15, Sean Gloumeau wrote:
-> Spelling error "eleminate" amended to "eliminate".
+Debug print could've probably stayed or could've been dropped
+completely -- I don't really believe it's going to help
+anyone. Debugging such issues without instrumentation/tracing seems to
+be hard-to-impossible...
 
-Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+>
+>>  
+>>  	if (is_guest_mode(vcpu) && !nested_get_vmcs12_pages(vcpu))
+>>  		return false;
+>> @@ -4422,7 +4423,15 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+>>  	/* trying to cancel vmlaunch/vmresume is a bug */
+>>  	WARN_ON_ONCE(vmx->nested.nested_run_pending);
+>>  
+>> -	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
+>> +	if (kvm_check_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu)) {
+>> +		/*
+>> +		 * KVM_REQ_GET_NESTED_STATE_PAGES is also used to map
+>> +		 * Enlightened VMCS after migration and we still need to
+>> +		 * do that when something is forcing L2->L1 exit prior to
+>> +		 * the first L2 run.
+>> +		 */
+>> +		(void)nested_get_evmcs_page(vcpu);
+>> +	}
+> Yes this is a band-aid, but it has to be done I agree.
+>
 
-> Signed-off-by: Sean Gloumeau <sajgloumeau@gmail.com>
-> ---
->  drivers/net/ethernet/brocade/bna/bnad.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/net/ethernet/brocade/bna/bnad.c b/drivers/net/ethernet/brocade/bna/bnad.c
-> index 7e4e831d720f..ba47777d9cff 100644
-> --- a/drivers/net/ethernet/brocade/bna/bnad.c
-> +++ b/drivers/net/ethernet/brocade/bna/bnad.c
-> @@ -1764,7 +1764,7 @@ bnad_dim_timeout(struct timer_list *t)
->  		}
->  	}
->  
-> -	/* Check for BNAD_CF_DIM_ENABLED, does not eleminate a race */
-> +	/* Check for BNAD_CF_DIM_ENABLED, does not eliminate a race */
->  	if (test_bit(BNAD_RF_DIM_TIMER_RUNNING, &bnad->run_flags))
->  		mod_timer(&bnad->dim_timer,
->  			  jiffies + msecs_to_jiffies(BNAD_DIM_TIMER_FREQ));>
+To restore the status quo, yes.
+
+>>  
+>>  	/* Service the TLB flush request for L2 before switching to L1. */
+>>  	if (kvm_check_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu))
+>
+>
+>
+>
+> I also tested this and it survives a bit better (used to crash instantly
+> after a single migration cycle, but the guest still crashes after around ~20 iterations of my 
+> regular nested migration test).
+>
+> Blues screen shows that stop code is HYPERVISOR ERROR and nothing else.
+>
+> I tested both this patch alone and all 4 patches.
+>
+> Without evmcs, the same VM with same host kernel and qemu survived an overnight
+> test and passed about 1800 migration iterations.
+> (my synthetic migration test doesn't yet work on Intel, I need to investigate why)
+>
+
+It would be great to compare on Intel to be 100% sure the issue is eVMCS
+related, Hyper-V may be behaving quite differently on AMD.
+
+> For reference this is the VM that you gave me to test, kvm/queue kernel,
+> with merged mainline in it,
+> and mostly latest qemu (updated about a week ago or so)
+>
+> qemu: 3791642c8d60029adf9b00bcb4e34d7d8a1aea4d
+> kernel: 9f242010c3b46e63bc62f08fff42cef992d3801b and
+>         then merge v5.12 from mainline.
+
+Thanks for testing! I'll try to come up with a selftest for this issue,
+maybe it'll help us discovering others)
+
+-- 
+Vitaly
 
