@@ -2,93 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A3B5373E2C
+	by mail.lfdr.de (Postfix) with ESMTP id C7B98373E2E
 	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233322AbhEEPLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:11:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233266AbhEEPLe (ORCPT
+        id S233295AbhEEPLj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:11:39 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41403 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233147AbhEEPLf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:11:34 -0400
-Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE87DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 08:10:37 -0700 (PDT)
-Received: by mail-wm1-x32f.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so1338310wmi.5
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:10:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=DVmLzOMSAp4MzyBbE9IavSC4LhAdh9HISmFzp/3ey4M=;
-        b=PX1CStE/I9J3q2IioHK6rLAPgNG2uQMGooDPLqVfOPEbs5iV4Dysl8GxmNZ9f7HnEG
-         dHUkYska5PMvwywUux3KhNAAXJsKPPe3E8yk/53tMJVYrDYuHwO8CjNOXdvn7r6a5iHN
-         awUELTnnM6GVm0sdm3u4KLCz7hLYNRvaOVgwkomXWWNBKuZXzo9YiyhchLAmO+fyWo9V
-         kBsPsIiKVQiKlWFKE84faQ1yUgkIE6XFlowfw3i7RkByMrRGCitnNEhZ37Keat+aOcYZ
-         xsOKNbf4G4D2SLyPIHJXbXrpNkL/DPS808MqexuN8D5esQvnqUfYsGkrV9MKcCJMNmvE
-         v+wQ==
+        Wed, 5 May 2021 11:11:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620227438;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/L/odP+hNbqQUDDWOlbej9giUfvPDpuerxl0425+TBc=;
+        b=e/1BlBsYloRIlP5H7nUqQVDa4u1o20rT3rKm6mHYe70SWXyD9i85EJOADcQNCLXm6sQ3Dr
+        SCiAxOTukBhnkU1JFggg1VSbL433Qy4XXZh8pukHLS9F+QFnMo0dmxQDowX2l5bGeFtHiZ
+        NHw6L7HYASkwiM97gyflqgCETpyxtV4=
+Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
+ [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-16-Dl5TOt3YNduwjxiR0lB4fg-1; Wed, 05 May 2021 11:10:37 -0400
+X-MC-Unique: Dl5TOt3YNduwjxiR0lB4fg-1
+Received: by mail-wr1-f72.google.com with SMTP id v2-20020a0560001622b0290106e28f8af8so817442wrb.9
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:10:36 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=DVmLzOMSAp4MzyBbE9IavSC4LhAdh9HISmFzp/3ey4M=;
-        b=A3Q+YsU/yVXCkCdJ9Y7y7imjRH51zQ/FKCeFTXztaE+lQs4KFJGNtx2ZWozLF5h0vZ
-         1l3QC9PncDbw3AkQotJE3oP9AXZiyXiUCD8B+FOYS6QgCMcCy5mZMHD5JywPu+v3SfGk
-         qPEU9pB3B004o15tlSHyHyxsC2dYhInWwv3nyXtR+jTMZtI3A9gAaoGXzZ5xh1dC2JJC
-         eth41ENSMuCgPBbHSEtYVS+ZVZI4Wpy51MI/thXRkRWuD/UZkOyUiFyca98GgLzUDHM9
-         lAPtmSkY78bcD7vgGhU8HdxKy0zYz6MXgUF62NApZW524oSDgw++h7vXTbf+A//oX8My
-         pDHA==
-X-Gm-Message-State: AOAM531RNI4ViBHV5y/PJg6/MALn6NfHDYANhn2R48+PEgLAtQkMiw5z
-        b+iyrvDIAK9cwLkx0eZ/fg9sqw==
-X-Google-Smtp-Source: ABdhPJy8nlJ3qXwtvGqfZLn39XjnqS6y85vyrZ8H+l0LX0opXU8h1lq+H+YOBMHVhce9a2ebnvx21w==
-X-Received: by 2002:a05:600c:228b:: with SMTP id 11mr10351164wmf.6.1620227434761;
-        Wed, 05 May 2021 08:10:34 -0700 (PDT)
-Received: from dell ([91.110.221.215])
-        by smtp.gmail.com with ESMTPSA id c14sm8482425wrt.77.2021.05.05.08.10.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 08:10:34 -0700 (PDT)
-Date:   Wed, 5 May 2021 16:10:32 +0100
-From:   Lee Jones <lee.jones@linaro.org>
-To:     Min Li <min.li.xe@renesas.com>
-Cc:     "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "grant.likely@linaro.org" <grant.likely@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: Re: [PATCH mfd v1] mfd: Add Renesas Synchronization Management Unit
- (SMU) support
-Message-ID: <20210505151032.GA5109@dell>
-References: <1619466246-11198-1-git-send-email-min.li.xe@renesas.com>
- <TYCPR01MB6608C23DE6681CF77729C04ABA599@TYCPR01MB6608.jpnprd01.prod.outlook.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=/L/odP+hNbqQUDDWOlbej9giUfvPDpuerxl0425+TBc=;
+        b=lazFTvES+Nyk8r0HHcnp5A8o7o+g5eKLvws3sH9ZNQhJCHoyolgJXsagnWaQYOFEDN
+         hvT5JuK8T41Yut9QOwaI/LqNu4V7d8d/B7c4i0O7/SxgYzbhosWW08XP88V/NeatLLYj
+         zLY9Rl+Di/DCPRHVGjZXkW34MT2vQhNkr15QGLf4Az+cXo47PyMo3B9XK6DlrhYMgipe
+         I8Uz8FxFkw4uZXc1cSVt6lETzcJ7SOUIaKKgSqsQuY6sHt9lJcoOyVPALjFVPA/khhy4
+         MwjbRQtE+g8BQbELDtAVO17MQ65KOaCOF2W312+yWhus7zZd5eK0oI3frtJjNOkLnn9X
+         m0qg==
+X-Gm-Message-State: AOAM530f+8vaWIZveVVw8RZVtZ+2SRyT1JiesatUeLPANqLJ01KlhV5d
+        5IcC3GrhRJQCOkLtVEeH0pwRxhYG/XeRBovZR268E5JBKyZADp61amCn2CmY3z1fuz+B+Zjk2P7
+        vwFY3hznTqscT12G414na4cNU
+X-Received: by 2002:adf:e686:: with SMTP id r6mr38035611wrm.187.1620227435727;
+        Wed, 05 May 2021 08:10:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzzj10ka75uUq1iMVB73dSK1NoxnunzZR7BfPe0BRAG27lacrjzLCxVkjF8du5Ejfe2oe3wnw==
+X-Received: by 2002:adf:e686:: with SMTP id r6mr38035569wrm.187.1620227435461;
+        Wed, 05 May 2021 08:10:35 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c63bc.dip0.t-ipconnect.de. [91.12.99.188])
+        by smtp.gmail.com with ESMTPSA id m184sm6099684wme.40.2021.05.05.08.10.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 08:10:35 -0700 (PDT)
+Subject: Re: [PATCH v1 5/7] mm: introduce
+ page_offline_(begin|end|freeze|unfreeze) to synchronize setting PageOffline()
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-6-david@redhat.com> <YJKcg06C3xE8fCfu@dhcp22.suse.cz>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <8650f764-8652-a82c-c54f-f67401c800e8@redhat.com>
+Date:   Wed, 5 May 2021 17:10:33 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <TYCPR01MB6608C23DE6681CF77729C04ABA599@TYCPR01MB6608.jpnprd01.prod.outlook.com>
+In-Reply-To: <YJKcg06C3xE8fCfu@dhcp22.suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 05 May 2021, Min Li wrote:
-
-> Hi guys
+On 05.05.21 15:24, Michal Hocko wrote:
+> On Thu 29-04-21 14:25:17, David Hildenbrand wrote:
+>> A driver might set a page logically offline -- PageOffline() -- and
+>> turn the page inaccessible in the hypervisor; after that, access to page
+>> content can be fatal. One example is virtio-mem; while unplugged memory
+>> -- marked as PageOffline() can currently be read in the hypervisor, this
+>> will no longer be the case in the future; for example, when having
+>> a virtio-mem device backed by huge pages in the hypervisor.
+>>
+>> Some special PFN walkers -- i.e., /proc/kcore -- read content of random
+>> pages after checking PageOffline(); however, these PFN walkers can race
+>> with drivers that set PageOffline().
+>>
+>> Let's introduce page_offline_(begin|end|freeze|unfreeze) for
+>> synchronizing.
+>>
+>> page_offline_freeze()/page_offline_unfreeze() allows for a subsystem to
+>> synchronize with such drivers, achieving that a page cannot be set
+>> PageOffline() while frozen.
+>>
+>> page_offline_begin()/page_offline_end() is used by drivers that care about
+>> such races when setting a page PageOffline().
+>>
+>> For simplicity, use a rwsem for now; neither drivers nor users are
+>> performance sensitive.
 > 
-> Can some one please review this patch? It's been submitted back and
-> forth a few months now without a meaningful review. Thanks for your
-> attention for this issue.
+> Please add a note to the PageOffline documentation as well. While are
+> adding the api close enough an explicit note there wouldn't hurt.
 
-Please be mindful of the release cycle.
+Will do.
 
-The merge-window is currently open.
+> 
+>> Signed-off-by: David Hildenbrand <david@redhat.com>
+> 
+> As to the patch itself, I am slightly worried that other pfn walkers
+> might be less tolerant to the locking than the proc ones. On the other
+> hand most users shouldn't really care as they do not tend to touch the
+> memory content and PageOffline check without any synchronization should
+> be sufficient for those. Let's try this out and see where we get...
 
-A review will be conducted shortly after -rc1 has been released.
+My thinking. Users that actually read random page content (as discussed 
+in the cover letter) are
 
-Please be patient.
+1. Hibernation
+2. Dumping (/proc/kcore, /proc/vmcore)
+3. Physical memory access bypassing the kernel via /dev/mem
+4. Live debug tools (kgdb)
+
+Other PFN walkers really shouldn't (and don't) access random page content.
+
+Thanks!
 
 -- 
-Lee Jones [李琼斯]
-Senior Technical Lead - Developer Services
-Linaro.org │ Open source software for Arm SoCs
-Follow Linaro: Facebook | Twitter | Blog
+Thanks,
+
+David / dhildenb
+
