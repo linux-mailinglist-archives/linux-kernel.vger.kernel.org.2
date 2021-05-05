@@ -2,85 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7790C374AC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:48:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0A0C374AC8
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:48:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229582AbhEEVtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 17:49:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229968AbhEEVtS (ORCPT
+        id S229650AbhEEVtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 17:49:47 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44284 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhEEVtp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 17:49:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B5BC061574;
-        Wed,  5 May 2021 14:48:21 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620251297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=DwnDbRYPGOB6QSqiEY7AuTKE84++kwmlDEV1tcogAv0=;
-        b=IcbSGt/aNAWDrw7qHp4Wt8BC0pn3AjDcHV/mHlqw2N2CyjBBYWo68W2MyuGT4p1O9zkz/f
-        zbXaj21XFjY1WP1sUbezCn9QsRTJLfRG97KxkwF0kfZPgHFdnxOQGgRXEi52Bbnb1N168T
-        WUNxiGfmhyuUkFmsJYh/sdTMSD+5+GfIOZ7BHfJrIQh0LbvxGTRThHscV+EseE1+AlHeJA
-        3LAv4i1pkq4MiCT0Rms7FFIzNmxpPxjplHP4NDibsWxaN4vo8Vk5mr2vQ89k1561mMj34n
-        7PRVnrNEk4c1Y/UGrlFkViwJ+Z3xFyKCqXqxXYRAMw3KCKE+vdF7X5gxLKabmg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620251297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=DwnDbRYPGOB6QSqiEY7AuTKE84++kwmlDEV1tcogAv0=;
-        b=DCbmaGOAWxbh7gginzBuFNGOZA2b1+9xNNptOuadeawYHzdDig1Ftb6TFP/0JRINV4+FZW
-        bkJWphTAQQeN6NAg==
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: KVM: x86: Cancel pvclock_gtod_work on module removal
-Date:   Wed, 05 May 2021 23:48:17 +0200
-Message-ID: <87czu4onry.ffs@nanos.tec.linutronix.de>
+        Wed, 5 May 2021 17:49:45 -0400
+Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
+        by linux.microsoft.com (Postfix) with ESMTPSA id D660220B7178;
+        Wed,  5 May 2021 14:48:47 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D660220B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620251328;
+        bh=Lq9GMPC1OAbG9MC4A6dXXKYcRIfgiNTw6E8T5BWsHts=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=QjIfl8kAu4zuy6l3rZpzPRQP94JtUMbP2G/6WsZtKmnNjH0NV8iZUTtUwgBGZODwj
+         nLtPVFuwNnjglJSrxoVnkgPoAqbxxLBgj+z8+hlFjbbBXoXp3oRSVPkIGeyu3lSpAQ
+         3JBydhlQ34ArzzP1BtY5LmmNVM2kpmJZg8SNuu2I=
+Date:   Wed, 5 May 2021 16:48:46 -0500
+From:   Tyler Hicks <tyhicks@linux.microsoft.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     wangglei <wangglei@gmail.com>,
+        "Lei Wang (DPLAT)" <Wang.Lei@microsoft.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "rric@kernel.org" <rric@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hang Li <hangl@microsoft.com>,
+        Brandon Waller <bwaller@microsoft.com>
+Subject: Re: [EXTERNAL] Re: [PATCH] EDAC: update edac printk wrappers to use
+ printk_ratelimited.
+Message-ID: <20210505214846.GE4967@sequoia>
+References: <20210505173027.78428-1-wangglei@gmail.com>
+ <YJLdZCcsgWG6TrKz@zn.tnic>
+ <SJ0PR21MB199984A8B47FBEECEC5D11CE90599@SJ0PR21MB1999.namprd21.prod.outlook.com>
+ <YJL1vU6HNBWPKy8g@zn.tnic>
+ <20210505202357.GC4967@sequoia>
+ <YJMIbB31oEDaXm0C@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJMIbB31oEDaXm0C@zn.tnic>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Nothing prevents the following:
+On 2021-05-05 23:04:44, Borislav Petkov wrote:
+> On Wed, May 05, 2021 at 03:23:57PM -0500, Tyler Hicks wrote:
+> >  Would it be any more acceptable to add an
+> > edac_mc_printk_ratelimited() macro, which uses printk_ratelimited(),
+> > and then call that new macro from edac_ce_error()?
+> 
+> You guys are way off here: the intent of EDAC drivers is to accurately
+> report errors for purposes of counting them and doing analysis on
+> that collected data as to whether components are going wrong - not to
+> ratelimit them as some nuisance output.
+> 
+> With breaking the EDAC reporting, you're barking up the wrong tree - if
+> you don't want to see those errors, do not load the drivers. It is that
+> simple.
 
-  pvclock_gtod_notify()
-    queue_work(system_long_wq, &pvclock_gtod_work);
-  ...
-  remove_module(kvm);
-  ...
-  work_queue_run()
-    pvclock_gtod_work()	<- UAF
+As I understand it, the idea here wasn't to treat the log messages as a
+nuisance that should be completely squelched. The counters are monitored
+and provide the definitive way to detect large scale problems but the CE
+log messages can be an easier-to-discover way for humans to identify
+potential problems when, for example, centralized log aggregation and
+indexing is in place.
 
-Ditto for any other operation on that workqueue list head which touches
-pvclock_gtod_work after module removal.
+The thought was that the full stream of log messages isn't necessary to
+notice that there's a problem when they are being emitted at such a high
+rate (500 per second). They're just filling up disk space and/or wasting
+networking bandwidth at that point. Of course, the best course of action
+here is to service the machine but there's still a period of time
+between the CE errors popping up and the machine being serviced.
 
-Cancel the work in kvm_arch_exit() to prevent that.
-
-Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-Found by inspection because of:
-  https://lkml.kernel.org/r/0000000000001d43ac05c0f5c6a0@google.com
-See also:
-  https://lkml.kernel.org/r/20210505105940.190490250@infradead.org
-
-TL;DR: Scheduling work with tk_core.seq write held is a bad idea.
----
- arch/x86/kvm/x86.c |    1 +
- 1 file changed, 1 insertion(+)
-
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8168,6 +8168,7 @@ void kvm_arch_exit(void)
- 	cpuhp_remove_state_nocalls(CPUHP_AP_X86_KVM_CLK_ONLINE);
- #ifdef CONFIG_X86_64
- 	pvclock_gtod_unregister_notifier(&pvclock_gtod_notifier);
-+	cancel_work_sync(&pvclock_gtod_work);
- #endif
- 	kvm_x86_ops.hardware_enable = NULL;
- 	kvm_mmu_module_exit();
+Tyler
