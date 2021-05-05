@@ -2,140 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CE8F37484E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:56:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE461374851
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234901AbhEES5B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:57:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41588 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhEES46 (ORCPT
+        id S235135AbhEES57 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:57:59 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55566 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234277AbhEES55 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:56:58 -0400
-Received: from mail-yb1-xb2a.google.com (mail-yb1-xb2a.google.com [IPv6:2607:f8b0:4864:20::b2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 97E37C061574;
-        Wed,  5 May 2021 11:56:01 -0700 (PDT)
-Received: by mail-yb1-xb2a.google.com with SMTP id e190so4024324ybb.10;
-        Wed, 05 May 2021 11:56:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=JvFr8MjdTnG10e+0AkGGA+m42ZxevnjfbeEU57hfbjM=;
-        b=kpcwsuV0QEC2lJSPW9DJ4P1zjk8DI+9DWQxBXRnpIh3HWcq4IueirxqgyJ5/4AvJXV
-         N6jyLWGnDGD6eXuallTfg5nuasXtyutu9Rg1xErrUnXxSz6MDexmoRsVTUevB9vHfvYr
-         iWvhmIJYi+YnBcFCEifpGAI/ufYXvQ0d5ZuREQJf2W2FNMNhWBJs6VGm6eoHI8WGVuft
-         hP11y+WzdjaZRNwgNBT7/9gFLF1lbhoD2FSOSR0gHT5THvLWX6tvvHN0xABNVy62sLT6
-         +Bms1PdKYpdGhVfkinqQx3nP0mj+9JGFCHHPSel7DGhdz/vylNLhpfPMaC2R4kkkG1Gw
-         p8KA==
+        Wed, 5 May 2021 14:57:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620241020;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=RLt9keyCtnOhXLfxqmhiGEZ6r/sGiYdHdPIuhsn7KMg=;
+        b=QKKI6vBPZP8qipV3O5mdDifi/b4xPXNN/PtzOiPMBHlvp53tMOVtCjlMYnnyH6bSaub92c
+        W3/Kt9J44RzkN229zn4/vqnjG+tSZ4YKfWT/7T3K/H55rfXKE27Hh1rJIQEQOnaTTQB+Lq
+        thLy2a2u/6qYYAGHOshJEDIL/8VqlsI=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-502-08dEve1LPP2zX7dBPgiKjA-1; Wed, 05 May 2021 14:56:58 -0400
+X-MC-Unique: 08dEve1LPP2zX7dBPgiKjA-1
+Received: by mail-qk1-f198.google.com with SMTP id c4-20020a3781040000b02902e46e29acf5so1803230qkd.22
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 11:56:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=JvFr8MjdTnG10e+0AkGGA+m42ZxevnjfbeEU57hfbjM=;
-        b=Q7Efj8DVL3I2HB7/7ihiTpewdExFX827/YKg2V1jNMHpSIVXKW117NMz7X1fI4Qs+n
-         jBI6VDjzw43XjCa6+XF7bEQlKq/uo6N/MZgYYLDCxubCbuVZv85qwjhPvvfH8ShwM5aP
-         7rOeG+gFD8G3rNT0TkNtukWQqdxol4hjrIlVZyxXy77gLIPa8lTEjYCI/P/i7PyGrIst
-         ab+ethAPfFDSh4NLEp1IryYaEyECdGGqJ9VjPrUCGTBS65kvTp7TLziC7sNCXQOBzB2r
-         kF7+0Z7L5wMIl2QrZogRSgYhLcUE+s5S9us1NLoYuREClI2UoBbRf1g5Zt5lvToUQ+wq
-         SbgQ==
-X-Gm-Message-State: AOAM530ORWt4JPvkcQpb9R80KTuZmha9b6h3MNPa//ok1rQJrXfFaX1H
-        APv8oQNinxbX1mX6kLlGkQLwjHqcx8rBo/opiFQ=
-X-Google-Smtp-Source: ABdhPJzuwWib3xbYYPmAHaE+YxXoPfRZ+T7GE26yNl5WNy9Zq9KnQzuA0VUYMuaWBHh6b58xK6Io4i/mpUkEY/JawBQ=
-X-Received: by 2002:a5b:286:: with SMTP id x6mr265343ybl.347.1620240960890;
- Wed, 05 May 2021 11:56:00 -0700 (PDT)
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=RLt9keyCtnOhXLfxqmhiGEZ6r/sGiYdHdPIuhsn7KMg=;
+        b=dSZ1JJUEkFVVvCRUI1YYrl+jmMquMRMkpcnD63lxAMoaZ+ApX978Y3fBbO80rLe+0c
+         oN1UOra55Jku38DDnREUF5oowaCpUY3KiMxdsQB5T+CWtX/nmeG1MPPrrtwHJY+AiZRo
+         VlmkU1ZO1WRd/INE6NlaDBv1a235boodyYi+KOQW2/84mpfekMbo5HoybLOaLrfOf8Aq
+         VcIFGfqdWUBv6DCDhaeVKeqRsv73YM2pvqu2OE5jLwQr5f1NJY9gVuxnNbrs9BLTcOtM
+         reZW7/p4ZELSn3hNuxKqNyLYjOM0RKxmeAWT9dm8+PdjwlKe+JQtujmPDdqb7dnX2CM/
+         3s6Q==
+X-Gm-Message-State: AOAM532Jy3rjRzqAPrWd5AsIeeoU8nKuFjinxcqp2G3ck0biZCjXGoDt
+        96T4EJnYuL982c6ErSBSoiRUGIYG/Ap+aDqGZ0SeQWgQS+fjug7cu6JA6LEHV6oEtJpYcygJi/H
+        37PD8BUdumCz17eNOGGTcw0l3
+X-Received: by 2002:a37:745:: with SMTP id 66mr204366qkh.5.1620241017477;
+        Wed, 05 May 2021 11:56:57 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzckruqTN3kXgcSr9qWxQj+MrQudiplS4IKJ4eXLo4TgviBYuj44Hisiiloy2k99iFmqoy/Ig==
+X-Received: by 2002:a37:745:: with SMTP id 66mr204360qkh.5.1620241017317;
+        Wed, 05 May 2021 11:56:57 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id a195sm109640qkg.101.2021.05.05.11.56.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 11:56:56 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Roman Gushchin <guro@fb.com>, Waiman Long <llong@redhat.com>
+Cc:     Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505154613.17214-1-longman@redhat.com>
+ <20210505154613.17214-3-longman@redhat.com>
+ <YJLWN6bNBYyKRPEN@carbon.DHCP.thefacebook.com>
+ <235f45b4-2d99-f32d-ac2b-18b59fea5a25@suse.cz>
+ <4e4b6903-2444-f4ed-f589-26d5beae3120@redhat.com>
+ <YJLmGcGYLZwqehIX@carbon.dhcp.thefacebook.com>
+Message-ID: <1b235531-e165-954a-74b1-d3477c2a4b87@redhat.com>
+Date:   Wed, 5 May 2021 14:56:55 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210505162307.2545061-1-revest@chromium.org>
-In-Reply-To: <20210505162307.2545061-1-revest@chromium.org>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Wed, 5 May 2021 11:55:49 -0700
-Message-ID: <CAEf4BzZiK1ncN7RzeJ-62e=itekn34VuFf7WNhUF=9OoznMP6Q@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Don't WARN_ON_ONCE in bpf_bprintf_prepare
-To:     Florent Revest <revest@chromium.org>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YJLmGcGYLZwqehIX@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 9:23 AM Florent Revest <revest@chromium.org> wrote:
+On 5/5/21 2:38 PM, Roman Gushchin wrote:
+> On Wed, May 05, 2021 at 02:31:28PM -0400, Waiman Long wrote:
+>> On 5/5/21 2:02 PM, Vlastimil Babka wrote:
+>>> On 5/5/21 7:30 PM, Roman Gushchin wrote:
+>>>> On Wed, May 05, 2021 at 11:46:13AM -0400, Waiman Long wrote:
+>>>>> With this change, all the objcg pointer array objects will come from
+>>>>> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+>>>>> both the recursive kfree() problem and non-freeable slab problem are
+>>>>> gone. Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer
+>>>>> have mixed accounted and unaccounted objects, this will slightly reduce
+>>>>> the number of objcg pointer arrays that need to be allocated and save
+>>>>> a bit of memory.
+>>>> Unfortunately the positive effect of this change will be likely
+>>>> reversed by a lower utilization due to a larger number of caches.
+>>>>
+>>>> Btw, I wonder if we also need a change in the slab caches merging procedure?
+>>>> KMALLOC_NORMAL caches should not be merged with caches which can potentially
+>>>> include accounted objects.
+>>> Good point. But looks like kmalloc* caches are extempt from all merging in
+>>> create_boot_cache() via
+>>>
+>>> 	s->refcount = -1;       /* Exempt from merging for now */
+>>>
+>>> It wouldn't hurt though to create the kmalloc-cg-* caches with SLAB_ACCOUNT flag
+>>> to prevent accidental merging in case the above is ever removed. It would also
+>>> better reflect reality, and ensure that the array is allocated immediately with
+>>> the page, AFAICS.
+>>>
+>> I am not sure if this is really true.
+>>
+>> struct kmem_cache *__init create_kmalloc_cache(const char *name,
+>>                  unsigned int size, slab_flags_t flags,
+>>                  unsigned int useroffset, unsigned int usersize)
+>> {
+>>          struct kmem_cache *s = kmem_cache_zalloc(kmem_cache, GFP_NOWAIT);
+>>
+>>          if (!s)
+>>                  panic("Out of memory when creating slab %s\n", name);
+>>
+>>          create_boot_cache(s, name, size, flags, useroffset, usersize);
+>>          kasan_cache_create_kmalloc(s);
+>>          list_add(&s->list, &slab_caches);
+>>          s->refcount = 1;
+>>          return s;
+>> }
+>>
+>> Even though refcount is set to -1 initially, it is set back to 1 afterward.
+>> So merging can still happen AFAICS.
+> Right, thanks, I already noticed it. Then yeah, we should make sure we're not
+> merging KMALLOC_NORMAL caches with any others.
 >
-> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
-> per-cpu buffer that they use to store temporary data (arguments to
-> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
-> by the end of their scope with bpf_bprintf_cleanup.
->
-> If one of these helpers gets called within the scope of one of these
-> helpers, for example: a first bpf program gets called, uses
+That should be easy. We just set the refcount to -1 for the 
+KMALLOC_NORMAL caches right after its creation then.
 
-Can we afford having few struct bpf_printf_bufs? They are just 512
-bytes, so can we have 3-5 of them? Tracing low-level stuff isn't the
-only situation where this can occur, right? If someone is doing
-bpf_snprintf() and interrupt occurs and we run another BPF program, it
-will be impossible to do bpf_snprintf() or bpf_trace_printk() from the
-second BPF program, etc. We can't eliminate the probability, but
-having a small stack of buffers would make the probability so
-miniscule as to not worry about it at all.
+Cheers,
+Longman
 
-Good thing is that try_get_fmt_tmp_buf() abstracts all the details, so
-the changes are minimal. Nestedness property is preserved for
-non-sleepable BPF programs, right? If we want this to work for
-sleepable we'd need to either: 1) disable migration or 2) instead of
-assuming a stack of buffers, do a loop to find unused one. Should be
-acceptable performance-wise, as it's not the fastest code anyway
-(printf'ing in general).
-
-In any case, re-using the same buffer for sort-of-optional-to-work
-bpf_trace_printk() and probably-important-to-work bpf_snprintf() is
-suboptimal, so seems worth fixing this.
-
-Thoughts?
-
-> bpf_trace_printk which calls raw_spin_lock_irqsave which is traced by
-> another bpf program that calls bpf_trace_printk again, then the second
-> "get" fails. Essentially, these helpers are not re-entrant, and it's not
-> that bad because they would simply return -EBUSY and recover gracefully.
->
-> However, when this happens, the code hits a WARN_ON_ONCE. The guidelines
-> in include/asm-generic/bug.h say "Do not use these macros [...] on
-> transient conditions like ENOMEM or EAGAIN."
->
-> This condition qualifies as transient, for example, the next
-> raw_spin_lock_irqsave probe is likely to succeed, so it does not deserve
-> a WARN_ON_ONCE.
->
-> The guidelines also say "Do not use these macros when checking for
-> invalid external inputs (e.g. invalid system call arguments" and, in a
-> way, this can be seen as an invalid input because syzkaller triggered
-> it.
->
-> Signed-off-by: Florent Revest <revest@chromium.org>
-> Reported-by: syzbot <syzbot@syzkaller.appspotmail.com>
-> Fixes: d9c9e4db186a ("bpf: Factorize bpf_trace_printk and bpf_seq_printf")
-> ---
->  kernel/bpf/helpers.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index 544773970dbc..007fa26eb3f5 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -709,7 +709,7 @@ static int try_get_fmt_tmp_buf(char **tmp_buf)
->
->         preempt_disable();
->         used = this_cpu_inc_return(bpf_printf_buf_used);
-> -       if (WARN_ON_ONCE(used > 1)) {
-> +       if (used > 1) {
->                 this_cpu_dec(bpf_printf_buf_used);
->                 preempt_enable();
->                 return -EBUSY;
-> --
-> 2.31.1.527.g47e6f16901-goog
->
