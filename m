@@ -2,215 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 394C0373AF3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:17:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9EADA373AF1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233046AbhEEMSr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:18:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbhEEMSC (ORCPT
+        id S233524AbhEEMSk convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 May 2021 08:18:40 -0400
+Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:36001 "EHLO
+        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233116AbhEEMSA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:18:02 -0400
-Received: from mail-il1-x130.google.com (mail-il1-x130.google.com [IPv6:2607:f8b0:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BD3C5C06134B
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 05:16:00 -0700 (PDT)
-Received: by mail-il1-x130.google.com with SMTP id e2so1538194ilr.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 05:16:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ieee.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=oqHb4rjlMXWPPEjHYTDBWNoZCPN0FDRJBPayCdf1+gU=;
-        b=fC7moJwcexh5klTQU/Qos20CANVJQ0wGYXAyuhaEW/+cMXKHVVnTTnZA1B4VEz51rd
-         CrfH126WMYAtoySakuXD+4WU2iaTZNuWIGHXwdV183CJw/dqRPLFvIFgmvOpFzmcfyT+
-         FmiDzIYBHig8WTHjxscb43F5miqoZECfetDxI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=oqHb4rjlMXWPPEjHYTDBWNoZCPN0FDRJBPayCdf1+gU=;
-        b=cevGfoBWcw71hepqPBOeAZVfyTuIir4YH3+AiG7i/UWCYacdv3smytpqlI8Z3VDDX+
-         Ys8wH3YwjZqKkdDYXIEOikYNGACAG/O9wT9OLW/peaEXSclAlj8UWcDhmmxWVQLc7g9E
-         WU8yr9hVgQkgy1O168YB4JObGQMgDM5jYfqJ+lohIqcSlkI/Dz+DLMDbUsw8QOq+FND2
-         TwgKK0DyDNC3F/JKz6+wlpUZUZWKteBJnoHauSDJ2B5D+3yGYmihCjU87MvpVSW4+1XY
-         pwzhIp2l8BlJ9etiEZRduTYgQ/0uDAQTpBTI+VYRvTljnfgYLdj8to+3moSB0mce6G6M
-         QzTg==
-X-Gm-Message-State: AOAM533NYcYYPqgiOD3Ko98Tg8BxpJ2KF9q/DfeWsPWK/5a0u6yN0Ifl
-        UV626JLAdBGFEYIXiE8AeoToVA==
-X-Google-Smtp-Source: ABdhPJzNiPFgzrMBLiHXKIJhn5JVROoYmNooEJpyd7zASOShC5srtlvUOLaoqzdp8ODmKU3x1bXjIw==
-X-Received: by 2002:a05:6e02:969:: with SMTP id q9mr14743719ilt.285.1620216960210;
-        Wed, 05 May 2021 05:16:00 -0700 (PDT)
-Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
-        by smtp.googlemail.com with ESMTPSA id 6sm2446098iog.36.2021.05.05.05.15.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 05:15:59 -0700 (PDT)
-Subject: Re: [PATCH 22/35] tty: make tty_operations::write_room return uint
-To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Richard Henderson <rth@twiddle.net>,
-        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-        Matt Turner <mattst88@gmail.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>,
-        Helge Deller <deller@gmx.de>, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Chris Zankel <chris@zankel.net>,
-        Max Filippov <jcmvbkbc@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Scott Branden <scott.branden@broadcom.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
-        Alex Elder <elder@kernel.org>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Oliver Neukum <oneukum@suse.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-References: <20210505091928.22010-1-jslaby@suse.cz>
- <20210505091928.22010-23-jslaby@suse.cz>
-From:   Alex Elder <elder@ieee.org>
-Message-ID: <608f186f-0c88-1a5d-e612-7f133476f1e3@ieee.org>
-Date:   Wed, 5 May 2021 07:15:56 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 5 May 2021 08:18:00 -0400
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-59-XDD02pRROKaLdrSLPguiDw-1; Wed, 05 May 2021 08:16:59 -0400
+X-MC-Unique: XDD02pRROKaLdrSLPguiDw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6DEAD107ACF3;
+        Wed,  5 May 2021 12:16:58 +0000 (UTC)
+Received: from bahia.redhat.com (ovpn-113-11.ams2.redhat.com [10.36.113.11])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 90EDD5C582;
+        Wed,  5 May 2021 12:16:43 +0000 (UTC)
+From:   Greg Kurz <groug@kaod.org>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, virtio-fs@redhat.com,
+        Greg Kurz <groug@kaod.org>, Robert Krawitz <rlk@redhat.com>
+Subject: [PATCH v3] virtiofs: propagate sync() to file server
+Date:   Wed,  5 May 2021 14:16:42 +0200
+Message-Id: <20210505121642.289191-1-groug@kaod.org>
 MIME-Version: 1.0
-In-Reply-To: <20210505091928.22010-23-jslaby@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=groug@kaod.org
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: kaod.org
+Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=WINDOWS-1252
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 4:19 AM, Jiri Slaby wrote:
-> Line disciplines expect a positive value or zero returned from
-> tty->ops->write_room (invoked by tty_write_room). So make this
-> assumption explicit by using unsigned int as a return value. Both of
-> tty->ops->write_room and tty_write_room.
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Richard Henderson <rth@twiddle.net>
-> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
-> Cc: Matt Turner <mattst88@gmail.com>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Helge Deller <deller@gmx.de>
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Max Filippov <jcmvbkbc@gmail.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-> Cc: Jens Taprogge <jens.taprogge@taprogge.org>
-> Cc: Karsten Keil <isdn@linux-pingi.de>
-> Cc: Scott Branden <scott.branden@broadcom.com>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: David Lin <dtwlin@gmail.com>
-> Cc: Johan Hovold <johan@kernel.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Oliver Neukum <oneukum@suse.com>
-> Cc: Felipe Balbi <balbi@kernel.org>
-> Cc: Mathias Nyman <mathias.nyman@intel.com>
-> Cc: Marcel Holtmann <marcel@holtmann.org>
-> Cc: Johan Hedberg <johan.hedberg@gmail.com>
-> Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-> ---
->   arch/alpha/kernel/srmcons.c            | 2 +-
->   arch/m68k/emu/nfcon.c                  | 2 +-
->   arch/parisc/kernel/pdc_cons.c          | 2 +-
->   arch/um/drivers/line.c                 | 6 +++---
->   arch/um/drivers/line.h                 | 2 +-
->   arch/xtensa/platforms/iss/console.c    | 2 +-
->   drivers/char/pcmcia/synclink_cs.c      | 2 +-
->   drivers/char/ttyprintk.c               | 2 +-
->   drivers/ipack/devices/ipoctal.c        | 2 +-
->   drivers/isdn/capi/capi.c               | 6 +++---
->   drivers/misc/bcm-vk/bcm_vk_tty.c       | 2 +-
->   drivers/mmc/core/sdio_uart.c           | 2 +-
->   drivers/net/usb/hso.c                  | 4 ++--
->   drivers/s390/char/con3215.c            | 2 +-
->   drivers/s390/char/sclp_tty.c           | 4 ++--
->   drivers/s390/char/sclp_vt220.c         | 4 ++--
->   drivers/s390/char/tty3270.c            | 2 +-
->   drivers/staging/fwserial/fwserial.c    | 6 +++---
->   drivers/staging/gdm724x/gdm_tty.c      | 2 +-
->   drivers/staging/greybus/uart.c         | 2 +-
->   drivers/tty/amiserial.c                | 2 +-
->   drivers/tty/ehv_bytechan.c             | 4 ++--
->   drivers/tty/goldfish.c                 | 2 +-
->   drivers/tty/hvc/hvc_console.c          | 2 +-
->   drivers/tty/hvc/hvcs.c                 | 2 +-
->   drivers/tty/hvc/hvsi.c                 | 4 ++--
->   drivers/tty/ipwireless/tty.c           | 2 +-
->   drivers/tty/mips_ejtag_fdc.c           | 4 ++--
->   drivers/tty/moxa.c                     | 8 ++++----
->   drivers/tty/mxser.c                    | 2 +-
->   drivers/tty/n_gsm.c                    | 2 +-
->   drivers/tty/nozomi.c                   | 4 ++--
->   drivers/tty/pty.c                      | 2 +-
->   drivers/tty/serial/kgdb_nmi.c          | 2 +-
->   drivers/tty/serial/serial_core.c       | 4 ++--
->   drivers/tty/synclink_gt.c              | 6 +++---
->   drivers/tty/tty_ioctl.c                | 2 +-
->   drivers/tty/ttynull.c                  | 2 +-
->   drivers/tty/vcc.c                      | 4 ++--
->   drivers/tty/vt/vt.c                    | 2 +-
->   drivers/usb/class/cdc-acm.c            | 2 +-
->   drivers/usb/gadget/function/u_serial.c | 6 +++---
->   drivers/usb/host/xhci-dbgtty.c         | 4 ++--
->   drivers/usb/serial/usb-serial.c        | 2 +-
->   include/linux/tty.h                    | 2 +-
->   include/linux/tty_driver.h             | 4 ++--
->   net/bluetooth/rfcomm/tty.c             | 2 +-
->   47 files changed, 71 insertions(+), 71 deletions(-)
+Even if POSIX doesn't mandate it, linux users legitimately expect
+sync() to flush all data and metadata to physical storage when it
+is located on the same system. This isn't happening with virtiofs
+though : sync() inside the guest returns right away even though
+data still needs to be flushed from the host page cache.
 
-. . .
+This is easily demonstrated by doing the following in the guest:
 
-Looks good.
+$ dd if=/dev/zero of=/mnt/foo bs=1M count=5K ; strace -T -e sync sync
+5120+0 records in
+5120+0 records out
+5368709120 bytes (5.4 GB, 5.0 GiB) copied, 5.22224 s, 1.0 GB/s
+sync()                                  = 0 <0.024068>
++++ exited with 0 +++
 
-Acked-by: Alex Elder <elder@linaro.org.
+and start the following in the host when the 'dd' command completes
+in the guest:
 
-> diff --git a/drivers/staging/greybus/uart.c b/drivers/staging/greybus/uart.c
-> index b1e63f7798b0..529eccb99b6c 100644
-> --- a/drivers/staging/greybus/uart.c
-> +++ b/drivers/staging/greybus/uart.c
-> @@ -440,7 +440,7 @@ static int gb_tty_write(struct tty_struct *tty, const unsigned char *buf,
->   	return count;
->   }
->   
-> -static int gb_tty_write_room(struct tty_struct *tty)
-> +static unsigned int gb_tty_write_room(struct tty_struct *tty)
->   {
->   	struct gb_tty *gb_tty = tty->driver_data;
->   	unsigned long flags;
+$ strace -T -e fsync /usr/bin/sync virtiofs/foo
+fsync(3)                                = 0 <10.371640>
++++ exited with 0 +++
 
-. . .
+There are no good reasons not to honor the expected behavior of
+sync() actually : it gives an unrealistic impression that virtiofs
+is super fast and that data has safely landed on HW, which isn't
+the case obviously.
+
+Implement a ->sync_fs() superblock operation that sends a new
+FUSE_SYNC request type for this purpose. Provision a 64-bit
+placeholder for possible future extensions. Since the file
+server cannot handle the wait == 0 case, we skip it to avoid a
+gratuitous roundtrip.
+
+Like with FUSE_FSYNC and FUSE_FSYNCDIR, lack of support for
+FUSE_SYNC in the file server is treated as permanent success.
+This ensures compatibility with older file servers : the client
+will get the current behavior of sync() not being propagated to
+the file server.
+
+Note that such an operation allows the file server to DoS sync().
+Since a typical FUSE file server is an untrusted piece of software
+running in userspace, this is disabled by default.  Only enable it
+with virtiofs for now since virtiofsd is supposedly trusted by the
+guest kernel.
+
+Reported-by: Robert Krawitz <rlk@redhat.com>
+Signed-off-by: Greg Kurz <groug@kaod.org>
+---
+
+v3: - just keep a 64-bit padding field in the arg struct (Vivek)
+
+v2: - clarify compatibility with older servers in changelog (Vivek)
+    - ignore the wait == 0 case (Miklos)
+    - 64-bit aligned argument structure (Vivek, Miklos)
+
+ fs/fuse/fuse_i.h          |  3 +++
+ fs/fuse/inode.c           | 35 +++++++++++++++++++++++++++++++++++
+ fs/fuse/virtio_fs.c       |  1 +
+ include/uapi/linux/fuse.h | 10 +++++++++-
+ 4 files changed, 48 insertions(+), 1 deletion(-)
+
+diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
+index 7e463e220053..f48dd7ff32af 100644
+--- a/fs/fuse/fuse_i.h
++++ b/fs/fuse/fuse_i.h
+@@ -761,6 +761,9 @@ struct fuse_conn {
+ 	/* Auto-mount submounts announced by the server */
+ 	unsigned int auto_submounts:1;
+ 
++	/* Propagate syncfs() to server */
++	unsigned int sync_fs:1;
++
+ 	/** The number of requests waiting for completion */
+ 	atomic_t num_waiting;
+ 
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index 393e36b74dc4..d7900f616397 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -506,6 +506,40 @@ static int fuse_statfs(struct dentry *dentry, struct kstatfs *buf)
+ 	return err;
+ }
+ 
++static int fuse_sync_fs(struct super_block *sb, int wait)
++{
++	struct fuse_mount *fm = get_fuse_mount_super(sb);
++	struct fuse_conn *fc = fm->fc;
++	struct fuse_syncfs_in inarg;
++	FUSE_ARGS(args);
++	int err;
++
++	/*
++	 * Userspace cannot handle the wait == 0 case. Avoid a
++	 * gratuitous roundtrip.
++	 */
++	if (!wait)
++		return 0;
++
++	if (!fc->sync_fs)
++		return 0;
++
++	memset(&inarg, 0, sizeof(inarg));
++	args.in_numargs = 1;
++	args.in_args[0].size = sizeof(inarg);
++	args.in_args[0].value = &inarg;
++	args.opcode = FUSE_SYNCFS;
++	args.out_numargs = 0;
++
++	err = fuse_simple_request(fm, &args);
++	if (err == -ENOSYS) {
++		fc->sync_fs = 0;
++		err = 0;
++	}
++
++	return err;
++}
++
+ enum {
+ 	OPT_SOURCE,
+ 	OPT_SUBTYPE,
+@@ -909,6 +943,7 @@ static const struct super_operations fuse_super_operations = {
+ 	.put_super	= fuse_put_super,
+ 	.umount_begin	= fuse_umount_begin,
+ 	.statfs		= fuse_statfs,
++	.sync_fs	= fuse_sync_fs,
+ 	.show_options	= fuse_show_options,
+ };
+ 
+diff --git a/fs/fuse/virtio_fs.c b/fs/fuse/virtio_fs.c
+index bcb8a02e2d8b..f9809b1b82f0 100644
+--- a/fs/fuse/virtio_fs.c
++++ b/fs/fuse/virtio_fs.c
+@@ -1447,6 +1447,7 @@ static int virtio_fs_get_tree(struct fs_context *fsc)
+ 	fc->release = fuse_free_conn;
+ 	fc->delete_stale = true;
+ 	fc->auto_submounts = true;
++	fc->sync_fs = true;
+ 
+ 	/* Tell FUSE to split requests that exceed the virtqueue's size */
+ 	fc->max_pages_limit = min_t(unsigned int, fc->max_pages_limit,
+diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
+index 271ae90a9bb7..3db9e1b729f6 100644
+--- a/include/uapi/linux/fuse.h
++++ b/include/uapi/linux/fuse.h
+@@ -181,6 +181,9 @@
+  *  - add FUSE_OPEN_KILL_SUIDGID
+  *  - extend fuse_setxattr_in, add FUSE_SETXATTR_EXT
+  *  - add FUSE_SETXATTR_ACL_KILL_SGID
++ *
++ *  7.34
++ *  - add FUSE_SYNCFS
+  */
+ 
+ #ifndef _LINUX_FUSE_H
+@@ -216,7 +219,7 @@
+ #define FUSE_KERNEL_VERSION 7
+ 
+ /** Minor version number of this interface */
+-#define FUSE_KERNEL_MINOR_VERSION 33
++#define FUSE_KERNEL_MINOR_VERSION 34
+ 
+ /** The node ID of the root inode */
+ #define FUSE_ROOT_ID 1
+@@ -509,6 +512,7 @@ enum fuse_opcode {
+ 	FUSE_COPY_FILE_RANGE	= 47,
+ 	FUSE_SETUPMAPPING	= 48,
+ 	FUSE_REMOVEMAPPING	= 49,
++	FUSE_SYNCFS		= 50,
+ 
+ 	/* CUSE specific operations */
+ 	CUSE_INIT		= 4096,
+@@ -971,4 +975,8 @@ struct fuse_removemapping_one {
+ #define FUSE_REMOVEMAPPING_MAX_ENTRY   \
+ 		(PAGE_SIZE / sizeof(struct fuse_removemapping_one))
+ 
++struct fuse_syncfs_in {
++	uint64_t padding;
++};
++
+ #endif /* _LINUX_FUSE_H */
+-- 
+2.26.3
 
