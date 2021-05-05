@@ -2,127 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D90CB3746F0
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51EF93746F1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235837AbhEERdn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:33:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50514 "EHLO
+        id S235172AbhEERdw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:33:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S239516AbhEERbW (ORCPT
+        with ESMTP id S240247AbhEERbn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:31:22 -0400
-Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B148C04347A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 09:57:34 -0700 (PDT)
-Received: by mail-lf1-x12c.google.com with SMTP id t11so3520796lfl.11
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:57:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=h2Rkiic1Qu5JUyXDgw7mY1fOZmJcCWfsiNziLqg7Wlo=;
-        b=JYizrWyK02sThSbFQwjDEqxWacSLOX+HiHOuavlPwv6otO/1VqE5O2XtC2jOK/aUOD
-         /3IVSoq+eY1SVvZjM5I1nc6nROOaI6uju5rHaA6hQ4tgzq+BVC6z1oIx5qcpiKLNZaLy
-         LkO94YggpCRpXgV/5/2WaF85cNFw2TEiPqnA+XoHN2aurBzp+c4HZv5ZA6P/D3/NaOnr
-         cqT4fMLGNmfP1PDwovqz52zuKZwTsibd1WdiLBM1gf7uirktx0n8xksElqggqYEwQtue
-         ITYEXXjU0I3TkbQ3yZ1tSaCbck4+4PqBxYucEMraROfPjbzh5H8Z6FuFxEZ0p/qRgWgf
-         oh8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=h2Rkiic1Qu5JUyXDgw7mY1fOZmJcCWfsiNziLqg7Wlo=;
-        b=TQdakclExROss0dzzO6uq6VxcKqgz5p2cJO1EZ994y0CekvXYDwAi71Zpw42JK/MGZ
-         XEImkUo7GGI/lI5twtdIcgewrsgjydWpWoXwkiLppc4c7xEdYPJ12vv+ucfcInG8tjoA
-         suf4bC2G1PWoLRhGewdfFaWvMVR4vU3CscIN+jx0qSD6CXuEHt6AyjhP8b2OkBV6qWFZ
-         o9Hwc4kpWmyBDX1qhdfNYlGkOpt0lCN2+U54XPB6jgCPso7x1YJHa/R13QUyCh+3Ar5g
-         4foUZqCJAlnE2LDs280fKBpiv29H/9ePtlM6erIaZ3SgX9moYQ6tJ8EE/xMYk//zntsA
-         7vZw==
-X-Gm-Message-State: AOAM533Kn0KIJdZIt9PO+Bqf8xMfl4fca3oIfysyLT9KqMugczSae3+8
-        E+Xt84VJDnGwCRnQN7GmmjHXvRm1AW20ZyzVLOoZdg==
-X-Google-Smtp-Source: ABdhPJzzaK7bU9VxXE56biKtUu0R+rle9JF1mX286hoB/BX/R3ldbxHgVdl4uAmbva9abcBivR0Luuh0xiiAv9sJLis=
-X-Received: by 2002:a19:4082:: with SMTP id n124mr21510445lfa.154.1620233852801;
- Wed, 05 May 2021 09:57:32 -0700 (PDT)
+        Wed, 5 May 2021 13:31:43 -0400
+Received: from mx0a-00190b01.pphosted.com (mx0a-00190b01.pphosted.com [IPv6:2620:100:9001:583::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86ECEC04954A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 09:59:01 -0700 (PDT)
+Received: from pps.filterd (m0050093.ppops.net [127.0.0.1])
+        by m0050093.ppops.net-00190b01. (8.16.0.43/8.16.0.43) with SMTP id 145Gwdee009776;
+        Wed, 5 May 2021 17:58:39 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=akamai.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=jan2016.eng;
+ bh=9CBW6Wth5Dp4Mxt53x/HFECIqMBZ1wpsufkMs+1r7FQ=;
+ b=imynDeR4RPjwcr3ZT5pt3pQJekN1FElqNKQESE6IrAVBYsELFoFIhpnq0IPWa4wvKaKW
+ dIGfPSZDUUI9fPnW+8Nj4hcehGitCmTB6KY0fNSfXG18/Qc4BsB/bwRYml0aIeksVOeh
+ tmPOPQoCfpifS1297WuTWEOg2vZeos8Cng5d0xRJWUDVTKaaeRTCE11uJ2g1U/D719mb
+ Qk/EvcCZVBYR3Fh1WGdUFL9nIhfW8av7GMIoak5xElqi3xPB9M/qg13oOT59sMhJtArB
+ kCU6zlXesVGz0I1VnQqw8lAf6JjO5lWEh21GYT9J0ZlwxjBf6yxvIl6sqHsXO/aOkktO uA== 
+Received: from prod-mail-ppoint4 (a72-247-45-32.deploy.static.akamaitechnologies.com [72.247.45.32] (may be forged))
+        by m0050093.ppops.net-00190b01. with ESMTP id 38bebmnenq-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 May 2021 17:58:39 +0100
+Received: from pps.filterd (prod-mail-ppoint4.akamai.com [127.0.0.1])
+        by prod-mail-ppoint4.akamai.com (8.16.1.2/8.16.1.2) with SMTP id 145Gmrfu018275;
+        Wed, 5 May 2021 12:58:32 -0400
+Received: from prod-mail-relay18.dfw02.corp.akamai.com ([172.27.165.172])
+        by prod-mail-ppoint4.akamai.com with ESMTP id 38bebh0414-1;
+        Wed, 05 May 2021 12:58:32 -0400
+Received: from [0.0.0.0] (unknown [172.27.119.138])
+        by prod-mail-relay18.dfw02.corp.akamai.com (Postfix) with ESMTP id D1D3657B;
+        Wed,  5 May 2021 16:58:31 +0000 (GMT)
+Subject: Re: [PATCH 2/2] x86/e820: Use pr_debug to avoid spamming dmesg log
+ with debug messages
+To:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <f527618e-54f2-c2fb-e267-8065ac34e462@gmail.com>
+ <6d55670d-2f06-d768-699f-5a79cece6ce0@gmail.com>
+From:   Jason Baron <jbaron@akamai.com>
+Message-ID: <d181b674-66fb-1719-e3c6-e4217cf5519c@akamai.com>
+Date:   Wed, 5 May 2021 12:58:31 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20210414021201.2462114-1-lzye@google.com>
-In-Reply-To: <20210414021201.2462114-1-lzye@google.com>
-From:   Chris Ye <lzye@google.com>
-Date:   Wed, 5 May 2021 09:57:21 -0700
-Message-ID: <CAFFuddLDgidkqDsihCU0VpXC_qEXVww67DmoFOvRdgrrPgOj_A@mail.gmail.com>
-Subject: Re: [PATCH] [v5] Input: Add "Select" button to Microsoft Xbox One controller.
-To:     =?UTF-8?Q?=C5=81ukasz_Patron?= <priv.luk@gmail.com>,
-        Benjamin Valentin <benpicco@googlemail.com>,
-        Chris Ye <lzye@google.com>, Lee Jones <lee.jones@linaro.org>,
-        =?UTF-8?Q?Olivier_Cr=C3=AAte?= <olivier.crete@ocrete.ca>,
-        Sanjay Govind <sanjay.govind9@gmail.com>,
-        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
-        Bastien Nocera <hadess@hadess.net>
-Cc:     linux-input <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>, trivial@kernel.org,
-        kernel-team@android.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <6d55670d-2f06-d768-699f-5a79cece6ce0@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-05_09:2021-05-05,2021-05-05 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
+ malwarescore=0 adultscore=0 bulkscore=0 mlxscore=0 phishscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105050116
+X-Proofpoint-GUID: t2ZvBqs1wZuOjLMFPGeAJl_nE-Y-PXuP
+X-Proofpoint-ORIG-GUID: t2ZvBqs1wZuOjLMFPGeAJl_nE-Y-PXuP
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-05_09:2021-05-05,2021-05-05 signatures=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
+ impostorscore=0 priorityscore=1501 spamscore=0 mlxscore=0 phishscore=0
+ mlxlogscore=999 suspectscore=0 clxscore=1011 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105050117
+X-Agari-Authentication-Results: mx.akamai.com; spf=${SPFResult} (sender IP is 72.247.45.32)
+ smtp.mailfrom=jbaron@akamai.com smtp.helo=prod-mail-ppoint4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bastien,
-      Can you please take a look at the patch v5, which has restored
-the same tab formatting?
-Thanks! Regards,
-Chris
 
-On Tue, Apr 13, 2021 at 7:12 PM Chris Ye <lzye@google.com> wrote:
->
-> Add "Select" button input capability and input event mapping for
-> Microsoft Xbox One controller. From product site this is also referred as
-> "Share" button.
-> Fixed Microsoft Xbox One controller select button not working under USB
-> connection.
->
-> Signed-off-by: Chris Ye <lzye@google.com>
+
+On 5/3/21 3:40 PM, Heiner Kallweit wrote:
+> e820 emits quite some debug messages to the dmesg log. Let's restrict
+> this to cases where the debug output is actually requested. Switch to
+> pr_debug() for this purpose and make sure by checking the return code
+> that pr_cont() is only called if applicable.
+> 
+> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
 > ---
->  drivers/input/joystick/xpad.c | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/drivers/input/joystick/xpad.c b/drivers/input/joystick/xpad.c
-> index 9f0d07dcbf06..cfbf1747b205 100644
-> --- a/drivers/input/joystick/xpad.c
-> +++ b/drivers/input/joystick/xpad.c
-> @@ -79,6 +79,7 @@
->  #define MAP_DPAD_TO_BUTTONS            (1 << 0)
->  #define MAP_TRIGGERS_TO_BUTTONS                (1 << 1)
->  #define MAP_STICKS_TO_NULL             (1 << 2)
-> +#define MAP_SELECT_BUTTON              (1 << 3)
->  #define DANCEPAD_MAP_CONFIG    (MAP_DPAD_TO_BUTTONS |                  \
->                                 MAP_TRIGGERS_TO_BUTTONS | MAP_STICKS_TO_NULL)
->
-> @@ -130,6 +131,7 @@ static const struct xpad_device {
->         { 0x045e, 0x02e3, "Microsoft X-Box One Elite pad", 0, XTYPE_XBOXONE },
->         { 0x045e, 0x02ea, "Microsoft X-Box One S pad", 0, XTYPE_XBOXONE },
->         { 0x045e, 0x0719, "Xbox 360 Wireless Receiver", MAP_DPAD_TO_BUTTONS, XTYPE_XBOX360W },
-> +       { 0x045e, 0x0b12, "Microsoft Xbox One X pad", MAP_SELECT_BUTTON, XTYPE_XBOXONE },
->         { 0x046d, 0xc21d, "Logitech Gamepad F310", 0, XTYPE_XBOX360 },
->         { 0x046d, 0xc21e, "Logitech Gamepad F510", 0, XTYPE_XBOX360 },
->         { 0x046d, 0xc21f, "Logitech Gamepad F710", 0, XTYPE_XBOX360 },
-> @@ -862,6 +864,8 @@ static void xpadone_process_packet(struct usb_xpad *xpad, u16 cmd, unsigned char
->         /* menu/view buttons */
->         input_report_key(dev, BTN_START,  data[4] & 0x04);
->         input_report_key(dev, BTN_SELECT, data[4] & 0x08);
-> +       if (xpad->mapping & MAP_SELECT_BUTTON)
-> +               input_report_key(dev, KEY_RECORD, data[22] & 0x01);
->
->         /* buttons A,B,X,Y */
->         input_report_key(dev, BTN_A,    data[4] & 0x10);
-> @@ -1672,6 +1676,8 @@ static int xpad_init_input(struct usb_xpad *xpad)
->             xpad->xtype == XTYPE_XBOXONE) {
->                 for (i = 0; xpad360_btn[i] >= 0; i++)
->                         input_set_capability(input_dev, EV_KEY, xpad360_btn[i]);
-> +               if (xpad->mapping & MAP_SELECT_BUTTON)
-> +                       input_set_capability(input_dev, EV_KEY, KEY_RECORD);
->         } else {
->                 for (i = 0; xpad_btn[i] >= 0; i++)
->                         input_set_capability(input_dev, EV_KEY, xpad_btn[i]);
-> --
-> 2.31.1.295.g9ea45b61b8-goog
->
+>  arch/x86/kernel/e820.c | 27 ++++++++++++++++-----------
+>  1 file changed, 16 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
+> index bc0657f0d..67ad4d8f0 100644
+> --- a/arch/x86/kernel/e820.c
+> +++ b/arch/x86/kernel/e820.c
+> @@ -465,6 +465,7 @@ __e820__range_update(struct e820_table *table, u64 start, u64 size, enum e820_ty
+>  	u64 end;
+>  	unsigned int i;
+>  	u64 real_updated_size = 0;
+> +	int printed;
+>  
+>  	BUG_ON(old_type == new_type);
+>  
+> @@ -472,11 +473,13 @@ __e820__range_update(struct e820_table *table, u64 start, u64 size, enum e820_ty
+>  		size = ULLONG_MAX - start;
+>  
+>  	end = start + size;
+> -	printk(KERN_DEBUG "e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
+> -	e820_print_type(old_type);
+> -	pr_cont(" ==> ");
+> -	e820_print_type(new_type);
+> -	pr_cont("\n");
+> +	printed = pr_debug("e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
+> +	if (printed > 0) {
+> +		e820_print_type(old_type);
+> +		pr_cont(" ==> ");
+> +		e820_print_type(new_type);
+> +		pr_cont("\n");
+> +	}
+
+
+Hi Heiner,
+
+We've been doing these like:
+
+DEFINE_DYNAMIC_DEBUG_METADATA(e820_dbg, "e820 verbose mode");
+
+.
+.
+.
+
+if (DYNAMIC_DEBUG_BRANCH(e820_debg)) {
+    printk(KERN_DEBUG "e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
+    e820_print_type(old_type);
+    pr_cont(" ==> ");
+    e820_print_type(new_type);
+    pr_cont("\n");
+}
+
+
+You could then have one DEFINE_DYNAMIC_DEBUG_METADATA statement - such that it enables
+it all in one go, or do separate ones that enable it how you see fit.
+
+Would that work here?
+
+Thanks,
+
+-Jason
+
+>  
+>  	for (i = 0; i < table->nr_entries; i++) {
+>  		struct e820_entry *entry = &table->entries[i];
+> @@ -540,7 +543,7 @@ static u64 __init e820__range_update_kexec(u64 start, u64 size, enum e820_type o
+>  /* Remove a range of memory from the E820 table: */
+>  u64 __init e820__range_remove(u64 start, u64 size, enum e820_type old_type, bool check_type)
+>  {
+> -	int i;
+> +	int printed, i;
+>  	u64 end;
+>  	u64 real_removed_size = 0;
+>  
+> @@ -548,10 +551,12 @@ u64 __init e820__range_remove(u64 start, u64 size, enum e820_type old_type, bool
+>  		size = ULLONG_MAX - start;
+>  
+>  	end = start + size;
+> -	printk(KERN_DEBUG "e820: remove [mem %#010Lx-%#010Lx] ", start, end - 1);
+> -	if (check_type)
+> -		e820_print_type(old_type);
+> -	pr_cont("\n");
+> +	printed = pr_debug("e820: remove [mem %#010Lx-%#010Lx] ", start, end - 1);
+> +	if (printed > 0) {
+> +		if (check_type)
+> +			e820_print_type(old_type);
+> +		pr_cont("\n");
+> +	}
+>  
+>  	for (i = 0; i < e820_table->nr_entries; i++) {
+>  		struct e820_entry *entry = &e820_table->entries[i];
+> @@ -1230,7 +1235,7 @@ void __init e820__reserve_resources_late(void)
+>  		if (start >= end)
+>  			continue;
+>  
+> -		printk(KERN_DEBUG "e820: reserve RAM buffer [mem %#010llx-%#010llx]\n", start, end);
+> +		pr_debug("e820: reserve RAM buffer [mem %#010llx-%#010llx]\n", start, end);
+>  		reserve_region_with_split(&iomem_resource, start, end, "RAM buffer");
+>  	}
+>  }
+> 
