@@ -2,91 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45CCC373D9B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:23:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15B47373DA1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233118AbhEEOYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:24:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:60826 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233054AbhEEOYu (ORCPT
+        id S232582AbhEEO0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:26:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37384 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231792AbhEEO0k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:24:50 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620224632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uqMX/kcgxstoPmvY8Wd/zciVA9qFnbv7Kyz4Ssl4A3I=;
-        b=q+jPs/ibe1vFk14EzFP32RiEk+khuaDqb1sbvNsjnQdnLzVO9H5M/j11YHjqJZ0ugu+3mq
-        7vTrifLgOeKwo0MstJ/rGJg0BN9//HwaPpFyVUY7wCuPJJC7QOd6Aa4c8ZGjl6fJtKelcS
-        8XViEY7UoTcKoLhOG8ha5H4ebq/rj/6vA8k03uyp/9beMrt6OcK+RFY5+fYXTOxp8+5zPk
-        dNqZr62L7G9VKFLm81KKGIDkjm0NdjRUV0k0Kj+GfpAIYnAnxGwPf2fJ9xDXx3lstQ86Mn
-        1P3lsZVrSy/wRkewtUe7ki+0ZhHU8MkkdF9kXMHxo6it1o2fni9KgvR2+1dCSQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620224632;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=uqMX/kcgxstoPmvY8Wd/zciVA9qFnbv7Kyz4Ssl4A3I=;
-        b=NLPrA9n0vhFqdef38DyhJqDycsiHukl0bJ1bmOq18k3B4jnmKVYN9rHGW0uCCIAnbFOIgb
-        ZvE6N0pDbcaxsfBg==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@collabora.com>
-Cc:     Ingo Molnar <mingo@redhat.com>, Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, corbet@lwn.net,
-        Peter Oskolkov <posk@posk.io>
-Subject: Re: [PATCH v3 00/13] Add futex2 syscalls
-In-Reply-To: <YJKQLkHuTH3EWJoR@hirez.programming.kicks-ass.net>
-References: <20210427231248.220501-1-andrealmeid@collabora.com> <YJKQLkHuTH3EWJoR@hirez.programming.kicks-ass.net>
-Date:   Wed, 05 May 2021 16:23:52 +0200
-Message-ID: <87bl9pi7if.ffs@nanos.tec.linutronix.de>
+        Wed, 5 May 2021 10:26:40 -0400
+Received: from mail-il1-x134.google.com (mail-il1-x134.google.com [IPv6:2607:f8b0:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43343C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 07:25:43 -0700 (PDT)
+Received: by mail-il1-x134.google.com with SMTP id j12so1875694ils.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:25:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PYIRtGGIsk1yNbWCE56gr4ny4GvEit0XmHd+klLpptA=;
+        b=dZqtmzDDVMaAYS+sL7UHhE+FDvTb4Hj13ZdSs0/7JAwKm31+AdZ6sMfKcd76n8BgRn
+         lFoCblDXNkV2AtMUX/wDT4KFq3e6vGIy1U2CBSxft/phzyKPEEBhiUkqOc6D5ICoxIqi
+         jjiKvybZ/l4+NmrXpaELjdhZIiBqJt0yMfyo0=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PYIRtGGIsk1yNbWCE56gr4ny4GvEit0XmHd+klLpptA=;
+        b=Xr/iRzOu1LcKntXWI7TwbsmOwUuyH0mAnAn6ZVIpeTy2gvv2T6hnk1a4eNLpMRjAWQ
+         vYF4KhxuK8PzAZLMnwU0hqOunzyoSE7ji9Yb1u68SQ86Grk1JM9iznocDe8Iyz2+ls88
+         ZQYq39s3SIhlX4xNt21Skboi6Inwv/EFuITKMw5bJ5ueCA4Yh4xqLThWqBciwInH0bGP
+         M638FBADzeIGUZZ9ueSK6+0kY/osQx1CN6vZSOP2JS95GgpZuEmHR2+lFZzuP2MAK8Qv
+         gvCS+hszVM9fC6BucvXpH/qdY/JNSC3c5B8y5iD32js0gDtPbBTxncE4hF69pOXwQsQi
+         lrwA==
+X-Gm-Message-State: AOAM533SzAA3VC1bFts7glRUJWwBCDT/uP3fI4kwmPOuu/b0ntXCBLZL
+        i+UmcCspuyIsILSw44NBSeoOt3nbg+9PRpfErxcv9w==
+X-Google-Smtp-Source: ABdhPJzQ+FLLDFINxcYPEDpoV3NLKb3eYCmr8yiohiGGpphSrlhrFuvjG4+xzoo3aJi/AsPa4UB3m9FuEe/8u17gHy4=
+X-Received: by 2002:a92:de11:: with SMTP id x17mr25128360ilm.42.1620224742374;
+ Wed, 05 May 2021 07:25:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+References: <20210419155243.1632274-1-revest@chromium.org> <20210419155243.1632274-7-revest@chromium.org>
+ <CAEf4BzZUM4hb9owhompwARabRvRbCYxBrpgXSdXM8RRm42tU1A@mail.gmail.com>
+ <CABRcYm+=XSt_U-19eYXU8+XwDUXoBGQMROMbm6xk9P9OHnUW_A@mail.gmail.com>
+ <CAEf4BzZnkYDAm2R+5R9u4YEdZLj=C8XQmpT=iS6Qv0Ne7cRBGw@mail.gmail.com>
+ <CABRcYmLn2S2g-QTezy8qECsU2QNSQ6wyjhuaHpuM9dzq97mZ7g@mail.gmail.com>
+ <2db39f1c-cedd-b9e7-2a15-aef203f068eb@rasmusvillemoes.dk> <CABRcYmJdTZAhdD_2OVAu-hOnYX-bgvrrbnUjaV23tzp-c+9_8w@mail.gmail.com>
+ <CAEf4BzaHqvxuosYP32WLSs_wxeJ9FfR2wGRKqsocXHCJUXVycw@mail.gmail.com>
+ <CABRcYm+pO94dFW83SZCtKQE8x6PkRicr+exGD3CNwGwQUYmFcw@mail.gmail.com> <f0888d2a-3a31-e454-001c-e46cc21b1664@rasmusvillemoes.dk>
+In-Reply-To: <f0888d2a-3a31-e454-001c-e46cc21b1664@rasmusvillemoes.dk>
+From:   Florent Revest <revest@chromium.org>
+Date:   Wed, 5 May 2021 16:25:31 +0200
+Message-ID: <CABRcYmLvR-9WS2M7d3vYmgapVuEHXqXTY1gv3PmfW5DzhDCbHA@mail.gmail.com>
+Subject: Re: [PATCH bpf-next v5 6/6] selftests/bpf: Add a series of tests for bpf_snprintf
+To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
+        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Yonghong Song <yhs@fb.com>, KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05 2021 at 14:31, Peter Zijlstra wrote:
-
-> On Tue, Apr 27, 2021 at 08:12:35PM -0300, Andr=C3=A9 Almeida wrote:
->> Hi,
->>=20
->> This patch series introduces the futex2 syscalls.
+On Wed, May 5, 2021 at 8:55 AM Rasmus Villemoes
+<linux@rasmusvillemoes.dk> wrote:
 >
-> I still utterly detest that this adds a second hash-table for no
-> descernable reason.
+> On 28/04/2021 16.59, Florent Revest wrote:
+> > On Tue, Apr 27, 2021 at 8:03 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> >>
+> >> On Tue, Apr 27, 2021 at 2:51 AM Florent Revest <revest@chromium.org> wrote:
+> >>>
+> >>> On Tue, Apr 27, 2021 at 8:35 AM Rasmus Villemoes
+> >>> <linux@rasmusvillemoes.dk> wrote:
+> >>>> Probably the test cases are not run in parallel, but this is the kind of
+> >>>> thing that would give those symptoms.
+> >>>
+> >>> I think it's a separate issue from what Andrii reported though because
+> >>> the flaky test exercises the bpf_snprintf helper and this buf spinlock
+> >>> bug you just found only affects the bpf_trace_printk helper.
+> >>>
+> >>> That being said, it does smell a little bit like a concurrency issue
+> >>> too, indeed. The bpf_snprintf test program is a raw_tp/sys_enter so it
+> >>> attaches to all syscall entries and most likely gets executed many
+> >>> more times than necessary and probably on parallel CPUs. The "pad_out"
+> >>> buffer they write to is unique and not locked so maybe the test's
+> >>> userspace reads pad_out while another CPU is writing on it and if the
+> >>> string output goes through a stage where it is "    4 0000" before
+> >>> being "    4 000", we might read at the wrong time. That being said, I
+> >>> would find it weird that this happens as much as 50% of the time and
+> >>> always specifically on that test case.
+> >>>
+> >>> Andrii could you maybe try changing the prog type to
+> >>> "tp/syscalls/sys_enter_nanosleep" on the machine where you can
+> >>> reproduce this bug ?
+> >>
+> >> Yes, it helps. I can't repro it easily anymore.
+> >
+> > Good, so it does sound like a concurrency issue indeed
+> >
+> >> I think the right fix, though, should be to filter by tid, not change the tracepoint.
+> >
+> > Agreed, I'll send a patch for that today. :)
+> >
+> >> I think what's happening is we see the string right before bstr_printf
+> >> does zero-termination with end[-1] = '\0'; So in some cases we see
+> >> truncated string, in others we see untruncated one.
+> >
+> > Makes sense but I still wonder why it happens so often (50% of the
+> > time is really a lot) and why it is consistently that one test case
+> > that fails and not the "overflow" case for example. But I'm confident
+> > that this is not a bug in the helper now and that the tid filter will
+> > fix the test.
+> >
 >
-> The new syscall interface does not depend on that in any way, you
-> previously implemented the multi-wait thing in the current futex code.
+> If the caller, or one of its sibling threads, inspects the buffer before
+> (v)snprintf has returned it's very obviously a bug in the caller. As for
+
+Absolutely
+
+> why that particular case exposes the race: It seems to be the only one
+> that "expects" an insanely long result, and it takes a very very long
+> time (several cycles per byte I'd assume) for the vsnprintf code to very
+> carefully go through the
 >
-> Like I said last time; I'm okay with the new interface, but I don't see
-> why you need to reimplement the insides, that's all pointless code
-> duplication.
+>   if (buf < end)
+>      *buf = /* '0' or ' ' or whatever it is it is emitting here */
+>   buf++;
+>
+> 900k times. So there's simply a very large window where the buffer
+> contents is "    4 0000" while number() is still 'emitting' 0s until
+> control returns to vsnprintf() which does that final end[-1] = '\0'.
 
-The real question is whether we really need to model all of this along
-the existing futex functionality. I wouldn't mind a new infrastructure
-which addresses all the other known issues of futexes and makes the
-overall design less horrible than what we have now.
-
-But that needs input from futex users (libraries and other horrible
-wrappers) to figure out what they really need, hate, like or do not care
-about.
-
-Without that we are bound to pile more crap on the existing pile of
-horrors forever.
-
-Thanks,
-
-        tglx
+Aaah, of course, it makes complete sense! :) Thank you Rasmus
