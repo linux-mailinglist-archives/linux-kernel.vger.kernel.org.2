@@ -2,92 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED90D37387E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:20:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3401A373880
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:21:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232667AbhEEKVn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 06:21:43 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:32533 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232095AbhEEKVl (ORCPT
+        id S232702AbhEEKWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 06:22:32 -0400
+Received: from mail2.protonmail.ch ([185.70.40.22]:18132 "EHLO
+        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232230AbhEEKWb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 06:21:41 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-226-NBzCLfwUMDaGZYPLw1SIkQ-1; Wed, 05 May 2021 11:20:41 +0100
-X-MC-Unique: NBzCLfwUMDaGZYPLw1SIkQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 11:20:41 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 5 May 2021 11:20:41 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Christophe JAILLET' <christophe.jaillet@wanadoo.fr>,
-        Eric Biggers <ebiggers@kernel.org>
-CC:     "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>
-Subject: RE: [RFC PATCH] crypto: arc4: Implement a version optimized for
- memory usage
-Thread-Topic: [RFC PATCH] crypto: arc4: Implement a version optimized for
- memory usage
-Thread-Index: AQHXQQ8/MxI87C5LlEaRIASgh2FBkKrUrGEQ
-Date:   Wed, 5 May 2021 10:20:41 +0000
-Message-ID: <4fe67cdda2c64c1da314142eda998967@AcuMS.aculab.com>
-References: <c52bd8972c9763c3fac685d7c6af3c46a23a1477.1619983555.git.christophe.jaillet@wanadoo.fr>
- <YJF8/oaWUqZsWfOb@gmail.com>
- <d523902e-744c-1291-aee8-9be734f2a3ce@wanadoo.fr>
-In-Reply-To: <d523902e-744c-1291-aee8-9be734f2a3ce@wanadoo.fr>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 5 May 2021 06:22:31 -0400
+Date:   Wed, 05 May 2021 10:21:16 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
+        s=protonmail3; t=1620210093;
+        bh=3RksiCH8cPtPlWk0to7nyL1y138c0K4MSYx/+808EYk=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=L1Pf1yT46Pzxfe9OzxG4g/ti/bt8/pX5+BOv5cn5Hz1sSX9ArWdWJg04JoFgxBkwa
+         lDfZzBVdd1Sav2gpsHuJn2YY4i6ttsQ+Nt0Csvk03Dwi3hl977iSpRboqdkcK/J2Mu
+         C3aENO9x9pWrufKsAjf4NtiQ6ipf9+sfrJWQhfxPRA6DF1JxscCIxyAp066yD0sFv/
+         YcqRgPcCB7L3QDz4wCB8zNm6DX9HIJ1Uu44qS+A0vmsW5g1Y5PTRFOkn48UUStNFkN
+         0l5iHCe2E18xiuCdXN40ST7SqCOwtbKPTnnJmWeBTROq3wFUS66UiV/lPYniRgrmL2
+         1ykVAgbWiw+ew==
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+From:   Simon Ser <contact@emersion.fr>
+Cc:     Peter Xu <peterx@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Herrmann <dh.herrmann@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        "tytso@mit.edu" <tytso@mit.edu>
+Reply-To: Simon Ser <contact@emersion.fr>
+Subject: Re: Sealed memfd & no-fault mmap
+Message-ID: <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr>
+In-Reply-To: <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
+References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr> <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com> <20210429154807.hptls4vnmq2svuea@box> <20210429183836.GF8339@xz-x1> <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr> <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogQ2hyaXN0b3BoZSBKQUlMTEVUDQo+IFNlbnQ6IDA0IE1heSAyMDIxIDE5OjAwDQo+IA0K
-PiBMZSAwNC8wNS8yMDIxIMOgIDE4OjU3LCBFcmljIEJpZ2dlcnMgYSDDqWNyaXTCoDoNCj4gPiBP
-biBTdW4sIE1heSAwMiwgMjAyMSBhdCAwOToyOTo0NlBNICswMjAwLCBDaHJpc3RvcGhlIEpBSUxM
-RVQgd3JvdGU6DQo+ID4+ICsjaWYgZGVmaW5lZChDT05GSUdfSEFWRV9FRkZJQ0lFTlRfVU5BTElH
-TkVEX0FDQ0VTUykNCj4gPj4gKyNkZWZpbmUgU190eXBlCXU4DQo+ID4+ICsjZWxzZQ0KPiA+PiAr
-I2RlZmluZSBTX3R5cGUJdTMyDQo+ID4+ICsjZW5kaWYNCj4gPj4gKw0KPiA+PiAgIHN0cnVjdCBh
-cmM0X2N0eCB7DQo+ID4+IC0JdTMyIFNbMjU2XTsNCj4gPj4gKwlTX3R5cGUgU1syNTZdOw0KPiA+
-PiAgIAl1MzIgeCwgeTsNCj4gPj4gICB9Ow0KPiA+DQo+ID4gSXMgaXQgYWN0dWFsbHkgdXNlZnVs
-IHRvIGtlZXAgYm90aCB2ZXJzaW9ucz8gIEl0IHNlZW1zIHdlIGNvdWxkIGp1c3QgdXNlIHRoZSB1
-OA0KPiA+IHZlcnNpb24gZXZlcnl3aGVyZS4gIE5vdGUgdGhhdCB0aGVyZSBhcmVuJ3QgYWN0dWFs
-bHkgYW55IHVuYWxpZ25lZCBtZW1vcnkNCj4gPiBhY2Nlc3Nlcywgc28gY2hvb3NpbmcgdGhlIHZl
-cnNpb24gY29uZGl0aW9uYWxseSBvbg0KPiA+IENPTkZJR19IQVZFX0VGRklDSUVOVF9VTkFMSUdO
-RURfQUNDRVNTIHNlZW1zIG9kZC4gIFdoYXQgYXJlIHlvdSB0cnlpbmcgdG8NCj4gPiBkZXRlcm1p
-bmUgYnkgY2hlY2tpbmcgdGhhdD8NCj4gDQo+IEhpLCB0aGlzIGlzIGEgYmFkIGludGVycHJldGF0
-aW9uIGZyb20gbWUuDQouLi4NCj4gDQo+IEkgd2FudGVkIHRvIGF2b2lkIHBvdGVudGlhbCBwZXJm
-b3JtYW5jZSBjb3N0IHJlbGF0ZWQgdG8gdXNpbmcgY2hhciAoaS5lDQo+IHU4KSBpbnN0ZWFkIG9m
-IGludCAoaS5lLiB1MzIpLg0KPiBPbiBzb21lIGFyY2hpdGVjdHVyZSB0aGlzIGNvdWxkIHJlcXVp
-cmUgc29tZSBzaGlmdCBvciBtYXNraW5nIG9yDQo+IHdoYXRldmVyIHRvICJ1bnBhY2siIHRoZSB2
-YWx1ZXMgb2YgUy4NCg0KVGhlIG9ubHkgYXJjaGl0ZWN0dXJlIHRoYXQgTGludXggcmFuIG9uIHdo
-ZXJlIHRoZSBoYXJkd2FyZQ0KZGlkIFJNVyBhY2Nlc3NlcyBmb3IgYnl0ZSB3cml0ZXMgd2FzIHNv
-bWUgdmVyeSBvbGQgYWxwaGEgY3B1Lg0KRXZlbiBtb3JlIHJlY2VudCBhbHBoYSBzdXBwb3J0ZWQg
-Ynl0ZSB3cml0ZXMgdG8gbWVtb3J5Lg0KDQpPbiBtYW55IGFyY2hpdGVjdHVyZXMgKG5vdCB4ODYg
-b3IgYXJtKSBpbmRleGluZyBhIGJ5dGUgYXJyYXkNCmlzIGJldHRlciBiZWNhdXNlIGl0IHNhdmVz
-IHRoZSBpbnN0cnVjdGlvbiB0byBtdWx0aXBseSB0aGUgaW5kZXggYnkgNC4NCk9uIHg4Ni02NCB5
-b3Ugd2FudCB0byBiZSB1c2luZyAndW5zaWduZWQgaW50JyBmb3IgYXJyYXkgaW5kZXhlcw0Kc28g
-dGhlIGNvbXBpbGVyIGRvZXNuJ3QgaGF2ZSB0byBlbWl0IHRoZSBpbnN0cnVjdGlvbiB0byBzaWdu
-IGV4dGVuZA0KYSAzMmJpdCBpbnQgdG8gNjQgYml0cyAoc29tZXRpbWVzIGl0IGtub3dzIGl0IGNh
-bid0IGJlIG5lZWRlZCkuDQoNCkZXSVcgd2l0aCBhIG1vZGVybiBjb21waWxlciBhbGwgdGhvc2Ug
-dGVtcG9yYXJpZXMgYXJlIHBvaW50bGVzcy4NClRoZSBudW1iZXIgb2YgbGluZXMgb2YgY29kZSBj
-YW4gYmUgaGFsdmVkLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRl
-LCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpS
-ZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+On Tuesday, May 4th, 2021 at 6:08 PM, Linus Torvalds <torvalds@linux-founda=
+tion.org> wrote:
 
+> On Tue, May 4, 2021 at 2:29 AM Simon Ser contact@emersion.fr wrote:
+>
+> > The remaining 10% is when the compositor needs a writable mapping for
+> > things like screen capture. It doesn't seem like a SIGBUS handler can
+> > be avoided in this case then=E2=80=A6 Oh well.
+>
+> So as Peter Xu mentioned, if we made it a "per inode" thing, we
+> probably could make such an inode do the zero page fill on its own,
+> and it might be ok for certain cases even for shared mappings.
+> However, realistically I think it's a horrible idea for the generic
+> situation, because I think that basically requires the filesystem
+> itself to buy into it. And we have something like 60+ different
+> filesystems.
+>
+> Is there some very specific and targeted pattern for that "shared
+> mapping" case? For example, if it's always a shared anonymous mapping
+> with no filesystem backing, then that would possibly be a simpler case
+> than the "random arbitrary shared file descriptor".
+
+Yes. I don't know of any Wayland client using buffers with real
+filesystem backing. I think the main cases are:
+
+- shm_open(3) immediately followed by shm_unlink(3). On Linux, this is
+  implemented with /dev/shm which is a tmpfs.
+- Abusing /tmp or /run's tmpfs by creating a file there and unlinking
+  it immediately afterwards. Kind of similar to the first case.
+- memfd_create(2) on Linux.
+
+Is this enough to make it work on shared memory mappings? Is it
+important that the mapping is anonymous?
+
+Thanks,
+
+Simon
