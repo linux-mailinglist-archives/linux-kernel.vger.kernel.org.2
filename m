@@ -2,161 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AC537478B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:05:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9530B37478D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:05:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235076AbhEER6i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:58:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55874 "EHLO
+        id S235180AbhEER6q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:58:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234274AbhEER6O (ORCPT
+        with ESMTP id S234482AbhEER6Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:58:14 -0400
-Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C4E0C00F602
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:28:57 -0700 (PDT)
-Received: by mail-ot1-x331.google.com with SMTP id c36-20020a05683034a4b02902a5b84b1d12so2399032otu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:28:57 -0700 (PDT)
+        Wed, 5 May 2021 13:58:16 -0400
+Received: from mail-qt1-x831.google.com (mail-qt1-x831.google.com [IPv6:2607:f8b0:4864:20::831])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50357C043446
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:29:18 -0700 (PDT)
+Received: by mail-qt1-x831.google.com with SMTP id y12so1796517qtx.11
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:29:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g4X2E1XRo1phsTQg3EtaDOCHvhUj1Tt6jnzKJ2/36r4=;
-        b=Ci17lKNM6SGVNOqaBWBsKIWTYwwHJkNl1mRsigIQBzQUV+Fe7R1iEbp4p0Gi7GvMLt
-         vpPFAF3pJjstdTj6jq3muVEeH8qUqVxVmGHZr24Pb3bnvcBdv12/sd389ZxY9jRAjLyh
-         A5ziYDkfBaYnFip5b0Ud/+WFd/dJgrQJUN3KTfYLrHwlQZulsdUg0gPk3ej58DmJG9na
-         6hzzjTzYsHRPDwgh/yQZUFTqLpQJJ7OtdlA6gz0OP37sYrKUJc7epGDksRCP9QDukzY1
-         OKOgnsm2Bu0EUuSj/f0d3dCe6+8/dv21IaF7lQa6r8eIHy6VgML1pohdp9Zq326OyzGi
-         4lgw==
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=fojQ2PXj0G/XPL225fjb5EMP1GoQwlvE1vKQPnzG0g8=;
+        b=H8/wac+roD0zr/mQrjnERr6NiF9XiIa85wQwHeCU8YtZbuIZWVVmestISt/QReZUSq
+         x9qRqSPw/XKyzkyqaHz6tAmQFsLxWkd6pvyKpfp3i/q7S86PtQ7xcKHZs7l0b1wXNndG
+         pwaJowF1D5xXcPtA4vIyMFYVkS3SqnmOcgVvpQ0O/YinHHbRrtCXwh7cDmhs2fGjR+4z
+         a4/BhwbD1Zlbz6y1Z53ZmPONRzVb+oETDUV/u25WfYR/ZLZSQcyF/drX9XaFRiaELSFQ
+         t6TbOhf11xDe/ULB3BARbleCkkdI8bAI+vMJ9iaDkeF72bUVzy9dzGJYHOPEN5oZbI7j
+         YHRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g4X2E1XRo1phsTQg3EtaDOCHvhUj1Tt6jnzKJ2/36r4=;
-        b=FMpLm2dWddeEf052Tne4pCH4YXe6vd9uB/A6hXq+kKuBq1KV3btwnHY3lUob4cmlD4
-         mcIOB7ABe5Fvl2SThS3zY88rWTSRiw5KxX5ABamvIdIZANjLbLcE9RQwZajxXauzhWov
-         7Lp+NfPanlEbKT9wnDG0NL7HQhvXl+esqsHJVo2/0oKnn22xM3H0Hro96dC0erHk7JB1
-         EeWMgNXgCxxcSGnwOTXG7EBpnJPygPlDcEzfg+g1nPwmob3i3eFJyOY5RzhidYuHEH+k
-         oS0Ge+sMBP1/pK4+1jo9yDld1FItl6D0s/FTyhJILVZdE1ZVQYkDu9B2Px6CbYUPuhg3
-         Emng==
-X-Gm-Message-State: AOAM533inX65ciYk5/O7YPNa2QSsx/jxYBN5093aQlX5nXn5EsRF2yRz
-        Z+7FJQuyZakYECt+ZdyfHnqvvOpiIlHb2HnjhOlS6w==
-X-Google-Smtp-Source: ABdhPJzCrgcsmVZ17vp3OnrajNVg5oiT8XHdZ69sPTTuAVz+vJkCkBYQQwz+3urgaEY63+KWW5G2D2SF2vbGhXDm6yU=
-X-Received: by 2002:a9d:60c8:: with SMTP id b8mr24974375otk.17.1620235736198;
- Wed, 05 May 2021 10:28:56 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fojQ2PXj0G/XPL225fjb5EMP1GoQwlvE1vKQPnzG0g8=;
+        b=qDqwgGIiu7fAZSLf8M/VM6USn2RFkGdCEG6JdHKq2DEt4EWbUkG2i/lYFisUjIGngM
+         hDNG8v48NaSIAEYTmyFTLHAjbc9ssK2YxDCqBBeuNGZzQIowJvr2W5lmP7RlAg8bioAO
+         uJvejcPqO4S1Tu7qZTMRIqXuqkEtoSTlLNz5eiv6HiSwte/byDIzw+a1A7dHveNvLAml
+         7O3W42kqw20sHjuAE8w7k/N0R+vhETHnOAZLQm/5lit5vNBi1fC+R7/qh4Cdl7Pv0gKV
+         yekyvxTvbgiel/36zWf5zeKCox2cX6aS/uojV2chRDdmtMDoCyFwPQxT+hcraq2ckzFp
+         SvSQ==
+X-Gm-Message-State: AOAM533gEmz+kzBP271uh5IunnI4CCZYBkkTi/pnC+1HpQo9QIeMwYC3
+        wcFIENKWlaq79yuRFPKSYJWdPg==
+X-Google-Smtp-Source: ABdhPJyt2lSY/nPhbJPbVUr8rJDTNBoFXA01E//fEcJPmPzB91Jm0NrfyfLyjFX6+eSOMHephKpY1A==
+X-Received: by 2002:ac8:6e87:: with SMTP id c7mr17134578qtv.358.1620235757561;
+        Wed, 05 May 2021 10:29:17 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
+        by smtp.gmail.com with ESMTPSA id z4sm5441793qtq.34.2021.05.05.10.29.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 10:29:17 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1leLKm-0017M9-8i; Wed, 05 May 2021 14:29:16 -0300
+Date:   Wed, 5 May 2021 14:29:16 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <parav@nvidia.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
+Message-ID: <20210505172916.GC2047089@ziepe.ca>
+References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
+ <202104021555.08B883C7@keescook>
+ <20210402233018.GA7721@ziepe.ca>
+ <202104021823.64FA6119@keescook>
+ <20210404135713.GB7721@ziepe.ca>
+ <YJLHHpatWOgJo0Zk@kroah.com>
 MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
- <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m1r1irpc5v.fsf@fess.ebiederm.org>
- <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
- <m1czuapjpx.fsf@fess.ebiederm.org> <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
- <m14kfjh8et.fsf_-_@fess.ebiederm.org> <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-In-Reply-To: <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 5 May 2021 19:28:00 +0200
-Message-ID: <CANpmjNMLbc_8HtUVB2fOu3eV7vO2rMdZAZ4BZ02hndeXu3hUoA@mail.gmail.com>
-Subject: Re: [PATCH v3 00/12] signal: sort out si_trapno and si_perf
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJLHHpatWOgJo0Zk@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 4 May 2021 at 23:13, Eric W. Biederman <ebiederm@xmission.com> wrote:
-> This set of changes sorts out the ABI issues with SIGTRAP TRAP_PERF, and
-> hopefully will can get merged before any userspace code starts using the
-> new ABI.
+On Wed, May 05, 2021 at 06:26:06PM +0200, Greg KH wrote:
+> > They are in many places, for instance.
+> > 
+> > int device_create_file(struct device *dev,
+> >                        const struct device_attribute *attr)
+> > 
+> > We loose the type safety when working with attribute arrays, and
+> > people can just bypass the "proper" APIs to raw sysfs ones whenever
+> > they like.
+> > 
+> > It is fundamentally completely wrong to attach a 'struct
+> > kobject_attribute' to a 'struct device' kobject.
+> 
+> But it works because we are using C and we don't have RTTI :)
 >
-> The big ideas are:
-> - Placing the asserts first to prevent unexpected ABI changes
-> - si_trapno becomming ordinary fault subfield.
-> - struct signalfd_siginfo is almost full
->
-> This set of changes starts out with Marco's static_assert changes and
-> additional one of my own that enforces the fact that the alignment of
-> siginfo_t is also part of the ABI.  Together these build time
-> checks verify there are no unexpected ABI changes in the changes
-> that follow.
->
-> The field si_trapno is changed to become an ordinary extension of the
-> _sigfault member of siginfo.
->
-> The code is refactored a bit and then si_perf_type is added along side
-> si_perf_data in the _perf subfield of _sigfault of siginfo_t.
->
-> Finally the signalfd_siginfo fields are removed as they appear to be
-> filling up the structure without userspace actually being able to use
-> them.
->
-> v2: https://lkml.kernel.org/r/m14kfjh8et.fsf_-_@fess.ebiederm.org
-> v1: https://lkml.kernel.org/r/m1zgxfs7zq.fsf_-_@fess.ebiederm.org
->
-> Eric W. Biederman (9):
->       signal: Verify the alignment and size of siginfo_t
->       siginfo: Move si_trapno inside the union inside _si_fault
->       signal: Implement SIL_FAULT_TRAPNO
->       signal: Use dedicated helpers to send signals with si_trapno set
->       signal: Remove __ARCH_SI_TRAPNO
->       signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
->       signal: Factor force_sig_perf out of perf_sigtrap
->       signal: Deliver all of the siginfo perf data in _perf
->       signalfd: Remove SIL_FAULT_PERF_EVENT fields from signalfd_siginfo
->
-> Marco Elver (3):
->       sparc64: Add compile-time asserts for siginfo_t offsets
->       arm: Add compile-time asserts for siginfo_t offsets
->       arm64: Add compile-time asserts for siginfo_t offsets
->
->  arch/alpha/include/uapi/asm/siginfo.h              |   2 -
->  arch/alpha/kernel/osf_sys.c                        |   2 +-
->  arch/alpha/kernel/signal.c                         |   4 +-
->  arch/alpha/kernel/traps.c                          |  24 ++---
->  arch/alpha/mm/fault.c                              |   4 +-
->  arch/arm/kernel/signal.c                           |  39 +++++++
->  arch/arm64/kernel/signal.c                         |  39 +++++++
->  arch/arm64/kernel/signal32.c                       |  39 +++++++
->  arch/mips/include/uapi/asm/siginfo.h               |   2 -
->  arch/sparc/include/uapi/asm/siginfo.h              |   3 -
->  arch/sparc/kernel/process_64.c                     |   2 +-
->  arch/sparc/kernel/signal32.c                       |  37 +++++++
->  arch/sparc/kernel/signal_64.c                      |  36 +++++++
->  arch/sparc/kernel/sys_sparc_32.c                   |   2 +-
->  arch/sparc/kernel/sys_sparc_64.c                   |   2 +-
->  arch/sparc/kernel/traps_32.c                       |  22 ++--
->  arch/sparc/kernel/traps_64.c                       |  44 ++++----
->  arch/sparc/kernel/unaligned_32.c                   |   2 +-
->  arch/sparc/mm/fault_32.c                           |   2 +-
->  arch/sparc/mm/fault_64.c                           |   2 +-
->  arch/x86/kernel/signal_compat.c                    |  15 ++-
->  fs/signalfd.c                                      |  23 ++---
->  include/linux/compat.h                             |  10 +-
->  include/linux/sched/signal.h                       |  13 +--
->  include/linux/signal.h                             |   3 +-
->  include/uapi/asm-generic/siginfo.h                 |  20 ++--
->  include/uapi/linux/signalfd.h                      |   4 +-
->  kernel/events/core.c                               |  11 +-
->  kernel/signal.c                                    | 113 +++++++++++++--------
->  .../selftests/perf_events/sigtrap_threads.c        |  12 +--
->  30 files changed, 373 insertions(+), 160 deletions(-)
+> Yes, it's horrid, but we do it because we "know" the real type that is
+> being called here.  That was an explicit design decision at the time.
 
-Looks good, thanks a lot! I ran selftests/perf_events on x86-64, and
-build-tested x86-32, arm, arm64, sparc, alpha.
+I think it is beyond horrid. Just so everyone is clear on what is
+happening here..
 
-I added my Reviewed/Acked-by to the various patches.
+RDMA has this:
 
-Thanks,
--- Marco
+struct hw_stats_attribute {
+	struct attribute	attr;
+	ssize_t	(*show)(struct kobject *kobj,
+			struct attribute *attr, char *buf);
+
+And it has two kobject types, a struct device kobject and a ib_port
+kobject.
+
+When the user invokes show on the struct device sysfs we have this
+call path:
+
+dev_sysfs_ops
+  dev_attr_show()
+    struct device_attribute *dev_attr = to_dev_attr(attr);
+      ret = dev_attr->show(dev, dev_attr, buf); 
+        show_hw_stats()
+          struct hw_stats_attribute *hsa = container_of(attr, struct hw_stats_attribute, attr)
+
+And from the ib_port kobject we have this one:
+
+port_sysfs_ops
+  port_attr_show()
+    struct port_attribute *port_attr =
+      container_of(attr, struct port_attribute, attr);
+       	return port_attr->show(p, port_attr, buf);
+          show_hw_stats()
+           struct hw_stats_attribute *hsa = container_of(attr, struct hw_stats_attribute, attr)
+
+Then show_hw_stats() goes on to detect which call chain it uses so it
+can apply the proper container of to the kobj:
+
+	if (!hsa->port_num)
+		dev = container_of((struct device *)kobj,
+				   struct ib_device, dev);
+	else
+		port = container_of(kobj, struct ib_port, kobj);
+
+There are several nasty defeats of the C typing system here:
+
+ - A hw_stats_attribute is casted to device_attribute hidden inside
+   container_of()
+
+ - The 'show' function pointer is being casted from from a
+     (*show)(kobject,attr,buf) to (*show)(device,device_attr,buf)
+   This cast is hidden by the above wrong use of container_of()
+
+ - The dev_attr 'struct device_attribute *' is casted directly to a
+   'struct attribute *' and this cast is hidden because of the wrongly type
+   function pointer
+
+ - The dev 'struct device *' is casted directly to a 'struct kobject *'
+   and like above this is hidden inside the wrongly typed function
+   pointer.
+
+ - All of the above is true again when talking about port_attribute
+   and struct ib_port.
+
+This all implicitly relies on the following unchecked and undocumated
+relationships:
+ - struct device's kobject is the first member in the struct
+ - struct ib_port's kobject is the first member in the struct
+ - The attr, show and store members are at the same offset
+   in struct device_attribute and struct hw_stats_attribute
+
+None of this is even slightly clear from the code. If Nathan hadn't
+pointed it out I don't think anyone would have known..
+
+> If that was a good decision or not, I don't know, but it's served us
+> well for the past 20 years or so...
+
+I agree with Kees, "my mind rebelled". I don't think it aligned with
+the modern kernel style. If tooling starts to shine light on these
+bast casts I feel it would only improve code quality.
+
+For instance the patch Kees pointed at e6d701dca989 ("ACPI: sysfs: Fix
+pm_profile_attr type")
+
+This is a legitimate typing bug. ACPI should not have been using
+struct device_attribute with a kobject creted by
+
+  acpi_kobj = kobject_create_and_add("acpi", firmware_kobj);
+
+Certainly this RDMA code has no buisness being written like this
+either, it nets out to saving about 50 lines of straightforward
+duplicated code for a lot of worse junk.
+
+Regards,
+Jason
