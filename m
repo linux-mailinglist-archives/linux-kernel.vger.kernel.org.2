@@ -2,170 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 973E3373E57
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:19:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC275373E5A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233589AbhEEPTo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:19:44 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35207 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233535AbhEEPTd (ORCPT
+        id S233110AbhEEPUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:20:16 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:32835 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S232596AbhEEPUN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:19:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620227915;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=hp+/oCYKjiIsjh/M46HXkPKj6GuBPVMNSJYocNhIgXo=;
-        b=THikacmAEHWr6eLUb+8z+ICT7XFWlldcOTBaUcIQgimKMsItydBvz31zsl35AP8kfccsGn
-        Ydp/tKOPuCwKFwq3eTJ/zhRPDf/k8wP2HVrLQe0dr4zlBem78hm6xNFocZEr0AMJRR+gEr
-        aJMixrVpHuH43CHhDkQ8R+vXuvXOcm0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-470-xqfV6Y_bNsa4hu0Zf-2TNA-1; Wed, 05 May 2021 11:18:34 -0400
-X-MC-Unique: xqfV6Y_bNsa4hu0Zf-2TNA-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4BAA4107ACC7;
-        Wed,  5 May 2021 15:18:32 +0000 (UTC)
-Received: from vitty.brq.redhat.com (unknown [10.40.194.168])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 8766D5C1A3;
-        Wed,  5 May 2021 15:18:30 +0000 (UTC)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never lost
-Date:   Wed,  5 May 2021 17:18:23 +0200
-Message-Id: <20210505151823.1341678-4-vkuznets@redhat.com>
-In-Reply-To: <20210505151823.1341678-1-vkuznets@redhat.com>
-References: <20210505151823.1341678-1-vkuznets@redhat.com>
+        Wed, 5 May 2021 11:20:13 -0400
+Received: (qmail 698740 invoked by uid 1000); 5 May 2021 11:19:15 -0400
+Date:   Wed, 5 May 2021 11:19:15 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Felipe Balbi <balbi@kernel.org>
+Cc:     Wesley Cheng <wcheng@codeaurora.org>,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "jackp@codeaurora.org" <jackp@codeaurora.org>
+Subject: Re: [PATCH v2] usb: dwc3: gadget: Avoid canceling current request
+ for queuing error
+Message-ID: <20210505151915.GA696631@rowland.harvard.edu>
+References: <1620091264-418-1-git-send-email-wcheng@codeaurora.org>
+ <5b46e4a1-93ef-2d17-048b-5b4ceba358ae@synopsys.com>
+ <513e6c16-9586-c78e-881b-08e0a73c50a8@codeaurora.org>
+ <8735v1ibj4.fsf@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8735v1ibj4.fsf@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE for a freshly restored VM
-(before the first KVM_RUN) to check that KVM_STATE_NESTED_EVMCS is not
-lost.
+On Wed, May 05, 2021 at 03:57:03PM +0300, Felipe Balbi wrote:
+> 
+> Hi,
+> 
+> Wesley Cheng <wcheng@codeaurora.org> writes:
+> > On 5/3/2021 7:20 PM, Thinh Nguyen wrote:
+> >> Hi,
+> >> 
+> >> Wesley Cheng wrote:
+> >>> If an error is received when issuing a start or update transfer
+> >>> command, the error handler will stop all active requests (including
+> >>> the current USB request), and call dwc3_gadget_giveback() to notify
+> >>> function drivers of the requests which have been stopped.  Avoid
+> >>> having to cancel the current request which is trying to be queued, as
+> >>> the function driver will handle the EP queue error accordingly.
+> >>> Simply unmap the request as it was done before, and allow previously
+> >>> started transfers to be cleaned up.
+> >>>
+> >
+> > Hi Thinh,
+> >
+> >> 
+> >> It looks like you're still letting dwc3 stopping and cancelling all the
+> >> active requests instead letting the function driver doing the dequeue.
+> >> 
+> >
+> > Yeah, main issue isn't due to the function driver doing dequeue, but
+> > having cleanup (ie USB request free) if there is an error during
+> > usb_ep_queue().
+> >
+> > The function driver in question at the moment is the f_fs driver in AIO
+> > mode.  When async IO is enabled in the FFS driver, every time it queues
+> > a packet, it will allocate a io_data struct beforehand.  If the
+> > usb_ep_queue() fails it will free this io_data memory.  Problem is that,
+> > since the DWC3 gadget calls the completion with -ECONNRESET, the FFS
+> > driver will also schedule a work item (within io_data struct) to handle
+> > the completion.  So you end up with a flow like below
+> >
+> > allocate io_data (ffs)
+> >  --> usb_ep_queue()
+> >    --> __dwc3_gadget_kick_transfer()
+> >    --> dwc3_send_gadget_ep_cmd(EINVAL)
+> >    --> dwc3_gadget_ep_cleanup_cancelled_requests()
+> >    --> dwc3_gadget_giveback(ECONNRESET)
+> > ffs completion callback
+> > queue work item within io_data
+> >  --> usb_ep_queue returns EINVAL
+> > ffs frees io_data
+> > ...
+> >
+> > work scheduled
+> >  --> NULL pointer/memory fault as io_data is freed
 
-Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
----
-- Note: this test is not yet to be commited as it is known to fail. A
-patch like
-https://lore.kernel.org/kvm/877dkdy1x5.fsf@vitty.brq.redhat.com/T/#u
-is needed to make it pass. The patch itself requires more work.
----
- .../testing/selftests/kvm/x86_64/evmcs_test.c | 62 ++++++++++++-------
- 1 file changed, 38 insertions(+), 24 deletions(-)
+Am I reading this correctly?  It looks like usb_ep_queue() returns a 
+-EINVAL error, but then the completion callback gets invoked with a 
+status of -ECONNRESET.
 
-diff --git a/tools/testing/selftests/kvm/x86_64/evmcs_test.c b/tools/testing/selftests/kvm/x86_64/evmcs_test.c
-index 63096cea26c6..8d1a63da5c63 100644
---- a/tools/testing/selftests/kvm/x86_64/evmcs_test.c
-+++ b/tools/testing/selftests/kvm/x86_64/evmcs_test.c
-@@ -121,14 +121,39 @@ void inject_nmi(struct kvm_vm *vm)
- 	vcpu_events_set(vm, VCPU_ID, &events);
- }
- 
-+static void save_restore_vm(struct kvm_vm *vm, struct kvm_run *run)
-+{
-+	struct kvm_regs regs1, regs2;
-+	struct kvm_x86_state *state;
-+
-+	state = vcpu_save_state(vm, VCPU_ID);
-+	memset(&regs1, 0, sizeof(regs1));
-+	vcpu_regs_get(vm, VCPU_ID, &regs1);
-+
-+	kvm_vm_release(vm);
-+
-+	/* Restore state in a new VM.  */
-+	kvm_vm_restart(vm, O_RDWR);
-+	vm_vcpu_add(vm, VCPU_ID);
-+	vcpu_set_hv_cpuid(vm, VCPU_ID);
-+	vcpu_enable_evmcs(vm, VCPU_ID);
-+	vcpu_load_state(vm, VCPU_ID, state);
-+	run = vcpu_state(vm, VCPU_ID);
-+	free(state);
-+
-+	memset(&regs2, 0, sizeof(regs2));
-+	vcpu_regs_get(vm, VCPU_ID, &regs2);
-+	TEST_ASSERT(!memcmp(&regs1, &regs2, sizeof(regs2)),
-+		    "Unexpected register values after vcpu_load_state; rdi: %lx rsi: %lx",
-+		    (ulong) regs2.rdi, (ulong) regs2.rsi);
-+}
-+
- int main(int argc, char *argv[])
- {
- 	vm_vaddr_t vmx_pages_gva = 0;
- 
--	struct kvm_regs regs1, regs2;
- 	struct kvm_vm *vm;
- 	struct kvm_run *run;
--	struct kvm_x86_state *state;
- 	struct ucall uc;
- 	int stage;
- 
-@@ -147,8 +172,6 @@ int main(int argc, char *argv[])
- 
- 	run = vcpu_state(vm, VCPU_ID);
- 
--	vcpu_regs_get(vm, VCPU_ID, &regs1);
--
- 	vcpu_alloc_vmx(vm, &vmx_pages_gva);
- 	vcpu_args_set(vm, VCPU_ID, 1, vmx_pages_gva);
- 
-@@ -184,32 +207,23 @@ int main(int argc, char *argv[])
- 			    uc.args[1] == stage, "Stage %d: Unexpected register values vmexit, got %lx",
- 			    stage, (ulong)uc.args[1]);
- 
--		state = vcpu_save_state(vm, VCPU_ID);
--		memset(&regs1, 0, sizeof(regs1));
--		vcpu_regs_get(vm, VCPU_ID, &regs1);
--
--		kvm_vm_release(vm);
--
--		/* Restore state in a new VM.  */
--		kvm_vm_restart(vm, O_RDWR);
--		vm_vcpu_add(vm, VCPU_ID);
--		vcpu_set_hv_cpuid(vm, VCPU_ID);
--		vcpu_enable_evmcs(vm, VCPU_ID);
--		vcpu_load_state(vm, VCPU_ID, state);
--		run = vcpu_state(vm, VCPU_ID);
--		free(state);
--
--		memset(&regs2, 0, sizeof(regs2));
--		vcpu_regs_get(vm, VCPU_ID, &regs2);
--		TEST_ASSERT(!memcmp(&regs1, &regs2, sizeof(regs2)),
--			    "Unexpected register values after vcpu_load_state; rdi: %lx rsi: %lx",
--			    (ulong) regs2.rdi, (ulong) regs2.rsi);
-+		save_restore_vm(vm, run);
- 
- 		/* Force immediate L2->L1 exit before resuming */
- 		if (stage == 8) {
- 			pr_info("Injecting NMI into L1 before L2 had a chance to run after restore\n");
- 			inject_nmi(vm);
- 		}
-+
-+		/*
-+		 * Do KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE for a freshly
-+		 * restored VM (before the first KVM_RUN) to check that
-+		 * KVM_STATE_NESTED_EVMCS is not lost.
-+		 */
-+		if (stage == 9) {
-+			pr_info("Trying extra KVM_GET_NESTED_STATE/KVM_SET_NESTED_STATE cycle\n");
-+			save_restore_vm(vm, run);
-+		}
- 	}
- 
- done:
--- 
-2.30.2
+> I have some vague memory of discussing (something like) this with Alan
+> Stern long ago and the conclusion was that the gadget driver should
+> handle cases such as this. 
+
+Indeed, this predates the creation of the Gadget API; the same design 
+principle applies to the host-side API.  It's a very simple idea:
+
+	If an URB or usb_request submission succeeds, it is guaranteed
+	that the completion routine will be called when the transfer is
+	finished, cancelled, aborted, or whatever (note that this may 
+	happen before the submission call returns).
+
+	If an URB or usb_request submission fails, it is guaranteed that
+	the completion routine will not be called.
+
+So if dwc3 behaves as described above (usb_ep_queue() fails _and_ the 
+completion handler is called), this is a bug.
+
+Alan Stern
+
+> OTOH, we're returning failure during
+> usb_ep_queue() which tells me there's something with dwc3 (perhaps not
+> exclusively, but that's yet to be shown).
+> 
+> If I understood the whole thing correctly, we want everything except the
+> current request (the one that failed START or UPDATE transfer) to go
+> through giveback(). This really tells me that we're not handling error
+> case in kick_transfer and/or prepare_trbs() correctly.
+> 
+> I also don't want to pass another argument to kick_transfer because it
+> should be unnecessary: the current request should *always* be the last
+> one in the list. Therefore we should rely on something like
+> list_last_entry() followed by list_for_each_entry_safe_reverse() to
+> handle this without a special case.
+> 
+> ret = dwc3_send_gadget_ep_cmd();
+> if (ret < 0) {
+> 	current = list_last_entry();
+> 
+> 	unmap(current);
+>         for_each_trb_in(current) {
+>         	clear_HWO(trb);
+>         }
+> 
+> 	list_for_entry_safe_reverse() {
+>         	move_cancelled();
+>         }
+> }
+> 
+> -- 
+> balbi
+
 
