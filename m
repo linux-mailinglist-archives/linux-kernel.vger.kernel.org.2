@@ -2,100 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E344F374741
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54CB1374747
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234974AbhEERxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:53:13 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:41146 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234090AbhEERwl (ORCPT
+        id S234985AbhEERyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:54:25 -0400
+Received: from conssluserg-02.nifty.com ([210.131.2.81]:52611 "EHLO
+        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231314AbhEERxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:52:41 -0400
-Received: from [192.168.254.32] (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 24BC220B7178;
-        Wed,  5 May 2021 10:51:43 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 24BC220B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620237103;
-        bh=sdd8ZMJAgH8gVKupmR0QjAVLyv9Ta+9CM3nIhnT4w4E=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=C52y7+v8ilF8BexdEy/Wkqfza8Rzms0fSCvyQ9ulzKSjekGM8BRm9cRpZqNzS5W9h
-         EIcCsR2tBclzDi/ycQ5EEVUUYIt84oU3VROjxUcutquknWLFcHsZ5NCbFIkhPnVtuD
-         Bvn1ceilFKmtswxjkUzyiFqKarfVpHCBGPQ7kCwM=
-Subject: Re: [RFC PATCH v3 2/4] arm64: Check the return PC against unreliable
- code sections
-To:     Mark Brown <broonie@kernel.org>
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-3-madvenka@linux.microsoft.com>
- <20210504160508.GC7094@sirena.org.uk>
- <1bd2b177-509a-21d9-e349-9b2388db45eb@linux.microsoft.com>
- <20210505163406.GB4541@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <64373047-1029-df65-e7aa-b8058850fbde@linux.microsoft.com>
-Date:   Wed, 5 May 2021 12:51:42 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Wed, 5 May 2021 13:53:41 -0400
+Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178]) (authenticated)
+        by conssluserg-02.nifty.com with ESMTP id 145HqREB017289;
+        Thu, 6 May 2021 02:52:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 145HqREB017289
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1620237148;
+        bh=18ou+g7OK3u3gkUuE5/R5rN8Vplhh/fI5mnkpi7CnZM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=NCsb5lo1QosYExCTDPuYOIqfDL1JCs58WQuOxYf/59ITfGaDfvYl+z5PBS3i8yBbj
+         4dRdvdbS+GVRvlB826wJMeCA+B/cpMA60u0sal8JTLlq4tHMpBK3WD13itF9SqrWtm
+         OwKPOdY4W7Ad8JP1IWR9UJNUr2ABowsXLuHQstrsSfQVc8DCC5+EEoRr6BoVz8eRAm
+         j8QovC8pFfsHO8RMYJW369iNaeTucFbRpWCVjYE5p8PLbECNOLvMh95th7PCeCoIKn
+         7B0jgSm8Z2tkVGElAzhBk9pUNB+33H36aDfztNKtsllc+jwtoLtv8bJd0O7EavuKj+
+         5CzJdirlJXbpg==
+X-Nifty-SrcIP: [209.85.215.178]
+Received: by mail-pg1-f178.google.com with SMTP id s22so2315396pgk.6;
+        Wed, 05 May 2021 10:52:28 -0700 (PDT)
+X-Gm-Message-State: AOAM532sgeI/px8KO3qNYaQB1uwFa3UKqWKW7SrC9vdNrsGt3qjZqKGq
+        q43XSoxiL0hz1Y5vSf1lC0rZhkIRijaLK9W0RMM=
+X-Google-Smtp-Source: ABdhPJxLDcLruVdNClMyGG+e/5NXyEcB4TVe8Gf5ERvv4Kcw+wyW0ic+fLdN/Lk4jB++81hOxUlCjXOkyUxxINIO5GA=
+X-Received: by 2002:a63:e044:: with SMTP id n4mr121371pgj.47.1620237147212;
+ Wed, 05 May 2021 10:52:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210505163406.GB4541@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210502180957.3419490-1-masahiroy@kernel.org>
+In-Reply-To: <20210502180957.3419490-1-masahiroy@kernel.org>
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 6 May 2021 02:51:50 +0900
+X-Gmail-Original-Message-ID: <CAK7LNAS4F9aSF2hZPVmy1vFOFRyOvMsrGtxKN0AMEB9Jp6Dtpw@mail.gmail.com>
+Message-ID: <CAK7LNAS4F9aSF2hZPVmy1vFOFRyOvMsrGtxKN0AMEB9Jp6Dtpw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] kbuild: parameterize the .o part of suffix-search
+To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, May 3, 2021 at 3:10 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
+>
+> The suffix-search macro hard-codes the suffix, '.o'.
+>
+> Make it a parameter so that the multi-search and real-search macros
+> can be reused for foo-dtbs syntax introduced by commit 15d16d6dadf6
+> ("kbuild: Add generic rule to apply fdtoverlay").
+>
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
 
 
-On 5/5/21 11:34 AM, Mark Brown wrote:
-> On Tue, May 04, 2021 at 02:03:14PM -0500, Madhavan T. Venkataraman wrote:
->> On 5/4/21 11:05 AM, Mark Brown wrote:
-> 
->>>> @@ -118,9 +160,21 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->>>>  			return -EINVAL;
->>>>  		frame->pc = ret_stack->ret;
->>>>  		frame->pc = ptrauth_strip_insn_pac(frame->pc);
->>>> +		return 0;
->>>>  	}
-> 
->>> Do we not need to look up the range of the restored pc and validate
->>> what's being pointed to here?  It's not immediately obvious why we do
->>> the lookup before handling the function graph tracer, especially given
->>> that we never look at the result and there's now a return added skipping
->>> further reliability checks.  At the very least I think this needs some
->>> additional comments so the code is more obvious.
-> 
->> I want sym_code_ranges[] to contain both unwindable and non-unwindable ranges.
->> Unwindable ranges will be special ranges such as the return_to_handler() and
->> kretprobe_trampoline() functions for which the unwinder has (or will have)
->> special code to unwind. So, the lookup_range() has to happen before the
->> function graph code. Please look at the last patch in the series for
->> the fix for the above function graph code.
-> 
-> That sounds reasonable but like I say should probably be called out in
-> the code so it's clear to people working with it.
-> 
+Applied to linux-kbuild.
 
-OK. To make this better, I will do the lookup_range() after the function
-graph code to begin with. Then, in the last patch for the function graph
-code, I will move it up. This way, the code is clear and your comment
-is addressed.
 
->> On the question of "should the original return address be checked against
->> sym_code_ranges[]?" - I assumed that if there is a function graph trace on a
->> function, it had to be an ftraceable function. It would not be a part
->> of sym_code_ranges[]. Is that a wrong assumption on my part?
-> 
-> I can't think of any cases where it wouldn't be right now, but it seems
-> easier to just do a redundant check than to have the assumption in the
-> code and have to think about if it's missing.
-> 
+>  scripts/Makefile.lib | 19 +++++++++++--------
+>  1 file changed, 11 insertions(+), 8 deletions(-)
+>
+> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
+> index 64daf37e874b..88b446ed6532 100644
+> --- a/scripts/Makefile.lib
+> +++ b/scripts/Makefile.lib
+> @@ -44,19 +44,22 @@ else
+>  obj-y          := $(filter-out %/, $(obj-y))
+>  endif
+>
+> -# Expand $(foo-objs) $(foo-y) by calling $(call suffix-search,foo.o,-objs -y)
+> -suffix-search = $(strip $(foreach s, $2, $($(1:.o=$s))))
+> +# Expand $(foo-objs) $(foo-y) etc. by replacing their individuals
+> +suffix-search = $(strip $(foreach s, $3, $($(1:%$(strip $2)=%$s))))
+> +# List composite targets that are constructed by combining other targets
+> +multi-search = $(sort $(foreach m, $1, $(if $(call suffix-search, $m, $2, $3 -), $m)))
+> +# List primitive targets that are compiled from source files
+> +real-search = $(foreach m, $1, $(if $(call suffix-search, $m, $2, $3 -), $(call suffix-search, $m, $2, $3), $m))
+> +
+>  # If $(foo-objs), $(foo-y), $(foo-m), or $(foo-) exists, foo.o is a composite object
+> -multi-search = $(sort $(foreach m, $1, $(if $(call suffix-search, $m, $2 -), $m)))
+> -multi-obj-y := $(call multi-search,$(obj-y),-objs -y)
+> -multi-obj-m := $(call multi-search,$(obj-m),-objs -y -m)
+> +multi-obj-y := $(call multi-search, $(obj-y), .o, -objs -y)
+> +multi-obj-m := $(call multi-search, $(obj-m), .o, -objs -y -m)
+>  multi-obj-ym := $(multi-obj-y) $(multi-obj-m)
+>
+>  # Replace multi-part objects by their individual parts,
+>  # including built-in.a from subdirectories
+> -real-search = $(foreach m, $1, $(if $(call suffix-search, $m, $2 -), $(call suffix-search, $m, $2), $m))
+> -real-obj-y := $(call real-search, $(obj-y),-objs -y)
+> -real-obj-m := $(call real-search, $(obj-m),-objs -y -m)
+> +real-obj-y := $(call real-search, $(obj-y), .o, -objs -y)
+> +real-obj-m := $(call real-search, $(obj-m), .o, -objs -y -m)
+>
+>  always-y += $(always-m)
+>
+> --
+> 2.27.0
+>
 
-Agreed. Will do the check.
 
-Madhavan
+-- 
+Best Regards
+Masahiro Yamada
