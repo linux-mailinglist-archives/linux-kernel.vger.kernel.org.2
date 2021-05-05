@@ -2,181 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA5A373E96
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:33:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84FD1373E9F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:36:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233502AbhEEPe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:34:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
+        id S233332AbhEEPhG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:37:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53116 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232327AbhEEPeY (ORCPT
+        with ESMTP id S231995AbhEEPhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:34:24 -0400
-Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5AAC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 08:33:28 -0700 (PDT)
-Received: by mail-qt1-x829.google.com with SMTP id 1so1504893qtb.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:33:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=O6w0cG9YtDPDCbidOpCE3ksxspkqrocA0oYzTOOZmTY=;
-        b=YQKbrBTtFj9MppoNVFsLxDdSZ/GmVwL/zzYHnJqJJ+CymA6PwkB1RXQU/zknmwLbOx
-         nRuC+c3zVZagrt5JC1/dbTDziLPRnMg7fkfFoSsi9M0fP6X0Abrrd6/b+rh/HqznwT82
-         AVGURakeDyDD3GwV+EAlU+XQLqbIfFHRztLt1XV19fmpF4hhWB0aFK3J7yhunE6E1FU6
-         derUunuLRMB9p+K3jUD1ccJ5ibKnrOtLRqvme4dyVnPIeSxkHxC4iGnQaPUudJSovhEz
-         DPKouVJD32Yk98btYA8W5kzdlIpnm+FtXJJLsnua4l8pxYbXL45ANgqX4SVaqy3RhWbz
-         5v3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=O6w0cG9YtDPDCbidOpCE3ksxspkqrocA0oYzTOOZmTY=;
-        b=SKh2sqHSDPW+EZ00KUUh0GBBk/fGSikE8iR0l1VGD7Qc556gBU/ejEzQsGUCPOHAqT
-         VvJtdAqnFb1TLWl55iXLjX93y3P5B45YKHe3JMtYi8s4jMHppsqh1eb+vkfOndDxm7SZ
-         8xznxq51FnkIWNXkIrQu/gtxKJ877LWv0GHxlq3quIzx+ERzC6VtrauzsXD0xotrHNL7
-         Qm1iKZX4nhHhntcKFXspey26FpBAiM7kKyZ4TE/dWxzlG+qMjySkmJJATEuZWpQZSfRi
-         LBWEHgcMoTQ0ECJAajf4doIn5ENS3Sv+YrIaOU0Y1SLd8qUaLkH3UNhLUshHbxtngGcl
-         9BbQ==
-X-Gm-Message-State: AOAM530dHSCv+zYAmRY7CBa3Uke7EzHgohkAEUjCbcKEQCEbW1U8/hUt
-        xBD1yAv6dgTpZi3R2wR/T5Aasg==
-X-Google-Smtp-Source: ABdhPJxhPUMuK8ha1j9GrZqzuSO7vV5fOOc6RgsQZm7A+tYOpJMWKo4YcFwkk9ghgDO7D11M6Zd0SA==
-X-Received: by 2002:a05:622a:1014:: with SMTP id d20mr8092919qte.64.1620228807158;
-        Wed, 05 May 2021 08:33:27 -0700 (PDT)
-Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
-        by smtp.gmail.com with ESMTPSA id t18sm13994897qkj.75.2021.05.05.08.33.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 08:33:26 -0700 (PDT)
-Message-ID: <fbee67d620d456b5f2988b7f0ba28d5c6335ee6c.camel@ndufresne.ca>
-Subject: Re: [PATCH v10 6/9] media: uapi: Add a control for HANTRO driver
-From:   Nicolas Dufresne <nicolas@ndufresne.ca>
-To:     John Cox <jc@kynesim.co.uk>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, lee.jones@linaro.org,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
-        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com, cphealy@gmail.com
-Date:   Wed, 05 May 2021 11:33:24 -0400
-In-Reply-To: <6bd59glrp4fq3j3ngmbl5p4u7aethvrv34@4ax.com>
-References: <20210420121046.181889-1-benjamin.gaignard@collabora.com>
-         <20210420121046.181889-7-benjamin.gaignard@collabora.com>
-         <6bd59glrp4fq3j3ngmbl5p4u7aethvrv34@4ax.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
+        Wed, 5 May 2021 11:37:05 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9368C061574;
+        Wed,  5 May 2021 08:36:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BHjn+8BJGc2uHiH1xODfkxmvyV8IDwFLyUOp2gE2Us8=; b=PxFJqWL+155H6nniAkd3Jsspot
+        gYFM/i3hrVtTk2vLE86VMH7UCPyrz4I2uI/YEjSb/R38kZfLQtiyBJ47bgU5p48G8YhrM1hbnD9sy
+        ZlyJeb/HIzVXtSK3XRV+S0vEXZuH5wCHNNIqozK8HaNzjprMAjAS9max4K5Wxn5CR6qSwRZK4n+XP
+        dJcZiqjv9ZjwlRY1GQj5mHA34HIp+sZSDazvV86vIflP7LjYaCsCcQGnC5fosLhVnfmKHUXetyEwp
+        v4fqtvLzDBk4JmZaIwq4J5Cq91skt0ZsCYQ8DOK/zF9fbCbyDPtdmP+W//t8ytXdDuRudW9TB40ay
+        jxjs77Wg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1leJY7-000VYK-Eu; Wed, 05 May 2021 15:35:04 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 80C363001D0;
+        Wed,  5 May 2021 17:34:54 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5D3E92B8FD1E1; Wed,  5 May 2021 17:34:54 +0200 (CEST)
+Date:   Wed, 5 May 2021 17:34:54 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Andi Kleen <ak@linux.intel.com>
+Cc:     linux-kernel@vger.kernel.org, Andi Kleen <andi@firstfloor.org>,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH] sched: Work around undefined behavior in sched class
+ checking
+Message-ID: <YJK7HlQYAIFVj9fL@hirez.programming.kicks-ass.net>
+References: <20210505033945.1282851-1-ak@linux.intel.com>
+ <YJI/OwoflyY2IXvf@hirez.programming.kicks-ass.net>
+ <20210505143442.GR4032392@tassilo.jf.intel.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505143442.GR4032392@tassilo.jf.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le mercredi 05 mai 2021 à 16:18 +0100, John Cox a écrit :
-> > The HEVC HANTRO driver needs to know the number of bits to skip at
-> > the beginning of the slice header.
-> > That is a hardware specific requirement so create a dedicated control
-> > for this purpose.
+On Wed, May 05, 2021 at 07:34:42AM -0700, Andi Kleen wrote:
+> > > Use RELOC_HIDE to make this work. This hides the symbols from gcc,
+> > > so the optimizer won't make these assumption. I also split
+> > > the BUG_ONs in multiple.
 > > 
-> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > ---
-> > .../userspace-api/media/drivers/hantro.rst    | 19 +++++++++++++++++++
-> > .../userspace-api/media/drivers/index.rst     |  1 +
-> > include/media/hevc-ctrls.h                    | 13 +++++++++++++
-> > 3 files changed, 33 insertions(+)
-> > create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
-> > 
-> > diff --git a/Documentation/userspace-api/media/drivers/hantro.rst
-> > b/Documentation/userspace-api/media/drivers/hantro.rst
-> > new file mode 100644
-> > index 000000000000..cd9754b4e005
-> > --- /dev/null
-> > +++ b/Documentation/userspace-api/media/drivers/hantro.rst
-> > @@ -0,0 +1,19 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +Hantro video decoder driver
-> > +===========================
-> > +
-> > +The Hantro video decoder driver implements the following driver-specific
-> > controls:
-> > +
-> > +``V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP (integer)``
-> > +    Specifies to Hantro HEVC video decoder driver the number of data (in
-> > bits) to
-> > +    skip in the slice segment header.
-> > +    If non-IDR, the bits to be skipped go from syntax element
-> > "pic_output_flag"
-> > +    to before syntax element "slice_temporal_mvp_enabled_flag".
-> > +    If IDR, the skipped bits are just "pic_output_flag"
-> > +    (separate_colour_plane_flag is not supported).
+> > Urgh, that insanity again :/ Can't we pretty please get a GCC flag to
+> > disable that?
 > 
-> What happens if it is a dependant_slice_segement or
-> output_flag_present_flag?  Those flags are all dependant on
-> dependant_slice_segement being false.  I'm guessing 0 but it maybe
-> should be documented.
+> Even if that was done (I could totally see the gcc people pushing back on this;
+> why should they add special flags just for Linux developers not understanding
+> ISO-C?)
 
-Zero indeed.
+I understand C fine, I just don't agree with it. I also want to
+explicitly define as much UB as is possible, because UB is just utter
+garbage.
 
-> Likewise if output_flag_present_flag is false pic_output_flag will not
-> be coded, so maybe express it as "after slice_type" rather than "before
-> pic_output_flag"?
+So just like we do with -fwrapv and others, add more knobs that
+explictly define away UB. Less UB is more better. This being C it's
+unlikely we'll ever get to no UB, but we should damn well try :-)
 
-Should work too.
+> you would still need the fix for already shipping compilers.
 
-> 
-> Regards
-> 
-> John Cox
-> 
-> > +.. note::
-> > +
-> > +        This control is not yet part of the public kernel API and
-> > +        it is expected to change.
-> > diff --git a/Documentation/userspace-api/media/drivers/index.rst
-> > b/Documentation/userspace-api/media/drivers/index.rst
-> > index 1a9038f5f9fa..12e3c512d718 100644
-> > --- a/Documentation/userspace-api/media/drivers/index.rst
-> > +++ b/Documentation/userspace-api/media/drivers/index.rst
-> > @@ -33,6 +33,7 @@ For more details see the file COPYING in the source
-> > distribution of Linux.
-> > 
-> > 	ccs
-> > 	cx2341x-uapi
-> > +        hantro
-> > 	imx-uapi
-> > 	max2175
-> > 	meye-uapi
-> > diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
-> > index 8e0109eea454..b713eeed1915 100644
-> > --- a/include/media/hevc-ctrls.h
-> > +++ b/include/media/hevc-ctrls.h
-> > @@ -224,4 +224,17 @@ struct v4l2_ctrl_hevc_decode_params {
-> > 	__u64	flags;
-> > };
-> > 
-> > +/*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2
-> > */
-> > +#define
-> > V4L2_CID_CODEC_HANTRO_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1200)
-> > +/*
-> > + * V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP -
-> > + * the number of data (in bits) to skip in the
-> > + * slice segment header.
-> > + * If non-IDR, the bits to be skipped go from syntax element
-> > "pic_output_flag"
-> > + * to before syntax element "slice_temporal_mvp_enabled_flag".
-> > + * If IDR, the skipped bits are just "pic_output_flag"
-> > + * (separate_colour_plane_flag is not supported).
-> > + */
-> > +#define V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP	(V4L2_CID_CODEC_HANTRO_BASE
-> > + 0)
-> > +
-> > #endif
-
-
+Yes, there is that.
