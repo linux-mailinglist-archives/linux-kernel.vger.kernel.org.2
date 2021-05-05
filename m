@@ -2,132 +2,210 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D47E7373DD6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:42:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352B1373DDA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233309AbhEEOnI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:43:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233244AbhEEOnG (ORCPT
+        id S233338AbhEEOnr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:43:47 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:47723 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233112AbhEEOnq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:43:06 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2307DC06174A;
-        Wed,  5 May 2021 07:42:09 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id m9so2983469ybm.3;
-        Wed, 05 May 2021 07:42:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=T4XfxZaZq47CKwnyWGH3VIAzItUvGF98JVa05cm0EJ4=;
-        b=gbtIna15A823UxWQ8KiZ4769tXSVtif/RLtdgeX9uWDg+cuVSJV4atrp8HJ8X3ZpB9
-         NVF2kMygWDlHvterIJIVMEDbWweRPYt1t8DBjeupko66Yu1RjklNdu5rqTdFvViJfqRo
-         NiB5C+f9Q2aVX9FM4BdGj6RhRAvzYqeOT17lhtAaNqMCaV1FctqgPyP7N4bhn0AnB7Rl
-         Eo4baobiVUNeAyus7N6eVYY5TZbXQa0+C9kZJdK29k0NXsYGGw/S55JFOvJGUuXGbJiy
-         MAUACY/LcNTxgx23d3lpTWyBW4nVeuTbIfvOy4xHPZCwhUOFpQouZhxilzVNZzqXblQL
-         CmMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=T4XfxZaZq47CKwnyWGH3VIAzItUvGF98JVa05cm0EJ4=;
-        b=gNe2NU6+Pp3J18Nk+sp/+jir0IaVLhyqBBN8mdaBHJXJPfmlVQjWNcleQUJnp5kHoc
-         GWpCO0YwmIKbtILdwMRwjRynlZrMw+YMyT8H/DSI+BX+rypsl3jq+xDwYulU0UvYMro6
-         1TzdW2JTzYvUNu9zI/w1UtHuN2pvivqM8eS/eUZSn6IFd7k6hwnzxK6TCasuWVx629e+
-         HL/q1XUBm90y3ewGB0LTzLBnf6eUApxTpaXmCTIH6+1NfcaHhv3Wo6h4kOj9XD1uM2rs
-         p3ftzc8VKGWL52arzUJ+f4O89sSjf/nQCpkBa7rHZODjuDZWNcTItQAULzirpw8gXMWO
-         iCdA==
-X-Gm-Message-State: AOAM5339GZkXoySPs+N55jgR4sHgtkz+6OKTYPUiwT4C72UNEfQHSAGm
-        mOm62zVx1r9Se/0rqtxOJTBQMvhd5R4YTANBMf0=
-X-Google-Smtp-Source: ABdhPJzciMEHoN9O9+VTTcdf9MnIS5J1InKekAolQeJU8U366NZlTQ0yPSlsG12wbhVfnh/RhfnWqokTIgU1II4fqKc=
-X-Received: by 2002:a25:ca85:: with SMTP id a127mr37116107ybg.33.1620225728295;
- Wed, 05 May 2021 07:42:08 -0700 (PDT)
+        Wed, 5 May 2021 10:43:46 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id eIjalNZWvWztCeIjdlLk0I; Wed, 05 May 2021 16:42:48 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1620225768; bh=Av024PgQCGoQzBKEgJiqT3Qmm3Jj8dv5DOFxbUBHbUU=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=TtTvHAwCOBdXfYzb/VCYG+SZ9TdOVUHaGThOIQud5Ho8RqTZE+5fJ0bdFt8gscW4K
+         JNQQRomYfZ1OdUGi5PNaE7BaOZKbLoWgRnaeCeNRdnXoMyzi6nmpq4k8h/C0sqBGat
+         cAZm+wgn0BrfNPZPoa6y4/DFHq5lC98GcNDMB+OGIn7zXN0Rd5lw1GrLKnBIqpUmwM
+         KWHVj8mgzqiXpAk25pcxnfhKayHwNZfelkOU6Uzom/WbLQ14WXtKud6k7wT/0u8dT7
+         qtiQs9js9bcU5CMHIGUcC20W0Op3OwhpLjOajV05Gcq9zpWfXBMTP3F1lyJm3gHb1F
+         0qxVsGRlOxS9g==
+Subject: Re: [PATCH v10 0/9] Add HANTRO G2/HEVC decoder support for IMX8MQ
+To:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+        ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, lee.jones@linaro.org,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, emil.l.velikov@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com, cphealy@gmail.com
+References: <20210420121046.181889-1-benjamin.gaignard@collabora.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <57dd758d-07b6-abbe-ab0d-2cc165b650db@xs4all.nl>
+Date:   Wed, 5 May 2021 16:42:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <CAJTyqKP4Ud7aWxdCihfzeZ3dQe_5yeTAVnXcKDonciez-g2zWA@mail.gmail.com>
- <878s51e3jc.fsf@gmail.com> <7999ba57-9b95-265e-a189-d9ca01304b13@schoebel-theuer.de>
- <53413f58-269a-a1f6-2a97-e33819446609@metux.net>
-In-Reply-To: <53413f58-269a-a1f6-2a97-e33819446609@metux.net>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 5 May 2021 16:41:57 +0200
-Message-ID: <CANiq72kjMf=Qv0+9vN45Qg6te1RUCTtmzP=a8X8XS8sriOzbkQ@mail.gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Cc:     Thomas Schoebel-Theuer <tst@schoebel-theuer.de>,
-        Kajetan Puchalski <mrkajetanp@gmail.com>,
-        mceier+kernel@gmail.com, Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210420121046.181889-1-benjamin.gaignard@collabora.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfB4xz84t/9tJk8Tsh/SHVh+F0gHNN/2hzLMgvPRnsZgWg9cigkHp23SpfIv5EOdIN/yMbL89V4s59xpPZ/wWPxrM9vGxHd5aIHSQxy4PKciu/3fogBgX
+ fuBsPFvSEK8/rkzvxVee/IXpvPHVM8hs91BJmLIVR2slEN30lh+At2QjCWeQ2PvVrGL8wuQpW93357c1iq+erPLg+1If30hxDafSuqR1VE4Ilt8nRKqzITFa
+ DmWJrAUzwIoExjcYZ7zt0ROb/CzrnyxpLEc/C2SMM1o7JZDjbt0i2KD/PyZ/OQgWLXVIDgnWTSaoRCYlL6HsTdggUs1ieb1qy00XQ3eCH+lVTIHy2wROlfPp
+ N17PLlTWcUG4v/yLzTrizqYFMYJLljYVIQEIjuhfnuqnqko0cAhYFnx/GOmvQBxn7xO3YFo7MQX+kw3jciWJ97WXbmidNoomK8S9vnqNhorqwZk0ze+9T5J4
+ //nHlCxr/pIuL/YYmoROWposjCM5bRTvbqTr30fB1JGcS9NJ8j0auP7S+IBOqlg5XyxOE90t6lzSjtQYBYOKp3B2D49F9mU5F9XMO161Si8qzzmiIBXI7att
+ h+L2pKrGQmJuoiAo6AGrjTaa+uqAUkRiz16+00zWxiX83CbgoEYuGbaW7jBUGFS8eXAO1y2Rcp5veo+5yDsctpTcCEBFqRR5QVZhVYJkZ7VcaaDs9rdzQXAx
+ SrHGWyitHtWTsbyEgDIPmMMg0bAR9Tv3ZkMr/YhDxBHsFwWWv7zhy8jcAD/STjQKw/sh6t51G3jXj18BylIshyZuzeolozPih3ylR3lNFm2auUdR4EEfvnp7
+ vrAs9yc9w7ffcqTM9FE+EOdklQdfFawdg1edG8hbwLlW9635P8zIqCWnXRyOjE6SNQbIuUd48GZ77avb+JHJ7TnDuyZUXfTbtzmHik9mMnx1EXCc9gZc6p1t
+ 3uISmyZyEs/9CaV21lCaLCEHi5DMBhvdqYI97ue9idK1ZRC9pO11iiTfRHFHwPazWaoeUR5rFG/vO6pYHehKgfg9LZ9j5JeYQv7N1FkAN+QlIT2u
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 3:59 PM Enrico Weigelt, metux IT consult
-<lkml@metux.net> wrote:
->
-> ACK. And speaking for embedded world, 20+ product lifetime is pretty
-> common. During that lifetime you'd need to be able to pick out old
-> sources, so some changes and rebuild your code and having your system
-> still running seamlessly after the update. IOW: long-term
-> reproducability is absolutely vital. Linux does much better here than
-> many competitors (that eg. need proprietary build tools that don't
-> even run later machine generations)
+Hi Benjamin,
 
-You should be able to rebuild old releases with newer compilers.
+On 20/04/2021 14:10, Benjamin Gaignard wrote:
+> The IMX8MQ got two VPUs but until now only G1 has been enabled.
+> This series aim to add the second VPU (aka G2) and provide basic 
+> HEVC decoding support.
+> 
+> To be able to decode HEVC it is needed to add/update some of the
+> structures in the uapi. In addition of them one HANTRO dedicated
+> control is required to inform the driver of the number of bits to skip
+> at the beginning of the slice header.
+> The hardware require to allocate few auxiliary buffers to store the
+> references frame or tile size data.
 
-Like the major C and C++ compilers keep support for old code and old
-standards, the main Rust compiler keeps support for old code and old
-"editions" too.
+This series clashes with this patch:
 
-> Yes, and also adding long-term reproducability as another vital requirement.
+https://patchwork.linuxtv.org/project/linux-media/patch/20210427071554.2222625-1-jernej.skrabec@siol.net/
 
-See my sibling replies to Linus W. on the efforts underway around this.
+and this patch series:
 
-> Rust seems to be a fast moving target. Even building a Rust compiler can
-> be a pretty complex task (if you're not a full time rust developer).
+https://patchwork.linuxtv.org/project/linux-media/cover/20210401144336.2495479-1-emil.l.velikov@gmail.com/
 
-It only takes a handful of commands. If you know how to build GCC or
-LLVM, building Rust is about the same complexity.
+For both PRs are pending.
 
-> Gcc, in constrast, itself can be built on older compilers (even non-
-> gcc). How to do that w/ rustc ? According to my observations some while
-> ago, it needs a fairly recent rustc to compile recent rustc, so when
-> coming with an old version, one has to do a longer chain of rustc
-> builds first. Doesn't look exactly appealing for enterprise grade and
-> long term support.
+It's probably better to wait until this is merged before rebasing this series.
 
-Why would enterprise users care about bootstrapping? Companies
-typically want to use supported software, so they would use the
-pre-built compiler their distribution offers support for.
+And if drivers are going to be moved out of staging, leaving only HEVC support
+in staging, then I'd wait until that is done as well.
 
-For companies that want more features, they can use newer versions via
-the pre-built official binaries from the Rust project itself, which
-are routinely used by many projects around the world. Some companies
-are even using particular (i.e. frozen) Rust nightly compilers they
-picked.
+Regards,
 
-> Correct, the amount of people who understand rust is pretty low, those
-> who also understand enough of linux kernel development, probably just
-> a hand full world wide. For any practical business use case this
-> practically means: unsupported.
+	Hans
 
-This assumes Rust-enabled kernels will be provided by distributions to
-businesses from day 1 as soon as supports gets merged.
+> 
+> The driver has been tested with fluster test suite stream.
+> For example with this command: ./fluster.py run -ts JCT-VC-HEVC_V1 -d GStreamer-H.265-V4L2SL-Gst1.0
+> 
+> version 10:
+>  - Shorter version of the previous series without ctrl block patches
+>    and no DT modifications.
+>    The scope of this series is limited to HEVC support.
+> 
+> version 9:
+>  - Corrections in commits messages.
+>  - Define the dedicated control in hevc-controls.h
+>  - Add note in documentation.
+>  - Change max value of the dedicated control.
+>  - Rebased on media_tree/master branch.
+> 
+> version 8:
+>  - Add reviewed-by and ack-by tags 
+>  - Fix the warnings reported by kernel test robot
+>  - Only patch 9 (adding dedicated control), patch 11 (HEVC support) and
+>    patch 13 (DT changes) are still missing of review/ack tag.
+> 
+> version 7:
+>  - Remove 'q' from syscon phandle name to make usable for iMX8MM too.
+>    Update the bindings documentation.
+>  - Add review/ack tags.
+>  - Rebase on top of media_tree/master
+>  - Be more accurate when computing the size of the memory needed motion
+>    vectors.
+>  - Explain why the all clocks need to set in the both DT node.
+> 
+> version 6:
+>  - fix the errors reported by kernel test robot
+> 
+> version 5:
+>  - use syscon instead of VPU reset driver.
+>  - Do not break kernel/DT backward compatibility.
+>  - Add documentation for dedicated Hantro control.
+>  - Fix the remarks done by Ezequeil (typo, comments, unused function)
+>  - Run v4l2-compliance without errors (see below).
+>  - Do not add field to distinguish version, check postproc reg instead
+> 
+> version 4:
+> - Split the changes in hevc controls in 2 commits to make them easier to
+>   review.
+> - Change hantro_codec_ops run() prototype to return errors   
+> - Hantro v4l2 dedicated control is now only an integer
+> - rebase on top of VPU reset changes posted here:
+>   https://www.spinics.net/lists/arm-kernel/msg878440.html
+> - Various fix from previous remarks
+> - Limit the modifications in API to what the driver needs
+> 
+> version 3:
+> - Fix typo in Hantro v4l2 dedicated control
+> - Add documentation for the new structures and fields
+> - Rebased on top of media_tree for-linus-5.12-rc1 tag
+> 
+> version 2:
+> - remove all change related to scaling
+> - squash commits to a coherent split
+> - be more verbose about the added fields
+> - fix the comments done by Ezequiel about dma_alloc_coherent usage
+> - fix Dan's comments about control copy, reverse the test logic
+> in tile_buffer_reallocate, rework some goto and return cases.
+> - be more verbose about why I change the bindings
+> - remove all sign-off expect mime since it is confusing
+> - remove useless clocks in VPUs nodes
+> 
+> Benjamin Gaignard (9):
+>   media: hevc: Add fields and flags for hevc PPS
+>   media: hevc: Add decode params control
+>   media: hantro: change hantro_codec_ops run prototype to return errors
+>   media: hantro: Define HEVC codec profiles and supported features
+>   media: hantro: Only use postproc when post processed formats are
+>     defined
+>   media: uapi: Add a control for HANTRO driver
+>   media: hantro: handle V4L2_PIX_FMT_HEVC_SLICE control
+>   media: hantro: Introduce G2/HEVC decoder
+>   media: hantro: IMX8M: add variant for G2/HEVC codec
+> 
+>  .../userspace-api/media/drivers/hantro.rst    |  19 +
+>  .../userspace-api/media/drivers/index.rst     |   1 +
+>  .../media/v4l/ext-ctrls-codec.rst             | 108 +++-
+>  .../media/v4l/vidioc-queryctrl.rst            |   6 +
+>  drivers/media/v4l2-core/v4l2-ctrls.c          |  28 +-
+>  drivers/staging/media/hantro/Makefile         |   2 +
+>  drivers/staging/media/hantro/hantro.h         |  13 +-
+>  drivers/staging/media/hantro/hantro_drv.c     |  99 ++-
+>  .../staging/media/hantro/hantro_g1_h264_dec.c |  10 +-
+>  .../media/hantro/hantro_g1_mpeg2_dec.c        |   4 +-
+>  .../staging/media/hantro/hantro_g1_vp8_dec.c  |   6 +-
+>  .../staging/media/hantro/hantro_g2_hevc_dec.c | 587 ++++++++++++++++++
+>  drivers/staging/media/hantro/hantro_g2_regs.h | 198 ++++++
+>  .../staging/media/hantro/hantro_h1_jpeg_enc.c |   4 +-
+>  drivers/staging/media/hantro/hantro_hevc.c    | 327 ++++++++++
+>  drivers/staging/media/hantro/hantro_hw.h      |  69 +-
+>  .../staging/media/hantro/hantro_postproc.c    |  14 +
+>  drivers/staging/media/hantro/hantro_v4l2.c    |   5 +-
+>  drivers/staging/media/hantro/imx8m_vpu_hw.c   |  74 ++-
+>  .../media/hantro/rk3399_vpu_hw_jpeg_enc.c     |   4 +-
+>  .../media/hantro/rk3399_vpu_hw_mpeg2_dec.c    |   4 +-
+>  .../media/hantro/rk3399_vpu_hw_vp8_dec.c      |   6 +-
+>  drivers/staging/media/sunxi/cedrus/cedrus.c   |   6 +
+>  drivers/staging/media/sunxi/cedrus/cedrus.h   |   1 +
+>  .../staging/media/sunxi/cedrus/cedrus_dec.c   |   2 +
+>  .../staging/media/sunxi/cedrus/cedrus_h265.c  |  12 +-
+>  include/media/hevc-ctrls.h                    |  46 +-
+>  27 files changed, 1586 insertions(+), 69 deletions(-)
+>  create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
+>  create mode 100644 drivers/staging/media/hantro/hantro_g2_hevc_dec.c
+>  create mode 100644 drivers/staging/media/hantro/hantro_g2_regs.h
+>  create mode 100644 drivers/staging/media/hantro/hantro_hevc.c
+> 
 
-Instead, what will need to happen first is that we evolve the support
-enough to compile the kernel with a Rust stable compiler, some
-important drivers get written *and* distributions start shipping those
-drivers in their business-oriented releases.
-
-That will take some time, and interested companies (e.g. for drivers)
-and their kernel developers will learn how to use Rust in the
-meantime.
-
-Cheers,
-Miguel
