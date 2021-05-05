@@ -2,114 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1B2A373F1C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:01:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA5A373E96
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:33:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233720AbhEEQBz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:01:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58782 "EHLO
+        id S233502AbhEEPe0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:34:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52518 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233603AbhEEQBy (ORCPT
+        with ESMTP id S232327AbhEEPeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:01:54 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEBEDC061574;
-        Wed,  5 May 2021 09:00:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=oVPeo/1eyCIP/suESTeKyctz41j9g0cex7YKKkrVPKQ=; b=RysEn5fK/Xx8ATWOD25wm6Kh3q
-        GlbTNVSJ5WsPFcOQUgbSh2iA40dfUSGf5iztvJyDsR9UfhX0YJJo4ufQUEcJPhgwdrt3a2pP7AVHD
-        q58hIXLNb3/vbxMfQOa2UMOhWua1mDmcM2Q1T0O2kfe2mTr4sC3LvllggCjTBbEwU6SzxPhFib0We
-        ArE7s1laoXo/XzWPfZRjKkz7XijUeG3ViEGERD/jWWBG12k5o9bh195WJUbI33vk+SgR54N+jwsZC
-        ok6+ZOCFx1UAjBR+oIKs2QhafWMwfuyEKGs60YY4t646WnxLsRwSSnghllkHTS9nc+vW3YDyd+yNo
-        ehC3Ae3g==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1leJvm-000XZr-Nc; Wed, 05 May 2021 15:59:40 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 42/96] mm/swap: Add folio_activate
-Date:   Wed,  5 May 2021 16:05:34 +0100
-Message-Id: <20210505150628.111735-43-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210505150628.111735-1-willy@infradead.org>
-References: <20210505150628.111735-1-willy@infradead.org>
+        Wed, 5 May 2021 11:34:24 -0400
+Received: from mail-qt1-x829.google.com (mail-qt1-x829.google.com [IPv6:2607:f8b0:4864:20::829])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D5AAC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 08:33:28 -0700 (PDT)
+Received: by mail-qt1-x829.google.com with SMTP id 1so1504893qtb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:33:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ndufresne-ca.20150623.gappssmtp.com; s=20150623;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :user-agent:mime-version:content-transfer-encoding;
+        bh=O6w0cG9YtDPDCbidOpCE3ksxspkqrocA0oYzTOOZmTY=;
+        b=YQKbrBTtFj9MppoNVFsLxDdSZ/GmVwL/zzYHnJqJJ+CymA6PwkB1RXQU/zknmwLbOx
+         nRuC+c3zVZagrt5JC1/dbTDziLPRnMg7fkfFoSsi9M0fP6X0Abrrd6/b+rh/HqznwT82
+         AVGURakeDyDD3GwV+EAlU+XQLqbIfFHRztLt1XV19fmpF4hhWB0aFK3J7yhunE6E1FU6
+         derUunuLRMB9p+K3jUD1ccJ5ibKnrOtLRqvme4dyVnPIeSxkHxC4iGnQaPUudJSovhEz
+         DPKouVJD32Yk98btYA8W5kzdlIpnm+FtXJJLsnua4l8pxYbXL45ANgqX4SVaqy3RhWbz
+         5v3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:user-agent:mime-version:content-transfer-encoding;
+        bh=O6w0cG9YtDPDCbidOpCE3ksxspkqrocA0oYzTOOZmTY=;
+        b=SKh2sqHSDPW+EZ00KUUh0GBBk/fGSikE8iR0l1VGD7Qc556gBU/ejEzQsGUCPOHAqT
+         VvJtdAqnFb1TLWl55iXLjX93y3P5B45YKHe3JMtYi8s4jMHppsqh1eb+vkfOndDxm7SZ
+         8xznxq51FnkIWNXkIrQu/gtxKJ877LWv0GHxlq3quIzx+ERzC6VtrauzsXD0xotrHNL7
+         Qm1iKZX4nhHhntcKFXspey26FpBAiM7kKyZ4TE/dWxzlG+qMjySkmJJATEuZWpQZSfRi
+         LBWEHgcMoTQ0ECJAajf4doIn5ENS3Sv+YrIaOU0Y1SLd8qUaLkH3UNhLUshHbxtngGcl
+         9BbQ==
+X-Gm-Message-State: AOAM530dHSCv+zYAmRY7CBa3Uke7EzHgohkAEUjCbcKEQCEbW1U8/hUt
+        xBD1yAv6dgTpZi3R2wR/T5Aasg==
+X-Google-Smtp-Source: ABdhPJxhPUMuK8ha1j9GrZqzuSO7vV5fOOc6RgsQZm7A+tYOpJMWKo4YcFwkk9ghgDO7D11M6Zd0SA==
+X-Received: by 2002:a05:622a:1014:: with SMTP id d20mr8092919qte.64.1620228807158;
+        Wed, 05 May 2021 08:33:27 -0700 (PDT)
+Received: from nicolas-tpx395.localdomain (173-246-12-168.qc.cable.ebox.net. [173.246.12.168])
+        by smtp.gmail.com with ESMTPSA id t18sm13994897qkj.75.2021.05.05.08.33.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 08:33:26 -0700 (PDT)
+Message-ID: <fbee67d620d456b5f2988b7f0ba28d5c6335ee6c.camel@ndufresne.ca>
+Subject: Re: [PATCH v10 6/9] media: uapi: Add a control for HANTRO driver
+From:   Nicolas Dufresne <nicolas@ndufresne.ca>
+To:     John Cox <jc@kynesim.co.uk>,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Cc:     ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
+        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
+        festevam@gmail.com, lee.jones@linaro.org,
+        gregkh@linuxfoundation.org, mripard@kernel.org,
+        paul.kocialkowski@bootlin.com, wens@csie.org,
+        jernej.skrabec@siol.net, hverkuil-cisco@xs4all.nl,
+        emil.l.velikov@gmail.com, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
+        kernel@collabora.com, cphealy@gmail.com
+Date:   Wed, 05 May 2021 11:33:24 -0400
+In-Reply-To: <6bd59glrp4fq3j3ngmbl5p4u7aethvrv34@4ax.com>
+References: <20210420121046.181889-1-benjamin.gaignard@collabora.com>
+         <20210420121046.181889-7-benjamin.gaignard@collabora.com>
+         <6bd59glrp4fq3j3ngmbl5p4u7aethvrv34@4ax.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.40.0 (3.40.0-1.fc34) 
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This ends up being inlined into mark_page_accessed(), saving 70 bytes
-of text.  It eliminates a lot of calls to compound_head(), but we still
-have to pass a page to __activate_page() because pagevec_lru_move_fn()
-takes a struct page.  That should be cleaned up eventually.
+Le mercredi 05 mai 2021 à 16:18 +0100, John Cox a écrit :
+> > The HEVC HANTRO driver needs to know the number of bits to skip at
+> > the beginning of the slice header.
+> > That is a hardware specific requirement so create a dedicated control
+> > for this purpose.
+> > 
+> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+> > ---
+> > .../userspace-api/media/drivers/hantro.rst    | 19 +++++++++++++++++++
+> > .../userspace-api/media/drivers/index.rst     |  1 +
+> > include/media/hevc-ctrls.h                    | 13 +++++++++++++
+> > 3 files changed, 33 insertions(+)
+> > create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
+> > 
+> > diff --git a/Documentation/userspace-api/media/drivers/hantro.rst
+> > b/Documentation/userspace-api/media/drivers/hantro.rst
+> > new file mode 100644
+> > index 000000000000..cd9754b4e005
+> > --- /dev/null
+> > +++ b/Documentation/userspace-api/media/drivers/hantro.rst
+> > @@ -0,0 +1,19 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +Hantro video decoder driver
+> > +===========================
+> > +
+> > +The Hantro video decoder driver implements the following driver-specific
+> > controls:
+> > +
+> > +``V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP (integer)``
+> > +    Specifies to Hantro HEVC video decoder driver the number of data (in
+> > bits) to
+> > +    skip in the slice segment header.
+> > +    If non-IDR, the bits to be skipped go from syntax element
+> > "pic_output_flag"
+> > +    to before syntax element "slice_temporal_mvp_enabled_flag".
+> > +    If IDR, the skipped bits are just "pic_output_flag"
+> > +    (separate_colour_plane_flag is not supported).
+> 
+> What happens if it is a dependant_slice_segement or
+> output_flag_present_flag?  Those flags are all dependant on
+> dependant_slice_segement being false.  I'm guessing 0 but it maybe
+> should be documented.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- mm/swap.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+Zero indeed.
 
-diff --git a/mm/swap.c b/mm/swap.c
-index 828889349b0b..07244999bcc6 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -347,16 +347,16 @@ static bool need_activate_page_drain(int cpu)
- 	return pagevec_count(&per_cpu(lru_pvecs.activate_page, cpu)) != 0;
- }
- 
--static void activate_page(struct page *page)
-+static void folio_activate(struct folio *folio)
- {
--	page = compound_head(page);
--	if (PageLRU(page) && !PageActive(page) && !PageUnevictable(page)) {
-+	if (folio_lru(folio) && !folio_active(folio) &&
-+	    !folio_unevictable(folio)) {
- 		struct pagevec *pvec;
- 
- 		local_lock(&lru_pvecs.lock);
- 		pvec = this_cpu_ptr(&lru_pvecs.activate_page);
--		get_page(page);
--		if (pagevec_add_and_need_flush(pvec, page))
-+		folio_get(folio);
-+		if (pagevec_add_and_need_flush(pvec, &folio->page))
- 			pagevec_lru_move_fn(pvec, __activate_page);
- 		local_unlock(&lru_pvecs.lock);
- 	}
-@@ -367,16 +367,15 @@ static inline void activate_page_drain(int cpu)
- {
- }
- 
--static void activate_page(struct page *page)
-+static void folio_activate(struct folio *folio)
- {
- 	struct lruvec *lruvec;
- 
--	page = compound_head(page);
--	if (TestClearPageLRU(page)) {
--		lruvec = lock_page_lruvec_irq(page);
--		__activate_page(page, lruvec);
-+	if (folio_test_clear_lru_flag(folio)) {
-+		lruvec = folio_lock_lruvec_irq(folio);
-+		__activate_page(&folio->page, lruvec);
- 		unlock_page_lruvec_irq(lruvec);
--		SetPageLRU(page);
-+		folio_set_lru_flag(folio);
- 	}
- }
- #endif
-@@ -441,7 +440,7 @@ void mark_page_accessed(struct page *page)
- 		 * LRU on the next drain.
- 		 */
- 		if (PageLRU(page))
--			activate_page(page);
-+			folio_activate(page_folio(page));
- 		else
- 			__lru_cache_activate_page(page);
- 		ClearPageReferenced(page);
--- 
-2.30.2
+> Likewise if output_flag_present_flag is false pic_output_flag will not
+> be coded, so maybe express it as "after slice_type" rather than "before
+> pic_output_flag"?
+
+Should work too.
+
+> 
+> Regards
+> 
+> John Cox
+> 
+> > +.. note::
+> > +
+> > +        This control is not yet part of the public kernel API and
+> > +        it is expected to change.
+> > diff --git a/Documentation/userspace-api/media/drivers/index.rst
+> > b/Documentation/userspace-api/media/drivers/index.rst
+> > index 1a9038f5f9fa..12e3c512d718 100644
+> > --- a/Documentation/userspace-api/media/drivers/index.rst
+> > +++ b/Documentation/userspace-api/media/drivers/index.rst
+> > @@ -33,6 +33,7 @@ For more details see the file COPYING in the source
+> > distribution of Linux.
+> > 
+> > 	ccs
+> > 	cx2341x-uapi
+> > +        hantro
+> > 	imx-uapi
+> > 	max2175
+> > 	meye-uapi
+> > diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
+> > index 8e0109eea454..b713eeed1915 100644
+> > --- a/include/media/hevc-ctrls.h
+> > +++ b/include/media/hevc-ctrls.h
+> > @@ -224,4 +224,17 @@ struct v4l2_ctrl_hevc_decode_params {
+> > 	__u64	flags;
+> > };
+> > 
+> > +/*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2
+> > */
+> > +#define
+> > V4L2_CID_CODEC_HANTRO_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1200)
+> > +/*
+> > + * V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP -
+> > + * the number of data (in bits) to skip in the
+> > + * slice segment header.
+> > + * If non-IDR, the bits to be skipped go from syntax element
+> > "pic_output_flag"
+> > + * to before syntax element "slice_temporal_mvp_enabled_flag".
+> > + * If IDR, the skipped bits are just "pic_output_flag"
+> > + * (separate_colour_plane_flag is not supported).
+> > + */
+> > +#define V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP	(V4L2_CID_CODEC_HANTRO_BASE
+> > + 0)
+> > +
+> > #endif
+
 
