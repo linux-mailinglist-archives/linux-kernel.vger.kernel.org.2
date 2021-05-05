@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D44983748D9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EF73748DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233404AbhEETrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 15:47:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36831 "EHLO
+        id S233561AbhEETuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 15:50:51 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:36887 "EHLO
         youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232642AbhEETrj (ORCPT
+        with ESMTP id S233114AbhEETut (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 15:47:39 -0400
-Received: from mail-qv1-f70.google.com ([209.85.219.70])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        Wed, 5 May 2021 15:50:49 -0400
+Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=[192.168.0.210])
+        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
         (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1leNTm-0003Sn-90
-        for linux-kernel@vger.kernel.org; Wed, 05 May 2021 19:46:42 +0000
-Received: by mail-qv1-f70.google.com with SMTP id h17-20020a0cb4d10000b02901c51890529dso2447504qvf.18
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 12:46:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=lkpUTCzONKczERA2MujskvwtonF4g3uvpRrfwyRJotc=;
-        b=P6i2umRlsZJgNDyeWdUCBQKQwyftsqYQ6ptePh9o0+3E9kZpTzbhQrxJz6HfzT3epp
-         LdZtWPDqOJRBeQyN/E/U7Y/33FYnkYxbLqZ1FRaPkPQj5OXmPGgM6oO79P/5dNIJBeD1
-         gGpjKcmp6gEkC2ddbtmBZ6H55TB/joUn1Yx5FfxjaXzrh4zY+6tzXqhxp9eV9J71n6YK
-         rVYA5MW/pQEUPhCwgJfttBkeNZ11Uc4KkxjJvMWkz278ZiI2gVQAXcmhpUlX4CRaM+2S
-         vBurkLz9gSuFdNOt8pTIZVeWvEjSaD2C8ujFsTIv9OebC0US3BLxerOnv2oZ5eu28xR4
-         mGOQ==
-X-Gm-Message-State: AOAM530oAM/LYnzQVFowd0asQdJmE9QPNQSHtv5I6k3JGimoOFlfwdz/
-        tVVoTrXqKLJxYZbI5SX+r47P/fuYPbP8WPYSJ0/v20mR0Q5/sxrITgCdvbc/Q97YxDBzkB3l66O
-        tXW+MV9KLypfrpca7YTw3mpTNB17EiNNYnd9yc1gvog==
-X-Received: by 2002:a05:6214:c2e:: with SMTP id a14mr692626qvd.34.1620244001060;
-        Wed, 05 May 2021 12:46:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzo54am7dCSTCUr1Fbs7xBAu8XLuOcYBZXQNDB/ZmBfA2ofYNrXpFqpSQZWtXpuBGcTtVkATQ==
-X-Received: by 2002:a05:6214:c2e:: with SMTP id a14mr692615qvd.34.1620244000913;
-        Wed, 05 May 2021 12:46:40 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.49.2])
-        by smtp.gmail.com with ESMTPSA id r16sm211492qtx.36.2021.05.05.12.46.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 12:46:40 -0700 (PDT)
-Subject: Re: [PATCH v3] hwrng: exynos - Fix runtime PM imbalance on error
-To:     =?UTF-8?Q?=c5=81ukasz_Stelmach?= <l.stelmach@samsung.com>,
-        Matt Mackall <mpm@selenic.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        linux-samsung-soc@vger.kernel.org, linux-crypto@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Cc:     =?UTF-8?Q?Bart=c5=82omiej_=c5=bbolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-References: <CGME20210505182918eucas1p18a11263e5d214e3356ac65d79504e430@eucas1p1.samsung.com>
- <20210505182914.13394-1-l.stelmach@samsung.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <5c6702a0-dd9e-dc76-6f8b-449d52fea210@canonical.com>
-Date:   Wed, 5 May 2021 15:46:37 -0400
+        (envelope-from <colin.king@canonical.com>)
+        id 1leNWp-0003ku-NP; Wed, 05 May 2021 19:49:51 +0000
+Subject: Re: [PATCH] scsi: ufs: ufs-exynos: make a const array static, makes
+ object smaller
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E . J . Bottomley" <jejb@linux.ibm.com>,
+        "Martin K . Petersen" <martin.petersen@oracle.com>,
+        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org
+Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210505190104.70112-1-colin.king@canonical.com>
+ <0e90b057-3a87-bec5-c0b2-46c49b191651@canonical.com>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <a9fafdd2-6625-18dc-62f4-7b4a8c9fd9c2@canonical.com>
+Date:   Wed, 5 May 2021 20:49:51 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210505182914.13394-1-l.stelmach@samsung.com>
+In-Reply-To: <0e90b057-3a87-bec5-c0b2-46c49b191651@canonical.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/2021 14:29, Łukasz Stelmach wrote:
-> pm_runtime_resume_and_get() wraps around pm_runtime_get_sync() and
-> decrements the runtime PM usage counter in case the latter function
-> fails and keeps the counter balanced.
+On 05/05/2021 20:41, Krzysztof Kozlowski wrote:
+> On 05/05/2021 15:01, Colin King wrote:
+>> From: Colin Ian King <colin.king@canonical.com>
+>>
+>> Don't populate the const array granularity_tbl on the stack but instead it
+>> static. Makes the object code smaller by 190 bytes:
+>>
+>> Before:
+>>    text    data     bss     dec     hex filename
+>>   25563    6908       0   32471    7ed7 ./drivers/scsi/ufs/ufs-exynos.o
+>>
+>> After:
+>>    text    data     bss     dec     hex filename
+>>   25213    7068       0   32281    7e19 ./drivers/scsi/ufs/ufs-exynos.o
+>>
+>> (gcc version 10.3.0)
 > 
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-> ---
-> Changes in v3:
->   - use pm_runtime_resume_and_get()
+> I am not sure what's the benefit here - you moved the code from text to
+> data. In total you decreased the size for this compilation settings
+> (e.g. compiler + optimizations) but that might not be always true, right?
+
+It is a marginal saving, but for arrays this size it makes sense to not
+have to populate the data into the stack before using it and then
+discarding it. This change essentially replaces quite a lot of
+instructions that put the data onto the stack so I think it's worth while.
+
 > 
-> Changes in v2:
->   - removed Change-Id from the commit message
+> This has effect on the code readability - line is longer and reader
+> would think "why this was made static since it is simple one-time const?".
+>
+
+Not sure how to respond to this. If they wonder why it is static const
+and don't know why then one would hope they look it up in K&R and
+familiarize themselves with C.  It's not so subtle.
+
+Colin
 > 
->  drivers/char/hw_random/exynos-trng.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+> Best regards,
+> Krzysztof
 > 
 
-Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-
-Best regards,
-Krzysztof
