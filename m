@@ -2,166 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 473E1373B97
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B32B1373B9F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:42:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233223AbhEEMl4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:41:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59144 "EHLO mail.kernel.org"
+        id S232122AbhEEMnp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:43:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33566 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229793AbhEEMly (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:41:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 61A8D608FE;
-        Wed,  5 May 2021 12:40:57 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620218457;
-        bh=hBYQoREdoWRmXPgn5WEqQ9gSz0H0wnMV2/09FjfWnr4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BcxthL2hRceKYUwGgUjzF2wKYuBWPefLxUCXjgE6fIO6726iSfAu2G8PrrrIVpoSy
-         XMB4lRwBYh5vS7Bn8plCwCA+rCHOItyB/DFKQhtoOEk2ul4i0XBFr/1D7XYToMSjc6
-         axitsu6ervrmJfADmgX/2wlYM07gRel7WIPXgZeA=
-Date:   Wed, 5 May 2021 14:40:55 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: xhci_pci & PCIe hotplug crash
-Message-ID: <YJKSV9nvf0ipq7CJ@kroah.com>
-References: <20210505120117.4wpmo6fhvzznf3wv@pali>
- <YJKK7SDIaeH1L/fC@kroah.com>
- <20210505123346.kxfpumww5i4qmhnk@pali>
+        id S229793AbhEEMnk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:43:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 36D9961132;
+        Wed,  5 May 2021 12:42:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620218563;
+        bh=j5tgY7P6UNnRgnZwcKAWN+v013/tjXzDMOOa52v8hj0=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=mc/IuCu2Pq6OzFcuAyZMNnqZZRpLxI98AEaW+RhjjNP9s0ypSX22cyZKHka2UXzp8
+         RDuOVBCrEDB3O0c+NdE3VVG95tkWkZfmWzGvrh4iL84BoqpoW+TltKoSGK0+l9Pqhl
+         O2q0Sg3kPP1IBWtXLp7QEn5jB9JzOBVNuz4cMzX/Z3qtyveL+Ke+LvuLTI1+38Vrtr
+         +3mynjLXY+FFm3YjF1xj4Oe9lxjzi+MZLnqfghvrjeb9a8l1KZtGt8aPy9vfCM2evb
+         0pj4/Y3p38j6I76Y/3gukTYVfBbCH7DSUB4l1nYN6g4n9c+fRAbdOf3Elajq4unGeE
+         nvRxGtJeY7jkw==
+Date:   Wed, 5 May 2021 14:42:40 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Anirudh Rayabharam <mail@anirudhrb.com>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        gregkh@linuxfoundation.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        syzbot+7c2bb71996f95a82524c@syzkaller.appspotmail.com,
+        linux-usb@vger.kernel.org, linux-input@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usbhid: fix info leak in hid_submit_ctrl
+In-Reply-To: <20210425173353.10231-1-mail@anirudhrb.com>
+Message-ID: <nycvar.YFH.7.76.2105051442120.28378@cbobk.fhfr.pm>
+References: <20210425173353.10231-1-mail@anirudhrb.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210505123346.kxfpumww5i4qmhnk@pali>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:33:46PM +0200, Pali Rohár wrote:
-> On Wednesday 05 May 2021 14:09:17 Greg KH wrote:
-> > On Wed, May 05, 2021 at 02:01:17PM +0200, Pali Rohár wrote:
-> > > Hello!
-> > > 
-> > > During debugging of pci-aardvark.c driver I got following synchronous
-> > > external abort 96000210 which I can reproduce with VIA XHCI controller
-> > > when PCIe hot plug support is enabled in kernel and PCIe Root Bridge
-> > > triggers link down event via PCIe hot plug interrupt.
-> > > 
-> > > [   71.773033] pcieport 0000:00:00.0: pciehp: Slot(0): Link Down
-> > > [   71.779120] xhci_hcd 0000:01:00.0: remove, state 4
-> > > [   71.784113] usb usb5: USB disconnect, device number 1
-> > > [   71.790398] xhci_hcd 0000:01:00.0: USB bus 5 deregistered
-> > > [   72.511899] Internal error: synchronous external abort: 96000210 [#1] SMP
-> > > [   72.518918] Modules linked in:
-> > > [   72.522074] CPU: 1 PID: 988 Comm: irq/53-pciehp Not tainted 5.12.0-dirty #949
-> > > [   72.536983] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
-> > > [   72.543182] pc : xhci_irq+0x70/0x17b8
-> > > [   72.546972] lr : xhci_irq+0x28/0x17b8
-> > > [   72.550752] sp : ffffffc012b8bab0
-> > > [   72.554167] x29: ffffffc012b8bab0 x28: 00000000000000a0 
-> > > [   72.559652] x27: 0000000000000060 x26: ffffff8000af2250 
-> > > [   72.565135] x25: ffffffc0100b0d48 x24: ffffffc0100b0be0 
-> > > [   72.570620] x23: ffffff80003be028 x22: ffffff8000af229c 
-> > > [   72.576104] x21: 0000000000000080 x20: ffffff8000af2000 
-> > > [   72.581587] x19: ffffff8000af2000 x18: 0000000000000004 
-> > > [   72.587071] x17: 0000000000000000 x16: 0000000000000000 
-> > > [   72.592553] x15: ffffffc01154cc70 x14: ffffff8001751df8 
-> > > [   72.598037] x13: 0000000000000000 x12: 0000000000000000 
-> > > [   72.603519] x11: ffffff8001751da8 x10: ffffffc01154cc78 
-> > > [   72.609001] x9 : ffffffc01087c238 x8 : 0000000000000000 
-> > > [   72.614485] x7 : ffffffc01162c4e0 x6 : 0000000000000000 
-> > > [   72.619967] x5 : fffffffe00085000 x4 : fffffffe00085000 
-> > > [   72.625451] x3 : 0000000000000000 x2 : 0000000000000001 
-> > > [   72.630933] x1 : ffffffc0118bd024 x0 : 0000000000000000 
-> > > [   72.636415] Call trace:
-> > > [   72.638936]  xhci_irq+0x70/0x17b8
-> > > [   72.642360]  usb_hcd_irq+0x34/0x50
-> > > [   72.645876]  usb_hcd_pci_remove+0x78/0x138
-> > > [   72.650106]  xhci_pci_remove+0x6c/0xa8
-> > > [   72.653978]  pci_device_remove+0x44/0x108
-> > > [   72.658122]  device_release_driver_internal+0x110/0x1e0
-> > > [   72.663521]  device_release_driver+0x1c/0x28
-> > > [   72.667931]  pci_stop_bus_device+0x84/0xc0
-> > > [   72.672162]  pci_stop_and_remove_bus_device+0x1c/0x30
-> > > [   72.677373]  pciehp_unconfigure_device+0x98/0xf8
-> > > [   72.682138]  pciehp_disable_slot+0x60/0x118
-> > > [   72.686457]  pciehp_handle_presence_or_link_change+0xec/0x3b0
-> > > [   72.692386]  pciehp_ist+0x170/0x1a0
-> > > [   72.695984]  irq_thread_fn+0x30/0x90
-> > > [   72.699674]  irq_thread+0x13c/0x200
-> > > [   72.703271]  kthread+0x12c/0x130
-> > > [   72.706603]  ret_from_fork+0x10/0x1c
-> > > [   72.710299] Code: 35ffff83 35002741 f9400f41 91001021 (b9400021) 
-> > > [   72.716586] ---[ end trace 20ce3e30ff292c93 ]---
-> > > [   72.721453] genirq: exiting task "irq/53-pciehp" (988) is an active IRQ thread (irq 53)
-> > > [   72.730068] sched: RT throttling activated
-> > > 
-> > > And after that kernel is in some semi-broken state. Some functionality
-> > > works, but some other (like reboot) does not.
-> > > 
-> > > I can reproduce it also when I manually inject/fake this link down PCIe
-> > > hot plug interrupt with setting corresponding bits in PCIe Root Status
-> > > registers, so pciehp driver thinks that link down even occurred.
-> > > 
-> > > I suspect that issue is in usb_hcd_pci_remove() function which calls
-> > > local_irq_disable()+usb_hcd_irq()+local_irq_enable() functions but do
-> > > not take into care that whole usb_hcd_pci_remove() function may be
-> > > called from interrupt context.
-> > 
-> > usb_hcd_pci_remove() should NOT be called from interrupt context.
-> > 
-> > What is causing that to happen?
-> 
-> PCIe Hot Plug interrupt with PCI_EXP_SLTSTA_DLLSC status bit set.
-> 
-> I can reproduce it by issuing PCIe Hot Reset to PCIe controller (via
-> setpci from userspace) which resulted in link down event (which is
-> obvious) and PCIe controller then triggered link down interrupt.
-> 
-> > No PCI driver can handle that, especially USB ones.
-> > 
-> > > Can you look at this issue if it is really safe to call usb_hcd_irq()
-> > > from interrupt context? Or rather if it is safe to call functions like
-> > > pciehp_disable_slot() or device_release_driver() from interrupt context
-> > > like it can be seen in call trace?
-> > 
-> > What is removing devices from an irq?
-> 
-> It can be seen in above call trace. It is pciehp_disable_slot() followed
-> by pciehp_unconfigure_device().
+On Sun, 25 Apr 2021, Anirudh Rayabharam wrote:
 
-But pciehp_disable_slot() is called under protection of a mutex, so we
-"know" it can't be called from an irq.  The trace might be wrong there,
-or someone moved to using a threaded irq handler somehow?
-
-I would focus on the "synchronous external abort", are you sure that is
-not just a platform error being hit somehow that is independent of the
-xhci driver?
-
-> > That is wrong, pci hotplug never used to do that, what recently changed?
+> In hid_submit_ctrl(), the way of calculating the report length doesn't
+> take into account that report->size can be zero. When running the
+> syzkaller reproducer, a report of size 0 causes hid_submit_ctrl) to
+> calculate transfer_buffer_length as 16384. When this urb is passed to
+> the usb core layer, KMSAN reports an info leak of 16384 bytes.
 > 
-> I really do not know what was changed recently. I hope that other people
-> in linux-pci ML would know history details better.
+> To fix this, first modify hid_report_len() to account for the zero
+> report size case by using DIV_ROUND_UP for the division. Then, call it
+> from hid_submit_ctrl().
 > 
-> I just spotted this crash during debugging PCIe controller driver
-> pci-aardvark.c with trying to expose its link down events via "hot plug"
-> interrupt and corresponding link layer state flags.
-> 
-> And because in whole call trace I see only generic PCIe and USB code
-> path without any driver specific parts, I suspect that this is not PCIe
-> controller-specific issue but rather something "wrong" in genetic PCIe
-> (or USB) code. That is why I sent this email, so maybe somebody else
-> find something suspicious here.
-> 
-> But still there is a chance that issue can be also in pci-aardvark.c
-> driver and somehow it masked its issue and propagated it into generic
-> PCIe hot plug code path.
+> Reported-by: syzbot+7c2bb71996f95a82524c@syzkaller.appspotmail.com
+> Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
 
-Any chance you can use 'git bisect' to track down where this showed up?
+Benjamin, could you please run this one through your regression testing 
+machinery before we send it upstream?
 
-thanks,
+Thanks,
 
-greg k-h
+-- 
+Jiri Kosina
+SUSE Labs
+
