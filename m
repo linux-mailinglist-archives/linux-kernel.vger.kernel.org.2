@@ -2,281 +2,243 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 109D0373E17
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:05:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68C3C373E1A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232847AbhEEPFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:05:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46056 "EHLO
+        id S233027AbhEEPIF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:08:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232416AbhEEPFv (ORCPT
+        with ESMTP id S232192AbhEEPIC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:05:51 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7F11C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 08:04:53 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id s8so2208322wrw.10
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:04:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=digitalocean.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=b/gil3b43S0ieNeCXFukeYwtCaimOAfyDmk3mmNDt0k=;
-        b=bjHYDPdDuzWQHlg+gwdWCvNYIcKuaKHDpCoK3vQMlHqAZHYHMHoGDYyUJTXfxBDXBd
-         MX+NHRiWy6WvujnWj4pasnGESsYPm0bDgfN9CiLrLMebG6tChEiCVa/5USe/Da18z2op
-         ROVRddmY2OyVSvu9fdoQ9BcoECUksdT5mNL0c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=b/gil3b43S0ieNeCXFukeYwtCaimOAfyDmk3mmNDt0k=;
-        b=DrSg5TAMVqbNB5tjpeN5+4wNr2ouo5GqfOhTwyEUoHlaF5MQxaJx2Zis1jV077VA6v
-         UPWOks5tu+wlJoi7tp5SozHDqfpFuSwMas9sOai+GLAyXsQjHpg+HG+b0/NpHQGIbwo+
-         RzoCKjlKS8hNxBr1dnHGUdN8TUWgzCo6Tdgsyho9cO1LrtqIxqOwRYMCIusyjDHnX4u4
-         TwUr2cSsrq1VVl5M653gRz2w+KfWnPpVfCl6y6vhcfUdv3rx93PAqBLHRmOocl/Y8SJp
-         5Bp+4BxsP3MPDj0BALwLY8lXJYjOWvsqHhsLog5MPX7FAA8T/zio3W9LSiUwszG4Lpfl
-         zluA==
-X-Gm-Message-State: AOAM532C/LCXj4ErvVsLfp8gwqdHcOr5omrHs4ts9kMd47p3HvDBqwa/
-        WGeHxyUlHefCJNLCEKOeWM+/ToDj7MCb9i1InwnkUal5/ObRUw==
-X-Google-Smtp-Source: ABdhPJxnlQCKii39Jo4Wg0qd3SgH36GR20wLA7iJ/Rg/SSmlwak5bkVAGxUwG7vzfvWKu/nRVI2xEwr7uKFAQ8j53F4=
-X-Received: by 2002:adf:ec4f:: with SMTP id w15mr39384123wrn.122.1620227092266;
- Wed, 05 May 2021 08:04:52 -0700 (PDT)
+        Wed, 5 May 2021 11:08:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF10C061574;
+        Wed,  5 May 2021 08:07:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=x2iXnp38r1hB0qF1pGeXq5kFsGn8s6a3uTVloIaIDJE=; b=Rlr6OxLkJqcgEZ8jJPAfzIx8tZ
+        uAzG+Z+Dsk4MdrjYAd715h1zsxv6xNSlmWti0lKuOFDUIKTImuStvEYh+3AmjDigSc1nITZnxS5xO
+        YhBH0IyRXZyqaw25ipgob+7KhrstTsmelTafJFi/OtYlAMphnvZ+WNsn50jkw7k8jkT1fAqyi7PLq
+        OBjrEW7V0GV8JxB0pQpXI1OaTOY/y/KoklziP+0CCIQQB+Mbf/aL03ILWqkQw5z7U6isnryvFZ3Ja
+        5KUpSZIzyV8Ep1JY19RfuzaE5zmg+ACanVSoDUbHqolfnUXqRpns2O6CRzP6ELAEcgRCuVNXUIeVW
+        lwWXrwLQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1leJ6c-000T53-7R; Wed, 05 May 2021 15:06:33 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v9 00/96] Memory folios
+Date:   Wed,  5 May 2021 16:04:52 +0100
+Message-Id: <20210505150628.111735-1-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
 MIME-Version: 1.0
-References: <20210505112326.195493232@linuxfoundation.org>
-In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
-From:   Patrick Mccormick <pmccormick@digitalocean.com>
-Date:   Wed, 5 May 2021 08:04:40 -0700
-Message-ID: <CAAjnzA=jBAzXjJUFR_U8yO877OcZicQYrazfgMKexzBMREuabQ@mail.gmail.com>
-Subject: Re: [PATCH 5.10 00/29] 5.10.35-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We ran tests on this kernel version:
+Managing memory in 4KiB pages is a serious overhead.  Many benchmarks
+benefit from a larger "page size".  As an example, an earlier iteration
+of this idea which used compound pages (and wasn't particularly tuned)
+got a 7% performance boost when compiling the kernel.
 
-Linux version 5.10.35-rc1-1-generic
-(root@00b11507-3b5c-42b4-5c09-e1112ad49d4d) (gcc (Ubuntu
-7.3.0-27ubuntu1~18.04) 7.3.0, GNU ld (GNU Binutils for Ubuntu) 2.30)
-#4bf26f3b5 SMP Wed May 5 11:52:21 UTC 2021
+Using compound pages or THPs exposes a weakness of our type system.
+Functions are often unprepared for compound pages to be passed to them,
+and may only act on PAGE_SIZE chunks.  Even functions which are aware of
+compound pages may expect a head page, and do the wrong thing if passed
+a tail page.
 
-With this hardware:
+We also waste a lot of instructions ensuring that we're not looking at
+a tail page.  Almost every call to PageFoo() contains one or more hidden
+calls to compound_head().  This also happens for get_page(), put_page()
+and many more functions.  There does not appear to be a way to tell gcc
+that it can cache the result of compound_head(), nor is there a way to
+tell it that compound_head() is idempotent.
 
-model name      : Intel(R) Xeon(R) Gold 6248 CPU @ 2.50GHz
+This patch series uses a new type, the struct folio, to manage memory.
+The first 8 patches are prep work that don't involve the folio at all
+but fix problems I found while working on this.  Patches 9-81 introduce
+infrastructure (that more than pays for itself, shrinking the kernel by
+over 4kB of text).  Patches 82-96 convert iomap (ie xfs) to use folios
+as an example.
 
-And everything passed!
+Git: https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/tags/folio_9
+v8: https://lore.kernel.org/linux-mm/20210430180740.2707166-1-willy@infradead.org/
+Even more work that's not being submitted:
+https://git.infradead.org/users/willy/pagecache.git/shortlog/refs/heads/folio
 
+v9:
+ - Rebase onto next-20210505
+ - Rename folio_test_set_foo() to folio_test_set_foo_flag() (Nick Piggin)
+ - Rename folio_set_uptodate() to folio_mark_uptodate()
+ - Rename trylock_folio_flag() to folio_trylock_flag()
+ - Add all remaining supporting patches for iomap
+ - Add iomap conversion patches
 
-Specific tests ran:
+Matthew Wilcox (Oracle) (96):
+  mm: Optimise nth_page for contiguous memmap
+  mm: Make __dump_page static
+  mm/debug: Factor PagePoisoned out of __dump_page
+  mm/page_owner: Constify dump_page_owner
+  mm: Make compound_head const-preserving
+  mm: Constify get_pfnblock_flags_mask and get_pfnblock_migratetype
+  mm: Constify page_count and page_ref_count
+  mm: Fix struct page layout on 32-bit systems
+  mm: Introduce struct folio
+  mm: Add folio_pgdat and folio_zone
+  mm/vmstat: Add functions to account folio statistics
+  mm/debug: Add VM_BUG_ON_FOLIO and VM_WARN_ON_ONCE_FOLIO
+  mm: Add folio reference count functions
+  mm: Add folio_put
+  mm: Add folio_get
+  mm: Add folio flag manipulation functions
+  mm: Add folio_young() and folio_idle()
+  mm: Handle per-folio private data
+  mm/filemap: Add folio_index, folio_file_page and folio_contains
+  mm/filemap: Add folio_next_index
+  mm/filemap: Add folio_offset and folio_file_offset
+  mm/util: Add folio_mapping and folio_file_mapping
+  mm: Add folio_mapcount
+  mm/memcg: Add folio wrappers for various functions
+  mm/filemap: Add folio_unlock
+  mm/filemap: Add folio_lock
+  mm/filemap: Add folio_lock_killable
+  mm/filemap: Add __folio_lock_async
+  mm/filemap: Add __folio_lock_or_retry
+  mm/filemap: Add folio_wait_locked
+  mm/swap: Add folio_rotate_reclaimable
+  mm/filemap: Add folio_end_writeback
+  mm/writeback: Add folio_wait_writeback
+  mm/writeback: Add folio_wait_stable
+  mm/filemap: Add folio_wait_bit
+  mm/filemap: Add folio_wake_bit
+  mm/filemap: Convert page wait queues to be folios
+  mm/filemap: Add folio private_2 functions
+  fs/netfs: Add folio fscache functions
+  mm: Add folio_mapped
+  mm/workingset: Convert workingset_activation to take a folio
+  mm/swap: Add folio_activate
+  mm/swap: Add folio_mark_accessed
+  mm/rmap: Add folio_mkclean
+  mm: Add kmap_local_folio
+  mm: Add flush_dcache_folio
+  mm: Add arch_make_folio_accessible
+  mm/memcg: Remove 'page' parameter to mem_cgroup_charge_statistics
+  mm/memcg: Use the node id in mem_cgroup_update_tree
+  mm/memcg: Convert commit_charge to take a folio
+  mm/memcg: Add folio_charge_cgroup
+  mm/memcg: Add folio_uncharge_cgroup
+  mm/memcg: Convert mem_cgroup_track_foreign_dirty_slowpath to folio
+  mm/writeback: Rename __add_wb_stat to wb_stat_mod
+  flex_proportions: Allow N events instead of 1
+  mm/writeback: Change __wb_writeout_inc to __wb_writeout_add
+  mm/writeback: Convert test_clear_page_writeback to
+    __folio_end_writeback
+  mm/writeback: Add folio_start_writeback
+  mm/writeback: Add folio_mark_dirty
+  mm/writeback: Use __set_page_dirty in __set_page_dirty_nobuffers
+  mm/writeback: Add __folio_mark_dirty
+  mm/writeback: Add filemap_dirty_folio
+  mm/writeback: Add folio_account_cleaned
+  mm/writeback: Add folio_cancel_dirty
+  mm/writeback: Add folio_clear_dirty_for_io
+  mm/writeback: Add folio_account_redirty
+  mm/writeback: Add folio_redirty_for_writepage
+  mm/filemap: Add i_blocks_per_folio
+  mm/filemap: Add folio_mkwrite_check_truncate
+  mm/filemap: Add readahead_folio
+  block: Add bio_add_folio
+  block: Add bio_for_each_folio_all
+  mm/lru: Add folio_lru and folio_is_file_lru
+  mm/workingset: Convert workingset_refault to take a folio
+  mm/lru: Add folio_add_lru
+  mm/page_alloc: Add __alloc_folio, __alloc_folio_node and alloc_folio
+  mm/filemap: Add filemap_alloc_folio
+  mm/filemap: Add folio_add_to_page_cache
+  mm/filemap: Convert mapping_get_entry to return a folio
+  mm/filemap: Add filemap_get_folio and find_get_folio
+  mm/filemap: Add filemap_get_stable_folio
+  iomap: Convert to_iomap_page to take a folio
+  iomap: Convert iomap_page_create to take a folio
+  iomap: Convert iomap_page_release to take a folio
+  iomap: Convert iomap_releasepage to use a folio
+  iomap: Convert iomap_invalidatepage to use a folio
+  iomap: Pass the iomap_page into iomap_set_range_uptodate
+  iomap: Use folio offsets instead of page offsets
+  iomap: Convert bio completions to use folios
+  iomap: Convert readahead and readpage to use a folio
+  iomap: Convert iomap_page_mkwrite to use a folio
+  iomap: Convert iomap_write_begin and iomap_write_end to folios
+  iomap: Convert iomap_read_inline_data to take a folio
+  iomap: Convert iomap_write_end_inline to take a folio
+  iomap: Convert iomap_add_to_ioend to take a folio
+  iomap: Convert iomap_do_writepage to use a folio
 
-1..47
-ok 1 ltp.py:LTP.test_nptl
-ok 2 ltp.py:LTP.test_math
-ok 3 ltp.py:LTP.test_dio
-ok 4 ltp.py:LTP.test_io
-ok 5 ltp.py:LTP.test_power_management_tests
-ok 6 ltp.py:LTP.test_can
-ok 7 ltp.py:LTP.test_input
-ok 8 ltp.py:LTP.test_hugetlb
-ok 9 ltp.py:LTP.test_ipc
-ok 10 ltp.py:LTP.test_uevent
-ok 11 ltp.py:LTP.test_smoketest
-ok 12 ltp.py:LTP.test_containers
-ok 13 ltp.py:LTP.test_filecaps
-ok 14 ltp.py:LTP.test_sched
-ok 15 ltp.py:LTP.test_hyperthreading
-ok 16 ltp.py:LTP.test_cap_bounds
-ok 17 /home/ci-hypervisor/.local/lib/python3.6/site-packages/fathom/tests/k=
-patch.sh
-ok 18 perf.py:Perf.test_help
-ok 19 perf.py:Perf.test_version
-ok 20 perf.py:Perf.test_list
-ok 21 perf.py:Perf.test_record
-ok 22 perf.py:Perf.test_mem_record
-ok 23 perf.py:Perf.test_kmem_record
-ok 24 perf.py:Perf.test_ftrace
-ok 25 perf.py:Perf.test_trace
-ok 26 perf.py:Perf.test_kallsyms
-ok 27 perf.py:Perf.test_annotate
-ok 28 perf.py:Perf.test_evlist
-ok 29 perf.py:Perf.test_script
-ok 30 perf.py:Perf.test_stat
-ok 31 perf.py:Perf.test_bench_sched
-ok 32 perf.py:Perf.test_bench_mem
-ok 33 perf.py:Perf.test_bench_numa
-ok 34 perf.py:Perf.test_bench_futex
-ok 35 kselftest.py:Kselftest.test_sysctl
-ok 36 kselftest.py:Kselftest.test_size
-ok 37 kselftest.py:Kselftest.test_sync
-ok 38 kselftest.py:Kselftest.test_capabilities
-ok 39 kselftest.py:Kselftest.test_x86
-ok 40 kselftest.py:Kselftest.test_pidfd
-ok 41 kselftest.py:Kselftest.test_membarrier
-ok 42 kselftest.py:Kselftest.test_sigaltstack
-ok 43 kselftest.py:Kselftest.test_tmpfs
-ok 44 kselftest.py:Kselftest.test_user
-ok 45 kselftest.py:Kselftest.test_sched
-ok 46 kselftest.py:Kselftest.test_timens
-ok 47 kselftest.py:Kselftest.test_timers
+ Documentation/core-api/cachetlb.rst         |   6 +
+ Documentation/core-api/mm-api.rst           |   4 +
+ Documentation/filesystems/netfs_library.rst |   2 +
+ block/bio.c                                 |  21 +
+ fs/afs/write.c                              |   9 +-
+ fs/buffer.c                                 |  25 -
+ fs/cachefiles/rdwr.c                        |  16 +-
+ fs/io_uring.c                               |   2 +-
+ fs/iomap/buffered-io.c                      | 524 +++++++++-----------
+ fs/jfs/jfs_metapage.c                       |   1 +
+ include/asm-generic/cacheflush.h            |  14 +
+ include/linux/backing-dev.h                 |   6 +-
+ include/linux/bio.h                         |  46 +-
+ include/linux/flex_proportions.h            |   9 +-
+ include/linux/gfp.h                         |  22 +-
+ include/linux/highmem-internal.h            |  11 +
+ include/linux/highmem.h                     |  38 ++
+ include/linux/iomap.h                       |   2 +-
+ include/linux/memcontrol.h                  |  81 ++-
+ include/linux/mm.h                          | 226 +++++++--
+ include/linux/mm_inline.h                   |  44 +-
+ include/linux/mm_types.h                    |  75 ++-
+ include/linux/mmdebug.h                     |  23 +-
+ include/linux/netfs.h                       |  77 +--
+ include/linux/page-flags.h                  | 260 +++++++---
+ include/linux/page_idle.h                   |  99 ++--
+ include/linux/page_owner.h                  |   6 +-
+ include/linux/page_ref.h                    |  92 +++-
+ include/linux/pageblock-flags.h             |   2 +-
+ include/linux/pagemap.h                     | 467 ++++++++++++-----
+ include/linux/rmap.h                        |  10 +-
+ include/linux/swap.h                        |  17 +-
+ include/linux/vmstat.h                      | 107 ++++
+ include/linux/writeback.h                   |   9 +-
+ include/net/page_pool.h                     |  12 +-
+ include/trace/events/writeback.h            |   8 +-
+ lib/flex_proportions.c                      |  28 +-
+ mm/Makefile                                 |   2 +-
+ mm/debug.c                                  |  25 +-
+ mm/filemap.c                                | 509 +++++++++----------
+ mm/folio-compat.c                           | 107 ++++
+ mm/internal.h                               |   2 +
+ mm/khugepaged.c                             |  32 +-
+ mm/memcontrol.c                             | 100 ++--
+ mm/memory.c                                 |  11 +-
+ mm/mempolicy.c                              |  10 +
+ mm/migrate.c                                |  56 +--
+ mm/page-writeback.c                         | 461 ++++++++++-------
+ mm/page_alloc.c                             |  28 +-
+ mm/page_io.c                                |   4 +-
+ mm/page_owner.c                             |   2 +-
+ mm/rmap.c                                   |  12 +-
+ mm/swap.c                                   | 101 ++--
+ mm/swap_state.c                             |   2 +-
+ mm/swapfile.c                               |   8 +-
+ mm/util.c                                   |  60 ++-
+ mm/workingset.c                             |  44 +-
+ net/core/page_pool.c                        |  12 +-
+ 58 files changed, 2568 insertions(+), 1421 deletions(-)
+ create mode 100644 mm/folio-compat.c
 
-Tested-By: Patrick McCormick <pmccormick@digitalocean.com>
+-- 
+2.30.2
 
-On Wed, May 5, 2021 at 5:09 AM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.10.35 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.10.35-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.10.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
->
-> -------------
-> Pseudo-Shortlog of commits:
->
-> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
->     Linux 5.10.35-rc1
->
-> Ondrej Mosnacek <omosnace@redhat.com>
->     perf/core: Fix unconditional security_locked_down() call
->
-> Mark Pearson <markpearson@lenovo.com>
->     platform/x86: thinkpad_acpi: Correct thermal sensor allocation
->
-> Shengjiu Wang <shengjiu.wang@nxp.com>
->     ASoC: ak5558: Add MODULE_DEVICE_TABLE
->
-> Shengjiu Wang <shengjiu.wang@nxp.com>
->     ASoC: ak4458: Add MODULE_DEVICE_TABLE
->
-> Chris Chiu <chris.chiu@canonical.com>
->     USB: Add reset-resume quirk for WD19's Realtek Hub
->
-> Kai-Heng Feng <kai.heng.feng@canonical.com>
->     USB: Add LPM quirk for Lenovo ThinkPad USB-C Dock Gen2 Ethernet
->
-> Takashi Iwai <tiwai@suse.de>
->     ALSA: usb-audio: Add MIDI quirk for Vox ToneLab EX
->
-> Miklos Szeredi <mszeredi@redhat.com>
->     ovl: allow upperdir inside lowerdir
->
-> Micka=C3=ABl Sala=C3=BCn <mic@linux.microsoft.com>
->     ovl: fix leaked dentry
->
-> Jianxiong Gao <jxgao@google.com>
->     nvme-pci: set min_align_mask
->
-> Jianxiong Gao <jxgao@google.com>
->     swiotlb: respect min_align_mask
->
-> Jianxiong Gao <jxgao@google.com>
->     swiotlb: don't modify orig_addr in swiotlb_tbl_sync_single
->
-> Jianxiong Gao <jxgao@google.com>
->     swiotlb: refactor swiotlb_tbl_map_single
->
-> Jianxiong Gao <jxgao@google.com>
->     swiotlb: clean up swiotlb_tbl_unmap_single
->
-> Jianxiong Gao <jxgao@google.com>
->     swiotlb: factor out a nr_slots helper
->
-> Jianxiong Gao <jxgao@google.com>
->     swiotlb: factor out an io_tlb_offset helper
->
-> Jianxiong Gao <jxgao@google.com>
->     swiotlb: add a IO_TLB_SIZE define
->
-> Jianxiong Gao <jxgao@google.com>
->     driver core: add a min_align_mask field to struct device_dma_paramete=
-rs
->
-> Vasily Averin <vvs@virtuozzo.com>
->     tools/cgroup/slabinfo.py: updated to work on current kernel
->
-> Thomas Richter <tmricht@linux.ibm.com>
->     perf ftrace: Fix access to pid in array when setting a pid filter
->
-> Serge E. Hallyn <serge@hallyn.com>
->     capabilities: require CAP_SETFCAP to map uid 0
->
-> Zhen Lei <thunder.leizhen@huawei.com>
->     perf data: Fix error return code in perf_data__create_dir()
->
-> Bjorn Andersson <bjorn.andersson@linaro.org>
->     net: qrtr: Avoid potential use after free in MHI send
->
-> Daniel Borkmann <daniel@iogearbox.net>
->     bpf: Fix leakage of uninitialized bpf stack under speculation
->
-> Daniel Borkmann <daniel@iogearbox.net>
->     bpf: Fix masking negation logic upon negative dst register
->
-> Nick Lowe <nick.lowe@gmail.com>
->     igb: Enable RSS for Intel I211 Ethernet Controller
->
-> Phillip Potter <phil@philpotter.co.uk>
->     net: usb: ax88179_178a: initialize local variables before use
->
-> Jonathon Reinhart <jonathon.reinhart@gmail.com>
->     netfilter: conntrack: Make global sysctls readonly in non-init netns
->
-> Romain Naour <romain.naour@gmail.com>
->     mips: Do not include hi and lo in clobber list for R6
->
->
-> -------------
->
-> Diffstat:
->
->  Makefile                                  |   4 +-
->  arch/mips/include/asm/vdso/gettimeofday.h |  26 ++-
->  drivers/net/ethernet/intel/igb/igb_main.c |   3 +-
->  drivers/net/usb/ax88179_178a.c            |   6 +-
->  drivers/nvme/host/pci.c                   |   1 +
->  drivers/platform/x86/thinkpad_acpi.c      |  31 ++--
->  drivers/usb/core/quirks.c                 |   4 +
->  fs/overlayfs/namei.c                      |   1 +
->  fs/overlayfs/super.c                      |  12 +-
->  include/linux/bpf_verifier.h              |   5 +-
->  include/linux/device.h                    |   1 +
->  include/linux/dma-mapping.h               |  16 ++
->  include/linux/swiotlb.h                   |   1 +
->  include/linux/user_namespace.h            |   3 +
->  include/uapi/linux/capability.h           |   3 +-
->  kernel/bpf/verifier.c                     |  33 ++--
->  kernel/dma/swiotlb.c                      | 259 +++++++++++++++++-------=
-------
->  kernel/events/core.c                      |  12 +-
->  kernel/user_namespace.c                   |  65 +++++++-
->  net/netfilter/nf_conntrack_standalone.c   |  10 +-
->  net/qrtr/mhi.c                            |   8 +-
->  sound/soc/codecs/ak4458.c                 |   1 +
->  sound/soc/codecs/ak5558.c                 |   1 +
->  sound/usb/quirks-table.h                  |  10 ++
->  tools/cgroup/memcg_slabinfo.py            |   8 +-
->  tools/perf/builtin-ftrace.c               |   2 +-
->  tools/perf/util/data.c                    |   5 +-
->  27 files changed, 347 insertions(+), 184 deletions(-)
->
->
