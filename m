@@ -2,85 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B73F337346B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 06:27:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9243D37346E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 06:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhEEE2n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 00:28:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46096 "EHLO
+        id S231625AbhEEEaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 00:30:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbhEEE2a (ORCPT
+        with ESMTP id S231326AbhEEEaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 00:28:30 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA62C0613ED
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 21:27:10 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id q2so1058518pfh.13
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 21:27:10 -0700 (PDT)
+        Wed, 5 May 2021 00:30:02 -0400
+Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60985C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 21:29:05 -0700 (PDT)
+Received: by mail-pf1-x42a.google.com with SMTP id b15so1142535pfl.4
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 21:29:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=AkdJ7jdjHyuclShdANsqX7WPCnDkiVjMoelEcVTWBS0=;
-        b=gR3LsznuyMIGgTZilvyx0JbzPUtgRaDl77q4aHnJG9jj2xRpGmUuKNGJmmDri8x6AB
-         1rx+OC3k+00tTkLIB0hsHQr2xUbgzHtK1opdiINI1vQ1MRP1Zt9ppArBgVelELnXR2UT
-         VKjYZuOFWLL10Q6ZgngjkAfpOQaYSId/h3eJ3UOTMxiLVycyZrQ6uzZYv1QWVdwp2X1Y
-         UVgku59UHziHV0a/0Ukn9h8lWrJ0tMc/u8iqfVnV/a7jsZxhto9jRLq+A0GlU7ib+oGP
-         9oX5E8rMCfiMYzBJe1ttxKAvMxK3fdGoIZDfmPLXdNqYp3wl7+HQtoofT7PoZrGXv65c
-         mIDQ==
+        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=dkfLmEwUYBpgZ3VRNqk3l0eUK71c8qK9M3LO8M6K/A4=;
+        b=j/2/x3IGENqBt1eM/uTRys9FwUAyOd7d1CPrhgnUeDqkdWgk208eetcKGgAwQm0ClS
+         807Quye1hCoirriQHZ8jB6fGbUq8JRjgdvApCO7Sk2LBzgsemv98xXqPqhRBtNTYFbQ2
+         c+pvRacMoE5zUBhZlKz1Zp/I3sP37UVPa/SyFRnF0O9Vv0+UUbY2fjviPRN77nwLubJm
+         WkGzNUwF7P0ucQPk4Bw8kKF/DF8Lt/l4gAxFgApBd4DtEkMPmr//4N1veXHtU6pvce11
+         I2Ygs6SMbnq3+EW7szo7yKB9Z6UagEOZuXHkUZLToFvlJwesJGEXi2KI7w4v+L0cFgNN
+         jqBg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=AkdJ7jdjHyuclShdANsqX7WPCnDkiVjMoelEcVTWBS0=;
-        b=oum5PFzbtMw5FXyVqzw9RfYMF42wjYd9y/xKt4fm3zY9HZiyNl/lTYV6pCT/GxCwqh
-         6KqEiQ8+xnU8+nj2iOEAOjt1BGgExAVOB476cVVt/9SyApEc9FhHEWZAdPOlmmO+jJlJ
-         cHn3FTfdPW8uUZH01xdaKA2dJjzcyrXbVEA/evsWrtX3wUsfwo/VqNoWkufS1BAzwrkj
-         3+UMC7EGGiY8gNdP+14UDnh5PVdyrrwRvBAfqQYpzrO7CS3LMr6ROZP08IGbS+C5nexP
-         uCjP4k57gkkzJsJU5sSgPMJDM//Vq+M7cTQQLSFfXQ6ijStMusxeMy80uxCHiEzrDuO6
-         BDrw==
-X-Gm-Message-State: AOAM532x0OPcE8/R5U0MSVCcj3f9QQBI4/IMdt/wli5lFR8Czm7RVdAU
-        ZLdkKrhEwPcyPZZE3Rj6EMJ+j9H2seYBI4mGDR9sng==
-X-Google-Smtp-Source: ABdhPJza8kErNiYiPhF4FsjxuCaUWp/dAsMXwZIhcTVBemm9n0WZjL+SoMALzGDgzOMRk8qkAZVeoJ4Cn6BCROM7Soc=
-X-Received: by 2002:a63:4f50:: with SMTP id p16mr26300372pgl.40.1620188829494;
- Tue, 04 May 2021 21:27:09 -0700 (PDT)
+        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
+         :content-language:to:cc:references:from:in-reply-to
+         :content-transfer-encoding;
+        bh=dkfLmEwUYBpgZ3VRNqk3l0eUK71c8qK9M3LO8M6K/A4=;
+        b=e8/o92G6LIzYhMzliNS5jsJlwhpDKaG3MXPJueCT5GVWjmXk681ODINNnah5D0pcxL
+         +fFPQR9jxKPWR3NaF5D2blUykJVvk1h57/A8/3qv9PtFLJ6l6Zh/JC7rK2nU4KsBHVKJ
+         kuBZiFLnkDqx8AxAWmi+ohroOuIPIlQap65gh5n3JW3q+LJyrKehaAmmQpWjWqXLxcnC
+         QQ2opjJ8yJMyfhIT2HOrBf1Dc47EryMa6ePnfqUcF9VvK5gHdmTLikpDetYkSwQPq+lo
+         euDeT0YQWwsP8jwfYkQk1lvtIZNrDE3KSiwgSFwc3scbyMPoGWHLMuuG8omwauWhgche
+         NGeA==
+X-Gm-Message-State: AOAM532q/szMvW0X60cJYEAtCJQtjuqmlfkQ27fh92s4ycyGgu8DIx6q
+        KbdXEQBWJaTg0r2g0kKaLW0hSw==
+X-Google-Smtp-Source: ABdhPJwj5l+dKlySIdCGZk4hFYyrFl+frI0ecQuTkJrGFGr2OgKeAZLnUNmYF3pUR0T+bfW0S+MHsg==
+X-Received: by 2002:aa7:8051:0:b029:272:7b9c:cde1 with SMTP id y17-20020aa780510000b02902727b9ccde1mr26211062pfm.55.1620188944813;
+        Tue, 04 May 2021 21:29:04 -0700 (PDT)
+Received: from localhost (ppp121-45-194-51.cbr-trn-nor-bras38.tpg.internode.on.net. [121.45.194.51])
+        by smtp.gmail.com with UTF8SMTPSA id l6sm5170914pgc.68.2021.05.04.21.28.56
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 21:29:04 -0700 (PDT)
+Message-ID: <7e5c2276-ca1c-a8af-c15f-72a7c83c8bfa@ozlabs.ru>
+Date:   Wed, 5 May 2021 14:28:53 +1000
 MIME-Version: 1.0
-References: <20210504171734.1434054-1-seanjc@google.com> <20210504171734.1434054-4-seanjc@google.com>
-In-Reply-To: <20210504171734.1434054-4-seanjc@google.com>
-From:   Reiji Watanabe <reijiw@google.com>
-Date:   Tue, 4 May 2021 21:26:53 -0700
-Message-ID: <CAAeT=FyA_0NDX0BqEkBwXLOY6vm3XfkYJmd9bpRNSza-2i42wA@mail.gmail.com>
-Subject: Re: [PATCH 03/15] KVM: SVM: Inject #UD on RDTSCP when it should be
- disabled in the guest
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
+ Thunderbird/88.0
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+Content-Language: en-US
+To:     Jason Gunthorpe <jgg@nvidia.com>,
+        David Gibson <david@gibson.dropbear.id.au>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <20210421133312.15307c44@redhat.com>
+ <20210421230301.GP1370958@nvidia.com> <20210422111337.6ac3624d@redhat.com>
+ <YIeYJZOdgMN/orl0@yekko.fritz.box> <20210427172432.GE1370958@nvidia.com>
+ <YIi5G4Wg/hpFqNdX@yekko.fritz.box> <20210429002149.GZ1370958@nvidia.com>
+ <YIol9p3z8BTWFRh8@yekko> <20210503160530.GL1370958@nvidia.com>
+ <YJDFj+sAv41JRIo4@yekko> <20210504181537.GC1370958@nvidia.com>
+From:   Alexey Kardashevskiy <aik@ozlabs.ru>
+In-Reply-To: <20210504181537.GC1370958@nvidia.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 10:17 AM Sean Christopherson <seanjc@google.com> wrote:
->
-> Intercept RDTSCP to inject #UD if RDTSC is disabled in the guest.
->
-> Note, SVM does not support intercepting RDPID.  Unlike VMX's
-> ENABLE_RDTSCP control, RDTSCP interception does not apply to RDPID.  This
-> is a benign virtualization hole as the host kernel (incorrectly) sets
-> MSR_TSC_AUX if RDTSCP is supported, and KVM loads the guest's MSR_TSC_AUX
-> into hardware if RDTSCP is supported in the host, i.e. KVM will not leak
-> the host's MSR_TSC_AUX to the guest.
->
-> But, when the kernel bug is fixed, KVM will start leaking the host's
-> MSR_TSC_AUX if RDPID is supported in hardware, but RDTSCP isn't available
-> for whatever reason.  This leak will be remedied in a future commit.
->
-> Fixes: 46896c73c1a4 ("KVM: svm: add support for RDTSCP")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Reviewed-by: Reiji Watanabe <reijiw@google.com>
+
+On 05/05/2021 04:15, Jason Gunthorpe wrote:
+> On Tue, May 04, 2021 at 01:54:55PM +1000, David Gibson wrote:
+>> On Mon, May 03, 2021 at 01:05:30PM -0300, Jason Gunthorpe wrote:
+>>> On Thu, Apr 29, 2021 at 01:20:22PM +1000, David Gibson wrote:
+>>>>> There is a certain appeal to having some
+>>>>> 'PPC_TCE_CREATE_SPECIAL_IOASID' entry point that has a wack of extra
+>>>>> information like windows that can be optionally called by the viommu
+>>>>> driver and it remains well defined and described.
+>>>>
+>>>> Windows really aren't ppc specific.  They're absolutely there on x86
+>>>> and everything else as well - it's just that people are used to having
+>>>> a window at 0..<something largish> that you can often get away with
+>>>> treating it sloppily.
+>>>
+>>> My point is this detailed control seems to go on to more than just
+>>> windows. As you say the vIOMMU is emulating specific HW that needs to
+>>> have kernel interfaces to match it exactly.
+>>
+>> It's really not that bad.  The case of emulating the PAPR vIOMMU on
+>> something else is relatively easy, because all updates to the IO page
+>> tables go through hypercalls.  So, as long as the backend IOMMU can
+>> map all the IOVAs that the guest IOMMU can, then qemu's implementation
+>> of those hypercalls just needs to put an equivalent mapping in the
+>> backend, which it can do with a generic VFIO_DMA_MAP.
+> 
+> So you also want the PAPR vIOMMU driver to run on, say, an ARM IOMMU?
+
+
+This is a good feature in general when let's say there is a linux 
+supported device which has a proprietary device firmware update tool 
+which only exists as an x86 binary and your hardware is not x86 - 
+running qemu + vfio in full emulation would provide a way to run the 
+tool to update a physical device.
+
+
+-- 
+Alexey
