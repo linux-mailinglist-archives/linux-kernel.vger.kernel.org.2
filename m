@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21645374A5D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:38:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B9629374A63
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230108AbhEEVj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 17:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49610 "EHLO
+        id S234095AbhEEVjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 17:39:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233826AbhEEVjV (ORCPT
+        with ESMTP id S234046AbhEEVj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 17:39:21 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1DB0FC0613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 14:38:24 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id i13so3198616pfu.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 14:38:24 -0700 (PDT)
+        Wed, 5 May 2021 17:39:29 -0400
+Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DA66C06138C
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 14:38:31 -0700 (PDT)
+Received: by mail-pf1-x42e.google.com with SMTP id 10so3212965pfl.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 14:38:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=vhdjZZj0cxH1sOFf7cnRwsPjytINyJCyqoplegM2Sio=;
-        b=KK/K8fTNtpI/sRKDN8LJvWs6y2Qovav6Xw5RxAc1rnqpauUJhF78f/iHvVOeJ3TgZW
-         6yjVrsBJK14LiSiumhRtbCB/uHTme/poowcZKzyNQosaW19AyH3U/ejQFzDHUHCZMplg
-         eWZs9aJA0zmE3SOfR/wUgdO2M47TSn8+Cx6VP3Cp4C7pMr2rV784fW6JzU//1XTdfz9z
-         OWCgZVTGKx0WRIAc1uGCfvdzqk/K8N2yoJNDAtnG65byYQDIMbK+57GfgPG80pj4KMD4
-         fyDBOscWHWEZCZutV3LwdXor4Ei6P4cWEpotCEtAeul1FQBi1wabIAbBPRJhipmEN/39
-         5dow==
+        bh=qDeLoqy+m6bioGGQ0GfxGS6rwvI3pr4vU0sm5fTC/IA=;
+        b=qU2J7GvV3eAL4wLd/SslzfLclw4OQWRXaaOn2oJuuJOTfEuHByToqlwWZgjrT8Za1Z
+         gpuQXrS9tu9tK5heE1Z8YbakxvmJnll/C8sZhWxS7UuBLIFPDNy8HpRWv/NAU2EqgHJV
+         3cASXjEhUTTIzXvooQEzNh3vbfjZTqV482XIKUXGmlew3biLw1iY+amm4yv0KjQutK42
+         yv3IZcTxfb7m6GArlV1pGspfzskTrJ4rdMKYCOkqzmhQsJJucxUcVEYCbvqY7eUguXrl
+         3tK5XB9Urlfa7jJNi6ZMmn1P8NxFqbMXaeX78op+4dwtgXmdkadx1IWjJA84lSaRLw0T
+         h7RA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=vhdjZZj0cxH1sOFf7cnRwsPjytINyJCyqoplegM2Sio=;
-        b=XtvcjrdHu7VTrUGEXFn06R0XfPtIJTDyfz/OXqu5adik+gaFKrk2GJh7NvtfpZRyoy
-         nx00aRJnEpsBP1fSBmt9AFWOBLnUfGQNQOJdm4LoUwVBByCnSl4ZeJgROS1UUx+SRjoh
-         0xUDekDULffB9IInjSn2NGFkeqKvPnN2PmO8LFb/bGVFqYBZB/7aT9ntyX9Iivrr9F/y
-         K/6W4sg+/lV6NUkne6411IOY4Y/YsjImXYZxtbT9jqU+o1c+FsUHmaJvhsdybnx+/DuI
-         hJ9DgNon9asxgPO2xjWYzLZ7DPLSyYr+lIJwgsbh4IZJp1MKGWp2G3k2IrTxT8z6SltG
-         HX8g==
-X-Gm-Message-State: AOAM532wmVKO22yDHwDOc7k1/n9QvQbtxlXio48yfBeT+4enBghQMuaj
-        On9DhIGhEZf94XavqsWtvQOf2w==
-X-Google-Smtp-Source: ABdhPJyWSpq7imTNSFR9FHpSkOIrd2OpZ1ePNrNW0UYnS8xM5sixk3U1mHqE+u12pKmEZxHEdAH3jQ==
-X-Received: by 2002:a63:4b5b:: with SMTP id k27mr920490pgl.368.1620250703669;
-        Wed, 05 May 2021 14:38:23 -0700 (PDT)
+        bh=qDeLoqy+m6bioGGQ0GfxGS6rwvI3pr4vU0sm5fTC/IA=;
+        b=J3g85oih3ts3h5+Qcoptc4D7zUIWx+uvxaaGZ79vFbANxENJqcG0jOz/6MpJxJEesG
+         CKr7Ch7cxH6+P5eiiQmBRsKosYQ+3slO90AmUGTre12/BGOm6ZmfokW/AkhWAsLVWAZ+
+         4nT/H0izoao7NQW+zHCW0/2NH8XODqtAKkt0e+43W3zI2icwRZaw6t2wN2/6oFiO1/XJ
+         pSHlIg8n8JQnuEAZarpiAFXXRj9zWSe3BCeihYkFCGTSP57sR6a1kBRpSNqTV+VousHv
+         c1HUI1mgDKV3Il/IRvBoF6JH/Qi4J71GM3YCviCvqzS3N3oaxPp74BMDvq/dLAzkirHV
+         iUfA==
+X-Gm-Message-State: AOAM5316oiH/f80X5wooWcCJxLp0oiZUogGjXZk74IXoQwSVqemADc9s
+        UElRNb81xXNO5JJEirwjYwsWoA==
+X-Google-Smtp-Source: ABdhPJyWPlU8fw5IDWX70/6t1JZhWToow81MBf2PDhVcjmJ80nixg6lDZgAW1mX00TAt4OOq+latXA==
+X-Received: by 2002:a63:eb10:: with SMTP id t16mr914422pgh.393.1620250710621;
+        Wed, 05 May 2021 14:38:30 -0700 (PDT)
 Received: from localhost.localdomain.name ([223.235.141.68])
-        by smtp.gmail.com with ESMTPSA id z26sm167031pfq.86.2021.05.05.14.38.17
+        by smtp.gmail.com with ESMTPSA id z26sm167031pfq.86.2021.05.05.14.38.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 14:38:23 -0700 (PDT)
+        Wed, 05 May 2021 14:38:30 -0700 (PDT)
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     bhupesh.sharma@linaro.org,
@@ -63,9 +63,9 @@ Cc:     bhupesh.sharma@linaro.org,
         linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         bhupesh.linux@gmail.com
-Subject: [PATCH v2 04/17] dt-bindings: qcom-qce: Add 'interconnects' and move 'clocks' to optional properties
-Date:   Thu,  6 May 2021 03:07:18 +0530
-Message-Id: <20210505213731.538612-5-bhupesh.sharma@linaro.org>
+Subject: [PATCH v2 05/17] arm64/dts: qcom: sdm845: Use RPMH_CE_CLK macro directly
+Date:   Thu,  6 May 2021 03:07:19 +0530
+Message-Id: <20210505213731.538612-6-bhupesh.sharma@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
 References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
@@ -75,16 +75,14 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add 'interconnects' and 'interconnect-names' to the device-tree binding
-documentation for qcom crypto IP.
+In commit 3e482859f1ef ("dts: qcom: sdm845: Add dt entries
+to support crypto engine."), we decided to use the value indicated
+by constant RPMH_CE_CLK rather than using it directly.
 
-These properties describe the interconnect path between crypto and main
-memory and the interconnect type respectively.
-
-While at it also move 'clocks' to the optional properties sections,
-as crypto IPs on SoCs like sm8150, sm8250, sm8350 (and so on), don't
-require linux to setup the clocks (this is already done by the secure
-firmware running before linux).
+Now that the same RPMH clock value might be used for other
+SoCs (in addition to sdm845), let's use the constant
+RPMH_CE_CLK to make sure that this dtsi is compatible with the
+other qcom ones.
 
 Cc: Thara Gopinath <thara.gopinath@linaro.org>
 Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
@@ -103,44 +101,31 @@ Cc: linux-kernel@vger.kernel.org
 Cc: bhupesh.linux@gmail.com
 Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 ---
- .../devicetree/bindings/crypto/qcom-qce.txt        | 14 ++++++++++----
- 1 file changed, 10 insertions(+), 4 deletions(-)
+ arch/arm64/boot/dts/qcom/sdm845.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/crypto/qcom-qce.txt b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-index 07ee1b12000b..3f70cee1a491 100644
---- a/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-+++ b/Documentation/devicetree/bindings/crypto/qcom-qce.txt
-@@ -4,15 +4,19 @@ Required properties:
- 
- - compatible  : should be "qcom,crypto-v5.1"
- - reg         : specifies base physical address and size of the registers map
--- clocks      : phandle to clock-controller plus clock-specifier pair
--- clock-names : "iface" clocks register interface
--                "bus" clocks data transfer interface
--                "core" clocks rest of the crypto block
- - dmas        : DMA specifiers for tx and rx dma channels. For more see
-                 Documentation/devicetree/bindings/dma/dma.txt
- - dma-names   : DMA request names should be "rx" and "tx"
- - iommus      : phandle to apps_smmu node with sid mask
- 
-+Optional properties:
-+- clocks	    : phandle to clock-controller plus clock-specifier pair
-+- clock-names	    : "iface" clocks register interface
-+                      "bus" clocks data transfer interface
-+                      "core" clocks rest of the crypto block
-+- interconnects	    : Interconnect path between qce crypto and main memory
-+- interconnect-names: should be "memory"
-+
- Example:
- 	crypto@fd45a000 {
- 		compatible = "qcom,crypto-v5.1";
-@@ -23,4 +27,6 @@ Example:
- 		clock-names = "iface", "bus", "core";
- 		dmas = <&cryptobam 2>, <&cryptobam 3>;
- 		dma-names = "rx", "tx";
-+		interconnects = <&aggre2_noc MASTER_CRYPTO_CORE_0 &mc_virt SLAVE_EBI_CH0>;
-+		interconnect-names = "memory";
- 	};
+diff --git a/arch/arm64/boot/dts/qcom/sdm845.dtsi b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+index 0a86fe71a66d..2ec4be930fd6 100644
+--- a/arch/arm64/boot/dts/qcom/sdm845.dtsi
++++ b/arch/arm64/boot/dts/qcom/sdm845.dtsi
+@@ -2316,7 +2316,7 @@ cryptobam: dma@1dc4000 {
+ 			compatible = "qcom,bam-v1.7.0";
+ 			reg = <0 0x01dc4000 0 0x24000>;
+ 			interrupts = <GIC_SPI 272 IRQ_TYPE_LEVEL_HIGH>;
+-			clocks = <&rpmhcc 15>;
++			clocks = <&rpmhcc RPMH_CE_CLK>;
+ 			clock-names = "bam_clk";
+ 			#dma-cells = <1>;
+ 			qcom,ee = <0>;
+@@ -2332,7 +2332,7 @@ crypto: crypto@1dfa000 {
+ 			reg = <0 0x01dfa000 0 0x6000>;
+ 			clocks = <&gcc GCC_CE1_AHB_CLK>,
+ 				 <&gcc GCC_CE1_AHB_CLK>,
+-				 <&rpmhcc 15>;
++				 <&rpmhcc RPMH_CE_CLK>;
+ 			clock-names = "iface", "bus", "core";
+ 			dmas = <&cryptobam 6>, <&cryptobam 7>;
+ 			dma-names = "rx", "tx";
 -- 
 2.30.2
 
