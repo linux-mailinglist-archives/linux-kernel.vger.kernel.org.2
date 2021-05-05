@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AF61374A4A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:38:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03C4374A51
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:38:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231425AbhEEVjD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 17:39:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49488 "EHLO
+        id S233136AbhEEVjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 17:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49532 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231374AbhEEVjC (ORCPT
+        with ESMTP id S233357AbhEEVjH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 17:39:02 -0400
-Received: from mail-pj1-x102f.google.com (mail-pj1-x102f.google.com [IPv6:2607:f8b0:4864:20::102f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E684C0613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 14:38:05 -0700 (PDT)
-Received: by mail-pj1-x102f.google.com with SMTP id g24so1663379pji.4
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 14:38:05 -0700 (PDT)
+        Wed, 5 May 2021 17:39:07 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1C066C061763
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 14:38:11 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id k3-20020a17090ad083b0290155b934a295so1745966pju.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 14:38:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=Vuvuy1+AT+Se+Ymw219J/gL7FUpA6VquAVOTuh+g8Jc=;
-        b=uLOLtUcD3/U1CPx3mWyktMgcU6UbmGRwzeLDy4y7Ko+ItOTBeVT4QOjivBXuALBv1Z
-         54HWe0iEGbQEYyCBJ2mM+dIUqEYuwoHRv23IcpltCHEvUpbB5mV9o8YEfzyF4fgTmAgc
-         VpMDp2zXpdU3XunQJKlaiAld9JzGfl4jL6hSmsebXSmPtAHp8oLn6lkNmJQOOH1UOYR1
-         X3Zfyb3GZ5j2F8pkHhMtaKjToe4oOhPvurX6uYcrBUvghfzKbouG4B/adKZ+hGJKWag+
-         RzJvBrTqmA0OQNcq7P/Pp3MOjBIrVbbawH1TIpNtswND6IsjO09IT2KuU4BdtxZOXbJu
-         RumA==
+        bh=G8+gYdiVbmjOwjaPy7U2TKEE4QviaMAH4q5NozXKn0Q=;
+        b=iBQAa1NKgpUgni9h2YA6oy4Dn8VunyJlqmjKKrxMQ3nQ6IbaEFRXGLYlYp+pgZz5fT
+         4juD1l4LNyQyKEfwDt5lQ1qbmSyVPZRXOWH5t/g9PfGAmBDOVnQCoKTHQe4w6xJfgngd
+         +UgsZOvjPV96U8y5firvnk35d14xflagdpdkrwzEX850NrG+kUIU4ydsTX7Cug/bQjfQ
+         Q80OH4+HkkBX3vI35IfBIRTH9Xf5Y7n3baFScUzxxT6Xw05G4T7nRrus7lj/f7gHTxJd
+         xXGnXALRWRZ5RXml1+sMSnlHE5BizZyLQ1tA3hlpDqlD8i8iwYh+cw1X//TT3ZL7F3Di
+         HwUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=Vuvuy1+AT+Se+Ymw219J/gL7FUpA6VquAVOTuh+g8Jc=;
-        b=CiumRONBhoN5WWELqtxJASaz9QV0f1KXY8gk/5QgePTETkn5drmYb8p191jjwaQksU
-         NWb+XqZobQW+tRCeUxDULttV764Stu/OYx3RrnR+MqX+4mbLz7Tvb6s18bBhrO8EtiR4
-         3vgDceQdYQvdRqLO285XmNb0Fsw2iZiPwucayiHVlf8YH6M8wha8vqb5ULCYOoCaKaCL
-         xX53WI+X9bbd5TTDpWvBoDGnHsmMlrgV9cRmSrJ3DsdceWn++rrhMz8NmeFh1/J64Xzs
-         LgvSnygNYp2rNo+FoIXJuw02mmLQ0HyItfX2IAIh7EhTs1yhqklNbGchiwpmfemVZNpB
-         V+Ng==
-X-Gm-Message-State: AOAM530JZNHCAm5kXrW/KroczWLEmE5eYvh5fq5AEgT+BynEKRcqthIW
-        RHFSn+yAEQ+2t8pa3IjWfbaNPw==
-X-Google-Smtp-Source: ABdhPJzgyvFxC589Qe4/bKRPP1/ndf0oUgZck9SproAnrE2LdXa+IqmozDQT9VjeQ6MEgdjPA6HmGA==
-X-Received: by 2002:a17:90a:e643:: with SMTP id ep3mr13636722pjb.194.1620250684644;
-        Wed, 05 May 2021 14:38:04 -0700 (PDT)
+        bh=G8+gYdiVbmjOwjaPy7U2TKEE4QviaMAH4q5NozXKn0Q=;
+        b=lCg5gCUAPKNC+Km+JmcTquAwuhYSW83xWIPxUrM2+Td6vEzJf65UjIxrM2BnCQFYp0
+         kDJQYHzN2F2I7N7BUFcCnWZOCADnsczZDNb/WKK7IK40/grCn3Qfx5AduktFW3FgmDjN
+         sXDrP3TB6QSChBWxZcobHaxa+IkUyEB24NQyyYkSDM7AEuKperktZUl00M2rmbYwNCUG
+         29sEnR/7xJeS2NyZeaP7B105iESGwvAHeQ+6TcQKYrGW5Uuy0sW9zSMDSkVAOWu8yysu
+         oZJYYum5+YUa8gHiCm/Da0/y0ngCiYFNBan5QquaTZyRjFkKbSPTcfhCWFlQ3JK+i2pg
+         w3uQ==
+X-Gm-Message-State: AOAM531h4RVZc8CN04QCbkCzTLkihjjPbzR1X2qM5J0KNaxYhDqtCRx0
+        wGJ4oWD/8JcgZH0ySa7VvTXJ9A==
+X-Google-Smtp-Source: ABdhPJzTn9wRcKkeSIPwlw1URylkANElXVgG9hVuwr1AC3j5LFOGnSLRAMSLSbgcIRCZohliYs84cg==
+X-Received: by 2002:a17:90a:246:: with SMTP id t6mr737090pje.228.1620250690710;
+        Wed, 05 May 2021 14:38:10 -0700 (PDT)
 Received: from localhost.localdomain.name ([223.235.141.68])
-        by smtp.gmail.com with ESMTPSA id z26sm167031pfq.86.2021.05.05.14.37.58
+        by smtp.gmail.com with ESMTPSA id z26sm167031pfq.86.2021.05.05.14.38.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 14:38:04 -0700 (PDT)
+        Wed, 05 May 2021 14:38:10 -0700 (PDT)
 From:   Bhupesh Sharma <bhupesh.sharma@linaro.org>
 To:     linux-arm-msm@vger.kernel.org
 Cc:     bhupesh.sharma@linaro.org,
@@ -63,9 +63,9 @@ Cc:     bhupesh.sharma@linaro.org,
         linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         bhupesh.linux@gmail.com
-Subject: [PATCH v2 01/17] dt-bindings: qcom-bam: Add 'interconnects' & 'interconnect-names' to optional properties
-Date:   Thu,  6 May 2021 03:07:15 +0530
-Message-Id: <20210505213731.538612-2-bhupesh.sharma@linaro.org>
+Subject: [PATCH v2 02/17] dt-bindings: qcom-bam: Add 'iommus' to required properties
+Date:   Thu,  6 May 2021 03:07:16 +0530
+Message-Id: <20210505213731.538612-3-bhupesh.sharma@linaro.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
 References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
@@ -75,12 +75,10 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add new optional properties - 'interconnects' and
-'interconnect-names' to the device-tree binding documentation for
-qcom-bam DMA IP.
+Add the missing required property - 'iommus' to the
+device-tree binding documentation for qcom-bam DMA IP.
 
-These properties describe the interconnect path between bam and main
-memory and the interconnect type respectively.
+This property describes the phandle(s) to apps_smmu node with sid mask.
 
 Cc: Thara Gopinath <thara.gopinath@linaro.org>
 Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
@@ -99,30 +97,21 @@ Cc: linux-kernel@vger.kernel.org
 Cc: bhupesh.linux@gmail.com
 Signed-off-by: Bhupesh Sharma <bhupesh.sharma@linaro.org>
 ---
- Documentation/devicetree/bindings/dma/qcom_bam_dma.txt | 4 ++++
- 1 file changed, 4 insertions(+)
+ Documentation/devicetree/bindings/dma/qcom_bam_dma.txt | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt b/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-index cf5b9e44432c..077242956ff2 100644
+index 077242956ff2..60a76c0fb118 100644
 --- a/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
 +++ b/Documentation/devicetree/bindings/dma/qcom_bam_dma.txt
-@@ -13,12 +13,16 @@ Required properties:
+@@ -13,6 +13,7 @@ Required properties:
  - clock-names: must contain "bam_clk" entry
  - qcom,ee : indicates the active Execution Environment identifier (0-7) used in
    the secure world.
-+
-+Optional properties:
++- iommus  : phandle to apps_smmu node with sid mask
+ 
+ Optional properties:
  - qcom,controlled-remotely : optional, indicates that the bam is controlled by
-   remote proccessor i.e. execution environment.
- - num-channels : optional, indicates supported number of DMA channels in a
-   remotely controlled bam.
- - qcom,num-ees : optional, indicates supported number of Execution Environments
-   in a remotely controlled bam.
-+- interconnects : Interconnect path between bam and main memory.
-+- interconnect-names: should be "memory".
- 
- Example:
- 
 -- 
 2.30.2
 
