@@ -2,93 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4CDA7373B6E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:36:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D994373B62
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233396AbhEEMhd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:37:33 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3031 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhEEMh2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:37:28 -0400
-Received: from fraeml701-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZwwq3HLLz6rlcd;
-        Wed,  5 May 2021 20:28:27 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml701-chm.china.huawei.com (10.206.15.50) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 5 May 2021 14:36:29 +0200
-Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
- 13:36:28 +0100
-Date:   Wed, 5 May 2021 13:34:50 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        "Krzysztof Kozlowski" <krzysztof.kozlowski@canonical.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-samsung-soc@vger.kernel.org>
-Subject: Re: [PATCH 24/25] media: exynos-gsc: fix pm_runtime_get_sync()
- usage count
-Message-ID: <20210505133450.00001fda@Huawei.com>
-In-Reply-To: <d73f24e33fb9b1cc0ff968bec833184c6510b9ec.1620207353.git.mchehab+huawei@kernel.org>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
-        <d73f24e33fb9b1cc0ff968bec833184c6510b9ec.1620207353.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S233473AbhEEMgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:36:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47210 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233471AbhEEMgH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:36:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C12F613AA;
+        Wed,  5 May 2021 12:35:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620218110;
+        bh=WoLNm9lJaRrgB/82wCLAmBaJ86xs4xLka0E/fHFUwDk=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=KXOeDFq6Mjqix5IiRmXDa0u52xHRdzYyNmHEH22Vm6ZGKN3Vzu6uapC66DDx3Nkc0
+         7jNFLP2aYUyNZsRMXqgzUjfg+yapORQGnENQAh5bYac5S++8fuiRwFNIZMbXTuMQkU
+         WYOSlvSWKbpkxKk3FPr7mKyE4IIBYt2JWqt+Br99lT1ti8c3GLOwIzXSKTO/+BksKi
+         GWoTsnQ4bnPc7mxBihBS8Ynmkb5KVTpiDVYHxsRhmnvvovlAiskAx4V6lBNx/yF8YV
+         KHJx31ren6a82ghxz9hdocjHoF5yy6O12qVKDRJbbevqqmjPb12rXq7BMdm2qJJ+SJ
+         8UpiNMjGvOOgg==
+Date:   Wed, 5 May 2021 14:35:07 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Ikjoon Jang <ikjn@chromium.org>
+cc:     linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+        Dmitry Torokhov <dtor@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v5 2/2] HID: google: Add of_match table to Whiskers switch
+ device.
+In-Reply-To: <20210415032958.740233-3-ikjn@chromium.org>
+Message-ID: <nycvar.YFH.7.76.2105051434520.28378@cbobk.fhfr.pm>
+References: <20210415032958.740233-1-ikjn@chromium.org> <20210415032958.740233-3-ikjn@chromium.org>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.138]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 11:42:14 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Thu, 15 Apr 2021, Ikjoon Jang wrote:
 
-> The pm_runtime_get_sync() internally increments the
-> dev->power.usage_count without decrementing it, even on errors.
-> Replace it by the new pm_runtime_resume_and_get(), introduced by:
-> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> in order to properly decrement the usage counter, avoiding
-> a potential PM usage counter leak.
-> 
-> As a bonus, as pm_runtime_get_sync() always return 0 on
-> success, the logic can be simplified.
-> 
-> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Add a device tree match table for "cros-cbas" switch device.
 
-> ---
->  drivers/media/platform/exynos-gsc/gsc-m2m.c | 4 +---
->  1 file changed, 1 insertion(+), 3 deletions(-)
-> 
-> diff --git a/drivers/media/platform/exynos-gsc/gsc-m2m.c b/drivers/media/platform/exynos-gsc/gsc-m2m.c
-> index 27a3c92c73bc..f1cf847d1cc2 100644
-> --- a/drivers/media/platform/exynos-gsc/gsc-m2m.c
-> +++ b/drivers/media/platform/exynos-gsc/gsc-m2m.c
-> @@ -56,10 +56,8 @@ static void __gsc_m2m_job_abort(struct gsc_ctx *ctx)
->  static int gsc_m2m_start_streaming(struct vb2_queue *q, unsigned int count)
->  {
->  	struct gsc_ctx *ctx = q->drv_priv;
-> -	int ret;
->  
-> -	ret = pm_runtime_get_sync(&ctx->gsc_dev->pdev->dev);
-> -	return ret > 0 ? 0 : ret;
-> +	return pm_runtime_resume_and_get(&ctx->gsc_dev->pdev->dev);
->  }
->  
->  static void __gsc_m2m_cleanup_queue(struct gsc_ctx *ctx)
+Applied, sorry for the delay.
+
+-- 
+Jiri Kosina
+SUSE Labs
 
