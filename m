@@ -2,78 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF994373B57
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:34:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C8BC373B4E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233425AbhEEMfJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:35:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40386 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232200AbhEEMfI (ORCPT
+        id S232806AbhEEMee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:34:34 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3025 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229793AbhEEMe3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:35:08 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57661C061574;
-        Wed,  5 May 2021 05:34:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Transfer-Encoding:
-        Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-        Sender:Reply-To:Content-ID:Content-Description;
-        bh=6nDsAgZyLnevi7PNrWtRehL0qNVNJeXiu/AjwzP/hUk=; b=O7jZ7bKH59HOcHeEyNTXh8RSfj
-        88AvWhK7SQ4O5d4bGiPLmvEQB2HI19SdqztgzDdK3mZ3wuw52rwJGJZsHl5VcWSQANqvUKg3UgMPl
-        dCWsPW/PwURSbV139Zan4c5cNQThZdkNcdvFE52oCiI1VLSEOW56vWlHhtmWbmuMXMIcdgQLjgTYt
-        jPOyze3oUKY05vcIpCPEXesuf46GtpoANYw2vYVn+Yg5RAgBcdAEnI/LFQM4fV7fZMesB/aVdnghR
-        ku/oVm2Pgipn+DFtm/4hPq8r5uZbMK3u2f24428SC9coFZ2YpSswu8t9BHpHGObzdF8b1fl5JiL0U
-        yA61Td/g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1leGgr-001CkZ-31; Wed, 05 May 2021 12:33:45 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 45319300103;
-        Wed,  5 May 2021 14:31:43 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0C245203E67FA; Wed,  5 May 2021 14:31:43 +0200 (CEST)
-Date:   Wed, 5 May 2021 14:31:42 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@collabora.com>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, corbet@lwn.net,
-        Peter Oskolkov <posk@posk.io>
-Subject: Re: [PATCH v3 00/13] Add futex2 syscalls
-Message-ID: <YJKQLkHuTH3EWJoR@hirez.programming.kicks-ass.net>
-References: <20210427231248.220501-1-andrealmeid@collabora.com>
+        Wed, 5 May 2021 08:34:29 -0400
+Received: from fraeml711-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZwvz13Gpz72f1w;
+        Wed,  5 May 2021 20:27:43 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml711-chm.china.huawei.com (10.206.15.60) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 5 May 2021 14:33:31 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 13:33:30 +0100
+Date:   Wed, 5 May 2021 13:31:52 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-samsung-soc@vger.kernel.org>,
+        "Sylwester Nawrocki" <s.nawrocki@samsung.com>
+Subject: Re: [PATCH 15/25] media: s5p: fix pm_runtime_get_sync() usage count
+Message-ID: <20210505133152.000017ff@Huawei.com>
+In-Reply-To: <57a141a2c538b253f1c9502a790c370007d2ed83.1620207353.git.mchehab+huawei@kernel.org>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <57a141a2c538b253f1c9502a790c370007d2ed83.1620207353.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210427231248.220501-1-andrealmeid@collabora.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 08:12:35PM -0300, André Almeida wrote:
-> Hi,
+On Wed, 5 May 2021 11:42:05 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> The pm_runtime_get_sync() internally increments the
+> dev->power.usage_count without decrementing it, even on errors.
+> Replace it by the new pm_runtime_resume_and_get(), introduced by:
+> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> in order to properly decrement the usage counter, avoiding
+> a potential PM usage counter leak.
 > 
-> This patch series introduces the futex2 syscalls.
+> While here, check if the PM runtime error was caught at
+> s5p_cec_adap_enable().
+> 
+> Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
+> Acked-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-I still utterly detest that this adds a second hash-table for no
-descernable reason.
+> ---
+>  drivers/media/cec/platform/s5p/s5p_cec.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/media/cec/platform/s5p/s5p_cec.c b/drivers/media/cec/platform/s5p/s5p_cec.c
+> index 3c7c4c3c798c..028a09a7531e 100644
+> --- a/drivers/media/cec/platform/s5p/s5p_cec.c
+> +++ b/drivers/media/cec/platform/s5p/s5p_cec.c
+> @@ -35,10 +35,13 @@ MODULE_PARM_DESC(debug, "debug level (0-2)");
+>  
+>  static int s5p_cec_adap_enable(struct cec_adapter *adap, bool enable)
+>  {
+> +	int ret;
+>  	struct s5p_cec_dev *cec = cec_get_drvdata(adap);
+>  
+>  	if (enable) {
+> -		pm_runtime_get_sync(cec->dev);
+> +		ret = pm_runtime_resume_and_get(cec->dev);
+> +		if (ret < 0)
+> +			return ret;
+>  
+>  		s5p_cec_reset(cec);
+>  
 
-The new syscall interface does not depend on that in any way, you
-previously implemented the multi-wait thing in the current futex code.
-
-Like I said last time; I'm okay with the new interface, but I don't see
-why you need to reimplement the insides, that's all pointless code
-duplication.
