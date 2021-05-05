@@ -2,83 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06270373D04
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:06:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56D24373D0F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:11:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233708AbhEEOHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:07:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56594 "EHLO mail.kernel.org"
+        id S233688AbhEEOLz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:11:55 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:60330 "EHLO srv6.fidu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232569AbhEEOHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:07:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57B47610D2;
-        Wed,  5 May 2021 14:06:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620223611;
-        bh=OjNXdtLe+rldbt/eqf2MzCXHGnPYO6PJB+Ud+Wzr38k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K4+OsyGPs1zXOojHu74svR1YSoxWe1oURMRbr+cAqnG6P83C+wzhhyB1dh1+Gt16v
-         HLa7Jdu63iOhY5UmIgAtLPMcWiNNlQ6mB+O7FFbcVTjOBaidr0oPDZL/hN40wKPV0l
-         IDwI38xSYDXaNT8/yhgWidCuGhv/KlyY/9QxGKrtU4x54adPkNUq8/YWxnulJCPtk8
-         r1j5PD/c3eZ/Khv9AxovP6rcAlc9Gy9GENAfcpJYoCQXZGhAsX0PaiAnxPTWOW8poO
-         d8mGE2yTq0V1vgcKKVAMt7TaF/sQrkfYGfcmLiwN09e5GUbOQji0Z9gWLjuOCqI86m
-         j5dIoFxCk2LbA==
-Date:   Wed, 5 May 2021 16:06:45 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>, <linuxarm@huawei.com>,
-        <mauro.chehab@huawei.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-Subject: Re: [PATCH 25/25] media: i2c: ccs-core: fix pm_runtime_get_sync()
- usage count
-Message-ID: <20210505160645.1d197193@coco.lan>
-In-Reply-To: <20210505133548.00005c1a@Huawei.com>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
-        <83ec24acb15f17e2ce589575c2f5eb7bdd1daf28.1620207353.git.mchehab+huawei@kernel.org>
-        <20210505103409.GN3@paasikivi.fi.intel.com>
-        <20210505125700.4a7584ca@coco.lan>
-        <20210505125857.7f30d8fa@coco.lan>
-        <20210505133548.00005c1a@Huawei.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232558AbhEEOLx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 10:11:53 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id F1555C800B6;
+        Wed,  5 May 2021 16:10:55 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id RADldgv4FbbV; Wed,  5 May 2021 16:10:55 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300E37F39860005a4018A54F094b9.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:5a4:18a:54f0:94b9])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id A53FEC800A8;
+        Wed,  5 May 2021 16:10:55 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     wse@tuxedocomputers.com, ville.syrjala@linux.intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] drm/i915/display Try YCbCr420 color when RGB fails
+Date:   Wed,  5 May 2021 16:10:49 +0200
+Message-Id: <20210505141052.3467-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jonathan,
+When encoder validation of a display mode fails, retry with less bandwidth
+heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
+to support 4k60Hz output, which previously failed silently.
 
-Em Wed, 5 May 2021 13:35:48 +0100
-Jonathan Cameron <Jonathan.Cameron@Huawei.com> escreveu:
+AMDGPU had nearly the exact same issue. This problem description is
+therefore copied from my commit message of the AMDGPU patch.
 
-> > > [PATCH] media: i2c: ccs-core: fix pm_runtime_get_sync() usage count
-> > > 
-> > > The pm_runtime_get_sync() internally increments the
-> > > dev->power.usage_count without decrementing it, even on errors.
-> > > 
-> > > There is a bug at ccs_pm_get_init(): when this function returns
-> > > an error, the stream is not started, and RPM usage_count
-> > > should not be incremented. However, if the calls to
-> > > v4l2_ctrl_handler_setup() return errors, it will be kept
-> > > incremented.
-> > > 
-> > > At ccs_suspend() the best is to replace it by the new
-> > > pm_runtime_resume_and_get(), introduced by:
-> > > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> > > in order to properly decrement the usage counter automatically,
-> > > in the case of errors.
-> > > 
-> > > Fixes: 96e3a6b92f23 ("media: smiapp: Avoid maintaining power state information")
-> > > Cc: stable@vger.kernel.org
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+On some setups, while the monitor and the gpu support display modes with
+pixel clocks of up to 600MHz, the link encoder might not. This prevents
+YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
+possible. However, which color mode is used is decided before the link
+encoder capabilities are checked. This patch fixes the problem by retrying
+to find a display mode with YCbCr420 enforced and using it, if it is
+valid.
 
-Per Sakari's request (for practical reasons on backporting and
-c/c stable), this was split into two separate patches, one
-fixing the issues, and a separate trivial one with just the
-pm_runtime_resume_and_get(). I'm adding your RB on both.
+This patchset is revision 3. I did not (yet) include all suggested changes
+as I'm waiting for some clarification. See my last emails.
 
-Thanks,
-Mauro
+
