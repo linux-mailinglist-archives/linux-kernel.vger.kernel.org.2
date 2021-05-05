@@ -2,96 +2,327 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC00A37403D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:34:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2776C3741DF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:46:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234490AbhEEQdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:33:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234210AbhEEQcn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:32:43 -0400
-Received: from mail-yb1-xb32.google.com (mail-yb1-xb32.google.com [IPv6:2607:f8b0:4864:20::b32])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58289C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 09:31:46 -0700 (PDT)
-Received: by mail-yb1-xb32.google.com with SMTP id z1so3461285ybf.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:31:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pRVzwOgIfTSllO4Wpxq3+JkI0Hw7DPEdTGB0dVwqKjQ=;
-        b=IdOv2ekLdGnchPslFlPDDzQiNQdeseK4Ba8Jyex9e0ZFkwjpS4vHnqmVAKgQTY4Gs0
-         NJT584bOfjuJOoiyeiXEW7Ye04nzU7Wg05vXbQ7n1aHfhK2Dz0h3UgaSdtBBPsz4piKu
-         m7kweSyABh3p1UstIv2J4EG8ONKIqc5KyQq2aNsLCYNggHpxtDQkm+4LUdufaoJy8fJ+
-         actO6D4HK2Jxc+8GMuLCE4T29bS3bvtgDyLpnmgZQHaPzefJhYbRYW5jdPCPzd9O/LoW
-         P0qozxlmQeqTeumDGcjo87Xn7ECtPN18FDvfeQCc1DSCBDytP5ANKykaR5rL/4WOB1wL
-         fzkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pRVzwOgIfTSllO4Wpxq3+JkI0Hw7DPEdTGB0dVwqKjQ=;
-        b=L+OYNO3Z+bWzvIbX9AtSmtiV0d2a2LF3mUme5yOAQIUtiwxYIccldRFuCtIbG3PG+W
-         70IqowGN/jcRptDxnHrUSZX6dYrAPlw6qvPiKUM/YWllC494Y9j87Emy2hvyZtod5j/6
-         RvFgOziwU6WSzfLqa8h7OSgJR8WTzYtLLIFL1gUArFoQ2GjLNYr/oNnwUb2c1qBwcWeZ
-         iVBDvTwRXSeduEvlK4IudbE7kcaCZYUYhzp8aUv3BGeT6QgklU+wrRmR1f3hwlW1z9NB
-         idkbG+SxR4hvQL23p/pwARnIppkv/IInuUMKxxVF4RxuTvGa+jx+qvamFBV2vZFAK4GF
-         q3xQ==
-X-Gm-Message-State: AOAM532dcC/Q9e9B++s2wvFaF3vdonls4XITP6BVxOO/0CaX42nS6Vgp
-        M0FEBeByfcneJxIbiUtYzCokszAkd4ii/QVTBa+hrLUchX8=
-X-Google-Smtp-Source: ABdhPJyknOwqxU5ETkne37G2eSRG0nmQg+LKD3m8TppD3zQF2UMZipDo/13yR1+ALt0EXhxSdbYpM3t9JhYZLky4VX0=
-X-Received: by 2002:a25:2d64:: with SMTP id s36mr40509310ybe.412.1620232305426;
- Wed, 05 May 2021 09:31:45 -0700 (PDT)
+        id S235439AbhEEQlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:41:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38742 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234928AbhEEQit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:38:49 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CCB661490;
+        Wed,  5 May 2021 16:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620232428;
+        bh=7KtH2Dzg7dXYW52LveMSpV3di6QojHhfgNGUfPlZpsw=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=ToWvFTTsMTKEau8JgXEvGpoMG0O/BLxZdPe9PPHLsswBbz8LVgCPdR309SXHgINfe
+         JSAa/REqBNbQKxYoIopvm9Bf18yB/bFcJIMjQkQNBPXvqXSRcmiWWghjqRx91+/Jf0
+         bfXHxXHxnlWgzgujyVigOKeM8gkkdNWfrpA5nczIh5zGovt//qBOKf/kBROtmem7Lu
+         NacAgXmp8jMhhXjbatkaMCbYFPW5hGfP1X703BKGIJAyIvhUNo7T1ewwjkiQdnc+Eg
+         MrUwppdTXrg/8OKAWyyIM3BTGYjGWOtqIPjbt/+PVZSyzUBX3O86BCmhuQ510mUd+e
+         aanPeBbUdFxRw==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 101/116] wl3501_cs: Fix out-of-bounds warnings in wl3501_mgmt_join
+Date:   Wed,  5 May 2021 12:31:09 -0400
+Message-Id: <20210505163125.3460440-101-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210505163125.3460440-1-sashal@kernel.org>
+References: <20210505163125.3460440-1-sashal@kernel.org>
 MIME-Version: 1.0
-References: <20210505031416.30128-1-saravanak@google.com> <20210505054838.GA22603@wunner.de>
-In-Reply-To: <20210505054838.GA22603@wunner.de>
-From:   Saravana Kannan <saravanak@google.com>
-Date:   Wed, 5 May 2021 09:31:09 -0700
-Message-ID: <CAGETcx9EnNKwq-KQ5dDifAV25jsJ3WCv6iqs7TqsAgXaUfFgbg@mail.gmail.com>
-Subject: Re: [PATCH v1] spi: Don't have controller clean up spi device before
- driver unbind
-To:     Lukas Wunner <lukas@wunner.de>
-Cc:     Mark Brown <broonie@kernel.org>,
-        Android Kernel Team <kernel-team@android.com>,
-        linux-spi <linux-spi@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 10:48 PM Lukas Wunner <lukas@wunner.de> wrote:
->
-> On Tue, May 04, 2021 at 08:14:16PM -0700, Saravana Kannan wrote:
-> > @@ -415,6 +421,7 @@ static int spi_remove(struct device *dev)
-> >                                ERR_PTR(ret));
-> >       }
-> >
-> > +     spi_cleanup(to_spi_device(dev));
-> >       dev_pm_domain_detach(dev, true);
-> >
-> >       return 0;
->
-> Unfortunately this doesn't look right:  spi_remove() is run on
-> driver unbind of the spi_device.  With the above change,
-> ->setup is called on spi_device addition and ->cleanup is called
-> on unbind, which is obviously assymetric.  What can happen
-> here is that a slave-specific controller_state is allocated on
-> spi_device addition, then on unbind that controller_state is freed
-> and on a subsequent rebind it won't be recreated because ->setup
-> isn't run on spi_device ->probe.
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
 
-Good point!
+[ Upstream commit bb43e5718d8f1b46e7a77e7b39be3c691f293050 ]
 
->
-> As I've written yesterday, calling spi_cleanup() in
-> spi_unregister_device() should be fine if you move it to the end
-> of the function, but before the final put_device().  For that,
-> you need to open code the calls to device_del() and put_device()
-> that happen in device_unregister() so far.
+Fix the following out-of-bounds warnings by adding a new structure
+wl3501_req instead of duplicating the same members in structure
+wl3501_join_req and wl3501_scan_confirm:
 
-Yeah, I saw that email after I sent out this patch. I'll send out a v2.
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [39, 108] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 36 [-Warray-bounds]
+arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [25, 95] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 22 [-Warray-bounds]
 
--Saravana
+Refactor the code, accordingly:
+
+$ pahole -C wl3501_req drivers/net/wireless/wl3501_cs.o
+struct wl3501_req {
+        u16                        beacon_period;        /*     0     2 */
+        u16                        dtim_period;          /*     2     2 */
+        u16                        cap_info;             /*     4     2 */
+        u8                         bss_type;             /*     6     1 */
+        u8                         bssid[6];             /*     7     6 */
+        struct iw_mgmt_essid_pset  ssid;                 /*    13    34 */
+        struct iw_mgmt_ds_pset     ds_pset;              /*    47     3 */
+        struct iw_mgmt_cf_pset     cf_pset;              /*    50     8 */
+        struct iw_mgmt_ibss_pset   ibss_pset;            /*    58     4 */
+        struct iw_mgmt_data_rset   bss_basic_rset;       /*    62    10 */
+
+        /* size: 72, cachelines: 2, members: 10 */
+        /* last cacheline: 8 bytes */
+};
+
+$ pahole -C wl3501_join_req drivers/net/wireless/wl3501_cs.o
+struct wl3501_join_req {
+        u16                        next_blk;             /*     0     2 */
+        u8                         sig_id;               /*     2     1 */
+        u8                         reserved;             /*     3     1 */
+        struct iw_mgmt_data_rset   operational_rset;     /*     4    10 */
+        u16                        reserved2;            /*    14     2 */
+        u16                        timeout;              /*    16     2 */
+        u16                        probe_delay;          /*    18     2 */
+        u8                         timestamp[8];         /*    20     8 */
+        u8                         local_time[8];        /*    28     8 */
+        struct wl3501_req          req;                  /*    36    72 */
+
+        /* size: 108, cachelines: 2, members: 10 */
+        /* last cacheline: 44 bytes */
+};
+
+$ pahole -C wl3501_scan_confirm drivers/net/wireless/wl3501_cs.o
+struct wl3501_scan_confirm {
+        u16                        next_blk;             /*     0     2 */
+        u8                         sig_id;               /*     2     1 */
+        u8                         reserved;             /*     3     1 */
+        u16                        status;               /*     4     2 */
+        char                       timestamp[8];         /*     6     8 */
+        char                       localtime[8];         /*    14     8 */
+        struct wl3501_req          req;                  /*    22    72 */
+        /* --- cacheline 1 boundary (64 bytes) was 30 bytes ago --- */
+        u8                         rssi;                 /*    94     1 */
+
+        /* size: 96, cachelines: 2, members: 8 */
+        /* padding: 1 */
+        /* last cacheline: 32 bytes */
+};
+
+The problem is that the original code is trying to copy data into a
+bunch of struct members adjacent to each other in a single call to
+memcpy(). Now that a new struct wl3501_req enclosing all those adjacent
+members is introduced, memcpy() doesn't overrun the length of
+&sig.beacon_period and &this->bss_set[i].beacon_period, because the
+address of the new struct object _req_ is used as the destination,
+instead.
+
+This helps with the ongoing efforts to globally enable -Warray-bounds
+and get us closer to being able to tighten the FORTIFY_SOURCE routines
+on memcpy().
+
+Link: https://github.com/KSPP/linux/issues/109
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Reviewed-by: Kees Cook <keescook@chromium.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1fbaf516da763b50edac47d792a9145aa4482e29.1618442265.git.gustavoars@kernel.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/net/wireless/wl3501.h    | 35 +++++++++++--------------
+ drivers/net/wireless/wl3501_cs.c | 44 +++++++++++++++++---------------
+ 2 files changed, 38 insertions(+), 41 deletions(-)
+
+diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
+index aa8222cbea68..59b7b93c5963 100644
+--- a/drivers/net/wireless/wl3501.h
++++ b/drivers/net/wireless/wl3501.h
+@@ -379,16 +379,7 @@ struct wl3501_get_confirm {
+ 	u8	mib_value[100];
+ };
+ 
+-struct wl3501_join_req {
+-	u16			    next_blk;
+-	u8			    sig_id;
+-	u8			    reserved;
+-	struct iw_mgmt_data_rset    operational_rset;
+-	u16			    reserved2;
+-	u16			    timeout;
+-	u16			    probe_delay;
+-	u8			    timestamp[8];
+-	u8			    local_time[8];
++struct wl3501_req {
+ 	u16			    beacon_period;
+ 	u16			    dtim_period;
+ 	u16			    cap_info;
+@@ -401,6 +392,19 @@ struct wl3501_join_req {
+ 	struct iw_mgmt_data_rset    bss_basic_rset;
+ };
+ 
++struct wl3501_join_req {
++	u16			    next_blk;
++	u8			    sig_id;
++	u8			    reserved;
++	struct iw_mgmt_data_rset    operational_rset;
++	u16			    reserved2;
++	u16			    timeout;
++	u16			    probe_delay;
++	u8			    timestamp[8];
++	u8			    local_time[8];
++	struct wl3501_req	    req;
++};
++
+ struct wl3501_join_confirm {
+ 	u16	next_blk;
+ 	u8	sig_id;
+@@ -443,16 +447,7 @@ struct wl3501_scan_confirm {
+ 	u16			    status;
+ 	char			    timestamp[8];
+ 	char			    localtime[8];
+-	u16			    beacon_period;
+-	u16			    dtim_period;
+-	u16			    cap_info;
+-	u8			    bss_type;
+-	u8			    bssid[ETH_ALEN];
+-	struct iw_mgmt_essid_pset   ssid;
+-	struct iw_mgmt_ds_pset	    ds_pset;
+-	struct iw_mgmt_cf_pset	    cf_pset;
+-	struct iw_mgmt_ibss_pset    ibss_pset;
+-	struct iw_mgmt_data_rset    bss_basic_rset;
++	struct wl3501_req	    req;
+ 	u8			    rssi;
+ };
+ 
+diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
+index 70307308635f..672f5d5f3f2c 100644
+--- a/drivers/net/wireless/wl3501_cs.c
++++ b/drivers/net/wireless/wl3501_cs.c
+@@ -590,7 +590,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
+ 	struct wl3501_join_req sig = {
+ 		.sig_id		  = WL3501_SIG_JOIN_REQ,
+ 		.timeout	  = 10,
+-		.ds_pset = {
++		.req.ds_pset = {
+ 			.el = {
+ 				.id  = IW_MGMT_INFO_ELEMENT_DS_PARAMETER_SET,
+ 				.len = 1,
+@@ -599,7 +599,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
+ 		},
+ 	};
+ 
+-	memcpy(&sig.beacon_period, &this->bss_set[stas].beacon_period, 72);
++	memcpy(&sig.req, &this->bss_set[stas].req, sizeof(sig.req));
+ 	return wl3501_esbq_exec(this, &sig, sizeof(sig));
+ }
+ 
+@@ -667,35 +667,37 @@ static void wl3501_mgmt_scan_confirm(struct wl3501_card *this, u16 addr)
+ 	if (sig.status == WL3501_STATUS_SUCCESS) {
+ 		pr_debug("success");
+ 		if ((this->net_type == IW_MODE_INFRA &&
+-		     (sig.cap_info & WL3501_MGMT_CAPABILITY_ESS)) ||
++		     (sig.req.cap_info & WL3501_MGMT_CAPABILITY_ESS)) ||
+ 		    (this->net_type == IW_MODE_ADHOC &&
+-		     (sig.cap_info & WL3501_MGMT_CAPABILITY_IBSS)) ||
++		     (sig.req.cap_info & WL3501_MGMT_CAPABILITY_IBSS)) ||
+ 		    this->net_type == IW_MODE_AUTO) {
+ 			if (!this->essid.el.len)
+ 				matchflag = 1;
+ 			else if (this->essid.el.len == 3 &&
+ 				 !memcmp(this->essid.essid, "ANY", 3))
+ 				matchflag = 1;
+-			else if (this->essid.el.len != sig.ssid.el.len)
++			else if (this->essid.el.len != sig.req.ssid.el.len)
+ 				matchflag = 0;
+-			else if (memcmp(this->essid.essid, sig.ssid.essid,
++			else if (memcmp(this->essid.essid, sig.req.ssid.essid,
+ 					this->essid.el.len))
+ 				matchflag = 0;
+ 			else
+ 				matchflag = 1;
+ 			if (matchflag) {
+ 				for (i = 0; i < this->bss_cnt; i++) {
+-					if (ether_addr_equal_unaligned(this->bss_set[i].bssid, sig.bssid)) {
++					if (ether_addr_equal_unaligned(this->bss_set[i].req.bssid,
++								       sig.req.bssid)) {
+ 						matchflag = 0;
+ 						break;
+ 					}
+ 				}
+ 			}
+ 			if (matchflag && (i < 20)) {
+-				memcpy(&this->bss_set[i].beacon_period,
+-				       &sig.beacon_period, 73);
++				memcpy(&this->bss_set[i].req,
++				       &sig.req, sizeof(sig.req));
+ 				this->bss_cnt++;
+ 				this->rssi = sig.rssi;
++				this->bss_set[i].rssi = sig.rssi;
+ 			}
+ 		}
+ 	} else if (sig.status == WL3501_STATUS_TIMEOUT) {
+@@ -887,19 +889,19 @@ static void wl3501_mgmt_join_confirm(struct net_device *dev, u16 addr)
+ 			if (this->join_sta_bss < this->bss_cnt) {
+ 				const int i = this->join_sta_bss;
+ 				memcpy(this->bssid,
+-				       this->bss_set[i].bssid, ETH_ALEN);
+-				this->chan = this->bss_set[i].ds_pset.chan;
++				       this->bss_set[i].req.bssid, ETH_ALEN);
++				this->chan = this->bss_set[i].req.ds_pset.chan;
+ 				iw_copy_mgmt_info_element(&this->keep_essid.el,
+-						     &this->bss_set[i].ssid.el);
++						     &this->bss_set[i].req.ssid.el);
+ 				wl3501_mgmt_auth(this);
+ 			}
+ 		} else {
+ 			const int i = this->join_sta_bss;
+ 
+-			memcpy(&this->bssid, &this->bss_set[i].bssid, ETH_ALEN);
+-			this->chan = this->bss_set[i].ds_pset.chan;
++			memcpy(&this->bssid, &this->bss_set[i].req.bssid, ETH_ALEN);
++			this->chan = this->bss_set[i].req.ds_pset.chan;
+ 			iw_copy_mgmt_info_element(&this->keep_essid.el,
+-						  &this->bss_set[i].ssid.el);
++						  &this->bss_set[i].req.ssid.el);
+ 			wl3501_online(dev);
+ 		}
+ 	} else {
+@@ -1573,30 +1575,30 @@ static int wl3501_get_scan(struct net_device *dev, struct iw_request_info *info,
+ 	for (i = 0; i < this->bss_cnt; ++i) {
+ 		iwe.cmd			= SIOCGIWAP;
+ 		iwe.u.ap_addr.sa_family = ARPHRD_ETHER;
+-		memcpy(iwe.u.ap_addr.sa_data, this->bss_set[i].bssid, ETH_ALEN);
++		memcpy(iwe.u.ap_addr.sa_data, this->bss_set[i].req.bssid, ETH_ALEN);
+ 		current_ev = iwe_stream_add_event(info, current_ev,
+ 						  extra + IW_SCAN_MAX_DATA,
+ 						  &iwe, IW_EV_ADDR_LEN);
+ 		iwe.cmd		  = SIOCGIWESSID;
+ 		iwe.u.data.flags  = 1;
+-		iwe.u.data.length = this->bss_set[i].ssid.el.len;
++		iwe.u.data.length = this->bss_set[i].req.ssid.el.len;
+ 		current_ev = iwe_stream_add_point(info, current_ev,
+ 						  extra + IW_SCAN_MAX_DATA,
+ 						  &iwe,
+-						  this->bss_set[i].ssid.essid);
++						  this->bss_set[i].req.ssid.essid);
+ 		iwe.cmd	   = SIOCGIWMODE;
+-		iwe.u.mode = this->bss_set[i].bss_type;
++		iwe.u.mode = this->bss_set[i].req.bss_type;
+ 		current_ev = iwe_stream_add_event(info, current_ev,
+ 						  extra + IW_SCAN_MAX_DATA,
+ 						  &iwe, IW_EV_UINT_LEN);
+ 		iwe.cmd = SIOCGIWFREQ;
+-		iwe.u.freq.m = this->bss_set[i].ds_pset.chan;
++		iwe.u.freq.m = this->bss_set[i].req.ds_pset.chan;
+ 		iwe.u.freq.e = 0;
+ 		current_ev = iwe_stream_add_event(info, current_ev,
+ 						  extra + IW_SCAN_MAX_DATA,
+ 						  &iwe, IW_EV_FREQ_LEN);
+ 		iwe.cmd = SIOCGIWENCODE;
+-		if (this->bss_set[i].cap_info & WL3501_MGMT_CAPABILITY_PRIVACY)
++		if (this->bss_set[i].req.cap_info & WL3501_MGMT_CAPABILITY_PRIVACY)
+ 			iwe.u.data.flags = IW_ENCODE_ENABLED | IW_ENCODE_NOKEY;
+ 		else
+ 			iwe.u.data.flags = IW_ENCODE_DISABLED;
+-- 
+2.30.2
+
