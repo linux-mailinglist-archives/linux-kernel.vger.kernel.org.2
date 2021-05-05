@@ -2,106 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE1A9373AE8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DFF69373AFB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:18:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233003AbhEEMRw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:17:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39944 "EHLO mail.kernel.org"
+        id S232985AbhEEMTv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:19:51 -0400
+Received: from mga07.intel.com ([134.134.136.100]:32318 "EHLO mga07.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233632AbhEEMQB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:16:01 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5024361182;
-        Wed,  5 May 2021 12:15:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620216904;
-        bh=no1Ap7Vs0p9wsqyZTTdIzLq4VZmWSYfaPoLAubQ7gTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mCkf3fhM4S4YMnd7hasOmcoXwfjZHy/MJAeRHEHwOM9y9QhQN5QS39i6YhMz3mIyW
-         oNlcREuat0+j6HEn2MGHZqXJtOUYJBN9JWMPeJjWariK4sxfKxaCN9IKCFNr8Ra0j6
-         zFxjXXfKbnnXkJ6AQC+uANyndxPsPGptgCO3NdNDYSX3delJLYfRnw8fahC4z1NuQM
-         dUqXHSVWOnCMwkr5BGnMkwfCjXdMwD7ikgO3Fb56dPS7CqUcevhwpYtmPA0oNyXA+c
-         7CNouEU8uaX3u1OOv20/gUEH/w06ONMV/vGv9hnneuRlu8zjH1OBeR0Pg8O7PaVWpT
-         tDXoVw5RAjT5Q==
-Received: by pali.im (Postfix)
-        id 9547179D; Wed,  5 May 2021 14:15:01 +0200 (CEST)
-Date:   Wed, 5 May 2021 14:15:01 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Shanker R Donthineni <sdonthineni@nvidia.com>
-Cc:     Bjorn Helgaas <helgaas@kernel.org>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Sinan Kaya <okaya@kernel.org>,
-        Vikram Sethi <vsethi@nvidia.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-Subject: Re: [PATCH v4 2/2] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
-Message-ID: <20210505121501.54dlrussyk7kij5d@pali>
-References: <20210430170151.GA660969@bjorn-Precision-5520>
- <52c89d4e-6b26-6c56-d71e-508a715394ab@nvidia.com>
+        id S233428AbhEEMSd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:18:33 -0400
+IronPort-SDR: mDUob3K7O6o9TG30q+lfEwsrEPEOH5uOlgxhG/o2x+B3gpvPAcdcuN9L/61oNj8iyTpAtq/M83
+ gwyeeKFcU0eg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="262139246"
+X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
+   d="scan'208";a="262139246"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 05:15:28 -0700
+IronPort-SDR: 2qvZIvm1j2cVwQyuy1ZCdITMWsNBOwR7bSL9a4ha/ewAeUbw8ExIKx4bMshD1mQPdoT6385dwk
+ L+WLN91syKvA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
+   d="scan'208";a="463855330"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.171])
+  by fmsmga002.fm.intel.com with SMTP; 05 May 2021 05:15:25 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Wed, 05 May 2021 15:15:24 +0300
+Date:   Wed, 5 May 2021 15:15:24 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] Restructure output format computation for better
+ expandability
+Message-ID: <YJKMXC8Wd+T34rNg@intel.com>
+References: <20210503182148.851790-1-wse@tuxedocomputers.com>
+ <20210503182148.851790-4-wse@tuxedocomputers.com>
+ <YJEZzhhQzmYxi8Gp@intel.com>
+ <41aca960-7595-8fed-228c-3b9347c64dc6@tuxedocomputers.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <52c89d4e-6b26-6c56-d71e-508a715394ab@nvidia.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <41aca960-7595-8fed-228c-3b9347c64dc6@tuxedocomputers.com>
+X-Patchwork-Hint: comment
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Friday 30 April 2021 17:11:23 Shanker R Donthineni wrote:
-> Thanks Bjorn for reviewing patch.
+On Wed, May 05, 2021 at 11:54:35AM +0200, Werner Sembach wrote:
+> Am 04.05.21 um 11:54 schrieb Ville Syrjälä:
 > 
-> On 4/30/21 12:01 PM, Bjorn Helgaas wrote:
-> > External email: Use caution opening links or attachments
-> >
-> >
-> > On Wed, Apr 28, 2021 at 07:49:07PM -0500, Shanker Donthineni wrote:
-> >> On select platforms, some Nvidia GPU devices do not work with SBR.
-> >> Triggering SBR would leave the device inoperable for the current
-> >> system boot. It requires a system hard-reboot to get the GPU device
-> >> back to normal operating condition post-SBR. For the affected
-> >> devices, enable NO_BUS_RESET quirk to fix the issue.
-> > Since 1/2 adds _RST support, should I infer that _RST works on these
-> > Nvidia GPUs even though SBR does not?  If so, how does _RST do the
-> > reset?
-> Yes, _RST method works but not SBR. The _RST method in DSDT-AML uses
-> platform-specific initialization steps outside of the GPU BARs for resetting
-> the GPU device.
-
-Hello! If I understood this "reset" issue correctly, it means that
-affected PCIe GPU device cannot be reset via PCI Secondary Bus Reset
-(PCIe Warm Reset) and some special, platform specific reset type needs
-to be issued.
-
-And code for this platform specific reset is included in ACPI DSDT
-table.
-
-But because ACPI DSDT table is part of BIOS/firmware and not part of the
-PCIe GPU device itself, it means that this kind of reset is available to
-linux kernel only in the case when vendor of motherboard (or who burn
-BIOS/firmware into motherboard EEPROM) includes this specific code into
-HW. Am I Right?
-
-So if this PCIe GPU device is connected to other motherboard or other
-system then this special platform reset in ACPI DSDT is not available.
-
-What is doing default APCI _RST() method on motherboards without this
-special platform reset hook? It probably would not be able to reset
-these PCIe GPU devices if standard SBR cannot reset them.
-
-Would not be better to include for these PCIe devices "native" linux
-code for resetting them?
-
-Please correct me if I'm wrong in my assumption or if I understood this
-issue incorrectly.
-
-> > Do you have a root cause for why SBR doesn't work?  
-> It is a hardware implementation specific issue. GPU end-point device
-> is inoperative after receiving SBR from the RP/SwitchPort. This quirk is
-> to prevent SBR.
+> > On Mon, May 03, 2021 at 08:21:47PM +0200, Werner Sembach wrote:
+> >> Couples the decission between RGB and YCbCr420 mode and the check if the port
+> >> clock can archive the required frequency. Other checks and configuration steps
+> >> that where previously done in between can also be done before or after.
+> >>
+> >> This allows for are cleaner implementation of retrying different color
+> >> encodings.
+> >>
+> >> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> >> ---
+> >>
+> >> >From 57e42ec6e34ac32da29eb7bc3c691cbeb2534396 Mon Sep 17 00:00:00 2001
+> >> From: Werner Sembach <wse@tuxedocomputers.com>
+> >> Date: Mon, 3 May 2021 15:30:40 +0200
+> >> Subject: [PATCH 3/4] Restructure output format computation for better
+> >>  expandability
+> >>
+> >> ---
+> >>  drivers/gpu/drm/i915/display/intel_hdmi.c | 57 +++++++++++------------
+> >>  1 file changed, 26 insertions(+), 31 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> >> index ce165ef28e88..e2553ac6fd13 100644
+> >> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+> >> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> >> @@ -1999,29 +1999,6 @@ static bool hdmi_deep_color_possible(const struct intel_crtc_state *crtc_state,
+> >>  					      INTEL_OUTPUT_FORMAT_YCBCR420);
+> >>  }
+> >>  
+> >> -static int
+> >> -intel_hdmi_ycbcr420_config(struct intel_crtc_state *crtc_state,
+> >> -			   const struct drm_connector_state *conn_state)
+> >> -{
+> >> -	struct drm_connector *connector = conn_state->connector;
+> >> -	struct drm_i915_private *i915 = to_i915(connector->dev);
+> >> -	const struct drm_display_mode *adjusted_mode =
+> >> -		&crtc_state->hw.adjusted_mode;
+> >> -
+> >> -	if (!drm_mode_is_420_only(&connector->display_info, adjusted_mode))
+> >> -		return 0;
+> >> -
+> >> -	if (!connector->ycbcr_420_allowed) {
+> >> -		drm_err(&i915->drm,
+> >> -			"Platform doesn't support YCBCR420 output\n");
+> >> -		return -EINVAL;
+> >> -	}
+> >> -
+> >> -	crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+> >> -
+> >> -	return intel_pch_panel_fitting(crtc_state, conn_state);
+> >> -}
+> >> -
+> >>  static int intel_hdmi_compute_bpc(struct intel_encoder *encoder,
+> >>  				  struct intel_crtc_state *crtc_state,
+> >>  				  int clock)
+> >> @@ -2128,6 +2105,24 @@ static bool intel_hdmi_has_audio(struct intel_encoder *encoder,
+> >>  		return intel_conn_state->force_audio == HDMI_AUDIO_ON;
+> >>  }
+> >>  
+> >> +int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
+> >> +				     struct intel_crtc_state *crtc_state,
+> >> +				     const struct drm_connector_state *conn_state)
+> >> +{
+> >> +	const struct drm_connector *connector = conn_state->connector;
+> >> +	const struct drm_display_mode *adjusted_mode = &crtc_state->hw.adjusted_mode;
+> >> +	int ret;
+> >> +
+> >> +	if (connector->ycbcr_420_allowed && drm_mode_is_420_only(&connector->display_info, adjusted_mode))
+> >> +		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+> >> +	else
+> >> +		crtc_state->output_format = INTEL_OUTPUT_FORMAT_RGB;
+> > Slight change in behaviour here since we used to reject 420_only modes
+> > if ycbcr_420_allowed wasn't set. But I think this should be OK, and in
+> > fact I believe the DP counterpart code always used an RGB fallback
+> > rather than failing. So this lines up better with that.
 > 
-> > I'm not super
-> > confident that we perform resets correctly in general, and if the
-> > problem is an issue in Linux, it'd be nice to fix that.
-> We have not seen any issue with Linux SBR implementation.
-> >
-> >> This issue will be fixed in the next generation of hardware.
+> That was actually an oversight on my side and not intended. Does a RGB fallback make sense?
+> 
+> Now that I think of it get to 2 scenarios:
+> 
+> - The screen is really 420_only, which causes a silent fail and a black screen I guess? Where before at least a log message was written.
+> 
+> - The screen falsely reports as 420_only and using RGB regardless makes it magically work
+> 
+> I think at least warning should be printed to the logs. Something along the lines of: "Display reports as 420 only, but port does not support 420, try forcing RGB, but this is likely to fail."
+
+I would just put it into the "user has decided to override the mode and
+gets to keep both pieces if it breaks". Typical users would not hit that
+since they will only use modes reported by the connector as supported.
+
+So I think the RGB fallback is totally in line with existing behaviour
+of the driver. We have other cases where we just ignore the reported
+limits of the display if the user overrides the mode manually.
+
+-- 
+Ville Syrjälä
+Intel
