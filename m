@@ -2,236 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD8653747F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:25:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7539B3747FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:28:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234443AbhEES0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:26:32 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:42919 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229901AbhEES01 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:26:27 -0400
-Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 145IDD8E028588;
-        Wed, 5 May 2021 20:25:27 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=+xd0ryYykI4TISlFZPuvHUQmoJhNjWMs5+REGNosxJk=;
- b=jXaK7NvJ9jI5DWEeMFsiLTREktFbYJPuRwFoURBCQ3dlv5DDhy8K9vLhJCf0+KiYmrFC
- bfaaRuEIEUCcO+LgTTrolDyfHT9nwSD2J9cjabSaOJ7VocKRXP/HJTk/MKkDlBYCWtxG
- MewlI7PI0Hxhr8bXK262dCu+U7NzIe5/5i0Mz7v6rbbewszKd9OHrq/n38U4CER/8L1W
- 4vJz1VAgX9TRN9IrZxck4pEfwNTrcsB6ymkiF548R1U5IdsvkE0l0Kj/pWJlBSP/w+bb
- a9fSGgiMpi0kI8PsQDvRvnFt7+RoryUwJ3ACX+P4NxILVQGwk5tbUmXHBajxM14MzgMf QQ== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38bea3wtp0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 May 2021 20:25:27 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DC0A810002A;
-        Wed,  5 May 2021 20:25:25 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C703021E5B7;
-        Wed,  5 May 2021 20:25:25 +0200 (CEST)
-Received: from lmecxl0889.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 5 May
- 2021 20:25:25 +0200
-Subject: Re: [PATCH v3 5/6] rpmsg: char: Introduce a rpmsg driver for the
- rpmsg char device
-To:     Mathieu Poirier <mathieu.poirier@linaro.org>
-CC:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        <linux-remoteproc@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>
-References: <20210429135507.8264-1-arnaud.pouliquen@foss.st.com>
- <20210429135507.8264-6-arnaud.pouliquen@foss.st.com>
- <20210505164159.GB1766375@xps15>
-From:   Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Message-ID: <5a41e653-4d75-c5d5-a8e3-e247a50507f3@foss.st.com>
-Date:   Wed, 5 May 2021 20:25:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234545AbhEES3c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:29:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46378 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229901AbhEES31 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 14:29:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8B7DF6101B;
+        Wed,  5 May 2021 18:28:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620239310;
+        bh=eO2PNNSkyM/8nStiM+dmWAjzoFFUGeKqODOESPKXzZ0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=bBkxESGst7chdBRluW3F1OZZIJLkrnb6h+3fScJ0UfxqffCzibDomBdt54x5lGiDe
+         n5AGtLCsbrRK98106ySwwRvGSNw3ZKSvTS+aZswPcP71PuDNkkuaJDws0Zdleziqk3
+         Cy9b5+s+yltCy8mAI20cMZU52xoe0dzlyqef1HfARwyuMgDXgdIrRESD9qRLLo3xBT
+         CHbM/Cu+CXrXPtBQTZxMlA69NVEeffaCDbyD1TBvKcxXjY4qTGlI9MZ/z0LiQrpa1c
+         RAkBli/lAJfFXqJZf8mmAScEce84XoBttRuGT9d2aJI2R3dl6jEM6RQZGX92kx48Ra
+         PEpq9vuocjIwA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] fbmem: Correct position of '__maybe_unused' in proc_fb_seq_ops
+Date:   Wed,  5 May 2021 11:28:08 -0700
+Message-Id: <20210505182808.3855516-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.31.1.362.g311531c9de
 MIME-Version: 1.0
-In-Reply-To: <20210505164159.GB1766375@xps15>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.51]
-X-ClientProxiedBy: SFHDAG1NODE2.st.com (10.75.127.2) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-05_09:2021-05-05,2021-05-05 signatures=0
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mathieu,
+Clang warns:
 
-On 5/5/21 6:41 PM, Mathieu Poirier wrote:
-> Hi Arnaud,
-> 
-> On Thu, Apr 29, 2021 at 03:55:06PM +0200, Arnaud Pouliquen wrote:
->> A rpmsg char device allows to probe the endpoint device on a remote name
->> service announcement.
->>
->> With this patch the /dev/rpmsgX interface is created either by a user
->> application or by the remote firmware.
->>
->> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
->>
->> ---
->> update from V1:
->>
->>  - add missing unregister_rpmsg_driver call on module exit.
->> ---
->>  drivers/rpmsg/rpmsg_char.c | 53 +++++++++++++++++++++++++++++++++++++-
->>  1 file changed, 52 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
->> index 5c6a7da6e4d7..9166454c1310 100644
->> --- a/drivers/rpmsg/rpmsg_char.c
->> +++ b/drivers/rpmsg/rpmsg_char.c
->> @@ -18,6 +18,8 @@
->>  
->>  #include "rpmsg_char.h"
->>  
->> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
->> +
->>  static dev_t rpmsg_major;
->>  static struct class *rpmsg_class;
->>  
->> @@ -413,6 +415,40 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
->>  }
->>  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
->>  
->> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
->> +{
->> +	struct rpmsg_channel_info chinfo;
->> +
->> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
->> +	chinfo.src = rpdev->src;
->> +	chinfo.dst = rpdev->dst;
->> +
->> +	return __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo, true);
->> +}
->> +
->> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
->> +{
->> +	int ret;
->> +
->> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
->> +	if (ret)
->> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
->> +}
->> +
->> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
->> +	{ .name	= RPMSG_CHAR_DEVNAME },
->> +	{ },
->> +};
->> +
->> +static struct rpmsg_driver rpmsg_chrdev_driver = {
->> +	.probe = rpmsg_chrdev_probe,
->> +	.remove = rpmsg_chrdev_remove,
->> +	.id_table = rpmsg_chrdev_id_table,
->> +	.drv = {
->> +		.name = "rpmsg_chrdev",
->> +	},
->> +};
-> 
-> The sole purpose of doing this is to create instances of rpmsg_chrdevs from the
-> name service - but is it really needed?  Up to now and aside from GLINK and SMD,
-> there asn't been other users of it so I'm wondering if it is worth going through
-> all this trouble.
+ drivers/video/fbdev/core/fbmem.c:736:21: warning: attribute
+ declaration must precede definition [-Wignored-attributes]
+ static const struct __maybe_unused seq_operations proc_fb_seq_ops = {
+                     ^
+ ./include/linux/compiler_attributes.h:273:56: note: expanded from macro
+ '__maybe_unused'
+ #define __maybe_unused                  __attribute__((__unused__))
+                                                        ^
+ ./include/linux/seq_file.h:31:8: note: previous definition is here
+ struct seq_operations {
+        ^
+ 1 warning generated.
 
-It is a good point.
+The attribute should not split the type 'struct seq_operations'. Move it
+before the struct keyword so that it works properly and there is no more
+warning.
 
-Just as a reminder, the need of ST and, I assume, some other companies, is to
-have a basic/generic communication channel to control a remote processor
-application.
+Fixes: b9d79e4ca4ff ("fbmem: Mark proc_fb_seq_ops as __maybe_unused")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1371
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+ drivers/video/fbdev/core/fbmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Nothing generic exists today for a virtio transport based implementation.
-Companies have to create their own driver.
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index 52c606c0f8a2..84c484f37b4a 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -733,7 +733,7 @@ static int fb_seq_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+ 
+-static const struct __maybe_unused seq_operations proc_fb_seq_ops = {
++static const __maybe_unused struct seq_operations proc_fb_seq_ops = {
+ 	.start	= fb_seq_start,
+ 	.next	= fb_seq_next,
+ 	.stop	= fb_seq_stop,
 
-The purpose of my work is to allow our customer to use RPMsg without developing
-a specific driver to control remote applications.
+base-commit: b9d79e4ca4ff23543d6b33c736ba07c1f0a9dcb1
+-- 
+2.31.1.362.g311531c9de
 
-The rpmsg_chrdev char is a good candidate for this. No protocol, just a simple
-inter-processor link to send and receive data. The rpmsg_tty is another one.
-
-Focusing on the rpmsg_chrdev:
-We did a part of the work with the first patch set that would be in 5.13.
-But is it simple to use it for virtio transport based platforms?
-If we don't implement the NS announcement support in rpmsg_chrdev, using
-rpmsg_chrdev for a user application seems rather tricky.
-How to instantiate the communication?
-The application will probably has to scan the /sys/bus/rpmsg/devices/ folder to
-determine the services and associated remote address.
-
-I don't think the QCOM drivers have the same problem because they seems to
-initiate the communication and work directly with the RPMsg endpoints ( new
-channel creation on endpoint creation) while Virtio works with the RPMsg channel.
-
-By introducing the ability to instantiate rpmsg_chrdevs through the NS
-announcement, we make this easy for applications to use.
-
-And without rpmsg_chrdevs instantiation, It also means that we can't create an
-RPMsg channel for the rpmsg_chrdevs using a new RPMSG_CREATE_DEV_IOCTL control,
-right?
-
-That said, If we consider that the aim was only to extract the rpmsg_ctrl part,
-I'm not against leaving the rpmsg_char in this state and switching to the
-rpmsg_tty driver upstream including the work on the rpmsg_ctrl to create rpmsg
-channels.
-
-We could come back on this if requested by someone else.
-
-Thanks,
-Arnaud
-
-> 
-> As such I suggest we don't go out of our way to expose rpmsg_chrdevs to the name
-> service.  That way patches 4, 5 and 6 of this set can be dropped.
-> 
-> Thanks,
-> Mathieu
-> 
->> +
->>  static int rpmsg_chrdev_init(void)
->>  {
->>  	int ret;
->> @@ -427,15 +463,30 @@ static int rpmsg_chrdev_init(void)
->>  	if (IS_ERR(rpmsg_class)) {
->>  		pr_err("failed to create rpmsg class\n");
->>  		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->> -		return PTR_ERR(rpmsg_class);
->> +		ret = PTR_ERR(rpmsg_class);
->> +		goto free_region;
->> +	}
->> +
->> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
->> +	if (ret < 0) {
->> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
->> +		goto free_class;
->>  	}
->>  
->>  	return 0;
->> +
->> +free_class:
->> +	class_destroy(rpmsg_class);
->> +free_region:
->> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->> +
->> +	return ret;
->>  }
->>  postcore_initcall(rpmsg_chrdev_init);
->>  
->>  static void rpmsg_chrdev_exit(void)
->>  {
->> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
->>  	class_destroy(rpmsg_class);
->>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->>  }
->> -- 
->> 2.17.1
->>
