@@ -2,102 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A548373C47
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F22E373C4A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:22:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233464AbhEENXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:23:13 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:50382 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231774AbhEENXM (ORCPT
+        id S233483AbhEENXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231774AbhEENXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:23:12 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 5EAF21F42BB0
-Message-ID: <11c24f97ef71b16c2e7b3ba40ca66a28c12df692.camel@collabora.com>
-Subject: Re: [PATCH 09/25] media: hantro: do a PM resume earlier
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev
-Date:   Wed, 05 May 2021 10:22:03 -0300
-In-Reply-To: <82114a4bd9c7bc1188c6a7167a6e74bb3360961d.1620207353.git.mchehab+huawei@kernel.org>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
-         <82114a4bd9c7bc1188c6a7167a6e74bb3360961d.1620207353.git.mchehab+huawei@kernel.org>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Wed, 5 May 2021 09:23:21 -0400
+Received: from mail-pf1-x433.google.com (mail-pf1-x433.google.com [IPv6:2607:f8b0:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E7592C061574;
+        Wed,  5 May 2021 06:22:23 -0700 (PDT)
+Received: by mail-pf1-x433.google.com with SMTP id v191so1949929pfc.8;
+        Wed, 05 May 2021 06:22:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=n3vwVar5r+329ocJFJtfF9oqnquOLoNIqbVI02ZlfTo=;
+        b=GQRy1x6UIBCNNz8QwfoLVp65/PY7M7t/WpP5uhwcU452xq3blR4aBJ/ss+dgfMN3Bj
+         5NI9FOqD584Z8NobAn57rdZJJn2JIkPcAkJd7YXts4h5Ken3GFjuwIIH5Z3EH3Ird4vu
+         gwg10SSHRKgfB5rbLEI0mkgs8v0H5VEJLbhG59vGvai+NYHEvslRFaQiReW3QR50+ENm
+         3XeAscwmjTTdH0N1Cpzcn+LO2KsWXkGEnXi67TaeahW30Kp2wBQnjIf8XiJBEH3saYeR
+         u8NkkydXhmCLSOeAnn+zEDVayAeb3HTMfdUlp80aTiykIBd0VGF9Q4Pv78yjQ8XyaIUh
+         5piQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=n3vwVar5r+329ocJFJtfF9oqnquOLoNIqbVI02ZlfTo=;
+        b=lQQ01rlEylNPoxd58BDLpl4d4UZg0bHuZV7s/aXLDs1Ywt5kjSwtmFMhxJlwG1VTAt
+         PMhy4zbpRTiiOuLC3y6M6iQTW4gT0B/s9niwYPLSukIkObhJSDx4knVTdKuz9ENk89+i
+         Xh5KFnwldBWBCMiLKC5oJ+gbkwxsDkizKyCTNenFVQvLz+nrj9nC7E9RGTd6thOuCoyv
+         PeRKRV7hyxAN2AZ6nSHinJiAL1rwT1bLj1NpnPaRyWGmaeeFCrredCaS/L5qBtQCql5m
+         F3rUf/4ueFl+flu5h1qMbtRYq+vnVGfqRcS9rgiHmLWxwd1NQO+KufKc6watS30kdETz
+         a71g==
+X-Gm-Message-State: AOAM533J1J7vHiUIaCrXLeJiKcALdcN5+E6thQz0+Vv+3qChMWSvTkNL
+        FWypn3Lgi8Mb7aoce9DZ1oMQg1TZaZF/dCYbSOU=
+X-Google-Smtp-Source: ABdhPJybaRX5evQllBiQhhyYB9nkofqWM3vZiIV4K6O32QwQjTOatu1GxVGoE8o6fdzpFN0bJ5EpUR0Ij4COagGF+yk=
+X-Received: by 2002:a63:a847:: with SMTP id i7mr28056425pgp.203.1620220943413;
+ Wed, 05 May 2021 06:22:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210504174019.2134652-1-linux@roeck-us.net> <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
+ <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net> <20210505093235.00007c38@Huawei.com>
+ <20210505093438.00005238@Huawei.com>
+In-Reply-To: <20210505093438.00005238@Huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 5 May 2021 16:22:07 +0300
+Message-ID: <CAHp75VezSD_TcbQ_OBZXPo-szTr-qwOT9oU+7h7W6nk65ZLBhA@mail.gmail.com>
+Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on CONFIG_ACPI
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Paul Menzel <paulepanter@users.sourceforge.net>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@denx.de>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Wed, May 5, 2021 at 11:36 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+> On Wed, 5 May 2021 09:32:35 +0100
+> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> > On Tue, 4 May 2021 11:00:52 -0700
+> > Guenter Roeck <linux@roeck-us.net> wrote:
 
-Thanks for working on this.
++Cc: Paul (I hope you are related to coreboot somehow and can
+communicate this further), Pavel and Jacek (LED subsystem suffered
+with this as well), Hans, Rafael and linux-acpi@
 
-On Wed, 2021-05-05 at 11:41 +0200, Mauro Carvalho Chehab wrote:
-> The device_run() first enables the clock and then
-> tries to resume PM runtime, checking for errors.
-> 
-> Well, if for some reason the pm_runtime can not resume,
-> it would be better to detect it beforehand.
-> 
-> So, change the order inside device_run().
-> 
-> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-> Fixes: 775fec69008d ("media: add Rockchip VPU JPEG encoder driver")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > Dropping the ones we are fairly sure are spurious is even better!
+>
+> If I get bored I'll just do a scrub of all the instances of this that
+> you haven't already cleaned up.  It's worth noting that we do
+> know some highly suspicious looking entries are out there in the wild.
 
-It seems this is wrong now, as this series doesn't have
+I have counted ~60 users of acpi_device_id in IIO. Brief looking at
+the IDs themselves rings an alarm about half of them.
 
-https://lore.kernel.org/linux-media/803c39fafdd62efc6f9e4d99a372af2c6955143b.1619621413.git.mchehab+huawei@kernel.org/
-
-I don't fully understand why all the back and forth
-happening on this series, but the former Hantro patches
-looked good (despite perhaps unclear commit messages).
-
-Any issues just squashing these two commits from "[PATCH v4 00/79] Address some issues with PM runtime at media subsystem":
-
-  media: hantro: use pm_runtime_resume_and_get()
-  media: hantro: do a PM resume earlier
-
-?
-
-Thanks,
-Ezequiel
-
->  drivers/staging/media/hantro/hantro_drv.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index 595e82a82728..4387edaa1d0d 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -152,13 +152,14 @@ static void device_run(void *priv)
->         src = hantro_get_src_buf(ctx);
->         dst = hantro_get_dst_buf(ctx);
->  
-> -       ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-> -       if (ret)
-> -               goto err_cancel_job;
->         ret = pm_runtime_get_sync(ctx->dev->dev);
->         if (ret < 0)
->                 goto err_cancel_job;
->  
-> +       ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-> +       if (ret)
-> +               goto err_cancel_job;
-> +
->         v4l2_m2m_buf_copy_metadata(src, dst, true);
->  
->         ctx->codec_ops->run(ctx);
+So, here we may have a chicken and egg problem, i.e. somebody has been
+using (or used) fake IDs from Linux kernel in the real products. What
+I can consider as a course of action is the following:
+1. Clean up (by removing as quickly as possible) the IDs that have no
+proof to be real from the Linux kernel sources (perhaps marked as
+stable material)
+2. Notify ASWG / UEFI forum about all IDs that abuse ACPI
+specification and are in Linux kernel, so at least we can keep some
+kind of "reserved/do not use" list on the official level (Rafael?)
+3. Do not accept any IDs without an evidence provided that they are
+being in use in the real products (this should be done on Linux
+maintainer level in all subsystems that accept drivers
 
 
+-- 
+With Best Regards,
+Andy Shevchenko
