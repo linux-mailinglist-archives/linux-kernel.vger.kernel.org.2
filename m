@@ -2,71 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C60373663
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:38:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F418F373667
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:38:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231987AbhEEIiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 04:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231981AbhEEIio (ORCPT
+        id S232034AbhEEIjt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 04:39:49 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:40504 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230490AbhEEIjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 04:38:44 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5B5CC06174A;
-        Wed,  5 May 2021 01:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=jK0moekqG1xhMRv7+xXp4lJk9jp8uiNxobgiWKXh+5A=; b=jkvUVKohOf8O1K994UUXsnu1Gj
-        pAAaW1jnaye2Wb2MFj/ciaGL47PIcPViHLq0CnU333G/XawQNPK0MV6jmzZ4iyBgSQMki6+TDvuy3
-        hBUKvCswsLWem6snP55iS3jVqkke/+1gG137r3Igj/sdeN6oBGiR5ejHqcP/5OYtpMBlxQlB0WvYZ
-        XUmLfDJtEqZ3rlw81tUS47E6aBsOEjpbYfbPZzqkON39WlzByDrdH6PpKXhyVLiOTqB/200jKL5pv
-        RtP0WEXVcHu+1wVhJHtq1jJEiB5kNS5Dmu64OI+dtC1CWvHBIwfvdgtby5nCAAbOX0JIxQC66ZV60
-        1Vbtr6cA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1leD2B-000eI4-25; Wed, 05 May 2021 08:37:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 710D93001CD;
-        Wed,  5 May 2021 10:37:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 57BA52D6DCEF9; Wed,  5 May 2021 10:37:29 +0200 (CEST)
-Date:   Wed, 5 May 2021 10:37:29 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>, dave.hansen@intel.com,
-        luto@kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
-        rppt@kernel.org, dan.j.williams@intel.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/9] PKS write protected page tables
-Message-ID: <YJJZSdVoP6yBbIjN@hirez.programming.kicks-ass.net>
-References: <20210505003032.489164-1-rick.p.edgecombe@intel.com>
- <202105042253.ECBBF6B6@keescook>
+        Wed, 5 May 2021 04:39:47 -0400
+Received: from [192.168.0.20] (cpc89244-aztw30-2-0-cust3082.18-1.cable.virginm.net [86.31.172.11])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C9ECC2CF;
+        Wed,  5 May 2021 10:38:48 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1620203929;
+        bh=QdqoNvph4DT3PiPWxxcQ72QkJnI2p554Kaxscdfp82U=;
+        h=Reply-To:Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=bbUUuwfLhb1szjyCIUvFrBFEhlODc5k1bWnH2TVW94jpf0mwsDMV7rXVF4wGJfn1S
+         /okzETMj9agF17aPlIIGk/IpfBXHaHGBj5He3hfsJBZQMpPZjnpaB0yun2OU66MZWg
+         urOqPldpCQZXlBSgNzlqjGUWZmC6kM7IYpGLqxdE=
+Reply-To: kieran.bingham+renesas@ideasonboard.com
+Subject: Re: [PATCH 1/3] Fix spelling error from "eleminate" to "eliminate"
+To:     Sean Gloumeau <sajgloumeau@gmail.com>,
+        Jiri Kosina <trivial@kernel.org>
+Cc:     David Woodhouse <dwmw2@infradead.org>,
+        Richard Weinberger <richard@nod.at>,
+        linux-mtd@lists.infradead.org, Rasesh Mody <rmody@marvell.com>,
+        Sudarsana Kalluru <skalluru@marvell.com>,
+        GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Sean Gloumeau <sajgloumeau@protonmail.com>
+References: <cover.1620185393.git.sajgloumeau@gmail.com>
+ <21caf628a8aeec21ea9d3f06c95f712a7e7ce7fa.1620185393.git.sajgloumeau@gmail.com>
+From:   Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+Organization: Ideas on Board
+Message-ID: <3fc4016e-53a9-fd30-3073-5b8955f49be9@ideasonboard.com>
+Date:   Wed, 5 May 2021 09:38:46 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202105042253.ECBBF6B6@keescook>
+In-Reply-To: <21caf628a8aeec21ea9d3f06c95f712a7e7ce7fa.1620185393.git.sajgloumeau@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 11:25:31PM -0700, Kees Cook wrote:
+Hi Sean,
 
-> It looks like PKS-protected page tables would be much like the
-> RO-protected text pages in the sense that there is already code in
-> the kernel to do things to make it writable, change text, and set it
-> read-only again (alternatives, ftrace, etc).
+Thank you for the patch,
 
-We don't actually modify text by changing the mapping at all. We modify
-through a writable (but not executable) temporary alias on the page (on
-x86).
+On 05/05/2021 05:15, Sean Gloumeau wrote:
+> Spelling error "eleminate" amended to "eliminate".
 
-Once a mapping is RX it will *never* be writable again (until we tear it
-all down).
+Reviewed-by: Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>
+
+> Signed-off-by: Sean Gloumeau <sajgloumeau@gmail.com>
+> ---
+>  drivers/net/ethernet/brocade/bna/bnad.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/brocade/bna/bnad.c b/drivers/net/ethernet/brocade/bna/bnad.c
+> index 7e4e831d720f..ba47777d9cff 100644
+> --- a/drivers/net/ethernet/brocade/bna/bnad.c
+> +++ b/drivers/net/ethernet/brocade/bna/bnad.c
+> @@ -1764,7 +1764,7 @@ bnad_dim_timeout(struct timer_list *t)
+>  		}
+>  	}
+>  
+> -	/* Check for BNAD_CF_DIM_ENABLED, does not eleminate a race */
+> +	/* Check for BNAD_CF_DIM_ENABLED, does not eliminate a race */
+>  	if (test_bit(BNAD_RF_DIM_TIMER_RUNNING, &bnad->run_flags))
+>  		mod_timer(&bnad->dim_timer,
+>  			  jiffies + msecs_to_jiffies(BNAD_DIM_TIMER_FREQ));>
+
