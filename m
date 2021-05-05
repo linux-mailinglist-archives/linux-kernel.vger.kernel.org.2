@@ -2,74 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34BB3733D3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 05:04:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC093733DB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 05:14:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231372AbhEEDFu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 23:05:50 -0400
-Received: from mga03.intel.com ([134.134.136.65]:26123 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230079AbhEEDFt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 23:05:49 -0400
-IronPort-SDR: aWySfpvG6YLLVAOPfCQC2Pf6pX/7p2vLGkStJsrZPxvz5PJxx1YMYHICiLpzZfLlvV4Mi7PZjj
- lEflBLfhC4Ow==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="198179093"
-X-IronPort-AV: E=Sophos;i="5.82,273,1613462400"; 
-   d="scan'208";a="198179093"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 20:04:53 -0700
-IronPort-SDR: eSdL5a60wFebfgQRagO5d8RWIzv8Vwnad4eB1atg/rDzdRg3G5MIDQFf3xiAQ65knE8yIPg0le
- uc/W7OXpbZ9A==
-X-IronPort-AV: E=Sophos;i="5.82,273,1613462400"; 
-   d="scan'208";a="433593330"
-Received: from chenyu-desktop.sh.intel.com (HELO chenyu-desktop) ([10.239.158.173])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 20:04:51 -0700
-Date:   Wed, 5 May 2021 11:09:32 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Len Brown <lenb@kernel.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Linux PM list <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][RFC] tools/power turbostat: Fix ACPI CState format issue
-Message-ID: <20210505030932.GA116899@chenyu-desktop>
-References: <20201012100205.2750-1-yu.c.chen@intel.com>
- <CAJvTdK=wGHfNhOBuWFS5VmW+QqdyG+w7HdDrP-Vs1u84dkSiyw@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJvTdK=wGHfNhOBuWFS5VmW+QqdyG+w7HdDrP-Vs1u84dkSiyw@mail.gmail.com>
+        id S230483AbhEEDPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 23:15:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58476 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229617AbhEEDPT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 23:15:19 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7DC9C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 20:14:23 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id s123-20020a3777810000b02902e9adec2313so255649qkc.4
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 20:14:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=6FMbAN7t12G/Juix+b9gMTv2kzO3C2P3Q5jEJeo40h4=;
+        b=RHKxy0nzZMKiiaUNg6+cDehHN1wDU7unHEmn9ng1SCsYUPc5cgsHrvLITgnMZ1z4KW
+         Xxg6wWzJHuuNnH8Z8YgFLdgnR9usVQNw94dFxzmTppUq2f2QRHago0bOsPsGuIPpU1Jh
+         LDz/07RjTFR73vDyiU2iBzST+K6dUns+UGNRnOrEGy3Ho0Y07Z2FeFNC60eBbmo5hShK
+         OxTnwzCMwmYS/i06DGdcQ943ZH/38mYOm1S3137p6HcT+KOpEjT+eEct4p1gcKjUtIV6
+         /6o0VO0lhc7yP1W4RLwDNzYt6Wdotd4KnpEI7n8ZtnNAoWkcz8iyhjYM1733toOiVMLi
+         f+7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=6FMbAN7t12G/Juix+b9gMTv2kzO3C2P3Q5jEJeo40h4=;
+        b=K9vx6T2QMMdyYz5Kspx/lA0tG0il9H6fnuXcBJXFZD8rdJh6ql7GM6SA4OrzFM+cq1
+         5YR/TFpVfFCrtHgP0jJAI7b5u+ymzf65YN1ltpA1CidM7K+PV/4j4eY+pQNzwf+ggG5M
+         /wcjHbF4gEJbHfH/Sv8xgdIxzMEDmSg+Mh2fxmxRjPOGXFI5kKw3mS36Bigw//ZYiwIb
+         PkOgEl/jL/RbYGgBTDz5G1ESYu0wmXDlF9ZUIa2dfKT8Y4Jylccbxp2bWF8+am9kw0pg
+         5nIXJ/+v6K4dqORJPlHcBtZ+sVj/fQX+HUlZPZi1lME50PtjiIJR216VXjas27OUCYQ1
+         zsbw==
+X-Gm-Message-State: AOAM530fd7CBuA9/ZHw2swEpQ6QDHfeIhbDtJU1bWqiR+nmJDpDdKBq5
+        7XltwGjxqzYZ0AkyOQR7EZoNym3GPixjKws=
+X-Google-Smtp-Source: ABdhPJxG9O+6Dqmq1pl0275GQdNWC3CuGBrHDFQUp40IO934UlNUR9csN1vCxTHLw+4ZGeFupcfTnE2b5niSMR4=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:423c:41e9:e02e:706e])
+ (user=saravanak job=sendgmr) by 2002:a05:6214:583:: with SMTP id
+ bx3mr19001972qvb.38.1620184462756; Tue, 04 May 2021 20:14:22 -0700 (PDT)
+Date:   Tue,  4 May 2021 20:14:16 -0700
+Message-Id: <20210505031416.30128-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH v1] spi: Don't have controller clean up spi device before
+ driver unbind
+From:   Saravana Kannan <saravanak@google.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Lukas Wunner <lukas@wunner.de>, kernel-team@android.com,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 06:56:00PM -0400, Len Brown wrote:
-> On Mon, Oct 12, 2020 at 6:00 AM Chen Yu <yu.c.chen@intel.com> wrote:
-> >
-> > Currently if the system boots with BIOS _CST Cstate information
-> > enabled, the turbostat output would have unaligned problems:
-> >
-> > C1_ACPI C2_ACPI C3_ACPI POLL%   C1_ACPI%        C2_ACPI%        C3_ACPI%        CPU%c1
-> > 5       37      138     0.00    0.02    1.30    98.51   0.38    0.00    0.00    99.43
-> >
-> > The C1_ACPI% is of 8 bytes, so extend the format accordingly if the field name
-> > equals to/longer than 8 bytes.
-> >
-> > After the patch applied:
-> >
-> > C1_ACPI C2_ACPI C3_ACPI POLL%   C1_ACPI%        C2_ACPI%        C3_ACPI%        CPU%c1
-> > 2       42      96      0.00    0.12            2.60            97.09           0.60
-> 
-> Let's shorten the header fields so that a single tab continues to work.
-> this is helpful for processing turbostat output in .TSV format.
->
-Okay. BTW it looks like the following patch has already fixed the _CST format issue
-and single tab still works:
-commit fecb3bc839df64761cc63c9ee9b45c1cad36aee8
-Author: David Arcari <darcari@redhat.com>
-Date:   Mon Aug 10 10:43:30 2020 -0400
+When a spi device is unregistered and triggers a driver unbind, the
+driver might need to access the spi device. So, don't have the
+controller clean up the spi device before the driver is unbound. Clean
+up the spi device after the driver is unbound.
 
-    tools/power turbostat: Fix output formatting for ACPI CST enumeration
+Fixes: c7299fea6769 ("spi: Fix spi device unregister flow")
+Reported-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+Lukas,
 
-thanks,
-Chenyu 
+Can you test this out please?
+
+Thanks,
+Saravana
+
+ drivers/spi/spi.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 2350d131871b..b856f4a1e3a4 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -401,6 +401,12 @@ static int spi_probe(struct device *dev)
+ 	return ret;
+ }
+ 
++static void spi_cleanup(struct spi_device *spi)
++{
++	if (spi->controller->cleanup)
++		spi->controller->cleanup(spi);
++}
++
+ static int spi_remove(struct device *dev)
+ {
+ 	const struct spi_driver		*sdrv = to_spi_driver(dev->driver);
+@@ -415,6 +421,7 @@ static int spi_remove(struct device *dev)
+ 				 ERR_PTR(ret));
+ 	}
+ 
++	spi_cleanup(to_spi_device(dev));
+ 	dev_pm_domain_detach(dev, true);
+ 
+ 	return 0;
+@@ -554,12 +561,6 @@ static int spi_dev_check(struct device *dev, void *data)
+ 	return 0;
+ }
+ 
+-static void spi_cleanup(struct spi_device *spi)
+-{
+-	if (spi->controller->cleanup)
+-		spi->controller->cleanup(spi);
+-}
+-
+ /**
+  * spi_add_device - Add spi_device allocated with spi_alloc_device
+  * @spi: spi_device to register
+@@ -714,8 +715,6 @@ void spi_unregister_device(struct spi_device *spi)
+ 	if (!spi)
+ 		return;
+ 
+-	spi_cleanup(spi);
+-
+ 	if (spi->dev.of_node) {
+ 		of_node_clear_flag(spi->dev.of_node, OF_POPULATED);
+ 		of_node_put(spi->dev.of_node);
+-- 
+2.31.1.527.g47e6f16901-goog
+
