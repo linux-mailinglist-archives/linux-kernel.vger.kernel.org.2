@@ -2,90 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF92C373FD3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:30:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27B36373F27
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:04:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234068AbhEEQbO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:31:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230142AbhEEQbN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:31:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B5D3C061574;
-        Wed,  5 May 2021 09:30:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=fGXeriWRXwI62lv9/5xrWlA4+z2PdEHPI8DQFPyC/rE=; b=TxhRkg6/+CDRx8eN3rN5YCwWZg
-        pkXnkMv2kM75tLEDJMqB6BEtrGbprvaIKZjwdYp6KpRpTdeCAPV3eElE8ooNSI40s/Z/rawXyDx11
-        bBquTlgB6Zv/KHd6GX0Fle74yyLnCbzF5XRAuIMREhxbmbvU6D75/HlN4o6eSNcNtyfqrSVIcrBkl
-        us4RyF+4PU9Ld5j9sajim1ZeIi8ZQ3G3zuznfnPEg8cvZeeH3kjHc4G6G9yH78HKjgl0zR/GJV9eT
-        Iaq0P9IIezOx3knq7MzGFzBL0wJl/LRy53ZL8SJUrwFrL+BMYl9OosEZFltPRtPPdZL2QuKNZr4qJ
-        tpwS69Vw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1leKLi-000aTt-2B; Wed, 05 May 2021 16:26:57 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 68/96] mm/filemap: Add i_blocks_per_folio
-Date:   Wed,  5 May 2021 16:06:00 +0100
-Message-Id: <20210505150628.111735-69-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210505150628.111735-1-willy@infradead.org>
-References: <20210505150628.111735-1-willy@infradead.org>
+        id S233739AbhEEQFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:05:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48638 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233502AbhEEQFe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:05:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B6893613B3;
+        Wed,  5 May 2021 16:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620230677;
+        bh=cTM8g/gKs3w7f3SKpfx5R9tQ4aTb7xARUcSs/9imTcI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=XuD8VZzVX2EySNepWfffqri6VedVVZQGkeTDWQIzwXT+4xV3nRr7KQ3BaL8uBhOj2
+         oRdBt1iLLzQwLBt5vpJXTK60/knqkx87AJdwTvw1lhwhqWUMNTpUZnNmwtwgsvS+z/
+         hm2TUwUqepC+tiHwpX+VVcBc92bVuLPh53jiyy/sx3yJ7k+iY7i1PDH84ZqXKAij8z
+         GbbUxf/HFT/GAqn9QTlgyR/vASAO3uu1lqHbO38tlWasAhe82wMc6XUmMUUMBD5uIi
+         vRcezoa9KzvwWeN7ANAJHZ2HSiaprrmRSxELqbpibgeaL9SDVOdvgm5k9+A2/IdX1Y
+         H8yRQSEHJwW3w==
+Date:   Wed, 5 May 2021 18:04:33 +0200
+From:   Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>,
+        Gregory CLEMENT <gregory.clement@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 mvebu + mvebu/dt64 1/6] firmware: turris-mox-rwtm:
+ fix reply status decoding function
+Message-ID: <20210505180433.550178c8@thinkpad>
+In-Reply-To: <YI/rGQfWdMdanPcN@lunn.ch>
+References: <20210308153703.23097-1-kabel@kernel.org>
+        <20210429083636.22560-1-pali@kernel.org>
+        <YI/rGQfWdMdanPcN@lunn.ch>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Reimplement i_blocks_per_page() as a wrapper around i_blocks_per_folio().
+On Mon, 3 May 2021 14:22:49 +0200
+Andrew Lunn <andrew@lunn.ch> wrote:
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- include/linux/pagemap.h | 18 ++++++++++++------
- 1 file changed, 12 insertions(+), 6 deletions(-)
+> On Thu, Apr 29, 2021 at 10:36:31AM +0200, Pali Roh=C3=A1r wrote:
+> > From: Marek Beh=C3=BAn <kabel@kernel.org>
+> >=20
+> > The status decoding function mox_get_status() currently contains a dead
+> > code path: if the error status is not MBOX_STS_SUCCESS, it always
+> > returns -EIO, so the comparison to MBOX_STS_FAIL is never executed and
+> > we don't get the actual error code sent by the firmware.
+> >=20
+> > Fix this.
+> >=20
+> > Signed-off-by: Marek Beh=C3=BAn <kabel@kernel.org>
+> > Fixes: 389711b37493 ("firmware: Add Turris Mox rWTM firmware driver") =
+=20
+>=20
+> You have put a fixes tag here, meaning you want it in stable? How does
+> dead code elimination fulfil the stable requirements?
+>=20
+> Do any of these changes contain real fixes?
+>=20
+>    Andrew
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index fa24217e305d..2f896574aad7 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -1224,19 +1224,25 @@ static inline int page_mkwrite_check_truncate(struct page *page,
- }
- 
- /**
-- * i_blocks_per_page - How many blocks fit in this page.
-+ * i_blocks_per_folio - How many blocks fit in this folio.
-  * @inode: The inode which contains the blocks.
-- * @page: The page (head page if the page is a THP).
-+ * @folio: The folio.
-  *
-- * If the block size is larger than the size of this page, return zero.
-+ * If the block size is larger than the size of this folio, return zero.
-  *
-- * Context: The caller should hold a refcount on the page to prevent it
-+ * Context: The caller should hold a refcount on the folio to prevent it
-  * from being split.
-- * Return: The number of filesystem blocks covered by this page.
-+ * Return: The number of filesystem blocks covered by this folio.
-  */
-+static inline
-+unsigned int i_blocks_per_folio(struct inode *inode, struct folio *folio)
-+{
-+	return folio_size(folio) >> inode->i_blkbits;
-+}
-+
- static inline
- unsigned int i_blocks_per_page(struct inode *inode, struct page *page)
- {
--	return thp_size(page) >> inode->i_blkbits;
-+	return i_blocks_per_folio(inode, page_folio(page));
- }
- #endif /* _LINUX_PAGEMAP_H */
--- 
-2.30.2
+Andrew, this is not dead code elimination. Rather it is that there is
+dead code path due to an incorrect check. By correcting the check, the
+dead code path becomes alive and starts reporting errors correctly.
+This fix is nedeed in stable so that stable will report errors
+correctly.
 
+Marek
