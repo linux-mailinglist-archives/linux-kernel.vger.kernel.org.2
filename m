@@ -2,66 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 464FD373BAB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 233E3373BAD
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:47:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbhEEMsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:48:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39460 "EHLO mail.kernel.org"
+        id S233429AbhEEMsX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:48:23 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:54406 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230034AbhEEMsM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:48:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 413F8613BC;
-        Wed,  5 May 2021 12:47:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620218836;
-        bh=K1tvaeyBF65sqdxG7iy3TRk3SWi/mJo1kQamET0hdrc=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=uJXxKUeauXVYvxttkbTJrgnH0oV8Ff8lv9JHIJ/jsX2vWXsF78LN4LBltwYlcym8F
-         WBerd7r0mJDb4vy6jjZ6IkEfYuenFBRa8rz2y78VajuRt8z89lnrMjfgUVS6eELK5a
-         OzV8fL1Nt+OJfk2ZWZvp/6YRDFgYYwWfGIUk0ddK5niC3BRTMUL8WgbDC122VGiTAM
-         EmoSvKFH3u05R9VqRsjPufWvNdeADRkge58H5MaV73Tpl6yMcb1z2G1BM/GOE3gh0l
-         F+Fj//3DX+AQjy14hsXOkHOJO+cmerWYt0oZ5v+0BPLMYIjQQdbPb8Z/JiyHgDoBQn
-         i0GAE8JwCxA0w==
-Date:   Wed, 5 May 2021 14:47:13 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH  1/1] HID: quirks: Add quirk for Lenovo optical mouse
-In-Reply-To: <20210429185040.46249-1-saeed.mirzamohammadi@oracle.com>
-Message-ID: <nycvar.YFH.7.76.2105051447031.28378@cbobk.fhfr.pm>
-References: <20210429185040.46249-1-saeed.mirzamohammadi@oracle.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S233118AbhEEMsV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:48:21 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1leGvv-002fo3-2r; Wed, 05 May 2021 14:47:19 +0200
+Date:   Wed, 5 May 2021 14:47:19 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        UNGLinuxDriver@microchip.com,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>
+Subject: Re: [RFC PATCH v1 8/9] net: phy: micrel: ksz886x/ksz8081: add
+ cabletest support
+Message-ID: <YJKT173qkYZ+Iyp6@lunn.ch>
+References: <20210505092025.8785-1-o.rempel@pengutronix.de>
+ <20210505092025.8785-9-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505092025.8785-9-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Apr 2021, Saeed Mirzamohammadi wrote:
-
-> The Lenovo optical mouse with vendor id of 0x17ef and product id of
-> 0x600e experiences disconnecting issues every 55 seconds:
+On Wed, May 05, 2021 at 11:20:24AM +0200, Oleksij Rempel wrote:
+> This patch support for cable test for the ksz886x switches and the
+> ksz8081 PHY.
 > 
-> [38565.706242] usb 1-1.4: Product: Lenovo Optical Mouse
-> [38565.728603] input: Lenovo Optical Mouse as /devices/platform/scb/fd500000.pcie/pci0000:00/0000:00:00.0/0000:01:00.0/usb1/1-1/1-1.4/1-1.4:1.0/0003:17EF:600E.029A/input/input665
-> [38565.755949] hid-generic 0003:17EF:600E.029A: input,hidraw1: USB HID v1.11 Mouse [Lenovo Optical Mouse] on usb-0000:01:00.0-1.4/input0
-> [38619.360692] usb 1-1.4: USB disconnect, device number 48
-> [38620.864990] usb 1-1.4: new low-speed USB device number 49 using xhci_hcd
-> [38620.984011] usb 1-1.4: New USB device found, idVendor=17ef,idProduct=600e, bcdDevice= 1.00
-> [38620.998117] usb 1-1.4: New USB device strings: Mfr=0, Product=2,SerialNumber=0
+> The patch was tested on a KSZ8873RLL switch with following results:
 > 
-> This adds HID_QUIRK_ALWAYS_POLL for this device in order to work properly.
-> 
-> Reference:
-> https://github.com/sriemer/fix-linux-mouse
-> 
-> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> - port 1:
+>   - cannot detect any distance
+>   - provides inverted values
+>     (Errata: DS80000830A: "LinkMD does not work on Port 1",
+>      http://ww1.microchip.com/downloads/en/DeviceDoc/KSZ8873-Errata-DS80000830A.pdf)
+>     - Reports "short" on open or ok.
+>     - Reports "ok" on short.
 
-Applied, thanks.
+Quite broken. Distance is optional, simply don't report it.  Status is
+harder. Reporting ETHTOOL_A_CABLE_RESULT_CODE_OK should really mean
+the cable is O.K. If you cannot tell open from O.K, i would return
+ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC.
 
--- 
-Jiri Kosina
-SUSE Labs
+More later.
 
+	Andrew
