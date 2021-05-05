@@ -2,87 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45205374B25
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2E6374B2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234019AbhEEWW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:22:59 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:51255 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233874AbhEEWWx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:22:53 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FbB5b2Tl3z9sCD;
-        Thu,  6 May 2021 08:21:55 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620253315;
-        bh=MBsrEiVVK4ikpWY8C9uwRIQbPvut3V/1aWROJgcxRXk=;
-        h=Date:From:To:Cc:Subject:From;
-        b=YwTi1vab1qX6KnKS+g1VLvX0CzUhWGeIihRA+u1k68GSEO145PgNzq70aXVCSxOyO
-         0x4e057G5HKcF3mwP/mehKolEwvf9xIT+cRSZLND/eFetv43FX8otAhpNiUZ1kKsVf
-         45x550Pv64+NEuFv74jnSo728frgU1xQ6xDbrYTslCujXcRZIIKibGfIDPoWAEMptp
-         oAV4FUE8EZg1HEdNjfrBEKtm/6kSXZC2dlcI2SN9lM/uOcODkg2vOS8gZ9LlXhKVd4
-         ZcGNGhfZeabNpMtFQEI6d7qvAYn8A0nhgd1aSz87rUitZw5XBRA1msKH8y5Rdtldqf
-         82o38FMhldmTA==
-Date:   Thu, 6 May 2021 08:21:54 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Cc:     Michael Zaidman <michael.zaidman@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the hid tree
-Message-ID: <20210506082154.58352028@canb.auug.org.au>
+        id S234073AbhEEWXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:23:21 -0400
+Received: from esa4.mentor.iphmx.com ([68.232.137.252]:57192 "EHLO
+        esa4.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229897AbhEEWXU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 18:23:20 -0400
+IronPort-SDR: SlZz+qtjNJar1cuRTb3RsH2YyzRNfwRCERsi+CelErtf0Bp4FqQ01OJSEXCDBT70XCy9wZcnGV
+ CpVP5ZArBBhesEl4raRJKGxmRMY3Cwe0N4CzCcIA3hg35SZGJhvm6yWoylwlAFdZHUl2uwVWgy
+ FdkYI3HWLg5BDOEOVa2ykGtmamv7ax/XaVQzVhkQNdS/n1xg04k44V7Z2CPO7gqlobb/25KzUr
+ 77KM7Y7esxA38v0VSAL7fFdtmE15L0TeNQTu8R2LnaHhWMa2lYGNUNnwCaqwdiFyrkXOGJ9uNO
+ LC0=
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="61033681"
+Received: from orw-gwy-02-in.mentorg.com ([192.94.38.167])
+  by esa4.mentor.iphmx.com with ESMTP; 05 May 2021 14:22:23 -0800
+IronPort-SDR: yYRQC2BGZ2EAkI+dghDlrq62ctnEzUdDXVCbEBB5v6z8SaTasrZVI5bDosiuTWtKQ2NxHxdwWc
+ 3oaEz2Y7c647UoXHvp0Jj2i9+uTeeFU1nNVPEyxqSbzUptTVOede61SgQjqXAIbOkz6stZVKDn
+ mIPzoD9dlTOxe3+0gwdVKx2TfSeRTKAuPj/prdhV8xBVRK9GeA3DHNoj16s0xugWhT0J5x8xoZ
+ cXwQBuJ8n5lEUZvbfkJnbYidEW5iYccXWAiDJhogWxOLWMfHI0nrP95kZXqh7LHnNFKdajOksb
+ CZc=
+Date:   Wed, 5 May 2021 22:22:18 +0000
+From:   Joseph Myers <joseph@codesourcery.com>
+X-X-Sender: jsm28@digraph.polyomino.org.uk
+To:     David Laight <David.Laight@ACULAB.COM>
+CC:     'Florian Weimer' <fweimer@redhat.com>,
+        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>,
+        linux-man <linux-man@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        GCC <gcc-patches@gcc.gnu.org>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        glibc <libc-alpha@sourceware.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Subject: RE: [RFC v2] bpf.2: Use standard types and attributes
+In-Reply-To: <a17b3a3c7eff46829666d2b07adda0be@AcuMS.aculab.com>
+Message-ID: <alpine.DEB.2.22.394.2105052219590.508961@digraph.polyomino.org.uk>
+References: <20210423230609.13519-1-alx.manpages@gmail.com> <20210504110519.16097-1-alx.manpages@gmail.com> <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com> <YJFZHW2afbAMVOmE@kroah.com> <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
+ <YJFxArfp8wN3ILJb@kroah.com> <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com> <6740a229-842e-b368-86eb-defc786b3658@gmail.com> <87r1imgu5g.fsf@oldenburg.str.redhat.com> <a17b3a3c7eff46829666d2b07adda0be@AcuMS.aculab.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/gX2FgZ/4hTOuWE7kBWgv/j/";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset="US-ASCII"
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2) To
+ svr-ies-mbx-01.mgc.mentorg.com (139.181.222.1)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/gX2FgZ/4hTOuWE7kBWgv/j/
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, 5 May 2021, David Laight via Libc-alpha wrote:
 
-Hi all,
+> > __u64 can't be formatted with %llu on all architectures.  That's not
+> > true for uint64_t, where you have to use %lu on some architectures to
+> > avoid compiler warnings (and technically undefined behavior).  There are
+> > preprocessor macros to get the expected format specifiers, but they are
+> > clunky.  I don't know if the problem applies to uint32_t.  It does
+> > happen with size_t and ptrdiff_t on 32-bit targets (both vary between
+> > int and long).
+> 
+> uint32_t can be 'randomly' either int or long on typical 32bit architectures.
+> The correct way to print it is with eg "xxx %5.4" PRI_u32 " yyy".
 
-In commit
+C2X adds printf length modifiers such as "w32", so you can use a 
+friendlier %w32u, for example.  (Not yet implemented in glibc or in GCC's 
+format checking.)
 
-  b45ef5db7bf2 ("HID: ft260: check data size in ft260_smbus_write()")
-
-Fixes tag
-
-  Fixes: 98189a0adfa0 ("HID: ft260: add usb hid to i2c host bridge driver")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-Maybe you meant
-
-Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/gX2FgZ/4hTOuWE7kBWgv/j/
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCTGoIACgkQAVBC80lX
-0GzuzAf9H9+JTF5SZ8pR8sOY0A8eNpSz1TmngMmxZWjGmswRyFKcyvS0pg+DGUq4
-J1zhKcypbADjiBv8QAgjgF3JuXg+GAWZfGVTWpIiz2RipgjHCSuW2nQeKaTwMTEt
-o0Q7w3iNcQCbWxh/0eRwIlmEPQMbjB0IN/balSrQqltTFZq5YKS3KOIPDzauK3J/
-yjfR6XuNuzOW1ZMgM71PVDVVZcB7HDevqi3gbql/lXn9bmtvkfcEIt3ZBV372o7t
-IbG9iPNPaRLkWPpHUKDOifTZtQtvz6uTasZ+Clvm4qsFJ+m8O4HKHCDTX7VUpIQH
-kRGyTVDU1P+UkCaRTYVbJ+qcTE6GVQ==
-=xaAU
------END PGP SIGNATURE-----
-
---Sig_/gX2FgZ/4hTOuWE7kBWgv/j/--
+-- 
+Joseph S. Myers
+joseph@codesourcery.com
