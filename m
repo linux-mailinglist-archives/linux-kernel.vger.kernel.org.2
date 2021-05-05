@@ -2,102 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0FF8373308
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33C3437330A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:25:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231180AbhEEAWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 20:22:34 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:40700 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230505AbhEEAWe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 20:22:34 -0400
-Received: from [192.168.254.32] (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 0759C20B7178;
-        Tue,  4 May 2021 17:21:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 0759C20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620174098;
-        bh=67pUuO9NPGqjJ/qDqrzzpbBgFlanoF6KUFDz7lH6P00=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Cj/GF5no1DMzZUaaja0KNhnaQ6g3J95YGLHwQk/gdXf2RUxB/JCXv9g2OPWrRXuCl
-         qM0WHBHB7DMIG/wVEbyC7+bwFsEZLYSxsIUgYznkroXl4AlWjKTZR3y4rv5wsai5+v
-         vYXrukyB/VmQEH7FF4WOakI6azOsc9SeGD8nx0xA=
-Subject: Re: [RFC PATCH v3 1/4] arm64: Introduce stack trace reliability
- checks in the unwinder
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     broonie@kernel.org, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-2-madvenka@linux.microsoft.com>
- <20210504215248.oi3zay3memgqri33@treble>
- <b000767b-26ca-01a9-a109-c9fc3357f832@linux.microsoft.com>
- <20210505000728.yxg3xbwa3emcu2wi@treble>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <2fc9a77a-ddf5-812a-0681-ece94b433d71@linux.microsoft.com>
-Date:   Tue, 4 May 2021 19:21:37 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S231219AbhEEA0j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 20:26:39 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53358 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230012AbhEEA0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 20:26:38 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1le5MB-002Yp7-BO; Wed, 05 May 2021 02:25:39 +0200
+Date:   Wed, 5 May 2021 02:25:39 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v3 04/20] net: dsa: qca8k: handle
+ qca8k_set_page errors
+Message-ID: <YJHmAxsyh08CnPHA@lunn.ch>
+References: <20210504222915.17206-1-ansuelsmth@gmail.com>
+ <20210504222915.17206-4-ansuelsmth@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210505000728.yxg3xbwa3emcu2wi@treble>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504222915.17206-4-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+> +static int
+>  qca8k_set_page(struct mii_bus *bus, u16 page)
+>  {
+>  	if (page == qca8k_current_page)
+> -		return;
+> +		return 0;
+>  
+> -	if (bus->write(bus, 0x18, 0, page) < 0)
+> +	if (bus->write(bus, 0x18, 0, page) < 0) {
+>  		dev_err_ratelimited(&bus->dev,
+>  				    "failed to set qca8k page\n");
+> +		return -EBUSY;
 
+EBUSY is a bit odd. bus->write() should return an error code. Please
+return that.
 
-On 5/4/21 7:07 PM, Josh Poimboeuf wrote:
-> On Tue, May 04, 2021 at 06:13:39PM -0500, Madhavan T. Venkataraman wrote:
->>
->>
->> On 5/4/21 4:52 PM, Josh Poimboeuf wrote:
->>> On Mon, May 03, 2021 at 12:36:12PM -0500, madvenka@linux.microsoft.com wrote:
->>>> @@ -44,6 +44,8 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
->>>>  	unsigned long fp = frame->fp;
->>>>  	struct stack_info info;
->>>>  
->>>> +	frame->reliable = true;
->>>> +
->>>
->>> Why set 'reliable' to true on every invocation of unwind_frame()?
->>> Shouldn't it be remembered across frames?
->>>
->>
->> This is mainly for debug purposes in case a caller wants to print the whole stack and also
->> print which functions are unreliable. For livepatch, it does not make any difference. It will
->> quit as soon as it encounters an unreliable frame.
-> 
-> Hm, ok.  So 'frame->reliable' refers to the current frame, not the
-> entire stack.
-> 
+> @@ -161,14 +169,19 @@ static void
+>  qca8k_write(struct qca8k_priv *priv, u32 reg, u32 val)
+>  {
+>  	u16 r1, r2, page;
+> +	int ret;
+>  
+>  	qca8k_split_addr(reg, &r1, &r2, &page);
+>  
+>  	mutex_lock_nested(&priv->bus->mdio_lock, MDIO_MUTEX_NESTED);
+>  
+> -	qca8k_set_page(priv->bus, page);
+> +	ret = qca8k_set_page(priv->bus, page);
+> +	if (ret < 0)
+> +		goto exit;
+> +
+>  	qca8k_mii_write32(priv->bus, 0x10 | r2, r1, val);
+>  
+> +exit:
+>  	mutex_unlock(&priv->bus->mdio_lock);
 
-Yes.
+Maybe make this function also return the error? 
 
->>> Also, it looks like there are several error scenarios where it returns
->>> -EINVAL but doesn't set 'reliable' to false.
->>>
->>
->> I wanted to make a distinction between an error situation (like stack corruption where unwinding
->> has to stop) and an unreliable situation (where unwinding can still proceed). E.g., when a
->> stack trace is taken for informational purposes or debug purposes, the unwinding will try to
->> proceed until either the stack trace ends or an error happens.
-> 
-> Ok, but I don't understand how that relates to my comment.
-> 
-> Why wouldn't a stack corruption like !on_accessible_stack() set
-> 'frame->reliable' to false?
-> 
-
-I do see your point. If an error has been hit, then the stack trace is essentially unreliable
-regardless of anything else. So, I accept your comment. I will mark the stack trace as unreliable
-if any kind of error is encountered.
-
-Thanks!
-
-Madhavan
+>  }
