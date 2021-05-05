@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 214463743A8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D7D83743B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:46:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235317AbhEEQv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:51:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39956 "EHLO mail.kernel.org"
+        id S235479AbhEEQvc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:51:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234663AbhEEQn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:43:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3971361625;
-        Wed,  5 May 2021 16:35:00 +0000 (UTC)
+        id S235289AbhEEQnq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:43:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 65CAD6190A;
+        Wed,  5 May 2021 16:35:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232501;
-        bh=Vtih4XqSlGzRgqVbBsR1hXZkNO3qTTXktN2pyCKWEH8=;
+        s=k20201202; t=1620232505;
+        bh=XUjM3uzOEodAd8GDaJ/3gful5wE9ZKQwbXWbEv/ZHZ0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=TsBubsR3i5tQdAAgFjJhTYHOwWvCM7XCEM9YdiDuvoAzqKDv7AZQhNvo+by3V+cuP
-         vrvPFPJyBj3Ntx75XIQVAiIMUlMKg2PFZxzkVYVPnQgqh5aEKg3JC6xwpEOvwTqItl
-         JFw5xB/oTgoMP1iUE/o7H3Ee1DzG0z/5Ccz3gzB08j2thq7mSUyj8xm3LyG0Xjh3WI
-         redctkN1L869KsyG3Pc4eFbWd8zE7pALB+8GaGTVy6efqTQuQOlYOWXxSA9h6ZDqfQ
-         ruhPJ3ipL7kF1jw0FkF/9qiYWA4cWJ+AzWHhM6ukRNa+uJLbYuAKgr3N3WF3xAhw3c
-         P3+YCb97oG57w==
+        b=P44MEyT7BdQQKisV/A8INp4AyD4Ii/f18R52Cj6ewBywb4mndqsq2fBYvez951o5a
+         VrttSeEq4nsrZFie/1yUYAyjDGqh/+kWAZdtGu0zmJd6mz0urrR6a+wdPcvFxIHR5X
+         KTZyWzlERzXcrOVZyPHs1+6RzWvIaOtQcwGUpG0TQcNZW0unAKV58ES3UQyl6Qw6jz
+         IxpVlFUyp8j94V5Td95yfS92fndATrkIKOinJdMoAwnQXrRBB0rHS99HYNKntHPGbH
+         FSnY6NCHGyO/Kqz8MMcwXRNzfNSFhY34vV7Rm7sHoEvwZ+Ut/2p5kaiTzBN88KjWGi
+         /8iFUDNT65Sww==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Eric Dumazet <edumazet@google.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 033/104] ip6_vti: proper dev_{hold|put} in ndo_[un]init methods
-Date:   Wed,  5 May 2021 12:33:02 -0400
-Message-Id: <20210505163413.3461611-33-sashal@kernel.org>
+Cc:     Andrew Scull <ascull@google.com>, Will Deacon <will@kernel.org>,
+        Marc Zyngier <maz@kernel.org>, Sasha Levin <sashal@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, kvmarm@lists.cs.columbia.edu
+Subject: [PATCH AUTOSEL 5.11 036/104] KVM: arm64: Use BUG and BUG_ON in nVHE hyp
+Date:   Wed,  5 May 2021 12:33:05 -0400
+Message-Id: <20210505163413.3461611-36-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -42,96 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Dumazet <edumazet@google.com>
+From: Andrew Scull <ascull@google.com>
 
-[ Upstream commit 40cb881b5aaa0b69a7d93dec8440d5c62dae299f ]
+[ Upstream commit f79e616f27ab6cd74deb0995a8eead3d1c9d65af ]
 
-After adopting CONFIG_PCPU_DEV_REFCNT=n option, syzbot was able to trigger
-a warning [1]
+hyp_panic() reports the address of the panic by using ELR_EL2, but this
+isn't a useful address when hyp_panic() is called directly. Replace such
+direct calls with BUG() and BUG_ON() which use BRK to trigger an
+exception that then goes to hyp_panic() with the correct address. Also
+remove the hyp_panic() declaration from the header file to avoid
+accidental misuse.
 
-Issue here is that:
-
-- all dev_put() should be paired with a corresponding prior dev_hold().
-
-- A driver doing a dev_put() in its ndo_uninit() MUST also
-  do a dev_hold() in its ndo_init(), only when ndo_init()
-  is returning 0.
-
-Otherwise, register_netdevice() would call ndo_uninit()
-in its error path and release a refcount too soon.
-
-Therefore, we need to move dev_hold() call from
-vti6_tnl_create2() to vti6_dev_init_gen()
-
-[1]
-WARNING: CPU: 0 PID: 15951 at lib/refcount.c:31 refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
-Modules linked in:
-CPU: 0 PID: 15951 Comm: syz-executor.3 Not tainted 5.12.0-rc4-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
-Code: 1d 6a 5a e8 09 31 ff 89 de e8 8d 1a ab fd 84 db 75 e0 e8 d4 13 ab fd 48 c7 c7 a0 e1 c1 89 c6 05 4a 5a e8 09 01 e8 2e 36 fb 04 <0f> 0b eb c4 e8 b8 13 ab fd 0f b6 1d 39 5a e8 09 31 ff 89 de e8 58
-RSP: 0018:ffffc90001eaef28 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815c51f5 RDI: fffff520003d5dd7
-RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815bdf8e R11: 0000000000000000 R12: ffff88801bb1c568
-R13: ffff88801f69e800 R14: 00000000ffffffff R15: ffff888050889d40
-FS:  00007fc79314e700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1c1ff47108 CR3: 0000000020fd5000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __refcount_dec include/linux/refcount.h:344 [inline]
- refcount_dec include/linux/refcount.h:359 [inline]
- dev_put include/linux/netdevice.h:4135 [inline]
- vti6_dev_uninit+0x31a/0x360 net/ipv6/ip6_vti.c:297
- register_netdevice+0xadf/0x1500 net/core/dev.c:10308
- vti6_tnl_create2+0x1b5/0x400 net/ipv6/ip6_vti.c:190
- vti6_newlink+0x9d/0xd0 net/ipv6/ip6_vti.c:1020
- __rtnl_newlink+0x1062/0x1710 net/core/rtnetlink.c:3443
- rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
- rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
- netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
- netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
- sock_sendmsg_nosec net/socket.c:654 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:674
- ____sys_sendmsg+0x331/0x810 net/socket.c:2350
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
- __sys_sendmmsg+0x195/0x470 net/socket.c:2490
- __do_sys_sendmmsg net/socket.c:2519 [inline]
- __se_sys_sendmmsg net/socket.c:2516 [inline]
- __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2516
-
-Signed-off-by: Eric Dumazet <edumazet@google.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
+Signed-off-by: Andrew Scull <ascull@google.com>
+Acked-by: Will Deacon <will@kernel.org>
+Signed-off-by: Marc Zyngier <maz@kernel.org>
+Link: https://lore.kernel.org/r/20210318143311.839894-5-ascull@google.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/ipv6/ip6_vti.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm64/include/asm/kvm_hyp.h   | 1 -
+ arch/arm64/kvm/hyp/nvhe/hyp-main.c | 2 +-
+ arch/arm64/kvm/hyp/nvhe/hyp-smp.c  | 6 ++----
+ 3 files changed, 3 insertions(+), 6 deletions(-)
 
-diff --git a/net/ipv6/ip6_vti.c b/net/ipv6/ip6_vti.c
-index f10e7a72ea62..a018afdb3e06 100644
---- a/net/ipv6/ip6_vti.c
-+++ b/net/ipv6/ip6_vti.c
-@@ -193,7 +193,6 @@ static int vti6_tnl_create2(struct net_device *dev)
+diff --git a/arch/arm64/include/asm/kvm_hyp.h b/arch/arm64/include/asm/kvm_hyp.h
+index 32ae676236b6..fe5fc814f228 100644
+--- a/arch/arm64/include/asm/kvm_hyp.h
++++ b/arch/arm64/include/asm/kvm_hyp.h
+@@ -100,7 +100,6 @@ u64 __guest_enter(struct kvm_vcpu *vcpu);
  
- 	strcpy(t->parms.name, dev->name);
+ bool kvm_host_psci_handler(struct kvm_cpu_context *host_ctxt);
  
--	dev_hold(dev);
- 	vti6_tnl_link(ip6n, t);
- 
- 	return 0;
-@@ -932,6 +931,7 @@ static inline int vti6_dev_init_gen(struct net_device *dev)
- 	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
- 	if (!dev->tstats)
- 		return -ENOMEM;
-+	dev_hold(dev);
- 	return 0;
+-void __noreturn hyp_panic(void);
+ #ifdef __KVM_NVHE_HYPERVISOR__
+ void __noreturn __hyp_do_panic(struct kvm_cpu_context *host_ctxt, u64 spsr,
+ 			       u64 elr, u64 par);
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+index 1b8ef37bf805..2630d3bbae62 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
++++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
+@@ -181,6 +181,6 @@ void handle_trap(struct kvm_cpu_context *host_ctxt)
+ 		handle_host_smc(host_ctxt);
+ 		break;
+ 	default:
+-		hyp_panic();
++		BUG();
+ 	}
  }
+diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+index 2997aa156d8e..4495aed04240 100644
+--- a/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
++++ b/arch/arm64/kvm/hyp/nvhe/hyp-smp.c
+@@ -18,8 +18,7 @@ u64 __ro_after_init hyp_cpu_logical_map[NR_CPUS] = { [0 ... NR_CPUS-1] = INVALID
  
+ u64 cpu_logical_map(unsigned int cpu)
+ {
+-	if (cpu >= ARRAY_SIZE(hyp_cpu_logical_map))
+-		hyp_panic();
++	BUG_ON(cpu >= ARRAY_SIZE(hyp_cpu_logical_map));
+ 
+ 	return hyp_cpu_logical_map[cpu];
+ }
+@@ -30,8 +29,7 @@ unsigned long __hyp_per_cpu_offset(unsigned int cpu)
+ 	unsigned long this_cpu_base;
+ 	unsigned long elf_base;
+ 
+-	if (cpu >= ARRAY_SIZE(kvm_arm_hyp_percpu_base))
+-		hyp_panic();
++	BUG_ON(cpu >= ARRAY_SIZE(kvm_arm_hyp_percpu_base));
+ 
+ 	cpu_base_array = (unsigned long *)hyp_symbol_addr(kvm_arm_hyp_percpu_base);
+ 	this_cpu_base = kern_hyp_va(cpu_base_array[cpu]);
 -- 
 2.30.2
 
