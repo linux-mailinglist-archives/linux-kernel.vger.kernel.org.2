@@ -2,70 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12C7B37356C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 09:16:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EFBC373579
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 09:18:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhEEHRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 03:17:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46250 "EHLO mail.kernel.org"
+        id S231827AbhEEHTM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 03:19:12 -0400
+Received: from muru.com ([72.249.23.125]:51824 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231530AbhEEHQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 03:16:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 99EC461182;
-        Wed,  5 May 2021 07:14:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620198883;
-        bh=NOCLPCGSDszziLl/ZTU726sXTwkD28Tc4E0pcvGwF4Q=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lNHOENVBn/M3fHhcQ8NL3Xkln+ldmcT1JSXHLCJgzAgsjBf3gkPM3mcBUTNVYRzXN
-         iY3gX1h1O39c21VbKvg8jAw3sa/puUVNJ1uiaYm8Vw9FP1YsIqyxBV+k+fqCRIWn7y
-         RejtrHmT1kpp/TeqSxrFDRIp3u/+wNmnJYIPGDUY=
-Date:   Wed, 5 May 2021 09:14:40 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Char/Misc driver fixes for 5.13-rc1
-Message-ID: <YJJF4O/Ztpw5PQbK@kroah.com>
+        id S231826AbhEEHTK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 03:19:10 -0400
+Received: from atomide.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTPS id CDED380DB;
+        Wed,  5 May 2021 07:18:13 +0000 (UTC)
+Date:   Wed, 5 May 2021 10:18:08 +0300
+From:   Tony Lindgren <tony@atomide.com>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-omap@vger.kernel.org,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Nishanth Menon <nm@ti.com>
+Subject: Re: [PATCH] dt-bindings: i2c: Move i2c-omap.txt to YAML format
+Message-ID: <YJJGsGXBz56Nhe8z@atomide.com>
+References: <20210505065511.918-1-vigneshr@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20210505065511.918-1-vigneshr@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 8e3a3249502d8ff92d73d827fb41dd44c5a16f76:
+Hi,
 
-  Merge tag 'char-misc-5.13-rc1' of git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc (2021-04-26 11:03:17 -0700)
+* Vignesh Raghavendra <vigneshr@ti.com> [210505 06:55]:
+> Convert i2c-omap.txt to YAML schema for better checks and documentation.
 
-are available in the Git repository at:
+Nice to see this happening, few minor comments below on handling the
+legacy devices.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gregkh/char-misc.git tags/char-misc-5.13-rc1-round2
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - const: ti,omap2420-i2c
+> +      - const: ti,omap2430-i2c
+> +      - const: ti,omap3-i2c
+> +      - const: ti,omap4-i2c
+> +      - items:
+> +          - enum:
+> +              - ti,am4372-i2c
+> +              - ti,am64-i2c
+> +              - ti,am654-i2c
+> +              - ti,j721e-i2c
+> +          - const: ti,omap4-i2c
 
-for you to fetch changes up to 7b1ae248279bea33af9e797a93c35f49601cb8a0:
+I wonder if we should just add all the compatible options to the
+driver, and have all these as oneOf?
 
-  dyndbg: fix parsing file query without a line-range suffix (2021-04-30 07:43:20 +0200)
+> +  ti,hwmods:
+> +    description:
+> +      Must be "i2c<n>", n being the instance number (1-based)
+> +    $ref: /schemas/types.yaml#/definitions/string
+> +    items:
+> +      - pattern: "^i2c([1-9])$"
 
-----------------------------------------------------------------
-Char/Misc fixes for 5.13-rc1
+The ti,hwmods is a legacy property that is only needed for omap2/3 and
+ti81xx. At least the description should mention that to avoid folks
+adding it accidentally.
 
-Here are 2 char/misc fixes for 5.13-rc1 to resolve reported issues.
+Regards,
 
-The first is a bugfix for the nitro_enclaves driver that fixed some
-important problems.  The second was a dyndbg bugfix that resolved some
-reported problems in dynamic debugging control.
-
-Both have been in linux-next for a while with no reported issues.
-
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-
-----------------------------------------------------------------
-Mathias Krause (1):
-      nitro_enclaves: Fix stale file descriptors on failed usercopy
-
-Shuo Chen (1):
-      dyndbg: fix parsing file query without a line-range suffix
-
- drivers/virt/nitro_enclaves/ne_misc_dev.c | 43 ++++++++++++-------------------
- lib/dynamic_debug.c                       |  2 +-
- 2 files changed, 18 insertions(+), 27 deletions(-)
+Tony
