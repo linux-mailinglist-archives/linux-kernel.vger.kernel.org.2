@@ -2,241 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75A3B373F75
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 107EC373F79
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:21:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233968AbhEEQVF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:21:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34924 "EHLO
+        id S233995AbhEEQVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:21:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35112 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233830AbhEEQVB (ORCPT
+        with ESMTP id S233857AbhEEQVt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:21:01 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 90EF8C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 09:20:03 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 12so3329757lfq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:20:03 -0700 (PDT)
+        Wed, 5 May 2021 12:21:49 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 453A9C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 09:20:51 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id b21so3208949ljf.11
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:20:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=48bh1+Y1vcaUPSucq70xwYXG4pAt+NIt0VPqq6H+naE=;
-        b=Ti+h4fdPntP/Z9GhcCKPby+JaBJzOz4csNEsXIHwlglqE8ig+S3DLM5Srf/eZHMAl6
-         PwzQnWryfs9DcGkjOActAiMMjwTTYwOI1xC7QEmUjynLIYpLVy1Ntvq/PLbKIEY7GEK2
-         CBPHe2gy0W6PiNCu0R4NgpjWQ4x2ABw7noikXLoWdGXApW74rhvOxApkzE7Gv25YN42i
-         tYLI3gOmSneJk5/tu51fWJi/km+tLQx2eYQD/WlStUThYoYsEGkmbqsjWnwnuinQYMIz
-         iuZj+/L8FV9+8c7NIpqyay+Q8bvAOxM9iMjE77SScaf+ZBm7eIxgkHKz8EyPCnaByAc/
-         JdGg==
+        d=digitalocean.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Q1Ws7hM1g3rNgVo1qWsRwG/a83biuh7qtkH5oZYDPSU=;
+        b=OZ0sPHITT95pix7g1f4tFO1QvbWd0iotKP+cq6CWiQWL34gkkhfHldPGcumua4eEzy
+         1dmAGmAc88gWo0TyqBornHH+r5ZmjBm3SwOPeZoXlijBszxa34EOcQU8abehFvOcHxrW
+         9dRP1+b0FpMGKci3bfm9EpKePM6RfHMOPNNRs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=48bh1+Y1vcaUPSucq70xwYXG4pAt+NIt0VPqq6H+naE=;
-        b=fAYOX3n6T1u9bfZzzVSs8v1DUKc/Y+DlD4Qdchiz4U1OZo27b/TPzSpzKZcNYZVVyH
-         TAbZGlZNnpS3qxeG+l10lzxUg5IfIlbqUi8tO4QM5yra/RRGMTHT6V6Ga8cReys3WCVG
-         c94LdH4kU7w2jUbCWDAfn4/ww9ZybEXzY7LZQXf6BSxGti+MSXim37aS8Eu2goJw8Ken
-         vgQs9YBDZF840K+RaiD4MS6CyPcogKnRp5fNOKImiIBJCYXHsbXS8eQzrnv/GPDVp+lM
-         mE/zynprYj+kwNa+HxFmwF1oVuxbfwAddMPwi+80GNId4ubLGHv1wg6so4rMPx+iKGyE
-         1beA==
-X-Gm-Message-State: AOAM5304c5ihhbsEPagtwteGyshT6C2Hd3Nk7C95bbcN2ImB+BzEU/L8
-        RuJT1AOpechTiyglWhD2/co=
-X-Google-Smtp-Source: ABdhPJzgdokOT5BeULVmw0ArOI6ornF4+3ln7HIZNPLrOYe6WziNoWNnr3V/UmzEX6vpxuvFd/isUQ==
-X-Received: by 2002:ac2:563a:: with SMTP id b26mr12943375lff.324.1620231601848;
-        Wed, 05 May 2021 09:20:01 -0700 (PDT)
-Received: from kitten-GF63-Thin-9SCSR (dy571hqwysp-9f10wvwqy-4.rev.dnainternet.fi. [2001:14bb:677:5336:407b:3fd2:57d2:8c9a])
-        by smtp.gmail.com with ESMTPSA id x207sm639269lff.234.2021.05.05.09.20.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 09:20:01 -0700 (PDT)
-From:   Roni Nevalainen <catmaster.kissa@gmail.com>
-X-Google-Original-From: Roni Nevalainen <kitten@kittenz.dev>
-Date:   Wed, 5 May 2021 19:19:58 +0300
-To:     Paul Moore <paul@paul-moore.com>, Eric Paris <eparis@redhat.com>
-Cc:     linux-audit@redhat.com, linux-kernel@vger.kernel.org
-Subject: [PATCH] audit: add blank line after variable declarations
-Message-ID: <YJLFrrsN2jOx9ooS@kitten-GF63-Thin-9SCSR>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Q1Ws7hM1g3rNgVo1qWsRwG/a83biuh7qtkH5oZYDPSU=;
+        b=FW+F7ab24/O57D9hQso4aihayazymHIaFuMAjf9irRUyFxv45z4UuKVP+5JdEpI3Do
+         3LhfEooknaFdmegw5WccMXb60A1hgnRBffChYKuLQptyVr2S2pRu9RDYxrO/1O7dKcQJ
+         JZ8PYc3hfgtSs5F040yhA//0RpoY9bBeY6cXhD9u1NzgI8Fq7rwohN7/QMoumUTXxcdD
+         DIc6X4NzMAmLAUx2sIFaZqQ/RuPLbDGuqhvWZIReRkvDVF6pJ/FO4+mEO2oR8LF6XaA0
+         JKH5L+/z9boY6g2+8zf0mxTKRnckdcFqTZuotB5kgRHLcxYUKp7CaOVrjJ0Rjqe3/r07
+         6XZw==
+X-Gm-Message-State: AOAM5314QcTYIJAsOJHjX/iWjb5STUeCXo+Tt8dAiWnZZYLuzHOxXQCD
+        EwOr6CD8uZ4IoJIUCjyb0A6E2fYnTYjca7qE6klBlg==
+X-Google-Smtp-Source: ABdhPJwY7XL1YMMiuzL4xxfdLqpToW4DgoXwsuvb9sT2O/23Zox3v0QUIDcVcZsxwLlmLD/PUEix07h1Ubr1p9rkYuA=
+X-Received: by 2002:a2e:a373:: with SMTP id i19mr14169965ljn.49.1620231649796;
+ Wed, 05 May 2021 09:20:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+References: <20210422120459.447350175@infradead.org> <20210422123308.196692074@infradead.org>
+ <CAERHkrsC9rC4Jrkz8r-7kp4SFPM6aU+EHN+Y+uQiTuPG5S72bA@mail.gmail.com>
+ <CABk29NuS-B3n4sbmavo0NDA1OCCsz6Zf2VDjjFQvAxBMQoJ_Lg@mail.gmail.com> <YJD56sBCGviSDOTK@hirez.programming.kicks-ass.net>
+In-Reply-To: <YJD56sBCGviSDOTK@hirez.programming.kicks-ass.net>
+From:   Don Hiatt <dhiatt@digitalocean.com>
+Date:   Wed, 5 May 2021 09:20:38 -0700
+Message-ID: <CAOY2Wowj-EEARi7b4X2wvaJExj_yQ1w5tgBRdnXX5BYJY0U15g@mail.gmail.com>
+Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Don <joshdon@google.com>, Aubrey Li <aubrey.intel@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix the following checkpatch warning in auditsc.c:
+On Tue, May 4, 2021 at 12:38 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Apr 29, 2021 at 01:39:54PM -0700, Josh Don wrote:
+>
+> > > > +void double_rq_lock(struct rq *rq1, struct rq *rq2)
+> > > > +{
+> > > > +       lockdep_assert_irqs_disabled();
+> > > > +
+> > > > +       if (rq1->cpu > rq2->cpu)
+> > >
+> > > It's still a bit hard for me to digest this function, I guess using (rq->cpu)
+> > > can't guarantee the sequence of locking when coresched is enabled.
+> > >
+> > > - cpu1 and cpu7 shares lockA
+> > > - cpu2 and cpu8 shares lockB
+> > >
+> > > double_rq_lock(1,8) leads to lock(A) and lock(B)
+> > > double_rq_lock(7,2) leads to lock(B) and lock(A)
+>
+> Good one!
 
-WARNING: Missing a blank line after declarations
+Hi Peter,
 
-Signed-off-by: Roni Nevalainen <kitten@kittenz.dev>
----
- kernel/auditsc.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+I've been running the same set-cookie tests on your latest repo for
+the last 24 hours and haven't had a single lockup. Thank you very
+much!
 
-diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-index 175ef6f3ea4e..0a9a1569f1ea 100644
---- a/kernel/auditsc.c
-+++ b/kernel/auditsc.c
-@@ -160,6 +160,7 @@ static const struct audit_nfcfgop_tab audit_nfcfgs[] = {
- static int audit_match_perm(struct audit_context *ctx, int mask)
- {
- 	unsigned n;
-+
- 	if (unlikely(!ctx))
- 		return 0;
- 	n = ctx->major;
-@@ -239,6 +240,7 @@ static int put_tree_ref(struct audit_context *ctx, struct audit_chunk *chunk)
- {
- 	struct audit_tree_refs *p = ctx->trees;
- 	int left = ctx->tree_count;
-+
- 	if (likely(left)) {
- 		p->c[--left] = chunk;
- 		ctx->tree_count = left;
-@@ -259,6 +261,7 @@ static int put_tree_ref(struct audit_context *ctx, struct audit_chunk *chunk)
- static int grow_tree_refs(struct audit_context *ctx)
- {
- 	struct audit_tree_refs *p = ctx->trees;
-+
- 	ctx->trees = kzalloc(sizeof(struct audit_tree_refs), GFP_KERNEL);
- 	if (!ctx->trees) {
- 		ctx->trees = p;
-@@ -277,6 +280,7 @@ static void unroll_tree_refs(struct audit_context *ctx,
- {
- 	struct audit_tree_refs *q;
- 	int n;
-+
- 	if (!p) {
- 		/* we started with empty chain */
- 		p = ctx->first_trees;
-@@ -303,6 +307,7 @@ static void unroll_tree_refs(struct audit_context *ctx,
- static void free_tree_refs(struct audit_context *ctx)
- {
- 	struct audit_tree_refs *p, *q;
-+
- 	for (p = ctx->first_trees; p; p = q) {
- 		q = p->next;
- 		kfree(p);
-@@ -313,6 +318,7 @@ static int match_tree_refs(struct audit_context *ctx, struct audit_tree *tree)
- {
- 	struct audit_tree_refs *p;
- 	int n;
-+
- 	if (!tree)
- 		return 0;
- 	/* full ones */
-@@ -1225,6 +1231,7 @@ static void show_special(struct audit_context *context, int *call_panic)
- 	switch (context->type) {
- 	case AUDIT_SOCKETCALL: {
- 		int nargs = context->socketcall.nargs;
-+
- 		audit_log_format(ab, "nargs=%d", nargs);
- 		for (i = 0; i < nargs; i++)
- 			audit_log_format(ab, " a%d=%lx", i,
-@@ -1240,6 +1247,7 @@ static void show_special(struct audit_context *context, int *call_panic)
- 		if (osid) {
- 			char *ctx = NULL;
- 			u32 len;
-+
- 			if (security_secid_to_secctx(osid, &ctx, &len)) {
- 				audit_log_format(ab, " osid=%u", osid);
- 				*call_panic = 1;
-@@ -1289,6 +1297,7 @@ static void show_special(struct audit_context *context, int *call_panic)
- 		break;
- 	case AUDIT_MQ_GETSETATTR: {
- 		struct mq_attr *attr = &context->mq_getsetattr.mqstat;
-+
- 		audit_log_format(ab,
- 			"mqdes=%d mq_flags=0x%lx mq_maxmsg=%ld mq_msgsize=%ld "
- 			"mq_curmsgs=%ld ",
-@@ -1325,6 +1334,7 @@ static void show_special(struct audit_context *context, int *call_panic)
- static inline int audit_proctitle_rtrim(char *proctitle, int len)
- {
- 	char *end = proctitle + len - 1;
-+
- 	while (end > proctitle && !isprint(*end))
- 		end--;
- 
-@@ -1513,6 +1523,7 @@ static void audit_log_exit(void)
- 
- 		case AUDIT_BPRM_FCAPS: {
- 			struct audit_aux_data_bprm_fcaps *axs = (void *)aux;
-+
- 			audit_log_format(ab, "fver=%x", axs->fcap_ver);
- 			audit_log_cap(ab, "fp", &axs->fcap.permitted);
- 			audit_log_cap(ab, "fi", &axs->fcap.inheritable);
-@@ -1765,6 +1776,7 @@ static inline void handle_one(const struct inode *inode)
- 	struct audit_tree_refs *p;
- 	struct audit_chunk *chunk;
- 	int count;
-+
- 	if (likely(!inode->i_fsnotify_marks))
- 		return;
- 	context = audit_context();
-@@ -1806,8 +1818,10 @@ static void handle_path(const struct dentry *dentry)
- 	seq = read_seqbegin(&rename_lock);
- 	for(;;) {
- 		struct inode *inode = d_backing_inode(d);
-+
- 		if (inode && unlikely(inode->i_fsnotify_marks)) {
- 			struct audit_chunk *chunk;
-+
- 			chunk = audit_tree_lookup(inode);
- 			if (chunk) {
- 				if (unlikely(!put_tree_ref(context, chunk))) {
-@@ -2285,6 +2299,7 @@ void __audit_mq_notify(mqd_t mqdes, const struct sigevent *notification)
- void __audit_mq_getsetattr(mqd_t mqdes, struct mq_attr *mqstat)
- {
- 	struct audit_context *context = audit_context();
-+
- 	context->mq_getsetattr.mqdes = mqdes;
- 	context->mq_getsetattr.mqstat = *mqstat;
- 	context->type = AUDIT_MQ_GETSETATTR;
-@@ -2298,6 +2313,7 @@ void __audit_mq_getsetattr(mqd_t mqdes, struct mq_attr *mqstat)
- void __audit_ipc_obj(struct kern_ipc_perm *ipcp)
- {
- 	struct audit_context *context = audit_context();
-+
- 	context->ipc.uid = ipcp->uid;
- 	context->ipc.gid = ipcp->gid;
- 	context->ipc.mode = ipcp->mode;
-@@ -2362,6 +2378,7 @@ int __audit_socketcall(int nargs, unsigned long *args)
- void __audit_fd_pair(int fd1, int fd2)
- {
- 	struct audit_context *context = audit_context();
-+
- 	context->fds[0] = fd1;
- 	context->fds[1] = fd2;
- }
-@@ -2379,6 +2396,7 @@ int __audit_sockaddr(int len, void *a)
- 
- 	if (!context->sockaddr) {
- 		void *p = kmalloc(sizeof(struct sockaddr_storage), GFP_KERNEL);
-+
- 		if (!p)
- 			return -ENOMEM;
- 		context->sockaddr = p;
-@@ -2510,6 +2528,7 @@ int __audit_log_bprm_fcaps(struct linux_binprm *bprm,
- void __audit_log_capset(const struct cred *new, const struct cred *old)
- {
- 	struct audit_context *context = audit_context();
-+
- 	context->capset.pid = task_tgid_nr(current);
- 	context->capset.cap.effective   = new->cap_effective;
- 	context->capset.cap.inheritable = new->cap_effective;
-@@ -2521,6 +2540,7 @@ void __audit_log_capset(const struct cred *new, const struct cred *old)
- void __audit_mmap_fd(int fd, int flags)
- {
- 	struct audit_context *context = audit_context();
-+
- 	context->mmap.fd = fd;
- 	context->mmap.flags = flags;
- 	context->type = AUDIT_MMAP;
-@@ -2686,6 +2706,7 @@ void audit_seccomp_actions_logged(const char *names, const char *old_names,
- struct list_head *audit_killed_trees(void)
- {
- 	struct audit_context *ctx = audit_context();
-+
- 	if (likely(!ctx || !ctx->in_syscall))
- 		return NULL;
- 	return &ctx->killed_trees;
--- 
-2.30.2
-
+don
