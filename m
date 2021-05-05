@@ -2,98 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2124373EAD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:36:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C26F5373EB8
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:39:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233633AbhEEPhu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:37:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233483AbhEEPhs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:37:48 -0400
-Received: from mail-pj1-x102c.google.com (mail-pj1-x102c.google.com [IPv6:2607:f8b0:4864:20::102c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2212FC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 08:36:52 -0700 (PDT)
-Received: by mail-pj1-x102c.google.com with SMTP id h14-20020a17090aea8eb02901553e1cc649so1045579pjz.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:36:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Uh5fnNg4PWYr5e3cV22y9vYtxdN1GmrpBB3SRm60g3I=;
-        b=BAW6nWwMYE/qNeiD8Uv6sfc0s0VCmV87nng79Gp4ifLQZWxTEt+Y3n9e8mSwU41CON
-         Kw/etwdSsl/FVeP+dqEkjelHig7+u5EXG+yBC1KAZ5wK13qIEmEV87+/Byfy8tFjitse
-         +acufFHjk56KyNImGAzIj3gUWxS742gVQdMmIXnPT66Bq4k3fMvqqsxEA35GLH6xgGPT
-         STUQiwE+dTla5M2kSkcGz0wy6RDlRGrS0q4atlyuSi6gFaOKXR1LriMnKepaK5eE572G
-         Q9br1bd/QUse+1zRyqZIT3GlZ1jROgvt1I2z4Zb3RAoYjtaJWdWfOuXpoFufy7QvjIsl
-         w/iA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Uh5fnNg4PWYr5e3cV22y9vYtxdN1GmrpBB3SRm60g3I=;
-        b=Luq2wJhbelUqAAiMusormK7MyIr8lJfl+Dc7mzJCKLz1rdoSwIvwvee5EWIl6+2fWv
-         4lQTF5ulVdUCNWKpfblZYjjRexGIE4XwD+Pnu7uwIhE5b5vvVtep3+NCNx7MQaZlojPa
-         2ZJNABD22OeERFMvYRQKPi+1kdiq1S85ZlK/i/EjxASb6vhEXTC3Qet8/Dc+wwArV+PG
-         iSEKJuPikRIWjyBTFIXge5XJJbeSH1G/Kjs8qsVwN6xQX1Qg88Y2+kpUOgkQxTaeuPMZ
-         mvx6OYNLjaw0mwujnpaGRd4CtAG2L8ASIkPoHYU9s1Eg2paD0UiTm6pD+SDluc3Tq+AQ
-         R0PQ==
-X-Gm-Message-State: AOAM533vK+HH+0/9pVhg7ykkFL8Agmz/ChLd/yL1NDVJGvQ8PBxudCR2
-        Y4z7OHl0pvUiBaSi0TC0mjwRbA==
-X-Google-Smtp-Source: ABdhPJwJshXIaDcc8ih2fcYI40swoQEQ4+4URUBGAeGDf8TBQWEjne7XmzoRhTQubVJItcu/gBjy1Q==
-X-Received: by 2002:a17:90a:f491:: with SMTP id bx17mr12330618pjb.176.1620229011512;
-        Wed, 05 May 2021 08:36:51 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id c13sm1829446pjc.43.2021.05.05.08.36.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 08:36:50 -0700 (PDT)
-Date:   Wed, 5 May 2021 15:36:47 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Xiaoyao Li <xiaoyao.li@intel.com>,
-        Reiji Watanabe <reijiw@google.com>
-Subject: Re: [PATCH 11/15] KVM: VMX: Disable loading of TSX_CTRL MSR the more
- conventional way
-Message-ID: <YJK7jzbihzFIkb59@google.com>
-References: <20210504171734.1434054-1-seanjc@google.com>
- <20210504171734.1434054-12-seanjc@google.com>
- <08a4afca-c3cb-1999-02a6-a72440ab2214@redhat.com>
+        id S233426AbhEEPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:40:43 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46666 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229798AbhEEPkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 11:40:42 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 40D676112F;
+        Wed,  5 May 2021 15:39:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620229185;
+        bh=ZCUYdqlONn4tcSJ0vwB/AkHctWRyUIU/usgs8uDdJI0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZBzu/yRe5fmHkCWO5xDGNCnfkxG0ujdJ+o2atVDtlbf+q58KRquJvZ33Qm9Zqngp6
+         0pqSTHCagEjHWc0zeZCvD1KgXYUMYjE6EA914b+7US0TZDu56qxvvejAfHio7Qsk9A
+         Dh6GvSpVggT72Ya5/ru261twvJ1LmS/s0LctfoTipw4XtDRUlbWwMW7aggZTGZBdmD
+         2uXv/l+YrCApSgM1hYQl91wz1xu7IKNrTbN45bS7WGTN2mOwpqPA1HL2FGbkxt5XcD
+         ae6AO2xNmS3w4guBZLEzxZgE0DJGz9BVRe0aiskCDZIz8+BboMWQ9oaOA5khS0zzJ6
+         RmoYfC1i+raCA==
+Received: by pali.im (Postfix)
+        id 8241D79D; Wed,  5 May 2021 17:39:42 +0200 (CEST)
+Date:   Wed, 5 May 2021 17:39:42 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Lukas Wunner <lukas@wunner.de>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>
+Subject: Re: xhci_pci & PCIe hotplug crash
+Message-ID: <20210505153942.mntbkmphw3ik3pdg@pali>
+References: <20210505120117.4wpmo6fhvzznf3wv@pali>
+ <YJKK7SDIaeH1L/fC@kroah.com>
+ <20210505123346.kxfpumww5i4qmhnk@pali>
+ <20210505124402.GB29101@wunner.de>
+ <20210505130240.lmryb26xffzkg4pl@pali>
+ <ea58430d088742a1910475a680fb1de5@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <08a4afca-c3cb-1999-02a6-a72440ab2214@redhat.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ea58430d088742a1910475a680fb1de5@AcuMS.aculab.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021, Paolo Bonzini wrote:
-> On 04/05/21 19:17, Sean Christopherson wrote:
-> > Tag TSX_CTRL as not needing to be loaded when RTM isn't supported in the
-> > host.  Crushing the write mask to '0' has the same effect, but requires
-> > more mental gymnastics to understand.
+On Wednesday 05 May 2021 15:20:11 David Laight wrote:
+> From: Pali Rohár
+> > Sent: 05 May 2021 14:03
+> ...
+> > I already figured out that CPU receive external abort also when trying
+> > to issue a new PIO transfer for accessing PCI config space while
+> > previous transfer has not finished yet. And also there is no way (at
+> > least in documentation) which allows to "mask" this external abort. But
+> > this issue can be fixed in pci-aardvark.c driver to disallow access to
+> > config space while previous transfer is still running (I will send patch
+> > for this one).
 > 
-> This doesn't explain _why_ this is now possible.  What about:
+> My the sound of the above you need to put a global spinlock around
+> all PCIe config space accesses.
+
+Kernel already uses raw_spin_lock_irqsave(), see pci_lock_config() macro
+in pci/access.c which implements this global lock for config space
+access.
+
+But issue is that pci-driver.c does not wait for finishing transfer and
+return from function which unlock this spin lock...
+
+Week ago I fixed this issue in U-Boot and similar fix would be needed
+also for kernel https://source.denx.de/u-boot/u-boot/-/commit/eccbd4ad8e4e
+
+But this issue is not related to my original report about XHCI & PCI.
+
+> Is this the horrid hardware that can't do a 'normal' PCIe transfer
+> while a config space access is in progress?
+
+Issue is different. You cannot do config space PIO transfer while
+another config space PIO transfer is in progress.
+
+> If that it true then you have bigger problems.
+> Especially if it is an SMP system.
+
+I really hope that memory read or write transfer can be initiated while
+config transfer is in progress. Marvell A3720 platform on which can be
+found this pci aardvark controller is 2 core CPU SoC.
+
+At least I have not seen any abort when PCIe link is up, card connected
+and previous config access transfer finished.
+
+> > So seems that PCIe controller HW triggers these external aborts when
+> > device on PCIe bus is not accessible anymore.
+> > 
+> > If this issue is really caused by MMIO access from xhci driver when
+> > device is not accessible on the bus anymore, can we do something to
+> > prevent this kernel crash? Somehow mask that external abort in kernel
+> > for a time during MMIO access?
 > 
-> Now that user return MSRs is always present in the list, we don't have
+> If it is a cycle abort then the interrupted address is probably
+> that of the MMIO instruction.
+> So you need to catch the abort, emulate the instruction and
+> then return to the next one.
 
-User return MSRs aren't always present in the list; this series doesn't change
-that behavior at all.
+Has kernel API & infrastructure for catching these aborts and executing
+own driver handler when abort happens?
 
-> the problem that the TSX_CTRL MSR needs a slot vmx->guest_uret_msrs even
-> if RTM is not supported in the host (and therefore there is nothing to
-> enable).  Thus we can simply tag TSX_CTRL as not needing to be loaded
-> instead of crushing the write mask to '0'.
-
-Unless I'm missing something, it would have been possible to give TSX_CTRL a
-slot but not load it even before this refactoring, we just missed that approach
-when handling the TSX_CTRL without HLE/RTM case.  Several other MSRs rely on
-this behavior, notably the SYSCALL MSRs, which are present in the list so that
-the guest can read/write the MSRs, but are loaded into hardware iff the guest
-has enabled SYSCALL.
-
-All that said, I certainly have no objection to writing a longer changelog.
+> This probably requires an exception table containing the address
+> of every readb/w/l() instruction.
+> 
+> If you get a similar error on writes it is likely to be a few
+> instructions after the actual writeb/w/l() instruction.
+> Write are normally 'posted' and asynchronous.
+> 
+> If you are really lucky you can get enough state out of the
+> abort handler to fixup/ignore the cycle without an
+> exception table.
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
