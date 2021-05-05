@@ -2,133 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 009683746BC
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B76D374746
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237956AbhEERXv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:23:51 -0400
-Received: from mga04.intel.com ([192.55.52.120]:11464 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S240400AbhEERVG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:21:06 -0400
-IronPort-SDR: +PORprcYD82VJlTpzh/fXyV3ZtJtOGefelmej7b2cCyOWrsuqqUgZr4gcluHhj1rtIyghA3Ac5
- mY6PImk7hKgA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="196230268"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="196230268"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 10:20:09 -0700
-IronPort-SDR: iY7VJJJQFkvN2izb7iyCSnux/+J5KjzfQzVOdrkOuIj75vXIEDSM2Pj2eu6Skcs8Y/rUFmt4UD
- Miwr4xTTFJpw==
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="433926176"
-Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 10:20:09 -0700
-Date:   Wed, 5 May 2021 10:22:59 -0700
-From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210505102259.044cafdf@jacob-builder>
-In-Reply-To: <20210504231530.GE1370958@nvidia.com>
-References: <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210422121020.GT1370958@nvidia.com>
-        <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210423114944.GF1370958@nvidia.com>
-        <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210426123817.GQ1370958@nvidia.com>
-        <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
-        <20210504084148.4f61d0b5@jacob-builder>
-        <20210504180050.GB1370958@nvidia.com>
-        <20210504151154.02908c63@jacob-builder>
-        <20210504231530.GE1370958@nvidia.com>
-Organization: OTC
-X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S234583AbhEERyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:54:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231312AbhEERxZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:53:25 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3C60C07E5E8
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:24:07 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 9D425C800B3;
+        Wed,  5 May 2021 19:24:06 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id DYNzcYye3W-t; Wed,  5 May 2021 19:24:06 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300E37f39860005A4018A54f094b9.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:5a4:18a:54f0:94b9])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 574F6C800A8;
+        Wed,  5 May 2021 19:24:06 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     wse@tuxedocomputers.com, ville.syrjala@linux.intel.com,
+        airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] drm/i915/display Try YCbCr420 color when RGB fails
+Date:   Wed,  5 May 2021 19:23:58 +0200
+Message-Id: <20210505172401.1453178-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
+When encoder validation of a display mode fails, retry with less bandwidth
+heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
+to support 4k60Hz output, which previously failed silently.
 
-On Tue, 4 May 2021 20:15:30 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+AMDGPU had nearly the exact same issue. This problem description is
+therefore copied from my commit message of the AMDGPU patch.
 
-> On Tue, May 04, 2021 at 03:11:54PM -0700, Jacob Pan wrote:
-> 
-> > > It is a weird way to use xarray to have a structure which
-> > > itself is just a wrapper around another RCU protected structure.
-> > > 
-> > > Make the caller supply the ioasid_data memory, embedded in its own
-> > > element, get rid of the void * and rely on XA_ZERO_ENTRY to hold
-> > > allocated but not active entries.
-> > >   
-> > Let me try to paraphrase to make sure I understand. Currently
-> > struct ioasid_data is private to the iasid core, its memory is
-> > allocated by the ioasid core.
-> > 
-> > You are suggesting the following:
-> > 1. make struct ioasid_data public
-> > 2. caller allocates memory for ioasid_data, initialize it then pass it
-> > to ioasid_alloc to store in the xarray
-> > 3. caller will be responsible for setting private data inside
-> > ioasid_data and do call_rcu after update if needed.  
-> 
-> Basically, but you probably won't need a "private data" once the
-> caller has this struct as it can just embed it in whatever larger
-> struct makes sense for it and use container_of/etc
-> 
-that makes sense. thanks!
+On some setups, while the monitor and the gpu support display modes with
+pixel clocks of up to 600MHz, the link encoder might not. This prevents
+YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
+possible. However, which color mode is used is decided before the link
+encoder capabilities are checked. This patch fixes the problem by retrying
+to find a display mode with YCbCr420 enforced and using it, if it is
+valid.
 
-> I didn't look too closely at the whole thing though. Honestly I'm a
-> bit puzzled why we need a pluggable global allocator framework.. The
-> whole framework went to some trouble to isolate everything into iommu
-> drivers then that whole design is disturbed by this global thing.
-> 
-Global and pluggable are for slightly separate reasons.
-- We need global PASID on VT-d in that we need to support shared
-workqueues (SWQ). E.g. One SWQ can be wrapped into two mdevs then assigned
-to two VMs. Each VM uses its private guest PASID to submit work but
-each guest PASID must be translated to a global (system-wide) host PASID to
-avoid conflict. Also, since PASID table storage is per PF, if two mdevs of
-the same PF are assigned to different VMs, the PASIDs must be unique.
-
-- The pluggable allocator is to support the option where the guest PASIDs
-are allocated by the hypervisor. Let it be the same as the host PASID or
-some arbitrary number cooked up by the hypervisor but backed by a host HW
-PASID. VT-d spec has this virtual command interface that requires the guest
-to use it instead of allocating from the guest ioasid xarray. This is the
-reason why it has to go down to iommu vendor driver. I guess that is what
-you meant by "went to some trouble to isolate everything into iommu"?
-
-For ARM, since the guest owns the per device PASID table. There is no need
-to allocate PASIDs from the host nor the hypervisor. Without SWQ, there is
-no need for global PASID/SSID either. So PASID being global for ARM is for
-simplicity in case of host PASID/SSID.
+This patchset is revision 5. Only change to 4 is a small whitespace error fix.
 
 
-
-> Jason
-
-
-Thanks,
-
-Jacob
