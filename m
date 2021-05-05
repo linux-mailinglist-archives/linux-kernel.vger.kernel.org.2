@@ -2,28 +2,28 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC075373360
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:55:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EA3E373363
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:58:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231599AbhEEA4s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 20:56:48 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34341 "EHLO
+        id S231621AbhEEA7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 20:59:19 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34733 "EHLO
         outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S229586AbhEEA4r (ORCPT
+        with ESMTP id S231551AbhEEA7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 20:56:47 -0400
+        Tue, 4 May 2021 20:59:17 -0400
 Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
         (authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1450tcRo016413
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1450wB8b017268
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 4 May 2021 20:55:38 -0400
+        Tue, 4 May 2021 20:58:12 -0400
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 3A57A15C3C43; Tue,  4 May 2021 20:55:38 -0400 (EDT)
-Date:   Tue, 4 May 2021 20:55:38 -0400
+        id D32EB15C3C43; Tue,  4 May 2021 20:58:11 -0400 (EDT)
+Date:   Tue, 4 May 2021 20:58:11 -0400
 From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Greg Stark <stark@mit.edu>
-Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Adrian Bunk <bunk@kernel.org>,
         Linus Torvalds <torvalds@linux-foundation.org>,
         Tom Stellard <tstellar@redhat.com>,
         Nick Desaulniers <ndesaulniers@google.com>,
@@ -35,90 +35,47 @@ Cc:     "Maciej W. Rozycki" <macro@orcam.me.uk>,
         Serge Guelton <sguelton@redhat.com>,
         Sylvestre Ledru <sylvestre@mozilla.com>
 Subject: Re: Very slow clang kernel config ..
-Message-ID: <YJHtCr9rWC0HqHGk@mit.edu>
-References: <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
- <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
- <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
+Message-ID: <YJHto1KaPFey5irj@mit.edu>
+References: <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
  <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <alpine.DEB.2.21.2105020346520.2587@angie.orcam.me.uk>
- <YJAK1C1uLknYGYrH@mit.edu>
- <CAM-w4HOJqDUyK9HXjtqD3K2ja1Wt=u2s5waQ1wqm7jHy0P5V-A@mail.gmail.com>
+ <20210502093123.GC12293@localhost>
+ <CAHk-=wgdUMt_n84mq93LZKA6jOGqZpD+=KeVzA3YmvJ6=JPyhw@mail.gmail.com>
+ <20210502164542.GA4522@localhost>
+ <CAHk-=winSraiwc4gC5WFWSehFq+s7AqCJZoMqUuHLX0nYVG0nQ@mail.gmail.com>
+ <20210502175510.GB4522@localhost>
+ <CAHk-=whTjJwCt2E0_JM2dDq=+UybvJN7QK+6K6e80A9Zd8duYg@mail.gmail.com>
+ <20210502214803.GA7951@localhost>
+ <CANiq72=5766fGQjNoMoOxrywoJHQ+-i4U+Nb62MeEaRok4LCFg@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAM-w4HOJqDUyK9HXjtqD3K2ja1Wt=u2s5waQ1wqm7jHy0P5V-A@mail.gmail.com>
+In-Reply-To: <CANiq72=5766fGQjNoMoOxrywoJHQ+-i4U+Nb62MeEaRok4LCFg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 07:04:56PM -0400, Greg Stark wrote:
-> On Mon, 3 May 2021 at 10:39, Theodore Ts'o <tytso@mit.edu> wrote:
+On Wed, May 05, 2021 at 12:02:33AM +0200, Miguel Ojeda wrote:
+> On Sun, May 2, 2021 at 11:48 PM Adrian Bunk <bunk@kernel.org> wrote:
 > >
-> > That was because memory was *incredibly* restrictive in those days.
-> > My first Linux server had one gig of memory, and so shared libraries
-> > provided a huge performance boost --- because otherwise systems would
-> > be swapping or paging their brains out.
+> > Library packages in ecosystems like Go or Rust are copies of the source
+> > code, and when an application package is built with these "libraries"
+> > (might even be using LTO) this is expected to be faster than using
+> > shared libraries.
 > 
-> (I assume you mean 1 megabyte?)
-> I have 16G and the way modern programs are written I'm still having
-> trouble avoiding swap thrashing...
-
-I corrected myself in a follow-on message; I had 16 megabytes of
-memory, which was generous at the time.  But it was still restrictive
-enough that it made sense to have shared libraries for C library, X
-Windows, etc.
-
-> This is always a foolish argument though. Regardless of the amount of
-> resources available we always want to use it as efficiently as
-> possible. The question is not whether we have more memory today than
-> before, but whether the time and power saved in reducing memory usage
-> (and memory bandwidth usage) is more or less than other resource costs
-> being traded off and whether that balance has changed.
-
-It's always about engineering tradeoffs.  We're always trading off
-available CPU, memory, storage device speeds --- and also programmer
-time and complexity.  For example, C++ and stable ABI's really don't
-go well together.  So if you are using a large number of C++
-libraries, the ability to maintain stable ABI's is ***much*** more
-difficult.  This was well understood decades ago --- there was an
-Ottawa Linux Symposium presentation that discussed this in the context
-of KDE two decades ago.
-
-I'll also note that technology can also play a huge role here.  Debian
-for example is now much more capable of rebuilding all packages from
-source with autobuilders.  In addition, most desktops have easy access
-to high speed network links, and are set up auto-update packages.  In
-that case, the argument that distributions have to have shared
-libraries because otherwise it's too hard to rebuild all of the
-binaries that statically linked against a shared library with a
-security fix becomes much less compelling.  It should be pretty simple
-to set up a system where after a library gets a security update, the
-distribution could automatically figure out which packages needs to be
-automatically rebuilt, and rebuild them all.
-
-> > However, these days, many if not most developers aren't capable of the
-> > discpline needed to maintained the ABI stability needed for shared
-> > libraries to work well.
+> Rust libraries only need to include "copies" for generics; and only
+> enough information to use them. Keeping the raw source code would be
+> one way of doing that (like C++ header-only libraries), but it is not
+> required.
 > 
-> I would argue you have cause and effect reversed here. The reason
-> developers don't understand ABI (or even API) compatibility is
-> *because* they're used to people just static linking (or vendoring).
-> If people pushed back the world would be a better place.
+> However, it is true that Rust does not have a stable ABI, that the
+> vast majority of Rust open source applications get built from source
+> via Cargo and that Cargo does not share artifacts in its cache.
 
-I'd argue is just that many upstream developers just don't *care*.
-The incentives of an upstream developer and the distribution
-maintainers are quite different.  ABI compatibility doesn't bring much
-benefits to upstream developers, and when you have a separation of
-concerns between package maintenance and upstream development, it's
-pretty inevitable.
-
-I wear both hats for e2fsprogs as the upstream maintainer as well as
-the Debian maintainer for that package, and I can definitely see the
-differences in the points of view of those two roles.
-
-Cheers,
+What does this mean for enterprise distributions, like RHEL, which
+need to maintain a stable kernel ABI as part of their business model.
+I assume it means that they will need to lock down on a specific Rust
+compiler and Rust libraries?  How painful will it be for them to get
+security updates (or have to do backports of security bug fixes) for
+7-10 years?
 
 					- Ted
