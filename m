@@ -2,182 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E25373E21
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:09:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8314373E28
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233114AbhEEPKT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:10:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:36412 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232885AbhEEPKN (ORCPT
+        id S233206AbhEEPL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:11:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229710AbhEEPLZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:10:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620227356;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=f65ENMyQ1N+0g9OsSvxp8jCBBY+W8xaRUzctsJuzZuk=;
-        b=AFDiGwWfLucdqyspLX/RYt+eQ/jpMmqYc5gDXCp85lcOIoVmnau5cHMq56tygzYbYg4EBP
-        XoCqwz5s3a/ij2uX4s/zfwF0LCERD2B/gyYalUB0Zv3g9yBgjaxidHTIIrCHs7ghumiVu5
-        G0neZDCwZKHgoS7kh3KNB/W/UB8/Ndo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-515-D6JOqljxNvO0oRuE4eHGMQ-1; Wed, 05 May 2021 11:09:12 -0400
-X-MC-Unique: D6JOqljxNvO0oRuE4eHGMQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8E50E1966327;
-        Wed,  5 May 2021 15:09:11 +0000 (UTC)
-Received: from localhost (ovpn-113-154.ams2.redhat.com [10.36.113.154])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id EB3F819D61;
-        Wed,  5 May 2021 15:09:10 +0000 (UTC)
-From:   Giuseppe Scrivano <gscrivan@redhat.com>
-To:     "Serge E. Hallyn" <serge@hallyn.com>
-Cc:     "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-kernel@vger.kernel.org, christian.brauner@ubuntu.com,
-        "Linux Containers" <containers@lists.linux.dev>
-Subject: Re: [PATCH] kernel: automatically split user namespace extent
-References: <20201126100839.381415-1-gscrivan@redhat.com>
-        <87ft4pe7km.fsf@x220.int.ebiederm.org> <87pn3schlg.fsf@redhat.com>
-        <20210402143212.GA18282@mail.hallyn.com> <87zgygg2xc.fsf@redhat.com>
-Date:   Wed, 05 May 2021 17:09:08 +0200
-In-Reply-To: <87zgygg2xc.fsf@redhat.com> (Giuseppe Scrivano's message of "Fri,
-        02 Apr 2021 16:46:07 +0200")
-Message-ID: <87v97x43qj.fsf@redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Wed, 5 May 2021 11:11:25 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01050C061574;
+        Wed,  5 May 2021 08:10:29 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id a36so2914586ljq.8;
+        Wed, 05 May 2021 08:10:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=DT3Fc4xJZnxmnZHXZAmBJ/q64yGckxL+AeHtyP2cBMA=;
+        b=fIwIEfnbqACpLW7PZ4PS0H25eBj/ic4NKx1VRPZqCEG6XPM6NG085JoYW3XUyhd133
+         CZeqeo3qohWoRASDQsNvEOiM9r3u6pfTp7QoMZNjdXXnN6TaSXTWZj+8OnxHzrjhVzAO
+         SX5RotyYqGe7YAeCqx9xH79DkRWrX0miBhvpalhZr41k3Pz0MJG7wvaUU2pZF0iW99EM
+         hKrqxwWr0phOdqGsTrXZgZdNGU9Of+O60nPDM2qmXw2Kgixus4hLH38RRr5s79uOwqGm
+         tDUZnRhQXilVKnICxxcYJzb1YquP5DDqyPytWzGg4zc+YOhvD0/fGvWxKHzJievhiPDM
+         +4wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=DT3Fc4xJZnxmnZHXZAmBJ/q64yGckxL+AeHtyP2cBMA=;
+        b=Q4xK3CgOTQ3F1suaYb9Vmtjh4oKVdRXngqVPwolXn1PUkfRtTj8IGReqwd7/Q3uV1M
+         E7m5P0GrmvGaRZgAPAPOQgYIlV5yDlmrFRIszKagnZHIrhJfngG8cExNtODn/q6uqfQb
+         LzbyeDHwBoEWBYwWVCgZ6pc69dEii6+8Ee2A20xL+md3G14kmEwLrIKrHCw8g+IeqpRe
+         DuLQ731NBecscN0ZEo4YkpShBY8AmZsKYmikvKEBCsyEBgQwlxSMyygVCHF7+SU+o20A
+         nTVl91YjewC1G/XB7YiNecxz7CPBRlpNcZ3KYs0oQXKmpv/x2vQJxUCBbe4Iy0qyL3KN
+         U1Zg==
+X-Gm-Message-State: AOAM532XjP0lVKTWc7PMkL0QW0SbU9JTBqsGjn7NVvS4LIyaLxQw34xQ
+        okNFBJKnhOsM0qWMgs4LI5zubPpOjXVW0mt6HVc=
+X-Google-Smtp-Source: ABdhPJy5FJWNNk1Xa6D5PAeWLf2N3ogOqZtlZ02r4136vzWJT+UDlPMVz7qSWfswxDR11vi8tFTa8STDaGSDkkC57TA=
+X-Received: by 2002:a2e:9d85:: with SMTP id c5mr21463224ljj.95.1620227427382;
+ Wed, 05 May 2021 08:10:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+References: <20210505140015.60013-1-krzysztof.kozlowski@canonical.com>
+ <CAOCHtYiicw5bqaZU5g2QGJHG3DZKRQUwAr08NZHw81S9=hmrgw@mail.gmail.com> <7ced6d2f-7107-e612-6787-63e38e5e3edd@canonical.com>
+In-Reply-To: <7ced6d2f-7107-e612-6787-63e38e5e3edd@canonical.com>
+From:   Robert Nelson <robertcnelson@gmail.com>
+Date:   Wed, 5 May 2021 10:10:01 -0500
+Message-ID: <CAOCHtYhPGiEX1-iBDr2SzktBZ8a_8TqYQu0NLrsqjkz48rfSaw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: am5729-beagleboneai: drop unused Broadcom WiFi properties
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     alexey.roslyakov@gmail.com, Drew Fustini <drew@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>,
+        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux kernel <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Serge,
-
-Giuseppe Scrivano <gscrivan@redhat.com> writes:
-
-> Hi Serge,
+> > I don't see the brcmfmac developers actually fixing it, as "out of
+> > tree" work for brcmfmac is 100+ patches long:
 >
-> "Serge E. Hallyn" <serge@hallyn.com> writes:
 >
->> On Wed, Dec 02, 2020 at 05:12:27PM +0100, Giuseppe Scrivano wrote:
->>> Hi Eric,
->>> 
->>> ebiederm@xmission.com (Eric W. Biederman) writes:
->>> 
->>> > Nit: The tag should have been "userns:" rather than kernel.
->>> >
->>> > Giuseppe Scrivano <gscrivan@redhat.com> writes:
->>> >
->>> >> writing to the id map fails when an extent overlaps multiple mappings
->>> >> in the parent user namespace, e.g.:
->>> >>
->>> >> $ cat /proc/self/uid_map
->>> >>          0       1000          1
->>> >>          1     100000      65536
->>> >> $ unshare -U sleep 100 &
->>> >> [1] 1029703
->>> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
->>> >> 0 0 100
->>> >> tee: /proc/1029703/uid_map: Operation not permitted
->>> >>
->>> >> To prevent it from happening, automatically split an extent so that
->>> >> each portion fits in one extent in the parent user namespace.
->>> >
->>> > I don't see anything fundamentally wrong with relaxing this
->>> > restriction, but more code does have more room for bugs to hide.
->>> >
->>> > What is the advantage of relaxing this restriction?
->>> 
->>> we are running rootless containers in a namespace created with
->>> newuidmap/newgidmap where the mappings look like:
->>> 
->>> $ cat /proc/self/uid_map
->>> 0       1000          1
->>> 1     110000      65536
->>> 
->>> users are allowed to create child user namespaces and specify the
->>> mappings to use.  Doing so, they often hit the issue that the mappings
->>> cannot overlap multiple extents in the parent user namespace.
->>> 
->>> The issue could be completely addressed in user space, but to me it
->>> looks like an implementation detail that user space should not know
->>> about.
->>> In addition, it would also be slower (additional read of the current
->>> uid_map and gid_map files) and must be implemented separately in each
->>> container runtime.
->>> 
->>> >> $ cat /proc/self/uid_map
->>> >>          0       1000          1
->>> >>          1     110000      65536
->>> >> $ unshare -U sleep 100 &
->>> >> [1] 1552
->>> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
->>> >> 0 0 100
->>> >> $ cat /proc/$!/uid_map
->>> >>          0          0          1
->>> >>          1          1         99
->>> >>
->>> >> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
->>> >> ---
->>> >>  kernel/user_namespace.c | 62 ++++++++++++++++++++++++++++++++++-------
->>> >>  1 file changed, 52 insertions(+), 10 deletions(-)
->>> >>
->>> >> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
->>> >> index 87804e0371fe..b5542be2bd0a 100644
->>> >> --- a/kernel/user_namespace.c
->>> >> +++ b/kernel/user_namespace.c
->>> >> @@ -706,6 +706,41 @@ const struct seq_operations proc_projid_seq_operations = {
->>> >>  	.show = projid_m_show,
->>> >>  };
->>> >>  
->>> >> +static void split_overlapping_mappings(struct uid_gid_map *parent_map,
->>> >> +				       struct uid_gid_extent *extent,
->>> >> +				       struct uid_gid_extent *overflow_extent)
->>> >> +{
->>> >> +	unsigned int idx;
->>> >> +
->>> >> +	overflow_extent->first = (u32) -1;
->>> >> +
->>> >> +	/* Split extent if it not fully contained in an extent from parent_map.  */
->>> >> +	for (idx = 0; idx < parent_map->nr_extents; idx++) {
->>> >
->>> > Ouch!
->>> >
->>> > For the larger tree we perform binary searches typically and
->>> > here you are walking every entry unconditionally.
->>> >
->>> > It looks like this makes the write O(N^2) from O(NlogN)
->>> > which for a user facing function is not desirable.
->>> >
->>> > I think something like insert_and_split_extent may be ok.
->>> > Incorporating your loop and the part that inserts an element.
->>> >
->>> > As written this almost doubles the complexity of the code,
->>> > as well as making it perform much worse.  Which is a problem.
->>> 
->>> I've attempted to implement the new functionality at input validation
->>> time to not touch the existing security checks.
->>> 
->>> I've thought the pattern for iterating the extents was fine as I've
->>> taken it from mappings_overlap (even if it is used differently on an
->>> unsorted array).
->>> 
->>> Thanks for the hint, I'll move the new logic when map_id_range_down() is
->>> used and I'll send a v2.
->>
->> Hi,
->>
->> sorry if I miseed it.  Did you ever send a v2?
+> Thanks for explanation. I understand these are actually used by
+> out-of-tree driver? That's a valid reason to add them to the binding then...
 >
-> no worries, the v2 is here:
+> >
+> > https://www.cypress.com/documentation/software-and-drivers-archive/wifi-bt-linux-archive?source=search&cat=other
 >
-> https://lkml.kernel.org/lkml/20201203150252.1229077-1-gscrivan@redhat.com/
+> Requires login - I am not able to get the sources.
 
-have you had a chance to look at the patch?
+Sorry Krzysztof,
 
-Thanks,
-Giuseppe
+I forgot that a login is required, here is a quick mirror (with a
+screenshot of the page.)
 
+https://rcn-ee.net/workshops/cypress-fmac/
+
+Screenshot: https://rcn-ee.net/workshops/cypress-fmac/brcm.png
+
+There patch with that binding:
+
+https://rcn-ee.net/workshops/cypress-fmac/cypress-fmac-v5.4.18-2021_0114/cypress-patch-v5.4.18-2021_0114/cypress-patch/0002-non-upstream-add-sg-parameters-dts-parsing.patch
+
+Thank You!
+
+
+Regards,
+
+--
+Robert Nelson
+https://rcn-ee.com/
