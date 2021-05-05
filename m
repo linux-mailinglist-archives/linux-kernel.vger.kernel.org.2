@@ -2,97 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52EAF3736BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:04:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6303736CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:10:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232269AbhEEJF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:05:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50184 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhEEJFZ (ORCPT
+        id S232265AbhEEJLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:11:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48932 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232091AbhEEJLu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:05:25 -0400
-Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC2DC06174A;
-        Wed,  5 May 2021 02:04:29 -0700 (PDT)
-Received: by mail-pj1-x1029.google.com with SMTP id fa21-20020a17090af0d5b0290157eb6b590fso477679pjb.5;
-        Wed, 05 May 2021 02:04:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=UR6pLT82MvBPpTBxMD4qnCZSm5lvjqbURbGKB/uGa0o=;
-        b=RD1HdyFeiID1WJ4ZpSwuZIBxaaupGQiOuDajgFgRIf3qQGLTM2rtM/8xz744gv1kc0
-         Pzdlb8qBOvpctFhIjUwrc4pyxl/g7rkaVMBHNtlqwvSpswFZKbrmwngo9kteNihtzog+
-         Qha0FIEPdhDaqRcUu0MDb18uWK1HEV37kfluacBI5Xu1dWS2mqGrSsfiX7L+SLNmHMVh
-         zHGGV+gjRUIvZ8/241NAR6To9f8odlGFuyRK+obkec4e7hpSU9NjxsixLnYvOljWBl2H
-         99f2Vs5PsF8wsbyIFoT0e6an3octbXrdopOO3kkLoYYBoiNTUv8Xd9HdQO5UweQSEhLF
-         4M3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UR6pLT82MvBPpTBxMD4qnCZSm5lvjqbURbGKB/uGa0o=;
-        b=DFwx3M8GKtkHh2bTfXWMLxbSXBgA/UipMbKzbUJYHsErodDjhXXbGPRJfNXQvuf88j
-         TxYvsoP3O7Q8w5yJ339sPu4Fa5/vc5Cqmw+XPtbF1EbTXK0jTYWuyfjSsUGjasM4W3lc
-         1DUhSyaLO51gT8gLPixvW8HlL5XXMGgDohKC60qxFLuD3Dx4xaYN+Bd1ICMDjopsjA41
-         AkcUFaycigp3zPIY3NK0t2g1Ci352Qpkb7HkCcCgb3CYOxhcLHjBgErCU0yGvIWlKqlC
-         +kN/uJqetDnuKBqw1Kjr1DMoR74AZ/1ZhiUfiNWJZifXrtThwwBWnD5IZky5RzXsIIyk
-         U3Mg==
-X-Gm-Message-State: AOAM530LPvu9l16/VDOGLKh57S0MhgKSh+QyBHlw8m51TJbiO6qLUox9
-        wkmlHqFlMpOasYoMD9nMaZM4G/cgnCK0YQsHLFQ=
-X-Google-Smtp-Source: ABdhPJy37MFUZIfct1ayEPii9ckUJevLQQQw8cYUNVCvhdgivFGprKV3GNbnYYiHkIXu+08hF6OzglgL+xtL+yoD020=
-X-Received: by 2002:a17:902:ecc6:b029:ee:af8f:899e with SMTP id
- a6-20020a170902ecc6b02900eeaf8f899emr24609444plh.21.1620205468592; Wed, 05
- May 2021 02:04:28 -0700 (PDT)
+        Wed, 5 May 2021 05:11:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620205854;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=d0SQnCbBnNBGtZsOp6MO/Q/qxE8V3SBQW2J1qFEwtZU=;
+        b=IVZWMQ2sLTFH8maZ/DesjqIIGo1J91YbOsIPsh5dZ9lFfrUCpPBmAUO5RMdHGkqDqQWkKk
+        GHu+sVIdewlbR56LhNnamjl+Fb/VL0a8Svts+pC5YmoGYxPZm1H3Mt1F4MSVrXcNSUTyNz
+        iWIdRQ/kSPaa57NlpBSRyY3ManpSSiA=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-108-MlKJvMw1OS2yDEXnT8O6kw-1; Wed, 05 May 2021 05:10:50 -0400
+X-MC-Unique: MlKJvMw1OS2yDEXnT8O6kw-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C59C107ACCA;
+        Wed,  5 May 2021 09:10:47 +0000 (UTC)
+Received: from [10.36.113.191] (ovpn-113-191.ams2.redhat.com [10.36.113.191])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7CA7A60CC6;
+        Wed,  5 May 2021 09:10:31 +0000 (UTC)
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
+ APIs
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+References: <20210416094547.1774e1a3@redhat.com>
+ <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
+ <20210421162307.GM1370958@nvidia.com> <20210421105451.56d3670a@redhat.com>
+ <20210421175203.GN1370958@nvidia.com> <20210421133312.15307c44@redhat.com>
+ <20210421230301.GP1370958@nvidia.com>
+ <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210422121020.GT1370958@nvidia.com>
+ <6e36797c-799e-074d-f66f-5686a4b37f38@redhat.com>
+ <20210429200431.GA1370958@nvidia.com>
+From:   Auger Eric <eric.auger@redhat.com>
+Message-ID: <17ab53a6-c2d7-c085-6469-ae487b138526@redhat.com>
+Date:   Wed, 5 May 2021 11:10:29 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.0
 MIME-Version: 1.0
-References: <20210504174019.2134652-1-linux@roeck-us.net> <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
- <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net> <20210505093235.00007c38@Huawei.com>
-In-Reply-To: <20210505093235.00007c38@Huawei.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Wed, 5 May 2021 12:04:12 +0300
-Message-ID: <CAHp75Vdy2DTQ_GG6f7zY3WtgoC7D-Kq-XomfV8+L6NNLMtLJuw@mail.gmail.com>
-Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on CONFIG_ACPI
-To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210429200431.GA1370958@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 11:34 AM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
-> On Tue, 4 May 2021 11:00:52 -0700
-> Guenter Roeck <linux@roeck-us.net> wrote:
-> > On 5/4/21 10:44 AM, Andy Shevchenko wrote:
-> > > On Tue, May 4, 2021 at 8:40 PM Guenter Roeck <linux@roeck-us.net> wrote:
+Hi Jason,
 
-> > I'll resend and let you add the tag, and send a similar patch
-> > for STK8312. I'll wait until tomorrow, though - I sent a number of
-> > patches today already, and I want to avoid yet another "account
-> > suspended" notice from gmail.
->
-> If you find some valid ACPI entries that are hitting this problem,
-> I'd prefer we just got rid of the ACPI_PTR() usecases rather than
-> added IFDEF magic.
+On 4/29/21 10:04 PM, Jason Gunthorpe wrote:
+> On Thu, Apr 29, 2021 at 03:26:55PM +0200, Auger Eric wrote:
+>> From the pseudo code,
+>>
+>>   gpa_ioasid_id = ioctl(ioasid_fd, CREATE_IOASID, ..)
+>>   ioctl(ioasid_fd, SET_IOASID_PAGE_TABLES, ..)
+>>
+>> I fail to understand whether the SET_IOASID_PAGE_TABLES would apply to
+>> the whole IOASIDs within /dev/ioasid or to a specific one.
+> 
+> Sorry, nearly every IOCTL would be scoped to a specific IOASID as one
+> of the arguments.
 
-Agree,
+OK thank you for the clarification.
+> 
+>> Also in subsequent emails when you talk about IOASID, is it the
+>> ioasid_id, just to double check the terminology.
+> 
+> I am refering to IOASID as 'handle of the page table object inside the
+> /dev/ioasid fd'. If that is equal to some HW value or not I think
+> remains as decision point.
+OK
+> 
+> Basically the fd has an xarray of 'struct [something] *' and the
+> IOASID is index to that FD's private xarray. This is necessary to
+> create proper security as even if we have global PASID numbers or
+> something they still need to be isolated to only the FD that has
+> been authorized access.
+> 
+>>>   nested_ioasid = ioctl(ioasid_fd, CREATE_NESTED_IOASID,  gpa_ioasid_id);
+>>>   ioctl(ioasid_fd, SET_NESTED_IOASID_PAGE_TABLES, nested_ioasid, ..)
+>> is the nested_ioasid the allocated PASID id or is it a complete
+>> different object id.
+> 
+> It is the IOASID handle above.
+ok as per the following emails and below comment IOASID and PASID are
+different.The first would be a logic ID wgile the second the HW ID.
 
-> The space wasted by having these is trivial and I'd rather not
-> introduce ifdef around any of these tables.
+Thanks
 
-> Dropping the ones we are fairly sure are spurious is even better!
+Eric
+> 
+>>>
+>>>    // IOMMU will match on the device RID, no PASID:
+>>>   ioctl(vfio_device, ATTACH_IOASID, nested_ioasid);
+>>>
+>>>    // IOMMU will match on the device RID and PASID:
+>>>   ioctl(vfio_device, ATTACH_IOASID_PASID, pasid, nested_ioasid);
+>> here I see you pass a different pasid, so I guess they are different, in
+>> which case you would need to have an allocator function for this pasid,
+>> right?
+> 
+> Yes, the underlying HW ID (PASID or substream id or whatver) is
+> something slightly different
+> 
+> Jason
+> 
 
-For the record, I have checked all three Guenter pointed out and to me
-all of them sounds like fake (two from the same author). So, I can
-deduce that if we have same author for a few looking very suspicious
-ACPI IDs, they are quite likely fake and must be removed sooner than
-later.
-
--- 
-With Best Regards,
-Andy Shevchenko
