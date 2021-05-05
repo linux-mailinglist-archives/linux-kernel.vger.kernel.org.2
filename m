@@ -2,94 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A0593737A5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:36:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B20E373796
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:32:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232366AbhEEJhs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:37:48 -0400
-Received: from mailgw02.mediatek.com ([216.200.240.185]:52258 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhEEJhq (ORCPT
+        id S232113AbhEEJdG convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 May 2021 05:33:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231129AbhEEJdE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:37:46 -0400
-X-Greylist: delayed 301 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 May 2021 05:37:46 EDT
-X-UUID: f8b40e87745347dd948baa84fdc9793e-20210505
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=wGIu9D0K3g9b5WCqbKTXiSpOw9BUQsnxsil9kutRcfg=;
-        b=X9nDReORDPz35r0ccML3pdh8YdbJ+qSLYPjvgG2nLM2OpyOgokoqyxhqsm8mZhHeoHqgwOJkjNjDMVQgiDR8RFQHdsRVGZYtVwbeQKDmmtAlwIKfhG9bvI5HPLyO4mzIrEUhERJOz0FYLaz779c4/O4jk1OYtALNdirtUC+ZuRw=;
-X-UUID: f8b40e87745347dd948baa84fdc9793e-20210505
-Received: from mtkcas66.mediatek.inc [(172.29.193.44)] by mailgw02.mediatek.com
-        (envelope-from <landen.chao@mediatek.com>)
-        (musrelay.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1997269144; Wed, 05 May 2021 02:31:45 -0700
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- MTKMBS62N1.mediatek.inc (172.29.193.41) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 5 May 2021 02:31:43 -0700
-Received: from mtksdccf07 (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 5 May 2021 17:31:42 +0800
-Message-ID: <fc962daf8b7babc22b043b2b0878a206780b55f3.camel@mediatek.com>
-Subject: Re: Re: Re: Re: [PATCH net-next 0/4] MT7530 interrupt support
-From:   Landen Chao <landen.chao@mediatek.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Frank Wunderlich <frank-w@public-files.de>
-CC:     DENG Qingfang <dqfext@gmail.com>,
-        David Miller <davem@davemloft.net>, <f.fainelli@gmail.com>,
-        <hkallweit1@gmail.com>, <kuba@kernel.org>,
-        <matthias.bgg@gmail.com>, <linux@armlinux.org.uk>,
-        <sean.wang@mediatek.com>, <vivien.didelot@gmail.com>,
-        <olteanv@gmail.com>, <robh+dt@kernel.org>,
-        <linus.walleij@linaro.org>, <gregkh@linuxfoundation.org>,
-        <sergio.paracuellos@gmail.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <linux-staging@lists.linux.dev>, <devicetree@vger.kernel.org>,
-        <netdev@vger.kernel.org>, <weijie.gao@mediatek.com>,
-        <gch981213@gmail.com>, <opensource@vdorst.com>,
-        <tglx@linutronix.de>, <maz@kernel.org>
-Date:   Wed, 5 May 2021 17:31:43 +0800
-In-Reply-To: <YIwxpYD1jnFMPQz+@lunn.ch>
-References: <20210429062130.29403-1-dqfext@gmail.com>
-         <20210429.170815.956010543291313915.davem@davemloft.net>
-         <20210430023839.246447-1-dqfext@gmail.com> <YIv28APpOP9tnuO+@lunn.ch>
-         <trinity-843c99ce-952a-434e-95e4-4ece3ba6b9bd-1619786236765@3c-app-gmx-bap03>
-         <YIv7w8Wy81fmU5A+@lunn.ch>
-         <trinity-611ff023-c337-4148-a215-98fd5604eac2-1619787382934@3c-app-gmx-bap03>
-         <YIwCliT5NZT713WD@lunn.ch>
-         <trinity-c45bbeec-5b7c-43a2-8e86-7cb22ad61558-1619794787680@3c-app-gmx-bap03>
-         <YIwxpYD1jnFMPQz+@lunn.ch>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+        Wed, 5 May 2021 05:33:04 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CACC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 02:32:07 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id BD54BC800B7;
+        Wed,  5 May 2021 11:32:04 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id YlBRfrwkfAw1; Wed,  5 May 2021 11:32:04 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f39:8600:6e35:22:d0af:f0c] (p200300e37f3986006E350022d0af0f0C.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:6e35:22:d0af:f0c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 6D59FC800B6;
+        Wed,  5 May 2021 11:32:04 +0200 (CEST)
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210503182148.851790-1-wse@tuxedocomputers.com>
+ <20210503182148.851790-3-wse@tuxedocomputers.com>
+ <YJEW3J0+RQPo22AD@intel.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Subject: Re: [PATCH 2/4] Add missing check
+Message-ID: <559ca7d0-f68d-32c8-d2d9-37f57d2ecdcd@tuxedocomputers.com>
+Date:   Wed, 5 May 2021 11:32:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <YJEW3J0+RQPo22AD@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIxLTA0LTMwIGF0IDE4OjM0ICswMjAwLCBBbmRyZXcgTHVubiB3cm90ZToNCj4g
-PiBtaG0sIG1heWJlIHRoZSBuYW1pbmcgc2hvdWxkIGRpZmZlciBpZiBnZW5lcmljIHBoeSBhbmQg
-bmV0LXBoeSBhcmUNCj4gPiB0aGF0IGRpZmZlcmVudC4gaSBndWVzcyB0aGVyZSBpcyBubyB3YXkg
-dG8gbWVyZ2UgdGhlIG5ldCBwaHlzIHRvDQo+ID4gdGhlDQo+ID4gZ2VuZXJpYyBwaHlzIChkdWUg
-dG8gbGlua2luZyB0byB0aGUgbmV0IGRldmljZSBkcml2ZXJzKSB0byBoYXZlDQo+ID4gb25seQ0K
-PiA+IDEgcGh5IHNlY3Rpb24sIHJpZ2h0Pw0KPiANCj4gcGh5cyBhbmQgZ2VuZXJpYyBQSFlzIGFy
-ZSB2ZXJ5IGRpZmZlcmVudCB0aGluZ3MsIGNvbXBsZXRlbHkgZGlmZmVyZW50DQo+IEFQSSBldGMu
-IFRoZXkgY2Fubm90IGJlIG1lcmdlZC4NCj4gDQo+ID4gYnV0IGlmIHBoeS0gcHJlZml4IGlzIHVz
-ZWQgYnkgZ2VuZXJpYyBwaHlzLCBtYXliZSBldGgtIG9yIG5ldC0gY2FuDQo+ID4gYmUgdXNlZCBo
-ZXJlIChtYXliZSB3aXRoICJwaHkiIGFkZGVkKQ0KPiA+IA0KPiA+IHNvbWV0aGluZyBsaWtlDQo+
-ID4gDQo+ID4gZXRoLXBoeS1tdDc1M3gua28NCkhvdyBhYm91dCB1c2luZyBtZWRpYXRlay1nZS5r
-by4gJ2dlJyBpcyB0aGUgYWJicmV2aWF0aW9uIG9mIGdpZ2FiaXQNCkV0aGVybmV0LiBNb3N0IG1l
-ZGlhdGVrIHByb2R1Y3RzIHVzZSB0aGUgc2FtZSBnaWdhYml0IEV0aGVybmV0IHBoeS4NCg0KTGFu
-ZGVuDQo+ID4gDQo+ID4gZWxzZSBpIGhhdmUgbm8gaWRlYSBub3cuLi5teSBwYXRjaCByZW5hbWlu
-ZyB0aGUgbXVzYi1tb2R1bGUgc2VlbXMNCj4gPiBub3QNCj4gPiB0byBiZSBhY2NlcHRlZCBkdWUg
-dG8gcG9zc2libGUgYnJlYWthZ2UNCj4gDQo+IFRoZSB1c2IgbW9kdWxlIGhhcyBiZWVuIGFyb3Vu
-ZCBmb3IgYSBsb25nIHRpbWUsIHNvIGl0IGNhbm5vdCBiZQ0KPiBjaGFuZ2VkLiBUaGUgcGh5IGRy
-aXZlciBpcyBuZXcsIG5vdCBpbiBhIHJlbGVhc2VkIGtlcm5lbC4gU28gd2UgY2FuDQo+IHN0aWxs
-IHJlbmFtZSBpdCB3aXRob3V0IGNhdXNpbmcgcHJvYmxlbXMuDQo+IA0KPiBJIHN0aWxsIHdhbnQg
-dG8gdW5kZXJzdGFuZCB0aGUgbmFtaW5nIGhlcmUuIElmIHlvdSBsb29rIGF0IG1vc3QNCj4gRXRo
-ZXJuZXQgc3dpdGNoZXMgd2l0aCBpbnRlZ3JhdGVkIFBIWXMsIHRoZSBQSFlzIGhhdmUgdGhlaXIg
-b3duDQo+IG5hbWluZw0KPiBzY2hlbWUsIHNlcGFyYXRlIGZyb20gdGhlIHN3aXRjaCwgYmVjYXVz
-ZSB0aGV5IGFyZSBpbmRlcGVuZGVudCBJUC4gU28NCj4gaSB3b3VsZCBwcmVmZXIgdGhpcyBkcml2
-ZXIgYnkgbmFtZWQgYWZ0ZXIgdGhlIFBIWSBuYW1lLCBub3QgdGhlDQo+IHN3aXRjaA0KPiBuYW1l
-LiBUaGF0IG1pZ2h0IHNvbHZlIHRoZSBuYW1pbmcgY29uZmxpY3QsIG10MTIzeCBmb3IgdGhlIFBI
-WSwNCj4gbXQ3NTMwDQo+IGZvciB0aGUgc3dpdGNoIGRyaXZlci4NCj4gDQo+IAlBbmRyZXcNCg==
+Am 04.05.21 um 11:41 schrieb Ville Syrjälä:
+
+> On Mon, May 03, 2021 at 08:21:46PM +0200, Werner Sembach wrote:
+>> Add a missing check that could potentially lead to an unarchivable mode being
+>> validated.
+>>
+>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>> ---
+>>
+>> >From 54fa706f0a5f260a32af5d18b9622ceebb94c12e Mon Sep 17 00:00:00 2001
+>> From: Werner Sembach <wse@tuxedocomputers.com>
+>> Date: Mon, 3 May 2021 14:42:36 +0200
+>> Subject: [PATCH 2/4] Add missing check
+> I guess you did something a bit wonky with git format-patch/send-mail?
+I have no idea how that timestamp happened, I will check when sending my next patch ^^.
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_hdmi.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> index 576d3d910d06..ce165ef28e88 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> @@ -1913,7 +1913,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
+>>  		clock *= 2;
+>>  	}
+>>  
+>> -	if (drm_mode_is_420_only(&connector->display_info, mode))
+>> +	if (connector->ycbcr_420_allowed && drm_mode_is_420_only(&connector->display_info, mode))
+> This one shouldn't be necessary. drm_mode_validate_ycbcr420() has
+> already checked it for us.
+I wasn't aware of drm_mode_validate_ycbcr420, thanks for the hint. In the "420_also"-patch I change drm_mode_is_420_only to drm_mode_is_420 (helper function: _only + _also), which is not checked by drm_mode_validate_ycbcr420. I can add this check to that patch, since its only required then.
+>>  		clock /= 2;
+>>  
+>>  	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
+>> -- 
+>> 2.25.1
 
