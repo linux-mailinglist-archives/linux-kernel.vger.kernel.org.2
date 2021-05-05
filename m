@@ -2,119 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DB8374B64
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7F40374B68
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:43:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234299AbhEEWnq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:43:46 -0400
-Received: from mail-oi1-f175.google.com ([209.85.167.175]:44031 "EHLO
-        mail-oi1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234306AbhEEWnl (ORCPT
+        id S234372AbhEEWny (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:43:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35636 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234347AbhEEWnp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:43:41 -0400
-Received: by mail-oi1-f175.google.com with SMTP id j75so3694041oih.10;
-        Wed, 05 May 2021 15:42:44 -0700 (PDT)
+        Wed, 5 May 2021 18:43:45 -0400
+Received: from mail-io1-xd2f.google.com (mail-io1-xd2f.google.com [IPv6:2607:f8b0:4864:20::d2f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8413BC061763
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 15:42:48 -0700 (PDT)
+Received: by mail-io1-xd2f.google.com with SMTP id z14so3102322ioc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 15:42:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ieee.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=eVRAL4I5R3EIThtpHkhCvr3PaZqxvgbDA7g9md7suZ0=;
+        b=NAJY9Hg2QjXPKsUa6VRHa7ZlrvQLdZV5WbT0H4FG5YQX800t2+fWOzVW1GHg3mR+gh
+         P94XdmejdrLRI5m5SSqTdHs4OnPb241mf5Qu/itTHtAbbnpww+FRLdM0TgDIbKXRVt1z
+         S8enQ3S/SCDQ7tOd42GHNNV4uSBbLYisYEdXw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=pbTlir03f0JEZL64fVklM0dp7uurLByJoVkfzt7FKdI=;
-        b=XN08j/vW9QaMNUq3Q444A/1WcNfex/xHUtWQAybcGm0FhDKYbXWhUr62GmMgJBp2Gr
-         HWngVa/LgumwwuGMcEmq6sMC52EjbRYZ/afVlKFwI/kriDC/HmEIMcW7qTjsDyrcOeJs
-         qD3VWFtRnHioDf8BB/2Qyi8qsEZJVCmf//4NSej7Z0llKn5g4+P4Y1hzbslIFMc6EmNO
-         XqvEsejrmxj4C5DPsuYcLcmbWF2NuIHywYhydVd+ziBK5AnlsBqFOv6SF7m02ysaArsE
-         pumylosMQ2ofMEZNLqn1gBT0DSeHz82eORZliIfJLhJNXIJKLu4vGxy66tabFb0rLORV
-         xUcw==
-X-Gm-Message-State: AOAM531I6QrJEPDgPSIera6it7G2a8bfZn4papdAaKHUqXFyQXh+mTxx
-        hlyYNfTqXmEd9fdcBis/vw==
-X-Google-Smtp-Source: ABdhPJyfhzdfd6UA46DZ7biewQHZJ1JerOBhiE0Rdlmh198apmqJb8vyJ4wq6S2rQepxN7Yo4EwwRA==
-X-Received: by 2002:aca:ad48:: with SMTP id w69mr836848oie.21.1620254564008;
-        Wed, 05 May 2021 15:42:44 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id h12sm189909otk.55.2021.05.05.15.42.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 15:42:43 -0700 (PDT)
-Received: (nullmailer pid 2970657 invoked by uid 1000);
-        Wed, 05 May 2021 22:42:42 -0000
-Date:   Wed, 5 May 2021 17:42:42 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
-Subject: [GIT PULL] Devicetree fixes for v5.13, take 1
-Message-ID: <20210505224242.GA2953573@robh.at.kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=eVRAL4I5R3EIThtpHkhCvr3PaZqxvgbDA7g9md7suZ0=;
+        b=jJdaGQbtkf6WnyIAIkCZY382Ejdn0Y0TJNNfdoIBnTibmR43G2fXMK/HokDFjPkkil
+         C2c+fQApeTUBBmtnSPv2UOufhdbMksw7JUODNtFcJWZKzSl27HWqjKY+sTB8QQO2PtZx
+         +VwNXqYx5njku+0cwyJyaDv3JNTUH4w9GZ4bnzlhTWVj0E2wiYsBCZ0oaUo/vPqSO+fJ
+         C8A2A4XdYHdnMvyXcyLlpzbukwz9vd9c3k6YngRrBFuYiYteUAv0P+VKdCXfkO/iZUd6
+         KKs9ug2ysAnD2dKdFFSbiHE2znZA+Lyoz49VQMroog4grGMKDspoNpVTq7R7dJFU3Nzs
+         DsNg==
+X-Gm-Message-State: AOAM531Cmf9cOAg1VPEQMzmJGNtZClOGsRnPTMui7Zmi04ysunova9/X
+        7cMpwnAoPK450XiK2u9IoG78xQ==
+X-Google-Smtp-Source: ABdhPJzRPg1pfHtketnKuyEw5gC3cjUAUj2IyceNo+rC3q5l1fw9d0pKB58HRLXey4W1vzb+15I/VA==
+X-Received: by 2002:a5d:9149:: with SMTP id y9mr661126ioq.159.1620254568052;
+        Wed, 05 May 2021 15:42:48 -0700 (PDT)
+Received: from [172.22.22.4] (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.googlemail.com with ESMTPSA id s23sm264263iol.49.2021.05.05.15.42.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 15:42:47 -0700 (PDT)
+Subject: Re: [PATCH v1 3/7] net: ipa: gsi: Avoid some writes during irq setup
+ for older IPA
+To:     AngeloGioacchino Del Regno 
+        <angelogioacchino.delregno@somainline.org>, elder@kernel.org
+Cc:     bjorn.andersson@linaro.org, agross@kernel.org, davem@davemloft.net,
+        kuba@kernel.org, linux-arm-msm@vger.kernel.org,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, konrad.dybcio@somainline.org,
+        marijn.suijten@somainline.org, phone-devel@vger.kernel.org
+References: <20210211175015.200772-1-angelogioacchino.delregno@somainline.org>
+ <20210211175015.200772-4-angelogioacchino.delregno@somainline.org>
+From:   Alex Elder <elder@ieee.org>
+Message-ID: <cd51718f-b584-11f5-40e0-cdec197881eb@ieee.org>
+Date:   Wed, 5 May 2021 17:42:46 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <20210211175015.200772-4-angelogioacchino.delregno@somainline.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On 2/11/21 11:50 AM, AngeloGioacchino Del Regno wrote:
+> On some IPA versions (v3.1 and older), writing to registers
+> GSI_INTER_EE_SRC_CH_IRQ_OFFSET and GSI_INTER_EE_SRC_EV_CH_IRQ_OFFSET
+> will generate a fault and the SoC will lockup.
+> 
+> Avoid clearing CH and EV_CH interrupts on GSI probe to fix this bad
+> behavior: we are anyway not going to get spurious interrupts.
+> 
+> Signed-off-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>
 
-Please pull a couple of DT fixes.
+Looking at this more closely, I see that you have found
+a *bug* that I will fix.  The bug is that these registers
+are the IRQ status registers, not the IRQ mask registers.
 
-Rob
+I have posted a fix for this bug, and once fixed, and I would
+like to know whether this fix makes the fault you were
+observing go away.
+   https://lore.kernel.org/netdev/20210505223636.232527-1-elder@linaro.org
 
-The following changes since commit 8ca5297e7e38f2dc8c753d33a5092e7be181fff0:
+					-Alex
 
-  Merge tag 'kconfig-v5.13' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild (2021-04-29 14:32:00 -0700)
+> ---
+>   drivers/net/ipa/gsi.c | 9 ++++++---
+>   1 file changed, 6 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/net/ipa/gsi.c b/drivers/net/ipa/gsi.c
+> index 6315336b3ca8..b5460cbb085c 100644
+> --- a/drivers/net/ipa/gsi.c
+> +++ b/drivers/net/ipa/gsi.c
+> @@ -207,11 +207,14 @@ static void gsi_irq_setup(struct gsi *gsi)
+>   	iowrite32(0, gsi->virt + GSI_CNTXT_SRC_IEOB_IRQ_MSK_OFFSET);
+>   
+>   	/* Reverse the offset adjustment for inter-EE register offsets */
+> -	adjust = gsi->version < IPA_VERSION_4_5 ? 0 : GSI_EE_REG_ADJUST;
+> -	iowrite32(0, gsi->virt + adjust + GSI_INTER_EE_SRC_CH_IRQ_OFFSET);
+> -	iowrite32(0, gsi->virt + adjust + GSI_INTER_EE_SRC_EV_CH_IRQ_OFFSET);
+> +	if (gsi->version > IPA_VERSION_3_1) {
+> +		adjust = gsi->version < IPA_VERSION_4_5 ? 0 : GSI_EE_REG_ADJUST;
+> +		iowrite32(0, gsi->virt + adjust + GSI_INTER_EE_SRC_CH_IRQ_OFFSET);
+> +		iowrite32(0, gsi->virt + adjust + GSI_INTER_EE_SRC_EV_CH_IRQ_OFFSET);
+> +	}
+>   
+>   	iowrite32(0, gsi->virt + GSI_CNTXT_GSI_IRQ_EN_OFFSET);
+> +
+>   }
+>   
+>   /* Turn off all GSI interrupts when we're all done */
+> 
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.13-1
-
-for you to fetch changes up to 6799e3f281e962628be531e8331bacd05b866134:
-
-  dt-bindings: net: renesas,etheravb: Fix optional second clock name (2021-05-04 09:05:46 -0500)
-
-----------------------------------------------------------------
-Devicetree fixes for v5.13-rc:
-
-- Several Renesas binding fixes to fix warnings
-
-- Remove duplicate compatibles in 8250 binding
-
-- Remove orphaned Sigma Designs Tango bindings
-
-- Fix bcm2711-hdmi binding to use 'additionalProperties'
-
-- Fix idt,32434-pic warning for missing 'interrupts' property
-
-- Fix 'stored but not read' warnings in DT overlay code
-
-----------------------------------------------------------------
-Geert Uytterhoeven (4):
-      dt-bindings: PCI: rcar-pci-host: Document missing R-Car H1 support
-      dt-bindings: media: renesas,vin: Make resets optional on R-Car Gen1
-      dt-bindings: display: renesas,du: Add missing power-domains property
-      dt-bindings: net: renesas,etheravb: Fix optional second clock name
-
-Jiapeng Chong (1):
-      of: overlay: Remove redundant assignment to ret
-
-Maxime Ripard (1):
-      dt-bindings: bcm2711-hdmi: Fix broken schema
-
-Rob Herring (1):
-      dt-bindings: Remove unused Sigma Designs Tango bindings
-
-Thomas Bogendoerfer (1):
-      dt-bindings: interrupt-controller: idt,32434-pic: Add missing interrupts property
-
-Zhen Lei (1):
-      dt-bindings: serial: 8250: Remove duplicated compatible strings
-
- .../bindings/display/brcm,bcm2711-hdmi.yaml        |  2 +-
- .../devicetree/bindings/display/renesas,du.yaml    |  3 ++
- .../interrupt-controller/idt,32434-pic.yaml        |  4 ++
- .../devicetree/bindings/media/renesas,vin.yaml     | 46 ++++++++++++++--------
- .../devicetree/bindings/mtd/tango-nand.txt         | 38 ------------------
- .../devicetree/bindings/net/renesas,etheravb.yaml  |  2 +-
- .../devicetree/bindings/pci/rcar-pci-host.yaml     | 12 +++++-
- .../devicetree/bindings/pci/tango-pcie.txt         | 29 --------------
- Documentation/devicetree/bindings/serial/8250.yaml |  5 ---
- drivers/of/overlay.c                               |  3 --
- 10 files changed, 49 insertions(+), 95 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/mtd/tango-nand.txt
- delete mode 100644 Documentation/devicetree/bindings/pci/tango-pcie.txt
