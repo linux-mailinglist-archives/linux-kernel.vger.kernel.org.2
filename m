@@ -2,95 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24CE6374BC1
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:13:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4A90374BC5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhEEXOc convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 May 2021 19:14:32 -0400
-Received: from mga18.intel.com ([134.134.136.126]:28412 "EHLO mga18.intel.com"
+        id S230460AbhEEXRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 19:17:19 -0400
+Received: from smtp.polymtl.ca ([132.207.4.11]:46291 "EHLO smtp.polymtl.ca"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhEEXO2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 19:14:28 -0400
-IronPort-SDR: R0eynmIc6B9nFbPKMwSuUl7ubeoTiiRbLeGqT5RR2AxucKweGS01Sz+3sbMqIcnjXu0CcVkFZb
- lvkSIEDrWZQg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="185790812"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="185790812"
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 16:13:31 -0700
-IronPort-SDR: JtNRit5eVng05dldqvlehV+SyrHwPbQrRBdsXvYUZ/yqu1FmmcQyh+R0VcnnDthakjpKfW4hle
- MRsCVRfBRPJQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="428324716"
-Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
-  by orsmga007.jf.intel.com with ESMTP; 05 May 2021 16:13:30 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 5 May 2021 16:13:30 -0700
-Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
- fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 5 May 2021 16:13:30 -0700
-Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
- fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
- Wed, 5 May 2021 16:13:30 -0700
-From:   "Luck, Tony" <tony.luck@intel.com>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>,
-        Borislav Petkov <bp@alien8.de>
-CC:     wangglei <wangglei@gmail.com>,
-        "Lei Wang (DPLAT)" <Wang.Lei@microsoft.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "rric@kernel.org" <rric@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hang Li <hangl@microsoft.com>,
-        Brandon Waller <bwaller@microsoft.com>
-Subject: RE: [EXTERNAL] Re: [PATCH] EDAC: update edac printk wrappers to use
- printk_ratelimited.
-Thread-Topic: [EXTERNAL] Re: [PATCH] EDAC: update edac printk wrappers to use
- printk_ratelimited.
-Thread-Index: AQHXQdRdJYHRX8nk2Ei54dInHCnYRqrVou8AgAAREgCAAAv0gIAACuGAgAALZQCAAAxOAIAAA+cAgAADu4CAAAfJgIAAAxYAgAAB6wD//40xMA==
-Date:   Wed, 5 May 2021 23:13:30 +0000
-Message-ID: <d727342c294b4d40b411dc25cbd3266f@intel.com>
-References: <YJLdZCcsgWG6TrKz@zn.tnic>
- <SJ0PR21MB199984A8B47FBEECEC5D11CE90599@SJ0PR21MB1999.namprd21.prod.outlook.com>
- <YJL1vU6HNBWPKy8g@zn.tnic> <20210505202357.GC4967@sequoia>
- <YJMIbB31oEDaXm0C@zn.tnic> <20210505214846.GE4967@sequoia>
- <YJMWBBBlQ6TwFad9@zn.tnic> <20210505221605.GF4967@sequoia>
- <20210505224357.GG4967@sequoia> <YJMiRF8D3EG28d2V@zn.tnic>
- <20210505230152.GH4967@sequoia>
-In-Reply-To: <20210505230152.GH4967@sequoia>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [10.1.200.100]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S229465AbhEEXRS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 19:17:18 -0400
+Received: from simark.ca (simark.ca [158.69.221.121])
+        (authenticated bits=0)
+        by smtp.polymtl.ca (8.14.7/8.14.7) with ESMTP id 145NFuAZ013297
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 5 May 2021 19:16:00 -0400
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.polymtl.ca 145NFuAZ013297
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=polymtl.ca;
+        s=default; t=1620256562;
+        bh=pc45n/BWF7lDKLmoC8+fLn/BhW3jQ7nH+5jK1B5rYNU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=nuaN8LfF7O+hFXk4ovvB4VaQ82brXcrghgJBxZS37ImCQHhHDcgtu+32xkIKehahe
+         KXhPSRCLOFJI6zgAyheiCNuRZsrXWBqKkhkCN2UtF78u8AMOxLXSWRCrxrwq/bLWg2
+         89raNRow77e5tbFdw6GsG8sjF9wc3T1/PwiYrxno=
+Received: from [10.0.0.11] (192-222-157-6.qc.cable.ebox.net [192.222.157.6])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by simark.ca (Postfix) with ESMTPSA id 631DE1E813;
+        Wed,  5 May 2021 19:15:55 -0400 (EDT)
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+To:     Stefan Metzmacher <metze@samba.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        linux-toolchains@vger.kernel.org
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
+ <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+ <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net> <YJFptPyDtow//5LU@zn.tnic>
+ <044d0bad-6888-a211-e1d3-159a4aeed52d@polymtl.ca>
+ <932d65e1-5a8f-c86a-8673-34f0e006c27f@samba.org>
+ <30e248aa-534d-37ff-2954-a70a454391fc@polymtl.ca>
+ <f15f0ccd-fe30-c3cf-9b01-df7ba462401f@samba.org>
+From:   Simon Marchi <simon.marchi@polymtl.ca>
+Message-ID: <0bd34171-1e94-fab6-b186-3ddd21bacc0e@polymtl.ca>
+Date:   Wed, 5 May 2021 19:15:55 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
+In-Reply-To: <f15f0ccd-fe30-c3cf-9b01-df7ba462401f@samba.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Poly-FromMTA: (simark.ca [158.69.221.121]) at Wed,  5 May 2021 23:15:56 +0000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->> What is your situation? ARM?
->
-> Yes, though I'm not sure if those additional features are
-> important/useful enough for us to generalize that driver. The main
-> motivation here was just to prevent storage/network from being flooded
-> by obviously-bad nodes that haven't been offlined yet. :) 
->
-> Lei and others on cc will need to evaluate porting cec.c and what it
-> will gain them. Thanks again.
+> Is it clear now?
+> metze
 
-Tyler,
+Yes, thanks.  I had missed that the point of the 2nd patch is to not do
+the memset for these threads.  Makes sense now.
 
-You might also look at the x86 "storm" detection code (tl;dr version
-"If error interrupts are coming too fast, turn off the interrupts and poll").
-
--Tony 
+Simon
