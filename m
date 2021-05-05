@@ -2,133 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 481B03741C6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:46:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D885373FE4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235141AbhEEQlJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:41:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38900 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234963AbhEEQiS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:38:18 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81EFEC06134F;
-        Wed,  5 May 2021 09:33:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=7erbrWi96udzk9FwXiNGJPahIb3q21i3Mxk6+d4+BqU=; b=cHv+FwvwiSiOf/bo48hwA2+V1M
-        U8+IPeQZ3qHLzZOPpDbJyyNc+PXjeWZAKmTpm8bP47pbaTuiVOL3SFjH2wHmsI6Pm9xaNXXxYFnu0
-        PKVsj4lPLZ+I32wbM7MDQI27M96ZCLnKOqJ85nhDgUu5UTK4YKk110DXUo7cBFiM+QaUFJ3dGZHwJ
-        y63LeRjgsl4DlmFHe04jcGtc87nXVeTE1bHD1A4Vzo1XnGGt4WyjPq6vb8Xq7fRHtxkVBIwXe1GDE
-        f9n15Whp2BD8K99cMuZDWkOj1flDON0aVRSoytXL0JcTcsW6tlXL8lAIoGPeBRfEsbBLg3V+XwRJd
-        zTX2HrRg==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1leKPr-000aml-Og; Wed, 05 May 2021 16:31:00 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 70/96] mm/filemap: Add readahead_folio
-Date:   Wed,  5 May 2021 16:06:02 +0100
-Message-Id: <20210505150628.111735-71-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210505150628.111735-1-willy@infradead.org>
-References: <20210505150628.111735-1-willy@infradead.org>
+        id S234150AbhEEQcb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:32:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51860 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234119AbhEEQcY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:32:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9AD9061176;
+        Wed,  5 May 2021 16:31:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620232287;
+        bh=GC0JSQP6TWY1b0lfwONIKL+869Qk61wRxyZRS4vVIz8=;
+        h=From:To:Cc:Subject:Date:From;
+        b=b0Sw1VTBifF255lbkOLmJaO5Tt+/31rE0B7vguzYdVrcW3p1Gt5Wf8gFNSXLR1Aza
+         FuhxhWAAWKmc5BbDth5eWD9yQQaEvi/wJbHzytWljJG80A/gtZVXY6JMsNA0J88Cop
+         5D7TcQg7TjVDS6auIt5uESbJE7ubUa1vDVNRktKqwwkmSDFMweg2+r/3qfmn+LGOUq
+         mJD6PxT/4Zp3y9eIMlpALYLDaX8L3QfpY8SsmQld2mlMeMkBSswnDrPXlLjWvd6xG/
+         1Gr8w9HitkGy458yAeDQyOrLS0z+6NFaILVSYyMDaz7smVmShOgIswIqZz64bn+why
+         toCXgwTisQUHg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.12 001/116] ath11k: fix thermal temperature read
+Date:   Wed,  5 May 2021 12:29:29 -0400
+Message-Id: <20210505163125.3460440-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pointers stored in the page cache are folios, by definition.
-This change comes with a behaviour change -- callers of readahead_folio()
-are no longer required to put the page reference themselves.  This matches
-how readpage works, rather than matching how readpages used to work.
+From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+[ Upstream commit e3de5bb7ac1a4cb262f8768924fd3ef6182b10bb ]
+
+Fix dangling pointer in thermal temperature event which causes
+incorrect temperature read.
+
+Tested-on: IPQ8074 AHB WLAN.HK.2.4.0.1-00041-QCAHKSWPL_SILICONZ-1
+
+Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210218182708.8844-1-pradeepc@codeaurora.org
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/pagemap.h | 53 +++++++++++++++++++++++++++++------------
- 1 file changed, 38 insertions(+), 15 deletions(-)
+ drivers/net/wireless/ath/ath11k/wmi.c | 53 +++++++++++----------------
+ 1 file changed, 21 insertions(+), 32 deletions(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 8fd00dc5ebd5..d54772aa7a3a 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -1062,33 +1062,56 @@ void page_cache_async_readahead(struct address_space *mapping,
- 	page_cache_async_ra(&ractl, page, req_count);
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index cccfd3bd4d27..ca5cda890d58 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -5417,31 +5417,6 @@ int ath11k_wmi_pull_fw_stats(struct ath11k_base *ab, struct sk_buff *skb,
+ 	return 0;
  }
  
-+static inline struct folio *__readahead_folio(struct readahead_control *ractl)
-+{
-+	struct folio *folio;
-+
-+	BUG_ON(ractl->_batch_count > ractl->_nr_pages);
-+	ractl->_nr_pages -= ractl->_batch_count;
-+	ractl->_index += ractl->_batch_count;
-+
-+	if (!ractl->_nr_pages) {
-+		ractl->_batch_count = 0;
-+		return NULL;
-+	}
-+
-+	folio = xa_load(&ractl->mapping->i_pages, ractl->_index);
-+	VM_BUG_ON_FOLIO(!folio_locked(folio), folio);
-+	ractl->_batch_count = folio_nr_pages(folio);
-+
-+	return folio;
-+}
-+
- /**
-  * readahead_page - Get the next page to read.
-- * @rac: The current readahead request.
-+ * @ractl: The current readahead request.
-  *
-  * Context: The page is locked and has an elevated refcount.  The caller
-  * should decreases the refcount once the page has been submitted for I/O
-  * and unlock the page once all I/O to that page has completed.
-  * Return: A pointer to the next page, or %NULL if we are done.
-  */
--static inline struct page *readahead_page(struct readahead_control *rac)
-+static inline struct page *readahead_page(struct readahead_control *ractl)
- {
--	struct page *page;
-+	struct folio *folio = __readahead_folio(ractl);
- 
--	BUG_ON(rac->_batch_count > rac->_nr_pages);
--	rac->_nr_pages -= rac->_batch_count;
--	rac->_index += rac->_batch_count;
+-static int
+-ath11k_pull_pdev_temp_ev(struct ath11k_base *ab, u8 *evt_buf,
+-			 u32 len, const struct wmi_pdev_temperature_event *ev)
+-{
+-	const void **tb;
+-	int ret;
 -
--	if (!rac->_nr_pages) {
--		rac->_batch_count = 0;
--		return NULL;
+-	tb = ath11k_wmi_tlv_parse_alloc(ab, evt_buf, len, GFP_ATOMIC);
+-	if (IS_ERR(tb)) {
+-		ret = PTR_ERR(tb);
+-		ath11k_warn(ab, "failed to parse tlv: %d\n", ret);
+-		return ret;
 -	}
-+	return &folio->page;
-+}
+-
+-	ev = tb[WMI_TAG_PDEV_TEMPERATURE_EVENT];
+-	if (!ev) {
+-		ath11k_warn(ab, "failed to fetch pdev temp ev");
+-		kfree(tb);
+-		return -EPROTO;
+-	}
+-
+-	kfree(tb);
+-	return 0;
+-}
+-
+ size_t ath11k_wmi_fw_stats_num_vdevs(struct list_head *head)
+ {
+ 	struct ath11k_fw_stats_vdev *i;
+@@ -6849,23 +6824,37 @@ ath11k_wmi_pdev_temperature_event(struct ath11k_base *ab,
+ 				  struct sk_buff *skb)
+ {
+ 	struct ath11k *ar;
+-	struct wmi_pdev_temperature_event ev = {0};
++	const void **tb;
++	const struct wmi_pdev_temperature_event *ev;
++	int ret;
++
++	tb = ath11k_wmi_tlv_parse_alloc(ab, skb->data, skb->len, GFP_ATOMIC);
++	if (IS_ERR(tb)) {
++		ret = PTR_ERR(tb);
++		ath11k_warn(ab, "failed to parse tlv: %d\n", ret);
++		return;
++	}
  
--	page = xa_load(&rac->mapping->i_pages, rac->_index);
--	VM_BUG_ON_PAGE(!PageLocked(page), page);
--	rac->_batch_count = thp_nr_pages(page);
-+/**
-+ * readahead_folio - Get the next folio to read.
-+ * @ractl: The current readahead request.
-+ *
-+ * Context: The folio is locked.  The caller should unlock the folio once
-+ * all I/O to that folio has completed.
-+ * Return: A pointer to the next folio, or %NULL if we are done.
-+ */
-+static inline struct folio *readahead_folio(struct readahead_control *ractl)
-+{
-+	struct folio *folio = __readahead_folio(ractl);
+-	if (ath11k_pull_pdev_temp_ev(ab, skb->data, skb->len, &ev) != 0) {
+-		ath11k_warn(ab, "failed to extract pdev temperature event");
++	ev = tb[WMI_TAG_PDEV_TEMPERATURE_EVENT];
++	if (!ev) {
++		ath11k_warn(ab, "failed to fetch pdev temp ev");
++		kfree(tb);
+ 		return;
+ 	}
  
--	return page;
-+	folio_put(folio);
-+	return folio;
+ 	ath11k_dbg(ab, ATH11K_DBG_WMI,
+-		   "pdev temperature ev temp %d pdev_id %d\n", ev.temp, ev.pdev_id);
++		   "pdev temperature ev temp %d pdev_id %d\n", ev->temp, ev->pdev_id);
+ 
+-	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev.pdev_id);
++	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev->pdev_id);
+ 	if (!ar) {
+-		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev.pdev_id);
++		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev->pdev_id);
++		kfree(tb);
+ 		return;
+ 	}
+ 
+-	ath11k_thermal_event_temperature(ar, ev.temp);
++	ath11k_thermal_event_temperature(ar, ev->temp);
++
++	kfree(tb);
  }
  
- static inline unsigned int __readahead_batch(struct readahead_control *rac,
+ static void ath11k_fils_discovery_event(struct ath11k_base *ab,
 -- 
 2.30.2
 
