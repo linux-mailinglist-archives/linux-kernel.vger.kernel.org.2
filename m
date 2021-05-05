@@ -2,97 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0359F373CAC
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:49:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AC6D373CAE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:51:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhEENuZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:50:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37944 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232671AbhEENuY (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:50:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 32F1C610FB;
-        Wed,  5 May 2021 13:49:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620222567;
-        bh=Tm+F5vmFGdQSaSHmk68Jf6ftLuqZ2EEpYYwH4nIBnXY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=YozxFOeSEy50DTkosgSr4QcepmTZ0o1EytnZ2n+Z1xg2U5IvLAPg5wuz3UKHduIJ5
-         qq4hVCEL7CyWUVmGprGS/DtEPewPsV8UfX7ttgBMWscoMXCtp8iICpOQloxCI/a8xY
-         i4THL5v8VJs+QdLJYsTrqyhx5fM8vtvtj/9l7MWhX7ZwI1DeBBmX6OWWTOjCKsJLLN
-         YPEkeaS/0UeQ8PfCrc5O9t96dTW1M1gKtbV3cF5uPCXkDImcAOVCZZukeAGZakUlOz
-         y4eMZxOhQbsLkziFWxb+3jTKnnpb0v9XQqQNNcXo6FWa8HZp4iaxdGKzdGdtXeAXNe
-         qVyVkUXWlGhhQ==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id BF5EF4034C; Wed,  5 May 2021 10:49:23 -0300 (-03)
-Date:   Wed, 5 May 2021 10:49:23 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Jin Yao <yao.jin@linux.intel.com>, jolsa@kernel.org,
-        peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-Subject: Re: [PATCH v1 1/2] perf header: Support HYBRID_TOPOLOGY feature
-Message-ID: <YJKiYziYlLgUmMwq@kernel.org>
-References: <20210430074602.3028-1-yao.jin@linux.intel.com>
- <YJFgrKB9ZavgbA1P@krava>
- <YJGgYSXcJbZ2n3H3@kernel.org>
- <YJGifgASdDD7T8Xc@krava>
+        id S232923AbhEENwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:52:10 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53194 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231265AbhEENwI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 09:52:08 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-177-z7GzCxiKMCmwap03myQkMA-1; Wed, 05 May 2021 14:51:08 +0100
+X-MC-Unique: z7GzCxiKMCmwap03myQkMA-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 14:51:07 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Wed, 5 May 2021 14:51:07 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Josh Poimboeuf' <jpoimboe@redhat.com>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        "Waiman Long" <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Borislav Petkov <bp@alien8.de>
+Subject: RE: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Thread-Topic: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Thread-Index: AQHXQWJqu8vqbxm3x0CYXgd0hdGkc6rUkPgwgAA+HoCAABP/4A==
+Date:   Wed, 5 May 2021 13:51:06 +0000
+Message-ID: <f7b0cdca14684c32868bc84df348ac9e@AcuMS.aculab.com>
+References: <cover.1620186182.git.jpoimboe@redhat.com>
+ <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
+ <2f75c496ac774444b75ff808854b8e5f@AcuMS.aculab.com>
+ <20210505131943.ci2svd6fmb22y7ac@treble>
+In-Reply-To: <20210505131943.ci2svd6fmb22y7ac@treble>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJGifgASdDD7T8Xc@krava>
-X-Url:  http://acmel.wordpress.com
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Tue, May 04, 2021 at 09:37:34PM +0200, Jiri Olsa escreveu:
-> On Tue, May 04, 2021 at 04:28:33PM -0300, Arnaldo Carvalho de Melo wrote:
-> > Em Tue, May 04, 2021 at 04:56:44PM +0200, Jiri Olsa escreveu:
-> > > On Fri, Apr 30, 2021 at 03:46:01PM +0800, Jin Yao wrote:
-> > > > It would be useful to let user know the hybrid topology.
-> > > > Adding HYBRID_TOPOLOGY feature in header to indicate the
-> > > > core cpus and the atom cpus.
-> > 
-> > > > With this patch,
-> > 
-> > > > For the perf.data generated on hybrid platform,
-> > > > reports the hybrid cpu list.
-> > 
-> > > >   root@otcpl-adl-s-2:~# perf report --header-only -I
-> > > >   ...
-> > > >   # cpu_core cpu list : 0-15
-> > > >   # cpu_atom cpu list : 16-23
-> > 
-> > > hum, should we print 'hybrid:' or something to make
-> > > sure its not confused with something else? like
-> >  
-> > >   # hybrid cpu_core cpu list : 0-15
-> > >   # hybrid cpu_atom cpu list : 16-23
-> > 
-> > But this _core/_atom already got to be enough? I disagreed with that
-> > naming, but neverthless having one or the other present in an output is
-> > a clear mark of this hybrid topology.
-> > 
-> > I.e having that extra hybrid string that wouldn't add information to the
-> > output.
-> 
-> sure when you know that cpu_core/cpu_atom are hybrid pmus ;-)
-> and I guess other arch will come with other names 
+RnJvbTogSm9zaCBQb2ltYm9ldWYNCj4gU2VudDogMDUgTWF5IDIwMjEgMTQ6MjANCi4uLg0KPiA+
+IGFjY2Vzc19vaygpIGFuZCBtYXNrX3VzZXJfcHRyKCkgYXJlIGRvaW5nIG11Y2ggdGhlIHNhbWUg
+Y2hlY2suDQo+ID4gSXMgdGhlcmUgc2NvcGUgZm9yIG1ha2luZyBhY2Nlc3Nfb2soKSByZXR1cm4g
+dGhlIG1hc2tlZCBwb2ludGVyPw0KPiA+DQo+ID4gU28gdGhlIGNhbm9uaWNhbCBjYWxsaW5nIGNv
+ZGUgd291bGQgYmU6DQo+ID4gCXVwdHIgPSBhY2Nlc3Nfb2sodXB0ciwgc2l6ZSk7DQo+ID4gCWlm
+ICghdXB0cikNCj4gPiAJCXJldHVybiAtRUZBVUxUOw0KPiA+DQo+ID4gVGhpcyB3b3VsZCBlcnJv
+ciByZXF1ZXN0cyBmb3IgYWRkcmVzcyAwIGVhcmxpZXIgLSBidXQgSSBkb24ndA0KPiA+IGJlbGll
+dmUgdGhleSBhcmUgZXZlciB2YWxpZCBpbiBMaW51eC4NCj4gPiAoU29tZSBoaXN0b3JpYyB4ODYg
+YS5vdXQgZm9ybWF0cyBkaWQgbG9hZCB0byBhZGRyZXNzIDAuKQ0KPiA+DQo+ID4gQ2xlYXJseSBm
+b3IgYSBmb2xsb3cgdXAgcGF0Y2guDQo+IA0KPiBZZWFoLiAgSSBtZW50aW9uZWQgYSBzaW1pbGFy
+IGlkZWEgaW4gdGhlIGNvdmVyIGxldHRlci4NCj4gDQo+IEJ1dCBJJ20gdGhpbmtpbmcgd2Ugc2hv
+dWxkIHN0aWxsIHJlbmFtZSBpdCB0byBhY2Nlc3Nfb2tfbWFzaygpLCBvcg0KPiBvdGhlcndpc2Ug
+Y2hhbmdlIHRoZSBBUEkgdG8gYXZvaWQgdGhlIG1hc2tlZCB2YWx1ZSBnZXR0aW5nIGlnbm9yZWQu
+DQoNClNvbWV0aGluZyBsaWtlOg0KCWlmIChhY2Nlc3Nfb2tfbWFzaygmdWFkZHIsIHNpemUpKQ0K
+CQlyZXR1cm4gLUVGQVVMVDsNCm1pZ2h0IHdvcmsuDQoNCj4gQnV0IHRoYXQnbGwgYmUgYSBtdWNo
+IGJpZ2dlciBwYXRjaC4NCg0KVHJ1ZSAtIGFuZCB3b3VsZCBuZWVkIHRvIGJlIGRvbmUgaXMgc3Rh
+Z2VzLg0KDQpUaGUgb3RoZXIgb3B0aW1pc2F0aW9uIGlzIGZvciBzaG9ydC9zZXF1ZW50aWFsIGFj
+Y2Vzc2VzLg0KSW4gcGFydGljdWxhciBnZXRfdXNlcigpIGFuZCBjb3B5X2Zyb21fdXNlcigpLg0K
+SGVyZSB0aGUgJ3NpemUnIGFyZ3VtZW50IGNhbiBvZnRlbiBiZSBhdm9pZGVkLg0KRWl0aGVyIGJl
+Y2F1c2Ugb25seSB0aGUgYmFzZSBhZGRyZXNzIGlzIGV2ZXIgYWNjZXNzZWQsIG9yIHRoZQ0Ka2Vy
+bmVsIGd1YXJhbnRlZXMgYW4gdW5tYXBwZWQgcGFnZSBiZXR3ZWVuIHVzZXIgYW5kIGtlcm5lbCBh
+ZGRyZXNzZXMuDQoNCklJUkMgeDg2IGhhcyB0byBoYXZlIGFuIHVubWFwcGVkIHBhZ2UgYmVjYXVz
+ZSBvZiAnaXNzdWVzJyB3aXRoDQpwcmVmZXRjaCBhY3Jvc3MgdGhlIGJvdW5kYXJ5Lg0KSSBkb24n
+dCBrbm93IGlmIGl0IGlzIG9uIHRoZSB1c2VyIG9yIGtlcm5lbCBzaWRlIC0gZG9lc24ndCByZWFs
+bHkgbWF0dGVyLg0KDQpBbHNvIGZvciB0eXBpY2FsIDY0Yml0IGFyY2hpdGVjdHVyZXMgd2hlcmUg
+dGhlcmUgaXMgYSBiaWcgYWRkcmVzcyBob2xlDQphcm91bmQgMXVsIDw8IDYzLCBhY2Nlc3Nfb2so
+KSBjYW4ganVzdCBjaGVjayAoZm9yIGV4YW1wbGUpOg0KCWlmICgoKGxvbmcpdWFkZHIgfCBzaXpl
+KSAmIH4wdWwgPDwgNTYpDQoJCXJldHVybiAtRUZBVUxULg0KKGNoYW5nZSB0aGUgNTYgdG8gbWF0
+Y2ggdGhlIFRBU0tfU0laRV9NQVgpLg0KVGhlIGNvbXBpbGVyIHdpbGwgdGhlbiBvcHRpbWlzZSBh
+d2F5IGFueSBjb25zdGFudCBzaXplLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
+IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
+UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-Yeah, its too Intel centric, I thought they would come up with
-cpu_big/cpu_little and map it to core/atom on Intel and whatever other
-BIG/little arches come up with.
-
-Perhaps:
-
-root@otcpl-adl-s-2:~# perf report --header-only -I
-...
-# hybrid cpu system:
-# cpu_core cpu list : 0-15
-# cpu_atom cpu list : 16-23
-
-?
-
-- Arnaldo
