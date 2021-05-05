@@ -2,95 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A98374AF5
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59827374AF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:07:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233166AbhEEWFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:05:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42642 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhEEWFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:05:08 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 76A1A61185;
-        Wed,  5 May 2021 22:04:11 +0000 (UTC)
-Date:   Wed, 5 May 2021 18:04:09 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [for-linus][PATCH] ftrace: Handle commands when closing
- set_ftrace_filter file
-Message-ID: <20210505180409.290e2b77@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S233286AbhEEWIn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:08:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34752 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229691AbhEEWIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 18:08:41 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620252463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UMR0l2eOxbZlG3eP2GKSR1qj/t2c7J2/JGyBVU+eog8=;
+        b=cQHZmYHC6OYkUivvmP5eyqSEXFNg16rNN1F3SKS5vPsTkpvWp85BMTQMA1rYCrgvy6JpKF
+        ngLJOlo35ELIF+UdKXvgw7f0Ub0fPxaXkV/jVTdp6MO63zkNZnP/SAEg+wJjUbOtoAqOsK
+        +fEuB+qlfVvTYTODzHwYTfeEe9OP8oSGROYkXHZOQwLZNMVHECOoELLMrv8/8wErAxEL6O
+        rWPAjg/sshQJXTCEyOhDsWx5Y83In6keIYekwWCMZWQkm4Sh4xoDJXRsgavKJCvpdcnnZ8
+        WjG9NC+skOS55MavRrKp4h32zRK6mL4ToC/tN84T5PuDsSGaGfhq2ZgCsA9F2g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620252463;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=UMR0l2eOxbZlG3eP2GKSR1qj/t2c7J2/JGyBVU+eog8=;
+        b=1EBA3+V804rt47qlprd0RUNtZvDTp3gX9e+JSaQkFYVvO9my28iAerpC6JKqTLv3aXw/9Q
+        WnPrz1E9oDgXBwBg==
+To:     Jens Axboe <axboe@kernel.dk>, Stefan Metzmacher <metze@samba.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2] io_thread/x86: setup io_threads more like normal user space threads
+In-Reply-To: <878s4soncx.ffs@nanos.tec.linutronix.de>
+References: <20210411152705.2448053-1-metze@samba.org> <20210505110310.237537-1-metze@samba.org> <df4b116a-3324-87b7-ff40-67d134b4e55c@kernel.dk> <878s4soncx.ffs@nanos.tec.linutronix.de>
+Date:   Thu, 06 May 2021 00:07:43 +0200
+Message-ID: <875yzwomvk.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, May 05 2021 at 23:57, Thomas Gleixner wrote:
+> On Wed, May 05 2021 at 15:24, Jens Axboe wrote:
+>> On 5/5/21 5:03 AM, Stefan Metzmacher wrote:
+>>> As io_threads are fully set up USER threads it's clearer to
+>>> separate the code path from the KTHREAD logic.
+>>> 
+>>> The only remaining difference to user space threads is that
+>>> io_threads never return to user space again.
+>>> Instead they loop within the given worker function.
+>>> 
+>>> The fact that they never return to user space means they
+>>> don't have an user space thread stack. In order to
+>>> indicate that to tools like gdb we reset the stack and instruction
+>>> pointers to 0.
+>>> 
+>>> This allows gdb attach to user space processes using io-uring,
+>>> which like means that they have io_threads, without printing worrying
+>>> message like this:
+>>> 
+>>>   warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
+>>> 
+>>>   warning: Architecture rejected target-supplied description
+>>> 
+>>> The output will be something like this:
+>>> 
+>>>   (gdb) info threads
+>>>     Id   Target Id                  Frame
+>>>   * 1    LWP 4863 "io_uring-cp-for" syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+>>>     2    LWP 4864 "iou-mgr-4863"    0x0000000000000000 in ?? ()
+>>>     3    LWP 4865 "iou-wrk-4863"    0x0000000000000000 in ?? ()
+>>>   (gdb) thread 3
+>>>   [Switching to thread 3 (LWP 4865)]
+>>>   #0  0x0000000000000000 in ?? ()
+>>>   (gdb) bt
+>>>   #0  0x0000000000000000 in ?? ()
+>>>   Backtrace stopped: Cannot access memory at address 0x0
+>>
+>> I have queued this one up in the io_uring branch, also happy to drop it if
+>> the x86 folks want to take it instead. Let me know!
+>
+> I have no objections, but heck what's the rush here?
+>
+> Waiting a day for the x86 people to respond it not too much asked for
+> right?
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
-for-next
+That said, the proper subject line would be:
 
-Head SHA1: 8c9af478c06bb1ab1422f90d8ecbc53defd44bc3
+  x86/process: Setup io_threads ....
 
+Aside of that:
 
-Steven Rostedt (VMware) (1):
-      ftrace: Handle commands when closing set_ftrace_filter file
-
-----
- kernel/trace/ftrace.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
----------------------------
-commit 8c9af478c06bb1ab1422f90d8ecbc53defd44bc3
-Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Date:   Wed May 5 10:38:24 2021 -0400
-
-    ftrace: Handle commands when closing set_ftrace_filter file
-    
-     # echo switch_mm:traceoff > /sys/kernel/tracing/set_ftrace_filter
-    
-    will cause switch_mm to stop tracing by the traceoff command.
-    
-     # echo -n switch_mm:traceoff > /sys/kernel/tracing/set_ftrace_filter
-    
-    does nothing.
-    
-    The reason is that the parsing in the write function only processes
-    commands if it finished parsing (there is white space written after the
-    command). That's to handle:
-    
-     write(fd, "switch_mm:", 10);
-     write(fd, "traceoff", 8);
-    
-    cases, where the command is broken over multiple writes.
-    
-    The problem is if the file descriptor is closed, then the write call is
-    not processed, and the command needs to be processed in the release code.
-    The release code can handle matching of functions, but does not handle
-    commands.
-    
-    Cc: stable@vger.kernel.org
-    Fixes: eda1e32855656 ("tracing: handle broken names in ftrace filter")
-    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 057e962ca5ce..c57508445faa 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5591,7 +5591,10 @@ int ftrace_regex_release(struct inode *inode, struct file *file)
- 
- 	parser = &iter->parser;
- 	if (trace_parser_loaded(parser)) {
--		ftrace_match_records(iter->hash, parser->buffer, parser->idx);
-+		int enable = !(iter->flags & FTRACE_ITER_NOTRACE);
-+
-+		ftrace_process_regex(iter, parser->buffer,
-+				     parser->idx, enable);
- 	}
- 
- 	trace_parser_put(parser);
+      Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
