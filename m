@@ -2,105 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A01537397E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 008A637398E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:37:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233134AbhEELfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:35:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232993AbhEELfq (ORCPT
+        id S233096AbhEELiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:38:14 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50538 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232917AbhEELiN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:35:46 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16D7C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 04:34:49 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x19so2104886lfa.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 04:34:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IgvoE77MnMbex7B2S0TkrRa1RsaV/q1aQVIu3eT5F4I=;
-        b=dAIjjW2qqzmG32ewtdJN+Q3kO51I+XWS+ICZ5Q/QlSc2OVA+FPOXH5+6ZS9pXMnlZE
-         Wxkl5zEarjWAxfNUZtq5GqF0sd6K4VBDcbpjzDWdxZeMXHrEdAxDgvzeOWqFlMh12LiQ
-         Cq19ZFLDmD9FpgdjvSoafBFGgrQ67n6PLXpV7YuSoimkTtCr4Yo/pze+IqCqjBaOcPUp
-         rYKBPzZsjA6JkGrfrsqxLXLAjGsJEdMVrujwr59VLv4B0a9ClOIxKk4knJnJhEe4VLet
-         NgrSgD4d3S6nbuNcvaP39+rn0ISeLOg4fM86jrwl15wcqhO+SkMfUxMic+EcMKsMIHSx
-         sNmA==
+        Wed, 5 May 2021 07:38:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620214636;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=C5Lah4Bb8DHKwVhTcxaDUF/2d0Qp2D0Gt9JdNQHVqpM=;
+        b=FSIy6NC3MVwTWLIcm6igyLXXY+7p3hvqPxTCuyVZahralKMEQjCpVT13cBn7pHndKzvYVZ
+        khcDddNu48ZwkybvCjwoJ8vYns+pCxCQyyjlJMuFRDdhabz6UKuE8Rr/eMbNA8pZlGH7mC
+        TEJ9hxkO0hx+94XfgoQ8h8ctofoWD5c=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-350-zSzpoIZHOsWIjKJCmmA8Rg-1; Wed, 05 May 2021 07:37:15 -0400
+X-MC-Unique: zSzpoIZHOsWIjKJCmmA8Rg-1
+Received: by mail-ed1-f71.google.com with SMTP id c15-20020a056402100fb029038518e5afc5so697621edu.18
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 04:37:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IgvoE77MnMbex7B2S0TkrRa1RsaV/q1aQVIu3eT5F4I=;
-        b=W5USbVJ6mmr6cOXvIUntcS+zcEIZJkVHk4jqydrGuz3jJYvuJzsiVQKx+zeNqJnaQ1
-         L/AEDhqygfqeVf91KbCgXtt1F1TiUtwxgizBTju6MR8ITaErH8QHkPrcf5HAGeHZDDNr
-         3ioQYaL/BP6nwYR3avj/F/6MrlU47QpkFXh37V4eUDFhOZGuhFTFi3dBAHuWE8BCuso4
-         suR1uLkg37jNdRnhcv5NQRnf6SsUXn80QOIY7RlDtmTyrB2vRsYgAC7gvbQdskQ5BJLe
-         VQQdHS/ByVRe3zyIgzC40VTQRz/JjS6ErHsC5l4wkcBsWKn0twGn6UQYYGTlS73MaDIj
-         jiMg==
-X-Gm-Message-State: AOAM5308f0INILHQV0uJZcBbj+QuS9U1mJcMCBZXPCIyks7LDisgFyij
-        M+eBSwUZgcA1A1w4dc9jOVGXIyNL3ZEmyfjDZRBjAw==
-X-Google-Smtp-Source: ABdhPJzSF9AHtOJF7IjLoW++ovuVHUkakgCSuRT8+ZsyQan+kbMdLPrMBrXFyvwHLXQlXaBHgo0G0xAvZDHqik5psVs=
-X-Received: by 2002:ac2:5e36:: with SMTP id o22mr10820729lfg.529.1620214488167;
- Wed, 05 May 2021 04:34:48 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=C5Lah4Bb8DHKwVhTcxaDUF/2d0Qp2D0Gt9JdNQHVqpM=;
+        b=Z9v59crdH3M911z8Tud8AZF9LMLEB+gFAOabow34Ib0XLfJhwn06YpF6+oFF+9jFXu
+         wWLBFJm1k+X2FKhTE8Dza5vMFQOoHpTWNLa/N5bROo0ZT2NnZ6Yd4cO5WY3QyEmuY1J9
+         a4GB19ca0UO8CtnQ3AivI+TA1ceKcsmOKI7LU6QkCB6iDRr1ksRLoqiE3COzBRI4Klm4
+         GJ+8B9MIuKOhFv1UKoCJ6JJirWf7rr0FceLNOkmqgin8GXzZdh1GIEXGPqN0Q0QAT84m
+         NLefoQ/Vh2vZkYjzViJOKgr8IX4pIE42eIDt8mqxKaierwmbyIdXp3dE/HbB2bEr3sP8
+         2EHg==
+X-Gm-Message-State: AOAM533nlbMaCjT3aqc/R5CkJfMWWG6BX/R1Z+XDvUuWRKzn9QKreeOg
+        4rrzwxZjgafAw1d7+q6ZQWO5+7665W5IpMeaYKCiaTz9drQLpFadGlZ/CDr2I4aLCmmjaxUj03j
+        PFK0ggOO6caU/3AWtayEwMHQ5
+X-Received: by 2002:a17:906:ce5a:: with SMTP id se26mr27558898ejb.332.1620214634249;
+        Wed, 05 May 2021 04:37:14 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwvqQBG09+x9kPbhc/155unYddBlPP6BJb1muXWMIK8OXYKn1M29PWBNb8X2eVyIfruqOJ9YQ==
+X-Received: by 2002:a17:906:ce5a:: with SMTP id se26mr27558870ejb.332.1620214634029;
+        Wed, 05 May 2021 04:37:14 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id u25sm2780048ejb.12.2021.05.05.04.37.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 04:37:13 -0700 (PDT)
+Subject: Re: [PATCH 4/6] kvm: Select SCHED_INFO instead of TASK_DELAY_ACCT
+To:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, bsingharora@gmail.com, maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        riel@surriel.com, hannes@cmpxchg.org
+References: <20210505105940.190490250@infradead.org>
+ <20210505111525.187225172@infradead.org>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <4f35124c-1127-2629-2e00-800bc965e9f1@redhat.com>
+Date:   Wed, 5 May 2021 13:37:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
- <YHj02M3jMSweoP4l@google.com> <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
- <CANiq72niCj9SfPhfQBMtxF+jth--cXdPQtUo5jhDDJgL6DTXZQ@mail.gmail.com>
- <CACRpkdarfkA1P0ERCXHSA=6VTBn6FXgOxB8haneQtN_4-tyQ0w@mail.gmail.com>
- <CANiq72=VA_cH9yw_LZr3P+n1AsQEEhtY4xdk76jHgimTufHRsQ@mail.gmail.com>
- <CACRpkdYodGnURuaYMBwVAY=8bU0PQoPAvTp34uYksPFmxBsT2A@mail.gmail.com>
- <CANiq72m9V3dVG59jAoR-OM+7QtJauQgrix3DZkw=oCuaaf3H5w@mail.gmail.com>
- <CACRpkdYzqy69G1Fpj4rFQFS+mYmpbQAzTszwCUBuEhe4YW4cuQ@mail.gmail.com> <CANiq72k+x13L+sFkjtDLahcvnpEySqk_NGow6FVMZfrV+MmHPw@mail.gmail.com>
-In-Reply-To: <CANiq72k+x13L+sFkjtDLahcvnpEySqk_NGow6FVMZfrV+MmHPw@mail.gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 5 May 2021 13:34:37 +0200
-Message-ID: <CACRpkdbNv4O7zs0OpZhWa2fkXkF5arQgDOF9++zKvr+yB5yk_w@mail.gmail.com>
-Subject: Re: [PATCH 00/13] [RFC] Rust support
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Miguel Ojeda <ojeda@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        rust-for-linux <rust-for-linux@vger.kernel.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210505111525.187225172@infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 1:30 AM Miguel Ojeda
-<miguel.ojeda.sandonis@gmail.com> wrote:
-> On Tue, May 4, 2021 at 11:21 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+On 05/05/21 12:59, Peter Zijlstra wrote:
+> AFAICT KVM only relies on SCHED_INFO. Nothing uses the p->delays data
+> that belongs to TASK_DELAY_ACCT.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-> > I think right now the right thing for Rust is to work out-of-tree until
-> > there is Rust support for all archs, while encouraging kernel
-> > developers to learn the language.
->
-> That would be an option, yes, but if the decision ends up being made
-> and we are encouraging kernel developers to learn the language, what
-> do we achieve by keeping things out-of-tree?
->
-> In fact, by getting in-tree people, organizations & companies would be
-> encouraged to give more support sooner rather than later to the LLVM
-> backends they care about and/or to the GCC frontend for Rust. So, in a
-> way, it can be a win for those projects too.
+Right, SCHED_INFO didn't exist at the time (it was introduced in 2015, 
+while KVM started using run_delay in 2011).  I'm not sure if it could 
+have used SCHEDSTATS instead.
 
-In a way it is a fair point because for example Unix and C evolved
-together and were intermingled at the onset. And they kind of
-needed each other to evolve.
+Acked-by: Paolo Bonzini <pbonzini@redhat.com>
 
-Right now it seems like those organizations and companies
-would be some academic institutions who like rust (because they
-study languages and compilers) and Google. But that is a
-pretty nice start, and one upside I would see in it is that
-the academic people stop writing so many papers and get their
-hands dirty and work on practical problems in the kernel. So
-if that can be achieved I would be happy.
+Paolo
 
-Yours,
-Linus Walleij
+> ---
+>   arch/arm64/kvm/Kconfig |    5 +----
+>   arch/x86/kvm/Kconfig   |    5 +----
+>   2 files changed, 2 insertions(+), 8 deletions(-)
+> 
+> --- a/arch/arm64/kvm/Kconfig
+> +++ b/arch/arm64/kvm/Kconfig
+> @@ -20,8 +20,6 @@ if VIRTUALIZATION
+>   menuconfig KVM
+>   	bool "Kernel-based Virtual Machine (KVM) support"
+>   	depends on OF
+> -	# for TASKSTATS/TASK_DELAY_ACCT:
+> -	depends on NET && MULTIUSER
+>   	select MMU_NOTIFIER
+>   	select PREEMPT_NOTIFIERS
+>   	select HAVE_KVM_CPU_RELAX_INTERCEPT
+> @@ -38,8 +36,7 @@ menuconfig KVM
+>   	select IRQ_BYPASS_MANAGER
+>   	select HAVE_KVM_IRQ_BYPASS
+>   	select HAVE_KVM_VCPU_RUN_PID_CHANGE
+> -	select TASKSTATS
+> -	select TASK_DELAY_ACCT
+> +	select SCHED_INFO
+>   	help
+>   	  Support hosting virtualized guest machines.
+>   
+> --- a/arch/x86/kvm/Kconfig
+> +++ b/arch/x86/kvm/Kconfig
+> @@ -22,8 +22,6 @@ config KVM
+>   	tristate "Kernel-based Virtual Machine (KVM) support"
+>   	depends on HAVE_KVM
+>   	depends on HIGH_RES_TIMERS
+> -	# for TASKSTATS/TASK_DELAY_ACCT:
+> -	depends on NET && MULTIUSER
+>   	depends on X86_LOCAL_APIC
+>   	select PREEMPT_NOTIFIERS
+>   	select MMU_NOTIFIER
+> @@ -36,8 +34,7 @@ config KVM
+>   	select KVM_ASYNC_PF
+>   	select USER_RETURN_NOTIFIER
+>   	select KVM_MMIO
+> -	select TASKSTATS
+> -	select TASK_DELAY_ACCT
+> +	select SCHED_INFO
+>   	select PERF_EVENTS
+>   	select HAVE_KVM_MSI
+>   	select HAVE_KVM_CPU_RELAX_INTERCEPT
+> 
+> 
+
