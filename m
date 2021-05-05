@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A94EC37439B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 214463743A8
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234730AbhEEQvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:51:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39572 "EHLO mail.kernel.org"
+        id S235317AbhEEQv0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:51:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234476AbhEEQnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:43:12 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 023A361624;
-        Wed,  5 May 2021 16:34:55 +0000 (UTC)
+        id S234663AbhEEQn1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:43:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3971361625;
+        Wed,  5 May 2021 16:35:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232496;
-        bh=AE+X5Eah/n8cO4IQIZGdsCNrvJn7jm+Frxh8LLMq1jk=;
+        s=k20201202; t=1620232501;
+        bh=Vtih4XqSlGzRgqVbBsR1hXZkNO3qTTXktN2pyCKWEH8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=unyLt/KJcWbTZKLpJ7kk+No2RNpPK3d1BB8pyd0Ih+TEyJ4XsJR9N3LI1tEpmZUqD
-         lAM+IDq2ihx/8zhWONZRBMSOEpQihGs2yJVL7kVV4WRwR0vyygAYj+2Qe+/4SglzFj
-         uzKJw2WguRCtWPFvsiiNubw2A86bOT3S3mVoH50s10OXKKuIjVzPvagK0u+HGEa134
-         WIRDtB/Q2jKjZi5lG8OQu211GnZF08BuJF4vHDx4zt5MZICFLopITMy96meYYTjK2N
-         NFAxA4n7pnK5/fz9bWMnDFEksnNgjY3+JnN+QjyPv748UXIqg5wgC0v04tTJdTTKRp
-         hP+HrZZyKmmAg==
+        b=TsBubsR3i5tQdAAgFjJhTYHOwWvCM7XCEM9YdiDuvoAzqKDv7AZQhNvo+by3V+cuP
+         vrvPFPJyBj3Ntx75XIQVAiIMUlMKg2PFZxzkVYVPnQgqh5aEKg3JC6xwpEOvwTqItl
+         JFw5xB/oTgoMP1iUE/o7H3Ee1DzG0z/5Ccz3gzB08j2thq7mSUyj8xm3LyG0Xjh3WI
+         redctkN1L869KsyG3Pc4eFbWd8zE7pALB+8GaGTVy6efqTQuQOlYOWXxSA9h6ZDqfQ
+         ruhPJ3ipL7kF1jw0FkF/9qiYWA4cWJ+AzWHhM6ukRNa+uJLbYuAKgr3N3WF3xAhw3c
+         P3+YCb97oG57w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.11 030/104] powerpc/32: Statically initialise first emergency context
-Date:   Wed,  5 May 2021 12:32:59 -0400
-Message-Id: <20210505163413.3461611-30-sashal@kernel.org>
+Cc:     Eric Dumazet <edumazet@google.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 033/104] ip6_vti: proper dev_{hold|put} in ndo_[un]init methods
+Date:   Wed,  5 May 2021 12:33:02 -0400
+Message-Id: <20210505163413.3461611-33-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -42,57 +42,96 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
+From: Eric Dumazet <edumazet@google.com>
 
-[ Upstream commit a4719f5bb6d7dc220bffdc1b9f5ce5eaa5543581 ]
+[ Upstream commit 40cb881b5aaa0b69a7d93dec8440d5c62dae299f ]
 
-The check of the emergency context initialisation in
-vmap_stack_overflow is buggy for the SMP case, as it
-compares r1 with 0 while in the SMP case r1 is offseted
-by the CPU id.
+After adopting CONFIG_PCPU_DEV_REFCNT=n option, syzbot was able to trigger
+a warning [1]
 
-Instead of fixing it, just perform static initialisation
-of the first emergency context.
+Issue here is that:
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/4a67ba422be75713286dca0c86ee0d3df2eb6dfa.1615552867.git.christophe.leroy@csgroup.eu
+- all dev_put() should be paired with a corresponding prior dev_hold().
+
+- A driver doing a dev_put() in its ndo_uninit() MUST also
+  do a dev_hold() in its ndo_init(), only when ndo_init()
+  is returning 0.
+
+Otherwise, register_netdevice() would call ndo_uninit()
+in its error path and release a refcount too soon.
+
+Therefore, we need to move dev_hold() call from
+vti6_tnl_create2() to vti6_dev_init_gen()
+
+[1]
+WARNING: CPU: 0 PID: 15951 at lib/refcount.c:31 refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
+Modules linked in:
+CPU: 0 PID: 15951 Comm: syz-executor.3 Not tainted 5.12.0-rc4-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:refcount_warn_saturate+0xbf/0x1e0 lib/refcount.c:31
+Code: 1d 6a 5a e8 09 31 ff 89 de e8 8d 1a ab fd 84 db 75 e0 e8 d4 13 ab fd 48 c7 c7 a0 e1 c1 89 c6 05 4a 5a e8 09 01 e8 2e 36 fb 04 <0f> 0b eb c4 e8 b8 13 ab fd 0f b6 1d 39 5a e8 09 31 ff 89 de e8 58
+RSP: 0018:ffffc90001eaef28 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff815c51f5 RDI: fffff520003d5dd7
+RBP: 0000000000000004 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815bdf8e R11: 0000000000000000 R12: ffff88801bb1c568
+R13: ffff88801f69e800 R14: 00000000ffffffff R15: ffff888050889d40
+FS:  00007fc79314e700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f1c1ff47108 CR3: 0000000020fd5000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __refcount_dec include/linux/refcount.h:344 [inline]
+ refcount_dec include/linux/refcount.h:359 [inline]
+ dev_put include/linux/netdevice.h:4135 [inline]
+ vti6_dev_uninit+0x31a/0x360 net/ipv6/ip6_vti.c:297
+ register_netdevice+0xadf/0x1500 net/core/dev.c:10308
+ vti6_tnl_create2+0x1b5/0x400 net/ipv6/ip6_vti.c:190
+ vti6_newlink+0x9d/0xd0 net/ipv6/ip6_vti.c:1020
+ __rtnl_newlink+0x1062/0x1710 net/core/rtnetlink.c:3443
+ rtnl_newlink+0x64/0xa0 net/core/rtnetlink.c:3491
+ rtnetlink_rcv_msg+0x44e/0xad0 net/core/rtnetlink.c:5553
+ netlink_rcv_skb+0x153/0x420 net/netlink/af_netlink.c:2502
+ netlink_unicast_kernel net/netlink/af_netlink.c:1312 [inline]
+ netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1338
+ netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1927
+ sock_sendmsg_nosec net/socket.c:654 [inline]
+ sock_sendmsg+0xcf/0x120 net/socket.c:674
+ ____sys_sendmsg+0x331/0x810 net/socket.c:2350
+ ___sys_sendmsg+0xf3/0x170 net/socket.c:2404
+ __sys_sendmmsg+0x195/0x470 net/socket.c:2490
+ __do_sys_sendmmsg net/socket.c:2519 [inline]
+ __se_sys_sendmmsg net/socket.c:2516 [inline]
+ __x64_sys_sendmmsg+0x99/0x100 net/socket.c:2516
+
+Signed-off-by: Eric Dumazet <edumazet@google.com>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/head_32.h  | 6 +-----
- arch/powerpc/kernel/setup_32.c | 2 +-
- 2 files changed, 2 insertions(+), 6 deletions(-)
+ net/ipv6/ip6_vti.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
-index abc7b603ab65..294dd0082ad2 100644
---- a/arch/powerpc/kernel/head_32.h
-+++ b/arch/powerpc/kernel/head_32.h
-@@ -331,11 +331,7 @@
- 	lis	r1, emergency_ctx@ha
- #endif
- 	lwz	r1, emergency_ctx@l(r1)
--	cmpwi	cr1, r1, 0
--	bne	cr1, 1f
--	lis	r1, init_thread_union@ha
--	addi	r1, r1, init_thread_union@l
--1:	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
-+	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
- 	EXCEPTION_PROLOG_2
- 	SAVE_NVGPRS(r11)
- 	addi	r3, r1, STACK_FRAME_OVERHEAD
-diff --git a/arch/powerpc/kernel/setup_32.c b/arch/powerpc/kernel/setup_32.c
-index 8ba49a6bf515..d7c1f92152af 100644
---- a/arch/powerpc/kernel/setup_32.c
-+++ b/arch/powerpc/kernel/setup_32.c
-@@ -164,7 +164,7 @@ void __init irqstack_early_init(void)
+diff --git a/net/ipv6/ip6_vti.c b/net/ipv6/ip6_vti.c
+index f10e7a72ea62..a018afdb3e06 100644
+--- a/net/ipv6/ip6_vti.c
++++ b/net/ipv6/ip6_vti.c
+@@ -193,7 +193,6 @@ static int vti6_tnl_create2(struct net_device *dev)
+ 
+ 	strcpy(t->parms.name, dev->name);
+ 
+-	dev_hold(dev);
+ 	vti6_tnl_link(ip6n, t);
+ 
+ 	return 0;
+@@ -932,6 +931,7 @@ static inline int vti6_dev_init_gen(struct net_device *dev)
+ 	dev->tstats = netdev_alloc_pcpu_stats(struct pcpu_sw_netstats);
+ 	if (!dev->tstats)
+ 		return -ENOMEM;
++	dev_hold(dev);
+ 	return 0;
  }
  
- #ifdef CONFIG_VMAP_STACK
--void *emergency_ctx[NR_CPUS] __ro_after_init;
-+void *emergency_ctx[NR_CPUS] __ro_after_init = {[0] = &init_stack};
- 
- void __init emergency_stack_init(void)
- {
 -- 
 2.30.2
 
