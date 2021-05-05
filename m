@@ -2,96 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FEBE37342F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 06:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C13A37346A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 06:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhEEESR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 00:18:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43910 "EHLO
+        id S231319AbhEEE2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 00:28:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45914 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230515AbhEEESP (ORCPT
+        with ESMTP id S231380AbhEEE2a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 00:18:15 -0400
-Received: from mail-vs1-xe2f.google.com (mail-vs1-xe2f.google.com [IPv6:2607:f8b0:4864:20::e2f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6DF5C061574;
-        Tue,  4 May 2021 21:17:18 -0700 (PDT)
-Received: by mail-vs1-xe2f.google.com with SMTP id r18so440837vso.12;
-        Tue, 04 May 2021 21:17:18 -0700 (PDT)
+        Wed, 5 May 2021 00:28:30 -0400
+Received: from mail-qk1-x72f.google.com (mail-qk1-x72f.google.com [IPv6:2607:f8b0:4864:20::72f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35362C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 21:26:44 -0700 (PDT)
+Received: by mail-qk1-x72f.google.com with SMTP id q136so411790qka.7
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 21:26:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=yWX4oJR4tsVyMxcW0RBqF75Bbh7IX1sBST4dlvOh10c=;
-        b=BU15yE000ZMck7FNXICtJ8wCfvnd/OqEMt2y7fs0fgXB8jz6BMI9XncK8Wm/vA24hM
-         Soo22Kl2m1o3f+upRMDBPSQHybt+vqYeO9O/0zk/ACLiaMQMGk6A9GN3bJu6n2dz+yLd
-         Z/104QxKWbFDgVuwSNqIdfUnuT5N31x5zb+E17SXd4TjkDdxTdCDk+2JT94LrOOanasW
-         jnpyntDjnbun4D/cAmeeJDZ8JRtiMnnycyQdkG1e09PT8vp6mzi/y9MQXtTTXHQBY7i/
-         LQ2+v5ZHwGuD8oXkNNyJf+IplJ2Y+3huT+smNNupNX5GJSHAbroY4delkfRhym3Nm02a
-         8o8A==
+        d=sifive.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=MWSpjxBHV1vRQCEcIIgUFYsW0arewhxrx2qqTW/rPlY=;
+        b=eG4DO5aZCjdAptZWJyANSIWrnjQfoI+YnXphlXLmQkVHW2OlYy15msNEav3uhLMHv+
+         9MC/49Ilp4ZUGHTZ91k1Ztq8VXZ2uQSVkHGeyblBNhtAfJ/YyYKFdWPXBjBocTAWnRIM
+         xNsyfLfBo83J+sPbjEojQCHGGi8NYXE4aDpKBLoaqOjgQDifZaLk5OyDBgE2i0d3vGh8
+         SK9AnSO5usHR4SWn950rRy8EzLZraCq90VeDCdzstYUKx4Yh0W1qka2UuaQlmaLu7agB
+         IvNIuhwuWm/QYlxp+BzrW6JNQs30u2smfSWsYf4m6c8GnnrGfiAFwEHjRcHArXFI6tsu
+         XDTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=yWX4oJR4tsVyMxcW0RBqF75Bbh7IX1sBST4dlvOh10c=;
-        b=rdzkbGNJpmOVbF4EB0ikhBbPQrK8rlRaKseKBMJ+oFGb2QgeG4nDJ0aq+1M4u0V3Tx
-         aBifhnE7YsyGRZAY8gGLqBNxp3DWxIXGGzZP6tHC5Z4KPYLf5gAjr+i+tPNuitQZ3Pwt
-         cA4B7SZPP/yveChF8Y752YT2QBBOkDBFSc0WRwJ8PS2oCEz7bnxYCrY8lTWBuNDh4hAz
-         qepPK0ulTirq7Xo376N6zpjzZH9YWG7z06WMOpbnQLvRhOvVXLIlhWcCITeiMGHoLGan
-         lZ5bwfaMwtD2HTIj2886RQMJx0svSiRZLnhK6royWP+OKczk6Fsupi6gk0XLoRAg0XdG
-         G7TA==
-X-Gm-Message-State: AOAM533ZdTvebSLAw2qeVctVQqGvteLmBn3pJOg2wbezTCVMmek/W1m0
-        1fweT+wIj8KmnQrm8l4Kg6E=
-X-Google-Smtp-Source: ABdhPJzAO4Suv/5mO4UkLcEyRpoSuJrEA15sGU511QPNtZLmxb5ZLx27qzPkXhqP3OK3EQYSgvZnZA==
-X-Received: by 2002:a67:8008:: with SMTP id b8mr1139349vsd.13.1620188238228;
-        Tue, 04 May 2021 21:17:18 -0700 (PDT)
-Received: from localhost.localdomain ([65.48.163.91])
-        by smtp.gmail.com with ESMTPSA id o35sm594070uae.3.2021.05.04.21.17.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 21:17:17 -0700 (PDT)
-From:   Sean Gloumeau <sajgloumeau@gmail.com>
-To:     Jiri Kosina <trivial@kernel.org>
-Cc:     kbingham@kernel.org, David Woodhouse <dwmw2@infradead.org>,
-        Richard Weinberger <richard@nod.at>,
-        linux-mtd@lists.infradead.org, Rasesh Mody <rmody@marvell.com>,
-        Sudarsana Kalluru <skalluru@marvell.com>,
-        GR-Linux-NIC-Dev@marvell.com, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Sean Gloumeau <sajgloumeau@protonmail.com>,
-        Sean Gloumeau <sajgloumeau@gmail.com>
-Subject: [PATCH 3/3] Add entries for words with stem "eleminat"
-Date:   Wed,  5 May 2021 00:17:08 -0400
-Message-Id: <6a526dbf75f6445f3711df0a201a48f8ac3149cd.1620185393.git.sajgloumeau@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <cover.1620185393.git.sajgloumeau@gmail.com>
-References: <cover.1620185393.git.sajgloumeau@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=MWSpjxBHV1vRQCEcIIgUFYsW0arewhxrx2qqTW/rPlY=;
+        b=llSF0NoLOFmY2WTE2KZqMk3XA8gevRoP8ZQynx+uHwmxVXAY/pPaM6DOE2PMLD0XoA
+         pAVfhFmoee8U0jFTnWj75wH2WUR7X1cIZESNwOG8ONNHECB7Xs5tl3z2UmcwE+isk/TY
+         m80QpzBbuPkGhI/yg8IdFgM3wK1hQwo2b+Y1uRIT096zHgDznRKp7iWMVOhKkQ0KLn78
+         rzgjmxClhFP9Tv1eXk8z1wnZSdAgojeFrXDfoAed4q1gX808HhVHtkLs7yMtk6V8nnT6
+         JaOPP+kdL8PycDr4Z19W1yPtHQgo01/ukIYmT8P56aXL3ky6ST/RIgqhJIgs4NB6mP3V
+         3kUw==
+X-Gm-Message-State: AOAM530A5XvdQCuWF8vZW2ndR1pnbFEczShVMyI8AUt0FCZpVSN1++KN
+        a6mocphtLgv87qv+blV2kECu6FWIUgA/wtzv2nazgA==
+X-Google-Smtp-Source: ABdhPJyyjim3sI4ReEhGXSHiHPSliwht/DIqCZWGZeFpAExlyKtWwB5fVEGkkFBLw60H7cFK5hOmWGBArsLX6P7qFAk=
+X-Received: by 2002:a05:620a:29c4:: with SMTP id s4mr25568588qkp.401.1620188803215;
+ Tue, 04 May 2021 21:26:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210504105940.100004-6-greentime.hu@sifive.com> <20210504134632.GA1088165@bjorn-Precision-5520>
+In-Reply-To: <20210504134632.GA1088165@bjorn-Precision-5520>
+From:   Greentime Hu <greentime.hu@sifive.com>
+Date:   Wed, 5 May 2021 12:26:31 +0800
+Message-ID: <CAHCEehL21cFLp+JWMhKP8rAVtGunMv2fmfo6C6tbTGpgL9q2RA@mail.gmail.com>
+Subject: Re: [PATCH v6 5/6] PCI: fu740: Add SiFive FU740 PCIe host controller driver
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Paul Walmsley <paul.walmsley@sifive.com>, hes@sifive.com,
+        Erik Danie <erik.danie@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, robh+dt@kernel.org,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>, alex.dewar90@gmail.com,
+        khilman@baylibre.com, hayashi.kunihiko@socionext.com,
+        vidyas@nvidia.com, jh80.chung@samsung.com,
+        linux-pci@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Entries are added to spelling.txt in order to prevent spelling mistakes
-involving words with stem "eliminat" from occurring again.
+Bjorn Helgaas <helgaas@kernel.org> =E6=96=BC 2021=E5=B9=B45=E6=9C=884=E6=97=
+=A5 =E9=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=889:46=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> On Tue, May 04, 2021 at 06:59:39PM +0800, Greentime Hu wrote:
+> > From: Paul Walmsley <paul.walmsley@sifive.com>
+> >
+> > Add driver for the SiFive FU740 PCIe host controller.
+> > This controller is based on the DesignWare PCIe core.
+> >
+> > Signed-off-by: Paul Walmsley <paul.walmsley@sifive.com>
+> > Co-developed-by: Henry Styles <hes@sifive.com>
+> > Signed-off-by: Henry Styles <hes@sifive.com>
+> > Co-developed-by: Erik Danie <erik.danie@sifive.com>
+> > Signed-off-by: Erik Danie <erik.danie@sifive.com>
+> > Co-developed-by: Greentime Hu <greentime.hu@sifive.com>
+> > Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
+> > ---
+> >  drivers/pci/controller/dwc/Kconfig      |  10 +
+> >  drivers/pci/controller/dwc/Makefile     |   1 +
+> >  drivers/pci/controller/dwc/pcie-fu740.c | 309 ++++++++++++++++++++++++
+> >  3 files changed, 320 insertions(+)
+> >  create mode 100644 drivers/pci/controller/dwc/pcie-fu740.c
+> >
+> > diff --git a/drivers/pci/controller/dwc/Kconfig b/drivers/pci/controlle=
+r/dwc/Kconfig
+> > index 22c5529e9a65..255d43b1661b 100644
+> > --- a/drivers/pci/controller/dwc/Kconfig
+> > +++ b/drivers/pci/controller/dwc/Kconfig
+> > @@ -318,4 +318,14 @@ config PCIE_AL
+> >         required only for DT-based platforms. ACPI platforms with the
+> >         Annapurna Labs PCIe controller don't need to enable this.
+> >
+> > +config PCIE_FU740
+> > +     bool "SiFive FU740 PCIe host controller"
+> > +     depends on PCI_MSI_IRQ_DOMAIN
+> > +     depends on SOC_SIFIVE || COMPILE_TEST
+> > +     depends on GPIOLIB
+>
+> 1) I'm a little disappointed that I reported the build issue 6 days
+>    ago when we were already in the merge window, and it's taken until
+>    now to make some progress.
+>
+> 2) I would prefer not to depend on GPIOLIB because it reduces
+>    compile-test coverage.  For example, the x86_64 defconfig does not
+>    enable GPIOLIB, so one must manually enable it to even be able to
+>    enable PCIE_FU740.
+>
+>    Many other PCI controller drivers use GPIO, but no others depend on
+>    GPIOLIB, so I infer that in the !GPIOLIB case, gpio/consumer.h
+>    provides the stubs required for compile testing.
+>
+>    We could have a conversation about whether it's better to
+>    explicitly depend on GPIOLIB here, or whether building a working
+>    FU740 driver implicitly depends on GPIOLIB being selected
+>    elsewhere.  That implicit dependency *is* a little obscure, but I
+>    think that's what other drivers currently do, and I'd like to do
+>    this consistently unless there's a good reason otherwise.
+>
+>    Here are some examples of other drivers:
+>
+>    dwc/pci-dra7xx.c:
+>      config PCI_DRA7XX_HOST
+>        depends on SOC_DRA7XX || COMPILE_TEST
+>
+>      config SOC_DRA7XX
+>        select ARCH_OMAP2PLUS
+>
+>      config ARCH_OMAP2PLUS
+>        select GPIOLIB
+>
+>    dwc/pci-meson.c:
+>      config PCI_MESON
+>        # doesn't, but probably *should* depend on "ARCH_MESON || COMPILE_=
+TEST"
+>
+>      menuconfig ARCH_MESON
+>        select GPIOLIB
+>
+>    dwc/pcie-qcom.c:
+>      config PCIE_QCOM
+>        depends on OF && (ARCH_QCOM || COMPILE_TEST)
+>
+>      config ARCH_QCOM
+>        select GPIOLIB
+>
+>    pcie-rockchip.c:
+>      config PCIE_ROCKCHIP_HOST
+>        depends on ARCH_ROCKCHIP || COMPILE_TEST
+>
+>      config ARCH_ROCKCHIP
+>        select GPIOLIB
+>
+> > +     select PCIE_DW_HOST
+> > +     help
+> > +       Say Y here if you want PCIe controller support for the SiFive
+> > +       FU740.
+> > +
+> >  endmenu
 
-Signed-off-by: Sean Gloumeau <sajgloumeau@gmail.com>
----
- scripts/spelling.txt | 3 +++
- 1 file changed, 3 insertions(+)
+Hi,
 
-diff --git a/scripts/spelling.txt b/scripts/spelling.txt
-index 7b6a01291598..e657be5aa2a9 100644
---- a/scripts/spelling.txt
-+++ b/scripts/spelling.txt
-@@ -548,6 +548,9 @@ ehther||ether
- eigth||eight
- elementry||elementary
- eletronic||electronic
-+eleminate||eliminate
-+eleminating||eliminating
-+elemination||elimination
- embeded||embedded
- enabledi||enabled
- enbale||enable
--- 
-2.31.1
+Sorry for late to debug this case. I was working on other works and
+just missed the email.
+How about this?
 
+diff --git a/arch/riscv/Kconfig.socs b/arch/riscv/Kconfig.socs
+index e1b2690b6e45..66f57f2db49d 100644
+--- a/arch/riscv/Kconfig.socs
++++ b/arch/riscv/Kconfig.socs
+@@ -7,6 +7,7 @@ config SOC_SIFIVE
+        select CLK_SIFIVE
+        select CLK_SIFIVE_PRCI
+        select SIFIVE_PLIC
++       select GPIOLIB if PCIE_FU740
+        help
+          This enables support for SiFive SoC platform hardware.
+
+diff --git a/drivers/pci/controller/dwc/Kconfig
+b/drivers/pci/controller/dwc/Kconfig
+index 255d43b1661b..0a37d21ed64e 100644
+--- a/drivers/pci/controller/dwc/Kconfig
++++ b/drivers/pci/controller/dwc/Kconfig
+@@ -322,7 +322,6 @@ config PCIE_FU740
+        bool "SiFive FU740 PCIe host controller"
+        depends on PCI_MSI_IRQ_DOMAIN
+        depends on SOC_SIFIVE || COMPILE_TEST
+-       depends on GPIOLIB
+        select PCIE_DW_HOST
+        help
+          Say Y here if you want PCIe controller support for the SiFive
