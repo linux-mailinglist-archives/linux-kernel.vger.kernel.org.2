@@ -2,78 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDD71373B06
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:21:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E607E373B0C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:23:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232981AbhEEMWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:22:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51450 "EHLO mail.kernel.org"
+        id S232910AbhEEMYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:24:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60830 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232440AbhEEMWi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:22:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C2D0E611EE;
-        Wed,  5 May 2021 12:21:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620217301;
-        bh=7IVvOEZYV1CnnsssmX7NXV+hvmd9q7XFY0JyQhEY/pQ=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=an75OSjlBEhBvTKKggaac94MbNhQgqhcpgF3VB1SKvI3UFoUpiesjudgTBGB7PDgK
-         k3LDifkV+WUTgbPtrh1DgdZLhsGWsfA/gQCiMsp9knaGyrO0g/Tl1v7ygM12OCB0uD
-         oHfq0l4Dn954nAxeO/VwjyJR/9FhspIOz4nAdjtzn76ivZHKjqDs39N4ZkPPFFmt6x
-         PxLOrcbx6T8myn0YBJJzAvifwp9W4BVqP7qulw6lDgMdD2CkQBsAjosdAzJXB23p2+
-         NEQh+YIBsekbhG2KYUDZ7M6N+xdXLzqxeaU3tb/nLqUdXRHhCzlv90zoQV5sZXpFTr
-         fqIUE9wVhboJg==
-Date:   Wed, 5 May 2021 14:21:38 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Benjamin Moody <benjamin.moody@gmail.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Benjamin Moody <bmoody@member.fsf.org>
-Subject: Re: [PATCH] HID: semitek: new driver for GK6X series keyboards
-In-Reply-To: <20210207184704.2961-1-benjamin.moody@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2105051421290.28378@cbobk.fhfr.pm>
-References: <20210207184704.2961-1-benjamin.moody@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S231129AbhEEMX7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:23:59 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9524CAF11;
+        Wed,  5 May 2021 12:23:02 +0000 (UTC)
+Date:   Wed, 5 May 2021 14:23:00 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, tglx@linutronix.de, bp@alien8.de,
+        thomas.lendacky@amd.com, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, pbonzini@redhat.com
+Subject: Re: [PATCH 0/3] x86/sev-es: rename file and other cleanup
+Message-ID: <YJKOJMZ+IdniIDmx@suse.de>
+References: <20210427111636.1207-1-brijesh.singh@amd.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210427111636.1207-1-brijesh.singh@amd.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 7 Feb 2021, Benjamin Moody wrote:
+On Tue, Apr 27, 2021 at 06:16:33AM -0500, Brijesh Singh wrote:
+> Brijesh Singh (3):
+>   x86/sev-es: Rename sev-es.{ch} to sev.{ch}
+>   x86/sev: Move GHCB MSR protocol and NAE definitions in a common header
+>   x86/msr: Rename MSR_K8_SYSCFG to MSR_AMD64_SYSCFG
 
-> From: Benjamin Moody <bmoody@member.fsf.org>
-> 
-> A number of USB keyboards, using the Semitek firmware, are capable of
-> handling arbitrary N-key rollover, but due to a buggy report
-> descriptor, keys beyond the sixth cannot be detected by the generic
-> HID driver.
-> 
-> There are numerous hardware variants sold by several vendors, mostly
-> using generic names like "GK61" for the 61-key version.  These
-> keyboards are sometimes known collectively as the "GK6X" series.
-> 
-> The keyboard has three USB interfaces.  Interface 0 uses the standard
-> HID boot protocol, limited to eight modifier keys and six normal keys;
-> interface 2 uses a custom report format that permits any number of
-> keys.  If more than six keys are pressed simultaneously, the first six
-> are reported via interface 0 while subsequent keys are reported via
-> interface 2.
-> 
-> (Interface 1 uses a custom protocol for reprogramming the keyboard;
-> this can be controlled through userspace tools and is not of concern
-> for the present driver.)
-> 
-> The report descriptor for interface 2, however, is incorrect (for
-> report ID 0x04, the input field is marked as "array" rather than
-> "variable".)  The descriptor appears to be correct in other respects,
-> so we simply replace the incorrect byte before parsing the descriptor.
-> 
-> Signed-off-by: Benjamin Moody <bmoody@member.fsf.org>
-
-Applied, thanks.
-
--- 
-Jiri Kosina
-SUSE Labs
+Acked-by: Joerg Roedel <jroedel@suse.de>
 
