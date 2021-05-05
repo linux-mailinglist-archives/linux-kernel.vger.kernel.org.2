@@ -2,83 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4129373DEA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:48:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC423373DEB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhEEOtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:49:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36624 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233380AbhEEOtR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:49:17 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S233408AbhEEOtc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:49:32 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233362AbhEEOt3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 10:49:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620226112;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=48UBqymDPDXkR8q4vDaT7FtTeIi5/cgoRyHmO54k5TI=;
+        b=KnLGa8Q6YRQsEi4uYZqCDr32MVfq85KrzDP4ncZAE1B8cnSjpKaXcTqS6KU5kFToHdZf7z
+        CkG7G0UCQdEmKqVmbC8TRxOyPEi2dV6EpWMKFPY6s2m88KFxqhsO8/a8quHiYXnM2rMt0P
+        OEZVZ2b1Whwsgb+BwLCEctBVoOjc2lU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-x_ViNySROj2fLDh5lSpKng-1; Wed, 05 May 2021 10:48:31 -0400
+X-MC-Unique: x_ViNySROj2fLDh5lSpKng-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9B335613BA;
-        Wed,  5 May 2021 14:48:20 +0000 (UTC)
-Date:   Wed, 5 May 2021 10:48:18 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Subject: [PATCH] ftrace: Handle commands when closing set_ftrace_filter file
-Message-ID: <20210505104818.24358ef7@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 75467835DE1;
+        Wed,  5 May 2021 14:48:29 +0000 (UTC)
+Received: from treble (ovpn-115-93.rdu2.redhat.com [10.10.115.93])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 16C3D5C1C5;
+        Wed,  5 May 2021 14:48:22 +0000 (UTC)
+Date:   Wed, 5 May 2021 09:48:22 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     David Laight <David.Laight@aculab.com>,
+        Al Viro <viro@zeniv.linux.org.uk>, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Message-ID: <20210505144822.muxfkxo5vajzgycu@treble>
+References: <cover.1620186182.git.jpoimboe@redhat.com>
+ <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
+ <20210505142542.GC5605@C02TD0UTHF1T.local>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210505142542.GC5605@C02TD0UTHF1T.local>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On Wed, May 05, 2021 at 03:25:42PM +0100, Mark Rutland wrote:
+> On arm64 we needed to have a sequence here because the addr_limit used
+> to be variable, but now that we've removed set_fs() and split the
+> user/kernel access routines we could simplify that to an AND with an
+> immediate mask to force all pointers into the user half of the address
+> space. IIUC x86_64 could do the same, and I think that was roughly what
+> David was suggesting.
 
- # echo switch_mm:traceoff > /sys/kernel/tracing/set_ftrace_filter
+True.  On 64-bit arches it might be as simple as just clearing the
+most-significant bit.
 
-will cause switch_mm to stop tracing by the traceoff command.
-
- # echo -n switch_mm:traceoff > /sys/kernel/tracing/set_ftrace_filter
-
-does nothing.
-
-The reason is that the parsing in the write function only processes
-commands if it finished parsing (there is white space written after the
-command). That's to handle:
-
- write(fd, "switch_mm:", 10);
- write(fd, "traceoff", 8);
-
-cases, where the command is broken over multiple writes.
-
-The problem is if the file descriptor is closed, then the write call is
-not processed, and the command needs to be processed in the release code.
-The release code can handle matching of functions, but does not handle
-commands.
-
-Cc: stable@vger.kernel.org
-Fixes: eda1e32855656 ("tracing: handle broken names in ftrace filter")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/ftrace.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
-index 057e962ca5ce..c57508445faa 100644
---- a/kernel/trace/ftrace.c
-+++ b/kernel/trace/ftrace.c
-@@ -5591,7 +5591,10 @@ int ftrace_regex_release(struct inode *inode, struct file *file)
- 
- 	parser = &iter->parser;
- 	if (trace_parser_loaded(parser)) {
--		ftrace_match_records(iter->hash, parser->buffer, parser->idx);
-+		int enable = !(iter->flags & FTRACE_ITER_NOTRACE);
-+
-+		ftrace_process_regex(iter, parser->buffer,
-+				     parser->idx, enable);
- 	}
- 
- 	trace_parser_put(parser);
 -- 
-2.29.2
+Josh
 
