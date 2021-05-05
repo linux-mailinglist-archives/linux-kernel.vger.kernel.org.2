@@ -2,66 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E3763748CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B50663748D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233279AbhEETmj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 15:42:39 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36674 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233118AbhEETmh (ORCPT
+        id S233380AbhEETqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 15:46:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232712AbhEETqB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 15:42:37 -0400
-Received: from mail-qv1-f69.google.com ([209.85.219.69])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1leNOt-000398-GS
-        for linux-kernel@vger.kernel.org; Wed, 05 May 2021 19:41:39 +0000
-Received: by mail-qv1-f69.google.com with SMTP id a18-20020a0cca920000b02901d3c6996bb7so2479407qvk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 12:41:39 -0700 (PDT)
+        Wed, 5 May 2021 15:46:01 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8233C061574;
+        Wed,  5 May 2021 12:45:04 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id m11so2725133pfc.11;
+        Wed, 05 May 2021 12:45:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WdWRuURhdSCNCPBKk/uClJ6VTdaDbNbIlQLKB5FSSZU=;
+        b=N4iPwl94hwcjbZYk7TfGHiDtxjrI37b0Kn2lHE+u3SYZr5BBLreDBNe5qqVlymo5Ns
+         9WpdBi3PuPWLUKDhg6QHuICKvGNLQP/KPqoPCxa/OIp9WewV1BHeneJPp4drL6/mcT1f
+         tmSNn2xPvVO3MxOqG/iA+/e0EcY6yjuM7iKV11eJ1uVNrWVd+SsVq7noo+yLwIsf05j8
+         lwdF1wEeJD+5dBxZi0Nzr67UTjS7WBAvhXfExOiweiLPZyVnpFIWo6SnC1QkN7wz0O3C
+         nuJQnBOEaNEhMsqY0SNLi2EFqwXLTCxKSJB0dd9hCghoaUtzv7NfLy4JLr6duBcH4PCs
+         AoVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=KMfcNsjXlZ+tgGRkWqvnbenP9g4xeEBy1YBavjn3OpA=;
-        b=bQICEYx4NIEAnneCf0nzhzmWSNzdb6S1IcrYKHp+sEenjXBfRDLQGNI3La7DUmGp64
-         OPRQO28Dh2A4mwZ11ehbI7En64o/PcLufnGeXsbMwZ85Mr4tGNRV2WRFLmg381V0NzKc
-         3qZdo3NRZje0zMt9Lmd9xkkLQvzVR/j/lQ9sm/KNN9T219RnoCZkrUi2/fqbPKEKgtTh
-         IFR6pRpweZHawtVyZPKbjOxBBo83tiqXcAVrqqVHkwDC0rkfVwdmO2MS0humiT4SSP83
-         96Ock5C//48aSDvjaj7p7W+Z9ksvlkYETSuIFnld8W/3UBWv3+0m2GyXilmDBmCPZ5+X
-         wc9w==
-X-Gm-Message-State: AOAM532vlcqVlS+HxKYfkqeSTLW1GeAEiShxlISbxRWsmL6jZ0IF0F0R
-        rNXzs24LLErbMXhDpaGo5/GYDoqOwob5DAtxGR/jUfxymk5RD9Yhj1fCt36h41WZqmu8fn4CV2P
-        8Csq8bP98/joVn+w9OwlHDX3wfg13D71+trqlaRkPAg==
-X-Received: by 2002:a05:620a:118a:: with SMTP id b10mr381192qkk.263.1620243698213;
-        Wed, 05 May 2021 12:41:38 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwjB1fkQLdzlaXKjnl6zTIgJDOAyEuudFSA92e4UuJZVegXPWitGuVebLofp0UL7pHqzFoZZg==
-X-Received: by 2002:a05:620a:118a:: with SMTP id b10mr381174qkk.263.1620243698062;
-        Wed, 05 May 2021 12:41:38 -0700 (PDT)
-Received: from [192.168.1.4] ([45.237.49.2])
-        by smtp.gmail.com with ESMTPSA id e5sm172640qtg.96.2021.05.05.12.41.36
+        bh=WdWRuURhdSCNCPBKk/uClJ6VTdaDbNbIlQLKB5FSSZU=;
+        b=uVYySiBiWByIdsyBm4bPqq4Z/h/6y/7xGXXQcQ+/gG937AlvEVZbsHkvNbXQUHpz1B
+         T7glFxbKarhqEodZh03CAtcY+DXKvt5fevbn1LIYE2QArSktTp8FAJUXWgYxskTvhExb
+         0hV1D96J+hgqTwPJXBwzD9LHPFf3RsPapspAyi1eyenyUH6PFeWZerozASXy4+o3jyC7
+         Vp5M5mukqSdPCgXSRmtBOCum6ZQNipaPvh2JiQ8kim6dGJpo/q3ejCQHjaXCWwZ3bQZy
+         8VcL59SUDCn2Nckq2cqkwODnutpouQoyXkIFurTypuKnSALxxli7g94Jhd+1UG7vWUo5
+         nxiA==
+X-Gm-Message-State: AOAM5328qMclVsLxRdsfntZO1zZbHze0eZ0eeZPoVjVubLeJB42m5f7r
+        8Kz0cpuCUPxmO1esmERa7EDG3l72JCU=
+X-Google-Smtp-Source: ABdhPJw99rjrKTXTzVSJOVKthVjlL760kVVU6FH1oOrRsV7COt7dOCn9zUMNONvXd1mUiyYwcedEvQ==
+X-Received: by 2002:a62:1602:0:b029:28e:e994:a37b with SMTP id 2-20020a6216020000b029028ee994a37bmr402232pfw.31.1620243903914;
+        Wed, 05 May 2021 12:45:03 -0700 (PDT)
+Received: from [10.67.49.104] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id q8sm46274pgn.22.2021.05.05.12.44.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 12:41:37 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: ufs-exynos: make a const array static, makes
- object smaller
-To:     Colin King <colin.king@canonical.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210505190104.70112-1-colin.king@canonical.com>
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Message-ID: <0e90b057-3a87-bec5-c0b2-46c49b191651@canonical.com>
-Date:   Wed, 5 May 2021 15:41:36 -0400
+        Wed, 05 May 2021 12:45:03 -0700 (PDT)
+Subject: Re: [PATCH 5.12 00/17] 5.12.2-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        stable@vger.kernel.org
+References: <20210505112324.956720416@linuxfoundation.org>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <ff83cbad-e1d6-20c5-f1e9-1509335fa981@gmail.com>
+Date:   Wed, 5 May 2021 12:44:55 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210505190104.70112-1-colin.king@canonical.com>
+In-Reply-To: <20210505112324.956720416@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -69,29 +71,27 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/2021 15:01, Colin King wrote:
-> From: Colin Ian King <colin.king@canonical.com>
+On 5/5/21 5:05 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.12.2 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Don't populate the const array granularity_tbl on the stack but instead it
-> static. Makes the object code smaller by 190 bytes:
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
 > 
-> Before:
->    text    data     bss     dec     hex filename
->   25563    6908       0   32471    7ed7 ./drivers/scsi/ufs/ufs-exynos.o
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.2-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
 > 
-> After:
->    text    data     bss     dec     hex filename
->   25213    7068       0   32281    7e19 ./drivers/scsi/ufs/ufs-exynos.o
+> thanks,
 > 
-> (gcc version 10.3.0)
+> greg k-h
 
-I am not sure what's the benefit here - you moved the code from text to
-data. In total you decreased the size for this compilation settings
-(e.g. compiler + optimizations) but that might not be always true, right?
+On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
 
-This has effect on the code readability - line is longer and reader
-would think "why this was made static since it is simple one-time const?".
-
-
-Best regards,
-Krzysztof
+Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+-- 
+Florian
