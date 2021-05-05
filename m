@@ -2,248 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B02A3736E7
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:18:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A54623736EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:18:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231963AbhEEJTB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:19:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53047 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231987AbhEEJS7 (ORCPT
+        id S232256AbhEEJTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:19:22 -0400
+Received: from lb2-smtp-cloud7.xs4all.net ([194.109.24.28]:55097 "EHLO
+        lb2-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231987AbhEEJTQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:18:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620206283;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=xF+fA5fxNVPdjny4gNEBrvfwyuZJATrYMPX8JPTS77I=;
-        b=Z9HLk/Ht6d5m+mDxLqBJUGKPtocP5XfFluC2YrhbkNBUSsFEszmdvnjbL/oIRwx+VTLSJl
-        LKO0ShKuzUbcrxtFduQkcR8VgfezPMmbJNq/bU6JOkmsg4/5Bq+SdtpYDehpteZFgB7ufO
-        pmxOfRf+2fHIrvHuyP/ctNvmUdyDlMo=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-524-Y4kUzBMVNXqcHp3SzqXWVg-1; Wed, 05 May 2021 05:18:01 -0400
-X-MC-Unique: Y4kUzBMVNXqcHp3SzqXWVg-1
-Received: by mail-ed1-f72.google.com with SMTP id y15-20020aa7d50f0000b02903885ee98723so532372edq.16
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 02:18:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=xF+fA5fxNVPdjny4gNEBrvfwyuZJATrYMPX8JPTS77I=;
-        b=Q1kCb80fBLtdi+cZ2pvuHUIIPmbsm/Btrd7tVOTiTvgsCEz0HL0a5XigkqKGZL7Svq
-         g6J/mpxtvhk2IayZ52kyB/fGupq8sjwEi1yK2uJ32Q9ohhrI2wDxgHxqcOji5SBevxFb
-         eDz0nfoftfVie8QucpquiR2oAoOwSQRd0slW5U7Z2ND+W4GLEZhPd2c0oGmZKIogEPpq
-         pvJlpv7EpFZ52X8q8DTFr2M0bM0iZ1O/lZVwut4sKUeogxlI6c45gWawM4C/2iRWaKqG
-         LvT5gOog7Pzmec1/G+FbAoY7IhoJCF0H0kkYu6ipeIfKjMjD212HpRC/PloWQQqPajzi
-         J7uA==
-X-Gm-Message-State: AOAM531IlfmYzBJsiroYwTp1xbrcuZRCjWIiyir0EPoLECbE3/7mxAKm
-        DhQBn9rHnNWYsUgbyL9B3hiRdwK7nNW+fpxDPLs/Kx76JvUXqIEN7S7s6dqFUBODtyR84eoAJDJ
-        PeGgJZLWRvG4mNlU1U7g1FhBx
-X-Received: by 2002:a17:906:9381:: with SMTP id l1mr25971271ejx.45.1620206280025;
-        Wed, 05 May 2021 02:18:00 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxIbSzLE1jwgCeK5h7xTLIO7kVWLVEGWtnOfkc5d859aMGuImanJP3vz9UGj4yqgLY6xYrnQw==
-X-Received: by 2002:a17:906:9381:: with SMTP id l1mr25971247ejx.45.1620206279749;
-        Wed, 05 May 2021 02:17:59 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id x9sm15732424edv.22.2021.05.05.02.17.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 02:17:59 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH 4/4] KVM: nVMX: Map enlightened VMCS upon restore when
- possible
-In-Reply-To: <fa744382453d7a196812e88fe9ae9e842c903e13.camel@redhat.com>
-References: <20210503150854.1144255-1-vkuznets@redhat.com>
- <20210503150854.1144255-5-vkuznets@redhat.com>
- <fa744382453d7a196812e88fe9ae9e842c903e13.camel@redhat.com>
-Date:   Wed, 05 May 2021 11:17:58 +0200
-Message-ID: <877dkdy1x5.fsf@vitty.brq.redhat.com>
+        Wed, 5 May 2021 05:19:16 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id eDfalkaaVyEWweDfelumJB; Wed, 05 May 2021 11:18:19 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1620206299; bh=uFqvRwOLsMa7SIQMsQ5/JoCIwOaiv0b6VkBg1dtVN3c=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=EyiCUfh4g4r1oXOpTnrOc7cvDVCT4mizeUXhPkrLHVqd4HCUPXYnS/Csu4Ty4YjQL
+         o83XyTq5H0kACQ2mruR5HAtwkXiaRlDkkd4QDmA4Ygx1mkUL0YSfi3MdxovTiVC2AY
+         VwBQq575GZHxs/MGPdMkhxhCtRAPde8TC+87Sp8uQuaXcUwMUuWriWlJj7k3b/r3hZ
+         lXIezVvUFELfHHiSQp0/lUg7r8SngbWshr8giYVATUKpTK2hI0OqJEjSto6BGeFV9o
+         Iix2SRAqqBxvAa1FD/00Z6qVCo8TRneI5cPuqILXTFpzEvQQ5r3FDTPghDf7m31LNt
+         rae268bThwPJw==
+Subject: Re: [PATCH] media: cobalt: fix null-ptr-deref when there is no PCI
+ bridge
+To:     Tong Zhang <ztong0001@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210424005206.261622-1-ztong0001@gmail.com>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <b84e0b87-4753-0513-9803-0cda4ceb4adc@xs4all.nl>
+Date:   Wed, 5 May 2021 11:18:14 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20210424005206.261622-1-ztong0001@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfEoTHaoLL+uzMYkeMiBfZMc9OFcCGcXwTwWbX1s2vdLVpxIYkt+xcS3wDYUm+2AX4ee9AHwZwSPFMKMXneINE/QyNY5p9O5ZQc17K5MuafpXlAiHg7UK
+ kLiZsHESNKJfCzOoWWrvKZEAToXGqADzdeldVCMOj3GfnwPXL+0nOlfptMv7eges425RrR0YXrKwUjeX8TeAbKXiDZMkJuSBA4l1eXs9jPr9qWGv/4rQoJAZ
+ 9cXRYLyC/wpYYpfqzIUY8IADRMewg0wUSeEZ1bXuXdPmutKrFUx5QEKoOiWS63DF2RQOdAwl7PFZDklLwme1kA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Maxim Levitsky <mlevitsk@redhat.com> writes:
+On 24/04/2021 02:52, Tong Zhang wrote:
+> the PCI bridge might be NULL, so we'd better check before use it
+> 
+> [    1.870569] RIP: 0010:pcie_bus_link_get_lanes.isra.0+0x26/0x59 [cobalt]
+> [    1.875880] Call Trace:
+> [    1.876013]  cobalt_probe.cold+0x1be/0xc11 [cobalt]
+> [    1.876683]  pci_device_probe+0x10f/0x1c0
 
-> On Mon, 2021-05-03 at 17:08 +0200, Vitaly Kuznetsov wrote:
->> It now looks like a bad idea to not restore eVMCS mapping directly from
->> vmx_set_nested_state(). The restoration path now depends on whether KVM
->> will continue executing L2 (vmx_get_nested_state_pages()) or will have to
->> exit to L1 (nested_vmx_vmexit()), this complicates error propagation and
->> diverges too much from the 'native' path when 'nested.current_vmptr' is
->> set directly from vmx_get_nested_state_pages().
->> 
->> The existing solution postponing eVMCS mapping also seems to be fragile.
->> In multiple places the code checks whether 'vmx->nested.hv_evmcs' is not
->> NULL to distinguish between eVMCS and non-eVMCS cases. All these checks
->> are 'incomplete' as we have a weird 'eVMCS is in use but not yet mapped'
->> state.
->> 
->> Also, in case vmx_get_nested_state() is called right after
->> vmx_set_nested_state() without executing the guest first, the resulting
->> state is going to be incorrect as 'KVM_STATE_NESTED_EVMCS' flag will be
->> missing.
->> 
->> Fix all these issues by making eVMCS restoration path closer to its
->> 'native' sibling by putting eVMCS GPA to 'struct kvm_vmx_nested_state_hdr'.
->> To avoid ABI incompatibility, do not introduce a new flag and keep the
->> original eVMCS mapping path through KVM_REQ_GET_NESTED_STATE_PAGES in
->> place. To distinguish between 'new' and 'old' formats consider eVMCS
->> GPA == 0 as an unset GPA (thus forcing KVM_REQ_GET_NESTED_STATE_PAGES
->> path). While technically possible, it seems to be an extremely unlikely
->> case.
->> 
->> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
->> ---
->>  arch/x86/include/uapi/asm/kvm.h |  2 ++
->>  arch/x86/kvm/vmx/nested.c       | 27 +++++++++++++++++++++------
->>  2 files changed, 23 insertions(+), 6 deletions(-)
->> 
->> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
->> index 0662f644aad9..3845977b739e 100644
->> --- a/arch/x86/include/uapi/asm/kvm.h
->> +++ b/arch/x86/include/uapi/asm/kvm.h
->> @@ -441,6 +441,8 @@ struct kvm_vmx_nested_state_hdr {
->>  
->>  	__u32 flags;
->>  	__u64 preemption_timer_deadline;
->> +
->> +	__u64 evmcs_pa;
->>  };
->>  
->>  struct kvm_svm_nested_state_data {
->> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
->> index 37fdc34f7afc..4261cf4755c8 100644
->> --- a/arch/x86/kvm/vmx/nested.c
->> +++ b/arch/x86/kvm/vmx/nested.c
->> @@ -6019,6 +6019,7 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
->>  		.hdr.vmx.vmxon_pa = -1ull,
->>  		.hdr.vmx.vmcs12_pa = -1ull,
->>  		.hdr.vmx.preemption_timer_deadline = 0,
->> +		.hdr.vmx.evmcs_pa = -1ull,
->>  	};
->>  	struct kvm_vmx_nested_state_data __user *user_vmx_nested_state =
->>  		&user_kvm_nested_state->data.vmx[0];
->> @@ -6037,8 +6038,10 @@ static int vmx_get_nested_state(struct kvm_vcpu *vcpu,
->>  		if (vmx_has_valid_vmcs12(vcpu)) {
->>  			kvm_state.size += sizeof(user_vmx_nested_state->vmcs12);
->>  
->> -			if (vmx->nested.hv_evmcs)
->> +			if (vmx->nested.hv_evmcs) {
->>  				kvm_state.flags |= KVM_STATE_NESTED_EVMCS;
->> +				kvm_state.hdr.vmx.evmcs_pa = vmx->nested.hv_evmcs_vmptr;
->> +			}
->>  
->>  			if (is_guest_mode(vcpu) &&
->>  			    nested_cpu_has_shadow_vmcs(vmcs12) &&
->> @@ -6230,13 +6233,25 @@ static int vmx_set_nested_state(struct kvm_vcpu *vcpu,
->>  
->>  		set_current_vmptr(vmx, kvm_state->hdr.vmx.vmcs12_pa);
->>  	} else if (kvm_state->flags & KVM_STATE_NESTED_EVMCS) {
->> +		u64 evmcs_gpa = kvm_state->hdr.vmx.evmcs_pa;
->> +
->>  		/*
->> -		 * nested_vmx_handle_enlightened_vmptrld() cannot be called
->> -		 * directly from here as HV_X64_MSR_VP_ASSIST_PAGE may not be
->> -		 * restored yet. EVMCS will be mapped from
->> -		 * nested_get_vmcs12_pages().
->> +		 * EVMCS GPA == 0 most likely indicates that the migration data is
->> +		 * coming from an older KVM which doesn't support 'evmcs_pa' in
->> +		 * 'struct kvm_vmx_nested_state_hdr'.
->>  		 */
->> -		kvm_make_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
->> +		if (evmcs_gpa && (evmcs_gpa != -1ull) &&
->> +		    (__nested_vmx_handle_enlightened_vmptrld(vcpu, evmcs_gpa, false) !=
->> +		     EVMPTRLD_SUCCEEDED)) {
->> +			return -EINVAL;
->> +		} else if (!evmcs_gpa) {
->> +			/*
->> +			 * EVMCS GPA can't be acquired from VP assist page here because
->> +			 * HV_X64_MSR_VP_ASSIST_PAGE may not be restored yet.
->> +			 * EVMCS will be mapped from nested_get_evmcs_page().
->> +			 */
->> +			kvm_make_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
->> +		}
->>  	} else {
->>  		return -EINVAL;
->>  	}
->
-> Hi everyone!
->
-> Let me expalin my concern about this patch and also ask if I understand this correctly.
->
-> In a nutshell if I understand this correctly, we are not allowed to access any guest
-> memory while setting the nested state. 
->
-> Now, if I understand correctly as well, the reason for the above,
-> is that the userspace is allowed to set the nested state first, then fiddle with
-> the KVM memslots, maybe even update the guest memory and only later do the KVM_RUN ioctl,
+How did you test this? With some virtualized PCI bus or something? I'm not sure
+how this can happen.
 
-Currently, userspace is free to restore the guest in any order
-indeed. I've probably missed post-copy but even the fact that guest MSRs
-can be restored after restoring nested state doesn't make our life easier.
+Regards,
 
->
-> And so this is the major reason why the KVM_REQ_GET_NESTED_STATE_PAGES
-> request exists in the first place.
->
-> If that is correct I assume that we either have to keep loading the EVMCS page on
-> KVM_REQ_GET_NESTED_STATE_PAGES request, or we want to include the EVMCS itself
-> in the migration state in addition to its physical address, similar to how we treat
-> the VMCS12 and the VMCB12.
+	Hans
 
-Keeping eVMCS load from KVM_REQ_GET_NESTED_STATE_PAGES is OK I believe
-(or at least I still don't see a reason for us to carry a copy in the
-migration data). What I still don't like is the transient state after
-vmx_set_nested_state(): 
-- vmx->nested.current_vmptr is -1ull because no 'real' vmptrld was done
-(we skip set_current_vmptr() when KVM_STATE_NESTED_EVMCS)
-- vmx->nested.hv_evmcs/vmx->nested.hv_evmcs_vmptr are also NULL because
-we haven't performed nested_vmx_handle_enlightened_vmptrld() yet.
-
-I know of at least one real problem with this state: in case
-vmx_get_nested_state() happens before KVM_RUN the resulting state won't
-have KVM_STATE_NESTED_EVMCS flag and this is incorrect. Take a look at
-the check in nested_vmx_fail() for example:
-
-        if (vmx->nested.current_vmptr == -1ull && !vmx->nested.hv_evmcs)
-                return nested_vmx_failInvalid(vcpu);
-
-this also seems off (I'm not sure it matters in any context but still).
-
->
-> I personally tinkered with qemu to try and reproduce this situation
-> and in my tests I wasn't able to make it update the memory
-> map after the load of the nested state but prior to KVM_RUN
-> but neither I wasn't able to prove that this can't happen.
-
-Userspace has multiple ways to mess with the state of course, in KVM we
-only need to make sure we don't crash :-) On migration, well behaving
-userspace is supposed to restore exactly what it got though. The
-restoration sequence may vary.
-
->
-> In addition to that I don't know how qemu behaves when it does 
-> guest ram post-copy because so far I haven't tried to tinker with it.
->
-> Finally other userspace hypervisors exist, and they might rely on assumption
-> as well.
->
-> Looking forward for any comments,
-> Best regards,
-> 	Maxim Levitsky
->
->
->
-
--- 
-Vitaly
+> 
+> Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+> ---
+>  drivers/media/pci/cobalt/cobalt-driver.c | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/media/pci/cobalt/cobalt-driver.c b/drivers/media/pci/cobalt/cobalt-driver.c
+> index 0695078ef812..5687ed4869ac 100644
+> --- a/drivers/media/pci/cobalt/cobalt-driver.c
+> +++ b/drivers/media/pci/cobalt/cobalt-driver.c
+> @@ -189,6 +189,8 @@ void cobalt_pcie_status_show(struct cobalt *cobalt)
+>  	u32 capa;
+>  	u16 stat, ctrl;
+>  
+> +	if (!pci_bus_dev)
+> +		return;
+>  	if (!pci_is_pcie(pci_dev) || !pci_is_pcie(pci_bus_dev))
+>  		return;
+>  
+> @@ -247,6 +249,8 @@ static unsigned pcie_bus_link_get_lanes(struct cobalt *cobalt)
+>  	struct pci_dev *pci_dev = cobalt->pci_dev->bus->self;
+>  	u32 link;
+>  
+> +	if (!pci_dev)
+> +		return 0;
+>  	if (!pci_is_pcie(pci_dev))
+>  		return 0;
+>  	pcie_capability_read_dword(pci_dev, PCI_EXP_LNKCAP, &link);
+> 
 
