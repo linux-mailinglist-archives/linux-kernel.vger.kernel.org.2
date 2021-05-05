@@ -2,155 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A39E2373D66
+	by mail.lfdr.de (Postfix) with ESMTP id EC36B373D67
 	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232171AbhEEOOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:14:00 -0400
-Received: from out03.mta.xmission.com ([166.70.13.233]:43334 "EHLO
-        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232596AbhEEONl (ORCPT
+        id S232816AbhEEOOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:14:16 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:30808 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233302AbhEEOOM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:13:41 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1leIGa-00CGlJ-DX; Wed, 05 May 2021 08:12:44 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1leIGX-002GvZ-Te; Wed, 05 May 2021 08:12:43 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Marco Elver <elver@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <YIpkvGrBFGlB5vNj@elver.google.com>
-        <m11rat9f85.fsf@fess.ebiederm.org>
-        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
-        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
-        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
-        <m1r1irpc5v.fsf@fess.ebiederm.org>
-        <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
-        <m1czuapjpx.fsf@fess.ebiederm.org>
-        <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
-        <m14kfjh8et.fsf_-_@fess.ebiederm.org>
-        <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-        <CANpmjNM5sYihM_9P5YHx06BooqLDhK96cMHGKaf61nCcoDJBdw@mail.gmail.com>
-Date:   Wed, 05 May 2021 09:12:38 -0500
-In-Reply-To: <CANpmjNM5sYihM_9P5YHx06BooqLDhK96cMHGKaf61nCcoDJBdw@mail.gmail.com>
-        (Marco Elver's message of "Wed, 5 May 2021 00:05:00 +0200")
-Message-ID: <m1o8dp8e21.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 5 May 2021 10:14:12 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-187-KHEAOyw0MByZbOGIVPi3DQ-1; Wed, 05 May 2021 15:13:12 +0100
+X-MC-Unique: KHEAOyw0MByZbOGIVPi3DQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 15:13:11 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Wed, 5 May 2021 15:13:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Miguel Ojeda' <miguel.ojeda.sandonis@gmail.com>
+CC:     Adrian Bunk <bunk@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Tom Stellard <tstellar@redhat.com>,
+        "Nick Desaulniers" <ndesaulniers@google.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Fangrui Song <maskray@google.com>,
+        Serge Guelton <sguelton@redhat.com>,
+        Sylvestre Ledru <sylvestre@mozilla.com>
+Subject: RE: Very slow clang kernel config ..
+Thread-Topic: Very slow clang kernel config ..
+Thread-Index: AQHXQS0DH46G91tEpEmd7WaoBDaEqarUt3wQgAAhgoCAABGacA==
+Date:   Wed, 5 May 2021 14:13:11 +0000
+Message-ID: <3ab89c4f8b1d455ba46781b392ef0b2d@AcuMS.aculab.com>
+References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
+ <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
+ <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
+ <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
+ <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
+ <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
+ <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
+ <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
+ <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
+ <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
+ <20210502093123.GC12293@localhost>
+ <CANiq72=aK-JJhpnZdeeGBtADrnXhyEp1Whw5+5rK6a4u85PhxA@mail.gmail.com>
+ <5256ed6b6f7d423daeb36fcbfc837fbc@AcuMS.aculab.com>
+ <CANiq72mq-SP5n_0cVr+eaP19xqJTP15V+JKUeqLiT910x=3NdA@mail.gmail.com>
+In-Reply-To: <CANiq72mq-SP5n_0cVr+eaP19xqJTP15V+JKUeqLiT910x=3NdA@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1leIGX-002GvZ-Te;;;mid=<m1o8dp8e21.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX19By7EuCGlSC+Hrh/+dmLFpw1rmZv8aoeM=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
-X-Spam-Level: *
-X-Spam-Status: No, score=1.4 required=8.0 tests=ALL_TRUSTED,BAYES_40,
-        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,TR_XM_PhishingBody,
-        T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XM_B_Phish66 autolearn=disabled
-        version=3.4.2
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
-        *      [score: 0.3381]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        *  2.0 XM_B_Phish66 BODY: Obfuscated XMission
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
-        *  0.0 TR_XM_PhishingBody Phishing flag in body of message
-X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: *;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1887 ms - load_scoreonly_sql: 0.17 (0.0%),
-        signal_user_changed: 15 (0.8%), b_tie_ro: 12 (0.6%), parse: 1.92
-        (0.1%), extract_message_metadata: 20 (1.1%), get_uri_detail_list: 3.8
-        (0.2%), tests_pri_-1000: 19 (1.0%), tests_pri_-950: 1.90 (0.1%),
-        tests_pri_-900: 1.38 (0.1%), tests_pri_-90: 1228 (65.1%), check_bayes:
-        1225 (64.9%), b_tokenize: 12 (0.6%), b_tok_get_all: 9 (0.5%),
-        b_comp_prob: 3.1 (0.2%), b_tok_touch_all: 1197 (63.4%), b_finish: 1.32
-        (0.1%), tests_pri_0: 579 (30.7%), check_dkim_signature: 0.87 (0.0%),
-        check_dkim_adsp: 2.6 (0.1%), poll_dns_idle: 0.44 (0.0%), tests_pri_10:
-        2.2 (0.1%), tests_pri_500: 13 (0.7%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v3 00/12] signal: sort out si_trapno and si_perf
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marco Elver <elver@google.com> writes:
+RnJvbTogTWlndWVsIE9qZWRhDQo+IFNlbnQ6IDA1IE1heSAyMDIxIDE0OjU0DQo+IA0KPiBPbiBX
+ZWQsIE1heSA1LCAyMDIxIGF0IDE6MDYgUE0gRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAYWN1
+bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBUaGUgcHJvYmxlbSBpc24ndCB0aGUgcGFja2FnZXMg
+dGhhdCBjb21lIHdpdGggdGhlIGRpc3RyaWJ1dGlvbi4NCj4gDQo+IE15IHF1ZXN0aW9uIHdhcyBp
+biB0aGUgY29udGV4dCBvZiBBZHJpYW4ncyBlbWFpbHMgd2hvIHdlcmUgbWVudGlvbmluZw0KPiBp
+c3N1ZXMgZm9yIExpbnV4IGRpc3RyaWJ1dGlvbiBldGMuDQo+IA0KPiA+IFRoZSBwcm9ibGVtIGlz
+IDNyZCBwYXJ0eSBwcm9ncmFtcyBzdXBwbGllZCBhcyBiaW5hcmllcy4NCj4gPiBUaGV5IGhhdmUg
+MiBiaWcgcmVxdWlyZW1lbnRzOg0KPiA+IDEpIFRoZSBzYW1lIGJpbmFyeSB3aWxsIHJ1biBvbiBh
+bGwgZGlzdHJpYnV0aW9ucyAobmV3ZXIgdGhhbiBzb21lIGN1dG9mZikuDQo+IA0KPiBUaGlzIGlz
+IGZpbmUgd2l0aCB0aGUgImV2ZXJ5dGhpbmcgc3RhdGljYWxseSBsaW5rZWQiIG1vZGVsLg0KDQpO
+byBpdCBpc24ndC4NCkl0IG1heSB3b3JrIGZvciBzaW1wbGUgbGlicmFyeSBjYWxscyAobGlrZSBz
+dHJpbmcgZnVuY3Rpb25zKQ0KdGhhdCB5b3UgY2FuIHdyaXRlIHlvdXJzZWxmLCBhbmQgdGhpbmdz
+IHRoYXQgYXJlIGRpcmVjdCBzeXN0ZW0gY2FsbHMuDQpCdXQgaXQgZmFsbHMgZm93bCBvZiBhbnl0
+aGluZyBjb21wbGljYXRlZCB0aGF0IGhhcyB0byBpbnRlcmFjdA0Kd2l0aCB0aGUgcmVzdCBvZiB0
+aGUgc3lzdGVtLg0KDQo+ID4gMikgQW55IHNlcmlvdXMgYnVnIGZpeGVzIGluIHN5c3RlbSBsaWJy
+YXJpZXMgZ2V0IHBpY2tlZCB1cCB3aGVuIHRoZQ0KPiA+ICAgIGRpc3RyaWJ1dGlvbiB1cGRhdGVz
+IHRoZSBsaWJyYXJ5Lg0KPiANCj4gRm9yIDNyZCBwYXJ0eSBzb2Z0d2FyZSwgdGhpcyBpcyB1c3Vh
+bGx5IGRvbmUgdGhyb3VnaCBhbiBhdXRvLXVwZGF0ZQ0KPiBtZWNoYW5pc20gb2Ygc29tZSBraW5k
+Lg0KDQpJIGNhbiBhbHJlYWR5IHNlZSBhIGhlbGQgb2YgcGlncyBmbHlpbmcuLi4NCg0KPiBBbmQg
+c2luY2UgdGhlIHZlbmRvciB0eXBpY2FsbHkgcHJvdmlkZXMNCj4gZXZlcnl0aGluZywgaW5jbHVk
+aW5nIGRlcGVuZGVuY2llcyAoZXZlbiBsaWJjIGluIHNvbWUgY2FzZXMhKSwgdGhleQ0KPiBjYW4g
+YWZmb3JkIHRvIHN0YXRpY2FsbHkgbGluayB0aGUgd29ybGQuDQoNClRoYXQgbWlnaHQgd29yayBp
+ZiB0aGV5IGFyZSBzdXBwbHlpbmcgYWxsIHRoZSBhcHBsaWNhdGlvbnMgdGhhdCBydW4NCm9mIGEg
+Z2l2ZW4gc3lzdGVtIC0gYW5kIHByb2JhYmx5IGluY2x1ZGluZyB0aGUga2VybmVsIGFzIHdlbGwu
+DQoNCj4gVGhhdCBtb2RlbCwgb2YgY291cnNlLCBoYXMgaXNzdWVzIC0tIHRoZSB2ZW5kb3IgbWF5
+IGdvIG91dCBvZg0KPiBidXNpbmVzcywgbWF5IGJlIHNsb3cgd2l0aCBzZWN1cml0eSB1cGRhdGVz
+LCBldGMuDQoNCk1hbnkgeWVhcnMgYWdvIHRoZSBjb21wYW55IEkgd29ya2VkIGZvciBmb3VuZCB0
+aGF0IHRoZSB1bml4ICd1dG1weCcNCmZpbGUgd2FzIGdldHRpbmcgY29ycnVwdGVkIChkdWUgdG8g
+aW5jb3JyZWN0IGxvY2tpbmcpLg0KVGhlIGZ1bmN0aW9ucyBoYWQgYmVlbiBwbGFjZXMgaW4gYW4g
+YXJjaGl2ZSBwYXJ0IG9mIGxpYmMgKGZvcg0KdmFyaW91cyByZWFzb25zKS4NCkdldHRpbmcgdGhl
+IGZpeCBvbnRvIHRoZSBjdXN0b21lcnMgbWFjaGluZSAod2Ugd2VyZSB0aGUgT1MgdmVuZG9yKQ0K
+aW52b2x2ZWQgZGV0ZXJtaW5pbmcgd2hpY2ggYXBwbGljYXRpb25zIGZyb20gM3JkICg0dGg/KSBw
+YXJ0aWVzDQpoYWQgYmVlbiBsaW5rZWQgd2l0aCB0aGUgYnJva2VuIGNvZGUgYW5kIHRoZW4gYXBw
+bHlpbmcgZW5vdWdoDQonZ2VudGxlIHBlcnN1YXNpb24nIHRvIGdldCB0aGVtIHRvIHJlbGluayB0
+aGUgb2ZmZW5kaW5nIHByb2dyYW1zLg0KRXZlbiB0aGlzIGNhbiBiZSBwcm9ibGVtYXRpYyBiZWNh
+dXNlIHRoZSBzb3VyY2UgY29udHJvbCBzeXN0ZW1zDQpvZiBzb21lIGNvbXBhbmllcyBpc24ndCBn
+cmVhdCAoaXQgaXMgcHJvYmFibHkgYmV0dGVyIHRoZXNlIGRheXMpLg0KQnV0IGdldHRpbmcgdGhl
+ICdwcmV2aW91cyB2ZXJzaW9uJyByZWJ1aWx0IHdpdGggYSBuZXcgbGliYy5hDQpjYW4gYmUgdmVy
+eSBwcm9ibGVtYXRpYy4NCg0KPiBCdXQgdGhpcyBpcyBhbGwgb3J0aG9nb25hbCB0byBSdXN0IC0t
+IEkgcmVwbGllZCBtYWlubHkgYmVjYXVzZSBpdCB3YXMNCj4gbWVudGlvbmVkIHRoYXQgUnVzdCBi
+cm91Z2h0IG5ldyBpc3N1ZXMgdG8gdGhlIHRhYmxlLCB3aGljaCBpc24ndCB0cnVlLg0KPiANCj4g
+PiBUaGVyZSBpcyBhbHNvIHRoZSBwb3NzaWJpbGl0eSB0aGF0IHRoZSBpbXBsZW1lbnRhdGlvbiBv
+ZiBzb21lDQo+ID4gZnVuY3Rpb24gZGlmZmVycyBiZXR3ZWVuIGRpc3RyaWJ1dGlvbnMuDQo+ID4g
+U28geW91IGFic29sdXRlbHkgbmVlZCB0byB1c2UgdGhlIHZlcnNpb24gZnJvbSB0aGUgaW5zdGFs
+bGVkIHN5c3RlbQ0KPiA+IG5vdCB3aGF0ZXZlciB3YXMgaW4gc29tZSBzdGF0aWMgbGlicmFyeSBv
+biB0aGUgYWN0dWFsIGJ1aWxkIG1hY2hpbmUuDQo+ID4NCj4gPiBCb3RoIG9mIHRoZXNlIG5lZWQg
+c3RhYmxlIEFCSSBhbmQgc2hhcmVkIGxpYnJhcmllcy4NCj4gDQo+IE5vdCByZWFsbHkuIElmIHlv
+dSBnbyBmb3IgdGhlICJzdGF0aWNhbGx5IGxpbmtlZCIgbW9kZWwgZm9yIHlvdXINCj4gYXBwbGlj
+YXRpb24sIHlvdSBvbmx5IG5lZWQgdG8gY2FyZSBhYm91dCB0aGUgc3lzY2FsbCBsYXllciAob3IN
+Cj4gZXF1aXZhbGVudCBoaWdoZXItbGV2ZWwgbGF5ZXJzIGluIGUuZy4gV2luZG93cy9tYWNPUyku
+DQoNCk5vIGJlY2F1c2UgdGhlcmUgYXJlIG1lc3NhZ2VzIHNlbnQgdG8gc3lzdGVtIGRhZW1vbnMg
+YW5kIGZpbGUNCmZvcm1hdHMgdGhhdCBjYW4gYmUgc3lzdGVtIGRlcGVuZGFudC4NCk5vdCBldmVy
+eXRoaW5nIGlzIGEgc3lzdGVtIGNhbGwuDQoNCj4gDQo+IElmIHlvdSB0cnVzdCB2ZW5kb3JzIGEg
+Yml0LCB5b3UgY2FuIGluc3RlYWQgZ28gZm9yICJzdGF0aWNhbGx5IGxpbmtlZA0KPiBleGNlcHQg
+Zm9yIG1ham9yIHN5c3RlbSBsaWJyYXJpZXMiIChsaWtlIGxpYmMgb3IgbGlibSBpbiBMaW51eCku
+IFRoaXMNCj4gaXMgd2hhdCBSdXN0IGRvZXMgYnkgZGVmYXVsdCBmb3IgdGhlIGdsaWJjIHg4Nl82
+NCB0YXJnZXQuDQo+IA0KPiBHaXZlbiB0aGF0IG5vd2FkYXlzIHN0YXRpY2FsbHkgbGlua2luZyBp
+cyBjb252ZW5pZW50LCBhZmZvcmRhYmxlIGFuZA0KPiBpbXByb3ZlcyBwZXJmb3JtYW5jZSwgaXQg
+c2VlbXMgbGlrZSB0aGUgcmlnaHQgZGVjaXNpb24uDQo+IA0KPiA+IFJlbWVtYmVyLCBhcyBmYXIg
+YXMgdXNlcnNwYWNlIGlzIGNvbmNlcm5lZCwgZm9vLmggaXMgdGhlIGRlZmluaXRpb24NCj4gPiBm
+b3IgJ2ZvbycgYW5kIGZvby5zbyBpcyB0aGUgY3VycmVudCBpbXBsZW1lbnRhdGlvbi4NCj4gPiAo
+eWVzLCBJIGtub3cgYSBsaXR0bGUgYml0IG9mIGluZm8gaXMgdGFrZW4gZnJvbSBmb28uc28gb24g
+dGhlIGJ1aWxkDQo+ID4gc3lzdGVtIC0gYnV0IHRoYXQgb3VnaHQgdG8gYmUgYWJzb2x1dGVseSBt
+aW5pbWFsLikNCj4gDQo+IE5vLCB0aGF0IGlzIG9ubHkgdGhlIEMgbW9kZWwgZm9yIHNoYXJlZCBs
+aWJyYXJpZXMuDQo+IA0KPiBDKysgaGFzIGhhZCB0ZW1wbGF0ZXMgZm9yIGRlY2FkZXMgbm93IGFu
+ZCBubyAiQysrIEFCSSIgc28gZmFyIGNvdmVycw0KPiB0aGVtLiBUaHVzLCBpZiB5b3Ugd2FudCB0
+byBwcm92aWRlIHRlbXBsYXRlcyBhcyBhIGxpYnJhcnksIHRoZXkgY2Fubm90DQo+IGJlICJwcmUt
+Y29tcGlsZWQiIGFuZCBzbyB0aGUgaW1wbGVtZW50YXRpb24gaXMga2VwdCBpbiB0aGUgaGVhZGVy
+Lg0KPiANCj4gVGhpcyBhY3R1YWxseSB0dXJuZWQgb3V0IHRvIGJlIHF1aXRlIGNvbnZlbmllbnQg
+YW5kIG5vd2FkYXlzIG1hbnkNCj4gbGlicmFyaWVzIGFyZSBkZXZlbG9wZWQgYXMgImhlYWRlci1v
+bmx5IiwgaW4gZmFjdC4gTW9yZW92ZXIsIHJlY2VudGx5DQo+IHRoZSBDKysgc3RhbmRhcmQgaW50
+cm9kdWNlZCBuZXcgZmVhdHVyZXMgdGhhdCBzaW1wbGlmeSB0YWtpbmcgdGhpcw0KPiBhcHByb2Fj
+aCwgZS5nLiBDKysxNyBgaW5saW5lYCB2YXJpYWJsZXMuDQoNClJlbWluZCBiZSB0byByZXF1ZXN0
+IG91ciBtYW5hZ2VtZW50IHRvIGxldCBtZSByZW1vdmUgYWxsIHRoZSBDKysNCmZyb20gbW9zdCBv
+ZiBvdXIgcHJvZ3JhbXMuDQpOb25lIG9mIHRoZW0gYWN0dWFsbHkgbmVlZCBpdCwgdGhlIHJlYXNv
+bnMgZm9yIEMrKyBhcmVuJ3QgdGVjaG5pY2FsLg0KDQppZiB5b3Ugd2FudCB0byBzZWUgc29tZXRo
+aW5nIHJlYWxseSBob3JyaWQgbG9vayBhdCB0aGUgaW5saW5lDQpkZXN0cnVjdG9yIGNvZGUgZm9y
+IGlvc3RyaW5nc3RyZWFtLg0KDQpBbmQgZG9uJ3QgbGV0IG1lIGxvb2sgYXQgdGhlIGNvZGUgZm9y
+IENTdHJpbmcgZWl0aGVyLg0KDQo+IFJ1c3QgaGFzIHRoZSBzYW1lIGlzc3VlIHdpdGggZ2VuZXJp
+Y3MsIGJ1dCBpbXByb3ZlcyB0aGUgc2l0dWF0aW9uIGENCj4gYml0OiB0aGVyZSBpcyBubyBuZWVk
+IHRvIHJlcGFyc2UgZXZlcnl0aGluZywgZXZlcnkgdGltZSwgZnJvbSBzY3JhdGNoLA0KPiBmb3Ig
+ZWFjaCB0cmFuc2xhdGlvbiB1bml0IHRoYXQgdXNlcyBhIGxpYnJhcnkgd2l0aCB0ZW1wbGF0ZXMg
+KHdoaWNoIGlzDQo+IHF1aXRlIGFuIGlzc3VlIGZvciBDKyssIHdpdGggYmlnIHByb2plY3RzIGdv
+aW5nIG91dCBvZiB0aGVpciB3YXkgdG8NCj4gcmVkdWNlIHRoZSB0cmVlcyBvZiBpbmNsdWRlcyku
+DQoNClRoYXQgc291bmRzIGxpa2UgaXQgaGFzIGFsbCB0aGUgc2FtZSBwcm9ibGVtcyBhcyBwcmUt
+Y29tcGlsZWQgaGVhZGVycy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtl
+c2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBV
+Sw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-> On Tue, 4 May 2021 at 23:13, Eric W. Biederman <ebiederm@xmission.com> wrote:
->>
->> This set of changes sorts out the ABI issues with SIGTRAP TRAP_PERF, and
->> hopefully will can get merged before any userspace code starts using the
->> new ABI.
->>
->> The big ideas are:
->> - Placing the asserts first to prevent unexpected ABI changes
->> - si_trapno becomming ordinary fault subfield.
->> - struct signalfd_siginfo is almost full
->>
->> This set of changes starts out with Marco's static_assert changes and
->> additional one of my own that enforces the fact that the alignment of
->> siginfo_t is also part of the ABI.  Together these build time
->> checks verify there are no unexpected ABI changes in the changes
->> that follow.
->>
->> The field si_trapno is changed to become an ordinary extension of the
->> _sigfault member of siginfo.
->>
->> The code is refactored a bit and then si_perf_type is added along side
->> si_perf_data in the _perf subfield of _sigfault of siginfo_t.
->>
->> Finally the signalfd_siginfo fields are removed as they appear to be
->> filling up the structure without userspace actually being able to use
->> them.
->>
->> v2: https://lkml.kernel.org/r/m14kfjh8et.fsf_-_@fess.ebiederm.org
->> v1: https://lkml.kernel.org/r/m1zgxfs7zq.fsf_-_@fess.ebiederm.org
->>
->> Eric W. Biederman (9):
->>       signal: Verify the alignment and size of siginfo_t
->>       siginfo: Move si_trapno inside the union inside _si_fault
->>       signal: Implement SIL_FAULT_TRAPNO
->>       signal: Use dedicated helpers to send signals with si_trapno set
->>       signal: Remove __ARCH_SI_TRAPNO
->>       signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
->>       signal: Factor force_sig_perf out of perf_sigtrap
->>       signal: Deliver all of the siginfo perf data in _perf
->>       signalfd: Remove SIL_FAULT_PERF_EVENT fields from signalfd_siginfo
->>
->> Marco Elver (3):
->>       sparc64: Add compile-time asserts for siginfo_t offsets
->>       arm: Add compile-time asserts for siginfo_t offsets
->>       arm64: Add compile-time asserts for siginfo_t offsets
->
-> I can't seem to see the rest of them in my inbox. LKML also is missing
-> them: https://lore.kernel.org/linux-api/m1tuni8ano.fsf_-_@fess.ebiederm.org/
->
-> Something must have swallowed them. Could you resend?
-> I'll then test in the morning.
-
-They got stuck going out you should see them any time now.
-Sorry about that.
-
-Eric
