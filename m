@@ -2,138 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90438374668
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A377837442D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:47:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S239231AbhEERQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:16:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236891AbhEERDj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:03:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5869E61401;
-        Wed,  5 May 2021 16:41:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232913;
-        bh=XxGGBWBfrbhWtYT8TV2T2lbojM3peR8A0GT50MPDk88=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EzN1agRcFkRx1/6s4Bdw4lfuUgn580OJRTwQI0AZsWoW5KtOQui/eLC3M4w2lJXpI
-         TvJOil9z87izfMjWNfbLdwNDH57Nn4dVdL2+wePqrHqtQUqILEDwu6ULNz4RBhPmm0
-         d5S0OQfRFytEbuF9Nubhapgmfa6TewbN4VJ9PlxZk+IBnLIfgHDtahxWGtg4SFnW5u
-         c3yBab/Mxp4CDpPCsiKV65glPIC6++fr0vlAjeGhuoV9Txht/CzjRmx3fyDGnVS4YM
-         0fXZQkB5r6qFGy2kNnk15dExKbA3eGX8Xvco13A+hK2c1Jm08wcAU1tReSmVitMErT
-         KqXRjwYkaj/5w==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Ward <david.ward@gatech.edu>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 4.9 16/22] ASoC: rt286: Generalize support for ALC3263 codec
-Date:   Wed,  5 May 2021 12:41:23 -0400
-Message-Id: <20210505164129.3464277-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505164129.3464277-1-sashal@kernel.org>
-References: <20210505164129.3464277-1-sashal@kernel.org>
+        id S235597AbhEEQzo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:55:44 -0400
+Received: from smtpout2.vodafonemail.de ([145.253.239.133]:55892 "EHLO
+        smtpout2.vodafonemail.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236229AbhEEQr7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:47:59 -0400
+Received: from smtp.vodafone.de (smtpa07.fra-mediabeam.com [10.2.0.38])
+        by smtpout2.vodafonemail.de (Postfix) with ESMTP id ACF4A120A4C;
+        Wed,  5 May 2021 18:47:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arcor.de;
+        s=vfde-smtpout-mb-15sep; t=1620233220;
+        bh=hSsWZO88tXF3BwJSxFyOa2HrT9AGLMOotWsm79XkQrE=;
+        h=From:To:References:In-Reply-To:Subject:Date;
+        b=XhYFyx1UrcLqUOTTZn4PaihYlEg1J88bf5GyAtNrOUO/bHf5u4dEQqcFnJbBymUyp
+         BCcQFQwztbC2+8DHxES4+g2C7KXx2az2/aWd3SevSIQih7IkSxXvM6kfDk4damJ4q5
+         BARFF1xQUrDJLMA1asu56W8jigJEOPF3v4Svg8Os=
+Received: from H270 (p5b38f6a1.dip0.t-ipconnect.de [91.56.246.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by smtp.vodafone.de (Postfix) with ESMTPSA id E20E9140271;
+        Wed,  5 May 2021 16:46:59 +0000 (UTC)
+Message-ID: <0B0CF00BA2FA4A039427A213640378A2@H270>
+From:   "Stefan Kanthak" <kanthak@arcor.de>
+To:     <linux-kernel@vger.kernel.org>,
+        "Rasmus Villemoes" <linux@rasmusvillemoes.dk>
+References: <6C7CD73845304CDE98F6DB165904B571@H270> <91e60831-3f8b-a81d-1204-872b5ee79feb@rasmusvillemoes.dk>
+In-Reply-To: <91e60831-3f8b-a81d-1204-872b5ee79feb@rasmusvillemoes.dk>
+Subject: Re: [PATCH] vsscanf() in lib/vsprintf.c
+Date:   Wed, 5 May 2021 18:41:24 +0200
+Organization: Me, myself & IT
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain;
+        charset="Windows-1252"
 Content-Transfer-Encoding: 8bit
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Windows Mail 6.0.6002.18197
+X-MimeOLE: Produced By Microsoft MimeOLE V6.1.7601.24158
+X-purgate-type: clean
+X-purgate-Ad: Categorized by eleven eXpurgate (R) http://www.eleven.de
+X-purgate: This mail is considered clean (visit http://www.eleven.de for further information)
+X-purgate: clean
+X-purgate-size: 3106
+X-purgate-ID: 155817::1620233220-0000067D-080AAAAC/0/0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Ward <david.ward@gatech.edu>
+Rasmus Villemoes <linux@rasmusvillemoes.dk> wrote:
+> On 04/05/2021 21.19, Stefan Kanthak wrote:
+>> Hi @ll,
+>>
+>> both <https://www.kernel.org/doc/htmldocs/kernel-api/API-sscanf.html>
+>> and <https://www.kernel.org/doc/htmldocs/kernel-api/API-vsscanf.html>
+>> are rather terse and fail to specify the supported arguments and their
+>> conversion specifiers/modifiers.
+>>
+>> <https://www.kernel.org/doc/htmldocs/kernel-api/libc.html#id-1.4.3>
+>> tells OTOH:
+>>
+>> | The behaviour of these functions may vary slightly from those
+>> | defined by ANSI, and these deviations are noted in the text.
+>>
+>> There is but no text (see above) despite multiple deviations from
+>> ANSI C
+>>
+>> <https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/plain/lib/vsprintf.c?h=v5.12>
+>>
+>> |  /* '%*[' not yet supported, invalid format */
+>> ...
+>> |  /*
+>> |   * Warning: This implementation of the '[' conversion specifier
+>> |   * deviates from its glibc counterpart in the following ways:
+>> ...
+>>
+>> More deviations (just from reading the source):
+>>
+>> 1. no support for %p
+>
+> What on earth good would that do in the kernel?
 
-[ Upstream commit aa2f9c12821e6a4ba1df4fb34a3dbc6a2a1ee7fe ]
+| The behaviour of these functions may vary slightly from those
+| defined by ANSI, and these deviations are noted in the text.
+                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>> 2. no support for conversion modifiers j and t
+>
+> Could be added, but do you have a user?
 
-The ALC3263 codec on the XPS 13 9343 is also found on the Latitude 13 7350
-and Venue 11 Pro 7140. They require the same handling for the combo jack to
-work with a headset: GPIO pin 6 must be set.
+Just fix your documentation.
 
-The HDA driver always sets this pin on the ALC3263, which it distinguishes
-by the codec vendor/device ID 0x10ec0288 and PCI subsystem vendor ID 0x1028
-(Dell). The ASoC driver does not use PCI, so adapt this check to use DMI to
-determine if Dell is the system vendor.
+>> 3. no support for multibyte characters and strings, i.e. %<width>c
+>>    and %<width>s may split UTF-8 codepoints
+>
+> So what?
 
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=150601
-BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205961
-Signed-off-by: David Ward <david.ward@gatech.edu>
-Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210418134658.4333-6-david.ward@gatech.edu
-Signed-off-by: Mark Brown <broonie@kernel.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- sound/soc/codecs/rt286.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+It's a BUG!
 
-diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
-index 7899a2cdeb42..4a0ab620983d 100644
---- a/sound/soc/codecs/rt286.c
-+++ b/sound/soc/codecs/rt286.c
-@@ -1119,12 +1119,11 @@ static const struct dmi_system_id force_combo_jack_table[] = {
- 	{ }
- };
- 
--static const struct dmi_system_id dmi_dell_dino[] = {
-+static const struct dmi_system_id dmi_dell[] = {
- 	{
--		.ident = "Dell Dino",
-+		.ident = "Dell",
- 		.matches = {
- 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
--			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 13 9343")
- 		}
- 	},
- 	{ }
-@@ -1135,7 +1134,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- {
- 	struct rt286_platform_data *pdata = dev_get_platdata(&i2c->dev);
- 	struct rt286_priv *rt286;
--	int i, ret, val;
-+	int i, ret, vendor_id;
- 
- 	rt286 = devm_kzalloc(&i2c->dev,	sizeof(*rt286),
- 				GFP_KERNEL);
-@@ -1151,14 +1150,15 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	}
- 
- 	ret = regmap_read(rt286->regmap,
--		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &val);
-+		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &vendor_id);
- 	if (ret != 0) {
- 		dev_err(&i2c->dev, "I2C error %d\n", ret);
- 		return ret;
- 	}
--	if (val != RT286_VENDOR_ID && val != RT288_VENDOR_ID) {
-+	if (vendor_id != RT286_VENDOR_ID && vendor_id != RT288_VENDOR_ID) {
- 		dev_err(&i2c->dev,
--			"Device with ID register %#x is not rt286\n", val);
-+			"Device with ID register %#x is not rt286\n",
-+			vendor_id);
- 		return -ENODEV;
- 	}
- 
-@@ -1182,8 +1182,8 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	if (pdata)
- 		rt286->pdata = *pdata;
- 
--	if (dmi_check_system(force_combo_jack_table) ||
--		dmi_check_system(dmi_dell_dino))
-+	if ((vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) ||
-+		dmi_check_system(force_combo_jack_table))
- 		rt286->pdata.cbj_en = true;
- 
- 	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
-@@ -1222,7 +1222,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
- 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL3, 0xf777, 0x4737);
- 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL4, 0x00ff, 0x003f);
- 
--	if (dmi_check_system(dmi_dell_dino)) {
-+	if (vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) {
- 		regmap_update_bits(rt286->regmap,
- 			RT286_SET_GPIO_MASK, 0x40, 0x40);
- 		regmap_update_bits(rt286->regmap,
--- 
-2.30.2
+> The kernel doesn't do a lot of text processing and wchar_t stuff.
+
+Nobody will ever feed a UTF-8 string to the kernel?
+
+>> 4. accepts %[<width>]<modifier>[c|s], but ignores all conversion
+>>    modifiers
+>
+> Yeah, %ls is technically accepted and treated as %s,
+
+just like %Ls and %Hs and %hhs and %zs ... what the documentation
+but fails to tell: just fix it.
+
+> that's mostly for ease of parsing it seems. Do you have a use
+> case where you'd want wchar_ts?
+
+>> 5. treats %<width><modifier>% (and combinations) as %%
+>
+> What would you expect it to do?
+
+See the patch: stop and return the number of converted items, like
+an ANSI/ISO conformant scanf()
+
+> Seems to be a non-issue, gcc flags that nonsense just fine
+
+Nobody will ever feed a non-constant format string to [v]sscanf()?
+
+>> 6. accepts %<width><modifier>n (and combinations)
+>
+> Again, non-issue (warning: field width used with ‘%n’ gnu_scanf format)
+
+How does gnu_scanf() handle %0Ln etc.?
+Does a warning stop compilation of the kernel?
+
+See above: it's undocumented, and it's not flagged in calls with
+non-constant format string.
+
+>> 7. doesn't scan the input for %[...]n
+>
+> ? What's that supposed to mean.
+
+Argh, my fault: should have been %*
+
+>> 8. uses simple_strto[u]l for the conversion modifier z, i.e. assigns
+>>    uint32_t to size_t, resulting in truncation
+>
+> Where do you see uint32_t?
+
+LLP64 vs. LP64, so my last point is invalid.
+
+Stefan
 
