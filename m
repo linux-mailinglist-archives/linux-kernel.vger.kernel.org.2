@@ -2,133 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A7FB3737FF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89E85373801
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:43:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233056AbhEEJob (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:44:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48708 "EHLO mail.kernel.org"
+        id S233190AbhEEJog (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:44:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:41392 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232504AbhEEJnR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:43:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BA8CE61581;
-        Wed,  5 May 2021 09:42:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620207739;
-        bh=n8BdYNFKHpGuvTsaDKiqExH9RPNm4SzImqrTD24XJEw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=D5T/Giy9UwbacLo5/r243zsPBZ7bkoG9N39UtkebzGibE2JzsvfvECZm6Zbguc6Uu
-         GTLD3m8D6+iHXCihxX/T3oEYcyShEYVZ6ZuebL91GQWXu2ErP1Pin4TxjkmC0Z3Mn4
-         /Rlz+WQTgF+x/qdH+qzMCxRvzMCOQpnUsbHZsPs2Oi0fV4xStJEi6cNxY96KVK42Ee
-         lfbW+cPG8uR0sAT5xyjz37bkVSrTe7am2zPJQAnYECVG0ALKFGx2k9aPchNc6zBr/E
-         Ursdkl9WjSgrF4HHILE35g25HfkopYqDbw/2QlF3c7I64raujdA+cbcWmF0ZLGalk4
-         daiAuIpELUvOw==
-Received: by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1leE2r-00AHx1-Lz; Wed, 05 May 2021 11:42:17 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: [PATCH 25/25] media: i2c: ccs-core: fix pm_runtime_get_sync() usage count
-Date:   Wed,  5 May 2021 11:42:15 +0200
-Message-Id: <83ec24acb15f17e2ce589575c2f5eb7bdd1daf28.1620207353.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1620207353.git.mchehab+huawei@kernel.org>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        id S233139AbhEEJoB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 05:44:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 0DB2ED6E;
+        Wed,  5 May 2021 02:43:05 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 468C13F70D;
+        Wed,  5 May 2021 02:43:02 -0700 (PDT)
+Subject: Re: [PATCH 1/1] sched/fair: Fix unfairness caused by missing load
+ decay
+To:     Odin Ugedal <odin@ugedal.com>
+Cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Odin Ugedal <odin@uged.al>, Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "open list:CONTROL GROUP (CGROUP)" <cgroups@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+References: <20210425080902.11854-1-odin@uged.al>
+ <20210425080902.11854-2-odin@uged.al> <20210427142611.GA22056@vingu-book>
+ <CAFpoUr1KOvLSUoUac8MMTD+TREDWmDpeku950U=_p-oBDE4Avw@mail.gmail.com>
+ <CAKfTPtCtt9V69AvkJTuMDRPJXGPboFsnSmwLM5RExnU2h5stSw@mail.gmail.com>
+ <4ba77def-c7e9-326e-7b5c-cd491b063888@arm.com>
+ <CAFpoUr3vMQq8QYajXZsQ6zWQOncO5Q8-2gFWOJLFm-APUznuZA@mail.gmail.com>
+From:   Dietmar Eggemann <dietmar.eggemann@arm.com>
+Message-ID: <4b0d6562-db41-b4fc-ae51-694946c9255d@arm.com>
+Date:   Wed, 5 May 2021 11:43:00 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <CAFpoUr3vMQq8QYajXZsQ6zWQOncO5Q8-2gFWOJLFm-APUznuZA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pm_runtime_get_sync() internally increments the
-dev->power.usage_count without decrementing it, even on errors.
+On 01/05/2021 16:41, Odin Ugedal wrote:
+> Hi,
+> 
+>> I think what I see on my Juno running the unfairness_missing_load_decay.sh script is
+>> in sync which what you discussed here:
+> 
+> Thanks for taking a look!
+> 
+>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>> index 794c2cb945f8..7214e6e89820 100644
+>> --- a/kernel/sched/fair.c
+>> +++ b/kernel/sched/fair.c
+>> @@ -10854,6 +10854,8 @@ static void propagate_entity_cfs_rq(struct sched_entity *se)
+>>                         break;
+>>
+>>                 update_load_avg(cfs_rq, se, UPDATE_TG);
+>> +               if (!cfs_rq_is_decayed(cfs_rq))
+>> +                       list_add_leaf_cfs_rq(cfs_rq);
+>>         }
+>> }
+> 
+> This might however lead to "loss" at /slice/cg-2/sub and
+> slice/cg-1/sub in this particular case tho, since
+> propagate_entity_cfs_rq skips one cfs_rq
+> by taking the parent of the provided se. The loss in that case would
+> however not be equally big, but will still often contribute to some
+> unfairness.
 
-There is a bug at ccs_pm_get_init(): when this function returns
-an error, the stream is not started, and RPM usage_count
-should not be incremented. However, if the calls to
-v4l2_ctrl_handler_setup() return errors, it will be kept
-incremented.
+Yeah, that's true.
 
-At ccs_suspend() the best is to replace it by the new
-pm_runtime_resume_and_get(), introduced by:
-commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-in order to properly decrement the usage counter automatically,
-in the case of errors.
+By moving stopped `stress` tasks into
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/i2c/ccs/ccs-core.c | 39 ++++++++++++++++++++------------
- 1 file changed, 24 insertions(+), 15 deletions(-)
+ /sys/fs/cgroup/cpu/slice/cg-{1,2}/sub
 
-diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-index b05f409014b2..04c3ab9e37b4 100644
---- a/drivers/media/i2c/ccs/ccs-core.c
-+++ b/drivers/media/i2c/ccs/ccs-core.c
-@@ -1880,21 +1880,33 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
- 	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
- 	int rval;
- 
-+	/*
-+	 * It can't use pm_runtime_resume_and_get() here, as the driver
-+	 * relies at the returned value to detect if the device was already
-+	 * active or not.
-+	 */
- 	rval = pm_runtime_get_sync(&client->dev);
--	if (rval < 0) {
--		pm_runtime_put_noidle(&client->dev);
-+	if (rval < 0)
-+		goto error;
- 
--		return rval;
--	} else if (!rval) {
--		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
--					       ctrl_handler);
--		if (rval)
--			return rval;
-+	/* Device was already active, so don't set controls */
-+	if (rval == 1)
-+		return 0;
- 
--		return v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
--	}
-+	/* Restore V4L2 controls to the suspended device */
-+	rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->ctrl_handler);
-+	if (rval)
-+		goto error;
- 
-+	rval = v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
-+	if (rval)
-+		goto error;
-+
-+	/* Keep PM runtime usage_count incremented on success */
- 	return 0;
-+error:
-+	pm_runtime_put_noidle(&client->dev);
-+	return rval;
- }
- 
- static int ccs_set_stream(struct v4l2_subdev *subdev, int enable)
-@@ -3089,12 +3101,9 @@ static int __maybe_unused ccs_suspend(struct device *dev)
- 	bool streaming = sensor->streaming;
- 	int rval;
- 
--	rval = pm_runtime_get_sync(dev);
--	if (rval < 0) {
--		pm_runtime_put_noidle(dev);
--
-+	rval = pm_runtime_resume_and_get(dev);
-+	if (rval < 0)
- 		return rval;
--	}
- 
- 	if (sensor->streaming)
- 		ccs_stop_streaming(sensor);
--- 
-2.30.2
+and then into
 
+ /sys/fs/cgroup/cpuset/A
+
+which has a cpuset.cpus {0-1,4-5} not containing the cpus the `stress`
+tasks attached {2,3} to and then restart the `stress` tasks again I get:
+
+cfs_rq[1]:/slice/cg-1/sub
+  .load_avg                      : 1024
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 1024  <---
+  .tg_load_avg                   : 2047  <---
+  .se->avg.load_avg              : 511
+cfs_rq[1]:/slice/cg-1
+  .load_avg                      : 512
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 512  <---
+  .tg_load_avg                   : 1022 <---
+  .se->avg.load_avg              : 512
+cfs_rq[1]:/slice
+  .load_avg                      : 513
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 513
+  .tg_load_avg                   : 1024
+  .se->avg.load_avg              : 512
+cfs_rq[5]:/slice/cg-1/sub
+  .load_avg                      : 1024
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 1023 <---
+  .tg_load_avg                   : 2047 <---
+  .se->avg.load_avg              : 511
+cfs_rq[5]:/slice/cg-1
+  .load_avg                      : 512
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 510  <---
+  .tg_load_avg                   : 1022 <---
+  .se->avg.load_avg              : 511
+cfs_rq[5]:/slice
+  .load_avg                      : 512
+  .removed.load_avg              : 0
+  .tg_load_avg_contrib           : 511
+  .tg_load_avg                   : 1024
+  .se->avg.load_avg              : 510
+
+I saw that your v2 patch takes care of that.
