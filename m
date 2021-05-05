@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C50D43743BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:46:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 710D83743C0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:46:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235507AbhEEQvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:51:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49344 "EHLO mail.kernel.org"
+        id S235609AbhEEQvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:51:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235308AbhEEQns (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:43:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id CA81A61923;
-        Wed,  5 May 2021 16:35:08 +0000 (UTC)
+        id S235485AbhEEQoH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:44:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 15F57617C9;
+        Wed,  5 May 2021 16:35:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232509;
-        bh=0+9Xdgeq1Rpqm/DtwPbsBg2XLXCA4ICNfobY8GCq/VY=;
+        s=k20201202; t=1620232520;
+        bh=BVWlPA/KL4xZMewJbjfvM8i8Zx/VWdWhlC9t6J9uyzs=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=aPGnwhnmNHg4qwEn34+XuQrKZToPvZqxlWgrg9NnfQDgkHZr2z6r/xx6GS1aoymHB
-         iG6X6mWtt0XGodIRIXDfeQsjgnK2I57RAyTJFknMIfgDhmcdEe5CyIQ/jwESCArMLk
-         ds4m09vFLCcuNF3a8SAe7GVWcWTRhS4Zi3VIxX7DFIh8JZC0hj0p3uiXI54YVCX6Pa
-         HYa2ZlEMAabnZgGXrMnLE/YDRd6tJnAFV0SOXnx78EGFkZR6eKLRefIqpza1z2RrS4
-         XE8ic6YJ2p++sLxxjY1TlFEH8SAPs+/jZWBCDIviI0ug7xeB1BP3heRk4N5wN4JMbn
-         bU5u5k7i4NolQ==
+        b=naA0mf822zF0jt+BmfxGO3CQlnvSKkUC+yMexZ7BHu1jy6v0XfmaEBwwEfQ/EG/w0
+         DgigfkPPnx6wt8DxPHS655QLit2SomhbKbjvgA7yWrTSFx3ou9/iNeLTUD+rTYBLrw
+         iBZhvTVQsM2wfeB37PW7eZ/rnLknaD9h1APsY5Kgf1IqV3gh2ZXPlY7fxKh6ZnmJ7/
+         rT2snT9qikwYM3CdhfNiJBBKngbhJYhdR3qwu1qZL4od3R6DxQ4isTvcA7eVWJC0C2
+         ZxWM2xvBP9i+ala8vTJ3TEk6CR2ux5oV11dOW/0Vic/VGPfgD8uKqji/u6BYYM7Z7d
+         mvwWBvCeZR67w==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hans de Goede <hdegoede@redhat.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.11 039/104] ASoC: rt5670: Add a quirk for the Dell Venue 10 Pro 5055
-Date:   Wed,  5 May 2021 12:33:08 -0400
-Message-Id: <20210505163413.3461611-39-sashal@kernel.org>
+Cc:     Johan Almbladh <johan.almbladh@anyfinetworks.com>,
+        Johannes Berg <johannes.berg@intel.com>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 046/104] mac80211: Set priority and queue mapping for injected frames
+Date:   Wed,  5 May 2021 12:33:15 -0400
+Message-Id: <20210505163413.3461611-46-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -43,45 +43,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hans de Goede <hdegoede@redhat.com>
+From: Johan Almbladh <johan.almbladh@anyfinetworks.com>
 
-[ Upstream commit 84cb0d5581b6a7bd5d96013f67e9f2eb0c7b4378 ]
+[ Upstream commit 96a7109a16665255b65d021e24141c2edae0e202 ]
 
-Add a quirk with the jack-detect and dmic settings necessary to make
-jack-detect and the builtin mic work on Dell Venue 10 Pro 5055 tablets.
+Some drivers, for example mt76, use the skb priority field, and
+expects that to be consistent with the skb queue mapping. On some
+frame injection code paths that was not true, and it broke frame
+injection. Now the skb queue mapping is set according to the skb
+priority value when the frame is injected. The skb priority value
+is also derived from the frame data for all frame types, as it
+was done prior to commit dbd50a851c50 (only allocate one queue
+when using iTXQs). Fixes frame injection with the mt76 driver on
+MT7610E chipset.
 
-Signed-off-by: Hans de Goede <hdegoede@redhat.com>
-Acked-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Link: https://lore.kernel.org/r/20210402140747.174716-5-hdegoede@redhat.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Johan Almbladh <johan.almbladh@anyfinetworks.com>
+Link: https://lore.kernel.org/r/20210401164455.978245-1-johan.almbladh@anyfinetworks.com
+Signed-off-by: Johannes Berg <johannes.berg@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/codecs/rt5670.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ net/mac80211/tx.c | 20 +++++++++-----------
+ 1 file changed, 9 insertions(+), 11 deletions(-)
 
-diff --git a/sound/soc/codecs/rt5670.c b/sound/soc/codecs/rt5670.c
-index a0c8f58d729b..47ce074289ca 100644
---- a/sound/soc/codecs/rt5670.c
-+++ b/sound/soc/codecs/rt5670.c
-@@ -2908,6 +2908,18 @@ static const struct dmi_system_id dmi_platform_intel_quirks[] = {
- 						 RT5670_GPIO1_IS_IRQ |
- 						 RT5670_JD_MODE3),
- 	},
-+	{
-+		.callback = rt5670_quirk_cb,
-+		.ident = "Dell Venue 10 Pro 5055",
-+		.matches = {
-+			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+			DMI_MATCH(DMI_PRODUCT_NAME, "Venue 10 Pro 5055"),
-+		},
-+		.driver_data = (unsigned long *)(RT5670_DMIC_EN |
-+						 RT5670_DMIC2_INR |
-+						 RT5670_GPIO1_IS_IRQ |
-+						 RT5670_JD_MODE1),
-+	},
- 	{
- 		.callback = rt5670_quirk_cb,
- 		.ident = "Aegex 10 tablet (RU2)",
+diff --git a/net/mac80211/tx.c b/net/mac80211/tx.c
+index 64fae4f645f5..f6bfa0ce262c 100644
+--- a/net/mac80211/tx.c
++++ b/net/mac80211/tx.c
+@@ -2269,17 +2269,6 @@ netdev_tx_t ieee80211_monitor_start_xmit(struct sk_buff *skb,
+ 						    payload[7]);
+ 	}
+ 
+-	/* Initialize skb->priority for QoS frames. If the DONT_REORDER flag
+-	 * is set, stick to the default value for skb->priority to assure
+-	 * frames injected with this flag are not reordered relative to each
+-	 * other.
+-	 */
+-	if (ieee80211_is_data_qos(hdr->frame_control) &&
+-	    !(info->control.flags & IEEE80211_TX_CTRL_DONT_REORDER)) {
+-		u8 *p = ieee80211_get_qos_ctl(hdr);
+-		skb->priority = *p & IEEE80211_QOS_CTL_TAG1D_MASK;
+-	}
+-
+ 	rcu_read_lock();
+ 
+ 	/*
+@@ -2343,6 +2332,15 @@ netdev_tx_t ieee80211_monitor_start_xmit(struct sk_buff *skb,
+ 
+ 	info->band = chandef->chan->band;
+ 
++	/* Initialize skb->priority according to frame type and TID class,
++	 * with respect to the sub interface that the frame will actually
++	 * be transmitted on. If the DONT_REORDER flag is set, the original
++	 * skb-priority is preserved to assure frames injected with this
++	 * flag are not reordered relative to each other.
++	 */
++	ieee80211_select_queue_80211(sdata, skb, hdr);
++	skb_set_queue_mapping(skb, ieee80211_ac_from_tid(skb->priority));
++
+ 	/* remove the injection radiotap header */
+ 	skb_pull(skb, len_rthdr);
+ 
 -- 
 2.30.2
 
