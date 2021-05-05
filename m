@@ -2,151 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93908374988
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:39:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9CDD737498B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:39:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234845AbhEEUkA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:40:00 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:49208 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234675AbhEEUj7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:39:59 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 145KYxhO027646;
-        Wed, 5 May 2021 13:38:51 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=RU75SMRO/mtB3tc7C0hCxRd/5hwa1TI5J2uZlWitDXY=;
- b=ZDeaAQ5cJcwjqg/TaH3c73IEx2g2Qnl2MKGjH6RECPbLT0QelamdgPbeNwk0CYQnFkXU
- eymDwbcGwQQwMrtq4V4rx//m6pHjGSpDxOHAF7Z0X2A2aknB8TzMxm4bOUZrLWQ/Dip4
- 6qOiQMorutArGrp0/SZrL3D78o8IjeUqMIk= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38bed2ws64-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 05 May 2021 13:38:51 -0700
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.228) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 5 May 2021 13:38:49 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dl/A5hp8KY88j3Dp+QqeJ2C85O+NlsCJHqBqcM1XHWh7qVoP8Ufc87FXE9eF/aW2Lkz2STLLfZtSedE1XRBrWzvsKWZKCCPDZsd0Sn0lJT7urHQecRrIm6FVCGGLtjYhhk5SvSjpAgi+xlXuf6qTBUDYJ/5JFLMI2x/ziLhRLFn3l6Bj3rq1cUTA3/4QHnidKNi7HAyroz1j/Dv8q48MTcLhIkd/ZYsbbl77yN0bRBb0qdmjoG+tGlMuPIZ6IHvqgwkxycyOvgGZqNBd1jgInBxwPASY4hE3s+KKhCZ8VGFg/nEfa1a3LAqCcofxNQSxA9iN5dxug9QTxyQafr/1lw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RU75SMRO/mtB3tc7C0hCxRd/5hwa1TI5J2uZlWitDXY=;
- b=O/LMb83Pd0q0i3jvHtGS4ZnmvVTszaX6bmPxw19sJJnEqbfIiDFn6+LmAG2WzjuS3quiJm5ZKYRBBoiuK/32PlUQU03tB9YzGHypM8LcXG7t4dyZVUhhlI5OliFDyOnGZ4wd8Qb5V+Y6a7NNCkLTX94//JdiY9sEbgfHmGfeh32E3dUYMzLqa0/DaF225tik2+f6K8qW561bPEauf2+rd9bDrgQagbhYTlaBgKds3zffF1RxKSwDYv2DFfkhqGZ0aIGsHrmrS4CoDIG5xu7/PaM125gP9Rd5/ahXFL2fMNNUKHdlHz7TusN6C3RmxyLb+sh5WWobtNQCTUpUrQr38g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3400.namprd15.prod.outlook.com (2603:10b6:a03:10f::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Wed, 5 May
- 2021 20:38:48 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::dd03:6ead:be0f:eca0%5]) with mapi id 15.20.4108.026; Wed, 5 May 2021
- 20:38:48 +0000
-Date:   Wed, 5 May 2021 13:38:44 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Waiman Long <longman@redhat.com>
-CC:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Shakeel Butt <shakeelb@google.com>,
-        <linux-kernel@vger.kernel.org>, <cgroups@vger.kernel.org>,
-        <linux-mm@kvack.org>
-Subject: Re: [PATCH v4 3/3] mm: memcg/slab: Disable cache merging for
- KMALLOC_NORMAL caches
-Message-ID: <YJMCVPIJyCFfcmiD@carbon.dhcp.thefacebook.com>
-References: <20210505200610.13943-1-longman@redhat.com>
- <20210505200610.13943-4-longman@redhat.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20210505200610.13943-4-longman@redhat.com>
-X-Originating-IP: [2620:10d:c090:400::5:c814]
-X-ClientProxiedBy: MWHPR18CA0069.namprd18.prod.outlook.com
- (2603:10b6:300:39::31) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        id S234951AbhEEUkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:40:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46990 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234675AbhEEUkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 16:40:02 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 37678613E3;
+        Wed,  5 May 2021 20:39:04 +0000 (UTC)
+Date:   Wed, 5 May 2021 16:38:55 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
+        Stefano Garzarella <sgarzare@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        Joel Fernandes <joelaf@google.com>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: [RFC][PATCH] vhost/vsock: Add vsock_list file to map cid with vhost
+ tasks
+Message-ID: <20210505163855.32dad8e7@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:c814) by MWHPR18CA0069.namprd18.prod.outlook.com (2603:10b6:300:39::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Wed, 5 May 2021 20:38:47 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 7b1fd657-19f3-4b1f-812b-08d91005c934
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3400:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB3400F5244EDE3222668C0560BE599@BYAPR15MB3400.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:3383;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: abPoqCPYUs7BY5u3WtwaAoaMZmIBC4sj7+mJRKGwZspk8V63LgAwu43Geod5X1fHLAQoWbr0wpjyZiQR6OnHlsE1h10JzXZ1kjsocXpTlq8Iuuws/XJwJBkItaRqykyU6TFH7J6QeTJr71RcdH+xcSfVHvzPh9cDVVJkThU5eEU6yHqdggWRocXA2hLIURYDrGiJf+R9nEg2vgWN2RFo0xSCExQntjf8yT4JQN1nJAI55t2bmd9+SAbMSVHuCLyuLKOIIy02p1wNEhiMPipjEfEXBJofUMQmoDcrYlr17l2AsVrWd6pHcTjJxGM7txT8Do83xmc7nu5l2XPnP6Dd0/4Z4Ig+j+c1rt+GWW2BHskIxbgijiaIx9nZ4Vl0/6oBfKRIkEmwpGC/9JifY7mpYoYl2am1Mit04JTJg1ltkwEKLCs0KXnpApg0ofzWNN27ZpomBBmtkArCqlMPqrQRcYc45yXmRD0kKoBjcQi3t5k3WzteOJOHXUiqB15jMGQhBPEl6jyxjpoPvrIesPs9aBLoLdy3MN/xVuenB3Hz3g2+VroWjPdCX/uMNjdd859zTue+ez2Jtf2+ZuzAobSq+w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(39860400002)(136003)(366004)(6916009)(83380400001)(7416002)(38100700002)(478600001)(16526019)(9686003)(55016002)(186003)(52116002)(54906003)(8936002)(316002)(7696005)(4326008)(8676002)(86362001)(6666004)(4744005)(66556008)(5660300002)(66476007)(2906002)(6506007)(66946007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?hdCEmyIy/Wx7FfFihdZokQM9cOl5ReJtEET0UHBtIFwQ8BjG6UZiW0YtQtL8?=
- =?us-ascii?Q?9Ohyoxr2AeolOIuEQIVajndves4Ty+SzXkbMwI07xmJRii8IOHvXHxtw77V7?=
- =?us-ascii?Q?3K6BRkd0yrbL2qcjvNA9oivFkL/LtXXHYVTt6qH2E0UNEb9do6adZasu65Nn?=
- =?us-ascii?Q?NgAyRZiVxk6vhJQzwo5hDP2QzS/jTyxZRxz3fFm2gjxanWxm3D6H8Q4Go87A?=
- =?us-ascii?Q?7GwUMQRsMUJKSdBuKvcNTRI0m/jXx26pGSKwlAoOktJ0Cjj8r5VqbmlHW3vs?=
- =?us-ascii?Q?anHMrpe7sapYL5STYLp+MinIc7BVupXvOlJDKTiMV7OEULPu9kfaKWQWy4W2?=
- =?us-ascii?Q?46MuUGPw1I1icn6Inu7NxaA9b+KsYbNOTwgScKdiPNBpDl9hrSjSwWXLj/sr?=
- =?us-ascii?Q?qAvIK8cYHtcwx9muO9fyUMKXpswKjPT3nQ+FcD1mJyyaLya+DaCI897ZQ0iR?=
- =?us-ascii?Q?9JJi1JxingYjuobVnIOoGNKm2T3epsC3YSwNzMwJsHhnjb+hwjjhaW9pXXny?=
- =?us-ascii?Q?FpsAUga9IUBBj/ay/8fv+FoLFL5YQGC5mb551x0ltGzu4rroKbUs9D6tLrk1?=
- =?us-ascii?Q?GuhWDrWrtETD/7g1K5VjKuwuVbG7606GTJMDqA6HRZk0IXQ2HTqIFhKxG0uw?=
- =?us-ascii?Q?vFG4DR05pKr0w7Wf/8l+P030FvBt0yjZqsDm9GXA5IK1t7vrbMZ5bj1HVPUf?=
- =?us-ascii?Q?D2QHgvSGQ6B9Ct2TOxvv7p2qrPLr4XwnEUe0D8v4f+XmrgznSdANF2PdKLsO?=
- =?us-ascii?Q?oRvhuzJrYieJeUNsnC7YG8TWqapLXtcBzZDE0BtYC16ISVh4RJNxcBWdJo/h?=
- =?us-ascii?Q?wDMTff8TMa4VKmQp7E0A3rpeWSivkIQ8yJcROp8lzKkpUoLXAMUvGU+WEhMm?=
- =?us-ascii?Q?KubZoCEqYgH0tTWUgeoloxGSs2r1Li6QjxoFue8BLg6iLYY9RMfeZyDJPXA8?=
- =?us-ascii?Q?Rv8Z0gT0kqiHY388HbOqOBWHI52kZl5qu8XhGPwPxE809en5JFwyt2iW37dG?=
- =?us-ascii?Q?NALp9EnyI2sELtEVPTulajD+cNGq6t7bsf40bYfSD8CRbM8OoEhqmdT2Pt0M?=
- =?us-ascii?Q?/T1PAbg3rU2lwWdS7SL97c1qECcVd0UdXofQg5BZmlpASoiCq3VQ7QfWgPmU?=
- =?us-ascii?Q?ucQiDanVZgHxyNH5Cf7NT4HOgexqxf/l95I0PgIzWGVrmlwA7Hx0qPFrrcsI?=
- =?us-ascii?Q?eu6N6KV+i0KfG4iF86kMRk/z6ei+o0sxf9SSTk8JHrn0JmNPEHdXKjDXhqND?=
- =?us-ascii?Q?J38tj4SWsgZF9Rbq24zJciEYGeZ/KOC3jOB9oz5ZfAUfvc0NV4cJ7fPMvPN6?=
- =?us-ascii?Q?DlsFhDvzk2ngdFShmkvWTo8FiZfs+Aakg0mDM4pcj7enn4S5EPcugQL3GK1c?=
- =?us-ascii?Q?/lmrv2E=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7b1fd657-19f3-4b1f-812b-08d91005c934
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 20:38:48.6931
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: BRJtqhzybNT6f9fSec/7hGZu7SZGnvc9VOVmoNEZx8z3cWD0RmnU86NKFLf0NY+E
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3400
-X-OriginatorOrg: fb.com
-X-Proofpoint-ORIG-GUID: kljhDIU0nsXVpTtA4gSC4M1HQoL1AR-g
-X-Proofpoint-GUID: kljhDIU0nsXVpTtA4gSC4M1HQoL1AR-g
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-05_10:2021-05-05,2021-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- impostorscore=0 priorityscore=1501 lowpriorityscore=0 bulkscore=0
- phishscore=0 mlxscore=0 adultscore=0 clxscore=1015 spamscore=0
- suspectscore=0 mlxlogscore=634 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2105050143
-X-FB-Internal: deliver
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 04:06:10PM -0400, Waiman Long wrote:
-> The KMALLOC_NORMAL (kmalloc-<n>) caches are for unaccounted objects only
-> when CONFIG_MEMCG_KMEM is enabled. To make sure that this condition
-> remains true, we will have to prevent KMALOC_NORMAL caches to merge
-> with other kmem caches. This is now done by setting its refcount to -1
-> right after its creation.
-> 
-> Suggested-by: Roman Gushchin <guro@fb.com>
-> Signed-off-by: Waiman Long <longman@redhat.com>
+The new trace-cmd 3.0 (which is almost ready to be released) allows for
+tracing between host and guests with timestamp synchronization such that
+the events on the host and the guest can be interleaved in the proper order
+that they occur. KernelShark now has a plugin that visualizes this
+interaction.
 
-Acked-by: Roman Gushchin <guro@fb.com>
+The implementation requires that the guest has a vsock CID assigned, and on
+the guest a "trace-cmd agent" is running, that will listen on a port for
+the CID. The on the host a "trace-cmd record -A guest@cid:port -e events"
+can be called and the host will connect to the guest agent through the
+cid/port pair and have the agent enable tracing on behalf of the host and
+send the trace data back down to it.
+
+The problem is that there is no sure fire way to find the CID for a guest.
+Currently, the user must know the cid, or we have a hack that looks for the
+qemu process and parses the --guest-cid parameter from it. But this is
+prone to error and does not work on other implementation (was told that
+crosvm does not use qemu).
+
+As I can not find a way to discover CIDs assigned to guests via any kernel
+interface, I decided to create this one. Note, I'm not attached to it. If
+there's a better way to do this, I would love to have it. But since I'm not
+an expert in the networking layer nor virtio, I decided to stick to what I
+know and add a debugfs interface that simply lists all the registered CIDs
+and the worker task that they are associated with. The worker task at
+least has the PID of the task it represents.
+
+Now I can find the cid / host process in charge of the guest pair:
+
+  # cat /sys/kernel/debug/vsock_list
+  3	vhost-1954:2002
+
+  # ps aux | grep 1954
+  qemu        1954  9.9 21.3 1629092 796148 ?      Sl   16:22   0:58  /usr/bin/qemu-kvm -name guest=Fedora21,debug-threads=on -S -object secret,id=masterKey0,format=raw,file=/var/lib/libvirt/qemu/domain-1-Fedora21/master-key.aes -machine pc-1.2,accel=kvm,usb=off,dump-guest-core=off -cpu qemu64 -m 1000 -overcommit mem-lock=off -smp 2,sockets=2,cores=1,threads=1 -uuid 1eefeeb0-3ac7-07c1-926e-236908313b4c -no-user-config -nodefaults -chardev socket,id=charmonitor,fd=32,server,nowait -mon chardev=charmonitor,id=monitor,mode=control -rtc base=utc -no-shutdown -boot strict=on -device piix3-usb-uhci,id=usb,bus=pci.0,addr=0x1.0x2 -device virtio-serial-pci,id=virtio-serial0,bus=pci.0,addr=0x6 -blockdev {"driver":"host_device","filename":"/dev/mapper/vg_bxtest-GuestFedora","node-name":"libvirt-1-storage","auto-read-only":true,"discard":"unmap"} -blockdev {"node-name":"libvirt-1-format","read-only":false,"driver":"raw","file":"libvirt-1-storage"} -device ide-hd,bus=ide.0,unit=0,drive=libvirt-1-
+ format,id=ide0-0-0,bootindex=1 -netdev tap,fd=34,id=hostnet0 -device rtl8139,netdev=hostnet0,id=net0,mac=52:54:00:9f:e9:d5,bus=pci.0,addr=0x3 -netdev tap,fd=35,id=hostnet1 -device virtio-net-pci,netdev=hostnet1,id=net1,mac=52:54:00:ec:dc:6e,bus=pci.0,addr=0x5 -chardev pty,id=charserial0 -device isa-serial,chardev=charserial0,id=serial0 -chardev pipe,id=charchannel0,path=/var/lib/trace-cmd/virt/Fedora21/trace-pipe-cpu0 -device virtserialport,bus=virtio-serial0.0,nr=1,chardev=charchannel0,id=channel0,name=trace-pipe-cpu0 -chardev pipe,id=charchannel1,path=/var/lib/trace-cmd/virt/Fedora21/trace-pipe-cpu1 -device virtserialport,bus=virtio-serial0.0,nr=2,chardev=charchannel1,id=channel1,name=trace-pipe-cpu1 -vnc 127.0.0.1:0 -device cirrus-vga,id=video0,bus=pci.0,addr=0x2 -device virtio-balloon-pci,id=balloon0,bus=pci.0,addr=0x4 -sandbox on,obsolete=deny,elevateprivileges=deny,spawn=deny,resourcecontrol=deny -device vhost-vsock-pci,id=vsock0,guest-cid=3,vhostfd=16,bus=pci.0,addr=0x7 -msg 
+ timestamp=on
+  root        2000  0.0  0.0      0     0 ?        S    16:22   0:00 [kvm-pit/1954]
+  root        2002  0.0  0.0      0     0 ?        S    16:22   0:00 [vhost-1954]
+
+
+This is just an example of what I'm looking for. Just a way to find what
+process is using what cid.
+
+Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+---
+diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+index 5e78fb719602..4f03b25b23c1 100644
+--- a/drivers/vhost/vsock.c
++++ b/drivers/vhost/vsock.c
+@@ -15,6 +15,7 @@
+ #include <linux/virtio_vsock.h>
+ #include <linux/vhost.h>
+ #include <linux/hashtable.h>
++#include <linux/debugfs.h>
+ 
+ #include <net/af_vsock.h>
+ #include "vhost.h"
+@@ -900,6 +901,128 @@ static struct miscdevice vhost_vsock_misc = {
+ 	.fops = &vhost_vsock_fops,
+ };
+ 
++static struct dentry *vsock_file;
++
++struct vsock_file_iter {
++	struct hlist_node	*node;
++	int			index;
++};
++
++
++static void *vsock_next(struct seq_file *m, void *v, loff_t *pos)
++{
++	struct vsock_file_iter *iter = v;
++	struct vhost_vsock *vsock;
++
++	if (pos)
++		(*pos)++;
++
++	if (iter->index >= (int)HASH_SIZE(vhost_vsock_hash))
++		return NULL;
++
++	if (iter->node)
++		iter->node = rcu_dereference_raw(hlist_next_rcu(iter->node));
++
++	for (;;) {
++		if (iter->node) {
++			vsock = hlist_entry_safe(rcu_dereference_raw(iter->node),
++						 struct vhost_vsock, hash);
++			if (vsock->guest_cid)
++				break;
++			iter->node = rcu_dereference_raw(hlist_next_rcu(iter->node));
++			continue;
++		}
++		iter->index++;
++		if (iter->index >= HASH_SIZE(vhost_vsock_hash))
++			return NULL;
++
++		iter->node = rcu_dereference_raw(hlist_first_rcu(&vhost_vsock_hash[iter->index]));
++	}
++	return iter;
++}
++
++static void *vsock_start(struct seq_file *m, loff_t *pos)
++{
++	struct vsock_file_iter *iter = m->private;
++	loff_t l = 0;
++	void *t;
++
++	rcu_read_lock();
++
++	iter->index = -1;
++	iter->node = NULL;
++	t = vsock_next(m, iter, NULL);
++
++	for (; iter->index < HASH_SIZE(vhost_vsock_hash) && l < *pos;
++	     t = vsock_next(m, iter, &l))
++		;
++
++	return t;
++}
++
++static void vsock_stop(struct seq_file *m, void *p)
++{
++	rcu_read_unlock();
++}
++
++static int vsock_show(struct seq_file *m, void *v)
++{
++	struct vsock_file_iter *iter = v;
++	struct vhost_vsock *vsock;
++	struct task_struct *worker;
++
++	if (!iter || iter->index >= HASH_SIZE(vhost_vsock_hash))
++		return 0;
++
++	vsock = hlist_entry_safe(rcu_dereference_raw(iter->node), struct vhost_vsock, hash);
++	worker = vsock->dev.worker;
++	seq_printf(m, "%d\t", vsock->guest_cid);
++
++	if (worker)
++		seq_printf(m, "%s:%d\n", worker->comm, worker->pid);
++	else
++		seq_puts(m, "(no task)\n");
++
++	return 0;
++}
++
++static const struct seq_operations vsock_file_seq_ops = {
++	.start		= vsock_start,
++	.next		= vsock_next,
++	.stop		= vsock_stop,
++	.show		= vsock_show,
++};
++
++static int vsock_file_open(struct inode *inode, struct file *file)
++{
++	struct vsock_file_iter *iter;
++	struct seq_file *m;
++	int ret;
++
++	iter = kzalloc(sizeof(*iter), GFP_KERNEL);
++	if (!iter)
++		return -ENOMEM;
++
++	ret = seq_open(file, &vsock_file_seq_ops);
++	if (ret) {
++		kfree(iter);
++		return ret;
++	}
++
++	m = file->private_data;
++	m->private = iter;
++
++	return 0;
++}
++
++static const struct file_operations vsock_file_fops = {
++	.owner		= THIS_MODULE,
++	.open		= vsock_file_open,
++	.release	= seq_release_private,
++	.read		= seq_read,
++	.llseek		= seq_lseek,
++};
++
+ static int __init vhost_vsock_init(void)
+ {
+ 	int ret;
+@@ -908,12 +1031,15 @@ static int __init vhost_vsock_init(void)
+ 				  VSOCK_TRANSPORT_F_H2G);
+ 	if (ret < 0)
+ 		return ret;
++	vsock_file = debugfs_create_file("vsock_list", 0400,
++					 NULL, NULL, &vsock_file_fops);
+ 	return misc_register(&vhost_vsock_misc);
+ };
+ 
+ static void __exit vhost_vsock_exit(void)
+ {
+ 	misc_deregister(&vhost_vsock_misc);
++	debugfs_remove(vsock_file);
+ 	vsock_core_unregister(&vhost_transport.transport);
+ };
+ 
