@@ -2,113 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B970C374B92
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:55:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63BA6374B8F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:55:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230046AbhEEW4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:56:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38756 "EHLO
+        id S229711AbhEEW4C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:56:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38632 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhEEW4c (ORCPT
+        with ESMTP id S229603AbhEEW4B (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:56:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE92EC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 15:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject:Sender:
-        Reply-To:Cc:Content-ID:Content-Description;
-        bh=6Sib80IUnQYmSYbcXgX9QZ+o6dCexEvCaj2tu9CyIiE=; b=fO4xzBUKzr8Ys3fOwaXwpyE2fO
-        qriwIxij2JK6KMB1Z+BMxJ0aezEntGAtC5oWlQ7PWd2leGaLBlMmvQuh868xMoc/zYwlQAAwp2Zj9
-        0GfIXKDIykxIexFfZLIOMXnM0nqZ3G8g0rac/SClHS/qtjBao0e8gAQj4vpu0JwXJf2BJBxSt7gZR
-        1aUNo4DEvlrIt4nfOvUFdaBaITU5WdZIj8KzxUoZJRYavrq5HM2LmbrE3DLyC67DMIz7zm9ueo4ca
-        9yMxrcJRGIoAqyUHe+kg/++ybGlXXXfm85Gx5kF0LvyWDr4fVzfYomQV+7a5fW8gltYGeRzXSwGEz
-        MUZ0RG9Q==;
-Received: from c-73-157-219-8.hsd1.or.comcast.net ([73.157.219.8] helo=[10.0.0.253])
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1leQPl-001146-T9; Wed, 05 May 2021 22:55:09 +0000
-Subject: Re: [PATCH] Fixed typos in all directories of Documentation/ABI/
-To:     Carlos Bilbao <bilbao@vt.edu>, corbet@lwn.net, hdegoede@redhat.com,
-        mchehab+huawei@kernel.org, Jonathan.Cameron@huawei.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        Stephen Hemminger <sthemmin@microsoft.com>
-References: <2219636.ElGaqSPkdT@iron-maiden>
- <de6f22e2-3f3c-0ce3-a73d-fb881646f1e8@infradead.org>
- <4341223.LvFx2qVVIh@iron-maiden> <1810583.tdWV9SEqCh@iron-maiden>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <70a547bd-1c64-611e-f487-3f1dd76f9526@infradead.org>
-Date:   Wed, 5 May 2021 15:54:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Wed, 5 May 2021 18:56:01 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02D7EC061574;
+        Wed,  5 May 2021 15:55:03 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f0b070001dc1f090e11b831.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:700:1dc:1f09:e11:b831])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 86BE41EC03E4;
+        Thu,  6 May 2021 00:55:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620255302;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=cnqon5MvgowBb3EWUqNjyFY3UgIvU3IW4qe8TPE+cc8=;
+        b=ErEhNePtA2sfWh3ZRAqR3CAWQcI6kYG52j5fUR0i226meWFvvL0zURcD7pnMa3a1VZLlPE
+        /E03fofwdn2Hfw6UTi9eB/dS4JK5duCIF2YoZpMoAMZstzUrG/bXN+8kDGt3WGv09LqVhq
+        FA4axolUov5+yb5fC8FUEUacrkedaUQ=
+Date:   Thu, 6 May 2021 00:55:00 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+Cc:     wangglei <wangglei@gmail.com>,
+        "Lei Wang (DPLAT)" <Wang.Lei@microsoft.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "rric@kernel.org" <rric@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hang Li <hangl@microsoft.com>,
+        Brandon Waller <bwaller@microsoft.com>
+Subject: Re: [EXTERNAL] Re: [PATCH] EDAC: update edac printk wrappers to use
+ printk_ratelimited.
+Message-ID: <YJMiRF8D3EG28d2V@zn.tnic>
+References: <20210505173027.78428-1-wangglei@gmail.com>
+ <YJLdZCcsgWG6TrKz@zn.tnic>
+ <SJ0PR21MB199984A8B47FBEECEC5D11CE90599@SJ0PR21MB1999.namprd21.prod.outlook.com>
+ <YJL1vU6HNBWPKy8g@zn.tnic>
+ <20210505202357.GC4967@sequoia>
+ <YJMIbB31oEDaXm0C@zn.tnic>
+ <20210505214846.GE4967@sequoia>
+ <YJMWBBBlQ6TwFad9@zn.tnic>
+ <20210505221605.GF4967@sequoia>
+ <20210505224357.GG4967@sequoia>
 MIME-Version: 1.0
-In-Reply-To: <1810583.tdWV9SEqCh@iron-maiden>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210505224357.GG4967@sequoia>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 3:28 PM, Carlos Bilbao wrote:
-> Fix the following typos in the Documentation/ABI/ directory:
-> 
-> - In file obsolete/sysfs-cpuidle, change "obselete" for "obsolete".
-> 
-> - In file removed/sysfs-kernel-uids, change "propotional" for "proportional".
-> 
-> - In directory stable/, fix the following words: "associtated" for "associated",
->   "hexidecimal" for "hexadecimal", "vlue" for "value", "csed" for "caused" and 
->   "wrtie" for "write". This updates a total of five files.
-> 
-> - In directory testing/, fix the following words: "subystem" for "subsystem", 
->   isochrnous" for "isochronous", "Desctiptors" for "Descriptors", "picutre" for 
->   "picture", "capture" for "capture", "occured" for "ocurred", "connnected" for 
->   "connected","agressively" for "aggressively","manufacturee" for "manufacturer"
->   and "transaction" for "transaction", "malformatted" for "malformed","internel"
->   for "internal", "writtento" for "written to", "specificed" for "specified", 
->   "beyound" for "beyond", "Symetric" for "Symmetric". This updates a total of 
->   eleven files.
-> 
-> Signed-off-by: Carlos Bilbao <bilbao@vt.edu>
+On Wed, May 05, 2021 at 05:43:57PM -0500, Tyler Hicks wrote:
+> This is x86-specific 
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
+That's because it is used by x86 currently. It shouldn't be hard to use
+it on another arch though as the machinery is pretty generic.
 
-> ---
+> and not applicable in our situation.
 
-This patch should have something here (below the --- line) like:
-
-v2: corrections from v1 and additions to the file <whatever the new file is>
-
-It should also have a modified Subject line: (e.g.)
-
-[PATCH v2] Documentation: ABI: fix typos in all directories
-
-Anyway, the changes look good to me.
-
-Thanks.
-
->  Documentation/ABI/obsolete/sysfs-cpuidle            |  2 +-
->  Documentation/ABI/removed/sysfs-kernel-uids         |  2 +-
->  Documentation/ABI/stable/sysfs-bus-vmbus            |  2 +-
->  Documentation/ABI/stable/sysfs-bus-xen-backend      |  2 +-
->  Documentation/ABI/stable/sysfs-driver-dma-idxd      |  2 +-
->  Documentation/ABI/stable/sysfs-driver-mlxreg-io     |  4 ++--
->  Documentation/ABI/testing/configfs-iio              |  2 +-
->  Documentation/ABI/testing/configfs-most             |  8 ++++----
->  Documentation/ABI/testing/configfs-usb-gadget       |  2 +-
->  Documentation/ABI/testing/configfs-usb-gadget-uvc   |  4 ++--
->  Documentation/ABI/testing/debugfs-driver-genwqe     |  2 +-
->  Documentation/ABI/testing/debugfs-driver-habanalabs |  2 +-
->  Documentation/ABI/testing/sysfs-bus-fsi             |  2 +-
->  Documentation/ABI/testing/sysfs-bus-pci             |  2 +-
->  Documentation/ABI/testing/sysfs-devices-system-cpu  | 10 +++++-----
->  Documentation/ABI/testing/sysfs-driver-ufs          |  4 ++--
->  Documentation/ABI/testing/sysfs-fs-f2fs             |  2 +-
->  17 files changed, 27 insertions(+), 27 deletions(-)
-> 
-
+What is your situation? ARM?
 
 -- 
-~Randy
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
