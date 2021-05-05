@@ -2,42 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0306373A63
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:09:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 105D9373A15
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:06:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbhEEMKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:10:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51444 "EHLO mail.kernel.org"
+        id S232934AbhEEMHW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:07:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46304 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233520AbhEEMIi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:08:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 747C9613BC;
-        Wed,  5 May 2021 12:07:41 +0000 (UTC)
+        id S233383AbhEEMGy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:06:54 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29FD3613D8;
+        Wed,  5 May 2021 12:05:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216462;
-        bh=xlnvhdu5Oni/7aSVgRMSR2mdTkG5kMknDXPHQUPUELI=;
+        s=korg; t=1620216357;
+        bh=7oa022Jfyd3u6Fh5ErzdA5kuhNB8T5+6oov5Pli7f0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xRLRSk+lmyKFGV/5n5wcbk2tZ3XdF+KXOaf6zo6XxElqbYbf8P36h8DAuRZk1SPgt
-         TLq9sA8LhURmsLqdOYynIooeGcWQtgW6GirUPWB0Dm8j6DzVsVV9C0vVjYrZBHL5sm
-         kWQhDuN2J0xjF2lZ6Je7tVcexxJkXMRRWO43KR2U=
+        b=zB7i7RZLEvbQT0AMlF7uG++lHHVoCcGXQtheLPZfrTFSkn2D/UDv5doAs/ZecXt7S
+         nVWcOVkTcJUziuIhOXiXMc8d02GEBmvepotBJTZ9XUMX96HYrfgfFud/m0G0W1N5TE
+         pOfH1czSCVQx00Sk0OJJFtlqA1pVnb472tKpiatQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Hulk Robot <hulkci@huawei.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 5.10 08/29] perf data: Fix error return code in perf_data__create_dir()
-Date:   Wed,  5 May 2021 14:05:11 +0200
-Message-Id: <20210505112326.470107974@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Piotr Krysiuk <piotras@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH 4.19 07/15] bpf: Fix masking negation logic upon negative dst register
+Date:   Wed,  5 May 2021 14:05:12 +0200
+Message-Id: <20210505120504.015714232@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
-References: <20210505112326.195493232@linuxfoundation.org>
+In-Reply-To: <20210505120503.781531508@linuxfoundation.org>
+References: <20210505120503.781531508@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -46,53 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zhen Lei <thunder.leizhen@huawei.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-[ Upstream commit f2211881e737cade55e0ee07cf6a26d91a35a6fe ]
+commit b9b34ddbe2076ade359cd5ce7537d5ed019e9807 upstream.
 
-Although 'ret' has been initialized to -1, but it will be reassigned by
-the "ret = open(...)" statement in the for loop. So that, the value of
-'ret' is unknown when asprintf() failed.
+The negation logic for the case where the off_reg is sitting in the
+dst register is not correct given then we cannot just invert the add
+to a sub or vice versa. As a fix, perform the final bitwise and-op
+unconditionally into AX from the off_reg, then move the pointer from
+the src to dst and finally use AX as the source for the original
+pointer arithmetic operation such that the inversion yields a correct
+result. The single non-AX mov in between is possible given constant
+blinding is retaining it as it's not an immediate based operation.
 
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Link: http://lore.kernel.org/lkml/20210415083417.3740-1-thunder.leizhen@huawei.com
-Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Fixes: 979d63d50c0c ("bpf: prevent out of bounds speculation on pointer arithmetic")
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Piotr Krysiuk <piotras@gmail.com>
+Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- tools/perf/util/data.c | 5 +++--
- 1 file changed, 3 insertions(+), 2 deletions(-)
+ kernel/bpf/verifier.c |   12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
-diff --git a/tools/perf/util/data.c b/tools/perf/util/data.c
-index c47aa34fdc0a..5d97b3e45fbb 100644
---- a/tools/perf/util/data.c
-+++ b/tools/perf/util/data.c
-@@ -35,7 +35,7 @@ void perf_data__close_dir(struct perf_data *data)
- int perf_data__create_dir(struct perf_data *data, int nr)
- {
- 	struct perf_data_file *files = NULL;
--	int i, ret = -1;
-+	int i, ret;
- 
- 	if (WARN_ON(!data->is_dir))
- 		return -EINVAL;
-@@ -51,7 +51,8 @@ int perf_data__create_dir(struct perf_data *data, int nr)
- 	for (i = 0; i < nr; i++) {
- 		struct perf_data_file *file = &files[i];
- 
--		if (asprintf(&file->path, "%s/data.%d", data->path, i) < 0)
-+		ret = asprintf(&file->path, "%s/data.%d", data->path, i);
-+		if (ret < 0)
- 			goto out_err;
- 
- 		ret = open(file->path, O_RDWR|O_CREAT|O_TRUNC, S_IRUSR|S_IWUSR);
--- 
-2.30.2
-
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -6099,14 +6099,10 @@ static int fixup_bpf_calls(struct bpf_ve
+ 			*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
+ 			*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
+ 			*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
+-			if (issrc) {
+-				*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX,
+-							 off_reg);
+-				insn->src_reg = BPF_REG_AX;
+-			} else {
+-				*patch++ = BPF_ALU64_REG(BPF_AND, off_reg,
+-							 BPF_REG_AX);
+-			}
++			*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
++			if (!issrc)
++				*patch++ = BPF_MOV64_REG(insn->dst_reg, insn->src_reg);
++			insn->src_reg = BPF_REG_AX;
+ 			if (isneg)
+ 				insn->code = insn->code == code_add ?
+ 					     code_sub : code_add;
 
 
