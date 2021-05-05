@@ -2,32 +2,32 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFEED37496D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6A2374970
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:27:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234703AbhEEU2a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:28:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33582 "EHLO
+        id S235530AbhEEU2d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:28:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235668AbhEEU17 (ORCPT
+        with ESMTP id S235691AbhEEU2F (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:27:59 -0400
+        Wed, 5 May 2021 16:28:05 -0400
 Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A48C061347;
-        Wed,  5 May 2021 13:26:59 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 871DBC06134E;
+        Wed,  5 May 2021 13:27:02 -0700 (PDT)
 Received: from dslb-188-104-057-152.188.104.pools.vodafone-ip.de ([188.104.57.152] helo=martin-debian-2.paytec.ch)
         by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
         (Exim 4.89)
         (envelope-from <martin@kaiser.cx>)
-        id 1leO6i-0003aS-6j; Wed, 05 May 2021 22:26:56 +0200
+        id 1leO6k-0003aS-DI; Wed, 05 May 2021 22:26:58 +0200
 From:   Martin Kaiser <martin@kaiser.cx>
 To:     Larry Finger <Larry.Finger@lwfinger.net>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
         linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH 4/6] staging: rtl8188eu: remove padapter from struct cmd_priv
-Date:   Wed,  5 May 2021 22:26:20 +0200
-Message-Id: <20210505202622.11087-4-martin@kaiser.cx>
+Subject: [PATCH 5/6] staging: rtl8188eu: remove nic_hdl from struct mlme_priv
+Date:   Wed,  5 May 2021 22:26:21 +0200
+Message-Id: <20210505202622.11087-5-martin@kaiser.cx>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <20210505202622.11087-1-martin@kaiser.cx>
 References: <20210505202622.11087-1-martin@kaiser.cx>
@@ -37,78 +37,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-struct cmd_priv is an element of struct adapter. Use container_of
+struct mlme_priv is an element of struct adapter. Use container_of
 to get a pointer to the enclosing struct.
 
 Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- drivers/staging/rtl8188eu/core/rtw_cmd.c    | 9 +++++----
- drivers/staging/rtl8188eu/include/rtw_cmd.h | 1 -
- drivers/staging/rtl8188eu/os_dep/os_intfs.c | 2 --
- 3 files changed, 5 insertions(+), 7 deletions(-)
+ drivers/staging/rtl8188eu/core/rtw_mlme.c    | 5 +----
+ drivers/staging/rtl8188eu/include/rtw_mlme.h | 2 --
+ 2 files changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/drivers/staging/rtl8188eu/core/rtw_cmd.c b/drivers/staging/rtl8188eu/core/rtw_cmd.c
-index 955899f334e6..64e83684fb81 100644
---- a/drivers/staging/rtl8188eu/core/rtw_cmd.c
-+++ b/drivers/staging/rtl8188eu/core/rtw_cmd.c
-@@ -103,11 +103,12 @@ struct cmd_obj *rtw_dequeue_cmd(struct __queue *queue)
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme.c b/drivers/staging/rtl8188eu/core/rtw_mlme.c
+index b6ac5b8915b1..e19091a2a4b8 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_mlme.c
++++ b/drivers/staging/rtl8188eu/core/rtw_mlme.c
+@@ -32,8 +32,6 @@ int rtw_init_mlme_priv(struct adapter *padapter)
  
- static int rtw_cmd_filter(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
- {
-+	struct adapter *padapter = container_of(pcmdpriv, struct adapter, cmdpriv);
- 	u8 bAllow = false; /* set to true to allow enqueuing cmd when hw_init_completed is false */
+ 	/*  We don't need to memset padapter->XXX to zero, because adapter is allocated by vzalloc(). */
  
- 	/* To decide allow or not */
--	if ((pcmdpriv->padapter->pwrctrlpriv.bHWPwrPindetect) &&
--	    (!pcmdpriv->padapter->registrypriv.usbss_enable)) {
-+	if ((padapter->pwrctrlpriv.bHWPwrPindetect) &&
-+	    (!padapter->registrypriv.usbss_enable)) {
- 		if (cmd_obj->cmdcode == _Set_Drv_Extra_CMD_) {
- 			struct drvextra_cmd_parm	*pdrvextra_cmd_parm = (struct drvextra_cmd_parm	*)cmd_obj->parmbuf;
- 
-@@ -119,7 +120,7 @@ static int rtw_cmd_filter(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
- 	if (cmd_obj->cmdcode == _SetChannelPlan_CMD_)
- 		bAllow = true;
- 
--	if ((!pcmdpriv->padapter->hw_init_completed && !bAllow) ||
-+	if ((!padapter->hw_init_completed && !bAllow) ||
- 	    !pcmdpriv->cmdthd_running)	/* com_thread not running */
- 		return _FAIL;
- 	return _SUCCESS;
-@@ -128,7 +129,7 @@ static int rtw_cmd_filter(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
- u32 rtw_enqueue_cmd(struct cmd_priv *pcmdpriv, struct cmd_obj *cmd_obj)
- {
- 	int res = _FAIL;
--	struct adapter *padapter = pcmdpriv->padapter;
-+	struct adapter *padapter = container_of(pcmdpriv, struct adapter, cmdpriv);
- 
- 	if (!cmd_obj)
- 		goto exit;
-diff --git a/drivers/staging/rtl8188eu/include/rtw_cmd.h b/drivers/staging/rtl8188eu/include/rtw_cmd.h
-index cb0eb4a1d2b7..0261cd931c35 100644
---- a/drivers/staging/rtl8188eu/include/rtw_cmd.h
-+++ b/drivers/staging/rtl8188eu/include/rtw_cmd.h
-@@ -35,7 +35,6 @@ struct cmd_priv {
- 	struct completion terminate_cmdthread_comp;
- 	struct __queue cmd_queue;
- 	u8 cmdthd_running;
--	struct adapter *padapter;
- };
- 
- #define init_h2fwcmd_w_parm_no_rsp(pcmd, pparm, code) \
-diff --git a/drivers/staging/rtl8188eu/os_dep/os_intfs.c b/drivers/staging/rtl8188eu/os_dep/os_intfs.c
-index 193895338cf0..5207cb0c60cd 100644
---- a/drivers/staging/rtl8188eu/os_dep/os_intfs.c
-+++ b/drivers/staging/rtl8188eu/os_dep/os_intfs.c
-@@ -423,8 +423,6 @@ u8 rtw_init_drv_sw(struct adapter *padapter)
- 
- 	rtw_init_cmd_priv(&padapter->cmdpriv);
- 
--	padapter->cmdpriv.padapter = padapter;
+-	pmlmepriv->nic_hdl = (u8 *)padapter;
 -
- 	if (rtw_init_mlme_priv(padapter) == _FAIL) {
- 		RT_TRACE(_module_os_intfs_c_, _drv_err_, ("\n Can't init mlme_priv\n"));
- 		ret8 = _FAIL;
+ 	pmlmepriv->pscanned = NULL;
+ 	pmlmepriv->fw_state = 0;
+ 	pmlmepriv->cur_network.network.InfrastructureMode = Ndis802_11AutoUnknown;
+@@ -1456,7 +1454,7 @@ int rtw_select_and_join_from_scanned_queue(struct mlme_priv *pmlmepriv)
+ {
+ 	int ret;
+ 	struct list_head *phead;
+-	struct adapter *adapter;
++	struct adapter *adapter = container_of(pmlmepriv, struct adapter, mlmepriv);
+ 	struct __queue *queue = &pmlmepriv->scanned_queue;
+ 	struct wlan_network *pnetwork = NULL;
+ 	struct wlan_network *candidate = NULL;
+@@ -1464,7 +1462,6 @@ int rtw_select_and_join_from_scanned_queue(struct mlme_priv *pmlmepriv)
+ 
+ 	spin_lock_bh(&pmlmepriv->scanned_queue.lock);
+ 	phead = get_list_head(queue);
+-	adapter = (struct adapter *)pmlmepriv->nic_hdl;
+ 	pmlmepriv->pscanned = phead->next;
+ 	while (phead != pmlmepriv->pscanned) {
+ 		pnetwork = container_of(pmlmepriv->pscanned, struct wlan_network, list);
+diff --git a/drivers/staging/rtl8188eu/include/rtw_mlme.h b/drivers/staging/rtl8188eu/include/rtw_mlme.h
+index 1b74b32b8a81..f5e805c13442 100644
+--- a/drivers/staging/rtl8188eu/include/rtw_mlme.h
++++ b/drivers/staging/rtl8188eu/include/rtw_mlme.h
+@@ -111,8 +111,6 @@ struct mlme_priv {
+ 	u8 to_join; /* flag */
+ 	u8 to_roaming; /*  roaming trying times */
+ 
+-	u8 *nic_hdl;
+-
+ 	struct list_head *pscanned;
+ 	struct __queue free_bss_pool;
+ 	struct __queue scanned_queue;
 -- 
 2.20.1
 
