@@ -2,94 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2FE37499D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:46:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D7223749A0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:48:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229911AbhEEUrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:47:05 -0400
-Received: from mail-ot1-f41.google.com ([209.85.210.41]:46900 "EHLO
-        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229575AbhEEUrE (ORCPT
+        id S229942AbhEEUtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38468 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229893AbhEEUtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:47:04 -0400
-Received: by mail-ot1-f41.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso2911910otb.13;
-        Wed, 05 May 2021 13:46:07 -0700 (PDT)
+        Wed, 5 May 2021 16:49:19 -0400
+Received: from mail-yb1-xb2e.google.com (mail-yb1-xb2e.google.com [IPv6:2607:f8b0:4864:20::b2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DA64C061574;
+        Wed,  5 May 2021 13:48:22 -0700 (PDT)
+Received: by mail-yb1-xb2e.google.com with SMTP id h202so4445372ybg.11;
+        Wed, 05 May 2021 13:48:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=WDMfQFqI//uoDmFx0L1nKcXQXu3zQsow+j5o+jsouGM=;
+        b=HHaySOxX/sizuss/R6FVSVAvU+L1PbRaw39ai5J7Twm2dwIBOrYCRpo5Fmbd1vQjBS
+         sNamWGyhRc0O00Hc/WaSaki4JPkDH27eO3XCj6tCJvw4QTxBcCQO+a9T2ekpuSQvJVS6
+         ZmwuEDESO46AbYMy3KxCDSkcpLWY19wK85FD08ZD/E0J5kmZYgy5ZqBBGbYPpSmp5mXR
+         vUm1pwfr9B3X47CkPMwGucZNxJszC3l0IBU4pafHQY+L55rNoPB9uoTBQ65gqiFPeijA
+         Dq7BGuvlR1LGXolFJepoF4cjQT9s0BwZNcsx6WVC1gtEI1A1GR1mazx3fA7mSbqZs2ot
+         ajvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:in-reply-to:references:subject:date
-         :message-id;
-        bh=uZEiv6HhKLNAH9Vt/Wy6pfuXYHRwYyJTO0WuIw2tkrw=;
-        b=sVA6FMNeIPoqJivSfQtVHFPlSNTXAWW96kr2nkxc+QEmCLT4Lej7FGfX4bC6gzK8fC
-         Vm6ACVwGoVvbZ4IYO1RkQ5WsVmJ1/JLHKKKsFdtIOb1TbuzAA7mXa+rs07lij0kIIFRA
-         hpWMPEOL2hj5X3v6dhg4xp41mcpuAK844fPkzk8qfi0nPXvBVyrlFvrCQcwaFdzKo2ft
-         T51ECE4/VLkKSRSyt6R1uPVcB/b6xVtlfZsLiEeq8Hs57VNDHoIYNb+pA3MN56YxpBg7
-         o9eJC/SSeY4ch3qhdDb4PGqY8AtmXLq3lrYcN4qu5yXrBwcyYGgNY7HtagM+3mSNHEhA
-         d8cA==
-X-Gm-Message-State: AOAM5316dnrf9OlSA5t91oZXDMTR9NktCOaVuTbOWy2hTeYk2QFO8L/I
-        nTW7vCqaFI444aAaikmQ5Q==
-X-Google-Smtp-Source: ABdhPJwYwQ8Hlr8qqvXdBp8FirB3rHUuf1rsEjTkWzeI3cLmeoa11IrsotcWMA9VweyaQWNxoyU2qg==
-X-Received: by 2002:a9d:479a:: with SMTP id b26mr488275otf.180.1620247567209;
-        Wed, 05 May 2021 13:46:07 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 88sm133743otx.2.2021.05.05.13.46.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 13:46:06 -0700 (PDT)
-Received: (nullmailer pid 2773322 invoked by uid 1000);
-        Wed, 05 May 2021 20:46:05 -0000
-From:   Rob Herring <robh@kernel.org>
-To:     Vignesh Raghavendra <vigneshr@ti.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        devicetree@vger.kernel.org, linux-i2c@vger.kernel.org,
-        linux-omap@vger.kernel.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20210505065511.918-1-vigneshr@ti.com>
-References: <20210505065511.918-1-vigneshr@ti.com>
-Subject: Re: [PATCH] dt-bindings: i2c: Move i2c-omap.txt to YAML format
-Date:   Wed, 05 May 2021 15:46:05 -0500
-Message-Id: <1620247565.552433.2773321.nullmailer@robh.at.kernel.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WDMfQFqI//uoDmFx0L1nKcXQXu3zQsow+j5o+jsouGM=;
+        b=f5JraOAvmSruRbbuMotktiy3wPnspPIKRRKMK/xk3jxY14UwND6NPAJQmLPqgz7Ojo
+         0W8Wo+W5hbmfW0+TEfC0D4M0bVPHQHD2M5A6+cdy+h3GaPkfT7rcpF9YlGRQgPYSBfEM
+         l5X9rwI0c/yEDZ4gVXjIKwUEJgI068aFQvL598GeU3aGEY25tb7Y2nikmuxm5aLTL0VE
+         19yoE6SaDPIg42Ez+FeJGaXBo0iI8SkBW/DKHXax1Y9DbHfVQcigcTvyEMIX59h/uJ/A
+         lds5PXFN4JAm0BIn/5n70/ULlOxWXme9ncTPP1I9P8zIN9y/ocvkEFmAYYVU/DNR79ty
+         DiXw==
+X-Gm-Message-State: AOAM531PJHxtlLgEupuhpTTqsizKFG3uIXPNNWjKUMwvRhc2XJekRUf5
+        nyRKaNPl94eHTfNjV20uYNxNNukMII3QRXMYy+w=
+X-Google-Smtp-Source: ABdhPJx6A9CvMT0el4X2OtaI5DdoRiuErAAe6r3oTRJXnCt65RwuIrdhUXdsQ2XyNMXs/QOFqlG9T2T9JaoASefByjI=
+X-Received: by 2002:a25:ba06:: with SMTP id t6mr843188ybg.459.1620247701369;
+ Wed, 05 May 2021 13:48:21 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210505162307.2545061-1-revest@chromium.org> <CAEf4BzZiK1ncN7RzeJ-62e=itekn34VuFf7WNhUF=9OoznMP6Q@mail.gmail.com>
+ <fe37ff8f-ebf0-25ec-4f3c-df3373944efa@iogearbox.net>
+In-Reply-To: <fe37ff8f-ebf0-25ec-4f3c-df3373944efa@iogearbox.net>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Wed, 5 May 2021 13:48:10 -0700
+Message-ID: <CAEf4BzYsAXQ1t6GUJ4f8c0qGLdnO4NLDVJLRMhAY2oaiarDd6g@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Don't WARN_ON_ONCE in bpf_bprintf_prepare
+To:     Daniel Borkmann <daniel@iogearbox.net>
+Cc:     Florent Revest <revest@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        syzbot <syzbot@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 05 May 2021 12:25:11 +0530, Vignesh Raghavendra wrote:
-> Convert i2c-omap.txt to YAML schema for better checks and documentation.
-> 
-> Following properties were used in DT but were not documented in txt
-> bindings and has been included in YAML schema:
-> 1. Include ti,am4372-i2c compatible
-> 2. Include dmas property used in few OMAP dts files
-> 3. Document clocks property
-> 
-> Signed-off-by: Vignesh Raghavendra <vigneshr@ti.com>
-> ---
->  .../devicetree/bindings/i2c/i2c-omap.txt      | 37 ---------
->  .../devicetree/bindings/i2c/ti,omap4-i2c.yaml | 75 +++++++++++++++++++
->  2 files changed, 75 insertions(+), 37 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-omap.txt
->  create mode 100644 Documentation/devicetree/bindings/i2c/ti,omap4-i2c.yaml
-> 
+On Wed, May 5, 2021 at 1:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>
+> On 5/5/21 8:55 PM, Andrii Nakryiko wrote:
+> > On Wed, May 5, 2021 at 9:23 AM Florent Revest <revest@chromium.org> wrote:
+> >>
+> >> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
+> >> per-cpu buffer that they use to store temporary data (arguments to
+> >> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
+> >> by the end of their scope with bpf_bprintf_cleanup.
+> >>
+> >> If one of these helpers gets called within the scope of one of these
+> >> helpers, for example: a first bpf program gets called, uses
+> >
+> > Can we afford having few struct bpf_printf_bufs? They are just 512
+> > bytes, so can we have 3-5 of them? Tracing low-level stuff isn't the
+> > only situation where this can occur, right? If someone is doing
+> > bpf_snprintf() and interrupt occurs and we run another BPF program, it
+> > will be impossible to do bpf_snprintf() or bpf_trace_printk() from the
+> > second BPF program, etc. We can't eliminate the probability, but
+> > having a small stack of buffers would make the probability so
+> > miniscule as to not worry about it at all.
+> >
+> > Good thing is that try_get_fmt_tmp_buf() abstracts all the details, so
+> > the changes are minimal. Nestedness property is preserved for
+> > non-sleepable BPF programs, right? If we want this to work for
+> > sleepable we'd need to either: 1) disable migration or 2) instead of
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+oh wait, we already disable migration for sleepable BPF progs, so it
+should be good to do nestedness level only
 
-yamllint warnings/errors:
-
-dtschema/dtc warnings/errors:
-Error: Documentation/devicetree/bindings/i2c/ti,omap4-i2c.example.dts:22.31-32 syntax error
-FATAL ERROR: Unable to parse input tree
-make[1]: *** [scripts/Makefile.lib:377: Documentation/devicetree/bindings/i2c/ti,omap4-i2c.example.dt.yaml] Error 1
-make[1]: *** Waiting for unfinished jobs....
-make: *** [Makefile:1414: dt_binding_check] Error 2
-
-See https://patchwork.ozlabs.org/patch/1474101
-
-This check can fail if there are any dependencies. The base for a patch
-series is generally the most recent rc1.
-
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+> > assuming a stack of buffers, do a loop to find unused one. Should be
+> > acceptable performance-wise, as it's not the fastest code anyway
+> > (printf'ing in general).
+> >
+> > In any case, re-using the same buffer for sort-of-optional-to-work
+> > bpf_trace_printk() and probably-important-to-work bpf_snprintf() is
+> > suboptimal, so seems worth fixing this.
+> >
+> > Thoughts?
+>
+> Yes, agree, it would otherwise be really hard to debug. I had the same
+> thought on why not allowing nesting here given users very likely expect
+> these helpers to just work for all the contexts.
+>
+> Thanks,
+> Daniel
