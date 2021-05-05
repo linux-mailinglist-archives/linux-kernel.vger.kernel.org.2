@@ -2,122 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9028A374714
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C9FC37471C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236240AbhEERnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:43:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38960 "EHLO mail.kernel.org"
+        id S235092AbhEERos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:44:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40388 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238904AbhEERk5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:40:57 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4BDE608FE;
-        Wed,  5 May 2021 17:39:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620236399;
-        bh=ZjWFsZx1U67ZQFN1wQdlYA9nKqiS+q/v3JEstpo4rD8=;
+        id S234985AbhEERm0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:42:26 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDDE4610E6;
+        Wed,  5 May 2021 17:41:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620236483;
+        bh=sJTYCVtiWBq6R74N8PqzXXzNwxH+DE+4BeekKhgRsus=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AhWldoB3roWUH6qAvHDRmFA/OCZIr7MxdQaxSH1aBPIFILc7cA8mJ6zPi+4jCTNV0
-         UJhgyF+qrx55YK9btsBBiZmE6O1+GOBLHCFp3U+jGeCpbg4IJri6a8VaddCv0Na3Iw
-         TtLhk2xDP4hqdBVHF0+73qviCCeajeG05p7u4Mv0=
-Date:   Wed, 5 May 2021 19:39:56 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
-Message-ID: <YJLYbCIKgLCZlcOv@kroah.com>
-References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
- <202104021555.08B883C7@keescook>
- <20210402233018.GA7721@ziepe.ca>
- <202104021823.64FA6119@keescook>
- <20210404135713.GB7721@ziepe.ca>
- <YJLHHpatWOgJo0Zk@kroah.com>
- <20210505172916.GC2047089@ziepe.ca>
+        b=IOm7oY6myzQEP6uoSPfIMXx8U+Wh2fO3QQ1/fZd6PhHiWaSKbCaOfErNRQ10RdN0J
+         0ooOeM6wc+4iUsJaoZsDZzULUEYx13oIo+2foz92jd8HKCY1R5mBVWc9IVM0ganfjC
+         kwWALtAPHJUFsqdcHMcNyj+Tewn3d8q6RPBJwM7D0gp9daMwT1MRv/5bbm6l7vMe5G
+         OJsr/DCsjLeT6EO8/HooHud3LhfJNJCf16hgb0+knxK3T3oka9aeAOw52PX8Lj4GFU
+         xTqMBIvGxGJEdt3sSe1bWslJTiy/KQ2RcW0J46MHN6aHIaVBYOLUp8Xo8ukScsNKVh
+         +c3j8Wqrx0m1w==
+Date:   Wed, 5 May 2021 20:41:12 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 5/7] mm: introduce
+ page_offline_(begin|end|freeze|unfreeze) to synchronize setting
+ PageOffline()
+Message-ID: <YJLYuL/EceejLC7L@kernel.org>
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-6-david@redhat.com>
+ <YJKcg06C3xE8fCfu@dhcp22.suse.cz>
+ <8650f764-8652-a82c-c54f-f67401c800e8@redhat.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210505172916.GC2047089@ziepe.ca>
+In-Reply-To: <8650f764-8652-a82c-c54f-f67401c800e8@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:29:16PM -0300, Jason Gunthorpe wrote:
-> On Wed, May 05, 2021 at 06:26:06PM +0200, Greg KH wrote:
-> > > They are in many places, for instance.
+On Wed, May 05, 2021 at 05:10:33PM +0200, David Hildenbrand wrote:
+> On 05.05.21 15:24, Michal Hocko wrote:
+> > On Thu 29-04-21 14:25:17, David Hildenbrand wrote:
+> > > A driver might set a page logically offline -- PageOffline() -- and
+> > > turn the page inaccessible in the hypervisor; after that, access to page
+> > > content can be fatal. One example is virtio-mem; while unplugged memory
+> > > -- marked as PageOffline() can currently be read in the hypervisor, this
+> > > will no longer be the case in the future; for example, when having
+> > > a virtio-mem device backed by huge pages in the hypervisor.
 > > > 
-> > > int device_create_file(struct device *dev,
-> > >                        const struct device_attribute *attr)
+> > > Some special PFN walkers -- i.e., /proc/kcore -- read content of random
+> > > pages after checking PageOffline(); however, these PFN walkers can race
+> > > with drivers that set PageOffline().
 > > > 
-> > > We loose the type safety when working with attribute arrays, and
-> > > people can just bypass the "proper" APIs to raw sysfs ones whenever
-> > > they like.
+> > > Let's introduce page_offline_(begin|end|freeze|unfreeze) for
+> > > synchronizing.
 > > > 
-> > > It is fundamentally completely wrong to attach a 'struct
-> > > kobject_attribute' to a 'struct device' kobject.
+> > > page_offline_freeze()/page_offline_unfreeze() allows for a subsystem to
+> > > synchronize with such drivers, achieving that a page cannot be set
+> > > PageOffline() while frozen.
+> > > 
+> > > page_offline_begin()/page_offline_end() is used by drivers that care about
+> > > such races when setting a page PageOffline().
+> > > 
+> > > For simplicity, use a rwsem for now; neither drivers nor users are
+> > > performance sensitive.
 > > 
-> > But it works because we are using C and we don't have RTTI :)
-> >
-> > Yes, it's horrid, but we do it because we "know" the real type that is
-> > being called here.  That was an explicit design decision at the time.
+> > Please add a note to the PageOffline documentation as well. While are
+> > adding the api close enough an explicit note there wouldn't hurt.
 > 
-> I think it is beyond horrid. Just so everyone is clear on what is
-> happening here..
+> Will do.
 > 
-> RDMA has this:
+> > 
+> > > Signed-off-by: David Hildenbrand <david@redhat.com>
+> > 
+> > As to the patch itself, I am slightly worried that other pfn walkers
+> > might be less tolerant to the locking than the proc ones. On the other
+> > hand most users shouldn't really care as they do not tend to touch the
+> > memory content and PageOffline check without any synchronization should
+> > be sufficient for those. Let's try this out and see where we get...
 > 
-> struct hw_stats_attribute {
-> 	struct attribute	attr;
-> 	ssize_t	(*show)(struct kobject *kobj,
-> 			struct attribute *attr, char *buf);
+> My thinking. Users that actually read random page content (as discussed in
+> the cover letter) are
 > 
-> And it has two kobject types, a struct device kobject and a ib_port
-> kobject.
-> 
-> When the user invokes show on the struct device sysfs we have this
-> call path:
-> 
-> dev_sysfs_ops
->   dev_attr_show()
->     struct device_attribute *dev_attr = to_dev_attr(attr);
->       ret = dev_attr->show(dev, dev_attr, buf); 
->         show_hw_stats()
->           struct hw_stats_attribute *hsa = container_of(attr, struct hw_stats_attribute, attr)
-> 
-> And from the ib_port kobject we have this one:
-> 
-> port_sysfs_ops
->   port_attr_show()
->     struct port_attribute *port_attr =
->       container_of(attr, struct port_attribute, attr);
->        	return port_attr->show(p, port_attr, buf);
->           show_hw_stats()
->            struct hw_stats_attribute *hsa = container_of(attr, struct hw_stats_attribute, attr)
-> 
-> Then show_hw_stats() goes on to detect which call chain it uses so it
-> can apply the proper container of to the kobj:
+> 1. Hibernation
+> 2. Dumping (/proc/kcore, /proc/vmcore)
+> 3. Physical memory access bypassing the kernel via /dev/mem
+> 4. Live debug tools (kgdb)
 
-Wait, what?  That's not how any of this was designed, you should not be
-"sharing" a callback of different types of objects, because:
+I think you can add
 
+5. Very old drivers
+ 
+> Other PFN walkers really shouldn't (and don't) access random page content.
 > 
-> 	if (!hsa->port_num)
-> 		dev = container_of((struct device *)kobj,
-> 				   struct ib_device, dev);
-> 	else
-> 		port = container_of(kobj, struct ib_port, kobj);
+> Thanks!
+> 
+> -- 
+> Thanks,
+> 
+> David / dhildenb
+> 
+> 
 
-Yeah, ick.
-
-No, that's not how this was designed or intended to be used.  Why not
-just have 2 different show functions?
-
-thanks,
-
-greg k-h
+-- 
+Sincerely yours,
+Mike.
