@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3F77374308
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:50:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 375FD374300
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:49:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236781AbhEEQuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:50:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49784 "EHLO mail.kernel.org"
+        id S236795AbhEEQuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:50:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50342 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235819AbhEEQpG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:45:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B20B861929;
-        Wed,  5 May 2021 16:35:46 +0000 (UTC)
+        id S235879AbhEEQpK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:45:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 880A361436;
+        Wed,  5 May 2021 16:35:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232547;
-        bh=crQZifefxFB5zTrNmQ8E/W5S9724KgP2XqK90+Y+VD0=;
+        s=k20201202; t=1620232554;
+        bh=JghHOZ/QVxtM6PX80Rval0YJBlOJPo9HT4NMQynXkL8=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=OAaeyl34eP6zai7zcSrCLwniL/12xmE4ESM8obgp34zPSJt9uREq0s0+Ihi6eYB1P
-         rZMalovwSb5RxMtMN4vZqeHNm1eQfswPYHOFiCP0hhPFTluc1qLMw8S53Ah0MZGFi5
-         Cy68ZyfQMYUXK36M0M+vt2daMXK65w3jB746bMaihwNr75XK0bDkTmgMU6j8gP4WV2
-         9D1JkjZ9GAs/K1w5lJwpr1mbH1JTI5kEH6M2VkM6LmhlZH1S5xkwWkwItT7eJNZ5XL
-         27HO8jVF0EUPTb/B39LcNuVZYYvkLLMySAPx2ukQmWAqSQdoElSt4ySakmzo8wQDz8
-         bG1IUZOrrxHPQ==
+        b=hOzbbJgFrD2XQtM9ZKs3EQdLjbNHd+pdoEWQQM5JVONI9vh6JIBWhXYSRzNiWjqKv
+         bfDyaLB9Kj5tX5uVkSdceYzJZpvevC5NiUgwqn97otxe6PD7kRMpQmhkRw9dlkb4Vq
+         o2R6IXZ2+xVMcSYvZhXgmsyu47vSoRwVjK7e10mUrwJgI95IqwtG6IDY9/srtOhVpZ
+         cpOepsbtMiXllfG6qNejlZvJQgax8eCwL/V0/e6YJlIH0zWt+NrZ5vgkRIzGM6EzZ+
+         vbuUIu4u1m7ovIQT97fMq4u8NR6Y79gAdkdILzImg1gs73njMbeSCk9gNjKjiACsJ8
+         u8S+w9LDZfOZg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "Linh Phung T . Y ." <linh.phung.jy@renesas.com>,
-        Mark Brown <broonie@kernel.org>,
-        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
-Subject: [PATCH AUTOSEL 5.11 065/104] ASoC: rsnd: call rsnd_ssi_master_clk_start() from rsnd_ssi_init()
-Date:   Wed,  5 May 2021 12:33:34 -0400
-Message-Id: <20210505163413.3461611-65-sashal@kernel.org>
+Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-kselftest@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 5.11 069/104] selftests: Set CC to clang in lib.mk if LLVM is set
+Date:   Wed,  5 May 2021 12:33:38 -0400
+Message-Id: <20210505163413.3461611-69-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -43,114 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
+From: Yonghong Song <yhs@fb.com>
 
-[ Upstream commit a122a116fc6d8fcf2f202dcd185173a54268f239 ]
+[ Upstream commit 26e6dd1072763cd5696b75994c03982dde952ad9 ]
 
-Current rsnd needs to call .prepare (P) for clock settings,
-.trigger for playback start (S) and stop (E).
-It should be called as below from SSI point of view.
+selftests/bpf/Makefile includes lib.mk. With the following command
+  make -j60 LLVM=1 LLVM_IAS=1  <=== compile kernel
+  make -j60 -C tools/testing/selftests/bpf LLVM=1 LLVM_IAS=1 V=1
+some files are still compiled with gcc. This patch
+fixed lib.mk issue which sets CC to gcc in all cases.
 
-	P -> S -> E -> P -> S -> E -> ...
-
-But, if you used MIXer, below case might happen
-
-	              (2)
-	1: P -> S ---> E -> ...
-	2:         P ----> S -> ...
-	          (1)     (3)
-
-P(1) setups clock, but E(2) resets it. and starts playback (3).
-In such case, it will reports "SSI parent/child should use same rate".
-
-rsnd_ssi_master_clk_start() which is the main function at (P)
-was called from rsnd_ssi_init() (= S) before,
-but was moved by below patch to rsnd_soc_dai_prepare() (= P) to avoid
-using clk_get_rate() which shouldn't be used under atomic context.
-
-	commit 4d230d1271064 ("ASoC: rsnd: fixup not to call clk_get/set
-				under non-atomic")
-
-Because of above patch, rsnd_ssi_master_clk_start() is now called at (P)
-which is for non atomic context. But (P) is assuming that spin lock is
-*not* used.
-One issue now is rsnd_ssi_master_clk_start() is checking ssi->xxx
-which should be protected by spin lock.
-
-After above patch, adg.c had below patch for other reasons.
-
-	commit 06e8f5c842f2d ("ASoC: rsnd: don't call clk_get_rate()
-				under atomic context")
-
-clk_get_rate() is used at probe() timing by this patch.
-In other words, rsnd_ssi_master_clk_start() is no longer using
-clk_get_rate() any more.
-
-This means we can call it from rsnd_ssi_init() (= S) again which is
-protected by spin lock.
-This patch re-move it to under spin lock, and solves
-1. checking ssi->xxx without spin lock issue.
-2. clk setting / device start / device stop race condition.
-
-Reported-by: Linh Phung T. Y. <linh.phung.jy@renesas.com>
-Signed-off-by: Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>
-Link: https://lore.kernel.org/r/875z0x1jt5.wl-kuninori.morimoto.gx@renesas.com
-Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Yonghong Song <yhs@fb.com>
+Signed-off-by: Alexei Starovoitov <ast@kernel.org>
+Acked-by: Andrii Nakryiko <andrii@kernel.org>
+Link: https://lore.kernel.org/bpf/20210413153413.3027426-1-yhs@fb.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- sound/soc/sh/rcar/ssi.c | 14 +++++---------
- 1 file changed, 5 insertions(+), 9 deletions(-)
+ tools/testing/selftests/lib.mk | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/sound/soc/sh/rcar/ssi.c b/sound/soc/sh/rcar/ssi.c
-index d0ded427a836..a2f8138d40c7 100644
---- a/sound/soc/sh/rcar/ssi.c
-+++ b/sound/soc/sh/rcar/ssi.c
-@@ -507,10 +507,15 @@ static int rsnd_ssi_init(struct rsnd_mod *mod,
- 			 struct rsnd_priv *priv)
- {
- 	struct rsnd_ssi *ssi = rsnd_mod_to_ssi(mod);
-+	int ret;
+diff --git a/tools/testing/selftests/lib.mk b/tools/testing/selftests/lib.mk
+index a5ce26d548e4..9a41d8bb9ff1 100644
+--- a/tools/testing/selftests/lib.mk
++++ b/tools/testing/selftests/lib.mk
+@@ -1,6 +1,10 @@
+ # This mimics the top-level Makefile. We do it explicitly here so that this
+ # Makefile can operate with or without the kbuild infrastructure.
++ifneq ($(LLVM),)
++CC := clang
++else
+ CC := $(CROSS_COMPILE)gcc
++endif
  
- 	if (!rsnd_ssi_is_run_mods(mod, io))
- 		return 0;
- 
-+	ret = rsnd_ssi_master_clk_start(mod, io);
-+	if (ret < 0)
-+		return ret;
-+
- 	ssi->usrcnt++;
- 
- 	rsnd_mod_power_on(mod);
-@@ -1060,13 +1065,6 @@ static int rsnd_ssi_pio_pointer(struct rsnd_mod *mod,
- 	return 0;
- }
- 
--static int rsnd_ssi_prepare(struct rsnd_mod *mod,
--			    struct rsnd_dai_stream *io,
--			    struct rsnd_priv *priv)
--{
--	return rsnd_ssi_master_clk_start(mod, io);
--}
--
- static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
- 	.name		= SSI_NAME,
- 	.probe		= rsnd_ssi_common_probe,
-@@ -1079,7 +1077,6 @@ static struct rsnd_mod_ops rsnd_ssi_pio_ops = {
- 	.pointer	= rsnd_ssi_pio_pointer,
- 	.pcm_new	= rsnd_ssi_pcm_new,
- 	.hw_params	= rsnd_ssi_hw_params,
--	.prepare	= rsnd_ssi_prepare,
- 	.get_status	= rsnd_ssi_get_status,
- };
- 
-@@ -1166,7 +1163,6 @@ static struct rsnd_mod_ops rsnd_ssi_dma_ops = {
- 	.pcm_new	= rsnd_ssi_pcm_new,
- 	.fallback	= rsnd_ssi_fallback,
- 	.hw_params	= rsnd_ssi_hw_params,
--	.prepare	= rsnd_ssi_prepare,
- 	.get_status	= rsnd_ssi_get_status,
- };
- 
+ ifeq (0,$(MAKELEVEL))
+     ifeq ($(OUTPUT),)
 -- 
 2.30.2
 
