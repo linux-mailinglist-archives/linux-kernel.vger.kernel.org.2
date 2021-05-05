@@ -2,75 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B30C373CCB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B741373CCE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:58:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232558AbhEEN6l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:58:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232923AbhEEN6k (ORCPT
+        id S233580AbhEEN7r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:59:47 -0400
+Received: from mout.kundenserver.de ([217.72.192.74]:43197 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232923AbhEEN7q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:58:40 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A340C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 06:57:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uyz8xzhZhhl7+aXceUSGUjTe8+5pIspaVIlfaycBdow=; b=AwiE9sc1NbdYRXvQS6336r2ijI
-        IVhdD8T8vODOTv4uL7RUFbFakuZ7AcQO4Vxevl4M6sougzxPHlIys5WenAPlQ4CewoavcO6rlPbfk
-        axKQEoI5Y2aQn9VFz1FJ6nQRgE2gQ2IGRi0u3dUOaQVeEmh39jyJGlW4x3lNFWGUBP1ePsLfLAwV0
-        6xyS7VywP2HbZ969iyHx3vaupHa2S+CWJFYa8q84uk4iU8zSpEZnD46Lw46SeXMx8FdQOw2Sqp6+y
-        7c3fROJO3ABiKn7FfIlOPFA1kCT9r4y0gHGjzW2U8cZcBaPf8VvZWpUtuWXiUJV3f7IMm+Z4d/Kuk
-        h+iOkBPg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1leI1s-001MUz-Mq; Wed, 05 May 2021 13:57:32 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 5C3B130022A;
-        Wed,  5 May 2021 15:57:32 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 52573203E67C2; Wed,  5 May 2021 15:57:32 +0200 (CEST)
-Date:   Wed, 5 May 2021 15:57:32 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH 0/8] tick/nohz updates v2
-Message-ID: <YJKkTPQ1MpBCMZy3@hirez.programming.kicks-ass.net>
-References: <20210422120158.33629-1-frederic@kernel.org>
+        Wed, 5 May 2021 09:59:46 -0400
+Received: from [192.168.1.155] ([95.114.117.51]) by mrelayeu.kundenserver.de
+ (mreue107 [212.227.15.183]) with ESMTPSA (Nemesis) id
+ 1MDPuq-1lnbSE2UBK-00AVJs; Wed, 05 May 2021 15:58:44 +0200
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Thomas Schoebel-Theuer <tst@schoebel-theuer.de>,
+        Kajetan Puchalski <mrkajetanp@gmail.com>,
+        mceier+kernel@gmail.com
+Cc:     ojeda@kernel.org, Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-doc@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20210414184604.23473-1-ojeda@kernel.org>
+ <CAJTyqKP4Ud7aWxdCihfzeZ3dQe_5yeTAVnXcKDonciez-g2zWA@mail.gmail.com>
+ <878s51e3jc.fsf@gmail.com>
+ <7999ba57-9b95-265e-a189-d9ca01304b13@schoebel-theuer.de>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <53413f58-269a-a1f6-2a97-e33819446609@metux.net>
+Date:   Wed, 5 May 2021 15:58:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422120158.33629-1-frederic@kernel.org>
+In-Reply-To: <7999ba57-9b95-265e-a189-d9ca01304b13@schoebel-theuer.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:muzYRpD1WAxLx2Cq+LC97YoKU1FJ8xnbrcx4Y75aR6nYpweJIMA
+ VN+KI57sg34AcQovmwb6xXXjtVWTRd4MFqtEA/DO6h1z7Jpdlko7yWcneGw2G2gsil4SI7/
+ 49/XHEjPLt8oiOHD3I1WNQuAUTyXp0CYN49XIrMLC0pOyjO28NxFxWrxF9GTlFRD8G8t5/f
+ IEA3ZflvXKdPiUDB4IsFA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:HOWavIaJf8Q=:QEurQ0FuI1CJ9o37a/gjJB
+ AZzAq/Ckn/aN38Ge87A0jy+gQMein9wpQvW3C/6i8EqZmqYuqyf5RJ8Q1ae2iK6yVI/DvJ3Xd
+ Z/0r/L/fQgz//rw/J8Fd8ufeLN29pa82thxoWrHz/QYEwREAZb4flHX8objle7MFrosIf3Csi
+ VmExdnC3CA4dxwituS9PzXTatN5Y5kOnecgJ4lLkhqF6mShjYvUZtccEur9X0ZRHmq2gLQebW
+ AwzkuNQmWpofUYm/z6LfhAYku0KxUAsb33Fnu+yu9iw9rXZZPXZrDY7XzCkBAKAQZ2nVqZT9C
+ Rsj/cPbga84e2sBRkwybf+YgWSNJbkckWQLl6FvBzM+CXkucWKuqH26n0pkaj5O7sWn5Y7bcs
+ 3FMVBLV0se8TCTmFMOHYc+HRHig4MCrVgl/2aTOvQl9j4DOpw54QFYLZVCQ58Gxzr97YAxKvu
+ hEH5wg81QDE2E1e/nj0D0sq54sxquyi8aMz+57UkCMsgXoyB3DA6zUZCsLkv/vzPZEZZIIQ6I
+ AEViP5sIRCeQygZvdEBzA8=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 02:01:50PM +0200, Frederic Weisbecker wrote:
-> Frederic Weisbecker (3):
->       tick/nohz: Remove superflous check for CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
->       tick/nohz: Update nohz_full Kconfig help
->       tick/nohz: Only wakeup a single target cpu when kicking a task
-> 
-> Marcelo Tosatti (2):
->       tick/nohz: Change signal tick dependency to wakeup CPUs of member tasks
->       tick/nohz: Kick only _queued_ task whose tick dependency is updated
-> 
-> Yunfeng Ye (2):
->       tick/nohz: Conditionally restart tick on idle exit
->       tick/nohz: Update idle_exittime on actual idle exit
-> 
-> Peter Zijlstra (1):
->       tick/nohz: Evaluate the CPU expression after the static key
-> 
+On 30.04.21 08:39, Thomas Schoebel-Theuer wrote:
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Hi,
+
+> IMO this is a _requirement_ for Linux, otherwise its "business model" 
+> wouldn't work in the long term (decades as is always necessary for basic 
+> infrastructure / system software).
+
+ACK. And speaking for embedded world, 20+ product lifetime is pretty
+common. During that lifetime you'd need to be able to pick out old
+sources, so some changes and rebuild your code and having your system
+still running seamlessly after the update. IOW: long-term
+reproducability is absolutely vital. Linux does much better here than
+many competitors (that eg. need proprietary build tools that don't
+even run later machine generations)
+
+> If the requirement "second source" (by either way) is not met by Rust at 
+> the moment, this needs to be fixed first.
+
+Yes, and also adding long-term reproducability as another vital requirement.
+
+Rust seems to be a fast moving target. Even building a Rust compiler can
+be a pretty complex task (if you're not a full time rust developer).
+
+Gcc, in constrast, itself can be built on older compilers (even non-
+gcc). How to do that w/ rustc ? According to my observations some while
+ago, it needs a fairly recent rustc to compile recent rustc, so when
+coming with an old version, one has to do a longer chain of rustc
+builds first. Doesn't look exactly appealing for enterprise grade and
+long term support.
+
+> Other limitations like "development resources" might lead to similar 
+> effects than lock-in. I am seeing the latter nearly every workday. 
+> Software becomes "unmanageable" due to factors like technical debts / 
+> resource restrictions / etc. Typical main reasons are almost always at a 
+> _social_ / _human_ level, while purely technical reasons are playing 
+> only a secondary role.
+
+Correct, the amount of people who understand rust is pretty low, those
+who also understand enough of linux kernel development, probably just
+a hand full world wide. For any practical business use case this
+practically means: unsupported.
+
+I don't like the idea of Linux being catapulted back from enterprise
+grade to academic toy.
+
+
+--mtx
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
