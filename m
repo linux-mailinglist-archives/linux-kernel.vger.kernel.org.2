@@ -2,117 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 351A6373B48
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:33:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 875E6373B3E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:31:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233345AbhEEMdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:33:55 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3024 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229793AbhEEMdx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:33:53 -0400
-Received: from fraeml712-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZwnL147Bz70gJ2;
-        Wed,  5 May 2021 20:21:58 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml712-chm.china.huawei.com (10.206.15.61) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 5 May 2021 14:32:55 +0200
-Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
- 13:32:54 +0100
-Date:   Wed, 5 May 2021 13:31:15 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-renesas-soc@vger.kernel.org>
-Subject: Re: [PATCH 13/25] media: rcar_fdp1: fix pm_runtime_get_sync() usage
- count
-Message-ID: <20210505133115.00007bd1@Huawei.com>
-In-Reply-To: <372d88637707ececab77fffaae49d455d90cf24f.1620207353.git.mchehab+huawei@kernel.org>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
-        <372d88637707ececab77fffaae49d455d90cf24f.1620207353.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S233205AbhEEMcR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:32:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38822 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229559AbhEEMcQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:32:16 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 71FBA613B3;
+        Wed,  5 May 2021 12:31:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620217880;
+        bh=rFmmXrPI4X+4npjqbU6ZVuXEOQcIcF/NgfprbwXQt68=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=LXMr/y/ULkX039TONXqOhGulmtKi2XzV3VGVnxW10XGsuzOqFka4WThN6G3cmuhJV
+         PeGeDi0i87CeIl4FkbF9wZuRhDjKP274GCkKjvR1o++B3oRiu0uCX7Xh9zRtCArLdY
+         rbCykPy63d8PIAfLy1KwyWvCzdZ3IOwHqD+9yhGZ4SwMuQ+Ti8Kiy7NAuHdeK7HIoR
+         4y41jkgbZ239KO/9wphSS+exxmGCNLswYJ+ocZpltWFVH4RFjMHSmHLM0VI0rokJ6n
+         dgWGhbOiuqeWB56BdFN9O9JAdi54mB1plT8BiKOY//hO102RMS22XN/KwdvB2aenee
+         0sev3ECDENAsQ==
+Date:   Wed, 5 May 2021 14:31:17 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] HID: hid-input: add mapping for emoji picker key
+In-Reply-To: <20210411025606.2744875-1-dmitry.torokhov@gmail.com>
+Message-ID: <nycvar.YFH.7.76.2105051431080.28378@cbobk.fhfr.pm>
+References: <20210411025606.2744875-1-dmitry.torokhov@gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.138]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 11:42:03 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Sat, 10 Apr 2021, Dmitry Torokhov wrote:
 
-> The pm_runtime_get_sync() internally increments the
-> dev->power.usage_count without decrementing it, even on errors.
-> Replace it by the new pm_runtime_resume_and_get(), introduced by:
-> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> in order to properly decrement the usage counter, avoiding
-> a potential PM usage counter leak.
+> HUTRR101 added a new usage code for a key that is supposed to invoke and
+> dismiss an emoji picker widget to assist users to locate and enter emojis.
 > 
-> Also, right now, the driver is ignoring any troubles when
-> trying to do PM resume. So, add the proper error handling
-> for the code.
+> This patch adds a new key definition KEY_EMOJI_PICKER and maps 0x0c/0x0d9
+> usage code to this new keycode. Additionally hid-debug is adjusted to
+> recognize this new usage code as well.
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-> ---
->  drivers/media/platform/rcar_fdp1.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/media/platform/rcar_fdp1.c b/drivers/media/platform/rcar_fdp1.c
-> index d26413fa5205..89aac60066d9 100644
-> --- a/drivers/media/platform/rcar_fdp1.c
-> +++ b/drivers/media/platform/rcar_fdp1.c
-> @@ -2135,7 +2135,9 @@ static int fdp1_open(struct file *file)
->  	}
->  
->  	/* Perform any power management required */
-> -	pm_runtime_get_sync(fdp1->dev);
-> +	ret = pm_runtime_resume_and_get(fdp1->dev);
-> +	if (ret < 0)
-> +		goto error_pm;
->  
->  	v4l2_fh_add(&ctx->fh);
->  
-> @@ -2145,6 +2147,8 @@ static int fdp1_open(struct file *file)
->  	mutex_unlock(&fdp1->dev_mutex);
->  	return 0;
->  
-> +error_pm:
-> +       v4l2_m2m_ctx_release(ctx->fh.m2m_ctx);
->  error_ctx:
->  	v4l2_ctrl_handler_free(&ctx->hdl);
->  	kfree(ctx);
-> @@ -2352,7 +2356,9 @@ static int fdp1_probe(struct platform_device *pdev)
->  
->  	/* Power up the cells to read HW */
->  	pm_runtime_enable(&pdev->dev);
-> -	pm_runtime_get_sync(fdp1->dev);
-> +	ret = pm_runtime_resume_and_get(fdp1->dev);
-> +	if (ret < 0)
-> +		goto disable_pm;
->  
->  	hw_version = fdp1_read(fdp1, FD1_IP_INTDATA);
->  	switch (hw_version) {
-> @@ -2381,6 +2387,9 @@ static int fdp1_probe(struct platform_device *pdev)
->  
->  	return 0;
->  
-> +disable_pm:
-> +	pm_runtime_disable(fdp1->dev);
-> +
->  release_m2m:
->  	v4l2_m2m_release(fdp1->m2m_dev);
->  
+> Signed-off-by: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+
+Both paches applied, thanks Dmitry.
+
+-- 
+Jiri Kosina
+SUSE Labs
 
