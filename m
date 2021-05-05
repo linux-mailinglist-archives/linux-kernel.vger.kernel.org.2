@@ -2,191 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2453D373542
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 08:59:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29F9C373543
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 08:59:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhEEG77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 02:59:59 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:53832 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229647AbhEEG75 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 02:59:57 -0400
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 1456wkTX074114;
-        Wed, 5 May 2021 01:58:46 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620197926;
-        bh=0j77LyqtTpjLqDfexeSMu4rG5MJRswU/vC8VHqp4Cx0=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=uskr3cn/Fst+OifpPmtFyRcd2mXaTGrszLUDzWQ9gCQE9XbfpKlmse4bsll9AmlSU
-         EYzSC1PeoGOKriP+yKG2MzZ4FdjTbiMGJZ4/gnUTs4MNvVnazbTqYOw/J3w0jrtDkd
-         U45B/9tjAi68FiqsW1aKrNS7NYCEgbxjLKO9fA40=
-Received: from DLEE111.ent.ti.com (dlee111.ent.ti.com [157.170.170.22])
-        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 1456wkxq040183
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 5 May 2021 01:58:46 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE111.ent.ti.com
- (157.170.170.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 5 May
- 2021 01:58:46 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 5 May 2021 01:58:46 -0500
-Received: from [10.250.235.7] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 1456we3U032185;
-        Wed, 5 May 2021 01:58:41 -0500
-Subject: Re: [PATCH] PCI: cadence: Set LTSSM Detect Quiet state minimum delay
- as workaround for training defect.
-To:     Nadeem Athani <nadeem@cadence.com>, <tjoseph@cadence.com>,
-        <lorenzo.pieralisi@arm.com>, <robh@kernel.org>,
-        <bhelgaas@google.com>, <linux-pci@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-omap@vger.kernel.org>
-CC:     <mparab@cadence.com>, <sjakhade@cadence.com>,
-        <pthombar@cadence.com>, Milind Parab <mparab@cadence.com>
-References: <20210426051427.15945-1-nadeem@cadence.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <152cc214-630f-3d66-9cd5-12909c161dec@ti.com>
-Date:   Wed, 5 May 2021 12:28:39 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20210426051427.15945-1-nadeem@cadence.com>
-Content-Type: text/plain; charset="utf-8"
+        id S231706AbhEEHAJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 03:00:09 -0400
+Received: from mail-bn8nam12on2082.outbound.protection.outlook.com ([40.107.237.82]:13408
+        "EHLO NAM12-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229647AbhEEHAI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 03:00:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WxPpOx3lybsKAjchAQLjNNoyFHget8gEL4ucbgZJQfzKgxGZcdiVB7HD6/GmN+B4sly5Z9vRpMQitfvU2tbtKqJzgvOzwHGxIWi3Z0UyaJK08hIU4xmtP96SaLeA8uqengPD9dpvAo+fQH8CBzXKGbePtCdry2sm++vx36hXbPD7+XVPEKte7hY8dUwl1j5bMDpKW44XzITrsYvJQPxbHFCOPprhTjnLGduUwanZH97eHZbx9RinUlThoQAxnHl2rz/Ie/zqP4xAm/xigO9TZNHEJeja5s2GaF1zZuPfxUlUEdaoOmnGZIBGBfDtwKYbntJdTqCvdZ7LQmtIGhmOWA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JJPQsgqSsyU9F8LNj0Jm/Hbf/xDkIyb1qqa7PtUw34s=;
+ b=NId7RkNlTxnqGtpfbJX8pBj8u7uJoQjM0wytfLFkrYk9BxIjsyauOCepjipLYECDAR/SbAq34FDo+OfFdFXYsmMYdQAeGW5ygUG9OO7A+wEdfccgP33ueuCJB7FEcJQtAnqK+yJVSeO4OH60N8a42kjeFe6aZmrkW3y91r5Z0IOAY7cQyZs4CU8Eqi84o0AIxLx5LsLthomg0QI0k6akUxeqaMfUuUNFOmbredd6C8G5JY0Umr49M+GDt1oXEEpVLltENvirVuwrYq6Ec5iQpT7vUbv/KV0cEDcrZ9Hhhte869uxG/GqOD+zrolzdvmxn47TNUXW8VHCVAr0zgpoFQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JJPQsgqSsyU9F8LNj0Jm/Hbf/xDkIyb1qqa7PtUw34s=;
+ b=CGtiF6idCjcY2ISsyMtKq3cI+EfETdmz1cRiByUNMzLUA1gGQ+bqKy4lRMS44SMKJwO7PE/ixlSsp8BNGzJjgIHNzTbOlkq6ik+Qx5fIC2ioFoHGRFejTw6Uzzloq57z9KckbO0OacJEiVK0PXlxQCZmRv/7gFTkYoEeJ4n3h7bRB2MXzYJbv3aVv6t3ZszcQqEhdKvT4wMbXk/q9FHiKWDcCyQI+gaYTZV8Y0bnmjnbpPaEJy4d4tw+gaXTxoRY51d8M1SB5AcJjvzpoplnzAnw+OtQFMNovyk2bs6fi/sz8j5NYVKSLt5yOLnHkv6wxnLvgSAD+Qz9OSDtWf4ijA==
+Authentication-Results: idosch.org; dkim=none (message not signed)
+ header.d=none;idosch.org; dmarc=none action=none header.from=nvidia.com;
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com (2603:10b6:5:39e::17)
+ by DM4PR12MB5247.namprd12.prod.outlook.com (2603:10b6:5:39b::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Wed, 5 May
+ 2021 06:59:11 +0000
+Received: from DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::d556:5155:7243:5f0f]) by DM4PR12MB5278.namprd12.prod.outlook.com
+ ([fe80::d556:5155:7243:5f0f%6]) with mapi id 15.20.4087.044; Wed, 5 May 2021
+ 06:59:11 +0000
+Subject: Re: [PATCH net 0/6] bridge: Fix snooping in multi-bridge config with
+ switchdev
+To:     "Huang, Joseph" <Joseph.Huang@garmin.com>,
+        Tobias Waldekranz <tobias@waldekranz.com>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Ido Schimmel <idosch@idosch.org>
+References: <20210504182259.5042-1-Joseph.Huang@garmin.com>
+ <6fd5711c-8d53-d72b-995d-1caf77047ecf@nvidia.com>
+ <685c25c2423c451480c0ad2cf78877be@garmin.com> <87v97ym8tc.fsf@waldekranz.com>
+ <82693dbedd524f94b5a6223f0287525c@garmin.com>
+From:   Nikolay Aleksandrov <nikolay@nvidia.com>
+Message-ID: <a610666e-c7e4-28cd-ab89-fa2e02ec31de@nvidia.com>
+Date:   Wed, 5 May 2021 09:59:04 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
+In-Reply-To: <82693dbedd524f94b5a6223f0287525c@garmin.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+X-Originating-IP: [213.179.129.39]
+X-ClientProxiedBy: ZR0P278CA0070.CHEP278.PROD.OUTLOOK.COM
+ (2603:10a6:910:21::21) To DM4PR12MB5278.namprd12.prod.outlook.com
+ (2603:10b6:5:39e::17)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.21.241.230] (213.179.129.39) by ZR0P278CA0070.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:21::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Wed, 5 May 2021 06:59:08 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 72d0c79f-7124-4a2b-c07b-08d90f934918
+X-MS-TrafficTypeDiagnostic: DM4PR12MB5247:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM4PR12MB5247613B3D4BEB390C4E13FEDF599@DM4PR12MB5247.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: qGAe5C3/jjkrbCar4HgR5Cyv6Ox9j0aZPmrHSeJ0L3lVvBt+LUgHxMmOlG7acWncrsXNtizgC41MewothVrY/De+U5v6PlMaSmEjX+YQPjYjiGUTGFMcFNZbl49weo8q8Na4+jm2/7ADwhSAbZr/6HEhndWI9tXM7R6VXgwNVrbfaMWifzEF6Dqjb7ypQgYUNlg5jAPhDafUtolJXucPD90XSuaGtiPGcGyAMXamMAR2kYykzeqUUFL2TUbP91gHIhekEPpk+qBdFRu3I5gd3y40WS+95Z58MV20cRpyvHUCkgiSskkbggR3QEy+nDziI1A6EhyAe5r5del24w3Yx5ps2kCpD4w+WK2aSgxUfodJnXqbjUFWcybeZMcRESl9SA/6m34PML3BqrnlWjYTY7b1Am6R2ADkzaY0ZOhVPVMGfjTcTAw9oIvl191MrLWmniGuKe8E4MzEIjMoPSslYZ2hzb4Jofvp1G7wTJ1/OJ5h043swonzHob/KtdBqpx//95AF6BaZ84PNbeeY/7ucl+enGtQom32nYAh+05z+dQ2DfLm1vLfLL6CeUxzzQ4ztdaH8j813QWfwvjRI1mkfoD3QsrkbMQGWgZMVDnan1tQfUlsLb/vj0JqKDm2k5dxa1YXsLJp8iN+SNvg8UHUoo5GO+g840RUue4iW3olVtIR0Pur4NUiOLWJFjdYpIzfgg/2oBXmNDdQ/iAro4ttjA==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM4PR12MB5278.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(136003)(39860400002)(396003)(346002)(86362001)(956004)(36756003)(316002)(921005)(66574015)(2616005)(16576012)(31696002)(8676002)(16526019)(186003)(31686004)(110136005)(66476007)(66946007)(66556008)(5660300002)(6486002)(2906002)(6666004)(478600001)(38100700002)(26005)(8936002)(53546011)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZVpwWUpvK1JlUjZmRWVuSjd2NDRDUXdNQkFpSmhjY3JWUlBrRjJaSXArOGZk?=
+ =?utf-8?B?QW5lOW5oSk9ocm43NFRNdUpUeFdSK2xLbHowNUMwQlEyR1FhSmN0Z2E2Zmsy?=
+ =?utf-8?B?QUFFRVU3Y0ptMHpuM0dFZzZSRWovdWJKV1pSTGNyRlp5TjJWOElNWkZXZFBV?=
+ =?utf-8?B?Vk1UbS9tcHpid3ZQSmVYRnc1Z1NNWWJzWFZia3RtbXIzcGRuU3hvM1FpVllp?=
+ =?utf-8?B?U2N3bmZQUWFra2I3M0MvV0hDWTVZcHdPdy92SDNuaFFRNitRazREaW80SGZL?=
+ =?utf-8?B?S1VOYTU0bVB0bmJzYzgzTys3U3JVbmgxbGYrenF6cGhBbW5tVDR0azRlV2RW?=
+ =?utf-8?B?ZTBXNjl4VDNoSGhMMVQ1K2ZsZzRWTlNmY0hOcmZhWFkzZjBySmVETFFqSEZo?=
+ =?utf-8?B?U3VXOHhUNGdTamo1SU53UUdFanRsTE50UU1vbnF2SmRLV29YTVlLZXo5eW9B?=
+ =?utf-8?B?YjJwMTRwRDhXclZzcUVCMDFFZ0thdFZReWlKcGxPbXpqL0VGb0g2b1RzeHZi?=
+ =?utf-8?B?SmliOUNqSlJ2UVlnNlpiZU9lOGpJSTVwRGhQcmhrbmVvcmxsdm41Ykc4VUwv?=
+ =?utf-8?B?dkZlWEM5WDVGZWIwWENJUnRIN01HdVJMdUtETHNIaGVQMWVrZFc0eVlDYXh3?=
+ =?utf-8?B?YWdrUEJhM3pOL3ByaWtMQ1p1RmZHdU5zZHByZDF4K1FzM2hEZHpOMjFmUDg5?=
+ =?utf-8?B?dEpLUFZXcDhoZ1pVRnRaNDlCQVZRYWNtNmFuejdlSlFKZi9oUStjOUFrOXp6?=
+ =?utf-8?B?MVgwMzZOdk5UTDJZUHUwQ3lyaVVNcUtLNGtwUWpSSEZVQ004ckEwT2oweGw2?=
+ =?utf-8?B?MkpPOVlWbDg3WmFvcmtPWHZWN1NCak43VEh3enBQTHFSVmxIOGFnNDYyYi9Z?=
+ =?utf-8?B?bG0vcXpHc0VKVlF2Q1VxamtrNWpWNGJRbzllQVY2Z2c1MFgrUnZLQ3dLdUl4?=
+ =?utf-8?B?TExYNDJrb1AxWVFjNUw4bm9BWmdTSGpOUzZDWDExaWVIV3h2TW1kQXhqVTFD?=
+ =?utf-8?B?SjEzYUd2ZG1KdzhHUGhSU3FGT2R5eGoxSVVkMEg3eGRscDhJWjlmZEdLNHlN?=
+ =?utf-8?B?eVVYeHMrSFlueW9GdjhGQ2VBcUJ1QW9ycjg4b0M4ZHZVTkRDSitRMHdBNjhK?=
+ =?utf-8?B?VDVYcTBLcWcvZWlpMlA4WS9iMnFqT25FTThlazNMWlhMckx2TzdHTE90cWlV?=
+ =?utf-8?B?K3QyRkxtSWUwQnM5Tzd5MmVzN1VCT21Rd1NXem1wTUtEWlpSeGRXYUtCNFZM?=
+ =?utf-8?B?NG9rU2hHNitPUU9xSTc4M2hKVlRjUTZIVmhoS3laU2ZwVUdNVlFyaml0Q0VX?=
+ =?utf-8?B?SjBKV3pHOVNaVTVybTdWRnRwanYwU1BrVjBuTVpFSWdaRmk3TldmUnZzMk9L?=
+ =?utf-8?B?WXJxYVAyQ1h1QnJZcWp0WEF2bkFxVVJMZU1UWEx4Qkw3czQyOFVRK0ZtRndP?=
+ =?utf-8?B?WWZOZjFKQ2VkY0JFbURYNk05TlVDSWFaRjRsOHZpcCtvUktwZ3h1NTZ3VVU1?=
+ =?utf-8?B?TnczVGNsMmx0dWpwT2lIbEpVaklCcU1ycGFNTTVYYktpMzBuQkRMZjkxTVNW?=
+ =?utf-8?B?TWlWSlNvZXF1MXh1SXU4TUtmOVcxM2pncFJudituK0l2QnNlNVJEZUhCZVNF?=
+ =?utf-8?B?cmhwRUxuY2RGSFdGSkFSRTRXUDI1c2ZDUjdJS0xGWWdFcExwUXo3VXFrVFVX?=
+ =?utf-8?B?a29xOUF5N29UQXdoRTh3MFJFODY3MFphdnpPcXU5Yjl6M21ZdUdmbGRMdFB5?=
+ =?utf-8?Q?akoX/BXgbJcxviVeTVPz205W12H4BtwwGr688dr?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72d0c79f-7124-4a2b-c07b-08d90f934918
+X-MS-Exchange-CrossTenant-AuthSource: DM4PR12MB5278.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 06:59:11.2605
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Sut2f9K360sXqB6CuWwebdMRTnyK8qPGoaBnbw6sN1PYU++EJHQa4sEKu7n29Mci0NTDfn9A97mnJd0aBLBJmw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5247
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nadeem,
-
-On 26/04/21 10:44 am, Nadeem Athani wrote:
-
-How about $subject to "PCI: cadence: Add quirk to set maximum possible
-wait time in Detect.Quiet state."?
-> Adding a quirk flag "quirk_detect_quiet_flag" to program the minimum
-> time that LTSSM waits on entering Detect.Quiet state.
-> Setting this to 2ms for specific TI j7200 SOC as a workaround to resolve
-> a link training issue in IP.
-
-Please add a more detailed description of the issue here. Something like
-below.
-
-PCIe fails to link up if SERDES lanes not used by PCIe are assigned to
-another protocol. For example, link training fails if lanes 2 and 3 are
-assigned to another protocol while lanes 0 and 1 are used for PCIe to
-form a two lane link. This failure is due to an incorrect tie-off on an
-internal status signal indicating electrical idle.
-
-Status signals going from SERDES to PCIe Controller are tied-off when a
-lane is not assigned to PCIe. Signal indicating electrical idle is
-incorrectly tied-off to a state that indicates non-idle. As a result,
-PCIe sees unused lanes to be out of electrical idle and this causes
-LTSSM to exit Detect.Quiet state without waiting for 12ms timeout to
-occur. If a receiver is not detected on the first receiver detection
-attempt in Detect.Active state, LTSSM goes back to Detect.Quiet and
-again moves forward to Detect.Active state without waiting for 12ms as
-required by PCIe base specification. Since wait time in Detect.Quiet is
-skipped, multiple receiver detect operations are performed back-to-back
-without allowing time for capacitance on the transmit lines to
-discharge. This causes subsequent receiver detection to always fail even
-if a receiver gets connected eventually.
-> In future revisions this setting will not be required.
+On 05/05/2021 02:26, Huang, Joseph wrote:
+>> If I may make a suggestion: I also work with mv88e6xxx systems, and we
+>> have the same issues with known multicast not being flooded to router
+>> ports. Knowing that chipset, I see what you are trying to do.
+>>
+>> But other chips may work differently. Imagine for example a switch where
+>> there is a separate vector of router ports that the hardware can OR in after
+>> looking up the group in the ATU. This implementation would render the
+>> performance gains possible on that device useless. As another example, you
+>> could imagine a device where an ATU operation exists that sets a bit in the
+>> vector of every group in a particular database; instead of having to update
+>> each entry individually.
+>>
+>> I think we (mv88e6xxx) will have to accept that we need to add the proper
+>> scaffolding to manage this on the driver side. That way the bridge can stay
+>> generic. The bridge could just provide some MDB iterator to save us from
+>> having to cache all the configured groups.
+>>
+>> So basically:
+>>
+>> - In mv88e6xxx, maintain a per-switch vector of router ports.
+>>
+>> - When a ports router state is toggled:
+>>   1. Update the vector.
+>>   2. Ask the bridge to iterate through all applicable groups and update
+>>      the corresponding ATU entries.
+>>
+>> - When a new MDB entry is updated, make sure to also OR in the current
+>>   vector of router ports in the DPV of the ATU entry.
+>>
+>>
+>> I would be happy to help out with testing of this!
 > 
-> As per PCIe specification, all Receivers must meet the Z-RX-DC
-> specification for 2.5 GT/s within 1ms of entering Detect.Quiet LTSSM
-> substate. The LTSSM must stay in this substate until the ZRXDC
-> specification for 2.5 GT/s is met.
+> Thanks for the suggestion/offer!
 > 
-> 00 : 0 minimum wait time in Detect.Quiet state.
-> 01 : 100us minimum wait time in Detect.Quiet state.
-> 10 : 1ms minimum wait time in Detect.Quiet state.
-> 11 : 2ms minimum wait time in Detect.Quiet state.
+> What patch 0002 does is that:
 > 
-> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
-> ---
-
-Please note the previous version of the patch here and what changed.
-http://lore.kernel.org/r/20210409053832.29512-1-nadeem@cadence.com
-
->  drivers/pci/controller/cadence/pcie-cadence-ep.c   | 21 +++++++++++++++++++++
->  drivers/pci/controller/cadence/pcie-cadence-host.c | 21 +++++++++++++++++++++
->  drivers/pci/controller/cadence/pcie-cadence.h      | 12 ++++++++++++
->  3 files changed, 54 insertions(+)
+> - When an mrouter port is added/deleted, it iterates over the list of mdb's
+>   to add/delete that port to/from the group in the hardware (I think this is
+>   what your bullet #2 does as well, except that one is done in the bridge,
+>   and the other is done in the driver)
 > 
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-ep.c b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> index 897cdde02bd8..245771f03c21 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-ep.c
-> @@ -552,6 +552,23 @@ static const struct pci_epc_ops cdns_pcie_epc_ops = {
->  	.get_features	= cdns_pcie_ep_get_features,
->  };
->  
-> +static void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie_ep *ep)
-> +{
-> +	struct cdns_pcie *pcie = &ep->pcie;
-> +	u32 delay = 0x3;
-> +	u32 ltssm_control_cap;
-> +
-> +	/*
-> +	 * Set the LTSSM Detect Quiet state min. delay to 2ms.
-> +	 */
-> +
-> +	ltssm_control_cap = cdns_pcie_readl(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP);
-> +	ltssm_control_cap = ((ltssm_control_cap &
-> +			    ~CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK) |
-> +			    CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay));
-> +
-> +	cdns_pcie_writel(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP, ltssm_control_cap);
-> +}
->  
->  int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
->  {
-> @@ -623,6 +640,10 @@ int cdns_pcie_ep_setup(struct cdns_pcie_ep *ep)
->  	ep->irq_pci_addr = CDNS_PCIE_EP_IRQ_PCI_ADDR_NONE;
->  	/* Reserve region 0 for IRQs */
->  	set_bit(0, &ep->ob_region_map);
-> +
-> +	if (ep->quirk_detect_quiet_flag)
-> +		cdns_pcie_detect_quiet_min_delay_set(ep);
-> +
->  	spin_lock_init(&ep->lock);
->  
->  	return 0;
-> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> index ae1c55503513..ffc2dbeb1240 100644
-> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
-> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
-> @@ -462,6 +462,24 @@ static int cdns_pcie_host_init(struct device *dev,
->  	return cdns_pcie_host_init_address_translation(rc);
->  }
->  
-> +static void cdns_pcie_detect_quiet_min_delay_set(struct cdns_pcie_rc *rc)
-> +{
-> +	struct cdns_pcie *pcie = &rc->pcie;
-> +	u32 delay = 0x3;
-> +	u32 ltssm_control_cap;
-> +
-> +	/*
-> +	 * Set the LTSSM Detect Quiet state min. delay to 2ms.
-> +	 */
-> +
-> +	ltssm_control_cap = cdns_pcie_readl(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP);
-> +	ltssm_control_cap = ((ltssm_control_cap &
-> +			    ~CDNS_PCIE_DETECT_QUIET_MIN_DELAY_MASK) |
-> +			    CDNS_PCIE_DETECT_QUIET_MIN_DELAY(delay));
-> +
-> +	cdns_pcie_writel(pcie, CDNS_PCIE_LTSSM_CONTROL_CAP, ltssm_control_cap);
-> +}
-> +
+> - When a group is added/deleted, it iterates over the list of mrouter ports
+>   to add/delete the switchdev programming
+> 
+> I think what Nik is objecting to is that with this approach, there's now
+> a for-loop in the call paths (thus it "increases the complexity with 1 order
+> of magnitude), however I can't think of a way to avoid the looping (whether
+> done inside the bridge or in the driver) but still achieve the same result
+> (for Marvell at least).
+> 
 
-Don't repeat this function once for host and once for device. Add this
-function pcie-cadence.c and invoked from host and endpoint.
+Note that I did not say to avoid it in the switchdev driver. :)
+I said it should be in the driver or in some user-space helper, but it mustn't
+affect non-switchdev software use cases so much.
 
-Thanks
-Kishon
+You can check how mlxsw[1] deals with mdbs and router ports.
+
+[1] drivers/net/ethernet/mellanox/mlxsw/spectrum_switchdev.c
+
+> I suspect that other SOHO switches might have this problem as well (Broadcom
+> comes to mind).
+> 
+> Thanks,
+> Joseph
+> 
+
