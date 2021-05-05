@@ -2,135 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25C9C37390D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5907637390E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:09:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232805AbhEELK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:10:29 -0400
-Received: from muru.com ([72.249.23.125]:51880 "EHLO muru.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232517AbhEELKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:10:22 -0400
-Received: from hillo.muru.com (localhost [127.0.0.1])
-        by muru.com (Postfix) with ESMTP id AABA980DB;
-        Wed,  5 May 2021 11:09:26 +0000 (UTC)
-From:   Tony Lindgren <tony@atomide.com>
-To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
-Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Subject: [PATCH] PM: runtime: Fix unpaired parent child_count for force_resume
-Date:   Wed,  5 May 2021 14:09:15 +0300
-Message-Id: <20210505110915.6861-1-tony@atomide.com>
-X-Mailer: git-send-email 2.31.1
+        id S232832AbhEELKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:10:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49498 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232772AbhEELK2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 07:10:28 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D74CDC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 04:09:29 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id a10-20020a05600c068ab029014dcda1971aso1072677wmn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 04:09:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BXOPEgevTuuM7YW5o4XEB+yh8uQ/yRiyPYvEuyt9rlk=;
+        b=ANuorpiua0sGgLlVBH2gdNw0j0TpmyM8D/T6TBE666cw43U0J5AASfftojQGfhRT+r
+         KKYkKgN2aqIx7jAsUD/tejnQ3QSPpGMcFtDJYDJqEUVAaZPykkGVKC6I+IzJifykGBUP
+         RsKWslk3Rv+NenACT2hX862+jkr/r98KS1a711Qgj0T3NcY2rkzXYrANQ+t8H6yqywdQ
+         0olQA0btEKn2Daqpq7JPbQfhw59sWYYLRPWErF17BaDwgMEGwpB3x/C9sMj5bi97eMiD
+         tyedil6vbMW4CQHCppzAepeOGmdTA7eGSne9mOM9PrYn5nOf5FZ1gzsgYgaEPmPnjuO/
+         zOGQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BXOPEgevTuuM7YW5o4XEB+yh8uQ/yRiyPYvEuyt9rlk=;
+        b=OOHDCTYP2Tyk4eoTRdlA0hnxVXSa+fj09IDlKquXD1Z5jNeOY1MBKZsKh4oFj71eXY
+         Ckb4oYi46zoaJW8mjaJwuw9pv4xlk4dIm9tgE8xtjwxooPZlSsDGjEd/1hhiuG4GxrOf
+         Xxh/CTBHNZTStNKlfdO+8XHYO9l1J/RlYYs/8jt0fmP0/BQ65bxtUk5ufphCQwvHQCyn
+         ltqr6V2pmLF7j3lSBRNCud0FB2ewE3q99qq5aPWltMsHOtJuh5NQ65034bLSagl6wT9P
+         V86cVtFqE8CVliRlCkNAFAvrdYlfpor14iIEUOwtXP+uu7icJ4UxA9a3m+EUOae7g+tp
+         1LsQ==
+X-Gm-Message-State: AOAM531XJ8bxcwm1Wfqu0zxwt468LLncXCSQHr5rGZMawJrdWF5RbfMO
+        YogsQd2FWzYqTEJbefjqYstlgXKPLc6FBlLRG0jklQ==
+X-Google-Smtp-Source: ABdhPJyHD8cyhtTQbTODDMIM1PMek+Jbkt4kcJVY0oCvd3Gvpnddd223L28FLguuZ9+oUuRSr43pX43UL1K0ekQP3Ls=
+X-Received: by 2002:a1c:9a88:: with SMTP id c130mr32441575wme.3.1620212968537;
+ Wed, 05 May 2021 04:09:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <5057c53afb568fa70234de2f23b0ffeff75af426.1618421014.git.Rijo-john.Thomas@amd.com>
+ <5072c20c-7912-4307-6e04-caa1fe54bf1a@amd.com> <20210503114734.GI21598@kadam> <01387b92-263c-edf1-52bf-b2244ebbd311@amd.com>
+In-Reply-To: <01387b92-263c-edf1-52bf-b2244ebbd311@amd.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Wed, 5 May 2021 13:09:17 +0200
+Message-ID: <CAHUa44HSaFYHUNEJ9S13czP5EZd2NdpWqaQN6zXaAn0ekt88Ag@mail.gmail.com>
+Subject: Re: [PATCH v3] tee: amdtee: unload TA only when its refcount becomes 0
+To:     Rijo Thomas <Rijo-john.Thomas@amd.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>,
+        Mythri Pandeshwara krishna <mythri.pandeshwarakrishna@amd.com>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-As pm_runtime_need_not_resume() relies also on usage_count, it can return
-a different value in pm_runtime_force_suspend() compared to when called in
-pm_runtime_force_resume(). Different return values can happen if anything
-calls PM runtime functions in between, and causes the parent child_count
-to increase on every resume.
+On Tue, May 4, 2021 at 6:26 AM Rijo Thomas <Rijo-john.Thomas@amd.com> wrote:
+>
+>
+>
+> On 03/05/21 5:17 pm, Dan Carpenter wrote:
+> > On Mon, May 03, 2021 at 09:04:35AM +0530, Rijo Thomas wrote:
+> >>
+> >>
+> >> On 14/04/21 11:08 pm, Rijo Thomas wrote:
+> >>> Same Trusted Application (TA) can be loaded in multiple TEE contexts.
+> >>>
+> >>> If it is a single instance TA, the TA should not get unloaded from AMD
+> >>> Secure Processor, while it is still in use in another TEE context.
+> >>>
+> >>> Therefore reference count TA and unload it when the count becomes zero.
+> >>>
+> >>> Fixes: 757cc3e9ff1d ("tee: add AMD-TEE driver")
+> >>> Reviewed-by: Devaraj Rangasamy <Devaraj.Rangasamy@amd.com>
+> >>> Signed-off-by: Rijo Thomas <Rijo-john.Thomas@amd.com>
+> >>
+> >> Hi Dan,
+> >>
+> >> Can you please give an Ack if you are okay with this patch.
+> >> I have incorporated your review comments for v2.
+> >>
+> >
+> > Oh, Sorry.  Thanks!
+> >
+> > Acked-by: Dan Carpenter <dan.carpenter@oracle.com>
+>
+> Thanks Dan!
+>
+> Jens, can you please pull in this patch.
 
-So far I've seen the issue only for omapdrm that does complicated things
-with PM runtime calls during system suspend for legacy reasons:
+Done!
 
-omap_atomic_commit_tail() for omapdrm.0
- dispc_runtime_get()
-  wakes up 58000000.dss as it's the dispc parent
-   dispc_runtime_resume()
-    rpm_resume() increases parent child_count
- dispc_runtime_put() won't idle, PM runtime suspend blocked
-pm_runtime_force_suspend() for 58000000.dss, !pm_runtime_need_not_resume()
- __update_runtime_status()
-system suspended
-pm_runtime_force_resume() for 58000000.dss, pm_runtime_need_not_resume()
- pm_runtime_enable() only called because of pm_runtime_need_not_resume()
-omap_atomic_commit_tail() for omapdrm.0
- dispc_runtime_get()
-  wakes up 58000000.dss as it's the dispc parent
-   dispc_runtime_resume()
-    rpm_resume() increases parent child_count
- dispc_runtime_put() won't idle, PM runtime suspend blocked
-...
-rpm_suspend for 58000000.dss but parent child_count is now unbalanced
-
-Let's fix the issue by adding a flag for needs_force_resume and use it in
-pm_runtime_force_resume() instead of pm_runtime_need_not_resume().
-
-Additionally omapdrm system suspend could be simplified later on to avoid
-lots of unnecessary PM runtime calls and the complexity it adds. The
-driver can just use internal functions that are shared between the PM
-runtime and system suspend related functions.
-
-Fixes: 4918e1f87c5f ("PM / runtime: Rework pm_runtime_force_suspend/resume()")
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Signed-off-by: Tony Lindgren <tony@atomide.com>
----
- drivers/base/power/runtime.c | 10 +++++++---
- include/linux/pm.h           |  1 +
- 2 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
---- a/drivers/base/power/runtime.c
-+++ b/drivers/base/power/runtime.c
-@@ -1637,6 +1637,7 @@ void pm_runtime_init(struct device *dev)
- 	dev->power.request_pending = false;
- 	dev->power.request = RPM_REQ_NONE;
- 	dev->power.deferred_resume = false;
-+	dev->power.needs_force_resume = 0;
- 	INIT_WORK(&dev->power.work, pm_runtime_work);
- 
- 	dev->power.timer_expires = 0;
-@@ -1804,10 +1805,12 @@ int pm_runtime_force_suspend(struct device *dev)
- 	 * its parent, but set its status to RPM_SUSPENDED anyway in case this
- 	 * function will be called again for it in the meantime.
- 	 */
--	if (pm_runtime_need_not_resume(dev))
-+	if (pm_runtime_need_not_resume(dev)) {
- 		pm_runtime_set_suspended(dev);
--	else
-+	} else {
- 		__update_runtime_status(dev, RPM_SUSPENDED);
-+		dev->power.needs_force_resume = 1;
-+	}
- 
- 	return 0;
- 
-@@ -1834,7 +1837,7 @@ int pm_runtime_force_resume(struct device *dev)
- 	int (*callback)(struct device *);
- 	int ret = 0;
- 
--	if (!pm_runtime_status_suspended(dev) || pm_runtime_need_not_resume(dev))
-+	if (!pm_runtime_status_suspended(dev) || !dev->power.needs_force_resume)
- 		goto out;
- 
- 	/*
-@@ -1853,6 +1856,7 @@ int pm_runtime_force_resume(struct device *dev)
- 
- 	pm_runtime_mark_last_busy(dev);
- out:
-+	dev->power.needs_force_resume = 0;
- 	pm_runtime_enable(dev);
- 	return ret;
- }
-diff --git a/include/linux/pm.h b/include/linux/pm.h
---- a/include/linux/pm.h
-+++ b/include/linux/pm.h
-@@ -602,6 +602,7 @@ struct dev_pm_info {
- 	unsigned int		idle_notification:1;
- 	unsigned int		request_pending:1;
- 	unsigned int		deferred_resume:1;
-+	unsigned int		needs_force_resume:1;
- 	unsigned int		runtime_auto:1;
- 	bool			ignore_children:1;
- 	unsigned int		no_callbacks:1;
--- 
-2.31.1
+Cheers,
+Jens
