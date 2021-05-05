@@ -2,108 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D327373C39
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C85F6373C3C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:20:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232957AbhEENUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:20:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50552 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229606AbhEENUd (ORCPT
+        id S232704AbhEENVL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:21:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20583 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229606AbhEENVI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:20:33 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68AA8C061574;
-        Wed,  5 May 2021 06:19:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=098DjoJGnAPT9eohEm8f+BcKiqTmmyQ4t8gfr7TicWI=; b=W/WiWgFI7/UtyDk6pyHlsqYp4K
-        tYY8VbPIiaG2BWw5+Vw/D6CqfT8qaPGMRiSsLCW9RhfQIdPcdRbpLGtWXAufrZDubMi/1ZjoU1Cl1
-        qlEF64APhf9cI9xQJ7mHF64do+531IRURlEmwtEIRT590CGh6fNyOi78tmtxv8zU/Hys5Ve7fEv4U
-        sXaG7AzMeCHPmy3XV3h1yOYGIgvgL8cLVkkWZKxqeyUtXdS4kujL19WYnqA421aSy4AD7xxt3G89S
-        LE/IeGEMKQvnznVqRd72pPp1OJSIELgz6zT8K/HRNelZfqXRikgLOkef6YPUlnlA95kTyqckm7KQ3
-        rkRg0P+A==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1leHQt-001HmQ-NC; Wed, 05 May 2021 13:19:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4C2143001CD;
-        Wed,  5 May 2021 15:19:19 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 085D3203E67F7; Wed,  5 May 2021 15:19:19 +0200 (CEST)
-Date:   Wed, 5 May 2021 15:19:18 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>, dave.hansen@intel.com,
-        luto@kernel.org, linux-mm@kvack.org, x86@kernel.org,
-        akpm@linux-foundation.org, linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 5/9] x86, mm: Use cache of page tables
-Message-ID: <YJKbVueq3nqXwnip@hirez.programming.kicks-ass.net>
-References: <20210505003032.489164-1-rick.p.edgecombe@intel.com>
- <20210505003032.489164-6-rick.p.edgecombe@intel.com>
- <YJJcqyrMEJipbevT@hirez.programming.kicks-ass.net>
- <YJKK5RUMOzv488DO@kernel.org>
+        Wed, 5 May 2021 09:21:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620220811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=buwK358EXACur1dtLJkV3OPco7maWEjjFk36E2kFDig=;
+        b=J72tJ8AG3ZGzX0Knlhwui0TTPAjACPE7Es75IJD2Aj/Ms/dnaQ9jkEJwCD9RdKk8zABJiK
+        oGfK9Ze2lHQ0UFUv/D6SsfbnCdS0XfTGhm/TP2qYtcLTsxK6zrMTlmEWuz04yDyoF3rjL6
+        NlWCfaOIAWRBjpP5JTZWv2eSjhYAOek=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-127-mYc0GcoHMeSmsywLbE8jWg-1; Wed, 05 May 2021 09:20:07 -0400
+X-MC-Unique: mYc0GcoHMeSmsywLbE8jWg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E0B6584A5FD;
+        Wed,  5 May 2021 13:19:46 +0000 (UTC)
+Received: from treble (ovpn-115-93.rdu2.redhat.com [10.10.115.93])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 4B73D5D703;
+        Wed,  5 May 2021 13:19:44 +0000 (UTC)
+Date:   Wed, 5 May 2021 08:19:43 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Message-ID: <20210505131943.ci2svd6fmb22y7ac@treble>
+References: <cover.1620186182.git.jpoimboe@redhat.com>
+ <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
+ <2f75c496ac774444b75ff808854b8e5f@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <YJKK5RUMOzv488DO@kernel.org>
+In-Reply-To: <2f75c496ac774444b75ff808854b8e5f@AcuMS.aculab.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 03:09:09PM +0300, Mike Rapoport wrote:
-> On Wed, May 05, 2021 at 10:51:55AM +0200, Peter Zijlstra wrote:
-> > On Tue, May 04, 2021 at 05:30:28PM -0700, Rick Edgecombe wrote:
-> > > @@ -54,6 +98,8 @@ void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
-> > >  {
-> > >  	pgtable_pte_page_dtor(pte);
-> > >  	paravirt_release_pte(page_to_pfn(pte));
-> > > +	/* Set Page Table so swap knows how to free it */
-> > > +	__SetPageTable(pte);
-> > >  	paravirt_tlb_remove_table(tlb, pte);
-> > >  }
-> > >  
-> > > @@ -70,12 +116,16 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
-> > >  	tlb->need_flush_all = 1;
-> > >  #endif
-> > >  	pgtable_pmd_page_dtor(page);
-> > > +	/* Set Page Table so swap nows how to free it */
-> > > +	__SetPageTable(virt_to_page(pmd));
-> > >  	paravirt_tlb_remove_table(tlb, page);
-> > >  }
-> > >  
-> > >  #if CONFIG_PGTABLE_LEVELS > 3
-> > >  void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
-> > >  {
-> > > +	/* Set Page Table so swap nows how to free it */
-> > > +	__SetPageTable(virt_to_page(pud));
-> > >  	paravirt_release_pud(__pa(pud) >> PAGE_SHIFT);
-> > >  	paravirt_tlb_remove_table(tlb, virt_to_page(pud));
-> > >  }
-> > > @@ -83,6 +133,8 @@ void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
-> > >  #if CONFIG_PGTABLE_LEVELS > 4
-> > >  void ___p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d)
-> > >  {
-> > > +	/* Set Page Table so swap nows how to free it */
-> > > +	__SetPageTable(virt_to_page(p4d));
-> > >  	paravirt_release_p4d(__pa(p4d) >> PAGE_SHIFT);
-> > >  	paravirt_tlb_remove_table(tlb, virt_to_page(p4d));
-> > >  }
+On Wed, May 05, 2021 at 08:48:48AM +0000, David Laight wrote:
+> From: Josh Poimboeuf
+> > Sent: 05 May 2021 04:55
 > > 
-> > This, to me, seems like a really weird place to __SetPageTable(), why
-> > can't we do that on allocation?
+> > The x86 uaccess code uses barrier_nospec() in various places to prevent
+> > speculative dereferencing of user-controlled pointers (which might be
+> > combined with further gadgets or CPU bugs to leak data).
+> ...
+> > Remove existing barrier_nospec() usage, and instead do user pointer
+> > masking, throughout the x86 uaccess code.  This is similar to what arm64
+> > is already doing with uaccess_mask_ptr().
+> ...
+> > diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+> > index fb75657b5e56..ebe9ab46b183 100644
+> > --- a/arch/x86/include/asm/uaccess.h
+> > +++ b/arch/x86/include/asm/uaccess.h
+> > @@ -66,12 +66,35 @@ static inline bool pagefault_disabled(void);
+> >   * Return: true (nonzero) if the memory block may be valid, false (zero)
+> >   * if it is definitely invalid.
+> >   */
+> > -#define access_ok(addr, size)					\
+> > +#define access_ok(addr, size)						\
+> >  ({									\
+> >  	WARN_ON_IN_IRQ();						\
+> >  	likely(!__range_not_ok(addr, size, TASK_SIZE_MAX));		\
+> >  })
+> > 
+> > +/*
+> > + * Sanitize a user pointer such that it becomes NULL if it's not a valid user
+> > + * pointer.  This prevents speculatively dereferencing a user-controlled
+> > + * pointer to kernel space if access_ok() speculatively returns true.  This
+> > + * should be done *after* access_ok(), to avoid affecting error handling
+> > + * behavior.
+> > + */
+> > +#define mask_user_ptr(ptr)						\
+> > +({									\
+> > +	unsigned long _ptr = (__force unsigned long)ptr;		\
+> > +	unsigned long mask;						\
+> > +									\
+> > +	asm volatile("cmp %[max], %[_ptr]\n\t"				\
+> > +		     "sbb %[mask], %[mask]\n\t"				\
+> > +		     : [mask] "=r" (mask)				\
+> > +		     : [_ptr] "r" (_ptr),				\
+> > +		       [max] "r" (TASK_SIZE_MAX)			\
+> > +		     : "cc");						\
+> > +									\
+> > +	mask &= _ptr;							\
+> > +	((typeof(ptr)) mask);						\
+> > +})
+> > +
 > 
-> We call __ClearPageTable() at pgtable_pxy_page_dtor(), so at least for pte
-> and pmd we need to somehow tell release_pages() what kind of page it was.
+> access_ok() and mask_user_ptr() are doing much the same check.
+> Is there scope for making access_ok() return the masked pointer?
+> 
+> So the canonical calling code would be:
+> 	uptr = access_ok(uptr, size);
+> 	if (!uptr)
+> 		return -EFAULT;
+> 
+> This would error requests for address 0 earlier - but I don't
+> believe they are ever valid in Linux.
+> (Some historic x86 a.out formats did load to address 0.)
+> 
+> Clearly for a follow up patch.
 
-Hurph, right, but then the added comment is misleading; s/Set/Reset/g.
-Still I'm thinking that if we do these allocators, moving the set/clear
-to the allocator would be the most natural place, perhaps we can remove
-them from the {c,d}tor.
+Yeah.  I mentioned a similar idea in the cover letter.
+
+But I'm thinking we should still rename it to access_ok_mask(), or
+otherwise change the API to avoid the masked value getting ignored.
+
+But that'll be a much bigger patch.
+
+-- 
+Josh
+
