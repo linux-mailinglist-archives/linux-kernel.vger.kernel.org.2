@@ -2,133 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D37373C32
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:18:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F0F7373C36
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhEENSz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:18:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:51136 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229606AbhEENSy (ORCPT
+        id S233430AbhEENTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:19:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50282 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229606AbhEENTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:18:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620220677;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=QtrXxKUiAvmqmB6yyp++vsOaAc/bZaOc4BH5ZWRKiJg=;
-        b=cvmkcuvDFybGFr8kCaBP7OyAsXx6GxLLeEPPFx5NqvE90X4NXOnwJQjmYDYdIq0kYrXklr
-        QcUvHGaBwQCrf5LkxWj9yRTcTfk4knbXHbYoPYhXCbQVANWAaDUenr/eHo3xPuqdXQ/jYi
-        H/1vqS/UGo9c0KCb26PA4WwWvaOAE6k=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-340-j1z11-bWOteGsKVXbuWLdQ-1; Wed, 05 May 2021 09:17:56 -0400
-X-MC-Unique: j1z11-bWOteGsKVXbuWLdQ-1
-Received: by mail-wm1-f71.google.com with SMTP id z9-20020a1c65090000b029014b497b2d98so543658wmb.8
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 06:17:56 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=QtrXxKUiAvmqmB6yyp++vsOaAc/bZaOc4BH5ZWRKiJg=;
-        b=Qq9crY2fFXd06H/VPfttqoc5bfvXs20GhEd8XqrNyvITT1/UH3YW4JCLA60aU+s5y/
-         y3fKy4hpHE+IflWaaIOeusKpMQiabls98Kz0k75QiBUIJy5Gitq6yzwtnKbVB+IC7DEB
-         TJQqYaI5tgH7oKnqjB6rb/BQbCvlN5F0AV54KBeYfBxmTMJD6oLUsFjXNj/ouL4kNvX8
-         lwtjO77Tu/CqYvNhyIZuWqM4+CzUTrEOcoZYa9VLuSRBIL3ljETGnn2fs7VC53KEBk9m
-         8bhGqJsPEOntBNAwcubejss0QSlbNrdPEFP1NXUDQgW4z5hbvFDRqJtJRv5I0iNx1hYy
-         s0Fw==
-X-Gm-Message-State: AOAM533VaYClxxmlxFx5h3RmEG91L7IanMD5wPLi/lek/PmcVS514cbT
-        0F39i81Uu/exTtI5SIMQLNJjMccMgzIrqgDbcIBdz2xJI1VLMKK5Ydiay856enRFW7nv7NS2/8m
-        LiG5QtD7eonXnEwHtmZksfZ4k
-X-Received: by 2002:a7b:c74d:: with SMTP id w13mr32277705wmk.25.1620220674945;
-        Wed, 05 May 2021 06:17:54 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJznzW0sfSsf6GMPNX1ppZVMk3nl9+IxB31SmKuXCFiIEFbzLjLS3W1tcOolWD10Wc36ulvXeg==
-X-Received: by 2002:a7b:c74d:: with SMTP id w13mr32277671wmk.25.1620220674718;
-        Wed, 05 May 2021 06:17:54 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c63bc.dip0.t-ipconnect.de. [91.12.99.188])
-        by smtp.gmail.com with ESMTPSA id v13sm20005354wrt.65.2021.05.05.06.17.53
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 06:17:54 -0700 (PDT)
-Subject: Re: [PATCH v1 3/7] mm: rename and move page_is_poisoned()
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-References: <20210429122519.15183-1-david@redhat.com>
- <20210429122519.15183-4-david@redhat.com> <YJKZ5yXdl18m9YSM@dhcp22.suse.cz>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <0710d8d5-2608-aeed-10c7-50a272604d97@redhat.com>
-Date:   Wed, 5 May 2021 15:17:53 +0200
+        Wed, 5 May 2021 09:19:18 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E3FBC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 06:18:22 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 0E7ECC800B4;
+        Wed,  5 May 2021 15:18:21 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id 1Qag4sH1Yh9M; Wed,  5 May 2021 15:18:20 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f39:8600:6e35:22:d0af:f0c] (p200300e37F3986006e350022d0aF0F0C.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:6e35:22:d0af:f0c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 469BFC800B3;
+        Wed,  5 May 2021 15:18:19 +0200 (CEST)
+Subject: Re: [PATCH 4/4] Use YCbCr420 as fallback when RGB fails
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210503182148.851790-1-wse@tuxedocomputers.com>
+ <20210503182148.851790-5-wse@tuxedocomputers.com>
+ <YJEdLbE5EOQv+Nib@intel.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Message-ID: <733f307c-9c39-e3a4-e1d9-fc238286ecc6@tuxedocomputers.com>
+Date:   Wed, 5 May 2021 15:18:19 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <YJKZ5yXdl18m9YSM@dhcp22.suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <YJEdLbE5EOQv+Nib@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+Content-Language: de-DE
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.05.21 15:13, Michal Hocko wrote:
-> On Thu 29-04-21 14:25:15, David Hildenbrand wrote:
->> Commit d3378e86d182 ("mm/gup: check page posion status for coredump.")
->> introduced page_is_poisoned(), however, v5 [1] of the patch used
->> "page_is_hwpoison()" and something went wrong while upstreaming. Rename the
->> function and move it to page-flags.h, from where it can be used in other
->> -- kcore -- context.
+
+Am 04.05.21 um 12:08 schrieb Ville Syrjälä:
+> On Mon, May 03, 2021 at 08:21:48PM +0200, Werner Sembach wrote:
+>> When encoder validation of a display mode fails, retry with less bandwidth
+>> heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
+>> to support 4k60Hz output, which previously failed silently.
 >>
->> Move the comment to the place where it belongs and simplify.
+>> AMDGPU had nearly the exact same issue. This problem description is
+>> therefore copied from my commit message of the AMDGPU patch.
 >>
->> [1] https://lkml.kernel.org/r/20210322193318.377c9ce9@alex-virtual-machine
+>> On some setups, while the monitor and the gpu support display modes with
+>> pixel clocks of up to 600MHz, the link encoder might not. This prevents
+>> YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
+>> possible. However, which color mode is used is decided before the link
+>> encoder capabilities are checked. This patch fixes the problem by retrying
+>> to find a display mode with YCbCr420 enforced and using it, if it is
+>> valid.
 >>
->> Signed-off-by: David Hildenbrand <david@redhat.com>
-> 
-> I do agree that being explicit about hwpoison is much better. Poisoned
-> page can be also an unitialized one and I believe this is the reason why
-> you are bringing that up.
+>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>> ---
+>>
+>> >From 4ea0c8839b47e846d46c613e38af475231994f0f Mon Sep 17 00:00:00 2001
+>> From: Werner Sembach <wse@tuxedocomputers.com>
+>> Date: Mon, 3 May 2021 16:23:17 +0200
+>> Subject: [PATCH 4/4] Use YCbCr420 as fallback when RGB fails
+>>
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_hdmi.c | 10 +++++++++-
+>>  1 file changed, 9 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> index e2553ac6fd13..20c800f2ed60 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> @@ -1913,7 +1913,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
+>>  		clock *= 2;
+>>  	}
+>>  
+>> -	if (connector->ycbcr_420_allowed && drm_mode_is_420_only(&connector->display_info, mode))
+>> +	if (connector->ycbcr_420_allowed && drm_mode_is_420(&connector->display_info, mode))
+>>  		clock /= 2;
+> This is too early. We want to keep clock as is for checking whether RGB
+> output is possible with 420_also modes.
+>
+> So the structure you had in your original patch was the correct way to
+> go about it. Which I think was something along the lines of:
+>
+> if (420_only)
+> 	clock /= 2;
+>
+> status = intel_hdmi_mode_clock_valid()
+> if (status != OK) {
+> 	if (420_only || !420_also || !420_allowed)
+> 		return status;
+> 	
+> 	clock /= 2;
+> 	status = intel_hdmi_mode_clock_valid()
+> }
+Does it make a difference?
 
-I'm bringing it up because I want to reuse that function as state above :)
-
-> 
-> But you've made me look at d3378e86d182 and I am wondering whether this
-> is really a valid patch. First of all it can leak a reference count
-> AFAICS. Moreover it doesn't really fix anything because the page can be
-> marked hwpoison right after the check is done. I do not think the race
-> is feasible to be closed. So shouldn't we rather revert it?
-
-I am not sure if we really care about races here that much here? I mean, 
-essentially we are racing with HW breaking asynchronously. Just because 
-we would be synchronizing with SetPageHWPoison() wouldn't mean we can 
-stop HW from breaking.
-
-Long story short, this should be good enough for the cases we actually 
-can handle? What am I missing?
-
--- 
-Thanks,
-
-David / dhildenb
-
+In case !420_allowed only rgb is ever tested
+In case 420_allowed && 420_only only 420 is ever tested
+In case 420_allowed && 420_also the return value of the rgb test is discarded anyways
+>
+>>  
+>>  	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
+>> @@ -2119,6 +2119,14 @@ int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
+>>  		crtc_state->output_format = INTEL_OUTPUT_FORMAT_RGB;
+>>  
+>>  	ret = intel_hdmi_compute_clock(encoder, crtc_state);
+>> +	if (ret) {
+>> +		if (crtc_state->output_format != INTEL_OUTPUT_FORMAT_YCBCR420 ||
+>> +				connector->ycbcr_420_allowed ||
+>> +				drm_mode_is_420_also(&connector->display_info, adjusted_mode)) {
+> That needs s/||/&&/ or we flip the conditions around to:
+>
+> if (ret) {
+> 	if (output_format == 420 || !420_allowed || !420_also)
+> 		return ret;
+>
+> 	output_format = 420;
+> 	...
+> }
+>
+> which would have the benefit of avoiding the extra indent level.
+>
+>> +			crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+>> +			ret = intel_hdmi_compute_clock(encoder, crtc_state);
+>> +		}
+>> +	}
+>>  
+>>  	return ret;
+>>  }
+>> -- 
+>> 2.25.1
