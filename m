@@ -2,99 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE15D3738FE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:06:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B3A9373906
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:08:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232566AbhEELHB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:07:01 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:48505 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232256AbhEELG6 (ORCPT
+        id S232658AbhEELJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:09:33 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3000 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232535AbhEELJb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:06:58 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-89-jmuEs67kPHax_weughYq5A-1; Wed, 05 May 2021 12:05:59 +0100
-X-MC-Unique: jmuEs67kPHax_weughYq5A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 12:05:58 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 5 May 2021 12:05:58 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Miguel Ojeda' <miguel.ojeda.sandonis@gmail.com>,
-        Adrian Bunk <bunk@kernel.org>
-CC:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Stellard <tstellar@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "Masahiro Yamada" <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
-Subject: RE: Very slow clang kernel config ..
-Thread-Topic: Very slow clang kernel config ..
-Thread-Index: AQHXQS0DH46G91tEpEmd7WaoBDaEqarUt3wQ
-Date:   Wed, 5 May 2021 11:05:58 +0000
-Message-ID: <5256ed6b6f7d423daeb36fcbfc837fbc@AcuMS.aculab.com>
-References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
- <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
- <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
- <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
- <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
- <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
- <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <20210502093123.GC12293@localhost>
- <CANiq72=aK-JJhpnZdeeGBtADrnXhyEp1Whw5+5rK6a4u85PhxA@mail.gmail.com>
-In-Reply-To: <CANiq72=aK-JJhpnZdeeGBtADrnXhyEp1Whw5+5rK6a4u85PhxA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 5 May 2021 07:09:31 -0400
+Received: from fraeml702-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZv1x4l78z6yj64;
+        Wed,  5 May 2021 19:02:45 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml702-chm.china.huawei.com (10.206.15.51) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 5 May 2021 13:08:33 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 12:08:32 +0100
+Date:   Wed, 5 May 2021 12:06:52 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-staging@lists.linux.dev>
+Subject: Re: [PATCH 02/25] staging: media: imx7-mipi-csis: fix
+ pm_runtime_get_sync() usage count
+Message-ID: <20210505120652.00001236@Huawei.com>
+In-Reply-To: <793a5806a63b6313606fd1c344b9eec41e61a440.1620207353.git.mchehab+huawei@kernel.org>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <793a5806a63b6313606fd1c344b9eec41e61a440.1620207353.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWlndWVsIE9qZWRhDQo+IFNlbnQ6IDA0IE1heSAyMDIxIDIyOjMzDQouLi4NCj4gPiBX
-aGF0IGhhcHBlbnMgaWYgeW91IHVzZSBhIHByb2dyYW0gcHJvdmlkZWQgYnkgeW91ciBkaXN0cmli
-dXRpb24gdGhhdCBpcw0KPiA+IHdyaXR0ZW4gaW4gUnVzdCBhbmQgaGFuZGxlcyB1bnRydXN0ZWQg
-aW5wdXQgaW4gYSB3YXkgdGhhdCBpdCBtaWdodCBiZQ0KPiA+IHZ1bG5lcmFibGUgdG8gZXhwbG9p
-dHMgYmFzZWQgb24gb25lIG9mIHRoZXNlIENWRXM/DQo+ID4NCj4gPiBUaGUgcHJvZ3JhbSBoYXMg
-YSBrbm93biB2dWxuZXJhYmlsaXR5IHRoYXQgd2lsbCBsaWtlbHkgc3RheSB1bmZpeGVkLg0KPiAN
-Cj4gV2h5PyBJIGZhaWwgdG8gc2VlIHdoYXQgaXMgdGhlIGlzc3VlIHJlYnVpbGRpbmcgKG9yIHJl
-bGlua2luZykgYWxsDQo+IHBhY2thZ2VzIGV4Y2VwdCBkaXN0cmlidXRpb25zIGxhY2tpbmcgZW5v
-dWdoIGNvbXB1dGUgcmVzb3VyY2VzLg0KDQpUaGUgcHJvYmxlbSBpc24ndCB0aGUgcGFja2FnZXMg
-dGhhdCBjb21lIHdpdGggdGhlIGRpc3RyaWJ1dGlvbi4NCg0KVGhlIHByb2JsZW0gaXMgM3JkIHBh
-cnR5IHByb2dyYW1zIHN1cHBsaWVkIGFzIGJpbmFyaWVzLg0KVGhleSBoYXZlIDIgYmlnIHJlcXVp
-cmVtZW50czoNCjEpIFRoZSBzYW1lIGJpbmFyeSB3aWxsIHJ1biBvbiBhbGwgZGlzdHJpYnV0aW9u
-cyAobmV3ZXIgdGhhbiBzb21lIGN1dG9mZikuDQoyKSBBbnkgc2VyaW91cyBidWcgZml4ZXMgaW4g
-c3lzdGVtIGxpYnJhcmllcyBnZXQgcGlja2VkIHVwIHdoZW4gdGhlDQogICBkaXN0cmlidXRpb24g
-dXBkYXRlcyB0aGUgbGlicmFyeS4NCg0KVGhlcmUgaXMgYWxzbyB0aGUgcG9zc2liaWxpdHkgdGhh
-dCB0aGUgaW1wbGVtZW50YXRpb24gb2Ygc29tZQ0KZnVuY3Rpb24gZGlmZmVycyBiZXR3ZWVuIGRp
-c3RyaWJ1dGlvbnMuDQpTbyB5b3UgYWJzb2x1dGVseSBuZWVkIHRvIHVzZSB0aGUgdmVyc2lvbiBm
-cm9tIHRoZSBpbnN0YWxsZWQgc3lzdGVtDQpub3Qgd2hhdGV2ZXIgd2FzIGluIHNvbWUgc3RhdGlj
-IGxpYnJhcnkgb24gdGhlIGFjdHVhbCBidWlsZCBtYWNoaW5lLg0KDQpCb3RoIG9mIHRoZXNlIG5l
-ZWQgc3RhYmxlIEFCSSBhbmQgc2hhcmVkIGxpYnJhcmllcy4NCg0KUmVtZW1iZXIsIGFzIGZhciBh
-cyB1c2Vyc3BhY2UgaXMgY29uY2VybmVkLCBmb28uaCBpcyB0aGUgZGVmaW5pdGlvbg0KZm9yICdm
-b28nIGFuZCBmb28uc28gaXMgdGhlIGN1cnJlbnQgaW1wbGVtZW50YXRpb24uDQooeWVzLCBJIGtu
-b3cgYSBsaXR0bGUgYml0IG9mIGluZm8gaXMgdGFrZW4gZnJvbSBmb28uc28gb24gdGhlIGJ1aWxk
-DQpzeXN0ZW0gLSBidXQgdGhhdCBvdWdodCB0byBiZSBhYnNvbHV0ZWx5IG1pbmltYWwuKQ0KDQoJ
-RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
-dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
-OTczODYgKFdhbGVzKQ0K
+On Wed, 5 May 2021 11:41:52 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> The pm_runtime_get_sync() internally increments the
+> dev->power.usage_count without decrementing it, even on errors.
+> Replace it by the new pm_runtime_resume_and_get(), introduced by:
+> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> in order to properly decrement the usage counter, avoiding
+> a potential PM usage counter leak.
+> 
+> Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Not a fix as far as I can see, just a cleanup - so perhaps not this set?
+
+Jonathan
+
+
+> ---
+>  drivers/staging/media/imx/imx7-mipi-csis.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/staging/media/imx/imx7-mipi-csis.c
+> index 025fdc488bd6..1dc680d94a46 100644
+> --- a/drivers/staging/media/imx/imx7-mipi-csis.c
+> +++ b/drivers/staging/media/imx/imx7-mipi-csis.c
+> @@ -695,11 +695,10 @@ static int mipi_csis_s_stream(struct v4l2_subdev *mipi_sd, int enable)
+>  
+>  		mipi_csis_clear_counters(state);
+>  
+> -		ret = pm_runtime_get_sync(&state->pdev->dev);
+> -		if (ret < 0) {
+> -			pm_runtime_put_noidle(&state->pdev->dev);
+> +		ret = pm_runtime_resume_and_get(&state->pdev->dev);
+> +		if (ret < 0)
+>  			return ret;
+> -		}
+> +
+>  		ret = v4l2_subdev_call(state->src_sd, core, s_power, 1);
+>  		if (ret < 0 && ret != -ENOIOCTLCMD)
+>  			goto done;
 
