@@ -2,94 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DD49373CF5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:02:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8970D373CED
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:02:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233822AbhEEODk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:03:40 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:58701 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233748AbhEEODW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233721AbhEEODW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 5 May 2021 10:03:22 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FZz134psKz9sQy;
-        Wed,  5 May 2021 16:02:15 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id kRG5U1s_uRx8; Wed,  5 May 2021 16:02:15 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FZz116Tnzz9sXR;
-        Wed,  5 May 2021 16:02:13 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 987C88B7D9;
-        Wed,  5 May 2021 16:02:13 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id qQ_G9t_DmGZA; Wed,  5 May 2021 16:02:13 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 5EDBD8B7D7;
-        Wed,  5 May 2021 16:02:13 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 3116364856; Wed,  5 May 2021 14:02:13 +0000 (UTC)
-Message-Id: <6e1813953da38c452c131fe3e2a2761a0fddb975.1620223303.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <1c80981548dc0c4f145109cdd473022c1aad8d2b.1620223302.git.christophe.leroy@csgroup.eu>
-References: <1c80981548dc0c4f145109cdd473022c1aad8d2b.1620223302.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v2 2/2] powerpc/paca: Remove mm_ctx_id and
- mm_ctx_slb_addr_limit
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  5 May 2021 14:02:13 +0000 (UTC)
+Received: from mail-il1-f197.google.com ([209.85.166.197]:55986 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233709AbhEEODN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 10:03:13 -0400
+Received: by mail-il1-f197.google.com with SMTP id a15-20020a927f0f0000b02901ac2bdd733dso1606988ild.22
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:02:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=nzZoGSaNk15eVdCdhLg/lhOvD5F94kAlun8vvUPZwmQ=;
+        b=HURbBW9Z/jShopXT0w3Zp1q8tq/BXFWDVbaa6IFT8Tqjgx0qedteDuo9Sc0w8i6l93
+         C9qjxs993TDmUKty+yfu7MrYhOmmjxnVgEo3v9TkPc2p666a+qHfTQkRafYx76mAwAUw
+         539eM0B5Ea3OPUlXPx5H0JhIjhZ/9MJpJacJS3p/tJn8bTSM6UfYAD69xJPTvfvlBAoI
+         69qrjAkThOZX+9PTjYu/7A5y1QpMHDPNQKY+tbV4M9T3cAhPC8n8gjone3FkY0aQkocf
+         rrByPgKwf72rn9tuZ80rPZ66TXVeI2d4dj9WTJqoM2XJUHT97z1GrqKOjZWe9llVPnrT
+         y3NA==
+X-Gm-Message-State: AOAM531Qsbr8DKDth+p3UifLuUb4B8e2F3QXWD++8bhkmjY/cc1O5kcH
+        qTINFO0iAQG0vZZ7rujpy6uE3z3JsS2tUzw16md/I5IKl+zz
+X-Google-Smtp-Source: ABdhPJyzXTlJHMJewy9XPDfpGTO6uV+D2lMNp4D6HM6CPyTnpKZnxTn33UszVOcVPYTRNmf41wg5cAcE/fYy+ivpY2DfwadJnrsy
+MIME-Version: 1.0
+X-Received: by 2002:a92:b74a:: with SMTP id c10mr24963547ilm.72.1620223335870;
+ Wed, 05 May 2021 07:02:15 -0700 (PDT)
+Date:   Wed, 05 May 2021 07:02:15 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006438bb05c195a467@google.com>
+Subject: [syzbot] WARNING in drm_wait_one_vblank
+From:   syzbot <syzbot+6f7fe2dbc479dca0ed17@syzkaller.appspotmail.com>
+To:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com,
+        mripard@kernel.org, syzkaller-bugs@googlegroups.com,
+        tzimmermann@suse.de
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mm_ctx_id and mm_ctx_slb_addr_limit are not used anymore.
+Hello,
 
-Remove them.
+syzbot found the following issue on:
 
-Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12c5b2c3d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
+dashboard link: https://syzkaller.appspot.com/bug?extid=6f7fe2dbc479dca0ed17
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6f7fe2dbc479dca0ed17@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+platform vkms: vblank wait timed out on crtc 0
+WARNING: CPU: 0 PID: 11785 at drivers/gpu/drm/drm_vblank.c:1269 drm_wait_one_vblank+0x2be/0x500 drivers/gpu/drm/drm_vblank.c:1269
+Modules linked in:
+CPU: 0 PID: 11785 Comm: syz-executor.0 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:drm_wait_one_vblank+0x2be/0x500 drivers/gpu/drm/drm_vblank.c:1269
+Code: 85 f6 0f 84 a3 01 00 00 e8 6f f0 32 fd 4c 89 ef e8 97 68 13 00 44 89 e1 4c 89 f2 48 c7 c7 e0 eb d6 89 48 89 c6 e8 57 35 86 04 <0f> 0b e9 87 fe ff ff e8 46 f0 32 fd 31 ff 4c 89 ee e8 5c f8 32 fd
+RSP: 0018:ffffc90008f7fb40 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 00000000000038f8 RCX: 0000000000000000
+RDX: 0000000000040000 RSI: ffffffff815c7bd5 RDI: fffff520011eff5a
+RBP: ffff8881437b0000 R08: 0000000000000000 R09: 0000000000000000
+R10: ffffffff815c1a3e R11: 0000000000000000 R12: 0000000000000000
+R13: ffff88801a1c4010 R14: ffff8880161746b8 R15: ffff888142ddc830
+FS:  00007f8eba6e2700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000014a53ad CR3: 0000000021583000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ drm_fb_helper_ioctl+0x159/0x1a0 drivers/gpu/drm/drm_fb_helper.c:1197
+ do_fb_ioctl+0x1d5/0x690 drivers/video/fbdev/core/fbmem.c:1171
+ fb_ioctl+0xe7/0x150 drivers/video/fbdev/core/fbmem.c:1185
+ vfs_ioctl fs/ioctl.c:51 [inline]
+ __do_sys_ioctl fs/ioctl.c:1069 [inline]
+ __se_sys_ioctl fs/ioctl.c:1055 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f8eba6e2188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
+RDX: 0000000000000000 RSI: 0000000040044620 RDI: 0000000000000006
+RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 0000000000a9fb1f R14: 00007f8eba6e2300 R15: 0000000000022000
+
+
 ---
- arch/powerpc/include/asm/paca.h | 2 --
- arch/powerpc/kernel/paca.c      | 2 --
- 2 files changed, 4 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/powerpc/include/asm/paca.h b/arch/powerpc/include/asm/paca.h
-index ec18ac818e3a..ecc8d792a431 100644
---- a/arch/powerpc/include/asm/paca.h
-+++ b/arch/powerpc/include/asm/paca.h
-@@ -149,11 +149,9 @@ struct paca_struct {
- #endif /* CONFIG_PPC_BOOK3E */
- 
- #ifdef CONFIG_PPC_BOOK3S
--	mm_context_id_t mm_ctx_id;
- #ifdef CONFIG_PPC_MM_SLICES
- 	unsigned char mm_ctx_low_slices_psize[BITS_PER_LONG / BITS_PER_BYTE];
- 	unsigned char mm_ctx_high_slices_psize[SLICE_ARRAY_SIZE];
--	unsigned long mm_ctx_slb_addr_limit;
- #else
- 	u16 mm_ctx_user_psize;
- 	u16 mm_ctx_sllp;
-diff --git a/arch/powerpc/kernel/paca.c b/arch/powerpc/kernel/paca.c
-index 7f5aae3c387d..9bd30cac852b 100644
---- a/arch/powerpc/kernel/paca.c
-+++ b/arch/powerpc/kernel/paca.c
-@@ -346,10 +346,8 @@ void copy_mm_to_paca(struct mm_struct *mm)
- #ifdef CONFIG_PPC_BOOK3S
- 	mm_context_t *context = &mm->context;
- 
--	get_paca()->mm_ctx_id = context->id;
- #ifdef CONFIG_PPC_MM_SLICES
- 	VM_BUG_ON(!mm_ctx_slb_addr_limit(context));
--	get_paca()->mm_ctx_slb_addr_limit = mm_ctx_slb_addr_limit(context);
- 	memcpy(&get_paca()->mm_ctx_low_slices_psize, mm_ctx_low_slices(context),
- 	       LOW_SLICE_ARRAY_SZ);
- 	memcpy(&get_paca()->mm_ctx_high_slices_psize, mm_ctx_high_slices(context),
--- 
-2.25.0
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
