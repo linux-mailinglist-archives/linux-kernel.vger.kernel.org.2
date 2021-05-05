@@ -2,164 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75C19373C9C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:43:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8347373CA0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhEENol (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:44:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232504AbhEENok (ORCPT
+        id S233055AbhEENq1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:46:27 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:35356 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232101AbhEENq0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:44:40 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C7677C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 06:43:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ouVU1lFGYesDJ408JaUblRc5MBOEnLO2xbqaLV8Nsok=; b=iXS8hXw2F1CMw7wHZ0GTh7QZKn
-        sr0rloRAgm/LZ/LVUSSF7qPmf4bwFVOmzL+b+qRzyEDrXGzAqvBEGc0N7QTCrcLKDAAyYeZUFEBYQ
-        GsWsvZNNtHcghgnZn3vFH7r2+OxxakVeUmzxTA2oinojgyC4CJz/TLUv2RU67cdM0AGLEX0K93Lo0
-        EcYTfOtpteaYq7aiQXADap/HIuVEjcYFYNUeCaN7w0dJsbtTj9QZGSl+1m+3gHG3yX05xB4WIaGyX
-        GYON0eaiOAMcT1pKZzSl2896FotWSMvJ/Hlf0nVTG9UwJPOrBlYKll8jyEUYyDVT4Qvr+dxkY0+i9
-        d0jG7RRw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1leHoI-001KjC-P4; Wed, 05 May 2021 13:43:31 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4EEF63001CD;
-        Wed,  5 May 2021 15:43:29 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id EF9F12027AFE6; Wed,  5 May 2021 15:43:28 +0200 (CEST)
-Date:   Wed, 5 May 2021 15:43:28 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Yunfeng Ye <yeyunfeng@huawei.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Subject: Re: [PATCH 6/8] tick/nohz: Only wakeup a single target cpu when
- kicking a task
-Message-ID: <YJKhAFAbOXzopp6/@hirez.programming.kicks-ass.net>
-References: <20210422120158.33629-1-frederic@kernel.org>
- <20210422120158.33629-7-frederic@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210422120158.33629-7-frederic@kernel.org>
+        Wed, 5 May 2021 09:46:26 -0400
+Received: from minint-m3g9p8n.europe.corp.microsoft.com (unknown [49.207.195.141])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 65FEB20B7178;
+        Wed,  5 May 2021 06:45:27 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 65FEB20B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620222329;
+        bh=6WGq0zZgjhn3s0WdYzm2WfXRuIVMAkQFjwMZgX91eJI=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+        b=av3eNHzrsMdu9Tzqxo4EFGsfxi5SmIEpx4dq+mvi1Ckor89fhXyVm43yGfHwPUP8J
+         2e6xDZ6PEBm4zTQy+QZD6baZHOx0xhyMbw/HnuQQZfLiFWMx2d7X+X086YYkqyj66J
+         +BVGjhAQHwmEvtB9q/MG5bO6X6PTl86zK5FSl0hU=
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2 1/2] optee: fix tee out of memory failure seen during
+ kexec reboot
+From:   Allen Pais <apais@linux.microsoft.com>
+In-Reply-To: <CAHUa44FyGOj5=Z80km_2T-avKiJpGVD8cWjTC3ZCX8csazP3rw@mail.gmail.com>
+Date:   Wed, 5 May 2021 19:15:23 +0530
+Cc:     Allen Pais <allen.lkml@gmail.com>, zajec5@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <409F60D9-F0FB-4B69-B64B-CC6B3704038E@linux.microsoft.com>
+References: <20210225090610.242623-1-allen.lkml@gmail.com>
+ <20210225090610.242623-2-allen.lkml@gmail.com>
+ <CAHUa44F5Ew6U80t7PPmV1J4KunXBm_izBxVrxg=x8azjBz0r9Q@mail.gmail.com>
+ <9a6c017c-d156-f939-f907-d6dfe83c41ac@linux.microsoft.com>
+ <CAHUa44FyGOj5=Z80km_2T-avKiJpGVD8cWjTC3ZCX8csazP3rw@mail.gmail.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 02:01:56PM +0200, Frederic Weisbecker wrote:
-> When adding a tick dependency to a task, its necessary to
-> wakeup the CPU where the task resides to reevaluate tick
-> dependencies on that CPU.
-> 
-> However the current code wakes up all nohz_full CPUs, which
-> is unnecessary.
-> 
-> Switch to waking up a single CPU, by using ordering of writes
-> to task->cpu and task->tick_dep_mask.
-> 
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Cc: Yunfeng Ye <yeyunfeng@huawei.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-> ---
->  kernel/time/tick-sched.c | 40 +++++++++++++++++++++++++++-------------
->  1 file changed, 27 insertions(+), 13 deletions(-)
-> 
-> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-> index ffc13b9dfbe3..45d9a4ea3ee0 100644
-> --- a/kernel/time/tick-sched.c
-> +++ b/kernel/time/tick-sched.c
-> @@ -322,6 +322,31 @@ void tick_nohz_full_kick_cpu(int cpu)
->  	irq_work_queue_on(&per_cpu(nohz_full_kick_work, cpu), cpu);
->  }
->  
-> +static void tick_nohz_kick_task(struct task_struct *tsk)
-> +{
-> +	int cpu = task_cpu(tsk);
-> +
-> +	/*
-> +	 * If the task concurrently migrates to another cpu,
-> +	 * we guarantee it sees the new tick dependency upon
-> +	 * schedule.
-> +	 *
-> +	 *
-> +	 * set_task_cpu(p, cpu);
-> +	 *   STORE p->cpu = @cpu
-> +	 * __schedule() (switch to task 'p')
-> +	 *   LOCK rq->lock
-> +	 *   smp_mb__after_spin_lock()          STORE p->tick_dep_mask
-> +	 *   tick_nohz_task_switch()            smp_mb() (atomic_fetch_or())
-> +	 *      LOAD p->tick_dep_mask           LOAD p->cpu
-> +	 */
-> +
-> +	preempt_disable();
-> +	if (cpu_online(cpu))
-> +		tick_nohz_full_kick_cpu(cpu);
-> +	preempt_enable();
-> +}
+Jens,=20
 
+>>>> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+>>>> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error =
+-22
+>>>>=20
+>>>> tee_shm_release() is not invoked on dma shm buffer.
+>>>>=20
+>>>> Implement .shutdown() method to handle the release of the buffers
+>>>> correctly.
+>>>>=20
+>>>> More info:
+>>>> https://github.com/OP-TEE/optee_os/issues/3637
+>>>>=20
+>>>> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+>>>> ---
+>>>>  drivers/tee/optee/core.c | 20 ++++++++++++++++++++
+>>>>  1 file changed, 20 insertions(+)
+>>>=20
+>>> This looks good to me. Do you have a practical way of testing this =
+on
+>>> QEMU for instance?
+>>>=20
+>>=20
+>> Jens,
+>>=20
+>>   I could not reproduce nor create a setup using QEMU, I could only
+>> do it on a real h/w.
+>>=20
+>>   I have extensively tested the fix and I don't see any issues.
+>=20
+> I did a few test runs too, seems OK.
 
-That had me looking at tick_nohz_task_switch(), does we want the below?
+ I carried these changes and have not run into any issues with Kexec so =
+far.
+Last week, while trying out kdump, we ran into a crash(this is when the
+Kdump kernel reboots).
 
+$echo c > /proc/sysrq-trigger
 
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 9143163fa678..ff45fc513ba7 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -4207,6 +4207,7 @@ static struct rq *finish_task_switch(struct task_struct *prev)
- 	vtime_task_switch(prev);
- 	perf_event_task_sched_in(prev, current);
- 	finish_task(prev);
-+	tick_nohz_task_switch();
- 	finish_lock_switch(rq);
- 	finish_arch_post_lock_switch();
- 	kcov_finish_switch(current);
-@@ -4252,7 +4253,6 @@ static struct rq *finish_task_switch(struct task_struct *prev)
- 		put_task_struct_rcu_user(prev);
- 	}
- 
--	tick_nohz_task_switch();
- 	return rq;
- }
- 
-diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
-index 828b091501ca..ea079be9097f 100644
---- a/kernel/time/tick-sched.c
-+++ b/kernel/time/tick-sched.c
-@@ -447,13 +447,10 @@ void tick_nohz_dep_clear_signal(struct signal_struct *sig, enum tick_dep_bits bi
-  */
- void __tick_nohz_task_switch(void)
- {
--	unsigned long flags;
- 	struct tick_sched *ts;
- 
--	local_irq_save(flags);
--
- 	if (!tick_nohz_full_cpu(smp_processor_id()))
--		goto out;
-+		return;
- 
- 	ts = this_cpu_ptr(&tick_cpu_sched);
- 
-@@ -462,8 +459,6 @@ void __tick_nohz_task_switch(void)
- 		    atomic_read(&current->signal->tick_dep_mask))
- 			tick_nohz_full_kick();
- 	}
--out:
--	local_irq_restore(flags);
- }
- 
- /* Get the boot-time nohz CPU list from the kernel parameters. */
+Leads to:
+
+[   18.004831] Unable to handle kernel paging request at virtual address =
+ffff0008dcef6758
+[   18.013002] Mem abort info:
+[   18.015885]   ESR =3D 0x96000005
+[   18.019034]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+[   18.024516]   SET =3D 0, FnV =3D 0
+[   18.027667]   EA =3D 0, S1PTW =3D 0
+[   18.030905] Data abort info:
+[   18.033877]   ISV =3D 0, ISS =3D 0x00000005
+[   18.037835]   CM =3D 0, WnR =3D 0
+[   18.040896] swapper pgtable: 4k pages, 48-bit VAs, =
+pgdp=3D0000000970a78000
+[   18.047811] [ffff0008dcef6758] pgd=3D000000097fbf9003, =
+pud=3D0000000000000000
+[   18.054819] Internal error: Oops: 96000005 [#1] SMP
+[   18.059850] Modules linked in: bnxt_en pcie_iproc_platform pcie_iproc =
+diagbe(O)
+[   18.067395] CPU: 3 PID: 1 Comm: systemd-shutdow Tainted: G           =
+O      5.4.83-microsoft-standard #1
+[   18.077174] Hardware name: Overlake (DT)
+[   18.081219] pstate: 80400005 (Nzcv daif +PAN -UAO)
+[   18.086170] pc : tee_shm_free+0x18/0x48
+[   18.090126] lr : optee_disable_shm_cache+0xa4/0xf0
+[   18.095066] sp : ffff80001005bb90
+[   18.098484] x29: ffff80001005bb90 x28: ffff000037e20000=20
+[   18.103962] x27: 0000000000000000 x26: ffff00003ed10490=20
+[   18.109440] x25: ffffca760e975f90 x24: 0000000000000000=20
+[   18.114918] x23: ffffca760ed79808 x22: ffff00003ec66e18=20
+[   18.120396] x21: ffff80001005bc08 x20: 00000000b200000a=20
+[   18.125874] x19: ffff0008dcef6700 x18: 0000000000000010=20
+[   18.131352] x17: 0000000000000000 x16: 0000000000000000=20
+[   18.136829] x15: ffffffffffffffff x14: ffffca760ed79808=20
+[   18.142307] x13: ffff80009005b897 x12: ffff80001005b89f=20
+[   18.147786] x11: ffffca760eda4000 x10: ffff80001005b820=20
+[   18.153264] x9 : 00000000ffffffd0 x8 : ffffca760e59b2c0=20
+[   18.158742] x7 : 0000000000000000 x6 : 0000000000000000=20
+[   18.164220] x5 : 0000000000000000 x4 : 0000000000000000=20
+[   18.169698] x3 : 0000000000000000 x2 : ffff0008dcef6700=20
+[   18.175175] x1 : 00000000ffff0008 x0 : ffffca760e59ca04=20
+[   18.180654] Call trace:
+[   18.183176]  tee_shm_free+0x18/0x48
+[   18.186773]  optee_disable_shm_cache+0xa4/0xf0
+[   18.191356]  optee_shutdown+0x20/0x30
+[   18.195135]  platform_drv_shutdown+0x2c/0x38
+[   18.199538]  device_shutdown+0x180/0x298
+[   18.203586]  kernel_restart_prepare+0x44/0x50
+[   18.208078]  kernel_restart+0x20/0x68
+[   18.211853]  __do_sys_reboot+0x104/0x258
+[   18.215899]  __arm64_sys_reboot+0x2c/0x38
+[   18.220035]  el0_svc_handler+0x90/0x138
+[   18.223991]  el0_svc+0x8/0x208
+[   18.227143] Code: f9000bf3 aa0003f3 aa1e03e0 d503201f (b9405a60)=20
+[   18.233435] ---[ end trace 835d756cd66aa959 ]---
+[   18.238621] Kernel panic - not syncing: Fatal exception
+[   18.244014] Kernel Offset: 0x4a75fde00000 from 0xffff800010000000
+[   18.250299] PHYS_OFFSET: 0xffff99c680000000
+[   18.254613] CPU features: 0x0002,21806008
+[   18.258747] Memory Limit: none
+[   18.262310] ---[ end Kernel panic - not syncing: Fatal exception ]=E2=80=
+=94
+
+I see that before secure world returns OPTEE_SMC_RETURN_ENOTAVAIL(which
+Should disable and clear all the cache) we run into the crash trying to =
+free shm.
+
+Thoughts?
+
+Thanks.=
