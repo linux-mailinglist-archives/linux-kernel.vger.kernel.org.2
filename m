@@ -2,109 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D9083738DE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3184037392B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:18:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232133AbhEEKyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 06:54:08 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:18355 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231431AbhEEKyH (ORCPT
+        id S232944AbhEELTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:19:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51490 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232854AbhEELTh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 06:54:07 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FZtmR0KVWzlbdw;
-        Wed,  5 May 2021 18:51:03 +0800 (CST)
-Received: from localhost.localdomain (10.175.104.82) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Wed, 5 May 2021 18:53:01 +0800
-From:   Zheng Yongjun <zhengyongjun3@huawei.com>
-To:     <colyli@suse.de>, <kent.overstreet@gmail.com>,
-        <linux-bcache@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Zheng Yongjun <zhengyongjun3@huawei.com>,
-        Hulk Robot <hulkci@huawei.com>
-Subject: [PATCH -next v4] bcache: Use DEFINE_MUTEX() for mutex lock
-Date:   Wed, 5 May 2021 19:06:55 +0800
-Message-ID: <20210505110655.1461896-1-zhengyongjun3@huawei.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.104.82]
-X-CFilter-Loop: Reflected
+        Wed, 5 May 2021 07:19:37 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2F02C061761;
+        Wed,  5 May 2021 04:18:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=Subject:Cc:To:From:Date:Message-ID:
+        Sender:Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=0MrMsSt2tV5B1WSdY54KIILEtmSIA0/QggdrXISHTE4=; b=MZs32ecLkErof+HJRhHK+/aqxT
+        ABfhxmvOpw0njH5gPfHjW2lHrGvcc3kv+mUEPPbY2F+HheZNlWu0kRIwiBoW7RwYhGmLLpRMXqRzR
+        cPxxG085d3SZd00ECa/kuDGbPSWircI2xECvYqh8NtdO2aQX40TwmNjPE4H++aiIkCjlgPFqn6mPL
+        mqG28eb7eJ7oxu/1aJKVZOfr/h7H1ovEZ4JJbkOtud4KAIlYwkRYKf31mRdcsKgtn7a154ZqFZc4F
+        9q4ORLsAsLSqDUH8o3IaEGIpXo74LmvZrQsOyBuA41Z8ksDb+mqmCanAtSaTsStcewOYuzt046lLE
+        0cYcxxCw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1leFXl-0014WF-Hv; Wed, 05 May 2021 11:18:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2B2FE300233;
+        Wed,  5 May 2021 13:18:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
+        id DBCEF299E9863; Wed,  5 May 2021 13:18:14 +0200 (CEST)
+Message-ID: <20210505105940.190490250@infradead.org>
+User-Agent: quilt/0.66
+Date:   Wed, 05 May 2021 12:59:40 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, bsingharora@gmail.com, pbonzini@redhat.com,
+        maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        peterz@infradead.org, riel@surriel.com, hannes@cmpxchg.org
+Subject: [PATCH 0/6] sched,delayacct: Some cleanups
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Mutex lock can be initialized automatically with DEFINE_MUTEX() rather
-than explicitly calling mutex_init().
+Hi,
 
-This patch will reduce the size of bcache.ko about 16 bytes, the
-reason as follows:
+Due to:
 
-Though this patch will increase the size of .data segment about 32
-bytes, it will also reduce the size of .init.text and
-.rodata.str1.1(at x86_64), .rodata_str1.8(at arm64) total about 48
-bytes which reduce the size more than .data segment;
+  https://lkml.kernel.org/r/0000000000001d43ac05c0f5c6a0@google.com
 
-Here is the statistics:
-Sections: (arm64 platform)
-Idx name                size
--.init.text             00000240
-+.init.text             00000228
+and general principle, delayacct really shouldn't be using ktime (pvclock also
+really shouldn't be doing what it does, but that's another story). This lead me
+to looking at the SCHED_INFO, SCHEDSTATS, DELAYACCT (and PSI) accounting hell.
 
--.rodata.str1.8	000012cd
-+.rodata.str1.8	000012b5
+The rest of the patches are an attempt at simplifying all that a little. All
+that crud is enabled by default for distros which is leading to a death by a
+thousand cuts.
 
--.data                  00000c60
-+.data                  00000c80
-
-Sections: (x86 platform)
-Idx name                size
--.init.text             000001d9
-+.init.text             000001bf
-
--.rodata.str1.1	00000c80
-+.rodata.str1.1	00000c6d
-
--.data                  00000cc0
-+.data                  00000ce0
-
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
----
-
-v4:
-- change commit log, delete bss information at commit description.
-v3:
-- change commit log, delete statistic about .bss segment.
-v2:
-- add commit log about the reason why bcache.ko size reduced.
----
- drivers/md/bcache/super.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
-index 03e1fe4de53d..3635f454309e 100644
---- a/drivers/md/bcache/super.c
-+++ b/drivers/md/bcache/super.c
-@@ -40,7 +40,7 @@ static const char invalid_uuid[] = {
- };
- 
- static struct kobject *bcache_kobj;
--struct mutex bch_register_lock;
-+DEFINE_MUTEX(bch_register_lock);
- bool bcache_is_reboot;
- LIST_HEAD(bch_cache_sets);
- static LIST_HEAD(uncached_devices);
-@@ -2869,7 +2869,6 @@ static int __init bcache_init(void)
- 
- 	check_module_parameters();
- 
--	mutex_init(&bch_register_lock);
- 	init_waitqueue_head(&unregister_wait);
- 	register_reboot_notifier(&reboot);
- 
--- 
-2.25.1
+The last patch is an attempt at default disabling DELAYACCT, because I don't
+think anybody actually uses that much, but what do I know, there were no ill
+effects on my testbox. Perhaps we should mirror
+/proc/sys/kernel/sched_schedstats and provide a delayacct sysctl for runtime
+frobbing.
 
