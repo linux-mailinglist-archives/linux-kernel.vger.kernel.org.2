@@ -2,127 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD351374BFB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3602374C0D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:43:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhEEXgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 19:36:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229579AbhEEXgS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 19:36:18 -0400
-Received: from mail-pf1-x436.google.com (mail-pf1-x436.google.com [IPv6:2607:f8b0:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6B24C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 16:35:21 -0700 (PDT)
-Received: by mail-pf1-x436.google.com with SMTP id h127so3508579pfe.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 16:35:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=926cAGvfUgvmtC8pdeJ7FxZmXpISXd5xiZDilkdp/Wg=;
-        b=rIHZValSBd+t1BgZ2OSP/xJZ10TMnVGal1r+/yi5a609d7m2DmHcNITOwbOb0Wb5zd
-         vfrn238jpQq5UgnFr4AVlBrHcX2ijgxjKbewbzz0xUI5hEtkvwp1DaPWkYaJ4DQw/tiF
-         vdk37LSH0WNrDlQWW9N8lRFXVwVNASLp1ilgArxRXWAvoYCQ4710JiyURetvKXpqpNUB
-         KjFPQqob5AHwCcwO7fUVWP132fLCBFuE7F5pmTg0ceC35VOjXKQEE6Qe2pA1x14IksHy
-         UrM28wmnYkbJjtA/JIZOqaqxFppR4WNkDixrHQoDfnrU2v6rZw3lEjFtrJK9Z/G5+Q1I
-         mFtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=926cAGvfUgvmtC8pdeJ7FxZmXpISXd5xiZDilkdp/Wg=;
-        b=UayduOrK/4FRuo8Nbyje2B56regxkfDr6m+UWsIKXKNZuog8PURFyMBS75wqm0NNaj
-         1wmc6gCngvQvsKaGkfcxgVgl5lvlMXHtMCtgW5UnU3qUoii9Sf2LQxGPuvFOFc8H/BkM
-         scRE9jdfJaxd5Gkz+D+1UUUWCp9iBpbJ28MwfdaRgxbCagUfDqPmgJkC3oCPTYL0sOnn
-         XiQylSCS4CnMCnjYCufJsas2VpADPNAjzGB74CW3Js9C0iqHVqMKoIcL/XRYwcW1oLXi
-         njfuIAqFEguAzRHaCLOB1nZaviAFGjJsGgsrNRHomTsOYKaeGKFznyd09hVocJ9f/yn+
-         ecdA==
-X-Gm-Message-State: AOAM532IsDK8HgH4clGeQK194C2hwcJQz84S3cVR1RZEhv600BZzcWIx
-        RtbHxebbV1tKR6N3dgvm7i+g2PmEvPFv1A==
-X-Google-Smtp-Source: ABdhPJyZ+bOFrOh2PvNWL+GEGQRsxCp6ZkSSjIz0iIqR4GDHW9pR/j90bCvjg0gbyLQ/9p+4anBz6Q==
-X-Received: by 2002:a63:4607:: with SMTP id t7mr1240499pga.269.1620257721047;
-        Wed, 05 May 2021 16:35:21 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id d18sm244862pgo.66.2021.05.05.16.35.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 16:35:20 -0700 (PDT)
-Subject: Re: [PATCH v2] io_thread/x86: setup io_threads more like normal user
- space threads
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Stefan Metzmacher <metze@samba.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, x86@kernel.org
-References: <20210411152705.2448053-1-metze@samba.org>
- <20210505110310.237537-1-metze@samba.org>
- <df4b116a-3324-87b7-ff40-67d134b4e55c@kernel.dk>
- <878s4soncx.ffs@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <4d79811e-7b71-009d-ef31-d6af045b25fd@kernel.dk>
-Date:   Wed, 5 May 2021 17:35:19 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229937AbhEEXoN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 19:44:13 -0400
+Received: from ozlabs.org ([203.11.71.1]:56849 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229601AbhEEXoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 19:44:12 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FbCvN0vvqz9rx6;
+        Thu,  6 May 2021 09:43:12 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620258193;
+        bh=PbaNRl7xPq9bgj5Sa6DQB8u0DHHaIu0USpQCshLKhKk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=J7G0BxD5PQNwa05TgccUsvg9SZOO9SMveMXBpmxkEEPDUb/P1wkA72/HgFTIn8J7W
+         /euNfudRJ2brUHgk4U03WwKMKA5fmwQ7wEP+kwrpN5d8ID+TOqpB3jKHfOT5YpmyNJ
+         tsfod3Wu9LnFP5LS8pjNN1qy9I5q03yi7PIorUMyj7R5LNZbTpd6r5nMSPe9yRhoj0
+         FOa8nA0erAv66XXc4I+NlWbUNrtzruSpN3uGYSgyXGtdoC9A/VBCXiXUVaQqKclyd0
+         U8/iXnwRJ+JdWy/FYpyI+zyIesetzi9iBa1y7DuVWKCsHiezZ29J5/v8qh+oB1dZC/
+         kHHfUzK/E8gSA==
+Date:   Thu, 6 May 2021 09:43:11 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ powerpc tree
+Message-ID: <20210506094311.7f9b2500@canb.auug.org.au>
+In-Reply-To: <20210505113959.43340f19@canb.auug.org.au>
+References: <20210505113959.43340f19@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <878s4soncx.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; boundary="Sig_/_=zdsKjBwFPYIA7J+BROiyJ";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 3:57 PM, Thomas Gleixner wrote:
-> On Wed, May 05 2021 at 15:24, Jens Axboe wrote:
->> On 5/5/21 5:03 AM, Stefan Metzmacher wrote:
->>> As io_threads are fully set up USER threads it's clearer to
->>> separate the code path from the KTHREAD logic.
->>>
->>> The only remaining difference to user space threads is that
->>> io_threads never return to user space again.
->>> Instead they loop within the given worker function.
->>>
->>> The fact that they never return to user space means they
->>> don't have an user space thread stack. In order to
->>> indicate that to tools like gdb we reset the stack and instruction
->>> pointers to 0.
->>>
->>> This allows gdb attach to user space processes using io-uring,
->>> which like means that they have io_threads, without printing worrying
->>> message like this:
->>>
->>>   warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
->>>
->>>   warning: Architecture rejected target-supplied description
->>>
->>> The output will be something like this:
->>>
->>>   (gdb) info threads
->>>     Id   Target Id                  Frame
->>>   * 1    LWP 4863 "io_uring-cp-for" syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
->>>     2    LWP 4864 "iou-mgr-4863"    0x0000000000000000 in ?? ()
->>>     3    LWP 4865 "iou-wrk-4863"    0x0000000000000000 in ?? ()
->>>   (gdb) thread 3
->>>   [Switching to thread 3 (LWP 4865)]
->>>   #0  0x0000000000000000 in ?? ()
->>>   (gdb) bt
->>>   #0  0x0000000000000000 in ?? ()
->>>   Backtrace stopped: Cannot access memory at address 0x0
->>
->> I have queued this one up in the io_uring branch, also happy to drop it if
->> the x86 folks want to take it instead. Let me know!
-> 
-> I have no objections, but heck what's the rush here?
-> 
-> Waiting a day for the x86 people to respond it not too much asked for
-> right?
+--Sig_/_=zdsKjBwFPYIA7J+BROiyJ
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-There's no rush. I just said I've queued it up, and to object if you
-want to take it through the tip tree. It's not going out before end of
-week anyway, so there's plenty of time. Then I know I won't forget...
+Hi all,
 
--- 
-Jens Axboe
+On Wed, 5 May 2021 11:39:59 +1000 Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+>
+> Today's linux-next merge of the akpm-current tree got a conflict in:
+>=20
+>   arch/powerpc/Kconfig
+>=20
+> between commit:
+>=20
+>   c6b05f4e233c ("powerpc/kconfig: Restore alphabetic order of the selects=
+ under CONFIG_PPC")
+>=20
+> from the powerpc tree and commits:
+>=20
+>   fd7d5c273c43 ("mm: generalize HUGETLB_PAGE_SIZE_VARIABLE")
+>   301ba77ae03c ("mm: generalize ARCH_ENABLE_MEMORY_[HOTPLUG|HOTREMOVE]")
+>=20
+> from the akpm-current tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc arch/powerpc/Kconfig
+> index ab17a56c3d10,d4333049b813..000000000000
+> --- a/arch/powerpc/Kconfig
+> +++ b/arch/powerpc/Kconfig
+> @@@ -118,11 -118,10 +118,13 @@@ config PP
+>   	# Please keep this list sorted alphabetically.
+>   	#
+>   	select ARCH_32BIT_OFF_T if PPC32
+> + 	select ARCH_ENABLE_MEMORY_HOTPLUG
+> + 	select ARCH_ENABLE_MEMORY_HOTREMOVE
+>  +	select ARCH_HAS_COPY_MC			if PPC64
+>   	select ARCH_HAS_DEBUG_VIRTUAL
+>  +	select ARCH_HAS_DEBUG_VM_PGTABLE
+>   	select ARCH_HAS_DEVMEM_IS_ALLOWED
+>  +	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC_PSERIES
+>   	select ARCH_HAS_ELF_RANDOMIZE
+>   	select ARCH_HAS_FORTIFY_SOURCE
+>   	select ARCH_HAS_GCOV_PROFILE_ALL
+> @@@ -163,8 -162,9 +165,8 @@@
+>   	select BUILDTIME_TABLE_SORT
+>   	select CLONE_BACKWARDS
+>   	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
+> - 	select DMA_OPS_BYPASS			if PPC64
+>   	select DMA_OPS				if PPC64
+> + 	select DMA_OPS_BYPASS			if PPC64
+>  -	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC64 && PPC_PSERIES
+>   	select DYNAMIC_FTRACE			if FUNCTION_TRACER
+>   	select EDAC_ATOMIC_SCRUB
+>   	select EDAC_SUPPORT
+> @@@ -182,15 -181,12 +184,15 @@@
+>   	select GENERIC_STRNCPY_FROM_USER
+>   	select GENERIC_STRNLEN_USER
+>   	select GENERIC_TIME_VSYSCALL
+>  -	select GENERIC_GETTIMEOFDAY
+>  +	select GENERIC_VDSO_TIME_NS
+>   	select HAVE_ARCH_AUDITSYSCALL
+> - 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
+>  +	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
+> + 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
+>   	select HAVE_ARCH_JUMP_LABEL
+>  +	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+>   	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <=3D 14
+>   	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <=3D 14
+>  +	select HAVE_ARCH_KFENCE			if PPC32
+>   	select HAVE_ARCH_KGDB
+>   	select HAVE_ARCH_MMAP_RND_BITS
+>   	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+> @@@ -231,19 -227,23 +233,20 @@@
+>   	select HAVE_LIVEPATCH			if HAVE_DYNAMIC_FTRACE_WITH_REGS
+>   	select HAVE_MOD_ARCH_SPECIFIC
+>   	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
+>  -	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if (PPC64 && PPC_BOOK3S)
+>  -	select HAVE_OPTPROBES			if PPC64
+>  +	select HAVE_OPTPROBES
+>   	select HAVE_PERF_EVENTS
+>   	select HAVE_PERF_EVENTS_NMI		if PPC64
+>  -	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENT=
+S_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
+>   	select HAVE_PERF_REGS
+>   	select HAVE_PERF_USER_STACK_DUMP
+>  -	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
+>  -	select MMU_GATHER_RCU_TABLE_FREE
+>  -	select MMU_GATHER_PAGE_SIZE
+>   	select HAVE_REGS_AND_STACK_ACCESS_API
+>  -	select HAVE_RELIABLE_STACKTRACE		if PPC_BOOK3S_64 && CPU_LITTLE_ENDIAN
+>  +	select HAVE_RELIABLE_STACKTRACE
+>  +	select HAVE_RSEQ
+>   	select HAVE_SOFTIRQ_ON_OWN_STACK
+>  +	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-=
+guard=3Dtls -mstack-protector-guard-reg=3Dr2)
+>  +	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-=
+guard=3Dtls -mstack-protector-guard-reg=3Dr13)
+>   	select HAVE_SYSCALL_TRACEPOINTS
+>   	select HAVE_VIRT_CPU_ACCOUNTING
+>  -	select HAVE_IRQ_TIME_ACCOUNTING
+>  -	select HAVE_RSEQ
+> ++	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
+>   	select IOMMU_HELPER			if PPC64
+>   	select IRQ_DOMAIN
+>   	select IRQ_FORCED_THREADING
 
+This is now a conflict between the powerpc tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/_=zdsKjBwFPYIA7J+BROiyJ
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCTLY8ACgkQAVBC80lX
+0Gx5VAgAh1qjr8a37Dbt4WyzmMdz137RgU4LlAP/meLG4odEy0dtFbsQrHKWkaWH
+JJCil+tSJWJBs8tYI1Oh9FVEYopl/O5m7zlqVS2cSzIptpYNKMe4+UAeKK8n73V0
+ereni02KRrNwZwS6RWXFTQuwaORz/GxyZm8BG4iRLMVMMQHhbGd2g4+CYOBSKaFS
+BvJyUW/c6giSK2TdNT2TzQ/w+pkun/k3me3bpRtjBKuHBimIa9MECHQFaQ+kwR+O
+jfxRbrsL3v0pnD4KlSZW+fJrfTFylOeULay0QFGXT4NGHBdooGg4iXbxFxsicnWV
+/IAn4/i66BKb1UENCicQ5Iq2z2bMPQ==
+=y7W6
+-----END PGP SIGNATURE-----
+
+--Sig_/_=zdsKjBwFPYIA7J+BROiyJ--
