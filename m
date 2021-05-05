@@ -2,107 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8970D373CED
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:02:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D744373D47
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:12:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233721AbhEEODW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:03:22 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:55986 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233709AbhEEODN (ORCPT
+        id S233883AbhEEOMn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:12:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58735 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233840AbhEEOMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:03:13 -0400
-Received: by mail-il1-f197.google.com with SMTP id a15-20020a927f0f0000b02901ac2bdd733dso1606988ild.22
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:02:16 -0700 (PDT)
+        Wed, 5 May 2021 10:12:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620223893;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=FQvZQgbJYVjNUMrC5yEbwcKD1FSVeRaVFPfvoK5S8OE=;
+        b=A4QBzeHezj5//t51U/29EVfVc3LO9Wd8Yv/mKHYbAYpaqwfW1+6W2oY6ku73OhQ7T1+3qp
+        2JG8KYN+/2yGC2jP0LM52+H0VlkNXtT6MLdXGMVyA6m6eDisWnvcBR61lV06a7xQes9ZT4
+        VRx1RuUucnb1Hoy4ZJcGLdN+OTkxBq0=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-310-1OmVkmrFMKiiL_-DAWK_xQ-1; Wed, 05 May 2021 10:11:31 -0400
+X-MC-Unique: 1OmVkmrFMKiiL_-DAWK_xQ-1
+Received: by mail-ed1-f71.google.com with SMTP id i19-20020a05640242d3b0290388cea34ed3so906787edc.15
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:11:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=nzZoGSaNk15eVdCdhLg/lhOvD5F94kAlun8vvUPZwmQ=;
-        b=HURbBW9Z/jShopXT0w3Zp1q8tq/BXFWDVbaa6IFT8Tqjgx0qedteDuo9Sc0w8i6l93
-         C9qjxs993TDmUKty+yfu7MrYhOmmjxnVgEo3v9TkPc2p666a+qHfTQkRafYx76mAwAUw
-         539eM0B5Ea3OPUlXPx5H0JhIjhZ/9MJpJacJS3p/tJn8bTSM6UfYAD69xJPTvfvlBAoI
-         69qrjAkThOZX+9PTjYu/7A5y1QpMHDPNQKY+tbV4M9T3cAhPC8n8gjone3FkY0aQkocf
-         rrByPgKwf72rn9tuZ80rPZ66TXVeI2d4dj9WTJqoM2XJUHT97z1GrqKOjZWe9llVPnrT
-         y3NA==
-X-Gm-Message-State: AOAM531Qsbr8DKDth+p3UifLuUb4B8e2F3QXWD++8bhkmjY/cc1O5kcH
-        qTINFO0iAQG0vZZ7rujpy6uE3z3JsS2tUzw16md/I5IKl+zz
-X-Google-Smtp-Source: ABdhPJyzXTlJHMJewy9XPDfpGTO6uV+D2lMNp4D6HM6CPyTnpKZnxTn33UszVOcVPYTRNmf41wg5cAcE/fYy+ivpY2DfwadJnrsy
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FQvZQgbJYVjNUMrC5yEbwcKD1FSVeRaVFPfvoK5S8OE=;
+        b=PoXPvhPmn+dWbmGRm6OQDCN2QDMGw+UnNZbX/ospCd92ucKVLRH2Sz5nr2nPh1Auq0
+         qJFgKKo5c+/M/UnJXHwJviybqQbMtTSz4BGvZskwdNATD0gvwbrKDHzaSIHprQquUnlV
+         22oW/E1Kg8LTaPwqVOt0sLPkEwIQf+E8kMl953EE7R6jpMn2zCyz9iLjl2fh48OPzr1U
+         EMB7K0V0llQJsVmI6vIn/9+aI2Zr88S3QPXN3b4uLjTzFuaX9ImUOV4kkFmwppPQ7f3q
+         AGX3CaHZZjUWH48G3waXpQxJhT4NWX/IK4YZnjln37UsmP2xkKTKreCTuMm+KpxFIaQX
+         6zug==
+X-Gm-Message-State: AOAM531Ff2wh448hg6x6zNuvr+3QW6Zw2Uew5ThxuHyHvBAmWybns+Os
+        YuO1fuyYAVtBigRS6kdevUK7K7ubQk263+QfamFU+4pUwqyhGuCU7XA9f5Ut4qJz254DC11Kzfh
+        6D/y6+yr43m8aKWnMMskBp8Xx
+X-Received: by 2002:a17:906:edc7:: with SMTP id sb7mr27368203ejb.443.1620223889776;
+        Wed, 05 May 2021 07:11:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw8MzGe5WOM9n6If5c8KORI8UnzDZLTgFfHOt+sLMiazC9FX6E0uLoehKR0Ri+zTkuZtoPzXQ==
+X-Received: by 2002:a17:906:edc7:: with SMTP id sb7mr27368174ejb.443.1620223889539;
+        Wed, 05 May 2021 07:11:29 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id g26sm2929567ejz.70.2021.05.05.07.11.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 07:11:29 -0700 (PDT)
+Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on
+ CONFIG_ACPI
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Paul Menzel <paulepanter@users.sourceforge.net>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@denx.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20210504174019.2134652-1-linux@roeck-us.net>
+ <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
+ <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net>
+ <20210505093235.00007c38@Huawei.com> <20210505093438.00005238@Huawei.com>
+ <CAHp75VezSD_TcbQ_OBZXPo-szTr-qwOT9oU+7h7W6nk65ZLBhA@mail.gmail.com>
+ <22212bbc-1dc7-c7e7-1954-ebb911754246@redhat.com>
+ <CAHp75Vf+2oVttGhAcpcw-ZsAXno01yuKWz0Xiti_7beHCR81ng@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <ede732cb-4a23-e5bc-6802-0280dc232876@redhat.com>
+Date:   Wed, 5 May 2021 16:04:39 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:b74a:: with SMTP id c10mr24963547ilm.72.1620223335870;
- Wed, 05 May 2021 07:02:15 -0700 (PDT)
-Date:   Wed, 05 May 2021 07:02:15 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006438bb05c195a467@google.com>
-Subject: [syzbot] WARNING in drm_wait_one_vblank
-From:   syzbot <syzbot+6f7fe2dbc479dca0ed17@syzkaller.appspotmail.com>
-To:     airlied@linux.ie, daniel@ffwll.ch, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, maarten.lankhorst@linux.intel.com,
-        mripard@kernel.org, syzkaller-bugs@googlegroups.com,
-        tzimmermann@suse.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHp75Vf+2oVttGhAcpcw-ZsAXno01yuKWz0Xiti_7beHCR81ng@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi,
 
-syzbot found the following issue on:
+On 5/5/21 3:53 PM, Andy Shevchenko wrote:
+> On Wed, May 5, 2021 at 4:39 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>> On 5/5/21 3:22 PM, Andy Shevchenko wrote:
+>>> On Wed, May 5, 2021 at 11:36 AM Jonathan Cameron
+>>> <Jonathan.Cameron@huawei.com> wrote:
+>>>> On Wed, 5 May 2021 09:32:35 +0100
+>>>> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+>>>>> On Tue, 4 May 2021 11:00:52 -0700
+>>>>> Guenter Roeck <linux@roeck-us.net> wrote:
+>>>
+>>> +Cc: Paul (I hope you are related to coreboot somehow and can
+>>> communicate this further), Pavel and Jacek (LED subsystem suffered
+>>> with this as well), Hans, Rafael and linux-acpi@
+>>>
+>>>>> Dropping the ones we are fairly sure are spurious is even better!
+>>>>
+>>>> If I get bored I'll just do a scrub of all the instances of this that
+>>>> you haven't already cleaned up.  It's worth noting that we do
+>>>> know some highly suspicious looking entries are out there in the wild.
+>>>
+>>> I have counted ~60 users of acpi_device_id in IIO. Brief looking at
+>>> the IDs themselves rings an alarm about half of them.
+>>>
+>>> So, here we may have a chicken and egg problem, i.e. somebody has been
+>>> using (or used) fake IDs from Linux kernel in the real products. What
+>>> I can consider as a course of action is the following:
+>>> 1. Clean up (by removing as quickly as possible) the IDs that have no
+>>> proof to be real from the Linux kernel sources (perhaps marked as
+>>> stable material)
+>>> 2. Notify ASWG / UEFI forum about all IDs that abuse ACPI
+>>> specification and are in Linux kernel, so at least we can keep some
+>>> kind of "reserved/do not use" list on the official level (Rafael?)
+>>> 3. Do not accept any IDs without an evidence provided that they are
+>>> being in use in the real products (this should be done on Linux
+>>> maintainer level in all subsystems that accept drivers
+>>
+>> So my 2 cents on this are that we need to be very careful with
+>> removing "bogus" ACPI-ids.
+>>
+>> A couple of examples from a quick check under drivers/iio/accel:
+>>
+>> drivers/iio/accel/bmc150-accel-i2c.c:
+>>
+>> static const struct i2c_device_id bmc150_accel_id[] = {
+>>         {"bmc150_accel",        bmc150},
+>>         {"bmi055_accel",        bmi055},
+>>         {"bma255",              bma255},
+>>         {"bma250e",             bma250e},
+>>         {"bma222",              bma222},
+>>         {"bma222e",             bma222e},
+>>         {"bma280",              bma280},
+>>         {}
+>> };
+>>
+>> static const struct acpi_device_id bmc150_accel_acpi_match[] = {
+>>         {"BSBA0150",    bmc150},
+>>         {"BMC150A",     bmc150},
+>>         {"BMI055A",     bmi055},
+>>         {"BMA0255",     bma255},
+>>         {"BMA250E",     bma250e},
+>>         {"BMA222",      bma222},
+>>         {"BMA222E",     bma222e},
+>>         {"BMA0280",     bma280},
+>>         {"BOSC0200"},
+>>         { },
+>> };
+>>
+>> With the exception of the  "BSBA0150" and "BOSC0200"
+>> ids, these look like they were invented. But at least the
+>> "BMA250E" one is actually being used! The other BMA###?
+>> ones are probably fake, but given that the "BMA250E"
+>> one is actually real ...
+>>
+>> drivers/iio/accel/bmc150-accel-spi.c
+>>
+>> This uses the same set of ACPI ids as bmc150-accel-i2c.c
+>> minus the "BOSC0200" one. I'm not aware if these
+>> being used in spi mode on any x86 devices, but again
+>> I'm not 100% sure ...
+>>
+>> drivers/iio/accel/da280.c
+>>
+>> static const struct acpi_device_id da280_acpi_match[] = {
+>>         {"MIRAACC", da280},
+>>         {},
+>> };
+>> MODULE_DEVICE_TABLE(acpi, da280_acpi_match);
+>>
+>> This looks like a fake-id, but it was actually added
+>> in a separate commit adding ACPI support because the
+>> chip is used with this id on a Linx 820 Windows tablet.
+>>
+>> So figuring out of any ids are real or not is really tricky
+>> and removing them if they are real will lead to regressions.
+>>
+>> So summarizing IMHO we need to be careful and not just
+>> start removing a whole bunch of these...
+> 
+> That's all true. However, I have a few hints on how to distinguish
+> them (fake ones):
+> 1. The ID has been added from day 1 with I2C or SPI ID table with just
+> capitalized name
+> 2. If there are a few drivers by the same author and at least one of
+> the contributions has confirmed fake ID
+> 3. The ID is single in the list and mimics the part number (capitalized form)
+> 4. Google/DuckDuckGo/etc searches give no meaningful results
+> 
+> Either combination of the above can be a good hint to at least be
+> sceptical that it's being used
+May I suggest for accelerometers to also grep for the id in
+60-sensors.hwdb from systemd ?  E.g. the BMA250E id can be found
+there. 
 
-HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12c5b2c3d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
-dashboard link: https://syzkaller.appspot.com/bug?extid=6f7fe2dbc479dca0ed17
+> So, Hans, as you already noticed, drivers with a long list of IDs or
+> when ID added separately can be considered less fakish, but we really
+> want evidence of the hardware that has it.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+If you want to move ahead with pruning some of these please Cc me
+on the patches, then I'll check them against my collection of
+Bay and Cherry Trail DSDTs, which are devices where these sensors
+are often found.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+6f7fe2dbc479dca0ed17@syzkaller.appspotmail.com
+Regards,
 
-------------[ cut here ]------------
-platform vkms: vblank wait timed out on crtc 0
-WARNING: CPU: 0 PID: 11785 at drivers/gpu/drm/drm_vblank.c:1269 drm_wait_one_vblank+0x2be/0x500 drivers/gpu/drm/drm_vblank.c:1269
-Modules linked in:
-CPU: 0 PID: 11785 Comm: syz-executor.0 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:drm_wait_one_vblank+0x2be/0x500 drivers/gpu/drm/drm_vblank.c:1269
-Code: 85 f6 0f 84 a3 01 00 00 e8 6f f0 32 fd 4c 89 ef e8 97 68 13 00 44 89 e1 4c 89 f2 48 c7 c7 e0 eb d6 89 48 89 c6 e8 57 35 86 04 <0f> 0b e9 87 fe ff ff e8 46 f0 32 fd 31 ff 4c 89 ee e8 5c f8 32 fd
-RSP: 0018:ffffc90008f7fb40 EFLAGS: 00010282
-RAX: 0000000000000000 RBX: 00000000000038f8 RCX: 0000000000000000
-RDX: 0000000000040000 RSI: ffffffff815c7bd5 RDI: fffff520011eff5a
-RBP: ffff8881437b0000 R08: 0000000000000000 R09: 0000000000000000
-R10: ffffffff815c1a3e R11: 0000000000000000 R12: 0000000000000000
-R13: ffff88801a1c4010 R14: ffff8880161746b8 R15: ffff888142ddc830
-FS:  00007f8eba6e2700(0000) GS:ffff8880b9c00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000014a53ad CR3: 0000000021583000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- drm_fb_helper_ioctl+0x159/0x1a0 drivers/gpu/drm/drm_fb_helper.c:1197
- do_fb_ioctl+0x1d5/0x690 drivers/video/fbdev/core/fbmem.c:1171
- fb_ioctl+0xe7/0x150 drivers/video/fbdev/core/fbmem.c:1185
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:1069 [inline]
- __se_sys_ioctl fs/ioctl.c:1055 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:1055
- do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x4665f9
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f8eba6e2188 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
-RDX: 0000000000000000 RSI: 0000000040044620 RDI: 0000000000000006
-RBP: 00000000004bfce1 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
-R13: 0000000000a9fb1f R14: 00007f8eba6e2300 R15: 0000000000022000
+Hans
 
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
