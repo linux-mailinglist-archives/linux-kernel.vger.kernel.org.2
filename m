@@ -2,115 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0777374B06
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3B8E374B0E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:14:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233632AbhEEWMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:12:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53918 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233504AbhEEWM2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:12:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3C8C7613F0
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 22:11:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620252691;
-        bh=rI0oHHeZd9YFRS4z4bbyC/mM0GIFRiRccYpAXqggogU=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=UefWFi1yB6sGKXkq0KUiaiPofvpVlfmFlOCcXNAb4bogajrzoMZIPFSYCIqKcqryB
-         04vo8ftBG4KRwEqcypNybAKi7+0PkmY2prwnbsEvc4T+nCkaAAlqX0+XSO6mk0ApUo
-         XKHxWiyKIdOrtq8VpKWPTrqmhjd/b+GQUNdMTuOhdxGI0P9I1LFOPx6jNUWB7LQ16k
-         yNpxxNSrDo7xQXviyDdBtvnxRFKhNzXm6EQnz0G8sEHREQCxmuiWX3wk8FYAe8PQIO
-         dJkk8BWZq6ktjxtPoJCKUoP2uA+RdrCy2MkazrFFYV97U0wadCtGIuaUwPxD+te7MB
-         njq/1zA7X9//w==
-Received: by mail-ed1-f46.google.com with SMTP id c22so3806088edn.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 15:11:31 -0700 (PDT)
-X-Gm-Message-State: AOAM532TOWp3Rzznlg09dXk/R3av3nMeAGEMUgzYH0qNFEGRCh5YAyeZ
-        Bo7kw+L1IO9CvpDkx9+gKWk70sS3aDrdkC/zfLzrNg==
-X-Google-Smtp-Source: ABdhPJwa1mtDX6B2XDVMbQyd/7X5vw28833micGneWZAkt/jXimVIn3YzNyG7UEDSe95fdqdlTKw38uZT/OEYSmo6BA=
-X-Received: by 2002:a50:fc91:: with SMTP id f17mr1291143edq.23.1620252689704;
- Wed, 05 May 2021 15:11:29 -0700 (PDT)
+        id S233722AbhEEWPP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:15:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229601AbhEEWPO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 18:15:14 -0400
+Received: from mail-io1-xd2a.google.com (mail-io1-xd2a.google.com [IPv6:2607:f8b0:4864:20::d2a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5368C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 15:14:16 -0700 (PDT)
+Received: by mail-io1-xd2a.google.com with SMTP id b10so3077074iot.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 15:14:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=k+TLJ+w/sIyEYaz/pmEc+wkQOprlg/a2eYr65RlYGlI=;
+        b=il6GOcf+4mlMmUP2SQ/tKzjmsVW7K9lDNXsA3VcmnAxOncRFzF/7oNVC0z5vQRPkzk
+         YdGO/H8Exps8jFuj4vhjpFIunkc+a6RgdYtAWrlkEZsmjd8Yux8vHU4BA5t2a6A1JW8M
+         YMW1YJMPgRTrJcUW4lI9R8nGONax1TlkZZ9HrQOpW/oLvqkyBCJbIkSFLFtxpj0GwLnD
+         oYIOaryC7HPP5FfRZ8UwihfRL0Ce2S4Uhi7U36+CUnQFcf4L+XX9Z26frWQ/U64AEBP+
+         tlWepwElyhIh93943l7KpfDhe5LCeXMC3n51ne/WgQ8+3m4ZXyx4aOUp2Fy4Ws74wxYq
+         66iA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=k+TLJ+w/sIyEYaz/pmEc+wkQOprlg/a2eYr65RlYGlI=;
+        b=EPlB6KZPDm2iR0txEQJ4RPIj9AORJN1oRAVz6HGl7HJ3ws0Sh/d398rxpKtwRA2XqG
+         ovdvLotz9n/p8Pwi2h9ADb4zbF21XEu+EjWZQtTxBUsOcMzYFIBt7NfzfEG7jAaSkQxI
+         0mE4Sm4118UJDNxQ39sKFegZG82BcztPuPomSfRbliHGUsYt2b2NephtOzID+fQeziVG
+         A23RXMC/uHHlabq7M7tNw7xRo2xXn25Pro6hJn8OZ4/TGpXikoL9fuRL4DUfsCjNeUJ+
+         0PVXuNdtEPdi/IMYWQ4jylCSXZOPMqFXeFHm+1sCd80WKBMj9zzuPxcQU2O+1KoyrKUu
+         WOUw==
+X-Gm-Message-State: AOAM530hK+dq0xmrnEF6qCVujhuvJKlSdtKy26cT3k3B2vJDaIfPCEH+
+        SKfuPGyoYq7JFzOOPYVQcHMoaNR/3mPGo/eDT6lhJA==
+X-Google-Smtp-Source: ABdhPJyEuVNI6YVlDbBhPd83vR7SdCCZTElgol3N+ViCnFn0vVD8EU+TF7jSbmIUTL3cr3CqNc5y/4k69h8NKEtoFus=
+X-Received: by 2002:a6b:cd08:: with SMTP id d8mr628898iog.86.1620252856012;
+ Wed, 05 May 2021 15:14:16 -0700 (PDT)
 MIME-Version: 1.0
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net> <YJFptPyDtow//5LU@zn.tnic>
- <044d0bad-6888-a211-e1d3-159a4aeed52d@polymtl.ca> <932d65e1-5a8f-c86a-8673-34f0e006c27f@samba.org>
- <30e248aa-534d-37ff-2954-a70a454391fc@polymtl.ca>
-In-Reply-To: <30e248aa-534d-37ff-2954-a70a454391fc@polymtl.ca>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 5 May 2021 15:11:18 -0700
-X-Gmail-Original-Message-ID: <CALCETrUF5M+Qw+RfY8subR7nzmpMyFsE3NHSAPoMVWMz6_hr-w@mail.gmail.com>
-Message-ID: <CALCETrUF5M+Qw+RfY8subR7nzmpMyFsE3NHSAPoMVWMz6_hr-w@mail.gmail.com>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Simon Marchi <simon.marchi@polymtl.ca>
-Cc:     Stefan Metzmacher <metze@samba.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-toolchains@vger.kernel.org
+References: <20210428180109.293606-1-axelrasmussen@google.com> <20210428230858.348400-1-axelrasmussen@google.com>
+In-Reply-To: <20210428230858.348400-1-axelrasmussen@google.com>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Wed, 5 May 2021 15:13:39 -0700
+Message-ID: <CAJHvVchOiSHkHOyKKnTTqj4ayUyiCyttTFQXWmg2PM_9XFS=sA@mail.gmail.com>
+Subject: Re: [PATCH v2] userfaultfd: release page in error path to avoid BUG_ON
+To:     Andrea Arcangeli <aarcange@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>, Peter Xu <peterx@redhat.com>
+Cc:     Lokesh Gidra <lokeshgidra@google.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm not holding my breath, but:
-
-On Wed, May 5, 2021 at 2:59 PM Simon Marchi <simon.marchi@polymtl.ca> wrote:
+On Wed, Apr 28, 2021 at 4:09 PM Axel Rasmussen <axelrasmussen@google.com> wrote:
 >
-> On 2021-05-05 7:29 a.m., Stefan Metzmacher wrote:
-> > See https://lore.kernel.org/io-uring/0375b37f-2e1e-7999-53b8-c567422aa181@samba.org/
-> > and https://lore.kernel.org/io-uring/20210411152705.2448053-1-metze@samba.org/T/#m461f280e8c3d32a49bc7da7bb5e214e90d97cf65
-> >
-> > The question is why does inferior_ptid doesn't represent the thread
-> > that was specified by 'gdb --pid PIDVAL'
+> Consider the following sequence of events:
 >
-> Hi Stefan,
+> 1. Userspace issues a UFFD ioctl, which ends up calling into
+>    shmem_mfill_atomic_pte(). We successfully account the blocks, we
+>    shmem_alloc_page(), but then the copy_from_user() fails. We return
+>    -ENOENT. We don't release the page we allocated.
+> 2. Our caller detects this error code, tries the copy_from_user() after
+>    dropping the mmap_lock, and retries, calling back into
+>    shmem_mfill_atomic_pte().
+> 3. Meanwhile, let's say another process filled up the tmpfs being used.
+> 4. So shmem_mfill_atomic_pte() fails to account blocks this time, and
+>    immediately returns - without releasing the page.
 >
-> When you attach to PIDVAL (assuming that PIDVAL is a thread-group
-> leader), GDB attaches to all the threads of that thread group.  The
-> inferior_ptid global variable is "the thread we are currently working
-> with", and changes whenever GDB wants to deal with a different thread.
+> This triggers a BUG_ON in our caller, which asserts that the page
+> should always be consumed, unless -ENOENT is returned.
 >
-> After attaching to all threads, GDB wants to know more about that
-> process' architecture (that read_description call mentioned in [1]).
+> To fix this, detect if we have such a "dangling" page when accounting
+> fails, and if so, release it before returning.
+>
+> Fixes: cb658a453b93 ("userfaultfd: shmem: avoid leaking blocks and used blocks in UFFDIO_COPY")
+> Reported-by: Hugh Dickins <hughd@google.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
 
-^^^^^^
+Apologies, I should have added this line:
 
-For what it's worth, this is already fundamentally incorrect.  On
-x86_64 Linux, a process *does* *not* *have* an architecture.  Every
-task on an x86_64 Linux host has a full 64-bit register state.  The
-task can, and sometimes does, change CS using far transfers or other
-bizarre techniques, and neither the kernel nor GDB will be notified or
-have a chance to take any action in response.  ELF files can be
-32-bit, CS:rIP can point at 32-bit code, and system calls can be
-32-bit (even from 64-bit code), but *tasks* are not 32-bit.
+Cc: stable@vger.kernel.org
 
-Now I realize that the ptrace() API is awful and makes life difficult
-in several respects for no good reason but, if gdb is ever interested
-in fixing its ideas about architecture to understand that all tasks,
-even those that think of themselves as "compat", have full 64-bit
-state, I would be more than willing to improve the ptrace() API as
-needed to make this work well.
+I believe this fix ought to go into the 4.14 and later stable branches
+(the commit referenced in Fixes: was introduced in 4.11).
 
-Since I'm not holding my breath, please at least keep in mind that
-anything you do here is merely a heuristic, cannot be fully correct,
-and then whenever gdb determines that a thread group or a thread is
-"32-bit", gdb is actually deciding to operate in a degraded mode for
-that task, is not accurately representing the task state, and is at
-risk of crashing, malfunctioning, or crashing the inferior due to its
-incorrect assumptions.  If you have ever attached gdb to QEMU's
-gdbserver and tried to debug the early boot process of a 64-bit Linux
-kernel, you may have encountered this class of bugs.  gdb works very,
-very poorly for this use case.
+I can resend with this included, if that would be easier.
 
-(To avoid confusion, this is not a universal property of Linux.  arm64
-and arm32 tasks on an arm64 Linux host are different and cannot
-arbitrarily switch modes.)
-
---Andy
+> ---
+>  mm/shmem.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+>
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 26c76b13ad23..8def03d3f32a 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -2375,8 +2375,18 @@ static int shmem_mfill_atomic_pte(struct mm_struct *dst_mm,
+>         pgoff_t offset, max_off;
+>
+>         ret = -ENOMEM;
+> -       if (!shmem_inode_acct_block(inode, 1))
+> +       if (!shmem_inode_acct_block(inode, 1)) {
+> +               /*
+> +                * We may have got a page, returned -ENOENT triggering a retry,
+> +                * and now we find ourselves with -ENOMEM. Release the page, to
+> +                * avoid a BUG_ON in our caller.
+> +                */
+> +               if (unlikely(*pagep)) {
+> +                       put_page(*pagep);
+> +                       *pagep = NULL;
+> +               }
+>                 goto out;
+> +       }
+>
+>         if (!*pagep) {
+>                 page = shmem_alloc_page(gfp, info, pgoff);
+> --
+> 2.31.1.498.g6c1eba8ee3d-goog
+>
