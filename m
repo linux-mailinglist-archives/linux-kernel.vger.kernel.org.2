@@ -2,228 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E27B373ADB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:15:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D65D373AD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233555AbhEEMPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:15:38 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3017 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233178AbhEEMLN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:11:13 -0400
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZwH94GWnz70gJC;
-        Wed,  5 May 2021 19:59:17 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 5 May 2021 14:10:14 +0200
-Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
- 13:10:13 +0100
-Date:   Wed, 5 May 2021 13:08:35 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Eugen Hristev <eugen.hristev@microchip.com>,
-        Ludovic Desroches <ludovic.desroches@microchip.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Nicolas Ferre <nicolas.ferre@microchip.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-Subject: Re: [PATCH 08/25] media: atmel: properly get pm_runtime
-Message-ID: <20210505130835.000006b7@Huawei.com>
-In-Reply-To: <975645970144b6c8401ab9bd1243619978a868a9.1620207353.git.mchehab+huawei@kernel.org>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
-        <975645970144b6c8401ab9bd1243619978a868a9.1620207353.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S233911AbhEEMOU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:14:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51578 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231828AbhEEMKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:10:14 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 72AB4613EC;
+        Wed,  5 May 2021 12:09:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620216557;
+        bh=eyDndtMwyuRmZym1pTFZiZuIz6uTY2r81jIr1/YiEfg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=U7fttDsTmI9wiuK7swO0Hm9SCpKEYoFuamTqMfTz7sbh91z3OeazDwC35vIS1g+9u
+         A1MnTY4490ECSNp7bClvXAoEPK+UOd25mM2GL4tfok4OlG50SHKaoefpJhejSUeTDQ
+         5Pzk2ttsInuAGZrgxToTAaF9aduPpi2k2nz/toKqNUKAEoTHnxmtGob1eoKJoK/lRP
+         xbdj7bMrHguSWDTw/HoQMwJhMPK0mT8CqmlOYzB0NVjuweRbBUrnvkwqpg+rmTtlXV
+         hRQVvDRxErrL1C0dDOS+mLPoipijqB7jHDnWfzUWIbhuCX4yidlh9uI6JiZfv9yL3B
+         q7GQAR9yK3YDA==
+Date:   Wed, 5 May 2021 15:09:09 +0300
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Rick Edgecombe <rick.p.edgecombe@intel.com>, dave.hansen@intel.com,
+        luto@kernel.org, linux-mm@kvack.org, x86@kernel.org,
+        akpm@linux-foundation.org, linux-hardening@vger.kernel.org,
+        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
+        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH RFC 5/9] x86, mm: Use cache of page tables
+Message-ID: <YJKK5RUMOzv488DO@kernel.org>
+References: <20210505003032.489164-1-rick.p.edgecombe@intel.com>
+ <20210505003032.489164-6-rick.p.edgecombe@intel.com>
+ <YJJcqyrMEJipbevT@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.138]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJJcqyrMEJipbevT@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 11:41:58 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-
-> There are several issues in the way the atmel driver handles
-> pm_runtime_get_sync():
+On Wed, May 05, 2021 at 10:51:55AM +0200, Peter Zijlstra wrote:
+> On Tue, May 04, 2021 at 05:30:28PM -0700, Rick Edgecombe wrote:
+> > @@ -54,6 +98,8 @@ void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
+> >  {
+> >  	pgtable_pte_page_dtor(pte);
+> >  	paravirt_release_pte(page_to_pfn(pte));
+> > +	/* Set Page Table so swap knows how to free it */
+> > +	__SetPageTable(pte);
+> >  	paravirt_tlb_remove_table(tlb, pte);
+> >  }
+> >  
+> > @@ -70,12 +116,16 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
+> >  	tlb->need_flush_all = 1;
+> >  #endif
+> >  	pgtable_pmd_page_dtor(page);
+> > +	/* Set Page Table so swap nows how to free it */
+> > +	__SetPageTable(virt_to_page(pmd));
+> >  	paravirt_tlb_remove_table(tlb, page);
+> >  }
+> >  
+> >  #if CONFIG_PGTABLE_LEVELS > 3
+> >  void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
+> >  {
+> > +	/* Set Page Table so swap nows how to free it */
+> > +	__SetPageTable(virt_to_page(pud));
+> >  	paravirt_release_pud(__pa(pud) >> PAGE_SHIFT);
+> >  	paravirt_tlb_remove_table(tlb, virt_to_page(pud));
+> >  }
+> > @@ -83,6 +133,8 @@ void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
+> >  #if CONFIG_PGTABLE_LEVELS > 4
+> >  void ___p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d)
+> >  {
+> > +	/* Set Page Table so swap nows how to free it */
+> > +	__SetPageTable(virt_to_page(p4d));
+> >  	paravirt_release_p4d(__pa(p4d) >> PAGE_SHIFT);
+> >  	paravirt_tlb_remove_table(tlb, virt_to_page(p4d));
+> >  }
 > 
-> - it doesn't check return codes;
-> - it doesn't properly decrement the usage_count on all places;
-> - it starts streaming even if pm_runtime_get_sync() fails.
-> - while it tries to get pm_runtime at the clock enable logic,
->   it doesn't check if the operation was suceeded.
+> This, to me, seems like a really weird place to __SetPageTable(), why
+> can't we do that on allocation?
+
+We call __ClearPageTable() at pgtable_pxy_page_dtor(), so at least for pte
+and pmd we need to somehow tell release_pages() what kind of page it was.
+ 
+> > @@ -888,6 +889,12 @@ void release_pages(struct page **pages, int nr)
+> >  			continue;
+> >  		}
+> >  
+> > +		if (PageTable(page)) {
+> > +			__ClearPageTable(page);
+> > +			free_table(page);
+> > +			continue;
+> > +		}
+> > +
+> >  		if (!put_page_testzero(page))
+> >  			continue;
+> >  
+> > diff --git a/mm/swap_state.c b/mm/swap_state.c
+> > index 3cdee7b11da9..a60ec3d4ab21 100644
+> > --- a/mm/swap_state.c
+> > +++ b/mm/swap_state.c
+> > @@ -22,6 +22,7 @@
+> >  #include <linux/swap_slots.h>
+> >  #include <linux/huge_mm.h>
+> >  #include <linux/shmem_fs.h>
+> > +#include <asm/pgalloc.h>
+> >  #include "internal.h"
+> >  
+> >  /*
+> > @@ -310,6 +311,11 @@ static inline void free_swap_cache(struct page *page)
+> >  void free_page_and_swap_cache(struct page *page)
+> >  {
+> >  	free_swap_cache(page);
+> > +	if (PageTable(page)) {
+> > +		__ClearPageTable(page);
+> > +		free_table(page);
+> > +		return;
+> > +	}
+> >  	if (!is_huge_zero_page(page))
+> >  		put_page(page);
+> >  }
 > 
-> Replace all occurrences of it to use the new kAPI:
-> pm_runtime_resume_and_get(), which ensures that, if the
-> return code is not negative, the usage_count was incremented.
-> 
-> With that, add additional checks when this is called, in order
-> to ensure that errors will be properly addressed.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> And then free_table() can __ClearPageTable() and all is nice and
+> symmetric and all this weirdness goes away, no?
 
-Hi Mauro, I don't know media enough to know what is the right answer
-but in some of this series, a failure in
-pm_runtime_resume_and_get() leads to a bunch of buffer cleanup
-(patch 22 being an example) and in others return happens without doing
-that cleanup.
-
-It might be both are safe, or I'm missing something else, but I'm
-certainly not confident enough to give any tags on this one as a result
-of that mismatch.
-
-> ---
->  drivers/media/platform/atmel/atmel-isc-base.c | 30 ++++++++++++++-----
->  drivers/media/platform/atmel/atmel-isi.c      | 19 +++++++++---
->  2 files changed, 38 insertions(+), 11 deletions(-)
-> 
-> diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
-> index fe3ec8d0eaee..ce8e1351fa53 100644
-> --- a/drivers/media/platform/atmel/atmel-isc-base.c
-> +++ b/drivers/media/platform/atmel/atmel-isc-base.c
-> @@ -294,9 +294,13 @@ static int isc_wait_clk_stable(struct clk_hw *hw)
->  static int isc_clk_prepare(struct clk_hw *hw)
->  {
->  	struct isc_clk *isc_clk = to_isc_clk(hw);
-> +	int ret;
->  
-> -	if (isc_clk->id == ISC_ISPCK)
-> -		pm_runtime_get_sync(isc_clk->dev);
-> +	if (isc_clk->id == ISC_ISPCK) {
-> +		ret = pm_runtime_resume_and_get(isc_clk->dev);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
->  
->  	return isc_wait_clk_stable(hw);
->  }
-> @@ -353,9 +357,13 @@ static int isc_clk_is_enabled(struct clk_hw *hw)
->  {
->  	struct isc_clk *isc_clk = to_isc_clk(hw);
->  	u32 status;
-> +	int ret;
->  
-> -	if (isc_clk->id == ISC_ISPCK)
-> -		pm_runtime_get_sync(isc_clk->dev);
-> +	if (isc_clk->id == ISC_ISPCK) {
-> +		ret = pm_runtime_resume_and_get(isc_clk->dev);
-> +		if (ret < 0)
-> +			return 0;
-> +	}
->  
->  	regmap_read(isc_clk->regmap, ISC_CLKSR, &status);
->  
-> @@ -807,7 +815,12 @@ static int isc_start_streaming(struct vb2_queue *vq, unsigned int count)
->  		goto err_start_stream;
->  	}
->  
-> -	pm_runtime_get_sync(isc->dev);
-> +	ret = pm_runtime_resume_and_get(isc->dev);
-> +	if (ret < 0) {
-> +		v4l2_err(&isc->v4l2_dev, "RPM resume failed in subdev %d\n",
-> +			 ret);
-> +		goto err_pm_get;
-> +	}
->  
->  	ret = isc_configure(isc);
->  	if (unlikely(ret))
-> @@ -838,7 +851,7 @@ static int isc_start_streaming(struct vb2_queue *vq, unsigned int count)
->  
->  err_configure:
->  	pm_runtime_put_sync(isc->dev);
-> -
-> +err_pm_get:
->  	v4l2_subdev_call(isc->current_subdev->sd, video, s_stream, 0);
->  
->  err_start_stream:
-> @@ -1809,6 +1822,7 @@ static void isc_awb_work(struct work_struct *w)
->  	u32 baysel;
->  	unsigned long flags;
->  	u32 min, max;
-> +	int ret;
->  
->  	/* streaming is not active anymore */
->  	if (isc->stop)
-> @@ -1831,7 +1845,9 @@ static void isc_awb_work(struct work_struct *w)
->  	ctrls->hist_id = hist_id;
->  	baysel = isc->config.sd_format->cfa_baycfg << ISC_HIS_CFG_BAYSEL_SHIFT;
->  
-> -	pm_runtime_get_sync(isc->dev);
-> +	ret = pm_runtime_resume_and_get(isc->dev);
-> +	if (ret < 0)
-> +		return;
->  
->  	/*
->  	 * only update if we have all the required histograms and controls
-> diff --git a/drivers/media/platform/atmel/atmel-isi.c b/drivers/media/platform/atmel/atmel-isi.c
-> index e392b3efe363..5b1dd358f2e6 100644
-> --- a/drivers/media/platform/atmel/atmel-isi.c
-> +++ b/drivers/media/platform/atmel/atmel-isi.c
-> @@ -422,7 +422,9 @@ static int start_streaming(struct vb2_queue *vq, unsigned int count)
->  	struct frame_buffer *buf, *node;
->  	int ret;
->  
-> -	pm_runtime_get_sync(isi->dev);
-> +	ret = pm_runtime_resume_and_get(isi->dev);
-> +	if (ret < 0)
-> +		return ret;
-This is the case I'm referring to above.
-
->  
->  	/* Enable stream on the sub device */
->  	ret = v4l2_subdev_call(isi->entity.subdev, video, s_stream, 1);
-> @@ -782,9 +784,10 @@ static int isi_enum_frameintervals(struct file *file, void *fh,
->  	return 0;
->  }
->  
-> -static void isi_camera_set_bus_param(struct atmel_isi *isi)
-> +static int isi_camera_set_bus_param(struct atmel_isi *isi)
->  {
->  	u32 cfg1 = 0;
-> +	int ret;
->  
->  	/* set bus param for ISI */
->  	if (isi->pdata.hsync_act_low)
-> @@ -801,12 +804,16 @@ static void isi_camera_set_bus_param(struct atmel_isi *isi)
->  	cfg1 |= ISI_CFG1_THMASK_BEATS_16;
->  
->  	/* Enable PM and peripheral clock before operate isi registers */
-> -	pm_runtime_get_sync(isi->dev);
-> +	ret = pm_runtime_resume_and_get(isi->dev);
-> +	if (ret < 0)
-> +		return ret;
->  
->  	isi_writel(isi, ISI_CTRL, ISI_CTRL_DIS);
->  	isi_writel(isi, ISI_CFG1, cfg1);
->  
->  	pm_runtime_put(isi->dev);
-> +
-> +	return 0;
->  }
->  
->  /* -----------------------------------------------------------------------*/
-> @@ -1085,7 +1092,11 @@ static int isi_graph_notify_complete(struct v4l2_async_notifier *notifier)
->  		dev_err(isi->dev, "No supported mediabus format found\n");
->  		return ret;
->  	}
-> -	isi_camera_set_bus_param(isi);
-> +	ret = isi_camera_set_bus_param(isi);
-> +	if (ret) {
-> +		dev_err(isi->dev, "Can't wake up device\n");
-> +		return ret;
-> +	}
->  
->  	ret = isi_set_default_fmt(isi);
->  	if (ret) {
-
+-- 
+Sincerely yours,
+Mike.
