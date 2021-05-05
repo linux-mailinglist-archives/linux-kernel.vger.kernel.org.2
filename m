@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 301C73743D0
+	by mail.lfdr.de (Postfix) with ESMTP id EFFE43743D2
 	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235818AbhEEQwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:52:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50936 "EHLO mail.kernel.org"
+        id S235859AbhEEQwT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:52:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49594 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235713AbhEEQow (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:44:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B45BF6142D;
-        Wed,  5 May 2021 16:35:29 +0000 (UTC)
+        id S235802AbhEEQpC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:45:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E66226192C;
+        Wed,  5 May 2021 16:35:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232530;
-        bh=IPp4mfL+XvNC0dERM3oeP/v+YbaufMNi1bDToE++chk=;
+        s=k20201202; t=1620232544;
+        bh=d0xUgckLeRh1pHbhhDdZ7uq11et2IR+/sjFS+Pl7Ngo=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=t2SRv6zqImbPwY6NnWiKxMUvQp7iBp7zuNepg/nMRODq0ZjY8yMAWC1xpN6Vy0m3N
-         HAu9foF9HYHsnQg+7p9xdhMui+hLaqtUgxBGUyWqOBEhSz04AaOXrlmqQ1fB1K7YMW
-         2sVUbDJc2Gee28vXQmX9iY3L+r+KYRPAbpa4RmdkSmhsRPjxvyFHKUIa1qPb+sCtZ+
-         bNwpTly0IB6+MlUY0A/eO4Q7qNvVJI+J2ntlDfihdgw5oqa+n3Ziwsashtv1yOQ+3m
-         eTPk8P5FigBgcn1AiayHskRHez2MrKAzKdqX/dEVnX1tUNNi7q7V3Ixv1CHnIOTn69
-         Qt43Z0bt8YtXg==
+        b=e82pt23uvp1dE4fzSqR/C2XbJcfXV66DXCE+V3SyiGvT9x384r2uPw7zhAizs2TbX
+         IOnZFrTTbl4bsHTxauYoAyfuhFb/owaUZw7Kkgd9QnXWiontZwr/R77K/qJ6NppVvw
+         26NxOQSVML4PIe4w+ksNMZFtbH2nRCe4JjnU3spkWMa/pcuJzcyR/7A490HbK3GYkW
+         PdK0QgEk0xYvcHXhlWOcxmqrdUZrjWQ0cbuxqUrKhZzJHdcfei0mgHWSh3E/olwcCP
+         RsQ8yUpr4dftqedqk9Asw6aIyRIqiY7zXliD6Etp/SOnCYHijNH64wWGWwG14Swl+k
+         sTtX297WD/2TQ==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     David Bauer <mail@david-bauer.net>, Felix Fietkau <nbd@nbd.name>,
+Cc:     Mordechay Goodstein <mordechay.goodstein@intel.com>,
+        Luca Coelho <luciano.coelho@intel.com>,
         Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.11 053/104] mt76: mt76x0: disable GTK offloading
-Date:   Wed,  5 May 2021 12:33:22 -0400
-Message-Id: <20210505163413.3461611-53-sashal@kernel.org>
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.11 063/104] iwlwifi: queue: avoid memory leak in reset flow
+Date:   Wed,  5 May 2021 12:33:32 -0400
+Message-Id: <20210505163413.3461611-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -44,44 +43,119 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Bauer <mail@david-bauer.net>
+From: Mordechay Goodstein <mordechay.goodstein@intel.com>
 
-[ Upstream commit 4b36cc6b390f18dbc59a45fb4141f90d7dfe2b23 ]
+[ Upstream commit 4cf2f5904d971a461f67825434ae3c31900ff84b ]
 
-When operating two VAP on a MT7610 with encryption (PSK2, SAE, OWE),
-only the first one to be created will transmit properly encrypteded
-frames.
+In case the device is stopped any usage of hw queues needs to be
+reallocated in fw due to fw reset after device stop, so all driver
+internal queue should also be freed, and if we don't free the next usage
+would leak the old memory and get in recover flows
+"iwlwifi 0000:00:03.0: dma_pool_destroy iwlwifi:bc" warning.
 
-All subsequently created VAPs will sent out frames with the payload left
-unencrypted, breaking multicast traffic (ICMP6 NDP) and potentially
-disclosing information to a third party.
+Also warn about trying to reuse an internal allocated queue.
 
-Disable GTK offloading and encrypt these frames in software to
-circumvent this issue. THis only seems to be necessary on MT7610 chips,
-as MT7612 is not affected from our testing.
-
-Signed-off-by: David Bauer <mail@david-bauer.net>
-Signed-off-by: Felix Fietkau <nbd@nbd.name>
+Signed-off-by: Mordechay Goodstein <mordechay.goodstein@intel.com>
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
+Link: https://lore.kernel.org/r/iwlwifi.20210411124417.c72d2f0355c4.Ia3baff633b9b9109f88ab379ef0303aa152c16bf@changeid
+Signed-off-by: Luca Coelho <luciano.coelho@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/mediatek/mt76/mt76x02_util.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../wireless/intel/iwlwifi/pcie/trans-gen2.c  |  4 +--
+ drivers/net/wireless/intel/iwlwifi/queue/tx.c | 30 ++++---------------
+ drivers/net/wireless/intel/iwlwifi/queue/tx.h |  3 +-
+ 3 files changed, 9 insertions(+), 28 deletions(-)
 
-diff --git a/drivers/net/wireless/mediatek/mt76/mt76x02_util.c b/drivers/net/wireless/mediatek/mt76/mt76x02_util.c
-index 7ac20d3c16d7..aaa597b941cd 100644
---- a/drivers/net/wireless/mediatek/mt76/mt76x02_util.c
-+++ b/drivers/net/wireless/mediatek/mt76/mt76x02_util.c
-@@ -447,6 +447,10 @@ int mt76x02_set_key(struct ieee80211_hw *hw, enum set_key_cmd cmd,
- 	    !(key->flags & IEEE80211_KEY_FLAG_PAIRWISE))
- 		return -EOPNOTSUPP;
+diff --git a/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c b/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c
+index 08788bc90683..fd7398daaf65 100644
+--- a/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c
++++ b/drivers/net/wireless/intel/iwlwifi/pcie/trans-gen2.c
+@@ -1,7 +1,7 @@
+ // SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause
+ /*
+  * Copyright (C) 2017 Intel Deutschland GmbH
+- * Copyright (C) 2018-2020 Intel Corporation
++ * Copyright (C) 2018-2021 Intel Corporation
+  */
+ #include "iwl-trans.h"
+ #include "iwl-prph.h"
+@@ -141,7 +141,7 @@ void _iwl_trans_pcie_gen2_stop_device(struct iwl_trans *trans)
+ 	if (test_and_clear_bit(STATUS_DEVICE_ENABLED, &trans->status)) {
+ 		IWL_DEBUG_INFO(trans,
+ 			       "DEVICE_ENABLED bit was set and is now cleared\n");
+-		iwl_txq_gen2_tx_stop(trans);
++		iwl_txq_gen2_tx_free(trans);
+ 		iwl_pcie_rx_stop(trans);
+ 	}
  
-+	/* MT76x0 GTK offloading does not work with more than one VIF */
-+	if (is_mt76x0(dev) && !(key->flags & IEEE80211_KEY_FLAG_PAIRWISE))
-+		return -EOPNOTSUPP;
+diff --git a/drivers/net/wireless/intel/iwlwifi/queue/tx.c b/drivers/net/wireless/intel/iwlwifi/queue/tx.c
+index 7ff1bb0ccc9c..cd5b06ce3e9c 100644
+--- a/drivers/net/wireless/intel/iwlwifi/queue/tx.c
++++ b/drivers/net/wireless/intel/iwlwifi/queue/tx.c
+@@ -13,30 +13,6 @@
+ #include "iwl-scd.h"
+ #include <linux/dmapool.h>
+ 
+-/*
+- * iwl_txq_gen2_tx_stop - Stop all Tx DMA channels
+- */
+-void iwl_txq_gen2_tx_stop(struct iwl_trans *trans)
+-{
+-	int txq_id;
+-
+-	/*
+-	 * This function can be called before the op_mode disabled the
+-	 * queues. This happens when we have an rfkill interrupt.
+-	 * Since we stop Tx altogether - mark the queues as stopped.
+-	 */
+-	memset(trans->txqs.queue_stopped, 0,
+-	       sizeof(trans->txqs.queue_stopped));
+-	memset(trans->txqs.queue_used, 0, sizeof(trans->txqs.queue_used));
+-
+-	/* Unmap DMA from host system and free skb's */
+-	for (txq_id = 0; txq_id < ARRAY_SIZE(trans->txqs.txq); txq_id++) {
+-		if (!trans->txqs.txq[txq_id])
+-			continue;
+-		iwl_txq_gen2_unmap(trans, txq_id);
+-	}
+-}
+-
+ /*
+  * iwl_txq_update_byte_tbl - Set up entry in Tx byte-count array
+  */
+@@ -1189,6 +1165,12 @@ static int iwl_txq_alloc_response(struct iwl_trans *trans, struct iwl_txq *txq,
+ 		goto error_free_resp;
+ 	}
+ 
++	if (WARN_ONCE(trans->txqs.txq[qid],
++		      "queue %d already allocated\n", qid)) {
++		ret = -EIO;
++		goto error_free_resp;
++	}
 +
- 	msta = sta ? (struct mt76x02_sta *)sta->drv_priv : NULL;
- 	wcid = msta ? &msta->wcid : &mvif->group_wcid;
- 
+ 	txq->id = qid;
+ 	trans->txqs.txq[qid] = txq;
+ 	wr_ptr &= (trans->trans_cfg->base_params->max_tfd_queue_size - 1);
+diff --git a/drivers/net/wireless/intel/iwlwifi/queue/tx.h b/drivers/net/wireless/intel/iwlwifi/queue/tx.h
+index cff694c25ccc..d32256d78917 100644
+--- a/drivers/net/wireless/intel/iwlwifi/queue/tx.h
++++ b/drivers/net/wireless/intel/iwlwifi/queue/tx.h
+@@ -1,6 +1,6 @@
+ /* SPDX-License-Identifier: GPL-2.0 OR BSD-3-Clause */
+ /*
+- * Copyright (C) 2020 Intel Corporation
++ * Copyright (C) 2020-2021 Intel Corporation
+  */
+ #ifndef __iwl_trans_queue_tx_h__
+ #define __iwl_trans_queue_tx_h__
+@@ -123,7 +123,6 @@ int iwl_txq_gen2_tx(struct iwl_trans *trans, struct sk_buff *skb,
+ void iwl_txq_dyn_free(struct iwl_trans *trans, int queue);
+ void iwl_txq_gen2_free_tfd(struct iwl_trans *trans, struct iwl_txq *txq);
+ void iwl_txq_inc_wr_ptr(struct iwl_trans *trans, struct iwl_txq *txq);
+-void iwl_txq_gen2_tx_stop(struct iwl_trans *trans);
+ void iwl_txq_gen2_tx_free(struct iwl_trans *trans);
+ int iwl_txq_init(struct iwl_trans *trans, struct iwl_txq *txq, int slots_num,
+ 		 bool cmd_queue);
 -- 
 2.30.2
 
