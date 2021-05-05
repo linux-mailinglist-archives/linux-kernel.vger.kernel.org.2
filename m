@@ -2,100 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C0AA3732EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FE153732F2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231140AbhEEABN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 20:01:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44346 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230465AbhEEABJ (ORCPT
+        id S231182AbhEEAIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 20:08:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50434 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231147AbhEEAId (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 20:01:09 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22074C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 17:00:13 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620172811;
+        Tue, 4 May 2021 20:08:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620173257;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=BZzghc/nFD5fYlTllIJmP+Dhcf+7hU/myWi1v8XwhJQ=;
-        b=vMKVmOxlToHWiasA1xWm8XkYL9pNS3a2/LMx3puvPlQ+DBFhzwOw4Ibq45GXoeQnqcijfy
-        QcQrG5es7NXabAQ2/ydHndSOAIf9c/8HHrR4msa99G6fJ0vyFWV+TiDUpqhuZLHEiaOLMh
-        XbbBhF1DpPWf5YaiO/jX1WTqdH20bhf5JNe/aaM5biU756r+IPYV/UF7rOoFQKIKI7l87+
-        eYYdhv7ftQe3vJP9NlvekkqiCSCUmWCsr3BLfKS9KwV0KFfmBpy8JWp6O18ts4+Yne0LUs
-        2b1wLY4fXTs9yACR0q0VCS9IgxbKcR8po73nmTqJyIC0qruffit9CHbpgAIHwg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620172811;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BZzghc/nFD5fYlTllIJmP+Dhcf+7hU/myWi1v8XwhJQ=;
-        b=rbeivPGOq5d/U+dluGnKE5Rkrq/cG+JtQbDQ6zSoRhhEEthtRTy56a3XhL/cpCJswICAT2
-        xtnAaGeXLf8ntGDg==
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        Lai Jiangshan <laijs@linux.alibaba.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Juergen Gross <JGross@suse.com>,
-        Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>
-Subject: Re: [PATCH] KVM/VMX: Invoke NMI non-IST entry instead of IST entry
-In-Reply-To: <5d7ca301-a0b2-d389-3bc2-feb304c9f5b5@redhat.com>
-References: <YJG6ztbGjtuctec4@google.com> <38B9D60F-F24F-4910-B2DF-2A57F1060452@amacapital.net> <625057c7-ea40-4f37-8bea-cddecfe1b855@redhat.com> <YJHBxvR2mqsSX0pU@google.com> <5d7ca301-a0b2-d389-3bc2-feb304c9f5b5@redhat.com>
-Date:   Wed, 05 May 2021 02:00:10 +0200
-Message-ID: <87im3yhwxh.ffs@nanos.tec.linutronix.de>
+        bh=WLuhQI1mHvbvNctH59ASrVI5S/Q5ccQ6XIJwhLh2EGQ=;
+        b=a6r02xRcuu5O6RUuXZJrjW6miPc5j3A+JrpHe9U+WuPt+aWkM2MOt0hYGxdpv3kfE/BiaG
+        eI/OsI6cOuWdvibvBEotkPlbgMTU6jwKiZUeh/1lM2M1D1vu39tAOPZZEnbS0NXbruwG0l
+        jYNpYMz+rq7yC75xA6cuh0H5YVHNkSc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-442-axtACvBCMI65Emy9o77H0g-1; Tue, 04 May 2021 20:07:35 -0400
+X-MC-Unique: axtACvBCMI65Emy9o77H0g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF2E5801817;
+        Wed,  5 May 2021 00:07:33 +0000 (UTC)
+Received: from treble (ovpn-115-93.rdu2.redhat.com [10.10.115.93])
+        by smtp.corp.redhat.com (Postfix) with SMTP id DF02560C4A;
+        Wed,  5 May 2021 00:07:28 +0000 (UTC)
+Date:   Tue, 4 May 2021 19:07:28 -0500
+From:   Josh Poimboeuf <jpoimboe@redhat.com>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     broonie@kernel.org, mark.rutland@arm.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 1/4] arm64: Introduce stack trace reliability
+ checks in the unwinder
+Message-ID: <20210505000728.yxg3xbwa3emcu2wi@treble>
+References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
+ <20210503173615.21576-1-madvenka@linux.microsoft.com>
+ <20210503173615.21576-2-madvenka@linux.microsoft.com>
+ <20210504215248.oi3zay3memgqri33@treble>
+ <b000767b-26ca-01a9-a109-c9fc3357f832@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <b000767b-26ca-01a9-a109-c9fc3357f832@linux.microsoft.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04 2021 at 23:56, Paolo Bonzini wrote:
-> On 04/05/21 23:51, Sean Christopherson wrote:
->> On Tue, May 04, 2021, Paolo Bonzini wrote:
->>> On 04/05/21 23:23, Andy Lutomirski wrote:
->>>>> On May 4, 2021, at 2:21 PM, Sean Christopherson <seanjc@google.com> wrote:
->>>>> FWIW, NMIs are masked if the VM-Exit was due to an NMI.
->>>
->>> Huh, indeed:  "An NMI causes subsequent NMIs to be blocked, but only after
->>> the VM exit completes".
->>>
->>>> Then this whole change is busted, since nothing will unmask NMIs. Revert it?
->>> Looks like the easiest way out indeed.
->> 
->> I've no objection to reverting to intn, but what does reverting versus handling
->> NMI on the kernel stack have to do with NMIs being blocked on VM-Exit due to NMI?
->> I'm struggling mightily to connect the dots.
->
-> Nah, you're right: vmx_do_interrupt_nmi_irqoff will not call the handler 
-> directly, rather it calls the IDT entrypoint which *will* do an IRET and 
-> unmask NMIs.  I trusted Andy too much on this one. :)
->
-> Thomas's posted patch ("[PATCH] KVM/VMX: Invoke NMI non-IST entry 
-> instead of IST entry") looks good.
+On Tue, May 04, 2021 at 06:13:39PM -0500, Madhavan T. Venkataraman wrote:
+> 
+> 
+> On 5/4/21 4:52 PM, Josh Poimboeuf wrote:
+> > On Mon, May 03, 2021 at 12:36:12PM -0500, madvenka@linux.microsoft.com wrote:
+> >> @@ -44,6 +44,8 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
+> >>  	unsigned long fp = frame->fp;
+> >>  	struct stack_info info;
+> >>  
+> >> +	frame->reliable = true;
+> >> +
+> > 
+> > Why set 'reliable' to true on every invocation of unwind_frame()?
+> > Shouldn't it be remembered across frames?
+> > 
+> 
+> This is mainly for debug purposes in case a caller wants to print the whole stack and also
+> print which functions are unreliable. For livepatch, it does not make any difference. It will
+> quit as soon as it encounters an unreliable frame.
 
-Well, looks good is one thing.
+Hm, ok.  So 'frame->reliable' refers to the current frame, not the
+entire stack.
 
-It would be more helpful if someone would actually review and/or test it.
+> > Also, it looks like there are several error scenarios where it returns
+> > -EINVAL but doesn't set 'reliable' to false.
+> > 
+> 
+> I wanted to make a distinction between an error situation (like stack corruption where unwinding
+> has to stop) and an unreliable situation (where unwinding can still proceed). E.g., when a
+> stack trace is taken for informational purposes or debug purposes, the unwinding will try to
+> proceed until either the stack trace ends or an error happens.
 
-Thanks,
+Ok, but I don't understand how that relates to my comment.
 
-        tglx
+Why wouldn't a stack corruption like !on_accessible_stack() set
+'frame->reliable' to false?
+
+In other words: for livepatch purposes, how does the caller tell the
+difference between hitting the final stack record -- which returns an
+error with reliable 'true' -- and a stack corruption like
+!on_accessible_stack(), which also returns an error with reliable
+'true'?  Surely the latter should be considered unreliable?
+
+-- 
+Josh
+
