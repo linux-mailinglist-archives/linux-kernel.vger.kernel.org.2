@@ -2,86 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8B7A374BA8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:01:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E89E374BAD
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:03:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230257AbhEEXCx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 19:02:53 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:53618 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhEEXCw (ORCPT
+        id S230283AbhEEXEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 19:04:00 -0400
+Received: from mail-ot1-f43.google.com ([209.85.210.43]:40491 "EHLO
+        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229821AbhEEXD6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 19:02:52 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 8C53C20B7178;
-        Wed,  5 May 2021 16:01:54 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8C53C20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620255715;
-        bh=2G61eTtWodmZSE5qpbSyTo8m3sCaUsW/XU9eK3gDywc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hyFJD2G79yPYAoGto1/xWyojG4YLWqGRsiqJ1Cd9U3sJsJ8lVbpX50a76uJMtvWwt
-         qy4wWHsqcABGR9vcg1Hfn1hQdldtHJRwBU7O5c63vjgLAmNLyh4D8+bYji1hdRXSOv
-         Iyv8l5shmCjpdtyQh+o5iFf2MtV1nOPCFUfwwNQI=
-Date:   Wed, 5 May 2021 18:01:52 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     wangglei <wangglei@gmail.com>,
-        "Lei Wang (DPLAT)" <Wang.Lei@microsoft.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "rric@kernel.org" <rric@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hang Li <hangl@microsoft.com>,
-        Brandon Waller <bwaller@microsoft.com>
-Subject: Re: [EXTERNAL] Re: [PATCH] EDAC: update edac printk wrappers to use
- printk_ratelimited.
-Message-ID: <20210505230152.GH4967@sequoia>
-References: <YJLdZCcsgWG6TrKz@zn.tnic>
- <SJ0PR21MB199984A8B47FBEECEC5D11CE90599@SJ0PR21MB1999.namprd21.prod.outlook.com>
- <YJL1vU6HNBWPKy8g@zn.tnic>
- <20210505202357.GC4967@sequoia>
- <YJMIbB31oEDaXm0C@zn.tnic>
- <20210505214846.GE4967@sequoia>
- <YJMWBBBlQ6TwFad9@zn.tnic>
- <20210505221605.GF4967@sequoia>
- <20210505224357.GG4967@sequoia>
- <YJMiRF8D3EG28d2V@zn.tnic>
+        Wed, 5 May 2021 19:03:58 -0400
+Received: by mail-ot1-f43.google.com with SMTP id g4-20020a9d6b040000b029029debbbb3ecso3230865otp.7;
+        Wed, 05 May 2021 16:03:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=c5gJIQptNbwhzfSNPQQCVwvZ2lAYCY0SqfJ3dG+5h4k=;
+        b=nwRT8+ox57GzmTlkcG3ggMaqjC76yD9q50r/u39k6wdZm+Qskmr7iz2xqodTUUAnXD
+         gac5mhi/3ImUDaTc7GislH9NFyMVau+p/gzFUiIrNVE7WlJTtWMrYekR/+apd9804+hd
+         JQpBbDbCR2ktdKPbpV62rAnQqCfdIieoZXCAxVKpRGgTylL0tSz4i7Rp0ddds4GP5J7E
+         PxD6iBhlfQiimTpgCr9qsnZRH6+pLieaAQ1qswT4Ck23MWvYchN7XpMkLFpcUB0AbJXB
+         +0b4TVPrXrnIfFbY0jwL+csE105MNyx8R2Cz45A7jELN35nYy3CluhdoNCtRyJoviWMw
+         CN/A==
+X-Gm-Message-State: AOAM530WJFNsmIWYr4nR7R+/y1e/nzL5HkW1Ja87KhmJUefMwtfJ0WkV
+        K32HMAp/cHuFa9D4N9xqIA==
+X-Google-Smtp-Source: ABdhPJwnGdYO6xivVdQOTOmieNJgXZf1cUHMK+GAA2Aak1nTUeuiCm+657685gZmMaAIiSTqypesLQ==
+X-Received: by 2002:a05:6830:1556:: with SMTP id l22mr895769otp.34.1620255780165;
+        Wed, 05 May 2021 16:03:00 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id e67sm126328oia.5.2021.05.05.16.02.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 16:02:59 -0700 (PDT)
+Received: (nullmailer pid 3004478 invoked by uid 1000);
+        Wed, 05 May 2021 23:02:58 -0000
+Date:   Wed, 5 May 2021 18:02:58 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Saravana Kannan <saravanak@google.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        linux-rtc@vger.kernel.org, linux-mtd@lists.infradead.org,
+        Fabio Estevam <festevam@gmail.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Alessandro Zummo <a.zummo@towertech.it>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        David Airlie <airlied@linux.ie>, kernel@collabora.com,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>
+Subject: Re: [PATCHv2 4/5] dt-bindings: arm: fsl: add GE B1x5pv2 boards
+Message-ID: <20210505230258.GA3004449@robh.at.kernel.org>
+References: <20210428222953.235280-1-sebastian.reichel@collabora.com>
+ <20210428222953.235280-5-sebastian.reichel@collabora.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJMiRF8D3EG28d2V@zn.tnic>
+In-Reply-To: <20210428222953.235280-5-sebastian.reichel@collabora.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-06 00:55:00, Borislav Petkov wrote:
-> On Wed, May 05, 2021 at 05:43:57PM -0500, Tyler Hicks wrote:
-> > This is x86-specific 
+On Thu, 29 Apr 2021 00:29:52 +0200, Sebastian Reichel wrote:
+> Document the compatible for GE B1x5pv2 boards.
 > 
-> That's because it is used by x86 currently. It shouldn't be hard to use
-> it on another arch though as the machinery is pretty generic.
+> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> ---
+>  Documentation/devicetree/bindings/arm/fsl.yaml | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
 > 
-> > and not applicable in our situation.
-> 
-> What is your situation? ARM?
 
-Yes, though I'm not sure if those additional features are
-important/useful enough for us to generalize that driver. The main
-motivation here was just to prevent storage/network from being flooded
-by obviously-bad nodes that haven't been offlined yet. :) 
-
-Lei and others on cc will need to evaluate porting cec.c and what it
-will gain them. Thanks again.
-
-Tyler
-
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-> 
+Acked-by: Rob Herring <robh@kernel.org>
