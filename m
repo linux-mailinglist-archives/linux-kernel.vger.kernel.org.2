@@ -2,172 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 231B43734F4
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 08:27:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B673A3734FA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 08:31:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231749AbhEEG2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 02:28:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43906 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231706AbhEEG2b (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 02:28:31 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25DAC061574;
-        Tue,  4 May 2021 23:27:34 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id d10so1053676pgf.12;
-        Tue, 04 May 2021 23:27:34 -0700 (PDT)
+        id S231326AbhEEGcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 02:32:08 -0400
+Received: from mail-bn8nam08on2086.outbound.protection.outlook.com ([40.107.100.86]:46304
+        "EHLO NAM04-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229728AbhEEGcG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 02:32:06 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JnRb6MiwFFDF4Z5vh03AMGYerGsbbM1DEGgo5d81Ue/R5dnE5sk3yGe4kr/hVPL7T8FBTD04diiKKD6F5sicbgVbVKXa9SuwnOFZbhtn/dGTK/jsgDuaDjoRtxwe12Kyyo3bK/3EMVLl7ldIwmGozo2tTuHAYIuMQaoWVG1jV+xjv+bw8ruOl1oyy1knJ/puFJHOQEdWJBFA47tFLOurXr8dA18dlVa3aHNQ17btcnGeTjUOVHCqAZkPHKPHl2osZ0Iq9EW00ziVU18zs8hA715YE6tJD5Ca89LHeIQYfKEPXS8CLlphCbBPGzbBo3twLh9jyvt9GxIPzv/6NGzalQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QnhIXjaGHH0u/z3SB/Q3/qiSZdn3cNofgJhgwngFddw=;
+ b=AMq3g4FPy5i0b+D1cFIePBRjV5++rg5XQCaV4aQJjMpLVqybd8D7rZhYuWeuizTomheWPBokLFTduSsLa+VoGtdvntp7UzBv7dGzCFqslV42fpg8eMS1NEGahjclo5Up+guSicYeJqO3ZinClKFiqjQKuRTom4sljPC/19CIBhQ0nGoXMiMJARlKOf2ILsjPm7Pt7a3EFzqo+/UAQPTgVZfefSvYut7JcCipPqKZSSRzAxn7Va/1Xh26Rg3Sm2xWRt9ObCr6GkuxsHXjHzIV2rn8FxGnlpdomWY8K7R2uWHg0CAY7YTk8pZWo1GZydbOl1RgEC12zeIU261vv+WHKA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 149.199.62.198) smtp.rcpttodomain=gmail.com smtp.mailfrom=xilinx.com;
+ dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
+ dkim=none (message not signed); arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=1HKBlpaCyJzd9arklB7EU/tOaG5LupW4wg4un2llmUs=;
-        b=mcr1f1QLoVbjojRQsaDAal09mAV3oCfe3iVNmQC9+y+ZD4YM7+Da1q3GubyPQi+YTB
-         lIzJ/eQm26rFXKUFZUvEbcBB0lvglkSYiaPh0FReYd/Ji0q9FjCzUy3XgrJ5dU43Dh1v
-         p9wb7psQEjueQgdIPIzHN3TM2LXblLcQ+jJq3mrsAENDUrTiL8dHRkycvlXfkQ/ksC0O
-         KvFEAMnC5CkxPp+vjMRxBIfpLXW4ByDtfqd3yGKHCpbQTrKwuprrqZHgPeTOgmsm8e7u
-         6cn7gZ85b/1oJfZEQuUdYACTGz6UtN1/wxLFvEqqOSbac/PJDeKv/td6xmODQlkFtXTa
-         1DFw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=1HKBlpaCyJzd9arklB7EU/tOaG5LupW4wg4un2llmUs=;
-        b=FVBQ00KJMHkw7HIlXnOyj+yGALStUzF170uqnm2nzhh4e3DZRNGqXJGkox1zln2QTj
-         +KsEBBQdVmx/7+VNtsx5NDEOhvN1/hiwwXPUjxlTlVDLLqG1c7StQjeNZoVFJztJ8oT6
-         UY0+qnc+1cwedMR0QdlETx/e/BLMtVW6N3HiFlRl7Exhhe9GanvpN8nhix5grFTWUAqZ
-         TBS/W3sPI5aCI4iqWdN7Mti5akkVSiJ3oX+fhsMyAepNlB9v3X02fkyf8x/dNROPrCFo
-         Ko/exI++IOh+D62T6BMcfLLLs6DpzLIrHVv1+XZTWIz1ORieIsTfWagrZkZGlmB76dYf
-         Rhcg==
-X-Gm-Message-State: AOAM531TQqVufOxtpGytylau8jaWxDRvlyU6HojoiATK+qIOt9+wX4L4
-        c33yVaBtUJal1E6U+YxW/Es=
-X-Google-Smtp-Source: ABdhPJyIBesPesIQfRjyOxzNqGnAz825pqG4hSplMnk9nO/R13QMazp98PNnKEvyZ0RLCNMl8FNxKQ==
-X-Received: by 2002:aa7:814c:0:b029:250:13db:3c6e with SMTP id d12-20020aa7814c0000b029025013db3c6emr27493810pfn.65.1620196054408;
-        Tue, 04 May 2021 23:27:34 -0700 (PDT)
-Received: from localhost (g17.222-224-135.ppp.wakwak.ne.jp. [222.224.135.17])
-        by smtp.gmail.com with ESMTPSA id c134sm9652932pfb.135.2021.05.04.23.27.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 23:27:33 -0700 (PDT)
-Date:   Wed, 5 May 2021 15:27:31 +0900
-From:   Stafford Horne <shorne@gmail.com>
-To:     Anshuman Khandual <anshuman.khandual@arm.com>
-Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
-        Richard Henderson <rth@twiddle.net>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
-        Brian Cain <bcain@codeaurora.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Michal Simek <monstr@monstr.eu>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Ley Foon Tan <ley.foon.tan@intel.com>,
-        Jonas Bonn <jonas@southpole.se>,
-        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Yoshinori Sato <ysato@users.sourceforge.jp>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jeff Dike <jdike@addtoit.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Chris Zankel <chris@zankel.net>, linux-arch@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V2] mm: Define default value for FIRST_USER_ADDRESS
-Message-ID: <20210505062731.GS3288043@lianli.shorne-pla.net>
-References: <1618550254-14511-1-git-send-email-anshuman.khandual@arm.com>
+ d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QnhIXjaGHH0u/z3SB/Q3/qiSZdn3cNofgJhgwngFddw=;
+ b=sIQmwdpooOWycJibaHtLpsIL76Yo5BOXAmZCkz7ZTcaGSHkow0jt5nkBkf/la9CFab2L2xXsl40MXfynZIZsVOAWp1CVXmYg9eYPmhNvYuQcu63tPspBNtXTsVBY6uFpfbLKLhCL5XhP7R1AOwgI4/AQ+9cdXRBk8mw7CUxjKmU=
+Received: from BN9PR03CA0984.namprd03.prod.outlook.com (2603:10b6:408:109::29)
+ by DM5PR02MB3337.namprd02.prod.outlook.com (2603:10b6:4:65::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.44; Wed, 5 May
+ 2021 06:31:06 +0000
+Received: from BN1NAM02FT035.eop-nam02.prod.protection.outlook.com
+ (2603:10b6:408:109:cafe::13) by BN9PR03CA0984.outlook.office365.com
+ (2603:10b6:408:109::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend
+ Transport; Wed, 5 May 2021 06:31:06 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
+ smtp.mailfrom=xilinx.com; gmail.com; dkim=none (message not signed)
+ header.d=none;gmail.com; dmarc=pass action=none header.from=xilinx.com;
+Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
+ 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
+ client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
+Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
+ BN1NAM02FT035.mail.protection.outlook.com (10.13.2.81) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.4065.21 via Frontend Transport; Wed, 5 May 2021 06:31:06 +0000
+Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
+ xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Tue, 4 May 2021 23:31:04 -0700
+Received: from smtp.xilinx.com (172.19.127.95) by
+ xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
+ 15.1.2176.2 via Frontend Transport; Tue, 4 May 2021 23:31:04 -0700
+Envelope-to: thierry.reding@gmail.com,
+ lee.jones@linaro.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ linux-pwm@vger.kernel.org,
+ robh@kernel.org,
+ sean.anderson@seco.com,
+ u.kleine-koenig@pengutronix.de
+Received: from [172.30.17.109] (port=46014)
+        by smtp.xilinx.com with esmtp (Exim 4.90)
+        (envelope-from <michal.simek@xilinx.com>)
+        id 1leB3n-0007YU-V0; Tue, 04 May 2021 23:31:04 -0700
+Subject: Re: [PATCH 2/2] pwm: Add support for Xilinx AXI Timer
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>,
+        Sean Anderson <sean.anderson@seco.com>,
+        Rob Herring <robh@kernel.org>
+CC:     Michal Simek <michal.simek@xilinx.com>,
+        <linux-pwm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        Lee Jones <lee.jones@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>
+References: <20210503214413.3145015-1-sean.anderson@seco.com>
+ <20210503214413.3145015-2-sean.anderson@seco.com>
+ <20210504085112.edyy6loprfzejrjl@pengutronix.de>
+ <dc6d9f40-a913-90c4-9675-0f84f789ab61@xilinx.com>
+ <71694d6a-21d8-2b31-0e66-2dfea52a6390@seco.com>
+ <20210504161334.tzylwyiz4k2tcztq@pengutronix.de>
+From:   Michal Simek <michal.simek@xilinx.com>
+Message-ID: <5e67c893-6261-bdfd-a51f-2c17f671294b@xilinx.com>
+Date:   Wed, 5 May 2021 08:31:01 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1618550254-14511-1-git-send-email-anshuman.khandual@arm.com>
+In-Reply-To: <20210504161334.tzylwyiz4k2tcztq@pengutronix.de>
+Content-Type: text/plain; charset="windows-1252"
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: aeb15e7d-e313-4601-395f-08d90f8f5cea
+X-MS-TrafficTypeDiagnostic: DM5PR02MB3337:
+X-Microsoft-Antispam-PRVS: <DM5PR02MB3337C8686EF471A6B1F9A977C6599@DM5PR02MB3337.namprd02.prod.outlook.com>
+X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: lY9SJ9z5AKqWtVxD2HHA2EvII80zoXeb7URzDW/M2NE2gqdyD98FgLg5zj+XNWe5cLkbUO3tqCGkwa2aTYRslu5hE2qQ0NIwXLE1xEQxpFdXSuTT5j2zd1sp60KaDl2dve4G1t0QgusdBz1QaQ7x2on9aRhwKf16JS3FeoBgV8IL9aCL0UZsQ6sI9lIw0HBEpJ7usfvlUW0DcmoZI2s72Va9bu7xg8zviitTxXyosSqGwFNBemzSjmcR3xHhpAVZOiW99GIOqWGAiHzED4rNEBQCgPGYb3wykz1MZDISPflm1U5U/bV2pyJ4WPu7yqaazlu7Ge2mjW8Fdp0F6s51SgKkyxZMiCiR+8jjKZHLMy+1eWoHRX5L7Mh8OmH6XQ9Dg7OwWS0uPfd7lCeyxlDnztWU5jLPfz+/EF5wLB363LSHWZ42xrXgWtPUaAPifsGSgFO3yZLXAR32gli22jAGw0/RWsG4Zw2T2V4owBjsqp9vWoMratAaAbHWosGPUn0w/d5A3K4Xh034eUXCkbwkK/BWy5AGm92a9vjFfoxjAyj5KA7uImlnwPf4AXyy3oUNDsUDNR1l9xy+bFHyMvRuBAU2wm8fTxUDfZjuIqfLPerHWMPGp0FVZl2QjcKalzlmmojVRFYQ4uVHBEu4ObDZ4DrqW80vS/+ZhJCU4ey1FxD6wybQY3eqh3z/smBqi+KArpo3J8MIpLVn7ggLHuwSIkuT7l/bqu30460mas0B+0uCaZWA8bpCaEGuotGU/3WMqn3az0O++reUY5o+eZTo7wWZF4uhkEUe/uu7gn3R1ek=
+X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(346002)(396003)(36840700001)(46966006)(82310400003)(36756003)(2906002)(478600001)(966005)(66574015)(36860700001)(47076005)(4326008)(5660300002)(6666004)(36906005)(70206006)(82740400003)(70586007)(9786002)(8676002)(44832011)(186003)(31696002)(26005)(54906003)(2616005)(83380400001)(7636003)(53546011)(110136005)(8936002)(316002)(336012)(31686004)(426003)(356005)(50156003)(43740500002);DIR:OUT;SFP:1101;
+X-OriginatorOrg: xilinx.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 06:31:06.1690
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: aeb15e7d-e313-4601-395f-08d90f8f5cea
+X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
+X-MS-Exchange-CrossTenant-AuthSource: BN1NAM02FT035.eop-nam02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR02MB3337
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 16, 2021 at 10:47:34AM +0530, Anshuman Khandual wrote:
-> Currently most platforms define FIRST_USER_ADDRESS as 0UL duplication the
-> same code all over. Instead just define a generic default value (i.e 0UL)
-> for FIRST_USER_ADDRESS and let the platforms override when required. This
-> makes it much cleaner with reduced code.
-> 
-> The default FIRST_USER_ADDRESS here would be skipped in <linux/pgtable.h>
-> when the given platform overrides its value via <asm/pgtable.h>.
-> 
-> Cc: Richard Henderson <rth@twiddle.net>
-> Cc: Vineet Gupta <vgupta@synopsys.com>
-> Cc: Catalin Marinas <catalin.marinas@arm.com>
-> Cc: Will Deacon <will@kernel.org>
-> Cc: Guo Ren <guoren@kernel.org>
-> Cc: Brian Cain <bcain@codeaurora.org>
-> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
-> Cc: Michal Simek <monstr@monstr.eu>
-> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
-> Cc: Jonas Bonn <jonas@southpole.se>
-> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
-> Cc: Stafford Horne <shorne@gmail.com>
-> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
-> Cc: Michael Ellerman <mpe@ellerman.id.au>
-> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
-> Cc: Paul Walmsley <paul.walmsley@sifive.com>
-> Cc: Palmer Dabbelt <palmer@dabbelt.com>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Chris Zankel <chris@zankel.net>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: linux-arch@vger.kernel.org
-> Cc: linux-mm@kvack.org
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
-> ---
-> This applies on v5.12-rc7 and has been boot tested on arm64 platform.
-> But has been cross compiled on multiple other platforms.
-> 
-> Changes in V2:
-> 
-> - Dropped ARCH_HAS_FIRST_USER_ADDRESS construct
-> 
-> Changes in V1:
-> 
-> https://patchwork.kernel.org/project/linux-mm/patch/1618368899-20311-1-git-send-email-anshuman.khandual@arm.com/
-> 
->  arch/alpha/include/asm/pgtable.h             | 1 -
->  arch/arc/include/asm/pgtable.h               | 6 ------
->  arch/arm64/include/asm/pgtable.h             | 2 --
->  arch/csky/include/asm/pgtable.h              | 1 -
->  arch/hexagon/include/asm/pgtable.h           | 3 ---
->  arch/ia64/include/asm/pgtable.h              | 1 -
->  arch/m68k/include/asm/pgtable_mm.h           | 1 -
->  arch/microblaze/include/asm/pgtable.h        | 2 --
->  arch/mips/include/asm/pgtable-32.h           | 1 -
->  arch/mips/include/asm/pgtable-64.h           | 1 -
->  arch/nios2/include/asm/pgtable.h             | 2 --
->  arch/openrisc/include/asm/pgtable.h          | 1 -
+Hi,
 
-Acked-by: Stafford Horne <shorne@gmail.com>
+On 5/4/21 6:13 PM, Uwe Kleine-König wrote:
+> Hello Sean,
+> 
+> [Adding Rob to the list of recipents, as he for sure has a valuable
+> opinion on this matter.]
+> 
+> On Tue, May 04, 2021 at 11:57:20AM -0400, Sean Anderson wrote:
+>> On 5/4/21 8:32 AM, Michal Simek wrote:
+>>> On 5/4/21 10:51 AM, Uwe Kleine-König wrote:
+>>>> On Mon, May 03, 2021 at 05:44:13PM -0400, Sean Anderson wrote:
+>>>>> This adds PWM support for Xilinx LogiCORE IP AXI soft timers commonly
+>>>>> found on Xilinx FPGAs. There is another driver for this device located
+>>>>> at arch/microblaze/kernel/timer.c, but it is only used for timekeeping.
+>>>>> This driver was written with reference to Xilinx DS764 for v1.03.a [1].
+>>>>>
+>>>>> [1] https://www.xilinx.com/support/documentation/ip_documentation/axi_timer/v1_03_a/axi_timer_ds764.pdf
+>>>>>
+>>>>> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+>>>>> ---
+>>>>>
+>>>>>   arch/arm64/configs/defconfig |   1 +
+>>>>>   drivers/pwm/Kconfig          |  11 ++
+>>>>>   drivers/pwm/Makefile         |   1 +
+>>>>>   drivers/pwm/pwm-xilinx.c     | 322 +++++++++++++++++++++++++++++++++++
+>>>>>   4 files changed, 335 insertions(+)
+>>>>>   create mode 100644 drivers/pwm/pwm-xilinx.c
+>>>>>
+>>>>> diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+>>>>> index 08c6f769df9a..81794209f287 100644
+>>>>> --- a/arch/arm64/configs/defconfig
+>>>>> +++ b/arch/arm64/configs/defconfig
+>>>>> @@ -1083,6 +1083,7 @@ CONFIG_PWM_SAMSUNG=y
+>>>>>   CONFIG_PWM_SL28CPLD=m
+>>>>>   CONFIG_PWM_SUN4I=m
+>>>>>   CONFIG_PWM_TEGRA=m
+>>>>> +CONFIG_PWM_XILINX=m
+>>>>>   CONFIG_SL28CPLD_INTC=y
+>>>>>   CONFIG_QCOM_PDC=y
+>>>>>   CONFIG_RESET_IMX7=y
+>>>>
+>>>> I think this should go into a separate patch once this driver is
+>>>> accepted. This can then go via the ARM people.
+>>>>
+>>>>> diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
+>>>>> index d3371ac7b871..01e62928f4bf 100644
+>>>>> --- a/drivers/pwm/Kconfig
+>>>>> +++ b/drivers/pwm/Kconfig
+>>>>> @@ -628,4 +628,15 @@ config PWM_VT8500
+>>>>>   	  To compile this driver as a module, choose M here: the module
+>>>>>   	  will be called pwm-vt8500.
+>>>>>
+>>>>> +config PWM_XILINX
+>>>>> +	tristate "Xilinx AXI Timer PWM support"
+>>>>> +	depends on !MICROBLAZE
+>>>>
+>>>> I don't understand this dependency.
+>>>
+>>> The dependency is clear here because microblaze has already driver for
+>>> this timer here arch/microblaze/kernel/timer.c.
+> 
+> Then at least add a comment.
 
->  arch/parisc/include/asm/pgtable.h            | 2 --
->  arch/powerpc/include/asm/book3s/pgtable.h    | 1 -
->  arch/powerpc/include/asm/nohash/32/pgtable.h | 1 -
->  arch/powerpc/include/asm/nohash/64/pgtable.h | 2 --
->  arch/riscv/include/asm/pgtable.h             | 2 --
->  arch/s390/include/asm/pgtable.h              | 2 --
->  arch/sh/include/asm/pgtable.h                | 2 --
->  arch/sparc/include/asm/pgtable_32.h          | 1 -
->  arch/sparc/include/asm/pgtable_64.h          | 3 ---
->  arch/um/include/asm/pgtable-2level.h         | 1 -
->  arch/um/include/asm/pgtable-3level.h         | 1 -
->  arch/x86/include/asm/pgtable_types.h         | 2 --
->  arch/xtensa/include/asm/pgtable.h            | 1 -
->  include/linux/pgtable.h                      | 9 +++++++++
->  26 files changed, 9 insertions(+), 43 deletions(-)
+I don't think that comment will really solve this. We should never
+duplicate driver for the same IP to two locations.
 
-This all looks fine to me, will this be merged via the arm tree?  I guess you
-have a means for that.
+Maybe this should be MFD driver.
 
--Stafford
+
+> 
+>>> And that's exactly pointing to the way how this should be done.
+>>> IP itself is single or dual timer and in case of dual timer you can
+>>> select if there is pwm output and use it for PWM generation.
+>>>
+>>> It means it is timer with PMW together.
+>>> I didn't have a time but Uwe likely knows this better how to design it.
+>>>
+>>> I see that gpio-mvebu driver instantiate pwm driver. Maybe that's the
+>>> way to go.
+>>
+>> I think drivers/clocksource/samsung_pwm_timer.c and
+>> drivers/pwm/pwm-samsung.c provide another example for how to go about
+>> this.
+> 
+> I recently had a similar problem (with code that isn't (yet) in
+> mainline), where a timer can be used as a counter. I chose to change the
+> compatible. Transferred to this example this would mean to use e.g.
+> 
+> 	static const struct of_device_id xilinx_pwm_of_match[] = {
+> 		{ .compatible = "xlnx,xps-timer-pwm-1.00.a" },
+> 		...
+> 	};
+> 
+> and if you want to use the hardware as a PWM, you overwrite the
+> compatible in your machine.dts.
+
+It is HW selection inside that IP. It means you will get dt properly
+when PWM output is selected. I understand that this shortcut can work
+but I don't think it is proper design.
+
+
+> Not sure however that this is nice enough to be accepted by the dt
+> people?!
+
+up to Rob.
+
+Thanks,
+Michal
+
