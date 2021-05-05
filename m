@@ -2,97 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14057373909
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:08:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25C9C37390D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232750AbhEELJw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:09:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49356 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232517AbhEELJt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:09:49 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 66E53C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 04:08:53 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id x20so1990464lfu.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 04:08:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=G5vc6WFcuA4Ved0s3f7uwaDCkdixE7ycKFQEB/WCSC4=;
-        b=Cci3Sa0VqW6/hPfN1FJvFUfq7mP3GN3WqAc313s02iQLWFHDceYE83Mgo/6wGm/MAR
-         8alY6SlTFMrJHrzHXUbvNtrHZY4Xn2787DMlWsypRItb4sBZG9I0TQkS7WBOiEBaAMtn
-         Bp4MmV1sXTm8crDATtE6zXTPi42mIwFFzfdetBUDc+7917zwsvPv/xwrcxYhpWTScO3l
-         5DlaZJSaMjo2gxmVYulYa8Xi7r4W0E3zBi9KWK/5rKCnKplZEwW0nCA/mML4x5XhloSY
-         GEyiCi3O2iK4lajuim4tKVm+silaKKRo9Os6wpjHegw6yV5L4FThxps+Bb1Owlsb6zII
-         6I6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=G5vc6WFcuA4Ved0s3f7uwaDCkdixE7ycKFQEB/WCSC4=;
-        b=aBYPj10WEOeYtot1i7bXlfmrvQrmFmlDvtbf9+4Q27bAydza+dOEGmDAQ11hKiJZyN
-         71VHbfM9P+hiIk0/A2QTZ5yUySj+GVpJ60uHyjeOGCkiHDlq9z5FWBU2/tFMKrTxtI7m
-         DTUisffd01Pmj6Wx87rBJxJHfCrKwLiA/xnC4HcCPOT2+MqDXM1EJREjWYX3yhs39hNI
-         A2EYlVrLP3N+jIL4WaSUNguHL0URAuhzwvIAGQxdG9BJ+E3p/J44akY6vcY0UcTpG4b2
-         IlyXQFvcPad3ZTsIuSEDF0cDpythlobWUfcJU7AF4UttjjXc73L0VVbZoMzbZDpxnh9L
-         5nQw==
-X-Gm-Message-State: AOAM533pgjugFU3V/SMGxLk3cyV4pOro70muiaJxNj0iN1l5tAY3RSaO
-        KGvuiE1XxmmeBp8Rq5IvJZPDYA==
-X-Google-Smtp-Source: ABdhPJzZ0u06G2GPbeSnqfz+Akzps6QZxvjdetUSSSdcBG0Ab+DLj5ImBZLje+dgx3KC9QqXvcUGwg==
-X-Received: by 2002:a19:c17:: with SMTP id 23mr20632058lfm.602.1620212931893;
-        Wed, 05 May 2021 04:08:51 -0700 (PDT)
-Received: from jade (h-85-3.A175.priv.bahnhof.se. [79.136.85.3])
-        by smtp.gmail.com with ESMTPSA id a20sm1973943ljd.105.2021.05.05.04.08.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 04:08:51 -0700 (PDT)
-Date:   Wed, 5 May 2021 13:08:50 +0200
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-To:     arm@kernel.org, soc@kernel.org
-Cc:     op-tee@lists.trustedfirmware.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Rijo Thomas <Rijo-john.Thomas@amd.com>
-Subject: [GIT PULL] AMD-TEE fix for v5.13
-Message-ID: <20210505110850.GA3434209@jade>
+        id S232805AbhEELK3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:10:29 -0400
+Received: from muru.com ([72.249.23.125]:51880 "EHLO muru.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232517AbhEELKW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 07:10:22 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id AABA980DB;
+        Wed,  5 May 2021 11:09:26 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Subject: [PATCH] PM: runtime: Fix unpaired parent child_count for force_resume
+Date:   Wed,  5 May 2021 14:09:15 +0300
+Message-Id: <20210505110915.6861-1-tony@atomide.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello arm-soc maintainers,
+As pm_runtime_need_not_resume() relies also on usage_count, it can return
+a different value in pm_runtime_force_suspend() compared to when called in
+pm_runtime_force_resume(). Different return values can happen if anything
+calls PM runtime functions in between, and causes the parent child_count
+to increase on every resume.
 
-Please pull this AMDTEE driver fix which adds reference counting to
-loaded TAs which is needed for proper life cycle management of TAs.
+So far I've seen the issue only for omapdrm that does complicated things
+with PM runtime calls during system suspend for legacy reasons:
 
-Note that this isn't a usual Arm driver update. This targets AMD instead,
-but is part of the TEE subsystem.
+omap_atomic_commit_tail() for omapdrm.0
+ dispc_runtime_get()
+  wakes up 58000000.dss as it's the dispc parent
+   dispc_runtime_resume()
+    rpm_resume() increases parent child_count
+ dispc_runtime_put() won't idle, PM runtime suspend blocked
+pm_runtime_force_suspend() for 58000000.dss, !pm_runtime_need_not_resume()
+ __update_runtime_status()
+system suspended
+pm_runtime_force_resume() for 58000000.dss, pm_runtime_need_not_resume()
+ pm_runtime_enable() only called because of pm_runtime_need_not_resume()
+omap_atomic_commit_tail() for omapdrm.0
+ dispc_runtime_get()
+  wakes up 58000000.dss as it's the dispc parent
+   dispc_runtime_resume()
+    rpm_resume() increases parent child_count
+ dispc_runtime_put() won't idle, PM runtime suspend blocked
+...
+rpm_suspend for 58000000.dss but parent child_count is now unbalanced
 
-Thanks,
-Jens
+Let's fix the issue by adding a flag for needs_force_resume and use it in
+pm_runtime_force_resume() instead of pm_runtime_need_not_resume().
 
-The following changes since commit 9f4ad9e425a1d3b6a34617b8ea226d56a119a717:
+Additionally omapdrm system suspend could be simplified later on to avoid
+lots of unnecessary PM runtime calls and the complexity it adds. The
+driver can just use internal functions that are shared between the PM
+runtime and system suspend related functions.
 
-  Linux 5.12 (2021-04-25 13:49:08 -0700)
+Fixes: 4918e1f87c5f ("PM / runtime: Rework pm_runtime_force_suspend/resume()")
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
+ drivers/base/power/runtime.c | 10 +++++++---
+ include/linux/pm.h           |  1 +
+ 2 files changed, 8 insertions(+), 3 deletions(-)
 
-are available in the Git repository at:
-
-  git://git.linaro.org/people/jens.wiklander/linux-tee.git tags/amdtee-fixes-for-v5.13
-
-for you to fetch changes up to 9f015b3765bf593b3ed5d3b588e409dc0ffa9f85:
-
-  tee: amdtee: unload TA only when its refcount becomes 0 (2021-05-05 13:00:11 +0200)
-
-----------------------------------------------------------------
-AMD-TEE reference count loaded TAs
-
-----------------------------------------------------------------
-Rijo Thomas (1):
-      tee: amdtee: unload TA only when its refcount becomes 0
-
- drivers/tee/amdtee/amdtee_private.h | 13 +++++
- drivers/tee/amdtee/call.c           | 94 +++++++++++++++++++++++++++++++++----
- drivers/tee/amdtee/core.c           | 15 +++---
- 3 files changed, 106 insertions(+), 16 deletions(-)
+diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+--- a/drivers/base/power/runtime.c
++++ b/drivers/base/power/runtime.c
+@@ -1637,6 +1637,7 @@ void pm_runtime_init(struct device *dev)
+ 	dev->power.request_pending = false;
+ 	dev->power.request = RPM_REQ_NONE;
+ 	dev->power.deferred_resume = false;
++	dev->power.needs_force_resume = 0;
+ 	INIT_WORK(&dev->power.work, pm_runtime_work);
+ 
+ 	dev->power.timer_expires = 0;
+@@ -1804,10 +1805,12 @@ int pm_runtime_force_suspend(struct device *dev)
+ 	 * its parent, but set its status to RPM_SUSPENDED anyway in case this
+ 	 * function will be called again for it in the meantime.
+ 	 */
+-	if (pm_runtime_need_not_resume(dev))
++	if (pm_runtime_need_not_resume(dev)) {
+ 		pm_runtime_set_suspended(dev);
+-	else
++	} else {
+ 		__update_runtime_status(dev, RPM_SUSPENDED);
++		dev->power.needs_force_resume = 1;
++	}
+ 
+ 	return 0;
+ 
+@@ -1834,7 +1837,7 @@ int pm_runtime_force_resume(struct device *dev)
+ 	int (*callback)(struct device *);
+ 	int ret = 0;
+ 
+-	if (!pm_runtime_status_suspended(dev) || pm_runtime_need_not_resume(dev))
++	if (!pm_runtime_status_suspended(dev) || !dev->power.needs_force_resume)
+ 		goto out;
+ 
+ 	/*
+@@ -1853,6 +1856,7 @@ int pm_runtime_force_resume(struct device *dev)
+ 
+ 	pm_runtime_mark_last_busy(dev);
+ out:
++	dev->power.needs_force_resume = 0;
+ 	pm_runtime_enable(dev);
+ 	return ret;
+ }
+diff --git a/include/linux/pm.h b/include/linux/pm.h
+--- a/include/linux/pm.h
++++ b/include/linux/pm.h
+@@ -602,6 +602,7 @@ struct dev_pm_info {
+ 	unsigned int		idle_notification:1;
+ 	unsigned int		request_pending:1;
+ 	unsigned int		deferred_resume:1;
++	unsigned int		needs_force_resume:1;
+ 	unsigned int		runtime_auto:1;
+ 	bool			ignore_children:1;
+ 	unsigned int		no_callbacks:1;
+-- 
+2.31.1
