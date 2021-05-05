@@ -2,308 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6D42A37339D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:38:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D27A73733A1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:40:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232140AbhEEBjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 21:39:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232101AbhEEBjD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 21:39:03 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A96C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 18:38:07 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id c36-20020a05683034a4b02902a5b84b1d12so352639otu.8
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 18:38:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to:cc;
-        bh=lX6vTVdP28sAUcsZAx6P7d8fEnuW4SnnYR6kFB2r4Dk=;
-        b=PziAM8UzWWk2O/fAzTSdFRXR7VcbJ09nbjUox6Gj//Qu/D9P8KlV8l6Au+ElQtRw6X
-         8T8bE2mwD02yOI1opc3c1rt4s5Ex9Iad+xA8TfnCoKIdoe/LnfsTFq+5m5hVVkxJGjxk
-         LTm7cuzIh7Xb0zG00C464iaHUBYkOtxO/4ces=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to:cc;
-        bh=lX6vTVdP28sAUcsZAx6P7d8fEnuW4SnnYR6kFB2r4Dk=;
-        b=OHQFdwIg4frHUbsLKNCii846O7VI3E1bEl0byjbMz4sBF83ZYfNe0GQQFAOSVrxLTj
-         CxW++4Mk2tgH3XaYXZospb7hSnoKoB5BVFVzw6OKZmfILjhkm7ldnk6CWdqZtUUJnoOn
-         n3dMgMAuoNnYhTilCr6P983twB/WDAeoksBMIDyL2lYIVw5am4WRYQaTpmR4iXz/sfD0
-         YvQoDVPNQFjJvHL8k3z1k13UVF5pRAQQliSDj8KgK6yFufcHkFg1rpLgm3o2s7a8j/Hk
-         qQV87S3RA8rRY6CmFpuxRyirmDgGAJOb5309z3eGZO9S9j/sGV1I/cmj021rBEdwZ73C
-         OwIw==
-X-Gm-Message-State: AOAM533OQjKyiGMSMmk0bqNoDe/Zb1ZpSeBJQ9shjqwKiZMJMjLxdng6
-        iaCrHqZFFcwxdxZPMK2Qw2cXpTt2Lh0N8IJxIyKIww==
-X-Google-Smtp-Source: ABdhPJzro2JKCy5vcnXa+onhPlmyRkPLgrndLJM9Va0ydjoM12Zj8/ZTtsjIG2ChK4qCSQ+1i5lO2Rxulpu23l1dX20=
-X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr22439486otn.233.1620178686562;
- Tue, 04 May 2021 18:38:06 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Tue, 4 May 2021 21:38:05 -0400
+        id S232195AbhEEBlB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 21:41:01 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:53269 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231869AbhEEBlA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 21:41:00 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FZfXf1YScz9sT6;
+        Wed,  5 May 2021 11:40:02 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620178803;
+        bh=gUSh3LSMd3wpKS0RGRX5FWNUp0KUTQowKKxok5YAWo0=;
+        h=Date:From:To:Cc:Subject:From;
+        b=CVxSpwfpH8W0E+PI8RIRghItEmCa8x4Qaht3XBqMLSsorUKMfcwiAbE4Oz+qoIx9E
+         85sviWp3YBeCd9yHI29tlIgAoFFa09bKbsjJEDisNze1CUs2Khn7vaSsMC5zxPLbiR
+         YGeddby5SAOmkJwlAvCANASHHKZnemRKKdIKmsUhXQEZS6eWKdZiCrcTZv8TO1l7+r
+         sG4/0lzjCgL394GVDeay0x5ZbUSrtHz/nBhurATalPFzyBA1EYN5F34TFt3wSeqvkx
+         kH5SfaiY/95n+5ekBD9mb9AjS88akn3m+S5lTHkBSnoqEUxpNNzwGg7VPX2NfnAqzG
+         6UxcBWE37pz6g==
+Date:   Wed, 5 May 2021 11:39:59 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        PowerPC <linuxppc-dev@lists.ozlabs.org>
+Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: manual merge of the akpm-current tree with the powerpc
+ tree
+Message-ID: <20210505113959.43340f19@canb.auug.org.au>
 MIME-Version: 1.0
-In-Reply-To: <20210420111355.18462-1-rojay@codeaurora.org>
-References: <20210420111355.18462-1-rojay@codeaurora.org>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Tue, 4 May 2021 21:38:05 -0400
-Message-ID: <CAE-0n51iyNgVW4Vra2C_4FAqQECU-aqAHLWZ+kB2Xv3i-inxiQ@mail.gmail.com>
-Subject: Re: [PATCH V9] i2c: i2c-qcom-geni: Add shutdown callback for i2c
-To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
-Cc:     dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
-        gregkh@linuxfoundation.org, mka@chromium.org,
-        skananth@codeaurora.org, msavaliy@qti.qualcomm.com,
-        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
-        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sumit.semwal@linaro.org, linux-media@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; boundary="Sig_/.W9zcxspq/EztUcH6lziHSj";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Roja Rani Yarubandi (2021-04-20 04:13:55)
-> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-> index 214b4c913a13..8ae17ccad99e 100644
-> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> @@ -71,6 +71,8 @@ enum geni_i2c_err_code {
->  #define ABORT_TIMEOUT          HZ
->  #define XFER_TIMEOUT           HZ
->  #define RST_TIMEOUT            HZ
-> +#define ABORT_XFER             0
-> +#define STOP_AND_ABORT_XFER    1
+--Sig_/.W9zcxspq/EztUcH6lziHSj
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-These should be an enum.
+Hi all,
 
->
->  struct geni_i2c_dev {
->         struct geni_se se;
-> @@ -89,6 +91,7 @@ struct geni_i2c_dev {
->         void *dma_buf;
->         size_t xfer_len;
->         dma_addr_t dma_addr;
-> +       bool stop_xfer;
->  };
->
->  struct geni_i2c_err_log {
-> @@ -215,6 +218,11 @@ static irqreturn_t geni_i2c_irq(int irq, void *dev)
->         struct i2c_msg *cur;
->
->         spin_lock(&gi2c->lock);
-> +       if (!gi2c->cur) {
-> +               dev_err(gi2c->se.dev, "Can't process irq, gi2c->cur is NULL\n");
+Today's linux-next merge of the akpm-current tree got a conflict in:
 
-This error message is worthless. The user won't know what to do and then
-we return IRQ_HANDLED? If the device is misbehaving we should return
-IRQ_NONE and shut down the irq storm that will soon be upon us, not
-print an error message and hope for the best.
+  arch/powerpc/Kconfig
 
-> +               spin_unlock(&gi2c->lock);
-> +               return IRQ_HANDLED;
-> +       }
->         m_stat = readl_relaxed(base + SE_GENI_M_IRQ_STATUS);
->         rx_st = readl_relaxed(base + SE_GENI_RX_FIFO_STATUS);
->         dm_tx_st = readl_relaxed(base + SE_DMA_TX_IRQ_STAT);
-> @@ -222,8 +230,7 @@ static irqreturn_t geni_i2c_irq(int irq, void *dev)
->         dma = readl_relaxed(base + SE_GENI_DMA_MODE_EN);
->         cur = gi2c->cur;
->
-> -       if (!cur ||
-> -           m_stat & (M_CMD_FAILURE_EN | M_CMD_ABORT_EN) ||
-> +       if (m_stat & (M_CMD_FAILURE_EN | M_CMD_ABORT_EN) ||
->             dm_rx_st & (DM_I2C_CB_ERR)) {
->                 if (m_stat & M_GP_IRQ_1_EN)
->                         geni_i2c_err(gi2c, NACK);
-> @@ -301,17 +308,19 @@ static irqreturn_t geni_i2c_irq(int irq, void *dev)
->         return IRQ_HANDLED;
->  }
->
-> -static void geni_i2c_abort_xfer(struct geni_i2c_dev *gi2c)
-> +static void geni_i2c_abort_xfer(struct geni_i2c_dev *gi2c, bool is_stop_xfer)
+between commit:
 
-The bool should be an enum, but a better approach would be to have a
-locked and unlocked version of this function.
+  c6b05f4e233c ("powerpc/kconfig: Restore alphabetic order of the selects u=
+nder CONFIG_PPC")
 
->  {
->         u32 val;
->         unsigned long time_left = ABORT_TIMEOUT;
->         unsigned long flags;
->
-> -       spin_lock_irqsave(&gi2c->lock, flags);
-> +       if (!is_stop_xfer)
-> +               spin_lock_irqsave(&gi2c->lock, flags);
->         geni_i2c_err(gi2c, GENI_TIMEOUT);
->         gi2c->cur = NULL;
->         geni_se_abort_m_cmd(&gi2c->se);
-> -       spin_unlock_irqrestore(&gi2c->lock, flags);
-> +       if (!is_stop_xfer)
-> +               spin_unlock_irqrestore(&gi2c->lock, flags);
+from the powerpc tree and commits:
 
-Please no conditional locking. It's too hard to reason about.
+  fd7d5c273c43 ("mm: generalize HUGETLB_PAGE_SIZE_VARIABLE")
+  301ba77ae03c ("mm: generalize ARCH_ENABLE_MEMORY_[HOTPLUG|HOTREMOVE]")
 
->         do {
->                 time_left = wait_for_completion_timeout(&gi2c->done, time_left);
->                 val = readl_relaxed(gi2c->se.base + SE_GENI_M_IRQ_STATUS);
-> @@ -375,6 +384,38 @@ static void geni_i2c_tx_msg_cleanup(struct geni_i2c_dev *gi2c,
->         }
->  }
->
-> +static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
-> +{
-> +       int ret;
-> +       u32 geni_status;
-> +       struct i2c_msg *cur;
-> +       unsigned long flags;
-> +
-> +       /* Resume device, as runtime suspend can happen anytime during transfer */
+from the akpm-current tree.
 
-This comment doesn't make any sense. Hopefully a suspend can't happen
-during a transfer, but only before or after a transfer. Otherwise, the
-transfer code is broken and isn't properly keeping the device runtime
-resumed during the transfer.
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
 
-> +       ret = pm_runtime_get_sync(gi2c->se.dev);
-> +       if (ret < 0) {
-> +               dev_err(gi2c->se.dev, "Failed to resume device: %d\n", ret);
-> +               return;
-> +       }
-> +
-> +       spin_lock_irqsave(&gi2c->lock, flags);
-> +       gi2c->stop_xfer = 1;
-> +       geni_status = readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
-> +       if (geni_status & M_GENI_CMD_ACTIVE) {
-> +               cur = gi2c->cur;
-> +               geni_i2c_abort_xfer(gi2c, STOP_AND_ABORT_XFER);
-> +               spin_unlock_irqrestore(&gi2c->lock, flags);
-> +               if (cur->flags & I2C_M_RD)
-> +                       geni_i2c_rx_msg_cleanup(gi2c, cur);
-> +               else
-> +                       geni_i2c_tx_msg_cleanup(gi2c, cur);
-> +       } else {
-> +               spin_unlock_irqrestore(&gi2c->lock, flags);
-> +       }
+--=20
+Cheers,
+Stephen Rothwell
 
-Please unlock outside of an if condition. A local variable can be used
-outside of the unlock, but then the code is easier to follow
+diff --cc arch/powerpc/Kconfig
+index ab17a56c3d10,d4333049b813..000000000000
+--- a/arch/powerpc/Kconfig
++++ b/arch/powerpc/Kconfig
+@@@ -118,11 -118,10 +118,13 @@@ config PP
+  	# Please keep this list sorted alphabetically.
+  	#
+  	select ARCH_32BIT_OFF_T if PPC32
++ 	select ARCH_ENABLE_MEMORY_HOTPLUG
++ 	select ARCH_ENABLE_MEMORY_HOTREMOVE
+ +	select ARCH_HAS_COPY_MC			if PPC64
+  	select ARCH_HAS_DEBUG_VIRTUAL
+ +	select ARCH_HAS_DEBUG_VM_PGTABLE
+  	select ARCH_HAS_DEVMEM_IS_ALLOWED
+ +	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC_PSERIES
+  	select ARCH_HAS_ELF_RANDOMIZE
+  	select ARCH_HAS_FORTIFY_SOURCE
+  	select ARCH_HAS_GCOV_PROFILE_ALL
+@@@ -163,8 -162,9 +165,8 @@@
+  	select BUILDTIME_TABLE_SORT
+  	select CLONE_BACKWARDS
+  	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
+- 	select DMA_OPS_BYPASS			if PPC64
+  	select DMA_OPS				if PPC64
++ 	select DMA_OPS_BYPASS			if PPC64
+ -	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC64 && PPC_PSERIES
+  	select DYNAMIC_FTRACE			if FUNCTION_TRACER
+  	select EDAC_ATOMIC_SCRUB
+  	select EDAC_SUPPORT
+@@@ -182,15 -181,12 +184,15 @@@
+  	select GENERIC_STRNCPY_FROM_USER
+  	select GENERIC_STRNLEN_USER
+  	select GENERIC_TIME_VSYSCALL
+ -	select GENERIC_GETTIMEOFDAY
+ +	select GENERIC_VDSO_TIME_NS
+  	select HAVE_ARCH_AUDITSYSCALL
+- 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
+ +	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
++ 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
+  	select HAVE_ARCH_JUMP_LABEL
+ +	select HAVE_ARCH_JUMP_LABEL_RELATIVE
+  	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <=3D 14
+  	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <=3D 14
+ +	select HAVE_ARCH_KFENCE			if PPC32
+  	select HAVE_ARCH_KGDB
+  	select HAVE_ARCH_MMAP_RND_BITS
+  	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
+@@@ -231,19 -227,23 +233,20 @@@
+  	select HAVE_LIVEPATCH			if HAVE_DYNAMIC_FTRACE_WITH_REGS
+  	select HAVE_MOD_ARCH_SPECIFIC
+  	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
+ -	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if (PPC64 && PPC_BOOK3S)
+ -	select HAVE_OPTPROBES			if PPC64
+ +	select HAVE_OPTPROBES
+  	select HAVE_PERF_EVENTS
+  	select HAVE_PERF_EVENTS_NMI		if PPC64
+ -	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_=
+NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
+  	select HAVE_PERF_REGS
+  	select HAVE_PERF_USER_STACK_DUMP
+ -	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
+ -	select MMU_GATHER_RCU_TABLE_FREE
+ -	select MMU_GATHER_PAGE_SIZE
+  	select HAVE_REGS_AND_STACK_ACCESS_API
+ -	select HAVE_RELIABLE_STACKTRACE		if PPC_BOOK3S_64 && CPU_LITTLE_ENDIAN
+ +	select HAVE_RELIABLE_STACKTRACE
+ +	select HAVE_RSEQ
+  	select HAVE_SOFTIRQ_ON_OWN_STACK
+ +	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-gu=
+ard=3Dtls -mstack-protector-guard-reg=3Dr2)
+ +	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-gu=
+ard=3Dtls -mstack-protector-guard-reg=3Dr13)
+  	select HAVE_SYSCALL_TRACEPOINTS
+  	select HAVE_VIRT_CPU_ACCOUNTING
+ -	select HAVE_IRQ_TIME_ACCOUNTING
+ -	select HAVE_RSEQ
+++	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
+  	select IOMMU_HELPER			if PPC64
+  	select IRQ_DOMAIN
+  	select IRQ_FORCED_THREADING
 
-	spin_lock_irqsave(&gi2c->lock, flags);
-	if (geni_status & M_GENI_CMD_ACTIVE) {
-		cur = gic2->cur;
-		geni_i2c_abort_xfer(....);
-	}
-	spin_unlock_irqrestore(gi2c->lock, flags);
+--Sig_/.W9zcxspq/EztUcH6lziHSj
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-	if (cur) {
-		if (cur->flags & I2C_M_RD)
-			...
-		else
-			...
-	}
+-----BEGIN PGP SIGNATURE-----
 
-And then I don't really know if grabbing 'cur' out of the struct and
-then messing with it outside the lock is correct.
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCR928ACgkQAVBC80lX
+0Gw4EAf/Yi8XHzVXWZpxR9XTs6RyVOU5rQM+bdB8yJi4LV8257+m4yj3eLJx04tG
+oYL+Rg/foCGPP/FAF0/ZA0oLuj/NNIAWZqktED8OdoSyikvkHwoTFisAcOapRNwF
+8DYmt82SAByq9crkbBqRIcct5OnXV6IwTR9tzCKVJhJGBFE74390u453BkC4Fx2F
+xcFyICV+/Fug1Z8NjAPUFZ7XOPFRailSw//TvVzbfKZomwaSMlXMEfMG5/AHOBqL
+QAvsOpuJmJg1bWD3mC1ouCs0MmfJARBlo/kKelzyD/L5gEb9OegsWzVw/IQIwwqB
+mVn4aXgzMkKnGo+dOvTANjm77WyUnA==
+=Uuqv
+-----END PGP SIGNATURE-----
 
-> +
-> +       pm_runtime_put_sync_suspend(gi2c->se.dev);
-> +}
-> +
->  static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->                                 u32 m_param)
->  {
-> @@ -407,7 +448,7 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->         cur = gi2c->cur;
->         time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
->         if (!time_left)
-> -               geni_i2c_abort_xfer(gi2c);
-> +               geni_i2c_abort_xfer(gi2c, ABORT_XFER);
-
-So this would say geni_i2c_abort_xfer() but the one above would say
-geni_i2c_abort_xfer_locked() because the lock is already held.
-
->
->         geni_i2c_rx_msg_cleanup(gi2c, cur);
->
-> @@ -449,7 +490,7 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->         cur = gi2c->cur;
->         time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
->         if (!time_left)
-> -               geni_i2c_abort_xfer(gi2c);
-> +               geni_i2c_abort_xfer(gi2c, ABORT_XFER);
->
->         geni_i2c_tx_msg_cleanup(gi2c, cur);
->
-> @@ -462,6 +503,7 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
->  {
->         struct geni_i2c_dev *gi2c = i2c_get_adapdata(adap);
->         int i, ret;
-> +       unsigned long flags;
->
->         gi2c->err = 0;
->         reinit_completion(&gi2c->done);
-> @@ -480,7 +522,13 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
->
->                 m_param |= ((msgs[i].addr << SLV_ADDR_SHFT) & SLV_ADDR_MSK);
->
-> +               spin_lock_irqsave(&gi2c->lock, flags);
-> +               if (gi2c->stop_xfer) {
-> +                       spin_unlock_irqrestore(&gi2c->lock, flags);
-> +                       break;
-> +               }
->                 gi2c->cur = &msgs[i];
-> +               spin_unlock_irqrestore(&gi2c->lock, flags);
-
-Is this to jump into the transfer real fast and break out if we're in
-the middle of a transfer?
-
->                 if (msgs[i].flags & I2C_M_RD)
->                         ret = geni_i2c_rx_one_msg(gi2c, &msgs[i], m_param);
->                 else
-> @@ -624,6 +672,7 @@ static int geni_i2c_probe(struct platform_device *pdev)
->         dev_dbg(dev, "i2c fifo/se-dma mode. fifo depth:%d\n", tx_depth);
->
->         gi2c->suspended = 1;
-> +       gi2c->stop_xfer = 0;
->         pm_runtime_set_suspended(gi2c->se.dev);
->         pm_runtime_set_autosuspend_delay(gi2c->se.dev, I2C_AUTO_SUSPEND_DELAY);
->         pm_runtime_use_autosuspend(gi2c->se.dev);
-> @@ -650,6 +699,13 @@ static int geni_i2c_remove(struct platform_device *pdev)
->         return 0;
->  }
->
-> +static void  geni_i2c_shutdown(struct platform_device *pdev)
-> +{
-> +       struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
-> +
-> +       geni_i2c_stop_xfer(gi2c);
-
-It would read better as
-
-	geni_i2c_plug_xfer(gi2c);
-
-or
-
-	geni_i2c_flush_and_teardown(gi2c);
-
-or
-
-	geni_i2c_teardown_tx_rx(gi2c);
-
-Something that says we're waiting for any transfer to complete, and then
-plugging the queue and removing the i2c bus entirely.
-
-In fact, where is that code? I'd expect to see i2c_del_adapter() in here
-so we know the adapter can't accept transfers anymore. Maybe
-i2c_del_adapter() could be called, and then there's nothing to do after
-that? This whole patch is trying to rip the adapter out from under the
-i2c core framework, when we should take the opposite approach and remove
-it from the core framework so that it can't transfer anything anymore
-and thus the IOMMU can remove the mapping.
-
-> +}
-> +
->  static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
->  {
->         int ret;
+--Sig_/.W9zcxspq/EztUcH6lziHSj--
