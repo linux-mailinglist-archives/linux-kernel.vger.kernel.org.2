@@ -2,91 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3401A373880
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:21:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773F8373883
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:24:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232702AbhEEKWc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 06:22:32 -0400
-Received: from mail2.protonmail.ch ([185.70.40.22]:18132 "EHLO
-        mail2.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232230AbhEEKWb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 06:22:31 -0400
-Date:   Wed, 05 May 2021 10:21:16 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=emersion.fr;
-        s=protonmail3; t=1620210093;
-        bh=3RksiCH8cPtPlWk0to7nyL1y138c0K4MSYx/+808EYk=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=L1Pf1yT46Pzxfe9OzxG4g/ti/bt8/pX5+BOv5cn5Hz1sSX9ArWdWJg04JoFgxBkwa
-         lDfZzBVdd1Sav2gpsHuJn2YY4i6ttsQ+Nt0Csvk03Dwi3hl977iSpRboqdkcK/J2Mu
-         C3aENO9x9pWrufKsAjf4NtiQ6ipf9+sfrJWQhfxPRA6DF1JxscCIxyAp066yD0sFv/
-         YcqRgPcCB7L3QDz4wCB8zNm6DX9HIJ1Uu44qS+A0vmsW5g1Y5PTRFOkn48UUStNFkN
-         0l5iHCe2E18xiuCdXN40ST7SqCOwtbKPTnnJmWeBTROq3wFUS66UiV/lPYniRgrmL2
-         1ykVAgbWiw+ew==
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-From:   Simon Ser <contact@emersion.fr>
-Cc:     Peter Xu <peterx@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Will Deacon <will@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Herrmann <dh.herrmann@gmail.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        Greg Kroah-Hartman <greg@kroah.com>,
-        "tytso@mit.edu" <tytso@mit.edu>
-Reply-To: Simon Ser <contact@emersion.fr>
-Subject: Re: Sealed memfd & no-fault mmap
-Message-ID: <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr>
-In-Reply-To: <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
-References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr> <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com> <20210429154807.hptls4vnmq2svuea@box> <20210429183836.GF8339@xz-x1> <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr> <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com>
+        id S232578AbhEEKZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 06:25:39 -0400
+Received: from mail-db8eur05olkn2097.outbound.protection.outlook.com ([40.92.89.97]:21217
+        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229559AbhEEKZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 06:25:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=dRrnTleIikd159Vps3ignAGDoxvyb/KhJm/DE4FnQBNwfkkjh13tgZFAHHAHWlZhKZA8C3+x9/802Rlb8KCL0SlTCaYtk37aTm/Zll4MvYh6odfhu3WICTqjsSLDYLcnB/unA1jSZ8SGrZK+jXHyAtkHfUUt8aH2VM6VSmKK7hjGRTUh+KGXLBxmjuXMSkhACTE3Xm6THVr+Nswv0DGsORYrjLQ+mx9PS4hYf5DCdiLbe2DAuthbRX9Rd9SZVTMPKktU9KI3/doN8O2LIe0zBI6hKGomLurejaMANx+1D9/UbsCup5eEhXyXuA7Dtl+2t8I9v7aQzP5x3MLsBeYkAw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AJxal/I82YEHUsPiZ4N/zcBXcIDnH8o7zxeY+I4EIv8=;
+ b=XqZ6p3yJAxw9/5GA239oX5xdk/08RVWDqCIORb9yRBkCKXkJaD9XUBGpdrTYTcpPe43rcWZ3S8ggds38Iw2+khUWGG5em/yy1RKfKfp3OO1qUmr16W2FjyEmIPN0mmId4rpa41gWNljnOJJYBnxgtAmCMrds3yfG5NFFymAdA6gtzMXhtd6/FCPgdOQA+2cOMJ+tanc73zN3XnJlYM/YVBikuHQM4ef/RjKD1DyshH0KF7LyavU/IGkH0QZeoieAn1xlIQFYTRHiMHOcPEugUR4xKH9mw1vLOjSYQARHnIPNfn1mCCz3tbUsNJwUJRf/lvW95kvwQ/2Xqs5ppadRMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+Received: from VI1EUR05FT026.eop-eur05.prod.protection.outlook.com
+ (2a01:111:e400:fc12::51) by
+ VI1EUR05HT102.eop-eur05.prod.protection.outlook.com (2a01:111:e400:fc12::100)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27; Wed, 5 May
+ 2021 10:24:38 +0000
+Received: from VI1PR09MB2638.eurprd09.prod.outlook.com
+ (2a01:111:e400:fc12::43) by VI1EUR05FT026.mail.protection.outlook.com
+ (2a01:111:e400:fc12::175) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend
+ Transport; Wed, 5 May 2021 10:24:38 +0000
+X-IncomingTopHeaderMarker: OriginalChecksum:BAB6BFFCAAE460C1EE0FD966D77287A495829F440E411E8C645E032C861A5CB4;UpperCasedChecksum:94CC6709E6C45DA1520E427D8938459DA01BEC556173663949FE737565F3EAB4;SizeAsReceived:8933;Count:48
+Received: from VI1PR09MB2638.eurprd09.prod.outlook.com
+ ([fe80::948b:987c:566b:198e]) by VI1PR09MB2638.eurprd09.prod.outlook.com
+ ([fe80::948b:987c:566b:198e%5]) with mapi id 15.20.4087.044; Wed, 5 May 2021
+ 10:24:38 +0000
+Subject: Re: [PATCH] x86/events/amd/iommu: Fix invalid Perf result due to
+ IOMMU PMC power-gating
+To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        iommu@lists.linux-foundation.org
+Cc:     peterz@infradead.org, mingo@redhat.com, joro@8bytes.org,
+        Jon.Grimm@amd.com, amonakov@ispras.ru
+References: <20210504065236.4415-1-suravee.suthikulpanit@amd.com>
+From:   David Coe <david.coe@live.co.uk>
+Message-ID: <VI1PR09MB2638BB0FCE2E312B3471BC7FC7599@VI1PR09MB2638.eurprd09.prod.outlook.com>
+Date:   Wed, 5 May 2021 11:24:36 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
+In-Reply-To: <20210504065236.4415-1-suravee.suthikulpanit@amd.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
+X-TMN:  [1iV9f5vNuyVtcVzve2HaL8LVwxHRlOOc]
+X-ClientProxiedBy: LO4P123CA0072.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:153::23) To VI1PR09MB2638.eurprd09.prod.outlook.com
+ (2603:10a6:803:7b::27)
+X-Microsoft-Original-Message-ID: <ed3237f2-e682-5f08-8c94-3c14a462c42e@live.co.uk>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.0.6] (90.246.218.100) by LO4P123CA0072.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:153::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Wed, 5 May 2021 10:24:37 +0000
+X-MS-PublicTrafficType: Email
+X-IncomingHeaderCount: 48
+X-EOPAttributedMessage: 0
+X-MS-Office365-Filtering-Correlation-Id: e2625db7-4d68-41ba-9abc-08d90faffc74
+X-MS-TrafficTypeDiagnostic: VI1EUR05HT102:
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: CAaOuzW05Ck8IUJoBfmldTL3PFAOiwEt8MO1Bm+vMTmanCuvde7hRabnCmH8qF/l1t1641OnU3rfhReckwsftQgJgU+fCogiTzyTqI8xPHSxQ1OMIAmOZzHUwErxgfaHDdrgkUJ1hAa9alHmp7xVJszKRZXHBiQxXmizk4aB+9/Xsjp0e05BDB+uanrBP+IyRbDWIDuPTEiITvKgcfptxfRo7zWe8XZ+S0ZdlmSnIXkg9pmzwaaPFhLhPE4pWucmAz8MKJrD9XEH2Jve28A4kp+ingxkBqo6HMDgJq3NrE00TZA8kTYr/gCfeOV2t4E+W3tCQah9gT208p7XTQBd1OIYO4W1Q4N9u1/A0Kt51ZjReQt5IUK3iwgkJn/dFpBEOHWO1fnBK2YHnDUa4csgcQ==
+X-MS-Exchange-AntiSpam-MessageData: h3ASWrdWl/LKUIJAHEj1d+v2LH+1iICfyXK8a/ZcdGeTDmFSAgK4XsEucNZtKZ9zbx7Cs9cfWYmihPMBE+5BbzMtXF1WcJlktDqkh4zumqtqK5VCDc45G6MKTTH5Qb5ORfoaz1iSWFaHQOHRhneraQ==
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e2625db7-4d68-41ba-9abc-08d90faffc74
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 10:24:38.1358
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-AuthSource: VI1EUR05FT026.eop-eur05.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1EUR05HT102
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tuesday, May 4th, 2021 at 6:08 PM, Linus Torvalds <torvalds@linux-founda=
-tion.org> wrote:
+Hi, once more!
 
-> On Tue, May 4, 2021 at 2:29 AM Simon Ser contact@emersion.fr wrote:
->
-> > The remaining 10% is when the compositor needs a writable mapping for
-> > things like screen capture. It doesn't seem like a SIGBUS handler can
-> > be avoided in this case then=E2=80=A6 Oh well.
->
-> So as Peter Xu mentioned, if we made it a "per inode" thing, we
-> probably could make such an inode do the zero page fill on its own,
-> and it might be ok for certain cases even for shared mappings.
-> However, realistically I think it's a horrible idea for the generic
-> situation, because I think that basically requires the filesystem
-> itself to buy into it. And we have something like 60+ different
-> filesystems.
->
-> Is there some very specific and targeted pattern for that "shared
-> mapping" case? For example, if it's always a shared anonymous mapping
-> with no filesystem backing, then that would possibly be a simpler case
-> than the "random arbitrary shared file descriptor".
+On 04/05/2021 07:52, Suravee Suthikulpanit wrote:
+> On certain AMD platforms, when the IOMMU performance counter source
+> (csource) field is zero, power-gating for the counter is enabled, which
+> prevents write access and returns zero for read access.
+> 
+> This can cause invalid perf result especially when event multiplexing
+> is needed (i.e. more number of events than available counters) since
+> the current logic keeps track of the previously read counter value,
+> and subsequently re-program the counter to continue counting the event.
+> With power-gating enabled, we cannot gurantee successful re-programming
+> of the counter.
+> 
+> Workaround this issue by :
+> 
+> 1. Modifying the ordering of setting/reading counters and enabing/
+>     disabling csources to only access the counter when the csource
+>     is set to non-zero.
+> 
+> 2. Since AMD IOMMU PMU does not support interrupt mode, the logic
+>     can be simplified to always start counting with value zero,
+>     and accumulate the counter value when stopping without the need
+>     to keep track and reprogram the counter with the previously read
+>     counter value.
+> 
+> This has been tested on systems with and without power-gating.
+> 
 
-Yes. I don't know of any Wayland client using buffers with real
-filesystem backing. I think the main cases are:
+Just as a final, sanity check I've loaded the same patched kernel 
+5.11.0-16 on to an old AMD Athlon FX8350. So far, all seems in order: it 
+loads IOMMUv1 and runs Ubuntu 21.04 without incident!
 
-- shm_open(3) immediately followed by shm_unlink(3). On Linux, this is
-  implemented with /dev/shm which is a tmpfs.
-- Abusing /tmp or /run's tmpfs by creating a file there and unlinking
-  it immediately afterwards. Kind of similar to the first case.
-- memfd_create(2) on Linux.
+Much appreciate all your efforts, Suravee, Alex et al. Best regards.
 
-Is this enough to make it work on shared memory mappings? Is it
-important that the mapping is anonymous?
-
-Thanks,
-
-Simon
+-- 
+David
