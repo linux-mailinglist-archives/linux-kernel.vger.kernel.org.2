@@ -2,130 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0942D373D8E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD748373D92
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhEEOXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:23:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232079AbhEEOXP (ORCPT
+        id S233053AbhEEOXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:23:41 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:55678 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232283AbhEEOXi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:23:15 -0400
-Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E68C061574;
-        Wed,  5 May 2021 07:22:19 -0700 (PDT)
-Received: by mail-lf1-x12a.google.com with SMTP id z9so2798154lfu.8;
-        Wed, 05 May 2021 07:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc;
-        bh=XgVsKKoBQDRVgbjHThG6cU9TXkUBKJb924zCStcnUCQ=;
-        b=CxbqbQ9iFWSzp5R3V43mnGsPXcoEi+ISSGNggf18T1z0iXNx0V++93mONi/+B2IpwG
-         rD7uRpYUCN6pnnba4QPUb64IMOJgf8Oz4hNk6B3u/GRqEEX9G/r33uuEsfIDzce0GNxv
-         rhZQzbLn9aSRNTOwC/KM9C8uzI5kG24Rc4LyozoVF0J1rHoyxLpowbL03Tntjg9zLJI9
-         9NnOav5Aab2tYDiX7OAf0LIETKWcfY8R03vIS90RZJKj0cd6PG53yCJ09P3PhjQqzBIl
-         q9rH1qI0NyBtKijkICjYpv1KM0enJkRr2ySvDjQ7Rq3cjZFE1ELK9gCnXLwaXgGUmwbQ
-         HHVg==
+        Wed, 5 May 2021 10:23:38 -0400
+Received: from mail-qk1-f198.google.com ([209.85.222.198])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1leIQD-00027a-8g
+        for linux-kernel@vger.kernel.org; Wed, 05 May 2021 14:22:41 +0000
+Received: by mail-qk1-f198.google.com with SMTP id n2-20020a37a4020000b02902e9aef597f7so1207060qke.21
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:22:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=XgVsKKoBQDRVgbjHThG6cU9TXkUBKJb924zCStcnUCQ=;
-        b=JSRDEtI+9i8E/xT+AWrSdRII/SNT0/44gA1itlAL+hflbSIYvlCdqN5fhU0NZmE6yi
-         iCQb4bGugqhsEB3vCN8q4ebaD45NozOzjKCnK/P4aHGWE8xCGZWu4dwiRUi5rwIKWXmy
-         iCpuMdfjQFA2dJTMQuzHuCP4W63JAxvHHKXw9JmTsWI/A5hQwWfou9f3rlglR+C/6YBl
-         4QWmqfs6NDYQshmbT/e0AMi5okyNATLVZsP63GIx5URqKZ6p9gBKLMvBdMXc2Pe2z6ji
-         jueKLdFey/oZqlvFzODDfZvf8wMVKG1H3BNNXTLZFfad78t3b+nI4kOG7ya0/+1q/spr
-         p/tQ==
-X-Gm-Message-State: AOAM530+eTnTDAC8o+BQVaCwesysFyRh46nDfn+23hzKeA+YYwOD4oOY
-        rU3hy7VhqFyVRXFH4/ITBntA/0jPlQrDusfJGCEA3O3x
-X-Google-Smtp-Source: ABdhPJyOTwwPplhOanvEhB4tQ3uGxqjxUiEHjr3VIaSK9dLKzx65rb0O05XVwer/VRb1bGyy2KVC/27ipKfq9eAtpfE=
-X-Received: by 2002:a19:614e:: with SMTP id m14mr20085393lfk.395.1620224537399;
- Wed, 05 May 2021 07:22:17 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p2p0gJ55l2BrIuGW3fGJbblLcGMFAVclXvZPsg/9734=;
+        b=A7phLfdaINo9EjLjkD+Ni1tIwVY6Eyc2lgc5k1WjKj8oyYVbSpuq27PpZhThlHCqGf
+         hogkSPrR/Ox977ddap0nDjV/1O4jjkUJ2msk7UJeMX8BX8tkEjmGT1+biE1RTA9XQ9E1
+         QrisPWlMwR9KQPVi/L2YgT9r70jAG+VL2R4QvlCHH+tQgqCJruBs1WEBSmFTgKaOl52n
+         a8YMVsL81OlEIygUmaDwRK7d4981ZKT4y50lnSNIZKWqoBBT9x4ebx9QHXUNWMldJuY1
+         PyG2KY3y2l00M9wi5qGflzod4urSG+kfZLGlUN3de3EeOhMkBAmg2aiuTNpBe3t0OU2/
+         WExg==
+X-Gm-Message-State: AOAM533rXGIv4U4H7irRzEjUR9d3IkFuM/Cx2WDfk7yPOw3T66bT91eZ
+        GFC5qk5WyuDmcm7dlx8nF+tSRQT3k6DYN8Zmm1N7IauLrElZgin3K+UpqbJE4juBN5I3na/35Y5
+        pSRqlbH/ZTj5cOlgDBRUbPuviIScaJHguKnjrZLa1BA==
+X-Received: by 2002:a37:e11:: with SMTP id 17mr24576832qko.499.1620224560353;
+        Wed, 05 May 2021 07:22:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxpQ3TLPSdk4w5AAovg0o+kr9jYYchgdMLem+pb6Sh/mSEWGzgGWWL46ISf/llPTJXMza6lWw==
+X-Received: by 2002:a37:e11:: with SMTP id 17mr24576805qko.499.1620224560113;
+        Wed, 05 May 2021 07:22:40 -0700 (PDT)
+Received: from [192.168.1.4] ([45.237.49.1])
+        by smtp.gmail.com with ESMTPSA id r16sm1041922qtx.36.2021.05.05.07.22.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 07:22:39 -0700 (PDT)
+Subject: Re: [PATCH] ARM: dts: am5729-beagleboneai: drop unused Broadcom WiFi
+ properties
+To:     Robert Nelson <robertcnelson@gmail.com>,
+        alexey.roslyakov@gmail.com, Drew Fustini <drew@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>
+Cc:     =?UTF-8?Q?Beno=c3=aet_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux kernel <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com
+References: <20210505140015.60013-1-krzysztof.kozlowski@canonical.com>
+ <CAOCHtYiicw5bqaZU5g2QGJHG3DZKRQUwAr08NZHw81S9=hmrgw@mail.gmail.com>
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Message-ID: <7ced6d2f-7107-e612-6787-63e38e5e3edd@canonical.com>
+Date:   Wed, 5 May 2021 10:22:37 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-From:   Steve French <smfrench@gmail.com>
-Date:   Wed, 5 May 2021 09:22:06 -0500
-Message-ID: <CAH2r5muJhWfmbsz+T1adiAT0n5DSPfsMDVBWFEY=xb22ptzGiQ@mail.gmail.com>
-Subject: [GIT PULL] CIFS/SMB3 Fixes
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     CIFS <linux-cifs@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAOCHtYiicw5bqaZU5g2QGJHG3DZKRQUwAr08NZHw81S9=hmrgw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull the following changes since commit
-a8a6082d4ae29d98129440c4a5de8e6ea3de0983:
-
-  cifs: update internal version number (2021-04-25 23:59:27 -0500)
-
-are available in the Git repository at:
-
-  git://git.samba.org/sfrench/cifs-2.6.git tags/5.13-rc-smb3-part2
-
-for you to fetch changes up to bae4c0c1c2d576d32e37925ef972a5d45f34e36d:
-
-  fs/cifs: Fix resource leak (2021-05-04 11:53:15 -0500)
-
-----------------------------------------------------------------
-10 CIFS/SMB3 changesets (including two for stable):
-- some important multichannel fixes
-- support for handle leases (deferred close)
-- shutdown support (which is also helpful since it enables multiple xfstests)
-- enable negotiating stronger encryption by default (GCM256)
-- improve wireshark debugging by allowing more options for root to
-dump decryption keys
-
-SambaXP and the SMB3 Plugfest test event are going on now so I am
-expecting more patches over the next few days due to extra testing
-(including more multichannel fixes).
-
-Regression test results:
-http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/628
-----------------------------------------------------------------
-Khaled ROMDHANI (1):
-      fs/cifs: Fix resource leak
-
-Paulo Alcantara (1):
-      cifs: fix regression when mounting shares with prefix paths
-
-Rohith Surabattula (2):
-      cifs: Deferred close for files
-      Cifs: Fix kernel oops caused by deferred close for files.
-
-Shyam Prasad N (2):
-      cifs: detect dead connections only when echoes are enabled.
-      cifs: use echo_interval even when connection not ready.
-
-Steve French (4):
-      smb3.1.1: enable negotiating stronger encryption by default
-      cifs: add shutdown support
-      smb3.1.1: allow dumping GCM256 keys to improve debugging of
-encrypted shares
-      smb3.1.1: allow dumping keys for multiuser mounts
-
- fs/cifs/cifs_fs_sb.h |   1 +
- fs/cifs/cifs_ioctl.h |  35 ++++++++++++++++++++++++++
- fs/cifs/cifsfs.c     |  25 ++++++++++++-------
- fs/cifs/cifsglob.h   |  17 +++++++++++++
- fs/cifs/cifsproto.h  |  13 ++++++++++
- fs/cifs/connect.c    |  37 ++++++++++++++-------------
- fs/cifs/dir.c        |  10 ++++++++
- fs/cifs/file.c       | 102
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
- fs/cifs/fs_context.c |   5 ++++
- fs/cifs/inode.c      |  27 ++++++++++++++++++--
- fs/cifs/ioctl.c      | 112
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/cifs/link.c       |  13 +++++++++-
- fs/cifs/misc.c       |  79
-++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
- fs/cifs/xattr.c      |   4 +++
- 14 files changed, 447 insertions(+), 33 deletions(-)
+On 05/05/2021 10:15, Robert Nelson wrote:
+> On Wed, May 5, 2021 at 9:04 AM Krzysztof Kozlowski
+> <krzysztof.kozlowski@canonical.com> wrote:
+>>
+>> The brcm,sd-head-align, brcm,sd_head_align and brcm,sd_sgentry_align are
+>> not used by the driver and not present in dtschema:
+>>
+>>   arch/arm/boot/dts/am5729-beagleboneai.dt.yaml: wifi@1:
+>>     'brcm,sd-head-align', 'brcm,sd_head_align', 'brcm,sd_sgentry_align' do not match any of the regexes: 'pinctrl-[0-9]+'
+>>
+>> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+>> ---
+>>  arch/arm/boot/dts/am5729-beagleboneai.dts | 4 ----
+>>  1 file changed, 4 deletions(-)
+>>
+>> diff --git a/arch/arm/boot/dts/am5729-beagleboneai.dts b/arch/arm/boot/dts/am5729-beagleboneai.dts
+>> index 149cfafb90bf..d3b2e87a6266 100644
+>> --- a/arch/arm/boot/dts/am5729-beagleboneai.dts
+>> +++ b/arch/arm/boot/dts/am5729-beagleboneai.dts
+>> @@ -582,10 +582,6 @@ brcmf: wifi@1 {
+>>                 reg = <1>;
+>>                 compatible = "brcm,bcm4329-fmac";
+>>
+>> -               brcm,sd-head-align = <4>;
+>> -               brcm,sd_head_align = <4>;
+>> -               brcm,sd_sgentry_align = <512>;
+>> -
+>>                 interrupt-parent = <&gpio3>;
+>>                 interrupts = <23 IRQ_TYPE_LEVEL_LOW>;
+>>                 interrupt-names = "host-wake";
+>> --
+>> 2.25.1
+>>
+> 
+> NAK, for what it is worth..
+> 
+> This is a plain old shitty situation, that everyone that mistakenly
+> chooses a BRCM based chipset in a design faces, then learns to NEVER
+> touch that chipset again..
+> 
+> These nodes have been posted before for mainline inclusion but always
+> get killed off:
+> 
+> https://lkml.org/lkml/2018/3/18/356
+> 
+> The TI AM57xx SDIO needs these flags for the brcmfmac driver to actually work.
+> 
+> I don't see the brcmfmac developers actually fixing it, as "out of
+> tree" work for brcmfmac is 100+ patches long:
 
 
---
-Thanks,
+Thanks for explanation. I understand these are actually used by
+out-of-tree driver? That's a valid reason to add them to the binding then...
 
-Steve
+> 
+> https://www.cypress.com/documentation/software-and-drivers-archive/wifi-bt-linux-archive?source=search&cat=other
+
+Requires login - I am not able to get the sources.
+
+Best regards,
+Krzysztof
