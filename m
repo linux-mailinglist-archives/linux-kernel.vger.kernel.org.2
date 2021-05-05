@@ -2,99 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E2513749E8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C491C3749EC
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:09:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhEEVJm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 17:09:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42932 "EHLO
+        id S229579AbhEEVKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 17:10:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234147AbhEEVJV (ORCPT
+        with ESMTP id S233253AbhEEVKE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 17:09:21 -0400
-Received: from ms.lwn.net (ms.lwn.net [IPv6:2600:3c01:e000:3a1::42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A1CEC061574;
-        Wed,  5 May 2021 14:08:23 -0700 (PDT)
-Received: from localhost (unknown [IPv6:2601:281:8300:104d::5f6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 35286740;
-        Wed,  5 May 2021 21:08:23 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 35286740
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-        t=1620248903; bh=u6FyGnz/XwbN39MDwPpjlvpqqoCaqu9hcG9HGtkp0us=;
-        h=From:To:Cc:Subject:Date:From;
-        b=JDbPWn529Wa15IvARnLlpmjhWh/hszWrKabbyAG1I+z9cmoIRFVTFAR0r6Y1bj2r+
-         POfs5WdVQZgsS1ojMmoAZsP3Tt/TWyeJjXb4tjA9gcUmZFAbcJ/wdWjQXR+1H0WDW1
-         aY9UdINOT0SmrT2nSA9aQdiTAqUYA5sRtBiDkZUTepG4T+BIJw1ItKh+T9TZ0ORU7Q
-         m5M0OsTmBdK8uBvwIYP8wBUoTdWxM5S70ugo4zImZpchMCE9KV369xj8MQMd7RtW3G
-         4qLfLW4U5DGgu3aIfpTp26mldAa8QuaMEGKX7BecIBzHi2nBH2QiJKZRpn8MOrRXq+
-         15S6lkM1u85WQ==
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [GIT PULL] Documentation fixes for 5.13
-Date:   Wed, 05 May 2021 15:08:22 -0600
-Message-ID: <87pmy4khx5.fsf@meer.lwn.net>
+        Wed, 5 May 2021 17:10:04 -0400
+Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD5DC061763
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 14:09:07 -0700 (PDT)
+Received: by mail-pl1-x62c.google.com with SMTP id v13so1829069ple.9
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 14:09:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=mzL7+lfo0jgpxWVMdqWo9doOV0ATdOWWCvUN85rK7VI=;
+        b=IdQvxHFBYeLPm6jvoN7IWLE8cBuA3g7jeOc/4BvVlHlq6VxGy4sxKNXuI3t+EHRWyk
+         J8Z4DIjRZ4XcPDg9BJ9cSTQYGnai8TfchuijkdpghvE8VBb/0u5DQICC71levMT03GZv
+         9GB/wZ7lylyx4/4dt0cz9+4fBEGjD0t5MQgbM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mzL7+lfo0jgpxWVMdqWo9doOV0ATdOWWCvUN85rK7VI=;
+        b=Ur5Kg/1P8G2E/gQiSyOhcLWpOmYl6KbgMp/AjiF2Ls3QBHk4MBqPtr3+XPoTyJcwDi
+         fBWL+KOPV7J4wEjeODx1eJnsdWF73WrT8tZfvDps4EKn1lXYnCfm9phachz5/nH2owRj
+         QHlH7f/q9978zHCS2AsgrNtWSCXxxUfeeGgTzQhCqh1/CYFUJkCY9KWreXjTASKDHAzi
+         Bz+bwwPBHUY7EacdojgXtbqmGyK5ruQlP2ueLuV0bxs1J/DwUJXY7YRzeKE+UcqBtMAe
+         r2LXkb7fRleayEyQ37/3KXJ4OJcQVKkS59tESo2CQqjRxedd1HYcuLYjb7YI8mPTVJQc
+         fhgg==
+X-Gm-Message-State: AOAM531rfVZoTuDR8qW992s/IHIE1PaT2C8JxoJbDOYGBX4hMAk2YuBt
+        /fWTmgZ4zTD3rswVt3TsBa2NfA==
+X-Google-Smtp-Source: ABdhPJzprjQ8B9VzBx+H58+wlW4Y5N3kcETfQLTkFMAvI8As/kebf+R+AEyUhM3pM3n73PgphHiGAA==
+X-Received: by 2002:a17:902:b7c8:b029:ed:2577:8dc3 with SMTP id v8-20020a170902b7c8b02900ed25778dc3mr665834plz.9.1620248947323;
+        Wed, 05 May 2021 14:09:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id q27sm142223pfl.41.2021.05.05.14.09.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 14:09:06 -0700 (PDT)
+Date:   Wed, 5 May 2021 14:09:05 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, chao <chao@eero.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2] linux/kconfig.h: replace IF_ENABLED() with PTR_IF()
+ in <linux/kernel.h>
+Message-ID: <202105051409.6FDC4F9AD6@keescook>
+References: <20210505174515.87565-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505174515.87565-1-masahiroy@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit 441ca977a84dadac6173db7c07c25db110b76c1e:
+On Thu, May 06, 2021 at 02:45:15AM +0900, Masahiro Yamada wrote:
+> <linux/kconfig.h> is included from all the kernel-space source files,
+> including C, assembly, linker scripts. It is intended to contain a
+> minimal set of macros to evaluate CONFIG options.
+> 
+> IF_ENABLED() is an intruder here because (x ? y : z) is C code, which
+> should not be included from assembly files or linker scripts.
+> 
+> Also, <linux/kconfig.h> is no longer self-contained because NULL is
+> defined in <linux/stddef.h>.
+> 
+> Move IF_ENABLED() out to <linux/kernel.h> as PTR_IF(). PTF_IF()
+> takes the general boolean expression instead of a CONFIG option
+> so that it fits better in <linux/kernel.h>.
+> 
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
 
-  docs/zh_CN: add openrisc translation to zh_CN index (2021-04-20 16:08:15 -0600)
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
-are available in the Git repository at:
-
-  git://git.lwn.net/linux.git tags/docs-5.13-2
-
-for you to fetch changes up to 7fc4607899e87259bb751ccdbe53628aa467ec22:
-
-  Enlisted oprofile version line removed (2021-05-03 17:23:06 -0600)
-
-----------------------------------------------------------------
-A few late-arriving documentation fixes, including some oprofile cleanup, a
-kernel-doc fix, some regression-reporting updates, and the usual minor
-fixes.
-
-----------------------------------------------------------------
-Anatoly Pugachev (1):
-      docs: correct URL to bios and kernel developer's guide
-
-Bhaskar Chowdhury (3):
-      Removed the oprofiled version option
-      oprofiled version output line removed from the list
-      Enlisted oprofile version line removed
-
-Matthew Wilcox (1):
-      kernel-doc: Add support for __deprecated
-
-Randy Dunlap (1):
-      Documentation: input: joydev file corrections
-
-Thorsten Leemhuis (1):
-      docs: reporting-issues.rst: CC subsystem and maintainers on regressions
-
-Wu XiangCheng (1):
-      docs/zh_CN: Adjust order and content of zh_CN/index.rst
-
-Yanteng Si (1):
-      docs/core-api: Consistent code style
-
-bilbao@vt.edu (1):
-      docs: Fix typo in Documentation/x86/x86_64/5level-paging.rst
-
- Documentation/ABI/testing/sysfs-devices-system-cpu |   2 +-
- Documentation/admin-guide/reporting-issues.rst     |  49 +++---
- Documentation/core-api/symbol-namespaces.rst       |  26 ++--
- Documentation/input/joydev/joystick-api.rst        |  14 +-
- Documentation/input/joydev/joystick.rst            |  26 ++--
- Documentation/process/changes.rst                  |   1 -
- .../translations/it_IT/process/changes.rst         |   1 -
- Documentation/translations/zh_CN/index.rst         | 168 +++++++++++++++++++--
- Documentation/x86/x86_64/5level-paging.rst         |   4 +-
- scripts/kernel-doc                                 |   1 +
- scripts/ver_linux                                  |   1 -
- 11 files changed, 225 insertions(+), 68 deletions(-)
+-- 
+Kees Cook
