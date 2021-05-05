@@ -2,124 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8014B373AD9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:14:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93799373B00
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233731AbhEEMPb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:15:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233619AbhEEMLH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:11:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1197F61157;
-        Wed,  5 May 2021 12:09:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216591;
-        bh=NhdMk4eOyzu8aJsg4uHkSGVM56P2jPRl5yrSh+Iv10U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=quuoot16DT71k5ZzbURAyJbLDGURTx8B4r0BoX9XAuQkwToiTE7k2y3S80stMxj+I
-         yrvStDnFD9GyNYQq60tg/BCIVRa0ljPj5YjrAsfGjg/fPBaBgp0nGHg4/UllYy5zPt
-         opARb3l9yrM5ffxK6TrNroMhXNOwQnrTzo5ff+9c=
-Date:   Wed, 5 May 2021 14:09:17 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     linux-usb@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
-Subject: Re: xhci_pci & PCIe hotplug crash
-Message-ID: <YJKK7SDIaeH1L/fC@kroah.com>
-References: <20210505120117.4wpmo6fhvzznf3wv@pali>
+        id S232299AbhEEMVI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 May 2021 08:21:08 -0400
+Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:50347 "EHLO
+        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229559AbhEEMVC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:21:02 -0400
+X-Greylist: delayed 421 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 May 2021 08:21:01 EDT
+Received: from GBR01-LO2-obe.outbound.protection.outlook.com
+ (mail-lo2gbr01lp2056.outbound.protection.outlook.com [104.47.21.56]) (Using
+ TLS) by relay.mimecast.com with ESMTP id de-mta-1-yvW-DvvtOlSYiuaccWmj_g-1;
+ Wed, 05 May 2021 14:13:00 +0200
+X-MC-Unique: yvW-DvvtOlSYiuaccWmj_g-1
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
+ by CWXP265MB2726.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:8b::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Wed, 5 May
+ 2021 12:12:59 +0000
+Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+ ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4108.025; Wed, 5 May 2021
+ 12:12:59 +0000
+From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "huyue2@yulong.com" <huyue2@yulong.com>,
+        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>
+Subject: Re: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
+Thread-Topic: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
+Thread-Index: AQHXN3kp02z8n6vh+UmW3TCHxA6qwqrUvpuAgAAEiK8=
+Date:   Wed, 5 May 2021 12:12:59 +0000
+Message-ID: <CWXP265MB26802E4E0F1AE7B6FE2836AAC4599@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFqvTgRZ0QEgBXJgbhbEmQvxBqzZuGh2MrZGS1mRyYz9mg@mail.gmail.com>
+In-Reply-To: <CAPDyKFqvTgRZ0QEgBXJgbhbEmQvxBqzZuGh2MrZGS1mRyYz9mg@mail.gmail.com>
+Accept-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [185.80.168.10]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: c2e65e37-a5fc-47d4-da8b-08d90fbf1f9d
+x-ms-traffictypediagnostic: CWXP265MB2726:
+x-microsoft-antispam-prvs: <CWXP265MB2726790C5148CE6EE3DBD953C4599@CWXP265MB2726.GBRP265.PROD.OUTLOOK.COM>
+x-ms-oob-tlc-oobclassifiers: OLM:9508
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0
+x-microsoft-antispam-message-info: qzv+sexz7ibTJO3jcAf4Rh7uj6+7Je7cJLgi+6iXlyhpIrezGBjlzEUKBtBBhskXB2vdP09FARABfCvNuXMjFrK6KZXgiNW5bU/b7kXXIpPCg4pbZrNkIHQWkW/4JTkyjHLboEM3TcRv7EeiGtvrg2fiXKc8vbzqBIKKBLv4N5NHU5R2IyWiLvZAE3y6n79WjHhT+YC5XyBg0iq8ESVxdtxEO84ProRpGBBiR1zL9f+CNtZxZY16B4e3ieJfL/OgBmsUP8EgIT7QoNo7u1v33CGRdQqwOjLuYxcxMGpRGc7AoypVveGbqzjToGYLGlz+vXeTWQui2CwkfhRO1a8QjC8bAL706yTL+Mlgc3lBhueOd85FJbBnpOQb7qFmchka2bGlXyzO414FaXJIwWVsJYHYMoUOJhZKuHqatJ+EAWB1HN3CBFC5udLySWbBZTKTtKqtEhyEZS1WJFdzsoTMUKjYx3imSSZ/O3fUCGSc5n6X2VM+kPRvJEndx3LdVYDS9dktF+S15pXUcF8qQOK7RiotSR48xFNzZSY0N15SuHe6PVdVFkvcXlftTigC/6AFvrWYttjEG9bhboFXr1SHns8Ij3w6/rmcRWuP9ZKtP6+tWp9gmHNItIZr1z/0PBEGue4WYEvpspWIOQyFG+m8N/Zt/uuZK35QU25z5EhK43fQaR1NJGTIjYdWGFUL36N+
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(39830400003)(376002)(136003)(346002)(366004)(396003)(966005)(6506007)(53546011)(91956017)(76116006)(52536014)(66946007)(66476007)(66574015)(86362001)(66556008)(66446008)(186003)(6916009)(26005)(5660300002)(83380400001)(64756008)(8676002)(8936002)(38100700002)(122000001)(55016002)(9686003)(7696005)(316002)(4326008)(54906003)(2906002)(71200400001)(33656002)(478600001);DIR:OUT;SFP:1101
+x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?EZ6iz7dqrppr8ksv5yPODVVeQXMNTDNRqf4IUHGCce3U4UPlKPO8fBNNee?=
+ =?iso-8859-1?Q?yGrJ3RkTJj9Sb/CMBO9IPwMi3MyGtl9r6SQTkGvAL34G/Ut7pui0Uz7OKH?=
+ =?iso-8859-1?Q?excZu7+GCaOZTr5Z/1qUaxVhthf/AG6cCXJdJpGTOONof7HyRFNiQ+i67A?=
+ =?iso-8859-1?Q?WxTLZJVtMNGiTh3JrB/c6ybwgf2qPOiEZjm9YrTLu/SDeW4bbd2nSFt1dM?=
+ =?iso-8859-1?Q?oHaZAaEz0/ZD1T8MWkCtIZVODqhLJvwaImcJd7Yb0wIJqBYNK+ec15Y3nw?=
+ =?iso-8859-1?Q?ab2oizMDXQ/wP0t96o7OtMYKHo99L1XWM0N3xUuiC7i9a8Ay7aM8UY04mE?=
+ =?iso-8859-1?Q?e01RvaZSZj/4ykvuyo59GocIG182ecnuQ5sZMvtcGDofr8Ku+oi5MK7dQp?=
+ =?iso-8859-1?Q?uqX2g7b4IQGWp11HyIR7O2vutSv+ulKzqIW6heEz+7kSbFeNewpB5ToDop?=
+ =?iso-8859-1?Q?IbpNUan152/38R56pKIwy1F5jzNYg/GuUZf0WonGbU4SnuBeeXGKM5el07?=
+ =?iso-8859-1?Q?Psr0oOPXbc4gticl53nHNjdlUcfCwjTRE30S8iUJTUJv5drfe6XMrDEcOX?=
+ =?iso-8859-1?Q?IXC5Q0sd/hGaCejVwc649/JWRqa8eQjPwC9BQayjsbPQe/sjkuM9MQm6zJ?=
+ =?iso-8859-1?Q?ialo+mmCCcEuKYWr/RGQskDeA/AR0oF5vkxBJnbZZv070+lqDmmTpbjO3a?=
+ =?iso-8859-1?Q?uDKXr1VNobEdSS/4tnb6hdvqKK/zXuCo89gkHrShkhMWSnqqln30vWYJhW?=
+ =?iso-8859-1?Q?qX0yAJo0so1wlXg/FAlHSylwTW2SUyZFKRLIeKMmXXJ7tjOgXSgGfg0JsG?=
+ =?iso-8859-1?Q?707FG+4GyIx5wju6frb/agBU5aHzBWs6h0q77CXu2xS5+Pag8221sNUmT6?=
+ =?iso-8859-1?Q?lodCB+vNeEo0y8lEjtfCYLsIfdpbBSCmfvliPUok3hS8G/Gx0xXkNKi7tO?=
+ =?iso-8859-1?Q?L//drjj+V0F37ku+0Ylc5xC2YcnCz6AgUOcHRa926fwUX5ZcVYLmgGjcdv?=
+ =?iso-8859-1?Q?809o/Rj61ZCO9sWuFP9iRZJbOM20sg1UPv4IGpGRT0QLBQWJA6s8gYD5OA?=
+ =?iso-8859-1?Q?ejhKCKeu2OOC23BlAJWeR54OBE+/UO2QO82oOoNR3vSCTqn4/AmvPaMKpZ?=
+ =?iso-8859-1?Q?HcDwH79S9dt7mZOBfeZI2v98YdnO90cfWcqJssKVKToZqD08jtrlLldEbd?=
+ =?iso-8859-1?Q?ZFchp3/9Kgt3RcRcUF0MS8Mbed9683WW29/z5SYpqDPBV94ny8ukR4Aruh?=
+ =?iso-8859-1?Q?cez0qZOEykq0Cge8y4F9j+PV16ODxBq7Eb4r4m13EbJJs3KB3DicinvbX2?=
+ =?iso-8859-1?Q?SRhf8rLYnQiLYLmMnqhFjIUfxl7Me00IsCnrm46qvkSLXnk=3D?=
+x-ms-exchange-transport-forked: True
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210505120117.4wpmo6fhvzznf3wv@pali>
+X-OriginatorOrg: hyperstone.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: c2e65e37-a5fc-47d4-da8b-08d90fbf1f9d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2021 12:12:59.2338
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1YAo7wzSKJULI40eZh0PzuDhBCfv3RvlyWuKRtsaneG3GOJLRDfpBB0hoGVrf3tz9+9twUhfA+LCK59kA3UO7w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWXP265MB2726
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: hyperstone.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:01:17PM +0200, Pali Roh�r wrote:
-> Hello!
-> 
-> During debugging of pci-aardvark.c driver I got following synchronous
-> external abort 96000210 which I can reproduce with VIA XHCI controller
-> when PCIe hot plug support is enabled in kernel and PCIe Root Bridge
-> triggers link down event via PCIe hot plug interrupt.
-> 
-> [   71.773033] pcieport 0000:00:00.0: pciehp: Slot(0): Link Down
-> [   71.779120] xhci_hcd 0000:01:00.0: remove, state 4
-> [   71.784113] usb usb5: USB disconnect, device number 1
-> [   71.790398] xhci_hcd 0000:01:00.0: USB bus 5 deregistered
-> [   72.511899] Internal error: synchronous external abort: 96000210 [#1] SMP
-> [   72.518918] Modules linked in:
-> [   72.522074] CPU: 1 PID: 988 Comm: irq/53-pciehp Not tainted 5.12.0-dirty #949
-> [   72.536983] pstate: 60000085 (nZCv daIf -PAN -UAO -TCO BTYPE=--)
-> [   72.543182] pc : xhci_irq+0x70/0x17b8
-> [   72.546972] lr : xhci_irq+0x28/0x17b8
-> [   72.550752] sp : ffffffc012b8bab0
-> [   72.554167] x29: ffffffc012b8bab0 x28: 00000000000000a0 
-> [   72.559652] x27: 0000000000000060 x26: ffffff8000af2250 
-> [   72.565135] x25: ffffffc0100b0d48 x24: ffffffc0100b0be0 
-> [   72.570620] x23: ffffff80003be028 x22: ffffff8000af229c 
-> [   72.576104] x21: 0000000000000080 x20: ffffff8000af2000 
-> [   72.581587] x19: ffffff8000af2000 x18: 0000000000000004 
-> [   72.587071] x17: 0000000000000000 x16: 0000000000000000 
-> [   72.592553] x15: ffffffc01154cc70 x14: ffffff8001751df8 
-> [   72.598037] x13: 0000000000000000 x12: 0000000000000000 
-> [   72.603519] x11: ffffff8001751da8 x10: ffffffc01154cc78 
-> [   72.609001] x9 : ffffffc01087c238 x8 : 0000000000000000 
-> [   72.614485] x7 : ffffffc01162c4e0 x6 : 0000000000000000 
-> [   72.619967] x5 : fffffffe00085000 x4 : fffffffe00085000 
-> [   72.625451] x3 : 0000000000000000 x2 : 0000000000000001 
-> [   72.630933] x1 : ffffffc0118bd024 x0 : 0000000000000000 
-> [   72.636415] Call trace:
-> [   72.638936]  xhci_irq+0x70/0x17b8
-> [   72.642360]  usb_hcd_irq+0x34/0x50
-> [   72.645876]  usb_hcd_pci_remove+0x78/0x138
-> [   72.650106]  xhci_pci_remove+0x6c/0xa8
-> [   72.653978]  pci_device_remove+0x44/0x108
-> [   72.658122]  device_release_driver_internal+0x110/0x1e0
-> [   72.663521]  device_release_driver+0x1c/0x28
-> [   72.667931]  pci_stop_bus_device+0x84/0xc0
-> [   72.672162]  pci_stop_and_remove_bus_device+0x1c/0x30
-> [   72.677373]  pciehp_unconfigure_device+0x98/0xf8
-> [   72.682138]  pciehp_disable_slot+0x60/0x118
-> [   72.686457]  pciehp_handle_presence_or_link_change+0xec/0x3b0
-> [   72.692386]  pciehp_ist+0x170/0x1a0
-> [   72.695984]  irq_thread_fn+0x30/0x90
-> [   72.699674]  irq_thread+0x13c/0x200
-> [   72.703271]  kthread+0x12c/0x130
-> [   72.706603]  ret_from_fork+0x10/0x1c
-> [   72.710299] Code: 35ffff83 35002741 f9400f41 91001021 (b9400021) 
-> [   72.716586] ---[ end trace 20ce3e30ff292c93 ]---
-> [   72.721453] genirq: exiting task "irq/53-pciehp" (988) is an active IRQ thread (irq 53)
-> [   72.730068] sched: RT throttling activated
-> 
-> And after that kernel is in some semi-broken state. Some functionality
-> works, but some other (like reboot) does not.
-> 
-> I can reproduce it also when I manually inject/fake this link down PCIe
-> hot plug interrupt with setting corresponding bits in PCIe Root Status
-> registers, so pciehp driver thinks that link down even occurred.
-> 
-> I suspect that issue is in usb_hcd_pci_remove() function which calls
-> local_irq_disable()+usb_hcd_irq()+local_irq_enable() functions but do
-> not take into care that whole usb_hcd_pci_remove() function may be
-> called from interrupt context.
+So two cards that advertise UHS:
+https://www.euric.de/de/flash-speicher/sd-microsd/sd/
+Model SDI790
+and
+https://na.industrial.panasonic.com/products/storage-media/industrial-sd-cards/lineup/industrial-grade-2d-nand/series/71695
+Hopefully that suffices as a couple, otherwise I would buy some
+that do not advertise it and actually check if they support it anyway.
+But 2GB SLC listings are kind of rare these days, so it's not as
+easy to find many that are still sold and available.
 
-usb_hcd_pci_remove() should NOT be called from interrupt context.
+My point about deviating from the standard was that these cards
+are already initialized as UHS, they just don't do the voltage switch.
+So anything reserved for UHS-I (e.g. CMD23 )is already being done
+by the host with the current linux-mmc,
+so the standard deviation is already there.
+Just the voltage switch is missing.
 
-What is causing that to happen?  No PCI driver can handle that,
-especially USB ones.
+Regards,
+Christian
 
-> Can you look at this issue if it is really safe to call usb_hcd_irq()
-> from interrupt context? Or rather if it is safe to call functions like
-> pciehp_disable_slot() or device_release_driver() from interrupt context
-> like it can be seen in call trace?
 
-What is removing devices from an irq?  That is wrong, pci hotplug never
-used to do that, what recently changed?
+From: Ulf Hansson <ulf.hansson@linaro.org>
+Sent: Wednesday, May 5, 2021 12:09 PM
+To: Christian Löhle <CLoehle@hyperstone.com>
+Subject: Re: [PATCH] mmc: enable UHS voltage switch for SDSC if supported 
+ 
+On Thu, 22 Apr 2021 at 15:18, Christian Löhle <CLoehle@hyperstone.com> wrote:
+>
+> Ignore the reported capacity if the card otherwise reports UHS support.
+>
+> Currently SDSC cards reporting UHS support except for the CCS do not run
+> through the voltage switch.
+> While strictly speaking a SDSC card cannot support UHS in compliance
+> with the standard, there is no good reason to throttle them that way.
 
-thanks,
+Maybe not, but I think the code just tries to conform to the SD spec.
 
-greg k-h
+> Especially for pSLCs in practice such cards benefit greatly by this patch,
+> as they can be new and UHS supporting, but must not lie about their CCS.
+
+Can you provide some concrete examples of SDSC cards that support UHS-I?
+
+> The behaviour of linux-mmc for SDSC is deviating from the standard anyway
+> in such a case, as the card is treated as UHS card not supporting the
+> voltage switch in general.
+> Such a card will come up as
+> mmc0: new ultra high speed SDR25 SD card at address 0001.
+> Thus the subsystem will support CMD23 and others to the card.
+> But if we deviate from the standard anyway, then we might as well
+> not throttle SDSC to 25MB/s.
+
+Not sure I understand this correctly? Can you elaborate a bit more, so
+I understand how we deviate from the SD spec here?
+
+As far as I understand the spec, SDSC cards shouldn't support UHS-I.
+If we decide to deviate from the spec to support this anyway, at least
+we need to know about a couple of cards that actually supports this.
+
+Kind regards
+Uffe
+
+>
+> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+> ---
+>  drivers/mmc/core/sd.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+> index 6fa51a6ed058..281ca2da8e0b 100644
+> --- a/drivers/mmc/core/sd.c
+> +++ b/drivers/mmc/core/sd.c
+> @@ -841,11 +841,10 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
+>                 return err;
+>
+>         /*
+> -        * In case CCS and S18A in the response is set, start Signal Voltage
+> -        * Switch procedure. SPI mode doesn't support CMD11.
+> +        * In case S18A in the response is set, start Signal Voltage Switch
+> +        * procedure. SPI mode doesn't support CMD11.
+>          */
+> -       if (!mmc_host_is_spi(host) && rocr &&
+> -          ((*rocr & 0x41000000) == 0x41000000)) {
+> +       if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
+>                 err = mmc_set_uhs_voltage(host, pocr);
+>                 if (err == -EAGAIN) {
+>                         retries--;
+> --
+> 2.31.1
+>
+> Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+> Managing Directors: Dr. Jan Peter Berns.
+> Commercial register of local courts: Freiburg HRB381782
+>
+
+Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+Managing Directors: Dr. Jan Peter Berns.
+Commercial register of local courts: Freiburg HRB381782
+
