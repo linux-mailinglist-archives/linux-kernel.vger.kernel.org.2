@@ -2,91 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3AC537493B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:19:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4C6937493F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234079AbhEEUUK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:20:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60172 "EHLO
+        id S234327AbhEEUVh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:21:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60482 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234027AbhEEUUJ (ORCPT
+        with ESMTP id S234203AbhEEUVf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:20:09 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D88DDC061574;
-        Wed,  5 May 2021 13:19:12 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id y2so1740227plr.5;
-        Wed, 05 May 2021 13:19:12 -0700 (PDT)
+        Wed, 5 May 2021 16:21:35 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ECE1C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 13:20:38 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id di13so3533158edb.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 13:20:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=V7HoLEH7Lbw/E4Y76i8HPkqPsBjaCkYha/kjurWQVkc=;
-        b=lcSLhOLuugm6sTCOH+2r0pJoFvoxYjH7+/vKd1ZjclcSqezzztTT8FeJ+hpKDcpd/1
-         7qDCa2kk4bsNlh0ZgFBFAkGQ19oe70OzAiBvG8LnZrCSWERtqcRyCWcPYGFfXGUpkWpA
-         CrdSLIhxAxmiEBoP36nbEnGrTzzCx+5hkKyzmfmxZXMdLLk2QWabMjZzsg/EmiiUqH2K
-         xPNvcN4cPWBWyQyaTGLALy3jPAofmz74WC+fKw7yVgNzKGckNM+YknSxgbgt4CjAyeEc
-         FMywOvpT5zUQJr0IDvp+XcthyNoRI9p8DgT2hP17jMLIo7DtYIWHrsunR4apuP+IeB99
-         dgfA==
+        d=googlemail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=1Mv4wqHc8zTw/J8WtIF1x0mpLNs4iPzNxbH+cO+sYFs=;
+        b=QVkG18XIZWHqKQDqA7yUYVW6tTYJeP+JLLxSFkbOFOBrMzSlSDtSuiUB/idxxSsy/d
+         6AHzXAJG8ZA/nyWc0f8u/Ego5Cn0CpZp84CUujXe/8DzVsoSaRFPGxfT8ieRULbpcaSH
+         q7XSTMnYMxVakMs9RxjwTKBHBvMvcrUvQKHTyTU/U5TaH/9u22iQgG7TmqbG2QYkOaqO
+         YREjms4RvTEnAW2ICYz/yxOBjTEEa4bwdfVSFv8As/+ghmnCNz3wQaazD0sRLD2njHdf
+         bZ8qP9usa9gfkmBEKNM+Tc+n40mpTfyKA2RfIpMJuHCSLO451ScGMRJHSFGsqJwj2BlQ
+         7CTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
-         :content-transfer-encoding;
-        bh=V7HoLEH7Lbw/E4Y76i8HPkqPsBjaCkYha/kjurWQVkc=;
-        b=fuHoGQN7uiGEq19oGN8S3eCSYYHHBMqpWq80zxi2D4HU54tbUyw2S1oWz3cSXyQMSq
-         qyRBL0QiMfM03lf2AXseAptkzCJNDVOWbvJKSbLrFJocJlm0d7zAyJt3QcvVeJoBYh7D
-         fnRoUyRlikOMrTM8tw6XVYbkABS2MSmaazw9EKT6TFpU2xjpYbImyPB5ESlx/NXT/Eyr
-         uHNEolOV1foCNN4hrwn7W7sitnThzGdYetWKM26fkQMQCwFK+mUNsswK4RnX7njLNG6N
-         mxNacXCvOFrizFsjEeyZkLVRfpg5YobcMPJpqBPu00QvWzKQEkKgUqs5QjWcG/jtNen4
-         wp3w==
-X-Gm-Message-State: AOAM532/XUGvYQFm7PgzjZGRJJ9Yd/nxCLGFk+8VTK9NqGEU921R6yHp
-        d/Om3Mpj0lz4EmEaACnpYE+suqI3uMPaKOpeMb/BbQ==
-X-Google-Smtp-Source: ABdhPJzWLOGVa1tUsXi+nDDGIM8gdi7Di6+Iz4zEOH97pjo5n0yI54hiMj40ip4V28A0i4MjiwRtzQ==
-X-Received: by 2002:a17:90a:302:: with SMTP id 2mr13803238pje.34.1620245952036;
-        Wed, 05 May 2021 13:19:12 -0700 (PDT)
-Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
-        by smtp.gmail.com with ESMTPSA id u18sm95831pfm.4.2021.05.05.13.19.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 13:19:11 -0700 (PDT)
-Message-ID: <6092fdbf.1c69fb81.ff5a7.08bd@mx.google.com>
-Date:   Wed, 05 May 2021 13:19:11 -0700 (PDT)
-X-Google-Original-Date: Wed, 05 May 2021 20:19:09 GMT
-From:   Fox Chen <foxhlchen@gmail.com>
-In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
-Subject: RE: [PATCH 5.10 00/29] 5.10.35-rc1 review
-To:     linux-kernel@vger.kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org,
-        Fox Chen <foxhlchen@gmail.com>
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=1Mv4wqHc8zTw/J8WtIF1x0mpLNs4iPzNxbH+cO+sYFs=;
+        b=WlczQG0N9wlYAs2WF5eqUeAcER2tjt7eCcvgfX39gbbnTSKBYrXXrsx+r7D+7fO/A2
+         rZI9zrJrKTpO+s3/V1PbmaUVu6nok0jragouGXERNvB7LHw4ok+LNbm5HNN59o2He+oP
+         rZgLatCCqFG3rbarTjueUau47yEcE0oDbLXcnnZzeYEOAGRdQmOFRr2Qh7Sfb+802eyu
+         VOSVfFyAQAl87sYD67YkUrvXtDbdXmxGEV7oHuE9TYZX7A4dvvLD+UTLoVcrRH82zGDU
+         9w+3KO6ST89ANhH7ydlWt0WBz3qd1wDo5qRUCLVE061nA/DgyeKttb07MGHmpiAUjp6o
+         RmXA==
+X-Gm-Message-State: AOAM5319g37GL319r1HkNycculDdGD21l/cn1Z4xEKi/aYx1o88Mh0zN
+        7cJ01w+Cw3O2AwH/JrRrPq/Pj/HMl/mJM5JwVLQ=
+X-Google-Smtp-Source: ABdhPJzZB98VEZ4g43Z5H3Hj4W7dWbziHf1Urvr12LVTjBku1fi3a9KlpuWAISYjSXM9GqQLaXXa2X380+YlZCqK2Fs=
+X-Received: by 2002:a05:6402:3109:: with SMTP id dc9mr881064edb.13.1620246037148;
+ Wed, 05 May 2021 13:20:37 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210505073248.3816183-1-narmstrong@baylibre.com> <20210505073248.3816183-4-narmstrong@baylibre.com>
+In-Reply-To: <20210505073248.3816183-4-narmstrong@baylibre.com>
+From:   Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Date:   Wed, 5 May 2021 22:20:26 +0200
+Message-ID: <CAFBinCBa=rHQ+Sho2Lq0cA0dYnhKX4ZJaQUqBcaiOxNzD+bFiA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/3] arm64: dts: meson-sm1: add Banana PI BPI-M5 board dts
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     khilman@baylibre.com, jbrunet@baylibre.com,
+        linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed,  5 May 2021 14:05:03 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
-> This is the start of the stable review cycle for the 5.10.35 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.35-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+Hi Neil,
 
-5.10.35-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
-                
-Tested-by: Fox Chen <foxhlchen@gmail.com>
+On Wed, May 5, 2021 at 9:32 AM Neil Armstrong <narmstrong@baylibre.com> wrote:
+>
+> Banana Pi BPI-M5 is a credit card format SBC with the following features:
+> - Amlogic S905X3 quad core Cortex-A55
+> - Mali-G31 GPU
+> - 4GB LPDDR4
+> - 16GB eMMC flash
+> - 4 USB 3.0
+> - 1 GbE ethernet
+> - HDMI output
+> - 2x LEDS
+> - SDCard
+> - 2.5mm Jack with Stereo Audio + CVBS
+> - Infrared Received
+> - ADC Button
+> - GPIO Button
+> - 40 pins header + 3pins debug header
+>
+> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+one nit-pick below, but still this gets my:
+Reviewed-by: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 
+[...]
+> +       /*
+> +        * WARNING: The USB Hub on the BPI-M54 needs a reset signal
+s/BPI-M5/BPI-M54/
+I am hoping that Kevin can fix this while applying
+
+
+Best regards,
+Martin
