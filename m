@@ -2,194 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F358F373C5C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:27:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1F32373C60
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:27:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233524AbhEEN2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:28:22 -0400
-Received: from m12-15.163.com ([220.181.12.15]:38139 "EHLO m12-15.163.com"
+        id S233582AbhEEN2l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:28:41 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52028 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231696AbhEEN2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:28:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=47ptq
-        WA6x7aSpz7bIxK9lp4WhZFobeKJyXA87JbvZq0=; b=Q6SSO8Djky+uWZZkOHPaj
-        319cddPhbzFHr5xS7fT6fpiCS+8olkkTITtJTierVGeKGnw40m0EZvSMoQTPRLIh
-        5amosyX11/3WETOY64Q9siDwotRNRK8yn1xukD1jjs19U80yPtSA5tl+yh8rCm07
-        2oAqwCUep23jFJwvHevXQ8=
-Received: from mjs-Inspiron-3668.www.tendawifi.com (unknown [61.152.208.136])
-        by smtp11 (Coremail) with SMTP id D8CowADHgHTvnJJgblwaCA--.60121S4;
-        Wed, 05 May 2021 21:26:21 +0800 (CST)
-From:   meijusan <meijusan@163.com>
-To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        meijusan <meijusan@163.com>
-Subject: [PATCH] net/ipv4/ip_fragment:fix missing Flags reserved bit set in iphdr
-Date:   Wed,  5 May 2021 21:25:57 +0800
-Message-Id: <20210505132557.197964-1-meijusan@163.com>
-X-Mailer: git-send-email 2.25.1
+        id S231696AbhEEN2i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 09:28:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620221260; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=CGLu3gLLUm9em9SOE5qtfKtO5dEYjOb/g2kUV6nMYNc=;
+        b=n6TZpPwGis+vpxeyirf9mIIe9mAPXZkRzj2QcW0Hz5S8a6aERcTXnW0gWX6OjUmbWSvICg
+        sOuW3IjuIvAXwuh4UEcJzAbeSDX+UINqNTBFrBFvHxCp2FfeWvlW5URegyu8k6matU4gWH
+        gayQpGv9GqxKKNk/QMUP960Ni5k+AJQ=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BE25DAE86;
+        Wed,  5 May 2021 13:27:40 +0000 (UTC)
+Date:   Wed, 5 May 2021 15:27:39 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v1 3/7] mm: rename and move page_is_poisoned()
+Message-ID: <YJKdS+Q8CgSlgmFf@dhcp22.suse.cz>
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-4-david@redhat.com>
+ <YJKZ5yXdl18m9YSM@dhcp22.suse.cz>
+ <0710d8d5-2608-aeed-10c7-50a272604d97@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: D8CowADHgHTvnJJgblwaCA--.60121S4
-X-Coremail-Antispam: 1Uf129KBjvJXoWxAFykXrW8ZFWDZrWkur4xtFb_yoW7Jr18p3
-        Z8K395Ja1xJrnrAwn7JrW3Aw4Skw1vka4akr4FyayrA34qyryFqF92gFyYqF45GrW5Zr13
-        try3t3y5Wr1DX37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNjjgUUUUU=
-X-Originating-IP: [61.152.208.136]
-X-CM-SenderInfo: xphly3xvdqqiywtou0bp/xtbB0h2JHlUMbalqOgAAsV
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0710d8d5-2608-aeed-10c7-50a272604d97@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ip frag with the iphdr flags reserved bit set,via router,ip frag reasm or
-fragment,causing the reserved bit is reset to zero.
+On Wed 05-05-21 15:17:53, David Hildenbrand wrote:
+> On 05.05.21 15:13, Michal Hocko wrote:
+> > On Thu 29-04-21 14:25:15, David Hildenbrand wrote:
+> > > Commit d3378e86d182 ("mm/gup: check page posion status for coredump.")
+> > > introduced page_is_poisoned(), however, v5 [1] of the patch used
+> > > "page_is_hwpoison()" and something went wrong while upstreaming. Rename the
+> > > function and move it to page-flags.h, from where it can be used in other
+> > > -- kcore -- context.
+> > > 
+> > > Move the comment to the place where it belongs and simplify.
+> > > 
+> > > [1] https://lkml.kernel.org/r/20210322193318.377c9ce9@alex-virtual-machine
+> > > 
+> > > Signed-off-by: David Hildenbrand <david@redhat.com>
+> > 
+> > I do agree that being explicit about hwpoison is much better. Poisoned
+> > page can be also an unitialized one and I believe this is the reason why
+> > you are bringing that up.
+> 
+> I'm bringing it up because I want to reuse that function as state above :)
+> 
+> > 
+> > But you've made me look at d3378e86d182 and I am wondering whether this
+> > is really a valid patch. First of all it can leak a reference count
+> > AFAICS. Moreover it doesn't really fix anything because the page can be
+> > marked hwpoison right after the check is done. I do not think the race
+> > is feasible to be closed. So shouldn't we rather revert it?
+> 
+> I am not sure if we really care about races here that much here? I mean,
+> essentially we are racing with HW breaking asynchronously. Just because we
+> would be synchronizing with SetPageHWPoison() wouldn't mean we can stop HW
+> from breaking.
 
-Keep reserved bit set is not modified in ip frag  defrag or fragment.
+Right
 
-Signed-off-by: meijusan <meijusan@163.com>
----
- include/net/ip.h       |  3 ++-
- net/ipv4/ip_fragment.c |  9 +++++++++
- net/ipv4/ip_output.c   | 14 ++++++++++++++
- 3 files changed, 25 insertions(+), 1 deletion(-)
+> Long story short, this should be good enough for the cases we actually can
+> handle? What am I missing?
 
-diff --git a/include/net/ip.h b/include/net/ip.h
-index e20874059f82..ae0c75fca61d 100644
---- a/include/net/ip.h
-+++ b/include/net/ip.h
-@@ -134,7 +134,7 @@ struct ip_ra_chain {
- #define IP_DF		0x4000		/* Flag: "Don't Fragment"	*/
- #define IP_MF		0x2000		/* Flag: "More Fragments"	*/
- #define IP_OFFSET	0x1FFF		/* "Fragment Offset" part	*/
--
-+#define IP_EVIL	0x8000		/* Flag: "reserve bit"	*/
- #define IP_FRAG_TIME	(30 * HZ)		/* fragment lifetime	*/
- 
- struct msghdr;
-@@ -194,6 +194,7 @@ struct ip_frag_state {
- 	int		offset;
- 	int		ptr;
- 	__be16		not_last_frag;
-+	bool		ip_evil;
- };
- 
- void ip_frag_init(struct sk_buff *skb, unsigned int hlen, unsigned int ll_rs,
-diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
-index cfeb8890f94e..52eb53007c48 100644
---- a/net/ipv4/ip_fragment.c
-+++ b/net/ipv4/ip_fragment.c
-@@ -62,6 +62,7 @@ struct ipq {
- 	struct inet_frag_queue q;
- 
- 	u8		ecn; /* RFC3168 support */
-+	bool		ip_evil; /*frag with evil bit set */
- 	u16		max_df_size; /* largest frag with DF set seen */
- 	int             iif;
- 	unsigned int    rid;
-@@ -88,6 +89,7 @@ static void ip4_frag_init(struct inet_frag_queue *q, const void *a)
- 
- 	q->key.v4 = *key;
- 	qp->ecn = 0;
-+	qp->ip_evil = false;
- 	qp->peer = q->fqdir->max_dist ?
- 		inet_getpeer_v4(net->ipv4.peers, key->saddr, key->vif, 1) :
- 		NULL;
-@@ -278,6 +280,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
- 	unsigned int fragsize;
- 	int err = -ENOENT;
- 	u8 ecn;
-+	bool  ip_evil;
- 
- 	if (qp->q.flags & INET_FRAG_COMPLETE)
- 		goto err;
-@@ -295,6 +298,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
- 	offset &= IP_OFFSET;
- 	offset <<= 3;		/* offset is in 8-byte chunks */
- 	ihl = ip_hdrlen(skb);
-+	ip_evil = flags & IP_EVIL ?  true : false;
- 
- 	/* Determine the position of this fragment. */
- 	end = offset + skb->len - skb_network_offset(skb) - ihl;
-@@ -350,6 +354,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
- 	qp->q.stamp = skb->tstamp;
- 	qp->q.meat += skb->len;
- 	qp->ecn |= ecn;
-+	qp->ip_evil = ip_evil;
- 	add_frag_mem_limit(qp->q.fqdir, skb->truesize);
- 	if (offset == 0)
- 		qp->q.flags |= INET_FRAG_FIRST_IN;
-@@ -451,6 +456,10 @@ static int ip_frag_reasm(struct ipq *qp, struct sk_buff *skb,
- 		iph->frag_off = 0;
- 	}
- 
-+	/*when ip or bridge forward, keep the origin evil bit set*/
-+	if (qp->ip_evil)
-+		iph->frag_off |= htons(IP_EVIL);
-+
- 	ip_send_check(iph);
- 
- 	__IP_INC_STATS(net, IPSTATS_MIB_REASMOKS);
-diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
-index c3efc7d658f6..d9ab750f9110 100644
---- a/net/ipv4/ip_output.c
-+++ b/net/ipv4/ip_output.c
-@@ -610,6 +610,8 @@ void ip_fraglist_init(struct sk_buff *skb, struct iphdr *iph,
- 	skb->len = first_len;
- 	iph->tot_len = htons(first_len);
- 	iph->frag_off = htons(IP_MF);
-+	if (ntohs(iph->frag_off) & IP_EVIL)
-+		iph->frag_off |= htons(IP_EVIL);
- 	ip_send_check(iph);
- }
- EXPORT_SYMBOL(ip_fraglist_init);
-@@ -631,6 +633,7 @@ void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
- 	unsigned int hlen = iter->hlen;
- 	struct iphdr *iph = iter->iph;
- 	struct sk_buff *frag;
-+	bool ip_evil;
- 
- 	frag = iter->frag;
- 	frag->ip_summed = CHECKSUM_NONE;
-@@ -638,6 +641,8 @@ void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
- 	__skb_push(frag, hlen);
- 	skb_reset_network_header(frag);
- 	memcpy(skb_network_header(frag), iph, hlen);
-+	if (ntohs(iph->frag_off) & IP_EVIL)
-+		ip_evil = true;
- 	iter->iph = ip_hdr(frag);
- 	iph = iter->iph;
- 	iph->tot_len = htons(frag->len);
-@@ -646,6 +651,10 @@ void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
- 	iph->frag_off = htons(iter->offset >> 3);
- 	if (frag->next)
- 		iph->frag_off |= htons(IP_MF);
-+
-+	if (ip_evil)
-+		iph->frag_off |= htons(IP_EVIL);
-+
- 	/* Ready, complete checksum */
- 	ip_send_check(iph);
- }
-@@ -667,6 +676,7 @@ void ip_frag_init(struct sk_buff *skb, unsigned int hlen,
- 
- 	state->offset = (ntohs(iph->frag_off) & IP_OFFSET) << 3;
- 	state->not_last_frag = iph->frag_off & htons(IP_MF);
-+	state->ip_evil = (ntohs(iph->frag_off) & IP_EVIL) ? true : false;
- }
- EXPORT_SYMBOL(ip_frag_init);
- 
-@@ -752,6 +762,10 @@ struct sk_buff *ip_frag_next(struct sk_buff *skb, struct ip_frag_state *state)
- 	 */
- 	if (state->left > 0 || state->not_last_frag)
- 		iph->frag_off |= htons(IP_MF);
-+
-+	if (state->ip_evil)
-+		iph->frag_off |= htons(IP_EVIL);
-+
- 	state->ptr += len;
- 	state->offset += len;
- 
+I am not sure I follow. My point is that I fail to see any added value
+of the check as it doesn't prevent the race (it fundamentally cannot as
+the page can be poisoned at any time) but the failure path doesn't
+put_page which is incorrect even for hwpoison pages.
 -- 
-2.25.1
-
+Michal Hocko
+SUSE Labs
