@@ -2,140 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99D1B374BCF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:19:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B718374BD4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:22:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231174AbhEEXU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 19:20:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37855 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231164AbhEEXUZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 19:20:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620256768;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=42NhY9pIv+uXlb41VZhPnr08pYEJ08Pi29tdv81LhX8=;
-        b=Mp5X4gw9sAQN1MsvWogvUs6YaqvOl8JIcDFVZmwOEmDSRj6/uot3a43y2L1cgNl2qKrPl3
-        ah30XGb9kbHYVXwZeV3eW+oTSzD9K3Zbc/3OCZLd4F//eufbbgtr+VwgSXzfnBqIbkvHPw
-        Uw3EbOkobrfBkUF/6DOGwzv+PCwV0A0=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-272-S35fr5sOMJWMNHExRCMq6Q-1; Wed, 05 May 2021 19:19:26 -0400
-X-MC-Unique: S35fr5sOMJWMNHExRCMq6Q-1
-Received: by mail-qk1-f200.google.com with SMTP id p17-20020a05620a1131b02902e45c6e4d33so2283018qkk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 16:19:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=42NhY9pIv+uXlb41VZhPnr08pYEJ08Pi29tdv81LhX8=;
-        b=K6C2NUPLwIC+2tQRiubKL8m8nwnSBoBMwXfRfzjPNCpL360Z9ngXAG4/WArTXCFRtL
-         s/y4aJTFSqeKW+mMuHs8H/OaRtDOiJfFvPFurphwoakY5c9zbAsKUYGdqvfHSrZfotrZ
-         MO7R2voh4947PRS4bC24KVGJFmvRXGj1oP1NUZi6L5vfJRVf6sxYjE5wi8kqfLanlwFT
-         Op/El4GKga/ClbqD5MNzwny33YJJCBQcNr6uyY1pxCa/GchdXxGLQa9zdr/ypZqiXORC
-         cNjX7kTZ7PEaSDtcjT52NgG8SI3dPXOjb32EqB9UaGhBtOiwtkvLTo1cn4a5rgL6aapf
-         UFAw==
-X-Gm-Message-State: AOAM533mRo/okDx8m2faDJDnx8bPmeloYg2Q6hH2I1BhCrYNcoLYMTJo
-        5VIecbT2LjRk3bsAZYX1j0zj4UaAy8SF5+SVnmIREEWkZyMZl/fpnI2MI36dK/LzFmlPqcMSoFt
-        EzyDHcNMtoqJCI24jmRVTsV2V
-X-Received: by 2002:a05:6214:e82:: with SMTP id hf2mr1260034qvb.22.1620256766428;
-        Wed, 05 May 2021 16:19:26 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyrf6/P25SquN9SJbJPN+P3WLa7pQBOu70auUucnAsduD5gcjZBVPI39mewNtJuN0YMSZCgHQ==
-X-Received: by 2002:a05:6214:e82:: with SMTP id hf2mr1260019qvb.22.1620256766268;
-        Wed, 05 May 2021 16:19:26 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id i129sm621947qke.103.2021.05.05.16.19.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 16:19:25 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v4 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
- caches
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210505200610.13943-1-longman@redhat.com>
- <20210505200610.13943-3-longman@redhat.com>
- <935031de-f177-b49f-2a1d-2af2b519a270@suse.cz>
-Message-ID: <e27561f4-75ac-77ae-de09-6c7d1cd96967@redhat.com>
-Date:   Wed, 5 May 2021 19:19:23 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        id S230037AbhEEXXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 19:23:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57944 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhEEXXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 19:23:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id D85B1613ED
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 23:22:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620256962;
+        bh=F+mnMMlF78TxCmvF3CvXV4DSs15i/Wd7uu7DampNkVI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=r5oHMC6uQn0rBeksxQYQ6ORMY/A7fulWtjrZqmMKwQFeNs13fMzlCTBGlgVzlgEx9
+         HKeQ/ToXjxOzoPGA9iyXXph0f1ZBb7mPn7tqF3An7tmnAzh1cJHltFtdDmujC6q7nq
+         RaMr23uagsa1hinYpVSENgnUwLl/plMGEx3xv4hU6JE2mJhO1DAHYi8Vf6YgTLKS8G
+         rXQd64h4lrbHu5IAU60+8oQcmZI0ljSLnuQLK33IkF34DIxkohxyfJiBOxlvQtC0tK
+         ouqcww5XnHDAI2bD9n3I0N9WhrV9AIB1rrBCA7tPnGMKoS2DcdtVWYwGEF2ZyRhlte
+         InFZ5YXDONLOg==
+Received: by mail-ed1-f41.google.com with SMTP id i24so3939439edy.8
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 16:22:42 -0700 (PDT)
+X-Gm-Message-State: AOAM533KnmzVp+qFSJH9Nz+GwOUDCWzav8hb1nPLO5zRaLJRgjB6c1ah
+        KUWyMo4W1b1idM4OHJOk29vO1g4zT38Cjms2voc+ZQ==
+X-Google-Smtp-Source: ABdhPJwFLoNYrpL4CTxTz77gnCsjjNufMO1tqV2hkAAFm4x4wfWew/wKMDOsGcOIqKLM5rVvMeRc+E3805CM1Qbq05U=
+X-Received: by 2002:a05:6402:17b0:: with SMTP id j16mr1524042edy.97.1620256961331;
+ Wed, 05 May 2021 16:22:41 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <935031de-f177-b49f-2a1d-2af2b519a270@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+ <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net> <YJFptPyDtow//5LU@zn.tnic>
+ <044d0bad-6888-a211-e1d3-159a4aeed52d@polymtl.ca> <932d65e1-5a8f-c86a-8673-34f0e006c27f@samba.org>
+ <30e248aa-534d-37ff-2954-a70a454391fc@polymtl.ca> <CALCETrUF5M+Qw+RfY8subR7nzmpMyFsE3NHSAPoMVWMz6_hr-w@mail.gmail.com>
+ <YJMmVHGn33W2n2Ux@zn.tnic>
+In-Reply-To: <YJMmVHGn33W2n2Ux@zn.tnic>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Wed, 5 May 2021 16:22:29 -0700
+X-Gmail-Original-Message-ID: <CALCETrXieCM3f2sYQLk36horw1Cgt9OrZyDqCYrN71VgGusdVg@mail.gmail.com>
+Message-ID: <CALCETrXieCM3f2sYQLk36horw1Cgt9OrZyDqCYrN71VgGusdVg@mail.gmail.com>
+Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        Simon Marchi <simon.marchi@polymtl.ca>,
+        Stefan Metzmacher <metze@samba.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jens Axboe <axboe@kernel.dk>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        io-uring <io-uring@vger.kernel.org>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 5:41 PM, Vlastimil Babka wrote:
-> On 5/5/21 10:06 PM, Waiman Long wrote:
->> There are currently two problems in the way the objcg pointer array
->> (memcg_data) in the page structure is being allocated and freed.
->>
->> On its allocation, it is possible that the allocated objcg pointer
->> array comes from the same slab that requires memory accounting. If this
->> happens, the slab will never become empty again as there is at least
->> one object left (the obj_cgroup array) in the slab.
->>
->> When it is freed, the objcg pointer array object may be the last one
->> in its slab and hence causes kfree() to be called again. With the
->> right workload, the slab cache may be set up in a way that allows the
->> recursive kfree() calling loop to nest deep enough to cause a kernel
->> stack overflow and panic the system.
->>
->> One way to solve this problem is to split the kmalloc-<n> caches
->> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
->> (KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
->> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
->> the other caches can still allow a mix of accounted and unaccounted
->> objects.
->>
->> With this change, all the objcg pointer array objects will come from
->> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
->> both the recursive kfree() problem and non-freeable slab problem are
->> gone.
->>
->> Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
->> mixed accounted and unaccounted objects, this will slightly reduce the
->> number of objcg pointer arrays that need to be allocated and save a bit
->> of memory. On the other hand, creating a new set of kmalloc caches does
->> have the effect of reducing cache utilization. So it is properly a wash.
->>
->> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
->> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
->> will include the newly added caches without change.
->>
->> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> A last nitpick: the new caches -cg should perhaps not be created when
-> cgroup_memory_nokmem == true because kmemcg was disabled by the respective boot
-> param.
+On Wed, May 5, 2021 at 4:12 PM Borislav Petkov <bp@alien8.de> wrote:
 >
-It is a nice to have feature. However, the nokmem kernel parameter isn't 
-used that often. The cgroup_memory_nokmem variable is private to 
-memcontrol.c and is not directly accessible. I will take a look on that, 
-but it will be a follow-on patch. I am not planning to change the 
-current patchset unless there are other issues coming up.
+> On Wed, May 05, 2021 at 03:11:18PM -0700, Andy Lutomirski wrote:
+> > Since I'm not holding my breath, please at least keep in mind that
+> > anything you do here is merely a heuristic, cannot be fully correct,
+> > and then whenever gdb determines that a thread group or a thread is
+> > "32-bit", gdb is actually deciding to operate in a degraded mode for
+> > that task, is not accurately representing the task state, and is at
+> > risk of crashing, malfunctioning, or crashing the inferior due to its
+> > incorrect assumptions.  If you have ever attached gdb to QEMU's
+> > gdbserver and tried to debug the early boot process of a 64-bit Linux
+> > kernel, you may have encountered this class of bugs.  gdb works very,
+> > very poorly for this use case.
+>
+> So we were talking about this with toolchain folks today and they gave
+> me this example:
+>
+> Imagine you've stopped the target this way:
+>
+>         <insn><-- stopped here
+>         <insn>
+>         <mode changing insn>
+>         <insn>
+>         <insn>
+>         ...
+>
+> now, if you dump rIP and say, rIP + the 10 following insns at the place
+> you've stopped it, gdb cannot know that 2 insns further into the stream
+> a
+>
+> <mode changing insn>
+>
+> is coming and it should change the disassembly of the insns after that
+> <mode changing insn> to the new mode. Unless it goes and inspects all
+> further instructions and disassembles them and analyzes the flow...
 
-Cheers,
-Longman
+That's fine.  x86 machine code is like this.  You also can't
+disassemble instructions before rIP accurately either.
 
+>
+> So what you can do is
+>
+> (gdb) set arch ...
+>
+> at the <mode changing insn> to the mode you're changing to.
+>
+> Dunno, maybe I'm missing something but this sounds like without user
+> help gdb can only assume things.
+
+In the tools/testing/x86/selftests directory, edited slightly for brevity:
+
+$ gdb ./test_syscall_vdso_32
+(gdb) b call64_from_32
+Breakpoint 1 at 0x80499ef: file thunks_32.S, line 19.
+(gdb) display/i $pc
+1: x/i $pc
+<error: No registers.>
+(gdb) r
+Starting program:
+/home/luto/apps/linux/tools/testing/selftests/x86/test_syscall_vdso_32
+...
+[RUN]    Executing 6-argument 32-bit syscall via VDSO
+
+Breakpoint 1, call64_from_32 () at thunks_32.S:19
+19        mov    4(%esp), %eax
+1: x/i $pc
+=> 0x80499ef <call64_from_32>:    mov    0x4(%esp),%eax
+(gdb) si
+22        push    %ecx
+1: x/i $pc
+=> 0x80499f3 <call64_from_32+4>:    push   %ecx
+(gdb)
+call64_from_32 () at thunks_32.S:23
+23        push    %edx
+1: x/i $pc
+=> 0x80499f4 <call64_from_32+5>:    push   %edx
+(gdb)
+call64_from_32 () at thunks_32.S:24
+24        push    %esi
+1: x/i $pc
+=> 0x80499f5 <call64_from_32+6>:    push   %esi
+(gdb)
+call64_from_32 () at thunks_32.S:25
+25        push    %edi
+1: x/i $pc
+=> 0x80499f6 <call64_from_32+7>:    push   %edi
+(gdb)
+call64_from_32 () at thunks_32.S:28
+28        jmp    $0x33,$1f
+1: x/i $pc
+=> 0x80499f7 <call64_from_32+8>:    ljmp   $0x33,$0x80499fe
+(gdb) info registers
+eax            0x80492e8           134517480
+ecx            0x3f                63
+edx            0x1                 1
+ebx            0xf7fc8550          -134445744
+esp            0xffffc57c          0xffffc57c
+ebp            0xffffc5e8          0xffffc5e8
+esi            0x0                 0
+edi            0x8049180           134517120
+eip            0x80499f7           0x80499f7 <call64_from_32+8>
+eflags         0x292               [ AF SF IF ]
+cs             0x23                35
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) si
+32        call    *%rax
+1: x/i $pc
+=> 0x80499fe <call64_from_32+15>:    call   *%eax
+(gdb) info registers
+eax            0x80492e8           134517480
+
+^^^ Should be rax
+
+ecx            0x3f                63
+edx            0x1                 1
+ebx            0xf7fc8550          -134445744
+esp            0xffffc57c          0xffffc57c
+ebp            0xffffc5e8          0xffffc5e8
+esi            0x0                 0
+edi            0x8049180           134517120
+eip            0x80499fe           0x80499fe <call64_from_32+15>
+
+^^^ r8, etc are all missing
+
+eflags         0x292               [ AF SF IF ]
+cs             0x33                51
+
+^^^ 64-bit!
+
+ss             0x2b                43
+ds             0x2b                43
+es             0x2b                43
+fs             0x0                 0
+gs             0x63                99
+(gdb) si
+poison_regs64 () at test_syscall_vdso.c:35
+35    long syscall_addr;
+1: x/i $pc
+=> 0x80492e8 <poison_regs64>:    dec    %ecx
+(gdb) si
+36    long get_syscall(char **envp)
+1: x/i $pc
+=> 0x80492ef <poison_regs64+7>:    dec    %ecx
+(gdb) set arch i386:x86-64
+warning: Selected architecture i386:x86-64 is not compatible with
+reported target architecture i386
+Architecture `i386:x86-64' not recognized.
+The target architecture is set to "auto" (currently "i386").
+(gdb) set arch i386:x86-64:intel
+warning: Selected architecture i386:x86-64:intel is not compatible
+with reported target architecture i386
+Architecture `i386:x86-64:intel' not recognized.
+The target architecture is set to "auto" (currently "i386").
+
+I don't know enough about gdb internals to know precisely what failed
+here, but this did not work the way it should have.
+
+Sure, ptrace should provide a nice API to figure out that CS == 0x33
+means long mode, but gdb could do a whole lot better here.
