@@ -2,123 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 773F8373883
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:24:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C88F9373897
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:34:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232578AbhEEKZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 06:25:39 -0400
-Received: from mail-db8eur05olkn2097.outbound.protection.outlook.com ([40.92.89.97]:21217
-        "EHLO EUR05-DB8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229559AbhEEKZg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 06:25:36 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=dRrnTleIikd159Vps3ignAGDoxvyb/KhJm/DE4FnQBNwfkkjh13tgZFAHHAHWlZhKZA8C3+x9/802Rlb8KCL0SlTCaYtk37aTm/Zll4MvYh6odfhu3WICTqjsSLDYLcnB/unA1jSZ8SGrZK+jXHyAtkHfUUt8aH2VM6VSmKK7hjGRTUh+KGXLBxmjuXMSkhACTE3Xm6THVr+Nswv0DGsORYrjLQ+mx9PS4hYf5DCdiLbe2DAuthbRX9Rd9SZVTMPKktU9KI3/doN8O2LIe0zBI6hKGomLurejaMANx+1D9/UbsCup5eEhXyXuA7Dtl+2t8I9v7aQzP5x3MLsBeYkAw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AJxal/I82YEHUsPiZ4N/zcBXcIDnH8o7zxeY+I4EIv8=;
- b=XqZ6p3yJAxw9/5GA239oX5xdk/08RVWDqCIORb9yRBkCKXkJaD9XUBGpdrTYTcpPe43rcWZ3S8ggds38Iw2+khUWGG5em/yy1RKfKfp3OO1qUmr16W2FjyEmIPN0mmId4rpa41gWNljnOJJYBnxgtAmCMrds3yfG5NFFymAdA6gtzMXhtd6/FCPgdOQA+2cOMJ+tanc73zN3XnJlYM/YVBikuHQM4ef/RjKD1DyshH0KF7LyavU/IGkH0QZeoieAn1xlIQFYTRHiMHOcPEugUR4xKH9mw1vLOjSYQARHnIPNfn1mCCz3tbUsNJwUJRf/lvW95kvwQ/2Xqs5ppadRMg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-Received: from VI1EUR05FT026.eop-eur05.prod.protection.outlook.com
- (2a01:111:e400:fc12::51) by
- VI1EUR05HT102.eop-eur05.prod.protection.outlook.com (2a01:111:e400:fc12::100)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.27; Wed, 5 May
- 2021 10:24:38 +0000
-Received: from VI1PR09MB2638.eurprd09.prod.outlook.com
- (2a01:111:e400:fc12::43) by VI1EUR05FT026.mail.protection.outlook.com
- (2a01:111:e400:fc12::175) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend
- Transport; Wed, 5 May 2021 10:24:38 +0000
-X-IncomingTopHeaderMarker: OriginalChecksum:BAB6BFFCAAE460C1EE0FD966D77287A495829F440E411E8C645E032C861A5CB4;UpperCasedChecksum:94CC6709E6C45DA1520E427D8938459DA01BEC556173663949FE737565F3EAB4;SizeAsReceived:8933;Count:48
-Received: from VI1PR09MB2638.eurprd09.prod.outlook.com
- ([fe80::948b:987c:566b:198e]) by VI1PR09MB2638.eurprd09.prod.outlook.com
- ([fe80::948b:987c:566b:198e%5]) with mapi id 15.20.4087.044; Wed, 5 May 2021
- 10:24:38 +0000
-Subject: Re: [PATCH] x86/events/amd/iommu: Fix invalid Perf result due to
- IOMMU PMC power-gating
-To:     Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
-        linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        iommu@lists.linux-foundation.org
-Cc:     peterz@infradead.org, mingo@redhat.com, joro@8bytes.org,
-        Jon.Grimm@amd.com, amonakov@ispras.ru
-References: <20210504065236.4415-1-suravee.suthikulpanit@amd.com>
-From:   David Coe <david.coe@live.co.uk>
-Message-ID: <VI1PR09MB2638BB0FCE2E312B3471BC7FC7599@VI1PR09MB2638.eurprd09.prod.outlook.com>
-Date:   Wed, 5 May 2021 11:24:36 +0100
+        id S232725AbhEEKfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 06:35:08 -0400
+Received: from ivanoab7.miniserver.com ([37.128.132.42]:48566 "EHLO
+        www.kot-begemot.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232592AbhEEKfE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 06:35:04 -0400
+Received: from tun252.jain.kot-begemot.co.uk ([192.168.18.6] helo=jain.kot-begemot.co.uk)
+        by www.kot-begemot.co.uk with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1leEqy-0000T9-JT; Wed, 05 May 2021 10:34:06 +0000
+Received: from jain.kot-begemot.co.uk ([192.168.3.3])
+        by jain.kot-begemot.co.uk with esmtp (Exim 4.92)
+        (envelope-from <anton.ivanov@cambridgegreys.com>)
+        id 1leEqv-0001wt-BS; Wed, 05 May 2021 11:34:04 +0100
+Subject: Re: [PATCH 31/35] tty: remove empty tty_operations::set_termios
+To:     Jiri Slaby <jslaby@suse.cz>, gregkh@linuxfoundation.org
+Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jeff Dike <jdike@addtoit.com>,
+        Richard Weinberger <richard@nod.at>,
+        Karsten Keil <isdn@linux-pingi.de>
+References: <20210505091928.22010-1-jslaby@suse.cz>
+ <20210505091928.22010-32-jslaby@suse.cz>
+From:   Anton Ivanov <anton.ivanov@cambridgegreys.com>
+Message-ID: <6e21c5b1-68c8-9aaa-61e0-dba24cc8339c@cambridgegreys.com>
+Date:   Wed, 5 May 2021 11:34:01 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
-In-Reply-To: <20210504065236.4415-1-suravee.suthikulpanit@amd.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
-X-TMN:  [1iV9f5vNuyVtcVzve2HaL8LVwxHRlOOc]
-X-ClientProxiedBy: LO4P123CA0072.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:153::23) To VI1PR09MB2638.eurprd09.prod.outlook.com
- (2603:10a6:803:7b::27)
-X-Microsoft-Original-Message-ID: <ed3237f2-e682-5f08-8c94-3c14a462c42e@live.co.uk>
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [192.168.0.6] (90.246.218.100) by LO4P123CA0072.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:153::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Wed, 5 May 2021 10:24:37 +0000
-X-MS-PublicTrafficType: Email
-X-IncomingHeaderCount: 48
-X-EOPAttributedMessage: 0
-X-MS-Office365-Filtering-Correlation-Id: e2625db7-4d68-41ba-9abc-08d90faffc74
-X-MS-TrafficTypeDiagnostic: VI1EUR05HT102:
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: CAaOuzW05Ck8IUJoBfmldTL3PFAOiwEt8MO1Bm+vMTmanCuvde7hRabnCmH8qF/l1t1641OnU3rfhReckwsftQgJgU+fCogiTzyTqI8xPHSxQ1OMIAmOZzHUwErxgfaHDdrgkUJ1hAa9alHmp7xVJszKRZXHBiQxXmizk4aB+9/Xsjp0e05BDB+uanrBP+IyRbDWIDuPTEiITvKgcfptxfRo7zWe8XZ+S0ZdlmSnIXkg9pmzwaaPFhLhPE4pWucmAz8MKJrD9XEH2Jve28A4kp+ingxkBqo6HMDgJq3NrE00TZA8kTYr/gCfeOV2t4E+W3tCQah9gT208p7XTQBd1OIYO4W1Q4N9u1/A0Kt51ZjReQt5IUK3iwgkJn/dFpBEOHWO1fnBK2YHnDUa4csgcQ==
-X-MS-Exchange-AntiSpam-MessageData: h3ASWrdWl/LKUIJAHEj1d+v2LH+1iICfyXK8a/ZcdGeTDmFSAgK4XsEucNZtKZ9zbx7Cs9cfWYmihPMBE+5BbzMtXF1WcJlktDqkh4zumqtqK5VCDc45G6MKTTH5Qb5ORfoaz1iSWFaHQOHRhneraQ==
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e2625db7-4d68-41ba-9abc-08d90faffc74
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 10:24:38.1358
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-AuthSource: VI1EUR05FT026.eop-eur05.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1EUR05HT102
+In-Reply-To: <20210505091928.22010-32-jslaby@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: -1.0
+X-Spam-Score: -1.0
+X-Clacks-Overhead: GNU Terry Pratchett
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, once more!
 
-On 04/05/2021 07:52, Suravee Suthikulpanit wrote:
-> On certain AMD platforms, when the IOMMU performance counter source
-> (csource) field is zero, power-gating for the counter is enabled, which
-> prevents write access and returns zero for read access.
+
+On 05/05/2021 10:19, Jiri Slaby wrote:
+> tty_operations::set_termios is optional. If it doesn't exist, nothing is
+> called. So remove almost¹ empty set_termios implementations.
 > 
-> This can cause invalid perf result especially when event multiplexing
-> is needed (i.e. more number of events than available counters) since
-> the current logic keeps track of the previously read counter value,
-> and subsequently re-program the counter to continue counting the event.
-> With power-gating enabled, we cannot gurantee successful re-programming
-> of the counter.
+> ¹ capi had an useless pr_debug in it.
 > 
-> Workaround this issue by :
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Richard Weinberger <richard@nod.at>
+> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Cc: Karsten Keil <isdn@linux-pingi.de>
+> ---
+>   arch/um/drivers/line.c          | 5 -----
+>   arch/um/drivers/line.h          | 1 -
+>   arch/um/drivers/ssl.c           | 1 -
+>   arch/um/drivers/stdio_console.c | 1 -
+>   drivers/isdn/capi/capi.c        | 6 ------
+>   5 files changed, 14 deletions(-)
 > 
-> 1. Modifying the ordering of setting/reading counters and enabing/
->     disabling csources to only access the counter when the csource
->     is set to non-zero.
-> 
-> 2. Since AMD IOMMU PMU does not support interrupt mode, the logic
->     can be simplified to always start counting with value zero,
->     and accumulate the counter value when stopping without the need
->     to keep track and reprogram the counter with the previously read
->     counter value.
-> 
-> This has been tested on systems with and without power-gating.
+> diff --git a/arch/um/drivers/line.c b/arch/um/drivers/line.c
+> index 159434851417..fbc623d2cc07 100644
+> --- a/arch/um/drivers/line.c
+> +++ b/arch/um/drivers/line.c
+> @@ -211,11 +211,6 @@ int line_write(struct tty_struct *tty, const unsigned char *buf, int len)
+>   	return ret;
+>   }
+>   
+> -void line_set_termios(struct tty_struct *tty, struct ktermios * old)
+> -{
+> -	/* nothing */
+> -}
+> -
+>   void line_throttle(struct tty_struct *tty)
+>   {
+>   	struct line *line = tty->driver_data;
+> diff --git a/arch/um/drivers/line.h b/arch/um/drivers/line.h
+> index 3325e2bc64e4..bdb16b96e76f 100644
+> --- a/arch/um/drivers/line.h
+> +++ b/arch/um/drivers/line.h
+> @@ -66,7 +66,6 @@ extern int line_setup(char **conf, unsigned nlines, char **def,
+>   		      char *init, char *name);
+>   extern int line_write(struct tty_struct *tty, const unsigned char *buf,
+>   		      int len);
+> -extern void line_set_termios(struct tty_struct *tty, struct ktermios * old);
+>   extern unsigned int line_chars_in_buffer(struct tty_struct *tty);
+>   extern void line_flush_buffer(struct tty_struct *tty);
+>   extern void line_flush_chars(struct tty_struct *tty);
+> diff --git a/arch/um/drivers/ssl.c b/arch/um/drivers/ssl.c
+> index 6476b28d7c5e..41eae2e8fb65 100644
+> --- a/arch/um/drivers/ssl.c
+> +++ b/arch/um/drivers/ssl.c
+> @@ -99,7 +99,6 @@ static const struct tty_operations ssl_ops = {
+>   	.chars_in_buffer 	= line_chars_in_buffer,
+>   	.flush_buffer 		= line_flush_buffer,
+>   	.flush_chars 		= line_flush_chars,
+> -	.set_termios 		= line_set_termios,
+>   	.throttle 		= line_throttle,
+>   	.unthrottle 		= line_unthrottle,
+>   	.install		= ssl_install,
+> diff --git a/arch/um/drivers/stdio_console.c b/arch/um/drivers/stdio_console.c
+> index 37b127941e6f..e8b762f4d8c2 100644
+> --- a/arch/um/drivers/stdio_console.c
+> +++ b/arch/um/drivers/stdio_console.c
+> @@ -106,7 +106,6 @@ static const struct tty_operations console_ops = {
+>   	.chars_in_buffer 	= line_chars_in_buffer,
+>   	.flush_buffer 		= line_flush_buffer,
+>   	.flush_chars 		= line_flush_chars,
+> -	.set_termios 		= line_set_termios,
+>   	.throttle 		= line_throttle,
+>   	.unthrottle 		= line_unthrottle,
+>   	.hangup			= line_hangup,
+> diff --git a/drivers/isdn/capi/capi.c b/drivers/isdn/capi/capi.c
+> index 6d99b93bb09e..693b0bc31395 100644
+> --- a/drivers/isdn/capi/capi.c
+> +++ b/drivers/isdn/capi/capi.c
+> @@ -1197,11 +1197,6 @@ static unsigned int capinc_tty_chars_in_buffer(struct tty_struct *tty)
+>   	return mp->outbytes;
+>   }
+>   
+> -static void capinc_tty_set_termios(struct tty_struct *tty, struct ktermios *old)
+> -{
+> -	pr_debug("capinc_tty_set_termios\n");
+> -}
+> -
+>   static void capinc_tty_throttle(struct tty_struct *tty)
+>   {
+>   	struct capiminor *mp = tty->driver_data;
+> @@ -1267,7 +1262,6 @@ static const struct tty_operations capinc_ops = {
+>   	.flush_chars = capinc_tty_flush_chars,
+>   	.write_room = capinc_tty_write_room,
+>   	.chars_in_buffer = capinc_tty_chars_in_buffer,
+> -	.set_termios = capinc_tty_set_termios,
+>   	.throttle = capinc_tty_throttle,
+>   	.unthrottle = capinc_tty_unthrottle,
+>   	.stop = capinc_tty_stop,
 > 
 
-Just as a final, sanity check I've loaded the same patched kernel 
-5.11.0-16 on to an old AMD Athlon FX8350. So far, all seems in order: it 
-loads IOMMUv1 and runs Ubuntu 21.04 without incident!
-
-Much appreciate all your efforts, Suravee, Alex et al. Best regards.
+Acked-By: Anton Ivanov <anton.ivanov@cambridgegreys.com>
 
 -- 
-David
+Anton R. Ivanov
+Cambridgegreys Limited. Registered in England. Company Number 10273661
+https://www.cambridgegreys.com/
