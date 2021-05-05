@@ -2,116 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B55F373CE6
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99824373CF0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:02:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233683AbhEEODK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233668AbhEEODI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:03:08 -0400
-Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976AEC06174A;
-        Wed,  5 May 2021 07:02:11 -0700 (PDT)
-Received: by mail-oi1-x22e.google.com with SMTP id d21so2236208oic.11;
-        Wed, 05 May 2021 07:02:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VFGUpVbhSw2/apyC9vepkbb02Glfo5sSVvaD/S5XelI=;
-        b=BF0reEh8p2C7kPm3xF2TxZ9/y8dDAQFHOLsKdOfzCmKkv0Q/bcGvQXH+n3kTDJy5uF
-         s9jCSmcEabM2Y8AzfVZtDBWhQilY1Eo2NYBQDb7D/pK/vx2C3TqLDRXn+1eKJCP49rpo
-         XlfNYvaHbFTNh4iDXprEf0kg3NuAqV95lamDDkmQLH+3gEDfVF6QqqYPQJnXqaf/jDKa
-         D+UK3IE4tKidZ5ia5Al84ABtbqLt7B8B6BcrD08becofqDsBrKQDQeZO1juFoDW/6gcE
-         VICDbES917LojWzvtwbIlQckaqaRmEt1VElxTM+Sb4m8ySMiuVzd/yidoKpQOp4iSviq
-         flHQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=VFGUpVbhSw2/apyC9vepkbb02Glfo5sSVvaD/S5XelI=;
-        b=pk6nS+O7KvuApX+au9OqL8zq8xF4f4O2UNcnPm2jDo5XNkLz1DKdURCzR0OBhX6dFG
-         mYigTqpcd9z3YSlzx+MRMkjJ1g6Q08PslttkyRIELeKqSqdc0lPMOa1L8xyqx83oO4lr
-         0gNRXRknlKwe0gpV7UKjdjbKejHW2AG2+/rxXX2/S+BMEThY6UILu/3/wp1dIoNEcGO0
-         /bKUFIM/WOBZ/bS+8TBbG1ukPxGAB1fzLtthZkM8nSyekewbW4X31eC/LuPwS1LTVjWJ
-         FgvnaWOHQr20lo8zLQfueICtWn1GeX1b9li0m7+46qLzvpv4Lg/QPbl9QbCaGd7rr/eb
-         1xdA==
-X-Gm-Message-State: AOAM533kCMgtQZWn9yq6pffQDe3jCSBmWe32gfxKpHLXnkMrJju3YaCO
-        S0X/yEDMM+o2iyyFhqsYKGE=
-X-Google-Smtp-Source: ABdhPJxEC7lqRByZwhnDwtCicpYXYi3RSPguymT8sqxrRM6pFIjhHauDX3g4O5qyQJV7I7xvS1v8ew==
-X-Received: by 2002:a05:6808:51:: with SMTP id v17mr6982333oic.132.1620223331018;
-        Wed, 05 May 2021 07:02:11 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p15sm1494501otl.23.2021.05.05.07.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 07:02:10 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 5 May 2021 07:02:08 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
-        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
-        linux-iio@vger.kernel.org, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH 4/4] hwmon: vcnl3020: add hwmon driver for intrusion
- sensor
-Message-ID: <20210505140208.GA1913659@roeck-us.net>
-References: <20210430152419.261757-1-i.mikhaylov@yadro.com>
- <20210430152419.261757-5-i.mikhaylov@yadro.com>
- <20210430163831.GA3163069@roeck-us.net>
- <8dbdf071f9f2041b92cabfa417487a3ec3e9647e.camel@yadro.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8dbdf071f9f2041b92cabfa417487a3ec3e9647e.camel@yadro.com>
+        id S233762AbhEEODa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:03:30 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:38409 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233702AbhEEODN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 10:03:13 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FZz125n1Bz9sXS;
+        Wed,  5 May 2021 16:02:14 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id RtgKVJrtb_61; Wed,  5 May 2021 16:02:14 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FZz110QcHz9sXT;
+        Wed,  5 May 2021 16:02:13 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E233B8B7CA;
+        Wed,  5 May 2021 16:02:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id wgcZoj-XOThG; Wed,  5 May 2021 16:02:12 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 57F6B8B7D7;
+        Wed,  5 May 2021 16:02:12 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 2C61D64856; Wed,  5 May 2021 14:02:12 +0000 (UTC)
+Message-Id: <1c80981548dc0c4f145109cdd473022c1aad8d2b.1620223302.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 1/2] powerpc/asm-offset: Remove unused items
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, npiggin@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Wed,  5 May 2021 14:02:12 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 10:46:53PM +0300, Ivan Mikhaylov wrote:
-> On Fri, 2021-04-30 at 09:38 -0700, Guenter Roeck wrote:
-> > On Fri, Apr 30, 2021 at 06:24:19PM +0300, Ivan Mikhaylov wrote:
-> > > Intrusion status detection via Interrupt Status Register.
-> > > 
-> > > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
-> > 
-> > I think this should, if at all, be handled using the
-> > iio->hwmon bridge (or, in other words, require a solution
-> > which is not chip specific).
-> 
-> Thanks a lot for suggestion, it's actually looks what's needed here instead of
-> this driver. Anyways, there is no IIO_PROXIMITY support inside supported types
-> in iio_hwmon.c. Should I add additional case inside this driver for
-> IIO_PROXIMITY type?
-> 
-> > I am also not sure if "proximity" is really appropriate to use
-> > for intrusion detection in the sense of hardware monitoring.
-> > This would require a proximity sensor within a chassis, which
-> > would be both overkill and unlikely to happen in the real world.
-> > "Intrusion", in hardware monitoring context, means "someone
-> > opened the chassis", not "someone got [too] close".
-> > 
-> 
-> I'm not sure either but it exists :) And it's exactly for this purpose:
-> "someone opened the chassis", "how near/far is cover?".
-> 
+Following PACA related items are not used anymore by ASM code:
+PACA_SIZE, PACACONTEXTID, PACALOWSLICESPSIZE, PACAHIGHSLICEPSIZE,
+PACA_SLB_ADDR_LIMIT, MMUPSIZEDEFSIZE, PACASLBCACHE, PACASLBCACHEPTR,
+PACASTABRR, PACAVMALLOCSLLP, MMUPSIZESLLP, PACACONTEXTSLLP,
+PACALPPACAPTR, LPPACA_DTLIDX and PACA_DTL_RIDX.
 
-The cost for VCNL3020, for a full reel with 3,300 chips, is $1.17 per chip
-at Mouser. A mechanical switch costs a couple of cents. A single proximity
-sensor won't cover all parts of a chassis; one would likely need several
-chips to be sure that are no blind spots (if that is even possible - I don't
-think it is in any of my PC chassis due to mechanical limitations). This
-is on top of programming, which would be sensitive to generating false
-alarms (or missing alarms, for that matter). That sounds quite impractical
-and expensive to me. I'd really like to see the actual use case where a
-proximity sensor (or set of proximity sensors) is used for intrusion
-detection in the sense of hardware monitoring - not just the technical
-possibility of doing so, but an actual use case (as in "this vendor,
-in this chassis, is doing it").
+Following items are also not used anymore:
+SIGSEGV, NMI_MASK, THREAD_DBCR0, KUAP, TI_FLAGS, TI_PREEMPT,
+DCACHEL1BLOCKSPERPAGE, ICACHEL1BLOCKSIZE, ICACHEL1LOGBLOCKSIZE,
+ICACHEL1BLOCKSPERPAGE, STACK_REGS_KUAP, KVM_NEED_FLUSH, KVM_FWNMI,
+VCPU_DEC, VCPU_SPMC, HSTATE_XICS_PHYS, HSTATE_SAVED_XIRR and
+PPC_DBELL_MSGTYPE.
 
-Thanks,
-Guenter
+Remove all of them.
+
+Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/asm-offsets.c | 52 +------------------------------
+ 1 file changed, 1 insertion(+), 51 deletions(-)
+
+diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
+index 28af4efb4587..0480f4006e0c 100644
+--- a/arch/powerpc/kernel/asm-offsets.c
++++ b/arch/powerpc/kernel/asm-offsets.c
+@@ -87,10 +87,7 @@ int main(void)
+ #endif
+ #endif
+ 	OFFSET(MMCONTEXTID, mm_struct, context.id);
+-#ifdef CONFIG_PPC64
+-	DEFINE(SIGSEGV, SIGSEGV);
+-	DEFINE(NMI_MASK, NMI_MASK);
+-#else
++#ifdef CONFIG_PPC32
+ #ifdef CONFIG_PPC_RTAS
+ 	OFFSET(RTAS_SP, thread_struct, rtas_sp);
+ #endif
+@@ -154,18 +151,12 @@ int main(void)
+ 	OFFSET(THREAD_USED_SPE, thread_struct, used_spe);
+ #endif /* CONFIG_SPE */
+ #endif /* CONFIG_PPC64 */
+-#if defined(CONFIG_4xx) || defined(CONFIG_BOOKE)
+-	OFFSET(THREAD_DBCR0, thread_struct, debug.dbcr0);
+-#endif
+ #ifdef CONFIG_KVM_BOOK3S_32_HANDLER
+ 	OFFSET(THREAD_KVM_SVCPU, thread_struct, kvm_shadow_vcpu);
+ #endif
+ #if defined(CONFIG_KVM) && defined(CONFIG_BOOKE)
+ 	OFFSET(THREAD_KVM_VCPU, thread_struct, kvm_vcpu);
+ #endif
+-#if defined(CONFIG_PPC_BOOK3S_32) && defined(CONFIG_PPC_KUAP)
+-	OFFSET(KUAP, thread_struct, kuap);
+-#endif
+ 
+ #ifdef CONFIG_PPC_TRANSACTIONAL_MEM
+ 	OFFSET(PACATMSCRATCH, paca_struct, tm_scratch);
+@@ -185,19 +176,12 @@ int main(void)
+ 	       sizeof(struct pt_regs) + 16);
+ #endif /* CONFIG_PPC_TRANSACTIONAL_MEM */
+ 
+-	OFFSET(TI_FLAGS, thread_info, flags);
+ 	OFFSET(TI_LOCAL_FLAGS, thread_info, local_flags);
+-	OFFSET(TI_PREEMPT, thread_info, preempt_count);
+ 
+ #ifdef CONFIG_PPC64
+ 	OFFSET(DCACHEL1BLOCKSIZE, ppc64_caches, l1d.block_size);
+ 	OFFSET(DCACHEL1LOGBLOCKSIZE, ppc64_caches, l1d.log_block_size);
+-	OFFSET(DCACHEL1BLOCKSPERPAGE, ppc64_caches, l1d.blocks_per_page);
+-	OFFSET(ICACHEL1BLOCKSIZE, ppc64_caches, l1i.block_size);
+-	OFFSET(ICACHEL1LOGBLOCKSIZE, ppc64_caches, l1i.log_block_size);
+-	OFFSET(ICACHEL1BLOCKSPERPAGE, ppc64_caches, l1i.blocks_per_page);
+ 	/* paca */
+-	DEFINE(PACA_SIZE, sizeof(struct paca_struct));
+ 	OFFSET(PACAPACAINDEX, paca_struct, paca_index);
+ 	OFFSET(PACAPROCSTART, paca_struct, cpu_start);
+ 	OFFSET(PACAKSAVE, paca_struct, kstack);
+@@ -212,15 +196,6 @@ int main(void)
+ 	OFFSET(PACAIRQSOFTMASK, paca_struct, irq_soft_mask);
+ 	OFFSET(PACAIRQHAPPENED, paca_struct, irq_happened);
+ 	OFFSET(PACA_FTRACE_ENABLED, paca_struct, ftrace_enabled);
+-#ifdef CONFIG_PPC_BOOK3S
+-	OFFSET(PACACONTEXTID, paca_struct, mm_ctx_id);
+-#ifdef CONFIG_PPC_MM_SLICES
+-	OFFSET(PACALOWSLICESPSIZE, paca_struct, mm_ctx_low_slices_psize);
+-	OFFSET(PACAHIGHSLICEPSIZE, paca_struct, mm_ctx_high_slices_psize);
+-	OFFSET(PACA_SLB_ADDR_LIMIT, paca_struct, mm_ctx_slb_addr_limit);
+-	DEFINE(MMUPSIZEDEFSIZE, sizeof(struct mmu_psize_def));
+-#endif /* CONFIG_PPC_MM_SLICES */
+-#endif
+ 
+ #ifdef CONFIG_PPC_BOOK3E
+ 	OFFSET(PACAPGD, paca_struct, pgd);
+@@ -241,21 +216,9 @@ int main(void)
+ #endif /* CONFIG_PPC_BOOK3E */
+ 
+ #ifdef CONFIG_PPC_BOOK3S_64
+-	OFFSET(PACASLBCACHE, paca_struct, slb_cache);
+-	OFFSET(PACASLBCACHEPTR, paca_struct, slb_cache_ptr);
+-	OFFSET(PACASTABRR, paca_struct, stab_rr);
+-	OFFSET(PACAVMALLOCSLLP, paca_struct, vmalloc_sllp);
+-#ifdef CONFIG_PPC_MM_SLICES
+-	OFFSET(MMUPSIZESLLP, mmu_psize_def, sllp);
+-#else
+-	OFFSET(PACACONTEXTSLLP, paca_struct, mm_ctx_sllp);
+-#endif /* CONFIG_PPC_MM_SLICES */
+ 	OFFSET(PACA_EXGEN, paca_struct, exgen);
+ 	OFFSET(PACA_EXMC, paca_struct, exmc);
+ 	OFFSET(PACA_EXNMI, paca_struct, exnmi);
+-#ifdef CONFIG_PPC_PSERIES
+-	OFFSET(PACALPPACAPTR, paca_struct, lppaca_ptr);
+-#endif
+ 	OFFSET(PACA_SLBSHADOWPTR, paca_struct, slb_shadow_ptr);
+ 	OFFSET(SLBSHADOW_STACKVSID, slb_shadow, save_area[SLB_NUM_BOLTED - 1].vsid);
+ 	OFFSET(SLBSHADOW_STACKESID, slb_shadow, save_area[SLB_NUM_BOLTED - 1].esid);
+@@ -264,9 +227,7 @@ int main(void)
+ #ifdef CONFIG_KVM_BOOK3S_HV_POSSIBLE
+ 	OFFSET(PACA_PMCINUSE, paca_struct, pmcregs_in_use);
+ #endif
+-	OFFSET(LPPACA_DTLIDX, lppaca, dtl_idx);
+ 	OFFSET(LPPACA_YIELDCOUNT, lppaca, yield_count);
+-	OFFSET(PACA_DTL_RIDX, paca_struct, dtl_ridx);
+ #endif /* CONFIG_PPC_BOOK3S_64 */
+ 	OFFSET(PACAEMERGSP, paca_struct, emergency_sp);
+ #ifdef CONFIG_PPC_BOOK3S_64
+@@ -343,10 +304,6 @@ int main(void)
+ 	STACK_PT_REGS_OFFSET(STACK_REGS_AMR, amr);
+ 	STACK_PT_REGS_OFFSET(STACK_REGS_IAMR, iamr);
+ #endif
+-#ifdef CONFIG_PPC_KUAP
+-	STACK_PT_REGS_OFFSET(STACK_REGS_KUAP, kuap);
+-#endif
+-
+ 
+ #if defined(CONFIG_PPC32)
+ #if defined(CONFIG_BOOKE) || defined(CONFIG_40x)
+@@ -482,11 +439,9 @@ int main(void)
+ 	OFFSET(KVM_HOST_LPID, kvm, arch.host_lpid);
+ 	OFFSET(KVM_HOST_LPCR, kvm, arch.host_lpcr);
+ 	OFFSET(KVM_HOST_SDR1, kvm, arch.host_sdr1);
+-	OFFSET(KVM_NEED_FLUSH, kvm, arch.need_tlb_flush.bits);
+ 	OFFSET(KVM_ENABLED_HCALLS, kvm, arch.enabled_hcalls);
+ 	OFFSET(KVM_VRMA_SLB_V, kvm, arch.vrma_slb_v);
+ 	OFFSET(KVM_RADIX, kvm, arch.radix);
+-	OFFSET(KVM_FWNMI, kvm, arch.fwnmi_enabled);
+ 	OFFSET(KVM_SECURE_GUEST, kvm, arch.secure_guest);
+ 	OFFSET(VCPU_DSISR, kvm_vcpu, arch.shregs.dsisr);
+ 	OFFSET(VCPU_DAR, kvm_vcpu, arch.shregs.dar);
+@@ -514,7 +469,6 @@ int main(void)
+ 	OFFSET(VCPU_DAWRX1, kvm_vcpu, arch.dawrx1);
+ 	OFFSET(VCPU_CIABR, kvm_vcpu, arch.ciabr);
+ 	OFFSET(VCPU_HFLAGS, kvm_vcpu, arch.hflags);
+-	OFFSET(VCPU_DEC, kvm_vcpu, arch.dec);
+ 	OFFSET(VCPU_DEC_EXPIRES, kvm_vcpu, arch.dec_expires);
+ 	OFFSET(VCPU_PENDING_EXC, kvm_vcpu, arch.pending_exceptions);
+ 	OFFSET(VCPU_CEDED, kvm_vcpu, arch.ceded);
+@@ -525,7 +479,6 @@ int main(void)
+ 	OFFSET(VCPU_MMCRA, kvm_vcpu, arch.mmcra);
+ 	OFFSET(VCPU_MMCRS, kvm_vcpu, arch.mmcrs);
+ 	OFFSET(VCPU_PMC, kvm_vcpu, arch.pmc);
+-	OFFSET(VCPU_SPMC, kvm_vcpu, arch.spmc);
+ 	OFFSET(VCPU_SIAR, kvm_vcpu, arch.siar);
+ 	OFFSET(VCPU_SDAR, kvm_vcpu, arch.sdar);
+ 	OFFSET(VCPU_SIER, kvm_vcpu, arch.sier);
+@@ -646,10 +599,8 @@ int main(void)
+ 	HSTATE_FIELD(HSTATE_HWTHREAD_STATE, hwthread_state);
+ 	HSTATE_FIELD(HSTATE_KVM_VCPU, kvm_vcpu);
+ 	HSTATE_FIELD(HSTATE_KVM_VCORE, kvm_vcore);
+-	HSTATE_FIELD(HSTATE_XICS_PHYS, xics_phys);
+ 	HSTATE_FIELD(HSTATE_XIVE_TIMA_PHYS, xive_tima_phys);
+ 	HSTATE_FIELD(HSTATE_XIVE_TIMA_VIRT, xive_tima_virt);
+-	HSTATE_FIELD(HSTATE_SAVED_XIRR, saved_xirr);
+ 	HSTATE_FIELD(HSTATE_HOST_IPI, host_ipi);
+ 	HSTATE_FIELD(HSTATE_PTID, ptid);
+ 	HSTATE_FIELD(HSTATE_FAKE_SUSPEND, fake_suspend);
+@@ -757,7 +708,6 @@ int main(void)
+ #endif
+ 
+ 	DEFINE(PPC_DBELL_SERVER, PPC_DBELL_SERVER);
+-	DEFINE(PPC_DBELL_MSGTYPE, PPC_DBELL_MSGTYPE);
+ 
+ #ifdef CONFIG_PPC_8xx
+ 	DEFINE(VIRT_IMMR_BASE, (u64)__fix_to_virt(FIX_IMMR_BASE));
+-- 
+2.25.0
+
