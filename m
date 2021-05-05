@@ -2,140 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E36F5374C19
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:49:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35E07374C25
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:00:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229894AbhEEXuC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 19:50:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50350 "EHLO
+        id S229968AbhEEX5k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 19:57:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229599AbhEEXuB (ORCPT
+        with ESMTP id S229726AbhEEX5k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 19:50:01 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2297DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 16:49:04 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id i190so3490820pfc.12
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 16:49:04 -0700 (PDT)
+        Wed, 5 May 2021 19:57:40 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9C7DC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 16:56:41 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id u20so4686837lja.13
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 16:56:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Dlk0fYmdsA4sVPnIEMF0cY2k6ue6IGJM2lhPnSbJsv4=;
-        b=TcawMCA+UZ4oNQP/voq1p4cIv3ZgEB1iKQt8HZdRPAjtIlpBftiLFe/vr8deNpT3Qo
-         ZLFETzAnjg+zND0/fWjQr/eqjQCwR6JXhv0Q7UbZ1Z7NM6kXDuTgh0JrRsa78aZDVhnt
-         NbH2ODOCseSe+8jhYA65nugS+8Pdqe9lVEkwl6jAE7A3fr61jpdEYbMfB0aXlOjup2La
-         oal5O/X20CpjXJk7t+UWsXbhNp8ZZi+eJHWJqCWORMtqY83KTjaZrCjkhYPJnZ+SwKMW
-         O32Mc1c7UfZbt2tmnQd8dK0CNujMONnRZUrTMpPPjEVrQ2uNWObC9BNKt4WCQIW+bWvO
-         C2Aw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fw7QXJGTsrjr3zuPRgQiAU7U58qxLFo5Weq3W8UeAIk=;
+        b=NVEql6v3DLZu4uHy44aAXvAF4LKSO9D6LCN+nDL+InoVa0ZnV1vRTtG+SsFmuV0QqB
+         4BSDGNktTU+3A3h8U6l/Vp7DAhP1th8AWeV6M1rvJRRbdQ+iiDEPEDQThqlWMNyE0Ag1
+         jaLWjeLQqwnymNeggNv/fXGKlMZ5bFZ6THEfZAhkoRoF97dBi184VEHi72L/6AM/oxJO
+         XOmOUpauKpB1/Vjl4V54rBcWkLEQtJVDc4VwFV420p8p5yNSHUdKLeoCm9PzFcRFloPv
+         GOVl7YBs1aXCD3cBdbLYqFNWI3wcI1DHaREI5QOFRSlG95oCsY9gDoOcGn1nZqjnRfUd
+         UY2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=Dlk0fYmdsA4sVPnIEMF0cY2k6ue6IGJM2lhPnSbJsv4=;
-        b=YvwuFBSCbdetcNeWUqj96fhVPy/7xFnwHzzet5CBovzdUW416Q5ahQ+aH5Kfys9wDS
-         /+TbHxgxesIWqlUqSQcydpLKfaheSxYJ11lwlZLgHHk5YRi+yb5MbdTidx0uMUJCVAsi
-         ujygI7XeKYtiJhW9wAm/kN+6IyseWD07EUV7UUtu2H0ZBWz6L6wMXI4tjt1Y+HpcoUMd
-         hkwa298R6uCPHs/9O4TMQC8a62govVBtnWWdexXkDSfLtBFFKYc6iECaXpG5Poe+E29I
-         wOMcYZ2V/OT7I8qR2wJHHu8CPyuJdM0zuY4JvZpHDWzK4g2XINE6oTGB0Gnr7YPWfQOg
-         x0NA==
-X-Gm-Message-State: AOAM530RFb3ENHCl+xBa7GSjJ1GQtwyFHlfK+n1X/5AIfbNJhHag5JMJ
-        aOkvsNIi0gljzpZ2nei5FO0Xdg==
-X-Google-Smtp-Source: ABdhPJzGglzznc3lT7uFV37R1RIE5nGXBKUWPyJlvMjLb5mKeraO5yO14etz4szPLLF6Vx/U8bYj4Q==
-X-Received: by 2002:a62:3344:0:b029:24c:735c:4546 with SMTP id z65-20020a6233440000b029024c735c4546mr1404124pfz.1.1620258543399;
-        Wed, 05 May 2021 16:49:03 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id 79sm277813pfz.202.2021.05.05.16.49.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 16:49:02 -0700 (PDT)
-Subject: Re: [PATCH v2] io_thread/x86: setup io_threads more like normal user
- space threads
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Stefan Metzmacher <metze@samba.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org,
-        io-uring@vger.kernel.org, x86@kernel.org
-References: <20210411152705.2448053-1-metze@samba.org>
- <20210505110310.237537-1-metze@samba.org>
- <df4b116a-3324-87b7-ff40-67d134b4e55c@kernel.dk>
- <878s4soncx.ffs@nanos.tec.linutronix.de>
- <875yzwomvk.ffs@nanos.tec.linutronix.de>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <ff1f6a6c-9a11-acda-13cc-e67440a85d87@kernel.dk>
-Date:   Wed, 5 May 2021 17:49:02 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fw7QXJGTsrjr3zuPRgQiAU7U58qxLFo5Weq3W8UeAIk=;
+        b=YHZNJlbO7Mh566ZIwlXJQl370YRcO3b2fAlB6KZy/XG1AWth+7y4kfasenN+g/t+6b
+         8GPjQ+bcWEf2UvNrx57tlbBwjwFFPp5yuYxJhavdj5K9jvxdWU9avUb9CoJURRbCaUvp
+         MWglYHkI0SB3SsxZDIUN+ybxLiFUczW4wVHDzJQ1CKPiMqF6DyiLN2bqfqez8KZOlv5r
+         LTmXsR6bUHPumeYez213tETn+aCMXMDv1hAWq0L6jvrl0IdYhKijz7r4RUSUk9wmk1in
+         g/bEQ8T5LlX/e5+6ob0imIwFEoDoBZBE+Dqa6flzwAlckCFHpcYOz64MHOlLoivvDuR0
+         Nkbg==
+X-Gm-Message-State: AOAM530QfZoMW/wqP3Cxvd4quwPRn+wwqpWt7OgvUlUxcGCndyqYElZC
+        ArswfcnQbI2NjU3zlCxN8sM4vABFNxixc1oajmbiPg==
+X-Google-Smtp-Source: ABdhPJy++qgGBoHXV7D8jU9no39eQo/Mg+p/IwsWGvgwYxsds9fL8Il97amaN3rdoofggSAL07oM53Jq81g9mJv+OBo=
+X-Received: by 2002:a2e:814d:: with SMTP id t13mr922707ljg.467.1620258999642;
+ Wed, 05 May 2021 16:56:39 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <875yzwomvk.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <YGtZeofmBv7hXK+a@Red> <CACRpkdZ_barDrLvD2UBKo+GA-F+g72uMQx8CfRK2YLRodpeyUA@mail.gmail.com>
+ <YGxOf8pKN8Ip/kCl@Red> <CACRpkdYRUXJY_tXamS0vc+RNPDxR2oxdRLbBUk0fmQLp+eYAOA@mail.gmail.com>
+ <YJLxTgVflotKs5Oe@Red>
+In-Reply-To: <YJLxTgVflotKs5Oe@Red>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 6 May 2021 01:56:28 +0200
+Message-ID: <CACRpkdaGAiK57LE8vkEBjCGwb+HRWBzWS_C86xdNa8N51G+1PA@mail.gmail.com>
+Subject: Re: gemini: sl3516: Mainlining of NS 2502
+To:     Corentin Labbe <clabbe.montjoie@gmail.com>
+Cc:     Hans Ulli Kroll <ulli.kroll@googlemail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 4:07 PM, Thomas Gleixner wrote:
-> On Wed, May 05 2021 at 23:57, Thomas Gleixner wrote:
->> On Wed, May 05 2021 at 15:24, Jens Axboe wrote:
->>> On 5/5/21 5:03 AM, Stefan Metzmacher wrote:
->>>> As io_threads are fully set up USER threads it's clearer to
->>>> separate the code path from the KTHREAD logic.
->>>>
->>>> The only remaining difference to user space threads is that
->>>> io_threads never return to user space again.
->>>> Instead they loop within the given worker function.
->>>>
->>>> The fact that they never return to user space means they
->>>> don't have an user space thread stack. In order to
->>>> indicate that to tools like gdb we reset the stack and instruction
->>>> pointers to 0.
->>>>
->>>> This allows gdb attach to user space processes using io-uring,
->>>> which like means that they have io_threads, without printing worrying
->>>> message like this:
->>>>
->>>>   warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
->>>>
->>>>   warning: Architecture rejected target-supplied description
->>>>
->>>> The output will be something like this:
->>>>
->>>>   (gdb) info threads
->>>>     Id   Target Id                  Frame
->>>>   * 1    LWP 4863 "io_uring-cp-for" syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
->>>>     2    LWP 4864 "iou-mgr-4863"    0x0000000000000000 in ?? ()
->>>>     3    LWP 4865 "iou-wrk-4863"    0x0000000000000000 in ?? ()
->>>>   (gdb) thread 3
->>>>   [Switching to thread 3 (LWP 4865)]
->>>>   #0  0x0000000000000000 in ?? ()
->>>>   (gdb) bt
->>>>   #0  0x0000000000000000 in ?? ()
->>>>   Backtrace stopped: Cannot access memory at address 0x0
->>>
->>> I have queued this one up in the io_uring branch, also happy to drop it if
->>> the x86 folks want to take it instead. Let me know!
->>
->> I have no objections, but heck what's the rush here?
->>
->> Waiting a day for the x86 people to respond it not too much asked for
->> right?
-> 
-> That said, the proper subject line would be:
-> 
->   x86/process: Setup io_threads ....
-> 
-> Aside of that:
-> 
->       Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+Hi Corentin,
 
-Thanks, I've added that and modified the subject line to adhere to that
-style.
+I will check the patches you posted too, sorry for being a bit busy
+with some merge window and stuff.
 
-Again, I'm fine with this going through the tip tree, just wanted to
-make sure it wasn't lost. So do just let me know, it's head-of-branch
-here and easy to chop if need be.
+On Wed, May 5, 2021 at 9:26 PM Corentin Labbe <clabbe.montjoie@gmail.com> wrote:
 
--- 
-Jens Axboe
+> It seems that USB is still a bit buggy, device are detected only if plugged before boot.
 
+Yeah :/ I don't know that driver very well, only that others use it too
+so there might be some people who can help. I haven't mainlined
+that patch because there is something that seems wrong about it
+but I'm not a USB guy.
+
+> I hit a problem on the NS2502, sata drives does not work well:
+(...)
+> It seems a problem soon after driver probe (qc timeout and HPA error).
+> Any idea ?
+>
+> The SATA works well on my other board (SSI1328)
+> having one or two disk does not change the behavour.
+
+Could be the SATA muxing, this thing in your device tree:
+
+sata: sata@46000000 {
+    cortina,gemini-ata-muxmode = <0>;
+    cortina,gemini-enable-sata-bridge;
+    status = "okay";
+};
+
+cortina,gemini-ata-muxmode should be 3 for two harddisks
+I think.
+
+If that is correct then check if DMA is broken like on SQ201,
+see drivers/ata/pata_ftide010.c and here:
+
+/* This device has broken DMA, only PIO works */
+if (of_machine_is_compatible("itian,sq201")) {
+    pi->mwdma_mask = 0;
+    pi->udma_mask = 0;
+}
+
+This had to be explicitly disabled for SQ201 to work and
+I guess it must be broken electronics design (too long
+leads, interference...) so try to put the compatible for your
+board in there and see if the drive starts working. You should
+be able to check the source code of the vendor tree to
+see if they also turned off DMA, if they did then that is
+a certain sign it has the same bug so you should make a
+patch for it. Maybe it should rather be some "disable-dma"
+flag in the DT node, the above is a bit ugly but works.
+
+Yours,
+Linus Walleij
