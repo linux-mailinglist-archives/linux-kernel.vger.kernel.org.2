@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82D853749B1
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 007B23749B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:49:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhEEUuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:50:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59836 "EHLO mail.kernel.org"
+        id S230184AbhEEUup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:50:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59940 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229893AbhEEUuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:50:24 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BC85161176;
-        Wed,  5 May 2021 20:49:26 +0000 (UTC)
+        id S230087AbhEEUu1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 16:50:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id F0A43613E3;
+        Wed,  5 May 2021 20:49:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620247766;
-        bh=p7Qt1nsJPc48Dnwbz9EhBx//Eh+iqM/EKCePqsyQIa8=;
+        s=k20201202; t=1620247771;
+        bh=tYO4fRB9G1wcKS4uhifFOsp/m8Sn9BrdXFG5rs0FEPA=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=u4SV70FJ6ZJE1SyMiUK/psE61ZUqJLRlPs3jNsQyBZd9f0dLla1kp66+Mc2o9BEni
-         LbsQDj3Bmd+aUMBtI5nNCloFxhbfQs2nQDqk8w+cPoJwPl41AX1thWd68UI3LYJVKB
-         60y2q0zWBAwVdrpFuAJfT/mSUQJpxTstSTw+LtHVY24Oz/CS6IebanUSkqekKnyNbZ
-         ShE81B20nzim1dtAzXbY3B58m9kld63MNPmvoo6waJKiCnFOHX++bGO1TG1ysPccKe
-         YJ/kgy/BNWWZkFVYviq7i4MPrnTMJ/QUS01jhOwJ7DdNe8blro6EWqR8d+DNVK+lDB
-         ijwkNxLBelUwQ==
+        b=qXN44gHFv0Y2h/LqVK5mSZgJN6R++H662olEyl9QYpaq1Dh5XucN3MOMYUU15EIvR
+         B4YibdS5B8l3NGH3pwjvBYQ6M71Q0gYxxBIYzaVq7+uYpvD6mPyayjjLouftwKhodR
+         XKyhjEs5jOe40SYvEvAdemmtbxjxZkn49rX7dagmywrrvhZWIXMi/oGqQxoL8QVbIj
+         M8a7xwse9B8OZbfmWLpVDTwoSW8zxErAiAV5zjjyolsASwI6L9C4/S2wYDQPBl7afI
+         WXzV4RsCUui9/KVQ2GIIZRJkYlm0AqhOB2SBY49ONsRe+ZYD9awbcmnXTgDpwhG/ct
+         aKlHzV2sD2EEA==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B6964609E8;
-        Wed,  5 May 2021 20:49:26 +0000 (UTC)
-Subject: Re: [GIT PULL] PCI changes for v5.13
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E8878609AD;
+        Wed,  5 May 2021 20:49:30 +0000 (UTC)
+Subject: Re: [GIT PULL] turbostat update
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210505163611.GA1310028@bjorn-Precision-5520>
-References: <20210505163611.GA1310028@bjorn-Precision-5520>
-X-PR-Tracked-List-Id: <linux-pci.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210505163611.GA1310028@bjorn-Precision-5520>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.13-changes
-X-PR-Tracked-Commit-Id: 882862aaacefcb9f723b0f7817ddafc154465d8f
+In-Reply-To: <CAJvTdKk9rNJhy1Ddpq-mbMzG0bJ8N8TumPfWpv6DUBP4N9tUyQ@mail.gmail.com>
+References: <CAJvTdKk9rNJhy1Ddpq-mbMzG0bJ8N8TumPfWpv6DUBP4N9tUyQ@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-pm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJvTdKk9rNJhy1Ddpq-mbMzG0bJ8N8TumPfWpv6DUBP4N9tUyQ@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux.git turbostat
+X-PR-Tracked-Commit-Id: 3c070b2abf85b92455c2721d0a9edc68893ab6c1
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 57151b502cbc0fa6ff9074a76883fa9d9eda322e
-Message-Id: <162024776674.12235.8495124452855702495.pr-tracker-bot@kernel.org>
-Date:   Wed, 05 May 2021 20:49:26 +0000
-To:     Bjorn Helgaas <helgaas@kernel.org>
+X-PR-Merge-Commit-Id: d8cb379cda885ac172454d7e680da65ebd6676b1
+Message-Id: <162024777094.12235.8153240043332342464.pr-tracker-bot@kernel.org>
+Date:   Wed, 05 May 2021 20:49:30 +0000
+To:     Len Brown <lenb@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 5 May 2021 11:36:11 -0500:
+The pull request you sent on Tue, 4 May 2021 20:10:13 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.13-changes
+> git://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux.git turbostat
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/57151b502cbc0fa6ff9074a76883fa9d9eda322e
+https://git.kernel.org/torvalds/c/d8cb379cda885ac172454d7e680da65ebd6676b1
 
 Thank you!
 
