@@ -2,131 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9243D37346E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 06:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3048373473
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 06:41:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231625AbhEEEaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 00:30:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231326AbhEEEaC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 00:30:02 -0400
-Received: from mail-pf1-x42a.google.com (mail-pf1-x42a.google.com [IPv6:2607:f8b0:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60985C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 21:29:05 -0700 (PDT)
-Received: by mail-pf1-x42a.google.com with SMTP id b15so1142535pfl.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 21:29:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ozlabs-ru.20150623.gappssmtp.com; s=20150623;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :cc:references:from:in-reply-to:content-transfer-encoding;
-        bh=dkfLmEwUYBpgZ3VRNqk3l0eUK71c8qK9M3LO8M6K/A4=;
-        b=j/2/x3IGENqBt1eM/uTRys9FwUAyOd7d1CPrhgnUeDqkdWgk208eetcKGgAwQm0ClS
-         807Quye1hCoirriQHZ8jB6fGbUq8JRjgdvApCO7Sk2LBzgsemv98xXqPqhRBtNTYFbQ2
-         c+pvRacMoE5zUBhZlKz1Zp/I3sP37UVPa/SyFRnF0O9Vv0+UUbY2fjviPRN77nwLubJm
-         WkGzNUwF7P0ucQPk4Bw8kKF/DF8Lt/l4gAxFgApBd4DtEkMPmr//4N1veXHtU6pvce11
-         I2Ygs6SMbnq3+EW7szo7yKB9Z6UagEOZuXHkUZLToFvlJwesJGEXi2KI7w4v+L0cFgNN
-         jqBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:date:mime-version:user-agent:subject
-         :content-language:to:cc:references:from:in-reply-to
-         :content-transfer-encoding;
-        bh=dkfLmEwUYBpgZ3VRNqk3l0eUK71c8qK9M3LO8M6K/A4=;
-        b=e8/o92G6LIzYhMzliNS5jsJlwhpDKaG3MXPJueCT5GVWjmXk681ODINNnah5D0pcxL
-         +fFPQR9jxKPWR3NaF5D2blUykJVvk1h57/A8/3qv9PtFLJ6l6Zh/JC7rK2nU4KsBHVKJ
-         kuBZiFLnkDqx8AxAWmi+ohroOuIPIlQap65gh5n3JW3q+LJyrKehaAmmQpWjWqXLxcnC
-         QQ2opjJ8yJMyfhIT2HOrBf1Dc47EryMa6ePnfqUcF9VvK5gHdmTLikpDetYkSwQPq+lo
-         euDeT0YQWwsP8jwfYkQk1lvtIZNrDE3KSiwgSFwc3scbyMPoGWHLMuuG8omwauWhgche
-         NGeA==
-X-Gm-Message-State: AOAM532q/szMvW0X60cJYEAtCJQtjuqmlfkQ27fh92s4ycyGgu8DIx6q
-        KbdXEQBWJaTg0r2g0kKaLW0hSw==
-X-Google-Smtp-Source: ABdhPJwj5l+dKlySIdCGZk4hFYyrFl+frI0ecQuTkJrGFGr2OgKeAZLnUNmYF3pUR0T+bfW0S+MHsg==
-X-Received: by 2002:aa7:8051:0:b029:272:7b9c:cde1 with SMTP id y17-20020aa780510000b02902727b9ccde1mr26211062pfm.55.1620188944813;
-        Tue, 04 May 2021 21:29:04 -0700 (PDT)
-Received: from localhost (ppp121-45-194-51.cbr-trn-nor-bras38.tpg.internode.on.net. [121.45.194.51])
-        by smtp.gmail.com with UTF8SMTPSA id l6sm5170914pgc.68.2021.05.04.21.28.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 04 May 2021 21:29:04 -0700 (PDT)
-Message-ID: <7e5c2276-ca1c-a8af-c15f-72a7c83c8bfa@ozlabs.ru>
-Date:   Wed, 5 May 2021 14:28:53 +1000
+        id S231523AbhEEElr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 00:41:47 -0400
+Received: from mga06.intel.com ([134.134.136.31]:34368 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229895AbhEEElp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 00:41:45 -0400
+IronPort-SDR: IGoKLNLLNHhCEgKhG1JOcV9eBZGyOltGLfu4Ktn2Y6QxolqYzB8qNR8cFUXawkZ4HjkQl1nIHx
+ WBE/1hlu8O9A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="259414605"
+X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
+   d="scan'208";a="259414605"
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 21:40:47 -0700
+IronPort-SDR: EUm5EbxTp/09v8jlfq6iwnQIXBGWm/gbeOYvxvksA+2FLby6EHuXiGDV+SDOx+hNqDzvTrdvXC
+ rklXzGvgcHIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
+   d="scan'208";a="607264834"
+Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
+  by orsmga005.jf.intel.com with ESMTP; 04 May 2021 21:40:44 -0700
+Subject: Re: [PATCH v1] mmc: block: Disable CMDQ on the ioctl path
+To:     Bean Huo <huobean@gmail.com>, ulf.hansson@linaro.org
+Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Bean Huo <beanhuo@micron.com>,
+        Michael Brunner <Michael.Brunner@kontron.com>
+References: <20210504203209.361597-1-huobean@gmail.com>
+From:   Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+Message-ID: <7607d4e2-d586-e0a0-d436-ff29cd960f9d@intel.com>
+Date:   Wed, 5 May 2021 07:41:05 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:88.0) Gecko/20100101
- Thunderbird/88.0
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
+In-Reply-To: <20210504203209.361597-1-huobean@gmail.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-To:     Jason Gunthorpe <jgg@nvidia.com>,
-        David Gibson <david@gibson.dropbear.id.au>
-Cc:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-References: <20210421133312.15307c44@redhat.com>
- <20210421230301.GP1370958@nvidia.com> <20210422111337.6ac3624d@redhat.com>
- <YIeYJZOdgMN/orl0@yekko.fritz.box> <20210427172432.GE1370958@nvidia.com>
- <YIi5G4Wg/hpFqNdX@yekko.fritz.box> <20210429002149.GZ1370958@nvidia.com>
- <YIol9p3z8BTWFRh8@yekko> <20210503160530.GL1370958@nvidia.com>
- <YJDFj+sAv41JRIo4@yekko> <20210504181537.GC1370958@nvidia.com>
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-In-Reply-To: <20210504181537.GC1370958@nvidia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 05/05/2021 04:15, Jason Gunthorpe wrote:
-> On Tue, May 04, 2021 at 01:54:55PM +1000, David Gibson wrote:
->> On Mon, May 03, 2021 at 01:05:30PM -0300, Jason Gunthorpe wrote:
->>> On Thu, Apr 29, 2021 at 01:20:22PM +1000, David Gibson wrote:
->>>>> There is a certain appeal to having some
->>>>> 'PPC_TCE_CREATE_SPECIAL_IOASID' entry point that has a wack of extra
->>>>> information like windows that can be optionally called by the viommu
->>>>> driver and it remains well defined and described.
->>>>
->>>> Windows really aren't ppc specific.  They're absolutely there on x86
->>>> and everything else as well - it's just that people are used to having
->>>> a window at 0..<something largish> that you can often get away with
->>>> treating it sloppily.
->>>
->>> My point is this detailed control seems to go on to more than just
->>> windows. As you say the vIOMMU is emulating specific HW that needs to
->>> have kernel interfaces to match it exactly.
->>
->> It's really not that bad.  The case of emulating the PAPR vIOMMU on
->> something else is relatively easy, because all updates to the IO page
->> tables go through hypercalls.  So, as long as the backend IOMMU can
->> map all the IOVAs that the guest IOMMU can, then qemu's implementation
->> of those hypercalls just needs to put an equivalent mapping in the
->> backend, which it can do with a generic VFIO_DMA_MAP.
+On 4/05/21 11:32 pm, Bean Huo wrote:
+> From: Bean Huo <beanhuo@micron.com>
 > 
-> So you also want the PAPR vIOMMU driver to run on, say, an ARM IOMMU?
+> According to the eMMC Spec:
+> "When command queuing is enabled (CMDQ Mode En bit in CMDQ_MODE_EN
+> field is set to ‘1’) class 11 commands are the only method through
+> which data transfer tasks can be issued. Existing data transfer
+> commands, namely CMD18/CMD17 and CMD25/CMD24, are not supported when
+> command queuing is enabled."
+> which means if CMDQ is enabled, the FFU commands will not be supported.
+> To fix this issue, just simply disable CMDQ on the ioctl path, and
+> re-enable CMDQ once ioctl request is completed.
+> 
+> Tested-by: Michael Brunner <Michael.Brunner@kontron.com>
+> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
+Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-This is a good feature in general when let's say there is a linux 
-supported device which has a proprietary device firmware update tool 
-which only exists as an x86 binary and your hardware is not x86 - 
-running qemu + vfio in full emulation would provide a way to run the 
-tool to update a physical device.
+> ---
+>  drivers/mmc/core/block.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
+> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
+> index 689eb9afeeed..21fb99883b1e 100644
+> --- a/drivers/mmc/core/block.c
+> +++ b/drivers/mmc/core/block.c
+> @@ -1004,6 +1004,11 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
+>  
+>  	switch (mq_rq->drv_op) {
+>  	case MMC_DRV_OP_IOCTL:
+> +		if (card->ext_csd.cmdq_en) {
+> +			ret = mmc_cmdq_disable(card);
+> +			if (ret)
+> +				break;
+> +		}
+>  	case MMC_DRV_OP_IOCTL_RPMB:
+>  		idata = mq_rq->drv_op_data;
+>  		for (i = 0, ret = 0; i < mq_rq->ioc_count; i++) {
+> @@ -1014,6 +1019,8 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
+>  		/* Always switch back to main area after RPMB access */
+>  		if (rpmb_ioctl)
+>  			mmc_blk_part_switch(card, 0);
+> +		else if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
+> +			mmc_cmdq_enable(card);
+>  		break;
+>  	case MMC_DRV_OP_BOOT_WP:
+>  		ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_BOOT_WP,
+> 
 
-
--- 
-Alexey
