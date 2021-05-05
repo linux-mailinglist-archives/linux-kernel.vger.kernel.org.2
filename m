@@ -2,120 +2,308 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E245373398
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:32:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D42A37339D
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:38:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230127AbhEEBdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 21:33:06 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54236 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229799AbhEEBdF (ORCPT
+        id S232140AbhEEBjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 21:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37696 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232101AbhEEBjD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 21:33:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620178329;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=cPRVInBsTWC+0BUGJOB5FIDSOa450b+bMYREaXrrpp0=;
-        b=OlYvEWSTM0YyKkoXTzEv61TTW5NH29xkBb25yX96IdN3aG9PrrU2hvknfbG6XXm+bQOf2c
-        Ydgxw90FsbUxZw22G0if2eT97Ki9tbZA1X9pAGTsT7fMc7Ngv9HgTVQI2w+2QZPJ5qCsq5
-        xwP45KTF153RAvYc5VGcsGm8xQ1bxQM=
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
- [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-118-EceD1YoQPVWHco1GNjnZxw-1; Tue, 04 May 2021 21:32:08 -0400
-X-MC-Unique: EceD1YoQPVWHco1GNjnZxw-1
-Received: by mail-io1-f70.google.com with SMTP id i204-20020a6bb8d50000b02903f266b8e1c5so162486iof.16
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 18:32:08 -0700 (PDT)
+        Tue, 4 May 2021 21:39:03 -0400
+Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55A96C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 18:38:07 -0700 (PDT)
+Received: by mail-ot1-x32a.google.com with SMTP id c36-20020a05683034a4b02902a5b84b1d12so352639otu.8
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 18:38:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=lX6vTVdP28sAUcsZAx6P7d8fEnuW4SnnYR6kFB2r4Dk=;
+        b=PziAM8UzWWk2O/fAzTSdFRXR7VcbJ09nbjUox6Gj//Qu/D9P8KlV8l6Au+ElQtRw6X
+         8T8bE2mwD02yOI1opc3c1rt4s5Ex9Iad+xA8TfnCoKIdoe/LnfsTFq+5m5hVVkxJGjxk
+         LTm7cuzIh7Xb0zG00C464iaHUBYkOtxO/4ces=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=cPRVInBsTWC+0BUGJOB5FIDSOa450b+bMYREaXrrpp0=;
-        b=AOe8QpxpUsKQcfdrsLikEmDaJIcAkTsLOgRQy3XPkUggwvNcBfGWPadodYoW8JpNJc
-         HQ5dkW5uVUvudIeQcDYtoXoN1iykKHmf3cSf3lhG2YxTO2zyUo0HDb1uijCQc1+WoE+y
-         hl5suN97xlHT5z1J5RWDfnlpsRQbyKtEIbIXg9Xn+CN6R8jWtYX8HHRAoA3Fw7kusYUk
-         TdTtQeZpSDFPN3vqJbqXC4TxXYFFgKIZapRQCUlPp8l/ThiGX3+ZaKyC4ZQ7QqSujUCc
-         9AinSlE4g1/nNkyBYQ+j6KmvjZ6EoiTodnsuf/+SsVfwWaiSRCy8vkejEk8Zu3f5PuzM
-         G+Lw==
-X-Gm-Message-State: AOAM533wiUCWyFvuZt6jr+Y8uI5957A+QQwKXs+7cMgCZ+GttNzMSiGl
-        AkiKIB9ZJ4KJgxqXMouOF2O3ZxaeNhwzWu1/a4k7GX2N5bJ9xw3AmiKHMQg/9Ymzcvcg5FW1oid
-        Nh15lZgyobdp5yfc5QOntsI5C
-X-Received: by 2002:a92:8e03:: with SMTP id c3mr2036560ild.167.1620178327564;
-        Tue, 04 May 2021 18:32:07 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzNg9jcG4O9OkPZqQlTS7aeMFQ7/soHNplo9cjmrJ2Ghe+p949bqg4pbzePUCrb/19N4cHmHg==
-X-Received: by 2002:a92:8e03:: with SMTP id c3mr2036544ild.167.1620178327359;
-        Tue, 04 May 2021 18:32:07 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id u9sm1842495ior.8.2021.05.04.18.32.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 18:32:06 -0700 (PDT)
-Date:   Tue, 4 May 2021 21:32:04 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Jerome Glisse <jglisse@redhat.com>,
-        Joe Perches <joe@perches.com>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-        Brian Geffon <bgeffon@google.com>,
-        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
-        Mina Almasry <almasrymina@google.com>,
-        Oliver Upton <oupton@google.com>
-Subject: Re: [PATCH v6 06/10] userfaultfd/shmem: modify
- shmem_mfill_atomic_pte to use install_pte()
-Message-ID: <YJH1lCx9IGqHG+yq@t490s>
-References: <20210503180737.2487560-1-axelrasmussen@google.com>
- <20210503180737.2487560-7-axelrasmussen@google.com>
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=lX6vTVdP28sAUcsZAx6P7d8fEnuW4SnnYR6kFB2r4Dk=;
+        b=OHQFdwIg4frHUbsLKNCii846O7VI3E1bEl0byjbMz4sBF83ZYfNe0GQQFAOSVrxLTj
+         CxW++4Mk2tgH3XaYXZospb7hSnoKoB5BVFVzw6OKZmfILjhkm7ldnk6CWdqZtUUJnoOn
+         n3dMgMAuoNnYhTilCr6P983twB/WDAeoksBMIDyL2lYIVw5am4WRYQaTpmR4iXz/sfD0
+         YvQoDVPNQFjJvHL8k3z1k13UVF5pRAQQliSDj8KgK6yFufcHkFg1rpLgm3o2s7a8j/Hk
+         qQV87S3RA8rRY6CmFpuxRyirmDgGAJOb5309z3eGZO9S9j/sGV1I/cmj021rBEdwZ73C
+         OwIw==
+X-Gm-Message-State: AOAM533OQjKyiGMSMmk0bqNoDe/Zb1ZpSeBJQ9shjqwKiZMJMjLxdng6
+        iaCrHqZFFcwxdxZPMK2Qw2cXpTt2Lh0N8IJxIyKIww==
+X-Google-Smtp-Source: ABdhPJzro2JKCy5vcnXa+onhPlmyRkPLgrndLJM9Va0ydjoM12Zj8/ZTtsjIG2ChK4qCSQ+1i5lO2Rxulpu23l1dX20=
+X-Received: by 2002:a9d:1ea9:: with SMTP id n38mr22439486otn.233.1620178686562;
+ Tue, 04 May 2021 18:38:06 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Tue, 4 May 2021 21:38:05 -0400
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210503180737.2487560-7-axelrasmussen@google.com>
+In-Reply-To: <20210420111355.18462-1-rojay@codeaurora.org>
+References: <20210420111355.18462-1-rojay@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Tue, 4 May 2021 21:38:05 -0400
+Message-ID: <CAE-0n51iyNgVW4Vra2C_4FAqQECU-aqAHLWZ+kB2Xv3i-inxiQ@mail.gmail.com>
+Subject: Re: [PATCH V9] i2c: i2c-qcom-geni: Add shutdown callback for i2c
+To:     Roja Rani Yarubandi <rojay@codeaurora.org>, wsa@kernel.org
+Cc:     dianders@chromium.org, saiprakash.ranjan@codeaurora.org,
+        gregkh@linuxfoundation.org, mka@chromium.org,
+        skananth@codeaurora.org, msavaliy@qti.qualcomm.com,
+        skakit@codeaurora.org, rnayak@codeaurora.org, agross@kernel.org,
+        bjorn.andersson@linaro.org, linux-arm-msm@vger.kernel.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        sumit.semwal@linaro.org, linux-media@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Axel,
+Quoting Roja Rani Yarubandi (2021-04-20 04:13:55)
+> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
+> index 214b4c913a13..8ae17ccad99e 100644
+> --- a/drivers/i2c/busses/i2c-qcom-geni.c
+> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
+> @@ -71,6 +71,8 @@ enum geni_i2c_err_code {
+>  #define ABORT_TIMEOUT          HZ
+>  #define XFER_TIMEOUT           HZ
+>  #define RST_TIMEOUT            HZ
+> +#define ABORT_XFER             0
+> +#define STOP_AND_ABORT_XFER    1
 
-On Mon, May 03, 2021 at 11:07:33AM -0700, Axel Rasmussen wrote:
-> In a previous commit, we added the mfill_atomic_install_pte() helper.
-> This helper does the job of setting up PTEs for an existing page, to map
-> it into a given VMA. It deals with both the anon and shmem cases, as
-> well as the shared and private cases.
-> 
-> In other words, shmem_mfill_atomic_pte() duplicates a case it already
-> handles. So, expose it, and let shmem_mfill_atomic_pte() use it
-> directly, to reduce code duplication.
-> 
-> This requires that we refactor shmem_mfill_atomic_pte() a bit:
-> 
-> Instead of doing accounting (shmem_recalc_inode() et al) part-way
-> through the PTE setup, do it afterward. This frees up
-> mfill_atomic_install_pte() from having to care about this accounting,
-> and means we don't need to e.g. shmem_uncharge() in the error path.
-> 
-> A side effect is this switches shmem_mfill_atomic_pte() to use
-> lru_cache_add_inactive_or_unevictable() instead of just lru_cache_add().
-> This wrapper does some extra accounting in an exceptional case, if
-> appropriate, so it's actually the more correct thing to use.
-> 
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+These should be an enum.
 
-(The moving of "ret = -ENOMEM" seems unnecessary, but not a big deal I think)
+>
+>  struct geni_i2c_dev {
+>         struct geni_se se;
+> @@ -89,6 +91,7 @@ struct geni_i2c_dev {
+>         void *dma_buf;
+>         size_t xfer_len;
+>         dma_addr_t dma_addr;
+> +       bool stop_xfer;
+>  };
+>
+>  struct geni_i2c_err_log {
+> @@ -215,6 +218,11 @@ static irqreturn_t geni_i2c_irq(int irq, void *dev)
+>         struct i2c_msg *cur;
+>
+>         spin_lock(&gi2c->lock);
+> +       if (!gi2c->cur) {
+> +               dev_err(gi2c->se.dev, "Can't process irq, gi2c->cur is NULL\n");
 
-Reviewed-by: Peter Xu <peterx@redhat.com>
+This error message is worthless. The user won't know what to do and then
+we return IRQ_HANDLED? If the device is misbehaving we should return
+IRQ_NONE and shut down the irq storm that will soon be upon us, not
+print an error message and hope for the best.
 
-Thanks,
+> +               spin_unlock(&gi2c->lock);
+> +               return IRQ_HANDLED;
+> +       }
+>         m_stat = readl_relaxed(base + SE_GENI_M_IRQ_STATUS);
+>         rx_st = readl_relaxed(base + SE_GENI_RX_FIFO_STATUS);
+>         dm_tx_st = readl_relaxed(base + SE_DMA_TX_IRQ_STAT);
+> @@ -222,8 +230,7 @@ static irqreturn_t geni_i2c_irq(int irq, void *dev)
+>         dma = readl_relaxed(base + SE_GENI_DMA_MODE_EN);
+>         cur = gi2c->cur;
+>
+> -       if (!cur ||
+> -           m_stat & (M_CMD_FAILURE_EN | M_CMD_ABORT_EN) ||
+> +       if (m_stat & (M_CMD_FAILURE_EN | M_CMD_ABORT_EN) ||
+>             dm_rx_st & (DM_I2C_CB_ERR)) {
+>                 if (m_stat & M_GP_IRQ_1_EN)
+>                         geni_i2c_err(gi2c, NACK);
+> @@ -301,17 +308,19 @@ static irqreturn_t geni_i2c_irq(int irq, void *dev)
+>         return IRQ_HANDLED;
+>  }
+>
+> -static void geni_i2c_abort_xfer(struct geni_i2c_dev *gi2c)
+> +static void geni_i2c_abort_xfer(struct geni_i2c_dev *gi2c, bool is_stop_xfer)
 
--- 
-Peter Xu
+The bool should be an enum, but a better approach would be to have a
+locked and unlocked version of this function.
 
+>  {
+>         u32 val;
+>         unsigned long time_left = ABORT_TIMEOUT;
+>         unsigned long flags;
+>
+> -       spin_lock_irqsave(&gi2c->lock, flags);
+> +       if (!is_stop_xfer)
+> +               spin_lock_irqsave(&gi2c->lock, flags);
+>         geni_i2c_err(gi2c, GENI_TIMEOUT);
+>         gi2c->cur = NULL;
+>         geni_se_abort_m_cmd(&gi2c->se);
+> -       spin_unlock_irqrestore(&gi2c->lock, flags);
+> +       if (!is_stop_xfer)
+> +               spin_unlock_irqrestore(&gi2c->lock, flags);
+
+Please no conditional locking. It's too hard to reason about.
+
+>         do {
+>                 time_left = wait_for_completion_timeout(&gi2c->done, time_left);
+>                 val = readl_relaxed(gi2c->se.base + SE_GENI_M_IRQ_STATUS);
+> @@ -375,6 +384,38 @@ static void geni_i2c_tx_msg_cleanup(struct geni_i2c_dev *gi2c,
+>         }
+>  }
+>
+> +static void geni_i2c_stop_xfer(struct geni_i2c_dev *gi2c)
+> +{
+> +       int ret;
+> +       u32 geni_status;
+> +       struct i2c_msg *cur;
+> +       unsigned long flags;
+> +
+> +       /* Resume device, as runtime suspend can happen anytime during transfer */
+
+This comment doesn't make any sense. Hopefully a suspend can't happen
+during a transfer, but only before or after a transfer. Otherwise, the
+transfer code is broken and isn't properly keeping the device runtime
+resumed during the transfer.
+
+> +       ret = pm_runtime_get_sync(gi2c->se.dev);
+> +       if (ret < 0) {
+> +               dev_err(gi2c->se.dev, "Failed to resume device: %d\n", ret);
+> +               return;
+> +       }
+> +
+> +       spin_lock_irqsave(&gi2c->lock, flags);
+> +       gi2c->stop_xfer = 1;
+> +       geni_status = readl_relaxed(gi2c->se.base + SE_GENI_STATUS);
+> +       if (geni_status & M_GENI_CMD_ACTIVE) {
+> +               cur = gi2c->cur;
+> +               geni_i2c_abort_xfer(gi2c, STOP_AND_ABORT_XFER);
+> +               spin_unlock_irqrestore(&gi2c->lock, flags);
+> +               if (cur->flags & I2C_M_RD)
+> +                       geni_i2c_rx_msg_cleanup(gi2c, cur);
+> +               else
+> +                       geni_i2c_tx_msg_cleanup(gi2c, cur);
+> +       } else {
+> +               spin_unlock_irqrestore(&gi2c->lock, flags);
+> +       }
+
+Please unlock outside of an if condition. A local variable can be used
+outside of the unlock, but then the code is easier to follow
+
+	spin_lock_irqsave(&gi2c->lock, flags);
+	if (geni_status & M_GENI_CMD_ACTIVE) {
+		cur = gic2->cur;
+		geni_i2c_abort_xfer(....);
+	}
+	spin_unlock_irqrestore(gi2c->lock, flags);
+
+	if (cur) {
+		if (cur->flags & I2C_M_RD)
+			...
+		else
+			...
+	}
+
+And then I don't really know if grabbing 'cur' out of the struct and
+then messing with it outside the lock is correct.
+
+> +
+> +       pm_runtime_put_sync_suspend(gi2c->se.dev);
+> +}
+> +
+>  static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>                                 u32 m_param)
+>  {
+> @@ -407,7 +448,7 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>         cur = gi2c->cur;
+>         time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+>         if (!time_left)
+> -               geni_i2c_abort_xfer(gi2c);
+> +               geni_i2c_abort_xfer(gi2c, ABORT_XFER);
+
+So this would say geni_i2c_abort_xfer() but the one above would say
+geni_i2c_abort_xfer_locked() because the lock is already held.
+
+>
+>         geni_i2c_rx_msg_cleanup(gi2c, cur);
+>
+> @@ -449,7 +490,7 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
+>         cur = gi2c->cur;
+>         time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
+>         if (!time_left)
+> -               geni_i2c_abort_xfer(gi2c);
+> +               geni_i2c_abort_xfer(gi2c, ABORT_XFER);
+>
+>         geni_i2c_tx_msg_cleanup(gi2c, cur);
+>
+> @@ -462,6 +503,7 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
+>  {
+>         struct geni_i2c_dev *gi2c = i2c_get_adapdata(adap);
+>         int i, ret;
+> +       unsigned long flags;
+>
+>         gi2c->err = 0;
+>         reinit_completion(&gi2c->done);
+> @@ -480,7 +522,13 @@ static int geni_i2c_xfer(struct i2c_adapter *adap,
+>
+>                 m_param |= ((msgs[i].addr << SLV_ADDR_SHFT) & SLV_ADDR_MSK);
+>
+> +               spin_lock_irqsave(&gi2c->lock, flags);
+> +               if (gi2c->stop_xfer) {
+> +                       spin_unlock_irqrestore(&gi2c->lock, flags);
+> +                       break;
+> +               }
+>                 gi2c->cur = &msgs[i];
+> +               spin_unlock_irqrestore(&gi2c->lock, flags);
+
+Is this to jump into the transfer real fast and break out if we're in
+the middle of a transfer?
+
+>                 if (msgs[i].flags & I2C_M_RD)
+>                         ret = geni_i2c_rx_one_msg(gi2c, &msgs[i], m_param);
+>                 else
+> @@ -624,6 +672,7 @@ static int geni_i2c_probe(struct platform_device *pdev)
+>         dev_dbg(dev, "i2c fifo/se-dma mode. fifo depth:%d\n", tx_depth);
+>
+>         gi2c->suspended = 1;
+> +       gi2c->stop_xfer = 0;
+>         pm_runtime_set_suspended(gi2c->se.dev);
+>         pm_runtime_set_autosuspend_delay(gi2c->se.dev, I2C_AUTO_SUSPEND_DELAY);
+>         pm_runtime_use_autosuspend(gi2c->se.dev);
+> @@ -650,6 +699,13 @@ static int geni_i2c_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> +static void  geni_i2c_shutdown(struct platform_device *pdev)
+> +{
+> +       struct geni_i2c_dev *gi2c = platform_get_drvdata(pdev);
+> +
+> +       geni_i2c_stop_xfer(gi2c);
+
+It would read better as
+
+	geni_i2c_plug_xfer(gi2c);
+
+or
+
+	geni_i2c_flush_and_teardown(gi2c);
+
+or
+
+	geni_i2c_teardown_tx_rx(gi2c);
+
+Something that says we're waiting for any transfer to complete, and then
+plugging the queue and removing the i2c bus entirely.
+
+In fact, where is that code? I'd expect to see i2c_del_adapter() in here
+so we know the adapter can't accept transfers anymore. Maybe
+i2c_del_adapter() could be called, and then there's nothing to do after
+that? This whole patch is trying to rip the adapter out from under the
+i2c core framework, when we should take the opposite approach and remove
+it from the core framework so that it can't transfer anything anymore
+and thus the IOMMU can remove the mapping.
+
+> +}
+> +
+>  static int __maybe_unused geni_i2c_runtime_suspend(struct device *dev)
+>  {
+>         int ret;
