@@ -2,116 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A38CA3746E9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9E5337474B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235882AbhEERcp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:32:45 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:41084 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239285AbhEERZH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:25:07 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 79C1AC800B5;
-        Wed,  5 May 2021 19:24:09 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id 5bGvay7Xrvbi; Wed,  5 May 2021 19:24:09 +0200 (CEST)
-Received: from wsembach-tuxedo.fritz.box (p200300E37f39860005A4018A54f094b9.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:5a4:18a:54f0:94b9])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id 8092EC800B1;
-        Wed,  5 May 2021 19:24:06 +0200 (CEST)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     wse@tuxedocomputers.com, ville.syrjala@linux.intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/3] New function to avoid duplicate code in upcomming commits
-Date:   Wed,  5 May 2021 19:23:59 +0200
-Message-Id: <20210505172401.1453178-2-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210505172401.1453178-1-wse@tuxedocomputers.com>
-References: <20210505172401.1453178-1-wse@tuxedocomputers.com>
+        id S235075AbhEERyd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:54:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55640 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234686AbhEERyK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:54:10 -0400
+Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12BEEC034631
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:25:12 -0700 (PDT)
+Received: by mail-ot1-x335.google.com with SMTP id 92-20020a9d02e50000b029028fcc3d2c9eso2432081otl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:25:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mhdimRmcWFxSoj8AFDYbNHsikBJUsUucL4YCEQ/2njw=;
+        b=XwV87+f8d7jiYw4U+qEweujviEosUJz4mImc4wpkn1QEZXlev2sM2d4pHmB9ofh0n9
+         Yq3P7e/x1h5Ku11y/LkqEy7Tg83m26DuXSv/6b8ycMo0LPll3ANtPBbvosNpyd5xtL+E
+         ENILOdjTnsjJQmXGdhRXu2Hpb+fNUHY+BTdNjf4x7S3P/lDuy7sGcKn1KV1P05zZkPaU
+         +uqSz3jnlE/qY9W1RdsdkdaNVel7e9fhAlzMSfmNdykR+OeoIqGnuw6gDl9eOGrhMUs6
+         6lniOEx+5gWlfLei1GD2lVdJcYtfvvZwcta7uSNLTtcrObbDfRzjRogS9wh7FlfsBfeP
+         l5Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mhdimRmcWFxSoj8AFDYbNHsikBJUsUucL4YCEQ/2njw=;
+        b=LXJ6sSxA1oeKWBKcxqVP9L64OSHIL9z+aPQSWznCbgEOmXuPziBjc9r46XoAHxwS9R
+         88i4ilyPcGkYCLUg7ONGwrREkMNfLZKjPa++1Qf387Oyt/aLhdU3Rg12JfOnPnIH4odv
+         YPYVt9ZY0BtEcVnBkXdHxaGsGM11cJkRC7AZNUQd77yzFIyLId36aDN+YhLaP+lyTFHn
+         XCmo0OUKESLrdlGnrnk46+sC2oE4rIp2k/0BVk5p5xnf1Dc2Jg7wPNRQPgpDy6ZIfBbZ
+         W8enh7geXEA5EjnbQOCXvSlIJloU5/wnozNa+JjQ3rBb6aVrHRAZ5MQlLdtQLDi5v30H
+         Wz/w==
+X-Gm-Message-State: AOAM531AIgMZNNBa5aUl/pVNvVvyAnKc6fsSb1gJngbQ8/EYxwxXMqsn
+        1KdKfEcOpBS3O312kI+QzkHFmrxayCblpJXZsylzwQ==
+X-Google-Smtp-Source: ABdhPJyRmdxXpkBjJhgLypJ27cbqA5yX2resHSeWAzU/LvydLIlTFHc1MP/3HSXWQhhwdgCDtzeYFR3RP7khraLUkho=
+X-Received: by 2002:a05:6830:410e:: with SMTP id w14mr23863201ott.251.1620235511237;
+ Wed, 05 May 2021 10:25:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <m1tuni8ano.fsf_-_@fess.ebiederm.org> <20210505141101.11519-1-ebiederm@xmission.com>
+ <20210505141101.11519-4-ebiederm@xmission.com>
+In-Reply-To: <20210505141101.11519-4-ebiederm@xmission.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 5 May 2021 19:24:00 +0200
+Message-ID: <CANpmjNNJ0vHq3s+mEqR1q8jqCzgHmivRcU+1m_Q8vquV5t5xWw@mail.gmail.com>
+Subject: Re: [PATCH v3 04/12] signal: Verify the alignment and size of siginfo_t
+To:     "Eric W. Beiderman" <ebiederm@xmission.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moves some checks that later will be performed 2 times to an own fuction. This
-avoids duplicate code later on.
+On Wed, 5 May 2021 at 16:11, Eric W. Beiderman <ebiederm@xmission.com> wrote:
+> From: "Eric W. Biederman" <ebiederm@xmission.com>
+>
+> Update the static assertions about siginfo_t to also describe
+> it's alignment and size.
+>
+> While investigating if it was possible to add a 64bit field into
+> siginfo_t[1] it became apparent that the alignment of siginfo_t
+> is as much a part of the ABI as the size of the structure.
+>
+> If the alignment changes siginfo_t when embedded in another structure
+> can move to a different offset.  Which is not acceptable from an ABI
+> structure.
+>
+> So document that fact and add static assertions to notify developers
+> if they change change the alignment by accident.
+>
+> [1] https://lkml.kernel.org/r/YJEZdhe6JGFNYlum@elver.google.com
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
----
+Acked-by: Marco Elver <elver@google.com>
 
-From 42a4a3a7d9ea9948b4071f406e7fcae23bfa0bdf Mon Sep 17 00:00:00 2001
-From: Werner Sembach <wse@tuxedocomputers.com>
-Date: Mon, 3 May 2021 14:35:39 +0200
-Subject: [PATCH 1/3] New function to avoid duplicate code in upcomming commits
+> ---
+>  arch/arm/kernel/signal.c           | 2 ++
+>  arch/arm64/kernel/signal.c         | 2 ++
+>  arch/arm64/kernel/signal32.c       | 2 ++
+>  arch/sparc/kernel/signal32.c       | 2 ++
+>  arch/sparc/kernel/signal_64.c      | 2 ++
+>  arch/x86/kernel/signal_compat.c    | 6 ++++++
+>  include/uapi/asm-generic/siginfo.h | 5 +++++
+>  7 files changed, 21 insertions(+)
+>
+> diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+> index 2dac5d2c5cf6..643bcb0f091b 100644
+> --- a/arch/arm/kernel/signal.c
+> +++ b/arch/arm/kernel/signal.c
+> @@ -737,6 +737,8 @@ static_assert(NSIGBUS       == 5);
+>  static_assert(NSIGTRAP == 6);
+>  static_assert(NSIGCHLD == 6);
+>  static_assert(NSIGSYS  == 2);
+> +static_assert(sizeof(siginfo_t) == 128);
+> +static_assert(__alignof__(siginfo_t) == 4);
+>  static_assert(offsetof(siginfo_t, si_signo)    == 0x00);
+>  static_assert(offsetof(siginfo_t, si_errno)    == 0x04);
+>  static_assert(offsetof(siginfo_t, si_code)     == 0x08);
+> diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+> index af8bd2af1298..ad4bd27fc044 100644
+> --- a/arch/arm64/kernel/signal.c
+> +++ b/arch/arm64/kernel/signal.c
+> @@ -985,6 +985,8 @@ static_assert(NSIGBUS       == 5);
+>  static_assert(NSIGTRAP == 6);
+>  static_assert(NSIGCHLD == 6);
+>  static_assert(NSIGSYS  == 2);
+> +static_assert(sizeof(siginfo_t) == 128);
 
----
- drivers/gpu/drm/i915/display/intel_hdmi.c | 41 ++++++++++++++---------
- 1 file changed, 26 insertions(+), 15 deletions(-)
+Would using SI_MAX_SIZE be appropriate? Perhaps not.. in case somebody
+changes it, given these static asserts are meant to double-check.
 
-diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index 46de56af33db..576d3d910d06 100644
---- a/drivers/gpu/drm/i915/display/intel_hdmi.c
-+++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -1861,6 +1861,31 @@ static int intel_hdmi_port_clock(int clock, int bpc)
- 	return clock * bpc / 8;
- }
- 
-+static enum drm_mode_status
-+intel_hdmi_mode_clock_valid(struct intel_hdmi *hdmi, int clock, bool has_hdmi_sink)
-+{
-+	struct drm_device *dev = intel_hdmi_to_dev(hdmi);
-+	struct drm_i915_private *dev_priv = to_i915(dev);
-+	enum drm_mode_status status;
-+
-+	/* check if we can do 8bpc */
-+	status = hdmi_port_clock_valid(hdmi, clock, true, has_hdmi_sink);
-+
-+	if (has_hdmi_sink) {
-+		/* if we can't do 8bpc we may still be able to do 12bpc */
-+		if (status != MODE_OK && !HAS_GMCH(dev_priv))
-+			status = hdmi_port_clock_valid(hdmi, clock * 3 / 2,
-+						       true, has_hdmi_sink);
-+
-+		/* if we can't do 8,12bpc we may still be able to do 10bpc */
-+		if (status != MODE_OK && INTEL_GEN(dev_priv) >= 11)
-+			status = hdmi_port_clock_valid(hdmi, clock * 5 / 4,
-+						       true, has_hdmi_sink);
-+	}
-+
-+	return status;
-+}
-+
- static enum drm_mode_status
- intel_hdmi_mode_valid(struct drm_connector *connector,
- 		      struct drm_display_mode *mode)
-@@ -1891,21 +1916,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 	if (drm_mode_is_420_only(&connector->display_info, mode))
- 		clock /= 2;
- 
--	/* check if we can do 8bpc */
--	status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 8),
--				       true, has_hdmi_sink);
--
--	if (has_hdmi_sink) {
--		/* if we can't do 8bpc we may still be able to do 12bpc */
--		if (status != MODE_OK && !HAS_GMCH(dev_priv))
--			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 12),
--						       true, has_hdmi_sink);
--
--		/* if we can't do 8,12bpc we may still be able to do 10bpc */
--		if (status != MODE_OK && DISPLAY_VER(dev_priv) >= 11)
--			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 10),
--						       true, has_hdmi_sink);
--	}
-+	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
- 	if (status != MODE_OK)
- 		return status;
- 
--- 
-2.25.1
+I leave it to you to decide what makes more sense.
 
+> +static_assert(__alignof__(siginfo_t) == 8);
+>  static_assert(offsetof(siginfo_t, si_signo)    == 0x00);
+>  static_assert(offsetof(siginfo_t, si_errno)    == 0x04);
+>  static_assert(offsetof(siginfo_t, si_code)     == 0x08);
+> diff --git a/arch/arm64/kernel/signal32.c b/arch/arm64/kernel/signal32.c
+> index b6afb646515f..ee6c7484e130 100644
+> --- a/arch/arm64/kernel/signal32.c
+> +++ b/arch/arm64/kernel/signal32.c
+> @@ -469,6 +469,8 @@ static_assert(NSIGBUS       == 5);
+>  static_assert(NSIGTRAP == 6);
+>  static_assert(NSIGCHLD == 6);
+>  static_assert(NSIGSYS  == 2);
+> +static_assert(sizeof(compat_siginfo_t) == 128);
+> +static_assert(__alignof__(compat_siginfo_t) == 4);
+>  static_assert(offsetof(compat_siginfo_t, si_signo)     == 0x00);
+>  static_assert(offsetof(compat_siginfo_t, si_errno)     == 0x04);
+>  static_assert(offsetof(compat_siginfo_t, si_code)      == 0x08);
+> diff --git a/arch/sparc/kernel/signal32.c b/arch/sparc/kernel/signal32.c
+> index 778ed5c26d4a..32b977f253e3 100644
+> --- a/arch/sparc/kernel/signal32.c
+> +++ b/arch/sparc/kernel/signal32.c
+> @@ -757,6 +757,8 @@ static_assert(NSIGBUS       == 5);
+>  static_assert(NSIGTRAP == 6);
+>  static_assert(NSIGCHLD == 6);
+>  static_assert(NSIGSYS  == 2);
+> +static_assert(sizeof(compat_siginfo_t) == 128);
+> +static_assert(__alignof__(compat_siginfo_t) == 4);
+>  static_assert(offsetof(compat_siginfo_t, si_signo)     == 0x00);
+>  static_assert(offsetof(compat_siginfo_t, si_errno)     == 0x04);
+>  static_assert(offsetof(compat_siginfo_t, si_code)      == 0x08);
+> diff --git a/arch/sparc/kernel/signal_64.c b/arch/sparc/kernel/signal_64.c
+> index c9bbf5f29078..e9dda9db156c 100644
+> --- a/arch/sparc/kernel/signal_64.c
+> +++ b/arch/sparc/kernel/signal_64.c
+> @@ -567,6 +567,8 @@ static_assert(NSIGBUS       == 5);
+>  static_assert(NSIGTRAP == 6);
+>  static_assert(NSIGCHLD == 6);
+>  static_assert(NSIGSYS  == 2);
+> +static_assert(sizeof(siginfo_t) == 128);
+> +static_assert(__alignof__(siginfo_t) == 8);
+>  static_assert(offsetof(siginfo_t, si_signo)    == 0x00);
+>  static_assert(offsetof(siginfo_t, si_errno)    == 0x04);
+>  static_assert(offsetof(siginfo_t, si_code)     == 0x08);
+> diff --git a/arch/x86/kernel/signal_compat.c b/arch/x86/kernel/signal_compat.c
+> index 0e5d0a7e203b..e735bc129331 100644
+> --- a/arch/x86/kernel/signal_compat.c
+> +++ b/arch/x86/kernel/signal_compat.c
+> @@ -34,7 +34,13 @@ static inline void signal_compat_build_tests(void)
+>         BUILD_BUG_ON(NSIGSYS  != 2);
+>
+>         /* This is part of the ABI and can never change in size: */
+> +       BUILD_BUG_ON(sizeof(siginfo_t) != 128);
+>         BUILD_BUG_ON(sizeof(compat_siginfo_t) != 128);
+> +
+> +       /* This is a part of the ABI and can never change in alignment */
+> +       BUILD_BUG_ON(__alignof__(siginfo_t) != 8);
+> +       BUILD_BUG_ON(__alignof__(compat_siginfo_t) != 4);
+> +
+>         /*
+>          * The offsets of all the (unioned) si_fields are fixed
+>          * in the ABI, of course.  Make sure none of them ever
+> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+> index 03d6f6d2c1fe..91c80d0c10c5 100644
+> --- a/include/uapi/asm-generic/siginfo.h
+> +++ b/include/uapi/asm-generic/siginfo.h
+> @@ -29,6 +29,11 @@ typedef union sigval {
+>  #define __ARCH_SI_ATTRIBUTES
+>  #endif
+>
+> +/*
+> + * Be careful when extending this union.  On 32bit siginfo_t is 32bit
+> + * aligned.  Which means that a 64bit field or any other field that
+> + * would increase the alignment of siginfo_t will break the ABI.
+> + */
+>  union __sifields {
+>         /* kill() */
+>         struct {
+> --
+> 2.30.1
+>
