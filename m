@@ -2,45 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EE8C374482
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA2B7374461
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236317AbhEEQ6D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:58:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49784 "EHLO mail.kernel.org"
+        id S236677AbhEEQ5H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:57:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49994 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236102AbhEEQrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:47:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3CF866193D;
-        Wed,  5 May 2021 16:36:46 +0000 (UTC)
+        id S235767AbhEEQrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:47:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 76E3B61441;
+        Wed,  5 May 2021 16:36:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232607;
-        bh=N+cDqyWaNRu7Fs6ee6v1kiQ73FqSCuRxLtsnmHdnzyU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=vQBIAHGxDmrz1jKYsnDw2lp2Rg9Uc8dtCy1GR0yM5ycduXxSXIIUY1zlsCTmVK0u8
-         Smp9xbyF3xBk5zl0liealTTPF/0NUdCqb34suoAYFdeujrgTnVeV4b6MCBbFomy9dz
-         gVxu9BulPvzeQOyT92fFjt4kHMFEM8Zle9D96HdhPGaU/9pzG9F+FbraXkQBwHc0DC
-         TRSUa6uybNGR7W9IDVhmAjRCN4Re2UP9TW3/e7QuxC3dp7zK1mQaumD6XLbWRVXpmw
-         gzB3DrTNRrkBadu77JxGNeW++Ln3jCZ7mKxQf2E97F3Jw1X/wikKcA2rtIus4YF9EF
-         1j7wr+AIU4y+g==
+        s=k20201202; t=1620232611;
+        bh=dKodwKUoJASrAFlw1LNyG9ld/2oU3AxtzmUdjccQb24=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nnoiQJsfSdiTQcNbBKui2/jr3mJQA8/BW8YXyning5Fbw3Mk/1Umpm0jAHxiv4e0j
+         NqofQEX+XNOi4owo1MiiaDb+Ts3V+QgprVTT3Ve+wQOmdUDaZqGEHWb11j3qgar9Is
+         Uf50SrSac3ELWV62eWUGsvuXSAXsMpoc/YdAOrlS3yp8vc4p2opm6PrTTYGm+SdD9F
+         GYtFqnWI7+Ch3fISvSCCSU14cxgl3+XKgElrhpi0xPjI02TIIcCSosm5wU5TSZAmD0
+         9WBcBPQ5YZ0PZKqqproHz8sbkdL8bu0CpmR8Yn4Nn6xlhQmV/a4K+QENj0FmTc8EUT
+         0up4tZ6sXM2Rw==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Petr Mladek <pmladek@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Laurence Oberman <loberman@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.11 104/104] watchdog: fix barriers when printing backtraces from all CPUs
-Date:   Wed,  5 May 2021 12:34:13 -0400
-Message-Id: <20210505163413.3461611-104-sashal@kernel.org>
+Cc:     Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.10 01/85] ath11k: fix thermal temperature read
+Date:   Wed,  5 May 2021 12:35:24 -0400
+Message-Id: <20210505163648.3462507-1-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
-References: <20210505163413.3461611-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -49,74 +41,104 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Mladek <pmladek@suse.com>
+From: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
 
-[ Upstream commit 9f113bf760ca90d709f8f89a733d10abb1f04a83 ]
+[ Upstream commit e3de5bb7ac1a4cb262f8768924fd3ef6182b10bb ]
 
-Any parallel softlockup reports are skipped when one CPU is already
-printing backtraces from all CPUs.
+Fix dangling pointer in thermal temperature event which causes
+incorrect temperature read.
 
-The exclusive rights are synchronized using one bit in
-soft_lockup_nmi_warn.  There is also one memory barrier that does not make
-much sense.
+Tested-on: IPQ8074 AHB WLAN.HK.2.4.0.1-00041-QCAHKSWPL_SILICONZ-1
 
-Use two barriers on the right location to prevent mixing two reports.
-
-[pmladek@suse.com: use bit lock operations to prevent multiple soft-lockup reports]
-  Link: https://lkml.kernel.org/r/YFSVsLGVWMXTvlbk@alley
-
-Link: https://lkml.kernel.org/r/20210311122130.6788-6-pmladek@suse.com
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Laurence Oberman <loberman@redhat.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Pradeep Kumar Chitrapu <pradeepc@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/20210218182708.8844-1-pradeepc@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/watchdog.c | 17 ++++++-----------
- 1 file changed, 6 insertions(+), 11 deletions(-)
+ drivers/net/wireless/ath/ath11k/wmi.c | 53 +++++++++++----------------
+ 1 file changed, 21 insertions(+), 32 deletions(-)
 
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 122e272ad7f2..01bf977090dc 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -393,11 +393,12 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 		if (kvm_check_and_clear_guest_paused())
- 			return HRTIMER_RESTART;
+diff --git a/drivers/net/wireless/ath/ath11k/wmi.c b/drivers/net/wireless/ath/ath11k/wmi.c
+index 173ab6ceed1f..eca86225a341 100644
+--- a/drivers/net/wireless/ath/ath11k/wmi.c
++++ b/drivers/net/wireless/ath/ath11k/wmi.c
+@@ -4986,31 +4986,6 @@ int ath11k_wmi_pull_fw_stats(struct ath11k_base *ab, struct sk_buff *skb,
+ 	return 0;
+ }
  
-+		/*
-+		 * Prevent multiple soft-lockup reports if one cpu is already
-+		 * engaged in dumping all cpu back traces.
-+		 */
- 		if (softlockup_all_cpu_backtrace) {
--			/* Prevent multiple soft-lockup reports if one cpu is already
--			 * engaged in dumping cpu back traces
--			 */
--			if (test_and_set_bit(0, &soft_lockup_nmi_warn))
-+			if (test_and_set_bit_lock(0, &soft_lockup_nmi_warn))
- 				return HRTIMER_RESTART;
- 		}
- 
-@@ -415,14 +416,8 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 			dump_stack();
- 
- 		if (softlockup_all_cpu_backtrace) {
--			/* Avoid generating two back traces for current
--			 * given that one is already made above
--			 */
- 			trigger_allbutself_cpu_backtrace();
+-static int
+-ath11k_pull_pdev_temp_ev(struct ath11k_base *ab, u8 *evt_buf,
+-			 u32 len, const struct wmi_pdev_temperature_event *ev)
+-{
+-	const void **tb;
+-	int ret;
 -
--			clear_bit(0, &soft_lockup_nmi_warn);
--			/* Barrier to sync with other cpus */
--			smp_mb__after_atomic();
-+			clear_bit_unlock(0, &soft_lockup_nmi_warn);
- 		}
+-	tb = ath11k_wmi_tlv_parse_alloc(ab, evt_buf, len, GFP_ATOMIC);
+-	if (IS_ERR(tb)) {
+-		ret = PTR_ERR(tb);
+-		ath11k_warn(ab, "failed to parse tlv: %d\n", ret);
+-		return ret;
+-	}
+-
+-	ev = tb[WMI_TAG_PDEV_TEMPERATURE_EVENT];
+-	if (!ev) {
+-		ath11k_warn(ab, "failed to fetch pdev temp ev");
+-		kfree(tb);
+-		return -EPROTO;
+-	}
+-
+-	kfree(tb);
+-	return 0;
+-}
+-
+ size_t ath11k_wmi_fw_stats_num_vdevs(struct list_head *head)
+ {
+ 	struct ath11k_fw_stats_vdev *i;
+@@ -6390,23 +6365,37 @@ ath11k_wmi_pdev_temperature_event(struct ath11k_base *ab,
+ 				  struct sk_buff *skb)
+ {
+ 	struct ath11k *ar;
+-	struct wmi_pdev_temperature_event ev = {0};
++	const void **tb;
++	const struct wmi_pdev_temperature_event *ev;
++	int ret;
++
++	tb = ath11k_wmi_tlv_parse_alloc(ab, skb->data, skb->len, GFP_ATOMIC);
++	if (IS_ERR(tb)) {
++		ret = PTR_ERR(tb);
++		ath11k_warn(ab, "failed to parse tlv: %d\n", ret);
++		return;
++	}
  
- 		add_taint(TAINT_SOFTLOCKUP, LOCKDEP_STILL_OK);
+-	if (ath11k_pull_pdev_temp_ev(ab, skb->data, skb->len, &ev) != 0) {
+-		ath11k_warn(ab, "failed to extract pdev temperature event");
++	ev = tb[WMI_TAG_PDEV_TEMPERATURE_EVENT];
++	if (!ev) {
++		ath11k_warn(ab, "failed to fetch pdev temp ev");
++		kfree(tb);
+ 		return;
+ 	}
+ 
+ 	ath11k_dbg(ab, ATH11K_DBG_WMI,
+-		   "pdev temperature ev temp %d pdev_id %d\n", ev.temp, ev.pdev_id);
++		   "pdev temperature ev temp %d pdev_id %d\n", ev->temp, ev->pdev_id);
+ 
+-	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev.pdev_id);
++	ar = ath11k_mac_get_ar_by_pdev_id(ab, ev->pdev_id);
+ 	if (!ar) {
+-		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev.pdev_id);
++		ath11k_warn(ab, "invalid pdev id in pdev temperature ev %d", ev->pdev_id);
++		kfree(tb);
+ 		return;
+ 	}
+ 
+-	ath11k_thermal_event_temperature(ar, ev.temp);
++	ath11k_thermal_event_temperature(ar, ev->temp);
++
++	kfree(tb);
+ }
+ 
+ static void ath11k_wmi_tlv_op_rx(struct ath11k_base *ab, struct sk_buff *skb)
 -- 
 2.30.2
 
