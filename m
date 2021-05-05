@@ -2,87 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F5D3373FD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:30:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B63F9373FD9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234088AbhEEQba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:31:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234063AbhEEQb3 (ORCPT
+        id S234021AbhEEQcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:32:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:49618 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233826AbhEEQb7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:31:29 -0400
-Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00B75C061574;
-        Wed,  5 May 2021 09:30:32 -0700 (PDT)
-Received: from dslb-188-104-057-152.188.104.pools.vodafone-ip.de ([188.104.57.152] helo=martin-debian-2.paytec.ch)
-        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.89)
-        (envelope-from <martin@kaiser.cx>)
-        id 1leKPr-0001PJ-Rh; Wed, 05 May 2021 18:30:27 +0200
-From:   Martin Kaiser <martin@kaiser.cx>
-To:     Alessandro Zummo <a.zummo@towertech.it>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>
-Cc:     linux-rtc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Martin Kaiser <martin@kaiser.cx>
-Subject: [PATCH v2] rtc: imxdi: add wakeup support
-Date:   Wed,  5 May 2021 18:30:09 +0200
-Message-Id: <20210505163009.14252-1-martin@kaiser.cx>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210430093210.7034-1-martin@kaiser.cx>
-References: <20210430093210.7034-1-martin@kaiser.cx>
+        Wed, 5 May 2021 12:31:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620232262;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kX3E2zH85fHZhD2JEIaEbiUpcmLdxoyEdcOH7SUKQb8=;
+        b=ZEPl6TFONoZrgGBWVhWOdeYHu9VEB6rmh9XRExqAJDxyWr7LbnnwksOQ11zdrluQlz2/68
+        L1IIwkJ/YWFRa6AgozZbdtbfJvD/4GYf9yC6E1xesDVvM/ERtFdxxPz7yql5dOnsHlRMZ4
+        dyRjzHavwxnRE9xRV7zmlfes6OJuSNI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-322-QQsDjsSTOqi091UDn-ZQXg-1; Wed, 05 May 2021 12:31:01 -0400
+X-MC-Unique: QQsDjsSTOqi091UDn-ZQXg-1
+Received: by mail-ed1-f70.google.com with SMTP id d6-20020a0564020786b0290387927a37e2so1133058edy.10
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:31:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kX3E2zH85fHZhD2JEIaEbiUpcmLdxoyEdcOH7SUKQb8=;
+        b=kqpcX2vzT6E4sxlNr/fRqkhi8DWFjAkUVLkU4PuuzeINu3Nv9HfGyEzGFu2B8Va6ng
+         pT/X8t4GGZe7H6/AHNn1yJC3+UfDkSj/YdyNmGgEJOMOdLuia5M//lCleWmY/thI1iHE
+         VoZP6wJM2jS+QvhL0SgUHQjZ6pFv3l3PDo9+YIFqlzMwPCUPgszgMY4g+CDqQFeKq6Xp
+         Ju2Lggv2ZNuhVky92GPGuFyB9MmvGR+GFAZzCaXjGiGujI5ATUMn2+qU2Xgw8/b/EZya
+         y9oMoUeCJCRoUAFEWIuHx+/Dt0kf39uoLg6qytw+Ju22JG1pYQHSLnOIlhSlIUmbUYNw
+         sx4w==
+X-Gm-Message-State: AOAM5334UcwwAmv2AWYoiAWgNSBXWQtWoF4ja68KuymXVDOCWdVMgDoE
+        fBr1WSbnZ2edjb8hTKlirtEW0eTir/6mDODJY3Owig59m3IKw6Xd9XYXHF8ptck58aksnX/tCZa
+        Fgf+pMi0QbLs2oyUoaesS/Jaz
+X-Received: by 2002:aa7:d955:: with SMTP id l21mr24340457eds.118.1620232260021;
+        Wed, 05 May 2021 09:31:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxHidgZUVPmG9pmetM6ciJpFsJs1e1yXIaEK6eN7wapSpmFtjNJU9Wh9NljExq3tV1gNFyTfg==
+X-Received: by 2002:aa7:d955:: with SMTP id l21mr24340438eds.118.1620232259879;
+        Wed, 05 May 2021 09:30:59 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id t9sm3135658edf.70.2021.05.05.09.30.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 09:30:59 -0700 (PDT)
+Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on
+ CONFIG_ACPI
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Paul Menzel <paulepanter@users.sourceforge.net>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@denx.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+References: <20210504174019.2134652-1-linux@roeck-us.net>
+ <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
+ <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net>
+ <20210505093235.00007c38@Huawei.com> <20210505093438.00005238@Huawei.com>
+ <CAHp75VezSD_TcbQ_OBZXPo-szTr-qwOT9oU+7h7W6nk65ZLBhA@mail.gmail.com>
+ <22212bbc-1dc7-c7e7-1954-ebb911754246@redhat.com>
+ <CAHp75Vf+2oVttGhAcpcw-ZsAXno01yuKWz0Xiti_7beHCR81ng@mail.gmail.com>
+ <ede732cb-4a23-e5bc-6802-0280dc232876@redhat.com>
+ <CAHp75VciMKfxPvKmY349327FcoUcUMeFnvqkniw2erCyb71BoQ@mail.gmail.com>
+ <3121ad81-1dc3-eace-a87c-47ebafa2d615@redhat.com>
+ <CAHp75VfosJVmQOBUSQEVwrvkfUKnVdfAW7ctX+Yi8bFu1+jamw@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <dbcf3cf5-069b-6a20-ebc7-0675e7713367@redhat.com>
+Date:   Wed, 5 May 2021 18:30:58 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHp75VfosJVmQOBUSQEVwrvkfUKnVdfAW7ctX+Yi8bFu1+jamw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The DryIce-based RTC supports alarms that trigger an interrupt.
+Hi,
 
-Add an option to configure this interrupt as a wakeup source that wakes the
-system up from standby mode.
+On 5/5/21 6:26 PM, Andy Shevchenko wrote:
+> On Wed, May 5, 2021 at 6:19 PM Hans de Goede <hdegoede@redhat.com> wrote:
+>> On 5/5/21 4:18 PM, Andy Shevchenko wrote:
+>>> On Wed, May 5, 2021 at 5:11 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> 
+> ...
+> 
+>>> Currently the scope is of
+>>> AOS2315
+>>> BME0680
+>>> STK8312
+>>
+>> Ok I cannot find any reference to those in the DSDT-s which I have,
+>> nor in systemd's hwdb.
+> 
+> Thanks for checking.
+> 
+> By the way. Do you have DSDTs in some kind of Git repository?
+> Shouldn't we have (means to create if not exists) one publicly
+> available? It would be nice to gather them under the hood for the
+> purpose of looking into. I have some (small) set of those as well
+> which might be useful.
 
-Signed-off-by: Martin Kaiser <martin@kaiser.cx>
----
-v2:
- - unconditionally declare rtc-imxdi as wakeup source
- - use dev_pm_set_wake_irq instead of manually coding suspend and resume
+Interesting idea, the issue is that arguably these are copyrightable
+and we don't have any permission to distribute them. Things like
+attaching them to bugs, having them emailed to me, etc. can be
+considered fair use of sorts I guess (IANAL), but putting them into
+a git repo would really be a bit of a grey area...
 
-simple test (no need to configure the wakeup source via sysfs any more)
+Regards,
 
-   [root@board ]# rtcwake -s 3 -m mem
-   wakeup from "mem" at Fri Apr 30 09:23:52 2021
-   ...
-   [root@board ]#
+Hans
 
- drivers/rtc/rtc-imxdi.c | 4 ++++
- 1 file changed, 4 insertions(+)
-
-diff --git a/drivers/rtc/rtc-imxdi.c b/drivers/rtc/rtc-imxdi.c
-index c1806f4d68e7..4b712e5ab08a 100644
---- a/drivers/rtc/rtc-imxdi.c
-+++ b/drivers/rtc/rtc-imxdi.c
-@@ -24,6 +24,7 @@
- #include <linux/delay.h>
- #include <linux/module.h>
- #include <linux/platform_device.h>
-+#include <linux/pm_wakeirq.h>
- #include <linux/rtc.h>
- #include <linux/sched.h>
- #include <linux/spinlock.h>
-@@ -811,6 +812,9 @@ static int __init dryice_rtc_probe(struct platform_device *pdev)
- 
- 	platform_set_drvdata(pdev, imxdi);
- 
-+	device_init_wakeup(&pdev->dev, true);
-+	dev_pm_set_wake_irq(&pdev->dev, norm_irq);
-+
- 	imxdi->rtc->ops = &dryice_rtc_ops;
- 	imxdi->rtc->range_max = U32_MAX;
- 
--- 
-2.20.1
 
