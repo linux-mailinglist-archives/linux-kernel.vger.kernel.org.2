@@ -2,162 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551D437492B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 30C6E37492F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:15:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233976AbhEEUPn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:15:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59174 "EHLO
+        id S234005AbhEEUQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:16:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59252 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230165AbhEEUPl (ORCPT
+        with ESMTP id S233983AbhEEUP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:15:41 -0400
-Received: from mail-qt1-x82b.google.com (mail-qt1-x82b.google.com [IPv6:2607:f8b0:4864:20::82b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A34B0C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 13:14:43 -0700 (PDT)
-Received: by mail-qt1-x82b.google.com with SMTP id j17so2250605qtx.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 13:14:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+jjeEQF3xaIPQlwhGWprqXCtf+a5GVL9PJ3c+CmBaaI=;
-        b=Qj+hddOVEJnmo8hg7lgul4xcuG8RVdY0sWqOcNQZXzyeM/cFHlKLF+St1c3GXu3Jlp
-         bWrR6LHfXkeRSrjuLsJWjzCXjuyU28WFotCpvt/rCatCZiM3VkyKsv8K49VncT4wZAle
-         oC5IQ9qX2YsFsyJ4Sn+HAbILLfHQmYfmJnftMTY0uNQ6ececzYMncPApRzv8WW2ykGqM
-         qbdl15s0lfuQQbl8eu7wLqHOsAv3SCSMWnvjhtEFcnl3WCxjvn3idBino7bUksb7ghlf
-         wZYeKLR3mKeNaEMXUFthyZdtUI6pgZAjBg83XlXIQqJKUtkgstXasgUpiFQmVRuSpWuz
-         xaIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+jjeEQF3xaIPQlwhGWprqXCtf+a5GVL9PJ3c+CmBaaI=;
-        b=bSXq71Qzh+G2h0WvOcCmIb3iKg8VppEqdBv8aSJO8PFfKZ0Yv35B6pJZwpIs4AOrS1
-         aq+6HBLLB1vLgdMYoK+atYEFypDxkCCl4WKIBTDi5vpSHs8W1IBev4FNby7mhXwRDiRD
-         qVRq0lA0OfiPCNHowvxnpdiuZnjl2W/FPpKCrzua41F+ee/7L879BDD9D8e84ZJ+PbZA
-         5xwk6kxpQQbDRNHYBnucW/zpDUmm2M8LWtC7RMj1SbyAkYRgbyfEOhVFQ/LtA1RMhdVY
-         kmcZHuklOayTwqfsVsSJTLGnuPKqSjRrk8D2mlGXRq/exCMQK9ThBkwK3YyrYMyYgz0P
-         yASQ==
-X-Gm-Message-State: AOAM532FgiU1m7Fqr3u6flP8xLBhS12kijPckfy4c75znTWY58CDtvim
-        Ltca9PCbuicSru9nsrwkYL2ZKQ==
-X-Google-Smtp-Source: ABdhPJxyWdI1pj+uGPYyfER/3770N6GgOO+jx6uMeY9S22MRCSdg7XkAQOkgs3N30CG2ijFfwIUEFQ==
-X-Received: by 2002:ac8:5d93:: with SMTP id d19mr376380qtx.334.1620245682881;
-        Wed, 05 May 2021 13:14:42 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-47-55-113-94.dhcp-dynamic.fibreop.ns.bellaliant.net. [47.55.113.94])
-        by smtp.gmail.com with ESMTPSA id z4sm270458qtq.34.2021.05.05.13.14.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 13:14:42 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1leNur-001Xna-Hk; Wed, 05 May 2021 17:14:41 -0300
-Date:   Wed, 5 May 2021 17:14:41 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, Qiushi Wu <wu000273@umn.edu>
-Subject: Re: [PATCH 037/190] Revert "RDMA/core: Fix several reference count
- leaks."
-Message-ID: <20210505201441.GD2047089@ziepe.ca>
-References: <20210421130105.1226686-1-gregkh@linuxfoundation.org>
- <20210421130105.1226686-38-gregkh@linuxfoundation.org>
- <20210421141444.GL1370958@nvidia.com>
- <YIgfbZDo9eQ2tKvc@kroah.com>
- <20210427161235.GB1370958@nvidia.com>
- <YIlTzGLpbRj3rh/R@kroah.com>
- <20210428130044.GQ1370958@nvidia.com>
- <YIq24bDyB49QJm0S@kroah.com>
- <20210503183051.GO1370958@nvidia.com>
+        Wed, 5 May 2021 16:15:58 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DF8DC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 13:15:02 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1leNv4-0007fA-5f; Wed, 05 May 2021 22:14:54 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1leNv2-0006m5-Sc; Wed, 05 May 2021 22:14:52 +0200
+From:   =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+To:     "David S . Miller" <davem@davemloft.net>,
+        Jens Axboe <axboe@kernel.dk>, Jakub Kicinski <kuba@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>
+Cc:     sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel@pengutronix.de
+Subject: [PATCH] sparc/vio: make remove callback return void
+Date:   Wed,  5 May 2021 22:14:49 +0200
+Message-Id: <20210505201449.195627-1-u.kleine-koenig@pengutronix.de>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210503183051.GO1370958@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 03:30:51PM -0300, Jason Gunthorpe wrote:
-> On Thu, Apr 29, 2021 at 03:38:41PM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, Apr 28, 2021 at 10:00:44AM -0300, Jason Gunthorpe wrote:
-> > > On Wed, Apr 28, 2021 at 02:23:40PM +0200, Greg Kroah-Hartman wrote:
-> > > 
-> > > > > We've talked about this specifically before:
-> > > > > 
-> > > > > http://lore.kernel.org/r/20210331170720.GY2710221@ziepe.ca
-> > > > > 
-> > > > > I still don't understand what you mean by "udev sees it properly", as
-> > > > > above, all the tests I thought of look OK.
-> > > > 
-> > > > Can you query the udev database to see the attribute values?
-> > > 
-> > > It appears so unless I misunderstand your ask:
-> > > 
-> > > $ udevadm info -a /sys/class/infiniband/ibp0s9
-> > >     ATTR{ports/1/cm_rx_duplicates/dreq}=="0"
-> > 
-> > That works?  Nice, I didn't think it did.
-> > 
-> > But what about the uevent that fired for "1", isn't there attibutes
-> > assigned to it that udev ignores?
-> 
-> I'm not completely familiar with uevents, but:
-> 
-> $ find /sys/class/infiniband/ibp0s9/ -name "uevent"
-> /sys/class/infiniband/ibp0s9/uevent
-> 
-> $ udevadm monitor & modprobe mlx5_ib
-> KERNEL[169.337295] add      /bus/auxiliary/drivers/mlx5_ib.multiport (drivers)
-> UDEV  [169.354621] add      /bus/auxiliary/drivers/mlx5_ib.multiport (drivers)
-> KERNEL[169.393088] add      /devices/pci0000:00/0000:00:09.0/infiniband_verbs/uverbs0 (infiniband_verbs)
-> KERNEL[169.393516] add      /devices/pci0000:00/0000:00:09.0/infiniband_mad/umad0 (infiniband_mad)
-> KERNEL[169.394040] add      /devices/pci0000:00/0000:00:09.0/infiniband_mad/issm0 (infiniband_mad)
-> UDEV  [169.395189] add      /devices/pci0000:00/0000:00:09.0/infiniband_verbs/uverbs0 (infiniband_verbs)
-> UDEV  [169.397812] add      /devices/pci0000:00/0000:00:09.0/infiniband_mad/issm0 (infiniband_mad)
-> KERNEL[169.407727] add      /devices/pci0000:00/0000:00:09.0/net/ib0 (net)
-> KERNEL[169.407851] add      /devices/pci0000:00/0000:00:09.0/net/ib0/queues/rx-0 (queues)
-> KERNEL[169.408113] add      /devices/pci0000:00/0000:00:09.0/net/ib0/queues/tx-0 (queues)
-> KERNEL[169.409059] add      /devices/pci0000:00/0000:00:09.0/infiniband/mlx5_0 (infiniband)
-> KERNEL[169.411483] bind     /devices/pci0000:00/0000:00:09.0/mlx5_core.rdma.0 (auxiliary)
-> KERNEL[169.411836] add      /bus/auxiliary/drivers/mlx5_ib.rdma (drivers)
-> KERNEL[169.411973] add      /module/mlx5_ib (module)
-> UDEV  [169.420570] bind     /devices/pci0000:00/0000:00:09.0/mlx5_core.rdma.0 (auxiliary)
-> UDEV  [169.421365] add      /bus/auxiliary/drivers/mlx5_ib.rdma (drivers)
-> UDEV  [169.447853] add      /module/mlx5_ib (module)
-> KERNEL[169.482293] move     /devices/pci0000:00/0000:00:09.0/infiniband/ibp0s9 (infiniband)
-> UDEV  [169.486395] add      /devices/pci0000:00/0000:00:09.0/infiniband/mlx5_0 (infiniband)
-> UDEV  [169.495193] move     /devices/pci0000:00/0000:00:09.0/infiniband/ibp0s9 (infiniband)
-> UDEV  [169.698592] add      /devices/pci0000:00/0000:00:09.0/net/ib0 (net)
-> UDEV  [169.700436] add      /devices/pci0000:00/0000:00:09.0/net/ib0/queues/rx-0 (queues)
-> UDEV  [169.700712] add      /devices/pci0000:00/0000:00:09.0/net/ib0/queues/tx-0 (queues)
-> UDEV  [170.042132] add      /devices/pci0000:00/0000:00:09.0/infiniband_mad/umad0 (infiniband_mad)
-> 
-> I don't see any uevents related to the nested attributes. Same on
-> removal.
+The driver core ignores the return value of struct bus_type::remove()
+because there is only little that can be done. To simplify the quest to
+make this function return void, let struct vio_driver::remove() return
+void, too. All users already unconditionally return 0, this commit makes
+it obvious that returning an error code is a bad idea and should prevent
+that future driver authors consider returning an error code.
 
-With some debugging, the uevent situation is like this..
+Note there are two nominally different implementations for a vio bus:
+one in arch/sparc/kernel/vio.c and the other in
+arch/powerpc/platforms/pseries/vio.c. This patch only addresses the
+former.
 
-When '1' is created as a kobj the code does call
+Signed-off-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+---
+ arch/sparc/include/asm/vio.h       | 2 +-
+ arch/sparc/kernel/ds.c             | 6 ------
+ arch/sparc/kernel/vio.c            | 4 ++--
+ drivers/block/sunvdc.c             | 3 +--
+ drivers/net/ethernet/sun/ldmvsw.c  | 4 +---
+ drivers/net/ethernet/sun/sunvnet.c | 3 +--
+ drivers/tty/vcc.c                  | 4 +---
+ 7 files changed, 7 insertions(+), 19 deletions(-)
 
-		kobject_uevent(&port->kobj, KOBJ_ADD);
+diff --git a/arch/sparc/include/asm/vio.h b/arch/sparc/include/asm/vio.h
+index 059f0eb678e0..8a1a83bbb6d5 100644
+--- a/arch/sparc/include/asm/vio.h
++++ b/arch/sparc/include/asm/vio.h
+@@ -362,7 +362,7 @@ struct vio_driver {
+ 	struct list_head		node;
+ 	const struct vio_device_id	*id_table;
+ 	int (*probe)(struct vio_dev *dev, const struct vio_device_id *id);
+-	int (*remove)(struct vio_dev *dev);
++	void (*remove)(struct vio_dev *dev);
+ 	void (*shutdown)(struct vio_dev *dev);
+ 	unsigned long			driver_data;
+ 	struct device_driver		driver;
+diff --git a/arch/sparc/kernel/ds.c b/arch/sparc/kernel/ds.c
+index 522e5b51050c..4a5bdb0df779 100644
+--- a/arch/sparc/kernel/ds.c
++++ b/arch/sparc/kernel/ds.c
+@@ -1236,11 +1236,6 @@ static int ds_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return err;
+ }
+ 
+-static int ds_remove(struct vio_dev *vdev)
+-{
+-	return 0;
+-}
+-
+ static const struct vio_device_id ds_match[] = {
+ 	{
+ 		.type = "domain-services-port",
+@@ -1251,7 +1246,6 @@ static const struct vio_device_id ds_match[] = {
+ static struct vio_driver ds_driver = {
+ 	.id_table	= ds_match,
+ 	.probe		= ds_probe,
+-	.remove		= ds_remove,
+ 	.name		= "ds",
+ };
+ 
+diff --git a/arch/sparc/kernel/vio.c b/arch/sparc/kernel/vio.c
+index 4f57056ed463..348a88691219 100644
+--- a/arch/sparc/kernel/vio.c
++++ b/arch/sparc/kernel/vio.c
+@@ -105,10 +105,10 @@ static int vio_device_remove(struct device *dev)
+ 		 * routines to do so at the moment. TBD
+ 		 */
+ 
+-		return drv->remove(vdev);
++		drv->remove(vdev);
+ 	}
+ 
+-	return 1;
++	return 0;
+ }
+ 
+ static ssize_t devspec_show(struct device *dev,
+diff --git a/drivers/block/sunvdc.c b/drivers/block/sunvdc.c
+index 39aeebc6837d..1547d4345ad8 100644
+--- a/drivers/block/sunvdc.c
++++ b/drivers/block/sunvdc.c
+@@ -1071,7 +1071,7 @@ static int vdc_port_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return err;
+ }
+ 
+-static int vdc_port_remove(struct vio_dev *vdev)
++static void vdc_port_remove(struct vio_dev *vdev)
+ {
+ 	struct vdc_port *port = dev_get_drvdata(&vdev->dev);
+ 
+@@ -1094,7 +1094,6 @@ static int vdc_port_remove(struct vio_dev *vdev)
+ 
+ 		kfree(port);
+ 	}
+-	return 0;
+ }
+ 
+ static void vdc_requeue_inflight(struct vdc_port *port)
+diff --git a/drivers/net/ethernet/sun/ldmvsw.c b/drivers/net/ethernet/sun/ldmvsw.c
+index 01ea0d6f8819..50bd4e3b0af9 100644
+--- a/drivers/net/ethernet/sun/ldmvsw.c
++++ b/drivers/net/ethernet/sun/ldmvsw.c
+@@ -404,7 +404,7 @@ static int vsw_port_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return err;
+ }
+ 
+-static int vsw_port_remove(struct vio_dev *vdev)
++static void vsw_port_remove(struct vio_dev *vdev)
+ {
+ 	struct vnet_port *port = dev_get_drvdata(&vdev->dev);
+ 	unsigned long flags;
+@@ -430,8 +430,6 @@ static int vsw_port_remove(struct vio_dev *vdev)
+ 
+ 		free_netdev(port->dev);
+ 	}
+-
+-	return 0;
+ }
+ 
+ static void vsw_cleanup(void)
+diff --git a/drivers/net/ethernet/sun/sunvnet.c b/drivers/net/ethernet/sun/sunvnet.c
+index 96b883f965f6..58ee89223951 100644
+--- a/drivers/net/ethernet/sun/sunvnet.c
++++ b/drivers/net/ethernet/sun/sunvnet.c
+@@ -510,7 +510,7 @@ static int vnet_port_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+ 	return err;
+ }
+ 
+-static int vnet_port_remove(struct vio_dev *vdev)
++static void vnet_port_remove(struct vio_dev *vdev)
+ {
+ 	struct vnet_port *port = dev_get_drvdata(&vdev->dev);
+ 
+@@ -533,7 +533,6 @@ static int vnet_port_remove(struct vio_dev *vdev)
+ 
+ 		kfree(port);
+ 	}
+-	return 0;
+ }
+ 
+ static const struct vio_device_id vnet_port_match[] = {
+diff --git a/drivers/tty/vcc.c b/drivers/tty/vcc.c
+index 0a3a71e14df4..0c9b291ef307 100644
+--- a/drivers/tty/vcc.c
++++ b/drivers/tty/vcc.c
+@@ -668,7 +668,7 @@ static int vcc_probe(struct vio_dev *vdev, const struct vio_device_id *id)
+  *
+  * Return: status of removal
+  */
+-static int vcc_remove(struct vio_dev *vdev)
++static void vcc_remove(struct vio_dev *vdev)
+ {
+ 	struct vcc_port *port = dev_get_drvdata(&vdev->dev);
+ 
+@@ -703,8 +703,6 @@ static int vcc_remove(struct vio_dev *vdev)
+ 		kfree(port->domain);
+ 		kfree(port);
+ 	}
+-
+-	return 0;
+ }
+ 
+ static const struct vio_device_id vcc_match[] = {
+-- 
+2.30.2
 
-However DEBUG_KOBJECT reveals:
-
- kobject: '1' (00000000d2367083): kobject_uevent_env: filter function caused the event to drop!
-
-Which happens because 
-  top_kobj == mlx5 (ie the struct device)
-  top_kobj->kset->uevent_ops == device_uevent_ops
-  get_ktype(kobj "1") == &port_type 
-
-Thus calling
-  dev_uevent_filter(mlx5 kset, kobj "1") == 0
-
-As get_ktype(kobj "1") != &device_ktype
-
-Which I read to mean these nested attributes under a struct device
-won't generate a uevent.
-
-The uevent for the struct device is supressed until all the child
-kobjects are created and this explains how udev sees the child kobj's
-and doesn't see extra uevents to confuse it.
-
-Jason
