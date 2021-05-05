@@ -2,60 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19CA5373384
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5439A37338A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:18:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231858AbhEEBSF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 21:18:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230328AbhEEBSE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 21:18:04 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AF557600D1;
-        Wed,  5 May 2021 01:17:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620177428;
-        bh=tOvpORL4pZCL/85TtD6K9Nbq4340ZVvyD3mf9i3tQcw=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=aTKnCJYUdKHY6B9G6Qe4vttFNmvUT8BBMtxBtoAf9N7LOzJyalkXSb9hTA1aahw5J
-         n6zdiCpi7G0NhUNhtNTiR0ZER4gSGgWPxw+Np+hVQIKvSy6o+QQXxDRn2kCeq/t5T/
-         UBwHeXbOyK5QQJMmqlA/aOIaHbORV2AdhGSN5KUyJmuV15J+1RNjWQtrCNWP/wadjF
-         4e25Si6T88dvQJHSYQ0qxpxMIgSfT3Y6IhSQ7fZ108IcrIA7xfM000PHwEAuWJzgAY
-         /9vwfccJho+yx7cdOmBx35Z4AFOhen2vd7v4wi+SIiMNFgfccUB/VdVz0H3zEM4hwp
-         Rxvj/1fLAW+Zw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 9D19E609AC;
-        Wed,  5 May 2021 01:17:08 +0000 (UTC)
-Subject: Re: [GIT PULL] JFFS2, UBI and UBIFS changes for 5.13
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <1258125270.55580.1620159361990.JavaMail.zimbra@nod.at>
-References: <1258125270.55580.1620159361990.JavaMail.zimbra@nod.at>
-X-PR-Tracked-List-Id: Linux MTD discussion mailing list <linux-mtd.lists.infradead.org>
-X-PR-Tracked-Message-Id: <1258125270.55580.1620159361990.JavaMail.zimbra@nod.at>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.13-rc1
-X-PR-Tracked-Commit-Id: 9a29f7f020e06f14eb126bcb84a7f0d166415824
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 51f629446cd172e324deb0146741888cac5dedca
-Message-Id: <162017742858.16566.6652519615271581325.pr-tracker-bot@kernel.org>
-Date:   Wed, 05 May 2021 01:17:08 +0000
-To:     Richard Weinberger <richard@nod.at>
-Cc:     torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-mtd <linux-mtd@lists.infradead.org>
+        id S232169AbhEEBTP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 21:19:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33420 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231958AbhEEBTM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 21:19:12 -0400
+Received: from mail-ed1-x530.google.com (mail-ed1-x530.google.com [IPv6:2a00:1450:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E12D8C061574;
+        Tue,  4 May 2021 18:18:15 -0700 (PDT)
+Received: by mail-ed1-x530.google.com with SMTP id n25so12631649edr.5;
+        Tue, 04 May 2021 18:18:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=hWxpXq/F/UtvTk8yx3LMbiZP1vZG7S4bzKSOJwj04Jk=;
+        b=iR9V6VlvJW7uzXLQUHkbjk/Xfq6uavpv22FUKFmMvzuwkXkW8hfjYDZystOsWcwdJJ
+         xEMf+p127fkEGKuPJXxllzfDtEs7wbic4fA6rYi9y0YxJAyPx3qkU0pttC/n6y3fXnMo
+         QElrLP084xvmE04lqH1RT/SwP02kqO8r2D6gTC/YpSwrmhVjTivFpq5n9eVcjn7iIvsl
+         clS3WONM0PGrHZM+BQ/MCLStnIEZ7yVQKRZ2s9EuCqoXPISj5eQe3DncYsY5UAK3OK2y
+         ztyR3fGVxXF0gEUhit+RKVo/9MHU5fsOnC3Tx38k4j6il9jfqIQmR/KBMHsnUvbiFMbW
+         P5JQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=hWxpXq/F/UtvTk8yx3LMbiZP1vZG7S4bzKSOJwj04Jk=;
+        b=nDjc1MJ08Xa6KXe5cT77M5jZKDp5gao8Oz7HLk6YyPr2JdMLriGj5wFwHoEAho8egQ
+         3EhbMmfpc44Xmdc07RVU+ZzQW7nUbz4zdU8zAdCd0QnfI/Qe92Z9l7CIgtsjeclpFdup
+         PsqlTWFCvGgCg7TCLrTxFlzjo4lPnc2Tk5Gs1eE4Y+tLFVIlB9pOK4aUpcR65wRE1Dol
+         T1Lnv+8B9aJM7RnFSiSSB7fRbVrVSvPPqXNJfzHscSEWc3HrguNI7M+ax6e60H9wjAIe
+         zmvzcJ288W8D3I3pxRUiTly3RvFZ7pLZp9wr/bD/1PJU9NJHeK5qsUl6pGdHz6G6XBNn
+         0HFw==
+X-Gm-Message-State: AOAM5334cu02hvmlh+rkFmjELBcFKrBT4lO0Ccw3XYmqoQLzk0NC6DA0
+        SvCdvMgRmGhgQspw+UPbLbg=
+X-Google-Smtp-Source: ABdhPJxrPXRslVkZKAEqSWinzLatVFrEwpAvNQObwOrwJT9GualSRJaVwbQmvFo7YVUXN4rybLbaAA==
+X-Received: by 2002:a05:6402:17b0:: with SMTP id j16mr28765604edy.97.1620177494579;
+        Tue, 04 May 2021 18:18:14 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.gmail.com with ESMTPSA id 16sm2177870ejw.0.2021.05.04.18.18.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 18:18:14 -0700 (PDT)
+Date:   Wed, 5 May 2021 03:17:20 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v3 20/20] net: phy: add qca8k driver for
+ qca8k switch internal PHY
+Message-ID: <YJHyIN7XbaluQwwL@Ansuel-xps.localdomain>
+References: <20210504222915.17206-1-ansuelsmth@gmail.com>
+ <20210504222915.17206-20-ansuelsmth@gmail.com>
+ <YJHwyPbklFgHVP3r@lunn.ch>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJHwyPbklFgHVP3r@lunn.ch>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Tue, 4 May 2021 22:16:02 +0200 (CEST):
+On Wed, May 05, 2021 at 03:11:36AM +0200, Andrew Lunn wrote:
+> > +/* QCA specific MII registers access function */
+> > +static void qca8k_phy_dbg_write(struct mii_bus *bus, int phy_addr, u16 dbg_addr, u16 dbg_data)
+> > +{
+> > +	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
+> > +	bus->write(bus, phy_addr, MII_ATH_DBG_ADDR, dbg_addr);
+> > +	bus->write(bus, phy_addr, MII_ATH_DBG_DATA, dbg_data);
+> > +	mutex_unlock(&bus->mdio_lock);
+> > +}
+> 
+> What are you locking against here?
+> 
+>      Andrew
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/rw/ubifs.git tags/for-linus-5.13-rc1
+Added the locking if in the future it will be used outside the
+config_init function but since it's used only there, yes, I can drop the
+useless lock.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/51f629446cd172e324deb0146741888cac5dedca
-
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
