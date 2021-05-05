@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC6F33749AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:49:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82D853749B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:49:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230116AbhEEUue (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:50:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59624 "EHLO mail.kernel.org"
+        id S230155AbhEEUuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:50:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59836 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230009AbhEEUuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:50:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id BCACD613ED;
-        Wed,  5 May 2021 20:49:19 +0000 (UTC)
+        id S229893AbhEEUuY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 16:50:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id BC85161176;
+        Wed,  5 May 2021 20:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620247759;
-        bh=aRGoPiNdZDbJUjhYfqJ0RTBYlAMNcp+GVNgQfxE2Sbc=;
+        s=k20201202; t=1620247766;
+        bh=p7Qt1nsJPc48Dnwbz9EhBx//Eh+iqM/EKCePqsyQIa8=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=IkjNDHHOpXmFqpGbTXyZ1USYd0Cu3fbRjXD12p3rsIu2cvrvc+K6BikE4tNfVgeTU
-         m2bBNTh8LkTPaaKqRW+kK0XeJBgudPEeuvdk/L2zmQtBzwNUc3D2XTZGUfFzpqBJWC
-         RIIW+62pu0sZbcWvUH9lfwnF+ts4SQXAE/Oparc4+nZKQeiGV5jjBkXdLBdB24RogG
-         wJaYFSGa/PPBsunWEz6+Rz6kSCg8EmbLCI3F7yXzuHPvp1f/IAWWvyNBLaUIEQ/oDv
-         VVFhy58GAOOG2cyUL6K916Jv03jWiYcPMPiJHrV31p0sygColP2C6SacmXKiDe2OjE
-         TTncGdjQAp0jg==
+        b=u4SV70FJ6ZJE1SyMiUK/psE61ZUqJLRlPs3jNsQyBZd9f0dLla1kp66+Mc2o9BEni
+         LbsQDj3Bmd+aUMBtI5nNCloFxhbfQs2nQDqk8w+cPoJwPl41AX1thWd68UI3LYJVKB
+         60y2q0zWBAwVdrpFuAJfT/mSUQJpxTstSTw+LtHVY24Oz/CS6IebanUSkqekKnyNbZ
+         ShE81B20nzim1dtAzXbY3B58m9kld63MNPmvoo6waJKiCnFOHX++bGO1TG1ysPccKe
+         YJ/kgy/BNWWZkFVYviq7i4MPrnTMJ/QUS01jhOwJ7DdNe8blro6EWqR8d+DNVK+lDB
+         ijwkNxLBelUwQ==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B823D609AD;
-        Wed,  5 May 2021 20:49:19 +0000 (UTC)
-Subject: Re: [GIT PULL] SafeSetID changes for v5.13
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id B6964609E8;
+        Wed,  5 May 2021 20:49:26 +0000 (UTC)
+Subject: Re: [GIT PULL] PCI changes for v5.13
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <CAJ-EccOdLW1+8xx8=PRHzSjy4kVaVOUave0pAXF5b=cD4w3=pg@mail.gmail.com>
-References: <CAJ-EccOdLW1+8xx8=PRHzSjy4kVaVOUave0pAXF5b=cD4w3=pg@mail.gmail.com>
-X-PR-Tracked-List-Id: <linux-security-module.vger.kernel.org>
-X-PR-Tracked-Message-Id: <CAJ-EccOdLW1+8xx8=PRHzSjy4kVaVOUave0pAXF5b=cD4w3=pg@mail.gmail.com>
-X-PR-Tracked-Remote: https://github.com/micah-morton/linux.git tags/safesetid-5.13
-X-PR-Tracked-Commit-Id: 1ca86ac1ec8d201478e9616565d4df5d51595cfc
+In-Reply-To: <20210505163611.GA1310028@bjorn-Precision-5520>
+References: <20210505163611.GA1310028@bjorn-Precision-5520>
+X-PR-Tracked-List-Id: <linux-pci.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210505163611.GA1310028@bjorn-Precision-5520>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.13-changes
+X-PR-Tracked-Commit-Id: 882862aaacefcb9f723b0f7817ddafc154465d8f
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: d29c9bb0108eedfc8f8b46f225f9539190c50d45
-Message-Id: <162024775974.12235.11953358196306474920.pr-tracker-bot@kernel.org>
-Date:   Wed, 05 May 2021 20:49:19 +0000
-To:     Micah Morton <mortonm@chromium.org>
+X-PR-Merge-Commit-Id: 57151b502cbc0fa6ff9074a76883fa9d9eda322e
+Message-Id: <162024776674.12235.8495124452855702495.pr-tracker-bot@kernel.org>
+Date:   Wed, 05 May 2021 20:49:26 +0000
+To:     Bjorn Helgaas <helgaas@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
+        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 3 May 2021 11:42:13 -1000:
+The pull request you sent on Wed, 5 May 2021 11:36:11 -0500:
 
-> https://github.com/micah-morton/linux.git tags/safesetid-5.13
+> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.13-changes
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/d29c9bb0108eedfc8f8b46f225f9539190c50d45
+https://git.kernel.org/torvalds/c/57151b502cbc0fa6ff9074a76883fa9d9eda322e
 
 Thank you!
 
