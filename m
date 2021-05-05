@@ -2,216 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC312374821
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:40:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E189374822
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:42:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235067AbhEESlp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:41:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38206 "EHLO
+        id S234088AbhEESni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:43:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38624 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234140AbhEESlo (ORCPT
+        with ESMTP id S234140AbhEESnf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:41:44 -0400
-Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DE05C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 11:40:47 -0700 (PDT)
-Received: by mail-wm1-x334.google.com with SMTP id g65so2003598wmg.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 11:40:47 -0700 (PDT)
+        Wed, 5 May 2021 14:43:35 -0400
+Received: from mail-lj1-x229.google.com (mail-lj1-x229.google.com [IPv6:2a00:1450:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AC6C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 11:42:37 -0700 (PDT)
+Received: by mail-lj1-x229.google.com with SMTP id p12so3813059ljg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 11:42:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:cc:references:from:subject:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=xPiqDUobm90PwEQWaNvmZpAUGE8LEPZKn4LE1Dhhu88=;
-        b=fMNsg1SJ+gZkYd5zRGwWKYszUpZVsEgoh1d3VdwmOTitwIdCoUQ5RwuzEWrucNy8Gb
-         2dUEIxTv15YNpEDIBFuFHfE0X4bhlbuFQK9y3tDTGHsspKJ1doqK9fP+rytuMALuehkm
-         macLrDJYZQDDYL8TlFhUTPwrLUjf3FB8RvNkWup4sg3KVnMF+/PkTNeGr1koxUi9htsK
-         fBbMMtyeqp98F+v6/G8qPW/BXlcSd3KK749lFvLl5Md1XlAnRNuZb7ZG/NTOuUAKwK3r
-         yXh8+KwbWuAK2psXM1hafo/mrYgNib/zApqJGdLGI8HqHhNjIyzKnLSf0UC7ZtquXc7d
-         8UIA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZtVgorg1zZS8VLz6ZkmKBwpxdrKeM7t+NX3g8df9hyo=;
+        b=fi/t3BnthT3poNXreQ6uLoaV03s0lm1WWZczRRqTuTs3qxP9jJknjHU5ah47WMVazy
+         MN9JWJuif6XkC1SfR6fZSi7FSYJLDZq9P3hTTF9ZtARuYc5NrhmjVxCzcdP5g8CpAXNN
+         QhkKSS62haSnoPmNyChnQ6bDHRBGTumBek7TE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=xPiqDUobm90PwEQWaNvmZpAUGE8LEPZKn4LE1Dhhu88=;
-        b=Bo1LdlqKdtU4ml3AAzzU5xOMf0hE0AARQdoHbRdHN3YA7B/2CCZr3nnulTUgpFIsm5
-         1mZUn6+Y9BK/MWZ6NXnOmxpKNWeQC9oo6LfiPd+gEwj3NeQCr1z0bUZo2+EWMGwSvYUG
-         ePtLfKG+rAc4Sx7rcQu6dfH4k/hy+HrdtBWVJZV9Iu4YPhERuAHAAPXWpUnvwVX/0S3Y
-         tEIzvAg9F4Ampud9UPWnCs3HT+JNZGipts3Cs0NqI1feEokrv2AvnVKJVKJmTWJGSmJe
-         ZeklmoTry2DwANB5E4kQ+gitamYoMQvGqGkbCEvGSvC5yIMjaJzb6ujLSxa+XgYh+e+L
-         6few==
-X-Gm-Message-State: AOAM533CE+leB/hA/52TQwnmRxpYNPVdnlDpUkV0k50vnxXJSLGfWUqu
-        3K5xvf+PCr1l9cyFV3zXpHwL8CHMkX0mVg==
-X-Google-Smtp-Source: ABdhPJyAU5ZlPh8GoKvWmDeZmBh1X74dVbtHBJQaw2sWuLmGQAInyzQnG2e6U8NMyR0xnyv7bagqEQ==
-X-Received: by 2002:a1c:2786:: with SMTP id n128mr11713522wmn.82.1620240045965;
-        Wed, 05 May 2021 11:40:45 -0700 (PDT)
-Received: from ?IPv6:2003:ea:8f38:4600:e1a9:6a7f:ee3b:8d0b? (p200300ea8f384600e1a96a7fee3b8d0b.dip0.t-ipconnect.de. [2003:ea:8f38:4600:e1a9:6a7f:ee3b:8d0b])
-        by smtp.googlemail.com with ESMTPSA id r36sm7119139wmp.18.2021.05.05.11.40.42
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZtVgorg1zZS8VLz6ZkmKBwpxdrKeM7t+NX3g8df9hyo=;
+        b=nD7Cor8xhwZEUNGOWlQN9jOX7+WYiLJ7e8b3G1+bYhFoBqDuHNPsafAS0ZWvt+OqqO
+         hbU3QPg7t2uIOFcTCQ+VYkO4OMXEktYbO/CqfosWaAP3l1fZ5L2xfBWsnfQjvmO+S+KQ
+         R09V22s1BcJ2mgsup+qlqAkOI/D9k3X8G7lNOLlWNH+g9v5UkbsrK/PAA+9sy+oQUsQd
+         AaRjmKYVZyM5xpH/XSABFpptZeRh316HjLuBSPBufoDiytjfEYDwqESw/0suz/YzOair
+         jtKWIsEBkPYyJh3AnvAmiV4l8IxI0ge4ySvo1T0DQ72AHHSxhjEzVajzK6ywkYb3xoNC
+         cPrw==
+X-Gm-Message-State: AOAM530KiwONiq9YeBDrnBxgYy2x2MKu/B+ROMHbc9PNykxE72+pMl1R
+        +3R12DwCyGWSGj8icNXFPirUXCLY5wZg/39Jrbs=
+X-Google-Smtp-Source: ABdhPJx4U0TJUDmIhaeUJWm/ZCdOsRPCUie9p1pzlLGwd76DYByByjM+gdUAtJ3rntRLY37Efjb2GQ==
+X-Received: by 2002:a05:651c:106a:: with SMTP id y10mr182128ljm.470.1620240155854;
+        Wed, 05 May 2021 11:42:35 -0700 (PDT)
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
+        by smtp.gmail.com with ESMTPSA id u25sm7729ljo.60.2021.05.05.11.42.33
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 11:40:45 -0700 (PDT)
-To:     Jason Baron <jbaron@akamai.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <f527618e-54f2-c2fb-e267-8065ac34e462@gmail.com>
- <6d55670d-2f06-d768-699f-5a79cece6ce0@gmail.com>
- <d181b674-66fb-1719-e3c6-e4217cf5519c@akamai.com>
-From:   Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [PATCH 2/2] x86/e820: Use pr_debug to avoid spamming dmesg log
- with debug messages
-Message-ID: <59985635-665b-773f-de8f-b15fe3f60196@gmail.com>
-Date:   Wed, 5 May 2021 20:40:36 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 05 May 2021 11:42:34 -0700 (PDT)
+Received: by mail-lj1-f177.google.com with SMTP id v5so3763283ljg.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 11:42:33 -0700 (PDT)
+X-Received: by 2002:a05:651c:3de:: with SMTP id f30mr161074ljp.251.1620240153569;
+ Wed, 05 May 2021 11:42:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <d181b674-66fb-1719-e3c6-e4217cf5519c@akamai.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <vs1Us2sm4qmfvLOqNat0-r16GyfmWzqUzQ4KHbXJwEcjhzeoQ4sBTxx7QXDG9B6zk5AeT7FsNb3CSr94LaKy6Novh1fbbw8D_BBxYsbPLms=@emersion.fr>
+ <CAHk-=wgmGv2EGscKSi8SrQWtEVpEQyk-ZN1Xj4EoAB87Dmx1gA@mail.gmail.com>
+ <20210429154807.hptls4vnmq2svuea@box> <20210429183836.GF8339@xz-x1>
+ <lpi4uT69AFMwtmWtwW_qJAmYm_r0jRikL11G_zI4X7wq--6Jtpiej8kGn8gePfv0Dtn4VmzsOqT2Q5-L3ca2niDi0nlC0nVYphbFBnNJnw0=@emersion.fr>
+ <CAHk-=wiAs7Ky9gmWAeqk5t7Nkueip13XPGtUcmMiZjwf-sX3sQ@mail.gmail.com> <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr>
+In-Reply-To: <hnL7s1u925fpeUhs90fXUpD3GG_4gmHlpznN8E0885tSM40QYb3VVTFGkwpmxYQ3U8HkRSUtfqw0ZfBKptA4pIw4FZw1MdRhSHC94iQATEE=@emersion.fr>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Wed, 5 May 2021 11:42:17 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com>
+Message-ID: <CAHk-=wiY1BL-UHPMEAbd7nY3vu6w41A1hhvjg1DoBXWuRt9_qw@mail.gmail.com>
+Subject: Re: Sealed memfd & no-fault mmap
+To:     Simon Ser <contact@emersion.fr>
+Cc:     Peter Xu <peterx@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Will Deacon <will@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Herrmann <dh.herrmann@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Greg Kroah-Hartman <greg@kroah.com>,
+        "tytso@mit.edu" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05.05.2021 18:58, Jason Baron wrote:
-> 
-> 
-> On 5/3/21 3:40 PM, Heiner Kallweit wrote:
->> e820 emits quite some debug messages to the dmesg log. Let's restrict
->> this to cases where the debug output is actually requested. Switch to
->> pr_debug() for this purpose and make sure by checking the return code
->> that pr_cont() is only called if applicable.
->>
->> Signed-off-by: Heiner Kallweit <hkallweit1@gmail.com>
->> ---
->>  arch/x86/kernel/e820.c | 27 ++++++++++++++++-----------
->>  1 file changed, 16 insertions(+), 11 deletions(-)
->>
->> diff --git a/arch/x86/kernel/e820.c b/arch/x86/kernel/e820.c
->> index bc0657f0d..67ad4d8f0 100644
->> --- a/arch/x86/kernel/e820.c
->> +++ b/arch/x86/kernel/e820.c
->> @@ -465,6 +465,7 @@ __e820__range_update(struct e820_table *table, u64 start, u64 size, enum e820_ty
->>  	u64 end;
->>  	unsigned int i;
->>  	u64 real_updated_size = 0;
->> +	int printed;
->>  
->>  	BUG_ON(old_type == new_type);
->>  
->> @@ -472,11 +473,13 @@ __e820__range_update(struct e820_table *table, u64 start, u64 size, enum e820_ty
->>  		size = ULLONG_MAX - start;
->>  
->>  	end = start + size;
->> -	printk(KERN_DEBUG "e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
->> -	e820_print_type(old_type);
->> -	pr_cont(" ==> ");
->> -	e820_print_type(new_type);
->> -	pr_cont("\n");
->> +	printed = pr_debug("e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
->> +	if (printed > 0) {
->> +		e820_print_type(old_type);
->> +		pr_cont(" ==> ");
->> +		e820_print_type(new_type);
->> +		pr_cont("\n");
->> +	}
-> 
-> 
-> Hi Heiner,
-> 
-> We've been doing these like:
-> 
-> DEFINE_DYNAMIC_DEBUG_METADATA(e820_dbg, "e820 verbose mode");
-> 
-> .
-> .
-> .
-> 
-> if (DYNAMIC_DEBUG_BRANCH(e820_debg)) {
->     printk(KERN_DEBUG "e820: update [mem %#010Lx-%#010Lx] ", start, end - 1);
->     e820_print_type(old_type);
->     pr_cont(" ==> ");
->     e820_print_type(new_type);
->     pr_cont("\n");
-> }
-> 
-> 
-> You could then have one DEFINE_DYNAMIC_DEBUG_METADATA statement - such that it enables
-> it all in one go, or do separate ones that enable it how you see fit.
-> 
-> Would that work here?
-> 
+On Wed, May 5, 2021 at 3:21 AM Simon Ser <contact@emersion.fr> wrote:
+> >
+> > Is there some very specific and targeted pattern for that "shared
+> > mapping" case? For example, if it's always a shared anonymous mapping
+> > with no filesystem backing, then that would possibly be a simpler case
+> > than the "random arbitrary shared file descriptor".
+>
+> Yes. I don't know of any Wayland client using buffers with real
+> filesystem backing. I think the main cases are:
+>
+> - shm_open(3) immediately followed by shm_unlink(3). On Linux, this is
+>   implemented with /dev/shm which is a tmpfs.
+> - Abusing /tmp or /run's tmpfs by creating a file there and unlinking
+>   it immediately afterwards. Kind of similar to the first case.
+> - memfd_create(2) on Linux.
+>
+> Is this enough to make it work on shared memory mappings? Is it
+> important that the mapping is anonymous?
 
-How would we handle the case that CONFIG_DYNAMIC_DEBUG_CORE isn't defined?
-Then also DEFINE_DYNAMIC_DEBUG_METADATA isn't defined and we'd need to
-duplicate the logic used here:
+All of those should be anonymous in the sense that the backing store
+is all the kernel's notion of anonymous pages, and there is no actual
+file backing. The mappings may then be shared, of course.
 
-#if defined(CONFIG_DYNAMIC_DEBUG) || \
-	(defined(CONFIG_DYNAMIC_DEBUG_CORE) && defined(DYNAMIC_DEBUG_MODULE))
-#include <linux/dynamic_debug.h>
-#define pr_debug(fmt, ...)			\
-	dynamic_pr_debug(fmt, ##__VA_ARGS__)
-#elif defined(DEBUG)
-#define pr_debug(fmt, ...) \
-	printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-#else
-#define pr_debug(fmt, ...) \
-	no_printk(KERN_DEBUG pr_fmt(fmt), ##__VA_ARGS__)
-#endif
+So that does make Peter's idea to have some inode flag for "don't
+SIGBUS on fault" be more reasonable, because there isn't some random
+actual filesystem involved, only the core VM layer.
 
-IMO it's better to have the complexity of using DEFINE_DYNAMIC_DEBUG_METADATA
-only once in the implementation of dynamic_pr_debug(), and not in every
-code that wants to use pr_debug() in combination with pr_cont().
+I'm not going to write the patch, though, but maybe you can convince
+somebody else to try it..
 
-Also I think that to a certain extent pr_debug() is broken currently in case
-of dynamic debugging because it has no return value, one drawback of
-using not type-safe macros. This doesn't hurt so far because no caller seems to
-check the return value or very few people have dynamic debugging enabled.
-
-> Thanks,
-> 
-> -Jason
-> 
-
-Heiner
-
->>  
->>  	for (i = 0; i < table->nr_entries; i++) {
->>  		struct e820_entry *entry = &table->entries[i];
->> @@ -540,7 +543,7 @@ static u64 __init e820__range_update_kexec(u64 start, u64 size, enum e820_type o
->>  /* Remove a range of memory from the E820 table: */
->>  u64 __init e820__range_remove(u64 start, u64 size, enum e820_type old_type, bool check_type)
->>  {
->> -	int i;
->> +	int printed, i;
->>  	u64 end;
->>  	u64 real_removed_size = 0;
->>  
->> @@ -548,10 +551,12 @@ u64 __init e820__range_remove(u64 start, u64 size, enum e820_type old_type, bool
->>  		size = ULLONG_MAX - start;
->>  
->>  	end = start + size;
->> -	printk(KERN_DEBUG "e820: remove [mem %#010Lx-%#010Lx] ", start, end - 1);
->> -	if (check_type)
->> -		e820_print_type(old_type);
->> -	pr_cont("\n");
->> +	printed = pr_debug("e820: remove [mem %#010Lx-%#010Lx] ", start, end - 1);
->> +	if (printed > 0) {
->> +		if (check_type)
->> +			e820_print_type(old_type);
->> +		pr_cont("\n");
->> +	}
->>  
->>  	for (i = 0; i < e820_table->nr_entries; i++) {
->>  		struct e820_entry *entry = &e820_table->entries[i];
->> @@ -1230,7 +1235,7 @@ void __init e820__reserve_resources_late(void)
->>  		if (start >= end)
->>  			continue;
->>  
->> -		printk(KERN_DEBUG "e820: reserve RAM buffer [mem %#010llx-%#010llx]\n", start, end);
->> +		pr_debug("e820: reserve RAM buffer [mem %#010llx-%#010llx]\n", start, end);
->>  		reserve_region_with_split(&iomem_resource, start, end, "RAM buffer");
->>  	}
->>  }
->>
-
+            Linus
