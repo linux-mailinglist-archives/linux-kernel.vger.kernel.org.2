@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE2853742F8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:49:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B73F374304
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:49:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236512AbhEEQtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:49:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49784 "EHLO mail.kernel.org"
+        id S236548AbhEEQt7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:49:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50330 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235449AbhEEQoA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:44:00 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9BAE161432;
-        Wed,  5 May 2021 16:35:17 +0000 (UTC)
+        id S235638AbhEEQoX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:44:23 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id CF9EC613F1;
+        Wed,  5 May 2021 16:35:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232518;
-        bh=QQqDryPfFACoY7jZFMHJBJG2Zc3/Zw7l8kN5pQchqnw=;
+        s=k20201202; t=1620232522;
+        bh=slT+Q2dWhK/Pdvc0JkBxSi4ZYL05dsOo7M1WRdImxtA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uBR02frArtLWc5gJYrWdoqS6YJP21FCvddaTnpnnJ8Myovi09RT9/gg2X297yzrgC
-         2LO2+T7ZljbWl9KYASyiMwfuXoXurtF2eXYILDt6Y5BTJUEvGoi/JcrkY3fY5GlUeo
-         ctNS862CysQKCOlURsYjU20wlnNRxneTO/xXOveqicd1FgZXvyJLwKWQ5wEv/SjWnX
-         gZV/obPTd1oN4avNcEvR0BruB9opEsjoWHi9MdwM7ApkJBMk6QcLXTxXXz8UqKjiQC
-         W8qMZoeilRalo+rigG7OvXsP5a7ACYUEPRpF7p2a15pa0OfD4vkYmZ1Zr6Y42JoCn7
-         w+cFxGFx8Ep+w==
+        b=DsJA/i5NsmkLnJHFgMqKNeR/bAVJo3exi4PWsym3X71QcWTpZ8Q9lyqZ7QFaFDehK
+         09jx4tUVjRmZxetLNTVhbeys1pBKwkwh+hol6xGb5Lu8y3aX68bMApuBwYfXVBZg37
+         wJHxDnhbd8EApr3hHU4tXZPBp4R5GvrxA33fJnXIYAgqGXCKuw6vI/T6XZbn+QOF7Q
+         upm10Rzc4nrOcZJaZOCpHaCa/R5bHWWjFNABcPV3qJlqoDgVNn595uMQ5riD54zIIG
+         4hrZ1REMxXMPw2HfYAqrY1ljrqwaU/gMXibXsTIqTwcnynalfc9N0fK5cQAaU5gp+x
+         NV1XeEH2vJSsA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>,
-        Kaike Wan <kaike.wan@intel.com>,
-        Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Sasha Levin <sashal@kernel.org>, linux-rdma@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.11 045/104] IB/hfi1: Correct oversized ring allocation
-Date:   Wed,  5 May 2021 12:33:14 -0400
-Message-Id: <20210505163413.3461611-45-sashal@kernel.org>
+Cc:     Gyeongtaek Lee <gt82.lee@samsung.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.11 048/104] ASoC: soc-compress: lock pcm_mutex to resolve lockdep error
+Date:   Wed,  5 May 2021 12:33:17 -0400
+Message-Id: <20210505163413.3461611-48-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -44,94 +42,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
+From: Gyeongtaek Lee <gt82.lee@samsung.com>
 
-[ Upstream commit b536d4b2a279733f440c911dc831764690b90050 ]
+[ Upstream commit 45475bf60cc1d42da229a0aa757180c88bab8d22 ]
 
-The completion ring for tx is using the wrong size to size the ring,
-oversizing the ring by two orders of magniture.
+If panic_on_warn=1 is added in bootargs and compress offload playback with
+DPCM is started, kernel panic would be occurred because rtd->card->pcm_mutex
+isn't held in soc_compr_open_fe() and soc_compr_free_fe() and it generates
+lockdep warning in the following code.
 
-Correct the allocation size and use kcalloc_node() to allocate the ring.
-Fix mistaken GFP defines in similar allocations.
+void snd_soc_runtime_action(struct snd_soc_pcm_runtime *rtd,
+			    int stream, int action)
+{
+	struct snd_soc_dai *dai;
+	int i;
 
-Link: https://lore.kernel.org/r/1617026056-50483-4-git-send-email-dennis.dalessandro@cornelisnetworks.com
-Reviewed-by: Kaike Wan <kaike.wan@intel.com>
-Signed-off-by: Mike Marciniszyn <mike.marciniszyn@cornelisnetworks.com>
-Signed-off-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+	lockdep_assert_held(&rtd->card->pcm_mutex);
+
+To prevent lockdep warning but minimize side effect by adding mutex,
+pcm_mutex is held just before snd_soc_runtime_activate() and
+snd_soc_runtime_deactivate() and is released right after them.
+
+Signed-off-by: Gyeongtaek Lee <gt82.lee@samsung.com>
+Link: https://lore.kernel.org/r/1891546521.01617772502282.JavaMail.epsvc@epcpadp3
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/infiniband/hw/hfi1/ipoib.h    |  3 ++-
- drivers/infiniband/hw/hfi1/ipoib_tx.c | 14 +++++++-------
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ sound/soc/soc-compress.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/drivers/infiniband/hw/hfi1/ipoib.h b/drivers/infiniband/hw/hfi1/ipoib.h
-index f650cac9d424..d30c23b6527a 100644
---- a/drivers/infiniband/hw/hfi1/ipoib.h
-+++ b/drivers/infiniband/hw/hfi1/ipoib.h
-@@ -52,8 +52,9 @@ union hfi1_ipoib_flow {
-  * @producer_lock: producer sync lock
-  * @consumer_lock: consumer sync lock
-  */
-+struct ipoib_txreq;
- struct hfi1_ipoib_circ_buf {
--	void **items;
-+	struct ipoib_txreq **items;
- 	unsigned long head;
- 	unsigned long tail;
- 	unsigned long max_items;
-diff --git a/drivers/infiniband/hw/hfi1/ipoib_tx.c b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-index edd4eeac8dd1..cdc26ee3cf52 100644
---- a/drivers/infiniband/hw/hfi1/ipoib_tx.c
-+++ b/drivers/infiniband/hw/hfi1/ipoib_tx.c
-@@ -702,14 +702,14 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
+diff --git a/sound/soc/soc-compress.c b/sound/soc/soc-compress.c
+index 246a5e32e22a..b4810266f5e5 100644
+--- a/sound/soc/soc-compress.c
++++ b/sound/soc/soc-compress.c
+@@ -153,7 +153,9 @@ static int soc_compr_open_fe(struct snd_compr_stream *cstream)
+ 	fe->dpcm[stream].state = SND_SOC_DPCM_STATE_OPEN;
+ 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_NO;
  
- 	priv->tx_napis = kcalloc_node(dev->num_tx_queues,
- 				      sizeof(struct napi_struct),
--				      GFP_ATOMIC,
-+				      GFP_KERNEL,
- 				      priv->dd->node);
- 	if (!priv->tx_napis)
- 		goto free_txreq_cache;
++	mutex_lock_nested(&fe->card->pcm_mutex, fe->card->pcm_subclass);
+ 	snd_soc_runtime_activate(fe, stream);
++	mutex_unlock(&fe->card->pcm_mutex);
  
- 	priv->txqs = kcalloc_node(dev->num_tx_queues,
- 				  sizeof(struct hfi1_ipoib_txq),
--				  GFP_ATOMIC,
-+				  GFP_KERNEL,
- 				  priv->dd->node);
- 	if (!priv->txqs)
- 		goto free_tx_napis;
-@@ -741,9 +741,9 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
- 					     priv->dd->node);
+ 	mutex_unlock(&fe->card->mutex);
  
- 		txq->tx_ring.items =
--			vzalloc_node(array_size(tx_ring_size,
--						sizeof(struct ipoib_txreq)),
--				     priv->dd->node);
-+			kcalloc_node(tx_ring_size,
-+				     sizeof(struct ipoib_txreq *),
-+				     GFP_KERNEL, priv->dd->node);
- 		if (!txq->tx_ring.items)
- 			goto free_txqs;
+@@ -181,7 +183,9 @@ static int soc_compr_free_fe(struct snd_compr_stream *cstream)
  
-@@ -764,7 +764,7 @@ int hfi1_ipoib_txreq_init(struct hfi1_ipoib_dev_priv *priv)
- 		struct hfi1_ipoib_txq *txq = &priv->txqs[i];
+ 	mutex_lock_nested(&fe->card->mutex, SND_SOC_CARD_CLASS_RUNTIME);
  
- 		netif_napi_del(txq->napi);
--		vfree(txq->tx_ring.items);
-+		kfree(txq->tx_ring.items);
- 	}
++	mutex_lock_nested(&fe->card->pcm_mutex, fe->card->pcm_subclass);
+ 	snd_soc_runtime_deactivate(fe, stream);
++	mutex_unlock(&fe->card->pcm_mutex);
  
- 	kfree(priv->txqs);
-@@ -817,7 +817,7 @@ void hfi1_ipoib_txreq_deinit(struct hfi1_ipoib_dev_priv *priv)
- 		hfi1_ipoib_drain_tx_list(txq);
- 		netif_napi_del(txq->napi);
- 		(void)hfi1_ipoib_drain_tx_ring(txq, txq->tx_ring.max_items);
--		vfree(txq->tx_ring.items);
-+		kfree(txq->tx_ring.items);
- 	}
+ 	fe->dpcm[stream].runtime_update = SND_SOC_DPCM_UPDATE_FE;
  
- 	kfree(priv->txqs);
 -- 
 2.30.2
 
