@@ -2,148 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C5C93734EF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 08:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 231B43734F4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 08:27:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231671AbhEEG0c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 02:26:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43454 "EHLO
+        id S231749AbhEEG2g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 02:28:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43906 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230304AbhEEG0b (ORCPT
+        with ESMTP id S231706AbhEEG2b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 02:26:31 -0400
-Received: from mail-pf1-x42e.google.com (mail-pf1-x42e.google.com [IPv6:2607:f8b0:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07BD3C06174A
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 23:25:33 -0700 (PDT)
-Received: by mail-pf1-x42e.google.com with SMTP id e15so1252827pfv.10
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 23:25:33 -0700 (PDT)
+        Wed, 5 May 2021 02:28:31 -0400
+Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E25DAC061574;
+        Tue,  4 May 2021 23:27:34 -0700 (PDT)
+Received: by mail-pg1-x52f.google.com with SMTP id d10so1053676pgf.12;
+        Tue, 04 May 2021 23:27:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=R97okrrT1ZR3nAmwWW6z4OxB86R8rXbhMKoQVYu9dd4=;
-        b=ns8vvV1Qo1QZc0J0GCqe2q2V5F0oFWwYAmbWDMmx7uVV7+gwRXWIDYJREfCKTuxZs2
-         wIqUtWMg6NwDe/gc16gCZL7CPHrQcl845Wr7bS9w0L9Igv5JLk8cXPN/m8SY78GMkIXt
-         /G/Zy48px0xpleaxPam7W4wMLM3zxCYEEQd94=
+         :content-disposition:in-reply-to;
+        bh=1HKBlpaCyJzd9arklB7EU/tOaG5LupW4wg4un2llmUs=;
+        b=mcr1f1QLoVbjojRQsaDAal09mAV3oCfe3iVNmQC9+y+ZD4YM7+Da1q3GubyPQi+YTB
+         lIzJ/eQm26rFXKUFZUvEbcBB0lvglkSYiaPh0FReYd/Ji0q9FjCzUy3XgrJ5dU43Dh1v
+         p9wb7psQEjueQgdIPIzHN3TM2LXblLcQ+jJq3mrsAENDUrTiL8dHRkycvlXfkQ/ksC0O
+         KvFEAMnC5CkxPp+vjMRxBIfpLXW4ByDtfqd3yGKHCpbQTrKwuprrqZHgPeTOgmsm8e7u
+         6cn7gZ85b/1oJfZEQuUdYACTGz6UtN1/wxLFvEqqOSbac/PJDeKv/td6xmODQlkFtXTa
+         1DFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=R97okrrT1ZR3nAmwWW6z4OxB86R8rXbhMKoQVYu9dd4=;
-        b=WJp+RM9cH1UApXiZ7e/TZp0r6HIWXHCE7Cm0QABIQpEzygRNmGKb/1qyRmTQIY+Xuu
-         YdlFT7XuZDg9uHNngK68o9lUgkZdYzA8vsaKhm2tU4oJJl+ftep67UbNpDFmvWxPUEwa
-         6qZZ3fH8ybOhfAIf0QqjJhEOeEOM87OnGDDJSFbybG2dC6MpTzePA0elL0KbpXH/0hd5
-         BcozuGFARMavtzAv1u2yuw02SjOFwtnXLQjXGZkQOycNyFVR6HCnI3p31MCSe+GrU/rk
-         qToFSIZ6PDbX/NusPJlN+X1bqwOVwa6uxUohTCh+0TSDT0oOsKSIRFHrHNSyMGrN5dtx
-         dO2w==
-X-Gm-Message-State: AOAM532Y/NoBzFS8Cp7/f6vppbmg4otUVXMKIvoRCI7u0uEEG7jX70pc
-        VqtTQj+H2ySt+pMraetgMXm+WQ==
-X-Google-Smtp-Source: ABdhPJyyFwabQwvnS1ulWRW160zd3aj383RgdjKZyVc1Alzp4aC2H+g6nFGuTTkCJgHz/TUp24HBww==
-X-Received: by 2002:a63:8f15:: with SMTP id n21mr26183891pgd.366.1620195933437;
-        Tue, 04 May 2021 23:25:33 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id d18sm5588407pgo.66.2021.05.04.23.25.32
+         :mime-version:content-disposition:in-reply-to;
+        bh=1HKBlpaCyJzd9arklB7EU/tOaG5LupW4wg4un2llmUs=;
+        b=FVBQ00KJMHkw7HIlXnOyj+yGALStUzF170uqnm2nzhh4e3DZRNGqXJGkox1zln2QTj
+         +KsEBBQdVmx/7+VNtsx5NDEOhvN1/hiwwXPUjxlTlVDLLqG1c7StQjeNZoVFJztJ8oT6
+         UY0+qnc+1cwedMR0QdlETx/e/BLMtVW6N3HiFlRl7Exhhe9GanvpN8nhix5grFTWUAqZ
+         TBS/W3sPI5aCI4iqWdN7Mti5akkVSiJ3oX+fhsMyAepNlB9v3X02fkyf8x/dNROPrCFo
+         Ko/exI++IOh+D62T6BMcfLLLs6DpzLIrHVv1+XZTWIz1ORieIsTfWagrZkZGlmB76dYf
+         Rhcg==
+X-Gm-Message-State: AOAM531TQqVufOxtpGytylau8jaWxDRvlyU6HojoiATK+qIOt9+wX4L4
+        c33yVaBtUJal1E6U+YxW/Es=
+X-Google-Smtp-Source: ABdhPJyIBesPesIQfRjyOxzNqGnAz825pqG4hSplMnk9nO/R13QMazp98PNnKEvyZ0RLCNMl8FNxKQ==
+X-Received: by 2002:aa7:814c:0:b029:250:13db:3c6e with SMTP id d12-20020aa7814c0000b029025013db3c6emr27493810pfn.65.1620196054408;
+        Tue, 04 May 2021 23:27:34 -0700 (PDT)
+Received: from localhost (g17.222-224-135.ppp.wakwak.ne.jp. [222.224.135.17])
+        by smtp.gmail.com with ESMTPSA id c134sm9652932pfb.135.2021.05.04.23.27.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 May 2021 23:25:32 -0700 (PDT)
-Date:   Tue, 4 May 2021 23:25:31 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     dave.hansen@intel.com, luto@kernel.org, peterz@infradead.org,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
-        rppt@kernel.org, dan.j.williams@intel.com,
+        Tue, 04 May 2021 23:27:33 -0700 (PDT)
+Date:   Wed, 5 May 2021 15:27:31 +0900
+From:   Stafford Horne <shorne@gmail.com>
+To:     Anshuman Khandual <anshuman.khandual@arm.com>
+Cc:     linux-mm@kvack.org, akpm@linux-foundation.org,
+        Richard Henderson <rth@twiddle.net>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>, Guo Ren <guoren@kernel.org>,
+        Brian Cain <bcain@codeaurora.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Michal Simek <monstr@monstr.eu>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Ley Foon Tan <ley.foon.tan@intel.com>,
+        Jonas Bonn <jonas@southpole.se>,
+        Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jeff Dike <jdike@addtoit.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Chris Zankel <chris@zankel.net>, linux-arch@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/9] PKS write protected page tables
-Message-ID: <202105042253.ECBBF6B6@keescook>
-References: <20210505003032.489164-1-rick.p.edgecombe@intel.com>
+Subject: Re: [PATCH V2] mm: Define default value for FIRST_USER_ADDRESS
+Message-ID: <20210505062731.GS3288043@lianli.shorne-pla.net>
+References: <1618550254-14511-1-git-send-email-anshuman.khandual@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210505003032.489164-1-rick.p.edgecombe@intel.com>
+In-Reply-To: <1618550254-14511-1-git-send-email-anshuman.khandual@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 05:30:23PM -0700, Rick Edgecombe wrote:
-> This is a POC for write protecting page tables with PKS (Protection Keys for 
-> Supervisor) [1]. The basic idea is to make the page tables read only, except 
-> temporarily on a per-cpu basis when they need to be modified. I’m looking for 
-> opinions on whether people like the general direction of this in terms of 
-> value and implementation.
-
-Yay!
-
-> Why would people want this?
-> ===========================
-> Page tables are the basis for many types of protections and as such, are a 
-> juicy target for attackers. Mapping them read-only will make them harder to 
-> use in attacks.
+On Fri, Apr 16, 2021 at 10:47:34AM +0530, Anshuman Khandual wrote:
+> Currently most platforms define FIRST_USER_ADDRESS as 0UL duplication the
+> same code all over. Instead just define a generic default value (i.e 0UL)
+> for FIRST_USER_ADDRESS and let the platforms override when required. This
+> makes it much cleaner with reduced code.
 > 
-> This protects against an attacker that has acquired the ability to write to 
-> the page tables. It's not foolproof because an attacker who can execute 
-> arbitrary code can either disable PKS directly, or simply call the same 
-> functions that the kernel uses for legitimate page table writes.
-
-I think it absolutely has value. The exploit techniques I'm aware of that
-target the page table are usually attempting to upgrade an arbitrary
-write into execution (e.g. write to kernel text after setting kernel
-text writable in the page table) or similar "data only" attacks (make
-sensitive page writable).
-
-It looks like PKS-protected page tables would be much like the
-RO-protected text pages in the sense that there is already code in
-the kernel to do things to make it writable, change text, and set it
-read-only again (alternatives, ftrace, etc). That said, making the PKS
-manipulation code be inline to page-writing code would make it less
-available for ROP/JOP, if an attack DID want to go that route.
-
-> Why use PKS for this?
-> =====================
-> PKS is an upcoming CPU feature that allows supervisor virtual memory 
-> permissions to be changed without flushing the TLB, like PKU does for user 
-> memory. Protecting page tables would normally be really expensive because you 
-> would have to do it with paging itself. PKS helps by providing a way to toggle 
-> the writability of the page tables with just a per-cpu MSR.
-
-The per-cpu-ness is really important for both performance and for avoiding
-temporal attacks where an arbitrary write in one CPU is timed against
-a page table write in another CPU.
-
-> Performance impacts
-> ===================
-> Setting direct map permissions on whatever random page gets allocated for a 
-> page table would result in a lot of kernel range shootdowns and direct map 
-> large page shattering. So the way the PKS page table memory is created is 
-> similar to this module page clustering series[2], where a cache of pages is 
-> replenished from 2MB pages such that the direct map permissions and associated 
-> breakage is localized on the direct map. In the PKS page tables case, a PKS 
-> key is pre-applied to the direct map for pages in the cache.
+> The default FIRST_USER_ADDRESS here would be skipped in <linux/pgtable.h>
+> when the given platform overrides its value via <asm/pgtable.h>.
 > 
-> There would be some costs of memory overhead in order to protect the direct 
-> map page tables. There would also be some extra kernel range shootdowns to 
-> replenish the cache on occasion, from setting the PKS key on the direct map of 
-> the new pages. I don’t have any actual performance data yet.
-
-What CPU models are expected to have PKS?
-
-> This is based on V6 [1] of the core PKS infrastructure patches. PKS 
-> infrastructure follow-on’s are planned to enable keys to be set to the same 
-> permissions globally. Since this usage needs a key to be set globally 
-> read-only by default, a small temporary solution is hacked up in patch 8. Long 
-> term, PKS protected page tables would use a better and more generic solution 
-> to achieve this.
+> Cc: Richard Henderson <rth@twiddle.net>
+> Cc: Vineet Gupta <vgupta@synopsys.com>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will@kernel.org>
+> Cc: Guo Ren <guoren@kernel.org>
+> Cc: Brian Cain <bcain@codeaurora.org>
+> Cc: Geert Uytterhoeven <geert@linux-m68k.org>
+> Cc: Michal Simek <monstr@monstr.eu>
+> Cc: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+> Cc: Ley Foon Tan <ley.foon.tan@intel.com>
+> Cc: Jonas Bonn <jonas@southpole.se>
+> Cc: Stefan Kristiansson <stefan.kristiansson@saunalahti.fi>
+> Cc: Stafford Horne <shorne@gmail.com>
+> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> Cc: Michael Ellerman <mpe@ellerman.id.au>
+> Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+> Cc: Paul Walmsley <paul.walmsley@sifive.com>
+> Cc: Palmer Dabbelt <palmer@dabbelt.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Yoshinori Sato <ysato@users.sourceforge.jp>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: Jeff Dike <jdike@addtoit.com>
+> Cc: Thomas Gleixner <tglx@linutronix.de>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: linux-arch@vger.kernel.org
+> Cc: linux-mm@kvack.org
+> Cc: linux-kernel@vger.kernel.org
+> Signed-off-by: Anshuman Khandual <anshuman.khandual@arm.com>
+> ---
+> This applies on v5.12-rc7 and has been boot tested on arm64 platform.
+> But has been cross compiled on multiple other platforms.
 > 
-> [1] https://lore.kernel.org/lkml/20210401225833.566238-1-ira.weiny@intel.com/
+> Changes in V2:
+> 
+> - Dropped ARCH_HAS_FIRST_USER_ADDRESS construct
+> 
+> Changes in V1:
+> 
+> https://patchwork.kernel.org/project/linux-mm/patch/1618368899-20311-1-git-send-email-anshuman.khandual@arm.com/
+> 
+>  arch/alpha/include/asm/pgtable.h             | 1 -
+>  arch/arc/include/asm/pgtable.h               | 6 ------
+>  arch/arm64/include/asm/pgtable.h             | 2 --
+>  arch/csky/include/asm/pgtable.h              | 1 -
+>  arch/hexagon/include/asm/pgtable.h           | 3 ---
+>  arch/ia64/include/asm/pgtable.h              | 1 -
+>  arch/m68k/include/asm/pgtable_mm.h           | 1 -
+>  arch/microblaze/include/asm/pgtable.h        | 2 --
+>  arch/mips/include/asm/pgtable-32.h           | 1 -
+>  arch/mips/include/asm/pgtable-64.h           | 1 -
+>  arch/nios2/include/asm/pgtable.h             | 2 --
+>  arch/openrisc/include/asm/pgtable.h          | 1 -
 
-Ah, neat!
+Acked-by: Stafford Horne <shorne@gmail.com>
 
-> [2] https://lore.kernel.org/lkml/20210405203711.1095940-1-rick.p.edgecombe@intel.com/
+>  arch/parisc/include/asm/pgtable.h            | 2 --
+>  arch/powerpc/include/asm/book3s/pgtable.h    | 1 -
+>  arch/powerpc/include/asm/nohash/32/pgtable.h | 1 -
+>  arch/powerpc/include/asm/nohash/64/pgtable.h | 2 --
+>  arch/riscv/include/asm/pgtable.h             | 2 --
+>  arch/s390/include/asm/pgtable.h              | 2 --
+>  arch/sh/include/asm/pgtable.h                | 2 --
+>  arch/sparc/include/asm/pgtable_32.h          | 1 -
+>  arch/sparc/include/asm/pgtable_64.h          | 3 ---
+>  arch/um/include/asm/pgtable-2level.h         | 1 -
+>  arch/um/include/asm/pgtable-3level.h         | 1 -
+>  arch/x86/include/asm/pgtable_types.h         | 2 --
+>  arch/xtensa/include/asm/pgtable.h            | 1 -
+>  include/linux/pgtable.h                      | 9 +++++++++
+>  26 files changed, 9 insertions(+), 43 deletions(-)
 
-Ooh. What does this do for performance? It sounds like less TLB
-pressure, IIUC?
+This all looks fine to me, will this be merged via the arm tree?  I guess you
+have a means for that.
 
--- 
-Kees Cook
+-Stafford
