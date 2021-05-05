@@ -2,100 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40D1B373841
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:01:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15E0D373845
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:02:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232464AbhEEKCJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 06:02:09 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:47727 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232144AbhEEKB6 (ORCPT
+        id S232265AbhEEKD0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 06:03:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34808 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232608AbhEEKDQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 06:01:58 -0400
-Received: from mail-ot1-f72.google.com ([209.85.210.72])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <dimitri.ledkov@canonical.com>)
-        id 1leEKx-0000tz-Ge
-        for linux-kernel@vger.kernel.org; Wed, 05 May 2021 10:00:59 +0000
-Received: by mail-ot1-f72.google.com with SMTP id 59-20020a9d0dc10000b02902a57e382ca1so895933ots.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 03:00:59 -0700 (PDT)
+        Wed, 5 May 2021 06:03:16 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CC51C061761
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 03:01:37 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id a22so360444qkl.10
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 03:01:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=m5HtWmAnig6lw4RtHlzbQQmHRo3yOMqpgy7bbvUw2Fc=;
+        b=JniwsF2H3MzPZR21KHPne2QKpqm3PVEUXKzmCmnkH7RlYzmTZq/6/RHJBZNbOtMn/9
+         vMN47dV1ItkRww5AhS3qakC0YRKHj3jMfAeGsM3MmGU7lM/CPbHpR2qkV9OlGAS48eIq
+         z+B/zbykJn3on8cqFqO54/okzAmUQgW/4UlM1FCJThqgZ303ftdEUZZPLpfs2Yfc33ua
+         Kf/BVZz51zGRZU8MqvpIAc+KopwOpm8DzLi55iCBaEsCz1xAo5nv+KGkynbWMIXPmrww
+         tg14uieIucJf7Rj2PNw7qgJKtR7OIDYr8cAllmA5f5H2hyvIhvPWxXhQ/CDplX2oyPnh
+         SWiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=Hmv8ovZ+lzfrtpGUv4rzbEFq7f24tUyHf3OpammTdVs=;
-        b=AdsV3hNQE4Rwf9Hk3d5lQcmt/2DuIO3skSzmcH1Gr0kYMhWzAElfDNcUffr/SZhAhg
-         q1SFpazC57VXTh9MEnqRj74+1WNLsfjd+KTtv3XvMKa0sLeVw6g9jZ3sU4arVAJnE72b
-         4TiAPjPO8d85lDHVyXV0ao+eLO2JMjO+JmUq7/603jtm9kIkd5utvk3BgqnZHnePYzu/
-         GTjFeZ5VZR0Pc/TjRPoZqbYj5hRKbr7r6/q52QQ+Q+uZG9UoX+7LwPDxwuluBTwqipvM
-         PM8ioTq6rylON8ThQSTU6BcTtuI1wPxiXTzMXyTKdmfAm2GNvv1RKddFvTXtlyfxw09J
-         MBPQ==
-X-Gm-Message-State: AOAM533PDA7PhA5xMsmRHeUSQi34HJzu0L/Dppvm/o8XnEX3fkBlny7u
-        VcZSxHDzhAROeDVo68ckf5iHX15yXHxnHhRTWF0FsCpIQplDSGoRD1TCHHiPwza+d0ypOOQ5jiJ
-        kj0tU7sG9R4bRnCpydeNzBKm2TiKBPo0QcnSjUE2Ifc62IdyG2Ojhz8vb8Q==
-X-Received: by 2002:aca:f008:: with SMTP id o8mr21310004oih.106.1620208858225;
-        Wed, 05 May 2021 03:00:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxpRAMGh4AS9JFPRCCBNyvlCeqrX9tgmlXqMVO13lCuk0UmTaaGw2kTzBqWRUd/WpjRXslgaBkTm9Kbc76fMKA=
-X-Received: by 2002:aca:f008:: with SMTP id o8mr21309979oih.106.1620208857795;
- Wed, 05 May 2021 03:00:57 -0700 (PDT)
+        bh=m5HtWmAnig6lw4RtHlzbQQmHRo3yOMqpgy7bbvUw2Fc=;
+        b=fNtaya2lZP3COmbIW3KA6KT/QfeTsESuq314vQOGUrTIkpR91WbQLM6Agj4Y3BXpG6
+         NOqOjcvyUsP5fmU585BRX7PNJpqJupOKbCj/eoOqCTMrDPPaDElB8f9PlCBVyZYnCt+G
+         mO6oL1OCTlz0LducnSA7qYvXjO0uerbtpeBI0onXhEueepCs1BmbPynQ2HJgmqtrNuyA
+         fe5JgdCvarLnAvls5xXiJO+8wUFp9XYXRsVyjTSqOrROYh1f9584RQG74FI8avDhzKUA
+         7VbFPXhc0aECVI9DQNj0qegtL2HKWZYVCe036/ubtnPgXwOcif8XXep84fw5OU53aJLK
+         /tEw==
+X-Gm-Message-State: AOAM532RjP4pkIRDddKgy4lmrIXSVUTdu6pS8EsaLqKIZJt6tzZjX99S
+        U8SOvtUh6sEI7i2Ua8rhzx9JmWkbshJM6DwHyo8z+A==
+X-Google-Smtp-Source: ABdhPJzvlSeiw16CrlySSngkvytIk52sMnf7quC/lBLqjW87Oju0lcBCJeZcUbsFMc/Zx3Q5B4XRt+ZghNjIBeYr9g4=
+X-Received: by 2002:a37:5945:: with SMTP id n66mr29120690qkb.138.1620208896828;
+ Wed, 05 May 2021 03:01:36 -0700 (PDT)
 MIME-Version: 1.0
-References: <337B72A8-C81A-4C53-A4D6-FFFD7FA66CEC@oracle.com>
- <161428671215.677100.6372209948022011988.stgit@warthog.procyon.org.uk>
- <161428674320.677100.12637282414018170743.stgit@warthog.procyon.org.uk>
- <4b275a33-28ac-78c2-e075-ea2eda4f13a8@canonical.com> <92182F5F-327E-4F1D-A7D9-42355625C84C@oracle.com>
- <b10f51dc-b9d7-e84d-3a52-438ebd358a7d@canonical.com> <2579343.1615623232@warthog.procyon.org.uk>
- <12AAB359-A315-490E-8B94-FF947997B30E@oracle.com>
-In-Reply-To: <12AAB359-A315-490E-8B94-FF947997B30E@oracle.com>
-From:   Dimitri John Ledkov <dimitri.ledkov@canonical.com>
-Date:   Wed, 5 May 2021 11:00:21 +0100
-Message-ID: <CADWks+Z0xqDcJG_+VKKJYw2m1aG9DZ3pD9yoLCSSA5CUjJgsSA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] integrity: Load mokx variables into the blacklist keyring
-To:     Eric Snowberg <eric.snowberg@oracle.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>,
-        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+References: <1620202579-19066-1-git-send-email-sbillaka@codeaurora.org>
+In-Reply-To: <1620202579-19066-1-git-send-email-sbillaka@codeaurora.org>
+From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date:   Wed, 5 May 2021 13:01:25 +0300
+Message-ID: <CAA8EJpqZXHNvBySL0Vm-CmsrAh8Z85SoQHn97TqWLYeFW-Q=UA@mail.gmail.com>
+Subject: Re: [PATCH v1 0/3] Add support for next gen eDP driver on SnapDragon
+To:     Sankeerth Billakanti <sbillaka@codeaurora.org>
+Cc:     "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <dri-devel@lists.freedesktop.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Rob Clark <robdclark@gmail.com>,
+        Sean Paul <seanpaul@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        khsieh@codeaurora.org, Krishna Manikandan <mkrishn@codeaurora.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Mar 13, 2021 at 2:40 PM Eric Snowberg <eric.snowberg@oracle.com> wrote:
+Hi,
+
+On Wed, 5 May 2021 at 11:17, Sankeerth Billakanti
+<sbillaka@codeaurora.org> wrote:
 >
+> These patches add support for the next generation eDP driver on SnapDragon
+> with dpu support. The existing eDP driver cannot support the new eDP
+> hardware. So, to maintain backward compatibility, the older eDP driver is
+> moved to v200 folder and the new generation eDP driver is added in
+> the v510 folder.
+
+What exactly does this version correspond to?
+I assume that v510 corresponds to sdmshrike/sc8180x. Is it right?
+Is it really so specific, or just v2/v5 would be enough? Not to
+mention that this is the MDP/ version, while other blocks tend to use
+block-specific versions/ids.
+
+Also, how much does it differ from the current DP core supported via
+drivers/gpu/drm/msm/dp ?
+
+First two patches did not make it to the linux-msm, so I can not
+comment on each of the lines.
+However just my few cents (other reviewers might disagree though):
+
+- I see little benefit in renaming the folders just for the sake of
+renaming. You can put your code in drivers/gpu/drm/msm/edp-v510, if
+you really insist on that. Note that for all other (even incompatible)
+hardware types we still use single level of folders.
+
+- Also I see that significant parts of code (e.g. AUX, bridge,
+connector, maybe more) are just c&p of old edp code pieces. Please
+share the code instead of duplicating it.
+
+- Please consider updating register definitions in xml form and then
+providing both changed xml files (to mesa project (?)) and generated
+headers into the kernel.
+
+- Please consider using clk_bulk_* functions instead of using
+dss_module_power. I'm going to send a patchset reworking current users
+to use the generic clk_bulk_* function family.
+
+- In generic, this eDP clock handling seems to match closely DP clocks
+handling (with all the name comparison, etc). Consider moving this to
+a generic piece of code
+
+- PHY seems to be a version of QMP PHY. Please use it, like it was
+done for the DP itself. There is support for combined USB+DP PHYs
+(both v3 and v4), so it should be possible to extend that for eDP.
+
+
+> These are baseline changes with which we can enable display. The new eDP
+> controller can also support additional features such as backlight control,
+> PSR etc. which will be enabled in subsequent patch series.
 >
-> > On Mar 13, 2021, at 1:13 AM, David Howells <dhowells@redhat.com> wrote:
-> >
-> > Eric Snowberg <eric.snowberg@oracle.com> wrote:
-> >
-> >> If MOKx will be available thru a config table in the next shim,
-> >> I'll prepare a follow on patch to add this support.
-> >
-> > Can this go separately, or would it be better rolled into the existing
-> > patchset?
+> Summary of changes:
+> DPU driver interface to the new eDP v510 display driver.
+> New generation eDP controller and phy driver implementation.
+> A common interface to choose enable the required eDP driver.
 >
-> IMHO, since you have already sent a pull request and this is not available
-> yet in shim, it seems save to have it go separately.  I should have time
-> to send something out next week to address this change.
+> Sankeerth Billakanti (3):
+>   drm/msm/edp: support multiple generations of edp hardware
+>   drm/msm/edp: add support for next gen edp
+>   drm/msm/disp/dpu1: add support for edp encoder
+>
+>  drivers/gpu/drm/msm/Makefile                      |   19 +-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c       |    7 +-
+>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c           |   33 +
+>  drivers/gpu/drm/msm/edp/edp.c                     |  198 ---
+>  drivers/gpu/drm/msm/edp/edp.h                     |   78 -
+>  drivers/gpu/drm/msm/edp/edp.xml.h                 |  380 -----
+>  drivers/gpu/drm/msm/edp/edp_aux.c                 |  264 ----
+>  drivers/gpu/drm/msm/edp/edp_bridge.c              |  111 --
+>  drivers/gpu/drm/msm/edp/edp_common.c              |   38 +
+>  drivers/gpu/drm/msm/edp/edp_common.h              |   47 +
+>  drivers/gpu/drm/msm/edp/edp_connector.c           |  132 --
+>  drivers/gpu/drm/msm/edp/edp_ctrl.c                | 1375 ------------------
+>  drivers/gpu/drm/msm/edp/edp_phy.c                 |   98 --
+>  drivers/gpu/drm/msm/edp/v200/edp.xml.h            |  380 +++++
+>  drivers/gpu/drm/msm/edp/v200/edp_v200.c           |  210 +++
+>  drivers/gpu/drm/msm/edp/v200/edp_v200.h           |   70 +
+>  drivers/gpu/drm/msm/edp/v200/edp_v200_aux.c       |  264 ++++
+>  drivers/gpu/drm/msm/edp/v200/edp_v200_bridge.c    |  111 ++
+>  drivers/gpu/drm/msm/edp/v200/edp_v200_connector.c |  132 ++
+>  drivers/gpu/drm/msm/edp/v200/edp_v200_ctrl.c      | 1375 ++++++++++++++++++
+>  drivers/gpu/drm/msm/edp/v200/edp_v200_phy.c       |   98 ++
+>  drivers/gpu/drm/msm/edp/v510/edp_v510.c           |  220 +++
+>  drivers/gpu/drm/msm/edp/v510/edp_v510.h           |  151 ++
+>  drivers/gpu/drm/msm/edp/v510/edp_v510_aux.c       |  268 ++++
+>  drivers/gpu/drm/msm/edp/v510/edp_v510_bridge.c    |  111 ++
+>  drivers/gpu/drm/msm/edp/v510/edp_v510_connector.c |  117 ++
+>  drivers/gpu/drm/msm/edp/v510/edp_v510_ctrl.c      | 1583 +++++++++++++++++++++
+>  drivers/gpu/drm/msm/edp/v510/edp_v510_phy.c       |  641 +++++++++
+>  drivers/gpu/drm/msm/edp/v510/edp_v510_reg.h       |  339 +++++
+>  29 files changed, 6207 insertions(+), 2643 deletions(-)
+>  delete mode 100644 drivers/gpu/drm/msm/edp/edp.c
+>  delete mode 100644 drivers/gpu/drm/msm/edp/edp.h
+>  delete mode 100644 drivers/gpu/drm/msm/edp/edp.xml.h
+>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_aux.c
+>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_bridge.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/edp_common.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/edp_common.h
+>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_connector.c
+>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_ctrl.c
+>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_phy.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp.xml.h
+>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200.h
+>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_aux.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_bridge.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_connector.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_ctrl.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_phy.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510.h
+>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_aux.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_bridge.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_connector.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_ctrl.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_phy.c
+>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_reg.h
+>
+> --
+> The Qualcomm Innovatin Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
 >
 
-I don't think that was correct to call it "not available yet in shim".
-Shim has always exported all the variables, it's just at the time most
-shims from most distros did not have any contents in MokX. And as
-usual with all EFI variables, empty ones do not exist.
 
-The shim from Ubuntu which is now public contains 1 cert & 378 on
-x86_64 and 1 cert & 170 hashes. Thus it is likely to fail to be read
-by kernel correctly unless it uses efi_mokvar_entry_find(). These
-patches are tagged with CVE number which it does not address
-completely in some configurations. Are you working on a patch to add
-efi_mokvar_entry_find() or do you want me to write it / test it /
-submit it for review?
-
-
--- 
-Regards,
-
-Dimitri.
+--
+With best wishes
+Dmitry
