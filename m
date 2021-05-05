@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B473A373A2D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:07:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 14297373A2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233494AbhEEMH6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:07:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47698 "EHLO mail.kernel.org"
+        id S233497AbhEEMIA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:08:00 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47794 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229699AbhEEMHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:07:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1046D613C4;
-        Wed,  5 May 2021 12:06:24 +0000 (UTC)
+        id S233376AbhEEMHY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:07:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BD77613B3;
+        Wed,  5 May 2021 12:06:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216385;
-        bh=Ql7iDEykfMvIIpEsQFffngjm6a4WUByVYdx2J5aCiKc=;
+        s=korg; t=1620216387;
+        bh=nKScMyZidbAGPHP51zjT3G2yJtXb4ABU9jEX63KpUDI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WJut0KrHhDO2gUEGdPRkhLrgsXMAQppGcwlUPa6UJVQev4rlo69OAYB0LxjDnDsFA
-         lKWFrD91TTXY0qviUdSgQlp+WUZxRBDZsH8Dxc/h9hU+20WtxUL+flgBg4bJpwriWe
-         YQT8yiYaIejKtm/jYMT5trvtqomOLqnJX5WuUulw=
+        b=zt3lnw4iLhkj/J3dWkfmGALsqOn4m1PiWM3eoGiRMLFdE/4A+kej0Zrblycez2Unu
+         WDgt5CbJcFJpTf2w8yEfEb3/TErDK+20A9Ypmk6EOVCJJ6g7AUVj46HhIm7jkPs/b9
+         zuFXkzUW4+BhoG9jPpqX0KLO1yvyXDz42kHWgo5E=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
         Jianxiong Gao <jxgao@google.com>,
         Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: [PATCH 5.10 14/29] swiotlb: factor out an io_tlb_offset helper
-Date:   Wed,  5 May 2021 14:05:17 +0200
-Message-Id: <20210505112326.666752898@linuxfoundation.org>
+Subject: [PATCH 5.10 15/29] swiotlb: factor out a nr_slots helper
+Date:   Wed,  5 May 2021 14:05:18 +0200
+Message-Id: <20210505112326.704407973@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
 References: <20210505112326.195493232@linuxfoundation.org>
@@ -42,10 +42,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jianxiong Gao <jxgao@google.com>
 
-commit: c7fbeca757fe74135d8b6a4c8ddaef76f5775d68
+commit: c32a77fd18780a5192dfb6eec69f239faebf28fd
 
-Replace the very genericly named OFFSET macro with a little inline
-helper that hardcodes the alignment to the only value ever passed.
+Factor out a helper to find the number of slots for a given size.
 
 Signed-off-by: Christoph Hellwig <hch@lst.de>
 Acked-by: Jianxiong Gao <jxgao@google.com>
@@ -54,72 +53,55 @@ Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
 Signed-off-by: Jianxiong Gao <jxgao@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- kernel/dma/swiotlb.c |   20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
+ kernel/dma/swiotlb.c |   13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
 --- a/kernel/dma/swiotlb.c
 +++ b/kernel/dma/swiotlb.c
-@@ -50,9 +50,6 @@
- #define CREATE_TRACE_POINTS
- #include <trace/events/swiotlb.h>
- 
--#define OFFSET(val,align) ((unsigned long)	\
--	                   ( (val) & ( (align) - 1)))
--
- #define SLABS_PER_PAGE (1 << (PAGE_SHIFT - IO_TLB_SHIFT))
- 
- /*
-@@ -176,6 +173,11 @@ void swiotlb_print_info(void)
- 	       bytes >> 20);
+@@ -178,6 +178,11 @@ static inline unsigned long io_tlb_offse
+ 	return val & (IO_TLB_SEGSIZE - 1);
  }
  
-+static inline unsigned long io_tlb_offset(unsigned long val)
++static inline unsigned long nr_slots(u64 val)
 +{
-+	return val & (IO_TLB_SEGSIZE - 1);
++	return DIV_ROUND_UP(val, IO_TLB_SIZE);
 +}
 +
  /*
   * Early SWIOTLB allocation may be too early to allow an architecture to
   * perform the desired operations.  This function allows the architecture to
-@@ -225,7 +227,7 @@ int __init swiotlb_init_with_tbl(char *t
- 		      __func__, alloc_size, PAGE_SIZE);
+@@ -477,20 +482,20 @@ phys_addr_t swiotlb_tbl_map_single(struc
  
- 	for (i = 0; i < io_tlb_nslabs; i++) {
--		io_tlb_list[i] = IO_TLB_SEGSIZE - OFFSET(i, IO_TLB_SEGSIZE);
-+		io_tlb_list[i] = IO_TLB_SEGSIZE - io_tlb_offset(i);
- 		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
- 	}
- 	io_tlb_index = 0;
-@@ -359,7 +361,7 @@ swiotlb_late_init_with_tbl(char *tlb, un
- 		goto cleanup4;
+ 	tbl_dma_addr &= mask;
  
- 	for (i = 0; i < io_tlb_nslabs; i++) {
--		io_tlb_list[i] = IO_TLB_SEGSIZE - OFFSET(i, IO_TLB_SEGSIZE);
-+		io_tlb_list[i] = IO_TLB_SEGSIZE - io_tlb_offset(i);
- 		io_tlb_orig_addr[i] = INVALID_PHYS_ADDR;
- 	}
- 	io_tlb_index = 0;
-@@ -530,7 +532,9 @@ phys_addr_t swiotlb_tbl_map_single(struc
+-	offset_slots = ALIGN(tbl_dma_addr, IO_TLB_SIZE) >> IO_TLB_SHIFT;
++	offset_slots = nr_slots(tbl_dma_addr);
  
- 			for (i = index; i < (int) (index + nslots); i++)
- 				io_tlb_list[i] = 0;
--			for (i = index - 1; (OFFSET(i, IO_TLB_SEGSIZE) != IO_TLB_SEGSIZE - 1) && io_tlb_list[i]; i--)
-+			for (i = index - 1;
-+			     io_tlb_offset(i) != IO_TLB_SEGSIZE - 1 &&
-+			     io_tlb_list[i]; i--)
- 				io_tlb_list[i] = ++count;
- 			tlb_addr = io_tlb_start + (index << IO_TLB_SHIFT);
+ 	/*
+ 	 * Carefully handle integer overflow which can occur when mask == ~0UL.
+ 	 */
+ 	max_slots = mask + 1
+-		    ? ALIGN(mask + 1, IO_TLB_SIZE) >> IO_TLB_SHIFT
++		    ? nr_slots(mask + 1)
+ 		    : 1UL << (BITS_PER_LONG - IO_TLB_SHIFT);
  
-@@ -616,7 +620,9 @@ void swiotlb_tbl_unmap_single(struct dev
- 		 * Step 2: merge the returned slots with the preceding slots,
- 		 * if available (non zero)
- 		 */
--		for (i = index - 1; (OFFSET(i, IO_TLB_SEGSIZE) != IO_TLB_SEGSIZE -1) && io_tlb_list[i]; i--)
-+		for (i = index - 1;
-+		     io_tlb_offset(i) != IO_TLB_SEGSIZE - 1 &&
-+		     io_tlb_list[i]; i--)
- 			io_tlb_list[i] = ++count;
+ 	/*
+ 	 * For mappings greater than or equal to a page, we limit the stride
+ 	 * (and hence alignment) to a page size.
+ 	 */
+-	nslots = ALIGN(alloc_size, IO_TLB_SIZE) >> IO_TLB_SHIFT;
++	nslots = nr_slots(alloc_size);
+ 	if (alloc_size >= PAGE_SIZE)
+ 		stride = (1 << (PAGE_SHIFT - IO_TLB_SHIFT));
+ 	else
+@@ -586,7 +591,7 @@ void swiotlb_tbl_unmap_single(struct dev
+ 			      enum dma_data_direction dir, unsigned long attrs)
+ {
+ 	unsigned long flags;
+-	int i, count, nslots = ALIGN(alloc_size, IO_TLB_SIZE) >> IO_TLB_SHIFT;
++	int i, count, nslots = nr_slots(alloc_size);
+ 	int index = (tlb_addr - io_tlb_start) >> IO_TLB_SHIFT;
+ 	phys_addr_t orig_addr = io_tlb_orig_addr[index];
  
- 		io_tlb_used -= nslots;
 
 
