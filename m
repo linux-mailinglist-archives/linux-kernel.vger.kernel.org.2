@@ -2,97 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C86C2373804
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:43:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD2D37380A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:47:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233249AbhEEJot (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:44:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58824 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233191AbhEEJoh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:44:37 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7304CC06134B;
-        Wed,  5 May 2021 02:43:34 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id c11so1650536lfi.9;
-        Wed, 05 May 2021 02:43:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6c3Xgmn5T37TIiY6YlqNonCt6qbYnwH+SLVXsWNUIl0=;
-        b=tlTyUi3kNACJZhVQLNA0q8gUswN+/IMa21mbaLzlaLXmWzl7Wu/8y3gc7AI4RJ7gp5
-         hkz1WvvJr4s16xg4aIGzXIiaFq++4fidadR9bsQtZVGviOdXVS5+sCckZ/S8tZB7OF7i
-         mN+OyC3oW7V0DgYb7z4XiON9PrXOB6FqDvFbeZVyOpSGqydB78TCyIk1nYnrCmMy4YCr
-         Tpu3gWJsG36gx1d3SQi6bArBRjmJQBi16tJQ0dBTJOjxi+dR/7zn/s30V9BovD0g2HbN
-         13nAhm0Wmx65jEDp0PeKMWOU+RWpsh834jaNzxv91k/ORKN5U0m/BcIlQfSqyPOYO4FQ
-         kg8g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6c3Xgmn5T37TIiY6YlqNonCt6qbYnwH+SLVXsWNUIl0=;
-        b=YMsSbxF1ZkQ5xOzW3drQVlIe/3h3hgIJVhZf/MJBO7qLNrkcmyEmeZE4+y2gxT6zYE
-         srBJJQj0ihS8Z+0CGdsepHNA736HXcr1USUFW/AdrLEudP3Vk8v37dOCs1IfIZZmJ49G
-         4r++auyT1fuOKEZ1RlrSwJMSeOlzb7tTYNPlqL1attiutebNqVXqDU3dXPh/Ul4hL1aS
-         dlJg8blhlPm0pm+w2Plguq1DAayL1LTlO3k0zfUk7ESWmtwWqEFuhD3OT3RI//C2XoX4
-         44PTkI30HvbAXg4k0him2J+evoLBhZWfqCFtC4DV2Q3wXgVJ6g8xy11YSqzWqx1xAJuD
-         Z/Aw==
-X-Gm-Message-State: AOAM531yy/gtNYc1TlPqKjPRP+nc4m6+f/jKH+cZhg99eDRIuAKa2Keg
-        q4OTYKMHnzxjFBgeDrebIqxzxUj5nRf979Z3ZiQ=
-X-Google-Smtp-Source: ABdhPJw6OWZKpcheUIXN4U6xqnJjupiMHWXCfxCTfUuc3HFjNvUcQ9YcgrDewl5kohtJyeEZNwEigc4i9Z3u2NQfWlY=
-X-Received: by 2002:ac2:44b1:: with SMTP id c17mr1737771lfm.527.1620207812971;
- Wed, 05 May 2021 02:43:32 -0700 (PDT)
+        id S232402AbhEEJss (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:48:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:41622 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231494AbhEEJsr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 05:48:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C6071D6E;
+        Wed,  5 May 2021 02:47:50 -0700 (PDT)
+Received: from [10.57.61.145] (unknown [10.57.61.145])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1652A3F70D;
+        Wed,  5 May 2021 02:47:48 -0700 (PDT)
+Subject: Re: [PATCH] coresight: tmc-etf: Fix global-out-of-bounds in
+ tmc_update_etf_buffer()
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>
+Cc:     coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, stable@vger.kernel.org
+References: <20210505093430.18445-1-saiprakash.ranjan@codeaurora.org>
+From:   Suzuki K Poulose <suzuki.poulose@arm.com>
+Message-ID: <8e0dbf24-af71-9bce-b615-ce7b1d12a720@arm.com>
+Date:   Wed, 5 May 2021 10:47:47 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210429062130.29403-1-dqfext@gmail.com> <20210429.170815.956010543291313915.davem@davemloft.net>
- <20210430023839.246447-1-dqfext@gmail.com> <YIv28APpOP9tnuO+@lunn.ch>
- <trinity-843c99ce-952a-434e-95e4-4ece3ba6b9bd-1619786236765@3c-app-gmx-bap03>
- <YIv7w8Wy81fmU5A+@lunn.ch> <trinity-611ff023-c337-4148-a215-98fd5604eac2-1619787382934@3c-app-gmx-bap03>
- <YIwCliT5NZT713WD@lunn.ch> <trinity-c45bbeec-5b7c-43a2-8e86-7cb22ad61558-1619794787680@3c-app-gmx-bap03>
- <YIwxpYD1jnFMPQz+@lunn.ch> <fc962daf8b7babc22b043b2b0878a206780b55f3.camel@mediatek.com>
-In-Reply-To: <fc962daf8b7babc22b043b2b0878a206780b55f3.camel@mediatek.com>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Wed, 5 May 2021 17:43:21 +0800
-Message-ID: <CALW65ja5mRPoNM2EZsONMh8Kda5OgQg79R=Xp71CaQcp4cprnQ@mail.gmail.com>
-Subject: Re: Re: Re: Re: [PATCH net-next 0/4] MT7530 interrupt support
-To:     Landen Chao <landen.chao@mediatek.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        David Miller <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-staging@lists.linux.dev,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210505093430.18445-1-saiprakash.ranjan@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 5:31 PM Landen Chao <landen.chao@mediatek.com> wrote:
-> How about using mediatek-ge.ko. 'ge' is the abbreviation of gigabit
-> Ethernet. Most mediatek products use the same gigabit Ethernet phy.
+On 05/05/2021 10:34, Sai Prakash Ranjan wrote:
+> commit 6f755e85c332 ("coresight: Add helper for inserting synchronization
+> packets") removed trailing '\0' from barrier_pkt array and updated the
+> call sites like etb_update_buffer() to have proper checks for barrier_pkt
+> size before read but missed updating tmc_update_etf_buffer() which still
+> reads barrier_pkt past the array size resulting in KASAN out-of-bounds
+> bug. Fix this by adding a check for barrier_pkt size before accessing
+> like it is done in etb_update_buffer().
+> 
+>   BUG: KASAN: global-out-of-bounds in tmc_update_etf_buffer+0x4b8/0x698
+>   Read of size 4 at addr ffffffd05b7d1030 by task perf/2629
+> 
+>   Call trace:
+>    dump_backtrace+0x0/0x27c
+>    show_stack+0x20/0x2c
+>    dump_stack+0x11c/0x188
+>    print_address_description+0x3c/0x4a4
+>    __kasan_report+0x140/0x164
+>    kasan_report+0x10/0x18
+>    __asan_report_load4_noabort+0x1c/0x24
+>    tmc_update_etf_buffer+0x4b8/0x698
+>    etm_event_stop+0x248/0x2d8
+>    etm_event_del+0x20/0x2c
+>    event_sched_out+0x214/0x6f0
+>    group_sched_out+0xd0/0x270
+>    ctx_sched_out+0x2ec/0x518
+>    __perf_event_task_sched_out+0x4fc/0xe6c
+>    __schedule+0x1094/0x16a0
+>    preempt_schedule_irq+0x88/0x170
+>    arm64_preempt_schedule_irq+0xf0/0x18c
+>    el1_irq+0xe8/0x180
+>    perf_event_exec+0x4d8/0x56c
+>    setup_new_exec+0x204/0x400
+>    load_elf_binary+0x72c/0x18c0
+>    search_binary_handler+0x13c/0x420
+>    load_script+0x500/0x6c4
+>    search_binary_handler+0x13c/0x420
+>    exec_binprm+0x118/0x654
+>    __do_execve_file+0x77c/0xba4
+>    __arm64_compat_sys_execve+0x98/0xac
+>    el0_svc_common+0x1f8/0x5e0
+>    el0_svc_compat_handler+0x84/0xb0
+>    el0_svc_compat+0x10/0x50
+> 
+>   The buggy address belongs to the variable:
+>    barrier_pkt+0x10/0x40
+> 
+>   Memory state around the buggy address:
+>    ffffffd05b7d0f00: fa fa fa fa 04 fa fa fa fa fa fa fa 00 00 00 00
+>    ffffffd05b7d0f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+>   >ffffffd05b7d1000: 00 00 00 00 00 00 fa fa fa fa fa fa 00 00 00 03
+>                                        ^
+>    ffffffd05b7d1080: fa fa fa fa 00 02 fa fa fa fa fa fa 03 fa fa fa
+>    ffffffd05b7d1100: fa fa fa fa 00 00 00 00 05 fa fa fa fa fa fa fa
+>   ==================================================================
+> 
+> Fixes: 6f755e85c332 ("coresight: Add helper for inserting synchronization packets")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+> ---
+>   drivers/hwtracing/coresight/coresight-tmc-etf.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+> index 45b85edfc690..cd0fb7bfba68 100644
+> --- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
+> +++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+> @@ -530,7 +530,7 @@ static unsigned long tmc_update_etf_buffer(struct coresight_device *csdev,
+>   		buf_ptr = buf->data_pages[cur] + offset;
+>   		*buf_ptr = readl_relaxed(drvdata->base + TMC_RRD);
+>   
+> -		if (lost && *barrier) {
+> +		if (lost && i < CORESIGHT_BARRIER_PKT_SIZE) {
+>   			*buf_ptr = *barrier;
+>   			barrier++;
+>   		}
+> 
 
-Well, MT7620's PHY is FE..
+Thanks for the fix. I will queue this one after rc1
 
->
-> Landen
+Thanks
+Suzuki
+
