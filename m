@@ -2,229 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C46F3738EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:59:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D9083738DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232535AbhEEK77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 06:59:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39994 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231750AbhEEK76 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 06:59:58 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E3AC613C7;
-        Wed,  5 May 2021 10:58:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620212342;
-        bh=SJKhjz6kStgLYNpkGUvEZlfiTGUIIdKZGRZ11FTO5+g=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=fHk/lzfKDSYfy5dObYAjyGbXP9knhHjeDzRwsvU9gXsOSjU1dF6vrGk8KFuvkyoJQ
-         tGKg2JMld3S137HqkwqF9SuIZq0g3SSaFA0qA4wLCYL3UUSwtbnWSJhrDyzNpyxzUK
-         tBflOsu2qiDb7w3AduksPNJ/4qV9T97X6eDTK7jtvkhFJ8Ef7ffTLihZDx9GocYont
-         z9enlLFvm/kfyC6Mr0dlKEVbH8QkiGwv30kLwGtDWBWlpftiFSsQtYE211vp2SOf4G
-         vwSr0Z3yXhMYxfCZNSxo/xXcIw7ItajQQIKW5mAncndyjQh6eUCgxjBwoTVxTJYlom
-         H+A09AkXTWMeg==
-Date:   Wed, 5 May 2021 12:58:57 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 25/25] media: i2c: ccs-core: fix pm_runtime_get_sync()
- usage count
-Message-ID: <20210505125857.7f30d8fa@coco.lan>
-In-Reply-To: <20210505125700.4a7584ca@coco.lan>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
-        <83ec24acb15f17e2ce589575c2f5eb7bdd1daf28.1620207353.git.mchehab+huawei@kernel.org>
-        <20210505103409.GN3@paasikivi.fi.intel.com>
-        <20210505125700.4a7584ca@coco.lan>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S232133AbhEEKyI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 06:54:08 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:18355 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231431AbhEEKyH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 06:54:07 -0400
+Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FZtmR0KVWzlbdw;
+        Wed,  5 May 2021 18:51:03 +0800 (CST)
+Received: from localhost.localdomain (10.175.104.82) by
+ DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
+ 14.3.498.0; Wed, 5 May 2021 18:53:01 +0800
+From:   Zheng Yongjun <zhengyongjun3@huawei.com>
+To:     <colyli@suse.de>, <kent.overstreet@gmail.com>,
+        <linux-bcache@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Zheng Yongjun <zhengyongjun3@huawei.com>,
+        Hulk Robot <hulkci@huawei.com>
+Subject: [PATCH -next v4] bcache: Use DEFINE_MUTEX() for mutex lock
+Date:   Wed, 5 May 2021 19:06:55 +0800
+Message-ID: <20210505110655.1461896-1-zhengyongjun3@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.104.82]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Wed, 5 May 2021 12:57:00 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+Mutex lock can be initialized automatically with DEFINE_MUTEX() rather
+than explicitly calling mutex_init().
 
-> Em Wed, 5 May 2021 13:34:09 +0300
-> Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
-> 
-> > Hi Mauro,
-> > 
-> > Thanks for the patch.
-> > 
-> > On Wed, May 05, 2021 at 11:42:15AM +0200, Mauro Carvalho Chehab wrote:
-> > > The pm_runtime_get_sync() internally increments the
-> > > dev->power.usage_count without decrementing it, even on errors.
-> > > 
-> > > There is a bug at ccs_pm_get_init(): when this function returns
-> > > an error, the stream is not started, and RPM usage_count
-> > > should not be incremented. However, if the calls to
-> > > v4l2_ctrl_handler_setup() return errors, it will be kept
-> > > incremented.
-> > > 
-> > > At ccs_suspend() the best is to replace it by the new
-> > > pm_runtime_resume_and_get(), introduced by:
-> > > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> > > in order to properly decrement the usage counter automatically,
-> > > in the case of errors.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> > 
-> > Could you add Fixes: line and Cc: stable?
-> 
-> Sure. See the fixes one enclosed.
-> 
-> > The patch that breaks this is 96e3a6b92f23a .
-> > 
-> > It would be better to fix the bug first so the patch to the stable trees
-> > doesn't need special handling.
-> > 
-> > > ---
-> > >  drivers/media/i2c/ccs/ccs-core.c | 39 ++++++++++++++++++++------------
-> > >  1 file changed, 24 insertions(+), 15 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-> > > index b05f409014b2..04c3ab9e37b4 100644
-> > > --- a/drivers/media/i2c/ccs/ccs-core.c
-> > > +++ b/drivers/media/i2c/ccs/ccs-core.c
-> > > @@ -1880,21 +1880,33 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
-> > >  	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
-> > >  	int rval;
-> > >  
-> > > +	/*
-> > > +	 * It can't use pm_runtime_resume_and_get() here, as the driver
-> > > +	 * relies at the returned value to detect if the device was already
-> > > +	 * active or not.
-> > > +	 */
-> > >  	rval = pm_runtime_get_sync(&client->dev);
-> > > -	if (rval < 0) {
-> > > -		pm_runtime_put_noidle(&client->dev);
-> > > +	if (rval < 0)
-> > > +		goto error;
-> > >  
-> > > -		return rval;
-> > > -	} else if (!rval) {
-> > > -		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
-> > > -					       ctrl_handler);
-> > > -		if (rval)
-> > > -			return rval;
-> > > +	/* Device was already active, so don't set controls */
-> > > +	if (rval == 1)
-> > > +		return 0;
-> > >  
-> > > -		return v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
-> > > -	}
-> > > +	/* Restore V4L2 controls to the suspended device */
-> > > +	rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->ctrl_handler);
-> > > +	if (rval)
-> > > +		goto error;
-> > >  
-> > > +	rval = v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
-> > > +	if (rval)
-> > > +		goto error;
-> > > +
-> > > +	/* Keep PM runtime usage_count incremented on success */
-> > >  	return 0;
-> > > +error:
-> > > +	pm_runtime_put_noidle(&client->dev);  
-> > 
-> > This needs to be pm_runtime_put() as the device has been successfully.
-> 
-> Ok.
-> 
-> > 
-> > > +	return rval;
-> > >  }
-> > >  
-> > >  static int ccs_set_stream(struct v4l2_subdev *subdev, int enable)
-> > > @@ -3089,12 +3101,9 @@ static int __maybe_unused ccs_suspend(struct device *dev)
-> > >  	bool streaming = sensor->streaming;
-> > >  	int rval;
-> > >  
-> > > -	rval = pm_runtime_get_sync(dev);
-> > > -	if (rval < 0) {
-> > > -		pm_runtime_put_noidle(dev);
-> > > -
-> > > +	rval = pm_runtime_resume_and_get(dev);
-> > > +	if (rval < 0)
-> > >  		return rval;
-> > > -	}
-> > >  
-> > >  	if (sensor->streaming)
-> > >  		ccs_stop_streaming(sensor);  
-> > 
-> 
-> Thanks,
-> Mauro
-> 
-> ---
-> 
-> [PATCH] media: i2c: ccs-core: fix pm_runtime_get_sync() usage count
-> 
-> The pm_runtime_get_sync() internally increments the
-> dev->power.usage_count without decrementing it, even on errors.
-> 
-> There is a bug at ccs_pm_get_init(): when this function returns
-> an error, the stream is not started, and RPM usage_count
-> should not be incremented. However, if the calls to
-> v4l2_ctrl_handler_setup() return errors, it will be kept
-> incremented.
-> 
-> At ccs_suspend() the best is to replace it by the new
-> pm_runtime_resume_and_get(), introduced by:
-> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> in order to properly decrement the usage counter automatically,
-> in the case of errors.
-> 
-> Fixes: 96e3a6b92f23 ("media: smiapp: Avoid maintaining power state information")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> 
-> diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-> index b05f409014b2..5ea471fefa3a 100644
-> --- a/drivers/media/i2c/ccs/ccs-core.c
-> +++ b/drivers/media/i2c/ccs/ccs-core.c
-> @@ -1880,21 +1880,33 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
->  	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
->  	int rval;
->  
-> +	/*
-> +	 * It can't use pm_runtime_resume_and_get() here, as the driver
-> +	 * relies at the returned value to detect if the device was already
-> +	 * active or not.
-> +	 */
->  	rval = pm_runtime_get_sync(&client->dev);
-> -	if (rval < 0) {
-> -		pm_runtime_put_noidle(&client->dev);
-> +	if (rval < 0)
-> +		goto error;
->  
-> -		return rval;
-> -	} else if (!rval) {
-> -		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
-> -					       ctrl_handler);
-> -		if (rval)
-> -			return rval;
-> +	/* Device was already active, so don't set controls */
-> +	if (rval == 1)
-> +		return 0;
->  
-> -		return v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
-> -	}
-> +	/* Restore V4L2 controls to the suspended device */
+This patch will reduce the size of bcache.ko about 16 bytes, the
+reason as follows:
 
-In time: I'll fold this at the patch:
+Though this patch will increase the size of .data segment about 32
+bytes, it will also reduce the size of .init.text and
+.rodata.str1.1(at x86_64), .rodata_str1.8(at arm64) total about 48
+bytes which reduce the size more than .data segment;
 
-diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-index 5ea471fefa3a..4a848ac2d2cd 100644
---- a/drivers/media/i2c/ccs/ccs-core.c
-+++ b/drivers/media/i2c/ccs/ccs-core.c
-@@ -1896 +1896 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
--       /* Restore V4L2 controls to the suspended device */
-+       /* Restore V4L2 controls to the previously suspended device */
+Here is the statistics:
+Sections: (arm64 platform)
+Idx name                size
+-.init.text             00000240
++.init.text             00000228
 
-Regards,
-Mauro
+-.rodata.str1.8	000012cd
++.rodata.str1.8	000012b5
+
+-.data                  00000c60
++.data                  00000c80
+
+Sections: (x86 platform)
+Idx name                size
+-.init.text             000001d9
++.init.text             000001bf
+
+-.rodata.str1.1	00000c80
++.rodata.str1.1	00000c6d
+
+-.data                  00000cc0
++.data                  00000ce0
+
+Reported-by: Hulk Robot <hulkci@huawei.com>
+Signed-off-by: Zheng Yongjun <zhengyongjun3@huawei.com>
+---
+
+v4:
+- change commit log, delete bss information at commit description.
+v3:
+- change commit log, delete statistic about .bss segment.
+v2:
+- add commit log about the reason why bcache.ko size reduced.
+---
+ drivers/md/bcache/super.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/drivers/md/bcache/super.c b/drivers/md/bcache/super.c
+index 03e1fe4de53d..3635f454309e 100644
+--- a/drivers/md/bcache/super.c
++++ b/drivers/md/bcache/super.c
+@@ -40,7 +40,7 @@ static const char invalid_uuid[] = {
+ };
+ 
+ static struct kobject *bcache_kobj;
+-struct mutex bch_register_lock;
++DEFINE_MUTEX(bch_register_lock);
+ bool bcache_is_reboot;
+ LIST_HEAD(bch_cache_sets);
+ static LIST_HEAD(uncached_devices);
+@@ -2869,7 +2869,6 @@ static int __init bcache_init(void)
+ 
+ 	check_module_parameters();
+ 
+-	mutex_init(&bch_register_lock);
+ 	init_waitqueue_head(&unregister_wait);
+ 	register_reboot_notifier(&reboot);
+ 
+-- 
+2.25.1
+
