@@ -2,138 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CABE374740
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A94EC37439B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234050AbhEERxJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:53:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54582 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235393AbhEERwY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:52:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE159C035439;
-        Wed,  5 May 2021 10:22:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=o2TH6QhEzWLrE8XJpaqMkQYw4rvJWZRsE6FI0c6cN8k=; b=VECtjC0yyd207an4UE86dXHZea
-        j79N2c0XNGciEV8Uhoim+U8D65flmgMSBmYsFdxOlcM0OVIcu2+pba6nsk1OuDItA+OYbqBDK0oCh
-        pl1ekyN5+6o+bDNVmJcPDm0rbR8hPquhbqRVhPqX7jmh02LOK6wDU3yDoT6EXhPINA3MRCeUCscqr
-        8WoH6EHeZKY8f5nsw9n3ZolSuz1YtiFpVfZVhHEoTVoR5AmUvFUIc7DXY0CeeftFJKiB5XeXS9Mvw
-        zK0lL/098QuSvu0iLvDFIpMje5O4+Kw2gzcPX51wj908OiQ+ao7KHGmYHuvqsc/UrSzXo288rCgcG
-        dXmzTBHA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1leLBA-000dbG-7R; Wed, 05 May 2021 17:19:41 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v9 87/96] iomap: Pass the iomap_page into iomap_set_range_uptodate
-Date:   Wed,  5 May 2021 16:06:19 +0100
-Message-Id: <20210505150628.111735-88-willy@infradead.org>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210505150628.111735-1-willy@infradead.org>
-References: <20210505150628.111735-1-willy@infradead.org>
+        id S234730AbhEEQvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:51:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39572 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234476AbhEEQnM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:43:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 023A361624;
+        Wed,  5 May 2021 16:34:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620232496;
+        bh=AE+X5Eah/n8cO4IQIZGdsCNrvJn7jm+Frxh8LLMq1jk=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=unyLt/KJcWbTZKLpJ7kk+No2RNpPK3d1BB8pyd0Ih+TEyJ4XsJR9N3LI1tEpmZUqD
+         lAM+IDq2ihx/8zhWONZRBMSOEpQihGs2yJVL7kVV4WRwR0vyygAYj+2Qe+/4SglzFj
+         uzKJw2WguRCtWPFvsiiNubw2A86bOT3S3mVoH50s10OXKKuIjVzPvagK0u+HGEa134
+         WIRDtB/Q2jKjZi5lG8OQu211GnZF08BuJF4vHDx4zt5MZICFLopITMy96meYYTjK2N
+         NFAxA4n7pnK5/fz9bWMnDFEksnNgjY3+JnN+QjyPv748UXIqg5wgC0v04tTJdTTKRp
+         hP+HrZZyKmmAg==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
+Subject: [PATCH AUTOSEL 5.11 030/104] powerpc/32: Statically initialise first emergency context
+Date:   Wed,  5 May 2021 12:32:59 -0400
+Message-Id: <20210505163413.3461611-30-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
+References: <20210505163413.3461611-1-sashal@kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All but one caller already has the iomap_page, and we can avoid getting
-it again.
+From: Christophe Leroy <christophe.leroy@csgroup.eu>
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+[ Upstream commit a4719f5bb6d7dc220bffdc1b9f5ce5eaa5543581 ]
+
+The check of the emergency context initialisation in
+vmap_stack_overflow is buggy for the SMP case, as it
+compares r1 with 0 while in the SMP case r1 is offseted
+by the CPU id.
+
+Instead of fixing it, just perform static initialisation
+of the first emergency context.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
+Link: https://lore.kernel.org/r/4a67ba422be75713286dca0c86ee0d3df2eb6dfa.1615552867.git.christophe.leroy@csgroup.eu
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/iomap/buffered-io.c | 25 +++++++++++++------------
- 1 file changed, 13 insertions(+), 12 deletions(-)
+ arch/powerpc/kernel/head_32.h  | 6 +-----
+ arch/powerpc/kernel/setup_32.c | 2 +-
+ 2 files changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index c36e16b87c45..f40a22a696c6 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -134,11 +134,9 @@ iomap_adjust_read_range(struct inode *inode, struct iomap_page *iop,
- 	*lenp = plen;
+diff --git a/arch/powerpc/kernel/head_32.h b/arch/powerpc/kernel/head_32.h
+index abc7b603ab65..294dd0082ad2 100644
+--- a/arch/powerpc/kernel/head_32.h
++++ b/arch/powerpc/kernel/head_32.h
+@@ -331,11 +331,7 @@
+ 	lis	r1, emergency_ctx@ha
+ #endif
+ 	lwz	r1, emergency_ctx@l(r1)
+-	cmpwi	cr1, r1, 0
+-	bne	cr1, 1f
+-	lis	r1, init_thread_union@ha
+-	addi	r1, r1, init_thread_union@l
+-1:	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
++	addi	r1, r1, THREAD_SIZE - INT_FRAME_SIZE
+ 	EXCEPTION_PROLOG_2
+ 	SAVE_NVGPRS(r11)
+ 	addi	r3, r1, STACK_FRAME_OVERHEAD
+diff --git a/arch/powerpc/kernel/setup_32.c b/arch/powerpc/kernel/setup_32.c
+index 8ba49a6bf515..d7c1f92152af 100644
+--- a/arch/powerpc/kernel/setup_32.c
++++ b/arch/powerpc/kernel/setup_32.c
+@@ -164,7 +164,7 @@ void __init irqstack_early_init(void)
  }
  
--static void
--iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
-+static void iomap_iop_set_range_uptodate(struct page *page,
-+		struct iomap_page *iop, unsigned off, unsigned len)
+ #ifdef CONFIG_VMAP_STACK
+-void *emergency_ctx[NR_CPUS] __ro_after_init;
++void *emergency_ctx[NR_CPUS] __ro_after_init = {[0] = &init_stack};
+ 
+ void __init emergency_stack_init(void)
  {
--	struct folio *folio = page_folio(page);
--	struct iomap_page *iop = to_iomap_page(folio);
- 	struct inode *inode = page->mapping->host;
- 	unsigned first = off >> inode->i_blkbits;
- 	unsigned last = (off + len - 1) >> inode->i_blkbits;
-@@ -151,14 +149,14 @@ iomap_iop_set_range_uptodate(struct page *page, unsigned off, unsigned len)
- 	spin_unlock_irqrestore(&iop->uptodate_lock, flags);
- }
- 
--static void
--iomap_set_range_uptodate(struct page *page, unsigned off, unsigned len)
-+static void iomap_set_range_uptodate(struct page *page,
-+		struct iomap_page *iop, unsigned off, unsigned len)
- {
- 	if (PageError(page))
- 		return;
- 
--	if (page_has_private(page))
--		iomap_iop_set_range_uptodate(page, off, len);
-+	if (iop)
-+		iomap_iop_set_range_uptodate(page, iop, off, len);
- 	else
- 		SetPageUptodate(page);
- }
-@@ -174,7 +172,8 @@ iomap_read_page_end_io(struct bio_vec *bvec, int error)
- 		ClearPageUptodate(page);
- 		SetPageError(page);
- 	} else {
--		iomap_set_range_uptodate(page, bvec->bv_offset, bvec->bv_len);
-+		iomap_set_range_uptodate(page, iop, bvec->bv_offset,
-+						bvec->bv_len);
- 	}
- 
- 	if (!iop || atomic_sub_and_test(bvec->bv_len, &iop->read_bytes_pending))
-@@ -254,7 +253,7 @@ iomap_readpage_actor(struct inode *inode, loff_t pos, loff_t length, void *data,
- 
- 	if (iomap_block_needs_zeroing(inode, iomap, pos)) {
- 		zero_user(page, poff, plen);
--		iomap_set_range_uptodate(page, poff, plen);
-+		iomap_set_range_uptodate(page, iop, poff, plen);
- 		goto done;
- 	}
- 
-@@ -583,7 +582,7 @@ __iomap_write_begin(struct inode *inode, loff_t pos, unsigned len, int flags,
- 			if (status)
- 				return status;
- 		}
--		iomap_set_range_uptodate(page, poff, plen);
-+		iomap_set_range_uptodate(page, iop, poff, plen);
- 	} while ((block_start += plen) < block_end);
- 
- 	return 0;
-@@ -670,6 +669,8 @@ EXPORT_SYMBOL_GPL(iomap_set_page_dirty);
- static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
- 		size_t copied, struct page *page)
- {
-+	struct folio *folio = page_folio(page);
-+	struct iomap_page *iop = to_iomap_page(folio);
- 	flush_dcache_page(page);
- 
- 	/*
-@@ -685,7 +686,7 @@ static size_t __iomap_write_end(struct inode *inode, loff_t pos, size_t len,
- 	 */
- 	if (unlikely(copied < len && !PageUptodate(page)))
- 		return 0;
--	iomap_set_range_uptodate(page, offset_in_page(pos), len);
-+	iomap_set_range_uptodate(page, iop, offset_in_page(pos), len);
- 	iomap_set_page_dirty(page);
- 	return copied;
- }
 -- 
 2.30.2
 
