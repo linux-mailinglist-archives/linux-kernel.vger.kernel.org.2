@@ -2,162 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190FC373482
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 06:57:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78E4337348A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 07:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231680AbhEEE6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 00:58:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52656 "EHLO
+        id S231637AbhEEFHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 01:07:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54592 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229653AbhEEE6X (ORCPT
+        with ESMTP id S229653AbhEEFHL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 00:58:23 -0400
-Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88174C061574;
-        Tue,  4 May 2021 21:57:27 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FZkwM092gz9sRR;
-        Wed,  5 May 2021 14:57:22 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
-        s=201909; t=1620190644;
-        bh=AuqytXgyTjzcSaZ5rxKrOKGocPS1zQRYvPHDmGYeViM=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=Vaj1/IoRbMmQkNvWsi22fvZ+66dpKVAlm7aZOE3dak7B2BJLuYDEo/QaBzW+TKNN0
-         BLnRKnOrH/Hre5uRF3gMkcv9kBwt/akEb+RoCVMjgZT7tKxM1nn/KnbK2Tn0D6baQJ
-         uHHjWq60B5QVnYD8KtXPl5CQ1lYqAUlOHRDSZ/LHSULLGDIegCDNh7ImEhH72leep/
-         odMFHy6ywpF5EiNM5Ty5FYIcP1B+YZToe8bn+G9q8yGeRS4awtuxVjK2p0dlFoovCd
-         wiZZQTmilomX2RwoJWos/JiifwBzlyCQZnJEkRpc5W7X0rTN1T9ghXvfwQmJbNH1i1
-         Be7da62j1p5iA==
-From:   Michael Ellerman <mpe@ellerman.id.au>
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        PowerPC <linuxppc-dev@lists.ozlabs.org>
-Cc:     Anshuman Khandual <anshuman.khandual@arm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: manual merge of the akpm-current tree with the
- powerpc tree
-In-Reply-To: <20210505113959.43340f19@canb.auug.org.au>
-References: <20210505113959.43340f19@canb.auug.org.au>
-Date:   Wed, 05 May 2021 14:57:18 +1000
-Message-ID: <87wnsd93rl.fsf@mpe.ellerman.id.au>
+        Wed, 5 May 2021 01:07:11 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 341A5C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 22:06:15 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id m124so941440pgm.13
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 22:06:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=7gpK7P2CpPVVCbVLUyVVTrI01QfMpCG4qxYH2m0q/WY=;
+        b=hRMfiR1c8aF8nkaibSuLvPsQ8VyCx/qSncGkzxu18vorhQYjFwpROhAEbXYMCNfquk
+         R79aCKblQiB16JvI81QOiFG7hoE+vwWFzuhbV1jcmU/QB6LmQwc8IoHRHHgrHKr1AooE
+         osQlLpZYwvRJRTQEWQKzZE0vUJAkPSCwibEEASukSg4xW9ERGzKZ40/yoQH+95owSb6v
+         iLEPDrI5blgVJviaQyBNxrHi4u/g5MffBYnIDhQOKoi0ygD8CMEeF9UCIMm87nzMRxHJ
+         P8UUlfcrr05jevKCiccoYy4X4FyQ6RYZzLzqVTr8I8qEmKxi4cqZReJU1TEVcBJWusH4
+         /VZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=7gpK7P2CpPVVCbVLUyVVTrI01QfMpCG4qxYH2m0q/WY=;
+        b=StrDnEl/vBZXXXrn1Qi1paUnJ24FeV5vABsj58yZIg5g55R//bIuEL66/ZxxdsALSQ
+         zTHFLRfEBSZe6ylCUzipg7i+t0QVtypjuebq5dVOIAKJS3azMSHdG8SPOeM2KcCi0fKO
+         wqvfCprWUQBJfcVT+Leswxvg9k6KV3rWO+v3uCvAlFSNJbzMUOFAsD0WMrBX1F1HUaRe
+         XCEqnS3IWdQ3gWIrvcCNLwsWbNZeJiClLGCKlNYrKlHc61pjD25hP4r7l1vwA358TOCB
+         FH8atbqDDOObKNmiNxTY97cKeLell1AXEDFAbRn7Lkizgj5d3r4gPluH00cpUdxkvoLA
+         UypA==
+X-Gm-Message-State: AOAM530B/thbHLoycgmW+kSE58Kc1+4nRLP2HdDLFMVxBrClcJWm19Vb
+        7A4D3zXZNBK6dDOwG8ulfU3sCV4IkauVJw==
+X-Google-Smtp-Source: ABdhPJz9VCC3PefBm33FrYikAk5yJSpijtIJiHa1jMrpQcN0eALeOoj+FqzHKiLwil2NOY6iXfaG3A==
+X-Received: by 2002:a62:ed0b:0:b029:25c:9ea2:abea with SMTP id u11-20020a62ed0b0000b029025c9ea2abeamr27332089pfh.46.1620191174556;
+        Tue, 04 May 2021 22:06:14 -0700 (PDT)
+Received: from [10.254.93.79] ([139.177.225.238])
+        by smtp.gmail.com with ESMTPSA id k10sm13420308pff.140.2021.05.04.22.06.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 04 May 2021 22:06:14 -0700 (PDT)
+Subject: Re: [Phishing Risk] [External] Re: [PATCH 2/3] cgroup/cpuset:
+ introduce cpuset.mems.migration
+To:     Tejun Heo <tj@kernel.org>, hannes@cmpxchg.org
+Cc:     akpm@linux-foundation.org, lizefan.x@bytedance.com, corbet@lwn.net,
+        cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210426065946.40491-1-wuyun.abel@bytedance.com>
+ <20210426065946.40491-3-wuyun.abel@bytedance.com>
+ <YIgjE6CgU4nDsJiR@slm.duckdns.org>
+From:   Abel Wu <wuyun.abel@bytedance.com>
+Message-ID: <55582805-5103-96c0-d8e8-e6d0b01beff3@bytedance.com>
+Date:   Wed, 5 May 2021 13:06:09 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YIgjE6CgU4nDsJiR@slm.duckdns.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Stephen Rothwell <sfr@canb.auug.org.au> writes:
-> Hi all,
->
-> Today's linux-next merge of the akpm-current tree got a conflict in:
->
->   arch/powerpc/Kconfig
->
-> between commit:
->
->   c6b05f4e233c ("powerpc/kconfig: Restore alphabetic order of the selects under CONFIG_PPC")
->
-> from the powerpc tree and commits:
->
->   fd7d5c273c43 ("mm: generalize HUGETLB_PAGE_SIZE_VARIABLE")
->   301ba77ae03c ("mm: generalize ARCH_ENABLE_MEMORY_[HOTPLUG|HOTREMOVE]")
->
-> from the akpm-current tree.
->
-> I fixed it up (see below) and can carry the fix as necessary. This
-> is now fixed as far as linux-next is concerned, but any non trivial
-> conflicts should be mentioned to your upstream maintainer when your tree
-> is submitted for merging.  You may also want to consider cooperating
-> with the maintainer of the conflicting tree to minimise any particularly
-> complex conflicts.
+ping :)
 
-Urgh, I did check linux-next to see if that patch would conflict but
-didn't think it would conflict *that* badly.
-
-I guess I'll leave it for now, but I can drop it if necessary.
-
-cheers
-
-
-> diff --cc arch/powerpc/Kconfig
-> index ab17a56c3d10,d4333049b813..000000000000
-> --- a/arch/powerpc/Kconfig
-> +++ b/arch/powerpc/Kconfig
-> @@@ -118,11 -118,10 +118,13 @@@ config PP
->   	# Please keep this list sorted alphabetically.
->   	#
->   	select ARCH_32BIT_OFF_T if PPC32
-> + 	select ARCH_ENABLE_MEMORY_HOTPLUG
-> + 	select ARCH_ENABLE_MEMORY_HOTREMOVE
->  +	select ARCH_HAS_COPY_MC			if PPC64
->   	select ARCH_HAS_DEBUG_VIRTUAL
->  +	select ARCH_HAS_DEBUG_VM_PGTABLE
->   	select ARCH_HAS_DEVMEM_IS_ALLOWED
->  +	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC_PSERIES
->   	select ARCH_HAS_ELF_RANDOMIZE
->   	select ARCH_HAS_FORTIFY_SOURCE
->   	select ARCH_HAS_GCOV_PROFILE_ALL
-> @@@ -163,8 -162,9 +165,8 @@@
->   	select BUILDTIME_TABLE_SORT
->   	select CLONE_BACKWARDS
->   	select DCACHE_WORD_ACCESS		if PPC64 && CPU_LITTLE_ENDIAN
-> - 	select DMA_OPS_BYPASS			if PPC64
->   	select DMA_OPS				if PPC64
-> + 	select DMA_OPS_BYPASS			if PPC64
->  -	select ARCH_HAS_DMA_MAP_DIRECT 		if PPC64 && PPC_PSERIES
->   	select DYNAMIC_FTRACE			if FUNCTION_TRACER
->   	select EDAC_ATOMIC_SCRUB
->   	select EDAC_SUPPORT
-> @@@ -182,15 -181,12 +184,15 @@@
->   	select GENERIC_STRNCPY_FROM_USER
->   	select GENERIC_STRNLEN_USER
->   	select GENERIC_TIME_VSYSCALL
->  -	select GENERIC_GETTIMEOFDAY
->  +	select GENERIC_VDSO_TIME_NS
->   	select HAVE_ARCH_AUDITSYSCALL
-> - 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
->  +	select HAVE_ARCH_HUGE_VMALLOC		if HAVE_ARCH_HUGE_VMAP
-> + 	select HAVE_ARCH_HUGE_VMAP		if PPC_BOOK3S_64 && PPC_RADIX_MMU
->   	select HAVE_ARCH_JUMP_LABEL
->  +	select HAVE_ARCH_JUMP_LABEL_RELATIVE
->   	select HAVE_ARCH_KASAN			if PPC32 && PPC_PAGE_SHIFT <= 14
->   	select HAVE_ARCH_KASAN_VMALLOC		if PPC32 && PPC_PAGE_SHIFT <= 14
->  +	select HAVE_ARCH_KFENCE			if PPC32
->   	select HAVE_ARCH_KGDB
->   	select HAVE_ARCH_MMAP_RND_BITS
->   	select HAVE_ARCH_MMAP_RND_COMPAT_BITS	if COMPAT
-> @@@ -231,19 -227,23 +233,20 @@@
->   	select HAVE_LIVEPATCH			if HAVE_DYNAMIC_FTRACE_WITH_REGS
->   	select HAVE_MOD_ARCH_SPECIFIC
->   	select HAVE_NMI				if PERF_EVENTS || (PPC64 && PPC_BOOK3S)
->  -	select HAVE_HARDLOCKUP_DETECTOR_ARCH	if (PPC64 && PPC_BOOK3S)
->  -	select HAVE_OPTPROBES			if PPC64
->  +	select HAVE_OPTPROBES
->   	select HAVE_PERF_EVENTS
->   	select HAVE_PERF_EVENTS_NMI		if PPC64
->  -	select HAVE_HARDLOCKUP_DETECTOR_PERF	if PERF_EVENTS && HAVE_PERF_EVENTS_NMI && !HAVE_HARDLOCKUP_DETECTOR_ARCH
->   	select HAVE_PERF_REGS
->   	select HAVE_PERF_USER_STACK_DUMP
->  -	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
->  -	select MMU_GATHER_RCU_TABLE_FREE
->  -	select MMU_GATHER_PAGE_SIZE
->   	select HAVE_REGS_AND_STACK_ACCESS_API
->  -	select HAVE_RELIABLE_STACKTRACE		if PPC_BOOK3S_64 && CPU_LITTLE_ENDIAN
->  +	select HAVE_RELIABLE_STACKTRACE
->  +	select HAVE_RSEQ
->   	select HAVE_SOFTIRQ_ON_OWN_STACK
->  +	select HAVE_STACKPROTECTOR		if PPC32 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r2)
->  +	select HAVE_STACKPROTECTOR		if PPC64 && $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=r13)
->   	select HAVE_SYSCALL_TRACEPOINTS
->   	select HAVE_VIRT_CPU_ACCOUNTING
->  -	select HAVE_IRQ_TIME_ACCOUNTING
->  -	select HAVE_RSEQ
-> ++	select HUGETLB_PAGE_SIZE_VARIABLE	if PPC_BOOK3S_64 && HUGETLB_PAGE
->   	select IOMMU_HELPER			if PPC64
->   	select IRQ_DOMAIN
->   	select IRQ_FORCED_THREADING
+On 4/27/21 10:43 PM, Tejun Heo wrote:
+> Hello,
+> 
+> On Mon, Apr 26, 2021 at 02:59:45PM +0800, Abel Wu wrote:
+>> When a NUMA node is assigned to numa-service, the workload
+>> on that node needs to be moved away fast and complete. The
+>> main aspects we cared about on the eviction are as follows:
+>>
+>> a) it should complete soon enough so that numa-services
+>>     won’t wait too long to hurt user experience
+>> b) the workloads to be evicted could have massive usage on
+>>     memory, and migrating such amount of memory may lead to
+>>     a sudden severe performance drop lasting tens of seconds
+>>     that some certain workloads may not afford
+>> c) the impact of the eviction should be limited within the
+>>     source and destination nodes
+>> d) cgroup interface is preferred
+>>
+>> So we come to a thought that:
+>>
+>> 1) fire up numa-services without waiting for memory migration
+>> 2) memory migration can be done asynchronously by using spare
+>>     memory bandwidth
+>>
+>> AutoNUMA seems to be a solution, but its scope is global which
+>> violates c&d. And cpuset.memory_migrate performs in a synchronous
+> 
+> I don't think d) in itself is a valid requirement. How does it violate c)?
+> 
+>> fashion which breaks a&b. So a mixture of them, the new cgroup2
+>> interface cpuset.mems.migration, is introduced.
+>>
+>> The new cpuset.mems.migration supports three modes:
+>>
+>>   - "none" mode, meaning migration disabled
+>>   - "sync" mode, which is exactly the same as the cgroup v1
+>>     interface cpuset.memory_migrate
+>>   - "lazy" mode, when walking through all the pages, unlike
+>>     cpuset.memory_migrate, it only sets pages to protnone,
+>>     and numa faults triggered by later touch will handle the
+>>     movement.
+> 
+> cpuset is already involved in NUMA allocation but it always felt like
+> something bolted on - it's weird to have cpu to NUMA node settings at global
+> level and then to have possibly conflicting direct NUMA configuration via
+> cpuset. My preference would be putting as much configuration as possible on
+> the mm / autonuma side and let cpuset's node confinements further restrict
+> their operations rather than cpuset having its own set of policy
+> configurations.
+> 
+> Johannes, what are your thoughts?
+> 
+> Thanks.
+> 
