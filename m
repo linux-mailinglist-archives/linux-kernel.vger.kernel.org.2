@@ -2,137 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56122373696
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E765B37369A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:49:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232136AbhEEItx convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 May 2021 04:49:53 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:34430 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231430AbhEEItt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 04:49:49 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-215-3K92nTLWNMu_AZz6pphPbw-1; Wed, 05 May 2021 09:48:49 +0100
-X-MC-Unique: 3K92nTLWNMu_AZz6pphPbw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 09:48:48 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 5 May 2021 09:48:48 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Josh Poimboeuf' <jpoimboe@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>
-CC:     "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Waiman Long" <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: RE: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Topic: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Index: AQHXQWJqu8vqbxm3x0CYXgd0hdGkc6rUkPgw
-Date:   Wed, 5 May 2021 08:48:48 +0000
-Message-ID: <2f75c496ac774444b75ff808854b8e5f@AcuMS.aculab.com>
-References: <cover.1620186182.git.jpoimboe@redhat.com>
- <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
-In-Reply-To: <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S232184AbhEEIuQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 04:50:16 -0400
+Received: from foss.arm.com ([217.140.110.172]:40612 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231430AbhEEIuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 04:50:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B7F2D6E;
+        Wed,  5 May 2021 01:49:18 -0700 (PDT)
+Received: from bogus (unknown [10.57.61.118])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 74E243F70D;
+        Wed,  5 May 2021 01:49:16 -0700 (PDT)
+Date:   Wed, 5 May 2021 09:49:08 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Sibi Sankar <sibis@codeaurora.org>
+Cc:     bjorn.andersson@linaro.org, viresh.kumar@linaro.org,
+        Sudeep Holla <sudeep.holla@arm.com>, swboyd@chromium.org,
+        agross@kernel.org, robh+dt@kernel.org, rjw@rjwysocki.net,
+        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dianders@chromium.org, mka@chromium.org
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
+Message-ID: <20210505084908.3lynedmblmqagr72@bogus>
+References: <1619792901-32701-1-git-send-email-sibis@codeaurora.org>
+ <1619792901-32701-3-git-send-email-sibis@codeaurora.org>
+ <20210504144215.svmrmmsy4jtoixzv@bogus>
+ <1fc9fb8d9a94909ff9b7b76d598bd266@codeaurora.org>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1fc9fb8d9a94909ff9b7b76d598bd266@codeaurora.org>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Josh Poimboeuf
-> Sent: 05 May 2021 04:55
-> 
-> The x86 uaccess code uses barrier_nospec() in various places to prevent
-> speculative dereferencing of user-controlled pointers (which might be
-> combined with further gadgets or CPU bugs to leak data).
-...
-> Remove existing barrier_nospec() usage, and instead do user pointer
-> masking, throughout the x86 uaccess code.  This is similar to what arm64
-> is already doing with uaccess_mask_ptr().
-...
-> diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-> index fb75657b5e56..ebe9ab46b183 100644
-> --- a/arch/x86/include/asm/uaccess.h
-> +++ b/arch/x86/include/asm/uaccess.h
-> @@ -66,12 +66,35 @@ static inline bool pagefault_disabled(void);
->   * Return: true (nonzero) if the memory block may be valid, false (zero)
->   * if it is definitely invalid.
->   */
-> -#define access_ok(addr, size)					\
-> +#define access_ok(addr, size)						\
->  ({									\
->  	WARN_ON_IN_IRQ();						\
->  	likely(!__range_not_ok(addr, size, TASK_SIZE_MAX));		\
->  })
-> 
-> +/*
-> + * Sanitize a user pointer such that it becomes NULL if it's not a valid user
-> + * pointer.  This prevents speculatively dereferencing a user-controlled
-> + * pointer to kernel space if access_ok() speculatively returns true.  This
-> + * should be done *after* access_ok(), to avoid affecting error handling
-> + * behavior.
-> + */
-> +#define mask_user_ptr(ptr)						\
-> +({									\
-> +	unsigned long _ptr = (__force unsigned long)ptr;		\
-> +	unsigned long mask;						\
-> +									\
-> +	asm volatile("cmp %[max], %[_ptr]\n\t"				\
-> +		     "sbb %[mask], %[mask]\n\t"				\
-> +		     : [mask] "=r" (mask)				\
-> +		     : [_ptr] "r" (_ptr),				\
-> +		       [max] "r" (TASK_SIZE_MAX)			\
-> +		     : "cc");						\
-> +									\
-> +	mask &= _ptr;							\
-> +	((typeof(ptr)) mask);						\
-> +})
-> +
+Hi Sibi,
 
-access_ok() and mask_user_ptr() are doing much the same check.
-Is there scope for making access_ok() return the masked pointer?
+On Tue, May 04, 2021 at 11:55:10PM +0530, Sibi Sankar wrote:
+> Hey Sudeep,
+>
+> Thanks for the review!
+>
+> On 2021-05-04 20:12, Sudeep Holla wrote:
 
-So the canonical calling code would be:
-	uptr = access_ok(uptr, size);
-	if (!uptr)
-		return -EFAULT;
+[...]
 
-This would error requests for address 0 earlier - but I don't
-believe they are ever valid in Linux.
-(Some historic x86 a.out formats did load to address 0.)
+> >
+> > NACK, this breaks if there is a mismatch from what is read from the
+> > hardware and what is presented in this table above. Either add it from the
+> > some bootloader or other boot code to this table reading from the
+> > hardware/firmware or find a way to link them without this.
+> >
+> > Sorry I had warned long back about this when such links were discussed
+> > as part of interconnect binding.
+>
+> Not sure why this warrants a NACK, as this was consensus for mapping cpu
+> freq to DDR/L3 bandwidth votes. (We use the same solution on SDM845 and
+> SC7180). The opp tables are optional and when specified puts in votes for
+> DDR/L3. In the future the table can be safely dropped when more useful
+> devfreq governors are upstreamed.
+> cpufreq: qcom: Don't add frequencies without an OPP
 
-Clearly for a follow up patch.
+(You can always add commit sha to make it easy to search)
 
-	David
+But I am not sure how this is related to the above commit anyways.
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+>
+> I guess your main concern for breakage is ^^ commit? The original design is
+> to list a super set of frequencies supported by all variants of the SoC
+> along with the required DDR/L3 bandwidth values. When we run into
+> non-documented frequency we just wouldn't put in bw votes for it which
+> should be fine since the entire opp_table is optional. If this is the reason
+> for the NACK I can try get it reverted with Matthias's ack.
 
+No my main concern is this platform uses "qcom-cpufreq-hw" driver and the
+fact that the OPPs are retrieved from the hardware lookup table invalidates
+whatever we have in DT. In short it will be junk and becomes obsolete.
+So what I suggested before is still valid. You simply can't have static
+OPP tables in the DT for this platform. Do get some boot code to fetch the
+same from the h/w LUT and patch to the DT or figure out any other way to
+manage dynamically.
+
+So NACK still stands for static addition of OPPs to the DT as in this patch.
+
+--
+Regards,
+Sudeep
