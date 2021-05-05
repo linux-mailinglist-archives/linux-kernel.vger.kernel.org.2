@@ -2,37 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E49A9373ABB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F9DA373AA5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232605AbhEEMNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:13:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50558 "EHLO mail.kernel.org"
+        id S233417AbhEEMMK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:12:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49958 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233763AbhEEMJ3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:09:29 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A1240613FB;
-        Wed,  5 May 2021 12:08:12 +0000 (UTC)
+        id S232450AbhEEMJx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:09:53 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id ED89161222;
+        Wed,  5 May 2021 12:08:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216493;
-        bh=w+ksNPRAa0KVoiUtvaDFov4RY9DMF4suTFHZxsLavNA=;
+        s=korg; t=1620216519;
+        bh=Vv89GRzN62drXvs6Is1v6/nS/XkpaahPEDshAg3+LE0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zseHCLYpl3vfN73Ve7mHMq7HVEAE5JgK083pzPEiX/JjShSmM38mfQdFkueRbJmPH
-         lmUVNHo+LE2aNhnOGPjimRxsBFuE6HVDb4qKL4jtfIyjiFQWtLgs1xjSz3xNLN1U/9
-         dX8taAwD3Wyp/pcPJ6yzj1a+TND8T6bYzdGmB74k=
+        b=bs0r6j87YPcDW2TCHNt+DOMtrC0mmXN4LVwiXuRIRJI/98QR6XxIhi3A309/qVM4I
+         MLoSEnZPGE1lor7J9TtTeXap3bk7o0B79+X80YcwbwLlEbUrHxGgsdmaZtwIj8ZYrv
+         WZxv6Aag1rGROIWo5AHfKyGO7798CPf8be3G3I5o=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
-        Piotr Krysiuk <piotras@gmail.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Alexei Starovoitov <ast@kernel.org>
-Subject: [PATCH 5.12 05/17] bpf: Fix masking negation logic upon negative dst register
-Date:   Wed,  5 May 2021 14:06:00 +0200
-Message-Id: <20210505112325.126024016@linuxfoundation.org>
+        stable@vger.kernel.org, Vasily Averin <vvs@virtuozzo.com>,
+        Roman Gushchin <guro@fb.com>, Michal Hocko <mhocko@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 5.11 12/31] tools/cgroup/slabinfo.py: updated to work on current kernel
+Date:   Wed,  5 May 2021 14:06:01 +0200
+Message-Id: <20210505112327.066567599@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210505112324.956720416@linuxfoundation.org>
-References: <20210505112324.956720416@linuxfoundation.org>
+In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
+References: <20210505112326.672439569@linuxfoundation.org>
 User-Agent: quilt/0.66
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -41,50 +42,71 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Daniel Borkmann <daniel@iogearbox.net>
+From: Vasily Averin <vvs@virtuozzo.com>
 
-commit b9b34ddbe2076ade359cd5ce7537d5ed019e9807 upstream.
+[ Upstream commit 1974c45dd7745e999b9387be3d8fdcb27a5b1721 ]
 
-The negation logic for the case where the off_reg is sitting in the
-dst register is not correct given then we cannot just invert the add
-to a sub or vice versa. As a fix, perform the final bitwise and-op
-unconditionally into AX from the off_reg, then move the pointer from
-the src to dst and finally use AX as the source for the original
-pointer arithmetic operation such that the inversion yields a correct
-result. The single non-AX mov in between is possible given constant
-blinding is retaining it as it's not an immediate based operation.
+slabinfo.py script does not work with actual kernel version.
 
-Fixes: 979d63d50c0c ("bpf: prevent out of bounds speculation on pointer arithmetic")
-Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
-Tested-by: Piotr Krysiuk <piotras@gmail.com>
-Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
-Reviewed-by: John Fastabend <john.fastabend@gmail.com>
-Acked-by: Alexei Starovoitov <ast@kernel.org>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+First, it was unable to recognise SLUB susbsytem, and when I specified
+it manually it failed again with
+
+  AttributeError: 'struct page' has no member 'obj_cgroups'
+
+.. and then again with
+
+  File "tools/cgroup/memcg_slabinfo.py", line 221, in main
+    memcg.kmem_caches.address_of_(),
+  AttributeError: 'struct mem_cgroup' has no member 'kmem_caches'
+
+Link: https://lkml.kernel.org/r/cec1a75e-43b4-3d64-2084-d9f98fda037f@virtuozzo.com
+Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+Tested-by: Roman Gushchin <guro@fb.com>
+Acked-by: Roman Gushchin <guro@fb.com>
+Cc: Michal Hocko <mhocko@kernel.org>
+Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c |   12 ++++--------
- 1 file changed, 4 insertions(+), 8 deletions(-)
+ tools/cgroup/memcg_slabinfo.py | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -11760,14 +11760,10 @@ static int fixup_bpf_calls(struct bpf_ve
- 			*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
- 			*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
- 			*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
--			if (issrc) {
--				*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX,
--							 off_reg);
--				insn->src_reg = BPF_REG_AX;
--			} else {
--				*patch++ = BPF_ALU64_REG(BPF_AND, off_reg,
--							 BPF_REG_AX);
--			}
-+			*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
-+			if (!issrc)
-+				*patch++ = BPF_MOV64_REG(insn->dst_reg, insn->src_reg);
-+			insn->src_reg = BPF_REG_AX;
- 			if (isneg)
- 				insn->code = insn->code == code_add ?
- 					     code_sub : code_add;
+diff --git a/tools/cgroup/memcg_slabinfo.py b/tools/cgroup/memcg_slabinfo.py
+index c4225ed63565..1600b17dbb8a 100644
+--- a/tools/cgroup/memcg_slabinfo.py
++++ b/tools/cgroup/memcg_slabinfo.py
+@@ -128,9 +128,9 @@ def detect_kernel_config():
+ 
+     cfg['nr_nodes'] = prog['nr_online_nodes'].value_()
+ 
+-    if prog.type('struct kmem_cache').members[1][1] == 'flags':
++    if prog.type('struct kmem_cache').members[1].name == 'flags':
+         cfg['allocator'] = 'SLUB'
+-    elif prog.type('struct kmem_cache').members[1][1] == 'batchcount':
++    elif prog.type('struct kmem_cache').members[1].name == 'batchcount':
+         cfg['allocator'] = 'SLAB'
+     else:
+         err('Can\'t determine the slab allocator')
+@@ -193,7 +193,7 @@ def main():
+         # look over all slab pages, belonging to non-root memcgs
+         # and look for objects belonging to the given memory cgroup
+         for page in for_each_slab_page(prog):
+-            objcg_vec_raw = page.obj_cgroups.value_()
++            objcg_vec_raw = page.memcg_data.value_()
+             if objcg_vec_raw == 0:
+                 continue
+             cache = page.slab_cache
+@@ -202,7 +202,7 @@ def main():
+             addr = cache.value_()
+             caches[addr] = cache
+             # clear the lowest bit to get the true obj_cgroups
+-            objcg_vec = Object(prog, page.obj_cgroups.type_,
++            objcg_vec = Object(prog, 'struct obj_cgroup **',
+                                value=objcg_vec_raw & ~1)
+ 
+             if addr not in stats:
+-- 
+2.30.2
+
 
 
