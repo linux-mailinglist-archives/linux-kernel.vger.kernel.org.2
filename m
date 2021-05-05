@@ -2,133 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D8BB373F00
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:53:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB5ED373F05
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:54:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbhEEPyT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:54:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33446 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229797AbhEEPyR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:54:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D0D36102A;
-        Wed,  5 May 2021 15:53:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620230000;
-        bh=1IqzisQrKCry3zuhlGVA9DAmUDQ6Lmyb/6eDqrrSd5A=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Dx4Vx3IS7EQcYaI8hG4qSa186pMuWLX3Zz+TG0xQGg+LusDjgZX4XbZFoucHcH6NW
-         /c9qZlJdrYfBnLVLOpkSHXENA7+mGKZrB9BEXTMfY8/n9pLgfuJBIApNulxwvN2aOr
-         JR1X0dcND9r4Pja/BEeQ8ETM6ONpPq3jF1ZHr0X0=
-Date:   Wed, 5 May 2021 17:53:18 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Paul Menzel <pmenzel@molgen.mpg.de>, linux-usb@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-pci@vger.kernel.org
-Subject: Re: `quirk_usb_handoff_xhci` takes 60 ms with ASM1042
-Message-ID: <YJK/bkJpCC+INPo3@kroah.com>
-References: <YJKQPJU/KhRx8vuy@kroah.com>
- <20210505154741.GA1304534@bjorn-Precision-5520>
+        id S233672AbhEEPzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:55:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57304 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233594AbhEEPzT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 11:55:19 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 483F7C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 08:54:23 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id 76so1937324qkn.13
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:54:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sT5gh+1EXZtOxYM3WBIR7U/7xjEHkvX592kGUagqFYc=;
+        b=aRbgNk1AAtCgn3aq1pldMwpcsbLLO0vsA9yDCYjTSKGDjhuIZGtGBhKlW5hu2kUzU2
+         VyxCj0mryiV8DsfB5b12qFz7DnauvSNwG5QkejFlCxMOzJcV9Og+67chd5p/plYHT+Z+
+         mL6Yh1T/OFD98MRBkPTueajHVg9CJBxWMeMSM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sT5gh+1EXZtOxYM3WBIR7U/7xjEHkvX592kGUagqFYc=;
+        b=mIAFm5lJlnBUiXGkn512UkLRIbXdK2d1HTHrCCHmUoOlufTKP3MqkZRYvshgZht9aK
+         bFuOSxaRjFTbDCAIx1MavJhY96MktmiGHGrvtVctM6wXI3B+oK2ffi98GnUGaPcHZF7r
+         7Nz0qkjUti+AF1iR8unDnT/jIoCDU7FPeRksmZFxSMIzK8879kSQAgk5fJZ9oDqQQgCu
+         7vx1+hSrWFVRfLcxyyeYkPD1eSXw/B2Q6WW1yBH/sJauwi4geu7fygsV1fESX1CeA+50
+         htCvzLKB33JHbiWbm+ncjmFUIXsPKwinYT1NjNx+shOjfTCXK46SmXWWsnOtQfDkavfa
+         ZyHw==
+X-Gm-Message-State: AOAM5301KA/BHeArS0S4hIMlt6LPwYqeYUSRpFv/LQ38kFLxfXM9p7Bq
+        MzpdI50sTBfWVvHAv+zx4fPITA==
+X-Google-Smtp-Source: ABdhPJya3vgRQ++iqwOA71h8RVcWf478k1iK9HmfiaeS+ST9LB9GXXDX5dCIG8VVdfCIZL4c5M4X7w==
+X-Received: by 2002:a05:620a:15ca:: with SMTP id o10mr2987351qkm.448.1620230062521;
+        Wed, 05 May 2021 08:54:22 -0700 (PDT)
+Received: from [192.168.151.33] (50-232-25-43-static.hfc.comcastbusiness.net. [50.232.25.43])
+        by smtp.gmail.com with ESMTPSA id k126sm7664937qkb.30.2021.05.05.08.54.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 08:54:22 -0700 (PDT)
+Subject: Re: [PATCH v2] media: em28xx: Fix possible memory leak of em28xx
+ struct
+To:     Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        mchehab@kernel.org, hverkuil-cisco@xs4all.nl
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210504183249.6307-1-igormtorrente@gmail.com>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <21f59c86-f1ae-5913-cde9-078fe4f6f752@linuxfoundation.org>
+Date:   Wed, 5 May 2021 11:54:20 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210505154741.GA1304534@bjorn-Precision-5520>
+In-Reply-To: <20210504183249.6307-1-igormtorrente@gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 10:47:41AM -0500, Bjorn Helgaas wrote:
-> On Wed, May 05, 2021 at 02:31:56PM +0200, Greg Kroah-Hartman wrote:
-> > On Wed, May 05, 2021 at 02:15:26PM +0200, Paul Menzel wrote:
-> > > Am 05.05.21 um 10:33 schrieb Greg Kroah-Hartman:
-> > > > On Wed, May 05, 2021 at 10:27:52AM +0200, Paul Menzel wrote:
-> > > > > Am 05.05.21 um 10:11 schrieb Greg Kroah-Hartman:
+On 5/4/21 2:32 PM, Igor Matheus Andrade Torrente wrote:
+> The em28xx struct kref isn't being decreased after an error in the
+> em28xx_ir_init, leading to a possible memory leak.
 > 
-> > > > > > If the driver is built as a module, there should not be any "hot
-> > > > > > path" here as the module is loaded async when the device is
-> > > > > > discovered, right?
-> > > > >      obj-$(CONFIG_USB_PCI)   += pci-quirks.o
-> > > > > 
-> > > > > So all quirks are run independently of the USB “variant”
-> > > > > (UHCI, OHCI, EHCI, xHCI).
-> > > > > 
-> > > > > Indeed, this driver is built into the Linux kernel.
-> > > > > 
-> > > > >      $ grep USB_PCI .config
-> > > > >      CONFIG_USB_PCI=y
-> > > > > 
-> > > > > So, should `pci-quirks.c` be split up to have more fine
-> > > > > grained control?
-> > > > 
-> > > > What control do you need here?
-> > > 
-> > > Good question, as I do not know the USB spec. I’d say, disabling certain
-> > > quirks, or just run them, when the actual driver is loaded.
-> > 
-> > This is not a "quirk", it is part of how USB works.
+> A kref_put and em28xx_shutdown_buttons is added to the error handler code.
 > 
-> I agree, this doesn't look like a "quirk" in the sense of working
-> around a hardware defect; the handoff is just a normal part of
-> operating the device.  But can you elaborate on why it must be done
-> this way?
-> 
-> I'm looking at the xHCI r1.2 spec, sec 4.22.1.  It talks about the
-> handoff synchronization process and says the OS driver shall use the
-> defined protocol to request ownership before it uses the device.  But
-> AFAICT there's no specific "early-startup" requirement.
-> 
-> quirk_usb_handoff_xhci() is in drivers/usb/host/pci-quirks.c, which is
-> always built statically and the quirk runs during device enumeration,
-> even if the xhcd driver itself is a module.  It looks like we run the
-> quirk even if we never load the xhcd driver.
-> 
-> Why can't we just do the handoff in the xhcd driver probe?
+> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+> ---
 
-I think, if we don't do the handoff, then the BIOS/firmware tries to
-send the OS fake keyboard/mouse commands, and Linux isn't ready for that
-as we didn't allow hotplug PS/2 stuff.  But I could be wrong, it's been
-a long time since we did that logic.
+Hi Igor,
 
-Someone could try to change this and see :)
+Please look at Hans's response and comments to your v1 patch. v4l core
+addresses the lifetime issues now and this driver could be updated to
+use them instead if fixing the problems in this driver's resource
+lifetime mgmt code.
 
-> > > > Try changing your BIOS settings to not have "legacy" USB support
-> > > > in it, that could cause this transition to go faster, at the
-> > > > expense of not being able to use a USB device before Linux
-> > > > boots.
-> > > 
-> > > The firmware of the Asus F2A85-M PRO allows to disable *legacy*
-> > > USB support for only the ASMedia ASM1042. And, thank you for the
-> > > suggestion, it helped.  `quirk_usb_early_handoff()` does not show
-> > > up in the logs now, meaning it’s below 50 ms. And it is well
-> > > below: less than one millisecond.
-> > > 
-> > >     [    0.308343] pci 0000:00:15.1: PCI->APIC IRQ transform: INT A -> IRQ
-> > > 16
-> > >     [    0.308359] pci 0000:03:00.0: PCI->APIC IRQ transform: INT A -> IRQ
-> > > 17
-> > >     [    0.308376] pci 0000:03:00.0: hc_init reached
-> > >     [    0.308380] pci 0000:03:00.0: second handshake done
-> > >     [    0.308384] pci 0000:03:00.0: third handshake done
-> > >     [    0.308395] PCI: CLS 64 bytes, default 64
-> > >     […]
-> > >     [    0.401722] Run /lib/systemd/systemd as init process
-> > 
-> > Nice!
-> > 
-> > Go blame your bios vendor now :)
-> 
-> So the answer is "to make Linux boot faster, flip this BIOS switch
-> which means your USB devices no longer work while in BIOS"?
-> 
-> I can see why this helps (BIOS never claims the xHCI, so OS can
-> immediately claim ownership), but it seems like a sub-optimal user
-> experience.
-
-Welcome to UEFI :)
+Please follow his review comments to address the issue based on his 
+suggestions.
 
 thanks,
-
-greg k-h
+-- Shuah
