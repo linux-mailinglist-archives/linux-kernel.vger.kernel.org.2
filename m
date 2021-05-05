@@ -2,173 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74FAE374880
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:11:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D96E374885
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:14:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235356AbhEETMi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 15:12:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235192AbhEETMf (ORCPT
+        id S235310AbhEETPD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 15:15:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:23593 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234254AbhEETPB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 15:12:35 -0400
-Received: from mail-il1-x131.google.com (mail-il1-x131.google.com [IPv6:2607:f8b0:4864:20::131])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D48D2C061761;
-        Wed,  5 May 2021 12:11:37 -0700 (PDT)
-Received: by mail-il1-x131.google.com with SMTP id y10so2719820ilv.0;
-        Wed, 05 May 2021 12:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=vZeEXRCd24seoFH7GRFkufDJ4YkQs9v5c3UPLyEGxAo=;
-        b=HMyA15emhA9kvzs6t5n2eHmMr7C1OdaGSA5Am2dCKb8XBeoCB4gi7wkd4d1I+uuWRT
-         lluqGqRc9LJK6nxZNnO8k38P//gAS3PgSSf+SCXyY3+0MraX07A3l3vHx4mOE1qHFz++
-         MLSS4sBgB2fm968szDXV2LvEQxmBVF3nzFbtNA5x8E7Fwoyzui0VPcSACLe+DEVtk61R
-         9HltsY8TzPA61MaelYYORYOYevFJvQpe80wxn07YFXYyh7JX/sC+xt6cIsYSLYd0DtPK
-         VcvxsBCi/E/u/7beL7n0QWrQ+Ns+rqMRKihpj1Bpbiy8yNRVr2oDeZ8h7sC8P6ZtYyvB
-         s5fA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=vZeEXRCd24seoFH7GRFkufDJ4YkQs9v5c3UPLyEGxAo=;
-        b=ZAD0UfNVdLKApiCCMB3ComV0lWBj+gv7M8yPCy6OS/Zpi3ZvBTLnbBwnGcRrV6Q9Pk
-         MDMG8v8aYBpeFIp+pPdLEsVxX0134mpP/WbfgnOWEQhhyKMLLHZ1EbwKhFOqQUsah0c4
-         mCLUhCYLfAbK1NYGxe7+F0dJIh7ZLtPAnEkr36Q5hHLKtjHMgTXBan4NhCorRwqKqV1+
-         JR31VMonibLYrqCuxdO4e5/7cKug43Sj2WYMDObs7U4XWtRhjx8rZBgYs24144Wl8bLe
-         BykmiOQZjb8Jx3QpOLTNYG3C7l+eW60UiNI7pR2DQ7HK051fDs2sX9xX2Fc8U8tlaMSl
-         ArWQ==
-X-Gm-Message-State: AOAM530A4i09sFqEQg0VluZ3tHmYU9e/ffac4UC36xkp2ZoJ41U+baYw
-        nQE2rRiMCXnVttb7/DtNX6Y=
-X-Google-Smtp-Source: ABdhPJyQhdUZ1ymtZ1XredlqSqWvf2hevJrzKx8j9JQpzkIUnde16I8WrwmXDbM+tTvXyYoNbz/+zQ==
-X-Received: by 2002:a92:d242:: with SMTP id v2mr422947ilg.135.1620241897076;
-        Wed, 05 May 2021 12:11:37 -0700 (PDT)
-Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:c971:6623:b9e9:f40d])
-        by smtp.gmail.com with ESMTPSA id q11sm140037ile.56.2021.05.05.12.11.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 12:11:36 -0700 (PDT)
-From:   Adam Ford <aford173@gmail.com>
-To:     linux-arm-kernel@lists.infradead.org
-Cc:     aford@beaconembedded.com, Adam Ford <aford173@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] arm64: dts: imx8mn-beacon: Enable more audio
-Date:   Wed,  5 May 2021 14:11:25 -0500
-Message-Id: <20210505191126.1239309-2-aford173@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210505191126.1239309-1-aford173@gmail.com>
-References: <20210505191126.1239309-1-aford173@gmail.com>
+        Wed, 5 May 2021 15:15:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620242044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WND2CpV8+IQjtov7jcu3oVwlqYfsz1FWGhFOziU4Cww=;
+        b=htY0QkklcpPtcEsO/Tv0xvo5uB+G3wFcNP+oHpf3lZtVnwsvbPpeP8hWKlGoMRrX/efL+w
+        S/Z0oIZ8nWKVFHJsP50gqRvinPiPSRR30fvNCMoj43OuS2/7rOfof2rfYJje9VQfNMVjyZ
+        m7z9Lq/4QMBhahg2uI3OEun3dHHArig=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-229-eSptlj6_MlqCGhcOGIPW3A-1; Wed, 05 May 2021 15:14:00 -0400
+X-MC-Unique: eSptlj6_MlqCGhcOGIPW3A-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 509936D58A;
+        Wed,  5 May 2021 19:13:58 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E15B25D6AC;
+        Wed,  5 May 2021 19:13:57 +0000 (UTC)
+Date:   Wed, 5 May 2021 13:13:57 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     Amey Narkhede <ameynarkhede03@gmail.com>
+Cc:     Oliver O'Halloran <oohall@gmail.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sinan Kaya <okaya@kernel.org>, Vikram Sethi <vsethi@nvidia.com>
+Subject: Re: [PATCH v4 2/2] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
+Message-ID: <20210505131357.07e55042@redhat.com>
+In-Reply-To: <20210505174032.sursnpwkfrc5qji2@archlinux>
+References: <478efe56-fb64-6987-f64c-f3d930a3b330@nvidia.com>
+        <20210505021236.GA1244944@bjorn-Precision-5520>
+        <CAOSf1CFACC5V1OdA9i9APipTUE3GmXu487vt-btXWk5rP97UAQ@mail.gmail.com>
+        <20210505174032.sursnpwkfrc5qji2@archlinux>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are audio ports for SPDIF and MICFIL on the baseboard.
-Enable them.
+On Wed, 5 May 2021 23:10:32 +0530
+Amey Narkhede <ameynarkhede03@gmail.com> wrote:
 
-Signed-off-by: Adam Ford <aford173@gmail.com>
+> On 21/05/05 01:56PM, Oliver O'Halloran wrote:
+> > On Wed, May 5, 2021 at 12:50 PM Bjorn Helgaas <helgaas@kernel.org> wrote:  
+> > >
+> > > On Mon, May 03, 2021 at 09:07:11PM -0500, Shanker R Donthineni wrote:  
+> > > > On 5/3/21 5:42 PM, Bjorn Helgaas wrote:  
+> > > > > Obviously _RST only works for built-in devices, since there's no AML
+> > > > > for plug-in devices, right?  So if there's a plug-in card with this
+> > > > > GPU, neither SBR nor _RST will work?  
+> > > > These are not plug-in PCIe GPU cards, will exist on upcoming server
+> > > > baseboards. ACPI-reset should wok for plug-in devices as well as long
+> > > > as firmware has _RST method defined in ACPI-device associated with
+> > > > the PCIe hot-plug slot.  
+> > >
+> > > Maybe I'm missing something, but I don't see how _RST can work for
+> > > plug-in devices.  _RST is part of the system firmware, and that
+> > > firmware knows nothing about what will be plugged into the slot.  So
+> > > if system firmware supplies _RST that knows how to reset the Nvidia
+> > > GPU, it's not going to do the right thing if you plug in an NVMe
+> > > device instead.
+> > >
+> > > Can you elaborate on how _RST would work for plug-in devices?  
 
-diff --git a/arch/arm64/boot/dts/freescale/imx8mn-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mn-beacon-baseboard.dtsi
-index 376ca8ff7213..cc31f2c5b4bf 100644
---- a/arch/arm64/boot/dts/freescale/imx8mn-beacon-baseboard.dtsi
-+++ b/arch/arm64/boot/dts/freescale/imx8mn-beacon-baseboard.dtsi
-@@ -76,6 +76,20 @@ sound {
- 			"AMIC", "MICBIAS",
- 			"IN3R", "AMIC";
- 	};
-+
-+	sound-micfil {
-+		compatible = "fsl,imx-audio-micfil";
-+		model = "imx-audio-micfil";
-+		cpu-dai = <&micfil>;
-+	};
-+
-+	sound-spdif {
-+		compatible = "fsl,imx-audio-spdif";
-+		model = "imx-spdif";
-+		spdif-controller = <&spdif1>;
-+		spdif-out;
-+		spdif-in;
-+	};
- };
- 
- &ecspi2 {
-@@ -151,6 +165,15 @@ &easrc {
- 	status = "okay";
- };
- 
-+&micfil {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_micfil>;
-+	assigned-clocks = <&clk IMX8MN_CLK_PDM>;
-+	assigned-clock-parents = <&clk IMX8MN_AUDIO_PLL1_OUT>;
-+	assigned-clock-rates = <196608000>;
-+	status = "okay";
-+};
-+
- &sai3 {
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_sai3>;
-@@ -165,6 +188,23 @@ &snvs_pwrkey {
- 	status = "okay";
- };
- 
-+&spdif1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pinctrl_spdif1>;
-+	assigned-clocks = <&clk IMX8MN_CLK_SPDIF1>;
-+	assigned-clock-parents = <&clk IMX8MN_AUDIO_PLL1_OUT>;
-+	assigned-clock-rates = <24576000>;
-+	clocks = <&clk IMX8MN_CLK_AUDIO_AHB>, <&clk IMX8MN_CLK_24M>,
-+		<&clk IMX8MN_CLK_SPDIF1>, <&clk IMX8MN_CLK_DUMMY>,
-+		<&clk IMX8MN_CLK_DUMMY>, <&clk IMX8MN_CLK_DUMMY>,
-+		<&clk IMX8MN_CLK_AUDIO_AHB>, <&clk IMX8MN_CLK_DUMMY>,
-+		<&clk IMX8MN_CLK_DUMMY>, <&clk IMX8MN_CLK_DUMMY>,
-+		<&clk IMX8MN_AUDIO_PLL1_OUT>, <&clk IMX8MN_AUDIO_PLL2_OUT>;
-+	clock-names = "core", "rxtx0", "rxtx1", "rxtx2", "rxtx3",
-+		"rxtx4", "rxtx5", "rxtx6", "rxtx7", "spba", "pll8k", "pll11k";
-+	status = "okay";
-+};
-+
- &uart2 { /* console */
- 	pinctrl-names = "default";
- 	pinctrl-0 = <&pinctrl_uart2>;
-@@ -226,6 +266,13 @@ MX8MN_IOMUXC_SAI3_RXFS_GPIO4_IO28	0x41
- 		>;
- 	};
- 
-+	pinctrl_micfil: micfilgrp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SAI5_RXC_PDM_CLK		0xd6
-+			MX8MN_IOMUXC_SAI5_RXD0_PDM_BIT_STREAM0	0xd6
-+		>;
-+	};
-+
- 	pinctrl_pcal6414: pcal6414-gpiogrp {
- 		fsl,pins = <
- 			MX8MN_IOMUXC_SAI2_MCLK_GPIO4_IO27		0x19
-@@ -248,6 +295,14 @@ MX8MN_IOMUXC_SAI3_RXD_SAI3_RX_DATA0	0xd6
- 		>;
- 	};
- 
-+	pinctrl_spdif1: spdif1grp {
-+		fsl,pins = <
-+			MX8MN_IOMUXC_SPDIF_TX_SPDIF1_OUT	0xd6
-+			MX8MN_IOMUXC_SPDIF_RX_SPDIF1_IN		0xd6
-+			MX8MN_IOMUXC_SPDIF_EXT_CLK_SPDIF1_EXT_CLK	0xd6
-+		>;
-+	};
-+
- 	pinctrl_uart2: uart2grp {
- 		fsl,pins = <
- 			MX8MN_IOMUXC_UART2_RXD_UART2_DCE_RX	0x140
--- 
-2.25.1
+I'm not sure I really understand these concerns about plug-in devices.
+In this case I believe we're dealing with an embedded GPU, there is no
+case where one of these GPUs would be a discrete device on a plug-in
+card.  I'm also assuming all SoCs integrating this GPU will provide a
+_RST method, but we're also disabling SBR in this series to avoid the
+only other generic reset option we'd have for this device.
+
+In the more general case, I'd expect that system firmware isn't going
+to implement an _RST method for a pluggable slot, so we'll lookup the
+ACPI handle, fail to find a _RST method and drop to the next option.
+For a PCI/e slot, at best the _RST method might be included in the _PRR
+scope rather than the device scope to indicate it affects the entire
+slot.  That could be something like the #PERST below or a warm reset.  I
+don't think we're enabling that here, are we?
+
+Otherwise system firmware would need to dynamically provide a _RST
+method if it recognized and had support for the plugin card.
+
+> > Power cycling the slot or just re-asserting #PERST probably. IBM has
+> > been doing that on Power boxes since forever and it mostly works.
+> > Mostly.  
+> According to ACPI spec v6.3 section 7.3.25, _RST just performs normal
+> FLR in most cases but if the device supports _PRR(Power Resource for Reset)
+> then reset operation causes the device to be reported as missing from the bus
+> that indicates that it affects all the devices on the bus.
+
+We're only looking for _RST on the device handle, so I think we're
+limited to the device context limitations.  Per the referenced section:
+
+7.3.25 _RST (Device Reset)
+
+  This object executes a reset on the associated device or devices. If
+                                                                    ^^
+  included in a device context, the reset must not affect any other
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  ACPI-described devices; if included in a power resource for reset
+  ^^^^^^^^^^^^^^^^^^^^^^
+  (_PRR, Section 7.3.26) the reset must affect all ACPI-described
+  devices that reference it.
+
+  When this object is described in a device context, it executes a
+  function level reset that only affects the device it is associated
+  with; neither parent nor children should be affected by the execution
+  of this reset. Executing this must only result in this device
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  resetting without the device appearing as if it has been removed from
+  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  the bus altogether, to prevent OSPM re-enumeration of devices on
+  ^^^^^^^^^^^^^^^^^^
+  hot-pluggable buses (e.g. USB).
+
+  If a device reset is supported by the platform, but cannot meet the
+  function level and bus requirement, the device should instead
+  implement a _PRR (Section 7.3.26).
+
+  Devices can define both a _RST and a _PRR if supported by the
+  hardware.
+
+  Arguments: Non
+
+  Return Value: None
+
+
+It's a bit unfortunate that they use the phrase "function level reset",
+but since this method is not specific to a PCI device, I think this
+could just as easily be replaced with "individual device scope reset".
+The implementation of that could be an PCI FLR, or any number of device
+or platform specific operations.  To me this reads like a system
+firmware provided, device specific reset.  Thanks,
+
+Alex
 
