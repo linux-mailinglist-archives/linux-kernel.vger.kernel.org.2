@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93999374478
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:48:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4CFB374428
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:47:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235467AbhEEQ5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:57:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50342 "EHLO mail.kernel.org"
+        id S236025AbhEEQzk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:55:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50828 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236123AbhEEQrj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:47:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6DE3161439;
-        Wed,  5 May 2021 16:36:54 +0000 (UTC)
+        id S236155AbhEEQrk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:47:40 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BA73061934;
+        Wed,  5 May 2021 16:36:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232615;
-        bh=zD/XlO3nFglcr4ayUhe59PHYI1gbpAn+M8Dg02aSF6A=;
+        s=k20201202; t=1620232616;
+        bh=GTG8bbh8V6Po43xFaE8EyHLkS4c8grvCURbwrR39XoI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=P6r/wGQnjvI9sFgmcitjtsrf6j8Cz69l+WZCIsMfbGUSNUwu49c/FtNuGzHriR7ri
-         +KO/UHP2yp8+If9s3T1pvzVT+xQv/ckhOFTeI2GAO18qnfPNsbF/TjAeJq7i67IpuY
-         sL1rmycC1iWPyeDnCaGquoQkT97rNn1HhsUhp0UxvRKY4Nf93ztNElwREVYzlJxLXw
-         FHGJWEtDOBwvHW10tkqxfRJN2znP41iJ143OqlBuFGOf3+21LhVJlRdujaiaDnkgrw
-         DaAs61BHy9BChXwnuqwg//x78/817JNmP57ZI5paB+uoAqfXaZliCl15x/0vAshsLc
-         /kemQ3bZnto1A==
+        b=U0/8bcudKM2m02FT+R5hdLHj6CCHwaaFclj/EyYuizVy9wW534WrVJmhbohaafzmi
+         KyAPkbVd/8qGaa3EPQ2PAyi5IOTi85uwLpyZolklE/lruIEw9+aL9jh9rgga5FjKLY
+         wGTudXcM/lCpiBupNHfaMih8XxzLnn/EqM/rQZFiEpdHFtGiXx9eDqT2hYh1Zu7aN/
+         YR23kX/GR9jo2ueAoM0bTyzXglgqNBEotCQ8BS0pxnbapWXT3SJwExm44dJO/DU/om
+         9DMcLyGjS1iWRpdJ9qjjaAzCRY4h6nSxTakLXF67ycMjMor/6uXj4QufRTHikLywuC
+         snL8PCERL4GGg==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
 Cc:     Alexander Aring <aahringo@redhat.com>,
         David Teigland <teigland@redhat.com>,
         Sasha Levin <sashal@kernel.org>, cluster-devel@redhat.com
-Subject: [PATCH AUTOSEL 5.10 04/85] fs: dlm: check on minimum msglen size
-Date:   Wed,  5 May 2021 12:35:27 -0400
-Message-Id: <20210505163648.3462507-4-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 05/85] fs: dlm: flush swork on shutdown
+Date:   Wed,  5 May 2021 12:35:28 -0400
+Message-Id: <20210505163648.3462507-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163648.3462507-1-sashal@kernel.org>
 References: <20210505163648.3462507-1-sashal@kernel.org>
@@ -44,38 +44,38 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Alexander Aring <aahringo@redhat.com>
 
-[ Upstream commit 710176e8363f269c6ecd73d203973b31ace119d3 ]
+[ Upstream commit eec054b5a7cfe6d1f1598a323b05771ee99857b5 ]
 
-This patch adds an additional check for minimum dlm header size which is
-an invalid dlm message and signals a broken stream. A msglen field cannot
-be less than the dlm header size because the field is inclusive header
-lengths.
+This patch fixes the flushing of send work before shutdown. The function
+cancel_work_sync() is not the right workqueue functionality to use here
+as it would cancel the work if the work queues itself. In cases of
+EAGAIN in send() for dlm message we need to be sure that everything is
+send out before. The function flush_work() will ensure that every send
+work is be done inclusive in EAGAIN cases.
 
 Signed-off-by: Alexander Aring <aahringo@redhat.com>
 Signed-off-by: David Teigland <teigland@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/dlm/midcomms.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/dlm/lowcomms.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/fs/dlm/midcomms.c b/fs/dlm/midcomms.c
-index fde3a6afe4be..0bedfa8606a2 100644
---- a/fs/dlm/midcomms.c
-+++ b/fs/dlm/midcomms.c
-@@ -49,9 +49,10 @@ int dlm_process_incoming_buffer(int nodeid, unsigned char *buf, int len)
- 		 * cannot deliver this message to upper layers
- 		 */
- 		msglen = get_unaligned_le16(&hd->h_length);
--		if (msglen > DEFAULT_BUFFER_SIZE) {
--			log_print("received invalid length header: %u, will abort message parsing",
--				  msglen);
-+		if (msglen > DEFAULT_BUFFER_SIZE ||
-+		    msglen < sizeof(struct dlm_header)) {
-+			log_print("received invalid length header: %u from node %d, will abort message parsing",
-+				  msglen, nodeid);
- 			return -EBADMSG;
- 		}
+diff --git a/fs/dlm/lowcomms.c b/fs/dlm/lowcomms.c
+index 79f56f16bc2c..44e2716ac158 100644
+--- a/fs/dlm/lowcomms.c
++++ b/fs/dlm/lowcomms.c
+@@ -612,10 +612,7 @@ static void shutdown_connection(struct connection *con)
+ {
+ 	int ret;
  
+-	if (cancel_work_sync(&con->swork)) {
+-		log_print("canceled swork for node %d", con->nodeid);
+-		clear_bit(CF_WRITE_PENDING, &con->flags);
+-	}
++	flush_work(&con->swork);
+ 
+ 	mutex_lock(&con->sock_mutex);
+ 	/* nothing to shutdown */
 -- 
 2.30.2
 
