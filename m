@@ -2,59 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8683F373B44
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18108373B53
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:34:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233340AbhEEMdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:33:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40772 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232389AbhEEMdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:33:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E9BEE613AA;
-        Wed,  5 May 2021 12:32:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620217934;
-        bh=ILiV2D88/fcxuf6nqlI+ZspSpTn5uVJ5xNMXpsO3Ows=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=HOFQAzUxjgiRZvuDBz9fBAbdVQ44xuzBaAwKRI/PFtdRk3f2f8+e7wBajvM5lTq8Z
-         7+dttQgwE6a5jK+k76yfm6LQmhtp19RaUHe4UQLLM272ho1Ib8Tl/pLfxckgUjLQ7c
-         ywA2RYo0jir/CxLyg9/ZOSaQ3u2T4TpSNWN+Q+UCX13xkmuh5gbiED+u050nL/IG83
-         mG7/G0NKzF201DyVtWp/wNBCwOvM3zbx1Gmro/gzm7VY0LzbU+k20yAiLw0fo6Rh6J
-         bKF/sBAFFvpUR5OPOaa3+P/0/nFPt+xOICoCGwJjkxXdklfejoUhbnnu7OTh3gk9XE
-         5Vi3ZAAiUFiRw==
-Date:   Wed, 5 May 2021 14:32:10 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Maximilian Luz <luzmaximilian@gmail.com>
-cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] HID: surface-hid: Fix integer endian conversion
-In-Reply-To: <20210411113402.2594945-1-luzmaximilian@gmail.com>
-Message-ID: <nycvar.YFH.7.76.2105051431580.28378@cbobk.fhfr.pm>
-References: <20210411113402.2594945-1-luzmaximilian@gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S233434AbhEEMe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:34:56 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3026 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233425AbhEEMex (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:34:53 -0400
+Received: from fraeml709-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZwwQ3vwXz6yhy0;
+        Wed,  5 May 2021 20:28:06 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml709-chm.china.huawei.com (10.206.15.37) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 5 May 2021 14:33:54 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 13:33:54 +0100
+Date:   Wed, 5 May 2021 13:32:15 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+Subject: Re: [PATCH 16/25] media: am437x: fix pm_runtime_get_sync() usage
+ count
+Message-ID: <20210505133215.00005f4e@Huawei.com>
+In-Reply-To: <8688555079cf30f5848bb020b5ecf0b0132b2c7e.1620207353.git.mchehab+huawei@kernel.org>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <8688555079cf30f5848bb020b5ecf0b0132b2c7e.1620207353.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 11 Apr 2021, Maximilian Luz wrote:
+On Wed, 5 May 2021 11:42:06 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-> We want to convert from 16 bit (unsigned) little endian values contained
-> in a packed struct to CPU native endian values here, not the other way
-> around. So replace cpu_to_le16() with get_unaligned_le16(), using the
-> latter instead of le16_to_cpu() to acknowledge that we are reading from
-> a packed struct.
+> The pm_runtime_get_sync() internally increments the
+> dev->power.usage_count without decrementing it, even on errors.
+> Replace it by the new pm_runtime_resume_and_get(), introduced by:
+> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> in order to properly decrement the usage counter, avoiding
+> a potential PM usage counter leak.
 > 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Fixes: b05ff1002a5c ("HID: Add support for Surface Aggregator Module HID transport")
-> Signed-off-by: Maximilian Luz <luzmaximilian@gmail.com>
+> While here, ensure that the driver will check if PM runtime
+> resumed at vpfe_initialize_device().
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Applied to hid.git#for-5.13/upstream-fixes. Thanks,
-
--- 
-Jiri Kosina
-SUSE Labs
+> ---
+>  drivers/media/platform/am437x/am437x-vpfe.c | 15 +++++++++++++--
+>  1 file changed, 13 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/am437x/am437x-vpfe.c b/drivers/media/platform/am437x/am437x-vpfe.c
+> index 6cdc77dda0e4..1c9cb9e05fdf 100644
+> --- a/drivers/media/platform/am437x/am437x-vpfe.c
+> +++ b/drivers/media/platform/am437x/am437x-vpfe.c
+> @@ -1021,7 +1021,9 @@ static int vpfe_initialize_device(struct vpfe_device *vpfe)
+>  	if (ret)
+>  		return ret;
+>  
+> -	pm_runtime_get_sync(vpfe->pdev);
+> +	ret = pm_runtime_resume_and_get(vpfe->pdev);
+> +	if (ret < 0)
+> +		return ret;
+>  
+>  	vpfe_config_enable(&vpfe->ccdc, 1);
+>  
+> @@ -2443,7 +2445,11 @@ static int vpfe_probe(struct platform_device *pdev)
+>  	pm_runtime_enable(&pdev->dev);
+>  
+>  	/* for now just enable it here instead of waiting for the open */
+> -	pm_runtime_get_sync(&pdev->dev);
+> +	ret = pm_runtime_resume_and_get(&pdev->dev);
+> +	if (ret < 0) {
+> +		vpfe_err(vpfe, "Unable to resume device.\n");
+> +		goto probe_out_v4l2_unregister;
+> +	}
+>  
+>  	vpfe_ccdc_config_defaults(ccdc);
+>  
+> @@ -2530,6 +2536,11 @@ static int vpfe_suspend(struct device *dev)
+>  
+>  	/* only do full suspend if streaming has started */
+>  	if (vb2_start_streaming_called(&vpfe->buffer_queue)) {
+> +		/*
+> +		 * ignore RPM resume errors here, as it is already too late.
+> +		 * A check like that should happen earlier, either at
+> +		 * open() or just before start streaming.
+> +		 */
+>  		pm_runtime_get_sync(dev);
+>  		vpfe_config_enable(ccdc, 1);
+>  
 
