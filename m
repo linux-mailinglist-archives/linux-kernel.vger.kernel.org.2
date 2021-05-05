@@ -2,88 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B20E373796
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:32:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 929F637379E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:35:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232113AbhEEJdG convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 May 2021 05:33:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56268 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231129AbhEEJdE (ORCPT
+        id S232256AbhEEJgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:36:08 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56798 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231129AbhEEJgG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:33:04 -0400
-Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2CACC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 02:32:07 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id BD54BC800B7;
-        Wed,  5 May 2021 11:32:04 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id YlBRfrwkfAw1; Wed,  5 May 2021 11:32:04 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f39:8600:6e35:22:d0af:f0c] (p200300e37f3986006E350022d0af0f0C.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:6e35:22:d0af:f0c])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        Wed, 5 May 2021 05:36:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620207310; h=Content-Transfer-Encoding: MIME-Version:
+ Message-Id: Date: Subject: Cc: To: From: Sender;
+ bh=DjffynwOTIplvphcol0QO9d3xBlxRHbmF00ZLWu5TJ8=; b=Bl1DzhMiGCxXck+m57PKxb0CJNQqMx00rEYdw+feJGYGBukowc30EzlGEn9xqrBPqeCjsRdm
+ Y2VHXZRuN0lZYUUvClLAZT5rhG9HU6PHqNSoIXISF2ZfKwyu75rLqJ6nRNu8zaIn674Op+k8
+ 5lju8hKkmc1YytxWe3+w175Bo5k=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 609266b879b6f9e57beb5b09 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 May 2021 09:34:48
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 6EB77C43144; Wed,  5 May 2021 09:34:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from blr-ubuntu-253.qualcomm.com (blr-bdr-fw-01_GlobalNAT_AllZones-Outside.qualcomm.com [103.229.18.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
         (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id 6D59FC800B6;
-        Wed,  5 May 2021 11:32:04 +0200 (CEST)
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210503182148.851790-1-wse@tuxedocomputers.com>
- <20210503182148.851790-3-wse@tuxedocomputers.com>
- <YJEW3J0+RQPo22AD@intel.com>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Subject: Re: [PATCH 2/4] Add missing check
-Message-ID: <559ca7d0-f68d-32c8-d2d9-37f57d2ecdcd@tuxedocomputers.com>
-Date:   Wed, 5 May 2021 11:32:02 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 14296C4338A;
+        Wed,  5 May 2021 09:34:43 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 14296C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=saiprakash.ranjan@codeaurora.org
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Leo Yan <leo.yan@linaro.org>
+Cc:     coresight@lists.linaro.org, Stephen Boyd <swboyd@chromium.org>,
+        Denis Nikitin <denik@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        stable@vger.kernel.org
+Subject: [PATCH] coresight: tmc-etf: Fix global-out-of-bounds in tmc_update_etf_buffer()
+Date:   Wed,  5 May 2021 15:04:30 +0530
+Message-Id: <20210505093430.18445-1-saiprakash.ranjan@codeaurora.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <YJEW3J0+RQPo22AD@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 04.05.21 um 11:41 schrieb Ville Syrjälä:
+commit 6f755e85c332 ("coresight: Add helper for inserting synchronization
+packets") removed trailing '\0' from barrier_pkt array and updated the
+call sites like etb_update_buffer() to have proper checks for barrier_pkt
+size before read but missed updating tmc_update_etf_buffer() which still
+reads barrier_pkt past the array size resulting in KASAN out-of-bounds
+bug. Fix this by adding a check for barrier_pkt size before accessing
+like it is done in etb_update_buffer().
 
-> On Mon, May 03, 2021 at 08:21:46PM +0200, Werner Sembach wrote:
->> Add a missing check that could potentially lead to an unarchivable mode being
->> validated.
->>
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->> ---
->>
->> >From 54fa706f0a5f260a32af5d18b9622ceebb94c12e Mon Sep 17 00:00:00 2001
->> From: Werner Sembach <wse@tuxedocomputers.com>
->> Date: Mon, 3 May 2021 14:42:36 +0200
->> Subject: [PATCH 2/4] Add missing check
-> I guess you did something a bit wonky with git format-patch/send-mail?
-I have no idea how that timestamp happened, I will check when sending my next patch ^^.
->> ---
->>  drivers/gpu/drm/i915/display/intel_hdmi.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
->> index 576d3d910d06..ce165ef28e88 100644
->> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
->> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
->> @@ -1913,7 +1913,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
->>  		clock *= 2;
->>  	}
->>  
->> -	if (drm_mode_is_420_only(&connector->display_info, mode))
->> +	if (connector->ycbcr_420_allowed && drm_mode_is_420_only(&connector->display_info, mode))
-> This one shouldn't be necessary. drm_mode_validate_ycbcr420() has
-> already checked it for us.
-I wasn't aware of drm_mode_validate_ycbcr420, thanks for the hint. In the "420_also"-patch I change drm_mode_is_420_only to drm_mode_is_420 (helper function: _only + _also), which is not checked by drm_mode_validate_ycbcr420. I can add this check to that patch, since its only required then.
->>  		clock /= 2;
->>  
->>  	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
->> -- 
->> 2.25.1
+ BUG: KASAN: global-out-of-bounds in tmc_update_etf_buffer+0x4b8/0x698
+ Read of size 4 at addr ffffffd05b7d1030 by task perf/2629
+
+ Call trace:
+  dump_backtrace+0x0/0x27c
+  show_stack+0x20/0x2c
+  dump_stack+0x11c/0x188
+  print_address_description+0x3c/0x4a4
+  __kasan_report+0x140/0x164
+  kasan_report+0x10/0x18
+  __asan_report_load4_noabort+0x1c/0x24
+  tmc_update_etf_buffer+0x4b8/0x698
+  etm_event_stop+0x248/0x2d8
+  etm_event_del+0x20/0x2c
+  event_sched_out+0x214/0x6f0
+  group_sched_out+0xd0/0x270
+  ctx_sched_out+0x2ec/0x518
+  __perf_event_task_sched_out+0x4fc/0xe6c
+  __schedule+0x1094/0x16a0
+  preempt_schedule_irq+0x88/0x170
+  arm64_preempt_schedule_irq+0xf0/0x18c
+  el1_irq+0xe8/0x180
+  perf_event_exec+0x4d8/0x56c
+  setup_new_exec+0x204/0x400
+  load_elf_binary+0x72c/0x18c0
+  search_binary_handler+0x13c/0x420
+  load_script+0x500/0x6c4
+  search_binary_handler+0x13c/0x420
+  exec_binprm+0x118/0x654
+  __do_execve_file+0x77c/0xba4
+  __arm64_compat_sys_execve+0x98/0xac
+  el0_svc_common+0x1f8/0x5e0
+  el0_svc_compat_handler+0x84/0xb0
+  el0_svc_compat+0x10/0x50
+
+ The buggy address belongs to the variable:
+  barrier_pkt+0x10/0x40
+
+ Memory state around the buggy address:
+  ffffffd05b7d0f00: fa fa fa fa 04 fa fa fa fa fa fa fa 00 00 00 00
+  ffffffd05b7d0f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+ >ffffffd05b7d1000: 00 00 00 00 00 00 fa fa fa fa fa fa 00 00 00 03
+                                      ^
+  ffffffd05b7d1080: fa fa fa fa 00 02 fa fa fa fa fa fa 03 fa fa fa
+  ffffffd05b7d1100: fa fa fa fa 00 00 00 00 05 fa fa fa fa fa fa fa
+ ==================================================================
+
+Fixes: 6f755e85c332 ("coresight: Add helper for inserting synchronization packets")
+Cc: stable@vger.kernel.org
+Signed-off-by: Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+---
+ drivers/hwtracing/coresight/coresight-tmc-etf.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/hwtracing/coresight/coresight-tmc-etf.c b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+index 45b85edfc690..cd0fb7bfba68 100644
+--- a/drivers/hwtracing/coresight/coresight-tmc-etf.c
++++ b/drivers/hwtracing/coresight/coresight-tmc-etf.c
+@@ -530,7 +530,7 @@ static unsigned long tmc_update_etf_buffer(struct coresight_device *csdev,
+ 		buf_ptr = buf->data_pages[cur] + offset;
+ 		*buf_ptr = readl_relaxed(drvdata->base + TMC_RRD);
+ 
+-		if (lost && *barrier) {
++		if (lost && i < CORESIGHT_BARRIER_PKT_SIZE) {
+ 			*buf_ptr = *barrier;
+ 			barrier++;
+ 		}
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member
+of Code Aurora Forum, hosted by The Linux Foundation
 
