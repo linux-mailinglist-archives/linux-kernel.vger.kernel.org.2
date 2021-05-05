@@ -2,84 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A0C374AC8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:48:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE551374ACA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:49:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229650AbhEEVtr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 17:49:47 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:44284 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhEEVtp (ORCPT
+        id S229672AbhEEVuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 17:50:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhEEVui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 17:49:45 -0400
-Received: from sequoia (162-237-133-238.lightspeed.rcsntx.sbcglobal.net [162.237.133.238])
-        by linux.microsoft.com (Postfix) with ESMTPSA id D660220B7178;
-        Wed,  5 May 2021 14:48:47 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D660220B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620251328;
-        bh=Lq9GMPC1OAbG9MC4A6dXXKYcRIfgiNTw6E8T5BWsHts=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QjIfl8kAu4zuy6l3rZpzPRQP94JtUMbP2G/6WsZtKmnNjH0NV8iZUTtUwgBGZODwj
-         nLtPVFuwNnjglJSrxoVnkgPoAqbxxLBgj+z8+hlFjbbBXoXp3oRSVPkIGeyu3lSpAQ
-         3JBydhlQ34ArzzP1BtY5LmmNVM2kpmJZg8SNuu2I=
-Date:   Wed, 5 May 2021 16:48:46 -0500
-From:   Tyler Hicks <tyhicks@linux.microsoft.com>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     wangglei <wangglei@gmail.com>,
-        "Lei Wang (DPLAT)" <Wang.Lei@microsoft.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "rric@kernel.org" <rric@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hang Li <hangl@microsoft.com>,
-        Brandon Waller <bwaller@microsoft.com>
-Subject: Re: [EXTERNAL] Re: [PATCH] EDAC: update edac printk wrappers to use
- printk_ratelimited.
-Message-ID: <20210505214846.GE4967@sequoia>
-References: <20210505173027.78428-1-wangglei@gmail.com>
- <YJLdZCcsgWG6TrKz@zn.tnic>
- <SJ0PR21MB199984A8B47FBEECEC5D11CE90599@SJ0PR21MB1999.namprd21.prod.outlook.com>
- <YJL1vU6HNBWPKy8g@zn.tnic>
- <20210505202357.GC4967@sequoia>
- <YJMIbB31oEDaXm0C@zn.tnic>
+        Wed, 5 May 2021 17:50:38 -0400
+Received: from mail-ot1-x333.google.com (mail-ot1-x333.google.com [IPv6:2607:f8b0:4864:20::333])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52457C061574;
+        Wed,  5 May 2021 14:49:41 -0700 (PDT)
+Received: by mail-ot1-x333.google.com with SMTP id c8-20020a9d78480000b0290289e9d1b7bcso3097834otm.4;
+        Wed, 05 May 2021 14:49:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=wmD7/CI0igsOX28HyIvBqbXYXF4ghwbLUFAW2XyLyC8=;
+        b=QKP14rpC5ftJQ8nIuK4+7iw1yexXQmkhFe2BpUr15jfDQleYwZ4Kptsr8Mdu2RWhFc
+         qg6YVlwK3xIa/0DCGn9lVxuP95k7I2TDCMluWqZBKS1J8onHHUx67kHqtJK6zJIm3cP4
+         Qluk8xxHpvuNSaNSUuLIjDHe9QWwkf0JcdqtD4jPIUsFyMB7Rlx3Vt5Y3uE/nyogVByx
+         ZeeYVC4ZlYi+gR/nJiYnIjG4eZCNnY58tuF+mVX2OEwzktjD2yenGAIG9+k9p712asMD
+         LwJryu43qf1Rt8Ko6lsEpw2N0ktXPNPjXQVn556h5irV2Inzg//t2u0pWxAGE9u5JwKB
+         xdHw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=wmD7/CI0igsOX28HyIvBqbXYXF4ghwbLUFAW2XyLyC8=;
+        b=RDDLZj/SFGtOQ/Y3APD3X1VgirCZHRIeCCctR15FpYe80KkhKw7kRjh36V1SLtj1Kg
+         hMiJ8Z/BABQ2weXh93KSaC4/A4IfpApr1zu0GpNnsJCwbthWZUOF9hZuyja5/ncUx20G
+         1cSuJHUmfhWQVtgAml+k/kXUarfyrdl6R3zZrKKc8sU9z7q81Vk9wnhjx6vB4UR81qhR
+         ghb3mhRX6dUqJrtpfUKiuuHfkO559RR14R2Ihxrt4LEd/u7Mpbw1pNTIwYywOKiV5V2t
+         cA80b0hIDpodg58deFVgTjldcOy7yAcWkqbZ0sN64tzkDs9fpfxih+1JLhe+E+mOCasG
+         3ghA==
+X-Gm-Message-State: AOAM530NzWOg+Z9boMLLsHcDy7g6yAtqgbWnbsnkSxTJoJg5y1N+MSGD
+        34EVmzBHV8OYL2mMmaQ7Tuo=
+X-Google-Smtp-Source: ABdhPJznV0JbxNOL4vcbp3zTSj+RGYKfzyBuq1/VOIUwsqrKd9ypmhIlNALEEW4Bf0Iyf2oWRWCfQw==
+X-Received: by 2002:a9d:764b:: with SMTP id o11mr659528otl.149.1620251380770;
+        Wed, 05 May 2021 14:49:40 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id g26sm175167otr.37.2021.05.05.14.49.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 14:49:40 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 5 May 2021 14:49:38 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/21] 5.4.117-rc1 review
+Message-ID: <20210505214938.GA817073@roeck-us.net>
+References: <20210505112324.729798712@linuxfoundation.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJMIbB31oEDaXm0C@zn.tnic>
+In-Reply-To: <20210505112324.729798712@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-05 23:04:44, Borislav Petkov wrote:
-> On Wed, May 05, 2021 at 03:23:57PM -0500, Tyler Hicks wrote:
-> >  Would it be any more acceptable to add an
-> > edac_mc_printk_ratelimited() macro, which uses printk_ratelimited(),
-> > and then call that new macro from edac_ce_error()?
+On Wed, May 05, 2021 at 02:04:14PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.4.117 release.
+> There are 21 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> You guys are way off here: the intent of EDAC drivers is to accurately
-> report errors for purposes of counting them and doing analysis on
-> that collected data as to whether components are going wrong - not to
-> ratelimit them as some nuisance output.
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
 > 
-> With breaking the EDAC reporting, you're barking up the wrong tree - if
-> you don't want to see those errors, do not load the drivers. It is that
-> simple.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.117-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
+> -------------
+> Pseudo-Shortlog of commits:
+> 
+> Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>     Linux 5.4.117-rc1
+> 
+> Ondrej Mosnacek <omosnace@redhat.com>
+>     perf/core: Fix unconditional security_locked_down() call
+> 
+> Miklos Szeredi <mszeredi@redhat.com>
+>     ovl: allow upperdir inside lowerdir
+> 
+> Dan Carpenter <dan.carpenter@oracle.com>
+>     scsi: ufs: Unlock on a couple error paths
+> 
+> Mark Pearson <markpearson@lenovo.com>
+>     platform/x86: thinkpad_acpi: Correct thermal sensor allocation
+> 
+> Shengjiu Wang <shengjiu.wang@nxp.com>
+>     ASoC: ak5558: Add MODULE_DEVICE_TABLE
+> 
+> Shengjiu Wang <shengjiu.wang@nxp.com>
+>     ASoC: ak4458: Add MODULE_DEVICE_TABLE
 
-As I understand it, the idea here wasn't to treat the log messages as a
-nuisance that should be completely squelched. The counters are monitored
-and provide the definitive way to detect large scale problems but the CE
-log messages can be an easier-to-discover way for humans to identify
-potential problems when, for example, centralized log aggregation and
-indexing is in place.
+Twice ? Why ?
 
-The thought was that the full stream of log messages isn't necessary to
-notice that there's a problem when they are being emitted at such a high
-rate (500 per second). They're just filling up disk space and/or wasting
-networking bandwidth at that point. Of course, the best course of action
-here is to service the machine but there's still a period of time
-between the CE errors popping up and the machine being serviced.
+This gives me a compile error (the second time it is added at the wrong
+place).
 
-Tyler
+chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/sound/soc/codecs/ak4458.c:722:1: error: redefinition of '__mod_of__ak4458_of_match_device_table'
+chromeos-kernel-5_4-5.4.117_rc1-r2159: MODULE_DEVICE_TABLE(of, ak4458_of_match);
+chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
+chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/include/linux/module.h:227:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
+chromeos-kernel-5_4-5.4.117_rc1-r2159: extern typeof(name) __mod_##type##__##name##_device_table               \
+chromeos-kernel-5_4-5.4.117_rc1-r2159:                     ^
+chromeos-kernel-5_4-5.4.117_rc1-r2159: <scratch space>:119:1: note: expanded from here
+chromeos-kernel-5_4-5.4.117_rc1-r2159: __mod_of__ak4458_of_match_device_table
+chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
+chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/sound/soc/codecs/ak4458.c:711:1: note: previous definition is here
+chromeos-kernel-5_4-5.4.117_rc1-r2159: MODULE_DEVICE_TABLE(of, ak4458_of_match);
+chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
+chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/include/linux/module.h:227:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
+chromeos-kernel-5_4-5.4.117_rc1-r2159: extern typeof(name) __mod_##type##__##name##_device_table               \
+
+Oddly enough, I only see the error when I try to merge the
+code into ChromeOS, not in my test builds. I guess that has
+to do with "-Werror".
+
+Guenter
