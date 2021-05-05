@@ -2,121 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A683D374909
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:04:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8AC8374903
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:02:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233766AbhEEUF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:05:26 -0400
-Received: from mail-mw2nam10on2063.outbound.protection.outlook.com ([40.107.94.63]:44000
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233381AbhEEUFW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:05:22 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xxqqi9HMfOHGJRfIvRhoBSI52KgAm7LoI79OszJJIkhvQbJ6QTsDHL3y2t/viKpnH+nGJ9CPKWSXO0A78tGBmWKi6pOFLEvS7pGSTGisQFX6JghHH9LIiD+FsoJLlk40VGBsfxKB5HrBLjUeDQ8zaFaWxv/Fxk1+QdauhJTrW+xSN1wpJODZycDFPdHQRg53f0cEs5yX2DZ4/twr7KXy2ta7VAEVQEEKzwR0oVnQd1IiODuj4J7CUEgxDbGsKaZxvyHnGL60k18uTzNOJfWjqAVPTUCX3RIRpjpZrgNZTyNYIk9/LKTC7+8iUx6R5F8vDVIuM2KWpVeTtpA1POahpg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ADFiv9JHKHE8WhOguza/Zu1b/rysUM8gGaAti1Z1SA=;
- b=nrlJROhGZsgcohN1+fYcRqazlY2hUIY/Yvo/KKc5yR+DfNs5c6m54x6GdxpHhdggYc4oyKNqSLVZjI+7HzGohAmDX8nFnf6b/BKbCJxPwb7M3P6NB8SsgzFnCHbZ8aRfeiukLcKWfGNqwpf1d/mkf3UO6l46xEkKNI0kbjHWtanQXQVAw+kQSWtHAGpBfyyEV9iObJPXD62E6zO8YqvrNfiYrzpgUk30f61XQgYEFSv8VTpP2NE0oHgmlBpYiKcAinZfGnSNtPVZLka/1VmZ+/Muqvythfx3Jo2DqAScKBj7vWvJ70vf1xGXqy8VRN80jxmoSgs28w3R8HGbD1JthA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=gmail.com smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ADFiv9JHKHE8WhOguza/Zu1b/rysUM8gGaAti1Z1SA=;
- b=QumhVPrxUqwMLkzCr5tkRVH8JIkI16jSRs3COFhSJ4yQmcs7O6zuxMXx6rwW5hCIT6/GwhB7z+It2ge1D9Pc06V6Sa8jM1s4rQdGrEophRbsiVvvu7lkFPhEW5UfioyIY1a1Krtw1RrfTN9TQeNyO27Rgpv89VYKNi68V/lgSpDkS1jdn+LLDkUHItTAblercXJGMxDk1evk3Q6SlvgpZsRGDPuCwUqYU2SpHkpBkMe1VZBNQLqByQ66UPCwS8tD5K4faA0YuebEMkR0hif6Fa4PxOWU42x5qFRXpmBbgltnNb9o20eP0nOAVQAH+rBdmdaxLDFAqjtRjc0o02vF6w==
-Received: from BN9PR03CA0032.namprd03.prod.outlook.com (2603:10b6:408:fb::7)
- by DM6PR12MB4864.namprd12.prod.outlook.com (2603:10b6:5:209::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.38; Wed, 5 May
- 2021 20:04:23 +0000
-Received: from BN8NAM11FT010.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:fb:cafe::68) by BN9PR03CA0032.outlook.office365.com
- (2603:10b6:408:fb::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend
- Transport; Wed, 5 May 2021 20:04:23 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; gmail.com; dkim=none (message not signed)
- header.d=none;gmail.com; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- BN8NAM11FT010.mail.protection.outlook.com (10.13.177.53) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4108.25 via Frontend Transport; Wed, 5 May 2021 20:04:22 +0000
-Received: from [10.20.23.38] (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 5 May
- 2021 20:04:21 +0000
-Subject: Re: [PATCH v4 2/2] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
-To:     Alex Williamson <alex.williamson@redhat.com>,
-        Amey Narkhede <ameynarkhede03@gmail.com>
-CC:     Oliver O'Halloran <oohall@gmail.com>,
-        Bjorn Helgaas <helgaas@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Sinan Kaya <okaya@kernel.org>, Vikram Sethi <vsethi@nvidia.com>
-References: <478efe56-fb64-6987-f64c-f3d930a3b330@nvidia.com>
- <20210505021236.GA1244944@bjorn-Precision-5520>
- <CAOSf1CFACC5V1OdA9i9APipTUE3GmXu487vt-btXWk5rP97UAQ@mail.gmail.com>
- <20210505174032.sursnpwkfrc5qji2@archlinux>
- <20210505131357.07e55042@redhat.com>
-From:   Shanker R Donthineni <sdonthineni@nvidia.com>
-Message-ID: <2e64d906-d398-a859-413a-c7ab3341de88@nvidia.com>
-Date:   Wed, 5 May 2021 15:04:18 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S235219AbhEEUC5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:02:57 -0400
+Received: from mga09.intel.com ([134.134.136.24]:22828 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233223AbhEEUCy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 16:02:54 -0400
+IronPort-SDR: bp9vGeSTkEhGnxfbSkfY/A5KiUZaqC5BuXISj5WDcCpq0pL4DS1efZHSds+1FdtRF/dT10RleZ
+ cgx33+eSp0Yg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="198374802"
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="198374802"
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 13:01:56 -0700
+IronPort-SDR: VI2pDIaJ4hHcNspdA1bLZ4OSjm/y7q0dqAdAfbQxIZJ/+0aNwNizzDu2jRjKs8XwRsR7nUF658
+ AYEPooNFtQVg==
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="406682561"
+Received: from jacob-builder.jf.intel.com (HELO jacob-builder) ([10.7.199.155])
+  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 13:01:56 -0700
+Date:   Wed, 5 May 2021 13:04:46 -0700
+From:   Jacob Pan <jacob.jun.pan@linux.intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>, jacob.jun.pan@linux.intel.com
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210505130446.3ee2fccd@jacob-builder>
+In-Reply-To: <20210505180023.GJ1370958@nvidia.com>
+References: <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210423114944.GF1370958@nvidia.com>
+        <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210426123817.GQ1370958@nvidia.com>
+        <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210504084148.4f61d0b5@jacob-builder>
+        <20210504180050.GB1370958@nvidia.com>
+        <20210504151154.02908c63@jacob-builder>
+        <20210504231530.GE1370958@nvidia.com>
+        <20210505102259.044cafdf@jacob-builder>
+        <20210505180023.GJ1370958@nvidia.com>
+Organization: OTC
+X-Mailer: Claws Mail 3.17.5 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20210505131357.07e55042@redhat.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e0672493-dad1-495c-dcca-08d91000fa16
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4864:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB486493075353421199E71835C7599@DM6PR12MB4864.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: mWY61ATLUHs3Zhx5sVo7JS7Mg8QdMll35PdEv1ZKBFuELFnfi1FRo81g17Daql/7C8D65iCSKo6ZBRBXC7yc+wHbM8/HIT/yrOCx0jZxPVCGPLRGeIaiilfBi9W9AQzJRxe86guCkOJZgwMXn46pNzWQxcacqLOixY56D/th/9CDGDFDpkodzsrAiOEdX2FpyTWWuS0rIXFOALLpr6DJ+Ib9WS1hxW8YatwgUSPKhHVMv0CfRnWV6+avxv2sR02AWJer2jY+aoCQWI208EC6mSM58T3cEmMGD/u0jcOoXUxtSLGkmcijaQdVeBqmgBZTRApaipYUh4LlOwk1EQ2fVRQJKgzIgwwMWB8IyiY9fYlhpzInhitDSoTq+kg1rpTIuC6uC80xarz18ur/rAreinypFt65ZDOf+rAaIMDWEU/oDiir4GSuqur+0EZDZDOHwcFnN2GKfA3HjBhB+RWm5Z7kIiHntAagkxxVb/9qlN7c1s1NuRoRtbkkHy+SmL4+ZZn2d4qGWvVRhsJRBCkAtwGPugL55eXJ0a0xRxiQFAcBDeF7TtsRbdAZUJkPVEH83pYK7ytMoNNsDv7KrBDvPNd53yD6zOz+I43I1HNfD4hrxbIv7DEEoPYaFVTQTnXZD+kNBliwy5FI2/ml1tlvyoK5/5oHeV08V0d595PvYcRHUEeZ/rkGA3yBI8AisvX+
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(136003)(39860400002)(36840700001)(46966006)(5660300002)(31686004)(26005)(478600001)(8676002)(7636003)(54906003)(110136005)(4326008)(2906002)(36860700001)(186003)(31696002)(53546011)(16526019)(47076005)(86362001)(82310400003)(107886003)(4744005)(70206006)(6666004)(70586007)(36906005)(316002)(36756003)(336012)(82740400003)(356005)(8936002)(2616005)(426003)(16576012)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 20:04:22.9723
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0672493-dad1-495c-dcca-08d91000fa16
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT010.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4864
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks Alex for the detailed explanation.
+Hi Jason,
 
-On 5/5/21 2:13 PM, Alex Williamson wrote:
->  I'm also assuming all SoCs integrating this GPU will provide a
-> _RST method, but we're also disabling SBR in this series to avoid the
-> only other generic reset option we'd have for this device.
-All the platforms/SoCs which contain these GPUs will provide ACPI/firmware with
-_RST method.
- 
-> In the more general case, I'd expect that system firmware isn't going
-> to implement an _RST method for a pluggable slot, so we'll lookup the
-> ACPI handle, fail to find a _RST method and drop to the next option.
-> For a PCI/e slot, at best the _RST method might be included in the _PRR
-> scope rather than the device scope to indicate it affects the entire
-> slot.  That could be something like the #PERST below or a warm reset.  I
-> don't think we're enabling that here, are we?
-No, our_RST method will be included only in a device context (not _PRP).
+On Wed, 5 May 2021 15:00:23 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
 
+> On Wed, May 05, 2021 at 10:22:59AM -0700, Jacob Pan wrote:
+> 
+> > Global and pluggable are for slightly separate reasons.
+> > - We need global PASID on VT-d in that we need to support shared
+> > workqueues (SWQ). E.g. One SWQ can be wrapped into two mdevs then
+> > assigned to two VMs. Each VM uses its private guest PASID to submit
+> > work but each guest PASID must be translated to a global (system-wide)
+> > host PASID to avoid conflict. Also, since PASID table storage is per
+> > PF, if two mdevs of the same PF are assigned to different VMs, the
+> > PASIDs must be unique.  
+> 
+> From a protocol perspective each RID has a unique PASID table, and
+> RIDs can have overlapping PASIDs.
+> 
+True, per RID or per PF as I was referring to.
+
+> Since your SWQ is connected to a single RID the requirement that
+> PASIDs are unique to the RID ensures they are sufficiently unique.
+> 
+True, but one process can submit work to multiple mdevs from different
+RIDs/PFs. One process uses one PASID and PASID translation table is per VM.
+The same PASID is used for all the PASID tables of each RID.
+
+For example:
+VM1 has two mdevs: mdev1 and mdev2. mdev1's parent is RID1, mdev2's parent
+is RID2. The guest process A allocates PASID_A and bind to both mdev1 and
+mdev2. PASID_A must be present in the PASID tables for both RID1 and RID2.
+
+If the allocator is per RID, it is not possible to ensure PASID_A is
+available for both RIDs. Right?
+
+Sorry I missed this point in my earlier explanation.
+
+> If the IOMMU driver has additional restrictions then it should raise
+> the PASID table up higher in the hierarchy than at the RID.
+> 
+That higher level in the hierarchy is global, right? I am a little
+concerned about expanding PASID table sharing from security perspective.
+Even though, VMs already share PASID table for mdevs.
+
+> I think what you are trying to explain is that the Intel vIOMMU has a
+> single PASID address space shared globally by the vCPU because ENQCMD
+> uses the global vGPU translation table.
+> 
+Yes, PASID translation table is per VM, global in terms of the guest.
+That combined with the case of two mdevs from different RIDs can be used by
+the same guest process/PASID requires global PASID.
+
+> That is fine, but all this stuff should be inside the Intel vIOMMU
+> driver not made into a global resource of the entire iommu subsystem.
+> 
+Intel vIOMMU has to use a generic uAPI to allocate PASID so the generic
+code need to have this option. I guess you are saying we should also have a
+per RID allocation option in addition to global?
+
+> Systems that work this way just cannot have multiple iommu drivers
+> competing for PASID.
+> 
+Sorry, I am not following. There would not be mixed iommu drivers on one
+platform, I must have missed your point. Could you explain a little?
+
+> > - The pluggable allocator is to support the option where the guest
+> > PASIDs are allocated by the hypervisor.   
+> 
+> And if the hypervisor allocates the PASID then again the specific
+> vIOMMU itself is concerned with this and it has nothing to do with
+> global behavior of the iommu subsystem.
+> 
+> > For ARM, since the guest owns the per device PASID table. There is no
+> > need to allocate PASIDs from the host nor the hypervisor. Without SWQ,
+> > there is no need for global PASID/SSID either. So PASID being global
+> > for ARM is for simplicity in case of host PASID/SSID.  
+> 
+> It isn't clear how ARM can support PASID and mdev but that is an
+> unrelated issue..
+> 
+AFAIK, the current SMMU device assignment is per RID, since only one stage2
+page tables per RID, not per PASID. This is equivalent to the older VT-d
+spec. prior to scalable mode.
+
+Eric/Jean, can you help?
+
+> Jason
+
+
+Thanks,
+
+Jacob
