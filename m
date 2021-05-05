@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3948A373ABA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:12:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40357373AC6
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233747AbhEEMN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:13:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53488 "EHLO mail.kernel.org"
+        id S233186AbhEEMN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:13:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55378 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233745AbhEEMJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:09:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0BF5F613DD;
-        Wed,  5 May 2021 12:07:48 +0000 (UTC)
+        id S233637AbhEEMKE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:10:04 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B2A6D613DD;
+        Wed,  5 May 2021 12:09:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216469;
-        bh=7k1L8PUzKyJKHOh6VqW6Qo1vI7Za1rAJKuKget/q4NY=;
+        s=korg; t=1620216548;
+        bh=Igo1WVPFrmwofjl9l41M+rRDy5nT8Cc3Jia6nEkAyMA=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GuZsW5wPb1AHsOwjGAkM6f6eQ0DntEiObVrYWUG2JQDYzeMKwDyiNA6nvM86WxfsH
-         iyxgMeclrhLHp8+nfKofz6PS692zzWdPgkOYwedSF/BAY7pq6GqJ04t6TEvAPEjnP8
-         APHPw2ca9h92jUA+ckwYc4ewcQ9ulFiZPMNUSFIE=
+        b=qazFcW9mZrzMu1Qk/iOEx+4jJnswdR/sJwEGaCcq47F9P9NfF8nU9pZNsMdTeZ2nW
+         HPg8ntHrbhzqIhzelPDQoSeu1dANypxZ7wolOCIcWlHNKOjFh8V/BlrzFSoQlZ7OUt
+         31PAsslMFotjPSXqiTJLp4zL3F1VoBQejG3VuZ30=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Romain Naour <romain.naour@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.12 01/17] mips: Do not include hi and lo in clobber list for R6
-Date:   Wed,  5 May 2021 14:05:56 +0200
-Message-Id: <20210505112325.005673304@linuxfoundation.org>
+        stable@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>
+Subject: [PATCH 5.11 08/31] net: qrtr: Avoid potential use after free in MHI send
+Date:   Wed,  5 May 2021 14:05:57 +0200
+Message-Id: <20210505112326.938601623@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210505112324.956720416@linuxfoundation.org>
-References: <20210505112324.956720416@linuxfoundation.org>
+In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
+References: <20210505112326.672439569@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
@@ -42,106 +40,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Romain Naour <romain.naour@gmail.com>
+From: Bjorn Andersson <bjorn.andersson@linaro.org>
 
-commit 1d7ba0165d8206ac073f7ac3b14fc0836b66eae7 upstream.
+commit 47a017f33943278570c072bc71681809b2567b3a upstream.
 
->From [1]
-"GCC 10 (PR 91233) won't silently allow registers that are not
-architecturally available to be present in the clobber list anymore,
-resulting in build failure for mips*r6 targets in form of:
-...
-.../sysdep.h:146:2: error: the register ‘lo’ cannot be clobbered in ‘asm’ for the current target
-  146 |  __asm__ volatile (      \
-      |  ^~~~~~~
+It is possible that the MHI ul_callback will be invoked immediately
+following the queueing of the skb for transmission, leading to the
+callback decrementing the refcount of the associated sk and freeing the
+skb.
 
-This is because base R6 ISA doesn't define hi and lo registers w/o DSP
-extension. This patch provides the alternative clobber list for r6 targets
-that won't include those registers."
+As such the dereference of skb and the increment of the sk refcount must
+happen before the skb is queued, to avoid the skb to be used after free
+and potentially the sk to drop its last refcount..
 
-Since kernel 5.4 and mips support for generic vDSO [2], the kernel fail to
-build for mips r6 cpus with gcc 10 for the same reason as glibc.
-
-[1] https://sourceware.org/git/?p=glibc.git;a=commit;h=020b2a97bb15f807c0482f0faee2184ed05bcad8
-[2] '24640f233b46 ("mips: Add support for generic vDSO")'
-
-Signed-off-by: Romain Naour <romain.naour@gmail.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Fixes: 6e728f321393 ("net: qrtr: Add MHI transport layer")
+Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+Signed-off-by: David S. Miller <davem@davemloft.net>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- arch/mips/include/asm/vdso/gettimeofday.h |   26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+ net/qrtr/mhi.c |    8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
---- a/arch/mips/include/asm/vdso/gettimeofday.h
-+++ b/arch/mips/include/asm/vdso/gettimeofday.h
-@@ -20,6 +20,12 @@
+--- a/net/qrtr/mhi.c
++++ b/net/qrtr/mhi.c
+@@ -50,6 +50,9 @@ static int qcom_mhi_qrtr_send(struct qrt
+ 	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, ep);
+ 	int rc;
  
- #define VDSO_HAS_CLOCK_GETRES		1
- 
-+#if MIPS_ISA_REV < 6
-+#define VDSO_SYSCALL_CLOBBERS "hi", "lo",
-+#else
-+#define VDSO_SYSCALL_CLOBBERS
-+#endif
++	if (skb->sk)
++		sock_hold(skb->sk);
 +
- static __always_inline long gettimeofday_fallback(
- 				struct __kernel_old_timeval *_tv,
- 				struct timezone *_tz)
-@@ -35,7 +41,9 @@ static __always_inline long gettimeofday
- 	: "=r" (ret), "=r" (error)
- 	: "r" (tv), "r" (tz), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
+ 	rc = skb_linearize(skb);
+ 	if (rc)
+ 		goto free_skb;
+@@ -59,12 +62,11 @@ static int qcom_mhi_qrtr_send(struct qrt
+ 	if (rc)
+ 		goto free_skb;
  
- 	return error ? -ret : ret;
- }
-@@ -59,7 +67,9 @@ static __always_inline long clock_gettim
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
+-	if (skb->sk)
+-		sock_hold(skb->sk);
+-
+ 	return rc;
  
- 	return error ? -ret : ret;
- }
-@@ -83,7 +93,9 @@ static __always_inline int clock_getres_
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
+ free_skb:
++	if (skb->sk)
++		sock_put(skb->sk);
+ 	kfree_skb(skb);
  
- 	return error ? -ret : ret;
- }
-@@ -105,7 +117,9 @@ static __always_inline long clock_gettim
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -125,7 +139,9 @@ static __always_inline int clock_getres3
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
+ 	return rc;
 
 
