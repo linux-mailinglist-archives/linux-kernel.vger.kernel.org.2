@@ -2,172 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E7E37385D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:09:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A45DA37385F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:10:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232230AbhEEKKe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 06:10:34 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:44489 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231995AbhEEKKc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 06:10:32 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620209376; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=/pFeOOQka32uiKGUO61/tAA85g3Y2JLsNoKpfoqaSaM=;
- b=ev4kXKkxDEXxGwcb+6aWp7Rig6L5p/g7FR9BPmB0DFIL1Pz6rqHqqWzT3oo+U0/fYHRM7A1C
- VS4WUwQb9lqIdAFVNUljIa0+vuWtdu/xzWfe8ilbo6QYcFhJHRglc0a4jFR3ko/3hqdlmjYh
- 5tmsntAH16Jz+cEof4HcTOnkr50=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 60926ece79b6f9e57b0223d2 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 May 2021 10:09:18
- GMT
-Sender: sibis=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3F97DC43460; Wed,  5 May 2021 10:09:18 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sibis)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 66FFDC433F1;
-        Wed,  5 May 2021 10:09:17 +0000 (UTC)
+        id S232438AbhEEKLY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 06:11:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36572 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231995AbhEEKLV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 06:11:21 -0400
+Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F1431C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 03:10:23 -0700 (PDT)
+Received: by mail-vs1-xe2b.google.com with SMTP id v188so808964vsb.6
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 03:10:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=v7hWLfiP4L8kd/8OkP5+NXOkybUNAwrKCRGGcgcoAgY=;
+        b=vn0pSNH+j1spd4Zd9WBHRblPehcqOgqRSDTd6kMUOpLQNoYKf19jGW34SPWIPuYuwd
+         Ja/LVFH2ljf2NCEq1Z0t/0yOUv61cbqLuVDlU7msNwlk9IVT09saoM+tAHj1tTRx/Vq+
+         iUdGFAjHIQbIY8b3IGr18nWOzPK4Y2KFnHg+R2iXUgjBn59lz9q3jTXziCGQhM6ecVJK
+         seIwhANuZLFxLlYsRn7WbieqrgIzZZ2Bve6qGvobN8frdhfEqQbNaoJcVQ1eds/vfSOj
+         mvbl0QmQlhb1D2kWmrWbBUqiL43c5aNFH9jK5xuxWWk9SWGjFwkFql0P5+7vM96angpn
+         KF9g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=v7hWLfiP4L8kd/8OkP5+NXOkybUNAwrKCRGGcgcoAgY=;
+        b=k88fiZ/aMebAkUuiyjlfVjBD+J21UIVpGfEgfOHAq9nB2TyeW5bD9fXM4IY00s1c48
+         WD4L06xeKZ6dUtadz+s02U63d5jDvxBi8AmL5ToS+oVSC0KmslmUBa9ka611pUTZzUWc
+         0XTjcjAmP85GyAqFCmnq2wjG9mMoV8JWEK8FwSLZ6dHvMwULgVW97YeFUmuQc2hSuvlC
+         hiGamvJ8PhgLHOlqUMU7LamIRjR57qxvWFQjwRR3D7vuOz+N8mWtcvN2+vtkOVHTFkAZ
+         KRJD15plvRVfCq8zE4uM/mzfNnSyg7YrcxVoTxyd5X842ERKinxku7PM+6LETmSyNJE3
+         R+pw==
+X-Gm-Message-State: AOAM532Fa2nYr4A0gb4pEvGyw36pdpLIP6wXuB7WCD/M0AL5tqc0x8sf
+        cmuk58JaoslUb5AZ5u4GfG0axogr4u6/LJx58Nd/Cg==
+X-Google-Smtp-Source: ABdhPJyLNbY7Hr5i/okzHjDMncajNnfX3gDt1hipCJXizf2/YZCQOO0omBnqbNTE17OPjgeF1pcT2RClqXksMGdAAks=
+X-Received: by 2002:a67:2c03:: with SMTP id s3mr15767861vss.42.1620209423138;
+ Wed, 05 May 2021 03:10:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Wed, 05 May 2021 15:39:17 +0530
-From:   Sibi Sankar <sibis@codeaurora.org>
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     bjorn.andersson@linaro.org, viresh.kumar@linaro.org,
-        swboyd@chromium.org, agross@kernel.org, robh+dt@kernel.org,
-        rjw@rjwysocki.net, linux-arm-msm@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org, dianders@chromium.org, mka@chromium.org
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
-In-Reply-To: <20210505084908.3lynedmblmqagr72@bogus>
-References: <1619792901-32701-1-git-send-email-sibis@codeaurora.org>
- <1619792901-32701-3-git-send-email-sibis@codeaurora.org>
- <20210504144215.svmrmmsy4jtoixzv@bogus>
- <1fc9fb8d9a94909ff9b7b76d598bd266@codeaurora.org>
- <20210505084908.3lynedmblmqagr72@bogus>
-Message-ID: <5cc53032c1f9f4e0170559c006133f47@codeaurora.org>
-X-Sender: sibis@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+In-Reply-To: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Wed, 5 May 2021 12:09:47 +0200
+Message-ID: <CAPDyKFqvTgRZ0QEgBXJgbhbEmQvxBqzZuGh2MrZGS1mRyYz9mg@mail.gmail.com>
+Subject: Re: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
+To:     =?UTF-8?Q?Christian_L=C3=B6hle?= <CLoehle@hyperstone.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        "pali@kernel.org" <pali@kernel.org>,
+        "huyue2@yulong.com" <huyue2@yulong.com>,
+        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-05 14:19, Sudeep Holla wrote:
-> Hi Sibi,
-> 
-> On Tue, May 04, 2021 at 11:55:10PM +0530, Sibi Sankar wrote:
->> Hey Sudeep,
->> 
->> Thanks for the review!
->> 
->> On 2021-05-04 20:12, Sudeep Holla wrote:
-> 
-> [...]
-> 
->> >
->> > NACK, this breaks if there is a mismatch from what is read from the
->> > hardware and what is presented in this table above. Either add it from the
->> > some bootloader or other boot code to this table reading from the
->> > hardware/firmware or find a way to link them without this.
->> >
->> > Sorry I had warned long back about this when such links were discussed
->> > as part of interconnect binding.
->> 
->> Not sure why this warrants a NACK, as this was consensus for mapping 
->> cpu
->> freq to DDR/L3 bandwidth votes. (We use the same solution on SDM845 
->> and
->> SC7180). The opp tables are optional and when specified puts in votes 
->> for
->> DDR/L3. In the future the table can be safely dropped when more useful
->> devfreq governors are upstreamed.
->> cpufreq: qcom: Don't add frequencies without an OPP
-> 
-> (You can always add commit sha to make it easy to search)
-> 
-> But I am not sure how this is related to the above commit anyways.
-> 
->> 
->> I guess your main concern for breakage is ^^ commit? The original 
->> design is
->> to list a super set of frequencies supported by all variants of the 
->> SoC
->> along with the required DDR/L3 bandwidth values. When we run into
->> non-documented frequency we just wouldn't put in bw votes for it which
->> should be fine since the entire opp_table is optional. If this is the 
->> reason
->> for the NACK I can try get it reverted with Matthias's ack.
-> 
-> No my main concern is this platform uses "qcom-cpufreq-hw" driver and 
-> the
-> fact that the OPPs are retrieved from the hardware lookup table 
-> invalidates
-> whatever we have in DT. In short it will be junk and becomes obsolete.
+On Thu, 22 Apr 2021 at 15:18, Christian L=C3=B6hle <CLoehle@hyperstone.com>=
+ wrote:
+>
+> Ignore the reported capacity if the card otherwise reports UHS support.
+>
+> Currently SDSC cards reporting UHS support except for the CCS do not run
+> through the voltage switch.
+> While strictly speaking a SDSC card cannot support UHS in compliance
+> with the standard, there is no good reason to throttle them that way.
 
-The table provides mapping to bandwidths
-which aren't available in the firmware
-though. In short we do have to store the
-mapping somewhere i.e. a mapping that
-lists all possible frequencies to its
-bandwidth requirements needs to be present
-and using a opp table with the interconnect
-bw bindings was the consensus reached.
+Maybe not, but I think the code just tries to conform to the SD spec.
 
-Given that a duplicate mapping that lists
-all possible frequencies to bw is inevitable
-and Qualcomm has a way of listing all the
-supported frequencies for the SoC, I feel
-that dt breakage in the future should be
-a non-concern. Not sure why you call it
-junk since it solves the perf/power
-requirements on SDM845/SC7180 SoCs. When
-it becomes obsolete it would mean that
-they are better devfreq governors available
-upstream and that's a good reason for the
-opp tables to go away.
+> Especially for pSLCs in practice such cards benefit greatly by this patch=
+,
+> as they can be new and UHS supporting, but must not lie about their CCS.
 
-> So what I suggested before is still valid. You simply can't have static
-> OPP tables in the DT for this platform. Do get some boot code to fetch 
-> the
-> same from the h/w LUT and patch to the DT or figure out any other way 
-> to
-> manage dynamically.
+Can you provide some concrete examples of SDSC cards that support UHS-I?
 
-moving the logic to boot loader doesn't
-magically fix your concerns though (since
-it would also need a superset of available
-frequencies). It will suffer from the same
-problems with an additional dependency on
-firmware propagation in case of breakages
-which is something you can avoid for the
-simple cpu based scaling solution.
+> The behaviour of linux-mmc for SDSC is deviating from the standard anyway
+> in such a case, as the card is treated as UHS card not supporting the
+> voltage switch in general.
+> Such a card will come up as
+> mmc0: new ultra high speed SDR25 SD card at address 0001.
+> Thus the subsystem will support CMD23 and others to the card.
+> But if we deviate from the standard anyway, then we might as well
+> not throttle SDSC to 25MB/s.
 
-> 
-> So NACK still stands for static addition of OPPs to the DT as in this 
-> patch.
+Not sure I understand this correctly? Can you elaborate a bit more, so
+I understand how we deviate from the SD spec here?
 
-I'll let Viresh take the call since this
-solution is already used on older SoCs.
+As far as I understand the spec, SDSC cards shouldn't support UHS-I.
+If we decide to deviate from the spec to support this anyway, at least
+we need to know about a couple of cards that actually supports this.
 
-> 
+Kind regards
+Uffe
+
+>
+> Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
+> ---
+>  drivers/mmc/core/sd.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+>
+> diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+> index 6fa51a6ed058..281ca2da8e0b 100644
+> --- a/drivers/mmc/core/sd.c
+> +++ b/drivers/mmc/core/sd.c
+> @@ -841,11 +841,10 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, =
+u32 *cid, u32 *rocr)
+>                 return err;
+>
+>         /*
+> -        * In case CCS and S18A in the response is set, start Signal Volt=
+age
+> -        * Switch procedure. SPI mode doesn't support CMD11.
+> +        * In case S18A in the response is set, start Signal Voltage Swit=
+ch
+> +        * procedure. SPI mode doesn't support CMD11.
+>          */
+> -       if (!mmc_host_is_spi(host) && rocr &&
+> -          ((*rocr & 0x41000000) =3D=3D 0x41000000)) {
+> +       if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
+>                 err =3D mmc_set_uhs_voltage(host, pocr);
+>                 if (err =3D=3D -EAGAIN) {
+>                         retries--;
 > --
-> Regards,
-> Sudeep
-
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum,
-a Linux Foundation Collaborative Project.
+> 2.31.1
+>
+> Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
+> Managing Directors: Dr. Jan Peter Berns.
+> Commercial register of local courts: Freiburg HRB381782
+>
