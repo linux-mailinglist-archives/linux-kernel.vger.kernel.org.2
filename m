@@ -2,110 +2,212 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 518BC3747D5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E59F3747DE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:12:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234607AbhEESHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:07:08 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:51260 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234699AbhEESFt (ORCPT
+        id S234300AbhEESMz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:12:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44357 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233946AbhEESMy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:05:49 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 145I4oiF022670;
-        Wed, 5 May 2021 13:04:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1620237890;
-        bh=voglt/7KPPYLxmIoYxRRKgvVDOk+aVkXcY+27aQZalQ=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=K1iQ0xebp3qm7TvCAVKd4h2bd7QUm3B+P/aE6OyfSMV1bgtjIvaLoGOrm6z6f+UAG
-         D4Y6gtXy7laHD2fK3vlA5U27qaQQLzmuy51Lv5z8Txu/iIu1Xz3Ssv79WC6MWEsoYj
-         8v0hgM2utrh1yKGS32z1B9spDaRtn97SFbmoe1Co=
-Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 145I4oJL062506
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 5 May 2021 13:04:50 -0500
-Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
- (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Wed, 5 May
- 2021 13:04:49 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
- (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
- Frontend Transport; Wed, 5 May 2021 13:04:49 -0500
-Received: from [10.250.234.148] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 145I4ksL068808;
-        Wed, 5 May 2021 13:04:47 -0500
-Subject: Re: [PATCH] dt-bindings: i2c: Move i2c-omap.txt to YAML format
-To:     Tony Lindgren <tony@atomide.com>
-CC:     Rob Herring <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
-        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, Nishanth Menon <nm@ti.com>
-References: <20210505065511.918-1-vigneshr@ti.com>
- <YJJGsGXBz56Nhe8z@atomide.com>
-From:   Vignesh Raghavendra <vigneshr@ti.com>
-Message-ID: <ade03294-6c1a-ce10-1ac9-c67c8e51b137@ti.com>
-Date:   Wed, 5 May 2021 23:34:46 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 5 May 2021 14:12:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620238316;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=nw/NXWJf7YefMV4xFftmS9WnDS1NhKlaE8hzMyBIij0=;
+        b=Ja9IWhvqR+R7g0HFM0Rot7+v4B9/Vnr+Q3gJqLhjodJ6G8kIhen2LvT4GL0QI2hdSp8Rrr
+        fTmQrz1DXlygp4CVYbJp5hPze+BqWhQXsAvahBVgX3FGTexniw3YMBN5q6/dxsS9n9N+lN
+        1FahD9MjAUzeAmYwtyahpSYNZVvP8tg=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-160-W0O7LhssOgOuhnUW3CZB3g-1; Wed, 05 May 2021 14:11:55 -0400
+X-MC-Unique: W0O7LhssOgOuhnUW3CZB3g-1
+Received: by mail-qv1-f71.google.com with SMTP id d11-20020a0cdb0b0000b02901c0da4391d5so2281445qvk.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 11:11:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=nw/NXWJf7YefMV4xFftmS9WnDS1NhKlaE8hzMyBIij0=;
+        b=su2XyEKxSJL41aM4xliAJ0q9kaGCvAWAdSdFD9/+rwE784uZZ3x+pSE+8eqPDf8loO
+         Y9MWK8leCYp2WPB1OwYryfb4d3ahyF7Isi3eiUSiUEAyy7lYWi8crhUrHj+E42iQ/cx/
+         pwqpTcLV+cTvcne63NPCuUJCH89YAxK0yQXT3sGDH8xmL/x3l55vQhfBW5HZLOTlXKHY
+         KnlO9pkWTCLr21nAXdkJmIHPJ9qCiHKvK1GcULh8YxkEzerh+BAUyUU1m4Ntynehy83X
+         i7HgSr6gkqvneteZhiTkLArZWFR8pSzrJJ/rfgRic52+Zc9SgInxAvlqKXJum8pFmVXv
+         y5+Q==
+X-Gm-Message-State: AOAM530BoonFvHdJRTgYwIz0mVNgaBYfmIdFVB5/mGqzaeEtjjAL+Tyu
+        bQCetA5hdvASNxfZIny99h8COHOW0qySyPPIEh5ps6wb6whu+kbx4bBzm4s6mLoCa3yHm4oehnG
+        kKokdxw97sIXfnOf9H/lj1HvM
+X-Received: by 2002:a37:de14:: with SMTP id h20mr53708qkj.34.1620238314917;
+        Wed, 05 May 2021 11:11:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwduF4OFPouA+pHzOJt58325444lPg2GI9Z612zESLQpE/ZW3x/CASG2csLuEiKir1BNl4LYg==
+X-Received: by 2002:a37:de14:: with SMTP id h20mr53688qkj.34.1620238314589;
+        Wed, 05 May 2021 11:11:54 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id z4sm5539059qtq.34.2021.05.05.11.11.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 11:11:54 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Shakeel Butt <shakeelb@google.com>,
+        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505154613.17214-1-longman@redhat.com>
+ <20210505154613.17214-3-longman@redhat.com>
+ <YJLWN6bNBYyKRPEN@carbon.DHCP.thefacebook.com>
+Message-ID: <f14a263b-10ea-ef2b-eefa-066591a4b637@redhat.com>
+Date:   Wed, 5 May 2021 14:11:52 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <YJJGsGXBz56Nhe8z@atomide.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <YJLWN6bNBYyKRPEN@carbon.DHCP.thefacebook.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On 5/5/21 1:30 PM, Roman Gushchin wrote:
+> On Wed, May 05, 2021 at 11:46:13AM -0400, Waiman Long wrote:
+>> There are currently two problems in the way the objcg pointer array
+>> (memcg_data) in the page structure is being allocated and freed.
+>>
+>> On its allocation, it is possible that the allocated objcg pointer
+>> array comes from the same slab that requires memory accounting. If this
+>> happens, the slab will never become empty again as there is at least
+>> one object left (the obj_cgroup array) in the slab.
+>>
+>> When it is freed, the objcg pointer array object may be the last one
+>> in its slab and hence causes kfree() to be called again. With the
+>> right workload, the slab cache may be set up in a way that allows the
+>> recursive kfree() calling loop to nest deep enough to cause a kernel
+>> stack overflow and panic the system.
+>>
+>> One way to solve this problem is to split the kmalloc-<n> caches
+>> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
+>> (KMALLOC_NORMAL) caches for non-accounted objects only and a new set of
+>> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
+>> the other caches can still allow a mix of accounted and non-accounted
+>> objects.
+> I agree that it's likely the best approach here. Thanks for discovering
+> and fixing the problem!
+>
+>> With this change, all the objcg pointer array objects will come from
+>> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+>> both the recursive kfree() problem and non-freeable slab problem are
+>> gone. Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer
+>> have mixed accounted and unaccounted objects, this will slightly reduce
+>> the number of objcg pointer arrays that need to be allocated and save
+>> a bit of memory.
+> Unfortunately the positive effect of this change will be likely
+> reversed by a lower utilization due to a larger number of caches.
 
-On 5/5/21 12:48 PM, Tony Lindgren wrote:
-> Hi,
-> 
-> * Vignesh Raghavendra <vigneshr@ti.com> [210505 06:55]:
->> Convert i2c-omap.txt to YAML schema for better checks and documentation.
-> 
-> Nice to see this happening, few minor comments below on handling the
-> legacy devices.
-> 
->> +properties:
->> +  compatible:
->> +    oneOf:
->> +      - const: ti,omap2420-i2c
->> +      - const: ti,omap2430-i2c
->> +      - const: ti,omap3-i2c
->> +      - const: ti,omap4-i2c
->> +      - items:
->> +          - enum:
->> +              - ti,am4372-i2c
->> +              - ti,am64-i2c
->> +              - ti,am654-i2c
->> +              - ti,j721e-i2c
->> +          - const: ti,omap4-i2c
-> 
-> I wonder if we should just add all the compatible options to the
-> driver, and have all these as oneOf?
-> 
+That is also true, will mention that.
 
-This would also need updates to dts files too. Also not a fan of adding
-all compatibles to driver code unless required.
+>
+> Btw, I wonder if we also need a change in the slab caches merging procedure?
+> KMALLOC_NORMAL caches should not be merged with caches which can potentially
+> include accounted objects.
 
->> +  ti,hwmods:
->> +    description:
->> +      Must be "i2c<n>", n being the instance number (1-based)
->> +    $ref: /schemas/types.yaml#/definitions/string
->> +    items:
->> +      - pattern: "^i2c([1-9])$"
-> 
-> The ti,hwmods is a legacy property that is only needed for omap2/3 and
-> ti81xx. At least the description should mention that to avoid folks
-> adding it accidentally.
-> 
+Thank for catching this omission.
 
-Sure, will do in v2. Thanks for the review!
+I will take a look and modify the merging procedure in a new patch. 
+Accounting is usually specified at kmem_cache_create() time. Though, I 
+did find one instance of setting ACCOUNT flag in kmem_cache_alloc(), I 
+will ignore this case and merge accounted, but unreclaimable caches to 
+KMALLOC_CGROUP.
 
+>
+>> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
+>> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
+>> will include the newly added caches without change.
+>>
+>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   include/linux/slab.h | 42 ++++++++++++++++++++++++++++++++++--------
+>>   mm/slab_common.c     | 23 +++++++++++++++--------
+>>   2 files changed, 49 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/include/linux/slab.h b/include/linux/slab.h
+>> index 0c97d788762c..f2d9ebc34f5c 100644
+>> --- a/include/linux/slab.h
+>> +++ b/include/linux/slab.h
+>> @@ -305,9 +305,16 @@ static inline void __check_heap_object(const void *ptr, unsigned long n,
+>>   /*
+>>    * Whenever changing this, take care of that kmalloc_type() and
+>>    * create_kmalloc_caches() still work as intended.
+>> + *
+>> + * KMALLOC_NORMAL is for non-accounted objects only whereas KMALLOC_CGROUP
+>> + * is for accounted objects only. All the other kmem caches can have both
+>> + * accounted and non-accounted objects.
+>>    */
+>>   enum kmalloc_cache_type {
+>>   	KMALLOC_NORMAL = 0,
+>> +#ifdef CONFIG_MEMCG_KMEM
+>> +	KMALLOC_CGROUP,
+>> +#endif
+>>   	KMALLOC_RECLAIM,
+>>   #ifdef CONFIG_ZONE_DMA
+>>   	KMALLOC_DMA,
+>> @@ -315,28 +322,47 @@ enum kmalloc_cache_type {
+>>   	NR_KMALLOC_TYPES
+>>   };
+>>   
+>> +#ifndef CONFIG_MEMCG_KMEM
+>> +#define KMALLOC_CGROUP	KMALLOC_NORMAL
+>> +#endif
+>> +#ifndef CONFIG_ZONE_DMA
+>> +#define KMALLOC_DMA	KMALLOC_NORMAL
+>> +#endif
+>> +
+>>   #ifndef CONFIG_SLOB
+>>   extern struct kmem_cache *
+>>   kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
+>>   
+>> +/*
+>> + * Define gfp bits that should not be set for KMALLOC_NORMAL.
+>> + */
+>> +#define KMALLOC_NOT_NORMAL_BITS					\
+>> +	(__GFP_RECLAIMABLE |					\
+>> +	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
+>> +	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
+>> +
+>>   static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+>>   {
+>> -#ifdef CONFIG_ZONE_DMA
+>>   	/*
+>>   	 * The most common case is KMALLOC_NORMAL, so test for it
+>>   	 * with a single branch for both flags.
+>>   	 */
+>> -	if (likely((flags & (__GFP_DMA | __GFP_RECLAIMABLE)) == 0))
+>> +	if (likely((flags & KMALLOC_NOT_NORMAL_BITS) == 0))
+>>   		return KMALLOC_NORMAL;
+> Likely KMALLOC_CGROUP is also very popular, so maybe we want to change the
+> optimization here a bit.
 
-Regards
-Vignesh
+I doubt this optimization is really noticeable and whether 
+KMALLOC_CGROUP is really popular will depend on the workloads. I am not 
+planning to spend additional time to micro-optimize this part of the code.
+
+Cheers,
+Longman
+
