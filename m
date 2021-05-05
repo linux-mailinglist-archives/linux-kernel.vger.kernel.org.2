@@ -2,204 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4177374216
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4FB374056
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:34:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235398AbhEEQn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:43:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235485AbhEEQjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:39:45 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 146A261606;
-        Wed,  5 May 2021 16:34:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232452;
-        bh=UsjxBsvXXEJqygexlnJloIBP1VVz4OTDGHbsvRi/5i0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W4X2r6Qzob9ItqGCETg1aH6UjyNwUsjDw+FOmkNZCwyTmFMLQRuEUt+NAXr3fGZ4u
-         /BXG8TmT+0BDFnnjxur57rpOm7wqzbRVCWdMQjK4Duk/iJTL9GGgE4w08h/GFOyG33
-         qOVyHQS/YZdNqaLWiy6XkPAbMXLA/QNB/ovF05TNDfoXkfJLp1ezXrtl6ZJUeEwNtG
-         dAVdeiZGojPS55UaRyGEtcIPVZj94r+HqHOSjOnv9yj15hsl18WruqityrcSsh/LA/
-         h+3OK7vzkzXOwq+DMqai0fkEZSUPbnYH56VHTMVDrydibk40faoS6w6sIBvt/8dVUx
-         u05kprVTOK5Sw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Petr Mladek <pmladek@suse.com>, Ingo Molnar <mingo@kernel.org>,
-        Laurence Oberman <loberman@redhat.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        id S234187AbhEEQe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:34:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42962 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234318AbhEEQc6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:32:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620232321;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zS3Ldg5vG9J3xehl8TqywjLJpgOH5ZU3rYG0PyHSqeM=;
+        b=YRABAgPUIhzaLF2+l6vFBapI+P9K7zrfcyY0lUdfnEAjER6ZwwewrGDYnUnNlSnlArU02C
+        D7nTlg16lp+/LXjYjExte0llzylrwYFYcI1nlHOWugbhY9r6hu/5Y1QMHczV+EvL0T+4QW
+        EGGiK2umny5c4Y/9IZVwq57qBzdEg+g=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-444-TvhvBcFgOOiJ4n2ubR7Jpw-1; Wed, 05 May 2021 12:32:00 -0400
+X-MC-Unique: TvhvBcFgOOiJ4n2ubR7Jpw-1
+Received: by mail-qk1-f199.google.com with SMTP id d15-20020a05620a136fb02902e9e93c69c8so1513896qkl.23
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:32:00 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=zS3Ldg5vG9J3xehl8TqywjLJpgOH5ZU3rYG0PyHSqeM=;
+        b=ibSKyN7KzkEGNULtS8piU0w76AmKiRZasWsd3u6ZPjeCkHDEnu941t1idlPVKYP0Xn
+         1d8kPYTNC8meSfxGAHn59DPCf3ddPKyPLd3G5K9pp1ajevjBmu1V0i71FxRsvifrFyOE
+         q/9OhoM8AUYK0SGTSyumBAjwx6P4KpY9FCGoR/RjEyjENBEJ420GHRBWoLzQuv0IUg+F
+         t1C7Lf0mS+RmvAR07CJMOCY6nwfiM8WqDJXnhDF1K7MSM0Yt9kbTICxO+SecETXtrKoe
+         CM5ZEX8bZxt+Txmw35VnCDfYyZlxa6afvkoa8R8Z2lEgJuFnOJ4/Ug3EgN1whEDpDeNw
+         TxHg==
+X-Gm-Message-State: AOAM5307uBTS3p37I5KQLoufmwbGXrlF3a+SdkcHT5lmHKN4xmI3Kg30
+        eOyTID09OywgCsYCPlN+u7/MmU7xYkqdW5RhG9bHYA9aMgq8AKOgMOrzrIxAs0Yr2mfzBjXQXDu
+        X3YgysmXNjQzgDdXWlZLDFFvw
+X-Received: by 2002:a37:ae04:: with SMTP id x4mr30811411qke.245.1620232319466;
+        Wed, 05 May 2021 09:31:59 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxzapoUleiXdFkf8r1cnEmwbpWr9agCgZfPPLWunF6QFzhEPni5JL8P9LUWVyMAcGIOFvgnxQ==
+X-Received: by 2002:a37:ae04:: with SMTP id x4mr30811377qke.245.1620232318969;
+        Wed, 05 May 2021 09:31:58 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id j9sm6455868qtl.15.2021.05.05.09.31.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 09:31:58 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.12 116/116] watchdog: cleanup handling of false positives
-Date:   Wed,  5 May 2021 12:31:24 -0400
-Message-Id: <20210505163125.3460440-116-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505163125.3460440-1-sashal@kernel.org>
-References: <20210505163125.3460440-1-sashal@kernel.org>
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+References: <20210505154613.17214-1-longman@redhat.com>
+ <20210505154613.17214-3-longman@redhat.com>
+ <CALvZod7TzBVdwdCMChFNEZqYHxQUWBVfvWwtuAH-4rh_b4XRKw@mail.gmail.com>
+Message-ID: <dbeb319b-81bb-ac4f-25f4-dd275834cd98@redhat.com>
+Date:   Wed, 5 May 2021 12:31:57 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CALvZod7TzBVdwdCMChFNEZqYHxQUWBVfvWwtuAH-4rh_b4XRKw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Petr Mladek <pmladek@suse.com>
+On 5/5/21 12:17 PM, Shakeel Butt wrote:
+> On Wed, May 5, 2021 at 8:47 AM Waiman Long <longman@redhat.com> wrote:
+>> There are currently two problems in the way the objcg pointer array
+>> (memcg_data) in the page structure is being allocated and freed.
+>>
+>> On its allocation, it is possible that the allocated objcg pointer
+>> array comes from the same slab that requires memory accounting. If this
+>> happens, the slab will never become empty again as there is at least
+>> one object left (the obj_cgroup array) in the slab.
+>>
+>> When it is freed, the objcg pointer array object may be the last one
+>> in its slab and hence causes kfree() to be called again. With the
+>> right workload, the slab cache may be set up in a way that allows the
+>> recursive kfree() calling loop to nest deep enough to cause a kernel
+>> stack overflow and panic the system.
+>>
+>> One way to solve this problem is to split the kmalloc-<n> caches
+>> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
+>> (KMALLOC_NORMAL) caches for non-accounted objects only and a new set of
+>> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
+>> the other caches can still allow a mix of accounted and non-accounted
+>> objects.
+>>
+>> With this change, all the objcg pointer array objects will come from
+>> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+>> both the recursive kfree() problem and non-freeable slab problem are
+>> gone. Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer
+>> have mixed accounted and unaccounted objects, this will slightly reduce
+>> the number of objcg pointer arrays that need to be allocated and save
+>> a bit of memory.
+>>
+>> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
+>> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
+>> will include the newly added caches without change.
+>>
+>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> One nit below and after incorporating Vlastimil's suggestions:
+>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>
+>> ---
+>>   include/linux/slab.h | 42 ++++++++++++++++++++++++++++++++++--------
+>>   mm/slab_common.c     | 23 +++++++++++++++--------
+>>   2 files changed, 49 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/include/linux/slab.h b/include/linux/slab.h
+>> index 0c97d788762c..f2d9ebc34f5c 100644
+>> --- a/include/linux/slab.h
+>> +++ b/include/linux/slab.h
+>> @@ -305,9 +305,16 @@ static inline void __check_heap_object(const void *ptr, unsigned long n,
+>>   /*
+>>    * Whenever changing this, take care of that kmalloc_type() and
+>>    * create_kmalloc_caches() still work as intended.
+>> + *
+>> + * KMALLOC_NORMAL is for non-accounted objects only whereas KMALLOC_CGROUP
+>> + * is for accounted objects only.
+> I think you can say "KMALLOC_CGROUP is for accounted and unreclaimable
+> objects only".
+>
+Thanks for the suggestion. Will incorporate that.
 
-[ Upstream commit 9bf3bc949f8aeefeacea4b1198db833b722a8e27 ]
-
-Commit d6ad3e286d2c ("softlockup: Add sched_clock_tick() to avoid kernel
-warning on kgdb resume") introduced touch_softlockup_watchdog_sync().
-
-It solved a problem when the watchdog was touched in an atomic context,
-the timer callback was proceed right after releasing interrupts, and the
-local clock has not been updated yet.  In this case, sched_clock_tick()
-was called in watchdog_timer_fn() before updating the timer.
-
-So far so good.
-
-Later commit 5d1c0f4a80a6 ("watchdog: add check for suspended vm in
-softlockup detector") added two kvm_check_and_clear_guest_paused()
-calls.  They touch the watchdog when the guest has been sleeping.
-
-The code makes my head spin around.
-
-Scenario 1:
-
-    + guest did sleep:
-	+ PVCLOCK_GUEST_STOPPED is set
-
-    + 1st watchdog_timer_fn() invocation:
-	+ the watchdog is not touched yet
-	+ is_softlockup() returns too big delay
-	+ kvm_check_and_clear_guest_paused():
-	   + clear PVCLOCK_GUEST_STOPPED
-	   + call touch_softlockup_watchdog_sync()
-		+ set SOFTLOCKUP_DELAY_REPORT
-		+ set softlockup_touch_sync
-	+ return from the timer callback
-
-      + 2nd watchdog_timer_fn() invocation:
-
-	+ call sched_clock_tick() even though it is not needed.
-	  The timer callback was invoked again only because the clock
-	  has already been updated in the meantime.
-
-	+ call kvm_check_and_clear_guest_paused() that does nothing
-	  because PVCLOCK_GUEST_STOPPED has been cleared already.
-
-	+ call update_report_ts() and return. This is fine. Except
-	  that sched_clock_tick() might allow to set it already
-	  during the 1st invocation.
-
-Scenario 2:
-
-	+ guest did sleep
-
-	+ 1st watchdog_timer_fn() invocation
-	    + same as in 1st scenario
-
-	+ guest did sleep again:
-	    + set PVCLOCK_GUEST_STOPPED again
-
-	+ 2nd watchdog_timer_fn() invocation
-	    + SOFTLOCKUP_DELAY_REPORT is set from 1st invocation
-	    + call sched_clock_tick()
-	    + call kvm_check_and_clear_guest_paused()
-		+ clear PVCLOCK_GUEST_STOPPED
-		+ call touch_softlockup_watchdog_sync()
-		    + set SOFTLOCKUP_DELAY_REPORT
-		    + set softlockup_touch_sync
-	    + call update_report_ts() (set real timestamp immediately)
-	    + return from the timer callback
-
-	+ 3rd watchdog_timer_fn() invocation
-	    + timestamp is set from 2nd invocation
-	    + softlockup_touch_sync is set but not checked because
-	      the real timestamp is already set
-
-Make the code more straightforward:
-
-1. Always call kvm_check_and_clear_guest_paused() at the very
-   beginning to handle PVCLOCK_GUEST_STOPPED. It touches the watchdog
-   when the quest did sleep.
-
-2. Handle the situation when the watchdog has been touched
-   (SOFTLOCKUP_DELAY_REPORT is set).
-
-   Call sched_clock_tick() when touch_*sync() variant was used. It makes
-   sure that the timestamp will be up to date even when it has been
-   touched in atomic context or quest did sleep.
-
-As a result, kvm_check_and_clear_guest_paused() is called on a single
-location.  And the right timestamp is always set when returning from the
-timer callback.
-
-Link: https://lkml.kernel.org/r/20210311122130.6788-7-pmladek@suse.com
-Signed-off-by: Petr Mladek <pmladek@suse.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: Laurence Oberman <loberman@redhat.com>
-Cc: Michal Hocko <mhocko@suse.com>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Vincent Whitchurch <vincent.whitchurch@axis.com>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
-Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/watchdog.c | 20 ++++++++------------
- 1 file changed, 8 insertions(+), 12 deletions(-)
-
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 8cf0678378d2..7c397907d0e9 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -376,7 +376,14 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 	/* .. and repeat */
- 	hrtimer_forward_now(hrtimer, ns_to_ktime(sample_period));
- 
--	/* Reset the interval when touched externally by a known slow code. */
-+	/*
-+	 * If a virtual machine is stopped by the host it can look to
-+	 * the watchdog like a soft lockup. Check to see if the host
-+	 * stopped the vm before we process the timestamps.
-+	 */
-+	kvm_check_and_clear_guest_paused();
-+
-+	/* Reset the interval when touched by known problematic code. */
- 	if (period_ts == SOFTLOCKUP_DELAY_REPORT) {
- 		if (unlikely(__this_cpu_read(softlockup_touch_sync))) {
- 			/*
-@@ -387,10 +394,7 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 			sched_clock_tick();
- 		}
- 
--		/* Clear the guest paused flag on watchdog reset */
--		kvm_check_and_clear_guest_paused();
- 		update_report_ts();
--
- 		return HRTIMER_RESTART;
- 	}
- 
-@@ -402,14 +406,6 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
- 	 */
- 	duration = is_softlockup(touch_ts, period_ts);
- 	if (unlikely(duration)) {
--		/*
--		 * If a virtual machine is stopped by the host it can look to
--		 * the watchdog like a soft lockup, check to see if the host
--		 * stopped the vm before we issue the warning
--		 */
--		if (kvm_check_and_clear_guest_paused())
--			return HRTIMER_RESTART;
--
- 		/*
- 		 * Prevent multiple soft-lockup reports if one cpu is already
- 		 * engaged in dumping all cpu back traces.
--- 
-2.30.2
+Cheers,
+Longman
 
