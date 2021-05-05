@@ -2,95 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 884AF3736B8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52EAF3736BA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232249AbhEEJFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:05:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50120 "EHLO
+        id S232269AbhEEJF0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:05:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50184 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231637AbhEEJFI (ORCPT
+        with ESMTP id S231637AbhEEJFZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:05:08 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FD4CC061574;
-        Wed,  5 May 2021 02:04:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hZi4ewpCK+lWJiEHygFzyAaJ5g9okvi4iFAZbz7URD4=; b=S/TjwcGJW4mvEfpR6nIld3U6i0
-        CyIjLMHdu64BoRAxRHSbjt2wxX48/d8evhD6/+8avByoarKoSYTR3LLQclubCjpyDqgDmspHR9la0
-        afjvdQWFEp36KlSS0i6u+v/yf9Zzbfrh3m7KgL16hwi1SV5q0/So85SPgWXf+21kQbTm0C0vCfjyS
-        OrLOPfOILtlKYP+BiNTgXrso+kwUB1dYyWrJItONgGFUOTgS/p8PQ8+EtarNSbhIloRZPhEUYJLyU
-        OBP5mnDLppgnZj2bEgbmv2XU9BzIukTe2rgUMEyb7R7bDi/yNFClnohIvb30ZREzJWBbZMRQlrHbO
-        fVpC+R1g==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1leDRq-000gJa-F5; Wed, 05 May 2021 09:04:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7BEF93001CD;
-        Wed,  5 May 2021 11:04:01 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 62D54200CAA24; Wed,  5 May 2021 11:04:01 +0200 (CEST)
-Date:   Wed, 5 May 2021 11:04:01 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Florian Weimer <fweimer@redhat.com>
-Cc:     Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org,
-        Andi Kleen <andi@firstfloor.org>,
-        linux-toolchains@vger.kernel.org
-Subject: Re: [PATCH] sched: Work around undefined behavior in sched class
- checking
-Message-ID: <YJJfgaM5ijI8iNKy@hirez.programming.kicks-ass.net>
-References: <20210505033945.1282851-1-ak@linux.intel.com>
- <YJI/OwoflyY2IXvf@hirez.programming.kicks-ass.net>
- <875yzxh8j8.fsf@oldenburg.str.redhat.com>
+        Wed, 5 May 2021 05:05:25 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2AC2DC06174A;
+        Wed,  5 May 2021 02:04:29 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id fa21-20020a17090af0d5b0290157eb6b590fso477679pjb.5;
+        Wed, 05 May 2021 02:04:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UR6pLT82MvBPpTBxMD4qnCZSm5lvjqbURbGKB/uGa0o=;
+        b=RD1HdyFeiID1WJ4ZpSwuZIBxaaupGQiOuDajgFgRIf3qQGLTM2rtM/8xz744gv1kc0
+         Pzdlb8qBOvpctFhIjUwrc4pyxl/g7rkaVMBHNtlqwvSpswFZKbrmwngo9kteNihtzog+
+         Qha0FIEPdhDaqRcUu0MDb18uWK1HEV37kfluacBI5Xu1dWS2mqGrSsfiX7L+SLNmHMVh
+         zHGGV+gjRUIvZ8/241NAR6To9f8odlGFuyRK+obkec4e7hpSU9NjxsixLnYvOljWBl2H
+         99f2Vs5PsF8wsbyIFoT0e6an3octbXrdopOO3kkLoYYBoiNTUv8Xd9HdQO5UweQSEhLF
+         4M3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UR6pLT82MvBPpTBxMD4qnCZSm5lvjqbURbGKB/uGa0o=;
+        b=DFwx3M8GKtkHh2bTfXWMLxbSXBgA/UipMbKzbUJYHsErodDjhXXbGPRJfNXQvuf88j
+         TxYvsoP3O7Q8w5yJ339sPu4Fa5/vc5Cqmw+XPtbF1EbTXK0jTYWuyfjSsUGjasM4W3lc
+         1DUhSyaLO51gT8gLPixvW8HlL5XXMGgDohKC60qxFLuD3Dx4xaYN+Bd1ICMDjopsjA41
+         AkcUFaycigp3zPIY3NK0t2g1Ci352Qpkb7HkCcCgb3CYOxhcLHjBgErCU0yGvIWlKqlC
+         +kN/uJqetDnuKBqw1Kjr1DMoR74AZ/1ZhiUfiNWJZifXrtThwwBWnD5IZky5RzXsIIyk
+         U3Mg==
+X-Gm-Message-State: AOAM530LPvu9l16/VDOGLKh57S0MhgKSh+QyBHlw8m51TJbiO6qLUox9
+        wkmlHqFlMpOasYoMD9nMaZM4G/cgnCK0YQsHLFQ=
+X-Google-Smtp-Source: ABdhPJy37MFUZIfct1ayEPii9ckUJevLQQQw8cYUNVCvhdgivFGprKV3GNbnYYiHkIXu+08hF6OzglgL+xtL+yoD020=
+X-Received: by 2002:a17:902:ecc6:b029:ee:af8f:899e with SMTP id
+ a6-20020a170902ecc6b02900eeaf8f899emr24609444plh.21.1620205468592; Wed, 05
+ May 2021 02:04:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <875yzxh8j8.fsf@oldenburg.str.redhat.com>
+References: <20210504174019.2134652-1-linux@roeck-us.net> <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
+ <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net> <20210505093235.00007c38@Huawei.com>
+In-Reply-To: <20210505093235.00007c38@Huawei.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 5 May 2021 12:04:12 +0300
+Message-ID: <CAHp75Vdy2DTQ_GG6f7zY3WtgoC7D-Kq-XomfV8+L6NNLMtLJuw@mail.gmail.com>
+Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on CONFIG_ACPI
+To:     Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc:     Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 10:47:07AM +0200, Florian Weimer wrote:
-> * Peter Zijlstra:
-> 
-> > On Tue, May 04, 2021 at 08:39:45PM -0700, Andi Kleen wrote:
-> >> From: Andi Kleen <andi@firstfloor.org>
-> >> 
-> >> The scheduler initialization code checks that the scheduling
-> >> classes are consecutive in memory by comparing the end
-> >> addresses with the next address.
-> >> 
-> >> Technically in ISO C comparing symbol addresseses outside different objects
-> >> is undefined. With LTO gcc 10 tries to exploits this and creates an
-> >> unconditional BUG_ON in the scheduler initialization, resulting
-> >> in a boot hang.
-> >> 
-> >> Use RELOC_HIDE to make this work. This hides the symbols from gcc,
-> >> so the optimizer won't make these assumption. I also split
-> >> the BUG_ONs in multiple.
-> >
-> > Urgh, that insanity again :/ Can't we pretty please get a GCC flag to
-> > disable that?
-> 
-> Context:
-> 
->   <https://lore.kernel.org/lkml/20210505033945.1282851-1-ak@linux.intel.com/>
-> 
-> Obviously, GCC doesn't do this in general.  Would you please provide a
-> minimal test case?
+On Wed, May 5, 2021 at 11:34 AM Jonathan Cameron
+<Jonathan.Cameron@huawei.com> wrote:
+> On Tue, 4 May 2021 11:00:52 -0700
+> Guenter Roeck <linux@roeck-us.net> wrote:
+> > On 5/4/21 10:44 AM, Andy Shevchenko wrote:
+> > > On Tue, May 4, 2021 at 8:40 PM Guenter Roeck <linux@roeck-us.net> wrote:
 
-Andi has this GCC-LTO patch-set that triggers this, but the thing I'd
-like fixed is the UB mentioned above. Not this particular instance.
+> > I'll resend and let you add the tag, and send a similar patch
+> > for STK8312. I'll wait until tomorrow, though - I sent a number of
+> > patches today already, and I want to avoid yet another "account
+> > suspended" notice from gmail.
+>
+> If you find some valid ACPI entries that are hitting this problem,
+> I'd prefer we just got rid of the ACPI_PTR() usecases rather than
+> added IFDEF magic.
 
-And, we've had the problem before, see all the RELOC_HIDE crud. Having
-this pointer arith outside object be UB is just really annoying. And in
-the spirit of UB bad, can we please get a flag to remove the UB and have
-it do the obvious, just do the arithmetic and don't do daft things.
+Agree,
 
-Pretty please.
+> The space wasted by having these is trivial and I'd rather not
+> introduce ifdef around any of these tables.
+
+> Dropping the ones we are fairly sure are spurious is even better!
+
+For the record, I have checked all three Guenter pointed out and to me
+all of them sounds like fake (two from the same author). So, I can
+deduce that if we have same author for a few looking very suspicious
+ACPI IDs, they are quite likely fake and must be removed sooner than
+later.
+
+-- 
+With Best Regards,
+Andy Shevchenko
