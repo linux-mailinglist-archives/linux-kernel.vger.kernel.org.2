@@ -2,112 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87F8C373632
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:24:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41932373637
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:24:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231592AbhEEIZB convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 May 2021 04:25:01 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:57394 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230491AbhEEIY6 (ORCPT
+        id S231931AbhEEIZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 04:25:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31972 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231858AbhEEIZW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 04:24:58 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-246-t31SIAGZMKGhnCVP98Zw3A-1; Wed, 05 May 2021 09:23:55 +0100
-X-MC-Unique: t31SIAGZMKGhnCVP98Zw3A-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 09:23:55 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 5 May 2021 09:23:55 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Florian Weimer' <fweimer@redhat.com>,
-        "Alejandro Colomar (man-pages)" <alx.manpages@gmail.com>
-CC:     Zack Weinberg <zackw@panix.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        linux-man <linux-man@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        glibc <libc-alpha@sourceware.org>, GCC <gcc-patches@gcc.gnu.org>,
-        bpf <bpf@vger.kernel.org>, Joseph Myers <joseph@codesourcery.com>
-Subject: RE: [RFC v2] bpf.2: Use standard types and attributes
-Thread-Topic: [RFC v2] bpf.2: Use standard types and attributes
-Thread-Index: AQHXQR4JneAG95ru70e6btooWxCDq6rUiRug
-Date:   Wed, 5 May 2021 08:23:55 +0000
-Message-ID: <a17b3a3c7eff46829666d2b07adda0be@AcuMS.aculab.com>
-References: <20210423230609.13519-1-alx.manpages@gmail.com>
-        <20210504110519.16097-1-alx.manpages@gmail.com>
-        <CAADnVQLdW=jH1CUP02jokEu3Sh+=xKsCXvjA19kfz7KOn9mzkA@mail.gmail.com>
-        <YJFZHW2afbAMVOmE@kroah.com>    <69fb22e0-84bd-47fb-35b5-537a7d39c692@gmail.com>
-        <YJFxArfp8wN3ILJb@kroah.com>
-        <CAKCAbMg_eRCsD-HYmryL8XEuZcaM1Qdfp4XD85QKT6To+h3QcQ@mail.gmail.com>
-        <6740a229-842e-b368-86eb-defc786b3658@gmail.com>
- <87r1imgu5g.fsf@oldenburg.str.redhat.com>
-In-Reply-To: <87r1imgu5g.fsf@oldenburg.str.redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 5 May 2021 04:25:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620203066;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=BGsu3FEFRIesmc2ErwraLa3SbQ5oDTNKTYIfbpQOouA=;
+        b=AIXAdQvVeDkKmVP9O46/jDGamKV/d+zhtl9BAZrWE6OTuLu6DAC604JBcqd5aL7jhNUfeM
+        rpNabGctb2QS3fHb6Mu17lGurqb8wXukKqZTxZ72uuqhkej03FsJ3JZ0hbfBdIJsTMBNgI
+        0l2uTpLvWDz4t+MZcKV3QlxAASY/tBE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-480-1t92TdhMNrWMziXgyKVJKA-1; Wed, 05 May 2021 04:24:22 -0400
+X-MC-Unique: 1t92TdhMNrWMziXgyKVJKA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C6F7D6D4F3;
+        Wed,  5 May 2021 08:24:21 +0000 (UTC)
+Received: from starship (unknown [10.40.192.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 8B05E5D9D5;
+        Wed,  5 May 2021 08:24:19 +0000 (UTC)
+Message-ID: <ff72dc0172cfdef228e63d766cb37e417cc4334d.camel@redhat.com>
+Subject: Re: [PATCH 2/4] KVM: nVMX: Properly pad 'struct
+ kvm_vmx_nested_state_hdr'
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Date:   Wed, 05 May 2021 11:24:18 +0300
+In-Reply-To: <20210503150854.1144255-3-vkuznets@redhat.com>
+References: <20210503150854.1144255-1-vkuznets@redhat.com>
+         <20210503150854.1144255-3-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Florian Weimer
-> Sent: 04 May 2021 20:46
+On Mon, 2021-05-03 at 17:08 +0200, Vitaly Kuznetsov wrote:
+> Eliminate the probably unwanted hole in 'struct kvm_vmx_nested_state_hdr':
 > 
-> * Alejandro Colomar:
+> Pre-patch:
+> struct kvm_vmx_nested_state_hdr {
+>         __u64                      vmxon_pa;             /*     0     8 */
+>         __u64                      vmcs12_pa;            /*     8     8 */
+>         struct {
+>                 __u16              flags;                /*    16     2 */
+>         } smm;                                           /*    16     2 */
 > 
-> > The thing is, in all of those threads, the only reasons to avoid
-> > <stdint.h> types in the kernel (at least, the only explicitly
-> > mentioned ones) are (a bit simplified, but this is the general idea of
-> > those threads):
-> >
-> > * Possibly breaking something in such a big automated change.
-> > * Namespace collision with userspace (the C standard allows defining
-> >   uint32_t for nefarious purposes as long as you don't include
-> >  <stdint.h>.   POSIX prohibits that, though)
-> > * Uglier
+>         /* XXX 2 bytes hole, try to pack */
 > 
-> __u64 can't be formatted with %llu on all architectures.  That's not
-> true for uint64_t, where you have to use %lu on some architectures to
-> avoid compiler warnings (and technically undefined behavior).  There are
-> preprocessor macros to get the expected format specifiers, but they are
-> clunky.  I don't know if the problem applies to uint32_t.  It does
-> happen with size_t and ptrdiff_t on 32-bit targets (both vary between
-> int and long).
+>         __u32                      flags;                /*    20     4 */
+>         __u64                      preemption_timer_deadline; /*    24     8 */
+> };
+> 
+> Post-patch:
+> struct kvm_vmx_nested_state_hdr {
+>         __u64                      vmxon_pa;             /*     0     8 */
+>         __u64                      vmcs12_pa;            /*     8     8 */
+>         struct {
+>                 __u16              flags;                /*    16     2 */
+>         } smm;                                           /*    16     2 */
+>         __u16                      pad;                  /*    18     2 */
+>         __u32                      flags;                /*    20     4 */
+>         __u64                      preemption_timer_deadline; /*    24     8 */
+> };
+> 
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/include/uapi/asm/kvm.h | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
+> diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
+> index 5a3022c8af82..0662f644aad9 100644
+> --- a/arch/x86/include/uapi/asm/kvm.h
+> +++ b/arch/x86/include/uapi/asm/kvm.h
+> @@ -437,6 +437,8 @@ struct kvm_vmx_nested_state_hdr {
+>  		__u16 flags;
+>  	} smm;
+>  
+> +	__u16 pad;
+> +
+>  	__u32 flags;
+>  	__u64 preemption_timer_deadline;
+>  };
 
-uint32_t can be 'randomly' either int or long on typical 32bit architectures.
-The correct way to print it is with eg "xxx %5.4" PRI_u32 " yyy".
 
-Typed like ptrdiff_t and size_t exist because of things like the x86
-segmented model. Pointers are 32bit (segment and offset), size_t is
-(probably) 16 bit (nothing can be any bigger), but ptrdiff_t has to
-be 32bit to contain [-65535 .. 65535].
+Looks good to me.
 
-Kernel code has used u8, u16 and u32 since well before the standards
-body even thought about fixed width types (and well before Linux).
-ISTR they were considered as the standard names, but rejected and the
-current definitions approved.
-They were probably too worried about code already using u32 for a
-variable.
-(Shame they never fixed math.h)
+I wonder if we can enable the -Wpadded GCC warning to warn about such cases.
+Probably can't be enabled for the whole kernel but maybe we can enable it
+for KVM codebase at least, like we did with -Werror.
 
-	David
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+From GCC manual:
+
+"-Wpadded
+Warn if padding is included in a structure, either to align an element of the structure or to align the whole structure. 
+Sometimes when this happens it is possible to rearrange the fields of the structure 
+to reduce the padding and so make the structure smaller."
+
+
+Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+
+Best regards,
+	Maxim Levitsky
+
 
