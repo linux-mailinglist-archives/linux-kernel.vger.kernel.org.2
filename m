@@ -2,90 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67514373B75
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:37:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FDDE373B81
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:38:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233373AbhEEMik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:38:40 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:54376 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233111AbhEEMig (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:38:36 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1leGmV-002fjT-5R; Wed, 05 May 2021 14:37:35 +0200
-Date:   Wed, 5 May 2021 14:37:35 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Woojung Huh <woojung.huh@microchip.com>,
-        UNGLinuxDriver@microchip.com,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel@pengutronix.de,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>,
-        Michael Grzeschik <m.grzeschik@pengutronix.de>
-Subject: Re: [RFC PATCH v1 5/9] net: phy: micrel: ksz886x add MDI-X support
-Message-ID: <YJKRj2tD0rPd+S0j@lunn.ch>
-References: <20210505092025.8785-1-o.rempel@pengutronix.de>
- <20210505092025.8785-6-o.rempel@pengutronix.de>
+        id S233452AbhEEMj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232513AbhEEMiw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:38:52 -0400
+X-Greylist: delayed 98398 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 05 May 2021 05:37:55 PDT
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [IPv6:2a01:37:3000::53df:4ef0:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55F54C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 05:37:54 -0700 (PDT)
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client CN "*.hostsharing.net", Issuer "RapidSSL TLS DV RSA Mixed SHA256 2020 CA-1" (verified OK))
+        by bmailout2.hostsharing.net (Postfix) with ESMTPS id 3295D2800B6C9;
+        Wed,  5 May 2021 14:37:53 +0200 (CEST)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+        id 1D07588EB8; Wed,  5 May 2021 14:37:53 +0200 (CEST)
+Date:   Wed, 5 May 2021 14:37:53 +0200
+From:   Lukas Wunner <lukas@wunner.de>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        linux-usb@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>
+Subject: Re: xhci_pci & PCIe hotplug crash
+Message-ID: <20210505123753.GA29101@wunner.de>
+References: <20210505120117.4wpmo6fhvzznf3wv@pali>
+ <YJKK7SDIaeH1L/fC@kroah.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20210505092025.8785-6-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YJKK7SDIaeH1L/fC@kroah.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +/* Device specific MII_BMCR (Reg 0) bits */
-> +/* 1 = HP Auto MDI/MDI-X mode, 0 = Microchip Auto MDI/MDI-X mode */
-> +#define KSZ886X_BMCR_HP_MDIX			BIT(5)
-> +/* 1 = Force MDI (transmit on RXP/RXM pins), 0 = Normal operation
-> + * (transmit on TXP/TXM pins)
-> + */
-> +#define KSZ886X_BMCR_FORCE_MDI			BIT(4)
-> +/* 1 = Disable auto MDI-X */
-> +#define KSZ886X_BMCR_DISABLE_AUTO_MDIX		BIT(3)
-> +#define KSZ886X_BMCR_DISABLE_FAR_END_FAULT	BIT(2)
-> +#define KSZ886X_BMCR_DISABLE_TRANSMIT		BIT(1)
-> +#define KSZ886X_BMCR_DISABLE_LED		BIT(0)
+On Wed, May 05, 2021 at 02:09:17PM +0200, Greg KH wrote:
+> On Wed, May 05, 2021 at 02:01:17PM +0200, Pali Rohár wrote:
+> > [   72.511899] Internal error: synchronous external abort: 96000210 [#1] SMP
+[...]
+> > [   72.636415] Call trace:
+> > [   72.638936]  xhci_irq+0x70/0x17b8
+> > [   72.642360]  usb_hcd_irq+0x34/0x50
+> > [   72.645876]  usb_hcd_pci_remove+0x78/0x138
+> > [   72.650106]  xhci_pci_remove+0x6c/0xa8
+> > [   72.653978]  pci_device_remove+0x44/0x108
+> > [   72.658122]  device_release_driver_internal+0x110/0x1e0
+> > [   72.663521]  device_release_driver+0x1c/0x28
+> > [   72.667931]  pci_stop_bus_device+0x84/0xc0
+> > [   72.672162]  pci_stop_and_remove_bus_device+0x1c/0x30
+> > [   72.677373]  pciehp_unconfigure_device+0x98/0xf8
+> > [   72.682138]  pciehp_disable_slot+0x60/0x118
+> > [   72.686457]  pciehp_handle_presence_or_link_change+0xec/0x3b0
+> > [   72.692386]  pciehp_ist+0x170/0x1a0
+> > [   72.695984]  irq_thread_fn+0x30/0x90
+                    ^^^^^^^^^^^^^
+[...]
+> > I suspect that issue is in usb_hcd_pci_remove() function which calls
+> > local_irq_disable()+usb_hcd_irq()+local_irq_enable() functions but do
+> > not take into care that whole usb_hcd_pci_remove() function may be
+> > called from interrupt context.
+> 
+> usb_hcd_pci_remove() should NOT be called from interrupt context.
+> 
+> What is causing that to happen?
 
-Do these have the same values as what you added in patch 1?
+Nothing.  It's called from an IRQ *thread*, i.e. task context, see above.
 
-> +static int ksz886x_config_mdix(struct phy_device *phydev, u8 ctrl)
-> +{
-> +	u16 val;
-> +
-> +	switch (ctrl) {
-> +	case ETH_TP_MDI:
-> +		val = KSZ886X_BMCR_DISABLE_AUTO_MDIX;
-> +		break;
-> +	case ETH_TP_MDI_X:
-> +		/* Note: The naming of the bit KSZ886X_BMCR_FORCE_MDI is bit
-> +		 * counter intuitive, the "-X" in "1 = Force MDI" in the data
-> +		 * sheet seems to be missing:
-> +		 * 1 = Force MDI (sic!) (transmit on RX+/RX- pins)
-> +		 * 0 = Normal operation (transmit on TX+/TX- pins)
-> +		 */
-> +		val = KSZ886X_BMCR_DISABLE_AUTO_MDIX | KSZ886X_BMCR_FORCE_MDI;
-> +		break;
-> +	case ETH_TP_MDI_AUTO:
-> +		val = 0;
-> +		break;
-> +	default:
-> +		return 0;
-> +	}
-> +
-> +	return phy_modify(phydev, MII_BMCR,
-> +			  KSZ886X_BMCR_HP_MDIX | KSZ886X_BMCR_FORCE_MDI |
-> +			  KSZ886X_BMCR_DISABLE_AUTO_MDIX,
-> +			  KSZ886X_BMCR_HP_MDIX | val);
-> +}
 
-Maybe this will also work for the PHY driver embedded in ksz8795.c?
-Maybe as another patchset, see if that PHY driver can be moved out of the DSA driver,
-and share some code with this driver?
+> > Can you look at this issue if it is really safe to call usb_hcd_irq()
+> > from interrupt context? Or rather if it is safe to call functions like
+> > pciehp_disable_slot() or device_release_driver() from interrupt context
+> > like it can be seen in call trace?
+> 
+> What is removing devices from an irq?  That is wrong, pci hotplug never
+> used to do that, what recently changed?
 
-    Andrew
+Nothing changed, the allegation that something is called from interrupt
+context is wrong.
+
+Thanks,
+
+Lukas
