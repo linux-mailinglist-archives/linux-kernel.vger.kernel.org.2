@@ -2,149 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8482B373E66
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:21:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68D0D373E6A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:22:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhEEPVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:21:53 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:51528 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233150AbhEEPVs (ORCPT
+        id S233365AbhEEPXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:23:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50114 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhEEPXe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:21:48 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: benjamin.gaignard)
-        with ESMTPSA id 77D441F42D0C
-Subject: Re: [PATCH v10 6/9] media: uapi: Add a control for HANTRO driver
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>, ezequiel@collabora.com,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com, cphealy@gmail.com
-References: <20210420121046.181889-1-benjamin.gaignard@collabora.com>
- <20210420121046.181889-7-benjamin.gaignard@collabora.com>
- <a7c9fe23-2900-ac90-7131-21380fbfc793@xs4all.nl>
-From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
-Message-ID: <1cf94540-7f4d-0179-dd1e-0b82ee30f6d2@collabora.com>
-Date:   Wed, 5 May 2021 17:20:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-MIME-Version: 1.0
-In-Reply-To: <a7c9fe23-2900-ac90-7131-21380fbfc793@xs4all.nl>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+        Wed, 5 May 2021 11:23:34 -0400
+Received: from mail-io1-xd33.google.com (mail-io1-xd33.google.com [IPv6:2607:f8b0:4864:20::d33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7EAC061574;
+        Wed,  5 May 2021 08:22:37 -0700 (PDT)
+Received: by mail-io1-xd33.google.com with SMTP id k25so1987520iob.6;
+        Wed, 05 May 2021 08:22:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=GvGjpD90B2dlGyrkqPDfUen+ArnkTHqSjG6plck5ZEs=;
+        b=goa58lhFKSvSK/PUjbNJHXtCjRW7vdvpIJg32/t4u6ci7Z8zFVyVvZJ4HQKYc71c7/
+         68FAYmQgYxIjtBtPk63ke1tg4bDnaAaVUGjtmn0FFM5p62rBosOVZOz48eKZFNqVqzbR
+         glDFnHR1LFid3OleOL4wrE6Epqo7sdci4mxjBSVJGgG4+rfgOFqaVF4HOMCzBaiqUhk8
+         pHWl4It1Af05+1bNHiMz6VD6I3USl6/6QjGdtqfRX8Xklnudklh4aSYv1Mo/4uW/flNW
+         wH1Cvat637Fbvx5EYnyKkFvZqLYG0TJoMuGR7PEZdM4zw9K8+/06s1IyXtzhltN5LxNH
+         364g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=GvGjpD90B2dlGyrkqPDfUen+ArnkTHqSjG6plck5ZEs=;
+        b=YF/E0N3QMPLxN515dTm8xM08wezJipIqUER736/YrhNVt1OAen+VoCZSfNSsmc0XfW
+         /eopJJtju5GQOhaiK6dMbNrKo/t+S+P29Q5TE4Ekg6JgLLzixW2+Pm6e/DIhER+3cbW6
+         4QqMKXMiQ85IM7qvdRQrIEONE2dBfmQPfV7uX7iqQeAuVnbC/vMfwoPDnfQ6dHiDV/E/
+         oeQ1cdtOALCzNjHkirF9l9GpNk83mr7Cxmr9aCsZ6oyGKHd5P9/krkzo2NqVRwuQZ9z6
+         eNGdDNtu7EcAE3B+r3vW0e051uhl9Fq/cFA+ddeokwcZOua8FNT25AtXVuXvYWvECXwy
+         H3Hg==
+X-Gm-Message-State: AOAM5328LVx7Vl3gK9ibESfO0LYmCxxUJEWEtv0Q1mQlAgf90GqIXoia
+        CQMq3yuiMO12cdJBSv42oY0eHnIm/ifKhgpb4T0=
+X-Google-Smtp-Source: ABdhPJzekqf2aGEMlYuuglDhl1pX1W4Fc1MReTwZfsgmisBqL+CtcTzVcFrbnhNHVGvL3/ZizyHYpg==
+X-Received: by 2002:a05:6602:2003:: with SMTP id y3mr15414458iod.62.1620228156411;
+        Wed, 05 May 2021 08:22:36 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id h14sm3739993ils.13.2021.05.05.08.22.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 08:22:35 -0700 (PDT)
+Message-ID: <6092b83b.1c69fb81.fd46d.d4fd@mx.google.com>
+Date:   Wed, 05 May 2021 08:22:35 -0700 (PDT)
+X-Google-Original-Date: Wed, 05 May 2021 15:22:34 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
+Subject: RE: [PATCH 5.11 00/31] 5.11.19-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed,  5 May 2021 14:05:49 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.11.19 release.
+> There are 31 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.19-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-Le 05/05/2021 à 16:55, Hans Verkuil a écrit :
-> On 20/04/2021 14:10, Benjamin Gaignard wrote:
->> The HEVC HANTRO driver needs to know the number of bits to skip at
->> the beginning of the slice header.
->> That is a hardware specific requirement so create a dedicated control
->> for this purpose.
->>
->> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->> ---
->>   .../userspace-api/media/drivers/hantro.rst    | 19 +++++++++++++++++++
->>   .../userspace-api/media/drivers/index.rst     |  1 +
->>   include/media/hevc-ctrls.h                    | 13 +++++++++++++
->>   3 files changed, 33 insertions(+)
->>   create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
->>
->> diff --git a/Documentation/userspace-api/media/drivers/hantro.rst b/Documentation/userspace-api/media/drivers/hantro.rst
->> new file mode 100644
->> index 000000000000..cd9754b4e005
->> --- /dev/null
->> +++ b/Documentation/userspace-api/media/drivers/hantro.rst
->> @@ -0,0 +1,19 @@
->> +.. SPDX-License-Identifier: GPL-2.0
->> +
->> +Hantro video decoder driver
->> +===========================
->> +
->> +The Hantro video decoder driver implements the following driver-specific controls:
->> +
->> +``V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP (integer)``
->> +    Specifies to Hantro HEVC video decoder driver the number of data (in bits) to
->> +    skip in the slice segment header.
->> +    If non-IDR, the bits to be skipped go from syntax element "pic_output_flag"
->> +    to before syntax element "slice_temporal_mvp_enabled_flag".
->> +    If IDR, the skipped bits are just "pic_output_flag"
->> +    (separate_colour_plane_flag is not supported).
-> I'm not very keen on this. Without this information the video data cannot be
-> decoded, or will it just be suboptimal?
+5.11.19-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
 
-Without that information the video can't be decoded.
-
->
-> The problem is that a generic decoder would have to know that the HW is a hantro,
-> and then call this control. If they don't (and are testing on non-hantro HW), then
-> it won't work, thus defeating the purpose of the HW independent decoder API.
->
-> Since hantro is widely used, and if there is no other way to do this beside explitely
-> setting this control, then perhaps this should be part of the standard HEVC API.
-> Non-hantro drivers that do not need this can just skip it.
-
-Even if I put this parameter in decode_params structure that would means that a generic
-userland decoder will have to know how the compute this value for hantro HW since it
-isn't something that could be done on kernel side.
-
-
-Regards,
-Benjamin
-
->
-> Regards,
->
-> 	Hans
->
->> +
->> +.. note::
->> +
->> +        This control is not yet part of the public kernel API and
->> +        it is expected to change.
->> diff --git a/Documentation/userspace-api/media/drivers/index.rst b/Documentation/userspace-api/media/drivers/index.rst
->> index 1a9038f5f9fa..12e3c512d718 100644
->> --- a/Documentation/userspace-api/media/drivers/index.rst
->> +++ b/Documentation/userspace-api/media/drivers/index.rst
->> @@ -33,6 +33,7 @@ For more details see the file COPYING in the source distribution of Linux.
->>   
->>   	ccs
->>   	cx2341x-uapi
->> +        hantro
->>   	imx-uapi
->>   	max2175
->>   	meye-uapi
->> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->> index 8e0109eea454..b713eeed1915 100644
->> --- a/include/media/hevc-ctrls.h
->> +++ b/include/media/hevc-ctrls.h
->> @@ -224,4 +224,17 @@ struct v4l2_ctrl_hevc_decode_params {
->>   	__u64	flags;
->>   };
->>   
->> +/*  MPEG-class control IDs specific to the Hantro driver as defined by V4L2 */
->> +#define V4L2_CID_CODEC_HANTRO_BASE				(V4L2_CTRL_CLASS_CODEC | 0x1200)
->> +/*
->> + * V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP -
->> + * the number of data (in bits) to skip in the
->> + * slice segment header.
->> + * If non-IDR, the bits to be skipped go from syntax element "pic_output_flag"
->> + * to before syntax element "slice_temporal_mvp_enabled_flag".
->> + * If IDR, the skipped bits are just "pic_output_flag"
->> + * (separate_colour_plane_flag is not supported).
->> + */
->> +#define V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP	(V4L2_CID_CODEC_HANTRO_BASE + 0)
->> +
->>   #endif
->>
->
