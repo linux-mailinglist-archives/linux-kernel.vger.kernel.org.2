@@ -2,148 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97312373CB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11553373CBB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233379AbhEENyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:54:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58242 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231650AbhEENyt (ORCPT
+        id S233464AbhEENzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:55:12 -0400
+Received: from mail-wr1-f47.google.com ([209.85.221.47]:43662 "EHLO
+        mail-wr1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233423AbhEENzK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:54:49 -0400
-Received: from mail-yb1-xb33.google.com (mail-yb1-xb33.google.com [IPv6:2607:f8b0:4864:20::b33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2C878C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 06:53:53 -0700 (PDT)
-Received: by mail-yb1-xb33.google.com with SMTP id i4so2771909ybe.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 06:53:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=clf2wb3Wvwg3HyTYmDIH3OCqRQ4Qu8WPQlaPdGBfodo=;
-        b=JfKZNrdnuYgfNHUmgOCqOdIjMbuF/sBBzVGGzX9kLfLkWIIlloDiT5ky31jsg8DOtv
-         DExpo1mE8Hml4L5w8N4MDActP/1g1nsoz/wfRWOrZqplALxFetR+3Uj+WU54aQvCmmCE
-         xJk0IslbRFBKAWycow9Lzcz2Od3O80GUi3I22djW+tYjRUi1viMAhR939lwD36tfBST5
-         xwIg+ai2ILqc59Dh9FbJFgI3IvKiCv1e5KTXo8qDvj3MQu75FuGY/f5zuCbXV3v2EXGt
-         XXkuXAV+LmoKyj0kUNtdOYepJYQkS0iOxRG2bm7F5UCFJgrm3Uz00yNr6Gwkt8ke6EvE
-         l/0g==
+        Wed, 5 May 2021 09:55:10 -0400
+Received: by mail-wr1-f47.google.com with SMTP id s8so1934067wrw.10
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 06:54:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=clf2wb3Wvwg3HyTYmDIH3OCqRQ4Qu8WPQlaPdGBfodo=;
-        b=l7TFT80s4i0BJzHNKbBNSqHcwS60LHKqL5UEYbFydTS2MxibqSzEW1ycvaAuxKxZSL
-         V/dx5WDsmmZw3OcbffL14bJJt/GVkwQ9DApA3HNzrDpMuX2v7K3+IHI/QJKDwifsh0Nm
-         hSqUutR+912H2SHZ+aPXcSjnJlj4h9UQHW+gufxzwIhyvrOe32BRSectB8lFwvhP+Lwh
-         kVdFlkDXdQFNMygrrQYrveJ1QlmcEBKfGbDeHyDwcBR8yC2WZWHMlEgCdoN8fr1eb727
-         ljE/5eC2dvBJdTCzjoVlHrvFSWzOVaNaDwkrvpcjkuOKV2BDyt3opioWT6bZdIJ2VJou
-         xzuQ==
-X-Gm-Message-State: AOAM530OumavQAReKQgiXhILZwUR1iATzrZsOm11JP01Q5PAZ99LRDFH
-        0FFk1rJmC+EEJSZO1ExTqtZodiZztp89jHJRyTpwLZsCFN5kWA==
-X-Google-Smtp-Source: ABdhPJwt59zPhG3C7dBLxMIsKHiFesWF0LokA9gB7+aHvgW6h2cIYRqmUd2pqlVd/hmi748H50J3AuRXQjAbW8P7vCE=
-X-Received: by 2002:a25:880f:: with SMTP id c15mr40989755ybl.247.1620222832436;
- Wed, 05 May 2021 06:53:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=eD6V+3EKLEZ2d3YHn8BHx9RbXqa4fEMUypgdABWHLlQ=;
+        b=HX1cUSjrX4ONfZAVU+sQt0IFp5XLTNBN3zw9ICpiIaYxFhI8FEnWODJyDHTyH3WgGU
+         3R69f2YD0NZ1q1mtJ7I9F0lQXSbeitOsxF3PUkg2GhKce0m0lOdsp7RB3pWjJdJAx0w9
+         Rzg9o+CG/FGWssT23pTMqcg9npADascE6f+8tP7M7qCfLBaWhpLhmnXMoD6e8F0tQpow
+         BqrtKkG4ePWfkyu1WnQ/+oCra+wCG0hWPvBauKPSYqzXiN5mUrbABdg1JMMK96/g19do
+         2pdryetBaqBRPHVUKZ7bafXd1Dc30LURfy6KgX+c34MqiiCWrSmvZNFBqjg4e1P02v4K
+         zVAw==
+X-Gm-Message-State: AOAM532Ti52aPmuGbKQZDlF0dE+KEUy5q4cjTMJPNXpxpLKkq7iOd2E1
+        xSliMr//zMwWhRONUrVLaLUzxV3J/zU=
+X-Google-Smtp-Source: ABdhPJwVZr25sOlVxz+KC0N/jYPU7xFY+zxzPB82mqgCwdIP8rqEAQfOaykCOk33AL8Bw/zvDc7k/w==
+X-Received: by 2002:a5d:64e5:: with SMTP id g5mr39262402wri.30.1620222853357;
+        Wed, 05 May 2021 06:54:13 -0700 (PDT)
+Received: from tiehlicka.suse.cz (ip-85-160-7-215.eurotel.cz. [85.160.7.215])
+        by smtp.gmail.com with ESMTPSA id q12sm4893794wmj.7.2021.05.05.06.54.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 06:54:12 -0700 (PDT)
+From:   Michal Hocko <mhocko@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     David Hildenbrand <david@redhat.com>,
+        Aili Yao <yaoaili@kingsoft.com>, <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+Subject: [PATCH] Revert "mm/gup: check page posion status for coredump."
+Date:   Wed,  5 May 2021 15:54:07 +0200
+Message-Id: <20210505135407.31590-1-mhocko@kernel.org>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
- <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
- <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
- <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
- <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
- <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com> <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <20210502093123.GC12293@localhost> <CANiq72=aK-JJhpnZdeeGBtADrnXhyEp1Whw5+5rK6a4u85PhxA@mail.gmail.com>
- <5256ed6b6f7d423daeb36fcbfc837fbc@AcuMS.aculab.com>
-In-Reply-To: <5256ed6b6f7d423daeb36fcbfc837fbc@AcuMS.aculab.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Wed, 5 May 2021 15:53:41 +0200
-Message-ID: <CANiq72mq-SP5n_0cVr+eaP19xqJTP15V+JKUeqLiT910x=3NdA@mail.gmail.com>
-Subject: Re: Very slow clang kernel config ..
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Adrian Bunk <bunk@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Stellard <tstellar@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 1:06 PM David Laight <David.Laight@aculab.com> wrote:
->
-> The problem isn't the packages that come with the distribution.
+From: Michal Hocko <mhocko@suse.com>
 
-My question was in the context of Adrian's emails who were mentioning
-issues for Linux distribution etc.
+While reviewing http://lkml.kernel.org/r/20210429122519.15183-4-david@redhat.com
+I have crossed d3378e86d182 ("mm/gup: check page posion status for
+coredump.") and noticed that this patch is broken in two ways. First it
+doesn't really prevent hwpoison pages from being dumped because hwpoison
+pages can be marked asynchornously at any time after the check.
+Secondly, and more importantly, the patch introduces a ref count leak
+because get_dump_page takes a reference on the page which is not
+releases.
 
-> The problem is 3rd party programs supplied as binaries.
-> They have 2 big requirements:
-> 1) The same binary will run on all distributions (newer than some cutoff).
+It also seems that the patch was merged incorrectly because there were
+follow up changes not included as well as discussions on how to address
+the underlying problem http://lkml.kernel.org/r/57ac524c-b49a-99ec-c1e4-ef5027bfb61b@redhat.com
 
-This is fine with the "everything statically linked" model.
+Therefore revert the original patch.
 
-> 2) Any serious bug fixes in system libraries get picked up when the
->    distribution updates the library.
+Fixes: d3378e86d182 ("mm/gup: check page posion status for coredump.")
+Signed-off-by: Michal Hocko <mhocko@suse.com>
+---
+ mm/gup.c      |  4 ----
+ mm/internal.h | 20 --------------------
+ 2 files changed, 24 deletions(-)
 
-For 3rd party software, this is usually done through an auto-update
-mechanism of some kind. And since the vendor typically provides
-everything, including dependencies (even libc in some cases!), they
-can afford to statically link the world.
+diff --git a/mm/gup.c b/mm/gup.c
+index 71e546e279fc..a33abe9048ed 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -1592,10 +1592,6 @@ struct page *get_dump_page(unsigned long addr)
+ 				      FOLL_FORCE | FOLL_DUMP | FOLL_GET);
+ 	if (locked)
+ 		mmap_read_unlock(mm);
+-
+-	if (ret == 1 && is_page_poisoned(page))
+-		return NULL;
+-
+ 	return (ret == 1) ? page : NULL;
+ }
+ #endif /* CONFIG_ELF_CORE */
+diff --git a/mm/internal.h b/mm/internal.h
+index ef5f336f59bd..43c4a2f8d4cc 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -96,26 +96,6 @@ static inline void set_page_refcounted(struct page *page)
+ 	set_page_count(page, 1);
+ }
+ 
+-/*
+- * When kernel touch the user page, the user page may be have been marked
+- * poison but still mapped in user space, if without this page, the kernel
+- * can guarantee the data integrity and operation success, the kernel is
+- * better to check the posion status and avoid touching it, be good not to
+- * panic, coredump for process fatal signal is a sample case matching this
+- * scenario. Or if kernel can't guarantee the data integrity, it's better
+- * not to call this function, let kernel touch the poison page and get to
+- * panic.
+- */
+-static inline bool is_page_poisoned(struct page *page)
+-{
+-	if (PageHWPoison(page))
+-		return true;
+-	else if (PageHuge(page) && PageHWPoison(compound_head(page)))
+-		return true;
+-
+-	return false;
+-}
+-
+ extern unsigned long highest_memmap_pfn;
+ 
+ /*
+-- 
+2.30.1
 
-That model, of course, has issues -- the vendor may go out of
-business, may be slow with security updates, etc.
-
-But this is all orthogonal to Rust -- I replied mainly because it was
-mentioned that Rust brought new issues to the table, which isn't true.
-
-> There is also the possibility that the implementation of some
-> function differs between distributions.
-> So you absolutely need to use the version from the installed system
-> not whatever was in some static library on the actual build machine.
->
-> Both of these need stable ABI and shared libraries.
-
-Not really. If you go for the "statically linked" model for your
-application, you only need to care about the syscall layer (or
-equivalent higher-level layers in e.g. Windows/macOS).
-
-If you trust vendors a bit, you can instead go for "statically linked
-except for major system libraries" (like libc or libm in Linux). This
-is what Rust does by default for the glibc x86_64 target.
-
-Given that nowadays statically linking is convenient, affordable and
-improves performance, it seems like the right decision.
-
-> Remember, as far as userspace is concerned, foo.h is the definition
-> for 'foo' and foo.so is the current implementation.
-> (yes, I know a little bit of info is taken from foo.so on the build
-> system - but that ought to be absolutely minimal.)
-
-No, that is only the C model for shared libraries.
-
-C++ has had templates for decades now and no "C++ ABI" so far covers
-them. Thus, if you want to provide templates as a library, they cannot
-be "pre-compiled" and so the implementation is kept in the header.
-
-This actually turned out to be quite convenient and nowadays many
-libraries are developed as "header-only", in fact. Moreover, recently
-the C++ standard introduced new features that simplify taking this
-approach, e.g. C++17 `inline` variables.
-
-Rust has the same issue with generics, but improves the situation a
-bit: there is no need to reparse everything, every time, from scratch,
-for each translation unit that uses a library with templates (which is
-quite an issue for C++, with big projects going out of their way to
-reduce the trees of includes).
-
-Cheers,
-Miguel
