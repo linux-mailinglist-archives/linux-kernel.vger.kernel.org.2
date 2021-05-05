@@ -2,80 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA3E373363
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86684373367
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231621AbhEEA7T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 20:59:19 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:34733 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231551AbhEEA7R (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 20:59:17 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 1450wB8b017268
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Tue, 4 May 2021 20:58:12 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id D32EB15C3C43; Tue,  4 May 2021 20:58:11 -0400 (EDT)
-Date:   Tue, 4 May 2021 20:58:11 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Adrian Bunk <bunk@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Stellard <tstellar@redhat.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
-Subject: Re: Very slow clang kernel config ..
-Message-ID: <YJHto1KaPFey5irj@mit.edu>
-References: <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
- <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <20210502093123.GC12293@localhost>
- <CAHk-=wgdUMt_n84mq93LZKA6jOGqZpD+=KeVzA3YmvJ6=JPyhw@mail.gmail.com>
- <20210502164542.GA4522@localhost>
- <CAHk-=winSraiwc4gC5WFWSehFq+s7AqCJZoMqUuHLX0nYVG0nQ@mail.gmail.com>
- <20210502175510.GB4522@localhost>
- <CAHk-=whTjJwCt2E0_JM2dDq=+UybvJN7QK+6K6e80A9Zd8duYg@mail.gmail.com>
- <20210502214803.GA7951@localhost>
- <CANiq72=5766fGQjNoMoOxrywoJHQ+-i4U+Nb62MeEaRok4LCFg@mail.gmail.com>
+        id S231750AbhEEBBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 21:01:46 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:53504 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231408AbhEEBBo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 21:01:44 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1le5u9-002Z8Y-EB; Wed, 05 May 2021 03:00:45 +0200
+Date:   Wed, 5 May 2021 03:00:45 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v3 13/20] net: dsa: qca8k: make rgmii delay
+ configurable
+Message-ID: <YJHuPdyj9B19sbUJ@lunn.ch>
+References: <20210504222915.17206-1-ansuelsmth@gmail.com>
+ <20210504222915.17206-13-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANiq72=5766fGQjNoMoOxrywoJHQ+-i4U+Nb62MeEaRok4LCFg@mail.gmail.com>
+In-Reply-To: <20210504222915.17206-13-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 12:02:33AM +0200, Miguel Ojeda wrote:
-> On Sun, May 2, 2021 at 11:48 PM Adrian Bunk <bunk@kernel.org> wrote:
-> >
-> > Library packages in ecosystems like Go or Rust are copies of the source
-> > code, and when an application package is built with these "libraries"
-> > (might even be using LTO) this is expected to be faster than using
-> > shared libraries.
+On Wed, May 05, 2021 at 12:29:07AM +0200, Ansuel Smith wrote:
+> The legacy qsdk code used a different delay instead of the max value.
+> Qsdk use 1 ps for rx and 2 ps for tx. Make these values configurable
+> using the standard rx/tx-internal-delay-ps ethernet binding and apply
+> qsdk values by default. The connected gmac doesn't add any delay so no
+> additional delay is added to tx/rx.
 > 
-> Rust libraries only need to include "copies" for generics; and only
-> enough information to use them. Keeping the raw source code would be
-> one way of doing that (like C++ header-only libraries), but it is not
-> required.
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/net/dsa/qca8k.c | 51 +++++++++++++++++++++++++++++++++++++++--
+>  drivers/net/dsa/qca8k.h | 11 +++++----
+>  2 files changed, 55 insertions(+), 7 deletions(-)
 > 
-> However, it is true that Rust does not have a stable ABI, that the
-> vast majority of Rust open source applications get built from source
-> via Cargo and that Cargo does not share artifacts in its cache.
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index 22334d416f53..cb9b44769e92 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -779,6 +779,47 @@ qca8k_setup_mdio_bus(struct qca8k_priv *priv)
+>  	return 0;
+>  }
+>  
+> +static int
+> +qca8k_setup_of_rgmii_delay(struct qca8k_priv *priv)
+> +{
+> +	struct device_node *ports, *port;
+> +	u32 val;
+> +
+> +	ports = of_get_child_by_name(priv->dev->of_node, "ports");
+> +	if (!ports)
+> +		return -EINVAL;
+> +
+> +	/* Assume only one port with rgmii-id mode */
+> +	for_each_available_child_of_node(ports, port) {
 
-What does this mean for enterprise distributions, like RHEL, which
-need to maintain a stable kernel ABI as part of their business model.
-I assume it means that they will need to lock down on a specific Rust
-compiler and Rust libraries?  How painful will it be for them to get
-security updates (or have to do backports of security bug fixes) for
-7-10 years?
+Are delays global? Or per port? They really should be per port.  If it
+is global, one value that applies to all ports, i would not use
+it. Have the PHY apply the delay, not the MAC.
 
-					- Ted
+    Andrew
