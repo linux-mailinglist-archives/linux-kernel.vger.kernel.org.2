@@ -2,133 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F343537474C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B2463746EB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhEERyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:54:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234092AbhEERyT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:54:19 -0400
-Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CACC08E818
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:25:28 -0700 (PDT)
-Received: by mail-oi1-x229.google.com with SMTP id k25so2884630oic.4
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:25:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sVTxixNEQgaMU45bwkqw/v+zgKxhFXtlznyvyelbh00=;
-        b=liHtDy4G7Tu/P8bA2SaybJCA17e5TNpk9jQCZD0bJtMFkTfUxLx2PHhX/LybmHqryi
-         t2hXt88MYRP4P5iwFMMaQqfP9GHzwKhnoyRDObi1ZkfsdZVwuKPae9WWSGaxpOnJTQWp
-         Q0RGqpPticafRncFV2Sh666li4OrcDKmj/UlCIIRjizs2clw0mrASkpsiI/YXZWK5hVn
-         d5S2GgQs4MFn8GKNjW8gTutroV2eK7fxAWyS6sD6gsTQqIJnp13UYGkWIoUIgCaA8UFF
-         bl/CMx6nBxDfktUDI+2hZjsPvFTp+e+hwfmcXYwGFSjSqSMdLKPz2EeoRt6MS/e3C0sg
-         Lkbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sVTxixNEQgaMU45bwkqw/v+zgKxhFXtlznyvyelbh00=;
-        b=CM4CSD47ZinWau8pGif7W+Qhar3emBtVp60ChAz8TJ08Itq1QUfEZomeJBufIfewNn
-         6VV9nDpDjKAdn8db25A2BWR+lL6oQzf6WPh/R9LhABVUWju18ZiTsALl8+FsHsfUjgTX
-         svfVDetmueWW6gfakC7xIuBU3qMrjKaylhaOnXSNmexWOAtQLyL44I5K5/PCPLaZGTLg
-         LchFO5F23ctW3cQMMhSXHETN4bmvZBicAApdWwZ4SURD3BSOavl3hbzIY4mE7T9tMIwx
-         2IIOpDjmC6+rCja2cd4yU2/YuekVyYradDEmJviVzYUpa/EgakuirZojKKyh0NLDtMRO
-         /V0w==
-X-Gm-Message-State: AOAM531vQ4Geqw6QDGlBLY6+nmgHEGKCdg/Y/31v5yCm2ETGxX5oNZIF
-        XfDzQubOOfMb938Jn62bzHSZk21IBfd2lnhPjq4uig==
-X-Google-Smtp-Source: ABdhPJxY9cqvcFHS8ogOFbnSJlth4v2utrx2okL4r1VPI4Hpmfnm63csoO/E37sGBeSfdVMfYrIfTUu8c8CyvX1HbJc=
-X-Received: by 2002:aca:bb06:: with SMTP id l6mr22157199oif.121.1620235527302;
- Wed, 05 May 2021 10:25:27 -0700 (PDT)
-MIME-Version: 1.0
-References: <m1tuni8ano.fsf_-_@fess.ebiederm.org> <20210505141101.11519-1-ebiederm@xmission.com>
- <20210505141101.11519-8-ebiederm@xmission.com>
-In-Reply-To: <20210505141101.11519-8-ebiederm@xmission.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 5 May 2021 19:25:00 +0200
-Message-ID: <CANpmjNMhMvKePmEutfd6U0wnd-bvktEQwR-=O6efxe6RM9A_4w@mail.gmail.com>
-Subject: Re: [PATCH v3 08/12] signal: Remove __ARCH_SI_TRAPNO
-To:     "Eric W. Beiderman" <ebiederm@xmission.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S230078AbhEERc7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:32:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52564 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S239927AbhEER0u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:26:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 73F3D608FE;
+        Wed,  5 May 2021 17:25:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+        s=korg; t=1620235548;
+        bh=0ntYBEJnbuEScJ5IjmsmmOH/9BzYiIMdYg9Cbp6hrvc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=wkf8/dFy/D4NRhSyMEruGZUogg+eyKrmZgmGTM2uvRsdZ3zBtIf0kWOjFX31RXHaG
+         EMQgBO3qow63K7JgOgsBM7Ivai2J6I57/BtSJwfwkhXfguDSWiKqNM5gERQ+R1MGEf
+         6NPqjcr54ZS+2xwgG7/QPDOyXiI5I30uDNQ51xm0=
+Date:   Wed, 5 May 2021 10:25:47 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     David Hildenbrand <david@redhat.com>
+Cc:     Michal Hocko <mhocko@kernel.org>, Aili Yao <yaoaili@kingsoft.com>,
+        linux-mm@kvack.org, LKML <linux-kernel@vger.kernel.org>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH] Revert "mm/gup: check page posion status for coredump."
+Message-Id: <20210505102547.8ee8ed1848370cc259dbe857@linux-foundation.org>
+In-Reply-To: <bedd4817-5b2e-4041-3b55-f8ebfd98505f@redhat.com>
+References: <20210505135407.31590-1-mhocko@kernel.org>
+        <bedd4817-5b2e-4041-3b55-f8ebfd98505f@redhat.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.31; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 at 16:11, Eric W. Beiderman <ebiederm@xmission.com> wrote:
-> From: "Eric W. Biederman" <ebiederm@xmission.com>
->
-> Now that this define is no longer used remove it from the kernel.
->
-> v1: https://lkml.kernel.org/r/m18s4zs7nu.fsf_-_@fess.ebiederm.org
-> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
+On Wed, 5 May 2021 15:55:42 +0200 David Hildenbrand <david@redhat.com> wrote:
 
-Reviewed-by: Marco Elver <elver@google.com>
+> 
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-
-
-> ---
->  arch/alpha/include/uapi/asm/siginfo.h | 2 --
->  arch/mips/include/uapi/asm/siginfo.h  | 2 --
->  arch/sparc/include/uapi/asm/siginfo.h | 3 ---
->  3 files changed, 7 deletions(-)
->
-> diff --git a/arch/alpha/include/uapi/asm/siginfo.h b/arch/alpha/include/uapi/asm/siginfo.h
-> index 6e1a2af2f962..e08eae88182b 100644
-> --- a/arch/alpha/include/uapi/asm/siginfo.h
-> +++ b/arch/alpha/include/uapi/asm/siginfo.h
-> @@ -2,8 +2,6 @@
->  #ifndef _ALPHA_SIGINFO_H
->  #define _ALPHA_SIGINFO_H
->
-> -#define __ARCH_SI_TRAPNO
-> -
->  #include <asm-generic/siginfo.h>
->
->  #endif
-> diff --git a/arch/mips/include/uapi/asm/siginfo.h b/arch/mips/include/uapi/asm/siginfo.h
-> index c34c7eef0a1c..8cb8bd061a68 100644
-> --- a/arch/mips/include/uapi/asm/siginfo.h
-> +++ b/arch/mips/include/uapi/asm/siginfo.h
-> @@ -10,9 +10,7 @@
->  #ifndef _UAPI_ASM_SIGINFO_H
->  #define _UAPI_ASM_SIGINFO_H
->
-> -
->  #define __ARCH_SIGEV_PREAMBLE_SIZE (sizeof(long) + 2*sizeof(int))
-> -#undef __ARCH_SI_TRAPNO /* exception code needs to fill this ...  */
->
->  #define __ARCH_HAS_SWAPPED_SIGINFO
->
-> diff --git a/arch/sparc/include/uapi/asm/siginfo.h b/arch/sparc/include/uapi/asm/siginfo.h
-> index 68bdde4c2a2e..0e7c27522aed 100644
-> --- a/arch/sparc/include/uapi/asm/siginfo.h
-> +++ b/arch/sparc/include/uapi/asm/siginfo.h
-> @@ -8,9 +8,6 @@
->
->  #endif /* defined(__sparc__) && defined(__arch64__) */
->
-> -
-> -#define __ARCH_SI_TRAPNO
-> -
->  #include <asm-generic/siginfo.h>
->
->
-> --
-> 2.30.1
+cc:stable?
