@@ -2,142 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 679E0374242
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:47:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94A173745F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235286AbhEEQqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:46:16 -0400
-Received: from mail-mw2nam12on2069.outbound.protection.outlook.com ([40.107.244.69]:63200
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S234524AbhEEQkC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:40:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mbRhmrQdJMMQAGE1MulLCl0XX9TPKhhhvXyvrwQ82H4b+XB9F4JZqf9g07EZzcCeG7sODmN02sQmdsCRB3lS699yxTv2arDGLpJVehJKmFNmmUgRoNexF1Y20SILVjuFb3iQ0BA+pLYVWQcAJaX7TKEJ1EFtn/xN+Pd/nX/Ytoo6/+6VMhF1SlVsCH51Zx1XmCf5krhgTJ5fUqOYIloBtyUfUh28K+7pXHV/NVccbJ+P/RQAw7PseLNFQZYe67BLjKw6C4qOIRzQKd7AChBiE984XQdbjl+fl0/T44iUevLaAgNG0pl48wOxJsR/MpaA/fjSMCXu2eH2Q2wHFgl4WQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KH70+oRTAyzUKrrZXAhjmmptE/7Hb7K1efCmOivi7Ws=;
- b=S6sfBaZOpDno0qIflVDmD+YU5h2NgGD4H+02o3e5USAp91r2GZtRCnMhUSZ4xHSeiSmR/79XtKL1gLTpAe54GCTlkKu4ovNc7ahIDURIGOolWaVGIkXkbmicYQS3SyFPDtJJbC4dvFJgkF4FdIhGbdzl0xGK1zQFnkmZuzB4FlQifzh5DtOvSAuuWwVIFg82Rfj1l9uz2uhspHRpeJ64zZ8GKM+a2xQrfk25jWAynOcf++Haw9bLgvV/UG8Kl6EmqZHGg/i4MeXWQQVYASFvi8QJfbDNesU2EMBWJO+WYnpJEpofd6m8FN/7NTc0Jn3fZ5IJoj0MqgynjM4f08E03g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=KH70+oRTAyzUKrrZXAhjmmptE/7Hb7K1efCmOivi7Ws=;
- b=ScuNMw/M7/LLfEZP0gsU6ggeJlwc4P960HhbR9TXzIjZXVi5M4YzxOlYwIX7NxE+cb+NWvvfzk4r1H7dmQVVUWYK0cK6gvwVNobFPhkNCwq7qW6Gb4z4pff6wDQBnnk1zJmZ0PziFsn5TW7eomXyNDCatxhsB3ZORC/Ow1/TkS+bnOFOyPWY/GjBlZO8aTysd8/vAq+Q1oXPh67RqXCwuWZfwMoJAnzAA/C9CdjNHX+/8H+8DuXGMcN97m1+k8H8CLFnPkN+VCYEI4ovjnKfxqvDtjODHgPbbURzl4kqUsm29xKiT5LfHcLdlutAeSzewEiYI4yns9A3thQY6FypDA==
-Authentication-Results: ozlabs.ru; dkim=none (message not signed)
- header.d=none;ozlabs.ru; dmarc=none action=none header.from=nvidia.com;
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM6PR12MB4497.namprd12.prod.outlook.com (2603:10b6:5:2a5::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Wed, 5 May
- 2021 16:39:04 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.026; Wed, 5 May 2021
- 16:39:04 +0000
-Date:   Wed, 5 May 2021 13:39:02 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Alexey Kardashevskiy <aik@ozlabs.ru>
-Cc:     David Gibson <david@gibson.dropbear.id.au>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210505163902.GG1370958@nvidia.com>
-References: <20210422111337.6ac3624d@redhat.com>
- <YIeYJZOdgMN/orl0@yekko.fritz.box>
- <20210427172432.GE1370958@nvidia.com>
- <YIi5G4Wg/hpFqNdX@yekko.fritz.box>
- <20210429002149.GZ1370958@nvidia.com>
- <YIol9p3z8BTWFRh8@yekko>
- <20210503160530.GL1370958@nvidia.com>
- <YJDFj+sAv41JRIo4@yekko>
- <20210504181537.GC1370958@nvidia.com>
- <7e5c2276-ca1c-a8af-c15f-72a7c83c8bfa@ozlabs.ru>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7e5c2276-ca1c-a8af-c15f-72a7c83c8bfa@ozlabs.ru>
-X-Originating-IP: [47.55.113.94]
-X-ClientProxiedBy: BL0PR02CA0046.namprd02.prod.outlook.com
- (2603:10b6:207:3d::23) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S238684AbhEERJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:09:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42720 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237252AbhEEQ7i (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:59:38 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E5DF5C06138D;
+        Wed,  5 May 2021 09:39:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=UdKLAv9tD4IGgGm2E+DtgLcmHg6ZIlBUn72zqqp8p8Y=; b=mN9tRfYc42+ctPCPH7j2z1N2AR
+        fMnuaC/JLZcM2VKRlu8R1lHO2k+TBdqiEFsqOiw1gZ9CgG5JiQq68+Clws+E7ynITwcJGEbQj4zlB
+        1ruDX2D9xy/f2RYE0TSS6lOwb2U8unS7XvvAleK/nRzfO7xE3DX6BEtkoF/UyAYCU6W0kgvIzwCOs
+        HqVJcA1prRwu04Qgpx63mhJpUYhGlRNAwjqjMtFdIefLIBLvDPFkINP25mKABQwqIaQ9P3OeZFt5K
+        P2cVv/rus1WmtgLR4VHZYIVXyNbyOexQg6hhk0dkJXW1w6i0WHKH1oRXWwmtzZxiuiUjfL5IJglqZ
+        wFefjiyg==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1leKQr-000ar5-R5; Wed, 05 May 2021 16:32:21 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v9 71/96] block: Add bio_add_folio
+Date:   Wed,  5 May 2021 16:06:03 +0100
+Message-Id: <20210505150628.111735-72-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210505150628.111735-1-willy@infradead.org>
+References: <20210505150628.111735-1-willy@infradead.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (47.55.113.94) by BL0PR02CA0046.namprd02.prod.outlook.com (2603:10b6:207:3d::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Wed, 5 May 2021 16:39:03 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1leKYA-0016Eu-Kx; Wed, 05 May 2021 13:39:02 -0300
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 8bc817a0-8f1b-4820-86cf-08d90fe44b2d
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4497:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB44970D3D13668F35173BA526C2599@DM6PR12MB4497.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bJNqIvqOGTRt3c2KFcm6mtwGkm4lvT9WGWqnNcokrCcmvVt2DfNKduhN3RmTIjz0QIEVdNdwbtULZfNQSxEeYRopL6mDJkwwL7Qa1j3GCi1sIrFkEWZ/3UQ7rUzIfUbqjN5OmlPLLmsTPLErcgJABkgbeeVQFge9Pqu9XeRlPeREwEi8nfH2IhmiF2U5pTyMv182dscosdRCHlBGMacbIGC/FgmdJpNyL67FIsv/nPiu5xM8duOLr0bcuOCqSkW2qdlTCtCd90xJH6jjkcnJAPwMAddTOPO2A7umObw0sQDAh1lEUybFp6OClVs1/FV/3PWMZMdOXyoK0KxqQkk+FTKY0D3UThp6GxSYn67X26iSqe/EBQDabaA6ZT0II70p5MXhZDKXiWwsolbV5o5nbpAJe5R9APuZdgWFoMDhh36myfoX6yDoSMpKL7S3MaJIz9YbZGJWYyo6RvAF8O8P3CaB/bCHhTST+znXZgwpDHsHWDVLUE/dBowkeVGsyq7azAxZm+uw6W9NLBF6ZmHmtjxsSUcqoB27Cgw16SQl7cy7AymVz9tP9h/AWt75hK27f9IWmfhzLGNFN/klkqMissceAPwa2KG/yeRyKAvjXL8=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(39860400002)(396003)(136003)(346002)(36756003)(426003)(86362001)(7416002)(8676002)(54906003)(2906002)(186003)(316002)(2616005)(33656002)(4326008)(1076003)(66556008)(66946007)(66476007)(5660300002)(6916009)(4744005)(478600001)(38100700002)(9786002)(9746002)(26005)(8936002)(83380400001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?6WKc6r5QMk5MTBzp5Kh4AZ4RZ+5ZzXTw4CZ+2ZsuxllP8MYh8yN6Cv+706id?=
- =?us-ascii?Q?PttWgu7R+x+mlnf2rGqM88DnXKhZlXc0TQbk7qwlikCZAQvrXcIO6CkOD+Oz?=
- =?us-ascii?Q?UpTZGM7EuoemCELLY692/DMTmZ+PxysaqYXF6LJD/y7O96nJnBwEeSAKvMC8?=
- =?us-ascii?Q?n9+xKUo+OWuHMCBm/GXOrGzQkRrCsQlPFKWX6q5OrG7R+AW4/t8tNYyQeEao?=
- =?us-ascii?Q?4NRDTxnhunWVDWY9YROeFMY9PFeaWwep5IPC3eTfH7KbnC4GqJAt9QS7kvcS?=
- =?us-ascii?Q?7uv6gSOREpatu+YxHN9y5PRaXqJe2e6NvnIFZvHehwGO0IyOhNDXI58yR8hj?=
- =?us-ascii?Q?5HTptFmEjRk7ZIFL76IweuVwurcMAPeWMKnrUruRqzebaLhqttk+fu7WyN97?=
- =?us-ascii?Q?SzLvI0adCDh2/4WXsivxD6GDldPbtR/PBoOwa1TAGfPrUIfBaWCuiVoWzD7V?=
- =?us-ascii?Q?ofP2OPVxB+z1vMktWCjD89J5UB6CFUxkrPkUbppoE5RX50UV2DOpOeKZx7xo?=
- =?us-ascii?Q?hwotLv0c7TljKQd0HKcYoL8rrehWuiBqi5YilgAm3arMk0WzrZsin3JJCkpz?=
- =?us-ascii?Q?2kAGCAcpbhM8ywoPjitBuX3EkR0XwCBF7EovKPiHcyzLCo2ud8PhJBhZOd0Q?=
- =?us-ascii?Q?PJVTI7ABsNhY/WgCjxP1yl0YsClgidTw2xWbWH4iFWV62DY6WrrKf4I1bBzo?=
- =?us-ascii?Q?hdIKnx4/sUDE811F0hCLv01L9nsObZ2TTDEP2piYzpF63JH2QISCnfUDbQom?=
- =?us-ascii?Q?QKaHXAWm0fcL2Xh3LWw59AdR+PvXNj/6MZxYNIGQYjhVfBZKtlGzjf3mJW36?=
- =?us-ascii?Q?Az7PPm+j4bBkAOxNjechdmGnyU2YSkzOZpOQJmWhvYf1Mhtp1dlGH7Nm/yjg?=
- =?us-ascii?Q?SR+fbiZYnkjXWF23CyIPDAcc0Evz3mhtnwVIsTS6UbU7rG8Giu1nxtjUzRFd?=
- =?us-ascii?Q?00MUTV4Bx7ODJnca3tifKxyrHV43bbXfpwvMj6w9VBd7RmWnAys2Yl948ask?=
- =?us-ascii?Q?MlWT1FlLo5/VNh7I9dcRf/pdsDVRswo8stjVMGHr1JDvhuGwhU4MbXvO1XnT?=
- =?us-ascii?Q?JCQC3R+n5a99PY9fxnG+xQYn3pPLCKt9T1wWj78EfQDjPsBlwTutPqerWOML?=
- =?us-ascii?Q?iNULL6nYEiuj30BZImtK/N9On+ZYHNGYFXIYwDOPZf2+Wpt2u3Rjxqjxrwn4?=
- =?us-ascii?Q?am14ccwoU+IqGPh4fALL6Lo7yQYYIK6T7t1xsF90KVWjTSDtQHwza6+Qg/n7?=
- =?us-ascii?Q?DJScQHI2/GcLIKvtaMwbjGrcdD50O47zWj0nHfe/Ud61wO0dPjdwDPot5I3M?=
- =?us-ascii?Q?TqnFJSUiULYo9+oD4e/Vpm2a?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8bc817a0-8f1b-4820-86cf-08d90fe44b2d
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 16:39:04.4976
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MQsqC/Q8Nh8Gtd4j+TDtzl+keabd2z8JHK6V4tsy3+ft5AqtuSMTxie21Gb5YWKi
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4497
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:28:53PM +1000, Alexey Kardashevskiy wrote:
+This is a thin wrapper around bio_add_page().  The main advantage here
+is the documentation that the submitter can expect to see folios in the
+completion handler, and that stupidly large folios are not supported.
+It's not currently possible to allocate stupidly large folios, but if
+it ever becomes possible, this function will fail gracefully instead of
+doing I/O to the wrong bytes.
 
-> This is a good feature in general when let's say there is a linux supported
-> device which has a proprietary device firmware update tool which only exists
-> as an x86 binary and your hardware is not x86 - running qemu + vfio in full
-> emulation would provide a way to run the tool to update a physical device.
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ block/bio.c         | 21 +++++++++++++++++++++
+ include/linux/bio.h |  3 ++-
+ 2 files changed, 23 insertions(+), 1 deletion(-)
 
-That specific use case doesn't really need a vIOMMU though, does it?
+diff --git a/block/bio.c b/block/bio.c
+index 221dc56ba22f..f84defe8d84a 100644
+--- a/block/bio.c
++++ b/block/bio.c
+@@ -940,6 +940,27 @@ int bio_add_page(struct bio *bio, struct page *page,
+ }
+ EXPORT_SYMBOL(bio_add_page);
+ 
++/**
++ * bio_add_folio - Attempt to add part of a folio to a bio.
++ * @bio: Bio to add to.
++ * @folio: Folio to add.
++ * @len: How many bytes from the folio to add.
++ * @off: First byte in this folio to add.
++ *
++ * Always uses the head page of the folio in the bio.  If a submitter
++ * only uses bio_add_folio(), it can count on never seeing tail pages
++ * in the completion routine.  BIOs do not support folios larger than 2GiB.
++ *
++ * Return: The number of bytes from this folio added to the bio.
++ */
++size_t bio_add_folio(struct bio *bio, struct folio *folio, size_t len,
++		size_t off)
++{
++	if (len > UINT_MAX || off > UINT_MAX)
++		return 0;
++	return bio_add_page(bio, &folio->page, len, off);
++}
++
+ void bio_release_pages(struct bio *bio, bool mark_dirty)
+ {
+ 	struct bvec_iter_all iter_all;
+diff --git a/include/linux/bio.h b/include/linux/bio.h
+index f1a99f0a240c..f41f20ebc2c6 100644
+--- a/include/linux/bio.h
++++ b/include/linux/bio.h
+@@ -468,7 +468,8 @@ extern void bio_uninit(struct bio *);
+ extern void bio_reset(struct bio *);
+ void bio_chain(struct bio *, struct bio *);
+ 
+-extern int bio_add_page(struct bio *, struct page *, unsigned int,unsigned int);
++int bio_add_page(struct bio *, struct page *, unsigned len, unsigned off);
++size_t bio_add_folio(struct bio *, struct folio *, size_t len, size_t off);
+ extern int bio_add_pc_page(struct request_queue *, struct bio *, struct page *,
+ 			   unsigned int, unsigned int);
+ int bio_add_zone_append_page(struct bio *bio, struct page *page,
+-- 
+2.30.2
 
-Jason
