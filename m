@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6EA4373BBD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:52:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7DA6373BC3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:55:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233033AbhEEMxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:53:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230217AbhEEMxc (ORCPT
+        id S233052AbhEEM4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:56:17 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39958 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232079AbhEEM4M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:53:32 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F3A7C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 05:52:36 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 12so2343135lfq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 05:52:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DUJ6wIodjpCneHighQ0GfY8iqpoBiT6LHmEd2Kcx/xc=;
-        b=EUV6OxDbgS6qzK3ecwukeDactMuVot2m/JQ5e65pqn9Y5KX9Wd0U4L5oGUUHTVMc8T
-         sJTshB6mNhR87tzS/RUDKmqmDpZtp/jo9bgY/Ct9XH7TaNonjfjWYaCgAeffGhlGUuwL
-         Ocm1KpZ1GTP60hKlL1xK4R9ryauExez8czBIh+EjqHYAaxBTcAEka/pXR83SOD/Db9V6
-         ZBeuEb3hvfy0Mn5rfZMEDpph73rCJFBfpMIoTXc/IBnR0UPvWX2eFwM+hd98bki354Xd
-         4bQAOMFTyavJo49o2wwbesF9tIzRDR0zbWYURxbxMmh7ypjI6+qua08ndZVANo5e+KGq
-         vvgA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DUJ6wIodjpCneHighQ0GfY8iqpoBiT6LHmEd2Kcx/xc=;
-        b=FbW5i8bKjkyMB1E3obV7/4UIvLWbB6peCAEyWH3/A6UCDSkX/ZTo5SFDoxEy0KoXzZ
-         UbD578Vix6JMmr73zia/K/YjCAe2+wPPp0DhgyxYdcKTgiy1YukyFdhOBzVePFoepYVR
-         9JHyxMCla5cLJjijz1jrcmC9Oa/FDe389xAKwmqGoqEq3KVlT2dk0Qbp4UxXDzyXHwhA
-         q7qjnQTZL+VC1wAjhtzB2vioYQLEkyq29XpqcgZJkb/n92fOExkEUyB+GZUBu+8zClnp
-         tcf/fZh1YSPMSsOEHaXs78G3K5REgFuKEzRhn1runWfD4nBEAIlvb4sF7daeHRhKSAan
-         FH4w==
-X-Gm-Message-State: AOAM532Y6HmwWWXo9Dp4P6R2hgYPiCbxaQId5YBzyO/TkIlks1NcCldj
-        VcYX59mkw0F6opxzDyTafAzRJ0DT1+5+Cn9Jje44Ag==
-X-Google-Smtp-Source: ABdhPJxYcof+sEcIS6k1g2fBI94Tsit285jfjEfq4xJ9sCMXYWCCpOkw77yViYGWgY2XHiMONxP5KDRPgNY4lIinde4=
-X-Received: by 2002:a19:b0b:: with SMTP id 11mr19983583lfl.291.1620219154638;
- Wed, 05 May 2021 05:52:34 -0700 (PDT)
+        Wed, 5 May 2021 08:56:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620219315;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=5/Hr/rgKSvr3/48grAcGfL3btvwIpqWZESlyqU89EvA=;
+        b=eNFmWA/u3pTfdonlJTqq9439Nd6SRCzilhHUldxbhgd0LUPAXUSxyvskbUQzIUy85a5rzL
+        ZkUkjr74doeEnt1BmZXsWINtcpQtF+9O/MvSjpuP3PMP96YaQbEBdZEqbxbifwKTQQPMhz
+        bFJlMqSgfc+QCmkx4bk+sAQgoHl/lGM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-105-z9zhlQMVPWWJIM27Vg8iCw-1; Wed, 05 May 2021 08:55:14 -0400
+X-MC-Unique: z9zhlQMVPWWJIM27Vg8iCw-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BE8A51008062;
+        Wed,  5 May 2021 12:55:12 +0000 (UTC)
+Received: from localhost.localdomain.com (ovpn-112-211.ams2.redhat.com [10.36.112.211])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id A5C7D6062C;
+        Wed,  5 May 2021 12:55:10 +0000 (UTC)
+From:   =?UTF-8?q?=C3=8D=C3=B1igo=20Huguet?= <ihuguet@redhat.com>
+To:     netdev@vger.kernel.org, rajur@chelsio.com, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org
+Cc:     ivecera@redhat.com, ihuguet@redhat.com
+Subject: [PATCH] net:CXGB4: fix leak if sk_buff is not used
+Date:   Wed,  5 May 2021 14:54:50 +0200
+Message-Id: <20210505125450.21737-1-ihuguet@redhat.com>
 MIME-Version: 1.0
-References: <20210503144350.7496-1-aardelean@deviqon.com>
-In-Reply-To: <20210503144350.7496-1-aardelean@deviqon.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Wed, 5 May 2021 14:52:23 +0200
-Message-ID: <CACRpkdZcnzx6+OQjG_3z8MP1EkhGFBKx1kDxaSFBmDcxs4KHGw@mail.gmail.com>
-Subject: Re: [PATCH] iio: core: return ENODEV if ioctl is unknown
-To:     Alexandru Ardelean <aardelean@deviqon.com>
-Cc:     linux-iio <linux-iio@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Nuno Sa <nuno.sa@analog.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 4:43 PM Alexandru Ardelean <aardelean@deviqon.com> wrote:
+An sk_buff is allocated to send a flow control message, but it's not
+sent in all cases: in case the state is not appropiate to send it or if
+it can't be enqueued.
 
-> When the ioctl() mechanism was introduced in IIO core to centralize the
-> registration of all ioctls in one place via commit 8dedcc3eee3ac ("iio:
-> core: centralize ioctl() calls to the main chardev"), the return code was
-> changed from ENODEV to EINVAL, when the ioctl code isn't known.
->
-> This was done by accident.
->
-> This change reverts back to the old behavior, where if the ioctl() code
-> isn't known, ENODEV is returned (vs EINVAL).
->
-> This was brought into perspective by this patch:
->   https://lore.kernel.org/linux-iio/20210428150815.136150-1-paul@crapouillou.net/
->
-> Fixes: 8dedcc3eee3ac ("iio: core: centralize ioctl() calls to the main chardev")
-> Cc: Linus Walleij <linus.walleij@linaro.org>
-> Cc: Paul Cercueil <paul@crapouillou.net>
-> Cc: Nuno Sa <nuno.sa@analog.com>
-> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
+In the first of these 2 cases, the sk_buff was discarded but not freed,
+producing a memory leak.
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Signed-off-by: Íñigo Huguet <ihuguet@redhat.com>
+---
+ drivers/net/ethernet/chelsio/cxgb4/sge.c | 16 +++++++++-------
+ 1 file changed, 9 insertions(+), 7 deletions(-)
 
-Yours,
-Linus Walleij
+diff --git a/drivers/net/ethernet/chelsio/cxgb4/sge.c b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+index 256fae15e032..1e5f2edb70cf 100644
+--- a/drivers/net/ethernet/chelsio/cxgb4/sge.c
++++ b/drivers/net/ethernet/chelsio/cxgb4/sge.c
+@@ -2563,12 +2563,12 @@ int cxgb4_ethofld_send_flowc(struct net_device *dev, u32 eotid, u32 tc)
+ 	spin_lock_bh(&eosw_txq->lock);
+ 	if (tc != FW_SCHED_CLS_NONE) {
+ 		if (eosw_txq->state != CXGB4_EO_STATE_CLOSED)
+-			goto out_unlock;
++			goto out_free_skb;
+ 
+ 		next_state = CXGB4_EO_STATE_FLOWC_OPEN_SEND;
+ 	} else {
+ 		if (eosw_txq->state != CXGB4_EO_STATE_ACTIVE)
+-			goto out_unlock;
++			goto out_free_skb;
+ 
+ 		next_state = CXGB4_EO_STATE_FLOWC_CLOSE_SEND;
+ 	}
+@@ -2604,17 +2604,19 @@ int cxgb4_ethofld_send_flowc(struct net_device *dev, u32 eotid, u32 tc)
+ 		eosw_txq_flush_pending_skbs(eosw_txq);
+ 
+ 	ret = eosw_txq_enqueue(eosw_txq, skb);
+-	if (ret) {
+-		dev_consume_skb_any(skb);
+-		goto out_unlock;
+-	}
++	if (ret)
++		goto out_free_skb;
+ 
+ 	eosw_txq->state = next_state;
+ 	eosw_txq->flowc_idx = eosw_txq->pidx;
+ 	eosw_txq_advance(eosw_txq, 1);
+ 	ethofld_xmit(dev, eosw_txq);
+ 
+-out_unlock:
++	spin_unlock_bh(&eosw_txq->lock);
++	return 0;
++
++out_free_skb:
++	dev_consume_skb_any(skb);
+ 	spin_unlock_bh(&eosw_txq->lock);
+ 	return ret;
+ }
+-- 
+2.31.1
+
