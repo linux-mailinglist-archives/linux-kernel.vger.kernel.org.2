@@ -2,107 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E21893742AF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:47:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2EB13741D9
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:46:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236179AbhEEQrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:47:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37302 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235394AbhEEQlr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:41:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 512C7616E8;
-        Wed,  5 May 2021 16:34:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232482;
-        bh=pN1MfxHin+caU+Dvsh+jFpWBcP0jideP3oH2EhjkwA8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Y1+jTj8Cky74YmZw8Mu0LvGLn8ieXNxZKR7s/9E9nhDzrvitPq5kn9c4GHbTMj0kg
-         P4OKEZ9IcxaAS/OuIZ1zq+zwbyzvgaPmcf8+viprCDqERFju0YO/CwvKM7O7nx81No
-         arI4ZEuztkIgsAiJ+/eLwQV8d0rNfkzJqwSBkZ7681IUcs0EkZzcXa+pvp2iTryZLn
-         Ux0Gie+Ii4gKSLV7JrSuirBIuqQYJHuuS6cJ/Gsrggx4NTNkJW3/50BU3JylQs5fXc
-         JdzPo8Ak/YNeKTdiMFuc8k/SRypyCUG46ekRf9m7CtZec9tugu5WisrGXCgSbn5l33
-         1Nook+U/Gs/tA==
-Date:   Wed, 5 May 2021 17:34:06 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/4] arm64: Check the return PC against unreliable
- code sections
-Message-ID: <20210505163406.GB4541@sirena.org.uk>
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-3-madvenka@linux.microsoft.com>
- <20210504160508.GC7094@sirena.org.uk>
- <1bd2b177-509a-21d9-e349-9b2388db45eb@linux.microsoft.com>
+        id S235385AbhEEQlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:41:46 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3033 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234739AbhEEQit (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:38:49 -0400
+Received: from fraeml735-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fb2Cw7414z6tm0f;
+        Thu,  6 May 2021 00:26:52 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml735-chm.china.huawei.com (10.206.15.216) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 5 May 2021 18:37:50 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 17:37:49 +0100
+Date:   Wed, 5 May 2021 17:36:10 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     Sakari Ailus <sakari.ailus@linux.intel.com>, <linuxarm@huawei.com>,
+        <mauro.chehab@huawei.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+Subject: Re: [PATCH 25/25] media: i2c: ccs-core: fix pm_runtime_get_sync()
+ usage count
+Message-ID: <20210505173610.000027e7@Huawei.com>
+In-Reply-To: <20210505160645.1d197193@coco.lan>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <83ec24acb15f17e2ce589575c2f5eb7bdd1daf28.1620207353.git.mchehab+huawei@kernel.org>
+        <20210505103409.GN3@paasikivi.fi.intel.com>
+        <20210505125700.4a7584ca@coco.lan>
+        <20210505125857.7f30d8fa@coco.lan>
+        <20210505133548.00005c1a@Huawei.com>
+        <20210505160645.1d197193@coco.lan>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OwLcNYc0lM97+oe1"
-Content-Disposition: inline
-In-Reply-To: <1bd2b177-509a-21d9-e349-9b2388db45eb@linux.microsoft.com>
-X-Cookie: Please ignore previous fortune.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 5 May 2021 16:06:45 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
---OwLcNYc0lM97+oe1
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Hi Jonathan,
+> 
+> Em Wed, 5 May 2021 13:35:48 +0100
+> Jonathan Cameron <Jonathan.Cameron@Huawei.com> escreveu:
+> 
+> > > > [PATCH] media: i2c: ccs-core: fix pm_runtime_get_sync() usage count
+> > > > 
+> > > > The pm_runtime_get_sync() internally increments the
+> > > > dev->power.usage_count without decrementing it, even on errors.
+> > > > 
+> > > > There is a bug at ccs_pm_get_init(): when this function returns
+> > > > an error, the stream is not started, and RPM usage_count
+> > > > should not be incremented. However, if the calls to
+> > > > v4l2_ctrl_handler_setup() return errors, it will be kept
+> > > > incremented.
+> > > > 
+> > > > At ccs_suspend() the best is to replace it by the new
+> > > > pm_runtime_resume_and_get(), introduced by:
+> > > > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > > > in order to properly decrement the usage counter automatically,
+> > > > in the case of errors.
+> > > > 
+> > > > Fixes: 96e3a6b92f23 ("media: smiapp: Avoid maintaining power state information")
+> > > > Cc: stable@vger.kernel.org
+> > > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>    
+> > Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>  
+> 
+> Per Sakari's request (for practical reasons on backporting and
+> c/c stable), this was split into two separate patches, one
+> fixing the issues, and a separate trivial one with just the
+> pm_runtime_resume_and_get(). I'm adding your RB on both.
+Makes sense.
 
-On Tue, May 04, 2021 at 02:03:14PM -0500, Madhavan T. Venkataraman wrote:
-> On 5/4/21 11:05 AM, Mark Brown wrote:
+Jonathan
 
-> >> @@ -118,9 +160,21 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
-> >>  			return -EINVAL;
-> >>  		frame->pc = ret_stack->ret;
-> >>  		frame->pc = ptrauth_strip_insn_pac(frame->pc);
-> >> +		return 0;
-> >>  	}
+> 
+> Thanks,
+> Mauro
 
-> > Do we not need to look up the range of the restored pc and validate
-> > what's being pointed to here?  It's not immediately obvious why we do
-> > the lookup before handling the function graph tracer, especially given
-> > that we never look at the result and there's now a return added skipping
-> > further reliability checks.  At the very least I think this needs some
-> > additional comments so the code is more obvious.
-
-> I want sym_code_ranges[] to contain both unwindable and non-unwindable ranges.
-> Unwindable ranges will be special ranges such as the return_to_handler() and
-> kretprobe_trampoline() functions for which the unwinder has (or will have)
-> special code to unwind. So, the lookup_range() has to happen before the
-> function graph code. Please look at the last patch in the series for
-> the fix for the above function graph code.
-
-That sounds reasonable but like I say should probably be called out in
-the code so it's clear to people working with it.
-
-> On the question of "should the original return address be checked against
-> sym_code_ranges[]?" - I assumed that if there is a function graph trace on a
-> function, it had to be an ftraceable function. It would not be a part
-> of sym_code_ranges[]. Is that a wrong assumption on my part?
-
-I can't think of any cases where it wouldn't be right now, but it seems
-easier to just do a redundant check than to have the assumption in the
-code and have to think about if it's missing.
-
---OwLcNYc0lM97+oe1
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCSyP0ACgkQJNaLcl1U
-h9AHXwf/dlSkWVc9S8GPIKnOPjZ4hMQvnKRX40iT/k9PrAM7y+5z3ear/Ur46dvD
-DeVmFutp0xtG9sZZuOVvhvc1Ud8HJejQDzFkC5cuSA5qsfjsB8oSnIzcXXMnFe7W
-HIC1GuRUZbS8tghRCYKlPAmJ07iIcM8TDiLY/sm54sHa2JPbIA9CeTK5U9VdgWKY
-ezPNVRXs/mfA2BEEOMr9PCjBrUXTnywTjUDW2UBHn4556xYHfDYGlAuwNkB9S93j
-yb5q32pFklKStG5NeMdFX31fNxRUpfmINEa+zaElVLChifuf2+BLilpzqf8j8uJQ
-H+6W3qYdxBAa4XnfSoPDXIbwMXEWzw==
-=tf0f
------END PGP SIGNATURE-----
-
---OwLcNYc0lM97+oe1--
