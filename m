@@ -2,113 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54CB1374747
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF8443747B1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234985AbhEERyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:54:25 -0400
-Received: from conssluserg-02.nifty.com ([210.131.2.81]:52611 "EHLO
-        conssluserg-02.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231314AbhEERxl (ORCPT
+        id S235303AbhEESCF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:02:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56746 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235393AbhEESBq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:53:41 -0400
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178]) (authenticated)
-        by conssluserg-02.nifty.com with ESMTP id 145HqREB017289;
-        Thu, 6 May 2021 02:52:28 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-02.nifty.com 145HqREB017289
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1620237148;
-        bh=18ou+g7OK3u3gkUuE5/R5rN8Vplhh/fI5mnkpi7CnZM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=NCsb5lo1QosYExCTDPuYOIqfDL1JCs58WQuOxYf/59ITfGaDfvYl+z5PBS3i8yBbj
-         4dRdvdbS+GVRvlB826wJMeCA+B/cpMA60u0sal8JTLlq4tHMpBK3WD13itF9SqrWtm
-         OwKPOdY4W7Ad8JP1IWR9UJNUr2ABowsXLuHQstrsSfQVc8DCC5+EEoRr6BoVz8eRAm
-         j8QovC8pFfsHO8RMYJW369iNaeTucFbRpWCVjYE5p8PLbECNOLvMh95th7PCeCoIKn
-         7B0jgSm8Z2tkVGElAzhBk9pUNB+33H36aDfztNKtsllc+jwtoLtv8bJd0O7EavuKj+
-         5CzJdirlJXbpg==
-X-Nifty-SrcIP: [209.85.215.178]
-Received: by mail-pg1-f178.google.com with SMTP id s22so2315396pgk.6;
-        Wed, 05 May 2021 10:52:28 -0700 (PDT)
-X-Gm-Message-State: AOAM532sgeI/px8KO3qNYaQB1uwFa3UKqWKW7SrC9vdNrsGt3qjZqKGq
-        q43XSoxiL0hz1Y5vSf1lC0rZhkIRijaLK9W0RMM=
-X-Google-Smtp-Source: ABdhPJxLDcLruVdNClMyGG+e/5NXyEcB4TVe8Gf5ERvv4Kcw+wyW0ic+fLdN/Lk4jB++81hOxUlCjXOkyUxxINIO5GA=
-X-Received: by 2002:a63:e044:: with SMTP id n4mr121371pgj.47.1620237147212;
- Wed, 05 May 2021 10:52:27 -0700 (PDT)
+        Wed, 5 May 2021 14:01:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67331C0612AF;
+        Wed,  5 May 2021 10:39:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
+        Content-Type:Content-ID:Content-Description;
+        bh=aCJPdbFikHVw1iejx4/NJ1aZahzV7GtlgafMroiNaUM=; b=RHO9cr6oP/h0BR9MZibn2R924u
+        q8bQNisZQBIAfcTDfoTYYmoGPKE0AmmJQ88PbpV4S1gLPuJO4lb8hRfJgPCBwAcMKzebKA3KgptDN
+        frNsAuMcVhHx3YKmiXmQ9h76R8D3X6fGblRzrrKkxZe6+uDdkDl3dyQUGtodP3jX2AwARSXpGDSk3
+        fgfYm6CvDeEXqrWfz5sQOooOTz1E/6YG9HzOcuTW1CqadHiEOF0Ovp+dyeTBBVMkJsKCmDDEu2MhY
+        dr8nHzodQzMsGY2VPt2vRWtHLn+3cMyhvG7JGDnrXAvyOfF7T3WRIWxrjGNiVQmRB21Nylp6chiKT
+        LjvqWXsQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1leKpR-000cRK-Fm; Wed, 05 May 2021 16:58:04 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v9 77/96] mm/filemap: Add filemap_alloc_folio
+Date:   Wed,  5 May 2021 16:06:09 +0100
+Message-Id: <20210505150628.111735-78-willy@infradead.org>
+X-Mailer: git-send-email 2.29.2
+In-Reply-To: <20210505150628.111735-1-willy@infradead.org>
+References: <20210505150628.111735-1-willy@infradead.org>
 MIME-Version: 1.0
-References: <20210502180957.3419490-1-masahiroy@kernel.org>
-In-Reply-To: <20210502180957.3419490-1-masahiroy@kernel.org>
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 6 May 2021 02:51:50 +0900
-X-Gmail-Original-Message-ID: <CAK7LNAS4F9aSF2hZPVmy1vFOFRyOvMsrGtxKN0AMEB9Jp6Dtpw@mail.gmail.com>
-Message-ID: <CAK7LNAS4F9aSF2hZPVmy1vFOFRyOvMsrGtxKN0AMEB9Jp6Dtpw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] kbuild: parameterize the .o part of suffix-search
-To:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 3:10 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->
-> The suffix-search macro hard-codes the suffix, '.o'.
->
-> Make it a parameter so that the multi-search and real-search macros
-> can be reused for foo-dtbs syntax introduced by commit 15d16d6dadf6
-> ("kbuild: Add generic rule to apply fdtoverlay").
->
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
-> ---
+Reimplement __page_cache_alloc as a wrapper around filemap_alloc_folio
+to allow filesystems to be converted at our leisure.  Increases
+kernel text size by 133 bytes, mostly in cachefiles_read_backing_file().
+pagecache_get_page() shrinks by 32 bytes, though.
 
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ include/linux/pagemap.h | 11 ++++++++---
+ mm/filemap.c            | 14 +++++++-------
+ 2 files changed, 15 insertions(+), 10 deletions(-)
 
-Applied to linux-kbuild.
-
-
->  scripts/Makefile.lib | 19 +++++++++++--------
->  1 file changed, 11 insertions(+), 8 deletions(-)
->
-> diff --git a/scripts/Makefile.lib b/scripts/Makefile.lib
-> index 64daf37e874b..88b446ed6532 100644
-> --- a/scripts/Makefile.lib
-> +++ b/scripts/Makefile.lib
-> @@ -44,19 +44,22 @@ else
->  obj-y          := $(filter-out %/, $(obj-y))
->  endif
->
-> -# Expand $(foo-objs) $(foo-y) by calling $(call suffix-search,foo.o,-objs -y)
-> -suffix-search = $(strip $(foreach s, $2, $($(1:.o=$s))))
-> +# Expand $(foo-objs) $(foo-y) etc. by replacing their individuals
-> +suffix-search = $(strip $(foreach s, $3, $($(1:%$(strip $2)=%$s))))
-> +# List composite targets that are constructed by combining other targets
-> +multi-search = $(sort $(foreach m, $1, $(if $(call suffix-search, $m, $2, $3 -), $m)))
-> +# List primitive targets that are compiled from source files
-> +real-search = $(foreach m, $1, $(if $(call suffix-search, $m, $2, $3 -), $(call suffix-search, $m, $2, $3), $m))
-> +
->  # If $(foo-objs), $(foo-y), $(foo-m), or $(foo-) exists, foo.o is a composite object
-> -multi-search = $(sort $(foreach m, $1, $(if $(call suffix-search, $m, $2 -), $m)))
-> -multi-obj-y := $(call multi-search,$(obj-y),-objs -y)
-> -multi-obj-m := $(call multi-search,$(obj-m),-objs -y -m)
-> +multi-obj-y := $(call multi-search, $(obj-y), .o, -objs -y)
-> +multi-obj-m := $(call multi-search, $(obj-m), .o, -objs -y -m)
->  multi-obj-ym := $(multi-obj-y) $(multi-obj-m)
->
->  # Replace multi-part objects by their individual parts,
->  # including built-in.a from subdirectories
-> -real-search = $(foreach m, $1, $(if $(call suffix-search, $m, $2 -), $(call suffix-search, $m, $2), $m))
-> -real-obj-y := $(call real-search, $(obj-y),-objs -y)
-> -real-obj-m := $(call real-search, $(obj-m),-objs -y -m)
-> +real-obj-y := $(call real-search, $(obj-y), .o, -objs -y)
-> +real-obj-m := $(call real-search, $(obj-m), .o, -objs -y -m)
->
->  always-y += $(always-m)
->
-> --
-> 2.27.0
->
-
-
+diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+index d54772aa7a3a..64370f615aba 100644
+--- a/include/linux/pagemap.h
++++ b/include/linux/pagemap.h
+@@ -338,14 +338,19 @@ static inline void *detach_page_private(struct page *page)
+ }
+ 
+ #ifdef CONFIG_NUMA
+-extern struct page *__page_cache_alloc(gfp_t gfp);
++extern struct folio *filemap_alloc_folio(gfp_t gfp, unsigned int order);
+ #else
+-static inline struct page *__page_cache_alloc(gfp_t gfp)
++static inline struct folio *filemap_alloc_folio(gfp_t gfp, unsigned int order)
+ {
+-	return alloc_pages(gfp, 0);
++	return alloc_folio(gfp, order);
+ }
+ #endif
+ 
++static inline struct page *__page_cache_alloc(gfp_t gfp)
++{
++	return &filemap_alloc_folio(gfp, 0)->page;
++}
++
+ static inline struct page *page_cache_alloc(struct address_space *x)
+ {
+ 	return __page_cache_alloc(mapping_gfp_mask(x));
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 5c130bfcdb1c..a9c16f05b863 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -987,24 +987,24 @@ int add_to_page_cache_lru(struct page *page, struct address_space *mapping,
+ EXPORT_SYMBOL_GPL(add_to_page_cache_lru);
+ 
+ #ifdef CONFIG_NUMA
+-struct page *__page_cache_alloc(gfp_t gfp)
++struct folio *filemap_alloc_folio(gfp_t gfp, unsigned int order)
+ {
+ 	int n;
+-	struct page *page;
++	struct folio *folio;
+ 
+ 	if (cpuset_do_page_mem_spread()) {
+ 		unsigned int cpuset_mems_cookie;
+ 		do {
+ 			cpuset_mems_cookie = read_mems_allowed_begin();
+ 			n = cpuset_mem_spread_node();
+-			page = __alloc_pages_node(n, gfp, 0);
+-		} while (!page && read_mems_allowed_retry(cpuset_mems_cookie));
++			folio = __alloc_folio_node(n, gfp, order);
++		} while (!folio && read_mems_allowed_retry(cpuset_mems_cookie));
+ 
+-		return page;
++		return folio;
+ 	}
+-	return alloc_pages(gfp, 0);
++	return alloc_folio(gfp, order);
+ }
+-EXPORT_SYMBOL(__page_cache_alloc);
++EXPORT_SYMBOL(filemap_alloc_folio);
+ #endif
+ 
+ /*
 -- 
-Best Regards
-Masahiro Yamada
+2.30.2
+
