@@ -2,121 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815423738CD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:46:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA3E53738D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:50:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232403AbhEEKrP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 06:47:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47720 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231265AbhEEKrO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 06:47:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F39F8B164;
-        Wed,  5 May 2021 10:46:16 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id B5D51DA795; Wed,  5 May 2021 12:43:50 +0200 (CEST)
-Date:   Wed, 5 May 2021 12:43:50 +0200
-From:   David Sterba <dsterba@suse.cz>
-To:     Jiri Slaby <jslaby@suse.cz>
-Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
-        Alex Elder <elder@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Oliver Neukum <oneukum@suse.com>,
-        Felipe Balbi <balbi@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Subject: Re: [PATCH 26/35] tty: make tty_operations::chars_in_buffer return
- uint
-Message-ID: <20210505104350.GP7604@suse.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz, Jiri Slaby <jslaby@suse.cz>,
-        gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jeff Dike <jdike@addtoit.com>,
-        Richard Weinberger <richard@nod.at>,
-        Anton Ivanov <anton.ivanov@cambridgegreys.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Samuel Iglesias Gonsalvez <siglesias@igalia.com>,
-        Jens Taprogge <jens.taprogge@taprogge.org>,
-        Karsten Keil <isdn@linux-pingi.de>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Heiko Carstens <hca@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        David Lin <dtwlin@gmail.com>, Johan Hovold <johan@kernel.org>,
-        Alex Elder <elder@kernel.org>, Jiri Kosina <jikos@kernel.org>,
-        David Sterba <dsterba@suse.com>, Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Oliver Neukum <oneukum@suse.com>, Felipe Balbi <balbi@kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-References: <20210505091928.22010-1-jslaby@suse.cz>
- <20210505091928.22010-27-jslaby@suse.cz>
+        id S232262AbhEEKu5 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 May 2021 06:50:57 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:22287 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229559AbhEEKuz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 06:50:55 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-222-KOeRTqsfPFCBXFwKiQHgGw-1; Wed, 05 May 2021 11:49:56 +0100
+X-MC-Unique: KOeRTqsfPFCBXFwKiQHgGw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 11:49:55 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Wed, 5 May 2021 11:49:55 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Stefan Kanthak' <kanthak@arcor.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] vsscanf() in lib/vsprintf.c
+Thread-Topic: [PATCH] vsscanf() in lib/vsprintf.c
+Thread-Index: AQHXQRwAOtVxxBSk3E+t7e+RYJucb6rUtkYg
+Date:   Wed, 5 May 2021 10:49:55 +0000
+Message-ID: <0be89b55a4064ef88d6b8ae73fd9ee01@AcuMS.aculab.com>
+References: <6C7CD73845304CDE98F6DB165904B571@H270>
+In-Reply-To: <6C7CD73845304CDE98F6DB165904B571@H270>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505091928.22010-27-jslaby@suse.cz>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 11:19:19AM +0200, Jiri Slaby wrote:
-> tty_operations::chars_in_buffer is another hook which is expected to
-> return values >= 0. So make it explicit by the return type too -- use
-> unsigned int.
-> 
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: Jeff Dike <jdike@addtoit.com>
-> Cc: Richard Weinberger <richard@nod.at>
-> Cc: Anton Ivanov <anton.ivanov@cambridgegreys.com>
-> Cc: Arnd Bergmann <arnd@arndb.de>
-> Cc: Samuel Iglesias Gonsalvez <siglesias@igalia.com>
-> Cc: Jens Taprogge <jens.taprogge@taprogge.org>
-> Cc: Karsten Keil <isdn@linux-pingi.de>
-> Cc: Ulf Hansson <ulf.hansson@linaro.org>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Jakub Kicinski <kuba@kernel.org>
-> Cc: Heiko Carstens <hca@linux.ibm.com>
-> Cc: Vasily Gorbik <gor@linux.ibm.com>
-> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
-> Cc: David Lin <dtwlin@gmail.com>
-> Cc: Johan Hovold <johan@kernel.org>
-> Cc: Alex Elder <elder@kernel.org>
-> Cc: Jiri Kosina <jikos@kernel.org>
-> Cc: David Sterba <dsterba@suse.com>
-> Cc: Shawn Guo <shawnguo@kernel.org>
-> Cc: Sascha Hauer <s.hauer@pengutronix.de>
-> Cc: Oliver Neukum <oneukum@suse.com>
-> Cc: Felipe Balbi <balbi@kernel.org>
-> Cc: Mathias Nyman <mathias.nyman@intel.com>
-> Cc: Marcel Holtmann <marcel@holtmann.org>
-> Cc: Johan Hedberg <johan.hedberg@gmail.com>
-> Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-> ---
->  drivers/tty/ipwireless/tty.c           |  2 +-
+It is so stupendously hard to use scanf() safely
+the best thing is probably to just delete it :-)
 
-Acked-by: David Sterba <dsterba@suse.com>
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
