@@ -2,166 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 332BB3747BA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:06:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EB5D3747C2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:06:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235578AbhEESDS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:03:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56982 "EHLO
+        id S235164AbhEESFN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:05:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57440 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235570AbhEESC5 (ORCPT
+        with ESMTP id S235669AbhEESEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:02:57 -0400
-Received: from mail-pf1-x42b.google.com (mail-pf1-x42b.google.com [IPv6:2607:f8b0:4864:20::42b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD7ABC061238
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:44:44 -0700 (PDT)
-Received: by mail-pf1-x42b.google.com with SMTP id c17so2544659pfn.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:44:44 -0700 (PDT)
+        Wed, 5 May 2021 14:04:04 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C43CAC0610F0;
+        Wed,  5 May 2021 10:53:00 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id m12so2306771pgr.9;
+        Wed, 05 May 2021 10:53:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=obGxJOifXc8O1UmFRuQ9Y2+IOogHda0WcOdPfQSfwps=;
-        b=pjLARA1GJw14DHiB+icqJxq8dOzk8zpoN9Uk7ZgzM6xWktE/WSxphlIGl1wNV7BpkO
-         ba5Ob+ivvmSStYs6/9XSuVUVnepS6u5SZkkxMLyKDe6NOcfomeyofG96nIsWgyOVVHhl
-         kDHGYtA0VHZX8eyuOwK88J9YI2A28LY/oazK6eB2KsdVvhGNS3uyI8PTZCuhP2nFaM/H
-         m5M8NMpCYJabwUUUxGTQX0etROOg/LeoHpCpJ4X22BKHxXq+C9gh+2Ktyoj/hU/TTCa5
-         1iy8m0W682jrxSkHBfPIgdxNaZp/FFhFwKmLWoUAPLI76XMIt+/2PdSjbXkesJ+NAfrL
-         NScQ==
+        d=gmail.com; s=20161025;
+        h=message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=F2C5cf9B198jaC0/2aV3ii+I4uZpmeyVcCtSq67VLBQ=;
+        b=hjGcJxR9LYIXOA2kEBBtFvQP/J3QYPoUWRV3D+kYk7hk7lIvUIpw8U3aLN598JwBVs
+         UDaWh1s8dlCCVmb3VbZSiWeBrwTZ4TgOICEaxVBCz8bceLstj4m9UKwZzAyHPPOM9HLE
+         5eWNfnFUV/DN92on8/EwTjtdH33r6F8l63zXv6gLUoSgN3jarf5y16+5CegVLKv8snzg
+         VFgYLtzhw0UQn8RHR9uVqLOUY84SjyhQQVTWcJxNoATMITtszocXJPrif9gvb/4NaBYy
+         bLY2w9vSG034BH9X8tbC/3i3kuriCv9S7e/YGYodks4LSyUi/IluuSRn2OTTFrz9wZIP
+         yCew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=obGxJOifXc8O1UmFRuQ9Y2+IOogHda0WcOdPfQSfwps=;
-        b=CNmsE8vsvuutntqio0AbMBXAZPwmrO8FcA4YIREvd1NDrDwZbV+k6WXqDO4XQspS9A
-         ea+pZO+Fyat0O1zr2QuTBwdsMHPISn8GxctYsLKw/DiP9A4B1u0dAGwkb/XgMJPP0tQ4
-         Ow9m4RCNoy6K5ciiq37D6WVYIMFaOqSLFvbkVJgyLRY53hV1oaU+MHZ082C3lsYKvP/m
-         sCJKuU9BaFznJVo0Ic+TmElhfqBPF7Fr1oeqbZsGqiw9EoXI37lRguWc7p5ri0FWpyl6
-         hb95isLUrtM99H8xq6Uaf8LfTsv8LuGX9+rqDLLN19Xv47YKbpihULgdGW+MsikIv8kn
-         5wWQ==
-X-Gm-Message-State: AOAM531g8o6xmNVfQyLI4XYpOeYEvbGcpu34fexYvqYkgJOFFS//S1Iz
-        FitD0XyWpQZhM3jqqg3YtXeHv6rpK7d742/PPsjIjA==
-X-Google-Smtp-Source: ABdhPJy0Ci7nMyjylGdOqTHf0rBu6M32HJjGd76reaDGpvyl4Y0m/boAcrTKs2TlphWAnNFY6zyVxQTWRpXczYHwTOY=
-X-Received: by 2002:a65:6085:: with SMTP id t5mr79539pgu.201.1620236683926;
- Wed, 05 May 2021 10:44:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210416065623.882364-1-davidgow@google.com> <YJGUFrc8PJ0LAKiF@google.com>
- <CABVgOSnz2PhMeqXLz00U406Wn6cLiiHKmrUyB20A=zauwh2=1A@mail.gmail.com>
-In-Reply-To: <CABVgOSnz2PhMeqXLz00U406Wn6cLiiHKmrUyB20A=zauwh2=1A@mail.gmail.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 5 May 2021 10:44:33 -0700
-Message-ID: <CAFd5g46uEMNYxhUNTKce-8jAGB_c=Zme8yF3mc4rNKtU9niy4Q@mail.gmail.com>
-Subject: Re: [PATCH v8] fat: Add KUnit tests for checksums and timestamps
-To:     David Gow <davidgow@google.com>
-Cc:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
-        Shuah Khan <shuah@kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:message-id:date:from:in-reply-to:subject:to:cc
+         :content-transfer-encoding;
+        bh=F2C5cf9B198jaC0/2aV3ii+I4uZpmeyVcCtSq67VLBQ=;
+        b=DPtL0jcIMC7lH6uwRZVEJJlU0Qd0OiimZZosSWUmI+vLyQyBC9xYqfeQBJzhoYoTuc
+         S9zyKmF/x/LhWDGDsagTOhXWXucltKZDOwrqBnXlLde0SaUHUb4ym3BMkBLUgJsgT/60
+         +FL/06TGhkpcDwuB4LjgrB7YSaure9G7NmcWM5OrTcNTiUgGObS6752TC521IRxGvyb5
+         EoRVzqCh1yOAMiTw6CmAE/1zolxvuGp3PeEdQocbKHeQaPpGjvEAENZv1CdyNG9Wq50j
+         l6DMArz6Oafx7EgmJY/qi6G2u3og4A54jbYSPH6dbRf20J3drDUqHzKp3aiWt6qSAw4u
+         5KqQ==
+X-Gm-Message-State: AOAM533nVw86ZcTHryqJ5nOSoxQvx/p0tPJvszXg5pyrUwxQgvLEmGwF
+        4xj200zZxGDxwVvKpsJHiymSIH+MgVztdQRT16C38A==
+X-Google-Smtp-Source: ABdhPJzM7Bh6WNr0AQQUNa7FDE59wr8Dzkat0UI18Eaki6EICVl/f0XQw0s/F9c9MmXW3qCXgoawOA==
+X-Received: by 2002:a62:b412:0:b029:21f:6b06:7bdd with SMTP id h18-20020a62b4120000b029021f6b067bddmr120978pfn.51.1620237180000;
+        Wed, 05 May 2021 10:53:00 -0700 (PDT)
+Received: from cl-arch-kdev (cl-arch-kdev.xen.prgmr.com. [2605:2700:0:2:a800:ff:fed6:fc0d])
+        by smtp.gmail.com with ESMTPSA id j1sm7275109pgj.17.2021.05.05.10.52.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 10:52:59 -0700 (PDT)
+Message-ID: <6092db7b.1c69fb81.c8318.f7b8@mx.google.com>
+Date:   Wed, 05 May 2021 10:52:59 -0700 (PDT)
+X-Google-Original-Date: Wed, 05 May 2021 17:52:58 GMT
+From:   Fox Chen <foxhlchen@gmail.com>
+In-Reply-To: <20210505112324.956720416@linuxfoundation.org>
+Subject: RE: [PATCH 5.12 00/17] 5.12.2-rc1 review
+To:     linux-kernel@vger.kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Fox Chen <foxhlchen@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 11:48 PM David Gow <davidgow@google.com> wrote:
->
-> On Wed, May 5, 2021 at 2:36 AM 'Brendan Higgins' via KUnit Development
-> <kunit-dev@googlegroups.com> wrote:
-> >
-> > On Thu, Apr 15, 2021 at 11:56:23PM -0700, David Gow wrote:
-> > > Add some basic sanity-check tests for the fat_checksum() function and
-> > > the fat_time_unix2fat() and fat_time_fat2unix() functions. These unit
-> > > tests verify these functions return correct output for a number of test
-> > > inputs.
-> > >
-> > > These tests were inspored by -- and serve a similar purpose to -- the
-> >                    ^^^^^^^^
-> >         I am guessing this is supposed to be "inspired".
-> >
->
-> Oops -- yup. This is a typo. I can resend a version with this fixed if
-> you think that makes sense, otherwise I'll just hold it over in case I
-> need to send out a new version.
->
-> > > timestamp parsing KUnit tests in ext4[1].
-> > >
-> > > Note that, unlike fat_time_unix2fat, fat_time_fat2unix wasn't previously
-> > > exported, so this patch exports it as well. This is required for the
-> > > case where we're building the fat and fat_test as modules.
-> > >
-> > > [1]:
-> > > https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/inode-test.c
-> > >
-> > > Signed-off-by: David Gow <davidgow@google.com>
-> > > Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-> >
-> > Aside from the nit above, and the *potential* nit and question below.
-> > Everything here looks good to me.
-> >
-> > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> >
-> > > ---
-> > >
-> > > It's been a while, but this hopefully is a final version of the FAT KUnit
-> > > patchset. It has a number of changes to keep it up-to-date with current
-> > > KUnit standards, notably the use of parameterised tests and the addition
-> > > of a '.kunitconfig' file to allow for easy testing. It also fixes an
-> > > endianness tagging issue picked up by the kernel test robot under sparse
-> > > on pa-risc.
-> > >
-> > > Cheers,
-> > > -- David
-> >
-> > [...]
-> >
-> > > diff --git a/fs/fat/fat_test.c b/fs/fat/fat_test.c
-> > > new file mode 100644
-> > > index 000000000000..febd25f57d4b
-> > > --- /dev/null
-> > > +++ b/fs/fat/fat_test.c
-> > > @@ -0,0 +1,197 @@
-> > > +// SPDX-License-Identifier: GPL-2.0
-> > > +/*
-> > > + * KUnit tests for FAT filesystems.
-> > > + *
-> > > + * Copyright (C) 2020 Google LLC.
-> >
-> > Nit: I know you wrote this last year, but I have had other maintainers
-> > tell me the Copyright date should be set to when the final version of
-> > the patch is sent out.
-> >
-> > I personally don't care, and I don't think you should resend this patch
-> > just for that, but figured I would mention.
-> >
->
-> Hmm... I've definitely heard this both ways, but I can easily update
-> the year if I need to send a new version out.
->
-> > > + * Author: David Gow <davidgow@google.com>
-> > > + */
-> > > +
-> > > +#include <kunit/test.h>
-> > > +
-> > > +#include "fat.h"
-> > > +
-> > > +static void fat_checksum_test(struct kunit *test)
-> > > +{
-> > > +     /* With no extension. */
-> > > +     KUNIT_EXPECT_EQ(test, fat_checksum("VMLINUX    "), (u8)44);
-> > > +     /* With 3-letter extension. */
-> > > +     KUNIT_EXPECT_EQ(test, fat_checksum("README  TXT"), (u8)115);
-> > > +     /* With short (1-letter) extension. */
-> > > +     KUNIT_EXPECT_EQ(test, fat_checksum("ABCDEFGHA  "), (u8)98);
-> >
-> > How do you get the magic values? Or is this just supposed to be a
-> > regression test?
->
-> This is mainly meant to be a regression test, and the values did
-> originally come from just running fat_checksum. I have, however,
-> checked that Windows 98 produces the same values (on a FAT12
-> filesystem).
+On Wed,  5 May 2021 14:05:55 +0200, Greg Kroah-Hartman <gregkh@linuxfoundation.org> wrote:
+> This is the start of the stable review cycle for the 5.12.2 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.2-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
+> and the diffstat can be found below.
+> 
+> thanks,
+> 
+> greg k-h
+> 
 
-All the above sounds good to me. Like I said before, all my comments
-are pretty minor, I don't think you need to send a new revision for
-those.
+5.12.2-rc1 Successfully Compiled and booted on my Raspberry PI 4b (8g) (bcm2711)
+                
+Tested-by: Fox Chen <foxhlchen@gmail.com>
+
