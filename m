@@ -2,251 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1632E3738F3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:02:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 398213738F5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:03:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232440AbhEELD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:03:27 -0400
-Received: from mga07.intel.com ([134.134.136.100]:27393 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229559AbhEELDZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:03:25 -0400
-IronPort-SDR: h6HsIwd+3fJsRPvF/Uf2DBxREbUG6qPODSlvE+Ubp4lx1FzpoN8k5s5ZcgPYDtg5FDDZT5CB5V
- pXAdVcElUyyA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="262129174"
-X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
-   d="scan'208";a="262129174"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 04:02:28 -0700
-IronPort-SDR: FZf52xL00zCjeufPwcx1WYqmxeoVKWEsYFHIECR/kRGMZRZZHfnHf08C7W8s/919Hej07/rHBr
- eTCFLYMg7zhA==
-X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
-   d="scan'208";a="539515219"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 04:02:26 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id CE665203BC;
-        Wed,  5 May 2021 14:02:24 +0300 (EEST)
-Date:   Wed, 5 May 2021 14:02:24 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH 25/25] media: i2c: ccs-core: fix pm_runtime_get_sync()
- usage count
-Message-ID: <20210505110224.GP3@paasikivi.fi.intel.com>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
- <83ec24acb15f17e2ce589575c2f5eb7bdd1daf28.1620207353.git.mchehab+huawei@kernel.org>
- <20210505103409.GN3@paasikivi.fi.intel.com>
- <20210505125700.4a7584ca@coco.lan>
+        id S232504AbhEELEw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:04:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48220 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232403AbhEELEu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 07:04:50 -0400
+Received: from hr2.samba.org (hr2.samba.org [IPv6:2a01:4f8:192:486::2:0])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE9A6C061574;
+        Wed,  5 May 2021 04:03:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=samba.org;
+         s=42; h=Message-Id:Date:Cc:To:From;
+        bh=LFmASb7+Qh69wknfhzFhMRba205E6B5Mf0FBOcwFrRY=; b=FAWOI7mIDBoVOuvaRay7/8hBTW
+        MhQGaVO2rAQxj5zagzmRGY2is20Kt2D0fDmWq+dNr6qad9W13I74+9Mgd+XEkwXoVJZNLd0mLGaiI
+        7UxGpGMux6eZrDTSlK9Bbx4I9k04KfU+uH4NEY1FUYOxAIotjzFMBTiPcJnNIkNLATLF9f7/E+63b
+        gKuu1tpmKbDxJiwW1ozgWfO4w+p0fbRroMuiLLhg0sNGBM3wujx8Rx7iJT8zHbm7yszcXtwr8GW4M
+        7Pu4VagkcXYb1HWMl8yKiitQcc+QC3un5LwHHT4fehOT13lMaKB73U1/QLNPgrnHa4xLg5CNk32K1
+        8TVBylVz2y6kwzSSyhSvNuVWd5Kz8kKB8Ri6pMZ+/7YBwrA7uhDUgF8qbeN4TpxhIpaFdjL75Ogm0
+        NL1imK+7P2ZLfGrtir5h1XjhuAOlf087jQLdAWK94PURx7tJoAhofmihZ7I+lOCgOwMv/uH3NJNZO
+        6HvrNkb+U9nmFKqygzMJ+WaV;
+Received: from [127.0.0.2] (localhost [127.0.0.1])
+        by hr2.samba.org with esmtpsa (TLS1.3:ECDHE_RSA_CHACHA20_POLY1305:256)
+        (Exim)
+        id 1leFJn-0000nS-4i; Wed, 05 May 2021 11:03:51 +0000
+From:   Stefan Metzmacher <metze@samba.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Stefan Metzmacher <metze@samba.org>, Jens Axboe <axboe@kernel.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        linux-kernel@vger.kernel.org, io-uring@vger.kernel.org,
+        x86@kernel.org
+Subject: [PATCH v2] io_thread/x86: setup io_threads more like normal user space threads
+Date:   Wed,  5 May 2021 13:03:10 +0200
+Message-Id: <20210505110310.237537-1-metze@samba.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210411152705.2448053-1-metze@samba.org>
+References: <20210411152705.2448053-1-metze@samba.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505125700.4a7584ca@coco.lan>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+As io_threads are fully set up USER threads it's clearer to
+separate the code path from the KTHREAD logic.
 
-On Wed, May 05, 2021 at 12:57:00PM +0200, Mauro Carvalho Chehab wrote:
-> Em Wed, 5 May 2021 13:34:09 +0300
-> Sakari Ailus <sakari.ailus@linux.intel.com> escreveu:
-> 
-> > Hi Mauro,
-> > 
-> > Thanks for the patch.
-> > 
-> > On Wed, May 05, 2021 at 11:42:15AM +0200, Mauro Carvalho Chehab wrote:
-> > > The pm_runtime_get_sync() internally increments the
-> > > dev->power.usage_count without decrementing it, even on errors.
-> > > 
-> > > There is a bug at ccs_pm_get_init(): when this function returns
-> > > an error, the stream is not started, and RPM usage_count
-> > > should not be incremented. However, if the calls to
-> > > v4l2_ctrl_handler_setup() return errors, it will be kept
-> > > incremented.
-> > > 
-> > > At ccs_suspend() the best is to replace it by the new
-> > > pm_runtime_resume_and_get(), introduced by:
-> > > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> > > in order to properly decrement the usage counter automatically,
-> > > in the case of errors.
-> > > 
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
-> > 
-> > Could you add Fixes: line and Cc: stable?
-> 
-> Sure. See the fixes one enclosed.
-> 
-> > The patch that breaks this is 96e3a6b92f23a .
-> > 
-> > It would be better to fix the bug first so the patch to the stable trees
-> > doesn't need special handling.
+The only remaining difference to user space threads is that
+io_threads never return to user space again.
+Instead they loop within the given worker function.
 
-Please ignore this comment.
+The fact that they never return to user space means they
+don't have an user space thread stack. In order to
+indicate that to tools like gdb we reset the stack and instruction
+pointers to 0.
 
-> > 
-> > > ---
-> > >  drivers/media/i2c/ccs/ccs-core.c | 39 ++++++++++++++++++++------------
-> > >  1 file changed, 24 insertions(+), 15 deletions(-)
-> > > 
-> > > diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-> > > index b05f409014b2..04c3ab9e37b4 100644
-> > > --- a/drivers/media/i2c/ccs/ccs-core.c
-> > > +++ b/drivers/media/i2c/ccs/ccs-core.c
-> > > @@ -1880,21 +1880,33 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
-> > >  	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
-> > >  	int rval;
-> > >  
-> > > +	/*
-> > > +	 * It can't use pm_runtime_resume_and_get() here, as the driver
-> > > +	 * relies at the returned value to detect if the device was already
-> > > +	 * active or not.
-> > > +	 */
-> > >  	rval = pm_runtime_get_sync(&client->dev);
-> > > -	if (rval < 0) {
-> > > -		pm_runtime_put_noidle(&client->dev);
-> > > +	if (rval < 0)
-> > > +		goto error;
-> > >  
-> > > -		return rval;
-> > > -	} else if (!rval) {
-> > > -		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
-> > > -					       ctrl_handler);
-> > > -		if (rval)
-> > > -			return rval;
-> > > +	/* Device was already active, so don't set controls */
-> > > +	if (rval == 1)
-> > > +		return 0;
-> > >  
-> > > -		return v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
-> > > -	}
-> > > +	/* Restore V4L2 controls to the suspended device */
-> > > +	rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->ctrl_handler);
-> > > +	if (rval)
-> > > +		goto error;
-> > >  
-> > > +	rval = v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
-> > > +	if (rval)
-> > > +		goto error;
-> > > +
-> > > +	/* Keep PM runtime usage_count incremented on success */
-> > >  	return 0;
-> > > +error:
-> > > +	pm_runtime_put_noidle(&client->dev);  
-> > 
-> > This needs to be pm_runtime_put() as the device has been successfully.
-> 
-> Ok.
-> 
-> > 
-> > > +	return rval;
-> > >  }
-> > >  
-> > >  static int ccs_set_stream(struct v4l2_subdev *subdev, int enable)
-> > > @@ -3089,12 +3101,9 @@ static int __maybe_unused ccs_suspend(struct device *dev)
-> > >  	bool streaming = sensor->streaming;
-> > >  	int rval;
-> > >  
-> > > -	rval = pm_runtime_get_sync(dev);
-> > > -	if (rval < 0) {
-> > > -		pm_runtime_put_noidle(dev);
-> > > -
-> > > +	rval = pm_runtime_resume_and_get(dev);
-> > > +	if (rval < 0)
-> > >  		return rval;
-> > > -	}
-> > >  
-> > >  	if (sensor->streaming)
-> > >  		ccs_stop_streaming(sensor);  
-> > 
-> 
-> Thanks,
-> Mauro
-> 
-> ---
-> 
-> [PATCH] media: i2c: ccs-core: fix pm_runtime_get_sync() usage count
-> 
-> The pm_runtime_get_sync() internally increments the
-> dev->power.usage_count without decrementing it, even on errors.
-> 
-> There is a bug at ccs_pm_get_init(): when this function returns
-> an error, the stream is not started, and RPM usage_count
-> should not be incremented. However, if the calls to
-> v4l2_ctrl_handler_setup() return errors, it will be kept
-> incremented.
-> 
-> At ccs_suspend() the best is to replace it by the new
-> pm_runtime_resume_and_get(), introduced by:
-> commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> in order to properly decrement the usage counter automatically,
-> in the case of errors.
-> 
-> Fixes: 96e3a6b92f23 ("media: smiapp: Avoid maintaining power state information")
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+This allows gdb attach to user space processes using io-uring,
+which like means that they have io_threads, without printing worrying
+message like this:
 
-Acked-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+  warning: Selected architecture i386:x86-64 is not compatible with reported target architecture i386
 
-> 
-> diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-> index b05f409014b2..5ea471fefa3a 100644
-> --- a/drivers/media/i2c/ccs/ccs-core.c
-> +++ b/drivers/media/i2c/ccs/ccs-core.c
-> @@ -1880,21 +1880,33 @@ static int ccs_pm_get_init(struct ccs_sensor *sensor)
->  	struct i2c_client *client = v4l2_get_subdevdata(&sensor->src->sd);
->  	int rval;
->  
-> +	/*
-> +	 * It can't use pm_runtime_resume_and_get() here, as the driver
-> +	 * relies at the returned value to detect if the device was already
-> +	 * active or not.
-> +	 */
->  	rval = pm_runtime_get_sync(&client->dev);
-> -	if (rval < 0) {
-> -		pm_runtime_put_noidle(&client->dev);
-> +	if (rval < 0)
-> +		goto error;
->  
-> -		return rval;
-> -	} else if (!rval) {
-> -		rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->
-> -					       ctrl_handler);
-> -		if (rval)
-> -			return rval;
-> +	/* Device was already active, so don't set controls */
-> +	if (rval == 1)
-> +		return 0;
->  
-> -		return v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
-> -	}
-> +	/* Restore V4L2 controls to the suspended device */
-> +	rval = v4l2_ctrl_handler_setup(&sensor->pixel_array->ctrl_handler);
-> +	if (rval)
-> +		goto error;
->  
-> +	rval = v4l2_ctrl_handler_setup(&sensor->src->ctrl_handler);
-> +	if (rval)
-> +		goto error;
-> +
-> +	/* Keep PM runtime usage_count incremented on success */
->  	return 0;
-> +error:
-> +	pm_runtime_put(&client->dev);
-> +	return rval;
->  }
->  
->  static int ccs_set_stream(struct v4l2_subdev *subdev, int enable)
-> 
-> 
-> 
-> 
+  warning: Architecture rejected target-supplied description
 
+The output will be something like this:
+
+  (gdb) info threads
+    Id   Target Id                  Frame
+  * 1    LWP 4863 "io_uring-cp-for" syscall () at ../sysdeps/unix/sysv/linux/x86_64/syscall.S:38
+    2    LWP 4864 "iou-mgr-4863"    0x0000000000000000 in ?? ()
+    3    LWP 4865 "iou-wrk-4863"    0x0000000000000000 in ?? ()
+  (gdb) thread 3
+  [Switching to thread 3 (LWP 4865)]
+  #0  0x0000000000000000 in ?? ()
+  (gdb) bt
+  #0  0x0000000000000000 in ?? ()
+  Backtrace stopped: Cannot access memory at address 0x0
+
+Fixes: 4727dc20e04 ("arch: setup PF_IO_WORKER threads like PF_KTHREAD")
+Link: https://lore.kernel.org/io-uring/044d0bad-6888-a211-e1d3-159a4aeed52d@polymtl.ca/T/#m1bbf5727e3d4e839603f6ec7ed79c7eebfba6267
+Signed-off-by: Stefan Metzmacher <metze@samba.org>
+cc: Linus Torvalds <torvalds@linux-foundation.org>
+cc: Jens Axboe <axboe@kernel.dk>
+cc: Thomas Gleixner <tglx@linutronix.de>
+cc: Andy Lutomirski <luto@kernel.org>
+cc: linux-kernel@vger.kernel.org
+cc: io-uring@vger.kernel.org
+cc: x86@kernel.org
+---
+ arch/x86/kernel/process.c | 19 ++++++++++++++++++-
+ 1 file changed, 18 insertions(+), 1 deletion(-)
+
+diff --git a/arch/x86/kernel/process.c b/arch/x86/kernel/process.c
+index 9c214d7085a4..6a64ee204897 100644
+--- a/arch/x86/kernel/process.c
++++ b/arch/x86/kernel/process.c
+@@ -161,7 +161,7 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ #endif
+ 
+ 	/* Kernel thread ? */
+-	if (unlikely(p->flags & (PF_KTHREAD | PF_IO_WORKER))) {
++	if (unlikely(p->flags & PF_KTHREAD)) {
+ 		memset(childregs, 0, sizeof(struct pt_regs));
+ 		kthread_frame_init(frame, sp, arg);
+ 		return 0;
+@@ -177,6 +177,23 @@ int copy_thread(unsigned long clone_flags, unsigned long sp, unsigned long arg,
+ 	task_user_gs(p) = get_user_gs(current_pt_regs());
+ #endif
+ 
++	if (unlikely(p->flags & PF_IO_WORKER)) {
++		/*
++		 * An IO thread is a user space thread, but it doesn't
++		 * return to ret_after_fork().
++		 *
++		 * In order to indicate that to tools like gdb,
++		 * we reset the stack and instruction pointers.
++		 *
++		 * It does the same kernel frame setup to return to a kernel
++		 * function that a kernel thread does.
++		 */
++		childregs->sp = 0;
++		childregs->ip = 0;
++		kthread_frame_init(frame, sp, arg);
++		return 0;
++	}
++
+ 	/* Set a new TLS for the child thread? */
+ 	if (clone_flags & CLONE_SETTLS)
+ 		ret = set_new_tls(p, tls);
 -- 
-Kind regards,
+2.25.1
 
-Sakari Ailus
