@@ -2,152 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0FA1D37333F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:36:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B8D7373343
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:37:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231478AbhEEAhR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 20:37:17 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:53392 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231146AbhEEAhP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 20:37:15 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1le5WR-002Yub-CZ; Wed, 05 May 2021 02:36:15 +0200
-Date:   Wed, 5 May 2021 02:36:15 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v3 05/20] net: dsa: qca8k: handle error with
- qca8k_read operation
-Message-ID: <YJHof4mwG7xYRc8f@lunn.ch>
-References: <20210504222915.17206-1-ansuelsmth@gmail.com>
- <20210504222915.17206-5-ansuelsmth@gmail.com>
+        id S231430AbhEEAik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 20:38:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230328AbhEEAij (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 20:38:39 -0400
+Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CBAC061574;
+        Tue,  4 May 2021 17:37:42 -0700 (PDT)
+Received: by mail-yb1-xb35.google.com with SMTP id z1so466741ybf.6;
+        Tue, 04 May 2021 17:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qZ6UQO/t/anayyvxHYL8y/BSgNgKydNeCjijU78LDB0=;
+        b=hTrd2XUlYhsfMMGGIx5klGnci50oDrRl0xMOhc7gSeBJ6JyUSZSgBRRcYDumzNziIN
+         EW5jBXVq223SV2a2bUU3WoIC2DwuDg5vWWm5sxYcwOcg1nDU3F/lctBBfvTbHTFoxASa
+         ULAT2IF1dTAC+zmX7fZNwTcLNckpJtwUJ4+wntOO3gx/MlKWZgPbwVDAEtAcwEMesfWu
+         p/H9/NmzXx0tqku0UN23HP3r4o/La/tBByaHFsGTe5yFG6uoXGnqmdXYAyYWVzKSBE61
+         x8EXnsRW67ETjsqK/6yFzR8w7Z5BICLypDRkgtNRZg6RuYY1nGehmrqkvHgApzUrVEtp
+         MSaw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qZ6UQO/t/anayyvxHYL8y/BSgNgKydNeCjijU78LDB0=;
+        b=PS2LyAhrRBXCR9FTkdVfGzfh1IG0e7iVCHVWQz4R4uDsVE3U1vrUb+SOzSc+hyDNrN
+         QZcGK97UTR9m2STN45Z/AixGG8j3iIXTaUO/9RY7AHyB85akUtW0UoTwBoXn1tqAqizn
+         8zrUm13bMxc+BZEQ/57h1Y2zisPQiYb215CodhU5JfFMr9y9qXLgqd6eV7QYzNQTvnh+
+         XCKDPhE06livCavy/2D5NZ9DRQEY8/cDRKUmAhohSdmcajx+maI35JmmTGVUdrLhWT6q
+         zO0vgrmo6gaJgw1ipXdgTCK6/0BwUwqjgHMk0joVA7z2+Jm134ejP4rv0EhwKJaquOBX
+         zsvg==
+X-Gm-Message-State: AOAM531LGCR5RcL8NfPWU5AiDEj0hGc+wc7VbSpDB6lP7v/BhJxlth9y
+        6abGEQLiQRpOxO2DkB1G7IG50Zl4PzJGwO739J7rhma1
+X-Google-Smtp-Source: ABdhPJyyONDl3K01zcGdj6oYMRlUtnCxG36FjryB+ubEE2VbFeOxgGehiFhaGcrhhos2lFw5JA54ckYwgpAgywOogj0=
+X-Received: by 2002:a25:c4c5:: with SMTP id u188mr36960466ybf.425.1620175062113;
+ Tue, 04 May 2021 17:37:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504222915.17206-5-ansuelsmth@gmail.com>
+References: <20210429130510.1621665-1-jackmanb@google.com> <CAEf4BzY7sx0gW=o5rM8WDzW1J0U_Yep3MMuJScoMg-hBAeBPCg@mail.gmail.com>
+ <CA+i-1C2+Lt7kmwsZOEw6D8B_Lc+aJdZoUmPDh08+7y_uMNW+kA@mail.gmail.com>
+ <CAEf4BzY1bftPAj_hjE4SBVv2P1U7twW3FdRsvNP9kPCMe_NOjA@mail.gmail.com> <CA+i-1C1V4b3LvB+pwDn5zomGG1ehSppX=r6TMfPutbgaoG_53Q@mail.gmail.com>
+In-Reply-To: <CA+i-1C1V4b3LvB+pwDn5zomGG1ehSppX=r6TMfPutbgaoG_53Q@mail.gmail.com>
+From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date:   Tue, 4 May 2021 17:37:31 -0700
+Message-ID: <CAEf4BzZ-qxd9Xb11zWetKaPpG+sYiF6D1c9+gc3L3BevBrhTYg@mail.gmail.com>
+Subject: Re: [PATCH v2 bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
+To:     Brendan Jackman <jackmanb@google.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Florent Revest <revest@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 12:28:59AM +0200, Ansuel Smith wrote:
-> qca8k_read can fail. Rework any user to handle error values and
-> correctly return.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
->  drivers/net/dsa/qca8k.c | 90 +++++++++++++++++++++++++++++++----------
->  1 file changed, 69 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> index 411b42d38819..cde68ed6856b 100644
-> --- a/drivers/net/dsa/qca8k.c
-> +++ b/drivers/net/dsa/qca8k.c
-> @@ -146,12 +146,13 @@ qca8k_set_page(struct mii_bus *bus, u16 page)
->  static u32
->  qca8k_read(struct qca8k_priv *priv, u32 reg)
+On Tue, May 4, 2021 at 2:01 AM Brendan Jackman <jackmanb@google.com> wrote:
+>
+> On Mon, 3 May 2021 at 19:46, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+> >
+> > On Mon, May 3, 2021 at 5:01 AM Brendan Jackman <jackmanb@google.com> wrote:
+> > >
+> > > On Fri, 30 Apr 2021 at 18:31, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+>
+> > So while doing that I noticed that you didn't fix ring_buffer__poll(),
+> > so I had to fix it up a bit more extensively. Please check the end
+> > result in bpf tree and let me know if there are any problems with it:
+> >
+> > 2a30f9440640 ("libbpf: Fix signed overflow in ringbuf_process_ring")
+>
+> Ah, thanks for that. Yep, the additional fix looks good to me.
+>
+> I think it actually fixes another very niche issue:
+>
+>  int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
 >  {
-> +	struct mii_bus *bus = priv->bus;
->  	u16 r1, r2, page;
->  	u32 val;
->  
->  	qca8k_split_addr(reg, &r1, &r2, &page);
->  
-> -	mutex_lock_nested(&priv->bus->mdio_lock, MDIO_MUTEX_NESTED);
-> +	mutex_lock_nested(&bus->mdio_lock, MDIO_MUTEX_NESTED);
->  
->  	val = qca8k_set_page(priv->bus, page);
->  	if (val < 0)
-> @@ -160,8 +161,7 @@ qca8k_read(struct qca8k_priv *priv, u32 reg)
->  	val = qca8k_mii_read32(priv->bus, 0x10 | r2, r1);
->  
->  exit:
-> -	mutex_unlock(&priv->bus->mdio_lock);
-> -
-> +	mutex_unlock(&bus->mdio_lock);
->  	return val;
-
-This change does not have anything to do with the commit message.
-
->  }
->  
-> @@ -226,8 +226,13 @@ static int
->  qca8k_regmap_read(void *ctx, uint32_t reg, uint32_t *val)
->  {
->  	struct qca8k_priv *priv = (struct qca8k_priv *)ctx;
-> +	int ret;
->  
-> -	*val = qca8k_read(priv, reg);
-> +	ret = qca8k_read(priv, reg);
-> +	if (ret < 0)
-> +		return ret;
+> -       int i, cnt, err, res = 0;
+> +       int i, cnt;
+> +       int64_t err, res = 0;
+>
+>         cnt = epoll_wait(rb->epoll_fd, rb->events, rb->ring_cnt, timeout_ms);
+> +       if (cnt < 0)
+> +               return -errno;
 > +
-> +	*val = ret;
->  
->  	return 0;
->  }
-> @@ -280,15 +285,17 @@ static int
->  qca8k_busy_wait(struct qca8k_priv *priv, u32 reg, u32 mask)
->  {
->  	unsigned long timeout;
-> +	u32 val;
->  
->  	timeout = jiffies + msecs_to_jiffies(20);
->  
->  	/* loop until the busy flag has cleared */
->  	do {
-> -		u32 val = qca8k_read(priv, reg);
-> -		int busy = val & mask;
-> +		val = qca8k_read(priv, reg);
-> +		if (val < 0)
-> +			continue;
->  
-> -		if (!busy)
-> +		if (!(val & mask))
->  			break;
->  		cond_resched();
+>         for (i = 0; i < cnt; i++) {
+>                 __u32 ring_id = rb->events[i].data.fd;
+>                 struct ring *ring = &rb->rings[ring_id];
+> @@ -280,7 +290,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int
+> timeout_ms)
+>                         return err;
+>                 res += err;
+>         }
+> -       return cnt < 0 ? -errno : res;
+>
+> If the callback returns an error but errno is 0 this fails to report the error.
 
-Maybe there is a patch doing this already, but it would be good to
-make use of include/linux/iopoll.h
+Yeah, there was no need to be clever about that. Explicit if (cnt < 0)
+check is obvious and correct.
 
->  qca8k_fdb_next(struct qca8k_priv *priv, struct qca8k_fdb *fdb, int port)
->  {
-> -	int ret;
-> +	int ret, ret_read;
->  
->  	qca8k_fdb_write(priv, fdb->vid, fdb->port_mask, fdb->mac, fdb->aging);
->  	ret = qca8k_fdb_access(priv, QCA8K_FDB_NEXT, port);
-> -	if (ret >= 0)
-> -		qca8k_fdb_read(priv, fdb);
-> +	if (ret >= 0) {
-> +		ret_read = qca8k_fdb_read(priv, fdb);
-> +		if (ret_read < 0)
-> +			return ret_read;
-> +	}
->  
->  	return ret;
->  }
-
-This is oddly structured. Why not:
-
-qca8k_fdb_next(struct qca8k_priv *priv, struct qca8k_fdb *fdb, int port)
-{
-	int ret;
-
-	qca8k_fdb_write(priv, fdb->vid, fdb->port_mask, fdb->mac, fdb->aging);
-
-	ret = qca8k_fdb_access(priv, QCA8K_FDB_NEXT, port);
-	if (ret < 0)
-		return ret;
-
-	return qca8k_fdb_read(priv, fdb);
-}
-
-	Andrew
+>
+> errno(3) says "the value of errno is never set to zero by any system
+> call or library function" but then describes a scenario where an
+> application might usefully set it to zero itself. Maybe it can also be
+> 0 in new threads, depending on your metaphysical interpretation of "by
+> a system call or library function".
+>
+> +       if (res > INT_MAX)
+> +               return INT_MAX;
+> +       return res;
