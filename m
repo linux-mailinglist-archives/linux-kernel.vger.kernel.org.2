@@ -2,63 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA494374699
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4081D3746A2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240660AbhEERVg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:21:36 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55388 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238102AbhEERJH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:09:07 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 7F149B0EA;
-        Wed,  5 May 2021 17:08:09 +0000 (UTC)
-Date:   Wed, 5 May 2021 19:08:12 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] init: Print out unknown kernel parameters
-Message-ID: <YJLQ/FAMTP/EhxOX@zn.tnic>
-References: <20210503213400.27360-1-ahalaney@redhat.com>
- <dfc44b3f-a810-cfbe-f13f-39548ab3fb08@infradead.org>
- <20210503184606.5e8461c0@gandalf.local.home>
- <YJFho3AasxxcD/hH@zn.tnic>
- <20210504152614.mgiihv4ukqajo3jb@halaneylaptop>
- <YJKpv6vjCcCkbzNT@zn.tnic>
- <20210505163728.oh7rqpdvxrdilmfk@halaneylaptop>
- <YJLMxXp2f7YvjGJ9@zn.tnic>
- <20210505165542.tpptt5g7ffxcfmxe@halaneylaptop>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210505165542.tpptt5g7ffxcfmxe@halaneylaptop>
+        id S240934AbhEERWD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:22:03 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:56229 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S238854AbhEERKC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:10:02 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620234545; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=zJ3n4e38JIW/W6C47Rp2eE60Ip/I/8mMnIajfX9QwqY=; b=Cym6D+8Xs8+JmoUAlSIh8Cqjb7ypOUUa75aPUOLRffBYU+XN7C5nWndO3YWBVNLThlvuC/WM
+ m0QcHoU6KH8bMYl4pTgZNZShAhQV0iXedTYGcamXbZmx8vLvNkGgyJ/GRdn1lSe3itJIM1Si
+ 4b4uNFn/FWGjPWfr4vi1bX6yT0o=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 6092d11ac39407c327c2f916 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 May 2021 17:08:42
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 8A187C43144; Wed,  5 May 2021 17:08:41 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 840C2C433D3;
+        Wed,  5 May 2021 17:08:40 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 840C2C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v3 0/6] BHI/BHIe improvements for MHI power purposes
+Date:   Wed,  5 May 2021 10:08:15 -0700
+Message-Id: <1620234501-30461-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 11:55:42AM -0500, Andrew Halaney wrote:
-> Ah, but don't worry! It is handled, just secretly:
->     unknown_bootoption()->obsolete_checksetup() walks __setup_start
-> :)
+This patch series improves the power up behavior by allowing MHI host driver to
+set BHI and/or BHIe offsets early on in the preparation phase and fail pre-power
+up if offsets are not found or not within a limited MMIO region. This also
+allows MHI host to clean up the offsets in the unprepare after power down phase.
 
-Eww, and there's a had_early_param - run-this-function-only-one-time
-clumsy thing. Here's another area that could use a cleanup.
+Going forward, controllers will be required to specify a reg_len field which
+will be used to check whether the BHI/BHIe offsets are in range or not.
 
-> Still worth considering, so at least lemme ponder it for a day instead
-> of being lazy.
+This series has been tested on X86_64 architecture with the PCI generic driver
+as controller and an SDX55 device.
 
-Take your time - that's one of those fun projects where no one's
-breathing down your neck.
+v3:
+-Added reviewed-by tags
+-Updated order of reg_len in mhi_controller structure documentation
 
-And remember to have fun, as we say. :-)
+v2:
+-Added reviewed-by tags
+-Moved reg_len entry in mhi_controller structure to allow for a packed struct
+
+Bhaumik Bhatt (6):
+  bus: mhi: core: Set BHI/BHIe offsets on power up preparation
+  bus: mhi: core: Set BHI and BHIe pointers to NULL in clean-up
+  bus: mhi: Add MMIO region length to controller structure
+  ath11k: set register access length for MHI driver
+  bus: mhi: pci_generic: Set register access length for MHI driver
+  bus: mhi: core: Add range checks for BHI and BHIe
+
+ drivers/bus/mhi/core/init.c           | 58 +++++++++++++++++++++++------------
+ drivers/bus/mhi/core/pm.c             | 28 +++--------------
+ drivers/bus/mhi/pci_generic.c         |  1 +
+ drivers/net/wireless/ath/ath11k/mhi.c |  1 +
+ include/linux/mhi.h                   |  2 ++
+ 5 files changed, 47 insertions(+), 43 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
