@@ -2,155 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BE3373ECC
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:45:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4F1C373ECE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233577AbhEEPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:45:53 -0400
-Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:60185 "EHLO
-        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233466AbhEEPpv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:45:51 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=25;SR=0;TI=SMTPD_---0UXoki5R_1620229489;
-Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UXoki5R_1620229489)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Wed, 05 May 2021 23:44:50 +0800
-Subject: Re: [PATCH] KVM/VMX: Invoke NMI non-IST entry instead of IST entry
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Andy Lutomirski <luto@amacapital.net>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Uros Bizjak <ubizjak@gmail.com>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        id S233608AbhEEPqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:46:25 -0400
+Received: from foss.arm.com ([217.140.110.172]:46518 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233466AbhEEPqX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 11:46:23 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 337AC1FB;
+        Wed,  5 May 2021 08:45:26 -0700 (PDT)
+Received: from C02TD0UTHF1T.local (unknown [10.57.28.242])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id BDFDA3F718;
+        Wed,  5 May 2021 08:45:23 -0700 (PDT)
+Date:   Wed, 5 May 2021 16:45:21 +0100
+From:   Mark Rutland <mark.rutland@arm.com>
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Will Deacon <will@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Waiman Long <longman@redhat.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        Juergen Gross <JGross@suse.com>,
-        Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>
-References: <YJG6ztbGjtuctec4@google.com>
- <38B9D60F-F24F-4910-B2DF-2A57F1060452@amacapital.net>
- <625057c7-ea40-4f37-8bea-cddecfe1b855@redhat.com>
- <YJHBxvR2mqsSX0pU@google.com>
- <5d7ca301-a0b2-d389-3bc2-feb304c9f5b5@redhat.com>
- <87im3yhwxh.ffs@nanos.tec.linutronix.de>
-From:   Lai Jiangshan <laijs@linux.alibaba.com>
-Message-ID: <91013efa-da53-2a3a-0e65-1ddb4318cb70@linux.alibaba.com>
-Date:   Wed, 5 May 2021 23:44:49 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.7.1
+        Thomas Gleixner <tglx@linutronix.de>,
+        Andrew Cooper <andrew.cooper3@citrix.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Christoph Hellwig <hch@lst.de>, Borislav Petkov <bp@alien8.de>
+Subject: Re: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
+ speculation
+Message-ID: <20210505154521.GD5605@C02TD0UTHF1T.local>
+References: <cover.1620186182.git.jpoimboe@redhat.com>
+ <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
+ <20210505142542.GC5605@C02TD0UTHF1T.local>
+ <ae4ca10422824546bca3a184a280a308@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <87im3yhwxh.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ae4ca10422824546bca3a184a280a308@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/5/5 08:00, Thomas Gleixner wrote:
-> On Tue, May 04 2021 at 23:56, Paolo Bonzini wrote:
->> On 04/05/21 23:51, Sean Christopherson wrote:
->>> On Tue, May 04, 2021, Paolo Bonzini wrote:
->>>> On 04/05/21 23:23, Andy Lutomirski wrote:
->>>>>> On May 4, 2021, at 2:21 PM, Sean Christopherson <seanjc@google.com> wrote:
->>>>>> FWIW, NMIs are masked if the VM-Exit was due to an NMI.
->>>>
->>>> Huh, indeed:  "An NMI causes subsequent NMIs to be blocked, but only after
->>>> the VM exit completes".
->>>>
->>>>> Then this whole change is busted, since nothing will unmask NMIs. Revert it?
->>>> Looks like the easiest way out indeed.
->>>
->>> I've no objection to reverting to intn, but what does reverting versus handling
->>> NMI on the kernel stack have to do with NMIs being blocked on VM-Exit due to NMI?
->>> I'm struggling mightily to connect the dots.
->>
->> Nah, you're right: vmx_do_interrupt_nmi_irqoff will not call the handler
->> directly, rather it calls the IDT entrypoint which *will* do an IRET and
->> unmask NMIs.  I trusted Andy too much on this one. :)
->>
->> Thomas's posted patch ("[PATCH] KVM/VMX: Invoke NMI non-IST entry
->> instead of IST entry") looks good.
+On Wed, May 05, 2021 at 02:49:53PM +0000, David Laight wrote:
+> From: Mark Rutland
+> > Sent: 05 May 2021 15:26
+> ...
+> > > +/*
+> > > + * Sanitize a user pointer such that it becomes NULL if it's not a valid user
+> > > + * pointer.  This prevents speculatively dereferencing a user-controlled
+> > > + * pointer to kernel space if access_ok() speculatively returns true.  This
+> > > + * should be done *after* access_ok(), to avoid affecting error handling
+> > > + * behavior.
+> > > + */
+> > > +#define mask_user_ptr(ptr)						\
+> > > +({									\
+> > > +	unsigned long _ptr = (__force unsigned long)ptr;		\
+> > > +	unsigned long mask;						\
+> > > +									\
+> > > +	asm volatile("cmp %[max], %[_ptr]\n\t"				\
+> > > +		     "sbb %[mask], %[mask]\n\t"				\
+> > > +		     : [mask] "=r" (mask)				\
+> > > +		     : [_ptr] "r" (_ptr),				\
+> > > +		       [max] "r" (TASK_SIZE_MAX)			\
+> > > +		     : "cc");						\
+> > > +									\
+> > > +	mask &= _ptr;							\
+> > > +	((typeof(ptr)) mask);						\
+> > > +})
+> > 
+> > On arm64 we needed to have a sequence here because the addr_limit used
+> > to be variable, but now that we've removed set_fs() and split the
+> > user/kernel access routines we could simplify that to an AND with an
+> > immediate mask to force all pointers into the user half of the address
+> > space. IIUC x86_64 could do the same, and I think that was roughly what
+> > David was suggesting.
 > 
-> Well, looks good is one thing.
+> Something like that :-)
 > 
-> It would be more helpful if someone would actually review and/or test it.
-> 
-> Thanks,
-> 
->          tglx
-> 
+> For 64bit you can either unconditionally mask the user address
+> (to clear a few high bits) or mask with a calculated value
+> if the address is invalid.
+> The former is almost certainly better.
 
-I tested it with the following testing-patch applied, it shows that the
-problem is fixed.
+Sure; I was thinking of the former as arm64 does the latter today.
 
-The only one line of code in vmenter.S in the testing-patch just emulates
-the situation that a "uninitialized" garbage in the kernel stack happens
-to be 1 and it happens to be at the same location of the RSP-located
-"NMI executing" variable.
+> The other thing is that a valid length has to be less than
+> the TASK_SIZE_MAX.
+> Provided there are 2 zero bits at the top of every user address
+> you can check 'addr | size < limit' and know that 'addr + size'
+> won't wrap into kernel space.
 
+I see. The size concern is interesting, and I'm not sure whether it
+practically matters. If the size crosses the user/kernel gap, then for
+this to (potentially) be a problem the CPU must speculate an access past
+the gap before it takes the exception for the first access that hits the
+gap. With that in mind:
 
-First round:
-# apply the testing-patch
-# perf record events of a vm which does kbuild inside
-# dmesg shows that there are the same number of "kvm nmi" and "kvm nmi miss"
-It shows that the problem exists with regard to the invocation of the NMI
-handler.
+* If the CPU cannot wildly mispredict an iteration of a uaccess loop
+  (e.g. issues iterations in-order), then it would need to speculate
+  accesses for the entire length of the gap without having raised an
+  exception. For arm64 that's at least 2^56 bytes, which even with SVE's
+  256-bit vectors that's 2^40 accesses. I think it's impractical for a
+  CPU to speculate a window this large before taking an exception.
 
-Second Round:
-# apply the fix from tglx
-# apply the testing-patch
-# perf record events of a vm which does kbuild inside
-# dmesg shows that there are some "kvm nmi" but no "kvm nmi miss".
-It shows that the problem is fixed.
+* If the CPU can wildly mispredict an iteration of a uaccess loop (e.g.
+  do this non-sequentially and generate offests wildly), then it can go
+  past the validated size boundary anyway, and we'd have to mask the
+  pointer immediately prior to the access. Beyond value prediction, I'm
+  not sure how this could happen given the way we build those loops.
 
+... so for architectures with large user/kernel gaps I'm not sure that
+it's necessary to check the size up-front.
 
-diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
-index 3a6461694fc2..32096049c2a2 100644
---- a/arch/x86/kvm/vmx/vmenter.S
-+++ b/arch/x86/kvm/vmx/vmenter.S
-@@ -316,6 +316,7 @@ SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
-  #endif
-  	pushf
-  	push $__KERNEL_CS
-+	movq $1, -24(%rsp) // "NMI executing": 1 = nested, non-1 = not-nested
-  	CALL_NOSPEC _ASM_ARG1
+On arm64 we also have a second defence as our uaccess primitives use
+"unprivileged load/store" instructions LDTR and STTR, which use the user
+permissions even when executed in kernel mode. So on CPUs where
+permissions are respected under speculation these cannot access kernel
+memory.
 
-  	/*
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index 8586eca349a9..eefd22d22fce 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6439,8 +6439,17 @@ static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
-
-  	if (vmx->exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT)
-  		handle_external_interrupt_irqoff(vcpu);
--	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI)
-+	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI) {
-+		unsigned long count = this_cpu_read(irq_stat.__nmi_count);
-+
-  		handle_exception_nmi_irqoff(vmx);
-+
-+		if (is_nmi(vmx_get_intr_info(&vmx->vcpu))) {
-+			pr_info("kvm nmi\n");
-+			if (count == this_cpu_read(irq_stat.__nmi_count))
-+				pr_info("kvm nmi miss\n");
-+		}
-+	}
-  }
-
-  /*
-
+Thanks,
+Mark.
