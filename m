@@ -2,189 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB3723746A1
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 88E88374691
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240910AbhEERWC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:22:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45312 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235761AbhEERH1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:07:27 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F4000C03461E
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 09:42:02 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id s22so2180311pgk.6
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:42:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=DoaVFzcWT65RDKIsoX6i4zeOSXhY9rWNOtYUEZapV9M=;
-        b=mbZtkkRloDaT6rF9tDRW/WZymf+9jLo9twlvhFYxhRfFiYZWjAvMyvN+viRiqjgKqt
-         UyNF1Iyh1k99tg8rgQ6BV9Ounqvoxr+rsdEzMRXR1g485Q9YLIoIHHPIXsXrBKG2ZiUD
-         nB4R4irRIQryWE92wgzcDCfKhD347u2q3t4um5tDOwylV4/JpVT4quKNpXWYBJD+R1XZ
-         5mj3Q2S4ucykX2zQpNuWEZmj6Uy9OWc010d33E+j2WUygzeT0YPt7CZAScPpA/igYKG1
-         LCTLsArcXQyVbFFbWENRBoQWIb3qt8GrYR870JQZMymqQ4A/rADuCXEcgXn+I5XPqGD/
-         vzmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=DoaVFzcWT65RDKIsoX6i4zeOSXhY9rWNOtYUEZapV9M=;
-        b=kVTaEbHFJ9LkiT86zT5oUtWGmMVlfOWQt3uFbetp295ZpfpirCcCP2shDFx+IClZRR
-         DPzZFYyIIsHvuB4bRRIM42nIPWsueveUVH/9afYFg0WJqW2C+MrMaC3ILPxMBtvOL77h
-         2SdqwcPv9uk3JzU/k5+KEPFgIZQcdxmhjccKr7sk0b/jXXopkcsPMJ0/SVHck94jA2Uu
-         0RvTHPbAzUjz/MXFF+W1XPoS5n2uJNJvFQwF0qOMHxZCruVSvjnK7nURxHFlsxrX8Az0
-         c7TBQVq1jHFTKOdU1E0aQdsLIKWfSN9g0tSGiDWycN+EyOXmicrUWGC6HFZ09rl4Rue2
-         3m0w==
-X-Gm-Message-State: AOAM533mMaqUZp5YANYE1H5eswOVJxrgTSHKSRwYkEmcqEUsMsgTCLTw
-        zf9uwT1R0Q4zaPsj7dVGxN4z9w==
-X-Google-Smtp-Source: ABdhPJy8aXfyfO/v6bt55dmHC/uDTmkRDUhRcGL0u1NDJI/QiWxFP8baqLitM5Yc9kh12gLU5ynfdg==
-X-Received: by 2002:a63:5322:: with SMTP id h34mr29849146pgb.182.1620232922466;
-        Wed, 05 May 2021 09:42:02 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id a18sm7502227pgg.51.2021.05.05.09.42.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 09:42:01 -0700 (PDT)
-Date:   Wed, 5 May 2021 10:41:59 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v3 5/6] rpmsg: char: Introduce a rpmsg driver for the
- rpmsg char device
-Message-ID: <20210505164159.GB1766375@xps15>
-References: <20210429135507.8264-1-arnaud.pouliquen@foss.st.com>
- <20210429135507.8264-6-arnaud.pouliquen@foss.st.com>
+        id S240439AbhEERVK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:21:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60720 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238352AbhEERFp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:05:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 42C1B61C2D;
+        Wed,  5 May 2021 16:42:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620232945;
+        bh=ZBymqGWVFeC6mz2Gi2Zf3T39esbhwQLJBbxSe594f6w=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=WSzFQ5yST1kY5FP1t553JevT4l446q8A9VzXEOBDuTMW2DWhXnVVzDKusMoIITz39
+         QXAFaI1U2OvQWlZ5JQ30AVuJeJnLpk1QQNhivTGl+xOx4avIQ6ng1rMBF7PgSKE6CI
+         TDJY76UFhXxDT2sUViyDht4T+rNSHikzI2GKM4Dm5JvXNeo8qzzvGSGtYIbkV7662c
+         Tn6YVY1BiJjBPl+tHSwghWN2Xh3ScEzv8EcIaVqh3+2LKvD1O9vi6DLMqwmkRYarHC
+         TkNMti8WOw5cMpf6yfd9r3XqRIMXz5SYBjRrPUqNXpoxOJV8oPxScQDg1cUPHqgZGK
+         H0g2Jb/yttHKQ==
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     David Ward <david.ward@gatech.edu>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 4.4 16/19] ASoC: rt286: Generalize support for ALC3263 codec
+Date:   Wed,  5 May 2021 12:41:59 -0400
+Message-Id: <20210505164203.3464510-16-sashal@kernel.org>
+X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210505164203.3464510-1-sashal@kernel.org>
+References: <20210505164203.3464510-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429135507.8264-6-arnaud.pouliquen@foss.st.com>
+X-stable: review
+X-Patchwork-Hint: Ignore
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaud,
+From: David Ward <david.ward@gatech.edu>
 
-On Thu, Apr 29, 2021 at 03:55:06PM +0200, Arnaud Pouliquen wrote:
-> A rpmsg char device allows to probe the endpoint device on a remote name
-> service announcement.
-> 
-> With this patch the /dev/rpmsgX interface is created either by a user
-> application or by the remote firmware.
-> 
-> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> 
-> ---
-> update from V1:
-> 
->  - add missing unregister_rpmsg_driver call on module exit.
-> ---
->  drivers/rpmsg/rpmsg_char.c | 53 +++++++++++++++++++++++++++++++++++++-
->  1 file changed, 52 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> index 5c6a7da6e4d7..9166454c1310 100644
-> --- a/drivers/rpmsg/rpmsg_char.c
-> +++ b/drivers/rpmsg/rpmsg_char.c
-> @@ -18,6 +18,8 @@
->  
->  #include "rpmsg_char.h"
->  
-> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
-> +
->  static dev_t rpmsg_major;
->  static struct class *rpmsg_class;
->  
-> @@ -413,6 +415,40 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
->  }
->  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
->  
-> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
-> +{
-> +	struct rpmsg_channel_info chinfo;
-> +
-> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
-> +	chinfo.src = rpdev->src;
-> +	chinfo.dst = rpdev->dst;
-> +
-> +	return __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo, true);
-> +}
-> +
-> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
-> +{
-> +	int ret;
-> +
-> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
-> +	if (ret)
-> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
-> +}
-> +
-> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
-> +	{ .name	= RPMSG_CHAR_DEVNAME },
-> +	{ },
-> +};
-> +
-> +static struct rpmsg_driver rpmsg_chrdev_driver = {
-> +	.probe = rpmsg_chrdev_probe,
-> +	.remove = rpmsg_chrdev_remove,
-> +	.id_table = rpmsg_chrdev_id_table,
-> +	.drv = {
-> +		.name = "rpmsg_chrdev",
-> +	},
-> +};
+[ Upstream commit aa2f9c12821e6a4ba1df4fb34a3dbc6a2a1ee7fe ]
 
-The sole purpose of doing this is to create instances of rpmsg_chrdevs from the
-name service - but is it really needed?  Up to now and aside from GLINK and SMD,
-there asn't been other users of it so I'm wondering if it is worth going through
-all this trouble.
+The ALC3263 codec on the XPS 13 9343 is also found on the Latitude 13 7350
+and Venue 11 Pro 7140. They require the same handling for the combo jack to
+work with a headset: GPIO pin 6 must be set.
 
-As such I suggest we don't go out of our way to expose rpmsg_chrdevs to the name
-service.  That way patches 4, 5 and 6 of this set can be dropped.
+The HDA driver always sets this pin on the ALC3263, which it distinguishes
+by the codec vendor/device ID 0x10ec0288 and PCI subsystem vendor ID 0x1028
+(Dell). The ASoC driver does not use PCI, so adapt this check to use DMI to
+determine if Dell is the system vendor.
 
-Thanks,
-Mathieu
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=150601
+BugLink: https://bugzilla.kernel.org/show_bug.cgi?id=205961
+Signed-off-by: David Ward <david.ward@gatech.edu>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Link: https://lore.kernel.org/r/20210418134658.4333-6-david.ward@gatech.edu
+Signed-off-by: Mark Brown <broonie@kernel.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ sound/soc/codecs/rt286.c | 20 ++++++++++----------
+ 1 file changed, 10 insertions(+), 10 deletions(-)
 
-> +
->  static int rpmsg_chrdev_init(void)
->  {
->  	int ret;
-> @@ -427,15 +463,30 @@ static int rpmsg_chrdev_init(void)
->  	if (IS_ERR(rpmsg_class)) {
->  		pr_err("failed to create rpmsg class\n");
->  		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> -		return PTR_ERR(rpmsg_class);
-> +		ret = PTR_ERR(rpmsg_class);
-> +		goto free_region;
-> +	}
-> +
-> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
-> +	if (ret < 0) {
-> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
-> +		goto free_class;
->  	}
->  
->  	return 0;
-> +
-> +free_class:
-> +	class_destroy(rpmsg_class);
-> +free_region:
-> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> +
-> +	return ret;
->  }
->  postcore_initcall(rpmsg_chrdev_init);
->  
->  static void rpmsg_chrdev_exit(void)
->  {
-> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
->  	class_destroy(rpmsg_class);
->  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
->  }
-> -- 
-> 2.17.1
-> 
+diff --git a/sound/soc/codecs/rt286.c b/sound/soc/codecs/rt286.c
+index af2ed774b552..63ed5b38b11f 100644
+--- a/sound/soc/codecs/rt286.c
++++ b/sound/soc/codecs/rt286.c
+@@ -1117,12 +1117,11 @@ static const struct dmi_system_id force_combo_jack_table[] = {
+ 	{ }
+ };
+ 
+-static const struct dmi_system_id dmi_dell_dino[] = {
++static const struct dmi_system_id dmi_dell[] = {
+ 	{
+-		.ident = "Dell Dino",
++		.ident = "Dell",
+ 		.matches = {
+ 			DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
+-			DMI_MATCH(DMI_PRODUCT_NAME, "XPS 13 9343")
+ 		}
+ 	},
+ 	{ }
+@@ -1133,7 +1132,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ {
+ 	struct rt286_platform_data *pdata = dev_get_platdata(&i2c->dev);
+ 	struct rt286_priv *rt286;
+-	int i, ret, val;
++	int i, ret, vendor_id;
+ 
+ 	rt286 = devm_kzalloc(&i2c->dev,	sizeof(*rt286),
+ 				GFP_KERNEL);
+@@ -1149,14 +1148,15 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	}
+ 
+ 	ret = regmap_read(rt286->regmap,
+-		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &val);
++		RT286_GET_PARAM(AC_NODE_ROOT, AC_PAR_VENDOR_ID), &vendor_id);
+ 	if (ret != 0) {
+ 		dev_err(&i2c->dev, "I2C error %d\n", ret);
+ 		return ret;
+ 	}
+-	if (val != RT286_VENDOR_ID && val != RT288_VENDOR_ID) {
++	if (vendor_id != RT286_VENDOR_ID && vendor_id != RT288_VENDOR_ID) {
+ 		dev_err(&i2c->dev,
+-			"Device with ID register %#x is not rt286\n", val);
++			"Device with ID register %#x is not rt286\n",
++			vendor_id);
+ 		return -ENODEV;
+ 	}
+ 
+@@ -1180,8 +1180,8 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	if (pdata)
+ 		rt286->pdata = *pdata;
+ 
+-	if (dmi_check_system(force_combo_jack_table) ||
+-		dmi_check_system(dmi_dell_dino))
++	if ((vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) ||
++		dmi_check_system(force_combo_jack_table))
+ 		rt286->pdata.cbj_en = true;
+ 
+ 	regmap_write(rt286->regmap, RT286_SET_AUDIO_POWER, AC_PWRST_D3);
+@@ -1220,7 +1220,7 @@ static int rt286_i2c_probe(struct i2c_client *i2c,
+ 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL3, 0xf777, 0x4737);
+ 	regmap_update_bits(rt286->regmap, RT286_DEPOP_CTRL4, 0x00ff, 0x003f);
+ 
+-	if (dmi_check_system(dmi_dell_dino)) {
++	if (vendor_id == RT288_VENDOR_ID && dmi_check_system(dmi_dell)) {
+ 		regmap_update_bits(rt286->regmap,
+ 			RT286_SET_GPIO_MASK, 0x40, 0x40);
+ 		regmap_update_bits(rt286->regmap,
+-- 
+2.30.2
+
