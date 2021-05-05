@@ -2,70 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFD7D373986
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B630C37398C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232955AbhEELgS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:36:18 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3014 "EHLO
+        id S233083AbhEELhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:37:15 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3015 "EHLO
         frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232976AbhEELgI (ORCPT
+        with ESMTP id S232934AbhEELhM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:36:08 -0400
-Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZvVj2cMhz6wkRK;
-        Wed,  5 May 2021 19:24:13 +0800 (CST)
-Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
- fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+        Wed, 5 May 2021 07:37:12 -0400
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZvbK0QHrz6rlWH;
+        Wed,  5 May 2021 19:28:13 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 5 May 2021 13:35:10 +0200
-From:   Roberto Sassu <roberto.sassu@huawei.com>
-To:     <zohar@linux.ibm.com>, <mjg59@google.com>
-CC:     <linux-integrity@vger.kernel.org>,
-        <linux-security-module@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Roberto Sassu <roberto.sassu@huawei.com>
-Subject: [PATCH v6 11/11] ima: Don't remove security.ima if file must not be appraised
-Date:   Wed, 5 May 2021 13:33:29 +0200
-Message-ID: <20210505113329.1410943-7-roberto.sassu@huawei.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210505112935.1410679-1-roberto.sassu@huawei.com>
-References: <20210505112935.1410679-1-roberto.sassu@huawei.com>
+ 15.1.2176.2; Wed, 5 May 2021 13:36:15 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 12:36:14 +0100
+Date:   Wed, 5 May 2021 12:34:35 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
+        <linux-rockchip@lists.infradead.org>,
+        <linux-staging@lists.linux.dev>
+Subject: Re: [PATCH 09/25] media: hantro: do a PM resume earlier
+Message-ID: <20210505123435.00002065@Huawei.com>
+In-Reply-To: <82114a4bd9c7bc1188c6a7167a6e74bb3360961d.1620207353.git.mchehab+huawei@kernel.org>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <82114a4bd9c7bc1188c6a7167a6e74bb3360961d.1620207353.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.204.62.217]
-X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
- fraeml714-chm.china.huawei.com (10.206.15.33)
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Files might come from a remote source and might have xattrs, including
-security.ima. It should not be IMA task to decide whether security.ima
-should be kept or not. This patch removes the removexattr() system
-call in ima_inode_post_setattr().
+On Wed, 5 May 2021 11:41:59 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
-Reviewed-by: Mimi Zohar <zohar@linux.ibm.com>
----
- security/integrity/ima/ima_appraise.c | 2 --
- 1 file changed, 2 deletions(-)
+> The device_run() first enables the clock and then
+> tries to resume PM runtime, checking for errors.
+> 
+> Well, if for some reason the pm_runtime can not resume,
+> it would be better to detect it beforehand.
+> 
+> So, change the order inside device_run().
+> 
+> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+> Fixes: 775fec69008d ("media: add Rockchip VPU JPEG encoder driver")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-diff --git a/security/integrity/ima/ima_appraise.c b/security/integrity/ima/ima_appraise.c
-index 23af45d8ac58..e1bd61f76f9e 100644
---- a/security/integrity/ima/ima_appraise.c
-+++ b/security/integrity/ima/ima_appraise.c
-@@ -532,8 +532,6 @@ void ima_inode_post_setattr(struct user_namespace *mnt_userns,
- 		return;
- 
- 	action = ima_must_appraise(mnt_userns, inode, MAY_ACCESS, POST_SETATTR);
--	if (!action)
--		__vfs_removexattr(&init_user_ns, dentry, XATTR_NAME_IMA);
- 	iint = integrity_iint_find(inode);
- 	if (iint) {
- 		set_bit(IMA_CHANGE_ATTR, &iint->atomic_flags);
--- 
-2.25.1
+Does this move not result in a potential call of clk_bulk_disable() for clocks
+that aren't enabled?
+
+> ---
+>  drivers/staging/media/hantro/hantro_drv.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
+> index 595e82a82728..4387edaa1d0d 100644
+> --- a/drivers/staging/media/hantro/hantro_drv.c
+> +++ b/drivers/staging/media/hantro/hantro_drv.c
+> @@ -152,13 +152,14 @@ static void device_run(void *priv)
+>  	src = hantro_get_src_buf(ctx);
+>  	dst = hantro_get_dst_buf(ctx);
+>  
+> -	ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+> -	if (ret)
+> -		goto err_cancel_job;
+>  	ret = pm_runtime_get_sync(ctx->dev->dev);
+>  	if (ret < 0)
+>  		goto err_cancel_job;
+>  
+> +	ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
+> +	if (ret)
+> +		goto err_cancel_job;
+> +
+>  	v4l2_m2m_buf_copy_metadata(src, dst, true);
+>  
+>  	ctx->codec_ops->run(ctx);
 
