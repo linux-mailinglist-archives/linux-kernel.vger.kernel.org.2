@@ -2,167 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28E023738A0
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:37:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA413738AC
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 12:41:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232147AbhEEKi2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 06:38:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231633AbhEEKi1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 06:38:27 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D40A8C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 03:37:30 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so1237351otf.12
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 03:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=21OEOBe1K5oTTDMQpZL0edPMTp3mnTLWpfEDMEehxWE=;
-        b=N2P3EHi38u7uxsi/pxDK3a4NEO74xNjAmPrr27lMnkbnAuc7PFlBc3Wy4LKAeKWgLZ
-         T/OducACAs+uSJSBb8bG1AoipmBNVZ4KbOTAdcooiBpaGpAMXJ1bo8ESFyz2GlXR61pn
-         lT15BUF4Fs53cg3JhMXBI1FgydIfPPw+g37E3RVQ437tli1rwR22xe5Ql6e2fKC0iKOu
-         QCLdugFw1JPlaulPVmm85nX6RhzBuOL5DTsa+OY0TmUQGjRYKXE52Lu4ueYbE4jo7mWC
-         kswH3W3KgiVNOXewDTGd+tGVwEvF7J/qi/OsZQXZri0uFl7xBscCrSVvpYZzu8SnG84M
-         pT2w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=21OEOBe1K5oTTDMQpZL0edPMTp3mnTLWpfEDMEehxWE=;
-        b=FzsTXJyi3jq2fVuESPcShzRJeo/cuBGBLvFeBOQcPgxzeREkdg738V9sJScVe87PZJ
-         hdD4qIulDlTjN7LHbBJ/iGZGOJ6xVepgXP20aN3f743Qrq/it4/d6qg8QVBzhTi1Tg5I
-         Yd/WXmlwWWHObB7oXixFZgMXihp8hOoCDC9uiLoP4qBj1cO9iH7zr4omhYMD7nFezJbm
-         hy2+4w0DkYepu/PsPmCECe46a5HT0viFXfIXvtZVNXg09BnbsYP5UD8FqBpr5V7AH1tT
-         gOUB36h0+kV8VgZkUz3bf/EHSC4lKsIbhtLvZdfH/Q1XMbk1efFNHUEeVso36eFYpaXI
-         M2ZA==
-X-Gm-Message-State: AOAM531Qe9ZoVGzpzO2IIR+kJxmhP79S3fEa90/3s0vBUiUcD9gdcxrc
-        27q70aD1gKfw08P+T9H9OsIxGgjndPsg4EAbclpTYQ==
-X-Google-Smtp-Source: ABdhPJxqK6g7FBn8y/9deqo13s8LUGLEcZnzibISWzr3+KDwpNeWRbr5rwr5HCFsQdWytLfdfjaioOHfrroFwHFEU0I=
-X-Received: by 2002:a05:6830:410e:: with SMTP id w14mr22346686ott.251.1620211049895;
- Wed, 05 May 2021 03:37:29 -0700 (PDT)
+        id S229699AbhEEKmF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 06:42:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43898 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229524AbhEEKmE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 06:42:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7F2E3B171;
+        Wed,  5 May 2021 10:41:06 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id CA8731F2B59; Wed,  5 May 2021 12:41:05 +0200 (CEST)
+Date:   Wed, 5 May 2021 12:41:05 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     yebin <yebin10@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ext4: Fix bug on in ext4_es_cache_extent as
+ ext4_split_extent_at failed
+Message-ID: <20210505104105.GA29867@quack2.suse.cz>
+References: <20210428085158.3728201-1-yebin10@huawei.com>
+ <20210430125853.GB5315@quack2.suse.cz>
+ <60921135.3030900@huawei.com>
 MIME-Version: 1.0
-References: <20210505092218.2422386-1-glider@google.com>
-In-Reply-To: <20210505092218.2422386-1-glider@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Wed, 5 May 2021 12:37:18 +0200
-Message-ID: <CANpmjNPr8HmQieNrKpcBAvnKdUGatTHuN-vjWhO2CfKAmvtoHA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] printk: introduce dump_stack_lvl()
-To:     Alexander Potapenko <glider@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>, Ingo Molnar <mingo@kernel.org>,
-        bo.he@intel.com, yanmin_zhang@linux.intel.com,
-        psodagud@quicinc.com, Dmitry Vyukov <dvyukov@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Andrey Ryabinin <ryabinin.a.a@gmail.com>, he@google.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <60921135.3030900@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 at 11:22, Alexander Potapenko <glider@google.com> wrote:
-> dump_stack() is used for many different cases, which may require a log
-> level consistent with other kernel messages surrounding the dump_stack()
-> call.
-> Without that, certain systems that are configured to ignore the default
-> level messages will miss stack traces in critical error reports.
->
-> This patch introduces dump_stack_lvl() that behaves similarly to
-> dump_stack(), but accepts a custom log level.
-> The old dump_stack() becomes equal to dump_stack_lvl(KERN_DEFAULT).
->
-> A somewhat similar patch has been proposed in 2012:
-> https://lore.kernel.org/lkml/1332493269.2359.9.camel@hebo/
-> , but wasn't merged.
->
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: Petr Mladek <pmladek@suse.com>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: he, bo <bo.he@intel.com>
-> Cc: Yanmin Zhang <yanmin_zhang@linux.intel.com>
-> Cc: Prasad Sodagudi <psodagud@quicinc.com>
-> Cc: Dmitry Vyukov <dvyukov@google.com>
-> Cc: Marco Elver <elver@google.com>
-> Cc: linux-kernel@vger.kernel.org
-> Signed-off-by: Alexander Potapenko <glider@google.com>
-> ---
->  include/linux/printk.h |  1 +
->  lib/dump_stack.c       | 19 ++++++++++++-------
->  2 files changed, 13 insertions(+), 7 deletions(-)
->
-> diff --git a/include/linux/printk.h b/include/linux/printk.h
-> index fe7eb2351610..abe274305d79 100644
-> --- a/include/linux/printk.h
-> +++ b/include/linux/printk.h
-> @@ -206,6 +206,7 @@ void __init setup_log_buf(int early);
->  __printf(1, 2) void dump_stack_set_arch_desc(const char *fmt, ...);
->  void dump_stack_print_info(const char *log_lvl);
->  void show_regs_print_info(const char *log_lvl);
-> +extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
->  extern asmlinkage void dump_stack(void) __cold;
->  extern void printk_safe_flush(void);
->  extern void printk_safe_flush_on_panic(void);
-> diff --git a/lib/dump_stack.c b/lib/dump_stack.c
-> index f5a33b6f773f..3d2c324a4929 100644
-> --- a/lib/dump_stack.c
-> +++ b/lib/dump_stack.c
-> @@ -73,10 +73,10 @@ void show_regs_print_info(const char *log_lvl)
->         dump_stack_print_info(log_lvl);
->  }
->
-> -static void __dump_stack(void)
-> +static void __dump_stack(const char *log_lvl)
->  {
-> -       dump_stack_print_info(KERN_DEFAULT);
-> -       show_stack(NULL, NULL, KERN_DEFAULT);
-> +       dump_stack_print_info(log_lvl);
-> +       show_stack(NULL, NULL, log_lvl);
->  }
->
->  /**
-> @@ -87,7 +87,7 @@ static void __dump_stack(void)
->  #ifdef CONFIG_SMP
->  static atomic_t dump_lock = ATOMIC_INIT(-1);
->
-> -asmlinkage __visible void dump_stack(void)
-> +asmlinkage __visible void dump_stack_lvl(const char *log_lvl)
->  {
->         unsigned long flags;
->         int was_locked;
-> @@ -117,7 +117,7 @@ asmlinkage __visible void dump_stack(void)
->                 goto retry;
->         }
->
-> -       __dump_stack();
-> +       __dump_stack(log_lvl);
->
->         if (!was_locked)
->                 atomic_set(&dump_lock, -1);
-> @@ -125,9 +125,14 @@ asmlinkage __visible void dump_stack(void)
->         local_irq_restore(flags);
->  }
->  #else
-> -asmlinkage __visible void dump_stack(void)
-> +asmlinkage __visible void dump_stack_lvl(const char *log_lvl)
->  {
-> -       __dump_stack();
-> +       __dump_stack(log_lvl);
->  }
->  #endif
+On Wed 05-05-21 11:29:57, yebin wrote:
+> 
+> 
+> On 2021/4/30 20:58, Jan Kara wrote:
+> > On Wed 28-04-21 16:51:58, Ye Bin wrote:
+> > > We got follow bug_on when run fsstress with injecting IO fault:
+> > > [130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
+> > > [130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
+> > > ......
+> > > [130747.334329] Call trace:
+> > > [130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
+> > > [130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
+> > > [130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
+> > > [130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
+> > > [130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
+> > > [130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
+> > > [130747.336995]  ext4_readpage+0x54/0x100 [ext4]
+> > > [130747.337359]  generic_file_buffered_read+0x410/0xae8
+> > > [130747.337767]  generic_file_read_iter+0x114/0x190
+> > > [130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
+> > > [130747.338556]  __vfs_read+0x11c/0x188
+> > > [130747.338851]  vfs_read+0x94/0x150
+> > > [130747.339110]  ksys_read+0x74/0xf0
+> > > 
+> > > If call ext4_ext_insert_extent failed but new extent already inserted, we just
+> > > update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
+> > > cause bug on when cache extent.
+> > Thanks for the patch but I'm still not quite sure, how overlapping extents
+> > in the extent tree can lead to triggering BUG_ON(lblk + len - 1 < lblk) in
+> > ext4_es_cache_extent().  Can you ellaborate a bit more how this happens?
+> Assume that there is  extent  [10, 100] (ee_block=10 ee_len=91), call
+> ext4_split_extent_at  split at  50,
+> we get two  extent [10, 49] and [50, 100], then call ext4_ext_insert_extent
+> to insert  new  extent [50, 100],
+> if insert extent  successed, but call ext4_ext_dirty  failed(return -EROFS)
+> as JBD maybe abort as io error.
+> Then fix  old extent  length with  old  value, so we get two extent   [10,
+> 100] (ee_block=10 ee_len=91) and
+> [50, 100](ee_block=50 ee_len=51).
+> If call ext4_cache_extent to cache above extents as follow:
+> prev = 0 lblk = 10 len = 91 --> cache  [10, 100] ---> prev = lblk + len =
+> 101
+> prev = 101  lblk = 50 len = 51 --> prev != 0 && prev != lblk --> cache [prev
+> = 101, lblk - prev = 50 - 101 = -51]
+> Obvious if call ext4_es_cache_extent cache  extent[101, -51] wil trigger
+> "BUG_ON(end < lblk)" .
 
-+EXPORT_SYMBOL(dump_stack_lvl);
+Thanks for great explanation! Now I understand.
 
-is missing here?
+> > > If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
+> > > Maybe there will lead to block leak, but it can be fixed by fsck later.
+> > > 
+> > > After we fixed above issue with v2 patch, but we got the same issue.
+> > > ext4_split_extent_at:
+> > > {
+> > >          ......
+> > >          err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+> > >          if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
+> > >              ......
+> > >              ext4_ext_try_to_merge(handle, inode, path, ex); ->step(1)
+> > >              err = ext4_ext_dirty(handle, inode, path + path->p_depth); ->step(2)
+> > >              if (err)
+> > >                  goto fix_extent_len;
+> > >          ......
+> > >          }
+> > >          ......
+> > > fix_extent_len:
+> > >          ex->ee_len = orig_ex.ee_len; ->step(3)
+> > >          ......
+> > > }
+> > > If step(1) have been merged, but step(2) dirty extent failed, then go to
+> > > fix_extent_len label to fix ex->ee_len with orig_ex.ee_len. But "ex" may not be
+> > > old one, will cause overwritten. Then will trigger the same issue as previous.
+> > > If step(2) failed, just return error, don't fix ex->ee_len with old value.
+> > > 
+> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > > ---
+> > >   fs/ext4/extents.c | 13 +++++--------
+> > >   1 file changed, 5 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> > > index 77c84d6f1af6..d4aa24a09d8b 100644
+> > > --- a/fs/ext4/extents.c
+> > > +++ b/fs/ext4/extents.c
+> > > @@ -3238,15 +3238,12 @@ static int ext4_split_extent_at(handle_t *handle,
+> > >   		ex->ee_len = cpu_to_le16(ee_len);
+> > >   		ext4_ext_try_to_merge(handle, inode, path, ex);
+> > >   		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+> > > -		if (err)
+> > > -			goto fix_extent_len;
+> > > -
+> > > -		/* update extent status tree */
+> > > -		err = ext4_zeroout_es(inode, &zero_ex);
+> > > -
+> > > -		goto out;
+> > > -	} else if (err)
+> > > +		if (!err)
+> > > +		        /* update extent status tree */
+> > > +		        err = ext4_zeroout_es(inode, &zero_ex);
+> > > +	} else if (err && err != -EROFS) {
+> > I fail to see why EROFS is special here. Can you explain a bit please?
+>  V1 patch Ted suggest me  to fix length  only  when "err != -EROSFS". As if
+> we don't
+> fix origin extent with old extent length, it will lead to block leak.
+> Ted said as follow:
+> 
+> If you don't want to do that, then a "do no harm" fix would be
+> something like this:
+> 
+> 	...
+> 	} else if (err == -EROFS) {
+> 		return err;
+> 	} else if (err)
+> 		goto fix_extent_len;
+> 
+> So in the journal abort case, when err is set to EROFS, we don't try
+> to reset the length, since in theory the file system is read-only
+> already anyway.  However, in the ENOSPC case, we won't end up silently
+> leaking blocks that will be lost until the user somehow decides to run
+> fsck.
 
-> +
-> +asmlinkage __visible void dump_stack(void)
-> +{
-> +       dump_stack_lvl(KERN_DEFAULT);
-> +}
->  EXPORT_SYMBOL(dump_stack);
-> --
-> 2.31.1.527.g47e6f16901-goog
->
+I see. Now I understand your patch. Honestly, seeing how fragile is trying
+to fix extent tree after split has failed in the middle, I would probably
+go even further and make sure we fix the tree properly in case of ENOSPC
+and EDQUOT (those are easily user triggerable).  Anything else indicates a
+HW problem or fs corruption so I'd rather leave the extent tree as is and
+don't try to fix it (which also means we will not create overlapping
+extents). So something like:
+
+
+        err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+-       if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
++       if (err == -ENOSPC || err == -EDQUOT) {
++		if (EXT4_EXT_MAY_ZEROOUT & split_flag)
++			err = handle zeroing...
+		if (err) {
+			fix extent len
+			goto out;
+		}
+...
+	}
+
+and in all other cases just 'goto out' in case of error. What do you think?
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
