@@ -2,46 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6786D373736
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FD1C37373A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232834AbhEEJVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:21:04 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41422 "EHLO mx2.suse.de"
+        id S232864AbhEEJVJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:21:09 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41480 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232359AbhEEJUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S232360AbhEEJUa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 May 2021 05:20:30 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BCA68B25B;
-        Wed,  5 May 2021 09:19:32 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 5C481B158;
+        Wed,  5 May 2021 09:19:33 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
         Jiri Slaby <jslaby@suse.cz>,
-        William Hubbs <w.d.hubbs@gmail.com>,
-        Chris Brannon <chris@the-brannons.com>,
-        Kirk Reiser <kirk@reisers.ca>,
-        Samuel Thibault <samuel.thibault@ens-lyon.org>,
-        Marcel Holtmann <marcel@holtmann.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
         "David S. Miller" <davem@davemloft.net>,
         Jakub Kicinski <kuba@kernel.org>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
-        Paul Mackerras <paulus@samba.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Peter Ujfalusi <peter.ujfalusi@gmail.com>
-Subject: [PATCH 11/35] tty: make fp of tty_ldisc_ops::receive_buf{,2} const
-Date:   Wed,  5 May 2021 11:19:04 +0200
-Message-Id: <20210505091928.22010-12-jslaby@suse.cz>
+        Jonathan Corbet <corbet@lwn.net>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        "Maciej W. Rozycki" <macro@orcam.me.uk>
+Subject: [PATCH 12/35] tty: cumulate and document tty_struct::flow* members
+Date:   Wed,  5 May 2021 11:19:05 +0200
+Message-Id: <20210505091928.22010-13-jslaby@suse.cz>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210505091928.22010-1-jslaby@suse.cz>
 References: <20210505091928.22010-1-jslaby@suse.cz>
@@ -51,446 +43,680 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Char pointer (cp) passed to tty_ldisc_ops::receive_buf{,2} is const.
-There is no reason for flag pointer (fp) not to be too. So switch it in
-the definition and all uses.
+Group the flow flags under a single struct called flow. The new struct
+contains 'stopped' and 'tco_stopped' bools which used to be bits in a
+bitfield. The struct also contains the lock protecting them to
+potentially share the same cache line.
+
+Note that commit c545b66c6922b (tty: Serialize tcflow() with other tty
+flow control changes) added a padding to the original bitfield. It was
+for the bitfield to occupy a whole 64b word to avoid interferring stores
+on Alpha (cannot we evaporate this arch with weird implications to C
+code yet?). But it doesn't work as expected as the padding
+(tty_struct::unused) is aligned to a 8B boundary too and occupies some
+bytes from the next word.
+
+So make it reliable by:
+1) setting __aligned of the struct -- that aligns the start, and
+2) making 'unsigned long unused[0]' as the last member of the struct --
+   pads the end.
+
+This is also the perfect time to start the documentation of tty_struct
+where all this lives. So we start by documenting what these bools
+actually serve for. And why we do all the alignment dances. Only the few
+up-to-date information from the Theodore's comment made it into this new
+Kerneldoc comment.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: William Hubbs <w.d.hubbs@gmail.com>
-Cc: Chris Brannon <chris@the-brannons.com>
-Cc: Kirk Reiser <kirk@reisers.ca>
-Cc: Samuel Thibault <samuel.thibault@ens-lyon.org>
-Cc: Marcel Holtmann <marcel@holtmann.org>
-Cc: Johan Hedberg <johan.hedberg@gmail.com>
-Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc: Arnd Bergmann <arnd@arndb.de>
 Cc: "David S. Miller" <davem@davemloft.net>
 Cc: Jakub Kicinski <kuba@kernel.org>
-Cc: Wolfgang Grandegger <wg@grandegger.com>
-Cc: Marc Kleine-Budde <mkl@pengutronix.de>
-Cc: Andreas Koensgen <ajk@comnets.uni-bremen.de>
-Cc: Paul Mackerras <paulus@samba.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>
-Cc: Mark Brown <broonie@kernel.org>
-Cc: Jaroslav Kysela <perex@perex.cz>
-Cc: Takashi Iwai <tiwai@suse.com>
-Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc: Jonathan Corbet <corbet@lwn.net>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Ulf Hansson <ulf.hansson@linaro.org>
+Cc: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Vineet Gupta <vgupta@synopsys.com>
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
 ---
- drivers/accessibility/speakup/spk_ttyio.c |  3 ++-
- drivers/bluetooth/hci_ldisc.c             |  2 +-
- drivers/input/serio/serport.c             |  3 ++-
- drivers/misc/ti-st/st_core.c              |  2 +-
- drivers/net/caif/caif_serial.c            |  2 +-
- drivers/net/can/slcan.c                   |  3 ++-
- drivers/net/hamradio/6pack.c              |  2 +-
- drivers/net/hamradio/mkiss.c              |  2 +-
- drivers/net/ppp/ppp_async.c               |  6 +++---
- drivers/net/ppp/ppp_synctty.c             |  6 +++---
- drivers/net/slip/slip.c                   |  2 +-
- drivers/tty/n_gsm.c                       |  2 +-
- drivers/tty/n_hdlc.c                      |  2 +-
- drivers/tty/n_null.c                      |  2 +-
- drivers/tty/n_tty.c                       | 16 ++++++++--------
- drivers/tty/tty_buffer.c                  |  4 ++--
- include/linux/tty.h                       |  2 +-
- include/linux/tty_ldisc.h                 |  4 ++--
- net/nfc/nci/uart.c                        |  2 +-
- sound/soc/codecs/cx20442.c                |  4 ++--
- sound/soc/ti/ams-delta.c                  |  4 ++--
- 21 files changed, 39 insertions(+), 36 deletions(-)
+ Documentation/networking/caif/caif.rst |  4 +--
+ drivers/char/pcmcia/synclink_cs.c      |  8 +++---
+ drivers/mmc/core/sdio_uart.c           |  2 +-
+ drivers/net/caif/caif_serial.c         |  4 +--
+ drivers/s390/char/tty3270.c            |  2 +-
+ drivers/staging/fwserial/fwserial.c    |  2 +-
+ drivers/tty/amiserial.c                |  8 +++---
+ drivers/tty/moxa.c                     |  4 +--
+ drivers/tty/mxser.c                    | 12 ++++----
+ drivers/tty/n_tty.c                    |  8 +++---
+ drivers/tty/pty.c                      |  4 +--
+ drivers/tty/serial/arc_uart.c          |  2 +-
+ drivers/tty/serial/dz.c                |  2 +-
+ drivers/tty/synclink_gt.c              |  6 ++--
+ drivers/tty/tty_io.c                   | 24 ++++++++--------
+ drivers/tty/tty_ioctl.c                | 16 +++++------
+ drivers/tty/tty_port.c                 |  2 +-
+ drivers/tty/vt/keyboard.c              |  2 +-
+ drivers/tty/vt/vt.c                    |  4 +--
+ include/linux/serial_core.h            |  2 +-
+ include/linux/tty.h                    | 38 +++++++++++++++-----------
+ include/linux/tty_driver.h             |  4 +--
+ 22 files changed, 83 insertions(+), 77 deletions(-)
 
-diff --git a/drivers/accessibility/speakup/spk_ttyio.c b/drivers/accessibility/speakup/spk_ttyio.c
-index 2e39fcf492d8..b7fd094700d9 100644
---- a/drivers/accessibility/speakup/spk_ttyio.c
-+++ b/drivers/accessibility/speakup/spk_ttyio.c
-@@ -72,7 +72,8 @@ static void spk_ttyio_ldisc_close(struct tty_struct *tty)
- }
+diff --git a/Documentation/networking/caif/caif.rst b/Documentation/networking/caif/caif.rst
+index 81a14373d780..d922d419c513 100644
+--- a/Documentation/networking/caif/caif.rst
++++ b/Documentation/networking/caif/caif.rst
+@@ -69,9 +69,9 @@ There are debugfs parameters provided for serial communication.
  
- static int spk_ttyio_receive_buf2(struct tty_struct *tty,
--				  const unsigned char *cp, char *fp, int count)
-+				  const unsigned char *cp,
-+				  const char *fp, int count)
- {
- 	struct spk_ldisc_data *ldisc_data = tty->disc_data;
- 	struct spk_synth *synth = ldisc_data->synth;
-diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
-index 71a4ca505e09..e785851a92c1 100644
---- a/drivers/bluetooth/hci_ldisc.c
-+++ b/drivers/bluetooth/hci_ldisc.c
-@@ -593,7 +593,7 @@ static void hci_uart_tty_wakeup(struct tty_struct *tty)
-  * Return Value:    None
-  */
- static void hci_uart_tty_receive(struct tty_struct *tty, const u8 *data,
--				 char *flags, int count)
-+				 const char *flags, int count)
- {
- 	struct hci_uart *hu = tty->disc_data;
+   - 0x01 - tty->warned is on.
+   - 0x04 - tty->packed is on.
+-  - 0x08 - tty->flow_stopped is on.
++  - 0x08 - tty->flow.tco_stopped is on.
+   - 0x10 - tty->hw_stopped is on.
+-  - 0x20 - tty->stopped is on.
++  - 0x20 - tty->flow.stopped is on.
  
-diff --git a/drivers/input/serio/serport.c b/drivers/input/serio/serport.c
-index 33e9d9bfd036..ff3715315592 100644
---- a/drivers/input/serio/serport.c
-+++ b/drivers/input/serio/serport.c
-@@ -114,7 +114,8 @@ static void serport_ldisc_close(struct tty_struct *tty)
-  * 'interrupt' routine.
-  */
+ * last_tx_msg: Binary blob Prints the last transmitted frame.
  
--static void serport_ldisc_receive(struct tty_struct *tty, const unsigned char *cp, char *fp, int count)
-+static void serport_ldisc_receive(struct tty_struct *tty,
-+		const unsigned char *cp, const char *fp, int count)
- {
- 	struct serport *serport = (struct serport*) tty->disc_data;
- 	unsigned long flags;
-diff --git a/drivers/misc/ti-st/st_core.c b/drivers/misc/ti-st/st_core.c
-index 071844b58073..239a75502cd6 100644
---- a/drivers/misc/ti-st/st_core.c
-+++ b/drivers/misc/ti-st/st_core.c
-@@ -798,7 +798,7 @@ static void st_tty_close(struct tty_struct *tty)
- }
+diff --git a/drivers/char/pcmcia/synclink_cs.c b/drivers/char/pcmcia/synclink_cs.c
+index 3287a7627ed0..b4707bc3aee8 100644
+--- a/drivers/char/pcmcia/synclink_cs.c
++++ b/drivers/char/pcmcia/synclink_cs.c
+@@ -985,7 +985,7 @@ static void tx_done(MGSLPC_INFO *info, struct tty_struct *tty)
+ 	else
+ #endif
+ 	{
+-		if (tty && (tty->stopped || tty->hw_stopped)) {
++		if (tty && (tty->flow.stopped || tty->hw_stopped)) {
+ 			tx_stop(info);
+ 			return;
+ 		}
+@@ -1005,7 +1005,7 @@ static void tx_ready(MGSLPC_INFO *info, struct tty_struct *tty)
+ 		if (!info->tx_active)
+ 			return;
+ 	} else {
+-		if (tty && (tty->stopped || tty->hw_stopped)) {
++		if (tty && (tty->flow.stopped || tty->hw_stopped)) {
+ 			tx_stop(info);
+ 			return;
+ 		}
+@@ -1525,7 +1525,7 @@ static void mgslpc_flush_chars(struct tty_struct *tty)
+ 	if (mgslpc_paranoia_check(info, tty->name, "mgslpc_flush_chars"))
+ 		return;
  
- static void st_tty_receive(struct tty_struct *tty, const unsigned char *data,
--			   char *tty_flags, int count)
-+			   const char *tty_flags, int count)
- {
- #ifdef VERBOSE
- 	print_hex_dump(KERN_DEBUG, ">in>", DUMP_PREFIX_NONE,
+-	if (info->tx_count <= 0 || tty->stopped ||
++	if (info->tx_count <= 0 || tty->flow.stopped ||
+ 	    tty->hw_stopped || !info->tx_buf)
+ 		return;
+ 
+@@ -1594,7 +1594,7 @@ static int mgslpc_write(struct tty_struct * tty,
+ 		ret += c;
+ 	}
+ start:
+-	if (info->tx_count && !tty->stopped && !tty->hw_stopped) {
++	if (info->tx_count && !tty->flow.stopped && !tty->hw_stopped) {
+ 		spin_lock_irqsave(&info->lock, flags);
+ 		if (!info->tx_active)
+ 			tx_start(info, tty);
+diff --git a/drivers/mmc/core/sdio_uart.c b/drivers/mmc/core/sdio_uart.c
+index be4067281caa..dbcac2b7f2fe 100644
+--- a/drivers/mmc/core/sdio_uart.c
++++ b/drivers/mmc/core/sdio_uart.c
+@@ -439,7 +439,7 @@ static void sdio_uart_transmit_chars(struct sdio_uart_port *port)
+ 	tty = tty_port_tty_get(&port->port);
+ 
+ 	if (tty == NULL || !kfifo_len(xmit) ||
+-				tty->stopped || tty->hw_stopped) {
++				tty->flow.stopped || tty->hw_stopped) {
+ 		sdio_uart_stop_tx(port);
+ 		tty_kref_put(tty);
+ 		return;
 diff --git a/drivers/net/caif/caif_serial.c b/drivers/net/caif/caif_serial.c
-index da6fffb4d5a8..fb3ca4e11fe5 100644
+index fb3ca4e11fe5..3996cf7dc9ba 100644
 --- a/drivers/net/caif/caif_serial.c
 +++ b/drivers/net/caif/caif_serial.c
-@@ -159,7 +159,7 @@ static inline void debugfs_tx(struct ser_device *ser, const u8 *data, int size)
- #endif
- 
- static void ldisc_receive(struct tty_struct *tty, const u8 *data,
--			char *flags, int count)
-+			const char *flags, int count)
+@@ -87,8 +87,8 @@ static void ldisc_tx_wakeup(struct tty_struct *tty);
+ static inline void update_tty_status(struct ser_device *ser)
  {
- 	struct sk_buff *skb = NULL;
- 	struct ser_device *ser;
-diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
-index 31ba6664503d..7dc3e79cb5c4 100644
---- a/drivers/net/can/slcan.c
-+++ b/drivers/net/can/slcan.c
-@@ -467,7 +467,8 @@ static void slc_setup(struct net_device *dev)
+ 	ser->tty_status =
+-		ser->tty->stopped << 5 |
+-		ser->tty->flow_stopped << 3 |
++		ser->tty->flow.stopped << 5 |
++		ser->tty->flow.tco_stopped << 3 |
+ 		ser->tty->packet << 2;
+ }
+ static inline void debugfs_init(struct ser_device *ser, struct tty_struct *tty)
+diff --git a/drivers/s390/char/tty3270.c b/drivers/s390/char/tty3270.c
+index 307a80f85c07..1b68564799fa 100644
+--- a/drivers/s390/char/tty3270.c
++++ b/drivers/s390/char/tty3270.c
+@@ -1640,7 +1640,7 @@ tty3270_do_write(struct tty3270 *tp, struct tty_struct *tty,
+ 	int i_msg, i;
+ 
+ 	spin_lock_bh(&tp->view.lock);
+-	for (i_msg = 0; !tty->stopped && i_msg < count; i_msg++) {
++	for (i_msg = 0; !tty->flow.stopped && i_msg < count; i_msg++) {
+ 		if (tp->esc_state != 0) {
+ 			/* Continue escape sequence. */
+ 			tty3270_escape_sequence(tp, buf[i_msg]);
+diff --git a/drivers/staging/fwserial/fwserial.c b/drivers/staging/fwserial/fwserial.c
+index 1ee6382cafc4..4245532d2fe0 100644
+--- a/drivers/staging/fwserial/fwserial.c
++++ b/drivers/staging/fwserial/fwserial.c
+@@ -722,7 +722,7 @@ static int fwtty_tx(struct fwtty_port *port, bool drain)
+ 
+ 	/* try to write as many dma transactions out as possible */
+ 	n = -EAGAIN;
+-	while (!tty->stopped && !tty->hw_stopped &&
++	while (!tty->flow.stopped && !tty->hw_stopped &&
+ 	       !test_bit(STOP_TX, &port->flags)) {
+ 		txn = kmem_cache_alloc(fwtty_txn_cache, GFP_ATOMIC);
+ 		if (!txn) {
+diff --git a/drivers/tty/amiserial.c b/drivers/tty/amiserial.c
+index ca48ce5a0862..a4b8876091d2 100644
+--- a/drivers/tty/amiserial.c
++++ b/drivers/tty/amiserial.c
+@@ -148,7 +148,7 @@ static __inline__ void rtsdtr_ctrl(int bits)
+  * ------------------------------------------------------------
+  * rs_stop() and rs_start()
+  *
+- * This routines are called before setting or resetting tty->stopped.
++ * This routines are called before setting or resetting tty->flow.stopped.
+  * They enable or disable transmitter interrupts, as necessary.
+  * ------------------------------------------------------------
   */
- 
- static void slcan_receive_buf(struct tty_struct *tty,
--			      const unsigned char *cp, char *fp, int count)
-+			      const unsigned char *cp, const char *fp,
-+			      int count)
- {
- 	struct slcan *sl = (struct slcan *) tty->disc_data;
- 
-diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
-index 80f41945709f..c0a80f04dd8e 100644
---- a/drivers/net/hamradio/6pack.c
-+++ b/drivers/net/hamradio/6pack.c
-@@ -428,7 +428,7 @@ static void sixpack_write_wakeup(struct tty_struct *tty)
-  * and sent on to some IP layer for further processing.
-  */
- static void sixpack_receive_buf(struct tty_struct *tty,
--	const unsigned char *cp, char *fp, int count)
-+	const unsigned char *cp, const char *fp, int count)
- {
- 	struct sixpack *sp;
- 	int count1;
-diff --git a/drivers/net/hamradio/mkiss.c b/drivers/net/hamradio/mkiss.c
-index 65154224d5b8..fc05ded48178 100644
---- a/drivers/net/hamradio/mkiss.c
-+++ b/drivers/net/hamradio/mkiss.c
-@@ -871,7 +871,7 @@ static int mkiss_ioctl(struct tty_struct *tty, struct file *file,
-  * and sent on to the AX.25 layer for further processing.
-  */
- static void mkiss_receive_buf(struct tty_struct *tty, const unsigned char *cp,
--	char *fp, int count)
-+	const char *fp, int count)
- {
- 	struct mkiss *ax = mkiss_get(tty);
- 
-diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
-index 8b41aa3fb64e..9f08bd19551f 100644
---- a/drivers/net/ppp/ppp_async.c
-+++ b/drivers/net/ppp/ppp_async.c
-@@ -98,7 +98,7 @@ static int ppp_async_send(struct ppp_channel *chan, struct sk_buff *skb);
- static int ppp_async_push(struct asyncppp *ap);
- static void ppp_async_flush_output(struct asyncppp *ap);
- static void ppp_async_input(struct asyncppp *ap, const unsigned char *buf,
--			    char *flags, int count);
-+			    const char *flags, int count);
- static int ppp_async_ioctl(struct ppp_channel *chan, unsigned int cmd,
- 			   unsigned long arg);
- static void ppp_async_process(struct tasklet_struct *t);
-@@ -340,7 +340,7 @@ ppp_asynctty_poll(struct tty_struct *tty, struct file *file, poll_table *wait)
- /* May sleep, don't call from interrupt level or with interrupts disabled */
- static void
- ppp_asynctty_receive(struct tty_struct *tty, const unsigned char *buf,
--		  char *cflags, int count)
-+		  const char *cflags, int count)
- {
- 	struct asyncppp *ap = ap_get(tty);
+@@ -309,7 +309,7 @@ static void transmit_chars(struct serial_state *info)
+ 		return;
+ 	}
+ 	if (info->xmit.head == info->xmit.tail
+-	    || info->tport.tty->stopped
++	    || info->tport.tty->flow.stopped
+ 	    || info->tport.tty->hw_stopped) {
+ 		info->IER &= ~UART_IER_THRI;
+ 	        custom.intena = IF_TBE;
+@@ -768,7 +768,7 @@ static void rs_flush_chars(struct tty_struct *tty)
  	unsigned long flags;
-@@ -829,7 +829,7 @@ process_input_packet(struct asyncppp *ap)
  
- static void
- ppp_async_input(struct asyncppp *ap, const unsigned char *buf,
--		char *flags, int count)
-+		const char *flags, int count)
- {
- 	struct sk_buff *skb;
- 	int c, i, j, n, s, f;
-diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
-index 576b6a93bf23..c82c4e6df4cb 100644
---- a/drivers/net/ppp/ppp_synctty.c
-+++ b/drivers/net/ppp/ppp_synctty.c
-@@ -94,7 +94,7 @@ static void ppp_sync_process(struct tasklet_struct *t);
- static int ppp_sync_push(struct syncppp *ap);
- static void ppp_sync_flush_output(struct syncppp *ap);
- static void ppp_sync_input(struct syncppp *ap, const unsigned char *buf,
--			   char *flags, int count);
-+			   const char *flags, int count);
+ 	if (info->xmit.head == info->xmit.tail
+-	    || tty->stopped
++	    || tty->flow.stopped
+ 	    || tty->hw_stopped
+ 	    || !info->xmit.buf)
+ 		return;
+@@ -812,7 +812,7 @@ static int rs_write(struct tty_struct * tty, const unsigned char *buf, int count
+ 	local_irq_restore(flags);
  
- static const struct ppp_channel_ops sync_ops = {
- 	.start_xmit = ppp_sync_send,
-@@ -333,7 +333,7 @@ ppp_sync_poll(struct tty_struct *tty, struct file *file, poll_table *wait)
- /* May sleep, don't call from interrupt level or with interrupts disabled */
- static void
- ppp_sync_receive(struct tty_struct *tty, const unsigned char *buf,
--		  char *cflags, int count)
-+		  const char *cflags, int count)
+ 	if (info->xmit.head != info->xmit.tail
+-	    && !tty->stopped
++	    && !tty->flow.stopped
+ 	    && !tty->hw_stopped
+ 	    && !(info->IER & UART_IER_THRI)) {
+ 		info->IER |= UART_IER_THRI;
+diff --git a/drivers/tty/moxa.c b/drivers/tty/moxa.c
+index 4d4f15b5cd29..847ad3dac107 100644
+--- a/drivers/tty/moxa.c
++++ b/drivers/tty/moxa.c
+@@ -1221,7 +1221,7 @@ static int moxa_write_room(struct tty_struct *tty)
  {
- 	struct syncppp *ap = sp_get(tty);
+ 	struct moxa_port *ch;
+ 
+-	if (tty->stopped)
++	if (tty->flow.stopped)
+ 		return 0;
+ 	ch = tty->driver_data;
+ 	if (ch == NULL)
+@@ -1374,7 +1374,7 @@ static int moxa_poll_port(struct moxa_port *p, unsigned int handle,
+ 			clear_bit(EMPTYWAIT, &p->statusflags);
+ 			tty_wakeup(tty);
+ 		}
+-		if (test_bit(LOWWAIT, &p->statusflags) && !tty->stopped &&
++		if (test_bit(LOWWAIT, &p->statusflags) && !tty->flow.stopped &&
+ 				MoxaPortTxQueue(p) <= WAKEUP_CHARS) {
+ 			clear_bit(LOWWAIT, &p->statusflags);
+ 			tty_wakeup(tty);
+diff --git a/drivers/tty/mxser.c b/drivers/tty/mxser.c
+index 16a852ecbe8a..85271e109014 100644
+--- a/drivers/tty/mxser.c
++++ b/drivers/tty/mxser.c
+@@ -1118,7 +1118,7 @@ static int mxser_write(struct tty_struct *tty, const unsigned char *buf, int cou
+ 		total += c;
+ 	}
+ 
+-	if (info->xmit_cnt && !tty->stopped) {
++	if (info->xmit_cnt && !tty->flow.stopped) {
+ 		if (!tty->hw_stopped ||
+ 				(info->type == PORT_16550A) ||
+ 				(info->board->chip_flag)) {
+@@ -1149,7 +1149,7 @@ static int mxser_put_char(struct tty_struct *tty, unsigned char ch)
+ 	info->xmit_head &= SERIAL_XMIT_SIZE - 1;
+ 	info->xmit_cnt++;
+ 	spin_unlock_irqrestore(&info->slock, flags);
+-	if (!tty->stopped) {
++	if (!tty->flow.stopped) {
+ 		if (!tty->hw_stopped ||
+ 				(info->type == PORT_16550A) ||
+ 				info->board->chip_flag) {
+@@ -1169,7 +1169,7 @@ static void mxser_flush_chars(struct tty_struct *tty)
+ 	struct mxser_port *info = tty->driver_data;
  	unsigned long flags;
-@@ -665,7 +665,7 @@ ppp_sync_flush_output(struct syncppp *ap)
+ 
+-	if (info->xmit_cnt <= 0 || tty->stopped || !info->port.xmit_buf ||
++	if (info->xmit_cnt <= 0 || tty->flow.stopped || !info->port.xmit_buf ||
+ 			(tty->hw_stopped && info->type != PORT_16550A &&
+ 			 !info->board->chip_flag))
+ 		return;
+@@ -1917,7 +1917,7 @@ static void mxser_unthrottle(struct tty_struct *tty)
+ /*
+  * mxser_stop() and mxser_start()
+  *
+- * This routines are called before setting or resetting tty->stopped.
++ * This routines are called before setting or resetting tty->flow.stopped.
+  * They enable or disable transmitter interrupts, as necessary.
   */
- static void
- ppp_sync_input(struct syncppp *ap, const unsigned char *buf,
--		char *flags, int count)
-+		const char *flags, int count)
- {
- 	struct sk_buff *skb;
- 	unsigned char *p;
-diff --git a/drivers/net/slip/slip.c b/drivers/net/slip/slip.c
-index 1ab124eba8eb..4dda49e61745 100644
---- a/drivers/net/slip/slip.c
-+++ b/drivers/net/slip/slip.c
-@@ -685,7 +685,7 @@ static void sl_setup(struct net_device *dev)
-  */
+ static void mxser_stop(struct tty_struct *tty)
+@@ -1963,7 +1963,7 @@ static void mxser_set_termios(struct tty_struct *tty, struct ktermios *old_termi
  
- static void slip_receive_buf(struct tty_struct *tty, const unsigned char *cp,
--							char *fp, int count)
-+		const char *fp, int count)
- {
- 	struct slip *sl = tty->disc_data;
+ 	/* Handle sw stopped */
+ 	if ((old_termios->c_iflag & IXON) && !I_IXON(tty)) {
+-		tty->stopped = 0;
++		tty->flow.stopped = 0;
  
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 5fea02cfb0cc..477403ecc445 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -2424,7 +2424,7 @@ static void gsmld_detach_gsm(struct tty_struct *tty, struct gsm_mux *gsm)
- }
+ 		if (info->board->chip_flag) {
+ 			spin_lock_irqsave(&info->slock, flags);
+@@ -2175,7 +2175,7 @@ static void mxser_transmit_chars(struct tty_struct *tty, struct mxser_port *port
+ 	if (port->port.xmit_buf == NULL)
+ 		return;
  
- static void gsmld_receive_buf(struct tty_struct *tty, const unsigned char *cp,
--			      char *fp, int count)
-+			      const char *fp, int count)
- {
- 	struct gsm_mux *gsm = tty->disc_data;
- 	char flags = TTY_NORMAL;
-diff --git a/drivers/tty/n_hdlc.c b/drivers/tty/n_hdlc.c
-index b0f33e8ac819..62b1d1a6e0f1 100644
---- a/drivers/tty/n_hdlc.c
-+++ b/drivers/tty/n_hdlc.c
-@@ -358,7 +358,7 @@ static void n_hdlc_tty_wakeup(struct tty_struct *tty)
-  * interpreted as one HDLC frame.
-  */
- static void n_hdlc_tty_receive(struct tty_struct *tty, const __u8 *data,
--			       char *flags, int count)
-+			       const char *flags, int count)
- {
- 	register struct n_hdlc *n_hdlc = tty->disc_data;
- 	register struct n_hdlc_buf *buf;
-diff --git a/drivers/tty/n_null.c b/drivers/tty/n_null.c
-index b8f67b5f1ef8..2ff373d2f98d 100644
---- a/drivers/tty/n_null.c
-+++ b/drivers/tty/n_null.c
-@@ -33,7 +33,7 @@ static ssize_t n_null_write(struct tty_struct *tty, struct file *file,
- }
- 
- static void n_null_receivebuf(struct tty_struct *tty,
--				 const unsigned char *cp, char *fp,
-+				 const unsigned char *cp, const char *fp,
- 				 int cnt)
- {
- }
+-	if (port->xmit_cnt <= 0 || tty->stopped ||
++	if (port->xmit_cnt <= 0 || tty->flow.stopped ||
+ 			(tty->hw_stopped &&
+ 			(port->type != PORT_16550A) &&
+ 			(!port->board->chip_flag))) {
 diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index 0d93be26c678..c32318da5190 100644
+index c32318da5190..3566bb577eb0 100644
 --- a/drivers/tty/n_tty.c
 +++ b/drivers/tty/n_tty.c
-@@ -1474,7 +1474,7 @@ n_tty_receive_char_lnext(struct tty_struct *tty, unsigned char c, char flag)
+@@ -1289,7 +1289,7 @@ static void n_tty_receive_char_special(struct tty_struct *tty, unsigned char c)
+ 		}
+ 	}
  
- static void
- n_tty_receive_buf_real_raw(struct tty_struct *tty, const unsigned char *cp,
--			   char *fp, int count)
-+			   const char *fp, int count)
+-	if (tty->stopped && !tty->flow_stopped && I_IXON(tty) && I_IXANY(tty)) {
++	if (tty->flow.stopped && !tty->flow.tco_stopped && I_IXON(tty) && I_IXANY(tty)) {
+ 		start_tty(tty);
+ 		process_echoes(tty);
+ 	}
+@@ -1398,7 +1398,7 @@ static void n_tty_receive_char(struct tty_struct *tty, unsigned char c)
  {
  	struct n_tty_data *ldata = tty->disc_data;
- 	size_t n, head;
-@@ -1494,7 +1494,7 @@ n_tty_receive_buf_real_raw(struct tty_struct *tty, const unsigned char *cp,
  
- static void
- n_tty_receive_buf_raw(struct tty_struct *tty, const unsigned char *cp,
--		      char *fp, int count)
-+		      const char *fp, int count)
+-	if (tty->stopped && !tty->flow_stopped && I_IXON(tty) && I_IXANY(tty)) {
++	if (tty->flow.stopped && !tty->flow.tco_stopped && I_IXON(tty) && I_IXANY(tty)) {
+ 		start_tty(tty);
+ 		process_echoes(tty);
+ 	}
+@@ -1427,7 +1427,7 @@ static void n_tty_receive_char_closing(struct tty_struct *tty, unsigned char c)
+ 		if (c == STOP_CHAR(tty))
+ 			stop_tty(tty);
+ 		else if (c == START_CHAR(tty) ||
+-			 (tty->stopped && !tty->flow_stopped && I_IXANY(tty) &&
++			 (tty->flow.stopped && !tty->flow.tco_stopped && I_IXANY(tty) &&
+ 			  c != INTR_CHAR(tty) && c != QUIT_CHAR(tty) &&
+ 			  c != SUSP_CHAR(tty))) {
+ 			start_tty(tty);
+@@ -1797,7 +1797,7 @@ static void n_tty_set_termios(struct tty_struct *tty, struct ktermios *old)
+ 	 * Fix tty hang when I_IXON(tty) is cleared, but the tty
+ 	 * been stopped by STOP_CHAR(tty) before it.
+ 	 */
+-	if (!I_IXON(tty) && old && (old->c_iflag & IXON) && !tty->flow_stopped) {
++	if (!I_IXON(tty) && old && (old->c_iflag & IXON) && !tty->flow.tco_stopped) {
+ 		start_tty(tty);
+ 		process_echoes(tty);
+ 	}
+diff --git a/drivers/tty/pty.c b/drivers/tty/pty.c
+index 9b5d4ae5d8f2..017f28150a32 100644
+--- a/drivers/tty/pty.c
++++ b/drivers/tty/pty.c
+@@ -113,7 +113,7 @@ static int pty_write(struct tty_struct *tty, const unsigned char *buf, int c)
+ 	struct tty_struct *to = tty->link;
+ 	unsigned long flags;
+ 
+-	if (tty->stopped)
++	if (tty->flow.stopped)
+ 		return 0;
+ 
+ 	if (c > 0) {
+@@ -138,7 +138,7 @@ static int pty_write(struct tty_struct *tty, const unsigned char *buf, int c)
+ 
+ static int pty_write_room(struct tty_struct *tty)
  {
- 	struct n_tty_data *ldata = tty->disc_data;
- 	char flag = TTY_NORMAL;
-@@ -1511,7 +1511,7 @@ n_tty_receive_buf_raw(struct tty_struct *tty, const unsigned char *cp,
- 
- static void
- n_tty_receive_buf_closing(struct tty_struct *tty, const unsigned char *cp,
--			  char *fp, int count)
-+			  const char *fp, int count)
- {
- 	char flag = TTY_NORMAL;
- 
-@@ -1524,7 +1524,7 @@ n_tty_receive_buf_closing(struct tty_struct *tty, const unsigned char *cp,
+-	if (tty->stopped)
++	if (tty->flow.stopped)
+ 		return 0;
+ 	return tty_buffer_space_avail(tty->link->port);
  }
- 
- static void n_tty_receive_buf_standard(struct tty_struct *tty,
--		const unsigned char *cp, char *fp, int count)
-+		const unsigned char *cp, const char *fp, int count)
- {
- 	struct n_tty_data *ldata = tty->disc_data;
- 	char flag = TTY_NORMAL;
-@@ -1562,7 +1562,7 @@ static void n_tty_receive_buf_standard(struct tty_struct *tty,
- }
- 
- static void __receive_buf(struct tty_struct *tty, const unsigned char *cp,
--			  char *fp, int count)
-+			  const char *fp, int count)
- {
- 	struct n_tty_data *ldata = tty->disc_data;
- 	bool preops = I_ISTRIP(tty) || (I_IUCLC(tty) && L_IEXTEN(tty));
-@@ -1629,7 +1629,7 @@ static void __receive_buf(struct tty_struct *tty, const unsigned char *cp,
+diff --git a/drivers/tty/serial/arc_uart.c b/drivers/tty/serial/arc_uart.c
+index 1a9444b6b57e..596217d10d5c 100644
+--- a/drivers/tty/serial/arc_uart.c
++++ b/drivers/tty/serial/arc_uart.c
+@@ -149,7 +149,7 @@ static unsigned int arc_serial_tx_empty(struct uart_port *port)
+ /*
+  * Driver internal routine, used by both tty(serial core) as well as tx-isr
+  *  -Called under spinlock in either cases
+- *  -also tty->stopped has already been checked
++ *  -also tty->flow.stopped has already been checked
+  *     = by uart_start( ) before calling us
+  *     = tx_ist checks that too before calling
   */
- static int
- n_tty_receive_buf_common(struct tty_struct *tty, const unsigned char *cp,
--			 char *fp, int count, int flow)
-+			 const char *fp, int count, int flow)
- {
- 	struct n_tty_data *ldata = tty->disc_data;
- 	int room, n, rcvd = 0, overflow;
-@@ -1698,13 +1698,13 @@ n_tty_receive_buf_common(struct tty_struct *tty, const unsigned char *cp,
- }
- 
- static void n_tty_receive_buf(struct tty_struct *tty, const unsigned char *cp,
--			      char *fp, int count)
-+			      const char *fp, int count)
- {
- 	n_tty_receive_buf_common(tty, cp, fp, count, 0);
- }
- 
- static int n_tty_receive_buf2(struct tty_struct *tty, const unsigned char *cp,
--			      char *fp, int count)
-+			      const char *fp, int count)
- {
- 	return n_tty_receive_buf_common(tty, cp, fp, count, 1);
- }
-diff --git a/drivers/tty/tty_buffer.c b/drivers/tty/tty_buffer.c
-index 9733469a14b2..55b1f1711341 100644
---- a/drivers/tty/tty_buffer.c
-+++ b/drivers/tty/tty_buffer.c
-@@ -455,7 +455,7 @@ EXPORT_SYMBOL_GPL(tty_prepare_flip_string);
-  *	Returns the number of bytes processed
+diff --git a/drivers/tty/serial/dz.c b/drivers/tty/serial/dz.c
+index 4552742c3859..6d91e9b6284d 100644
+--- a/drivers/tty/serial/dz.c
++++ b/drivers/tty/serial/dz.c
+@@ -115,7 +115,7 @@ static void dz_out(struct dz_port *dport, unsigned offset, u16 value)
+  * rs_stop () and rs_start ()
+  *
+  * These routines are called before setting or resetting
+- * tty->stopped. They enable or disable transmitter interrupts,
++ * tty->flow.stopped. They enable or disable transmitter interrupts,
+  * as necessary.
+  * ------------------------------------------------------------
   */
- int tty_ldisc_receive_buf(struct tty_ldisc *ld, const unsigned char *p,
--			  char *f, int count)
-+			  const char *f, int count)
- {
- 	if (ld->ops->receive_buf2)
- 		count = ld->ops->receive_buf2(ld->tty, p, f, count);
-@@ -472,7 +472,7 @@ static int
- receive_buf(struct tty_port *port, struct tty_buffer *head, int count)
- {
- 	unsigned char *p = char_buf_ptr(head, head->read);
--	char	      *f = NULL;
-+	const char *f = NULL;
- 	int n;
+diff --git a/drivers/tty/synclink_gt.c b/drivers/tty/synclink_gt.c
+index 5523cf7bd1c2..1555dccc28af 100644
+--- a/drivers/tty/synclink_gt.c
++++ b/drivers/tty/synclink_gt.c
+@@ -768,7 +768,7 @@ static int write(struct tty_struct *tty,
+ 	if (!info->tx_buf || (count > info->max_frame_size))
+ 		return -EIO;
  
- 	if (~head->flags & TTYB_NORMAL)
+-	if (!count || tty->stopped || tty->hw_stopped)
++	if (!count || tty->flow.stopped || tty->hw_stopped)
+ 		return 0;
+ 
+ 	spin_lock_irqsave(&info->lock, flags);
+@@ -889,7 +889,7 @@ static void flush_chars(struct tty_struct *tty)
+ 		return;
+ 	DBGINFO(("%s flush_chars entry tx_count=%d\n", info->device_name, info->tx_count));
+ 
+-	if (info->tx_count <= 0 || tty->stopped ||
++	if (info->tx_count <= 0 || tty->flow.stopped ||
+ 	    tty->hw_stopped || !info->tx_buf)
+ 		return;
+ 
+@@ -2241,7 +2241,7 @@ static void isr_txeom(struct slgt_info *info, unsigned short status)
+ 		else
+ #endif
+ 		{
+-			if (info->port.tty && (info->port.tty->stopped || info->port.tty->hw_stopped)) {
++			if (info->port.tty && (info->port.tty->flow.stopped || info->port.tty->hw_stopped)) {
+ 				tx_stop(info);
+ 				return;
+ 			}
+diff --git a/drivers/tty/tty_io.c b/drivers/tty/tty_io.c
+index 5b5e99604989..9734be2eb00e 100644
+--- a/drivers/tty/tty_io.c
++++ b/drivers/tty/tty_io.c
+@@ -778,14 +778,14 @@ EXPORT_SYMBOL(tty_hung_up_p);
+  *	but not always.
+  *
+  *	Locking:
+- *		flow_lock
++ *		flow.lock
+  */
+ 
+ void __stop_tty(struct tty_struct *tty)
+ {
+-	if (tty->stopped)
++	if (tty->flow.stopped)
+ 		return;
+-	tty->stopped = 1;
++	tty->flow.stopped = true;
+ 	if (tty->ops->stop)
+ 		tty->ops->stop(tty);
+ }
+@@ -794,9 +794,9 @@ void stop_tty(struct tty_struct *tty)
+ {
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&tty->flow_lock, flags);
++	spin_lock_irqsave(&tty->flow.lock, flags);
+ 	__stop_tty(tty);
+-	spin_unlock_irqrestore(&tty->flow_lock, flags);
++	spin_unlock_irqrestore(&tty->flow.lock, flags);
+ }
+ EXPORT_SYMBOL(stop_tty);
+ 
+@@ -809,14 +809,14 @@ EXPORT_SYMBOL(stop_tty);
+  *	start method is invoked and the line discipline woken.
+  *
+  *	Locking:
+- *		flow_lock
++ *		flow.lock
+  */
+ 
+ void __start_tty(struct tty_struct *tty)
+ {
+-	if (!tty->stopped || tty->flow_stopped)
++	if (!tty->flow.stopped || tty->flow.tco_stopped)
+ 		return;
+-	tty->stopped = 0;
++	tty->flow.stopped = false;
+ 	if (tty->ops->start)
+ 		tty->ops->start(tty);
+ 	tty_wakeup(tty);
+@@ -826,9 +826,9 @@ void start_tty(struct tty_struct *tty)
+ {
+ 	unsigned long flags;
+ 
+-	spin_lock_irqsave(&tty->flow_lock, flags);
++	spin_lock_irqsave(&tty->flow.lock, flags);
+ 	__start_tty(tty);
+-	spin_unlock_irqrestore(&tty->flow_lock, flags);
++	spin_unlock_irqrestore(&tty->flow.lock, flags);
+ }
+ EXPORT_SYMBOL(start_tty);
+ 
+@@ -1172,7 +1172,7 @@ ssize_t redirected_tty_write(struct kiocb *iocb, struct iov_iter *iter)
+ 
+ int tty_send_xchar(struct tty_struct *tty, char ch)
+ {
+-	int	was_stopped = tty->stopped;
++	bool was_stopped = tty->flow.stopped;
+ 
+ 	if (tty->ops->send_xchar) {
+ 		down_read(&tty->termios_rwsem);
+@@ -3141,7 +3141,7 @@ struct tty_struct *alloc_tty_struct(struct tty_driver *driver, int idx)
+ 	INIT_WORK(&tty->hangup_work, do_tty_hangup);
+ 	mutex_init(&tty->atomic_write_lock);
+ 	spin_lock_init(&tty->ctrl_lock);
+-	spin_lock_init(&tty->flow_lock);
++	spin_lock_init(&tty->flow.lock);
+ 	spin_lock_init(&tty->files_lock);
+ 	INIT_LIST_HEAD(&tty->tty_files);
+ 	INIT_WORK(&tty->SAK_work, do_SAK_work);
+diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
+index 41f7449d0464..07c88ccfb17a 100644
+--- a/drivers/tty/tty_ioctl.c
++++ b/drivers/tty/tty_ioctl.c
+@@ -846,20 +846,20 @@ int n_tty_ioctl_helper(struct tty_struct *tty, struct file *file,
+ 			return retval;
+ 		switch (arg) {
+ 		case TCOOFF:
+-			spin_lock_irq(&tty->flow_lock);
+-			if (!tty->flow_stopped) {
+-				tty->flow_stopped = 1;
++			spin_lock_irq(&tty->flow.lock);
++			if (!tty->flow.tco_stopped) {
++				tty->flow.tco_stopped = true;
+ 				__stop_tty(tty);
+ 			}
+-			spin_unlock_irq(&tty->flow_lock);
++			spin_unlock_irq(&tty->flow.lock);
+ 			break;
+ 		case TCOON:
+-			spin_lock_irq(&tty->flow_lock);
+-			if (tty->flow_stopped) {
+-				tty->flow_stopped = 0;
++			spin_lock_irq(&tty->flow.lock);
++			if (tty->flow.tco_stopped) {
++				tty->flow.tco_stopped = false;
+ 				__start_tty(tty);
+ 			}
+-			spin_unlock_irq(&tty->flow_lock);
++			spin_unlock_irq(&tty->flow.lock);
+ 			break;
+ 		case TCIOFF:
+ 			if (STOP_CHAR(tty) != __DISABLED_CHAR)
+diff --git a/drivers/tty/tty_port.c b/drivers/tty/tty_port.c
+index 303c198fbf5c..0eb523207828 100644
+--- a/drivers/tty/tty_port.c
++++ b/drivers/tty/tty_port.c
+@@ -587,7 +587,7 @@ int tty_port_close_start(struct tty_port *port,
+ 
+ 	if (tty_port_initialized(port)) {
+ 		/* Don't block on a stalled port, just pull the chain */
+-		if (tty->flow_stopped)
++		if (tty->flow.tco_stopped)
+ 			tty_driver_flush_buffer(tty);
+ 		if (port->closing_wait != ASYNC_CLOSING_WAIT_NONE)
+ 			tty_wait_until_sent(tty, port->closing_wait);
+diff --git a/drivers/tty/vt/keyboard.c b/drivers/tty/vt/keyboard.c
+index 5d2309742718..4b0d69042ceb 100644
+--- a/drivers/tty/vt/keyboard.c
++++ b/drivers/tty/vt/keyboard.c
+@@ -515,7 +515,7 @@ static void fn_hold(struct vc_data *vc)
+ 	 * these routines are also activated by ^S/^Q.
+ 	 * (And SCROLLOCK can also be set by the ioctl KDSKBLED.)
+ 	 */
+-	if (tty->stopped)
++	if (tty->flow.stopped)
+ 		start_tty(tty);
+ 	else
+ 		stop_tty(tty);
+diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
+index e5040bdadcd6..38c677fb6505 100644
+--- a/drivers/tty/vt/vt.c
++++ b/drivers/tty/vt/vt.c
+@@ -2888,7 +2888,7 @@ static int do_con_write(struct tty_struct *tty, const unsigned char *buf, int co
+ 
+ 	param.vc = vc;
+ 
+-	while (!tty->stopped && count) {
++	while (!tty->flow.stopped && count) {
+ 		int orig = *buf;
+ 		buf++;
+ 		n++;
+@@ -3265,7 +3265,7 @@ static int con_put_char(struct tty_struct *tty, unsigned char ch)
+ 
+ static int con_write_room(struct tty_struct *tty)
+ {
+-	if (tty->stopped)
++	if (tty->flow.stopped)
+ 		return 0;
+ 	return 32768;		/* No limit, really; we're not buffering */
+ }
+diff --git a/include/linux/serial_core.h b/include/linux/serial_core.h
+index d7ed00f1594e..7445c8fd88c0 100644
+--- a/include/linux/serial_core.h
++++ b/include/linux/serial_core.h
+@@ -428,7 +428,7 @@ int uart_resume_port(struct uart_driver *reg, struct uart_port *port);
+ static inline int uart_tx_stopped(struct uart_port *port)
+ {
+ 	struct tty_struct *tty = port->state->port.tty;
+-	if ((tty && tty->stopped) || port->hw_stopped)
++	if ((tty && tty->flow.stopped) || port->hw_stopped)
+ 		return 1;
+ 	return 0;
+ }
 diff --git a/include/linux/tty.h b/include/linux/tty.h
-index e5d6b1f28823..5aad2220266c 100644
+index 5aad2220266c..df3a69b2e1ea 100644
 --- a/include/linux/tty.h
 +++ b/include/linux/tty.h
-@@ -628,7 +628,7 @@ extern int tty_register_ldisc(int disc, struct tty_ldisc_ops *new_ldisc);
- extern int tty_unregister_ldisc(int disc);
- extern int tty_set_ldisc(struct tty_struct *tty, int disc);
- extern int tty_ldisc_receive_buf(struct tty_ldisc *ld, const unsigned char *p,
--				 char *f, int count);
-+				 const char *f, int count);
+@@ -243,20 +243,22 @@ struct tty_port {
+ #define TTY_PORT_KOPENED	5	/* device exclusively opened by
+ 					   kernel */
  
- /* n_tty.c */
- extern void n_tty_inherit_ops(struct tty_ldisc_ops *ops);
-diff --git a/include/linux/tty_ldisc.h b/include/linux/tty_ldisc.h
-index 31284b55bd4f..c20ca6a75b4c 100644
---- a/include/linux/tty_ldisc.h
-+++ b/include/linux/tty_ldisc.h
-@@ -201,11 +201,11 @@ struct tty_ldisc_ops {
- 	 * The following routines are called from below.
- 	 */
- 	void	(*receive_buf)(struct tty_struct *, const unsigned char *cp,
--			       char *fp, int count);
-+			       const char *fp, int count);
- 	void	(*write_wakeup)(struct tty_struct *);
- 	void	(*dcd_change)(struct tty_struct *, unsigned int);
- 	int	(*receive_buf2)(struct tty_struct *, const unsigned char *cp,
--				char *fp, int count);
-+				const char *fp, int count);
+-/*
+- * Where all of the state associated with a tty is kept while the tty
+- * is open.  Since the termios state should be kept even if the tty
+- * has been closed --- for things like the baud rate, etc --- it is
+- * not stored here, but rather a pointer to the real state is stored
+- * here.  Possible the winsize structure should have the same
+- * treatment, but (1) the default 80x24 is usually right and (2) it's
+- * most often used by a windowing system, which will set the correct
+- * size each time the window is created or resized anyway.
+- * 						- TYT, 9/14/92
+- */
+-
+ struct tty_operations;
  
- 	struct  module *owner;
- 
-diff --git a/net/nfc/nci/uart.c b/net/nfc/nci/uart.c
-index 1248faf4d6df..98102ef64004 100644
---- a/net/nfc/nci/uart.c
-+++ b/net/nfc/nci/uart.c
-@@ -308,7 +308,7 @@ static int nci_uart_default_recv_buf(struct nci_uart *nu, const u8 *data,
-  * Return Value:    None
-  */
- static void nci_uart_tty_receive(struct tty_struct *tty, const u8 *data,
--				 char *flags, int count)
-+				 const char *flags, int count)
- {
- 	struct nci_uart *nu = (void *)tty->disc_data;
- 
-diff --git a/sound/soc/codecs/cx20442.c b/sound/soc/codecs/cx20442.c
-index 61dfa86d444d..ec8d6e74b467 100644
---- a/sound/soc/codecs/cx20442.c
-+++ b/sound/soc/codecs/cx20442.c
-@@ -259,8 +259,8 @@ static int v253_hangup(struct tty_struct *tty)
- }
- 
- /* Line discipline .receive_buf() */
--static void v253_receive(struct tty_struct *tty,
--				const unsigned char *cp, char *fp, int count)
-+static void v253_receive(struct tty_struct *tty, const unsigned char *cp,
-+		const char *fp, int count)
- {
- 	struct snd_soc_component *component = tty->disc_data;
- 	struct cx20442_priv *cx20442;
-diff --git a/sound/soc/ti/ams-delta.c b/sound/soc/ti/ams-delta.c
-index aba0017e870b..55a6736a378e 100644
---- a/sound/soc/ti/ams-delta.c
-+++ b/sound/soc/ti/ams-delta.c
-@@ -337,8 +337,8 @@ static int cx81801_hangup(struct tty_struct *tty)
- }
- 
- /* Line discipline .receive_buf() */
--static void cx81801_receive(struct tty_struct *tty,
--				const unsigned char *cp, char *fp, int count)
-+static void cx81801_receive(struct tty_struct *tty, const unsigned char *cp,
-+		const char *fp, int count)
- {
- 	struct snd_soc_component *component = tty->disc_data;
- 	const unsigned char *c;
++/**
++ * struct tty_struct - state associated with a tty while open
++ *
++ * @flow.lock: lock for flow members
++ * @flow.stopped: tty stopped/started by tty_stop/tty_start
++ * @flow.tco_stopped: tty stopped/started by TCOOFF/TCOON ioctls (it has
++ *		      precedense over @flow.stopped)
++ * @flow.unused: alignment for Alpha, so that no members other than @flow.* are
++ *		 modified by the same 64b word store. The @flow's __aligned is
++ *		 there for the very same reason.
++ *
++ * All of the state associated with a tty while the tty is open. Persistent
++ * storage for tty devices is referenced here as @port in struct tty_port.
++ */
+ struct tty_struct {
+ 	int	magic;
+ 	struct kref kref;
+@@ -275,7 +277,6 @@ struct tty_struct {
+ 	struct rw_semaphore termios_rwsem;
+ 	struct mutex winsize_mutex;
+ 	spinlock_t ctrl_lock;
+-	spinlock_t flow_lock;
+ 	/* Termios values are protected by the termios rwsem */
+ 	struct ktermios termios, termios_locked;
+ 	char name[64];
+@@ -288,9 +289,14 @@ struct tty_struct {
+ 	unsigned long flags;
+ 	int count;
+ 	struct winsize winsize;		/* winsize_mutex */
+-	unsigned long stopped:1,	/* flow_lock */
+-		      flow_stopped:1,
+-		      unused:BITS_PER_LONG - 2;
++
++	struct {
++		spinlock_t lock;
++		bool stopped;
++		bool tco_stopped;
++		unsigned long unused[0];
++	} __aligned(sizeof(unsigned long)) flow;
++
+ 	int hw_stopped;
+ 	unsigned long ctrl_status:8,	/* ctrl_lock */
+ 		      packet:1,
+diff --git a/include/linux/tty_driver.h b/include/linux/tty_driver.h
+index 2f719b471d52..653fa5af3a22 100644
+--- a/include/linux/tty_driver.h
++++ b/include/linux/tty_driver.h
+@@ -153,7 +153,7 @@
+  * 	This routine notifies the tty driver that it should stop
+  * 	outputting characters to the tty device.  
+  *
+- *	Called with ->flow_lock held. Serialized with start() method.
++ *	Called with ->flow.lock held. Serialized with start() method.
+  *
+  *	Optional:
+  *
+@@ -164,7 +164,7 @@
+  * 	This routine notifies the tty driver that it resume sending
+  *	characters to the tty device.
+  *
+- *	Called with ->flow_lock held. Serialized with stop() method.
++ *	Called with ->flow.lock held. Serialized with stop() method.
+  *
+  *	Optional:
+  *
 -- 
 2.31.1
 
