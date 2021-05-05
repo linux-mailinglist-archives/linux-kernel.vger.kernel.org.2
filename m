@@ -2,102 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AC6D373CAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:51:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF4DB373CAF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232923AbhEENwK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:52:10 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:53194 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231265AbhEENwI (ORCPT
+        id S233094AbhEENwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:52:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232967AbhEENwU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:52:08 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-177-z7GzCxiKMCmwap03myQkMA-1; Wed, 05 May 2021 14:51:08 +0100
-X-MC-Unique: z7GzCxiKMCmwap03myQkMA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 14:51:07 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 5 May 2021 14:51:07 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Josh Poimboeuf' <jpoimboe@redhat.com>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Waiman Long" <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: RE: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Topic: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Index: AQHXQWJqu8vqbxm3x0CYXgd0hdGkc6rUkPgwgAA+HoCAABP/4A==
-Date:   Wed, 5 May 2021 13:51:06 +0000
-Message-ID: <f7b0cdca14684c32868bc84df348ac9e@AcuMS.aculab.com>
-References: <cover.1620186182.git.jpoimboe@redhat.com>
- <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
- <2f75c496ac774444b75ff808854b8e5f@AcuMS.aculab.com>
- <20210505131943.ci2svd6fmb22y7ac@treble>
-In-Reply-To: <20210505131943.ci2svd6fmb22y7ac@treble>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 5 May 2021 09:52:20 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E29C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 06:51:23 -0700 (PDT)
+From:   Kurt Kanzenbach <kurt@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620222680;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g/GpEF2bVEbo7bj/SJzowkKdzRgfe0IpPQJ2B862nEM=;
+        b=Sdfnx0qT+frgFt3WojN//pyQPVdFA4i/5lN60UIdfGxKractshbvX5Xf6G9VxUplYoYZGu
+        0oQ11vlS9ESYe9buWyHgqV5v4KK1zQknLDlOWitgOwktMF7SYJ8jQreHdY8qqRwRbNwSkD
+        qRBEPAMp580HZGGXG9da8dSWczi0WOzyKLja8BJIvC8pwTS02lFu1rI0y+ep8l6pSXwaCb
+        RgW47UFQSwQdHgMN+Onmmibz1SSEED2SYJnMDQZRcc99zaCDsQfwQinh0Gb1/xog3G4ifC
+        3rT0TLx3kI78bVBnS/evqS+OU4QrZA1rtRssCJ0i30QGwS4cQs6DySHZjqgJoA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620222680;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=g/GpEF2bVEbo7bj/SJzowkKdzRgfe0IpPQJ2B862nEM=;
+        b=+KZbvEO3QELFUwQ3py8+7t1a1IcV7Q+x27LyH9iEk9yWnZbUx5/os5+Sny7RRwAby3umCx
+        akxCwAzjh7kdsVCQ==
+To:     Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
+        Lukasz Majewski <lukma@denx.de>,
+        Florian Weimer <fweimer@redhat.com>,
+        Carlos O'Donell <carlos@redhat.com>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Davidlohr Bueso <dave@stgolabs.net>,
+        Ingo Molnar <mingo@kernel.org>,
+        Darren Hart <dvhart@infradead.org>,
+        Andrei Vagin <avagin@gmail.com>
+Subject: Re: [patch 0/6] futex: Bugfixes and FUTEX_LOCK_PI2
+In-Reply-To: <YJKWt2vlr74WR5tx@hirez.programming.kicks-ass.net>
+References: <20210422194417.866740847@linutronix.de>
+ <YJKWt2vlr74WR5tx@hirez.programming.kicks-ass.net>
+Date:   Wed, 05 May 2021 15:51:18 +0200
+Message-ID: <87r1ilp9ux.fsf@kurt>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; boundary="=-=-=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogSm9zaCBQb2ltYm9ldWYNCj4gU2VudDogMDUgTWF5IDIwMjEgMTQ6MjANCi4uLg0KPiA+
-IGFjY2Vzc19vaygpIGFuZCBtYXNrX3VzZXJfcHRyKCkgYXJlIGRvaW5nIG11Y2ggdGhlIHNhbWUg
-Y2hlY2suDQo+ID4gSXMgdGhlcmUgc2NvcGUgZm9yIG1ha2luZyBhY2Nlc3Nfb2soKSByZXR1cm4g
-dGhlIG1hc2tlZCBwb2ludGVyPw0KPiA+DQo+ID4gU28gdGhlIGNhbm9uaWNhbCBjYWxsaW5nIGNv
-ZGUgd291bGQgYmU6DQo+ID4gCXVwdHIgPSBhY2Nlc3Nfb2sodXB0ciwgc2l6ZSk7DQo+ID4gCWlm
-ICghdXB0cikNCj4gPiAJCXJldHVybiAtRUZBVUxUOw0KPiA+DQo+ID4gVGhpcyB3b3VsZCBlcnJv
-ciByZXF1ZXN0cyBmb3IgYWRkcmVzcyAwIGVhcmxpZXIgLSBidXQgSSBkb24ndA0KPiA+IGJlbGll
-dmUgdGhleSBhcmUgZXZlciB2YWxpZCBpbiBMaW51eC4NCj4gPiAoU29tZSBoaXN0b3JpYyB4ODYg
-YS5vdXQgZm9ybWF0cyBkaWQgbG9hZCB0byBhZGRyZXNzIDAuKQ0KPiA+DQo+ID4gQ2xlYXJseSBm
-b3IgYSBmb2xsb3cgdXAgcGF0Y2guDQo+IA0KPiBZZWFoLiAgSSBtZW50aW9uZWQgYSBzaW1pbGFy
-IGlkZWEgaW4gdGhlIGNvdmVyIGxldHRlci4NCj4gDQo+IEJ1dCBJJ20gdGhpbmtpbmcgd2Ugc2hv
-dWxkIHN0aWxsIHJlbmFtZSBpdCB0byBhY2Nlc3Nfb2tfbWFzaygpLCBvcg0KPiBvdGhlcndpc2Ug
-Y2hhbmdlIHRoZSBBUEkgdG8gYXZvaWQgdGhlIG1hc2tlZCB2YWx1ZSBnZXR0aW5nIGlnbm9yZWQu
-DQoNClNvbWV0aGluZyBsaWtlOg0KCWlmIChhY2Nlc3Nfb2tfbWFzaygmdWFkZHIsIHNpemUpKQ0K
-CQlyZXR1cm4gLUVGQVVMVDsNCm1pZ2h0IHdvcmsuDQoNCj4gQnV0IHRoYXQnbGwgYmUgYSBtdWNo
-IGJpZ2dlciBwYXRjaC4NCg0KVHJ1ZSAtIGFuZCB3b3VsZCBuZWVkIHRvIGJlIGRvbmUgaXMgc3Rh
-Z2VzLg0KDQpUaGUgb3RoZXIgb3B0aW1pc2F0aW9uIGlzIGZvciBzaG9ydC9zZXF1ZW50aWFsIGFj
-Y2Vzc2VzLg0KSW4gcGFydGljdWxhciBnZXRfdXNlcigpIGFuZCBjb3B5X2Zyb21fdXNlcigpLg0K
-SGVyZSB0aGUgJ3NpemUnIGFyZ3VtZW50IGNhbiBvZnRlbiBiZSBhdm9pZGVkLg0KRWl0aGVyIGJl
-Y2F1c2Ugb25seSB0aGUgYmFzZSBhZGRyZXNzIGlzIGV2ZXIgYWNjZXNzZWQsIG9yIHRoZQ0Ka2Vy
-bmVsIGd1YXJhbnRlZXMgYW4gdW5tYXBwZWQgcGFnZSBiZXR3ZWVuIHVzZXIgYW5kIGtlcm5lbCBh
-ZGRyZXNzZXMuDQoNCklJUkMgeDg2IGhhcyB0byBoYXZlIGFuIHVubWFwcGVkIHBhZ2UgYmVjYXVz
-ZSBvZiAnaXNzdWVzJyB3aXRoDQpwcmVmZXRjaCBhY3Jvc3MgdGhlIGJvdW5kYXJ5Lg0KSSBkb24n
-dCBrbm93IGlmIGl0IGlzIG9uIHRoZSB1c2VyIG9yIGtlcm5lbCBzaWRlIC0gZG9lc24ndCByZWFs
-bHkgbWF0dGVyLg0KDQpBbHNvIGZvciB0eXBpY2FsIDY0Yml0IGFyY2hpdGVjdHVyZXMgd2hlcmUg
-dGhlcmUgaXMgYSBiaWcgYWRkcmVzcyBob2xlDQphcm91bmQgMXVsIDw8IDYzLCBhY2Nlc3Nfb2so
-KSBjYW4ganVzdCBjaGVjayAoZm9yIGV4YW1wbGUpOg0KCWlmICgoKGxvbmcpdWFkZHIgfCBzaXpl
-KSAmIH4wdWwgPDwgNTYpDQoJCXJldHVybiAtRUZBVUxULg0KKGNoYW5nZSB0aGUgNTYgdG8gbWF0
-Y2ggdGhlIFRBU0tfU0laRV9NQVgpLg0KVGhlIGNvbXBpbGVyIHdpbGwgdGhlbiBvcHRpbWlzZSBh
-d2F5IGFueSBjb25zdGFudCBzaXplLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNz
-IExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAx
-UFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
+--=-=-=
+Content-Type: text/plain
 
+On Wed May 05 2021, Peter Zijlstra wrote:
+> It's all somewhat sad, but I don't see any other way out of this. Using
+> LOCK_PI2 will be a fairly horrible pile of hacks on the userspace side
+> of things given they need to first detect it's presence etc., but that
+> seems unavoidable whatever we do :/
+
+Well, that's the interesting point. I do have such horrible hacks for
+glibc, which detect the presence of LOCK_PI2 at run time. However, the
+glibc has also the notion of kernel features based on the Linux kernel
+version. Then, it could be detected at compile time. At the end of the
+day it depends on how this patch set is merged. I was hoping for the
+glibc folks to share their opinion on this :-).
+
+Thanks,
+Kurt
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJHBAEBCgAxFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmCSotYTHGt1cnRAbGlu
+dXRyb25peC5kZQAKCRB5KluBy5jwpkMYD/9qkV+sIhhArxSY4O1HZ+J+Ee80F5JB
+HMPssquvl7wr7a3ghR5ri0xo0/3OkVoK4n7bJ6nr1I0aECvqfEz5ha319rbLtxgV
+2MMu7OLJYKZY5Mnf3pXFwMOst4Vr8aSb31vAxccSLFttTMaq6RajsaMzl9Be33WH
+yjv/qANort61mNn1VwjX89kzi/5joDItkGUenp3XDf1sj4yDZpXaXE2fULfakCV3
+zyBiLMtboEyybyTxNzi3vo93bte4KCa68gq3F8YAac03eXXR4qy22pAQnodz1nQt
+jNgMu29MgYoms0HmoOYZf2rRZRjaxVJyWINdcGYbSLUt2fmwlY542Dspk+Of7SDa
+6SvqvLERk959fZSxl7NLl0YauNKatmif5uaj6ILzaPxqIuoqXLUOar/g99xNqZ9g
+ENABEZI4FBMcamXI4MIOOdpqiTVJYJhAdO5q9CXfZxAolulWU8wMS0FeFGnY17FZ
+T1x9i+Pmr7uFugIQCq1Wglgya/58YaO3DzmtDxZo01pN2bEk3x1lWWvDaGZSQHXd
+X2EvzVb8yHpBCnpFtl7SM9ACq5onEKaKiGBRC5t+CcPJzlO9D8E30sLfD2cWNCgy
+dC78eO+AN5VSLfDqw8BgDf8Z7y9dql3SWcECeluYziQ7I7+UxhXvmKAWslvRd5om
+KfzStgm74Vc8tA==
+=Lpy5
+-----END PGP SIGNATURE-----
+--=-=-=--
