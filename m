@@ -2,143 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CE02374BCD
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:19:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99D1B374BCF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:19:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231144AbhEEXUW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 19:20:22 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:11021 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhEEXUV (ORCPT
+        id S231174AbhEEXU1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 19:20:27 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:37855 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231164AbhEEXUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 19:20:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.co.jp; i=@amazon.co.jp; q=dns/txt;
-  s=amazon201209; t=1620256764; x=1651792764;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=V1yDyAS9obTZv6O5+ocWOKw+3evADzevDjou0AX+rN4=;
-  b=LqnUcR6wklABdH4rhSted2CNWCBB3QaGQZRrblHhycWOKXTJLMqXnLYx
-   jV4VCk9vF5eGUSpQSuQyudly7KaiWg4ndUTQ1VGhWk7pJd7Gmzgydo6+S
-   KCOr0cYgKIp4HiYfbcP6xPsNkCE1MynhckU2MazrxTAp7UfhtlZSKsjpc
-   s=;
-X-IronPort-AV: E=Sophos;i="5.82,276,1613433600"; 
-   d="scan'208";a="133496101"
-Received: from pdx4-co-svc-p1-lb2-vlan2.amazon.com (HELO email-inbound-relay-1e-c7c08562.us-east-1.amazon.com) ([10.25.36.210])
-  by smtp-border-fw-9102.sea19.amazon.com with ESMTP; 05 May 2021 23:19:23 +0000
-Received: from EX13MTAUWB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan2.iad.amazon.com [10.40.163.34])
-        by email-inbound-relay-1e-c7c08562.us-east-1.amazon.com (Postfix) with ESMTPS id 94827240BEB;
-        Wed,  5 May 2021 23:19:20 +0000 (UTC)
-Received: from EX13D04ANC001.ant.amazon.com (10.43.157.89) by
- EX13MTAUWB001.ant.amazon.com (10.43.161.207) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 5 May 2021 23:19:19 +0000
-Received: from 88665a182662.ant.amazon.com (10.43.162.200) by
- EX13D04ANC001.ant.amazon.com (10.43.157.89) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Wed, 5 May 2021 23:19:15 +0000
-From:   Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-To:     <kafai@fb.com>
-CC:     <andrii@kernel.org>, <ast@kernel.org>, <benh@amazon.com>,
-        <bpf@vger.kernel.org>, <daniel@iogearbox.net>,
-        <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <kuni1840@gmail.com>, <kuniyu@amazon.co.jp>,
-        <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
-Subject: Re: [PATCH v4 bpf-next 11/11] bpf: Test BPF_SK_REUSEPORT_SELECT_OR_MIGRATE.
-Date:   Thu, 6 May 2021 08:19:12 +0900
-Message-ID: <20210505231912.47522-1-kuniyu@amazon.co.jp>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505051408.5q6xmafbogghkrfz@kafai-mbp.dhcp.thefacebook.com>
-References: <20210505051408.5q6xmafbogghkrfz@kafai-mbp.dhcp.thefacebook.com>
+        Wed, 5 May 2021 19:20:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620256768;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=42NhY9pIv+uXlb41VZhPnr08pYEJ08Pi29tdv81LhX8=;
+        b=Mp5X4gw9sAQN1MsvWogvUs6YaqvOl8JIcDFVZmwOEmDSRj6/uot3a43y2L1cgNl2qKrPl3
+        ah30XGb9kbHYVXwZeV3eW+oTSzD9K3Zbc/3OCZLd4F//eufbbgtr+VwgSXzfnBqIbkvHPw
+        Uw3EbOkobrfBkUF/6DOGwzv+PCwV0A0=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-272-S35fr5sOMJWMNHExRCMq6Q-1; Wed, 05 May 2021 19:19:26 -0400
+X-MC-Unique: S35fr5sOMJWMNHExRCMq6Q-1
+Received: by mail-qk1-f200.google.com with SMTP id p17-20020a05620a1131b02902e45c6e4d33so2283018qkk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 16:19:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=42NhY9pIv+uXlb41VZhPnr08pYEJ08Pi29tdv81LhX8=;
+        b=K6C2NUPLwIC+2tQRiubKL8m8nwnSBoBMwXfRfzjPNCpL360Z9ngXAG4/WArTXCFRtL
+         s/y4aJTFSqeKW+mMuHs8H/OaRtDOiJfFvPFurphwoakY5c9zbAsKUYGdqvfHSrZfotrZ
+         MO7R2voh4947PRS4bC24KVGJFmvRXGj1oP1NUZi6L5vfJRVf6sxYjE5wi8kqfLanlwFT
+         Op/El4GKga/ClbqD5MNzwny33YJJCBQcNr6uyY1pxCa/GchdXxGLQa9zdr/ypZqiXORC
+         cNjX7kTZ7PEaSDtcjT52NgG8SI3dPXOjb32EqB9UaGhBtOiwtkvLTo1cn4a5rgL6aapf
+         UFAw==
+X-Gm-Message-State: AOAM533mRo/okDx8m2faDJDnx8bPmeloYg2Q6hH2I1BhCrYNcoLYMTJo
+        5VIecbT2LjRk3bsAZYX1j0zj4UaAy8SF5+SVnmIREEWkZyMZl/fpnI2MI36dK/LzFmlPqcMSoFt
+        EzyDHcNMtoqJCI24jmRVTsV2V
+X-Received: by 2002:a05:6214:e82:: with SMTP id hf2mr1260034qvb.22.1620256766428;
+        Wed, 05 May 2021 16:19:26 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyrf6/P25SquN9SJbJPN+P3WLa7pQBOu70auUucnAsduD5gcjZBVPI39mewNtJuN0YMSZCgHQ==
+X-Received: by 2002:a05:6214:e82:: with SMTP id hf2mr1260019qvb.22.1620256766268;
+        Wed, 05 May 2021 16:19:26 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id i129sm621947qke.103.2021.05.05.16.19.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 16:19:25 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v4 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505200610.13943-1-longman@redhat.com>
+ <20210505200610.13943-3-longman@redhat.com>
+ <935031de-f177-b49f-2a1d-2af2b519a270@suse.cz>
+Message-ID: <e27561f4-75ac-77ae-de09-6c7d1cd96967@redhat.com>
+Date:   Wed, 5 May 2021 19:19:23 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.43.162.200]
-X-ClientProxiedBy: EX13D06UWC002.ant.amazon.com (10.43.162.205) To
- EX13D04ANC001.ant.amazon.com (10.43.157.89)
+In-Reply-To: <935031de-f177-b49f-2a1d-2af2b519a270@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From:   Martin KaFai Lau <kafai@fb.com>
-Date:   Tue, 4 May 2021 22:14:08 -0700
-> On Tue, Apr 27, 2021 at 12:46:23PM +0900, Kuniyuki Iwashima wrote:
-> [ ... ]
-> 
-> > diff --git a/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c b/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
-> > new file mode 100644
-> > index 000000000000..d7136dc29fa2
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/bpf/progs/test_migrate_reuseport.c
-> > @@ -0,0 +1,51 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Check if we can migrate child sockets.
-> > + *
-> > + *   1. If reuse_md->migrating_sk is NULL (SYN packet),
-> > + *        return SK_PASS without selecting a listener.
-> > + *   2. If reuse_md->migrating_sk is not NULL (socket migration),
-> > + *        select a listener (reuseport_map[migrate_map[cookie]])
-> > + *
-> > + * Author: Kuniyuki Iwashima <kuniyu@amazon.co.jp>
-> > + */
-> > +
-> > +#include <stddef.h>
-> > +#include <linux/bpf.h>
-> > +#include <bpf/bpf_helpers.h>
-> > +
-> > +struct {
-> > +	__uint(type, BPF_MAP_TYPE_REUSEPORT_SOCKARRAY);
-> > +	__uint(max_entries, 256);
-> > +	__type(key, int);
-> > +	__type(value, __u64);
-> > +} reuseport_map SEC(".maps");
-> > +
-> > +struct {
-> > +	__uint(type, BPF_MAP_TYPE_HASH);
-> > +	__uint(max_entries, 256);
-> > +	__type(key, __u64);
-> > +	__type(value, int);
-> > +} migrate_map SEC(".maps");
-> > +
-> > +SEC("sk_reuseport/migrate")
-> > +int prog_migrate_reuseport(struct sk_reuseport_md *reuse_md)
-> > +{
-> > +	int *key, flags = 0;
-> > +	__u64 cookie;
-> > +
-> > +	if (!reuse_md->migrating_sk)
-> > +		return SK_PASS;
-> > +
-> 
-> It will be useful to check if it is migrating a child sk or
-> a reqsk by testing the migrating_sk->state for TCP_ESTABLISHED
-> and TCP_NEW_SYN_RECV.  skb can be further tested to check if it is
-> selecting for the final ACK.  Global variables can then be
-> incremented and the user prog can check that, for example,
-> it is indeed testing the TCP_NEW_SYN_RECV code path...etc.
-> 
-> It will also become a good example for others on how migrating_sk
-> can be used.
+On 5/5/21 5:41 PM, Vlastimil Babka wrote:
+> On 5/5/21 10:06 PM, Waiman Long wrote:
+>> There are currently two problems in the way the objcg pointer array
+>> (memcg_data) in the page structure is being allocated and freed.
+>>
+>> On its allocation, it is possible that the allocated objcg pointer
+>> array comes from the same slab that requires memory accounting. If this
+>> happens, the slab will never become empty again as there is at least
+>> one object left (the obj_cgroup array) in the slab.
+>>
+>> When it is freed, the objcg pointer array object may be the last one
+>> in its slab and hence causes kfree() to be called again. With the
+>> right workload, the slab cache may be set up in a way that allows the
+>> recursive kfree() calling loop to nest deep enough to cause a kernel
+>> stack overflow and panic the system.
+>>
+>> One way to solve this problem is to split the kmalloc-<n> caches
+>> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
+>> (KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
+>> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
+>> the other caches can still allow a mix of accounted and unaccounted
+>> objects.
+>>
+>> With this change, all the objcg pointer array objects will come from
+>> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+>> both the recursive kfree() problem and non-freeable slab problem are
+>> gone.
+>>
+>> Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
+>> mixed accounted and unaccounted objects, this will slightly reduce the
+>> number of objcg pointer arrays that need to be allocated and save a bit
+>> of memory. On the other hand, creating a new set of kmalloc caches does
+>> have the effect of reducing cache utilization. So it is properly a wash.
+>>
+>> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
+>> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
+>> will include the newly added caches without change.
+>>
+>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> A last nitpick: the new caches -cg should perhaps not be created when
+> cgroup_memory_nokmem == true because kmemcg was disabled by the respective boot
+> param.
+>
+It is a nice to have feature. However, the nokmem kernel parameter isn't 
+used that often. The cgroup_memory_nokmem variable is private to 
+memcontrol.c and is not directly accessible. I will take a look on that, 
+but it will be a follow-on patch. I am not planning to change the 
+current patchset unless there are other issues coming up.
 
-Exactly, I'll count in which state/path the migration happens and validate
-them in userspace.
+Cheers,
+Longman
 
-Thank you.
-
-
-> 
-> 
-> > +	cookie = bpf_get_socket_cookie(reuse_md->sk);
-> > +
-> > +	key = bpf_map_lookup_elem(&migrate_map, &cookie);
-> > +	if (!key)
-> > +		return SK_DROP;
-> > +
-> > +	bpf_sk_select_reuseport(reuse_md, &reuseport_map, key, flags);
-> > +
-> > +	return SK_PASS;
-> > +}
-> > +
-> > +char _license[] SEC("license") = "GPL";
-> > -- 
-> > 2.30.2
-> > 
