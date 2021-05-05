@@ -2,225 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B718374BD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:22:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3C7E374BD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:23:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230037AbhEEXXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 19:23:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57944 "EHLO mail.kernel.org"
+        id S229637AbhEEXYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 19:24:19 -0400
+Received: from mga01.intel.com ([192.55.52.88]:26124 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229637AbhEEXXk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 19:23:40 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D85B1613ED
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 23:22:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620256962;
-        bh=F+mnMMlF78TxCmvF3CvXV4DSs15i/Wd7uu7DampNkVI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=r5oHMC6uQn0rBeksxQYQ6ORMY/A7fulWtjrZqmMKwQFeNs13fMzlCTBGlgVzlgEx9
-         HKeQ/ToXjxOzoPGA9iyXXph0f1ZBb7mPn7tqF3An7tmnAzh1cJHltFtdDmujC6q7nq
-         RaMr23uagsa1hinYpVSENgnUwLl/plMGEx3xv4hU6JE2mJhO1DAHYi8Vf6YgTLKS8G
-         rXQd64h4lrbHu5IAU60+8oQcmZI0ljSLnuQLK33IkF34DIxkohxyfJiBOxlvQtC0tK
-         ouqcww5XnHDAI2bD9n3I0N9WhrV9AIB1rrBCA7tPnGMKoS2DcdtVWYwGEF2ZyRhlte
-         InFZ5YXDONLOg==
-Received: by mail-ed1-f41.google.com with SMTP id i24so3939439edy.8
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 16:22:42 -0700 (PDT)
-X-Gm-Message-State: AOAM533KnmzVp+qFSJH9Nz+GwOUDCWzav8hb1nPLO5zRaLJRgjB6c1ah
-        KUWyMo4W1b1idM4OHJOk29vO1g4zT38Cjms2voc+ZQ==
-X-Google-Smtp-Source: ABdhPJwFLoNYrpL4CTxTz77gnCsjjNufMO1tqV2hkAAFm4x4wfWew/wKMDOsGcOIqKLM5rVvMeRc+E3805CM1Qbq05U=
-X-Received: by 2002:a05:6402:17b0:: with SMTP id j16mr1524042edy.97.1620256961331;
- Wed, 05 May 2021 16:22:41 -0700 (PDT)
+        id S231158AbhEEXYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 19:24:18 -0400
+IronPort-SDR: anQ4sq13xt/nbKAl/yW065bk70+iVadgXjWKMgYE7VYMIBiMBFFsU1uP7S8awLm5mocu1B5+G4
+ eSVpuUnfNiDQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="219201884"
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="219201884"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 16:23:21 -0700
+IronPort-SDR: y6H1briiY6X5e8Ct0n+c9ZWb74lP1ORzh6BLftnomIRyzmNIFA8xgMXubeYF4fCTApEPrsBn/l
+ R9AN4Z2u5GLA==
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="532177206"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 16:23:20 -0700
+Date:   Wed, 5 May 2021 16:23:19 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210505232319.GA5087@otc-nc-03>
+References: <20210426123817.GQ1370958@nvidia.com>
+ <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210504084148.4f61d0b5@jacob-builder>
+ <20210504180050.GB1370958@nvidia.com>
+ <20210504151154.02908c63@jacob-builder>
+ <20210504231530.GE1370958@nvidia.com>
+ <20210505102259.044cafdf@jacob-builder>
+ <20210505180023.GJ1370958@nvidia.com>
+ <20210505130446.3ee2fccd@jacob-builder>
+ <20210505222120.GM1370958@nvidia.com>
 MIME-Version: 1.0
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net> <YJFptPyDtow//5LU@zn.tnic>
- <044d0bad-6888-a211-e1d3-159a4aeed52d@polymtl.ca> <932d65e1-5a8f-c86a-8673-34f0e006c27f@samba.org>
- <30e248aa-534d-37ff-2954-a70a454391fc@polymtl.ca> <CALCETrUF5M+Qw+RfY8subR7nzmpMyFsE3NHSAPoMVWMz6_hr-w@mail.gmail.com>
- <YJMmVHGn33W2n2Ux@zn.tnic>
-In-Reply-To: <YJMmVHGn33W2n2Ux@zn.tnic>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Wed, 5 May 2021 16:22:29 -0700
-X-Gmail-Original-Message-ID: <CALCETrXieCM3f2sYQLk36horw1Cgt9OrZyDqCYrN71VgGusdVg@mail.gmail.com>
-Message-ID: <CALCETrXieCM3f2sYQLk36horw1Cgt9OrZyDqCYrN71VgGusdVg@mail.gmail.com>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Simon Marchi <simon.marchi@polymtl.ca>,
-        Stefan Metzmacher <metze@samba.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505222120.GM1370958@nvidia.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 4:12 PM Borislav Petkov <bp@alien8.de> wrote:
->
-> On Wed, May 05, 2021 at 03:11:18PM -0700, Andy Lutomirski wrote:
-> > Since I'm not holding my breath, please at least keep in mind that
-> > anything you do here is merely a heuristic, cannot be fully correct,
-> > and then whenever gdb determines that a thread group or a thread is
-> > "32-bit", gdb is actually deciding to operate in a degraded mode for
-> > that task, is not accurately representing the task state, and is at
-> > risk of crashing, malfunctioning, or crashing the inferior due to its
-> > incorrect assumptions.  If you have ever attached gdb to QEMU's
-> > gdbserver and tried to debug the early boot process of a 64-bit Linux
-> > kernel, you may have encountered this class of bugs.  gdb works very,
-> > very poorly for this use case.
->
-> So we were talking about this with toolchain folks today and they gave
-> me this example:
->
-> Imagine you've stopped the target this way:
->
->         <insn><-- stopped here
->         <insn>
->         <mode changing insn>
->         <insn>
->         <insn>
->         ...
->
-> now, if you dump rIP and say, rIP + the 10 following insns at the place
-> you've stopped it, gdb cannot know that 2 insns further into the stream
-> a
->
-> <mode changing insn>
->
-> is coming and it should change the disassembly of the insns after that
-> <mode changing insn> to the new mode. Unless it goes and inspects all
-> further instructions and disassembles them and analyzes the flow...
+On Wed, May 05, 2021 at 07:21:20PM -0300, Jason Gunthorpe wrote:
+> On Wed, May 05, 2021 at 01:04:46PM -0700, Jacob Pan wrote:
+> > Hi Jason,
+> > 
+> > On Wed, 5 May 2021 15:00:23 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
+> > 
+> > > On Wed, May 05, 2021 at 10:22:59AM -0700, Jacob Pan wrote:
+> > > 
+> > > > Global and pluggable are for slightly separate reasons.
+> > > > - We need global PASID on VT-d in that we need to support shared
+> > > > workqueues (SWQ). E.g. One SWQ can be wrapped into two mdevs then
+> > > > assigned to two VMs. Each VM uses its private guest PASID to submit
+> > > > work but each guest PASID must be translated to a global (system-wide)
+> > > > host PASID to avoid conflict. Also, since PASID table storage is per
+> > > > PF, if two mdevs of the same PF are assigned to different VMs, the
+> > > > PASIDs must be unique.  
+> > > 
+> > > From a protocol perspective each RID has a unique PASID table, and
+> > > RIDs can have overlapping PASIDs.
+> > > 
+> > True, per RID or per PF as I was referring to.
+> > 
+> > > Since your SWQ is connected to a single RID the requirement that
+> > > PASIDs are unique to the RID ensures they are sufficiently unique.
+> > > 
+> > True, but one process can submit work to multiple mdevs from different
+> > RIDs/PFs. One process uses one PASID and PASID translation table is per VM.
+> > The same PASID is used for all the PASID tables of each RID.
+> 
+> If the model is "assign this PASID to this RID" then yes, there is a
+> big problem keeping everything straight that can only be solved with a
+> global table.
+> 
+> But if the model is "give me a PASID for this RID" then it isn't such
+> a problem.
 
-That's fine.  x86 machine code is like this.  You also can't
-disassemble instructions before rIP accurately either.
+Correct, since we have usage with ENQCMD, its more like
 
->
-> So what you can do is
->
-> (gdb) set arch ...
->
-> at the <mode changing insn> to the mode you're changing to.
->
-> Dunno, maybe I'm missing something but this sounds like without user
-> help gdb can only assume things.
+- Give me a PASID1 (not attached to any RID)
+- Bind/attach PASID1 with RID1
+- Bind/attach PASID1 with RID2
 
-In the tools/testing/x86/selftests directory, edited slightly for brevity:
+and ENQCMD isn't just for Intel, with the DMWr spec in PCI, it brings it to
+all devices as long as routing is supported by interim switches and such.
 
-$ gdb ./test_syscall_vdso_32
-(gdb) b call64_from_32
-Breakpoint 1 at 0x80499ef: file thunks_32.S, line 19.
-(gdb) display/i $pc
-1: x/i $pc
-<error: No registers.>
-(gdb) r
-Starting program:
-/home/luto/apps/linux/tools/testing/selftests/x86/test_syscall_vdso_32
-...
-[RUN]    Executing 6-argument 32-bit syscall via VDSO
+> 
+> Basically trying to enforce a uniform PASID for an IOASID across all
+> RIDs attached to it is not such a nice choice.
+> 
+> > > That is fine, but all this stuff should be inside the Intel vIOMMU
+> > > driver not made into a global resource of the entire iommu subsystem.
+> > > 
+> > Intel vIOMMU has to use a generic uAPI to allocate PASID so the generic
+> > code need to have this option. I guess you are saying we should also have a
+> > per RID allocation option in addition to global?
+> 
+> There always has to be a RID involvement for the PASID, for security,
+> this issue really boils down to where the PASID lives.
 
-Breakpoint 1, call64_from_32 () at thunks_32.S:19
-19        mov    4(%esp), %eax
-1: x/i $pc
-=> 0x80499ef <call64_from_32>:    mov    0x4(%esp),%eax
-(gdb) si
-22        push    %ecx
-1: x/i $pc
-=> 0x80499f3 <call64_from_32+4>:    push   %ecx
-(gdb)
-call64_from_32 () at thunks_32.S:23
-23        push    %edx
-1: x/i $pc
-=> 0x80499f4 <call64_from_32+5>:    push   %edx
-(gdb)
-call64_from_32 () at thunks_32.S:24
-24        push    %esi
-1: x/i $pc
-=> 0x80499f5 <call64_from_32+6>:    push   %esi
-(gdb)
-call64_from_32 () at thunks_32.S:25
-25        push    %edi
-1: x/i $pc
-=> 0x80499f6 <call64_from_32+7>:    push   %edi
-(gdb)
-call64_from_32 () at thunks_32.S:28
-28        jmp    $0x33,$1f
-1: x/i $pc
-=> 0x80499f7 <call64_from_32+8>:    ljmp   $0x33,$0x80499fe
-(gdb) info registers
-eax            0x80492e8           134517480
-ecx            0x3f                63
-edx            0x1                 1
-ebx            0xf7fc8550          -134445744
-esp            0xffffc57c          0xffffc57c
-ebp            0xffffc5e8          0xffffc5e8
-esi            0x0                 0
-edi            0x8049180           134517120
-eip            0x80499f7           0x80499f7 <call64_from_32+8>
-eflags         0x292               [ AF SF IF ]
-cs             0x23                35
-ss             0x2b                43
-ds             0x2b                43
-es             0x2b                43
-fs             0x0                 0
-gs             0x63                99
-(gdb) si
-32        call    *%rax
-1: x/i $pc
-=> 0x80499fe <call64_from_32+15>:    call   *%eax
-(gdb) info registers
-eax            0x80492e8           134517480
+We do have a RID involvement with PASID always for security. Every RID has
+its own PASID table, but the PASID name space is global. 
 
-^^^ Should be rax
+So if you have RID1 associated with PASID1, another RID2 doesn't have the
+PASID1 in its PASID table. Until when the app binds PASID1 with RID2 as
+well. Then you have PASID1 plumbed in the PASID table for RID2.
 
-ecx            0x3f                63
-edx            0x1                 1
-ebx            0xf7fc8550          -134445744
-esp            0xffffc57c          0xffffc57c
-ebp            0xffffc5e8          0xffffc5e8
-esi            0x0                 0
-edi            0x8049180           134517120
-eip            0x80499fe           0x80499fe <call64_from_32+15>
+Is this what you refer to for security? 
 
-^^^ r8, etc are all missing
 
-eflags         0x292               [ AF SF IF ]
-cs             0x33                51
+> 
+> If you need the PASID attached to the IOASID then it has to be global
+> because the IOASID can be attached to any RID and must keep the same
+> PASID.
+> 
+> If the PASID is learned when the IOASID is attached to a RID then the
+> PASID is more flexible and isn't attached to the IOASID.
+> 
+> Honestly I'm a little leary to bake into a UAPI a specific HW choice
+> that Intel made here.
 
-^^^ 64-bit!
+Like I mentioned, this isn't just Intel going forward. The specs are public
+in PCIe. I just can't comment which other vendors are adopting it.
 
-ss             0x2b                43
-ds             0x2b                43
-es             0x2b                43
-fs             0x0                 0
-gs             0x63                99
-(gdb) si
-poison_regs64 () at test_syscall_vdso.c:35
-35    long syscall_addr;
-1: x/i $pc
-=> 0x80492e8 <poison_regs64>:    dec    %ecx
-(gdb) si
-36    long get_syscall(char **envp)
-1: x/i $pc
-=> 0x80492ef <poison_regs64+7>:    dec    %ecx
-(gdb) set arch i386:x86-64
-warning: Selected architecture i386:x86-64 is not compatible with
-reported target architecture i386
-Architecture `i386:x86-64' not recognized.
-The target architecture is set to "auto" (currently "i386").
-(gdb) set arch i386:x86-64:intel
-warning: Selected architecture i386:x86-64:intel is not compatible
-with reported target architecture i386
-Architecture `i386:x86-64:intel' not recognized.
-The target architecture is set to "auto" (currently "i386").
+> 
+> I would advise making the "attach a global PASID to this IOASID"
+> operation explicit and opt into for case that actually need it.
+> 
+> Which implies the API to the iommu driver should be more like:
+> 
+>   'assign an IOASID to this RID and return the PASID'
+>   'reserve a PASID from every RID'
 
-I don't know enough about gdb internals to know precisely what failed
-here, but this did not work the way it should have.
+I don't think this has any decent change of success. Its rather round about
+way to get a global PASID namespace.
 
-Sure, ptrace should provide a nice API to figure out that CS == 0x33
-means long mode, but gdb could do a whole lot better here.
+>   'assign an IOASID to this RID and use this specific PASID'
+
+This seems a bit complicated. Another way to specify this.
+
+- IOASID is a logical construct to specify a page table.
+- You can bind a global PASID to an IOASID
+
+We aren't loosing any security by using a global PASID name space. 
+Until the application asks for it, that is not bound to any other RID without an explicit
+request.
+
+
+-- 
+Cheers,
+Ashok
