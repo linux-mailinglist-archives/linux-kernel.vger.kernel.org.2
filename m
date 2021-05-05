@@ -2,128 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26F5373EB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:39:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05A24373EC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233426AbhEEPkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:40:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46666 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229798AbhEEPkm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:40:42 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 40D676112F;
-        Wed,  5 May 2021 15:39:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620229185;
-        bh=ZCUYdqlONn4tcSJ0vwB/AkHctWRyUIU/usgs8uDdJI0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ZBzu/yRe5fmHkCWO5xDGNCnfkxG0ujdJ+o2atVDtlbf+q58KRquJvZ33Qm9Zqngp6
-         0pqSTHCagEjHWc0zeZCvD1KgXYUMYjE6EA914b+7US0TZDu56qxvvejAfHio7Qsk9A
-         Dh6GvSpVggT72Ya5/ru261twvJ1LmS/s0LctfoTipw4XtDRUlbWwMW7aggZTGZBdmD
-         2uXv/l+YrCApSgM1hYQl91wz1xu7IKNrTbN45bS7WGTN2mOwpqPA1HL2FGbkxt5XcD
-         ae6AO2xNmS3w4guBZLEzxZgE0DJGz9BVRe0aiskCDZIz8+BboMWQ9oaOA5khS0zzJ6
-         RmoYfC1i+raCA==
-Received: by pali.im (Postfix)
-        id 8241D79D; Wed,  5 May 2021 17:39:42 +0200 (CEST)
-Date:   Wed, 5 May 2021 17:39:42 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     Lukas Wunner <lukas@wunner.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>
-Subject: Re: xhci_pci & PCIe hotplug crash
-Message-ID: <20210505153942.mntbkmphw3ik3pdg@pali>
-References: <20210505120117.4wpmo6fhvzznf3wv@pali>
- <YJKK7SDIaeH1L/fC@kroah.com>
- <20210505123346.kxfpumww5i4qmhnk@pali>
- <20210505124402.GB29101@wunner.de>
- <20210505130240.lmryb26xffzkg4pl@pali>
- <ea58430d088742a1910475a680fb1de5@AcuMS.aculab.com>
+        id S233520AbhEEPpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:45:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28954 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229798AbhEEPpJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 11:45:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620229452;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=kB18wOq0wwABF209vAjteUSBdk4dEBLdqvgC2SNz17Y=;
+        b=Go46m6zi3sbMRMK3WxGXGR1HK+j4TJPDe6hfG81qCzhDBs1zLZJ58CH656R0cCJzZuvb32
+        RbKaSq5YlcQiaoNzYC4kru6P30raJPz/apA8eiiamMu1RAct8JgZ/FtCmgFH1KCbhvzyeZ
+        9snN4lD4bU5QHS/UlvwT9AQjJzQrdv4=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-414--rjeofgLPzSsbLZUoC4qCw-1; Wed, 05 May 2021 11:44:10 -0400
+X-MC-Unique: -rjeofgLPzSsbLZUoC4qCw-1
+Received: by mail-wm1-f70.google.com with SMTP id b16-20020a7bc2500000b029014587f5376dso1563165wmj.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:44:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kB18wOq0wwABF209vAjteUSBdk4dEBLdqvgC2SNz17Y=;
+        b=RwoYMnXp1RTTA32V8XrTTrWGffeqdBvPJYnzuHju39a77F05WzW4J3hfwoodESMYuC
+         jVc1PoPF/Gt6aauGJ3fVBZ0KSx4CXsHVHNn8ms+7fet2KWjblUmTlRHvB5T7BcrdYfDy
+         TN6867IW+C1CV5jptjnQqkMSLT4lVPAVgME7cSCN7hDW42NSbGHQtYYpAzOKpU06dqEA
+         WflmAQbPZGotXApSUQ4Hh8PMytrliDKMpH5zRiGiCErxWeFc9YNml5ykiDqEKSUZ1X6J
+         SdvT+4+hGzXS4lIOiGYM0tfS4lZaNbKkKTgygWSHTmzTp+naZyWAVaoIUfYsWdBcuAVG
+         LcCw==
+X-Gm-Message-State: AOAM530+xiCXckLqwv0AnvJepffTTDXEl+bgrEQBRPDYHcKVjj9tbQ3A
+        lYIHvrQF9K5LIZeN9Zw5GUbDwYlVmAtEu2NvFlKv62RhyPlxiliSzE4YcJMI3RrgILkBvgiDF36
+        nyXZS6qQzx4Z/26htNa7zrBogqf2RGKrWMQWIBHM5e0cTtfHp/piqbGx2eoGiqw77PJRYGkucCA
+        m4
+X-Received: by 2002:a7b:c217:: with SMTP id x23mr10447923wmi.26.1620229449521;
+        Wed, 05 May 2021 08:44:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwKkqKQ1KzwKdPY3wUmcuteH0Wwcuufh6A7pvdXG1H6KtXZqt1tXR+oSHmXTNUpeIXf5TOB8g==
+X-Received: by 2002:a7b:c217:: with SMTP id x23mr10447895wmi.26.1620229449206;
+        Wed, 05 May 2021 08:44:09 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id 61sm21723917wrm.52.2021.05.05.08.44.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 08:44:08 -0700 (PDT)
+Subject: Re: [PATCH 0/3] KVM: selftests: evmcs_test: Check issues induced by
+ late eVMCS mapping upon restore
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        linux-kernel@vger.kernel.org
+References: <20210505151823.1341678-1-vkuznets@redhat.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <f394cc20-8123-2b79-c95e-0aad784a3344@redhat.com>
+Date:   Wed, 5 May 2021 17:44:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ea58430d088742a1910475a680fb1de5@AcuMS.aculab.com>
-User-Agent: NeoMutt/20180716
+In-Reply-To: <20210505151823.1341678-1-vkuznets@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday 05 May 2021 15:20:11 David Laight wrote:
-> From: Pali Rohár
-> > Sent: 05 May 2021 14:03
-> ...
-> > I already figured out that CPU receive external abort also when trying
-> > to issue a new PIO transfer for accessing PCI config space while
-> > previous transfer has not finished yet. And also there is no way (at
-> > least in documentation) which allows to "mask" this external abort. But
-> > this issue can be fixed in pci-aardvark.c driver to disallow access to
-> > config space while previous transfer is still running (I will send patch
-> > for this one).
+On 05/05/21 17:18, Vitaly Kuznetsov wrote:
+> A regression was introduced by commit f2c7ef3ba955
+> ("KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES on nested vmexit"). When
+> L2->L1 exit is forced immediately after restoring nested state,
+> KVM_REQ_GET_NESTED_STATE_PAGES request is cleared and VMCS12 changes (e.g.
+> fresh RIP) are not reflected to eVMCS. The consequent nested vCPU run gets
+> broken. Add a test for the condition (PATCH2). PATCH1 is a preparatory
+> change, PATCH3 adds a test for a situation when KVM_GET_NESTED_STATE is
+> requested right after KVM_SET_NESTED_STATE, this is still broken in KVM
+> (so the patch is not to be committed).
 > 
-> My the sound of the above you need to put a global spinlock around
-> all PCIe config space accesses.
-
-Kernel already uses raw_spin_lock_irqsave(), see pci_lock_config() macro
-in pci/access.c which implements this global lock for config space
-access.
-
-But issue is that pci-driver.c does not wait for finishing transfer and
-return from function which unlock this spin lock...
-
-Week ago I fixed this issue in U-Boot and similar fix would be needed
-also for kernel https://source.denx.de/u-boot/u-boot/-/commit/eccbd4ad8e4e
-
-But this issue is not related to my original report about XHCI & PCI.
-
-> Is this the horrid hardware that can't do a 'normal' PCIe transfer
-> while a config space access is in progress?
-
-Issue is different. You cannot do config space PIO transfer while
-another config space PIO transfer is in progress.
-
-> If that it true then you have bigger problems.
-> Especially if it is an SMP system.
-
-I really hope that memory read or write transfer can be initiated while
-config transfer is in progress. Marvell A3720 platform on which can be
-found this pci aardvark controller is 2 core CPU SoC.
-
-At least I have not seen any abort when PCIe link is up, card connected
-and previous config access transfer finished.
-
-> > So seems that PCIe controller HW triggers these external aborts when
-> > device on PCIe bus is not accessible anymore.
-> > 
-> > If this issue is really caused by MMIO access from xhci driver when
-> > device is not accessible on the bus anymore, can we do something to
-> > prevent this kernel crash? Somehow mask that external abort in kernel
-> > for a time during MMIO access?
+> Vitaly Kuznetsov (3):
+>    KVM: selftests: evmcs_test: Check that VMLAUNCH with bogus EVMPTR is
+>      causing #UD
+>    KVM: selftests: evmcs_test: Check that VMCS12 is alway properly synced
+>      to eVMCS after restore
+>    KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never
+>      lost
 > 
-> If it is a cycle abort then the interrupted address is probably
-> that of the MMIO instruction.
-> So you need to catch the abort, emulate the instruction and
-> then return to the next one.
+>   .../testing/selftests/kvm/x86_64/evmcs_test.c | 150 +++++++++++++-----
+>   1 file changed, 108 insertions(+), 42 deletions(-)
+> 
 
-Has kernel API & infrastructure for catching these aborts and executing
-own driver handler when abort happens?
+Queued 1-2, thanks.
 
-> This probably requires an exception table containing the address
-> of every readb/w/l() instruction.
-> 
-> If you get a similar error on writes it is likely to be a few
-> instructions after the actual writeb/w/l() instruction.
-> Write are normally 'posted' and asynchronous.
-> 
-> If you are really lucky you can get enough state out of the
-> abort handler to fixup/ignore the cycle without an
-> exception table.
-> 
-> 	David
-> 
-> -
-> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-> Registration No: 1397386 (Wales)
+Paolo
+
