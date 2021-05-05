@@ -2,97 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE84A374806
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B959C37480B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:33:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234859AbhEESdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:33:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36326 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234089AbhEESdf (ORCPT
+        id S234947AbhEESd6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:33:58 -0400
+Received: from smtp.outgoing.loopia.se ([93.188.3.37]:14902 "EHLO
+        smtp.outgoing.loopia.se" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234831AbhEESd4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:33:35 -0400
-Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E45EC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 11:32:38 -0700 (PDT)
-Received: by mail-lf1-x132.google.com with SMTP id c11so3959566lfi.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 11:32:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DF4x2E+X/2I3MS2ylkXmeNQV4Ts8V9J13dnhgpIp/sU=;
-        b=DDkq2BCKRi6rk7V1qAqA24p//4BHtkwFtOKJZBqgTEk4smbiKh0NDcFIYn626jBp9y
-         /jzf1eJHx2xcd9c7nlDaDKpysaAKcku4PC1OcTdIrmi9f/cPJw7nHlL0ep0G3lQmqpEJ
-         Hj8JkiG8deVRaI6X8y7bgHkkx6XJ6jrM4mP4M=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DF4x2E+X/2I3MS2ylkXmeNQV4Ts8V9J13dnhgpIp/sU=;
-        b=pshXwvmUEolmTQwClemL9xlGtz3raLxGO8SqDG66umE76rQNY1LRVkqBBuAOMUyNwJ
-         JFcMRbxG9ru9pvq40a2xKVWHOBwx8KjyYh13W/DlqbiSc4YpDgXalWWW4V+qjutkUvrp
-         lOx7GnFN7bXUSChVsosgbQIKDgsl/LDUVIYX+d5x2CeYYyyjzOZeLQ+ShsnvhtFL/EaK
-         m3+2TZ012zjF4zncdsJKYNBsdKfOHtn2AHku4LsBnNRPc5qzd/H6EPoH7hZAGT6jfKeS
-         RyywqskSEYNjTwTlJrSkNnRO/hn/Pixi5krltIeLx7Qmg+luuwg1nxMGRtyUK/fgdvRZ
-         FFXg==
-X-Gm-Message-State: AOAM5326MibXsatjI5E4ZHn0ClsqLp6ty48hhNBELKlLhGbkWA1I6/A2
-        Aamb42Vqfnqx/hDn51ElOy+qQcSffCoPl7dr
-X-Google-Smtp-Source: ABdhPJwM2zu8508Cf5te0aQm7D4n3aBrXt/BdyTMp+7P2KJFvhxWXpEry9jduIV7iehJhYCPK1ygwA==
-X-Received: by 2002:a05:6512:922:: with SMTP id f2mr126906lft.171.1620239555773;
-        Wed, 05 May 2021 11:32:35 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id b10sm42822lfb.183.2021.05.05.11.32.34
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 11:32:34 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id z9so3957850lfu.8
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 11:32:34 -0700 (PDT)
-X-Received: by 2002:a05:6512:1095:: with SMTP id j21mr151048lfg.40.1620239553933;
- Wed, 05 May 2021 11:32:33 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1620186182.git.jpoimboe@redhat.com> <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
- <2f75c496ac774444b75ff808854b8e5f@AcuMS.aculab.com>
-In-Reply-To: <2f75c496ac774444b75ff808854b8e5f@AcuMS.aculab.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 5 May 2021 11:32:17 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wh-a6B11tH3upLG+-P5_yFPs3PB8tiXO5JKaQjUvhOMYg@mail.gmail.com>
-Message-ID: <CAHk-=wh-a6B11tH3upLG+-P5_yFPs3PB8tiXO5JKaQjUvhOMYg@mail.gmail.com>
-Subject: Re: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess speculation
-To:     David Laight <David.Laight@aculab.com>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Borislav Petkov <bp@alien8.de>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 5 May 2021 14:33:56 -0400
+Received: from s807.loopia.se (localhost [127.0.0.1])
+        by s807.loopia.se (Postfix) with ESMTP id 4D4D91A9A15F
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 20:32:56 +0200 (CEST)
+Received: from s499.loopia.se (unknown [172.22.191.6])
+        by s807.loopia.se (Postfix) with ESMTP id 3CF5B2E2C5C4;
+        Wed,  5 May 2021 20:32:56 +0200 (CEST)
+Received: from s475.loopia.se (unknown [172.22.191.6])
+        by s499.loopia.se (Postfix) with ESMTP id 378021CE6247;
+        Wed,  5 May 2021 20:32:56 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at amavis.loopia.se
+X-Spam-Flag: NO
+X-Spam-Score: -1
+X-Spam-Level: 
+X-Spam-Status: No, score=-1 tagged_above=-999 required=6.2
+        tests=[ALL_TRUSTED=-1] autolearn=disabled
+Received: from s645.loopia.se ([172.22.191.6])
+        by s475.loopia.se (s475.loopia.se [172.22.190.15]) (amavisd-new, port 10024)
+        with LMTP id VRGAQ1D_P96G; Wed,  5 May 2021 20:32:55 +0200 (CEST)
+X-Loopia-Auth: user
+X-Loopia-User: carl@hgsystem.se
+X-Loopia-Originating-IP: 98.128.181.169
+Received: from localhost.localdomain (h-98-128-181-169.NA.cust.bahnhof.se [98.128.181.169])
+        (Authenticated sender: carl@hgsystem.se)
+        by s645.loopia.se (Postfix) with ESMTPSA id 2C872157A02D;
+        Wed,  5 May 2021 20:32:55 +0200 (CEST)
+From:   Erik Rosen <erik.rosen@metormote.com>
+To:     Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Erik Rosen <erik.rosen@metormote.com>
+Subject: [PATCH 0/3] hwmon: (pmbus) Add support for additional Flex BMR converters to the pmbus driver 
+Date:   Wed,  5 May 2021 20:32:45 +0200
+Message-Id: <20210505183248.57082-1-erik.rosen@metormote.com>
+X-Mailer: git-send-email 2.11.0 (Apple Git-81)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 1:48 AM David Laight <David.Laight@aculab.com> wrote:
->
-> This would error requests for address 0 earlier - but I don't
-> believe they are ever valid in Linux.
-> (Some historic x86 a.out formats did load to address 0.)
+Some Flex PMBus converters (BMR310, BMR458, BMR80, BMR490 and BMR491)
+end up in an undefined state when trying to read an register that does
+not exist in the chip. This causes the following chip access to also
+fail even if it is a valid register read. This will mess up the pmbus
+driver auto-detection process.
 
-Not only loading at address 0 - there are various real reason s why
-address 0 might actually be needed.
+One way to reset the pmbus state machine to a known state is to read
+a register that is known to exist. This read will fail but will also
+reset the chip into a known state.
 
-Anybody who still runs a 32-bit kernel and wants to use vm86 mode, for
-example, requires address 0 because that's simply how the hardware
-works.
+For such chips we suggest adding a new pmbus flag:
+PMBUS_READ_STATUS_AFTER_FAILED_CHECK
+By setting this flag the driver will try to read the STATUS register
+after each failed register check. This read may fail, but it will put
+the chip into a known state so that the auto-detection process can
+proceed correctly.
 
-So no. "mask to zero and make zero invalid" is not a proper model.
+Add support for Flex BMR310, BMR456, BMR457, BMR458, BMR480, BMR490,
+BMR491 and BMR492 to the pmbus driver
 
-            Linus
+This patch has been tested with Flex BMR310, BMR456, BMR457, BMR458,
+BMR480, BMR490, BMR491 and BMR492 converter modules
+
+Erik Rosen (3):
+  Add new flag PMBUS_READ_STATUS_AFTER_FAILED_CHECK
+  Add documentation for new flags
+  Add support for Flex BMR310, BMR456, BMR457, BMR458, BMR480, BMR490,
+    BMR491 and BMR492 to the pmbus driver
+
+ Documentation/hwmon/pmbus-core.rst | 24 ++++++++++++++++++++++--
+ Documentation/hwmon/pmbus.rst      | 11 +++++++----
+ drivers/hwmon/pmbus/Kconfig        |  7 ++++---
+ drivers/hwmon/pmbus/pmbus.c        | 24 ++++++++++++++++++++++--
+ drivers/hwmon/pmbus/pmbus_core.c   |  2 ++
+ include/linux/pmbus.h              | 13 +++++++++++++
+ 6 files changed, 70 insertions(+), 11 deletions(-)
+
+
+base-commit: 1e28eed17697bcf343c6743f0028cc3b5dd88bf0
+-- 
+2.20.1
+
