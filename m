@@ -2,124 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48CB237394E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:29:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78ACE373962
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:30:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232978AbhEELaD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:30:03 -0400
-Received: from relay2.uni-heidelberg.de ([129.206.119.212]:45457 "EHLO
-        relay2.uni-heidelberg.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230001AbhEELaA (ORCPT
+        id S233103AbhEELbL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:31:11 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3004 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230001AbhEELbB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:30:00 -0400
-X-IPAS-Result: =?us-ascii?q?A2A8AACOgJJg/1BqzoFaGwEBAQEBAQEBBQEBARIBAQEDA?=
- =?us-ascii?q?wEBAUCBRgMBAQELAYMMa2uERK0MgXMBAQEBAQEBAQEJMQECBAEBhFCBfwIlN?=
- =?us-ascii?q?wYOAgQBAQEDAgMBAQEBAQYBAQEBAQYEgQSFXYZFBiMEUhAlAh8HAgIUKCETh?=
- =?us-ascii?q?XmpBX8zgQGIMoELI4EQKgGLOYJNgieBFYNgg38JHDuCejaCKwSCQAdZNb4zB?=
- =?us-ascii?q?6AxAg4nlEuQVwEtkimhJIVAgWqBfTM+gzhQGQ6OVo4YQi84AgYKAQEDCVkBA?=
- =?us-ascii?q?Yw0AQE?=
-IronPort-HdrOrdr: A9a23:+CXIA62CXSC8racTdty7aQqjBfd2eYIsi2QD101hICF9Wvez0+
- izgfUW0gL1gj4NWHcm3euNIrWEXGm0z+8W3aA4Bp3neAX9omOnIMVZ7YXkyyD9ACGWzJ8/6Y
- 5JSII7MtH5CDFB7frSyAOzH888hPyO9661jenTpk0dMz1CQadm8gt/F0K/Gkp5WAFJCfMCZe
- uhz+BAoCetfmlSU9SjChA+Lqn+jvDCiZ6OW299OzcJ8w+L5AnYj4LSMx/d5RsGViMK/LFKyx
- m7ryXY/aOliveh11vn+lS71f9rsf/A7vcGO8CWkMgSLVzX+0aVTaBsQaeLsjxwgMzH0idWrP
- D2rx0tP9t+5hrqFwnYznWNqmyQtAoG0HPsxUSVhnHuu6XCNU4HIvFMmJ5DdV/h41cg1esMip
- 5j5X6TtJZcEHr77V3AzuXITB1jmw6VpncvgIco/gdieLYec7NYoMgj+lpUGv47bVrHwb0ged
- Meav301bJ3alWcVnbDoy1G/7WXNEgbL1OjbGBHoNCf1zhNhnB+yCIjqfA3rzMlztYQWpNE7+
- PLPuBDj7dVVPIbaqp7GaMoXda3Inale2OODEuiZXDcUI0XMXPErJD6pJ8v4vuxRZAOxJwu3L
- zcTVJjs3IocU6GM7zN4LR7tjT2BEmtVzXkzc9To7JjvKfnebbtOSqfDHcjjtWnuPdaJsHAQf
- 68NNZ3DpbYXC7TMLcM+ze7d4hZKHEYXsFQkM08QUiyrsXCLZCvuffcdPrVObrxATcpUm7yGR
- I4LX/ODfQFynrudm7zgRDXVX+oUFf454hMHK/T+PVWyIVlDPwLjiElzXCCou2bIzxLtaI7OG
- FkJqn8r6+9rW6quWLB72BjPAtBHl9YiY+QCk9ilEsvCQfZYLwDs9KQdSR5x32cPCJySMvQDU
- pYvFR4+aW+KpSK3iA8A9e7MmaX5kFj4E6iftM5oOmu9M3lcpQ3AtINQ6pqDzjGEBRzhEJ3sm
- tZcRQFQUXeDzvqjq2ggPUvdbniXug5pD3uDd9fqHrZu0nZmNomQWEDWSWyFeSNhxw1ejZSjl
- pt0qMWjbaagwyzIW8njOlQCiwWVE2nRJZ9SCWMfsF9h63icgAYdxb7uRWqzzUIPlfM22pXrG
- r7NiGQcezMGTNmywNl+5ev1kh1eGWbd193cVZgv+RGZDj7k0c27MvOXI2P6S+qTmY6q9ttbQ
- 3taScOIw9o2tC83AOUnjHHDnk92pAyJIXmfcYeWqCW1XW3JIKSk6YaW/dS4ZZ+Ldjr9vQGSO
- SFZmauXX/FIvJs3wyevXA+PiZo7HEijPPzwRXghVLIlkIXEL7XIF58QascLMzZ52/4R+yQ2J
- E8id4up+O/PiHwbdGBoJunIgJrO1fWoWSsSfsvpo0RtaUutKFrF52eSCDWzhh8rVwDBdaxkF
- lbTLVw4bjHNIMqd8sOezhB9l5skNiUNkMkvgH/H+dWRyBjs1bLe9eSp7bYo7smBUOM4BH9Pl
- SS6CVR9fbIVSnr789QN4sgZWBNLEQs4nVr++2PM5DKAAKxbudZ4R60NGS+fLI1ctnKJZwA6h
- Jhp9eGkO+ce3CmhETevT5nLrlP9GjiS8WoGw6IEfNJ9dv/OVnkuNrc3OejyDPsDT28YAAEgI
- cAc0oaZMFKkCMjg406yTLacN2+nms1119FpSh6nVvs0JW86GjVHUtaIRTU668mKQV7IzyNl4
- DZ6uCW23T2/Shd1ZTCHElWeMtSG9J4dPmAEw5+bc4KvLCp+KIzgiNMJBc2ZlRM/QzA4w==
-X-IronPort-Anti-Spam-Filtered: true
-Received: from lemon.iwr.uni-heidelberg.de ([129.206.106.80])
-  by relay2.uni-heidelberg.de with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 05 May 2021 13:29:03 +0200
-Received: from hlauer by lemon.iwr.uni-heidelberg.de with local (Exim 4.92)
-        (envelope-from <hlauer@lemon.iwr.uni-heidelberg.de>)
-        id 1leFiA-0001eS-H6; Wed, 05 May 2021 13:29:02 +0200
-Date:   Wed, 5 May 2021 13:29:02 +0200
-From:   Hermann.Lauer@uni-heidelberg.de
-To:     Chen-Yu Tsai <wens@csie.org>
-Cc:     sre@kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] power: supply: axp20x_battery: implement writeable status to
- enable/disable battery charging
-Message-ID: <20210505112902.GC5302@lemon.iwr.uni-heidelberg.de>
-References: <20210421090354.GF19953@lemon.iwr.uni-heidelberg.de>
- <CAGb2v64U3vMew8LUU776Mx7jYj3eVb4FXQdXMZ0aJNBPUh2D2A@mail.gmail.com>
+        Wed, 5 May 2021 07:31:01 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.201])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZvVj5bCPz6yj77;
+        Wed,  5 May 2021 19:24:13 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 5 May 2021 13:30:01 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <mjg59@google.com>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v6 00/11] evm: Improve usability of portable signatures
+Date:   Wed, 5 May 2021 13:29:24 +0200
+Message-ID: <20210505112935.1410679-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAGb2v64U3vMew8LUU776Mx7jYj3eVb4FXQdXMZ0aJNBPUh2D2A@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.62.217]
+X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Maintainers,
+EVM portable signatures are particularly suitable for the protection of
+metadata of immutable files where metadata is signed by a software vendor.
+They can be used for example in conjunction with an IMA policy that
+appraises only executed and memory mapped files.
 
-this patch allows enabling/disabling charging for the axp209 PMIC through a
-writeable status property.
+However, some usability issues are still unsolved, especially when EVM is
+used without loading an HMAC key. This patch set attempts to fix the open
+issues.
 
-This works on the axp209 of Banana {Pi M1+,Pro}. I have no access to
-the other chips the driver deals with.
+Patch 1 allows EVM to be used without loading an HMAC key. Patch 2 avoids
+appraisal verification of public keys (they are already verified by the key
+subsystem).
 
-Thanks to ChenYu for the idea and greetings
-  Hermann
+Patches 3-4 allow metadata verification to be turned off when no HMAC key
+is loaded and to use this mode in a safe way (by ensuring that IMA
+revalidates metadata when there is a change).
 
-Signed-off-by: Hermann.Lauer@uni-heidelberg.de
----
- drivers/power/supply/axp20x_battery.c | 16 ++++++++++++++--
- 1 file changed, 14 insertions(+), 2 deletions(-)
+Patches 5-8 make portable signatures more usable if metadata verification
+is not turned off, by ignoring the INTEGRITY_NOLABEL and INTEGRITY_NOXATTS
+errors when possible, by accepting any metadata modification until
+signature verification succeeds (useful when xattrs/attrs are copied
+sequentially from a source) and by allowing operations that don't change
+metadata.
 
-diff --git a/drivers/power/supply/axp20x_battery.c b/drivers/power/supply/axp20x_battery.c
---- a/drivers/power/supply/axp20x_battery.c
-+++ b/drivers/power/supply/axp20x_battery.c
-@@ -40,6 +40,7 @@
- #define AXP209_FG_PERCENT		GENMASK(6, 0)
- #define AXP22X_FG_VALID			BIT(7)
- 
-+#define AXP20X_CHRG_CTRL1_ENABLE	BIT(7)
- #define AXP20X_CHRG_CTRL1_TGT_VOLT	GENMASK(6, 5)
- #define AXP20X_CHRG_CTRL1_TGT_4_1V	(0 << 5)
- #define AXP20X_CHRG_CTRL1_TGT_4_15V	(1 << 5)
-@@ -468,7 +469,17 @@
- 	case POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX:
- 		return axp20x_set_max_constant_charge_current(axp20x_batt,
- 							      val->intval);
-+	case POWER_SUPPLY_PROP_STATUS:
-+		switch (val->intval) {
-+		case POWER_SUPPLY_STATUS_CHARGING:
-+			return regmap_update_bits(axp20x_batt->regmap, AXP20X_CHRG_CTRL1,
-+				AXP20X_CHRG_CTRL1_ENABLE, AXP20X_CHRG_CTRL1_ENABLE);
- 
-+		case POWER_SUPPLY_STATUS_DISCHARGING:
-+		case POWER_SUPPLY_STATUS_NOT_CHARGING:
-+			return regmap_update_bits(axp20x_batt->regmap, AXP20X_CHRG_CTRL1,
-+				AXP20X_CHRG_CTRL1_ENABLE, 0);
-+	}
- 	default:
- 		return -EINVAL;
- 	}
-@@ -491,7 +502,8 @@
- static int axp20x_battery_prop_writeable(struct power_supply *psy,
- 					 enum power_supply_property psp)
- {
--	return psp == POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN ||
-+	return psp == POWER_SUPPLY_PROP_STATUS ||
-+	       psp == POWER_SUPPLY_PROP_VOLTAGE_MIN_DESIGN ||
- 	       psp == POWER_SUPPLY_PROP_VOLTAGE_MAX_DESIGN ||
- 	       psp == POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT ||
- 	       psp == POWER_SUPPLY_PROP_CONSTANT_CHARGE_CURRENT_MAX;
+Patch 9 makes it possible to use portable signatures when the IMA policy
+requires file signatures and patch 10 shows portable signatures in the
+measurement list when the ima-sig template is selected.
+
+Lastly, patch 11 avoids undesired removal of security.ima when a file is
+not selected by the IMA policy.
+
+Test:
+https://github.com/robertosassu/ima-evm-utils/blob/ima-evm-fixes-v6-devel-v1/tests/portable_signatures.test
+
+Test results:
+https://travis-ci.com/github/robertosassu/ima-evm-utils/jobs/503096506
+https://travis-ci.com/github/robertosassu/ima-evm-utils/jobs/503096510
+
+
+Changelog
+
+v5:
+- remove IMA xattr post hooks and call evm_revalidate() from pre hooks
+  (suggested by Mimi)
+- rename evm_ignore_error_safe() to evm_hmac_disabled() and check the errors
+  inline (suggested by Mimi)
+- improve readability of error handling in evm_verify_hmac() (suggested by Mimi)
+- don't show an error message if the EVM status is INTEGRITY_PASS_IMMUTABLE
+  (suggested by Mimi)
+- check if CONFIG_FS_POSIX_ACL is defined in evm_xattr_acl_change() (reported
+  by kernel test robot)
+- fix return value of evm_xattr_change() (suggested by Christian Brauner)
+- simplify EVM_ALLOW_METADATA_WRITES check in evm_write_key() (suggested by
+  Mimi)
+
+v4:
+- add patch to pass mnt_userns to EVM inode set/remove xattr hooks
+  (suggested by Christian Brauner)
+- pass mnt_userns to posix_acl_update_mode()
+- use IS_ERR_OR_NULL() in evm_xattr_acl_change() (suggested by Mimi)
+
+v3:
+- introduce evm_ignore_error_safe() to correctly ignore INTEGRITY_NOLABEL
+  and INTEGRITY_NOXATTRS errors
+- fix an error in evm_xattr_acl_change()
+- replace #ifndef with !IS_ENABLED() in integrity_load_keys()
+- reintroduce ima_inode_removexattr()
+- adapt patches to apply on top of the idmapped mounts patch set
+
+v2:
+- replace EVM_RESET_STATUS flag with evm_status_revalidate()
+- introduce IMA post hooks ima_inode_post_setxattr() and
+  ima_inode_post_removexattr()
+- remove ima_inode_removexattr()
+- ignore INTEGRITY_NOLABEL error if the HMAC key is not loaded
+
+v1:
+- introduce EVM_RESET_STATUS integrity flag instead of clearing IMA flag
+- introduce new template field evmsig
+- add description of evm_xattr_acl_change() and evm_xattr_change()
+
+Roberto Sassu (11):
+  evm: Execute evm_inode_init_security() only when an HMAC key is loaded
+  evm: Load EVM key in ima_load_x509() to avoid appraisal
+  evm: Refuse EVM_ALLOW_METADATA_WRITES only if an HMAC key is loaded
+  evm: Introduce evm_status_revalidate()
+  evm: Introduce evm_hmac_disabled() to safely ignore verification
+    errors
+  evm: Allow xattr/attr operations for portable signatures
+  evm: Pass user namespace to set/remove xattr hooks
+  evm: Allow setxattr() and setattr() for unmodified metadata
+  ima: Allow imasig requirement to be satisfied by EVM portable
+    signatures
+  ima: Introduce template field evmsig and write to field sig as
+    fallback
+  ima: Don't remove security.ima if file must not be appraised
+
+Roberto Sassu (11):
+  evm: Execute evm_inode_init_security() only when an HMAC key is loaded
+  evm: Load EVM key in ima_load_x509() to avoid appraisal
+  evm: Refuse EVM_ALLOW_METADATA_WRITES only if an HMAC key is loaded
+  evm: Introduce evm_status_revalidate()
+  evm: Introduce evm_hmac_disabled() to safely ignore verification
+    errors
+  evm: Allow xattr/attr operations for portable signatures
+  evm: Pass user namespace to set/remove xattr hooks
+  evm: Allow setxattr() and setattr() for unmodified metadata
+  ima: Allow imasig requirement to be satisfied by EVM portable
+    signatures
+  ima: Introduce template field evmsig and write to field sig as
+    fallback
+  ima: Don't remove security.ima if file must not be appraised
+
+ Documentation/ABI/testing/evm             |   5 +-
+ Documentation/security/IMA-templates.rst  |   4 +-
+ include/linux/evm.h                       |  18 +-
+ include/linux/integrity.h                 |   1 +
+ security/integrity/evm/evm_main.c         | 227 ++++++++++++++++++++--
+ security/integrity/evm/evm_secfs.c        |   5 +-
+ security/integrity/iint.c                 |   4 +-
+ security/integrity/ima/ima_appraise.c     |  43 ++--
+ security/integrity/ima/ima_init.c         |   4 +
+ security/integrity/ima/ima_template.c     |   2 +
+ security/integrity/ima/ima_template_lib.c |  33 +++-
+ security/integrity/ima/ima_template_lib.h |   2 +
+ security/security.c                       |   4 +-
+ 13 files changed, 304 insertions(+), 48 deletions(-)
+
+-- 
+2.25.1
+
