@@ -2,97 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3048373473
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 06:41:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C824F373477
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 06:49:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231523AbhEEElr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 00:41:47 -0400
-Received: from mga06.intel.com ([134.134.136.31]:34368 "EHLO mga06.intel.com"
+        id S231623AbhEEEuJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 00:50:09 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:49503 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229895AbhEEElp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 00:41:45 -0400
-IronPort-SDR: IGoKLNLLNHhCEgKhG1JOcV9eBZGyOltGLfu4Ktn2Y6QxolqYzB8qNR8cFUXawkZ4HjkQl1nIHx
- WBE/1hlu8O9A==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="259414605"
-X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
-   d="scan'208";a="259414605"
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 21:40:47 -0700
-IronPort-SDR: EUm5EbxTp/09v8jlfq6iwnQIXBGWm/gbeOYvxvksA+2FLby6EHuXiGDV+SDOx+hNqDzvTrdvXC
- rklXzGvgcHIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
-   d="scan'208";a="607264834"
-Received: from ahunter-desktop.fi.intel.com (HELO [10.237.72.174]) ([10.237.72.174])
-  by orsmga005.jf.intel.com with ESMTP; 04 May 2021 21:40:44 -0700
-Subject: Re: [PATCH v1] mmc: block: Disable CMDQ on the ioctl path
-To:     Bean Huo <huobean@gmail.com>, ulf.hansson@linaro.org
-Cc:     linux-mmc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Bean Huo <beanhuo@micron.com>,
-        Michael Brunner <Michael.Brunner@kontron.com>
-References: <20210504203209.361597-1-huobean@gmail.com>
-From:   Adrian Hunter <adrian.hunter@intel.com>
-Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
- Business Identity Code: 0357606 - 4, Domiciled in Helsinki
-Message-ID: <7607d4e2-d586-e0a0-d436-ff29cd960f9d@intel.com>
-Date:   Wed, 5 May 2021 07:41:05 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+        id S229895AbhEEEuI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 00:50:08 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FZkkt387cz9sWs;
+        Wed,  5 May 2021 06:49:10 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id YqPLq18KB6Pc; Wed,  5 May 2021 06:49:10 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FZkkt24rdz9sWq;
+        Wed,  5 May 2021 06:49:10 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4FAD28B7B8;
+        Wed,  5 May 2021 06:49:09 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id MlrGRD_86eaG; Wed,  5 May 2021 06:49:08 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6BBBE8B7B4;
+        Wed,  5 May 2021 06:49:07 +0200 (CEST)
+Subject: Re: [PATCH 1/2] powerpc/asm-offset: Remove unused items related to
+ paca
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+To:     Nicholas Piggin <npiggin@gmail.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Paul Mackerras <paulus@samba.org>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+References: <f38728dbe96df5fef84c868640def5f6d7c114bc.1620060357.git.christophe.leroy@csgroup.eu>
+ <1620121538.q0b7uiea5y.astroid@bobo.none>
+ <9b07e9c1-b004-a814-278b-c6a1f7b616e3@csgroup.eu>
+Message-ID: <58e781b6-b23d-9c22-4b2b-c82e708758bb@csgroup.eu>
+Date:   Wed, 5 May 2021 06:49:05 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <20210504203209.361597-1-huobean@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+In-Reply-To: <9b07e9c1-b004-a814-278b-c6a1f7b616e3@csgroup.eu>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/05/21 11:32 pm, Bean Huo wrote:
-> From: Bean Huo <beanhuo@micron.com>
-> 
-> According to the eMMC Spec:
-> "When command queuing is enabled (CMDQ Mode En bit in CMDQ_MODE_EN
-> field is set to ‘1’) class 11 commands are the only method through
-> which data transfer tasks can be issued. Existing data transfer
-> commands, namely CMD18/CMD17 and CMD25/CMD24, are not supported when
-> command queuing is enabled."
-> which means if CMDQ is enabled, the FFU commands will not be supported.
-> To fix this issue, just simply disable CMDQ on the ioctl path, and
-> re-enable CMDQ once ioctl request is completed.
-> 
-> Tested-by: Michael Brunner <Michael.Brunner@kontron.com>
-> Signed-off-by: Bean Huo <beanhuo@micron.com>
 
-Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-> ---
->  drivers/mmc/core/block.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+Le 04/05/2021 à 12:40, Christophe Leroy a écrit :
 > 
-> diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-> index 689eb9afeeed..21fb99883b1e 100644
-> --- a/drivers/mmc/core/block.c
-> +++ b/drivers/mmc/core/block.c
-> @@ -1004,6 +1004,11 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
->  
->  	switch (mq_rq->drv_op) {
->  	case MMC_DRV_OP_IOCTL:
-> +		if (card->ext_csd.cmdq_en) {
-> +			ret = mmc_cmdq_disable(card);
-> +			if (ret)
-> +				break;
-> +		}
->  	case MMC_DRV_OP_IOCTL_RPMB:
->  		idata = mq_rq->drv_op_data;
->  		for (i = 0, ret = 0; i < mq_rq->ioc_count; i++) {
-> @@ -1014,6 +1019,8 @@ static void mmc_blk_issue_drv_op(struct mmc_queue *mq, struct request *req)
->  		/* Always switch back to main area after RPMB access */
->  		if (rpmb_ioctl)
->  			mmc_blk_part_switch(card, 0);
-> +		else if (card->reenable_cmdq && !card->ext_csd.cmdq_en)
-> +			mmc_cmdq_enable(card);
->  		break;
->  	case MMC_DRV_OP_BOOT_WP:
->  		ret = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL, EXT_CSD_BOOT_WP,
 > 
+> Le 04/05/2021 à 12:14, Nicholas Piggin a écrit :
+>> Excerpts from Christophe Leroy's message of May 4, 2021 2:46 am:
+>>> PACA_SIZE, PACACONTEXTID, PACALOWSLICESPSIZE, PACAHIGHSLICEPSIZE,
+>>> PACA_SLB_ADDR_LIMIT, MMUPSIZEDEFSIZE, PACASLBCACHE, PACASLBCACHEPTR,
+>>> PACASTABRR, PACAVMALLOCSLLP, MMUPSIZESLLP, PACACONTEXTSLLP,
+>>> PACALPPACAPTR, LPPACA_DTLIDX and PACA_DTL_RIDX are not used anymore
+>>> by ASM code.
+>>
+>> Reviewed-by: Nicholas Piggin <npiggin@gmail.com>
+>>
+>> Also I think SIGSEGV, NMI_MASK, THREAD_DBCR0, KUAP?, TI_FLAGS,
+>> TI_PREEMPT, [ID]CACHEL1*, STACK_REGS_KUAP, EXC_LVL_SIZE, KVM_NEED_FLUSH,
+>> KVM_FWNMI, VCPU_DEC, VCPU_SPMC, HSTATE_XICS_PHYS, HSTATE_SAVED_XIRR,
+>> PPC_DBELL_MSGTYPE I think. While we're cleaning it up.
+> 
+> Yes, thanks for checking.
+> 
+> I think we can safely remove KUAP.
+> 
+> But we can't remove EXC_LVL_SIZE, it is used in kernel/head_booke.h which is probably included in 
+> head_44x.S and head_fsl_booke.S
 
+DCACHEL1*BLOCKSIZE are also still used.
+
+Christophe
+
+
+> 
+> Christophe
