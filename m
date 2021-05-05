@@ -2,80 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6A63374AF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:02:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A98374AF5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232890AbhEEWDq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:03:46 -0400
-Received: from mail.skyhub.de ([5.9.137.197]:50946 "EHLO mail.skyhub.de"
+        id S233166AbhEEWFJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:05:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229691AbhEEWDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:03:45 -0400
-Received: from zn.tnic (p200300ec2f0b070001dc1f090e11b831.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:700:1dc:1f09:e11:b831])
+        id S229691AbhEEWFI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 18:05:08 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id D86D41EC02E6;
-        Thu,  6 May 2021 00:02:46 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
-        t=1620252167;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
-        bh=NXYsMl5AQdmgOJ9oEQHkvot9C4WwsPfhkFMXbbCFP3M=;
-        b=IU+gXTlGpeBBuEFTHTr6H0Oj4+fgPd7aNw43OVWjWsrMUO6D/2cgYVqZ+V3CamobNo22dK
-        W92tA5trBYc8+XpjzoaqHQZj8WkwpmOyRGLpgMVY5iv0jDYdxZcQtHjV0nfW/D5vz/ERme
-        RLEKp723NO9HDcb66Ya9qUfYluCaBVA=
-Date:   Thu, 6 May 2021 00:02:44 +0200
-From:   Borislav Petkov <bp@alien8.de>
-To:     Tyler Hicks <tyhicks@linux.microsoft.com>
-Cc:     wangglei <wangglei@gmail.com>,
-        "Lei Wang (DPLAT)" <Wang.Lei@microsoft.com>,
-        "mchehab@kernel.org" <mchehab@kernel.org>,
-        "tony.luck@intel.com" <tony.luck@intel.com>,
-        "james.morse@arm.com" <james.morse@arm.com>,
-        "rric@kernel.org" <rric@kernel.org>,
-        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Hang Li <hangl@microsoft.com>,
-        Brandon Waller <bwaller@microsoft.com>
-Subject: Re: [EXTERNAL] Re: [PATCH] EDAC: update edac printk wrappers to use
- printk_ratelimited.
-Message-ID: <YJMWBBBlQ6TwFad9@zn.tnic>
-References: <20210505173027.78428-1-wangglei@gmail.com>
- <YJLdZCcsgWG6TrKz@zn.tnic>
- <SJ0PR21MB199984A8B47FBEECEC5D11CE90599@SJ0PR21MB1999.namprd21.prod.outlook.com>
- <YJL1vU6HNBWPKy8g@zn.tnic>
- <20210505202357.GC4967@sequoia>
- <YJMIbB31oEDaXm0C@zn.tnic>
- <20210505214846.GE4967@sequoia>
+        by mail.kernel.org (Postfix) with ESMTPSA id 76A1A61185;
+        Wed,  5 May 2021 22:04:11 +0000 (UTC)
+Date:   Wed, 5 May 2021 18:04:09 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [for-linus][PATCH] ftrace: Handle commands when closing
+ set_ftrace_filter file
+Message-ID: <20210505180409.290e2b77@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20210505214846.GE4967@sequoia>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 04:48:46PM -0500, Tyler Hicks wrote:
-> The thought was that the full stream of log messages isn't necessary to
-> notice that there's a problem when they are being emitted at such a high
-> rate (500 per second). They're just filling up disk space and/or wasting
-> networking bandwidth at that point.
 
-I already asked about this but lemme point it out again: have you guys
-looked at drivers/ras/cec.c ?
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+for-next
 
-With that there won't be *any* error reports in dmesg and it will even
-poison and offline pages which generate excessive errors so that ...
+Head SHA1: 8c9af478c06bb1ab1422f90d8ecbc53defd44bc3
 
-> Of course, the best course of action here is to service the machine
-> but there's still a period of time between the CE errors popping up
-> and the machine being serviced.
 
-... you'll have ample time to service the machine.
+Steven Rostedt (VMware) (1):
+      ftrace: Handle commands when closing set_ftrace_filter file
 
--- 
-Regards/Gruss,
-    Boris.
+----
+ kernel/trace/ftrace.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+---------------------------
+commit 8c9af478c06bb1ab1422f90d8ecbc53defd44bc3
+Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Date:   Wed May 5 10:38:24 2021 -0400
 
-https://people.kernel.org/tglx/notes-about-netiquette
+    ftrace: Handle commands when closing set_ftrace_filter file
+    
+     # echo switch_mm:traceoff > /sys/kernel/tracing/set_ftrace_filter
+    
+    will cause switch_mm to stop tracing by the traceoff command.
+    
+     # echo -n switch_mm:traceoff > /sys/kernel/tracing/set_ftrace_filter
+    
+    does nothing.
+    
+    The reason is that the parsing in the write function only processes
+    commands if it finished parsing (there is white space written after the
+    command). That's to handle:
+    
+     write(fd, "switch_mm:", 10);
+     write(fd, "traceoff", 8);
+    
+    cases, where the command is broken over multiple writes.
+    
+    The problem is if the file descriptor is closed, then the write call is
+    not processed, and the command needs to be processed in the release code.
+    The release code can handle matching of functions, but does not handle
+    commands.
+    
+    Cc: stable@vger.kernel.org
+    Fixes: eda1e32855656 ("tracing: handle broken names in ftrace filter")
+    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 057e962ca5ce..c57508445faa 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -5591,7 +5591,10 @@ int ftrace_regex_release(struct inode *inode, struct file *file)
+ 
+ 	parser = &iter->parser;
+ 	if (trace_parser_loaded(parser)) {
+-		ftrace_match_records(iter->hash, parser->buffer, parser->idx);
++		int enable = !(iter->flags & FTRACE_ITER_NOTRACE);
++
++		ftrace_process_regex(iter, parser->buffer,
++				     parser->idx, enable);
+ 	}
+ 
+ 	trace_parser_put(parser);
