@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4831373581
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 09:21:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 74A9237358A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 09:27:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231709AbhEEHWg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 03:22:36 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:45126 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231445AbhEEHWe (ORCPT
+        id S231784AbhEEH1w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 03:27:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhEEH1L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 03:22:34 -0400
-Received: from pps.filterd (m0241204.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1457Fit7014805;
-        Wed, 5 May 2021 09:21:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=8/yAuhmraI0tqlt6iAwgkJ+3l0e6yI+x8bwBJnx/s2Q=;
- b=k+vCqSIoxOP8tNQSEvYXY0LpqoCBvF1AlYEeNYBPgjZt5bVejv1yfUUF7pMikiFHcEns
- PuyOVqZmuqEnRRFk1Wk6YwNW1dkRabc9DWrwN8JKzxK3sHBoXMEnmCbos4mnP2tveH7g
- sBgjpqhZYswcn0iKcZMjkWekUwGwBn12t+yzxye/8GCIakEXQlFEtUEUxT9V1Pnj9xSJ
- rUtHBWni74fr1C5MkvggwCyUEdf4LS4ovUw0GuTbq3AsluwZVrq6wUi6QuSPnh1WEUnK
- AXWSZodN7Z9EZhBD4MyCPsnvckywQYDTX0RNBpGHk4yLMLGk75Kh91NZ0hOEg5J/nY4E og== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38be9ajddu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 May 2021 09:21:18 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 2EA3110002A;
-        Wed,  5 May 2021 09:21:17 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 0F50020F46C;
-        Wed,  5 May 2021 09:21:17 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.48) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 5 May
- 2021 09:21:16 +0200
-Subject: Re: [PATCH 1/3] spi: spi-mem: add automatic poll status functions
-To:     Mark Brown <broonie@kernel.org>
-CC:     Pratyush Yadav <p.yadav@ti.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        Boris Brezillon <boris.brezillon@collabora.com>,
-        <linux-mtd@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@foss.st.com>,
-        <linux-spi@vger.kernel.org>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <christophe.kerello@foss.st.com>
-References: <20210426143934.25275-1-patrice.chotard@foss.st.com>
- <20210426143934.25275-2-patrice.chotard@foss.st.com>
- <20210426162610.erpt5ubeddx7paeq@ti.com>
- <20210426165118.GH4590@sirena.org.uk>
- <28acedfd-6cd5-a8ad-0182-e61c3c30c27d@foss.st.com>
- <20210430155623.GD5981@sirena.org.uk>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <f472d75d-7549-191b-1b42-4e3921280c49@foss.st.com>
-Date:   Wed, 5 May 2021 09:21:15 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 5 May 2021 03:27:11 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0131C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 00:26:13 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id d11so635486wrw.8
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 00:26:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sSGB223I3PeBh3TG2RAuibwn3vbLRJONtkpynCow05g=;
+        b=tNBsreuCJZemMha64jCuI97TnHZ0gwzRwx0zYrIb/M9JCEXaMBrNLQ7RxmV/PmWrbY
+         HJoT2YoPVdEKNxcpCrk1VeJ0q5XVpBaRl0oNSqrmPy9aJajrmXRwxzcptYXNLBL22kg4
+         kCI9rkOnmAKzVCFy0DAPO33h3iH53CX7AB+litwzli2VPeHS5m1OcNMogGiPj6w022RA
+         E25OcZd9zZ4KiGk25bLrmRDXKvKPpwNFRI86GPn4Ff70sJHM29lmSjg7EFFDr/Ig830k
+         tsKRqgMl3nZz5hbO9EZE4zKIvHL7NXpVXpMHGPUE/vvVs2FNzPMtmZmn3ndH27pIZCXU
+         81RQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sSGB223I3PeBh3TG2RAuibwn3vbLRJONtkpynCow05g=;
+        b=KsPuFQLKeSpy99K9UTFCYMzHMcU42DZIc+6TPdjs3CRLpuliHdaEIBDvTTJjrfiz9e
+         dhTV4wP2KUqyMbpvvPZ7skaLKJwdRG64RzuxPvknmIECplT6KiyZVtyvFrVyAhu+bUlC
+         lYYv9pviS3DCH6Saw4YX7sdD7B3Cczsw9vpgz7s1aSr+6EbZtsbpcMTAXYSdxRoxa7M8
+         gf9nyAtKFMKwqSMuEI2rIOkjgtYB+LN8WsbpRx9UEH2FyPuUxPcRfFsDv3ZJy2PtT658
+         Hcoypiccxn43Vn1ZzMVEyb2qINrXOfMNIWKwj9SFkhp5rPYMf1Ir7pMOqEbh/IhTJvjw
+         t6Pg==
+X-Gm-Message-State: AOAM530SoqWANqmNH9ksC3YOlSiKacNTQlrn6Y0XE6eNi7/a8wi1tHvn
+        aSNqUAatZZe8uM8ujty1hQILhQ==
+X-Google-Smtp-Source: ABdhPJyABkwemPMKwQp9GLUEV/VZsbakg+LdwJTV16+JOgDc0yiICSRNDSpsAxOBJf+N1wu1PvwxEA==
+X-Received: by 2002:a05:6000:508:: with SMTP id a8mr18035799wrf.315.1620199572246;
+        Wed, 05 May 2021 00:26:12 -0700 (PDT)
+Received: from localhost.localdomain ([2a01:e0a:90c:e290:6eb3:66ab:cb1e:ef0])
+        by smtp.gmail.com with ESMTPSA id f25sm19008991wrd.67.2021.05.05.00.26.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 00:26:11 -0700 (PDT)
+From:   Neil Armstrong <narmstrong@baylibre.com>
+To:     jbrunet@baylibre.com, broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Neil Armstrong <narmstrong@baylibre.com>
+Subject: [PATCH v2 0/2] ASoC: meson: g12a-toacodec: add support for SM1
+Date:   Wed,  5 May 2021 09:26:04 +0200
+Message-Id: <20210505072607.3815442-1-narmstrong@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210430155623.GD5981@sirena.org.uk>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.48]
-X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-05_02:2021-05-05,2021-05-05 signatures=0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark
+This patchset adds Amlogic SM1 support on the TOACODEC driver, first by switching
+to regmap fields for some bit fields to avoid code duplication, and then by adding
+the corresponding bits & struct for the SM1 changed bits.
 
-On 4/30/21 5:56 PM, Mark Brown wrote:
-> On Fri, Apr 30, 2021 at 04:22:34PM +0200, Patrice CHOTARD wrote:
->> On 4/26/21 6:51 PM, Mark Brown wrote:
->>> On Mon, Apr 26, 2021 at 09:56:12PM +0530, Pratyush Yadav wrote:
-> 
->>> Is it possible there's some situation where you're waiting for some bits
->>> to clear as well?
-> 
->> Yes, we are waiting STATUS_BUSY bit to be cleared, see patch 2 which is making 
->> usage of this API.
-> 
-> Then the inverse question applies - is there no circumstance where we
-> might be waiting for a bit to be set?
-> 
->>> We already have the core handling other timeouts.  We don't pass around
->>> completions but rather have an API function that the driver has to call
->>> when the operation completes, a similar pattern might work here.  Part
-> 
->> So, if i correctly understood, you make allusion to what is already done
->> in SPI core framework with spi_finalize_current_transfer() right ?
-> 
-> Yes, and _current_message().
-> 
->>> of the thing with those APIs which I'm missing here is that this will
->>> just return -EOPNOTSUPP if the driver can't do the delay in hardware, I
->>> think it would be cleaner if this API were similar and the core dealt
->>> with doing the delay/poll on the CPU.  That way the users don't need to
->>> repeat the handling for the offload/non-offload cases.
-> 
->> Sorry, i didn't catch what you mean here. In PATCH 2, that's the case,
->> if spi_mem_poll_status() is not supported, the core is dealing with 
->> the delay/poll on the CPU in spinand_wait().
-> 
-> That's in the NAND core, not in spi-mem.  Any other users of spi-mem
-> will also need to open code stuff.
-> 
+Changes since v1 at [1]:
+- switch to regmap field
 
-Ok, got it, i will transfer what is done in spi_nand_wait() into spi_mem_poll_status() 
-in order to get the full feature in spi-mem which will profit to all spi-mem users as requested.
+[1] https://lore.kernel.org/r/20210429170147.3615883-1-narmstrong@baylibre.com
 
-Thanks
-Patrice
+Neil Armstrong (2):
+  ASoC: meson: g12a-toacodec: use regmap fields to prepare SM1 support
+  ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
+
+ sound/soc/meson/g12a-toacodec.c | 144 +++++++++++++++++++++++++++-----
+ 1 file changed, 125 insertions(+), 19 deletions(-)
+
+-- 
+2.25.1
+
