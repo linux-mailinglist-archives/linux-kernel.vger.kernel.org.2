@@ -2,88 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE9D373D88
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:20:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8A20373D86
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:20:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232873AbhEEOVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:21:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36210 "EHLO
+        id S232733AbhEEOVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36094 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232122AbhEEOVb (ORCPT
+        with ESMTP id S232349AbhEEOVC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:21:31 -0400
-Received: from mail-pg1-x52f.google.com (mail-pg1-x52f.google.com [IPv6:2607:f8b0:4864:20::52f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACC2CC061574;
-        Wed,  5 May 2021 07:20:34 -0700 (PDT)
-Received: by mail-pg1-x52f.google.com with SMTP id y32so1876322pga.11;
-        Wed, 05 May 2021 07:20:34 -0700 (PDT)
+        Wed, 5 May 2021 10:21:02 -0400
+Received: from mail-ej1-x629.google.com (mail-ej1-x629.google.com [IPv6:2a00:1450:4864:20::629])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32E94C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 07:20:04 -0700 (PDT)
+Received: by mail-ej1-x629.google.com with SMTP id n2so3130210ejy.7
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:20:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=70Vtk3cTkEH+v9q1J6g0pF83dKihPS0No/AaCgqegvc=;
-        b=R44r3rtYIMKmWn0I1E4rk3/ogyHPR8YBCBYMkxtcftL/c35wTTZG+h3CF3lQomHiHS
-         XF/x2xdGYMY3LL+T5rppkyyFl7HcjY7G0GRB8+TQZUctXx2jty0UkcsdvaH1SOU3fvcx
-         ezsZEKXrPUoAXNCC12NaMg95vkwJL4yz9LsQHvIaI4PKgwyf1TX0jmLNGO9wPvYWEG7O
-         THrLiIIvXdivL2e98CWnzQi7LMI+c4WL4pNf9otRckw3pbMRlv/i4j7bFpI3qripoMpX
-         5vu5LRYwL504MszHxYmJnJ+MhyGMWccAx8yfOBvgPWP8Pb/wd3SxGLZjHsWn61kSWp+g
-         qUxg==
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tgBFW77w+tqXgd2qEhzNM+pBbVN0PtVs2ChlIQlnPok=;
+        b=E0/0eSBIRoJ31aC+hu8b8fyOZgaiGRtak/6pzAv0VlIcRqBObMCPzEZaXsK/R085SU
+         QNqZCv7io+8+UpPtOsLN9Gw4rXmi0D9EryZsIa2vA1H90I/J8J5ndJHnj0tDseLlGO6M
+         O3b/XsVsGpaZUM6vXwEn/H7Tv2knupaQNUjSDhScaGZ1PsXZDRA0Tj/ytUmnqMSU1DKn
+         l3ObaZV7lco5NHEOmSEZCUBEgEk0nWC/300ypBZFaZyfp10kT6K9l7563hSgWEBdYycE
+         jezfZRst235bIHUGmfQyrgMJAUcbYZ5LLabv2eroQrm4eCZ9uDM/4RMX3n2kBNMVthZW
+         iihw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=70Vtk3cTkEH+v9q1J6g0pF83dKihPS0No/AaCgqegvc=;
-        b=sXS7OCxL8No8n/vSOVeGZ8xFCuC23ELZQVlI0avKrTR19r9JVfjztMuWt9IWbE1bOY
-         qWEQBns/zcqvgpGpheQpWMQbtjp56d4cmy6+P1mm+PjawHXVYrGVx4UKn57f3kKCA/ph
-         so+KZhcj5a8BJpQypbXY/87I90x2W7SfbagIR+t8V7zRnHq3mVhZU2ZklW7GCaZUm7Xo
-         /QHWUpGepID+As2KmwOo8V2GeK2Il7tQOEXtVYtKvZAgVPNuy1Bpdz+JbRc+UI7Kp4KM
-         qu7Cep3I4uzbtQARr4iOPurYXGiAvIO69gxEfWwSaMiCFvcrvKi27TgP6nG7N27X02eT
-         EIIg==
-X-Gm-Message-State: AOAM531aWez4uwMrcMTXe8tKzoRE19i9/zj4xPJU/+/U3e8/+MgksAyu
-        9lrCaug/D0vBULRNg6utgq8IHy6qJBITrpos7TY=
-X-Google-Smtp-Source: ABdhPJzDZot3Y38Q1FZ2t0aN4qB6SNpVdwfUALKFIucHoa4/XdIEJ9z4z7gJL0K9wbNX/yvum6732w==
-X-Received: by 2002:a63:796:: with SMTP id 144mr28563579pgh.246.1620224433949;
-        Wed, 05 May 2021 07:20:33 -0700 (PDT)
-Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
-        by smtp.gmail.com with ESMTPSA id s13sm15240598pfd.79.2021.05.05.07.20.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 07:20:33 -0700 (PDT)
-From:   Wei Ming Chen <jj251510319013@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     balbi@kernel.org, linux-usb@vger.kernel.org,
-        Wei Ming Chen <jj251510319013@gmail.com>
-Subject: [PATCH] usb: phy: Use fallthrough pseudo-keyword
-Date:   Wed,  5 May 2021 22:19:36 +0800
-Message-Id: <20210505141936.4343-1-jj251510319013@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tgBFW77w+tqXgd2qEhzNM+pBbVN0PtVs2ChlIQlnPok=;
+        b=jppN3KZ+fwvuLZBCbZtBoneAYf+Lzxl9RMFP3UISgaiA4jFDlCotwrcNQs3Vl1y29S
+         oBCgdCIDtgSJYcprRitY5fygjfeaPU5359FULP1JU7p0hRxOMzjKa8v98TGvN8B68PZa
+         nfWiryMuBPf2yNFof2DFErGHZK3RX/irx8AjTculhGX+PejwPBTWgTajcZUv0Bm8nd2F
+         xknc9ZW2bavlnrM57tOeCMS24t4hiW5wuE2yEvmJ58K/UMnz5E+YjOM/CkDQhwVtH2H2
+         76WStxbgwypqIEbRT1rB6su7flDHpnApuq5X+kdcVM5Gep+Kp/IXSD8ANpYksc98ygrM
+         oxxg==
+X-Gm-Message-State: AOAM533Mf7qUevFJBawlNHsAyEGzKIqUBqezOdq6oV9voOUaVcoas9OR
+        KnOLzgZ53o6yeChDuFKxS49i4sG1rLWhnbyNjlTPgw==
+X-Google-Smtp-Source: ABdhPJyzLudiIQ/dpybDA57vC74JzVw449WHxrJNYfxwFjrKij9jEbD6z+ZLr4L2liSwFhoiYlSvyXGVP4cmweokm9k=
+X-Received: by 2002:a17:907:78c4:: with SMTP id kv4mr27335251ejc.445.1620224402914;
+ Wed, 05 May 2021 07:20:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210502193216.24872-1-brgl@bgdev.pl> <CAHk-=whSWp3exv8tZ2th5im_P7HF=c6iuOOVb9iSrNrd6405WA@mail.gmail.com>
+ <YJBA1iYK7npit9vn@zeniv-ca.linux.org.uk> <YJCpnvKUNx+Tc+vg@zeniv-ca.linux.org.uk>
+ <CAMRc=Mdh9LvUQCxcyt7ZBjitDB2noVnOptft_VORDhffxJaeCA@mail.gmail.com> <YJGFsrPBoQsKj+JZ@zeniv-ca.linux.org.uk>
+In-Reply-To: <YJGFsrPBoQsKj+JZ@zeniv-ca.linux.org.uk>
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+Date:   Wed, 5 May 2021 16:19:52 +0200
+Message-ID: <CAMRc=Mf1N1iL4b5KvVFbPsvKDMy_geXkd8LjmCu5r=bih-N7_w@mail.gmail.com>
+Subject: Re: [GIT PULL] gpio: updates for v5.13
+To:     Al Viro <viro@zeniv.linux.org.uk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace /* FALLTHROUGH */ comment with pseudo-keyword macro fallthrough[1]
+On Tue, May 4, 2021 at 7:34 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
+>
+> On Tue, May 04, 2021 at 04:17:02PM +0200, Bartosz Golaszewski wrote:
+> > >     Incidentally, if your code critically depends upon some field
+> > > being first in such-and-such structure, you should either get rid of
+> > > the dependency or at least bother to document that.
+> > > That
+> > > +               /*
+> > > +                * Free memory allocated for the pending and live
+> > > directories
+> > > +                * of committable groups.
+> > > +                */
+> > > +               if (sd->s_type & (CONFIGFS_GROUP_PENDING |
+> > > CONFIGFS_GROUP_LIVE))
+> > > +                       kfree(sd->s_element);
+> > > +
+> > > is asking for trouble down the road.
+> > >
+> >
+> > I'm not sure if this is a hard NAK for these changes or if you
+> > consider this something that can be ironed out post v5.13-rc1?
+>
+> Rename implementation is simply bogus.  You are, for some reason, attaching
+> stuff to *destination*, which won't be seen by anyone not currently using
+> it.  It's the old_dentry that will be seen from that point on - you are
+> moving it to new location by that d_move().  So I rather wonder how much
+> had that thing been tested.  And I'm pretty much certain that you are
+> mishandling the refcounts on configfs-internal objects, with everything
+> that entails in terms of UAF and leaks.
+>
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+The interface's stability in user-space has been tested a lot with the
+test-suite for libgpiod[1] but I didn't look for leaks indeed.
 
-Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
----
- drivers/usb/phy/phy-isp1301-omap.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> FWIW, I'm not happy about the userland API of that thing (what is supposed
+> to happen if you create, move to live, then create another with the same
+> name and try to move it to live or original back from live?), but
+> Documentation/filesystems/configfs.rst is too sparse on such details.
+> So I would like to see the specifics on that as well.  _Before_ signing
+> up on anything, including "we can fix it up after merge".
 
-diff --git a/drivers/usb/phy/phy-isp1301-omap.c b/drivers/usb/phy/phy-isp1301-omap.c
-index 02bb7ddd4bd6..f3e9b3b6ac3e 100644
---- a/drivers/usb/phy/phy-isp1301-omap.c
-+++ b/drivers/usb/phy/phy-isp1301-omap.c
-@@ -555,7 +555,7 @@ static void otg_update_isp(struct isp1301 *isp)
- 	case OTG_STATE_A_PERIPHERAL:
- 		if (otg_ctrl & OTG_PULLUP)
- 			goto pullup;
--		/* FALLTHROUGH */
-+		fallthrough;
- 	// case OTG_STATE_B_WAIT_ACON:
- 	default:
- pulldown:
--- 
-2.25.1
+Understood. I've sent out a new PR without these changes. I'll start
+another thread asking for your help on the correct approach and maybe
+some better ideas for the user interface.
 
+Thanks,
+Bartosz
+
+[1] https://patchwork.ozlabs.org/project/linux-gpio/patch/20210429094734.9585-3-brgl@bgdev.pl/
