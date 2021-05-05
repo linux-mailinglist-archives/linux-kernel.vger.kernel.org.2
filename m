@@ -2,95 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C491C3749EC
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:09:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BE553749F0
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:10:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229579AbhEEVKG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 17:10:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43096 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233253AbhEEVKE (ORCPT
+        id S233683AbhEEVLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 17:11:16 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:35031 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233585AbhEEVLO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 17:10:04 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CBD5DC061763
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 14:09:07 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id v13so1829069ple.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 14:09:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mzL7+lfo0jgpxWVMdqWo9doOV0ATdOWWCvUN85rK7VI=;
-        b=IdQvxHFBYeLPm6jvoN7IWLE8cBuA3g7jeOc/4BvVlHlq6VxGy4sxKNXuI3t+EHRWyk
-         J8Z4DIjRZ4XcPDg9BJ9cSTQYGnai8TfchuijkdpghvE8VBb/0u5DQICC71levMT03GZv
-         9GB/wZ7lylyx4/4dt0cz9+4fBEGjD0t5MQgbM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mzL7+lfo0jgpxWVMdqWo9doOV0ATdOWWCvUN85rK7VI=;
-        b=Ur5Kg/1P8G2E/gQiSyOhcLWpOmYl6KbgMp/AjiF2Ls3QBHk4MBqPtr3+XPoTyJcwDi
-         fBWL+KOPV7J4wEjeODx1eJnsdWF73WrT8tZfvDps4EKn1lXYnCfm9phachz5/nH2owRj
-         QHlH7f/q9978zHCS2AsgrNtWSCXxxUfeeGgTzQhCqh1/CYFUJkCY9KWreXjTASKDHAzi
-         Bz+bwwPBHUY7EacdojgXtbqmGyK5ruQlP2ueLuV0bxs1J/DwUJXY7YRzeKE+UcqBtMAe
-         r2LXkb7fRleayEyQ37/3KXJ4OJcQVKkS59tESo2CQqjRxedd1HYcuLYjb7YI8mPTVJQc
-         fhgg==
-X-Gm-Message-State: AOAM531rfVZoTuDR8qW992s/IHIE1PaT2C8JxoJbDOYGBX4hMAk2YuBt
-        /fWTmgZ4zTD3rswVt3TsBa2NfA==
-X-Google-Smtp-Source: ABdhPJzprjQ8B9VzBx+H58+wlW4Y5N3kcETfQLTkFMAvI8As/kebf+R+AEyUhM3pM3n73PgphHiGAA==
-X-Received: by 2002:a17:902:b7c8:b029:ed:2577:8dc3 with SMTP id v8-20020a170902b7c8b02900ed25778dc3mr665834plz.9.1620248947323;
-        Wed, 05 May 2021 14:09:07 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q27sm142223pfl.41.2021.05.05.14.09.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 14:09:06 -0700 (PDT)
-Date:   Wed, 5 May 2021 14:09:05 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Kars Mulder <kerneldev@karsmulder.nl>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Paul Cercueil <paul@crapouillou.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>, chao <chao@eero.com>,
-        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-mips@vger.kernel.org
-Subject: Re: [PATCH v2] linux/kconfig.h: replace IF_ENABLED() with PTR_IF()
- in <linux/kernel.h>
-Message-ID: <202105051409.6FDC4F9AD6@keescook>
-References: <20210505174515.87565-1-masahiroy@kernel.org>
+        Wed, 5 May 2021 17:11:14 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620249018; h=Message-ID: Subject: Cc: To: From: Date:
+ Content-Transfer-Encoding: Content-Type: MIME-Version: Sender;
+ bh=ljqGh4vdZ4x6txKvkOy9TSMun4WY4aIky27Q4tklUF4=; b=BSckRQp6dQmX8tD83uSwpnCRm1PmQU4BbBPmBbbi59u+G5PAv3m9NfsoONxkgC/3ObQ7vt8Z
+ 7Z14nZKMSwb5oWxCorMJ+zh/bUA2bgaULKDDjhs6ZRhbfvuPNiBooMb8ssF4IgmbyRjVZvNH
+ XAA576YhzLnMvvhbaZcad55EceU=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
+ 609309a8c39407c327b1eb6d (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 May 2021 21:10:00
+ GMT
+Sender: bcain=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 08772C4323A; Wed,  5 May 2021 21:10:00 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: bcain)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5F077C433F1;
+        Wed,  5 May 2021 21:09:59 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505174515.87565-1-masahiroy@kernel.org>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 05 May 2021 16:09:59 -0500
+From:   bcain@codeaurora.org
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-hexagon <linux-hexagon@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Cc:     sidneym@codeaurora.org,
+        'clang-built-linux' <clang-built-linux@googlegroups.com>
+Subject: [GIT PULL] hexagon changes for v5.13
+Message-ID: <a81e116ba3d64aab8d379703bedcf032@codeaurora.org>
+X-Sender: bcain@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 02:45:15AM +0900, Masahiro Yamada wrote:
-> <linux/kconfig.h> is included from all the kernel-space source files,
-> including C, assembly, linker scripts. It is intended to contain a
-> minimal set of macros to evaluate CONFIG options.
-> 
-> IF_ENABLED() is an intruder here because (x ? y : z) is C code, which
-> should not be included from assembly files or linker scripts.
-> 
-> Also, <linux/kconfig.h> is no longer self-contained because NULL is
-> defined in <linux/stddef.h>.
-> 
-> Move IF_ENABLED() out to <linux/kernel.h> as PTR_IF(). PTF_IF()
-> takes the general boolean expression instead of a CONFIG option
-> so that it fits better in <linux/kernel.h>.
-> 
-> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+Linus,
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Please pull the following changes for Hexagon: they contain build fixes.
+
+Thanks,
+-Brian
+
+===
+
+
+The following changes since commit 
+9ccce092fc64d19504fa54de4fd659e279cc92e7:
+
+   Merge tag 'for-linus-5.13-ofs-1' of 
+git://git.kernel.org/pub/scm/linux/kernel/git/hubcap/linux (2021-05-02 
+14:13:46 -0700)
+
+are available in the git repository at:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/bcain/linux 
+tags/hexagon-5.13-0
+
+for you to fetch changes up to f1f99adf05f2138ff2646d756d4674e302e8d02d:
+
+   Hexagon: add target builtins to kernel (2021-05-03 11:04:22 -0500)
+
+----------------------------------------------------------------
+Hexagon architecture build fixes + builtins
+
+Small build fixes applied:
+- use -mlong-calls to build
+- extend jumps in futex_atomic_*
+- etc
+
+Also, for convenience and portability, the hexagon compiler builtin
+functions like memcpy etc have been added to the kernel -- following the
+idiom used by other architectures.
+
+----------------------------------------------------------------
+Sid Manning (4):
+       Hexagon: fix build errors
+       Hexagon: change jumps to must-extend in futex_atomic_*
+       Hexagon: remove DEBUG from comet config
+       Hexagon: add target builtins to kernel
+
+  arch/hexagon/Makefile                    |  6 +--
+  arch/hexagon/configs/comet_defconfig     |  1 -
+  arch/hexagon/include/asm/futex.h         |  4 +-
+  arch/hexagon/include/asm/timex.h         |  3 +-
+  arch/hexagon/kernel/hexagon_ksyms.c      |  8 ++--
+  arch/hexagon/kernel/ptrace.c             |  4 +-
+  arch/hexagon/lib/Makefile                |  3 +-
+  arch/hexagon/lib/divsi3.S                | 67 
+++++++++++++++++++++++++++++++++
+  arch/hexagon/lib/memcpy_likely_aligned.S | 56 
+++++++++++++++++++++++++++
+  arch/hexagon/lib/modsi3.S                | 46 ++++++++++++++++++++++
+  arch/hexagon/lib/udivsi3.S               | 38 ++++++++++++++++++
+  arch/hexagon/lib/umodsi3.S               | 36 +++++++++++++++++
+  12 files changed, 258 insertions(+), 14 deletions(-)
+  create mode 100644 arch/hexagon/lib/divsi3.S
+  create mode 100644 arch/hexagon/lib/memcpy_likely_aligned.S
+  create mode 100644 arch/hexagon/lib/modsi3.S
+  create mode 100644 arch/hexagon/lib/udivsi3.S
+  create mode 100644 arch/hexagon/lib/umodsi3.S
+
 
 -- 
-Kees Cook
+Employee of Qualcomm Innovation Center, Inc.
+Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
