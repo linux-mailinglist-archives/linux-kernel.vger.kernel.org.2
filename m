@@ -2,366 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E032373609
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:06:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2E1B37360B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:07:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232029AbhEEIHh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 04:07:37 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:37439 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S231697AbhEEIHb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S231697AbhEEIHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 04:07:43 -0400
+Received: from mail-eopbgr20133.outbound.protection.outlook.com ([40.107.2.133]:30619
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231829AbhEEIHb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 May 2021 04:07:31 -0400
-X-UUID: 9169c652bd164b86b7e1ba6de4c47b6a-20210505
-X-UUID: 9169c652bd164b86b7e1ba6de4c47b6a-20210505
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <louis.kuo@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1755114515; Wed, 05 May 2021 16:06:30 +0800
-Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Wed, 5 May 2021 16:06:29 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas11.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Wed, 5 May 2021 16:06:29 +0800
-From:   Louis Kuo <louis.kuo@mediatek.com>
-To:     <sakari.ailus@linux.intel.com>,
-        <laurent.pinchart@ideasonboard.com>, <mchehab@kernel.org>,
-        <matthias.bgg@gmail.com>, <hverkuil-cisco@xs4all.nl>,
-        <arnd@arndb.de>, <louis.kuo@mediatek.com>,
-        <sergey.senozhatsky@gmail.com>, <helen.koike@collabora.com>,
-        <niklas.soderlund+renesas@ragnatech.se>, <yepeilin.cs@gmail.com>
-CC:     <frederic.chen@mediatek.com>, <linux-media@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [RFC PATCH V0 4/4] media: pixfmt: Add ISP Camsys formats
-Date:   Wed, 5 May 2021 16:06:26 +0800
-Message-ID: <20210505080626.15432-5-louis.kuo@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210505080626.15432-1-louis.kuo@mediatek.com>
-References: <20210505080626.15432-1-louis.kuo@mediatek.com>
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TG2qD9XVp3PDaLBYNbdLqX3KYSV/riutaH0UXDrQXH0QQ//QT+xpAMEw1UINsqlXVcj7Xb/7z2wviDPw5SOG4NRsFjYPkk4jYxYYrEUD952SqeICZUI/+y0k2p7M+wOMBzSjZ9qE1cPm8NfUQdv3boBCzRLfQZ02I1IffBTVyTAkZTzdzy7pw5+370GHr8GPNmI4xmub8j6zM7bL0KgdDFqd/GBZZ0KhpSzusVmFo3URXJrMcD3esWajFeMYSqmO9rvOHk7LfrRjMoUe6J4/QC1PMsp0ORfyrd4Iy2XPjKpM97FIgFnD/3UzuPIWzzRR9htEIaCQNRzypq9fQj8HsQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PI/UpSOrXbkY3oiFUh544jygI4fK47wyICP2r/0oiOY=;
+ b=LuzFALXx35fKc8u/ZtvYsJcqTf7LVeAR9g/2v6Dg/d9bgtXOegkVEuL7bfrOQnEBD7hNz/qgsgLqgSLl5Iz2uqV0v+3MoO1QJVuqWO7DJTloCQjbPRQbht4WdvdvELTN1W1DATHei/j+0LlotLZtJrzNEILSA4u4M4XVAsBIvU/3Np0o418L1nJZWtYGKwvNiduMVfd4TxXqWutN/mt/q7in/XdRFFT9Ns/AX/YDpemXQtZe0yQKN4bbvCCPFx/mJfkLtCoDLrdeARD3C0xf92zPAXJApdt8pnYmwb6gLtyDvzsP4QBsEISIWu99CJVcqHnWgjp2mAFM/tPKuOw2DA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=PI/UpSOrXbkY3oiFUh544jygI4fK47wyICP2r/0oiOY=;
+ b=NnDkxhajNBKyMr80FsiW5e7us1lz7kxX/EMz5zzNZ8JslsKl61knQUZcNw8Hjk7FhDexhQld+EmpOTfAMapdIpd+bt5OGEq0AC0MOBPjc4lw+J+ZRDOkG0n2qCMzt2lOc4zY5PqxCjWwRVyUQkzyVmoWb/CDUy360sF/TFToayA=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM0PR10MB2354.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:da::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.35; Wed, 5 May
+ 2021 08:06:33 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87%7]) with mapi id 15.20.4108.024; Wed, 5 May 2021
+ 08:06:33 +0000
+Subject: Re: [PATCH v2] can: mcp251x: Fix resume from sleep before interface
+ was brought up
+To:     Marc Kleine-Budde <mkl@pengutronix.de>
+Cc:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        =?UTF-8?Q?Timo_Schl=c3=bc=c3=9fler?= <schluessler@krause.de>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Tim Harvey <tharvey@gateworks.com>, stable@vger.kernel.org,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <17d5d714-b468-482f-f37a-482e3d6df84e@kontron.de>
+ <20210505075127.yrx474t5dkpxxdmt@pengutronix.de>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+Message-ID: <96710db4-f330-eb3a-71fa-570dd651aee4@kontron.de>
+Date:   Wed, 5 May 2021 10:06:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210505075127.yrx474t5dkpxxdmt@pengutronix.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [46.142.67.208]
+X-ClientProxiedBy: AM0PR02CA0164.eurprd02.prod.outlook.com
+ (2603:10a6:20b:28d::31) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.17] (46.142.67.208) by AM0PR02CA0164.eurprd02.prod.outlook.com (2603:10a6:20b:28d::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Wed, 5 May 2021 08:06:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7039707c-8642-411b-6a54-08d90f9cb255
+X-MS-TrafficTypeDiagnostic: AM0PR10MB2354:
+X-Microsoft-Antispam-PRVS: <AM0PR10MB2354E83AA7F6A2387A5684FBE9599@AM0PR10MB2354.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vqYjdvP/zkaSTCSU/xdsyCvHNl3K+X6dTs+ilih3tvWZ6qOTDdX3ID/OesduSXqBrjkmKJkOwqEbU28PsTREwj+EOPFUw9dSOvjGlTfxFeDh2EPlXKZwAYnoJXuzSRwLno8x4pGdEvg+HMKX22e1Fztki9xY0fvukjolZsvMmg65NFigjpb8OPGXffADS5HMm9W4aapjqBuDs5ArO2Il6+yKLaBbsKIxytNISfyA5uMr86q+tXmiSP9hj6KCCqx75XJ0IfXSIQ5Pg5iihJ+i6dKqBXyhIBB6FtedCjvj4TrYHjdesB/x9Uh7Crnlc1gctzph+cVFrMQPA+bFIC3cd6C9LRGzVG2zlwhhYjIENwd+pu35j+yUF/hyFi4JpDP1QkjvUsT/IGjODbo25gk8YrrUtCwscnOGFRRd33OiI40PwXXw2n5KWJYJcDSvm1zBvcnBDyS5zHVJe7X7/AJhUvZHlZ3hQb23+GyGEIi2zjVQVyzjSkveZ7VbPmz+nfQ86TZNR/Ya5XVmr7x6U56LxNtSpf9gg4TbLsUQIhAwTdzJr+7EGWctEUpDg2dSCl0YFo8vMCoi8w+eLMVWulQP3Qoa+wtIVkRo4KKdqBM3iNm02dHD+tLwdcRGHYErsK6YP8benrSXmbLTtIN3wteUKv/fIEcewK03wQ1BdUaNvG8tcsstKjQPU9jSPtzxfdED
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(366004)(376002)(136003)(39850400004)(2616005)(44832011)(7416002)(86362001)(66946007)(6486002)(36756003)(31696002)(4326008)(8676002)(66476007)(66556008)(956004)(5660300002)(2906002)(6916009)(478600001)(316002)(31686004)(16576012)(16526019)(83380400001)(186003)(38100700002)(53546011)(8936002)(26005)(54906003)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?QzNRVmdaMTkydWc1c3U2WWYweEVFR3NpYTBTM3Mzb3ErMFpmeFZpbkNsaGhx?=
+ =?utf-8?B?R2tEN1NhRjVBamJIWjFXRXIvRlVHWERwZXFVNCs5S3BuTkRSUmd4eUZKSXZB?=
+ =?utf-8?B?eGxLSDlJL2xRU3E3TFI4amxLQTJ2MkYxQVJHTDBuSTFoczRtRXVwZXp1RjR4?=
+ =?utf-8?B?WVg5QzBnMmpOeEhwV2NmTTR3UmtNaFJQUExWZC9NeVhWYzJHek9YQ1BFQ0cw?=
+ =?utf-8?B?VnN0MVNDdE01dG9leE9RdmpUclRBYnBkT1JqcHRyVjI5bmh1YVNUSmRxWVZi?=
+ =?utf-8?B?OTdNZmxpcFNGZ2pmTmcxQlpqaTdQZm5SU0lPaWFYblVMUTRWVWNUT2VtZkVt?=
+ =?utf-8?B?YnhuMkRRaUlTNDNVOGt3WDlYdGtpcHNVSzhzKzBPRXp0emtCTUZ5dFdDR2NL?=
+ =?utf-8?B?RnVBdzdSTnVtaEtlZldybE5WMkRzc1Y4ZnErd2MvRVkxak9NU1U2d3Qwbnho?=
+ =?utf-8?B?TVdRU2hZOHpHSjJZa2JkYThDUkRZWVdmeWlleGMvb2xaWFlub3dmaVNaSVRZ?=
+ =?utf-8?B?bXFGT1BvSVFSTFEwbk9KZWN3SUZhN05sdnI4L053YjZSMHpyUEpZVXNGRWdG?=
+ =?utf-8?B?R3lGcFFCdTh3dnhqeHo2c2JyTXl1a3lEYmlybEROallwL3d1dDRZaWhsUFE1?=
+ =?utf-8?B?SkxmLzBOU3lRVWxpeTdOTm5ic1N5RGtiTkZiQXdSa284cGZkUnZHRXFsajY3?=
+ =?utf-8?B?MDI0VU9oWFJOMVVRM0wvRlFjdnozUW51aTlLODJMZVdmVElHUEJDWjdPUStw?=
+ =?utf-8?B?VFFLcE5Kbi94cHM5bElpTE5QdDBDUHFtdzZ5eUxGb3pldU4rYjFSOHowWVQ5?=
+ =?utf-8?B?OHd6L0RNYkhUZ1YzcHUrTkNlK1Q4aEsweUpnWlBYRG1uaGQ2OHpJUWIwUVBx?=
+ =?utf-8?B?ZVlLOTVtMnpQWWJTMnd0UUxBVzg0cG0vczhmcXZUeGFNRGNCZUwrb1E4c1Ey?=
+ =?utf-8?B?YS9NS2lWRkxZUExCRlVKV2oyOEM0WHNFWE5TWjh2eEdOQXlTWEE0amNieUVr?=
+ =?utf-8?B?a0NJeG1QTDk1cEkzdmhGSW9NUkVtOElMSzErY1ovSnRiRStXLzFwTG56WWJ4?=
+ =?utf-8?B?eTRoaDdVUFVSTU1hejJORnlFeGdIYWF0Tm9zbGtwVk9RYVdsc2pNbkZKRFZG?=
+ =?utf-8?B?c0dFdncxVWJWeW1zUTdKaGdYUmFrNHJBMGlmVmtXbnFDUHRkcWdQclhCbnR1?=
+ =?utf-8?B?OHFaaG5VMEp2Y0pHcnFobmYzdFNoU2ovVXVGQWZxOXdWb0h3TkxyTXBLZkc3?=
+ =?utf-8?B?Y01ZNy8rajFidkoybitCTjk5MzFyTFFJZUxvS2hWVUdZZ3hyOU9mSnpoWXFL?=
+ =?utf-8?B?TUNobm15NnczWkRrMkNYaWhFb0xRUFllSkJ6V2kreU00eUVFQ1doQWx1Yjd5?=
+ =?utf-8?B?ZmhNYWQrdnRuWE9aOURpOFpROFd3QVFaZFllTnNuRHVreFhzeHBlWkxkbVZL?=
+ =?utf-8?B?aXhpeGpHY0JmelNwNE1nM1hTbkxTZmdOSEJwektaMG1PQTJhNWJVeXR6V1k4?=
+ =?utf-8?B?ZWtwUTRaWUJHdy85TVBjYlA5Nm53MkkvQnZWK0RBdTZxNE1kaWp6cEV0UHA3?=
+ =?utf-8?B?d2MvTXFxeS9zdHdnYUNxVjgwMUhyNTNUZFpMcW43dFVDQkMxUU95OFcvaFJB?=
+ =?utf-8?B?aTZTOHVrTUJNcXF0RUI1ZkRPdTg4UGxsVkRKeGtEK0hpUUlnMHhma3E2K0Mz?=
+ =?utf-8?B?TUZ0NlQ3YkZIT2ZxSGtobUFWaVlUMWxKcG5Bejl6S3NjTThCVktoajNPR3RS?=
+ =?utf-8?Q?oPeiEBuoCNSARQY/8heIGZWJxrycmEEGiWR8n9z?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7039707c-8642-411b-6a54-08d90f9cb255
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 08:06:33.2262
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: m5rva6/cz4Vrw89xf0O9jouVZfaeYtlMn3FaAWphfc/1VPiMgAO1rKDLfD5vDH/rMPDdMR74bZIIDq9U95YPIqT7Bx8Gj4J/rg1B3p6YYNE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR10MB2354
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add packed bayer formats with 10/12/14 bit for image output.
-Add packed/unpacked yuv formats with 10/12 bit for image output.
-Add specific meta formats for parameter processing and 3A/other
-statistics.
+On 05.05.21 09:51, Marc Kleine-Budde wrote:
+> On 05.05.2021 09:14:15, Frieder Schrempf wrote:
+>> From: Frieder Schrempf <frieder.schrempf@kontron.de>
+>>
+>> Since 8ce8c0abcba3 the driver queues work via priv->restart_work when
+>> resuming after suspend, even when the interface was not previously
+>> enabled. This causes a null dereference error as the workqueue is
+>> only allocated and initialized in mcp251x_open().
+>>
+>> To fix this we move the workqueue init to mcp251x_can_probe() as
+>> there is no reason to do it later and repeat it whenever
+>> mcp251x_open() is called.
+>>
+>> Fixes: 8ce8c0abcba3 ("can: mcp251x: only reset hardware as required")
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+>> Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+>> ---
+>> Changes in v2:
+>>   * Remove the out_clean label in mcp251x_open()
+>>   * Add Andy's R-b tag
+>>   * Add 'From' tag
+>>
+>> Hi Marc, I'm sending a v2 mainly because I noticed that v1 is missing
+>> the 'From' tag and as my company's mailserver always sends my name
+>> reversed this causes incorrect author information in git. So if possible
+>> you could fix this up. If this is too much work, just leave it as is.
+>> Thanks!
+> 
+> Done.
 
-Signed-off-by: Louis Kuo <louis.kuo@mediatek.com>
----
- drivers/media/v4l2-core/v4l2-ioctl.c | 145 ++++++++++++++++++++++++++-
- include/uapi/linux/videodev2.h       | 101 +++++++++++++++++++
- 2 files changed, 245 insertions(+), 1 deletion(-)
+Thanks!
 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 823ebd175f3a..00dba596893a 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -1259,6 +1259,30 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_PIX_FMT_YVYU:		descr = "YVYU 4:2:2"; break;
- 	case V4L2_PIX_FMT_UYVY:		descr = "UYVY 4:2:2"; break;
- 	case V4L2_PIX_FMT_VYUY:		descr = "VYUY 4:2:2"; break;
-+	case V4L2_PIX_FMT_YUYV10:
-+		descr = "YUYV 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_YVYU10:
-+		descr = "YVYU 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_UYVY10:
-+		descr = "UYVY 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_VYUY10:
-+		descr = "VYUY 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_YUYV12:
-+		descr = "YUYV 4:2:2 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_YVYU12:
-+		descr = "YVYU 4:2:2 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_UYVY12:
-+		descr = "UYVY 4:2:2 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_VYUY12:
-+		descr = "VYUY 4:2:2 12 bits";
-+		break;
- 	case V4L2_PIX_FMT_YUV422P:	descr = "Planar YUV 4:2:2"; break;
- 	case V4L2_PIX_FMT_YUV411P:	descr = "Planar YUV 4:1:1"; break;
- 	case V4L2_PIX_FMT_Y41P:		descr = "YUV 4:1:1 (Packed)"; break;
-@@ -1282,6 +1306,30 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_PIX_FMT_NV61:		descr = "Y/CrCb 4:2:2"; break;
- 	case V4L2_PIX_FMT_NV24:		descr = "Y/CbCr 4:4:4"; break;
- 	case V4L2_PIX_FMT_NV42:		descr = "Y/CrCb 4:4:4"; break;
-+	case V4L2_PIX_FMT_NV12_10:
-+		descr = "Y/CbCr 4:2:0 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV21_10:
-+		descr = "Y/CrCb 4:2:0 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV16_10:
-+		descr = "Y/CbCr 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV61_10:
-+		descr = "Y/CrCb 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV12_12:
-+		descr = "Y/CbCr 4:2:0 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV21_12:
-+		descr = "Y/CrCb 4:2:0 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV16_12:
-+		descr = "Y/CbCr 4:2:2 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV61_12:
-+		descr = "Y/CrCb 4:2:2 12 bits";
-+		break;
- 	case V4L2_PIX_FMT_NV12M:	descr = "Y/CbCr 4:2:0 (N-C)"; break;
- 	case V4L2_PIX_FMT_NV21M:	descr = "Y/CrCb 4:2:0 (N-C)"; break;
- 	case V4L2_PIX_FMT_NV16M:	descr = "Y/CbCr 4:2:2 (N-C)"; break;
-@@ -1348,6 +1396,90 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_PIX_FMT_KONICA420:	descr = "GSPCA KONICA420"; break;
- 	case V4L2_PIX_FMT_HSV24:	descr = "24-bit HSV 8-8-8"; break;
- 	case V4L2_PIX_FMT_HSV32:	descr = "32-bit XHSV 8-8-8-8"; break;
-+	case V4L2_PIX_FMT_MTISP_SBGGR10:
-+		descr = "10-bit Bayer BGGR MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGBRG10:
-+		descr = "10-bit Bayer GBRG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGRBG10:
-+		descr = "10-bit Bayer GRBG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SRGGB10:
-+		descr = "10-bit Bayer RGGB MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SBGGR12:
-+		descr = "12-bit Bayer BGGR MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGBRG12:
-+		descr = "12-bit Bayer GBRG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGRBG12:
-+		descr = "12-bit Bayer GRBG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SRGGB12:
-+		descr = "12-bit Bayer RGGB MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SBGGR14:
-+		descr = "14-bit Bayer BGGR MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGBRG14:
-+		descr = "14-bit Bayer GBRG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGRBG14:
-+		descr = "14-bit Bayer GRBG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SRGGB14:
-+		descr = "14-bit Bayer RGGB MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV12_10P:
-+		descr = "Y/CbCr 4:2:0 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV21_10P:
-+		descr = "Y/CrCb 4:2:0 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV16_10P:
-+		descr = "Y/CbCr 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV61_10P:
-+		descr = "Y/CrCb 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_YUYV10P:
-+		descr = "YUYV 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_YVYU10P:
-+		descr = "YVYU 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_UYVY10P:
-+		descr = "UYVY 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_VYUY10P:
-+		descr = "VYUY 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV12_12P:
-+		descr = "Y/CbCr 4:2:0 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV21_12P:
-+		descr = "Y/CrCb 4:2:0 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV16_12P:
-+		descr = "Y/CbCr 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV61_12P:
-+		descr = "Y/CrCb 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_YUYV12P:
-+		descr = "YUYV 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_YVYU12P:
-+		descr = "YVYU 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_UYVY12P:
-+		descr = "UYVY 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_VYUY12P:
-+		descr = "VYUY 4:2:2 12 bits packed";
-+		break;
- 	case V4L2_SDR_FMT_CU8:		descr = "Complex U8"; break;
- 	case V4L2_SDR_FMT_CU16LE:	descr = "Complex U16LE"; break;
- 	case V4L2_SDR_FMT_CS8:		descr = "Complex S8"; break;
-@@ -1367,7 +1499,18 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_META_FMT_VIVID:       descr = "Vivid Metadata"; break;
- 	case V4L2_META_FMT_RK_ISP1_PARAMS:	descr = "Rockchip ISP1 3A Parameters"; break;
- 	case V4L2_META_FMT_RK_ISP1_STAT_3A:	descr = "Rockchip ISP1 3A Statistics"; break;
--
-+	case V4L2_META_FMT_MTISP_AF:
-+		descr = "AF Histogram";
-+		break;
-+	case V4L2_META_FMT_MTISP_LCS:
-+		descr = "Local Contrast Enhancement Stat";
-+		break;
-+	case V4L2_META_FMT_MTISP_LMV:
-+		descr = "Local Motion Vector Histogram";
-+		break;
-+	case V4L2_META_FMT_MTISP_PARAMS:
-+		descr = "MTK ISP Tuning Metadata";
-+		break;
- 	default:
- 		/* Compressed formats */
- 		flags = V4L2_FMT_FLAG_COMPRESSED;
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 6641194b3fab..c86ab1c18284 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -593,6 +593,22 @@ struct v4l2_pix_format {
- #define V4L2_PIX_FMT_VUYA32  v4l2_fourcc('V', 'U', 'Y', 'A') /* 32  VUYA-8-8-8-8  */
- #define V4L2_PIX_FMT_VUYX32  v4l2_fourcc('V', 'U', 'Y', 'X') /* 32  VUYX-8-8-8-8  */
- #define V4L2_PIX_FMT_M420    v4l2_fourcc('M', '4', '2', '0') /* 12  YUV 4:2:0 2 lines y, 1 line uv interleaved */
-+#define V4L2_PIX_FMT_YUYV10  v4l2_fourcc('Y', 'U', 'Y', 'A')
-+/* 16  YUV 4:2:2 10-bit */
-+#define V4L2_PIX_FMT_YVYU10  v4l2_fourcc('Y', 'V', 'Y', 'A')
-+/* 16  YUV 4:2:2 10-bit */
-+#define V4L2_PIX_FMT_UYVY10  v4l2_fourcc('U', 'Y', 'V', 'A')
-+/* 16  YUV 4:2:2 10-bit */
-+#define V4L2_PIX_FMT_VYUY10  v4l2_fourcc('V', 'Y', 'U', 'A')
-+/* 16  YUV 4:2:2 10-bit */
-+#define V4L2_PIX_FMT_YUYV12  v4l2_fourcc('Y', 'U', 'Y', 'C')
-+/* 16  YUV 4:2:2 12-bit */
-+#define V4L2_PIX_FMT_YVYU12  v4l2_fourcc('Y', 'V', 'Y', 'C')
-+/* 16  YUV 4:2:2 12-bit */
-+#define V4L2_PIX_FMT_UYVY12  v4l2_fourcc('U', 'Y', 'V', 'C')
-+/* 16  YUV 4:2:2 12-bit */
-+#define V4L2_PIX_FMT_VYUY12  v4l2_fourcc('V', 'Y', 'U', 'C')
-+/* 16  YUV 4:2:2 12-bit */
- 
- /* two planes -- one Y, one Cr + Cb interleaved  */
- #define V4L2_PIX_FMT_NV12    v4l2_fourcc('N', 'V', '1', '2') /* 12  Y/CbCr 4:2:0  */
-@@ -602,6 +618,22 @@ struct v4l2_pix_format {
- #define V4L2_PIX_FMT_NV24    v4l2_fourcc('N', 'V', '2', '4') /* 24  Y/CbCr 4:4:4  */
- #define V4L2_PIX_FMT_NV42    v4l2_fourcc('N', 'V', '4', '2') /* 24  Y/CrCb 4:4:4  */
- #define V4L2_PIX_FMT_HM12    v4l2_fourcc('H', 'M', '1', '2') /*  8  YUV 4:2:0 16x16 macroblocks */
-+#define V4L2_PIX_FMT_NV12_10 v4l2_fourcc('1', '2', 'A', 'U')
-+	/* 12  Y/CbCr 4:2:0 10 bits un-packed */
-+#define V4L2_PIX_FMT_NV21_10 v4l2_fourcc('2', '1', 'A', 'U')
-+	/* 12  Y/CrCb 4:2:0 10 bits un-packed */
-+#define V4L2_PIX_FMT_NV16_10 v4l2_fourcc('1', '6', 'A', 'U')
-+	/* 16  Y/CbCr 4:2:2 10 bits un-packed */
-+#define V4L2_PIX_FMT_NV61_10 v4l2_fourcc('6', '1', 'A', 'U')
-+	/* 16  Y/CrCb 4:2:2 10 bits un-packed */
-+#define V4L2_PIX_FMT_NV12_12 v4l2_fourcc('1', '2', 'C', 'U')
-+	/* 12  Y/CbCr 4:2:0 12 bits un-packed */
-+#define V4L2_PIX_FMT_NV21_12 v4l2_fourcc('2', '1', 'C', 'U')
-+	/* 12  Y/CrCb 4:2:0 12 bits un-packed */
-+#define V4L2_PIX_FMT_NV16_12 v4l2_fourcc('1', '6', 'C', 'U')
-+	/* 16  Y/CbCr 4:2:2 12 bits un-packed */
-+#define V4L2_PIX_FMT_NV61_12 v4l2_fourcc('6', '1', 'C', 'U')
-+	/* 16  Y/CrCb 4:2:2 12 bits un-packed */
- 
- /* two non contiguous planes - one Y, one Cr + Cb interleaved  */
- #define V4L2_PIX_FMT_NV12M   v4l2_fourcc('N', 'M', '1', '2') /* 12  Y/CbCr 4:2:0  */
-@@ -743,6 +775,75 @@ struct v4l2_pix_format {
- #define V4L2_PIX_FMT_IPU3_SGBRG10	v4l2_fourcc('i', 'p', '3', 'g') /* IPU3 packed 10-bit GBRG bayer */
- #define V4L2_PIX_FMT_IPU3_SGRBG10	v4l2_fourcc('i', 'p', '3', 'G') /* IPU3 packed 10-bit GRBG bayer */
- #define V4L2_PIX_FMT_IPU3_SRGGB10	v4l2_fourcc('i', 'p', '3', 'r') /* IPU3 packed 10-bit RGGB bayer */
-+	/* Vendor specific - Mediatek ISP bayer formats */
-+#define V4L2_PIX_FMT_MTISP_SBGGR10  v4l2_fourcc('M', 'B', 'B', 'A')
-+	/*  Packed 10-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGBRG10  v4l2_fourcc('M', 'B', 'G', 'A')
-+	/*  Packed 10-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGRBG10  v4l2_fourcc('M', 'B', 'g', 'A')
-+	/*  Packed 10-bit  */
-+#define V4L2_PIX_FMT_MTISP_SRGGB10  v4l2_fourcc('M', 'B', 'R', 'A')
-+	/*  Packed 10-bit  */
-+#define V4L2_PIX_FMT_MTISP_SBGGR12  v4l2_fourcc('M', 'B', 'B', 'C')
-+	/*  Packed 12-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGBRG12  v4l2_fourcc('M', 'B', 'G', 'C')
-+	/*  Packed 12-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGRBG12  v4l2_fourcc('M', 'B', 'g', 'C')
-+	/*  Packed 12-bit  */
-+#define V4L2_PIX_FMT_MTISP_SRGGB12  v4l2_fourcc('M', 'B', 'R', 'C')
-+	/*  Packed 12-bit  */
-+#define V4L2_PIX_FMT_MTISP_SBGGR14  v4l2_fourcc('M', 'B', 'B', 'E')
-+	/*  Packed 14-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGBRG14  v4l2_fourcc('M', 'B', 'G', 'E')
-+	/*  Packed 14-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGRBG14  v4l2_fourcc('M', 'B', 'g', 'E')
-+	/*  Packed 14-bit  */
-+#define V4L2_PIX_FMT_MTISP_SRGGB14  v4l2_fourcc('M', 'B', 'R', 'E')
-+	/*  Packed 14-bit  */
-+/* Vendor specific - Mediatek Luminance+Chrominance formats */
-+#define V4L2_PIX_FMT_MTISP_YUYV10P v4l2_fourcc('Y', 'U', 'A', 'P')
-+/* YUV 4:2:2 10-bit packed */
-+#define V4L2_PIX_FMT_MTISP_YVYU10P v4l2_fourcc('Y', 'V', 'A', 'P')
-+/* YUV 4:2:2 10-bit packed */
-+#define V4L2_PIX_FMT_MTISP_UYVY10P v4l2_fourcc('U', 'Y', 'A', 'P')
-+/* YUV 4:2:2 10-bit packed */
-+#define V4L2_PIX_FMT_MTISP_VYUY10P v4l2_fourcc('V', 'Y', 'A', 'P')
-+/* YUV 4:2:2 10-bit packed */
-+#define V4L2_PIX_FMT_MTISP_NV12_10P v4l2_fourcc('1', '2', 'A', 'P')
-+/* Y/CbCr 4:2:0 10 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV21_10P v4l2_fourcc('2', '1', 'A', 'P')
-+/* Y/CrCb 4:2:0 10 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV16_10P v4l2_fourcc('1', '6', 'A', 'P')
-+/* Y/CbCr 4:2:2 10 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV61_10P v4l2_fourcc('6', '1', 'A', 'P')
-+/* Y/CrCb 4:2:2 10 bits packed */
-+#define V4L2_PIX_FMT_MTISP_YUYV12P v4l2_fourcc('Y', 'U', 'C', 'P')
-+/* YUV 4:2:2 12-bit packed */
-+#define V4L2_PIX_FMT_MTISP_YVYU12P v4l2_fourcc('Y', 'V', 'C', 'P')
-+/* YUV 4:2:2 12-bit packed */
-+#define V4L2_PIX_FMT_MTISP_UYVY12P v4l2_fourcc('U', 'Y', 'C', 'P')
-+/* YUV 4:2:2 12-bit packed */
-+#define V4L2_PIX_FMT_MTISP_VYUY12P v4l2_fourcc('V', 'Y', 'C', 'P')
-+/* YUV 4:2:2 12-bit packed */
-+#define V4L2_PIX_FMT_MTISP_NV12_12P v4l2_fourcc('1', '2', 'C', 'P')
-+/* Y/CbCr 4:2:0 12 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV21_12P v4l2_fourcc('2', '1', 'C', 'P')
-+/* Y/CrCb 4:2:0 12 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV16_12P v4l2_fourcc('1', '6', 'C', 'P')
-+/* Y/CbCr 4:2:2 12 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV61_12P v4l2_fourcc('6', '1', 'C', 'P')
-+/* Y/CrCb 4:2:2 12 bits packed */
-+/* Vendor specific - Mediatek ISP parameters for firmware */
-+#define V4L2_META_FMT_MTISP_PARAMS v4l2_fourcc('M', 'T', 'f', 'p')
-+	/* ISP tuning parameters */
-+#define V4L2_META_FMT_MTISP_3A     v4l2_fourcc('M', 'T', 'f', 'a')
-+	/* AE/AWB histogram */
-+#define V4L2_META_FMT_MTISP_AF     v4l2_fourcc('M', 'T', 'f', 'f')
-+	/* AF histogram */
-+#define V4L2_META_FMT_MTISP_LCS    v4l2_fourcc('M', 'T', 'f', 'c')
-+	/* Local contrast enhanced statistics */
-+#define V4L2_META_FMT_MTISP_LMV    v4l2_fourcc('M', 'T', 'f', 'm')
-+	/* Local motion vector histogram */
- 
- /* SDR formats - used only for Software Defined Radio devices */
- #define V4L2_SDR_FMT_CU8          v4l2_fourcc('C', 'U', '0', '8') /* IQ u8 */
--- 
-2.18.0
+> 
+> I've also squashed this fixup:
 
+Oh dear, I really should have looked at this more closely.
+Thanks a lot and sorry for the mess!
+
+> 
+> | --- a/drivers/net/can/spi/mcp251x.c
+> | +++ b/drivers/net/can/spi/mcp251x.c
+> | @@ -1224,13 +1224,13 @@ static int mcp251x_open(struct net_device *net)
+> |  
+> |         ret = mcp251x_hw_wake(spi);
+> |         if (ret)
+> | -               goto out_free_wq;
+> | +               goto out_free_irq;
+> |         ret = mcp251x_setup(net, spi);
+> |         if (ret)
+> | -               goto out_free_wq;
+> | +               goto out_free_irq;
+> |         ret = mcp251x_set_normal_mode(spi);
+> |         if (ret)
+> | -               goto out_free_wq;
+> | +               goto out_free_irq;
+> |  
+> |         can_led_event(net, CAN_LED_EVENT_OPEN);
+> |  
+> | @@ -1239,8 +1239,7 @@ static int mcp251x_open(struct net_device *net)
+> |  
+> |         return 0;
+> |  
+> | -out_free_wq:
+> | -       destroy_workqueue(priv->wq);
+> | +out_free_irq:
+> |         free_irq(spi->irq, priv);
+> |         mcp251x_hw_sleep(spi);
+> |  out_close:
+> 
+> Marc
+> 
