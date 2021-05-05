@@ -2,119 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B8D7373343
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:37:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E533373345
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:38:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhEEAik (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 20:38:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52672 "EHLO
+        id S231586AbhEEAim (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 20:38:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52688 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230328AbhEEAij (ORCPT
+        with ESMTP id S230328AbhEEAil (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 20:38:39 -0400
-Received: from mail-yb1-xb35.google.com (mail-yb1-xb35.google.com [IPv6:2607:f8b0:4864:20::b35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C1CBAC061574;
-        Tue,  4 May 2021 17:37:42 -0700 (PDT)
-Received: by mail-yb1-xb35.google.com with SMTP id z1so466741ybf.6;
-        Tue, 04 May 2021 17:37:42 -0700 (PDT)
+        Tue, 4 May 2021 20:38:41 -0400
+Received: from mail-lf1-x135.google.com (mail-lf1-x135.google.com [IPv6:2a00:1450:4864:20::135])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89D78C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 17:37:45 -0700 (PDT)
+Received: by mail-lf1-x135.google.com with SMTP id 2so121211lft.4
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 17:37:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=qZ6UQO/t/anayyvxHYL8y/BSgNgKydNeCjijU78LDB0=;
-        b=hTrd2XUlYhsfMMGGIx5klGnci50oDrRl0xMOhc7gSeBJ6JyUSZSgBRRcYDumzNziIN
-         EW5jBXVq223SV2a2bUU3WoIC2DwuDg5vWWm5sxYcwOcg1nDU3F/lctBBfvTbHTFoxASa
-         ULAT2IF1dTAC+zmX7fZNwTcLNckpJtwUJ4+wntOO3gx/MlKWZgPbwVDAEtAcwEMesfWu
-         p/H9/NmzXx0tqku0UN23HP3r4o/La/tBByaHFsGTe5yFG6uoXGnqmdXYAyYWVzKSBE61
-         x8EXnsRW67ETjsqK/6yFzR8w7Z5BICLypDRkgtNRZg6RuYY1nGehmrqkvHgApzUrVEtp
-         MSaw==
+        bh=rE+67pf/2itGCrXRDqOt78tityf8/56CzXmtqalTs7Y=;
+        b=oPjqJycdh906u/NKD96OF/32I8GkIKXWJvImxBVe8Uoi5eQH0eCxEmU1C14OFp77Bh
+         7Q0cLGd/hOMzojqrDn4N+h/krRVmuvkI/846O1BZJG6acacCSK6qRvH8kWCAw0IgRM2o
+         tW70LTDJPlXiFxn+Onp+XUen2V3IVkqMFUZ7B20neSLbTJyPlWuIJLgM+YpmiPQ3zIUA
+         kc8idKtZ5R86Yp4837IQvSnAO/r8OkY3shl3v0ueAglTxveiZ600ewUj216ssOQDZoWi
+         COcs6/4gvKgeap02wOQj5e0w7c0XRY4BL7JWx7btEdKvqUOorT11BgEN8oY2OwmENhV1
+         yMtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qZ6UQO/t/anayyvxHYL8y/BSgNgKydNeCjijU78LDB0=;
-        b=PS2LyAhrRBXCR9FTkdVfGzfh1IG0e7iVCHVWQz4R4uDsVE3U1vrUb+SOzSc+hyDNrN
-         QZcGK97UTR9m2STN45Z/AixGG8j3iIXTaUO/9RY7AHyB85akUtW0UoTwBoXn1tqAqizn
-         8zrUm13bMxc+BZEQ/57h1Y2zisPQiYb215CodhU5JfFMr9y9qXLgqd6eV7QYzNQTvnh+
-         XCKDPhE06livCavy/2D5NZ9DRQEY8/cDRKUmAhohSdmcajx+maI35JmmTGVUdrLhWT6q
-         zO0vgrmo6gaJgw1ipXdgTCK6/0BwUwqjgHMk0joVA7z2+Jm134ejP4rv0EhwKJaquOBX
-         zsvg==
-X-Gm-Message-State: AOAM531LGCR5RcL8NfPWU5AiDEj0hGc+wc7VbSpDB6lP7v/BhJxlth9y
-        6abGEQLiQRpOxO2DkB1G7IG50Zl4PzJGwO739J7rhma1
-X-Google-Smtp-Source: ABdhPJyyONDl3K01zcGdj6oYMRlUtnCxG36FjryB+ubEE2VbFeOxgGehiFhaGcrhhos2lFw5JA54ckYwgpAgywOogj0=
-X-Received: by 2002:a25:c4c5:: with SMTP id u188mr36960466ybf.425.1620175062113;
- Tue, 04 May 2021 17:37:42 -0700 (PDT)
+        bh=rE+67pf/2itGCrXRDqOt78tityf8/56CzXmtqalTs7Y=;
+        b=Awr/TK2UueS4x61M5XPJs2u6CfBV0Gr85Y8QIiofFYZ2z211E0UCiVSgzs+6FkZmcF
+         BdrTfaDw1NWkTvvYFBAhN25RLA1BedoapGavMXigTstZYu4iBtIDeNnzWAETUJ2buBX8
+         eUuGBxpnE5oC1wWdt5g4g5YbcDkblTkXtlQhH3sjgfyn5ZfIMaDy5HePQkGyPZ1IiWBL
+         D2mZtDh14DPtlBxNEnDIRVXp8ynVgwXtx31tuU1kRfBGZxXsoulFkZNtzsJuYLgSgFi2
+         LjwlPcdpihOOoqWZmEAUJpy/ZSOztbA1ekFFmvy20BJxP5rF1xHXhIEHQA0HMx/aS0DD
+         peOw==
+X-Gm-Message-State: AOAM530OxtM4jjvP3AnpdcqmhXnkX3UyeXGq9ScOpSQCPadHUZX8c8Uq
+        KLHAzBLhLpJTOuobYp6vIp9gliNVzxlTamwUB++8qw==
+X-Google-Smtp-Source: ABdhPJzcggYN+sQarkF2p9KMUd3IdfrvBTmP3Ycic01HaxyCcS1xXBgbGOrpUlrf3u49WLTtzDu+21oBxRurC6ywBew=
+X-Received: by 2002:a05:6512:208b:: with SMTP id t11mr16611191lfr.358.1620175063595;
+ Tue, 04 May 2021 17:37:43 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210429130510.1621665-1-jackmanb@google.com> <CAEf4BzY7sx0gW=o5rM8WDzW1J0U_Yep3MMuJScoMg-hBAeBPCg@mail.gmail.com>
- <CA+i-1C2+Lt7kmwsZOEw6D8B_Lc+aJdZoUmPDh08+7y_uMNW+kA@mail.gmail.com>
- <CAEf4BzY1bftPAj_hjE4SBVv2P1U7twW3FdRsvNP9kPCMe_NOjA@mail.gmail.com> <CA+i-1C1V4b3LvB+pwDn5zomGG1ehSppX=r6TMfPutbgaoG_53Q@mail.gmail.com>
-In-Reply-To: <CA+i-1C1V4b3LvB+pwDn5zomGG1ehSppX=r6TMfPutbgaoG_53Q@mail.gmail.com>
-From:   Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date:   Tue, 4 May 2021 17:37:31 -0700
-Message-ID: <CAEf4BzZ-qxd9Xb11zWetKaPpG+sYiF6D1c9+gc3L3BevBrhTYg@mail.gmail.com>
-Subject: Re: [PATCH v2 bpf-next] libbpf: Fix signed overflow in ringbuf_process_ring
-To:     Brendan Jackman <jackmanb@google.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Florent Revest <revest@chromium.org>
+References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+ <YH54pyRWSi1zLMw4@dhcp22.suse.cz> <CALvZod4kjdgMU=8T_bx6zFufA1cGtt2p1Jg8jOgi=+g=bs-Evw@mail.gmail.com>
+ <YH/RPydqhwXdyG80@dhcp22.suse.cz> <CALvZod4kRWDQuZZQ5F+z6WMcUWLwgYd-Kb0mY8UAEK4MbSOZaA@mail.gmail.com>
+ <YIA2rB0wgqKzfUfi@dhcp22.suse.cz>
+In-Reply-To: <YIA2rB0wgqKzfUfi@dhcp22.suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Tue, 4 May 2021 17:37:32 -0700
+Message-ID: <CALvZod4_L7GSHnivQTSdDzo=fb4i3z=katjzVCHfLz9WWGK8uQ@mail.gmail.com>
+Subject: Re: [RFC] memory reserve for userspace oom-killer
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Johannes Weiner <hannes@cmpxchg.org>, Roman Gushchin <guro@fb.com>,
+        Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 2:01 AM Brendan Jackman <jackmanb@google.com> wrote:
+On Wed, Apr 21, 2021 at 7:29 AM Michal Hocko <mhocko@suse.com> wrote:
 >
-> On Mon, 3 May 2021 at 19:46, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
+[...]
+> > > What if the pool is depleted?
 > >
-> > On Mon, May 3, 2021 at 5:01 AM Brendan Jackman <jackmanb@google.com> wrote:
-> > >
-> > > On Fri, 30 Apr 2021 at 18:31, Andrii Nakryiko <andrii.nakryiko@gmail.com> wrote:
->
-> > So while doing that I noticed that you didn't fix ring_buffer__poll(),
-> > so I had to fix it up a bit more extensively. Please check the end
-> > result in bpf tree and let me know if there are any problems with it:
+> > This would mean that either the estimate of mempool size is bad or
+> > oom-killer is buggy and leaking memory.
 > >
-> > 2a30f9440640 ("libbpf: Fix signed overflow in ringbuf_process_ring")
+> > I am open to any design directions for mempool or some other way where
+> > we can provide a notion of memory guarantee to oom-killer.
 >
-> Ah, thanks for that. Yep, the additional fix looks good to me.
+> OK, thanks for clarification. There will certainly be hard problems to
+> sort out[1] but the overall idea makes sense to me and it sounds like a
+> much better approach than a OOM specific solution.
 >
-> I think it actually fixes another very niche issue:
 >
->  int ring_buffer__poll(struct ring_buffer *rb, int timeout_ms)
->  {
-> -       int i, cnt, err, res = 0;
-> +       int i, cnt;
-> +       int64_t err, res = 0;
->
->         cnt = epoll_wait(rb->epoll_fd, rb->events, rb->ring_cnt, timeout_ms);
-> +       if (cnt < 0)
-> +               return -errno;
-> +
->         for (i = 0; i < cnt; i++) {
->                 __u32 ring_id = rb->events[i].data.fd;
->                 struct ring *ring = &rb->rings[ring_id];
-> @@ -280,7 +290,9 @@ int ring_buffer__poll(struct ring_buffer *rb, int
-> timeout_ms)
->                         return err;
->                 res += err;
->         }
-> -       return cnt < 0 ? -errno : res;
->
-> If the callback returns an error but errno is 0 this fails to report the error.
+> [1] - how the pool is going to be replenished without hitting all
+> potential reclaim problems (thus dependencies on other all tasks
+> directly/indirectly) yet to not rely on any background workers to do
+> that on the task behalf without a proper accounting etc...
+> --
 
-Yeah, there was no need to be clever about that. Explicit if (cnt < 0)
-check is obvious and correct.
+I am currently contemplating between two paths here:
 
->
-> errno(3) says "the value of errno is never set to zero by any system
-> call or library function" but then describes a scenario where an
-> application might usefully set it to zero itself. Maybe it can also be
-> 0 in new threads, depending on your metaphysical interpretation of "by
-> a system call or library function".
->
-> +       if (res > INT_MAX)
-> +               return INT_MAX;
-> +       return res;
+First, the mempool, exposed through either prctl or a new syscall.
+Users would need to trace their userspace oom-killer (or whatever
+their use case is) to find an appropriate mempool size they would need
+and periodically refill the mempools if allowed by the state of the
+machine. The challenge here is to find a good value for the mempool
+size and coordinating the refilling of mempools.
+
+Second is a mix of Roman and Peter's suggestions but much more
+simplified. A very simple watchdog with a kill-list of processes and
+if userspace didn't pet the watchdog within a specified time, it will
+kill all the processes in the kill-list. The challenge here is to
+maintain/update the kill-list.
+
+I would prefer the direction which oomd and lmkd are open to adopt.
+
+Any suggestions?
