@@ -2,108 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66220374A01
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:17:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4843374A0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:19:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229995AbhEEVSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 17:18:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44926 "EHLO
+        id S230057AbhEEVUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 17:20:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229900AbhEEVSX (ORCPT
+        with ESMTP id S229893AbhEEVUu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 17:18:23 -0400
-Received: from mail-ot1-x32c.google.com (mail-ot1-x32c.google.com [IPv6:2607:f8b0:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1E29C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 14:17:24 -0700 (PDT)
-Received: by mail-ot1-x32c.google.com with SMTP id g4-20020a9d6b040000b029029debbbb3ecso3011763otp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 14:17:24 -0700 (PDT)
+        Wed, 5 May 2021 17:20:50 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E391C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 14:19:53 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id m190so2775029pga.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 14:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Lnb309EHsvW62boTcdJKaStV7Ili46SfwMsHJrZuHdM=;
-        b=erJ5JmsWf02UPK9ZE+Cc9wV6053fj9gDNXKi7auyTdWA0sSqX9KLjCiw3FQxYzuLKV
-         u14Il/C6Fkb1xON22JNDEYdTZ3RV9ka1L2wmKpoEprVHWngZtNoCEXh8BVlOkUcme43X
-         8UnRztGCQesVt2/EV2xe4LsRI0aseZ8puKJnWWFF8R18Ruu8io3oJxT5toQ01EvNQSn9
-         rYZmuSrat0EktXS1P+b1A+6b2EelW6Davt2Ta5SWuK4a84CuSKUwg9Kvw8os4N92b6PH
-         aNfWCr5nFzm9jEB1ENPUp/ecAmr9K+ab4hnkiylMFTJjeUs34bLfVofs99eVW8TI4Jqk
-         Oq+w==
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9nGzi5CNcRf8P6ukHnfVe+RHJcl1mNr7kPIzbkyiUvo=;
+        b=kGB0dncyYeVHRpUkcrYEHlkEIimb9n7+xXk3nbtiao2P7nh5CRQFoMNBJ8cXfISMd/
+         TNuA3kLMMbEwSIBqsoc1/9LLphiuSF8DEA7pBivLK886PQSQWEPXCYkhhgBPaFzQjiHI
+         p7i+daEzOIhlDu7x69oiLJBKsjeoFEu028z/0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Lnb309EHsvW62boTcdJKaStV7Ili46SfwMsHJrZuHdM=;
-        b=npJXYMCAUSwyj+9Iz3ytAFKutnv8i0N1zwFWzPdU2OKiQskkVF1lbdY7gK57amX4QR
-         CSYLZppf2c4+QwQV70if6mC6in0Pyy5tCk4U1lu7c4P5VhUy+w7Y9E3w1WBuwjbrNn3Z
-         iu98/5oQnT8stC5rc+v5TPhpfYQ/gyPdRmjHY13NtJY5L+Nac+WiyNNUkrX8axUQm9N5
-         uOvfrhd8JudvfFnmh2gj9H5ORNF67bwJ4XhCvyq1Ds8Vl7+y/Ff3dWf2noY87dJ8XoKe
-         nc7uj2P5V7Mwt5GdSGtv9gQ+vM85MjH5NuBB4FAgr4CByJ5Pz6iuZiWNlb6gTdOvCVUA
-         6Wqw==
-X-Gm-Message-State: AOAM533eLasGnbO+szF2lEc8tnfygZeaYWtGgBtkkrM2/F8LfZqhsJ/8
-        u6WDDhcGdr1nY/eIdmmwoJS8a/2iRjQ=
-X-Google-Smtp-Source: ABdhPJzLvwkfd2htUILAjm4ateGc8RH9xdwiJ2prkfR9EZRLV10Dcg13C28LGM2B+W66uVLKd6HsAw==
-X-Received: by 2002:a05:6830:2247:: with SMTP id t7mr542610otd.179.1620249444389;
-        Wed, 05 May 2021 14:17:24 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b14sm72461oic.30.2021.05.05.14.17.22
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9nGzi5CNcRf8P6ukHnfVe+RHJcl1mNr7kPIzbkyiUvo=;
+        b=bEzh5HES4uKKHyiQvSYuiieSpK1jahepyr4rokFyQXuaqnKDR9t/law1yQIfDOcZBo
+         a9AVVFMR3Pd9gmycFp9FtXJyCDkhKHbFjamppJCs7CBCyRvgCntcXeNO0fzoEnPLEkWv
+         Av4u8LqwImFp2txkHLwtBS5LF7h+jqHdA6sH9+QL9oH8/iaNnnLqli9vvoBx23IQH65g
+         fQZVK2v7MR+djvkoYYW50wY4oysIpSRr9bm7vCcJMSfJL0h9uVvIOwDe5pTC8nnUvYVJ
+         2IRdvwdtYwhG0eCJCv8+x9QCYMU1ibJxKHKE3jBLVytu3VZ2DBZX0eoCtHbQO8ZVfzMW
+         AYgQ==
+X-Gm-Message-State: AOAM533yfgXTXldx9b/LwvSJwibKfzmMfG0avPgax6asoK6hKBb7hl1J
+        zC3CwLOdoisoPALbidqa5LIM/w==
+X-Google-Smtp-Source: ABdhPJzthqPqKuFaBRhpJRcpiMvGIDqyQLZX/WyV5COGCXLyMJRbZVZrelLfpID/ATaYTNrASM6OYQ==
+X-Received: by 2002:a62:8c05:0:b029:290:81ab:a936 with SMTP id m5-20020a628c050000b029029081aba936mr844363pfd.69.1620249592995;
+        Wed, 05 May 2021 14:19:52 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id a65sm149447pfb.116.2021.05.05.14.19.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 14:17:23 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Bert Vermeulen <bert@biot.com>
-Subject: [PATCH] checkpatch: scripts/spdxcheck.py now requires python3
-Date:   Wed,  5 May 2021 14:17:20 -0700
-Message-Id: <20210505211720.447111-1-linux@roeck-us.net>
-X-Mailer: git-send-email 2.25.1
+        Wed, 05 May 2021 14:19:52 -0700 (PDT)
+Date:   Wed, 5 May 2021 14:19:51 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        David Laight <David.Laight@aculab.com>,
+        Will Deacon <will@kernel.org>,
+        clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] stack: replace "o" output with "r" input constraint
+Message-ID: <202105051419.8F3C8EE58D@keescook>
+References: <20210419231741.4084415-1-keescook@chromium.org>
+ <YIIcoz4fHjVjWHTI@archlinux-ax161>
+ <YJMKQFscszFcf5fE@archlinux-ax161>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJMKQFscszFcf5fE@archlinux-ax161>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since commit d0259c42abff ("spdxcheck.py: Use Python 3"), spdxcheck.py
-explicitly expects to run as python3 script. If "python" still points to
-python v2.7 and the script is executed with "python scripts/spdxcheck.py",
-the following error may be seen even if git-python is installed for
-python3.
+On Wed, May 05, 2021 at 02:12:32PM -0700, Nathan Chancellor wrote:
+> On Thu, Apr 22, 2021 at 06:02:27PM -0700, Nathan Chancellor wrote:
+> > On Mon, Apr 19, 2021 at 04:17:41PM -0700, Kees Cook wrote:
+> > > From: Nick Desaulniers <ndesaulniers@google.com>
+> > > 
+> > > "o" isn't a common asm() constraint to use; it triggers an assertion in
+> > > assert-enabled builds of LLVM that it's not recognized when targeting
+> > > aarch64 (though it appears to fall back to "m"). I've fixed this in LLVM
+> > > 13 now, but there isn't really a good reason to be using "o" in particular
+> > > here. To avoid causing build issues for those using assert-enabled builds
+> > > of earlier LLVM versions, the constraint needs changing.
+> > > 
+> > > Instead, if the point is to retain the __builtin_alloca(), we can make ptr
+> > > appear to "escape" via being an input to an empty inline asm block. This
+> > > is preferable anyways, since otherwise this looks like a dead store.
+> > > 
+> > > While the use of "r" was considered in
+> > > https://lore.kernel.org/lkml/202104011447.2E7F543@keescook/
+> > > it was only tested as an output (which looks like a dead store, and
+> > > wasn't sufficient). Use "r" as an input constraint instead, which
+> > > behaves correctly across compilers and architectures:
+> > > https://godbolt.org/z/E9cd411ob
+> > > 
+> > > Link: https://reviews.llvm.org/D100412
+> > > Link: https://bugs.llvm.org/show_bug.cgi?id=49956
+> > > Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+> > > Tested-by: Kees Cook <keescook@chromium.org>
+> > > Fixes: 39218ff4c625 ("stack: Optionally randomize kernel stack offset each syscall")
+> 
+> Kees, were you planning on taking this to Linus or someone else? It
+> would be nice to have this in for -rc1 (although I understand it might
+> be too late), if not, by -rc2.
 
-Traceback (most recent call last):
-  File "scripts/spdxcheck.py", line 10, in <module>
-    import git
-ImportError: No module named git
+I assumed Thomas would pick this up. Thomas, shall I send this directly
+to Linus?
 
-To fix the problem, check for the existence of python3, check if
-the script is executable and not just for its existence, and execute
-it directly.
+Thanks!
 
-Cc: Bert Vermeulen <bert@biot.com>
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
----
- scripts/checkpatch.pl | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+-Kees
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index ccb412a74725..8a1b782dd7e7 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -1084,10 +1084,10 @@ sub is_maintained_obsolete {
- sub is_SPDX_License_valid {
- 	my ($license) = @_;
- 
--	return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
-+	return 1 if (!$tree || which("python3") eq "" || !(-x "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
- 
- 	my $root_path = abs_path($root);
--	my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
-+	my $status = `cd "$root_path"; echo "$license" | scripts/spdxcheck.py -`;
- 	return 0 if ($status ne "");
- 	return 1;
- }
+> 
+> Cheers,
+> Nathan
+> 
+> > > Signed-off-by: Kees Cook <keescook@chromium.org>
+> > 
+> > I built arm64 defconfig with and without
+> > CONFIG_RANDOMIZE_KSTACK_OFFSET_DEFAULT with LLVM 12 (which does not have
+> > Nick's LLVM fix) without any issues and did a quick boot test in QEMU,
+> > nothing exploded.
+> > 
+> > Reviewed-by: Nathan Chancellor <nathan@kernel.org>
+> > Tested-by: Nathan Chancellor <nathan@kernel.org>
+> > 
+> > > ---
+> > >  include/linux/randomize_kstack.h | 2 +-
+> > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/include/linux/randomize_kstack.h b/include/linux/randomize_kstack.h
+> > > index fd80fab663a9..bebc911161b6 100644
+> > > --- a/include/linux/randomize_kstack.h
+> > > +++ b/include/linux/randomize_kstack.h
+> > > @@ -38,7 +38,7 @@ void *__builtin_alloca(size_t size);
+> > >  		u32 offset = raw_cpu_read(kstack_offset);		\
+> > >  		u8 *ptr = __builtin_alloca(KSTACK_OFFSET_MAX(offset));	\
+> > >  		/* Keep allocation even after "ptr" loses scope. */	\
+> > > -		asm volatile("" : "=o"(*ptr) :: "memory");		\
+> > > +		asm volatile("" :: "r"(ptr) : "memory");		\
+> > >  	}								\
+> > >  } while (0)
+> > >  
+> > > -- 
+> > > 2.25.1
+> > > 
+
 -- 
-2.25.1
-
+Kees Cook
