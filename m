@@ -2,90 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9BD63733CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 04:55:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E51353733CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 04:59:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231234AbhEEC4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 22:56:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54308 "EHLO
+        id S231313AbhEEDAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 23:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55230 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230079AbhEEC4I (ORCPT
+        with ESMTP id S230079AbhEEDAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 22:56:08 -0400
-Received: from gimli.rothwell.id.au (gimli.rothwell.id.au [IPv6:2404:9400:2:0:216:3eff:fee1:997a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85C34C061574;
-        Tue,  4 May 2021 19:55:10 -0700 (PDT)
-Received: from authenticated.rothwell.id.au (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.rothwell.id.au (Postfix) with ESMTPSA id 4FZhCC6sXQzyQJ;
-        Wed,  5 May 2021 12:55:03 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rothwell.id.au;
-        s=201702; t=1620183305;
-        bh=PKD6mAt4CHLEFMPwKBiak/1A67nn78rq8xH2ssz/7Yg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=DG6Irciwl0nEOUZm+Tbs1pa0vo/+Zz5TqATLnkvAJFPmb/gC8Hoxj2sEW9f6XAyw6
-         BjDN5NXe9XJymTZUrnOYCbFAhHs/wl0LckuLVgeiwqP7O2IPx0DW7H1+uc/WFzZLrh
-         MHwmcdTvG6TDgBdnS71o+0EuzK35oZ00dneAJXHGaSf6qTOjGyFcKoJfrcmBQYqdUE
-         9zHgnFdkuMC2ni+KNQf8HphUTydbKBCskhJ7J9rbRoFZUhzzPYEn8ZpWOdbKjMZ1zB
-         bbWZJoouIjSNYx9ajXA54/MzozFAeHvrJpZiEPBW0ytfIJVz27rV0x12gfp1Yzh3O0
-         +NegTIw42opRQ==
-Date:   Wed, 5 May 2021 12:55:01 +1000
-From:   Stephen Rothwell <sfr@rothwell.id.au>
-To:     "Shih, Jude" <Jude.Shih@amd.com>
-Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Alex Deucher <alexdeucher@gmail.com>,
-        "Ma, Hanghong" <Hanghong.Ma@amd.com>,
-        "Kazlauskas, Nicholas" <Nicholas.Kazlauskas@amd.com>,
-        "Wheeler, Daniel" <Daniel.Wheeler@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: linux-next: build warning after merge of the amdgpu tree
-Message-ID: <20210505125501.22acdf7f@elm.ozlabs.ibm.com>
-In-Reply-To: <DM4PR12MB5133E6A99840D1E8542C0D23F7599@DM4PR12MB5133.namprd12.prod.outlook.com>
-References: <20210505093907.6e6c9556@canb.auug.org.au>
-        <DM4PR12MB5133E6A99840D1E8542C0D23F7599@DM4PR12MB5133.namprd12.prod.outlook.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        Tue, 4 May 2021 23:00:21 -0400
+Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8AE4C061574
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 19:59:25 -0700 (PDT)
+Received: by mail-yb1-xb36.google.com with SMTP id m9so820101ybm.3
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 19:59:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ihGAn22hJSR8rjyLL6L+pknKJgzhwSZEEzawq0VbAU0=;
+        b=knXCpejnyh18gszj8Evz817ERM+apdbOpGzltW5BoTfCfnWvkFNz7GwzqeSqpjJRhq
+         2Z5VxkeCwMz7CbctjqLVsv439h0ie60LIOjkJhgR2nLQfn3LTZw4zle3XxJGId4AeKiX
+         SHItgrHqyo0S1OJB1a8ohnLE58ZALqyq0WwlAexypypDblVxzJ5GwCnXQ2TudbBZj9l/
+         5NGj2T+jKrZQGcDLnsIb4kL2F7GM2XCD39p2MntbG30uZk1PEjwXqh+kWwy2Gi6SXfFw
+         eky1yep288Y0OPlcPIQSbDnaPQUzvvPRAdS6WIravUuliHYFpzJ9BP65Ip1o1K451gsI
+         QSvw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ihGAn22hJSR8rjyLL6L+pknKJgzhwSZEEzawq0VbAU0=;
+        b=GMl55+VibR+a08DOzmMp4EjWBZ+sqDp3PcRYXwFnkZIGtqqlTWNFU9CGTNrKb05K3g
+         VdEeDGb9rHK8IThL+45R7e9GdVJLCipaj55UGNDtdYFeE4pCWUBLjD96AjljH06CGdO0
+         eqK1nEUiSe63Lb0m7jkLY8PV75GMCGFKdC5zgoqbSgsxGCvWzPFW0mkuCiOpEY+Osal8
+         PqOQmMkCvK4ZGCl5FIhd/WymH50TlsA8GGKMETLLvRwyGu/wVvLC5d/EjKQesntpfSYY
+         NeudvDfbG014vy5N8Qy0u9kziQUUfxtoYUxv4iWNoJuilQ/DIE9MZfgElToyJEDDiTc2
+         ykgQ==
+X-Gm-Message-State: AOAM532pT0xxae+/p5pxtOsliXVSL9eWSaLbXyLA+f2YozxUb6MXwYse
+        NSyU90U2cphZio5drzs106dHQ42QkjylWJkTosafHQ==
+X-Google-Smtp-Source: ABdhPJxxNqPNHSOoLbLktWw+OgpqGe/rmbsMooN4hPamGsw+4Yzkcdu6/fR3RYL0B9Y4vjDcX5m68e+0T5PrU6Fck2A=
+X-Received: by 2002:a25:7ec4:: with SMTP id z187mr36919159ybc.136.1620183564909;
+ Tue, 04 May 2021 19:59:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/824ZQ/8Upqk_a_OFy/cUm++";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
+ <YH54pyRWSi1zLMw4@dhcp22.suse.cz> <CALvZod4kjdgMU=8T_bx6zFufA1cGtt2p1Jg8jOgi=+g=bs-Evw@mail.gmail.com>
+ <YH/RPydqhwXdyG80@dhcp22.suse.cz> <CALvZod4kRWDQuZZQ5F+z6WMcUWLwgYd-Kb0mY8UAEK4MbSOZaA@mail.gmail.com>
+ <YIA2rB0wgqKzfUfi@dhcp22.suse.cz> <CALvZod4_L7GSHnivQTSdDzo=fb4i3z=katjzVCHfLz9WWGK8uQ@mail.gmail.com>
+ <CAJuCfpEXyG9x1nUsg+6yVWTP+-A4OwuCg9XHLAciu39=JNY7DQ@mail.gmail.com> <CALvZod4pqkY84Od67=aEnpWL7V3bXnH4pduBQAh89Byp=snD+Q@mail.gmail.com>
+In-Reply-To: <CALvZod4pqkY84Od67=aEnpWL7V3bXnH4pduBQAh89Byp=snD+Q@mail.gmail.com>
+From:   Suren Baghdasaryan <surenb@google.com>
+Date:   Tue, 4 May 2021 19:59:13 -0700
+Message-ID: <CAJuCfpGD8xBh2nepB0zmxRjzjQQbxKj_o9OzQPQMkw5rUcovMQ@mail.gmail.com>
+Subject: Re: [RFC] memory reserve for userspace oom-killer
+To:     Shakeel Butt <shakeelb@google.com>
+Cc:     Michal Hocko <mhocko@suse.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Cgroups <cgroups@vger.kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Thelen <gthelen@google.com>,
+        Dragos Sbirlea <dragoss@google.com>,
+        Priya Duraisamy <padmapriyad@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/824ZQ/8Upqk_a_OFy/cUm++
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
-
-Hi Jude,
-
-On Wed, 5 May 2021 01:08:48 +0000 "Shih, Jude" <Jude.Shih@amd.com> wrote:
+On Tue, May 4, 2021 at 7:45 PM Shakeel Butt <shakeelb@google.com> wrote:
 >
-> This function is used as below. This commit also passed the auto
-> test. Is there anything different between our evnrionment?
+> On Tue, May 4, 2021 at 6:26 PM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Tue, May 4, 2021 at 5:37 PM Shakeel Butt <shakeelb@google.com> wrote:
+> > >
+> > > On Wed, Apr 21, 2021 at 7:29 AM Michal Hocko <mhocko@suse.com> wrote:
+> > > >
+> > > [...]
+> > > > > > What if the pool is depleted?
+> > > > >
+> > > > > This would mean that either the estimate of mempool size is bad or
+> > > > > oom-killer is buggy and leaking memory.
+> > > > >
+> > > > > I am open to any design directions for mempool or some other way where
+> > > > > we can provide a notion of memory guarantee to oom-killer.
+> > > >
+> > > > OK, thanks for clarification. There will certainly be hard problems to
+> > > > sort out[1] but the overall idea makes sense to me and it sounds like a
+> > > > much better approach than a OOM specific solution.
+> > > >
+> > > >
+> > > > [1] - how the pool is going to be replenished without hitting all
+> > > > potential reclaim problems (thus dependencies on other all tasks
+> > > > directly/indirectly) yet to not rely on any background workers to do
+> > > > that on the task behalf without a proper accounting etc...
+> > > > --
+> > >
+> > > I am currently contemplating between two paths here:
+> > >
+> > > First, the mempool, exposed through either prctl or a new syscall.
+> > > Users would need to trace their userspace oom-killer (or whatever
+> > > their use case is) to find an appropriate mempool size they would need
+> > > and periodically refill the mempools if allowed by the state of the
+> > > machine. The challenge here is to find a good value for the mempool
+> > > size and coordinating the refilling of mempools.
+> > >
+> > > Second is a mix of Roman and Peter's suggestions but much more
+> > > simplified. A very simple watchdog with a kill-list of processes and
+> > > if userspace didn't pet the watchdog within a specified time, it will
+> > > kill all the processes in the kill-list. The challenge here is to
+> > > maintain/update the kill-list.
+> >
+> > IIUC this solution is designed to identify cases when oomd/lmkd got
+> > stuck while allocating memory due to memory shortages and therefore
+> > can't feed the watchdog. In such a case the kernel goes ahead and
+> > kills some processes to free up memory and unblock the blocked
+> > process. Effectively this would limit the time such a process gets
+> > stuck by the duration of the watchdog timeout. If my understanding of
+> > this proposal is correct,
+>
+> Your understanding is indeed correct.
+>
+> > then I see the following downsides:
+> > 1. oomd/lmkd are still not prevented from being stuck, it just limits
+> > the duration of this blocked state. Delaying kills when memory
+> > pressure is high even for short duration is very undesirable.
+>
+> Yes I agree.
+>
+> > I think
+> > having mempool reserves could address this issue better if it can
+> > always guarantee memory availability (not sure if it's possible in
+> > practice).
+>
+> I think "mempool ... always guarantee memory availability" is
+> something I should quantify with some experiments.
+>
+> > 2. What would be performance overhead of this watchdog? To limit the
+> > duration of a process being blocked to a small enough value we would
+> > have to have quite a small timeout, which means oomd/lmkd would have
+> > to wake up quite often to feed the watchdog. Frequent wakeups on a
+> > battery-powered system is not a good idea.
+>
+> This is indeed the downside i.e. the tradeoff between acceptable stall
+> vs frequent wakeups.
+>
+> > 3. What if oomd/lmkd gets stuck for some memory-unrelated reason and
+> > can't feed the watchdog? In such a scenario the kernel would assume
+> > that it is stuck due to memory shortages and would go on a killing
+> > spree.
+>
+> This is correct but IMHO killing spree is not worse than oomd/lmkd
+> getting stuck for some other reason.
+>
+> > If there is a sure way to identify when a process gets stuck
+> > due to memory shortages then this could work better.
+>
+> Hmm are you saying looking at the stack traces of the userspace
+> oom-killer or some metrics related to oom-killer? It will complicate
+> the code.
 
-The function is defined unconditionally, but only used if
-CONFIG_DRM_AMD_DC_DCN is defined.
---=20
-Cheers,
-Stephen Rothwell
+Well, I don't know of a sure and easy way to identify the reasons for
+process blockage but maybe there is one I don't know of? My point is
+that we would need some additional indications of memory being the
+culprit for the process blockage before resorting to kill.
 
---Sig_/824ZQ/8Upqk_a_OFy/cUm++
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCSCQYACgkQAVBC80lX
-0Gwy9Qf/Sf415sxVDYqMOuOJPA5/QbuX+/H6/VRamc+TihsUTPQWtZ2gUm0bEUEO
-KyHpAxRdYcFSn2vgopwK2zly/MgsjHV45h0ASFx8asDyYY/d7R1NYr/xJqqwZ46/
-LJlFHWOODkj1TL59QXJEbX4dCVurGzNRUynpgZ4U+6aTgzJ9JA7B8XPMrwwZoiu4
-fnQgBc29PEcqeupgy98aqix2ny/JEfrY6ftgoLpe2hR1buSB1/StTpn8nw4JvK3+
-G1i9rfPPABM17x7Ssv7vuyA78u/88GhQedvE7V4u4qq9BwwdpoWwPyH4kBaL1TDo
-hRkVW+CN8T69NXcFMktNNadVCQ4pFg==
-=L4SY
------END PGP SIGNATURE-----
-
---Sig_/824ZQ/8Upqk_a_OFy/cUm++--
+>
+> > 4. Additional complexity of keeping the list of potential victims in
+> > the kernel. Maybe we can simply reuse oom_score to choose the best
+> > victims?
+>
+> Your point of additional complexity is correct. Regarding oom_score I
+> think you meant oom_score_adj, I would avoid putting more
+> policies/complexity in the kernel but I got your point that the
+> simplest watchdog might not be helpful at all.
+>
+> > Thanks,
+> > Suren.
+> >
+> > >
+> > > I would prefer the direction which oomd and lmkd are open to adopt.
+> > >
+> > > Any suggestions?
