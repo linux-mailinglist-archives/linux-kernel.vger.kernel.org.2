@@ -2,162 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC36B373D67
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:13:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66D32373D6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:14:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232816AbhEEOOQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:14:16 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:30808 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233302AbhEEOOM (ORCPT
+        id S232796AbhEEOPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:15:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232096AbhEEOPG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:14:12 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-187-KHEAOyw0MByZbOGIVPi3DQ-1; Wed, 05 May 2021 15:13:12 +0100
-X-MC-Unique: KHEAOyw0MByZbOGIVPi3DQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 15:13:11 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Wed, 5 May 2021 15:13:11 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Miguel Ojeda' <miguel.ojeda.sandonis@gmail.com>
-CC:     Adrian Bunk <bunk@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Tom Stellard <tstellar@redhat.com>,
-        "Nick Desaulniers" <ndesaulniers@google.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Nathan Chancellor <nathan@kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Fangrui Song <maskray@google.com>,
-        Serge Guelton <sguelton@redhat.com>,
-        Sylvestre Ledru <sylvestre@mozilla.com>
-Subject: RE: Very slow clang kernel config ..
-Thread-Topic: Very slow clang kernel config ..
-Thread-Index: AQHXQS0DH46G91tEpEmd7WaoBDaEqarUt3wQgAAhgoCAABGacA==
-Date:   Wed, 5 May 2021 14:13:11 +0000
-Message-ID: <3ab89c4f8b1d455ba46781b392ef0b2d@AcuMS.aculab.com>
-References: <CAHk-=wjmNOoX8iPtYsM8PVa+7DE1=5bv-XVe_egP0ZOiuT=7CQ@mail.gmail.com>
- <CAKwvOdmMF_v9TzBtFn2S1qSS_yCDO8D-u3WhBehUM7gzjcdjUQ@mail.gmail.com>
- <CAKwvOdk+V2dc31guafFM=N2ez4SrwCmah+mimUG3MzPMx_2efQ@mail.gmail.com>
- <CAKwvOdn3uXniVedgtpD8QFAd-hdVuVjGPa4-n0h64PTxT4XhWg@mail.gmail.com>
- <CAKwvOdm3D=dqKw=kx46PLaiqfHOZJL3QFKGc8kxqJqpwdFFWqw@mail.gmail.com>
- <CAKwvOdkp_P8BCtFuKqDrtC_=A89ZfDf66Yr3FL2e=ojwv4KaMA@mail.gmail.com>
- <CAHk-=wi1yiBBr3b3RbCEte6-yzAApsZN5zRdr3xoW8Av9jOX=Q@mail.gmail.com>
- <CAKwvOdk0nxxUATg2jEKgx4HutXCMXcW92SX3DT+uCTgqBwQHBg@mail.gmail.com>
- <1c5e05fa-a246-9456-ff4e-287960acb18c@redhat.com>
- <CAHk-=whs8QZf3YnifdLv57+FhBi5_WeNTG1B-suOES=RcUSmQg@mail.gmail.com>
- <20210502093123.GC12293@localhost>
- <CANiq72=aK-JJhpnZdeeGBtADrnXhyEp1Whw5+5rK6a4u85PhxA@mail.gmail.com>
- <5256ed6b6f7d423daeb36fcbfc837fbc@AcuMS.aculab.com>
- <CANiq72mq-SP5n_0cVr+eaP19xqJTP15V+JKUeqLiT910x=3NdA@mail.gmail.com>
-In-Reply-To: <CANiq72mq-SP5n_0cVr+eaP19xqJTP15V+JKUeqLiT910x=3NdA@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Wed, 5 May 2021 10:15:06 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52786C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 07:14:09 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id m9so2031606wrx.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:14:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/LGCdpREbfD/YWDwLyE6sY9IYpJiH6j7QDDmk3lJWP4=;
+        b=GF8D9UTF/OquU+sEsnG0z7NaYJthuGzMV88GlGqAut2nI4qKuXvJGQaO+g+G/4uj5K
+         H+B4OSx3A3J9qdI5FaIWheVi7FsOkExLA3xFuiBKoWzVF7+G8I6h3I5vllLPseZCafFv
+         SjIyAjjJU8/4NhRzGJ/lVnMxxw51hQo2+cCAXHmTMuyiFLW090pQr+HkILMmhtACIhgn
+         1tIId31dJ/zBmuHgJPPtBrEBpXiK0At1sdIelT+mNOtgPA3ZCeJfkyetkI3ReffL9Mzj
+         sPg7NN4hDP0hV7CBExIMnq/adxvfXYjwek9AuLCYaDH5OYdvptXlCAtofBokpz/HO/CA
+         9y0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=/LGCdpREbfD/YWDwLyE6sY9IYpJiH6j7QDDmk3lJWP4=;
+        b=cazfEK+HKgy31Ogku5iqg9EyYRoU/zq4qthcFz2L83Bs/ashYpRLP+Cs+Yy0ZaGYdT
+         uZUmy+r8cLpvpCC5iMSVCTasYg2L0zcCeYN0uEFiha7KDy2HVupgXoku9ry7Lh9ge7+U
+         nYAVd2X6K+FzcMUS/uikCilTUNvD3MlxAZBzXoTSlP82W7ZhtFRGN2EQaebQXhU5bnzA
+         jxDSv6qEu9UoIuDFAi54KYqq9gsOI5y13auLuTKTy2MBwtu5R46ZPhMm8kVN8NmsVbOj
+         OsOKTYHvFa1cVdBwsFbgFXhErc86dSMWFTcuBL6fXpJFMIBDtScLNxC2iIPoXSZ7hfoR
+         KL7A==
+X-Gm-Message-State: AOAM53315BN3XNmY7ZxmeZ5BqE27JxFyag5eTtwR5fE0iP2nCbxms7OC
+        ue+0XHJZ75kAs2lJkUEoHaVgPA==
+X-Google-Smtp-Source: ABdhPJwbUzl2duqqXXrePhzv2T0owX8HSUZiNTe+9J4croOVrST04Ov0Az+JEMoEvq3r7WBhKAch/Q==
+X-Received: by 2002:adf:e611:: with SMTP id p17mr12298279wrm.161.1620224048047;
+        Wed, 05 May 2021 07:14:08 -0700 (PDT)
+Received: from debian-brgl.home (lfbn-nic-1-149-6.w2-15.abo.wanadoo.fr. [2.15.231.6])
+        by smtp.gmail.com with ESMTPSA id s6sm5969750wms.0.2021.05.05.07.14.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 07:14:07 -0700 (PDT)
+From:   Bartosz Golaszewski <brgl@bgdev.pl>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Al Viro <viro@zeniv.linux.org.uk>, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>
+Subject: [GIT PULL v2] gpio: updates for v5.13
+Date:   Wed,  5 May 2021 16:13:58 +0200
+Message-Id: <20210505141358.6065-1-brgl@bgdev.pl>
+X-Mailer: git-send-email 2.30.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTWlndWVsIE9qZWRhDQo+IFNlbnQ6IDA1IE1heSAyMDIxIDE0OjU0DQo+IA0KPiBPbiBX
-ZWQsIE1heSA1LCAyMDIxIGF0IDE6MDYgUE0gRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWlnaHRAYWN1
-bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBUaGUgcHJvYmxlbSBpc24ndCB0aGUgcGFja2FnZXMg
-dGhhdCBjb21lIHdpdGggdGhlIGRpc3RyaWJ1dGlvbi4NCj4gDQo+IE15IHF1ZXN0aW9uIHdhcyBp
-biB0aGUgY29udGV4dCBvZiBBZHJpYW4ncyBlbWFpbHMgd2hvIHdlcmUgbWVudGlvbmluZw0KPiBp
-c3N1ZXMgZm9yIExpbnV4IGRpc3RyaWJ1dGlvbiBldGMuDQo+IA0KPiA+IFRoZSBwcm9ibGVtIGlz
-IDNyZCBwYXJ0eSBwcm9ncmFtcyBzdXBwbGllZCBhcyBiaW5hcmllcy4NCj4gPiBUaGV5IGhhdmUg
-MiBiaWcgcmVxdWlyZW1lbnRzOg0KPiA+IDEpIFRoZSBzYW1lIGJpbmFyeSB3aWxsIHJ1biBvbiBh
-bGwgZGlzdHJpYnV0aW9ucyAobmV3ZXIgdGhhbiBzb21lIGN1dG9mZikuDQo+IA0KPiBUaGlzIGlz
-IGZpbmUgd2l0aCB0aGUgImV2ZXJ5dGhpbmcgc3RhdGljYWxseSBsaW5rZWQiIG1vZGVsLg0KDQpO
-byBpdCBpc24ndC4NCkl0IG1heSB3b3JrIGZvciBzaW1wbGUgbGlicmFyeSBjYWxscyAobGlrZSBz
-dHJpbmcgZnVuY3Rpb25zKQ0KdGhhdCB5b3UgY2FuIHdyaXRlIHlvdXJzZWxmLCBhbmQgdGhpbmdz
-IHRoYXQgYXJlIGRpcmVjdCBzeXN0ZW0gY2FsbHMuDQpCdXQgaXQgZmFsbHMgZm93bCBvZiBhbnl0
-aGluZyBjb21wbGljYXRlZCB0aGF0IGhhcyB0byBpbnRlcmFjdA0Kd2l0aCB0aGUgcmVzdCBvZiB0
-aGUgc3lzdGVtLg0KDQo+ID4gMikgQW55IHNlcmlvdXMgYnVnIGZpeGVzIGluIHN5c3RlbSBsaWJy
-YXJpZXMgZ2V0IHBpY2tlZCB1cCB3aGVuIHRoZQ0KPiA+ICAgIGRpc3RyaWJ1dGlvbiB1cGRhdGVz
-IHRoZSBsaWJyYXJ5Lg0KPiANCj4gRm9yIDNyZCBwYXJ0eSBzb2Z0d2FyZSwgdGhpcyBpcyB1c3Vh
-bGx5IGRvbmUgdGhyb3VnaCBhbiBhdXRvLXVwZGF0ZQ0KPiBtZWNoYW5pc20gb2Ygc29tZSBraW5k
-Lg0KDQpJIGNhbiBhbHJlYWR5IHNlZSBhIGhlbGQgb2YgcGlncyBmbHlpbmcuLi4NCg0KPiBBbmQg
-c2luY2UgdGhlIHZlbmRvciB0eXBpY2FsbHkgcHJvdmlkZXMNCj4gZXZlcnl0aGluZywgaW5jbHVk
-aW5nIGRlcGVuZGVuY2llcyAoZXZlbiBsaWJjIGluIHNvbWUgY2FzZXMhKSwgdGhleQ0KPiBjYW4g
-YWZmb3JkIHRvIHN0YXRpY2FsbHkgbGluayB0aGUgd29ybGQuDQoNClRoYXQgbWlnaHQgd29yayBp
-ZiB0aGV5IGFyZSBzdXBwbHlpbmcgYWxsIHRoZSBhcHBsaWNhdGlvbnMgdGhhdCBydW4NCm9mIGEg
-Z2l2ZW4gc3lzdGVtIC0gYW5kIHByb2JhYmx5IGluY2x1ZGluZyB0aGUga2VybmVsIGFzIHdlbGwu
-DQoNCj4gVGhhdCBtb2RlbCwgb2YgY291cnNlLCBoYXMgaXNzdWVzIC0tIHRoZSB2ZW5kb3IgbWF5
-IGdvIG91dCBvZg0KPiBidXNpbmVzcywgbWF5IGJlIHNsb3cgd2l0aCBzZWN1cml0eSB1cGRhdGVz
-LCBldGMuDQoNCk1hbnkgeWVhcnMgYWdvIHRoZSBjb21wYW55IEkgd29ya2VkIGZvciBmb3VuZCB0
-aGF0IHRoZSB1bml4ICd1dG1weCcNCmZpbGUgd2FzIGdldHRpbmcgY29ycnVwdGVkIChkdWUgdG8g
-aW5jb3JyZWN0IGxvY2tpbmcpLg0KVGhlIGZ1bmN0aW9ucyBoYWQgYmVlbiBwbGFjZXMgaW4gYW4g
-YXJjaGl2ZSBwYXJ0IG9mIGxpYmMgKGZvcg0KdmFyaW91cyByZWFzb25zKS4NCkdldHRpbmcgdGhl
-IGZpeCBvbnRvIHRoZSBjdXN0b21lcnMgbWFjaGluZSAod2Ugd2VyZSB0aGUgT1MgdmVuZG9yKQ0K
-aW52b2x2ZWQgZGV0ZXJtaW5pbmcgd2hpY2ggYXBwbGljYXRpb25zIGZyb20gM3JkICg0dGg/KSBw
-YXJ0aWVzDQpoYWQgYmVlbiBsaW5rZWQgd2l0aCB0aGUgYnJva2VuIGNvZGUgYW5kIHRoZW4gYXBw
-bHlpbmcgZW5vdWdoDQonZ2VudGxlIHBlcnN1YXNpb24nIHRvIGdldCB0aGVtIHRvIHJlbGluayB0
-aGUgb2ZmZW5kaW5nIHByb2dyYW1zLg0KRXZlbiB0aGlzIGNhbiBiZSBwcm9ibGVtYXRpYyBiZWNh
-dXNlIHRoZSBzb3VyY2UgY29udHJvbCBzeXN0ZW1zDQpvZiBzb21lIGNvbXBhbmllcyBpc24ndCBn
-cmVhdCAoaXQgaXMgcHJvYmFibHkgYmV0dGVyIHRoZXNlIGRheXMpLg0KQnV0IGdldHRpbmcgdGhl
-ICdwcmV2aW91cyB2ZXJzaW9uJyByZWJ1aWx0IHdpdGggYSBuZXcgbGliYy5hDQpjYW4gYmUgdmVy
-eSBwcm9ibGVtYXRpYy4NCg0KPiBCdXQgdGhpcyBpcyBhbGwgb3J0aG9nb25hbCB0byBSdXN0IC0t
-IEkgcmVwbGllZCBtYWlubHkgYmVjYXVzZSBpdCB3YXMNCj4gbWVudGlvbmVkIHRoYXQgUnVzdCBi
-cm91Z2h0IG5ldyBpc3N1ZXMgdG8gdGhlIHRhYmxlLCB3aGljaCBpc24ndCB0cnVlLg0KPiANCj4g
-PiBUaGVyZSBpcyBhbHNvIHRoZSBwb3NzaWJpbGl0eSB0aGF0IHRoZSBpbXBsZW1lbnRhdGlvbiBv
-ZiBzb21lDQo+ID4gZnVuY3Rpb24gZGlmZmVycyBiZXR3ZWVuIGRpc3RyaWJ1dGlvbnMuDQo+ID4g
-U28geW91IGFic29sdXRlbHkgbmVlZCB0byB1c2UgdGhlIHZlcnNpb24gZnJvbSB0aGUgaW5zdGFs
-bGVkIHN5c3RlbQ0KPiA+IG5vdCB3aGF0ZXZlciB3YXMgaW4gc29tZSBzdGF0aWMgbGlicmFyeSBv
-biB0aGUgYWN0dWFsIGJ1aWxkIG1hY2hpbmUuDQo+ID4NCj4gPiBCb3RoIG9mIHRoZXNlIG5lZWQg
-c3RhYmxlIEFCSSBhbmQgc2hhcmVkIGxpYnJhcmllcy4NCj4gDQo+IE5vdCByZWFsbHkuIElmIHlv
-dSBnbyBmb3IgdGhlICJzdGF0aWNhbGx5IGxpbmtlZCIgbW9kZWwgZm9yIHlvdXINCj4gYXBwbGlj
-YXRpb24sIHlvdSBvbmx5IG5lZWQgdG8gY2FyZSBhYm91dCB0aGUgc3lzY2FsbCBsYXllciAob3IN
-Cj4gZXF1aXZhbGVudCBoaWdoZXItbGV2ZWwgbGF5ZXJzIGluIGUuZy4gV2luZG93cy9tYWNPUyku
-DQoNCk5vIGJlY2F1c2UgdGhlcmUgYXJlIG1lc3NhZ2VzIHNlbnQgdG8gc3lzdGVtIGRhZW1vbnMg
-YW5kIGZpbGUNCmZvcm1hdHMgdGhhdCBjYW4gYmUgc3lzdGVtIGRlcGVuZGFudC4NCk5vdCBldmVy
-eXRoaW5nIGlzIGEgc3lzdGVtIGNhbGwuDQoNCj4gDQo+IElmIHlvdSB0cnVzdCB2ZW5kb3JzIGEg
-Yml0LCB5b3UgY2FuIGluc3RlYWQgZ28gZm9yICJzdGF0aWNhbGx5IGxpbmtlZA0KPiBleGNlcHQg
-Zm9yIG1ham9yIHN5c3RlbSBsaWJyYXJpZXMiIChsaWtlIGxpYmMgb3IgbGlibSBpbiBMaW51eCku
-IFRoaXMNCj4gaXMgd2hhdCBSdXN0IGRvZXMgYnkgZGVmYXVsdCBmb3IgdGhlIGdsaWJjIHg4Nl82
-NCB0YXJnZXQuDQo+IA0KPiBHaXZlbiB0aGF0IG5vd2FkYXlzIHN0YXRpY2FsbHkgbGlua2luZyBp
-cyBjb252ZW5pZW50LCBhZmZvcmRhYmxlIGFuZA0KPiBpbXByb3ZlcyBwZXJmb3JtYW5jZSwgaXQg
-c2VlbXMgbGlrZSB0aGUgcmlnaHQgZGVjaXNpb24uDQo+IA0KPiA+IFJlbWVtYmVyLCBhcyBmYXIg
-YXMgdXNlcnNwYWNlIGlzIGNvbmNlcm5lZCwgZm9vLmggaXMgdGhlIGRlZmluaXRpb24NCj4gPiBm
-b3IgJ2ZvbycgYW5kIGZvby5zbyBpcyB0aGUgY3VycmVudCBpbXBsZW1lbnRhdGlvbi4NCj4gPiAo
-eWVzLCBJIGtub3cgYSBsaXR0bGUgYml0IG9mIGluZm8gaXMgdGFrZW4gZnJvbSBmb28uc28gb24g
-dGhlIGJ1aWxkDQo+ID4gc3lzdGVtIC0gYnV0IHRoYXQgb3VnaHQgdG8gYmUgYWJzb2x1dGVseSBt
-aW5pbWFsLikNCj4gDQo+IE5vLCB0aGF0IGlzIG9ubHkgdGhlIEMgbW9kZWwgZm9yIHNoYXJlZCBs
-aWJyYXJpZXMuDQo+IA0KPiBDKysgaGFzIGhhZCB0ZW1wbGF0ZXMgZm9yIGRlY2FkZXMgbm93IGFu
-ZCBubyAiQysrIEFCSSIgc28gZmFyIGNvdmVycw0KPiB0aGVtLiBUaHVzLCBpZiB5b3Ugd2FudCB0
-byBwcm92aWRlIHRlbXBsYXRlcyBhcyBhIGxpYnJhcnksIHRoZXkgY2Fubm90DQo+IGJlICJwcmUt
-Y29tcGlsZWQiIGFuZCBzbyB0aGUgaW1wbGVtZW50YXRpb24gaXMga2VwdCBpbiB0aGUgaGVhZGVy
-Lg0KPiANCj4gVGhpcyBhY3R1YWxseSB0dXJuZWQgb3V0IHRvIGJlIHF1aXRlIGNvbnZlbmllbnQg
-YW5kIG5vd2FkYXlzIG1hbnkNCj4gbGlicmFyaWVzIGFyZSBkZXZlbG9wZWQgYXMgImhlYWRlci1v
-bmx5IiwgaW4gZmFjdC4gTW9yZW92ZXIsIHJlY2VudGx5DQo+IHRoZSBDKysgc3RhbmRhcmQgaW50
-cm9kdWNlZCBuZXcgZmVhdHVyZXMgdGhhdCBzaW1wbGlmeSB0YWtpbmcgdGhpcw0KPiBhcHByb2Fj
-aCwgZS5nLiBDKysxNyBgaW5saW5lYCB2YXJpYWJsZXMuDQoNClJlbWluZCBiZSB0byByZXF1ZXN0
-IG91ciBtYW5hZ2VtZW50IHRvIGxldCBtZSByZW1vdmUgYWxsIHRoZSBDKysNCmZyb20gbW9zdCBv
-ZiBvdXIgcHJvZ3JhbXMuDQpOb25lIG9mIHRoZW0gYWN0dWFsbHkgbmVlZCBpdCwgdGhlIHJlYXNv
-bnMgZm9yIEMrKyBhcmVuJ3QgdGVjaG5pY2FsLg0KDQppZiB5b3Ugd2FudCB0byBzZWUgc29tZXRo
-aW5nIHJlYWxseSBob3JyaWQgbG9vayBhdCB0aGUgaW5saW5lDQpkZXN0cnVjdG9yIGNvZGUgZm9y
-IGlvc3RyaW5nc3RyZWFtLg0KDQpBbmQgZG9uJ3QgbGV0IG1lIGxvb2sgYXQgdGhlIGNvZGUgZm9y
-IENTdHJpbmcgZWl0aGVyLg0KDQo+IFJ1c3QgaGFzIHRoZSBzYW1lIGlzc3VlIHdpdGggZ2VuZXJp
-Y3MsIGJ1dCBpbXByb3ZlcyB0aGUgc2l0dWF0aW9uIGENCj4gYml0OiB0aGVyZSBpcyBubyBuZWVk
-IHRvIHJlcGFyc2UgZXZlcnl0aGluZywgZXZlcnkgdGltZSwgZnJvbSBzY3JhdGNoLA0KPiBmb3Ig
-ZWFjaCB0cmFuc2xhdGlvbiB1bml0IHRoYXQgdXNlcyBhIGxpYnJhcnkgd2l0aCB0ZW1wbGF0ZXMg
-KHdoaWNoIGlzDQo+IHF1aXRlIGFuIGlzc3VlIGZvciBDKyssIHdpdGggYmlnIHByb2plY3RzIGdv
-aW5nIG91dCBvZiB0aGVpciB3YXkgdG8NCj4gcmVkdWNlIHRoZSB0cmVlcyBvZiBpbmNsdWRlcyku
-DQoNClRoYXQgc291bmRzIGxpa2UgaXQgaGFzIGFsbCB0aGUgc2FtZSBwcm9ibGVtcyBhcyBwcmUt
-Y29tcGlsZWQgaGVhZGVycy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtl
-c2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBV
-Sw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+Linus,
 
+This is the big pull-request for GPIO for this release cycle minus the configfs
+changes and the gpio-sim driver that was based on it as these will have to sit
+one more release out.
+
+The resulting pull-request is even smaller than before and there's nothing
+controversial left. The details are in the signed tag. Please pull!
+
+Bartosz
+
+The following changes since commit 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b:
+
+  Linux 5.12-rc4 (2021-03-21 14:56:43 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio-updates-for-v5.13-v2
+
+for you to fetch changes up to 444952956f34a5de935159561d56a34276ffffd6:
+
+  dt-bindings: gpio: add YAML description for rockchip,gpio-bank (2021-05-05 16:07:41 +0200)
+
+----------------------------------------------------------------
+gpio updates for v5.13
+
+- new driver for the Realtek Otto GPIO controller
+- ACPI support for gpio-mpc8xxx
+- edge event support for gpio-sch (+ Kconfig fixes)
+- Kconfig improvements in gpio-ich
+- fixes to older issues in gpio-mockup
+- ACPI quirk for ignoring EC wakeups on Dell Venue 10 Pro 5055
+- improve the GPIO aggregator code by using more generic interfaces instead of
+  reimplementing them in the driver
+- convert the DT bindings for gpio-74x164 to yaml
+- documentation improvements
+- a slew of other minor fixes and improvements to GPIO drivers
+
+----------------------------------------------------------------
+Alexander Dahl (2):
+      docs: kernel-parameters: Move gpio-mockup for alphabetic order
+      docs: kernel-parameters: Add gpio_mockup_named_lines
+
+Andy Shevchenko (13):
+      irqdomain: Introduce irq_domain_create_simple() API
+      gpiolib: Unify the checks on fwnode type
+      gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
+      gpiolib: Introduce acpi_gpio_dev_init() and call it from core
+      gpiolib: Reuse device's fwnode to create IRQ domain
+      gpiolib: Fold conditionals into a simple ternary operator
+      gpio: mockup: Drop duplicate NULL check in gpio_mockup_unregister_pdevs()
+      gpio: mockup: Adjust documentation to the code
+      lib/cmdline: Export next_arg() for being used in modules
+      gpio: aggregator: Replace custom get_arg() with a generic next_arg()
+      gpio: sch: Hook into ACPI GPE handler to catch GPIO edge events
+      gpio: sch: Drop MFD_CORE selection
+      gpio: ich: Switch to be dependent on LPC_ICH
+
+Barney Goette (1):
+      gpio: 104-dio-48e: Fix coding style issues
+
+Bartosz Golaszewski (3):
+      lib: bitmap: remove the 'extern' keyword from function declarations
+      lib: bitmap: order includes alphabetically
+      lib: bitmap: provide devm_bitmap_alloc() and devm_bitmap_zalloc()
+
+Geert Uytterhoeven (1):
+      dt-bindings: gpio: fairchild,74hc595: Convert to json-schema
+
+Hans de Goede (1):
+      gpiolib: acpi: Add quirk to ignore EC wakeups on Dell Venue 10 Pro 5055
+
+Jan Kiszka (1):
+      gpio: sch: Add edge event support
+
+Jiapeng Chong (2):
+      gpio: it87: remove unused code
+      gpio: mxs: remove useless function
+
+Johan Jonker (1):
+      dt-bindings: gpio: add YAML description for rockchip,gpio-bank
+
+Jonathan Neuschäfer (1):
+      docs: driver-api: gpio: consumer: Mark another line of code as such
+
+Linus Walleij (1):
+      gpio: Mention GPIO MUX in docs
+
+Ran Wang (1):
+      gpio: mpc8xxx: Add ACPI support
+
+Randy Dunlap (3):
+      tools: gpio-utils: fix various kernel-doc warnings
+      gpiolib: some edits of kernel docs for clarity
+      gpio: sch: depends on LPC_SCH
+
+Sander Vanheule (2):
+      dt-bindings: gpio: Binding for Realtek Otto GPIO
+      gpio: Add Realtek Otto GPIO support
+
+Tian Tao (1):
+      gpio: omap: Use device_get_match_data() helper
+
+ Documentation/admin-guide/gpio/gpio-mockup.rst     |  11 +-
+ Documentation/admin-guide/kernel-parameters.txt    |  10 +-
+ Documentation/core-api/irq/irq-domain.rst          |  22 +-
+ .../bindings/gpio/fairchild,74hc595.yaml           |  77 +++++
+ .../devicetree/bindings/gpio/gpio-74x164.txt       |  27 --
+ .../bindings/gpio/realtek,otto-gpio.yaml           |  78 +++++
+ .../bindings/gpio/rockchip,gpio-bank.yaml          |  82 ++++++
+ .../bindings/pinctrl/rockchip,pinctrl.txt          |  58 +---
+ Documentation/driver-api/gpio/consumer.rst         |   2 +-
+ Documentation/driver-api/gpio/drivers-on-gpio.rst  |   6 +
+ drivers/gpio/Kconfig                               |  24 +-
+ drivers/gpio/Makefile                              |   1 +
+ drivers/gpio/gpio-104-dio-48e.c                    |  50 ++--
+ drivers/gpio/gpio-aggregator.c                     |  39 +--
+ drivers/gpio/gpio-ich.c                            |   2 -
+ drivers/gpio/gpio-it87.c                           |   8 -
+ drivers/gpio/gpio-mockup.c                         |   9 +-
+ drivers/gpio/gpio-mpc8xxx.c                        |  47 ++-
+ drivers/gpio/gpio-mxs.c                            |   5 -
+ drivers/gpio/gpio-omap.c                           |   5 +-
+ drivers/gpio/gpio-realtek-otto.c                   | 325 +++++++++++++++++++++
+ drivers/gpio/gpio-sch.c                            | 198 ++++++++++++-
+ drivers/gpio/gpiolib-acpi.c                        |  21 ++
+ drivers/gpio/gpiolib-acpi.h                        |   4 +
+ drivers/gpio/gpiolib-of.c                          |   6 +-
+ drivers/gpio/gpiolib.c                             |  62 ++--
+ include/linux/bitmap.h                             | 127 ++++----
+ include/linux/gpio/driver.h                        |  12 +-
+ include/linux/irqdomain.h                          |  19 +-
+ kernel/irq/irqdomain.c                             |  20 +-
+ lib/bitmap.c                                       |  42 ++-
+ lib/cmdline.c                                      |   1 +
+ tools/gpio/gpio-utils.c                            |  18 +-
+ 33 files changed, 1068 insertions(+), 350 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
+ delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-74x164.txt
+ create mode 100644 Documentation/devicetree/bindings/gpio/realtek,otto-gpio.yaml
+ create mode 100644 Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
+ create mode 100644 drivers/gpio/gpio-realtek-otto.c
