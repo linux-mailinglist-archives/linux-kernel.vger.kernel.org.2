@@ -2,86 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEDC4374B34
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:23:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4FA374B37
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:25:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234168AbhEEWYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:24:45 -0400
-Received: from bilbo.ozlabs.org ([203.11.71.1]:41073 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230135AbhEEWYn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:24:43 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FbB7h56Klz9sPf;
-        Thu,  6 May 2021 08:23:44 +1000 (AEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1620253425;
-        bh=6AqeAEh9ZG24y38rZoAWtPUoG2d4G9AvEF8n72KHRmg=;
-        h=Date:From:To:Cc:Subject:From;
-        b=W4BC2fHSiP8zWrE8zs+3j+Hyuh0j4AIMq/JIEFPGzIpQ7FQakprV3CmpHYgHOm53f
-         KNF9AuE6ljS4kD4u6ehvq22n7gqJxAbMeqGpU5WcfUqgOHO3dDNyjfXmZJBoFYR2fr
-         7VS4aZVtajnfxXCRp6ES0dtLsZjKGyNaDLHNKR5mPXw64NkwSFWAFmTXUenK7Oed9o
-         J0+HKBua+KaeT7aa9EWqn3BPLvTrkg5kX8ZZWGO5G+mpnEazmBuYcLGIqXSDCZEBoM
-         jDltoxt6fJl7ohN2mr4vwqmDI7ILAiXwviuZ33KwcU142ZfSiWzGTvL2Dt62zodIDd
-         k1aMvUGT5BALg==
-Date:   Thu, 6 May 2021 08:23:44 +1000
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Jens Axboe <axboe@kernel.dk>
-Cc:     Minwoo Im <minwoo.im.dev@gmail.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the block tree
-Message-ID: <20210506082344.4f7af4af@canb.auug.org.au>
+        id S230071AbhEEW0E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:26:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59946 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229649AbhEEW0C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 18:26:02 -0400
+Received: from mail-qt1-x82d.google.com (mail-qt1-x82d.google.com [IPv6:2607:f8b0:4864:20::82d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74770C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 15:25:05 -0700 (PDT)
+Received: by mail-qt1-x82d.google.com with SMTP id o12so2530152qtx.8
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 15:25:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20150623.gappssmtp.com; s=20150623;
+        h=from:to:subject:date:message-id:organization:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=VHF+1pzeQiV2IkLAVQY01JyDWVebdBsj7MiU0s3L8tA=;
+        b=XggPzJIzxpaq1Flue+zJ4EgoPgBwaHnlXrfbikxdzI7pJwKyPeagv0NdgbVQxpOJhZ
+         j3Q/D0x5BH3bLqHEPlF4TBRLp6I83RRdsWwsIVO8q9ozM8ZUgxR+8Euq1oBusjsUsFqo
+         Z2cPan7ff+APIfWW5gWW6zS5qUlFjojTdzw/EbhIRjZJUva+cOlTt/LiQbD+ZxFhn14N
+         /P3kzBbf3pA5eoiIkEBMvXE1h8wPjlklyvKCUAyTjab0e+GEqpAShfjYe7K/xJAQcn9Q
+         dok3AHNvr/Hl3Hw7S4mgz6LDHzI4rzWZLR0yEpVco8R1YWmlv7ojR4/LVZeu82d3GEYX
+         FFiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:organization
+         :in-reply-to:references:mime-version:content-transfer-encoding;
+        bh=VHF+1pzeQiV2IkLAVQY01JyDWVebdBsj7MiU0s3L8tA=;
+        b=NumqERIyeqibk3TmimxBzuR9EGcffVVSkaYYXkTcXkq7U2xpamKKPK00XVaIif54yu
+         KUOPZCDfP1GcZQZRuFQjfmk5FiyLnedK3AJU4LFKfAAQj3d32MIxa6ggG84v5c8jeD1P
+         kealhyeAyFPdwvGm/X1vc5UWdY84YqUHT8Qul1EZ2rACPymDEGNR9NxFl2URCtjpRo7r
+         0x1GKAdg6tvoo/mivgV2Uv8Dd2cXsyQ2prB4eJKvRSnnBGNKSJ/9D/fot+rmlKzeFnZX
+         TsmkDM8rBrgCmjkaN+IbyUpEOVbMPPfdY3apcUr3R6Xf5s8n1Nan1EJcgZnL9mAAejQ0
+         UqFA==
+X-Gm-Message-State: AOAM530Qj7s/jaywig5ZpqupyfbQwxNP0k/KxjxkKQ8I/vGFTUfuvX/k
+        6RC92uaa0GZTwE6vflYhVxl1yA==
+X-Google-Smtp-Source: ABdhPJyXjp04g/al6SaVrM35QSds1Dzfe4/k1h2ndJGPBzHYa6zeBKKlmYux+S0J5U+U2VW0Mja29g==
+X-Received: by 2002:ac8:7244:: with SMTP id l4mr864209qtp.347.1620253504546;
+        Wed, 05 May 2021 15:25:04 -0700 (PDT)
+Received: from iron-maiden.localnet ([66.199.90.164])
+        by smtp.gmail.com with ESMTPSA id p10sm546907qkg.74.2021.05.05.15.25.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 15:25:04 -0700 (PDT)
+From:   Carlos Bilbao <bilbao@vt.edu>
+To:     corbet@lwn.net, hdegoede@redhat.com, mchehab+huawei@kernel.org,
+        Jonathan.Cameron@huawei.com, gregkh@linuxfoundation.org,
+        linux-kernel@vger.kernel.org,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Randy Dunlap <rdunlap@infradead.org>, bilbao@vt.edu
+Subject: Re: [PATCH] Fixed typos in all directories of Documentation/ABI/
+Date:   Wed, 05 May 2021 18:25:03 -0400
+Message-ID: <4341223.LvFx2qVVIh@iron-maiden>
+Organization: Virginia Tech
+In-Reply-To: <de6f22e2-3f3c-0ce3-a73d-fb881646f1e8@infradead.org>
+References: <2219636.ElGaqSPkdT@iron-maiden> <de6f22e2-3f3c-0ce3-a73d-fb881646f1e8@infradead.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/09IANTl.EOeQwaSNx5qMouS";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/09IANTl.EOeQwaSNx5qMouS
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hello Randy,
 
-Hi all,
+Thank you for your quick feedback that I address below, I will send the patch
+again after this email.
+ 
+> >  What:		/sys/bus/vmbus/devices/<UUID>/channels/<N>/cpu
+> >  Date:		September. 2017
+> >  KernelVersion:	4.14
+> >  Contact:	Stephen Hemminger <sthemmin@microsoft.com>
+> > 
+> > -Description:	VCPU (sub)channel is affinitized to
+> > +Description:	PCP (sub)channel is affinitized to
+> 
+> Stephen- comment here?
 
-In commit
+Stephen, no need to comment. This was my fault, VCPU was already right. Fixed.
 
-  48145b62563a ("nvme: fix controller ioctl through ns_head")
+> > diff --git a/Documentation/ABI/stable/sysfs-class-infiniband
+> > b/Documentation/ABI/stable/sysfs-class-infiniband index
+> > 348c4ac803ad..bbaa7bab8af4 100644
+> > --- a/Documentation/ABI/stable/sysfs-class-infiniband
+> > +++ b/Documentation/ABI/stable/sysfs-class-infiniband
+> > 
+> > @@ -140,7 +140,7 @@ Description:
+> >  		by LocalPhyErrors
+> >  		
+> >  		excessive_buffer_overrun_errors: (RO) This counter, indicates an
+> > 
+> > -		input buffer overrun. It indicates possible misconfiguration of
+> 
+> Above is correct AFAIK although my 3 quick dictionary searches didn't find
+> it spelled either of those ways. :)
 
-Fixes tag
+Also true, "misconfiguration" is accepted. Change removed.
 
-  Fixes: 3557a4409701 ("nvme: don't bother to look up a namespace for
+> 
+> codespell find 4 problems here (in ABI/testing):
+> 
+> $ codespell sysfs-devices-system-cpu
+> sysfs-devices-system-cpu:100: internel  ==> internal
+> sysfs-devices-system-cpu:283: specificed  ==> specified
+> sysfs-devices-system-cpu:298: beyound  ==> beyond
+> sysfs-devices-system-cpu:535: Symetric  ==> Symmetric
+> 
+> 
+> Would you mind adding those to your patch?
+> 
 
-has these problem(s):
+Changes added to the patch.
 
-  - Subject has leading but no trailing parentheses
-  - Subject has leading but no trailing quotes
 
-Please do not split Fixes tags over more than one line.
 
---=20
-Cheers,
-Stephen Rothwell
 
---Sig_/09IANTl.EOeQwaSNx5qMouS
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCTGvAACgkQAVBC80lX
-0GxKHAf+IhrBo92bIt4LaE5JR2nVfBErfuNHbZFA/0NeHkXn6AFOLN0K8sKxk4Zx
-8n8bnSN/4vWumYpj+lUTGsoTS4Ua2SLtraBizR2u36njmAPXdbNbjMSQ9dzRn1c7
-uzSluWSn7tnYjpFtK6OPRuizgylQHt4tAKB2lfIXEjmRVR8svPDQZcDRAUcBQsTm
-3GUCL80ohLRnv2zUraKlurWx07XAVeX66DKfISL3Zch9kwbouWREnYGXGTZkbmlt
-8lyFdVrcu94JYF83ptu9be5zR8h6tJWp4UATG8sSeUQ5OgsLRfA90l/c+QOHRpY6
-lDJQ4Ko2OpBbVqyqGYYMyfdZuhea5g==
-=4fpt
------END PGP SIGNATURE-----
-
---Sig_/09IANTl.EOeQwaSNx5qMouS--
