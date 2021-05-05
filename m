@@ -2,99 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5287B374698
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 852153746BD
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240630AbhEERV1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:21:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35264 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S238599AbhEERGL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:06:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C36EB613F9;
-        Wed,  5 May 2021 16:47:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620233245;
-        bh=cQH1viTRhYXl+Jt1QORMEhZ6NgeUoG/3eUaMm1SfYc8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=MbYkLDraHvZ9Z15LwnUslfVHSDdfqboAaa5IKFnn6G9zp7sn1/r3gMcpBoxkMUS3j
-         jfIF9dGUtff3yDR/xffYdjJN21RFD2UjqEXUYBnVFEm0CLDjPGVbNxfZysA6/nXNTf
-         Shfy//0z2yLErdZqnoEREQp24XMNg/5v9sdO0wZ5HVep7Ze0384kVKada+cAFNUeGK
-         7E/zM+bS3umqj7k/tSwOrUt7CUJEsBYecVvw57qIA8ra2kwLLemoI4CF0m6+BV58xl
-         rfR9HcoQyemnFn8Ks8VIsUetEivSB6wxW3zeVi8n1YwthuWNWHbPJf9a83fmDuDktE
-         wB6NpT1lFFqqg==
-Date:   Wed, 5 May 2021 17:46:48 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/4] arm64: Check the return PC against unreliable
- code sections
-Message-ID: <20210505164648.GC4541@sirena.org.uk>
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-3-madvenka@linux.microsoft.com>
- <20210504160508.GC7094@sirena.org.uk>
- <1bd2b177-509a-21d9-e349-9b2388db45eb@linux.microsoft.com>
- <0f72c4cb-25ef-ee23-49e4-986542be8673@linux.microsoft.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="GPJrCs/72TxItFYR"
-Content-Disposition: inline
-In-Reply-To: <0f72c4cb-25ef-ee23-49e4-986542be8673@linux.microsoft.com>
-X-Cookie: Please ignore previous fortune.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S237021AbhEERYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:24:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47834 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S240438AbhEERVK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:21:10 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF547C061180
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 09:47:42 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id y24-20020a0ca9180000b02901d367101f9dso2132676qva.1
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:47:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=+Z0lyW66zxOZsOevWcsCwL84e2yGgP0OYBfGnI/uA/g=;
+        b=oLFI6khFTjiKL0g4NmVUXGT4j5ezutBdCS3NzCcJ/m0KONr5mhkjXzymoSsalrdirk
+         /E3q1LnikFBuinZ/dgVUnZYF4c6y1wOxGY2kQdkX6Czi0pwg77BBCVSOlnn2ixxrIPMv
+         Q+EsJChaXlhCXBedlYs/TNicuyJIq0sIE7YUD7UnAsMPCzZ+qq3p8JcFboPyMaNMATWV
+         yCFijZMDG9i5UKFlB7e4KWx6zRb8e8b+My187j7VzyVZPftUckQy343xRd0JwuaY3Qx3
+         7er5JcK+MVyY2PS4oh1UE5kIPzDT9ocIRiImz4ybTT916NRBPf9Ggot6IIEJuldogIyP
+         lV7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=+Z0lyW66zxOZsOevWcsCwL84e2yGgP0OYBfGnI/uA/g=;
+        b=LnXHY7iqK1z/2LpkJXQeUbh0zjppH9J2V8n1x7RTx5NkQyrb9Xe5GQsaJ+AeRI35mJ
+         9jih34Wzk3wQrTyc0BNiLn+UxI9ZsNEZCFRj3DUJymI269dggvHt6nmibPJ2AStIl13G
+         P/gWhFvmOBC1vp07XzNXhX4CRZx1Z1g4zwDb8ddHw/uYzgsViVfQxRuXgUX4LefXqys/
+         9sacVTvqZGKjsW4H5Y72b7G9qCIrkqsyisjX3GV/wbySisgl5E3Q2iGgohaNqGWKaY2Q
+         L+P80CFmT0HM9qNekI+Wez+hudhAWn2MK8v8ObCgbKGaC+Zd8hicU+bvRYlqkbt85j4a
+         +4CA==
+X-Gm-Message-State: AOAM532iIoIHFkscfGq3nSd+7o1ijdpEyFIeEmYSmdXbhLofRpYIwM3v
+        AgIuc5BhXP+DlIH4ozg0GhadqN8U4Vodj4o=
+X-Google-Smtp-Source: ABdhPJzc8P2c54WxtApx/JET5+qWZUdHWQzzSYlWMrFTIGUgljzpejnTiZgPN1mojmPFZ1z2xpEoO+T8uoId2to=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7dba:15b:e3fd:a2e5])
+ (user=saravanak job=sendgmr) by 2002:a05:6214:a8b:: with SMTP id
+ ev11mr24864780qvb.42.1620233262036; Wed, 05 May 2021 09:47:42 -0700 (PDT)
+Date:   Wed,  5 May 2021 09:47:34 -0700
+Message-Id: <20210505164734.175546-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH v2] spi: Don't have controller clean up spi device before
+ driver unbind
+From:   Saravana Kannan <saravanak@google.com>
+To:     Mark Brown <broonie@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     Lukas Wunner <lukas@wunner.de>, kernel-team@android.com,
+        linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+When a spi device is unregistered and triggers a driver unbind, the
+driver might need to access the spi device. So, don't have the
+controller clean up the spi device before the driver is unbound. Clean
+up the spi device after the driver is unbound.
 
---GPJrCs/72TxItFYR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Fixes: c7299fea6769 ("spi: Fix spi device unregister flow")
+Reported-by: Lukas Wunner <lukas@wunner.de>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
 
-On Tue, May 04, 2021 at 02:32:35PM -0500, Madhavan T. Venkataraman wrote:
+v1->v2:
+- Made the clean up more symmetric. 
 
-> If you prefer, I could do something like this:
->=20
-> check_pc:
-> 	if (!__kernel_text_address(frame->pc))
-> 		frame->reliable =3D false;
->=20
-> 	range =3D lookup_range(frame->pc);
->=20
-> #ifdef CONFIG_FUNCTION_GRAPH_TRACER
-> 	if (tsk->ret_stack &&
-> 		frame->pc =3D=3D (unsigned long)return_to_handler) {
-> 		...
-> 		frame->pc =3D ret_stack->ret;
-> 		frame->pc =3D ptrauth_strip_insn_pac(frame->pc);
-> 		goto check_pc;
-> 	}
-> #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
+Lukas,
 
-> Is that acceptable?
+Can you test this one your end to make sure you don't have issues
+anymore?
 
-I think that works even if it's hard to love the goto, might want some
-defensiveness to ensure we can't somehow end up in an infinite loop with
-a sufficiently badly formed stack.
+Thanks,
+Saravana
 
---GPJrCs/72TxItFYR
-Content-Type: application/pgp-signature; name="signature.asc"
+ drivers/spi/spi.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 2350d131871b..f23e288e6498 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -714,8 +714,6 @@ void spi_unregister_device(struct spi_device *spi)
+ 	if (!spi)
+ 		return;
+ 
+-	spi_cleanup(spi);
+-
+ 	if (spi->dev.of_node) {
+ 		of_node_clear_flag(spi->dev.of_node, OF_POPULATED);
+ 		of_node_put(spi->dev.of_node);
+@@ -723,7 +721,9 @@ void spi_unregister_device(struct spi_device *spi)
+ 	if (ACPI_COMPANION(&spi->dev))
+ 		acpi_device_clear_enumerated(ACPI_COMPANION(&spi->dev));
+ 	device_remove_software_node(&spi->dev);
+-	device_unregister(&spi->dev);
++	device_del(&spi->dev);
++	spi_cleanup(spi);
++	put_device(&spi->dev);
+ }
+ EXPORT_SYMBOL_GPL(spi_unregister_device);
+ 
+-- 
+2.31.1.527.g47e6f16901-goog
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCSy/cACgkQJNaLcl1U
-h9ABjAf/fEFuQnVM2PvVSSZ12g8EU3JD2pWnZUmAS5BwePbK0p37pAFxtY+RmvAQ
-DwaiqGBi0F7QP8FToXUPDsds7X9jQy8+8yHMNbt878ScDIz5SKNuR29m2ADQ/cKr
-OZD8Jv3poTDRDVUNequtEEqt4T+90tBlCN6ZKBlxH7wV2ArU3cUJ8Oa/vQyouyoc
-VPzvPAZY1zupyPtDNPzK31AkkyWhhmOZJmckQuJ1p8KC5aKZCRcEvmPA5jX9QYvq
-oesi89rEjZVhXphISnELRwpfcvJx/O203iRhTbuJ06nU/KxZLBXWAmj/vaXhggog
-jAkfptyHcleFuFCNNsKFLCY3o/TQ6A==
-=fJrE
------END PGP SIGNATURE-----
-
---GPJrCs/72TxItFYR--
