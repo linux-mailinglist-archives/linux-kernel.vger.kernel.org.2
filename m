@@ -2,101 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF4DB373CAF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A523373CB1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:51:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhEENwV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:52:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57682 "EHLO
+        id S233218AbhEENwp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:52:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232967AbhEENwU (ORCPT
+        with ESMTP id S229559AbhEENwo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:52:20 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3E29C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 06:51:23 -0700 (PDT)
-From:   Kurt Kanzenbach <kurt@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620222680;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/GpEF2bVEbo7bj/SJzowkKdzRgfe0IpPQJ2B862nEM=;
-        b=Sdfnx0qT+frgFt3WojN//pyQPVdFA4i/5lN60UIdfGxKractshbvX5Xf6G9VxUplYoYZGu
-        0oQ11vlS9ESYe9buWyHgqV5v4KK1zQknLDlOWitgOwktMF7SYJ8jQreHdY8qqRwRbNwSkD
-        qRBEPAMp580HZGGXG9da8dSWczi0WOzyKLja8BJIvC8pwTS02lFu1rI0y+ep8l6pSXwaCb
-        RgW47UFQSwQdHgMN+Onmmibz1SSEED2SYJnMDQZRcc99zaCDsQfwQinh0Gb1/xog3G4ifC
-        3rT0TLx3kI78bVBnS/evqS+OU4QrZA1rtRssCJ0i30QGwS4cQs6DySHZjqgJoA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620222680;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=g/GpEF2bVEbo7bj/SJzowkKdzRgfe0IpPQJ2B862nEM=;
-        b=+KZbvEO3QELFUwQ3py8+7t1a1IcV7Q+x27LyH9iEk9yWnZbUx5/os5+Sny7RRwAby3umCx
-        akxCwAzjh7kdsVCQ==
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Adhemerval Zanella <adhemerval.zanella@linaro.org>,
-        Lukasz Majewski <lukma@denx.de>,
-        Florian Weimer <fweimer@redhat.com>,
-        Carlos O'Donell <carlos@redhat.com>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Ingo Molnar <mingo@kernel.org>,
-        Darren Hart <dvhart@infradead.org>,
-        Andrei Vagin <avagin@gmail.com>
-Subject: Re: [patch 0/6] futex: Bugfixes and FUTEX_LOCK_PI2
-In-Reply-To: <YJKWt2vlr74WR5tx@hirez.programming.kicks-ass.net>
-References: <20210422194417.866740847@linutronix.de>
- <YJKWt2vlr74WR5tx@hirez.programming.kicks-ass.net>
-Date:   Wed, 05 May 2021 15:51:18 +0200
-Message-ID: <87r1ilp9ux.fsf@kurt>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+        Wed, 5 May 2021 09:52:44 -0400
+Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05690C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 06:51:47 -0700 (PDT)
+Received: by mail-pj1-x102e.google.com with SMTP id gc22-20020a17090b3116b02901558435aec1so866457pjb.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 06:51:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Y/CTAKzIuKeVAsurTNZSFbDEWvUN/AwDAFxmJzT0nms=;
+        b=DzLLaMj0Lgx87w3BkIp+4MM6snNJ3/HHV9Br/aXaoQ6STJzye4LzYr7fEo7rgJZ1N0
+         I+ZtIViGeIAHvW/5E+y5JXHyhxn1+cT7fAmIECDhctapolarb/SuJJ1vPA3w73H0qFP+
+         dRZtiWpAqOxlVvork+QFV6UDrHEf64x2or9xhCKbs3Sv//fYBhJ3WSJUDEPqcUK20JqP
+         MpuXYe4md0vxSoYw8m27rdCX5krP3FefqKc2wRyqcdjrGMQiTO3WGk9R69y+Ga50BawI
+         oP3Vo7Fzx+SosIprPRa9TvcjTXuorypGTPufqxZ41CVdbxoJ3mxzmjPxqkN78/kgZE4J
+         l8hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Y/CTAKzIuKeVAsurTNZSFbDEWvUN/AwDAFxmJzT0nms=;
+        b=iCqgCgv3tpX9GaGIKRVMkmoRhG8Yue9ytIYq+M4mIiHnGTBWMifIXNj52iLzA0qenP
+         kHrbGiSJk0CM6aFRKxeVnr5b4s/S4Ze21qK1sX4D2fSJ7wsIXLjZP4BCpHw+LKWXlKxd
+         NftcyMtvP51Wu88Cj7JsyuYpguxENSfnjWjNSGk6qqLrRu3WZQ4mJ54Vc7Hb4gx4EvwM
+         khLu+Z4pE2J1eJe567e0AGxsGeY50isQHBWqsPiVrRxRPmU/tFgKQeCjUE46jNqV24eP
+         kMMZV8CepOP8+8TD2cXBXYJ+BuHDNwb4TIpd/jNLQ9rbJ8BbcASIABJDhXqAUjRL/qsV
+         lYwg==
+X-Gm-Message-State: AOAM533cScugBV0LgQFef7YtzuC2jHQfL2Hmh7QfRE/bhgJQ3LEX+PTC
+        fvz70mWVjP+uQk9LrcCH9XM=
+X-Google-Smtp-Source: ABdhPJyihmU5ExVbrYRHhfLgBX8BHyp1NDS00U+1r3h2pHSTIjrj79btLDXclBTy8wdLyvBcqmGylg==
+X-Received: by 2002:a17:902:a9cb:b029:ed:61be:2cfb with SMTP id b11-20020a170902a9cbb02900ed61be2cfbmr31581689plr.9.1620222706620;
+        Wed, 05 May 2021 06:51:46 -0700 (PDT)
+Received: from localhost ([39.182.0.127])
+        by smtp.gmail.com with ESMTPSA id p36sm1880987pgm.74.2021.05.05.06.51.45
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 05 May 2021 06:51:46 -0700 (PDT)
+From:   Mingzhe Yang <cainiao666999@gmail.com>
+To:     tglx@linutronix.de, peterz@infradead.org
+Cc:     linux-kernel@vger.kernel.org,
+        Mingzhe Yang <cainiao666999@gmail.com>
+Subject: [PATCH] linux/interrupt.h: fix checkpatch errors
+Date:   Wed,  5 May 2021 21:51:36 +0800
+Message-Id: <20210505135136.14606-1-cainiao666999@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
+This patch cleans several checkpatch errors in the header file.
 
-On Wed May 05 2021, Peter Zijlstra wrote:
-> It's all somewhat sad, but I don't see any other way out of this. Using
-> LOCK_PI2 will be a fairly horrible pile of hacks on the userspace side
-> of things given they need to first detect it's presence etc., but that
-> seems unavoidable whatever we do :/
+Signed-off-by: Mingzhe Yang <cainiao666999@gmail.com>
+---
+ include/linux/interrupt.h | 18 +++++++-----------
+ 1 file changed, 7 insertions(+), 11 deletions(-)
 
-Well, that's the interesting point. I do have such horrible hacks for
-glibc, which detect the presence of LOCK_PI2 at run time. However, the
-glibc has also the notion of kernel features based on the Linux kernel
-version. Then, it could be detected at compile time. At the end of the
-day it depends on how this patch set is merged. I was hoping for the
-glibc folks to share their opinion on this :-).
+diff --git a/include/linux/interrupt.h b/include/linux/interrupt.h
+index 4777850..b9d6a8a 100644
+--- a/include/linux/interrupt.h
++++ b/include/linux/interrupt.h
+@@ -529,7 +529,7 @@ extern int irq_set_irqchip_state(unsigned int irq, enum irqchip_irq_state which,
+  * implement the following hook.
+  */
+ #ifndef hard_irq_disable
+-#define hard_irq_disable()	do { } while(0)
++#define hard_irq_disable()	do { } while (0)
+ #endif
+ 
+ /* PLEASE, avoid to allocate new softirqs, if you need not _really_ high
+@@ -538,9 +538,8 @@ extern int irq_set_irqchip_state(unsigned int irq, enum irqchip_irq_state which,
+    al. should be converted to tasklets, not to softirqs.
+  */
+ 
+-enum
+-{
+-	HI_SOFTIRQ=0,
++enum {
++	HI_SOFTIRQ = 0,
+ 	TIMER_SOFTIRQ,
+ 	NET_TX_SOFTIRQ,
+ 	NET_RX_SOFTIRQ,
+@@ -565,8 +564,7 @@ enum
+  * asm/hardirq.h to get better cache usage.  KAO
+  */
+ 
+-struct softirq_action
+-{
++struct softirq_action {
+ 	void	(*action)(struct softirq_action *);
+ };
+ 
+@@ -610,8 +608,7 @@ static inline struct task_struct *this_cpu_ksoftirqd(void)
+      he makes it with spinlocks.
+  */
+ 
+-struct tasklet_struct
+-{
++struct tasklet_struct {
+ 	struct tasklet_struct *next;
+ 	unsigned long state;
+ 	atomic_t count;
+@@ -652,8 +649,7 @@ struct tasklet_struct name = {				\
+ 	.func = _func,					\
+ }
+ 
+-enum
+-{
++enum {
+ 	TASKLET_STATE_SCHED,	/* Tasklet is scheduled for execution */
+ 	TASKLET_STATE_RUN	/* Tasklet is running (SMP only) */
+ };
+@@ -755,7 +751,7 @@ extern void tasklet_setup(struct tasklet_struct *t,
+  * if more than one irq occurred.
+  */
+ 
+-#if !defined(CONFIG_GENERIC_IRQ_PROBE) 
++#if !defined(CONFIG_GENERIC_IRQ_PROBE)
+ static inline unsigned long probe_irq_on(void)
+ {
+ 	return 0;
+-- 
+1.8.3.1
 
-Thanks,
-Kurt
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJHBAEBCgAxFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAmCSotYTHGt1cnRAbGlu
-dXRyb25peC5kZQAKCRB5KluBy5jwpkMYD/9qkV+sIhhArxSY4O1HZ+J+Ee80F5JB
-HMPssquvl7wr7a3ghR5ri0xo0/3OkVoK4n7bJ6nr1I0aECvqfEz5ha319rbLtxgV
-2MMu7OLJYKZY5Mnf3pXFwMOst4Vr8aSb31vAxccSLFttTMaq6RajsaMzl9Be33WH
-yjv/qANort61mNn1VwjX89kzi/5joDItkGUenp3XDf1sj4yDZpXaXE2fULfakCV3
-zyBiLMtboEyybyTxNzi3vo93bte4KCa68gq3F8YAac03eXXR4qy22pAQnodz1nQt
-jNgMu29MgYoms0HmoOYZf2rRZRjaxVJyWINdcGYbSLUt2fmwlY542Dspk+Of7SDa
-6SvqvLERk959fZSxl7NLl0YauNKatmif5uaj6ILzaPxqIuoqXLUOar/g99xNqZ9g
-ENABEZI4FBMcamXI4MIOOdpqiTVJYJhAdO5q9CXfZxAolulWU8wMS0FeFGnY17FZ
-T1x9i+Pmr7uFugIQCq1Wglgya/58YaO3DzmtDxZo01pN2bEk3x1lWWvDaGZSQHXd
-X2EvzVb8yHpBCnpFtl7SM9ACq5onEKaKiGBRC5t+CcPJzlO9D8E30sLfD2cWNCgy
-dC78eO+AN5VSLfDqw8BgDf8Z7y9dql3SWcECeluYziQ7I7+UxhXvmKAWslvRd5om
-KfzStgm74Vc8tA==
-=Lpy5
------END PGP SIGNATURE-----
---=-=-=--
