@@ -2,133 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D928B37337E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:13:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C15A7373383
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:17:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231876AbhEEBOf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 21:14:35 -0400
-Received: from mail108.syd.optusnet.com.au ([211.29.132.59]:36043 "EHLO
-        mail108.syd.optusnet.com.au" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231408AbhEEBOc (ORCPT
+        id S231790AbhEEBSC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 21:18:02 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:59385 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230328AbhEEBSB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 21:14:32 -0400
-Received: from dread.disaster.area (pa49-179-143-157.pa.nsw.optusnet.com.au [49.179.143.157])
-        by mail108.syd.optusnet.com.au (Postfix) with ESMTPS id C72B31AF823;
-        Wed,  5 May 2021 11:13:32 +1000 (AEST)
-Received: from dave by dread.disaster.area with local (Exim 4.92.3)
-        (envelope-from <david@fromorbit.com>)
-        id 1le66V-003pXr-Mo; Wed, 05 May 2021 11:13:31 +1000
-Date:   Wed, 5 May 2021 11:13:31 +1000
-From:   Dave Chinner <david@fromorbit.com>
-To:     Muchun Song <songmuchun@bytedance.com>
-Cc:     Roman Gushchin <guro@fb.com>, Matthew Wilcox <willy@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Yang Shi <shy828301@gmail.com>, alexs@kernel.org,
-        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
-        Wei Yang <richard.weiyang@gmail.com>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: [External] Re: [PATCH 0/9] Shrink the list lru size on memory
- cgroup removal
-Message-ID: <20210505011331.GM1872259@dread.disaster.area>
-References: <20210428094949.43579-1-songmuchun@bytedance.com>
- <20210430004903.GF1872259@dread.disaster.area>
- <YItf3GIUs2skeuyi@carbon.dhcp.thefacebook.com>
- <20210430032739.GG1872259@dread.disaster.area>
- <CAMZfGtXawtMT4JfBtDLZ+hES4iEHFboe2UgJee_s-NhZR5faAw@mail.gmail.com>
- <20210502235843.GJ1872259@dread.disaster.area>
- <CAMZfGtVK2Sracf=ongpNJqacafmC2ZsNy-KxEL67fVCAGXz3xA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMZfGtVK2Sracf=ongpNJqacafmC2ZsNy-KxEL67fVCAGXz3xA@mail.gmail.com>
-X-Optus-CM-Score: 0
-X-Optus-CM-Analysis: v=2.3 cv=Tu+Yewfh c=1 sm=1 tr=0
-        a=I9rzhn+0hBG9LkCzAun3+g==:117 a=I9rzhn+0hBG9LkCzAun3+g==:17
-        a=kj9zAlcOel0A:10 a=5FLXtPjwQuUA:10 a=7-415B0cAAAA:8
-        a=sqVQysubuN6EyXWE9wQA:9 a=CjuIK1q_8ugA:10 a=biEYGPWJfzWAr4FL6Ov7:22
+        Tue, 4 May 2021 21:18:01 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.west.internal (Postfix) with ESMTP id BEABC1894;
+        Tue,  4 May 2021 21:17:04 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Tue, 04 May 2021 21:17:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=O5REtwqvgt8KsIaYaZnDGcg20cB2UjM
+        nPfZ6Ty5OO+0=; b=TpqN/m6HLdmUdxpIzKonFN6eq/4P59qcgXTzO5BsfOqIq+E
+        kwpNe+ueTJPA7n//4beb46D/IZ+CFGF1VegZpYCl3+Y61DlzDbr8m0SqQwisTnd9
+        EhSSH5LIfJqF8F12/DmsL5YwFzFg6NbKBE3mh1r2Qu8RP9SwJlaue9l/LWsZG0kZ
+        pNhPbofTIv+8PXWTxibhV9JjMavJi+hw1ZplrqaBYNsxZ0DzhxpIC/Hv8Ar1qrDe
+        depPqNM+r6q7aZC0YMfAvCoVdz0JKKRH04u3nqkoj+CuiZbP2UmcuGIE0Rfufthi
+        5+UvHtcqBSn7iSm9mxt6Z3UrpK+hPqMEdDlgKJg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=O5REtw
+        qvgt8KsIaYaZnDGcg20cB2UjMnPfZ6Ty5OO+0=; b=I/CKbZypZ55gje+EEqjuai
+        xwRiD1jPAsI6MdbLl8UduJyldQiBEjPJwEEw3fV9pGwtrTcJl//7lWaBuoBvNglJ
+        T+EAhyRFV73lchsBtLppQYZ234ovcbzWUP+qGllMrMP0Y0UmdcP4obi8k9TyuCUE
+        J3wfWqGoBpGqhVMDD3+sUY7hdvl9GFIkcQT0I8XRR2mFzVG4Z1w4ews4MStHbqSs
+        HttsPr9AVSzmElF6J3AjpMnGT9bxSR8CNZYq6SEYDDCuQPNvv4bC9zMFRBDAAHP/
+        KPnxGHHxjXZMMzl7tphs/R373FTGzmIH5TN1gMy4q75Jbmxs3fwhTfSxXQAePU6A
+        ==
+X-ME-Sender: <xms:D_KRYCXXfKi6EEIA6F6mTTItmmuUfyQYFVUa0-lnZyuaYsL1dQWUag>
+    <xme:D_KRYOn0hJpPxc_fNQWD74nV8M74Oqgo9k3IKOPCf18vk8tC2KKMGYzRZFrbg_Z4U
+    lva2t2uO1j4GDpzWQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdefjedgfeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdetnhgu
+    rhgvficulfgvfhhfvghrhidfuceorghnughrvgifsegrjhdrihgurdgruheqnecuggftrf
+    grthhtvghrnhepvefgvdevfeelfeejgeegfeevjeejhfdvtdeffeejgeetueelgfekudek
+    teeiteejnecuffhomhgrihhnpehrshhtrdgttgdpkhgvrhhnvghlrdhorhhgnecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvgifsegr
+    jhdrihgurdgruh
+X-ME-Proxy: <xmx:D_KRYGb10Qq0pwI5X9Bj54iRIFzPF8aqrLLvL60e5TIvLfrycXFcfQ>
+    <xmx:D_KRYJWMyjA1busrACJs4fpO-Grvh1DBCVWzkZ2OQ3enHnhynIQvcg>
+    <xmx:D_KRYMl9K8w3ILRrpdcQKjZ2dRYYIdCgka_yK283RwcpvEsI-7u1aQ>
+    <xmx:EPKRYG4DIQ3iMwpZXjR0fGrDVAeEo3fshbSXaXnTw3mNjFGGbnsAIJ0IsHQ>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 2BF85A00079; Tue,  4 May 2021 21:17:03 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-442-g5daca166b9-fm-20210428.001-g5daca166
+Mime-Version: 1.0
+Message-Id: <f3427072-4dc4-47c8-a681-4f37e3c440e2@www.fastmail.com>
+In-Reply-To: <892dfd15-a8f7-9db9-86bb-9630e88e0e3c@infradead.org>
+References: <20210503163409.31944-1-rdunlap@infradead.org>
+ <e899781c-304c-4494-a544-e3950e928e55@www.fastmail.com>
+ <892dfd15-a8f7-9db9-86bb-9630e88e0e3c@infradead.org>
+Date:   Wed, 05 May 2021 10:46:41 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Randy Dunlap" <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org
+Cc:     "kbuild test robot" <lkp@intel.com>, linux-aspeed@lists.ozlabs.org,
+        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
+        "Tony Luck" <tony.luck@intel.com>,
+        "Borislav Petkov" <bp@alien8.de>,
+        "Stefan M Schaeckeler" <sschaeck@cisco.com>,
+        "Borislav Petkov" <bp@suse.de>, linux-edac@vger.kernel.org,
+        "Arnd Bergmann" <arnd@kernel.org>
+Subject: Re: [PATCH] EDAC: aspeed: print resource_size_t using %pa
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 02:33:21PM +0800, Muchun Song wrote:
-> On Mon, May 3, 2021 at 7:58 AM Dave Chinner <david@fromorbit.com> wrote:
-> > > If the user wants to insert the allocated object to its lru list in
-> > > the feature. The
-> > > user should use list_lru_kmem_cache_alloc() instead of kmem_cache_alloc().
-> > > I have looked at the code closely. There are 3 different kmem_caches that
-> > > need to use this new API to allocate memory. They are inode_cachep,
-> > > dentry_cache and radix_tree_node_cachep. I think that it is easy to migrate.
-> >
-> > It might work, but I think you may have overlooked the complexity
-> > of inode allocation for filesystems. i.e.  alloc_inode() calls out
-> > to filesystem allocation functions more often than it allocates
-> > directly from the inode_cachep.  i.e.  Most filesystems provide
-> > their own ->alloc_inode superblock operation, and they allocate
-> > inodes out of their own specific slab caches, not the inode_cachep.
+
+
+On Tue, 4 May 2021, at 14:37, Randy Dunlap wrote:
+> On 5/3/21 9:57 PM, Andrew Jeffery wrote:
+> > 
+> > 
+> > On Tue, 4 May 2021, at 02:04, Randy Dunlap wrote:
+> >> Fix build warnings for using "%x" to print resource_size_t in 2 places.
+> >> resource_size_t can be either of u32 or u64. We have a special format
+> >> "%pa" for printing a resource_size_t, which is the same as a phys_addr_t.
+> >> See Documentation/core-api/printk-formats.rst.
+> >>
+> >>   CC      drivers/edac/aspeed_edac.o
+> >> ../drivers/edac/aspeed_edac.c: In function 'init_csrows':
+> >> ../drivers/edac/aspeed_edac.c:257:21: warning: format '%x' expects 
+> >> argument of type 'unsigned int', but argument 4 has type 
+> >> 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+> >>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> >> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> >>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> >> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> >>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> >> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> >> ../drivers/edac/aspeed_edac.c:257:21: warning: format '%x' expects 
+> >> argument of type 'unsigned int', but argument 5 has type 
+> >> 'resource_size_t' {aka 'long long unsigned int'} [-Wformat=]
+> >>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> >> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> >>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> >> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> >>   257 |  dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> >> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> >>
+> >> Fixes: 9b7e6242ee4e ("EDAC, aspeed: Add an Aspeed AST2500 EDAC driver")
+> >> Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+> >> Reported-by: kernel test robot <lkp@intel.com>
+> >> Cc: Troy Lee <troy_lee@aspeedtech.com>
+> >> Cc: Stefan Schaeckeler <sschaeck@cisco.com>
+> >> Cc: linux-edac@vger.kernel.org
+> >> Cc: Borislav Petkov <bp@alien8.de>
+> >> Cc: Borislav Petkov <bp@suse.de>
+> >> Cc: Mauro Carvalho Chehab <mchehab@kernel.org>
+> >> Cc: Tony Luck <tony.luck@intel.com>
+> >> Cc: linux-aspeed@lists.ozlabs.org
+> >> ---
+> >> Found in linux-next but applies to mainline.
+> > 
+> >>
+> >>  drivers/edac/aspeed_edac.c |    8 +++++---
+> >>  1 file changed, 5 insertions(+), 3 deletions(-)
+> >>
+> >> --- linux-next-20210503.orig/drivers/edac/aspeed_edac.c
+> >> +++ linux-next-20210503/drivers/edac/aspeed_edac.c
+> >> @@ -234,6 +234,7 @@ static int init_csrows(struct mem_ctl_in
+> >>  	u32 nr_pages, dram_type;
+> >>  	struct dimm_info *dimm;
+> >>  	struct device_node *np;
+> >> +	resource_size_t rsize;
+> >>  	struct resource r;
+> >>  	u32 reg04;
+> >>  	int rc;
+> >> @@ -254,11 +255,12 @@ static int init_csrows(struct mem_ctl_in
+> >>  		return rc;
+> >>  	}
+> >>  
+> >> -	dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> >> r.start=0x%x, resource_size=0x%x, PAGE_SHIFT macro=0x%x\n",
+> >> -		r.start, resource_size(&r), PAGE_SHIFT);
+> >> +	rsize = resource_size(&r);
+> >> +	dev_dbg(mci->pdev, "dt: /memory node resources: first page 
+> >> r.start=0x%pa, resource_size=0x%pa, PAGE_SHIFT macro=0x%x\n",
+> >> +		&r.start, &rsize, PAGE_SHIFT);
+> > 
+> > Arnd posted a fix a few days back that feels more intuitive, though 
+> > probably could have cleaned up the grammar:
+> > 
+> > https://lore.kernel.org/lkml/20210421135500.3518661-1-arnd@kernel.org/
 > 
-> I didn't realize this before. You are right. Most filesystems
-> have their own kmem_cache instead of inode_cachep.
-> We need a lot of filesystems special to be changed.
-> Thanks for your reminder.
-> 
-> >
-> > And then you have filesystems like XFS, where alloc_inode() will
-> > never be called, and implement ->alloc_inode as:
-> >
-> > /* Catch misguided souls that try to use this interface on XFS */
-> > STATIC struct inode *
-> > xfs_fs_alloc_inode(
-> >         struct super_block      *sb)
-> > {
-> >         BUG();
-> >         return NULL;
-> > }
-> >
-> > Because all the inode caching and allocation is internal to XFS and
-> > VFS inode management interfaces are not used.
-> >
-> > So I suspect that an external wrapper function is not the way to go
-> > here - either internalising the LRU management into the slab
-> > allocation or adding the memcg code to alloc_inode() and filesystem
-> > specific routines would make a lot more sense to me.
-> 
-> Sure. If we introduce kmem_cache_alloc_lru, all filesystems
-> need to migrate to kmem_cache_alloc_lru. I cannot figure out
-> an approach that does not need to change filesystems code.
+> Oh, that's fine. I just missed it. :(
 
-Right, I don't think there's a way to avoid changing all the
-filesystem code if we are touching the cache allocation routines.
-However, if we hide it all inside the allocation routine, then
-the changes to each filesystem is effectively just a 1-liner like:
+No worries, I was a bit short there as I was in a rush. I certainly 
+don't expect you to go looking for Arnd's patch without knowing it 
+exists :)
 
--	inode = kmem_cache_alloc(inode_cache, GFP_NOFS);
-+	inode = kmem_cache_alloc_lru(inode_cache, sb->s_inode_lru, GFP_NOFS);
-
-Or perhaps, define a generic wrapper function like:
-
-static inline void *
-alloc_inode_sb(struct superblock *sb, struct kmem_cache *cache, gfp_flags_t gfp)
-{
-	return kmem_cache_alloc_lru(cache, sb->s_inode_lru, gfp);
-}
-
-And then each filesystem ends up with:
-
--	inode = kmem_cache_alloc(inode_cache, GFP_NOFS);
-+	inode = alloc_inode_sb(sb, inode_cache, GFP_NOFS);
-
-so that all the superblock LRU stuff is also hidden from the
-filesystems...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Andrew
