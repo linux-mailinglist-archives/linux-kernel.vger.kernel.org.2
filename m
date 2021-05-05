@@ -2,181 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0C743736CF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:11:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6102F3736D3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:12:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232300AbhEEJMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:12:07 -0400
-Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:55207 "EHLO
-        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232091AbhEEJMF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:12:05 -0400
-Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
-        by smtp-cloud7.xs4all.net with ESMTPA
-        id eDYdlkXMLyEWweDYglukBU; Wed, 05 May 2021 11:11:07 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
-        t=1620205867; bh=SxgYb14ClndkCKGy9k2rbObXxdvwXYY3UatDeaUJVuw=;
-        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
-         Subject;
-        b=mSSx2oI+rD14wX/Qm6rXHTkbZp5E6KVIr2v7Y/ARJ9/bxeGyNAt3qZNG6PBVLxRsf
-         fG5H2T9rJpWtfHd1VFE/uKd0NSeGCMz0+9x+g+gv8lAZt8ZnjNNfOxrcQgGeOx1fuw
-         RNnWON/vSNQZeq4X2vyx9avs7EOSlFMWLXUSsXuJeI5XaLRfVLPnsNqZQyY5piObAO
-         nk94E3VeJQSHsFEXlFvfz74VPHlOOUeWnpU0ZqfZ23uVxlApg0Q1NdcMpSl2tKSv4V
-         tUy+hNQEhKilLBH1Lv08GD46tuAcNTIHwt9b0lVq8jvZAr8P5vhCoTUw2aVZ/hdh6H
-         aK5+WurgJdJMg==
-Subject: Re: [PATCH] media: gspca: stv06xx: Fix memleak in stv06xx subdrivers
-To:     Shuah Khan <skhan@linuxfoundation.org>,
-        Pavel Skripkin <paskripkin@gmail.com>
-Cc:     Atul Gopinathan <atulgopinathan@gmail.com>,
-        syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com,
-        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-        mchehab@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-media@vger.kernel.org
-References: <20210422160742.7166-1-atulgopinathan@gmail.com>
- <20210422215511.01489adb@gmail.com>
- <36f126fc-6a5e-a078-4cf0-c73d6795a111@linuxfoundation.org>
- <20210423234458.3f754de2@gmail.com>
- <4c22cfa5-5702-6181-0f9a-d1d8d4041156@linuxfoundation.org>
-From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Message-ID: <e8f45770-76c1-22d3-0960-03e2965b79ab@xs4all.nl>
-Date:   Wed, 5 May 2021 11:11:03 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Firefox/78.0 Thunderbird/78.9.0
+        id S232314AbhEEJNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:13:32 -0400
+Received: from mga04.intel.com ([192.55.52.120]:19248 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231936AbhEEJNa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 05:13:30 -0400
+IronPort-SDR: s4P7TMxYmTZxNPR+SeYbanlZ0yz1UIclEZPIlsf062zEQnd0z53AJz5MS3UNhwRnV3hggJKDrL
+ +qM7fyzE4VIQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="196129227"
+X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
+   d="scan'208";a="196129227"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 02:12:32 -0700
+IronPort-SDR: FHY1UjCWM1i+q6AwPNEfcZZEmNrfOJsoYEmWpeuFFmSsiYjWeNnKwhaY+1zJgKZK0pjDatF5Yb
+ ifmEUPzuloZw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,274,1613462400"; 
+   d="scan'208";a="531640829"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 05 May 2021 02:12:27 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Wed, 05 May 2021 12:12:26 +0300
+Date:   Wed, 5 May 2021 12:12:26 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     linux@roeck-us.net, gregkh@linuxfoundation.org, badhri@google.com,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated
+ work
+Message-ID: <YJJhej9fpS5s8JTP@kuha.fi.intel.com>
+References: <20210504135622.3965148-1-kyletso@google.com>
 MIME-Version: 1.0
-In-Reply-To: <4c22cfa5-5702-6181-0f9a-d1d8d4041156@linuxfoundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CMAE-Envelope: MS4xfFtNF0AOKSec5MD9by5lOuaECiQ8FyLuep91fSEXbKDbjWNqLjdt+YfLJqNpk4I2vpTyPL+BEJhlJFJP2zENP6njY4zsa9WhIGnl0E0wMO6+xockKQ31
- l0eFT5/KSYtNLGbxbrGT8hsPsmF6gy73tvnMmLF8sB5wnskYrUnEBQp/BxRZh5Dwcfk7y2RpbZZNAiqC2o1hCt9G6QkOCXn7XjRUJjtKi+kqMf8THm1zMxwy
- HLeH4GrOrTbL5Vn4xloy1EYTv3eSwgn7o+Sdl5aAH0cwH4dtovT7fKAaVRaOZLNb0I7pvGYFcWAoUalLwMYgOxCjOykN/Q3fY7zirisR+9lQJ9Xqw3q3XJgU
- wsNw8glPWYBZLwaVkCDxMt34p0g29FIScneBLNy+Vtv5ZPcGZhCRS+2NdPZYGLZAiOrgN+6GHM2evp5FMF3YW/Xf32DDBPMRQpY1r5qxVePeyn9tNL9q1QIn
- 4kbJtxEkUgqJH044RDjQRI8USpOkp/f27qQ40HH/c0ixKupd9ZibALBlpIJ5Imy1wWxF3CVZ4SFugnCDV/yusCjVLhd7xl7ulH3kLg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504135622.3965148-1-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/04/2021 22:56, Shuah Khan wrote:
-> On 4/23/21 2:44 PM, Pavel Skripkin wrote:
->> Hi!
->>
->> On Fri, 23 Apr 2021 14:19:15 -0600
->> Shuah Khan <skhan@linuxfoundation.org> wrote:
->>> On 4/22/21 12:55 PM, Pavel Skripkin wrote:
->>>> Hi!
->>>>
->>>> On Thu, 22 Apr 2021 21:37:42 +0530
->>>> Atul Gopinathan <atulgopinathan@gmail.com> wrote:
->>>>> During probing phase of a gspca driver in "gspca_dev_probe2()", the
->>>>> stv06xx subdrivers have certain sensor variants (namely, hdcs_1x00,
->>>>> hdcs_1020 and pb_0100) that allocate memory for their respective
->>>>> sensor which is passed to the "sd->sensor_priv" field. During the
->>>>> same probe routine, after "sensor_priv" allocation, there are
->>>>> chances of later functions invoked to fail which result in the
->>>>> probing routine to end immediately via "goto out" path. While
->>>>> doing so, the memory allocated earlier for the sensor isn't taken
->>>>> care of resulting in memory leak.
->>>>>
->>>>> Fix this by adding operations to the gspca, stv06xx and down to the
->>>>> sensor levels to free this allocated memory during gspca probe
->>>>> failure.
->>>>>
->>>>> -
->>>>> The current level of hierarchy looks something like this:
->>>>>
->>>>> 	gspca (main driver) represented by struct gspca_dev
->>>>> 	   |
->>>>> ___________|_____________________________________
->>>>> |	|	|	|	|		| (subdrivers)
->>>>> 			|			  represented
->>>>>    			stv06xx			  by
->>>>> "struct sd" |
->>>>>    	 _______________|_______________
->>>>>    	 |	|	|	|	|  (sensors)
->>>>> 	 	|			|
->>>>>    		hdcs_1x00/1020		pb01000
->>>>> 			|_________________|
->>>>> 				|
->>>>> 			These three sensor variants
->>>>> 			allocate memory for
->>>>> 			"sd->sensor_priv" field.
->>>>>
->>>>> Here, "struct gspca_dev" is the representation used in the top
->>>>> level. In the sub-driver levels, "gspca_dev" pointer is cast to
->>>>> "struct sd*", something like this:
->>>>>
->>>>> 	struct sd *sd = (struct sd *)gspca_dev;
->>>>>
->>>>> This is possible because the first field of "struct sd" is
->>>>> "gspca_dev":
->>>>>
->>>>> 	struct sd {
->>>>> 		struct gspca_dev;
->>>>> 		.
->>>>> 		.
->>>>> 	}
->>>>>
->>>>> Therefore, to deallocate the "sd->sensor_priv" fields from
->>>>> "gspca_dev_probe2()" which is at the top level, the patch creates
->>>>> operations for the subdrivers and sensors to be invoked from the
->>>>> gspca driver levels. These operations essentially free the
->>>>> "sd->sensor_priv" which were allocated by the "config" and
->>>>> "init_controls" operations in the case of stv06xx sub-drivers and
->>>>> the sensor levels.
->>>>>
->>>>> This patch doesn't affect other sub-drivers or even sensors who
->>>>> never allocate memory to "sensor_priv". It has also been tested by
->>>>> syzbot and it returned an "OK" result.
->>>>>
->>>>> https://syzkaller.appspot.com/bug?id=ab69427f2911374e5f0b347d0d7795bfe384016c
->>>>> -
->>>>>
->>>>> Fixes: 4c98834addfe ("V4L/DVB (10048): gspca - stv06xx: New
->>>>> subdriver.") Cc: stable@vger.kernel.org
->>>>> Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
->>>>> Reported-by: syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com
->>>>> Tested-by: syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com
->>>>> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
->>>>
->>>> AFAIK, something similar is already applied to linux-media tree
->>>> https://git.linuxtv.org/media_tree.git/commit/?id=4f4e6644cd876c844cdb3bea2dd7051787d5ae25
->>>>
->>>
->>> Pavel,
->>>
->>> Does the above handle the other drivers hdcs_1x00/1020 and pb01000?
->>>
->>> Atul's patch handles those cases. If thoese code paths need to be
->>> fixes, Atul could do a patch on top of yours perhaps?
->>>
->>> thanks,
->>> -- Shuah
->>>
->>>
->>
->> It's not my patch. I've sent a patch sometime ago, but it was reject
->> by Mauro (we had a small discussion on linux-media mailing-list), then
->> Hans wrote the patch based on my leak discoverage.
->>
+On Tue, May 04, 2021 at 09:56:22PM +0800, Kyle Tso wrote:
+> In current design, DISCOVER_IDENTITY is queued to VDM state machine
+> immediately in Ready states and never retries if it fails in the AMS.
+> Move the process to a delayed work so that when it fails for some
+> reasons (e.g. Sink Tx No Go), it can be retried by queueing the work
+> again. Also fix a problem that the vdm_state is not set to a proper
+> state if it is blocked by Collision Avoidance mechanism.
 > 
-> Yes my bad. :)
+> Signed-off-by: Kyle Tso <kyletso@google.com>
+
+Acked-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+
+> ---
+>  drivers/usb/typec/tcpm/tcpm.c | 85 ++++++++++++++++++++++++++++++-----
+>  1 file changed, 75 insertions(+), 10 deletions(-)
 > 
->> I added Hans to CC, maybe, he will help :)
->>
-> 
-> Will wait for Hans to take a look.
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index c4fdc00a3bc8..07a449f0e8fa 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -259,6 +259,7 @@ enum frs_typec_current {
+>  #define ALTMODE_DISCOVERY_MAX	(SVID_DISCOVERY_MAX * MODE_DISCOVERY_MAX)
+>  
+>  #define GET_SINK_CAP_RETRY_MS	100
+> +#define SEND_DISCOVER_RETRY_MS	100
+>  
+>  struct pd_mode_data {
+>  	int svid_index;		/* current SVID index		*/
+> @@ -366,6 +367,8 @@ struct tcpm_port {
+>  	struct kthread_work vdm_state_machine;
+>  	struct hrtimer enable_frs_timer;
+>  	struct kthread_work enable_frs;
+> +	struct hrtimer send_discover_timer;
+> +	struct kthread_work send_discover_work;
+>  	bool state_machine_running;
+>  	bool vdm_sm_running;
+>  
+> @@ -1178,6 +1181,16 @@ static void mod_enable_frs_delayed_work(struct tcpm_port *port, unsigned int del
+>  	}
+>  }
+>  
+> +static void mod_send_discover_delayed_work(struct tcpm_port *port, unsigned int delay_ms)
+> +{
+> +	if (delay_ms) {
+> +		hrtimer_start(&port->send_discover_timer, ms_to_ktime(delay_ms), HRTIMER_MODE_REL);
+> +	} else {
+> +		hrtimer_cancel(&port->send_discover_timer);
+> +		kthread_queue_work(port->wq, &port->send_discover_work);
+> +	}
+> +}
+> +
+>  static void tcpm_set_state(struct tcpm_port *port, enum tcpm_state state,
+>  			   unsigned int delay_ms)
+>  {
+> @@ -1855,6 +1868,9 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+>  				res = tcpm_ams_start(port, DISCOVER_IDENTITY);
+>  				if (res == 0)
+>  					port->send_discover = false;
+> +				else if (res == -EAGAIN)
+> +					mod_send_discover_delayed_work(port,
+> +								       SEND_DISCOVER_RETRY_MS);
+>  				break;
+>  			case CMD_DISCOVER_SVID:
+>  				res = tcpm_ams_start(port, DISCOVER_SVIDS);
+> @@ -1880,6 +1896,7 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+>  			}
+>  
+>  			if (res < 0) {
+> +				port->vdm_state = VDM_STATE_ERR_BUSY;
+>  				port->vdm_sm_running = false;
+>  				return;
+>  			}
+> @@ -3682,14 +3699,6 @@ static inline enum tcpm_state unattached_state(struct tcpm_port *port)
+>  	return SNK_UNATTACHED;
+>  }
+>  
+> -static void tcpm_check_send_discover(struct tcpm_port *port)
+> -{
+> -	if ((port->data_role == TYPEC_HOST || port->negotiated_rev > PD_REV20) &&
+> -	    port->send_discover && port->pd_capable)
+> -		tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
+> -	port->send_discover = false;
+> -}
+> -
+>  static void tcpm_swap_complete(struct tcpm_port *port, int result)
+>  {
+>  	if (port->swap_pending) {
+> @@ -3926,7 +3935,18 @@ static void run_state_machine(struct tcpm_port *port)
+>  			break;
+>  		}
+>  
+> -		tcpm_check_send_discover(port);
+> +		/*
+> +		 * 6.4.4.3.1 Discover Identity
+> +		 * "The Discover Identity Command Shall only be sent to SOP when there is an
+> +		 * Explicit Contract."
+> +		 * For now, this driver only supports SOP for DISCOVER_IDENTITY, thus using
+> +		 * port->explicit_contract to decide whether to send the command.
+> +		 */
+> +		if (port->explicit_contract)
+> +			mod_send_discover_delayed_work(port, 0);
+> +		else
+> +			port->send_discover = false;
+> +
+>  		/*
+>  		 * 6.3.5
+>  		 * Sending ping messages is not necessary if
+> @@ -4194,7 +4214,18 @@ static void run_state_machine(struct tcpm_port *port)
+>  			break;
+>  		}
+>  
+> -		tcpm_check_send_discover(port);
+> +		/*
+> +		 * 6.4.4.3.1 Discover Identity
+> +		 * "The Discover Identity Command Shall only be sent to SOP when there is an
+> +		 * Explicit Contract."
+> +		 * For now, this driver only supports SOP for DISCOVER_IDENTITY, thus using
+> +		 * port->explicit_contract.
+> +		 */
+> +		if (port->explicit_contract)
+> +			mod_send_discover_delayed_work(port, 0);
+> +		else
+> +			port->send_discover = false;
+> +
+>  		power_supply_changed(port->psy);
+>  		break;
+>  
+> @@ -5288,6 +5319,29 @@ static void tcpm_enable_frs_work(struct kthread_work *work)
+>  	mutex_unlock(&port->lock);
+>  }
+>  
+> +static void tcpm_send_discover_work(struct kthread_work *work)
+> +{
+> +	struct tcpm_port *port = container_of(work, struct tcpm_port, send_discover_work);
+> +
+> +	mutex_lock(&port->lock);
+> +	/* No need to send DISCOVER_IDENTITY anymore */
+> +	if (!port->send_discover)
+> +		goto unlock;
+> +
+> +	/* Retry if the port is not idle */
+> +	if ((port->state != SRC_READY && port->state != SNK_READY) || port->vdm_sm_running) {
+> +		mod_send_discover_delayed_work(port, SEND_DISCOVER_RETRY_MS);
+> +		goto unlock;
+> +	}
+> +
+> +	/* Only send the Message if the port is host for PD rev2.0 */
+> +	if (port->data_role == TYPEC_HOST || port->negotiated_rev > PD_REV20)
+> +		tcpm_send_vdm(port, USB_SID_PD, CMD_DISCOVER_IDENT, NULL, 0);
+> +
+> +unlock:
+> +	mutex_unlock(&port->lock);
+> +}
+> +
+>  static int tcpm_dr_set(struct typec_port *p, enum typec_data_role data)
+>  {
+>  	struct tcpm_port *port = typec_get_drvdata(p);
+> @@ -6093,6 +6147,14 @@ static enum hrtimer_restart enable_frs_timer_handler(struct hrtimer *timer)
+>  	return HRTIMER_NORESTART;
+>  }
+>  
+> +static enum hrtimer_restart send_discover_timer_handler(struct hrtimer *timer)
+> +{
+> +	struct tcpm_port *port = container_of(timer, struct tcpm_port, send_discover_timer);
+> +
+> +	kthread_queue_work(port->wq, &port->send_discover_work);
+> +	return HRTIMER_NORESTART;
+> +}
+> +
+>  struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
+>  {
+>  	struct tcpm_port *port;
+> @@ -6123,12 +6185,15 @@ struct tcpm_port *tcpm_register_port(struct device *dev, struct tcpc_dev *tcpc)
+>  	kthread_init_work(&port->vdm_state_machine, vdm_state_machine_work);
+>  	kthread_init_work(&port->event_work, tcpm_pd_event_handler);
+>  	kthread_init_work(&port->enable_frs, tcpm_enable_frs_work);
+> +	kthread_init_work(&port->send_discover_work, tcpm_send_discover_work);
+>  	hrtimer_init(&port->state_machine_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+>  	port->state_machine_timer.function = state_machine_timer_handler;
+>  	hrtimer_init(&port->vdm_state_machine_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+>  	port->vdm_state_machine_timer.function = vdm_state_machine_timer_handler;
+>  	hrtimer_init(&port->enable_frs_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+>  	port->enable_frs_timer.function = enable_frs_timer_handler;
+> +	hrtimer_init(&port->send_discover_timer, CLOCK_MONOTONIC, HRTIMER_MODE_REL);
+> +	port->send_discover_timer.function = send_discover_timer_handler;
+>  
+>  	spin_lock_init(&port->pd_event_lock);
+>  
+> -- 
+> 2.31.1.527.g47e6f16901-goog
 
-Yes, my patch does the same as this patch, just a bit more concise.
-
-I'll drop this one.
-
-Regards,
-
-	Hans
-
-> 
-> thanks,
-> -- Shuah
-> 
-
+-- 
+heikki
