@@ -2,63 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF2C7373C67
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:28:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84A53373C6B
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:30:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233606AbhEEN3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:29:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38280 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232626AbhEEN3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:29:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6BF8D6121F;
-        Wed,  5 May 2021 13:28:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620221315;
-        bh=XruXOpQ6wk1MGWHgkFB3iuhkA4jJMCmzu3vUC8XzJ4M=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=LAp8N+NdGcNdSz6GCpw2RKH5cAZom5NPGkWRfuDBgtGEGlKf9N9H1d532wxCkTvDZ
-         mPq0clfTA5bR9uj5VRq2Z519SjX6NWuzQ4cptJ/fcLc4F6IafnJLXuJA2u6iG4rvKo
-         2QKFew52Y64dXnyatpNLJurU5z82xYzZLkk1QIyeedNxBbv/W6VlrUUl3V4QMrC7D4
-         1dso7sHv+uZcOMtFN5thYm/vgA/PmfeTw+qpXBz05fUzVcPKK5qDhyzcxcPHtA2aEj
-         jmacfjleFZTswaq11csddjymUpht9AAxQIkajSbJ0NEhdGCZoV3Kar9CdyKmdI4ICf
-         lNvIGqRtPCG6A==
-Date:   Wed, 5 May 2021 15:28:31 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
-cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        id S233340AbhEENbd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:31:33 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21395 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232101AbhEENbc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 09:31:32 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1620221430; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=cMazpHma65TSqD7qq8XBIzStM7ip2vILomjQD5sFvmMilQrBislWMCky3ct1/tDQ/p36gAsviNtEaZDnmQi7X4Fx4czWYYdCQbQt9CmTJERx+6dETsCFGHQZQd2Q5gQtaDzKCIklji9FltEL+fD+1Kcn2fTvfcMMgFIDVzEWoM8=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1620221430; h=Content-Transfer-Encoding:Cc:Date:From:MIME-Version:Message-ID:Subject:To; 
+        bh=9uG1f+RLlDAAS4typJtcpWBOatS43T1L//FcR3zSh2o=; 
+        b=cUiOmCU1I5Z+EGeBuga0Xd0p3SRw2buLByl4Z5GjprpYYPgd5P9HQ99lEiaqHi75ZwlNHf1ISK/Lr+BH6i/iMlLx8q6C6ymg/fX5tKq2IYSNfh3fmD3c4s2yZva8QLpqeSvvn8WrMGO2O1+wcVuHVfLjFlBBuGxO+Bn3GXSC14g=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1620221430;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Transfer-Encoding;
+        bh=9uG1f+RLlDAAS4typJtcpWBOatS43T1L//FcR3zSh2o=;
+        b=I5CqSRLnEGVbnGZJsH7vsSDC6J6p1d1FtIReuoUqvffwYK99riwYu9nXc9D+3vjZ
+        uRg6HGsQqCW9OdeISRDDmpotX12ASLl/RCENXHdyIZeQC8q0/j1ECyYXEZTS0nY0zOh
+        9mT7e59xvTr97sM2cypWQmgXCMLuSRg1tf8YJnxk=
+Received: from localhost.localdomain (49.207.214.47 [49.207.214.47]) by mx.zohomail.com
+        with SMTPS id 1620221421007420.2082576559726; Wed, 5 May 2021 06:30:21 -0700 (PDT)
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>
+Cc:     gregkh@linuxfoundation.org,
         linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+7c2bb71996f95a82524c@syzkaller.appspotmail.com,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] usbhid: fix info leak in hid_submit_ctrl
-In-Reply-To: <CAO-hwJJ4u5NZ-81Tq3PGu-F9r3iUSCiKp=JUsTfuVsyd-Sxsew@mail.gmail.com>
-Message-ID: <nycvar.YFH.7.76.2105051528090.28378@cbobk.fhfr.pm>
-References: <20210425173353.10231-1-mail@anirudhrb.com> <nycvar.YFH.7.76.2105051442120.28378@cbobk.fhfr.pm> <CAO-hwJJ4u5NZ-81Tq3PGu-F9r3iUSCiKp=JUsTfuVsyd-Sxsew@mail.gmail.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        Anirudh Rayabharam <mail@anirudhrb.com>,
+        syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ext4: fix kernel infoleak via ext4_extent_header
+Date:   Wed,  5 May 2021 19:00:10 +0530
+Message-Id: <20210505133011.32484-1-mail@anirudhrb.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021, Benjamin Tissoires wrote:
+Initialize eh_generation of struct ext4_extent_header to prevent leaking
+info to userspace. Fixes KMSAN kernel-infoleak bug reported by syzbot at:
+http://syzkaller.appspot.com/bug?id=78e9ad0e6952a3ca16e8234724b2fa92d041b9b8
 
-> I don't have a reproducer like syzbot has for the exact bug here, as I 
-> am relying on one real USB device to check if usbhid is not too broken. 
-> However, the test suite should catch if there is an error implied by the 
-> hid_report_len() change.
+Reported-by: syzbot+2dcfeaf8cb49b05e8f1a@syzkaller.appspotmail.com
+Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+---
+ fs/ext4/extents.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Yes, that was exactly what I wanted to check, sorry for not being verbose 
-enough :)
-
-> Anyway, I manually started the job and will report when it is done.
-
-Thanks,
-
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 77c84d6f1af6..677d4821bcc1 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -825,6 +825,7 @@ void ext4_ext_tree_init(handle_t *handle, struct inode *inode)
+ 	eh->eh_entries = 0;
+ 	eh->eh_magic = EXT4_EXT_MAGIC;
+ 	eh->eh_max = cpu_to_le16(ext4_ext_space_root(inode, 0));
++	eh->eh_generation = 0;
+ 	ext4_mark_inode_dirty(handle, inode);
+ }
+ 
+@@ -1090,6 +1091,7 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
+ 	neh->eh_max = cpu_to_le16(ext4_ext_space_block(inode, 0));
+ 	neh->eh_magic = EXT4_EXT_MAGIC;
+ 	neh->eh_depth = 0;
++	neh->eh_generation = 0;
+ 
+ 	/* move remainder of path[depth] to the new leaf */
+ 	if (unlikely(path[depth].p_hdr->eh_entries !=
+@@ -1167,6 +1169,7 @@ static int ext4_ext_split(handle_t *handle, struct inode *inode,
+ 		neh->eh_magic = EXT4_EXT_MAGIC;
+ 		neh->eh_max = cpu_to_le16(ext4_ext_space_block_idx(inode, 0));
+ 		neh->eh_depth = cpu_to_le16(depth - i);
++		neh->eh_generation = 0;
+ 		fidx = EXT_FIRST_INDEX(neh);
+ 		fidx->ei_block = border;
+ 		ext4_idx_store_pblock(fidx, oldblock);
 -- 
-Jiri Kosina
-SUSE Labs
+2.26.2
 
