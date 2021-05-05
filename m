@@ -2,121 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA1CA37363C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:24:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 00A6A373643
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231989AbhEEIZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 04:25:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42540 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231636AbhEEIZh (ORCPT
+        id S231844AbhEEI3V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 04:29:21 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2996 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229566AbhEEI3T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 04:25:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620203081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=8wZ6XP6OkIUA9lJMeKzZLCGEWjnWoB/ZPPsPtnXehl4=;
-        b=KK9pdnavETSJYuOkXahkuTTF5qOZwHMvRg5pBOd+Tbyym7RvHeuZamNXCngqNWZuROvTep
-        WO4fQdY1cNbcQTOmUVfpHDbrvBUmKr0Lo2CXFWJbg5wjTzRe5q4VQ79yNE8VOr8fWh+TlF
-        OAdEAA67pSFmCOIXBhWjlp6ChQsrcSA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-498-JEfIPDrIMYmwsIlNDiiB0g-1; Wed, 05 May 2021 04:24:39 -0400
-X-MC-Unique: JEfIPDrIMYmwsIlNDiiB0g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6FCF584A5E7;
-        Wed,  5 May 2021 08:24:38 +0000 (UTC)
-Received: from starship (unknown [10.40.192.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 5CEFE60C17;
-        Wed,  5 May 2021 08:24:36 +0000 (UTC)
-Message-ID: <634edad3ff66e3a63bbfd0b1728a29010d3dbff8.camel@redhat.com>
-Subject: Re: [PATCH 3/4] KVM: nVMX: Introduce
- __nested_vmx_handle_enlightened_vmptrld()
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Date:   Wed, 05 May 2021 11:24:35 +0300
-In-Reply-To: <20210503150854.1144255-4-vkuznets@redhat.com>
-References: <20210503150854.1144255-1-vkuznets@redhat.com>
-         <20210503150854.1144255-4-vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 5 May 2021 04:29:19 -0400
+Received: from fraeml710-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZqQX1XZwz6wj4w;
+        Wed,  5 May 2021 16:20:20 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml710-chm.china.huawei.com (10.206.15.59) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 5 May 2021 10:28:21 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 09:28:21 +0100
+Date:   Wed, 5 May 2021 09:26:42 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+CC:     Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-hwmon@vger.kernel.org>
+Subject: Re: [PATCH 4/4] hwmon: vcnl3020: add hwmon driver for intrusion
+ sensor
+Message-ID: <20210505092642.00002035@Huawei.com>
+In-Reply-To: <8dbdf071f9f2041b92cabfa417487a3ec3e9647e.camel@yadro.com>
+References: <20210430152419.261757-1-i.mikhaylov@yadro.com>
+        <20210430152419.261757-5-i.mikhaylov@yadro.com>
+        <20210430163831.GA3163069@roeck-us.net>
+        <8dbdf071f9f2041b92cabfa417487a3ec3e9647e.camel@yadro.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 17:08 +0200, Vitaly Kuznetsov wrote:
-> As a preparation to mapping eVMCS from vmx_set_nested_state() split
-> the actual eVMCS mappign from aquiring eVMCS GPA.
-> 
-> No functional change intended.
-> 
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/kvm/vmx/nested.c | 26 +++++++++++++++++---------
->  1 file changed, 17 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 2febb1dd68e8..37fdc34f7afc 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -1972,18 +1972,11 @@ static int copy_vmcs12_to_enlightened(struct vcpu_vmx *vmx)
->   * This is an equivalent of the nested hypervisor executing the vmptrld
->   * instruction.
->   */
-> -static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
-> -	struct kvm_vcpu *vcpu, bool from_launch)
-> +static enum nested_evmptrld_status __nested_vmx_handle_enlightened_vmptrld(
-> +	struct kvm_vcpu *vcpu, u64 evmcs_gpa, bool from_launch)
->  {
->  	struct vcpu_vmx *vmx = to_vmx(vcpu);
->  	bool evmcs_gpa_changed = false;
-> -	u64 evmcs_gpa;
-> -
-> -	if (likely(!vmx->nested.enlightened_vmcs_enabled))
-> -		return EVMPTRLD_DISABLED;
-> -
-> -	if (!nested_enlightened_vmentry(vcpu, &evmcs_gpa))
-> -		return EVMPTRLD_DISABLED;
->  
->  	if (unlikely(!vmx->nested.hv_evmcs ||
->  		     evmcs_gpa != vmx->nested.hv_evmcs_vmptr)) {
-> @@ -2055,6 +2048,21 @@ static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
->  	return EVMPTRLD_SUCCEEDED;
->  }
->  
-> +static enum nested_evmptrld_status nested_vmx_handle_enlightened_vmptrld(
-> +	struct kvm_vcpu *vcpu, bool from_launch)
-> +{
-> +	struct vcpu_vmx *vmx = to_vmx(vcpu);
-> +	u64 evmcs_gpa;
-> +
-> +	if (likely(!vmx->nested.enlightened_vmcs_enabled))
-> +		return EVMPTRLD_DISABLED;
-> +
-> +	if (!nested_enlightened_vmentry(vcpu, &evmcs_gpa))
-> +		return EVMPTRLD_DISABLED;
-> +
-> +	return __nested_vmx_handle_enlightened_vmptrld(vcpu, evmcs_gpa, from_launch);
-> +}
-> +
->  void nested_sync_vmcs12_to_shadow(struct kvm_vcpu *vcpu)
->  {
->  	struct vcpu_vmx *vmx = to_vmx(vcpu);
+On Tue, 4 May 2021 22:46:53 +0300
+Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
 
-Reviewed-by: Maxim Levitsky <mlevitsk@redhat.com>
+> On Fri, 2021-04-30 at 09:38 -0700, Guenter Roeck wrote:
+> > On Fri, Apr 30, 2021 at 06:24:19PM +0300, Ivan Mikhaylov wrote:  
+> > > Intrusion status detection via Interrupt Status Register.
+> > > 
+> > > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>  
+> > 
+> > I think this should, if at all, be handled using the
+> > iio->hwmon bridge (or, in other words, require a solution
+> > which is not chip specific).  
+> 
+> Thanks a lot for suggestion, it's actually looks what's needed here instead of
+> this driver. Anyways, there is no IIO_PROXIMITY support inside supported types
+> in iio_hwmon.c. Should I add additional case inside this driver for
+> IIO_PROXIMITY type?
+> 
+> > I am also not sure if "proximity" is really appropriate to use
+> > for intrusion detection in the sense of hardware monitoring.
+> > This would require a proximity sensor within a chassis, which
+> > would be both overkill and unlikely to happen in the real world.
+> > "Intrusion", in hardware monitoring context, means "someone
+> > opened the chassis", not "someone got [too] close".
+> >   
+> 
+> I'm not sure either but it exists :) And it's exactly for this purpose:
+> "someone opened the chassis", "how near/far is cover?".
+> 
 
-Best regards,
-	Maxim Levitsky
+Hmm. So we will have somewhat of an impedance mismatch.
 
+In IIO events are push based (typically interrupt driven).
+There is also the issue that we don't currently have in kernel
+interfaces to allow drivers like iio-hwmon to use them (there
+has never been enough demand though it has been discussed a few
+times).   As such we'd need to implement the core support for
+that as well.   We might get away with some simplifications that
+make this not too painful - e.g. avoid the need to filter events
+by stating that a consumer may well get events it's not interested
+in and it is up to the consumer to check (a later optimization could
+then add filtering similar to what we do for main data flows).
+
+Jonathan
