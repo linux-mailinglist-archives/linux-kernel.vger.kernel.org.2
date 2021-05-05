@@ -2,73 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE51E374917
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:08:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EDD7374920
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:11:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233829AbhEEUJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:09:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49728 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230227AbhEEUJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:09:52 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E18D60241;
-        Wed,  5 May 2021 20:08:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620245335;
-        bh=C9PR3tmwVlH9qW2D6M7x6fJzbZRnZYZX8R2df7n/xWo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=aVnWcmhemwCrgP5BTCssC6opOMk1FgRSN/6CPh8ucAItTtA7V+qG/oC+oYP14fNkM
-         9Wau1Ne7HgSSB7xpmePexVRAf+U6RJ5n7LwSb8hEpY3UeMFFY2QiFT9ibKPO4VNady
-         tFovIAHE6+oPB++XRh2ttTCNXVLrmONcs5NKS3w1Smnoqm2gWZrYQB7KvgGX3gS5KG
-         wBqXLk3wJsOVgZpC/bnBGcbvbJUk/GacJO+VA3wrSaBWTGgy4GmzI96OsNobKufBqY
-         JuJ8L7QKf7f0vvwM1WW4SFmrzDJ1pONsSa8G0SR5FBxEBMMaRcO7xSeqcy5uFp3Kqa
-         XFTcrtyVSvWlw==
-Date:   Wed, 5 May 2021 13:08:50 -0700
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Jason Gunthorpe <jgg@ziepe.ca>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Doug Ledford <dledford@redhat.com>,
-        Leon Romanovsky <leon@kernel.org>,
-        Parav Pandit <parav@nvidia.com>,
-        Sami Tolvanen <samitolvanen@google.com>,
-        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
-Message-ID: <YJL7UoSr42JfMCq1@archlinux-ax161>
-References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
- <202104021555.08B883C7@keescook>
- <20210403065559.5vebyyx2p5uej5nw@archlinux-ax161>
- <20210504202222.GB2047089@ziepe.ca>
+        id S233878AbhEEUML (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:12:11 -0400
+Received: from smtp08.smtpout.orange.fr ([80.12.242.130]:44757 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233852AbhEEUMK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 16:12:10 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d16 with ME
+        id 18BC2500121Fzsu038BCd0; Wed, 05 May 2021 22:11:12 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Wed, 05 May 2021 22:11:12 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH] media: i2c: ov2659: Fix an error message
+To:     prabhakar.csengg@gmail.com, mchehab@kernel.org,
+        sakari.ailus@linux.intel.com, bparrot@ti.com,
+        hans.verkuil@cisco.com
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+References: <1ed22753cd773e68e56c78eca01713d781097ffb.1620244953.git.christophe.jaillet@wanadoo.fr>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <289cde95-da39-71ed-b9eb-84aa3bdd0fa3@wanadoo.fr>
+Date:   Wed, 5 May 2021 22:11:10 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504202222.GB2047089@ziepe.ca>
+In-Reply-To: <1ed22753cd773e68e56c78eca01713d781097ffb.1620244953.git.christophe.jaillet@wanadoo.fr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 05:22:22PM -0300, Jason Gunthorpe wrote:
-> On Fri, Apr 02, 2021 at 11:55:59PM -0700, Nathan Chancellor wrote:
-> > > So, I think, the solution is below. This hasn't been runtime tested. It
-> > > basically removes the ib_port callback prototype and leaves everything
-> > > as kobject/attr. The callbacks then do their own container_of() calls.
-> > 
-> > Well that appear to be okay from a runtime perspective.
+Le 05/05/2021 à 22:03, Christophe JAILLET a écrit :
+> 'ret' is known to be 0 here and printing -ENODEV wouldn't be really
+> helpful.
+> So, print something that may be helpful instead.
 > 
-> This giant thing should fix it, and some of the other stuff Greg observed:
+> Fixes: c4c0283ab3cd ("[media] media: i2c: add support for omnivision's ov2659 sensor")
+> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> ---
+>   drivers/media/i2c/ov2659.c | 4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> https://github.com/jgunthorpe/linux/commits/rmda_sysfs_cleanup
+> diff --git a/drivers/media/i2c/ov2659.c b/drivers/media/i2c/ov2659.c
+> index 42f64175a6df..96bda172b334 100644
+> --- a/drivers/media/i2c/ov2659.c
+> +++ b/drivers/media/i2c/ov2659.c
+> @@ -1368,8 +1368,8 @@ static int ov2659_detect(struct v4l2_subdev *sd)
+>   		id = OV265X_ID(pid, ver);
+>   		if (id != OV2659_ID) {
+>   			dev_err(&client->dev,
+> -				"Sensor detection failed (%04X, %d)\n",
+> -				id, ret);
+> +				"Sensor detection failed (id=%04X, pid=%X, ver=%X)\n",
+> +				id, (int)pid, (int)ver);
+>   			ret = -ENODEV;
+>   		} else {
+>   			dev_info(&client->dev, "Found OV%04X sensor\n", id);
 > 
-> It needs some testing before it gets posted
-> 
-> Jason
 
-I have verified that my original test case of running LTP's read_all
-test case passes with CFI enabled in enforcing mode with your series and
-I still get values when running cat on them. If you have any other
-suggestions for test cases, please let me know :)
+NACK.
 
-Thanks for the quick fix!
+I should have looked at OV265X_ID before sending the patch.
 
-Cheers,
-Nathan
+I'll send a v2 that just removes 'ret'.
+
+CJ
