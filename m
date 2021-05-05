@@ -2,60 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC89437358B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 09:27:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4277037358C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 09:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231829AbhEEH1y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 03:27:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56678 "EHLO
+        id S231883AbhEEH15 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 03:27:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56680 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231388AbhEEH1M (ORCPT
+        with ESMTP id S231445AbhEEH1O (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 03:27:12 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01FFDC061761
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 00:26:16 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso2446987wmc.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 00:26:15 -0700 (PDT)
+        Wed, 5 May 2021 03:27:14 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24C39C061763
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 00:26:17 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id a4so650420wrr.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 00:26:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
         bh=ryLo2gccvYnJFf6uz5T1OlY0Lzzgw8rSJB9vsnUHoqE=;
-        b=AOFwLbrj3UIWYKYMglM59levWs0CwBGCnzJKEGYBCMCmOvaXco0gfVgtLRgLDombiC
-         WJrCu+k6+ppreNXIyWyjmKwGpLmvBGtLHdbxnThZb4wItpi11kJ39FiSXpAf/i/jswfj
-         V0ZruldhB7fqIOrnoxHToqmyeIE1UCWYt6R7bZG152zqzEqwxFc1AQjBI5nla808RSmT
-         LbfGxht8gAg0PE+cndhUQRToHy0LgmpQgPkNqCFYgsa7Is8oRpj+UxgzycYC2OHpCt7y
-         evoKP6qs5pj2aIrWdoqzmtllm5KIzf1m/U8yaLG2DiMrLVuzRQdYm2vQ1c7ZrGMXuYYG
-         7YhA==
+        b=mmaKgtabncuduXfLM9oT6YqrfkH0MJcr5ydzabdPW5tI3a2j/ZeavcxqROSnVPiP0y
+         QWC83sreSiHFxO6TXwAtHPQ8Q6g+HusDKd5Z1BcCyQgL6zYfl2c7noq52MVVRuCpxlFm
+         2Iv862euEaJp2K/LkYrbbXQwrGyG2SLfNLLWzPOy5vCkVrBCH0k5iQjs3dF9wlPxC+bq
+         SXA5uRXkTzuQyo5dQY92rmHoDk0p4oZur5YxZUKjV7ZTa/tDvhvRJNdBaYSK1XsglXXF
+         pl3dIyhyyTMK7vxgcYh/ZEaKtTXIdzlUAMYj7F3ftlNFFYkIjY906L1bLxAzL0T9a7Sn
+         mQBA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
         bh=ryLo2gccvYnJFf6uz5T1OlY0Lzzgw8rSJB9vsnUHoqE=;
-        b=TBZVC6kOeUEQAZl7aVkLOEuCTqEROoZ219WLYCzhaSpGz3Cp/XPsXT6e/nU8nTVL8P
-         8wFPCW8s0wp7RbGZEmcKKF9UiI8FMg47l/emOqt3SBpiPGDOTHs8sZ8teuL0hNne/X53
-         YfII+NH54w/HIGi2oRAzSGxXV92klihN0+y1vkx6MRAqH/sIWIUdqjWPP8MBz3wT/wid
-         Lcr9M0Mr3M7fLLhmNOR8Mei3ik9y0AHenrPvsxdtFngIA1jmWyo9SotwULNJhYvaafNs
-         Vk8/C3wjBkCT/y2MoQWkNGl0xjrwBSnlffLRDOq33i7NU4sMV3afdy65Wpss73nB0Vwm
-         WJRQ==
-X-Gm-Message-State: AOAM533G/K6Swm4CmQn3NPQRjAc8H1DeY1F7/ttZD4aqDqkC0W4lXeZO
-        YClyy2i2A1QuNlkVasyvL0MS2Q==
-X-Google-Smtp-Source: ABdhPJzDCygRvwK/+nSocWqj6oDcXCUudZHXcgd967/zopD+CaCbwXcFQU6Bi/gkEZYx5oLhj/niig==
-X-Received: by 2002:a1c:c206:: with SMTP id s6mr8703239wmf.47.1620199574593;
-        Wed, 05 May 2021 00:26:14 -0700 (PDT)
+        b=Bi892tipnIIGqhutB4iJLD1giwhN8gOrEAaXvJa0qI+6I9Wim8chDwht6c2HobZOKg
+         /7d7USDl8sa1yWRv/UTYo5tK51AyCeHbW0O0Ah9H3VNQGwCqBJF17ru1W9rgMzvFiqed
+         pVESFjS/1h/ofd+EBWxPdOWu3SwJr3R6lT1NoItUEM5scvy1ud8uMEjXeW3ci3/o6P1Q
+         1bczczvmhy6w1aZgsQC32KPj0tFgZ7AVrwpyhyu5g9B0qXrzFa+DpopV0cpmOYyhLETF
+         xdrf/urhuODCAX+xvWPbjQCQ4VW5bEtxlCu2Hrr6HLaRbbHgvI85sS4pCn995SayfwQ3
+         xqRw==
+X-Gm-Message-State: AOAM530roJ+Rqu+QengDPfqNZpJk4EqJKLgzXYT87UEHGUajA1hw+pyH
+        oYIFCX2bvkqxMNxgIzTJnXCdQQ==
+X-Google-Smtp-Source: ABdhPJx4DVSUJy6saY70ep/mXUrM9nHCdK7Z61aVTL6XBZMMC5IECfrDceM1fmjbMmcp4AqPb3mduA==
+X-Received: by 2002:a05:6000:1152:: with SMTP id d18mr17857048wrx.211.1620199575726;
+        Wed, 05 May 2021 00:26:15 -0700 (PDT)
 Received: from localhost.localdomain ([2a01:e0a:90c:e290:6eb3:66ab:cb1e:ef0])
-        by smtp.gmail.com with ESMTPSA id f25sm19008991wrd.67.2021.05.05.00.26.13
+        by smtp.gmail.com with ESMTPSA id f25sm19008991wrd.67.2021.05.05.00.26.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 00:26:14 -0700 (PDT)
+        Wed, 05 May 2021 00:26:15 -0700 (PDT)
 From:   Neil Armstrong <narmstrong@baylibre.com>
 To:     jbrunet@baylibre.com, broonie@kernel.org
 Cc:     alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
         linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
         Neil Armstrong <narmstrong@baylibre.com>
-Subject: [PATCH v2 2/2] ASoC: meson: g12a-toacodec: add support for SM1 TOACODEC
-Date:   Wed,  5 May 2021 09:26:06 +0200
-Message-Id: <20210505072607.3815442-3-narmstrong@baylibre.com>
+Subject: [PATCH v2 2/2] sound: meson: g12a-toacodec: add support for SM1 TOACODEC
+Date:   Wed,  5 May 2021 09:26:07 +0200
+Message-Id: <20210505072607.3815442-4-narmstrong@baylibre.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210505072607.3815442-1-narmstrong@baylibre.com>
 References: <20210505072607.3815442-1-narmstrong@baylibre.com>
