@@ -2,89 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6371337380D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:48:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5156373812
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232469AbhEEJt1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:49:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233002AbhEEJtY (ORCPT
+        id S232525AbhEEJuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:50:40 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:51879 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232265AbhEEJui (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:49:24 -0400
-Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2536CC061574;
-        Wed,  5 May 2021 02:48:25 -0700 (PDT)
-Received: by mail-lf1-x12b.google.com with SMTP id 2so1704796lft.4;
-        Wed, 05 May 2021 02:48:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:organization:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=T9xggn2FMiHUCK0JlgIAaoS/FDcktmglWb4xoxeN6Tg=;
-        b=RMdoQG/DGvhjj378i2tgVHLSU7jPCo8Q3GAdPuFYp6Els+PiHp77O/IHNmbxSb+hOD
-         IQmq10ICgbhp3gULA5p22NXW7Ify3NZwatHUWvJmWqmPmsMJICeKYccd3dR9Fd6kLiiO
-         9Le+1+wRrIgHWYku54L1HX8KBNWufzjB9CSpfymTu6w500Vq65JXfzGphiR7zgCT1GMo
-         T2IX3iDpsEDLcQAaCpXuJQF5TtAxym6tyHDnpxcfbaI+zqvUP7vhN+L63tY7QAgFMH2G
-         z5OxOn95+iqqV3mO582NFFtBjB42z1nNiDqBnHdRFcmwpHywoVD1hPOLH48gP9m0/wp3
-         5P8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=T9xggn2FMiHUCK0JlgIAaoS/FDcktmglWb4xoxeN6Tg=;
-        b=A/0dBZbN6WxJWKP34qS45EVq4fAAiURMAH5wPBMAHYZDOWH3/e5kRfaieo2S9Uwich
-         E1Qa/4P3Tt/6DAy865cMw2oZdgFsUoyZBlYZFGFSJjDIg6cAzqUIit+wTNsBxB0Ebovn
-         4alShfxF7iMtb7+Fgdj/PLjsRXh3uJodRgz6uoABIm5IdQtMOaB9+MRENJSC8NSBBi0D
-         GYSegakkYW57VKrOfma0TsStNcF/irTvSA5DhJpJfnnVulmYL5ib0i/T4I5I9UDbdnXv
-         Uq0rqLzaAMLwCgQa9ooJwpnpOS0LmOMMxhkUnibC/UBWHnMA0c/N6Ok4Xe/uaetTHvPO
-         RJVA==
-X-Gm-Message-State: AOAM533uPonWtDQeEKjavvnBIlmVjhd3IXiczp1qn2dY+E09Gjrj/GH0
-        f7J/HXVvIF+Vx5cy42jxwIkaU3aQxQU=
-X-Google-Smtp-Source: ABdhPJwNQpAAyMQzifb+wR7LJgqRVho6ApD70rHoAY1Gt66RZsTl0RO2v2lvGHo8oeN2+QIarHBIpQ==
-X-Received: by 2002:a05:6512:92e:: with SMTP id f14mr19752982lft.347.1620208103478;
-        Wed, 05 May 2021 02:48:23 -0700 (PDT)
-Received: from [192.168.1.100] ([31.173.83.246])
-        by smtp.gmail.com with ESMTPSA id z27sm2009990ljn.23.2021.05.05.02.48.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 02:48:23 -0700 (PDT)
-Subject: Re: [PATCH 12/25] media: rcar_fdp1: simplify error check logic at
- fdp_open()
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
- <c9e7c9b02841c149b0127a7658d2a3e2828cfb90.1620207353.git.mchehab+huawei@kernel.org>
-From:   Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Organization: Brain-dead Software
-Message-ID: <42cf9dff-5c8a-02bd-610f-d88507eb7519@gmail.com>
-Date:   Wed, 5 May 2021 12:48:17 +0300
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 5 May 2021 05:50:38 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1459hJda011331;
+        Wed, 5 May 2021 11:49:24 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=date : from : to :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=selector1; bh=U1j+kkMEVDtIpXFolKJBxuRWb0u7O4P5oXrM2MRHZkY=;
+ b=6P846THNTdNrs3vLTVDlCsfdrFCHEP1i6pdMBz1Rre5lvSFdfSMss/sTLosSLtf1LF4L
+ yZ/Px3dmz19RCwhw4ucxDkFMR6kNA2qzdEYeX3jPE/tXWbccABFzXnALHjl6oQsdcqkS
+ LF9jTLzk4MtYKjz+Sp6HnpONNmKgv4pV3QPP3H/6uHvdFjoHKz258/+MRsDsUJn8SV2V
+ WkJUdVz2u5Ry/KQ2YcsezEpvTSsB1msBIXr/jwkO6Ei/HUipy9/R9FbiKjgJnZjpp/TK
+ QlgrKacRR1P1Z1BybImQnBxSdC5LFTsUlmt7MTv++MAZIOnIRAfWXfAccjcl1NmlxoPf Uw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38bea3u91e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 May 2021 11:49:24 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 49317100034;
+        Wed,  5 May 2021 11:49:22 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 28B442199A9;
+        Wed,  5 May 2021 11:49:22 +0200 (CEST)
+Received: from gnbcxd0016.gnb.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 5 May
+ 2021 11:49:21 +0200
+Date:   Wed, 5 May 2021 11:49:16 +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     Wolfram Sang <wsa@kernel.org>, <robh+dt@kernel.org>,
+        <mark.rutland@arm.com>, <pierre-yves.mordret@foss.st.com>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>
+Subject: Re: [PATCH v3 1/2] dt-bindings: i2c: stm32f7: add st,smbus-alert
+ binding for SMBus Alert
+Message-ID: <20210505094916.GA27818@gnbcxd0016.gnb.st.com>
+Mail-Followup-To: Wolfram Sang <wsa@kernel.org>, robh+dt@kernel.org,
+        mark.rutland@arm.com, pierre-yves.mordret@foss.st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@foss.st.com,
+        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        fabrice.gasnier@foss.st.com
+References: <1616998145-28278-1-git-send-email-alain.volmat@foss.st.com>
+ <1616998145-28278-2-git-send-email-alain.volmat@foss.st.com>
+ <20210504195348.GB1783@kunai>
 MIME-Version: 1.0
-In-Reply-To: <c9e7c9b02841c149b0127a7658d2a3e2828cfb90.1620207353.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20210504195348.GB1783@kunai>
+X-Disclaimer: ce message est personnel / this message is private
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-05_03:2021-05-05,2021-05-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+Hi Wolfram,
 
-On 05.05.2021 12:42, Mauro Carvalho Chehab wrote:
+On Tue, May 04, 2021 at 09:53:48PM +0200, Wolfram Sang wrote:
+> 
+> > +        st,smbus-alert:
+> 
+> After reading the specs again, I think we can make this a generic
+> binding. SMBusAlert is optional. So, we can say it is not covered by the
+> "smbus" binding and needs a seperate one. Makes sense?
 
-> Avoid some code duplication by moving the common error path
-> logit at fdp_open().
+Indeed, SMBus Spec [1] mentions about SMBALERT#:
+An optional signal that a slave device can use to notify the system
+master that it has information for the master
 
-    Logic?
+Hence it does make sense to separate it from the smbus binding. I will
+post a v4 of this serie with the addition of a generic binding 'smbus-alert'.
 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-[...]
+Alain
 
-MBR, Sergei
+[1] http://www.smbus.org/specs/SMBus_3_1_20180319.pdf
+
