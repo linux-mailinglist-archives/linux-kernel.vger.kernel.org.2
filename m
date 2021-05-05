@@ -2,144 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E517937479E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:06:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DA403747B3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:06:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235145AbhEESBS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 14:01:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56756 "EHLO
+        id S235619AbhEESCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 14:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235138AbhEESA6 (ORCPT
+        with ESMTP id S234303AbhEESBs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 14:00:58 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D57D8C04BE43
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:34:49 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id lp4so1206595pjb.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:34:49 -0700 (PDT)
+        Wed, 5 May 2021 14:01:48 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E199C0612B2;
+        Wed,  5 May 2021 10:40:48 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id i13so2653154pfu.2;
+        Wed, 05 May 2021 10:40:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:in-reply-to;
-        bh=pTTuRgK8OZ5vlAlZOqM9k9U/8/bnkECtvXImRJXjECI=;
-        b=UvDbR6z5QHQ+Oj8rENsLCDbKe84pyj5ZgNVJdWMahQ66wPRVa06l//z2k28asdg2dc
-         CYFS1J7JwsiDBOs2FNsM27LnCVp0xOXjP9UkZVOrArrLbTbEonWPzGN3bqonqU1QNxUu
-         CIRSVGeW4q0vmxZ0BYZxObbMmubbgS8OItPeHFj/4/66o1xuGioBMmGU28qwhm+43pzH
-         iP4MoRQOKJmfrjpUpnWpXc5ZkbQYeVE77UwItBNsSqw8M0bQ5kITmvYc8MBp4SGB3Vs5
-         dy+Qq04/z8tFm0rJTRxhLUFFapUMzro4wR+Ik1+BEFSIgNUIvjwn26DdUeIPv1/PiXX7
-         5OXA==
+        bh=dnLyDfQDKmEAB/Zy+442w63QRqZp2WSqlDnxSjfCge4=;
+        b=bXhTE29PQrwhDVpLwBQ4HUuP+kyBa2bSEZEcD0J+th4tx0C1f6RWKVmbl9HNi7oMJi
+         PGS0jRpFGtWKoZRDOuTFZshYeRIjaAz8g3n+iElM1YJt+HetiLJ8wFMtezbArav7YhiB
+         qAw333p8KmP07CS5K32SjNtLPYYH57odD8pNTcaNSGLIEJGsnB8gSspfGjx472rRa/Vh
+         vIf4f1CSY3z8tljfG3rvXg7s2pxScfnPqjQKR2eqtgAyFzXEpbvbcEhGP2JpFxIaRRh7
+         g//j922xF4QPxd7CsN90kTiqw9x9oWkATwcaSkD1qmAPmYwun2K1vYEqnudOlRqGO5fn
+         esSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=pTTuRgK8OZ5vlAlZOqM9k9U/8/bnkECtvXImRJXjECI=;
-        b=l0spApeWI66POU97hoI3OrmDcNSfv05FK6d78P5Rxx1ROTMmBcxnzgkVVWBrAyRYJ5
-         HI2oHrykYgijYi2iRwEXENFL5PTPS/ub50EwBF+Xiptq56iRvXAUcALBaGVyRqHt+fJj
-         vb2AD/Bla3uwIkifH2sYFCmtNElnOE1jmvcA30cC1GxLXC8/Hwd/+RYMCNHFrlNiUeHc
-         G3n439AEuh3PbqHZiVlH/ImrHjFPi8cXqXoIqlKxmzGP3kZL0ryfp1xHqAnOF3bDt8Hn
-         D1d6mu/KUji4ZAnRcEw+MzDJkoGxswHCIq3Dw7pRZ8eZYzyNpPFeKKWOcQne5GvEfXjf
-         0C/A==
-X-Gm-Message-State: AOAM533oAbGVobf4gMauQfkgkw3LPTm8ycs6CxZ54NXauoo8UPAp73W2
-        tTeFlfffnutAphnW6yTo6JNl7w==
-X-Google-Smtp-Source: ABdhPJxdMe1aYGDhkaGP/IYqbPqgfe6PvzQKMIOMp0ynpLP7lMMzD4NQiTkY3vSnPiRxo80fVW3P2g==
-X-Received: by 2002:a17:902:9a08:b029:ec:bef1:4ea1 with SMTP id v8-20020a1709029a08b02900ecbef14ea1mr32413393plp.78.1620236089271;
-        Wed, 05 May 2021 10:34:49 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id h3sm14747997pfc.184.2021.05.05.10.34.48
+        bh=dnLyDfQDKmEAB/Zy+442w63QRqZp2WSqlDnxSjfCge4=;
+        b=Oh+YjyaQh3k5UihFL9sTcy7TO3NDmRCbuqMBOEWYbfW+eUVR5j29KM/xq6KPPu97NG
+         HJL9/hX5fdMJ09jVYEFkED6JYo2a8WKgJPYs3rlSzK01c97vcsYujX5vOtUewfUdnLK5
+         dnXtykW4mN9TlR1QLNZtahg2kfhfQIEtmNydcvy30SIH6nWbbjWGFnrz9QJnbfzsHM5T
+         l7CuR9iLn1txaVTeer2+noqDAyp/2mg1yywAYbOcUnwzJ4NiwRcq3ReZo0mWuNm0xoeD
+         ggz63E3I9ch2mx9WuCA7mRDRBD1qmdEc7oLTvDvwA59E6Yn1iiqtG+t3BEckvyBApax/
+         0E5A==
+X-Gm-Message-State: AOAM532TYUl4RoolRVZ7eYTFzW+kuKvtRBM5VpLZCfLprbP8kttM8nsV
+        kKwKyDMwlYq4cnkPKEo6nt6gVzq0mYI=
+X-Google-Smtp-Source: ABdhPJzEpZaeUy588mWV1OdwjxOsiG2gfmbOpQ6PgYXLED86mFJrs1aRDuR5uHOCBeSOCX42qEAdww==
+X-Received: by 2002:a63:ed17:: with SMTP id d23mr72055pgi.107.1620236447937;
+        Wed, 05 May 2021 10:40:47 -0700 (PDT)
+Received: from localhost ([103.248.31.167])
+        by smtp.gmail.com with ESMTPSA id a190sm16363738pfd.118.2021.05.05.10.40.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 10:34:48 -0700 (PDT)
-Date:   Wed, 5 May 2021 17:34:45 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Maxim Levitsky <mlevitsk@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] KVM: nVMX: Properly pad 'struct
- kvm_vmx_nested_state_hdr'
-Message-ID: <YJLXNZtaWL3LKGjn@google.com>
-References: <20210503150854.1144255-1-vkuznets@redhat.com>
- <20210503150854.1144255-3-vkuznets@redhat.com>
- <ff72dc0172cfdef228e63d766cb37e417cc4334d.camel@redhat.com>
+        Wed, 05 May 2021 10:40:47 -0700 (PDT)
+Date:   Wed, 5 May 2021 23:10:32 +0530
+From:   Amey Narkhede <ameynarkhede03@gmail.com>
+To:     Oliver O'Halloran <oohall@gmail.com>
+Cc:     Bjorn Helgaas <helgaas@kernel.org>,
+        Shanker R Donthineni <sdonthineni@nvidia.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci <linux-pci@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Sinan Kaya <okaya@kernel.org>, Vikram Sethi <vsethi@nvidia.com>
+Subject: Re: [PATCH v4 2/2] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
+Message-ID: <20210505174032.sursnpwkfrc5qji2@archlinux>
+References: <478efe56-fb64-6987-f64c-f3d930a3b330@nvidia.com>
+ <20210505021236.GA1244944@bjorn-Precision-5520>
+ <CAOSf1CFACC5V1OdA9i9APipTUE3GmXu487vt-btXWk5rP97UAQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ff72dc0172cfdef228e63d766cb37e417cc4334d.camel@redhat.com>
+In-Reply-To: <CAOSf1CFACC5V1OdA9i9APipTUE3GmXu487vt-btXWk5rP97UAQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021, Maxim Levitsky wrote:
-> On Mon, 2021-05-03 at 17:08 +0200, Vitaly Kuznetsov wrote:
-> > Eliminate the probably unwanted hole in 'struct kvm_vmx_nested_state_hdr':
-> > 
-> > Pre-patch:
-> > struct kvm_vmx_nested_state_hdr {
-> >         __u64                      vmxon_pa;             /*     0     8 */
-> >         __u64                      vmcs12_pa;            /*     8     8 */
-> >         struct {
-> >                 __u16              flags;                /*    16     2 */
-> >         } smm;                                           /*    16     2 */
-> > 
-> >         /* XXX 2 bytes hole, try to pack */
-> > 
-> >         __u32                      flags;                /*    20     4 */
-> >         __u64                      preemption_timer_deadline; /*    24     8 */
-> > };
-> > 
-> > Post-patch:
-> > struct kvm_vmx_nested_state_hdr {
-> >         __u64                      vmxon_pa;             /*     0     8 */
-> >         __u64                      vmcs12_pa;            /*     8     8 */
-> >         struct {
-> >                 __u16              flags;                /*    16     2 */
-> >         } smm;                                           /*    16     2 */
-> >         __u16                      pad;                  /*    18     2 */
-> >         __u32                      flags;                /*    20     4 */
-> >         __u64                      preemption_timer_deadline; /*    24     8 */
-> > };
-> > 
-> > Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> > ---
-> >  arch/x86/include/uapi/asm/kvm.h | 2 ++
-> >  1 file changed, 2 insertions(+)
-> > 
-> > diff --git a/arch/x86/include/uapi/asm/kvm.h b/arch/x86/include/uapi/asm/kvm.h
-> > index 5a3022c8af82..0662f644aad9 100644
-> > --- a/arch/x86/include/uapi/asm/kvm.h
-> > +++ b/arch/x86/include/uapi/asm/kvm.h
-> > @@ -437,6 +437,8 @@ struct kvm_vmx_nested_state_hdr {
-> >  		__u16 flags;
-> >  	} smm;
-> >  
-> > +	__u16 pad;
-> > +
-> >  	__u32 flags;
-> >  	__u64 preemption_timer_deadline;
-> >  };
-> 
-> 
-> Looks good to me.
-> 
-> I wonder if we can enable the -Wpadded GCC warning to warn about such cases.
-> Probably can't be enabled for the whole kernel but maybe we can enable it
-> for KVM codebase at least, like we did with -Werror.
+On 21/05/05 01:56PM, Oliver O'Halloran wrote:
+> On Wed, May 5, 2021 at 12:50 PM Bjorn Helgaas <helgaas@kernel.org> wrote:
+> >
+> > On Mon, May 03, 2021 at 09:07:11PM -0500, Shanker R Donthineni wrote:
+> > > On 5/3/21 5:42 PM, Bjorn Helgaas wrote:
+> > > > Obviously _RST only works for built-in devices, since there's no AML
+> > > > for plug-in devices, right?  So if there's a plug-in card with this
+> > > > GPU, neither SBR nor _RST will work?
+> > > These are not plug-in PCIe GPU cards, will exist on upcoming server
+> > > baseboards. ACPI-reset should wok for plug-in devices as well as long
+> > > as firmware has _RST method defined in ACPI-device associated with
+> > > the PCIe hot-plug slot.
+> >
+> > Maybe I'm missing something, but I don't see how _RST can work for
+> > plug-in devices.  _RST is part of the system firmware, and that
+> > firmware knows nothing about what will be plugged into the slot.  So
+> > if system firmware supplies _RST that knows how to reset the Nvidia
+> > GPU, it's not going to do the right thing if you plug in an NVMe
+> > device instead.
+> >
+> > Can you elaborate on how _RST would work for plug-in devices?
+>
+> Power cycling the slot or just re-asserting #PERST probably. IBM has
+> been doing that on Power boxes since forever and it mostly works.
+> Mostly.
+According to ACPI spec v6.3 section 7.3.25, _RST just performs normal
+FLR in most cases but if the device supports _PRR(Power Resource for Reset)
+then reset operation causes the device to be reported as missing from the bus
+that indicates that it affects all the devices on the bus.
 
-It'll never work, there are far, far too many structs throughout the kernel and
-KVM that have implicit padding.  And for kernel-internal structs, that's perfectly
-ok and even desirable since the kernel generally shouldn't make assumptions about
-the layouts of its structs, i.e. it's a good thing the compiler pads structs so
-that accesses are optimally aligned.
-
-The padding behavior is only problematic for structs that are exposed to
-userspace, because if userspace pads differently then we've got problems.  But
-even then, building the kernel with -Wpadded wouldn't prevent userspace from
-using a broken/goofy compiler that inserts unusual padding and misinterprets the
-intended layout.
-
-AFAIK, the C standard only expicitly disallows padding at the beginning of a
-struct, i.e. the kernel's ABI is heavily reliant on existing compiler convention.
-The only way to ensure exact layouts without relying on compiler convention would
-be to tagged structs as packed, but "packed" also causes the compiler to generate
-sub-optimal code since "packed" has strict requirements, and so the kernel relies
-on sane compiler padding to provide a stable ABI.
+Thanks,
+Amey
