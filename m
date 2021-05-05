@@ -2,144 +2,477 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52BBE374B2C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:22:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2EFBF374B2E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233812AbhEEWXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:23:35 -0400
-Received: from mail02.rohde-schwarz.com ([80.246.32.97]:20116 "EHLO
-        mail02.rohde-schwarz.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234092AbhEEWXZ (ORCPT
+        id S234154AbhEEWYK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:24:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229997AbhEEWYI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:23:25 -0400
-Received: from amu316.rsint.net (10.0.26.65) by mail-emea.rohde-schwarz.com
- (172.21.64.152) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.858.5; Thu, 6 May 2021
- 00:22:26 +0200
-Received: from GMU418.rsint.net ([10.0.230.144])
-          by amu316.rsint.net (Totemo SMTP Server) with SMTP ID 998;
-          Thu, 6 May 2021 00:22:25 +0200 (CEST)
-Received: from GMU008.rsint.net (10.0.2.29) by GMU418.rsint.net (10.0.230.144)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2242.4; Thu, 6 May 2021
- 00:22:25 +0200
-Received: from GMU006.rsint.net (10.0.2.28) by GMU008.rsint.net (10.0.2.29)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2242.4; Thu, 6 May
- 2021 00:22:25 +0200
-Received: from GMU006.rsint.net ([fe80::81e7:6ea1:2437:698b]) by
- GMU006.rsint.net ([fe80::81e7:6ea1:2437:698b%12]) with mapi id
- 15.01.2242.008; Thu, 6 May 2021 00:22:24 +0200
-From:   Guido Kiener <Guido.Kiener@rohde-schwarz.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-CC:     Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "dpenkler@gmail.com" <dpenkler@gmail.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: RE: Re: Re: [syzbot] INFO: rcu detected stall in tx
-Thread-Topic: Re: Re: [syzbot] INFO: rcu detected stall in tx /ur/
-Thread-Index: AddB/PS7Li0nZFy5SOyK+pazcdQJJA==
-Date:   Wed, 5 May 2021 22:22:24 +0000
-Message-ID: <58bda4726ca24d0e963a6787d4c86313@rohde-schwarz.com>
-Accept-Language: de-DE, en-US
-Content-Language: de-DE
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-rus_sensitivity: 10
-hvs-classificationid: 8485d17c-1b45-47c0-b496-903334a11e28
-hvs-prefix: R_S
-x-originating-ip: [10.0.9.40]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Wed, 5 May 2021 18:24:08 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82B40C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 15:23:11 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id l4so5231279ejc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 15:23:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Mt+Qg1JrnJEreITDANxBmHknj6ni8spPEnxGYMvdZrY=;
+        b=dIrDE8WW8dVjG+IxcpkThLlbUPfYpcLEj7Jru9b4XvKV1S5Bmnh6DgUnE0IclEGr0L
+         IxxNyfp0zilxzrEUyQE/BO0hSvN/E6ktlRCFOuCSb87jPt8fX9HyCD1Syb/v9zDR1bx/
+         XlBNCDW68nkeeI/s8LM6ogX2+4Q0a8dyBCWMmcu6qg9OMTJLPTLDEwWCtjHFRWX89On6
+         48QIyoPRfpUnXcp0wX6JhxzehO9Fslp3SQAjy8KK4xY9j3T3AUwJJKV+aopcIObF6A2w
+         eWkDZgueenFMzFa/rDZLWhN9jTWDN0I+ZIKUyEnLW8t+Szjl31BuxWDY9f2GxfkI0jOZ
+         8Vqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Mt+Qg1JrnJEreITDANxBmHknj6ni8spPEnxGYMvdZrY=;
+        b=FoXwd3Pao53ScZrqKp9kQIqPv2eVBpdtqHy09SJIHleW9oy81YEMQFlDHKIhox1A+t
+         oec5e0dPp4JRl7mM8pMC+hBJ2S92BHAqqFzA0a2lDeJyOUIKnnEsqaO8f+lK9h1u40gB
+         mvZ7Srr1iOlS90Xt7lVDqcBcQ26hPBIgEKh/MeamLEh38KrPZZrDhL34hGJkAd2valyf
+         tLERNlXCct3b6rmytiOIfTQxBe3DnqN8hrNhrnTTlWsBfEOSlC2GiTAFCrasTNxUAsAr
+         40qHgQUNlrAAA9q13uUEHNjXy+gJJPqYnlVMqNHnNuvs68cWn2vH0Kz+S9jdomPlHq/F
+         zcdg==
+X-Gm-Message-State: AOAM531tI/JLimXIzSmX4gILxzA+GXd+aeLisJgeGhlZ2NcSdc1wNiWh
+        9Y5+kGG8ImkGxi+myOu0LbRoAqbPP5s5tbBm9SRh/g==
+X-Google-Smtp-Source: ABdhPJwguRIiJAJz8m41MtdEheS5whCRFQRDyemYFlhB6GUX2l00ViqSt5RPX2pckCudRpvgxfr5qHBdfkgbg/OKbpM=
+X-Received: by 2002:a17:906:d0c8:: with SMTP id bq8mr911325ejb.423.1620253389837;
+ Wed, 05 May 2021 15:23:09 -0700 (PDT)
 MIME-Version: 1.0
-X-IQAV: YES
-X-GBS-PROC: 6KdluzGQerrboy4j1mmdnyGsLkZ0NLPDTIMMABczP9LL43ps3CfDqWURB50ckR7eAKLlWLn6jOlxqerk4sGkEzTfhciNznHsQs5z+MQNWMoX62dltylrf8igsNwu+qrG
-X-GBS-PROCJOB: as1p5eGTkF+9lQHM4naQUmJP410WfUY01feE+nsU/wQ1BDGSvTE1sYPC54FKh6x8
+References: <20210416065623.882364-1-davidgow@google.com>
+In-Reply-To: <20210416065623.882364-1-davidgow@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Wed, 5 May 2021 15:22:58 -0700
+Message-ID: <CAGS_qxpnVJWgPBV9bCTHZNXiHtjEC3MWxA0-jG1EU9PUUUvKhw@mail.gmail.com>
+Subject: Re: [PATCH v8] fat: Add KUnit tests for checksums and timestamps
+To:     David Gow <davidgow@google.com>
+Cc:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        shuah <shuah@kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBbGFuIFN0ZXJuIDxzdGVybkBy
-b3dsYW5kLmhhcnZhcmQuZWR1Pg0KPiBTZW50OiBUdWVzZGF5LCBNYXkgNCwgMjAyMSA1OjE0IFBN
-DQo+IFRvOiBLaWVuZXIgR3VpZG8gMTREUzEgDQo+IFN1YmplY3Q6IFJlOiBSZTogW3N5emJvdF0g
-SU5GTzogcmN1IGRldGVjdGVkIHN0YWxsIGluIHR4DQo+IA0KPiBPbiBNb24sIE1heSAwMywgMjAy
-MSBhdCAwOTo1NjowNVBNICswMDAwLCBHdWlkbyBLaWVuZXIgd3JvdGU6DQo+ID4gSGkgYWxsLA0K
-PiA+DQo+ID4gRGF2ZSBhbmQgSSBkaXNjdXNzZWQgdGhlICJzZWxmLWRldGVjdGVkIHN0YWxsIG9u
-IENQVSIgY2F1c2VkIGJ5IHRoZSB1c2J0bWMNCj4gZHJpdmVyLg0KPiA+DQo+ID4gV2hhdCBoYXBw
-ZW5lZD8NCj4gPiBUaGUgY2FsbGJhY2sgaGFuZGxlciB1c2J0bWNfaW50ZXJydXB0KHN0cnVjdCB1
-cmIgKnVyYikgZm9yIHRoZSBJTlQgcGlwZSByZWNlaXZlcw0KPiBhbiBlcnJvbmVvdXMgdXJiIHdp
-dGggc3RhdHVzIC1FUFJPVE8gKC03MSkuDQo+ID4gU2VlDQo+ID4gaHR0cHM6Ly9naXQua2VybmVs
-Lm9yZy9wdWIvc2NtL2xpbnV4L2tlcm5lbC9naXQvdG9ydmFsZHMvbGludXguZ2l0L3RyZQ0KPiA+
-IGUvZHJpdmVycy91c2IvY2xhc3MvdXNidG1jLmM/aD12NS4xMiNuMjM0MA0KPiA+IC1FUFJPVE8g
-ZG9lcyBub3QgYWJvcnQvc2h1dGRvd24gdGhlIHBpcGUgYW5kIHRoZSB1cmIgaXMgcmVzdWJtaXR0
-ZWQgdG8gcmVjZWl2ZQ0KPiB0aGUgbmV4dCBwYWNrZXQuIEhvd2V2ZXIgdGhlIGNhbGxiYWNrIGhh
-bmRsZXIgdXNidG1jX2ludGVycnVwdCBpcyBjYWxsZWQgYWdhaW4gd2l0aA0KPiB0aGUgc2FtZSBl
-cnJvbmVvdXMgc3RhdHVzIC1FUFJPVE8gYW5kIHRoaXMgc2VlbXMgdG8gcmVzdWx0IGluIGFuIGVu
-ZGxlc3MgbG9vcC4NCj4gPiBBY2NvcmRpbmcgdG8NCj4gPiBodHRwczovL2dpdC5rZXJuZWwub3Jn
-L3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxkcy9saW51eC5naXQvdHJlDQo+ID4gZS9E
-b2N1bWVudGF0aW9uL2RyaXZlci1hcGkvdXNiL2Vycm9yLWNvZGVzLnJzdD9oPXY1LjEyI24xNzcN
-Cj4gPiB0aGUgZXJyb3IgLUVQUk9UTyBpbmRpY2F0ZXMgYSBoYXJkd2FyZSBwcm9ibGVtIG9yIGEg
-YmFkIGNhYmxlLg0KPiA+DQo+ID4gTW9zdCB1c2IgZHJpdmVycyBkbyBub3QgcmVhY3QgaW4gYSBz
-cGVjaWZpYyB3YXkgb24gdGhpcyBoYXJkd2FyZSBwcm9ibGVtcyBhbmQNCj4gcmVzdWJtaXQgdGhl
-IHVyYi4gV2UgYXNzdW1lIHRoZXNlIGRyaXZlcnMgd2lsbCBydW4gaW50byB0aGUgc2FtZSBlbmRs
-ZXNzIGxvb3AuDQo+IFNvbWUgb3RoZXIgZHJpdmVyIHNhbXBsZXMgYXJlOg0KPiA+IGh0dHBzOi8v
-Z2l0Lmtlcm5lbC5vcmcvcHViL3NjbS9saW51eC9rZXJuZWwvZ2l0L3RvcnZhbGRzL2xpbnV4Lmdp
-dC90cmUNCj4gPiBlL2RyaXZlcnMvdXNiL2NsYXNzL2NkYy1hY20uYz9oPXY1LjEyI24zNzkNCj4g
-PiBodHRwczovL2dpdC5rZXJuZWwub3JnL3B1Yi9zY20vbGludXgva2VybmVsL2dpdC90b3J2YWxk
-cy9saW51eC5naXQvdHJlDQo+ID4gZS9kcml2ZXJzL2hpZC91c2JoaWQvdXNibW91c2UuYz9oPXY1
-LjEyI242NQ0KPiA+DQo+ID4gUG9zc2libGUgc29sdXRpb25zOg0KPiA+IEhhcmR3YXJlIGRlZmVj
-dHMgb3IgYmFkIGNhYmxlcyBzZWVtcyB0byBiZSBhIGNvbW1vbiBwcm9ibGVtIGZvciBtb3N0IHVz
-Yg0KPiBkcml2ZXJzIGFuZCBJIGFzc3VtZSB3ZSBkbyBub3Qgd2FudCB0byBmaXggdGhpcyBwcm9i
-bGVtIGluIGFsbCBjbGFzcyBzcGVjaWZpYyBkcml2ZXJzLA0KPiBidXQgaW4gbG93ZXIgbGV2ZWwg
-aG9zdCBkcml2ZXJzLCBlLmc6DQo+ID4gMS4gVXNpbmcgYSBjb3VudGVyIGFuZCBjbG9zZSB0aGUg
-cGlwZSBhZnRlciBzb21lIGRldGVjdGVkIGVycm9ycyAyLg0KPiA+IERlbGF5IHRoZSByZXN1Ym1p
-c3Npb24gb2YgdGhlIHVyYiB0byBhdm9pZCBoaWdoIGNwdSB1c2FnZSAzLiBEbw0KPiA+IG5vdGhp
-bmcsIHNpbmNlIGl0IGlzIGp1c3QgYSByYXJlIHByb2JsZW0uDQo+ID4NCj4gPiBXZSd2ZSBuZXZl
-ciBzZWVuIHRoaXMgcHJvYmxlbSBpbiBvdXIgcHJvZHVjdHMgYW5kIHdlIGRvIG5vdCBkYXJlIHRv
-IGNoYW5nZQ0KPiBhbnl0aGluZy4NCj4gDQo+IERyaXZlcnMgYXJlIG5vdCBjb25zaXN0ZW50IGlu
-IHRoZSB3YXkgdGhleSBoYW5kbGUgdGhlc2UgZXJyb3JzLCBhcyB5b3UgaGF2ZSBzZWVuLiAgQQ0K
-PiBmZXcgdHJ5IHRvIHRha2UgYWN0aXZlIG1lYXN1cmVzLCBzdWNoIGFzIHJldHJ5cyB3aXRoIGlu
-Y3JlYXNpbmcgdGltZW91dHMuICBNYW55DQo+IGRyaXZlcnMganVzdCBpZ25vcmUgdGhlbSwgd2hp
-Y2ggaXMgbm90IGEgdmVyeSBnb29kIGlkZWEuDQo+IA0KPiBUaGUgZ2VuZXJhbCBmZWVsaW5nIGFt
-b25nIGtlcm5lbCBVU0IgZGV2ZWxvcGVycyBpcyB0aGF0IGEgLUVQUk9UTywgLUVJTFNFUSwgb3IN
-Cj4gLUVUSU1FIGVycm9yIHNob3VsZCBiZSByZWdhcmRlZCBhcyBmYXRhbCwgbXVjaCB0aGUgc2Ft
-ZSBhcyBhbiB1bnBsdWcgZXZlbnQuICBUaGUNCj4gZHJpdmVyIHNob3VsZCBhdm9pZCByZXN1Ym1p
-dHRpbmcgVVJCcyBhbmQganVzdCB3YWl0IHRvIGJlIHVuYm91bmQgZnJvbSB0aGUgZGV2aWNlLg0K
-DQpUaGFua3MgZm9yIHlvdXIgYXNzZXNzbWVudC4gSSBhZ3JlZSB3aXRoIHRoZSBnZW5lcmFsIGZl
-ZWxpbmcuIEkgY291bnRlZCBhYm91dCBodW5kcmVkDQpzcGVjaWZpYyB1c2IgZHJpdmVycywgc28g
-d291bGRuJ3QgaXQgYmUgYmV0dGVyIHRvIGZpeCB0aGUgcHJvYmxlbSBpbiBzb21lIG9mIHRoZSBo
-b3N0IGRyaXZlcnMgKGUuZy4gdXJiLmMpPw0KV2UgY291bGQgcmV0dXJuIGFuIGVycm9yIHdoZW4g
-Y2FsbGluZyB1c2Jfc3VibWl0X3VyYigpIG9uIGFuIGVycm9uZW91cyBwaXBlLg0KSSBjYW5ub3Qg
-ZXN0aW1hdGUgdGhlIHNpZGUgZWZmZWN0cyBhbmQgd2UgbmVlZCB0byBjaGVjayBhbGwgZHJpdmVy
-cyBhZ2FpbiBob3cgdGhleSBkZWFsIHdpdGggdGhlDQplcnJvciBzaXR1YXRpb24uIE1heWJlIHRo
-ZXJlIGFyZSBzb21lIHNwZWNpYWwgZHJpdmVyIHRoYXQgbmVlZCBhIHNwZWNpYWxpemVkIGVycm9y
-IGhhbmRsaW5nLg0KSW4gdGhpcyBjYXNlIHRoZXNlIGRyaXZlcnMgY291bGQgcmVzZXQgdGhlIChu
-ZXc/KSBlcnJvciBmbGFnIHRvIGFsbG93IGNhbGxpbmcgdXNiX3N1Ym1pdF91cmIoKQ0KYWdhaW4g
-d2l0aG91dCBlcnJvci4gVGhpcyBjb3VsZCB3b3JrLCBpc24ndCBpdD8NCg0KPiBJZiB5b3Ugd291
-bGQgbGlrZSB0byBhdWRpdCBkcml2ZXJzIGFuZCBmaXggdGhlbSB1cCB0byBiZWhhdmUgdGhpcyB3
-YXksIHRoYXQgd291bGQgYmUNCj4gZ3JlYXQuDQoNCkN1cnJlbnRseSBub3QuIEkgY2Fubm90IHB1
-bGwgdGhlIFVTQiBjYWJsZSBpbiBob21lIG9mZmljZSA6LSksIGJ1dCBJIHdpbGwga2VlcCBhbiBl
-eWUgb24gaXQuDQpXaGVuIEknbSBtb3JlIGludm9sdmVkIGluIHRoZSBuZXh0IFVTQiBkcml2ZXIg
-aXNzdWUgdGhhbiBJIHdpbGwgdGVzdCBiYWQgY2FibGVzIGFuZCANCm1heWJlIGdldCBtb3JlIGlk
-ZWFzIGhvdyB3ZSBjb3VsZCB0ZXN0IGFuZCBmaXggdGhpcyByYXJlIGVycm9yLg0KDQo+IChGWUks
-IGJ5IGZhciB0aGUgbW9zdCBjb21tb24gY2F1c2VzIG9mIHRoZXNlIGVycm9ycyBhcmU6IFRoZSB1
-c2VyIGhhcyB1bnBsdWdnZWQNCj4gdGhlIFVTQiBjYWJsZSwgb3IgdGhlIGRldmljZSdzIGZpcm13
-YXJlIGhhcyBjcmFzaGVkLiAgSXQgaXMgcXVpdGUgcmFyZSBmb3IgdGhlIGNhdXNlIHRvDQo+IGJl
-IGludGVybWl0dGVudCwgYWx0aG91Z2ggbm90IGVudGlyZWx5IHVuaGVhcmQgb2YgLS0gZm9yIGV4
-YW1wbGUsIHNvbWVvbmUgb25jZQ0KPiByZXBvcnRlZCBlcnJvcnMgcmVzdWx0aW5nIGZyb20gRU0g
-b3IgcG93ZXItbGluZSBpbnRlcmZlcmVuY2UgY2F1c2VkIGJ5IGZsaWNrZXJpbmcNCj4gZmx1b3Jl
-c2NlbnQgbGlnaHRzIG9yIHNvbWV0aGluZyBvZiB0aGF0IHNvcnQuICBJdCdzIHByZXR0eSBzYWZl
-IHRvIGlnbm9yZSB0aGlzIHBvc3NpYmlsaXR5LikNCg0KSSBmZWFyIEkgbWF5IG5vdCB1c2UgdGhl
-IDc1IGtXIFRWIHRyYW5zbWl0dGVyIHRvIGludGVyZmVyZSB0aGUgVVNCIGNhYmxlIDotKQ0KDQot
-R3VpZG8NCg==
+On Thu, Apr 15, 2021 at 11:56 PM 'David Gow' via KUnit Development
+<kunit-dev@googlegroups.com> wrote:
+>
+> Add some basic sanity-check tests for the fat_checksum() function and
+> the fat_time_unix2fat() and fat_time_fat2unix() functions. These unit
+> tests verify these functions return correct output for a number of test
+> inputs.
+>
+> These tests were inspored by -- and serve a similar purpose to -- the
+> timestamp parsing KUnit tests in ext4[1].
+>
+> Note that, unlike fat_time_unix2fat, fat_time_fat2unix wasn't previously
+> exported, so this patch exports it as well. This is required for the
+> case where we're building the fat and fat_test as modules.
+>
+> [1]:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/inode-test.c
+>
+> Signed-off-by: David Gow <davidgow@google.com>
+> Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+
+Tested-by: Daniel Latypov <dlatypov@google.com>
+
+The KUnit side of things looks good to me, added some minor nits below.
+I had been hoping to run this using coverage, but something about that
+is newly broken for my machine, so I haven't been able to :|
+
+Because I felt committed to checking the coverage somehow, I added
+some pr_info()s to see which branches are being taken.
+We're hitting all of them except for the two in fat_time_unix2fat:
+* the one for dates before 1980
+* the one for dates after 2107
+
+We have the earliest and latest possible dates as test cases already,
+so it's probably not that important to hit those.
+
+> ---
+>
+> It's been a while, but this hopefully is a final version of the FAT KUnit
+> patchset. It has a number of changes to keep it up-to-date with current
+> KUnit standards, notably the use of parameterised tests and the addition
+> of a '.kunitconfig' file to allow for easy testing. It also fixes an
+> endianness tagging issue picked up by the kernel test robot under sparse
+> on pa-risc.
+>
+> Cheers,
+> -- David
+>
+> Changes since v7:
+> https://lore.kernel.org/linux-kselftest/20201028064631.3774908-1-davidgow@google.com/
+> - Make the two timestamp tests parameterised: this means that the KUnit
+>   runtime and tooling are aware of the different testcases (and print a
+>   nice list of them to the TAP log when the test is run).
+> - Fix some issues sparse picked up with __le32 tagged integers.
+> - Add an fs/fat/.kunitconfig file which contains all the Kconfig entries
+>   needed to run the test. The test can now be run with:
+>   ./tools/testing/kunit/kunit.py run --kunitconfig fs/fat/.kunitconfig
+
+FYI, if you do rebase send out a new revision, the test can be run via
+$ ./tools/testing/kunit/kunit.py run --kunitconfig fs/fat
+
+>
+> Changes since v6:
+> https://lore.kernel.org/linux-kselftest/20201024060558.2556249-1-davidgow@google.com/
+> - Make CONFIG_FAT_DEFAULT_CODEPAGE depend on FAT_FS, rather than either
+>   VFAT_FS or MSDOS_FS.
+>   - This means that FAT_KUNIT_TEST can now also just depend of FAT_FS
+> - Fix a few warnings that KUnit tool was eating:
+>   - KUnit's type checking needs a specific cast for the fat_checksum()
+>     expected results.
+>   - The time test cases shouldn't be 'const'
+>   - The fake superblock is now static, as otherwise it increased the
+>     stack size too much.
+>
+> Changes since v4/5:
+> https://lore.kernel.org/linux-kselftest/20201024052047.2526780-1-davidgow@google.com/
+> - Fix a typo introduced in the Kconfig. It builds now.
+>
+> Changes since v3:
+> https://lore.kernel.org/linux-kselftest/20201021061713.1545931-1-davidgow@google.com/
+> - Update the Kconfig entry to use "depends on" rather than "select", as
+>   discussed in [2].
+> - Depend on "MSDOS_FS || VFAT_FS", rather than "FAT_FS", as we need the
+>   CONFIG_FAT_DEFAULT_CODEPAGE symbol to be defined.
+>
+> Changes since v2:
+> https://lore.kernel.org/linux-kselftest/20201020055856.1270482-1-davidgow@google.com/
+> - Comment that the export for fat_time_fat2unix() function is for KUnit
+>   tests.
+>
+> Changes since v1:
+> https://lore.kernel.org/linux-kselftest/20201017064107.375174-1-davidgow@google.com/
+> - Now export fat_time_fat2unix() so that the test can access it when
+>   built as a module.
+>
+>
+> [2]:
+> https://lore.kernel.org/linux-ext4/52959e99-4105-3de9-730c-c46894b82bdd@infradead.org/T/#t
+>
+>
+>
+>  fs/fat/.kunitconfig |   5 ++
+>  fs/fat/Kconfig      |  14 +++-
+>  fs/fat/Makefile     |   2 +
+>  fs/fat/fat_test.c   | 197 ++++++++++++++++++++++++++++++++++++++++++++
+>  fs/fat/misc.c       |   2 +
+>  5 files changed, 219 insertions(+), 1 deletion(-)
+>  create mode 100644 fs/fat/.kunitconfig
+>  create mode 100644 fs/fat/fat_test.c
+>
+> diff --git a/fs/fat/.kunitconfig b/fs/fat/.kunitconfig
+> new file mode 100644
+> index 000000000000..0a6971dbeccb
+> --- /dev/null
+> +++ b/fs/fat/.kunitconfig
+> @@ -0,0 +1,5 @@
+> +CONFIG_KUNIT=y
+> +CONFIG_FAT_FS=y
+> +CONFIG_MSDOS_FS=y
+> +CONFIG_VFAT_FS=y
+> +CONFIG_FAT_KUNIT_TEST=y
+> diff --git a/fs/fat/Kconfig b/fs/fat/Kconfig
+> index 66532a71e8fd..238cc55f84c4 100644
+> --- a/fs/fat/Kconfig
+> +++ b/fs/fat/Kconfig
+> @@ -77,7 +77,7 @@ config VFAT_FS
+>
+>  config FAT_DEFAULT_CODEPAGE
+>         int "Default codepage for FAT"
+> -       depends on MSDOS_FS || VFAT_FS
+> +       depends on FAT_FS
+>         default 437
+>         help
+>           This option should be set to the codepage of your FAT filesystems.
+> @@ -115,3 +115,15 @@ config FAT_DEFAULT_UTF8
+>           Say Y if you use UTF-8 encoding for file names, N otherwise.
+>
+>           See <file:Documentation/filesystems/vfat.rst> for more information.
+> +
+> +config FAT_KUNIT_TEST
+> +       tristate "Unit Tests for FAT filesystems" if !KUNIT_ALL_TESTS
+> +       depends on KUNIT && FAT_FS
+> +       default KUNIT_ALL_TESTS
+> +       help
+> +         This builds the FAT KUnit tests
+> +
+> +         For more information on KUnit and unit tests in general, please refer
+> +         to the KUnit documentation in Documentation/dev-tools/kunit
+> +
+> +         If unsure, say N
+> diff --git a/fs/fat/Makefile b/fs/fat/Makefile
+> index 70645ce2f7fc..2b034112690d 100644
+> --- a/fs/fat/Makefile
+> +++ b/fs/fat/Makefile
+> @@ -10,3 +10,5 @@ obj-$(CONFIG_MSDOS_FS) += msdos.o
+>  fat-y := cache.o dir.o fatent.o file.o inode.o misc.o nfs.o
+>  vfat-y := namei_vfat.o
+>  msdos-y := namei_msdos.o
+> +
+> +obj-$(CONFIG_FAT_KUNIT_TEST) += fat_test.o
+> diff --git a/fs/fat/fat_test.c b/fs/fat/fat_test.c
+> new file mode 100644
+> index 000000000000..febd25f57d4b
+> --- /dev/null
+> +++ b/fs/fat/fat_test.c
+> @@ -0,0 +1,197 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * KUnit tests for FAT filesystems.
+> + *
+> + * Copyright (C) 2020 Google LLC.
+> + * Author: David Gow <davidgow@google.com>
+> + */
+> +
+> +#include <kunit/test.h>
+> +
+> +#include "fat.h"
+> +
+> +static void fat_checksum_test(struct kunit *test)
+> +{
+> +       /* With no extension. */
+> +       KUNIT_EXPECT_EQ(test, fat_checksum("VMLINUX    "), (u8)44);
+> +       /* With 3-letter extension. */
+> +       KUNIT_EXPECT_EQ(test, fat_checksum("README  TXT"), (u8)115);
+> +       /* With short (1-letter) extension. */
+> +       KUNIT_EXPECT_EQ(test, fat_checksum("ABCDEFGHA  "), (u8)98);
+> +}
+> +
+> +
+> +struct fat_timestamp_testcase {
+> +       const char *name;
+> +       struct timespec64 ts;
+> +       __le16 time;
+> +       __le16 date;
+> +       u8 cs;
+> +       int time_offset;
+
+Optional: it could be easier to read if we grouped the fields together, e.g.
+
+struc timespec64 ts;
+/* fields used by FAT */
+time, date, cs;
+int time_offset;
+
+Or we could add a test-only struct
+
+struct fat_timestamp {
+  time, date, cs;
+};
+
+to keep things more readable, e.g. in unix2fat_test
+
+struct fat_timestamp got;
+...
+KUNIT_EXPECT_EQ_MSG(test, test_case->cs, got.cs, "...")
+
+
+> +};
+> +
+> +static struct fat_timestamp_testcase time_test_cases[] = {
+> +       {
+> +               .name = "Earliest possible UTC (1980-01-01 00:00:00)",
+> +               .ts = {.tv_sec = 315532800LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(0),
+> +               .date = cpu_to_le16(33),
+> +               .cs = 0,
+> +               .time_offset = 0,
+> +       },
+> +       {
+> +               .name = "Latest possible UTC (2107-12-31 23:59:58)",
+> +               .ts = {.tv_sec = 4354819198LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(49021),
+> +               .date = cpu_to_le16(65439),
+> +               .cs = 0,
+> +               .time_offset = 0,
+> +       },
+> +       {
+> +               .name = "Earliest possible (UTC-11) (== 1979-12-31 13:00:00 UTC)",
+> +               .ts = {.tv_sec = 315493200LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(0),
+> +               .date = cpu_to_le16(33),
+> +               .cs = 0,
+> +               .time_offset = 11 * 60,
+> +       },
+> +       {
+> +               .name = "Latest possible (UTC+11) (== 2108-01-01 10:59:58 UTC)",
+> +               .ts = {.tv_sec = 4354858798LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(49021),
+> +               .date = cpu_to_le16(65439),
+> +               .cs = 0,
+> +               .time_offset = -11 * 60,
+> +       },
+> +       {
+> +               .name = "Leap Day / Year (1996-02-29 00:00:00)",
+> +               .ts = {.tv_sec = 825552000LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(0),
+> +               .date = cpu_to_le16(8285),
+> +               .cs = 0,
+> +               .time_offset = 0,
+> +       },
+> +       {
+> +               .name = "Year 2000 is leap year (2000-02-29 00:00:00)",
+> +               .ts = {.tv_sec = 951782400LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(0),
+> +               .date = cpu_to_le16(10333),
+> +               .cs = 0,
+> +               .time_offset = 0,
+> +       },
+> +       {
+> +               .name = "Year 2100 not leap year (2100-03-01 00:00:00)",
+> +               .ts = {.tv_sec = 4107542400LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(0),
+> +               .date = cpu_to_le16(61537),
+> +               .cs = 0,
+> +               .time_offset = 0,
+> +       },
+> +       {
+> +               .name = "Leap year + timezone UTC+1 (== 2004-02-29 00:30:00 UTC)",
+> +               .ts = {.tv_sec = 1078014600LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(48064),
+> +               .date = cpu_to_le16(12380),
+> +               .cs = 0,
+> +               .time_offset = -60,
+> +       },
+> +       {
+> +               .name = "Leap year + timezone UTC-1 (== 2004-02-29 23:30:00 UTC)",
+> +               .ts = {.tv_sec = 1078097400LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(960),
+> +               .date = cpu_to_le16(12385),
+> +               .cs = 0,
+> +               .time_offset = 60,
+> +       },
+> +       {
+> +               .name = "VFAT odd-second resolution (1999-12-31 23:59:59)",
+> +               .ts = {.tv_sec = 946684799LL, .tv_nsec = 0L},
+> +               .time = cpu_to_le16(49021),
+> +               .date = cpu_to_le16(10143),
+> +               .cs = 100,
+> +               .time_offset = 0,
+> +       },
+> +       {
+> +               .name = "VFAT 10ms resolution (1980-01-01 00:00:00:0010)",
+> +               .ts = {.tv_sec = 315532800LL, .tv_nsec = 10000000L},
+> +               .time = cpu_to_le16(0),
+> +               .date = cpu_to_le16(33),
+> +               .cs = 1,
+> +               .time_offset = 0,
+> +       },
+> +};
+> +
+> +static void time_testcase_desc(struct fat_timestamp_testcase *t,
+> +                              char *desc)
+> +{
+> +       strscpy(desc, t->name, KUNIT_PARAM_DESC_SIZE);
+> +}
+> +
+> +KUNIT_ARRAY_PARAM(fat_time, time_test_cases, time_testcase_desc);
+> +
+> +static void fat_time_fat2unix_test(struct kunit *test)
+> +{
+> +       static struct msdos_sb_info fake_sb;
+> +       struct timespec64 ts;
+> +       struct fat_timestamp_testcase *testcase =
+> +               (struct fat_timestamp_testcase *)test->param_value;
+> +
+> +       fake_sb.options.tz_set = 1;
+> +       fake_sb.options.time_offset = testcase->time_offset;
+> +
+> +       fat_time_fat2unix(&fake_sb, &ts,
+> +                         testcase->time,
+> +                         testcase->date,
+> +                         testcase->cs);
+> +       KUNIT_EXPECT_EQ_MSG(test,
+> +                           testcase->ts.tv_sec,
+> +                           ts.tv_sec,
+> +                           "Timestamp mismatch (seconds)\n");
+
+Nit: if I delete these \n's, I don't see a difference in kunit.py output.
+I also don't think I see a difference in the raw output either.
+
+If I put \n\n, then I'll see a difference.
+
+So should we drop these single trailing \n?
+
+> +       KUNIT_EXPECT_EQ_MSG(test,
+> +                           testcase->ts.tv_nsec,
+> +                           ts.tv_nsec,
+> +                           "Timestamp mismatch (nanoseconds)\n");
+> +}
+> +
+> +static void fat_time_unix2fat_test(struct kunit *test)
+> +{
+> +       static struct msdos_sb_info fake_sb;
+> +       __le16 date, time;
+> +       u8 cs;
+> +       struct fat_timestamp_testcase *testcase =
+> +               (struct fat_timestamp_testcase *)test->param_value;
+> +
+> +       fake_sb.options.tz_set = 1;
+> +       fake_sb.options.time_offset = testcase->time_offset;
+> +
+> +       fat_time_unix2fat(&fake_sb, &(testcase->ts),
+> +                         &time, &date, &cs);
+> +       KUNIT_EXPECT_EQ_MSG(test,
+> +                           le16_to_cpu(testcase->time),
+> +                           le16_to_cpu(time),
+> +                           "Time mismatch\n");
+> +       KUNIT_EXPECT_EQ_MSG(test,
+> +                           le16_to_cpu(testcase->date),
+> +                           le16_to_cpu(date),
+> +                           "Date mismatch\n");
+> +       KUNIT_EXPECT_EQ_MSG(test,
+> +                           testcase->cs,
+> +                           cs,
+> +                           "Centisecond mismatch\n");
+> +}
+> +
+> +static struct kunit_case fat_test_cases[] = {
+> +       KUNIT_CASE(fat_checksum_test),
+> +       KUNIT_CASE_PARAM(fat_time_fat2unix_test, fat_time_gen_params),
+> +       KUNIT_CASE_PARAM(fat_time_unix2fat_test, fat_time_gen_params),
+> +       {},
+> +};
+> +
+> +static struct kunit_suite fat_test_suite = {
+> +       .name = "fat_test",
+> +       .test_cases = fat_test_cases,
+> +};
+> +
+> +kunit_test_suites(&fat_test_suite);
+> +
+> +MODULE_LICENSE("GPL v2");
+> diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+> index 18a50a46b57f..9073fa927be3 100644
+> --- a/fs/fat/misc.c
+> +++ b/fs/fat/misc.c
+> @@ -229,6 +229,8 @@ void fat_time_fat2unix(struct msdos_sb_info *sbi, struct timespec64 *ts,
+>                 ts->tv_nsec = 0;
+>         }
+>  }
+> +/* Export fat_time_fat2unix() for the fat_test KUnit tests. */
+> +EXPORT_SYMBOL_GPL(fat_time_fat2unix);
+>
+>  /* Convert linear UNIX date to a FAT time/date pair. */
+>  void fat_time_unix2fat(struct msdos_sb_info *sbi, struct timespec64 *ts,
+> --
+> 2.31.1.368.gbe11c130af-goog
+>
+> --
+> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/20210416065623.882364-1-davidgow%40google.com.
