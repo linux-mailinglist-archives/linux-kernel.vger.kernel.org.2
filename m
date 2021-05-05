@@ -2,150 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54653373CC2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:56:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D7E373CD2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:59:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbhEEN5l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:57:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58908 "EHLO
+        id S233592AbhEEOAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:00:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59606 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233178AbhEEN5k (ORCPT
+        with ESMTP id S232923AbhEEOAq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:57:40 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EFD4DC061574;
-        Wed,  5 May 2021 06:56:43 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id l14so1957738wrx.5;
-        Wed, 05 May 2021 06:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:date:message-id:to:cc
-         :subject:from:references:in-reply-to;
-        bh=w5NxWLLzhgPNs7hgKxObXSucJQTrVLPMT6JRaxXmMGg=;
-        b=rHQPvxjAuK2Pff3yz8wDRSkCbFh7jdBrno1hGfOSliik/K37WXholSfq5fnbl5g4tD
-         D9vY7q3tQDIx7X7eAU4HPA9exN2PxY47yjtGnDFc9DcUbUjdKD/t1jVq9lghDvpLXU+R
-         pCYRfvxuY+DKcNtzYOhoMg8+knE65iw6S2qZ7W9zNn0KBSIhCg/9aJpu4iI6Rh4VXDEm
-         foteZEQ9xZRj2agkDMGY4k/OtG/fii1KtIPHqcJhYbE1uCP7M2IJr1FY1eE6FKN3bOn4
-         JP7mDe8VW2XdfAOOiKruStlKFvdgDN38R/D4KsTpR33qet0a19AEiNmLGQGlj1+SlbUP
-         zS7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding:date
-         :message-id:to:cc:subject:from:references:in-reply-to;
-        bh=w5NxWLLzhgPNs7hgKxObXSucJQTrVLPMT6JRaxXmMGg=;
-        b=SAv+H3SpHgKVoffqA0Jjxo5qeuqnInwrle+5l0PR3Wz8VAiDEZQhdgesr9IWJ5ysOM
-         XJJqVJxg/TR/3Nbv9rLgheKcdJuY1PXbGQHPWx37FUVOFQ/l53kZt/tOxaWZ5/Q8/j6q
-         sh+utF8S6RwVprM/vV7PbltPn5/m0lnMkHdSiTy7aWF7ipSlDxTv3mZTozjWnqLA7O43
-         MtZobCO1+SLrBzHNz4lpO+dReXYg5NgeVjdWmipfirrfeJGHNTTjuH5UqYKlpp7VS7Mz
-         06N6cBsqUgNXIQ0/vYdxlWiz0AkV9RtCbAc4K43EliW/ITmRIqpY9DJ/WywTX0p3NmMI
-         gCEA==
-X-Gm-Message-State: AOAM533anH8K+cuvHL6huplBVLbQPri7y3LhtRRYWgoe6FQ7JSvKMZic
-        REorEhBa4WgSHuvBFT/Vpd0=
-X-Google-Smtp-Source: ABdhPJyV2UBegtSOrw2Zpi3F53Lq+71q6vd8Wp3vO3VMu7mlOM4kKYHZucbGpdf2r8Tyhuih4H/9fg==
-X-Received: by 2002:adf:fc11:: with SMTP id i17mr34684916wrr.368.1620223002719;
-        Wed, 05 May 2021 06:56:42 -0700 (PDT)
-Received: from localhost (a109-49-46-234.cpe.netcabo.pt. [109.49.46.234])
-        by smtp.gmail.com with ESMTPSA id s5sm6062841wmh.37.2021.05.05.06.56.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 06:56:41 -0700 (PDT)
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date:   Wed, 05 May 2021 14:56:40 +0100
-Message-Id: <CB5D4B64QTP4.GBH80G3VX3B6@arch-thunder>
-To:     "Jonathan Cameron" <Jonathan.Cameron@Huawei.com>,
-        "Mauro Carvalho Chehab" <mchehab+huawei@kernel.org>
-Cc:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        "Fabio Estevam" <festevam@gmail.com>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Mauro Carvalho Chehab" <mchehab@kernel.org>,
-        "NXP Linux Team" <linux-imx@nxp.com>,
-        "Pengutronix Kernel Team" <kernel@pengutronix.de>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        "Sascha Hauer" <s.hauer@pengutronix.de>,
-        "Shawn Guo" <shawnguo@kernel.org>,
-        "Steve Longerbeam" <slongerbeam@gmail.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-staging@lists.linux.dev>
-Subject: Re: [PATCH 02/25] staging: media: imx7-mipi-csis: fix
- pm_runtime_get_sync() usage count
-From:   "Rui Miguel Silva" <rmfrfs@gmail.com>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
- <793a5806a63b6313606fd1c344b9eec41e61a440.1620207353.git.mchehab+huawei@kernel.org> <20210505120652.00001236@Huawei.com>
-In-Reply-To: <20210505120652.00001236@Huawei.com>
+        Wed, 5 May 2021 10:00:46 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1F190C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 06:59:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=hHQTdk29tySjRz+Nb81eZPl2KWyrgM9RRrCRMdxPkvU=; b=Bv6dNSDiJ6DbjEy6bVgiSmZhnb
+        jG8d4YqFzPZyqjojp72BCs/bYhhOJUYN1HuUP2Salji/enDu9JtUt72jXbU6eAl+EPqCZOY4CuAx6
+        LpsZLu3ug7eoJxa+1mwxG+/4sBK2cwC2iF3RxkYAPyxIrrpDZUKFjkfXqqb7BslqgoKS2k15iGNMn
+        8/gDSG70pSUZ/WYpOEHpzAHGaUAw4sO87VZnzjFLCmJUYY9IiVEnPeRJ6PFQ37QSljGSYtAjcXmqH
+        waJ6Pbi4hLU42AamRxvDC60SEy1Igdhv1cVVl6IyqpyUVEVolM2lSsSnp1BSlQFwMqNap3uVrmX8L
+        UNm3iDoQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1leI1Y-000OMB-7N; Wed, 05 May 2021 13:57:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 67CBB300103;
+        Wed,  5 May 2021 15:57:08 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 13936203E67C1; Wed,  5 May 2021 15:57:08 +0200 (CEST)
+Date:   Wed, 5 May 2021 15:57:08 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Frederic Weisbecker <frederic@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Marcelo Tosatti <mtosatti@redhat.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Yunfeng Ye <yeyunfeng@huawei.com>
+Subject: Re: [PATCH 8/8] tick/nohz: Kick only _queued_ task whose tick
+ dependency is updated
+Message-ID: <YJKkNJTQFtmQPv1u@hirez.programming.kicks-ass.net>
+References: <20210422120158.33629-1-frederic@kernel.org>
+ <20210422120158.33629-9-frederic@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210422120158.33629-9-frederic@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-On Wed May 5, 2021 at 12:06 PM WEST, Jonathan Cameron wrote:
+On Thu, Apr 22, 2021 at 02:01:58PM +0200, Frederic Weisbecker wrote:
 
-> On Wed, 5 May 2021 11:41:52 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
->
-> > The pm_runtime_get_sync() internally increments the
-> > dev->power.usage_count without decrementing it, even on errors.
-> > Replace it by the new pm_runtime_resume_and_get(), introduced by:
-> > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to dea=
-l with usage counter")
-> > in order to properly decrement the usage counter, avoiding
-> > a potential PM usage counter leak.
-> >=20
-> > Acked-by: Rui Miguel Silva <rmfrfs@gmail.com>
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
->
-> Not a fix as far as I can see, just a cleanup - so perhaps not this set?
+> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> index 98191218d891..08526227d200 100644
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -1580,6 +1580,11 @@ static inline void uclamp_post_fork(struct task_struct *p) { }
+>  static inline void init_uclamp(void) { }
+>  #endif /* CONFIG_UCLAMP_TASK */
+>  
+> +bool sched_task_on_rq(struct task_struct *p)
+> +{
+> +	return task_on_rq_queued(p);
+> +}
+> +
+>  static inline void enqueue_task(struct rq *rq, struct task_struct *p, int flags)
+>  {
+>  	if (!(flags & ENQUEUE_NOCLOCK))
 
-yes, the original changelog of this patch, that I acked,  made it
-clear it was a cleanup:
+That's a wee bit sad..
 
-"
-Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to
-deal with usage counter")                                                  =
-                                                                           =
-           =20
-added pm_runtime_resume_and_get() in order to automatically handle=20
-dev->power.usage_count decrement on errors.
+> diff --git a/kernel/time/tick-sched.c b/kernel/time/tick-sched.c
+> index ad5c3905196a..faba7881048f 100644
+> --- a/kernel/time/tick-sched.c
+> +++ b/kernel/time/tick-sched.c
+> @@ -324,8 +324,6 @@ void tick_nohz_full_kick_cpu(int cpu)
+>  
+>  static void tick_nohz_kick_task(struct task_struct *tsk)
+>  {
+> -	int cpu = task_cpu(tsk);
+> -
+>  	/*
+>  	 * If the task concurrently migrates to another cpu,
+>  	 * we guarantee it sees the new tick dependency upon
+> @@ -340,6 +338,23 @@ static void tick_nohz_kick_task(struct task_struct *tsk)
+>  	 *   tick_nohz_task_switch()            smp_mb() (atomic_fetch_or())
+>  	 *      LOAD p->tick_dep_mask           LOAD p->cpu
+>  	 */
+> +	int cpu = task_cpu(tsk);
+> +
+> +	/*
+> +	 * If the task is not running, run_posix_cpu_timers
+> +	 * has nothing to elapsed, can spare IPI in that
+> +	 * case.
+> +	 *
+> +	 * activate_task()                      STORE p->tick_dep_mask
+> +	 * STORE p->on_rq
+> +	 * __schedule() (switch to task 'p')    smp_mb() (atomic_fetch_or())
+> +	 * LOCK rq->lock                        LOAD p->on_rq
+> +	 * smp_mb__after_spin_lock()
+> +	 * tick_nohz_task_switch()
+> +	 *	LOAD p->tick_dep_mask
+> +	 */
 
-Use the new API, in order to cleanup the error check logic.
-"
+That needs indenting, the style is distinctly different from the comment
+right above it.
 
-This one above is new, but I saw Mauro is going change it.
+> +	if (!sched_task_on_rq(tsk))
+> +		return;
 
-------
-Cheers,
-     Rui
+I'm too tired, but do we really need the task_cpu() load to be before
+this?
 
->
-> Jonathan
->
->
-> > ---
-> >  drivers/staging/media/imx/imx7-mipi-csis.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> >=20
-> > diff --git a/drivers/staging/media/imx/imx7-mipi-csis.c b/drivers/stagi=
-ng/media/imx/imx7-mipi-csis.c
-> > index 025fdc488bd6..1dc680d94a46 100644
-> > --- a/drivers/staging/media/imx/imx7-mipi-csis.c
-> > +++ b/drivers/staging/media/imx/imx7-mipi-csis.c
-> > @@ -695,11 +695,10 @@ static int mipi_csis_s_stream(struct v4l2_subdev =
-*mipi_sd, int enable)
-> > =20
-> >  		mipi_csis_clear_counters(state);
-> > =20
-> > -		ret =3D pm_runtime_get_sync(&state->pdev->dev);
-> > -		if (ret < 0) {
-> > -			pm_runtime_put_noidle(&state->pdev->dev);
-> > +		ret =3D pm_runtime_resume_and_get(&state->pdev->dev);
-> > +		if (ret < 0)
-> >  			return ret;
-> > -		}
-> > +
-> >  		ret =3D v4l2_subdev_call(state->src_sd, core, s_power, 1);
-> >  		if (ret < 0 && ret !=3D -ENOIOCTLCMD)
-> >  			goto done;
-
-
-
+>  
+>  	preempt_disable();
+>  	if (cpu_online(cpu))
+> -- 
+> 2.25.1
+> 
