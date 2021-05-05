@@ -2,119 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 700FE373D01
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:05:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06270373D04
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:06:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233691AbhEEOGl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:06:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232569AbhEEOGk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:06:40 -0400
-Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8855BC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 07:05:43 -0700 (PDT)
-Received: by mail-wr1-x435.google.com with SMTP id l2so1979801wrm.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:05:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CmkloHZMbYYsutWi2v9Qx78QF4fzXdmWotZ2Kv9nAZg=;
-        b=UqyhSR4lXze/ooFXogbnFNZQ+l03UPDgvYFdrX8BICA3iusG9aMFtcbK7s7jCg2QcG
-         WFMXu3XTeUG213ML1j/JYNZ7WZl9wpE/AFvE1zK+f9wzKiFi/BH+duc/L7SPNHovEn6O
-         tgUORMpw1mLM4S1bZBLKTBh2v7LZurFB37a47Mh/hZ5Gz8qWChbScUSLrKbWKAa8zTHZ
-         Hfr21OmOtrO/R8jweTqrNCGGtvtz0ssh/Yd14+oQ3VvBmxOxvMTHdXQKzMYonBHDC8Wn
-         zDzNPM5HhJb8zfjSEUnG93TwFAc8t5naGG4vJlUDbeS0rhEecNL2k79ebaMjMpKJtxW9
-         dRQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=CmkloHZMbYYsutWi2v9Qx78QF4fzXdmWotZ2Kv9nAZg=;
-        b=nFsXQrl0mH5/+vJcFKVUApc3V6spF1RJPdzumfzOYsxYnzN6dpOyN5bYLVwD1USD4t
-         mbkSbrejBaY9VPe7Duaq5melUYH0CwW1XQjsILRz7hCMfmVc3TilGU0L6yndEcy0i8kh
-         9WpNivYxTBpNF150PRcTxvNCZoZe+eruGcyhMJWDj+Zyg8z6UphsKFjp/dXolZYT0IGY
-         hUrHXBnlScXBzDtG+Es8ESSWLlLqXCUAJa4Np46MqRpUnJ/UEFyzsEIu1GCXJV/W28Zx
-         WklbGbDUgw1Jt9eowCSsbm6UKEiBD8HbYUNT34ogKT271sFYpB8VIseoMUdoEfNEYwUU
-         BCag==
-X-Gm-Message-State: AOAM530BhQ2ydm5nBWVbXaZcApWtlRC6NHaS5d+wXABZO/DFzQ+/tsaI
-        uofsTSfUG/NAk3nH+/uPRWA+oA==
-X-Google-Smtp-Source: ABdhPJzDTH57HIhjDeThf/cNMDXb6vxbqDEYrjFgiBf9y9IzSYt9HIz/q/8dnK3sUbQx+7L3xIcRTg==
-X-Received: by 2002:a5d:5242:: with SMTP id k2mr38938187wrc.269.1620223542265;
-        Wed, 05 May 2021 07:05:42 -0700 (PDT)
-Received: from localhost.localdomain ([212.45.67.2])
-        by smtp.googlemail.com with ESMTPSA id f6sm23296476wru.72.2021.05.05.07.05.41
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 05 May 2021 07:05:41 -0700 (PDT)
-From:   Georgi Djakov <georgi.djakov@linaro.org>
-To:     akpm@linux-foundation.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, georgi.djakov@linaro.org,
-        Liam Mark <lmark@codeaurora.org>
-Subject: [PATCH] mm/memory_hotplug: Rate limit page migration warnings
-Date:   Wed,  5 May 2021 17:05:42 +0300
-Message-Id: <20210505140542.24935-1-georgi.djakov@linaro.org>
-X-Mailer: git-send-email 2.29.0
+        id S233708AbhEEOHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:07:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56594 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232569AbhEEOHs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 10:07:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 57B47610D2;
+        Wed,  5 May 2021 14:06:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620223611;
+        bh=OjNXdtLe+rldbt/eqf2MzCXHGnPYO6PJB+Ud+Wzr38k=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=K4+OsyGPs1zXOojHu74svR1YSoxWe1oURMRbr+cAqnG6P83C+wzhhyB1dh1+Gt16v
+         HLa7Jdu63iOhY5UmIgAtLPMcWiNNlQ6mB+O7FFbcVTjOBaidr0oPDZL/hN40wKPV0l
+         IDwI38xSYDXaNT8/yhgWidCuGhv/KlyY/9QxGKrtU4x54adPkNUq8/YWxnulJCPtk8
+         r1j5PD/c3eZ/Khv9AxovP6rcAlc9Gy9GENAfcpJYoCQXZGhAsX0PaiAnxPTWOW8poO
+         d8mGE2yTq0V1vgcKKVAMt7TaF/sQrkfYGfcmLiwN09e5GUbOQji0Z9gWLjuOCqI86m
+         j5dIoFxCk2LbA==
+Date:   Wed, 5 May 2021 16:06:45 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>, <linuxarm@huawei.com>,
+        <mauro.chehab@huawei.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+Subject: Re: [PATCH 25/25] media: i2c: ccs-core: fix pm_runtime_get_sync()
+ usage count
+Message-ID: <20210505160645.1d197193@coco.lan>
+In-Reply-To: <20210505133548.00005c1a@Huawei.com>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <83ec24acb15f17e2ce589575c2f5eb7bdd1daf28.1620207353.git.mchehab+huawei@kernel.org>
+        <20210505103409.GN3@paasikivi.fi.intel.com>
+        <20210505125700.4a7584ca@coco.lan>
+        <20210505125857.7f30d8fa@coco.lan>
+        <20210505133548.00005c1a@Huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Liam Mark <lmark@codeaurora.org>
+Hi Jonathan,
 
-When offlining memory the system can attempt to migrate a lot of pages,
-if there are problems with migration this can flood the logs. Printing
-all the data hogs the CPU and cause some RT threads to run for a long
-time, which may have some bad consequences.
+Em Wed, 5 May 2021 13:35:48 +0100
+Jonathan Cameron <Jonathan.Cameron@Huawei.com> escreveu:
 
-Rate limit the page migration warnings in order to avoid this.
+> > > [PATCH] media: i2c: ccs-core: fix pm_runtime_get_sync() usage count
+> > > 
+> > > The pm_runtime_get_sync() internally increments the
+> > > dev->power.usage_count without decrementing it, even on errors.
+> > > 
+> > > There is a bug at ccs_pm_get_init(): when this function returns
+> > > an error, the stream is not started, and RPM usage_count
+> > > should not be incremented. However, if the calls to
+> > > v4l2_ctrl_handler_setup() return errors, it will be kept
+> > > incremented.
+> > > 
+> > > At ccs_suspend() the best is to replace it by the new
+> > > pm_runtime_resume_and_get(), introduced by:
+> > > commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> > > in order to properly decrement the usage counter automatically,
+> > > in the case of errors.
+> > > 
+> > > Fixes: 96e3a6b92f23 ("media: smiapp: Avoid maintaining power state information")
+> > > Cc: stable@vger.kernel.org
+> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-Signed-off-by: Liam Mark <lmark@codeaurora.org>
-Signed-off-by: Georgi Djakov <georgi.djakov@linaro.org>
----
- mm/memory_hotplug.c | 16 +++++++++++-----
- 1 file changed, 11 insertions(+), 5 deletions(-)
+Per Sakari's request (for practical reasons on backporting and
+c/c stable), this was split into two separate patches, one
+fixing the issues, and a separate trivial one with just the
+pm_runtime_resume_and_get(). I'm adding your RB on both.
 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index 70620d0dd923..64acbdc6bece 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -1521,6 +1521,8 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 	struct page *page, *head;
- 	int ret = 0;
- 	LIST_HEAD(source);
-+	static DEFINE_RATELIMIT_STATE(migrate_rs, DEFAULT_RATELIMIT_INTERVAL,
-+				      DEFAULT_RATELIMIT_BURST);
- 
- 	for (pfn = start_pfn; pfn < end_pfn; pfn++) {
- 		if (!pfn_valid(pfn))
-@@ -1567,8 +1569,10 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 						    page_is_file_lru(page));
- 
- 		} else {
--			pr_warn("failed to isolate pfn %lx\n", pfn);
--			dump_page(page, "isolation failed");
-+			if (__ratelimit(&migrate_rs)) {
-+				pr_warn("failed to isolate pfn %lx\n", pfn);
-+				dump_page(page, "isolation failed");
-+			}
- 		}
- 		put_page(page);
- 	}
-@@ -1597,9 +1601,11 @@ do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 			(unsigned long)&mtc, MIGRATE_SYNC, MR_MEMORY_HOTPLUG);
- 		if (ret) {
- 			list_for_each_entry(page, &source, lru) {
--				pr_warn("migrating pfn %lx failed ret:%d ",
--				       page_to_pfn(page), ret);
--				dump_page(page, "migration failure");
-+				if (__ratelimit(&migrate_rs)) {
-+					pr_warn("migrating pfn %lx failed ret:%d\n",
-+						page_to_pfn(page), ret);
-+					dump_page(page, "migration failure");
-+				}
- 			}
- 			putback_movable_pages(&source);
- 		}
+Thanks,
+Mauro
