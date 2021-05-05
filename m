@@ -2,77 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E89E374BAD
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:03:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CAC5374BB1
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230283AbhEEXEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 19:04:00 -0400
-Received: from mail-ot1-f43.google.com ([209.85.210.43]:40491 "EHLO
-        mail-ot1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229821AbhEEXD6 (ORCPT
+        id S229821AbhEEXGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 19:06:49 -0400
+Received: from mail-oi1-f177.google.com ([209.85.167.177]:43817 "EHLO
+        mail-oi1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhEEXGs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 19:03:58 -0400
-Received: by mail-ot1-f43.google.com with SMTP id g4-20020a9d6b040000b029029debbbb3ecso3230865otp.7;
-        Wed, 05 May 2021 16:03:00 -0700 (PDT)
+        Wed, 5 May 2021 19:06:48 -0400
+Received: by mail-oi1-f177.google.com with SMTP id j75so3739807oih.10;
+        Wed, 05 May 2021 16:05:50 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=c5gJIQptNbwhzfSNPQQCVwvZ2lAYCY0SqfJ3dG+5h4k=;
-        b=nwRT8+ox57GzmTlkcG3ggMaqjC76yD9q50r/u39k6wdZm+Qskmr7iz2xqodTUUAnXD
-         gac5mhi/3ImUDaTc7GislH9NFyMVau+p/gzFUiIrNVE7WlJTtWMrYekR/+apd9804+hd
-         JQpBbDbCR2ktdKPbpV62rAnQqCfdIieoZXCAxVKpRGgTylL0tSz4i7Rp0ddds4GP5J7E
-         PxD6iBhlfQiimTpgCr9qsnZRH6+pLieaAQ1qswT4Ck23MWvYchN7XpMkLFpcUB0AbJXB
-         +0b4TVPrXrnIfFbY0jwL+csE105MNyx8R2Cz45A7jELN35nYy3CluhdoNCtRyJoviWMw
-         CN/A==
-X-Gm-Message-State: AOAM530WJFNsmIWYr4nR7R+/y1e/nzL5HkW1Ja87KhmJUefMwtfJ0WkV
-        K32HMAp/cHuFa9D4N9xqIA==
-X-Google-Smtp-Source: ABdhPJwnGdYO6xivVdQOTOmieNJgXZf1cUHMK+GAA2Aak1nTUeuiCm+657685gZmMaAIiSTqypesLQ==
-X-Received: by 2002:a05:6830:1556:: with SMTP id l22mr895769otp.34.1620255780165;
-        Wed, 05 May 2021 16:03:00 -0700 (PDT)
+        bh=MngNvYwOHxEk6uk+PqkoCOn4yX8WrY5NS/V34QIKjJw=;
+        b=VQYi1uyPN2BvCpUQpHpNYFlyCrPG36FhZdgDFn2Sc3pFNAsrIxH5fRjpr0zpSd9I1i
+         Kih1M3Q2ZI5om2J/tcwka+2wuYyeZ0ZEFWntuAs1tvzeNctKLThd9oVNZRJKNzIcwkJC
+         beNivbOWY8CiUO6jOfQlRZBueHqb/AmdQDg1hj4kEgfULxRpzhDKv7yhVLVP+t4ohTUZ
+         5kE4vH5ota9CKXCtLUi3lawKMnjrJtoz7VvQmaYoVPYELBe2VfyjWRpcDu0Uyi+lZ/co
+         xZNky0aJXX/4NGhQuWRA+T5cTGESUxng2mBmpePy83GNfGGL4EzHUS4DdNMTldk0w2Uv
+         evzg==
+X-Gm-Message-State: AOAM532AuJELgR79KthVrx/QMDZo7z1rH7uM6C2/gal64XxfoVPnaPWk
+        h3VN81FFsl+3LKd3Inpha5TjLTveSQ==
+X-Google-Smtp-Source: ABdhPJwBwpPBDjdYr7rrCEl5VZZEFfefkXKjkjiQIJKCVdQQjTO5+dLgXZpLVmSdhon+TRyd8WA4QA==
+X-Received: by 2002:aca:eb02:: with SMTP id j2mr8546575oih.92.1620255949934;
+        Wed, 05 May 2021 16:05:49 -0700 (PDT)
 Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e67sm126328oia.5.2021.05.05.16.02.58
+        by smtp.gmail.com with ESMTPSA id a4sm125046oib.17.2021.05.05.16.05.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 16:02:59 -0700 (PDT)
-Received: (nullmailer pid 3004478 invoked by uid 1000);
-        Wed, 05 May 2021 23:02:58 -0000
-Date:   Wed, 5 May 2021 18:02:58 -0500
+        Wed, 05 May 2021 16:05:49 -0700 (PDT)
+Received: (nullmailer pid 3009072 invoked by uid 1000);
+        Wed, 05 May 2021 23:05:48 -0000
+Date:   Wed, 5 May 2021 18:05:48 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Sebastian Reichel <sebastian.reichel@collabora.com>
-Cc:     Saravana Kannan <saravanak@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
-        linux-rtc@vger.kernel.org, linux-mtd@lists.infradead.org,
-        Fabio Estevam <festevam@gmail.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Alessandro Zummo <a.zummo@towertech.it>,
-        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
-        David Airlie <airlied@linux.ie>, kernel@collabora.com,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>
-Subject: Re: [PATCHv2 4/5] dt-bindings: arm: fsl: add GE B1x5pv2 boards
-Message-ID: <20210505230258.GA3004449@robh.at.kernel.org>
-References: <20210428222953.235280-1-sebastian.reichel@collabora.com>
- <20210428222953.235280-5-sebastian.reichel@collabora.com>
+To:     Eddie James <eajames@linux.ibm.com>
+Cc:     linux-kernel@vger.kernel.org, robh+dt@kernel.or,
+        linux-leds@vger.kernel.org, jacek.anaszewski@gmail.com,
+        devicetree@vger.kernel.org, vishwa@linux.ibm.com, pavel@ucw.cz
+Subject: Re: [PATCH 1/5] dt-bindings: leds: Add retain-state-shutdown boolean
+Message-ID: <20210505230548.GA3009010@robh.at.kernel.org>
+References: <20210429205002.70245-1-eajames@linux.ibm.com>
+ <20210429205002.70245-2-eajames@linux.ibm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210428222953.235280-5-sebastian.reichel@collabora.com>
+In-Reply-To: <20210429205002.70245-2-eajames@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 29 Apr 2021 00:29:52 +0200, Sebastian Reichel wrote:
-> Document the compatible for GE B1x5pv2 boards.
+On Thu, 29 Apr 2021 15:49:58 -0500, Eddie James wrote:
+> Document the retain-state-shutdown property that indicates that a LED
+> should not be turned off or changed during system shutdown.
 > 
-> Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Signed-off-by: Eddie James <eajames@linux.ibm.com>
 > ---
->  Documentation/devicetree/bindings/arm/fsl.yaml | 11 +++++++++++
->  1 file changed, 11 insertions(+)
+>  Documentation/devicetree/bindings/leds/common.yaml | 6 ++++++
+>  1 file changed, 6 insertions(+)
 > 
 
 Acked-by: Rob Herring <robh@kernel.org>
