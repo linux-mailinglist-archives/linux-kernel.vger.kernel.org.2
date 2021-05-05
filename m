@@ -2,178 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C7E374BD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CB11374BEE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 01:32:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229637AbhEEXYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 19:24:19 -0400
-Received: from mga01.intel.com ([192.55.52.88]:26124 "EHLO mga01.intel.com"
+        id S231230AbhEEXdA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 19:33:00 -0400
+Received: from mout.gmx.net ([212.227.15.18]:46597 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231158AbhEEXYS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 19:24:18 -0400
-IronPort-SDR: anQ4sq13xt/nbKAl/yW065bk70+iVadgXjWKMgYE7VYMIBiMBFFsU1uP7S8awLm5mocu1B5+G4
- eSVpuUnfNiDQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="219201884"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="219201884"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 16:23:21 -0700
-IronPort-SDR: y6H1briiY6X5e8Ct0n+c9ZWb74lP1ORzh6BLftnomIRyzmNIFA8xgMXubeYF4fCTApEPrsBn/l
- R9AN4Z2u5GLA==
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="532177206"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by fmsmga001-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 16:23:20 -0700
-Date:   Wed, 5 May 2021 16:23:19 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210505232319.GA5087@otc-nc-03>
-References: <20210426123817.GQ1370958@nvidia.com>
- <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210504084148.4f61d0b5@jacob-builder>
- <20210504180050.GB1370958@nvidia.com>
- <20210504151154.02908c63@jacob-builder>
- <20210504231530.GE1370958@nvidia.com>
- <20210505102259.044cafdf@jacob-builder>
- <20210505180023.GJ1370958@nvidia.com>
- <20210505130446.3ee2fccd@jacob-builder>
- <20210505222120.GM1370958@nvidia.com>
+        id S230128AbhEEXc6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 19:32:58 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620257520;
+        bh=ptpB4Mo5gjXW1QIf1DchDb8lby1fzDZYKg/z/S90zzI=;
+        h=X-UI-Sender-Class:To:From:Subject:Date;
+        b=ExnlOrykOkZpQIZ9taNzahxwBM3B3XNCfqnjzpzNg/Mt4BTq86IXRomhcQV9xU8t5
+         WSBmPIYLKb5+mE68LdyKPMh7Fzs7m9FECw8kGFxDXx5EJZz1afZi13R0UIt+0t1WeE
+         gZAfiN6UOYB3t3bm9ziwA3G22M4K04qAPVQsQL3w=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from [192.168.1.252] ([5.166.189.19]) by mail.gmx.net (mrgmx004
+ [212.227.17.184]) with ESMTPSA (Nemesis) id 1MsHns-1lOgEU0dwY-00tnRr for
+ <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 01:32:00 +0200
+To:     linux-kernel@vger.kernel.org
+From:   "Artem S. Tashkinov" <aros@gmx.com>
+Subject: An initiative to collect unusual kernel messages and automatically
+ create bugzilla.kernel.org bugs based on them
+Message-ID: <aaece64f-8c6d-29c8-2aa1-34e6dd9378ac@gmx.com>
+Date:   Wed, 5 May 2021 23:31:59 +0000
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505222120.GM1370958@nvidia.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dtvZ3U1jo2JIDNEDiqwUQInfD9NLP5VytWXwdjbP3QGPBzOaijO
+ g0xaMTlzu0ubEhzeOeNfskO3tNEQ8xkBztAEy0tD0L4kXNbChIpmfUmoTfCxQh9tnL5r3uP
+ lgoCMmzG38uZvrgv+2Gw9kM1J6Qwio241EsTZS5mRNO8j4Z3j5ncv3NXUq2JScyPyn9Ws0r
+ Qo19TcthYcascTeRXjrSQ==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:v+KqJh3q2AU=:1QHUfDV71hyg3NhVopyeo6
+ CF4BK2FTL63YcdIGWPZx+kFBzzg02rPnxq9pI63miUjOMxAZZbUNbxEhxZuRvICIXSPbZZAL9
+ ZegHno65R3y9gAdHnBp/XiEBwmKgjRnmgw0z+R8aoQ7N+DM3Azpn4KUx8l+LLpFlnBCtP0XF+
+ sooryaeeAz207vQRdgAGYCdHPIVXnPpWtCWpVpv7RvXpmrzJH3vshFOj199D5DrG1475mJcmv
+ i51cTaZXHWk3KZxCeRfIS/fIT2808+5DNitsJQWZyUHTJtiTzntS0ir1Uz39G0agywiv7dWA7
+ anNM3D4h0cLglrJ+MAavdNZ7LWYgCGmJPlzTlzMisTLGmCfx51Ip5I7VK7xHtMoI8ZrclKnZy
+ 6asib6zCdBHN9C1J+5HfApxhQrevhB/6Qx5Hkwmp243t5DweixI6aEREdLdi+nhjjBc2HWlWC
+ n7dPV1aA8IlpSeHxOM4ku81rVj7pGXmqZ8xdCU0ZZKeMw5qsqkbL1+2PvsTxHAcJ+2+TcaRPH
+ riGWAUMoo4YPw2qiLkz28qYvHB0VA+QGLKK7GavPOx9M2gDMQLTR3fGBkCerqGssF0ogmZvyf
+ 8a9VgKAJ2wNAsNvAMnApaAphHXUi4zHz6rizCdCBZI1ttJf8A4rqFNyoXVIRvIXsefTBH+/LI
+ rZ3d2e8SrPk/ZPovkv+PxyFPYaRXD86wNc84+FMnmz3HAtLzcJsvzPE65D18YPWmNqW7U0aou
+ +oZG5c8CfneVXWl4GBNqsOncA5CYrbbpdYM5Waa1M0x9dCgX65AZiTROoE/x3wWv31weJMZaQ
+ Pa1/+6i35ukUhHOubIrvFJKLlEBQlaaV47ivz/eKVCF2bwdeYxzozu309ExyiJJSWK++Ed7HE
+ e1I0usAgGvMNbZAXhKTgaJNa4Iphd1qTE6qfIMvbBsxNQ+QJXixRsirdwDYw7AqGQVJlCQncc
+ mmnzbeksqymTrMaHbNWuBG59FHG8TAJVvWmLLcwCrN5QMIahVdqWiyhLv3AfoxjJai/rLMASG
+ sAKMjKNQbpGBLkh0G5UiJK4KWQgdRbntbtywn4glswGdivKLxVxwzN39Rr2htoeHxtktcyysO
+ qDBXgy0uq33RrFvr1BvHqDE4EdxexjqGvLvgKzE5E2Svp6wzHwS8uReo09gzhb4doEgB55eY8
+ Btf2mc9VgL18rGgyr6R4e6JQ0cTiSXTBVYi/W5XP7AypIiGxtjhfPihdoOTSkV+nV85d0=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 07:21:20PM -0300, Jason Gunthorpe wrote:
-> On Wed, May 05, 2021 at 01:04:46PM -0700, Jacob Pan wrote:
-> > Hi Jason,
-> > 
-> > On Wed, 5 May 2021 15:00:23 -0300, Jason Gunthorpe <jgg@nvidia.com> wrote:
-> > 
-> > > On Wed, May 05, 2021 at 10:22:59AM -0700, Jacob Pan wrote:
-> > > 
-> > > > Global and pluggable are for slightly separate reasons.
-> > > > - We need global PASID on VT-d in that we need to support shared
-> > > > workqueues (SWQ). E.g. One SWQ can be wrapped into two mdevs then
-> > > > assigned to two VMs. Each VM uses its private guest PASID to submit
-> > > > work but each guest PASID must be translated to a global (system-wide)
-> > > > host PASID to avoid conflict. Also, since PASID table storage is per
-> > > > PF, if two mdevs of the same PF are assigned to different VMs, the
-> > > > PASIDs must be unique.  
-> > > 
-> > > From a protocol perspective each RID has a unique PASID table, and
-> > > RIDs can have overlapping PASIDs.
-> > > 
-> > True, per RID or per PF as I was referring to.
-> > 
-> > > Since your SWQ is connected to a single RID the requirement that
-> > > PASIDs are unique to the RID ensures they are sufficiently unique.
-> > > 
-> > True, but one process can submit work to multiple mdevs from different
-> > RIDs/PFs. One process uses one PASID and PASID translation table is per VM.
-> > The same PASID is used for all the PASID tables of each RID.
-> 
-> If the model is "assign this PASID to this RID" then yes, there is a
-> big problem keeping everything straight that can only be solved with a
-> global table.
-> 
-> But if the model is "give me a PASID for this RID" then it isn't such
-> a problem.
+Hello!
 
-Correct, since we have usage with ENQCMD, its more like
+Here's a proposal I've made in Redhat's bugzilla (it's been my distro
+for more than two decades, so I think it's pertinent), PR1957520:
 
-- Give me a PASID1 (not attached to any RID)
-- Bind/attach PASID1 with RID1
-- Bind/attach PASID1 with RID2
+=2D-----------------------------------------------------------------
 
-and ENQCMD isn't just for Intel, with the DMWr spec in PCI, it brings it to
-all devices as long as routing is supported by interim switches and such.
+I've been thinking about this issue for a couple of years now and I
+struggle to understand where and how it needs to be implemented.
 
-> 
-> Basically trying to enforce a uniform PASID for an IOASID across all
-> RIDs attached to it is not such a nice choice.
-> 
-> > > That is fine, but all this stuff should be inside the Intel vIOMMU
-> > > driver not made into a global resource of the entire iommu subsystem.
-> > > 
-> > Intel vIOMMU has to use a generic uAPI to allocate PASID so the generic
-> > code need to have this option. I guess you are saying we should also have a
-> > per RID allocation option in addition to global?
-> 
-> There always has to be a RID involvement for the PASID, for security,
-> this issue really boils down to where the PASID lives.
+We all know that the Linux kernel doesn't perfectly support all the
+hardware around, and the second serious issue is that the Linux kernel
+contains known workarounds for broken hardware but those are often not
+properly organized and end users have no idea whether those workarounds
+are mild and innocuous or they need to be taken care of.
 
-We do have a RID involvement with PASID always for security. Every RID has
-its own PASID table, but the PASID name space is global. 
+I have a very unpopular idea to propose. Let's implement a strict opt-in
+program and add it as an option in the Anaconda/Fedora/RHEL installer to
+_anonymously_ collect unusual kernel messages and based on them
+automatically create bugzilla.kernel.org bugs.
 
-So if you have RID1 associated with PASID1, another RID2 doesn't have the
-PASID1 in its PASID table. Until when the app binds PASID1 with RID2 as
-well. Then you have PASID1 plumbed in the PASID table for RID2.
+Why do I believe it's necessary?
 
-Is this what you refer to for security? 
+If you run the following command on your Linux device right now you'll
+see a ton of data which in a perfect world shouldn't be there, the
+output of this command should be just empty but it's not:
 
+dmesg -t --level=3Dalert,crit,err,warn
 
-> 
-> If you need the PASID attached to the IOASID then it has to be global
-> because the IOASID can be attached to any RID and must keep the same
-> PASID.
-> 
-> If the PASID is learned when the IOASID is attached to a RID then the
-> PASID is more flexible and isn't attached to the IOASID.
-> 
-> Honestly I'm a little leary to bake into a UAPI a specific HW choice
-> that Intel made here.
+Of course some of the issues presented are known quirks which will never
+be fixed, but users often have no way of knowing it and end up googling
+each error message.
 
-Like I mentioned, this isn't just Intel going forward. The specs are public
-in PCIe. I just can't comment which other vendors are adopting it.
+In a perfect world each of such messages should be followed by a good
+explanation, e.g.
 
-> 
-> I would advise making the "attach a global PASID to this IOASID"
-> operation explicit and opt into for case that actually need it.
-> 
-> Which implies the API to the iommu driver should be more like:
-> 
->   'assign an IOASID to this RID and return the PASID'
->   'reserve a PASID from every RID'
+smpboot: 32 Processors exceeds NR_CPUS limit of 16 : this is a known bug
+tracked as PR204813, it is safe to ignore it.
 
-I don't think this has any decent change of success. Its rather round about
-way to get a global PASID namespace.
+Or another message:
 
->   'assign an IOASID to this RID and use this specific PASID'
+kernel: ACPI Warning: SystemIO range
+0x0000000000000295-0x0000000000000296 conflicts with OpRegion
+0x0000000000000290-0x0000000000000299 (\AMW0.SHWM)
+(20201113/utaddress-204) : this is likely a problem with your EFI
+firmware or a known bug: PR204807
 
-This seems a bit complicated. Another way to specify this.
+In short, "bad" dmesg output should not be cryptic and Fedora may
+actually start doing something about that.
 
-- IOASID is a logical construct to specify a page table.
-- You can bind a global PASID to an IOASID
+Lastly, out of all active Linux users, I guess less than 0.1% actually
+report bugs about their HW [support] and such an opt-in program could
+actually resolve a ton of issues which are flying under the radar of
+Linux developers.
 
-We aren't loosing any security by using a global PASID name space. 
-Until the application asks for it, that is not bound to any other RID without an explicit
-request.
+Probably such a daemon for collecting anonymized kernel messages could
+be implemented across all Linux distors right in the kernel itself but
+that will require cooperation between Linux distros and the kernel which
+I'm not sure will pan out.
 
+I would love Fedora/Redhat/IBM to treat this proposal seriously and move
+ahead with it regardless of what the Linux kernel community thinks about
+it as it most likely will result in multiple bugs resolved or and kernel
+messages made understandable for end users.
 
--- 
-Cheers,
-Ashok
+=2D-----------------------------------------------------------------
+
+I would still be extremely glad and grateful if Linux kernel developers
+chimed in and expressed their opinion about this program/initiative. I
+believe it can have a great chance of resolving multiple not well known
+issues in Linux hardware support and making `dmesg` messages a lot more
+understandable and clear for Linux users without strong IT background.
+
+Best regards,
+Artem
