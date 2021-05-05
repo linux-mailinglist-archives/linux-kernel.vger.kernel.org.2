@@ -2,143 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EDE4373391
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:26:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E245373398
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 03:32:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231826AbhEEB1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 21:27:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35226 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229985AbhEEB1j (ORCPT
+        id S230127AbhEEBdG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 21:33:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:54236 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229799AbhEEBdF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 21:27:39 -0400
-Received: from mail-yb1-xb36.google.com (mail-yb1-xb36.google.com [IPv6:2607:f8b0:4864:20::b36])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2598C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 18:26:42 -0700 (PDT)
-Received: by mail-yb1-xb36.google.com with SMTP id v39so599799ybd.4
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 18:26:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=VwkFVGeygfPPOOzWFv0DYtzQ6yrWI2H0fQZB1AzPEM0=;
-        b=dYUEpvTtcC/zgvuWMLUHqfh+FSH/C0VurBbahqhGRd7mtNCdElZiv25gRL44Iw79+S
-         hP/vLRzLkzKCiTwfo2An3vgfDX/zKwdcrIBaAS/0z3mD49nou8AzB4Bm8Pt+qx9Z9a8q
-         UEmF29J6Ygs9BJD/1ekctTMc2cFptqEm6WGNsXEDhOQ8h7+e74n0m1m7AsweZkRRwH+s
-         fEnXJiLjo04MzFahr387l2EFB5WF/Fcsy2kSY7pCLdSj0V5HimTC43xBEpAbEm6Q2og7
-         7Hyq/nCGkgWsKYWBLoW7POCxrwV4Qzrh3c7IujMQhnUPAh0FIvllbAR9mNZIi0AKczv7
-         BRcg==
+        Tue, 4 May 2021 21:33:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620178329;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cPRVInBsTWC+0BUGJOB5FIDSOa450b+bMYREaXrrpp0=;
+        b=OlYvEWSTM0YyKkoXTzEv61TTW5NH29xkBb25yX96IdN3aG9PrrU2hvknfbG6XXm+bQOf2c
+        Ydgxw90FsbUxZw22G0if2eT97Ki9tbZA1X9pAGTsT7fMc7Ngv9HgTVQI2w+2QZPJ5qCsq5
+        xwP45KTF153RAvYc5VGcsGm8xQ1bxQM=
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com
+ [209.85.166.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-118-EceD1YoQPVWHco1GNjnZxw-1; Tue, 04 May 2021 21:32:08 -0400
+X-MC-Unique: EceD1YoQPVWHco1GNjnZxw-1
+Received: by mail-io1-f70.google.com with SMTP id i204-20020a6bb8d50000b02903f266b8e1c5so162486iof.16
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 18:32:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VwkFVGeygfPPOOzWFv0DYtzQ6yrWI2H0fQZB1AzPEM0=;
-        b=n4G9VkPqj/FQADhw0dEMOtB5BrSgQO+Aiv3OtarK4xjdmtMeI3iA1LUviT5eGRlKVW
-         sDOL7ixGlgtgfq+eMqgZ0E+khBofh2auZ5sPL/uls15ejtxF6Oi/9Qt1QPK0/ZTh28tg
-         oPrlgppjhoft8GrcvJhvvBj1OWnvuCUjPBfvd5t9/5JUmZR+kS34/4rTuo7MRpg1VnrM
-         psOyb3EB+zzN+LsXBuojGevxkdsAglTRAR+XmTyYxJ/yhaFz8ubg82f16AMCkU66clai
-         QXQgi6r1eo+HfUD6QN2WKnrN8ecq+QF+FdcWLJ3LDASi7mnReBofTq93qFGXBrpiTOKA
-         xdew==
-X-Gm-Message-State: AOAM532W8xDzJJ8gLB+qeYHIssVtsvo1DyzfR89LBu8Kh3WpvAUV/J+T
-        fhE3xo7fJ8E5hpeDS4btd5q4Zjqs5rRNE98NcA3Tvg==
-X-Google-Smtp-Source: ABdhPJwpz5V8xuoroIlXbMblu6FsI3wrXZvSHPldR8YeTpoz6D8T1Nb6osHDgPpvHOlp934YhH9maWDv6KofvuczY1w=
-X-Received: by 2002:a25:b049:: with SMTP id e9mr38030700ybj.111.1620178001694;
- Tue, 04 May 2021 18:26:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <CALvZod7vtDxJZtNhn81V=oE-EPOf=4KZB2Bv6Giz+u3bFFyOLg@mail.gmail.com>
- <YH54pyRWSi1zLMw4@dhcp22.suse.cz> <CALvZod4kjdgMU=8T_bx6zFufA1cGtt2p1Jg8jOgi=+g=bs-Evw@mail.gmail.com>
- <YH/RPydqhwXdyG80@dhcp22.suse.cz> <CALvZod4kRWDQuZZQ5F+z6WMcUWLwgYd-Kb0mY8UAEK4MbSOZaA@mail.gmail.com>
- <YIA2rB0wgqKzfUfi@dhcp22.suse.cz> <CALvZod4_L7GSHnivQTSdDzo=fb4i3z=katjzVCHfLz9WWGK8uQ@mail.gmail.com>
-In-Reply-To: <CALvZod4_L7GSHnivQTSdDzo=fb4i3z=katjzVCHfLz9WWGK8uQ@mail.gmail.com>
-From:   Suren Baghdasaryan <surenb@google.com>
-Date:   Tue, 4 May 2021 18:26:30 -0700
-Message-ID: <CAJuCfpEXyG9x1nUsg+6yVWTP+-A4OwuCg9XHLAciu39=JNY7DQ@mail.gmail.com>
-Subject: Re: [RFC] memory reserve for userspace oom-killer
-To:     Shakeel Butt <shakeelb@google.com>
-Cc:     Michal Hocko <mhocko@suse.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <guro@fb.com>, Linux MM <linux-mm@kvack.org>,
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cPRVInBsTWC+0BUGJOB5FIDSOa450b+bMYREaXrrpp0=;
+        b=AOe8QpxpUsKQcfdrsLikEmDaJIcAkTsLOgRQy3XPkUggwvNcBfGWPadodYoW8JpNJc
+         HQ5dkW5uVUvudIeQcDYtoXoN1iykKHmf3cSf3lhG2YxTO2zyUo0HDb1uijCQc1+WoE+y
+         hl5suN97xlHT5z1J5RWDfnlpsRQbyKtEIbIXg9Xn+CN6R8jWtYX8HHRAoA3Fw7kusYUk
+         TdTtQeZpSDFPN3vqJbqXC4TxXYFFgKIZapRQCUlPp8l/ThiGX3+ZaKyC4ZQ7QqSujUCc
+         9AinSlE4g1/nNkyBYQ+j6KmvjZ6EoiTodnsuf/+SsVfwWaiSRCy8vkejEk8Zu3f5PuzM
+         G+Lw==
+X-Gm-Message-State: AOAM533wiUCWyFvuZt6jr+Y8uI5957A+QQwKXs+7cMgCZ+GttNzMSiGl
+        AkiKIB9ZJ4KJgxqXMouOF2O3ZxaeNhwzWu1/a4k7GX2N5bJ9xw3AmiKHMQg/9Ymzcvcg5FW1oid
+        Nh15lZgyobdp5yfc5QOntsI5C
+X-Received: by 2002:a92:8e03:: with SMTP id c3mr2036560ild.167.1620178327564;
+        Tue, 04 May 2021 18:32:07 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzNg9jcG4O9OkPZqQlTS7aeMFQ7/soHNplo9cjmrJ2Ghe+p949bqg4pbzePUCrb/19N4cHmHg==
+X-Received: by 2002:a92:8e03:: with SMTP id c3mr2036544ild.167.1620178327359;
+        Tue, 04 May 2021 18:32:07 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id u9sm1842495ior.8.2021.05.04.18.32.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 18:32:06 -0700 (PDT)
+Date:   Tue, 4 May 2021 21:32:04 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrea Arcangeli <aarcange@redhat.com>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Greg Thelen <gthelen@google.com>,
-        Dragos Sbirlea <dragoss@google.com>,
-        Priya Duraisamy <padmapriyad@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Hugh Dickins <hughd@google.com>,
+        Jerome Glisse <jglisse@redhat.com>,
+        Joe Perches <joe@perches.com>,
+        Lokesh Gidra <lokeshgidra@google.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Shuah Khan <shuah@kernel.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Wang Qing <wangqing@vivo.com>, linux-api@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+        Brian Geffon <bgeffon@google.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Oliver Upton <oupton@google.com>
+Subject: Re: [PATCH v6 06/10] userfaultfd/shmem: modify
+ shmem_mfill_atomic_pte to use install_pte()
+Message-ID: <YJH1lCx9IGqHG+yq@t490s>
+References: <20210503180737.2487560-1-axelrasmussen@google.com>
+ <20210503180737.2487560-7-axelrasmussen@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210503180737.2487560-7-axelrasmussen@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 5:37 PM Shakeel Butt <shakeelb@google.com> wrote:
->
-> On Wed, Apr 21, 2021 at 7:29 AM Michal Hocko <mhocko@suse.com> wrote:
-> >
-> [...]
-> > > > What if the pool is depleted?
-> > >
-> > > This would mean that either the estimate of mempool size is bad or
-> > > oom-killer is buggy and leaking memory.
-> > >
-> > > I am open to any design directions for mempool or some other way where
-> > > we can provide a notion of memory guarantee to oom-killer.
-> >
-> > OK, thanks for clarification. There will certainly be hard problems to
-> > sort out[1] but the overall idea makes sense to me and it sounds like a
-> > much better approach than a OOM specific solution.
-> >
-> >
-> > [1] - how the pool is going to be replenished without hitting all
-> > potential reclaim problems (thus dependencies on other all tasks
-> > directly/indirectly) yet to not rely on any background workers to do
-> > that on the task behalf without a proper accounting etc...
-> > --
->
-> I am currently contemplating between two paths here:
->
-> First, the mempool, exposed through either prctl or a new syscall.
-> Users would need to trace their userspace oom-killer (or whatever
-> their use case is) to find an appropriate mempool size they would need
-> and periodically refill the mempools if allowed by the state of the
-> machine. The challenge here is to find a good value for the mempool
-> size and coordinating the refilling of mempools.
->
-> Second is a mix of Roman and Peter's suggestions but much more
-> simplified. A very simple watchdog with a kill-list of processes and
-> if userspace didn't pet the watchdog within a specified time, it will
-> kill all the processes in the kill-list. The challenge here is to
-> maintain/update the kill-list.
+Axel,
 
-IIUC this solution is designed to identify cases when oomd/lmkd got
-stuck while allocating memory due to memory shortages and therefore
-can't feed the watchdog. In such a case the kernel goes ahead and
-kills some processes to free up memory and unblock the blocked
-process. Effectively this would limit the time such a process gets
-stuck by the duration of the watchdog timeout. If my understanding of
-this proposal is correct, then I see the following downsides:
-1. oomd/lmkd are still not prevented from being stuck, it just limits
-the duration of this blocked state. Delaying kills when memory
-pressure is high even for short duration is very undesirable. I think
-having mempool reserves could address this issue better if it can
-always guarantee memory availability (not sure if it's possible in
-practice).
-2. What would be performance overhead of this watchdog? To limit the
-duration of a process being blocked to a small enough value we would
-have to have quite a small timeout, which means oomd/lmkd would have
-to wake up quite often to feed the watchdog. Frequent wakeups on a
-battery-powered system is not a good idea.
-3. What if oomd/lmkd gets stuck for some memory-unrelated reason and
-can't feed the watchdog? In such a scenario the kernel would assume
-that it is stuck due to memory shortages and would go on a killing
-spree. If there is a sure way to identify when a process gets stuck
-due to memory shortages then this could work better.
-4. Additional complexity of keeping the list of potential victims in
-the kernel. Maybe we can simply reuse oom_score to choose the best
-victims?
+On Mon, May 03, 2021 at 11:07:33AM -0700, Axel Rasmussen wrote:
+> In a previous commit, we added the mfill_atomic_install_pte() helper.
+> This helper does the job of setting up PTEs for an existing page, to map
+> it into a given VMA. It deals with both the anon and shmem cases, as
+> well as the shared and private cases.
+> 
+> In other words, shmem_mfill_atomic_pte() duplicates a case it already
+> handles. So, expose it, and let shmem_mfill_atomic_pte() use it
+> directly, to reduce code duplication.
+> 
+> This requires that we refactor shmem_mfill_atomic_pte() a bit:
+> 
+> Instead of doing accounting (shmem_recalc_inode() et al) part-way
+> through the PTE setup, do it afterward. This frees up
+> mfill_atomic_install_pte() from having to care about this accounting,
+> and means we don't need to e.g. shmem_uncharge() in the error path.
+> 
+> A side effect is this switches shmem_mfill_atomic_pte() to use
+> lru_cache_add_inactive_or_unevictable() instead of just lru_cache_add().
+> This wrapper does some extra accounting in an exceptional case, if
+> appropriate, so it's actually the more correct thing to use.
+> 
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+
+(The moving of "ret = -ENOMEM" seems unnecessary, but not a big deal I think)
+
+Reviewed-by: Peter Xu <peterx@redhat.com>
+
 Thanks,
-Suren.
 
->
-> I would prefer the direction which oomd and lmkd are open to adopt.
->
-> Any suggestions?
+-- 
+Peter Xu
+
