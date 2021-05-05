@@ -2,54 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EDB3437330F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:27:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58602373311
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:29:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231367AbhEEA2m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 20:28:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50332 "EHLO
+        id S230505AbhEEA2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 20:28:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231134AbhEEA2l (ORCPT
+        with ESMTP id S231370AbhEEA2n (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 20:28:41 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC4D3C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 17:27:45 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id d89-20020a25a3620000b02904dc8d0450c6so485880ybi.2
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 17:27:45 -0700 (PDT)
+        Tue, 4 May 2021 20:28:43 -0400
+Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E911C06174A
+        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 17:27:48 -0700 (PDT)
+Received: by mail-qk1-x749.google.com with SMTP id e4-20020a37b5040000b02902df9a0070efso8763811qkf.18
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 17:27:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=VKgVRByPslcwTvLjOdYrGp82XaC2KrJ5pPY9xex0Ink=;
-        b=RZJ5s5vgHmlGIa5GRi9aBd1ACKmDRhWI1rFQ8DWxOR+x8CwUwwgOGzgTAd8Af0z/TD
-         QVA/g9wiHqDQ+UkkRiUMGXVzYQbv/cDCfaErKFOga/u+10X9DVW7yG3Pdu22fqrjPflG
-         aQKvZF2huCCbeUddmJeikoZAHwS4qi+VgqYZ+vhdBd2EeDbNfd/WPZd1Q6uIEXXneA0B
-         l8iO9Z9mweUvuGwF1kdknf07tKK7AvO+7p4gCcfcD9KqNYCKUGDvQjiEi0y3Bzhey4my
-         CnbFozb3ZOqAb7ZPND7BRSObRAFTfK8LgUJ5PQxMTmk+5BkrqPVN7iaF52NIDUsBdzJz
-         U3hg==
+        h=reply-to:date:in-reply-to:message-id:mime-version:references
+         :subject:from:to:cc;
+        bh=xZt4efxZ5O1fki+F06zzqnkjNwRMCCexS8Z/OWGzDKY=;
+        b=RCPr67vEGY5CUjwXRYFJ17bNaPnTkB+YC/NFD/g6gSMqXJo1KpoKNbc8ioAry3aOo5
+         wT+5bW4ukEcbzXmpBO6Nofhx0N2lf4tDuOdo5Q85UU/5Ac2aMBtx3lRG7ypI2J1Vg4sM
+         bewxeC0g6/dJ3Puc+L9MGhCugukS6LvFPriOzSQOo4HuTnHPx6Gz5JmtM4BJxAEg75XU
+         qmFX77Jq9Qtzaa3+3CniWDGR9P6Yo6lYxGZKAf9loV1nK5k10yCPOKBEUJDqeGL6L5dQ
+         yWGkfNtzVRUdOoo1J91pz9qPhUVuTJ96FALUsSej1OTblQKUzoCHSuHJF1p4RBDmSbB2
+         18FA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=VKgVRByPslcwTvLjOdYrGp82XaC2KrJ5pPY9xex0Ink=;
-        b=hxl1nMpVIzULuB7vXdcW0q5ZtlDlJqADxbaKUO+RrKiqqABDLT6EJwDeyl7twmmnaJ
-         Yiumr/DD/h7cOW0Th6qAl7XvIBgbPMQp3xvXWuTbzQkkDuICBE0pr0k6m7SLzkmKjfvM
-         ZIRvAqIgjlMftg2yZrzjRmErV4rYmLJ+OwTF52qD9O/J3d9ekxYmT6REysF1pWUl3XCW
-         0etrvkUnMcPr+Cgnsvc8UiZyqpaJwVZ2EAqSQlU+H3HcryoDc9tKoXMSh+SGfu+ih3Lq
-         3q55tbYyFwmH5Cv6UpTv8CWNRmDvZv6mb6Ub8AUC7Gl1Fa3m7q0nTb9Fyl6DTDF+XzwI
-         cwKw==
-X-Gm-Message-State: AOAM533IIf48iurxytbMWxVhzcwG1+h5ZvDTkNwZUOL4PNffrnMXjMGT
-        Pjbsbmmr4ebRCgYDnXZwtSJFM20wvc8=
-X-Google-Smtp-Source: ABdhPJwV3cL8E3VbRB9iH5Ir/bfVm4wFsBBev6rxSscrx4ENE8zNzsNhqOGUZkwj5qcHec+NcEyrbDLhZrk=
+        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
+         :mime-version:references:subject:from:to:cc;
+        bh=xZt4efxZ5O1fki+F06zzqnkjNwRMCCexS8Z/OWGzDKY=;
+        b=Ac3lh5rETab5fBD2OR8KjCQsVYYlrpbzO7t4S0mBK3xtNhT4pFZmh/WiNmNsEPpblt
+         xTpSx00pQ3EBCGnH7vZLFWeqQJs0O/204/Fz3cL8MKDV06BMCkkVqwD2oVaie9vG0j+9
+         9WFibwMQlIx8aNvRUITAmfRtUM9YcAqWO4xfW/9U3EO93uUJnExxhFw1FTNRT7JnZfdc
+         OPTMVKOKaANRLMDmfgkySfJ1yt6mjSuUIamQ7HyolxD6WIx6I8CDwaWJElY2AuwlWzKy
+         huyXjukrrfEplSFDz7afUVtxbQtnb5HJYhApj33w0Lel6dQiCthruFa93Jpl2VHAo0tz
+         hnkw==
+X-Gm-Message-State: AOAM532hBXGzi+Ge8Bl3NSRBT09r3H2yCkgNgSSZDnu7R8GmI8Hjl0Qz
+        svQgvVRrNAlxGTbsQQ3SVXAhuJC3KD0=
+X-Google-Smtp-Source: ABdhPJy1pcjP5q/y8aPXnwQ3sVhGewgpWMslaYXIyaqZg7im31538j5Ml+LRQ3OlWvuxy8r5Vd7WnmuVGHo=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:df57:48cb:ea33:a156])
- (user=seanjc job=sendgmr) by 2002:a25:880c:: with SMTP id c12mr38649622ybl.399.1620174465152;
- Tue, 04 May 2021 17:27:45 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a05:6214:176f:: with SMTP id
+ et15mr28001756qvb.61.1620174467444; Tue, 04 May 2021 17:27:47 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Tue,  4 May 2021 17:27:27 -0700
-Message-Id: <20210505002735.1684165-1-seanjc@google.com>
+Date:   Tue,  4 May 2021 17:27:28 -0700
+In-Reply-To: <20210505002735.1684165-1-seanjc@google.com>
+Message-Id: <20210505002735.1684165-2-seanjc@google.com>
 Mime-Version: 1.0
+References: <20210505002735.1684165-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH v4 0/8] KVM: Fix tick-based accounting for x86 guests
+Subject: [PATCH v4 1/8] context_tracking: Move guest exit context tracking to
+ separate helpers
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -66,52 +70,54 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix tick-based accounting for x86 guests, and do additional cleanups to
-further disentangle guest time accounting and to deduplicate code.
+From: Wanpeng Li <wanpengli@tencent.com>
 
-v4:
-  - Add R-b's (dropped one due to code change). [Christian]
-  - Drop instrumentation annotation shuffling since s390 may be gaining
-    support. [Christian].
-  - Drop "irqs_off" from context_tracking_guest_exit(). [Frederic]
-  - Account guest time after enabling IRQs, even when using context
-    tracking to precisely account time. [Frederic]
+Provide separate context tracking helpers for guest exit, the standalone
+helpers will be called separately by KVM x86 in later patches to fix
+tick-based accounting.
 
-v3 (delta from Wanpeng's v2):
-  - https://lkml.kernel.org/r/20210415222106.1643837-1-seanjc@google.com
-  - s/context_guest/context_tracking_guest, purely to match the existing
-    functions.  I have no strong opinion either way.
-  - Split only the "exit" functions.
-  - Partially open code vcpu_account_guest_exit() and
-    __vtime_account_guest_exit() in x86 to avoid churn when segueing into
-    my cleanups (see above).
+Suggested-by: Thomas Gleixner <tglx@linutronix.de>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Michael Tokarev <mjt@tls.msk.ru>
+Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+Cc: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+Co-developed-by: Sean Christopherson <seanjc@google.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ include/linux/context_tracking.h | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
 
-older:
-  - https://lkml.kernel.org/r/1618298169-3831-1-git-send-email-wanpengli@tencent.com
-  - https://lkml.kernel.org/r/20210413182933.1046389-1-seanjc@google.com
-
-
-Sean Christopherson (5):
-  sched/vtime: Move vtime accounting external declarations above inlines
-  sched/vtime: Move guest enter/exit vtime accounting to vtime.h
-  context_tracking: Consolidate guest enter/exit wrappers
-  context_tracking: KVM: Move guest enter/exit wrappers to KVM's domain
-  KVM: x86: Consolidate guest enter/exit logic to common helpers
-
-Wanpeng Li (3):
-  context_tracking: Move guest exit context tracking to separate helpers
-  context_tracking: Move guest exit vtime accounting to separate helpers
-  KVM: x86: Defer vtime accounting 'til after IRQ handling
-
- arch/x86/kvm/svm/svm.c           |  39 +--------
- arch/x86/kvm/vmx/vmx.c           |  39 +--------
- arch/x86/kvm/x86.c               |   9 ++
- arch/x86/kvm/x86.h               |  45 ++++++++++
- include/linux/context_tracking.h |  92 ++++-----------------
- include/linux/kvm_host.h         |  45 ++++++++++
- include/linux/vtime.h            | 138 +++++++++++++++++++------------
- 7 files changed, 205 insertions(+), 202 deletions(-)
-
+diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+index bceb06498521..b8c7313495a7 100644
+--- a/include/linux/context_tracking.h
++++ b/include/linux/context_tracking.h
+@@ -131,10 +131,15 @@ static __always_inline void guest_enter_irqoff(void)
+ 	}
+ }
+ 
+-static __always_inline void guest_exit_irqoff(void)
++static __always_inline void context_tracking_guest_exit(void)
+ {
+ 	if (context_tracking_enabled())
+ 		__context_tracking_exit(CONTEXT_GUEST);
++}
++
++static __always_inline void guest_exit_irqoff(void)
++{
++	context_tracking_guest_exit();
+ 
+ 	instrumentation_begin();
+ 	if (vtime_accounting_enabled_this_cpu())
+@@ -159,6 +164,8 @@ static __always_inline void guest_enter_irqoff(void)
+ 	instrumentation_end();
+ }
+ 
++static __always_inline void context_tracking_guest_exit(void) { }
++
+ static __always_inline void guest_exit_irqoff(void)
+ {
+ 	instrumentation_begin();
 -- 
 2.31.1.527.g47e6f16901-goog
 
