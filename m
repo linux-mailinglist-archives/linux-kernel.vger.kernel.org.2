@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDA2B374775
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:05:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F295374784
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 20:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234825AbhEER46 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:56:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55628 "EHLO
+        id S234922AbhEER60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:58:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234228AbhEER4k (ORCPT
+        with ESMTP id S234539AbhEER6N (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:56:40 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A97CC026CD4
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:27:23 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso2422484ote.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:27:23 -0700 (PDT)
+        Wed, 5 May 2021 13:58:13 -0400
+Received: from mail-ot1-x336.google.com (mail-ot1-x336.google.com [IPv6:2607:f8b0:4864:20::336])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 710C5C0149F2
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:28:31 -0700 (PDT)
+Received: by mail-ot1-x336.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so2370996otf.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:28:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=M03sKOxWmfO4zIIvVJvRTj0HkcVDUTsP1sbeJa/EAZM=;
-        b=EcCh/rMi5KmwfiXTgOVzyoVd8i5hjF3UHvLH4vJc8mPzzFhcP98szei1CE0cr+uBHk
-         tOnj6ZEGDl8PKnDih4+zjCEEkGUN81/KH8KOEYAylIhzmV/k3AfJtBZ4VafnmGpRxjjK
-         NQ9DFyme0g0Qonmj5S4uIBUoVOVdq7mo68xbItQuRZSmbSayf8jf6oDQapdeX1Z4nbQI
-         ehxiyMgSb51cECe3YmG0xyZ4Re+lNR8tmtbLVPPAg4HRhLAFpVKklUYKhsoPX4wEbXKR
-         bfEXh6gC4Sq3ILqJd1c6EVAq0VbUFrXHhNdPvbB868DHKkenWUrnj/RZ0oT2XugfN5yf
-         fCXg==
+        bh=J8AaP/lvxUNB3rrLU595zuxT9OqLnp3Rqgcgif6hwNc=;
+        b=EXvGc2UUZ3jUpb3Mwrf260u6rm16633aBwEdjBwqCrOfTh38bYF1BbWc//6xVUJvZ3
+         nimI0AcDXVhX2oYnadpTsCdbOEop+LvzedwfPfGJVqBo5BE/0Sp03D6cHPyOvGkH1GnI
+         VpoRsAp8UWYFv5j/kewfavhy8fJ2EduYkqwLL+Z9gAaCSjyYKS4PyE5eZWPs26BxIgQV
+         B6acvGhDucvInX/WhYmBch4U7yUGAIMTMBc4Bc7NyhUl8NxHp74egkERDFAnnM8PzU/n
+         xiaFPEJRJe4fYS+7kgqwcc9F9xq/DVORC7v9fLpMqsesbQJ8U7GYhVmnxc8ZTqhoHQEu
+         wzug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=M03sKOxWmfO4zIIvVJvRTj0HkcVDUTsP1sbeJa/EAZM=;
-        b=O+a5Ml9owncj0ngCdpmH02R7BVldtn/cNtLJe4QdkYlzQk6/uJlBUg93EWO6OB+KZR
-         9wVrbg3uPcswuxRg/1cQ5Xplmz9Cp+HtHMLseD/ApGf84YKMd+6k1UjaTzCfY9o4ye4G
-         DCShqn6aYjl0POF8aFYGObnb2IUNzgiZSF0tMRMrQGwoN7Cd5rDr4ns82UVKaRQNggJT
-         9M1D7mNk8K68yxCJcaVqY2W87Cy/OaYk65cpmJI6/bizQmwNxEyw5PAn+jEAWy8dDVxe
-         KciBdi+RBQSLIELlexbqfI4si9x77rR+1ZC3CBGwjHBCo4z4+Pe25pylgTWY0eCc4JA3
-         6vdg==
-X-Gm-Message-State: AOAM5337zmJ34nZVkCWSRFTCB5E46WId85RrhWmLqkxnwwy18+LFDCxt
-        do74DaXr/lrCbhCS6t+5QE5QNAyKxTTodCJlxgxoDg==
-X-Google-Smtp-Source: ABdhPJwnM0M9EJ6eW6nI6X71rFRhMc4rEfbYRTx7ndnQbKdg/JyLCc6Zt9WXMv5yti6eJtKneFxV80R7JjkXaKj5N6M=
-X-Received: by 2002:a05:6830:410e:: with SMTP id w14mr23870964ott.251.1620235642416;
- Wed, 05 May 2021 10:27:22 -0700 (PDT)
+        bh=J8AaP/lvxUNB3rrLU595zuxT9OqLnp3Rqgcgif6hwNc=;
+        b=YdsFjYWl36s6+YGIpeYyp/VBF+AFoKhST5DXO7Mb7CE/JltK5vgu3ix0bDioRA35jX
+         etzbJX70c3Vc8qziDUGdll0zaxo69jZnFr7GhL9tdAgcrcQKyHMOAlW42ad94Ux/zVcy
+         ye/3AnOnJZt7dC+aKOePVUIMcAn3tRchvnNsGuwwFsQ5ax50FQQzmVBvb85qTJznIJo7
+         keJBF3AbE7BbsjWrNusca7Kz5QDKm4ixyhQ7P0Z+9vwmYkNERVZyjhRi7YTyXZ1AtdwK
+         hO/nKU++mOEB+MjDM/6uON1vSOY+Xvww17eIH0hO1uFTTXR1mZX40jRG7aCq3gdyTheh
+         twDA==
+X-Gm-Message-State: AOAM530o3hjHiYeMkDpam5+vW6f3Hdac3J8FC5tIodajVdlaK/C32zor
+        DbhbeM4Dxyatvvpn48JcI2rbF1aaSLd4eRisSkl9ig==
+X-Google-Smtp-Source: ABdhPJwBfePd37x8jcZMNg4h5PBr/URe0Ve8N2lapM4qoprsvsOneJZhWyxNhKww2Z/imlLAUs5fJ+ZS5AuUF+K1Bdc=
+X-Received: by 2002:a05:6830:410e:: with SMTP id w14mr23875287ott.251.1620235710813;
+ Wed, 05 May 2021 10:28:30 -0700 (PDT)
 MIME-Version: 1.0
 References: <m1tuni8ano.fsf_-_@fess.ebiederm.org> <20210505141101.11519-1-ebiederm@xmission.com>
- <20210505141101.11519-9-ebiederm@xmission.com>
-In-Reply-To: <20210505141101.11519-9-ebiederm@xmission.com>
+ <20210505141101.11519-11-ebiederm@xmission.com>
+In-Reply-To: <20210505141101.11519-11-ebiederm@xmission.com>
 From:   Marco Elver <elver@google.com>
-Date:   Wed, 5 May 2021 19:26:00 +0200
-Message-ID: <CANpmjNPmPWymJ9ZsQWys9wC3okt5M5fj7edp7ejk8RpTTMsxew@mail.gmail.com>
-Subject: Re: [PATCH v3 09/12] signal: Rename SIL_PERF_EVENT
- SIL_FAULT_PERF_EVENT for consistency
+Date:   Wed, 5 May 2021 19:27:00 +0200
+Message-ID: <CANpmjNOBtpMad-mn1JE1LmkEURtc0RJX-9LNXvJPMfDpSC3ASw@mail.gmail.com>
+Subject: Re: [PATCH v3 11/12] signal: Deliver all of the siginfo perf data in _perf
 To:     "Eric W. Beiderman" <ebiederm@xmission.com>
 Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
         "David S. Miller" <davem@davemloft.net>,
@@ -75,102 +74,292 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 On Wed, 5 May 2021 at 16:11, Eric W. Beiderman <ebiederm@xmission.com> wrote:
 > From: "Eric W. Biederman" <ebiederm@xmission.com>
 >
-> It helps to know which part of the siginfo structure the siginfo_layout
-> value is talking about.
+> Don't abuse si_errno and deliver all of the perf data in _perf member
+> of siginfo_t.
 >
-> v1: https://lkml.kernel.org/r/m18s4zs7nu.fsf_-_@fess.ebiederm.org
-> Acked-by: Marco Elver <elver@google.com>
-> Signed-off-by: Eric W. Biederman <ebiederm@xmission.com>
+> The data field in the perf data structures in a u64 to allow a pointer
+> to be encoded without needed to implement a 32bit and 64bit version of
+> the same structure.  There already exists a 32bit and 64bit versions
+> siginfo_t, and the 32bit version can not include a 64bit member as it
+> only has 32bit alignment.  So unsigned long is used in siginfo_t
+> instead of a u64 as unsigned long can encode a pointer on all
+> architectures linux supports.
+
+Since there is no functional change (we already had the unsigned long
+here), the explanation made me think there was a change in that area
+(but there wasn't). (Can leave as-is, but a "Note: " or similar if you
+deem it appropriate.)
+
+> v1: https://lkml.kernel.org/r/m11rarqqx2.fsf_-_@fess.ebiederm.org
+> v2: https://lkml.kernel.org/r/20210503203814.25487-10-ebiederm@xmission.com
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
 Reviewed-by: Marco Elver <elver@google.com>
 
+Thank you!
 
 
 > ---
->  fs/signalfd.c          |  2 +-
->  include/linux/signal.h |  2 +-
->  kernel/signal.c        | 10 +++++-----
->  3 files changed, 7 insertions(+), 7 deletions(-)
+>  arch/arm/kernel/signal.c                      |  3 ++-
+>  arch/arm64/kernel/signal.c                    |  3 ++-
+>  arch/arm64/kernel/signal32.c                  |  3 ++-
+>  arch/sparc/kernel/signal32.c                  |  3 ++-
+>  arch/sparc/kernel/signal_64.c                 |  3 ++-
+>  arch/x86/kernel/signal_compat.c               |  6 ++++--
+>  fs/signalfd.c                                 |  3 ++-
+>  include/linux/compat.h                        |  5 ++++-
+>  include/uapi/asm-generic/siginfo.h            |  8 +++++--
+>  include/uapi/linux/signalfd.h                 |  4 ++--
+>  kernel/signal.c                               | 21 ++++++++++++-------
+>  .../selftests/perf_events/sigtrap_threads.c   | 12 +++++------
+>  12 files changed, 47 insertions(+), 27 deletions(-)
 >
+> diff --git a/arch/arm/kernel/signal.c b/arch/arm/kernel/signal.c
+> index 643bcb0f091b..f3800c0f428b 100644
+> --- a/arch/arm/kernel/signal.c
+> +++ b/arch/arm/kernel/signal.c
+> @@ -757,7 +757,8 @@ static_assert(offsetof(siginfo_t, si_addr_lsb)      == 0x10);
+>  static_assert(offsetof(siginfo_t, si_lower)    == 0x14);
+>  static_assert(offsetof(siginfo_t, si_upper)    == 0x18);
+>  static_assert(offsetof(siginfo_t, si_pkey)     == 0x14);
+> -static_assert(offsetof(siginfo_t, si_perf)     == 0x10);
+> +static_assert(offsetof(siginfo_t, si_perf_data)        == 0x10);
+> +static_assert(offsetof(siginfo_t, si_perf_type)        == 0x14);
+>  static_assert(offsetof(siginfo_t, si_band)     == 0x0c);
+>  static_assert(offsetof(siginfo_t, si_fd)       == 0x10);
+>  static_assert(offsetof(siginfo_t, si_call_addr)        == 0x0c);
+> diff --git a/arch/arm64/kernel/signal.c b/arch/arm64/kernel/signal.c
+> index ad4bd27fc044..b3978b468bd4 100644
+> --- a/arch/arm64/kernel/signal.c
+> +++ b/arch/arm64/kernel/signal.c
+> @@ -1005,7 +1005,8 @@ static_assert(offsetof(siginfo_t, si_addr_lsb)    == 0x18);
+>  static_assert(offsetof(siginfo_t, si_lower)    == 0x20);
+>  static_assert(offsetof(siginfo_t, si_upper)    == 0x28);
+>  static_assert(offsetof(siginfo_t, si_pkey)     == 0x20);
+> -static_assert(offsetof(siginfo_t, si_perf)     == 0x18);
+> +static_assert(offsetof(siginfo_t, si_perf_data)        == 0x18);
+> +static_assert(offsetof(siginfo_t, si_perf_type)        == 0x20);
+>  static_assert(offsetof(siginfo_t, si_band)     == 0x10);
+>  static_assert(offsetof(siginfo_t, si_fd)       == 0x18);
+>  static_assert(offsetof(siginfo_t, si_call_addr)        == 0x10);
+> diff --git a/arch/arm64/kernel/signal32.c b/arch/arm64/kernel/signal32.c
+> index ee6c7484e130..d3be01c46bec 100644
+> --- a/arch/arm64/kernel/signal32.c
+> +++ b/arch/arm64/kernel/signal32.c
+> @@ -489,7 +489,8 @@ static_assert(offsetof(compat_siginfo_t, si_addr_lsb)       == 0x10);
+>  static_assert(offsetof(compat_siginfo_t, si_lower)     == 0x14);
+>  static_assert(offsetof(compat_siginfo_t, si_upper)     == 0x18);
+>  static_assert(offsetof(compat_siginfo_t, si_pkey)      == 0x14);
+> -static_assert(offsetof(compat_siginfo_t, si_perf)      == 0x10);
+> +static_assert(offsetof(compat_siginfo_t, si_perf_data) == 0x10);
+> +static_assert(offsetof(compat_siginfo_t, si_perf_type) == 0x14);
+>  static_assert(offsetof(compat_siginfo_t, si_band)      == 0x0c);
+>  static_assert(offsetof(compat_siginfo_t, si_fd)                == 0x10);
+>  static_assert(offsetof(compat_siginfo_t, si_call_addr) == 0x0c);
+> diff --git a/arch/sparc/kernel/signal32.c b/arch/sparc/kernel/signal32.c
+> index 5573722e34ad..4276b9e003ca 100644
+> --- a/arch/sparc/kernel/signal32.c
+> +++ b/arch/sparc/kernel/signal32.c
+> @@ -778,6 +778,7 @@ static_assert(offsetof(compat_siginfo_t, si_addr_lsb)       == 0x10);
+>  static_assert(offsetof(compat_siginfo_t, si_lower)     == 0x14);
+>  static_assert(offsetof(compat_siginfo_t, si_upper)     == 0x18);
+>  static_assert(offsetof(compat_siginfo_t, si_pkey)      == 0x14);
+> -static_assert(offsetof(compat_siginfo_t, si_perf)      == 0x10);
+> +static_assert(offsetof(compat_siginfo_t, si_perf_data) == 0x10);
+> +static_assert(offsetof(compat_siginfo_t, si_perf_type) == 0x14);
+>  static_assert(offsetof(compat_siginfo_t, si_band)      == 0x0c);
+>  static_assert(offsetof(compat_siginfo_t, si_fd)                == 0x10);
+> diff --git a/arch/sparc/kernel/signal_64.c b/arch/sparc/kernel/signal_64.c
+> index a69a78984c36..cea23cf95600 100644
+> --- a/arch/sparc/kernel/signal_64.c
+> +++ b/arch/sparc/kernel/signal_64.c
+> @@ -588,6 +588,7 @@ static_assert(offsetof(siginfo_t, si_addr_lsb)      == 0x18);
+>  static_assert(offsetof(siginfo_t, si_lower)    == 0x20);
+>  static_assert(offsetof(siginfo_t, si_upper)    == 0x28);
+>  static_assert(offsetof(siginfo_t, si_pkey)     == 0x20);
+> -static_assert(offsetof(siginfo_t, si_perf)     == 0x18);
+> +static_assert(offsetof(siginfo_t, si_perf_data)        == 0x18);
+> +static_assert(offsetof(siginfo_t, si_perf_type)        == 0x20);
+>  static_assert(offsetof(siginfo_t, si_band)     == 0x10);
+>  static_assert(offsetof(siginfo_t, si_fd)       == 0x14);
+> diff --git a/arch/x86/kernel/signal_compat.c b/arch/x86/kernel/signal_compat.c
+> index c9601f092a1e..b52407c56000 100644
+> --- a/arch/x86/kernel/signal_compat.c
+> +++ b/arch/x86/kernel/signal_compat.c
+> @@ -147,8 +147,10 @@ static inline void signal_compat_build_tests(void)
+>         BUILD_BUG_ON(offsetof(siginfo_t, si_pkey) != 0x20);
+>         BUILD_BUG_ON(offsetof(compat_siginfo_t, si_pkey) != 0x14);
+>
+> -       BUILD_BUG_ON(offsetof(siginfo_t, si_perf) != 0x18);
+> -       BUILD_BUG_ON(offsetof(compat_siginfo_t, si_perf) != 0x10);
+> +       BUILD_BUG_ON(offsetof(siginfo_t, si_perf_data) != 0x18);
+> +       BUILD_BUG_ON(offsetof(siginfo_t, si_perf_type) != 0x20);
+> +       BUILD_BUG_ON(offsetof(compat_siginfo_t, si_perf_data) != 0x10);
+> +       BUILD_BUG_ON(offsetof(compat_siginfo_t, si_perf_type) != 0x14);
+>
+>         CHECK_CSI_OFFSET(_sigpoll);
+>         CHECK_CSI_SIZE  (_sigpoll, 2*sizeof(int));
 > diff --git a/fs/signalfd.c b/fs/signalfd.c
-> index e87e59581653..83130244f653 100644
+> index 83130244f653..335ad39f3900 100644
 > --- a/fs/signalfd.c
 > +++ b/fs/signalfd.c
-> @@ -132,7 +132,7 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
->                 new.ssi_addr = (long) kinfo->si_addr;
->                 new.ssi_addr_lsb = (short) kinfo->si_addr_lsb;
+> @@ -134,7 +134,8 @@ static int signalfd_copyinfo(struct signalfd_siginfo __user *uinfo,
 >                 break;
-> -       case SIL_PERF_EVENT:
-> +       case SIL_FAULT_PERF_EVENT:
+>         case SIL_FAULT_PERF_EVENT:
 >                 new.ssi_addr = (long) kinfo->si_addr;
->                 new.ssi_perf = kinfo->si_perf;
+> -               new.ssi_perf = kinfo->si_perf;
+> +               new.ssi_perf_type = kinfo->si_perf_type;
+> +               new.ssi_perf_data = kinfo->si_perf_data;
 >                 break;
-> diff --git a/include/linux/signal.h b/include/linux/signal.h
-> index 5160fd45e5ca..ed896d790e46 100644
-> --- a/include/linux/signal.h
-> +++ b/include/linux/signal.h
-> @@ -44,7 +44,7 @@ enum siginfo_layout {
->         SIL_FAULT_MCEERR,
->         SIL_FAULT_BNDERR,
->         SIL_FAULT_PKUERR,
-> -       SIL_PERF_EVENT,
-> +       SIL_FAULT_PERF_EVENT,
->         SIL_CHLD,
->         SIL_RT,
->         SIL_SYS,
+>         case SIL_CHLD:
+>                 new.ssi_pid    = kinfo->si_pid;
+> diff --git a/include/linux/compat.h b/include/linux/compat.h
+> index 6af7bef15e94..a27fffaae121 100644
+> --- a/include/linux/compat.h
+> +++ b/include/linux/compat.h
+> @@ -236,7 +236,10 @@ typedef struct compat_siginfo {
+>                                         u32 _pkey;
+>                                 } _addr_pkey;
+>                                 /* used when si_code=TRAP_PERF */
+> -                               compat_ulong_t _perf;
+> +                               struct {
+> +                                       compat_ulong_t _data;
+> +                                       u32 _type;
+> +                               } _perf;
+>                         };
+>                 } _sigfault;
+>
+> diff --git a/include/uapi/asm-generic/siginfo.h b/include/uapi/asm-generic/siginfo.h
+> index 3503282021aa..3ba180f550d7 100644
+> --- a/include/uapi/asm-generic/siginfo.h
+> +++ b/include/uapi/asm-generic/siginfo.h
+> @@ -96,7 +96,10 @@ union __sifields {
+>                                 __u32 _pkey;
+>                         } _addr_pkey;
+>                         /* used when si_code=TRAP_PERF */
+> -                       unsigned long _perf;
+> +                       struct {
+> +                               unsigned long _data;
+> +                               __u32 _type;
+> +                       } _perf;
+>                 };
+>         } _sigfault;
+>
+> @@ -159,7 +162,8 @@ typedef struct siginfo {
+>  #define si_lower       _sifields._sigfault._addr_bnd._lower
+>  #define si_upper       _sifields._sigfault._addr_bnd._upper
+>  #define si_pkey                _sifields._sigfault._addr_pkey._pkey
+> -#define si_perf                _sifields._sigfault._perf
+> +#define si_perf_data   _sifields._sigfault._perf._data
+> +#define si_perf_type   _sifields._sigfault._perf._type
+>  #define si_band                _sifields._sigpoll._band
+>  #define si_fd          _sifields._sigpoll._fd
+>  #define si_call_addr   _sifields._sigsys._call_addr
+> diff --git a/include/uapi/linux/signalfd.h b/include/uapi/linux/signalfd.h
+> index 7e333042c7e3..e78dddf433fc 100644
+> --- a/include/uapi/linux/signalfd.h
+> +++ b/include/uapi/linux/signalfd.h
+> @@ -39,8 +39,8 @@ struct signalfd_siginfo {
+>         __s32 ssi_syscall;
+>         __u64 ssi_call_addr;
+>         __u32 ssi_arch;
+> -       __u32 __pad3;
+> -       __u64 ssi_perf;
+> +       __u32 ssi_perf_type;
+> +       __u64 ssi_perf_data;
+>
+>         /*
+>          * Pad strcture to 128 bytes. Remember to update the
 > diff --git a/kernel/signal.c b/kernel/signal.c
-> index 7eaa8d84db4c..697c5fe58db8 100644
+> index 49560ceac048..7fec9d1c5b11 100644
 > --- a/kernel/signal.c
 > +++ b/kernel/signal.c
-> @@ -1198,7 +1198,7 @@ static inline bool has_si_pid_and_uid(struct kernel_siginfo *info)
->         case SIL_FAULT_MCEERR:
->         case SIL_FAULT_BNDERR:
->         case SIL_FAULT_PKUERR:
-> -       case SIL_PERF_EVENT:
-> +       case SIL_FAULT_PERF_EVENT:
->         case SIL_SYS:
->                 ret = false;
+> @@ -1758,11 +1758,13 @@ int force_sig_perf(void __user *addr, u32 type, u64 sig_data)
+>         struct kernel_siginfo info;
+>
+>         clear_siginfo(&info);
+> -       info.si_signo = SIGTRAP;
+> -       info.si_errno = type;
+> -       info.si_code  = TRAP_PERF;
+> -       info.si_addr  = addr;
+> -       info.si_perf  = sig_data;
+> +       info.si_signo     = SIGTRAP;
+> +       info.si_errno     = 0;
+> +       info.si_code      = TRAP_PERF;
+> +       info.si_addr      = addr;
+> +       info.si_perf_data = sig_data;
+> +       info.si_perf_type = type;
+> +
+>         return force_sig_info(&info);
+>  }
+>
+> @@ -3380,7 +3382,8 @@ void copy_siginfo_to_external32(struct compat_siginfo *to,
 >                 break;
-> @@ -2553,7 +2553,7 @@ static void hide_si_addr_tag_bits(struct ksignal *ksig)
->         case SIL_FAULT_MCEERR:
->         case SIL_FAULT_BNDERR:
->         case SIL_FAULT_PKUERR:
-> -       case SIL_PERF_EVENT:
-> +       case SIL_FAULT_PERF_EVENT:
->                 ksig->info.si_addr = arch_untagged_si_addr(
->                         ksig->info.si_addr, ksig->sig, ksig->info.si_code);
->                 break;
-> @@ -3243,7 +3243,7 @@ enum siginfo_layout siginfo_layout(unsigned sig, int si_code)
->                                 layout = SIL_FAULT_PKUERR;
->  #endif
->                         else if ((sig == SIGTRAP) && (si_code == TRAP_PERF))
-> -                               layout = SIL_PERF_EVENT;
-> +                               layout = SIL_FAULT_PERF_EVENT;
->                 }
->                 else if (si_code <= NSIGPOLL)
->                         layout = SIL_POLL;
-> @@ -3365,7 +3365,7 @@ void copy_siginfo_to_external32(struct compat_siginfo *to,
+>         case SIL_FAULT_PERF_EVENT:
 >                 to->si_addr = ptr_to_compat(from->si_addr);
->                 to->si_pkey = from->si_pkey;
+> -               to->si_perf = from->si_perf;
+> +               to->si_perf_data = from->si_perf_data;
+> +               to->si_perf_type = from->si_perf_type;
 >                 break;
-> -       case SIL_PERF_EVENT:
-> +       case SIL_FAULT_PERF_EVENT:
->                 to->si_addr = ptr_to_compat(from->si_addr);
->                 to->si_perf = from->si_perf;
+>         case SIL_CHLD:
+>                 to->si_pid = from->si_pid;
+> @@ -3456,7 +3459,8 @@ static int post_copy_siginfo_from_user32(kernel_siginfo_t *to,
 >                 break;
-> @@ -3441,7 +3441,7 @@ static int post_copy_siginfo_from_user32(kernel_siginfo_t *to,
+>         case SIL_FAULT_PERF_EVENT:
 >                 to->si_addr = compat_ptr(from->si_addr);
->                 to->si_pkey = from->si_pkey;
+> -               to->si_perf = from->si_perf;
+> +               to->si_perf_data = from->si_perf_data;
+> +               to->si_perf_type = from->si_perf_type;
 >                 break;
-> -       case SIL_PERF_EVENT:
-> +       case SIL_FAULT_PERF_EVENT:
->                 to->si_addr = compat_ptr(from->si_addr);
->                 to->si_perf = from->si_perf;
->                 break;
+>         case SIL_CHLD:
+>                 to->si_pid    = from->si_pid;
+> @@ -4639,7 +4643,8 @@ static inline void siginfo_buildtime_checks(void)
+>         CHECK_OFFSET(si_lower);
+>         CHECK_OFFSET(si_upper);
+>         CHECK_OFFSET(si_pkey);
+> -       CHECK_OFFSET(si_perf);
+> +       CHECK_OFFSET(si_perf_data);
+> +       CHECK_OFFSET(si_perf_type);
+>
+>         /* sigpoll */
+>         CHECK_OFFSET(si_band);
+> diff --git a/tools/testing/selftests/perf_events/sigtrap_threads.c b/tools/testing/selftests/perf_events/sigtrap_threads.c
+> index 78ddf5e11625..fde123066a8c 100644
+> --- a/tools/testing/selftests/perf_events/sigtrap_threads.c
+> +++ b/tools/testing/selftests/perf_events/sigtrap_threads.c
+> @@ -164,8 +164,8 @@ TEST_F(sigtrap_threads, enable_event)
+>         EXPECT_EQ(ctx.signal_count, NUM_THREADS);
+>         EXPECT_EQ(ctx.tids_want_signal, 0);
+>         EXPECT_EQ(ctx.first_siginfo.si_addr, &ctx.iterate_on);
+> -       EXPECT_EQ(ctx.first_siginfo.si_errno, PERF_TYPE_BREAKPOINT);
+> -       EXPECT_EQ(ctx.first_siginfo.si_perf, TEST_SIG_DATA(&ctx.iterate_on));
+> +       EXPECT_EQ(ctx.first_siginfo.si_perf_type, PERF_TYPE_BREAKPOINT);
+> +       EXPECT_EQ(ctx.first_siginfo.si_perf_data, TEST_SIG_DATA(&ctx.iterate_on));
+>
+>         /* Check enabled for parent. */
+>         ctx.iterate_on = 0;
+> @@ -183,8 +183,8 @@ TEST_F(sigtrap_threads, modify_and_enable_event)
+>         EXPECT_EQ(ctx.signal_count, NUM_THREADS);
+>         EXPECT_EQ(ctx.tids_want_signal, 0);
+>         EXPECT_EQ(ctx.first_siginfo.si_addr, &ctx.iterate_on);
+> -       EXPECT_EQ(ctx.first_siginfo.si_errno, PERF_TYPE_BREAKPOINT);
+> -       EXPECT_EQ(ctx.first_siginfo.si_perf, TEST_SIG_DATA(&ctx.iterate_on));
+> +       EXPECT_EQ(ctx.first_siginfo.si_perf_type, PERF_TYPE_BREAKPOINT);
+> +       EXPECT_EQ(ctx.first_siginfo.si_perf_data, TEST_SIG_DATA(&ctx.iterate_on));
+>
+>         /* Check enabled for parent. */
+>         ctx.iterate_on = 0;
+> @@ -203,8 +203,8 @@ TEST_F(sigtrap_threads, signal_stress)
+>         EXPECT_EQ(ctx.signal_count, NUM_THREADS * ctx.iterate_on);
+>         EXPECT_EQ(ctx.tids_want_signal, 0);
+>         EXPECT_EQ(ctx.first_siginfo.si_addr, &ctx.iterate_on);
+> -       EXPECT_EQ(ctx.first_siginfo.si_errno, PERF_TYPE_BREAKPOINT);
+> -       EXPECT_EQ(ctx.first_siginfo.si_perf, TEST_SIG_DATA(&ctx.iterate_on));
+> +       EXPECT_EQ(ctx.first_siginfo.si_perf_type, PERF_TYPE_BREAKPOINT);
+> +       EXPECT_EQ(ctx.first_siginfo.si_perf_data, TEST_SIG_DATA(&ctx.iterate_on));
+>  }
+>
+>  TEST_HARNESS_MAIN
 > --
 > 2.30.1
 >
-> --
-> You received this message because you are subscribed to the Google Groups "kasan-dev" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kasan-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kasan-dev/20210505141101.11519-9-ebiederm%40xmission.com.
