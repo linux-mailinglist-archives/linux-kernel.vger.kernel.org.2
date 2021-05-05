@@ -2,141 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 008A637398E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:37:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C647373993
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233096AbhEELiO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:38:14 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50538 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232917AbhEELiN (ORCPT
+        id S233113AbhEELi1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:38:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232987AbhEELi0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:38:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620214636;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=C5Lah4Bb8DHKwVhTcxaDUF/2d0Qp2D0Gt9JdNQHVqpM=;
-        b=FSIy6NC3MVwTWLIcm6igyLXXY+7p3hvqPxTCuyVZahralKMEQjCpVT13cBn7pHndKzvYVZ
-        khcDddNu48ZwkybvCjwoJ8vYns+pCxCQyyjlJMuFRDdhabz6UKuE8Rr/eMbNA8pZlGH7mC
-        TEJ9hxkO0hx+94XfgoQ8h8ctofoWD5c=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-350-zSzpoIZHOsWIjKJCmmA8Rg-1; Wed, 05 May 2021 07:37:15 -0400
-X-MC-Unique: zSzpoIZHOsWIjKJCmmA8Rg-1
-Received: by mail-ed1-f71.google.com with SMTP id c15-20020a056402100fb029038518e5afc5so697621edu.18
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 04:37:15 -0700 (PDT)
+        Wed, 5 May 2021 07:38:26 -0400
+Received: from mail-pf1-x432.google.com (mail-pf1-x432.google.com [IPv6:2607:f8b0:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2119BC061761
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 04:37:27 -0700 (PDT)
+Received: by mail-pf1-x432.google.com with SMTP id p4so1811435pfo.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 04:37:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=jwzu12d+QscnqOFQLhy4vh097a70ZnMp+hWw5krWrIk=;
+        b=ZxbA1tfyfKPGdWBAOR+Y7RlXNKo0jtDwpuDRVr1usMxGZoBv82lY5nRNfltNjKO1hH
+         Q7y7FDb6LgIpvZMvCb7aqc+Xve+lVh9zkUaSTlQzCBPHlpwpwcZtrEnarO5Lc5WDNp0a
+         ug8JjqltbYlpsOLL2jMLtIfag5oYlt9qghVOy/7eC6FZhjz5YERIwOAuHHdzqHj7WESp
+         GHgXxzeLXt3pIm1ioOJenBBeRsDagR/fc+XiEzSImMUkgoAX1tbV5vPWKN21/w36v4bG
+         9WW1ksviqEZBHvq9FUbzJrqKeFQ0eOf9EDv5mYbjpmIryj4TESREdyKnD9I8QGacUcAQ
+         iTXQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=C5Lah4Bb8DHKwVhTcxaDUF/2d0Qp2D0Gt9JdNQHVqpM=;
-        b=Z9v59crdH3M911z8Tud8AZF9LMLEB+gFAOabow34Ib0XLfJhwn06YpF6+oFF+9jFXu
-         wWLBFJm1k+X2FKhTE8Dza5vMFQOoHpTWNLa/N5bROo0ZT2NnZ6Yd4cO5WY3QyEmuY1J9
-         a4GB19ca0UO8CtnQ3AivI+TA1ceKcsmOKI7LU6QkCB6iDRr1ksRLoqiE3COzBRI4Klm4
-         GJ+8B9MIuKOhFv1UKoCJ6JJirWf7rr0FceLNOkmqgin8GXzZdh1GIEXGPqN0Q0QAT84m
-         NLefoQ/Vh2vZkYjzViJOKgr8IX4pIE42eIDt8mqxKaierwmbyIdXp3dE/HbB2bEr3sP8
-         2EHg==
-X-Gm-Message-State: AOAM533nlbMaCjT3aqc/R5CkJfMWWG6BX/R1Z+XDvUuWRKzn9QKreeOg
-        4rrzwxZjgafAw1d7+q6ZQWO5+7665W5IpMeaYKCiaTz9drQLpFadGlZ/CDr2I4aLCmmjaxUj03j
-        PFK0ggOO6caU/3AWtayEwMHQ5
-X-Received: by 2002:a17:906:ce5a:: with SMTP id se26mr27558898ejb.332.1620214634249;
-        Wed, 05 May 2021 04:37:14 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwvqQBG09+x9kPbhc/155unYddBlPP6BJb1muXWMIK8OXYKn1M29PWBNb8X2eVyIfruqOJ9YQ==
-X-Received: by 2002:a17:906:ce5a:: with SMTP id se26mr27558870ejb.332.1620214634029;
-        Wed, 05 May 2021 04:37:14 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id u25sm2780048ejb.12.2021.05.05.04.37.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 04:37:13 -0700 (PDT)
-Subject: Re: [PATCH 4/6] kvm: Select SCHED_INFO instead of TASK_DELAY_ACCT
-To:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
-        mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, bsingharora@gmail.com, maz@kernel.org
-Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        riel@surriel.com, hannes@cmpxchg.org
-References: <20210505105940.190490250@infradead.org>
- <20210505111525.187225172@infradead.org>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <4f35124c-1127-2629-2e00-800bc965e9f1@redhat.com>
-Date:   Wed, 5 May 2021 13:37:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=jwzu12d+QscnqOFQLhy4vh097a70ZnMp+hWw5krWrIk=;
+        b=QueG7vdmlUy2JhOktJNmtuue4eEGf6a8ET+lOOf/k4t4REZhlX3lf/FrEd5oXJK2rC
+         K5Vj8EVT1Tb8PhVa9sZNlO9R7a7LGZgApeHSRELY43AnjMZl4WlMG2miF/0vbmoWaTXJ
+         S9SQiq2g9X6QX5s2z7qJzmdUaE2LZF/nCsi8KWXrrd9ahmaJqcjQ2f1Dg3opkLftc6rk
+         bPBhBEPQlGMiX0IN6T4jz8haCZA+VD/tSjhWVOy9z38rh4gq05mOI/YDDd/sXf0xNaCN
+         hjBukC8eRcUX08SL2yC+p4Ddv7vpgfBRhfNZZ0JXKvt7j5VCzcEhUEEyMajP2EQi0sr/
+         VcxA==
+X-Gm-Message-State: AOAM530hlKD4eS6xAWUY9rAfW66aKUd/0oDcHFM66dSzRcZPgbyXYffs
+        19wg4Pe/kklzcr8Nl412DsneIQ==
+X-Google-Smtp-Source: ABdhPJwCPq/LSEqazkj7mS6+zQB5ApPaTWOLcZzzlV2ZlvhakMrgpY4gelMW0KBKN7Xw7oLx2vKNbw==
+X-Received: by 2002:a62:5209:0:b029:278:648f:99b6 with SMTP id g9-20020a6252090000b0290278648f99b6mr28004842pfb.9.1620214646574;
+        Wed, 05 May 2021 04:37:26 -0700 (PDT)
+Received: from localhost ([136.185.154.93])
+        by smtp.gmail.com with ESMTPSA id a18sm14989138pfo.64.2021.05.05.04.37.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 04:37:26 -0700 (PDT)
+Date:   Wed, 5 May 2021 17:07:24 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
+        swboyd@chromium.org, agross@kernel.org, robh+dt@kernel.org,
+        rjw@rjwysocki.net, linux-arm-msm@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-pm@vger.kernel.org, dianders@chromium.org, mka@chromium.org
+Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
+Message-ID: <20210505113724.fpzcizgytf55msfa@vireshk-i7>
+References: <1619792901-32701-1-git-send-email-sibis@codeaurora.org>
+ <1619792901-32701-3-git-send-email-sibis@codeaurora.org>
+ <20210504144215.svmrmmsy4jtoixzv@bogus>
+ <1fc9fb8d9a94909ff9b7b76d598bd266@codeaurora.org>
+ <20210505084908.3lynedmblmqagr72@bogus>
 MIME-Version: 1.0
-In-Reply-To: <20210505111525.187225172@infradead.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505084908.3lynedmblmqagr72@bogus>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/21 12:59, Peter Zijlstra wrote:
-> AFAICT KVM only relies on SCHED_INFO. Nothing uses the p->delays data
-> that belongs to TASK_DELAY_ACCT.
+On 05-05-21, 09:49, Sudeep Holla wrote:
+> No my main concern is this platform uses "qcom-cpufreq-hw" driver and the
+> fact that the OPPs are retrieved from the hardware lookup table invalidates
+> whatever we have in DT.
+
+Not exactly.
+
+It disables them all, and then call dev_pm_opp_adjust_voltage() and
+enable them again. This is how it started initially. Though the driver
+also works if the DT doesn't have the table, in that case it calls
+dev_pm_opp_add() for all the OPPs.
+
+> In short it will be junk and becomes obsolete.
+> So what I suggested before is still valid. You simply can't have static
+> OPP tables in the DT for this platform. Do get some boot code to fetch the
+> same from the h/w LUT and patch to the DT or figure out any other way to
+> manage dynamically.
 > 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> So NACK still stands for static addition of OPPs to the DT as in this patch.
 
-Right, SCHED_INFO didn't exist at the time (it was introduced in 2015, 
-while KVM started using run_delay in 2011).  I'm not sure if it could 
-have used SCHEDSTATS instead.
-
-Acked-by: Paolo Bonzini <pbonzini@redhat.com>
-
-Paolo
-
-> ---
->   arch/arm64/kvm/Kconfig |    5 +----
->   arch/x86/kvm/Kconfig   |    5 +----
->   2 files changed, 2 insertions(+), 8 deletions(-)
-> 
-> --- a/arch/arm64/kvm/Kconfig
-> +++ b/arch/arm64/kvm/Kconfig
-> @@ -20,8 +20,6 @@ if VIRTUALIZATION
->   menuconfig KVM
->   	bool "Kernel-based Virtual Machine (KVM) support"
->   	depends on OF
-> -	# for TASKSTATS/TASK_DELAY_ACCT:
-> -	depends on NET && MULTIUSER
->   	select MMU_NOTIFIER
->   	select PREEMPT_NOTIFIERS
->   	select HAVE_KVM_CPU_RELAX_INTERCEPT
-> @@ -38,8 +36,7 @@ menuconfig KVM
->   	select IRQ_BYPASS_MANAGER
->   	select HAVE_KVM_IRQ_BYPASS
->   	select HAVE_KVM_VCPU_RUN_PID_CHANGE
-> -	select TASKSTATS
-> -	select TASK_DELAY_ACCT
-> +	select SCHED_INFO
->   	help
->   	  Support hosting virtualized guest machines.
->   
-> --- a/arch/x86/kvm/Kconfig
-> +++ b/arch/x86/kvm/Kconfig
-> @@ -22,8 +22,6 @@ config KVM
->   	tristate "Kernel-based Virtual Machine (KVM) support"
->   	depends on HAVE_KVM
->   	depends on HIGH_RES_TIMERS
-> -	# for TASKSTATS/TASK_DELAY_ACCT:
-> -	depends on NET && MULTIUSER
->   	depends on X86_LOCAL_APIC
->   	select PREEMPT_NOTIFIERS
->   	select MMU_NOTIFIER
-> @@ -36,8 +34,7 @@ config KVM
->   	select KVM_ASYNC_PF
->   	select USER_RETURN_NOTIFIER
->   	select KVM_MMIO
-> -	select TASKSTATS
-> -	select TASK_DELAY_ACCT
-> +	select SCHED_INFO
->   	select PERF_EVENTS
->   	select HAVE_KVM_MSI
->   	select HAVE_KVM_CPU_RELAX_INTERCEPT
-> 
-> 
-
+-- 
+viresh
