@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 654ED373E06
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:58:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17275373E0A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:59:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233495AbhEEO6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:58:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44546 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233394AbhEEO6x (ORCPT
+        id S233525AbhEEPAD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:00:03 -0400
+Received: from mout.kundenserver.de ([212.227.126.135]:50961 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233518AbhEEO77 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:58:53 -0400
-Received: from mail-pj1-x102d.google.com (mail-pj1-x102d.google.com [IPv6:2607:f8b0:4864:20::102d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D71DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 07:57:57 -0700 (PDT)
-Received: by mail-pj1-x102d.google.com with SMTP id ge1so942936pjb.2
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:57:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=z6+s7ClFTSCmHRUS+zDGYYUNz29NacIOGaA914mSXZQ=;
-        b=AmXStwt9VYu+MKeiLgQsueoc1SEsbma2hCjuXwUqMTABYaxCm4vZ9u/2+4QAa4tyZZ
-         Yfg9XCTMIDnh1zqY4nCVJGhQSu+6oYeqSPSmpU6xkIi12mRM24MWw/rnHkUzj4zAdMQX
-         dfIKyrkE5Kq+bQaLpMsdnnKBKCLzqzBKaXSPA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=z6+s7ClFTSCmHRUS+zDGYYUNz29NacIOGaA914mSXZQ=;
-        b=VPULY3PgBzv5pX9RJy77wrOf3isSTBwvzZRp4FD3Nv1QQtVylQGi6Y4gviUbtuqV8y
-         tWVdWNK/fFfJQMRI6chWi5x5448ygzzLCLwyeLxHlvTRatqZUKhEKZ3ENKHwe+vL60P3
-         sT5hRatlDwp4qaW2JhyqabRbU7D26y1FS2Mjy87ruH7NGB957IWjr8ptp9jFc2fmuQvc
-         OGGC0dnkJuJsE4qQqUGS11otuIj59k86SrQaXgrJOUSEmIpyeYS+HxGolR28IFC95OA7
-         oXCB5MKFhsc88Cbx1H1Qns16UniiqwkbqlokwbF5tmQT/zXJ8MKlH9gMTHeGjTf9yicD
-         4HWg==
-X-Gm-Message-State: AOAM530uZ00+wW8GG++BmsZJsCTpg8aXfNpnJOTRMarX6Ky4vppIF/x9
-        e6jClMuGuipWUHZ89ye+ehbvgA==
-X-Google-Smtp-Source: ABdhPJwwMu0D3UCRccrXZoNzxuPBlkKi5Na3NwoqNTUQWqMi/Qugd3QBMlaOt8xeWv/3VjMP6mGkpg==
-X-Received: by 2002:a17:902:dccc:b029:ed:32ed:e7d0 with SMTP id t12-20020a170902dcccb02900ed32ede7d0mr32034390pll.79.1620226676754;
-        Wed, 05 May 2021 07:57:56 -0700 (PDT)
-Received: from localhost ([2620:15c:202:201:8770:f856:b2ff:e5e4])
-        by smtp.gmail.com with UTF8SMTPSA id u12sm15203777pfh.122.2021.05.05.07.57.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 07:57:56 -0700 (PDT)
-Date:   Wed, 5 May 2021 07:57:55 -0700
-From:   Matthias Kaehlcke <mka@chromium.org>
-To:     satya priya <skakit@codeaurora.org>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, kgunda@codeaurora.org
-Subject: Re: [PATCH V4 8/8] arm64: dts: qcom: sc7280: Include PMIC DT files
- for sc7280-idp
-Message-ID: <YJKyc09bL/Z6YcK1@google.com>
-References: <1620197726-23802-1-git-send-email-skakit@codeaurora.org>
- <1620197726-23802-9-git-send-email-skakit@codeaurora.org>
+        Wed, 5 May 2021 10:59:59 -0400
+Received: from [192.168.1.155] ([95.114.117.51]) by mrelayeu.kundenserver.de
+ (mreue011 [212.227.15.167]) with ESMTPSA (Nemesis) id
+ 1MRn0U-1m6OWX2shu-00TBd0; Wed, 05 May 2021 16:58:35 +0200
+Subject: Re: [PATCH v3 2/4] leds: simatic-ipc-leds: add new driver for Siemens
+ Industial PCs
+To:     Henning Schild <henning.schild@siemens.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org,
+        Srikanth Krishnakar <skrishnakar@gmail.com>,
+        Jan Kiszka <jan.kiszka@siemens.com>,
+        Gerd Haeussler <gerd.haeussler.ext@siemens.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Pavel Machek <pavel@ucw.cz>
+References: <20210329174928.18816-1-henning.schild@siemens.com>
+ <20210329174928.18816-3-henning.schild@siemens.com>
+ <CAHp75Vdh_YAJLE4DWPhxhYY1g5Fc_7EFgr4FED3crpfpzwXeRg@mail.gmail.com>
+ <20210330135808.373c3308@md1za8fc.ad001.siemens.net>
+ <CAHp75Vc0f0HfAJx0KPyQMWjekkhB_T-1+vuR566qAcYGA2JLJA@mail.gmail.com>
+ <20210330143011.0e8ae4a0@md1za8fc.ad001.siemens.net>
+ <CAHp75VceCsuANZpib6HXJvxgMdJhmr8KPTZgThxKvXq6Yotymg@mail.gmail.com>
+ <20210330172305.67b6e050@md1za8fc.ad001.siemens.net>
+ <CAHp75VcSwW42_oQDpxn34gN7+aJNmB=HdJUbaWsYkBokYAHkSA@mail.gmail.com>
+ <20210401124415.3c9321c0@md1za8fc.ad001.siemens.net>
+ <CAHp75VcU-7-BVum4xuuQcG7NZZc9xXOoXYpfSBUwwPr6iZLWGg@mail.gmail.com>
+ <20210412135641.1173941b@md1za8fc.ad001.siemens.net>
+From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
+Message-ID: <c268618b-27f5-5f1d-a3d2-d94e785df0cb@metux.net>
+Date:   Wed, 5 May 2021 16:58:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1620197726-23802-9-git-send-email-skakit@codeaurora.org>
+In-Reply-To: <20210412135641.1173941b@md1za8fc.ad001.siemens.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: tl
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:m7rpyvRWbx2i21vXIFpgzQpQITT3X3V+SHOF8txJtU59XM3pxpJ
+ pAv41dUJE34otqkj+DaIFLTb2IbSSQNRGzHiJv28svPMx0i4FlG46wmv4Zi+NVEg6+ic7j/
+ DtW3eiRzTWK+OI3ymOCoePjHoXNKuQeQquGinc6YpMcjlkNfzPWxx+SWY8geUY2A5ce/BXJ
+ vqER+xcFxmhXhU0sCwgng==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:Bef024urxdA=:0ttqYRbPJ/NP5Moi2UDHg7
+ UTAwfvxOP9iBWS+WfjrBSdpMyic7ujXaPxv46JH++uy3ngRtGI1rm51YwwskWFQfruNXzGkX6
+ q4U7CuMiuI9A9WJ0W5Fy+0ZPDrEoSLiNcIqB3gymFdcxmtVa/IXrDw0cFmk4yj/3AFo4WCzA9
+ 2gOM6kBlMLi0XMYkV3G0+a2v1JczAg0WA4CyIoVAjacojHPk0Xxu/H1q73yYv4JMZncZZ1XOK
+ 83Rzj0Ef9DtcyvjiDg7Hjx3qRzvTc/UrvgM+cSwCx2o2MeSG0MO7G4nvxWn9xLVcxsH94Ms22
+ mULJvV0OCH0ME0ZB5YLZwbP4WFJghVRLPi8g0e1oDFKR9Cg1vrB9YYCuFi0bZDqczy/dbdBFm
+ YFBdOdn5boh4x6P6yiYm5AJzEHK5zGbE79BxYIqMifNRbsLtMZCTROZFFdopRKpiOgS4PhpkX
+ 1lUAoOAVlJ5AOSdNbloyD10r5hE8LY06NMVHZX46i6e93QNwoDji0v/2ZtNSSdnH5ZnQdo53e
+ PfGhuJqbQE60I1vfCCQbHA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 12:25:26PM +0530, satya priya wrote:
-> The sc7280-idp has four PMICs, include their .dtsi files.
-> 
-> Signed-off-by: satya priya <skakit@codeaurora.org>
-> ---
->  arch/arm64/boot/dts/qcom/sc7280-idp.dts | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc7280-idp.dts b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> index 02a14fc..704fb9a 100644
-> --- a/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc7280-idp.dts
-> @@ -12,6 +12,10 @@
->  #include <dt-bindings/iio/qcom,spmi-adc7-pm8350.h>
->  #include <dt-bindings/iio/qcom,spmi-adc7-pmk8350.h>
->  #include "sc7280.dtsi"
-> +#include "pm7325.dtsi"
-> +#include "pmr735a.dtsi"
-> +#include "pm8350c.dtsi"
-> +#include "pmk8350.dtsi"
+On 12.04.21 13:56, Henning Schild wrote:
 
-Patch '[7/8] arm64: dts: qcom: sc7280: Add channel nodes for sc7280-idp'
-of this series makes use of the label 'pmk8350_vadc', which doesn't exist
-at that point.
+> Enrico, does "gpio_amd_fch" show up under /sys/class/gpio as a
+> gpiochip? Or how to interact with that driver before basing another one
+> on top?
 
-A series should be organized in a way that applying only a
-subset of the series (in order, starting with patch 1) doesn't
-cause any build or runtime issues. To achieve this patch [7/8]
-and [8/8] of this series need to be swapped.
+It's not probed on its own, but explicitly by a board specific driver,
+as it needs board specific data.
+
+See drivers/platform/x86/pcengines-apuv2.c
+
+
+--mtx
+
+-- 
+---
+Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
+werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
+GPG/PGP-Schlüssel zu.
+---
+Enrico Weigelt, metux IT consult
+Free software and Linux embedded engineering
+info@metux.net -- +49-151-27565287
