@@ -2,26 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E881B37373E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:20:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ABB4373741
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:20:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232613AbhEEJVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:21:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41352 "EHLO mx2.suse.de"
+        id S232966AbhEEJVj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:21:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41380 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232400AbhEEJUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:20:32 -0400
+        id S232406AbhEEJUd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 05:20:33 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 51020B274;
+        by mx2.suse.de (Postfix) with ESMTP id E95F0B260;
         Wed,  5 May 2021 09:19:35 +0000 (UTC)
 From:   Jiri Slaby <jslaby@suse.cz>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 17/35] tty: drop tty_ldisc_ops::refcount
-Date:   Wed,  5 May 2021 11:19:10 +0200
-Message-Id: <20210505091928.22010-18-jslaby@suse.cz>
+        Jiri Slaby <jslaby@suse.cz>,
+        William Hubbs <w.d.hubbs@gmail.com>,
+        Chris Brannon <chris@the-brannons.com>,
+        Kirk Reiser <kirk@reisers.ca>,
+        Samuel Thibault <samuel.thibault@ens-lyon.org>,
+        Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andreas Koensgen <ajk@comnets.uni-bremen.de>,
+        Paul Mackerras <paulus@samba.org>,
+        Rodolfo Giometti <giometti@enneenne.com>,
+        Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Subject: [PATCH 18/35] tty: no checking of tty_unregister_ldisc
+Date:   Wed,  5 May 2021 11:19:11 +0200
+Message-Id: <20210505091928.22010-19-jslaby@suse.cz>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210505091928.22010-1-jslaby@suse.cz>
 References: <20210505091928.22010-1-jslaby@suse.cz>
@@ -31,98 +50,293 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The refcount is checked only in tty_unregister_ldisc and EBUSY returned
-if it is nonzero. But none of the tty_unregister_ldisc callers act
-anyhow if this (or any other) error is returned. So remove
-tty_ldisc_ops::refcount completely and make tty_unregister_ldisc return
-'void' in the next patches. That means we assume tty_unregister_ldisc is
-not called while the ldisc might be in use. That relies on
-try_module_get in get_ldops and module_put in put_ldops.
+tty_unregister_ldisc now returns 0 = success. No need to check the
+return value. In fact, the users only warned if an error occured and
+didn't do anything useful anyway -- the ldisc module was unloaded in any
+case.
 
 Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: William Hubbs <w.d.hubbs@gmail.com>
+Cc: Chris Brannon <chris@the-brannons.com>
+Cc: Kirk Reiser <kirk@reisers.ca>
+Cc: Samuel Thibault <samuel.thibault@ens-lyon.org>
+Cc: Marcel Holtmann <marcel@holtmann.org>
+Cc: Johan Hedberg <johan.hedberg@gmail.com>
+Cc: Luiz Augusto von Dentz <luiz.dentz@gmail.com>
+Cc: Arnd Bergmann <arnd@arndb.de>
+Cc: Wolfgang Grandegger <wg@grandegger.com>
+Cc: Marc Kleine-Budde <mkl@pengutronix.de>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Jakub Kicinski <kuba@kernel.org>
+Cc: Andreas Koensgen <ajk@comnets.uni-bremen.de>
+Cc: Paul Mackerras <paulus@samba.org>
+Cc: Rodolfo Giometti <giometti@enneenne.com>
+Cc: Peter Ujfalusi <peter.ujfalusi@gmail.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>
+Cc: Mark Brown <broonie@kernel.org>
+Cc: Jaroslav Kysela <perex@perex.cz>
+Cc: Takashi Iwai <tiwai@suse.com>
 ---
- drivers/tty/n_tty.c       |  2 +-
- drivers/tty/tty_ldisc.c   | 14 +++-----------
- include/linux/tty_ldisc.h |  2 --
- 3 files changed, 4 insertions(+), 14 deletions(-)
+ drivers/accessibility/speakup/spk_ttyio.c |  3 +--
+ drivers/bluetooth/hci_ldisc.c             |  7 +------
+ drivers/misc/ti-st/st_core.c              | 12 +++---------
+ drivers/net/can/slcan.c                   |  4 +---
+ drivers/net/hamradio/6pack.c              |  8 +-------
+ drivers/net/hamradio/mkiss.c              |  8 +-------
+ drivers/net/ppp/ppp_async.c               |  3 +--
+ drivers/net/ppp/ppp_synctty.c             |  3 +--
+ drivers/net/slip/slip.c                   |  4 +---
+ drivers/pps/clients/pps-ldisc.c           |  8 +-------
+ drivers/tty/n_gsm.c                       |  5 +----
+ drivers/tty/n_hdlc.c                      |  8 +-------
+ sound/soc/ti/ams-delta.c                  |  4 +---
+ 13 files changed, 15 insertions(+), 62 deletions(-)
 
-diff --git a/drivers/tty/n_tty.c b/drivers/tty/n_tty.c
-index 2fe27905c398..0ec93f1a61f5 100644
---- a/drivers/tty/n_tty.c
-+++ b/drivers/tty/n_tty.c
-@@ -2450,7 +2450,7 @@ void n_tty_inherit_ops(struct tty_ldisc_ops *ops)
+diff --git a/drivers/accessibility/speakup/spk_ttyio.c b/drivers/accessibility/speakup/spk_ttyio.c
+index 0b7f1a87eaeb..0d1f397cd896 100644
+--- a/drivers/accessibility/speakup/spk_ttyio.c
++++ b/drivers/accessibility/speakup/spk_ttyio.c
+@@ -219,8 +219,7 @@ void spk_ttyio_register_ldisc(void)
+ 
+ void spk_ttyio_unregister_ldisc(void)
  {
- 	*ops = n_tty_ops;
- 	ops->owner = NULL;
--	ops->refcount = ops->flags = 0;
-+	ops->flags = 0;
+-	if (tty_unregister_ldisc(&spk_ttyio_ldisc_ops))
+-		pr_warn("speakup: Couldn't unregister ldisc\n");
++	tty_unregister_ldisc(&spk_ttyio_ldisc_ops);
  }
- EXPORT_SYMBOL_GPL(n_tty_inherit_ops);
  
-diff --git a/drivers/tty/tty_ldisc.c b/drivers/tty/tty_ldisc.c
-index d02deeb5e584..98e8316fd28a 100644
---- a/drivers/tty/tty_ldisc.c
-+++ b/drivers/tty/tty_ldisc.c
-@@ -69,7 +69,6 @@ int tty_register_ldisc(struct tty_ldisc_ops *new_ldisc)
+ static int spk_ttyio_out(struct spk_synth *in_synth, const char ch)
+diff --git a/drivers/bluetooth/hci_ldisc.c b/drivers/bluetooth/hci_ldisc.c
+index 31e0c804363c..5ed2cfa7da1d 100644
+--- a/drivers/bluetooth/hci_ldisc.c
++++ b/drivers/bluetooth/hci_ldisc.c
+@@ -883,8 +883,6 @@ static int __init hci_uart_init(void)
  
- 	raw_spin_lock_irqsave(&tty_ldiscs_lock, flags);
- 	tty_ldiscs[new_ldisc->num] = new_ldisc;
--	new_ldisc->refcount = 0;
- 	raw_spin_unlock_irqrestore(&tty_ldiscs_lock, flags);
- 
- 	return ret;
-@@ -90,16 +89,12 @@ EXPORT_SYMBOL(tty_register_ldisc);
- int tty_unregister_ldisc(struct tty_ldisc_ops *ldisc)
+ static void __exit hci_uart_exit(void)
  {
- 	unsigned long flags;
--	int ret = 0;
- 
- 	raw_spin_lock_irqsave(&tty_ldiscs_lock, flags);
--	if (tty_ldiscs[ldisc->num]->refcount)
--		ret = -EBUSY;
--	else
--		tty_ldiscs[ldisc->num] = NULL;
-+	tty_ldiscs[ldisc->num] = NULL;
- 	raw_spin_unlock_irqrestore(&tty_ldiscs_lock, flags);
- 
--	return ret;
-+	return 0;
- }
- EXPORT_SYMBOL(tty_unregister_ldisc);
- 
-@@ -113,10 +108,8 @@ static struct tty_ldisc_ops *get_ldops(int disc)
- 	ldops = tty_ldiscs[disc];
- 	if (ldops) {
- 		ret = ERR_PTR(-EAGAIN);
--		if (try_module_get(ldops->owner)) {
--			ldops->refcount++;
-+		if (try_module_get(ldops->owner))
- 			ret = ldops;
--		}
- 	}
- 	raw_spin_unlock_irqrestore(&tty_ldiscs_lock, flags);
- 	return ret;
-@@ -127,7 +120,6 @@ static void put_ldops(struct tty_ldisc_ops *ldops)
- 	unsigned long flags;
- 
- 	raw_spin_lock_irqsave(&tty_ldiscs_lock, flags);
--	ldops->refcount--;
- 	module_put(ldops->owner);
- 	raw_spin_unlock_irqrestore(&tty_ldiscs_lock, flags);
- }
-diff --git a/include/linux/tty_ldisc.h b/include/linux/tty_ldisc.h
-index c20ca6a75b4c..fbe9de278629 100644
---- a/include/linux/tty_ldisc.h
-+++ b/include/linux/tty_ldisc.h
-@@ -208,8 +208,6 @@ struct tty_ldisc_ops {
- 				const char *fp, int count);
- 
- 	struct  module *owner;
+-	int err;
 -
--	int refcount;
- };
+ #ifdef CONFIG_BT_HCIUART_H4
+ 	h4_deinit();
+ #endif
+@@ -916,10 +914,7 @@ static void __exit hci_uart_exit(void)
+ 	mrvl_deinit();
+ #endif
  
- struct tty_ldisc {
+-	/* Release tty registration of line discipline */
+-	err = tty_unregister_ldisc(&hci_uart_ldisc);
+-	if (err)
+-		BT_ERR("Can't unregister HCI line discipline (%d)", err);
++	tty_unregister_ldisc(&hci_uart_ldisc);
+ }
+ 
+ module_init(hci_uart_init);
+diff --git a/drivers/misc/ti-st/st_core.c b/drivers/misc/ti-st/st_core.c
+index 174ae8e52805..85315e726644 100644
+--- a/drivers/misc/ti-st/st_core.c
++++ b/drivers/misc/ti-st/st_core.c
+@@ -872,9 +872,7 @@ int st_core_init(struct st_data_s **core_data)
+ 	st_gdata = kzalloc(sizeof(struct st_data_s), GFP_KERNEL);
+ 	if (!st_gdata) {
+ 		pr_err("memory allocation failed");
+-		err = tty_unregister_ldisc(&st_ldisc_ops);
+-		if (err)
+-			pr_err("unable to un-register ldisc %ld", err);
++		tty_unregister_ldisc(&st_ldisc_ops);
+ 		err = -ENOMEM;
+ 		return err;
+ 	}
+@@ -892,9 +890,7 @@ int st_core_init(struct st_data_s **core_data)
+ 	if (err) {
+ 		pr_err("error during st_ll initialization(%ld)", err);
+ 		kfree(st_gdata);
+-		err = tty_unregister_ldisc(&st_ldisc_ops);
+-		if (err)
+-			pr_err("unable to un-register ldisc");
++		tty_unregister_ldisc(&st_ldisc_ops);
+ 		return err;
+ 	}
+ 
+@@ -919,9 +915,7 @@ void st_core_exit(struct st_data_s *st_gdata)
+ 		kfree_skb(st_gdata->rx_skb);
+ 		kfree_skb(st_gdata->tx_skb);
+ 		/* TTY ldisc cleanup */
+-		err = tty_unregister_ldisc(&st_ldisc_ops);
+-		if (err)
+-			pr_err("unable to un-register ldisc %ld", err);
++		tty_unregister_ldisc(&st_ldisc_ops);
+ 		/* free the global data pointer */
+ 		kfree(st_gdata);
+ 	}
+diff --git a/drivers/net/can/slcan.c b/drivers/net/can/slcan.c
+index 03a2dbd3c367..d42ec7d1bc14 100644
+--- a/drivers/net/can/slcan.c
++++ b/drivers/net/can/slcan.c
+@@ -784,9 +784,7 @@ static void __exit slcan_exit(void)
+ 	kfree(slcan_devs);
+ 	slcan_devs = NULL;
+ 
+-	i = tty_unregister_ldisc(&slc_ldisc);
+-	if (i)
+-		printk(KERN_ERR "slcan: can't unregister ldisc (err %d)\n", i);
++	tty_unregister_ldisc(&slc_ldisc);
+ }
+ 
+ module_init(slcan_init);
+diff --git a/drivers/net/hamradio/6pack.c b/drivers/net/hamradio/6pack.c
+index aac24f9caceb..686c38c46113 100644
+--- a/drivers/net/hamradio/6pack.c
++++ b/drivers/net/hamradio/6pack.c
+@@ -774,15 +774,9 @@ static int __init sixpack_init_driver(void)
+ 	return status;
+ }
+ 
+-static const char msg_unregfail[] = KERN_ERR \
+-	"6pack: can't unregister line discipline (err = %d)\n";
+-
+ static void __exit sixpack_exit_driver(void)
+ {
+-	int ret;
+-
+-	if ((ret = tty_unregister_ldisc(&sp_ldisc)))
+-		printk(msg_unregfail, ret);
++	tty_unregister_ldisc(&sp_ldisc);
+ }
+ 
+ /* encode an AX.25 packet into 6pack */
+diff --git a/drivers/net/hamradio/mkiss.c b/drivers/net/hamradio/mkiss.c
+index 750c6afc9302..e3294a0a9800 100644
+--- a/drivers/net/hamradio/mkiss.c
++++ b/drivers/net/hamradio/mkiss.c
+@@ -960,15 +960,9 @@ static int __init mkiss_init_driver(void)
+ 	return status;
+ }
+ 
+-static const char msg_unregfail[] = KERN_ERR \
+-	"mkiss: can't unregister line discipline (err = %d)\n";
+-
+ static void __exit mkiss_exit_driver(void)
+ {
+-	int ret;
+-
+-	if ((ret = tty_unregister_ldisc(&ax_ldisc)))
+-		printk(msg_unregfail, ret);
++	tty_unregister_ldisc(&ax_ldisc);
+ }
+ 
+ MODULE_AUTHOR("Ralf Baechle DL5RB <ralf@linux-mips.org>");
+diff --git a/drivers/net/ppp/ppp_async.c b/drivers/net/ppp/ppp_async.c
+index b2d454d01eba..29a93d6bfe37 100644
+--- a/drivers/net/ppp/ppp_async.c
++++ b/drivers/net/ppp/ppp_async.c
+@@ -1016,8 +1016,7 @@ static void async_lcp_peek(struct asyncppp *ap, unsigned char *data,
+ 
+ static void __exit ppp_async_cleanup(void)
+ {
+-	if (tty_unregister_ldisc(&ppp_ldisc) != 0)
+-		printk(KERN_ERR "failed to unregister PPP line discipline\n");
++	tty_unregister_ldisc(&ppp_ldisc);
+ }
+ 
+ module_init(ppp_async_init);
+diff --git a/drivers/net/ppp/ppp_synctty.c b/drivers/net/ppp/ppp_synctty.c
+index ca403bde56fb..af3e048695b6 100644
+--- a/drivers/net/ppp/ppp_synctty.c
++++ b/drivers/net/ppp/ppp_synctty.c
+@@ -727,8 +727,7 @@ ppp_sync_input(struct syncppp *ap, const unsigned char *buf,
+ static void __exit
+ ppp_sync_cleanup(void)
+ {
+-	if (tty_unregister_ldisc(&ppp_sync_ldisc) != 0)
+-		printk(KERN_ERR "failed to unregister Sync PPP line discipline\n");
++	tty_unregister_ldisc(&ppp_sync_ldisc);
+ }
+ 
+ module_init(ppp_sync_init);
+diff --git a/drivers/net/slip/slip.c b/drivers/net/slip/slip.c
+index 867efff40a0e..dc84cb844319 100644
+--- a/drivers/net/slip/slip.c
++++ b/drivers/net/slip/slip.c
+@@ -1360,9 +1360,7 @@ static void __exit slip_exit(void)
+ 	kfree(slip_devs);
+ 	slip_devs = NULL;
+ 
+-	i = tty_unregister_ldisc(&sl_ldisc);
+-	if (i != 0)
+-		printk(KERN_ERR "SLIP: can't unregister line discipline (err = %d)\n", i);
++	tty_unregister_ldisc(&sl_ldisc);
+ }
+ 
+ module_init(slip_init);
+diff --git a/drivers/pps/clients/pps-ldisc.c b/drivers/pps/clients/pps-ldisc.c
+index 91b947f37774..d73c4c2ed4e1 100644
+--- a/drivers/pps/clients/pps-ldisc.c
++++ b/drivers/pps/clients/pps-ldisc.c
+@@ -129,13 +129,7 @@ static int __init pps_tty_init(void)
+ 
+ static void __exit pps_tty_cleanup(void)
+ {
+-	int err;
+-
+-	err = tty_unregister_ldisc(&pps_ldisc_ops);
+-	if (err)
+-		pr_err("can't unregister PPS line discipline\n");
+-	else
+-		pr_info("PPS line discipline removed\n");
++	tty_unregister_ldisc(&pps_ldisc_ops);
+ }
+ 
+ module_init(pps_tty_init);
+diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
+index db7d4a30af91..157b26ef6259 100644
+--- a/drivers/tty/n_gsm.c
++++ b/drivers/tty/n_gsm.c
+@@ -3286,10 +3286,7 @@ static int __init gsm_init(void)
+ 
+ static void __exit gsm_exit(void)
+ {
+-	int status = tty_unregister_ldisc(&tty_ldisc_packet);
+-	if (status != 0)
+-		pr_err("n_gsm: can't unregister line discipline (err = %d)\n",
+-								status);
++	tty_unregister_ldisc(&tty_ldisc_packet);
+ 	tty_unregister_driver(gsm_tty_driver);
+ 	put_tty_driver(gsm_tty_driver);
+ }
+diff --git a/drivers/tty/n_hdlc.c b/drivers/tty/n_hdlc.c
+index c2afbfe0a1d5..d899ee4e0116 100644
+--- a/drivers/tty/n_hdlc.c
++++ b/drivers/tty/n_hdlc.c
+@@ -822,13 +822,7 @@ static int __init n_hdlc_init(void)
+ 
+ static void __exit n_hdlc_exit(void)
+ {
+-	int status = tty_unregister_ldisc(&n_hdlc_ldisc);
+-
+-	if (status)
+-		pr_err("N_HDLC: can't unregister line discipline (err = %d)\n",
+-				status);
+-	else
+-		pr_info("N_HDLC: line discipline unregistered\n");
++	tty_unregister_ldisc(&n_hdlc_ldisc);
+ }
+ 
+ module_init(n_hdlc_init);
+diff --git a/sound/soc/ti/ams-delta.c b/sound/soc/ti/ams-delta.c
+index e89548e48364..ecd24d412a9b 100644
+--- a/sound/soc/ti/ams-delta.c
++++ b/sound/soc/ti/ams-delta.c
+@@ -583,9 +583,7 @@ static int ams_delta_remove(struct platform_device *pdev)
+ {
+ 	struct snd_soc_card *card = platform_get_drvdata(pdev);
+ 
+-	if (tty_unregister_ldisc(&cx81801_ops) != 0)
+-		dev_warn(&pdev->dev,
+-			"failed to unregister V253 line discipline\n");
++	tty_unregister_ldisc(&cx81801_ops);
+ 
+ 	snd_soc_unregister_card(card);
+ 	card->dev = NULL;
 -- 
 2.31.1
 
