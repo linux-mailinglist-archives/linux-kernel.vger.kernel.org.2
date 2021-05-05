@@ -2,110 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8ABFA373CDD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:01:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B55F373CE6
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233629AbhEEOCo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:02:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60038 "EHLO
+        id S233683AbhEEODK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60158 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233587AbhEEOCm (ORCPT
+        with ESMTP id S233668AbhEEODI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:02:42 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFCC3C06174A;
-        Wed,  5 May 2021 07:01:45 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id 978881F42DFA
-Message-ID: <735925557d7fde1c11affeea703f8486febc825d.camel@collabora.com>
-Subject: Re: [PATCH 09/25] media: hantro: do a PM resume earlier
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev
-Date:   Wed, 05 May 2021 11:01:35 -0300
-In-Reply-To: <20210505154647.62784bf7@coco.lan>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
-         <82114a4bd9c7bc1188c6a7167a6e74bb3360961d.1620207353.git.mchehab+huawei@kernel.org>
-         <11c24f97ef71b16c2e7b3ba40ca66a28c12df692.camel@collabora.com>
-         <20210505154647.62784bf7@coco.lan>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Wed, 5 May 2021 10:03:08 -0400
+Received: from mail-oi1-x22e.google.com (mail-oi1-x22e.google.com [IPv6:2607:f8b0:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 976AEC06174A;
+        Wed,  5 May 2021 07:02:11 -0700 (PDT)
+Received: by mail-oi1-x22e.google.com with SMTP id d21so2236208oic.11;
+        Wed, 05 May 2021 07:02:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VFGUpVbhSw2/apyC9vepkbb02Glfo5sSVvaD/S5XelI=;
+        b=BF0reEh8p2C7kPm3xF2TxZ9/y8dDAQFHOLsKdOfzCmKkv0Q/bcGvQXH+n3kTDJy5uF
+         s9jCSmcEabM2Y8AzfVZtDBWhQilY1Eo2NYBQDb7D/pK/vx2C3TqLDRXn+1eKJCP49rpo
+         XlfNYvaHbFTNh4iDXprEf0kg3NuAqV95lamDDkmQLH+3gEDfVF6QqqYPQJnXqaf/jDKa
+         D+UK3IE4tKidZ5ia5Al84ABtbqLt7B8B6BcrD08becofqDsBrKQDQeZO1juFoDW/6gcE
+         VICDbES917LojWzvtwbIlQckaqaRmEt1VElxTM+Sb4m8ySMiuVzd/yidoKpQOp4iSviq
+         flHQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=VFGUpVbhSw2/apyC9vepkbb02Glfo5sSVvaD/S5XelI=;
+        b=pk6nS+O7KvuApX+au9OqL8zq8xF4f4O2UNcnPm2jDo5XNkLz1DKdURCzR0OBhX6dFG
+         mYigTqpcd9z3YSlzx+MRMkjJ1g6Q08PslttkyRIELeKqSqdc0lPMOa1L8xyqx83oO4lr
+         0gNRXRknlKwe0gpV7UKjdjbKejHW2AG2+/rxXX2/S+BMEThY6UILu/3/wp1dIoNEcGO0
+         /bKUFIM/WOBZ/bS+8TBbG1ukPxGAB1fzLtthZkM8nSyekewbW4X31eC/LuPwS1LTVjWJ
+         FgvnaWOHQr20lo8zLQfueICtWn1GeX1b9li0m7+46qLzvpv4Lg/QPbl9QbCaGd7rr/eb
+         1xdA==
+X-Gm-Message-State: AOAM533kCMgtQZWn9yq6pffQDe3jCSBmWe32gfxKpHLXnkMrJju3YaCO
+        S0X/yEDMM+o2iyyFhqsYKGE=
+X-Google-Smtp-Source: ABdhPJxEC7lqRByZwhnDwtCicpYXYi3RSPguymT8sqxrRM6pFIjhHauDX3g4O5qyQJV7I7xvS1v8ew==
+X-Received: by 2002:a05:6808:51:: with SMTP id v17mr6982333oic.132.1620223331018;
+        Wed, 05 May 2021 07:02:11 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id p15sm1494501otl.23.2021.05.05.07.02.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 07:02:10 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 5 May 2021 07:02:08 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jean Delvare <jdelvare@suse.com>, linux-kernel@vger.kernel.org,
+        linux-iio@vger.kernel.org, linux-hwmon@vger.kernel.org
+Subject: Re: [PATCH 4/4] hwmon: vcnl3020: add hwmon driver for intrusion
+ sensor
+Message-ID: <20210505140208.GA1913659@roeck-us.net>
+References: <20210430152419.261757-1-i.mikhaylov@yadro.com>
+ <20210430152419.261757-5-i.mikhaylov@yadro.com>
+ <20210430163831.GA3163069@roeck-us.net>
+ <8dbdf071f9f2041b92cabfa417487a3ec3e9647e.camel@yadro.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8dbdf071f9f2041b92cabfa417487a3ec3e9647e.camel@yadro.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-05-05 at 15:46 +0200, Mauro Carvalho Chehab wrote:
-> Em Wed, 05 May 2021 10:22:03 -0300
-> Ezequiel Garcia <ezequiel@collabora.com> escreveu:
-> 
-> > Hi Mauro,
-> > 
-> > Thanks for working on this.
-> > 
-> > On Wed, 2021-05-05 at 11:41 +0200, Mauro Carvalho Chehab wrote:
-> > > The device_run() first enables the clock and then
-> > > tries to resume PM runtime, checking for errors.
+On Tue, May 04, 2021 at 10:46:53PM +0300, Ivan Mikhaylov wrote:
+> On Fri, 2021-04-30 at 09:38 -0700, Guenter Roeck wrote:
+> > On Fri, Apr 30, 2021 at 06:24:19PM +0300, Ivan Mikhaylov wrote:
+> > > Intrusion status detection via Interrupt Status Register.
 > > > 
-> > > Well, if for some reason the pm_runtime can not resume,
-> > > it would be better to detect it beforehand.
-> > > 
-> > > So, change the order inside device_run().
-> > > 
-> > > Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-> > > Fixes: 775fec69008d ("media: add Rockchip VPU JPEG encoder driver")
-> > > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> > > Signed-off-by: Ivan Mikhaylov <i.mikhaylov@yadro.com>
 > > 
-> > It seems this is wrong now, as this series doesn't have
+> > I think this should, if at all, be handled using the
+> > iio->hwmon bridge (or, in other words, require a solution
+> > which is not chip specific).
+> 
+> Thanks a lot for suggestion, it's actually looks what's needed here instead of
+> this driver. Anyways, there is no IIO_PROXIMITY support inside supported types
+> in iio_hwmon.c. Should I add additional case inside this driver for
+> IIO_PROXIMITY type?
+> 
+> > I am also not sure if "proximity" is really appropriate to use
+> > for intrusion detection in the sense of hardware monitoring.
+> > This would require a proximity sensor within a chassis, which
+> > would be both overkill and unlikely to happen in the real world.
+> > "Intrusion", in hardware monitoring context, means "someone
+> > opened the chassis", not "someone got [too] close".
 > > 
-> > https://lore.kernel.org/linux-media/803c39fafdd62efc6f9e4d99a372af2c6955143b.1619621413.git.mchehab+huawei@kernel.org/
-> > 
-> > I don't fully understand why all the back and forth
-> > happening on this series, but the former Hantro patches
-> > looked good (despite perhaps unclear commit messages).
 > 
-> There was a request to break the original /79 series into smaller ones,
-> to make easier for reviewers. So, I opted to split it into (probably)
-> 3 series:
-> 
-> 1. Fixes (this series);
-> 2. "use pm_runtime_resume_and_get" for the I2C drivers;
-> 3. "use pm_runtime_resume_and_get" for remaining ones.
-> 
-> Before flooding everybody's email's with series (2) and (3), better
-> to focus at the fixes first. I'll probably send the other two series
-> by tomorrow.
-> 
-> > Any issues just squashing these two commits from "[PATCH v4 00/79] Address some issues with PM runtime at media subsystem":
-> > 
-> >   media: hantro: use pm_runtime_resume_and_get()
-> >   media: hantro: do a PM resume earlier
-> 
-> The problem is that pm_runtime_resume_and_get() was added only
-> recently (Kernel v5.10). 
-> 
-> So, I opted to place the fix patches before the changes, as this
-> way, most (all?) patches can be easily be backported to legacy Kernels
-> as needed.
+> I'm not sure either but it exists :) And it's exactly for this purpose:
+> "someone opened the chassis", "how near/far is cover?".
 > 
 
-Got it.
-
-Maybe the better fix would be the squash of [PATCH v4 78/79] media: hantro: use pm_runtime_resume_and_get()
-and [PATCH v4 79/79] media: hantro: do a PM resume earlier but keeping pm_runtime_get_sync.
-
-And then you can replace the pm_runtime_get_sync with pm_runtime_resume_and_get.
+The cost for VCNL3020, for a full reel with 3,300 chips, is $1.17 per chip
+at Mouser. A mechanical switch costs a couple of cents. A single proximity
+sensor won't cover all parts of a chassis; one would likely need several
+chips to be sure that are no blind spots (if that is even possible - I don't
+think it is in any of my PC chassis due to mechanical limitations). This
+is on top of programming, which would be sensitive to generating false
+alarms (or missing alarms, for that matter). That sounds quite impractical
+and expensive to me. I'd really like to see the actual use case where a
+proximity sensor (or set of proximity sensors) is used for intrusion
+detection in the sense of hardware monitoring - not just the technical
+possibility of doing so, but an actual use case (as in "this vendor,
+in this chassis, is doing it").
 
 Thanks,
-Ezequiel
-
-
+Guenter
