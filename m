@@ -2,74 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461093745A2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:50:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC0E43745D5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:51:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237469AbhEERGm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:06:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49796 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237126AbhEEQ5V (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:57:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id D44A0619A3;
-        Wed,  5 May 2021 16:39:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232768;
-        bh=rPHIF/+0AcFm8CFMCe2mNu3gaE4Hz8XPq3/3gL81Xe0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YeMMCP0xH8ezYUD7i2WXuEFLrdKXi5TeP7L/pwU3qSNVfJt+Sxye0bs0fsBe4H5yr
-         oEdQHEKSeUEP3vAuVWf4o9m17NsVHGAzp+jyv09oeyuTynbtlckm0z3MCzVdpriGUb
-         AUHtvgh8QE1s9SqMssW6sN/oTdjUqzPQq/gByij4HRtVI73k2jC1Rfi4PyVpGmbNgT
-         fCzEOQ0akZb8WwCKSATZa8sMHQhSddD8BhQc/h1w2pceswmIpf1DfVjYUoVW0ns48i
-         KByXJM5eZreMBfvC2GULaBibzCpxap8gRIwwG1ljWDXMDr0sNZzgQtYVFYbQ7l+TRc
-         2uU5TCdrVxkyw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Miklos Szeredi <mszeredi@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 22/46] cuse: prevent clone
-Date:   Wed,  5 May 2021 12:38:32 -0400
-Message-Id: <20210505163856.3463279-22-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505163856.3463279-1-sashal@kernel.org>
-References: <20210505163856.3463279-1-sashal@kernel.org>
+        id S236961AbhEERID (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:08:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43054 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236610AbhEEQ7K (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:59:10 -0400
+Received: from mail-ej1-x635.google.com (mail-ej1-x635.google.com [IPv6:2a00:1450:4864:20::635])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38FE4C06138B
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 09:38:35 -0700 (PDT)
+Received: by mail-ej1-x635.google.com with SMTP id w3so3866315ejc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:38:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=QodjTVqQx1kXWbV7w4FAq27SHIeN7ltLP8cnL4vbASM=;
+        b=bf5Rgr4cFTK6LnI9fss1N15z9mZcSeorJJ59/8Go7GPzROQq9i+ZVxLNGLnWIXli+S
+         4cJsvSK2DGVsDV2PTah6CTM/STcX5DXYTsQB8vfSQIcsFlwt4+mmrHeD37ccHn2hUkGK
+         gdjuWR1DRfmuV1zvGJvTqrmIZJK7cCZiM+WGklSKeIU4PFKfLd02k4veaxBKYvi4wRul
+         8h8KdTUuVfqqMuks22j/KwldL7qCsP6zlq0AK96xvwooAREfgy+aSkL3hpjF5U3nvwrw
+         cXTPDYTc3UuiOcZDpFNIAsOA7omuMbZEFrhQKuYlEFMh7smBC3MiGZGVoe7XHi1SAZGQ
+         E23w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=QodjTVqQx1kXWbV7w4FAq27SHIeN7ltLP8cnL4vbASM=;
+        b=Ugost12qDxgB8ODBuU1x5d4f3M7JHbzBO3Vnqw2lm8OlqYdlGSslSAJx2C12Spm28y
+         E8t0SvhBvBrHbLgrxRcSNdYYBNcDKZYTirAP/QcT4u84j8cOFjprTfmEPS4ABCXVanc5
+         wKCt+mHiF+leRonD52LfzbT4RcMcaj1qwt+cd2aXaOfW7PRGmcJ3IOeHuynSyz486Xvm
+         g61G4AxzrdWeK3/uKDhRLTROQpCGQeWrf0SgmzXwwhQwRgGE+I3td+4p2Yt1c7B48bsM
+         kS+jmcP2i+hwv6cTrwA59j3ysCF2OYnd+obKj1qLC+QJDHAOJiAuUsga6U7CqNXryOgG
+         m3Xg==
+X-Gm-Message-State: AOAM531owhK4vPUYOvn/JsBGmJdCHRp2THa9UkuaKkptQ0ApjGs+o+rc
+        HVVJ3ndOxWOfeZ5qtzDgn6NCAU95RfNUitiuPQg=
+X-Google-Smtp-Source: ABdhPJwSKprlNOj7XHHFnAa4U+FPyYyZnqeXojYy5TU+PIl4nS7HFq/egue6BKCK9bjjI4DUmI/VKhdhLtIkHW6akBM=
+X-Received: by 2002:a17:906:4a55:: with SMTP id a21mr27591627ejv.215.1620232713961;
+ Wed, 05 May 2021 09:38:33 -0700 (PDT)
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a54:334c:0:0:0:0:0 with HTTP; Wed, 5 May 2021 09:38:33 -0700 (PDT)
+Reply-To: ditabarbaratomas1@gmail.com
+From:   dita barbara tomas <barristergeorge016@gmail.com>
+Date:   Wed, 5 May 2021 09:38:33 -0700
+Message-ID: <CADN7sG2k17son4TDKpZK2kUULSZTtua3e_51iHJ1hSw+W7P=4A@mail.gmail.com>
+Subject: GOODDAY
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Miklos Szeredi <mszeredi@redhat.com>
+We write to inform you that you have been recommended and approved by
 
-[ Upstream commit 8217673d07256b22881127bf50dce874d0e51653 ]
+the International Monetary Fund in conjunction with the Federal
 
-For cloned connections cuse_channel_release() will be called more than
-once, resulting in use after free.
-
-Prevent device cloning for CUSE, which does not make sense at this point,
-and highly unlikely to be used in real life.
-
-Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/fuse/cuse.c | 2 ++
- 1 file changed, 2 insertions(+)
-
-diff --git a/fs/fuse/cuse.c b/fs/fuse/cuse.c
-index 00015d851382..e51b7019e887 100644
---- a/fs/fuse/cuse.c
-+++ b/fs/fuse/cuse.c
-@@ -624,6 +624,8 @@ static int __init cuse_init(void)
- 	cuse_channel_fops.owner		= THIS_MODULE;
- 	cuse_channel_fops.open		= cuse_channel_open;
- 	cuse_channel_fops.release	= cuse_channel_release;
-+	/* CUSE is not prepared for FUSE_DEV_IOC_CLONE */
-+	cuse_channel_fops.unlocked_ioctl	= NULL;
- 
- 	cuse_class = class_create(THIS_MODULE, "cuse");
- 	if (IS_ERR(cuse_class))
--- 
-2.30.2
-
+Reserve Bank here in United Kingdom
