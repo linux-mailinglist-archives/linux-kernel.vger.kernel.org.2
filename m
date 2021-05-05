@@ -2,71 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DC2374889
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:14:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 707C6374897
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:18:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235332AbhEETPm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 15:15:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45794 "EHLO
+        id S235445AbhEETTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 15:19:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46600 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233826AbhEETPj (ORCPT
+        with ESMTP id S235202AbhEETTF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 15:15:39 -0400
-Received: from relay02.th.seeweb.it (relay02.th.seeweb.it [IPv6:2001:4b7a:2000:18::163])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF61C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 12:14:42 -0700 (PDT)
-Received: from [192.168.1.101] (83.6.168.154.neoplus.adsl.tpnet.pl [83.6.168.154])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id C7D691F53F;
-        Wed,  5 May 2021 21:14:35 +0200 (CEST)
-Subject: Re: [RFC PATCH] soc: qcom: socinfo: import PMIC IDs from pmic-spmi
-To:     Luca Weiss <luca@z3ntu.xyz>, linux-arm-msm@vger.kernel.org
-Cc:     ~postmarketos/upstreaming@lists.sr.ht,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-kernel@vger.kernel.org
-References: <20210504203752.95555-1-luca@z3ntu.xyz>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <08fde8a5-1d9f-4676-41c2-133b7a9a1c75@somainline.org>
-Date:   Wed, 5 May 2021 21:14:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Wed, 5 May 2021 15:19:05 -0400
+Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2CD5C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 12:18:07 -0700 (PDT)
+Received: by mail-pg1-x533.google.com with SMTP id t22so2553075pgu.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 12:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4WYSC4vZQjtev2oFzlx0FGKTMmYzxEnnQo/e/yAZ4w8=;
+        b=kPvQemPtSPOW/yzBzeEYb+M1Ag2ysITcVCD+EG4obVHyhN8ONYEUXUYUBJXh7XznIt
+         Zvxxx93f26qcHTzi1BL9KKkw5rMICh0K5dySFfjUYcgol62ZlD3TOLX4E6JapDAaKFFV
+         D3z7bkHVbiJZOxV5aY+rcYfJMQwjTEcwXnxOg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=4WYSC4vZQjtev2oFzlx0FGKTMmYzxEnnQo/e/yAZ4w8=;
+        b=aXHZlp1LJC+mt5qOMJws8++c/MNQXO39FJ3Z9ombkLSuP3tGBJq6nUoyonTFp+wbT9
+         5Q+M+mP29t038ZOeKRqGCYiMEkgpuNoszQpqQxQXDvCaRJZqJIL3IFDrbbFqS8qy9U1C
+         xFnD16fjnVknYEq9jH/gzLqe1f6fwu5Tju46+M0KQv2ngtwrV21VX0CvrDS5asatU0nF
+         JCxh/CRw1gQC5a3QfT35/00U1D/TKZHSR5mdf29DZUulXV6QgSl7TzVQPlmyNvdeZXsE
+         gMNYtmyWx07G2T+nKiBbE3dLHDkaL2pLBXawlKhqB3lA6xmrVK4w0Q/kUY71Ffulo/EA
+         T9Tw==
+X-Gm-Message-State: AOAM531saKU5zOOi1j722NBr0z/OQ8ad4vL9SZyj/Zl6JL4Jia8R6w81
+        CzIkEyB806pseah0ybQdvLNzRw==
+X-Google-Smtp-Source: ABdhPJysdlxx7Lr0SIayibsfBEnnNF5N67lBnTfNjc9vFhiqdhpxd/izyt4dW9Lm8k/+21BMTSrUeQ==
+X-Received: by 2002:a63:465b:: with SMTP id v27mr414257pgk.445.1620242287430;
+        Wed, 05 May 2021 12:18:07 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id b21sm26163pfl.82.2021.05.05.12.18.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 12:18:06 -0700 (PDT)
+From:   Kees Cook <keescook@chromium.org>
+To:     linux-hardening@vger.kernel.org
+Cc:     Kees Cook <keescook@chromium.org>,
+        Qing Zhao <qing.zhao@oracle.com>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Michal Marek <michal.lkml@markovi.net>,
+        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+Subject: [PATCH] Makefile: Introduce CONFIG_ZERO_CALL_USED_REGS
+Date:   Wed,  5 May 2021 12:18:04 -0700
+Message-Id: <20210505191804.4015873-1-keescook@chromium.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210504203752.95555-1-luca@z3ntu.xyz>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+X-Patch-Hashes: v=1; h=sha256; g=486ae8ef11ec6ce07be8f36f937bc84f12b212d7; i=INxa/4VCLBovtkxgk4v6PayUOJQvpGeFUZovolpEDWo=; m=6hofzkFzCVIzIaBPLx/ZSwUq1VzuU3BvCXxnAGa5Moo=; p=yiFCvg8shZIMIJrM4uWz6P8G93GPjOZ7K1K592eVyGA=
+X-Patch-Sig: m=pgp; i=keescook@chromium.org; s=0x0x8972F4DFDC6DC026; b=iQIzBAABCgAdFiEEpcP2jyKd1g9yPm4TiXL039xtwCYFAmCS72sACgkQiXL039xtwCZG5g/+J1o l9p/R17NzyztXLl2VsbdCf3h4tXYkMbK+K6TpUi19k92VY2sbrGJN1i5uXLSAXyVaQIvyChiqoCCM gWv+amkmus6B4aCuie6xRnnqqYfxUGICtTys9T60XMCuqbMawGDuXd/5r0kIwYN4JitjJv9WR1kTt z4mdwwlb3bp6vKn1YxcvVgE45rGJNN8tgth0B7gqy4llri/agllSLgkRvU9PUu0x7dBwYWIdiz2/V yfbBRBhn1Wthc+Quz372wiYylx1O3/QfggDxabhE8j+gYlCi7NtgWpkkL4OpAn8+3kOGng+VVK1/K Ht10W/Ikjcwx99XlgyTMmj28FK4FDec838v125bjsnV/aRhiNOffmYTIFfR2xV+xY6ddkG66xMAAG cP5ng83+VpYV+vEcZ4zkIKv4KbYs4siOmi0YlqpcTwp0QhWbhEWQ34YCe/1PCgyvkiYTJ1NpMnPIP PNNCNJjBO95lr3lIVu4+XrTTrG3zoirjq5SO1u1gyS+6Z3lHeAHAAp7k0JtKoZ8a0GaFFj5r2mh6l VihdtWY3ysqlHCVPqlTcTbrCxxHv5fdJnPjUOdEaPPx3gvBsbW8T1yyYn67/4DCTSoPRguS1j5bGT uaui+WGG8Xbe42gGc3dJrAjPcxzXML6vVGa0e6kswXg4VuCiHHXCHNrhS2aI6JoA=
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+When CONFIG_ZERO_CALL_USED_REGS is enabled, build the kernel with
+"-fzero-call-used-regs=used-gpr" (in GCC 11). This option will zero any
+caller-used register contents just before returning from a function,
+ensuring that temporary values are not leaked beyond the function
+boundary. This means that register contents are less likely to be
+available for side channel attacks and information exposures.
 
+Additionally this helps reduce the number of useful ROP gadgets in the
+kernel image by about 20%:
 
-> The driver in drivers/mfd/qcom-spmi-pmic.c has a more complete and more
-> up-to-date list of PMICs with the respective IDs. Use those names for
-> socinfo.
->
-> Signed-off-by: Luca Weiss <luca@z3ntu.xyz>
-> ---
-> I'm sending this as RFC because I'm not sure what names are correct for
-> the IDs that I've replaced (13, 16, 17, 20, 21, 24).
-> For PM8941, PM8841, PM8226 and PMA8084 I'm quite sure that the IDs are
-> correct, but I don't have devices with the other PMICs. Please advise
-> what to do.
->
-As far as I'm aware, qcom did the lazy and ugly thing (as they usually do) and
+$ ROPgadget.py --nosys --nojop --binary vmlinux.stock | tail -n1
+Unique gadgets found: 337245
 
-decided to reuse previously-occupied IDs on newer kernel releases, where the legacy
+$ ROPgadget.py --nosys --nojop --binary vmlinux.zero-call-regs | tail -n1
+Unique gadgets found: 267175
 
-PMICs weren't supported anymore. That's why some IDs have multiple candidates and unless
+and more notably removes simple "write-what-where" gadgets:
 
-a better suggestion than "let's check if this 2013 PMIC+ 2019 SoC combo is sane" pops up, we
+$ ROPgadget.py --ropchain --binary vmlinux.stock | sed -n '/Step 1/,/Step 2/p'
+- Step 1 -- Write-what-where gadgets
 
-will probably just have to deal with ambiguity (for example `[20] PM8015/PM8998`).
+        [+] Gadget found: 0xffffffff8102d76c mov qword ptr [rsi], rdx ; ret
+        [+] Gadget found: 0xffffffff81000cf5 pop rsi ; ret
+        [+] Gadget found: 0xffffffff8104d7c8 pop rdx ; ret
+        [-] Can't find the 'xor rdx, rdx' gadget. Try with another 'mov [reg], reg'
 
+        [+] Gadget found: 0xffffffff814c2b4c mov qword ptr [rsi], rdi ; ret
+        [+] Gadget found: 0xffffffff81000cf5 pop rsi ; ret
+        [+] Gadget found: 0xffffffff81001e51 pop rdi ; ret
+        [-] Can't find the 'xor rdi, rdi' gadget. Try with another 'mov [reg], reg'
 
-Konrad
+        [+] Gadget found: 0xffffffff81540d61 mov qword ptr [rsi], rdi ; pop rbx ; pop rbp ; ret
+        [+] Gadget found: 0xffffffff81000cf5 pop rsi ; ret
+        [+] Gadget found: 0xffffffff81001e51 pop rdi ; ret
+        [-] Can't find the 'xor rdi, rdi' gadget. Try with another 'mov [reg], reg'
+
+        [+] Gadget found: 0xffffffff8105341e mov qword ptr [rsi], rax ; ret
+        [+] Gadget found: 0xffffffff81000cf5 pop rsi ; ret
+        [+] Gadget found: 0xffffffff81029a11 pop rax ; ret
+        [+] Gadget found: 0xffffffff811f1c3b xor rax, rax ; ret
+
+- Step 2 -- Init syscall number gadgets
+
+$ ROPgadget.py --ropchain --binary vmlinux.zero* | sed -n '/Step 1/,/Step 2/p'
+- Step 1 -- Write-what-where gadgets
+
+        [-] Can't find the 'mov qword ptr [r64], r64' gadget
+
+In parallel build tests, this has a less than 1% performance impact,
+and grows the image size less than 1%:
+
+$ size vmlinux.stock vmlinux.zero-call-regs
+   text    data     bss     dec     hex filename
+22437676   8559152 14127340 45124168 2b08a48 vmlinux.stock
+22453184   8563248 14110956 45127388 2b096dc vmlinux.zero-call-regs
+
+Signed-off-by: Kees Cook <keescook@chromium.org>
+---
+ Makefile                   |  5 +++++
+ security/Kconfig.hardening | 17 +++++++++++++++++
+ 2 files changed, 22 insertions(+)
+
+diff --git a/Makefile b/Makefile
+index 31dcdb3d61fa..810600618490 100644
+--- a/Makefile
++++ b/Makefile
+@@ -811,6 +811,11 @@ KBUILD_CFLAGS	+= -ftrivial-auto-var-init=zero
+ KBUILD_CFLAGS	+= -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
+ endif
+ 
++# Clear used registers at func exit (to reduce data lifetime and ROP gadgets).
++ifdef CONFIG_ZERO_CALL_USED_REGS
++KBUILD_CFLAGS	+= -fzero-call-used-regs=used-gpr
++endif
++
+ DEBUG_CFLAGS	:=
+ 
+ # Workaround for GCC versions < 5.0
+diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
+index 269967c4fc1b..85f7f2036725 100644
+--- a/security/Kconfig.hardening
++++ b/security/Kconfig.hardening
+@@ -217,6 +217,23 @@ config INIT_ON_FREE_DEFAULT_ON
+ 	  touching "cold" memory areas. Most cases see 3-5% impact. Some
+ 	  synthetic workloads have measured as high as 8%.
+ 
++config CC_HAS_ZERO_CALL_USED_REGS
++	def_bool $(cc-option,-fzero-call-used-regs=used-gpr)
++
++config ZERO_CALL_USED_REGS
++	bool "Enable register zeroing on function exit"
++	depends on CC_HAS_ZERO_CALL_USED_REGS
++	help
++	  At the end of functions, always zero any caller-used register
++	  contents. This helps ensure that temporary values are not
++	  leaked beyond the function boundary. This means that register
++	  contents are less likely to be available for side channels
++	  and information exposures. Additionally, this helps reduce the
++	  number of useful ROP gadgets by about 20% (and removes compiler
++	  generated "write-what-where" gadgets) in the resulting kernel
++	  image. This has a less than 1% performance impact on most
++	  workloads, and grows the image size less than 1%.
++
+ endmenu
+ 
+ endmenu
+-- 
+2.25.1
 
