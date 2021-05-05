@@ -2,220 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2849E373DCD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97E99373DD1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:41:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233271AbhEEOkp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:40:45 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46222 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S232919AbhEEOkn (ORCPT
+        id S233233AbhEEOl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:41:58 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:38398 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233192AbhEEOl5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:40:43 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 145EXOsm167381;
-        Wed, 5 May 2021 10:39:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=Lc7uFzgPNhcsp+WarEELqYO8Kt7OXRxKAZ/JSIHieH0=;
- b=IvWsmmuKvc1ZrmXnxYchok7nblZeFztREwnqJ4MePoTGwubYRGcX5ziJ6YS/wGWtnrRG
- 4RJ4IcpZ1PR5iIY1jYxuxJcszxtQ1XOZV2Zoup8SQY/3sS5vghCCVcFlliQX4rZbA4Mq
- 0Xyd6KnWMeUNSJNOw3qIsZF5oULnT23UXwLtle2iFWycijSMCTwMhTDlr3U+UMTgZtbM
- 2tiv2AZCQrZoJkQQmG7wmelLF42awMKrqYs89Y8NI+jXjILujGXkuZLvKaCU8TXqXDl4
- Lne6xfC/VZ4apgMQ5QAR/JR+rbBg9lpKqmnukkY7zfwTq2XqIHTkvHUIJgQslLiHO2x2 vA== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38bw4nrck1-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 May 2021 10:39:28 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 145EcIss012554;
-        Wed, 5 May 2021 14:39:27 GMT
-Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
-        by ppma03ams.nl.ibm.com with ESMTP id 38bedxrbtq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 05 May 2021 14:39:26 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 145EdORw2753238
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Wed, 5 May 2021 14:39:24 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 093144C052;
-        Wed,  5 May 2021 14:39:24 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id C09944C040;
-        Wed,  5 May 2021 14:39:23 +0000 (GMT)
-Received: from pomme.local (unknown [9.145.1.8])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Wed,  5 May 2021 14:39:23 +0000 (GMT)
-Subject: Re: [PATCH v4] pseries/drmem: update LMBs after LPM
-To:     Nathan Lynch <nathanl@linux.ibm.com>
-Cc:     Tyrel Datwyler <tyreld@linux.ibm.com>,
-        linux-kernel@vger.kernel.org, paulus@samba.org,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        linuxppc-dev@lists.ozlabs.org
-References: <20210504092038.8514-1-ldufour@linux.ibm.com>
- <87bl9qf7xk.fsf@linux.ibm.com>
-From:   Laurent Dufour <ldufour@linux.ibm.com>
-Message-ID: <8cebddd7-5b06-ba93-3cc7-9cdab57db491@linux.ibm.com>
-Date:   Wed, 5 May 2021 16:39:23 +0200
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.10.0
+        Wed, 5 May 2021 10:41:57 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1leIhu-0006ci-GP; Wed, 05 May 2021 10:40:58 -0400
+Message-ID: <9296a6244d4aada03633ae6e8a984df372089fff.camel@surriel.com>
+Subject: Re: [PATCH 1/6] delayacct: Use sched_clock()
+From:   Rik van Riel <riel@surriel.com>
+To:     Peter Zijlstra <peterz@infradead.org>, tglx@linutronix.de,
+        mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, bsingharora@gmail.com, pbonzini@redhat.com,
+        maz@kernel.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        hannes@cmpxchg.org
+Date:   Wed, 05 May 2021 10:40:57 -0400
+In-Reply-To: <20210505111525.001031466@infradead.org>
+References: <20210505105940.190490250@infradead.org>
+         <20210505111525.001031466@infradead.org>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-4hXqd8YByiR6kjvdagQA"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-In-Reply-To: <87bl9qf7xk.fsf@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: BShm9QQKfxlfhzv9-PAaRod7W6k6SlW9
-X-Proofpoint-ORIG-GUID: BShm9QQKfxlfhzv9-PAaRod7W6k6SlW9
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-05_09:2021-05-05,2021-05-05 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 adultscore=0 mlxscore=0 phishscore=0 spamscore=0
- suspectscore=0 priorityscore=1501 clxscore=1015 lowpriorityscore=0
- mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2104060000 definitions=main-2105050106
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 05/05/2021 à 00:30, Nathan Lynch a écrit :
-> Hi Laurent,
 
-Hi Nathan,
+--=-4hXqd8YByiR6kjvdagQA
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Thanks for your review.
+On Wed, 2021-05-05 at 12:59 +0200, Peter Zijlstra wrote:
+> Like all scheduler statistics, use sched_clock() based time.
+>=20
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 
-> Bear with me while I work through the commit message:
-> 
-> Laurent Dufour <ldufour@linux.ibm.com> writes:
->> After a LPM, the device tree node ibm,dynamic-reconfiguration-memory may be
->> updated by the hypervisor in the case the NUMA topology of the LPAR's
->> memory is updated.
-> 
-> Yes, the RTAS functions ibm,update-nodes and ibm,update-properties,
-> which the OS invokes after resuming, may bring in updated properties
-> under the ibm,dynamic-reconfiguration-memory node, including the
-> ibm,associativity-lookup-arrays property.
-> 
->> This is caught by the kernel,
-> 
-> "Caught" makes me think this is an error condition, as in catching an
-> exception. I guess "handled" better conveys your meaning?
+Looks like this works even on messed up systems because
+the delayacct code is called from the same CPU at sleep
+time and wakeup time, before a task is migrated.
 
-ok
+Reviewed-by: Rik van Riel <riel@surriel.com>
 
-> 
->> but the memory's node is updated because
->> there is no way to move a memory block between nodes.
-> 
-> "The memory's node" refers the ibm,dynamic-reconfiguration-memory DT
-> node, yes? Or is it referring to Linux's NUMA nodes? ("move a memory
-> block between nodes" in your statement here refers to Linux's NUMA
-> nodes, that much is clear to me.)
-> 
-> I am failing to follow the cause->effect relationship stated. True,
-> changing a block's node assignment while it's in use isn't safe. I don't
-> see why that implies that "the memory's node is updated"? In fact this
-> seems contradictory.
-> 
-> This statement makes more sense to me if I change it to "the memory's
-> node is _not_ updated" -- is this what you intended?
+--=20
+All Rights Reversed.
 
-Correct, I dropped the 'not' word here ;)
+--=-4hXqd8YByiR6kjvdagQA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-> 
->> If later a memory block is added or removed, drmem_update_dt() is called
->> and it is overwriting the DT node to match the added or removed LMB.
-> 
-> I understand this, but I will expand on it.
-> 
-> dlpar_memory()
->    -> dlpar_memory_add_by_count()
->      -> dlpar_add_lmb()
->        -> update_lmb_associativity_index()
->          ... lmb->aa_index = <value>
->    -> drmem_update_dt()
-> 
-> update_lmb_associativity_index() retrieves the firmware description of
-> the new block, and sets the aa_index of the matching entry in the
-> drmem_info array to the value matching the firmware description.
-> 
-> Then, drmem_update_dt() walks the drmem_info array and synthesizes a new
-> /ibm,dynamic-reconfiguration-memory/ibm,dynamic-memory-v2 property based
-> on the recently updated information in that array.
+-----BEGIN PGP SIGNATURE-----
 
-Yes
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAmCSrnkACgkQznnekoTE
+3oO6YQgAqiTwiWVDFt9ana4e9J7G4PRzEAbmg4QYW5bmmFRzmQQ/e1kcbPmC2MQ4
+o0I5b14YBTIK64k8g+xE0kp3OBQPoXdeBHGTx94WU962lKyM0RkZ9kxC3XL282DB
+7K+ikkM6VZFbStDDokJJi9GQazdmqRIXHDh2cI7xxElb9MMSSacYaj8Agh9w4tVU
+U8xwJEd0UNMjEbT5E/CebWAJ1p+8p0vSKLLrIpVtEz97AsnsjgAkPWQuOIsZlNhR
+wEYZc8R/4k9sFzQb7xsKnkXkFdBKBEJRo8ptyTDtPTJ0kbrW4Y1RgSzNY9seg88G
+pEHk+DeB8wbzIEoJ+S8pnTL27cPheg==
+=5CYx
+-----END PGP SIGNATURE-----
 
-> 
->> But the LMB's associativity node has not been updated after the DT
->> node update and thus the node is overwritten by the Linux's topology
->> instead of the hypervisor one.
-> 
-> So, an example of the problem is:
-> 
-> 1. VM migrates. On resume, ibm,associativity-lookup-arrays is changed
->     via ibm,update-properties. Entries in the drmem_info array remain
->     unchanged, with aa_index values that correspond to the source
->     system's ibm,associativity-lookup-arrays property, now inaccessible.
-> 
-> 2. A memory block is added. We look up the new block's entry in the
->     drmem_info array, and set the aa_index to the value matching the
->     current ibm,associativity-lookup-arrays.
-> 
-> 3. Then, the ibm,associativity-lookup-arrays property is completely
->     regenerated from the drmem_info array, which reflects a mixture of
->     information from the source and destination systems.
-> 
-> Do I understand correctly?
-
-Yes
-
-> 
-> 
->> Introduce a hook called when the ibm,dynamic-reconfiguration-memory node is
->> updated to force an update of the LMB's associativity. However, ignore the
->> call to that hook when the update has been triggered by drmem_update_dt().
->> Because, in that case, the LMB tree has been used to set the DT property
->> and thus it doesn't need to be updated back. Since drmem_update_dt() is
->> called under the protection of the device_hotplug_lock and the hook is
->> called in the same context, use a simple boolean variable to detect that
->> call.
-> 
-> This strikes me as almost a revert of e978a3ccaa71 ("powerpc/pseries:
-> remove obsolete memory hotplug DT notifier code").
-
-Not really identical to reverting e978a3ccaa71, here only the aa_index of the 
-LMB is updated, everything else is kept in place. I don't try to apply the 
-memory layout's changes, just updating the in use LMB's aa_index field.
-
-The only matching point with the code reverted by the commit you mentioned would 
-be the use of a global variable in_drmem_update instead of the previous 
-rtas_hp_event to prevent the LMB tree to be updated again during memory hot plug 
-event.
-
-> I'd rather avoid smuggling through global state information that ought
-> to be passed in function parameters, if it should be passed around at
-> all. Despite having (IMO) relatively simple responsibilities, this code
-> is difficult to change and review; adding this property makes it
-> worse. If the structure of the code is pushing us toward this kind of
-> compromise, then the code probably needs more fundamental changes.
-> 
-> I'm probably forgetting something -- can anyone remind me why we need an
-> array of these:
-> 
-> struct drmem_lmb {
-> 	u64     base_addr;
-> 	u32     drc_index;
-> 	u32     aa_index;
-> 	u32     flags;
-> };
-> 
-> which is just a less efficient representation of what's already in the
-> device tree? If we got rid of it, would this problem disappear?
-
-I don't think this is right for the moment, at first, we should robustify the 
-DLPAR and LPM operations.
-
+--=-4hXqd8YByiR6kjvdagQA--
 
