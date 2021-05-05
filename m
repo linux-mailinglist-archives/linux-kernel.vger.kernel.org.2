@@ -2,80 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA575373B26
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571ED373B1C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233233AbhEEM1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:27:17 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3021 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232101AbhEEM1O (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:27:14 -0400
-Received: from fraeml706-chm.china.huawei.com (unknown [172.18.147.200])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZwj244FLz6rlcx;
-        Wed,  5 May 2021 20:18:14 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml706-chm.china.huawei.com (10.206.15.55) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Wed, 5 May 2021 14:26:16 +0200
-Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
- 13:26:15 +0100
-Date:   Wed, 5 May 2021 13:24:37 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
-Subject: Re: [PATCH 05/25] media: i2c: ccs-core: return the right error code
- at suspend
-Message-ID: <20210505132437.00000a54@Huawei.com>
-In-Reply-To: <92cb0f741d16d9eaa9f99f336d826f30ac7a2671.1620207353.git.mchehab+huawei@kernel.org>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
-        <92cb0f741d16d9eaa9f99f336d826f30ac7a2671.1620207353.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        id S233259AbhEEM0J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:26:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57134 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233237AbhEEM0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:26:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id F21B3613BA;
+        Wed,  5 May 2021 12:25:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620217511;
+        bh=C5LYBRRyhiEzCX//ZToyZztdG94uLTLCIvwvDijWmZ8=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=anE0HHb6nenV8RxA7oCmq8fok7HKuOXivAyJ5/PXs3GUhM016pKnWvrHsnk3TS+Yr
+         iDm2+DLR6T2N5ZnPnaYu4GtMpFIU0hCois4GO7wJavTkPA6Xk9YXqWE3ezji+NC7xj
+         aRizk3QGkq98NMpW58zFVaSC98g9ZdlXx7VWb/PT9az+ZESWvdCB5vpOwmBP8ZsAvj
+         h50dijykhBfngSKoyRJUOCXnoYJRPZDPgVs6TMxvq+GlQXcjZWrVQSVwJNRlnN24pY
+         MG7pk5fieTcv45A2KNOUJnuAUtJ+zWyHkjz1nubo7Jo4wFVGiTmVxLmr+Ib+LnYBun
+         eiXqjDtSReTlw==
+Date:   Wed, 5 May 2021 14:25:07 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+cc:     Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] HID: do not use down_interruptible() when unbinding
+ devices
+In-Reply-To: <YFVBZCrmzvNJQstT@google.com>
+Message-ID: <nycvar.YFH.7.76.2105051424590.28378@cbobk.fhfr.pm>
+References: <YFVBZCrmzvNJQstT@google.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.138]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 11:41:55 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Fri, 19 Mar 2021, Dmitry Torokhov wrote:
 
-> If pm_runtime resume logic fails, return the error code
-> provided by it, instead of -EAGAIN, as, depending on what
-> caused it to fail, it may not be something that would be
-> recovered.
-> 
-> Fixes: cbba45d43631 ("[media] smiapp: Use runtime PM")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+> Action of unbinding driver from a device is not cancellable and should not
+> fail, and driver core does not pay attention to the result of "remove"
+> method, therefore using down_interruptible() in hid_device_remove() does
+> not make sense.
 
-> ---
->  drivers/media/i2c/ccs/ccs-core.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-> index 9dc3f45da3dc..b05f409014b2 100644
-> --- a/drivers/media/i2c/ccs/ccs-core.c
-> +++ b/drivers/media/i2c/ccs/ccs-core.c
-> @@ -3093,7 +3093,7 @@ static int __maybe_unused ccs_suspend(struct device *dev)
->  	if (rval < 0) {
->  		pm_runtime_put_noidle(dev);
->  
-> -		return -EAGAIN;
-> +		return rval;
->  	}
->  
->  	if (sensor->streaming)
+Applied, thanks Dmitry.
+
+-- 
+Jiri Kosina
+SUSE Labs
 
