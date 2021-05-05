@@ -2,327 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2776C3741DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:46:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ABAB3373FDD
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235439AbhEEQlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:41:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38742 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234928AbhEEQit (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:38:49 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CCB661490;
-        Wed,  5 May 2021 16:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232428;
-        bh=7KtH2Dzg7dXYW52LveMSpV3di6QojHhfgNGUfPlZpsw=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ToWvFTTsMTKEau8JgXEvGpoMG0O/BLxZdPe9PPHLsswBbz8LVgCPdR309SXHgINfe
-         JSAa/REqBNbQKxYoIopvm9Bf18yB/bFcJIMjQkQNBPXvqXSRcmiWWghjqRx91+/Jf0
-         bfXHxXHxnlWgzgujyVigOKeM8gkkdNWfrpA5nczIh5zGovt//qBOKf/kBROtmem7Lu
-         NacAgXmp8jMhhXjbatkaMCbYFPW5hGfP1X703BKGIJAyIvhUNo7T1ewwjkiQdnc+Eg
-         MrUwppdTXrg/8OKAWyyIM3BTGYjGWOtqIPjbt/+PVZSyzUBX3O86BCmhuQ510mUd+e
-         aanPeBbUdFxRw==
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.12 101/116] wl3501_cs: Fix out-of-bounds warnings in wl3501_mgmt_join
-Date:   Wed,  5 May 2021 12:31:09 -0400
-Message-Id: <20210505163125.3460440-101-sashal@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20210505163125.3460440-1-sashal@kernel.org>
-References: <20210505163125.3460440-1-sashal@kernel.org>
+        id S234114AbhEEQcQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:32:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39287 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234101AbhEEQcL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:32:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620232274;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=81DdwLuppEsne8dGMXcwRqVz38oxfrnLdDs7rg3uPgM=;
+        b=a65U/VOdhBbIQB/m3vpi+3wT15YOxGG0dzzRtZZfhBxSfaVgDcoAUOlb1pS/O8+Mr5gZhJ
+        qzbT2w/eKZAStnpSXcpZ+lEQl9KlnOQjbX3WjHYnd/Ux0Rjz/3eoHwXeKadh0o3CnMAuUe
+        MSzJtk2VTlPGq135IPYOqx0BuCQu9ao=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-565-HLwRDkXdPgGfWVRaHIXi_A-1; Wed, 05 May 2021 12:31:12 -0400
+X-MC-Unique: HLwRDkXdPgGfWVRaHIXi_A-1
+Received: by mail-qk1-f197.google.com with SMTP id s123-20020a3777810000b02902e9adec2313so1542552qkc.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 09:31:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=81DdwLuppEsne8dGMXcwRqVz38oxfrnLdDs7rg3uPgM=;
+        b=Tqh1V0y+RjL81lHPYb3x7+sGZhqQndw4QYIBhb5YpqYMs7rf9sI9X/xYI2AqzNZCSL
+         tyJdcfFzSf0NDx7tQB+cDxYjLPBrfu/qvT8UZRb0Yz3krz3DdTYIg0DntemUOYSmgBWg
+         qNwHc395TGX+P2Vne8aKb7lf0jc+z9NHJz+Wg3QsUShrCN07Q7fxpj3ZjJ8Itu3196+L
+         Dr7xZK8anFeacKngS6MYME6ROwZD3ky9XzovAxt8G5qKJlfa1Bnn4DynMDWJf5xfS3A6
+         AtNpyjwf6IrR9rW3wlTd+opQ7NFh6MpWzFokQIP6he0aqlLDqqgC21ZzUnZr3CP/w2ea
+         P3Rg==
+X-Gm-Message-State: AOAM530sql1BkNyEA8rWky01XR5DuwV/6LEetuPufTmWpsa6QL6bHYng
+        jwTpklKGLg5qpLtM8k6vD3clxZvHINlyEdsi20NPDxpIhWFb2Vxr/J5cGixaeTJzykF6fMlZ+ia
+        ctpvf0WuAczJmpyv6G/QQaF5I
+X-Received: by 2002:a05:620a:15ca:: with SMTP id o10mr3168440qkm.448.1620232272344;
+        Wed, 05 May 2021 09:31:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzTBEKFUN7wXglaJUYSMmAOxWOuFIgMxOXBXNY/vFjUujrx4c1jniCEPsD1GaLRm8BV6S4gDA==
+X-Received: by 2002:a05:620a:15ca:: with SMTP id o10mr3168418qkm.448.1620232272090;
+        Wed, 05 May 2021 09:31:12 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id c23sm5338915qtm.46.2021.05.05.09.31.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 09:31:11 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v3 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505154613.17214-1-longman@redhat.com>
+ <20210505154613.17214-3-longman@redhat.com>
+ <4c1a0436-2d46-d23a-2eef-d558e37373bf@suse.cz>
+Message-ID: <a93ee868-24ed-73ad-543c-5fba19c934e8@redhat.com>
+Date:   Wed, 5 May 2021 12:31:09 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <4c1a0436-2d46-d23a-2eef-d558e37373bf@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+On 5/5/21 12:06 PM, Vlastimil Babka wrote:
+> On 5/5/21 5:46 PM, Waiman Long wrote:
+>> There are currently two problems in the way the objcg pointer array
+>> (memcg_data) in the page structure is being allocated and freed.
+>>
+>> On its allocation, it is possible that the allocated objcg pointer
+>> array comes from the same slab that requires memory accounting. If this
+>> happens, the slab will never become empty again as there is at least
+>> one object left (the obj_cgroup array) in the slab.
+>>
+>> When it is freed, the objcg pointer array object may be the last one
+>> in its slab and hence causes kfree() to be called again. With the
+>> right workload, the slab cache may be set up in a way that allows the
+>> recursive kfree() calling loop to nest deep enough to cause a kernel
+>> stack overflow and panic the system.
+>>
+>> One way to solve this problem is to split the kmalloc-<n> caches
+>> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
+>> (KMALLOC_NORMAL) caches for non-accounted objects only and a new set of
+>> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
+>> the other caches can still allow a mix of accounted and non-accounted
+>> objects.
+>>
+>> With this change, all the objcg pointer array objects will come from
+>> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+>> both the recursive kfree() problem and non-freeable slab problem are
+>> gone. Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer
+>> have mixed accounted and unaccounted objects, this will slightly reduce
+>> the number of objcg pointer arrays that need to be allocated and save
+>> a bit of memory.
+>>
+>> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
+>> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
+>> will include the newly added caches without change.
+>>
+>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   include/linux/slab.h | 42 ++++++++++++++++++++++++++++++++++--------
+>>   mm/slab_common.c     | 23 +++++++++++++++--------
+>>   2 files changed, 49 insertions(+), 16 deletions(-)
+>>
+>> diff --git a/include/linux/slab.h b/include/linux/slab.h
+>> index 0c97d788762c..f2d9ebc34f5c 100644
+>> --- a/include/linux/slab.h
+>> +++ b/include/linux/slab.h
+>> @@ -305,9 +305,16 @@ static inline void __check_heap_object(const void *ptr, unsigned long n,
+>>   /*
+>>    * Whenever changing this, take care of that kmalloc_type() and
+>>    * create_kmalloc_caches() still work as intended.
+>> + *
+>> + * KMALLOC_NORMAL is for non-accounted objects only whereas KMALLOC_CGROUP
+>> + * is for accounted objects only. All the other kmem caches can have both
+>> + * accounted and non-accounted objects.
+>>    */
+>>   enum kmalloc_cache_type {
+>>   	KMALLOC_NORMAL = 0,
+>> +#ifdef CONFIG_MEMCG_KMEM
+>> +	KMALLOC_CGROUP,
+>> +#endif
+>>   	KMALLOC_RECLAIM,
+>>   #ifdef CONFIG_ZONE_DMA
+>>   	KMALLOC_DMA,
+>> @@ -315,28 +322,47 @@ enum kmalloc_cache_type {
+>>   	NR_KMALLOC_TYPES
+>>   };
+>>   
+>> +#ifndef CONFIG_MEMCG_KMEM
+>> +#define KMALLOC_CGROUP	KMALLOC_NORMAL
+>> +#endif
+>> +#ifndef CONFIG_ZONE_DMA
+>> +#define KMALLOC_DMA	KMALLOC_NORMAL
+>> +#endif
+> You could move this to the enum definition itself? E.g.:
+>
+> #ifdef CONFIG_MEMCG_KMEM
+> 	KMALLOC_CGROUP,
+> #else
+> 	KMALLOC_CGROUP = KMALLOC_NORMAL,
+> #endif
+>
+>> +
+>>   #ifndef CONFIG_SLOB
+>>   extern struct kmem_cache *
+>>   kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
+>>   
+>> +/*
+>> + * Define gfp bits that should not be set for KMALLOC_NORMAL.
+>> + */
+>> +#define KMALLOC_NOT_NORMAL_BITS					\
+>> +	(__GFP_RECLAIMABLE |					\
+>> +	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
+>> +	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
+>> +
+>>   static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
+>>   {
+>> -#ifdef CONFIG_ZONE_DMA
+>>   	/*
+>>   	 * The most common case is KMALLOC_NORMAL, so test for it
+>>   	 * with a single branch for both flags.
+> Not "both flags" anymore. Something like "so test with a single branch that
+> there are none of the flags that would select a different type"
+Right. I just left the comment there without taking a deeper look. My bad.
 
-[ Upstream commit bb43e5718d8f1b46e7a77e7b39be3c691f293050 ]
-
-Fix the following out-of-bounds warnings by adding a new structure
-wl3501_req instead of duplicating the same members in structure
-wl3501_join_req and wl3501_scan_confirm:
-
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [39, 108] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 36 [-Warray-bounds]
-arch/x86/include/asm/string_32.h:182:25: warning: '__builtin_memcpy' offset [25, 95] from the object at 'sig' is out of the bounds of referenced subobject 'beacon_period' with type 'short unsigned int' at offset 22 [-Warray-bounds]
-
-Refactor the code, accordingly:
-
-$ pahole -C wl3501_req drivers/net/wireless/wl3501_cs.o
-struct wl3501_req {
-        u16                        beacon_period;        /*     0     2 */
-        u16                        dtim_period;          /*     2     2 */
-        u16                        cap_info;             /*     4     2 */
-        u8                         bss_type;             /*     6     1 */
-        u8                         bssid[6];             /*     7     6 */
-        struct iw_mgmt_essid_pset  ssid;                 /*    13    34 */
-        struct iw_mgmt_ds_pset     ds_pset;              /*    47     3 */
-        struct iw_mgmt_cf_pset     cf_pset;              /*    50     8 */
-        struct iw_mgmt_ibss_pset   ibss_pset;            /*    58     4 */
-        struct iw_mgmt_data_rset   bss_basic_rset;       /*    62    10 */
-
-        /* size: 72, cachelines: 2, members: 10 */
-        /* last cacheline: 8 bytes */
-};
-
-$ pahole -C wl3501_join_req drivers/net/wireless/wl3501_cs.o
-struct wl3501_join_req {
-        u16                        next_blk;             /*     0     2 */
-        u8                         sig_id;               /*     2     1 */
-        u8                         reserved;             /*     3     1 */
-        struct iw_mgmt_data_rset   operational_rset;     /*     4    10 */
-        u16                        reserved2;            /*    14     2 */
-        u16                        timeout;              /*    16     2 */
-        u16                        probe_delay;          /*    18     2 */
-        u8                         timestamp[8];         /*    20     8 */
-        u8                         local_time[8];        /*    28     8 */
-        struct wl3501_req          req;                  /*    36    72 */
-
-        /* size: 108, cachelines: 2, members: 10 */
-        /* last cacheline: 44 bytes */
-};
-
-$ pahole -C wl3501_scan_confirm drivers/net/wireless/wl3501_cs.o
-struct wl3501_scan_confirm {
-        u16                        next_blk;             /*     0     2 */
-        u8                         sig_id;               /*     2     1 */
-        u8                         reserved;             /*     3     1 */
-        u16                        status;               /*     4     2 */
-        char                       timestamp[8];         /*     6     8 */
-        char                       localtime[8];         /*    14     8 */
-        struct wl3501_req          req;                  /*    22    72 */
-        /* --- cacheline 1 boundary (64 bytes) was 30 bytes ago --- */
-        u8                         rssi;                 /*    94     1 */
-
-        /* size: 96, cachelines: 2, members: 8 */
-        /* padding: 1 */
-        /* last cacheline: 32 bytes */
-};
-
-The problem is that the original code is trying to copy data into a
-bunch of struct members adjacent to each other in a single call to
-memcpy(). Now that a new struct wl3501_req enclosing all those adjacent
-members is introduced, memcpy() doesn't overrun the length of
-&sig.beacon_period and &this->bss_set[i].beacon_period, because the
-address of the new struct object _req_ is used as the destination,
-instead.
-
-This helps with the ongoing efforts to globally enable -Warray-bounds
-and get us closer to being able to tighten the FORTIFY_SOURCE routines
-on memcpy().
-
-Link: https://github.com/KSPP/linux/issues/109
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Reviewed-by: Kees Cook <keescook@chromium.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1fbaf516da763b50edac47d792a9145aa4482e29.1618442265.git.gustavoars@kernel.org
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/net/wireless/wl3501.h    | 35 +++++++++++--------------
- drivers/net/wireless/wl3501_cs.c | 44 +++++++++++++++++---------------
- 2 files changed, 38 insertions(+), 41 deletions(-)
-
-diff --git a/drivers/net/wireless/wl3501.h b/drivers/net/wireless/wl3501.h
-index aa8222cbea68..59b7b93c5963 100644
---- a/drivers/net/wireless/wl3501.h
-+++ b/drivers/net/wireless/wl3501.h
-@@ -379,16 +379,7 @@ struct wl3501_get_confirm {
- 	u8	mib_value[100];
- };
- 
--struct wl3501_join_req {
--	u16			    next_blk;
--	u8			    sig_id;
--	u8			    reserved;
--	struct iw_mgmt_data_rset    operational_rset;
--	u16			    reserved2;
--	u16			    timeout;
--	u16			    probe_delay;
--	u8			    timestamp[8];
--	u8			    local_time[8];
-+struct wl3501_req {
- 	u16			    beacon_period;
- 	u16			    dtim_period;
- 	u16			    cap_info;
-@@ -401,6 +392,19 @@ struct wl3501_join_req {
- 	struct iw_mgmt_data_rset    bss_basic_rset;
- };
- 
-+struct wl3501_join_req {
-+	u16			    next_blk;
-+	u8			    sig_id;
-+	u8			    reserved;
-+	struct iw_mgmt_data_rset    operational_rset;
-+	u16			    reserved2;
-+	u16			    timeout;
-+	u16			    probe_delay;
-+	u8			    timestamp[8];
-+	u8			    local_time[8];
-+	struct wl3501_req	    req;
-+};
-+
- struct wl3501_join_confirm {
- 	u16	next_blk;
- 	u8	sig_id;
-@@ -443,16 +447,7 @@ struct wl3501_scan_confirm {
- 	u16			    status;
- 	char			    timestamp[8];
- 	char			    localtime[8];
--	u16			    beacon_period;
--	u16			    dtim_period;
--	u16			    cap_info;
--	u8			    bss_type;
--	u8			    bssid[ETH_ALEN];
--	struct iw_mgmt_essid_pset   ssid;
--	struct iw_mgmt_ds_pset	    ds_pset;
--	struct iw_mgmt_cf_pset	    cf_pset;
--	struct iw_mgmt_ibss_pset    ibss_pset;
--	struct iw_mgmt_data_rset    bss_basic_rset;
-+	struct wl3501_req	    req;
- 	u8			    rssi;
- };
- 
-diff --git a/drivers/net/wireless/wl3501_cs.c b/drivers/net/wireless/wl3501_cs.c
-index 70307308635f..672f5d5f3f2c 100644
---- a/drivers/net/wireless/wl3501_cs.c
-+++ b/drivers/net/wireless/wl3501_cs.c
-@@ -590,7 +590,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
- 	struct wl3501_join_req sig = {
- 		.sig_id		  = WL3501_SIG_JOIN_REQ,
- 		.timeout	  = 10,
--		.ds_pset = {
-+		.req.ds_pset = {
- 			.el = {
- 				.id  = IW_MGMT_INFO_ELEMENT_DS_PARAMETER_SET,
- 				.len = 1,
-@@ -599,7 +599,7 @@ static int wl3501_mgmt_join(struct wl3501_card *this, u16 stas)
- 		},
- 	};
- 
--	memcpy(&sig.beacon_period, &this->bss_set[stas].beacon_period, 72);
-+	memcpy(&sig.req, &this->bss_set[stas].req, sizeof(sig.req));
- 	return wl3501_esbq_exec(this, &sig, sizeof(sig));
- }
- 
-@@ -667,35 +667,37 @@ static void wl3501_mgmt_scan_confirm(struct wl3501_card *this, u16 addr)
- 	if (sig.status == WL3501_STATUS_SUCCESS) {
- 		pr_debug("success");
- 		if ((this->net_type == IW_MODE_INFRA &&
--		     (sig.cap_info & WL3501_MGMT_CAPABILITY_ESS)) ||
-+		     (sig.req.cap_info & WL3501_MGMT_CAPABILITY_ESS)) ||
- 		    (this->net_type == IW_MODE_ADHOC &&
--		     (sig.cap_info & WL3501_MGMT_CAPABILITY_IBSS)) ||
-+		     (sig.req.cap_info & WL3501_MGMT_CAPABILITY_IBSS)) ||
- 		    this->net_type == IW_MODE_AUTO) {
- 			if (!this->essid.el.len)
- 				matchflag = 1;
- 			else if (this->essid.el.len == 3 &&
- 				 !memcmp(this->essid.essid, "ANY", 3))
- 				matchflag = 1;
--			else if (this->essid.el.len != sig.ssid.el.len)
-+			else if (this->essid.el.len != sig.req.ssid.el.len)
- 				matchflag = 0;
--			else if (memcmp(this->essid.essid, sig.ssid.essid,
-+			else if (memcmp(this->essid.essid, sig.req.ssid.essid,
- 					this->essid.el.len))
- 				matchflag = 0;
- 			else
- 				matchflag = 1;
- 			if (matchflag) {
- 				for (i = 0; i < this->bss_cnt; i++) {
--					if (ether_addr_equal_unaligned(this->bss_set[i].bssid, sig.bssid)) {
-+					if (ether_addr_equal_unaligned(this->bss_set[i].req.bssid,
-+								       sig.req.bssid)) {
- 						matchflag = 0;
- 						break;
- 					}
- 				}
- 			}
- 			if (matchflag && (i < 20)) {
--				memcpy(&this->bss_set[i].beacon_period,
--				       &sig.beacon_period, 73);
-+				memcpy(&this->bss_set[i].req,
-+				       &sig.req, sizeof(sig.req));
- 				this->bss_cnt++;
- 				this->rssi = sig.rssi;
-+				this->bss_set[i].rssi = sig.rssi;
- 			}
- 		}
- 	} else if (sig.status == WL3501_STATUS_TIMEOUT) {
-@@ -887,19 +889,19 @@ static void wl3501_mgmt_join_confirm(struct net_device *dev, u16 addr)
- 			if (this->join_sta_bss < this->bss_cnt) {
- 				const int i = this->join_sta_bss;
- 				memcpy(this->bssid,
--				       this->bss_set[i].bssid, ETH_ALEN);
--				this->chan = this->bss_set[i].ds_pset.chan;
-+				       this->bss_set[i].req.bssid, ETH_ALEN);
-+				this->chan = this->bss_set[i].req.ds_pset.chan;
- 				iw_copy_mgmt_info_element(&this->keep_essid.el,
--						     &this->bss_set[i].ssid.el);
-+						     &this->bss_set[i].req.ssid.el);
- 				wl3501_mgmt_auth(this);
- 			}
- 		} else {
- 			const int i = this->join_sta_bss;
- 
--			memcpy(&this->bssid, &this->bss_set[i].bssid, ETH_ALEN);
--			this->chan = this->bss_set[i].ds_pset.chan;
-+			memcpy(&this->bssid, &this->bss_set[i].req.bssid, ETH_ALEN);
-+			this->chan = this->bss_set[i].req.ds_pset.chan;
- 			iw_copy_mgmt_info_element(&this->keep_essid.el,
--						  &this->bss_set[i].ssid.el);
-+						  &this->bss_set[i].req.ssid.el);
- 			wl3501_online(dev);
- 		}
- 	} else {
-@@ -1573,30 +1575,30 @@ static int wl3501_get_scan(struct net_device *dev, struct iw_request_info *info,
- 	for (i = 0; i < this->bss_cnt; ++i) {
- 		iwe.cmd			= SIOCGIWAP;
- 		iwe.u.ap_addr.sa_family = ARPHRD_ETHER;
--		memcpy(iwe.u.ap_addr.sa_data, this->bss_set[i].bssid, ETH_ALEN);
-+		memcpy(iwe.u.ap_addr.sa_data, this->bss_set[i].req.bssid, ETH_ALEN);
- 		current_ev = iwe_stream_add_event(info, current_ev,
- 						  extra + IW_SCAN_MAX_DATA,
- 						  &iwe, IW_EV_ADDR_LEN);
- 		iwe.cmd		  = SIOCGIWESSID;
- 		iwe.u.data.flags  = 1;
--		iwe.u.data.length = this->bss_set[i].ssid.el.len;
-+		iwe.u.data.length = this->bss_set[i].req.ssid.el.len;
- 		current_ev = iwe_stream_add_point(info, current_ev,
- 						  extra + IW_SCAN_MAX_DATA,
- 						  &iwe,
--						  this->bss_set[i].ssid.essid);
-+						  this->bss_set[i].req.ssid.essid);
- 		iwe.cmd	   = SIOCGIWMODE;
--		iwe.u.mode = this->bss_set[i].bss_type;
-+		iwe.u.mode = this->bss_set[i].req.bss_type;
- 		current_ev = iwe_stream_add_event(info, current_ev,
- 						  extra + IW_SCAN_MAX_DATA,
- 						  &iwe, IW_EV_UINT_LEN);
- 		iwe.cmd = SIOCGIWFREQ;
--		iwe.u.freq.m = this->bss_set[i].ds_pset.chan;
-+		iwe.u.freq.m = this->bss_set[i].req.ds_pset.chan;
- 		iwe.u.freq.e = 0;
- 		current_ev = iwe_stream_add_event(info, current_ev,
- 						  extra + IW_SCAN_MAX_DATA,
- 						  &iwe, IW_EV_FREQ_LEN);
- 		iwe.cmd = SIOCGIWENCODE;
--		if (this->bss_set[i].cap_info & WL3501_MGMT_CAPABILITY_PRIVACY)
-+		if (this->bss_set[i].req.cap_info & WL3501_MGMT_CAPABILITY_PRIVACY)
- 			iwe.u.data.flags = IW_ENCODE_ENABLED | IW_ENCODE_NOKEY;
- 		else
- 			iwe.u.data.flags = IW_ENCODE_DISABLED;
--- 
-2.30.2
+Cheers,
+Longman
 
