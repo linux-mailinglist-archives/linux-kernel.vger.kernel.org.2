@@ -2,96 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7925A373BF9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:06:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91F58373C00
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:08:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233365AbhEENHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:07:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47676 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233040AbhEENHi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:07:38 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDBEDC061574;
-        Wed,  5 May 2021 06:06:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=kj3lk+MzppwZnR4pyZdWYqNDn2L5VLUwXkqm3e6rR9s=; b=IcRzhmy3e3QVV24Wb/38lgZKdv
-        sToVrmEzizW7NxLWDO+fD+mh0CDfrQSBuQ13qVXeOpcizNeTdVuacmPo3XrSw81+31tkcQFXH1Al0
-        i/ueRj/Poi8z1POz6VbBtkD7hdQsg47KGMcDS8quFo4FwvjYLwnjA6Up2Ve8w1c12jrkrCmTj6AMs
-        snNqpQIQ1qgDkc6OQV24oyvU6eqsD0ySV0fKp5X/ZtjDRRCcnzqJS5J4j1sHotocr8EhU8CmIBHrM
-        dVGzUkcR6HxsPMjxN092z6w3Nthn4EOizVNcET3qjdH4FgEsTizIhA3X0ZG1cEZvozuAMqNzGnsCi
-        TDpZTrdw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1leHDA-000LSn-UF; Wed, 05 May 2021 13:05:20 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2CD993001CD;
-        Wed,  5 May 2021 15:05:06 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 2E32A203E67C5; Wed,  5 May 2021 15:05:06 +0200 (CEST)
-Date:   Wed, 5 May 2021 15:05:06 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Suthikulpanit, Suravee" <suravee.suthikulpanit@amd.com>
-Cc:     linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        iommu@lists.linux-foundation.org, mingo@redhat.com,
-        joro@8bytes.org, Jon.Grimm@amd.com, amonakov@ispras.ru,
-        David Coe <david.coe@live.co.uk>
-Subject: Re: [PATCH] x86/events/amd/iommu: Fix invalid Perf result due to
- IOMMU PMC power-gating
-Message-ID: <YJKYAiC8GiiFPrWk@hirez.programming.kicks-ass.net>
-References: <20210504065236.4415-1-suravee.suthikulpanit@amd.com>
- <YJEWWbEeDm0rUyC+@hirez.programming.kicks-ass.net>
- <e9769da5-3d2a-6e86-8ebd-feb00b567bba@amd.com>
- <YJE6eCyHtIONCJet@hirez.programming.kicks-ass.net>
- <ad67d625-9e59-2216-0f2a-88635a212595@amd.com>
+        id S233438AbhEENI7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:08:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44474 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232395AbhEENI6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 09:08:58 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 831E061222;
+        Wed,  5 May 2021 13:08:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620220081;
+        bh=bRfAkupBJgozVoyOgxID1RAP6YZOhwy1dGOwnklAX/I=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=ffLTyrM3c5n6cnPGpQtSyq8t8pbxatS5LEuMBbL4sx4emCVRI2Z3XezBACnr7f5fs
+         ms+dSpM2F+8OytT8bq1stKWq/fEQ5ozR2V4N+9gSmbzpggMbz7VAzeAIvp18S05l2x
+         xIHv8aDdM5aLhoD4WotUIQE9XNyR9c6zWd1Kg0G95SH1XQQOiccc3sHHoBEjIThH+D
+         QRh3rMssyMmcIblUPGMfj/mXkxihUvCTRkHd/h4i7jlRme+b24YktbaAfu+LZANXHJ
+         uqXC3Hr8RAkVVnsuvotifrM1iI39FQJ7JpzLw3IekhZUPuwTVO0V843ePG+dQp8SxN
+         p4mJAUp+E7UuQ==
+Date:   Wed, 5 May 2021 15:07:58 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Benjamin Tissoires <benjamin.tissoires@redhat.com>
+cc:     =?KOI8-R?B?zsHC?= <nabijaczleweli@nabijaczleweli.xyz>,
+        Peter Hutterer <peter.hutterer@who-t.net>,
+        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 0/4] Stylus-on-touchscreen device support
+In-Reply-To: <CAO-hwJKLYTqQ9qZ8LZGabze_NjNfwAq2_V-28LFewjOC=EK8rw@mail.gmail.com>
+Message-ID: <nycvar.YFH.7.76.2105051504400.28378@cbobk.fhfr.pm>
+References: <cover.1615224800.git.nabijaczleweli@nabijaczleweli.xyz> <20210420131741.kdgxquhwqureih7c@tarta.nabijaczleweli.xyz> <nycvar.YFH.7.76.2105031110480.28378@cbobk.fhfr.pm> <CAO-hwJ+HhKU7EzPZGOtPePT_h7OUaJ=QfWi7eAcxsfRaDtQuvg@mail.gmail.com>
+ <CAO-hwJKLYTqQ9qZ8LZGabze_NjNfwAq2_V-28LFewjOC=EK8rw@mail.gmail.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ad67d625-9e59-2216-0f2a-88635a212595@amd.com>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 07:39:14PM +0700, Suthikulpanit, Suravee wrote:
-> Peter,
-> 
-> On 5/4/2021 7:13 PM, Peter Zijlstra wrote:
-> > On Tue, May 04, 2021 at 06:58:29PM +0700, Suthikulpanit, Suravee wrote:
-> > > Peter,
-> > > 
-> > > On 5/4/2021 4:39 PM, Peter Zijlstra wrote:
-> > > > On Tue, May 04, 2021 at 01:52:36AM -0500, Suravee Suthikulpanit wrote:
-> > > > 
-> > > > > 2. Since AMD IOMMU PMU does not support interrupt mode, the logic
-> > > > >      can be simplified to always start counting with value zero,
-> > > > >      and accumulate the counter value when stopping without the need
-> > > > >      to keep track and reprogram the counter with the previously read
-> > > > >      counter value.
-> > > > 
-> > > > This relies on the hardware counter being the full 64bit wide, is it?
-> > > > 
-> > > 
-> > > The HW counter value is 48-bit. Not sure why it needs to be 64-bit?
-> > > I might be missing some points here? Could you please describe?
-> > 
-> > How do you deal with the 48bit overflow if you don't use the interrupt?
-> 
-> The IOMMU Perf driver does not currently handle counter overflow since the overflow
-> notification mechanism (i.e. IOMMU creates an EVENT_COUNTER_ZERO event in the IOMMU event log,
-> and generate an IOMMU MSI interrupt to signal IOMMU driver to process the event.) is not
-> currently supported. When counter overflows, the counter becomes zero, and Perf
-> reports value zero for the event.
-> 
-> Alternatively, to detect overflow, we might start counting with value 1 so that
-> we can detect overflow when the value becomes zero in which case the Perf driver
-> could generate error message.
+On Mon, 3 May 2021, Benjamin Tissoires wrote:
 
-Urgh.. the intel uncore driver programs an hrtimer to periodically fold
-deltas. That way the counter will never be short.
+> So I did a quick pass at the patches:
+> - 1/4 -> I think this one is safe and could go as it is, maybe with
+> CC: stable on it. Any regressions should have been caught by the
+> testsuite, so that's a good one.
+
+Added stable tag and applied to hid.git#for-5.13/upstream-fixes
+
+> - 2/4 and 3/4 -> Ack on those 2 too, note stable material, but not
+> necessary v5.13 material
+
+I have queued 2/4 for to hid.git#for-5.13/upstream-fixes as well, while 
+3/4 to hid.git#for-5.14/core.
+
+Thanks,
+
+-- 
+Jiri Kosina
+SUSE Labs
+
