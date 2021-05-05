@@ -2,852 +2,183 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4460F37362D
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:22:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C2AD37362F
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231499AbhEEIXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 04:23:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhEEIXK (ORCPT
+        id S231430AbhEEIXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 04:23:15 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50928 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231553AbhEEIXN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 04:23:10 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63D7DC06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 01:22:13 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id y2so720896plr.5
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 01:22:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZvvR1l5zWhnCiSFTVSLKMPmtP+aPqUsrdD9rV7fyGQk=;
-        b=lZpIaU18GoMD7xIbLu26GW0eja1C7rv3ubVocBG2UtQ+BpuYWNqt57Aocs1O7fAFpN
-         HxwM0HOQ1nh2FLTZSBhHXBDkjNSUva1ld410WSuXwkshblzE/DRWHfxN3xITr9zExvpz
-         iOdY25+m4rjtNDJ3VBDRIr3o0lak4lxdyQFJFQOuxZOd626I7Ub+ISJo58U9DcdRZezC
-         OSrZuuCT/qYxhNBjlKWwIY9MjsKzcDWADmxDbI8yJLalStICvuLfifcqz6sfHHjk/gmr
-         y8R9ECiYRl7yi8EVMaMl/pptmn3cRMNw8C7UYfpmsm5XMhMx0s1FXdlAHiZreltZh9tr
-         rDhQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ZvvR1l5zWhnCiSFTVSLKMPmtP+aPqUsrdD9rV7fyGQk=;
-        b=JRviUYqLnwXi+8kgNgdhoQzXjajAB34of79okihcdsLbIFg3kyAQacCYe+X9voNdW1
-         XTRlD/5ugXQZYCxy9AsWX+e43meseWPgmbKQ3UUtm3Xs5iUn2vg/3v8fKIxoO4Ds+0Zw
-         wgWyKI9qQIhnOveJy9a0F6OCnEF6TTpEqbt9kBAHUSAugsWotp8zaDkBpVMEueMLzM2n
-         gFXKzIFT12c2UPpaaCyCMzJORy6Hq+hw0ug/vLnX9+YDB+qIun1Y9Gdy+foWXH9/bR/e
-         7zFTYn0W6KpRai/6U2kii33BIMrsWH/aB20rUwIQa0/Dyax0Ti2AxOLajGVrkdNUQ1ik
-         fBqg==
-X-Gm-Message-State: AOAM532/MqbBA/GUIpYy8e2tzOxMmJZ7K61os2uLH7lPjKhaw8RecEoT
-        cYg+rvXV02JzK3SJdXNdzRsR
-X-Google-Smtp-Source: ABdhPJzL53zlnB5h2dfceV2M8LTTkKaz0hLTQHjBZQ+eIfg9dDQmyY/rhZcMa6rRIMSO1CjsEZl4/Q==
-X-Received: by 2002:a17:903:230a:b029:ee:a909:4f92 with SMTP id d10-20020a170903230ab02900eea9094f92mr26648581plh.44.1620202932560;
-        Wed, 05 May 2021 01:22:12 -0700 (PDT)
-Received: from localhost.localdomain ([2409:4072:6d18:2fef:221f:3158:8c4c:ea90])
-        by smtp.gmail.com with ESMTPSA id j27sm6417471pgb.54.2021.05.05.01.22.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 01:22:12 -0700 (PDT)
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     bjorn.andersson@linaro.org, robh+dt@kernel.org
-Cc:     ohad@wizery.com, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, pillair@codeaurora.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Subject: [PATCH] dt-bindings: remoteproc: qcom: pas: Convert binding to YAML
-Date:   Wed,  5 May 2021 13:52:00 +0530
-Message-Id: <20210505082200.32635-1-manivannan.sadhasivam@linaro.org>
-X-Mailer: git-send-email 2.25.1
+        Wed, 5 May 2021 04:23:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620202937;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=Y78uch+8ZEwmUjJmNf1iR6U8L/anRfE9pjBoQCdxF90=;
+        b=AvtCdvpIIwUVHF24n/zL6vPZYfoht+tgsq5+nzwa6mBiY9+uA30tXE7QZqREIGP4jwkpuF
+        klUVjjYKafDCWJ7mMEV3QDL/+iNnrhdVbtTKob1Q7NCXbZYiapmhyfNViUYj713B7CBV13
+        3SNbCD205ptOqm+vGnrx+mzoXtlY4tc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-557-_D13jY8bMYaqUYY1JJ6gsw-1; Wed, 05 May 2021 04:22:13 -0400
+X-MC-Unique: _D13jY8bMYaqUYY1JJ6gsw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BDF5802804;
+        Wed,  5 May 2021 08:22:12 +0000 (UTC)
+Received: from starship (unknown [10.40.192.34])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 766A85C5DF;
+        Wed,  5 May 2021 08:22:10 +0000 (UTC)
+Message-ID: <d56429a80d9c6118370c722d5b3a90b5669e2411.camel@redhat.com>
+Subject: Re: [PATCH 1/4] KVM: nVMX: Always make an attempt to map eVMCS
+ after migration
+From:   Maxim Levitsky <mlevitsk@redhat.com>
+To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
+        Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
+Date:   Wed, 05 May 2021 11:22:09 +0300
+In-Reply-To: <20210503150854.1144255-2-vkuznets@redhat.com>
+References: <20210503150854.1144255-1-vkuznets@redhat.com>
+         <20210503150854.1144255-2-vkuznets@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert Qualcomm ADSP Remoteproc devicetree binding to YAML.
+On Mon, 2021-05-03 at 17:08 +0200, Vitaly Kuznetsov wrote:
+> When enlightened VMCS is in use and nested state is migrated with
+> vmx_get_nested_state()/vmx_set_nested_state() KVM can't map evmcs
+> page right away: evmcs gpa is not 'struct kvm_vmx_nested_state_hdr'
+> and we can't read it from VP assist page because userspace may decide
+> to restore HV_X64_MSR_VP_ASSIST_PAGE after restoring nested state
+> (and QEMU, for example, does exactly that). To make sure eVMCS is
+> mapped /vmx_set_nested_state() raises KVM_REQ_GET_NESTED_STATE_PAGES
+> request.
+> 
+> Commit f2c7ef3ba955 ("KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES
+> on nested vmexit") added KVM_REQ_GET_NESTED_STATE_PAGES clearing to
+> nested_vmx_vmexit() to make sure MSR permission bitmap is not switched
+> when an immediate exit from L2 to L1 happens right after migration (caused
+> by a pending event, for example). Unfortunately, in the exact same
+> situation we still need to have eVMCS mapped so
+> nested_sync_vmcs12_to_shadow() reflects changes in VMCS12 to eVMCS.
+> 
+> As a band-aid, restore nested_get_evmcs_page() when clearing
+> KVM_REQ_GET_NESTED_STATE_PAGES in nested_vmx_vmexit(). The 'fix' is far
+> from being ideal as we can't easily propagate possible failures and even if
+> we could, this is most likely already too late to do so. The whole
+> 'KVM_REQ_GET_NESTED_STATE_PAGES' idea for mapping eVMCS after migration
+> seems to be fragile as we diverge too much from the 'native' path when
+> vmptr loading happens on vmx_set_nested_state().
+> 
+> Fixes: f2c7ef3ba955 ("KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES on nested vmexit")
+> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 29 +++++++++++++++++++----------
+>  1 file changed, 19 insertions(+), 10 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 1e069aac7410..2febb1dd68e8 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -3098,15 +3098,8 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
+>  			nested_vmx_handle_enlightened_vmptrld(vcpu, false);
+>  
+>  		if (evmptrld_status == EVMPTRLD_VMFAIL ||
+> -		    evmptrld_status == EVMPTRLD_ERROR) {
+> -			pr_debug_ratelimited("%s: enlightened vmptrld failed\n",
+> -					     __func__);
+> -			vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+> -			vcpu->run->internal.suberror =
+> -				KVM_INTERNAL_ERROR_EMULATION;
+> -			vcpu->run->internal.ndata = 0;
+> +		    evmptrld_status == EVMPTRLD_ERROR)
+>  			return false;
+> -		}
+>  	}
+>  
+>  	return true;
+> @@ -3194,8 +3187,16 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+>  
+>  static bool vmx_get_nested_state_pages(struct kvm_vcpu *vcpu)
+>  {
+> -	if (!nested_get_evmcs_page(vcpu))
+> +	if (!nested_get_evmcs_page(vcpu)) {
+> +		pr_debug_ratelimited("%s: enlightened vmptrld failed\n",
+> +				     __func__);
+> +		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
+> +		vcpu->run->internal.suberror =
+> +			KVM_INTERNAL_ERROR_EMULATION;
+> +		vcpu->run->internal.ndata = 0;
+> +
+>  		return false;
+> +	}
 
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
----
- .../bindings/remoteproc/qcom,adsp.txt         | 228 --------
- .../bindings/remoteproc/qcom,adsp.yaml        | 534 ++++++++++++++++++
- 2 files changed, 534 insertions(+), 228 deletions(-)
- delete mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
- create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+Hi!
 
-diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-deleted file mode 100644
-index 229f908fd831..000000000000
---- a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
-+++ /dev/null
-@@ -1,228 +0,0 @@
--Qualcomm ADSP Peripheral Image Loader
--
--This document defines the binding for a component that loads and boots firmware
--on the Qualcomm ADSP Hexagon core.
--
--- compatible:
--	Usage: required
--	Value type: <string>
--	Definition: must be one of:
--		    "qcom,msm8974-adsp-pil"
--		    "qcom,msm8996-adsp-pil"
--		    "qcom,msm8996-slpi-pil"
--		    "qcom,msm8998-adsp-pas"
--		    "qcom,msm8998-slpi-pas"
--		    "qcom,qcs404-adsp-pas"
--		    "qcom,qcs404-cdsp-pas"
--		    "qcom,qcs404-wcss-pas"
--		    "qcom,sc7180-mpss-pas"
--		    "qcom,sdm845-adsp-pas"
--		    "qcom,sdm845-cdsp-pas"
--                    "qcom,sdx55-mpss-pas"
--		    "qcom,sm8150-adsp-pas"
--		    "qcom,sm8150-cdsp-pas"
--		    "qcom,sm8150-mpss-pas"
--		    "qcom,sm8150-slpi-pas"
--		    "qcom,sm8250-adsp-pas"
--		    "qcom,sm8250-cdsp-pas"
--		    "qcom,sm8250-slpi-pas"
--		    "qcom,sm8350-adsp-pas"
--		    "qcom,sm8350-cdsp-pas"
--		    "qcom,sm8350-slpi-pas"
--		    "qcom,sm8350-mpss-pas"
--
--- interrupts-extended:
--	Usage: required
--	Value type: <prop-encoded-array>
--	Definition: reference to the interrupts that match interrupt-names
--
--- interrupt-names:
--	Usage: required
--	Value type: <stringlist>
--	Definition: The interrupts needed depends on the compatible
--		    string:
--	qcom,msm8974-adsp-pil:
--	qcom,msm8996-adsp-pil:
--	qcom,msm8996-slpi-pil:
--	qcom,msm8998-adsp-pas:
--	qcom,msm8998-slpi-pas:
--	qcom,qcs404-adsp-pas:
--	qcom,qcs404-cdsp-pas:
--	qcom,sdm845-adsp-pas:
--	qcom,sdm845-cdsp-pas:
--	qcom,sm8150-adsp-pas:
--	qcom,sm8150-cdsp-pas:
--	qcom,sm8150-slpi-pas:
--	qcom,sm8250-adsp-pas:
--	qcom,sm8250-cdsp-pas:
--	qcom,sm8250-slpi-pas:
--	qcom,sm8350-adsp-pas:
--	qcom,sm8350-cdsp-pas:
--	qcom,sm8350-slpi-pas:
--		    must be "wdog", "fatal", "ready", "handover", "stop-ack"
--	qcom,qcs404-wcss-pas:
--	qcom,sc7180-mpss-pas:
--        qcom,sdx55-mpss-pas:
--	qcom,sm8150-mpss-pas:
--	qcom,sm8350-mpss-pas:
--		    must be "wdog", "fatal", "ready", "handover", "stop-ack",
--		    "shutdown-ack"
--
--- firmware-name:
--	Usage: optional
--	Value type: <string>
--	Definition: must list the relative firmware image path for the
--		    Hexagon Core.
--
--- clocks:
--	Usage: required
--	Value type: <prop-encoded-array>
--	Definition: reference to the xo clock and optionally aggre2 clock to be
--		    held on behalf of the booting Hexagon core
--
--- clock-names:
--	Usage: required
--	Value type: <stringlist>
--	Definition: must be "xo" and optionally include "aggre2"
--
--- cx-supply:
--	Usage: required
--	Value type: <phandle>
--	Definition: reference to the regulator to be held on behalf of the
--		    booting Hexagon core
--
--- px-supply:
--	Usage: required
--	Value type: <phandle>
--	Definition: reference to the px regulator to be held on behalf of the
--		    booting Hexagon core
--
--- power-domains:
--	Usage: required
--	Value type: <phandle>
--	Definition: reference to power-domains that match the power-domain-names
--
--- power-domain-names:
--	Usage: required
--	Value type: <stringlist>
--	Definition: The power-domains needed depend on the compatible string:
--	qcom,msm8974-adsp-pil:
--	qcom,msm8996-adsp-pil:
--	qcom,msm8998-adsp-pas:
--		    must be "cx"
--	qcom,msm8996-slpi-pil:
--		    must be "ss_cx"
--	qcom,msm8998-slpi-pas:
--		    must be "ssc_cx"
--	qcom,qcs404-adsp-pas:
--		    must be "lpi_cx"
--	qcom,qcs404-cdsp-pas:
--	qcom,qcs404-wcss-pas:
--		    must be "mx"
--	qcom,sdm845-adsp-pas:
--	qcom,sdm845-cdsp-pas:
--	qcom,sm8150-adsp-pas:
--	qcom,sm8150-cdsp-pas:
--	qcom,sm8250-cdsp-pas:
--	qcom,sm8350-cdsp-pas:
--		    must be "cx", "load_state"
--	qcom,sc7180-mpss-pas:
--	qcom,sm8150-mpss-pas:
--	qcom,sm8350-mpss-pas:
--		    must be "cx", "load_state", "mss"
--        qcom,sdx55-mpss-pas:
--                    must be "cx", "mss"
--	qcom,sm8250-adsp-pas:
--	qcom,sm8350-adsp-pas:
--	qcom,sm8150-slpi-pas:
--	qcom,sm8250-slpi-pas:
--	qcom,sm8350-slpi-pas:
--		    must be "lcx", "lmx", "load_state"
--
--- memory-region:
--	Usage: required
--	Value type: <phandle>
--	Definition: reference to the reserved-memory for the ADSP
--
--- qcom,smem-states:
--	Usage: required
--	Value type: <phandle>
--	Definition: reference to the smem state for requesting the ADSP to
--		    shut down
--
--- qcom,smem-state-names:
--	Usage: required
--	Value type: <stringlist>
--	Definition: must be "stop"
--
--
--= SUBNODES
--The adsp node may have an subnode named either "smd-edge" or "glink-edge" that
--describes the communication edge, channels and devices related to the ADSP.
--See ../soc/qcom/qcom,smd.txt and ../soc/qcom/qcom,glink.txt for details on how
--to describe these.
--
--
--= EXAMPLE
--The following example describes the resources needed to boot control the
--ADSP, as it is found on MSM8974 boards.
--
--	adsp {
--		compatible = "qcom,msm8974-adsp-pil";
--
--		interrupts-extended = <&intc 0 162 IRQ_TYPE_EDGE_RISING>,
--				      <&adsp_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
--				      <&adsp_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
--				      <&adsp_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
--				      <&adsp_smp2p_in 3 IRQ_TYPE_EDGE_RISING>;
--		interrupt-names = "wdog",
--				  "fatal",
--				  "ready",
--				  "handover",
--				  "stop-ack";
--
--		clocks = <&rpmcc RPM_CXO_CLK>;
--		clock-names = "xo";
--
--		cx-supply = <&pm8841_s2>;
--
--		memory-region = <&adsp_region>;
--
--		qcom,smem-states = <&adsp_smp2p_out 0>;
--		qcom,smem-state-names = "stop";
--
--		smd-edge {
--			interrupts = <0 156 IRQ_TYPE_EDGE_RISING>;
--
--			qcom,ipc = <&apcs 8 8>;
--			qcom,smd-edge = <1>;
--		};
--	};
--
--The following example describes the resources needed to boot control the
--SLPI, as it is found on MSM8996 boards.
--
--	slpi {
--		compatible = "qcom,msm8996-slpi-pil";
--		interrupts-extended = <&intc 0 390 IRQ_TYPE_EDGE_RISING>,
--				      <&slpi_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
--				      <&slpi_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
--				      <&slpi_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
--				      <&slpi_smp2p_in 3 IRQ_TYPE_EDGE_RISING>;
--		interrupt-names = "wdog",
--				  "fatal",
--				  "ready",
--				  "handover",
--				  "stop-ack";
--
--		clocks = <&rpmcc MSM8996_RPM_SMD_XO_CLK_SRC>,
--		         <&rpmcc MSM8996_RPM_SMD_AGGR2_NOC_CLK>;
--		clock-names = "xo", "aggre2";
--
--		cx-supply = <&pm8994_l26>;
--		px-supply = <&pm8994_lvs2>;
--
--		memory-region = <&slpi_region>;
--		qcom,smem-states = <&slpi_smp2p_out 0>;
--		qcom,smem-state-names = "stop";
--        };
-diff --git a/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
-new file mode 100644
-index 000000000000..9c07cfce0383
---- /dev/null
-+++ b/Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
-@@ -0,0 +1,534 @@
-+# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/remoteproc/qcom,adsp.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Qualcomm ADSP Peripheral Image Loader binding
-+
-+maintainers:
-+  - Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-+
-+description:
-+  This document defines the binding for a component that loads and boots
-+  firmware on the Qualcomm ADSP Hexagon core.
-+
-+properties:
-+  compatible:
-+    enum:
-+      - qcom,msm8974-adsp-pil
-+      - qcom,msm8996-adsp-pil
-+      - qcom,msm8996-slpi-pil
-+      - qcom,msm8998-adsp-pas
-+      - qcom,msm8998-slpi-pas
-+      - qcom,qcs404-adsp-pas
-+      - qcom,qcs404-cdsp-pas
-+      - qcom,qcs404-wcss-pas
-+      - qcom,sc7180-mpss-pas
-+      - qcom,sdm845-adsp-pas
-+      - qcom,sdm845-cdsp-pas
-+      - qcom,sdx55-mpss-pas
-+      - qcom,sm8150-adsp-pas
-+      - qcom,sm8150-cdsp-pas
-+      - qcom,sm8150-mpss-pas
-+      - qcom,sm8150-slpi-pas
-+      - qcom,sm8250-adsp-pas
-+      - qcom,sm8250-cdsp-pas
-+      - qcom,sm8250-slpi-pas
-+      - qcom,sm8350-adsp-pas
-+      - qcom,sm8350-cdsp-pas
-+      - qcom,sm8350-slpi-pas
-+      - qcom,sm8350-mpss-pas
-+
-+  reg:
-+    maxItems: 1
-+
-+  clocks:
-+    minItems: 1
-+    maxItems: 8
-+
-+  clock-names:
-+    minItems: 1
-+    maxItems: 8
-+
-+  interrupts:
-+    minItems: 5
-+    maxItems: 6
-+
-+  interrupt-names:
-+    minItems: 5
-+    maxItems: 6
-+
-+  resets:
-+    minItems: 1
-+    maxItems: 3
-+
-+  reset-names:
-+    minItems: 1
-+    maxItems: 3
-+
-+  cx-supply:
-+    description: Phandle to the CX regulator
-+
-+  px-supply:
-+    description: Phandle to the PX regulator
-+
-+  power-domains:
-+    minItems: 1
-+    maxItems: 3
-+
-+  power-domain-names:
-+    minItems: 1
-+    maxItems: 3
-+
-+  firmware-name:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: Firmware name for the Hexagon core
-+
-+  memory-region:
-+    maxItems: 1
-+    description: Reference to the reserved-memory for the Hexagon core
-+
-+  qcom,smem-states:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description: States used by the AP to signal the Hexagon core
-+    items:
-+      - description: Stop the modem
-+
-+  qcom,smem-state-names:
-+    $ref: /schemas/types.yaml#/definitions/string-array
-+    description: The names of the state bits used for SMP2P output
-+    items:
-+      - const: stop
-+
-+  qcom,halt-regs:
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    description:
-+      Phandle reference to a syscon representing TCSR followed by the
-+      three offsets within syscon for q6, modem and nc halt registers.
-+
-+  smd-edge:
-+    type: object
-+    description:
-+      Qualcomm Shared Memory subnode which represents communication edge,
-+      channels and devices related to the ADSP.
-+
-+  glink-edge:
-+    type: object
-+    description:
-+      Qualcomm G-Link subnode which represents communication edge, channels
-+      and devices related to the ADSP.
-+
-+required:
-+  - compatible
-+  - clocks
-+  - clock-names
-+  - interrupts
-+  - interrupt-names
-+  - memory-region
-+  - qcom,smem-states
-+  - qcom,smem-state-names
-+
-+additionalProperties: false
-+
-+allOf:
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,msm8974-adsp-pil
-+              - qcom,msm8996-adsp-pil
-+              - qcom,msm8996-slpi-pil
-+              - qcom,msm8998-adsp-pas
-+              - qcom,qcs404-adsp-pas
-+              - qcom,qcs404-wcss-pas
-+              - qcom,sdm845-adsp-pas
-+              - qcom,sdm845-cdsp-pas
-+              - qcom,sm8150-adsp-pas
-+              - qcom,sm8150-cdsp-pas
-+              - qcom,sm8150-mpss-pas
-+              - qcom,sm8150-slpi-pas
-+              - qcom,sm8250-adsp-pas
-+              - qcom,sm8250-cdsp-pas
-+              - qcom,sm8250-slpi-pas
-+              - qcom,sm8350-adsp-pas
-+              - qcom,sm8350-cdsp-pas
-+              - qcom,sm8350-slpi-pas
-+              - qcom,sm8350-mpss-pas
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: XO clock
-+        clock-names:
-+          items:
-+            - const: xo
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,msm8998-slpi-pas
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: XO clock
-+            - description: AGGRE2 clock
-+        clock-names:
-+          items:
-+            - const: xo
-+            - const: aggre2
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,qcs404-cdsp-pas
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: XO clock
-+            - description: SWAY clock
-+            - description: TBU clock
-+            - description: BIMC clock
-+            - description: AHB AON clock
-+            - description: Q6SS SLAVE clock
-+            - description: Q6SS MASTER clock
-+            - description: Q6 AXIM clock
-+        clock-names:
-+          items:
-+            - const: xo
-+            - const: sway
-+            - const: tbu
-+            - const: bimc
-+            - const: ahb_aon
-+            - const: q6ss_slave
-+            - const: q6ss_master
-+            - const: q6_axim
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sc7180-mpss-pas
-+    then:
-+      properties:
-+        clocks:
-+          items:
-+            - description: XO clock
-+            - description: IFACE clock
-+            - description: BUS clock
-+            - description: NAC clock
-+            - description: SNOC AXI clock
-+            - description: MNOC AXI clock
-+        clock-names:
-+          items:
-+            - const: xo
-+            - const: iface
-+            - const: bus
-+            - const: nav
-+            - const: snoc_axi
-+            - const: mnoc_axi
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,msm8974-adsp-pil
-+              - qcom,msm8996-adsp-pil
-+              - qcom,msm8996-slpi-pil
-+              - qcom,msm8998-adsp-pas
-+              - qcom,msm8998-slpi-pas
-+              - qcom,qcs404-adsp-pas
-+              - qcom,qcs404-cdsp-pas
-+              - qcom,qcs404-wcss-pas
-+              - qcom,sdm845-adsp-pas
-+              - qcom,sdm845-cdsp-pas
-+              - qcom,sm8150-adsp-pas
-+              - qcom,sm8150-cdsp-pas
-+              - qcom,sm8150-slpi-pas
-+              - qcom,sm8250-adsp-pas
-+              - qcom,sm8250-cdsp-pas
-+              - qcom,sm8250-slpi-pas
-+              - qcom,sm8350-adsp-pas
-+              - qcom,sm8350-cdsp-pas
-+              - qcom,sm8350-slpi-pas
-+    then:
-+      properties:
-+        interrupts:
-+          items:
-+            - description: Watchdog interrupt
-+            - description: Fatal interrupt
-+            - description: Ready interrupt
-+            - description: Handover interrupt
-+            - description: Stop acknowledge interrupt
-+        interrupt-names:
-+          items:
-+            - const: wdog
-+            - const: fatal
-+            - const: ready
-+            - const: handover
-+            - const: stop-ack
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sc7180-mpss-pas
-+              - qcom,sdx55-mpss-pas
-+              - qcom,sm8150-mpss-pas
-+              - qcom,sm8350-mpss-pas
-+    then:
-+      properties:
-+        interrupts:
-+          items:
-+            - description: Watchdog interrupt
-+            - description: Fatal interrupt
-+            - description: Ready interrupt
-+            - description: Handover interrupt
-+            - description: Stop acknowledge interrupt
-+            - description: Shutdown acknowledge interrupt
-+        interrupt-names:
-+          items:
-+            - const: wdog
-+            - const: fatal
-+            - const: ready
-+            - const: handover
-+            - const: stop-ack
-+            - const: shutdown-ack
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,msm8974-adsp-pil
-+    then:
-+      required:
-+        - cx-supply
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,msm8998-adsp-pas
-+    then:
-+      properties:
-+        power-domains:
-+          items:
-+            - description: CX power domain
-+        power-domain-names:
-+          items:
-+           - const: cx
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,msm8998-slpi-pas
-+    then:
-+      properties:
-+        power-domains:
-+          items:
-+            - description: SSC-CX power domain
-+        power-domain-names:
-+          items:
-+           - const: ssc_cx
-+      required:
-+        - px-supply
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sc7180-mpss-pas
-+    then:
-+      properties:
-+        power-domains:
-+          items:
-+            - description: Load State power domain
-+            - description: CX power domain
-+            - description: MX power domain
-+            - description: MSS power domain
-+        power-domain-names:
-+          items:
-+           - const: load_state
-+           - const: cx
-+           - const: mx
-+           - const: mss
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sm8150-adsp-pas
-+              - qcom,sm8150-cdsp-pas
-+    then:
-+      properties:
-+        power-domains:
-+          items:
-+            - description: Load State power domain
-+            - description: CX power domain
-+        power-domain-names:
-+          items:
-+           - const: load_state
-+           - const: cx
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sm8150-mpss-pas
-+              - qcom,sm8350-mpss-pas
-+    then:
-+      properties:
-+        power-domains:
-+          items:
-+            - description: Load State power domain
-+            - description: CX power domain
-+            - description: MSS power domain
-+        power-domain-names:
-+          items:
-+           - const: load_state
-+           - const: cx
-+           - const: mss
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sdx55-mpss-pas
-+    then:
-+      properties:
-+        power-domains:
-+          items:
-+            - description: CX power domain
-+            - description: MSS power domain
-+        power-domain-names:
-+          items:
-+           - const: cx
-+           - const: mss
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sm8150-slpi-pas
-+              - qcom,sm8250-adsp-pas
-+              - qcom,sm8250-slpi-pas
-+              - qcom,sm8350-adsp-pas
-+              - qcom,sm8350-slpi-pas
-+    then:
-+      properties:
-+        power-domains:
-+          items:
-+            - description: Load State power domain
-+            - description: LCX power domain
-+            - description: LMX power domain
-+        power-domain-names:
-+          items:
-+           - const: load_state
-+           - const: lcx
-+           - const: lmx
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sm8350-cdsp-pas
-+    then:
-+      properties:
-+        power-domains:
-+          items:
-+            - description: Load State power domain
-+            - description: CX power domain
-+            - description: MXC power domain
-+        power-domain-names:
-+          items:
-+           - const: load_state
-+           - const: cx
-+           - const: mxc
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,qcs404-cdsp-pas
-+    then:
-+      properties:
-+        resets:
-+          items:
-+            - description: CDSP restart
-+        reset-names:
-+          items:
-+            - const: restart
-+
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,sc7180-mpss-pas
-+    then:
-+      properties:
-+        resets:
-+          items:
-+            - description: MSS restart
-+            - description: PDC reset
-+        reset-names:
-+          items:
-+            - const: mss_restart
-+            - const: pdc_reset
-+
-+examples:
-+  - |
-+    #include <dt-bindings/clock/qcom,rpmcc.h>
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    adsp {
-+        compatible = "qcom,msm8974-adsp-pil";
-+
-+        interrupts-extended = <&intc 0 162 IRQ_TYPE_EDGE_RISING>,
-+                      <&adsp_smp2p_in 0 IRQ_TYPE_EDGE_RISING>,
-+                      <&adsp_smp2p_in 1 IRQ_TYPE_EDGE_RISING>,
-+                      <&adsp_smp2p_in 2 IRQ_TYPE_EDGE_RISING>,
-+                      <&adsp_smp2p_in 3 IRQ_TYPE_EDGE_RISING>;
-+        interrupt-names = "wdog",
-+                  "fatal",
-+                  "ready",
-+                  "handover",
-+                  "stop-ack";
-+
-+        clocks = <&rpmcc RPM_CXO_CLK>;
-+        clock-names = "xo";
-+
-+        cx-supply = <&pm8841_s2>;
-+
-+        memory-region = <&adsp_region>;
-+
-+        qcom,smem-states = <&adsp_smp2p_out 0>;
-+        qcom,smem-state-names = "stop";
-+
-+        smd-edge {
-+            interrupts = <0 156 IRQ_TYPE_EDGE_RISING>;
-+
-+            qcom,ipc = <&apcs 8 8>;
-+            qcom,smd-edge = <1>;
-+        };
-+    };
--- 
-2.25.1
+Any reason to move the debug prints out of nested_get_evmcs_page?
+
+
+>  
+>  	if (is_guest_mode(vcpu) && !nested_get_vmcs12_pages(vcpu))
+>  		return false;
+> @@ -4422,7 +4423,15 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
+>  	/* trying to cancel vmlaunch/vmresume is a bug */
+>  	WARN_ON_ONCE(vmx->nested.nested_run_pending);
+>  
+> -	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
+> +	if (kvm_check_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu)) {
+> +		/*
+> +		 * KVM_REQ_GET_NESTED_STATE_PAGES is also used to map
+> +		 * Enlightened VMCS after migration and we still need to
+> +		 * do that when something is forcing L2->L1 exit prior to
+> +		 * the first L2 run.
+> +		 */
+> +		(void)nested_get_evmcs_page(vcpu);
+> +	}
+Yes this is a band-aid, but it has to be done I agree.
+
+>  
+>  	/* Service the TLB flush request for L2 before switching to L1. */
+>  	if (kvm_check_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu))
+
+
+
+
+I also tested this and it survives a bit better (used to crash instantly
+after a single migration cycle, but the guest still crashes after around ~20 iterations of my 
+regular nested migration test).
+
+Blues screen shows that stop code is HYPERVISOR ERROR and nothing else.
+
+I tested both this patch alone and all 4 patches.
+
+Without evmcs, the same VM with same host kernel and qemu survived an overnight
+test and passed about 1800 migration iterations.
+(my synthetic migration test doesn't yet work on Intel, I need to investigate why)
+
+For reference this is the VM that you gave me to test, kvm/queue kernel,
+with merged mainline in it,
+and mostly latest qemu (updated about a week ago or so)
+
+qemu: 3791642c8d60029adf9b00bcb4e34d7d8a1aea4d
+kernel: 9f242010c3b46e63bc62f08fff42cef992d3801b and
+        then merge v5.12 from mainline.
+
+Best regards,
+	Maxim Levitsky
+
+
+
 
