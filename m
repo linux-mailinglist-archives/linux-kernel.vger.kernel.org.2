@@ -2,151 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32DA3373BD0
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85941373BD7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbhEEM6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:58:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54164 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231899AbhEEM6I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:58:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 5068661027;
-        Wed,  5 May 2021 12:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620219431;
-        bh=j2vJcsDv7kNoCB+SgESqW/P8QQFEM7o8//oQA+hxUGk=;
-        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-        b=MqHurwLsyFmpVl43cvHNExhSxkY4iPtm7HJyKcvmtSSNBJr6uNHzrSBbPI/IAMliJ
-         RShCS5qbTe5GymdAY1+V6PvgQy3zLYJiVqxAipt27VLSJdNtC6LV6tfS1UPZr13NCi
-         r9F3a3B31bA3ZZiJ7Vf5a5vZcVpw1TQB/6Ae0m6gQaNSRTkK50n7HFxtFGsBIS4Nqg
-         uk6wDxbQ975LNu2iL6PiQBeKQxYWbHPzjSe1GClnJTutonZvwxhxsCx9uZom5mh1hX
-         EJmIw69uZPOzluqns/26L6RkD+6kEsU246OGTqmQc50My9ca4lF3shvXZm8RagghDf
-         SomCsDZ9yjSGQ==
-From:   Felipe Balbi <balbi@kernel.org>
-To:     Wesley Cheng <wcheng@codeaurora.org>,
-        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
-        "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>
-Cc:     "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jackp@codeaurora.org" <jackp@codeaurora.org>
-Subject: Re: [PATCH v2] usb: dwc3: gadget: Avoid canceling current request
- for queuing error
-In-Reply-To: <513e6c16-9586-c78e-881b-08e0a73c50a8@codeaurora.org>
-References: <1620091264-418-1-git-send-email-wcheng@codeaurora.org>
- <5b46e4a1-93ef-2d17-048b-5b4ceba358ae@synopsys.com>
- <513e6c16-9586-c78e-881b-08e0a73c50a8@codeaurora.org>
-Date:   Wed, 05 May 2021 15:57:03 +0300
-Message-ID: <8735v1ibj4.fsf@kernel.org>
+        id S233295AbhEENAg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:00:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231899AbhEENAf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 09:00:35 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6FEAAC061574;
+        Wed,  5 May 2021 05:59:38 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id y26so1913883eds.4;
+        Wed, 05 May 2021 05:59:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=q3TUXql89bkOBKVdZb/N0fDACBtYAZwgrTC4aNZ/0kc=;
+        b=uV29I9tLk7ANTNzFA1wxHQJbNKWCXsHVRbRSEBzO5LsmthoqIERDma5lAafkKTeqir
+         HRvCo6sKwWjdy7gWqurDdr/67LoqJ0eeHBZ931slpmjfCNWd6P0PrbKlMn6sGUUx8MJN
+         c5QszoiquPtLswpAkmublRPb/jbOHJp3cuYHkTctZYmuz6PYScf7zOeeCgFXnCIkUijp
+         ZJHWbTWEN2m2AMCT4yu9W4ud1xjLX5UZMZ7Xf0k9QItiBUvcyI0vH88x37QXbjAhbYkB
+         ArO45VAh4ZkSl5R0eace/5p9Br8N3bvgCUVjRSh0CEigbskH5hEpAHvoD5f4Y1BDHTUV
+         ++AA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=q3TUXql89bkOBKVdZb/N0fDACBtYAZwgrTC4aNZ/0kc=;
+        b=oeVidgfzWLKg45M1PI/4Un+fINWpSURJh4wM5jQgQHXeJKdi43gzbl8hz5JgAAsBSV
+         39ySjBCg80Vnim9yvskJ4/SIV3d/RDgT/poahfbaUTPIr4egsdb2q/WRweYQ+8R8ca81
+         +FIErInut3V2w7ypbA7w6xosvz83hxHkxrBcE20LmMfS7EdAp8Z+PJ9l2WM6R6GgyyN/
+         +iYw+IuDuwD5kQc4NzwOhxegOMIeIIaSzuAQ8yPXier2igYVl+xEhVelIzpQjq65fz88
+         25vOQtP7XPQ6J2sVpVIbM4OoV4Nk04XlZIDH7O/zKA3txLnwWINJCgFkqGbdk5Ut3IAL
+         1vOA==
+X-Gm-Message-State: AOAM532SzPYQlILGwghAKPdGwKL9vwah77DVUP8tFsdJRXnuZEiYBndx
+        GuroROrtz3hI/3Vy/dV+2jMkfWGQTrzVlHXf2j4=
+X-Google-Smtp-Source: ABdhPJyx/n0JkMbp0gnpwsKd3yP6nSHrkixNPJdYcwGzCflujmMm1KivqO2G9w8ig4+I7PoAx2bOod9QJHoAI5/GHJE=
+X-Received: by 2002:a05:6402:20f:: with SMTP id t15mr32166134edv.370.1620219576979;
+ Wed, 05 May 2021 05:59:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha256; protocol="application/pgp-signature"
+References: <20210409125732.376589-1-luca@lucaceresoli.net>
+In-Reply-To: <20210409125732.376589-1-luca@lucaceresoli.net>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Wed, 5 May 2021 07:59:25 -0500
+Message-ID: <CAHCN7xLSgkJKs-8baa9O303=x1jB=7khedyBMcoHP_33Obqdbg@mail.gmail.com>
+Subject: Re: [PATCH] clk: vc5: fix output disabling when enabling a FOD
+To:     Luca Ceresoli <luca@lucaceresoli.net>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-
-Hi,
-
-Wesley Cheng <wcheng@codeaurora.org> writes:
-> On 5/3/2021 7:20 PM, Thinh Nguyen wrote:
->> Hi,
->>=20
->> Wesley Cheng wrote:
->>> If an error is received when issuing a start or update transfer
->>> command, the error handler will stop all active requests (including
->>> the current USB request), and call dwc3_gadget_giveback() to notify
->>> function drivers of the requests which have been stopped.  Avoid
->>> having to cancel the current request which is trying to be queued, as
->>> the function driver will handle the EP queue error accordingly.
->>> Simply unmap the request as it was done before, and allow previously
->>> started transfers to be cleaned up.
->>>
+On Fri, Apr 9, 2021 at 7:57 AM Luca Ceresoli <luca@lucaceresoli.net> wrote:
 >
-> Hi Thinh,
+> On 5P49V6965, when an output is enabled we enable the corresponding
+> FOD. When this happens for the first time, and specifically when writing
+> register VC5_OUT_DIV_CONTROL in vc5_clk_out_prepare(), all other outputs
+> are stopped for a short time and then restarted.
 >
->>=20
->> It looks like you're still letting dwc3 stopping and cancelling all the
->> active requests instead letting the function driver doing the dequeue.
->>=20
+> According to Renesas support this is intended: "The reason for that is VC=
+6E
+> has synced up all output function".
 >
-> Yeah, main issue isn't due to the function driver doing dequeue, but
-> having cleanup (ie USB request free) if there is an error during
-> usb_ep_queue().
+> This behaviour can be disabled at least on VersaClock 6E devices, of whic=
+h
+> only the 5P49V6965 is currently implemented by this driver. This requires
+> writing bit 7 (bypass_sync{1..4}) in register 0x20..0x50.  Those register=
+s
+> are named "Unused Factory Reserved Register", and the bits are documented
+> as "Skip VDDO<N> verification", which does not clearly explain the relati=
+on
+> to FOD sync. However according to Renesas support as well as my testing
+> setting this bit does prevent disabling of all clock outputs when enablin=
+g
+> a FOD.
 >
-> The function driver in question at the moment is the f_fs driver in AIO
-> mode.  When async IO is enabled in the FFS driver, every time it queues
-> a packet, it will allocate a io_data struct beforehand.  If the
-> usb_ep_queue() fails it will free this io_data memory.  Problem is that,
-> since the DWC3 gadget calls the completion with -ECONNRESET, the FFS
-> driver will also schedule a work item (within io_data struct) to handle
-> the completion.  So you end up with a flow like below
+> See "VersaClock =C2=AE 6E Family Register Descriptions and Programming Gu=
+ide"
+> (August 30, 2018), Table 116 "Power Up VDD check", page 58:
+> https://www.renesas.com/us/en/document/mau/versaclock-6e-family-register-=
+descriptions-and-programming-guide
 >
-> allocate io_data (ffs)
->  --> usb_ep_queue()
->    --> __dwc3_gadget_kick_transfer()
->    --> dwc3_send_gadget_ep_cmd(EINVAL)
->    --> dwc3_gadget_ep_cleanup_cancelled_requests()
->    --> dwc3_gadget_giveback(ECONNRESET)
-> ffs completion callback
-> queue work item within io_data
->  --> usb_ep_queue returns EINVAL
-> ffs frees io_data
-> ...
+Reviewed-by: Adam Ford <aford173@gmail.com>
+
+> Signed-off-by: Luca Ceresoli <luca@lucaceresoli.net>
+> ---
+>  drivers/clk/clk-versaclock5.c | 27 ++++++++++++++++++++++++---
+>  1 file changed, 24 insertions(+), 3 deletions(-)
 >
-> work scheduled
->  --> NULL pointer/memory fault as io_data is freed
+> diff --git a/drivers/clk/clk-versaclock5.c b/drivers/clk/clk-versaclock5.=
+c
+> index 344cd6c61188..3c737742c2a9 100644
+> --- a/drivers/clk/clk-versaclock5.c
+> +++ b/drivers/clk/clk-versaclock5.c
+> @@ -69,7 +69,10 @@
+>  #define VC5_FEEDBACK_FRAC_DIV(n)               (0x19 + (n))
+>  #define VC5_RC_CONTROL0                                0x1e
+>  #define VC5_RC_CONTROL1                                0x1f
+> -/* Register 0x20 is factory reserved */
+> +
+> +/* These registers are named "Unused Factory Reserved Registers" */
+> +#define VC5_RESERVED_X0(idx)           (0x20 + ((idx) * 0x10))
+> +#define VC5_RESERVED_X0_BYPASS_SYNC    BIT(7) /* bypass_sync<idx> bit */
+>
+>  /* Output divider control for divider 1,2,3,4 */
+>  #define VC5_OUT_DIV_CONTROL(idx)       (0x21 + ((idx) * 0x10))
+> @@ -87,7 +90,6 @@
+>  #define VC5_OUT_DIV_SKEW_INT(idx, n)   (0x2b + ((idx) * 0x10) + (n))
+>  #define VC5_OUT_DIV_INT(idx, n)                (0x2d + ((idx) * 0x10) + =
+(n))
+>  #define VC5_OUT_DIV_SKEW_FRAC(idx)     (0x2f + ((idx) * 0x10))
+> -/* Registers 0x30, 0x40, 0x50 are factory reserved */
+>
+>  /* Clock control register for clock 1,2 */
+>  #define VC5_CLK_OUTPUT_CFG(idx, n)     (0x60 + ((idx) * 0x2) + (n))
+> @@ -140,6 +142,8 @@
+>  #define VC5_HAS_INTERNAL_XTAL  BIT(0)
+>  /* chip has PFD requency doubler */
+>  #define VC5_HAS_PFD_FREQ_DBL   BIT(1)
+> +/* chip has bits to disable FOD sync */
+> +#define VC5_HAS_BYPASS_SYNC_BIT        BIT(2)
+>
+>  /* Supported IDT VC5 models. */
+>  enum vc5_model {
+> @@ -581,6 +585,23 @@ static int vc5_clk_out_prepare(struct clk_hw *hw)
+>         unsigned int src;
+>         int ret;
+>
+> +       /*
+> +        * When enabling a FOD, all currently enabled FODs are briefly
+> +        * stopped in order to synchronize all of them. This causes a clo=
+ck
+> +        * disruption to any unrelated chips that might be already using
+> +        * other clock outputs. Bypass the sync feature to avoid the issu=
+e,
+> +        * which is possible on the VersaClock 6E family via reserved
+> +        * registers.
+> +        */
 
-I have some vague memory of discussing (something like) this with Alan
-Stern long ago and the conclusion was that the gadget driver should
-handle cases such as this. OTOH, we're returning failure during
-usb_ep_queue() which tells me there's something with dwc3 (perhaps not
-exclusively, but that's yet to be shown).
+Thanks for the comments here.  I with IDT/Renesas would better
+document this. I might see if I can convince one of the hardware guys
+at my office to test the impact of radiated emissions.
 
-If I understood the whole thing correctly, we want everything except the
-current request (the one that failed START or UPDATE transfer) to go
-through giveback(). This really tells me that we're not handling error
-case in kick_transfer and/or prepare_trbs() correctly.
-
-I also don't want to pass another argument to kick_transfer because it
-should be unnecessary: the current request should *always* be the last
-one in the list. Therefore we should rely on something like
-list_last_entry() followed by list_for_each_entry_safe_reverse() to
-handle this without a special case.
-
-ret =3D dwc3_send_gadget_ep_cmd();
-if (ret < 0) {
-	current =3D list_last_entry();
-
-	unmap(current);
-        for_each_trb_in(current) {
-        	clear_HWO(trb);
-        }
-
-	list_for_entry_safe_reverse() {
-        	move_cancelled();
-        }
-}
-
-=2D-=20
-balbi
-
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQFFBAEBCAAvFiEE9DumQ60WEZ09LIErzlfNM9wDzUgFAmCSlh8RHGJhbGJpQGtl
-cm5lbC5vcmcACgkQzlfNM9wDzUiPMQf+OzEmWNuQmTR2O1d5b9l5CL4ZB2meItFi
-59QXBVeDQyCAiC2ZzDR4JvM29npuHXCbVuT40Nj2H7ZKMbM99M1iIX8kSx79kViI
-CSFtLxxQ6uRR8rV1X2TdG3Kn0+a+Qt0m04vGea0T9U5RYFFBvGAsRtcvv8+8ur0n
-MIkvy4DQw1Zf2LGXIb6Wa4Wl04B0r+uVIVxsUUhW/bhBj6oWOaOgPsjaRNi4PZfh
-j6uTZTRaJn6mHZhoU8V9VPtvGaBE5hkDN5+g4vPIMVbffu1ZXE9EH6/gFtpQyK6t
-ltLbbihZb49nVZkvDCrCFt/Sr77pU6x9HWjBnjaSV93XrRQn53WJ1Q==
-=0h80
------END PGP SIGNATURE-----
---=-=-=--
+> +       if (vc5->chip_info->flags & VC5_HAS_BYPASS_SYNC_BIT) {
+> +               ret =3D regmap_update_bits(vc5->regmap,
+> +                                        VC5_RESERVED_X0(hwdata->num),
+> +                                        VC5_RESERVED_X0_BYPASS_SYNC,
+> +                                        VC5_RESERVED_X0_BYPASS_SYNC);
+> +               if (ret)
+> +                       return ret;
+> +       }
+> +
+>         /*
+>          * If the input mux is disabled, enable it first and
+>          * select source from matching FOD.
+> @@ -1166,7 +1187,7 @@ static const struct vc5_chip_info idt_5p49v6965_inf=
+o =3D {
+>         .model =3D IDT_VC6_5P49V6965,
+>         .clk_fod_cnt =3D 4,
+>         .clk_out_cnt =3D 5,
+> -       .flags =3D 0,
+> +       .flags =3D VC5_HAS_BYPASS_SYNC_BIT,
+>  };
+>
+>  static const struct i2c_device_id vc5_id[] =3D {
+> --
+> 2.25.1
+>
