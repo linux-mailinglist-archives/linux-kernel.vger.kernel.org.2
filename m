@@ -2,138 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8207B3735BB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 09:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 397CA3735CB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 09:44:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231665AbhEEHnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 03:43:17 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:56182 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229741AbhEEHnP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 03:43:15 -0400
-Received: by mail-io1-f72.google.com with SMTP id c24-20020a5d9a980000b029040db7d17e09so609665iom.22
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 00:42:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=ya+E1g89xMTBDEmcemt9FFZwadnYmRvfrssN8EvLq3Q=;
-        b=kkn3WIgW5NBepCBbqhj6R/oEwTG7O1LZ+YD1xzGS1TiOzrnOfP8gIaREmez6+Y5WfK
-         DYjruFHmukiUMFiYoFVGmTK4/35iE+9ju1QNMopwgCwuvqopHD+Jm4tw72QG2efQFK2P
-         4dwZ4A09RSQIXMhD4vEdvPke2LSZQnzaR8ST9w5EgUiw/fwsbcF1XSjSSTkTwJmUrOaZ
-         zeTZh6ILIsGhqDHbZTjPunUQVNEIsbw6utAhZQdxPnQvoZINlr+bxzr1UxcfDmTd4ifC
-         DuiKYxLccJdj0Jp7j1DTis8UsncXuxP7nYXSPt0+3Izj5ki1YoI/oPf2FSg8usahjFXh
-         yiYw==
-X-Gm-Message-State: AOAM530G5/vqHGVh8EwjrcnjceLplTKSrQKeB4kkEZIHM3EipUc3/pTw
-        SvZJHs1WzcJ/6E2WQxXP2cinAvEj65widBO3pExbcvipP3eH
-X-Google-Smtp-Source: ABdhPJybl0X8SrKJXC9jch+sKWnvv3XrFOBUOGAdD6ciacQ7sKC+XPFckZdpBTBFmm72afE7FQ23SmQ5JKelGNcgKvhV6rx57d+R
+        id S231810AbhEEHpT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 03:45:19 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:43508 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231738AbhEEHpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 03:45:16 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620200660; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+S5kmU6xVK0FKbVGrsxNwlTFR/UzcM5BAX9iz0qyWHI=; b=vibsq298/JnI91zfGPlFQQWMGzcEqX973e9CxOW0XPbhnS57xkm7OC6lH8RkcgKX+CIqWAq9
+ 9BHrqzhomQaJl2TML9NGhy3w4vnxTSqsfCHFwiorPzc61hiz2hXaHuklNTuHjJIwx3x0SfCl
+ tTwa2osBWP0ICi0blEt6eNAp75o=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 60924cd48166b7eff7bc5d31 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 May 2021 07:44:20
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 856C0C433F1; Wed,  5 May 2021 07:44:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.3] (unknown [122.163.131.242])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9ADAAC433D3;
+        Wed,  5 May 2021 07:44:16 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9ADAAC433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@codeaurora.org
+Subject: Re: [PATCH V2 1/2] soc: qcom: aoss: Expose send for generic usecase
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Deepak Kumar Singh <deesin@qti.qualcomm.com>
+Cc:     clew@codeaurora.org, sibis@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org, Andy Gross <agross@kernel.org>
+References: <1617943188-23278-1-git-send-email-deesin@qti.qualcomm.com>
+ <1617943188-23278-2-git-send-email-deesin@qti.qualcomm.com>
+ <YHYJVjvjUyXtrNmC@builder.lan>
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+Message-ID: <926738e1-6786-aa6f-5a85-784d624575c7@codeaurora.org>
+Date:   Wed, 5 May 2021 13:14:07 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a5d:8246:: with SMTP id n6mr8441830ioo.73.1620200539134;
- Wed, 05 May 2021 00:42:19 -0700 (PDT)
-Date:   Wed, 05 May 2021 00:42:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000999e4705c1905503@google.com>
-Subject: [syzbot] divide error in fill_meta_index
-From:   syzbot <syzbot+7b98870d4fec9447b951@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, phillip@squashfs.org.uk,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YHYJVjvjUyXtrNmC@builder.lan>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-syzbot found the following issue on:
+On 4/14/2021 2:42 AM, Bjorn Andersson wrote:
+> On Thu 08 Apr 23:39 CDT 2021, Deepak Kumar Singh wrote:
+> [..]
+>> +/**
+>> + * qmp_get() - get a qmp handle from a device
+>> + * @dev: client device pointer
+>> + *
+>> + * Return: handle to qmp device on success, ERR_PTR() on failure
+>> + */
+>> +struct qmp *qmp_get(struct device *dev)
+>> +{
+>> +	struct platform_device *pdev;
+>> +	struct device_node *np;
+>> +	struct qmp *qmp;
+>> +
+>> +	if (!dev || !dev->of_node)
+>> +		return ERR_PTR(-EINVAL);
+>> +
+>> +	np = of_parse_phandle(dev->of_node, "qcom,qmp", 0);
+>> +	if (!np)
+>> +		return ERR_PTR(-ENODEV);
+>> +
+>> +	pdev = of_find_device_by_node(np);
+>> +	if (!pdev)
+>> +		return ERR_PTR(-EINVAL);
+>> +
+>> +	qmp = platform_get_drvdata(pdev);
+>> +	return qmp ? qmp : ERR_PTR(-EPROBE_DEFER);
+>> +}
+>> +EXPORT_SYMBOL(qmp_get);
+>> +
+>> +void qmp_put(struct platform_device *pdev)
+>> +{
+>> +	platform_device_put(pdev);
+> I was expecting that the devres allocated struct qmp would stick around
+> until the struct device's release callback came. As described in my
+> answer to Mani yesterday I was wrong.
+>
+> As such you need to make sure that struct qmp stays around until
+> qmp_remove() and all qmp_put() calls has been made.
+>
+> I presume a reasonable way to achieve this is to not use devm to
+> allocate our struct qmp, add a kref to the object. So this would have to
+> be a kref_put() on that instead of the platform_device_put() I asked you
+> to implement here.
+>
+> Sorry about that.
+>
+>
+> The rest of the patch looks good.
+>
+> Regards,
+> Bjorn
 
-HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d2d5a3d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=53fdf14defd48c56
-dashboard link: https://syzkaller.appspot.com/bug?extid=7b98870d4fec9447b951
-compiler:       Debian clang version 11.0.1-2
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1105f733d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11b7af43d00000
+Hi Bjorn,
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
+Even if we use kref_put(), would it not require platform_device_put()? 
+As per my understanding of_find_device_by_node(np) will increment 
+node/pdev kobj refcount which both needs to be decremented.
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12f60095d00000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=11f60095d00000
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f60095d00000
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7b98870d4fec9447b951@syzkaller.appspotmail.com
-
-loop0: detected capacity change from 0 to 8
-divide error: 0000 [#1] PREEMPT SMP KASAN
-CPU: 1 PID: 8375 Comm: syz-executor040 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:fill_meta_index+0x242/0xf50 fs/squashfs/file.c:243
-Code: 28 00 74 08 4c 89 ff e8 4c 79 91 ff 49 8b 07 48 89 44 24 60 48 63 4c 24 44 48 c1 e1 0b 49 63 c6 31 d2 48 89 8c 24 b8 00 00 00 <48> f7 f1 48 89 c3 31 ff 89 de e8 3f e5 4a ff 48 89 5c 24 58 85 db
-RSP: 0018:ffffc90000eff1c0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 00000000000000de RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 00000000ffffff10 RDI: ffffc90000eff2a0
-RBP: ffffc90000eff330 R08: ffffffff8233f543 R09: fffff94000180631
-R10: fffff94000180631 R11: 0000000000000000 R12: ffff8880331dc520
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff8880331dc4c0
-FS:  0000000002199300(0000) GS:ffff8880b9b00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000055b45fc1d008 CR3: 0000000012688000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- read_blocklist+0x9f/0x320 fs/squashfs/file.c:332
- squashfs_readpage+0x4ce/0xba0 fs/squashfs/file.c:469
- read_pages+0x5d4/0x890 mm/readahead.c:145
- page_cache_ra_unbounded+0x82a/0x9a0 mm/readahead.c:238
- page_cache_sync_readahead include/linux/pagemap.h:864 [inline]
- filemap_get_pages+0x43d/0xd90 mm/filemap.c:2442
- filemap_read+0x39e/0x1030 mm/filemap.c:2525
- __kernel_read+0x596/0xa40 fs/read_write.c:454
- prepare_binprm fs/exec.c:1650 [inline]
- search_binary_handler fs/exec.c:1704 [inline]
- exec_binprm fs/exec.c:1761 [inline]
- bprm_execve+0x808/0x1470 fs/exec.c:1830
- do_execveat_common+0x487/0x5f0 fs/exec.c:1919
- do_execveat fs/exec.c:1998 [inline]
- __do_sys_execveat fs/exec.c:2074 [inline]
- __se_sys_execveat fs/exec.c:2066 [inline]
- __x64_sys_execveat+0xcd/0xe0 fs/exec.c:2066
- do_syscall_64+0x3f/0xb0 arch/x86/entry/common.c:47
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x443c09
-Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffff066cd08 EFLAGS: 00000246 ORIG_RAX: 0000000000000142
-RAX: ffffffffffffffda RBX: 00000000004004a0 RCX: 0000000000443c09
-RDX: 0000000000000000 RSI: 0000000020000040 RDI: 0000000000000005
-RBP: 00000000004034a0 R08: 0000000000000000 R09: 00000000004004a0
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000403530
-R13: 0000000000000000 R14: 00000000004b1018 R15: 00000000004004a0
-Modules linked in:
----[ end trace 5a69392a838e0d97 ]---
-RIP: 0010:fill_meta_index+0x242/0xf50 fs/squashfs/file.c:243
-Code: 28 00 74 08 4c 89 ff e8 4c 79 91 ff 49 8b 07 48 89 44 24 60 48 63 4c 24 44 48 c1 e1 0b 49 63 c6 31 d2 48 89 8c 24 b8 00 00 00 <48> f7 f1 48 89 c3 31 ff 89 de e8 3f e5 4a ff 48 89 5c 24 58 85 db
-RSP: 0018:ffffc90000eff1c0 EFLAGS: 00010246
-RAX: 0000000000000000 RBX: 00000000000000de RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 00000000ffffff10 RDI: ffffc90000eff2a0
-RBP: ffffc90000eff330 R08: ffffffff8233f543 R09: fffff94000180631
-R10: fffff94000180631 R11: 0000000000000000 R12: ffff8880331dc520
-R13: dffffc0000000000 R14: 0000000000000000 R15: ffff8880331dc4c0
-FS:  0000000002199300(0000) GS:ffff8880b9a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000560489adc160 CR3: 0000000012688000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
