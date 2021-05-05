@@ -2,33 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05439373AB8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B332C373A59
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:09:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233717AbhEEMNM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:13:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50940 "EHLO mail.kernel.org"
+        id S233172AbhEEMKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:10:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51048 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233226AbhEEMI2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:08:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BBD5B6121F;
-        Wed,  5 May 2021 12:07:31 +0000 (UTC)
+        id S233685AbhEEMIc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:08:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C07661222;
+        Wed,  5 May 2021 12:07:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216452;
-        bh=v0L3Lwn8MNJzGQuluKTNQb+gCZiYjptZe+pQAEEAOII=;
+        s=korg; t=1620216454;
+        bh=hI3+8Rv757eAsUwMRBJhdfgqGFNVe7gYhzEKWG78Z7k=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=uJIX7F78JAAsNE9+CF5qEPE+exQnuQFFQyjNO8B1cMIQjflsbbLYA7a0s+7O9Lg4w
-         NRghwx0f3e6QmpNki+9Bo58S835thiFi5walD21qOvf9C+CEZVMFSgtIyvuWbZY8JB
-         m8WFLZ5Nd3DIbJTPVU39zNOseqY1fvWFpkzLIDcc=
+        b=2pzrx8Ilt/dKgrU8rSx6ryR6ihSkxVaiYZ2mi/saJKBq7q6NlMQq7pSqnqx4lxsI9
+         iJA5TCsgk8ET0tD85zGJ28YGryY1+4R9QH44BvPSfMVmcmsZsgdtMtWLdGbJ1UcaxP
+         aJEVy6oaxiJpkouABZD9k63bNHx4TFWA2CjIpynQ=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Nick Lowe <nick.lowe@gmail.com>,
-        David Switzer <david.switzer@intel.com>,
-        Tony Nguyen <anthony.l.nguyen@intel.com>
-Subject: [PATCH 5.10 04/29] igb: Enable RSS for Intel I211 Ethernet Controller
-Date:   Wed,  5 May 2021 14:05:07 +0200
-Message-Id: <20210505112326.341867310@linuxfoundation.org>
+        stable@vger.kernel.org, Daniel Borkmann <daniel@iogearbox.net>,
+        Piotr Krysiuk <piotras@gmail.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH 5.10 05/29] bpf: Fix masking negation logic upon negative dst register
+Date:   Wed,  5 May 2021 14:05:08 +0200
+Message-Id: <20210505112326.379826453@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
 References: <20210505112326.195493232@linuxfoundation.org>
@@ -40,44 +41,50 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nick Lowe <nick.lowe@gmail.com>
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-commit 6e6026f2dd2005844fb35c3911e8083c09952c6c upstream.
+commit b9b34ddbe2076ade359cd5ce7537d5ed019e9807 upstream.
 
-The Intel I211 Ethernet Controller supports 2 Receive Side Scaling (RSS)
-queues. It should not be excluded from having this feature enabled.
+The negation logic for the case where the off_reg is sitting in the
+dst register is not correct given then we cannot just invert the add
+to a sub or vice versa. As a fix, perform the final bitwise and-op
+unconditionally into AX from the off_reg, then move the pointer from
+the src to dst and finally use AX as the source for the original
+pointer arithmetic operation such that the inversion yields a correct
+result. The single non-AX mov in between is possible given constant
+blinding is retaining it as it's not an immediate based operation.
 
-Via commit c883de9fd787 ("igb: rename igb define to be more generic")
-E1000_MRQC_ENABLE_RSS_4Q was renamed to E1000_MRQC_ENABLE_RSS_MQ to
-indicate that this is a generic bit flag to enable queues and not
-a flag that is specific to devices that support 4 queues
-
-The bit flag enables 2, 4 or 8 queues appropriately depending on the part.
-
-Tested with a multicore CPU and frames were then distributed as expected.
-
-This issue appears to have been introduced because of confusion caused
-by the prior name.
-
-Signed-off-by: Nick Lowe <nick.lowe@gmail.com>
-Tested-by: David Switzer <david.switzer@intel.com>
-Signed-off-by: Tony Nguyen <anthony.l.nguyen@intel.com>
+Fixes: 979d63d50c0c ("bpf: prevent out of bounds speculation on pointer arithmetic")
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Piotr Krysiuk <piotras@gmail.com>
+Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/net/ethernet/intel/igb/igb_main.c |    3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/bpf/verifier.c |   12 ++++--------
+ 1 file changed, 4 insertions(+), 8 deletions(-)
 
---- a/drivers/net/ethernet/intel/igb/igb_main.c
-+++ b/drivers/net/ethernet/intel/igb/igb_main.c
-@@ -4482,8 +4482,7 @@ static void igb_setup_mrqc(struct igb_ad
- 		else
- 			mrqc |= E1000_MRQC_ENABLE_VMDQ;
- 	} else {
--		if (hw->mac.type != e1000_i211)
--			mrqc |= E1000_MRQC_ENABLE_RSS_MQ;
-+		mrqc |= E1000_MRQC_ENABLE_RSS_MQ;
- 	}
- 	igb_vmm_control(adapter);
- 
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -11403,14 +11403,10 @@ static int fixup_bpf_calls(struct bpf_ve
+ 			*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
+ 			*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
+ 			*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
+-			if (issrc) {
+-				*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX,
+-							 off_reg);
+-				insn->src_reg = BPF_REG_AX;
+-			} else {
+-				*patch++ = BPF_ALU64_REG(BPF_AND, off_reg,
+-							 BPF_REG_AX);
+-			}
++			*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
++			if (!issrc)
++				*patch++ = BPF_MOV64_REG(insn->dst_reg, insn->src_reg);
++			insn->src_reg = BPF_REG_AX;
+ 			if (isneg)
+ 				insn->code = insn->code == code_add ?
+ 					     code_sub : code_add;
 
 
