@@ -2,70 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5832E3733B0
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 04:03:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE4C63733B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 04:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231474AbhEECEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 22:04:51 -0400
-Received: from mga01.intel.com ([192.55.52.88]:30446 "EHLO mga01.intel.com"
+        id S230509AbhEECNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 22:13:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37690 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229694AbhEECEt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 22:04:49 -0400
-IronPort-SDR: CZouSr/MHCQXzfhxgjf/85Y+DKrA6ZhYFQlqTD1fR76BZt9Fgne261mL5DretI6WEFzlgiQ/wd
- P6Kf0J5P0ezA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9974"; a="218952840"
-X-IronPort-AV: E=Sophos;i="5.82,273,1613462400"; 
-   d="scan'208";a="218952840"
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 19:03:54 -0700
-IronPort-SDR: qmaz3lgwLJOIwgqsyrLKcWH5vSggMksDOP+oksXCm5BbW9SHf3O50ZGo68GJ2/kJ9Eakkp/MM5
- +XVO/SvgJHAw==
-X-IronPort-AV: E=Sophos;i="5.82,273,1613462400"; 
-   d="scan'208";a="621741505"
-Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 May 2021 19:03:53 -0700
-Date:   Tue, 4 May 2021 19:03:53 -0700
-From:   Ira Weiny <ira.weiny@intel.com>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     dave.hansen@intel.com, luto@kernel.org, peterz@infradead.org,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, rppt@kernel.org,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 0/9] PKS write protected page tables
-Message-ID: <20210505020353.GE1904484@iweiny-DESK2.sc.intel.com>
-References: <20210505003032.489164-1-rick.p.edgecombe@intel.com>
+        id S229799AbhEECN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 22:13:28 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CF5C613CC
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 02:12:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620180752;
+        bh=QcOcUQQZmj+dOibYCaDeGWcNaIV3C2QYxgfO6KET9gk=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RIk7szTjVh8RsIYtvU1beuqct76T7eGNKsL8EwfQ3cUNP+tT9RJN7iTdsADYEi1Gk
+         38bJhdWGUXtb9pYMWWBii/I2F2HmUAIj1002EhhSCeUtxU682Nj4AX3EkXLAq2tSHO
+         S1gpDfxEX2+8P7yw5PpdUG5t6mgqE3kFSEeJYRJTIYY5sJcyutfDt9bvEPeNw1u0Yf
+         AuT2rI5nRajKzsTzhtZjAFYsGX6/BeVgRDGyv3g3sWESL1Z8eeZX+bIOLY62ViqpLy
+         jtzN6/lysYu7VvRFdAgvLBfvZ9LOVY6LjHtr8HAGtdu/JqEJnyx8ZawztGsGcSG2+1
+         MY+M4KDY+qt3w==
+Received: by mail-ed1-f41.google.com with SMTP id c22so74327edn.7
+        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 19:12:32 -0700 (PDT)
+X-Gm-Message-State: AOAM532HE2SBsMKfSJ5xcRplYoSxuhXxbaLGO5J9+2wNXPpT2ccMxkPq
+        4Qmm+UFa7tvJu0GuZteuzP7g9PEddDGeqh+Hug==
+X-Google-Smtp-Source: ABdhPJyr9aLTxIR7ZL09D1+M19d7NaJ4FYUfOZhkz2BqMEEDB0A8kQkAI1lUvwgB7LJDeoEsEQbawNS3LY0oI8RDeSs=
+X-Received: by 2002:aa7:cd83:: with SMTP id x3mr29087357edv.373.1620180750937;
+ Tue, 04 May 2021 19:12:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210505003032.489164-1-rick.p.edgecombe@intel.com>
-User-Agent: Mutt/1.11.1 (2018-12-01)
+References: <20210311000837.3630499-1-robh@kernel.org> <20210311000837.3630499-7-robh@kernel.org>
+ <CAP-5=fUEu1EO7GreYYjZ178BH_riYYa0HdY4GZhi=0DdjkCMJg@mail.gmail.com>
+In-Reply-To: <CAP-5=fUEu1EO7GreYYjZ178BH_riYYa0HdY4GZhi=0DdjkCMJg@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Tue, 4 May 2021 21:12:19 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKc_qFA59L9e-xXOhE4yBTdVg-Ea9EddimWwqj3XXxhGw@mail.gmail.com>
+Message-ID: <CAL_JsqKc_qFA59L9e-xXOhE4yBTdVg-Ea9EddimWwqj3XXxhGw@mail.gmail.com>
+Subject: Re: [PATCH v6 06/10] libperf: Add support for user space counter access
+To:     Ian Rogers <irogers@google.com>
+Cc:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
+        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Itaru Kitayama <itaru.kitayama@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 05:30:23PM -0700, Rick Edgecombe wrote:
-> 
-> This is based on V6 [1] of the core PKS infrastructure patches. PKS 
-> infrastructure follow-on’s are planned to enable keys to be set to the same 
-> permissions globally. Since this usage needs a key to be set globally 
-> read-only by default, a small temporary solution is hacked up in patch 8. Long 
-> term, PKS protected page tables would use a better and more generic solution 
-> to achieve this.
+On Tue, May 4, 2021 at 4:41 PM Ian Rogers <irogers@google.com> wrote:
+>
+> On Wed, Mar 10, 2021 at 4:08 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > x86 and arm64 can both support direct access of event counters in
+> > userspace. The access sequence is less than trivial and currently exists
+> > in perf test code (tools/perf/arch/x86/tests/rdpmc.c) with copies in
+> > projects such as PAPI and libpfm4.
+> >
+> > In order to support usersapce access, an event must be mmapped first
+> > with perf_evsel__mmap(). Then subsequent calls to perf_evsel__read()
+> > will use the fast path (assuming the arch supports it).
+> >
+> > Signed-off-by: Rob Herring <robh@kernel.org>
+> > ---
+> > v6:
+> >  - Adapt to mmap changes adding MMAP NULL check
+> > v5:
+> >  - Make raw count s64 instead of u64 so that counter width shifting
+> >    works
+> >  - Adapt to mmap changes
+> > v4:
+> >  - Update perf_evsel__mmap size to pages
+> > v3:
+> >  - Split out perf_evsel__mmap() to separate patch
+> > ---
+> >  tools/lib/perf/evsel.c                 |  4 ++
+> >  tools/lib/perf/include/internal/mmap.h |  3 +
+> >  tools/lib/perf/mmap.c                  | 88 ++++++++++++++++++++++++++
+> >  tools/lib/perf/tests/test-evsel.c      | 65 +++++++++++++++++++
+> >  4 files changed, 160 insertions(+)
+> >
+> > diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
+> > index 1057e9b15528..4d67343d36c9 100644
+> > --- a/tools/lib/perf/evsel.c
+> > +++ b/tools/lib/perf/evsel.c
+> > @@ -242,6 +242,10 @@ int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
+> >         if (FD(evsel, cpu, thread) < 0)
+> >                 return -EINVAL;
+> >
+> > +       if (MMAP(evsel, cpu, thread) &&
+> > +           !perf_mmap__read_self(MMAP(evsel, cpu, thread), count))
+> > +               return 0;
+> > +
+> >         if (readn(FD(evsel, cpu, thread), count->values, size) <= 0)
+> >                 return -errno;
+> >
+> > diff --git a/tools/lib/perf/include/internal/mmap.h b/tools/lib/perf/include/internal/mmap.h
+> > index be7556e0a2b2..5e3422f40ed5 100644
+> > --- a/tools/lib/perf/include/internal/mmap.h
+> > +++ b/tools/lib/perf/include/internal/mmap.h
+> > @@ -11,6 +11,7 @@
+> >  #define PERF_SAMPLE_MAX_SIZE (1 << 16)
+> >
+> >  struct perf_mmap;
+> > +struct perf_counts_values;
+> >
+> >  typedef void (*libperf_unmap_cb_t)(struct perf_mmap *map);
+> >
+> > @@ -52,4 +53,6 @@ void perf_mmap__put(struct perf_mmap *map);
+> >
+> >  u64 perf_mmap__read_head(struct perf_mmap *map);
+> >
+> > +int perf_mmap__read_self(struct perf_mmap *map, struct perf_counts_values *count);
+> > +
+> >  #endif /* __LIBPERF_INTERNAL_MMAP_H */
+> > diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
+> > index 79d5ed6c38cc..915469f00cf4 100644
+> > --- a/tools/lib/perf/mmap.c
+> > +++ b/tools/lib/perf/mmap.c
+> > @@ -8,9 +8,11 @@
+> >  #include <linux/perf_event.h>
+> >  #include <perf/mmap.h>
+> >  #include <perf/event.h>
+> > +#include <perf/evsel.h>
+> >  #include <internal/mmap.h>
+> >  #include <internal/lib.h>
+> >  #include <linux/kernel.h>
+> > +#include <linux/math64.h>
+> >  #include "internal.h"
+> >
+> >  void perf_mmap__init(struct perf_mmap *map, struct perf_mmap *prev,
+> > @@ -273,3 +275,89 @@ union perf_event *perf_mmap__read_event(struct perf_mmap *map)
+> >
+> >         return event;
+> >  }
+> > +
+> > +#if defined(__i386__) || defined(__x86_64__)
+> > +static u64 read_perf_counter(unsigned int counter)
+> > +{
+> > +       unsigned int low, high;
+> > +
+> > +       asm volatile("rdpmc" : "=a" (low), "=d" (high) : "c" (counter));
+> > +
+> > +       return low | ((u64)high) << 32;
+> > +}
+> > +
+> > +static u64 read_timestamp(void)
+> > +{
+> > +       unsigned int low, high;
+> > +
+> > +       asm volatile("rdtsc" : "=a" (low), "=d" (high));
+> > +
+> > +       return low | ((u64)high) << 32;
+> > +}
+> > +#else
+> > +static u64 read_perf_counter(unsigned int counter) { return 0; }
+> > +static u64 read_timestamp(void) { return 0; }
+> > +#endif
+> > +
+> > +int perf_mmap__read_self(struct perf_mmap *map, struct perf_counts_values *count)
+> > +{
+> > +       struct perf_event_mmap_page *pc = map->base;
+> > +       u32 seq, idx, time_mult = 0, time_shift = 0;
+> > +       u64 cnt, cyc = 0, time_offset = 0, time_cycles = 0, time_mask = ~0ULL;
+> > +
+> > +       if (!pc || !pc->cap_user_rdpmc)
+> > +               return -1;
+> > +
+> > +       do {
+> > +               seq = READ_ONCE(pc->lock);
+> > +               barrier();
+> > +
+> > +               count->ena = READ_ONCE(pc->time_enabled);
+> > +               count->run = READ_ONCE(pc->time_running);
+> > +
+> > +               if (pc->cap_user_time && count->ena != count->run) {
+> > +                       cyc = read_timestamp();
+> > +                       time_mult = READ_ONCE(pc->time_mult);
+> > +                       time_shift = READ_ONCE(pc->time_shift);
+> > +                       time_offset = READ_ONCE(pc->time_offset);
+> > +
+> > +                       if (pc->cap_user_time_short) {
+> > +                               time_cycles = READ_ONCE(pc->time_cycles);
+> > +                               time_mask = READ_ONCE(pc->time_mask);
+> > +                       }
+>
+> Nit, this is now out of sync with the comment code in perf_event.h.
 
-Before you send this out I've been thinking about this more and I think I would
-prefer you not call this 'globally' setting the key.  Because you don't really
-want to be able to update the key globally like I originally suggested for
-kmap().  What is required is to set a different default for the key which gets
-used by all threads by 'default'.
+IMO, we should just delete that version. One less slightly wrong version...
 
-What is really missing is how to get the default changed after it may have been
-used by some threads...  thus the 'global' nature...  Perhaps I am picking nits
-here but I think it may go over better with Thomas and the maintainers.  Or
-maybe not...  :-)
+> > +               }
+> > +
+> > +               idx = READ_ONCE(pc->index);
+> > +               cnt = READ_ONCE(pc->offset);
+> > +               if (pc->cap_user_rdpmc && idx) {
+> > +                       s64 evcnt = read_perf_counter(idx - 1);
+> > +                       u16 width = READ_ONCE(pc->pmc_width);
+> > +
+> > +                       evcnt <<= 64 - width;
+> > +                       evcnt >>= 64 - width;
+> > +                       cnt += evcnt;
+> > +               } else
+> > +                       return -1;
+> > +
+> > +               barrier();
+> > +       } while (READ_ONCE(pc->lock) != seq);
+> > +
+> > +       if (count->ena != count->run) {
+> > +               u64 delta;
+> > +
+> > +               /* Adjust for cap_usr_time_short, a nop if not */
+> > +               cyc = time_cycles + ((cyc - time_cycles) & time_mask);
+> > +
+> > +               delta = time_offset + mul_u64_u32_shr(cyc, time_mult, time_shift);
+> > +
+> > +               count->ena += delta;
+> > +               if (idx)
+> > +                       count->run += delta;
+> > +
+> > +               cnt = mul_u64_u64_div64(cnt, count->ena, count->run);
+>
+> Does this still suffer the divide by zero if multiplexing hasn't run
+> the counter? If so, we still need to add something like:
+> https://lore.kernel.org/lkml/CAP-5=fVRdqvswtyQMg5cB+ntTGda+SAYskjTQednEH-AeZo13g@mail.gmail.com/
 
-Would it be too much trouble to call this a 'default' change?  Because that is
-really what you implement?
+I don't think so because if we don't have a valid counter index, we
+exit before this if.
 
-Ira
+>
+> > +       }
+> > +
+> > +       count->val = cnt;
+> > +
+> > +       return 0;
+> > +}
+> > diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
+> > index 0ad82d7a2a51..54fb4809b9ee 100644
+> > --- a/tools/lib/perf/tests/test-evsel.c
+> > +++ b/tools/lib/perf/tests/test-evsel.c
+> > @@ -120,6 +120,69 @@ static int test_stat_thread_enable(void)
+> >         return 0;
+> >  }
+> >
+> > +static int test_stat_user_read(int event)
+> > +{
+> > +       struct perf_counts_values counts = { .val = 0 };
+> > +       struct perf_thread_map *threads;
+> > +       struct perf_evsel *evsel;
+> > +       struct perf_event_mmap_page *pc;
+> > +       struct perf_event_attr attr = {
+> > +               .type   = PERF_TYPE_HARDWARE,
+> > +               .config = event,
+> > +       };
+>
+> A nit, previously test-evsel was able to run and pass on a hypervisor.
+> As now there is a reliance on hardware events the evsel open fails on
+> a hypervisor. It'd be nice if we could detect running on a hypervisor
+> and test software events in that case.
+
+I suppose we can just exit if open fails on this test.
+
+Rob
