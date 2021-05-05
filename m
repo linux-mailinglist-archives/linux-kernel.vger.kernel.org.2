@@ -2,96 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CB4B3746EA
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F343537474C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:53:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235162AbhEERcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:32:48 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40922 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239815AbhEERZj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:25:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 86517AD5C;
-        Wed,  5 May 2021 17:24:41 +0000 (UTC)
-Subject: Re: [PATCH v9 01/96] mm: Optimise nth_page for contiguous memmap
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Cc:     linux-kernel@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
-        David Hildenbrand <david@redhat.com>, Zi Yan <ziy@nvidia.com>
-References: <20210505150628.111735-1-willy@infradead.org>
- <20210505150628.111735-2-willy@infradead.org>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <7557fdb7-dccf-16fc-3c30-51532558dc6f@suse.cz>
-Date:   Wed, 5 May 2021 19:24:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S230128AbhEERyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:54:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234092AbhEERyT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:54:19 -0400
+Received: from mail-oi1-x229.google.com (mail-oi1-x229.google.com [IPv6:2607:f8b0:4864:20::229])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16CACC08E818
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 10:25:28 -0700 (PDT)
+Received: by mail-oi1-x229.google.com with SMTP id k25so2884630oic.4
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 10:25:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=sVTxixNEQgaMU45bwkqw/v+zgKxhFXtlznyvyelbh00=;
+        b=liHtDy4G7Tu/P8bA2SaybJCA17e5TNpk9jQCZD0bJtMFkTfUxLx2PHhX/LybmHqryi
+         t2hXt88MYRP4P5iwFMMaQqfP9GHzwKhnoyRDObi1ZkfsdZVwuKPae9WWSGaxpOnJTQWp
+         Q0RGqpPticafRncFV2Sh666li4OrcDKmj/UlCIIRjizs2clw0mrASkpsiI/YXZWK5hVn
+         d5S2GgQs4MFn8GKNjW8gTutroV2eK7fxAWyS6sD6gsTQqIJnp13UYGkWIoUIgCaA8UFF
+         bl/CMx6nBxDfktUDI+2hZjsPvFTp+e+hwfmcXYwGFSjSqSMdLKPz2EeoRt6MS/e3C0sg
+         Lkbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=sVTxixNEQgaMU45bwkqw/v+zgKxhFXtlznyvyelbh00=;
+        b=CM4CSD47ZinWau8pGif7W+Qhar3emBtVp60ChAz8TJ08Itq1QUfEZomeJBufIfewNn
+         6VV9nDpDjKAdn8db25A2BWR+lL6oQzf6WPh/R9LhABVUWju18ZiTsALl8+FsHsfUjgTX
+         svfVDetmueWW6gfakC7xIuBU3qMrjKaylhaOnXSNmexWOAtQLyL44I5K5/PCPLaZGTLg
+         LchFO5F23ctW3cQMMhSXHETN4bmvZBicAApdWwZ4SURD3BSOavl3hbzIY4mE7T9tMIwx
+         2IIOpDjmC6+rCja2cd4yU2/YuekVyYradDEmJviVzYUpa/EgakuirZojKKyh0NLDtMRO
+         /V0w==
+X-Gm-Message-State: AOAM531vQ4Geqw6QDGlBLY6+nmgHEGKCdg/Y/31v5yCm2ETGxX5oNZIF
+        XfDzQubOOfMb938Jn62bzHSZk21IBfd2lnhPjq4uig==
+X-Google-Smtp-Source: ABdhPJxY9cqvcFHS8ogOFbnSJlth4v2utrx2okL4r1VPI4Hpmfnm63csoO/E37sGBeSfdVMfYrIfTUu8c8CyvX1HbJc=
+X-Received: by 2002:aca:bb06:: with SMTP id l6mr22157199oif.121.1620235527302;
+ Wed, 05 May 2021 10:25:27 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210505150628.111735-2-willy@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <m1tuni8ano.fsf_-_@fess.ebiederm.org> <20210505141101.11519-1-ebiederm@xmission.com>
+ <20210505141101.11519-8-ebiederm@xmission.com>
+In-Reply-To: <20210505141101.11519-8-ebiederm@xmission.com>
+From:   Marco Elver <elver@google.com>
+Date:   Wed, 5 May 2021 19:25:00 +0200
+Message-ID: <CANpmjNMhMvKePmEutfd6U0wnd-bvktEQwR-=O6efxe6RM9A_4w@mail.gmail.com>
+Subject: Re: [PATCH v3 08/12] signal: Remove __ARCH_SI_TRAPNO
+To:     "Eric W. Beiderman" <ebiederm@xmission.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 5:04 PM, Matthew Wilcox (Oracle) wrote:
-> If the memmap is virtually contiguous (either because we're using
-> a virtually mapped memmap or because we don't support a discontig
-> memmap at all), then we can implement nth_page() by simple addition.
-> Contrary to popular belief, the compiler is not able to optimise this
-> itself for a vmemmap configuration.  This reduces one example user (sg.c)
-> by four instructions:
-> 
->         struct page *page = nth_page(rsv_schp->pages[k], offset >> PAGE_SHIFT);
-> 
-> before:
->    49 8b 45 70             mov    0x70(%r13),%rax
->    48 63 c9                movslq %ecx,%rcx
->    48 c1 eb 0c             shr    $0xc,%rbx
->    48 8b 04 c8             mov    (%rax,%rcx,8),%rax
->    48 2b 05 00 00 00 00    sub    0x0(%rip),%rax
->            R_X86_64_PC32      vmemmap_base-0x4
->    48 c1 f8 06             sar    $0x6,%rax
->    48 01 d8                add    %rbx,%rax
->    48 c1 e0 06             shl    $0x6,%rax
->    48 03 05 00 00 00 00    add    0x0(%rip),%rax
->            R_X86_64_PC32      vmemmap_base-0x4
-> 
-> after:
->    49 8b 45 70             mov    0x70(%r13),%rax
->    48 63 c9                movslq %ecx,%rcx
->    48 c1 eb 0c             shr    $0xc,%rbx
->    48 c1 e3 06             shl    $0x6,%rbx
->    48 03 1c c8             add    (%rax,%rcx,8),%rbx
-> 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Reviewed-by: Zi Yan <ziy@nvidia.com>
+On Wed, 5 May 2021 at 16:11, Eric W. Beiderman <ebiederm@xmission.com> wrote:
+> From: "Eric W. Biederman" <ebiederm@xmission.com>
+>
+> Now that this define is no longer used remove it from the kernel.
+>
+> v1: https://lkml.kernel.org/r/m18s4zs7nu.fsf_-_@fess.ebiederm.org
+> Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Reviewed-by: Marco Elver <elver@google.com>
+
+
 
 > ---
->  include/linux/mm.h | 4 ++++
->  1 file changed, 4 insertions(+)
-> 
-> diff --git a/include/linux/mm.h b/include/linux/mm.h
-> index 25b9041f9925..2327f99b121f 100644
-> --- a/include/linux/mm.h
-> +++ b/include/linux/mm.h
-> @@ -234,7 +234,11 @@ int overcommit_policy_handler(struct ctl_table *, int, void *, size_t *,
->  int __add_to_page_cache_locked(struct page *page, struct address_space *mapping,
->  		pgoff_t index, gfp_t gfp, void **shadowp);
->  
-> +#if defined(CONFIG_SPARSEMEM) && !defined(CONFIG_SPARSEMEM_VMEMMAP)
->  #define nth_page(page,n) pfn_to_page(page_to_pfn((page)) + (n))
-> +#else
-> +#define nth_page(page,n) ((page) + (n))
-> +#endif
->  
->  /* to align the pointer to the (next) page boundary */
->  #define PAGE_ALIGN(addr) ALIGN(addr, PAGE_SIZE)
-> 
-
+>  arch/alpha/include/uapi/asm/siginfo.h | 2 --
+>  arch/mips/include/uapi/asm/siginfo.h  | 2 --
+>  arch/sparc/include/uapi/asm/siginfo.h | 3 ---
+>  3 files changed, 7 deletions(-)
+>
+> diff --git a/arch/alpha/include/uapi/asm/siginfo.h b/arch/alpha/include/uapi/asm/siginfo.h
+> index 6e1a2af2f962..e08eae88182b 100644
+> --- a/arch/alpha/include/uapi/asm/siginfo.h
+> +++ b/arch/alpha/include/uapi/asm/siginfo.h
+> @@ -2,8 +2,6 @@
+>  #ifndef _ALPHA_SIGINFO_H
+>  #define _ALPHA_SIGINFO_H
+>
+> -#define __ARCH_SI_TRAPNO
+> -
+>  #include <asm-generic/siginfo.h>
+>
+>  #endif
+> diff --git a/arch/mips/include/uapi/asm/siginfo.h b/arch/mips/include/uapi/asm/siginfo.h
+> index c34c7eef0a1c..8cb8bd061a68 100644
+> --- a/arch/mips/include/uapi/asm/siginfo.h
+> +++ b/arch/mips/include/uapi/asm/siginfo.h
+> @@ -10,9 +10,7 @@
+>  #ifndef _UAPI_ASM_SIGINFO_H
+>  #define _UAPI_ASM_SIGINFO_H
+>
+> -
+>  #define __ARCH_SIGEV_PREAMBLE_SIZE (sizeof(long) + 2*sizeof(int))
+> -#undef __ARCH_SI_TRAPNO /* exception code needs to fill this ...  */
+>
+>  #define __ARCH_HAS_SWAPPED_SIGINFO
+>
+> diff --git a/arch/sparc/include/uapi/asm/siginfo.h b/arch/sparc/include/uapi/asm/siginfo.h
+> index 68bdde4c2a2e..0e7c27522aed 100644
+> --- a/arch/sparc/include/uapi/asm/siginfo.h
+> +++ b/arch/sparc/include/uapi/asm/siginfo.h
+> @@ -8,9 +8,6 @@
+>
+>  #endif /* defined(__sparc__) && defined(__arch64__) */
+>
+> -
+> -#define __ARCH_SI_TRAPNO
+> -
+>  #include <asm-generic/siginfo.h>
+>
+>
+> --
+> 2.30.1
