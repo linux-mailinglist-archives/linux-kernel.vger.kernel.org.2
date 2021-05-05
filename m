@@ -2,208 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66D32373D6B
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:14:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C75373D70
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:15:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232796AbhEEOPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34760 "EHLO
+        id S232351AbhEEOQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:16:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232096AbhEEOPG (ORCPT
+        with ESMTP id S231792AbhEEOQ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:15:06 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52786C06174A
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 07:14:09 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id m9so2031606wrx.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 07:14:09 -0700 (PDT)
+        Wed, 5 May 2021 10:16:28 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20160C061574;
+        Wed,  5 May 2021 07:15:32 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id s6so2208141edu.10;
+        Wed, 05 May 2021 07:15:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bgdev-pl.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/LGCdpREbfD/YWDwLyE6sY9IYpJiH6j7QDDmk3lJWP4=;
-        b=GF8D9UTF/OquU+sEsnG0z7NaYJthuGzMV88GlGqAut2nI4qKuXvJGQaO+g+G/4uj5K
-         H+B4OSx3A3J9qdI5FaIWheVi7FsOkExLA3xFuiBKoWzVF7+G8I6h3I5vllLPseZCafFv
-         SjIyAjjJU8/4NhRzGJ/lVnMxxw51hQo2+cCAXHmTMuyiFLW090pQr+HkILMmhtACIhgn
-         1tIId31dJ/zBmuHgJPPtBrEBpXiK0At1sdIelT+mNOtgPA3ZCeJfkyetkI3ReffL9Mzj
-         sPg7NN4hDP0hV7CBExIMnq/adxvfXYjwek9AuLCYaDH5OYdvptXlCAtofBokpz/HO/CA
-         9y0Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=3v7GTLBkveSO/DzoiCusnfOSBV5pZgN/EggynLGhcDk=;
+        b=lAGpv2W44mI+TklKu4AxJth+nxdI1zLFE3VGWqnF/G9fjl/zDe0k8uRBtfbeZvoh5+
+         lALa8zlEYb3WuFMcnSqH6DMY4oiNHMfELjk8ZhLLYiPghszGyjH0JRWGxjpM0NcZBxqi
+         txF7ZPsRh4CUZcW/EAjdewDwiCtYFgKSU95esRYrAxj8a6j9VFpm5nr2W7etmzfv2Nzw
+         ZFtWCWfsr42N8vLdXztyX9300NLvihqD0BEwszdaRLypgP+cSAxhkiwIhgsxW3gVAinS
+         7zcCqk/FabDBOmcrFTWPyckWcW5zhwV9R9vHFYXQTO4ZQx9Yjtgk+PBnhKgcGd0FCWWH
+         DwcQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=/LGCdpREbfD/YWDwLyE6sY9IYpJiH6j7QDDmk3lJWP4=;
-        b=cazfEK+HKgy31Ogku5iqg9EyYRoU/zq4qthcFz2L83Bs/ashYpRLP+Cs+Yy0ZaGYdT
-         uZUmy+r8cLpvpCC5iMSVCTasYg2L0zcCeYN0uEFiha7KDy2HVupgXoku9ry7Lh9ge7+U
-         nYAVd2X6K+FzcMUS/uikCilTUNvD3MlxAZBzXoTSlP82W7ZhtFRGN2EQaebQXhU5bnzA
-         jxDSv6qEu9UoIuDFAi54KYqq9gsOI5y13auLuTKTy2MBwtu5R46ZPhMm8kVN8NmsVbOj
-         OsOKTYHvFa1cVdBwsFbgFXhErc86dSMWFTcuBL6fXpJFMIBDtScLNxC2iIPoXSZ7hfoR
-         KL7A==
-X-Gm-Message-State: AOAM53315BN3XNmY7ZxmeZ5BqE27JxFyag5eTtwR5fE0iP2nCbxms7OC
-        ue+0XHJZ75kAs2lJkUEoHaVgPA==
-X-Google-Smtp-Source: ABdhPJwbUzl2duqqXXrePhzv2T0owX8HSUZiNTe+9J4croOVrST04Ov0Az+JEMoEvq3r7WBhKAch/Q==
-X-Received: by 2002:adf:e611:: with SMTP id p17mr12298279wrm.161.1620224048047;
-        Wed, 05 May 2021 07:14:08 -0700 (PDT)
-Received: from debian-brgl.home (lfbn-nic-1-149-6.w2-15.abo.wanadoo.fr. [2.15.231.6])
-        by smtp.gmail.com with ESMTPSA id s6sm5969750wms.0.2021.05.05.07.14.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 07:14:07 -0700 (PDT)
-From:   Bartosz Golaszewski <brgl@bgdev.pl>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Al Viro <viro@zeniv.linux.org.uk>, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Bartosz Golaszewski <brgl@bgdev.pl>
-Subject: [GIT PULL v2] gpio: updates for v5.13
-Date:   Wed,  5 May 2021 16:13:58 +0200
-Message-Id: <20210505141358.6065-1-brgl@bgdev.pl>
-X-Mailer: git-send-email 2.30.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3v7GTLBkveSO/DzoiCusnfOSBV5pZgN/EggynLGhcDk=;
+        b=E8dHNGx/YQtV3km8Hbje3XMxf8SpbFHkhvpHfQSW5Rm/3QqGZ3cZ+jGxuccFFdxukY
+         1+Jv+lnLnsiz3xxl/AKfkS2WvDzo4Tx5wdN0QD61YT9UbfggbfGfh3IKMTwZOlx4Zp6a
+         UtzqcGrFipT29gRW+IHO+HXI3k/4FOwLim/M3uN6r2FbK3GoRGE+w5uGOqBYOn4mnnvM
+         AsJfwp/Hho0DPapHrgNICNThdJK8j5D9xxv+IUdBVPvvvO2guU+Rc1yVp3XzawB822xG
+         YEPBXvrnxed45srW5A7eqTK+4EgalQ09cosWt6wrkvh8cQ5ztrvH2WKUH8DexRr6i81N
+         b45g==
+X-Gm-Message-State: AOAM5302Lcz4gXk0KI5SFf7hiDamOdU6pFJbS8Zh+wnA/n1t4pT6B5Un
+        IvhfXcRsr73BtbYq5kAEGKV8ORylnyxN7q7tSyQ=
+X-Google-Smtp-Source: ABdhPJzEQodWMVV/muUqtH9tMV4QSj1AoLg7azHYsXTWphHaRCJmi8DokE3iUNcJHJkKPvsg9oIvRAvfgeQcn39I924=
+X-Received: by 2002:aa7:cf12:: with SMTP id a18mr32562378edy.160.1620224130659;
+ Wed, 05 May 2021 07:15:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20210505140015.60013-1-krzysztof.kozlowski@canonical.com>
+In-Reply-To: <20210505140015.60013-1-krzysztof.kozlowski@canonical.com>
+From:   Robert Nelson <robertcnelson@gmail.com>
+Date:   Wed, 5 May 2021 09:15:04 -0500
+Message-ID: <CAOCHtYiicw5bqaZU5g2QGJHG3DZKRQUwAr08NZHw81S9=hmrgw@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: am5729-beagleboneai: drop unused Broadcom WiFi properties
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        alexey.roslyakov@gmail.com, Drew Fustini <drew@beagleboard.org>,
+        Jason Kridner <jkridner@beagleboard.org>
+Cc:     =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
+        Tony Lindgren <tony@atomide.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-omap <linux-omap@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux kernel <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+On Wed, May 5, 2021 at 9:04 AM Krzysztof Kozlowski
+<krzysztof.kozlowski@canonical.com> wrote:
+>
+> The brcm,sd-head-align, brcm,sd_head_align and brcm,sd_sgentry_align are
+> not used by the driver and not present in dtschema:
+>
+>   arch/arm/boot/dts/am5729-beagleboneai.dt.yaml: wifi@1:
+>     'brcm,sd-head-align', 'brcm,sd_head_align', 'brcm,sd_sgentry_align' do not match any of the regexes: 'pinctrl-[0-9]+'
+>
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  arch/arm/boot/dts/am5729-beagleboneai.dts | 4 ----
+>  1 file changed, 4 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/am5729-beagleboneai.dts b/arch/arm/boot/dts/am5729-beagleboneai.dts
+> index 149cfafb90bf..d3b2e87a6266 100644
+> --- a/arch/arm/boot/dts/am5729-beagleboneai.dts
+> +++ b/arch/arm/boot/dts/am5729-beagleboneai.dts
+> @@ -582,10 +582,6 @@ brcmf: wifi@1 {
+>                 reg = <1>;
+>                 compatible = "brcm,bcm4329-fmac";
+>
+> -               brcm,sd-head-align = <4>;
+> -               brcm,sd_head_align = <4>;
+> -               brcm,sd_sgentry_align = <512>;
+> -
+>                 interrupt-parent = <&gpio3>;
+>                 interrupts = <23 IRQ_TYPE_LEVEL_LOW>;
+>                 interrupt-names = "host-wake";
+> --
+> 2.25.1
+>
 
-This is the big pull-request for GPIO for this release cycle minus the configfs
-changes and the gpio-sim driver that was based on it as these will have to sit
-one more release out.
+NAK, for what it is worth..
 
-The resulting pull-request is even smaller than before and there's nothing
-controversial left. The details are in the signed tag. Please pull!
+This is a plain old shitty situation, that everyone that mistakenly
+chooses a BRCM based chipset in a design faces, then learns to NEVER
+touch that chipset again..
 
-Bartosz
+These nodes have been posted before for mainline inclusion but always
+get killed off:
 
-The following changes since commit 0d02ec6b3136c73c09e7859f0d0e4e2c4c07b49b:
+https://lkml.org/lkml/2018/3/18/356
 
-  Linux 5.12-rc4 (2021-03-21 14:56:43 -0700)
+The TI AM57xx SDIO needs these flags for the brcmfmac driver to actually work.
 
-are available in the Git repository at:
+I don't see the brcmfmac developers actually fixing it, as "out of
+tree" work for brcmfmac is 100+ patches long:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/brgl/linux.git gpio-updates-for-v5.13-v2
+https://www.cypress.com/documentation/software-and-drivers-archive/wifi-bt-linux-archive?source=search&cat=other
 
-for you to fetch changes up to 444952956f34a5de935159561d56a34276ffffd6:
+Regards,
 
-  dt-bindings: gpio: add YAML description for rockchip,gpio-bank (2021-05-05 16:07:41 +0200)
-
-----------------------------------------------------------------
-gpio updates for v5.13
-
-- new driver for the Realtek Otto GPIO controller
-- ACPI support for gpio-mpc8xxx
-- edge event support for gpio-sch (+ Kconfig fixes)
-- Kconfig improvements in gpio-ich
-- fixes to older issues in gpio-mockup
-- ACPI quirk for ignoring EC wakeups on Dell Venue 10 Pro 5055
-- improve the GPIO aggregator code by using more generic interfaces instead of
-  reimplementing them in the driver
-- convert the DT bindings for gpio-74x164 to yaml
-- documentation improvements
-- a slew of other minor fixes and improvements to GPIO drivers
-
-----------------------------------------------------------------
-Alexander Dahl (2):
-      docs: kernel-parameters: Move gpio-mockup for alphabetic order
-      docs: kernel-parameters: Add gpio_mockup_named_lines
-
-Andy Shevchenko (13):
-      irqdomain: Introduce irq_domain_create_simple() API
-      gpiolib: Unify the checks on fwnode type
-      gpiolib: Move of_node operations to gpiolib-of and correct fwnode use
-      gpiolib: Introduce acpi_gpio_dev_init() and call it from core
-      gpiolib: Reuse device's fwnode to create IRQ domain
-      gpiolib: Fold conditionals into a simple ternary operator
-      gpio: mockup: Drop duplicate NULL check in gpio_mockup_unregister_pdevs()
-      gpio: mockup: Adjust documentation to the code
-      lib/cmdline: Export next_arg() for being used in modules
-      gpio: aggregator: Replace custom get_arg() with a generic next_arg()
-      gpio: sch: Hook into ACPI GPE handler to catch GPIO edge events
-      gpio: sch: Drop MFD_CORE selection
-      gpio: ich: Switch to be dependent on LPC_ICH
-
-Barney Goette (1):
-      gpio: 104-dio-48e: Fix coding style issues
-
-Bartosz Golaszewski (3):
-      lib: bitmap: remove the 'extern' keyword from function declarations
-      lib: bitmap: order includes alphabetically
-      lib: bitmap: provide devm_bitmap_alloc() and devm_bitmap_zalloc()
-
-Geert Uytterhoeven (1):
-      dt-bindings: gpio: fairchild,74hc595: Convert to json-schema
-
-Hans de Goede (1):
-      gpiolib: acpi: Add quirk to ignore EC wakeups on Dell Venue 10 Pro 5055
-
-Jan Kiszka (1):
-      gpio: sch: Add edge event support
-
-Jiapeng Chong (2):
-      gpio: it87: remove unused code
-      gpio: mxs: remove useless function
-
-Johan Jonker (1):
-      dt-bindings: gpio: add YAML description for rockchip,gpio-bank
-
-Jonathan Neuschäfer (1):
-      docs: driver-api: gpio: consumer: Mark another line of code as such
-
-Linus Walleij (1):
-      gpio: Mention GPIO MUX in docs
-
-Ran Wang (1):
-      gpio: mpc8xxx: Add ACPI support
-
-Randy Dunlap (3):
-      tools: gpio-utils: fix various kernel-doc warnings
-      gpiolib: some edits of kernel docs for clarity
-      gpio: sch: depends on LPC_SCH
-
-Sander Vanheule (2):
-      dt-bindings: gpio: Binding for Realtek Otto GPIO
-      gpio: Add Realtek Otto GPIO support
-
-Tian Tao (1):
-      gpio: omap: Use device_get_match_data() helper
-
- Documentation/admin-guide/gpio/gpio-mockup.rst     |  11 +-
- Documentation/admin-guide/kernel-parameters.txt    |  10 +-
- Documentation/core-api/irq/irq-domain.rst          |  22 +-
- .../bindings/gpio/fairchild,74hc595.yaml           |  77 +++++
- .../devicetree/bindings/gpio/gpio-74x164.txt       |  27 --
- .../bindings/gpio/realtek,otto-gpio.yaml           |  78 +++++
- .../bindings/gpio/rockchip,gpio-bank.yaml          |  82 ++++++
- .../bindings/pinctrl/rockchip,pinctrl.txt          |  58 +---
- Documentation/driver-api/gpio/consumer.rst         |   2 +-
- Documentation/driver-api/gpio/drivers-on-gpio.rst  |   6 +
- drivers/gpio/Kconfig                               |  24 +-
- drivers/gpio/Makefile                              |   1 +
- drivers/gpio/gpio-104-dio-48e.c                    |  50 ++--
- drivers/gpio/gpio-aggregator.c                     |  39 +--
- drivers/gpio/gpio-ich.c                            |   2 -
- drivers/gpio/gpio-it87.c                           |   8 -
- drivers/gpio/gpio-mockup.c                         |   9 +-
- drivers/gpio/gpio-mpc8xxx.c                        |  47 ++-
- drivers/gpio/gpio-mxs.c                            |   5 -
- drivers/gpio/gpio-omap.c                           |   5 +-
- drivers/gpio/gpio-realtek-otto.c                   | 325 +++++++++++++++++++++
- drivers/gpio/gpio-sch.c                            | 198 ++++++++++++-
- drivers/gpio/gpiolib-acpi.c                        |  21 ++
- drivers/gpio/gpiolib-acpi.h                        |   4 +
- drivers/gpio/gpiolib-of.c                          |   6 +-
- drivers/gpio/gpiolib.c                             |  62 ++--
- include/linux/bitmap.h                             | 127 ++++----
- include/linux/gpio/driver.h                        |  12 +-
- include/linux/irqdomain.h                          |  19 +-
- kernel/irq/irqdomain.c                             |  20 +-
- lib/bitmap.c                                       |  42 ++-
- lib/cmdline.c                                      |   1 +
- tools/gpio/gpio-utils.c                            |  18 +-
- 33 files changed, 1068 insertions(+), 350 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/gpio/fairchild,74hc595.yaml
- delete mode 100644 Documentation/devicetree/bindings/gpio/gpio-74x164.txt
- create mode 100644 Documentation/devicetree/bindings/gpio/realtek,otto-gpio.yaml
- create mode 100644 Documentation/devicetree/bindings/gpio/rockchip,gpio-bank.yaml
- create mode 100644 drivers/gpio/gpio-realtek-otto.c
+-- 
+Robert Nelson
+https://rcn-ee.com/
