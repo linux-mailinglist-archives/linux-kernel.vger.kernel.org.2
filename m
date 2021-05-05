@@ -2,277 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C72B9373AA4
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:11:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E27B373ADB
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:15:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233420AbhEEMMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:12:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48308 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233569AbhEEMJv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:09:51 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id F045A61157;
-        Wed,  5 May 2021 12:08:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620216516;
-        bh=dM4xD7b/mynWlGakcF1uA9Zbsm4TJNc8N5AP7gQzHoQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=mMsBs0VQQEhzmv7wcf9rNPaQvIO9QQUHxDjE492vUIP2Dvjdd+495pl+42NV1EsXB
-         ZUuy8/XWQtsxayIoLVKJcuXTIEjQlskVZX/5DSd4vEoRHegah/qcCdsDcuSjLOciBd
-         WQPiGhecWsUkNkYNHi3QndzM4X704+ZP82CuqIPvqTJ7Rg+0VpB7oIw4n4v9kw8tJ2
-         SDi8frkUUX+cQIaOuuj54dnPApfiPYd5Twzr/dLew5P1oy/BDnIbe7wqDowNGEQKo6
-         XZ8Mwf3LcA47CIa40eeIqJVf4mMHaqv+u6RmhEwBw5kSQfiF1g9IvjxFe4ccFowSY/
-         iY3jJfaCdHxWw==
-Date:   Wed, 5 May 2021 15:08:27 +0300
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc:     dave.hansen@intel.com, luto@kernel.org, peterz@infradead.org,
-        linux-mm@kvack.org, x86@kernel.org, akpm@linux-foundation.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 3/9] x86/mm/cpa: Add grouped page allocations
-Message-ID: <YJKKu7kMCtCuel2L@kernel.org>
-References: <20210505003032.489164-1-rick.p.edgecombe@intel.com>
- <20210505003032.489164-4-rick.p.edgecombe@intel.com>
+        id S233555AbhEEMPi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:15:38 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3017 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233178AbhEEMLN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:11:13 -0400
+Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.200])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZwH94GWnz70gJC;
+        Wed,  5 May 2021 19:59:17 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 5 May 2021 14:10:14 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 13:10:13 +0100
+Date:   Wed, 5 May 2021 13:08:35 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Eugen Hristev <eugen.hristev@microchip.com>,
+        Ludovic Desroches <ludovic.desroches@microchip.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Nicolas Ferre <nicolas.ferre@microchip.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>
+Subject: Re: [PATCH 08/25] media: atmel: properly get pm_runtime
+Message-ID: <20210505130835.000006b7@Huawei.com>
+In-Reply-To: <975645970144b6c8401ab9bd1243619978a868a9.1620207353.git.mchehab+huawei@kernel.org>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <975645970144b6c8401ab9bd1243619978a868a9.1620207353.git.mchehab+huawei@kernel.org>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505003032.489164-4-rick.p.edgecombe@intel.com>
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 05:30:26PM -0700, Rick Edgecombe wrote:
-> For x86, setting memory permissions on the direct map results in fracturing
-> large pages. Direct map fracturing can be reduced by locating pages that
-> will have their permissions set close together.
-> 
-> Create a simple page cache that allocates pages from huge page size
-> blocks. Don't guarantee that a page will come from a huge page grouping,
-> instead fallback to non-grouped pages to fulfill the allocation if
-> needed. Also, register a shrinker such that the system can ask for the
-> pages back if needed. Since this is only needed when there is a direct
-> map, compile it out on highmem systems.
+On Wed, 5 May 2021 11:41:58 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 
-I only had time to skim through the patches, I like the idea of having a
-simple cache that allocates larger pages with a fallback to basic page
-size.
-
-I just think it should be more generic and closer to the page allocator.
-I was thinking about adding a GFP flag that will tell that the allocated
-pages should be removed from the direct map. Then alloc_pages() could use
-such cache whenever this GFP flag is specified with a fallback for lower
-order allocations.
- 
-> Free pages in the cache are kept track of in per-node list inside a
-> list_lru. NUMA_NO_NODE requests are serviced by checking each per-node
-> list in a round robin fashion. If pages are requested for a certain node
-> but the cache is empty for that node, a whole additional huge page size
-> page is allocated.
+> There are several issues in the way the atmel driver handles
+> pm_runtime_get_sync():
 > 
-> Signed-off-by: Rick Edgecombe <rick.p.edgecombe@intel.com>
+> - it doesn't check return codes;
+> - it doesn't properly decrement the usage_count on all places;
+> - it starts streaming even if pm_runtime_get_sync() fails.
+> - while it tries to get pm_runtime at the clock enable logic,
+>   it doesn't check if the operation was suceeded.
+> 
+> Replace all occurrences of it to use the new kAPI:
+> pm_runtime_resume_and_get(), which ensures that, if the
+> return code is not negative, the usage_count was incremented.
+> 
+> With that, add additional checks when this is called, in order
+> to ensure that errors will be properly addressed.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+Hi Mauro, I don't know media enough to know what is the right answer
+but in some of this series, a failure in
+pm_runtime_resume_and_get() leads to a bunch of buffer cleanup
+(patch 22 being an example) and in others return happens without doing
+that cleanup.
+
+It might be both are safe, or I'm missing something else, but I'm
+certainly not confident enough to give any tags on this one as a result
+of that mismatch.
+
 > ---
->  arch/x86/include/asm/set_memory.h |  14 +++
->  arch/x86/mm/pat/set_memory.c      | 151 ++++++++++++++++++++++++++++++
->  2 files changed, 165 insertions(+)
+>  drivers/media/platform/atmel/atmel-isc-base.c | 30 ++++++++++++++-----
+>  drivers/media/platform/atmel/atmel-isi.c      | 19 +++++++++---
+>  2 files changed, 38 insertions(+), 11 deletions(-)
 > 
-> diff --git a/arch/x86/include/asm/set_memory.h b/arch/x86/include/asm/set_memory.h
-> index 4352f08bfbb5..b63f09cc282a 100644
-> --- a/arch/x86/include/asm/set_memory.h
-> +++ b/arch/x86/include/asm/set_memory.h
-> @@ -4,6 +4,9 @@
+> diff --git a/drivers/media/platform/atmel/atmel-isc-base.c b/drivers/media/platform/atmel/atmel-isc-base.c
+> index fe3ec8d0eaee..ce8e1351fa53 100644
+> --- a/drivers/media/platform/atmel/atmel-isc-base.c
+> +++ b/drivers/media/platform/atmel/atmel-isc-base.c
+> @@ -294,9 +294,13 @@ static int isc_wait_clk_stable(struct clk_hw *hw)
+>  static int isc_clk_prepare(struct clk_hw *hw)
+>  {
+>  	struct isc_clk *isc_clk = to_isc_clk(hw);
+> +	int ret;
 >  
->  #include <asm/page.h>
->  #include <asm-generic/set_memory.h>
-> +#include <linux/gfp.h>
-> +#include <linux/list_lru.h>
-> +#include <linux/shrinker.h>
+> -	if (isc_clk->id == ISC_ISPCK)
+> -		pm_runtime_get_sync(isc_clk->dev);
+> +	if (isc_clk->id == ISC_ISPCK) {
+> +		ret = pm_runtime_resume_and_get(isc_clk->dev);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
 >  
->  /*
->   * The set_memory_* API can be used to change various attributes of a virtual
-> @@ -135,4 +138,15 @@ static inline int clear_mce_nospec(unsigned long pfn)
->   */
->  #endif
+>  	return isc_wait_clk_stable(hw);
+>  }
+> @@ -353,9 +357,13 @@ static int isc_clk_is_enabled(struct clk_hw *hw)
+>  {
+>  	struct isc_clk *isc_clk = to_isc_clk(hw);
+>  	u32 status;
+> +	int ret;
 >  
-> +struct grouped_page_cache {
-> +	struct shrinker shrinker;
-> +	struct list_lru lru;
-> +	gfp_t gfp;
-> +	atomic_t nid_round_robin;
-> +};
-> +
-> +int init_grouped_page_cache(struct grouped_page_cache *gpc, gfp_t gfp);
-> +struct page *get_grouped_page(int node, struct grouped_page_cache *gpc);
-> +void free_grouped_page(struct grouped_page_cache *gpc, struct page *page);
-> +
->  #endif /* _ASM_X86_SET_MEMORY_H */
-> diff --git a/arch/x86/mm/pat/set_memory.c b/arch/x86/mm/pat/set_memory.c
-> index 16f878c26667..6877ef66793b 100644
-> --- a/arch/x86/mm/pat/set_memory.c
-> +++ b/arch/x86/mm/pat/set_memory.c
-> @@ -2306,6 +2306,157 @@ int __init kernel_unmap_pages_in_pgd(pgd_t *pgd, unsigned long address,
->  	return retval;
+> -	if (isc_clk->id == ISC_ISPCK)
+> -		pm_runtime_get_sync(isc_clk->dev);
+> +	if (isc_clk->id == ISC_ISPCK) {
+> +		ret = pm_runtime_resume_and_get(isc_clk->dev);
+> +		if (ret < 0)
+> +			return 0;
+> +	}
+>  
+>  	regmap_read(isc_clk->regmap, ISC_CLKSR, &status);
+>  
+> @@ -807,7 +815,12 @@ static int isc_start_streaming(struct vb2_queue *vq, unsigned int count)
+>  		goto err_start_stream;
+>  	}
+>  
+> -	pm_runtime_get_sync(isc->dev);
+> +	ret = pm_runtime_resume_and_get(isc->dev);
+> +	if (ret < 0) {
+> +		v4l2_err(&isc->v4l2_dev, "RPM resume failed in subdev %d\n",
+> +			 ret);
+> +		goto err_pm_get;
+> +	}
+>  
+>  	ret = isc_configure(isc);
+>  	if (unlikely(ret))
+> @@ -838,7 +851,7 @@ static int isc_start_streaming(struct vb2_queue *vq, unsigned int count)
+>  
+>  err_configure:
+>  	pm_runtime_put_sync(isc->dev);
+> -
+> +err_pm_get:
+>  	v4l2_subdev_call(isc->current_subdev->sd, video, s_stream, 0);
+>  
+>  err_start_stream:
+> @@ -1809,6 +1822,7 @@ static void isc_awb_work(struct work_struct *w)
+>  	u32 baysel;
+>  	unsigned long flags;
+>  	u32 min, max;
+> +	int ret;
+>  
+>  	/* streaming is not active anymore */
+>  	if (isc->stop)
+> @@ -1831,7 +1845,9 @@ static void isc_awb_work(struct work_struct *w)
+>  	ctrls->hist_id = hist_id;
+>  	baysel = isc->config.sd_format->cfa_baycfg << ISC_HIS_CFG_BAYSEL_SHIFT;
+>  
+> -	pm_runtime_get_sync(isc->dev);
+> +	ret = pm_runtime_resume_and_get(isc->dev);
+> +	if (ret < 0)
+> +		return;
+>  
+>  	/*
+>  	 * only update if we have all the required histograms and controls
+> diff --git a/drivers/media/platform/atmel/atmel-isi.c b/drivers/media/platform/atmel/atmel-isi.c
+> index e392b3efe363..5b1dd358f2e6 100644
+> --- a/drivers/media/platform/atmel/atmel-isi.c
+> +++ b/drivers/media/platform/atmel/atmel-isi.c
+> @@ -422,7 +422,9 @@ static int start_streaming(struct vb2_queue *vq, unsigned int count)
+>  	struct frame_buffer *buf, *node;
+>  	int ret;
+>  
+> -	pm_runtime_get_sync(isi->dev);
+> +	ret = pm_runtime_resume_and_get(isi->dev);
+> +	if (ret < 0)
+> +		return ret;
+This is the case I'm referring to above.
+
+>  
+>  	/* Enable stream on the sub device */
+>  	ret = v4l2_subdev_call(isi->entity.subdev, video, s_stream, 1);
+> @@ -782,9 +784,10 @@ static int isi_enum_frameintervals(struct file *file, void *fh,
+>  	return 0;
 >  }
 >  
-> +#ifndef HIGHMEM
-> +static struct page *__alloc_page_order(int node, gfp_t gfp_mask, int order)
-> +{
-> +	if (node == NUMA_NO_NODE)
-> +		return alloc_pages(gfp_mask, order);
+> -static void isi_camera_set_bus_param(struct atmel_isi *isi)
+> +static int isi_camera_set_bus_param(struct atmel_isi *isi)
+>  {
+>  	u32 cfg1 = 0;
+> +	int ret;
+>  
+>  	/* set bus param for ISI */
+>  	if (isi->pdata.hsync_act_low)
+> @@ -801,12 +804,16 @@ static void isi_camera_set_bus_param(struct atmel_isi *isi)
+>  	cfg1 |= ISI_CFG1_THMASK_BEATS_16;
+>  
+>  	/* Enable PM and peripheral clock before operate isi registers */
+> -	pm_runtime_get_sync(isi->dev);
+> +	ret = pm_runtime_resume_and_get(isi->dev);
+> +	if (ret < 0)
+> +		return ret;
+>  
+>  	isi_writel(isi, ISI_CTRL, ISI_CTRL_DIS);
+>  	isi_writel(isi, ISI_CFG1, cfg1);
+>  
+>  	pm_runtime_put(isi->dev);
 > +
-> +	return alloc_pages_node(node, gfp_mask, order);
-> +}
-> +
-> +static struct grouped_page_cache *__get_gpc_from_sc(struct shrinker *shrinker)
-> +{
-> +	return container_of(shrinker, struct grouped_page_cache, shrinker);
-> +}
-> +
-> +static unsigned long grouped_shrink_count(struct shrinker *shrinker,
-> +					  struct shrink_control *sc)
-> +{
-> +	struct grouped_page_cache *gpc = __get_gpc_from_sc(shrinker);
-> +	unsigned long page_cnt = list_lru_shrink_count(&gpc->lru, sc);
-> +
-> +	return page_cnt ? page_cnt : SHRINK_EMPTY;
-> +}
-> +
-> +static enum lru_status grouped_isolate(struct list_head *item,
-> +				       struct list_lru_one *list,
-> +				       spinlock_t *lock, void *cb_arg)
-> +{
-> +	struct list_head *dispose = cb_arg;
-> +
-> +	list_lru_isolate_move(list, item, dispose);
-> +
-> +	return LRU_REMOVED;
-> +}
-> +
-> +static void __dispose_pages(struct grouped_page_cache *gpc, struct list_head *head)
-> +{
-> +	struct list_head *cur, *next;
-> +
-> +	list_for_each_safe(cur, next, head) {
-> +		struct page *page = list_entry(head, struct page, lru);
-> +
-> +		list_del(cur);
-> +
-> +		__free_pages(page, 0);
+> +	return 0;
+>  }
+>  
+>  /* -----------------------------------------------------------------------*/
+> @@ -1085,7 +1092,11 @@ static int isi_graph_notify_complete(struct v4l2_async_notifier *notifier)
+>  		dev_err(isi->dev, "No supported mediabus format found\n");
+>  		return ret;
+>  	}
+> -	isi_camera_set_bus_param(isi);
+> +	ret = isi_camera_set_bus_param(isi);
+> +	if (ret) {
+> +		dev_err(isi->dev, "Can't wake up device\n");
+> +		return ret;
 > +	}
-> +}
-> +
-> +static unsigned long grouped_shrink_scan(struct shrinker *shrinker,
-> +					 struct shrink_control *sc)
-> +{
-> +	struct grouped_page_cache *gpc = __get_gpc_from_sc(shrinker);
-> +	unsigned long isolated;
-> +	LIST_HEAD(freeable);
-> +
-> +	if (!(sc->gfp_mask & gpc->gfp))
-> +		return SHRINK_STOP;
-> +
-> +	isolated = list_lru_shrink_walk(&gpc->lru, sc, grouped_isolate,
-> +					&freeable);
-> +	__dispose_pages(gpc, &freeable);
-> +
-> +	/* Every item walked gets isolated */
-> +	sc->nr_scanned += isolated;
-> +
-> +	return isolated;
-> +}
-> +
-> +static struct page *__remove_first_page(struct grouped_page_cache *gpc, int node)
-> +{
-> +	unsigned int start_nid, i;
-> +	struct list_head *head;
-> +
-> +	if (node != NUMA_NO_NODE) {
-> +		head = list_lru_get_mru(&gpc->lru, node);
-> +		if (head)
-> +			return list_entry(head, struct page, lru);
-> +		return NULL;
-> +	}
-> +
-> +	/* If NUMA_NO_NODE, search the nodes in round robin for a page */
-> +	start_nid = (unsigned int)atomic_fetch_inc(&gpc->nid_round_robin) % nr_node_ids;
-> +	for (i = 0; i < nr_node_ids; i++) {
-> +		int cur_nid = (start_nid + i) % nr_node_ids;
-> +
-> +		head = list_lru_get_mru(&gpc->lru, cur_nid);
-> +		if (head)
-> +			return list_entry(head, struct page, lru);
-> +	}
-> +
-> +	return NULL;
-> +}
-> +
-> +/* Get and add some new pages to the cache to be used by VM_GROUP_PAGES */
-> +static struct page *__replenish_grouped_pages(struct grouped_page_cache *gpc, int node)
-> +{
-> +	const unsigned int hpage_cnt = HPAGE_SIZE >> PAGE_SHIFT;
-> +	struct page *page;
-> +	int i;
-> +
-> +	page = __alloc_page_order(node, gpc->gfp, HUGETLB_PAGE_ORDER);
-> +	if (!page)
-> +		return __alloc_page_order(node, gpc->gfp, 0);
-> +
-> +	split_page(page, HUGETLB_PAGE_ORDER);
-> +
-> +	for (i = 1; i < hpage_cnt; i++)
-> +		free_grouped_page(gpc, &page[i]);
-> +
-> +	return &page[0];
-> +}
-> +
-> +int init_grouped_page_cache(struct grouped_page_cache *gpc, gfp_t gfp)
-> +{
-> +	int err = 0;
-> +
-> +	memset(gpc, 0, sizeof(struct grouped_page_cache));
-> +
-> +	if (list_lru_init(&gpc->lru))
-> +		goto out;
-> +
-> +	gpc->shrinker.count_objects = grouped_shrink_count;
-> +	gpc->shrinker.scan_objects = grouped_shrink_scan;
-> +	gpc->shrinker.seeks = DEFAULT_SEEKS;
-> +	gpc->shrinker.flags = SHRINKER_NUMA_AWARE;
-> +
-> +	err = register_shrinker(&gpc->shrinker);
-> +	if (err)
-> +		list_lru_destroy(&gpc->lru);
-> +
-> +out:
-> +	return err;
-> +}
-> +
-> +struct page *get_grouped_page(int node, struct grouped_page_cache *gpc)
-> +{
-> +	struct page *page;
-> +
-> +	page = __remove_first_page(gpc, node);
-> +
-> +	if (page)
-> +		return page;
-> +
-> +	return __replenish_grouped_pages(gpc, node);
-> +}
-> +
-> +void free_grouped_page(struct grouped_page_cache *gpc, struct page *page)
-> +{
-> +	INIT_LIST_HEAD(&page->lru);
-> +	list_lru_add_node(&gpc->lru, &page->lru, page_to_nid(page));
-> +}
-> +#endif /* !HIGHMEM */
->  /*
->   * The testcases use internal knowledge of the implementation that shouldn't
->   * be exposed to the rest of the kernel. Include these directly here.
-> -- 
-> 2.30.2
-> 
+>  
+>  	ret = isi_set_default_fmt(isi);
+>  	if (ret) {
 
--- 
-Sincerely yours,
-Mike.
