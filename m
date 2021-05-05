@@ -2,121 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 942973746AE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE6AC3746B7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237147AbhEERWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:22:37 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:40808 "EHLO srv6.fidu.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239966AbhEERP5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:15:57 -0400
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id A9C9EC800A8;
-        Wed,  5 May 2021 19:14:58 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id OCZX5XV-A9iL; Wed,  5 May 2021 19:14:58 +0200 (CEST)
-Received: from wsembach-tuxedo.fritz.box (p200300e37F39860005A4018A54F094b9.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:5a4:18a:54f0:94b9])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id 62BB6C800B5;
-        Wed,  5 May 2021 19:14:58 +0200 (CEST)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     wse@tuxedocomputers.com, ville.syrjala@linux.intel.com,
-        airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] Use YCbCr420 as fallback when RGB fails
-Date:   Wed,  5 May 2021 19:14:53 +0200
-Message-Id: <20210505171453.1403560-4-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210505171453.1403560-1-wse@tuxedocomputers.com>
-References: <20210505171453.1403560-1-wse@tuxedocomputers.com>
+        id S237377AbhEERW4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:22:56 -0400
+Received: from smtprelay0211.hostedemail.com ([216.40.44.211]:44702 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S237755AbhEERS3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:18:29 -0400
+Received: from omf06.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id A688C182CED34;
+        Wed,  5 May 2021 17:17:15 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf06.hostedemail.com (Postfix) with ESMTPA id D7C832448B5;
+        Wed,  5 May 2021 17:17:14 +0000 (UTC)
+Message-ID: <3ba412f1c7c74639196d830939221b764284a24b.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: do not check for "/dev/null" while parsing
+ addition of files
+From:   Joe Perches <joe@perches.com>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        akpm@linux-foundation.org, apw@canonical.com
+Cc:     linux-kernel@vger.kernel.org
+Date:   Wed, 05 May 2021 10:17:13 -0700
+In-Reply-To: <20210505081230.29190-1-manivannan.sadhasivam@linaro.org>
+References: <20210505081230.29190-1-manivannan.sadhasivam@linaro.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: D7C832448B5
+X-Spam-Status: No, score=-2.71
+X-Stat-Signature: qeedbxjif69ecw7eksd1xdbg6ze641xn
+X-Rspamd-Server: rspamout02
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX19M7M7BIoYf2FvG3zEbW9caxnoDdkV2Iak=
+X-HE-Tag: 1620235034-341205
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When encoder validation of a display mode fails, retry with less bandwidth
-heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
-to support 4k60Hz output, which previously failed silently.
+On Wed, 2021-05-05 at 13:42 +0530, Manivannan Sadhasivam wrote:
+> "/dev/null" is used to signal created or deleted files in the diff header.
+> While parsing the addition of files, checkpatch should look for
+> "+++ b/file" and ignore "+++ /dev/null".
 
-AMDGPU had nearly the exact same issue. This problem description is
-therefore copied from my commit message of the AMDGPU patch.
+nack.  checkpatch shouldn't care about a/ b/ uses here.
 
-On some setups, while the monitor and the gpu support display modes with
-pixel clocks of up to 600MHz, the link encoder might not. This prevents
-YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
-possible. However, which color mode is used is decided before the link
-encoder capabilities are checked. This patch fixes the problem by retrying
-to find a display mode with YCbCr420 enforced and using it, if it is
-valid.
+> 
+> Without this change, checkpatch falsely reports below warning for the
+> patch that does devicetree YAML conversion:
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
----
-Now with the suggestes change as it does makes a difference ^^
+Send me a copy of the source patch that creates this false positive.
 
-From dc2fb79273f2c75a08b76bf912949ff3e433056b Mon Sep 17 00:00:00 2001
-From: Werner Sembach <wse@tuxedocomputers.com>
-Date: Mon, 3 May 2021 16:23:17 +0200
-Subject: [PATCH 3/3] Use YCbCr420 as fallback when RGB fails
+> 
+> ```
+> WARNING: DT binding docs and includes should be a separate patch. See: Documentation/devicetree/bindings/submitting-patches.rst
 
----
- drivers/gpu/drm/i915/display/intel_hdmi.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index b0201d4f27eb..5af6aef0acbf 100644
---- a/drivers/gpu/drm/i915/display/intel_hdmi.c
-+++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -1897,6 +1897,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 	int clock = mode->clock;
- 	int max_dotclk = to_i915(connector->dev)->max_dotclk_freq;
- 	bool has_hdmi_sink = intel_has_hdmi_sink(hdmi, connector->state);
-+    bool ycbcr_420_only;
- 
- 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
- 		return MODE_NO_DBLESCAN;
-@@ -1913,12 +1914,20 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 		clock *= 2;
- 	}
- 
--	if (drm_mode_is_420_only(&connector->display_info, mode))
-+	ycbcr_420_only = drm_mode_is_420_only(&connector->display_info, mode);
-+	if (ycbcr_420_only)
- 		clock /= 2;
- 
- 	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
--	if (status != MODE_OK)
--		return status;
-+	if (status != MODE_OK) {
-+		if (ycbcr_420_only || !connector->ycbcr_420_allowed || !drm_mode_is_420_also(&connector->display_info, mode))
-+			return status;
-+
-+		clock /= 2;
-+		status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
-+		if (status != MODE_OK)
-+			return status;
-+	}
- 
- 	return intel_mode_valid_max_plane_size(dev_priv, mode, false);
- }
-@@ -2125,6 +2134,14 @@ static int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
- 	}
- 
- 	ret = intel_hdmi_compute_clock(encoder, crtc_state);
-+	if (ret) {
-+		if (crtc_state->output_format != INTEL_OUTPUT_FORMAT_YCBCR420 &&
-+				connector->ycbcr_420_allowed &&
-+				drm_mode_is_420_also(&connector->display_info, adjusted_mode)) {
-+			crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
-+			ret = intel_hdmi_compute_clock(encoder, crtc_state);
-+		}
-+	}
- 
- 	return ret;
- }
--- 
-2.25.1
 
