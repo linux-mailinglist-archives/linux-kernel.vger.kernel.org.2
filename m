@@ -2,231 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9217373E5E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:19:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10A81373E62
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233492AbhEEPUf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:20:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:59668 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232596AbhEEPUc (ORCPT
+        id S233511AbhEEPVO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:21:14 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:45442 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233150AbhEEPVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:20:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620227976;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=i9+/SI9bfIZOMi4mYl2+8D9GvEvJDbWNlGJbD7Lpwj8=;
-        b=dgut62RLx/yUIVdqs+bueL4t/M/Alic4gzXKHcgo+PZ5WnormxuOixP/bjI4eQkjvgDHND
-        V6kY/afY8DEReD/uaZqJGv6tFUB2gDaMxqhZRhtc0u+5nDZEZXZ4/HGBSh//Ovdi5ZdfRy
-        HXCCeTbmieSmATVuyVC3awJvK0Z2iKM=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-544-iiAJRsCrOUqQ6gvQ68qgiA-1; Wed, 05 May 2021 11:19:34 -0400
-X-MC-Unique: iiAJRsCrOUqQ6gvQ68qgiA-1
-Received: by mail-ed1-f72.google.com with SMTP id o12-20020aa7d3cc0000b02903891695ceabso1041951edr.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:19:34 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=i9+/SI9bfIZOMi4mYl2+8D9GvEvJDbWNlGJbD7Lpwj8=;
-        b=KwSeSJp8aq1puZnt+7viXblnV4ro7wz09Aav0z8DbE+IjO9uQTYMYMwwjfFUFacqR6
-         Uvz4gz6BobAz0ci9k4yztLIjWOVrMsRO+J3DpGJzAue3Q4oFKOhY/NNk99a5DzIkci7C
-         ZJb2YjabX8xX7iWQ3VYGR+z9gbaRyQsOR2f9x+nOYm3p81f/4PGYjMZBFSOQpBuxCYWg
-         iHN5941cxDC0ZQBzXlG/TNLxt7o1eFrXcZ/AaswH307dq5a+Es7NyEuCHCwtiEohtvPi
-         tLCB9aurJDnkCxy0oOHeGCyYp/xzj+8vWr3fwQqfUo3mJe9Fe+bQZzdsFlxevwRgQW5K
-         eesg==
-X-Gm-Message-State: AOAM531ghke2z/dp0eO+lVfkVAaUN1deJ/VfqSGznONruoOjtBMQDDU9
-        SwgcoA9eEh9PTGzJcoHhtyp/NnFrYQLJCwMB65xXNuXoLU3KVZh1dfTOiJxT/cLGxQEXOQwwMCy
-        XicFi06NUPDVvtUan5oeJrdgD
-X-Received: by 2002:a05:6402:c03:: with SMTP id co3mr32538031edb.133.1620227973212;
-        Wed, 05 May 2021 08:19:33 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwjGGeHQ9vmnmQDxg5lqz7wEOdbz3LdKGpDTxIsZiw1ioXyJ+Fb0quPGbmmpOxMmgPfGxOtkA==
-X-Received: by 2002:a05:6402:c03:: with SMTP id co3mr32538005edb.133.1620227973013;
-        Wed, 05 May 2021 08:19:33 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id g8sm2954220ejt.25.2021.05.05.08.19.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 08:19:32 -0700 (PDT)
-Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on
- CONFIG_ACPI
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Paul Menzel <paulepanter@users.sourceforge.net>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@denx.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-References: <20210504174019.2134652-1-linux@roeck-us.net>
- <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
- <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net>
- <20210505093235.00007c38@Huawei.com> <20210505093438.00005238@Huawei.com>
- <CAHp75VezSD_TcbQ_OBZXPo-szTr-qwOT9oU+7h7W6nk65ZLBhA@mail.gmail.com>
- <22212bbc-1dc7-c7e7-1954-ebb911754246@redhat.com>
- <CAHp75Vf+2oVttGhAcpcw-ZsAXno01yuKWz0Xiti_7beHCR81ng@mail.gmail.com>
- <ede732cb-4a23-e5bc-6802-0280dc232876@redhat.com>
- <CAHp75VciMKfxPvKmY349327FcoUcUMeFnvqkniw2erCyb71BoQ@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <3121ad81-1dc3-eace-a87c-47ebafa2d615@redhat.com>
-Date:   Wed, 5 May 2021 17:19:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Wed, 5 May 2021 11:21:12 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-178-BQ8_e9FxPlmU9ZviEyU3mQ-1; Wed, 05 May 2021 16:20:12 +0100
+X-MC-Unique: BQ8_e9FxPlmU9ZviEyU3mQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 16:20:11 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Wed, 5 May 2021 16:20:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     =?utf-8?B?J1BhbGkgUm9ow6FyJw==?= <pali@kernel.org>,
+        Lukas Wunner <lukas@wunner.de>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        =?utf-8?B?TWFyZWsgQmVow7pu?= <kabel@kernel.org>
+Subject: RE: xhci_pci & PCIe hotplug crash
+Thread-Topic: xhci_pci & PCIe hotplug crash
+Thread-Index: AQHXQa7y6ld2lnJxqUeg15sWnzByEKrU/keg
+Date:   Wed, 5 May 2021 15:20:11 +0000
+Message-ID: <ea58430d088742a1910475a680fb1de5@AcuMS.aculab.com>
+References: <20210505120117.4wpmo6fhvzznf3wv@pali>
+ <YJKK7SDIaeH1L/fC@kroah.com> <20210505123346.kxfpumww5i4qmhnk@pali>
+ <20210505124402.GB29101@wunner.de> <20210505130240.lmryb26xffzkg4pl@pali>
+In-Reply-To: <20210505130240.lmryb26xffzkg4pl@pali>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VciMKfxPvKmY349327FcoUcUMeFnvqkniw2erCyb71BoQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 5/5/21 4:18 PM, Andy Shevchenko wrote:
-> On Wed, May 5, 2021 at 5:11 PM Hans de Goede <hdegoede@redhat.com> wrote:
->> On 5/5/21 3:53 PM, Andy Shevchenko wrote:
->>> On Wed, May 5, 2021 at 4:39 PM Hans de Goede <hdegoede@redhat.com> wrote:
->>>> On 5/5/21 3:22 PM, Andy Shevchenko wrote:
->>>>> On Wed, May 5, 2021 at 11:36 AM Jonathan Cameron
->>>>> <Jonathan.Cameron@huawei.com> wrote:
->>>>>> On Wed, 5 May 2021 09:32:35 +0100
->>>>>> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
->>>>>>> On Tue, 4 May 2021 11:00:52 -0700
->>>>>>> Guenter Roeck <linux@roeck-us.net> wrote:
->>>>>
->>>>> +Cc: Paul (I hope you are related to coreboot somehow and can
->>>>> communicate this further), Pavel and Jacek (LED subsystem suffered
->>>>> with this as well), Hans, Rafael and linux-acpi@
->>>>>
->>>>>>> Dropping the ones we are fairly sure are spurious is even better!
->>>>>>
->>>>>> If I get bored I'll just do a scrub of all the instances of this that
->>>>>> you haven't already cleaned up.  It's worth noting that we do
->>>>>> know some highly suspicious looking entries are out there in the wild.
->>>>>
->>>>> I have counted ~60 users of acpi_device_id in IIO. Brief looking at
->>>>> the IDs themselves rings an alarm about half of them.
->>>>>
->>>>> So, here we may have a chicken and egg problem, i.e. somebody has been
->>>>> using (or used) fake IDs from Linux kernel in the real products. What
->>>>> I can consider as a course of action is the following:
->>>>> 1. Clean up (by removing as quickly as possible) the IDs that have no
->>>>> proof to be real from the Linux kernel sources (perhaps marked as
->>>>> stable material)
->>>>> 2. Notify ASWG / UEFI forum about all IDs that abuse ACPI
->>>>> specification and are in Linux kernel, so at least we can keep some
->>>>> kind of "reserved/do not use" list on the official level (Rafael?)
->>>>> 3. Do not accept any IDs without an evidence provided that they are
->>>>> being in use in the real products (this should be done on Linux
->>>>> maintainer level in all subsystems that accept drivers
->>>>
->>>> So my 2 cents on this are that we need to be very careful with
->>>> removing "bogus" ACPI-ids.
->>>>
->>>> A couple of examples from a quick check under drivers/iio/accel:
->>>>
->>>> drivers/iio/accel/bmc150-accel-i2c.c:
->>>>
->>>> static const struct i2c_device_id bmc150_accel_id[] = {
->>>>         {"bmc150_accel",        bmc150},
->>>>         {"bmi055_accel",        bmi055},
->>>>         {"bma255",              bma255},
->>>>         {"bma250e",             bma250e},
->>>>         {"bma222",              bma222},
->>>>         {"bma222e",             bma222e},
->>>>         {"bma280",              bma280},
->>>>         {}
->>>> };
->>>>
->>>> static const struct acpi_device_id bmc150_accel_acpi_match[] = {
->>>>         {"BSBA0150",    bmc150},
->>>>         {"BMC150A",     bmc150},
->>>>         {"BMI055A",     bmi055},
->>>>         {"BMA0255",     bma255},
->>>>         {"BMA250E",     bma250e},
->>>>         {"BMA222",      bma222},
->>>>         {"BMA222E",     bma222e},
->>>>         {"BMA0280",     bma280},
->>>>         {"BOSC0200"},
->>>>         { },
->>>> };
->>>>
->>>> With the exception of the  "BSBA0150" and "BOSC0200"
->>>> ids, these look like they were invented. But at least the
->>>> "BMA250E" one is actually being used! The other BMA###?
->>>> ones are probably fake, but given that the "BMA250E"
->>>> one is actually real ...
->>>>
->>>> drivers/iio/accel/bmc150-accel-spi.c
->>>>
->>>> This uses the same set of ACPI ids as bmc150-accel-i2c.c
->>>> minus the "BOSC0200" one. I'm not aware if these
->>>> being used in spi mode on any x86 devices, but again
->>>> I'm not 100% sure ...
->>>>
->>>> drivers/iio/accel/da280.c
->>>>
->>>> static const struct acpi_device_id da280_acpi_match[] = {
->>>>         {"MIRAACC", da280},
->>>>         {},
->>>> };
->>>> MODULE_DEVICE_TABLE(acpi, da280_acpi_match);
->>>>
->>>> This looks like a fake-id, but it was actually added
->>>> in a separate commit adding ACPI support because the
->>>> chip is used with this id on a Linx 820 Windows tablet.
->>>>
->>>> So figuring out of any ids are real or not is really tricky
->>>> and removing them if they are real will lead to regressions.
->>>>
->>>> So summarizing IMHO we need to be careful and not just
->>>> start removing a whole bunch of these...
->>>
->>> That's all true. However, I have a few hints on how to distinguish
->>> them (fake ones):
->>> 1. The ID has been added from day 1 with I2C or SPI ID table with just
->>> capitalized name
->>> 2. If there are a few drivers by the same author and at least one of
->>> the contributions has confirmed fake ID
->>> 3. The ID is single in the list and mimics the part number (capitalized form)
->>> 4. Google/DuckDuckGo/etc searches give no meaningful results
->>>
->>> Either combination of the above can be a good hint to at least be
->>> sceptical that it's being used
->> May I suggest for accelerometers to also grep for the id in
->> 60-sensors.hwdb from systemd ?  E.g. the BMA250E id can be found
->> there.
-> 
-> Right, it's a very good suggestion! It will definitely tell us what
-> may not be removed even if we don't see any evidence otherwise.
-> 
->>> So, Hans, as you already noticed, drivers with a long list of IDs or
->>> when ID added separately can be considered less fakish, but we really
->>> want evidence of the hardware that has it.
->>
->> If you want to move ahead with pruning some of these please Cc me
->> on the patches, then I'll check them against my collection of
->> Bay and Cherry Trail DSDTs, which are devices where these sensors
->> are often found.
-> 
-> Currently the scope is of
-> AOS2315
-> BME0680
-> STK8312
-
-Ok I cannot find any reference to those in the DSDT-s which I have,
-nor in systemd's hwdb.
-
-Regards,
-
-Hans
+RnJvbTogUGFsaSBSb2jDoXINCj4gU2VudDogMDUgTWF5IDIwMjEgMTQ6MDMNCi4uLg0KPiBJIGFs
+cmVhZHkgZmlndXJlZCBvdXQgdGhhdCBDUFUgcmVjZWl2ZSBleHRlcm5hbCBhYm9ydCBhbHNvIHdo
+ZW4gdHJ5aW5nDQo+IHRvIGlzc3VlIGEgbmV3IFBJTyB0cmFuc2ZlciBmb3IgYWNjZXNzaW5nIFBD
+SSBjb25maWcgc3BhY2Ugd2hpbGUNCj4gcHJldmlvdXMgdHJhbnNmZXIgaGFzIG5vdCBmaW5pc2hl
+ZCB5ZXQuIEFuZCBhbHNvIHRoZXJlIGlzIG5vIHdheSAoYXQNCj4gbGVhc3QgaW4gZG9jdW1lbnRh
+dGlvbikgd2hpY2ggYWxsb3dzIHRvICJtYXNrIiB0aGlzIGV4dGVybmFsIGFib3J0LiBCdXQNCj4g
+dGhpcyBpc3N1ZSBjYW4gYmUgZml4ZWQgaW4gcGNpLWFhcmR2YXJrLmMgZHJpdmVyIHRvIGRpc2Fs
+bG93IGFjY2VzcyB0bw0KPiBjb25maWcgc3BhY2Ugd2hpbGUgcHJldmlvdXMgdHJhbnNmZXIgaXMg
+c3RpbGwgcnVubmluZyAoSSB3aWxsIHNlbmQgcGF0Y2gNCj4gZm9yIHRoaXMgb25lKS4NCg0KTXkg
+dGhlIHNvdW5kIG9mIHRoZSBhYm92ZSB5b3UgbmVlZCB0byBwdXQgYSBnbG9iYWwgc3BpbmxvY2sg
+YXJvdW5kDQphbGwgUENJZSBjb25maWcgc3BhY2UgYWNjZXNzZXMuDQoNCklzIHRoaXMgdGhlIGhv
+cnJpZCBoYXJkd2FyZSB0aGF0IGNhbid0IGRvIGEgJ25vcm1hbCcgUENJZSB0cmFuc2Zlcg0Kd2hp
+bGUgYSBjb25maWcgc3BhY2UgYWNjZXNzIGlzIGluIHByb2dyZXNzPw0KSWYgdGhhdCBpdCB0cnVl
+IHRoZW4geW91IGhhdmUgYmlnZ2VyIHByb2JsZW1zLg0KRXNwZWNpYWxseSBpZiBpdCBpcyBhbiBT
+TVAgc3lzdGVtLg0KDQo+IFNvIHNlZW1zIHRoYXQgUENJZSBjb250cm9sbGVyIEhXIHRyaWdnZXJz
+IHRoZXNlIGV4dGVybmFsIGFib3J0cyB3aGVuDQo+IGRldmljZSBvbiBQQ0llIGJ1cyBpcyBub3Qg
+YWNjZXNzaWJsZSBhbnltb3JlLg0KPiANCj4gSWYgdGhpcyBpc3N1ZSBpcyByZWFsbHkgY2F1c2Vk
+IGJ5IE1NSU8gYWNjZXNzIGZyb20geGhjaSBkcml2ZXIgd2hlbg0KPiBkZXZpY2UgaXMgbm90IGFj
+Y2Vzc2libGUgb24gdGhlIGJ1cyBhbnltb3JlLCBjYW4gd2UgZG8gc29tZXRoaW5nIHRvDQo+IHBy
+ZXZlbnQgdGhpcyBrZXJuZWwgY3Jhc2g/IFNvbWVob3cgbWFzayB0aGF0IGV4dGVybmFsIGFib3J0
+IGluIGtlcm5lbA0KPiBmb3IgYSB0aW1lIGR1cmluZyBNTUlPIGFjY2Vzcz8NCg0KSWYgaXQgaXMg
+YSBjeWNsZSBhYm9ydCB0aGVuIHRoZSBpbnRlcnJ1cHRlZCBhZGRyZXNzIGlzIHByb2JhYmx5DQp0
+aGF0IG9mIHRoZSBNTUlPIGluc3RydWN0aW9uLg0KU28geW91IG5lZWQgdG8gY2F0Y2ggdGhlIGFi
+b3J0LCBlbXVsYXRlIHRoZSBpbnN0cnVjdGlvbiBhbmQNCnRoZW4gcmV0dXJuIHRvIHRoZSBuZXh0
+IG9uZS4NCg0KVGhpcyBwcm9iYWJseSByZXF1aXJlcyBhbiBleGNlcHRpb24gdGFibGUgY29udGFp
+bmluZyB0aGUgYWRkcmVzcw0Kb2YgZXZlcnkgcmVhZGIvdy9sKCkgaW5zdHJ1Y3Rpb24uDQoNCklm
+IHlvdSBnZXQgYSBzaW1pbGFyIGVycm9yIG9uIHdyaXRlcyBpdCBpcyBsaWtlbHkgdG8gYmUgYSBm
+ZXcNCmluc3RydWN0aW9ucyBhZnRlciB0aGUgYWN0dWFsIHdyaXRlYi93L2woKSBpbnN0cnVjdGlv
+bi4NCldyaXRlIGFyZSBub3JtYWxseSAncG9zdGVkJyBhbmQgYXN5bmNocm9ub3VzLg0KDQpJZiB5
+b3UgYXJlIHJlYWxseSBsdWNreSB5b3UgY2FuIGdldCBlbm91Z2ggc3RhdGUgb3V0IG9mIHRoZQ0K
+YWJvcnQgaGFuZGxlciB0byBmaXh1cC9pZ25vcmUgdGhlIGN5Y2xlIHdpdGhvdXQgYW4NCmV4Y2Vw
+dGlvbiB0YWJsZS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
+QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
+aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
