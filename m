@@ -2,101 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8314373E28
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:10:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A3B5373E2C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:10:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233206AbhEEPL0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:11:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47302 "EHLO
+        id S233322AbhEEPLg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:11:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47346 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhEEPLZ (ORCPT
+        with ESMTP id S233266AbhEEPLe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:11:25 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01050C061574;
-        Wed,  5 May 2021 08:10:29 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id a36so2914586ljq.8;
-        Wed, 05 May 2021 08:10:28 -0700 (PDT)
+        Wed, 5 May 2021 11:11:34 -0400
+Received: from mail-wm1-x32f.google.com (mail-wm1-x32f.google.com [IPv6:2a00:1450:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BE87DC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 08:10:37 -0700 (PDT)
+Received: by mail-wm1-x32f.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so1338310wmi.5
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:10:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DT3Fc4xJZnxmnZHXZAmBJ/q64yGckxL+AeHtyP2cBMA=;
-        b=fIwIEfnbqACpLW7PZ4PS0H25eBj/ic4NKx1VRPZqCEG6XPM6NG085JoYW3XUyhd133
-         CZeqeo3qohWoRASDQsNvEOiM9r3u6pfTp7QoMZNjdXXnN6TaSXTWZj+8OnxHzrjhVzAO
-         SX5RotyYqGe7YAeCqx9xH79DkRWrX0miBhvpalhZr41k3Pz0MJG7wvaUU2pZF0iW99EM
-         hKrqxwWr0phOdqGsTrXZgZdNGU9Of+O60nPDM2qmXw2Kgixus4hLH38RRr5s79uOwqGm
-         tDUZnRhQXilVKnICxxcYJzb1YquP5DDqyPytWzGg4zc+YOhvD0/fGvWxKHzJievhiPDM
-         +4wg==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=DVmLzOMSAp4MzyBbE9IavSC4LhAdh9HISmFzp/3ey4M=;
+        b=PX1CStE/I9J3q2IioHK6rLAPgNG2uQMGooDPLqVfOPEbs5iV4Dysl8GxmNZ9f7HnEG
+         dHUkYska5PMvwywUux3KhNAAXJsKPPe3E8yk/53tMJVYrDYuHwO8CjNOXdvn7r6a5iHN
+         awUELTnnM6GVm0sdm3u4KLCz7hLYNRvaOVgwkomXWWNBKuZXzo9YiyhchLAmO+fyWo9V
+         kBsPsIiKVQiKlWFKE84faQ1yUgkIE6XFlowfw3i7RkByMrRGCitnNEhZ37Keat+aOcYZ
+         xsOKNbf4G4D2SLyPIHJXbXrpNkL/DPS808MqexuN8D5esQvnqUfYsGkrV9MKcCJMNmvE
+         v+wQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DT3Fc4xJZnxmnZHXZAmBJ/q64yGckxL+AeHtyP2cBMA=;
-        b=Q4xK3CgOTQ3F1suaYb9Vmtjh4oKVdRXngqVPwolXn1PUkfRtTj8IGReqwd7/Q3uV1M
-         E7m5P0GrmvGaRZgAPAPOQgYIlV5yDlmrFRIszKagnZHIrhJfngG8cExNtODn/q6uqfQb
-         LzbyeDHwBoEWBYwWVCgZ6pc69dEii6+8Ee2A20xL+md3G14kmEwLrIKrHCw8g+IeqpRe
-         DuLQ731NBecscN0ZEo4YkpShBY8AmZsKYmikvKEBCsyEBgQwlxSMyygVCHF7+SU+o20A
-         nTVl91YjewC1G/XB7YiNecxz7CPBRlpNcZ3KYs0oQXKmpv/x2vQJxUCBbe4Iy0qyL3KN
-         U1Zg==
-X-Gm-Message-State: AOAM532XjP0lVKTWc7PMkL0QW0SbU9JTBqsGjn7NVvS4LIyaLxQw34xQ
-        okNFBJKnhOsM0qWMgs4LI5zubPpOjXVW0mt6HVc=
-X-Google-Smtp-Source: ABdhPJy5FJWNNk1Xa6D5PAeWLf2N3ogOqZtlZ02r4136vzWJT+UDlPMVz7qSWfswxDR11vi8tFTa8STDaGSDkkC57TA=
-X-Received: by 2002:a2e:9d85:: with SMTP id c5mr21463224ljj.95.1620227427382;
- Wed, 05 May 2021 08:10:27 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=DVmLzOMSAp4MzyBbE9IavSC4LhAdh9HISmFzp/3ey4M=;
+        b=A3Q+YsU/yVXCkCdJ9Y7y7imjRH51zQ/FKCeFTXztaE+lQs4KFJGNtx2ZWozLF5h0vZ
+         1l3QC9PncDbw3AkQotJE3oP9AXZiyXiUCD8B+FOYS6QgCMcCy5mZMHD5JywPu+v3SfGk
+         qPEU9pB3B004o15tlSHyHyxsC2dYhInWwv3nyXtR+jTMZtI3A9gAaoGXzZ5xh1dC2JJC
+         eth41ENSMuCgPBbHSEtYVS+ZVZI4Wpy51MI/thXRkRWuD/UZkOyUiFyca98GgLzUDHM9
+         lAPtmSkY78bcD7vgGhU8HdxKy0zYz6MXgUF62NApZW524oSDgw++h7vXTbf+A//oX8My
+         pDHA==
+X-Gm-Message-State: AOAM531RNI4ViBHV5y/PJg6/MALn6NfHDYANhn2R48+PEgLAtQkMiw5z
+        b+iyrvDIAK9cwLkx0eZ/fg9sqw==
+X-Google-Smtp-Source: ABdhPJy8nlJ3qXwtvGqfZLn39XjnqS6y85vyrZ8H+l0LX0opXU8h1lq+H+YOBMHVhce9a2ebnvx21w==
+X-Received: by 2002:a05:600c:228b:: with SMTP id 11mr10351164wmf.6.1620227434761;
+        Wed, 05 May 2021 08:10:34 -0700 (PDT)
+Received: from dell ([91.110.221.215])
+        by smtp.gmail.com with ESMTPSA id c14sm8482425wrt.77.2021.05.05.08.10.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 08:10:34 -0700 (PDT)
+Date:   Wed, 5 May 2021 16:10:32 +0100
+From:   Lee Jones <lee.jones@linaro.org>
+To:     Min Li <min.li.xe@renesas.com>
+Cc:     "sameo@linux.intel.com" <sameo@linux.intel.com>,
+        "grant.likely@linaro.org" <grant.likely@linaro.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
+Subject: Re: [PATCH mfd v1] mfd: Add Renesas Synchronization Management Unit
+ (SMU) support
+Message-ID: <20210505151032.GA5109@dell>
+References: <1619466246-11198-1-git-send-email-min.li.xe@renesas.com>
+ <TYCPR01MB6608C23DE6681CF77729C04ABA599@TYCPR01MB6608.jpnprd01.prod.outlook.com>
 MIME-Version: 1.0
-References: <20210505140015.60013-1-krzysztof.kozlowski@canonical.com>
- <CAOCHtYiicw5bqaZU5g2QGJHG3DZKRQUwAr08NZHw81S9=hmrgw@mail.gmail.com> <7ced6d2f-7107-e612-6787-63e38e5e3edd@canonical.com>
-In-Reply-To: <7ced6d2f-7107-e612-6787-63e38e5e3edd@canonical.com>
-From:   Robert Nelson <robertcnelson@gmail.com>
-Date:   Wed, 5 May 2021 10:10:01 -0500
-Message-ID: <CAOCHtYhPGiEX1-iBDr2SzktBZ8a_8TqYQu0NLrsqjkz48rfSaw@mail.gmail.com>
-Subject: Re: [PATCH] ARM: dts: am5729-beagleboneai: drop unused Broadcom WiFi properties
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     alexey.roslyakov@gmail.com, Drew Fustini <drew@beagleboard.org>,
-        Jason Kridner <jkridner@beagleboard.org>,
-        =?UTF-8?Q?Beno=C3=AEt_Cousson?= <bcousson@baylibre.com>,
-        Tony Lindgren <tony@atomide.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-omap <linux-omap@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux kernel <linux-kernel@vger.kernel.org>,
-        linux-wireless@vger.kernel.org, brcm80211-dev-list.pdl@broadcom.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <TYCPR01MB6608C23DE6681CF77729C04ABA599@TYCPR01MB6608.jpnprd01.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > I don't see the brcmfmac developers actually fixing it, as "out of
-> > tree" work for brcmfmac is 100+ patches long:
->
->
-> Thanks for explanation. I understand these are actually used by
-> out-of-tree driver? That's a valid reason to add them to the binding then...
->
-> >
-> > https://www.cypress.com/documentation/software-and-drivers-archive/wifi-bt-linux-archive?source=search&cat=other
->
-> Requires login - I am not able to get the sources.
+On Wed, 05 May 2021, Min Li wrote:
 
-Sorry Krzysztof,
+> Hi guys
+> 
+> Can some one please review this patch? It's been submitted back and
+> forth a few months now without a meaningful review. Thanks for your
+> attention for this issue.
 
-I forgot that a login is required, here is a quick mirror (with a
-screenshot of the page.)
+Please be mindful of the release cycle.
 
-https://rcn-ee.net/workshops/cypress-fmac/
+The merge-window is currently open.
 
-Screenshot: https://rcn-ee.net/workshops/cypress-fmac/brcm.png
+A review will be conducted shortly after -rc1 has been released.
 
-There patch with that binding:
+Please be patient.
 
-https://rcn-ee.net/workshops/cypress-fmac/cypress-fmac-v5.4.18-2021_0114/cypress-patch-v5.4.18-2021_0114/cypress-patch/0002-non-upstream-add-sg-parameters-dts-parsing.patch
-
-Thank You!
-
-
-Regards,
-
---
-Robert Nelson
-https://rcn-ee.com/
+-- 
+Lee Jones [李琼斯]
+Senior Technical Lead - Developer Services
+Linaro.org │ Open source software for Arm SoCs
+Follow Linaro: Facebook | Twitter | Blog
