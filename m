@@ -2,194 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 668A3373787
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:28:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2F57373792
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:31:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232389AbhEEJ3i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:29:38 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:59957 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232860AbhEEJ3U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:29:20 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FZrx21QSvz9sT7;
-        Wed,  5 May 2021 11:28:22 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id rhT9k94579dF; Wed,  5 May 2021 11:28:22 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FZrx13t2Bz9sXF;
-        Wed,  5 May 2021 11:28:21 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 34A2F8B7CB;
-        Wed,  5 May 2021 11:28:21 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 5jr3cojWsp3N; Wed,  5 May 2021 11:28:21 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id D62748B7D2;
-        Wed,  5 May 2021 11:28:20 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id A94E96484E; Wed,  5 May 2021 09:28:20 +0000 (UTC)
-Message-Id: <36e30ead7740a078cbfa270f45541205aa3656bf.1620206886.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <f20b416b3ef2064b3cad1f0f87ceb7cb8c59d309.1620206886.git.christophe.leroy@csgroup.eu>
-References: <f20b416b3ef2064b3cad1f0f87ceb7cb8c59d309.1620206886.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH 2/2] powerpc/32s: Convert switch_mmu_context() to C
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Wed,  5 May 2021 09:28:20 +0000 (UTC)
+        id S232093AbhEEJcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:32:14 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:57455 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231265AbhEEJcM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 05:32:12 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id eDs0lkg6lyEWweDs3lupll; Wed, 05 May 2021 11:31:14 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1620207074; bh=1f2m7EYMttRsQnXbEhfemDohFdPiPwDAM81ywOimWUo=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=UpLNkD2W8VUOtGSl5shiX4yuPXA0FjY552bHDeayXXJ3caN/njoWO3i24ZqKUoQ8V
+         4C55dfqvBdOyXSR2XHk8woIKVgmVRmJvEclx0cgRMPjKt3eqld6Xg3yJw3fVIeiiO7
+         lWDTTnthGim5DcvltKy/paUSJG7i+EWSpyl+M13uHXJpvcZg97dZnfwzOVdudWaS+3
+         uIKmF+QRREUN0XStCcjKSJgN7RlO+z/FkgxdwWu1haLHswZy89QL7YXzgufeCq3vcQ
+         qaEfAr7BZ5h8/hKyMiSNE5i7FNeInPd8FbqDMs10eoB58WStywZZ8CaH4aVReqzoUY
+         KGfgCxR1nrb+w==
+Subject: Re: [PATCH v3] media:exynos4-is: Fix a use after free in
+ isp_video_release
+To:     Lv Yunlong <lyl2019@mail.ustc.edu.cn>, s.nawrocki@samsung.com,
+        mchehab@kernel.org, krzk@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210427132734.5212-1-lyl2019@mail.ustc.edu.cn>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <44f264d9-e039-66b6-6e4b-1a5b3c386aa4@xs4all.nl>
+Date:   Wed, 5 May 2021 11:31:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
+MIME-Version: 1.0
+In-Reply-To: <20210427132734.5212-1-lyl2019@mail.ustc.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfBUyQI064gF4n7oUEovx3XiNBp/e9PzY0hj0Lc/zTjmgz1NsUparW1XpjD4P/9bfkAy2U1EmrVbxjKrdXDC0Z0MTg937lbs2QDPtutWYJCvvl46rkHYr
+ fIN3YjCzyhLXAD/57J2rV2YQ1EOdCiToNxcGcur35RsIIVAZW25TXzE6za5DytSGVvsyqtYaQvfntzHb3nxI8wKbt8SKgR//emp7Ph2B51dlEoA2jzC3BiG4
+ Csf+FjxuRSlEc4HE9uy65x34UWjhva3UzRQC1gz2OzmssN6a5VeN3P6Pu0NpE3VgC4aLpqLg3mvG1UtcpQUIfIRTObhUGSbhpz4HFRvPTscgWcTI2erqR7R6
+ oRLbhGM31if61UpPUzJAhN0yPX9ta703jdZy2hl3/KJS5FuIcODwCd+fOgAjLoouNXxMRu8o9WhLGVLoaOZFiO/MlmPNI+TfetsJDsX4QkmewDSAOZg=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-switch_mmu_context() does things that can easily be done in C.
+Hi Lv Yunlong,
 
-For updating user segments, we have update_user_segments().
+On 27/04/2021 15:27, Lv Yunlong wrote:
+> In isp_video_release, file->private_data is freed via
+> _vb2_fop_release()->v4l2_fh_release(). But the freed
+> file->private_data is still used in v4l2_fh_is_singular_file()
+> ->v4l2_fh_is_singular(file->private_data), which is a use
+> after free bug.
+> 
+> My patch sets file->private_data to NULL after _vb2_fop_release()
+> to avoid the use after free, and uses a variable 'is_singular_file'
+> to keep the original function unchanged.
 
-As mentionned in commit b5efec00b671 ("powerpc/32s: Move KUEP
-locking/unlocking in C"), update_user_segments() has the loop
-unrolled which is a significant performance gain.
+Actually, it is the use of 'is_singular_file' that fixes the bug,
+the 'file->private_data = NULL;' is unnecessary here.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/asm-offsets.c      |  5 ---
- arch/powerpc/kernel/head_book3s_32.S   | 53 +-------------------------
- arch/powerpc/mm/book3s32/mmu_context.c | 27 +++++++++++++
- 3 files changed, 28 insertions(+), 57 deletions(-)
+That said, it would be a really good idea if in a separate patch you
+make v4l2_fh_release() more robust by setting filp->private_data to
+NULL after the kfree(fh).
 
-diff --git a/arch/powerpc/kernel/asm-offsets.c b/arch/powerpc/kernel/asm-offsets.c
-index 28af4efb4587..459829805177 100644
---- a/arch/powerpc/kernel/asm-offsets.c
-+++ b/arch/powerpc/kernel/asm-offsets.c
-@@ -86,7 +86,6 @@ int main(void)
- 	OFFSET(PACA_CANARY, paca_struct, canary);
- #endif
- #endif
--	OFFSET(MMCONTEXTID, mm_struct, context.id);
- #ifdef CONFIG_PPC64
- 	DEFINE(SIGSEGV, SIGSEGV);
- 	DEFINE(NMI_MASK, NMI_MASK);
-@@ -368,10 +367,6 @@ int main(void)
- #endif
- #endif
- 
--#ifndef CONFIG_PPC64
--	OFFSET(MM_PGD, mm_struct, pgd);
--#endif /* ! CONFIG_PPC64 */
--
- 	/* About the CPU features table */
- 	OFFSET(CPU_SPEC_FEATURES, cpu_spec, cpu_features);
- 	OFFSET(CPU_SPEC_SETUP, cpu_spec, cpu_setup);
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index 065178f19a3d..c1d2f0d1d6b2 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -1023,58 +1023,6 @@ END_MMU_FTR_SECTION_IFCLR(MMU_FTR_HPTE_TABLE)
- 	mtspr	SPRN_SRR1,r4
- 	rfi
- 
--/*
-- * void switch_mmu_context(struct mm_struct *prev, struct mm_struct *next);
-- *
-- * Set up the segment registers for a new context.
-- */
--_ENTRY(switch_mmu_context)
--	lwz	r3,MMCONTEXTID(r4)
--	cmpwi	cr0,r3,0
--	blt-	4f
--	mulli	r3,r3,897	/* multiply context by skew factor */
--	rlwinm	r3,r3,4,8,27	/* VSID = (context & 0xfffff) << 4 */
--#ifdef CONFIG_PPC_KUEP
--	oris	r3, r3, SR_NX@h	/* Set Nx */
--#endif
--#ifdef CONFIG_PPC_KUAP
--	oris	r3, r3, SR_KS@h	/* Set Ks */
--#endif
--	li	r0,NUM_USER_SEGMENTS
--	mtctr	r0
--
--#ifdef CONFIG_BDI_SWITCH
--	/* Context switch the PTE pointer for the Abatron BDI2000.
--	 * The PGDIR is passed as second argument.
--	 */
--	lwz	r4, MM_PGD(r4)
--	lis	r5, abatron_pteptrs@ha
--	stw	r4, abatron_pteptrs@l + 0x4(r5)
--#endif
--BEGIN_MMU_FTR_SECTION
--#ifndef CONFIG_BDI_SWITCH
--	lwz	r4, MM_PGD(r4)
--#endif
--	tophys(r4, r4)
--	rlwinm	r4, r4, 4, 0xffff01ff
--	mtspr	SPRN_SDR1, r4
--END_MMU_FTR_SECTION_IFCLR(MMU_FTR_HPTE_TABLE)
--	li	r4,0
--	isync
--3:
--	mtsrin	r3,r4
--	addi	r3,r3,0x111	/* next VSID */
--	rlwinm	r3,r3,0,8,3	/* clear out any overflow from VSID field */
--	addis	r4,r4,0x1000	/* address of next segment */
--	bdnz	3b
--	sync
--	isync
--	blr
--4:	trap
--	EMIT_BUG_ENTRY 4b,__FILE__,__LINE__,0
--	blr
--EXPORT_SYMBOL(switch_mmu_context)
--
- /*
-  * An undocumented "feature" of 604e requires that the v bit
-  * be cleared before changing BAT values.
-@@ -1312,5 +1260,6 @@ swapper_pg_dir:
- /* Room for two PTE pointers, usually the kernel and current user pointers
-  * to their respective root page table.
-  */
-+	.globl	abatron_pteptrs
- abatron_pteptrs:
- 	.space	8
-diff --git a/arch/powerpc/mm/book3s32/mmu_context.c b/arch/powerpc/mm/book3s32/mmu_context.c
-index 218996e40a8e..3fcac03b125f 100644
---- a/arch/powerpc/mm/book3s32/mmu_context.c
-+++ b/arch/powerpc/mm/book3s32/mmu_context.c
-@@ -111,3 +111,30 @@ void __init mmu_context_init(void)
- 	context_map[0] = (1 << FIRST_CONTEXT) - 1;
- 	next_mmu_context = FIRST_CONTEXT;
- }
-+
-+void switch_mmu_context(struct mm_struct *prev, struct mm_struct *next, struct task_struct *tsk)
-+{
-+	unsigned long id = next->context.id;
-+	unsigned long val;
-+
-+	if (!id)
-+		panic("mm_struct %p has no context ID", next);
-+
-+	isync();
-+
-+	val = ((id * 897) & 0xfffff) << 4;
-+	if (IS_ENABLED(CONFIG_PPC_KUEP))
-+		val |= SR_NX;
-+	if (IS_ENABLED(CONFIG_PPC_KUAP))
-+		val |= SR_KS;
-+
-+	update_user_segments(val);
-+	mb();	/* sync */
-+	isync();
-+
-+	if (IS_ENABLED(CONFIG_BDI_SWITCH))
-+		abatron_pteptrs[1] = next->pgd;
-+
-+	if (!mmu_has_feature(MMU_FTR_HPTE_TABLE))
-+		mtspr(SPRN_SDR1, rol32(__pa(next->pgd), 4) & 0xffff01ff);
-+}
--- 
-2.25.0
+Regards,
+
+	Hans
+
+> 
+> Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
+> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+> ---
+>  drivers/media/platform/exynos4-is/fimc-isp-video.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+> index 612b9872afc8..c07dcb0bccc2 100644
+> --- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
+> +++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+> @@ -306,17 +306,21 @@ static int isp_video_release(struct file *file)
+>  	struct fimc_is_video *ivc = &isp->video_capture;
+>  	struct media_entity *entity = &ivc->ve.vdev.entity;
+>  	struct media_device *mdev = entity->graph_obj.mdev;
+> +	bool is_singular_file;
+>  
+>  	mutex_lock(&isp->video_lock);
+>  
+> -	if (v4l2_fh_is_singular_file(file) && ivc->streaming) {
+> +	is_singular_file = v4l2_fh_is_singular_file(file);
+> +
+> +	if (is_singular_file && ivc->streaming) {
+>  		media_pipeline_stop(entity);
+>  		ivc->streaming = 0;
+>  	}
+>  
+>  	_vb2_fop_release(file, NULL);
+> +	file->private_data = NULL;
+>  
+> -	if (v4l2_fh_is_singular_file(file)) {
+> +	if (is_singular_file) {
+>  		fimc_pipeline_call(&ivc->ve, close);
+>  
+>  		mutex_lock(&mdev->graph_mutex);
+> 
 
