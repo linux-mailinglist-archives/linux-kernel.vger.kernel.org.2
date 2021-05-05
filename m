@@ -2,67 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 159173739A3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:44:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5E83739B5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:52:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233053AbhEELpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:45:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:43060 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232658AbhEELpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:45:07 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 06D1F31B;
-        Wed,  5 May 2021 04:44:11 -0700 (PDT)
-Received: from bogus (unknown [10.57.61.118])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C77A3F70D;
-        Wed,  5 May 2021 04:44:09 -0700 (PDT)
-Date:   Wed, 5 May 2021 12:44:06 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Sibi Sankar <sibis@codeaurora.org>, bjorn.andersson@linaro.org,
-        Sudeep Holla <sudeep.holla@arm.com>, swboyd@chromium.org,
-        agross@kernel.org, robh+dt@kernel.org, rjw@rjwysocki.net,
-        linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dianders@chromium.org, mka@chromium.org
-Subject: Re: [PATCH 2/2] arm64: dts: qcom: sc7280: Add cpu OPP tables
-Message-ID: <20210505114406.dawq5xvhnc6ifetb@bogus>
-References: <1619792901-32701-1-git-send-email-sibis@codeaurora.org>
- <1619792901-32701-3-git-send-email-sibis@codeaurora.org>
- <20210504144215.svmrmmsy4jtoixzv@bogus>
- <1fc9fb8d9a94909ff9b7b76d598bd266@codeaurora.org>
- <20210505084908.3lynedmblmqagr72@bogus>
- <20210505113724.fpzcizgytf55msfa@vireshk-i7>
+        id S232999AbhEELxA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:53:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232658AbhEELw6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 07:52:58 -0400
+Received: from mail-ed1-x533.google.com (mail-ed1-x533.google.com [IPv6:2a00:1450:4864:20::533])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 408D6C061574;
+        Wed,  5 May 2021 04:52:01 -0700 (PDT)
+Received: by mail-ed1-x533.google.com with SMTP id bf4so1634372edb.11;
+        Wed, 05 May 2021 04:52:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=K4SSAwHPBoZlDvDFrCeXzoT6Ev+sJfif2JM2Vh2Peds=;
+        b=ibOfNCJmlO9GjP9XA7RyhPnTE3cz/VbO+kZyT8tbzlzuUf9Ama5KXBjtPcaY02ShGn
+         p4NaSlb8KiBrF8SEWcE0kcm+Y4Hj6SeR+6dqy5RW4+hL/3dMq0Qo559owdprwX2Tv/VR
+         JqqkAVqTBeQMIMIc9pd2zqItdSzfkhviBCUVbgg7e3Lp16t7YbPoH+gDdKeoYAqT9lSC
+         Tt2xIHzcobRROmXcFYBihGx23me9ZmXlhlFAQY0OP5QEB4VO19kRV5msqoK9m3J1RHWa
+         cNpDIVrmvKVq06HbJXO//lntK/vp88IdP1OP8OYg46Be7hBeaVy8oFwrRLWFcyjtI1aG
+         vyCA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=K4SSAwHPBoZlDvDFrCeXzoT6Ev+sJfif2JM2Vh2Peds=;
+        b=qwSXN7UVoVdc667NRWaFPM1lABZK8wU6Xi35D9lKJrMLTUTUHyhtUq+qUlFgmGyZhk
+         9z9+qMkeWcNZZS5QKBUm5Y1gsJjrQWyTD8xUAPgRLHBgGfxpXMl8sri+4FHbdt8PrrKx
+         Mhz6vygfLN9IwvKg51fLgcWTl5zikTFBXQr/VRuk9E+gy1Kw83S6X2nXOiL1yxWDT5yM
+         /XN8e1Keverl/lCzSY2msSuCx1+kKKvrpAdUjtB80iJQwhdvhSBWyMNitsFuTT5gziB6
+         QwsG5WO2PR0m3ctOQR0uL/KUpIu6MdkYdo1aRQ6bI+1une6zA5yPNWWjpbOrKsVMk+jE
+         APUw==
+X-Gm-Message-State: AOAM530XWDKLgdmE4BhJMkiTU86IOf9RrBeVPYSjQoiINp1PPKn4M2gB
+        lhKffVIAcfd+KgYdb8zXETB3tNPh0fxVpf/U+NrAD89JFlE=
+X-Google-Smtp-Source: ABdhPJw/3XIaMwJJQ+xVfe/fhKbmLvdMsqVVK383RjxOPa6oLisFthQ9ApMYbaxxyLyWr+2Ciz6vmfK4G9F8EO+T/v4=
+X-Received: by 2002:aa7:dc15:: with SMTP id b21mr32329093edu.350.1620215520075;
+ Wed, 05 May 2021 04:52:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210505113724.fpzcizgytf55msfa@vireshk-i7>
-User-Agent: NeoMutt/20171215
+References: <20210505091928.22010-1-jslaby@suse.cz> <20210505091928.22010-26-jslaby@suse.cz>
+In-Reply-To: <20210505091928.22010-26-jslaby@suse.cz>
+From:   Max Filippov <jcmvbkbc@gmail.com>
+Date:   Wed, 5 May 2021 04:51:48 -0700
+Message-ID: <CAMo8Bf+Zz2P6vL=GY4LyAjL2j1V-wOTK4LaCmjnAhtXaZrWkaA@mail.gmail.com>
+Subject: Re: [PATCH 25/35] tty: remove tty_operations::chars_in_buffer for non-buffering
+To:     Jiri Slaby <jslaby@suse.cz>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-serial@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
+        Matt Turner <mattst88@gmail.com>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>, Chris Zankel <chris@zankel.net>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 05:07:24PM +0530, Viresh Kumar wrote:
-> On 05-05-21, 09:49, Sudeep Holla wrote:
-> > No my main concern is this platform uses "qcom-cpufreq-hw" driver and the
-> > fact that the OPPs are retrieved from the hardware lookup table invalidates
-> > whatever we have in DT.
+On Wed, May 5, 2021 at 2:19 AM Jiri Slaby <jslaby@suse.cz> wrote:
 >
-> Not exactly.
+> The only user of tty_ops::chars_in_buffer is tty_chars_in_buffer. And it
+> considers tty_ops::chars_in_buffer optional. In case it's NULL, zero is
+> returned. So remove all those chars_in_buffer from tty_ops which return
+> zero. (Zero means such driver doesn't buffer.)
 >
-> It disables them all, and then call dev_pm_opp_adjust_voltage() and
-> enable them again. This is how it started initially. Though the driver
-> also works if the DT doesn't have the table, in that case it calls
-> dev_pm_opp_add() for all the OPPs.
->
+> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+> c: Richard Henderson <rth@twiddle.net>
+> Cc: Ivan Kokshaysky <ink@jurassic.park.msu.ru>
+> Cc: Matt Turner <mattst88@gmail.com>
+> Cc: "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>
+> Cc: Helge Deller <deller@gmx.de>
+> Cc: Chris Zankel <chris@zankel.net>
+> Cc: Max Filippov <jcmvbkbc@gmail.com>
+> Cc: Heiko Carstens <hca@linux.ibm.com>
+> Cc: Vasily Gorbik <gor@linux.ibm.com>
+> Cc: Christian Borntraeger <borntraeger@de.ibm.com>
+> ---
+>  arch/alpha/kernel/srmcons.c         |  7 -------
+>  arch/parisc/kernel/pdc_cons.c       |  6 ------
+>  arch/xtensa/platforms/iss/console.c |  7 -------
+>  drivers/s390/char/tty3270.c         | 12 ------------
+>  drivers/tty/pty.c                   | 17 -----------------
+>  drivers/tty/vt/vt.c                 |  6 ------
+>  6 files changed, 55 deletions(-)
 
-Ah OK, if it is handled in the driver, I will shut up then 😄. I did a
-quick look at it but couldn't understand the connection, so I started
-and continued the discussion. Thanks for the confirmation. I am fine if
-it is handled.
+Acked-by: Max Filippov <jcmvbkbc@gmail.com> # xtensa
 
---
-Regards,
-Sudeep
+-- 
+Thanks.
+-- Max
