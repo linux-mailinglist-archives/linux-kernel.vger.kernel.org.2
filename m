@@ -2,99 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AAF3E373C55
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:25:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F358F373C5C
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233564AbhEEN0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:26:42 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60671 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233524AbhEEN0l (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:26:41 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620221144;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=/bpFsXMdn5eaqmMBwGxqc2rlRW2ISNHWpOEm7J8RdOs=;
-        b=PGeUyJkGaRWKAS7pRhItsg5qKX8ZxHnk7fbJGIv3k2/YAjzCjFsm8Ta7JCpHxStb1FSMD/
-        p2RhQFtB9H4jiXDHADfJcJTXwFX7VSUZZWhIAsSzP8XFa1S0Pa+XraQDHKQDQFpSSm/yHX
-        R6uaUHVWxG1YhoTKBg/IZPn0iasUIlw=
-Received: from mail-pg1-f199.google.com (mail-pg1-f199.google.com
- [209.85.215.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-351-IFdsOSmSOKui7__PxJGe0A-1; Wed, 05 May 2021 09:25:43 -0400
-X-MC-Unique: IFdsOSmSOKui7__PxJGe0A-1
-Received: by mail-pg1-f199.google.com with SMTP id b3-20020a6367030000b029020ed6abb792so1319022pgc.8
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 06:25:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/bpFsXMdn5eaqmMBwGxqc2rlRW2ISNHWpOEm7J8RdOs=;
-        b=bEOKCqbTPZH7bUwTCS3vFEZb+mmkGdye7o4yckGOwM6pfFu9yS9YYYBxfFT/hYFde8
-         euv9b2U0QSrch77QD00qkyCM/bi0B+Z4mSuJ5zWr37S8eCMQRjxtS4u9oamAzEu8IAZ1
-         B1++vYmbgxkG9CARRjPlMU/i8pEulzCBZQb/l5UUPVEsP3w2sfHHsPicAPRrUBT//rem
-         lh+pjuG3/nCHt3FXBfi81Ia3vmvUiydv8Mvqs00/OyH1oTD3+OMDJrTCDke64no+T1Zw
-         U6bm7JTHFK+SDMuqRkRAde4qvtba6Wc0WrFhpRD1rSicZ27SCPquzxHpuNaF2Aeih8fo
-         pzFg==
-X-Gm-Message-State: AOAM530KNbrTYpmhiv9mgYhA/nw//rRfwpDpnlojJcC48BvsgC3dFW+f
-        3fC/0W2BZG8ycfL6x1/Bt/LwrPX7+uimXVUEbOn9pSoam/gs23hBhZFsqT043d6rcoMxrGSxMHI
-        7UAn7MAgfPHzyuoXKJg90CHqf/10RlNM6VYvBhXnV
-X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr34741902pjr.234.1620221141868;
-        Wed, 05 May 2021 06:25:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJynLc8AHCVwjV7sToQg82XsVT77jGKQjpRW3gOLa+Ib3v9yJLpRKhvj1Cf0JJj43ujAwhVuVWLzaINnDBAk/eU=
-X-Received: by 2002:a17:90a:bb0c:: with SMTP id u12mr34741885pjr.234.1620221141608;
- Wed, 05 May 2021 06:25:41 -0700 (PDT)
+        id S233524AbhEEN2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:28:22 -0400
+Received: from m12-15.163.com ([220.181.12.15]:38139 "EHLO m12-15.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231696AbhEEN2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 09:28:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=47ptq
+        WA6x7aSpz7bIxK9lp4WhZFobeKJyXA87JbvZq0=; b=Q6SSO8Djky+uWZZkOHPaj
+        319cddPhbzFHr5xS7fT6fpiCS+8olkkTITtJTierVGeKGnw40m0EZvSMoQTPRLIh
+        5amosyX11/3WETOY64Q9siDwotRNRK8yn1xukD1jjs19U80yPtSA5tl+yh8rCm07
+        2oAqwCUep23jFJwvHevXQ8=
+Received: from mjs-Inspiron-3668.www.tendawifi.com (unknown [61.152.208.136])
+        by smtp11 (Coremail) with SMTP id D8CowADHgHTvnJJgblwaCA--.60121S4;
+        Wed, 05 May 2021 21:26:21 +0800 (CST)
+From:   meijusan <meijusan@163.com>
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        meijusan <meijusan@163.com>
+Subject: [PATCH] net/ipv4/ip_fragment:fix missing Flags reserved bit set in iphdr
+Date:   Wed,  5 May 2021 21:25:57 +0800
+Message-Id: <20210505132557.197964-1-meijusan@163.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210425173353.10231-1-mail@anirudhrb.com> <nycvar.YFH.7.76.2105051442120.28378@cbobk.fhfr.pm>
-In-Reply-To: <nycvar.YFH.7.76.2105051442120.28378@cbobk.fhfr.pm>
-From:   Benjamin Tissoires <benjamin.tissoires@redhat.com>
-Date:   Wed, 5 May 2021 15:25:30 +0200
-Message-ID: <CAO-hwJJ4u5NZ-81Tq3PGu-F9r3iUSCiKp=JUsTfuVsyd-Sxsew@mail.gmail.com>
-Subject: Re: [PATCH] usbhid: fix info leak in hid_submit_ctrl
-To:     Jiri Kosina <jikos@kernel.org>
-Cc:     Anirudh Rayabharam <mail@anirudhrb.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        syzbot+7c2bb71996f95a82524c@syzkaller.appspotmail.com,
-        Linux USB Mailing List <linux-usb@vger.kernel.org>,
-        "open list:HID CORE LAYER" <linux-input@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: D8CowADHgHTvnJJgblwaCA--.60121S4
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAFykXrW8ZFWDZrWkur4xtFb_yoW7Jr18p3
+        Z8K395Ja1xJrnrAwn7JrW3Aw4Skw1vka4akr4FyayrA34qyryFqF92gFyYqF45GrW5Zr13
+        try3t3y5Wr1DX37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNjjgUUUUU=
+X-Originating-IP: [61.152.208.136]
+X-CM-SenderInfo: xphly3xvdqqiywtou0bp/xtbB0h2JHlUMbalqOgAAsV
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 2:42 PM Jiri Kosina <jikos@kernel.org> wrote:
->
-> On Sun, 25 Apr 2021, Anirudh Rayabharam wrote:
->
-> > In hid_submit_ctrl(), the way of calculating the report length doesn't
-> > take into account that report->size can be zero. When running the
-> > syzkaller reproducer, a report of size 0 causes hid_submit_ctrl) to
-> > calculate transfer_buffer_length as 16384. When this urb is passed to
-> > the usb core layer, KMSAN reports an info leak of 16384 bytes.
-> >
-> > To fix this, first modify hid_report_len() to account for the zero
-> > report size case by using DIV_ROUND_UP for the division. Then, call it
-> > from hid_submit_ctrl().
-> >
-> > Reported-by: syzbot+7c2bb71996f95a82524c@syzkaller.appspotmail.com
-> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
->
-> Benjamin, could you please run this one through your regression testing
-> machinery before we send it upstream?
->
+ip frag with the iphdr flags reserved bit set,via router,ip frag reasm or
+fragment,causing the reserved bit is reset to zero.
 
-I don't have a reproducer like syzbot has for the exact bug here, as I
-am relying on one real USB device to check if usbhid is not too
-broken.
-However, the test suite should catch if there is an error implied by
-the hid_report_len() change.
+Keep reserved bit set is not modified in ip frag  defrag or fragment.
 
-Anyway, I manually started the job and will report when it is done.
+Signed-off-by: meijusan <meijusan@163.com>
+---
+ include/net/ip.h       |  3 ++-
+ net/ipv4/ip_fragment.c |  9 +++++++++
+ net/ipv4/ip_output.c   | 14 ++++++++++++++
+ 3 files changed, 25 insertions(+), 1 deletion(-)
 
-Cheers,
-Benjamin
+diff --git a/include/net/ip.h b/include/net/ip.h
+index e20874059f82..ae0c75fca61d 100644
+--- a/include/net/ip.h
++++ b/include/net/ip.h
+@@ -134,7 +134,7 @@ struct ip_ra_chain {
+ #define IP_DF		0x4000		/* Flag: "Don't Fragment"	*/
+ #define IP_MF		0x2000		/* Flag: "More Fragments"	*/
+ #define IP_OFFSET	0x1FFF		/* "Fragment Offset" part	*/
+-
++#define IP_EVIL	0x8000		/* Flag: "reserve bit"	*/
+ #define IP_FRAG_TIME	(30 * HZ)		/* fragment lifetime	*/
+ 
+ struct msghdr;
+@@ -194,6 +194,7 @@ struct ip_frag_state {
+ 	int		offset;
+ 	int		ptr;
+ 	__be16		not_last_frag;
++	bool		ip_evil;
+ };
+ 
+ void ip_frag_init(struct sk_buff *skb, unsigned int hlen, unsigned int ll_rs,
+diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
+index cfeb8890f94e..52eb53007c48 100644
+--- a/net/ipv4/ip_fragment.c
++++ b/net/ipv4/ip_fragment.c
+@@ -62,6 +62,7 @@ struct ipq {
+ 	struct inet_frag_queue q;
+ 
+ 	u8		ecn; /* RFC3168 support */
++	bool		ip_evil; /*frag with evil bit set */
+ 	u16		max_df_size; /* largest frag with DF set seen */
+ 	int             iif;
+ 	unsigned int    rid;
+@@ -88,6 +89,7 @@ static void ip4_frag_init(struct inet_frag_queue *q, const void *a)
+ 
+ 	q->key.v4 = *key;
+ 	qp->ecn = 0;
++	qp->ip_evil = false;
+ 	qp->peer = q->fqdir->max_dist ?
+ 		inet_getpeer_v4(net->ipv4.peers, key->saddr, key->vif, 1) :
+ 		NULL;
+@@ -278,6 +280,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
+ 	unsigned int fragsize;
+ 	int err = -ENOENT;
+ 	u8 ecn;
++	bool  ip_evil;
+ 
+ 	if (qp->q.flags & INET_FRAG_COMPLETE)
+ 		goto err;
+@@ -295,6 +298,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
+ 	offset &= IP_OFFSET;
+ 	offset <<= 3;		/* offset is in 8-byte chunks */
+ 	ihl = ip_hdrlen(skb);
++	ip_evil = flags & IP_EVIL ?  true : false;
+ 
+ 	/* Determine the position of this fragment. */
+ 	end = offset + skb->len - skb_network_offset(skb) - ihl;
+@@ -350,6 +354,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
+ 	qp->q.stamp = skb->tstamp;
+ 	qp->q.meat += skb->len;
+ 	qp->ecn |= ecn;
++	qp->ip_evil = ip_evil;
+ 	add_frag_mem_limit(qp->q.fqdir, skb->truesize);
+ 	if (offset == 0)
+ 		qp->q.flags |= INET_FRAG_FIRST_IN;
+@@ -451,6 +456,10 @@ static int ip_frag_reasm(struct ipq *qp, struct sk_buff *skb,
+ 		iph->frag_off = 0;
+ 	}
+ 
++	/*when ip or bridge forward, keep the origin evil bit set*/
++	if (qp->ip_evil)
++		iph->frag_off |= htons(IP_EVIL);
++
+ 	ip_send_check(iph);
+ 
+ 	__IP_INC_STATS(net, IPSTATS_MIB_REASMOKS);
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index c3efc7d658f6..d9ab750f9110 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -610,6 +610,8 @@ void ip_fraglist_init(struct sk_buff *skb, struct iphdr *iph,
+ 	skb->len = first_len;
+ 	iph->tot_len = htons(first_len);
+ 	iph->frag_off = htons(IP_MF);
++	if (ntohs(iph->frag_off) & IP_EVIL)
++		iph->frag_off |= htons(IP_EVIL);
+ 	ip_send_check(iph);
+ }
+ EXPORT_SYMBOL(ip_fraglist_init);
+@@ -631,6 +633,7 @@ void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
+ 	unsigned int hlen = iter->hlen;
+ 	struct iphdr *iph = iter->iph;
+ 	struct sk_buff *frag;
++	bool ip_evil;
+ 
+ 	frag = iter->frag;
+ 	frag->ip_summed = CHECKSUM_NONE;
+@@ -638,6 +641,8 @@ void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
+ 	__skb_push(frag, hlen);
+ 	skb_reset_network_header(frag);
+ 	memcpy(skb_network_header(frag), iph, hlen);
++	if (ntohs(iph->frag_off) & IP_EVIL)
++		ip_evil = true;
+ 	iter->iph = ip_hdr(frag);
+ 	iph = iter->iph;
+ 	iph->tot_len = htons(frag->len);
+@@ -646,6 +651,10 @@ void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
+ 	iph->frag_off = htons(iter->offset >> 3);
+ 	if (frag->next)
+ 		iph->frag_off |= htons(IP_MF);
++
++	if (ip_evil)
++		iph->frag_off |= htons(IP_EVIL);
++
+ 	/* Ready, complete checksum */
+ 	ip_send_check(iph);
+ }
+@@ -667,6 +676,7 @@ void ip_frag_init(struct sk_buff *skb, unsigned int hlen,
+ 
+ 	state->offset = (ntohs(iph->frag_off) & IP_OFFSET) << 3;
+ 	state->not_last_frag = iph->frag_off & htons(IP_MF);
++	state->ip_evil = (ntohs(iph->frag_off) & IP_EVIL) ? true : false;
+ }
+ EXPORT_SYMBOL(ip_frag_init);
+ 
+@@ -752,6 +762,10 @@ struct sk_buff *ip_frag_next(struct sk_buff *skb, struct ip_frag_state *state)
+ 	 */
+ 	if (state->left > 0 || state->not_last_frag)
+ 		iph->frag_off |= htons(IP_MF);
++
++	if (state->ip_evil)
++		iph->frag_off |= htons(IP_EVIL);
++
+ 	state->ptr += len;
+ 	state->offset += len;
+ 
+-- 
+2.25.1
 
