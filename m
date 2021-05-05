@@ -2,33 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17E45373AD5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:14:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3435373AD4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:14:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234109AbhEEMOs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:14:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50342 "EHLO mail.kernel.org"
+        id S234088AbhEEMOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:14:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53680 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233489AbhEEMKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233524AbhEEMKh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 May 2021 08:10:37 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9A942613F5;
-        Wed,  5 May 2021 12:09:28 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3BDA361402;
+        Wed,  5 May 2021 12:09:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216569;
-        bh=S8RVvjfA1TBf24yMtHk/nvHbnU8yFOYwiTPItBWTCps=;
+        s=korg; t=1620216572;
+        bh=C9ke7v72V70s1IdVAQHEb0HbJn+RJXrdfqqY1sv86ws=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=tkqYP8jMw4IrC0vjQXctwpb+vgjnr3OM/WesrrB3CA3Sv8rtFQ8BLF99VoCrVxkNT
-         DFpcP5lWdJvw/uWfH9Xanh/5PwJuy0hixBcZ4+zi72WIUg9MHCJpSOeKI5vEVb7Jm6
-         ttPOc2S7iUdfXIHaalsQEurnIBn6qDjHZwRB6D/k=
+        b=h+Q36sU/QXnrVa6Gp5zDyzC3sE3WhhLVUJKs3M47CFcuCGlVR4IyDSLOsE8BbItNM
+         fFjk2m/BCuUIUPFtDtdQdTJRgotokvyNCi80LxMGuSwW3XMiMyW3VFIZziApfKwJfS
+         A28sQtntPxhL1QYbcr7gd+nU9ij8IK1IpXgePoOc=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianxiong Gao <jxgao@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: [PATCH 5.11 21/31] nvme-pci: set min_align_mask
-Date:   Wed,  5 May 2021 14:06:10 +0200
-Message-Id: <20210505112327.370017023@linuxfoundation.org>
+        stable@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>,
+        syzbot <syzkaller@googlegroups.com>,
+        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        Miklos Szeredi <mszeredi@redhat.com>
+Subject: [PATCH 5.11 22/31] ovl: fix leaked dentry
+Date:   Wed,  5 May 2021 14:06:11 +0200
+Message-Id: <20210505112327.401594800@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
 References: <20210505112326.672439569@linuxfoundation.org>
@@ -40,35 +42,76 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jianxiong Gao <jxgao@google.com>
+From: Mickaël Salaün <mic@linux.microsoft.com>
 
-commit: 3d2d861eb03e8ee96dc430a54361c900cbe28afd
+commit eaab1d45cdb4bb0c846bd23c3d666d5b90af7b41 upstream.
 
-The PRP addressing scheme requires all PRP entries except for the
-first one to have a zero offset into the NVMe controller pages (which
-can be different from the Linux PAGE_SIZE).  Use the min_align_mask
-device parameter to ensure that swiotlb does not change the address
-of the buffer modulo the device page size to ensure that the PRPs
-won't be malformed.
+Since commit 6815f479ca90 ("ovl: use only uppermetacopy state in
+ovl_lookup()"), overlayfs doesn't put temporary dentry when there is a
+metacopy error, which leads to dentry leaks when shutting down the related
+superblock:
 
-Signed-off-by: Jianxiong Gao <jxgao@google.com>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Tested-by: Jianxiong Gao <jxgao@google.com>
-Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+  overlayfs: refusing to follow metacopy origin for (/file0)
+  ...
+  BUG: Dentry (____ptrval____){i=3f33,n=file3}  still in use (1) [unmount of overlay overlay]
+  ...
+  WARNING: CPU: 1 PID: 432 at umount_check.cold+0x107/0x14d
+  CPU: 1 PID: 432 Comm: unmount-overlay Not tainted 5.12.0-rc5 #1
+  ...
+  RIP: 0010:umount_check.cold+0x107/0x14d
+  ...
+  Call Trace:
+   d_walk+0x28c/0x950
+   ? dentry_lru_isolate+0x2b0/0x2b0
+   ? __kasan_slab_free+0x12/0x20
+   do_one_tree+0x33/0x60
+   shrink_dcache_for_umount+0x78/0x1d0
+   generic_shutdown_super+0x70/0x440
+   kill_anon_super+0x3e/0x70
+   deactivate_locked_super+0xc4/0x160
+   deactivate_super+0xfa/0x140
+   cleanup_mnt+0x22e/0x370
+   __cleanup_mnt+0x1a/0x30
+   task_work_run+0x139/0x210
+   do_exit+0xb0c/0x2820
+   ? __kasan_check_read+0x1d/0x30
+   ? find_held_lock+0x35/0x160
+   ? lock_release+0x1b6/0x660
+   ? mm_update_next_owner+0xa20/0xa20
+   ? reacquire_held_locks+0x3f0/0x3f0
+   ? __sanitizer_cov_trace_const_cmp4+0x22/0x30
+   do_group_exit+0x135/0x380
+   __do_sys_exit_group.isra.0+0x20/0x20
+   __x64_sys_exit_group+0x3c/0x50
+   do_syscall_64+0x45/0x70
+   entry_SYSCALL_64_after_hwframe+0x44/0xae
+  ...
+  VFS: Busy inodes after unmount of overlay. Self-destruct in 5 seconds.  Have a nice day...
+
+This fix has been tested with a syzkaller reproducer.
+
+Cc: Amir Goldstein <amir73il@gmail.com>
+Cc: <stable@vger.kernel.org> # v5.8+
+Reported-by: syzbot <syzkaller@googlegroups.com>
+Fixes: 6815f479ca90 ("ovl: use only uppermetacopy state in ovl_lookup()")
+Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
+Link: https://lore.kernel.org/r/20210329164907.2133175-1-mic@digikod.net
+Reviewed-by: Vivek Goyal <vgoyal@redhat.com>
+Signed-off-by: Miklos Szeredi <mszeredi@redhat.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- drivers/nvme/host/pci.c |    1 +
+ fs/overlayfs/namei.c |    1 +
  1 file changed, 1 insertion(+)
 
---- a/drivers/nvme/host/pci.c
-+++ b/drivers/nvme/host/pci.c
-@@ -2629,6 +2629,7 @@ static void nvme_reset_work(struct work_
- 	 * Don't limit the IOMMU merged segment size.
- 	 */
- 	dma_set_max_seg_size(dev->dev, 0xffffffff);
-+	dma_set_min_align_mask(dev->dev, NVME_CTRL_PAGE_SIZE - 1);
+--- a/fs/overlayfs/namei.c
++++ b/fs/overlayfs/namei.c
+@@ -919,6 +919,7 @@ struct dentry *ovl_lookup(struct inode *
+ 			continue;
  
- 	mutex_unlock(&dev->shutdown_lock);
- 
+ 		if ((uppermetacopy || d.metacopy) && !ofs->config.metacopy) {
++			dput(this);
+ 			err = -EPERM;
+ 			pr_warn_ratelimited("refusing to follow metacopy origin for (%pd2)\n", dentry);
+ 			goto out_put;
 
 
