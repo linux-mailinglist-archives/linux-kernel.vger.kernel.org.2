@@ -2,146 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 218AA373A23
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:07:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEDCC373A03
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:06:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232199AbhEEMHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:07:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46816 "EHLO mail.kernel.org"
+        id S233349AbhEEMGw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:06:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45068 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233465AbhEEMHK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:07:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 82A4761157;
-        Wed,  5 May 2021 12:06:13 +0000 (UTC)
+        id S233312AbhEEMGc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:06:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B3EA761154;
+        Wed,  5 May 2021 12:05:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216374;
-        bh=7k1L8PUzKyJKHOh6VqW6Qo1vI7Za1rAJKuKget/q4NY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cy62W4YpRO17tdSwmiikcd7/C1af27mO64oNjzN6bdyIZn3GZc21tSEDoT+OnKZGZ
-         6RIhE8b1Cf4yTfgrukwIApCOaUgmudNozaDpyPuh7+OD2hJ8MOx0HzUZB0EQcr6Rpx
-         KfwiZsujshtGRd75MC6xnCrkJm8uMMaqfVevrUUk=
+        s=korg; t=1620216336;
+        bh=DCRVEipV4htkfXERlLw5ak61oGTjOfJrVeTpLoSsH/Y=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0CyTdbihStL2/n1BfqDQl105DTLjANwzAteSvMOibxUicJIhJmd3S89ChrapLfSkx
+         XsTHGsY4O+q2JL7FnFo+nN0tPQJQpM3DYzWO9kqMa/D/g3TMDLGlqu1heeEr/9UhD6
+         +cnkC6eGhKNemxtVpIER3Gl5Lw3gqI6qOmjZTDZA=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Romain Naour <romain.naour@gmail.com>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Subject: [PATCH 5.10 01/29] mips: Do not include hi and lo in clobber list for R6
-Date:   Wed,  5 May 2021 14:05:04 +0200
-Message-Id: <20210505112326.243167571@linuxfoundation.org>
+        torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: [PATCH 4.19 00/15] 4.19.190-rc1 review
+Date:   Wed,  5 May 2021 14:05:05 +0200
+Message-Id: <20210505120503.781531508@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
-References: <20210505112326.195493232@linuxfoundation.org>
+MIME-Version: 1.0
 User-Agent: quilt/0.66
 X-stable: review
 X-Patchwork-Hint: ignore
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.190-rc1.gz
+X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+X-KernelTest-Branch: linux-4.19.y
+X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
+X-KernelTest-Version: 4.19.190-rc1
+X-KernelTest-Deadline: 2021-05-07T12:05+00:00
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Romain Naour <romain.naour@gmail.com>
+This is the start of the stable review cycle for the 4.19.190 release.
+There are 15 patches in this series, all will be posted as a response
+to this one.  If anyone has any issues with these being applied, please
+let me know.
 
-commit 1d7ba0165d8206ac073f7ac3b14fc0836b66eae7 upstream.
+Responses should be made by Fri, 07 May 2021 12:04:54 +0000.
+Anything received after that time might be too late.
 
->From [1]
-"GCC 10 (PR 91233) won't silently allow registers that are not
-architecturally available to be present in the clobber list anymore,
-resulting in build failure for mips*r6 targets in form of:
-...
-.../sysdep.h:146:2: error: the register ‘lo’ cannot be clobbered in ‘asm’ for the current target
-  146 |  __asm__ volatile (      \
-      |  ^~~~~~~
+The whole patch series can be found in one patch at:
+	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.190-rc1.gz
+or in the git tree and branch at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+and the diffstat can be found below.
 
-This is because base R6 ISA doesn't define hi and lo registers w/o DSP
-extension. This patch provides the alternative clobber list for r6 targets
-that won't include those registers."
+thanks,
 
-Since kernel 5.4 and mips support for generic vDSO [2], the kernel fail to
-build for mips r6 cpus with gcc 10 for the same reason as glibc.
+greg k-h
 
-[1] https://sourceware.org/git/?p=glibc.git;a=commit;h=020b2a97bb15f807c0482f0faee2184ed05bcad8
-[2] '24640f233b46 ("mips: Add support for generic vDSO")'
+-------------
+Pseudo-Shortlog of commits:
 
-Signed-off-by: Romain Naour <romain.naour@gmail.com>
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
----
- arch/mips/include/asm/vdso/gettimeofday.h |   26 +++++++++++++++++++++-----
- 1 file changed, 21 insertions(+), 5 deletions(-)
+Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+    Linux 4.19.190-rc1
 
---- a/arch/mips/include/asm/vdso/gettimeofday.h
-+++ b/arch/mips/include/asm/vdso/gettimeofday.h
-@@ -20,6 +20,12 @@
- 
- #define VDSO_HAS_CLOCK_GETRES		1
- 
-+#if MIPS_ISA_REV < 6
-+#define VDSO_SYSCALL_CLOBBERS "hi", "lo",
-+#else
-+#define VDSO_SYSCALL_CLOBBERS
-+#endif
-+
- static __always_inline long gettimeofday_fallback(
- 				struct __kernel_old_timeval *_tv,
- 				struct timezone *_tz)
-@@ -35,7 +41,9 @@ static __always_inline long gettimeofday
- 	: "=r" (ret), "=r" (error)
- 	: "r" (tv), "r" (tz), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -59,7 +67,9 @@ static __always_inline long clock_gettim
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -83,7 +93,9 @@ static __always_inline int clock_getres_
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -105,7 +117,9 @@ static __always_inline long clock_gettim
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -125,7 +139,9 @@ static __always_inline int clock_getres3
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
+Miklos Szeredi <mszeredi@redhat.com>
+    ovl: allow upperdir inside lowerdir
+
+Mark Pearson <markpearson@lenovo.com>
+    platform/x86: thinkpad_acpi: Correct thermal sensor allocation
+
+Shengjiu Wang <shengjiu.wang@nxp.com>
+    ASoC: ak5558: Add MODULE_DEVICE_TABLE
+
+Shengjiu Wang <shengjiu.wang@nxp.com>
+    ASoC: ak4458: Add MODULE_DEVICE_TABLE
+
+Chris Chiu <chris.chiu@canonical.com>
+    USB: Add reset-resume quirk for WD19's Realtek Hub
+
+Kai-Heng Feng <kai.heng.feng@canonical.com>
+    USB: Add LPM quirk for Lenovo ThinkPad USB-C Dock Gen2 Ethernet
+
+Takashi Iwai <tiwai@suse.de>
+    ALSA: usb-audio: Add MIDI quirk for Vox ToneLab EX
+
+Jiri Kosina <jkosina@suse.cz>
+    iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
+
+Daniel Borkmann <daniel@iogearbox.net>
+    bpf: Fix masking negation logic upon negative dst register
+
+Romain Naour <romain.naour@gmail.com>
+    mips: Do not include hi and lo in clobber list for R6
+
+Jiri Kosina <jkosina@suse.cz>
+    iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_enqueue_hcmd()
+
+Phillip Potter <phil@philpotter.co.uk>
+    net: usb: ax88179_178a: initialize local variables before use
+
+Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+    ACPI: x86: Call acpi_boot_table_init() after acpi_table_upgrade()
+
+Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+    ACPI: tables: x86: Reserve memory occupied by ACPI tables
+
+Gao Xiang <hsiangkao@redhat.com>
+    erofs: fix extended inode could cross boundary
+
+
+-------------
+
+Diffstat:
+
+ Makefile                                          |   4 +-
+ arch/mips/vdso/gettimeofday.c                     |  14 ++-
+ arch/x86/kernel/acpi/boot.c                       |  25 ++--
+ arch/x86/kernel/setup.c                           |   7 +-
+ drivers/acpi/tables.c                             |  42 ++++++-
+ drivers/net/usb/ax88179_178a.c                    |   4 +-
+ drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c |   7 +-
+ drivers/net/wireless/intel/iwlwifi/pcie/tx.c      |   7 +-
+ drivers/platform/x86/thinkpad_acpi.c              |  31 +++--
+ drivers/staging/erofs/inode.c                     | 135 ++++++++++++++--------
+ drivers/usb/core/quirks.c                         |   4 +
+ fs/overlayfs/super.c                              |  12 +-
+ include/linux/acpi.h                              |   9 +-
+ kernel/bpf/verifier.c                             |  12 +-
+ sound/soc/codecs/ak4458.c                         |   1 +
+ sound/soc/codecs/ak5558.c                         |   1 +
+ sound/usb/quirks-table.h                          |  10 ++
+ 17 files changed, 224 insertions(+), 101 deletions(-)
 
 
