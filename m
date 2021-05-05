@@ -2,274 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE4C63733B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 04:12:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D4A23733B4
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 04:12:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230509AbhEECNa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 22:13:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37690 "EHLO mail.kernel.org"
+        id S231408AbhEECNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 22:13:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37778 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229799AbhEECN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 22:13:28 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 6CF5C613CC
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 02:12:32 +0000 (UTC)
+        id S229799AbhEECNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 4 May 2021 22:13:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3399F611CB;
+        Wed,  5 May 2021 02:12:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620180752;
-        bh=QcOcUQQZmj+dOibYCaDeGWcNaIV3C2QYxgfO6KET9gk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=RIk7szTjVh8RsIYtvU1beuqct76T7eGNKsL8EwfQ3cUNP+tT9RJN7iTdsADYEi1Gk
-         38bJhdWGUXtb9pYMWWBii/I2F2HmUAIj1002EhhSCeUtxU682Nj4AX3EkXLAq2tSHO
-         S1gpDfxEX2+8P7yw5PpdUG5t6mgqE3kFSEeJYRJTIYY5sJcyutfDt9bvEPeNw1u0Yf
-         AuT2rI5nRajKzsTzhtZjAFYsGX6/BeVgRDGyv3g3sWESL1Z8eeZX+bIOLY62ViqpLy
-         jtzN6/lysYu7VvRFdAgvLBfvZ9LOVY6LjHtr8HAGtdu/JqEJnyx8ZawztGsGcSG2+1
-         MY+M4KDY+qt3w==
-Received: by mail-ed1-f41.google.com with SMTP id c22so74327edn.7
-        for <linux-kernel@vger.kernel.org>; Tue, 04 May 2021 19:12:32 -0700 (PDT)
-X-Gm-Message-State: AOAM532HE2SBsMKfSJ5xcRplYoSxuhXxbaLGO5J9+2wNXPpT2ccMxkPq
-        4Qmm+UFa7tvJu0GuZteuzP7g9PEddDGeqh+Hug==
-X-Google-Smtp-Source: ABdhPJyr9aLTxIR7ZL09D1+M19d7NaJ4FYUfOZhkz2BqMEEDB0A8kQkAI1lUvwgB7LJDeoEsEQbawNS3LY0oI8RDeSs=
-X-Received: by 2002:aa7:cd83:: with SMTP id x3mr29087357edv.373.1620180750937;
- Tue, 04 May 2021 19:12:30 -0700 (PDT)
+        s=k20201202; t=1620180758;
+        bh=3MH+IfwCtYy+KGwAHtO23xU0Cn26SwyyNWf7lqR1zT8=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=elB3NjpgrYKCLLTt8S0bH6TPRyVGuvc1kPJH49JTIW3XtxuGtwa52ttsnOfDR1BVY
+         fb8TR/GZW4vIhOSG62+rsoz2ORZ5ogsiLxfYXAQ30T5FZjo0pFhp9vRmMuwehlfFBK
+         dA7odjOdJhFAZFxCnSlTC7ZM3W1KEAQnEnp2TT24134x4Z7pS9AwBearh2m1epymgY
+         NJ9g7wvpZuzqSxeW+H7YcOqBvX4pRAeEhWm9LIIekk1TCLoY2nXFqnFw1NQq7VJW0e
+         Cf03M8v8pwkVIjubLb9pj4oYrfHH2okFDh6dvfpDaqV4qo+55c6AW6LSztlwSnuDQL
+         zf8Or7KdMVKsQ==
+Date:   Tue, 4 May 2021 21:12:36 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Shanker R Donthineni <sdonthineni@nvidia.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Sinan Kaya <okaya@kernel.org>,
+        Vikram Sethi <vsethi@nvidia.com>,
+        Amey Narkhede <ameynarkhede03@gmail.com>
+Subject: Re: [PATCH v4 2/2] PCI: Enable NO_BUS_RESET quirk for Nvidia GPUs
+Message-ID: <20210505021236.GA1244944@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210311000837.3630499-1-robh@kernel.org> <20210311000837.3630499-7-robh@kernel.org>
- <CAP-5=fUEu1EO7GreYYjZ178BH_riYYa0HdY4GZhi=0DdjkCMJg@mail.gmail.com>
-In-Reply-To: <CAP-5=fUEu1EO7GreYYjZ178BH_riYYa0HdY4GZhi=0DdjkCMJg@mail.gmail.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Tue, 4 May 2021 21:12:19 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqKc_qFA59L9e-xXOhE4yBTdVg-Ea9EddimWwqj3XXxhGw@mail.gmail.com>
-Message-ID: <CAL_JsqKc_qFA59L9e-xXOhE4yBTdVg-Ea9EddimWwqj3XXxhGw@mail.gmail.com>
-Subject: Re: [PATCH v6 06/10] libperf: Add support for user space counter access
-To:     Ian Rogers <irogers@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Honnappa Nagarahalli <honnappa.nagarahalli@arm.com>,
-        Zachary.Leaf@arm.com, Raphael Gault <raphael.gault@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Itaru Kitayama <itaru.kitayama@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <478efe56-fb64-6987-f64c-f3d930a3b330@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 4:41 PM Ian Rogers <irogers@google.com> wrote:
->
-> On Wed, Mar 10, 2021 at 4:08 PM Rob Herring <robh@kernel.org> wrote:
-> >
-> > x86 and arm64 can both support direct access of event counters in
-> > userspace. The access sequence is less than trivial and currently exists
-> > in perf test code (tools/perf/arch/x86/tests/rdpmc.c) with copies in
-> > projects such as PAPI and libpfm4.
-> >
-> > In order to support usersapce access, an event must be mmapped first
-> > with perf_evsel__mmap(). Then subsequent calls to perf_evsel__read()
-> > will use the fast path (assuming the arch supports it).
-> >
-> > Signed-off-by: Rob Herring <robh@kernel.org>
-> > ---
-> > v6:
-> >  - Adapt to mmap changes adding MMAP NULL check
-> > v5:
-> >  - Make raw count s64 instead of u64 so that counter width shifting
-> >    works
-> >  - Adapt to mmap changes
-> > v4:
-> >  - Update perf_evsel__mmap size to pages
-> > v3:
-> >  - Split out perf_evsel__mmap() to separate patch
-> > ---
-> >  tools/lib/perf/evsel.c                 |  4 ++
-> >  tools/lib/perf/include/internal/mmap.h |  3 +
-> >  tools/lib/perf/mmap.c                  | 88 ++++++++++++++++++++++++++
-> >  tools/lib/perf/tests/test-evsel.c      | 65 +++++++++++++++++++
-> >  4 files changed, 160 insertions(+)
-> >
-> > diff --git a/tools/lib/perf/evsel.c b/tools/lib/perf/evsel.c
-> > index 1057e9b15528..4d67343d36c9 100644
-> > --- a/tools/lib/perf/evsel.c
-> > +++ b/tools/lib/perf/evsel.c
-> > @@ -242,6 +242,10 @@ int perf_evsel__read(struct perf_evsel *evsel, int cpu, int thread,
-> >         if (FD(evsel, cpu, thread) < 0)
-> >                 return -EINVAL;
-> >
-> > +       if (MMAP(evsel, cpu, thread) &&
-> > +           !perf_mmap__read_self(MMAP(evsel, cpu, thread), count))
-> > +               return 0;
-> > +
-> >         if (readn(FD(evsel, cpu, thread), count->values, size) <= 0)
-> >                 return -errno;
-> >
-> > diff --git a/tools/lib/perf/include/internal/mmap.h b/tools/lib/perf/include/internal/mmap.h
-> > index be7556e0a2b2..5e3422f40ed5 100644
-> > --- a/tools/lib/perf/include/internal/mmap.h
-> > +++ b/tools/lib/perf/include/internal/mmap.h
-> > @@ -11,6 +11,7 @@
-> >  #define PERF_SAMPLE_MAX_SIZE (1 << 16)
-> >
-> >  struct perf_mmap;
-> > +struct perf_counts_values;
-> >
-> >  typedef void (*libperf_unmap_cb_t)(struct perf_mmap *map);
-> >
-> > @@ -52,4 +53,6 @@ void perf_mmap__put(struct perf_mmap *map);
-> >
-> >  u64 perf_mmap__read_head(struct perf_mmap *map);
-> >
-> > +int perf_mmap__read_self(struct perf_mmap *map, struct perf_counts_values *count);
-> > +
-> >  #endif /* __LIBPERF_INTERNAL_MMAP_H */
-> > diff --git a/tools/lib/perf/mmap.c b/tools/lib/perf/mmap.c
-> > index 79d5ed6c38cc..915469f00cf4 100644
-> > --- a/tools/lib/perf/mmap.c
-> > +++ b/tools/lib/perf/mmap.c
-> > @@ -8,9 +8,11 @@
-> >  #include <linux/perf_event.h>
-> >  #include <perf/mmap.h>
-> >  #include <perf/event.h>
-> > +#include <perf/evsel.h>
-> >  #include <internal/mmap.h>
-> >  #include <internal/lib.h>
-> >  #include <linux/kernel.h>
-> > +#include <linux/math64.h>
-> >  #include "internal.h"
-> >
-> >  void perf_mmap__init(struct perf_mmap *map, struct perf_mmap *prev,
-> > @@ -273,3 +275,89 @@ union perf_event *perf_mmap__read_event(struct perf_mmap *map)
-> >
-> >         return event;
-> >  }
-> > +
-> > +#if defined(__i386__) || defined(__x86_64__)
-> > +static u64 read_perf_counter(unsigned int counter)
-> > +{
-> > +       unsigned int low, high;
-> > +
-> > +       asm volatile("rdpmc" : "=a" (low), "=d" (high) : "c" (counter));
-> > +
-> > +       return low | ((u64)high) << 32;
-> > +}
-> > +
-> > +static u64 read_timestamp(void)
-> > +{
-> > +       unsigned int low, high;
-> > +
-> > +       asm volatile("rdtsc" : "=a" (low), "=d" (high));
-> > +
-> > +       return low | ((u64)high) << 32;
-> > +}
-> > +#else
-> > +static u64 read_perf_counter(unsigned int counter) { return 0; }
-> > +static u64 read_timestamp(void) { return 0; }
-> > +#endif
-> > +
-> > +int perf_mmap__read_self(struct perf_mmap *map, struct perf_counts_values *count)
-> > +{
-> > +       struct perf_event_mmap_page *pc = map->base;
-> > +       u32 seq, idx, time_mult = 0, time_shift = 0;
-> > +       u64 cnt, cyc = 0, time_offset = 0, time_cycles = 0, time_mask = ~0ULL;
-> > +
-> > +       if (!pc || !pc->cap_user_rdpmc)
-> > +               return -1;
-> > +
-> > +       do {
-> > +               seq = READ_ONCE(pc->lock);
-> > +               barrier();
-> > +
-> > +               count->ena = READ_ONCE(pc->time_enabled);
-> > +               count->run = READ_ONCE(pc->time_running);
-> > +
-> > +               if (pc->cap_user_time && count->ena != count->run) {
-> > +                       cyc = read_timestamp();
-> > +                       time_mult = READ_ONCE(pc->time_mult);
-> > +                       time_shift = READ_ONCE(pc->time_shift);
-> > +                       time_offset = READ_ONCE(pc->time_offset);
-> > +
-> > +                       if (pc->cap_user_time_short) {
-> > +                               time_cycles = READ_ONCE(pc->time_cycles);
-> > +                               time_mask = READ_ONCE(pc->time_mask);
-> > +                       }
->
-> Nit, this is now out of sync with the comment code in perf_event.h.
+On Mon, May 03, 2021 at 09:07:11PM -0500, Shanker R Donthineni wrote:
+> On 5/3/21 5:42 PM, Bjorn Helgaas wrote:
+> > Obviously _RST only works for built-in devices, since there's no AML
+> > for plug-in devices, right?  So if there's a plug-in card with this
+> > GPU, neither SBR nor _RST will work?
+> These are not plug-in PCIe GPU cards, will exist on upcoming server
+> baseboards. ACPI-reset should wok for plug-in devices as well as long
+> as firmware has _RST method defined in ACPI-device associated with
+> the PCIe hot-plug slot.
 
-IMO, we should just delete that version. One less slightly wrong version...
+Maybe I'm missing something, but I don't see how _RST can work for
+plug-in devices.  _RST is part of the system firmware, and that
+firmware knows nothing about what will be plugged into the slot.  So
+if system firmware supplies _RST that knows how to reset the Nvidia
+GPU, it's not going to do the right thing if you plug in an NVMe
+device instead.
 
-> > +               }
-> > +
-> > +               idx = READ_ONCE(pc->index);
-> > +               cnt = READ_ONCE(pc->offset);
-> > +               if (pc->cap_user_rdpmc && idx) {
-> > +                       s64 evcnt = read_perf_counter(idx - 1);
-> > +                       u16 width = READ_ONCE(pc->pmc_width);
-> > +
-> > +                       evcnt <<= 64 - width;
-> > +                       evcnt >>= 64 - width;
-> > +                       cnt += evcnt;
-> > +               } else
-> > +                       return -1;
-> > +
-> > +               barrier();
-> > +       } while (READ_ONCE(pc->lock) != seq);
-> > +
-> > +       if (count->ena != count->run) {
-> > +               u64 delta;
-> > +
-> > +               /* Adjust for cap_usr_time_short, a nop if not */
-> > +               cyc = time_cycles + ((cyc - time_cycles) & time_mask);
-> > +
-> > +               delta = time_offset + mul_u64_u32_shr(cyc, time_mult, time_shift);
-> > +
-> > +               count->ena += delta;
-> > +               if (idx)
-> > +                       count->run += delta;
-> > +
-> > +               cnt = mul_u64_u64_div64(cnt, count->ena, count->run);
->
-> Does this still suffer the divide by zero if multiplexing hasn't run
-> the counter? If so, we still need to add something like:
-> https://lore.kernel.org/lkml/CAP-5=fVRdqvswtyQMg5cB+ntTGda+SAYskjTQednEH-AeZo13g@mail.gmail.com/
+Can you elaborate on how _RST would work for plug-in devices?  My only
+point here is that IF this GPU is ever on a plug-in card, neither _RST
+nor SBR would work, so we'd have to use whatever other reset methods
+*do* work (I guess only FLR?)
 
-I don't think so because if we don't have a valid counter index, we
-exit before this if.
+> I've verified PCIe plug-in feature using SYSFS interface.
+> 
+> 1) Remove device using sysfs interface
+>   root@test:/sys/bus/pci# echo 1 > devices/0005:01:00.0/remove
+>   root@test:/sys/bus/pci# lspci -s 0005:01:00.0
+>  
+> 2) Rescan PCI bus using sysfs interface
+>   root@test:/sys/bus/pci# echo 1 > devices/0005:00:00.0/rescan
+>   root@test:/sys/bus/pci# lspci -s 0005:01:00.0
+>   0005:01:00.0 3D controller: NVIDIA Corporation Device 2341 (rev a1)
+> 
+> 3) List current reset methods
+>   root@jetson:/sys/bus/pci# cat devices/0005:01:00.0/reset_method
+>   acpi,flr
+> 
+> Example AML code:
+>  // Device definition for slot/devfn
+>   Device(GPU0) {
+>      Name(_ADR,0x00000000)
+>      Method (_RST, 0)
+>      {
+>         printf("Entering ACPI _RST method")
+>         // RESET code
+>         printf("Exiting ACPI _RST method")
+>      }
+>   }
+> 
+> 4) Issue device reset from the userspace
+>  root@test:/sys/bus/pci# echo 1 > devices/0005:01:00.0/reset
+> 
+> dmesg:
+>  [ 6156.426303] ACPI Debug:  "Entering PCI9 _RST method"
+>  [ 6156.427007] ACPI Debug:  "Exiting PCI9 _RST method"
+> 
+> > I'm wondering if we should log something to dmesg in
+> > quirk_no_bus_reset(), quirk_no_pm_reset(), quirk_no_flr(), etc., just
+> > so we have a hint about the fact that resets won't work quite as
+> > expected on these devices.
+> Yes, it would be very useful to know what PCI quirks were applied
+> during boot.  Should I create a separate patch for adding pci_info()
+> or include as part of this patch?
 
->
-> > +       }
-> > +
-> > +       count->val = cnt;
-> > +
-> > +       return 0;
-> > +}
-> > diff --git a/tools/lib/perf/tests/test-evsel.c b/tools/lib/perf/tests/test-evsel.c
-> > index 0ad82d7a2a51..54fb4809b9ee 100644
-> > --- a/tools/lib/perf/tests/test-evsel.c
-> > +++ b/tools/lib/perf/tests/test-evsel.c
-> > @@ -120,6 +120,69 @@ static int test_stat_thread_enable(void)
-> >         return 0;
-> >  }
-> >
-> > +static int test_stat_user_read(int event)
-> > +{
-> > +       struct perf_counts_values counts = { .val = 0 };
-> > +       struct perf_thread_map *threads;
-> > +       struct perf_evsel *evsel;
-> > +       struct perf_event_mmap_page *pc;
-> > +       struct perf_event_attr attr = {
-> > +               .type   = PERF_TYPE_HARDWARE,
-> > +               .config = event,
-> > +       };
->
-> A nit, previously test-evsel was able to run and pass on a hypervisor.
-> As now there is a reliance on hardware events the evsel open fails on
-> a hypervisor. It'd be nice if we could detect running on a hypervisor
-> and test software events in that case.
+Don't include it as part of this patch.  It's a separate logical
+change so should be a separate patch.  We can worry about that later.
 
-I suppose we can just exit if open fails on this test.
-
-Rob
+>  --- a/drivers/pci/quirks.c
+>  +++ b/drivers/pci/quirks.c
+>  @@ -3556,6 +3556,7 @@ DECLARE_PCI_FIXUP_FINAL(PCI_VENDOR_ID_MELLANOX, PCI_ANY_ID,
+>   static void quirk_no_bus_reset(struct pci_dev *dev)
+>   {
+>          dev->dev_flags |= PCI_DEV_FLAGS_NO_BUS_RESET;
+>        +pci_info(dev, "Applied NO_BUS_RESET quirk\n");
+>   }
+> 
+>   /*
+>  @@ -3598,6 +3599,7 @@ static void quirk_no_pm_reset(struct pci_dev *dev)
+>           */
+>          if (!pci_is_root_bus(dev->bus))
+>                  dev->dev_flags |= PCI_DEV_FLAGS_NO_PM_RESET;
+>         +pci_info(dev, "Applied NO_PM_RESET quirk\n");
+>   }
+> 
+>   /*
+>  @@ -5138,6 +5140,7 @@ DECLARE_PCI_FIXUP_EARLY(PCI_VENDOR_ID_INTEL, 0x443, quirk_intel_qat_vf_cap);
+>   static void quirk_no_flr(struct pci_dev *dev)
+>   {
+>          dev->dev_flags |= PCI_DEV_FLAGS_NO_FLR_RESET;
+>         +pci_info(dev, "Applied NO_FLR_RESET quirk\n");
+>   }
+> 
+> 
