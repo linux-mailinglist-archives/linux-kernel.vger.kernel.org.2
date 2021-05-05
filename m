@@ -2,230 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC910373F30
+	by mail.lfdr.de (Postfix) with ESMTP id 766B7373F2F
 	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 18:06:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233771AbhEEQHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:07:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51582 "EHLO mx2.suse.de"
+        id S233761AbhEEQHH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:07:07 -0400
+Received: from mail.hallyn.com ([178.63.66.53]:46912 "EHLO mail.hallyn.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233677AbhEEQHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S230281AbhEEQHG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 May 2021 12:07:06 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A5D3AB0BD;
-        Wed,  5 May 2021 16:06:08 +0000 (UTC)
-To:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210505154613.17214-1-longman@redhat.com>
- <20210505154613.17214-3-longman@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v3 2/2] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
- caches
-Message-ID: <4c1a0436-2d46-d23a-2eef-d558e37373bf@suse.cz>
-Date:   Wed, 5 May 2021 18:06:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+Received: by mail.hallyn.com (Postfix, from userid 1001)
+        id 93117A1C; Wed,  5 May 2021 11:06:08 -0500 (CDT)
+Date:   Wed, 5 May 2021 11:06:08 -0500
+From:   "Serge E. Hallyn" <serge@hallyn.com>
+To:     Giuseppe Scrivano <gscrivan@redhat.com>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-kernel@vger.kernel.org, christian.brauner@ubuntu.com,
+        Linux Containers <containers@lists.linux.dev>
+Subject: Re: [PATCH] kernel: automatically split user namespace extent
+Message-ID: <20210505160608.GA537@mail.hallyn.com>
+References: <20201126100839.381415-1-gscrivan@redhat.com>
+ <87ft4pe7km.fsf@x220.int.ebiederm.org>
+ <87pn3schlg.fsf@redhat.com>
+ <20210402143212.GA18282@mail.hallyn.com>
+ <87zgygg2xc.fsf@redhat.com>
+ <87v97x43qj.fsf@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20210505154613.17214-3-longman@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87v97x43qj.fsf@redhat.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 5:46 PM, Waiman Long wrote:
-> There are currently two problems in the way the objcg pointer array
-> (memcg_data) in the page structure is being allocated and freed.
-> 
-> On its allocation, it is possible that the allocated objcg pointer
-> array comes from the same slab that requires memory accounting. If this
-> happens, the slab will never become empty again as there is at least
-> one object left (the obj_cgroup array) in the slab.
-> 
-> When it is freed, the objcg pointer array object may be the last one
-> in its slab and hence causes kfree() to be called again. With the
-> right workload, the slab cache may be set up in a way that allows the
-> recursive kfree() calling loop to nest deep enough to cause a kernel
-> stack overflow and panic the system.
-> 
-> One way to solve this problem is to split the kmalloc-<n> caches
-> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
-> (KMALLOC_NORMAL) caches for non-accounted objects only and a new set of
-> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
-> the other caches can still allow a mix of accounted and non-accounted
-> objects.
-> 
-> With this change, all the objcg pointer array objects will come from
-> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
-> both the recursive kfree() problem and non-freeable slab problem are
-> gone. Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer
-> have mixed accounted and unaccounted objects, this will slightly reduce
-> the number of objcg pointer arrays that need to be allocated and save
-> a bit of memory.
-> 
-> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
-> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
-> will include the newly added caches without change.
-> 
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  include/linux/slab.h | 42 ++++++++++++++++++++++++++++++++++--------
->  mm/slab_common.c     | 23 +++++++++++++++--------
->  2 files changed, 49 insertions(+), 16 deletions(-)
-> 
-> diff --git a/include/linux/slab.h b/include/linux/slab.h
-> index 0c97d788762c..f2d9ebc34f5c 100644
-> --- a/include/linux/slab.h
-> +++ b/include/linux/slab.h
-> @@ -305,9 +305,16 @@ static inline void __check_heap_object(const void *ptr, unsigned long n,
->  /*
->   * Whenever changing this, take care of that kmalloc_type() and
->   * create_kmalloc_caches() still work as intended.
-> + *
-> + * KMALLOC_NORMAL is for non-accounted objects only whereas KMALLOC_CGROUP
-> + * is for accounted objects only. All the other kmem caches can have both
-> + * accounted and non-accounted objects.
->   */
->  enum kmalloc_cache_type {
->  	KMALLOC_NORMAL = 0,
-> +#ifdef CONFIG_MEMCG_KMEM
-> +	KMALLOC_CGROUP,
-> +#endif
->  	KMALLOC_RECLAIM,
->  #ifdef CONFIG_ZONE_DMA
->  	KMALLOC_DMA,
-> @@ -315,28 +322,47 @@ enum kmalloc_cache_type {
->  	NR_KMALLOC_TYPES
->  };
->  
-> +#ifndef CONFIG_MEMCG_KMEM
-> +#define KMALLOC_CGROUP	KMALLOC_NORMAL
-> +#endif
-> +#ifndef CONFIG_ZONE_DMA
-> +#define KMALLOC_DMA	KMALLOC_NORMAL
-> +#endif
+No.  Moving it to the top of my queue for tonight.
 
-You could move this to the enum definition itself? E.g.:
-
-#ifdef CONFIG_MEMCG_KMEM
-	KMALLOC_CGROUP,
-#else
-	KMALLOC_CGROUP = KMALLOC_NORMAL,
-#endif
-
-> +
->  #ifndef CONFIG_SLOB
->  extern struct kmem_cache *
->  kmalloc_caches[NR_KMALLOC_TYPES][KMALLOC_SHIFT_HIGH + 1];
->  
-> +/*
-> + * Define gfp bits that should not be set for KMALLOC_NORMAL.
-> + */
-> +#define KMALLOC_NOT_NORMAL_BITS					\
-> +	(__GFP_RECLAIMABLE |					\
-> +	(IS_ENABLED(CONFIG_ZONE_DMA)   ? __GFP_DMA : 0) |	\
-> +	(IS_ENABLED(CONFIG_MEMCG_KMEM) ? __GFP_ACCOUNT : 0))
-> +
->  static __always_inline enum kmalloc_cache_type kmalloc_type(gfp_t flags)
->  {
-> -#ifdef CONFIG_ZONE_DMA
->  	/*
->  	 * The most common case is KMALLOC_NORMAL, so test for it
->  	 * with a single branch for both flags.
-Not "both flags" anymore. Something like "so test with a single branch that
-there are none of the flags that would select a different type"
-
->  	 */
-> -	if (likely((flags & (__GFP_DMA | __GFP_RECLAIMABLE)) == 0))
-> +	if (likely((flags & KMALLOC_NOT_NORMAL_BITS) == 0))
->  		return KMALLOC_NORMAL;
->  
->  	/*
-> -	 * At least one of the flags has to be set. If both are, __GFP_DMA
-> -	 * is more important.
-> +	 * At least one of the flags has to be set. Their priorities in
-> +	 * decreasing order are:
-> +	 *  1) __GFP_DMA
-> +	 *  2) __GFP_RECLAIMABLE
-> +	 *  3) __GFP_ACCOUNT
->  	 */
-> -	return flags & __GFP_DMA ? KMALLOC_DMA : KMALLOC_RECLAIM;
-> -#else
-> -	return flags & __GFP_RECLAIMABLE ? KMALLOC_RECLAIM : KMALLOC_NORMAL;
-> -#endif
-> +	if (IS_ENABLED(CONFIG_ZONE_DMA) && (flags & __GFP_DMA))
-> +		return KMALLOC_DMA;
-> +	if (!IS_ENABLED(CONFIG_MEMCG_KMEM) || (flags & __GFP_RECLAIMABLE))
-> +		return KMALLOC_RECLAIM;
-> +	else
-> +		return KMALLOC_CGROUP;
->  }
-
-Works for me this way, thanks.
-
->  
->  /*
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index f8833d3e5d47..d750e3ba7af5 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -727,21 +727,25 @@ struct kmem_cache *kmalloc_slab(size_t size, gfp_t flags)
->  }
->  
->  #ifdef CONFIG_ZONE_DMA
-> -#define INIT_KMALLOC_INFO(__size, __short_size)			\
-> -{								\
-> -	.name[KMALLOC_NORMAL]  = "kmalloc-" #__short_size,	\
-> -	.name[KMALLOC_RECLAIM] = "kmalloc-rcl-" #__short_size,	\
-> -	.name[KMALLOC_DMA]     = "dma-kmalloc-" #__short_size,	\
-> -	.size = __size,						\
-> -}
-> +#define KMALLOC_DMA_NAME(sz)	.name[KMALLOC_DMA] = "dma-kmalloc-" #sz,
-> +#else
-> +#define KMALLOC_DMA_NAME(sz)
-> +#endif
-> +
-> +#ifdef CONFIG_MEMCG_KMEM
-> +#define KMALLOC_CGROUP_NAME(sz)	.name[KMALLOC_CGROUP] = "kmalloc-cg-" #sz,
->  #else
-> +#define KMALLOC_CGROUP_NAME(sz)
-> +#endif
-> +
->  #define INIT_KMALLOC_INFO(__size, __short_size)			\
->  {								\
->  	.name[KMALLOC_NORMAL]  = "kmalloc-" #__short_size,	\
->  	.name[KMALLOC_RECLAIM] = "kmalloc-rcl-" #__short_size,	\
-> +	KMALLOC_CGROUP_NAME(__short_size)			\
-> +	KMALLOC_DMA_NAME(__short_size)				\
->  	.size = __size,						\
->  }
-> -#endif
->  
->  /*
->   * kmalloc_info[] is to make slub_debug=,kmalloc-xx option work at boot time.
-> @@ -847,6 +851,9 @@ void __init create_kmalloc_caches(slab_flags_t flags)
->  	int i;
->  	enum kmalloc_cache_type type;
->  
-> +	/*
-> +	 * Including KMALLOC_CGROUP if CONFIG_MEMCG_KMEM defined
-> +	 */
->  	for (type = KMALLOC_NORMAL; type <= KMALLOC_RECLAIM; type++) {
->  		for (i = KMALLOC_SHIFT_LOW; i <= KMALLOC_SHIFT_HIGH; i++) {
->  			if (!kmalloc_caches[type][i])
+On Wed, May 05, 2021 at 05:09:08PM +0200, Giuseppe Scrivano wrote:
+> Hi Serge,
 > 
-
+> Giuseppe Scrivano <gscrivan@redhat.com> writes:
+> 
+> > Hi Serge,
+> >
+> > "Serge E. Hallyn" <serge@hallyn.com> writes:
+> >
+> >> On Wed, Dec 02, 2020 at 05:12:27PM +0100, Giuseppe Scrivano wrote:
+> >>> Hi Eric,
+> >>> 
+> >>> ebiederm@xmission.com (Eric W. Biederman) writes:
+> >>> 
+> >>> > Nit: The tag should have been "userns:" rather than kernel.
+> >>> >
+> >>> > Giuseppe Scrivano <gscrivan@redhat.com> writes:
+> >>> >
+> >>> >> writing to the id map fails when an extent overlaps multiple mappings
+> >>> >> in the parent user namespace, e.g.:
+> >>> >>
+> >>> >> $ cat /proc/self/uid_map
+> >>> >>          0       1000          1
+> >>> >>          1     100000      65536
+> >>> >> $ unshare -U sleep 100 &
+> >>> >> [1] 1029703
+> >>> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
+> >>> >> 0 0 100
+> >>> >> tee: /proc/1029703/uid_map: Operation not permitted
+> >>> >>
+> >>> >> To prevent it from happening, automatically split an extent so that
+> >>> >> each portion fits in one extent in the parent user namespace.
+> >>> >
+> >>> > I don't see anything fundamentally wrong with relaxing this
+> >>> > restriction, but more code does have more room for bugs to hide.
+> >>> >
+> >>> > What is the advantage of relaxing this restriction?
+> >>> 
+> >>> we are running rootless containers in a namespace created with
+> >>> newuidmap/newgidmap where the mappings look like:
+> >>> 
+> >>> $ cat /proc/self/uid_map
+> >>> 0       1000          1
+> >>> 1     110000      65536
+> >>> 
+> >>> users are allowed to create child user namespaces and specify the
+> >>> mappings to use.  Doing so, they often hit the issue that the mappings
+> >>> cannot overlap multiple extents in the parent user namespace.
+> >>> 
+> >>> The issue could be completely addressed in user space, but to me it
+> >>> looks like an implementation detail that user space should not know
+> >>> about.
+> >>> In addition, it would also be slower (additional read of the current
+> >>> uid_map and gid_map files) and must be implemented separately in each
+> >>> container runtime.
+> >>> 
+> >>> >> $ cat /proc/self/uid_map
+> >>> >>          0       1000          1
+> >>> >>          1     110000      65536
+> >>> >> $ unshare -U sleep 100 &
+> >>> >> [1] 1552
+> >>> >> $ printf "0 0 100\n" | tee /proc/$!/uid_map
+> >>> >> 0 0 100
+> >>> >> $ cat /proc/$!/uid_map
+> >>> >>          0          0          1
+> >>> >>          1          1         99
+> >>> >>
+> >>> >> Signed-off-by: Giuseppe Scrivano <gscrivan@redhat.com>
+> >>> >> ---
+> >>> >>  kernel/user_namespace.c | 62 ++++++++++++++++++++++++++++++++++-------
+> >>> >>  1 file changed, 52 insertions(+), 10 deletions(-)
+> >>> >>
+> >>> >> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
+> >>> >> index 87804e0371fe..b5542be2bd0a 100644
+> >>> >> --- a/kernel/user_namespace.c
+> >>> >> +++ b/kernel/user_namespace.c
+> >>> >> @@ -706,6 +706,41 @@ const struct seq_operations proc_projid_seq_operations = {
+> >>> >>  	.show = projid_m_show,
+> >>> >>  };
+> >>> >>  
+> >>> >> +static void split_overlapping_mappings(struct uid_gid_map *parent_map,
+> >>> >> +				       struct uid_gid_extent *extent,
+> >>> >> +				       struct uid_gid_extent *overflow_extent)
+> >>> >> +{
+> >>> >> +	unsigned int idx;
+> >>> >> +
+> >>> >> +	overflow_extent->first = (u32) -1;
+> >>> >> +
+> >>> >> +	/* Split extent if it not fully contained in an extent from parent_map.  */
+> >>> >> +	for (idx = 0; idx < parent_map->nr_extents; idx++) {
+> >>> >
+> >>> > Ouch!
+> >>> >
+> >>> > For the larger tree we perform binary searches typically and
+> >>> > here you are walking every entry unconditionally.
+> >>> >
+> >>> > It looks like this makes the write O(N^2) from O(NlogN)
+> >>> > which for a user facing function is not desirable.
+> >>> >
+> >>> > I think something like insert_and_split_extent may be ok.
+> >>> > Incorporating your loop and the part that inserts an element.
+> >>> >
+> >>> > As written this almost doubles the complexity of the code,
+> >>> > as well as making it perform much worse.  Which is a problem.
+> >>> 
+> >>> I've attempted to implement the new functionality at input validation
+> >>> time to not touch the existing security checks.
+> >>> 
+> >>> I've thought the pattern for iterating the extents was fine as I've
+> >>> taken it from mappings_overlap (even if it is used differently on an
+> >>> unsorted array).
+> >>> 
+> >>> Thanks for the hint, I'll move the new logic when map_id_range_down() is
+> >>> used and I'll send a v2.
+> >>
+> >> Hi,
+> >>
+> >> sorry if I miseed it.  Did you ever send a v2?
+> >
+> > no worries, the v2 is here:
+> >
+> > https://lkml.kernel.org/lkml/20201203150252.1229077-1-gscrivan@redhat.com/
+> 
+> have you had a chance to look at the patch?
+> 
+> Thanks,
+> Giuseppe
