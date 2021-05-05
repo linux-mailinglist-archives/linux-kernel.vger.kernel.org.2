@@ -2,100 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D02A373640
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:27:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9D42373655
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:34:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231764AbhEEI2v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 04:28:51 -0400
-Received: from mx3.molgen.mpg.de ([141.14.17.11]:38761 "EHLO mx1.molgen.mpg.de"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229566AbhEEI2u (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 04:28:50 -0400
-Received: from [192.168.0.7] (ip5f5aeee6.dynamic.kabel-deutschland.de [95.90.238.230])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        (Authenticated sender: pmenzel)
-        by mx.molgen.mpg.de (Postfix) with ESMTPSA id BA7FD61E5FE02;
-        Wed,  5 May 2021 10:27:52 +0200 (CEST)
-Subject: Re: `quirk_usb_handoff_xhci` takes 60 ms with ASM1042
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-usb@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        linux-pci@vger.kernel.org
-References: <eed7681d-2bbf-b3a5-4ee3-729b614545bf@molgen.mpg.de>
- <YJJTQzJS/8Loz8kV@kroah.com>
-From:   Paul Menzel <pmenzel@molgen.mpg.de>
-Message-ID: <e4d36cdd-3998-3ed3-76d9-56541d89a182@molgen.mpg.de>
-Date:   Wed, 5 May 2021 10:27:52 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231992AbhEEIfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 04:35:16 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2997 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231977AbhEEIfN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 04:35:13 -0400
+Received: from fraeml703-chm.china.huawei.com (unknown [172.18.147.226])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZqYK3b67z6wjdD;
+        Wed,  5 May 2021 16:26:13 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml703-chm.china.huawei.com (10.206.15.52) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.2176.2; Wed, 5 May 2021 10:34:15 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 09:34:14 +0100
+Date:   Wed, 5 May 2021 09:32:35 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on
+ CONFIG_ACPI
+Message-ID: <20210505093235.00007c38@Huawei.com>
+In-Reply-To: <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net>
+References: <20210504174019.2134652-1-linux@roeck-us.net>
+        <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
+        <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <YJJTQzJS/8Loz8kV@kroah.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dear Greg,
+On Tue, 4 May 2021 11:00:52 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
 
-
-Thank you for the quick reply.
-
-Am 05.05.21 um 10:11 schrieb Greg Kroah-Hartman:
-> On Wed, May 05, 2021 at 09:57:44AM +0200, Paul Menzel wrote:
-
->> On an Asus F2A85-M PRO, BIOS 6601 11/25/2014, with an ASM1042 SuperSpeed USB
->> Host Controller [1b21:1042], and the xHCI drivers built as modules
->>
->>      CONFIG_USB_XHCI_PCI=m
->>      CONFIG_USB_XHCI_HCD=m
->>
->> `quirk_usb_handoff_xhci` takes 60 ms, which is 15 % of the time to reaching
->> `run_init_process()`. I addded some prints, showing the f
->>
->>      [    0.308841] pci 0000:03:00.0: PCI->APIC IRQ transform: INT A -> IRQ 17
->>      [    0.369858] pci 0000:03:00.0: handshake done with timeout = 0
->>      [    0.369862] pci 0000:03:00.0: hc_init reached
->>      [    0.369865] pci 0000:03:00.0: second handshake done
->>      [    0.369869] pci 0000:03:00.0: third handshake done
->>      [    0.369909] pci 0000:03:00.0: quirk_usb_early_handoff+0x0/0x670 took 59661 usecs
->>      […]
->>      [    0.415223] Run /lib/systemd/systemd as init process
->>
->> Is there a way to optimize this, or move it out “the hot path”?
+> On 5/4/21 10:44 AM, Andy Shevchenko wrote:
+> > On Tue, May 4, 2021 at 8:40 PM Guenter Roeck <linux@roeck-us.net> wrote:  
+> >>
+> >> With CONFIG_ACPI=n and -Werror, 0-day reports:
+> >>
+> >> drivers/iio/chemical/bme680_i2c.c:46:36: error:
+> >>         'bme680_acpi_match' defined but not used  
+> >   
+> >> Given the other patch, question of course is if this ACPI ID
+> >> is real. A Google search suggests that this might not be the case.
+> >> Should we remove it as well ? STK8312 has the same problem.  
+> > 
+> > For this one definitely removal. Looking into the code it suggests a
+> > cargo cult taken that time by a few contributors to invent fake ACPI
+> > IDs while submitting new drivers.
+> > Feel free to add my tag or if you wish me I'll add it explicitly.
+> >   
 > 
-> That's the hardware taking so long, all that function does is make some
-> PCI calls to the device.
+> I'll resend and let you add the tag, and send a similar patch
+> for STK8312. I'll wait until tomorrow, though - I sent a number of
+> patches today already, and I want to avoid yet another "account
+> suspended" notice from gmail.
 
-In your experience, do most devices take that long?
+If you find some valid ACPI entries that are hitting this problem,
+I'd prefer we just got rid of the ACPI_PTR() usecases rather than
+added IFDEF magic.
 
-> If the driver is built as a module, there should not be any "hot
-> path" here as the module is loaded async when the device is
-> discovered, right?
-     obj-$(CONFIG_USB_PCI)   += pci-quirks.o
+The space wasted by having these is trivial and I'd rather not
+introduce ifdef around any of these tables.
 
-So all quirks are run independently of the USB “variant” (UHCI, OHCI, 
-EHCI, xHCI).
+Dropping the ones we are fairly sure are spurious is even better!
 
-Indeed, this driver is built into the Linux kernel.
+Thanks,
 
-     $ grep USB_PCI .config
-     CONFIG_USB_PCI=y
+Jonathan
 
-So, should `pci-quirks.c` be split up to have more fine grained control?
+> 
+> Thanks,
+> Guenter
 
-> What is waiting for this module to load in order to cause your init to
-> stall?  Perhaps fix your initramfs logic or build the driver into the
-> kernel itself to take it off of this "load all the modules and wait"
-> path?
-
-Sorry, for causing some confusion. But as written above, this all 
-happens before the initrd is involved.
-
-
-Kind regards,
-
-Paul
