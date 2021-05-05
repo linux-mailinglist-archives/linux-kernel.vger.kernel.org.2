@@ -2,91 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D9DC374ABB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:41:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7790C374AC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:48:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231397AbhEEVmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 17:42:45 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33014 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229893AbhEEVmo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 17:42:44 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 55DE8B13E;
-        Wed,  5 May 2021 21:41:46 +0000 (UTC)
-Subject: Re: [PATCH v4 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
- caches
-To:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210505200610.13943-1-longman@redhat.com>
- <20210505200610.13943-3-longman@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <935031de-f177-b49f-2a1d-2af2b519a270@suse.cz>
-Date:   Wed, 5 May 2021 23:41:45 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S229582AbhEEVtX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 17:49:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51888 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229968AbhEEVtS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 17:49:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59B5BC061574;
+        Wed,  5 May 2021 14:48:21 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620251297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=DwnDbRYPGOB6QSqiEY7AuTKE84++kwmlDEV1tcogAv0=;
+        b=IcbSGt/aNAWDrw7qHp4Wt8BC0pn3AjDcHV/mHlqw2N2CyjBBYWo68W2MyuGT4p1O9zkz/f
+        zbXaj21XFjY1WP1sUbezCn9QsRTJLfRG97KxkwF0kfZPgHFdnxOQGgRXEi52Bbnb1N168T
+        WUNxiGfmhyuUkFmsJYh/sdTMSD+5+GfIOZ7BHfJrIQh0LbvxGTRThHscV+EseE1+AlHeJA
+        3LAv4i1pkq4MiCT0Rms7FFIzNmxpPxjplHP4NDibsWxaN4vo8Vk5mr2vQ89k1561mMj34n
+        7PRVnrNEk4c1Y/UGrlFkViwJ+Z3xFyKCqXqxXYRAMw3KCKE+vdF7X5gxLKabmg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620251297;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=DwnDbRYPGOB6QSqiEY7AuTKE84++kwmlDEV1tcogAv0=;
+        b=DCbmaGOAWxbh7gginzBuFNGOZA2b1+9xNNptOuadeawYHzdDig1Ftb6TFP/0JRINV4+FZW
+        bkJWphTAQQeN6NAg==
+To:     kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: KVM: x86: Cancel pvclock_gtod_work on module removal
+Date:   Wed, 05 May 2021 23:48:17 +0200
+Message-ID: <87czu4onry.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210505200610.13943-3-longman@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 10:06 PM, Waiman Long wrote:
-> There are currently two problems in the way the objcg pointer array
-> (memcg_data) in the page structure is being allocated and freed.
-> 
-> On its allocation, it is possible that the allocated objcg pointer
-> array comes from the same slab that requires memory accounting. If this
-> happens, the slab will never become empty again as there is at least
-> one object left (the obj_cgroup array) in the slab.
-> 
-> When it is freed, the objcg pointer array object may be the last one
-> in its slab and hence causes kfree() to be called again. With the
-> right workload, the slab cache may be set up in a way that allows the
-> recursive kfree() calling loop to nest deep enough to cause a kernel
-> stack overflow and panic the system.
-> 
-> One way to solve this problem is to split the kmalloc-<n> caches
-> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
-> (KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
-> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
-> the other caches can still allow a mix of accounted and unaccounted
-> objects.
-> 
-> With this change, all the objcg pointer array objects will come from
-> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
-> both the recursive kfree() problem and non-freeable slab problem are
-> gone.
-> 
-> Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
-> mixed accounted and unaccounted objects, this will slightly reduce the
-> number of objcg pointer arrays that need to be allocated and save a bit
-> of memory. On the other hand, creating a new set of kmalloc caches does
-> have the effect of reducing cache utilization. So it is properly a wash.
-> 
-> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
-> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
-> will include the newly added caches without change.
-> 
-> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Nothing prevents the following:
 
-A last nitpick: the new caches -cg should perhaps not be created when
-cgroup_memory_nokmem == true because kmemcg was disabled by the respective boot
-param.
+  pvclock_gtod_notify()
+    queue_work(system_long_wq, &pvclock_gtod_work);
+  ...
+  remove_module(kvm);
+  ...
+  work_queue_run()
+    pvclock_gtod_work()	<- UAF
+
+Ditto for any other operation on that workqueue list head which touches
+pvclock_gtod_work after module removal.
+
+Cancel the work in kvm_arch_exit() to prevent that.
+
+Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+---
+Found by inspection because of:
+  https://lkml.kernel.org/r/0000000000001d43ac05c0f5c6a0@google.com
+See also:
+  https://lkml.kernel.org/r/20210505105940.190490250@infradead.org
+
+TL;DR: Scheduling work with tk_core.seq write held is a bad idea.
+---
+ arch/x86/kvm/x86.c |    1 +
+ 1 file changed, 1 insertion(+)
+
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -8168,6 +8168,7 @@ void kvm_arch_exit(void)
+ 	cpuhp_remove_state_nocalls(CPUHP_AP_X86_KVM_CLK_ONLINE);
+ #ifdef CONFIG_X86_64
+ 	pvclock_gtod_unregister_notifier(&pvclock_gtod_notifier);
++	cancel_work_sync(&pvclock_gtod_work);
+ #endif
+ 	kvm_x86_ops.hardware_enable = NULL;
+ 	kvm_mmu_module_exit();
