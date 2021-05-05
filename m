@@ -2,246 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0244374877
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:09:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB31437487A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:10:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235211AbhEETKg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 15:10:36 -0400
-Received: from mail-dm6nam10on2074.outbound.protection.outlook.com ([40.107.93.74]:23934
-        "EHLO NAM10-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231422AbhEETKf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 15:10:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Y6tcqhztKmW2NbBLj178XrLiNF34uHXhdy1Jlf+NOLk5vuPiLKPo02isl8p/WUqaF2Momu76xX/lYYN3H7obL9RH9D35vCHQLfrSCGbO3WQrc4pYo1HfgGK6rHPu8NZ8ER6IQBSnvhBzyv1Tb1E3V6Unlv1/2Nuk7mXKPdLJ+hzC8WNBd1hBwv/npRYw0gviw5AucPPIu3yuN3U6QqzMoP0ubL5cMMeb49VIwzB1tyf8ETljqrVJnyhX3i/HtixRiuABANcwJFBUR2EB7P6QOkiU2iFbkFeG2txbOtzDEBtYCS64Zw9Zivh9qdV4GhtSAd3Zxi0LcZ2wv1Aom7RCiA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qlr9rgtczr3YKjozbr900Ub4+a/dffl1HAuCmlL+O6U=;
- b=mNk6SxaelUt0zJpHihLX3cBrxAZZA6nyp/Z1wVe5dDfxyhpLcrf82ke3j3V1s05pagvio7YSLP7QsF+mZ4kJyS7POeLpa0sQZZHkix/K0gXdL75SzrrGU7k7iChxXdWgQItCFXDa00jR8XkJk6AM+lKIjTCFz8+6jemsGmU9ewYQxDqMobnhAiYsfYnF+2ZLMI9WqI+yckKrg9t2JpzYg1O73OsPreLVzMaNng6Z3Oqt4JcILosK6vCwm2WB7ewtzRKY10S8liW8+BclbNVJ3uR/EYuqI61zSGRtKrIso/+skyG/dSRJkBaeDyLDhKZkhH5ZW2uu7z1DAWQfnsGuyA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qlr9rgtczr3YKjozbr900Ub4+a/dffl1HAuCmlL+O6U=;
- b=cAyk9Zr4P3R+yYF5vR5dV3382en3FrAT+GQSi3pLIy2WQRe2XHvbYBCINysrN2VHDqdPXXlBZsnC5KZ48Wj5RauIqkvziizmJDe3C7Nwn4xq5rx0DKZaLjul8xoboWd0TE2751UFUunsjwGpRmy3zZ1Qd4S/7988HyXDQFM6Bjo=
-Received: from BN9PR03CA0336.namprd03.prod.outlook.com (2603:10b6:408:f6::11)
- by BYAPR12MB2776.namprd12.prod.outlook.com (2603:10b6:a03:67::31) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.41; Wed, 5 May
- 2021 19:09:36 +0000
-Received: from BN8NAM11FT039.eop-nam11.prod.protection.outlook.com
- (2603:10b6:408:f6:cafe::99) by BN9PR03CA0336.outlook.office365.com
- (2603:10b6:408:f6::11) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend
- Transport; Wed, 5 May 2021 19:09:36 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com;
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- BN8NAM11FT039.mail.protection.outlook.com (10.13.177.169) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4108.25 via Frontend Transport; Wed, 5 May 2021 19:09:36 +0000
-Received: from rsaripalli-Inspiron-5676.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2242.4; Wed, 5 May 2021 14:09:35 -0500
-From:   Ramakrishna Saripalli <rsaripal@amd.com>
-To:     <linux-kernel@vger.kernel.org>, <x86@kernel.org>,
-        <tglx@linutronix.de>, <mingo@redhat.com>, <bp@alien8.de>,
-        <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>
-CC:     <bsd@redhat.com>, <rsaripal@amd.com>
-Subject: [PATCH v5 1/1] x86/cpufeatures: Implement Predictive Store Forwarding control.
-Date:   Wed, 5 May 2021 14:09:23 -0500
-Message-ID: <20210505190923.276051-2-rsaripal@amd.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210505190923.276051-1-rsaripal@amd.com>
-References: <20210505190923.276051-1-rsaripal@amd.com>
+        id S235321AbhEETLB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 15:11:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44706 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231422AbhEETK7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 15:10:59 -0400
+Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C468C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 12:10:01 -0700 (PDT)
+Received: by mail-ed1-x535.google.com with SMTP id d14so3293775edc.12
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 12:10:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ZO07fig+Fo15/ubZmeE90l3nz6ipAJGihh+nah7Dgv0=;
+        b=DzvzdqvDVmxJjpAX4SXcy0AlCU9CDGmdRMaTZw/0Vbbu7xAJyqAozASEXYWfeozqXn
+         uSPA0Wih4PR+FgaEBBDpXS2XLrminqNIj53L3/e3Tm83Vj9vIc103Q+QtBrqkll7BjGS
+         LKql8BeHIe9EDkuQUKe8M4U1fYR1PHNbQmHqv0kGVnrEM/U1r1kpDu6XbRH0DVpBL45h
+         TbhjJj5Lbg7gQ/5D8E46cjp5TrebWIrSVvM3MyF0YtQWa8k6/v85qCYxJ9gkJmPe7tv0
+         7CVxZmfWQEW3ja5XbWUYYnqn6syXfVPoiIjJQoryRV0WOHAUeBJ63LeZBEGNggQCOJF6
+         VgsA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ZO07fig+Fo15/ubZmeE90l3nz6ipAJGihh+nah7Dgv0=;
+        b=bVq3lGCAgncdrUJwkB0I3+122Ln7zzVF/KW4LCnLSAW5xoFaKblyz/Njks8d9PRglP
+         /F8q5tYZ/HgpWA/VKVAXhfvd+PtiYNYhaVAntcNb7Yo6Qyo13KM5iuqX3Gr98VoNXzk7
+         fwixz7IqB1nHYk3cJomcpVF5/DWIWNvT6G5IWZAgRiofjfEGsDxZ5eBnc7ElMwEMsLWd
+         ofUhRgXec44m/UcaNm/I2OR3563GVDy88yE4/BQREGQe712o3qk2PMvoGsQ+DvWAvBch
+         i0F+uuWE2DHFt0vBQfOr0lWBtEVZQ73iLaZoMckk3ZgNI+f8i1qKXAuZj7VZWrIWu4DJ
+         8Lag==
+X-Gm-Message-State: AOAM531G4IdEAimwButYE+o+Aqzr/AE1Y9ovvwUTrXh/h8MsTXKE94tu
+        EqfJcPvp4OlL8iuN92un9RZTt4IuGRsWyF3gCW9gGQ==
+X-Google-Smtp-Source: ABdhPJw/ZWK8GQkFpFJ1Vo2+TpOXsAVEna4Zq8RcaplWS6HPtiiT9beWpoSz5eiVNCL6fdYgWlgaOPIZsMvkJ+RKZLg=
+X-Received: by 2002:a50:fc91:: with SMTP id f17mr597143edq.23.1620241799760;
+ Wed, 05 May 2021 12:09:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [10.180.168.240]
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a9b5423c-1574-4feb-4bb0-08d90ff95347
-X-MS-TrafficTypeDiagnostic: BYAPR12MB2776:
-X-Microsoft-Antispam-PRVS: <BYAPR12MB27761F160C2219C49C94ACC59B599@BYAPR12MB2776.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cvf6rfWShsLGJWXPbTyKnWRbyqJLw3m0DuwZ69pjKP1J0mY1Qxx7zSdytkCjF/jg/ycTGIeGMvfn1+3VJMH5B6vJYEwnV1GVwMAl10K/9R5NXDSfrNb7qcewmWsmWZmhEOL16sOc5uoi3GvK4oXvJKdcj+dgELp+ZZoKxX17vy6i+D/82c25F7scSjwV/MU5+lVnDbxjgXNgY+TV/Tgp6EW0WndzTcFtVEvQyhPLz/t6L/rtiXWMgOLfnEbyQ0oz3bLzk6S/zJ3wIZy7wlKHZVozevZz7OXt6giB0oONT7BUiliWw1oRjjrNvMtX74Lgz/SW7t7PwDJ22i7jE6nbg6YL1fPZrwxyKwp4QRxm0BhvAnmdNWpyPsh3MsfMU3q12MKP+N2OsQYF9ZvVKHu/UwtUDn34EVYjOHaSpZFsYHGk8UA3LIy6Gkio+6uwZtDnxO5i2k5N9JJE9vYK94/1ouuDRQy5aPv6CPMnjWSQmFH6PsGDC2Y6gzam+QnBhWNfkTyIjQNmfdr80pw7Z2IGnPqM4AalbVtWl4jrcjEn9NSzB679+jqzPchMaaNTteESozdaeHGXHMRPjFsQDmcpsJbfZNlWMNpegXaYz0GW1XFghWSv00Z4BeoSdfX9sroLyP5Y5TnHxEUHJ8tu7hCZJxaLpwJS9z6BQG+pCkguZsnTLKGDBpdd0k3pf/9Wlyyl
-X-Forefront-Antispam-Report: CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(136003)(39860400002)(36840700001)(46966006)(8936002)(1076003)(478600001)(82740400003)(2616005)(81166007)(2906002)(426003)(5660300002)(83380400001)(4326008)(82310400003)(356005)(7696005)(70206006)(70586007)(54906003)(47076005)(186003)(16526019)(6666004)(36756003)(110136005)(8676002)(36860700001)(26005)(316002)(336012)(36900700001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 05 May 2021 19:09:36.7660
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9b5423c-1574-4feb-4bb0-08d90ff95347
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM11FT039.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB2776
+References: <20210505112324.956720416@linuxfoundation.org>
+In-Reply-To: <20210505112324.956720416@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 6 May 2021 00:39:47 +0530
+Message-ID: <CA+G9fYvFpBd+5Sc8Py=m_XopbDXT_PSUWWid3-pCXzStB4P5hQ@mail.gmail.com>
+Subject: Re: [PATCH 5.12 00/17] 5.12.2-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramakrishna Saripalli <rk.saripalli@amd.com>
+On Wed, 5 May 2021 at 17:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.12.2 release.
+> There are 17 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.12.2-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.12.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Certain AMD processors feature a new technology called Predictive Store
-Forwarding (PSF).
 
-PSF is a micro-architectural optimization designed to improve the
-performance of code execution by predicting dependencies between
-loads and stores.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Incorrect PSF predictions can occur due to two reasons.
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-- It is possible that the load/store pair may have had dependency for
-  a while but the dependency has stopped because the address in the
-  load/store pair has changed.
+## Build
+* kernel: 5.12.2-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.12.y
+* git commit: 77358801e46cfaa306e7b1bcf5d8cf99a21b40d2
+* git describe: v5.12.1-18-g77358801e46c
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.12.y/build/v5.12=
+.1-18-g77358801e46c
 
-- Second source of incorrect PSF prediction can occur because of an alias
-  in the PSF predictor structure stored in the microarchitectural state.
-  PSF predictor tracks load/store pair based on portions of instruction
-  pointer. It is possible that a load/store pair which does have a
-  dependency may be aliased by another load/store pair which does not have
-  the same dependency. This can result in incorrect speculation.
+## No regressions (compared to v5.12.1-8-g3a4da71200d3)
 
-  Software may be able to detect this aliasing and perform side-channel
-  attacks.
+## No fixes (compared to v5.12.1-8-g3a4da71200d3)
 
-All CPUs that implement PSF provide one bit to disable this feature.
-If the bit to disable this feature is available, it means that the CPU
-implements PSF feature and is therefore vulnerable to PSF risks.
 
-The bits that are introduced
+## Test result summary
+ total: 79811, pass: 65944, fail: 2758, skip: 11109, xfail: 0,
 
-X86_FEATURE_PSFD: CPUID_Fn80000008_EBX[28] ("PSF disable")
-	If this bit is 1, CPU implements PSF and PSF control
-	via SPEC_CTRL_MSR is supported in the CPU.
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
 
-All AMD processors that support PSF implement a bit in
-SPEC_CTRL MSR (0x48) to disable or enable Predictive Store
-Forwarding.
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* timesync-off
+* v4l2-compliance
 
-PSF control introduces a new kernel parameter called
-	predict_store_fwd.
-
-Kernel parameter predict_store_fwd has the following values
-
-- off. This value is used to disable PSF on all CPUs.
-
-- on. This value is used to enable PSF on all CPUs.
-        This is also the default setting.
-
-Signed-off-by: Ramakrishna Saripalli<rk.saripalli@amd.com>
----
- .../admin-guide/kernel-parameters.txt         |  5 +++++
- arch/x86/include/asm/cpufeatures.h            |  1 +
- arch/x86/include/asm/msr-index.h              |  2 ++
- arch/x86/kernel/cpu/amd.c                     | 19 +++++++++++++++++++
- arch/x86/kernel/cpu/bugs.c                    |  6 +++++-
- 5 files changed, 32 insertions(+), 1 deletion(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 04545725f187..a4dd08bb0d3a 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -3940,6 +3940,11 @@
- 			Format: {"off"}
- 			Disable Hardware Transactional Memory
- 
-+	predict_store_fwd=	[X86] This option controls PSF.
-+			off - Turns off PSF.
-+			on  - Turns on PSF.
-+			default : on.
-+
- 	preempt=	[KNL]
- 			Select preemption mode if you have CONFIG_PREEMPT_DYNAMIC
- 			none - Limited to cond_resched() calls
-diff --git a/arch/x86/include/asm/cpufeatures.h b/arch/x86/include/asm/cpufeatures.h
-index cc96e26d69f7..078f46022293 100644
---- a/arch/x86/include/asm/cpufeatures.h
-+++ b/arch/x86/include/asm/cpufeatures.h
-@@ -309,6 +309,7 @@
- #define X86_FEATURE_AMD_SSBD		(13*32+24) /* "" Speculative Store Bypass Disable */
- #define X86_FEATURE_VIRT_SSBD		(13*32+25) /* Virtualized Speculative Store Bypass Disable */
- #define X86_FEATURE_AMD_SSB_NO		(13*32+26) /* "" Speculative Store Bypass is fixed in hardware. */
-+#define X86_FEATURE_PSFD		(13*32+28) /* Predictive Store Forward Disable */
- 
- /* Thermal and Power Management Leaf, CPUID level 0x00000006 (EAX), word 14 */
- #define X86_FEATURE_DTHERM		(14*32+ 0) /* Digital Thermal Sensor */
-diff --git a/arch/x86/include/asm/msr-index.h b/arch/x86/include/asm/msr-index.h
-index 546d6ecf0a35..f569918c8754 100644
---- a/arch/x86/include/asm/msr-index.h
-+++ b/arch/x86/include/asm/msr-index.h
-@@ -51,6 +51,8 @@
- #define SPEC_CTRL_STIBP			BIT(SPEC_CTRL_STIBP_SHIFT)	/* STIBP mask */
- #define SPEC_CTRL_SSBD_SHIFT		2	   /* Speculative Store Bypass Disable bit */
- #define SPEC_CTRL_SSBD			BIT(SPEC_CTRL_SSBD_SHIFT)	/* Speculative Store Bypass Disable */
-+#define SPEC_CTRL_PSFD_SHIFT		7
-+#define SPEC_CTRL_PSFD			BIT(SPEC_CTRL_PSFD_SHIFT)	/* Predictive Store Forwarding Disable */
- 
- #define MSR_IA32_PRED_CMD		0x00000049 /* Prediction Command */
- #define PRED_CMD_IBPB			BIT(0)	   /* Indirect Branch Prediction Barrier */
-diff --git a/arch/x86/kernel/cpu/amd.c b/arch/x86/kernel/cpu/amd.c
-index 347a956f71ca..2ae74b68c6d3 100644
---- a/arch/x86/kernel/cpu/amd.c
-+++ b/arch/x86/kernel/cpu/amd.c
-@@ -1170,3 +1170,22 @@ void set_dr_addr_mask(unsigned long mask, int dr)
- 		break;
- 	}
- }
-+
-+static int __init psf_cmdline(char *str)
-+{
-+	if (!boot_cpu_has(X86_FEATURE_PSFD))
-+		return 0;
-+
-+	if (!str)
-+		return -EINVAL;
-+
-+	if (!strcmp(str, "off")) {
-+		set_cpu_cap(&boot_cpu_data, X86_FEATURE_MSR_SPEC_CTRL);
-+		x86_spec_ctrl_base |= SPEC_CTRL_PSFD;
-+		msr_set_bit(MSR_IA32_SPEC_CTRL, SPEC_CTRL_PSFD_SHIFT);
-+	}
-+
-+	return 0;
-+}
-+
-+early_param("predict_store_fwd", psf_cmdline);
-diff --git a/arch/x86/kernel/cpu/bugs.c b/arch/x86/kernel/cpu/bugs.c
-index d41b70fe4918..536136e0daa3 100644
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -78,6 +78,8 @@ EXPORT_SYMBOL_GPL(mds_idle_clear);
- 
- void __init check_bugs(void)
- {
-+	u64 tmp = 0;
-+
- 	identify_boot_cpu();
- 
- 	/*
-@@ -97,7 +99,9 @@ void __init check_bugs(void)
- 	 * init code as it is not enumerated and depends on the family.
- 	 */
- 	if (boot_cpu_has(X86_FEATURE_MSR_SPEC_CTRL))
--		rdmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_base);
-+		rdmsrl(MSR_IA32_SPEC_CTRL, tmp);
-+
-+	x86_spec_ctrl_base |= tmp;
- 
- 	/* Allow STIBP in MSR_SPEC_CTRL if supported */
- 	if (boot_cpu_has(X86_FEATURE_STIBP))
--- 
-2.25.1
-
+--
+Linaro LKFT
+https://lkft.linaro.org
