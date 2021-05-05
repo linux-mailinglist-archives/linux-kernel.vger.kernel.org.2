@@ -2,37 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A72393743D9
+	by mail.lfdr.de (Postfix) with ESMTP id 5D88A3743D8
 	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236004AbhEEQwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 12:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49782 "EHLO mail.kernel.org"
+        id S235974AbhEEQwb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 12:52:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49996 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235817AbhEEQpF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 12:45:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4D3DB61925;
-        Wed,  5 May 2021 16:35:45 +0000 (UTC)
+        id S235842AbhEEQpH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 12:45:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1C8A66142F;
+        Wed,  5 May 2021 16:35:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620232546;
-        bh=K1Ad5LIEd+gqJ8BD+O00ND/QWNDl+hwMAp3Bhh7hrOc=;
+        s=k20201202; t=1620232549;
+        bh=L9Fh6FiWjtyOYGHCrMPfyT8MFcvxiBflcyQyZc5AxaM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xem00VX2KMb0yrScWYlYZx9TVr/7h6MZlXErZjY4aWKHumGGY0U0QNdQ7mz9tLCwZ
-         UyfoBccksh04Toa8JN4mzrxTfvBdlVAKNgUZ3OUOfWcQaDCGsTo/E4OjPqJyx8MBrL
-         5clkEwVcyD7LYG82ho5mm67c+GTL6gktmiUZRcqK1UVZenxnv7CjFaruTEUFpiScWD
-         jEfLeGgRqxJuc7SyaTVxl4dcbyJ1o8P1Z/7pCPp00BgM8QfwS24OI6anrcMriZSiAL
-         07tcuLLtG1qFWIwj88hjOvb44530fV/Ktg5VLnW3TJgMtt2lgJ792ShH3o2/EVD84V
-         tZoe3iVQeObLw==
+        b=TQrwd/IF8aohczlbQ2uOXIqLSP8T7mNfjnt0zLNC5JlwowG/H8Nu+unBmQ2o7zeVC
+         DIUH/el1tFs6jmj0wRovsy0fzTC6/sd0XqneILD7ZVv2eV8j9L9lY7Hy6xS/mbed9x
+         u9g7qJf2cuQWGz+lLcBLzGjtmhLOF0slrT1CWBIqWg0KKCa4xTuiYPLALbBzUD1nA9
+         PyQqItMYQ5s4+qtE47bAkeRJmsHWq12t/K2BssCoUkUr+SZeyziPSfS7Z010ro/Q1x
+         eNIr0aZcyWKE2iUb8XAEnuGrYyI3u5bmp3jmJYvD6+4wN3iCz0t/YG9kFo3UDxK6lp
+         Jiow33MCpXgGA==
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Vaibhav Jain <vaibhav@linux.ibm.com>,
-        "Aneesh Kumar K . V" <aneesh.kumar@linux.ibm.com>,
-        Christophe Leroy <christophe.leroy@csgroup.eu>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.11 064/104] powerpc/mm: Add cond_resched() while removing hpte mappings
-Date:   Wed,  5 May 2021 12:33:33 -0400
-Message-Id: <20210505163413.3461611-64-sashal@kernel.org>
+Cc:     Paul Menzel <pmenzel@molgen.mpg.de>, Tj <ml.linux@elloe.vision>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Alexander Monakov <amonakov@ispras.ru>,
+        David Coe <david.coe@live.co.uk>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        Joerg Roedel <jroedel@suse.de>,
+        Sasha Levin <sashal@kernel.org>,
+        iommu@lists.linux-foundation.org
+Subject: [PATCH AUTOSEL 5.11 066/104] Revert "iommu/amd: Fix performance counter initialization"
+Date:   Wed,  5 May 2021 12:33:35 -0400
+Message-Id: <20210505163413.3461611-66-sashal@kernel.org>
 X-Mailer: git-send-email 2.30.2
 In-Reply-To: <20210505163413.3461611-1-sashal@kernel.org>
 References: <20210505163413.3461611-1-sashal@kernel.org>
@@ -44,85 +47,123 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vaibhav Jain <vaibhav@linux.ibm.com>
+From: Paul Menzel <pmenzel@molgen.mpg.de>
 
-[ Upstream commit a5d6a3e73acbd619dd5b7b831762b755f9e2db80 ]
+[ Upstream commit 715601e4e36903a653cd4294dfd3ed0019101991 ]
 
-While removing large number of mappings from hash page tables for
-large memory systems as soft-lockup is reported because of the time
-spent inside htap_remove_mapping() like one below:
+This reverts commit 6778ff5b21bd8e78c8bd547fd66437cf2657fd9b.
 
- watchdog: BUG: soft lockup - CPU#8 stuck for 23s!
- <snip>
- NIP plpar_hcall+0x38/0x58
- LR  pSeries_lpar_hpte_invalidate+0x68/0xb0
- Call Trace:
-  0x1fffffffffff000 (unreliable)
-  pSeries_lpar_hpte_removebolted+0x9c/0x230
-  hash__remove_section_mapping+0xec/0x1c0
-  remove_section_mapping+0x28/0x3c
-  arch_remove_memory+0xfc/0x150
-  devm_memremap_pages_release+0x180/0x2f0
-  devm_action_release+0x30/0x50
-  release_nodes+0x28c/0x300
-  device_release_driver_internal+0x16c/0x280
-  unbind_store+0x124/0x170
-  drv_attr_store+0x44/0x60
-  sysfs_kf_write+0x64/0x90
-  kernfs_fop_write+0x1b0/0x290
-  __vfs_write+0x3c/0x70
-  vfs_write+0xd4/0x270
-  ksys_write+0xdc/0x130
-  system_call+0x5c/0x70
+The original commit tries to address an issue, where PMC power-gating
+causing the IOMMU PMC pre-init test to fail on certain desktop/mobile
+platforms where the power-gating is normally enabled.
 
-Fix this by adding a cond_resched() to the loop in
-htap_remove_mapping() that issues hcall to remove hpte mapping. The
-call to cond_resched() is issued every HZ jiffies which should prevent
-the soft-lockup from being reported.
+There have been several reports that the workaround still does not
+guarantee to work, and can add up to 100 ms (on the worst case)
+to the boot process on certain platforms such as the MSI B350M MORTAR
+with AMD Ryzen 3 2200G.
 
-Suggested-by: Aneesh Kumar K.V <aneesh.kumar@linux.ibm.com>
-Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
-Reviewed-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20210404163148.321346-1-vaibhav@linux.ibm.com
+Therefore, revert this commit as a prelude to removing the pre-init
+test.
+
+Link: https://lore.kernel.org/linux-iommu/alpine.LNX.3.20.13.2006030935570.3181@monopod.intra.ispras.ru/
+Bugzilla: https://bugzilla.kernel.org/show_bug.cgi?id=201753
+Cc: Tj (Elloe Linux) <ml.linux@elloe.vision>
+Cc: Shuah Khan <skhan@linuxfoundation.org>
+Cc: Alexander Monakov <amonakov@ispras.ru>
+Cc: David Coe <david.coe@live.co.uk>
+Signed-off-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+Link: https://lore.kernel.org/r/20210409085848.3908-2-suravee.suthikulpanit@amd.com
+Signed-off-by: Joerg Roedel <jroedel@suse.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/mm/book3s64/hash_utils.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+ drivers/iommu/amd/init.c | 45 ++++++++++------------------------------
+ 1 file changed, 11 insertions(+), 34 deletions(-)
 
-diff --git a/arch/powerpc/mm/book3s64/hash_utils.c b/arch/powerpc/mm/book3s64/hash_utils.c
-index 73b06adb6eeb..f81b09769e0b 100644
---- a/arch/powerpc/mm/book3s64/hash_utils.c
-+++ b/arch/powerpc/mm/book3s64/hash_utils.c
-@@ -337,7 +337,7 @@ int htab_bolt_mapping(unsigned long vstart, unsigned long vend,
- int htab_remove_mapping(unsigned long vstart, unsigned long vend,
- 		      int psize, int ssize)
- {
--	unsigned long vaddr;
-+	unsigned long vaddr, time_limit;
- 	unsigned int step, shift;
- 	int rc;
- 	int ret = 0;
-@@ -350,8 +350,19 @@ int htab_remove_mapping(unsigned long vstart, unsigned long vend,
+diff --git a/drivers/iommu/amd/init.c b/drivers/iommu/amd/init.c
+index 78339b0bb8e5..7720dcfa2b29 100644
+--- a/drivers/iommu/amd/init.c
++++ b/drivers/iommu/amd/init.c
+@@ -12,7 +12,6 @@
+ #include <linux/acpi.h>
+ #include <linux/list.h>
+ #include <linux/bitmap.h>
+-#include <linux/delay.h>
+ #include <linux/slab.h>
+ #include <linux/syscore_ops.h>
+ #include <linux/interrupt.h>
+@@ -255,8 +254,6 @@ static enum iommu_init_state init_state = IOMMU_START_STATE;
+ static int amd_iommu_enable_interrupts(void);
+ static int __init iommu_go_to_state(enum iommu_init_state state);
+ static void init_device_table_dma(void);
+-static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
+-				u8 fxn, u64 *value, bool is_write);
  
- 	/* Unmap the full range specificied */
- 	vaddr = ALIGN_DOWN(vstart, step);
-+	time_limit = jiffies + HZ;
+ static bool amd_iommu_pre_enabled = true;
+ 
+@@ -1715,11 +1712,13 @@ static int __init init_iommu_all(struct acpi_table_header *table)
+ 	return 0;
+ }
+ 
+-static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
++static int iommu_pc_get_set_reg(struct amd_iommu *iommu, u8 bank, u8 cntr,
++				u8 fxn, u64 *value, bool is_write);
 +
- 	for (;vaddr < vend; vaddr += step) {
- 		rc = mmu_hash_ops.hpte_removebolted(vaddr, psize, ssize);
-+
-+		/*
-+		 * For large number of mappings introduce a cond_resched()
-+		 * to prevent softlockup warnings.
-+		 */
-+		if (time_after(jiffies, time_limit)) {
-+			cond_resched();
-+			time_limit = jiffies + HZ;
-+		}
- 		if (rc == -ENOENT) {
- 			ret = -ENOENT;
- 			continue;
++static void init_iommu_perf_ctr(struct amd_iommu *iommu)
+ {
+-	int retry;
+ 	struct pci_dev *pdev = iommu->dev;
+-	u64 val = 0xabcd, val2 = 0, save_reg, save_src;
++	u64 val = 0xabcd, val2 = 0, save_reg = 0;
+ 
+ 	if (!iommu_feature(iommu, FEATURE_PC))
+ 		return;
+@@ -1727,39 +1726,17 @@ static void __init init_iommu_perf_ctr(struct amd_iommu *iommu)
+ 	amd_iommu_pc_present = true;
+ 
+ 	/* save the value to restore, if writable */
+-	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false) ||
+-	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, false))
+-		goto pc_false;
+-
+-	/*
+-	 * Disable power gating by programing the performance counter
+-	 * source to 20 (i.e. counts the reads and writes from/to IOMMU
+-	 * Reserved Register [MMIO Offset 1FF8h] that are ignored.),
+-	 * which never get incremented during this init phase.
+-	 * (Note: The event is also deprecated.)
+-	 */
+-	val = 20;
+-	if (iommu_pc_get_set_reg(iommu, 0, 0, 8, &val, true))
++	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, false))
+ 		goto pc_false;
+ 
+ 	/* Check if the performance counters can be written to */
+-	val = 0xabcd;
+-	for (retry = 5; retry; retry--) {
+-		if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true) ||
+-		    iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false) ||
+-		    val2)
+-			break;
+-
+-		/* Wait about 20 msec for power gating to disable and retry. */
+-		msleep(20);
+-	}
+-
+-	/* restore */
+-	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true) ||
+-	    iommu_pc_get_set_reg(iommu, 0, 0, 8, &save_src, true))
++	if ((iommu_pc_get_set_reg(iommu, 0, 0, 0, &val, true)) ||
++	    (iommu_pc_get_set_reg(iommu, 0, 0, 0, &val2, false)) ||
++	    (val != val2))
+ 		goto pc_false;
+ 
+-	if (val != val2)
++	/* restore */
++	if (iommu_pc_get_set_reg(iommu, 0, 0, 0, &save_reg, true))
+ 		goto pc_false;
+ 
+ 	pci_info(pdev, "IOMMU performance counters supported\n");
 -- 
 2.30.2
 
