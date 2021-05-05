@@ -2,86 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B52C373C15
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:13:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 324CE373C2E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233430AbhEENOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:14:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40452 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233426AbhEENOL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:14:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620220393; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=p4Gx3o25ACBJGILIG3HE+BwEcXMm6WbBPfaqpoYYUJ0=;
-        b=OBaJHXK5sCug91eAyObDotV8cPGAFyEbp7Q+f9qfJC+/K3yf7zsq79OSdiiU/KtluIicgj
-        QQkvL9pxKq8JGHLEAPJ59xvmARwRGEItvWqWlU5lQIz4GTleHBvoieJdhGkAieMekppVE4
-        kMDy5/vXg6IHmTB3u+mbnEerBLa0F8E=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 5B149B199;
-        Wed,  5 May 2021 13:13:13 +0000 (UTC)
-Date:   Wed, 5 May 2021 15:13:11 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     linux-kernel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 3/7] mm: rename and move page_is_poisoned()
-Message-ID: <YJKZ5yXdl18m9YSM@dhcp22.suse.cz>
-References: <20210429122519.15183-1-david@redhat.com>
- <20210429122519.15183-4-david@redhat.com>
+        id S233057AbhEENSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:18:35 -0400
+Received: from mx07-00178001.pphosted.com ([185.132.182.106]:5536 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229606AbhEENSc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 09:18:32 -0400
+Received: from pps.filterd (m0046668.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 145DHMeS022118;
+        Wed, 5 May 2021 15:17:23 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type; s=selector1;
+ bh=oKWdkh59xaWBXpAlbJc3K7xKwP0fD1UPO9YaA7JF6dk=;
+ b=XELtC+voQP/UEhp6mOTj0IhYvZm9YYViaUf3ZgfQTviRfFHehe63ZMXfylx63UJuUsfm
+ BY7/n9BK8VSY7PNM30BaZ3D+HFS3cbwW2ReDumx1M0yL+fRKDsCiYFsZnzX88TLRlM4J
+ n3+x7gyjmmUmDuzuiJwUnk62sY8/CC5Ir2XVBd3q7HBpHMu91ExY7OvgjMCiK70HmVMs
+ 331yNAMJEeuy1F+kRhDNy9YO9dmgX2uGOW+w6EDRleFIL7b8TB0/4wkOdMGLZYWIKnIg
+ MqToVwA4Cl6Tk2DXMTzSZO55v4TmsXrI70yzdVNlCi7QVJrQobnkHV3mc9JiwTucS4/S aw== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38bea3vd3u-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 05 May 2021 15:17:23 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id DE7E510002A;
+        Wed,  5 May 2021 15:17:21 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id AA7D22C4206;
+        Wed,  5 May 2021 15:17:21 +0200 (CEST)
+Received: from localhost (10.75.127.51) by SFHDAG2NODE3.st.com (10.75.127.6)
+ with Microsoft SMTP Server (TLS) id 15.0.1497.2; Wed, 5 May 2021 15:17:21
+ +0200
+From:   Alain Volmat <alain.volmat@foss.st.com>
+To:     <wsa@kernel.org>, <robh+dt@kernel.org>
+CC:     <mark.rutland@arm.com>, <pierre-yves.mordret@foss.st.com>,
+        <mcoquelin.stm32@gmail.com>, <alexandre.torgue@foss.st.com>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-stm32@st-md-mailman.stormreply.com>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>, <fabrice.gasnier@foss.st.com>,
+        <alain.volmat@foss.st.com>
+Subject: [PATCH v4 0/2] i2c: stm32f7: add SMBus-Alert support
+Date:   Wed, 5 May 2021 15:14:37 +0200
+Message-ID: <1620220479-2647-1-git-send-email-alain.volmat@foss.st.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210429122519.15183-4-david@redhat.com>
+Content-Type: text/plain
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE1.st.com (10.75.127.4) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-05_07:2021-05-05,2021-05-05 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 29-04-21 14:25:15, David Hildenbrand wrote:
-> Commit d3378e86d182 ("mm/gup: check page posion status for coredump.")
-> introduced page_is_poisoned(), however, v5 [1] of the patch used
-> "page_is_hwpoison()" and something went wrong while upstreaming. Rename the
-> function and move it to page-flags.h, from where it can be used in other
-> -- kcore -- context.
-> 
-> Move the comment to the place where it belongs and simplify.
-> 
-> [1] https://lkml.kernel.org/r/20210322193318.377c9ce9@alex-virtual-machine
-> 
-> Signed-off-by: David Hildenbrand <david@redhat.com>
+This serie adds support for SMBus Alert on the STM32F7.
+A new binding smbus-alert is added in order to differenciate
+with the existing smbus binding.
 
-I do agree that being explicit about hwpoison is much better. Poisoned
-page can be also an unitialized one and I believe this is the reason why
-you are bringing that up.
+SMBus-Alert is an optional SMBus feature and SMBA alert control
+and status logic must be enabled along with SMBALERT# pin
+configured via pinctrl in the device tree. This is the
+rational for adding "smbus-alert" property.
 
-But you've made me look at d3378e86d182 and I am wondering whether this
-is really a valid patch. First of all it can leak a reference count
-AFAICS. Moreover it doesn't really fix anything because the page can be
-marked hwpoison right after the check is done. I do not think the race
-is feasible to be closed. So shouldn't we rather revert it?
+---
+v4:
+add a new generic smbus-alert property instead of st,smbus-alert
+update driver to use smbus-alert instead of st,smbus-alert
+
+v3:
+use lore.kernel.org links instead of marc.info
+
+v2:
+When SMBUS alert isn't available on the board (SMBA unused), this
+logic musn't be enabled. Enabling it unconditionally wrongly lead to get
+SMBA interrupts.
+So, add "st,smbus-alert" dedicated binding to have a smbus alert with a
+consistent pin configuration in DT.
+
+Alain Volmat (2):
+  i2c: add binding to mark a bus as supporting SMBus-Alert
+  i2c: stm32f7: add SMBus-Alert support
+
+ Documentation/devicetree/bindings/i2c/i2c.txt |  7 ++-
+ drivers/i2c/busses/i2c-stm32f7.c              | 73 +++++++++++++++++++++++++++
+ 2 files changed, 78 insertions(+), 2 deletions(-)
 
 -- 
-Michal Hocko
-SUSE Labs
+2.7.4
+
