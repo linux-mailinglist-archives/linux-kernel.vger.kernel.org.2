@@ -2,115 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7BE233734AD
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 07:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15CA73734B2
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 07:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231726AbhEEFW6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 01:22:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58048 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231567AbhEEFW4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 01:22:56 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5D68C061574
-        for <linux-kernel@vger.kernel.org>; Tue,  4 May 2021 22:22:00 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1le9ys-0005HJ-1e; Wed, 05 May 2021 07:21:54 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1le9yr-00047w-6W; Wed, 05 May 2021 07:21:53 +0200
-Date:   Wed, 5 May 2021 07:21:53 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Martin Botka <martin.botka1@gmail.com>,
-        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
-Message-ID: <20210505052153.syhptme4pfrbw73v@pengutronix.de>
-References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
- <20201021201224.3430546-3-bjorn.andersson@linaro.org>
- <20201029181357.GE26053@duo.ucw.cz>
- <YIn50NW+Pimqfsih@builder.lan>
- <20210429211223.GA5480@amd>
- <20210429212920.GB2484@yoga>
- <YJFridMwwMV1K98m@mobian>
- <20210504161327.GF2484@yoga>
+        id S231750AbhEEFXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 01:23:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231388AbhEEFXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 01:23:34 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B4FF361176;
+        Wed,  5 May 2021 05:22:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620192158;
+        bh=bPIeKfd6KZ78X0NtafKS2Ld5eWyAQr/hRA5Y7nqkX5Y=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HbsqixYgEOIdUWAQfZlPPm6FdNMeb4RmS/3GvhlnqyWw8jqKWmtDhsvXvb9Ag50zs
+         /epJxLlp0YDsliOWhR8/23gNTnrg5B4WP7sHGtEYrtVSC1OnzMzePLB2/KehTQ+vVP
+         euEoqHuiKHUD/U3GHMd0ubofFswfPNPnw+07Ur0MD/WaUF4hVihK3RMBzHC5f0a3+b
+         c3uHJZUt9wPB4R8n6wq/gWQlMPn5dhx76Mjk4nrEj5FnXw55PHDFDnnYEhdTs2t0Ma
+         mIbJvz5snMxmRP9gtHZMlswTmPt56wqx6FGqhpj3nMastgGtRnffjv/Teq6xOAWOHF
+         ML20afPCMUxmA==
+Date:   Wed, 5 May 2021 08:22:34 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Bjorn Helgaas <helgaas@kernel.org>
+Cc:     Greentime Hu <greentime.hu@sifive.com>, paul.walmsley@sifive.com,
+        hes@sifive.com, erik.danie@sifive.com, zong.li@sifive.com,
+        bhelgaas@google.com, robh+dt@kernel.org, aou@eecs.berkeley.edu,
+        mturquette@baylibre.com, sboyd@kernel.org,
+        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
+        alex.dewar90@gmail.com, khilman@baylibre.com,
+        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
+        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
+        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
+Subject: Re: [PATCH v6 1/6] clk: sifive: Add pcie_aux clock in prci driver
+ for PCIe driver
+Message-ID: <YJIrmjsYLWhIuevI@unreal>
+References: <YJGOqaMulHzR9BZq@unreal>
+ <20210504184555.GA1144324@bjorn-Precision-5520>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="twdyeagubu6upt4z"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210504161327.GF2484@yoga>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20210504184555.GA1144324@bjorn-Precision-5520>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, May 04, 2021 at 01:45:55PM -0500, Bjorn Helgaas wrote:
+> On Tue, May 04, 2021 at 09:12:57PM +0300, Leon Romanovsky wrote:
+> > On Tue, May 04, 2021 at 11:23:31AM -0500, Bjorn Helgaas wrote:
+> 
+> > > There are some weird/interesting bool vs int usages nearby, though:
+> > > 
+> > >   "bool __is_clk_gate_enabled()" goes to some trouble to convert
+> > >   int to bool ("return (reg_val & bit_mask) != 0;"), and then
+> > >   kona_peri_clk_is_enabled() converts the bool back to int ("return
+> > >   is_clk_gate_enabled(bcm_clk->ccu, gate) ? 1 : 0;").
+> > > 
+> > >   "int lpc32xx_clk_gate_is_enabled()" actually returns a bool that is
+> > >   implicitly converted to int.
+> > > 
+> > >   Many *_is_enabled() functions return !!(...) where !! is an
+> > >   int-to-bool conversion that is arguably unnecessary and again
+> > >   results in an implicit conversion to int.
+> > > 
+> > > I don't see any *problems* with any of these; it just seems like a
+> > > little more mental effort to think about all the explicit and implicit
+> > > conversions going on.
+> > 
+> > The code is written once but read many times and I can't agree with
+> > your that examples given by you are not the *problems*. They clearly
+> > says "the API is not great and easily can be improved".
+> 
+> I certainly agree that it's easier for readers if the style is
+> consistent.  I just meant I didn't see anything that's an actual bug.  
 
---twdyeagubu6upt4z
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+No one said that it is a bug. My comment is better seen as s suggestion
+to the maintainers on how other subsystems keep their code base clean
+and up-to date.
 
-Hello,
+Once "the problem" is spotted, the submitter is asked to fix it globally
+including fixing other drivers if needed, before "new feature" can be merged.
 
-On Tue, May 04, 2021 at 11:13:27AM -0500, Bjorn Andersson wrote:
-> On Tue 04 May 10:43 CDT 2021, Pavel Machek wrote:
-> > > So downstream they have (last time I looked at the code) an addition =
-in
-> > > the PWM API where the LED driver can inform the PWM driver part about
-> > > the indices to use. Naturally I don't think that's a good idea.
-> >=20
-> > Dunno. Is it bad idea?
-> >=20
-> > pattern support for other PWMs (vibration?) seems useful, too. Yes, it
-> > means more discussion and extending PWMs properly..
-> >=20
->=20
-> @Thierry, @Lee, @Uwe, are you interested in extending the PWM api with
-> some sort of support for specifying an array of "duty_cycle" and some
-> property for how fast the hardware should cycle through those duty
-> cycles? (And I need a bit/bool to indicate if the pattern should run
-> once of be repeated)
->=20
-> The (current) use case relates to being able to alter the duty cycle
-> over time to create "effects" such as pulsing an LED.
+Of course, there are exceptions from this rule, but they are rare and
+usually given to the people who has proven record.
 
-My personal opinion here is that this is too special to be worth the
-generalisation.
+Thanks
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---twdyeagubu6upt4z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCSK20ACgkQwfwUeK3K
-7AnbuQf9FCB0PpgSA/lR/qkTwcyn5aszc/HWkQpesYZyNI/WCfvWF9/stR+usSRk
-+nGaH75A/vzYqc91kOyGIxxBdAXF/6nwuaVlf7bqAnv7ik7fsBDNxdB8TGRlxaMe
-BqEn9OGkicUoKce8jEdXnvtWHNEydIyIwnddviu9XXuuuzyeoW4rLqViWDRfTxSc
-3lpyxoTyylKO+giIoB3LIdfAu7N+zs61WBpwaUgH/hdDJ0ZAI5Nyluqkui4gcsht
-02x0bxWbl/wbpXPWTz/Sx3BW9zrZk3k/uKZSFPYNxm3rZmOF4I+HhbMA5/FrkSub
-LBDp5Vds0xUF2QtsuDfPv3JWexGoJQ==
-=v6gl
------END PGP SIGNATURE-----
-
---twdyeagubu6upt4z--
+> 
+> Bjorn
