@@ -2,103 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B411D3749C8
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:01:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D2B43749CE
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 23:04:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbhEEVCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 17:02:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41418 "EHLO
+        id S232519AbhEEVFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 17:05:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41958 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235097AbhEEVCi (ORCPT
+        with ESMTP id S229710AbhEEVFG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 17:02:38 -0400
-Received: from bhuna.collabora.co.uk (bhuna.collabora.co.uk [IPv6:2a00:1098:0:82:1000:25:2eeb:e3e3])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63799C061574;
-        Wed,  5 May 2021 14:01:41 -0700 (PDT)
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: ezequiel)
-        with ESMTPSA id D21551F4322A
-Message-ID: <f5d194db2bb70237c8b3b5072daac2d7ad404b84.camel@collabora.com>
-Subject: Re: [PATCH v10 6/9] media: uapi: Add a control for HANTRO driver
-From:   Ezequiel Garcia <ezequiel@collabora.com>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        p.zabel@pengutronix.de, mchehab@kernel.org, robh+dt@kernel.org,
-        shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
-        lee.jones@linaro.org, gregkh@linuxfoundation.org,
-        mripard@kernel.org, paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com, cphealy@gmail.com
-Date:   Wed, 05 May 2021 18:01:25 -0300
-In-Reply-To: <a7c9fe23-2900-ac90-7131-21380fbfc793@xs4all.nl>
-References: <20210420121046.181889-1-benjamin.gaignard@collabora.com>
-         <20210420121046.181889-7-benjamin.gaignard@collabora.com>
-         <a7c9fe23-2900-ac90-7131-21380fbfc793@xs4all.nl>
-Organization: Collabora
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.2-1 
+        Wed, 5 May 2021 17:05:06 -0400
+Received: from mail-qk1-x732.google.com (mail-qk1-x732.google.com [IPv6:2607:f8b0:4864:20::732])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27C69C06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 14:04:09 -0700 (PDT)
+Received: by mail-qk1-x732.google.com with SMTP id o5so3050187qkb.0
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 14:04:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linuxfoundation.org; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=SCT1S/Fsqjp/wX30By/exSgOJtdfEZmays5dtaFQImE=;
+        b=QCB/agHmu+t2jIfgBGZga77A+wzamefn2dFdFTwa8YrVz5ANO3QiLoYIJa5ApG7N3I
+         RjYEBBHyYWvHrDF5SOi7FiJ8cnf7U0ETbS9C7w8Nxm6LKO+/IsdAtaSxoxyc0kkaytrd
+         3b3eYgbJxJxAzfQib3y46HC54jMuZYNLltS2E=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=SCT1S/Fsqjp/wX30By/exSgOJtdfEZmays5dtaFQImE=;
+        b=rlRc572Yzd7PHJgB5c+15HXvlcpIfN5ekDWzeNO9/CE0cjRdOrav7mVXFQkzN8/tjq
+         Fe394sbe6hry1X0POKXMaiImK1kcOLWhoOZUCUv/W1YGhEOx2cIuxiOTixdu8mZwEaF4
+         0pusFGFpThGSEww7sH3/Pd4xFViILrQgkTFN4J7EDN1zeT41exf8ZNT8+sQbVDtS1YRi
+         gFakSq+40PZsPIBhCavTL/Poqaxk7QjhRoPh6lQUAyjYgA0aTKHowP+fle3nIj24E9gL
+         n4G911eeiEGA53UeW807KbGQPfng6SYZz8bIzTu4ZkSVvoIofGyHmqqhFlPlL/f2DJvx
+         aHEw==
+X-Gm-Message-State: AOAM530SFzrIIrmR27CT2jzMvPT8Kg42315dnsjme0jleq5S0Ewl0dha
+        2VZxXg5MtWQtJ2QH+xgAhgFpPw==
+X-Google-Smtp-Source: ABdhPJzeLRyCkgNL8lwFawis3+wR05YVGgxWX/agqscfWZNEl2ul4VBYKhAT+vJjfO6lXKaFV1+7+g==
+X-Received: by 2002:a37:42d3:: with SMTP id p202mr697591qka.456.1620248648250;
+        Wed, 05 May 2021 14:04:08 -0700 (PDT)
+Received: from [192.168.151.33] (50-232-25-43-static.hfc.comcastbusiness.net. [50.232.25.43])
+        by smtp.gmail.com with ESMTPSA id i5sm468557qka.0.2021.05.05.14.04.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 14:04:07 -0700 (PDT)
+Subject: Re: [PATCH 5.11 00/31] 5.11.19-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org
+Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
+        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org,
+        Shuah Khan <skhan@linuxfoundation.org>
+References: <20210505112326.672439569@linuxfoundation.org>
+From:   Shuah Khan <skhan@linuxfoundation.org>
+Message-ID: <ac9cf5ee-df0c-fee1-960e-8b929c71c94d@linuxfoundation.org>
+Date:   Wed, 5 May 2021 17:04:07 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2021-05-05 at 16:55 +0200, Hans Verkuil wrote:
-> On 20/04/2021 14:10, Benjamin Gaignard wrote:
-> > The HEVC HANTRO driver needs to know the number of bits to skip at
-> > the beginning of the slice header.
-> > That is a hardware specific requirement so create a dedicated control
-> > for this purpose.
-> > 
-> > Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
-> > ---
-> >  .../userspace-api/media/drivers/hantro.rst    | 19 +++++++++++++++++++
-> >  .../userspace-api/media/drivers/index.rst     |  1 +
-> >  include/media/hevc-ctrls.h                    | 13 +++++++++++++
-> >  3 files changed, 33 insertions(+)
-> >  create mode 100644 Documentation/userspace-api/media/drivers/hantro.rst
-> > 
-> > diff --git a/Documentation/userspace-api/media/drivers/hantro.rst b/Documentation/userspace-api/media/drivers/hantro.rst
-> > new file mode 100644
-> > index 000000000000..cd9754b4e005
-> > --- /dev/null
-> > +++ b/Documentation/userspace-api/media/drivers/hantro.rst
-> > @@ -0,0 +1,19 @@
-> > +.. SPDX-License-Identifier: GPL-2.0
-> > +
-> > +Hantro video decoder driver
-> > +===========================
-> > +
-> > +The Hantro video decoder driver implements the following driver-specific controls:
-> > +
-> > +``V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP (integer)``
-> > +    Specifies to Hantro HEVC video decoder driver the number of data (in bits) to
-> > +    skip in the slice segment header.
-> > +    If non-IDR, the bits to be skipped go from syntax element "pic_output_flag"
-> > +    to before syntax element "slice_temporal_mvp_enabled_flag".
-> > +    If IDR, the skipped bits are just "pic_output_flag"
-> > +    (separate_colour_plane_flag is not supported).
+On 5/5/21 8:05 AM, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.11.19 release.
+> There are 31 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> I'm not very keen on this. Without this information the video data cannot be
-> decoded, or will it just be suboptimal?
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
 > 
-> The problem is that a generic decoder would have to know that the HW is a hantro,
-
-Applications can just query which controls are exposed by a video device,
-and if this control is found, then it means it needs to be set.
-
-> and then call this control. If they don't (and are testing on non-hantro HW), then
-> it won't work, thus defeating the purpose of the HW independent decoder API.
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.11.19-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.11.y
+> and the diffstat can be found below.
 > 
-> Since hantro is widely used, and if there is no other way to do this beside explitely
-> setting this control, then perhaps this should be part of the standard HEVC API.
-> Non-hantro drivers that do not need this can just skip it.
+> thanks,
+> 
+> greg k-h
 > 
 
-The decision to move it out of the HEVC API is not really to avoid setting it.
-In the end, most/all applications will end up required to set this 
+Compiled and booted on my test system. No dmesg regressions.
+
+Tested-by: Shuah Khan <skhan@linuxfoundation.org>
+
+thanks,
+-- Shuah
 
