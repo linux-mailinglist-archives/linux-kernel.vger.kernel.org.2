@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8FE153732F2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:07:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9013D3732F6
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 02:10:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231182AbhEEAIe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 4 May 2021 20:08:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:50434 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231147AbhEEAId (ORCPT
+        id S231228AbhEEALV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 4 May 2021 20:11:21 -0400
+Received: from mail-ej1-f44.google.com ([209.85.218.44]:35683 "EHLO
+        mail-ej1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229586AbhEEALU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 4 May 2021 20:08:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620173257;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WLuhQI1mHvbvNctH59ASrVI5S/Q5ccQ6XIJwhLh2EGQ=;
-        b=a6r02xRcuu5O6RUuXZJrjW6miPc5j3A+JrpHe9U+WuPt+aWkM2MOt0hYGxdpv3kfE/BiaG
-        eI/OsI6cOuWdvibvBEotkPlbgMTU6jwKiZUeh/1lM2M1D1vu39tAOPZZEnbS0NXbruwG0l
-        jYNpYMz+rq7yC75xA6cuh0H5YVHNkSc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-442-axtACvBCMI65Emy9o77H0g-1; Tue, 04 May 2021 20:07:35 -0400
-X-MC-Unique: axtACvBCMI65Emy9o77H0g-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EF2E5801817;
-        Wed,  5 May 2021 00:07:33 +0000 (UTC)
-Received: from treble (ovpn-115-93.rdu2.redhat.com [10.10.115.93])
-        by smtp.corp.redhat.com (Postfix) with SMTP id DF02560C4A;
-        Wed,  5 May 2021 00:07:28 +0000 (UTC)
-Date:   Tue, 4 May 2021 19:07:28 -0500
-From:   Josh Poimboeuf <jpoimboe@redhat.com>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     broonie@kernel.org, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 1/4] arm64: Introduce stack trace reliability
- checks in the unwinder
-Message-ID: <20210505000728.yxg3xbwa3emcu2wi@treble>
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-2-madvenka@linux.microsoft.com>
- <20210504215248.oi3zay3memgqri33@treble>
- <b000767b-26ca-01a9-a109-c9fc3357f832@linux.microsoft.com>
+        Tue, 4 May 2021 20:11:20 -0400
+Received: by mail-ej1-f44.google.com with SMTP id m12so157734eja.2;
+        Tue, 04 May 2021 17:10:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=aToIgNR6y7JgO+maz4yecvlBzkOZHi81W8xBubpDptw=;
+        b=nxzrw3w0r7D08P/umVOvlayqFoQKgbKRYHC8cfw6N1nrK9J9xeAJNSIUMyA5kOmrlR
+         /eCjFNuSHTqvxEEG0vor6Pbux1UjG/9QqppsoP3zV5bXt77OkdQ2e2JX6WC0BKc3C83i
+         42/SCHCufbhqzaVprT4N8jHgo8UBXjtD1GWDYrcv3UBVik5rb5YhBY3M2Yr2Czo0cQ9j
+         s8WCAdAD80qk3tcRMlwluQGrF/BuUOAcGNuOEpPqV5l9kZFYtNuXyDa37Kj/vwUgcgC7
+         Jl0TBQ5d/mZHd3J78WwMnbdJOe94x+Aadqun0VXOn6BOu55rUmvZKOaNuf6UhzJFo+iO
+         sndw==
+X-Gm-Message-State: AOAM5325T9EKkYYVVQfsTbNTR7giOFzpSvPZrmQd60TmWBJtEn6qhc41
+        GDmRcjA8WAmrNt1yK26u+zVkW2BVTAVaUh7sa7QDLBQs
+X-Google-Smtp-Source: ABdhPJw5cdLcfNNJPVq6mVSlE0z68+s+6AThMYH90e1+PWpF5NVWlygRULMU2sWgvjNP8G1LiOn21rvrI/7ywdH8vII=
+X-Received: by 2002:a17:906:3098:: with SMTP id 24mr23835072ejv.507.1620173424329;
+ Tue, 04 May 2021 17:10:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <b000767b-26ca-01a9-a109-c9fc3357f832@linux.microsoft.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+From:   Len Brown <lenb@kernel.org>
+Date:   Tue, 4 May 2021 20:10:13 -0400
+Message-ID: <CAJvTdKk9rNJhy1Ddpq-mbMzG0bJ8N8TumPfWpv6DUBP4N9tUyQ@mail.gmail.com>
+Subject: [GIT PULL] turbostat update
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 06:13:39PM -0500, Madhavan T. Venkataraman wrote:
-> 
-> 
-> On 5/4/21 4:52 PM, Josh Poimboeuf wrote:
-> > On Mon, May 03, 2021 at 12:36:12PM -0500, madvenka@linux.microsoft.com wrote:
-> >> @@ -44,6 +44,8 @@ int notrace unwind_frame(struct task_struct *tsk, struct stackframe *frame)
-> >>  	unsigned long fp = frame->fp;
-> >>  	struct stack_info info;
-> >>  
-> >> +	frame->reliable = true;
-> >> +
-> > 
-> > Why set 'reliable' to true on every invocation of unwind_frame()?
-> > Shouldn't it be remembered across frames?
-> > 
-> 
-> This is mainly for debug purposes in case a caller wants to print the whole stack and also
-> print which functions are unreliable. For livepatch, it does not make any difference. It will
-> quit as soon as it encounters an unreliable frame.
+Hi Linus,
 
-Hm, ok.  So 'frame->reliable' refers to the current frame, not the
-entire stack.
+Please pull these turbostat patches -- bug fixes and a smattering of features.
 
-> > Also, it looks like there are several error scenarios where it returns
-> > -EINVAL but doesn't set 'reliable' to false.
-> > 
-> 
-> I wanted to make a distinction between an error situation (like stack corruption where unwinding
-> has to stop) and an unreliable situation (where unwinding can still proceed). E.g., when a
-> stack trace is taken for informational purposes or debug purposes, the unwinding will try to
-> proceed until either the stack trace ends or an error happens.
+thanks!
+Len Brown, Intel Open Source Technology Center
 
-Ok, but I don't understand how that relates to my comment.
+The following changes since commit 9f4ad9e425a1d3b6a34617b8ea226d56a119a717:
 
-Why wouldn't a stack corruption like !on_accessible_stack() set
-'frame->reliable' to false?
+  Linux 5.12 (2021-04-25 13:49:08 -0700)
 
-In other words: for livepatch purposes, how does the caller tell the
-difference between hitting the final stack record -- which returns an
-error with reliable 'true' -- and a stack corruption like
-!on_accessible_stack(), which also returns an error with reliable
-'true'?  Surely the latter should be considered unreliable?
+are available in the Git repository at:
 
--- 
-Josh
+  git://git.kernel.org/pub/scm/linux/kernel/git/lenb/linux.git turbostat
 
+for you to fetch changes up to 3c070b2abf85b92455c2721d0a9edc68893ab6c1:
+
+  tools/power turbostat: version 2021.05.04 (2021-05-04 20:01:09 -0400)
+
+----------------------------------------------------------------
+Bas Nieuwenhuizen (1):
+      tools/power/turbostat: Fix turbostat for AMD Zen CPUs
+
+Calvin Walton (1):
+      tools/power turbostat: Fix offset overflow issue in index converting
+
+Chen Yu (5):
+      tools/power turbostat: Support Alder Lake Mobile
+      tools/power turbostat: Support Ice Lake D
+      tools/power/turbostat: Remove Package C6 Retention on Ice Lake Server
+      tools/power turbostat: Enable tsc_tweak for Elkhart Lake and Jasper Lake
+      tools/power turbostat: Print the C-state Pre-wake settings
+
+Len Brown (8):
+      tools/power turbostat: add built-in-counter for IPC --
+Instructions per Cycle
+      tools/power turbostat: print microcode patch level
+      Revert "tools/power turbostat: adjust for temperature offset"
+      tools/power turbostat: update version number
+      tools/power turbostat: formatting
+      tools/power turbostat: elevate priority of interval mode
+      tools/power turbostat: Support "turbostat --hide idle"
+      tools/power turbostat: version 2021.05.04
+
+Randy Dunlap (1):
+      tools/power turbostat: unmark non-kernel-doc comment
+
+Zhang Rui (5):
+      tools/power turbostat: Fix DRAM Energy Unit on SKX
+      tools/power turbostat: Fix Core C6 residency on Atom CPUs
+      tools/power turbostat: save original CPU model
+      tools/power turbostat: add TCC Offset support
+      tools/power turbostat: rename tcc variables
+
+ tools/power/x86/turbostat/turbostat.8 |    6 +-
+ tools/power/x86/turbostat/turbostat.c | 1316 +++++++++++++++++++--------------
+ 2 files changed, 773 insertions(+), 549 deletions(-)
