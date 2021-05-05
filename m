@@ -2,93 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15CA73734B2
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 07:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 879DE3734BC
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 07:37:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231750AbhEEFXg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 01:23:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39240 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231388AbhEEFXe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 01:23:34 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B4FF361176;
-        Wed,  5 May 2021 05:22:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620192158;
-        bh=bPIeKfd6KZ78X0NtafKS2Ld5eWyAQr/hRA5Y7nqkX5Y=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=HbsqixYgEOIdUWAQfZlPPm6FdNMeb4RmS/3GvhlnqyWw8jqKWmtDhsvXvb9Ag50zs
-         /epJxLlp0YDsliOWhR8/23gNTnrg5B4WP7sHGtEYrtVSC1OnzMzePLB2/KehTQ+vVP
-         euEoqHuiKHUD/U3GHMd0ubofFswfPNPnw+07Ur0MD/WaUF4hVihK3RMBzHC5f0a3+b
-         c3uHJZUt9wPB4R8n6wq/gWQlMPn5dhx76Mjk4nrEj5FnXw55PHDFDnnYEhdTs2t0Ma
-         mIbJvz5snMxmRP9gtHZMlswTmPt56wqx6FGqhpj3nMastgGtRnffjv/Teq6xOAWOHF
-         ML20afPCMUxmA==
-Date:   Wed, 5 May 2021 08:22:34 +0300
-From:   Leon Romanovsky <leon@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Greentime Hu <greentime.hu@sifive.com>, paul.walmsley@sifive.com,
-        hes@sifive.com, erik.danie@sifive.com, zong.li@sifive.com,
-        bhelgaas@google.com, robh+dt@kernel.org, aou@eecs.berkeley.edu,
-        mturquette@baylibre.com, sboyd@kernel.org,
-        lorenzo.pieralisi@arm.com, p.zabel@pengutronix.de,
-        alex.dewar90@gmail.com, khilman@baylibre.com,
-        hayashi.kunihiko@socionext.com, vidyas@nvidia.com,
-        jh80.chung@samsung.com, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [PATCH v6 1/6] clk: sifive: Add pcie_aux clock in prci driver
- for PCIe driver
-Message-ID: <YJIrmjsYLWhIuevI@unreal>
-References: <YJGOqaMulHzR9BZq@unreal>
- <20210504184555.GA1144324@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504184555.GA1144324@bjorn-Precision-5520>
+        id S231265AbhEEFih (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 01:38:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33174 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229614AbhEEFie (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 01:38:34 -0400
+Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3302C061574;
+        Tue,  4 May 2021 22:37:37 -0700 (PDT)
+Received: by mail-wr1-x432.google.com with SMTP id l2so373800wrm.9;
+        Tue, 04 May 2021 22:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=unYcznRdPcyvgkZrvsrvxIZQa+LjafDJyw9TLnEdcWw=;
+        b=GSIhmA0V3VNz95ERxv/N81Yw3mWwBJypUlg7OhXiyXlc7+wevDHxLbUxvaW65YecRp
+         eBJAyqE+WSR64btFqqAlNxdCQQlzTvGlatfh0T8NGvqkvNbcIxkNS9jsxGMxClL/2QF2
+         pkGHxR56ElG9Nd/21NqOP2w8bEbddQ/bYOuCybTmyAeeAfI5ixBOJ7YP7kXEq21okGy9
+         WgQDF1K91wR6bEETctYPiWVM4CpmatSaH3C3D8j9WhbF/sqhPyhaodUZusZ8KL2PEqrA
+         6pbGeb2dYgVxFcQ35Z68e4cC07zMLQ7lM48wWYDWu1SD81o6Hi3wSPr4+P37R/zNZnZi
+         Xthg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=unYcznRdPcyvgkZrvsrvxIZQa+LjafDJyw9TLnEdcWw=;
+        b=IwYRoHDRuKcfmSidWZDRj3SiJrReZ7Jh/0TGOvVWiCVdzF0AfC8l3xi4q2wVbqw1mQ
+         8qlpn9gRH6BXXeplTQGQ9tTkgChyNOplRUc2SestPtVWyvxKY7D2oqHl/N+hU1z8pV2j
+         Qjip1D3+glP6xtsgKgx1BWrFbMJCaiOGoeP3YPxWnp3fukEmTmTWKa1MOMlTQUgkhy9D
+         kcp14UFg7vUoNeENamGxDs+rXYFr2NM6dTDilKI5KYMzNML6ZPvKpCnq/m3i68dj6twW
+         uusUtc4ksz+i1s9Chnn5D353zp1gIrAWBMueZ5Rj0popnKksMIV5xJHbGlvvzwupHe1j
+         P5qg==
+X-Gm-Message-State: AOAM532wheX4vdTiMZDcMfTecIkeWE/xZnhNX7RaucfSdxjLPXSN+Acq
+        sSGVjXLEoqyNB8VgMCoLaxg=
+X-Google-Smtp-Source: ABdhPJzflgbgjmD3C38IJSMoXY+c3Z+f/R5KmsfZlZTFMS9Aet/6rSOBOUx4Btnw5NYZFKATzH62zQ==
+X-Received: by 2002:adf:e0c8:: with SMTP id m8mr36529361wri.349.1620193056219;
+        Tue, 04 May 2021 22:37:36 -0700 (PDT)
+Received: from felia.fritz.box ([2001:16b8:2d40:3400:1d3:ebdb:5632:f627])
+        by smtp.gmail.com with ESMTPSA id r17sm4396376wmh.25.2021.05.04.22.37.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 May 2021 22:37:35 -0700 (PDT)
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+To:     Jens Axboe <axboe@kernel.dk>,
+        Pavel Begunkov <asml.silence@gmail.com>,
+        io-uring@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Subject: [PATCH] MAINTAINERS: add io_uring tool to IO_URING
+Date:   Wed,  5 May 2021 07:37:28 +0200
+Message-Id: <20210505053728.3868-1-lukas.bulwahn@gmail.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 01:45:55PM -0500, Bjorn Helgaas wrote:
-> On Tue, May 04, 2021 at 09:12:57PM +0300, Leon Romanovsky wrote:
-> > On Tue, May 04, 2021 at 11:23:31AM -0500, Bjorn Helgaas wrote:
-> 
-> > > There are some weird/interesting bool vs int usages nearby, though:
-> > > 
-> > >   "bool __is_clk_gate_enabled()" goes to some trouble to convert
-> > >   int to bool ("return (reg_val & bit_mask) != 0;"), and then
-> > >   kona_peri_clk_is_enabled() converts the bool back to int ("return
-> > >   is_clk_gate_enabled(bcm_clk->ccu, gate) ? 1 : 0;").
-> > > 
-> > >   "int lpc32xx_clk_gate_is_enabled()" actually returns a bool that is
-> > >   implicitly converted to int.
-> > > 
-> > >   Many *_is_enabled() functions return !!(...) where !! is an
-> > >   int-to-bool conversion that is arguably unnecessary and again
-> > >   results in an implicit conversion to int.
-> > > 
-> > > I don't see any *problems* with any of these; it just seems like a
-> > > little more mental effort to think about all the explicit and implicit
-> > > conversions going on.
-> > 
-> > The code is written once but read many times and I can't agree with
-> > your that examples given by you are not the *problems*. They clearly
-> > says "the API is not great and easily can be improved".
-> 
-> I certainly agree that it's easier for readers if the style is
-> consistent.  I just meant I didn't see anything that's an actual bug.  
+The files in ./tools/io_uring/ are maintained by the IO_URING maintainers.
+Reflect that fact in MAINTAINERS.
 
-No one said that it is a bug. My comment is better seen as s suggestion
-to the maintainers on how other subsystems keep their code base clean
-and up-to date.
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
+---
+applies cleanly on next-20210505
 
-Once "the problem" is spotted, the submitter is asked to fix it globally
-including fixing other drivers if needed, before "new feature" can be merged.
+Jens, please pick this quick minor cleanup patch.
 
-Of course, there are exceptions from this rule, but they are rare and
-usually given to the people who has proven record.
+ MAINTAINERS | 1 +
+ 1 file changed, 1 insertion(+)
 
-Thanks
+diff --git a/MAINTAINERS b/MAINTAINERS
+index efeaebe1bcae..3160d86b0057 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -9563,6 +9563,7 @@ F:	fs/io-wq.h
+ F:	fs/io_uring.c
+ F:	include/linux/io_uring.h
+ F:	include/uapi/linux/io_uring.h
++F:	tools/io_uring/
+ 
+ IPMI SUBSYSTEM
+ M:	Corey Minyard <minyard@acm.org>
+-- 
+2.17.1
 
-> 
-> Bjorn
