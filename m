@@ -2,150 +2,198 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AA5E374B44
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3AB3374B47
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 00:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234181AbhEEWbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 18:31:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229712AbhEEWbp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 18:31:45 -0400
-Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 498EBC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 15:30:47 -0700 (PDT)
-Received: by mail-qk1-x72d.google.com with SMTP id q136so3215100qka.7
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 15:30:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=SPq92WwUkkbUZi8i20jXBtq5YFPc01M81BIgdGcCXik=;
-        b=1XsoNbpEqhTeEDcH7JxyK1q4zEs5Rwp9aoUuhagED0iCyc41POI1c/VVIoc67o9OjE
-         a3Jb3Siz5tq48y7cWLCSTOm33rfApdoNOrKkwEdQt0YnzYm9fi3qMnjHZ3BYKCT02QiX
-         0VphxMM7zC+tWpB5PSY6bUR2xGMZqvPoif6p5qHIecAcllv23Hk710cDnh+RoL9WJ6eP
-         t+IXCXBHlMZdWEcUZsCJCGvilm+OZYcCTYYD44m6NbH0DXuOHl+1cMO9wrTg+OW7f3cW
-         hIjacaScsm+ZUwPQ70PCCQD2ycyzWsb2o1ZH9gcOP0dFIhTmI7U4y3yVboLv2Dnp+c23
-         16ew==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=SPq92WwUkkbUZi8i20jXBtq5YFPc01M81BIgdGcCXik=;
-        b=uPcw8Z/oEg2QVMwv97IShODmv7+l3TsAlOt89b2McPrSvZmnHdHavUxivhFsa38VEp
-         aM812+Izuh/eqA6PIIUose8nW/MYLGaiv5pKynAS0M8jkpHUpVSA8yliN/+FjTo5KS5x
-         QBgXPwOdCXjX0KF0o3qVo4z1Pc4NAV84fzd3nEF00jNvG++17fvoqvLy6RrrYH/JPIYS
-         Uf/u2JrsW/DveNYRlEkOmcYMfiTYFtpVS0r2dFdscx77pcNR5MV/7na9szbXHO6d37Ya
-         HlerzYx8G1Z0qsnKiqsxb57IZ0AGu1WJXp5PPzjeraFPowTXH1kaDgO/3ToQHqh+/ElG
-         5/aA==
-X-Gm-Message-State: AOAM533bQM5A+rzfduEqSVG1YpVTy6ZOn+Ku8su946ADSa/Th/kAV+Gr
-        39tR08CTS7M9ubF9sRKlrYYHQw==
-X-Google-Smtp-Source: ABdhPJw0WA4KlmeJNSng9tMnOiLQgmBjymemgeDCJXg5r1D/Nvlzw9wZF5IVlF2lDIYsU+9hXHXTlA==
-X-Received: by 2002:a05:620a:4043:: with SMTP id i3mr1024866qko.380.1620253846537;
-        Wed, 05 May 2021 15:30:46 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:ab71])
-        by smtp.gmail.com with ESMTPSA id w7sm515484qtn.91.2021.05.05.15.30.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 15:30:45 -0700 (PDT)
-Date:   Wed, 5 May 2021 18:30:44 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Tejun Heo <tj@kernel.org>
-Cc:     Abel Wu <wuyun.abel@bytedance.com>, akpm@linux-foundation.org,
-        lizefan.x@bytedance.com, corbet@lwn.net, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, linux-doc@vger.kernel.org,
+        id S234266AbhEEWeR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 18:34:17 -0400
+Received: from mout02.posteo.de ([185.67.36.66]:32795 "EHLO mout02.posteo.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234220AbhEEWeQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 18:34:16 -0400
+Received: from submission (posteo.de [89.146.220.130]) 
+        by mout02.posteo.de (Postfix) with ESMTPS id 4ABC62400FF
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:33:17 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+        t=1620253997; bh=d+MZ3M5ofwIO07iwMxuy4XLtX9nFR+ntHe40O3nLLz8=;
+        h=Date:From:To:Cc:Subject:From;
+        b=TBzpjjEreXHv3ipY1qqVq3iWprn9CdXgzoRLEmxOxZoWMQv/Mo/dUzMkAm6jBmnVk
+         RX5anutFxM3x5Dxrpakgc0tyUBxGCnP6rZIbCsdLM5G48N+e9XWJ96Nw99MC3U1q/G
+         MqTFFCESuNrQ5WwFRZafaCheCBwJ7o75UAimKrbiCxyi3szNNDnwHOZpSmdM5ffDXy
+         pj+M7r/V3lI2j9z9EAYrsEgyZKINA4N6yudos/TWpHUM/NhpgMrAd/E9Q4dnJoB9ms
+         EqkKnYDTZICCqO/BMoKIcRusC+aVXS6ykfVzTqFx2E5DL7Ut8xmc/P5CFPy3vKkhAd
+         ONdWWtncR0FOA==
+Received: from customer (localhost [127.0.0.1])
+        by submission (posteo.de) with ESMTPSA id 4FbBLh1N4Dz9rxH;
+        Thu,  6 May 2021 00:33:16 +0200 (CEST)
+Date:   Wed,  5 May 2021 22:33:15 +0000
+From:   Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
+To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+Cc:     linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
+        Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] cgroup/cpuset: introduce cpuset.mems.migration
-Message-ID: <YJMclPw7OVYxboEE@cmpxchg.org>
-References: <20210426065946.40491-1-wuyun.abel@bytedance.com>
- <20210426065946.40491-3-wuyun.abel@bytedance.com>
- <YIgjE6CgU4nDsJiR@slm.duckdns.org>
+Subject: Re: [PATCH 1/4] HID: wiiu-drc: Add a driver for this gamepad
+Message-ID: <YJMdK8zQR7Al3wWC@latitude>
+References: <20210502232836.26134-1-linkmauve@linkmauve.fr>
+ <20210502232836.26134-2-linkmauve@linkmauve.fr>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="UliBZUaNN8NDi4/o"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <YIgjE6CgU4nDsJiR@slm.duckdns.org>
+In-Reply-To: <20210502232836.26134-2-linkmauve@linkmauve.fr>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 27, 2021 at 10:43:31AM -0400, Tejun Heo wrote:
-> Hello,
-> 
-> On Mon, Apr 26, 2021 at 02:59:45PM +0800, Abel Wu wrote:
-> > When a NUMA node is assigned to numa-service, the workload
-> > on that node needs to be moved away fast and complete. The
-> > main aspects we cared about on the eviction are as follows:
-> > 
-> > a) it should complete soon enough so that numa-services
-> >    won’t wait too long to hurt user experience
-> > b) the workloads to be evicted could have massive usage on
-> >    memory, and migrating such amount of memory may lead to
-> >    a sudden severe performance drop lasting tens of seconds
-> >    that some certain workloads may not afford
-> > c) the impact of the eviction should be limited within the
-> >    source and destination nodes
-> > d) cgroup interface is preferred
-> > 
-> > So we come to a thought that:
-> > 
-> > 1) fire up numa-services without waiting for memory migration
-> > 2) memory migration can be done asynchronously by using spare
-> >    memory bandwidth
-> > 
-> > AutoNUMA seems to be a solution, but its scope is global which
-> > violates c&d. And cpuset.memory_migrate performs in a synchronous
-> 
-> I don't think d) in itself is a valid requirement. How does it violate c)?
-> 
-> > fashion which breaks a&b. So a mixture of them, the new cgroup2
-> > interface cpuset.mems.migration, is introduced.
-> > 
-> > The new cpuset.mems.migration supports three modes:
-> > 
-> >  - "none" mode, meaning migration disabled
-> >  - "sync" mode, which is exactly the same as the cgroup v1
-> >    interface cpuset.memory_migrate
-> >  - "lazy" mode, when walking through all the pages, unlike
-> >    cpuset.memory_migrate, it only sets pages to protnone,
-> >    and numa faults triggered by later touch will handle the
-> >    movement.
-> 
-> cpuset is already involved in NUMA allocation but it always felt like
-> something bolted on - it's weird to have cpu to NUMA node settings at global
-> level and then to have possibly conflicting direct NUMA configuration via
-> cpuset. My preference would be putting as much configuration as possible on
-> the mm / autonuma side and let cpuset's node confinements further restrict
-> their operations rather than cpuset having its own set of policy
-> configurations.
-> 
-> Johannes, what are your thoughts?
 
-This is basically a cgroup interface for the existing MPOL_MF_LAZY /
-MPOL_F_MOF flags, which are per task (set_mempolicy()) and per-vma
-(mbind()) scope respectively. They're not per-node, so cannot be
-cgroupified through cpuset's node restrictions alone, and I understand
-why a cgroup interface could be convenient.
+--UliBZUaNN8NDi4/o
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-On the other hand, this is not really about configuring a shared
-resource. Rather it's using cgroups to set an arbitrary task parameter
-on a bunch of tasks simultaneously. It's the SIMD type usecase of
-cgroup1 that we tried to get away from in cgroup2, simply because it's
-so unbounded in scope. There are *a lot* of possible task parameters,
-and we could add a lot of kernel interfaces that boil down to
-css_task_iter and setting or clearing a task flag.
+Hi,
 
-So I'm also thinking this cgroup interface isn't desirable.
+some mostly trivial remarks and questions of curiosity below, because
+I'm not very qualified to review the input subsystem side of things.
 
-If you want to control numa policies of tasks from the outside, it's
-probably best to extend the numa syscall interface to work on pids.
-And then use cgroup.procs to cgroupify the operation from userspace.
 
-Or extend the NUMA interface to make the system-wide default behavior
-configurable, so that you can set MPOL_F_MOF in there (without having
-to enable autonuma).
+On Mon, May 03, 2021 at 01:28:32AM +0200, Emmanuel Gil Peyrot wrote:
+> From: Ash Logan <ash@heyquark.com>
+>=20
+> This driver is for the DRC (wireless gamepad) when plugged to the DRH of
+> the Wii=C2=A0U, a chip exposing it as a USB device.
 
-But yeah, cgroups doesn't seem like the right place to do this.
+s/plugged/wirelessly connected/, rather
 
-Thanks
+>=20
+> This first patch exposes the buttons and sticks of this device, so that
+> it can act as a plain game controller.
+>=20
+> Signed-off-by: Ash Logan <ash@heyquark.com>
+> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> ---
+
+Out of curiosity:
+
+Do the HID reports travel over the wireless link from DRC to DRH, or are
+they formed in DRH firmware?
+
+Is there a reference of the device-specific HID format? I briefly looked
+at https://libdrc.org/docs/index.html but couldn't find it there.
+
+
+>  drivers/hid/Kconfig        |   7 +
+>  drivers/hid/Makefile       |   1 +
+>  drivers/hid/hid-ids.h      |   1 +
+>  drivers/hid/hid-quirks.c   |   3 +
+>  drivers/hid/hid-wiiu-drc.c | 270 +++++++++++++++++++++++++++++++++++++
+>  5 files changed, 282 insertions(+)
+>  create mode 100644 drivers/hid/hid-wiiu-drc.c
+>=20
+> diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+> index 4bf263c2d61a..01116c315459 100644
+> --- a/drivers/hid/Kconfig
+> +++ b/drivers/hid/Kconfig
+> @@ -1105,6 +1105,13 @@ config HID_WACOM
+>  	  To compile this driver as a module, choose M here: the
+>  	  module will be called wacom.
+> =20
+> +config HID_WIIU_DRC
+> +	tristate "Nintendo Wii U gamepad over internal DRH"
+
+                                 gamepad (DRC)
+
+=2E.. so it's clearer where the "DRC" name comes from.
+
+> +#if IS_ENABLED(CONFIG_HID_WIIU_DRC)
+> +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_NINTENDO, USB_DEVICE_ID_NINTENDO_W=
+IIU_DRH) },
+> +#endif
+
+Is the DRC connection the only USB function that the DRH provides?
+
+
+> +++ b/drivers/hid/hid-wiiu-drc.c
+> @@ -0,0 +1,270 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * HID driver for Nintendo Wii U gamepad, connected via console-internal=
+ DRH
+
+                                    gamepad (DRC)
+
+
+> +static int drc_raw_event(struct hid_device *hdev, struct hid_report *rep=
+ort,
+> +	 u8 *data, int len)
+> +{
+> +	struct drc *drc =3D hid_get_drvdata(hdev);
+> +	int i;
+> +	u32 buttons;
+> +
+> +	if (len !=3D 128)
+> +		return 0;
+
+=46rom include/linux/hid.h:
+
+ * raw_event and event should return negative on error, any other value will
+ * pass the event on to .event() typically return 0 for success.
+
+Not sure if returning 0 as you do above is appropriate.
+
+
+> +static bool drc_setup_joypad(struct drc *drc,
+> +		struct hid_device *hdev)
+> +{
+> +	struct input_dev *input_dev;
+> +
+> +	input_dev =3D allocate_and_setup(hdev, DEVICE_NAME " Joypad");
+
+"Nintendo Wii U gamepad Joypad" looks a bit sub-optimal, but I'm not
+sure about the conventions here.
+
+
+> +
+> +	/* These two buttons are actually TV control and Power. */
+> +	set_bit(BTN_Z, input_dev->keybit);
+> +	set_bit(BTN_DEAD, input_dev->keybit);
+
+Hmm... from what I've deen the TV control button opens a menu on the
+gamepad itself. Does it send the input event in addition to that?
+Or is there a mode where it opens the TV menu, and a mode where it
+forwards the button press to the Wii U?
+
+
+> +MODULE_AUTHOR("Ash Logan <ash@heyquark.com>");
+
+Since you're submitting the driver, rather than Ash, maybe adjust the
+author field here? (totally your choice.)
+
+
+
+Thanks,
+Jonathan
+
+--UliBZUaNN8NDi4/o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEvHAHGBBjQPVy+qvDCDBEmo7zX9sFAmCTHSQACgkQCDBEmo7z
+X9t++RAAwxOQRI2oNPSUdt7rAOrLcMc9ZeL6ypOzM/0lItKzqPAKcNcmQFmEvT0N
++HPm95oRc7qWZLpe68aIB+Nps9mXuAIb11UPAWHdX5f+8O3zmVoQG1COt+ogFXBH
+D7Q/vUq506uiaIC0aIEP6HQ00UeZ6UdFBMQYMch/pi6CbcnVn7ff2eeUoDQtVV1A
+nx9n+LNc9pyf3ordf7i3PjpHcb4v+AxU9uhkhq0RMA1Mfea78lrKgjpQxwLhO2xk
+q5JMlcVf23AefWeHMvTTtuahkFYcPHSu3v8lX45Hl52trWqO0I1MiS0KV7AnZS4R
+tICoumo6SlkYwEKnT2TNvPbhAK/1RWXL7n+SMcKWY7fgAO29E8e42pimO7rDeN7d
+TWxilNm+hDgubY20XiMsKtmXb6/FjucXDYK9c55O6chcSg43JABmYN2YHF/8NL21
+2KYcof5lVh0HUiB7p7qARvojGk10+8YlFotvzRrI5JLnFQVDCrFAwGc+V+J44I1B
+Z6PB8W7ZTiPvmC/77G2gCm/OKnBdcP9MqhdZ9E4I+huUPv/c213EPNdj8aBljmAQ
+GxTg1GjLX4BEE/rcuSdJGLZ3eXGkRSpwKOxuQHh5B+qz7Lv05JaouRGwr9fIRBOd
+CDiDQpMrNO1LlYHQWJKlWuE3WjSL5WsykKA+hsuYpsxYsT7PF54=
+=zEtj
+-----END PGP SIGNATURE-----
+
+--UliBZUaNN8NDi4/o--
