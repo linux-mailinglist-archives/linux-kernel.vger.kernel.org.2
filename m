@@ -2,89 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59115374912
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:06:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE51E374917
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 22:08:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233796AbhEEUHp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 16:07:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49724 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233800AbhEEUHn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 16:07:43 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620245206;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:in-reply-to:in-reply-to:references:references;
-        bh=GObYidJPOxqa39RCGKtF8EH7OG9xQ65JoyiaTRpSe4I=;
-        b=JSw5lM5nsX7TGEy38DjwnmKE2Sy9T5GQ2645ws9DxRt99bA6RfQvgLRoWsgNhPVZ2GorJ0
-        Pg3B1byi/4GZB8X0Jm7fXsA2Fug7yP1eUf+OChJdFIwA9xglCphK9heZV+DQm/AIH3Nvlt
-        1IASKGlnkuUSKcvORF6z9+G2h91sdTQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-289-AMamAWPhPeW0_g-6xgUE0A-1; Wed, 05 May 2021 16:06:42 -0400
-X-MC-Unique: AMamAWPhPeW0_g-6xgUE0A-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5899E10066E5;
-        Wed,  5 May 2021 20:06:40 +0000 (UTC)
-Received: from llong.com (ovpn-117-4.rdu2.redhat.com [10.10.117.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id D03A410016FD;
-        Wed,  5 May 2021 20:06:38 +0000 (UTC)
-From:   Waiman Long <longman@redhat.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Vlastimil Babka <vbabka@suse.cz>, Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org, Waiman Long <longman@redhat.com>
-Subject: [PATCH v4 3/3] mm: memcg/slab: Disable cache merging for KMALLOC_NORMAL caches
-Date:   Wed,  5 May 2021 16:06:10 -0400
-Message-Id: <20210505200610.13943-4-longman@redhat.com>
-In-Reply-To: <20210505200610.13943-1-longman@redhat.com>
-References: <20210505200610.13943-1-longman@redhat.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+        id S233829AbhEEUJx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 16:09:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49728 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230227AbhEEUJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 16:09:52 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E18D60241;
+        Wed,  5 May 2021 20:08:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620245335;
+        bh=C9PR3tmwVlH9qW2D6M7x6fJzbZRnZYZX8R2df7n/xWo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=aVnWcmhemwCrgP5BTCssC6opOMk1FgRSN/6CPh8ucAItTtA7V+qG/oC+oYP14fNkM
+         9Wau1Ne7HgSSB7xpmePexVRAf+U6RJ5n7LwSb8hEpY3UeMFFY2QiFT9ibKPO4VNady
+         tFovIAHE6+oPB++XRh2ttTCNXVLrmONcs5NKS3w1Smnoqm2gWZrYQB7KvgGX3gS5KG
+         wBqXLk3wJsOVgZpC/bnBGcbvbJUk/GacJO+VA3wrSaBWTGgy4GmzI96OsNobKufBqY
+         JuJ8L7QKf7f0vvwM1WW4SFmrzDJ1pONsSa8G0SR5FBxEBMMaRcO7xSeqcy5uFp3Kqa
+         XFTcrtyVSvWlw==
+Date:   Wed, 5 May 2021 13:08:50 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Jason Gunthorpe <jgg@ziepe.ca>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Doug Ledford <dledford@redhat.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Parav Pandit <parav@nvidia.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        linux-rdma@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: Re: CFI violation in drivers/infiniband/core/sysfs.c
+Message-ID: <YJL7UoSr42JfMCq1@archlinux-ax161>
+References: <20210402195241.gahc5w25gezluw7p@archlinux-ax161>
+ <202104021555.08B883C7@keescook>
+ <20210403065559.5vebyyx2p5uej5nw@archlinux-ax161>
+ <20210504202222.GB2047089@ziepe.ca>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504202222.GB2047089@ziepe.ca>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The KMALLOC_NORMAL (kmalloc-<n>) caches are for unaccounted objects only
-when CONFIG_MEMCG_KMEM is enabled. To make sure that this condition
-remains true, we will have to prevent KMALOC_NORMAL caches to merge
-with other kmem caches. This is now done by setting its refcount to -1
-right after its creation.
+On Tue, May 04, 2021 at 05:22:22PM -0300, Jason Gunthorpe wrote:
+> On Fri, Apr 02, 2021 at 11:55:59PM -0700, Nathan Chancellor wrote:
+> > > So, I think, the solution is below. This hasn't been runtime tested. It
+> > > basically removes the ib_port callback prototype and leaves everything
+> > > as kobject/attr. The callbacks then do their own container_of() calls.
+> > 
+> > Well that appear to be okay from a runtime perspective.
+> 
+> This giant thing should fix it, and some of the other stuff Greg observed:
+> 
+> https://github.com/jgunthorpe/linux/commits/rmda_sysfs_cleanup
+> 
+> It needs some testing before it gets posted
+> 
+> Jason
 
-Suggested-by: Roman Gushchin <guro@fb.com>
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- mm/slab_common.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+I have verified that my original test case of running LTP's read_all
+test case passes with CFI enabled in enforcing mode with your series and
+I still get values when running cat on them. If you have any other
+suggestions for test cases, please let me know :)
 
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index bbaf41a7c77e..a0ff8e1d8b67 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -841,6 +841,13 @@ new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
- 					kmalloc_info[idx].name[type],
- 					kmalloc_info[idx].size, flags, 0,
- 					kmalloc_info[idx].size);
-+
-+	/*
-+	 * If CONFIG_MEMCG_KMEM is enabled, disable cache merging for
-+	 * KMALLOC_NORMAL caches.
-+	 */
-+	if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_NORMAL))
-+		kmalloc_caches[type][idx]->refcount = -1;
- }
- 
- /*
--- 
-2.18.1
+Thanks for the quick fix!
 
+Cheers,
+Nathan
