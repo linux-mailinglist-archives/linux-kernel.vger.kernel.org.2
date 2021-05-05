@@ -2,87 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2E4373CA3
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:45:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B17FA373CA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:46:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233094AbhEENqt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:46:49 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39340 "EHLO mx2.suse.de"
+        id S233129AbhEENrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:47:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34052 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231783AbhEENqr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:46:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1620222350; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-         mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Zmxur1kgzuevsre8s/5Lx5vP8+P1yeG3cdZsfEJFfbI=;
-        b=e9SF9KizJ6skQ3SZqBMxV9jRhsS9xJskcYraE7q5zDy20XZbIx9mgQGPLYTnnz6IkdnBFE
-        mbwJODkGnxRAELnkaaE6ybeyPhOe/alOTs9q6Hv5usMLRcwnF3mSOyJPWwavA6eL2vXm3P
-        syN4KPLO/yREBYmukxjyUUZFSWkQ8hY=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 3B76EADB3;
-        Wed,  5 May 2021 13:45:50 +0000 (UTC)
-Date:   Wed, 5 May 2021 15:45:47 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Roman Gushchin <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Aili Yao <yaoaili@kingsoft.com>, Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        Wei Liu <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        linux-hyperv@vger.kernel.org,
-        virtualization@lists.linux-foundation.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH v1 3/7] mm: rename and move page_is_poisoned()
-Message-ID: <YJKhi6T33UmiZ/kE@dhcp22.suse.cz>
-References: <20210429122519.15183-1-david@redhat.com>
- <20210429122519.15183-4-david@redhat.com>
- <YJKZ5yXdl18m9YSM@dhcp22.suse.cz>
- <0710d8d5-2608-aeed-10c7-50a272604d97@redhat.com>
- <YJKdS+Q8CgSlgmFf@dhcp22.suse.cz>
- <57ac524c-b49a-99ec-c1e4-ef5027bfb61b@redhat.com>
+        id S230159AbhEENru (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 09:47:50 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A044610FB;
+        Wed,  5 May 2021 13:46:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620222413;
+        bh=f2HvundY/v8CdCUmWlDh+pnal+3mUV1iWqzpr2EOCMA=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EjY9SLA8HDPK0DvF0y+Jr96DIoEJFOULCNyYDAhEh2vzk9A8L9Uirup/H81xby0Sx
+         l0ped0vM+QDqjEzShUDgfjr9NL9X4LaVvoyY4mw5xJGmlDvMdJI7SIKo2X8Iq9gxss
+         oJF4879n2tXmw+iarHnVKbm/3j3FMf63g6pJ+XvrMh//jolSYJV/j4eZCPo/dy8Gqz
+         t13kermK4ZNSFaFswgJaqfameakMwYxSG3Th2Is+Bglj/M4OW6ZskctAG8lao8S987
+         +0NQ+saAX+StNskg5k6gz8TyfxMQbLh0985/xdVX2x9hgUg6LRa1lW1ukH1iLrntnp
+         hlssLhxPN3F8w==
+Date:   Wed, 5 May 2021 15:46:47 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Ezequiel Garcia <ezequiel@collabora.com>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev
+Subject: Re: [PATCH 09/25] media: hantro: do a PM resume earlier
+Message-ID: <20210505154647.62784bf7@coco.lan>
+In-Reply-To: <11c24f97ef71b16c2e7b3ba40ca66a28c12df692.camel@collabora.com>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+        <82114a4bd9c7bc1188c6a7167a6e74bb3360961d.1620207353.git.mchehab+huawei@kernel.org>
+        <11c24f97ef71b16c2e7b3ba40ca66a28c12df692.camel@collabora.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <57ac524c-b49a-99ec-c1e4-ef5027bfb61b@redhat.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed 05-05-21 15:39:08, David Hildenbrand wrote:
-> > > Long story short, this should be good enough for the cases we actually can
-> > > handle? What am I missing?
+Em Wed, 05 May 2021 10:22:03 -0300
+Ezequiel Garcia <ezequiel@collabora.com> escreveu:
+
+> Hi Mauro,
+> 
+> Thanks for working on this.
+> 
+> On Wed, 2021-05-05 at 11:41 +0200, Mauro Carvalho Chehab wrote:
+> > The device_run() first enables the clock and then
+> > tries to resume PM runtime, checking for errors.
 > > 
-> > I am not sure I follow. My point is that I fail to see any added value
-> > of the check as it doesn't prevent the race (it fundamentally cannot as
-> > the page can be poisoned at any time) but the failure path doesn't
-> > put_page which is incorrect even for hwpoison pages.
+> > Well, if for some reason the pm_runtime can not resume,
+> > it would be better to detect it beforehand.
+> > 
+> > So, change the order inside device_run().
+> > 
+> > Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
+> > Fixes: 775fec69008d ("media: add Rockchip VPU JPEG encoder driver")
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
 > 
-> Oh, I think you are right. If we have a page and return NULL we would leak a
-> reference.
+> It seems this is wrong now, as this series doesn't have
 > 
-> Actually, we discussed in that thread handling this entirely differently,
-> which resulted in a v7 [1]; however Andrew moved forward with this
-> (outdated?) patch, maybe that was just a mistake?
+> https://lore.kernel.org/linux-media/803c39fafdd62efc6f9e4d99a372af2c6955143b.1619621413.git.mchehab+huawei@kernel.org/
 > 
-> Yes, I agree we should revert that patch for now.
+> I don't fully understand why all the back and forth
+> happening on this series, but the former Hantro patches
+> looked good (despite perhaps unclear commit messages).
 
-OK, Let me send the revert to Andrew.
+There was a request to break the original /79 series into smaller ones,
+to make easier for reviewers. So, I opted to split it into (probably)
+3 series:
 
--- 
-Michal Hocko
-SUSE Labs
+1. Fixes (this series);
+2. "use pm_runtime_resume_and_get" for the I2C drivers;
+3. "use pm_runtime_resume_and_get" for remaining ones.
+
+Before flooding everybody's email's with series (2) and (3), better
+to focus at the fixes first. I'll probably send the other two series
+by tomorrow.
+
+> Any issues just squashing these two commits from "[PATCH v4 00/79] Address some issues with PM runtime at media subsystem":
+> 
+>   media: hantro: use pm_runtime_resume_and_get()
+>   media: hantro: do a PM resume earlier
+
+The problem is that pm_runtime_resume_and_get() was added only
+recently (Kernel v5.10). 
+
+So, I opted to place the fix patches before the changes, as this
+way, most (all?) patches can be easily be backported to legacy Kernels
+as needed.
+
+Thanks,
+Mauro
