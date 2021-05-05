@@ -2,183 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2AD37362F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:22:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C30C373635
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 10:24:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231430AbhEEIXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 04:23:15 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50928 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231553AbhEEIXN (ORCPT
+        id S231875AbhEEIZO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 04:25:14 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:2995 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231783AbhEEIZD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 04:23:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620202937;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Y78uch+8ZEwmUjJmNf1iR6U8L/anRfE9pjBoQCdxF90=;
-        b=AvtCdvpIIwUVHF24n/zL6vPZYfoht+tgsq5+nzwa6mBiY9+uA30tXE7QZqREIGP4jwkpuF
-        klUVjjYKafDCWJ7mMEV3QDL/+iNnrhdVbtTKob1Q7NCXbZYiapmhyfNViUYj713B7CBV13
-        3SNbCD205ptOqm+vGnrx+mzoXtlY4tc=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-557-_D13jY8bMYaqUYY1JJ6gsw-1; Wed, 05 May 2021 04:22:13 -0400
-X-MC-Unique: _D13jY8bMYaqUYY1JJ6gsw-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9BDF5802804;
-        Wed,  5 May 2021 08:22:12 +0000 (UTC)
-Received: from starship (unknown [10.40.192.34])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 766A85C5DF;
-        Wed,  5 May 2021 08:22:10 +0000 (UTC)
-Message-ID: <d56429a80d9c6118370c722d5b3a90b5669e2411.camel@redhat.com>
-Subject: Re: [PATCH 1/4] KVM: nVMX: Always make an attempt to map eVMCS
- after migration
-From:   Maxim Levitsky <mlevitsk@redhat.com>
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>, linux-kernel@vger.kernel.org
-Date:   Wed, 05 May 2021 11:22:09 +0300
-In-Reply-To: <20210503150854.1144255-2-vkuznets@redhat.com>
-References: <20210503150854.1144255-1-vkuznets@redhat.com>
-         <20210503150854.1144255-2-vkuznets@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-2.fc32) 
+        Wed, 5 May 2021 04:25:03 -0400
+Received: from fraeml738-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZqGD0KTFz70gFY;
+        Wed,  5 May 2021 16:13:08 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml738-chm.china.huawei.com (10.206.15.219) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 5 May 2021 10:24:04 +0200
+Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
+ 09:24:03 +0100
+Date:   Wed, 5 May 2021 09:22:25 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Ivan Mikhaylov <i.mikhaylov@yadro.com>
+CC:     Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Peter Meerwald-Stadler <pmeerw@pmeerw.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        <linux-kernel@vger.kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-hwmon@vger.kernel.org>
+Subject: Re: [PATCH 1/4] iio: proximity: vcnl3020: add periodic mode
+Message-ID: <20210505092225.00007ec4@Huawei.com>
+In-Reply-To: <136a077085488866235636be5884681341fb3644.camel@yadro.com>
+References: <20210430152419.261757-1-i.mikhaylov@yadro.com>
+        <20210430152419.261757-2-i.mikhaylov@yadro.com>
+        <20210502190054.4bd99a38@jic23-huawei>
+        <136a077085488866235636be5884681341fb3644.camel@yadro.com>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+X-Originating-IP: [10.52.120.138]
+X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 17:08 +0200, Vitaly Kuznetsov wrote:
-> When enlightened VMCS is in use and nested state is migrated with
-> vmx_get_nested_state()/vmx_set_nested_state() KVM can't map evmcs
-> page right away: evmcs gpa is not 'struct kvm_vmx_nested_state_hdr'
-> and we can't read it from VP assist page because userspace may decide
-> to restore HV_X64_MSR_VP_ASSIST_PAGE after restoring nested state
-> (and QEMU, for example, does exactly that). To make sure eVMCS is
-> mapped /vmx_set_nested_state() raises KVM_REQ_GET_NESTED_STATE_PAGES
-> request.
+On Tue, 4 May 2021 22:07:53 +0300
+Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+
+> On Sun, 2021-05-02 at 19:00 +0100, Jonathan Cameron wrote:
+> > On Fri, 30 Apr 2021 18:24:16 +0300
+> > Ivan Mikhaylov <i.mikhaylov@yadro.com> wrote:
+> >   
+> > > Add the possibility to run proximity sensor in periodic measurement
+> > > mode.  
+> > 
+> > Without an interrupt?  Unusual and perhaps best left to userspace.  
 > 
-> Commit f2c7ef3ba955 ("KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES
-> on nested vmexit") added KVM_REQ_GET_NESTED_STATE_PAGES clearing to
-> nested_vmx_vmexit() to make sure MSR permission bitmap is not switched
-> when an immediate exit from L2 to L1 happens right after migration (caused
-> by a pending event, for example). Unfortunately, in the exact same
-> situation we still need to have eVMCS mapped so
-> nested_sync_vmcs12_to_shadow() reflects changes in VMCS12 to eVMCS.
+> Do you mean without interrupt handler in driver for this particular interrupt?
+> If it's need to be added here, I can add it. In this patch I just added trigger
+> to enable/disable periodic measurement mode without interrupt handler.
+
+The model for events in IIO is that they are 'pushed' to userspace.
+So it is possible to do this with a polling thread, but on a device
+with an interrupt line tied to the event, it makes much more sense
+to do it that way.
+
+We don't have read on demand event as there has been little real
+demand for them (and they can be implemented in userspase).
+
+Jonathan
+
+
 > 
-> As a band-aid, restore nested_get_evmcs_page() when clearing
-> KVM_REQ_GET_NESTED_STATE_PAGES in nested_vmx_vmexit(). The 'fix' is far
-> from being ideal as we can't easily propagate possible failures and even if
-> we could, this is most likely already too late to do so. The whole
-> 'KVM_REQ_GET_NESTED_STATE_PAGES' idea for mapping eVMCS after migration
-> seems to be fragile as we diverge too much from the 'native' path when
-> vmptr loading happens on vmx_set_nested_state().
+> >   
+> > > +		if (rc)
+> > > +			return rc;
+> > > +
+> > > +		/* Enable periodic measurement of proximity data. */
+> > > +		cmd = VCNL_PS_EN | VCNL_PS_SELFTIMED_EN;
+> > > +
+> > > +		/*
+> > > +		 * Enable interrupts on threshold, for proximity data by
+> > > +		 * default.
+> > > +		 */
+> > > +		icr = VCNL_ICR_THRES_EN;
+> > > +	} else {
+> > > +		if (!vcnl3020_is_thr_enabled(data))
+> > > +			return 0;
+> > > +
+> > > +		cmd = 0;
+> > > +		icr = 0;
+> > > +		isr = 0;
+> > > +	}
+> > > +
+> > > +	rc = regmap_write(data->regmap, VCNL_COMMAND, cmd);
+> > > +	if (rc)
+> > > +		goto end;
+> > > +
+> > > +	rc = regmap_write(data->regmap, VCNL_PS_ICR, icr);
+> > > +	if (rc)
+> > > +		goto end;
+> > > +
+> > > +	if (!state)
+> > > +		/* Clear interrupts */  
+> > 
+> > Given you don't seem to have an interrupt. I guess this is clearing
+> > a status flag?  
 > 
-> Fixes: f2c7ef3ba955 ("KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES on nested vmexit")
-> Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-> ---
->  arch/x86/kvm/vmx/nested.c | 29 +++++++++++++++++++----------
->  1 file changed, 19 insertions(+), 10 deletions(-)
+> Yes, it is clearing flag in interrupt status register.
 > 
-> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> index 1e069aac7410..2febb1dd68e8 100644
-> --- a/arch/x86/kvm/vmx/nested.c
-> +++ b/arch/x86/kvm/vmx/nested.c
-> @@ -3098,15 +3098,8 @@ static bool nested_get_evmcs_page(struct kvm_vcpu *vcpu)
->  			nested_vmx_handle_enlightened_vmptrld(vcpu, false);
->  
->  		if (evmptrld_status == EVMPTRLD_VMFAIL ||
-> -		    evmptrld_status == EVMPTRLD_ERROR) {
-> -			pr_debug_ratelimited("%s: enlightened vmptrld failed\n",
-> -					     __func__);
-> -			vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-> -			vcpu->run->internal.suberror =
-> -				KVM_INTERNAL_ERROR_EMULATION;
-> -			vcpu->run->internal.ndata = 0;
-> +		    evmptrld_status == EVMPTRLD_ERROR)
->  			return false;
-> -		}
->  	}
->  
->  	return true;
-> @@ -3194,8 +3187,16 @@ static bool nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
->  
->  static bool vmx_get_nested_state_pages(struct kvm_vcpu *vcpu)
->  {
-> -	if (!nested_get_evmcs_page(vcpu))
-> +	if (!nested_get_evmcs_page(vcpu)) {
-> +		pr_debug_ratelimited("%s: enlightened vmptrld failed\n",
-> +				     __func__);
-> +		vcpu->run->exit_reason = KVM_EXIT_INTERNAL_ERROR;
-> +		vcpu->run->internal.suberror =
-> +			KVM_INTERNAL_ERROR_EMULATION;
-> +		vcpu->run->internal.ndata = 0;
-> +
->  		return false;
-> +	}
-
-Hi!
-
-Any reason to move the debug prints out of nested_get_evmcs_page?
-
-
->  
->  	if (is_guest_mode(vcpu) && !nested_get_vmcs12_pages(vcpu))
->  		return false;
-> @@ -4422,7 +4423,15 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 vm_exit_reason,
->  	/* trying to cancel vmlaunch/vmresume is a bug */
->  	WARN_ON_ONCE(vmx->nested.nested_run_pending);
->  
-> -	kvm_clear_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu);
-> +	if (kvm_check_request(KVM_REQ_GET_NESTED_STATE_PAGES, vcpu)) {
-> +		/*
-> +		 * KVM_REQ_GET_NESTED_STATE_PAGES is also used to map
-> +		 * Enlightened VMCS after migration and we still need to
-> +		 * do that when something is forcing L2->L1 exit prior to
-> +		 * the first L2 run.
-> +		 */
-> +		(void)nested_get_evmcs_page(vcpu);
-> +	}
-Yes this is a band-aid, but it has to be done I agree.
-
->  
->  	/* Service the TLB flush request for L2 before switching to L1. */
->  	if (kvm_check_request(KVM_REQ_TLB_FLUSH_CURRENT, vcpu))
-
-
-
-
-I also tested this and it survives a bit better (used to crash instantly
-after a single migration cycle, but the guest still crashes after around ~20 iterations of my 
-regular nested migration test).
-
-Blues screen shows that stop code is HYPERVISOR ERROR and nothing else.
-
-I tested both this patch alone and all 4 patches.
-
-Without evmcs, the same VM with same host kernel and qemu survived an overnight
-test and passed about 1800 migration iterations.
-(my synthetic migration test doesn't yet work on Intel, I need to investigate why)
-
-For reference this is the VM that you gave me to test, kvm/queue kernel,
-with merged mainline in it,
-and mostly latest qemu (updated about a week ago or so)
-
-qemu: 3791642c8d60029adf9b00bcb4e34d7d8a1aea4d
-kernel: 9f242010c3b46e63bc62f08fff42cef992d3801b and
-        then merge v5.12 from mainline.
-
-Best regards,
-	Maxim Levitsky
-
-
-
+> >   
+> > > +		rc = regmap_write(data->regmap, VCNL_ISR, isr);
+> > > +
+> > > +end:
+> > > +	if (state)
+> > > +		iio_device_release_direct_mode(indio_dev);  
+> >   
+> 
+> 
 
