@@ -2,99 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B630C37398C
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A01537397E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233083AbhEELhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:37:15 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3015 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232934AbhEELhM (ORCPT
+        id S233134AbhEELfs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:35:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55190 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232993AbhEELfq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:37:12 -0400
-Received: from fraeml734-chm.china.huawei.com (unknown [172.18.147.201])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZvbK0QHrz6rlWH;
-        Wed,  5 May 2021 19:28:13 +0800 (CST)
-Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
- fraeml734-chm.china.huawei.com (10.206.15.215) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 5 May 2021 13:36:15 +0200
-Received: from localhost (10.52.120.138) by lhreml710-chm.china.huawei.com
- (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Wed, 5 May 2021
- 12:36:14 +0100
-Date:   Wed, 5 May 2021 12:34:35 +0100
-From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-CC:     <linuxarm@huawei.com>, <mauro.chehab@huawei.com>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        <linux-kernel@vger.kernel.org>, <linux-media@vger.kernel.org>,
-        <linux-rockchip@lists.infradead.org>,
-        <linux-staging@lists.linux.dev>
-Subject: Re: [PATCH 09/25] media: hantro: do a PM resume earlier
-Message-ID: <20210505123435.00002065@Huawei.com>
-In-Reply-To: <82114a4bd9c7bc1188c6a7167a6e74bb3360961d.1620207353.git.mchehab+huawei@kernel.org>
-References: <cover.1620207353.git.mchehab+huawei@kernel.org>
-        <82114a4bd9c7bc1188c6a7167a6e74bb3360961d.1620207353.git.mchehab+huawei@kernel.org>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
+        Wed, 5 May 2021 07:35:46 -0400
+Received: from mail-lf1-x12b.google.com (mail-lf1-x12b.google.com [IPv6:2a00:1450:4864:20::12b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D16D7C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 04:34:49 -0700 (PDT)
+Received: by mail-lf1-x12b.google.com with SMTP id x19so2104886lfa.2
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 04:34:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=IgvoE77MnMbex7B2S0TkrRa1RsaV/q1aQVIu3eT5F4I=;
+        b=dAIjjW2qqzmG32ewtdJN+Q3kO51I+XWS+ICZ5Q/QlSc2OVA+FPOXH5+6ZS9pXMnlZE
+         Wxkl5zEarjWAxfNUZtq5GqF0sd6K4VBDcbpjzDWdxZeMXHrEdAxDgvzeOWqFlMh12LiQ
+         Cq19ZFLDmD9FpgdjvSoafBFGgrQ67n6PLXpV7YuSoimkTtCr4Yo/pze+IqCqjBaOcPUp
+         rYKBPzZsjA6JkGrfrsqxLXLAjGsJEdMVrujwr59VLv4B0a9ClOIxKk4knJnJhEe4VLet
+         NgrSgD4d3S6nbuNcvaP39+rn0ISeLOg4fM86jrwl15wcqhO+SkMfUxMic+EcMKsMIHSx
+         sNmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=IgvoE77MnMbex7B2S0TkrRa1RsaV/q1aQVIu3eT5F4I=;
+        b=W5USbVJ6mmr6cOXvIUntcS+zcEIZJkVHk4jqydrGuz3jJYvuJzsiVQKx+zeNqJnaQ1
+         L/AEDhqygfqeVf91KbCgXtt1F1TiUtwxgizBTju6MR8ITaErH8QHkPrcf5HAGeHZDDNr
+         3ioQYaL/BP6nwYR3avj/F/6MrlU47QpkFXh37V4eUDFhOZGuhFTFi3dBAHuWE8BCuso4
+         suR1uLkg37jNdRnhcv5NQRnf6SsUXn80QOIY7RlDtmTyrB2vRsYgAC7gvbQdskQ5BJLe
+         VQQdHS/ByVRe3zyIgzC40VTQRz/JjS6ErHsC5l4wkcBsWKn0twGn6UQYYGTlS73MaDIj
+         jiMg==
+X-Gm-Message-State: AOAM5308f0INILHQV0uJZcBbj+QuS9U1mJcMCBZXPCIyks7LDisgFyij
+        M+eBSwUZgcA1A1w4dc9jOVGXIyNL3ZEmyfjDZRBjAw==
+X-Google-Smtp-Source: ABdhPJzSF9AHtOJF7IjLoW++ovuVHUkakgCSuRT8+ZsyQan+kbMdLPrMBrXFyvwHLXQlXaBHgo0G0xAvZDHqik5psVs=
+X-Received: by 2002:ac2:5e36:: with SMTP id o22mr10820729lfg.529.1620214488167;
+ Wed, 05 May 2021 04:34:48 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.52.120.138]
-X-ClientProxiedBy: lhreml725-chm.china.huawei.com (10.201.108.76) To
- lhreml710-chm.china.huawei.com (10.201.108.61)
-X-CFilter-Loop: Reflected
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com> <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
+ <CANiq72niCj9SfPhfQBMtxF+jth--cXdPQtUo5jhDDJgL6DTXZQ@mail.gmail.com>
+ <CACRpkdarfkA1P0ERCXHSA=6VTBn6FXgOxB8haneQtN_4-tyQ0w@mail.gmail.com>
+ <CANiq72=VA_cH9yw_LZr3P+n1AsQEEhtY4xdk76jHgimTufHRsQ@mail.gmail.com>
+ <CACRpkdYodGnURuaYMBwVAY=8bU0PQoPAvTp34uYksPFmxBsT2A@mail.gmail.com>
+ <CANiq72m9V3dVG59jAoR-OM+7QtJauQgrix3DZkw=oCuaaf3H5w@mail.gmail.com>
+ <CACRpkdYzqy69G1Fpj4rFQFS+mYmpbQAzTszwCUBuEhe4YW4cuQ@mail.gmail.com> <CANiq72k+x13L+sFkjtDLahcvnpEySqk_NGow6FVMZfrV+MmHPw@mail.gmail.com>
+In-Reply-To: <CANiq72k+x13L+sFkjtDLahcvnpEySqk_NGow6FVMZfrV+MmHPw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Wed, 5 May 2021 13:34:37 +0200
+Message-ID: <CACRpkdbNv4O7zs0OpZhWa2fkXkF5arQgDOF9++zKvr+yB5yk_w@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 11:41:59 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+On Wed, May 5, 2021 at 1:30 AM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+> On Tue, May 4, 2021 at 11:21 PM Linus Walleij <linus.walleij@linaro.org> wrote:
 
-> The device_run() first enables the clock and then
-> tries to resume PM runtime, checking for errors.
-> 
-> Well, if for some reason the pm_runtime can not resume,
-> it would be better to detect it beforehand.
-> 
-> So, change the order inside device_run().
-> 
-> Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-> Fixes: 775fec69008d ("media: add Rockchip VPU JPEG encoder driver")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > I think right now the right thing for Rust is to work out-of-tree until
+> > there is Rust support for all archs, while encouraging kernel
+> > developers to learn the language.
+>
+> That would be an option, yes, but if the decision ends up being made
+> and we are encouraging kernel developers to learn the language, what
+> do we achieve by keeping things out-of-tree?
+>
+> In fact, by getting in-tree people, organizations & companies would be
+> encouraged to give more support sooner rather than later to the LLVM
+> backends they care about and/or to the GCC frontend for Rust. So, in a
+> way, it can be a win for those projects too.
 
-Does this move not result in a potential call of clk_bulk_disable() for clocks
-that aren't enabled?
+In a way it is a fair point because for example Unix and C evolved
+together and were intermingled at the onset. And they kind of
+needed each other to evolve.
 
-> ---
->  drivers/staging/media/hantro/hantro_drv.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-> index 595e82a82728..4387edaa1d0d 100644
-> --- a/drivers/staging/media/hantro/hantro_drv.c
-> +++ b/drivers/staging/media/hantro/hantro_drv.c
-> @@ -152,13 +152,14 @@ static void device_run(void *priv)
->  	src = hantro_get_src_buf(ctx);
->  	dst = hantro_get_dst_buf(ctx);
->  
-> -	ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-> -	if (ret)
-> -		goto err_cancel_job;
->  	ret = pm_runtime_get_sync(ctx->dev->dev);
->  	if (ret < 0)
->  		goto err_cancel_job;
->  
-> +	ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-> +	if (ret)
-> +		goto err_cancel_job;
-> +
->  	v4l2_m2m_buf_copy_metadata(src, dst, true);
->  
->  	ctx->codec_ops->run(ctx);
+Right now it seems like those organizations and companies
+would be some academic institutions who like rust (because they
+study languages and compilers) and Google. But that is a
+pretty nice start, and one upside I would see in it is that
+the academic people stop writing so many papers and get their
+hands dirty and work on practical problems in the kernel. So
+if that can be achieved I would be happy.
 
+Yours,
+Linus Walleij
