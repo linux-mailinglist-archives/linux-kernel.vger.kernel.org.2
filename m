@@ -2,33 +2,33 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 740F7373AAE
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:11:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1176373AA7
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233027AbhEEMMd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:12:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50186 "EHLO mail.kernel.org"
+        id S232577AbhEEMMM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:12:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53564 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233321AbhEEMJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S233002AbhEEMJy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 5 May 2021 08:09:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4AC8E6139A;
-        Wed,  5 May 2021 12:08:41 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A164961176;
+        Wed,  5 May 2021 12:08:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216521;
-        bh=Yf0zVo/dlPirZVH2nGeno4UG/jo8lP2Tgi6DLoz+/rk=;
+        s=korg; t=1620216524;
+        bh=6zNtDsAgB5bMSkA8ViPnx8VnboOtKU7dasZ2/fYghwc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=0epiyvyeoc8Beba7TZ7PTZHIQT9m7MmHJO7tH8hzGzkhMOIUe4RswY6a27FBs+9U6
-         JnnMTlhtqy6hfALG2idg/OJus2Hzc3DD2/S/fUzqsrG0RVBb9vc+91BuL8LAbyvA8m
-         4kYUROC1exkzG3ktESnLDvz22bjmEQd6bdZEyHxg=
+        b=WcYuEXIof04bskZQQG04j6PvOkctlXXtxXmYKgrVFxSnriaqU+WeZEkvBDZEa5R4n
+         Rr3hKXxVBJaLRC7Jmo0t0auUzwpwyQ01B+m1AWV59AV4VJ7fr2H7BuKbIDuTSSGAYC
+         zkAk5e/Dbu+4zlQQJ0YPkUdPkSuAVuMAm897+YwI=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        stable@vger.kernel.org, Jianxiong Gao <jxgao@google.com>,
-        Christoph Hellwig <hch@lst.de>,
+        stable@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        Jianxiong Gao <jxgao@google.com>,
         Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-Subject: [PATCH 5.11 13/31] driver core: add a min_align_mask field to struct device_dma_parameters
-Date:   Wed,  5 May 2021 14:06:02 +0200
-Message-Id: <20210505112327.097349074@linuxfoundation.org>
+Subject: [PATCH 5.11 14/31] swiotlb: add a IO_TLB_SIZE define
+Date:   Wed,  5 May 2021 14:06:03 +0200
+Message-Id: <20210505112327.128659745@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
 References: <20210505112326.672439569@linuxfoundation.org>
@@ -42,58 +42,84 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Jianxiong Gao <jxgao@google.com>
 
-commit: 36950f2da1ea4cb683be174f6f581e25b2d33e71
+commit: b5d7ccb7aac3895c2138fe0980a109116ce15eff
 
-Some devices rely on the address offset in a page to function
-correctly (NVMe driver as an example). These devices may use
-a different page size than the Linux kernel. The address offset
-has to be preserved upon mapping, and in order to do so, we
-need to record the page_offset_mask first.
+Add a new IO_TLB_SIZE define instead open coding it using
+IO_TLB_SHIFT all over.
 
-Signed-off-by: Jianxiong Gao <jxgao@google.com>
 Signed-off-by: Christoph Hellwig <hch@lst.de>
-Acked-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Acked-by: Jianxiong Gao <jxgao@google.com>
+Tested-by: Jianxiong Gao <jxgao@google.com>
 Signed-off-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+Signed-off-by: Jianxiong Gao <jxgao@google.com>
 Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 ---
- include/linux/device.h      |    1 +
- include/linux/dma-mapping.h |   16 ++++++++++++++++
- 2 files changed, 17 insertions(+)
+ include/linux/swiotlb.h |    1 +
+ kernel/dma/swiotlb.c    |   12 ++++++------
+ 2 files changed, 7 insertions(+), 6 deletions(-)
 
---- a/include/linux/device.h
-+++ b/include/linux/device.h
-@@ -291,6 +291,7 @@ struct device_dma_parameters {
- 	 * sg limitations.
- 	 */
- 	unsigned int max_segment_size;
-+	unsigned int min_align_mask;
- 	unsigned long segment_boundary_mask;
- };
+--- a/include/linux/swiotlb.h
++++ b/include/linux/swiotlb.h
+@@ -29,6 +29,7 @@ enum swiotlb_force {
+  * controllable.
+  */
+ #define IO_TLB_SHIFT 11
++#define IO_TLB_SIZE (1 << IO_TLB_SHIFT)
  
---- a/include/linux/dma-mapping.h
-+++ b/include/linux/dma-mapping.h
-@@ -500,6 +500,22 @@ static inline int dma_set_seg_boundary(s
- 	return -EIO;
+ /* default to 64MB */
+ #define IO_TLB_DEFAULT_SIZE (64UL<<20)
+--- a/kernel/dma/swiotlb.c
++++ b/kernel/dma/swiotlb.c
+@@ -491,20 +491,20 @@ phys_addr_t swiotlb_tbl_map_single(struc
+ 
+ 	tbl_dma_addr &= mask;
+ 
+-	offset_slots = ALIGN(tbl_dma_addr, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT;
++	offset_slots = ALIGN(tbl_dma_addr, IO_TLB_SIZE) >> IO_TLB_SHIFT;
+ 
+ 	/*
+ 	 * Carefully handle integer overflow which can occur when mask == ~0UL.
+ 	 */
+ 	max_slots = mask + 1
+-		    ? ALIGN(mask + 1, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT
++		    ? ALIGN(mask + 1, IO_TLB_SIZE) >> IO_TLB_SHIFT
+ 		    : 1UL << (BITS_PER_LONG - IO_TLB_SHIFT);
+ 
+ 	/*
+ 	 * For mappings greater than or equal to a page, we limit the stride
+ 	 * (and hence alignment) to a page size.
+ 	 */
+-	nslots = ALIGN(alloc_size, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT;
++	nslots = ALIGN(alloc_size, IO_TLB_SIZE) >> IO_TLB_SHIFT;
+ 	if (alloc_size >= PAGE_SIZE)
+ 		stride = (1 << (PAGE_SHIFT - IO_TLB_SHIFT));
+ 	else
+@@ -598,7 +598,7 @@ void swiotlb_tbl_unmap_single(struct dev
+ 			      enum dma_data_direction dir, unsigned long attrs)
+ {
+ 	unsigned long flags;
+-	int i, count, nslots = ALIGN(alloc_size, 1 << IO_TLB_SHIFT) >> IO_TLB_SHIFT;
++	int i, count, nslots = ALIGN(alloc_size, IO_TLB_SIZE) >> IO_TLB_SHIFT;
+ 	int index = (tlb_addr - io_tlb_start) >> IO_TLB_SHIFT;
+ 	phys_addr_t orig_addr = io_tlb_orig_addr[index];
+ 
+@@ -649,7 +649,7 @@ void swiotlb_tbl_sync_single(struct devi
+ 
+ 	if (orig_addr == INVALID_PHYS_ADDR)
+ 		return;
+-	orig_addr += (unsigned long)tlb_addr & ((1 << IO_TLB_SHIFT) - 1);
++	orig_addr += (unsigned long)tlb_addr & (IO_TLB_SIZE - 1);
+ 
+ 	switch (target) {
+ 	case SYNC_FOR_CPU:
+@@ -707,7 +707,7 @@ dma_addr_t swiotlb_map(struct device *de
+ 
+ size_t swiotlb_max_mapping_size(struct device *dev)
+ {
+-	return ((size_t)1 << IO_TLB_SHIFT) * IO_TLB_SEGSIZE;
++	return ((size_t)IO_TLB_SIZE) * IO_TLB_SEGSIZE;
  }
  
-+static inline unsigned int dma_get_min_align_mask(struct device *dev)
-+{
-+	if (dev->dma_parms)
-+		return dev->dma_parms->min_align_mask;
-+	return 0;
-+}
-+
-+static inline int dma_set_min_align_mask(struct device *dev,
-+		unsigned int min_align_mask)
-+{
-+	if (WARN_ON_ONCE(!dev->dma_parms))
-+		return -EIO;
-+	dev->dma_parms->min_align_mask = min_align_mask;
-+	return 0;
-+}
-+
- static inline int dma_get_cache_alignment(void)
- {
- #ifdef ARCH_DMA_MINALIGN
+ bool is_swiotlb_active(void)
 
 
