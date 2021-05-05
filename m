@@ -2,73 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05A24373EC5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:44:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68BE3373ECC
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 17:45:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233520AbhEEPpK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 11:45:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:28954 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229798AbhEEPpJ (ORCPT
+        id S233577AbhEEPpx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 11:45:53 -0400
+Received: from out30-130.freemail.mail.aliyun.com ([115.124.30.130]:60185 "EHLO
+        out30-130.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233466AbhEEPpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 11:45:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620229452;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kB18wOq0wwABF209vAjteUSBdk4dEBLdqvgC2SNz17Y=;
-        b=Go46m6zi3sbMRMK3WxGXGR1HK+j4TJPDe6hfG81qCzhDBs1zLZJ58CH656R0cCJzZuvb32
-        RbKaSq5YlcQiaoNzYC4kru6P30raJPz/apA8eiiamMu1RAct8JgZ/FtCmgFH1KCbhvzyeZ
-        9snN4lD4bU5QHS/UlvwT9AQjJzQrdv4=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-414--rjeofgLPzSsbLZUoC4qCw-1; Wed, 05 May 2021 11:44:10 -0400
-X-MC-Unique: -rjeofgLPzSsbLZUoC4qCw-1
-Received: by mail-wm1-f70.google.com with SMTP id b16-20020a7bc2500000b029014587f5376dso1563165wmj.1
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 08:44:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kB18wOq0wwABF209vAjteUSBdk4dEBLdqvgC2SNz17Y=;
-        b=RwoYMnXp1RTTA32V8XrTTrWGffeqdBvPJYnzuHju39a77F05WzW4J3hfwoodESMYuC
-         jVc1PoPF/Gt6aauGJ3fVBZ0KSx4CXsHVHNn8ms+7fet2KWjblUmTlRHvB5T7BcrdYfDy
-         TN6867IW+C1CV5jptjnQqkMSLT4lVPAVgME7cSCN7hDW42NSbGHQtYYpAzOKpU06dqEA
-         WflmAQbPZGotXApSUQ4Hh8PMytrliDKMpH5zRiGiCErxWeFc9YNml5ykiDqEKSUZ1X6J
-         SdvT+4+hGzXS4lIOiGYM0tfS4lZaNbKkKTgygWSHTmzTp+naZyWAVaoIUfYsWdBcuAVG
-         LcCw==
-X-Gm-Message-State: AOAM530+xiCXckLqwv0AnvJepffTTDXEl+bgrEQBRPDYHcKVjj9tbQ3A
-        lYIHvrQF9K5LIZeN9Zw5GUbDwYlVmAtEu2NvFlKv62RhyPlxiliSzE4YcJMI3RrgILkBvgiDF36
-        nyXZS6qQzx4Z/26htNa7zrBogqf2RGKrWMQWIBHM5e0cTtfHp/piqbGx2eoGiqw77PJRYGkucCA
-        m4
-X-Received: by 2002:a7b:c217:: with SMTP id x23mr10447923wmi.26.1620229449521;
-        Wed, 05 May 2021 08:44:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwKkqKQ1KzwKdPY3wUmcuteH0Wwcuufh6A7pvdXG1H6KtXZqt1tXR+oSHmXTNUpeIXf5TOB8g==
-X-Received: by 2002:a7b:c217:: with SMTP id x23mr10447895wmi.26.1620229449206;
-        Wed, 05 May 2021 08:44:09 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id 61sm21723917wrm.52.2021.05.05.08.44.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 08:44:08 -0700 (PDT)
-Subject: Re: [PATCH 0/3] KVM: selftests: evmcs_test: Check issues induced by
- late eVMCS mapping upon restore
-To:     Vitaly Kuznetsov <vkuznets@redhat.com>, kvm@vger.kernel.org
-Cc:     Sean Christopherson <seanjc@google.com>,
+        Wed, 5 May 2021 11:45:51 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R611e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04395;MF=laijs@linux.alibaba.com;NM=1;PH=DS;RN=25;SR=0;TI=SMTPD_---0UXoki5R_1620229489;
+Received: from C02XQCBJJG5H.local(mailfrom:laijs@linux.alibaba.com fp:SMTPD_---0UXoki5R_1620229489)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Wed, 05 May 2021 23:44:50 +0800
+Subject: Re: [PATCH] KVM/VMX: Invoke NMI non-IST entry instead of IST entry
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>
+Cc:     Andy Lutomirski <luto@amacapital.net>,
+        Maxim Levitsky <mlevitsk@redhat.com>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
         Wanpeng Li <wanpengli@tencent.com>,
         Jim Mattson <jmattson@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>,
-        linux-kernel@vger.kernel.org
-References: <20210505151823.1341678-1-vkuznets@redhat.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f394cc20-8123-2b79-c95e-0aad784a3344@redhat.com>
-Date:   Wed, 5 May 2021 17:44:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Joerg Roedel <joro@8bytes.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        Juergen Gross <JGross@suse.com>,
+        Joerg Roedel <jroedel@suse.de>, Jian Cai <caij2003@gmail.com>
+References: <YJG6ztbGjtuctec4@google.com>
+ <38B9D60F-F24F-4910-B2DF-2A57F1060452@amacapital.net>
+ <625057c7-ea40-4f37-8bea-cddecfe1b855@redhat.com>
+ <YJHBxvR2mqsSX0pU@google.com>
+ <5d7ca301-a0b2-d389-3bc2-feb304c9f5b5@redhat.com>
+ <87im3yhwxh.ffs@nanos.tec.linutronix.de>
+From:   Lai Jiangshan <laijs@linux.alibaba.com>
+Message-ID: <91013efa-da53-2a3a-0e65-1ddb4318cb70@linux.alibaba.com>
+Date:   Wed, 5 May 2021 23:44:49 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210505151823.1341678-1-vkuznets@redhat.com>
+In-Reply-To: <87im3yhwxh.ffs@nanos.tec.linutronix.de>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -76,30 +58,99 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/21 17:18, Vitaly Kuznetsov wrote:
-> A regression was introduced by commit f2c7ef3ba955
-> ("KVM: nSVM: cancel KVM_REQ_GET_NESTED_STATE_PAGES on nested vmexit"). When
-> L2->L1 exit is forced immediately after restoring nested state,
-> KVM_REQ_GET_NESTED_STATE_PAGES request is cleared and VMCS12 changes (e.g.
-> fresh RIP) are not reflected to eVMCS. The consequent nested vCPU run gets
-> broken. Add a test for the condition (PATCH2). PATCH1 is a preparatory
-> change, PATCH3 adds a test for a situation when KVM_GET_NESTED_STATE is
-> requested right after KVM_SET_NESTED_STATE, this is still broken in KVM
-> (so the patch is not to be committed).
+
+
+On 2021/5/5 08:00, Thomas Gleixner wrote:
+> On Tue, May 04 2021 at 23:56, Paolo Bonzini wrote:
+>> On 04/05/21 23:51, Sean Christopherson wrote:
+>>> On Tue, May 04, 2021, Paolo Bonzini wrote:
+>>>> On 04/05/21 23:23, Andy Lutomirski wrote:
+>>>>>> On May 4, 2021, at 2:21 PM, Sean Christopherson <seanjc@google.com> wrote:
+>>>>>> FWIW, NMIs are masked if the VM-Exit was due to an NMI.
+>>>>
+>>>> Huh, indeed:  "An NMI causes subsequent NMIs to be blocked, but only after
+>>>> the VM exit completes".
+>>>>
+>>>>> Then this whole change is busted, since nothing will unmask NMIs. Revert it?
+>>>> Looks like the easiest way out indeed.
+>>>
+>>> I've no objection to reverting to intn, but what does reverting versus handling
+>>> NMI on the kernel stack have to do with NMIs being blocked on VM-Exit due to NMI?
+>>> I'm struggling mightily to connect the dots.
+>>
+>> Nah, you're right: vmx_do_interrupt_nmi_irqoff will not call the handler
+>> directly, rather it calls the IDT entrypoint which *will* do an IRET and
+>> unmask NMIs.  I trusted Andy too much on this one. :)
+>>
+>> Thomas's posted patch ("[PATCH] KVM/VMX: Invoke NMI non-IST entry
+>> instead of IST entry") looks good.
 > 
-> Vitaly Kuznetsov (3):
->    KVM: selftests: evmcs_test: Check that VMLAUNCH with bogus EVMPTR is
->      causing #UD
->    KVM: selftests: evmcs_test: Check that VMCS12 is alway properly synced
->      to eVMCS after restore
->    KVM: selftests: evmcs_test: Test that KVM_STATE_NESTED_EVMCS is never
->      lost
+> Well, looks good is one thing.
 > 
->   .../testing/selftests/kvm/x86_64/evmcs_test.c | 150 +++++++++++++-----
->   1 file changed, 108 insertions(+), 42 deletions(-)
+> It would be more helpful if someone would actually review and/or test it.
+> 
+> Thanks,
+> 
+>          tglx
 > 
 
-Queued 1-2, thanks.
+I tested it with the following testing-patch applied, it shows that the
+problem is fixed.
 
-Paolo
+The only one line of code in vmenter.S in the testing-patch just emulates
+the situation that a "uninitialized" garbage in the kernel stack happens
+to be 1 and it happens to be at the same location of the RSP-located
+"NMI executing" variable.
+
+
+First round:
+# apply the testing-patch
+# perf record events of a vm which does kbuild inside
+# dmesg shows that there are the same number of "kvm nmi" and "kvm nmi miss"
+It shows that the problem exists with regard to the invocation of the NMI
+handler.
+
+Second Round:
+# apply the fix from tglx
+# apply the testing-patch
+# perf record events of a vm which does kbuild inside
+# dmesg shows that there are some "kvm nmi" but no "kvm nmi miss".
+It shows that the problem is fixed.
+
+
+diff --git a/arch/x86/kvm/vmx/vmenter.S b/arch/x86/kvm/vmx/vmenter.S
+index 3a6461694fc2..32096049c2a2 100644
+--- a/arch/x86/kvm/vmx/vmenter.S
++++ b/arch/x86/kvm/vmx/vmenter.S
+@@ -316,6 +316,7 @@ SYM_FUNC_START(vmx_do_interrupt_nmi_irqoff)
+  #endif
+  	pushf
+  	push $__KERNEL_CS
++	movq $1, -24(%rsp) // "NMI executing": 1 = nested, non-1 = not-nested
+  	CALL_NOSPEC _ASM_ARG1
+
+  	/*
+diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
+index 8586eca349a9..eefd22d22fce 100644
+--- a/arch/x86/kvm/vmx/vmx.c
++++ b/arch/x86/kvm/vmx/vmx.c
+@@ -6439,8 +6439,17 @@ static void vmx_handle_exit_irqoff(struct kvm_vcpu *vcpu)
+
+  	if (vmx->exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT)
+  		handle_external_interrupt_irqoff(vcpu);
+-	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI)
++	else if (vmx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI) {
++		unsigned long count = this_cpu_read(irq_stat.__nmi_count);
++
+  		handle_exception_nmi_irqoff(vmx);
++
++		if (is_nmi(vmx_get_intr_info(&vmx->vcpu))) {
++			pr_info("kvm nmi\n");
++			if (count == this_cpu_read(irq_stat.__nmi_count))
++				pr_info("kvm nmi miss\n");
++		}
++	}
+  }
+
+  /*
 
