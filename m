@@ -2,139 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6303736CB
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:10:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0C743736CF
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:11:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232265AbhEEJLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:11:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48932 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232091AbhEEJLu (ORCPT
+        id S232300AbhEEJMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 05:12:07 -0400
+Received: from lb1-smtp-cloud7.xs4all.net ([194.109.24.24]:55207 "EHLO
+        lb1-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232091AbhEEJMF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:11:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620205854;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=d0SQnCbBnNBGtZsOp6MO/Q/qxE8V3SBQW2J1qFEwtZU=;
-        b=IVZWMQ2sLTFH8maZ/DesjqIIGo1J91YbOsIPsh5dZ9lFfrUCpPBmAUO5RMdHGkqDqQWkKk
-        GHu+sVIdewlbR56LhNnamjl+Fb/VL0a8Svts+pC5YmoGYxPZm1H3Mt1F4MSVrXcNSUTyNz
-        iWIdRQ/kSPaa57NlpBSRyY3ManpSSiA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-108-MlKJvMw1OS2yDEXnT8O6kw-1; Wed, 05 May 2021 05:10:50 -0400
-X-MC-Unique: MlKJvMw1OS2yDEXnT8O6kw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C59C107ACCA;
-        Wed,  5 May 2021 09:10:47 +0000 (UTC)
-Received: from [10.36.113.191] (ovpn-113-191.ams2.redhat.com [10.36.113.191])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7CA7A60CC6;
-        Wed,  5 May 2021 09:10:31 +0000 (UTC)
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-References: <20210416094547.1774e1a3@redhat.com>
- <BN6PR11MB406854F56D18E1187A2C98ACC3479@BN6PR11MB4068.namprd11.prod.outlook.com>
- <20210421162307.GM1370958@nvidia.com> <20210421105451.56d3670a@redhat.com>
- <20210421175203.GN1370958@nvidia.com> <20210421133312.15307c44@redhat.com>
- <20210421230301.GP1370958@nvidia.com>
- <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210422121020.GT1370958@nvidia.com>
- <6e36797c-799e-074d-f66f-5686a4b37f38@redhat.com>
- <20210429200431.GA1370958@nvidia.com>
-From:   Auger Eric <eric.auger@redhat.com>
-Message-ID: <17ab53a6-c2d7-c085-6469-ae487b138526@redhat.com>
-Date:   Wed, 5 May 2021 11:10:29 +0200
+        Wed, 5 May 2021 05:12:05 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud7.xs4all.net with ESMTPA
+        id eDYdlkXMLyEWweDYglukBU; Wed, 05 May 2021 11:11:07 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1620205867; bh=SxgYb14ClndkCKGy9k2rbObXxdvwXYY3UatDeaUJVuw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=mSSx2oI+rD14wX/Qm6rXHTkbZp5E6KVIr2v7Y/ARJ9/bxeGyNAt3qZNG6PBVLxRsf
+         fG5H2T9rJpWtfHd1VFE/uKd0NSeGCMz0+9x+g+gv8lAZt8ZnjNNfOxrcQgGeOx1fuw
+         RNnWON/vSNQZeq4X2vyx9avs7EOSlFMWLXUSsXuJeI5XaLRfVLPnsNqZQyY5piObAO
+         nk94E3VeJQSHsFEXlFvfz74VPHlOOUeWnpU0ZqfZ23uVxlApg0Q1NdcMpSl2tKSv4V
+         tUy+hNQEhKilLBH1Lv08GD46tuAcNTIHwt9b0lVq8jvZAr8P5vhCoTUw2aVZ/hdh6H
+         aK5+WurgJdJMg==
+Subject: Re: [PATCH] media: gspca: stv06xx: Fix memleak in stv06xx subdrivers
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Atul Gopinathan <atulgopinathan@gmail.com>,
+        syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com,
+        linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        mchehab@kernel.org, linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-media@vger.kernel.org
+References: <20210422160742.7166-1-atulgopinathan@gmail.com>
+ <20210422215511.01489adb@gmail.com>
+ <36f126fc-6a5e-a078-4cf0-c73d6795a111@linuxfoundation.org>
+ <20210423234458.3f754de2@gmail.com>
+ <4c22cfa5-5702-6181-0f9a-d1d8d4041156@linuxfoundation.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <e8f45770-76c1-22d3-0960-03e2965b79ab@xs4all.nl>
+Date:   Wed, 5 May 2021 11:11:03 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.0
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-In-Reply-To: <20210429200431.GA1370958@nvidia.com>
+In-Reply-To: <4c22cfa5-5702-6181-0f9a-d1d8d4041156@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+X-CMAE-Envelope: MS4xfFtNF0AOKSec5MD9by5lOuaECiQ8FyLuep91fSEXbKDbjWNqLjdt+YfLJqNpk4I2vpTyPL+BEJhlJFJP2zENP6njY4zsa9WhIGnl0E0wMO6+xockKQ31
+ l0eFT5/KSYtNLGbxbrGT8hsPsmF6gy73tvnMmLF8sB5wnskYrUnEBQp/BxRZh5Dwcfk7y2RpbZZNAiqC2o1hCt9G6QkOCXn7XjRUJjtKi+kqMf8THm1zMxwy
+ HLeH4GrOrTbL5Vn4xloy1EYTv3eSwgn7o+Sdl5aAH0cwH4dtovT7fKAaVRaOZLNb0I7pvGYFcWAoUalLwMYgOxCjOykN/Q3fY7zirisR+9lQJ9Xqw3q3XJgU
+ wsNw8glPWYBZLwaVkCDxMt34p0g29FIScneBLNy+Vtv5ZPcGZhCRS+2NdPZYGLZAiOrgN+6GHM2evp5FMF3YW/Xf32DDBPMRQpY1r5qxVePeyn9tNL9q1QIn
+ 4kbJtxEkUgqJH044RDjQRI8USpOkp/f27qQ40HH/c0ixKupd9ZibALBlpIJ5Imy1wWxF3CVZ4SFugnCDV/yusCjVLhd7xl7ulH3kLg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason,
-
-On 4/29/21 10:04 PM, Jason Gunthorpe wrote:
-> On Thu, Apr 29, 2021 at 03:26:55PM +0200, Auger Eric wrote:
->> From the pseudo code,
+On 23/04/2021 22:56, Shuah Khan wrote:
+> On 4/23/21 2:44 PM, Pavel Skripkin wrote:
+>> Hi!
 >>
->>   gpa_ioasid_id = ioctl(ioasid_fd, CREATE_IOASID, ..)
->>   ioctl(ioasid_fd, SET_IOASID_PAGE_TABLES, ..)
+>> On Fri, 23 Apr 2021 14:19:15 -0600
+>> Shuah Khan <skhan@linuxfoundation.org> wrote:
+>>> On 4/22/21 12:55 PM, Pavel Skripkin wrote:
+>>>> Hi!
+>>>>
+>>>> On Thu, 22 Apr 2021 21:37:42 +0530
+>>>> Atul Gopinathan <atulgopinathan@gmail.com> wrote:
+>>>>> During probing phase of a gspca driver in "gspca_dev_probe2()", the
+>>>>> stv06xx subdrivers have certain sensor variants (namely, hdcs_1x00,
+>>>>> hdcs_1020 and pb_0100) that allocate memory for their respective
+>>>>> sensor which is passed to the "sd->sensor_priv" field. During the
+>>>>> same probe routine, after "sensor_priv" allocation, there are
+>>>>> chances of later functions invoked to fail which result in the
+>>>>> probing routine to end immediately via "goto out" path. While
+>>>>> doing so, the memory allocated earlier for the sensor isn't taken
+>>>>> care of resulting in memory leak.
+>>>>>
+>>>>> Fix this by adding operations to the gspca, stv06xx and down to the
+>>>>> sensor levels to free this allocated memory during gspca probe
+>>>>> failure.
+>>>>>
+>>>>> -
+>>>>> The current level of hierarchy looks something like this:
+>>>>>
+>>>>> 	gspca (main driver) represented by struct gspca_dev
+>>>>> 	   |
+>>>>> ___________|_____________________________________
+>>>>> |	|	|	|	|		| (subdrivers)
+>>>>> 			|			  represented
+>>>>>    			stv06xx			  by
+>>>>> "struct sd" |
+>>>>>    	 _______________|_______________
+>>>>>    	 |	|	|	|	|  (sensors)
+>>>>> 	 	|			|
+>>>>>    		hdcs_1x00/1020		pb01000
+>>>>> 			|_________________|
+>>>>> 				|
+>>>>> 			These three sensor variants
+>>>>> 			allocate memory for
+>>>>> 			"sd->sensor_priv" field.
+>>>>>
+>>>>> Here, "struct gspca_dev" is the representation used in the top
+>>>>> level. In the sub-driver levels, "gspca_dev" pointer is cast to
+>>>>> "struct sd*", something like this:
+>>>>>
+>>>>> 	struct sd *sd = (struct sd *)gspca_dev;
+>>>>>
+>>>>> This is possible because the first field of "struct sd" is
+>>>>> "gspca_dev":
+>>>>>
+>>>>> 	struct sd {
+>>>>> 		struct gspca_dev;
+>>>>> 		.
+>>>>> 		.
+>>>>> 	}
+>>>>>
+>>>>> Therefore, to deallocate the "sd->sensor_priv" fields from
+>>>>> "gspca_dev_probe2()" which is at the top level, the patch creates
+>>>>> operations for the subdrivers and sensors to be invoked from the
+>>>>> gspca driver levels. These operations essentially free the
+>>>>> "sd->sensor_priv" which were allocated by the "config" and
+>>>>> "init_controls" operations in the case of stv06xx sub-drivers and
+>>>>> the sensor levels.
+>>>>>
+>>>>> This patch doesn't affect other sub-drivers or even sensors who
+>>>>> never allocate memory to "sensor_priv". It has also been tested by
+>>>>> syzbot and it returned an "OK" result.
+>>>>>
+>>>>> https://syzkaller.appspot.com/bug?id=ab69427f2911374e5f0b347d0d7795bfe384016c
+>>>>> -
+>>>>>
+>>>>> Fixes: 4c98834addfe ("V4L/DVB (10048): gspca - stv06xx: New
+>>>>> subdriver.") Cc: stable@vger.kernel.org
+>>>>> Suggested-by: Shuah Khan <skhan@linuxfoundation.org>
+>>>>> Reported-by: syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com
+>>>>> Tested-by: syzbot+990626a4ef6f043ed4cd@syzkaller.appspotmail.com
+>>>>> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+>>>>
+>>>> AFAIK, something similar is already applied to linux-media tree
+>>>> https://git.linuxtv.org/media_tree.git/commit/?id=4f4e6644cd876c844cdb3bea2dd7051787d5ae25
+>>>>
+>>>
+>>> Pavel,
+>>>
+>>> Does the above handle the other drivers hdcs_1x00/1020 and pb01000?
+>>>
+>>> Atul's patch handles those cases. If thoese code paths need to be
+>>> fixes, Atul could do a patch on top of yours perhaps?
+>>>
+>>> thanks,
+>>> -- Shuah
+>>>
+>>>
 >>
->> I fail to understand whether the SET_IOASID_PAGE_TABLES would apply to
->> the whole IOASIDs within /dev/ioasid or to a specific one.
+>> It's not my patch. I've sent a patch sometime ago, but it was reject
+>> by Mauro (we had a small discussion on linux-media mailing-list), then
+>> Hans wrote the patch based on my leak discoverage.
+>>
 > 
-> Sorry, nearly every IOCTL would be scoped to a specific IOASID as one
-> of the arguments.
+> Yes my bad. :)
+> 
+>> I added Hans to CC, maybe, he will help :)
+>>
+> 
+> Will wait for Hans to take a look.
 
-OK thank you for the clarification.
-> 
->> Also in subsequent emails when you talk about IOASID, is it the
->> ioasid_id, just to double check the terminology.
-> 
-> I am refering to IOASID as 'handle of the page table object inside the
-> /dev/ioasid fd'. If that is equal to some HW value or not I think
-> remains as decision point.
-OK
-> 
-> Basically the fd has an xarray of 'struct [something] *' and the
-> IOASID is index to that FD's private xarray. This is necessary to
-> create proper security as even if we have global PASID numbers or
-> something they still need to be isolated to only the FD that has
-> been authorized access.
-> 
->>>   nested_ioasid = ioctl(ioasid_fd, CREATE_NESTED_IOASID,  gpa_ioasid_id);
->>>   ioctl(ioasid_fd, SET_NESTED_IOASID_PAGE_TABLES, nested_ioasid, ..)
->> is the nested_ioasid the allocated PASID id or is it a complete
->> different object id.
-> 
-> It is the IOASID handle above.
-ok as per the following emails and below comment IOASID and PASID are
-different.The first would be a logic ID wgile the second the HW ID.
+Yes, my patch does the same as this patch, just a bit more concise.
 
-Thanks
+I'll drop this one.
 
-Eric
+Regards,
+
+	Hans
+
 > 
->>>
->>>    // IOMMU will match on the device RID, no PASID:
->>>   ioctl(vfio_device, ATTACH_IOASID, nested_ioasid);
->>>
->>>    // IOMMU will match on the device RID and PASID:
->>>   ioctl(vfio_device, ATTACH_IOASID_PASID, pasid, nested_ioasid);
->> here I see you pass a different pasid, so I guess they are different, in
->> which case you would need to have an allocator function for this pasid,
->> right?
-> 
-> Yes, the underlying HW ID (PASID or substream id or whatver) is
-> something slightly different
-> 
-> Jason
+> thanks,
+> -- Shuah
 > 
 
