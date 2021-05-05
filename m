@@ -2,66 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98622373B1E
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:25:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DE94373AFD
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:19:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233299AbhEEM0Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:26:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233282AbhEEM0M (ORCPT
+        id S232147AbhEEMTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:19:54 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:60110 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233920AbhEEMTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:26:12 -0400
-X-Greylist: delayed 494 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 05 May 2021 05:25:14 PDT
-Received: from a3.inai.de (a3.inai.de [IPv6:2a01:4f8:10b:45d8::f5])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BEE66C061574;
-        Wed,  5 May 2021 05:25:14 -0700 (PDT)
-Received: by a3.inai.de (Postfix, from userid 25121)
-        id 81D42588A36D9; Wed,  5 May 2021 14:16:57 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by a3.inai.de (Postfix) with ESMTP id 765B06167A36C;
-        Wed,  5 May 2021 14:16:57 +0200 (CEST)
-Date:   Wed, 5 May 2021 14:16:57 +0200 (CEST)
-From:   Jan Engelhardt <jengelh@inai.de>
-To:     Florian Westphal <fw@strlen.de>
-cc:     Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>,
-        pablo@netfilter.org, kadlec@netfilter.org, davem@davemloft.net,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Subject: Re: [PATCH] netfilter: nf_conntrack: Add conntrack helper for
- ESP/IPsec
-In-Reply-To: <20210414154021.GE14932@breakpoint.cc>
-Message-ID: <pq161666-47s-p680-552o-58poo05onr86@vanv.qr>
-References: <20210414035327.31018-1-Cole.Dishington@alliedtelesis.co.nz> <20210414154021.GE14932@breakpoint.cc>
-User-Agent: Alpine 2.24 (LSU 510 2020-10-10)
+        Wed, 5 May 2021 08:19:46 -0400
+Date:   Wed, 05 May 2021 12:18:48 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620217129;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=fgabuEnzvGMU84AiG91WffGwF4MQTQdFsOWx7Wc+1Vs=;
+        b=yGN0tRdeI78x9fn5x2wq9MdUezpKsw6pRr+4q/NAwKBPrhOGNIcze/dPA63eZDzGB2G9of
+        4VnW2g6CUZe0tGNW6dcx8rHN2pEofvHEyCsZHrGn26xwvZ0W1OK02dMUJpDDmAvfVj96/Q
+        pXDOfK58wTlaBagTZHughXQH/emDt/67V538PlublnW28reS8+fcC0TYH4Ri/jeNPXh1cn
+        2T9j22dN9YiLRmiIyOULpCUPR1T1aenswoOhCm8C/5Hjd1hQNTznx3qFKwz6rn9XzJBwOT
+        B+P4BOI3EpbS09NyEOVLHVQlKPKopwnSIVugWDSQa6ZnmuQNikMYxEdTE6UWdQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620217129;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:  content-transfer-encoding:content-transfer-encoding;
+        bh=fgabuEnzvGMU84AiG91WffGwF4MQTQdFsOWx7Wc+1Vs=;
+        b=IVy5KniQ/1LbIfXQ7DmQoutmTlVsOA0R3ClgkuLn9rBF/IjCxO87R1hDvoDQ2Rxbha4fer
+        Ba4iU52BdgGl4xDQ==
+From:   "tip-bot2 for Linus Torvalds" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/cpu: Use alternative to generate the
+ TASK_SIZE_MAX constant
+Cc:     Borislav Petkov <bp@alien8.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <162021712859.29796.15613638722168867162.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the x86/urgent branch of tip:
 
-On Wednesday 2021-04-14 17:40, Florian Westphal wrote:
->
->Preface: AFAIU this tracker aims to 'soft-splice' two independent ESP
->connections, i.e.: saddr:spi1 -> daddr, daddr:spi2 <- saddr. [...] This can't
->be done as-is, because we don't know spi2 at the time the first ESP packet is
->received. The solution implemented here is introduction of a 'virtual esp id',
->computed when first ESP packet is received,[...]
+Commit-ID:     025768a966a3dde8455de46d1f121a51bacb6a77
+Gitweb:        https://git.kernel.org/tip/025768a966a3dde8455de46d1f121a51bacb6a77
+Author:        Linus Torvalds <torvalds@linux-foundation.org>
+AuthorDate:    Tue, 04 May 2021 14:07:53 -07:00
+Committer:     Ingo Molnar <mingo@kernel.org>
+CommitterDate: Wed, 05 May 2021 08:52:31 +02:00
 
-I can't imagine this working reliably.
+x86/cpu: Use alternative to generate the TASK_SIZE_MAX constant
 
-1. The IKE daemons could do an exchange whereby just one ESP flow is set up (from
-daddr to saddr). It's unusual to do a one-way tunnel, but it's a possibility.
-Then you only ever have ESP packets going from daddr to saddr.
+We used to generate this constant with static jumps, which certainly
+works, but generates some quite unreadable and horrid code, and extra
+jumps.
 
-2. Even if the IKE daemons set up what we would consider a normal tunnel,
-i.e. one ESP flow per direction, there is no obligation that saddr has to
-send anything. daddr could be contacting saddr solely with a protocol
-that is both connectionless at L4 and which does not demand any L7 responses
-either. Like ... syslog-over-udp?
+It's actually much simpler to just use our alternative_asm()
+infrastructure to generate a simple alternative constant, making the
+generated code much more obvious (and straight-line rather than "jump
+around to load the right constant").
 
-3. Even under best conditions, what if two clients on the saddr network
-simultaneously initiate a connection to daddr, how will you decide
-which of the daddr ESP SPIs belongs to which saddr?
+Acked-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
+Signed-off-by: Ingo Molnar <mingo@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>
+Cc: Ingo Molnar <mingo@redhat.com>
+---
+ arch/x86/include/asm/page_64.h       | 33 +++++++++++++++++++++++++++-
+ arch/x86/include/asm/page_64_types.h | 23 ++-----------------
+ 2 files changed, 36 insertions(+), 20 deletions(-)
+
+diff --git a/arch/x86/include/asm/page_64.h b/arch/x86/include/asm/page_64.h
+index 939b1cf..ca840fe 100644
+--- a/arch/x86/include/asm/page_64.h
++++ b/arch/x86/include/asm/page_64.h
+@@ -56,6 +56,39 @@ static inline void clear_page(void *page)
+ 
+ void copy_page(void *to, void *from);
+ 
++#ifdef CONFIG_X86_5LEVEL
++/*
++ * User space process size.  This is the first address outside the user range.
++ * There are a few constraints that determine this:
++ *
++ * On Intel CPUs, if a SYSCALL instruction is at the highest canonical
++ * address, then that syscall will enter the kernel with a
++ * non-canonical return address, and SYSRET will explode dangerously.
++ * We avoid this particular problem by preventing anything
++ * from being mapped at the maximum canonical address.
++ *
++ * On AMD CPUs in the Ryzen family, there's a nasty bug in which the
++ * CPUs malfunction if they execute code from the highest canonical page.
++ * They'll speculate right off the end of the canonical space, and
++ * bad things happen.  This is worked around in the same way as the
++ * Intel problem.
++ *
++ * With page table isolation enabled, we map the LDT in ... [stay tuned]
++ */
++static inline unsigned long task_size_max(void)
++{
++	unsigned long ret;
++
++	alternative_io("movq %[small],%0","movq %[large],%0",
++			X86_FEATURE_LA57,
++			"=r" (ret),
++			[small] "i" ((1ul << 47)-PAGE_SIZE),
++			[large] "i" ((1ul << 56)-PAGE_SIZE));
++
++	return ret;
++}
++#endif	/* CONFIG_X86_5LEVEL */
++
+ #endif	/* !__ASSEMBLY__ */
+ 
+ #ifdef CONFIG_X86_VSYSCALL_EMULATION
+diff --git a/arch/x86/include/asm/page_64_types.h b/arch/x86/include/asm/page_64_types.h
+index 64297ea..a8d4ad8 100644
+--- a/arch/x86/include/asm/page_64_types.h
++++ b/arch/x86/include/asm/page_64_types.h
+@@ -55,30 +55,13 @@
+ 
+ #ifdef CONFIG_X86_5LEVEL
+ #define __VIRTUAL_MASK_SHIFT	(pgtable_l5_enabled() ? 56 : 47)
++/* See task_size_max() in <asm/page_64.h> */
+ #else
+ #define __VIRTUAL_MASK_SHIFT	47
++#define task_size_max()		((_AC(1,UL) << __VIRTUAL_MASK_SHIFT) - PAGE_SIZE)
+ #endif
+ 
+-/*
+- * User space process size.  This is the first address outside the user range.
+- * There are a few constraints that determine this:
+- *
+- * On Intel CPUs, if a SYSCALL instruction is at the highest canonical
+- * address, then that syscall will enter the kernel with a
+- * non-canonical return address, and SYSRET will explode dangerously.
+- * We avoid this particular problem by preventing anything
+- * from being mapped at the maximum canonical address.
+- *
+- * On AMD CPUs in the Ryzen family, there's a nasty bug in which the
+- * CPUs malfunction if they execute code from the highest canonical page.
+- * They'll speculate right off the end of the canonical space, and
+- * bad things happen.  This is worked around in the same way as the
+- * Intel problem.
+- *
+- * With page table isolation enabled, we map the LDT in ... [stay tuned]
+- */
+-#define TASK_SIZE_MAX	((_AC(1,UL) << __VIRTUAL_MASK_SHIFT) - PAGE_SIZE)
+-
++#define TASK_SIZE_MAX		task_size_max()
+ #define DEFAULT_MAP_WINDOW	((1UL << 47) - PAGE_SIZE)
+ 
+ /* This decides where the kernel will search for a free chunk of vm
