@@ -2,82 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FD00373D8A
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:20:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0942D373D8E
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:22:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232925AbhEEOVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:21:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46586 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232122AbhEEOVt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:21:49 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2997AB209;
-        Wed,  5 May 2021 14:20:52 +0000 (UTC)
-Date:   Wed, 5 May 2021 16:20:47 +0200
-From:   Borislav Petkov <bp@suse.de>
-To:     Andrew Halaney <ahalaney@redhat.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] init: Print out unknown kernel parameters
-Message-ID: <YJKpv6vjCcCkbzNT@zn.tnic>
-References: <20210503213400.27360-1-ahalaney@redhat.com>
- <dfc44b3f-a810-cfbe-f13f-39548ab3fb08@infradead.org>
- <20210503184606.5e8461c0@gandalf.local.home>
- <YJFho3AasxxcD/hH@zn.tnic>
- <20210504152614.mgiihv4ukqajo3jb@halaneylaptop>
+        id S233001AbhEEOXQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:23:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232079AbhEEOXP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 10:23:15 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07E68C061574;
+        Wed,  5 May 2021 07:22:19 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id z9so2798154lfu.8;
+        Wed, 05 May 2021 07:22:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=XgVsKKoBQDRVgbjHThG6cU9TXkUBKJb924zCStcnUCQ=;
+        b=CxbqbQ9iFWSzp5R3V43mnGsPXcoEi+ISSGNggf18T1z0iXNx0V++93mONi/+B2IpwG
+         rD7uRpYUCN6pnnba4QPUb64IMOJgf8Oz4hNk6B3u/GRqEEX9G/r33uuEsfIDzce0GNxv
+         rhZQzbLn9aSRNTOwC/KM9C8uzI5kG24Rc4LyozoVF0J1rHoyxLpowbL03Tntjg9zLJI9
+         9NnOav5Aab2tYDiX7OAf0LIETKWcfY8R03vIS90RZJKj0cd6PG53yCJ09P3PhjQqzBIl
+         q9rH1qI0NyBtKijkICjYpv1KM0enJkRr2ySvDjQ7Rq3cjZFE1ELK9gCnXLwaXgGUmwbQ
+         HHVg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=XgVsKKoBQDRVgbjHThG6cU9TXkUBKJb924zCStcnUCQ=;
+        b=JSRDEtI+9i8E/xT+AWrSdRII/SNT0/44gA1itlAL+hflbSIYvlCdqN5fhU0NZmE6yi
+         iCQb4bGugqhsEB3vCN8q4ebaD45NozOzjKCnK/P4aHGWE8xCGZWu4dwiRUi5rwIKWXmy
+         iCpuMdfjQFA2dJTMQuzHuCP4W63JAxvHHKXw9JmTsWI/A5hQwWfou9f3rlglR+C/6YBl
+         4QWmqfs6NDYQshmbT/e0AMi5okyNATLVZsP63GIx5URqKZ6p9gBKLMvBdMXc2Pe2z6ji
+         jueKLdFey/oZqlvFzODDfZvf8wMVKG1H3BNNXTLZFfad78t3b+nI4kOG7ya0/+1q/spr
+         p/tQ==
+X-Gm-Message-State: AOAM530+eTnTDAC8o+BQVaCwesysFyRh46nDfn+23hzKeA+YYwOD4oOY
+        rU3hy7VhqFyVRXFH4/ITBntA/0jPlQrDusfJGCEA3O3x
+X-Google-Smtp-Source: ABdhPJyOTwwPplhOanvEhB4tQ3uGxqjxUiEHjr3VIaSK9dLKzx65rb0O05XVwer/VRb1bGyy2KVC/27ipKfq9eAtpfE=
+X-Received: by 2002:a19:614e:: with SMTP id m14mr20085393lfk.395.1620224537399;
+ Wed, 05 May 2021 07:22:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210504152614.mgiihv4ukqajo3jb@halaneylaptop>
+From:   Steve French <smfrench@gmail.com>
+Date:   Wed, 5 May 2021 09:22:06 -0500
+Message-ID: <CAH2r5muJhWfmbsz+T1adiAT0n5DSPfsMDVBWFEY=xb22ptzGiQ@mail.gmail.com>
+Subject: [GIT PULL] CIFS/SMB3 Fixes
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     CIFS <linux-cifs@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 10:26:14AM -0500, Andrew Halaney wrote:
-> Definitely a matter of opinion, but with the kernel having specific
-> ways to denote init destined parameters (anything after "--") I think
-> an unconditional message is acceptable.
+Please pull the following changes since commit
+a8a6082d4ae29d98129440c4a5de8e6ea3de0983:
 
-Or - and I had alluded to that on IRC - you *actually* know which params
-are kernel params:
+  cifs: update internal version number (2021-04-25 23:59:27 -0500)
 
-#define __setup_param(str, unique_id, fn, early)                        \
-        static const char __setup_str_##unique_id[] __initconst         \
-                __aligned(1) = str;                                     \
-        static struct obs_kernel_param __setup_##unique_id              \
-                __used __section(".init.setup")                         \
-				^^^^^^^^^^^^^^^^^^
+are available in the Git repository at:
 
-                __aligned(__alignof__(struct obs_kernel_param))         \
-                = { __setup_str_##unique_id, fn, early }
+  git://git.samba.org/sfrench/cifs-2.6.git tags/5.13-rc-smb3-part2
+
+for you to fetch changes up to bae4c0c1c2d576d32e37925ef972a5d45f34e36d:
+
+  fs/cifs: Fix resource leak (2021-05-04 11:53:15 -0500)
+
+----------------------------------------------------------------
+10 CIFS/SMB3 changesets (including two for stable):
+- some important multichannel fixes
+- support for handle leases (deferred close)
+- shutdown support (which is also helpful since it enables multiple xfstests)
+- enable negotiating stronger encryption by default (GCM256)
+- improve wireshark debugging by allowing more options for root to
+dump decryption keys
+
+SambaXP and the SMB3 Plugfest test event are going on now so I am
+expecting more patches over the next few days due to extra testing
+(including more multichannel fixes).
+
+Regression test results:
+http://smb3-test-rhel-75.southcentralus.cloudapp.azure.com/#/builders/2/builds/628
+----------------------------------------------------------------
+Khaled ROMDHANI (1):
+      fs/cifs: Fix resource leak
+
+Paulo Alcantara (1):
+      cifs: fix regression when mounting shares with prefix paths
+
+Rohith Surabattula (2):
+      cifs: Deferred close for files
+      Cifs: Fix kernel oops caused by deferred close for files.
+
+Shyam Prasad N (2):
+      cifs: detect dead connections only when echoes are enabled.
+      cifs: use echo_interval even when connection not ready.
+
+Steve French (4):
+      smb3.1.1: enable negotiating stronger encryption by default
+      cifs: add shutdown support
+      smb3.1.1: allow dumping GCM256 keys to improve debugging of
+encrypted shares
+      smb3.1.1: allow dumping keys for multiuser mounts
+
+ fs/cifs/cifs_fs_sb.h |   1 +
+ fs/cifs/cifs_ioctl.h |  35 ++++++++++++++++++++++++++
+ fs/cifs/cifsfs.c     |  25 ++++++++++++-------
+ fs/cifs/cifsglob.h   |  17 +++++++++++++
+ fs/cifs/cifsproto.h  |  13 ++++++++++
+ fs/cifs/connect.c    |  37 ++++++++++++++-------------
+ fs/cifs/dir.c        |  10 ++++++++
+ fs/cifs/file.c       | 102
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++---
+ fs/cifs/fs_context.c |   5 ++++
+ fs/cifs/inode.c      |  27 ++++++++++++++++++--
+ fs/cifs/ioctl.c      | 112
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/cifs/link.c       |  13 +++++++++-
+ fs/cifs/misc.c       |  79
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ fs/cifs/xattr.c      |   4 +++
+ 14 files changed, 447 insertions(+), 33 deletions(-)
 
 
-all those guys in the above section.
+--
+Thanks,
 
-So you'd have iterate over those and do some cheap version of those
-autocorrect algorithms which guess which words you meant. For example,
-if you have:
-
-panik_on_oops instead of
-panic_on_oops
-
-the difference is one letter so it is likely a mistyped param rather
-than something which goes to init or other random garbage and then you
-warn.
-
-Something like that.
-
-It would need a lot of experimentation first, though, to see whether
-this makes sense and it is workable at all.
-
-Thx.
-
--- 
-Regards/Gruss,
-    Boris.
-
-SUSE Software Solutions Germany GmbH, GF: Felix Imendörffer, HRB 36809, AG Nürnberg
+Steve
