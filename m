@@ -2,96 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8A49373968
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:32:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2493B373971
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 13:33:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232999AbhEELdM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 07:33:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33976 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232909AbhEELdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 07:33:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A7EB6B2BE;
-        Wed,  5 May 2021 11:32:13 +0000 (UTC)
-Subject: Re: [PATCH v2 1/2] mm: memcg/slab: Properly set up gfp flags for
- objcg pointer array
-To:     Shakeel Butt <shakeelb@google.com>, Waiman Long <llong@redhat.com>
-Cc:     Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
-References: <20210504132350.4693-1-longman@redhat.com>
- <20210504132350.4693-2-longman@redhat.com>
- <CALvZod438=YKZtV0qckoaMkdL1seu5PiLnvPPQyRzA0S60-TpQ@mail.gmail.com>
- <267501a0-f416-4058-70d3-e32eeec3d6da@redhat.com>
- <CALvZod5gakHaAZfU2gH6QVNJRcX90MVSmqBpBSgCmF-Zhpz_vw@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <b85f5b2b-cd5c-74ba-918b-f61ec0e540b0@suse.cz>
-Date:   Wed, 5 May 2021 13:32:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S233037AbhEELew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 07:34:52 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3008 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232854AbhEELeu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 07:34:50 -0400
+Received: from fraeml714-chm.china.huawei.com (unknown [172.18.147.207])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FZvb82bDYz6yhrR;
+        Wed,  5 May 2021 19:28:04 +0800 (CST)
+Received: from roberto-ThinkStation-P620.huawei.com (10.204.62.217) by
+ fraeml714-chm.china.huawei.com (10.206.15.33) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Wed, 5 May 2021 13:33:52 +0200
+From:   Roberto Sassu <roberto.sassu@huawei.com>
+To:     <zohar@linux.ibm.com>, <mjg59@google.com>
+CC:     <linux-integrity@vger.kernel.org>,
+        <linux-security-module@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Roberto Sassu <roberto.sassu@huawei.com>
+Subject: [PATCH v6 05/11] evm: Introduce evm_hmac_disabled() to safely ignore verification errors
+Date:   Wed, 5 May 2021 13:33:23 +0200
+Message-ID: <20210505113329.1410943-1-roberto.sassu@huawei.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20210505112935.1410679-1-roberto.sassu@huawei.com>
+References: <20210505112935.1410679-1-roberto.sassu@huawei.com>
 MIME-Version: 1.0
-In-Reply-To: <CALvZod5gakHaAZfU2gH6QVNJRcX90MVSmqBpBSgCmF-Zhpz_vw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.204.62.217]
+X-ClientProxiedBy: lhreml752-chm.china.huawei.com (10.201.108.202) To
+ fraeml714-chm.china.huawei.com (10.206.15.33)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/4/21 10:06 PM, Shakeel Butt wrote:
-> On Tue, May 4, 2021 at 1:02 PM Waiman Long <llong@redhat.com> wrote:
->>
->> On 5/4/21 3:37 PM, Shakeel Butt wrote:
->> > On Tue, May 4, 2021 at 6:24 AM Waiman Long <longman@redhat.com> wrote:
->> >> Since the merging of the new slab memory controller in v5.9, the page
->> >> structure may store a pointer to obj_cgroup pointer array for slab pages.
->> >> Currently, only the __GFP_ACCOUNT bit is masked off. However, the array
->> >> is not readily reclaimable and doesn't need to come from the DMA buffer.
->> >> So those GFP bits should be masked off as well.
->> >>
->> >> Do the flag bit clearing at memcg_alloc_page_obj_cgroups() to make sure
->> >> that it is consistently applied no matter where it is called.
->> >>
->> >> Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
->> >> Signed-off-by: Waiman Long <longman@redhat.com>
->> >> ---
->> >>   mm/memcontrol.c | 8 ++++++++
->> >>   mm/slab.h       | 1 -
->> >>   2 files changed, 8 insertions(+), 1 deletion(-)
->> >>
->> >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> >> index c100265dc393..5e3b4f23b830 100644
->> >> --- a/mm/memcontrol.c
->> >> +++ b/mm/memcontrol.c
->> >> @@ -2863,6 +2863,13 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
->> >>   }
->> >>
->> >>   #ifdef CONFIG_MEMCG_KMEM
->> >> +/*
->> >> + * The allocated objcg pointers array is not accounted directly.
->> >> + * Moreover, it should not come from DMA buffer and is not readily
->> >> + * reclaimable. So those GFP bits should be masked off.
->> >> + */
->> >> +#define OBJCGS_CLEAR_MASK      (__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
->> > What about __GFP_DMA32? Does it matter? It seems like DMA32 requests
->> > go to normal caches.
->>
->> I included __GFP_DMA32 in my first draft patch. However, __GFP_DMA32 is
->> not considered in determining the right kmalloc_type() (patch 2), so I
->> took it out to make it consistent. I can certainly add it back.
->>
-> 
-> No this is fine and DMA32 question is unrelated to this patch series.
+When a file is being created, LSMs can set the initial label with the
+inode_init_security hook. If no HMAC key is loaded, the new file will have
+LSM xattrs but not the HMAC. It is also possible that the file remains
+without protected xattrs after creation if no active LSM provided it.
 
-We never supported them in kmalloc(), only explicit caches with SLAB_CACHE_DMA32
-flag.
+Unfortunately, EVM will deny any further metadata operation on new files,
+as evm_protect_xattr() will always return the INTEGRITY_NOLABEL error, or
+INTEGRITY_NOXATTRS if no protected xattrs exist. This would limit the
+usability of EVM when only a public key is loaded, as commands such as cp
+or tar with the option to preserve xattrs won't work.
+
+This patch introduces the evm_hmac_disabled() function to determine whether
+or not it is safe to ignore verification errors, based on the ability of
+EVM to calculate HMACs. If the HMAC key is not loaded, and it cannot be
+loaded in the future due to the EVM_SETUP_COMPLETE initialization flag,
+allowing an operation despite the attrs/xattrs being found invalid will not
+make them valid.
+
+Signed-off-by: Roberto Sassu <roberto.sassu@huawei.com>
+Suggested-by: Mimi Zohar <zohar@linux.ibm.com>
+---
+ security/integrity/evm/evm_main.c | 28 +++++++++++++++++++++++++++-
+ 1 file changed, 27 insertions(+), 1 deletion(-)
+
+diff --git a/security/integrity/evm/evm_main.c b/security/integrity/evm/evm_main.c
+index 998818283fda..f625196eee8e 100644
+--- a/security/integrity/evm/evm_main.c
++++ b/security/integrity/evm/evm_main.c
+@@ -90,6 +90,24 @@ static bool evm_key_loaded(void)
+ 	return (bool)(evm_initialized & EVM_KEY_MASK);
+ }
+ 
++/*
++ * This function determines whether or not it is safe to ignore verification
++ * errors, based on the ability of EVM to calculate HMACs. If the HMAC key
++ * is not loaded, and it cannot be loaded in the future due to the
++ * EVM_SETUP_COMPLETE initialization flag, allowing an operation despite the
++ * attrs/xattrs being found invalid will not make them valid.
++ */
++static bool evm_hmac_disabled(void)
++{
++	if (evm_initialized & EVM_INIT_HMAC)
++		return false;
++
++	if (!(evm_initialized & EVM_SETUP_COMPLETE))
++		return false;
++
++	return true;
++}
++
+ static int evm_find_protected_xattrs(struct dentry *dentry)
+ {
+ 	struct inode *inode = d_backing_inode(dentry);
+@@ -338,6 +356,10 @@ static int evm_protect_xattr(struct dentry *dentry, const char *xattr_name,
+ 	if (evm_status == INTEGRITY_NOXATTRS) {
+ 		struct integrity_iint_cache *iint;
+ 
++		/* Exception if the HMAC is not going to be calculated. */
++		if (evm_hmac_disabled())
++			return 0;
++
+ 		iint = integrity_iint_find(d_backing_inode(dentry));
+ 		if (iint && (iint->flags & IMA_NEW_FILE))
+ 			return 0;
+@@ -354,6 +376,9 @@ static int evm_protect_xattr(struct dentry *dentry, const char *xattr_name,
+ 				    -EPERM, 0);
+ 	}
+ out:
++	/* Exception if the HMAC is not going to be calculated. */
++	if (evm_hmac_disabled() && evm_status == INTEGRITY_NOLABEL)
++		return 0;
+ 	if (evm_status != INTEGRITY_PASS)
+ 		integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
+ 				    dentry->d_name.name, "appraise_metadata",
+@@ -515,7 +540,8 @@ int evm_inode_setattr(struct dentry *dentry, struct iattr *attr)
+ 		return 0;
+ 	evm_status = evm_verify_current_integrity(dentry);
+ 	if ((evm_status == INTEGRITY_PASS) ||
+-	    (evm_status == INTEGRITY_NOXATTRS))
++	    (evm_status == INTEGRITY_NOXATTRS) ||
++	    (evm_hmac_disabled() && evm_status == INTEGRITY_NOLABEL))
+ 		return 0;
+ 	integrity_audit_msg(AUDIT_INTEGRITY_METADATA, d_backing_inode(dentry),
+ 			    dentry->d_name.name, "appraise_metadata",
+-- 
+2.25.1
+
