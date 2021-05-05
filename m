@@ -2,119 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ED884373D59
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A39E2373D66
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 16:13:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233978AbhEEONP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 10:13:15 -0400
-Received: from mail-eopbgr1410129.outbound.protection.outlook.com ([40.107.141.129]:11934
-        "EHLO JPN01-OS2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233908AbhEEOMq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 10:12:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=aiPaELgbQGwUyALQYMDMv5pzMHEWqgyo3mMB4oxVFIL/mSXcDgLalTaV0izcDstaKtHiUwl7hYwvOfDjvqvTF4lCFxzVyIQsnoV604b4ZqXMqSBpXEDltwN2+kqouuyH6ZjR4HzdyHY5Csg449CaGmXSf7jCkd8gTj06LgoEX2WdEJf2jYeA+T4ik9pln6g/Icg8Bi8M6ESmmT6Rk32LCEsC7qFkymJstLFlz5IJNKU95hcoGCb1IBt67vELHqWdE9dqlZyTV0ny0q16dk55DTusEgem3r8stejCRZEtQNPX72GPoCSpctNyC/ngclp0CBJaLY/9v32WUtXafFxoMw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nS7uA6ddIIb7EEMn5TdmQdb30R26ZnWcrIViCmoRwvA=;
- b=T9GjpX4yW6suFx6KMEjufLr2QeHeJxWmGsugzWgNClO8gf0pva+2+OueUr/hy96QAOloZTqR09xSgtgxFRGP01BLZE1FLxOkUfEt6L5xLfZiSS5YmQUFYCstnq4iGVkhBjbIcwc4snhsfhYUV6iI4KNMh77W7S+aRNqMwkm4ya+8VZlutGHwua2inpVylSA+vDkc4/7lknY8YehucOj3lWx0mnxnvs5Hx/JxGekxRq6tFHX6atIDUEqZUrfSyPdYQNQRpzdAZUd52okRABmiTp9PN4M0VufgVDNCc2SC9Wrn95YvO9qMzIcO2GjtmU7CecZ/OBoNe+wqJgX46mD5Gg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=renesas.com; dmarc=pass action=none header.from=renesas.com;
- dkim=pass header.d=renesas.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=renesasgroup.onmicrosoft.com; s=selector2-renesasgroup-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=nS7uA6ddIIb7EEMn5TdmQdb30R26ZnWcrIViCmoRwvA=;
- b=OzSz1H3Xb78c2FmzIL1GNKjfgSFP8+PoOdqSqL1wV0Mbk8MYTEnwDcX+0zk8c74j7v1sa5IbiZNioJaqQLftqS8jU+jSeqjJflTaVItxUXTlxtObEwktkDFHFZ5V5hbiPK5GaBNVSqykWXnCqQn9GdJQWmLptZNe1o+utNozdvs=
-Received: from TYCPR01MB6608.jpnprd01.prod.outlook.com (2603:1096:400:ae::14)
- by TYYPR01MB7021.jpnprd01.prod.outlook.com (2603:1096:400:d9::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Wed, 5 May
- 2021 14:11:47 +0000
-Received: from TYCPR01MB6608.jpnprd01.prod.outlook.com
- ([fe80::b476:9bc5:e9c2:31d6]) by TYCPR01MB6608.jpnprd01.prod.outlook.com
- ([fe80::b476:9bc5:e9c2:31d6%7]) with mapi id 15.20.4087.044; Wed, 5 May 2021
- 14:11:47 +0000
-From:   Min Li <min.li.xe@renesas.com>
-To:     Min Li <min.li.xe@renesas.com>,
-        "sameo@linux.intel.com" <sameo@linux.intel.com>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        "grant.likely@linaro.org" <grant.likely@linaro.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
-Subject: RE: [PATCH mfd v1] mfd: Add Renesas Synchronization Management Unit
- (SMU) support
-Thread-Topic: [PATCH mfd v1] mfd: Add Renesas Synchronization Management Unit
- (SMU) support
-Thread-Index: AQHXOtSPoxM3P4fkKEmDrY8StfrCU6rU+rJg
-Date:   Wed, 5 May 2021 14:11:47 +0000
-Message-ID: <TYCPR01MB6608C23DE6681CF77729C04ABA599@TYCPR01MB6608.jpnprd01.prod.outlook.com>
-References: <1619466246-11198-1-git-send-email-min.li.xe@renesas.com>
-In-Reply-To: <1619466246-11198-1-git-send-email-min.li.xe@renesas.com>
-Accept-Language: en-CA, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: renesas.com; dkim=none (message not signed)
- header.d=none;renesas.com; dmarc=none action=none header.from=renesas.com;
-x-originating-ip: [72.140.114.230]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: aa497703-6f63-433d-6a7d-08d90fcfb86b
-x-ms-traffictypediagnostic: TYYPR01MB7021:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <TYYPR01MB7021262827A28B853DB28EA4BA599@TYYPR01MB7021.jpnprd01.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:4502;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 9gB5/9xrXBJgnJ0QWwdn+JCIXQrI4IHkkMvyd7g2HcB/HRywksxNwL2opS7fevu2WC9XsjMOxP4XjwN1Z+0iDy2x3b+3hc3E6OlJbGHnepVxMCNp9WZBTjyfX9/Bg8zOG0JerxlzLlF3Xh9dE7w7qZHIG6/Bj2+g9y8T9n1YTx/JpV7U2T9epOj8m4nHnpExHAzanIEfRXKuznI2rvGUSKRP71anQKwuz1emeTHcZnjs/jMPme2Yf1eBk61V+NwHKno6YwCEx0f85Kj8uM/JSwlcwtLYYPjDf8ie01PSPPWgxt2wZD3OhNl88EfKko0Fv/mtxJXNczGZ6xFWDmaWlVc3kYwvEhz2NP/WpACL4J1m2KrM2/dYxAQ9m7Ddb1/zcuwCdFiyohwm47aQpsRe0TiAQFdRMmb6nEf+v0JtIv3CWJOwDhGB02+3VJmAxsy303GBbvakdfb8jllA/Jlfl+ViPLiecYCmOqjAX+z4/Y+9aP+HRt5k1NKKcpLI2JNs7/8rOJ3fa2fcOS8bDCL1csQ2Z4KtBHNbNMWe2XoHIwy+GU5e4BBSkpCXDMjwFXD/9n3RjX9Ls6s0v/SNKh623IpiipEFp4HTjFEAW3yddxw=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYCPR01MB6608.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(39850400004)(396003)(366004)(346002)(136003)(7696005)(4326008)(558084003)(9686003)(71200400001)(55016002)(316002)(6506007)(66946007)(38100700002)(86362001)(52536014)(186003)(76116006)(110136005)(5660300002)(2906002)(64756008)(26005)(66476007)(8676002)(66446008)(8936002)(33656002)(66556008)(54906003)(122000001)(478600001);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?NRffOfWJWC5WQhfVgwHcFVUwGm2CEx4zJPsiSnPN9fW0epOhaiAPcBY1Ji/A?=
- =?us-ascii?Q?sF8V12y7fy3gh63UAbNEJSiGJxchyk3n6zSb+vYOaQQw5zcw/YS4mJIsFdOk?=
- =?us-ascii?Q?jYFQvSvvl2SlOGSpE9eQZo6l3IduuhMGrSL8WM0u0HkUwr/OQ62Qbdx1T6K4?=
- =?us-ascii?Q?7N6ewlhXNpCHdV2PNAbmfIukL/GUe02u0qJQB1vVPrDGt5WACeBN4zs50Bmh?=
- =?us-ascii?Q?fjaUdCufxjcfGoRY1WFRmo4mMnDlo5iHfAPK/NJZXa5fRVtYViqoa533LIRs?=
- =?us-ascii?Q?B+OPkoSBdm6PAmRtrfPoAPt14T9ZmVgNdmjqS/7VKz7YEgzSk1IRK3LhZ4u5?=
- =?us-ascii?Q?KVnBUDY05jLxtxlGgG4M2nXO/OETd9th1jXhk65xBrveRFc0aeDcWvdL1GTv?=
- =?us-ascii?Q?LPYO+cu05zBxSHfoKf8WDPi+p0/MbctHNaTwIy2zZLQKd1XB5PFn/oD9BsoF?=
- =?us-ascii?Q?1S3KHaL+oLFDwKPzQ8+Xeb4jFurcZPExKs/A90+3o+L3e/BUY6fLWfHnb6Fb?=
- =?us-ascii?Q?jW6jQsHZqqTenuRoMnMzuOgTvN1FDy5i1/2MkaS6bCl3+xF2ea4m7Cre2yCD?=
- =?us-ascii?Q?risgtaAyDkSGZd5AqMHbRmmnOT5TJN58FeemJtH830fh/DbxUEfx3SsChQP3?=
- =?us-ascii?Q?zhvvsnVN1TGy4f/kTCyJdvKZaVfxIpPygazJtddukPqKhTv9qbwqvy9NY8Gf?=
- =?us-ascii?Q?fWnN/vQpYSPwwMT9FtKH2dtNvakEOHlj188uuXyr+i9txljOo1cmo3YEJmuv?=
- =?us-ascii?Q?xz1Yiy+9Jy69tmGdBvZlEi2VeC8ZPTOR+WGAbSv+cjH81LCK234fi2kZ3f1R?=
- =?us-ascii?Q?Bo2ADOyK26lhHe86CqjONwDqnmldZuu1qhAcWeoPQWrbDSGlU7Il6I0RDKlc?=
- =?us-ascii?Q?LnRx0Lsk4kH7m4DOo+myEs2mkAINZkjpwOgXreZ9j9qhKeVF02auCkL5wF4d?=
- =?us-ascii?Q?GYZcTeaHkb7Unf4mj714nSkpUyAkpWKKr0eiY9mOe7CWvDj64RBPJB0BNUYa?=
- =?us-ascii?Q?jokXATcxxXBpbr9XQDTA+soYWFwdJbby+sitLXKzRzkyRfQ1oujUPCBmOEwU?=
- =?us-ascii?Q?wXeaay8mx5qS+DEzWcPxzWTL/o0vUJp43kO26+y3XvUfxQYfgF6HWOQtZoCR?=
- =?us-ascii?Q?XrN5HA3c7Sfa4lqjQEod0GS8fKIia70LdkbqygrxOcfqVdaZcF863Mz8RZYs?=
- =?us-ascii?Q?ydl9+At89svOFvayy4NQsvVkWkBoI+HnCgN/tCs464MOHCaOaT1UE/HF+bzJ?=
- =?us-ascii?Q?InDzXkEPRkesw17P0vaBjBk2A5apJBpomjiCdzGfKbUbuKgyK0CyEVIyqbCe?=
- =?us-ascii?Q?iWVfdoVsJtMv+/i+ZGyctkDm?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S232171AbhEEOOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 10:14:00 -0400
+Received: from out03.mta.xmission.com ([166.70.13.233]:43334 "EHLO
+        out03.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232596AbhEEONl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 10:13:41 -0400
+Received: from in02.mta.xmission.com ([166.70.13.52])
+        by out03.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1leIGa-00CGlJ-DX; Wed, 05 May 2021 08:12:44 -0600
+Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
+        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.93)
+        (envelope-from <ebiederm@xmission.com>)
+        id 1leIGX-002GvZ-Te; Wed, 05 May 2021 08:12:43 -0600
+From:   ebiederm@xmission.com (Eric W. Biederman)
+To:     Marco Elver <elver@google.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, Florian Weimer <fweimer@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Collingbourne <pcc@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Alexander Potapenko <glider@google.com>,
+        sparclinux <sparclinux@vger.kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>
+References: <YIpkvGrBFGlB5vNj@elver.google.com>
+        <m11rat9f85.fsf@fess.ebiederm.org>
+        <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
+        <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
+        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
+        <m1r1irpc5v.fsf@fess.ebiederm.org>
+        <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
+        <m1czuapjpx.fsf@fess.ebiederm.org>
+        <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
+        <m14kfjh8et.fsf_-_@fess.ebiederm.org>
+        <m1tuni8ano.fsf_-_@fess.ebiederm.org>
+        <CANpmjNM5sYihM_9P5YHx06BooqLDhK96cMHGKaf61nCcoDJBdw@mail.gmail.com>
+Date:   Wed, 05 May 2021 09:12:38 -0500
+In-Reply-To: <CANpmjNM5sYihM_9P5YHx06BooqLDhK96cMHGKaf61nCcoDJBdw@mail.gmail.com>
+        (Marco Elver's message of "Wed, 5 May 2021 00:05:00 +0200")
+Message-ID: <m1o8dp8e21.fsf@fess.ebiederm.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
 MIME-Version: 1.0
-X-OriginatorOrg: renesas.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYCPR01MB6608.jpnprd01.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aa497703-6f63-433d-6a7d-08d90fcfb86b
-X-MS-Exchange-CrossTenant-originalarrivaltime: 05 May 2021 14:11:47.4697
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 53d82571-da19-47e4-9cb4-625a166a4a2a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wf2AT9Sf2RAlx7XWMefhLtr/f3xbz6PNZ46iCq62sw7G+KE/7Cc0Thb3ffDuqJFWCUTc4LeMup88Bn3osMGXiA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYYPR01MB7021
+Content-Type: text/plain
+X-XM-SPF: eid=1leIGX-002GvZ-Te;;;mid=<m1o8dp8e21.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
+X-XM-AID: U2FsdGVkX19By7EuCGlSC+Hrh/+dmLFpw1rmZv8aoeM=
+X-SA-Exim-Connect-IP: 68.227.160.95
+X-SA-Exim-Mail-From: ebiederm@xmission.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa04.xmission.com
+X-Spam-Level: *
+X-Spam-Status: No, score=1.4 required=8.0 tests=ALL_TRUSTED,BAYES_40,
+        DCC_CHECK_NEGATIVE,FVGT_m_MULTI_ODD,TR_XM_PhishingBody,
+        T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XM_B_Phish66 autolearn=disabled
+        version=3.4.2
+X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
+        * -0.0 BAYES_40 BODY: Bayes spam probability is 20 to 40%
+        *      [score: 0.3381]
+        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
+        *  2.0 XM_B_Phish66 BODY: Obfuscated XMission
+        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
+        *      [sa04 1397; Body=1 Fuz1=1 Fuz2=1]
+        *  0.0 T_TooManySym_01 4+ unique symbols in subject
+        *  0.4 FVGT_m_MULTI_ODD Contains multiple odd letter combinations
+        *  0.0 TR_XM_PhishingBody Phishing flag in body of message
+X-Spam-DCC: XMission; sa04 1397; Body=1 Fuz1=1 Fuz2=1 
+X-Spam-Combo: *;Marco Elver <elver@google.com>
+X-Spam-Relay-Country: 
+X-Spam-Timing: total 1887 ms - load_scoreonly_sql: 0.17 (0.0%),
+        signal_user_changed: 15 (0.8%), b_tie_ro: 12 (0.6%), parse: 1.92
+        (0.1%), extract_message_metadata: 20 (1.1%), get_uri_detail_list: 3.8
+        (0.2%), tests_pri_-1000: 19 (1.0%), tests_pri_-950: 1.90 (0.1%),
+        tests_pri_-900: 1.38 (0.1%), tests_pri_-90: 1228 (65.1%), check_bayes:
+        1225 (64.9%), b_tokenize: 12 (0.6%), b_tok_get_all: 9 (0.5%),
+        b_comp_prob: 3.1 (0.2%), b_tok_touch_all: 1197 (63.4%), b_finish: 1.32
+        (0.1%), tests_pri_0: 579 (30.7%), check_dkim_signature: 0.87 (0.0%),
+        check_dkim_adsp: 2.6 (0.1%), poll_dns_idle: 0.44 (0.0%), tests_pri_10:
+        2.2 (0.1%), tests_pri_500: 13 (0.7%), rewrite_mail: 0.00 (0.0%)
+Subject: Re: [PATCH v3 00/12] signal: sort out si_trapno and si_perf
+X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
+X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi guys
+Marco Elver <elver@google.com> writes:
 
-Can some one please review this patch? It's been submitted back and forth a=
- few months now without a meaningful review. Thanks for your attention for =
-this issue.
+> On Tue, 4 May 2021 at 23:13, Eric W. Biederman <ebiederm@xmission.com> wrote:
+>>
+>> This set of changes sorts out the ABI issues with SIGTRAP TRAP_PERF, and
+>> hopefully will can get merged before any userspace code starts using the
+>> new ABI.
+>>
+>> The big ideas are:
+>> - Placing the asserts first to prevent unexpected ABI changes
+>> - si_trapno becomming ordinary fault subfield.
+>> - struct signalfd_siginfo is almost full
+>>
+>> This set of changes starts out with Marco's static_assert changes and
+>> additional one of my own that enforces the fact that the alignment of
+>> siginfo_t is also part of the ABI.  Together these build time
+>> checks verify there are no unexpected ABI changes in the changes
+>> that follow.
+>>
+>> The field si_trapno is changed to become an ordinary extension of the
+>> _sigfault member of siginfo.
+>>
+>> The code is refactored a bit and then si_perf_type is added along side
+>> si_perf_data in the _perf subfield of _sigfault of siginfo_t.
+>>
+>> Finally the signalfd_siginfo fields are removed as they appear to be
+>> filling up the structure without userspace actually being able to use
+>> them.
+>>
+>> v2: https://lkml.kernel.org/r/m14kfjh8et.fsf_-_@fess.ebiederm.org
+>> v1: https://lkml.kernel.org/r/m1zgxfs7zq.fsf_-_@fess.ebiederm.org
+>>
+>> Eric W. Biederman (9):
+>>       signal: Verify the alignment and size of siginfo_t
+>>       siginfo: Move si_trapno inside the union inside _si_fault
+>>       signal: Implement SIL_FAULT_TRAPNO
+>>       signal: Use dedicated helpers to send signals with si_trapno set
+>>       signal: Remove __ARCH_SI_TRAPNO
+>>       signal: Rename SIL_PERF_EVENT SIL_FAULT_PERF_EVENT for consistency
+>>       signal: Factor force_sig_perf out of perf_sigtrap
+>>       signal: Deliver all of the siginfo perf data in _perf
+>>       signalfd: Remove SIL_FAULT_PERF_EVENT fields from signalfd_siginfo
+>>
+>> Marco Elver (3):
+>>       sparc64: Add compile-time asserts for siginfo_t offsets
+>>       arm: Add compile-time asserts for siginfo_t offsets
+>>       arm64: Add compile-time asserts for siginfo_t offsets
+>
+> I can't seem to see the rest of them in my inbox. LKML also is missing
+> them: https://lore.kernel.org/linux-api/m1tuni8ano.fsf_-_@fess.ebiederm.org/
+>
+> Something must have swallowed them. Could you resend?
+> I'll then test in the morning.
 
-Min
+They got stuck going out you should see them any time now.
+Sorry about that.
+
+Eric
