@@ -2,96 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B50663748D5
+	by mail.lfdr.de (Postfix) with ESMTP id 3E9213748D4
 	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:45:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233380AbhEETqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 15:46:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232712AbhEETqB (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 15:46:01 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8233C061574;
-        Wed,  5 May 2021 12:45:04 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id m11so2725133pfc.11;
-        Wed, 05 May 2021 12:45:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WdWRuURhdSCNCPBKk/uClJ6VTdaDbNbIlQLKB5FSSZU=;
-        b=N4iPwl94hwcjbZYk7TfGHiDtxjrI37b0Kn2lHE+u3SYZr5BBLreDBNe5qqVlymo5Ns
-         9WpdBi3PuPWLUKDhg6QHuICKvGNLQP/KPqoPCxa/OIp9WewV1BHeneJPp4drL6/mcT1f
-         tmSNn2xPvVO3MxOqG/iA+/e0EcY6yjuM7iKV11eJ1uVNrWVd+SsVq7noo+yLwIsf05j8
-         lwdF1wEeJD+5dBxZi0Nzr67UTjS7WBAvhXfExOiweiLPZyVnpFIWo6SnC1QkN7wz0O3C
-         nuJQnBOEaNEhMsqY0SNLi2EFqwXLTCxKSJB0dd9hCghoaUtzv7NfLy4JLr6duBcH4PCs
-         AoVQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WdWRuURhdSCNCPBKk/uClJ6VTdaDbNbIlQLKB5FSSZU=;
-        b=uVYySiBiWByIdsyBm4bPqq4Z/h/6y/7xGXXQcQ+/gG937AlvEVZbsHkvNbXQUHpz1B
-         T7glFxbKarhqEodZh03CAtcY+DXKvt5fevbn1LIYE2QArSktTp8FAJUXWgYxskTvhExb
-         0hV1D96J+hgqTwPJXBwzD9LHPFf3RsPapspAyi1eyenyUH6PFeWZerozASXy4+o3jyC7
-         Vp5M5mukqSdPCgXSRmtBOCum6ZQNipaPvh2JiQ8kim6dGJpo/q3ejCQHjaXCWwZ3bQZy
-         8VcL59SUDCn2Nckq2cqkwODnutpouQoyXkIFurTypuKnSALxxli7g94Jhd+1UG7vWUo5
-         nxiA==
-X-Gm-Message-State: AOAM5328qMclVsLxRdsfntZO1zZbHze0eZ0eeZPoVjVubLeJB42m5f7r
-        8Kz0cpuCUPxmO1esmERa7EDG3l72JCU=
-X-Google-Smtp-Source: ABdhPJw99rjrKTXTzVSJOVKthVjlL760kVVU6FH1oOrRsV7COt7dOCn9zUMNONvXd1mUiyYwcedEvQ==
-X-Received: by 2002:a62:1602:0:b029:28e:e994:a37b with SMTP id 2-20020a6216020000b029028ee994a37bmr402232pfw.31.1620243903914;
-        Wed, 05 May 2021 12:45:03 -0700 (PDT)
-Received: from [10.67.49.104] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id q8sm46274pgn.22.2021.05.05.12.44.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 12:45:03 -0700 (PDT)
-Subject: Re: [PATCH 5.12 00/17] 5.12.2-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org
-Cc:     torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        stable@vger.kernel.org
-References: <20210505112324.956720416@linuxfoundation.org>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Message-ID: <ff83cbad-e1d6-20c5-f1e9-1509335fa981@gmail.com>
-Date:   Wed, 5 May 2021 12:44:55 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S233329AbhEETqC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 15:46:02 -0400
+Received: from mail.skyhub.de ([5.9.137.197]:58682 "EHLO mail.skyhub.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231783AbhEETqA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 15:46:00 -0400
+Received: from zn.tnic (p200300ec2f0b070095a0cdc8ba9d3b20.dip0.t-ipconnect.de [IPv6:2003:ec:2f0b:700:95a0:cdc8:ba9d:3b20])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id E3C561EC046E;
+        Wed,  5 May 2021 21:45:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1620243903;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=iBtzxeku0BzbG6kK0L1hpR6azGfgLKROm2hQUdhdjKw=;
+        b=DfvbjnYs6c+I61Fv5U17vDGrboPu/lFr5kZ41eVEHDcNNrJMPGjK7qD2L4ZzErQJqyY7Cs
+        Y1Vq4HL+4dcqTxlJcFH789yCGpnU1zihb3H3lnTmjR3jxls5S5IClwrvXPvflCoCVr6vkP
+        KnmL3xwU9JFRMB8yPb6ryK50qtLNS7o=
+Date:   Wed, 5 May 2021 21:45:01 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     "Lei Wang (DPLAT)" <Wang.Lei@microsoft.com>
+Cc:     wangglei <wangglei@gmail.com>,
+        "mchehab@kernel.org" <mchehab@kernel.org>,
+        "tony.luck@intel.com" <tony.luck@intel.com>,
+        "james.morse@arm.com" <james.morse@arm.com>,
+        "rric@kernel.org" <rric@kernel.org>,
+        "linux-edac@vger.kernel.org" <linux-edac@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Hang Li <hangl@microsoft.com>,
+        "tyhicks@linux.microsoft.com" <tyhicks@linux.microsoft.com>,
+        Brandon Waller <bwaller@microsoft.com>
+Subject: Re: [EXTERNAL] Re: [PATCH] EDAC: update edac printk wrappers to use
+ printk_ratelimited.
+Message-ID: <YJL1vU6HNBWPKy8g@zn.tnic>
+References: <20210505173027.78428-1-wangglei@gmail.com>
+ <YJLdZCcsgWG6TrKz@zn.tnic>
+ <SJ0PR21MB199984A8B47FBEECEC5D11CE90599@SJ0PR21MB1999.namprd21.prod.outlook.com>
 MIME-Version: 1.0
-In-Reply-To: <20210505112324.956720416@linuxfoundation.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <SJ0PR21MB199984A8B47FBEECEC5D11CE90599@SJ0PR21MB1999.namprd21.prod.outlook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 5:05 AM, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.2 release.
-> There are 17 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.2-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
+Hi Lei,
 
-On ARCH_BRCMSTB using 32-bit and 64-bit ARM kernels:
+On Wed, May 05, 2021 at 07:02:14PM +0000, Lei Wang (DPLAT) wrote:
+> Hi Boris,
 
-Tested-by: Florian Fainelli <f.fainelli@gmail.com>
+first of all, please do not top-post.
+
+> We found a corner case in production environment that there are ~500
+> CE errors per second. The SoC otherwise functions just fine. Making
+> printk ratelimited reduced CE error logging to < 20 per second.
+
+If you want to avoid CE logs flooding dmesg, there's a couple of things
+you can do:
+
+1. Use drivers/ras/cec.c
+
+2. Do not load EDAC drivers at all since you don't care about the error
+reports, apparently.
+
+3. Fix the CE source: replace the DIMMs, etc.
+
+> Though this is just one case so far, we think moving to
+> printk_ratelimited could benefit broader use as well, by helping
+> control the amount of kernel logging.
+
+No, this will make EDAC driver loading output incomplete when some of
+the messages are omitted due to the ratelimiting. And no, this is not
+going to happen.
+
+HTH.
+
 -- 
-Florian
+Regards/Gruss,
+    Boris.
+
+https://people.kernel.org/tglx/notes-about-netiquette
