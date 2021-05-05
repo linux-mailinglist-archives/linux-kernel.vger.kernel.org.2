@@ -2,110 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 580FC373CB5
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:53:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 92661373CBA
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 15:54:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233325AbhEENyS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 09:54:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58120 "EHLO
+        id S233416AbhEENyz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 09:54:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58240 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232541AbhEENyQ (ORCPT
+        with ESMTP id S232475AbhEENyu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 09:54:16 -0400
-Received: from mail-pg1-x52b.google.com (mail-pg1-x52b.google.com [IPv6:2607:f8b0:4864:20::52b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AD33C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 06:53:19 -0700 (PDT)
-Received: by mail-pg1-x52b.google.com with SMTP id c21so1851828pgg.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 06:53:19 -0700 (PDT)
+        Wed, 5 May 2021 09:54:50 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3A97C061574;
+        Wed,  5 May 2021 06:53:52 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id gc22-20020a17090b3116b02901558435aec1so870138pjb.4;
+        Wed, 05 May 2021 06:53:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=n1bbsdQFslUe2/D8fiyQmt7GT8BuGOrH6bymhVpBYX0=;
-        b=Key2mtimVz3Ms9QHFbm4+H7mGJ0Ryu2plYuVDFRZjpPSMAdAD5nCBdXFdPFEFUJIvf
-         QsPqFq2nTQv3zsXqVfDIqgtf/Q7ma8W2BEtCjCaq2veefFeg9Zf5iFSuhQWPe/MRYHhO
-         J+pT6zBwMfMpXE2z4H0pWtMDJRH0kOnIGMH5JKuz7O31W0CVIV0iefAiDshNHsUT8KUw
-         ys6ywYxzupKjoqkEv9sW1YvBER5/JV2MYPXmDnJq6hKgQe3DETrS0fuI4a+ZbH6vHx2T
-         yU0Iv7KK9687KoatwGwgtHpGT5v4//KWks/yMgZfx4fHaRGcUHdf+eUFpqYT3bF8afEW
-         hkGA==
+        bh=KxC8eRm5vZdHLw/CLg5YmBFFYEBES/Rpe8UpmiyOxeg=;
+        b=GlF1XPtdG0JmD97NLMV2tGoqxoQEd4zGDApRczjngpfLn6Cp61TvbqgMRKsKHbiRDr
+         NYyjRj8uFrga1L4OtcYrofP5/085Gt1oil9WGCF2d5vikjT7YMcKORjBacr7wHDNE7Wh
+         Bc/yl/GvRYQ7xrl4XIKhB9y8n2WoUFW0gcArQ4l1W5jbnNiVoXDwOYxXrLuPnEhktKxK
+         A7XFIsMmjHCU83Kz9iy7EMTeQXdXILGjoalPxFGzEgyYYyxKxV6FBybPdd8ZGVqO+aBc
+         2XSCSy7Ao+OiSFRjLS208I7jQDegZP/J+qYxBfv7vUu6Iw52FajGrKmhtNrasaQPI9dK
+         Q8vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=n1bbsdQFslUe2/D8fiyQmt7GT8BuGOrH6bymhVpBYX0=;
-        b=ch/pdFV7uX8QlcxPMyRSWAnjRlwwx4IuJ3N1qtdDHvOveoqomrA7slZRMhUfpS0aqz
-         BaGk1D3r6nQPKJ1lkiljxzpwRyqR4mZ8qvsE8Pwuqx9SRjfHQ3rXCEokCc6Oyocxakag
-         DRcElpP8p6Q/C/BAoGFpEIoBm4vYK/rPp7d2jqv1n72z1HbthdrDFm9zZ+es9oqgNUr3
-         e7Kq29ZVVX6VHVRmrkf0ksL1EBy4s3/NrLmUxp8XV4W3wnRMBKCuUHnoFdMVEPPC394A
-         i9jJAu35EZzY0BsqE0Wsv7be4/pHnrRwB2cGjp/GPP6sTTqFi2zfyG3rqmkE/c3/XjMm
-         HZ4A==
-X-Gm-Message-State: AOAM531NdOWq81Z+1JTbjS2DO7mGApGSEbZ0nYT+hxjuyHwJHy1Ckj9W
-        wDDBGR7GMNzsj2H1p8dy2PF/e16MB4q9BauqbOrHT1tMk0JQvg==
-X-Google-Smtp-Source: ABdhPJyluxFRTo8fdiox4JZ/YBjp7C3OIiVJ3YAHoNyjb+ElKi+tqlmQFHxdzj08K6nCwubf+VSVhH2i0N/I2jSnzsg=
-X-Received: by 2002:a65:4c8e:: with SMTP id m14mr27753924pgt.377.1620222798644;
- Wed, 05 May 2021 06:53:18 -0700 (PDT)
+        bh=KxC8eRm5vZdHLw/CLg5YmBFFYEBES/Rpe8UpmiyOxeg=;
+        b=QLlD39nwvLW+lYF4btTAzgxObTURFfp3LuHYVkRoeMYbLFm1PjbS6LamKMLixnb9lq
+         9lsgfEIGcGB4ogyJG584BjRWYbQzGvWCJTBBMdU3fNbK9tl4FFmewjXA+kXaiWVO2OaU
+         5P3HxDl9QiF9qjLO+1vhiNkDvqe5QzAiJNCGdp/zLELyHa3Z/UfNO+bE19jLpBvpLuom
+         Bska1kxsuPoGB0D3ZibQeVydnJ2tm+IaW69lxG4Q9cp4cnLNi1hnqf8/o2zhr1BjmbGv
+         LJ+8+CzVL63qkJp0LjkySO+GTeevgek4bgFZ8S1Cbu/GDf2GDl4qKHe2/uighynhWgex
+         PLPw==
+X-Gm-Message-State: AOAM531J6uynl2Pv7qEYxsQXBDeUSjQYaSywZuRap3Q5v9ok4UNqyblD
+        qNS+K3PDYStQI+0bDur+8RpItlln/C4i6HMbLLU=
+X-Google-Smtp-Source: ABdhPJxUZe5dy4K1/6z7/apaLIsLcvhFy2KwMWnRPUMSFYhuGRpUvv6+pftd1DfqtA9soOM7/+BYPrcWp5ZTzrzTwwg=
+X-Received: by 2002:a17:902:ecc6:b029:ee:af8f:899e with SMTP id
+ a6-20020a170902ecc6b02900eeaf8f899emr25742086plh.21.1620222832276; Wed, 05
+ May 2021 06:53:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <55fe7f3454d8c91dc3837ba5aa741d4a0e67378f.1618797813.git.tommyhebb@gmail.com>
-In-Reply-To: <55fe7f3454d8c91dc3837ba5aa741d4a0e67378f.1618797813.git.tommyhebb@gmail.com>
-From:   Jonathan Liu <net147@gmail.com>
-Date:   Wed, 5 May 2021 23:53:07 +1000
-Message-ID: <CANwerB2Jjtu=HyLEgFjf1PyJEWzE9_7rcTgTr2QAXCWXZWjC3g@mail.gmail.com>
-Subject: Re: [RESEND PATCH] drm/rockchip: dsi: move all lane config except
- LCDC mux to bind()
-To:     Thomas Hebb <tommyhebb@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Nickey Yang <nickey.yang@rock-chips.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Brian Norris <briannorris@chromium.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Sandy Huang <hjc@rock-chips.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        linux-rockchip@lists.infradead.org
+References: <20210504174019.2134652-1-linux@roeck-us.net> <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
+ <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net> <20210505093235.00007c38@Huawei.com>
+ <20210505093438.00005238@Huawei.com> <CAHp75VezSD_TcbQ_OBZXPo-szTr-qwOT9oU+7h7W6nk65ZLBhA@mail.gmail.com>
+ <22212bbc-1dc7-c7e7-1954-ebb911754246@redhat.com>
+In-Reply-To: <22212bbc-1dc7-c7e7-1954-ebb911754246@redhat.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Wed, 5 May 2021 16:53:35 +0300
+Message-ID: <CAHp75Vf+2oVttGhAcpcw-ZsAXno01yuKWz0Xiti_7beHCR81ng@mail.gmail.com>
+Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on CONFIG_ACPI
+To:     Hans de Goede <hdegoede@redhat.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Paul Menzel <paulepanter@users.sourceforge.net>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Pavel Machek <pavel@denx.de>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 19 Apr 2021 at 02:04, Thomas Hebb <tommyhebb@gmail.com> wrote:
+On Wed, May 5, 2021 at 4:39 PM Hans de Goede <hdegoede@redhat.com> wrote:
+> On 5/5/21 3:22 PM, Andy Shevchenko wrote:
+> > On Wed, May 5, 2021 at 11:36 AM Jonathan Cameron
+> > <Jonathan.Cameron@huawei.com> wrote:
+> >> On Wed, 5 May 2021 09:32:35 +0100
+> >> Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
+> >>> On Tue, 4 May 2021 11:00:52 -0700
+> >>> Guenter Roeck <linux@roeck-us.net> wrote:
+> >
+> > +Cc: Paul (I hope you are related to coreboot somehow and can
+> > communicate this further), Pavel and Jacek (LED subsystem suffered
+> > with this as well), Hans, Rafael and linux-acpi@
+> >
+> >>> Dropping the ones we are fairly sure are spurious is even better!
+> >>
+> >> If I get bored I'll just do a scrub of all the instances of this that
+> >> you haven't already cleaned up.  It's worth noting that we do
+> >> know some highly suspicious looking entries are out there in the wild.
+> >
+> > I have counted ~60 users of acpi_device_id in IIO. Brief looking at
+> > the IDs themselves rings an alarm about half of them.
+> >
+> > So, here we may have a chicken and egg problem, i.e. somebody has been
+> > using (or used) fake IDs from Linux kernel in the real products. What
+> > I can consider as a course of action is the following:
+> > 1. Clean up (by removing as quickly as possible) the IDs that have no
+> > proof to be real from the Linux kernel sources (perhaps marked as
+> > stable material)
+> > 2. Notify ASWG / UEFI forum about all IDs that abuse ACPI
+> > specification and are in Linux kernel, so at least we can keep some
+> > kind of "reserved/do not use" list on the official level (Rafael?)
+> > 3. Do not accept any IDs without an evidence provided that they are
+> > being in use in the real products (this should be done on Linux
+> > maintainer level in all subsystems that accept drivers
 >
-> When we first enable the DSI encoder, we currently program some per-chip
-> configuration that we look up in rk3399_chip_data based on the device
-> tree compatible we match. This data configures various parameters of the
-> MIPI lanes, including on RK3399 whether DSI1 is slaved to DSI0 in a
-> dual-mode configuration. It also selects which LCDC (i.e. VOP) to scan
-> out from.
+> So my 2 cents on this are that we need to be very careful with
+> removing "bogus" ACPI-ids.
 >
-> This causes a problem in RK3399 dual-mode configurations, though: panel
-> prepare() callbacks run before the encoder gets enabled and expect to be
-> able to write commands to the DSI bus, but the bus isn't fully
-> functional until the lane and master/slave configuration have been
-> programmed. As a result, dual-mode panels (and possibly others too) fail
-> to turn on when the rockchipdrm driver is initially loaded.
+> A couple of examples from a quick check under drivers/iio/accel:
 >
-> Because the LCDC mux is the only thing we don't know until enable time
-> (and is the only thing that can ever change), we can actually move most
-> of the initialization to bind() and get it out of the way early. That's
-> what this change does. (Rockchip's 4.4 BSP kernel does it in mode_set(),
-> which also avoids the issue, but bind() seems like the more correct
-> place to me.)
+> drivers/iio/accel/bmc150-accel-i2c.c:
 >
-> Tested on a Google Scarlet board (Acer Chromebook Tab 10), which has a
-> Kingdisplay KD097D04 dual-mode panel. Prior to this change, the panel's
-> backlight would turn on but no image would appear when initially loading
-> rockchipdrm. If I kept rockchipdrm loaded and reloaded the panel driver,
-> it would come on. With this change, the panel successfully turns on
-> during initial rockchipdrm load as expected.
+> static const struct i2c_device_id bmc150_accel_id[] = {
+>         {"bmc150_accel",        bmc150},
+>         {"bmi055_accel",        bmi055},
+>         {"bma255",              bma255},
+>         {"bma250e",             bma250e},
+>         {"bma222",              bma222},
+>         {"bma222e",             bma222e},
+>         {"bma280",              bma280},
+>         {}
+> };
 >
-> Fixes: 2d4f7bdafd70 ("drm/rockchip: dsi: migrate to use dw-mipi-dsi bridge driver")
-> Signed-off-by: Thomas Hebb <tommyhebb@gmail.com>
+> static const struct acpi_device_id bmc150_accel_acpi_match[] = {
+>         {"BSBA0150",    bmc150},
+>         {"BMC150A",     bmc150},
+>         {"BMI055A",     bmi055},
+>         {"BMA0255",     bma255},
+>         {"BMA250E",     bma250e},
+>         {"BMA222",      bma222},
+>         {"BMA222E",     bma222e},
+>         {"BMA0280",     bma280},
+>         {"BOSC0200"},
+>         { },
+> };
+>
+> With the exception of the  "BSBA0150" and "BOSC0200"
+> ids, these look like they were invented. But at least the
+> "BMA250E" one is actually being used! The other BMA###?
+> ones are probably fake, but given that the "BMA250E"
+> one is actually real ...
+>
+> drivers/iio/accel/bmc150-accel-spi.c
+>
+> This uses the same set of ACPI ids as bmc150-accel-i2c.c
+> minus the "BOSC0200" one. I'm not aware if these
+> being used in spi mode on any x86 devices, but again
+> I'm not 100% sure ...
+>
+> drivers/iio/accel/da280.c
+>
+> static const struct acpi_device_id da280_acpi_match[] = {
+>         {"MIRAACC", da280},
+>         {},
+> };
+> MODULE_DEVICE_TABLE(acpi, da280_acpi_match);
+>
+> This looks like a fake-id, but it was actually added
+> in a separate commit adding ACPI support because the
+> chip is used with this id on a Linx 820 Windows tablet.
+>
+> So figuring out of any ids are real or not is really tricky
+> and removing them if they are real will lead to regressions.
+>
+> So summarizing IMHO we need to be careful and not just
+> start removing a whole bunch of these...
 
-Tested-by: Jonathan Liu <net147@gmail.com>
+That's all true. However, I have a few hints on how to distinguish
+them (fake ones):
+1. The ID has been added from day 1 with I2C or SPI ID table with just
+capitalized name
+2. If there are a few drivers by the same author and at least one of
+the contributions has confirmed fake ID
+3. The ID is single in the list and mimics the part number (capitalized form)
+4. Google/DuckDuckGo/etc searches give no meaningful results
 
-Fixes MIPI-DSI panel initialization for me on RK3399 too.
+Either combination of the above can be a good hint to at least be
+sceptical that it's being used.
 
-Regards,
-Jonathan
+So, Hans, as you already noticed, drivers with a long list of IDs or
+when ID added separately can be considered less fakish, but we really
+want evidence of the hardware that has it.
+
+Some big companies sometimes produce fake IDs themselves (and
+sometimes for the components they are not even producing) without
+following the process (as described on uefi.org) which is a pity part
+of the story.
+
+-- 
+With Best Regards,
+Andy Shevchenko
