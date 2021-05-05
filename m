@@ -2,148 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DBBA373AB9
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2EEB373AC5
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 14:14:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231633AbhEEMNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 08:13:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48308 "EHLO mail.kernel.org"
+        id S229793AbhEEMNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 08:13:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50832 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233747AbhEEMJZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 08:09:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 4497E613E4;
-        Wed,  5 May 2021 12:07:51 +0000 (UTC)
+        id S233093AbhEEMKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 08:10:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 517E2613D8;
+        Wed,  5 May 2021 12:09:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620216471;
-        bh=jdbcuQdEkWUkf5XKN5t7eGU+1kqDpJkJDfaFcegWBqg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=a4Wf7C9aW7L56Cd7X9+XtNjQs/YONGXtFKrGMMUMWVxiLkwCIPE6cOFd8MPUCb1EQ
-         MSuTmpcfMtmlcXSfMJ38p99YFTXZtUk/a6ecl9CI1wxr1oqwgjT9BK2qvw7bJTJ3xm
-         U7EmZE70nPvp7xCFxe7RV4VsneiZrQb4vEhT09vw=
+        s=korg; t=1620216545;
+        bh=XqLgv7r2dMQRYl1KkcoVkyeiy148TjiJxkdsvbhjVa8=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=m0LCqn151Rn+pcuxIV7+Ynvg+GM9Gxi47KjN4JoERuHqMPdcayzIANa2XwxrjX8k5
+         QBHk3iiVdtg/qDIQrYyJ68yNxLgDC6fa1oqw6bV3MlwpZb6l843zfKXACNwHKchjG8
+         eBxvOTOBfPvPhDpJJzRrThTsgK8noSXwajKqbR68=
 From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        torvalds@linux-foundation.org, akpm@linux-foundation.org,
-        linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: [PATCH 5.12 00/17] 5.12.2-rc1 review
-Date:   Wed,  5 May 2021 14:05:55 +0200
-Message-Id: <20210505112324.956720416@linuxfoundation.org>
+        stable@vger.kernel.org, Piotr Krysiuk <piotras@gmail.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Alexei Starovoitov <ast@kernel.org>
+Subject: [PATCH 5.11 07/31] bpf: Fix leakage of uninitialized bpf stack under speculation
+Date:   Wed,  5 May 2021 14:05:56 +0200
+Message-Id: <20210505112326.908699621@linuxfoundation.org>
 X-Mailer: git-send-email 2.31.1
-MIME-Version: 1.0
+In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
+References: <20210505112326.672439569@linuxfoundation.org>
 User-Agent: quilt/0.66
-X-stable: review
-X-Patchwork-Hint: ignore
-X-KernelTest-Patch: http://kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.2-rc1.gz
-X-KernelTest-Tree: git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-X-KernelTest-Branch: linux-5.12.y
-X-KernelTest-Patches: git://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git
-X-KernelTest-Version: 5.12.2-rc1
-X-KernelTest-Deadline: 2021-05-07T11:23+00:00
+MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is the start of the stable review cycle for the 5.12.2 release.
-There are 17 patches in this series, all will be posted as a response
-to this one.  If anyone has any issues with these being applied, please
-let me know.
+From: Daniel Borkmann <daniel@iogearbox.net>
 
-Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-Anything received after that time might be too late.
+commit 801c6058d14a82179a7ee17a4b532cac6fad067f upstream.
 
-The whole patch series can be found in one patch at:
-	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.12.2-rc1.gz
-or in the git tree and branch at:
-	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.12.y
-and the diffstat can be found below.
+The current implemented mechanisms to mitigate data disclosure under
+speculation mainly address stack and map value oob access from the
+speculative domain. However, Piotr discovered that uninitialized BPF
+stack is not protected yet, and thus old data from the kernel stack,
+potentially including addresses of kernel structures, could still be
+extracted from that 512 bytes large window. The BPF stack is special
+compared to map values since it's not zero initialized for every
+program invocation, whereas map values /are/ zero initialized upon
+their initial allocation and thus cannot leak any prior data in either
+domain. In the non-speculative domain, the verifier ensures that every
+stack slot read must have a prior stack slot write by the BPF program
+to avoid such data leaking issue.
 
-thanks,
+However, this is not enough: for example, when the pointer arithmetic
+operation moves the stack pointer from the last valid stack offset to
+the first valid offset, the sanitation logic allows for any intermediate
+offsets during speculative execution, which could then be used to
+extract any restricted stack content via side-channel.
 
-greg k-h
+Given for unprivileged stack pointer arithmetic the use of unknown
+but bounded scalars is generally forbidden, we can simply turn the
+register-based arithmetic operation into an immediate-based arithmetic
+operation without the need for masking. This also gives the benefit
+of reducing the needed instructions for the operation. Given after
+the work in 7fedb63a8307 ("bpf: Tighten speculative pointer arithmetic
+mask"), the aux->alu_limit already holds the final immediate value for
+the offset register with the known scalar. Thus, a simple mov of the
+immediate to AX register with using AX as the source for the original
+instruction is sufficient and possible now in this case.
 
--------------
-Pseudo-Shortlog of commits:
+Reported-by: Piotr Krysiuk <piotras@gmail.com>
+Signed-off-by: Daniel Borkmann <daniel@iogearbox.net>
+Tested-by: Piotr Krysiuk <piotras@gmail.com>
+Reviewed-by: Piotr Krysiuk <piotras@gmail.com>
+Reviewed-by: John Fastabend <john.fastabend@gmail.com>
+Acked-by: Alexei Starovoitov <ast@kernel.org>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
+ include/linux/bpf_verifier.h |    5 +++--
+ kernel/bpf/verifier.c        |   27 +++++++++++++++++----------
+ 2 files changed, 20 insertions(+), 12 deletions(-)
 
-Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-    Linux 5.12.2-rc1
-
-Ondrej Mosnacek <omosnace@redhat.com>
-    perf/core: Fix unconditional security_locked_down() call
-
-Mark Pearson <markpearson@lenovo.com>
-    platform/x86: thinkpad_acpi: Correct thermal sensor allocation
-
-Shengjiu Wang <shengjiu.wang@nxp.com>
-    ASoC: ak5558: Add MODULE_DEVICE_TABLE
-
-Shengjiu Wang <shengjiu.wang@nxp.com>
-    ASoC: ak4458: Add MODULE_DEVICE_TABLE
-
-Chris Chiu <chris.chiu@canonical.com>
-    USB: Add reset-resume quirk for WD19's Realtek Hub
-
-Kai-Heng Feng <kai.heng.feng@canonical.com>
-    USB: Add LPM quirk for Lenovo ThinkPad USB-C Dock Gen2 Ethernet
-
-Takashi Iwai <tiwai@suse.de>
-    ALSA: usb-audio: Fix implicit sync clearance at stopping stream
-
-Takashi Iwai <tiwai@suse.de>
-    ALSA: usb-audio: Add MIDI quirk for Vox ToneLab EX
-
-Miklos Szeredi <mszeredi@redhat.com>
-    ovl: allow upperdir inside lowerdir
-
-Mickaël Salaün <mic@linux.microsoft.com>
-    ovl: fix leaked dentry
-
-Bjorn Andersson <bjorn.andersson@linaro.org>
-    net: qrtr: Avoid potential use after free in MHI send
-
-Daniel Borkmann <daniel@iogearbox.net>
-    bpf: Fix leakage of uninitialized bpf stack under speculation
-
-Daniel Borkmann <daniel@iogearbox.net>
-    bpf: Fix masking negation logic upon negative dst register
-
-Imre Deak <imre.deak@intel.com>
-    drm/i915: Disable runtime power management during shutdown
-
-Phillip Potter <phil@philpotter.co.uk>
-    net: usb: ax88179_178a: initialize local variables before use
-
-Jonathon Reinhart <jonathon.reinhart@gmail.com>
-    netfilter: conntrack: Make global sysctls readonly in non-init netns
-
-Romain Naour <romain.naour@gmail.com>
-    mips: Do not include hi and lo in clobber list for R6
-
-
--------------
-
-Diffstat:
-
- Makefile                                  |  4 ++--
- arch/mips/include/asm/vdso/gettimeofday.h | 26 +++++++++++++++++++-----
- drivers/gpu/drm/i915/i915_drv.c           | 10 ++++++++++
- drivers/net/usb/ax88179_178a.c            |  6 ++++--
- drivers/platform/x86/thinkpad_acpi.c      | 31 ++++++++++++++++++++---------
- drivers/usb/core/quirks.c                 |  4 ++++
- fs/overlayfs/namei.c                      |  1 +
- fs/overlayfs/super.c                      | 12 ++++++-----
- include/linux/bpf_verifier.h              |  5 +++--
- kernel/bpf/verifier.c                     | 33 +++++++++++++++++--------------
- kernel/events/core.c                      | 12 +++++------
- net/netfilter/nf_conntrack_standalone.c   | 10 ++--------
- net/qrtr/mhi.c                            |  8 +++++---
- sound/soc/codecs/ak4458.c                 |  1 +
- sound/soc/codecs/ak5558.c                 |  1 +
- sound/usb/endpoint.c                      |  8 ++++----
- sound/usb/quirks-table.h                  | 10 ++++++++++
- 17 files changed, 121 insertions(+), 61 deletions(-)
+--- a/include/linux/bpf_verifier.h
++++ b/include/linux/bpf_verifier.h
+@@ -299,10 +299,11 @@ struct bpf_verifier_state_list {
+ };
+ 
+ /* Possible states for alu_state member. */
+-#define BPF_ALU_SANITIZE_SRC		1U
+-#define BPF_ALU_SANITIZE_DST		2U
++#define BPF_ALU_SANITIZE_SRC		(1U << 0)
++#define BPF_ALU_SANITIZE_DST		(1U << 1)
+ #define BPF_ALU_NEG_VALUE		(1U << 2)
+ #define BPF_ALU_NON_POINTER		(1U << 3)
++#define BPF_ALU_IMMEDIATE		(1U << 4)
+ #define BPF_ALU_SANITIZE		(BPF_ALU_SANITIZE_SRC | \
+ 					 BPF_ALU_SANITIZE_DST)
+ 
+--- a/kernel/bpf/verifier.c
++++ b/kernel/bpf/verifier.c
+@@ -5810,6 +5810,7 @@ static int sanitize_ptr_alu(struct bpf_v
+ {
+ 	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : tmp_aux;
+ 	struct bpf_verifier_state *vstate = env->cur_state;
++	bool off_is_imm = tnum_is_const(off_reg->var_off);
+ 	bool off_is_neg = off_reg->smin_value < 0;
+ 	bool ptr_is_dst_reg = ptr_reg == dst_reg;
+ 	u8 opcode = BPF_OP(insn->code);
+@@ -5840,6 +5841,7 @@ static int sanitize_ptr_alu(struct bpf_v
+ 		alu_limit = abs(tmp_aux->alu_limit - alu_limit);
+ 	} else {
+ 		alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
++		alu_state |= off_is_imm ? BPF_ALU_IMMEDIATE : 0;
+ 		alu_state |= ptr_is_dst_reg ?
+ 			     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
+ 	}
+@@ -11523,7 +11525,7 @@ static int fixup_bpf_calls(struct bpf_ve
+ 			const u8 code_sub = BPF_ALU64 | BPF_SUB | BPF_X;
+ 			struct bpf_insn insn_buf[16];
+ 			struct bpf_insn *patch = &insn_buf[0];
+-			bool issrc, isneg;
++			bool issrc, isneg, isimm;
+ 			u32 off_reg;
+ 
+ 			aux = &env->insn_aux_data[i + delta];
+@@ -11534,16 +11536,21 @@ static int fixup_bpf_calls(struct bpf_ve
+ 			isneg = aux->alu_state & BPF_ALU_NEG_VALUE;
+ 			issrc = (aux->alu_state & BPF_ALU_SANITIZE) ==
+ 				BPF_ALU_SANITIZE_SRC;
++			isimm = aux->alu_state & BPF_ALU_IMMEDIATE;
+ 
+ 			off_reg = issrc ? insn->src_reg : insn->dst_reg;
+-			if (isneg)
+-				*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
+-			*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
+-			*patch++ = BPF_ALU64_REG(BPF_SUB, BPF_REG_AX, off_reg);
+-			*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
+-			*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
+-			*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
+-			*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
++			if (isimm) {
++				*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
++			} else {
++				if (isneg)
++					*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
++				*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
++				*patch++ = BPF_ALU64_REG(BPF_SUB, BPF_REG_AX, off_reg);
++				*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
++				*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
++				*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
++				*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
++			}
+ 			if (!issrc)
+ 				*patch++ = BPF_MOV64_REG(insn->dst_reg, insn->src_reg);
+ 			insn->src_reg = BPF_REG_AX;
+@@ -11551,7 +11558,7 @@ static int fixup_bpf_calls(struct bpf_ve
+ 				insn->code = insn->code == code_add ?
+ 					     code_sub : code_add;
+ 			*patch++ = *insn;
+-			if (issrc && isneg)
++			if (issrc && isneg && !isimm)
+ 				*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
+ 			cnt = patch - insn_buf;
+ 
 
 
