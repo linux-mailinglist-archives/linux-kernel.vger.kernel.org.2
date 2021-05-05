@@ -2,104 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3109373825
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:51:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8468B37382A
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 11:54:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232608AbhEEJwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 05:52:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60726 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231494AbhEEJwi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 05:52:38 -0400
-Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E08FC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 02:51:42 -0700 (PDT)
-Received: by mail-pj1-x1030.google.com with SMTP id p17so522463pjz.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 02:51:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bNDJPGwrquZJ+gjSDnL9VcoDb165ZhWuJrSq+RVYVfk=;
-        b=ctYNEZWB1el/6E/2d5ygQncwiOHKXrTDL1j8NwOTBP8osLWB8VXPmMCr7VViju1jTg
-         8VPv3/HnAG7TyVkTXuIAGdGPsS+3Yd8k3oyzw7AZK+3QQSq8U+WXbf+knqOSKd1h3Y7l
-         cQLfyAUVp6h6u19r7Z9AY4hg40/SLeSuQcoyY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bNDJPGwrquZJ+gjSDnL9VcoDb165ZhWuJrSq+RVYVfk=;
-        b=PQXZ7XSNiSR9y4gveTNp3w1dv6eL2d7AXFJozcb4W1UqsKTSNtBPuWu0y0dX/65aBS
-         43Shx9Bx12A4mbFOMXmoP9ccr2hj4JB75ETth3G/UQb5TWFproNcUkdoaL+jnYhrXVzV
-         ZT2i01akWMee+fTyWfpCFvGhggQ7zD7zdzm6SXVip+2ZLhe01TE4ZwzaquoCkqBWeU4B
-         So6ycUOb8Tl706Pr0TQnI2tkPsycbeLpGw1DlAN/DVWvIynd84EbJsKhb++ZOm6nexpZ
-         NC//gcdF9IVpDoOjLtJmMzyBXi52qDe2wZNeUzBKrvJmnKaunckNZZqVtWZvP3aUR1bh
-         Kw4g==
-X-Gm-Message-State: AOAM5309V4/uc7tncYzrrAhNJ7c5AX2tSENUpGtWW8SoiwBzEGw2Plro
-        US/cBrN+6elVd/e9ObYgkeqILxDE1fKH3MVq4tBFhw==
-X-Google-Smtp-Source: ABdhPJytAVBDYKsW07DVIG1RkxBtcNqsprJkbKLW6RGyTiSonhBpHmC5MH6QSv/ICRd4ybE5enTFCE5sXuHIWc18FKM=
-X-Received: by 2002:a17:90a:be10:: with SMTP id a16mr9989671pjs.112.1620208302210;
- Wed, 05 May 2021 02:51:42 -0700 (PDT)
+        id S232310AbhEEJze convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 5 May 2021 05:55:34 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:45556 "EHLO srv6.fidu.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231769AbhEEJzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 05:55:33 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 2BDFAC800B6;
+        Wed,  5 May 2021 11:54:36 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id MM2mOfkRZDQz; Wed,  5 May 2021 11:54:35 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f39:8600:6e35:22:d0af:f0c] (p200300e37f3986006E350022d0af0f0C.dip0.t-ipconnect.de [IPv6:2003:e3:7f39:8600:6e35:22:d0af:f0c])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id CB857C800AB;
+        Wed,  5 May 2021 11:54:35 +0200 (CEST)
+To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
+Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20210503182148.851790-1-wse@tuxedocomputers.com>
+ <20210503182148.851790-4-wse@tuxedocomputers.com>
+ <YJEZzhhQzmYxi8Gp@intel.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Subject: Re: [PATCH 3/4] Restructure output format computation for better
+ expandability
+Message-ID: <41aca960-7595-8fed-228c-3b9347c64dc6@tuxedocomputers.com>
+Date:   Wed, 5 May 2021 11:54:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210415032958.740233-1-ikjn@chromium.org>
-In-Reply-To: <20210415032958.740233-1-ikjn@chromium.org>
-From:   Ikjoon Jang <ikjn@chromium.org>
-Date:   Wed, 5 May 2021 17:51:31 +0800
-Message-ID: <CAATdQgDr0N-ewRrt4V14R72G4VTufmBzqzKka+xwSwkeodx=zQ@mail.gmail.com>
-Subject: Re: [PATCH v5 0/2] HID: google: add device tree bindings for Whiskers
- switch device
-To:     linux-input@vger.kernel.org,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>
-Cc:     Dmitry Torokhov <dtor@chromium.org>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        Benson Leung <bleung@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Jiri Kosina <jikos@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YJEZzhhQzmYxi8Gp@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+Am 04.05.21 um 11:54 schrieb Ville Syrjälä:
 
-Genting ping on this series.
+> On Mon, May 03, 2021 at 08:21:47PM +0200, Werner Sembach wrote:
+>> Couples the decission between RGB and YCbCr420 mode and the check if the port
+>> clock can archive the required frequency. Other checks and configuration steps
+>> that where previously done in between can also be done before or after.
+>>
+>> This allows for are cleaner implementation of retrying different color
+>> encodings.
+>>
+>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>> ---
+>>
+>> >From 57e42ec6e34ac32da29eb7bc3c691cbeb2534396 Mon Sep 17 00:00:00 2001
+>> From: Werner Sembach <wse@tuxedocomputers.com>
+>> Date: Mon, 3 May 2021 15:30:40 +0200
+>> Subject: [PATCH 3/4] Restructure output format computation for better
+>>  expandability
+>>
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_hdmi.c | 57 +++++++++++------------
+>>  1 file changed, 26 insertions(+), 31 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> index ce165ef28e88..e2553ac6fd13 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> @@ -1999,29 +1999,6 @@ static bool hdmi_deep_color_possible(const struct intel_crtc_state *crtc_state,
+>>  					      INTEL_OUTPUT_FORMAT_YCBCR420);
+>>  }
+>>  
+>> -static int
+>> -intel_hdmi_ycbcr420_config(struct intel_crtc_state *crtc_state,
+>> -			   const struct drm_connector_state *conn_state)
+>> -{
+>> -	struct drm_connector *connector = conn_state->connector;
+>> -	struct drm_i915_private *i915 = to_i915(connector->dev);
+>> -	const struct drm_display_mode *adjusted_mode =
+>> -		&crtc_state->hw.adjusted_mode;
+>> -
+>> -	if (!drm_mode_is_420_only(&connector->display_info, adjusted_mode))
+>> -		return 0;
+>> -
+>> -	if (!connector->ycbcr_420_allowed) {
+>> -		drm_err(&i915->drm,
+>> -			"Platform doesn't support YCBCR420 output\n");
+>> -		return -EINVAL;
+>> -	}
+>> -
+>> -	crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+>> -
+>> -	return intel_pch_panel_fitting(crtc_state, conn_state);
+>> -}
+>> -
+>>  static int intel_hdmi_compute_bpc(struct intel_encoder *encoder,
+>>  				  struct intel_crtc_state *crtc_state,
+>>  				  int clock)
+>> @@ -2128,6 +2105,24 @@ static bool intel_hdmi_has_audio(struct intel_encoder *encoder,
+>>  		return intel_conn_state->force_audio == HDMI_AUDIO_ON;
+>>  }
+>>  
+>> +int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
+>> +				     struct intel_crtc_state *crtc_state,
+>> +				     const struct drm_connector_state *conn_state)
+>> +{
+>> +	const struct drm_connector *connector = conn_state->connector;
+>> +	const struct drm_display_mode *adjusted_mode = &crtc_state->hw.adjusted_mode;
+>> +	int ret;
+>> +
+>> +	if (connector->ycbcr_420_allowed && drm_mode_is_420_only(&connector->display_info, adjusted_mode))
+>> +		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+>> +	else
+>> +		crtc_state->output_format = INTEL_OUTPUT_FORMAT_RGB;
+> Slight change in behaviour here since we used to reject 420_only modes
+> if ycbcr_420_allowed wasn't set. But I think this should be OK, and in
+> fact I believe the DP counterpart code always used an RGB fallback
+> rather than failing. So this lines up better with that.
 
-On Thu, Apr 15, 2021 at 11:30 AM Ikjoon Jang <ikjn@chromium.org> wrote:
->
-> Add device a tree binding for a "cros-cbas" switch device of
-> ChromeOS tablets with Whiskers base board.
->
-> Changes in v5:
->  - Add missing blank lines and change the description property's position.
->  - Add a note to description: "this device cannot be detected at runtime."
->
-> Changes in v4:
-> Define cros-cbase bindings inside google,cros-ec.yaml instead of
-> a separated binding document.
->
-> Ikjoon Jang (2):
->   mfd: google,cros-ec: add DT bindings for a baseboard's switch device
->   HID: google: Add of_match table to Whiskers switch device.
->
->  .../bindings/mfd/google,cros-ec.yaml          | 20 +++++++++++++++++++
->  drivers/hid/hid-google-hammer.c               | 10 ++++++++++
->  2 files changed, 30 insertions(+)
->
+That was actually an oversight on my side and not intended. Does a RGB fallback make sense?
 
-Can this be queued up to hid.git?
+Now that I think of it get to 2 scenarios:
 
-Thanks!
+- The screen is really 420_only, which causes a silent fail and a black screen I guess? Where before at least a log message was written.
 
+- The screen falsely reports as 420_only and using RGB regardless makes it magically work
 
-
-> --
-> 2.31.1.295.g9ea45b61b8-goog
+I think at least warning should be printed to the logs. Something along the lines of: "Display reports as 420 only, but port does not support 420, try forcing RGB, but this is likely to fail."
+> Needs at least a note in the commit message to indicate that
+> there is a functional change buried within. Though it would be
+> better to split this functional change into a separate prep patch.
 >
+>> +
+>> +	ret = intel_hdmi_compute_clock(encoder, crtc_state);
+>> +
+>> +	return ret;
+>> +}
+>> +
+>>  int intel_hdmi_compute_config(struct intel_encoder *encoder,
+>>  			      struct intel_crtc_state *pipe_config,
+>>  			      struct drm_connector_state *conn_state)
+>> @@ -2152,23 +2147,23 @@ int intel_hdmi_compute_config(struct intel_encoder *encoder,
+>>  	if (adjusted_mode->flags & DRM_MODE_FLAG_DBLCLK)
+>>  		pipe_config->pixel_multiplier = 2;
+>>  
+>> -	ret = intel_hdmi_ycbcr420_config(pipe_config, conn_state);
+>> -	if (ret)
+>> -		return ret;
+>> -
+>> -	pipe_config->limited_color_range =
+>> -		intel_hdmi_limited_color_range(pipe_config, conn_state);
+>> -
+>>  	if (HAS_PCH_SPLIT(dev_priv) && !HAS_DDI(dev_priv))
+>>  		pipe_config->has_pch_encoder = true;
+>>  
+>>  	pipe_config->has_audio =
+>>  		intel_hdmi_has_audio(encoder, pipe_config, conn_state);
+>>  
+>> -	ret = intel_hdmi_compute_clock(encoder, pipe_config);
+>> +	ret = intel_hdmi_compute_output_format(encoder, pipe_config, conn_state);
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> +	ret = intel_pch_panel_fitting(pipe_config, conn_state);
+>> +	if (ret)
+>> +		return ret;
+> We probably want to still wrap this call in a
+> if (crtc_state->output_format == INTEL_OUTPUT_FORMAT_YCBCR420) {...}
+>
+> In theory calling intel_pch_panel_fitting() should be a nop for
+> the !420 case, but I think we have some issues there at least when
+> it comes to bigjoiner. So the 420 check is probably needed to avoid
+> mistakenly turning on the panel fitter when not needed.
+>
+>
+>> +
+>> +	pipe_config->limited_color_range =
+>> +		intel_hdmi_limited_color_range(pipe_config, conn_state);
+>> +
+>>  	if (conn_state->picture_aspect_ratio)
+>>  		adjusted_mode->picture_aspect_ratio =
+>>  			conn_state->picture_aspect_ratio;
+>> -- 
+>> 2.25.1
+
