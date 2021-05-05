@@ -2,85 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0EF73748DF
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:49:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0E3C3748E1
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 21:50:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbhEETuv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 15:50:51 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:36887 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233114AbhEETut (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 15:50:49 -0400
-Received: from cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net ([80.193.200.194] helo=[192.168.0.210])
-        by youngberry.canonical.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <colin.king@canonical.com>)
-        id 1leNWp-0003ku-NP; Wed, 05 May 2021 19:49:51 +0000
-Subject: Re: [PATCH] scsi: ufs: ufs-exynos: make a const array static, makes
- object smaller
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E . J . Bottomley" <jejb@linux.ibm.com>,
-        "Martin K . Petersen" <martin.petersen@oracle.com>,
-        linux-scsi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210505190104.70112-1-colin.king@canonical.com>
- <0e90b057-3a87-bec5-c0b2-46c49b191651@canonical.com>
-From:   Colin Ian King <colin.king@canonical.com>
-Message-ID: <a9fafdd2-6625-18dc-62f4-7b4a8c9fd9c2@canonical.com>
-Date:   Wed, 5 May 2021 20:49:51 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234106AbhEETvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 15:51:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233512AbhEETvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 15:51:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 30E48613C7;
+        Wed,  5 May 2021 19:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620244210;
+        bh=W+/HruJkTs47y8+Ionclt8owswhldiQL8RqjoAm0cAs=;
+        h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+        b=Pt80Qf/hG6wnCJHluViOda4wQuTGqTDjRzf67xlWX7hCuu5FmVF8AkFiCO6XE4dnW
+         4hKS2jMFZBRM5zy8tp7CFQRB+GCJVmXUi4LpNCl5Olcv91iQHt1vShpp6zUc3axb4O
+         Vm/Un0ckO0BJfbfPTudj/aoin3NWgJgJVtdunKZ55coo7QQVQI05Xr5SCIcoWL+pze
+         bYhqtZFTNd1VBLUGWDLW27868hHJ7+yfCXfwoVEUGmhNnXFr73AzDD6Jd5eiMQXEBU
+         wmtzPE7Pg1FsoAW53RqEnTOD26pk8tF2AZOGouggjI2AiNgTQ1EzqqkNXlFQMeSFBV
+         sCZ4OfZJ5ZmCQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 252C8609AC;
+        Wed,  5 May 2021 19:50:10 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <0e90b057-3a87-bec5-c0b2-46c49b191651@canonical.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net:CXGB4: fix leak if sk_buff is not used
+From:   patchwork-bot+netdevbpf@kernel.org
+Message-Id: <162024421014.18947.13737323283517875110.git-patchwork-notify@kernel.org>
+Date:   Wed, 05 May 2021 19:50:10 +0000
+References: <20210505125450.21737-1-ihuguet@redhat.com>
+In-Reply-To: <20210505125450.21737-1-ihuguet@redhat.com>
+To:     =?utf-8?b?w43DsWlnbyBIdWd1ZXQgPGlodWd1ZXRAcmVkaGF0LmNvbT4=?=@ci.codeaurora.org
+Cc:     netdev@vger.kernel.org, rajur@chelsio.com, davem@davemloft.net,
+        kuba@kernel.org, linux-kernel@vger.kernel.org, ivecera@redhat.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/05/2021 20:41, Krzysztof Kozlowski wrote:
-> On 05/05/2021 15:01, Colin King wrote:
->> From: Colin Ian King <colin.king@canonical.com>
->>
->> Don't populate the const array granularity_tbl on the stack but instead it
->> static. Makes the object code smaller by 190 bytes:
->>
->> Before:
->>    text    data     bss     dec     hex filename
->>   25563    6908       0   32471    7ed7 ./drivers/scsi/ufs/ufs-exynos.o
->>
->> After:
->>    text    data     bss     dec     hex filename
->>   25213    7068       0   32281    7e19 ./drivers/scsi/ufs/ufs-exynos.o
->>
->> (gcc version 10.3.0)
-> 
-> I am not sure what's the benefit here - you moved the code from text to
-> data. In total you decreased the size for this compilation settings
-> (e.g. compiler + optimizations) but that might not be always true, right?
+Hello:
 
-It is a marginal saving, but for arrays this size it makes sense to not
-have to populate the data into the stack before using it and then
-discarding it. This change essentially replaces quite a lot of
-instructions that put the data onto the stack so I think it's worth while.
+This patch was applied to netdev/net.git (refs/heads/master):
 
+On Wed,  5 May 2021 14:54:50 +0200 you wrote:
+> An sk_buff is allocated to send a flow control message, but it's not
+> sent in all cases: in case the state is not appropiate to send it or if
+> it can't be enqueued.
 > 
-> This has effect on the code readability - line is longer and reader
-> would think "why this was made static since it is simple one-time const?".
->
+> In the first of these 2 cases, the sk_buff was discarded but not freed,
+> producing a memory leak.
+> 
+> [...]
 
-Not sure how to respond to this. If they wonder why it is static const
-and don't know why then one would hope they look it up in K&R and
-familiarize themselves with C.  It's not so subtle.
+Here is the summary with links:
+  - net:CXGB4: fix leak if sk_buff is not used
+    https://git.kernel.org/netdev/net/c/52bfcdd87e83
 
-Colin
-> 
-> Best regards,
-> Krzysztof
-> 
+You are awesome, thank you!
+--
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
