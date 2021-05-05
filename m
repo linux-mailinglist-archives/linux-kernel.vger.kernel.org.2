@@ -2,117 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AC437469F
-	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A65E3746A3
+	for <lists+linux-kernel@lfdr.de>; Wed,  5 May 2021 19:52:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S240860AbhEERV6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 13:21:58 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:14870 "EHLO m43-7.mailgun.net"
+        id S240960AbhEERWE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 13:22:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56280 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S239019AbhEERK3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 13:10:29 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620234572; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=2NJ2FCJ5eygsO7NmVQKBkrCnohRdJRzGE0EKHDhDgYA=; b=UtZ48e4/BJfDs5qJ/mqvQw0oxcfMNIqjZcPkiiwR5gRS484lcRaHl1bwD1aTmcTFoksPhCOb
- ZJZY+cnnCTVh2ojXIag4PU/QvLP9ZsStbQT4P/9GPaHp+BEdg6hp5jXNMbHbSnFBLdE5Gttu
- rND8BB/UHwpiqeqsbINazaoATow=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
- 6092d1398807bcde1d132855 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 05 May 2021 17:09:13
- GMT
-Sender: bbhatt=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 567ABC00A28; Wed,  5 May 2021 17:09:13 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: bbhatt)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A7CD9C43143;
-        Wed,  5 May 2021 17:08:53 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A7CD9C43143
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
-From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
-        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
-        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
-        kvalo@codeaurora.org, ath11k@lists.infradead.org,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
-Subject: [PATCH v3 6/6] bus: mhi: core: Add range checks for BHI and BHIe
-Date:   Wed,  5 May 2021 10:08:21 -0700
-Message-Id: <1620234501-30461-7-git-send-email-bbhatt@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620234501-30461-1-git-send-email-bbhatt@codeaurora.org>
-References: <1620234501-30461-1-git-send-email-bbhatt@codeaurora.org>
+        id S239001AbhEERKX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 13:10:23 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 099E9AF3D;
+        Wed,  5 May 2021 17:09:26 +0000 (UTC)
+MIME-Version: 1.0
+Date:   Wed, 05 May 2021 10:09:25 -0700
+From:   Davidlohr Bueso <dbueso@suse.de>
+To:     Varad Gautam <varad.gautam@suse.com>
+Cc:     linux-kernel@vger.kernel.org,
+        Matthias von Faber <matthias.vonfaber@aox-tech.de>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Oleg Nesterov <oleg@redhat.com>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Manfred Spraul <manfred@colorfullife.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH] ipc/mqueue: Avoid relying on a stack reference past its
+ expiry
+In-Reply-To: <a6c7f3e5cfaf16e7912f350a93f7c69e@suse.de>
+References: <20210504155534.17270-1-varad.gautam@suse.com>
+ <4959eb8d8c14b00113370ae86dc7c9f5@suse.de>
+ <fe1b29a0-af09-e270-de52-09bacac35d86@suse.com>
+ <6fbcb0fa502e7574f87213fc29877ed8@suse.de>
+ <5abf8348-b1fc-fecb-d130-6d45b84ee081@suse.com>
+ <a6c7f3e5cfaf16e7912f350a93f7c69e@suse.de>
+User-Agent: Roundcube Webmail
+Message-ID: <0b1da1311f1d9f60ae3cf3f037c2bfe3@suse.de>
+X-Sender: dbueso@suse.de
+Organization: SUSE Labs
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When obtaining the BHI or BHIe offsets during the power up
-preparation phase, range checks are missing. These can help
-controller drivers avoid accessing any address outside of the
-MMIO region. Ensure that mhi_cntrl->reg_len is set before MHI
-registration as it is a required field and range checks will
-fail without it.
+On 2021-05-05 09:24, Davidlohr Bueso wrote:
+> On 2021-05-05 08:36, Varad Gautam wrote:
+>> If you're still unconvinced, I'll send out a v2 w/ wake_q_add called 
+>> before
+>> smp_store_release.
+> 
+> Yeah, please send a v2, I believe this is the right way to fix the 
+> issue.
 
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
----
- drivers/bus/mhi/core/init.c | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
+Also, it would be good to add:
 
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 1cc2f22..86ad06e 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -885,7 +885,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
- 	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
- 	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
- 	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
--	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs || !mhi_cntrl->irq)
-+	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs ||
-+	    !mhi_cntrl->irq || !mhi_cntrl->reg_len)
- 		return -EINVAL;
- 
- 	ret = parse_config(mhi_cntrl, config);
-@@ -1077,6 +1078,12 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
- 		dev_err(dev, "Error getting BHI offset\n");
- 		goto error_reg_offset;
- 	}
-+
-+	if (bhi_off >= mhi_cntrl->reg_len) {
-+		dev_err(dev, "BHI offset is out of range\n");
-+		ret = -EINVAL;
-+		goto error_reg_offset;
-+	}
- 	mhi_cntrl->bhi = mhi_cntrl->regs + bhi_off;
- 
- 	if (mhi_cntrl->fbc_download || mhi_cntrl->rddm_size) {
-@@ -1086,6 +1093,12 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
- 			dev_err(dev, "Error getting BHIE offset\n");
- 			goto error_reg_offset;
- 		}
-+
-+		if (bhie_off >= mhi_cntrl->reg_len) {
-+			dev_err(dev, "BHIe offset is out of range\n");
-+			ret = -EINVAL;
-+			goto error_reg_offset;
-+		}
- 		mhi_cntrl->bhie = mhi_cntrl->regs + bhie_off;
- 	}
- 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Cc: <stable@vger.kernel.org> # 5.6
 
+Thanks,
+Davidlohr
