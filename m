@@ -2,91 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 27C07374DB5
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:53:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2450374D91
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:34:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231649AbhEFCyJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:54:09 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:38110 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhEFCyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:54:06 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 54BEF20065A;
-        Thu,  6 May 2021 04:53:07 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 3F71320067D;
-        Thu,  6 May 2021 04:53:03 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C6AE44034D;
-        Thu,  6 May 2021 04:46:35 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     timur@kernel.org, nicoleotsuka@gmail.com, Xiubo.Lee@gmail.com,
-        festevam@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org
-Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: imx-pcm-rpmsg: Fix warning of incorrect type in assignment
-Date:   Thu,  6 May 2021 10:30:40 +0800
-Message-Id: <1620268240-1005-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S231542AbhEFCe4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:34:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58176 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231370AbhEFCey (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 22:34:54 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45CACC061574;
+        Wed,  5 May 2021 19:33:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lJhsfLdiShCVCFTVkuBSUSKQ7SSGri8tABxwLddsMas=; b=BQwfXNXWmctipdvcC+WjXHeVZ3
+        PaulRVvYfUxB433ISfhJZWpIdSSp8/HlIrP1bRq7Rpc1Gm+cUiB7actvmxdjmBSlRf1ZkYneBTK9n
+        J1gzyDL4LuyaT61jUfkiK0YDVlcptfVPUZXcbzmun24mluNdMRZp66DpxdjttZN03WJqCWiGtdyRN
+        /Vu5UFhqeoJKtPfdfrZZw9vyKwcS0haXtma4qDwZ4t0FPZ5cfJRvbH5xHx4HODNA7yJb0W0RpPCp8
+        /zc4NyDtaVMyNhzGdGrEoz2Z0ila3bAgFbcbkiwQNCcZ2gcqQeidtkwXYN+vdu1Ru6XmpEaqtnBNh
+        78ReL12w==;
+Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1leTpR-001CJe-TH; Thu, 06 May 2021 02:33:43 +0000
+Date:   Thu, 6 May 2021 03:33:29 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     kernel test robot <lkp@intel.com>
+Cc:     linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 46/96] mm: Add flush_dcache_folio
+Message-ID: <20210506023329.GM1847222@casper.infradead.org>
+References: <20210505150628.111735-47-willy@infradead.org>
+ <202105060752.es5znqMC-lkp@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202105060752.es5znqMC-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The format in rpmsg is defained as unsigned char, there is warning
-when convert snd_pcm_format_t to it.
+On Thu, May 06, 2021 at 07:35:16AM +0800, kernel test robot wrote:
+>    In file included from arch/ia64/include/asm/cacheflush.h:31,
+>                     from arch/ia64/include/asm/pgtable.h:153,
+>                     from include/linux/pgtable.h:6,
+>                     from arch/ia64/include/asm/uaccess.h:40,
+>                     from include/linux/uaccess.h:11,
+>                     from include/linux/sched/task.h:11,
+>                     from include/linux/sched/signal.h:9,
+>                     from arch/ia64/kernel/asm-offsets.c:10:
+>    include/asm-generic/cacheflush.h: In function 'flush_dcache_folio':
+> >> include/asm-generic/cacheflush.h:61:19: error: implicit declaration of function 'folio_nr_pages'; did you mean 'folio_page'? [-Werror=implicit-function-declaration]
 
-sound/soc/fsl/imx-pcm-rpmsg.c:164:43: sparse: warning: incorrect type in assignment (different base types)
-sound/soc/fsl/imx-pcm-rpmsg.c:164:43: sparse:    expected unsigned char format
-sound/soc/fsl/imx-pcm-rpmsg.c:164:43: sparse:    got restricted snd_pcm_format_t [usertype]
-sound/soc/fsl/imx-pcm-rpmsg.c:167:43: sparse: warning: incorrect type in assignment (different base types)
-sound/soc/fsl/imx-pcm-rpmsg.c:167:43: sparse:    expected unsigned char format
-sound/soc/fsl/imx-pcm-rpmsg.c:167:43: sparse:    got restricted snd_pcm_format_t [usertype]
-
-Refine the unused RPMSG_DSD_U16_LE and RPMSG_DSD_U32_LE for these
-case to fix this sparse warning.
-
-Fixes: 3c00eceb2a53 ("ASoC: imx-pcm-rpmsg: Add platform driver for audio base on rpmsg")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/fsl/imx-pcm-rpmsg.c | 4 ++--
- sound/soc/fsl/imx-pcm-rpmsg.h | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/sound/soc/fsl/imx-pcm-rpmsg.c b/sound/soc/fsl/imx-pcm-rpmsg.c
-index 875c0d6df339..3f5913adbfb0 100644
---- a/sound/soc/fsl/imx-pcm-rpmsg.c
-+++ b/sound/soc/fsl/imx-pcm-rpmsg.c
-@@ -161,10 +161,10 @@ static int imx_rpmsg_pcm_hw_params(struct snd_soc_component *component,
- 		msg->s_msg.param.format   = RPMSG_S24_LE;
- 		break;
- 	case SNDRV_PCM_FORMAT_DSD_U16_LE:
--		msg->s_msg.param.format   = SNDRV_PCM_FORMAT_DSD_U16_LE;
-+		msg->s_msg.param.format   = RPMSG_DSD_U16_LE;
- 		break;
- 	case SNDRV_PCM_FORMAT_DSD_U32_LE:
--		msg->s_msg.param.format   = SNDRV_PCM_FORMAT_DSD_U32_LE;
-+		msg->s_msg.param.format   = RPMSG_DSD_U32_LE;
- 		break;
- 	default:
- 		msg->s_msg.param.format   = RPMSG_S32_LE;
-diff --git a/sound/soc/fsl/imx-pcm-rpmsg.h b/sound/soc/fsl/imx-pcm-rpmsg.h
-index 308d153920a3..8286b55f00ae 100644
---- a/sound/soc/fsl/imx-pcm-rpmsg.h
-+++ b/sound/soc/fsl/imx-pcm-rpmsg.h
-@@ -328,9 +328,9 @@
- #define	RPMSG_S16_LE		0x0
- #define	RPMSG_S24_LE		0x1
- #define	RPMSG_S32_LE		0x2
--#define	RPMSG_DSD_U16_LE	0x3
-+#define	RPMSG_DSD_U16_LE	49  /* SNDRV_PCM_FORMAT_DSD_U16_LE */
- #define	RPMSG_DSD_U24_LE	0x4
--#define	RPMSG_DSD_U32_LE	0x5
-+#define	RPMSG_DSD_U32_LE	50  /* SNDRV_PCM_FORMAT_DSD_U32_LE */
- 
- #define	RPMSG_CH_LEFT		0x0
- #define	RPMSG_CH_RIGHT		0x1
--- 
-2.17.1
+Ugh, I can't be bothered to untangle the ia64 header file mess.
+I'll just move the function out of line.
 
