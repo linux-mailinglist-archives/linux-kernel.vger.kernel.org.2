@@ -2,133 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE7A5375A1C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 20:20:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0A2A375A20
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 20:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234298AbhEFSVv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 14:21:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41892 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232420AbhEFSVp (ORCPT
+        id S234379AbhEFSXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 14:23:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234333AbhEFSXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 14:21:45 -0400
-Date:   Thu, 06 May 2021 18:20:45 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620325246;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q+epKSfuLZIwuHczT4aj4V0eMOXZpyOyZjXimp9cnIw=;
-        b=gB5kR1ehT4nc/VB813lapN6jY2bQDVif2DjYrmq7TRmJ5GjkIysHurR/r6UsDKq8lujTRN
-        zsONjIBtxcfgQenm3JjXLiEk4mOIsBNuKrLXpuCbJ09U283bFEResEiesZ1n/JZAm4f1VT
-        qiHRnm5xXh4ki/6hRdcGjiAtIf/2ks7Ulu6BsrxHDUHixlj+FUs4Vtsp7xTBx2I0E13xsC
-        GP+R8yfY7beLZZKZUtmwWYhxRZZvObX4rf2GpZJK3xnqNTnwEr5xGBHZs3W8Q1gj32gyq7
-        y47f7Na2lZbAzj7sszAukmmFL/FD10gBOxIOObZAl++pu19DIWzW3Kt2tHFYSQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620325246;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=q+epKSfuLZIwuHczT4aj4V0eMOXZpyOyZjXimp9cnIw=;
-        b=zpvoKR/VviPbFHKM54U2YW7iVdU+a/xZYavbeC7Ugf26zqEDAU27gTTTkP++FXLqyV+kkz
-        DFp86zoeG1nejbBw==
-From:   "tip-bot2 for Thomas Gleixner" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] futex: Get rid of the val2 conditional dance
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210422194705.125957049@linutronix.de>
-References: <20210422194705.125957049@linutronix.de>
+        Thu, 6 May 2021 14:23:21 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDC8C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 11:22:21 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id l4so9670204ejc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 11:22:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=BRQHRkFwEmoQQH23N9E0XGi4S2KTprSInvxvTybpRDo=;
+        b=cupWVeZ/u7+KYnd0pZbmw0V8kpVJFidtNQmJJndcFVQDm7Mz9sH12+Lvq5d+q2lORZ
+         askoFNLFB+ul/jNYyOaXg2Tc8PAwEkqUta+zAbfyeEtDr204q+upO7tiLAh5wdB9o0aH
+         Yb9MtWshSqoRLpE7C2Uc8CPKDNJXhWVFj2EP7zwBz1bdSM1Xiz30uMjFperBXrK3WRdL
+         TvwUA8q18G7J4cNgZYHBhFczEjy1UgA0lCqYBSYOIHI9yjJU+kALAz20Y3jyLLnqIuWg
+         SSOWEKIM2+jJSkFl8wOFPlyNTFJ8/0LbyLSHTGF3hAHXE3YCmz0LpQKySvdn/GYfM0XB
+         2x/w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=BRQHRkFwEmoQQH23N9E0XGi4S2KTprSInvxvTybpRDo=;
+        b=HTmpy8HL25IJ+rj+Nyjt1h5ie1eKLK7wRmy3cXhfpZBiNWQ70mwox/3f5H7fbQqJeV
+         Fil+KfMkqeMe3VGHws/HK1s75uhdzbo5VpjEDY22o8a3iQcJNjHTOJT+GhuR7Tz9+TTH
+         Gf2guVUed7NLt2Oje30tTDymV8VwFA6SsYKdSjW/8P/boG1lu9H1gP5Soeb+uUuyAYaW
+         8qC739kyOXdJBwuD7S+Z+Ye5ROAURuFEpImxuqt4bWbyLlKfE0ugzOz273IfD1VCzERE
+         70z/aTLWltY7Q8Y0Bj7Ejifw+YqTfmEPiKjpzwiryFhFwXOoTzbsCnLXoYQFRoA3g/lB
+         26LQ==
+X-Gm-Message-State: AOAM533ctjNUbagP7QkciBBUfj8+QGD+afyWrHo+4EQrAWr2JPhZ2VV6
+        XEd2XvyX5ZkmV5wUq6U05adUa8tYUY7TfuYN
+X-Google-Smtp-Source: ABdhPJzwuhPOBfgFQU8SiUp7j0GdaRHxt613w0o2t5N/IpAUz0HLlpl6hBVfMURDMo+cqRUATYTTfg==
+X-Received: by 2002:a17:906:1957:: with SMTP id b23mr5969511eje.209.1620325339430;
+        Thu, 06 May 2021 11:22:19 -0700 (PDT)
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
+        by smtp.gmail.com with ESMTPSA id 16sm1877234ejw.0.2021.05.06.11.22.16
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 11:22:17 -0700 (PDT)
+Received: by mail-wr1-f42.google.com with SMTP id l14so6624060wrx.5
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 11:22:16 -0700 (PDT)
+X-Received: by 2002:a05:6000:188b:: with SMTP id a11mr6776251wri.275.1620325335877;
+ Thu, 06 May 2021 11:22:15 -0700 (PDT)
 MIME-Version: 1.0
-Message-ID: <162032524551.29796.2014810338967341881.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+ <1619690903-1138-1-git-send-email-dseok.yi@samsung.com> <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
+ <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com> <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
+ <02c801d7421f$65287a90$2f796fb0$@samsung.com>
+In-Reply-To: <02c801d7421f$65287a90$2f796fb0$@samsung.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Thu, 6 May 2021 14:21:37 -0400
+X-Gmail-Original-Message-ID: <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
+Message-ID: <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
+ to 4
+To:     Dongseok Yi <dseok.yi@samsung.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Martin KaFai Lau <kafai@fb.com>,
+        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Network Development <netdev@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+On Wed, May 5, 2021 at 10:27 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
+>
+> On Wed, May 05, 2021 at 09:45:37PM -0400, Willem de Bruijn wrote:
+> > On Wed, May 5, 2021 at 8:45 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
+> > >
+> > > On Wed, May 05, 2021 at 10:55:10PM +0200, Daniel Borkmann wrote:
+> > > > On 4/29/21 12:08 PM, Dongseok Yi wrote:
+> > > > > tcp_gso_segment check for the size of GROed payload if it is bigger
+> > > > > than the mss. bpf_skb_proto_6_to_4 increases mss, but the mss can be
+> > > > > bigger than the size of GROed payload unexpectedly if data_len is not
+> > > > > big enough.
+> > > > >
+> > > > > Assume that skb gso_size = 1372 and data_len = 8. bpf_skb_proto_6_to_4
+> >
+> > Is this a typo and is this intended to read skb->data_len = 1380?
+>
+> This is not a typo. I intended skb->data_len = 8.
+>
+> >
+> > The issue is that payload length (1380) is greater than mss with ipv6
+> > (1372), but less than mss with ipv4 (1392).
+> >
+> > I don't understand data_len = 8 or why the patch compares
+> > skb->data_len to len_diff (20).
+>
+> skb_gro_receive():
+>         unsigned int len = skb_gro_len(skb);
+>         [...]
+> done:
+>         NAPI_GRO_CB(p)->count++;
+>         p->data_len += len;
+>
+> head_skb's data_len is the sum of skb_gro_len for each skb of the frags.
+> data_len could be 8 if server sent a small size packet and it is GROed
+> to head_skb.
+>
+> Please let me know if I am missing something.
 
-Commit-ID:     b097d5ed33561507eeffc77120a8c16c2f0f2c4c
-Gitweb:        https://git.kernel.org/tip/b097d5ed33561507eeffc77120a8c16c2f0f2c4c
-Author:        Thomas Gleixner <tglx@linutronix.de>
-AuthorDate:    Thu, 22 Apr 2021 21:44:20 +02:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Thu, 06 May 2021 20:19:04 +02:00
+This is my understanding of the data path. This is a forwarding path
+for TCP traffic.
 
-futex: Get rid of the val2 conditional dance
+GRO is enabled and will coalesce multiple segments into a single large
+packet. In bad cases, the coalesced packet payload is > MSS, but < MSS
++ 20.
 
-There is no point in checking which FUTEX operand treats the utime pointer
-as 'val2' argument because that argument to do_futex() is only used by
-exactly these operands.
+Somewhere between GRO and GSO you have a BPF program that converts the
+IPv6 address to IPv4.
 
-So just handing it in unconditionally is not making any difference, but
-removes a lot of pointless gunk.
+There is no concept of head_skb at the time of this BPF program. It is
+a single SKB, with an skb linear part and multiple data items in the
+frags (no frag_list).
 
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Link: https://lore.kernel.org/r/20210422194705.125957049@linutronix.de
+When entering the GSO stack, this single skb now has a payload length
+< MSS. So it would just make a valid TCP packet on its own?
 
----
- kernel/futex.c | 16 ++--------------
- 1 file changed, 2 insertions(+), 14 deletions(-)
+skb_gro_len is only relevant inside the GRO stack. It internally casts
+the skb->cb[] to NAPI_GRO_CB. This field is a scratch area that may be
+reused for other purposes later by other layers of the datapath. It is
+not safe to read this inside bpf_skb_proto_6_to_4.
 
-diff --git a/kernel/futex.c b/kernel/futex.c
-index b0f5304..4ddfdce 100644
---- a/kernel/futex.c
-+++ b/kernel/futex.c
-@@ -3764,7 +3764,6 @@ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
- {
- 	struct timespec64 ts;
- 	ktime_t t, *tp = NULL;
--	u32 val2 = 0;
- 	int cmd = op & FUTEX_CMD_MASK;
- 
- 	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
-@@ -3784,15 +3783,8 @@ SYSCALL_DEFINE6(futex, u32 __user *, uaddr, int, op, u32, val,
- 			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
- 		tp = &t;
- 	}
--	/*
--	 * requeue parameter in 'utime' if cmd == FUTEX_*_REQUEUE_*.
--	 * number of waiters to wake in 'utime' if cmd == FUTEX_WAKE_OP.
--	 */
--	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
--	    cmd == FUTEX_CMP_REQUEUE_PI || cmd == FUTEX_WAKE_OP)
--		val2 = (u32) (unsigned long) utime;
- 
--	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
-+	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
- }
- 
- #ifdef CONFIG_COMPAT
-@@ -3960,7 +3952,6 @@ SYSCALL_DEFINE6(futex_time32, u32 __user *, uaddr, int, op, u32, val,
- {
- 	struct timespec64 ts;
- 	ktime_t t, *tp = NULL;
--	int val2 = 0;
- 	int cmd = op & FUTEX_CMD_MASK;
- 
- 	if (utime && (cmd == FUTEX_WAIT || cmd == FUTEX_LOCK_PI ||
-@@ -3978,11 +3969,8 @@ SYSCALL_DEFINE6(futex_time32, u32 __user *, uaddr, int, op, u32, val,
- 			t = timens_ktime_to_host(CLOCK_MONOTONIC, t);
- 		tp = &t;
- 	}
--	if (cmd == FUTEX_REQUEUE || cmd == FUTEX_CMP_REQUEUE ||
--	    cmd == FUTEX_CMP_REQUEUE_PI || cmd == FUTEX_WAKE_OP)
--		val2 = (int) (unsigned long) utime;
- 
--	return do_futex(uaddr, op, val, tp, uaddr2, val2, val3);
-+	return do_futex(uaddr, op, val, tp, uaddr2, (unsigned long)utime, val3);
- }
- #endif /* CONFIG_COMPAT_32BIT_TIME */
- 
+
+> >
+> > One simple solution if this packet no longer needs to be segmented
+> > might be to reset the gso_type completely.
+>
+> I am not sure gso_type can be cleared even when GSO is needed.
+>
+> >
+> > In general, I would advocate using BPF_F_ADJ_ROOM_FIXED_GSO. When
+> > converting from IPv6 to IPv4, fixed gso will end up building packets
+> > that are slightly below the MTU. That opportunity cost is negligible
+> > (especially with TSO). Unfortunately, I see that that flag is
+> > available for bpf_skb_adjust_room but not for bpf_skb_proto_6_to_4.
+> >
+> >
+> > > > > would increse the gso_size to 1392. tcp_gso_segment will get an error
+> > > > > with 1380 <= 1392.
+> > > > >
+> > > > > Check for the size of GROed payload if it is really bigger than target
+> > > > > mss when increase mss.
+> > > > >
+> > > > > Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
+> > > > > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> > > > > ---
+> > > > >   net/core/filter.c | 4 +++-
+> > > > >   1 file changed, 3 insertions(+), 1 deletion(-)
+> > > > >
+> > > > > diff --git a/net/core/filter.c b/net/core/filter.c
+> > > > > index 9323d34..3f79e3c 100644
+> > > > > --- a/net/core/filter.c
+> > > > > +++ b/net/core/filter.c
+> > > > > @@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+> > > > >             }
+> > > > >
+> > > > >             /* Due to IPv4 header, MSS can be upgraded. */
+> > > > > -           skb_increase_gso_size(shinfo, len_diff);
+> > > > > +           if (skb->data_len > len_diff)
+> > > >
+> > > > Could you elaborate some more on what this has to do with data_len specifically
+> > > > here? I'm not sure I follow exactly your above commit description. Are you saying
+> > > > that you're hitting in tcp_gso_segment():
+> > > >
+> > > >          [...]
+> > > >          mss = skb_shinfo(skb)->gso_size;
+> > > >          if (unlikely(skb->len <= mss))
+> > > >                  goto out;
+> > > >          [...]
+> > >
+> > > Yes, right
+> > >
+> > > >
+> > > > Please provide more context on the bug, thanks!
+> > >
+> > > tcp_gso_segment():
+> > >         [...]
+> > >         __skb_pull(skb, thlen);
+> > >
+> > >         mss = skb_shinfo(skb)->gso_size;
+> > >         if (unlikely(skb->len <= mss))
+> > >         [...]
+> > >
+> > > skb->len will have total GROed TCP payload size after __skb_pull.
+> > > skb->len <= mss will not be happened in a normal GROed situation. But
+> > > bpf_skb_proto_6_to_4 would upgrade MSS by increasing gso_size, it can
+> > > hit an error condition.
+> > >
+> > > We should ensure the following condition.
+> > > total GROed TCP payload > the original mss + (IPv6 size - IPv4 size)
+> > >
+> > > Due to
+> > > total GROed TCP payload = the original mss + skb->data_len
+> > > IPv6 size - IPv4 size = len_diff
+> > >
+> > > Finally, we can get the condition.
+> > > skb->data_len > len_diff
+> > >
+> > > >
+> > > > > +                   skb_increase_gso_size(shinfo, len_diff);
+> > > > > +
+> > > > >             /* Header must be checked, and gso_segs recomputed. */
+> > > > >             shinfo->gso_type |= SKB_GSO_DODGY;
+> > > > >             shinfo->gso_segs = 0;
+> > > > >
+> > >
+> > >
+>
