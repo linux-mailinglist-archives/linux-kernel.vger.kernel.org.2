@@ -2,299 +2,572 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8CB1B375233
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D1B7375237
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:22:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbhEFKWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:22:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47926 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232936AbhEFKWu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:22:50 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30592C06174A;
-        Thu,  6 May 2021 03:21:51 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id w3so7476090ejc.4;
-        Thu, 06 May 2021 03:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Okvuy7UMQ+muyrVt6dbv2vx5m7gZXNUjABVA8axp1J8=;
-        b=G+CpirJVV/wOQQZ+DzmK77gsRy5ewNYMoHjs65eaMxTuejOjRdifM+6QQUqddxcCT3
-         G+NftrHR9lz9WmUYa+snrG3q9i7I1QJ0spE/gogwAi2kIrCOTDTYDmxceMbpFRebT1VD
-         uPwbhbjdB22EUA4PphSSmY6oQvPIWxvLMyNxAc9h0/tlpLVtrlsTjNOc0VvNmX2anMCz
-         FMj4H4d+aBMp14c3qoPBkqT8jUb3JqISvlNSeCE0WyLqDIxS5D9njjp6RR+FR7HafbQZ
-         9Jhb0XfK0q88By0HhWWWb/c4rOVpOpKkFFm+yJjLy1ujsHsaqNGLmgU68/TLqVeHKUp8
-         vjbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Okvuy7UMQ+muyrVt6dbv2vx5m7gZXNUjABVA8axp1J8=;
-        b=bLf+VrCYdZVsqwM5byHJAltZ8FQYd/mdmDiegUsgwq8qnR884qrjUSH/9kRLmgEjn0
-         YXpNErOfB8PWDQSml2YdTsUgUHuinSEJJQXZouXNY13L491owAKBkDgopJnUKIGca0sz
-         mi2FTAbz1UPFKJjRCEihcbZTRpCeiQq2BoMmQ2/vnXRc5emx8zqVJgtt22bDgBpN969N
-         E6JZ4gVoIezjLcD/WtiEm/mVIHJog++lOg+dTCCfhgS5RHiafQmVbIJhUFeb7fUqM60K
-         w9k9JbJP8c/B9oNSmqV0PaxRvd7zaFeeCopCjhVDR8WccUh5rlbBFBFTo5XN4EQWQUZx
-         ZHOQ==
-X-Gm-Message-State: AOAM5303/bBn6vFlFWrVpcIFY3qee31AzkYXQFBrXG7/O8oL71M3TJAE
-        4Hkkk0KQcALdvJril182xbwQMmRsIymcprMKFaU=
-X-Google-Smtp-Source: ABdhPJx/PWX8+mn+kYtfhCmdRhQ3bJC+30Rhk8EyyPiXA8mP/xTU2pOfrpEX7T0RWvVLADrRFOYmmcmyJNw1iCIjrl0=
-X-Received: by 2002:a17:906:1617:: with SMTP id m23mr3763516ejd.352.1620296509848;
- Thu, 06 May 2021 03:21:49 -0700 (PDT)
-MIME-Version: 1.0
-References: <CAFt=RON+KYYf5yt9vM3TdOSn4zco+3XtFyi3VDRr1vbQUBPZ0g@mail.gmail.com>
- <YIWd7v1U/dGivmSE@zeniv-ca.linux.org.uk> <CAFt=RONcpvvk5=8GLTvG44=6wKwiYPH7oG4YULfcP+J=x8OW-w@mail.gmail.com>
- <YIWlOlss7usVnvme@zeniv-ca.linux.org.uk> <CAFt=ROOi+bi_N4NEkDQxagNwnoqM0zYR+sxiag7r2poNVW9u+w@mail.gmail.com>
- <YIb4xIU6x5BLe0wd@zeniv-ca.linux.org.uk> <CAFt=ROOnU-rVoLoP=bgR3Y3WpJmhTerAQZqFd-v=eZ306Vrobg@mail.gmail.com>
-In-Reply-To: <CAFt=ROOnU-rVoLoP=bgR3Y3WpJmhTerAQZqFd-v=eZ306Vrobg@mail.gmail.com>
-From:   haosdent <haosdent@gmail.com>
-Date:   Thu, 6 May 2021 18:21:37 +0800
-Message-ID: <CAFt=ROMzGwFssZA4Z35UeP2JPwEZtf62spm1Q+mN+mN+08bk8Q@mail.gmail.com>
-Subject: Re: NULL pointer dereference when access /proc/net
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        zhengyu.duan@shopee.com, Haosong Huang <huangh@sea.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S234368AbhEFKXu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:23:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:56768 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232085AbhEFKXt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 06:23:49 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620296571; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=4HeYf0SOVpwKNRj2HiaMr+axZWRmAnYkslP2OQu5Y7w=; b=ctMV3CaG4xO89H2+wtspDXBBN3gCqB/T+MLMzVWGhemE2s80e9+LhaZnc7UbFZVWqrVvMeyD
+ AGFHgIhYa2AVivtP9TMG/COO0jkVpgrfTGgQL82hmK0Bt73xHBGXGp2l2aJV3L112xkV4c8r
+ QnZUBiDYaDGSS6f2k9Ppy5FQVN0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 6093c35b55b14811b43337c1 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 10:22:19
+ GMT
+Sender: faiyazm=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 689E9C433D3; Thu,  6 May 2021 10:22:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from faiyazm-linux.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: faiyazm)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 93FA9C43460;
+        Thu,  6 May 2021 10:22:12 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 93FA9C43460
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=faiyazm@codeaurora.org
+From:   Faiyaz Mohammed <faiyazm@codeaurora.org>
+To:     cl@linux.com, penberg@kernel.org, rientjes@google.com,
+        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org, glittao@gmail.com
+Cc:     vinmenon@codeaurora.org, Faiyaz Mohammed <faiyazm@codeaurora.org>
+Subject: [PATCH v5] mm: slub: move sysfs slab alloc/free interfaces to debugfs
+Date:   Thu,  6 May 2021 15:52:03 +0530
+Message-Id: <1620296523-21922-1-git-send-email-faiyazm@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oh, Al, I saw you mentioned the reoder issue at
-https://groups.google.com/g/syzkaller/c/0SW33jMcrXQ/m/lHJUsWHVBwAJ
-and with a follow-up patch
-https://gist.githubusercontent.com/dvyukov/67fe363d5ce2e2b06c71/raw/4d1b6c23f8dff7e0f8e2e3cab7e50208fddb0570/gistfile1.txt
-However, it looks it would not work in some previous version
-https://github.com/torvalds/linux/blob/v4.16/fs/dcache.c#L496
+alloc_calls and free_calls implementation in sysfs have two issues,
+one is PAGE_SIZE limitiation of sysfs and other is it does not adhere
+to "one value per file" rule.
 
-Because we set `d_hahs.prev` to `NULL` at
+To overcome this issues, move the alloc_calls and free_calls implemeation
+to debugfs.
 
-```
-void __d_drop(struct dentry *dentry)
-{
-  ___d_drop(dentry);
-  dentry->d_hash.pprev = NULL;
-}
-```
+Rename the alloc_calls/free_calls to alloc_traces/free_traces,
+to be inline with what it does.
 
-then in `dentry_unlink_inode`, `raw_write_seqcount_begin` would be
-skipped due to `if (hashed)` condition is false.
+Signed-off-by: Faiyaz Mohammed <faiyazm@codeaurora.org>
+---
+ include/linux/slub_def.h |  10 ++
+ mm/slab_common.c         |   9 ++
+ mm/slub.c                | 362 ++++++++++++++++++++++++++++++++++++-----------
+ 3 files changed, 299 insertions(+), 82 deletions(-)
 
-```
-static void dentry_unlink_inode(struct dentry * dentry)
-    __releases(dentry->d_lock)
-    __releases(dentry->d_inode->i_lock)
-{
-    struct inode *inode = dentry->d_inode;
-    bool hashed = !d_unhashed(dentry);
-
-    if (hashed)
-        raw_write_seqcount_begin(&dentry->d_seq);  <--- Looks would
-skip because hashed is false.
-    __d_clear_type_and_inode(dentry);
-    hlist_del_init(&dentry->d_u.d_alias);
-    if (hashed)
-        raw_write_seqcount_end(&dentry->d_seq);     <--- Looks would
-skip because hashed is false.
-...
-```
-
-Should we backport
-https://github.com/torvalds/linux/commit/4c0d7cd5c8416b1ef41534d19163cb07ffaa03ab
-and https://github.com/torvalds/linux/commit/0632a9ac7bc0a32f8251a53b3925775f0a7c4da6
-to previous versions?
-
-On Mon, May 3, 2021 at 11:31 PM haosdent <haosdent@gmail.com> wrote:
->
-> Hi, Alexander, thanks a lot for your detailed explanations. I take a
-> look at the code again and the thread and I realize there are some
-> incorrect representations in my previous word.
->
-> >>   struct inode *d_inode = 0x0         <======= d_inode is NULL and cause Oops!
->
-> Actually it is Oops at `inode->i_flags` directly instead of `d_inode`,
-> so the code would not further to change the access time.
->
-> ```
-> bool __atime_needs_update(const struct path *path, struct inode *inode,
->   bool rcu)
-> {
-> struct vfsmount *mnt = path->mnt;
-> struct timespec now;
->
-> if (inode->i_flags & S_NOATIME)    <======= Oops at here according to
-> `[19521409.372016] IP: __atime_needs_update+0x5/0x190`.
-> return false;
-> ```
->
-> But it looks impossible if we take a look at "walk_component > lookup_fast".
->
-> Let me introduce why it goes through "walk_component > lookup_fast"
-> instead of "walk_component > lookup_slow" first,
->
-> in "walk_component > step_into > pick_link", the code would set
-> `nameidata->stack->seq` to `seq` which is comes from the passed in
-> parameters.
-> If the code goes through "walk_component > lookup_slow", `seq` would
-> be 0 and then `nameidata->stack->seq` would be 0.
-> If the code goes through "walk_component > lookup_slow", `seq` would
-> be `dentry->d_seq->sequence`.
-> According to the contents in attachment files "nameidata.txt" and
-> "dentry.txt", `dentry->d_seq->sequence` is 4, and
-> `nameidata->stack->seq` is 4 as well.
-> So looks like the code goes through "walk_component > lookup_fast" and
-> "walk_component > step_into > pick_link".
->
-> The `inode` parameter in `__atime_needs_update` comes from
-> `nameidata->link_inode`. But in attachment file "nameidata.txt", we
-> could found `nameidata->link_inode` is NULL already.
-> Because the code goes through "walk_component > lookup_fast" and
-> "walk_component > step_into > pick_link", the `inode` assign to
-> `nameidata->link_inode` must comes from `lookup_fast`.
->
-> So it looks like something wrong in `lookup_fast`. Let me continue to
-> explain why this looks impossible.
->
-> In `walk_component`, `lookup_fast` have to return 1 (> 0), otherwise
-> it would fallback to `lookup_slow`.
->
-> ```
-> err = lookup_fast(nd, &path, &inode, &seq);
-> if (unlikely(err <= 0)) {
->   if (err < 0)
->     return err;
->   path.dentry = lookup_slow(&nd->last, nd->path.dentry,
->         nd->flags);
-> }
->
-> return step_into
-> ```
->
-> Because for our case, it looks like the code goes through
-> "walk_component > lookup_fast" and "walk_component > step_into >
-> pick_link",
-> This infers `lookup_fast` return 1 in this Oops.
->
-> Because `lookup_fast` return 1, it looks like the code goes through
-> the following path.
->
-> ```
->   if (nd->flags & LOOKUP_RCU) {
->     ...
->
->     *inode = d_backing_inode(dentry);
->     negative = d_is_negative(dentry);
->
->     ...
->       ...
->       if (negative)
->         return -ENOENT;
->       path->mnt = mnt;
->       path->dentry = dentry;
->       if (likely(__follow_mount_rcu(nd, path, inode, seqp)))
->         return 1;
-> ```
->
-> As we see, if `*inode` is NULL, it should return `-ENOENT` because `if
-> (negative)` would be true, which is conflict with "`lookup_fast`
-> return 1".
->
-> And in `__d_clear_type_and_inode`, it always sets the dentry to
-> negative first and then sets d_inode to NULL.
->
-> ```
-> static inline void __d_clear_type_and_inode(struct dentry *dentry)
-> {`
->   unsigned flags = READ_ONCE(dentry->d_flags);
->
->   flags &= ~(DCACHE_ENTRY_TYPE | DCACHE_FALLTHRU);   // Set dentry to
-> negative first.
->   WRITE_ONCE(dentry->d_flags, flags);
->       // memory barrier
->   dentry->d_inode = NULL;
->                // Then set d_inode to NULL.
-> }
-> ```
->
-> So looks like `inode` in `lookup_fast` should not be NULL if it could
-> skip `if (negative)` check even in the RCU case. Unless
->
-> ```
-> # in lookup_fast method
->   *inode = d_backing_inode(dentry);
->   negative = d_is_negative(dentry);
-> ```
->
-> is reorder to
->
-> ```
-> # in lookup_fast method
->   negative = d_is_negative(dentry);
->   *inode = d_backing_inode(dentry);
-> ```
->
-> when CPU executing the code. But is this possible in RCU?
->
-> I diff my local ubuntu's code with upstream tag v4.15.18, it looks
-> like no different in `fs/namei.c`, `fs/dcache.c`, `fs/proc`.
-> So possible the problem may happen to upstream tag v4.15.18 as well,
-> sadly my script still could not reproduce the issue on the server so
-> far,
-> would like to see if any insights from you then I could continue to
-> check what's wrong in this Oops, thank you in advance!
->
-> On Tue, Apr 27, 2021 at 1:30 AM Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > On Tue, Apr 27, 2021 at 01:16:44AM +0800, haosdent wrote:
-> > > > really should not assume ->d_inode stable
-> > >
-> > > Hi, Alexander, sorry to disturb you again. Today I try to check what
-> > > `dentry->d_inode` and `nd->link_inode` looks like when `dentry` is
-> > > already been killed in `__dentry_kill`.
-> > >
-> > > ```
-> > > nd->last.name: net/sockstat, dentry->d_lockref.count: -128,
-> > > dentry->d_inode: (nil), nd->link_inode: 0xffffffffab299966
-> > > nd->last.name: net/sockstat, dentry->d_lockref.count: -128,
-> > > dentry->d_inode: (nil), nd->link_inode: 0xffffffffab299966
-> > > nd->last.name: net/sockstat, dentry->d_lockref.count: -128,
-> > > dentry->d_inode: (nil), nd->link_inode: 0xffffffffab299966
-> > > ```
-> > >
-> > > It looks like `dentry->d_inode` could be NULL while `nd->link_inode`
-> > > is always has value.
-> > > But this make me confuse, by right `nd->link_inode` is get from
-> > > `dentry->d_inode`, right?
-> >
-> > It's sampled from there, yes.  And in RCU mode there's nothing to
-> > prevent a previously positive dentry from getting negative and/or
-> > killed.  ->link_inode (used to - it's gone these days) go with
-> > ->seq, which had been sampled from dentry->d_seq before fetching
-> > ->d_inode and then verified to have ->d_seq remain unchanged.
-> > That gives you "dentry used to have this inode at the time it
-> > had this d_seq", and that's what gets used to validate the sucker
-> > when we switch to non-RCU mode (look at legitimize_links()).
-> >
-> > IOW, we know that
-> >         * at some point during the pathwalk that sucker had this inode
-> >         * the inode won't get freed until we drop out of RCU mode
-> >         * if we need to go to non-RCU (and thus grab dentry references)
-> > while we still need that inode, we will verify that nothing has happened
-> > to that link (same ->d_seq, so it still refers to the same inode) and
-> > grab dentry reference, making sure it won't go away or become negative
-> > under us.  Or we'll fail (in case something _has_ happened to dentry)
-> > and repeat the entire thing in non-RCU mode.
->
->
->
-> --
-> Best Regards,
-> Haosdent Huang
-
-
-
+diff --git a/include/linux/slub_def.h b/include/linux/slub_def.h
+index dcde82a..f8c268d 100644
+--- a/include/linux/slub_def.h
++++ b/include/linux/slub_def.h
+@@ -110,6 +110,9 @@ struct kmem_cache {
+ #ifdef CONFIG_SYSFS
+ 	struct kobject kobj;	/* For sysfs */
+ #endif
++#ifdef CONFIG_SLUB_DEBUG
++	struct dentry *slab_cache_dentry;
++#endif
+ #ifdef CONFIG_SLAB_FREELIST_HARDENED
+ 	unsigned long random;
+ #endif
+@@ -159,6 +162,13 @@ static inline void sysfs_slab_release(struct kmem_cache *s)
+ }
+ #endif
+ 
++#ifdef CONFIG_DEBUG_FS
++void debugfs_slab_release(struct kmem_cache *);
++#else
++static inline void debugfs_slab_release(struct kmem_cache *s)
++{
++}
++#endif
+ void object_err(struct kmem_cache *s, struct page *page,
+ 		u8 *object, char *reason);
+ 
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index f8833d3..f3afe6b 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -445,6 +445,9 @@ static void slab_caches_to_rcu_destroy_workfn(struct work_struct *work)
+ #else
+ 		slab_kmem_cache_release(s);
+ #endif
++#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB)
++		debugfs_slab_release(s);
++#endif
+ 	}
+ }
+ 
+@@ -462,6 +465,9 @@ static int shutdown_cache(struct kmem_cache *s)
+ #ifdef SLAB_SUPPORTS_SYSFS
+ 		sysfs_slab_unlink(s);
+ #endif
++#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB)
++		debugfs_slab_release(s);
++#endif
+ 		list_add_tail(&s->list, &slab_caches_to_rcu_destroy);
+ 		schedule_work(&slab_caches_to_rcu_destroy_work);
+ 	} else {
+@@ -472,6 +478,9 @@ static int shutdown_cache(struct kmem_cache *s)
+ #else
+ 		slab_kmem_cache_release(s);
+ #endif
++#if defined(CONFIG_DEBUG_FS) && defined(CONFIG_SLUB)
++		debugfs_slab_release(s);
++#endif
+ 	}
+ 
+ 	return 0;
+diff --git a/mm/slub.c b/mm/slub.c
+index 68123b2..a5347f1 100644
+--- a/mm/slub.c
++++ b/mm/slub.c
+@@ -36,6 +36,7 @@
+ #include <linux/memcontrol.h>
+ #include <linux/random.h>
+ 
++#include <linux/debugfs.h>
+ #include <trace/events/kmem.h>
+ 
+ #include "internal.h"
+@@ -225,6 +226,15 @@ static inline int sysfs_slab_alias(struct kmem_cache *s, const char *p)
+ 							{ return 0; }
+ #endif
+ 
++#ifdef CONFIG_DEBUG_FS
++static void debugfs_slab_add(struct kmem_cache *);
++static int debugfs_slab_alias(struct kmem_cache *, const char *);
++#else
++static inline void debugfs_slab_add(struct kmem_cache *s) { }
++static inline int debugfs_slab_alias(struct kmem_cache *s, const char *p)
++							{ return 0; }
++#endif
++
+ static inline void stat(const struct kmem_cache *s, enum stat_item si)
+ {
+ #ifdef CONFIG_SLUB_STATS
+@@ -4533,6 +4543,8 @@ __kmem_cache_alias(const char *name, unsigned int size, unsigned int align,
+ 			s->refcount--;
+ 			s = NULL;
+ 		}
++
++		debugfs_slab_alias(s, name);
+ 	}
+ 
+ 	return s;
+@@ -4554,6 +4566,8 @@ int __kmem_cache_create(struct kmem_cache *s, slab_flags_t flags)
+ 	if (err)
+ 		__kmem_cache_release(s);
+ 
++	debugfs_slab_add(s);
++
+ 	return err;
+ }
+ 
+@@ -4694,6 +4708,8 @@ static long validate_slab_cache(struct kmem_cache *s)
+ 
+ 	return count;
+ }
++
++#ifdef CONFIG_DEBUG_FS
+ /*
+  * Generate lists of code addresses where slabcache objects are allocated
+  * and freed.
+@@ -4717,6 +4733,9 @@ struct loc_track {
+ 	struct location *loc;
+ };
+ 
++static struct dentry *slab_debugfs_root;
++struct loc_track t = { 0, 0, NULL };
++
+ static void free_loc_track(struct loc_track *t)
+ {
+ 	if (t->max)
+@@ -4833,82 +4852,7 @@ static void process_slab(struct loc_track *t, struct kmem_cache *s,
+ 			add_location(t, s, get_track(s, p, alloc));
+ 	put_map(map);
+ }
+-
+-static int list_locations(struct kmem_cache *s, char *buf,
+-			  enum track_item alloc)
+-{
+-	int len = 0;
+-	unsigned long i;
+-	struct loc_track t = { 0, 0, NULL };
+-	int node;
+-	struct kmem_cache_node *n;
+-
+-	if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
+-			     GFP_KERNEL)) {
+-		return sysfs_emit(buf, "Out of memory\n");
+-	}
+-	/* Push back cpu slabs */
+-	flush_all(s);
+-
+-	for_each_kmem_cache_node(s, node, n) {
+-		unsigned long flags;
+-		struct page *page;
+-
+-		if (!atomic_long_read(&n->nr_slabs))
+-			continue;
+-
+-		spin_lock_irqsave(&n->list_lock, flags);
+-		list_for_each_entry(page, &n->partial, slab_list)
+-			process_slab(&t, s, page, alloc);
+-		list_for_each_entry(page, &n->full, slab_list)
+-			process_slab(&t, s, page, alloc);
+-		spin_unlock_irqrestore(&n->list_lock, flags);
+-	}
+-
+-	for (i = 0; i < t.count; i++) {
+-		struct location *l = &t.loc[i];
+-
+-		len += sysfs_emit_at(buf, len, "%7ld ", l->count);
+-
+-		if (l->addr)
+-			len += sysfs_emit_at(buf, len, "%pS", (void *)l->addr);
+-		else
+-			len += sysfs_emit_at(buf, len, "<not-available>");
+-
+-		if (l->sum_time != l->min_time)
+-			len += sysfs_emit_at(buf, len, " age=%ld/%ld/%ld",
+-					     l->min_time,
+-					     (long)div_u64(l->sum_time,
+-							   l->count),
+-					     l->max_time);
+-		else
+-			len += sysfs_emit_at(buf, len, " age=%ld", l->min_time);
+-
+-		if (l->min_pid != l->max_pid)
+-			len += sysfs_emit_at(buf, len, " pid=%ld-%ld",
+-					     l->min_pid, l->max_pid);
+-		else
+-			len += sysfs_emit_at(buf, len, " pid=%ld",
+-					     l->min_pid);
+-
+-		if (num_online_cpus() > 1 &&
+-		    !cpumask_empty(to_cpumask(l->cpus)))
+-			len += sysfs_emit_at(buf, len, " cpus=%*pbl",
+-					     cpumask_pr_args(to_cpumask(l->cpus)));
+-
+-		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
+-			len += sysfs_emit_at(buf, len, " nodes=%*pbl",
+-					     nodemask_pr_args(&l->nodes));
+-
+-		len += sysfs_emit_at(buf, len, "\n");
+-	}
+-
+-	free_loc_track(&t);
+-	if (!t.count)
+-		len += sysfs_emit_at(buf, len, "No data\n");
+-
+-	return len;
+-}
++#endif  /* CONFIG_DEBUG_FS   */
+ #endif	/* CONFIG_SLUB_DEBUG */
+ 
+ #ifdef SLUB_RESILIENCY_TEST
+@@ -5360,17 +5304,25 @@ SLAB_ATTR(validate);
+ 
+ static ssize_t alloc_calls_show(struct kmem_cache *s, char *buf)
+ {
+-	if (!(s->flags & SLAB_STORE_USER))
+-		return -ENOSYS;
+-	return list_locations(s, buf, TRACK_ALLOC);
++	int len = 0;
++
++	len += sprintf(buf + len, "Deprecated, use the equvalent under\n");
++	len += sprintf(buf + len, "/sys/kernel/debug/slab/%s/alloc_traces\n",
++			s->name);
++
++	return len;
+ }
+ SLAB_ATTR_RO(alloc_calls);
+ 
+ static ssize_t free_calls_show(struct kmem_cache *s, char *buf)
+ {
+-	if (!(s->flags & SLAB_STORE_USER))
+-		return -ENOSYS;
+-	return list_locations(s, buf, TRACK_FREE);
++	int len = 0;
++
++	len += sprintf(buf + len, "Deprecated, use the equvalent under\n");
++	len += sprintf(buf + len, "/sys/kernel/debug/slab/%s/free_traces\n",
++			s->name);
++
++	return len;
+ }
+ SLAB_ATTR_RO(free_calls);
+ #endif /* CONFIG_SLUB_DEBUG */
+@@ -5826,6 +5778,252 @@ static int __init slab_sysfs_init(void)
+ __initcall(slab_sysfs_init);
+ #endif /* CONFIG_SYSFS */
+ 
++#if defined(CONFIG_SLUB_DEBUG) && defined(CONFIG_DEBUG_FS)
++static int debugfs_slab_alias(struct kmem_cache *s, const char *name)
++{
++	struct saved_alias *al;
++
++	if (slab_state == FULL) {
++		/*
++		 * If we have a leftover link then remove it.
++		 */
++		debugfs_remove(s->slab_cache_dentry);
++		s->slab_cache_dentry = debugfs_create_symlink(name, slab_debugfs_root, NULL);
++		return IS_ERR(s->slab_cache_dentry);
++	}
++
++	al = kmalloc(sizeof(struct saved_alias), GFP_KERNEL);
++	if (!al)
++		return -ENOMEM;
++
++	al->s = s;
++	al->name = name;
++	al->next = alias_list;
++	alias_list = al;
++	return 0;
++}
++
++static int slab_debugfs_show(struct seq_file *seq, void *v)
++{
++
++	struct location *l;
++	unsigned int idx = *(unsigned int *)v;
++
++	if (idx < t.count) {
++		l = &t.loc[idx];
++
++		seq_printf(seq, "%7ld ", l->count);
++
++		if (l->addr)
++			seq_printf(seq, "%pS", (void *)l->addr);
++		else
++			seq_puts(seq, "<not-available>");
++
++		if (l->sum_time != l->min_time) {
++			seq_printf(seq, " age=%ld/%ld/%ld",
++				l->min_time,
++				(long)div_u64(l->sum_time, l->count),
++				l->max_time);
++		} else
++			seq_printf(seq, " age=%ld",
++				l->min_time);
++
++		if (l->min_pid != l->max_pid)
++			seq_printf(seq, " pid=%ld-%ld",
++				l->min_pid, l->max_pid);
++		else
++			seq_printf(seq, " pid=%ld",
++				l->min_pid);
++
++		if (num_online_cpus() > 1 &&
++				!cpumask_empty(to_cpumask(l->cpus)))
++			seq_printf(seq, " cpus=%*pbl",
++				 cpumask_pr_args(to_cpumask(l->cpus)));
++
++		if (nr_online_nodes > 1 && !nodes_empty(l->nodes))
++			seq_printf(seq, " nodes=%*pbl",
++				 nodemask_pr_args(&l->nodes));
++
++		seq_puts(seq, "\n");
++	}
++
++	if (t.count == 0)
++		seq_puts(seq, "No data\n");
++
++	return 0;
++}
++
++static void slab_debugfs_stop(struct seq_file *seq, void *v)
++{
++	if (!v && t.max) {
++		free_loc_track(&t);
++		t.max = 0;
++	}
++}
++
++static void *slab_debugfs_next(struct seq_file *seq, void *v, loff_t *ppos)
++{
++	loff_t *spos = v;
++
++	if (*ppos < t.count) {
++		*spos = *spos + 1;
++		*ppos = *spos;
++		return spos;
++	}
++
++	return NULL;
++}
++
++static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
++{
++	struct kmem_cache_node *n;
++	struct kmem_cache *s;
++	enum track_item alloc;
++	int node;
++	loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
++
++	s = seq->file->f_inode->i_private;
++
++	if (!spos)
++		return NULL;
++
++	if (!(s->flags & SLAB_STORE_USER))
++		return ERR_PTR(-EOPNOTSUPP);
++
++	if (*ppos == 0) {
++
++		t.count = 0;
++		t.max = 0;
++		t.loc = NULL;
++		if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_traces") == 0)
++			alloc =  TRACK_ALLOC;
++		else
++			alloc =  TRACK_FREE;
++
++		if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
++			     GFP_KERNEL)) {
++			seq_puts(seq, "Out of memory\n");
++			return ERR_PTR(-ENOMEM);
++		}
++		/* Push back cpu slabs */
++		flush_all(s);
++
++		for_each_kmem_cache_node(s, node, n) {
++			unsigned long flags;
++			struct page *page;
++
++			if (!atomic_long_read(&n->nr_slabs))
++				continue;
++
++			spin_lock_irqsave(&n->list_lock, flags);
++			list_for_each_entry(page, &n->partial, slab_list)
++				process_slab(&t, s, page, alloc);
++			list_for_each_entry(page, &n->full, slab_list)
++				process_slab(&t, s, page, alloc);
++			spin_unlock_irqrestore(&n->list_lock, flags);
++		}
++	}
++
++	if (*ppos < t.count) {
++		*spos = *ppos;
++		return spos;
++	}
++
++	kfree(spos);
++	return NULL;
++}
++
++static const struct seq_operations slab_debugfs_sops = {
++	.start  = slab_debugfs_start,
++	.next   = slab_debugfs_next,
++	.stop   = slab_debugfs_stop,
++	.show   = slab_debugfs_show
++};
++DEFINE_SEQ_ATTRIBUTE(slab_debugfs);
++
++static void debugfs_slab_add(struct kmem_cache *s)
++{
++	const char *name;
++	int unmergeable = slab_unmergeable(s);
++
++	if (unlikely(!slab_debugfs_root))
++		return;
++
++	if (!unmergeable && disable_higher_order_debug &&
++			(slub_debug & DEBUG_METADATA_FLAGS))
++		unmergeable = 1;
++
++	if (unmergeable) {
++		/*
++		 * Slabcache can never be merged so we can use the name proper.
++		 * This is typically the case for debug situations. In that
++		 * case we can catch duplicate names easily.
++		 */
++		debugfs_remove_recursive(s->slab_cache_dentry);
++		name = s->name;
++	} else {
++		/*
++		 * Create a unique name for the slab as a target
++		 * for the symlinks.
++		 */
++		name = create_unique_id(s);
++	}
++
++	s->slab_cache_dentry = debugfs_create_dir(name, slab_debugfs_root);
++	if (!IS_ERR(s->slab_cache_dentry)) {
++		debugfs_create_file("alloc_traces", 0400,
++			s->slab_cache_dentry, s, &slab_debugfs_fops);
++
++		debugfs_create_file("free_traces", 0400,
++			s->slab_cache_dentry, s, &slab_debugfs_fops);
++	}
++
++	if (!unmergeable) {
++		/* Setup first alias */
++		debugfs_slab_alias(s, s->name);
++	}
++}
++
++void debugfs_slab_release(struct kmem_cache *s)
++{
++	if (slab_state >= FULL)
++		debugfs_remove_recursive(s->slab_cache_dentry);
++}
++
++static int __init slab_debugfs_init(void)
++{
++	struct kmem_cache *s;
++	int err;
++
++	slab_debugfs_root = debugfs_create_dir("slab", NULL);
++	if (!IS_ERR(slab_debugfs_root)) {
++
++		slab_state = FULL;
++
++		list_for_each_entry(s, &slab_caches, list)
++			debugfs_slab_add(s);
++	} else {
++		pr_err("Cannot create slab debugfs.\n");
++		return IS_ERR(slab_debugfs_root);
++	}
++
++	while (alias_list) {
++		struct saved_alias *al = alias_list;
++
++		alias_list = alias_list->next;
++
++		err = debugfs_slab_alias(al->s, al->name);
++		if (err)
++			pr_err("SLUB: Unable to add boot slab alias %s to debugfs\n",
++			       al->name);
++		kfree(al);
++	}
++
++	return 0;
++
++}
++__initcall(slab_debugfs_init);
++#endif
+ /*
+  * The /proc/slabinfo ABI
+  */
 -- 
-Best Regards,
-Haosdent Huang
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a
+member of the Code Aurora Forum, hosted by The Linux Foundation
+
