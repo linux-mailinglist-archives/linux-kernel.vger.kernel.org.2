@@ -2,110 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38FD37567D
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CC243756AE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:24:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbhEFPXh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:23:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59432 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235169AbhEFPX0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:23:26 -0400
-Received: from mail-wr1-x42e.google.com (mail-wr1-x42e.google.com [IPv6:2a00:1450:4864:20::42e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94B35C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 08:22:18 -0700 (PDT)
-Received: by mail-wr1-x42e.google.com with SMTP id l2so6039569wrm.9
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:22:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=LjkmNLfvqPyiL6614IK57vCZCshkuyxTiVxlK7RyKtA=;
-        b=CMqxdjlogQnANY0VSTrBV6eFGXtkS+zAJKD1u/fKWxqZrqdn7N0d56jErtHZas5P9R
-         Pf4HteJ2Y4/c/cpzK7Ok/LwxGOseGrIwf8jDphlXe9jLm6cfKTNvzB+d/G5PTeTmf2MU
-         F+o89XkALsUT2fplqCk8O0VB+p4mkiCzrO4ijm0SY6OoWwLESwlJ07CnnY2LZ6hZIIby
-         omLlZqUsb0DAMRaSNHzpXsXbUG3E8HZm/6wK5XjkRSlb691jm79660CBIgmTmzNDyorI
-         t8Cb7TQE6kI+gP03d3eJHloqRVgna2nuFOviCLb8bSIoDfKTnnSLx0Jyjp6UFYellv2w
-         sifg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=LjkmNLfvqPyiL6614IK57vCZCshkuyxTiVxlK7RyKtA=;
-        b=Ts6w7SCW4VjWbwXjeBOwwwyZHqsljFGz+0Owm9UWL1QxK+T/oegbeeoSQRsTfcYN6s
-         7/L/sMfQdroaeqIqhA2G0zFEVctvx6NGdzQwxIl324yuJuM2/BR8WEfaDPSJbKGFz3H+
-         HaIctguLwQbRADXVGEsbu6CQDaKMhq2TDDL0klh9J2y9gNVRjleHGBTCnZYBd/vi7SWh
-         qG7pEIRFOn133WshQVoHIdIxxgU2dPAL2IJFoBv3ElAZbkxt8b/ux78DaEuDyjHYhtGw
-         gLIxpk6wKZqkD3cgXh1MUFd9wzfi4DpjkPCcHMsUHkIS62+BAW6gPT5T+gTZtjt7NA5A
-         Xsgw==
-X-Gm-Message-State: AOAM531qA55lC4sXxD4x6xjm3kO5IWBXfo8+5Ekvh3n9S4FDK6bqB7tC
-        drOYlKpp3F2EirW7dM/KtaAB9A==
-X-Google-Smtp-Source: ABdhPJxdb+luU7TjtYehHC6AgShtkBAy0A4Wk/HkhJo47Oe0t/FbqPNTthbkMXDy91vXqJYGSnQRag==
-X-Received: by 2002:a5d:5603:: with SMTP id l3mr5836134wrv.79.1620314537204;
-        Thu, 06 May 2021 08:22:17 -0700 (PDT)
-Received: from elver.google.com ([2a00:79e0:15:13:56c7:a45c:aa57:32c4])
-        by smtp.gmail.com with ESMTPSA id t10sm10687781wmf.16.2021.05.06.08.22.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 08:22:16 -0700 (PDT)
-Date:   Thu, 6 May 2021 17:22:10 +0200
-From:   Marco Elver <elver@google.com>
-To:     "Eric W . Biederman" <ebiederm@xmission.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Subject: [PATCH v2] checkpatch: warn about direct use of send_sig_info and
- force_sig_info
-Message-ID: <YJQJoq+7MAJosrHg@elver.google.com>
-References: <20210506132827.3198497-1-elver@google.com>
- <CABJPP5D_azxBiKq08_m_WVmcEy8qbMCa0EsAgu57t2T+eDJA0A@mail.gmail.com>
+        id S235431AbhEFPZT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:25:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38110 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235187AbhEFPY3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:24:29 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3EB3F61289;
+        Thu,  6 May 2021 15:23:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620314610;
+        bh=mHMffteSTguBJ20cEjxFDlhyxs7b4CZOVWuPWstQVxs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=V5sH6CPic+zohK9e0Tej3j8T0kxhtrLLXH+mZlmBv49+NZtZPuX2kr6TsFBz5vekd
+         urwi/KUoo9XkzkPDq6TXUaZQ7nYXGaRLBm8llSAPGI1KovW1EGpcUWUY6erJRofnaH
+         bZnc3eARG7nffX83sw1h1xumx9wqxAA9j0K3VIi0R7jlVOKT5Xp9/B/Eh/XkCNXDzs
+         9+90CCva4xyhxqv+w+WZWiyLR78rX1Z2hD8XE5MZahgwqCOEvUI6WXnWjY4Rh/4mTq
+         0bCj7Zdd2oR1IOAQKOOjIMUGbBRARvm0VVC7riOKIwpD4JN3ZHbZ443EJtIpd6ZSy6
+         0nFUXN48LqZbg==
+Received: by mail.kernel.org with local (Exim 4.94.2)
+        (envelope-from <mchehab@kernel.org>)
+        id 1lefqZ-000RuV-V0; Thu, 06 May 2021 17:23:27 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        Bingbu Cao <bingbu.cao@intel.com>,
+        Chiranjeevi Rapolu <chiranjeevi.rapolu@intel.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Dongchun Zhu <dongchun.zhu@mediatek.com>,
+        Hyungwoo Yang <hyungwoo.yang@intel.com>,
+        Jacopo Mondi <jacopo@jmondi.org>,
+        Leon Luo <leonl@leopardimaging.com>,
+        Manivannan Sadhasivam <mani@kernel.org>,
+        Matt Ranostay <matt.ranostay@konsulko.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Ricardo Ribalda <ribalda@kernel.org>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Shawn Tu <shawnx.tu@intel.com>,
+        Shunqian Zheng <zhengsq@rock-chips.com>,
+        Tianshu Qiu <tian.shu.qiu@intel.com>,
+        Wenyou Yang <wenyou.yang@microchip.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org
+Subject: [PATCH v5 00/30] media: i2c: use pm_runtime_resume_and_get() were possible
+Date:   Thu,  6 May 2021 17:22:56 +0200
+Message-Id: <cover.1620314098.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABJPP5D_azxBiKq08_m_WVmcEy8qbMCa0EsAgu57t2T+eDJA0A@mail.gmail.com>
-User-Agent: Mutt/2.0.5 (2021-01-21)
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting up siginfo and using send_sig_info() or force_sig_info()
-directly is discouraged. Instead, new code wanting to generate signals
-should use the appropriate helper specific to the signal.
+Dealing with PM runtime (RPM) is different than dealing with other kAPIs used
+on media, as most pm_runtime_get_*() functions won't return to the the state
+before the call if an error rises. They, instead, increment an usage_count.
 
-Eric mentioned that he'd like to make these static at some point, but
-until that can happen, let's try to avoid introducing new users of them.
+Due to that, there were several bugs on media. Just on this review, we found
+24 such errors.
 
-Cc: Eric W. Biederman <ebiederm@xmission.com>
-Tested-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
-Signed-off-by: Marco Elver <elver@google.com>
----
-v2:
-* Use ?: because we don't need $2 (suggested by Dwaipayan Ray).
+So, let's use pm_runtime_resume_and_get() whenever possible, as it
+has two advantages over :
 
-v1: https://lkml.kernel.org/r/20210506132827.3198497-1-elver@google.com
----
- scripts/checkpatch.pl | 6 ++++++
- 1 file changed, 6 insertions(+)
+1. On errors, it decrements the usage count;
+2. It always return zero on success or an error code. This prevents a 
+   common error pattern of checking if ret is not zero to identify
+   for errors.
 
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index ccb412a74725..59f6eb3a2026 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -7153,6 +7153,12 @@ sub process {
- 			     "Where possible, use lockdep_assert_held instead of assertions based on spin_is_locked\n" . $herecurr);
- 		}
- 
-+# check for direct use of send_sig_info(), force_sig_info()
-+		if ($line =~ /\b((?:force|send)_sig_info)\(/) {
-+			WARN("USE_SIGINFO_HELPER",
-+			     "Where possible, avoid using '$1' directly and use a signal-specific helper setting required siginfo fields (see include/linux/sched/signal.h).\n" . $herecurr);
-+		}
-+
- # check for deprecated apis
- 		if ($line =~ /\b($deprecated_apis_search)\b\s*\(/) {
- 			my $deprecated_api = $1;
+There are however a few places where calls to pm_runtime_get_sync()
+are kept. On several of those, a comment was added, in order to
+help preventing trivial patches that could try to change them.
+
+PS.: This series was submitted already together with the fix patches
+at:
+
+	https://lore.kernel.org/linux-media/cover.1619621413.git.mchehab+huawei@kernel.org/
+
+I opted to break it on 3 parts, in order to make easier to review.
+
+This is the second part.
+
+Mauro Carvalho Chehab (30):
+  media: i2c: ak7375: use pm_runtime_resume_and_get()
+  media: i2c: dw9714: use pm_runtime_resume_and_get()
+  media: i2c: dw9768: use pm_runtime_resume_and_get()
+  media: i2c: dw9807-vcm: use pm_runtime_resume_and_get()
+  media: i2c: hi556: use pm_runtime_resume_and_get()
+  media: i2c: imx214: use pm_runtime_resume_and_get()
+  media: i2c: imx219: use pm_runtime_resume_and_get()
+  media: i2c: imx258: use pm_runtime_resume_and_get()
+  media: i2c: imx274: use pm_runtime_resume_and_get()
+  media: i2c: imx290: use pm_runtime_resume_and_get()
+  media: i2c: imx319: use pm_runtime_resume_and_get()
+  media: i2c: imx355: use pm_runtime_resume_and_get()
+  media: i2c: mt9m001: use pm_runtime_resume_and_get()
+  media: i2c: ov02a10: use pm_runtime_resume_and_get()
+  media: i2c: ov13858: use pm_runtime_resume_and_get()
+  media: i2c: ov2659: use pm_runtime_resume_and_get()
+  media: i2c: ov2685: use pm_runtime_resume_and_get()
+  media: i2c: ov2740: use pm_runtime_resume_and_get()
+  media: i2c: ov5647: use pm_runtime_resume_and_get()
+  media: i2c: ov5648: use pm_runtime_resume_and_get()
+  media: i2c: ov5670: use pm_runtime_resume_and_get()
+  media: i2c: ov5675: use pm_runtime_resume_and_get()
+  media: i2c: ov5695: use pm_runtime_resume_and_get()
+  media: i2c: ov7740: use pm_runtime_resume_and_get()
+  media: i2c: ov8856: use pm_runtime_resume_and_get()
+  media: i2c: ov8865: use pm_runtime_resume_and_get()
+  media: i2c: ov9734: use pm_runtime_resume_and_get()
+  media: i2c: tvp5150: use pm_runtime_resume_and_get()
+  media: i2c: video-i2c: use pm_runtime_resume_and_get()
+  media: i2c: ccs-core: use pm_runtime_resume_and_get()
+
+ drivers/media/i2c/ak7375.c       | 10 +---------
+ drivers/media/i2c/ccs/ccs-core.c |  7 ++-----
+ drivers/media/i2c/dw9714.c       | 10 +---------
+ drivers/media/i2c/dw9768.c       | 10 +---------
+ drivers/media/i2c/dw9807-vcm.c   | 10 +---------
+ drivers/media/i2c/hi556.c        |  3 +--
+ drivers/media/i2c/imx214.c       |  6 ++----
+ drivers/media/i2c/imx219.c       |  6 ++----
+ drivers/media/i2c/imx258.c       |  6 ++----
+ drivers/media/i2c/imx274.c       |  3 +--
+ drivers/media/i2c/imx290.c       |  6 ++----
+ drivers/media/i2c/imx319.c       |  6 ++----
+ drivers/media/i2c/imx355.c       |  6 ++----
+ drivers/media/i2c/mt9m001.c      |  9 +++++++--
+ drivers/media/i2c/ov02a10.c      |  6 ++----
+ drivers/media/i2c/ov13858.c      |  6 ++----
+ drivers/media/i2c/ov2659.c       |  6 ++----
+ drivers/media/i2c/ov2685.c       |  7 +++----
+ drivers/media/i2c/ov2740.c       |  6 ++----
+ drivers/media/i2c/ov5647.c       |  9 +++++----
+ drivers/media/i2c/ov5648.c       |  6 ++----
+ drivers/media/i2c/ov5670.c       |  6 ++----
+ drivers/media/i2c/ov5675.c       |  3 +--
+ drivers/media/i2c/ov5695.c       |  6 ++----
+ drivers/media/i2c/ov7740.c       |  6 ++----
+ drivers/media/i2c/ov8856.c       |  3 +--
+ drivers/media/i2c/ov8865.c       |  6 ++----
+ drivers/media/i2c/ov9734.c       |  3 +--
+ drivers/media/i2c/tvp5150.c      | 16 +++-------------
+ drivers/media/i2c/video-i2c.c    | 12 ++++--------
+ 30 files changed, 63 insertions(+), 142 deletions(-)
+
 -- 
-2.31.1.607.g51e8a6a459-goog
+2.30.2
+
 
