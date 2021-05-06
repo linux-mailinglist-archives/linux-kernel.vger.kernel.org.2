@@ -2,90 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FE437509B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CB6037509D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:15:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233705AbhEFIQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 04:16:13 -0400
-Received: from mail-m176216.qiye.163.com ([59.111.176.216]:19512 "EHLO
-        mail-m176216.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhEFIQL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 04:16:11 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m176216.qiye.163.com (Hmail) with ESMTPA id 16285C20158;
-        Thu,  6 May 2021 16:15:12 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
-        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
-        Wan Jiabing <wanjiabing@vivo.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net
-Subject: [PATCH] docs/zh_CN: fix reference file and update translations
-Date:   Thu,  6 May 2021 16:14:01 +0800
-Message-Id: <20210506081414.14004-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S233726AbhEFIQ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:16:26 -0400
+Received: from mga18.intel.com ([134.134.136.126]:50404 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233574AbhEFIQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 04:16:24 -0400
+IronPort-SDR: ZeHwsGpKGi2PloLm85ZvWpX8Ag29yy2hAOS2bUHNCju6wNaRxEZFwv7Q73oyO9rV9Sys5mskcj
+ 50QfevodoAuQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="185872229"
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="185872229"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 01:14:49 -0700
+IronPort-SDR: YOYbol4mHR0ZzBH+w1CpU011GEPo5Etw8G5ZJ0PqJFjirPYPzkpjWHnEflKyL5d5EBLkCsJuwZ
+ wUA757WTQlxA==
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="434235869"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 01:14:45 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        He Ying <heying24@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Subject: Re: [PATCH] [v2] smp: fix smp_call_function_single_async prototype
+References: <20210505211300.3174456-1-arnd@kernel.org>
+        <87czu4slom.fsf@yhuang6-desk1.ccr.corp.intel.com>
+        <CAK8P3a1SBDXqHE5FgG_WfzrcbeT6V6kg5T+xTGU8Cp_vLLdMqA@mail.gmail.com>
+Date:   Thu, 06 May 2021 16:14:43 +0800
+In-Reply-To: <CAK8P3a1SBDXqHE5FgG_WfzrcbeT6V6kg5T+xTGU8Cp_vLLdMqA@mail.gmail.com>
+        (Arnd Bergmann's message of "Thu, 6 May 2021 09:54:55 +0200")
+Message-ID: <877dkcs2h8.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQh4eHVZDT0IeQkIfGEhOQxhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PE06Mww4ND8TPEIsAhMuGTgM
-        KTAKFE9VSlVKTUlLSUNDQkpJTUhOVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFIT0xPNwY+
-X-HM-Tid: 0a7940bebb63d976kuws16285c20158
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit da514157c4f06 ("docs: make reporting-bugs.rst obsolete"),
-reporting-bugs.rst was deleted and replaced by reporting-issues.rst.
+Arnd Bergmann <arnd@kernel.org> writes:
 
-In commit cf6d6fc279360 ("docs: process/howto.rst: make sections on
-bug reporting match practice"), related sections were adjusted.
+> On Thu, May 6, 2021 at 3:20 AM Huang, Ying <ying.huang@intel.com> wrote:
+>>
+>> Arnd Bergmann <arnd@kernel.org> writes:
+>>
+>> > From: Arnd Bergmann <arnd@arndb.de>
+>> >
+>> > As of commit 966a967116e6 ("smp: Avoid using two cache lines for struct
+>> > call_single_data"), the smp code prefers 32-byte aligned call_single_data
+>> > objects for performance reasons, but the block layer includes an instance
+>> > of this structure in the main 'struct request' that is more senstive
+>> > to size than to performance here, see 4ccafe032005 ("block: unalign
+>> > call_single_data in struct request").
+>> >
+>> > The result is a violation of the calling conventions that clang correctly
+>> > points out:
+>> >
+>> > block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to 32-byte aligned parameter 2 of 'smp_call_function_single_async' may result in an unaligned pointer access [-Walign-mismatch]
+>> >                 smp_call_function_single_async(cpu, &rq->csd);
+>>
+>> Can this be silenced by
+>>
+>>                 smp_call_function_single_async(cpu, (call_single_data_t *)&rq->csd);
+>
+> Probably, but casting from smaller alignment to larger alignment is undefined
+> behavior
 
-Fix the reference file and update some translations.
+We cannot avoid type cast in Linux kernel, such as container_of(), is
+there some difference here?
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- .../translations/zh_CN/process/howto.rst         | 16 +++++++---------
- 1 file changed, 7 insertions(+), 9 deletions(-)
+> and I'd rather not go there in case this triggers some runtime
+> misbehavior or ubsan check in the future. Making the function accept a
+> pointer with the smaller alignment avoids getting into undefined behavior
+> and doesn't require a cast.
 
-diff --git a/Documentation/translations/zh_CN/process/howto.rst b/Documentation/translations/zh_CN/process/howto.rst
-index ee3dee476d57..930ebc215fad 100644
---- a/Documentation/translations/zh_CN/process/howto.rst
-+++ b/Documentation/translations/zh_CN/process/howto.rst
-@@ -275,14 +275,8 @@ Linux-next 集成测试树
- 报告bug
- -------
- 
--bugzilla.kernel.org是Linux内核开发者们用来跟踪内核Bug的网站。我们鼓励用
--户在这个工具中报告找到的所有bug。如何使用内核bugzilla的细节请访问：
--
--	http://test.kernel.org/bugzilla/faq.html
--
--内核源码主目录中的:ref:`admin-guide/reporting-bugs.rst <reportingbugs>`
--文件里有一个很好的模板。它指导用户如何报告可能的内核bug以及需要提供哪些信息
--来帮助内核开发者们找到问题的根源。
-+内核源码主目录中的 'Documentation/admin-guide/reporting-issues.rst' 文件介绍了
-+如何报告可能的内核bug，以及需要提供哪些信息来帮助内核开发者们找到问题的根源。
- 
- 
- 利用bug报告
-@@ -293,7 +287,11 @@ bugzilla.kernel.org是Linux内核开发者们用来跟踪内核Bug的网站。
- 者感受到你的存在。修改bug是赢得其他开发者赞誉的最好办法，因为并不是很多
- 人都喜欢浪费时间去修改别人报告的bug。
- 
--要尝试修改已知的bug，请访问 http://bugzilla.kernel.org 网址。
-+要尝试修复已知的bug，请找到你感兴趣的子系统，查看报告该子系统bug的
-+MAINTAINERS文件，通常它是一个邮件列表，很少有bug追踪信息。在这个
-+文件搜索获取最新的报告，并在你认为合适的地方提供帮助。你可能还需要查看
-+https://bugzilla.kernel.org 以获取bug报告，只有少数一些内核子系统积极地
-+通过它进行报告或追踪，但是整个内核的bug都被归档在那里。
- 
- 
- 邮件列表
--- 
-2.25.1
+In its raw form as above, this looks bad.  If we encapsulate it, it may
+look better, for example,
 
+static inline int __smp_call_function_single_async(int cpu, struct __call_single_data *csd)
+{
+        smp_call_function_single_async(cpu, (call_single_data_t *)csd);
+}
+
+Then, we can do
+
+        __smp_call_function_single_async(cpu, &rq->csd);
+
+Best Regards,
+Huang, Ying
