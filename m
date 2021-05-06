@@ -2,162 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A851375723
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:29:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 571D9375731
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:30:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236050AbhEFPaO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:30:14 -0400
-Received: from out01.mta.xmission.com ([166.70.13.231]:54040 "EHLO
-        out01.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235730AbhEFP3s (ORCPT
+        id S235202AbhEFPba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:31:30 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:39622 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235167AbhEFPbV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:29:48 -0400
-Received: from in02.mta.xmission.com ([166.70.13.52])
-        by out01.mta.xmission.com with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lefvf-005iqR-MM; Thu, 06 May 2021 09:28:43 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in02.mta.xmission.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lefvd-006sGN-K7; Thu, 06 May 2021 09:28:43 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Marco Elver <elver@google.com>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
-References: <m15z031z0a.fsf@fess.ebiederm.org>
-        <YIxVWkT03TqcJLY3@elver.google.com>
-        <m1zgxfs7zq.fsf_-_@fess.ebiederm.org>
-        <m1r1irpc5v.fsf@fess.ebiederm.org>
-        <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
-        <m1czuapjpx.fsf@fess.ebiederm.org>
-        <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
-        <m14kfjh8et.fsf_-_@fess.ebiederm.org>
-        <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-        <CAMuHMdUXh45iNmzrqqQc1kwD_OELHpujpst1BTMXDYTe7vKSCg@mail.gmail.com>
-        <YJPIO7r2uLXsW9uK@elver.google.com>
-Date:   Thu, 06 May 2021 10:28:37 -0500
-In-Reply-To: <YJPIO7r2uLXsW9uK@elver.google.com> (Marco Elver's message of
-        "Thu, 6 May 2021 12:43:07 +0200")
-Message-ID: <m14kff6fve.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 6 May 2021 11:31:21 -0400
+Received: from [192.168.254.32] (unknown [47.187.223.33])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 7CC0620B7178;
+        Thu,  6 May 2021 08:30:22 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7CC0620B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620315023;
+        bh=oOr6oWLNHl5OnLWE/DfiEsabe3j4uXEH45hDNM9rU+k=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=X6aXc3oIkpBHMKkJLeTziMHQ5IMjhZR/dNw7gsy5jn+zxwAkWPgqm9Tg5wW6VVnez
+         5OaVLAP3oHl89xq9HwL8VAtPzggXN0sNNdUThakOXFHExpCO8iaB3Ct61p6n17O/8e
+         lT0nLF1TCnlrcVtzTpRYRxGLZtJM9Evbq5HKnHLk=
+Subject: Re: [RFC PATCH v3 3/4] arm64: Handle miscellaneous functions in .text
+ and .init.text
+To:     Mark Brown <broonie@kernel.org>
+Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
+ <20210503173615.21576-1-madvenka@linux.microsoft.com>
+ <20210503173615.21576-4-madvenka@linux.microsoft.com>
+ <20210506141211.GE4642@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <8268fde8-5f3b-0781-971b-b29b5e0916cf@linux.microsoft.com>
+Date:   Thu, 6 May 2021 10:30:21 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lefvd-006sGN-K7;;;mid=<m14kff6fve.fsf@fess.ebiederm.org>;;;hst=in02.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18VBUwGkvjVT/EuvDccLGPbA1rUG9welZ4=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa03.xmission.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-0.2 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01
-        autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.4999]
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa03 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa03 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: ;Marco Elver <elver@google.com>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 1433 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 4.1 (0.3%), b_tie_ro: 2.8 (0.2%), parse: 1.17
-        (0.1%), extract_message_metadata: 11 (0.7%), get_uri_detail_list: 2.4
-        (0.2%), tests_pri_-1000: 11 (0.8%), tests_pri_-950: 0.96 (0.1%),
-        tests_pri_-900: 0.81 (0.1%), tests_pri_-90: 78 (5.5%), check_bayes: 77
-        (5.4%), b_tokenize: 7 (0.5%), b_tok_get_all: 6 (0.4%), b_comp_prob:
-        1.88 (0.1%), b_tok_touch_all: 58 (4.1%), b_finish: 0.68 (0.0%),
-        tests_pri_0: 1313 (91.6%), check_dkim_signature: 0.39 (0.0%),
-        check_dkim_adsp: 2.4 (0.2%), poll_dns_idle: 1.07 (0.1%), tests_pri_10:
-        2.9 (0.2%), tests_pri_500: 8 (0.5%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH v3 00/12] signal: sort out si_trapno and si_perf
-X-SA-Exim-Version: 4.2.1 (built Sat, 08 Feb 2020 21:53:50 +0000)
-X-SA-Exim-Scanned: Yes (on in02.mta.xmission.com)
+In-Reply-To: <20210506141211.GE4642@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-For the moment I am adding this to my for-next branch.  I plan to
-respin and fold this in but I am not certain what my schedule looks like
-today.  So I figure making certain I have a fix out (so I stop breaking
-m68k) is more important than having a perfect patch.
 
-Eric
+On 5/6/21 9:12 AM, Mark Brown wrote:
+> On Mon, May 03, 2021 at 12:36:14PM -0500, madvenka@linux.microsoft.com wrote:
+> 
+>> There are some SYM_CODE functions that are currently in ".text" or
+>> ".init.text" sections. Some of these are functions that the unwinder
+>> does not care about as they are not "interesting" to livepatch. These
+>> will remain in their current sections. The rest I have moved into a
+>> new section called ".code.text".
+> 
+> I was thinking it'd be good to do this by modifying SYM_CODE_START() to
+> emit the section, that way nobody can forget to put any SYM_CODE into a
+> special section.  That does mean we'd have to first introduce a new
+> variant for specifying a section that lets us override things that need
+> to be in some specific section and convert everything that's in a
+> special section over to that first which is a bit annoying but feels
+> like it's worth it for the robustness.  It'd also put some of the don't
+> cares into .code.text but so long as they are actually don't cares that
+> should be fine!
+> 
 
-From: "Eric W. Biederman" <ebiederm@xmission.com>
-Date: Thu, 6 May 2021 10:17:10 -0500
-Subject: [PATCH] signal: Remove the last few si_perf references
+OK. I could make the section an argument to SYM_CODE*() so that a developer
+will never miss that. Some documentation may be in order so the guidelines
+are clear. I will do the doc patch separately, if that is alright with
+you all.
 
-I accidentially overlooked a few references to si_perf when sorting
-out the ABI update those references now.
+About the don't car functions - most of them are OK to be moved into
+.code.text. But the hypervisor vector related code has a problem. I
+have not debugged that yet. If I add that code in .code.text, KVM
+initialization fails in one case. In another case, when I actually
+test with a VM, the VM does not come up.
 
-Fixes: f6a2c711f1e3 ("signal: Deliver all of the siginfo perf data in _perf")
-Suggested-by: Marco Elver <elver@google.com>
-Signed-off-by: "Eric W. Biederman" <ebiederm@xmission.com>
----
- arch/m68k/kernel/signal.c                             | 3 ++-
- include/uapi/linux/perf_event.h                       | 2 +-
- tools/testing/selftests/perf_events/sigtrap_threads.c | 2 +-
- 3 files changed, 4 insertions(+), 3 deletions(-)
+I am not sure. But it looks like there may be some reloc issue going on.
+I don't have a handle on this yet. So, for now, I will leave the hypervisor
+stuff in .text. But I will mark it as TBD in the cover letter so we don't
+lose track of it.
 
-diff --git a/arch/m68k/kernel/signal.c b/arch/m68k/kernel/signal.c
-index a4b7ee1df211..8f215e79e70e 100644
---- a/arch/m68k/kernel/signal.c
-+++ b/arch/m68k/kernel/signal.c
-@@ -623,7 +623,8 @@ static inline void siginfo_build_tests(void)
- 	BUILD_BUG_ON(offsetof(siginfo_t, si_pkey) != 0x12);
- 
- 	/* _sigfault._perf */
--	BUILD_BUG_ON(offsetof(siginfo_t, si_perf) != 0x10);
-+	BUILD_BUG_ON(offsetof(siginfo_t, si_perf_data) != 0x10);
-+	BUILD_BUG_ON(offsetof(siginfo_t, si_perf_type) != 0x14);
- 
- 	/* _sigpoll */
- 	BUILD_BUG_ON(offsetof(siginfo_t, si_band)   != 0x0c);
-diff --git a/include/uapi/linux/perf_event.h b/include/uapi/linux/perf_event.h
-index e54e639248c8..7b14753b3d38 100644
---- a/include/uapi/linux/perf_event.h
-+++ b/include/uapi/linux/perf_event.h
-@@ -464,7 +464,7 @@ struct perf_event_attr {
- 
- 	/*
- 	 * User provided data if sigtrap=1, passed back to user via
--	 * siginfo_t::si_perf, e.g. to permit user to identify the event.
-+	 * siginfo_t::si_perf_data, e.g. to permit user to identify the event.
- 	 */
- 	__u64	sig_data;
- };
-diff --git a/tools/testing/selftests/perf_events/sigtrap_threads.c b/tools/testing/selftests/perf_events/sigtrap_threads.c
-index fde123066a8c..8e83cf91513a 100644
---- a/tools/testing/selftests/perf_events/sigtrap_threads.c
-+++ b/tools/testing/selftests/perf_events/sigtrap_threads.c
-@@ -43,7 +43,7 @@ static struct {
- 	siginfo_t first_siginfo;	/* First observed siginfo_t. */
- } ctx;
- 
--/* Unique value to check si_perf is correctly set from perf_event_attr::sig_data. */
-+/* Unique value to check si_perf_data is correctly set from perf_event_attr::sig_data. */
- #define TEST_SIG_DATA(addr) (~(unsigned long)(addr))
- 
- static struct perf_event_attr make_event_attr(bool enabled, volatile void *addr)
--- 
-2.30.1
 
+>> Don't care functions
+>> ====================
+> 
+> We also have a bunch of things like __cpu_soft_restart which don't seem
+> to be called out here but need to be in .idmap.text.
+> 
+
+It is already in .idmap.text.
+
+
+
+/* SPDX-License-Identifier: GPL-2.0-only */
+/*
+ * CPU reset routines
+ *
+ * Copyright (C) 2001 Deep Blue Solutions Ltd.
+ * Copyright (C) 2012 ARM Ltd.
+ * Copyright (C) 2015 Huawei Futurewei Technologies.
+ */
+
+#include <linux/linkage.h>
+#include <asm/assembler.h>
+#include <asm/sysreg.h>
+#include <asm/virt.h>
+
+.text
+.pushsection    .idmap.text, "awx"
+
+/*
+ * __cpu_soft_restart(el2_switch, entry, arg0, arg1, arg2) - Helper for
+ * cpu_soft_restart.
+ *
+ * @el2_switch: Flag to indicate a switch to EL2 is needed.
+ * @entry: Location to jump to for soft reset.
+ * arg0: First argument passed to @entry. (relocation list)
+ * arg1: Second argument passed to @entry.(physical kernel entry)
+ * arg2: Third argument passed to @entry. (physical dtb address)
+ *
+ * Put the CPU into the same state as it would be if it had been reset, and
+ * branch to what would be the reset vector. It must be executed with the
+ * flat identity mapping.
+ */
+SYM_CODE_START(__cpu_soft_restart)
+        mov_q   x12, INIT_SCTLR_EL1_MMU_OFF
+        pre_disable_mmu_workaround
+        /*
+         * either disable EL1&0 translation regime or disable EL2&0 translation
+         * regime if HCR_EL2.E2H == 1
+         */
+        msr     sctlr_el1, x12
+        isb
+
+        cbz     x0, 1f                          // el2_switch?
+        mov     x0, #HVC_SOFT_RESTART
+        hvc     #0                              // no return
+
+1:      mov     x8, x1                          // entry
+        mov     x0, x2                          // arg0
+        mov     x1, x3                          // arg1
+        mov     x2, x4                          // arg2
+        br      x8
+SYM_CODE_END(__cpu_soft_restart)
+
+.popsection
+
+
+I will double check all the *.S files and make sure that every function is accounted
+for in version 4.
+
+Stay tuned.
+
+Thanks.
+
+Madhavan
