@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EBF33753FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:43:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D731375400
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:44:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231327AbhEFMoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:44:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51456 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhEFMoh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:44:37 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB4EEC061763
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 05:43:38 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id o16so6876432ljp.3
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 05:43:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fbHWIIjNsb9wei3xXx6Otqpzu53zaXTIXIFKBmpNOgo=;
-        b=Bgqg7sh9bCd5nshaNaWvRHui08dl/ZbqDnFZ0IJ97hliP13z/2GcIBrux/SLdwV0/i
-         Km45HFsHhgWctbcGuGF6Ai0HvMZqIj6POZRSs6/PpSRACJl2PlFmLQU4hlC1yDovIWBg
-         aoQtkENq3gxHz6laQ2nmHkKeFF5HDzsMB1hneI4Ds46GeucQ1zmRGYA3wLsnyxnSTV+p
-         Db5TgOzJNR01i8q8ZcC7fzaKnTvJPicRUV9tY8zTJ3Fn3kGnBEhC16d3shmCkOArTBkz
-         lLFzcth3mqWw7rRMzs4kvzsjIlgL1hnv1j22fv57T54QODE0L88yQ2jCksh+4ITE6+wH
-         5VGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fbHWIIjNsb9wei3xXx6Otqpzu53zaXTIXIFKBmpNOgo=;
-        b=K92eClfWreYBSi1EHnzI43vAtCtdowAw9ATXLIRCLpKa8OWQX/BqtUabKokATOorWs
-         BBoix+S5SsAftC7enZMlgw/oBDRDxQMpUsMqO03foSXB4xvt4byYjHfFj9YrSwp89oEc
-         QeQM7I5STPs4AbeEVB4ZVB/TCszX+U69cRpWubL+MH+c9QusSamTY3Mv3e77uKX8MDef
-         jz8d3vGf8w2zSELTacy58FpQw4mo4LyFgwSQqY+jDsSFBLw9oit/d8PxrO54wRAbrVG5
-         97tfeTie7ee1NnO7JHcdVpdhWA569aS837mLhMO90N9ahU37YPSHSOUmIb1l0i3aqBDX
-         DGkQ==
-X-Gm-Message-State: AOAM530ful2UmSXPy34IRW0AkZLN6tD0xHVSHtlC2J5WqnifvUPbSYpU
-        FNbCR+XLuBSSUU2HCUhTufEydroSeja3Drbfk0I0zA==
-X-Google-Smtp-Source: ABdhPJz4optDOZiBZ3vSZcVI8Py60XPMQCZzXNInCGDBXfYIu467P3Ej4pt6DNl0kP7Ihy/ZCeYrBXG2yJQ/QYMK8Ng=
-X-Received: by 2002:a05:651c:503:: with SMTP id o3mr3172636ljp.368.1620305017299;
- Thu, 06 May 2021 05:43:37 -0700 (PDT)
+        id S232151AbhEFMpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:45:21 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229777AbhEFMpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 08:45:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BF4B613C2;
+        Thu,  6 May 2021 12:44:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620305058;
+        bh=ZYYq1/bAyD5Y4EByZaOxo773L78ziclPTpbCUsIZSSI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NStFqnvNeAnQkiwPNoohMf/Ty3XfhD8Mgij9OP2lBTP5mbS+Bg5375VtBN2UO0Mzs
+         Sa6wqW5hMm9WIwGKEHCwYJbIvnc9Fz4Dy0jRl9myii3jPs8FoM3NgEiPwOKVtvQxUf
+         mLlrPrXFvxWZ/LN2dVj/oJLjyX79+Yy4yPvyVbd5kk9euc2W4+6KFhpKMSYr3/nNyJ
+         UwQr52DkhzlzTRLVWlEmLNt/GfWRO5sUEgDlQz5oOJsbYH1oSNsgyqg0MeLq7Dj0PH
+         mLzir5HqyuhGiPO8MbO89sTHxI/26n9MjWag26Cv3TO/Vpse/1FfkblHQdtZDtWg7X
+         76QRgtmD6zyNg==
+Date:   Thu, 6 May 2021 13:43:42 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Michael Walle <michael@walle.cc>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH 1/2] regmap: add regmap_might_sleep()
+Message-ID: <20210506124342.GC4642@sirena.org.uk>
+References: <20210430130645.31562-1-michael@walle.cc>
+ <20210430151908.GC5981@sirena.org.uk>
+ <df27a6508e9edcd8b56058ac4834fd56@walle.cc>
+ <20210430172603.GE5981@sirena.org.uk>
+ <128a6d51af1b7c9ed24a5848347c66b9@walle.cc>
 MIME-Version: 1.0
-References: <20210317113130.2554368-1-geert+renesas@glider.be>
-In-Reply-To: <20210317113130.2554368-1-geert+renesas@glider.be>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 6 May 2021 14:43:26 +0200
-Message-ID: <CACRpkdb47SZ1npdp+MNiAz4WZZvfVZOeHcV3Scv5pK1QurT06A@mail.gmail.com>
-Subject: Re: [PATCH v3] ARM: Parse kdump DT properties
-To:     Geert Uytterhoeven <geert+renesas@glider.be>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Nicolas Pitre <nico@fluxnic.net>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Dmitry Osipenko <digetx@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Simon Horman <horms@verge.net.au>,
-        Arnd Bergmann <arnd@arndb.de>, Stephen Boyd <sboyd@kernel.org>,
-        =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Lukasz Stelmach <l.stelmach@samsung.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        kexec@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uXxzq0nDebZQVNAZ"
+Content-Disposition: inline
+In-Reply-To: <128a6d51af1b7c9ed24a5848347c66b9@walle.cc>
+X-Cookie: If it ain't baroque, don't phiques it.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 12:31 PM Geert Uytterhoeven
-<geert+renesas@glider.be> wrote:
 
-> Parse the following DT properties in the crash dump kernel, to provide a
-> modern interface between kexec and the crash dump kernel:
->   - linux,elfcorehdr: ELF core header segment, similar to the
->     "elfcorehdr=" kernel parameter.
->   - linux,usable-memory-range: Usable memory reserved for the crash dump
->     kernel.
->     This makes the memory reservation explicit.  If present, Linux no
->     longer needs to mask the program counter, and rely on the "mem="
->     kernel parameter to obtain the start and size of usable memory.
->
-> For backwards compatibility, the traditional method to derive the start
-> of memory is still used if "linux,usable-memory-range" is absent, and
-> the "elfcorehdr=" and "mem=" kernel parameters are still parsed.
->
-> Loosely based on the ARM64 version by Akashi Takahiro.
->
-> Signed-off-by: Geert Uytterhoeven <geert+renesas@glider.be>
+--uXxzq0nDebZQVNAZ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-I like the approach overall.
+On Sat, May 01, 2021 at 12:10:16AM +0200, Michael Walle wrote:
+> Am 2021-04-30 19:26, schrieb Mark Brown:
 
-I see Rob has some comments that need adressing.
+> > But that's a driver for a specific device AFAICT which looks like it's
+> > only got an I2C binding on the MFD so the driver knows that it's for a
+> > device that's on a bus that's going to sleep and doesn't need to infer
+> > anything?  This looks like the common case I'd expect where there's no
+> > variation.
 
-The chosen.txt file needs an example of how to use this so people
-can intuitively get it right if they want to play with it, it was at least
-the first question in my head: how does that look in practice?
+> You are right, at the moment this driver only has an I2C binding. But
+> the idea was that this IP block and driver can be reused behind any
+> kind of bridge; I2C, SPI or MMIO. Actually, I had the impression
 
-Yours,
-Linus Walleij
+Is this actually a way people are building hardware though?
+
+> that all you need to do to convert it to MMIO is to replace the
+> "kontron,sl28cpld" compatible with a "syscon" compatible. But it isn't
+> that easy. Anyway, the idea is that you don't need to change anything
+> in the gpio-sl28cpld driver, just change the parent. But if we can't
+> ask the regmap what type it is, then we'll have to modify the
+> gpio-sl28cpld driver and we will have to figure it out by some other
+> means.
+
+Well, you don't need to change anything at all - the driver will work
+perfectly fine if it's flagging up the GPIOs as potentially sleeping
+even if they end up not actually sleeping.
+
+> > If users happen to end up with a map flagged as fast they can work on
+> > the whatever driver uses this stuff and not realise they're breaking
+> > other users of the same driver that end up with slow I/O.  The whole
+> > point of the flag in GPIO is AIUI warnings to help with that case.
+
+> Hm, but as of now, the only thing which makes the gpio-regmap driver
+> slow i/o is the regmap itself.
+
+Surely it's just a case of the device that's creating the gpio regmap
+setting a flag when it instantiates it?  It's just one more thing that
+the parent knows about the device.  This doesn't seem insurmountable.
+
+--uXxzq0nDebZQVNAZ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCT5H0ACgkQJNaLcl1U
+h9C1jgf/fMsa7iuDhVuCYqM7GgShZSTiST2PU/FnbNwb2PTBPf7hOg631X0qGP4m
+eDKkTfJo7fiISjBASO6TWtVUeRu5jEGImhVG6Spr4SdYv5PCry7IcoStNVRO8l2t
+BDT4WzkGdCOL8eb2/UGkaeKV97jQygY91QBdduDKgJ/x5E8+9rMbTfnFBf4Rk1Ye
+39zJiOtabMrmwvFX5riGzjJ0+NNgjeIT32j1yFl76gvnvKNrk0W858TF9KfgTce3
+T3GD1bEpWhpbYIjybPwWxn2fex5Fx0mvYPcMeKSXTwF2RZ1vpnXyEznmla7N4IaO
+oBOxXEeXqMr0DTFUe6km+Dth65wY0Q==
+=mkkW
+-----END PGP SIGNATURE-----
+
+--uXxzq0nDebZQVNAZ--
