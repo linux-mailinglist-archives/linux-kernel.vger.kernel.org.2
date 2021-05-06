@@ -2,135 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CAF8375185
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:30:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C52C375188
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:32:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233852AbhEFJbA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:31:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36402 "EHLO
+        id S234082AbhEFJc5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:32:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36818 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbhEFJa7 (ORCPT
+        with ESMTP id S233028AbhEFJcz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:30:59 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14AAC061574;
-        Thu,  6 May 2021 02:30:00 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id q15so64263pgg.12;
-        Thu, 06 May 2021 02:30:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x3qQi9rPMrrCMaNFdkW+WUvitmYJ9H2Mywx5LqV07Z4=;
-        b=E1AvYrcwo9pOAgmV+vOdPoLhjaaHuTQLOAW2+33xKqKZX4zFMwJNQb0eMl7eg7XpCq
-         No+gg1cfkmAGYXB/Y+mRs8pFQ8bHpUaC+Ts0fOQJZXVPX9dTocbUtmvZoMgBPUT3+HbU
-         HRvBBToJI/1y6jjU8J5OnBGmngdj0TFPIs4/qLxtUR59CQUDA3KMYtaPjNou/ZfN7L+n
-         yxM3Ei1NFZEYkPqISYTgFPHfv9stRE5h5dSHUWjm2MSyGI+JVC0YhQyW6ynd5WmfdbRD
-         FEAPBOq4LmWXm0ysARpJBvxunlN1OAVUdq/oyP/TljqLkBLQrcq9ZLtVOut8DvrhVdMn
-         uR3g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x3qQi9rPMrrCMaNFdkW+WUvitmYJ9H2Mywx5LqV07Z4=;
-        b=f3hhUPC9q2gfQxrPLXODZsLP6KKX/jPofhFcles3mGdAgm9MWYMW5GHIa47orUuQW7
-         WWYTY/HBpmRgoo65LECFjhtI63CH8tGrxXp7My0S//zcdon4fnxPvES9nr8c77RamELZ
-         qW3iNuZEZDIa/G9SXpzohv7j+KGdUtehhTtQ5v4tr6fKtfUpYNdY4XrDE0Ww00DgwWhh
-         TcH1b70RkZCY8YzKrJRyDm3OiFCDYsIjWozsDPMokl2Ru0TmQkAFgdEjM58IUTV+RivM
-         8M6+UckaBZP/DuAL9GahdS5i7CVPA+wxqDSy9RPabM+Jtow0xa3GF3TcnrBNG9rqsvpy
-         qyTg==
-X-Gm-Message-State: AOAM533HNM+gDVvMjskmn+696aKzDw5gwBDeaQK2ob+hYOEgGBDogZOa
-        8QXio6EiyZB57Llb7DhsO7gLnCdWqRzKaqfwdEA=
-X-Google-Smtp-Source: ABdhPJzlbMtx3Ea8eWyf0Dds4VHudl6KuN1qzQ4W3LfLI8PgAD6IGSqi/G23AeRhvWquIkj0W6UZGKzKtxWNtf/a9f4=
-X-Received: by 2002:a62:528e:0:b029:1f5:c5ee:a487 with SMTP id
- g136-20020a62528e0000b02901f5c5eea487mr3449329pfb.7.1620293400352; Thu, 06
- May 2021 02:30:00 -0700 (PDT)
+        Thu, 6 May 2021 05:32:55 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3288EC061574;
+        Thu,  6 May 2021 02:31:58 -0700 (PDT)
+Received: from cap.home.8bytes.org (p5b0069de.dip0.t-ipconnect.de [91.0.105.222])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        (No client certificate requested)
+        by theia.8bytes.org (Postfix) with ESMTPSA id EB37B247;
+        Thu,  6 May 2021 11:31:55 +0200 (CEST)
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Eric Biederman <ebiederm@xmission.com>, x86@kernel.org
+Cc:     kexec@lists.infradead.org, Joerg Roedel <jroedel@suse.de>,
+        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        Joerg Roedel <joro@8bytes.org>, linux-coco@lists.linux.dev,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org
+Subject: [PATCH 0/2] x86: Disable kexec for SEV-ES guests
+Date:   Thu,  6 May 2021 11:31:20 +0200
+Message-Id: <20210506093122.28607-1-joro@8bytes.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210506035659.765109-1-linux@roeck-us.net>
-In-Reply-To: <20210506035659.765109-1-linux@roeck-us.net>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 6 May 2021 12:29:44 +0300
-Message-ID: <CAHp75VdkQmrfpwj6tmEpNYcL0soRcGrhoOghiqJpVezyxZ68LQ@mail.gmail.com>
-Subject: Re: [PATCH] iio:accel:stk8312: Remove ACPI support
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 6:57 AM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> With CONFIG_ACPI=n, W=1 and -Werror, 0-day reports:
->
-> drivers/iio/accel/stk8312.c:644:36: error:
->         'stk8312_acpi_id' defined but not used
->
-> Apparently STK8312 is not a valid ACPI ID. Remove it and with it
-> ACPI support from the stk8312 driver.
+From: Joerg Roedel <jroedel@suse.de>
 
-Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
+Hi,
 
-For the record, point finger on me in case somebody complains about
-any of such patches.
+two small patches to disable kexec on x86 when running as an SEV-ES
+guest. Trying to kexec a new kernel would fail anyway because there is
+no mechanism yet to hand over the APs from the old to the new kernel.
+Supporting this needs changes in the Hypervisor and the guest kernel
+as well.
 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-> ---
-> There is another patch pending which makes whitespace changes in struct
-> acpi_device_id stk8312_acpi_id. This will result in a conflict if this
-> patch is applied. In that patch, it is claimed that the driver would
-> possibly only be used based on its ACPI ID (even though that ACPI device
-> ID is not official).
-> Link: https://patchwork.kernel.org/project/linux-iio/patch/20210401144226.225928-1-jic23@kernel.org/
-> I can not determine if that claim has any truth in it. Still, it appears
-> that the device ID is not an official device ID.
->
->  drivers/iio/accel/stk8312.c | 9 ---------
->  1 file changed, 9 deletions(-)
->
-> diff --git a/drivers/iio/accel/stk8312.c b/drivers/iio/accel/stk8312.c
-> index 157d8faefb9e..2fc30cfe1457 100644
-> --- a/drivers/iio/accel/stk8312.c
-> +++ b/drivers/iio/accel/stk8312.c
-> @@ -7,7 +7,6 @@
->   * IIO driver for STK8312; 7-bit I2C address: 0x3D.
->   */
->
-> -#include <linux/acpi.h>
->  #include <linux/i2c.h>
->  #include <linux/interrupt.h>
->  #include <linux/kernel.h>
-> @@ -640,18 +639,10 @@ static const struct i2c_device_id stk8312_i2c_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, stk8312_i2c_id);
->
-> -static const struct acpi_device_id stk8312_acpi_id[] = {
-> -       {"STK8312", 0},
-> -       {}
-> -};
-> -
-> -MODULE_DEVICE_TABLE(acpi, stk8312_acpi_id);
-> -
->  static struct i2c_driver stk8312_driver = {
->         .driver = {
->                 .name = STK8312_DRIVER_NAME,
->                 .pm = STK8312_PM_OPS,
-> -               .acpi_match_table = ACPI_PTR(stk8312_acpi_id),
->         },
->         .probe =            stk8312_probe,
->         .remove =           stk8312_remove,
-> --
-> 2.25.1
->
+This code is currently being work on, but disable kexec in SEV-ES
+guests until it is ready.
 
+Please review.
+
+Regards,
+
+	Joerg
+
+Joerg Roedel (2):
+  kexec: Allow architecture code to opt-out at runtime
+  x86/kexec/64: Forbid kexec when running as an SEV-ES guest
+
+ arch/x86/kernel/machine_kexec_64.c |  8 ++++++++
+ kernel/kexec.c                     | 14 ++++++++++++++
+ 2 files changed, 22 insertions(+)
 
 -- 
-With Best Regards,
-Andy Shevchenko
+2.31.1
+
