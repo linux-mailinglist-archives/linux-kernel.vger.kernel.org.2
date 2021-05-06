@@ -2,54 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CD8337536A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:05:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9AB3375371
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232634AbhEFMG3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:06:29 -0400
-Received: from verein.lst.de ([213.95.11.211]:47473 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231560AbhEFMG2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:06:28 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id 883BC68AFE; Thu,  6 May 2021 14:05:26 +0200 (CEST)
-Date:   Thu, 6 May 2021 14:05:26 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Laight <David.Laight@ACULAB.COM>
-Cc:     'Andy Lutomirski' <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Waiman Long <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: Re: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit
- uaccess speculation
-Message-ID: <20210506120526.GA1124@lst.de>
-References: <cover.1620186182.git.jpoimboe@redhat.com> <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com> <CALCETrWQrMkeP+=pkNVNvSs9q3ZhhLq_ceHJ-N72Urp2KBrUfQ@mail.gmail.com> <986301bcdc7c488d86dd5f11c988bf87@AcuMS.aculab.com>
+        id S232696AbhEFMNe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:13:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44484 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229824AbhEFMNb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 08:13:31 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 38C44C061574;
+        Thu,  6 May 2021 05:12:32 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id j10so7405484lfb.12;
+        Thu, 06 May 2021 05:12:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fZu2pbACv1pjiePADfO8gBHAoJuthgIq1ShMV5M39W8=;
+        b=d1gK+nyCabCN6MgYPaUnPqnVnFCTnrweOvWBKyfk3M+iv8dsVGai11pJrwhQtvcdsU
+         jnk7YrvyT5QEJp+R8FxVwZXHSzuC9Y9sPCDse3yd++vkEgILOQEks4r2DCYNhY0pNpiE
+         VUTjpxLA0SdA1EpRxrlfzSN6t0tYg32BjUCITVNySloQ3D/UoI11rh+iXGQBT286s8WU
+         MDHJqRj24S4TBqYlKtNt7sdbWVjWxEo9TVHC34G6G2Si8zfCc7z6+1U6akbjCZ+0MhJS
+         VIJ+QLma4fYSsqQDO7RaGoScw7cEfZl+elEhnnvxIATJVf0po5BTAJTW8RiSvtBhEs/j
+         us4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=fZu2pbACv1pjiePADfO8gBHAoJuthgIq1ShMV5M39W8=;
+        b=InXCZ3lHh43Gx3Fjx/jn/V8JaVhe/0yLsQLSigD4QrKIqtaGlI7KGhbqwIiq3wx4Ah
+         J9YRLm79Ye+izBEO19yDUoowqkuv8a1Yr6RShB/GMqg8Tyv8I/KqB2TeEQr1Q7O2+Y1O
+         gCIvvVo86ADI3ScQRifreWzgg7FSlCDjoM6TlTQFqLqvekFxIXZrcXr96OE0hcB5tdeb
+         UF1nWovKxg7hfkEG7sd4ieC/LMD++aplO69pIaMV8Ie4JeTbEqAwZEozmRguXPLrmjo1
+         FmTG+MHRizp/ijO2oSphcReNzTDEC4/YNPfycx2zw0wsfgIpLoh4d6/sjuwzcYlENoIw
+         24nw==
+X-Gm-Message-State: AOAM530UokhQFFuPNnkiUifSZwk/0AQFWdE4fmroVgxICTD4rk2fkz54
+        i0Ei3ZDBtCfqN9fR9Hy3LceGwCNixdBauw==
+X-Google-Smtp-Source: ABdhPJzGET6GJ1dUtBo/4G3xycq3vQf2BHCJJXhYgMRUdsQoeELqJ9iKcNowAHqXBlnGi92WhAN0Eg==
+X-Received: by 2002:a05:6512:3888:: with SMTP id n8mr2702820lft.407.1620303150604;
+        Thu, 06 May 2021 05:12:30 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.84])
+        by smtp.gmail.com with ESMTPSA id z23sm630791lfu.32.2021.05.06.05.12.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 05:12:30 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     mkrufky@linuxtv.org, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>,
+        syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com
+Subject: [PATCH] media: dvb-usb: fix wrong definition
+Date:   Thu,  6 May 2021 15:12:11 +0300
+Message-Id: <20210506121211.8556-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <986301bcdc7c488d86dd5f11c988bf87@AcuMS.aculab.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 08:36:08AM +0000, David Laight wrote:
-> 	uaddr = access_ok(uaddr, size)
+syzbot reported WARNING in vmalloc. The problem
+was in sizo size passed to vmalloc.
 
-access_ok as a public API is not interesting.  There are very few
-valid uses cases for ever calling access_ok outside the usual
-uaccess helper.  So leave access_ok alone, there is not point in
-touching all the callers except for removing most of them.  If OTOH
-we can micro-optimize get_user and put_user by using a different
-variant of access_ok that seems fair game and actually useful.
+The root case was in wrong cxusb_bluebird_lgz201_properties
+defenition. adapter array has only 1 entry, but num_adapters was
+2.
+
+Call Trace:
+ __vmalloc_node mm/vmalloc.c:2963 [inline]
+ vmalloc+0x67/0x80 mm/vmalloc.c:2996
+ dvb_dmx_init+0xe4/0xb90 drivers/media/dvb-core/dvb_demux.c:1251
+ dvb_usb_adapter_dvb_init+0x564/0x860 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:184
+ dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:86 [inline]
+ dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:184 [inline]
+ dvb_usb_device_init.cold+0xc94/0x146e drivers/media/usb/dvb-usb/dvb-usb-init.c:308
+ cxusb_probe+0x159/0x5e0 drivers/media/usb/dvb-usb/cxusb.c:1634
+
+Reported-and-tested-by: syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+---
+ drivers/media/usb/dvb-usb/cxusb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/media/usb/dvb-usb/cxusb.c b/drivers/media/usb/dvb-usb/cxusb.c
+index 761992ad05e2..7707de7bae7c 100644
+--- a/drivers/media/usb/dvb-usb/cxusb.c
++++ b/drivers/media/usb/dvb-usb/cxusb.c
+@@ -1947,7 +1947,7 @@ static struct dvb_usb_device_properties cxusb_bluebird_lgz201_properties = {
+ 
+ 	.size_of_priv     = sizeof(struct cxusb_state),
+ 
+-	.num_adapters = 2,
++	.num_adapters = 1,
+ 	.adapter = {
+ 		{
+ 		.num_frontends = 1,
+-- 
+2.31.1
+
