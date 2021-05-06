@@ -2,138 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 828173755C2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 601823755C5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234872AbhEFOiX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:38:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36114 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234397AbhEFOiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:38:22 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 7339F610A0;
-        Thu,  6 May 2021 14:37:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620311844;
-        bh=fJSwzFf7c0GmQiYWV5kfjwbHtHttKC4v3Xf+3U7MQWE=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YmrPgJU2fnYn2hgmdWtfZVPlhNhJLGJ1mvpacnoqrsD3ZZhOID+H3zj90sz6ZBaNM
-         tJIL/aUtzUuCf5RYG+2LED2Zl9q+4+hck5t4iKt8NetaEcR1+hiLVCX9RuiDh8lSK/
-         JNmRv06Vf2yiTBOCruDnqkPGpjuHHYUVI6n8UTrgkfYNahjCQtCQGr65x93fVearrj
-         wRP3sYb4h3uTcgo22YBy8sjGxqBK53uY/l8lCAUxeeC1jI4YWdltj0kRKwdICkgcBi
-         WFCI+JqmIEEczaE88YcKeZEYlH86L+IV/47iMz/+W3nueqwNL4luYvsJBVoVZ3g9Sz
-         FDwLVi1/ix40g==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lef7y-000P0w-0J; Thu, 06 May 2021 16:37:22 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev
-Subject: [PATCH v2] media: hantro: do a PM resume earlier
-Date:   Thu,  6 May 2021 16:37:20 +0200
-Message-Id: <a8b63a10d606dcbee9acc17b54d5d8eaa3d8fc3e.1620311838.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
+        id S234880AbhEFOjE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:39:04 -0400
+Received: from smtprelay0009.hostedemail.com ([216.40.44.9]:40280 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234397AbhEFOjA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 10:39:00 -0400
+Received: from omf07.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 90136837F24D;
+        Thu,  6 May 2021 14:38:01 +0000 (UTC)
+Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf07.hostedemail.com (Postfix) with ESMTPA id 0BA2D315D7E;
+        Thu,  6 May 2021 14:37:59 +0000 (UTC)
+Message-ID: <eb9aaace58730082253eae3c577136bb05ac82af.camel@perches.com>
+Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
+From:   Joe Perches <joe@perches.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Guenter Roeck <linux@roeck-us.net>
+Cc:     Hans de Goede <hdegoede@redhat.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>
+Date:   Thu, 06 May 2021 07:37:57 -0700
+In-Reply-To: <CAHp75VdHMm+WYA2Nfiz1g3B5Sj14Rq601aSyQ_puynudg9ZiZw@mail.gmail.com>
+References: <20210506034332.752263-1-linux@roeck-us.net>
+         <CAHp75Vd0N5s=D9LFiVU75gYCLnpqOwfBogbWUTwZNC1CV2n88Q@mail.gmail.com>
+         <20210506133754.GA2266661@roeck-us.net>
+         <768c06ff-663c-eacb-fd3c-628b4e4ba449@redhat.com>
+         <20210506135052.GB2267050@roeck-us.net>
+         <CAHp75VdHMm+WYA2Nfiz1g3B5Sj14Rq601aSyQ_puynudg9ZiZw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: 0BA2D315D7E
+X-Spam-Status: No, score=-1.40
+X-Stat-Signature: yo563xmp4spdra4zn3aae81u3dobfoqz
+X-Rspamd-Server: rspamout05
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Session-ID: U2FsdGVkX182Giu6DFmaWMRG+A0W1UqK5an6K6kEKB0=
+X-HE-Tag: 1620311879-858103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The device_run() first enables the clock and then
-tries to resume PM runtime, checking for errors.
+On Thu, 2021-05-06 at 17:31 +0300, Andy Shevchenko wrote:
+> On Thu, May 6, 2021 at 4:50 PM Guenter Roeck <linux@roeck-us.net> wrote:
+> > On Thu, May 06, 2021 at 03:42:08PM +0200, Hans de Goede wrote:
+> > > On 5/6/21 3:37 PM, Guenter Roeck wrote:
+> 
+> ...
+> 
+> > > We (mostly Andy and me) are not even 100% sure this one is
+> > > a fake ACPI ID, but we do pretty strongly believe that it is.
+> > > 
+> > 
+> > What a mess :-(
+> 
+> What we can do is a checkpatch-alike check for vendor ID to be
+> registered in [1] and issue a warning if not. At least it alerts
+> maintainers. Joe, do you think it is doable or we should have a
+> separate tool for that? (Because I have no clue how checkpatch
+> cohabits with internet connection, otherwise the problem with
+> synchronisation of that registry might be a problem)
 
-Well, if for some reason the pm_runtime can not resume,
-it would be better to detect it beforehand.
+Perhaps best to have a separate scriptable tool and if necessary
+have checkpatch use it like the spdxcheck block.
 
-So, change the order inside device_run().
+scripts/checkpatch.pl-sub is_SPDX_License_valid {
+scripts/checkpatch.pl-  my ($license) = @_;
+scripts/checkpatch.pl-
+scripts/checkpatch.pl:  return 1 if (!$tree || which("python") eq "" || !(-e "$root/scripts/spdxcheck.py") || !(-e "$gitroot"));
+scripts/checkpatch.pl-
+scripts/checkpatch.pl-  my $root_path = abs_path($root);
+scripts/checkpatch.pl:  my $status = `cd "$root_path"; echo "$license" | python scripts/spdxcheck.py -`;
+scripts/checkpatch.pl-  return 0 if ($status ne "");
+scripts/checkpatch.pl-  return 1;
+scripts/checkpatch.pl-}
 
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Fixes: 775fec69008d ("media: add Rockchip VPU JPEG encoder driver")
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/staging/media/hantro/hantro_drv.c | 35 +++++++++++++++--------
- 1 file changed, 23 insertions(+), 12 deletions(-)
+[]
 
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index 595e82a82728..eea2009fa17b 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -56,16 +56,12 @@ dma_addr_t hantro_get_ref(struct hantro_ctx *ctx, u64 ts)
- 	return hantro_get_dec_buf_addr(ctx, buf);
- }
- 
--static void hantro_job_finish(struct hantro_dev *vpu,
--			      struct hantro_ctx *ctx,
--			      enum vb2_buffer_state result)
-+static void hantro_job_finish_no_pm(struct hantro_dev *vpu,
-+				    struct hantro_ctx *ctx,
-+				    enum vb2_buffer_state result)
- {
- 	struct vb2_v4l2_buffer *src, *dst;
- 
--	pm_runtime_mark_last_busy(vpu->dev);
--	pm_runtime_put_autosuspend(vpu->dev);
--	clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
--
- 	src = v4l2_m2m_next_src_buf(ctx->fh.m2m_ctx);
- 	dst = v4l2_m2m_next_dst_buf(ctx->fh.m2m_ctx);
- 
-@@ -81,6 +77,18 @@ static void hantro_job_finish(struct hantro_dev *vpu,
- 					 result);
- }
- 
-+static void hantro_job_finish(struct hantro_dev *vpu,
-+			      struct hantro_ctx *ctx,
-+			      enum vb2_buffer_state result)
-+{
-+	pm_runtime_mark_last_busy(vpu->dev);
-+	pm_runtime_put_autosuspend(vpu->dev);
-+
-+	clk_bulk_disable(vpu->variant->num_clocks, vpu->clocks);
-+
-+	hantro_job_finish_no_pm(vpu, ctx, result);
-+}
-+
- void hantro_irq_done(struct hantro_dev *vpu,
- 		     enum vb2_buffer_state result)
- {
-@@ -152,11 +160,14 @@ static void device_run(void *priv)
- 	src = hantro_get_src_buf(ctx);
- 	dst = hantro_get_dst_buf(ctx);
- 
--	ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
--	if (ret)
--		goto err_cancel_job;
- 	ret = pm_runtime_get_sync(ctx->dev->dev);
--	if (ret < 0)
-+	if (ret < 0) {
-+		pm_runtime_put_noidle(ctx->dev->dev);
-+		goto err_cancel_job;
-+	}
-+
-+	ret = clk_bulk_enable(ctx->dev->variant->num_clocks, ctx->dev->clocks);
-+	if (ret)
- 		goto err_cancel_job;
- 
- 	v4l2_m2m_buf_copy_metadata(src, dst, true);
-@@ -165,7 +176,7 @@ static void device_run(void *priv)
- 	return;
- 
- err_cancel_job:
--	hantro_job_finish(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
-+	hantro_job_finish_no_pm(ctx->dev, ctx, VB2_BUF_STATE_ERROR);
- }
- 
- static struct v4l2_m2m_ops vpu_m2m_ops = {
--- 
-2.30.2
+scripts/checkpatch.pl-                          } elsif ($rawline =~ /(SPDX-License-Identifier: .*)/) {
+scripts/checkpatch.pl-                                  my $spdx_license = $1;
+scripts/checkpatch.pl:                                  if (!is_SPDX_License_valid($spdx_license)) {
+scripts/checkpatch.pl-                                          WARN("SPDX_LICENSE_TAG",
+scripts/checkpatch.pl-                                               "'$spdx_license' is not supported in LICENSES/...\n" . $herecurr);
+scripts/checkpatch.pl-                                  }
+
 
