@@ -2,77 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F18FA374E29
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 05:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19C99374DFF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 05:43:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231545AbhEFD6f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 23:58:35 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:38766 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230078AbhEFD6e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 23:58:34 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id F41BE20313D;
-        Thu,  6 May 2021 05:57:35 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id EB5A320071E;
-        Thu,  6 May 2021 05:57:31 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id D89D84029F;
-        Thu,  6 May 2021 05:57:22 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, shengjiu.wang@gmail.com
-Subject: [PATCH v2 2/2] ARM: dts: imx6qdl-sabresd: Configure the gpio for hp detect
-Date:   Thu,  6 May 2021 11:41:19 +0800
-Message-Id: <1620272479-1219-2-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620272479-1219-1-git-send-email-shengjiu.wang@nxp.com>
-References: <1620272479-1219-1-git-send-email-shengjiu.wang@nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S231304AbhEFDoh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 23:44:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44986 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229725AbhEFDog (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 23:44:36 -0400
+Received: from mail-oo1-xc2e.google.com (mail-oo1-xc2e.google.com [IPv6:2607:f8b0:4864:20::c2e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E327AC061574;
+        Wed,  5 May 2021 20:43:37 -0700 (PDT)
+Received: by mail-oo1-xc2e.google.com with SMTP id s1-20020a4ac1010000b02901cfd9170ce2so962433oop.12;
+        Wed, 05 May 2021 20:43:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=XWaMZqY8xGjwY01ObO+7tWazSIgZSXv5o+5YdwDhduo=;
+        b=Ie6SoG/w7fgaCh5Qdsv6NzennNv1Z3T8sZpOdkB183H7Wz8wAlZSVhNbuMCGmw1MIL
+         Iq6LkvwNOZ9KRU+2fZhlU7tylITEw5dZYliSbkI57jBEGfQdMBsuXVXuBeH7v0Ovvb88
+         ryHbk/SQ752+YuZ42L0ykEs0AZxAtxya8VezrF7L6b11m/luViauAKw03jCXa/AfqhSk
+         yu9ZzrQj0k5fhX/IzRJNRsiaRq4khzpiMOs30ylj5zf5jgzrnPtSzTXYW7+XghHcpNlP
+         ZjHvplq5IUx0nnU5vpAbl5IXEUpk/Gr8ITtUTs8Qrn4qgXXc+3A1ctPNi94e6g+RBPRP
+         34iQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=XWaMZqY8xGjwY01ObO+7tWazSIgZSXv5o+5YdwDhduo=;
+        b=er+COKfu3U/Xjo14d1/3eTg0/eQkadOa19EdlkVCJI5QuOQoC3cU4eU5csffQHzlfN
+         vMCxR7Y6Ce9M3A0jF7sIwW3lNOCvoKXnPy688J556ICtjMvS5Ru+jZ6UVnYxiJOXw3Yu
+         pfLZb0Ya1rtPLP+C1+skZZGpMXGYS55JJo0KBuieL2ruKRlWgYBL7yzsQzJtLUA6xg+i
+         B7zwdHd+N73T1TwG7645STGOxPpJsD1NLB2nDVbKRMLIJeOllSydm+d1CBgTpjAHCLJZ
+         UVa4rkIhnK1jMxrhefqmg4UejY2IhFncusVCXRaBKmMNeXKR7Me57EnL3oFRGYkcwpnS
+         CtVw==
+X-Gm-Message-State: AOAM533HeewKNw/IHbS86zB1S/bWOsl8zTyqEM/Zzhwj0VPLLzSBX7G1
+        9cNCCQb4makqSX8ZKMRayzU=
+X-Google-Smtp-Source: ABdhPJyIDz3JfVmxiL7PQ9xW5K0DKS8P3dy70x/eTlW8bWVzWrhxO7qw52K/XAcOEacTJGlQqVdc8g==
+X-Received: by 2002:a4a:8247:: with SMTP id t7mr1544672oog.53.1620272617285;
+        Wed, 05 May 2021 20:43:37 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id u207sm229059oie.56.2021.05.05.20.43.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 20:43:36 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        kernel test robot <lkp@intel.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH v2] iio: bme680_i2c: Remove ACPI support
+Date:   Wed,  5 May 2021 20:43:32 -0700
+Message-Id: <20210506034332.752263-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Configure the gpio for hp detect for wm8962 sound card
+With CONFIG_ACPI=n and -Werror, 0-day reports:
 
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+drivers/iio/chemical/bme680_i2c.c:46:36: error:
+	'bme680_acpi_match' defined but not used
+
+Apparently BME0680 is not a valid ACPI ID. Remove it and with it
+ACPI support from the bme680_i2c driver.
+
+Reported-by: kernel test robot <lkp@intel.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 ---
-changes in v2:
-- update PAD_CTL value
+v2: Instead of making bme680_acpi_match conditional,
+    remove ACPI support entirely since the ACPI ID is
+    not valid.
 
- arch/arm/boot/dts/imx6qdl-sabresd.dtsi | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ drivers/iio/chemical/bme680_i2c.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/arch/arm/boot/dts/imx6qdl-sabresd.dtsi b/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-index d20eaac6c5d6..0c0105468a2f 100644
---- a/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-+++ b/arch/arm/boot/dts/imx6qdl-sabresd.dtsi
-@@ -97,6 +97,8 @@ sound {
- 		compatible = "fsl,imx6q-sabresd-wm8962",
- 			   "fsl,imx-audio-wm8962";
- 		model = "wm8962-audio";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&pinctrl_hp>;
- 		ssi-controller = <&ssi2>;
- 		audio-codec = <&codec>;
- 		audio-asrc = <&asrc>;
-@@ -546,6 +548,13 @@ MX6QDL_PAD_KEY_ROW2__HDMI_TX_CEC_LINE	0x1f8b0
- 			>;
- 		};
+diff --git a/drivers/iio/chemical/bme680_i2c.c b/drivers/iio/chemical/bme680_i2c.c
+index 29c0dfa4702b..74cf89c82c0a 100644
+--- a/drivers/iio/chemical/bme680_i2c.c
++++ b/drivers/iio/chemical/bme680_i2c.c
+@@ -11,7 +11,6 @@
+  * Note: SDO pin cannot be left floating otherwise I2C address
+  *	 will be undefined.
+  */
+-#include <linux/acpi.h>
+ #include <linux/i2c.h>
+ #include <linux/module.h>
+ #include <linux/regmap.h>
+@@ -42,12 +41,6 @@ static const struct i2c_device_id bme680_i2c_id[] = {
+ };
+ MODULE_DEVICE_TABLE(i2c, bme680_i2c_id);
  
-+		pinctrl_hp: hpgrp {
-+			fsl,pins = <
-+				MX6QDL_PAD_SD3_RST__GPIO7_IO08          0x1b0b0
-+				MX6QDL_PAD_GPIO_9__GPIO1_IO09           0x1b0b0
-+			>;
-+		};
-+
- 		pinctrl_i2c1: i2c1grp {
- 			fsl,pins = <
- 				MX6QDL_PAD_CSI0_DAT8__I2C1_SDA		0x4001b8b1
+-static const struct acpi_device_id bme680_acpi_match[] = {
+-	{"BME0680", 0},
+-	{},
+-};
+-MODULE_DEVICE_TABLE(acpi, bme680_acpi_match);
+-
+ static const struct of_device_id bme680_of_i2c_match[] = {
+ 	{ .compatible = "bosch,bme680", },
+ 	{},
+@@ -57,7 +50,6 @@ MODULE_DEVICE_TABLE(of, bme680_of_i2c_match);
+ static struct i2c_driver bme680_i2c_driver = {
+ 	.driver = {
+ 		.name			= "bme680_i2c",
+-		.acpi_match_table       = ACPI_PTR(bme680_acpi_match),
+ 		.of_match_table		= bme680_of_i2c_match,
+ 	},
+ 	.probe = bme680_i2c_probe,
 -- 
-2.27.0
+2.25.1
 
