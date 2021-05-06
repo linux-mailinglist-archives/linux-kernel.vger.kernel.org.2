@@ -2,61 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC00375225
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:18:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4470B375227
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:19:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233366AbhEFKTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:19:37 -0400
-Received: from out30-43.freemail.mail.aliyun.com ([115.124.30.43]:50885 "EHLO
-        out30-43.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234210AbhEFKTY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:19:24 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R531e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e01424;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=5;SR=0;TI=SMTPD_---0UXyJDp1_1620296302;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UXyJDp1_1620296302)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 06 May 2021 18:18:23 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     nathan@kernel.org
-Cc:     ndesaulniers@google.com, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] lib/asn1_encoder: Remove redundant assignment to ret
-Date:   Thu,  6 May 2021 18:18:19 +0800
-Message-Id: <1620296299-125105-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234057AbhEFKUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:20:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55002 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233416AbhEFKUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 06:20:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 014D8B175;
+        Thu,  6 May 2021 10:19:16 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 7575F1F2C60; Thu,  6 May 2021 12:19:15 +0200 (CEST)
+Date:   Thu, 6 May 2021 12:19:15 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     yebin <yebin10@huawei.com>
+Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] ext4: Fix bug on in ext4_es_cache_extent as
+ ext4_split_extent_at failed
+Message-ID: <20210506101915.GA22189@quack2.suse.cz>
+References: <20210428085158.3728201-1-yebin10@huawei.com>
+ <20210430125853.GB5315@quack2.suse.cz>
+ <60921135.3030900@huawei.com>
+ <20210505104105.GA29867@quack2.suse.cz>
+ <6093A830.3000704@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6093A830.3000704@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable 'ret' is set to zero but this value is never read as it is
-overwritten with a new value later on, hence it is a redundant
-assignment and can be removed.
+On Thu 06-05-21 16:26:24, yebin wrote:
+> Thanks for your suggesttion. If you have no objection to following
+> modification, i will send it as V4.
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 77c84d6f1af6..f9cbd11e1eae 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -3206,7 +3206,10 @@ static int ext4_split_extent_at(handle_t *handle,
+>                 ext4_ext_mark_unwritten(ex2);
+> 
+>         err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+> -       if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
+> +       if (err != -ENOSPC && err != -EDQUOT)
+> +                goto out;
+> +
+> +       if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
 
-Clean up the following clang-analyzer warning:
+You need:
 
-lib/asn1_encoder.c:167:2: warning: Value stored to 'ret' is never read
-[clang-analyzer-deadcode.DeadStores]
+if (err && (EXT4_EXT_MAY_ZEROOUT & split_flag))
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- lib/asn1_encoder.c | 2 --
- 1 file changed, 2 deletions(-)
+there, don't you? You don't want to zero-out if there's no error.
 
-diff --git a/lib/asn1_encoder.c b/lib/asn1_encoder.c
-index 41e71aa..0d287ea 100644
---- a/lib/asn1_encoder.c
-+++ b/lib/asn1_encoder.c
-@@ -164,8 +164,6 @@ static int asn1_encode_oid_digit(unsigned char **_data, int *data_len, u32 oid)
- 
- 	data_len -= 3;
- 
--	ret = 0;
--
- 	for (i = 2; i < oid_len; i++) {
- 		ret = asn1_encode_oid_digit(&d, &data_len, oid[i]);
- 		if (ret < 0)
+> @@ -3232,22 +3235,23 @@ static int ext4_split_extent_at(handle_t *handle,
+> ext4_ext_pblock(&orig_ex));
+>                 }
+> 
+> -               if (err)
+> -                       goto fix_extent_len;
+> -               /* update the extent length and mark as initialized */
+> -               ex->ee_len = cpu_to_le16(ee_len);
+> -               ext4_ext_try_to_merge(handle, inode, path, ex);
+> -               err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+> -               if (err)
+> -                       goto fix_extent_len;
+> -
+> -               /* update extent status tree */
+> -               err = ext4_zeroout_es(inode, &zero_ex);
+> -
+> -               goto out;
+> -       } else if (err)
+> -               goto fix_extent_len;
+> -
+> +               if (!err) {
+> +                       /* update the extent length and mark as initialized
+> */
+> +                        ex->ee_len = cpu_to_le16(ee_len);
+> +                        ext4_ext_try_to_merge(handle, inode, path, ex);
+> +                        err = ext4_ext_dirty(handle, inode, path +
+> path->p_depth);
+> +                        if (!err)
+> +                               /* update extent status tree */
+> +                                err = ext4_zeroout_es(inode, &zero_ex);
+> +                        /* At here, ext4_ext_try_to_merge maybe already
+> merge
+> +                         * extent, if fix origin extent length may lead to
+> +                         * overwritten.
+> +                         */
+
+I'd rephrase the comment as:
+
+/*
+ * If we failed at this point, we don't know in which state the extent tree
+ * exactly is so don't try to fix length of the original extent as it may do
+ * even more damage.
+ */
+
+
+> +                        goto out;
+> +                }
+> +       }
+> +        if (err)
+> +                goto fix_extent_len;
+
+And you can move this if (err) before if (!err) above to make code easier
+to read and save one indentation level.
+
+>  out:
+>         ext4_ext_show_leaf(inode, path);
+>         return err;
+> 
+> 
+								Honza
 -- 
-1.8.3.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
