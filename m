@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38203375484
+	by mail.lfdr.de (Postfix) with ESMTP id A5175375485
 	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:15:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233723AbhEFNQV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:16:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40740 "EHLO mail.kernel.org"
+        id S233763AbhEFNQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:16:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40792 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233327AbhEFNQQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:16:16 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 46229613C2;
-        Thu,  6 May 2021 13:15:17 +0000 (UTC)
+        id S233521AbhEFNQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 09:16:17 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EE0E61042;
+        Thu,  6 May 2021 13:15:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620306918;
-        bh=nTr/gFQfdzF0LhJ7VNXhmo9HOsu0CSUQyFoaljuwPn4=;
+        s=k20201202; t=1620306919;
+        bh=op5ex0Fi0Betr2wW0CnZmbJS/BItv19K7TubLeKLbxY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LGMouJlBEnuEK9HlSaqS8pE0p3LzC4HW+Tn9f4NHDVXeT31fEpfzGXfNPUdKG1ExV
-         mj9+HC1uOANHjx5hpzSvgfx3dAElXXp9kTkvM5BasFmSJnMmMOWldtMkDtwqz3S8+Y
-         dJe3+s2+gBZoVGKJGSbHurZ9X4r6kUWplCz8y86xcT4SQF0rW2Mfxh/4uUL7SGkijl
-         L8Ig0EL/NTOEGNe5BwxGZMUJ/sc9Ec6Pf8HmKIeKyw2CaXvi+lq1iTzF0xKOYFwiVa
-         X9A1Tknw35YfEzNxjesKgtCiVn4ir0ps51TcDRfK2ayelv2f9EK53yl6sgHDsA6hI3
-         FLpHlbczMIuVg==
+        b=Z/ZVl76QgCTkqTmxLGuVHc9CvcDL/+h2UVorkUG5WLTnJ0//+ijHvok1wgpoi/ciJ
+         YtwUCJjA0ETRPX66J8teG1/Gkg6RpGjd4cmWDCQ3HASqcoC1J1TBnYD/Au0a5364SN
+         JkwjuMyu4BYj7uK7CkpzCto6bnG+pvPEL1PRk5m6KOqJXXEg0dLbmT+ae9Fr7oOzmw
+         wkxNQmzCPrD7dqHljlxX5MDxiNpYAkLAl7Yg72SNF8pHTO8C8A+VT9TLsDPYJQEEOT
+         Yvx5nauN6Bez7IstSKOtqzsOBllYhoUyKY6N+AyhwBjTlbd76y81O54BMzW1MVQXkJ
+         q2JdfUO7PwS9w==
 From:   Frederic Weisbecker <frederic@kernel.org>
 To:     "Paul E . McKenney" <paulmck@kernel.org>
 Cc:     LKML <linux-kernel@vger.kernel.org>,
         Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 2/3] torture: Add --configonly parameter for kvm.sh
-Date:   Thu,  6 May 2021 15:15:09 +0200
-Message-Id: <20210506131510.51488-3-frederic@kernel.org>
+Subject: [PATCH 3/3] torture: Update bare metal advices to latest kvm.sh options
+Date:   Thu,  6 May 2021 15:15:10 +0200
+Message-Id: <20210506131510.51488-4-frederic@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210506131510.51488-1-frederic@kernel.org>
 References: <20210506131510.51488-1-frederic@kernel.org>
@@ -39,164 +39,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Those who just want the resulting config file to generate for bare metal
-don't need to wait for the build. Provide an option to only produce
-the .config file.
+kvm.sh is perfectly able to build a new kernel config from an existing
+one instead of using a defconfig. All we need to do is to pass:
+
+	--defconfig oldconfig
+
+This is much easier than manually modifying a .config from a
+ConfigFragment file.
+
+Then with the latest parameters that got added on kvm.sh, it's now
+easy to build a bare metal .config for a cross target for example:
+
+	./kvm.sh --configs "TREE01" --defconfig oldconfig --configonly
+		--cmdline-to-config --kmake-arg ARCH=arm64 --no-initrd
+
+After that all we need to do is to build the updated .config and run
+the resulting image.
+
+Update bare metal advices to propose that.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- .../selftests/rcutorture/bin/kvm-build.sh     |  5 ++++
- .../selftests/rcutorture/bin/kvm-recheck.sh   |  6 ++++-
- .../rcutorture/bin/kvm-test-1-run.sh          | 12 ++++++++-
- tools/testing/selftests/rcutorture/bin/kvm.sh | 26 +++++++++++++------
- 4 files changed, 39 insertions(+), 10 deletions(-)
+ .../rcutorture/bin/kvm-test-1-run.sh          | 21 ++++++++++---------
+ 1 file changed, 11 insertions(+), 10 deletions(-)
 
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-build.sh b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-index 9eb4324d42e1..463db5590220 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-build.sh
-@@ -43,6 +43,11 @@ then
- 	exit 2
- fi
- 
-+if test -n "$TORTURE_CONFIGONLY"
-+then
-+    exit 0
-+fi
-+
- # Tell "make" to use double the number of real CPUs on the build system.
- ncpus="`getconf _NPROCESSORS_ONLN`"
- make -j$((2 * ncpus)) $TORTURE_KMAKE_ARG > $resdir/Make.out 2>&1
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-index e01b31b87044..68b521b5961e 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-recheck.sh
-@@ -57,7 +57,11 @@ do
- 				cat $i/Warnings
- 			fi
- 		else
--			if test -f "$i/buildonly"
-+			if test -f "$i/configonly"
-+			then
-+				echo Config-only run, no build/boot/test
-+				configcheck.sh $i/.config $i/ConfigFragment
-+			elif test -f "$i/buildonly"
- 			then
- 				echo Build-only run, no boot/test
- 				configcheck.sh $i/.config $i/ConfigFragment
 diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index e6aece69d81b..6df9efc77469 100755
+index 6df9efc77469..47d69668ab37 100755
 --- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
 +++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -113,11 +113,21 @@ then
- 	exit 1
- elif kvm-build.sh $T/KcList $resdir "$kboot_args" "$modprobe_args"
- then
-+	cp .config $resdir
-+	if test -n "$TORTURE_CONFIGONLY"
-+	then
-+		if test -f $resdir/build.wait
-+		then
-+			rm $resdir/build.wait
-+		fi
-+		echo Config-only run specified, build/boot/test omitted.
-+		touch $resdir/configonly
-+		exit 0
-+	fi
- 	# Had to build a kernel for this test.
- 	QEMU="`identify_qemu vmlinux`"
- 	BOOT_IMAGE="`identify_boot_image $QEMU`"
- 	cp vmlinux $resdir
--	cp .config $resdir
- 	cp Module.symvers $resdir > /dev/null || :
- 	cp System.map $resdir > /dev/null || :
- 	if test -n "$BOOT_IMAGE"
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm.sh b/tools/testing/selftests/rcutorture/bin/kvm.sh
-index a05a20135de1..283f5d896234 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm.sh
-@@ -34,6 +34,7 @@ TORTURE_DEFCONFIG=defconfig
- TORTURE_BOOT_IMAGE=""
- TORTURE_BUILDONLY=
- TORTURE_CMDLINE2CONFIG=
-+TORTURE_CONFIGONLY=
- TORTURE_INITRD="$KVM/initrd"; export TORTURE_INITRD
- TORTURE_KCONFIG_ARG=""
- TORTURE_KCONFIG_GDB_ARG=""
-@@ -66,6 +67,7 @@ usage () {
- 	echo "       --bootimage relative-path-to-kernel-boot-image"
- 	echo "       --buildonly"
- 	echo "       --cmdline-to-config"
-+	echo "       --configonly"
- 	echo "       --configs \"config-file list w/ repeat factor (3*TINY01)\""
- 	echo "       --cpus N"
- 	echo "       --datestamp string"
-@@ -113,6 +115,9 @@ do
- 	--cmdline-to-config)
- 		TORTURE_CMDLINE2CONFIG=1
- 		;;
-+	--configonly|--config-only)
-+		TORTURE_CONFIGONLY=1
-+		;;
- 	--configs|--config)
- 		checkarg --configs "(list of config files)" "$#" "$2" '^[^/.a-z]\+$' '^--'
- 		configs="$configs $2"
-@@ -394,6 +399,7 @@ TORTURE_ALLOTED_CPUS="$TORTURE_ALLOTED_CPUS"; export TORTURE_ALLOTED_CPUS
- TORTURE_BOOT_IMAGE="$TORTURE_BOOT_IMAGE"; export TORTURE_BOOT_IMAGE
- TORTURE_BUILDONLY="$TORTURE_BUILDONLY"; export TORTURE_BUILDONLY
- TORTURE_CMDLINE2CONFIG="$TORTURE_CMDLINE2CONFIG"; export TORTURE_CMDLINE2CONFIG
-+TORTURE_CONFIGONLY="$TORTURE_CONFIGONLY"; export TORTURE_CONFIGONLY
- TORTURE_DEFCONFIG="$TORTURE_DEFCONFIG"; export TORTURE_DEFCONFIG
- TORTURE_INITRD="$TORTURE_INITRD"; export TORTURE_INITRD
- TORTURE_KCONFIG_ARG="$TORTURE_KCONFIG_ARG"; export TORTURE_KCONFIG_ARG
-@@ -438,6 +444,7 @@ fi
- ___EOF___
- awk < $T/cfgcpu.pack \
- 	-v TORTURE_BUILDONLY="$TORTURE_BUILDONLY" \
-+	-v TORTURE_CONFIGONLY="$TORTURE_CONFIGONLY" \
- 	-v CONFIGDIR="$CONFIGFRAG/" \
- 	-v KVM="$KVM" \
- 	-v ncpus=$cpus \
-@@ -490,12 +497,14 @@ function dump(first, pastlast, batchnum)
- 		print "mkdir " rd cfr[jn] " || :";
- 		print "touch " builddir ".wait";
- 		print "kvm-test-1-run.sh " CONFIGDIR cf[j], rd cfr[jn], dur " \"" TORTURE_QEMU_ARG "\" \"" TORTURE_BOOTARGS "\" > " rd cfr[jn]  "/kvm-test-1-run.sh.out 2>&1 &"
--		print "echo ", cfr[jn], cpusr[jn] ovf ": Waiting for build to complete. `date` | tee -a " rd "log";
--		print "while test -f " builddir ".wait"
--		print "do"
--		print "\tsleep 1"
--		print "done"
--		print "echo ", cfr[jn], cpusr[jn] ovf ": Build complete. `date` | tee -a " rd "log";
-+		if (!TORTURE_CONFIGONLY) {
-+			print "echo ", cfr[jn], cpusr[jn] ovf ": Waiting for build to complete. `date` | tee -a " rd "log";
-+			print "while test -f " builddir ".wait"
-+			print "do"
-+			print "\tsleep 1"
-+			print "done"
-+			print "echo ", cfr[jn], cpusr[jn] ovf ": Build complete. `date` | tee -a " rd "log";
-+		}
- 		jn++;
- 	}
- 	print "runfiles="
-@@ -503,7 +512,7 @@ function dump(first, pastlast, batchnum)
- 		builddir=rd cfr[j] "/build";
- 		if (TORTURE_BUILDONLY)
- 			print "rm -f " builddir ".ready"
--		else
-+		else if (!TORTURE_CONFIGONLY)
- 			print "mv " builddir ".ready " builddir ".run"
- 			print "runfiles=\"$runfiles " builddir ".run\""
- 		fi
-@@ -517,7 +526,8 @@ function dump(first, pastlast, batchnum)
- 		njitter = 0;
- 		print "echo Build-only run, so suppressing jitter | tee -a " rd "log"
- 	}
--	if (TORTURE_BUILDONLY) {
-+
-+	if (TORTURE_BUILDONLY || TORTURE_CONFIGONLY) {
- 		print "needqemurun="
- 	}
- 	print "if test -n \"$needqemurun\""
+@@ -190,27 +190,28 @@ echo To run this scenario on bare metal: >> $resdir/bare-metal
+ echo >> $resdir/bare-metal
+ echo " 1." Set your bare-metal build tree to the state shown in this file: >> $resdir/bare-metal
+ echo "   " $testid_txt >> $resdir/bare-metal
+-echo " 2." Update your bare-metal build tree"'"s .config based on this file: >> $resdir/bare-metal
+-echo "   " $resdir/ConfigFragment >> $resdir/bare-metal
+-echo " 3." Make the bare-metal kernel"'"s build system aware of your .config updates: >> $resdir/bare-metal
+-echo "   " $ 'yes "" | make oldconfig' >> $resdir/bare-metal
+-echo " 4." Build your bare-metal kernel. >> $resdir/bare-metal
++echo " 2." Prepare your bare-metal build tree"'"s .config on your root kernel directory >> $resdir/bare-metal
++echo " 3." Run this scenario with "'--defconfig oldconfig --configonly --no-initrd'" >> $resdir/bare-metal
++echo " 4." If you"'"re cross compiling then append the appropriate make arguments >> $resdir/bare-metal
++echo "   " eg: "'--kmake-arg ARCH=arm64'" >> $resdir/bare-metal
+ echo " 5." Boot your bare-metal kernel with the following parameters: >> $resdir/bare-metal
+ echo "   " $kboot_args >> $resdir/bare-metal
+ echo " 6." Start the test with the following command: >> $resdir/bare-metal
+ echo "   " $ modprobe $TORTURE_MOD $modprobe_args >> $resdir/bare-metal
+ echo " 7." After some time, end the test with the following command: >> $resdir/bare-metal
+ echo "   " $ rmmod $TORTURE_MOD >> $resdir/bare-metal
+-echo " 8." Copy your bare-metal kernel"'"s .config file, overwriting this file: >> $resdir/bare-metal
++echo " 8." Alternatively if you run rcutorture in a built-in fashion and your kernel arguments are already >> $resdir/bare-metal
++echo "   " hardcoded in the kernel config, skip the previous 5/6/7 steps and append to kvm.sh arguments: >> $resdir/bare-metal
++echo "   " --cmdline-to-config >> $resdir/bare-metal
++echo "   " Then simply boot your kernel and wait for the end of the tests >> $resdir/bare-metal
++echo " 9." Copy your bare-metal kernel"'"s .config file, overwriting this file: >> $resdir/bare-metal
+ echo "   " $resdir/.config >> $resdir/bare-metal
+-echo " 9." Copy the console output from just before the modprobe to just after >> $resdir/bare-metal
++echo "10." Copy the console output from just before the modprobe to just after >> $resdir/bare-metal
+ echo "   " the rmmod into this file: >> $resdir/bare-metal
+ echo "   " $resdir/console.log >> $resdir/bare-metal
+-echo "10." Check for runtime errors using the following command: >> $resdir/bare-metal
++echo "11." Check for runtime errors using the following command: >> $resdir/bare-metal
+ echo "   " $ tools/testing/selftests/rcutorture/bin/kvm-recheck.sh `dirname $resdir` >> $resdir/bare-metal
+ echo >> $resdir/bare-metal
+-echo Some of the above steps may be skipped if you build your bare-metal >> $resdir/bare-metal
+-echo kernel here: `head -n 1 $testid_txt | sed -e 's/^Build directory: //'`  >> $resdir/bare-metal
+ 
+ echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" $TORTURE_QEMU_GDB_ARG > $resdir/qemu-cmd
+ echo "# TORTURE_SHUTDOWN_GRACE=$TORTURE_SHUTDOWN_GRACE" >> $resdir/qemu-cmd
 -- 
 2.25.1
 
