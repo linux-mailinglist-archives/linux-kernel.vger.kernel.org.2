@@ -2,99 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 555CA375D53
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:07:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B0FF375D4F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:06:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhEFXIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 19:08:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
+        id S231509AbhEFXHd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 19:07:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49916 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231557AbhEFXIU (ORCPT
+        with ESMTP id S231230AbhEFXHc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 19:08:20 -0400
-Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F09DC061574;
-        Thu,  6 May 2021 16:07:21 -0700 (PDT)
-Received: by mail-qv1-xf29.google.com with SMTP id g17so3986657qvl.9;
-        Thu, 06 May 2021 16:07:21 -0700 (PDT)
+        Thu, 6 May 2021 19:07:32 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4F76C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 16:06:31 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso6404900ote.1
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 16:06:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hdoQKvWPL9i1TBAUsjZf0P4J7XliNekoDzOXUw16ac0=;
-        b=WtVmoKZvUBY2suy7YuVFx53lCrAJzQ+Iz1WtCTP0c1SuWz+EFuek2wNMZmxGs4MPAl
-         1c3AdMhHS1ruqfdnwwL98gIPO2+YBEoIY1D+r+5ZiT2n4DcLeBl/ss9z/pn+7Mv85nzr
-         9pby1hzKSfRnz5YvbMoqStht2DrLe9T7NnOEs3P6zs1qTRGLEVcc8Iyay8r/ql4Oa409
-         wkXoL2M/FDQAzkI4sSw3oxmLc/o8/G1NBJZbjaCpn/ymmD7ubqE92ro/0fh041tqvrfj
-         Wf74Myl96UKOj/dkxGxvhTWg4PWz/DYL74rZCLckw3CzUSoOk1+L9uGjl47zTxUp3qq7
-         h+TA==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=puSn4XmETa9i4jT6sRSbeiOvgKRNZLbIOzKaQoODelw=;
+        b=BW0gfeKF/RfgaCMS6XoDjwHd3mgxHEIuNDN1gCaM9vQFpnsm6WiHAdzvwiYu/mVYtb
+         BhYCgKo2kmSlSs4v3qM3421of0BJzSHCM1ju+ovOMsg1KIWSRtzFbivGfNih7ZPp5hov
+         7ldK3dtbJvtGdJEhjQy6urB0y3NikewcYpdZFm5URlfyb8dOXiL4quqryrpJMdUidboC
+         7Bte+BwLICwW4AoSFH6DnHSXEDmqLb+9hzzuXgezU3Tvcy4wOiBbTi0TEyhx+UeVsCV6
+         VDMc8Kjp3YaOrtOyXYen9cQx2+CvNoriagUC6uxRN6DXMGs1+zWUCB3ch7TtjPhwE6lx
+         omXg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=hdoQKvWPL9i1TBAUsjZf0P4J7XliNekoDzOXUw16ac0=;
-        b=IurPAqaDP1MJtlgWwaaXSlvpCfH+srwtLzBZkV5ZoAmACyC2J+4fqHUzSCBzx4c1dO
-         mUt3+7dpHymOz4ZtBbXdILzMkSfFmZ5y8490dDbpuNlnSaZmlZlR+XGbDGDTl6T8xiQ9
-         QMIPOxHvr5cmPD7xDOlxANufBNZan0jLH2RUxd7QC5lLSEqDR0s2DLq3g1Fiq80Ofc4q
-         2AyNv3kTRn1ZGHem19cyGVMYzQsjXqvai3GWkhKn/XXULYunW+Hs0/IHCibmCBJziKxv
-         T9X6/CkzWNp+VpHMguOnTcQ16UFFlOR1Jlknm9Y0S6QYMF3gJZAMsICNZhGc7/4W4+P+
-         VuIQ==
-X-Gm-Message-State: AOAM530VCUFchZdwJosD//zXEJhmnlEU7wo1PImjGqzyQ6UK60VEknKx
-        ZIr59A3zr+CMPvVPeU+lEF692HYFbUeN2RUh
-X-Google-Smtp-Source: ABdhPJwEHz02mhC8X+DsKOaecOgpqtF7urmqyiL8Q4SSWBZB3QjIgouyobhW7pIJcKAkQ3pfPU7UoA==
-X-Received: by 2002:ad4:48c4:: with SMTP id v4mr7051528qvx.16.1620342440573;
-        Thu, 06 May 2021 16:07:20 -0700 (PDT)
-Received: from localhost.localdomain ([107.171.200.67])
-        by smtp.googlemail.com with ESMTPSA id m22sm3514150qtu.43.2021.05.06.16.07.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 16:07:20 -0700 (PDT)
-From:   Michael John Sakellaropoulos <mjsakellaropoulos@gmail.com>
-To:     Marek Vasut <marex@denx.de>
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael John Sakellaropoulos <mjsakellaropoulos@gmail.com>,
-        Hansem Ro <hansemro@outlook.com>
-Subject: [PATCH] Fix ili210x touchdata coordinates endianness.
-Date:   Thu,  6 May 2021 19:06:01 -0400
-Message-Id: <20210506230601.429756-1-mjsakellaropoulos@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=puSn4XmETa9i4jT6sRSbeiOvgKRNZLbIOzKaQoODelw=;
+        b=JpkIoVnjSFpD9oTR6zYpEioCgkgmGlQO8ZNfXrZTcheYpWB0TUSmVkpOrF/qbQ2i/6
+         7brxM7h7AhcJpLycaAVuG2RMnH6iNJXfckpF1oUUBRaBOy6M59WYorDdNfp0htgRBPnl
+         Dc4V/gQ+MssBKqTayc97DKW4/Q7R9zwXZ/wgrwFy3lDKjSpG/uhnHm9FXLge7ZX398v0
+         8UVPxFA5siqiyGQ0bV1vSqPt2d1THEhHVnKUvk/kjvmTJKH7bGYNdoPAuR4YOeDhmhMb
+         C86CsFs+00Pwh84z2sLh0I82XGh3NstVhBBobMsVWpsKqjfGpqdORTHtQOJ7BS+WPKeF
+         u8LA==
+X-Gm-Message-State: AOAM5335Y9Pt7oC9dLTs2JNOT1cONFGGatl+0VwRQb/D3WuA7UsMmbYn
+        dy2lPnZZtR1GDkCMKf0rU7nigdXLoxvMmjdEU4yP7Q==
+X-Google-Smtp-Source: ABdhPJzDykGlQ6ezNL2J4VfpoNJwXtHZP1bF6dS04iOa4mv17SRjG9AWPexaf7XqqSIVA4YFCxqgtQpLPdmlkR/I7/U=
+X-Received: by 2002:a9d:1b4d:: with SMTP id l71mr5728018otl.241.1620342390829;
+ Thu, 06 May 2021 16:06:30 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1548966284-28642-1-git-send-email-karahmed@amazon.de> <1548966284-28642-9-git-send-email-karahmed@amazon.de>
+In-Reply-To: <1548966284-28642-9-git-send-email-karahmed@amazon.de>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 6 May 2021 16:06:19 -0700
+Message-ID: <CALMp9eR-Kt5wcveYmmmOe7HfWBB4r5nF+SjMfybPRR-b9TXiTg@mail.gmail.com>
+Subject: Re: [PATCH v6 08/14] KVM/nVMX: Use kvm_vcpu_map when mapping the
+ posted interrupt descriptor table
+To:     KarimAllah Ahmed <karahmed@amazon.de>
+Cc:     "the arch/x86 maintainers" <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This fixes how coordinates are parsed from ili210x touchdata. Through observation 
-and manual probing of the i2c bus, we have confirmed that the values stored in 
-the registers are Little Endian.
-(Tested on Amazon Kindle Fire Gen1 : arch/arm/boot/dts/omap4-kc1.dts)
+On Thu, Jan 31, 2019 at 12:28 PM KarimAllah Ahmed <karahmed@amazon.de> wrote:
+>
+> Use kvm_vcpu_map when mapping the posted interrupt descriptor table since
+> using kvm_vcpu_gpa_to_page() and kmap() will only work for guest memory
+> that has a "struct page".
+>
+> One additional semantic change is that the virtual host mapping lifecycle
+> has changed a bit. It now has the same lifetime of the pinning of the
+> interrupt descriptor table page on the host side.
+>
+> Signed-off-by: KarimAllah Ahmed <karahmed@amazon.de>
+> Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
+> ---
+> v4 -> v5:
+> - unmap with dirty flag
+>
+> v1 -> v2:
+> - Do not change the lifecycle of the mapping (pbonzini)
+> ---
+>  arch/x86/kvm/vmx/nested.c | 43 ++++++++++++-------------------------------
+>  arch/x86/kvm/vmx/vmx.h    |  2 +-
+>  2 files changed, 13 insertions(+), 32 deletions(-)
+>
+> diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
+> index 31b352c..53b1063 100644
+> --- a/arch/x86/kvm/vmx/nested.c
+> +++ b/arch/x86/kvm/vmx/nested.c
+> @@ -230,12 +230,8 @@ static void free_nested(struct kvm_vcpu *vcpu)
+>                 vmx->nested.apic_access_page = NULL;
+>         }
+>         kvm_vcpu_unmap(vcpu, &vmx->nested.virtual_apic_map, true);
+> -       if (vmx->nested.pi_desc_page) {
+> -               kunmap(vmx->nested.pi_desc_page);
+> -               kvm_release_page_dirty(vmx->nested.pi_desc_page);
+> -               vmx->nested.pi_desc_page = NULL;
+> -               vmx->nested.pi_desc = NULL;
+> -       }
+> +       kvm_vcpu_unmap(vcpu, &vmx->nested.pi_desc_map, true);
+> +       vmx->nested.pi_desc = NULL;
+>
+>         kvm_mmu_free_roots(vcpu, &vcpu->arch.guest_mmu, KVM_MMU_ROOTS_ALL);
+>
+> @@ -2868,26 +2864,15 @@ static void nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
+>         }
+>
+>         if (nested_cpu_has_posted_intr(vmcs12)) {
+> -               if (vmx->nested.pi_desc_page) { /* shouldn't happen */
+> -                       kunmap(vmx->nested.pi_desc_page);
+> -                       kvm_release_page_dirty(vmx->nested.pi_desc_page);
+> -                       vmx->nested.pi_desc_page = NULL;
+> -                       vmx->nested.pi_desc = NULL;
+> -                       vmcs_write64(POSTED_INTR_DESC_ADDR, -1ull);
+> +               map = &vmx->nested.pi_desc_map;
+> +
+> +               if (!kvm_vcpu_map(vcpu, gpa_to_gfn(vmcs12->posted_intr_desc_addr), map)) {
+> +                       vmx->nested.pi_desc =
+> +                               (struct pi_desc *)(((void *)map->hva) +
+> +                               offset_in_page(vmcs12->posted_intr_desc_addr));
+> +                       vmcs_write64(POSTED_INTR_DESC_ADDR,
+> +                                    pfn_to_hpa(map->pfn) + offset_in_page(vmcs12->posted_intr_desc_addr));
+>                 }
 
-This patch is a follow-up to the earlier one by Hansem Ro. I am also working on another patch
-that queries the touchscreen controller for the active panel resolution (via REG_PANEL_INFO)
-so we can report the correct resolution to evdev (right now it's hardcoded).
+Previously, if there was no backing page for the
+vmcs12->posted_intr_desc_addr, we wrote an illegal value (-1ull) into
+the vmcs02 POSTED_INTR_DESC_ADDR field to force VM-entry failure. Now,
+AFAICT, we leave that field unmodified. For a newly constructed
+vmcs02, doesn't that mean we're going to treat physical address 0 as
+the address of the vmcs02 posted interrupt descriptor?
 
-Signed-off-by: Michael John Sakellaropoulos <mjsakellaropoulos@gmail.com>
-Tested-by: Hansem Ro <hansemro@outlook.com>
-Fixes: e3559442afd2a ("ili210x - rework the touchscreen sample processing")
----
- drivers/input/touchscreen/ili210x.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
-index d8fccf048bf4..15e68d5a96d8 100644
---- a/drivers/input/touchscreen/ili210x.c
-+++ b/drivers/input/touchscreen/ili210x.c
-@@ -90,8 +90,8 @@ static bool ili210x_touchdata_to_coords(const u8 *touchdata,
- 	if (touchdata[0] & BIT(finger))
- 		return false;
- 
--	*x = get_unaligned_be16(touchdata + 1 + (finger * 4) + 0);
--	*y = get_unaligned_be16(touchdata + 1 + (finger * 4) + 2);
-+	*x = get_unaligned_le16(touchdata + 1 + (finger * 4) + 0);
-+	*y = get_unaligned_le16(touchdata + 1 + (finger * 4) + 2);
- 
- 	return true;
- }
--- 
-2.27.0
-
+> -               page = kvm_vcpu_gpa_to_page(vcpu, vmcs12->posted_intr_desc_addr);
+> -               if (is_error_page(page))
+> -                       return;
+> -               vmx->nested.pi_desc_page = page;
+> -               vmx->nested.pi_desc = kmap(vmx->nested.pi_desc_page);
+> -               vmx->nested.pi_desc =
+> -                       (struct pi_desc *)((void *)vmx->nested.pi_desc +
+> -                       (unsigned long)(vmcs12->posted_intr_desc_addr &
+> -                       (PAGE_SIZE - 1)));
+> -               vmcs_write64(POSTED_INTR_DESC_ADDR,
+> -                       page_to_phys(vmx->nested.pi_desc_page) +
+> -                       (unsigned long)(vmcs12->posted_intr_desc_addr &
+> -                       (PAGE_SIZE - 1)));
+>         }
+>         if (nested_vmx_prepare_msr_bitmap(vcpu, vmcs12))
+>                 vmcs_set_bits(CPU_BASED_VM_EXEC_CONTROL,
+> @@ -3911,12 +3896,8 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 exit_reason,
+>                 vmx->nested.apic_access_page = NULL;
+>         }
+>         kvm_vcpu_unmap(vcpu, &vmx->nested.virtual_apic_map, true);
+> -       if (vmx->nested.pi_desc_page) {
+> -               kunmap(vmx->nested.pi_desc_page);
+> -               kvm_release_page_dirty(vmx->nested.pi_desc_page);
+> -               vmx->nested.pi_desc_page = NULL;
+> -               vmx->nested.pi_desc = NULL;
+> -       }
+> +       kvm_vcpu_unmap(vcpu, &vmx->nested.pi_desc_map, true);
+> +       vmx->nested.pi_desc = NULL;
+>
+>         /*
+>          * We are now running in L2, mmu_notifier will force to reload the
+> diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
+> index f618f52..bd04725 100644
+> --- a/arch/x86/kvm/vmx/vmx.h
+> +++ b/arch/x86/kvm/vmx/vmx.h
+> @@ -143,7 +143,7 @@ struct nested_vmx {
+>          */
+>         struct page *apic_access_page;
+>         struct kvm_host_map virtual_apic_map;
+> -       struct page *pi_desc_page;
+> +       struct kvm_host_map pi_desc_map;
+>
+>         struct kvm_host_map msr_bitmap_map;
+>
+> --
+> 2.7.4
+>
