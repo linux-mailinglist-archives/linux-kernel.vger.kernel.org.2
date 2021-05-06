@@ -2,131 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F2D6375637
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:07:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A2D1375639
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:07:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235032AbhEFPIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:08:15 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52564 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234918AbhEFPIL (ORCPT
+        id S235079AbhEFPIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:08:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56016 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235036AbhEFPIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:08:11 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 146F0SjN152944;
-        Thu, 6 May 2021 15:07:05 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=LdNFXLZvIrWNeAXvM8wGQFKUXDBQOjYA9/qHDh84w7Y=;
- b=cnDl7rQX2qZBzuBhqsSJFDPiaLix+S21ov8jtqBnh+mYnOOsrP0A4fZw+kJ44PNvN522
- Ggn36xyHp3bD03Ku+Wbvow+VCIueGiHa3VWtatIgIIxAi1jQWS1GYbeJrvVePm0hdDOt
- yRLLyOQXqip9YCo6yUoUKVUv5U1jJ4ISXlTC9V4AiZCTr0SWf+ug8+L1suf7SihOVyjU
- xj2Jt5eaTNGV/lRnSZacVEXS8Pb/1g9KPZjzMAbzAv9PnjN19oV0DVKTKnfHQ4UW7Sdx
- 59/MV70atRuqcVYGzrlbOo7dzrQ8FmsTXPqnrOcW4Pbp0a0jtBADHM3tk6ESEMd5HHsY fA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 38bebc5bff-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 15:07:05 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 146F1MHP012619;
-        Thu, 6 May 2021 15:07:05 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38bebvfgc9-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 15:07:05 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 146F62TM045877;
-        Thu, 6 May 2021 15:07:04 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 38bebvfgbk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 15:07:04 +0000
-Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 146F738w031942;
-        Thu, 6 May 2021 15:07:03 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 May 2021 08:07:02 -0700
-Date:   Thu, 6 May 2021 18:06:55 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>,
-        USB list <linux-usb@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
-Subject: Re: [syzbot] WARNING in __vmalloc_node_range
-Message-ID: <20210506150655.GD1955@kadam>
-References: <000000000000fdc0be05c1a6d68f@google.com>
- <20210506142210.GA37570@pc638.lan>
- <20210506145722.GC1955@kadam>
- <CACT4Y+bEpri=MaveEOSeGGa3i-hwVgt3Cq13GMQxPLWu7g+ThA@mail.gmail.com>
+        Thu, 6 May 2021 11:08:20 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DF1DBC061574;
+        Thu,  6 May 2021 08:07:21 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id b19-20020a05600c06d3b029014258a636e8so3236307wmn.2;
+        Thu, 06 May 2021 08:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=VJvzLtj6GnQ/oN29bUzouxUFpiZG8Jw7sIzM1dlTRAI=;
+        b=TJyy0YUt0cu7Nz7O4qFnyqhM0OaJgobZpIJOE4Pyt02doVgxdILqJUQrHK/jJD98Ax
+         Lc29r/SXWpDnE8g1f0FZbz1dP//EfgaGxhbFuZwCGlYwv1bd7ExJaV+4xq/LkfPUTJ18
+         YHly27EqjbaK7mAd8QLIjD1eOoqka+5ailsypm3tIP3eWclozOBD7Zge75784GlVv79s
+         w2uButLdGrP+/g7mrYNC2DQ5/G5rjH2XZRWEcsB+Zb3ww2L/BVfIHQp8xrG/3ZdPbzK4
+         e8WtB32Hy7ah8On+BPNCMk8jsWcASiHW8YbprS8HPEsl2+AxhS5wEk00MDUQkI3CQCUP
+         olGA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=VJvzLtj6GnQ/oN29bUzouxUFpiZG8Jw7sIzM1dlTRAI=;
+        b=px2Iq8eNS9chmrp6fASuSKC7+8naeFwW46f4xTSCkZ7yo6lfZlBRlg3Vwcab1JyeuP
+         lei05Mk/UorYIx8iIY1+Wo7Iz2ufX9UfxDrwl61RGhI6PCc0TD2lry3QaK9DbQBFap54
+         2xAgZjgbNQUJpTefUkeBaupRrG9WIDIFv3g8aNeKh4s0HIIiBRqsobFbqMEiiWXycwh9
+         Sk6dc0V2t3cZhptkGmwUcK6+Dm6QhSw5mBG+peJZnaFB7vSKkY+gMArMpTKf73V1bzrr
+         1sHy6QVDK/F30SCNHoTrZZ65t0KYu+pqiFGupkMqoIVSAv0hm8sOxM298NIxwJ7+NloZ
+         lLVg==
+X-Gm-Message-State: AOAM533tfWUuAchf3VKs+cskfeds2/mcleP6tsurlf74WP95r3cCANkz
+        PDul1WcUb7CjAUcCcdu8+7o=
+X-Google-Smtp-Source: ABdhPJy1CWpVAR4whTiKwF7t52yA4nWQig2Y7F52GwfZwOrcEFAUGjUPi8urZhnS8qes6n3XnPYLrw==
+X-Received: by 2002:a7b:cf38:: with SMTP id m24mr4516661wmg.174.1620313640552;
+        Thu, 06 May 2021 08:07:20 -0700 (PDT)
+Received: from skbuf ([86.127.41.210])
+        by smtp.gmail.com with ESMTPSA id v15sm10151692wmj.39.2021.05.06.08.07.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 08:07:20 -0700 (PDT)
+Date:   Thu, 6 May 2021 18:07:18 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Michael Walle <michael@walle.cc>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
+        allan.nielsen@microchip.com,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, davem@davemloft.net,
+        idosch@mellanox.com, joergen.andreasen@microchip.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Po Liu <po.liu@nxp.com>, vinicius.gomes@intel.com
+Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for
+ TAS config
+Message-ID: <20210506150718.on5ivo3zqpsf6uab@skbuf>
+References: <20210504181833.w2pecbp2qpuiactv@skbuf>
+ <c7618025da6723418c56a54fe4683bd7@walle.cc>
+ <20210504185040.ftkub3ropuacmyel@skbuf>
+ <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
+ <20210504191739.73oejybqb6z7dlxr@skbuf>
+ <d933eef300cb1e1db7d36ca2cb876ef6@walle.cc>
+ <20210504213259.l5rbnyhxrrbkykyg@skbuf>
+ <efe5ac03ceddc8ff472144b5fe9fd046@walle.cc>
+ <20210506135007.ul3gpdecq427tvgr@skbuf>
+ <879df38ab1fb6d8fb8f371bfd5e8c213@walle.cc>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+bEpri=MaveEOSeGGa3i-hwVgt3Cq13GMQxPLWu7g+ThA@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: ugl8PibTVt-L5ke14gFtMgCVzSchfDh7
-X-Proofpoint-GUID: ugl8PibTVt-L5ke14gFtMgCVzSchfDh7
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9976 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
- phishscore=0 spamscore=0 adultscore=0 clxscore=1011 mlxscore=0
- malwarescore=0 mlxlogscore=999 impostorscore=0 bulkscore=0 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2105060108
+In-Reply-To: <879df38ab1fb6d8fb8f371bfd5e8c213@walle.cc>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 05:00:41PM +0200, 'Dmitry Vyukov' via syzkaller-bugs wrote:
-> On Thu, May 6, 2021 at 4:57 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
-> >
-> > On Thu, May 06, 2021 at 04:22:10PM +0200, Uladzislau Rezki wrote:
-> > > Seems like vmalloc() is called with zero size passed:
-> > >
-> > > <snip>
-> > > void *__vmalloc_node_range(unsigned long size, unsigned long align,
-> > >                       unsigned long start, unsigned long end, gfp_t gfp_mask,
-> > >                       pgprot_t prot, unsigned long vm_flags, int node,
-> > >                       const void *caller)
-> > > {
-> > >       struct vm_struct *area;
-> > >       void *addr;
-> > >       unsigned long real_size = size;
-> > >       unsigned long real_align = align;
-> > >       unsigned int shift = PAGE_SHIFT;
-> > >
-> > > 2873  if (WARN_ON_ONCE(!size))
-> > >               return NULL;
-> > > <snip>
-> > >
-> > > from the dvb_dmx_init() driver:
-> > >
-> > > <snip>
-> > > int dvb_dmx_init(struct dvb_demux *dvbdemux)
-> > > {
-> > >       int i;
-> > >       struct dmx_demux *dmx = &dvbdemux->dmx;
-> > >
-> > >       dvbdemux->cnt_storage = NULL;
-> > >       dvbdemux->users = 0;
-> > > 1251  dvbdemux->filter = vmalloc(array_size(sizeof(struct dvb_demux_filter),
-> > > <snip>                                              dvbdemux->filternum));
-> >
-> > Indeed.
-> >
-> > It is a mystery because array_size() should never return less than
-> > sizeof(struct dvb_demux_filter).  That's the whole point of the
-> > array_size() function is that it returns ULONG_MAX if there is an
-> > integer overflow.
+On Thu, May 06, 2021 at 04:41:51PM +0200, Michael Walle wrote:
+> Am 2021-05-06 15:50, schrieb Vladimir Oltean:
+> > On Thu, May 06, 2021 at 03:25:07PM +0200, Michael Walle wrote:
+> > > Am 2021-05-04 23:33, schrieb Vladimir Oltean:
+> > > > [ trimmed the CC list, as this is most likely spam for most people ]
+> > > >
+> > > > On Tue, May 04, 2021 at 10:23:11PM +0200, Michael Walle wrote:
+> > > > > Am 2021-05-04 21:17, schrieb Vladimir Oltean:
+> > > > > > On Tue, May 04, 2021 at 09:08:00PM +0200, Michael Walle wrote:
+> > > > > > > > > > > As explained in another mail in this thread, all queues are marked as
+> > > > > > > > > > > scheduled. So this is actually a no-op, correct? It doesn't matter if
+> > > > > > > > > > > it set or not set for now. Dunno why we even care for this bit then.
+> > > > > > > > > >
+> > > > > > > > > > It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the available
+> > > > > > > > > > throughput when set.
+> > > > > > > > >
+> > > > > > > > > Ahh, I see now. All queues are "scheduled" but the guard band only
+> > > > > > > > > applies
+> > > > > > > > > for "non-scheduled" -> "scheduled" transitions. So the guard band is
+> > > > > > > > > never
+> > > > > > > > > applied, right? Is that really what we want?
+> > > > > > > >
+> > > > > > > > Xiaoliang explained that yes, this is what we want. If the end user
+> > > > > > > > wants a guard band they can explicitly add a "sched-entry 00" in the
+> > > > > > > > tc-taprio config.
+> > > > > > >
+> > > > > > > You're disabling the guard band, then. I figured, but isn't that
+> > > > > > > suprising for the user? Who else implements taprio? Do they do it in
+> > > > > > > the
+> > > > > > > same way? I mean this behavior is passed right to the userspace and
+> > > > > > > have
+> > > > > > > a direct impact on how it is configured. Of course a user can add it
+> > > > > > > manually, but I'm not sure that is what we want here. At least it
+> > > > > > > needs
+> > > > > > > to be documented somewhere. Or maybe it should be a switchable option.
+> > > > > > >
+> > > > > > > Consider the following:
+> > > > > > > sched-entry S 01 25000
+> > > > > > > sched-entry S fe 175000
+> > > > > > > basetime 0
+> > > > > > >
+> > > > > > > Doesn't guarantee, that queue 0 is available at the beginning of
+> > > > > > > the cycle, in the worst case it takes up to
+> > > > > > > <begin of cycle> + ~12.5us until the frame makes it through (given
+> > > > > > > gigabit and 1518b frames).
+> > > > > > >
+> > > > > > > Btw. there are also other implementations which don't need a guard
+> > > > > > > band (because they are store-and-forward and cound the remaining
+> > > > > > > bytes). So yes, using a guard band and scheduling is degrading the
+> > > > > > > performance.
+> > > > > >
+> > > > > > What is surprising for the user, and I mentioned this already in another
+> > > > > > thread on this patch, is that the Felix switch overruns the time gate (a
+> > > > > > packet taking 2 us to transmit will start transmission even if there is
+> > > > > > only 1 us left of its time slot, delaying the packets from the next time
+> > > > > > slot by 1 us). I guess that this is why the ALWAYS_GUARD_BAND_SCH_Q bit
+> > > > > > exists, as a way to avoid these overruns, but it is a bit of a poor tool
+> > > > > > for that job. Anyway, right now we disable it and live with the
+> > > > > > overruns.
+> > > > >
+> > > > > We are talking about the same thing here. Why is that a poor tool?
+> > > >
+> > > > It is a poor tool because it revolves around the idea of "scheduled
+> > > > queues" and "non-scheduled queues".
+> > > >
+> > > > Consider the following tc-taprio schedule:
+> > > >
+> > > > 	sched-entry S 81 2000 # TC 7 and 0 open, all others closed
+> > > > 	sched-entry S 82 2000 # TC 7 and 1 open, all others closed
+> > > > 	sched-entry S 84 2000 # TC 7 and 2 open, all others closed
+> > > > 	sched-entry S 88 2000 # TC 7 and 3 open, all others closed
+> > > > 	sched-entry S 90 2000 # TC 7 and 4 open, all others closed
+> > > > 	sched-entry S a0 2000 # TC 7 and 5 open, all others closed
+> > > > 	sched-entry S c0 2000 # TC 7 and 6 open, all others closed
+> > > >
+> > > > Otherwise said, traffic class 7 should be able to send any time it
+> > > > wishes.
+> > > 
+> > > What is the use case behind that? TC7 (with the highest priority)
+> > > may always take precedence of the other TCs, thus what is the point
+> > > of having a dedicated window for the others.
+> > 
+> > Worst case latency is obviously better for an intermittent stream (not
+> > more than one packet in flight at a time) in TC7 than it is for any
+> > stream in TC6-TC0. But intermittent streams in TC6-TC0 also have their
+> > own worst case guarantees (assuming that 2000 ns is enough to fit one
+> > TC 7 frame and one frame from the TC6-TC0 range).
 > 
-> But it will return 0 if dvbdemux->filternum==0, right?
-> 
+> Oh and I missed that, TC0-TC6 probably won't work because that gate is
+> too narrow (12.5us guard band) unless of course you set MAXSDU to a
+> smaller value. Which would IMHO be the correct thing to do here.
 
-Heh...  I'm an idiot.  I was thinking of struct_size().  Sorry.
-
-regards,
-dan carpenter
-
+I'm not sure that this is exactly true. I know that I tested once, and
+the switch is happy to send a packet as long as the time window is 33 ns
+or larger (Idon't . Can't remember if the ALWAYS_GUARD_BAND_SCH_Q bit was set or
+not, and I'm traveling right now so I don't have an LS1028A board handy
+to re-test.
