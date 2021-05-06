@@ -2,239 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99365374F98
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 08:48:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 095CF374F9E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 08:51:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232889AbhEFGsz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 02:48:55 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:57177 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232714AbhEFGsx (ORCPT
+        id S232834AbhEFGwG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 02:52:06 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:49324 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232054AbhEFGwB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 02:48:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620283676; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=09kcynuKC/GAxHLAWkYQzzxDXsnrgm3MhwhAfA6COPY=;
- b=uHmIlrS7az88bxId2D9SwG9DyUavwtfPCWwuAYucSBh92Nc7s1k8H2IkodpRNdaBg9/c+Ixx
- hJPv2Vt/MPFRwOKPCSfymkioBKys90KQHeHXj7DUUhlaNqjSc4pesiLJ0Rx/ic0T44oUQ7fJ
- Ho/J05Q29D75suJhGIAHhMyQiWo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
- 6093911b8166b7eff7d69db8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 06:47:55
- GMT
-Sender: sbillaka=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C0255C4360C; Thu,  6 May 2021 06:47:54 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: sbillaka)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0B038C433D3;
-        Thu,  6 May 2021 06:47:51 +0000 (UTC)
+        Thu, 6 May 2021 02:52:01 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1466jYMI109120;
+        Thu, 6 May 2021 06:50:46 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-id : content-transfer-encoding : mime-version; s=corp-2020-01-29;
+ bh=tjbzmmEgUMnhf9BPcMbyBlovFc2YrWN5oEUIpzBwkmk=;
+ b=ed0F7+X5XhTI/q0Pa3wdqaFMxohpSsOwUstpyXbmlm+OSc8bpmUhf0h0ZGeT3pwN3mzN
+ o7FUl+sOYaXiik8RgL8DTGWl04kQ9yPJ6ul6yMzTYbRwClWUKeYZYhJfS8lRW7yXt26K
+ 8ibgHtYoW4n72+k136W3POEjkT2TMEXUbm4ozFlsYbvMC9YClHHb4gpbVYDIxJ5JnWak
+ P0ZOPXVDNWPZPlf1KUhpYWsUxK6i40WHyWSO70bpw/3A9o5RdLrohnfbFSOhntteYygo
+ pczVL8+bdx0XiPwL37paxgGNYI7n8bFrUhxpaQG9VfH6FqInrqzLiaXghfXkwHC3gHVS kQ== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 38begjbw2t-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 May 2021 06:50:46 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1466jUMT154266;
+        Thu, 6 May 2021 06:50:45 GMT
+Received: from nam11-dm6-obe.outbound.protection.outlook.com (mail-dm6nam11lp2172.outbound.protection.outlook.com [104.47.57.172])
+        by aserp3030.oracle.com with ESMTP id 38bews9r5c-2
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 May 2021 06:50:45 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Rp+2zTESgAbMPcBqnhdIOmP1WJpRwgJTJpoFQJJ1QoFySs5plsXSp+Hpi1jTsO3mXLey3qTd087efc6E1T5GNcF5Yc9tQURk2IpDj/tBR4qT/7Avfa0TiRveubfOWnmLmI4MzHOQnodvBOzgxoZc18XeV7EYuJDgUZaFjU4IYFOQMzDZi/EaU6uk/abG1uQ0iqt6jo5JYdEzY3gG6fKp5M4asetJPuLoaMeV3B+JT0KiAzsWPlq8J9uoxUYfp5c06I3jf1IxeyKqUHDiwr75OvKcTlZdX9RUGM+7uio6lwMJua5xJT90fJKBX6ZK/CebAnbDHWIlAkbhOmsjan/gHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tjbzmmEgUMnhf9BPcMbyBlovFc2YrWN5oEUIpzBwkmk=;
+ b=ENpGCCbeepEuhObB8h78xYYPFzN8vtlB2N+3bTknLr1CVnnLtqG7BWIxIzijkDJqEJfPyhuvR5WdKNuOos3/wzwDj8v5ODr2ZhobGTkRDdUAqflv4II0Wm23f4K6/EBHpmwLHMNKCh9nC9yMUst37L3ipeFeL/kkoNUcI5kF+XVuip/Iv9U+Ae0HCegRIg7PyccL3TuNG7ASd69/9T5jFqw7EzTW9NOFwOG01igkc7wuuTeI/kz30THxYP4v8HiLSULJ03ra53x0WXT49qkiyWQATJjwGiE1x8VcclQKmj6Rkp4p9tPrcxWYTOhLM9iI56PEg/QvfZrC2oPW8/G/kQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tjbzmmEgUMnhf9BPcMbyBlovFc2YrWN5oEUIpzBwkmk=;
+ b=SBUB72qpCPxDjEABuFVE9lgUDRG5QXzhVA2z61KNNpm0kckJT5QzsMe0BcOrg4e57zLLERVV8TOYjzE9xNbV+elkP8hxGG23Wq5B9kh1Jq5dUJsN0LrAwh0PwvHWjHcyo74muubKaG6/wmQWi9iPA5LwrN4hW+0RfH5xxP5Y1E0=
+Received: from CY4PR10MB1989.namprd10.prod.outlook.com (2603:10b6:903:11a::12)
+ by CY4PR10MB1255.namprd10.prod.outlook.com (2603:10b6:910:b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
+ 2021 06:50:43 +0000
+Received: from CY4PR10MB1989.namprd10.prod.outlook.com
+ ([fe80::ad28:97d2:76cf:3fa5]) by CY4PR10MB1989.namprd10.prod.outlook.com
+ ([fe80::ad28:97d2:76cf:3fa5%11]) with mapi id 15.20.4087.044; Thu, 6 May 2021
+ 06:50:43 +0000
+From:   Haakon Bugge <haakon.bugge@oracle.com>
+To:     "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+CC:     "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        OFED mailing list <linux-rdma@vger.kernel.org>,
+        "rds-devel@oss.oracle.com" <rds-devel@oss.oracle.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-hardening@vger.kernel.org" <linux-hardening@vger.kernel.org>
+Subject: Re: [PATCH RESEND][next] rds: Fix fall-through warnings for Clang
+Thread-Topic: [PATCH RESEND][next] rds: Fix fall-through warnings for Clang
+Thread-Index: AQHXEZ70IVxEeMts1UqoqPxQZDIhRKq+HyGAgBhF5AA=
+Date:   Thu, 6 May 2021 06:50:43 +0000
+Message-ID: <6AB78D3D-C73D-4633-A6FD-9452DD8E4751@oracle.com>
+References: <20210305090612.GA139288@embeddedor>
+ <cd935ba5-a072-5b5a-d455-e06ef87a3a34@embeddedor.com>
+In-Reply-To: <cd935ba5-a072-5b5a-d455-e06ef87a3a34@embeddedor.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-mailer: Apple Mail (2.3654.60.0.2.21)
+authentication-results: embeddedor.com; dkim=none (message not signed)
+ header.d=none;embeddedor.com; dmarc=none action=none header.from=oracle.com;
+x-originating-ip: [51.175.204.144]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 7cf3d031-fc70-4bbf-1e95-08d9105b451d
+x-ms-traffictypediagnostic: CY4PR10MB1255:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <CY4PR10MB12550DBCFDE845295305DA7DFD589@CY4PR10MB1255.namprd10.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2043;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tdF/ue4l0zZIJYYvMRPsclDzCX/e0BlJIU6V4K5uDKYzUbCHm/0qHc+GnNPNcG2UZCh2psd/UmpGPaSUkFCsZupuj+hgMjXS3hzMqWMMp72WOv8pQsoFBgHWktEZ0PF+S3FUVZfUTItWm+gC8qINpkhZp8OIqA4/GLqqGsgGpi6YTUoj6HSjpT1INeO3H+0J57KM50WdcAlenojM+a1XPhWGbN4y36duYdwcIiBDnrxO71Oq5EjBPswmUfp90g438AKPbFN5p3I3Yl3IRmI4ad/MvVSPeJu0Ff+6BdKAtYVUmpkEYvvpRKr//eDV8EYxOolVY9QHYaUgTYVHvQUzLcTfzjp6KPwm9Xk2MCQmRSL5pNhFVzN/TS6F5xFQK7LAKhMWNAGwRTgKEnG+Bou+p7Xog0egrhzkI/uLVRDsfmvXH6EHp4kRwXZzPKT1Qgyu67B8lcoLVx967woo5PEm3uCBSYod3vGKIbhIkU8/LNRLVMsJ5MhkvHUJbYIsvOE2fZ4EaWR+wQ+a/YuNvDgZLTMU5f1t+1Ul7XuFsapi2k6TUKoi/yxGiGCvIPmbp31lSZpbsl58+cRBdpIBGBxtzfu6oh91I5XroJHRMX6WB3D9Jw63U2q9f/khbYCTg6Jq38l0a+zFvT1+T6SpAgUzPXtVDvAnaH+9ymiVP0KFllEFsoQspJP/jEpeSaqO2ipp7kJYhgDnGcWUJ4XbCp8eRzpKD4mFwdm3UeLXJRi5h9k=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY4PR10MB1989.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(396003)(366004)(136003)(346002)(376002)(44832011)(66574015)(5660300002)(83380400001)(316002)(2906002)(8936002)(38100700002)(122000001)(6916009)(6512007)(54906003)(76116006)(66476007)(66556008)(2616005)(64756008)(66446008)(33656002)(53546011)(6506007)(71200400001)(186003)(91956017)(86362001)(36756003)(8676002)(966005)(26005)(6486002)(478600001)(66946007)(4326008)(45980500001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?OU5jc2FpUkQ0RDNZeUpUZWhhSWZZU1JRT3BZM3pyOXdFNUQ2YWhFS3RGcEYz?=
+ =?utf-8?B?WTdDK1NrR21MUnJHM0JJNkZDOUt3R1daTTlxV2dpRFFvNEV3bG5vRWdJNk92?=
+ =?utf-8?B?QXJqU0VBTjZRbkV1Q1JqanhFakd0ZlR5Y2hCUGRNd1U5UFc4L1Vhck9kNjBu?=
+ =?utf-8?B?VFZFU1hZbHBhcXNpSkh5eUFiczJtRDBXckYvcldDWTA5YVRQQWhMUThSZUhN?=
+ =?utf-8?B?cFpWSW1wZmlSMFBjczZRbU96OStPc012eGNoQ2Z4TWNtOVloT0p4eFpjZ0p4?=
+ =?utf-8?B?MjczQ0QvSGhiMVRYODlSbjdFK3FPeDRkZlFlQnpRTUYvQXQ0MVNnMlhoSWxl?=
+ =?utf-8?B?aHNuM3NRUVlOUnFmWlAwNXB6SFBBWnQyK0lBdTJkSlNwUWh5QzBqTVRqTDNi?=
+ =?utf-8?B?UVNMTVVwTkhzSHd2Vnk1a2lsenIzSGdLNysyYS9kVllQcTh1SmlGblpaRlhG?=
+ =?utf-8?B?dWt4T0R4VzI3Nmlud3VxK2ZOSitKVHBmMHFJdk5iS3JoKy96bGZOL1dib2Ju?=
+ =?utf-8?B?ZTFyRTA3c05EemhSaWxvOG5Za3BvSEJWSnlGZXBhRGRHL0tGd0FXKzJiSWk2?=
+ =?utf-8?B?V0o2VlJqL09YLzhYU2ZqUlVuZFhDenJrcEdLQkF4ai9DRnZMK0YxQUxPcGl5?=
+ =?utf-8?B?eVd4SkV1eDZtNTFueXJqQWkxQmF3M1daMFM0THFvU0lTZSswSWJRVDBzUE9L?=
+ =?utf-8?B?YU1DcmN2bENqK1k3RkVUc0FDV3hJUk04RjlSOW5zUFJFa1NhTUV6bEgwQnFi?=
+ =?utf-8?B?L1lEdHJMUmlrMFRLZEVrUi9RUjlHOUE2YkhtVlptbGtQTGRrZTk0b0NJSmJD?=
+ =?utf-8?B?TVVISEtuSndjUFU4Yko1Tml4ZGV1LzVwdFMrQWE1YjR1eFBKUGJvTk1lTFFF?=
+ =?utf-8?B?SFVCUmM4bXBuSGVoVC8rMjROYnExTm5oVzVUVndwWFdCdzgrc1ZwUDhaUEF0?=
+ =?utf-8?B?Tm8yeEtNNkZUZ1ZZZTdsaXhPT0NEZFpvL3dVS2YvWmRrV3JHd01kMVpyQWVx?=
+ =?utf-8?B?VnNIRjJ5cnNKdzdtbG5pYlZ5dHdPMEJ1RnRDS3R1Q21nMVlYb3IrZmw3WjdT?=
+ =?utf-8?B?aEFuWForRzcxRForMlhnTTN2cjdQdE1SUmM5dmlndklrMmgzRDBYQ3ZHeEsr?=
+ =?utf-8?B?VTgrZHQxdG96dFNoNWc1eW9WdEo3T3pDWk1VYlJYcFQ2dWNSTXlNb2FXRWZp?=
+ =?utf-8?B?aWdhV0tlVEU5OE53Sk5Kak9GQ3E3NE96VkxNMGcrMW4rQzRSN0p5K1BRdjhR?=
+ =?utf-8?B?c244RmRDbldJZFZIUGFyMVV6NmI4cm9NbVhBaGRtcXF6SlQrclVFTHV3OXFu?=
+ =?utf-8?B?a0Yvb21jcGUyNWtNb1hNZlpEOU5hSmJWWHZxenl1VGlXMjZha2svdzl0WXpj?=
+ =?utf-8?B?RlIrajA3LzJMaHFJOUxlaTNkNitrSlRhUFVlSEJSQ09DZFFyeEI2S0VsRG9o?=
+ =?utf-8?B?TEJRdTRNdS9uS0xRS01kbVN5eVZwVEh6Tk5CYkE4WGpFTXVwSlBQOTU3aUVO?=
+ =?utf-8?B?VU4vdHNIZlFFRzhCckFQb2MxNm16c2pjSlBxNkxQWm9tL2lpMmxBVS9ORkxr?=
+ =?utf-8?B?VDlGMkxISjZUa2FiQmViWFlKM2hxdjREcXdQaStGbnRqRlV5aUdKT0ppSXh2?=
+ =?utf-8?B?ZGVQR1BNWmNVbUIvRHBDOU8zWE1RdEVwTUxGY1lrZzdrbHZiNjhpazU4dlll?=
+ =?utf-8?B?NzlydnRkK2c1UWREcS9YN3pmUklrOGhzRUhOTkJIejEyWWkvbWtmeGFwdXVC?=
+ =?utf-8?B?WFRXSkh5b1ZkZEJ5cWRDY2ovQ3psL3YwTVdaVjFhbFFhaEFkaUJKbVlNNGgy?=
+ =?utf-8?B?ekpJN2pUNksrRjdmLzdSdz09?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <2B239216F9DD9044984BF03D07576042@namprd10.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 06 May 2021 12:17:51 +0530
-From:   sbillaka@codeaurora.org
-To:     Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc:     "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <dri-devel@lists.freedesktop.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Rob Clark <robdclark@gmail.com>,
-        Sean Paul <seanpaul@chromium.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Douglas Anderson <dianders@chromium.org>,
-        khsieh@codeaurora.org, Krishna Manikandan <mkrishn@codeaurora.org>
-Subject: Re: [PATCH v1 0/3] Add support for next gen eDP driver on SnapDragon
-In-Reply-To: <CAA8EJpqZXHNvBySL0Vm-CmsrAh8Z85SoQHn97TqWLYeFW-Q=UA@mail.gmail.com>
-References: <1620202579-19066-1-git-send-email-sbillaka@codeaurora.org>
- <CAA8EJpqZXHNvBySL0Vm-CmsrAh8Z85SoQHn97TqWLYeFW-Q=UA@mail.gmail.com>
-Message-ID: <3398f9a1f985ccd6bb6a44646f7bea24@codeaurora.org>
-X-Sender: sbillaka@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CY4PR10MB1989.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7cf3d031-fc70-4bbf-1e95-08d9105b451d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2021 06:50:43.3372
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: t3D7EH16M8dUc913AynIpvLtjhRc81J0mAOaKP5T/wFdAtyEw1CP54dBfdDVM2/Y3qgvTZMYeUE/MPvDKywLYw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY4PR10MB1255
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9975 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 malwarescore=0
+ suspectscore=0 bulkscore=0 spamscore=0 adultscore=0 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105060044
+X-Proofpoint-GUID: r8BFfnsOh3VB6Jiag0IBuoV9Ky9vzEhh
+X-Proofpoint-ORIG-GUID: r8BFfnsOh3VB6Jiag0IBuoV9Ky9vzEhh
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9975 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 malwarescore=0
+ mlxlogscore=999 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
+ impostorscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2105060044
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-05 15:31, Dmitry Baryshkov wrote:
-> Hi,
-> 
-> On Wed, 5 May 2021 at 11:17, Sankeerth Billakanti
-> <sbillaka@codeaurora.org> wrote:
->> 
->> These patches add support for the next generation eDP driver on 
->> SnapDragon
->> with dpu support. The existing eDP driver cannot support the new eDP
->> hardware. So, to maintain backward compatibility, the older eDP driver 
->> is
->> moved to v200 folder and the new generation eDP driver is added in
->> the v510 folder.
-> 
-> What exactly does this version correspond to?
-> I assume that v510 corresponds to sdmshrike/sc8180x. Is it right?
-[Sankeerth] This is for sc7280.
-
-> Is it really so specific, or just v2/v5 would be enough? Not to
-> mention that this is the MDP/ version, while other blocks tend to use
-> block-specific versions/ids.
-[Sankeerth] I can rename it as edp-v1 and edp-v2. Edp v1 is very old 
-chip and there is considerable HW delta between v1 and v2. So, we want 
-to separate the driver. We followed similar model for DPU driver where, 
-MDP4, MDP5 and DPU have separate folders. EDP v1 belongs to MDP4 
-generation.
-
-> 
-> Also, how much does it differ from the current DP core supported via
-> drivers/gpu/drm/msm/dp ?
-[Sankeerth] eDP is a native controller like DP but does not have audio, 
-content protection and interoperability requirement. Upstream already 
-supports eDP as a new interface driver found here: 
-drivers/gpu/drm/msm/edp.
-I wanted to add the new controller driver as part of that folder.
-
-> 
-> First two patches did not make it to the linux-msm, so I can not
-> comment on each of the lines.
-[Sankeerth] I am also not sure why they did not make it to patchwork. I 
-will repost them.
-
-> However just my few cents (other reviewers might disagree though):
-> 
-> - I see little benefit in renaming the folders just for the sake of
-> renaming. You can put your code in drivers/gpu/drm/msm/edp-v510, if
-> you really insist on that. Note that for all other (even incompatible)
-> hardware types we still use single level of folders.
-> 
-> - Also I see that significant parts of code (e.g. AUX, bridge,
-> connector, maybe more) are just c&p of old edp code pieces. Please
-> share the code instead of duplicating it.
-[Sankeerth] It is a baseline driver. As we add more features, it will 
-considerably deviate a lot. The effort seems to be very high to maintain 
-the common portion of code as I expect a lot of deviation.
-> 
-> - Please consider updating register definitions in xml form and then
-> providing both changed xml files (to mesa project (?)) and generated
-> headers into the kernel.
-[Sankeerth] I followed what was done in the DP driver at 
-/drivers/gpu/drm/msm/dp. I need to explore the xml approach to generate 
-the register definitions.
-> 
-> - Please consider using clk_bulk_* functions instead of using
-> dss_module_power. I'm going to send a patchset reworking current users
-> to use the generic clk_bulk_* function family.
-[Sankeerth] I will explore and rebase after your patch is available.
-> 
-> - In generic, this eDP clock handling seems to match closely DP clocks
-> handling (with all the name comparison, etc). Consider moving this to
-> a generic piece of code
-> 
-> - PHY seems to be a version of QMP PHY. Please use it, like it was
-> done for the DP itself. There is support for combined USB+DP PHYs
-> (both v3 and v4), so it should be possible to extend that for eDP.
-[Sankeerth] The DP phy is a combophy which supports both usb and dp phy 
-concurrently, unlike eDP phy which is specific to only the eDP 
-controller in sc7280. So, I implemented the edp phy sequences in the 
-same folder.
-> 
-> 
->> These are baseline changes with which we can enable display. The new 
->> eDP
->> controller can also support additional features such as backlight 
->> control,
->> PSR etc. which will be enabled in subsequent patch series.
->> 
->> Summary of changes:
->> DPU driver interface to the new eDP v510 display driver.
->> New generation eDP controller and phy driver implementation.
->> A common interface to choose enable the required eDP driver.
->> 
->> Sankeerth Billakanti (3):
->>   drm/msm/edp: support multiple generations of edp hardware
->>   drm/msm/edp: add support for next gen edp
->>   drm/msm/disp/dpu1: add support for edp encoder
->> 
->>  drivers/gpu/drm/msm/Makefile                      |   19 +-
->>  drivers/gpu/drm/msm/disp/dpu1/dpu_encoder.c       |    7 +-
->>  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c           |   33 +
->>  drivers/gpu/drm/msm/edp/edp.c                     |  198 ---
->>  drivers/gpu/drm/msm/edp/edp.h                     |   78 -
->>  drivers/gpu/drm/msm/edp/edp.xml.h                 |  380 -----
->>  drivers/gpu/drm/msm/edp/edp_aux.c                 |  264 ----
->>  drivers/gpu/drm/msm/edp/edp_bridge.c              |  111 --
->>  drivers/gpu/drm/msm/edp/edp_common.c              |   38 +
->>  drivers/gpu/drm/msm/edp/edp_common.h              |   47 +
->>  drivers/gpu/drm/msm/edp/edp_connector.c           |  132 --
->>  drivers/gpu/drm/msm/edp/edp_ctrl.c                | 1375 
->> ------------------
->>  drivers/gpu/drm/msm/edp/edp_phy.c                 |   98 --
->>  drivers/gpu/drm/msm/edp/v200/edp.xml.h            |  380 +++++
->>  drivers/gpu/drm/msm/edp/v200/edp_v200.c           |  210 +++
->>  drivers/gpu/drm/msm/edp/v200/edp_v200.h           |   70 +
->>  drivers/gpu/drm/msm/edp/v200/edp_v200_aux.c       |  264 ++++
->>  drivers/gpu/drm/msm/edp/v200/edp_v200_bridge.c    |  111 ++
->>  drivers/gpu/drm/msm/edp/v200/edp_v200_connector.c |  132 ++
->>  drivers/gpu/drm/msm/edp/v200/edp_v200_ctrl.c      | 1375 
->> ++++++++++++++++++
->>  drivers/gpu/drm/msm/edp/v200/edp_v200_phy.c       |   98 ++
->>  drivers/gpu/drm/msm/edp/v510/edp_v510.c           |  220 +++
->>  drivers/gpu/drm/msm/edp/v510/edp_v510.h           |  151 ++
->>  drivers/gpu/drm/msm/edp/v510/edp_v510_aux.c       |  268 ++++
->>  drivers/gpu/drm/msm/edp/v510/edp_v510_bridge.c    |  111 ++
->>  drivers/gpu/drm/msm/edp/v510/edp_v510_connector.c |  117 ++
->>  drivers/gpu/drm/msm/edp/v510/edp_v510_ctrl.c      | 1583 
->> +++++++++++++++++++++
->>  drivers/gpu/drm/msm/edp/v510/edp_v510_phy.c       |  641 +++++++++
->>  drivers/gpu/drm/msm/edp/v510/edp_v510_reg.h       |  339 +++++
->>  29 files changed, 6207 insertions(+), 2643 deletions(-)
->>  delete mode 100644 drivers/gpu/drm/msm/edp/edp.c
->>  delete mode 100644 drivers/gpu/drm/msm/edp/edp.h
->>  delete mode 100644 drivers/gpu/drm/msm/edp/edp.xml.h
->>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_aux.c
->>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_bridge.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/edp_common.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/edp_common.h
->>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_connector.c
->>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_ctrl.c
->>  delete mode 100644 drivers/gpu/drm/msm/edp/edp_phy.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp.xml.h
->>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200.h
->>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_aux.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_bridge.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_connector.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_ctrl.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v200/edp_v200_phy.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510.h
->>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_aux.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_bridge.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_connector.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_ctrl.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_phy.c
->>  create mode 100644 drivers/gpu/drm/msm/edp/v510/edp_v510_reg.h
->> 
->> --
->> The Qualcomm Innovatin Center, Inc. is a member of the Code Aurora 
->> Forum, a Linux Foundation Collaborative Project
->> 
-> 
-> 
-> --
-> With best wishes
-> Dmitry
+U29ycnkgZm9yIHRoZSBkZWxheS4NCg0KDQo+IE9uIDIwIEFwciAyMDIxLCBhdCAyMjoxMCwgR3Vz
+dGF2byBBLiBSLiBTaWx2YSA8Z3VzdGF2b0BlbWJlZGRlZG9yLmNvbT4gd3JvdGU6DQo+IA0KPiBI
+aSBhbGwsDQo+IA0KPiBGcmllbmRseSBwaW5nOiB3aG8gY2FuIHRha2UgdGhpcywgcGxlYXNlPw0K
+PiANCj4gVGhhbmtzDQo+IC0tDQo+IEd1c3Rhdm8NCj4gDQo+IE9uIDMvNS8yMSAwMzowNiwgR3Vz
+dGF2byBBLiBSLiBTaWx2YSB3cm90ZToNCj4+IEluIHByZXBhcmF0aW9uIHRvIGVuYWJsZSAtV2lt
+cGxpY2l0LWZhbGx0aHJvdWdoIGZvciBDbGFuZywgZml4IG11bHRpcGxlDQo+PiB3YXJuaW5ncyBi
+eSBleHBsaWNpdGx5IGFkZGluZyBtdWx0aXBsZSBicmVhayBzdGF0ZW1lbnRzIGluc3RlYWQgb2YN
+Cj4+IGxldHRpbmcgdGhlIGNvZGUgZmFsbCB0aHJvdWdoIHRvIHRoZSBuZXh0IGNhc2UuDQo+PiAN
+Cj4+IExpbms6IGh0dHBzOi8vZ2l0aHViLmNvbS9LU1BQL2xpbnV4L2lzc3Vlcy8xMTUNCj4+IFNp
+Z25lZC1vZmYtYnk6IEd1c3Rhdm8gQS4gUi4gU2lsdmEgPGd1c3Rhdm9hcnNAa2VybmVsLm9yZz4N
+Cg0KUmV2aWV3ZWQtYnk6IEjDpWtvbiBCdWdnZSA8aGFha29uLmJ1Z2dlQG9yYWNsZS5jb20+DQoN
+Cg0KVGh4cywgSMOla29uDQoNCg0KPj4gLS0tDQo+PiBuZXQvcmRzL3RjcF9jb25uZWN0LmMgfCAx
+ICsNCj4+IG5ldC9yZHMvdGhyZWFkcy5jICAgICB8IDIgKysNCj4+IDIgZmlsZXMgY2hhbmdlZCwg
+MyBpbnNlcnRpb25zKCspDQo+PiANCj4+IGRpZmYgLS1naXQgYS9uZXQvcmRzL3RjcF9jb25uZWN0
+LmMgYi9uZXQvcmRzL3RjcF9jb25uZWN0LmMNCj4+IGluZGV4IDRlNjQ1OTgxNzZiMC4uNTQ2MWQ3
+N2ZmZjRmIDEwMDY0NA0KPj4gLS0tIGEvbmV0L3Jkcy90Y3BfY29ubmVjdC5jDQo+PiArKysgYi9u
+ZXQvcmRzL3RjcF9jb25uZWN0LmMNCj4+IEBAIC03OCw2ICs3OCw3IEBAIHZvaWQgcmRzX3RjcF9z
+dGF0ZV9jaGFuZ2Uoc3RydWN0IHNvY2sgKnNrKQ0KPj4gCWNhc2UgVENQX0NMT1NFX1dBSVQ6DQo+
+PiAJY2FzZSBUQ1BfQ0xPU0U6DQo+PiAJCXJkc19jb25uX3BhdGhfZHJvcChjcCwgZmFsc2UpOw0K
+Pj4gKwkJYnJlYWs7DQo+PiAJZGVmYXVsdDoNCj4+IAkJYnJlYWs7DQo+PiAJfQ0KPj4gZGlmZiAt
+LWdpdCBhL25ldC9yZHMvdGhyZWFkcy5jIGIvbmV0L3Jkcy90aHJlYWRzLmMNCj4+IGluZGV4IDMy
+ZGM1MGYwYTMwMy4uMWY0MjRjYmZjYmI0IDEwMDY0NA0KPj4gLS0tIGEvbmV0L3Jkcy90aHJlYWRz
+LmMNCj4+ICsrKyBiL25ldC9yZHMvdGhyZWFkcy5jDQo+PiBAQCAtMjA4LDYgKzIwOCw3IEBAIHZv
+aWQgcmRzX3NlbmRfd29ya2VyKHN0cnVjdCB3b3JrX3N0cnVjdCAqd29yaykNCj4+IAkJY2FzZSAt
+RU5PTUVNOg0KPj4gCQkJcmRzX3N0YXRzX2luYyhzX3NlbmRfZGVsYXllZF9yZXRyeSk7DQo+PiAJ
+CQlxdWV1ZV9kZWxheWVkX3dvcmsocmRzX3dxLCAmY3AtPmNwX3NlbmRfdywgMik7DQo+PiArCQkJ
+YnJlYWs7DQo+PiAJCWRlZmF1bHQ6DQo+PiAJCQlicmVhazsNCj4+IAkJfQ0KPj4gQEAgLTIzMiw2
+ICsyMzMsNyBAQCB2b2lkIHJkc19yZWN2X3dvcmtlcihzdHJ1Y3Qgd29ya19zdHJ1Y3QgKndvcmsp
+DQo+PiAJCWNhc2UgLUVOT01FTToNCj4+IAkJCXJkc19zdGF0c19pbmMoc19yZWN2X2RlbGF5ZWRf
+cmV0cnkpOw0KPj4gCQkJcXVldWVfZGVsYXllZF93b3JrKHJkc193cSwgJmNwLT5jcF9yZWN2X3cs
+IDIpOw0KPj4gKwkJCWJyZWFrOw0KPj4gCQlkZWZhdWx0Og0KPj4gCQkJYnJlYWs7DQo+PiAJCX0N
+Cj4+IA0KDQo=
