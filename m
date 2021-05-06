@@ -2,120 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FD737540B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:47:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA12F37540E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:48:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231501AbhEFMso (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:48:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52386 "EHLO
+        id S231976AbhEFMs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:48:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52436 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229769AbhEFMsn (ORCPT
+        with ESMTP id S231533AbhEFMsy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:48:43 -0400
-Received: from mail-lj1-x232.google.com (mail-lj1-x232.google.com [IPv6:2a00:1450:4864:20::232])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB198C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 05:47:44 -0700 (PDT)
-Received: by mail-lj1-x232.google.com with SMTP id a36so6861770ljq.8
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 05:47:44 -0700 (PDT)
+        Thu, 6 May 2021 08:48:54 -0400
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F5AC061761
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 05:47:56 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id c3so7591833lfs.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 05:47:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=tIRE8QgoHIdYOF8GPHvxQ+HvdFDXSfw9r/pCQC6+ol0=;
-        b=DSf1wjC3qLWw0y4zWaZrNJYe88iiGWkjjk3VJpK0Iay6DXEa5pw1qOFrmx1mU2GcL0
-         UsGPrxnLxynv039A8OneG3YWNrG7BWmasP2KgdZ5cSsjKjFjfIfsrf/rqEDHMQ33q7fv
-         iwFvbWjsQ6v3DWRu3Nu6G+fFyOGhi8GvyZTjITF9kYeME79eRy3wFf41l05j5pv/AXlV
-         703jQsYtsL4I2bR67Kjz+zI8LBEbs66wxXYv91qShfAhJOBVChXTTfvvhVkSjgi0nuHu
-         XSP0rQZAUwIN78lAUAWV8/Zc3Jrf+Ir9QJW/HtzCjrDiCZvE16jWVC6jV55/tQP2m6l2
-         Q9Qw==
+        bh=QzEhbEsMPT0RAPd1e91T+mtb6uxkgCOagogsHHD+eZ8=;
+        b=Ks4nME/nPDpiuCR59p2B2xWzX2AYOmCJzm4REQpSn4ozFkIMOPSUaWXVEwcPIc4xyQ
+         /h/8FA83Pe63a9B4OsKLVtiF+oz11lDf0JTY0Nrd9qrebslmObz5Ypz0Gz1hTRDzKP2j
+         VqxNzfQVUd8RPj/vo9zPpRYyZSk4aFNGAgziomJb2ZrXcFnaEFbVdi4BRH2/5cHXHWkt
+         lp9+3khZACAlWA5W6hz3CYTVxwHDfHI9CGl1MoHyCeKD8UrE3WcIrz9uSDezslqePeqc
+         wV081/jHVKrG2qYS+BZVI099G5yt3aR4TATmjDcF4wJ3EMrnwEPL5Emo1GkHIqM9iFxK
+         zw+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=tIRE8QgoHIdYOF8GPHvxQ+HvdFDXSfw9r/pCQC6+ol0=;
-        b=JvQtGP8cF3bEJMq9Vxt9LT18c2mGanXO3Lj42sm56eCErm0rb3FRgk4j65twTF55Jg
-         fiUUxKnOeoTCI4kIBwX7huuXIE2yvmHtZon0IzWoJl9wYXuJGDPSspR53e6QseNDz4sd
-         hXYZmNeSZV6sL1WmpkJuBdYM4VpJFiB6YVsCxrqmedKsa0niS+eudaBx5BzmGqVO6rya
-         WTfvPUcGRBWfDOCcOiRyQBOIuLQbmrmPlFYM0e2x0ElItfKp0af37Uvf1IUOfynHbEuu
-         0Sl2MH6+bzRQJGvc0U/3YxPtN2qqBD2jUA/vWPFszpS/vx+70xJ1m6lfb6LJ2mSLPZWy
-         KLEQ==
-X-Gm-Message-State: AOAM530waLfHkzFhr7aICK0o8Ubja/inHg3maR3FrQPsruXlOESkw5qt
-        B2SnB0N/tXpoZAIIzOI+iKj5otrSe5UPCByuFDg=
-X-Google-Smtp-Source: ABdhPJxMrAhSFUQZ6f4f8PdOR4GLRquFN0haRUuA5Qm5JmvUPJDwnd9MQq94Qa24TiA5dSegrn9TFK1dNFEh5D4mMds=
-X-Received: by 2002:a2e:7306:: with SMTP id o6mr3173444ljc.420.1620305263193;
- Thu, 06 May 2021 05:47:43 -0700 (PDT)
+        bh=QzEhbEsMPT0RAPd1e91T+mtb6uxkgCOagogsHHD+eZ8=;
+        b=K/tzEpw5CWdc5dQk6hcO1jNsF9tZsRf59OzIjhvM4tkZgbajdHJqrs3TpgPTdcAcC1
+         x4Ylh7acYaNHOrkIE+sE/cZqYz19Wc1cXxkxZmp7zzu3vITCgkv3cGW5VhuWrJccZhYp
+         18ClZQFZsATbOxuv3IwQXokiZrj4vQLJ5GWTiDpRz6vwFCE3aB9hOOAYevTrAJQtRBGd
+         M6UZC1g7thn2DB6zGnFo8Djv1D9BHQJS/nTkhXxXkRZqDdazxliIWdmm0qlEJiRcNogJ
+         RQ5L+emOlzuxQ0Qb6ml2kPVa1ShNcg4FVgzAIpBceXkc++YiP8T8Ro96GJXjPERBbkSJ
+         wSSQ==
+X-Gm-Message-State: AOAM532D5plFeUi0lPMya4TawGAt0eYGNsDryY7tWmB82yIzAw6pphBC
+        SiPwCFOnWezOnsLEFKm1Vw6t1Q5naf3qKs889Z8yVg==
+X-Google-Smtp-Source: ABdhPJwJSNb8W1vk/3K2xi7xKhIaQoHWBzIq30udueCYblsY75ozgEgTP9kUERq+loNLHdEeI4qZI/JWoOzp/xuldN4=
+X-Received: by 2002:ac2:544f:: with SMTP id d15mr2712552lfn.465.1620305275123;
+ Thu, 06 May 2021 05:47:55 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210506110936.8797-1-xuewen.yan94@gmail.com> <20210506122823.GA8671@ubiquitous>
-In-Reply-To: <20210506122823.GA8671@ubiquitous>
-From:   Xuewen Yan <xuewen.yan94@gmail.com>
-Date:   Thu, 6 May 2021 20:46:08 +0800
-Message-ID: <CAB8ipk-uL4Z1SY5sxhZ8dTtdvg8AzLtPS6QNEQFxuKCDdeBZxQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/pelt: Add UTIL_AVG_UNCHANGED flag for last_enqueued_diff
-To:     Vincent Donnefort <vincent.donnefort@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+References: <20210414184604.23473-1-ojeda@kernel.org> <YHiMyE4E1ViDcVPi@hirez.programming.kicks-ass.net>
+ <YHj02M3jMSweoP4l@google.com> <CACRpkdat8bny=D2mAsUXcDQvFJ=9jSZSccMMZzH=10dHQ_bXrQ@mail.gmail.com>
+ <CANiq72niCj9SfPhfQBMtxF+jth--cXdPQtUo5jhDDJgL6DTXZQ@mail.gmail.com>
+ <CACRpkdarfkA1P0ERCXHSA=6VTBn6FXgOxB8haneQtN_4-tyQ0w@mail.gmail.com>
+ <CANiq72=VA_cH9yw_LZr3P+n1AsQEEhtY4xdk76jHgimTufHRsQ@mail.gmail.com>
+ <CACRpkdYodGnURuaYMBwVAY=8bU0PQoPAvTp34uYksPFmxBsT2A@mail.gmail.com>
+ <CANiq72m9V3dVG59jAoR-OM+7QtJauQgrix3DZkw=oCuaaf3H5w@mail.gmail.com>
+ <CACRpkdYzqy69G1Fpj4rFQFS+mYmpbQAzTszwCUBuEhe4YW4cuQ@mail.gmail.com>
+ <CANiq72k+x13L+sFkjtDLahcvnpEySqk_NGow6FVMZfrV+MmHPw@mail.gmail.com>
+ <CACRpkdbNv4O7zs0OpZhWa2fkXkF5arQgDOF9++zKvr+yB5yk_w@mail.gmail.com> <CANiq72njjiovAecf5pJGAuyJB8sEZ_fO92FNDZ7rH6YQSffqrw@mail.gmail.com>
+In-Reply-To: <CANiq72njjiovAecf5pJGAuyJB8sEZ_fO92FNDZ7rH6YQSffqrw@mail.gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 6 May 2021 14:47:43 +0200
+Message-ID: <CACRpkdYpM=38K2WLS-+R2OhWweO8Q9SFndgGC2Py7uBjjxNdAA@mail.gmail.com>
+Subject: Re: [PATCH 00/13] [RFC] Rust support
+To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Cc:     Wedson Almeida Filho <wedsonaf@google.com>,
         Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Benjamin Segall <bsegall@google.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Ryan Y <xuewyan@foxmail.com>
+        Miguel Ojeda <ojeda@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        rust-for-linux <rust-for-linux@vger.kernel.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-On Thu, May 6, 2021 at 8:28 PM Vincent Donnefort
-<vincent.donnefort@arm.com> wrote:
+On Wed, May 5, 2021 at 4:17 PM Miguel Ojeda
+<miguel.ojeda.sandonis@gmail.com> wrote:
+> On Wed, May 5, 2021 at 1:34 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+> >
+> > Right now it seems like those organizations and companies
+> > would be some academic institutions who like rust (because they
+> > study languages and compilers) and Google. But that is a
 >
-> On Thu, May 06, 2021 at 07:09:36PM +0800, Xuewen Yan wrote:
-> > From: Xuewen Yan <xuewen.yan@unisoc.com>
-> >
-> > The UTIL_AVG_UNCHANGED flag had been cleared when the task util changed.
-> > And the enqueued is equal to task_util with the flag, so it is better
-> > to add the UTIL_AVG_UNCHANGED flag for last_enqueued_diff.
-> >
-> > Fixes: b89997aa88f0b sched/pelt: Fix task util_est update filtering
-> >
-> > Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
-> > ---
-> >  kernel/sched/fair.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index e5e457fa9dc8..94d77b4fa601 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -3996,7 +3996,7 @@ static inline void util_est_update(struct cfs_rq *cfs_rq,
-> >       if (ue.enqueued & UTIL_AVG_UNCHANGED)
-> >               return;
-> >
-> > -     last_enqueued_diff = ue.enqueued;
-> > +     last_enqueued_diff = (ue.enqueued | UTIL_AVG_UNCHANGED);
-> >
-> >       /*
-> >        * Reset EWMA on utilization increases, the moving average is used only
-> > --
-> > 2.29.0
-> >
->
-> Hi,
->
-> We do indeed for the diff use the flag for the value updated and no flag for the
-> value before the update. However, last_enqueued_diff is only used for the margin
-> check which is an heuristic and is not an accurate value (~1%) and as we know
-The last_enqueued_diff is compared with the UTIL_EST_MARGIN which is
-"1024/100 = 10",
-and The LSB may cause ~10% error.
-> we already loose the LSB in util_est, I'm not sure this is really necessary.
-I'm also not very sure, maybe the calculation will be more rigorous
-with the flag?
->
-> --
-> Vincent
->
+> Note that there are quite a few major private players already
+> involved, not just Google! e.g.
+
+I was referring to entities interested in using Rust for the
+Linux kernel. Not just "using rust". And that interest is coming
+from Google and a few academic institutions AFAICT.
+
+Yours,
+Linus Walleij
