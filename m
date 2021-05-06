@@ -2,89 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28F2B375B66
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:07:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27DC6375B69
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:08:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234763AbhEFTIh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 15:08:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53634 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233217AbhEFTIg (ORCPT
+        id S234825AbhEFTIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 15:08:52 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20278 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234776AbhEFTIu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 15:08:36 -0400
-Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32F24C061763
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 12:07:35 -0700 (PDT)
-Received: by mail-lf1-x134.google.com with SMTP id j10so9272007lfb.12
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 12:07:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mVaHSdkbm8MwXcn7SQ50Z8opf/CDWX+YUlvqILmFAHk=;
-        b=id5UfkCDd3EuyHSkKzeuUxog37Hj+v43FlB6zPks/xuoHqW5jOXyiVva7fE9tBExzA
-         ZQdpWuYTI7YOESVVJ1e3yzGm+X0NbHiJ6WIr8AqbJC+n7dAPDHNIfD3BIlilXlTKRmE1
-         EQ0eJ3Et51PD0cBnCErwJDkS45jDqHR0gTDoKxc8W6fVs6ksLAN4jsvrS6FAVRBreHF5
-         i753Vg02zXSIa7OAF3vcEqqzQvBWUs8po4OucrGh6LtnY9fLOdhCfMF5cG9Nou2bpe2w
-         pNXPhaw7yqeTW34QCvdv3IApVkJbse6igXULNvW+21LE/ko2OVuDJOPYG2ujGlnAihDJ
-         ABMw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mVaHSdkbm8MwXcn7SQ50Z8opf/CDWX+YUlvqILmFAHk=;
-        b=eX1e3Jn/QbCto12jtTeP5Elssu6slTMMQO49mnKcX7UcMQLzIy+D0Ph6MBTGAZ/ZHD
-         5GizpqfsxcJDHh2JdyBirg6OrJPiETcYn5Xg+Zdcg7a3yUzW3WZeVvOD351t8Q45tM07
-         PezeDwIEQFDMatjQAmpp1WEJmdXWWJ9Cp/Ku7JtAc+gixPL/GLfzm2nSjigirPH4ETnB
-         TS7LEzCO1gzsAuz+i4ev7p+PCUYD8zNcR9YFGAyq73N20K2fPGBOZwrQ/sgVgX8OFCKI
-         VlEe0MO2leVh6XmfWnLuBX2Y/qAJ0XCRpZWHBcUrYxEhTLqmPr6lWi6L4qO6/v136QBn
-         5MOw==
-X-Gm-Message-State: AOAM5324WJ6RooFkQoYK+36HcR3nGKoZeg5cnDtOYTxd53ZdT0dadmkl
-        4f0F6Hw1MQ/wV2pKw9I0i7E=
-X-Google-Smtp-Source: ABdhPJwT/SDkwwAWGtM7M9K6YKUnWqjhwTIfX4TvTeQgOwu6HN924Hkru5vwazeHB+OAZmx1nL7yiA==
-X-Received: by 2002:a19:c104:: with SMTP id r4mr4132224lff.555.1620328054402;
-        Thu, 06 May 2021 12:07:34 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.226.84])
-        by smtp.gmail.com with ESMTPSA id k11sm857445lfg.288.2021.05.06.12.07.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 12:07:33 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     tglx@linutronix.de, mingo@redhat.com, bp@alien8.de
-Cc:     linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH] x86: make x86nops symbol static
-Date:   Thu,  6 May 2021 22:07:26 +0300
-Message-Id: <20210506190726.15575-1-paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        Thu, 6 May 2021 15:08:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620328071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/fpuFMdCeajW1Uwy98sPY31ItgEQVigIlX9gJjRQOwU=;
+        b=WSVLz6c6hJzhSLtTQXiM82UQCZ9EnFlva1Xt88yAcV+1QNZdTvCgAX9GKPPc5q7j8JQoEb
+        g5YUuBQiFXE0vhqhpObQqdHdx2iuMJhS5q6LR3PLZcOrQIBLDut1/jmM6i6SjdS3wVUHkn
+        Kk0kfats7Bn28sEPPT1Cdegsbo6PDeo=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-383-1ZKBawjKOVu4PAcNeaqJJw-1; Thu, 06 May 2021 15:07:50 -0400
+X-MC-Unique: 1ZKBawjKOVu4PAcNeaqJJw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BAAAB801817;
+        Thu,  6 May 2021 19:07:48 +0000 (UTC)
+Received: from work-vm (ovpn-115-37.ams2.redhat.com [10.36.115.37])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 301145C1C5;
+        Thu,  6 May 2021 19:07:42 +0000 (UTC)
+Date:   Thu, 6 May 2021 20:07:39 +0100
+From:   "Dr. David Alan Gilbert" <dgilbert@redhat.com>
+To:     Vivek Goyal <vgoyal@redhat.com>
+Cc:     linux-fsdevel@vger.kernel.org, virtio-fs@redhat.com,
+        miklos@szeredi.hu, linux-kernel@vger.kernel.org,
+        dan.carpenter@oracle.com
+Subject: Re: [PATCH 1/2] virtiofs, dax: Fix smatch warning about loss of info
+ during shift
+Message-ID: <YJQ+ex2DUPYo1GV5@work-vm>
+References: <20210506184304.321645-1-vgoyal@redhat.com>
+ <20210506184304.321645-2-vgoyal@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20210506184304.321645-2-vgoyal@redhat.com>
+User-Agent: Mutt/2.0.6 (2021-03-06)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sparse says:
-  arch/x86/kernel/alternative.c:78:21: warning: symbol 'x86nops' was not declared. Should it be static?
+* Vivek Goyal (vgoyal@redhat.com) wrote:
+> Dan reported a smatch warning during potentential loss of info during
+> left shift if this code is compiled on 32bit systems.
+>=20
+> New smatch warnings:
+> fs/fuse/dax.c:113 fuse_setup_one_mapping() warn: should 'start_idx << 21'=
+ be a
+> +64 bit type?
+>=20
+> I ran smatch and found two more instances of similar warning. This patch
+> fixes all such instances.
+>=20
+> Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+> Signed-off-by: Vivek Goyal <vgoyal@redhat.com>
+> ---
+>  fs/fuse/dax.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/fs/fuse/dax.c b/fs/fuse/dax.c
+> index ff99ab2a3c43..f06fdad3f7b1 100644
+> --- a/fs/fuse/dax.c
+> +++ b/fs/fuse/dax.c
+> @@ -186,7 +186,7 @@ static int fuse_setup_one_mapping(struct inode *inode=
+, unsigned long start_idx,
+>  	struct fuse_conn_dax *fcd =3D fm->fc->dax;
+>  	struct fuse_inode *fi =3D get_fuse_inode(inode);
+>  	struct fuse_setupmapping_in inarg;
+> -	loff_t offset =3D start_idx << FUSE_DAX_SHIFT;
+> +	loff_t offset =3D (loff_t)start_idx << FUSE_DAX_SHIFT;
 
-Since x86nops is not used outside this file,
-it can be made static.
+I've not followed the others back, but isn't it easier to change
+the start_idx parameter to be a loff_t, since the places it's called
+=66rom are poth loff_t pos?
 
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
----
- arch/x86/kernel/alternative.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Dave
 
-diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
-index 6974b5174495..75c752b0628c 100644
---- a/arch/x86/kernel/alternative.c
-+++ b/arch/x86/kernel/alternative.c
-@@ -75,7 +75,7 @@ do {									\
- 	}								\
- } while (0)
- 
--const unsigned char x86nops[] =
-+static const unsigned char x86nops[] =
- {
- 	BYTES_NOP1,
- 	BYTES_NOP2,
--- 
-2.31.1
+>  	FUSE_ARGS(args);
+>  	ssize_t err;
+> =20
+> @@ -872,7 +872,7 @@ static int dmap_writeback_invalidate(struct inode *in=
+ode,
+>  				     struct fuse_dax_mapping *dmap)
+>  {
+>  	int ret;
+> -	loff_t start_pos =3D dmap->itn.start << FUSE_DAX_SHIFT;
+> +	loff_t start_pos =3D (loff_t)dmap->itn.start << FUSE_DAX_SHIFT;
+>  	loff_t end_pos =3D (start_pos + FUSE_DAX_SZ - 1);
+> =20
+>  	ret =3D filemap_fdatawrite_range(inode->i_mapping, start_pos, end_pos);
+> @@ -966,7 +966,7 @@ inode_inline_reclaim_one_dmap(struct fuse_conn_dax *f=
+cd, struct inode *inode,
+>  	dmap =3D inode_lookup_first_dmap(inode);
+>  	if (dmap) {
+>  		start_idx =3D dmap->itn.start;
+> -		dmap_start =3D start_idx << FUSE_DAX_SHIFT;
+> +		dmap_start =3D (u64)start_idx << FUSE_DAX_SHIFT;
+>  		dmap_end =3D dmap_start + FUSE_DAX_SZ - 1;
+>  	}
+>  	up_read(&fi->dax->sem);
+> @@ -1118,7 +1118,7 @@ static int lookup_and_reclaim_dmap(struct fuse_conn=
+_dax *fcd,
+>  {
+>  	int ret;
+>  	struct fuse_inode *fi =3D get_fuse_inode(inode);
+> -	loff_t dmap_start =3D start_idx << FUSE_DAX_SHIFT;
+> +	loff_t dmap_start =3D (loff_t)start_idx << FUSE_DAX_SHIFT;
+>  	loff_t dmap_end =3D (dmap_start + FUSE_DAX_SZ) - 1;
+> =20
+>  	down_write(&fi->i_mmap_sem);
+> --=20
+> 2.25.4
+>=20
+--=20
+Dr. David Alan Gilbert / dgilbert@redhat.com / Manchester, UK
 
