@@ -2,152 +2,379 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC511375488
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:16:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 446AF375491
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:17:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233833AbhEFNRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:17:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30761 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231993AbhEFNRu (ORCPT
+        id S233771AbhEFNSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:18:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231993AbhEFNSf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:17:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620307011;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aFyoCh/Cvv5uFlEu/CTPouwkWlGfZVHzYvmAxhYjM4o=;
-        b=Tq4etUMlv9rWYGwy9kI5cjv3WwB15vNRm49Wql4asSLCGzzz9uaBQPwlNUaXlIFn+AdiaY
-        xJawyPBEdlUqnHXPaPTdguIQyE0q6VJU78bpEA0rF/TzefrkIDTQA190Oeibe0tZnrT9/d
-        fenSHH3aEsanSELP9xE6HOoe3RWg0KI=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-587-luWD0peDPHCz8cVEamg4ww-1; Thu, 06 May 2021 09:16:49 -0400
-X-MC-Unique: luWD0peDPHCz8cVEamg4ww-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C931F1008063;
-        Thu,  6 May 2021 13:16:44 +0000 (UTC)
-Received: from krava (unknown [10.40.193.227])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C6728620DE;
-        Thu,  6 May 2021 13:16:36 +0000 (UTC)
-Date:   Thu, 6 May 2021 15:16:35 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Martin KaFai Lau <kafai@fb.com>
-Cc:     Jiri Slaby <jirislaby@kernel.org>,
-        Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
-        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <YJPsM0McnVgsHS15@krava>
-References: <YIcRlHQWWKbOlcXr@krava>
- <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
- <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
- <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
- <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org>
- <YI/LgjLxo9VCN/d+@krava>
- <8c3cbd22-eb26-ea8b-c8bb-35a629d6d2d8@kernel.org>
- <20210506053152.e5rnv44zsitob3sn@kafai-mbp.dhcp.thefacebook.com>
+        Thu, 6 May 2021 09:18:35 -0400
+Received: from mail-oo1-xc30.google.com (mail-oo1-xc30.google.com [IPv6:2607:f8b0:4864:20::c30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60BCAC061574;
+        Thu,  6 May 2021 06:17:37 -0700 (PDT)
+Received: by mail-oo1-xc30.google.com with SMTP id o202-20020a4a2cd30000b02901fcaada0306so1232746ooo.7;
+        Thu, 06 May 2021 06:17:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WLSAJ5a3eCq61WA8m6zKAmiEQMEoVgwKlSjIxhRwdGk=;
+        b=jrzpTgQkbHr85ev2ZPLtLXoQkXsmIFxAaEwhtC3R8Bvqhi28zn8Vk+UVG3gY8iX0ne
+         HCXwsV52uBscDUUBlPXELRD1N40NAKrGgVeFdUc8XcjuMwOJNeF0PCBGwxOu+VmwRQ4I
+         NVB5sK2ZWJs5ddC0E0hvb+taXoaOgcGNsNH/3C5A5LGB4TPYQWaCNX4IYoljkND22Nyt
+         BqcdeIvIXx9JYV8bKdeyeed9RvrcO2buNEQh4m+J2k/BMDCcoEjOxdgQxhBSSP8Rkpzz
+         kwmlHqIdIRqj2bda6MDkUEyP8sBtEbGmRWyvZTzyDjF+i1UQZwKHwjbKZRn6tS5dLlDr
+         pMEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=WLSAJ5a3eCq61WA8m6zKAmiEQMEoVgwKlSjIxhRwdGk=;
+        b=fMxVMCzs7UrmjELFn3EKFPlLg/WNG5p++kj+hvw2am1EpppqrbXHKUq3T9dshr2ksr
+         sArrS9J4n1tSLWOUrAhv0bBvvSC6MRb1nd5AUzMfOh2aeltIT/wOxd7YKw2uAX8gbBSm
+         GRQZv5ZMJ7Bnm3Oro6YIhWS5XwAs/23CoVkTFpcNMJNwP5G9H0gcOkadIZpDH9Qly26s
+         nias0nmB/Q7eZMydYowAIPQDCmV3u1jUFq04xN04UsMHeWMDK28gygCMzvcp0m4fehwc
+         2wzOu2U/kfM3d/SAVdOxZ/JQHRq75S233BkFKuOEZV5IWh+pQq/BzoX8nfyZveN1Lgex
+         XLuQ==
+X-Gm-Message-State: AOAM530/yZwquw+4kfp2rlyFFyikpohKA49kKrcua5HiVhohym/bisbq
+        +6B3GURSGTTRiWZQrOH3YP8=
+X-Google-Smtp-Source: ABdhPJzzxXJVd7nD1HXbYAmHXttMomlfmJPlPXrIYJFF5qhy6GI2Mx8gh0yx4nEk6OJNYvoFLlWhiw==
+X-Received: by 2002:a4a:37cf:: with SMTP id r198mr3434229oor.26.1620307056715;
+        Thu, 06 May 2021 06:17:36 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id w10sm497378oou.35.2021.05.06.06.17.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 06:17:36 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Thu, 6 May 2021 06:17:34 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Campion Kang <campion.kang@advantech.com.tw>
+Cc:     Lee Jones <lee.jones@linaro.org>, Rob Herring <robh+dt@kernel.org>,
+        Hans de Goede <hdegoede@redhat.com>,
+        Mark Gross <mgross@linux.intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, linux-doc@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org,
+        AceLan Kao <chia-lin.kao@canonical.com>
+Subject: Re: [PATCH v7 6/7] Watchdog: ahc1ec0-wdt: Add sub-device Watchdog
+ for Advantech embedded controller
+Message-ID: <20210506131734.GB2252703@roeck-us.net>
+References: <20210506081619.2443-1-campion.kang@advantech.com.tw>
+ <20210506081619.2443-6-campion.kang@advantech.com.tw>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506053152.e5rnv44zsitob3sn@kafai-mbp.dhcp.thefacebook.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+In-Reply-To: <20210506081619.2443-6-campion.kang@advantech.com.tw>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 10:31:52PM -0700, Martin KaFai Lau wrote:
-> On Tue, May 04, 2021 at 08:41:47AM +0200, Jiri Slaby wrote:
-> > On 03. 05. 21, 12:08, Jiri Olsa wrote:
-> > > On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
-> > > > CCing pahole people.
-> > > > 
-> > > > On 03. 05. 21, 9:59, Jiri Slaby wrote:
-> > > > > On 03. 05. 21, 8:11, Jiri Slaby wrote:
-> > > > > > > > > > > looks like vfs_truncate did not get into BTF data,
-> > > > > > > > > > > I'll try to reproduce
-> > > > > > > 
-> > > > > > > _None_ of the functions are generated by pahole -J from
-> > > > > > > debuginfo on ppc64. debuginfo appears to be correct. Neither
-> > > > > > > pahole -J fs/open.o works correctly. collect_functions in
-> > > > > > > dwarves seems to be defunct on ppc64... "functions" array is
-> > > > > > > bogus (so find_function -- the bsearch -- fails).
-> > > > > > 
-> > > > > > It's not that bogus. I forgot an asterisk:
-> > > > > > > #0  find_function (btfe=0x100269f80, name=0x10024631c
-> > > > > > > "stream_open") at
-> > > > > > > /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
-> > > > > > > (gdb) p (*functions)@84
-> > > > > > > $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
-> > > > > > > = 75232, size = 72, sh_addr = 65536, generated = false}, {
-> > > > > > >      name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
-> > > > > > > size = 216, sh_addr = 65536, generated = false}, {
-> > > > > > >      name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
-> > > > > > > 80816, size = 232, sh_addr = 65536, generated = false}, {
-> > > > > > >      name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
-> > > > > > > 74304, size = 100, sh_addr = 65536, generated = false}, {
-> > > > > > ...
-> > > > > > >      name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
-> > > > > > > 72, sh_addr = 65536, generated = false}, {
-> > > > > > ...
-> > > > > > >      name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
-> > > > > > > 544, sh_addr = 65536, generated = false}}
-> > > > > > 
-> > > > > > The dot makes the difference, of course. The question is why is it
-> > > > > > there? I keep looking into it. Only if someone has an immediate
-> > > > > > idea...
-> > > > > 
-> > > > > Well, .vfs_truncate is in .text (and contains an ._mcount call). And
-> > > > > vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
-> > > > > excludes all functions without the ._mcount call, is_ftrace_func later
-> > > > > returns false for such functions and they are filtered before the BTF
-> > > > > processing.
-> > > > > 
-> > > > > Technically, get_vmlinux_addrs looks at a list of functions between
-> > > > > __start_mcount_loc and __stop_mcount_loc and considers only the listed.
-> > > > > 
-> > > > > I don't know what the correct fix is (exclude .opd functions from the
-> > > > > filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
-> > > > > this too.
-> > > > 
-> > > > Attaching a patch for pahole which fixes the issue, but I have no idea
-> > > > whether it is the right fix at all.
-> > > 
-> > > hi,
-> > > we're considering to disable ftrace filter completely,
-> > > I guess that would solve this issue for ppc as well
-> > > 
-> > >    https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
-> > 
-> > Right, the attached patch fixes it for me too.
-> Ah, I just noticed the attachment while replying an earlier message in
-> this thread.
+On Thu, May 06, 2021 at 04:16:18PM +0800, Campion Kang wrote:
+> This is one of sub-device driver for Advantech embedded controller
+> AHC1EC0. This driver provide Watchdog functionality for Advantech
+> related applications to restart the system.
 > 
-> Please feel free to add SOB to mine or
-> repost yours and toss mine.  Either way works for me.
+> Changed in V7:
+> 	Fix the patch according to reviewer's comment:
+> 	- remove unnecessary variables and fix error checks
+> 	- remove error messages that avoid clogging the kernel log
+> 	- remove advwdt_notify_sys(), use watchdog subsystem to process
+> 	  reboot or shutdown
+> 	- delete mutex lock, the watchdog core has processed it
 > 
+> Changed in V6:
+> 	- remove unnecessary header files
+> 	- bug fixed: reboot halt if watchdog enabled
+> 	- Kconfig: add "AHC1EC0" string to clearly define the EC name
+> 
+> Signed-off-by: Campion Kang <campion.kang@advantech.com.tw>
+> ---
+>  drivers/watchdog/Kconfig       |  11 +++
+>  drivers/watchdog/Makefile      |   1 +
+>  drivers/watchdog/ahc1ec0-wdt.c | 171 +++++++++++++++++++++++++++++++++
+>  3 files changed, 183 insertions(+)
+>  create mode 100644 drivers/watchdog/ahc1ec0-wdt.c
+> 
+> diff --git a/drivers/watchdog/Kconfig b/drivers/watchdog/Kconfig
+> index 355100dad60a..5fe9add0a12d 100644
+> --- a/drivers/watchdog/Kconfig
+> +++ b/drivers/watchdog/Kconfig
+> @@ -1005,6 +1005,17 @@ config ADVANTECH_WDT
+>  	  feature. More information can be found at
+>  	  <https://www.advantech.com.tw/products/>
+>  
+> +config AHC1EC0_WDT
+> +	tristate "Advantech AHC1EC0 Watchdog Function"
+> +	depends on MFD_AHC1EC0
+> +	help
+> +	  This is sub-device for Advantech AHC1EC0 embedded controller.
+> +
+> +	  This driver provide watchdog functionality for Advantech related
+> +	  applications to restart the system.
+> +	  To compile this driver as a module, choose M here: the module will be
+> +	  called ahc1ec0-wdt.
+> +
+>  config ALIM1535_WDT
+>  	tristate "ALi M1535 PMU Watchdog Timer"
+>  	depends on X86 && PCI
+> diff --git a/drivers/watchdog/Makefile b/drivers/watchdog/Makefile
+> index a7eade8b4d45..0d78211e1412 100644
+> --- a/drivers/watchdog/Makefile
+> +++ b/drivers/watchdog/Makefile
+> @@ -142,6 +142,7 @@ obj-$(CONFIG_NI903X_WDT) += ni903x_wdt.o
+>  obj-$(CONFIG_NIC7018_WDT) += nic7018_wdt.o
+>  obj-$(CONFIG_MLX_WDT) += mlx_wdt.o
+>  obj-$(CONFIG_KEEMBAY_WATCHDOG) += keembay_wdt.o
+> +obj-$(CONFIG_AHC1EC0_WDT) += ahc1ec0-wdt.o
+>  
+>  # M68K Architecture
+>  obj-$(CONFIG_M54xx_WATCHDOG) += m54xx_wdt.o
+> diff --git a/drivers/watchdog/ahc1ec0-wdt.c b/drivers/watchdog/ahc1ec0-wdt.c
+> new file mode 100644
+> index 000000000000..efa955c41a81
+> --- /dev/null
+> +++ b/drivers/watchdog/ahc1ec0-wdt.c
+> @@ -0,0 +1,171 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
 
-I think this patch is missing the same removal I just commented
-on your patch.. either way is ok for me
+GPL or GPLv2 ?
 
-jirka
+> +/*
+> + * Watchdog Driver for Advantech AHC1EC0 Embedded Controller
+> + *
+> + * Copyright 2021, Advantech IIoT Group
+> + */
+> +
+> +#include <linux/errno.h>
+> +#include <linux/kernel.h>
+> +#include <linux/module.h>
+> +#include <linux/notifier.h>
 
+Unnecessary.
+
+> +#include <linux/platform_data/ahc1ec0.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/reboot.h>
+
+Unnecessary.
+
+> +#include <linux/types.h>
+> +#include <linux/watchdog.h>
+> +
+> +struct ec_wdt_data {
+> +	struct watchdog_device wdtdev;
+> +	struct adv_ec_ddata *ddata;
+> +	unsigned short timeout_in_ds; /* a decisecond */
+
+This variable is unnecessary.
+
+> +};
+> +
+> +#define EC_WDT_MIN_TIMEOUT	1   /* The watchdog devices minimum timeout value (in seconds). */
+> +#define EC_WDT_MAX_TIMEOUT	600 /* The watchdog devices maximum timeout value (in seconds) */
+
+Please use constant alignment, and "The watchdog devices " is really
+unnecessary.
+
+> +#define EC_WDT_DEFAULT_TIMEOUT	45
+> +
+> +static int set_delay(struct adv_ec_ddata *ddata, unsigned short delay_timeout_in_ms)
+> +{
+> +	if (ahc1ec_write_hw_ram(ddata, EC_RESET_DELAY_TIME_L,
+> +				delay_timeout_in_ms & 0x00FF))
+> +		return -EINVAL;
+> +
+> +	if (ahc1ec_write_hw_ram(ddata, EC_RESET_DELAY_TIME_H,
+> +				(delay_timeout_in_ms & 0xFF00) >> 8))
+
+Those functions presumably return a valid error code which should be passed
+on and not replaced.
+
+> +		return -EINVAL;
+> +
+> +	return 0;
+> +}
+> +
+> +static int ec_wdt_start(struct watchdog_device *wdd)
+> +{
+> +	int ret;
+> +	struct ec_wdt_data *ec_wdt_data = watchdog_get_drvdata(wdd);
+> +	struct adv_ec_ddata *ddata;
+> +
+> +	ddata = ec_wdt_data->ddata;
+> +
+
+Might as well be written as
+	struct adv_ec_ddata *ddata = ec_wdt_data->ddata;
+
+> +	/*
+> +	 * Because an unit of ahc1ec0_wdt is 0.1 seconds, timeout 100 is 10 seconds
+> +	 */
+> +	ec_wdt_data->timeout_in_ds = wdd->timeout * 10;
+
+timeout_in_ds can be a local variable (if not omitted entirely).
+
+> +
+> +	ret = set_delay(ddata, (ec_wdt_data->timeout_in_ds - 1));
+
+Unnecessary ( ) around second parameter.
+
+> +	if (ret)
+> +		goto exit;
+
+	if (ret)
+		return ret;
+
+> +
+> +	ahc1ec_write_hwram_command(ddata, EC_WDT_STOP);
+> +	ret = ahc1ec_write_hwram_command(ddata, EC_WDT_START);
+> +	if (ret)
+> +		goto exit;
+
+Unnecessary.
+
+> +
+> +exit:
+
+Unnecessary label.
+
+> +	return ret;
+> +}
+> +
+> +static int ec_wdt_stop(struct watchdog_device *wdd)
+> +{
+> +	struct ec_wdt_data *ec_wdt_data = watchdog_get_drvdata(wdd);
+> +	struct adv_ec_ddata *ddata;
+> +
+> +	ddata = ec_wdt_data->ddata;
+> +
+> +	return ahc1ec_write_hwram_command(ddata, EC_WDT_STOP);
+> +}
+> +
+> +static int ec_wdt_ping(struct watchdog_device *wdd)
+> +{
+> +	int ret;
+> +	struct ec_wdt_data *ec_wdt_data = watchdog_get_drvdata(wdd);
+> +	struct adv_ec_ddata *ddata;
+> +
+> +	ddata = ec_wdt_data->ddata;
+> +
+> +	ret = ahc1ec_write_hwram_command(ddata, EC_WDT_RESET);
+> +	if (ret)
+> +		return -EINVAL;
+
+	return ret;
+
+but then above you have
+	return ahc1ec_write_hwram_command(ddata, EC_WDT_STOP);
+
+Please be consistent.
+
+> +
+> +	return 0;
+> +}
+> +
+> +static int ec_wdt_set_timeout(struct watchdog_device *wdd,
+> +			      unsigned int timeout)
+> +{
+> +	wdd->timeout = timeout;
+> +
+> +	if (watchdog_active(wdd))
+> +		return ec_wdt_start(wdd);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct watchdog_info ec_watchdog_info = {
+> +	.options = WDIOF_SETTIMEOUT | WDIOF_KEEPALIVEPING | WDIOF_MAGICCLOSE,
+> +	.identity = "AHC1EC0 Watchdog",
+> +};
+> +
+> +static const struct watchdog_ops ec_watchdog_ops = {
+> +	.owner = THIS_MODULE,
+> +	.start = ec_wdt_start,
+> +	.stop = ec_wdt_stop,
+> +	.ping = ec_wdt_ping,
+> +	.set_timeout = ec_wdt_set_timeout,
+> +};
+> +
+> +static int adv_ec_wdt_probe(struct platform_device *pdev)
+> +{
+> +	int ret;
+> +	struct device *dev = &pdev->dev;
+> +	struct adv_ec_ddata *ddata;
+> +	struct ec_wdt_data *ec_wdt_data;
+> +	struct watchdog_device *wdd;
+> +
+> +	ddata = dev_get_drvdata(dev->parent);
+> +	if (!ddata)
+> +		return -EINVAL;
+> +
+> +	ec_wdt_data = devm_kzalloc(dev, sizeof(*ec_wdt_data), GFP_KERNEL);
+> +	if (!ec_wdt_data)
+> +		return -ENOMEM;
+> +
+> +	ec_wdt_data->ddata = ddata;
+> +	wdd = &ec_wdt_data->wdtdev;
+> +
+> +	watchdog_init_timeout(&ec_wdt_data->wdtdev, 0, dev);
+> +
+
+This should be after wdd->timeout is set, and please use wdd.
+
+> +	/* watchdog_set_nowayout(&ec_wdt_data->wdtdev, WATCHDOG_NOWAYOUT); */
+> +	watchdog_set_drvdata(&ec_wdt_data->wdtdev, ec_wdt_data);
+
+Please use wdd.
+
+> +	platform_set_drvdata(pdev, ec_wdt_data);
+
+Is this used anywhere ?
+
+> +
+> +	wdd->info = &ec_watchdog_info;
+> +	wdd->ops = &ec_watchdog_ops;
+> +	wdd->min_timeout = EC_WDT_MIN_TIMEOUT;
+> +	wdd->max_timeout = EC_WDT_MAX_TIMEOUT;
+> +	wdd->parent = dev;
+> +
+> +	ec_wdt_data->wdtdev.timeout = EC_WDT_DEFAULT_TIMEOUT;
+
+	wdd->timeout = EC_WDT_DEFAULT_TIMEOUT;
+
+> +
+> +	watchdog_stop_on_reboot(wdd);
+> +	watchdog_stop_on_unregister(wdd);
+> +
+> +	ret = devm_watchdog_register_device(dev, wdd);
+> +	if (ret == 0)
+> +		dev_info(dev, "ahc1ec0 watchdog register success\n");
+
+This is noise.
+
+> +
+> +	return ret;
+> +}
+> +
+> +static struct platform_driver adv_wdt_drv = {
+> +	.driver = {
+> +		.name = "ahc1ec0-wdt",
+> +	},
+> +	.probe = adv_ec_wdt_probe,
+> +};
+> +module_platform_driver(adv_wdt_drv);
+> +
+> +MODULE_LICENSE("GPL");
+> +MODULE_ALIAS("platform:ahc1ec0-wdt");
+> +MODULE_DESCRIPTION("Advantech Embedded Controller Watchdog Driver.");
+> +MODULE_AUTHOR("Campion Kang <campion.kang@advantech.com.tw>");
+> +MODULE_VERSION("1.0");
+> -- 
+> 2.17.1
+> 
