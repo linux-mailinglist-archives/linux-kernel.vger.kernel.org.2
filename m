@@ -2,154 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8702375029
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:28:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A0437502C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:29:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233400AbhEFH3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:29:15 -0400
-Received: from mail.kingsoft.com ([114.255.44.145]:24435 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233374AbhEFH3N (ORCPT
+        id S233394AbhEFHan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:30:43 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:33886 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232271AbhEFHam (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:29:13 -0400
-X-AuditID: 0a580157-bebff70000027901-76-60939a8d4edd
-Received: from mail.kingsoft.com (localhost [10.88.1.79])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id 33.EA.30977.D8A93906; Thu,  6 May 2021 15:28:13 +0800 (HKT)
-Received: from alex-virtual-machine (10.88.1.103) by KSBJMAIL4.kingsoft.cn
- (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 6 May 2021
- 15:28:11 +0800
-Date:   Thu, 6 May 2021 15:28:05 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Michal Hocko <mhocko@suse.com>
-CC:     David Hildenbrand <david@redhat.com>,
-        <linux-kernel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        Alexey Dobriyan <adobriyan@gmail.com>,
-        Mike Rapoport <rppt@kernel.org>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "Roman Gushchin" <guro@fb.com>,
-        Alex Shi <alex.shi@linux.alibaba.com>,
-        Steven Price <steven.price@arm.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Jiri Bohac <jbohac@suse.cz>,
-        "K. Y. Srinivasan" <kys@microsoft.com>,
-        Haiyang Zhang <haiyangz@microsoft.com>,
-        Stephen Hemminger <sthemmin@microsoft.com>,
-        "Wei Liu" <wei.liu@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        <linux-hyperv@vger.kernel.org>,
-        <virtualization@lists.linux-foundation.org>,
-        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <yaoaili126@gmail.com>
-Subject: Re: [PATCH v1 3/7] mm: rename and move page_is_poisoned()
-Message-ID: <20210506152805.13fe775e@alex-virtual-machine>
-In-Reply-To: <YJOVZlFGcSG+mmIk@dhcp22.suse.cz>
-References: <20210429122519.15183-1-david@redhat.com>
-        <20210429122519.15183-4-david@redhat.com>
-        <YJKZ5yXdl18m9YSM@dhcp22.suse.cz>
-        <0710d8d5-2608-aeed-10c7-50a272604d97@redhat.com>
-        <YJKdS+Q8CgSlgmFf@dhcp22.suse.cz>
-        <20210506085611.1ec21588@alex-virtual-machine>
-        <YJOVZlFGcSG+mmIk@dhcp22.suse.cz>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.88.1.103]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
- (10.88.1.79)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrLIsWRmVeSWpSXmKPExsXCFcHor9s7a3KCwY+rghbTG70s5qxfw2ax
-        7ngXs8XX9b+AxKQLbBbXtntYLLv0mcnixsHNbBZPVm9lt9iz9ySLxdSJH9gsLu+aw2Zxb81/
-        Vov7fQ4WH/cHW/z/9YrV4mLjAUaLM9OKLI6s385k0XjkPZvF28MHmS2Wn53HZnF40y0mi98/
-        gBqftV5lcZD0WDNvDaPHxOZ37B47Z91l99i8Qstj06pONo9Nnyaxe5yY8ZvFY+dDS4/JN5Yz
-        erTu+Mvu8eLqRhaPj09vsXi833eVzWP9lqssHmcWHAHqPF0dIBjFZZOSmpNZllqkb5fAlfF2
-        8m3GgjOSFVt7NjI3MC4W7mLk5JAQMJFY9mUSYxcjF4eQwHQmicezL7BCOM8YJaZPXc8MUsUi
-        oCLR/qaREcRmE1CV2HVvFiuILSKgJNG1eScbSAOzQDO7RPPPCWANwgJOEsef3wRr4BWwkmj4
-        fpIFxOYU0JNoPLCFCWLDJiaJr7desIEk+AXEJHqv/AdKcADdZC/xeL0iRK+gxMmZT8B6mQV0
-        JE6sOsYMYctLbH87B8wWElCUOLzkFzvEO/ISd39PZ4SwYyWaDtxim8AoPAvJqFlIRs1CMmoB
-        I/MqRpbi3HTDTYyQFBG+g3Fe00e9Q4xMHIyHGCU4mJVEeAvW9icI8aYkVlalFuXHF5XmpBYf
-        YpTmYFES522cOTlBSCA9sSQ1OzW1ILUIJsvEwSnVwLT1XjXLr+aDKz90PD/b0GeRYSUhIrPu
-        8oSe+QcrLsZZeEW2VClH3Y3nvsD0cMqW5K6Zp2smdS7YvFE27s6CzQs2PlWRm30lomfZ0mXx
-        KasnsXGqTOVg5r0ofT//UOf09GWL3HWbTPiv8Sle81v0+9AuP9fO83d+Me06kfagOc6780dw
-        i7rMm+T0/7Fqz22f/V97p2zV3xzj4z933trYu/AR95NcQfbWsMtS4VtE5pteyHhyvPMf55E1
-        hrVLAm7/2p5545velKYpCVc6m0yqhWMbpmtzX5cSVe7YH6e6ynBl29lYny0X5i3Kuns2c2HF
-        b+7Pq06J2bH/k1+5/7Z89Fn28oDgMy1xTAeCPpV3bexUYinOSDTUYi4qTgQANETSJIADAAA=
+        Thu, 6 May 2021 03:30:42 -0400
+Received: from minint-m3g9p8n.europe.corp.microsoft.com (unknown [49.207.195.141])
+        by linux.microsoft.com (Postfix) with ESMTPSA id C4D3120B7178;
+        Thu,  6 May 2021 00:29:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C4D3120B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620286184;
+        bh=+D2bXIhtPis6G949XVk0e9GC9p12MK88hwh6XdzmYHA=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+        b=q6U1sjxoBgBWc46EWZ/JyYKyMBKfB0uBFyvpg9eOq0yHv9q+t/vawmJqgcBxI6Cpw
+         ezLytgctJuDUfUtSHVydpMc5et4vMI3mOkHw7yFHNSFI5iiNxWRXvrIGQfd9fkRqTq
+         Y+cBQn4vXhxPRnxW/A8PmJnkzs+9+30bUelzwoH4=
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2 1/2] optee: fix tee out of memory failure seen during
+ kexec reboot
+From:   Allen Pais <apais@linux.microsoft.com>
+In-Reply-To: <CAHUa44HTYcPyK95E+Mo2GNnCB9TfstA-n_4911JQh8V7-4vyjg@mail.gmail.com>
+Date:   Thu, 6 May 2021 12:59:40 +0530
+Cc:     Allen Pais <allen.lkml@gmail.com>, zajec5@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <CBC53D4C-120E-4252-B251-46E064A63250@linux.microsoft.com>
+References: <20210225090610.242623-1-allen.lkml@gmail.com>
+ <20210225090610.242623-2-allen.lkml@gmail.com>
+ <CAHUa44F5Ew6U80t7PPmV1J4KunXBm_izBxVrxg=x8azjBz0r9Q@mail.gmail.com>
+ <9a6c017c-d156-f939-f907-d6dfe83c41ac@linux.microsoft.com>
+ <CAHUa44FyGOj5=Z80km_2T-avKiJpGVD8cWjTC3ZCX8csazP3rw@mail.gmail.com>
+ <409F60D9-F0FB-4B69-B64B-CC6B3704038E@linux.microsoft.com>
+ <CAHUa44EZprsEKbd_mzGhxQKQgu5XB5nLtREJh2j_9J3zPO4gNg@mail.gmail.com>
+ <51FC863B-96C5-47BA-8EBF-3D9FB6DE7DD2@linux.microsoft.com>
+ <CAHUa44HTYcPyK95E+Mo2GNnCB9TfstA-n_4911JQh8V7-4vyjg@mail.gmail.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 May 2021 09:06:14 +0200
-Michal Hocko <mhocko@suse.com> wrote:
+>>=20
+>>>>>>>> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+>>>>>>>> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with =
+error -22
+>>>>>>>>=20
+>>>>>>>> tee_shm_release() is not invoked on dma shm buffer.
+>>>>>>>>=20
+>>>>>>>> Implement .shutdown() method to handle the release of the =
+buffers
+>>>>>>>> correctly.
+>>>>>>>>=20
+>>>>>>>> More info:
+>>>>>>>> https://github.com/OP-TEE/optee_os/issues/3637
+>>>>>>>>=20
+>>>>>>>> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+>>>>>>>> ---
+>>>>>>>> drivers/tee/optee/core.c | 20 ++++++++++++++++++++
+>>>>>>>> 1 file changed, 20 insertions(+)
+>>>>>>>=20
+>>>>>>> This looks good to me. Do you have a practical way of testing =
+this on
+>>>>>>> QEMU for instance?
+>>>>>>>=20
+>>>>>>=20
+>>>>>> Jens,
+>>>>>>=20
+>>>>>> I could not reproduce nor create a setup using QEMU, I could only
+>>>>>> do it on a real h/w.
+>>>>>>=20
+>>>>>> I have extensively tested the fix and I don't see any issues.
+>>>>>=20
+>>>>> I did a few test runs too, seems OK.
+>>>>=20
+>>>> I carried these changes and have not run into any issues with Kexec =
+so far.
+>>>> Last week, while trying out kdump, we ran into a crash(this is when =
+the
+>>>> Kdump kernel reboots).
+>>>>=20
+>>>> $echo c > /proc/sysrq-trigger
+>>>>=20
+>>>> Leads to:
+>>>>=20
+>>>> [   18.004831] Unable to handle kernel paging request at virtual =
+address ffff0008dcef6758
+>>>> [   18.013002] Mem abort info:
+>>>> [   18.015885]   ESR =3D 0x96000005
+>>>> [   18.019034]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+>>>> [   18.024516]   SET =3D 0, FnV =3D 0
+>>>> [   18.027667]   EA =3D 0, S1PTW =3D 0
+>>>> [   18.030905] Data abort info:
+>>>> [   18.033877]   ISV =3D 0, ISS =3D 0x00000005
+>>>> [   18.037835]   CM =3D 0, WnR =3D 0
+>>>> [   18.040896] swapper pgtable: 4k pages, 48-bit VAs, =
+pgdp=3D0000000970a78000
+>>>> [   18.047811] [ffff0008dcef6758] pgd=3D000000097fbf9003, =
+pud=3D0000000000000000
+>>>> [   18.054819] Internal error: Oops: 96000005 [#1] SMP
+>>>> [   18.059850] Modules linked in: bnxt_en pcie_iproc_platform =
+pcie_iproc diagbe(O)
+>>>> [   18.067395] CPU: 3 PID: 1 Comm: systemd-shutdow Tainted: G       =
+    O      5.4.83-microsoft-standard #1
+>>>> [   18.077174] Hardware name: Overlake (DT)
+>>>> [   18.081219] pstate: 80400005 (Nzcv daif +PAN -UAO)
+>>>> [   18.086170] pc : tee_shm_free+0x18/0x48
+>>>> [   18.090126] lr : optee_disable_shm_cache+0xa4/0xf0
+>>>> [   18.095066] sp : ffff80001005bb90
+>>>> [   18.098484] x29: ffff80001005bb90 x28: ffff000037e20000
+>>>> [   18.103962] x27: 0000000000000000 x26: ffff00003ed10490
+>>>> [   18.109440] x25: ffffca760e975f90 x24: 0000000000000000
+>>>> [   18.114918] x23: ffffca760ed79808 x22: ffff00003ec66e18
+>>>> [   18.120396] x21: ffff80001005bc08 x20: 00000000b200000a
+>>>> [   18.125874] x19: ffff0008dcef6700 x18: 0000000000000010
+>>>> [   18.131352] x17: 0000000000000000 x16: 0000000000000000
+>>>> [   18.136829] x15: ffffffffffffffff x14: ffffca760ed79808
+>>>> [   18.142307] x13: ffff80009005b897 x12: ffff80001005b89f
+>>>> [   18.147786] x11: ffffca760eda4000 x10: ffff80001005b820
+>>>> [   18.153264] x9 : 00000000ffffffd0 x8 : ffffca760e59b2c0
+>>>> [   18.158742] x7 : 0000000000000000 x6 : 0000000000000000
+>>>> [   18.164220] x5 : 0000000000000000 x4 : 0000000000000000
+>>>> [   18.169698] x3 : 0000000000000000 x2 : ffff0008dcef6700
+>>>> [   18.175175] x1 : 00000000ffff0008 x0 : ffffca760e59ca04
+>>>> [   18.180654] Call trace:
+>>>> [   18.183176]  tee_shm_free+0x18/0x48
+>>>> [   18.186773]  optee_disable_shm_cache+0xa4/0xf0
+>>>> [   18.191356]  optee_shutdown+0x20/0x30
+>>>> [   18.195135]  platform_drv_shutdown+0x2c/0x38
+>>>> [   18.199538]  device_shutdown+0x180/0x298
+>>>> [   18.203586]  kernel_restart_prepare+0x44/0x50
+>>>> [   18.208078]  kernel_restart+0x20/0x68
+>>>> [   18.211853]  __do_sys_reboot+0x104/0x258
+>>>> [   18.215899]  __arm64_sys_reboot+0x2c/0x38
+>>>> [   18.220035]  el0_svc_handler+0x90/0x138
+>>>> [   18.223991]  el0_svc+0x8/0x208
+>>>> [   18.227143] Code: f9000bf3 aa0003f3 aa1e03e0 d503201f (b9405a60)
+>>>> [   18.233435] ---[ end trace 835d756cd66aa959 ]---
+>>>> [   18.238621] Kernel panic - not syncing: Fatal exception
+>>>> [   18.244014] Kernel Offset: 0x4a75fde00000 from =
+0xffff800010000000
+>>>> [   18.250299] PHYS_OFFSET: 0xffff99c680000000
+>>>> [   18.254613] CPU features: 0x0002,21806008
+>>>> [   18.258747] Memory Limit: none
+>>>> [   18.262310] ---[ end Kernel panic - not syncing: Fatal exception =
+]=E2=80=94
+>>>>=20
+>>>> I see that before secure world returns =
+OPTEE_SMC_RETURN_ENOTAVAIL(which
+>>>> Should disable and clear all the cache) we run into the crash =
+trying to free shm.
+>>>>=20
+>>>> Thoughts?
+>>>=20
+>>> It seems that the pointer is invalid, but the pointer doesn't look
+>>> like garbage. Could the kernel have unmapped the memory area =
+covering
+>>> that address?
+>>>=20
+>>=20
+>> Yes, I am not entirely sure if the kernel had the time to unmap the =
+memory.
+>> Right after triggering the crash the kdump kernel is booted and I see =
+the following
+>>=20
+>> [ 2.050145] optee: probing for conduit method.
+>> [ 2.054743] optee: revision 3.6 (f84427aa)
+>> [ 2.054821] optee: dynamic shared memory is enabled
+>> [ 2.066186] optee: initialized driver
+>>=20
+>> Could this be previous un-released maps causing corruption?
+>=20
+> Aha, yes, that could be it.
+>=20
 
-> On Thu 06-05-21 08:56:11, Aili Yao wrote:
-> > On Wed, 5 May 2021 15:27:39 +0200
-> > Michal Hocko <mhocko@suse.com> wrote:
-> >   
-> > > On Wed 05-05-21 15:17:53, David Hildenbrand wrote:  
-> > > > On 05.05.21 15:13, Michal Hocko wrote:    
-> > > > > On Thu 29-04-21 14:25:15, David Hildenbrand wrote:    
-> > > > > > Commit d3378e86d182 ("mm/gup: check page posion status for coredump.")
-> > > > > > introduced page_is_poisoned(), however, v5 [1] of the patch used
-> > > > > > "page_is_hwpoison()" and something went wrong while upstreaming. Rename the
-> > > > > > function and move it to page-flags.h, from where it can be used in other
-> > > > > > -- kcore -- context.
-> > > > > > 
-> > > > > > Move the comment to the place where it belongs and simplify.
-> > > > > > 
-> > > > > > [1] https://lkml.kernel.org/r/20210322193318.377c9ce9@alex-virtual-machine
-> > > > > > 
-> > > > > > Signed-off-by: David Hildenbrand <david@redhat.com>    
-> > > > > 
-> > > > > I do agree that being explicit about hwpoison is much better. Poisoned
-> > > > > page can be also an unitialized one and I believe this is the reason why
-> > > > > you are bringing that up.    
-> > > > 
-> > > > I'm bringing it up because I want to reuse that function as state above :)
-> > > >     
-> > > > > 
-> > > > > But you've made me look at d3378e86d182 and I am wondering whether this
-> > > > > is really a valid patch. First of all it can leak a reference count
-> > > > > AFAICS. Moreover it doesn't really fix anything because the page can be
-> > > > > marked hwpoison right after the check is done. I do not think the race
-> > > > > is feasible to be closed. So shouldn't we rather revert it?    
-> > > > 
-> > > > I am not sure if we really care about races here that much here? I mean,
-> > > > essentially we are racing with HW breaking asynchronously. Just because we
-> > > > would be synchronizing with SetPageHWPoison() wouldn't mean we can stop HW
-> > > > from breaking.    
-> > > 
-> > > Right
-> > >   
-> > > > Long story short, this should be good enough for the cases we actually can
-> > > > handle? What am I missing?    
-> > > 
-> > > I am not sure I follow. My point is that I fail to see any added value
-> > > of the check as it doesn't prevent the race (it fundamentally cannot as
-> > > the page can be poisoned at any time) but the failure path doesn't
-> > > put_page which is incorrect even for hwpoison pages.  
-> > 
-> > Sorry, I have something to say:
-> > 
-> > I have noticed the ref count leak in the previous topic ,but  I don't think
-> > it's a really matter. For memory recovery case for user pages, we will keep one
-> > reference to the poison page so the error page will not be freed to buddy allocator.
-> > which can be checked in memory_faulure() function.  
-> 
-> So what would happen if those pages are hwpoisoned from userspace rather
-> than by HW. And repeatedly so?
+How about checking for the ptr?
 
-Sorry, I may be not totally understand what you mean.
+diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+index aadedec3bfe7..8dc4fe9a1588 100644
+--- a/drivers/tee/optee/call.c
++++ b/drivers/tee/optee/call.c
+@@ -426,10 +426,12 @@ void optee_disable_shm_cache(struct optee *optee)
+                if (res.result.status =3D=3D OPTEE_SMC_RETURN_ENOTAVAIL)
+                        break; /* All shm's freed */
+                if (res.result.status =3D=3D OPTEE_SMC_RETURN_OK) {
+-                       struct tee_shm *shm;
++                       struct tee_shm *shm =3D NULL;
+=20
+                        shm =3D reg_pair_to_ptr(res.result.shm_upper32,
+                                              res.result.shm_lower32);
++                       if (IS_ERR(shm))
++                               return PTR_ERR(shm);
+                        tee_shm_free(shm);
 
-Do you mean hard page offline from mcelog?
-If yes, I think it's not for one real UC error but for CE storms.
-when we access this page in kernel, the access may success even it was marked hwpoison.
-
-Thanks!
-Aili Yao 
+Thanks.=
