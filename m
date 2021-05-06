@@ -2,34 +2,34 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 962F0375935
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E14EE375937
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:24:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236271AbhEFRYt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:24:49 -0400
-Received: from srv6.fidu.org ([159.69.62.71]:57744 "EHLO srv6.fidu.org"
+        id S236208AbhEFRY4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:24:56 -0400
+Received: from srv6.fidu.org ([159.69.62.71]:57756 "EHLO srv6.fidu.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236248AbhEFRYr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:24:47 -0400
+        id S236250AbhEFRYt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 13:24:49 -0400
 Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 424ADC800AE;
-        Thu,  6 May 2021 19:23:46 +0200 (CEST)
+        by srv6.fidu.org (Postfix) with ESMTP id D58B0C800AE;
+        Thu,  6 May 2021 19:23:49 +0200 (CEST)
 X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
 Received: from srv6.fidu.org ([127.0.0.1])
         by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id WB3n034q-CHi; Thu,  6 May 2021 19:23:46 +0200 (CEST)
+        with LMTP id E_O1LAIMkALQ; Thu,  6 May 2021 19:23:49 +0200 (CEST)
 Received: from wsembach-tuxedo.fritz.box (p200300e37F12f2008bdED9a70B37E3f5.dip0.t-ipconnect.de [IPv6:2003:e3:7f12:f200:8bde:d9a7:b37:e3f5])
         (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id E59FEC800AB;
-        Thu,  6 May 2021 19:23:45 +0200 (CEST)
+        by srv6.fidu.org (Postfix) with ESMTPA id 8FB04C800AB;
+        Thu,  6 May 2021 19:23:49 +0200 (CEST)
 From:   Werner Sembach <wse@tuxedocomputers.com>
 To:     ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
         intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
 Cc:     Werner Sembach <wse@tuxedocomputers.com>
-Subject: [PATCH 1/3] drm/i915/display: New function to avoid duplicate code in upcomming commits
-Date:   Thu,  6 May 2021 19:23:23 +0200
-Message-Id: <20210506172325.1995964-2-wse@tuxedocomputers.com>
+Subject: [PATCH 2/3] drm/i915/display: Restructure output format computation for better expandability
+Date:   Thu,  6 May 2021 19:23:24 +0200
+Message-Id: <20210506172325.1995964-3-wse@tuxedocomputers.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210506172325.1995964-1-wse@tuxedocomputers.com>
 References: <20210506172325.1995964-1-wse@tuxedocomputers.com>
@@ -39,73 +39,120 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Moves some checks that later will be performed 2 times to an own fuction. This
-avoids duplicate code later on.
+Couples the decission between RGB and YCbCr420 mode and the check if the port
+clock can archive the required frequency. Other checks and configuration steps
+that where previously done in between can also be done before or after.
+
+This allows for are cleaner implementation of retrying different color
+encodings.
+
+Slight change in behaviour: If YCbCr420 is not allowed but display is YCbCr420
+only it no longer fails, but just prints an error and tries to fallback on RGB.
 
 Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 ---
- drivers/gpu/drm/i915/display/intel_hdmi.c | 41 ++++++++++++++---------
- 1 file changed, 26 insertions(+), 15 deletions(-)
+ drivers/gpu/drm/i915/display/intel_hdmi.c | 65 ++++++++++++-----------
+ 1 file changed, 34 insertions(+), 31 deletions(-)
 
 diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index 46de56af33db..576d3d910d06 100644
+index 576d3d910d06..b0201d4f27eb 100644
 --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
 +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -1861,6 +1861,31 @@ static int intel_hdmi_port_clock(int clock, int bpc)
- 	return clock * bpc / 8;
+@@ -1999,29 +1999,6 @@ static bool hdmi_deep_color_possible(const struct intel_crtc_state *crtc_state,
+ 					      INTEL_OUTPUT_FORMAT_YCBCR420);
  }
  
-+static enum drm_mode_status
-+intel_hdmi_mode_clock_valid(struct intel_hdmi *hdmi, int clock, bool has_hdmi_sink)
+-static int
+-intel_hdmi_ycbcr420_config(struct intel_crtc_state *crtc_state,
+-			   const struct drm_connector_state *conn_state)
+-{
+-	struct drm_connector *connector = conn_state->connector;
+-	struct drm_i915_private *i915 = to_i915(connector->dev);
+-	const struct drm_display_mode *adjusted_mode =
+-		&crtc_state->hw.adjusted_mode;
+-
+-	if (!drm_mode_is_420_only(&connector->display_info, adjusted_mode))
+-		return 0;
+-
+-	if (!connector->ycbcr_420_allowed) {
+-		drm_err(&i915->drm,
+-			"Platform doesn't support YCBCR420 output\n");
+-		return -EINVAL;
+-	}
+-
+-	crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
+-
+-	return intel_pch_panel_fitting(crtc_state, conn_state);
+-}
+-
+ static int intel_hdmi_compute_bpc(struct intel_encoder *encoder,
+ 				  struct intel_crtc_state *crtc_state,
+ 				  int clock)
+@@ -2128,6 +2105,30 @@ static bool intel_hdmi_has_audio(struct intel_encoder *encoder,
+ 		return intel_conn_state->force_audio == HDMI_AUDIO_ON;
+ }
+ 
++static int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
++				     struct intel_crtc_state *crtc_state,
++				     const struct drm_connector_state *conn_state)
 +{
-+	struct drm_device *dev = intel_hdmi_to_dev(hdmi);
-+	struct drm_i915_private *dev_priv = to_i915(dev);
-+	enum drm_mode_status status;
++	struct drm_connector *connector = conn_state->connector;
++	struct drm_i915_private *i915 = to_i915(connector->dev);
++	const struct drm_display_mode *adjusted_mode = &crtc_state->hw.adjusted_mode;
++	int ret;
++	bool ycbcr_420_only;
 +
-+	/* check if we can do 8bpc */
-+	status = hdmi_port_clock_valid(hdmi, clock, true, has_hdmi_sink);
-+
-+	if (has_hdmi_sink) {
-+		/* if we can't do 8bpc we may still be able to do 12bpc */
-+		if (status != MODE_OK && !HAS_GMCH(dev_priv))
-+			status = hdmi_port_clock_valid(hdmi, clock * 3 / 2,
-+						       true, has_hdmi_sink);
-+
-+		/* if we can't do 8,12bpc we may still be able to do 10bpc */
-+		if (status != MODE_OK && INTEL_GEN(dev_priv) >= 11)
-+			status = hdmi_port_clock_valid(hdmi, clock * 5 / 4,
-+						       true, has_hdmi_sink);
++	ycbcr_420_only = drm_mode_is_420_only(&connector->display_info, adjusted_mode);
++	if (connector->ycbcr_420_allowed && ycbcr_420_only)
++		crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
++	else {
++		if (!connector->ycbcr_420_allowed && ycbcr_420_only)
++			drm_err(&i915->drm, "Display only supports YCbCr420 output, but connector does not allow it. Fallback to RGB, but this will likely fail.\n");
++		crtc_state->output_format = INTEL_OUTPUT_FORMAT_RGB;
 +	}
 +
-+	return status;
++	ret = intel_hdmi_compute_clock(encoder, crtc_state);
++
++	return ret;
 +}
 +
- static enum drm_mode_status
- intel_hdmi_mode_valid(struct drm_connector *connector,
- 		      struct drm_display_mode *mode)
-@@ -1891,21 +1916,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 	if (drm_mode_is_420_only(&connector->display_info, mode))
- 		clock /= 2;
+ int intel_hdmi_compute_config(struct intel_encoder *encoder,
+ 			      struct intel_crtc_state *pipe_config,
+ 			      struct drm_connector_state *conn_state)
+@@ -2152,23 +2153,25 @@ int intel_hdmi_compute_config(struct intel_encoder *encoder,
+ 	if (adjusted_mode->flags & DRM_MODE_FLAG_DBLCLK)
+ 		pipe_config->pixel_multiplier = 2;
  
--	/* check if we can do 8bpc */
--	status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 8),
--				       true, has_hdmi_sink);
+-	ret = intel_hdmi_ycbcr420_config(pipe_config, conn_state);
+-	if (ret)
+-		return ret;
 -
--	if (has_hdmi_sink) {
--		/* if we can't do 8bpc we may still be able to do 12bpc */
--		if (status != MODE_OK && !HAS_GMCH(dev_priv))
--			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 12),
--						       true, has_hdmi_sink);
+-	pipe_config->limited_color_range =
+-		intel_hdmi_limited_color_range(pipe_config, conn_state);
 -
--		/* if we can't do 8,12bpc we may still be able to do 10bpc */
--		if (status != MODE_OK && DISPLAY_VER(dev_priv) >= 11)
--			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 10),
--						       true, has_hdmi_sink);
--	}
-+	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
- 	if (status != MODE_OK)
- 		return status;
+ 	if (HAS_PCH_SPLIT(dev_priv) && !HAS_DDI(dev_priv))
+ 		pipe_config->has_pch_encoder = true;
  
+ 	pipe_config->has_audio =
+ 		intel_hdmi_has_audio(encoder, pipe_config, conn_state);
+ 
+-	ret = intel_hdmi_compute_clock(encoder, pipe_config);
++	ret = intel_hdmi_compute_output_format(encoder, pipe_config, conn_state);
+ 	if (ret)
+ 		return ret;
+ 
++	if (pipe_config->output_format == INTEL_OUTPUT_FORMAT_YCBCR420) {
++		ret = intel_pch_panel_fitting(pipe_config, conn_state);
++		if (ret)
++			return ret;
++	}
++
++	pipe_config->limited_color_range =
++		intel_hdmi_limited_color_range(pipe_config, conn_state);
++
+ 	if (conn_state->picture_aspect_ratio)
+ 		adjusted_mode->picture_aspect_ratio =
+ 			conn_state->picture_aspect_ratio;
 -- 
 2.25.1
 
