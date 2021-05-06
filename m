@@ -2,113 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3860C374D5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:17:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FFEF374D70
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:20:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231317AbhEFCSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:18:35 -0400
-Received: from mga18.intel.com ([134.134.136.126]:59048 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229872AbhEFCSe (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:18:34 -0400
-IronPort-SDR: bD/uPtSENMGzJE3zvXxa4fnN+B01ddwZzalDZc/Wg9TxAV5xA/yN3lQ1u0NKrgjY6bpC4Gk9Jo
- DGWnBpERQ94g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="185818877"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="185818877"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 19:17:36 -0700
-IronPort-SDR: 0eZjQhvS6wTzEm3/NX5QFvAAa6wepwUsPJ6bLS570U94Oi/9qIAKC81WdKkmVaK3zhDoOWmYK2
- 9hb7OfBZub9g==
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="434112674"
-Received: from unknown (HELO [10.238.4.82]) ([10.238.4.82])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 19:17:31 -0700
-Subject: Re: [PATCH v1 1/2] perf header: Support HYBRID_TOPOLOGY feature
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
-        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
-        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
-References: <20210430074602.3028-1-yao.jin@linux.intel.com>
- <YJFgrKB9ZavgbA1P@krava> <YJGgYSXcJbZ2n3H3@kernel.org>
- <YJGifgASdDD7T8Xc@krava> <YJKiYziYlLgUmMwq@kernel.org>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <b2aa6227-90e6-81dc-f629-1d5221f2cae5@linux.intel.com>
-Date:   Thu, 6 May 2021 10:17:29 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231401AbhEFCU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:20:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230478AbhEFCU4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 22:20:56 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2BC5C061574;
+        Wed,  5 May 2021 19:19:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=V4mzC/03A9PkISlLKmH95T2sRtfj/+QS0FV6NnWc8lQ=; b=CUr3GwM5D2MsDbraiZI94JBpka
+        WqDevTQVDVCA4lekRPRoLZa7TnjVAxNC7GLWBoSokdpYnl5iTCxvUcsjzVNpAODRWfEUX1g5ooF0d
+        68H2+eHfNK7VWL//FTxLSG3KImrJ4hOTCNPZRkjWUDAhbjT6GdOUIxTlcvcXot8cnEUDy9YuBXWt3
+        yb6L8vZIUlbSA2rQq5Cz+/VgHLcdnD9xPI5PrdOOOaouWA1KlY/rNqGEvmkcs3Lq1xuaI2iURHJqR
+        q1F+zzoCjQwD4Er+g0MTxOcIEhzJsaHLGLadz73RCramFLrhuc1JEnrMV2k/jx+esiuWpTFQWsZjE
+        V0nj4pPQ==;
+Received: from [2601:1c0:6280:3f0::7376]
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1leTbu-001BiG-Jg; Thu, 06 May 2021 02:19:44 +0000
+Subject: Re: [PATCH] MIPS: Loongson64: Fix build error 'secondary_kexec_args'
+ undeclared under !SMP
+To:     Youling Tang <tangyouling@loongson.cn>,
+        Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1620266570-21585-1-git-send-email-tangyouling@loongson.cn>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <1e8a74a8-3139-c77a-3eab-4ae0ff42ee0b@infradead.org>
+Date:   Wed, 5 May 2021 19:19:27 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-In-Reply-To: <YJKiYziYlLgUmMwq@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <1620266570-21585-1-git-send-email-tangyouling@loongson.cn>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnaldo,
-
-On 5/5/2021 9:49 PM, Arnaldo Carvalho de Melo wrote:
-> Em Tue, May 04, 2021 at 09:37:34PM +0200, Jiri Olsa escreveu:
->> On Tue, May 04, 2021 at 04:28:33PM -0300, Arnaldo Carvalho de Melo wrote:
->>> Em Tue, May 04, 2021 at 04:56:44PM +0200, Jiri Olsa escreveu:
->>>> On Fri, Apr 30, 2021 at 03:46:01PM +0800, Jin Yao wrote:
->>>>> It would be useful to let user know the hybrid topology.
->>>>> Adding HYBRID_TOPOLOGY feature in header to indicate the
->>>>> core cpus and the atom cpus.
->>>
->>>>> With this patch,
->>>
->>>>> For the perf.data generated on hybrid platform,
->>>>> reports the hybrid cpu list.
->>>
->>>>>    root@otcpl-adl-s-2:~# perf report --header-only -I
->>>>>    ...
->>>>>    # cpu_core cpu list : 0-15
->>>>>    # cpu_atom cpu list : 16-23
->>>
->>>> hum, should we print 'hybrid:' or something to make
->>>> sure its not confused with something else? like
->>>   
->>>>    # hybrid cpu_core cpu list : 0-15
->>>>    # hybrid cpu_atom cpu list : 16-23
->>>
->>> But this _core/_atom already got to be enough? I disagreed with that
->>> naming, but neverthless having one or the other present in an output is
->>> a clear mark of this hybrid topology.
->>>
->>> I.e having that extra hybrid string that wouldn't add information to the
->>> output.
->>
->> sure when you know that cpu_core/cpu_atom are hybrid pmus ;-)
->> and I guess other arch will come with other names
+On 5/5/21 7:02 PM, Youling Tang wrote:
+> On the Loongson64 platform, if CONFIG_SMP is not set, the following build
+> error will occur:
+> arch/mips/loongson64/reset.c:133:2: error:'secondary_kexec_args' undeclared
 > 
-> Yeah, its too Intel centric, I thought they would come up with
-> cpu_big/cpu_little and map it to core/atom on Intel and whatever other
-> BIG/little arches come up with.
+> Because the definition and declaration of secondary_kexec_args are in the
+> CONFIG_SMP, the secondary_kexec_args variable should be used in CONFIG_SMP.
 > 
-> Perhaps:
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+> ---
+>  arch/mips/loongson64/reset.c | 5 ++++-
+>  1 file changed, 4 insertions(+), 1 deletion(-)
 > 
-> root@otcpl-adl-s-2:~# perf report --header-only -I
-> ...
-> # hybrid cpu system:
-> # cpu_core cpu list : 0-15
-> # cpu_atom cpu list : 16-23
+> diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+> index c97bfdc..758d5d2 100644
+> --- a/arch/mips/loongson64/reset.c
+> +++ b/arch/mips/loongson64/reset.c
+> @@ -126,11 +126,12 @@ static void loongson_kexec_shutdown(void)
+>  	for_each_possible_cpu(cpu)
+>  		if (!cpu_online(cpu))
+>  			cpu_device_up(get_cpu_device(cpu));
+> +
+> +	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+>  #endif
+>  	kexec_args[0] = kexec_argc;
+>  	kexec_args[1] = fw_arg1;
+>  	kexec_args[2] = fw_arg2;
+> -	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+>  	memcpy((void *)fw_arg1, kexec_argv, KEXEC_ARGV_SIZE);
+>  	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+>  }
+> @@ -141,7 +142,9 @@ static void loongson_crash_shutdown(struct pt_regs *regs)
+>  	kexec_args[0] = kdump_argc;
+>  	kexec_args[1] = fw_arg1;
+>  	kexec_args[2] = fw_arg2;
+> +#ifdef CONFIG_SMP
+>  	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+> +#endif
+>  	memcpy((void *)fw_arg1, kdump_argv, KEXEC_ARGV_SIZE);
+>  	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+>  }
 > 
-> ?
->
 
-That's a good idea! :)
 
-On my ADL test machine, it's now output like:
+Acked-by: Randy Dunlap <rdunlap@infradead.org>
 
-# hybrid cpu system:
-# cpu_core cpu list : 0-15
-# cpu_atom cpu list : 16-23
+Yep, slightly better than my version:
+https://lore.kernel.org/lkml/20210430205055.13594-1-rdunlap@infradead.org/
 
-Thanks
-Jin Yao
+-- 
+~Randy
 
-> - Arnaldo
-> 
