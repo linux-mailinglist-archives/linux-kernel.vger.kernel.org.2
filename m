@@ -2,108 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90F26375CDB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:34:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E6424375CEB
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:38:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhEFVf1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:35:27 -0400
-Received: from mail-il1-f198.google.com ([209.85.166.198]:41900 "EHLO
-        mail-il1-f198.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhEFVf0 (ORCPT
+        id S230128AbhEFVjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 17:39:41 -0400
+Received: from www62.your-server.de ([213.133.104.62]:39980 "EHLO
+        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhEFVjj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 17:35:26 -0400
-Received: by mail-il1-f198.google.com with SMTP id m4-20020a9287040000b0290166e96ff634so5575722ild.8
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 14:34:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=3CQRv1MMPidxolkoeD/DeJhyOO/QRFAG2V1l4//lqmY=;
-        b=JN1K8aMTcWxJlkWLNAebpxd/5eEAhUC1rw86n4GHMboDLTOG+RPQAeIMN5Ur3pCXq/
-         bPRpIquGw+vQZ4qPg2REBU/sf/Xii/z5NrP+s0AyIcNAB56P8jtpeiqp0FOlBbXhpyZe
-         INolksH83M0SdxlfXtSRtCPluw1tUkT9RCYx2VY9F9k6kRHFQoAI/FaYzlmYYVEyvc/i
-         qvx9Y8Hj2ozZ9UhI7T/zGNwSYRNYo/C59NN8OVVcJwU8/46XZDLo8DwFZScUlK1E/BXK
-         /zJI1NbmCpWX5bD5/Ldk6FNHUyzwrE08GWgSPUtV9w5/vn/N/9zlKBLqXnOLiPkaYaQR
-         7YRg==
-X-Gm-Message-State: AOAM530vQPyd801m7ajjgQrCDvddItN8NKL/ZcZ6OLDBDAmSCQerm1Yc
-        JsWXCFAu64xgyLmBMadfGCCFK++PF5dwnA6bgkVlyul31k5w
-X-Google-Smtp-Source: ABdhPJyG+CbnNxvx/6LeI3Xen/G9xegmZj5fWM+Is4+k315XAJY8YiTtc4aQFwCny0v3mxI6WXQrNGjHAAftEQqKL1IwtOYamBwT
+        Thu, 6 May 2021 17:39:39 -0400
+Received: from sslproxy05.your-server.de ([78.46.172.2])
+        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92.3)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lelhf-0009JR-Fh; Thu, 06 May 2021 23:38:39 +0200
+Received: from [85.7.101.30] (helo=linux.home)
+        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <daniel@iogearbox.net>)
+        id 1lelhf-000GZv-7s; Thu, 06 May 2021 23:38:39 +0200
+Subject: Re: [PATCH bpf] bpf: Don't WARN_ON_ONCE in bpf_bprintf_prepare
+To:     Florent Revest <revest@chromium.org>,
+        Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        syzbot <syzbot@syzkaller.appspotmail.com>
+References: <20210505162307.2545061-1-revest@chromium.org>
+ <CAEf4BzZiK1ncN7RzeJ-62e=itekn34VuFf7WNhUF=9OoznMP6Q@mail.gmail.com>
+ <fe37ff8f-ebf0-25ec-4f3c-df3373944efa@iogearbox.net>
+ <CAEf4BzYsAXQ1t6GUJ4f8c0qGLdnO4NLDVJLRMhAY2oaiarDd6g@mail.gmail.com>
+ <CAEf4BzYqUxgj28p7e1ng_5gfebXdVdrCVyPK4bjA31O4wgppeA@mail.gmail.com>
+ <CABRcYmJBxY5AQMzO2vuuhVN7hs=1h+ursEnVAXpCPJ3DrkRrUA@mail.gmail.com>
+ <CAEf4BzY4a6R-apnS0AZsb_Mtht2N8be1HvEN9hD9aSByoD1EHQ@mail.gmail.com>
+ <CABRcYm+3AjHa3zO5AHSk6SbyFK6o6dLd8Fbz_sOznchWL2dumQ@mail.gmail.com>
+From:   Daniel Borkmann <daniel@iogearbox.net>
+Message-ID: <875174b0-c0f1-8a41-ef00-3f0fe0396288@iogearbox.net>
+Date:   Thu, 6 May 2021 23:38:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.7.2
 MIME-Version: 1.0
-X-Received: by 2002:a92:c8d2:: with SMTP id c18mr6478220ilq.81.1620336867359;
- Thu, 06 May 2021 14:34:27 -0700 (PDT)
-Date:   Thu, 06 May 2021 14:34:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006540d705c1b013b5@google.com>
-Subject: [syzbot] WARNING: suspicious RCU usage in get_signal
-From:   syzbot <syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com>
-To:     axboe@kernel.dk, christian@brauner.io, ebiederm@xmission.com,
-        linux-kernel@vger.kernel.org, oleg@redhat.com, pcc@google.com,
-        peterz@infradead.org, syzkaller-bugs@googlegroups.com,
-        tglx@linutronix.de
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CABRcYm+3AjHa3zO5AHSk6SbyFK6o6dLd8Fbz_sOznchWL2dumQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Authenticated-Sender: daniel@iogearbox.net
+X-Virus-Scanned: Clear (ClamAV 0.103.2/26162/Thu May  6 13:11:07 2021)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 5/6/21 10:17 PM, Florent Revest wrote:
+> On Thu, May 6, 2021 at 8:52 PM Andrii Nakryiko
+> <andrii.nakryiko@gmail.com> wrote:
+>> On Wed, May 5, 2021 at 3:29 PM Florent Revest <revest@chromium.org> wrote:
+>>> On Wed, May 5, 2021 at 10:52 PM Andrii Nakryiko
+>>> <andrii.nakryiko@gmail.com> wrote:
+>>>> On Wed, May 5, 2021 at 1:48 PM Andrii Nakryiko
+>>>> <andrii.nakryiko@gmail.com> wrote:
+>>>>> On Wed, May 5, 2021 at 1:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+>>>>>> On 5/5/21 8:55 PM, Andrii Nakryiko wrote:
+>>>>>>> On Wed, May 5, 2021 at 9:23 AM Florent Revest <revest@chromium.org> wrote:
+>>>>>>>>
+>>>>>>>> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
+>>>>>>>> per-cpu buffer that they use to store temporary data (arguments to
+>>>>>>>> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
+>>>>>>>> by the end of their scope with bpf_bprintf_cleanup.
+>>>>>>>>
+>>>>>>>> If one of these helpers gets called within the scope of one of these
+>>>>>>>> helpers, for example: a first bpf program gets called, uses
+>>>>>>>
+>>>>>>> Can we afford having few struct bpf_printf_bufs? They are just 512
+>>>>>>> bytes, so can we have 3-5 of them? Tracing low-level stuff isn't the
+>>>>>>> only situation where this can occur, right? If someone is doing
+>>>>>>> bpf_snprintf() and interrupt occurs and we run another BPF program, it
+>>>>>>> will be impossible to do bpf_snprintf() or bpf_trace_printk() from the
+>>>>>>> second BPF program, etc. We can't eliminate the probability, but
+>>>>>>> having a small stack of buffers would make the probability so
+>>>>>>> miniscule as to not worry about it at all.
+>>>>>>>
+>>>>>>> Good thing is that try_get_fmt_tmp_buf() abstracts all the details, so
+>>>>>>> the changes are minimal. Nestedness property is preserved for
+>>>>>>> non-sleepable BPF programs, right? If we want this to work for
+>>>>>>> sleepable we'd need to either: 1) disable migration or 2) instead of
+>>>>>
+>>>>> oh wait, we already disable migration for sleepable BPF progs, so it
+>>>>> should be good to do nestedness level only
+>>>>
+>>>> actually, migrate_disable() might not be enough. Unless it is
+>>>> impossible for some reason I miss, worst case it could be that two
+>>>> sleepable programs (A and B) can be intermixed on the same CPU: A
+>>>> starts&sleeps - B starts&sleeps - A continues&returns - B continues
+>>>> and nestedness doesn't work anymore. So something like "reserving a
+>>>> slot" would work better.
+>>>
+>>> Iiuc try_get_fmt_tmp_buf does preempt_enable to avoid that situation ?
+>>>
+>>>>>>> assuming a stack of buffers, do a loop to find unused one. Should be
+>>>>>>> acceptable performance-wise, as it's not the fastest code anyway
+>>>>>>> (printf'ing in general).
+>>>>>>>
+>>>>>>> In any case, re-using the same buffer for sort-of-optional-to-work
+>>>>>>> bpf_trace_printk() and probably-important-to-work bpf_snprintf() is
+>>>>>>> suboptimal, so seems worth fixing this.
+>>>>>>>
+>>>>>>> Thoughts?
+>>>>>>
+>>>>>> Yes, agree, it would otherwise be really hard to debug. I had the same
+>>>>>> thought on why not allowing nesting here given users very likely expect
+>>>>>> these helpers to just work for all the contexts.
+>>>>>>
+>>>>>> Thanks,
+>>>>>> Daniel
+>>>
+>>> What would you think of just letting the helpers own these 512 bytes
+>>> buffers as local variables on their stacks ? Then bpf_prepare_bprintf
+>>> would only need to write there, there would be no acquire semantic
+>>> (like try_get_fmt_tmp_buf) and the stack frame would just be freed on
+>>> the helper return so there would be no bpf_printf_cleanup either. We
+>>> would also not pre-reserve static memory for all CPUs and it becomes
+>>> trivial to handle re-entrant helper calls.
+>>>
+>>> I inherited this per-cpu buffer from the pre-existing bpf_seq_printf
+>>> code but I've not been convinced of its necessity.
+>>
+>> I got the impression that extra 512 bytes on the kernel stack is quite
+>> a lot and that's why we have per-cpu buffers. Especially that
+>> bpf_trace_printk() can be called from any context, including NMI.
+> 
+> Ok, I understand.
+> 
+> What about having one buffer per helper, synchronized with a spinlock?
+> Actually, bpf_trace_printk already has that, not for the bprintf
+> arguments but for the bprintf output so this wouldn't change much to
+> the performance of the helpers anyway:
+> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/trace/bpf_trace.c?id=9d31d2338950293ec19d9b095fbaa9030899dcb4#n385
+> 
+> These helpers are not performance sensitive so a per-cpu stack of
+> buffers feels over-engineered to me (and is also complexity I feel a
+> bit uncomfortable with).
 
-syzbot found the following issue on:
+But wouldn't this have same potential of causing a deadlock? Simple example
+would be if you have a tracing prog attached to bstr_printf(), and one of
+the other helpers using the same lock called from a non-tracing prog. If
+it can be avoided fairly easily, I'd also opt for per-cpu buffers as Andrii
+mentioned earlier. We've had few prior examples with similar issues [0].
 
-HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=123a56a5d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
-dashboard link: https://syzkaller.appspot.com/bug?extid=37fc8b84ffa2279d636d
-userspace arch: i386
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com
-
-=============================
-WARNING: suspicious RCU usage
-5.12.0-syzkaller #0 Not tainted
------------------------------
-kernel/sched/core.c:8304 Illegal context switch in RCU-sched read-side critical section!
-
-other info that might help us debug this:
-
-
-rcu_scheduler_active = 2, debug_locks = 0
-no locks held by syz-executor.4/10430.
-
-stack backtrace:
-CPU: 0 PID: 10430 Comm: syz-executor.4 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- ___might_sleep+0x266/0x2c0 kernel/sched/core.c:8304
- try_to_freeze_unsafe include/linux/freezer.h:57 [inline]
- try_to_freeze include/linux/freezer.h:67 [inline]
- get_signal+0x14a/0x2150 kernel/signal.c:2613
- arch_do_signal_or_restart+0x2a8/0x1eb0 arch/x86/kernel/signal.c:789
- handle_signal_work kernel/entry/common.c:147 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:171 [inline]
- exit_to_user_mode_prepare+0x171/0x280 kernel/entry/common.c:208
- irqentry_exit_to_user_mode+0x5/0x40 kernel/entry/common.c:314
- exc_page_fault+0xc6/0x180 arch/x86/mm/fault.c:1534
- asm_exc_page_fault+0x1e/0x30 arch/x86/include/asm/idtentry.h:577
-RIP: 0023:0x8052207
-Code: 0c 50 e8 ac 5a 01 00 83 c4 10 85 c0 0f 84 b9 01 00 00 65 f0 83 2d d8 ff ff ff 01 8b 5c 24 08 e8 6f f7 00 00 8b 4c 24 0c 8b 00 <8b> 71 50 89 41 54 85 c0 75 05 83 fe ff 74 19 6b 44 24 1c 34 8b 4c
-RSP: 002b:00000000f5514640 EFLAGS: 00010283
-RAX: 000000000000000e RBX: 0000000000000000 RCX: 0000000000000000
-RDX: 00000000080521e4 RSI: 0000000000000005 RDI: 00000000080ea51d
-RBP: 000000000819afc0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000296 R12: 0000000000000000
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+   [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9594dc3c7e71b9f52bee1d7852eb3d4e3aea9e99
