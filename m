@@ -2,206 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3415A374EA7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:45:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78345374EAA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:45:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231540AbhEFEoW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 00:44:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49056 "EHLO mail.kernel.org"
+        id S232331AbhEFEq0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 00:46:26 -0400
+Received: from mga03.intel.com ([134.134.136.65]:37365 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229748AbhEFEoV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 00:44:21 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 102C461154;
-        Thu,  6 May 2021 04:43:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620276203;
-        bh=emE7IWPBt8G1yYbPXEmQ85x65/QMfz+bbQXbzfcWd1o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Ti64FknMo03ALtatmVISEfIzeQoiRG3usIKrNPp6/vVVkKXeoq1aOpZAC6kAZhvlX
-         nj3T9M6ZlA3j6HQOrhV6mPisDfHKgkllcWPKvCZ70Wo+0ZZawZ0qgQCpFp7rJIOFER
-         f7rUEx/d+B3ei5R6y6bl/QjPmlz65qHtIJ8nV1Rhx88SSYpcNjFPUAXZDKuB0ni121
-         U3PQbHs78eLCqXhlYQoW5zOcf8Qe7LJS0oyZGv86nyFAQn7w3kmhcayBdyVyjtrF80
-         v06lHE/bNd9hjOxcB2EA25TdeJeGt4byTpYk4loeD6J5sE52cq6W7XHqXk4C7ucz3e
-         gwAXNbVIVRmEA==
-Date:   Wed, 5 May 2021 21:43:21 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Chao Yu <yuchao0@huawei.com>
-Cc:     linux-f2fs-devel@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, chao@kernel.org,
-        Yunlei He <heyunlei@hihonor.com>
-Subject: Re: [PATCH v2] f2fs: reduce expensive checkpoint trigger frequency
-Message-ID: <YJNz6YJC1oSF8wL4@google.com>
-References: <20210425011053.44436-1-yuchao0@huawei.com>
- <YIbzwPGOJoKZvFnv@google.com>
- <3338f2bc-6985-c1a4-9f3d-e59a474027f9@huawei.com>
- <YJFb5GWijGzHOAV6@google.com>
- <912459e6-3eef-59b7-e8a3-1097efd22750@huawei.com>
+        id S232097AbhEFEpU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 00:45:20 -0400
+IronPort-SDR: m1CuzAg28OU3tw98QXMpe6g3Y//iUI51iqcUkp7Y9ENrxcbmnHRkr0CINCRNjzGHc9rsTHPeMh
+ rIfsUGJR1I5g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="198428304"
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208,223";a="198428304"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 21:44:22 -0700
+IronPort-SDR: K8Al2qKKncwZZatEYKU+cZ9YtcFO8Td89KFmdA0qBa9uKwWTBVFr7X9CWZedcvy+i1cm2Ja9V/
+ KbNeKPmbAd7g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208,223";a="434157331"
+Received: from orsmsx605.amr.corp.intel.com ([10.22.229.18])
+  by orsmga008.jf.intel.com with ESMTP; 05 May 2021 21:44:22 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX605.amr.corp.intel.com (10.22.229.18) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 5 May 2021 21:44:22 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Wed, 5 May 2021 21:44:21 -0700
+Received: from orsmsx610.amr.corp.intel.com ([10.22.229.23]) by
+ ORSMSX610.amr.corp.intel.com ([10.22.229.23]) with mapi id 15.01.2106.013;
+ Wed, 5 May 2021 21:44:21 -0700
+From:   "Pandruvada, Srinivas" <srinivas.pandruvada@intel.com>
+To:     "jikos@kernel.org" <jikos@kernel.org>,
+        "benjamin.tissoires@redhat.com" <benjamin.tissoires@redhat.com>
+CC:     "jiapeng.chong@linux.alibaba.com" <jiapeng.chong@linux.alibaba.com>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
+        "jic23@kernel.org" <jic23@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "abaci@linux.alibaba.com" <abaci@linux.alibaba.com>
+Subject: Re: [PATCH 2/2] HID: hid-sensor-custom: Process failure of
+ sensor_hub_set_feature()
+Thread-Topic: [PATCH 2/2] HID: hid-sensor-custom: Process failure of
+ sensor_hub_set_feature()
+Thread-Index: AQHXQjJ7Ab0U0kZDTUSvrj1FeMdqGQ==
+Importance: high
+X-Priority: 1
+Date:   Thu, 6 May 2021 04:44:21 +0000
+Message-ID: <7d2c6d4e918485cba09d43702a2a78ae68550ab2.camel@intel.com>
+References: <20210415185232.2617398-1-srinivas.pandruvada@linux.intel.com>
+         <20210415185232.2617398-2-srinivas.pandruvada@linux.intel.com>
+         <nycvar.YFH.7.76.2105051437420.28378@cbobk.fhfr.pm>
+         <CAO-hwJJM5F-1PAh62JSW+GAivMRpgjBiPT2Jvf7+vNcL=HRhGw@mail.gmail.com>
+In-Reply-To: <CAO-hwJJM5F-1PAh62JSW+GAivMRpgjBiPT2Jvf7+vNcL=HRhGw@mail.gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+x-originating-ip: [10.22.254.132]
+Content-Type: multipart/mixed;
+        boundary="_002_7d2c6d4e918485cba09d43702a2a78ae68550ab2camelintelcom_"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <912459e6-3eef-59b7-e8a3-1097efd22750@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/06, Chao Yu wrote:
-> On 2021/5/4 22:36, Jaegeuk Kim wrote:
-> > On 04/27, Chao Yu wrote:
-> > > On 2021/4/27 1:09, Jaegeuk Kim wrote:
-> > > > On 04/25, Chao Yu wrote:
-> > > > > We may trigger high frequent checkpoint for below case:
-> > > > > 1. mkdir /mnt/dir1; set dir1 encrypted
-> > > > > 2. touch /mnt/file1; fsync /mnt/file1
-> > > > > 3. mkdir /mnt/dir2; set dir2 encrypted
-> > > > > 4. touch /mnt/file2; fsync /mnt/file2
-> > > > > ...
-> > > > > 
-> > > > > Although, newly created dir and file are not related, due to
-> > > > > commit bbf156f7afa7 ("f2fs: fix lost xattrs of directories"), we will
-> > > > > trigger checkpoint whenever fsync() comes after a new encrypted dir
-> > > > > created.
-> > > > > 
-> > > > > In order to avoid such condition, let's record an entry including
-> > > > > directory's ino into global cache when we initialize encryption policy
-> > > > > in a checkpointed directory, and then only trigger checkpoint() when
-> > > > > target file's parent has non-persisted encryption policy, for the case
-> > > > > its parent is not checkpointed, need_do_checkpoint() has cover that
-> > > > > by verifying it with f2fs_is_checkpointed_node().
-> > > > > 
-> > > > > Reported-by: Yunlei He <heyunlei@hihonor.com>
-> > > > > Signed-off-by: Chao Yu <yuchao0@huawei.com>
-> > > > > ---
-> > > > > v2:
-> > > > > - fix to set ENC_DIR_INO only for encrypted directory
-> > > > >    fs/f2fs/f2fs.h              | 2 ++
-> > > > >    fs/f2fs/file.c              | 3 +++
-> > > > >    fs/f2fs/xattr.c             | 6 ++++--
-> > > > >    include/trace/events/f2fs.h | 3 ++-
-> > > > >    4 files changed, 11 insertions(+), 3 deletions(-)
-> > > > > 
-> > > > > diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
-> > > > > index b9d5317db0a7..0fe881309a20 100644
-> > > > > --- a/fs/f2fs/f2fs.h
-> > > > > +++ b/fs/f2fs/f2fs.h
-> > > > > @@ -246,6 +246,7 @@ enum {
-> > > > >    	APPEND_INO,		/* for append ino list */
-> > > > >    	UPDATE_INO,		/* for update ino list */
-> > > > >    	TRANS_DIR_INO,		/* for trasactions dir ino list */
-> > > > > +	ENC_DIR_INO,		/* for encrypted dir ino list */
-> > > > >    	FLUSH_INO,		/* for multiple device flushing */
-> > > > >    	MAX_INO_ENTRY,		/* max. list */
-> > > > >    };
-> > > > > @@ -1090,6 +1091,7 @@ enum cp_reason_type {
-> > > > >    	CP_FASTBOOT_MODE,
-> > > > >    	CP_SPEC_LOG_NUM,
-> > > > >    	CP_RECOVER_DIR,
-> > > > > +	CP_ENC_DIR,
-> > > > >    };
-> > > > >    enum iostat_type {
-> > > > > diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> > > > > index a595050c56d3..62af29ec0879 100644
-> > > > > --- a/fs/f2fs/file.c
-> > > > > +++ b/fs/f2fs/file.c
-> > > > > @@ -218,6 +218,9 @@ static inline enum cp_reason_type need_do_checkpoint(struct inode *inode)
-> > > > >    		f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
-> > > > >    							TRANS_DIR_INO))
-> > > > >    		cp_reason = CP_RECOVER_DIR;
-> > > > > +	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
-> > > > > +							ENC_DIR_INO))
-> > > > > +		cp_reason = CP_ENC_DIR;
-> > > > >    	return cp_reason;
-> > > > >    }
-> > > > > diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
-> > > > > index c8f34decbf8e..70615d504f7e 100644
-> > > > > --- a/fs/f2fs/xattr.c
-> > > > > +++ b/fs/f2fs/xattr.c
-> > > > > @@ -630,6 +630,7 @@ static int __f2fs_setxattr(struct inode *inode, int index,
-> > > > >    			const char *name, const void *value, size_t size,
-> > > > >    			struct page *ipage, int flags)
-> > > > >    {
-> > > > > +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
-> > > > >    	struct f2fs_xattr_entry *here, *last;
-> > > > >    	void *base_addr, *last_base_addr;
-> > > > >    	int found, newsize;
-> > > > > @@ -745,8 +746,9 @@ static int __f2fs_setxattr(struct inode *inode, int index,
-> > > > >    			!strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT))
-> > > > >    		f2fs_set_encrypted_inode(inode);
-> > > > >    	f2fs_mark_inode_dirty_sync(inode, true);
-> > > > > -	if (!error && S_ISDIR(inode->i_mode))
-> > > > > -		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
-> > > > > +	if (!error && S_ISDIR(inode->i_mode) && f2fs_encrypted_file(inode) &&
-> > > > > +			f2fs_is_checkpointed_node(sbi, inode->i_ino))
-> > > > > +		f2fs_add_ino_entry(sbi, inode->i_ino, ENC_DIR_INO);
-> > > > 
-> > > > What will happen, if we need to checkpoint xattr_nid on this directory?
-> > > 
-> > > need_do_checkpoint()
-> > > 
-> > > a)	else if (!f2fs_is_checkpointed_node(sbi, F2FS_I(inode)->i_pino))
-> > > 		cp_reason = CP_NODE_NEED_CP;
-> > 
-> > This will change the current behavior which does checkpoint regardless of the
-> > parent being checkpointed. If i_pino was checkpointed but xnid wasn't, can we
-> > get xnid being checkpointed?
-> 
-> Yes,
-> 
-> >> If parent is checkpointed, after converting parent to encrypted directory
-> >> and create the file in parent, fsync this file will trigger checkpoint() due
-> >> to b)
-> 
-> If i_pino was checkpointed, but xnid wasn't due to enable encryption on this
+--_002_7d2c6d4e918485cba09d43702a2a78ae68550ab2camelintelcom_
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6BECED45DA318147AFE5A0716465458D@intel.com>
+Content-Transfer-Encoding: base64
 
-I keep asking no encryption case where
-1) parent is checkpointed
-2) set_xattr(dir) w/ new new xnid
-3) create(file)
-4) fsync(file)
+SGkgQmVuamFtaW4sDQoNCk9uIFdlZCwgMjAyMS0wNS0wNSBhdCAxNToyOCArMDIwMCwgQmVuamFt
+aW4gVGlzc29pcmVzIHdyb3RlOg0KPiBPbiBXZWQsIE1heSA1LCAyMDIxIGF0IDI6MzggUE0gSmly
+aSBLb3NpbmEgPGppa29zQGtlcm5lbC5vcmc+IHdyb3RlOg0KPiA+IA0KPiA+IE9uIFRodSwgMTUg
+QXByIDIwMjEsIFNyaW5pdmFzIFBhbmRydXZhZGEgd3JvdGU6DQo+ID4gDQo+ID4gPiBXaGVuIHVz
+ZXIgbW9kaWZpZXMgYSBjdXN0b20gZmVhdHVyZSB2YWx1ZSBhbmQNCj4gPiA+IHNlbnNvcl9odWJf
+c2V0X2ZlYXR1cmUoKQ0KPiA+ID4gZmFpbHMsIHJldHVybiBlcnJvci4NCj4gPiA+IA0KPiA+ID4g
+UmVwb3J0ZWQtYnk6IEFiYWNpIFJvYm90IDxhYmFjaUBsaW51eC5hbGliYWJhLmNvbT4NCj4gPiA+
+IFNpZ25lZC1vZmYtYnk6IFNyaW5pdmFzIFBhbmRydXZhZGEgPA0KPiA+ID4gc3Jpbml2YXMucGFu
+ZHJ1dmFkYUBsaW51eC5pbnRlbC5jb20+DQo+ID4gPiAtLS0NCj4gPiA+IFJlcGxhY2VzIHBhdGNo
+OiBISUQ6IGhpZC1zZW5zb3ItY3VzdG9tOiByZW1vdmUgdXNlbGVzcyB2YXJpYWJsZQ0KPiA+ID4g
+YnkgSmlhcGVuZyBDaG9uZyA8amlhcGVuZy5jaG9uZ0BsaW51eC5hbGliYWJhLmNvbT4NCj4gPiA+
+IA0KPiA+ID4gwqBkcml2ZXJzL2hpZC9oaWQtc2Vuc29yLWN1c3RvbS5jIHwgMiArKw0KPiA+ID4g
+wqAxIGZpbGUgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspDQo+ID4gPiANCj4gPiA+IGRpZmYgLS1n
+aXQgYS9kcml2ZXJzL2hpZC9oaWQtc2Vuc29yLWN1c3RvbS5jIGIvZHJpdmVycy9oaWQvaGlkLQ0K
+PiA+ID4gc2Vuc29yLWN1c3RvbS5jDQo+ID4gPiBpbmRleCAyNjI4YmM1M2VkODAuLjU4YjU0YjEy
+N2NkZiAxMDA2NDQNCj4gPiA+IC0tLSBhL2RyaXZlcnMvaGlkL2hpZC1zZW5zb3ItY3VzdG9tLmMN
+Cj4gPiA+ICsrKyBiL2RyaXZlcnMvaGlkL2hpZC1zZW5zb3ItY3VzdG9tLmMNCj4gPiA+IEBAIC00
+MDYsNiArNDA2LDggQEAgc3RhdGljIHNzaXplX3Qgc3RvcmVfdmFsdWUoc3RydWN0IGRldmljZQ0K
+PiA+ID4gKmRldiwgc3RydWN0IGRldmljZV9hdHRyaWJ1dGUgKmF0dHIsDQo+ID4gPiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oA0KPiA+ID4gcmVwb3J0X2lkOw0KPiA+ID4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgcmV0
+ID0gc2Vuc29yX2h1Yl9zZXRfZmVhdHVyZShzZW5zb3JfaW5zdC0+aHNkZXYsDQo+ID4gPiByZXBv
+cnRfaWQsDQo+ID4gPiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaW5kZXgsIHNpemVvZih2
+YWx1ZSksDQo+ID4gPiAmdmFsdWUpOw0KPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBp
+ZiAocmV0KQ0KPiA+ID4gK8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+cmV0dXJuIHJldDsNCj4gPiANCj4gPiBXaGF0IHRyZWUgaXMgdGhpcyBwYXRjaCBhZ2FpbnN0PyBJ
+biBteSB0cmVlLCB3ZSdyZSBub3QgZXZlbg0KPiA+IGFzc2lnbmluZw0KPiA+IHNlbnNvcl9odWJf
+c2V0X2ZlYXR1cmUoKSByZXR1cm4gdmFsdWUgdG8gYW55dGhpbmcuDQo+ID4gDQo+IA0KPiBJIGd1
+ZXNzIHRoZXJlIHdhcyBhICJjb2xsaXNpb24iLiBBdCByb3VnaGx5IHRoZSBzYW1lIHRpbWUgSSBt
+ZXJnZWQNCj4gaHR0cHM6Ly9wYXRjaHdvcmsua2VybmVsLm9yZy9wcm9qZWN0L2xpbnV4LWlucHV0
+L2xpc3QvP3Nlcmllcz00NTYyNjkNCj4gcGVvcGxlIHdlcmUgc3RhcnRpbmcgdG8gc2VuZCB2YXJp
+b3VzIHBhdGNoZXMgZm9yIHRoZSBzYW1lIHRoaW5nLg0KPiANCj4gU3Jpbml2YXMsIGVpdGhlciB0
+aGUgY2hhbmdlIGluIGZvci1uZXh0IChhbmQgcHJvYmFibHkgTGludXMnIG1hc3Rlcg0KPiBub3cp
+IGlzIGZpbmUsIG9yIGNvdWxkIHlvdSByZWJhc2Ugb24gdG9wIG9mIGhpZC5naXQ/DQo+IA0KDQpS
+ZWJhc2VkIGFuZCBhdHRhY2hlZCBiYXNlZCBvbiB0b3Agb2YgdGhlIGxhdGVzdCBtYWlubGluZS4N
+Cg0KVGhhbmtzLA0KU3Jpbml2YXMNCg0KDQo+IENoZWVycywNCj4gQmVuamFtaW4NCj4gDQoNCg==
 
-In that case, previousely we do checkpoint, but this change does not. Yes?
+--_002_7d2c6d4e918485cba09d43702a2a78ae68550ab2camelintelcom_
+Content-Type: text/x-patch;
+	name="0001-HID-hid-sensor-custom-Process-failure-of-sensor_hub_.patch"
+Content-Description: 0001-HID-hid-sensor-custom-Process-failure-of-sensor_hub_.patch
+Content-Disposition: attachment;
+	filename="0001-HID-hid-sensor-custom-Process-failure-of-sensor_hub_.patch";
+	size=1640; creation-date="Thu, 06 May 2021 04:44:21 GMT";
+	modification-date="Thu, 06 May 2021 04:44:21 GMT"
+Content-ID: <88B431456AF02043A1F4DCC5BD436051@intel.com>
+Content-Transfer-Encoding: base64
 
-> directory, fsync() this file will trigger checkpoint() to make sure xnid
-> checkpointed due to b) case.
-> 
-> Thanks,
-> 
-> > 
-> > > 
-> > > b)	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
-> > > 							ENC_DIR_INO))
-> > > 		cp_reason = CP_ENC_DIR;
-> > > 
-> > > If parent is not checkpointed, after converting parent to encrypted directory
-> > > and create the file in parent, fsync this file will trigger checkpoint() due
-> > > to a)
-> > > 
-> > > If parent is checkpointed, after converting parent to encrypted directory
-> > > and create the file in parent, fsync this file will trigger checkpoint() due
-> > > to b)
-> > > 
-> > > Am I missing any cases?
-> > > 
-> > > Thanks,
-> > > 
-> > > > 
-> > > > >    same:
-> > > > >    	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
-> > > > > diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
-> > > > > index 56b113e3cd6a..ca0cf12226e9 100644
-> > > > > --- a/include/trace/events/f2fs.h
-> > > > > +++ b/include/trace/events/f2fs.h
-> > > > > @@ -145,7 +145,8 @@ TRACE_DEFINE_ENUM(CP_RESIZE);
-> > > > >    		{ CP_NODE_NEED_CP,	"node needs cp" },		\
-> > > > >    		{ CP_FASTBOOT_MODE,	"fastboot mode" },		\
-> > > > >    		{ CP_SPEC_LOG_NUM,	"log type is 2" },		\
-> > > > > -		{ CP_RECOVER_DIR,	"dir needs recovery" })
-> > > > > +		{ CP_RECOVER_DIR,	"dir needs recovery" },		\
-> > > > > +		{ CP_ENC_DIR,		"persist encryption policy" })
-> > > > >    #define show_shutdown_mode(type)					\
-> > > > >    	__print_symbolic(type,						\
-> > > > > -- 
-> > > > > 2.29.2
-> > > > .
-> > > > 
-> > .
-> > 
+RnJvbSA0NjFiODVkNTg2OWJkYzJkYTg0ZGY4YWNlZDhhMTgxNjQ3MDgyZWE0IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBTcmluaXZhcyBQYW5kcnV2YWRhIDxzcmluaXZhcy5wYW5kcnV2
+YWRhQGxpbnV4LmludGVsLmNvbT4KRGF0ZTogVGh1LCAxNSBBcHIgMjAyMSAxMTo1MjozMiAtMDcw
+MApTdWJqZWN0OiBbVVBEQVRFRF1bUEFUQ0ggMi8yXSBISUQ6IGhpZC1zZW5zb3ItY3VzdG9tOiBQ
+cm9jZXNzIGZhaWx1cmUgb2YKIHNlbnNvcl9odWJfc2V0X2ZlYXR1cmUoKQoKV2hlbiB1c2VyIG1v
+ZGlmaWVzIGEgY3VzdG9tIGZlYXR1cmUgdmFsdWUgYW5kIHNlbnNvcl9odWJfc2V0X2ZlYXR1cmUo
+KQpmYWlscywgcmV0dXJuIGVycm9yLgoKUmVwb3J0ZWQtYnk6IEFiYWNpIFJvYm90IDxhYmFjaUBs
+aW51eC5hbGliYWJhLmNvbT4KU2lnbmVkLW9mZi1ieTogU3Jpbml2YXMgUGFuZHJ1dmFkYSA8c3Jp
+bml2YXMucGFuZHJ1dmFkYUBsaW51eC5pbnRlbC5jb20+Ci0tLQpVcGRhdGVzOgoJUmViYXNlZCBv
+biB0b3Agb2YgdGhlIGxhdGVzdCBtYWlubGluZQoKIGRyaXZlcnMvaGlkL2hpZC1zZW5zb3ItY3Vz
+dG9tLmMgfCA4ICsrKysrLS0tCiAxIGZpbGUgY2hhbmdlZCwgNSBpbnNlcnRpb25zKCspLCAzIGRl
+bGV0aW9ucygtKQoKZGlmZiAtLWdpdCBhL2RyaXZlcnMvaGlkL2hpZC1zZW5zb3ItY3VzdG9tLmMg
+Yi9kcml2ZXJzL2hpZC9oaWQtc2Vuc29yLWN1c3RvbS5jCmluZGV4IDJlNjY2MjE3M2E3OS4uMzJj
+MjMwNmUyNDBkIDEwMDY0NAotLS0gYS9kcml2ZXJzL2hpZC9oaWQtc2Vuc29yLWN1c3RvbS5jCisr
+KyBiL2RyaXZlcnMvaGlkL2hpZC1zZW5zb3ItY3VzdG9tLmMKQEAgLTM4Nyw3ICszODcsNyBAQCBz
+dGF0aWMgc3NpemVfdCBzdG9yZV92YWx1ZShzdHJ1Y3QgZGV2aWNlICpkZXYsIHN0cnVjdCBkZXZp
+Y2VfYXR0cmlidXRlICphdHRyLAogCXN0cnVjdCBoaWRfc2Vuc29yX2N1c3RvbSAqc2Vuc29yX2lu
+c3QgPSBkZXZfZ2V0X2RydmRhdGEoZGV2KTsKIAlpbnQgaW5kZXgsIGZpZWxkX2luZGV4LCB1c2Fn
+ZTsKIAljaGFyIG5hbWVbSElEX0NVU1RPTV9OQU1FX0xFTkdUSF07Ci0JaW50IHZhbHVlOworCWlu
+dCB2YWx1ZSwgcmV0OwogCiAJaWYgKHNzY2FuZihhdHRyLT5hdHRyLm5hbWUsICJmZWF0dXJlLSV4
+LSV4LSVzIiwgJmluZGV4LCAmdXNhZ2UsCiAJCSAgIG5hbWUpID09IDMpIHsKQEAgLTQwMyw4ICs0
+MDMsMTAgQEAgc3RhdGljIHNzaXplX3Qgc3RvcmVfdmFsdWUoc3RydWN0IGRldmljZSAqZGV2LCBz
+dHJ1Y3QgZGV2aWNlX2F0dHJpYnV0ZSAqYXR0ciwKIAogCQlyZXBvcnRfaWQgPSBzZW5zb3JfaW5z
+dC0+ZmllbGRzW2ZpZWxkX2luZGV4XS5hdHRyaWJ1dGUuCiAJCQkJCQkJCXJlcG9ydF9pZDsKLQkJ
+c2Vuc29yX2h1Yl9zZXRfZmVhdHVyZShzZW5zb3JfaW5zdC0+aHNkZXYsIHJlcG9ydF9pZCwKLQkJ
+CQkgICAgICAgaW5kZXgsIHNpemVvZih2YWx1ZSksICZ2YWx1ZSk7CisJCXJldCA9IHNlbnNvcl9o
+dWJfc2V0X2ZlYXR1cmUoc2Vuc29yX2luc3QtPmhzZGV2LCByZXBvcnRfaWQsCisJCQkJCSAgICAg
+aW5kZXgsIHNpemVvZih2YWx1ZSksICZ2YWx1ZSk7CisJCWlmIChyZXQpCisJCQlyZXR1cm4gcmV0
+OwogCX0gZWxzZQogCQlyZXR1cm4gLUVJTlZBTDsKIAotLSAKMi4yNy4wCgo=
+
+--_002_7d2c6d4e918485cba09d43702a2a78ae68550ab2camelintelcom_--
