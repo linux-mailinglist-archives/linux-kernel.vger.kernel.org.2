@@ -2,108 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F0A374D34
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 407AD374D3B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:01:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230426AbhEFCAb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:00:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        id S230487AbhEFCCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:02:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50998 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhEFCAZ (ORCPT
+        with ESMTP id S230033AbhEFCCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:00:25 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 505E4C061574;
-        Wed,  5 May 2021 18:59:25 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id f75-20020a9d03d10000b0290280def9ab76so3531873otf.12;
-        Wed, 05 May 2021 18:59:25 -0700 (PDT)
+        Wed, 5 May 2021 22:02:14 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ABC0C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 19:01:17 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id w4so5008824ljw.9
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 19:01:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9lACLQylxTNhoV+382sJLIS8tLV79pPOrWem8cDtSgc=;
-        b=eHlBkLpN+MzZOLiFYlSVZkXcfq1MhfGofCNxMRrUtrJhj2g4p5G9pRm5AlOQlmwjif
-         fhdxY0ARJOOzCfdvt250jYQGQFlA102Ka+danYMlTA7E4ufQeJnRff+B/6bRgJR6inCp
-         dDZWAPsHXkV+VZO9LoQwmDnreI5C26UR7xqrEcF0SPxtcsLOVpFhV6Wti/hvx19jQfiA
-         fTz1dLvrWvbrHBQRkM70bPPTNkaumaG04trWTbkjEJlL35ZI3pp73KR/e2hL+S2DcTvb
-         NheEPG+TdDB+OlfHodO2i/qJ/cgbMklLVW5D62hudIASf8fkkcOXqOobQ1zqiaqWhZI+
-         8kFg==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=bdTXCNCJehL6L2FUf8dVXHKc7By/gl2K5wPWDUG3aHQ=;
+        b=npobrFmjY3F/BH+4xzy01aYi8zEKzmvijsn8BvArbMYGIHjuVw12soYgAUuljvq437
+         ijinaGUa2nwrdIX6K0US0d8kCc8WaqMpFWp/SvGxO0J9t7zlL5aglEGTqJFF8zYq7+4C
+         JcPrxUw08b+nKEgEIV9SF0F5gBROZjIfYFmAqw3mpa0TEFSXrlgDhwoyRp/EXQE3bNZZ
+         IQlOv8v0JRXs3HODzvEykjvqSaxKbh/qsQs08y/s3Z28PjfG7bMZ3xvVcaAWfPgSCdOH
+         uGLi1Zc/gWf4hzXTB4v1LHXTDoZnvXVU+7i/OPaG+ZfwRuuhqyvB6e90+GZCD33QU+50
+         IMiw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=9lACLQylxTNhoV+382sJLIS8tLV79pPOrWem8cDtSgc=;
-        b=aRMvCI7bws69TLC/eMdH1799XMlPbQjqjYo/BmW7PipZeom/Ux8Fb2dy3KH2IGr+Sh
-         Xfy62Pu06KSoWhIo0hC6e8skr8HUZtLMbm/z+z7EbqfNBlo2vS3KclHaDFnOjLHZFJos
-         iH1bdWD48BnS6rW3n/DIgeYfJkccTt1Ld+/K4EX//a34A+6wy8fBCGX1QF7IglsqqENf
-         l7NuHo2NnnUBhVFL2cQxpND1N36Wl3454hcvRyI1Tmz/E1sHQbEfKuCTcjcZyS1cusFH
-         eHpJ91NOCSR9VgPAwSL0Y1606KpR3nhuIKKAQT2O0JNSBhwD+ZsiXx4MwEfqroQfgEK7
-         SoZA==
-X-Gm-Message-State: AOAM530ms0r3d809jKBY0K7c+2Y/Ot8sl8n1WoMStsrA9ux23fAfbH04
-        spJETTIDMkLZRxfP+3iJenMy0I+VbVo=
-X-Google-Smtp-Source: ABdhPJyPfR7T79T64zoyIZd+axvXotDt114HDY8ee0QKfqUrxDAN5TNSPrXs7S3PxWaBpk3v0zkasg==
-X-Received: by 2002:a05:6830:1555:: with SMTP id l21mr1381742otp.157.1620266364761;
-        Wed, 05 May 2021 18:59:24 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id u126sm197706oig.4.2021.05.05.18.59.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 18:59:24 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 5 May 2021 18:59:22 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.12 00/17] 5.12.2-rc1 review
-Message-ID: <20210506015922.GF731872@roeck-us.net>
-References: <20210505112324.956720416@linuxfoundation.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bdTXCNCJehL6L2FUf8dVXHKc7By/gl2K5wPWDUG3aHQ=;
+        b=Yy/mAC03LSIOlsf+0x5XF7rPIp4YxbXF6jeqm3HWkmbQq/LCWPTCyTzng6ELVkwBGM
+         lxf3rCUSB3ljHg122+akZaceA5u0Egm+2PARXcMGaEHSvWMYx9R5fcnItMeThLfHPSEF
+         D6NTGfDZ4bzkPYjVcOT0EzpP2UzICJVOzehmp/mRGkvnI1iSNz+5nYSWbrKZhCsmW1Bf
+         uTkQ2d/sBM48coG4larA2pPyTfnU/jDuaiTRLj9FqlVpfPZgF2M8M/N94ZfekwKneJ2I
+         m7nbwnhH8FFGzKp45T+KKeoyV7/zNj8DhNTI4vSR70dAtXh+jiYzl5a8+YDoShJeVjqr
+         eM8w==
+X-Gm-Message-State: AOAM531wckTkluBITsVfZRxf9Fi3rRSkZGJiuY1sRVmPp15hpFyLrA9M
+        VEt1Ntgx7W1fHPR8vPoP2u1irSxz5HZxhXD+n0u2DA==
+X-Google-Smtp-Source: ABdhPJzuud5nGxGBZKvJcULbXiIs/DImEdzGgjgMpVJb4t+vKkxZ5/hCS6RKqUESMVNkt//sfbFh2OWHgfIJ5t7gADI=
+X-Received: by 2002:a2e:b4c3:: with SMTP id r3mr1283898ljm.232.1620266475764;
+ Wed, 05 May 2021 19:01:15 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505112324.956720416@linuxfoundation.org>
+References: <20210506004423.345199-1-saravanak@google.com>
+In-Reply-To: <20210506004423.345199-1-saravanak@google.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 5 May 2021 19:01:04 -0700
+Message-ID: <CALAqxLU+Uf6OSDLG8OC_gHY9-VVHPgu0_bXxJcO8B4peFugtqw@mail.gmail.com>
+Subject: Re: [PATCH v1] usb: typec: tcpm: Don't block probing of consumers of
+ "connector" nodes
+To:     Saravana Kannan <saravanak@google.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Android Kernel Team <kernel-team@android.com>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Linux USB List <linux-usb@vger.kernel.org>,
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:05:55PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.12.2 release.
-> There are 17 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-> Anything received after that time might be too late.
-> 
-[ ... ]
+On Wed, May 5, 2021 at 5:44 PM Saravana Kannan <saravanak@google.com> wrote:
+>
+> fw_devlink expects DT device nodes with "compatible" property to have
+> struct devices created for them. Since the connector node might not be
+> populated as a device, mark it as such so that fw_devlink knows not to
+> wait on this fwnode being populated as a struct device.
+>
+> Without this patch, USB functionality can be broken on some boards.
+>
+> Fixes: f7514a663016 ("of: property: fw_devlink: Add support for remote-endpoint")
+> Reported-by: John Stultz <john.stultz@linaro.org>
+> Signed-off-by: Saravana Kannan <saravanak@google.com>
 
-> Shengjiu Wang <shengjiu.wang@nxp.com>
->     ASoC: ak5558: Add MODULE_DEVICE_TABLE
-> 
-> Shengjiu Wang <shengjiu.wang@nxp.com>
->     ASoC: ak4458: Add MODULE_DEVICE_TABLE
-> 
+Tested-by: John Stultz <john.stultz@linaro.org>
 
-No, wait, those are both already in the tree, and both need to be removed.
-
-$ git describe
-v5.12.1-18-g77358801e46c
-$ git log --oneline v5.10.. sound/soc/codecs/ak4458.c sound/soc/codecs/ak5558.c
-a72a232ea459 ASoC: ak5558: Add MODULE_DEVICE_TABLE
-20583d98df0c ASoC: ak4458: Add MODULE_DEVICE_TABLE
-80cffd2468dd ASoC: ak5558: Add MODULE_DEVICE_TABLE
-4ec5b96775a8 ASoC: ak4458: Add MODULE_DEVICE_TABLE
-e953daeb68b1 ASoC: ak4458: correct reset polarity
-9f34c0405723 ASoC: ak5558: mark OF related data as maybe unused
-
-This applies to all branches.
-
-Other than that,
-
-Build results:
-	total: 151 pass: 151 fail: 0
-Qemu test results:
-	total: 461 pass: 461 fail: 0
-
-Guenter
+Thanks so much for this fix! HiKey960 is back to booting properly!
+-john
