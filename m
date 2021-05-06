@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2553759DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E19AA3759DD
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:57:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236424AbhEFR6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:58:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40538 "EHLO mail.kernel.org"
+        id S236448AbhEFR6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:58:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40552 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236338AbhEFR6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S236341AbhEFR6l (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 May 2021 13:58:41 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C651961107;
-        Thu,  6 May 2021 17:57:42 +0000 (UTC)
+Received: by mail.kernel.org (Postfix) with ESMTPS id 1449661154;
+        Thu,  6 May 2021 17:57:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620323862;
-        bh=7hq6JRPExv14wrJEV4oEAqMY4ywekwltCgszlztOM/I=;
+        s=k20201202; t=1620323863;
+        bh=VeSoGsTV+o+DIg0jSwMT1NXLAnZJUY0O3nBlQcRsyMI=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=MRcfx0lWCLyZmGJbGw4bstIPVZ/buuQqMRE9zivHH7DX9IVKTLC8/Rhj/jarzU3Jv
-         +OYX3OjDnApfXkANUzFFfdMSdjnqIzGLEkamcIt2CI42fx1QxsAgLa3iB/2AARuKrk
-         B8SW2D3DFefM/MTMIp3iessi05vLPwT5iYxVM8d/e+x73cgQSHMTqXI3a1wSIoIsJQ
-         Y0l1iHHfGvFI70Z7UNFM+1G94+IvEP6QkYZM5Hj5Bl4judqKrRytN+urjnxlDiydGA
-         Fw6jQUguZY/txRLPCPwcw9Bxw2VSny8nB3/eSyEQ8NYDhLAzLfGN7aOhTiht7bKl3O
-         TIW+CcjCW7CDg==
+        b=nnpxTyS+PJJNWD8A7kRSH43omDqanqTynRG6orOR3Qg87hpyWtatRM7KTbUBm2KoV
+         cS6pVp20sv5ibLzGIX5QnfXpDnW5wIhFgNis9OOo0q7UWxic42Mr4D8h/PdrqGHuB1
+         T0agOEvAlsj633bAEgDFKAfGWGlYrVNGX5sfbq/9qe4eaVAGQ1pbmOg3T84MzEFJ6M
+         vkURG+SLSD+QQDy9NwiOZXfNf2uDL8qkyiEUI4iV4s4AhJDPXfpFEoGtPIddNnmunH
+         Y4Gk8uze28DhPbdz5lVbP5BAJRkFgpjD5NHV3ZwTVI3ArMA63zOaZDXn+5oam/zVFK
+         /OE6l9WWLiCTg==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id C004660A0C;
-        Thu,  6 May 2021 17:57:42 +0000 (UTC)
-Subject: Re: [GIT PULL] Devicetree fixes for v5.13, take 1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 0E88C609AC;
+        Thu,  6 May 2021 17:57:43 +0000 (UTC)
+Subject: Re: [GIT PULL] eCryptfs updates for 5.13-rc1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210505224242.GA2953573@robh.at.kernel.org>
-References: <20210505224242.GA2953573@robh.at.kernel.org>
+In-Reply-To: <20210506022851.GA622556@elm>
+References: <20210506022851.GA622556@elm>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210505224242.GA2953573@robh.at.kernel.org>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.13-1
-X-PR-Tracked-Commit-Id: 6799e3f281e962628be531e8331bacd05b866134
+X-PR-Tracked-Message-Id: <20210506022851.GA622556@elm>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs.git tags/ecryptfs-5.13-rc1-updates
+X-PR-Tracked-Commit-Id: 9046625511ad8dfbc8c6c2de16b3532c43d68d48
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 2423e142b37e2fcce61ea6d3c2f103384ae05f92
-Message-Id: <162032386277.1989.15293221254226311127.pr-tracker-bot@kernel.org>
-Date:   Thu, 06 May 2021 17:57:42 +0000
-To:     Rob Herring <robh@kernel.org>
+X-PR-Merge-Commit-Id: 682a8e2b41effcaf2e80697e395d47f77c91273f
+Message-Id: <162032386305.1989.10037069998243079729.pr-tracker-bot@kernel.org>
+Date:   Thu, 06 May 2021 17:57:43 +0000
+To:     Tyler Hicks <code@tyhicks.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Frank Rowand <frowand.list@gmail.com>
+        Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, ecryptfs@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 5 May 2021 17:42:42 -0500:
+The pull request you sent on Wed, 5 May 2021 21:28:51 -0500:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/robh/linux.git tags/devicetree-fixes-for-5.13-1
+> https://git.kernel.org/pub/scm/linux/kernel/git/tyhicks/ecryptfs.git tags/ecryptfs-5.13-rc1-updates
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/2423e142b37e2fcce61ea6d3c2f103384ae05f92
+https://git.kernel.org/torvalds/c/682a8e2b41effcaf2e80697e395d47f77c91273f
 
 Thank you!
 
