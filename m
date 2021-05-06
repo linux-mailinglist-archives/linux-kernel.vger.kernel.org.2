@@ -2,72 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5C27375875
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:29:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC72437587D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235884AbhEFQaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235167AbhEFQat (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:30:49 -0400
-Received: from mail-yb1-xb2b.google.com (mail-yb1-xb2b.google.com [IPv6:2607:f8b0:4864:20::b2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A903C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 09:29:51 -0700 (PDT)
-Received: by mail-yb1-xb2b.google.com with SMTP id l7so8137164ybf.8
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 09:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9qTFwtA2XDXxNaj7Uvk5c//7Kigj5G2j2Vg7lc+7nk8=;
-        b=gQgbA4RAs50NFYkXr8ipLSjMGKRZv3FTELBC/dnV4LIfT8Vj6mIcLancGiin7OCbCV
-         IELF6hLtuvocn2dfiMjlsYgYX2rUcRAxNjr4EowjCddVQBK6xPIHgH3M2vcN5NZqLrBn
-         Fb4tonfwBXVpeoMDYdCk/aW0z8zPL9EgCsO6hMQkIIOXMC95ibvku3kkAYK0Dg2F0Vo2
-         vd+htUmQI1KN3ERYnU966Xb4gUoLQrlloSBO5tgn/RVgdd1063n5z9qZLdL49R2i3+uq
-         NEPqwWu3PO/oLZPcEgj7zgnzHKvBKF2axRREnqZCpsCcFQafj1CzWBNJ2WmWHzESdeQZ
-         FvTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=9qTFwtA2XDXxNaj7Uvk5c//7Kigj5G2j2Vg7lc+7nk8=;
-        b=ZvfQL43mlLUOf4gq04iG38Yu3yNDBJtVOptDEE642vUUYmzhIxKssYp4fY87lBzyOU
-         b7UieJNNnp8W6xCbY3OU/zMRaI4R9Krof6Vfx1WpV0CgktKp9nLhn/2N2kLnDUEzhzZ4
-         pAQ/WNFJguenGYSTgPEryvR1VXw6Li/JCUSf+ZyRS4yutqBSYlHIiCwIhpFfxUvIsfIG
-         fhSdYv2+lonvxQcsInkifDu292SWNxWHL7/1xAQUItiyc2WqTGTLRpA+KJJBBw+vlwru
-         trqLqq6pjsS1P05iLqRzUgAXKTRcDfYTXo56s7gyCt8g0f2cluRCK0Pyr6wu5wT7gZSU
-         I3kg==
-X-Gm-Message-State: AOAM5334Iz9I6S721YnLpeYC1laL+/PHUKmLHFFdxFvT1IhTI52CvHG1
-        FI7+/BQBz0fEvFKO3JrxBky8OxDOAePON9PGM44=
-X-Google-Smtp-Source: ABdhPJyKsrabSaPpr5A6bzEwLLoYV6KfgzG6O1Mcytz4bjdNFnQGZ21z+mEtefaJ0XyanOV3n5p5GlrQkPatCG5rnNk=
-X-Received: by 2002:a25:bc8b:: with SMTP id e11mr7177209ybk.115.1620318590865;
- Thu, 06 May 2021 09:29:50 -0700 (PDT)
+        id S235926AbhEFQeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:34:18 -0400
+Received: from mga04.intel.com ([192.55.52.120]:40079 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235167AbhEFQeS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 12:34:18 -0400
+IronPort-SDR: Ll81RRz0a55T72YKjx5In/GBjGClONGsGQk5pkxxpJU+vrosxZ71eLdQFtpL+rFwHbv+ePx0hR
+ kPCY1Yti1mIA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="196495528"
+X-IronPort-AV: E=Sophos;i="5.82,278,1613462400"; 
+   d="scan'208";a="196495528"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 09:32:42 -0700
+IronPort-SDR: wyPtzq1AlkC8XDzoyMUG3bfiBuyrMzsFN73gf9J8keEmp0nD/1ecblUB/ji3/061mupVrEkq5v
+ gUQKN9QAVdPQ==
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="428627255"
+Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
+  by orsmga007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 09:32:41 -0700
+Date:   Thu, 6 May 2021 09:32:40 -0700
+From:   "Raj, Ashok" <ashok.raj@intel.com>
+To:     Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        "Liu, Yi L" <yi.l.liu@intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>,
+        Ashok Raj <ashok.raj@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210506163240.GA9058@otc-nc-03>
+References: <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+ <20210504084148.4f61d0b5@jacob-builder>
+ <20210504180050.GB1370958@nvidia.com>
+ <20210504151154.02908c63@jacob-builder>
+ <20210504231530.GE1370958@nvidia.com>
+ <20210505102259.044cafdf@jacob-builder>
+ <20210505180023.GJ1370958@nvidia.com>
+ <20210505130446.3ee2fccd@jacob-builder>
+ <YJOZhPGheTSlHtQc@myrica>
+ <20210506122730.GQ1370958@nvidia.com>
 MIME-Version: 1.0
-References: <20210506123051.7414-1-jj251510319013@gmail.com>
-In-Reply-To: <20210506123051.7414-1-jj251510319013@gmail.com>
-From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Date:   Thu, 6 May 2021 18:29:39 +0200
-Message-ID: <CANiq72=s=BeroPjTNSeZsj+qq8gYiZtEQPJHgMxMopTy9Zk10A@mail.gmail.com>
-Subject: Re: [PATCH] Compiler Attributes: Add continue in comment
-To:     Wei Ming Chen <jj251510319013@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Miguel Ojeda <ojeda@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506122730.GQ1370958@nvidia.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 2:31 PM Wei Ming Chen <jj251510319013@gmail.com> wrote:
->
-> Add "continue;" for switch/case block according to Doc[1]
->
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
->
-> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+Hi Jason
 
-Thanks, queuing it!
+On Thu, May 06, 2021 at 09:27:30AM -0300, Jason Gunthorpe wrote:
+> On Thu, May 06, 2021 at 09:23:48AM +0200, Jean-Philippe Brucker wrote:
+> > On Wed, May 05, 2021 at 01:04:46PM -0700, Jacob Pan wrote:
+> > > > > For ARM, since the guest owns the per device PASID table. There is no
+> > > > > need to allocate PASIDs from the host nor the hypervisor. Without SWQ,
+> > > > > there is no need for global PASID/SSID either. So PASID being global
+> > > > > for ARM is for simplicity in case of host PASID/SSID.  
+> > > > 
+> > > > It isn't clear how ARM can support PASID and mdev but that is an
+> > > > unrelated issue..
+> > > > 
+> > > AFAIK, the current SMMU device assignment is per RID, since only one stage2
+> > > page tables per RID, not per PASID. This is equivalent to the older VT-d
+> > > spec. prior to scalable mode.
+> > 
+> > Yes that's right. Since SMMUv3 has a single level-2 page table per RID, it
+> > doesn't support assigning level-1 page tables to guests for mdevs (sub-VF
+> > devices). So no PASIDs for mdevs, which also means each guest has its own
+> > PASID space and the host doesn't track guest PASIDs.
+> 
+> Basically it means when the guest's top level IOASID is created for
+> nesting that IOASID claims all PASID's on the RID and excludes any
+> PASID IOASIDs from existing on the RID now or in future.
+
+The way to look at it this is as follows:
+
+For platforms that do not have a need to support shared work queue model
+support for ENQCMD or similar, PASID space is naturally per RID. There is no
+complication with this. Every RID has the full range of PASID's and no need
+for host to track which PASIDs are allocated now or in future in the guest.
+
+For platforms that support ENQCMD, it is required to mandate PASIDs are
+global across the entire system. Maybe its better to call them gPASID for
+guest and hPASID for host. Short reason being gPASID->hPASID is a guest
+wide mapping for ENQCMD and not a per-RID based mapping. (We covered that
+in earlier responses)
+
+In our current implementation we actually don't separate this space, and
+gPASID == hPASID. The iommu driver enforces that by using the custom
+allocator and the architected interface that allows all guest vIOMMU
+allocations to be proxied to host. Nothing but a glorified hypercall like
+interface. In fact some OS's do use hypercall to get a hPASID vs using
+the vCMD style interface.
+
+For cases where there is full PASID range for every RID and completely
+managed by the guest that requires no assist from host to ensure
+uniqueness, they don't need to have a custom allocator. Maybe the general
+allocator can have ways to ensure global uniqueness vs. RID wide
+uniqueness. This is still managed by the iommu driver (vIOMMU) + the
+backend for vCMD in the host IOMMU driver.
+
+> 
+> Which would be a different behavior than something like Intel's top
+> level IOASID that doesn't claim all the PASIDs.
+
+isn't this simple, if we can say ioasid allocator can provide 
+
+- system wide PASID
+- RID local PASID
+
+Based on platform capabilities that require such differentiation?
+
+And based on the other threads, if ioasid is just a pgtable representation,
+it doesn't need a PASID per-se. But when you want to use SVM or such, you
+can associate a PASID with it for the IOMMU to plumb things with hardware.
 
 Cheers,
-Miguel
+Ashok
