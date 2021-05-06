@@ -2,116 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E968C374EB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26D91374EBF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:59:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233015AbhEFEwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 00:52:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231232AbhEFEwP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 00:52:15 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9A50DC061574;
-        Wed,  5 May 2021 21:51:17 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so3806584otp.11;
-        Wed, 05 May 2021 21:51:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BkR8EzMQJSRdUTCzoWgn3x8ok1vavL42w7HcwP25SNc=;
-        b=AKS72qspds8ZGn6uyQ758fmEadTumeLpLvpwTPI2aGoyZViv4xqGFRghS9ylyVbYZh
-         stktQwWC2RvQY1cde0m5Fas2rdCCT0MXQ39vHFrgWqyOaU3y8pPQUZTed31DOIBy0I6l
-         cdOxXjNjWyd58FF/mk6WKVLbE82dnn5t4YTwX4moqntGyUJ2eyRjnJe/bOF1lmuOOWiZ
-         zzOK65+PCOQMLYL0lOM/D8PoqmGOslwyEjnmiHMlKLpt5u1TtipMimZEbDgzwdO6EIi8
-         AqmXvQm2gjgXTHhg84OhGtDfhKJFNhJjN4cVt1PV3HhPM85Yyv0aBujyShD1cfEI+k2t
-         rC4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=BkR8EzMQJSRdUTCzoWgn3x8ok1vavL42w7HcwP25SNc=;
-        b=enkP7Fg20TxbGw2PoLB1R+lXrJ3TnTLzf5uA6+0VAgJgsZImjjML2liuD+A7d/cjg7
-         dmS1lqOLyVWlk/VsViAuFS+9wiI8oUe03+p25AHfMsUobCeZktG3rpJ1jIYyZ6OtdmbU
-         lVNel00WpMgNFivok550l17uYkV2Z6412IcEkvsc9CXFlU2kbgpWAjYs205ZSyspDOzw
-         hb2ZdBAPbUJnBZ5AeagjEWFjTYpIM/p9UAMas3PIADEQnuMv1X/USzSIVU883Nnd1h8M
-         9GPrnkALa+fphiLf9rEng8XRhemE5+9Fg3JnWypCYTR6d64UNUamBLtWkLDu8Ksf3tPj
-         LuWQ==
-X-Gm-Message-State: AOAM530wlL4UGdMf3hyoGU4oGqhvkXbmmafTjrP4iJ8EZASH2nqd8U5g
-        Sm0jSn0k9UvZFuHDU1ezxTU=
-X-Google-Smtp-Source: ABdhPJy9PNmpSVm6f5o/j9WfXm1EkTWXxyRg3ZZdfU7fedQjxTyCpUl8W0IJgannFMMAVJWw4xbH2A==
-X-Received: by 2002:a05:6830:1150:: with SMTP id x16mr1965608otq.294.1620276676992;
-        Wed, 05 May 2021 21:51:16 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id p1sm366549otk.58.2021.05.05.21.51.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 21:51:16 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 5 May 2021 21:51:15 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Roger Lu <roger.lu@mediatek.com>
-Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Enric Balletbo Serra <eballetbo@gmail.com>,
-        Kevin Hilman <khilman@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Nicolas Boichat <drinkcat@google.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Fan Chen <fan.chen@mediatek.com>,
-        HenryC Chen <HenryC.Chen@mediatek.com>,
-        YT Lee <yt.lee@mediatek.com>,
-        Xiaoqing Liu <Xiaoqing.Liu@mediatek.com>,
-        Charles Yang <Charles.Yang@mediatek.com>,
-        Angus Lin <Angus.Lin@mediatek.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Nishanth Menon <nm@ti.com>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-pm@vger.kernel.org,
-        Project_Global_Chrome_Upstream_Group@mediatek.com
-Subject: Re: [PATCH v16 3/7] soc: mediatek: SVS: introduce MTK SVS engine
-Message-ID: <20210506045115.GA767398@roeck-us.net>
-References: <20210428065440.3704-1-roger.lu@mediatek.com>
- <20210428065440.3704-4-roger.lu@mediatek.com>
+        id S232288AbhEFFAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 01:00:50 -0400
+Received: from mga11.intel.com ([192.55.52.93]:60748 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233007AbhEFFAn (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 01:00:43 -0400
+IronPort-SDR: 7FhMJVenzKpw8pb1bRjaFrbsBnpn4zpxz1UOLij/rjiJ6qQ0LMbSM+bOxBJD7OoV0BLp/Iruh4
+ 2s/2J7ZxO6YQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="195258082"
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="195258082"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 21:59:14 -0700
+IronPort-SDR: 87FNLb4TGmATRx26ipmTDl9KyMkhHNJcNIEC40LvWVDsBC+9BDbV8o7QxbNQe9K2Y19JrBfP5J
+ bFGfUKT9fh2g==
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="434161883"
+Received: from unknown (HELO [10.238.4.82]) ([10.238.4.82])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 21:59:10 -0700
+Subject: Re: [PATCH v1 2/2] perf header: Support hybrid CPU_PMU_CAPS
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210430074602.3028-1-yao.jin@linux.intel.com>
+ <20210430074602.3028-2-yao.jin@linux.intel.com> <YJFjTCsk9dCd6QP7@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <c0bd3baa-3209-23f3-7058-c6908434de2d@linux.intel.com>
+Date:   Thu, 6 May 2021 12:59:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210428065440.3704-4-roger.lu@mediatek.com>
+In-Reply-To: <YJFjTCsk9dCd6QP7@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 02:54:36PM +0800, Roger Lu wrote:
-> The Smart Voltage Scaling(SVS) engine is a piece of hardware
-> which calculates suitable SVS bank voltages to OPP voltage table.
-> Then, DVFS driver could apply those SVS bank voltages to PMIC/Buck
-> when receiving OPP_EVENT_ADJUST_VOLTAGE.
+Hi Jiri,
+
+On 5/4/2021 11:07 PM, Jiri Olsa wrote:
+> On Fri, Apr 30, 2021 at 03:46:02PM +0800, Jin Yao wrote:
+>> On hybrid platform, it may have several cpu pmus, such as,
+>> "cpu_core" and "cpu_atom". The CPU_PMU_CAPS feature in perf
+>> header needs to be improved to support multiple cpu pmus.
+>>
+>> The new layout in header is defined as:
+>>
+>> <nr_caps>
+>> <caps string>
+>> <caps string>
+>> <pmu name>
+>> <nr of rest pmus>
 > 
-> Signed-off-by: Roger Lu <roger.lu@mediatek.com>
-> ---
->  drivers/soc/mediatek/Kconfig   |   10 +
->  drivers/soc/mediatek/Makefile  |    1 +
->  drivers/soc/mediatek/mtk-svs.c | 1723 ++++++++++++++++++++++++++++++++
->  3 files changed, 1734 insertions(+)
->  create mode 100644 drivers/soc/mediatek/mtk-svs.c
+> not sure why is the 'nr of rest pmus' needed
 > 
-[ ... ]
 
-> +
-> +	svsp_irq = irq_of_parse_and_map(svsp->dev->of_node, 0);
-> +	ret = devm_request_threaded_irq(svsp->dev, svsp_irq, NULL, svs_isr,
-> +					svsp->irqflags, svsp->name, svsp);
+The 'nr of rest pmus' indicates the remaining pmus which are waiting for process.
 
-0-day reports:
+For example,
 
-drivers/soc/mediatek/mtk-svs.c:1663:7-32: ERROR:
-	Threaded IRQ with no primary handler requested without IRQF_ONESHOT
+<nr_caps>
+<caps string>
+"cpu_core"
+1
+<nr_caps>
+<caps string>
+"cpu_atom"
+0
 
-I would be a bit concerned about this. There is no primary (hard)
-interrupt handler, meaning the hard interrupt may be re-enabled after
-the default hard interrupt handler runs. This might result in endless
-interrupts.
+When we see '0' in data file processing, we know all the pmu have been processed yet.
 
-Guenter
+> the current format is:
+> 
+>          u32 nr_cpu_pmu_caps;
+>          {
+>                  char    name[];
+>                  char    value[];
+>          } [nr_cpu_pmu_caps]
+> 
+> 
+> I guess we could extend it to:
+> 
+>          u32 nr_cpu_pmu_caps;
+>          {
+>                  char    name[];
+>                  char    value[];
+>          } [nr_cpu_pmu_caps]
+> 	char pmu_name[]
+> 
+>          u32 nr_cpu_pmu_caps;
+>          {
+>                  char    name[];
+>                  char    value[];
+>          } [nr_cpu_pmu_caps]
+> 	char pmu_name[]
+> 
+> 	...
+> 
+> and we could detect the old format by checking that there's no
+> pmu name.. but maybe I'm missing something, I did not check deeply,
+> please let me know
+>
+
+Actually we do the same thing, but I just add an extra 'nr of rest pmus' after the pmu_name. The 
+purpose of 'nr of rest pmus' is when we see '0' at 'nr of rest pmus', we know that all pmus have 
+been processed.
+
+Otherwise, we have to continue reading data file till we find something incorrect and then finally 
+drop the last read data.
+
+So is this solution acceptable?
+
+> also would be great to move the format change and storing hybrid
+> pmus in separate patches
+> 
+
+Maybe we have to put the storing and processing into one patch.
+
+Say patch 1 contains the format change and storing hybrid pmus. And patch 2 contains the processing 
+for the new format. If the repo only contains the patch 1, I'm afraid that may introduce the 
+compatible issue.
+
+Thanks
+Jin Yao
+
+> thanks,
+> jirka
+> 
