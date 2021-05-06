@@ -2,108 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1039C375146
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:09:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EEEE375149
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:10:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234090AbhEFJKD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:10:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47122 "EHLO mail.kernel.org"
+        id S234044AbhEFJLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:11:02 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:34813 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234014AbhEFJKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:10:02 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 2B7A360FEE;
-        Thu,  6 May 2021 09:09:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620292144;
-        bh=HaAfWtOAafkNSsvz88e84TAEk52kR7zNGm+Hs1lufVE=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Kbz3ZT3czmDTPiEHofA2omrUzRRbVbZvQ9cVWU+5hyYE80BUTfKlHHMNOvyP3clN5
-         wD4qvnDOoWcmLh0KNq4IwcLF+u0Z7KOeE24Ah09aOzzOrv6SIx9q4/VzcVZZSLdEtL
-         ve60187F0+KLqVy5q61j4peVs0JD4Jz/+GSF+gGLs6ajNcSMxmTE5a6EooyLpaZv9p
-         BKoCjDR4KA4dNuCt3YfB15hcTeXTTbVUPf5v4XzylVVDCrAXt7iFQTt0zckNSnaooI
-         pG6ov8gbmdsEdt7T06f+Amae9J+ZJRJI+OGJQv2bN9KqDI3PDijh+G1C/1scduatgB
-         uPKU8ld7JmWOQ==
-Received: by pali.im (Postfix)
-        id 5F565732; Thu,  6 May 2021 11:09:02 +0200 (CEST)
-From:   =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>
-To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
-        Andrew Lunn <andrew@lunn.ch>
-Cc:     =?UTF-8?q?Marek=20Beh=C3=BAn?= <kabel@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 mvebu + mvebu/dt64 6/6] arm64: dts: marvell: armada-37xx: move firmware node to generic dtsi file
-Date:   Thu,  6 May 2021 11:08:02 +0200
-Message-Id: <20210506090802.14268-6-pali@kernel.org>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20210506090802.14268-1-pali@kernel.org>
-References: <20210308153703.23097-1-kabel@kernel.org>
- <20210506090802.14268-1-pali@kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+        id S233765AbhEFJLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 05:11:01 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FbSTQ2frfz9sTC;
+        Thu,  6 May 2021 11:10:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id 84Jh_hPK5OFm; Thu,  6 May 2021 11:10:02 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FbSTQ1jkgz9sSD;
+        Thu,  6 May 2021 11:10:02 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1748E8B7F1;
+        Thu,  6 May 2021 11:10:02 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 4nw4S1JpHMM8; Thu,  6 May 2021 11:10:02 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DA4788B7EC;
+        Thu,  6 May 2021 11:10:01 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 99FA564884; Thu,  6 May 2021 09:10:01 +0000 (UTC)
+Message-Id: <13f7532f21df3196e8c78b4f82a9c8d5487aca35.1620292185.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/32s: Remove m8260_gorom()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  6 May 2021 09:10:01 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Move the turris-mox-rwtm firmware node from Turris MOX' device tree into
-the generic armada-37xx.dtsi file and use the generic compatible string
-'marvell,armada-3700-rwtm-firmware' instead of the current one.
+Last user of m8260_gorom() was removed by
+Commit 917f0af9e5a9 ("powerpc: Remove arch/ppc and include/asm-ppc")
+removed last user of m8260_gorom().
 
-The Turris MOX rWTM firmware can be used on any Armada 37xx device,
-giving them access to the rWTM hardware random number generator, which
-is otherwise unavailable.
+In fact m8260_gorom() was ported to arch/powerpc/ but the
+platform using it died with arch/ppc/
 
-This change allows Linux to load the turris-mox-rwtm.ko module on these
-boards.
+Remove it.
 
-Tested on ESPRESSObin v5 with both default Marvell WTMI firmware and
-CZ.NIC's firmware. With default WTMI firmware the turris-mox-rwtm fails
-to probe, while with CZ.NIC's firmware it registers the HW random number
-generator.
-
-Signed-off-by: Pali Rohár <pali@kernel.org>
-Signed-off-by: Marek Behún <kabel@kernel.org>
-Cc: <stable@vger.kernel.org> # 5.4+: 46d2f6d0c99f ("arm64: dts: armada-3720-turris-mox: add firmware node")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts | 8 --------
- arch/arm64/boot/dts/marvell/armada-37xx.dtsi           | 8 ++++++++
- 2 files changed, 8 insertions(+), 8 deletions(-)
+ arch/powerpc/kernel/head_book3s_32.S | 36 ----------------------------
+ 1 file changed, 36 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-index 0753cc489638..ebb0ddf8d306 100644
---- a/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-+++ b/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts
-@@ -107,14 +107,6 @@
- 		/* enabled by U-Boot if SFP module is present */
- 		status = "disabled";
- 	};
--
--	firmware {
--		turris-mox-rwtm {
--			compatible = "cznic,turris-mox-rwtm";
--			mboxes = <&rwtm 0>;
--			status = "okay";
--		};
--	};
- };
+diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+index c1d2f0d1d6b2..74296708b35e 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -1204,42 +1204,6 @@ setup_usbgecko_bat:
+ 	blr
+ #endif
  
- &i2c0 {
-diff --git a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-index 1b7f43e27589..847a2d12a4be 100644
---- a/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-+++ b/arch/arm64/boot/dts/marvell/armada-37xx.dtsi
-@@ -505,4 +505,12 @@
- 			};
- 		};
- 	};
-+
-+	firmware {
-+		armada-3700-rwtm {
-+			compatible = "marvell,armada-3700-rwtm-firmware";
-+			mboxes = <&rwtm 0>;
-+			status = "okay";
-+		};
-+	};
- };
+-#ifdef CONFIG_8260
+-/* Jump into the system reset for the rom.
+- * We first disable the MMU, and then jump to the ROM reset address.
+- *
+- * r3 is the board info structure, r4 is the location for starting.
+- * I use this for building a small kernel that can load other kernels,
+- * rather than trying to write or rely on a rom monitor that can tftp load.
+- */
+-       .globl  m8260_gorom
+-m8260_gorom:
+-	mfmsr	r0
+-	rlwinm	r0,r0,0,17,15	/* clear MSR_EE in r0 */
+-	sync
+-	mtmsr	r0
+-	sync
+-	mfspr	r11, SPRN_HID0
+-	lis	r10, 0
+-	ori	r10,r10,HID0_ICE|HID0_DCE
+-	andc	r11, r11, r10
+-	mtspr	SPRN_HID0, r11
+-	isync
+-	li	r5, MSR_ME|MSR_RI
+-	lis	r6,2f@h
+-	addis	r6,r6,-KERNELBASE@h
+-	ori	r6,r6,2f@l
+-	mtspr	SPRN_SRR0,r6
+-	mtspr	SPRN_SRR1,r5
+-	isync
+-	sync
+-	rfi
+-2:
+-	mtlr	r4
+-	blr
+-#endif
+-
+-
+ /*
+  * We put a few things here that have to be page-aligned.
+  * This stuff goes at the beginning of the data segment,
 -- 
-2.20.1
+2.25.0
 
