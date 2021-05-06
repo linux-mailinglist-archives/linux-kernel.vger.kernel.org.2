@@ -2,82 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD9E3756C6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:26:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 098D53756C0
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:25:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235633AbhEFP06 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:26:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38338 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235226AbhEFPYj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:24:39 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EF8BD61414;
-        Thu,  6 May 2021 15:23:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620314611;
-        bh=79OkehonmjtZng1/b9LdwRP7XaO8omnxvo99Fl7zk0I=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=e9Sjz/0Ldr9Vqmcgo7hHeTt48TKpX2hJHRAGXrChAnj4HQK04a+O8wMEDAyPnzBj5
-         83t+NUzy+Msm5WQWVoSMqlhLN1yWxf2yZsITvPExdDZcxEMe1Aax0WhoYevh846Awh
-         W/rGEsqo+aW+xbOadaWiekD0TTmp9h1xYYa1a0/CIU8muCMvTEqXc353Priz8fLB18
-         BgB1hSTVefTGinDBtzFb2JB5cazZOZTfcfjM59b8uQ8rbybwbq9zNEGpi+mG/MWyVL
-         QZkdRXQ+UBo8i218IXTtPRYkbVeoLRd0YWYxw+xQGeYPDOREwMsAOymalXfQt+hD7g
-         fDIlnXCI2jQAA==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1lefqb-000RwU-3b; Thu, 06 May 2021 17:23:29 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Subject: [PATCH v5 30/30] media: i2c: ccs-core: use pm_runtime_resume_and_get()
-Date:   Thu,  6 May 2021 17:23:26 +0200
-Message-Id: <588552504c2e4b0347b237454588e7040eff857a.1620314098.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1620314098.git.mchehab+huawei@kernel.org>
-References: <cover.1620314098.git.mchehab+huawei@kernel.org>
+        id S235521AbhEFP0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:26:40 -0400
+Received: from mail-ot1-f42.google.com ([209.85.210.42]:39793 "EHLO
+        mail-ot1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235204AbhEFPYd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:24:33 -0400
+Received: by mail-ot1-f42.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso5188659otv.6;
+        Thu, 06 May 2021 08:23:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3gd59Q00UsIN3VmjUeIhTthZ0QDrMCmfvT1a++zDiFI=;
+        b=LYmZ0VKe1SL3XvHsoeiLxiYfM/Sf0pkCHi4ADNNnALkQhDr6nv2jGzFSwnsQssif9W
+         ZXamHHCwmB9jq1XEMA4a7+p2zffSBQgPyivrAHH+RICl2rGjF0fV9BLoEOILTO24Cac9
+         KlRCK9+dGcTZKqKsQ5ENvSyXlh0w/OcQkrpu8k9fZDMxH2B6xlbxactTztqPPnafi/gE
+         gCygyw+DlG3RMVO1n7QgEpMzdv6fkjrVM6Ourr8ufpX23So1bMNhZfiyx/781L2lbEQm
+         rEArpvrBbFRdBNAN3ASt7hgNH8PCRh4mO4kVO9a4cJCQG1MOTL4IDHoPMdQ3QmkAkdZ4
+         ANNQ==
+X-Gm-Message-State: AOAM533DUrTJdTfPl7t8fY+cKgLZzFJT88tKA05jgP6mhVZFTjGQ2rMM
+        2hqpCe69IE3jeQSEOQvpUA==
+X-Google-Smtp-Source: ABdhPJwvsQN2eK/NTlHbSE6SVGfw3ggGDQ0VkuZPxGExJK60BByW3DR4TypPYBPg6/iuBNu8VmJvIQ==
+X-Received: by 2002:a9d:7f96:: with SMTP id t22mr4169872otp.152.1620314612632;
+        Thu, 06 May 2021 08:23:32 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id f13sm639959ote.46.2021.05.06.08.23.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 08:23:31 -0700 (PDT)
+Received: (nullmailer pid 351881 invoked by uid 1000);
+        Thu, 06 May 2021 15:23:30 -0000
+Date:   Thu, 6 May 2021 10:23:30 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Shawn Guo <shawn.guo@linaro.org>
+Cc:     Benjamin Li <benl@squareup.com>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, Jassi Brar <jassisinghbrar@gmail.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Sivaprakash Murugesan <sivaprak@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] dt-bindings: mailbox: qcom: Add MSM8939 APCS
+ compatible
+Message-ID: <20210506152330.GA351835@robh.at.kernel.org>
+References: <20210503081334.17143-1-shawn.guo@linaro.org>
+ <20210503081334.17143-2-shawn.guo@linaro.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210503081334.17143-2-shawn.guo@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-added pm_runtime_resume_and_get() in order to automatically handle
-dev->power.usage_count decrement on errors.
+On Mon, 03 May 2021 16:13:33 +0800, Shawn Guo wrote:
+> Add compatible for the Qualcomm MSM8939 APCS block to the Qualcomm APCS
+> bindings.
+> 
+> Signed-off-by: Shawn Guo <shawn.guo@linaro.org>
+> ---
+>  .../devicetree/bindings/mailbox/qcom,apcs-kpss-global.yaml       | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-Use the new API, in order to cleanup the error check logic.
-
-Reviewed-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/media/i2c/ccs/ccs-core.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/media/i2c/ccs/ccs-core.c b/drivers/media/i2c/ccs/ccs-core.c
-index 4a848ac2d2cd..a349189a38db 100644
---- a/drivers/media/i2c/ccs/ccs-core.c
-+++ b/drivers/media/i2c/ccs/ccs-core.c
-@@ -3101,12 +3101,9 @@ static int __maybe_unused ccs_suspend(struct device *dev)
- 	bool streaming = sensor->streaming;
- 	int rval;
- 
--	rval = pm_runtime_get_sync(dev);
--	if (rval < 0) {
--		pm_runtime_put_noidle(dev);
--
-+	rval = pm_runtime_resume_and_get(dev);
-+	if (rval < 0)
- 		return rval;
--	}
- 
- 	if (sensor->streaming)
- 		ccs_stop_streaming(sensor);
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
