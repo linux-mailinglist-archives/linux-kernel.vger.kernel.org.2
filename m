@@ -2,111 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D731375400
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:44:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 394CB3753FE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:44:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232151AbhEFMpV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:45:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38976 "EHLO mail.kernel.org"
+        id S231514AbhEFMpC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:45:02 -0400
+Received: from mga14.intel.com ([192.55.52.115]:39337 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229777AbhEFMpT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:45:19 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1BF4B613C2;
-        Thu,  6 May 2021 12:44:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620305058;
-        bh=ZYYq1/bAyD5Y4EByZaOxo773L78ziclPTpbCUsIZSSI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=NStFqnvNeAnQkiwPNoohMf/Ty3XfhD8Mgij9OP2lBTP5mbS+Bg5375VtBN2UO0Mzs
-         Sa6wqW5hMm9WIwGKEHCwYJbIvnc9Fz4Dy0jRl9myii3jPs8FoM3NgEiPwOKVtvQxUf
-         mLlrPrXFvxWZ/LN2dVj/oJLjyX79+Yy4yPvyVbd5kk9euc2W4+6KFhpKMSYr3/nNyJ
-         UwQr52DkhzlzTRLVWlEmLNt/GfWRO5sUEgDlQz5oOJsbYH1oSNsgyqg0MeLq7Dj0PH
-         mLzir5HqyuhGiPO8MbO89sTHxI/26n9MjWag26Cv3TO/Vpse/1FfkblHQdtZDtWg7X
-         76QRgtmD6zyNg==
-Date:   Thu, 6 May 2021 13:43:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 1/2] regmap: add regmap_might_sleep()
-Message-ID: <20210506124342.GC4642@sirena.org.uk>
-References: <20210430130645.31562-1-michael@walle.cc>
- <20210430151908.GC5981@sirena.org.uk>
- <df27a6508e9edcd8b56058ac4834fd56@walle.cc>
- <20210430172603.GE5981@sirena.org.uk>
- <128a6d51af1b7c9ed24a5848347c66b9@walle.cc>
+        id S229777AbhEFMpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 08:45:00 -0400
+IronPort-SDR: wX5Gd5BEVO4AIV9P9LiMP6pWXn32Q/FOTQFW8Eg2mvqWlUZmqE17YDP/1zaGi9y0Lc5Gl4aQk0
+ sk/KGlFdv69w==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="198102181"
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="198102181"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 05:44:01 -0700
+IronPort-SDR: OLM6QTvlzuf1+BZDVUO5NgH1Qd5eC2S+EMEpFLH+JX6zstRllxDgrra673sZvqgE7hc5GaiG02
+ 2qe8c57/35mQ==
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="469436772"
+Received: from abaydur-mobl1.ccr.corp.intel.com (HELO [10.249.229.1]) ([10.249.229.1])
+  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 05:43:57 -0700
+Subject: Re: [PATCH v5 00/20] Introduce threaded trace streaming for basic
+ perf record operation
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andi Kleen <ak@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>
+References: <cover.1619781188.git.alexey.v.bayduraev@linux.intel.com>
+ <CAM9d7citW_NGb0vjMM2ytp=Mbq5YNe4GEaWspEkMGf=KAm+ugw@mail.gmail.com>
+From:   "Bayduraev, Alexey V" <alexey.v.bayduraev@linux.intel.com>
+Organization: Intel Corporation
+Message-ID: <9f178dde-751f-9ac9-f5a0-fd1bfba3ca32@linux.intel.com>
+Date:   Thu, 6 May 2021 15:43:55 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uXxzq0nDebZQVNAZ"
-Content-Disposition: inline
-In-Reply-To: <128a6d51af1b7c9ed24a5848347c66b9@walle.cc>
-X-Cookie: If it ain't baroque, don't phiques it.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAM9d7citW_NGb0vjMM2ytp=Mbq5YNe4GEaWspEkMGf=KAm+ugw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---uXxzq0nDebZQVNAZ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 06.05.2021 9:20, Namhyung Kim wrote:
+> Hello,
+> 
+> On Tue, May 4, 2021 at 12:05 AM Alexey Bayduraev
+> <alexey.v.bayduraev@linux.intel.com> wrote:
+>>
+<SNIP>>>
+>> Basic analysis of data directories is provided in perf report mode.
+>> Raw dump and aggregated reports are available for data directories,
+>> still with no memory consumption optimizations.
+> 
+> Do you have an idea how to improve it?
+> 
+> I have to say again that I don't like merely adding more threads to
+> record.  Yeah, parallelizing the perf record is good, but we have to
+> think about the perf report (and others) too.
 
-On Sat, May 01, 2021 at 12:10:16AM +0200, Michael Walle wrote:
-> Am 2021-04-30 19:26, schrieb Mark Brown:
+There is your idea about separating tracking records and process them 
+first, but these changes can be much larger than my patch and I think 
+they looks like independent patch and could be introduced as extension 
+of parallel data loading.
 
-> > But that's a driver for a specific device AFAICT which looks like it's
-> > only got an I2C binding on the MFD so the driver knows that it's for a
-> > device that's on a bus that's going to sleep and doesn't need to infer
-> > anything?  This looks like the common case I'd expect where there's no
-> > variation.
+I also thought and experimented with the intermediate flushing of 
+the ordered queue. This is simple for per-cpu data files (sorted 
+by time), but not clear for arbitrary CPU masks.
 
-> You are right, at the moment this driver only has an I2C binding. But
-> the idea was that this IP block and driver can be reused behind any
-> kind of bridge; I2C, SPI or MMIO. Actually, I had the impression
+I think my patch can be the first step to introduce parallel mode 
+to the perf tool. It just extends perf-record (already used in our 
+vtune tool) and allows to load parallel data in experimental mode. 
+Next patches could optimize and extend parallel data loading.
 
-Is this actually a way people are building hardware though?
+Regards,
+Alexey
 
-> that all you need to do to convert it to MMIO is to replace the
-> "kontron,sl28cpld" compatible with a "syscon" compatible. But it isn't
-> that easy. Anyway, the idea is that you don't need to change anything
-> in the gpio-sl28cpld driver, just change the parent. But if we can't
-> ask the regmap what type it is, then we'll have to modify the
-> gpio-sl28cpld driver and we will have to figure it out by some other
-> means.
-
-Well, you don't need to change anything at all - the driver will work
-perfectly fine if it's flagging up the GPIOs as potentially sleeping
-even if they end up not actually sleeping.
-
-> > If users happen to end up with a map flagged as fast they can work on
-> > the whatever driver uses this stuff and not realise they're breaking
-> > other users of the same driver that end up with slow I/O.  The whole
-> > point of the flag in GPIO is AIUI warnings to help with that case.
-
-> Hm, but as of now, the only thing which makes the gpio-regmap driver
-> slow i/o is the regmap itself.
-
-Surely it's just a case of the device that's creating the gpio regmap
-setting a flag when it instantiates it?  It's just one more thing that
-the parent knows about the device.  This doesn't seem insurmountable.
-
---uXxzq0nDebZQVNAZ
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCT5H0ACgkQJNaLcl1U
-h9C1jgf/fMsa7iuDhVuCYqM7GgShZSTiST2PU/FnbNwb2PTBPf7hOg631X0qGP4m
-eDKkTfJo7fiISjBASO6TWtVUeRu5jEGImhVG6Spr4SdYv5PCry7IcoStNVRO8l2t
-BDT4WzkGdCOL8eb2/UGkaeKV97jQygY91QBdduDKgJ/x5E8+9rMbTfnFBf4Rk1Ye
-39zJiOtabMrmwvFX5riGzjJ0+NNgjeIT32j1yFl76gvnvKNrk0W858TF9KfgTce3
-T3GD1bEpWhpbYIjybPwWxn2fex5Fx0mvYPcMeKSXTwF2RZ1vpnXyEznmla7N4IaO
-oBOxXEeXqMr0DTFUe6km+Dth65wY0Q==
-=mkkW
------END PGP SIGNATURE-----
-
---uXxzq0nDebZQVNAZ--
+> 
+> Thanks,
+> Namhyung
+> 
+> 
+>>
+>> Tested:
+>>
+>> tools/perf/perf record -o prof.data --threads -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data --threads= -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data --threads=cpu -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data --threads=core -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data --threads=socket -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data --threads=numa -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data -C 2,5 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data -C 3,4 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=core -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=numa -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 --compression-level=3 -- matrix.gcc.g.O3
+>> tools/perf/perf record -o prof.data --threads -a
+>> tools/perf/perf record -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+>> tools/perf/perf record --threads -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
+>>
+>> tools/perf/perf report -i prof.data
+>> tools/perf/perf report -i prof.data --call-graph=callee
+>> tools/perf/perf report -i prof.data --stdio --header
+>> tools/perf/perf report -i prof.data -D --header
+>>
+>> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+>> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+>>
+>> ---
+>>
+>> Alexey Bayduraev (20):
+>>   perf record: introduce thread affinity and mmap masks
+>>   perf record: introduce thread specific data array
+>>   perf record: introduce thread local variable
+>>   perf record: stop threads in the end of trace streaming
+>>   perf record: start threads in the beginning of trace streaming
+>>   perf record: introduce data file at mmap buffer object
+>>   perf record: introduce data transferred and compressed stats
+>>   perf record: init data file at mmap buffer object
+>>   tools lib: introduce bitmap_intersects() operation
+>>   perf record: introduce --threads=<spec> command line option
+>>   perf record: document parallel data streaming mode
+>>   perf report: output data file name in raw trace dump
+>>   perf session: move reader structure to the top
+>>   perf session: introduce reader_state in reader object
+>>   perf session: introduce reader objects in session object
+>>   perf session: introduce decompressor into trace reader object
+>>   perf session: move init into reader__init function
+>>   perf session: move map/unmap into reader__mmap function
+>>   perf session: load single file for analysis
+>>   perf session: load data directory files for analysis
+>>
+>>  tools/include/linux/bitmap.h             |   11 +
+>>  tools/lib/api/fd/array.c                 |   17 +
+>>  tools/lib/api/fd/array.h                 |    1 +
+>>  tools/lib/bitmap.c                       |   14 +
+>>  tools/perf/Documentation/perf-record.txt |   30 +
+>>  tools/perf/builtin-inject.c              |    3 +-
+>>  tools/perf/builtin-record.c              | 1066 ++++++++++++++++++++--
+>>  tools/perf/util/evlist.c                 |   16 +
+>>  tools/perf/util/evlist.h                 |    1 +
+>>  tools/perf/util/mmap.c                   |    6 +
+>>  tools/perf/util/mmap.h                   |    6 +
+>>  tools/perf/util/ordered-events.h         |    1 +
+>>  tools/perf/util/record.h                 |    2 +
+>>  tools/perf/util/session.c                |  491 +++++++---
+>>  tools/perf/util/session.h                |    5 +
+>>  tools/perf/util/tool.h                   |    3 +-
+>>  16 files changed, 1474 insertions(+), 199 deletions(-)
+>>
+>> --
+>> 2.19.0
+>>
