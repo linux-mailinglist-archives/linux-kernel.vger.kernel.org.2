@@ -2,102 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11E78375082
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:00:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A42B937506A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:55:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233663AbhEFIBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 04:01:25 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17471 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233565AbhEFIBY (ORCPT
+        id S233575AbhEFH4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:56:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231596AbhEFH4S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 04:01:24 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FbQt61WgMzkWpZ;
-        Thu,  6 May 2021 15:57:50 +0800 (CST)
-Received: from huawei.com (10.69.192.56) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 6 May 2021
- 16:00:18 +0800
-From:   Luo Jiaxing <luojiaxing@huawei.com>
-To:     <pmladek@suse.com>, <sergey.senozhatsky@gmail.com>,
-        <rostedt@goodmis.org>, <john.ogness@linutronix.de>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
-        <luojiaxing@huawei.com>, <bobo.shaobowang@huawei.com>
-Subject: [PATCH] printk: stop spining waiter when console resume to flush prb
-Date:   Thu, 6 May 2021 16:00:26 +0800
-Message-ID: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
-X-Mailer: git-send-email 2.7.4
+        Thu, 6 May 2021 03:56:18 -0400
+Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FC3C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:55:21 -0700 (PDT)
+Received: by mail-pg1-x536.google.com with SMTP id i14so4164545pgk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:55:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ESVV/fMaAxNkE4WvbW0fxbJidb4bTYMGXoio537XTy8=;
+        b=CBl6iUCMWBc1+XteGpbJ9leQZsxPoMSOwx/iAOt5hsVC8kF9j8ypdYuGO1NLGxRqgf
+         3Ykk1ylqzolhm9eRIbT68h92NVteUANOM1QfT0FYefqAV18aaXzlczPZ45hztQHrFb+a
+         gBbpnbW6Y49Lpts8ib15JwNOaHgWZoc9wZTZ9cdz0IFMH5Nu5zrJTlQBNsZCjHmTVZyn
+         tl2Y4l3ES+7g3boCezH0i/M934Qc7jBnF/aHXKTo/18PFCu+BbVtiuo076Nt9W6eNOXA
+         sg9YqOHJ7wRmVywkTdw4YdnzYb/EOOmYxhTQKtUnx61935Ac57esFpzZeAspbfmKjgeR
+         HIgg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ESVV/fMaAxNkE4WvbW0fxbJidb4bTYMGXoio537XTy8=;
+        b=IASYsQBkO45YRGTzYHODRhmUMjjjvlkGU5P7gVw6s2gFRnKIuZNzuEoV/r5wztg9US
+         92cw3pnA1v+ZASp3/uRxE5ZXHjEWJFYT4Sj/RN73a2KAkzubFzxcS3Acbzrn1EOFfvgm
+         JqIcqCCLglHo3rbLDcibtkWrpRT1PQO45AMtE2khcSbKS6X9BXF2SkRNE4qaH7ukHu70
+         OGCUE0Q2J3LqE4gW5nTkEGtQfr77J96c9sEgB59kj4iULUdI7c97UsqGG0GaRH+FWrP+
+         XHsdSi9Q9rmk5lFBM0tVLEMQaYuB96zyfjHdOn8NJTk4db/dKc3//56nqi9NL+w1CTIA
+         bgYA==
+X-Gm-Message-State: AOAM5323PHh2q+3nG4rh3gKygQlCoWCGXMgbZYygBMfhus9KYdOu/NrV
+        eM5LLuryIyZYwDQTahHabJM8WC0VpJMkneRebbN1lQ==
+X-Google-Smtp-Source: ABdhPJz9+BbLcod0C8x9IKaB+7PNgAIm6oZ/AvRXYy2PJxruNemP5ifp+mZctZppylusL3o8E5DacbRjvD7abeeEMnE=
+X-Received: by 2002:a63:9d4e:: with SMTP id i75mr2924857pgd.443.1620287720183;
+ Thu, 06 May 2021 00:55:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.56]
-X-CFilter-Loop: Reflected
+References: <1620234501-30461-1-git-send-email-bbhatt@codeaurora.org> <1620234501-30461-6-git-send-email-bbhatt@codeaurora.org>
+In-Reply-To: <1620234501-30461-6-git-send-email-bbhatt@codeaurora.org>
+From:   Loic Poulain <loic.poulain@linaro.org>
+Date:   Thu, 6 May 2021 10:03:53 +0200
+Message-ID: <CAMZdPi8_MKyF8imaOc+9MGz4ifOKX=UMA1CzHe3aPuXC2BEoOg@mail.gmail.com>
+Subject: Re: [PATCH v3 5/6] bus: mhi: pci_generic: Set register access length
+ for MHI driver
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
+Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        Hemant Kumar <hemantk@codeaurora.org>,
+        Jeffrey Hugo <jhugo@codeaurora.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
+        ath11k@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some threads still call printk() for printing when resume_console() is
-being executed. In practice, the printk() is executed for a period of time
-and then returned. The duration is determined by the number of prints
-cached in the prb during the suspend/resume process. At the same time,
-resume_console() returns quickly.
+On Wed, 5 May 2021 at 19:08, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
+>
+> MHI driver requires register space length to add range checks and
+> prevent memory region accesses outside of that for MMIO space.
+> Set it from the PCI generic controller driver before registering
+> the MHI controller.
+>
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-Base on owner/waiter machanism, the frist one who fail to lock console will
-become waiter, and start spining. When current owner finish print one
-informance, if a waiter is waitting, owner will give up and let waiter
-become a new owner. New owner need to flush the whole prb unitl prb empty
-or another new waiter come and take the job from him.
-
-So the first waiter after resume_console() will take seconds to help to
-flush prb, but driver which call printk() may be bothered by this. New
-a flag to mark resume flushing prb. When the console resume, before the
-prb is empty, stop to set a new waiter temporarily.
-
-Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
----
- kernel/printk/printk.c | 9 ++++++++-
- 1 file changed, 8 insertions(+), 1 deletion(-)
-
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 575a34b..2c680a5 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -287,6 +287,9 @@ EXPORT_SYMBOL(console_set_on_cmdline);
- /* Flag: console code may call schedule() */
- static int console_may_schedule;
- 
-+/* Flags: console flushing prb when resume */
-+static atomic_t console_resume_flush_prb = ATOMIC_INIT(0);
-+
- enum con_msg_format_flags {
- 	MSG_FORMAT_DEFAULT	= 0,
- 	MSG_FORMAT_SYSLOG	= (1 << 0),
-@@ -1781,7 +1784,8 @@ static int console_trylock_spinning(void)
- 	raw_spin_lock(&console_owner_lock);
- 	owner = READ_ONCE(console_owner);
- 	waiter = READ_ONCE(console_waiter);
--	if (!waiter && owner && owner != current) {
-+	if (!waiter && owner && owner != current &&
-+	    !atomic_read(&console_resume_flush_prb)) {
- 		WRITE_ONCE(console_waiter, true);
- 		spin = true;
- 	}
-@@ -2355,6 +2359,7 @@ void resume_console(void)
- 	if (!console_suspend_enabled)
- 		return;
- 	down_console_sem();
-+	atomic_set(&console_resume_flush_prb, 1);
- 	console_suspended = 0;
- 	console_unlock();
- }
-@@ -2592,6 +2597,8 @@ void console_unlock(void)
- 	raw_spin_unlock(&logbuf_lock);
- 
- 	up_console_sem();
-+	if (atomic_read(&console_resume_flush_prb))
-+		atomic_set(&console_resume_flush_prb, 0);
- 
- 	/*
- 	 * Someone could have filled up the buffer again, so re-check if there's
--- 
-2.7.4
-
+Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
