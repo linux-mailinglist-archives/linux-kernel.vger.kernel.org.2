@@ -2,290 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D6C8375D10
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 00:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A749375D14
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 00:08:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230413AbhEFWGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 18:06:35 -0400
-Received: from mga14.intel.com ([192.55.52.115]:25401 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230149AbhEFWGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 18:06:19 -0400
-IronPort-SDR: aVvx8E7eLZcNY2kpyYVI9cjFAH3s1B8suKPVmc8z36twu9Sru51jqtCPpJH8q0ulLsXDPWk8Vn
- lo0AZI0zHw7Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="198233911"
-X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="198233911"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 15:05:18 -0700
-IronPort-SDR: E3B3lZ5t9BIU7x8JT3XoIkdfTP2uDRLb1wtuJN38MAl21fRXDH3sv+Vcf7oDpbQ+XVVkx4ab22
- JaNUBAXX/BSw==
-X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="434596777"
-Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.251.158.199]) ([10.251.158.199])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 15:05:16 -0700
-Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
- signals for shadow stack)
-From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
- <20210427204315.24153-26-yu-cheng.yu@intel.com>
- <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
- <8fd86049-930d-c9b7-379c-56c02a12cd77@intel.com>
- <CALCETrX9z-73wpy-SCy8NE1XfQgXAN0mCmjv0jXDDomMyS7TKg@mail.gmail.com>
- <a7c332c8-9368-40b1-e221-ec921f7db948@intel.com>
- <5fc5dea4-0705-2aad-cf8f-7ff78a5e518a@intel.com>
-Message-ID: <bf16ab7e-bf27-68eb-efc9-c0468fb1c651@intel.com>
-Date:   Thu, 6 May 2021 15:05:15 -0700
+        id S230380AbhEFWJj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 18:09:39 -0400
+Received: from mail-eopbgr70110.outbound.protection.outlook.com ([40.107.7.110]:33603
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230265AbhEFWJi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 18:09:38 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RUEz9FpbOp40DOeBEci+pHanGga2Mix5QK6leduj7XLoqpezRfyTZPVcGWf0OBlkWvRcfiNcg7ZPV7VoT/OFkaotcMO7QwpbeFsofbpsDwfSqMsClH1ATzmeIEvxiehY3Hgr9zkK333xxMwICvVJgKvvFSFo/DyUziDuwyFqJ6km+WJlyzpnpJ9JqBoMvrAZZa2dKNN+F8sdXWQGmnvpF8Kl37TW1pV+2Ztp7X8Cbt81IKkeOlCOFjE8YWxtLTqzp/Eem7mC9XEtz0M5Bf9J0biktBkWRlbQOFAPsYvp3P1zzxT/Lud9OAXRp2DH0GWCMR0hy22cET1lWwWET3IWCQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LpjiEkM65R2Fc6IzPpadEcK9QHEWPzEc3vdEkYvRZik=;
+ b=cBDL5sLIQ4haw8kg0T4foVvsB3P7ofakEZnuqqqrJjzzsY2qOo/5wrKgjqAXpZUmcaK04WKUr847GfmpV6txTwhqEP21u3l5aJtDzkIWq9/a2K9+RrWjW3wONbeOUjN+C15DZWXdeV8iXF4nOlxlGodfhd5Z8Mto3UU0NpF7HK9Iz4O4p4CRygmLWLDHrxMPhHAxYhrY2Dtx2PxG2Ep1OZ+wCnFh+tT3gclHvREjku7uHxJm3OMbB8dnxjyNTdyYYFrt65yiu4VhUWpOC/ZZ/4GvIOv98NiHr9iJcfIt/VQ8sOihNUNprsvg8f3b2P8ynU7SMrtQqGVwdPjMEAt46Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=axentia.se; dmarc=pass action=none header.from=axentia.se;
+ dkim=pass header.d=axentia.se; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=axentia.se;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=LpjiEkM65R2Fc6IzPpadEcK9QHEWPzEc3vdEkYvRZik=;
+ b=aFy+uatW8CqVxB0do92YeVRPXNLzR+1Zf9x3F76qpdUBQxMPW5jp1X+o1fUI5bm1Uav0vuZS5ginil5d5S7JX8os3huDeh9eU98IvMk9dx9UTCyUUW6jJDiJgtEabFdxRY1WnFAVn18x8j6ojcRh2HxS7jIU7ALc5S+tOMoJHWk=
+Authentication-Results: jms.id.au; dkim=none (message not signed)
+ header.d=none;jms.id.au; dmarc=none action=none header.from=axentia.se;
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com (2603:10a6:10:eb::29)
+ by DB7PR02MB4602.eurprd02.prod.outlook.com (2603:10a6:10:66::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.35; Thu, 6 May
+ 2021 22:08:35 +0000
+Received: from DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::d47d:ca8c:4fe6:3908]) by DB8PR02MB5482.eurprd02.prod.outlook.com
+ ([fe80::d47d:ca8c:4fe6:3908%3]) with mapi id 15.20.4108.027; Thu, 6 May 2021
+ 22:08:35 +0000
+Subject: Re: [PATCH] i2c: mux: pca954x: Support multiple devices on a single
+ reset line
+To:     Eddie James <eajames@linux.ibm.com>, linux-i2c@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, joel@jms.id.au
+References: <20210505215918.45720-1-eajames@linux.ibm.com>
+From:   Peter Rosin <peda@axentia.se>
+Organization: Axentia Technologies AB
+Message-ID: <997d20b4-457c-17ba-e9bf-193132768afa@axentia.se>
+Date:   Fri, 7 May 2021 00:08:32 +0200
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <5fc5dea4-0705-2aad-cf8f-7ff78a5e518a@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+ Thunderbird/78.9.1
+In-Reply-To: <20210505215918.45720-1-eajames@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [85.229.94.233]
+X-ClientProxiedBy: HE1PR06CA0130.eurprd06.prod.outlook.com
+ (2603:10a6:7:16::17) To DB8PR02MB5482.eurprd02.prod.outlook.com
+ (2603:10a6:10:eb::29)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.13.3] (85.229.94.233) by HE1PR06CA0130.eurprd06.prod.outlook.com (2603:10a6:7:16::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 6 May 2021 22:08:35 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 7149f2fc-5095-46b9-98f6-08d910db7e62
+X-MS-TrafficTypeDiagnostic: DB7PR02MB4602:
+X-Microsoft-Antispam-PRVS: <DB7PR02MB46029DA972A3E521EB3FBEC5BC589@DB7PR02MB4602.eurprd02.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: RPjhSSbarMN7kQQ/1btiNn3+BbzHSAgPvxwjJueR3De0Y2Q3eBUp9RiRogIkxAc8mMOjxIPKmvHYeunKtd5g0H3gZFjscZ038mkBwsoTygpQ+Tsa7jDIQQNHL2lVUm4jkTz0yCi4ez6hGnAc8lVVB+38A36VYQf+07MvwTrAK+PEq62UTzoipNNP9alIYr5tgTMvYGvmWcVdofb+f/syiawIPKahtt69BGaG6GR17BbeNyyndurNIQCZFqlAyz2RZhFnzz+u/Due9GBeC7uYkaLNgArc1KP3jC+6GTnr2JsZd+KlwVo6y+Ta2oB852N8EMHpdI+abF1X/ChYiMXC9D0iCpayyKdKg7T2bRSpKC9uNPszk9vxwkPbx6oGui4nELQrNNw6w11fyHHJ1t0YunTBYaxqlt8gaf+jj4uSKTWwOV1t6No5yVq5KsbzM8SZclYlOH8WnHsWWD9RnJtq0j72f+HXbNzYcFblthDKJBMyeTzlUneAygWJXg7o/23/eJ/6GC+PdDTHjIADnqaizptaAnyJZXoikeDeCsoEdc+6gtz3GhjWm+7FDDJf3elXCwx5IkFp4+n1uv5iPKu2VgjvCZUMf6s0WcIA49QUa9xfEGjusdtCNY1LeBU4HdptYlVFPUUUWFI4BxptBGbUoFvZ9TDlyBR5uhh4RrPUBH5fz1dsbOAE2S59Yry02Lfh
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB8PR02MB5482.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(136003)(396003)(366004)(39830400003)(346002)(6666004)(26005)(5660300002)(31696002)(83380400001)(2906002)(38100700002)(53546011)(36756003)(86362001)(31686004)(16576012)(316002)(66476007)(8676002)(66556008)(4326008)(956004)(186003)(66946007)(2616005)(36916002)(6486002)(478600001)(8936002)(16526019)(45980500001)(43740500002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?QStPVWppLzhnTHdacGNLMGt3WWlQYWs4a21vMmRsbTFHY0FxWWpjcVBJbTJD?=
+ =?utf-8?B?UmZ4eXdHb2p4Nkk2Z1ZTMkhjZm5rWi9BajR3VFIzVnZDNFZQTHMza05MTmg0?=
+ =?utf-8?B?NWw4L0M0RmJ2WjNyblljNWMyMXJXWEtvbkc4YUVaZWRqcWpqN3FtbnVqb004?=
+ =?utf-8?B?aFRGbzlicVlnR2NTTWFXay9nMEpwdFNoSU04VFFMTjl1NDZna1UxMGlLWVc1?=
+ =?utf-8?B?UDIxVFVMdkxuQ096R2VKbG5JSjdLT1NLQ3dld3E3R2w0L212OWxOckxMck9v?=
+ =?utf-8?B?NUl0WFZrTFBYVEdzUGFPRnRpUVhEMndJcWl3UDdvYXlVRjdGUnI4NFpQaFpD?=
+ =?utf-8?B?aGRhdWlNKzVMNXMyYUdmVDBXZEZEeUJhTWlxT0hFaVMwZzlmQ2QzRlFoQ1Ft?=
+ =?utf-8?B?SGlPeEQvWkZ0dERKV1FvYXkrOHhtZTd5OTR4dzArWStCVEpFWjBNRkc1bXUy?=
+ =?utf-8?B?N3BUcDc0L2tnSElyVmZYRmRuRWE2U29Lb0ZRSFRYQmgzcCtDYTl1eC83Vkdy?=
+ =?utf-8?B?Q054R2FmdFZPU2NSeWU3K1dwVWt3NG1kR3l5enRUeWU1ZW1SL0lVaGRTMVNI?=
+ =?utf-8?B?dVM0SVhIcWMxWklGaGlLMGd4TzV3SVNkNFNxc0I3L1lsNkRmR1B1VVgySDBC?=
+ =?utf-8?B?UVh5RlFnenhuTGZUWWx4RVBLWjBMNmZONUNEUkNTVzdrQlBydHNGTCtCMDB6?=
+ =?utf-8?B?NU4xdDRCalZidFZLSm1GZW1GZDhBSVA0VmFlVE9kWFBCSEVUYnhrOFcydHNq?=
+ =?utf-8?B?aGRpT01xeWU3VWZFWDJ3MThVNjFiUWY1b1ZybzBBbG5EQUYzV3M5SEFEanVi?=
+ =?utf-8?B?QXFsS1l0MCtYMGtIUk9RbHdjS3g1NVlIZGVpMFd1R3VGY28xSG1BV0ZTS212?=
+ =?utf-8?B?N3F2TkpEMHF4S1R4ZlFJSUpNL2VXZXBlK2FKVlRtaHNyMFdBQm1NZ1JIU3h1?=
+ =?utf-8?B?a0hYNDBYdzZRYTZHMjRYUzRMNmhNaXRHTm4vcFVTeURqMHZpTkhlY3gxaThX?=
+ =?utf-8?B?QzRtU1RGQkNRYWphNFVxSjhtM3ZtRWlUcTkxTEgvL1czODJHR2dITVp0ZG5j?=
+ =?utf-8?B?YWxtelF2R0E0a2gzcEdPbUlxT0xvTGRoeDdlSWdjcFFXU05CWWVUQk92NFlH?=
+ =?utf-8?B?QVJvNU1BeXBXRHFSNHFZUHZKWFh1ZjJkNERjSjdrWmdZTXZlSzNuTlJlQkpL?=
+ =?utf-8?B?c0dCTitYMTB5K0U4MVFQc0ErMWZybjFJZ3FGN2lTWFpySERpQWFuS0o4OU1w?=
+ =?utf-8?B?YW94TzlQMTk3ZjNKSnpjeUZ0eFJoUGdpTU14VE9lUzB0b24zNitjZ3NJZGpo?=
+ =?utf-8?B?K2ErNjhWWlRPekRTUGQ0MmN1QWRheklXUEZiWHBpbFlJc1psMVh6Q3djNVFm?=
+ =?utf-8?B?MU5XNEtxcDhNY3ZveWtPR1VnbWczYks3UFFpd2VYVDAxSHR0ekE2Zk11THhB?=
+ =?utf-8?B?NzloLy9lOFliN0NUVGxGMHExWnd0NnJvMk8wMm1SaHJSOUJvR0MzQWtpbUZO?=
+ =?utf-8?B?YWpWeXJkWWJnRDNCdSsreHdsRzl6RnJDYjVKZXpjUkk4Y1hIZU1RWXoxWm1L?=
+ =?utf-8?B?N3hwMERMOG5RWUlPZlNNV0lpbDdoV3dpaG9rRlhncFUxTjR4SmpqU1M2ODNZ?=
+ =?utf-8?B?SGptbjl3QVBpaDJsS205U1d1RlNaT2VSNmYvKzBCRG8xbjVuM0wrVVZwY20w?=
+ =?utf-8?B?a1B1Ry9zS00xbnlEYS9Za3I2TzEvVldvWmlUbDdwSGQ3dkxyOHdVbkFWMFVZ?=
+ =?utf-8?Q?jucBL3iZn425onD4wB7clmhmkk0Aime6HCMlYIU?=
+X-OriginatorOrg: axentia.se
+X-MS-Exchange-CrossTenant-Network-Message-Id: 7149f2fc-5095-46b9-98f6-08d910db7e62
+X-MS-Exchange-CrossTenant-AuthSource: DB8PR02MB5482.eurprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 22:08:35.5098
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4ee68585-03e1-4785-942a-df9c1871a234
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hpL7k0FlaffxjS2KTISRs4/bktqEbij7BLec2/cRF8wwG+CTku4MNRE1AOUSN7/G
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR02MB4602
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/4/2021 1:49 PM, Yu, Yu-cheng wrote:
-> On 4/30/2021 11:32 AM, Yu, Yu-cheng wrote:
->> On 4/30/2021 10:47 AM, Andy Lutomirski wrote:
->>> On Fri, Apr 30, 2021 at 10:00 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> 
->>> wrote:
->>>>
->>>> On 4/28/2021 4:03 PM, Andy Lutomirski wrote:
->>>>> On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com> 
->>>>> wrote:
->>>>>>
->>>>>> When shadow stack is enabled, a task's shadow stack states must be 
->>>>>> saved
->>>>>> along with the signal context and later restored in sigreturn. 
->>>>>> However,
->>>>>> currently there is no systematic facility for extending a signal 
->>>>>> context.
->>>>>> There is some space left in the ucontext, but changing ucontext is 
->>>>>> likely
->>>>>> to create compatibility issues and there is not enough space for 
->>>>>> further
->>>>>> extensions.
->>>>>>
->>>>>> Introduce a signal context extension struct 'sc_ext', which is 
->>>>>> used to save
->>>>>> shadow stack restore token address.  The extension is located 
->>>>>> above the fpu
->>>>>> states, plus alignment.  The struct can be extended (such as the 
->>>>>> ibt's
->>>>>> wait_endbr status to be introduced later), and sc_ext.total_size 
->>>>>> field
->>>>>> keeps track of total size.
->>>>>
->>>>> I still don't like this.
->>>>>
+Hi!
 
-[...]
+On 2021-05-05 23:59, Eddie James wrote:
+> Some systems connect several PCA954x devices to a single reset GPIO. For
+> these devices to get out of reset and probe successfully, only the first
+> device probed should change the GPIO. Add this functionality by checking
+> for EBUSY when getting the GPIO fails. Then, retry getting the GPIO with
+> the non-exclusive flag and wait for the reset line to drop. This prevents
+> the later probes from proceding while the device is still reset.
 
->>>>>
->>>>> That's where we are right now upstream.  The kernel has a parser for
->>>>> the FPU state that is bugs piled upon bugs and is going to have to be
->>>>> rewritten sometime soon.  On top of all this, we have two upcoming
->>>>> features, both of which require different kinds of extensions:
->>>>>
->>>>> 1. AVX-512.  (Yeah, you thought this story was over a few years ago,
->>>>> but no.  And AMX makes it worse.)  To make a long story short, we
->>>>> promised user code many years ago that a signal frame fit in 2048
->>>>> bytes with some room to spare.  With AVX-512 this is false.  With AMX
->>>>> it's so wrong it's not even funny.  The only way out of the mess
->>>>> anyone has come up with involves making the length of the FPU state
->>>>> vary depending on which features are INIT, i.e. making it more compact
->>>>> than "compact" mode is.  This has a side effect: it's no longer
->>>>> possible to modify the state in place, because enabling a feature with
->>>>> no space allocated will make the structure bigger, and the stack won't
->>>>> have room.  Fortunately, one can relocate the entire FPU state, update
->>>>> the pointer in mcontext, and the kernel will happily follow the
->>>>> pointer.  So new code on a new kernel using a super-compact state
->>>>> could expand the state by allocating new memory (on the heap? very
->>>>> awkwardly on the stack?) and changing the pointer.  For all we know,
->>>>> some code already fiddles with the pointer.  This is great, except
->>>>> that your patch sticks more data at the end of the FPU block that no
->>>>> one is expecting, and your sigreturn code follows that pointer, and
->>>>> will read off into lala land.
->>>>>
->>>>
->>>> Then, what about we don't do that at all.  Is it possible from now 
->>>> on we
->>>> don't stick more data at the end, and take the relocating-fpu approach?
->>>>
->>>>> 2. CET.  CET wants us to find a few more bytes somewhere, and those
->>>>> bytes logically belong in ucontext, and here we are.
->>>>>
->>>>
->>>> Fortunately, we can spare CET the need of ucontext extension.  When the
->>>> kernel handles sigreturn, the user-mode shadow stack pointer is 
->>>> right at
->>>> the restore token.  There is no need to put that in ucontext.
->>>
->>> That seems entirely reasonable.  This might also avoid needing to
->>> teach CRIU about CET at all.
->>>
->>>>
->>>> However, the WAIT_ENDBR status needs to be saved/restored for signals.
->>>> Since IBT is now dependent on shadow stack, we can use a spare bit of
->>>> the shadow stack restore token for that.
->>>
->>> That seems like unnecessary ABI coupling.  We have plenty of bits in
->>> uc_flags, and we have an entire reserved word in sigcontext.  How
->>> about just sticking this bit in one of those places?
->>
->> Yes, I will make it UC_WAIT_ENDBR.
-> 
-> Personally, I think an explicit flag is cleaner than using a reserved 
-> word somewhere.  However, there is a small issue: ia32 has no uc_flags.
-> 
-> This series can support legacy apps up to now.  But, instead of creating 
-> too many special cases, perhaps we should drop CET support of ia32?
-> 
-> Thoughts?
-> 
+(nit: proceeding)
 
-Once we have UC_WAIT_ENDBR, IBT signal handling becomes quite simple. 
-Like the following:
+The patch assumes that all muxes with interconnected resets are only
+ever reset "in symphony". But there is no guarantee anywhere that this
+actually holds.
 
-diff --git a/arch/x86/include/uapi/asm/ucontext.h 
-b/arch/x86/include/uapi/asm/ucontext.h
-index 5657b7a49f03..96375d609e11 100644
---- a/arch/x86/include/uapi/asm/ucontext.h
-+++ b/arch/x86/include/uapi/asm/ucontext.h
-@@ -49,6 +49,11 @@
-   */
-  #define UC_SIGCONTEXT_SS	0x2
-  #define UC_STRICT_RESTORE_SS	0x4
-+
-+/*
-+ * UC_WAIT_ENDBR indicates the task is in wait-ENDBR status.
-+ */
-+#define UC_WAIT_ENDBR		0x08
-  #endif
+So, I don't see how this can be safe. Sure, it may very well work in the
+majority of cases, but it seems very dangerous. If one instance resets
+muxes controlled by other instances, any cached value is destroyed in
+those instances and anything can happen. Sure, if you have HW like this,
+then you have what you have. But I don't see any good way to handle
+this case in an elegant way. If this scheme is allowed the dangers of
+relying on it at minimum needs to be documented.
 
-  #include <asm-generic/ucontext.h>
-diff --git a/arch/x86/kernel/ibt.c b/arch/x86/kernel/ibt.c
-index d2563dd4759f..da804314ddc4 100644
---- a/arch/x86/kernel/ibt.c
-+++ b/arch/x86/kernel/ibt.c
-@@ -66,3 +66,32 @@ void ibt_disable(void)
-  	ibt_set_clear_msr_bits(0, CET_ENDBR_EN);
-  	current->thread.cet.ibt = 0;
-  }
-+
-+int ibt_get_clear_wait_endbr(void)
-+{
-+	u64 msr_val = 0;
-+
-+	if (!current->thread.cet.ibt)
-+		return 0;
-+
-+	fpregs_lock();
-+
-+	if (test_thread_flag(TIF_NEED_FPU_LOAD))
-+		__fpregs_load_activate();
-+
-+	if (!rdmsrl_safe(MSR_IA32_U_CET, &msr_val))
-+		wrmsrl(MSR_IA32_U_CET, msr_val & ~CET_WAIT_ENDBR);
-+
-+	fpregs_unlock();
-+
-+	return msr_val & CET_WAIT_ENDBR;
-+}
-+
-+int ibt_set_wait_endbr(void)
-+{
-+	if (!current->thread.cet.ibt)
-+		return 0;
-+
-+
-+	return ibt_set_clear_msr_bits(CET_WAIT_ENDBR, 0);
-+}
-diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
-index 66b662e57e19..5afd15419006 100644
---- a/arch/x86/kernel/signal.c
-+++ b/arch/x86/kernel/signal.c
-@@ -46,6 +46,7 @@
-  #include <asm/syscall.h>
-  #include <asm/sigframe.h>
-  #include <asm/signal.h>
-+#include <asm/cet.h>
+And what if the second instance reads the gpio just a few ns after the
+reset is released? The first instance waits for 1us before proceeding
+to give the chip some time to recover from the reset, but that respite
+may be lost to other instances.
 
-  #ifdef CONFIG_X86_64
-  /*
-@@ -134,6 +135,9 @@ static int restore_sigcontext(struct pt_regs *regs,
-  	 */
-  	if (unlikely(!(uc_flags & UC_STRICT_RESTORE_SS) && 
-user_64bit_mode(regs)))
-  		force_valid_ss(regs);
-+
-+	if (uc_flags & UC_WAIT_ENDBR)
-+		ibt_set_wait_endbr();
-  #endif
+What if the first instance does the reset but then fails the probe later,
+possibly because the chip isn't there, but then other instances manages
+to time their probe just so that the gpio is busy at the right point,
+and then proceeds without holding a reference to the gpio. Then the first
+instance also lets go of the gpio and you end up with a bunch of instances
+relying on a pin that noone holds a reference to. Or, yet another instance
+enters the picture and finds the gpio free and pulls a reset behind the
+back of the intermediate instances which have already proceeded.
 
-  	return fpu__restore_sig((void __user *)sc.fpstate,
-@@ -433,6 +437,9 @@ static unsigned long frame_uc_flags(struct pt_regs 
-*regs)
-  	if (likely(user_64bit_mode(regs)))
-  		flags |= UC_STRICT_RESTORE_SS;
+Or am I reading something wrong?
 
-+	if (ibt_get_clear_wait_endbr())
-+		flags |= UC_WAIT_ENDBR;
-+
-  	return flags;
-  }
+Cheers,
+Peter
 
-
-However, this cannot handle ia32 with no SA_SIGINFO.  For that, can we 
-create a synthetic token on the shadow stack?
-
-- The token points to itself with reserved bit[1] set, and cannot be 
-used for RSTORSSP.
-- The token only exists for ia32 with no SA_SIGINFO *AND* when the task 
-is in wait-endbr.
-
-The signal shadow stack will look like this:
-
---> ssp before signal
-     synthetic IBT token (for ia32 no SA_SIGINFO)
-     shadow stack restore token
-     sigreturn address
-
-The synthetic token is not valid in other situations.
-How is that?
-
-Thanks,
-Yu-cheng
