@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88C00375888
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D0F537588B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:35:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235960AbhEFQg0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:36:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35018 "EHLO mail.kernel.org"
+        id S236005AbhEFQg3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:36:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35040 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235248AbhEFQgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S235793AbhEFQgZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 May 2021 12:36:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 1910161107;
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8D12C6113D;
         Thu,  6 May 2021 16:35:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=k20201202; t=1620318927;
-        bh=huJtbCV1Gi0bWntZkvHCoREaR8vwHWIMpnUVhx07qoo=;
+        bh=BMF+/cwRTuDiNf22Ih7rCcmsfWG+yJgPZFWrdXoEx6c=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=CsXiaGbxKx/vuxzbudC1ge1gdvG4hCoKpnGoTm726Nf/IU0LZQ2GLj6tEFUq+cQ4E
-         eDbww85wlWvPKqM4h3ouF16JWEb2LXH+1u5Rr1NdTyhw/fQH2kNYdcALrFHpPX6dhU
-         kADEGjroJmwrQeE3TXlTJXDhgU6rvNr9sXE5jykGDcf2UosEsimszm5bM9YYPXgGQQ
-         B8TwQGEkggjbk1R6SbVUEh9YX34eWG+mMXuvu2HDCYho8Vzj9U1l0CzIRyieQtZx4a
-         VPwS7xvjK/REPfdDl2nAk+ThyAgQltl2LxksJ7eJREh1GXBSrQN5O+FRYbADGBX4Li
-         d5XAwzrrb0Maw==
+        b=n+U4SVY4iBOBmPu8oDh1jERM8X0iXCxvnHTn08Sse6w7keaCvssmHqBRFCBzP20hW
+         ESKnIO6QnuLQ69E/D4Xcdy7yANwuGbaLxDywxnxYk5yNP+vqhZl2Vb6O8pbNXWYkgX
+         8i6vp2MjO+VdgOhoYPxHBa34yvKHBs7Zbi8dSh+QGzdobzFXc6tEWK7AwjJv4pSWdx
+         zzkP9IlOaq5mlMrL3wgQfPQgyPpVn/9qHX7PSFA/+xmOnN1s9pIPUEZyVmHcwYUkxr
+         Tv0me1z+zADY77hbFqHjg3tH3R/eQbpVaBwDVoOgeBCAmXjuPTeZr3kXW9+K2a48Fe
+         n3EdgQoD/K7Sw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 03E8D60A0C;
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8819A60A0C;
         Thu,  6 May 2021 16:35:27 +0000 (UTC)
-Subject: Re: [GIT PULL] Documentation fixes for 5.13
+Subject: Re: [GIT PULL] RISC-V Patches for the 5.13 Merge Window, Part 1
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87pmy4khx5.fsf@meer.lwn.net>
-References: <87pmy4khx5.fsf@meer.lwn.net>
+In-Reply-To: <mhng-723be372-8df5-44b9-9e4f-def2eb929f8e@palmerdabbelt-glaptop>
+References: <mhng-723be372-8df5-44b9-9e4f-def2eb929f8e@palmerdabbelt-glaptop>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87pmy4khx5.fsf@meer.lwn.net>
-X-PR-Tracked-Remote: git://git.lwn.net/linux.git tags/docs-5.13-2
-X-PR-Tracked-Commit-Id: 7fc4607899e87259bb751ccdbe53628aa467ec22
+X-PR-Tracked-Message-Id: <mhng-723be372-8df5-44b9-9e4f-def2eb929f8e@palmerdabbelt-glaptop>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.13-mw0
+X-PR-Tracked-Commit-Id: f54c7b5898d31eda3d6608da13b55c0466ba49fe
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a3f53e8adfda814730c341ee39ce015a0abf69aa
-Message-Id: <162031892695.29346.1585570848371067971.pr-tracker-bot@kernel.org>
-Date:   Thu, 06 May 2021 16:35:26 +0000
-To:     Jonathan Corbet <corbet@lwn.net>
+X-PR-Merge-Commit-Id: 939b7cbc00906b02c6eae6a380ad6c24c7a1e043
+Message-Id: <162031892755.29346.4410305055923494242.pr-tracker-bot@kernel.org>
+Date:   Thu, 06 May 2021 16:35:27 +0000
+To:     Palmer Dabbelt <palmer@dabbelt.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 05 May 2021 15:08:22 -0600:
+The pull request you sent on Wed, 05 May 2021 22:51:36 -0700 (PDT):
 
-> git://git.lwn.net/linux.git tags/docs-5.13-2
+> git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.13-mw0
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a3f53e8adfda814730c341ee39ce015a0abf69aa
+https://git.kernel.org/torvalds/c/939b7cbc00906b02c6eae6a380ad6c24c7a1e043
 
 Thank you!
 
