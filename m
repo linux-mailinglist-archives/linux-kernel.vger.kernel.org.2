@@ -2,106 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF042374D74
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 21D89374D7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:22:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231420AbhEFCWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:22:51 -0400
-Received: from mail.loongson.cn ([114.242.206.163]:59352 "EHLO loongson.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229872AbhEFCWu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:22:50 -0400
-Received: from [10.130.0.77] (unknown [113.200.148.30])
-        by mail.loongson.cn (Coremail) with SMTP id AQAAf9AxLcizUpNgEo0SAA--.7343S3;
-        Thu, 06 May 2021 10:21:39 +0800 (CST)
-Subject: Re: [PATCH] MIPS: Loongson64: Fix build error 'secondary_kexec_args'
- undeclared under !SMP
-To:     Youling Tang <tangyouling@loongson.cn>,
-        Huacai Chen <chenhuacai@kernel.org>,
-        Jiaxun Yang <jiaxun.yang@flygoat.com>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
-References: <1620266570-21585-1-git-send-email-tangyouling@loongson.cn>
-Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Randy Dunlap <rdunlap@infradead.org>
-From:   Jinyang He <hejinyang@loongson.cn>
-Message-ID: <c3d635ee-2478-c786-59fe-f630e4980a77@loongson.cn>
-Date:   Thu, 6 May 2021 10:21:39 +0800
-User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
- Thunderbird/45.4.0
+        id S231489AbhEFCXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:23:47 -0400
+Received: from mga11.intel.com ([192.55.52.93]:6872 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229872AbhEFCXq (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 22:23:46 -0400
+IronPort-SDR: QrP1rrvhPXb07KWT4xEJ9Zrrq67gb5ish3g9r5PKc8qJo31XAFtsHlIAHP+RgdodQuTqf8JZvf
+ hmN8FQD47/zA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="195236045"
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="195236045"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 19:22:48 -0700
+IronPort-SDR: SfHyyOLNGdl8JZ7gdVwKgIeJD+7K53nKxnWnLPRjLNz4kzI3YNqc5kdc0i9DUBNk0rvSwWvJhR
+ c241KjzrGj0g==
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="434114146"
+Received: from unknown (HELO [10.238.4.82]) ([10.238.4.82])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 19:22:46 -0700
+Subject: Re: [PATCH v1 1/2] perf header: Support HYBRID_TOPOLOGY feature
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc:     jolsa@kernel.org, peterz@infradead.org, mingo@redhat.com,
+        alexander.shishkin@linux.intel.com, Linux-kernel@vger.kernel.org,
+        ak@linux.intel.com, kan.liang@intel.com, yao.jin@intel.com
+References: <20210430074602.3028-1-yao.jin@linux.intel.com>
+ <YJFgrKB9ZavgbA1P@krava> <YJGgYSXcJbZ2n3H3@kernel.org>
+ <YJGifgASdDD7T8Xc@krava> <YJKiYziYlLgUmMwq@kernel.org>
+ <YJL//g4j7RgmSIqW@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <ef4ea10d-667d-2fed-25d0-2bc27482bba0@linux.intel.com>
+Date:   Thu, 6 May 2021 10:22:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <1620266570-21585-1-git-send-email-tangyouling@loongson.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+In-Reply-To: <YJL//g4j7RgmSIqW@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID: AQAAf9AxLcizUpNgEo0SAA--.7343S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJryDuw17Zw4UCw15Xr4DXFb_yoW8AFWkpa
-        15C3W8tFWFgr42yr4fXry5Z34ru393JrW7JFW7C3s8K3srXr1UXF97tFnrXFykuw43KFWf
-        XF4agr1DAFnrCrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-        1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-        6r4UJwA2z4x0Y4vEx4A2jsIE14v26r4UJVWxJr1l84ACjcxK6I8E87Iv6xkF7I0E14v26r
-        4UJVWxJr1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2Wl
-        Yx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbV
-        WUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07Al
-        zVAYIcxG8wCY02Avz4vE14v_Gr1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
-        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
-        17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
-        C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
-        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
-        nxnUUI43ZEXa7VUbpwZ7UUUUU==
-X-CM-SenderInfo: pkhmx0p1dqwqxorr0wxvrqhubq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 05/06/2021 10:02 AM, Youling Tang wrote:
+Hi Jiri,
 
-> On the Loongson64 platform, if CONFIG_SMP is not set, the following build
-> error will occur:
-> arch/mips/loongson64/reset.c:133:2: error:'secondary_kexec_args' undeclared
->
-> Because the definition and declaration of secondary_kexec_args are in the
-> CONFIG_SMP, the secondary_kexec_args variable should be used in CONFIG_SMP.
->
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
-> ---
->   arch/mips/loongson64/reset.c | 5 ++++-
->   1 file changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
-> index c97bfdc..758d5d2 100644
-> --- a/arch/mips/loongson64/reset.c
-> +++ b/arch/mips/loongson64/reset.c
-> @@ -126,11 +126,12 @@ static void loongson_kexec_shutdown(void)
->   	for_each_possible_cpu(cpu)
->   		if (!cpu_online(cpu))
->   			cpu_device_up(get_cpu_device(cpu));
-> +
-> +	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
->   #endif
->   	kexec_args[0] = kexec_argc;
->   	kexec_args[1] = fw_arg1;
->   	kexec_args[2] = fw_arg2;
-> -	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
->   	memcpy((void *)fw_arg1, kexec_argv, KEXEC_ARGV_SIZE);
->   	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
->   }
-> @@ -141,7 +142,9 @@ static void loongson_crash_shutdown(struct pt_regs *regs)
->   	kexec_args[0] = kdump_argc;
->   	kexec_args[1] = fw_arg1;
->   	kexec_args[2] = fw_arg2;
-> +#ifdef CONFIG_SMP
->   	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
-> +#endif
->   	memcpy((void *)fw_arg1, kdump_argv, KEXEC_ARGV_SIZE);
->   	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
->   }
+On 5/6/2021 4:28 AM, Jiri Olsa wrote:
+> On Wed, May 05, 2021 at 10:49:23AM -0300, Arnaldo Carvalho de Melo wrote:
+>> Em Tue, May 04, 2021 at 09:37:34PM +0200, Jiri Olsa escreveu:
+>>> On Tue, May 04, 2021 at 04:28:33PM -0300, Arnaldo Carvalho de Melo wrote:
+>>>> Em Tue, May 04, 2021 at 04:56:44PM +0200, Jiri Olsa escreveu:
+>>>>> On Fri, Apr 30, 2021 at 03:46:01PM +0800, Jin Yao wrote:
+>>>>>> It would be useful to let user know the hybrid topology.
+>>>>>> Adding HYBRID_TOPOLOGY feature in header to indicate the
+>>>>>> core cpus and the atom cpus.
+>>>>
+>>>>>> With this patch,
+>>>>
+>>>>>> For the perf.data generated on hybrid platform,
+>>>>>> reports the hybrid cpu list.
+>>>>
+>>>>>>    root@otcpl-adl-s-2:~# perf report --header-only -I
+>>>>>>    ...
+>>>>>>    # cpu_core cpu list : 0-15
+>>>>>>    # cpu_atom cpu list : 16-23
+>>>>
+>>>>> hum, should we print 'hybrid:' or something to make
+>>>>> sure its not confused with something else? like
+>>>>   
+>>>>>    # hybrid cpu_core cpu list : 0-15
+>>>>>    # hybrid cpu_atom cpu list : 16-23
+>>>>
+>>>> But this _core/_atom already got to be enough? I disagreed with that
+>>>> naming, but neverthless having one or the other present in an output is
+>>>> a clear mark of this hybrid topology.
+>>>>
+>>>> I.e having that extra hybrid string that wouldn't add information to the
+>>>> output.
+>>>
+>>> sure when you know that cpu_core/cpu_atom are hybrid pmus ;-)
+>>> and I guess other arch will come with other names
+>>
+>> Yeah, its too Intel centric, I thought they would come up with
+>> cpu_big/cpu_little and map it to core/atom on Intel and whatever other
+>> BIG/little arches come up with.
+>>
+>> Perhaps:
+>>
+>> root@otcpl-adl-s-2:~# perf report --header-only -I
+>> ...
+>> # hybrid cpu system:
+>> # cpu_core cpu list : 0-15
+>> # cpu_atom cpu list : 16-23
+>>
+>> ?
+> 
+> 'hybrid pmus' would sounds better to me,
+> but as long as there's hybrid in there I'm good ;-)
+> 
+> thanks,
+> jirka
+> 
 
-Hi, Youling,
+:)
 
-The earlier fix is here,
-https://lkml.org/lkml/2021/4/30/874
+Thanks
+Jin Yao
 
-Thanks.
-
+>>
+>> - Arnaldo
+>>
+> 
