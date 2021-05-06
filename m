@@ -2,238 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 526B1374FDC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:14:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E930D374FDF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:16:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232934AbhEFHPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:15:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231254AbhEFHPn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:15:43 -0400
-Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B2CC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:14:44 -0700 (PDT)
-Received: by mail-ed1-x52c.google.com with SMTP id bf4so4913423edb.11
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2ylmmxs+TaB3xrkE/2Zlsxz/yNTcrgLEBXV0nI/0Rr4=;
-        b=VxUxHYmXfisn0UtQuKY9Y0B7RTXRoJ/Fnv9zcEnTk4XUk4JsoMfLEbfil+q0xLNy+U
-         8Y6c9dvBUh54whtKA8/XBEmQbvlafFxV4/1sV9cFEUH30/HJ8dm/R/6U45I8l3bnsDed
-         gjQDSRtqhLOztytJLJ0KI/pzkb5/VRduGBvirwuMiRnmf6HxkUQUeUtsIknGwJZWmVg+
-         rmYMdQFYgILJq2bmBjJ3KGb99PsVGP93gHA8nUX0opQoxGkvWAFpzFX84OOE00KN6uOM
-         vcpZ2lMLwI/BtXMARC6NQNsgUzAUoqUuWzMSyNGVuTTGIDiLHArUEuhfZx7HSJObdhQI
-         jDPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2ylmmxs+TaB3xrkE/2Zlsxz/yNTcrgLEBXV0nI/0Rr4=;
-        b=IbYIJfaeG1H9/g52N5lHILwfCyFUs7wrrDvX1x1l0ctmY9xLVQgh4f8RxPyZMGP23o
-         Q6LrUFtWcdE+IDxh0aEGZzkAjJQ8nTe8sRmi+mqshgtMuHWzxQreHqmdCXOf2sX2T4Dz
-         PRvk06ObOR/jES02CCdYkLHv1st8r6YYr4mZrIUc1PQFJ2pncBBOYqCnf9ZqpMr9SyCL
-         oUEEskuCXRKe1WwCDSeht0ZW+kYl9+zbQHuv0t9ikBodyL6UkJz7XKHZWcveqgHVw4oB
-         xtIAp7FWo8Q2aefwNiI3NvKCm+8kykza5qsJr3ywDblTqVwhvcQikGGPQ65P/PPAEMTi
-         SVWA==
-X-Gm-Message-State: AOAM530xLHL8dmOPJ78pdDO8nlWUOHXyBYqay98T9qrcDh/Bnhl9Hh/N
-        PMcVb9EPWeRzhRnfMy7bz5OeODg2EMFX1Bp9ubs4+g==
-X-Google-Smtp-Source: ABdhPJx0kcdPAe+JYobud457UWeAKWmB1LuF2zhEwEL+62ASH5Z2h4D514Rhv+bsFntjrexXSj8ON+pBmB1j7mSPZtE=
-X-Received: by 2002:aa7:c78a:: with SMTP id n10mr3322356eds.239.1620285283235;
- Thu, 06 May 2021 00:14:43 -0700 (PDT)
+        id S233131AbhEFHQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:16:58 -0400
+Received: from mail-eopbgr140111.outbound.protection.outlook.com ([40.107.14.111]:39822
+        "EHLO EUR01-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231254AbhEFHQ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 03:16:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=iUHtgqGvYgy9wZ6CZVuQkWBJmOZuhA2SVlfAwD7Vv7kruhKL4twLyknlNKlnyjDcYa/XaCJFvj2NIzd2O0xFjyB6bnHYjT6EuqWwxDXj3Lpljs6+JRzKQkBCDcLK2BpJtS5D579815Lh1Ye0/iAEyy+IZ86h+CgmhW/AwrFSsrxDIyJXXKdyTdnehkAjr8YkM+bUIjhYf6OZa7YEWFRBaJi5qBXj2m1Gl56WasKyMtypC822A1FbZOvDnoZBsGbIx+xGNQkkX530HqGpphNmkrUrPWwNxoKTSMOSyYslB2biYOrpdPlsfszO/XI7sNuCy0ZU3hFafEV0I2ph3KUr0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KDxnGxk291zwF2lJW53jxPPb+MNDTr8W8Zb3LqqJSoU=;
+ b=No7NTTtFNwwfdWSDkAzyjnIWHDo4MH53ClEuuScRZwSSbyt/LHq0nmRX7l0eMWhU4o2s84LbtI1eBZDq36eWXjNihC5IiqLFoJEC3dXRxdGQ7LgZPQR8LTBVB6xR7VMu4hAQU0HK/BMJIX4lkoYtp32KMvaz7kr+zoZcX0futo4gq6M+JL13fYacCl9neuMRdKlC1ZXGAbd5uc3j46SgobhNMmY2S8EyesCjzFRbSOHP72pnj7ZyL2RBJCcXTT0HaDhdenpExAzN9m706haeRJkJ/qM6zrjorC4k6XV9MdInxdncNe9gRHMQKx55FS1hqhIg9p/jJZcnmykby0tTbg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KDxnGxk291zwF2lJW53jxPPb+MNDTr8W8Zb3LqqJSoU=;
+ b=bkzjVvfIVILWjde3Mnj5KlY8Yco8ZDpWNjxbSAq9d9a7qPNribeI1Iv4x31uumuDmMov1fJPuY4KxSPrfgmbSet+rtYSVem8mENmCvnqLoQ1+RcHT13F8DdBDaG3oScfqYH5igquusqJ6N63s4AIaFJDmUH+xCT2gY/PSYVM34E=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM9PR10MB4069.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1ff::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
+ 2021 07:15:57 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87%7]) with mapi id 15.20.4108.026; Thu, 6 May 2021
+ 07:15:57 +0000
+Subject: Re: [PATCH V3 1/4] dt-bindings: power: Add defines for i.MX8MM
+ BLK-CTL power domains
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        p.zabel@pengutronix.de, l.stach@pengutronix.de, krzk@kernel.org,
+        agx@sigxcpu.org, marex@denx.de, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ping.bai@nxp.com, aford173@gmail.com,
+        abel.vesa@nxp.com, Peng Fan <peng.fan@nxp.com>
+References: <20210506041555.10719-1-peng.fan@oss.nxp.com>
+ <20210506041555.10719-2-peng.fan@oss.nxp.com>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+Message-ID: <13101b86-65d3-671d-2603-8e091fc71824@kontron.de>
+Date:   Thu, 6 May 2021 09:15:53 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210506041555.10719-2-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [89.244.180.42]
+X-ClientProxiedBy: BE0P281CA0017.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:b10:a::27) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
-References: <20210505112326.672439569@linuxfoundation.org>
-In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Thu, 6 May 2021 12:44:31 +0530
-Message-ID: <CA+G9fYv_HVktCp-pB4HKM4KG-Suu=ZmR_qOTdF5KYHih9Oxt3Q@mail.gmail.com>
-Subject: Re: [PATCH 5.11 00/31] 5.11.19-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Shuah Khan <shuah@kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
-        linux-stable <stable@vger.kernel.org>,
-        Pavel Machek <pavel@denx.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.27] (89.244.180.42) by BE0P281CA0017.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:a::27) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.9 via Frontend Transport; Thu, 6 May 2021 07:15:55 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 526f6d34-a7bc-49f1-42e8-08d9105ecb1a
+X-MS-TrafficTypeDiagnostic: AM9PR10MB4069:
+X-Microsoft-Antispam-PRVS: <AM9PR10MB406977485DA89F88952F508CE9589@AM9PR10MB4069.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4941;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LZQBk/hmrf9qEvwwHAbpJK6nFT+5CNr8I2sUDFmoZBW+6kgsOfMm0mYcPMV+/SDr7yseKhwdBdq5EMzOcHImyqgeouZHjPqHKprp6xWnIwWZpRQUo2qC+DqeEwT/pijtYYz8YqgpjFjooKtHsbvvL1rxYeB9jyZwHYkrlF45L49zFRuJZLeI9yh4BwepyKM9Ozo6dW/82X5V6k/VgCsbqRsFAsJ0W2ugDT4NK7VZLGBE8DvxOf+WJcxYXs5gTHplsmNPznUQnXa8i/NlDc7D/B3yvWGE65MgFHUZCl6RNUO8g2gRc4XCDhj7kdrDhtkybioQGwQ+IHJHXfog4Q+2oVhxxtQmR+U6/DQBwJeA3vpYdxXxle0cfBhC3e9tqQFr7J81nFLwOf7VpsT2d7R+ZzWP5ZrLNKaPofnHXLEzIJc4kUwBx5Uk8VcqP0lmyfBf1ccLOHCQJ8AylWsK/gytNpMOBqeUapo2aqXXnJUKo7PWZIY/w6YrzGMvb3ISOquKPcySw2KBOzxxrqD/jHgei2SlpZhPrc1GRhqRQEAbZkkNnRh+h7I1KQRzoNLobVvzXQQ5aMkkj84gWWF7RspQRX4jWRYpP9JwEcGuYOhwwUKbwtL2GBIs+LCcLSmcZKLZAG6YbswfGRH1ZLv6pbSYeNEoVPDYedeHqG73QDULHWxHdEqTSkP0OaMNITsW+upz
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(346002)(136003)(39860400002)(396003)(478600001)(8936002)(5660300002)(53546011)(44832011)(86362001)(2616005)(26005)(7416002)(83380400001)(956004)(4326008)(2906002)(186003)(8676002)(16526019)(38100700002)(36756003)(6486002)(66556008)(66946007)(66476007)(16576012)(316002)(31696002)(31686004)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dkx5emtTUnZHQnJVeEs0YnZRNXdpWGw0bTQxUWlqS0ZLNjBVbjdpRy9VZ0Mz?=
+ =?utf-8?B?ODUwT0gvdklSVGoyNE1YdHBEalNXZWgzaVluNTZpckNZVTRwalRxZFJvY04x?=
+ =?utf-8?B?TThSYkw1SVZ6RnNaQkZNWjdocmJpMjJsNHRxMlVlRWp3YUZYVlh5d09hbzBl?=
+ =?utf-8?B?UWtnYVFRcUlPTUc4OGpDYWdwTHJVVGQzTVVpdnpWL3hvazZSbmtIUnlvelMr?=
+ =?utf-8?B?MmxZM1ZHMXorQnZIZ2RPR3l6bFZhMmRTbjk3bDF2czBwVTRQTUROQnlJVTRC?=
+ =?utf-8?B?L3lJRkxTcEJ0MnNFRnphemVDSzcyNTJvTkVzUXF5aGd5Z3h0OStDUWVBRjkr?=
+ =?utf-8?B?NTdQV0ttdE9HMzEzNGdscm9OWkxObVFpMkVmdVNKZnM5TmN0MUY1UGNQNEo0?=
+ =?utf-8?B?TnpQN2doUGd1M2VuaGhUcThCTGlmcGdwSVNhRHlzWm1hS0NmRmt0Qi9oeVZu?=
+ =?utf-8?B?M0tJaDdpbitKNTN0eUZNRjNjd1VaaGdxbWlIcVRhdWI5bVVQRXl6d3RCU2dK?=
+ =?utf-8?B?MDlVOFYvQ1Rtd2R0V0RhdkluaGZ4bmFBK1JpVGhrYXB1RFljRTZtNHFnWjk0?=
+ =?utf-8?B?UHpzRUlGdjJhMkRETUNtNWRrUXR6KzlXUUpnVlhLYkVxcmplS25wME1jcXdT?=
+ =?utf-8?B?Vmp6Y2lIVGRuekkzZFpoTkpIaUIvQTdWL2lyUEVlNFBSQVV1WmpzZzhZeTJH?=
+ =?utf-8?B?UUVZY2ljSFFzY3RnaWlveVl6S2p6YzNkRFFFU0JJQUp1dHhMWllWTDlhWm1L?=
+ =?utf-8?B?NmJkWE9jSWtxWTc4Nit5ZFVyWUxUVEdIb1hoTzhxVnhxTFNVNUw4VFNydmRQ?=
+ =?utf-8?B?bXdSWlgzQ3BTY2dHamJIY3IrSTVhV2owMWVmQllscDBlL29QekFGVzB2N3E4?=
+ =?utf-8?B?YUN0aXdKb21OWmRyazF6cjF1eSs0V3ZGL0N4UFBCVklEdDBvNUJzbEZMKzc3?=
+ =?utf-8?B?NWYxMTRrQ3NLUkdoYndwblB0VU50OFJuUVVwVFBFUklMV1FtMWtVZzhySThm?=
+ =?utf-8?B?MXpiSEJJV1RvdWZaMUE1dXN5MkdpS0lkWENYL1U2aFoyWDhXKzRQVkVKRmRC?=
+ =?utf-8?B?OTFCZFZiZEtZc2R4U01paUhVVXorUmQ1YjZuWHVvbTQzdUx0R3QzdXBYMDVE?=
+ =?utf-8?B?ZkxISGRNcTByRDJGM1lWSHBjVzhYb2JPMFVYY3M0blZYRVVHNERZN3BKMjM1?=
+ =?utf-8?B?NEQrNzMxLzRIZDR1ZHMzL2NQbHNsUGlTNHQ3SGc5R3BJbTZNSWhyY2xrclpr?=
+ =?utf-8?B?TWU0MVF2ajNBOFNFbUtLZzRxNEoxcncrUjVkRDllak4wUTZnY205Y20rKyta?=
+ =?utf-8?B?bUxpbmdsek5Od3cxNmo1bXgxTUx6RUtCRUJSbmpFdDJyam9oKyt2SDZ6MXBa?=
+ =?utf-8?B?blhmTXo3OHdDSVlHMEFHTnovVUxyVlcvWW9SQzA0UFQwZkdDNTZoV3o5QStP?=
+ =?utf-8?B?ekxRMWxYU2loNDZseTQyVVE0R3VWd1hnNVdaeHVBdWdKRDBOWlJVVlV6YUwz?=
+ =?utf-8?B?VTM0MTJ4bEtmekwxOTZnMUVPa3JtZXM0Zk91UTcwRzZlVUVIc1NPaXU3T2x3?=
+ =?utf-8?B?OFJ1NU55UGxFbVVzOW1IQVVsVXJIRmVWWmZZV3lhN0lKaHVIMGxJaGNVWUlt?=
+ =?utf-8?B?Y1lVZzdFY2dWeFlYSkdlUlFDa1hhODhTdnNYS3ZBWVBQWHFWWmYxYVVXaHpV?=
+ =?utf-8?B?QktpenJuSXV6R3pvWW9hSUtUL2hpTUdrc2hBU3lqaWxhWktjbEVOYWFSVWZZ?=
+ =?utf-8?Q?Lo/myuZPpHdgelixAG8tOwN6YD7KbF8KrUsay8p?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 526f6d34-a7bc-49f1-42e8-08d9105ecb1a
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 07:15:57.3020
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: UmmI2vXcBOVEtqBFW7zPO5nElj7n9soe3ccIV7fVMB1fPQqvr5aNOjdpCRO4l+Mu9I2aAXFou2DL2PcmHqQcOGXvXS4jiJgESsFg9XaFfNY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4069
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 at 17:39, Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
->
-> This is the start of the stable review cycle for the 5.11.19 release.
-> There are 31 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.11.19-rc1.gz
-> or in the git tree and branch at:
->         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.11.y
-> and the diffstat can be found below.
->
-> thanks,
->
-> greg k-h
+On 06.05.21 06:15, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Adding the defines for i.MX8MM BLK-CTL power domains.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  include/dt-bindings/power/imx8mm-power.h | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+> 
+> diff --git a/include/dt-bindings/power/imx8mm-power.h b/include/dt-bindings/power/imx8mm-power.h
+> index fc9c2e16aadc..510e383d1953 100644
+> --- a/include/dt-bindings/power/imx8mm-power.h
+> +++ b/include/dt-bindings/power/imx8mm-power.h
+> @@ -19,4 +19,15 @@
+>  #define IMX8MM_POWER_DOMAIN_DISPMIX	10
+>  #define IMX8MM_POWER_DOMAIN_MIPI	11
+>  
+> +#define IMX8MM_BLK_CTL_G2_PD		0
+> +#define IMX8MM_BLK_CTL_G1_PD		1
+> +#define IMX8MM_BLK_CTL_H1_PD		2
+> +#define IMX8MM_BLK_CTL_MAX_PD		3
 
-Results from Linaro=E2=80=99s test farm.
-No regressions on arm64, arm, x86_64, and i386.
+I think it would be good to have "VPU" somewhere in these defines. Like IMX8MM_BLK_CTL_VPU_*. And here you have the *_PD suffix, but for dispmix below you don't have it. I think you should either remove the suffix here, or add it below, while I would go for the former.
 
-Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
-
-## Build
-* kernel: 5.11.19-rc1
-* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
-rc.git
-* git branch: linux-5.11.y
-* git commit: cffd2a415e649b47f93b2f10fd7b7fa2441c3585
-* git describe: v5.11.18-32-gcffd2a415e64
-* test details:
-https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
-.18-32-gcffd2a415e64
-
-## No regressions (compared to v5.11.18-9-g7c5623736e0c)
-
-## No fixes (compared to v5.11.18-9-g7c5623736e0c)
-
-## Test result summary
- total: 84037, pass: 69465, fail: 2557, skip: 11736, xfail: 279,
-
-## Build Summary
-* arc: 10 total, 10 passed, 0 failed
-* arm: 193 total, 193 passed, 0 failed
-* arm64: 27 total, 27 passed, 0 failed
-* dragonboard-410c: 1 total, 1 passed, 0 failed
-* hi6220-hikey: 1 total, 1 passed, 0 failed
-* i386: 26 total, 26 passed, 0 failed
-* juno-r2: 1 total, 1 passed, 0 failed
-* mips: 45 total, 45 passed, 0 failed
-* parisc: 9 total, 9 passed, 0 failed
-* powerpc: 27 total, 27 passed, 0 failed
-* riscv: 21 total, 21 passed, 0 failed
-* s390: 18 total, 18 passed, 0 failed
-* sh: 18 total, 18 passed, 0 failed
-* sparc: 9 total, 9 passed, 0 failed
-* x15: 1 total, 0 passed, 1 failed
-* x86: 1 total, 1 passed, 0 failed
-* x86_64: 27 total, 27 passed, 0 failed
-
-## Test suites summary
-* fwts
-* igt-gpu-tools
-* install-android-platform-tools-r2600
-* kselftest-
-* kselftest-android
-* kselftest-bpf
-* kselftest-breakpoints
-* kselftest-capabilities
-* kselftest-cgroup
-* kselftest-clone3
-* kselftest-core
-* kselftest-cpu-hotplug
-* kselftest-cpufreq
-* kselftest-drivers
-* kselftest-efivarfs
-* kselftest-filesystems
-* kselftest-firmware
-* kselftest-fpu
-* kselftest-futex
-* kselftest-gpio
-* kselftest-intel_pstate
-* kselftest-ipc
-* kselftest-ir
-* kselftest-kcmp
-* kselftest-kexec
-* kselftest-kvm
-* kselftest-lib
-* kselftest-livepatch
-* kselftest-lkdtm
-* kselftest-membarrier
-* kselftest-memfd
-* kselftest-memory-hotplug
-* kselftest-mincore
-* kselftest-mount
-* kselftest-mqueue
-* kselftest-net
-* kselftest-netfilter
-* kselftest-nsfs
-* kselftest-openat2
-* kselftest-pid_namespace
-* kselftest-pidfd
-* kselftest-proc
-* kselftest-pstore
-* kselftest-ptrace
-* kselftest-rseq
-* kselftest-rtc
-* kselftest-seccomp
-* kselftest-sigaltstack
-* kselftest-size
-* kselftest-splice
-* kselftest-static_keys
-* kselftest-sync
-* kselftest-sysctl
-* kselftest-tc-testing
-* kselftest-timens
-* kselftest-timers
-* kselftest-tmpfs
-* kselftest-tpm2
-* kselftest-user
-* kselftest-vm
-* kselftest-vsyscall-mode-native-
-* kselftest-vsyscall-mode-none-
-* kselftest-x86
-* kselftest-zram
-* kunit
-* kvm-unit-tests
-* libhugetlbfs
-* linux-log-parser
-* ltp-cap_bounds-tests
-* ltp-commands-tests
-* ltp-containers-tests
-* ltp-controllers-tests
-* ltp-cpuhotplug-tests
-* ltp-crypto-tests
-* ltp-cve-tests
-* ltp-dio-tests
-* ltp-fcntl-locktests-tests
-* ltp-filecaps-tests
-* ltp-fs-tests
-* ltp-fs_bind-tests
-* ltp-fs_perms_simple-tests
-* ltp-fsx-tests
-* ltp-hugetlb-tests
-* ltp-io-tests
-* ltp-ipc-tests
-* ltp-math-tests
-* ltp-mm-tests
-* ltp-nptl-tests
-* ltp-open-posix-tests
-* ltp-pty-tests
-* ltp-sched-tests
-* ltp-securebits-tests
-* ltp-syscalls-tests
-* ltp-tracing-tests
-* network-basic-tests
-* packetdrill
-* perf
-* rcutorture
-* ssuite
-* v4l2-compliance
-
---
-Linaro LKFT
-https://lkft.linaro.org
+> +
+> +#define IMX8MM_BLK_CTL_DISPMIX_CSI_BRIDGE	0
+> +#define IMX8MM_BLK_CTL_DISPMIX_LCDIF		1
+> +#define IMX8MM_BLK_CTL_DISPMIX_MIPI_DSI		2
+> +#define IMX8MM_BLK_CTL_DISPMIX_MIPI_CSI		3
+> +#define IMX8MM_BLK_CTL_DISPMIX_MAX_PD		4
+> +
+>  #endif
+> 
