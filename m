@@ -2,114 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1ABB374DC0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 05:00:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F93374DCA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 05:02:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230299AbhEFDAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 23:00:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35566 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhEFDAv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 23:00:51 -0400
-Received: from gate2.alliedtelesis.co.nz (gate2.alliedtelesis.co.nz [IPv6:2001:df5:b000:5::4])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C9ECDC061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 19:59:53 -0700 (PDT)
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 6E2F3891AD;
-        Thu,  6 May 2021 14:59:50 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1620269990;
-        bh=WiX/7t7MT2sDaNzbijFun5ci1fXS9VdtGyyrOgCwJoE=;
-        h=From:To:CC:Subject:Date:References:In-Reply-To;
-        b=moALwjU6dzAAOfWD4QD5HmqQQCHnpDjxoTrTo8AkdSk3UQb33mJSqyvl5FpVOSpuF
-         nGzPP07BbDLrkvFvZuB+Xl+1tTFKf5FDlIm591xoz3lLrO8OgVqh4H3MfbKniCE+Ip
-         sYmpoKBsWDaNwmfPSQCtFfMuM2Sa+BEtReehUY2z7Gw4SSincUjLFsFsXK7OLubc7v
-         /syOGn8pusnb27bVeebqkTLuBqcPKrleflLYO7DQaMVRjMxT9GmTkFT3UKUezEeWV8
-         BzQcv5k1jrOr2qY4D7YY6anXAFYqwE8I3Na5fOEy+vGTBmETD7sP5kCjEs0JEcY2Zx
-         eAtH4bXrc4lAg==
-Received: from svr-chch-ex1.atlnz.lc (Not Verified[2001:df5:b000:bc8::77]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B60935ba60001>; Thu, 06 May 2021 14:59:50 +1200
-Received: from svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) by
- svr-chch-ex1.atlnz.lc (2001:df5:b000:bc8::77) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Thu, 6 May 2021 14:59:50 +1200
-Received: from svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8]) by
- svr-chch-ex1.atlnz.lc ([fe80::409d:36f5:8899:92e8%12]) with mapi id
- 15.00.1497.015; Thu, 6 May 2021 14:59:50 +1200
-From:   Cole Dishington <Cole.Dishington@alliedtelesis.co.nz>
-To:     "fw@strlen.de" <fw@strlen.de>, "jengelh@inai.de" <jengelh@inai.de>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "pablo@netfilter.org" <pablo@netfilter.org>,
-        "kuba@kernel.org" <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "kadlec@netfilter.org" <kadlec@netfilter.org>,
-        "coreteam@netfilter.org" <coreteam@netfilter.org>
-Subject: Re: [PATCH] netfilter: nf_conntrack: Add conntrack helper for
- ESP/IPsec
-Thread-Topic: [PATCH] netfilter: nf_conntrack: Add conntrack helper for
- ESP/IPsec
-Thread-Index: AQHXMOHFTHFm3Atrx06w+06M5CAoGaqzXgaAgCDIIYCAAPasgA==
-Date:   Thu, 6 May 2021 02:59:49 +0000
-Message-ID: <82faec0c7d403a76781372b0fd7911c9c08bb87a.camel@alliedtelesis.co.nz>
-References: <20210414035327.31018-1-Cole.Dishington@alliedtelesis.co.nz>
-         <20210414154021.GE14932@breakpoint.cc>
-         <pq161666-47s-p680-552o-58poo05onr86@vanv.qr>
-In-Reply-To: <pq161666-47s-p680-552o-58poo05onr86@vanv.qr>
-Accept-Language: en-US, en-NZ
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [2001:df5:b000:25:264b:feff:fe5b:1e9]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <53B3744B6A0F2042B417C4F4A3245377@atlnz.lc>
-Content-Transfer-Encoding: base64
+        id S232036AbhEFDD2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 23:03:28 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:40866 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230495AbhEFDD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 23:03:26 -0400
+Received: from [10.130.0.193] (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9Dx_+4_XJNgzJASAA--.12190S3;
+        Thu, 06 May 2021 11:02:24 +0800 (CST)
+Subject: Re: [PATCH] MIPS: Loongson64: Fix build error 'secondary_kexec_args'
+ undeclared under !SMP
+To:     Jinyang He <hejinyang@loongson.cn>
+References: <1620266570-21585-1-git-send-email-tangyouling@loongson.cn>
+ <c3d635ee-2478-c786-59fe-f630e4980a77@loongson.cn>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+From:   Youling Tang <tangyouling@loongson.cn>
+Message-ID: <1d9db325-0c3b-30a4-3501-f195591379ea@loongson.cn>
+Date:   Thu, 6 May 2021 11:02:23 +0800
+User-Agent: Mozilla/5.0 (X11; Linux mips64; rv:45.0) Gecko/20100101
+ Thunderbird/45.4.0
 MIME-Version: 1.0
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=B+jHL9lM c=1 sm=1 tr=0 a=Xf/6aR1Nyvzi7BryhOrcLQ==:117 a=xqWC_Br6kY4A:10 a=IkcTkHD0fZMA:10 a=5FLXtPjwQuUA:10 a=l_J4rYp_HbzP6ty2xjAA:9 a=QEXdDO2ut3YA:10
-X-SEG-SpamProfiler-Score: 0
+In-Reply-To: <c3d635ee-2478-c786-59fe-f630e4980a77@loongson.cn>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: AQAAf9Dx_+4_XJNgzJASAA--.12190S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFW7KFW3CryDWw1fCw17Jrb_yoW8Zry5pF
+        4rGa4UtFWFqr42yrWfZrn8Z34ru393XrW7Jay7C3s8Ka4DWr1UXFyxKF4UXF92vw43KFW8
+        XFWagr1DAFnIkrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUvC14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+        rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+        1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+        6F4UM28EF7xvwVC2z280aVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Cr
+        1j6rxdM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj
+        6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Yz7v_Jr
+        0_Gr1lF7xvr2IY64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7Mxk0xIA0c2IEe2xFo4CE
+        bIxvr21lc2xSY4AK67AK6r48MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+        4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+        67AKxVWUXVWUAwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+        x0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAI
+        cVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUUVHq5UUUUU==
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gV2VkLCAyMDIxLTA1LTA1IGF0IDE0OjE2ICswMjAwLCBKYW4gRW5nZWxoYXJkdCB3cm90ZToN
-Cj4gT24gV2VkbmVzZGF5IDIwMjEtMDQtMTQgMTc6NDAsIEZsb3JpYW4gV2VzdHBoYWwgd3JvdGU6
-DQo+ID4gDQo+ID4gUHJlZmFjZTogQUZBSVUgdGhpcyB0cmFja2VyIGFpbXMgdG8gJ3NvZnQtc3Bs
-aWNlJyB0d28gaW5kZXBlbmRlbnQNCj4gPiBFU1ANCj4gPiBjb25uZWN0aW9ucywgaS5lLjogc2Fk
-ZHI6c3BpMSAtPiBkYWRkciwgZGFkZHI6c3BpMiA8LSBzYWRkci4gWy4uLl0NCj4gPiBUaGlzIGNh
-bid0DQo+ID4gYmUgZG9uZSBhcy1pcywgYmVjYXVzZSB3ZSBkb24ndCBrbm93IHNwaTIgYXQgdGhl
-IHRpbWUgdGhlIGZpcnN0IEVTUA0KPiA+IHBhY2tldCBpcw0KPiA+IHJlY2VpdmVkLiBUaGUgc29s
-dXRpb24gaW1wbGVtZW50ZWQgaGVyZSBpcyBpbnRyb2R1Y3Rpb24gb2YgYQ0KPiA+ICd2aXJ0dWFs
-IGVzcCBpZCcsDQo+ID4gY29tcHV0ZWQgd2hlbiBmaXJzdCBFU1AgcGFja2V0IGlzIHJlY2VpdmVk
-LFsuLi5dDQo+IA0KPiBJIGNhbid0IGltYWdpbmUgdGhpcyB3b3JraW5nIHJlbGlhYmx5Lg0KPiAN
-Cj4gMS4gVGhlIElLRSBkYWVtb25zIGNvdWxkIGRvIGFuIGV4Y2hhbmdlIHdoZXJlYnkganVzdCBv
-bmUgRVNQIGZsb3cgaXMNCj4gc2V0IHVwIChmcm9tDQo+IGRhZGRyIHRvIHNhZGRyKS4gSXQncyB1
-bnVzdWFsIHRvIGRvIGEgb25lLXdheSB0dW5uZWwsIGJ1dCBpdCdzIGENCj4gcG9zc2liaWxpdHku
-DQo+IFRoZW4geW91IG9ubHkgZXZlciBoYXZlIEVTUCBwYWNrZXRzIGdvaW5nIGZyb20gZGFkZHIg
-dG8gc2FkZHIuDQo+IA0KPiAyLiBFdmVuIGlmIHRoZSBJS0UgZGFlbW9ucyBzZXQgdXAgd2hhdCB3
-ZSB3b3VsZCBjb25zaWRlciBhIG5vcm1hbA0KPiB0dW5uZWwsDQo+IGkuZS4gb25lIEVTUCBmbG93
-IHBlciBkaXJlY3Rpb24sIHRoZXJlIGlzIG5vIG9ibGlnYXRpb24gdGhhdCBzYWRkcg0KPiBoYXMg
-dG8NCj4gc2VuZCBhbnl0aGluZy4gZGFkZHIgY291bGQgYmUgY29udGFjdGluZyBzYWRkciBzb2xl
-bHkgd2l0aCBhIHByb3RvY29sDQo+IHRoYXQgaXMgYm90aCBjb25uZWN0aW9ubGVzcyBhdCBMNCBh
-bmQgd2hpY2ggZG9lcyBub3QgZGVtYW5kIGFueSBMNw0KPiByZXNwb25zZXMNCj4gZWl0aGVyLiBM
-aWtlIC4uLiBzeXNsb2ctb3Zlci11ZHA/DQo+IA0KPiAzLiBFdmVuIHVuZGVyIGJlc3QgY29uZGl0
-aW9ucywgd2hhdCBpZiB0d28gY2xpZW50cyBvbiB0aGUgc2FkZHINCj4gbmV0d29yaw0KPiBzaW11
-bHRhbmVvdXNseSBpbml0aWF0ZSBhIGNvbm5lY3Rpb24gdG8gZGFkZHIsIGhvdyB3aWxsIHlvdSBk
-ZWNpZGUNCj4gd2hpY2ggb2YgdGhlIGRhZGRyIEVTUCBTUElzIGJlbG9uZ3MgdG8gd2hpY2ggc2Fk
-ZHI/DQoNCjEgYW5kIDIgYXJlIGxpbWl0YXRpb25zIG9mIHRyZWF0aW5nIHR3byBvbmUtd2F5IEVT
-UCBTQXMgYXMgYSBzaW5nbGUNCmNvbm5lY3Rpb24uIEkgdGhpbmsgMSBhbmQgMiB3b3VsZCBiZSBs
-ZXNzIG9mIGFuIGlzc3VlIHdpdGggRmxvcmlhbg0KV2VzdHBoYWwncyBsYXRlc3QgY29tbWVudHMg
-cmVxdWVzdGluZyBleHBlY3RhdGlvbnMgKGFsdGhvdWdoIGFuDQpleHBlY3RhdGlvbiBmb3IgdGhl
-IG90aGVyIHNpZGUgd291bGQgc3RpbGwgYmUgc2V0dXApLiAzIGlzIGhhbmRsZWQgYnkNCmFzc3Vt
-aW5nIHRoZSBmaXJzdCBFU1AgcGFja2V0IHdpbGwgZ2V0IHRoZSBmaXJzdCBFU1AgcmVzcG9uc2Uu
-IEkgdGhpbmsNCnRoZSBvbmx5IHdheSBwYXN0IDEgKGFuZCBhIG1vcmUgcmVsaWFibGUgYXBwcm9h
-Y2ggdG8gMykgd291bGQgYmUgYnkNCnByb2Nlc3NpbmcgSVNBS01QIG1lc3NhZ2VzLg0KDQpIb3dl
-dmVyLCBjb25zaWRlcmluZyB0aGF0IHRoZSBFU1AgY29ubmVjdGlvbiB0cmFja2VyJ3MgcHJpbWFy
-eSB1c2UgaXMNCnRvIGFsbG93IGNsaWVudHMgYmVoaW5kIGEgTkFUIHRoYXQgZG9lc24ndCBzdXBw
-b3J0IChvciB1c2UpIE5BVC1UIGENCm1ldGhvZCBvZiBlc3RhYmxpc2hpbmcgYSBjb25uZWN0aW9u
-IHdpaG91dCBtYW51YWxseSBjb25maWd1cmluZw0Kc3BlY2lmaWMgTkFUIHJ1bGVzLCB0aGVzZSBs
-aW1pdGF0aW9ucyBtaWdodCBiZSBhY2NlcHRhYmxlLg0KDQpUaGFua3MNCg==
+Hi, Jinyang
+
+On 05/06/2021 10:21 AM, Jinyang He wrote:
+> On 05/06/2021 10:02 AM, Youling Tang wrote:
+>
+>> On the Loongson64 platform, if CONFIG_SMP is not set, the following 
+>> build
+>> error will occur:
+>> arch/mips/loongson64/reset.c:133:2: error:'secondary_kexec_args' 
+>> undeclared
+>>
+>> Because the definition and declaration of secondary_kexec_args are in 
+>> the
+>> CONFIG_SMP, the secondary_kexec_args variable should be used in 
+>> CONFIG_SMP.
+>>
+>> Reported-by: kernel test robot <lkp@intel.com>
+>> Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+>> ---
+>>   arch/mips/loongson64/reset.c | 5 ++++-
+>>   1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+>> index c97bfdc..758d5d2 100644
+>> --- a/arch/mips/loongson64/reset.c
+>> +++ b/arch/mips/loongson64/reset.c
+>> @@ -126,11 +126,12 @@ static void loongson_kexec_shutdown(void)
+>>       for_each_possible_cpu(cpu)
+>>           if (!cpu_online(cpu))
+>>               cpu_device_up(get_cpu_device(cpu));
+>> +
+>> +    secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+>>   #endif
+>>       kexec_args[0] = kexec_argc;
+>>       kexec_args[1] = fw_arg1;
+>>       kexec_args[2] = fw_arg2;
+>> -    secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+>>       memcpy((void *)fw_arg1, kexec_argv, KEXEC_ARGV_SIZE);
+>>       memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+>>   }
+>> @@ -141,7 +142,9 @@ static void loongson_crash_shutdown(struct 
+>> pt_regs *regs)
+>>       kexec_args[0] = kdump_argc;
+>>       kexec_args[1] = fw_arg1;
+>>       kexec_args[2] = fw_arg2;
+>> +#ifdef CONFIG_SMP
+>>       secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+>> +#endif
+>>       memcpy((void *)fw_arg1, kdump_argv, KEXEC_ARGV_SIZE);
+>>       memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+>>   }
+>
+> Hi, Youling,
+>
+> The earlier fix is here,
+> https://lkml.org/lkml/2021/4/30/874
+>
+Thank you for reminding me.
+
+Thanks,
+Youling.
+> Thanks.
+
