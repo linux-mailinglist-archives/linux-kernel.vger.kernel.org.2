@@ -2,174 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E48FD374CE4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:32:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 84E62374CE6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:33:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230227AbhEFBd2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 21:33:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40856 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230059AbhEFBdZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 21:33:25 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1A17E613B4;
-        Thu,  6 May 2021 01:32:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620264748;
-        bh=SBH+MobRpF+5DDP94nORP4AYMydp5fDZmfQhl9jAGzQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=srvWBwloZNeSB4WOXjucMRJLoOfSNxcA0twb/dD8oJw2GHFSuzx1Jp7RTWbg+B7Kn
-         KcRrH3XxIDfBmj5LD3ZAi71lIQsVb+NnIL0MZB3AfA98ZG7V61VctCPqQH45+le4Uv
-         U3b09jIQbdtJsFqzt8BGW6QIgIV4Itrg0fyFC0YPyNl6mU2nxEhlyViLt1+L7dVu15
-         8fg2a81wnwutYrEXBjU/W3PGEdlTk6xt/ExCozH1aMTDmq5bIhIWPEdmS1vyHRRLQX
-         82rDXImQKREvowfPl7xB+86kmukK398dfxfEoocOQjaqiDzmUl8kiIQm8paXa9r1Z/
-         6xljAh2WQkgEg==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-sgx@vger.kernel.org, dave.hansen@intel.com,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] selftests/sgx: Report kselftest results
-Date:   Thu,  6 May 2021 04:32:00 +0300
-Message-Id: <20210506013201.126612-2-jarkko@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210506013201.126612-1-jarkko@kernel.org>
-References: <20210506013201.126612-1-jarkko@kernel.org>
+        id S230292AbhEFBeb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 21:34:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44804 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229946AbhEFBe2 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 21:34:28 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 006BBC061574;
+        Wed,  5 May 2021 18:33:29 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FbGLT2dVSz9sRf;
+        Thu,  6 May 2021 11:33:21 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620264805;
+        bh=As4u6JGsuKsh735yt+Kt6L02htYKLMZj8E3IGhFRXwc=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UUxcpABDIOhMBay5IKLhnp3JVUZ0nIBhXEevwOqp5A6uQ6LzRET5bFzp0Bsefay7Q
+         YeNFMyu4W+BU8jfNRZcvz61/ZJt7OabgOdOb9q8/VeH1LZPAQryDUwLcXx8shAf9xX
+         FFAw/7CUmp1Q9TLlAHvFtlpqjZ8YflKwIL8tR5+iS48bKDjEXshkteK+ZToRSrzGkW
+         5ygPDGpGVKwlGqCaWwowi2aIBEgM1iUxP7i5iPzeyz1XAABOpA3vSBEu5AdflUzkYe
+         iE+Tt/vOXj05Qk8RNsVnZZFEBBaqvUu9xMJajuLljEWni2/hJprdBbDskkOTX27RCa
+         a2pd+RNWzhFpA==
+Date:   Thu, 6 May 2021 11:33:19 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Palmer Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul@pwsan.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Oscar Salvador <osalvador@suse.de>
+Subject: Re: linux-next: manual merge of the akpm-current tree with the
+ risc-v tree
+Message-ID: <20210506113319.3fdf410f@canb.auug.org.au>
+In-Reply-To: <20210312173702.18c4512a@canb.auug.org.au>
+References: <20210312173702.18c4512a@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="Sig_/zX=aDu/y=vIQ0yQnBGz5Pf2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use ksft API documented in tools/testing/selftests/kselftest.h to count
-succeeded and failed tests and print all the debug output with
-ksft_print_msg(), as advised by the documentation.
+--Sig_/zX=aDu/y=vIQ0yQnBGz5Pf2
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
- tools/testing/selftests/sgx/main.c | 45 +++++++++++++++++-------------
- 1 file changed, 25 insertions(+), 20 deletions(-)
+Hi all,
 
-diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-index d3e1db9ee4bc..b5f17076b0c3 100644
---- a/tools/testing/selftests/sgx/main.c
-+++ b/tools/testing/selftests/sgx/main.c
-@@ -20,6 +20,8 @@
- #include "main.h"
- #include "../kselftest.h"
- 
-+#define NR_KSELFTESTS 3
-+
- static const uint64_t MAGIC = 0x1122334455667788ULL;
- vdso_sgx_enter_enclave_t sgx_enter_enclave;
- 
-@@ -107,34 +109,35 @@ static Elf64_Sym *vdso_symtab_get(struct vdso_symtab *symtab, const char *name)
- 	return NULL;
- }
- 
--bool report_results(struct sgx_enclave_run *run, int ret, uint64_t result,
--		  const char *test)
-+bool update_ksft(struct sgx_enclave_run *run, int ret, uint64_t result, const char *test)
- {
- 	bool valid = true;
- 
- 	if (ret) {
--		printf("FAIL: %s() returned: %d\n", test, ret);
-+		ksft_print_msg("%s: ret = %d\n", test, ret);
- 		valid = false;
- 	}
- 
- 	if (run->function != EEXIT) {
--		printf("FAIL: %s() function, expected: %u, got: %u\n", test, EEXIT,
--		       run->function);
-+		ksft_print_msg("%s: function, expected: %u, got: %u\n", test, EEXIT, run->function);
- 		valid = false;
- 	}
- 
- 	if (result != MAGIC) {
--		printf("FAIL: %s(), expected: 0x%lx, got: 0x%lx\n", test, MAGIC,
--		       result);
-+		ksft_print_msg("%s: expected: 0x%lx, got: 0x%lx\n", test, MAGIC, result);
- 		valid = false;
- 	}
- 
- 	if (run->user_data) {
--		printf("FAIL: %s() user data, expected: 0x0, got: 0x%llx\n",
--		       test, run->user_data);
-+		ksft_print_msg("%s: user data, expected: 0x0, got: 0x%llx\n", test, run->user_data);
- 		valid = false;
- 	}
- 
-+	if (valid)
-+		ksft_test_result_pass("%s: PASS");
-+	else
-+		ksft_test_result_fail("%s: FAIL");
-+
- 	return valid;
- }
- 
-@@ -156,6 +159,9 @@ int main(int argc, char *argv[])
- 	void *addr;
- 	int ret;
- 
-+	ksft_print_header();
-+	ksft_set_plan(NR_KSELFTESTS);
-+
- 	memset(&run, 0, sizeof(run));
- 
- 	if (!encl_load("test_encl.elf", &encl)) {
-@@ -178,8 +184,8 @@ int main(int argc, char *argv[])
- 		addr = mmap((void *)encl.encl_base + seg->offset, seg->size,
- 			    seg->prot, MAP_SHARED | MAP_FIXED, encl.fd, 0);
- 		if (addr == MAP_FAILED) {
--			perror("mmap() segment failed");
--			exit(KSFT_FAIL);
-+			ksft_print_msg("mmap() segment: %s", strerror(errno));
-+			goto err;
- 		}
- 	}
- 
-@@ -200,32 +206,31 @@ int main(int argc, char *argv[])
- 
- 	sgx_enter_enclave = addr + sgx_enter_enclave_sym->st_value;
- 
-+	/* 1: unclobbered vDSO */
- 	ret = sgx_enter_enclave_unclobbered((void *)&MAGIC, &result, 0, EENTER,
- 					    NULL, NULL, &run);
--	if (!report_results(&run, ret, result, "sgx_enter_enclave_unclobbered"))
-+	if (!update_ksft(&run, ret, result, "unclobbered"))
- 		goto err;
- 
--
--	/* Invoke the vDSO directly. */
-+	/* 2: clobbered vDSO */
- 	result = 0;
- 	ret = sgx_enter_enclave((unsigned long)&MAGIC, (unsigned long)&result,
- 				0, EENTER, 0, 0, &run);
--	if (!report_results(&run, ret, result, "sgx_enter_enclave"))
-+	if (!update_ksft(&run, ret, result, "sgx_enter_enclave"))
- 		goto err;
- 
--	/* And with an exit handler. */
-+	/* 3: clobbered vDSO with a callback. */
- 	run.user_handler = (__u64)user_handler;
- 	run.user_data = 0xdeadbeef;
- 	ret = sgx_enter_enclave((unsigned long)&MAGIC, (unsigned long)&result,
- 				0, EENTER, 0, 0, &run);
--	if (!report_results(&run, ret, result, "user_handler"))
-+	if (!update_ksft(&run, ret, result, "user_handler"))
- 		goto err;
- 
--	printf("SUCCESS\n");
- 	encl_delete(&encl);
--	exit(KSFT_PASS);
-+	ksft_exit_pass();
- 
- err:
- 	encl_delete(&encl);
--	exit(KSFT_FAIL);
-+	ksft_exit_fail();
- }
--- 
-2.31.1
+On Fri, 12 Mar 2021 17:37:02 +1100 Stephen Rothwell <sfr@canb.auug.org.au> =
+wrote:
+>
+> Tomorrow's linux-next merge of the akpm-current tree will get a
+> conflict in:
+>=20
+>   Documentation/admin-guide/kernel-parameters.txt
+>=20
+> between commit:
+>=20
+>   f6e5aedf470b ("riscv: Add support for memtest")
+>=20
+> from the risc-v tree and commit:
+>=20
+>   6b8f5ba8661b ("mm,memory_hotplug: add kernel boot option to enable memm=
+ap_on_memory")
+>=20
+> from the akpm-current tree.
+>=20
+> I fixed it up (see below) and can carry the fix as necessary. This
+> is now fixed as far as linux-next is concerned, but any non trivial
+> conflicts should be mentioned to your upstream maintainer when your tree
+> is submitted for merging.  You may also want to consider cooperating
+> with the maintainer of the conflicting tree to minimise any particularly
+> complex conflicts.
+>=20
+> --=20
+> Cheers,
+> Stephen Rothwell
+>=20
+> diff --cc Documentation/admin-guide/kernel-parameters.txt
+> index b816481dfaef,04b4e76be65b..000000000000
+> --- a/Documentation/admin-guide/kernel-parameters.txt
+> +++ b/Documentation/admin-guide/kernel-parameters.txt
+> @@@ -2800,23 -2802,7 +2808,23 @@@
+>   			seconds.  Use this parameter to check at some
+>   			other rate.  0 disables periodic checking.
+>  =20
+>  +	memory_hotplug.memmap_on_memory
+>  +			[KNL,X86,ARM] Boolean flag to enable this feature.
+>  +			Format: {on | off (default)}
+>  +			When enabled, memory to build the pages tables for the
+>  +			memmap array describing the hot-added range will be taken
+>  +			from the range itself, so the memmap page tables will be
+>  +			self-hosted.
+>  +			Since only single memory device ranges are supported at
+>  +			the moment, this option is disabled by default because
+>  +			it might have an impact on workloads that needs large
+>  +			contiguous memory chunks.
+>  +			The state of the flag can be read in
+>  +			/sys/module/memory_hotplug/parameters/memmap_on_memory.
+>  +			Note that even when enabled, there are a few cases where
+>  +			the feature is not effective.
+>  +
+> - 	memtest=3D	[KNL,X86,ARM,PPC] Enable memtest
+> + 	memtest=3D	[KNL,X86,ARM,PPC,RISCV] Enable memtest
+>   			Format: <integer>
+>   			default : 0 <disable>
+>   			Specifies the number of memtest passes to be
 
+This is now a conflict between the risc-v tree and Linus' tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/zX=aDu/y=vIQ0yQnBGz5Pf2
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCTR18ACgkQAVBC80lX
+0GwnHgf+OpNUwYJWTzhmmxAX0c9X2kgjqX+4RTBp5rZs0ZcWU7QDlc0wnVeapikC
+Pf9i7DsBXFq9hGxKhvGeWUoavsHTLO7UOFjWcB7aokSQDdilHWAhFfGJXq3yOukj
+Gk7/IX7I+GtxTQ/mEvwL8/qTv0bnslFGptEapdn9W5+GRsfjT0ZK6mebIrlCRWaL
+T70XlNSck1lkQhJFKx6P63tz2wTUtA7/BJ+uv8uoDUT2qq+b3npOzHbqlLfG81xm
+Wrs+Ciy2MXanjTcAwAMihsy9W+wQdnlybG/XMuGNgmT/75uWcBI0q/6Yg/Iljlwz
+IUodvVR58BvV3PMW9vUA/VogM0gOkg==
+=Ac0P
+-----END PGP SIGNATURE-----
+
+--Sig_/zX=aDu/y=vIQ0yQnBGz5Pf2--
