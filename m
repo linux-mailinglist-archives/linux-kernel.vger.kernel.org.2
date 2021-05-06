@@ -2,625 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6675375C1E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5071E375C20
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:15:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233561AbhEFUOH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 16:14:07 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:18532 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231270AbhEFUOE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 16:14:04 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146K3I86015164;
-        Thu, 6 May 2021 16:13:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : content-type : mime-version; s=pp1;
- bh=wgKAYDNzuTakpVjWTtFZXJG8jldau4bwkug52L6efw4=;
- b=ZRGfbT50rpvJJqLOIXOKX1FjuqVI/mHUxa3x6Dhpje+sSH28rhPHxvXiXnJ1iN2x0X39
- NYWsoCJ8ZVNLuc4/mN+SWLGcWF6oJayM0QsA3fZDkB1jMfItJ0gYcja9y8PhK6g8mmVJ
- Pb5wr/OYwEoOfcb0SeO1TD0WBdnYlnFMSxtDUu8VXDR/7CLTpkbWJu2zfBYt2J5hn1ya
- AuRAGrtEEzAvr0xAHiE1Br0SoL4Q3U/hpdoqLbITPhMz5hvFoppbA/6r5Q1AI9zv66Vv
- gibwRjcgJFkkQpAGdwcH6ygKuHE7U9B/44tFwbpywOcQmQOGewLHsJFhHwGzP3y+43u7 sw== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38cmc5522e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 May 2021 16:13:04 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 146KBA8F027641;
-        Thu, 6 May 2021 20:13:03 GMT
-Received: from b06cxnps4076.portsmouth.uk.ibm.com (d06relay13.portsmouth.uk.ibm.com [9.149.109.198])
-        by ppma02fra.de.ibm.com with ESMTP id 38bee2gncj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 May 2021 20:13:03 +0000
-Received: from d06av26.portsmouth.uk.ibm.com (d06av26.portsmouth.uk.ibm.com [9.149.105.62])
-        by b06cxnps4076.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 146KD0K636503856
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 6 May 2021 20:13:00 GMT
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 12F8EAE045;
-        Thu,  6 May 2021 20:13:00 +0000 (GMT)
-Received: from d06av26.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AD4C9AE053;
-        Thu,  6 May 2021 20:12:59 +0000 (GMT)
-Received: from osiris (unknown [9.171.54.194])
-        by d06av26.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Thu,  6 May 2021 20:12:59 +0000 (GMT)
-Date:   Thu, 6 May 2021 22:12:58 +0200
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] more s390 updates for 5.13-rc1
-Message-ID: <YJRNygc8ryOitlmO@osiris>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: x0269I5nWpN0WiytRNV5uJGhNn86HCUt
-X-Proofpoint-GUID: x0269I5nWpN0WiytRNV5uJGhNn86HCUt
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S233704AbhEFUP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 16:15:57 -0400
+Received: from mail-bn7nam10on2083.outbound.protection.outlook.com ([40.107.92.83]:1825
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233572AbhEFUPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 16:15:55 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=XcH/mAwgVUSiK3tmkFpf51O5MuWB2toFF8KzJvvdDOmhZ83oicUmldjB9BLxVns5r3ReA3ldfrha06lZ0pv5QIdoE8MwsCTa+JzsAL9bcbpK8scRBmLN149xtS2Ebh6OB2e0YdCFf/2E51AlO/kWLPXMAp77tSrqE+Jtd76K2NpNu3uctRGkO3EqJt+zuDQSuiWEQWI1m7jR9e4IApp80M0t9LD1ypi2g9XlcapzlqX9Ae3IS8Dwuxw5+hk2TOHXPjxuWpNhIozAcgW5qi5RIGa1ZsdZJEEv2ITw2yV+ayqvdZpvQ40syze4Grdu5cL7TpQLoI92Tobf7l757Yv6rw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z8CIZrvBAGJs/QawVq0AwmgWuOWA8aw6TENObZMBMO0=;
+ b=llUvI9mpqTvpLtmfo1zhhVPCYLIxz9FcVDd1b1pP6DxP1Lr5L4sq6b/RdWnX4vBz+V+7lo2WIrQIxVMmBmPu72wd3Im4EWgKXO3dfnzZdBAVkOPrtyRHQ/HC+QIyoYtCwJsiu9xXNB1Nyfs03GXyvG04Xpx7UXhv6g7v9FJvYPKLAPGpnRG4rMu4B5DfXdlFbXfKyBNAZS+PTiqWlXvhuz0n33bv67R6BewL3bt3lL68GQe/1NYrc3tJCUCARWG8v2kJb183H0xoLEjrE1adwc3ijysXndzKzBu3tMCyLjmW1WLdkkHBxsTFefu/7EBeLNd613/p85QdYfmYJ6VCTw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z8CIZrvBAGJs/QawVq0AwmgWuOWA8aw6TENObZMBMO0=;
+ b=LkV2dp7GwSWc46RzDEFSmeWrnQX960ySBL00X0cPojSnaJSB5VIaVVzZjl5ToHW4lThMl2PguCrCrrEGoxGqQxC7GKE2UHt/DQF81Ii70Z/GV/Q/YFpLYEW1dqSEi3oX32y65Y08i6mQWwFWXKtwOQpo4amnh+YFgNxNyVaV0Tg=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
+ DM6PR12MB4958.namprd12.prod.outlook.com (2603:10b6:5:20a::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4108.26; Thu, 6 May 2021 20:14:55 +0000
+Received: from DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
+ ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4108.026; Thu, 6 May 2021
+ 20:14:55 +0000
+From:   Tom Lendacky <thomas.lendacky@amd.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Subject: [PATCH] KVM: SVM: Move GHCB unmapping to fix RCU warning
+Date:   Thu,  6 May 2021 15:14:41 -0500
+Message-Id: <b2f9b79d15166f2c3e4375c0d9bc3268b7696455.1620332081.git.thomas.lendacky@amd.com>
+X-Mailer: git-send-email 2.31.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [165.204.77.1]
+X-ClientProxiedBy: SN1PR12CA0057.namprd12.prod.outlook.com
+ (2603:10b6:802:20::28) To DM5PR12MB1355.namprd12.prod.outlook.com
+ (2603:10b6:3:6e::7)
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-06_10:2021-05-06,2021-05-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- spamscore=0 impostorscore=0 lowpriorityscore=0 suspectscore=0 phishscore=0
- bulkscore=0 adultscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105060138
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from tlendack-t1.amd.com (165.204.77.1) by SN1PR12CA0057.namprd12.prod.outlook.com (2603:10b6:802:20::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 6 May 2021 20:14:54 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: b4bb3163-5bd8-4ff0-c488-08d910cb9d59
+X-MS-TrafficTypeDiagnostic: DM6PR12MB4958:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DM6PR12MB4958C6FA8491B06A7E7C779EEC589@DM6PR12MB4958.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: pZMatCLiMkY+i5XexglfvLanbwIjDhibxK44ktmw+OJf6zp9oyx9Dih+lu1RJtvGcG8CV0QTs/zd4ETjsSNs8lU/4+iOQ/oAMQVQ8Fmzorz+4BPP51h6YVHS5ULMjlb7vaJZXC05vMC7+S63eboe8e6gVjLYS3ZsgRWcFtTrR3p56rfjudJ/tUs+6wFvcRQ2HNv+L6y9LLSCnVT0IrzDG8x40TT2+b6ZTAupb14uIKkcIbwY4Nan2kBFDWpaLhXMGAbOvaBokTwHoaa0SkcEG0CbPbZ4TVxF9BecimEmsszplKj2h8cM/phb0jMdGd4Ukma3r5UCMiPDzE5dToG79RV6qstBrCIGR0kNXlD/QxZISEjro4Kj9Kp85bYWCas+mbQodn3kdC3MYHrdkAmEm21QxmDIn0y5IavnqIx3vt6sX/Jg9ukPR2kTYx15RAJO3qWPqidAXBNbr9eNLreMH0T9EIyOnMvsgdA8WRraV07MH4GCha+g6oqwY8jiMc7ezgnN0/lz1Wjk8Dp4oVPYdDZDh0KHtPUc7eCqWj3wSju+/gLTG1mrazG2YxR18UIdvPNUB945HzVP4cIWkSKbontTDE5jiJwWK9kNaEK2JXmj2Cqq3Ue0R5Gnh0+ropl6JnAAqp+XzEy7QW8ihd0M3w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(366004)(346002)(396003)(6486002)(16526019)(66556008)(5660300002)(956004)(83380400001)(38350700002)(66476007)(86362001)(8676002)(4326008)(38100700002)(66946007)(2616005)(316002)(7416002)(8936002)(52116002)(54906003)(2906002)(7696005)(26005)(6666004)(36756003)(186003)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?MbqMK58H4s4dvNEqm4sE/yaburecBu3zwTkhzn2k5NcCQRT843IBSH9X/nDq?=
+ =?us-ascii?Q?BVQQncb5mqWHbX/FUeX4Ce8AEunmCu+NAOpP7y4YT4XjeSXbAiDwnG4Kq+uz?=
+ =?us-ascii?Q?j8jc9R+SCIpEawAinZjwcHomh0rCn3aQQ72HiNCF5RzrN0A2Wfmo2ozmYDBH?=
+ =?us-ascii?Q?BSZgmC7W8GY3MqZ7NsRbVUH29EKhrWO+qK0qCmCRAs+zOgQBUY/M32TTm18q?=
+ =?us-ascii?Q?WnjXDdGcDFPoJxFD/7g1SJIf7FTaHkLeTd581FF0kaJBTTb4FMrpJeT7455t?=
+ =?us-ascii?Q?O667RwLeDgmYZSekyQDTMnkJJQZfjasay4Sktpju3WQ53adQGXmin0n/HKDF?=
+ =?us-ascii?Q?LiIFH8rZYKhtAzYV3UTm+zDfg7TEyUVe/2nX+OPP7GVxrMPWU/euPvQwzHWb?=
+ =?us-ascii?Q?1Vgq3udTCpo6SAkWZpzYHfUU5P/Jbcif4b5TcCWAEksVjO9O3WIH+J3OOx6r?=
+ =?us-ascii?Q?Fks5h7s/JsUiQ6G1sKbEzxmFL8cfgLgHHc1RYAzWf/QWIaKPYhMa0TvOzhBK?=
+ =?us-ascii?Q?PmzR/4PNFP6rQ5pnAmBDmH32hfVZIMg+utgpn0LQlvNi/Co8xRV8dNXWAYMR?=
+ =?us-ascii?Q?PGp05zNM9Ih5jHwDZNLDHffiH73AL7W7IpoNolsLudChd4fCi/6tbmMYik/v?=
+ =?us-ascii?Q?d3d2aNrRRCpQ2Yg5j2ZvR3qazAOHVKZFf0wRHOIxjtFajqlAM0QuqD8FLVq1?=
+ =?us-ascii?Q?pTeHyjrZTjKWG9Sr6pWnaa2Z9xLuFMzZH8+bcofB7/sOsYhmQq1AZnngXBWm?=
+ =?us-ascii?Q?Iiv0YkzHTEersJfw6eS7U+xhB8LbcLZQ/wfDb3wWVJNtSTAMO5ZxMGvs7Kmt?=
+ =?us-ascii?Q?4+pazFzNzeNAk+FWvaBtwSHItz6HZV20okqlfRDD6fiXafqt/p4WxHP4Rq00?=
+ =?us-ascii?Q?qtkRMSPSZjsmApP+VdEdmXLt3Pe4jPIrNPwJTzchwquHgFk/8t1GB2bQe0KQ?=
+ =?us-ascii?Q?k+bRwt+PzpyZvWpwlyGstnyop/Y/QvPCG+tee4GetarggLhBWsdk3RFyQFUn?=
+ =?us-ascii?Q?nxSuqGbokI9EAP98jdb25z/0rdqJOI2r2tI0s4/USnMOTQu8pQ9y7/GOKo5/?=
+ =?us-ascii?Q?7q8wagh91n63ZRXreifBBQwK2lvEkHkGupmeny/8AfDBz+XcxVoaaZ7opqg+?=
+ =?us-ascii?Q?aY4ksLL3Y/KJKMt8TvY8ancUxFNXRvqk9nUKA5rdFH5VlYoG/cb214aLOtZL?=
+ =?us-ascii?Q?XcR9y4qn9kIlqVVYP06dOoUkvduT2OQUPrlq7hrEH5Nt5ZpFSdtejCASJQJs?=
+ =?us-ascii?Q?crDOeoUOj2/s1jzomdS+MrVaGeJl1AU5nMc+WJ6zdeJ00zeQpmuQkeMnLolR?=
+ =?us-ascii?Q?SucEW9W/xNEbVspvlXudb5hx?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b4bb3163-5bd8-4ff0-c488-08d910cb9d59
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 20:14:55.5626
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Z5EF1SkhDZGs7qLQeiQbOgHIakJyhVfm7vza5WG4CvoDkQj59aLWJpHbR0w2L+avfYaMruQneul79SwyWhMHow==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4958
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+When an SEV-ES guest is running, the GHCB is unmapped as part of the
+vCPU run support. However, kvm_vcpu_unmap() triggers an RCU dereference
+warning with CONFIG_PROVE_LOCKING=y because the SRCU lock is released
+before invoking the vCPU run support.
 
-please pull some more s390 updates for 5.13-rc1.
+Move the GHCB unmapping into the prepare_guest_switch callback, which is
+invoked while still holding the SRCU lock, eliminating the RCU dereference
+warning.
 
-Thanks,
-Heiko
+Fixes: 291bd20d5d88 ("KVM: SVM: Add initial support for a VMGEXIT VMEXIT")
+Reported-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
+---
+ arch/x86/kvm/svm/sev.c | 5 +----
+ arch/x86/kvm/svm/svm.c | 3 +++
+ arch/x86/kvm/svm/svm.h | 1 +
+ 3 files changed, 5 insertions(+), 4 deletions(-)
 
-The following changes since commit 6daa755f813e6aa0bcc97e352666e072b1baac25:
-
-  Merge tag 's390-5.13-1' of git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux (2021-04-27 17:54:15 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.13-2
-
-for you to fetch changes up to b208108638c4bd3215792415944467c36f5dfd97:
-
-  s390: fix detection of vector enhancements facility 1 vs. vector packed decimal facility (2021-05-04 19:10:56 +0200)
-
-----------------------------------------------------------------
-more s390 updates for 5.13 merge window
-
-- add support for system call stack randomization.
-
-- handle stale PCI deconfiguration events.
-
-- couple of defconfig updates.
-
-- some fixes and cleanups.
-
-----------------------------------------------------------------
-David Hildenbrand (1):
-      s390: fix detection of vector enhancements facility 1 vs. vector packed decimal facility
-
-Niklas Schnelle (3):
-      s390/pci: rename zpci_configure_device()
-      s390/pci: handle stale deconfiguration events
-      s390/configs: enable CONFIG_PCI_IOV
-
-Sven Schnelle (1):
-      s390/entry: add support for syscall stack randomization
-
-Thomas Huth (1):
-      s390/configs: change CONFIG_VIRTIO_CONSOLE to "m"
-
-Thomas Richter (3):
-      s390/cpumf: beautify if-then-else indentation
-      s390/cpumf: move counter set size calculation to common place
-      s390/cpumf: remove call to perf_event_update_userpage
-
-Vineeth Vijayan (1):
-      s390/cio: remove invalid condition on IO_SCH_UNREG
-
- arch/s390/Kconfig                      |  1 +
- arch/s390/configs/debug_defconfig      |  3 +-
- arch/s390/configs/defconfig            |  3 +-
- arch/s390/include/asm/cpu_mcf.h        |  2 ++
- arch/s390/include/asm/entry-common.h   | 10 +++++++
- arch/s390/include/asm/pci.h            |  2 +-
- arch/s390/kernel/perf_cpum_cf.c        | 12 ++------
- arch/s390/kernel/perf_cpum_cf_common.c | 46 +++++++++++++++++++++++++++++
- arch/s390/kernel/perf_cpum_cf_diag.c   | 54 +++-------------------------------
- arch/s390/kernel/setup.c               |  4 +--
- arch/s390/kernel/syscall.c             |  1 +
- arch/s390/kernel/traps.c               |  2 ++
- arch/s390/pci/pci.c                    | 10 ++++---
- arch/s390/pci/pci_event.c              | 28 ++++++++++++------
- drivers/pci/hotplug/s390_pci_hpc.c     |  2 +-
- drivers/s390/cio/device.c              |  3 +-
- 16 files changed, 103 insertions(+), 80 deletions(-)
-
-diff --git a/arch/s390/Kconfig b/arch/s390/Kconfig
-index c1ff874e6c2e..1900428ce557 100644
---- a/arch/s390/Kconfig
-+++ b/arch/s390/Kconfig
-@@ -137,6 +137,7 @@ config S390
- 	select HAVE_ARCH_JUMP_LABEL_RELATIVE
- 	select HAVE_ARCH_KASAN
- 	select HAVE_ARCH_KASAN_VMALLOC
-+	select HAVE_ARCH_RANDOMIZE_KSTACK_OFFSET
- 	select HAVE_ARCH_SECCOMP_FILTER
- 	select HAVE_ARCH_SOFT_DIRTY
- 	select HAVE_ARCH_TRACEHOOK
-diff --git a/arch/s390/configs/debug_defconfig b/arch/s390/configs/debug_defconfig
-index 6422618a4f75..86afcc6b56bf 100644
---- a/arch/s390/configs/debug_defconfig
-+++ b/arch/s390/configs/debug_defconfig
-@@ -387,6 +387,7 @@ CONFIG_CGROUP_NET_PRIO=y
- CONFIG_BPF_JIT=y
- CONFIG_NET_PKTGEN=m
- CONFIG_PCI=y
-+CONFIG_PCI_IOV=y
- # CONFIG_PCIEASPM is not set
- CONFIG_PCI_DEBUG=y
- CONFIG_HOTPLUG_PCI=y
-@@ -548,7 +549,7 @@ CONFIG_INPUT_EVDEV=y
- # CONFIG_INPUT_MOUSE is not set
- # CONFIG_SERIO is not set
- CONFIG_LEGACY_PTY_COUNT=0
--CONFIG_VIRTIO_CONSOLE=y
-+CONFIG_VIRTIO_CONSOLE=m
- CONFIG_HW_RANDOM_VIRTIO=m
- CONFIG_RAW_DRIVER=m
- CONFIG_HANGCHECK_TIMER=m
-diff --git a/arch/s390/configs/defconfig b/arch/s390/configs/defconfig
-index 371a529546aa..71b49ea5b058 100644
---- a/arch/s390/configs/defconfig
-+++ b/arch/s390/configs/defconfig
-@@ -377,6 +377,7 @@ CONFIG_CGROUP_NET_PRIO=y
- CONFIG_BPF_JIT=y
- CONFIG_NET_PKTGEN=m
- CONFIG_PCI=y
-+CONFIG_PCI_IOV=y
- # CONFIG_PCIEASPM is not set
- CONFIG_HOTPLUG_PCI=y
- CONFIG_HOTPLUG_PCI_S390=y
-@@ -540,7 +541,7 @@ CONFIG_INPUT_EVDEV=y
- # CONFIG_INPUT_MOUSE is not set
- # CONFIG_SERIO is not set
- CONFIG_LEGACY_PTY_COUNT=0
--CONFIG_VIRTIO_CONSOLE=y
-+CONFIG_VIRTIO_CONSOLE=m
- CONFIG_HW_RANDOM_VIRTIO=m
- CONFIG_RAW_DRIVER=m
- CONFIG_HANGCHECK_TIMER=m
-diff --git a/arch/s390/include/asm/cpu_mcf.h b/arch/s390/include/asm/cpu_mcf.h
-index 649b9fc60685..3e4cbcb7c4cc 100644
---- a/arch/s390/include/asm/cpu_mcf.h
-+++ b/arch/s390/include/asm/cpu_mcf.h
-@@ -123,4 +123,6 @@ static inline int stccm_avail(void)
- 	return test_facility(142);
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index a9d8d6aafdb8..5f70be4e36aa 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -2198,7 +2198,7 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
+ 	return -EINVAL;
  }
  
-+size_t cpum_cf_ctrset_size(enum cpumf_ctr_set ctrset,
-+			   struct cpumf_ctr_info *info);
- #endif /* _ASM_S390_CPU_MCF_H */
-diff --git a/arch/s390/include/asm/entry-common.h b/arch/s390/include/asm/entry-common.h
-index 9cceb26ed63f..baa8005090c3 100644
---- a/arch/s390/include/asm/entry-common.h
-+++ b/arch/s390/include/asm/entry-common.h
-@@ -4,9 +4,11 @@
+-static void pre_sev_es_run(struct vcpu_svm *svm)
++void sev_es_unmap_ghcb(struct vcpu_svm *svm)
+ {
+ 	if (!svm->ghcb)
+ 		return;
+@@ -2234,9 +2234,6 @@ void pre_sev_run(struct vcpu_svm *svm, int cpu)
+ 	struct svm_cpu_data *sd = per_cpu(svm_data, cpu);
+ 	int asid = sev_get_asid(svm->vcpu.kvm);
  
- #include <linux/sched.h>
- #include <linux/audit.h>
-+#include <linux/randomize_kstack.h>
- #include <linux/tracehook.h>
- #include <linux/processor.h>
- #include <linux/uaccess.h>
-+#include <asm/timex.h>
- #include <asm/fpu/api.h>
+-	/* Perform any SEV-ES pre-run actions */
+-	pre_sev_es_run(svm);
+-
+ 	/* Assign the asid allocated with this SEV guest */
+ 	svm->asid = asid;
  
- #define ARCH_EXIT_TO_USER_MODE_WORK (_TIF_GUARDED_STORAGE | _TIF_PER_TRAP)
-@@ -48,6 +50,14 @@ static __always_inline void arch_exit_to_user_mode(void)
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index a7271f31df47..e9f9aacc8f51 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -1424,6 +1424,9 @@ static void svm_prepare_guest_switch(struct kvm_vcpu *vcpu)
+ 	struct vcpu_svm *svm = to_svm(vcpu);
+ 	struct svm_cpu_data *sd = per_cpu(svm_data, vcpu->cpu);
  
- #define arch_exit_to_user_mode arch_exit_to_user_mode
- 
-+static inline void arch_exit_to_user_mode_prepare(struct pt_regs *regs,
-+						  unsigned long ti_work)
-+{
-+	choose_random_kstack_offset(get_tod_clock_fast() & 0xff);
-+}
++	if (sev_es_guest(vcpu->kvm))
++		sev_es_unmap_ghcb(svm);
 +
-+#define arch_exit_to_user_mode_prepare arch_exit_to_user_mode_prepare
-+
- static inline bool on_thread_stack(void)
- {
- 	return !(((unsigned long)(current->stack) ^ current_stack_pointer()) & ~(THREAD_SIZE - 1));
-diff --git a/arch/s390/include/asm/pci.h b/arch/s390/include/asm/pci.h
-index 35c2af9371a9..10b67f8aab99 100644
---- a/arch/s390/include/asm/pci.h
-+++ b/arch/s390/include/asm/pci.h
-@@ -204,7 +204,7 @@ extern unsigned int s390_pci_no_rid;
- struct zpci_dev *zpci_create_device(u32 fid, u32 fh, enum zpci_state state);
- int zpci_enable_device(struct zpci_dev *);
- int zpci_disable_device(struct zpci_dev *);
--int zpci_configure_device(struct zpci_dev *zdev, u32 fh);
-+int zpci_scan_configured_device(struct zpci_dev *zdev, u32 fh);
- int zpci_deconfigure_device(struct zpci_dev *zdev);
+ 	if (svm->guest_state_loaded)
+ 		return;
  
- int zpci_register_ioat(struct zpci_dev *, u8, u64, u64, u64);
-diff --git a/arch/s390/kernel/perf_cpum_cf.c b/arch/s390/kernel/perf_cpum_cf.c
-index b3beef64d3d4..31a605bcbc6e 100644
---- a/arch/s390/kernel/perf_cpum_cf.c
-+++ b/arch/s390/kernel/perf_cpum_cf.c
-@@ -230,9 +230,7 @@ static int __hw_perf_event_init(struct perf_event *event, unsigned int type)
- 		/* No support for kernel space counters only */
- 		} else if (!attr->exclude_kernel && attr->exclude_user) {
- 			return -EOPNOTSUPP;
--
--		/* Count user and kernel space */
--		} else {
-+		} else {	/* Count user and kernel space */
- 			if (ev >= ARRAY_SIZE(cpumf_generic_events_basic))
- 				return -EOPNOTSUPP;
- 			ev = cpumf_generic_events_basic[ev];
-@@ -402,12 +400,12 @@ static void cpumf_pmu_stop(struct perf_event *event, int flags)
- 		 */
- 		if (!atomic_dec_return(&cpuhw->ctr_set[hwc->config_base]))
- 			ctr_set_stop(&cpuhw->state, hwc->config_base);
--		event->hw.state |= PERF_HES_STOPPED;
-+		hwc->state |= PERF_HES_STOPPED;
- 	}
+diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
+index 84b3133c2251..e44567ceb865 100644
+--- a/arch/x86/kvm/svm/svm.h
++++ b/arch/x86/kvm/svm/svm.h
+@@ -581,6 +581,7 @@ void sev_es_init_vmcb(struct vcpu_svm *svm);
+ void sev_es_create_vcpu(struct vcpu_svm *svm);
+ void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
+ void sev_es_prepare_guest_switch(struct vcpu_svm *svm, unsigned int cpu);
++void sev_es_unmap_ghcb(struct vcpu_svm *svm);
  
- 	if ((flags & PERF_EF_UPDATE) && !(hwc->state & PERF_HES_UPTODATE)) {
- 		hw_perf_event_update(event);
--		event->hw.state |= PERF_HES_UPTODATE;
-+		hwc->state |= PERF_HES_UPTODATE;
- 	}
- }
+ /* vmenter.S */
  
-@@ -430,8 +428,6 @@ static int cpumf_pmu_add(struct perf_event *event, int flags)
- 	if (flags & PERF_EF_START)
- 		cpumf_pmu_start(event, PERF_EF_RELOAD);
- 
--	perf_event_update_userpage(event);
--
- 	return 0;
- }
- 
-@@ -451,8 +447,6 @@ static void cpumf_pmu_del(struct perf_event *event, int flags)
- 	 */
- 	if (!atomic_read(&cpuhw->ctr_set[event->hw.config_base]))
- 		ctr_set_disable(&cpuhw->state, event->hw.config_base);
--
--	perf_event_update_userpage(event);
- }
- 
- /*
-diff --git a/arch/s390/kernel/perf_cpum_cf_common.c b/arch/s390/kernel/perf_cpum_cf_common.c
-index 3bced89caffb..6d53215c8484 100644
---- a/arch/s390/kernel/perf_cpum_cf_common.c
-+++ b/arch/s390/kernel/perf_cpum_cf_common.c
-@@ -170,6 +170,52 @@ static int cpum_cf_offline_cpu(unsigned int cpu)
- 	return cpum_cf_setup(cpu, PMC_RELEASE);
- }
- 
-+/* Return the maximum possible counter set size (in number of 8 byte counters)
-+ * depending on type and model number.
-+ */
-+size_t cpum_cf_ctrset_size(enum cpumf_ctr_set ctrset,
-+			   struct cpumf_ctr_info *info)
-+{
-+	size_t ctrset_size = 0;
-+
-+	switch (ctrset) {
-+	case CPUMF_CTR_SET_BASIC:
-+		if (info->cfvn >= 1)
-+			ctrset_size = 6;
-+		break;
-+	case CPUMF_CTR_SET_USER:
-+		if (info->cfvn == 1)
-+			ctrset_size = 6;
-+		else if (info->cfvn >= 3)
-+			ctrset_size = 2;
-+		break;
-+	case CPUMF_CTR_SET_CRYPTO:
-+		if (info->csvn >= 1 && info->csvn <= 5)
-+			ctrset_size = 16;
-+		else if (info->csvn == 6)
-+			ctrset_size = 20;
-+		break;
-+	case CPUMF_CTR_SET_EXT:
-+		if (info->csvn == 1)
-+			ctrset_size = 32;
-+		else if (info->csvn == 2)
-+			ctrset_size = 48;
-+		else if (info->csvn >= 3 && info->csvn <= 5)
-+			ctrset_size = 128;
-+		else if (info->csvn == 6)
-+			ctrset_size = 160;
-+		break;
-+	case CPUMF_CTR_SET_MT_DIAG:
-+		if (info->csvn > 3)
-+			ctrset_size = 48;
-+		break;
-+	case CPUMF_CTR_SET_MAX:
-+		break;
-+	}
-+
-+	return ctrset_size;
-+}
-+
- static int __init cpum_cf_init(void)
- {
- 	int rc;
-diff --git a/arch/s390/kernel/perf_cpum_cf_diag.c b/arch/s390/kernel/perf_cpum_cf_diag.c
-index 2e3e7edbe3a0..08c985c1097c 100644
---- a/arch/s390/kernel/perf_cpum_cf_diag.c
-+++ b/arch/s390/kernel/perf_cpum_cf_diag.c
-@@ -316,52 +316,6 @@ static void cf_diag_read(struct perf_event *event)
- 	debug_sprintf_event(cf_diag_dbg, 5, "%s event %p\n", __func__, event);
- }
- 
--/* Return the maximum possible counter set size (in number of 8 byte counters)
-- * depending on type and model number.
-- */
--static size_t cf_diag_ctrset_size(enum cpumf_ctr_set ctrset,
--				 struct cpumf_ctr_info *info)
--{
--	size_t ctrset_size = 0;
--
--	switch (ctrset) {
--	case CPUMF_CTR_SET_BASIC:
--		if (info->cfvn >= 1)
--			ctrset_size = 6;
--		break;
--	case CPUMF_CTR_SET_USER:
--		if (info->cfvn == 1)
--			ctrset_size = 6;
--		else if (info->cfvn >= 3)
--			ctrset_size = 2;
--		break;
--	case CPUMF_CTR_SET_CRYPTO:
--		if (info->csvn >= 1 && info->csvn <= 5)
--			ctrset_size = 16;
--		else if (info->csvn == 6)
--			ctrset_size = 20;
--		break;
--	case CPUMF_CTR_SET_EXT:
--		if (info->csvn == 1)
--			ctrset_size = 32;
--		else if (info->csvn == 2)
--			ctrset_size = 48;
--		else if (info->csvn >= 3 && info->csvn <= 5)
--			ctrset_size = 128;
--		else if (info->csvn == 6)
--			ctrset_size = 160;
--		break;
--	case CPUMF_CTR_SET_MT_DIAG:
--		if (info->csvn > 3)
--			ctrset_size = 48;
--		break;
--	case CPUMF_CTR_SET_MAX:
--		break;
--	}
--
--	return ctrset_size;
--}
--
- /* Calculate memory needed to store all counter sets together with header and
-  * trailer data. This is independend of the counter set authorization which
-  * can vary depending on the configuration.
-@@ -372,7 +326,7 @@ static size_t cf_diag_ctrset_maxsize(struct cpumf_ctr_info *info)
- 	enum cpumf_ctr_set i;
- 
- 	for (i = CPUMF_CTR_SET_BASIC; i < CPUMF_CTR_SET_MAX; ++i) {
--		size_t size = cf_diag_ctrset_size(i, info);
-+		size_t size = cpum_cf_ctrset_size(i, info);
- 
- 		if (size)
- 			max_size += size * sizeof(u64) +
-@@ -405,7 +359,7 @@ static size_t cf_diag_getctrset(struct cf_ctrset_entry *ctrdata, int ctrset,
- 	ctrdata->def = CF_DIAG_CTRSET_DEF;
- 	ctrdata->set = ctrset;
- 	ctrdata->res1 = 0;
--	ctrset_size = cf_diag_ctrset_size(ctrset, &cpuhw->info);
-+	ctrset_size = cpum_cf_ctrset_size(ctrset, &cpuhw->info);
- 
- 	if (ctrset_size) {			/* Save data */
- 		need = ctrset_size * sizeof(u64) + sizeof(*ctrdata);
-@@ -845,7 +799,7 @@ static void cf_diag_cpu_read(void *parm)
- 
- 		if (!(p->sets & cpumf_ctr_ctl[set]))
- 			continue;	/* Counter set not in list */
--		set_size = cf_diag_ctrset_size(set, &cpuhw->info);
-+		set_size = cpum_cf_ctrset_size(set, &cpuhw->info);
- 		space = sizeof(csd->data) - csd->used;
- 		space = cf_diag_cpuset_read(sp, set, set_size, space);
- 		if (space) {
-@@ -975,7 +929,7 @@ static size_t cf_diag_needspace(unsigned int sets)
- 	for (i = CPUMF_CTR_SET_BASIC; i < CPUMF_CTR_SET_MAX; ++i) {
- 		if (!(sets & cpumf_ctr_ctl[i]))
- 			continue;
--		bytes += cf_diag_ctrset_size(i, &cpuhw->info) * sizeof(u64) +
-+		bytes += cpum_cf_ctrset_size(i, &cpuhw->info) * sizeof(u64) +
- 			 sizeof(((struct s390_ctrset_setdata *)0)->set) +
- 			 sizeof(((struct s390_ctrset_setdata *)0)->no_cnts);
- 	}
-diff --git a/arch/s390/kernel/setup.c b/arch/s390/kernel/setup.c
-index 72134f9f6ff5..5aab59ad5688 100644
---- a/arch/s390/kernel/setup.c
-+++ b/arch/s390/kernel/setup.c
-@@ -937,9 +937,9 @@ static int __init setup_hwcaps(void)
- 	if (MACHINE_HAS_VX) {
- 		elf_hwcap |= HWCAP_S390_VXRS;
- 		if (test_facility(134))
--			elf_hwcap |= HWCAP_S390_VXRS_EXT;
--		if (test_facility(135))
- 			elf_hwcap |= HWCAP_S390_VXRS_BCD;
-+		if (test_facility(135))
-+			elf_hwcap |= HWCAP_S390_VXRS_EXT;
- 		if (test_facility(148))
- 			elf_hwcap |= HWCAP_S390_VXRS_EXT2;
- 		if (test_facility(152))
-diff --git a/arch/s390/kernel/syscall.c b/arch/s390/kernel/syscall.c
-index bc8e650e377d..4e5cc7d2364e 100644
---- a/arch/s390/kernel/syscall.c
-+++ b/arch/s390/kernel/syscall.c
-@@ -142,6 +142,7 @@ void do_syscall(struct pt_regs *regs)
- 
- void noinstr __do_syscall(struct pt_regs *regs, int per_trap)
- {
-+	add_random_kstack_offset();
- 	enter_from_user_mode(regs);
- 
- 	memcpy(&regs->gprs[8], S390_lowcore.save_area_sync, 8 * sizeof(unsigned long));
-diff --git a/arch/s390/kernel/traps.c b/arch/s390/kernel/traps.c
-index 63021d484626..8dd23c703718 100644
---- a/arch/s390/kernel/traps.c
-+++ b/arch/s390/kernel/traps.c
-@@ -17,6 +17,7 @@
- #include "asm/ptrace.h"
- #include <linux/kprobes.h>
- #include <linux/kdebug.h>
-+#include <linux/randomize_kstack.h>
- #include <linux/extable.h>
- #include <linux/ptrace.h>
- #include <linux/sched.h>
-@@ -301,6 +302,7 @@ void noinstr __do_pgm_check(struct pt_regs *regs)
- 	unsigned int trapnr, syscall_redirect = 0;
- 	irqentry_state_t state;
- 
-+	add_random_kstack_offset();
- 	regs->int_code = *(u32 *)&S390_lowcore.pgm_ilc;
- 	regs->int_parm_long = S390_lowcore.trans_exc_code;
- 
-diff --git a/arch/s390/pci/pci.c b/arch/s390/pci/pci.c
-index c01b6dbac7cf..b0993e05affe 100644
---- a/arch/s390/pci/pci.c
-+++ b/arch/s390/pci/pci.c
-@@ -738,17 +738,19 @@ struct zpci_dev *zpci_create_device(u32 fid, u32 fh, enum zpci_state state)
- }
- 
- /**
-- * zpci_configure_device() - Configure a zpci_dev
-+ * zpci_scan_configured_device() - Scan a freshly configured zpci_dev
-  * @zdev: The zpci_dev to be configured
-  * @fh: The general function handle supplied by the platform
-  *
-  * Given a device in the configuration state Configured, enables, scans and
-- * adds it to the common code PCI subsystem. If any failure occurs, the
-- * zpci_dev is left disabled.
-+ * adds it to the common code PCI subsystem if possible. If the PCI device is
-+ * parked because we can not yet create a PCI bus because we have not seen
-+ * function 0, it is ignored but will be scanned once function 0 appears.
-+ * If any failure occurs, the zpci_dev is left disabled.
-  *
-  * Return: 0 on success, or an error code otherwise
-  */
--int zpci_configure_device(struct zpci_dev *zdev, u32 fh)
-+int zpci_scan_configured_device(struct zpci_dev *zdev, u32 fh)
- {
- 	int rc;
- 
-diff --git a/arch/s390/pci/pci_event.c b/arch/s390/pci/pci_event.c
-index 1178b48a66df..cd447b96b4b1 100644
---- a/arch/s390/pci/pci_event.c
-+++ b/arch/s390/pci/pci_event.c
-@@ -76,8 +76,6 @@ void zpci_event_error(void *data)
- 
- static void zpci_event_hard_deconfigured(struct zpci_dev *zdev, u32 fh)
- {
--	enum zpci_state state;
--
- 	zdev->fh = fh;
- 	/* Give the driver a hint that the function is
- 	 * already unusable.
-@@ -88,15 +86,12 @@ static void zpci_event_hard_deconfigured(struct zpci_dev *zdev, u32 fh)
- 	 */
- 	zpci_disable_device(zdev);
- 	zdev->state = ZPCI_FN_STATE_STANDBY;
--	if (!clp_get_state(zdev->fid, &state) &&
--	    state == ZPCI_FN_STATE_RESERVED) {
--		zpci_zdev_put(zdev);
--	}
- }
- 
- static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
- {
- 	struct zpci_dev *zdev = get_zdev_by_fid(ccdf->fid);
-+	enum zpci_state state;
- 
- 	zpci_err("avail CCDF:\n");
- 	zpci_err_hex(ccdf, sizeof(*ccdf));
-@@ -113,7 +108,7 @@ static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
- 				break;
- 			zdev->state = ZPCI_FN_STATE_CONFIGURED;
- 		}
--		zpci_configure_device(zdev, ccdf->fh);
-+		zpci_scan_configured_device(zdev, ccdf->fh);
- 		break;
- 	case 0x0302: /* Reserved -> Standby */
- 		if (!zdev)
-@@ -123,13 +118,28 @@ static void __zpci_event_availability(struct zpci_ccdf_avail *ccdf)
- 		break;
- 	case 0x0303: /* Deconfiguration requested */
- 		if (zdev) {
-+			/* The event may have been queued before we confirgured
-+			 * the device.
-+			 */
-+			if (zdev->state != ZPCI_FN_STATE_CONFIGURED)
-+				break;
- 			zdev->fh = ccdf->fh;
- 			zpci_deconfigure_device(zdev);
- 		}
- 		break;
- 	case 0x0304: /* Configured -> Standby|Reserved */
--		if (zdev)
--			zpci_event_hard_deconfigured(zdev, ccdf->fh);
-+		if (zdev) {
-+			/* The event may have been queued before we confirgured
-+			 * the device.:
-+			 */
-+			if (zdev->state == ZPCI_FN_STATE_CONFIGURED)
-+				zpci_event_hard_deconfigured(zdev, ccdf->fh);
-+			/* The 0x0304 event may immediately reserve the device */
-+			if (!clp_get_state(zdev->fid, &state) &&
-+			    state == ZPCI_FN_STATE_RESERVED) {
-+				zpci_zdev_put(zdev);
-+			}
-+		}
- 		break;
- 	case 0x0306: /* 0x308 or 0x302 for multiple devices */
- 		zpci_remove_reserved_devices();
-diff --git a/drivers/pci/hotplug/s390_pci_hpc.c b/drivers/pci/hotplug/s390_pci_hpc.c
-index f8f056be71b7..014868752cd4 100644
---- a/drivers/pci/hotplug/s390_pci_hpc.c
-+++ b/drivers/pci/hotplug/s390_pci_hpc.c
-@@ -35,7 +35,7 @@ static int enable_slot(struct hotplug_slot *hotplug_slot)
- 		return rc;
- 	zdev->state = ZPCI_FN_STATE_CONFIGURED;
- 
--	return zpci_configure_device(zdev, zdev->fh);
-+	return zpci_scan_configured_device(zdev, zdev->fh);
- }
- 
- static int disable_slot(struct hotplug_slot *hotplug_slot)
-diff --git a/drivers/s390/cio/device.c b/drivers/s390/cio/device.c
-index 3f026021e95e..84f659cafe76 100644
---- a/drivers/s390/cio/device.c
-+++ b/drivers/s390/cio/device.c
-@@ -1532,8 +1532,7 @@ static int io_subchannel_sch_event(struct subchannel *sch, int process)
- 	switch (action) {
- 	case IO_SCH_ORPH_UNREG:
- 	case IO_SCH_UNREG:
--		if (!cdev)
--			css_sch_device_unregister(sch);
-+		css_sch_device_unregister(sch);
- 		break;
- 	case IO_SCH_ORPH_ATTACH:
- 	case IO_SCH_UNREG_ATTACH:
+-- 
+2.31.0
+
