@@ -2,93 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD75E375BD2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:35:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB6EF375BC0
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235348AbhEFTgZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 15:36:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235140AbhEFTgX (ORCPT
+        id S235311AbhEFTeO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 15:34:14 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:11886 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235140AbhEFTeJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 15:36:23 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D3981C061574;
-        Thu,  6 May 2021 12:35:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=+Gmd9WE9Bu2QYLvWpqKR/yYem0cFXFiMf/zwpkj95U8=; b=crQvOxVhfA0rYm1ruAKJBNw0xC
-        xsM1t+SsJ5U1dOvsLom1VliGQksmvwhkFYj4n7ocfHyofPKeGYBDJFe7TYnq2YqoCPZFOp9Hi5yST
-        4FH25flkLwf/Lwe/+RCpeR/nmAkbyaM0SvaT/6ZA3du1X0I7kf4FyjORRo8wpB+6q2guCZ8DJU5gv
-        abGYH78vgb/2DeTmQHYosKU2fazelARvJeX7jelqa1FilgXL4Ovy+pzWnv0m0qQ94W3S3HRu/HDqu
-        DvLeYnQ9jgK+5VudN9eKZp/TM9hNoGEyJpw9FhDDQ01zRQCnF9I0oCHm83eSPFGW7r3nw8/YpGdhl
-        9IBGKFNQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lejha-0028sz-5z; Thu, 06 May 2021 19:30:34 +0000
-Date:   Thu, 6 May 2021 20:30:26 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     Zi Yan <ziy@nvidia.com>, Oscar Salvador <osalvador@suse.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        Andy Lutomirski <luto@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Wei Yang <richard.weiyang@linux.alibaba.com>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/7] Memory hotplug/hotremove at subsection size
-Message-ID: <20210506193026.GE388843@casper.infradead.org>
-References: <20210506152623.178731-1-zi.yan@sent.com>
- <fb60eabd-f8ef-2cb1-7338-7725efe3c286@redhat.com>
- <9D7FD316-988E-4B11-AC1C-64FF790BA79E@nvidia.com>
- <3a51f564-f3d1-c21f-93b5-1b91639523ec@redhat.com>
- <16962E62-7D1E-4E06-B832-EC91F54CC359@nvidia.com>
- <f3a2152c-685b-2141-3e33-b2bcab8b6010@redhat.com>
- <3A6D54CF-76F4-4401-A434-84BEB813A65A@nvidia.com>
- <0e850dcb-c69a-188b-7ab9-09e6644af3ab@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0e850dcb-c69a-188b-7ab9-09e6644af3ab@redhat.com>
+        Thu, 6 May 2021 15:34:09 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620329591; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=6hsvNiLm6snfgYT1gETxO981lyXB3iHndDKxbMsOxfE=; b=Gwzb63SBYfcyUpy2tBHtekgeU3tK8s1fYE02fOevYu6Vy818fYzWK0n46wuBnabz88VQXrq/
+ Hf1FNTgiSOb4OOJ69t2corPMVzj0VO9+cSujyBdEkdxj+L1Obd6DJWxcm9K2ib+G65pp7p5M
+ ZxwM+m7OaLbfDaYsltM6ohdXMcw=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 60944460febcffa80f056b8c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 19:32:48
+ GMT
+Sender: bbhatt=qti.qualcomm.com@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 5BBF3C43148; Thu,  6 May 2021 19:32:48 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_PASS
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id C3785C433D3;
+        Thu,  6 May 2021 19:32:34 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org C3785C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=pass (p=none dis=none) header.from=qti.qualcomm.com
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=pass smtp.mailfrom=bbhatt@qti.qualcomm.com
+From:   Bhaumik Bhatt <bbhatt@qti.qualcomm.com>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org,
+        Bhaumik Bhatt <bbhatt@qti.qualcomm.com>
+Subject: [PATCH v4 0/6] BHI/BHIe improvements for MHI power purposes
+Date:   Thu,  6 May 2021 12:32:19 -0700
+Message-Id: <1620329545-32328-1-git-send-email-bbhatt@qti.qualcomm.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 09:10:52PM +0200, David Hildenbrand wrote:
-> I have to admit that I am not really a friend of that. I still think our
-> target goal should be to have gigantic THP *in addition to* ordinary THP.
-> Use gigantic THP where enabled and possible, and just use ordinary THP
-> everywhere else. Having one pageblock granularity is a real limitation IMHO
-> and requires us to hack the system to support it to some degree.
+This patch series improves the power up behavior by allowing MHI host driver to
+set BHI and/or BHIe offsets early on in the preparation phase and fail pre-power
+up if offsets are not found or not within a limited MMIO region. This also
+allows MHI host to clean up the offsets in the unprepare after power down phase.
 
-You're thinking too small with only two THP sizes ;-)  I'm aiming to
-support arbitrary power-of-two memory allocations.  I think there's a
-fruitful discussion to be had about how that works for anonymous memory --
-with page cache, we have readahead to tell us when our predictions of use
-are actually fulfilled.  It doesn't tell us what percentage of the pages
-allocated were actually used, but it's a hint.  It's a big lift to go from
-2MB all the way to 1GB ... if you can look back to see that the previous
-1GB was basically fully populated, then maybe jump up from allocating
-2MB folios to allocating a 1GB folio, but wow, that's a big step.
+Going forward, controllers will be required to specify a reg_len field which
+will be used to check whether the BHI/BHIe offsets are in range or not.
 
-This goal really does mean that we want to allocate from the page
-allocator, and so we do want to grow MAX_ORDER.  I suppose we could
-do somethig ugly like
+This series has been tested on X86_64 architecture with the PCI generic driver
+as controller and an SDX55 device.
 
-	if (order <= MAX_ORDER)
-		alloc_page()
-	else
-		alloc_really_big_page()
+v4:
+-Added reviewed-by tags
+-Updated range check patch to include BHI/e offsets in the error message
 
-but that feels like unnecessary hardship to place on the user.
+v3:
+-Added reviewed-by tags
+-Updated order of reg_len in mhi_controller structure documentation
 
-I know that for the initial implementation, we're going to rely on hints
-from the user to use 1GB pages, but it'd be nice to not do that.
+v2:
+-Added reviewed-by tags
+-Moved reg_len entry in mhi_controller structure to allow for a packed struct
+
+Bhaumik Bhatt (6):
+  bus: mhi: core: Set BHI/BHIe offsets on power up preparation
+  bus: mhi: core: Set BHI and BHIe pointers to NULL in clean-up
+  bus: mhi: Add MMIO region length to controller structure
+  ath11k: set register access length for MHI driver
+  bus: mhi: pci_generic: Set register access length for MHI driver
+  bus: mhi: core: Add range checks for BHI and BHIe
+
+ drivers/bus/mhi/core/init.c           | 61 ++++++++++++++++++++++++-----------
+ drivers/bus/mhi/core/pm.c             | 28 +++-------------
+ drivers/bus/mhi/pci_generic.c         |  1 +
+ drivers/net/wireless/ath/ath11k/mhi.c |  1 +
+ include/linux/mhi.h                   |  2 ++
+ 5 files changed, 50 insertions(+), 43 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
