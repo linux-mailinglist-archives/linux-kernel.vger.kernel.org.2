@@ -2,129 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F75A37519F
+	by mail.lfdr.de (Postfix) with ESMTP id 8AF2F3751A0
 	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:38:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231658AbhEFJjN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:39:13 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:55024 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229898AbhEFJjK (ORCPT
+        id S232929AbhEFJjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:39:15 -0400
+Received: from mail.kingsoft.com ([114.255.44.146]:3140 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S232268AbhEFJjL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:39:10 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1469Nm4e144761;
-        Thu, 6 May 2021 09:37:44 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=DfoZg/EJyv1J1Ur8oyCVj6Lob9E6npm7TWUpZvwlkdQ=;
- b=lotbw+IA/+4rSHD6IZu2S4D7pxOWbwT5HIrrTNB02T/TZZUHfDkXVkYsM6MLg36ZfXQE
- c65iPl+ZEipn3RcxGlVmBy1rXRoHoo2OY0RM+/PfabyOnkGO0wi8FAuD2GkuHQy+kdIt
- wvel42TBu/TQVTwGujS0OjBZzjj7EPfdk4zzb+r9gTLfMF3F8/KnbWf/ptNp9Nu4dRh3
- Axzht2zd89DDNCtBkgAaAKUd/Df2Jr7vGYRe6KaZci5zEl1EKW7brh6b3VAhv37F818+
- W60rurQ9boV9HG//P7UniPpeX9FJDBRkidSM/auSHoGDEgmF9RY4Xz7wsUthJlp+BiZo WA== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by aserp2130.oracle.com with ESMTP id 38begjcc5y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 09:37:44 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1469PiuQ004949;
-        Thu, 6 May 2021 09:37:44 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38bewsgfkk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 09:37:44 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1469bhYi045611;
-        Thu, 6 May 2021 09:37:43 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 38bewsgfkb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 09:37:43 +0000
-Received: from abhmp0007.oracle.com (abhmp0007.oracle.com [141.146.116.13])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1469besP015292;
-        Thu, 6 May 2021 09:37:40 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 May 2021 02:37:40 -0700
-Date:   Thu, 6 May 2021 12:37:31 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, meijusan <meijusan@163.com>,
-        davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
-        kuba@kernel.org
-Cc:     lkp@intel.com, kbuild-all@lists.01.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, meijusan <meijusan@163.com>
-Subject: Re: [PATCH] net/ipv4/ip_fragment:fix missing Flags reserved bit set
- in iphdr
-Message-ID: <202105060033.tDmPYOCg-lkp@intel.com>
+        Thu, 6 May 2021 05:39:11 -0400
+X-AuditID: 0a580157-bd3ff70000027901-ed-6093b8f85b22
+Received: from mail.kingsoft.com (localhost [10.88.1.79])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id E1.2D.30977.8F8B3906; Thu,  6 May 2021 17:38:00 +0800 (HKT)
+Received: from alex-virtual-machine (10.88.1.103) by KSBJMAIL4.kingsoft.cn
+ (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 6 May 2021
+ 17:37:58 +0800
+Date:   Thu, 6 May 2021 17:37:57 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
+CC:     <linux-mm@kvack.org>, Tony Luck <tony.luck@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        "David Hildenbrand" <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        "Andy Lutomirski" <luto@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Jue Wang <juew@google.com>, <linux-kernel@vger.kernel.org>,
+        <yaoaili126@gmail.com>
+Subject: Re: [PATCH v4 1/2] mm/memory-failure: Use a mutex to avoid
+ memory_failure() races
+Message-ID: <20210506173757.586580bd@alex-virtual-machine>
+In-Reply-To: <20210427062953.2080293-2-nao.horiguchi@gmail.com>
+References: <20210427062953.2080293-1-nao.horiguchi@gmail.com>
+        <20210427062953.2080293-2-nao.horiguchi@gmail.com>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505132557.197964-1-meijusan@163.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: Ko1rMzgzYzMquw8bURs27wahlO4y6lad
-X-Proofpoint-ORIG-GUID: Ko1rMzgzYzMquw8bURs27wahlO4y6lad
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9975 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 malwarescore=0
- mlxlogscore=999 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2105060065
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.88.1.103]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
+ (10.88.1.79)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsXCFcHor/tjx+QEg2U3mS3mrF/DZvF5wz82
+        i6/rfzFb3LxlYnF51xw2i3tr/rNanN+1ltVi1bw7zBYXGw8wWpyZVmTx5sI9FotnrVdZHHg8
+        vrf2sXjsnHWX3WPBplKPxXteMnlsWtXJ5rHp0yR2jxMzfrN4vLi6kcXj/b6rbB6bT1d7fN4k
+        F8AdxWWTkpqTWZZapG+XwJVxs/8SW8EGjoolNwwbGO+zdTFycEgImEg8euzaxcjFISQwnUni
+        0LUt7BDOM0aJ95OuMXcxcnKwCKhILF13lQXEZhNQldh1bxYriC0ioCsxYVsvI0gDs8A/JolJ
+        Vw8wgSSEBWIkdrzYxwhi8wpYSay6cBmsgVPAXqJh/SGwQUICxRLr7s0Cq+EXEJPovfKfCeIi
+        e4nH6xUhWgUlTs58AlbOLKAjcWLVMWYIW15i+9s5zBBjFCUOL/nFDmJLAMXv/p7OCGHHSjQd
+        uMU2gVF4FpJRs5CMmoVk1AJG5lWMLMW56YabGCHxFr6DcV7TR71DjEwcjIcYJTiYlUR4Ty+a
+        nCDEm5JYWZValB9fVJqTWnyIUZqDRUmct3EmUEogPbEkNTs1tSC1CCbLxMEp1cBUZbvVJ99r
+        n4ThOy4mn/e2fWu3dxpECWcFPfi6bndBDPuW+nwRPlHeX7PS5abv/jvnnPfW/lt3F8TdP+v8
+        /V4UM9/0PzqrtnYI3Dly9/yEe4t5I0pYlHdaS+mwxjZOcW1dKTol/RKPVui5Y/tr+B9NfnOM
+        QX7v+5f/ty4v9RBz6Pbr3u2TMWVjx46K1WGRYp9er07c8IQ1ZTLjkxUfvT13s+tvNrtj2Cn5
+        T7Ut9aDBhOh2Tk+dG7tn7bwn+ThW7sSPlpJrrcsCV9dF7i09lS2wOOvewjVFpzsXFztfWln2
+        6vXJX5VVeVdePN4Y83St5dfqvq2fip1yZz2TNjEOjTZctq7Bf4mU5zdPC2H+CpWtSizFGYmG
+        WsxFxYkAVOlEXCYDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi meijusan,
+On Tue, 27 Apr 2021 15:29:52 +0900
+Naoya Horiguchi <nao.horiguchi@gmail.com> wrote:
 
-url:    https://github.com/0day-ci/linux/commits/meijusan/net-ipv4-ip_fragment-fix-missing-Flags-reserved-bit-set-in-iphdr/20210505-212826
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/horms/ipvs.git master
-config: i386-randconfig-m021-20210505 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
+> From: Tony Luck <tony.luck@intel.com>
+> 
+> There can be races when multiple CPUs consume poison from the same
+> page. The first into memory_failure() atomically sets the HWPoison
+> page flag and begins hunting for tasks that map this page. Eventually
+> it invalidates those mappings and may send a SIGBUS to the affected
+> tasks.
+> 
+> But while all that work is going on, other CPUs see a "success"
+> return code from memory_failure() and so they believe the error
+> has been handled and continue executing.
+> 
+> Fix by wrapping most of the internal parts of memory_failure() in
+> a mutex.
+> 
+> Signed-off-by: Tony Luck <tony.luck@intel.com>
+> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
+> Reviewed-by: Borislav Petkov <bp@suse.de>
 
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
+Sorry to interrupt, I just thought one thing:
 
-smatch warnings:
-net/ipv4/ip_output.c:655 ip_fraglist_prepare() error: uninitialized symbol 'ip_evil'.
+This mutex seems not been bind to the error page, will there be some core case
+like test code or multi-poison case whick will break this mutex?
 
-vim +/ip_evil +655 net/ipv4/ip_output.c
-
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  631  void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  632  {
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  633  	unsigned int hlen = iter->hlen;
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  634  	struct iphdr *iph = iter->iph;
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  635  	struct sk_buff *frag;
-c6cde148fcd3bf meijusan          2021-05-05  636  	bool ip_evil;
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  637  
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  638  	frag = iter->frag;
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  639  	frag->ip_summed = CHECKSUM_NONE;
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  640  	skb_reset_transport_header(frag);
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  641  	__skb_push(frag, hlen);
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  642  	skb_reset_network_header(frag);
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  643  	memcpy(skb_network_header(frag), iph, hlen);
-c6cde148fcd3bf meijusan          2021-05-05  644  	if (ntohs(iph->frag_off) & IP_EVIL)
-c6cde148fcd3bf meijusan          2021-05-05  645  		ip_evil = true;
-
-"ip_evil" is never set to false.
-
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  646  	iter->iph = ip_hdr(frag);
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  647  	iph = iter->iph;
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  648  	iph->tot_len = htons(frag->len);
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  649  	ip_copy_metadata(frag, skb);
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  650  	iter->offset += skb->len - hlen;
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  651  	iph->frag_off = htons(iter->offset >> 3);
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  652  	if (frag->next)
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  653  		iph->frag_off |= htons(IP_MF);
-c6cde148fcd3bf meijusan          2021-05-05  654  
-c6cde148fcd3bf meijusan          2021-05-05 @655  	if (ip_evil)
-c6cde148fcd3bf meijusan          2021-05-05  656  		iph->frag_off |= htons(IP_EVIL);
-c6cde148fcd3bf meijusan          2021-05-05  657  
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  658  	/* Ready, complete checksum */
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  659  	ip_send_check(iph);
-c8b17be0b7a45d Pablo Neira Ayuso 2019-05-29  660  }
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+Thanks!
+Aili Yao 
