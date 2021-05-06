@@ -2,198 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D0A43757DD
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:50:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC3403757E3
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:50:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235562AbhEFPvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:51:17 -0400
-Received: from mail-mw2nam12on2042.outbound.protection.outlook.com ([40.107.244.42]:19008
-        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S235136AbhEFPvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:51:14 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N/HC+d9j1sEKpbymxfhil7VCuItCIAd4keEXyiEgoz2RaFIf1hklQ5zzjO9az+34OqHVZLSoMGWc4xPWLn16OK66su4d5M85bZGS6jI7xHR2+q4C6GfmZOGe0CtpAvMZrrAKthmtKMgwoqBGnnhnrGArWzq6SKuIzRSYVh2RY0ha1e+x97wJptkJlzRqVpqt6l+EbQNoAP0pufFdCjBqJfXeowcU6RVvTZzPAUT+4KG3lEIGPkFWu2SHUooaIMr76gw0ChOMmDqEubOOV+vxIfHpyCFMEnTYpivp6+3yBhT2fW/jiFU8P63qhSYvWS5krPt5tdWJDsqn/loxoTS3gg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mVLWYEJoKYGXddORiVVn9D5vk11JrfFyAbRck+MT2CM=;
- b=SmRw33Ly6rDEEhV6wsuMCJyfCkYr8KYXHWV2D97sXlAzshDIH3Zb5sVm8rR7vlmVz3tekvZhZJGsK25P1DGXBZXdE8w5i+FlvinqBYhZC/qcP6Kl/f9UbbqVWEpYegMalrVwuiz2k19M4Vg95RmpUuFqn3yT8U3FOhPpvh3O+LeQdJCck35lOUu4UqSg3XphsiGxexQSGy+2+RPswcoHun7TERxA6Oyk+XuiaUm5oouOA/WmhawfE93N1U47IbIqrmlyV86F9QLzukFWCMMDLkI5Eq/ZZ3aRZEqcMJMg2ritqD8xlrjdEhBXTyni1Ws2hP0WW75hZ5K11A1GwP53PQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=mVLWYEJoKYGXddORiVVn9D5vk11JrfFyAbRck+MT2CM=;
- b=LCAVlZY87OZfnXt755C2W6mYDItjDnfJChoRIBvXR89IyHc0a5t1Udyb6tow24aJa6yQzuP4hN/FeNYswuV38KIHj5duqwbfUBNG7BytjLmpzZhe0AOZLFO++RiI/lpN5e3lgdNof+J/MY5xzlLRK+yMeKsvJBwZ7BN/R0/ZRryZln58n6+vFOYzXSUdTSev/0M0F1HlxEx58ljCmBs3i8TKICzCoqGFTEBHMaFSJp1Vkaj2d2HBwGa14rYKV+YFjPb91diMGLniCK1yELw1JxcNwp+XDobxAtwJO10muSEuHk2fktmZjggtUUY8I37xxei9PzGJht3O7aBjR27NQw==
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
- by BL0PR12MB2468.namprd12.prod.outlook.com (2603:10b6:207:44::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
- 2021 15:50:14 +0000
-Received: from MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::ccd7:fb49:6f2d:acf2]) by MN2PR12MB3823.namprd12.prod.outlook.com
- ([fe80::ccd7:fb49:6f2d:acf2%7]) with mapi id 15.20.4108.026; Thu, 6 May 2021
- 15:50:14 +0000
-From:   "Zi Yan" <ziy@nvidia.com>
-To:     "David Hildenbrand" <david@redhat.com>
-Cc:     "Oscar Salvador" <osalvador@suse.de>,
-        "Michael Ellerman" <mpe@ellerman.id.au>,
-        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>, x86@kernel.org,
-        "Andy Lutomirski" <luto@kernel.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        "Andrew Morton" <akpm@linux-foundation.org>,
-        "Mike Rapoport" <rppt@kernel.org>,
-        "Anshuman Khandual" <anshuman.khandual@arm.com>,
-        "Michal Hocko" <mhocko@suse.com>,
-        "Dan Williams" <dan.j.williams@intel.com>,
-        "Wei Yang" <richard.weiyang@linux.alibaba.com>,
-        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org
-Subject: Re: [RFC PATCH 0/7] Memory hotplug/hotremove at subsection size
-Date:   Thu, 06 May 2021 11:50:08 -0400
-X-Mailer: MailMate (1.14r5757)
-Message-ID: <16962E62-7D1E-4E06-B832-EC91F54CC359@nvidia.com>
-In-Reply-To: <3a51f564-f3d1-c21f-93b5-1b91639523ec@redhat.com>
-References: <20210506152623.178731-1-zi.yan@sent.com>
- <fb60eabd-f8ef-2cb1-7338-7725efe3c286@redhat.com>
- <9D7FD316-988E-4B11-AC1C-64FF790BA79E@nvidia.com>
- <3a51f564-f3d1-c21f-93b5-1b91639523ec@redhat.com>
-Content-Type: multipart/signed;
- boundary="=_MailMate_EF181C5B-F560-456C-BCA4-7AD984E499FD_=";
- micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [216.228.112.22]
-X-ClientProxiedBy: MN2PR05CA0059.namprd05.prod.outlook.com
- (2603:10b6:208:236::28) To MN2PR12MB3823.namprd12.prod.outlook.com
- (2603:10b6:208:168::26)
+        id S235784AbhEFPvp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:51:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37752 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235136AbhEFPvn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:51:43 -0400
+Received: from mail-pf1-x435.google.com (mail-pf1-x435.google.com [IPv6:2607:f8b0:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A612BC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 08:50:44 -0700 (PDT)
+Received: by mail-pf1-x435.google.com with SMTP id h127so5422902pfe.9
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:50:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Q38PAJ9+uMS5LIyUmdseGu2IcazIhzhvbZQsCgfZzn4=;
+        b=1cUZc1c2lIsjBJsJ4rOOvLJzMepMGS/DzSPn09nST1vPpjvY9wgA70C4DBLt5bGDLJ
+         WPaAXEaZgEjBu4Q0C88uBp5IWO1zeRjgwNNzt/vB7YfXxhyoT9XA1jkn4QHpn0qYJCaM
+         oxXiurTz9jG3MEFWRmuKrqTmV5VJy0v+51oSeAQ0aWNCOI0ParK4dXwosAl0qVpmGIv/
+         CDCsMnSmjisWdGai9oQyt1T9HZzUTym6xYlpNa/YP5ZUT/SP+yREFbbbALXzRei9J6jB
+         reDLe2tSkqnnkAttGhpPxy3nUjTOLA4TtzbfshBodbwN1QaHhboQmjUlEPSKAM4BU/X+
+         tt5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Q38PAJ9+uMS5LIyUmdseGu2IcazIhzhvbZQsCgfZzn4=;
+        b=rGDz/TR67x0a/fb0Kkf/TDP48WwRKMSZDAP1CnrWb/GIXhh7MUw3C8+aUqK5GT03aY
+         y4MKZsMbW1V/NLBa9FHfJ+PJJQ6wsx4BvRujVb0Ll4D3il0kfC1m34+dCSW/3hLZKdpL
+         VusLOj6+TYFpBC/E2OzqGYSGxoLWe5GmGbzpoIVkMjxyEUWY3wCetsxEoVyGGYBB95PW
+         4Hbf1Sfnz8a/5IJz7UwYVok/0sQ+qQkbIAhjQm+cvpgC6vsVHLG1e2VA8bYOiC1Q8aTc
+         xI0iGbE05eTZ70+6Jg7yzygmGarbP7eFLlu7XlFeun5y0L3yjmu1+kVqzUBcw8znqAbC
+         puog==
+X-Gm-Message-State: AOAM530WgMaVhBxUdMki0zbbuGtZ54Mp1dVl5tjd2LMLK+y20oaIYm9J
+        mAw6XmDGwkBLWilIu6WVRDtufg==
+X-Google-Smtp-Source: ABdhPJyjgjL58P30m9SNtzogdtxcO3JGCVNtxZZ7nUIhgb2sWuNtDd7TKt+ryVdWeknB0pIolxuoDQ==
+X-Received: by 2002:a63:bd49:: with SMTP id d9mr4884354pgp.311.1620316244117;
+        Thu, 06 May 2021 08:50:44 -0700 (PDT)
+Received: from hermes.local (76-14-218-44.or.wavecable.com. [76.14.218.44])
+        by smtp.gmail.com with ESMTPSA id d8sm2329844pfl.156.2021.05.06.08.50.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 08:50:43 -0700 (PDT)
+Date:   Thu, 6 May 2021 08:50:35 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Vincent Mailhol <mailhol.vincent@wanadoo.fr>
+Cc:     Marc Kleine-Budde <mkl@pengutronix.de>, linux-can@vger.kernel.org,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v1 1/1] iplink_can: add new CAN FD bittiming
+ parameters: Transmitter Delay Compensation (TDC)
+Message-ID: <20210506085035.2fc33bf3@hermes.local>
+In-Reply-To: <20210506112007.1666738-2-mailhol.vincent@wanadoo.fr>
+References: <20210506112007.1666738-1-mailhol.vincent@wanadoo.fr>
+        <20210506112007.1666738-2-mailhol.vincent@wanadoo.fr>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.2.63.7] (216.228.112.22) by MN2PR05CA0059.namprd05.prod.outlook.com (2603:10b6:208:236::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.11 via Frontend Transport; Thu, 6 May 2021 15:50:10 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4a2db97e-f624-4c48-62e7-08d910a6a382
-X-MS-TrafficTypeDiagnostic: BL0PR12MB2468:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BL0PR12MB2468B754CC1E5FE3B1B1021AC2589@BL0PR12MB2468.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: y5G/mpktJwt+tvY6OagShcoWTPAMPS67CRSrkmgMOLWrtwO5cHehRs0Q8BmjmxWsFUC/KBfyjxjBxVl1/ROcsxXV1TQlk+x0FhgtGeg1Pf6ITt3Ahh/dMyZ326PEA4YMoxSv7pKYJhhsAdS5utRiUDZFyNKXI8aeTWao8pkbcy2+DclVvszVqDbEb5t+LuVcnw4jnm62hiB906ESESUO72lro7GW12JunOMXubu840LM8G8eqbRVO83ItgTwPdEkN2EdEER4ztFUZSVCMErAwOTqk/KVmsrSEAf6+gjpJHqAf3++uFxy5OEu3W/VERx7e3uoXJ1y5rWpKk8OBpADHmC81PWogvhJICH1I4EEvdDaF2lAeG/8ojNuM+odv62bMUvlPV2bLo5ao6X1KtTkMSvhpq7B5eIYoleKqpZplsnYrh+OdhsvsL/OMU2S7YFD/spwENFQpwu1yqrSsfFZIrro1BUKzSKwjxp/zIIakgBnbiVKgjyH7qUg5A5SLCRmlUSMC0+sbkkKgv0xek7N5MT/vX3AabgGyDxP9btn2CLvriOQx0qMMqk6fTqr6+h0yn6k3Cofc+zMgGwggDwYMB1cP1xn75aB675jplHa4AiTHkzOpUKwR2pshxgZE9yHB/kVHds73qMbqlyJRnhPVgdVj131TuxRmHzOKgr3LlM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(376002)(366004)(136003)(396003)(66946007)(235185007)(33656002)(8936002)(66476007)(2906002)(186003)(16526019)(66556008)(6916009)(956004)(2616005)(5660300002)(4326008)(8676002)(26005)(16576012)(7416002)(36756003)(478600001)(316002)(6486002)(53546011)(83380400001)(54906003)(38100700002)(33964004)(86362001)(72826003)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?amN6YUpLNkIyRXdJNmFSRmVPVkdFVGdqcWd5eGlUVVlNTUg4NDdXUnlMdEFT?=
- =?utf-8?B?U3NYNWdER1gxdkt6R2ZHR3daamU5SlRIQkFsTFRFYS84V0tHWFpHVzJhVjRi?=
- =?utf-8?B?bGIxZ2YvNVFZemV3QUJGN2oxLzdxM2E2aEpDd1o4eWRGb09MUXdkaGU2bjR3?=
- =?utf-8?B?eVZPUFpIN1NDS1RIY0k5OXlZSENIMGNwQW1nWjhxNEpnekVTVXU3WFVVVXRx?=
- =?utf-8?B?UVZHOG5vUzFYbUI0VGc2YjVRTW50M2t2emlITHpkVkgwY3JqTGljckhOWkl0?=
- =?utf-8?B?YmJrT01uTms0L01BWldNOTNxSFdjYzAvRldNSlZBQ0tWT3VPNWtINk1XTUxG?=
- =?utf-8?B?L3JXU1RtQUFOcG1IbjcvclppdXJFS2VKazRyaG9RMDc5OUJIc1BLaHBDbEw1?=
- =?utf-8?B?aStUWEFKVDlTdUR6TEk4SndmV0l4MU1BM2dqdmZHU2RqOXhNdTQvNWxya1p3?=
- =?utf-8?B?QkhBRW8xMzJFOVA5bWF5akJTTjFwTVppQngxRHdXNDkwbWN3NC9IQVhPaUZk?=
- =?utf-8?B?U2JjWHVhazRvdldpbjEwd2hrdWYrQVB1R1AwR1lkWUs4YU5rN3htdDFJZGRz?=
- =?utf-8?B?QUljdFhUVmRwRWgzU1M3RFhCNTIzVEtoaG5PbUYyRUlQZWZHZlBzT3ZtMGQ2?=
- =?utf-8?B?UlloYzV5czU2N0c4aWpsUjkzNGxwMnE4STlWS0tIYVlRMS9LR2xSY0w4MU1h?=
- =?utf-8?B?a3F1WmRwT0hBLzBxT0xnNmJJSjJBQldlRWRCcG9ZdTE3bWJTTHJ0bEwyMzFF?=
- =?utf-8?B?dlM2TzRtZ3FJRWtnNDhiMFgvaG5zY0Y5eXBNSTFId3kwUjQzU3dUSUl3ajkr?=
- =?utf-8?B?ZERrcTlxYTR4NUtkamJZU0lFU0tpQXROeTZyb0g3YmRGMHRuMHloWWtYQUNC?=
- =?utf-8?B?WStpZEpZUWpNOVJ0T1lralZGWmtvOGErd01xTkoxNUhDbXc4eGFxQkFjUWdO?=
- =?utf-8?B?Zis0Y3plVCtYNndTRUdFd0VXQkRxRWt2eCs3K0JXYk9sdU5jdi9ZaSt3NUEw?=
- =?utf-8?B?WTRqS3VhenpVRWRVTm9mOU44QWFyMjZDNHR0WC9sbU1tRU5sR2ZiQ0tTV0tT?=
- =?utf-8?B?OUYrV09OZE9DY1hjZWRYN3VMZkVUR3NuVXEzeDlrZ2tRTHg4alJ0cmtsK1VX?=
- =?utf-8?B?dGRuSUJ1dExPbkM0YkNiVXNvV2tlV25qc01neG10ZlZ0cnpmRFBvSmQxNXUr?=
- =?utf-8?B?eDJveVJTZEZ1YWkvby9PQndoL0ZuQldiU0dyWEJBNGcwYjgySEN3Wk5HdWxl?=
- =?utf-8?B?ekppQ1JXb2NaSERJMDJsbWcxbWtvTEZaeTg4YkdmbHRTbmcvWVZFK0cxWWpi?=
- =?utf-8?B?KysxeStDQ1Z6V2VGL3pCV3RKWEo0MnhkMXBCakhMd0ZyQiszbzM3QUl2MTVw?=
- =?utf-8?B?QUNvQWpmRXEvZWp6UHk0N09STFZibU0wa29ubmNaTHJ0K1Z1RG8zdzdVR1Ez?=
- =?utf-8?B?U3JsSkJiajBtUlk3aUVaT1I1TklQbDVhd1NNbnB1RFlPdEU1cVJlSWpvS0JW?=
- =?utf-8?B?OHFBeHdGbVhvL09MSktKMmtwbHVNU0ZVSlh5amhUQ1NIdzFrVWFyeTdqS0pk?=
- =?utf-8?B?NHNzY2cwQUEzN2tIVDEvR0loaURQV0ZEeGNRNjRlcmVaWXVHYnpHazQ1MVBQ?=
- =?utf-8?B?QXFPOU5NL0RkWFFqNUlWNE1GUncycDVjcjhwMFRQQUM2NGR6S2luQ1VlSzcy?=
- =?utf-8?B?eW9hQURzVUhYVmIwcHM2VVNHM0cxQzNnWnVYbXZQNW82bm11cXVYRlpzYXo3?=
- =?utf-8?Q?TVVK0zxzGP/ol0BudmIpFc4urkN5Kdka5CEGccn?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a2db97e-f624-4c48-62e7-08d910a6a382
-X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 15:50:14.6251
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: CSlfpw9kMOus/VnZHVM7zSMn6gYy3gYbyvASz5mWyiCkWbWBDH1hPjGsZAygXRag
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB2468
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_EF181C5B-F560-456C-BCA4-7AD984E499FD_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Thu,  6 May 2021 20:20:07 +0900
+Vincent Mailhol <mailhol.vincent@wanadoo.fr> wrote:
 
-On 6 May 2021, at 11:40, David Hildenbrand wrote:
+> +	if (tb[IFLA_CAN_TDC_TDCV] && tb[IFLA_CAN_TDC_TDCO] &&
+> +	    tb[IFLA_CAN_TDC_TDCF]) {
+> +		__u32 *tdcv = RTA_DATA(tb[IFLA_CAN_TDC_TDCV]);
+> +		__u32 *tdco = RTA_DATA(tb[IFLA_CAN_TDC_TDCO]);
+> +		__u32 *tdcf = RTA_DATA(tb[IFLA_CAN_TDC_TDCF]);
+> +
+> +		if (is_json_context()) {
+> +			open_json_object("tdc");
+> +			print_int(PRINT_JSON, "tdcv", NULL, *tdcv);
+> +			print_int(PRINT_JSON, "tdco", NULL, *tdco);
+> +			print_int(PRINT_JSON, "tdcf", NULL, *tdcf);
+> +			close_json_object();
+> +		} else {
+> +			fprintf(f, "\n	  tdcv %d tdco %d tdcf %d",
+> +				*tdcv, *tdco, *tdcf);
+> +		}
+> +	}
+> +
 
->>>> The last patch increases SECTION_SIZE_BITS to demonstrate the use of=
- memory
->>>> hotplug/hotremove subsection, but is not intended to be merged as is=
-=2E It is
->>>> there in case one wants to try this out and will be removed during t=
-he final
->>>> submission.
->>>>
->>>> Feel free to give suggestions and comments. I am looking forward to =
-your
->>>> feedback.
->>>
->>> Please not like this.
->>
->> Do you mind sharing more useful feedback instead of just saying a lot =
-of No?
->
-> I remember reasoning about this already in another thread, no? Either y=
-ou're ignoring my previous feedback or my mind is messing with me.
+The most common pattern in iproute2 is to let json/non-json be decided
+inside the print routine.  I search for all instances of fprintf as
+indication of broken code. Also these are not signed values so please
+print unsigned.  The code should use print_nl() to handle the single line
+case. Also, there is helper to handle 
 
-I definitely remember all your suggestions:
+Something like:
+              __u32 tdc = rte_getattr_u32(tb[IFLA_CAN_TDC_TDCV]);
 
-1. do not use CMA allocation for 1GB THP.
-2. section size defines the minimum size in which we can add_memory(), so=
- we cannot increase it.
-
-I am trying an alternative here. I am not using CMA allocation and not in=
-creasing the minimum size of add_memory() by decoupling the memory block =
-size from section size, so that add_memory() can add a memory block small=
-er (as small as 2MB, the subsection size) than section size. In this way,=
- section size can be increased freely. I do not see the strong tie betwee=
-n add_memory() and section size, especially we have subsection bitmap sup=
-port.
-
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_EF181C5B-F560-456C-BCA4-7AD984E499FD_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename=signature.asc
-Content-Type: application/pgp-signature; name=signature.asc
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmCUEDAPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKvJMP/0lV2lDuyjt8qAFqOIf+9/FwjaI5D/Zp45sh
-yG07rIN2WsKGzAXTeXMOy2wOZeFkUaYcO7TYTWB2ITMt0AM6ZoBQkHfH93RX1DYx
-SKQuvCEHcA8gIzNidDjoDQxZhIXVFcPWqoe1INChH5YlydqRbxrMaRUEbNXFUkh2
-Uyoa3KmmghZL+hCfTukkMkD0vzFU4kC6C3J61RBk2JulO6QB8BnVS2FhwoHLqKJE
-yfnjvEAxYCjCveV8+L9JS/A4sdWEW+jIeFc9a1Ak0lFBIablXox2vAyyhJHqq9PE
-/zyW8EUl+VrbT6B/xDenQMT5WwY0ggxdsjHzvXe4BcsHWSTZq6jFlW5dhlaqn/Rf
-WhpRQYni21wq/A4zdF0SVp400TYOvmoBsf9haLygjUXT3rVHkJnd6ItZ6wa+QbPJ
-mb3x6lQmNnKRiU5VZt/G8octH7m3O8153e3sT/6ffdE33NhQUC2ncJBCQB+BSflW
-JgsOSizD13RI5TmuliD/JFhi37kMrkj4dCuK7hBWBZyHL8DKzCf6y3Iw1VIgyku1
-6b9jWQCl4OVxSTyh2rrI0ulvjHbJNSCB+P8w+kQ66qEuZVjlOkKmbCCoL/64diDH
-8gR3c2uSEGevWqZzX5Mt0u7C/HYAWqKN0TYpjcuQ0hL9xiYVz8dqdNo/lsfgk4q+
-dXFzUKjn
-=8W9n
------END PGP SIGNATURE-----
-
---=_MailMate_EF181C5B-F560-456C-BCA4-7AD984E499FD_=--
+		open_json_object("tdc");
+		print_nl();
+		print_u32(PRINT_ANY, "tdcv", "    tdcv %u", tdcv);
+...
