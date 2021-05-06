@@ -2,93 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22ABD37556F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90B4637557B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:17:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234669AbhEFONt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:13:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
+        id S234561AbhEFOSp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:18:45 -0400
+Received: from mga06.intel.com ([134.134.136.31]:48746 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233737AbhEFONq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:13:46 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E0C0610A6;
-        Thu,  6 May 2021 14:12:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620310367;
-        bh=Gtp++8OISnKlL7igW1jsmr8lSaw32BvY9v1KfWv5ncU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dvbWjFFU2pzS4gM2+/va2sQm/uvGhbrXjdWBmOorH903z16u8tbwh24qRUnzY0Ivf
-         ZgBqPscl7PccHeK3TJh+2tYecsXbytQl+SXDXgjbdHXIcy26HuVPS/s8fi3C6XoPcS
-         NZ+dzxu5VgZRaBBdtBrdF9JML0mUZZGuWD8uJt1qk3u76/qSX2KbP1qG6lCERAmwxN
-         Z2/3ruLnSpWpvTFX91Dsm5bRQCMJwXrRUvr0BsxRtlwVZgW6ZX0tceSONXJ/yOrzYB
-         0KRc70WlZMt9TzYjuHa/Jm4WwTTpVchtvqJ40zqtUqYiH1+rNL6FJw19oeeibyekZr
-         M4EV3QrH9efRw==
-Date:   Thu, 6 May 2021 15:12:11 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 3/4] arm64: Handle miscellaneous functions in
- .text and .init.text
-Message-ID: <20210506141211.GE4642@sirena.org.uk>
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-4-madvenka@linux.microsoft.com>
+        id S233737AbhEFOSn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 10:18:43 -0400
+IronPort-SDR: 33ZLxfnA7o8IDcgkDqHAkDvQtilmnt//Uthm41OKf/AmlSinh7oQtYbEpTeDJP9FrtaUbe3AR8
+ t4QFmyTTNrnA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="259761859"
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="259761859"
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 07:17:18 -0700
+IronPort-SDR: hn02Kj8lMN1tRBnSxSDHsBy1bNo+nrUylKglaI8arSXJDe0mBho9E15Cs/Nm/LWV3A4FDH0h7H
+ e2AN+d5DHQuQ==
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="539970015"
+Received: from akleen-mobl1.amr.corp.intel.com (HELO [10.212.219.76]) ([10.212.219.76])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 07:17:18 -0700
+Subject: Re: [PATCH v5 00/20] Introduce threaded trace streaming for basic
+ perf record operation
+To:     Namhyung Kim <namhyung@kernel.org>,
+        Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Alexander Antonov <alexander.antonov@linux.intel.com>,
+        Alexei Budankov <abudankov@huawei.com>
+References: <cover.1619781188.git.alexey.v.bayduraev@linux.intel.com>
+ <CAM9d7citW_NGb0vjMM2ytp=Mbq5YNe4GEaWspEkMGf=KAm+ugw@mail.gmail.com>
+From:   Andi Kleen <ak@linux.intel.com>
+Message-ID: <4926ae4f-b14b-1048-229b-0b789204c192@linux.intel.com>
+Date:   Thu, 6 May 2021 07:17:17 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="9l24NVCWtSuIVIod"
-Content-Disposition: inline
-In-Reply-To: <20210503173615.21576-4-madvenka@linux.microsoft.com>
-X-Cookie: If it ain't baroque, don't phiques it.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAM9d7citW_NGb0vjMM2ytp=Mbq5YNe4GEaWspEkMGf=KAm+ugw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---9l24NVCWtSuIVIod
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+On 5/5/2021 11:20 PM, Namhyung Kim wrote:
+>
+> Do you have an idea how to improve it?
+>
+> I have to say again that I don't like merely adding more threads to
+> record.  Yeah, parallelizing the perf record is good, but we have to
+> think about the perf report (and others) too.
 
-On Mon, May 03, 2021 at 12:36:14PM -0500, madvenka@linux.microsoft.com wrote:
+perf report/script can be already parallelized with --time xx/x% and a 
+simple shell script that runs multiple processes. While that's a bit 
+awkward for interactive use it works fine for scripting. I use it all 
+the time for PT batch processing for example. The real bottleneck we 
+have is really record on systems with many CPUs (which are more and more 
+common), and that can only be fixed with some variant of this patch kit.
 
-> There are some SYM_CODE functions that are currently in ".text" or
-> ".init.text" sections. Some of these are functions that the unwinder
-> does not care about as they are not "interesting" to livepatch. These
-> will remain in their current sections. The rest I have moved into a
-> new section called ".code.text".
+-Andi
 
-I was thinking it'd be good to do this by modifying SYM_CODE_START() to
-emit the section, that way nobody can forget to put any SYM_CODE into a
-special section.  That does mean we'd have to first introduce a new
-variant for specifying a section that lets us override things that need
-to be in some specific section and convert everything that's in a
-special section over to that first which is a bit annoying but feels
-like it's worth it for the robustness.  It'd also put some of the don't
-cares into .code.text but so long as they are actually don't cares that
-should be fine!
-
-> Don't care functions
-> ====================
-
-We also have a bunch of things like __cpu_soft_restart which don't seem
-to be called out here but need to be in .idmap.text.
-
---9l24NVCWtSuIVIod
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCT+ToACgkQJNaLcl1U
-h9ABFgf/Z5OheyVXijHxIjnaaC+SDZlNsGtc6XqdehcMncCJVr16obC0q5aBjRLy
-i4VZOPM2GQ0pxk0Dx/xujpeeRhb6owdcraXotZDQNJNUy0IhFGXZ0hCKTei2ow/U
-f8OTvJVvrGzSuC7YwvkkEOgwnj4ZwVK1hMn/fvcifC5qGbIeuUFDQmxiRAke2Hcf
-zd0NzogA1c3RAyNx2HJTQVDF7O0LHeTwq31TPpS6sx94A9Jaadk/G/MtuZvWMiri
-jQTp8nTuDuLBlN5ToSeV0Y1u5F5KVnddt+g0GqXsxelvhCcujmIesVPCePX3jXAE
-3FIUnUQGQBv/iJYyjJ9v6h8oEp0obg==
-=COOq
------END PGP SIGNATURE-----
-
---9l24NVCWtSuIVIod--
