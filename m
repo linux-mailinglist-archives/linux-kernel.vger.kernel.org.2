@@ -2,121 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95D0B3755E7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E2C4E3755E8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:49:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234950AbhEFOts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:49:48 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:39838 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234759AbhEFOtq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:49:46 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: tonyk)
-        with ESMTPSA id 13DDA1F439BE
-Subject: Re: [PATCH v3 00/13] Add futex2 syscalls
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Darren Hart <dvhart@infradead.org>,
-        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        kernel@collabora.com, krisman@collabora.com,
-        pgriffais@valvesoftware.com, z.figura12@gmail.com,
-        joel@joelfernandes.org, malteskarupke@fastmail.fm,
-        linux-api@vger.kernel.org, fweimer@redhat.com,
-        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
-        shuah@kernel.org, acme@kernel.org, corbet@lwn.net,
-        Peter Oskolkov <posk@posk.io>
-References: <20210427231248.220501-1-andrealmeid@collabora.com>
- <YJKQLkHuTH3EWJoR@hirez.programming.kicks-ass.net>
- <87bl9pi7if.ffs@nanos.tec.linutronix.de>
-From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
-Message-ID: <36e6951e-e7a9-5e82-200e-17668f02447f@collabora.com>
-Date:   Thu, 6 May 2021 11:48:36 -0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
-MIME-Version: 1.0
-In-Reply-To: <87bl9pi7if.ffs@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+        id S234920AbhEFOuu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:50:50 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:38523 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234759AbhEFOuq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 10:50:46 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Fbc1Q1M4Hz9sYh;
+        Thu,  6 May 2021 16:49:46 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id L2QXxuYoNt71; Thu,  6 May 2021 16:49:46 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fbc1Q0Qq6z9sYZ;
+        Thu,  6 May 2021 16:49:46 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id DEB468B802;
+        Thu,  6 May 2021 16:49:45 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id rIf4-rmnMFKT; Thu,  6 May 2021 16:49:45 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id A4F328B800;
+        Thu,  6 May 2021 16:49:45 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 7B1D8648FD; Thu,  6 May 2021 14:49:45 +0000 (UTC)
+Message-Id: <b831e54a2579db24fbef836ed415588ce2b3e825.1620312573.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/interrupts: Fix kuep_unlock() call
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  6 May 2021 14:49:45 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Thomas, Peter,
+Same as kuap_user_restore(), kuep_unlock() has to be called when
+really returning to user, that is in interrupt_exit_user_prepare(),
+not in interrupt_exit_prepare().
 
-Às 11:23 de 05/05/21, Thomas Gleixner escreveu:
-> On Wed, May 05 2021 at 14:31, Peter Zijlstra wrote:
-> 
->> On Tue, Apr 27, 2021 at 08:12:35PM -0300, André Almeida wrote:
->>> Hi,
->>>
->>> This patch series introduces the futex2 syscalls.
->>
->> I still utterly detest that this adds a second hash-table for no
->> descernable reason.
->>
->> The new syscall interface does not depend on that in any way, you
->> previously implemented the multi-wait thing in the current futex code.
->>
->> Like I said last time; I'm okay with the new interface, but I don't see
->> why you need to reimplement the insides, that's all pointless code
->> duplication.
-> 
-> The real question is whether we really need to model all of this along
-> the existing futex functionality. I wouldn't mind a new infrastructure
-> which addresses all the other known issues of futexes and makes the
-> overall design less horrible than what we have now.
-> 
+Fixes: b5efec00b671 ("powerpc/32s: Move KUEP locking/unlocking in C")
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/interrupt.h | 2 --
+ arch/powerpc/kernel/interrupt.c      | 1 +
+ 2 files changed, 1 insertion(+), 2 deletions(-)
 
-Thank you for the feedback. I think we are completing another full 
-circle on the proposals. I've proposed a futex2 interface that would use 
-the current futex infrastructure[0], but my understanding is that this 
-is discouraged given it needs to do big changes in the current futex 
-code. Given that, I proceeded with developing a new code for futex2, 
-taking in consideration those new use cases (waitv, NUMA, sizes) and 
-known issues.
+diff --git a/arch/powerpc/include/asm/interrupt.h b/arch/powerpc/include/asm/interrupt.h
+index 44cde2e129b8..c77e8f57ff06 100644
+--- a/arch/powerpc/include/asm/interrupt.h
++++ b/arch/powerpc/include/asm/interrupt.h
+@@ -153,8 +153,6 @@ static inline void interrupt_enter_prepare(struct pt_regs *regs, struct interrup
+  */
+ static inline void interrupt_exit_prepare(struct pt_regs *regs, struct interrupt_state *state)
+ {
+-	if (user_mode(regs))
+-		kuep_unlock();
+ }
+ 
+ static inline void interrupt_async_enter_prepare(struct pt_regs *regs, struct interrupt_state *state)
+diff --git a/arch/powerpc/kernel/interrupt.c b/arch/powerpc/kernel/interrupt.c
+index 30a596182baa..e0938ba298f2 100644
+--- a/arch/powerpc/kernel/interrupt.c
++++ b/arch/powerpc/kernel/interrupt.c
+@@ -424,6 +424,7 @@ notrace unsigned long interrupt_exit_user_prepare(struct pt_regs *regs, unsigned
+ 
+ 	/* Restore user access locks last */
+ 	kuap_user_restore(regs);
++	kuep_unlock();
+ 
+ 	return ret;
+ }
+-- 
+2.25.0
 
-As you know, my original goal with this work is to have a native and 
-efficient way to wait on multiple objects. Right now, we've proposed it 
-in three different ways, but so far none had much success in being 
-merged. Of course, I want to take the approach that better fits the 
-community goals, as this patchset suggests - a work that goes away 
-further than just implementing a multi-wait feature. But for the benefit 
-of not walking in circles, what we need back is a clear direction, in 
-order to proceed that.
-
-> But that needs input from futex users (libraries and other horrible
-> wrappers) to figure out what they really need, hate, like or do not care
-> about.
-> 
-
-I think it's clear the use case for "wait on multiple" as a way to 
-emulate WinAPI and for Linux native loads like game engines is valid. 
-We have been running it in the field with success for the past year or 
-so. I'm also working with userspace communities to get a better sense of 
-how this and other features would work in the real world. You can read 
-an example of that effort with Chromium developers at [1], and there are 
-more to come.
-
-Maybe support for multiple futexes and futex2 are disjoint things? The 
-multi-wait can be achieved through a (somewhat) simple implementation, 
-on the old interface or in a new one, while for futex2 we are still 
-unsure about how it should look like and its blocking this feature.
-
-> Without that we are bound to pile more crap on the existing pile of
-> horrors forever.
-> 
-> Thanks,
-> 
->          tglx
-> 
-
-Thanks,
-	André
-
-[0] 
-https://lore.kernel.org/lkml/20200612185122.327860-2-andrealmeid@collabora.com/
-[1] https://groups.google.com/a/chromium.org/g/chromium-dev/c/5hpH3ckr6_Y
