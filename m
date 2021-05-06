@@ -2,224 +2,470 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCDB7374EE5
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 07:32:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97FE1374EFB
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 07:43:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232542AbhEFFdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 01:33:19 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:18654 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229622AbhEFFdR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 01:33:17 -0400
-Received: from pps.filterd (m0109333.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 1465VdRr025000;
-        Wed, 5 May 2021 22:32:01 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- content-transfer-encoding : mime-version; s=facebook;
- bh=d5ETYBYi2tvK35V4+VhhDX3RPSc1MvycNaai912xSZ4=;
- b=Iz3sUVCal6YTqXiWMMfjM5TGc/KdEXf5X4l4ehZL5kQcFfaj+t3nXPD9nxj9Bex59RZv
- fKFPbGrgeOAKpJCMv/IUgTQYPpJwLrpZQyhEkB8crbFmrOzkOwehFbuwvl+noIubjDlj
- e452I+ehxh1jGwPK7HEcVbzc95an8C4L0ZA= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 38c5j3h3rj-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 05 May 2021 22:32:00 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.199) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Wed, 5 May 2021 22:31:59 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fsXo+zANMsSCWk18V/3zJqEAwKq+UzMJOGtS8u+QywrS08zPd0Stk1IrjwGIVgMEV87UI2eL4W+cB3QdbztYSclSxpQCLXS5s1iQ13uHoOfME7LPpmrAKWw4ipVRqxaV8WdjA/AqGPkkNlaKrp5Jp1zXuL5r9iD9bizji0K+968S77TkWEW4qZuBDjL4OQ3L+b2lPTb3v/BJaU5O+J06NrdZ04uATlPyk+UomNtVAC/5/+5i4fzx8sBTdBfPzX5tZEAE+PmkwFNN2+hOb/85IRF8nCcZWsm+0fNBHVNOg7KePkaFDmh8LGn5VBqRCXKtUMhzbOsoEL+a2+vrCmlvxQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yoQcSEwGzIThTchpePLiK7anexj2a3mIRWn8L7V9rIo=;
- b=lWFYIid2wp4gSQoi3fiK072qBeaCbPMFN0Qkfkt/tzL2JlXQrbSyjl0fEBORXsOxBGy90YS1hgAwrPhldJuzqA1xhdiBy92BUqg0krRN/uxpAgUAgOkJ5q5mKvfifp396CHMntYARSi3F8fvbHYvRPBqXqVrnewW/fnLQW6tue9sauIQlYnDnF0Dl8/WoXttNQo4dyd1RcEUH98DZ6OEHybStSLmAp4VgSYqQerbe1iFM8w+styy8VSqrAq50aw9DOn/CQ08fxQD+AV7PptcS7ixb0IzF8D5e/TNhoJPAksa1pxE+tJgyK3QiIiiF+Kfj+4v3H5Tj7box/ZUYJ9Obg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=fb.com;
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com (2603:10b6:a03:1f6::32)
- by BYAPR15MB3047.namprd15.prod.outlook.com (2603:10b6:a03:f8::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.27; Thu, 6 May
- 2021 05:31:57 +0000
-Received: from BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f]) by BY5PR15MB3571.namprd15.prod.outlook.com
- ([fe80::718a:4142:4c92:732f%6]) with mapi id 15.20.4108.026; Thu, 6 May 2021
- 05:31:56 +0000
-Date:   Wed, 5 May 2021 22:31:52 -0700
-From:   Martin KaFai Lau <kafai@fb.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-CC:     Jiri Olsa <jolsa@redhat.com>,
-        Michal =?utf-8?B?U3VjaMOhbmVr?= <msuchanek@suse.de>,
-        Yonghong Song <yhs@fb.com>, <linux-kernel@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, <netdev@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>,
-        <dwarves@vger.kernel.org>,
-        Arnaldo Carvalho de Melo <acme@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-Message-ID: <20210506053152.e5rnv44zsitob3sn@kafai-mbp.dhcp.thefacebook.com>
-References: <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava>
- <20210427121237.GK6564@kitsune.suse.cz>
- <20210430174723.GP15381@kitsune.suse.cz>
- <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
- <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
- <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
- <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org>
- <YI/LgjLxo9VCN/d+@krava>
- <8c3cbd22-eb26-ea8b-c8bb-35a629d6d2d8@kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-In-Reply-To: <8c3cbd22-eb26-ea8b-c8bb-35a629d6d2d8@kernel.org>
-X-Originating-IP: [2620:10d:c090:400::5:910f]
-X-ClientProxiedBy: MW4PR03CA0046.namprd03.prod.outlook.com
- (2603:10b6:303:8e::21) To BY5PR15MB3571.namprd15.prod.outlook.com
- (2603:10b6:a03:1f6::32)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from kafai-mbp.dhcp.thefacebook.com (2620:10d:c090:400::5:910f) by MW4PR03CA0046.namprd03.prod.outlook.com (2603:10b6:303:8e::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Thu, 6 May 2021 05:31:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6f7e755f-1101-485c-0e66-08d91050435f
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3047:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB30478C441E367B4AE3E146C2D5589@BYAPR15MB3047.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: IC1GmI//H+l5Fqau1OKdH3Nmcd922hAtF4e6OyWyLIbVfadDItTAWhzXS2j4smF1ak4UP9S+6GKOth12ClA7jccMmFPF5qb2GtlfUJF3DYpZorvoxq8voXvM/djdC2Kg71F8fhvnS9E1tzU0gqB4EAeqLxLKMJvWGKxbX49080YCgshtW2TuXbxzOgnd/Rgq2eB3nV2ZRv9nLphut/8NAA8w/z61wMaV/2DUkkdFSjnBhFwZe6hJFwdGpW/8kcMugRbTzXCQN7IxDvDaWMAXbv8IbXWrzxKSHxIhF5/avTQtR2d4x2mOaqncpQiNtH7GH5P8xWhVVAbQnYcikb2bUEX9PURV+meBtseOUyPtGzCYEKtg1dXQnFA9IJd0/SmJOqCmeDRmBXnfNdh6a2GnF3sKsS1c9HjJAlwi85a8dhcSYvUt4/5YNv9Yhzd6XQtMY8EVQ8yTg7hBxgC3+mIR/7URwK1ShxJs5aEXI0n+2mJ2wuQUYem0s0bICwE/gJTUVVNeMcxPYSdUBeZMzmLPC6i416qZkCpTePGVUUd0writLuf5nnA9jpOvhDGy0TUnForS2ZB6IGKw/jdItt7VgovLkeL024O4CSMgkEPd2PNslY0wKdZhWfHVdhufYfnTbpOi+zPUTgltrWO0d6OjSybpUNFQgRLJ2VZ+S30DaZU=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR15MB3571.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(346002)(136003)(39860400002)(376002)(83380400001)(66556008)(66476007)(66946007)(55016002)(2906002)(86362001)(4326008)(316002)(54906003)(52116002)(9686003)(7696005)(6506007)(5660300002)(8936002)(478600001)(6916009)(966005)(8676002)(16526019)(38100700002)(7416002)(1076003)(186003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: =?iso-8859-1?Q?B+QPji5DT+3s1RG4gAT3KhBshZQiBAZy50J6Tb/gNahCydr4h8P3Z89XwA?=
- =?iso-8859-1?Q?yp4Faaz5jtUbq0cMOehYfYp5/57UnbvjR6FxfE+g0oTXUfGL3RZJs2n9kE?=
- =?iso-8859-1?Q?66X27tY59udT7ieG31NqP7MzjVoc2QwIKezLo4X3PG20t4FAnT4nayQBpO?=
- =?iso-8859-1?Q?im/rNYFZktk24RsqrqyUyYgTevc6SZepStc4Fh0J576UuqhelJo9xVhZMy?=
- =?iso-8859-1?Q?JaiwyleHq5dOf2MAllKR/50HttiiisdJ+Z7XCvDMvvmzLh7oum2bqwclqN?=
- =?iso-8859-1?Q?kNFQmo7B7rn6jTOQGeJJrHP8ZLWRScspV2LAzt7PllsFU4j26rx9Fpv4E2?=
- =?iso-8859-1?Q?OZEBbvnuZ9Yzh7BTIUHtp8QKQwVI/dPy3R3GmWoCwN0P7I7Qo+Yd3T4Wto?=
- =?iso-8859-1?Q?vBtDF488RgBYAXrKNxwJ/0GxyIROwY7PdtlchqJzeJUOFhUM7k6wWTo/RN?=
- =?iso-8859-1?Q?pY3/Npo2lI+2+6t7p4zFdxXF+C8GvEyRmPB6+bGQB5x+/6dXGt7J63kT2U?=
- =?iso-8859-1?Q?HW8wsaCtTLFqpjZ2r1S+cewywIOlM/RMC0J1wVepzx+jwpbcCqQenbx4vY?=
- =?iso-8859-1?Q?iFqUtK8novbNcRRg111npEBHvl6kzTuIwKXrgYUyj+JU0p2XeJIfsR1cz9?=
- =?iso-8859-1?Q?JI7ONY4grhHolFxh6sEUgHvuNOoH9oiJDeV2Vlv4o1q52GWjBpDhh8pUsz?=
- =?iso-8859-1?Q?IhiNQNVYjVl5zxVxLuPIREz4rEHBqXILC37TSFnr1PVKfoqF0bqahF/FW7?=
- =?iso-8859-1?Q?+3cZ6r6hJnboJPzR5eZLHsB3o/TRghqZ/u0AjmpoUVZl5UpxIC7hqEzZrJ?=
- =?iso-8859-1?Q?6X5z/BPzim5EW0x8BB9kNCexmZ+PtuKEWlZO3BlrLX0Ru92AEdGHMpZtub?=
- =?iso-8859-1?Q?FBn9Uuxjs62v9zB2FsZqv524EgzwbQy8Ea5z/nfcA+czZlU9L76hO8Dkp7?=
- =?iso-8859-1?Q?KbVuVCxvhnyMi90JbpAtEQNhU+VwwI8XYKJ9UsAeV3Dn1WACmkbDWWGqzo?=
- =?iso-8859-1?Q?IixEP7Jea8WQ0jcaQYtlp6nfHhoIY8eE12YGJRhO/JhvV2oT+fxQ19Nv21?=
- =?iso-8859-1?Q?3Ll7oxJRcnf+52fMpf8QslPn9zmpg1bHqJT8wQrGEKoxYcav70/CEujZE4?=
- =?iso-8859-1?Q?WHueW6YitIJAf2vUFOISmdZB3Lh9+d8pUHDWwopcSBh3MDsPQyGGlGs1gF?=
- =?iso-8859-1?Q?a9+FicdKU/YJ8k1GVbwJtw/HTy8BO19cCsRB9Z2q0VZ77ILr396d981zFf?=
- =?iso-8859-1?Q?DXywKgJE9zSRbmqMpf35y+MNBWA2Ugq9uUcNlhDBud7H+kuTocmTghIcxo?=
- =?iso-8859-1?Q?zeVujG8wKRuq4Yb2GcaOjVOuM9378fJJTtNkmig/lxa0bQrYmCJ5zyAg9b?=
- =?iso-8859-1?Q?tTQVcNSVO2jUKx1YmakR8M2r2TKE++Nw=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6f7e755f-1101-485c-0e66-08d91050435f
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR15MB3571.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 05:31:56.4666
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: nRb88oKV2Kn0A3meuAgNEphPyLTiulA3ddVmWu7BHaVfgY9n93ie57iLgOD1sYpc
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3047
-X-OriginatorOrg: fb.com
-X-Proofpoint-GUID: WZexhsKT_IrW7otgmzAqYXFDFkoUMfQw
-X-Proofpoint-ORIG-GUID: WZexhsKT_IrW7otgmzAqYXFDFkoUMfQw
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        id S233139AbhEFFoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 01:44:34 -0400
+Received: from 212-129-56-80.ip.rebuild.sh ([212.129.56.80]:47262 "EHLO
+        rebuild.sh" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231278AbhEFFod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 01:44:33 -0400
+X-Greylist: delayed 391 seconds by postgrey-1.27 at vger.kernel.org; Thu, 06 May 2021 01:44:33 EDT
+Received: from [192.168.97.21] (81-67-152-104.rev.numericable.fr [81.67.152.104])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by rebuild.sh (Postfix) with ESMTPSA id 666B320331;
+        Thu,  6 May 2021 07:37:03 +0200 (CEST)
+To:     "Deucher, Alexander" <Alexander.Deucher@amd.com>,
+        "Koenig, Christian" <Christian.Koenig@amd.com>,
+        LKML <linux-kernel@vger.kernel.org>
+References: <6941f046-d9a6-7603-0338-e7831917a540@illwieckz.net>
+ <MN2PR12MB448814C93AA0664284E1DA32F7EA0@MN2PR12MB4488.namprd12.prod.outlook.com>
+From:   =?UTF-8?B?VGhvbWFzIOKAnGlsbHdpZWNreuKAnCBEZWJlc3Nl?= 
+        <dev@illwieckz.net>
+Subject: Re: On disabling AGP without working alternative (PCI and PCIe are
+ also affected)
+Message-ID: <0ce2f491-ab60-8965-0292-4da44ebf7fc7@illwieckz.net>
+Date:   Thu, 6 May 2021 07:37:02 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-06_03:2021-05-05,2021-05-06 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- lowpriorityscore=0 spamscore=0 mlxlogscore=575 priorityscore=1501
- suspectscore=0 bulkscore=0 impostorscore=0 clxscore=1011 phishscore=0
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105060036
-X-FB-Internal: deliver
+In-Reply-To: <MN2PR12MB448814C93AA0664284E1DA32F7EA0@MN2PR12MB4488.namprd12.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 04, 2021 at 08:41:47AM +0200, Jiri Slaby wrote:
-> On 03. 05. 21, 12:08, Jiri Olsa wrote:
-> > On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
-> > > CCing pahole people.
-> > > 
-> > > On 03. 05. 21, 9:59, Jiri Slaby wrote:
-> > > > On 03. 05. 21, 8:11, Jiri Slaby wrote:
-> > > > > > > > > > looks like vfs_truncate did not get into BTF data,
-> > > > > > > > > > I'll try to reproduce
-> > > > > > 
-> > > > > > _None_ of the functions are generated by pahole -J from
-> > > > > > debuginfo on ppc64. debuginfo appears to be correct. Neither
-> > > > > > pahole -J fs/open.o works correctly. collect_functions in
-> > > > > > dwarves seems to be defunct on ppc64... "functions" array is
-> > > > > > bogus (so find_function -- the bsearch -- fails).
-> > > > > 
-> > > > > It's not that bogus. I forgot an asterisk:
-> > > > > > #0† find_function (btfe=0x100269f80, name=0x10024631c
-> > > > > > "stream_open") at
-> > > > > > /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
-> > > > > > (gdb) p (*functions)@84
-> > > > > > $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
-> > > > > > = 75232, size = 72, sh_addr = 65536, generated = false}, {
-> > > > > >  ††† name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
-> > > > > > size = 216, sh_addr = 65536, generated = false}, {
-> > > > > >  ††† name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
-> > > > > > 80816, size = 232, sh_addr = 65536, generated = false}, {
-> > > > > >  ††† name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
-> > > > > > 74304, size = 100, sh_addr = 65536, generated = false}, {
-> > > > > ...
-> > > > > >  ††† name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
-> > > > > > 72, sh_addr = 65536, generated = false}, {
-> > > > > ...
-> > > > > >  ††† name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
-> > > > > > 544, sh_addr = 65536, generated = false}}
-> > > > > 
-> > > > > The dot makes the difference, of course. The question is why is it
-> > > > > there? I keep looking into it. Only if someone has an immediate
-> > > > > idea...
-> > > > 
-> > > > Well, .vfs_truncate is in .text (and contains an ._mcount call). And
-> > > > vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
-> > > > excludes all functions without the ._mcount call, is_ftrace_func later
-> > > > returns false for such functions and they are filtered before the BTF
-> > > > processing.
-> > > > 
-> > > > Technically, get_vmlinux_addrs looks at a list of functions between
-> > > > __start_mcount_loc and __stop_mcount_loc and considers only the listed.
-> > > > 
-> > > > I don't know what the correct fix is (exclude .opd functions from the
-> > > > filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
-> > > > this too.
-> > > 
-> > > Attaching a patch for pahole which fixes the issue, but I have no idea
-> > > whether it is the right fix at all.
-> > 
-> > hi,
-> > we're considering to disable ftrace filter completely,
-> > I guess that would solve this issue for ppc as well
-> > 
-> >    https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
-> 
-> Right, the attached patch fixes it for me too.
-Ah, I just noticed the attachment while replying an earlier message in
-this thread.
+Hi! First, thank you both Alex and Christian for your answers. Since
+that time I did more experiments with more hardware. And‚Ä¶ the new
+knowledge is that the bug affects PCIe cards on PCIe slot when the host
+also offers AGP slot, meaning those computers have to rely on AGP cards
+(or PCI ones) instead of PCIe ones to get a working and usable desktop.
+This bug is older than the AGP disablement that happened with 5.9-rc1
+(out of curiosity I also reproduced the bug on Linux 4.15 from Ubuntu
+Xenial, for example).
 
-Please feel free to add SOB to mine or
-repost yours and toss mine.  Either way works for me.
+We now know the issue affects both AGP, PCI, and PCIe. We know that the
+issue affects both ATI/AMD and Nvidia hardware. The bugs occur given
+this or that host / card combination, while everything works with other
+combinations of the same hosts and cards (all of them being validated to
+be working at some point). We know that, for PCI-related issues, it even
+affects post-AGP AMD platforms like Bulldozer/Piledriver.
+
+The PCIe issue affects both ATI/AMD and Nvidia GPUs and the symptoms are
+consistent with the ones experienced with legacy PCI ATI/AMD and Nvidia
+GPUs on platform we know PCI GPUs do not work. When I talk about GPUs
+with legacy PCI port I talk about TeraScale/Tesla ones with GL3 support,
+512MB of VRAM and HDMI support, not ones from the Rage era, just to make
+sure this is clear enough.
+
+Among the PCIe GPUs I managed to reproduce the bug with, I can name:
+
+- ATI Radeon HD 5870 Eyefinity 6 (RV870 Cypress XT, TeraScale 2, OpenGL
+4.3, 2GB of VRAM, 6 miniDP, released 2010-03).
+- AMD FirePro 3D V4800 (RV830 Redwood XT GL, Terascale2, OpenGL 3.3, 1GB
+VRAM, 1 DVI-I + 2 DP, released 2010-04).
+- AMD Radeon HD 6970 (RV910 Caicos, TeraScale 3, OpenGL 4.3, 2GB VRAM, 2
+DVI-D + 1 HDMI + 2 miniDP, released 2010-12).
+
+Those GPUs don't have PCI or AGP counterparts anyway. And we know some
+Linux PCI bugs can even affect TeraScale 3 PCIe GPUs with OpenGL 4 and
+OpenCL support.
+
+We also know some Nvidia GPU (PCI and PCIe) can be affected.
+
+It looks like the problems are less on the GPU side, but more on the PCI
+platform (bridge? chipset? I don't know). So while AMD is more affected,
+and maybe AMD specific code is affected since AMD symptoms are different
+than Nvidia symptoms, even combinations to reproduce bugs may differ
+given the brand, my attention is now focused on PCI.
+
+## What we already knew at the time of previous emails ##
+
+1. PCI ATI/AMD Radeon and PCI Nvidia GPUs don't work on AMD platform,
+this was verified on K8 (AMD Athlon 64 3200+, AMD Athlon 64 X2), K10
+(AMD Phenom II X4 970 8 core) and Piledriver (FX-9590 8 core), so we can
+probably assume all AMD64 platforms before Ryzen, Ryzen-based
+motherboard usually don't have legacy PCI anyway (I've heard of the
+Biostar Racing X470GTA motherboard but well, it's more rare than legacy
+PCI and AGP).
+
+So there are known issues with legacy PCI on pre-Ryzen architecture,
+including bulldozer ones, which is far more recent than AGP.
+
+At the same time, those PCI ATI/AMD Radeon and PCI Nvidia GPUs work on
+Intel platforms, this was verified on multiple hosts including ones with
+Pentium E5200 dual core (with Intel 82801) and Core 2 Quad Q6600 (with
+VIA PT880/VT82xx) to name somes.
+
+The brokenness of PCI ATI/AMD Radeon GPU on AMD platform is unrelated to
+the platform offering AGP or PCIe. Both K8 with AGP and K8 with PCIe
+behaves the same when a PCI ATI/AMD Radeon GPU is plugged in. The PCI
+Radeon sample used for the test is a Radeon HD 4350 which is fairly
+capable: TeraScale, GL 3.3, 512M VRAM, HDMI.
+
+2. AGP Radeon cards stopped to work on AMD platforms when AGP was
+disabled by default in 5.9-rc1. The only way to make them work is to use
+radeon.agpmode=1 kernel command line option. Because distributions like
+Ubuntu LTS distributed the patch backported on 5.8 kernel (either
+because they backported it themselves or kernel developers did it
+upstream, I don't know), after the update the computers were not able to
+complete the boot because they never reached the desktop. This affected
+pretty capable computers like the one I previously quoted, which runs
+the quad core AMD AM3 Phenom II CPU X4 970 (3.5GHz) with 16GB of RAM and
+featuring AGP Radeon HD 4600 (TeraScale, GL 3.3, 1GB VRAM, HDMI).
+
+If I use startx with lxsession I can get a working X.org environement,
+but that is super slow and not really usable. Very slow disk IO are
+reported and audio glitches are experienced, this has side-effects on a
+wider scale than the sole display. Starting a more complexe environment
+like GNOME will just make the computer unusable.
+
+3. AGP Radeon cards running as PCI cards on AMD platforms display the
+same broken behaviour we can see with PCI Radeon cards, which is not
+surprising given it is expected they would run the same way. At least
+this prediction got verified. ATI/AMD AGP as PCI on AMD platform is as
+broken as ATI/AMD PCI on AMD platform.
+
+4. Some problems were said to have been noticed by kernel developers
+with latest AMD Radeon hardware and it was said disabling AGP improved
+the support for those recent cards, that's why AGP was disabled starting
+with 5.9-rc1 in hope to fix the latest AMD Radeon hardware (but that
+brokes older ones in the process).
+
+## What is new knowledge since that time ##
+
+1. PCIe ATI/AMD Radeon GPUs running on Intel host having both AGP and
+PCIe slots do not work and displays the same broken behaviour we can see
+with AGP Radeon cards running as PCI cards, or PCI Radeon cards on AMD
+platform.
+
+This was verified with a wide range of AMD/ATI PCIe GPUs, both consumer
+Radeon or professionnal FirePro cards.
+
+Interestingly, the testbed is an Intel-based platform (Core 2 Quad
+Q6600) and then PCI Radeon cards work as we seen with other Intel based
+hosts. If I'm right, AGP cards seems to work as PCI ones as well. That
+may makes sense because previously I did not test AGP Radeon cards on
+Intel platforms.
+
+But then, as I said, the PCIe Radeon cards just fails as AGP ones
+running as PCI and PCI ones on AMD platforms. But for them,
+radeon.agpmode=1 does not make sense, so there is no solution.
+
+By failing I mean grub displays things correctly, then linux displays
+things correctly, including framebuffer, but when X.org starts and open
+the desktop, some background is painted but the desktop never complete
+the startup. The mouse pointer can be moved with the mouse but that's
+all. The tested desktop is GNOME, and the shell itself does not display.
+
+So, with all those experiments done, and with all that knowledge, it
+appears there is some serious issues in the PCI code.
+
+Note: on some very old cards (like the 9700 Pro from 2002) with
+radeon.agpmode -1 (AGP as PCI), the symptom is different, the desktop
+loads properly, but loading a game (Unvanquished) leads to a GPU lockup.
+While on newer hardware like ATI Radeon HD 4670 AGP (which was still
+sold as new in 2012), the desktop won't load, displaying the exact same
+symptoms as ATI/AMD PCI on ATI/AMD CPU. If I'm right, the old ones like
+the 9700 Pro is likely to be a native AGP card, while the latest ones
+like the HD 4670 may be natively PCIe with a bridge on the AGP card.
+Maybe that can ring a bell‚Ä¶
+
+2. PCIe Ndidia GPUs on Intel host having both AGP and PCIe slots do not
+work and displays the same broken behaviour we can see with PCI Nvidia
+card running on AMD host. The graphical glitches are exactly the sames
+with Nvidia PCI on the AMD host and Nvidia PCIe on the Intel host (but
+not the same as PCI and AGP-as-PCI and PCIe Radeon symptoms).
+
+So, we can reproduce the Nvidia-specific glitches with both PCI and
+PCIe, and we can reproduce the ATI/AMD-specific symptoms with both PCI,
+AGP, and PCIe.
+
+## Various answers and questions ##
+
+Christian K√∂ning said:
+
+> That is interesting but doesn't make much sense from the technical
+perspective.
+> See AGP is build on top of PCI, if PCI doesn't work AGP won't work
+either. So why should AGP work while PCI doesn't?
+
+Now we know that both PCI, AGP and PCIe are affected. Which makes sense.
+
+What's makes hard to track the bugs is that the bugs may occur or not
+occur given the host and cards combination. This is probably about
+GPU/PCI bridge combination (and motherboard chipset when it makes sense)
+or things like that.
+
+Alex Deucher said:
+
+> For newer AGP hardware like the RV730 you point out (or anything newer
+than R300), there is no reason to run AGP mode. The on chip GART is far
+superior.
+
+So, on paper, AGP-as-PCI is expected to work, and on paper again, some
+of those card may even work better this way. Experience currently
+displays the exact opposite, which not only means there is bugs
+somewhere, but also that the behaviour of the PCI code is unpredictable,
+because predictions fail.
+
+Christian K√∂ning said:
+
+> We simply don't have the time to support that older GPU and disabling
+AGP fixed quite a number of them.
+
+Was disabling AGP motivated by some issues with identified causes and it
+was decided to not fix them, or was disabling AGP motivated by the
+observation it fixed some other issues but without identifying the causes?
+
+What's now interesting is that on some PCIe-compatible platforms, PCIe
+is broken and AGP is the working fallback, and now that AGP is disabled
+by default in code, none work out of the box.
+
+I can understand how it would be easier to not support older hardware,
+but on the other hand what's the purpose of Mesa/RadeonSI supporting
+them on the userland side if the kernel can't host the hardware to begin
+with?
+
+Also, that may be seen as unfortunate, but AGP is not only about Rage
+128 cards or those very very old thing that would not fullfill current
+needs. Unlike Nvidia, there was AMD/ATI AGP hardware that were produced
+and sold very lately and those are still capable to fullfill current
+needs. At the same time, AMD ensured very good compatibility of it's
+hardware, that's why it was possible to have the quoted quad core AM3
+Phenom II on an AM2 motherboard with AGP for example. This is precisely
+why AMD is appreciated by customers, not like Intel with frustrating
+market segmentation where, for example (real use case), one Pentium
+E5200 with IGP can support OpenGL 3 but not virtualization, while
+another Pentium E5200 with IGP cannot support OpenGL 3 but supports
+virtualization, or (another real example), supporting PAE while hiding
+it to the operating system. Buying AMD is all about not having to choose
+between this or this feature, and buying AMD is all about being able to
+get hardware that works over multiple hardware generations.
+
+But anyway, outside of those considerations, it now appears the PCI code
+has serious issues and the behaviour can't be predicted. Newer hardware
+may be working, but do we know how much luck is involved?
+
+I may be busy, doing those extra tests and reporting the results took me
+some extra months, but at least, I have access to a wide range of
+hardware to test any patch that would aim to fix the
+PCI/AGP/PCIe-related bugs. I would be happy to help on that topic. AGP
+is just one aspect of it, now we know those PCI-related bugs affect
+legacy PCI and PCI express as well.
+
+Christian K√∂ning said:
+
+> We simply can't invest time maintaining a technology which is
+deprecated for nearly 15 years now.
+
+It now appears that the bugs not only affect AGP and PCI but also PCI
+Express. AGP disclosed those bugs, but PCI seems to be at fault there.
+
+One interesting thing is that some ATI/AMD cards on AMD hosts are more
+buggy than the same ATI/AMD cards on Intel hosts. The underlying bugs
+may even not be related to the cards themselves but on the host PCI code
+(chipsets, PCI bridges or things like that).
+
+Note: one interesting thing is that I have access to two Radeon HD 4670,
+one AGP model, one PCIe model, from the same vendor, exact same
+generation, vendor and model, just one being AGP and one being PCIe
+variant. On the same Intel-based motherboard supporting both AGP and
+PCIe, only the AGP model works. The PCIe model is not faulty, it works
+as expected on AMD-based motherboards only having an AGP port and no
+PCIe port. Getting things working seems to be about luck, not about what
+the implementation is said to do.
+
+I also have access to two X1950 pro, one PCIe, one AGP, from different
+vendors, though this one is less interesting because not a TeraScale
+one. But this may be useful for testing because I can test both on the
+same motherboard having both an AGP and a PCIe slot. Currently, only AGP
+works on that host anyway because when using AMD/ATI or Nvidia PCIe GPUs
+on that Intel host I reproduce the issues I get with AMD/ATI or Nvidia
+PCI  GPUs on AMD host‚Ä¶
+
+Who are the ones working on the PCI platform code? Maybe those would be
+better interlocutors, it looks like the issue is not AMD specific, it
+affects Nvidia GPUs and Intel platforms as well.
+
+Is there options similar to radeon.agpmode but for PCI / PCI Express I
+can experiment with?
+
+I'll build one day the latest vanilla kernel to reproduce the issues and
+probably open a ticket on the kernel bugzilla regarding PCI-related
+problems in general (even if there is AMD-specific variants of the bug).
+That would be a good start.
+
+Thank your very much for your attention, best regards,
+
+PS: I wish to be personally CC'ed the answers/comments posted to the
+list in response to my posting.
+
+--
+Thomas ‚Äúillwieckz‚Äù Debesse
+Le 09/11/2020 √† 18:37, Deucher, Alexander a √©crit¬†:
+> [AMD Public Use]
+> 
+>> -----Original Message-----
+>> From: Thomas ‚Äúillwieckz‚Äú Debesse <dev@illwieckz.net>
+>> Sent: Monday, November 9, 2020 6:41 AM
+>> To: LKML <linux-kernel@vger.kernel.org>
+>> Cc: Koenig, Christian <Christian.Koenig@amd.com>; Deucher, Alexander 
+>> <Alexander.Deucher@amd.com>
+>> Subject: On disabling AGP without working alternative (PCI fallback is 
+>> broken for years)
+>>
+>> Hi, on May 12 2020, a commit (ba806f9) was merged disabling AGP in 
+>> default build.
+>>
+>> It was signed-off by Christian K√∂nig and Reviewed by Alex Deucher.
+>> Distributions started to backport this commit, and it seems to have 
+>> happened with 5.4.0-48-generic on Ubuntu 20.04 LTS side, which was 
+>> built on Sep 10 2020.
+>>
+>> Around that time I noticed AGP computers experiencing lock-ups and 
+>> other problems making them unusable after the upgrade. After 
+>> investigating what was happening bisecting Linux versions, I reverted 
+>> the commit and those computers were working again.
+>>
+>> Commit message was:
+>>
+>>> This means a performance regression for some GPUs, but also a bug 
+>>> fix for some others.
+>>
+>> Unfortunately, this commit does not only introduce a performance 
+>> regression but makes some computers unusable, maybe all computers with 
+>> AMD CPUs.
+>>
+>> One of the root cause may be that PCI GPUs are broken for years on AMD 
+>> platforms, it was tested and verified on:
+>>
+>> - K8-based computer with AGP
+>> - K8-based computer with PCI Express
+>> - K10-based computer with AGP
+>> - Piledriver-based computer with PCI Express
+>>
+>> The breakage was tested and reproduced from Linux 4.4 to Linux
+>> 5.10-rc2 (I have not tried older than 4.4).
+>>
+>> PCI GPUs may be broken on some other platforms, but I have found that 
+>> testing on an Intel PC (with PCI Express) does not reproduce the issue 
+>> when the PCI GPU hardware is plugged in.
+>>
+>> There is two patches I'm requesting comments for:
+>>
+>> ## drm/radeon: make all PCI GPUs use 32 bits DMA bit mask
+>>
+>> https://lkml.org/lkml/2020/11/5/307
+>>
+>> This one is not enough to fix PCI GPUs but it is enough to prevent to 
+>> fail r600_ring_test on ATI PCI devices. Note that Nvidia PCI GPUs 
+>> can't be fixed by this, and this uncovers other bug with AGP GPUs when 
+>> AGP is disabled at build time. Also, this patch may makes PCI GPUs 
+>> working on a non-optimal way on platform that accepts them with 40-bit 
+>> DMA bit mask (like Intel- based computers that already work without any patch).
+>>
+>> This patch is inspired from the patch made to solve that issue from
+>> 2012 on kernel 3.5: https://bugzilla.redhat.com/show_bug.cgi?id=785375
+>>
+>> At the time, such change may have been enough to fix the issue, it's 
+>> not true any more. More breakage may have been introduced since.
+>>
+>> Also, maybe this patch becomes useless when other PCI bugs are fixed, 
+>> who knows? At least, this is an entry-point for investigations.
+> 
+> I think you may be seeing fallout from this patch:
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=33b3ad3788aba846fc8b9a065fe2685a0b64f713
+> That patch lead to screen corruption and other issues on older radeons.  It seemed to be related to AGP and/or HIMEM.  Disabling either of those fixes the issues.
+> I proposed reverting the change, but there was push back to find the root cause:
+> https://www.spinics.net/lists/stable/msg413960.html
+> 
+> 
+>>
+>> ## Revert "drm/radeon: disable AGP by default"
+>>
+>> https://lkml.org/lkml/2020/11/5/308
+>>
+>> This is the simple fix but currently only solution to make AMD hosts 
+>> with AGP port to get a display again, as without this reverts, those 
+>> computers do not have any alternative to run a display (even not PCI GPUs).
+>>
+>> I'm asking for comments on those patches. I may have reached my own 
+>> skill cap on kernel development anyway. I can repurpose hardware to 
+>> test any other patch and can contribute time for such testing. Unlike 
+>> AGP GPUs, PCI GPUs are hard to find, so you may appreciate the time 
+>> and availability offered.
+>>
+>> The PCI GPU on AMD CPU issue was verified with both Nvidia (GS 8400GS
+>> rev.2) and ATI (Radeon HD 4350) PCI GPUs, such GPU sample not being 
+>> old cards from the previous millennial but capable
+>> ones: TeraScale RV710 architecture on ATI side and Tesla 1.0 NV98 on 
+>> Nvidia side. They can both do OpenGL 3.3 and feature both 512M of 
+>> VRAM. The ATI one had HDMI port, and it is known some variant of the 
+>> Nvidia one (not the one I own but same specification) had HDMI port too.
+>>
+>> Also, fixing PCI GPUs may not be enough to fix AGP GPUs running as PCI 
+>> ones, since fixing some issues (not all) on PCI side raises new issues 
+>> with AGP GPUs running as PCI ones but not on native PCI GPUs (see below).
+>>
+>> Bugs aside, one thing that is important to consider against the AGP 
+>> disablement is that there is such hardware that is very capable and 
+>> not that old out there. For example the ATI Radeon HD 4670 AGP
+>> (RV730 XT) was still sold brand new after 2010 and is a powerful and 
+>> featureful GPUs with 1GB of VRAM and HDMI port. Performance with it is 
+>> still pretty decent on competitive games. To compare with other
+>> ¬†open source drivers mainlined in Linux, to outperform this GPU an
+>> ¬†user has to get an Intel UHD 600 or an Nvidia GTX 1060 from 2016.
+>>
+>> Also, yet another thing that is important to consider against AGP 
+>> disablement is that if PCI Express was introduced in 2004, there was 
+>> still AGP compatible hardware being designed, produced and sold very 
+>> lately, especially on AMD side. Computers with quad core 64-bit CPUs 
+>> with virtualisation, 16GB of RAM and AGPs exist, and this is widely 
+>> distributed consumer hardware, not specific esoteric hardware.
+>>
+>> So, not only powerful AGP GPUs were still sold brand new in the 
+>> current decade, but there was also very capable computers to host 
+>> them. Because of those AGP computers, fixing PCI GPUs fallback is not 
+>> a solution because PCI fallback is not a solution.
+>>
+> 
+> For newer AGP hardware like the RV730 you point out (or anything newer than R300), there is no reason to run AGP mode.  The on chip GART is far superior.  The only chips where performance may be a problem is the older R1xx/R2xx radeons, and the issue there is more around the size of the TLB on the on chip GART vs the TLB in the AGP bridge. Also as Christian mentioned, AGP is PCI so if PCI doesn't work, you have bigger problems.
+> 
+> Alex
+> 
+> 
+>> All that range of hardware became unusable with that commit disabling 
+>> AGP, without alternative.
+>>
+>> Not only those AGP GPUs don't work with kernel's PCI fallback, but 
+>> unplugging those AGP GPUs and plugging physical PCI-native GPUs 
+>> instead does not work.
+>>
+>> You'll find more details about the various issues on those bugs, I've 
+>> invested multiple full time day to test and reproduce bugs on a wide 
+>> range of hardware, I've attached, quoted and commented a lot of logs:
+>>
+>> - https://bugs.launchpad.net/bugs/1899304
+>>> AGP disablement leaves GPUs without working alternative (PCI 
+>>> fallback is broken), makes very-capable ATI TeraScale GPUs unusable
+>>
+>> - https://bugs.launchpad.net/bugs/1902981
+>>> AGP GPUs driven as PCI ones (when AGP is disabled at kernel build
+>>> time) are known to fail on K8 and K10 platforms
+>>
+>> - https://bugs.launchpad.net/bugs/1902795
+>>> PCI graphics broken on AMD K8/K10/Piledriver platform (while it 
+>>> works on Intel) verified from Linux 4.4 to 5.10-rc2
+>>
+>> I wish to be personally CC'ed the answers/comments posted to the list 
+>> in response to my posting.
+>>
+>> Thank you for your attention.
+>>
+>> --
+>> Thomas ‚Äúillwieckz‚Äù Debesse
