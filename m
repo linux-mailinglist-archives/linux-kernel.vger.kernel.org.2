@@ -2,201 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30B94375D64
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:27:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E43375D73
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:31:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231987AbhEFX2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 19:28:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231733AbhEFX2c (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 19:28:32 -0400
-Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00C31C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 16:27:32 -0700 (PDT)
-Received: by mail-pg1-x52d.google.com with SMTP id c21so5853636pgg.3
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 16:27:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=hNnmB2N+G/xliEHvFgXD/jk8b5W6LQ1nCJcVUsPji2I=;
-        b=cXuAAA48mu88DAuWJxtAPWw5wM0J3HL3GxZE9djShlADFL8vJ3ysETvXY6SV/jQdeQ
-         NHXdnwBUs5Zij7g0Y4e80hmMJi4XbWulwDIXgHeb5lyNB8B8Yzyo4X4KkZOz60OTnIfg
-         SQVUoOaco97WIizqiL/OwN2ey5smZPwKzpsENT/Wi7GA/4wzFT0SDo1rYJIBDlsjjySK
-         ky8BdcIpcc4BjXuYD1OS9Fckz0v81qKM6y4k1JrlD9dCCs6l4UhY8JrkQ0xHEqUDECTI
-         InG95rF0j8N87Xez49u3CR2+ZF1F28laFfCbm273k7ymbrKIkNY7SaY/CHGIITjm1UC5
-         tZFQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hNnmB2N+G/xliEHvFgXD/jk8b5W6LQ1nCJcVUsPji2I=;
-        b=gMvIHEM3Tp66ziQSOwkoi9hCstHkPr9RckLGli0E1G+nYtkEPuwMmk+AiT49nGrCHA
-         N3VymgW9IO6I7DXxuGSTtf6eBkLwd6jMep9jckBf8pUJupKlrzgaLybYKG5ppc43VvtQ
-         gondXC7N3Iwj2TsBUdQWKrw+Nm+xF6ZZFaGkN0CU1JkR0IuMGa40wY8LnTsYHIa2BVBw
-         MF26y5x1fqZ9lMT/JOJvuo+9bwL0SYwPK0Hxubbjx5RgZe63PsRDYly7Xsyi22GRodGv
-         mjwrxnffL6CtDtCn5f5wdRzCE6EhChGwLk0rMQ55xpgZFTV8dzChR8e9OYBlF9POLkZn
-         Dkog==
-X-Gm-Message-State: AOAM532IiPU+h6TUfZ60UT0beDhpsLLcKuwFsoEV3f+EO/Ll3DQ/RS7l
-        brWU4cFDEpYcc+6ifzfdWrM6ew==
-X-Google-Smtp-Source: ABdhPJxKb2tilIJ4jh/l5dj063LYVgL9b+SY5h1DiC2kpP4lVhAVzlu3K9Pp+zl3VS3rhBMXvGQyiQ==
-X-Received: by 2002:a63:6986:: with SMTP id e128mr6751721pgc.16.1620343651335;
-        Thu, 06 May 2021 16:27:31 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id c6sm10411626pjs.11.2021.05.06.16.27.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 16:27:30 -0700 (PDT)
-Date:   Thu, 6 May 2021 23:27:27 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Jim Mattson <jmattson@google.com>
-Cc:     KarimAllah Ahmed <karahmed@amazon.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Subject: Re: [PATCH v6 08/14] KVM/nVMX: Use kvm_vcpu_map when mapping the
- posted interrupt descriptor table
-Message-ID: <YJR7X7nN7sFwvesj@google.com>
-References: <1548966284-28642-1-git-send-email-karahmed@amazon.de>
- <1548966284-28642-9-git-send-email-karahmed@amazon.de>
- <CALMp9eR-Kt5wcveYmmmOe7HfWBB4r5nF+SjMfybPRR-b9TXiTg@mail.gmail.com>
+        id S232391AbhEFXcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 19:32:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232209AbhEFXcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 19:32:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 04051613E9
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 23:31:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620343880;
+        bh=IITCyoi4hOnQGgAjRVqRr7RtIsMxc4kk9HMuRUc4kAA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=dzOaN+y3YvGy/qiIgwPQ336zp8h4Qgn5S+x18V/7U5Z832vjobSnQaneW+3LoIEKJ
+         2a2jNix2ICu4wrie+QaMY1ZYi5JeLqwvsNAzAkbGZZ/nUllk3sHS9tkSZvZjgqpkC9
+         kCK+x05evvBumC0UY5a9mo0bnq7OW0c0GyYLbShG175267sg3d+ec8jXISGY66r0AR
+         AbpkldqZtEenweVoVFX9nG8O6guWKtwnusnBxzl23d3PVIca/bebwBdDsB6yXoXDDJ
+         ExL5i7BsuB+eGTaLABjvVKpR9zfL2ZkRE2jCVJbxEAjQIK6W00wxgMqVOOgqE5CPd4
+         7TyKigSjS9thg==
+Received: by mail-ej1-f46.google.com with SMTP id l4so10759129ejc.10
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 16:31:19 -0700 (PDT)
+X-Gm-Message-State: AOAM532s4j3TIzD/9MztPQoNOHXGq+o6x71O788KJBIvBYJ3IrGpAkHB
+        bibssITBLIpTITQQCfFKYkan3EIzVecGbMcJs1/u9Q==
+X-Google-Smtp-Source: ABdhPJy/HzUeyVBBOPMQzBeIl7qYyB1Cn0Bw3qIUSRljI0+cxPtL7Jufl+V2qYgyD4Kr53bGa8ynkwEWn9q1gDRzC2M=
+X-Received: by 2002:a17:906:c010:: with SMTP id e16mr7123175ejz.214.1620343878143;
+ Thu, 06 May 2021 16:31:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALMp9eR-Kt5wcveYmmmOe7HfWBB4r5nF+SjMfybPRR-b9TXiTg@mail.gmail.com>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com> <20210427204315.24153-26-yu-cheng.yu@intel.com>
+ <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
+ <8fd86049-930d-c9b7-379c-56c02a12cd77@intel.com> <CALCETrX9z-73wpy-SCy8NE1XfQgXAN0mCmjv0jXDDomMyS7TKg@mail.gmail.com>
+ <a7c332c8-9368-40b1-e221-ec921f7db948@intel.com> <5fc5dea4-0705-2aad-cf8f-7ff78a5e518a@intel.com>
+ <bf16ab7e-bf27-68eb-efc9-c0468fb1c651@intel.com>
+In-Reply-To: <bf16ab7e-bf27-68eb-efc9-c0468fb1c651@intel.com>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Thu, 6 May 2021 16:31:06 -0700
+X-Gmail-Original-Message-ID: <CALCETrWbOP_exK9cHT9vEDsQjorqC4SjhyU+gUzmGNdanO-enw@mail.gmail.com>
+Message-ID: <CALCETrWbOP_exK9cHT9vEDsQjorqC4SjhyU+gUzmGNdanO-enw@mail.gmail.com>
+Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
+ signals for shadow stack)
+To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+Cc:     Andy Lutomirski <luto@kernel.org>,
+        linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021, Jim Mattson wrote:
-> On Thu, Jan 31, 2019 at 12:28 PM KarimAllah Ahmed <karahmed@amazon.de> wrote:
+On Thu, May 6, 2021 at 3:05 PM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
+>
+> On 5/4/2021 1:49 PM, Yu, Yu-cheng wrote:
+> > On 4/30/2021 11:32 AM, Yu, Yu-cheng wrote:
+> >> On 4/30/2021 10:47 AM, Andy Lutomirski wrote:
+> >>> On Fri, Apr 30, 2021 at 10:00 AM Yu, Yu-cheng <yu-cheng.yu@intel.com>
+> >>> wrote:
+> >>>>
+> >>>> On 4/28/2021 4:03 PM, Andy Lutomirski wrote:
+> >>>>> On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com>
+> >>>>> wrote:
+> >>>>>>
+> >>>>>> When shadow stack is enabled, a task's shadow stack states must be
+> >>>>>> saved
+> >>>>>> along with the signal context and later restored in sigreturn.
+> >>>>>> However,
+> >>>>>> currently there is no systematic facility for extending a signal
+> >>>>>> context.
+> >>>>>> There is some space left in the ucontext, but changing ucontext is
+> >>>>>> likely
+> >>>>>> to create compatibility issues and there is not enough space for
+> >>>>>> further
+> >>>>>> extensions.
+> >>>>>>
+> >>>>>> Introduce a signal context extension struct 'sc_ext', which is
+> >>>>>> used to save
+> >>>>>> shadow stack restore token address.  The extension is located
+> >>>>>> above the fpu
+> >>>>>> states, plus alignment.  The struct can be extended (such as the
+> >>>>>> ibt's
+> >>>>>> wait_endbr status to be introduced later), and sc_ext.total_size
+> >>>>>> field
+> >>>>>> keeps track of total size.
+> >>>>>
+> >>>>> I still don't like this.
+> >>>>>
+>
+> [...]
+>
+> >>>>>
+> >>>>> That's where we are right now upstream.  The kernel has a parser for
+> >>>>> the FPU state that is bugs piled upon bugs and is going to have to be
+> >>>>> rewritten sometime soon.  On top of all this, we have two upcoming
+> >>>>> features, both of which require different kinds of extensions:
+> >>>>>
+> >>>>> 1. AVX-512.  (Yeah, you thought this story was over a few years ago,
+> >>>>> but no.  And AMX makes it worse.)  To make a long story short, we
+> >>>>> promised user code many years ago that a signal frame fit in 2048
+> >>>>> bytes with some room to spare.  With AVX-512 this is false.  With AMX
+> >>>>> it's so wrong it's not even funny.  The only way out of the mess
+> >>>>> anyone has come up with involves making the length of the FPU state
+> >>>>> vary depending on which features are INIT, i.e. making it more compact
+> >>>>> than "compact" mode is.  This has a side effect: it's no longer
+> >>>>> possible to modify the state in place, because enabling a feature with
+> >>>>> no space allocated will make the structure bigger, and the stack won't
+> >>>>> have room.  Fortunately, one can relocate the entire FPU state, update
+> >>>>> the pointer in mcontext, and the kernel will happily follow the
+> >>>>> pointer.  So new code on a new kernel using a super-compact state
+> >>>>> could expand the state by allocating new memory (on the heap? very
+> >>>>> awkwardly on the stack?) and changing the pointer.  For all we know,
+> >>>>> some code already fiddles with the pointer.  This is great, except
+> >>>>> that your patch sticks more data at the end of the FPU block that no
+> >>>>> one is expecting, and your sigreturn code follows that pointer, and
+> >>>>> will read off into lala land.
+> >>>>>
+> >>>>
+> >>>> Then, what about we don't do that at all.  Is it possible from now
+> >>>> on we
+> >>>> don't stick more data at the end, and take the relocating-fpu approach?
+> >>>>
+> >>>>> 2. CET.  CET wants us to find a few more bytes somewhere, and those
+> >>>>> bytes logically belong in ucontext, and here we are.
+> >>>>>
+> >>>>
+> >>>> Fortunately, we can spare CET the need of ucontext extension.  When the
+> >>>> kernel handles sigreturn, the user-mode shadow stack pointer is
+> >>>> right at
+> >>>> the restore token.  There is no need to put that in ucontext.
+> >>>
+> >>> That seems entirely reasonable.  This might also avoid needing to
+> >>> teach CRIU about CET at all.
+> >>>
+> >>>>
+> >>>> However, the WAIT_ENDBR status needs to be saved/restored for signals.
+> >>>> Since IBT is now dependent on shadow stack, we can use a spare bit of
+> >>>> the shadow stack restore token for that.
+> >>>
+> >>> That seems like unnecessary ABI coupling.  We have plenty of bits in
+> >>> uc_flags, and we have an entire reserved word in sigcontext.  How
+> >>> about just sticking this bit in one of those places?
+> >>
+> >> Yes, I will make it UC_WAIT_ENDBR.
 > >
-> > Use kvm_vcpu_map when mapping the posted interrupt descriptor table since
-> > using kvm_vcpu_gpa_to_page() and kmap() will only work for guest memory
-> > that has a "struct page".
+> > Personally, I think an explicit flag is cleaner than using a reserved
+> > word somewhere.  However, there is a small issue: ia32 has no uc_flags.
 > >
-> > One additional semantic change is that the virtual host mapping lifecycle
-> > has changed a bit. It now has the same lifetime of the pinning of the
-> > interrupt descriptor table page on the host side.
+> > This series can support legacy apps up to now.  But, instead of creating
+> > too many special cases, perhaps we should drop CET support of ia32?
 > >
-> > Signed-off-by: KarimAllah Ahmed <karahmed@amazon.de>
-> > Reviewed-by: Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>
-> > ---
-> > v4 -> v5:
-> > - unmap with dirty flag
-> >
-> > v1 -> v2:
-> > - Do not change the lifecycle of the mapping (pbonzini)
-> > ---
-> >  arch/x86/kvm/vmx/nested.c | 43 ++++++++++++-------------------------------
-> >  arch/x86/kvm/vmx/vmx.h    |  2 +-
-> >  2 files changed, 13 insertions(+), 32 deletions(-)
-> >
-> > diff --git a/arch/x86/kvm/vmx/nested.c b/arch/x86/kvm/vmx/nested.c
-> > index 31b352c..53b1063 100644
-> > --- a/arch/x86/kvm/vmx/nested.c
-> > +++ b/arch/x86/kvm/vmx/nested.c
-> > @@ -230,12 +230,8 @@ static void free_nested(struct kvm_vcpu *vcpu)
-> >                 vmx->nested.apic_access_page = NULL;
-> >         }
-> >         kvm_vcpu_unmap(vcpu, &vmx->nested.virtual_apic_map, true);
-> > -       if (vmx->nested.pi_desc_page) {
-> > -               kunmap(vmx->nested.pi_desc_page);
-> > -               kvm_release_page_dirty(vmx->nested.pi_desc_page);
-> > -               vmx->nested.pi_desc_page = NULL;
-> > -               vmx->nested.pi_desc = NULL;
-> > -       }
-> > +       kvm_vcpu_unmap(vcpu, &vmx->nested.pi_desc_map, true);
-> > +       vmx->nested.pi_desc = NULL;
-> >
-> >         kvm_mmu_free_roots(vcpu, &vcpu->arch.guest_mmu, KVM_MMU_ROOTS_ALL);
-> >
-> > @@ -2868,26 +2864,15 @@ static void nested_get_vmcs12_pages(struct kvm_vcpu *vcpu)
-> >         }
-> >
-> >         if (nested_cpu_has_posted_intr(vmcs12)) {
-> > -               if (vmx->nested.pi_desc_page) { /* shouldn't happen */
-> > -                       kunmap(vmx->nested.pi_desc_page);
-> > -                       kvm_release_page_dirty(vmx->nested.pi_desc_page);
-> > -                       vmx->nested.pi_desc_page = NULL;
-> > -                       vmx->nested.pi_desc = NULL;
-> > -                       vmcs_write64(POSTED_INTR_DESC_ADDR, -1ull);
-> > +               map = &vmx->nested.pi_desc_map;
-> > +
-> > +               if (!kvm_vcpu_map(vcpu, gpa_to_gfn(vmcs12->posted_intr_desc_addr), map)) {
-> > +                       vmx->nested.pi_desc =
-> > +                               (struct pi_desc *)(((void *)map->hva) +
-> > +                               offset_in_page(vmcs12->posted_intr_desc_addr));
-> > +                       vmcs_write64(POSTED_INTR_DESC_ADDR,
-> > +                                    pfn_to_hpa(map->pfn) + offset_in_page(vmcs12->posted_intr_desc_addr));
-> >                 }
-> 
-> Previously, if there was no backing page for the
-> vmcs12->posted_intr_desc_addr, we wrote an illegal value (-1ull) into
-> the vmcs02 POSTED_INTR_DESC_ADDR field to force VM-entry failure.
+> > Thoughts?
 
-The "vmcs_write64(POSTED_INTR_DESC_ADDR, -1ull)" above is for the "impossible"
-case where the PI descriptor was already mapped.  The error handling for failure
-to map is below.  The (forced) VM-Exit unmap paths don't stuff vmcs02 either.
-In other words, I think the bug was pre-existing.
+I'm really not thrilled about coupling IBT and SHSTK like this.
 
-> Now, AFAICT, we leave that field unmodified. For a newly constructed vmcs02,
-> doesn't that mean we're going to treat physical address 0 as the address of
-> the vmcs02 posted interrupt descriptor?
+Here are a couple of possible solutions:
 
-PA=0 is the happy path.  Thanks to L1TF, that memory is always unused.  If
-mapping for a previous VM-Enter succeeded, vmcs02.POSTED_INTR_DESC_ADDR will
-hold whatever PA was used for the last VM-Enter.
- 
-> > -               page = kvm_vcpu_gpa_to_page(vcpu, vmcs12->posted_intr_desc_addr);
-> > -               if (is_error_page(page))
-> > -                       return;
+- Don't support IBT in 32-bit mode, or maybe just don't support IBT
+with legacy 32-bit signals.  The actual mechanics of this could be
+awkward.  Maybe we would reject the sigaction() call or the
+IBT-enabling request if they conflict?
 
-Error path for failure to map.
+- Find some space in the signal frame for these flags.  Looking around
+a bit, sigframe_ia32 has fpstate_unused, but I can imagine things like
+CRIU getting very confused if it stops being unused.  sigframe_ia32
+uses sigcontext_32, which has a bunch of reserved space in __gsh,
+__fsh, etc.
 
-> > -               vmx->nested.pi_desc_page = page;
-> > -               vmx->nested.pi_desc = kmap(vmx->nested.pi_desc_page);
-> > -               vmx->nested.pi_desc =
-> > -                       (struct pi_desc *)((void *)vmx->nested.pi_desc +
-> > -                       (unsigned long)(vmcs12->posted_intr_desc_addr &
-> > -                       (PAGE_SIZE - 1)));
-> > -               vmcs_write64(POSTED_INTR_DESC_ADDR,
-> > -                       page_to_phys(vmx->nested.pi_desc_page) +
-> > -                       (unsigned long)(vmcs12->posted_intr_desc_addr &
-> > -                       (PAGE_SIZE - 1)));
-> >         }
-> >         if (nested_vmx_prepare_msr_bitmap(vcpu, vmcs12))
-> >                 vmcs_set_bits(CPU_BASED_VM_EXEC_CONTROL,
-> > @@ -3911,12 +3896,8 @@ void nested_vmx_vmexit(struct kvm_vcpu *vcpu, u32 exit_reason,
-> >                 vmx->nested.apic_access_page = NULL;
-> >         }
-> >         kvm_vcpu_unmap(vcpu, &vmx->nested.virtual_apic_map, true);
-> > -       if (vmx->nested.pi_desc_page) {
-> > -               kunmap(vmx->nested.pi_desc_page);
-> > -               kvm_release_page_dirty(vmx->nested.pi_desc_page);
-> > -               vmx->nested.pi_desc_page = NULL;
-> > -               vmx->nested.pi_desc = NULL;
-> > -       }
-> > +       kvm_vcpu_unmap(vcpu, &vmx->nested.pi_desc_map, true);
-> > +       vmx->nested.pi_desc = NULL;
-> >
-> >         /*
-> >          * We are now running in L2, mmu_notifier will force to reload the
-> > diff --git a/arch/x86/kvm/vmx/vmx.h b/arch/x86/kvm/vmx/vmx.h
-> > index f618f52..bd04725 100644
-> > --- a/arch/x86/kvm/vmx/vmx.h
-> > +++ b/arch/x86/kvm/vmx/vmx.h
-> > @@ -143,7 +143,7 @@ struct nested_vmx {
-> >          */
-> >         struct page *apic_access_page;
-> >         struct kvm_host_map virtual_apic_map;
-> > -       struct page *pi_desc_page;
-> > +       struct kvm_host_map pi_desc_map;
-> >
-> >         struct kvm_host_map msr_bitmap_map;
-> >
-> > --
-> > 2.7.4
-> >
+rt_sigframe_ia32 has uc_flags, so this isn't a real problem.
+
+I don't have a brilliant solution here.
