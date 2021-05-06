@@ -2,281 +2,344 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A4EEF375A69
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 20:49:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3120375A6B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 20:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231441AbhEFStz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 14:49:55 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:23448 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229622AbhEFStw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 14:49:52 -0400
-Received: from pps.filterd (m0098399.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146Ie0Id095816;
-        Thu, 6 May 2021 14:48:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : reply-to : to : cc : date : in-reply-to : references : content-type
- : mime-version : content-transfer-encoding; s=pp1;
- bh=Wc+kGeasxC6SCjHD/hF7VUIpoQ6yJFeE+vXN7W7+C4U=;
- b=OTVCDM3WySurOF5XXn57WUpqZhxVqXaTB8D+to5XbmiwW+4XK39ESsbHdU0eKsg4gHg5
- M9m1v87wap5KMdARxbTYfS1Vkb6dmoqLJm45GOW5vi6sAw+ClYZG/Ukudm5sDTA9NOFH
- lAGH29vry4j7aTa16opQjvhkXs8HZHCle5EwO6S4TO/+JIue4T7X3+GuQjZGl4wGF28a
- Dpn1ZEybliVEIcSb0RpYDt8VtfWlWeVPFwKY1OJGaRu12yLUqdQe6uSGPBNEsPdcxhr7
- j8DvjnPv68EtoQJ8p+h5nrehmQKUKBRYJFWRnD+iSaZEYAdVycCRCmbjkhKSILB2deGB Nw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38cmsfa5we-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 May 2021 14:48:05 -0400
-Received: from m0098399.ppops.net (m0098399.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 146IeELI097074;
-        Thu, 6 May 2021 14:48:04 -0400
-Received: from ppma01dal.us.ibm.com (83.d6.3fa9.ip4.static.sl-reverse.com [169.63.214.131])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38cmsfa5vr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 May 2021 14:48:04 -0400
-Received: from pps.filterd (ppma01dal.us.ibm.com [127.0.0.1])
-        by ppma01dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 146IcEn9017016;
-        Thu, 6 May 2021 18:48:03 GMT
-Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
-        by ppma01dal.us.ibm.com with ESMTP id 38bee1150t-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 May 2021 18:48:03 +0000
-Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
-        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 146Im26m21758272
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 6 May 2021 18:48:02 GMT
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 41B3C78068;
-        Thu,  6 May 2021 18:48:02 +0000 (GMT)
-Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 55FB77805F;
-        Thu,  6 May 2021 18:47:49 +0000 (GMT)
-Received: from jarvis (unknown [9.80.192.238])
-        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
-        Thu,  6 May 2021 18:47:49 +0000 (GMT)
-Message-ID: <9e1953a1412fad06a9f7988a280d2d9a74ab0464.camel@linux.ibm.com>
-Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to
- create "secret" memory areas
-From:   James Bottomley <jejb@linux.ibm.com>
-Reply-To: jejb@linux.ibm.com
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org
-Date:   Thu, 06 May 2021 11:47:47 -0700
-In-Reply-To: <202105060916.ECDEC21@keescook>
-References: <20210303162209.8609-1-rppt@kernel.org>
-         <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
-         <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
-         <202105060916.ECDEC21@keescook>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        id S233233AbhEFSuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 14:50:17 -0400
+Received: from mail-mw2nam12on2080.outbound.protection.outlook.com ([40.107.244.80]:62945
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229622AbhEFSuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 14:50:16 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=bEo2/ib1e2hzWam0WMg6kUnpF4wED1KOioOupGaER9EIkCMkeUdCWsCokcTHJL44UKxwj/rQpn/Ez742k0hUiZJH4IIUnqI1B9mQ0lXcNme2HoebLJd43yEeB1LUXTOF1i+Vb7h1KpRY48zVlaLDid7GX2JTygZQun07m7LAb3HYq1vn4KVdAkYrQBjwVn5ykswmEMVMCFCmOw+b9MAdrHwgAwLiNuEkCxlLTYwQIXGAUiBo4I39Z9TvhVPQUSY89QqCY9oMpLw0/1E/Nj5WIbx4tSKINKsqLQjiTYLz/KrNxZWxIas9H7ZIMPC610vOI2jBHG8z9tPb8nVrmdcUpQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qaA5JCCrl+WaQBOWn9EwgrQmHKdYMnicDWf4fJAmbPY=;
+ b=g8zMuyi4jOL5+WHye48zvvO3nSxuoaB2lgjZDcbujhDhRwpJnjP2kAEGHVHNuG5Uj8hm4L6fmptjCYMMVbhN7vy+7EBuuhHDPKb5Ybqlw6JFKacDWir2Ae9PgCu6K7/XkbCZq72cbhyQIeW1IJeupUbiaK8PUz8B2gGyG7k0oQsvEG3NIIAgNvRLdd2C1LjeGNh484mj8Ws0Htt3FR5PAeE9i7tszOPJoWIhJzZs8D+9q/ThoeTr39R+k8QTvtrfCr3V1MIU/f/RmUWCJNmZSX/dUXTi5BcrSc9JjhPdlwtehRQ8f4iYYvd/awFpb67qeIM7P0LZoCrGObDLglefSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qaA5JCCrl+WaQBOWn9EwgrQmHKdYMnicDWf4fJAmbPY=;
+ b=KjiJTdcpMjkda4pDM98roglebEg1p9l+DtMnFRApIacZKPoAiKNMBhk2M3MyYrJnzhaIlM8eCChICCFBGSbJyccSptHSHdgnAB7M81OnzT5GZA1vxbkbyfCF5ofhIH4jLs4DvjbQ50yRP9vwy3JL5qvA5VC9+VFmZQUQKOuR1BelF/PrkMRnN0yovKxHH96QF3Ga0s3qLiBiRkhxDAHsJBGdUEzx0yRmjEzlNtdreQ4JIho3c/vPGLthSAs/DL9tAgeAQTcsikw1m5aH9ea3wPM5O/2BbvA+X50FuJ1J9s9hYQbf6Na8nsHKqx42JmigzFCEBWcmE6Tz0bapHVZ19w==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
+ by BL0PR12MB5011.namprd12.prod.outlook.com (2603:10b6:208:1c9::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
+ 2021 18:49:16 +0000
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::ccd7:fb49:6f2d:acf2]) by MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::ccd7:fb49:6f2d:acf2%7]) with mapi id 15.20.4108.026; Thu, 6 May 2021
+ 18:49:16 +0000
+From:   "Zi Yan" <ziy@nvidia.com>
+To:     "David Hildenbrand" <david@redhat.com>
+Cc:     "Oscar Salvador" <osalvador@suse.de>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>, x86@kernel.org,
+        "Andy Lutomirski" <luto@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Anshuman Khandual" <anshuman.khandual@arm.com>,
+        "Michal Hocko" <mhocko@suse.com>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        "Wei Yang" <richard.weiyang@linux.alibaba.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH 0/7] Memory hotplug/hotremove at subsection size
+Date:   Thu, 06 May 2021 14:49:09 -0400
+X-Mailer: MailMate (1.14r5757)
+Message-ID: <3A6D54CF-76F4-4401-A434-84BEB813A65A@nvidia.com>
+In-Reply-To: <f3a2152c-685b-2141-3e33-b2bcab8b6010@redhat.com>
+References: <20210506152623.178731-1-zi.yan@sent.com>
+ <fb60eabd-f8ef-2cb1-7338-7725efe3c286@redhat.com>
+ <9D7FD316-988E-4B11-AC1C-64FF790BA79E@nvidia.com>
+ <3a51f564-f3d1-c21f-93b5-1b91639523ec@redhat.com>
+ <16962E62-7D1E-4E06-B832-EC91F54CC359@nvidia.com>
+ <f3a2152c-685b-2141-3e33-b2bcab8b6010@redhat.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_4E6142BD-3CD1-474B-93C8-703340E8202A_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [216.228.112.22]
+X-ClientProxiedBy: BL1PR13CA0218.namprd13.prod.outlook.com
+ (2603:10b6:208:2bf::13) To MN2PR12MB3823.namprd12.prod.outlook.com
+ (2603:10b6:208:168::26)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: g0-aeVw8NpL0zpJxkftnXh3fKMLJvIyG
-X-Proofpoint-ORIG-GUID: QDTWMRO_ZYIJvGBc0eZdMSgIeAAZWI1o
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-06_10:2021-05-06,2021-05-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
- priorityscore=1501 lowpriorityscore=0 malwarescore=0 clxscore=1015
- adultscore=0 mlxscore=0 bulkscore=0 impostorscore=0 mlxlogscore=999
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105060127
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.2.49.219] (216.228.112.22) by BL1PR13CA0218.namprd13.prod.outlook.com (2603:10b6:208:2bf::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.12 via Frontend Transport; Thu, 6 May 2021 18:49:12 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 44cdb326-7258-4f09-06ba-08d910bfa63e
+X-MS-TrafficTypeDiagnostic: BL0PR12MB5011:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB501190DD4C5D170A29899B91C2589@BL0PR12MB5011.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: y1sddUj8TinhHcolYUp28a9YtL4n5AznegYSgqgc4SvyrRaqrLRkoibdfmM7jDYyJe4E0s4pStg/D9ippvshc2FEbpn6Ro4HHZlRnORyogtsmxKJNCzE/u0dT/6cKh9hOwaxbZACwTfUb+CCkwIJRphGZ9ojoGVBrE/X0Po/yjSwh0uDejL++ZOFnE//ViXM48jKlvb9ptVFN87uIEm5dCVxTyEz2uF5OeVPrbLffL8c7wDSPYHNAD96VgormXILEuNKx8LRQriAMTx5epMPrc+2Bg9kqjuiPvHlQnEXyfa14IWHDcGZVhEbGIoq6wGGsanU0U6nqk363oVkLAcvqsR9SFY2w+WAvARz1h3RfhXyARYwMzigINr0C/y6m4vjNWJY4eJZ2R7/6gBhkIJgiNorD+E3mj8b+KT1mabely4AGqMkIaNrXJmS4rv1Ngiy48saMURJhKzEGn9X79gVNG3fppr9axVMbnjZmLW4kJwZqarhQWGKof1HszKsaWXBEMiyQGUDZg0zgus41tAOEfxd8B4IR3vPm3DPzdDvt+wW+X8t3PZVGQbJ3lYerEiC/jUeQDZzd5l2i0D7z69d3cBFiByNcPsfsoQB6xP3UekQpVDevIgfT6y/oGkNawyPjiX4aM2i1nzLrUIpNQzBFD4u+l5cMzBvghFKV2cSwgk=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(366004)(376002)(136003)(38100700002)(16526019)(956004)(5660300002)(83380400001)(33964004)(2616005)(53546011)(2906002)(6916009)(235185007)(16576012)(33656002)(6486002)(316002)(86362001)(66556008)(66476007)(478600001)(4326008)(54906003)(66946007)(8936002)(26005)(6666004)(7416002)(36756003)(186003)(8676002)(45980500001)(72826003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?emRZM1EvV29sazhtNGpqcm5GdzhqMER5T0FHWGhaUnBPbGdYcHI2UmoyaDVR?=
+ =?utf-8?B?R3NYZGFrdjhBTUpPd2pHYndKbTZaVjdhZnZ4UHFhZ3BKL29tSlV6TzlINXNO?=
+ =?utf-8?B?TG51eHZ3bGF4Q3h5NkNJaVpqT3dYV0JQOWtURS9heFBzZHJyaXVYUlBkbkZM?=
+ =?utf-8?B?Y2lSNHFsWThjMzVRMzFSLzl5NmJjMmpmMEI4aFBhMktZY1pxSnBIc2crVkk4?=
+ =?utf-8?B?NzU0Tk5vSkwwTHErR3Q5VkVZWW83THlGWFo3b1gvRTFOd0l6QWlYRHhTclZT?=
+ =?utf-8?B?bXZ2ckFjbWhuME8zb0c2V1R6MEU4ZExKOU1FY0VQb3lIa3NFN05jTHIwWE4w?=
+ =?utf-8?B?R1l4ejlidkdjNmoxMTZvWktPU21Ta2lHYkJwd1JBNks5cjBJNThXc3RvQmtr?=
+ =?utf-8?B?Q3JCV3B4NE5kMC9JeFJ0RWE0eFNmNUZVRWhzYnIwMkRkMnhRRm9nWHpoRUZh?=
+ =?utf-8?B?TVpuSVk4amVtai80d1kvbWhjaDV6ZDV0R2oxM3NHQ2E2elZrS0dDMU1yVnNm?=
+ =?utf-8?B?VVI4Q05GVmlZK09qdDF4NEVRbDNKZUhBWkxqbVBUanl0UE1PNTlkQitzb2dN?=
+ =?utf-8?B?dVNEOHFpalN1cldFeFBNbThvYkhJSjFzOFI0NklxZGMxTXAzYzVPUnYwdWw3?=
+ =?utf-8?B?WTE3dHRZdlp5Wk44b1E5bnlwRDl5cW1HM0hkOGZTYjNPR1hzK0JFQlJGcEFL?=
+ =?utf-8?B?VlgyZytyUjA5MDRDWjJna2pSdWY3anNuVGRRU1FsNVNGZHlxVm5yU3ZWUlpG?=
+ =?utf-8?B?VHFpdnZtV3BSbmxCMWpuRHdmbFhOZ3NaeG9uNnpnZklQTWJrRU1qclBUSEsz?=
+ =?utf-8?B?aHpSSUVraHcrNWdCQU9MNjJYUGh5TUZHMXE3aXcvVlgzWlR3KzRIcUZRTWZX?=
+ =?utf-8?B?ZVJTSDJiTXBGUDZPbFIyZkZ5RFpaSXRzWWJ4dWxEVzZ3RUFsdDZCTTQ4cUN2?=
+ =?utf-8?B?MmpGQkM1V0lla1RYZk4wTnJiQkl4RXpCU1daOWV0ZFJBTTN3c0I1QnVCUU9i?=
+ =?utf-8?B?WTRlV0ZhbnBNTHZCOUE0ZHlGWVdnR1JoUWI2RmZMd0czUVNyVUdibVRvcXZu?=
+ =?utf-8?B?bm9sNVMwRUVXaE04UXY3ZXV0SjJZUEtta0dzNmJ2WkZTa3lteHdvMnNRQXZa?=
+ =?utf-8?B?S1FFK3dIWjdUc3J3c0NWaU9OWHdwWTJCelFPZ3dvRjIvUFJYNlhybnJHdGVn?=
+ =?utf-8?B?ck1WcXJGd2lLK2V4SWNZaG4wcVg1UVZmOVVueXpVOVZKSnBFZzg1SUNDNyt4?=
+ =?utf-8?B?QlZQeHpHWitEVjF2Sy90OXlSY1gzOThQcUcrUkRnZ1c0bGJSbDZYZm9zZjF5?=
+ =?utf-8?B?a0tNWTdsM1FUYml1SmtxWEc1T2lBZlg2NmNXQ1J5eGRUeFljRTJnTk5XT0hT?=
+ =?utf-8?B?UW5ldnlHY01HTDNBSDQ4OVFRbzNFTkFzT01nNks0L2ZkNGF0djQxRlJiQmNn?=
+ =?utf-8?B?cWdBUWZMNW8zY3huSnYwdkE4eWU4SkhQd1NFYTdrUHJGTGxvRi9NckRIS2RI?=
+ =?utf-8?B?MlZrVlBySjJzYm9xZXcxM1FQMW9BVTRZeXFBTHlZczRVRTNiTWxVdUJqR0hI?=
+ =?utf-8?B?dS84QmhRUnJPcHNWdldIQWFnNHh0VDRIdG0rN3JhcjU5ZHFIMm80QkRZdWQ5?=
+ =?utf-8?B?bk1LdkFXMk9BVmd0WTZ4bDlUczZPeGdHYzBHVStaY01BK0dHMGdrNVNBcFF4?=
+ =?utf-8?B?eEg1bkN1dVZqUEVjZVJNZkdqMGlIZk04QlBzZ0FrSVB0RHcyWGQyenVDbnZ2?=
+ =?utf-8?Q?sOOVYXoNTlk75A4VOJwPod/7drOtgn9Sn4XAL10?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 44cdb326-7258-4f09-06ba-08d910bfa63e
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 18:49:16.6534
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e6ZJ9lbkzVoeMEBcbD+Vx6jo/ThNBZMwXNn7D5xS+iiBAttfpsRwxUFZC0tgoym1
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB5011
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-06 at 10:33 -0700, Kees Cook wrote:
-> On Thu, May 06, 2021 at 08:26:41AM -0700, James Bottomley wrote:
-[...]
-> >    1. Memory safety for user space code.  Once the secret memory is
-> >       allocated, the user can't accidentally pass it into the
-> > kernel to be
-> >       transmitted somewhere.
-> 
-> In my first read through, I didn't see how cross-userspace operations
-> were blocked, but it looks like it's the various gup paths where
-> {vma,page}_is_secretmem() is called. (Thank you for the self-test!
-> That helped me follow along.) I think this access pattern should be
-> more clearly spelled out in the cover later (i.e. "This will block
-> things like process_vm_readv()").
+--=_MailMate_4E6142BD-3CD1-474B-93C8-703340E8202A_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I'm sure Mike can add it.
+On 6 May 2021, at 12:28, David Hildenbrand wrote:
 
-> I like the results (inaccessible outside the process), though I
-> suspect this will absolutely melt gdb or other ptracers that try to
-> see into the memory.
+> On 06.05.21 17:50, Zi Yan wrote:
+>> On 6 May 2021, at 11:40, David Hildenbrand wrote:
+>>
+>>>>>> The last patch increases SECTION_SIZE_BITS to demonstrate the use =
+of memory
+>>>>>> hotplug/hotremove subsection, but is not intended to be merged as =
+is. It is
+>>>>>> there in case one wants to try this out and will be removed during=
+ the final
+>>>>>> submission.
+>>>>>>
+>>>>>> Feel free to give suggestions and comments. I am looking forward t=
+o your
+>>>>>> feedback.
+>>>>>
+>>>>> Please not like this.
+>>>>
+>>>> Do you mind sharing more useful feedback instead of just saying a lo=
+t of No?
+>>>
+>>> I remember reasoning about this already in another thread, no? Either=
+ you're ignoring my previous feedback or my mind is messing with me.
+>>
+>> I definitely remember all your suggestions:
+>>
+>> 1. do not use CMA allocation for 1GB THP.
+>> 2. section size defines the minimum size in which we can add_memory(),=
+ so we cannot increase it.
+>>
+>> I am trying an alternative here. I am not using CMA allocation and not=
+ increasing the minimum size of add_memory() by decoupling the memory blo=
+ck size from section size, so that add_memory() can add a memory block sm=
+aller (as small as 2MB, the subsection size) than section size. In this w=
+ay, section size can be increased freely. I do not see the strong tie bet=
+ween add_memory() and section size, especially we have subsection bitmap =
+support.
+>
+> Okay, let me express my thoughts, I could have sworn I explained back t=
+hen why I am not a friend of messing with the existing pageblock size:
 
-I wouldn't say "melt" ... one of the Demos we did a FOSDEM was using
-gdb/ptrace to extract secrets and then showing it couldn't be done if
-secret memory was used.  You can still trace the execution of the
-process (and thus you could extract the secret as it's processed in
-registers, for instance) but you just can't extract the actual secret
-memory contents ... that's a fairly limited and well defined
-restriction.
+Thanks for writing down your thoughts in detail. I will clarify my high-l=
+evel plan below too.
 
->  Don't get me wrong, I'm a big fan of such concepts[0], but I see
-> nothing in the cover letter about it (e.g. the effects on "ptrace" or
-> "gdb" are not mentioned.)
+>
+> 1. Pageblock size
+>
+> There are a couple of features that rely on the pageblock size to be re=
+asonably small to work as expected. One example is virtio-balloon free pa=
+ge reporting, then there is virtio-mem (still also glued MAX_ORDER) and w=
+e have CMA (still also glued to MAX_ORDER). Most probably there are more.=
+ We track movability/ page isolation per pageblock; it's the smallest gra=
+nularity you can effectively isolate pages or mark them as CMA (MIGRATE_I=
+SOLATE, MIGRATE_CMA). Well, and there are "ordinary" THP / huge pages mos=
+t of our applications use and will use, especially on smallish systems.
+>
+> Assume you bump up the pageblock order to 1G. Small VMs won't be able t=
+o report any free pages to the hypervisor. You'll take the "fine-grained"=
+ out of virtio-mem. Each CMA area will have to be at least 1G big, which =
+turns CMA essentially useless on smallish systems (like we have on arm64 =
+with 64k base pages -- pageblock_size is 512MB and I hate it).
 
-Sure, but we thought "secret" covered it.  It wouldn't be secret if
-gdb/ptrace from another process could see it.
+I understand the issue of having large pageblock in small systems. My pla=
+n for this issue is to make MAX_ORDER a variable (pageblock size would be=
+ set according to MAX_ORDER) that can be adjusted based on total memory a=
+nd via boot time parameter. My apology since I did not state this clearly=
+ in my cover letter and it confused you. When we have a boot time adjusta=
+ble MAX_ORDER, large pageblock like 1GB would only appear for systems wit=
+h large memory. For small VMs, pageblock size would stay at 2MB, so all y=
+our concerns on smallish systems should go away.
 
-> There is also a risk here of this becoming a forensics nightmare:
-> userspace malware will just download their entire executable region
-> into a memfd_secret region. Can we, perhaps, disallow mmap/mprotect
-> with PROT_EXEC when vma_is_secretmem()? The OpenSSL example, for
-> example, certainly doesn't need PROT_EXEC.
+>
+> Then, imagine systems that have like 4G of main memory. By stopping gro=
+uping at 2M and instead grouping at 1G you can very easily find yourself =
+in the system where all your 4 pageblocks are unmovable and you essential=
+ly don't optimize for huge pages in that environment any more.
+>
+> Long story short: we need a different mechanism on top and shall leave =
+the pageblock size untouched, it's too tightly integrated with page isola=
+tion, ordinary THP, and CMA.
 
-I think disallowing PROT_EXEC is a great enhancement.
+I think it is better to make pageblock size adjustable based on total mem=
+ory of a system. It is not reasonable to have the same pageblock size acr=
+oss systems with memory sizes from <1GB to several TBs. Do you agree?
 
-> What's happening with O_CLOEXEC in this code? I don't see that
-> mentioned in the cover letter either. Why is it disallowed? That
-> seems a strange limitation for something trying to avoid leaking
-> secrets into other processes.
+>
+> 2. Section size
+>
+> I assume the only reason you want to touch that is because pageblock_si=
+ze <=3D section_size, and I guess that's one of the reasons I dislike it =
+so much. Messing with the section size really only makes sense when we wa=
+nt to manage metadata for larger granularity within a section.
 
-I actually thought we forced it, so I'll let Mike address this.  I
-think allowing it is great, so the secret memory isn't inherited by
-children, but I can see use cases where a process would want its child
-to inherit the secrets.
+Perhaps it is worth checking if it is feasible to make pageblock_size > s=
+ection_size, so we can still have small sections when pageblock_size are =
+large. One potential issue for that is when PFN discontinues at section b=
+oundary, we might have partial pageblock when pageblock_size is big. I gu=
+ess supporting partial pageblock (or different pageblock sizes like you m=
+entioned below ) would be the right solution.
 
-> And just so I'm sure I understand: if a vma_is_secretmem() check is
-> missed in future mm code evolutions, it seems there is nothing to
-> block the kernel from accessing the contents directly through
-> copy_from_user() via the userspace virtual address, yes?
+>
+> We allocate metadata per section. We mark whole sections early/online/p=
+resent/.... Yes, in case of vmemmap, we manage the memmap in smaller gran=
+ularity using the sub-section map, some kind of hack to support some ZONE=
+_DEVICE cases better.
+>
+> Let's assume we introduce something new "gigapage_order", corresponding=
+ to 1G. We could either decide to squeeze the metadata into sections, hav=
+ing to increase the section size, or manage that metadata differently.
+>
+> Managing it differently certainly makes the necessary changes easier. I=
+nstead of adding more hacks into sections, rather manage that metadata at=
+ differently place / in a different way.
 
-Technically no because copy_from_user goes via the userspace page
-tables which do have access.
+Can you elaborate on managing it differently?
 
-> >    2. It also serves as a basis for context protection of virtual
-> >       machines, but other groups are working on this aspect, and it
-> > is
-> >       broadly similar to the secret exfiltration from the kernel
-> > problem.
-> > 
-> > > Is this intended to protect keys/etc after the attacker has
-> > > gained the ability to run arbitrary kernel-mode code?  If so,
-> > > that seems optimistic, doesn't it?
-> > 
-> > Not exactly: there are many types of kernel attack, but mostly the
-> > attacker either manages to effect a privilege escalation to root or
-> > gets the ability to run a ROP gadget.  The object of this code is
-> > to be completely secure against root trying to extract the secret
-> > (some what similar to the lockdown idea), thus defeating privilege
-> > escalation and to provide "sufficient" protection against ROP
-> > gadgets.
-> > 
-> > The ROP gadget thing needs more explanation: the usual defeatist
-> > approach is to say that once the attacker gains the stack, they can
-> > do anything because they can find enough ROP gadgets to be turing
-> > complete.  However, in the real world, given the kernel stack size
-> > limit and address space layout randomization making finding gadgets
-> > really hard, usually the attacker gets one or at most two gadgets
-> > to string together.  Not having any in-kernel primitive for
-> > accessing secret memory means the one gadget ROP attack can't
-> > work.  Since the only way to access secret memory is to reconstruct
-> > the missing mapping entry, the attacker has to recover the physical
-> > page and insert a PTE pointing to it in the kernel and then
-> > retrieve the contents.  That takes at least three gadgets which is
-> > a level of difficulty beyond most standard attacks.
-> 
-> As for protecting against exploited kernel flaws I also see benefits
-> here. While the kernel is already blocked from directly reading
-> contents from userspace virtual addresses (i.e. SMAP), this feature
-> does help by blocking the kernel from directly reading contents via
-> the direct map alias. (i.e. this feature is a specialized version of
-> XPFO[1], which tried to do this for ALL user memory.) So in that
-> regard, yes, this has value in the sense that to perform
-> exfiltration, an attacker would need a significant level of control
-> over kernel execution or over page table contents.
-> 
-> Sufficient control over PTE allocation and positioning is possible
-> without kernel execution control[3], and "only" having an arbitrary
-> write primitive can lead to direct PTE control. Because of this, it
-> would be nice to have page tables strongly protected[2] in the
-> kernel. They remain a viable "data only" attack given a sufficiently
-> "capable" write flaw.
+>
+> See [1] for an alternative. Not necessarily what I would dream off, but=
+ just to showcase that there might be alternative to group pages.
 
-Right, but this is on the radar of several people and when fixed will
-strengthen the value of secret memory.
-
-> I would argue that page table entries are a more important asset to
-> protect than userspace secrets, but given the difficulties with XPFO
-> and the not-yet-available PKS I can understand starting here. It
-> does, absolutely, narrow the ways exploits must be written to
-> exfiltrate secret contents. (We are starting to now constrict[4] many
-> attack methods into attacking the page table itself, which is good in
-> the sense that protecting page tables will be a big win, and bad in
-> the sense that focusing attack research on page tables means we're
-> going to see some very powerful attacks.)
-> 
-> > > I think that a very complete description of the threats which
-> > > this feature addresses would be helpful.  
-> > 
-> > It's designed to protect against three different threats:
-> > 
-> >    1. Detection of user secret memory mismanagement
-> 
-> I would say "cross-process secret userspace memory exposures" (via a
-> number of common interfaces by blocking it at the GUP level).
-> 
-> >    2. significant protection against privilege escalation
-> 
-> I don't see how this series protects against privilege escalation.
-> (It protects against exfiltration.) Maybe you mean include this in
-> the first bullet point (i.e. "cross-process secret userspace memory
-> exposures, even in the face of privileged processes")?
-
-It doesn't prevent privilege escalation from happening in the first
-place, but once the escalation has happened it protects against
-exfiltration by the newly minted root attacker.
-
-> >    3. enhanced protection (in conjunction with all the other in-
-> > kernel
-> >       attack prevention systems) against ROP attacks.
-> 
-> Same here, I don't see it preventing ROP, but I see it making
-> "simple" ROP insufficient to perform exfiltration.
-
-Right, that's why I call it "enhanced protection".  With ROP the design
-goal is to take exfiltration beyond the simple, and require increasing
-complexity in the attack ... the usual security whack-a-mole approach
-... in the hope that script kiddies get bored by the level of
-difficulty and move on to something easier.
-
-James
+I saw this patch too. It is an interesting idea to separate different all=
+ocation orders into different regions, but it would not work for gigantic=
+ page allocations unless we have large pageblock size to utilize existing=
+ anti-fragmentation mechanisms.
 
 
+>
+> 3. Grouping pages > pageblock_order
+>
+> There are other approaches that would benefit from grouping at > pagebl=
+ock_order and having bigger MAX_ORDER. And that doesn't necessarily mean =
+to form gigantic pages only, we might want to group in multiple granulari=
+ty on a single system. Memory hot(un)plug is one example, but also optimi=
+zing memory consumption by powering down DIMM banks. Also, some architect=
+ures support differing huge page sizes (aarch64) that could be improved w=
+ithout CMA. Why not have more than 2 THP sizes on these systems?
+>
+> Ideally, we'd have a mechanism that tries grouping on different granula=
+rity, like for every order in pageblock_order ... max_pageblock_order (e.=
+g., 1 GiB), and not only add one new level of grouping (or increase the s=
+ingle grouping size).
+
+I agree. In some sense, supporting partial pageblock and increasing pageb=
+lock size (e.g., to 1GB) is, at the high level, quite similar to having m=
+ultiple pageblock sizes. But I am not sure if we really want to support m=
+ultiple pageblock sizes, since it creates pageblock fragmentation when we=
+ want to change migratetype for part of a pageblock. This means we would =
+break a large pageblock into small ones if we just want to steal a subset=
+ of pages from MOVEABLE for UNMOVABLE allocations. Then pageblock loses i=
+ts most useful anti-fragmentation feature. Also it seems to be a replicat=
+ion of buddy allocator functionalities when it comes to pageblock split a=
+nd merge.
+
+
+The above is really a nice discussion with you on pageblock, section, mem=
+ory hotplug/hotremove, which also helps me understand more on the issues =
+with increasing MAX_ORDER to enable 1GB page allocation.
+
+In sum, if I get it correctly, the issues I need to address are:
+
+1. large pageblock size (which is needed when we bump MAX_ORDER for gigan=
+tic page allocation from buddy allocator) is not good for machines with s=
+mall memory.
+
+2. pageblock size is currently tied with section size (which made me want=
+ to bump section size).
+
+
+For 1, I think making MAX_ORDER a variable that can be set based on total=
+ memory size and adjustable via boot time parameter should solve the prob=
+lem. For small machines, we will keep MAX_ORDER as small as we have now l=
+ike 4MB, whereas for large machines, we can increase MAX_ORDER to utilize=
+ gigantic pages.
+
+For 2, supporting partial pageblock and allow a pageblock to cross multip=
+le sections would break the tie between pageblock size and section to sol=
+ve the issue.
+
+I am going to look into them. What do you think?
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_4E6142BD-3CD1-474B-93C8-703340E8202A_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmCUOiUPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKQxwQAIwdvlJCO/3aI45RAe4SVGdMAicXn3W5vkpK
+QwXwEyiAWQDQN7VFEZDpffx/A4sP3D4Seh2V8l+xBj3cNnElnbWzbxnm7D/9TuOi
+QiXpADUS5MGwO1JAtqQ/fgwuOjPIKXXvw1e/8u5NRh17CCoATGc165leSJqrTt6T
+XntZXgH76lVxmYO0bswzb5yojVVo3OKiIlpAy1dtDyELzw67dnof0h3qnRTOlFJo
+XQUIMfA3KeVTVvR+66IWPxjr6Gqjibd3ntZMkGVUB54yjPClEJ1+yyBfVJDvnfag
+v8TosgUBN9gXeUi1uk2TngTwP7ydsq6xec/8EI7/f0RUmY+LJnoyIXhirI1rb3fB
+PnyJch0jTyqwdQ0m/UxCS9w2meAfbpkUDxUcXLYa1eGq5B6zWiagEmpEw6plxa3P
+yRl+r3GUfwUIRP3lAVkP+gNjuh4xmnk9eia5DrSEbSlSyDozCNYfhpO0GRwxpyXJ
+zZBoWmI+suY582hIPI5rfXJDvypet5zeq8Ao3eyIFqu99PQzDlJIG1HflnK0+XIE
+03lHj5E/vGGs8eFE6MrAIhcaRU5YZVFFlk7hrLi7XYWDDKiYddgLhMStvO/aBol5
+qGZ296qRxnByo5U6GkTFdXXCKVqcWPpvwn8tH+P7uCQ4UZIheKXlsJWsZDJnMnAN
+den8JOoa
+=rO6N
+-----END PGP SIGNATURE-----
+
+--=_MailMate_4E6142BD-3CD1-474B-93C8-703340E8202A_=--
