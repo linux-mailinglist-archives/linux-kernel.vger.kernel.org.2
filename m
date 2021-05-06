@@ -2,229 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0A2A375A20
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 20:22:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49C1F375A24
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 20:24:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234379AbhEFSXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 14:23:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43488 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234333AbhEFSXV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 14:23:21 -0400
-Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AFDC8C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 11:22:21 -0700 (PDT)
-Received: by mail-ej1-x62f.google.com with SMTP id l4so9670204ejc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 11:22:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BRQHRkFwEmoQQH23N9E0XGi4S2KTprSInvxvTybpRDo=;
-        b=cupWVeZ/u7+KYnd0pZbmw0V8kpVJFidtNQmJJndcFVQDm7Mz9sH12+Lvq5d+q2lORZ
-         askoFNLFB+ul/jNYyOaXg2Tc8PAwEkqUta+zAbfyeEtDr204q+upO7tiLAh5wdB9o0aH
-         Yb9MtWshSqoRLpE7C2Uc8CPKDNJXhWVFj2EP7zwBz1bdSM1Xiz30uMjFperBXrK3WRdL
-         TvwUA8q18G7J4cNgZYHBhFczEjy1UgA0lCqYBSYOIHI9yjJU+kALAz20Y3jyLLnqIuWg
-         SSOWEKIM2+jJSkFl8wOFPlyNTFJ8/0LbyLSHTGF3hAHXE3YCmz0LpQKySvdn/GYfM0XB
-         2x/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BRQHRkFwEmoQQH23N9E0XGi4S2KTprSInvxvTybpRDo=;
-        b=HTmpy8HL25IJ+rj+Nyjt1h5ie1eKLK7wRmy3cXhfpZBiNWQ70mwox/3f5H7fbQqJeV
-         Fil+KfMkqeMe3VGHws/HK1s75uhdzbo5VpjEDY22o8a3iQcJNjHTOJT+GhuR7Tz9+TTH
-         Gf2guVUed7NLt2Oje30tTDymV8VwFA6SsYKdSjW/8P/boG1lu9H1gP5Soeb+uUuyAYaW
-         8qC739kyOXdJBwuD7S+Z+Ye5ROAURuFEpImxuqt4bWbyLlKfE0ugzOz273IfD1VCzERE
-         70z/aTLWltY7Q8Y0Bj7Ejifw+YqTfmEPiKjpzwiryFhFwXOoTzbsCnLXoYQFRoA3g/lB
-         26LQ==
-X-Gm-Message-State: AOAM533ctjNUbagP7QkciBBUfj8+QGD+afyWrHo+4EQrAWr2JPhZ2VV6
-        XEd2XvyX5ZkmV5wUq6U05adUa8tYUY7TfuYN
-X-Google-Smtp-Source: ABdhPJzwuhPOBfgFQU8SiUp7j0GdaRHxt613w0o2t5N/IpAUz0HLlpl6hBVfMURDMo+cqRUATYTTfg==
-X-Received: by 2002:a17:906:1957:: with SMTP id b23mr5969511eje.209.1620325339430;
-        Thu, 06 May 2021 11:22:19 -0700 (PDT)
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com. [209.85.221.42])
-        by smtp.gmail.com with ESMTPSA id 16sm1877234ejw.0.2021.05.06.11.22.16
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 11:22:17 -0700 (PDT)
-Received: by mail-wr1-f42.google.com with SMTP id l14so6624060wrx.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 11:22:16 -0700 (PDT)
-X-Received: by 2002:a05:6000:188b:: with SMTP id a11mr6776251wri.275.1620325335877;
- Thu, 06 May 2021 11:22:15 -0700 (PDT)
+        id S234006AbhEFSZF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 14:25:05 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51046 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231839AbhEFSZD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 14:25:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 26F63AF98;
+        Thu,  6 May 2021 18:24:04 +0000 (UTC)
+Date:   Thu, 6 May 2021 20:24:01 +0200
+From:   Joerg Roedel <jroedel@suse.de>
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Eric Biederman <ebiederm@xmission.com>, x86@kernel.org,
+        kexec@lists.infradead.org, stable@vger.kernel.org, hpa@zytor.com,
+        Andy Lutomirski <luto@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jiri Slaby <jslaby@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Juergen Gross <jgross@suse.com>,
+        Kees Cook <keescook@chromium.org>,
+        David Rientjes <rientjes@google.com>,
+        Cfir Cohen <cfir@google.com>,
+        Erdem Aktas <erdemaktas@google.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Mike Stunes <mstunes@vmware.com>,
+        Martin Radev <martin.b.radev@gmail.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
+Subject: Re: [PATCH 1/2] kexec: Allow architecture code to opt-out at runtime
+Message-ID: <YJQ0QdjdRwpMkIqU@suse.de>
+References: <20210506093122.28607-1-joro@8bytes.org>
+ <20210506093122.28607-2-joro@8bytes.org>
+ <YJQOmxx1EMUqNpNn@google.com>
 MIME-Version: 1.0
-References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
- <1619690903-1138-1-git-send-email-dseok.yi@samsung.com> <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
- <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com> <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
- <02c801d7421f$65287a90$2f796fb0$@samsung.com>
-In-Reply-To: <02c801d7421f$65287a90$2f796fb0$@samsung.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Thu, 6 May 2021 14:21:37 -0400
-X-Gmail-Original-Message-ID: <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
-Message-ID: <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
- to 4
-To:     Dongseok Yi <dseok.yi@samsung.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJQOmxx1EMUqNpNn@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 10:27 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
->
-> On Wed, May 05, 2021 at 09:45:37PM -0400, Willem de Bruijn wrote:
-> > On Wed, May 5, 2021 at 8:45 PM Dongseok Yi <dseok.yi@samsung.com> wrote:
-> > >
-> > > On Wed, May 05, 2021 at 10:55:10PM +0200, Daniel Borkmann wrote:
-> > > > On 4/29/21 12:08 PM, Dongseok Yi wrote:
-> > > > > tcp_gso_segment check for the size of GROed payload if it is bigger
-> > > > > than the mss. bpf_skb_proto_6_to_4 increases mss, but the mss can be
-> > > > > bigger than the size of GROed payload unexpectedly if data_len is not
-> > > > > big enough.
-> > > > >
-> > > > > Assume that skb gso_size = 1372 and data_len = 8. bpf_skb_proto_6_to_4
-> >
-> > Is this a typo and is this intended to read skb->data_len = 1380?
->
-> This is not a typo. I intended skb->data_len = 8.
->
-> >
-> > The issue is that payload length (1380) is greater than mss with ipv6
-> > (1372), but less than mss with ipv4 (1392).
-> >
-> > I don't understand data_len = 8 or why the patch compares
-> > skb->data_len to len_diff (20).
->
-> skb_gro_receive():
->         unsigned int len = skb_gro_len(skb);
->         [...]
-> done:
->         NAPI_GRO_CB(p)->count++;
->         p->data_len += len;
->
-> head_skb's data_len is the sum of skb_gro_len for each skb of the frags.
-> data_len could be 8 if server sent a small size packet and it is GROed
-> to head_skb.
->
-> Please let me know if I am missing something.
+On Thu, May 06, 2021 at 03:43:23PM +0000, Sean Christopherson wrote:
+> This misses kexec_file_load.
 
-This is my understanding of the data path. This is a forwarding path
-for TCP traffic.
+Right, thanks, I will fix that in the next version.
 
-GRO is enabled and will coalesce multiple segments into a single large
-packet. In bad cases, the coalesced packet payload is > MSS, but < MSS
-+ 20.
+> Also, is a new hook really needed?  E.g. the SEV-ES check be shoved
+> into machine_kexec_prepare().  The downside is that we'd do a fair
+> amount of work before detecting failure, but that doesn't seem hugely
+> problematic.
 
-Somewhere between GRO and GSO you have a BPF program that converts the
-IPv6 address to IPv4.
+That could work, but I think its more user-friendly to just claim that
+the syscalls are not supported at all.
 
-There is no concept of head_skb at the time of this BPF program. It is
-a single SKB, with an skb linear part and multiple data items in the
-frags (no frag_list).
+Regards,
 
-When entering the GSO stack, this single skb now has a payload length
-< MSS. So it would just make a valid TCP packet on its own?
-
-skb_gro_len is only relevant inside the GRO stack. It internally casts
-the skb->cb[] to NAPI_GRO_CB. This field is a scratch area that may be
-reused for other purposes later by other layers of the datapath. It is
-not safe to read this inside bpf_skb_proto_6_to_4.
-
-
-> >
-> > One simple solution if this packet no longer needs to be segmented
-> > might be to reset the gso_type completely.
->
-> I am not sure gso_type can be cleared even when GSO is needed.
->
-> >
-> > In general, I would advocate using BPF_F_ADJ_ROOM_FIXED_GSO. When
-> > converting from IPv6 to IPv4, fixed gso will end up building packets
-> > that are slightly below the MTU. That opportunity cost is negligible
-> > (especially with TSO). Unfortunately, I see that that flag is
-> > available for bpf_skb_adjust_room but not for bpf_skb_proto_6_to_4.
-> >
-> >
-> > > > > would increse the gso_size to 1392. tcp_gso_segment will get an error
-> > > > > with 1380 <= 1392.
-> > > > >
-> > > > > Check for the size of GROed payload if it is really bigger than target
-> > > > > mss when increase mss.
-> > > > >
-> > > > > Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
-> > > > > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
-> > > > > ---
-> > > > >   net/core/filter.c | 4 +++-
-> > > > >   1 file changed, 3 insertions(+), 1 deletion(-)
-> > > > >
-> > > > > diff --git a/net/core/filter.c b/net/core/filter.c
-> > > > > index 9323d34..3f79e3c 100644
-> > > > > --- a/net/core/filter.c
-> > > > > +++ b/net/core/filter.c
-> > > > > @@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
-> > > > >             }
-> > > > >
-> > > > >             /* Due to IPv4 header, MSS can be upgraded. */
-> > > > > -           skb_increase_gso_size(shinfo, len_diff);
-> > > > > +           if (skb->data_len > len_diff)
-> > > >
-> > > > Could you elaborate some more on what this has to do with data_len specifically
-> > > > here? I'm not sure I follow exactly your above commit description. Are you saying
-> > > > that you're hitting in tcp_gso_segment():
-> > > >
-> > > >          [...]
-> > > >          mss = skb_shinfo(skb)->gso_size;
-> > > >          if (unlikely(skb->len <= mss))
-> > > >                  goto out;
-> > > >          [...]
-> > >
-> > > Yes, right
-> > >
-> > > >
-> > > > Please provide more context on the bug, thanks!
-> > >
-> > > tcp_gso_segment():
-> > >         [...]
-> > >         __skb_pull(skb, thlen);
-> > >
-> > >         mss = skb_shinfo(skb)->gso_size;
-> > >         if (unlikely(skb->len <= mss))
-> > >         [...]
-> > >
-> > > skb->len will have total GROed TCP payload size after __skb_pull.
-> > > skb->len <= mss will not be happened in a normal GROed situation. But
-> > > bpf_skb_proto_6_to_4 would upgrade MSS by increasing gso_size, it can
-> > > hit an error condition.
-> > >
-> > > We should ensure the following condition.
-> > > total GROed TCP payload > the original mss + (IPv6 size - IPv4 size)
-> > >
-> > > Due to
-> > > total GROed TCP payload = the original mss + skb->data_len
-> > > IPv6 size - IPv4 size = len_diff
-> > >
-> > > Finally, we can get the condition.
-> > > skb->data_len > len_diff
-> > >
-> > > >
-> > > > > +                   skb_increase_gso_size(shinfo, len_diff);
-> > > > > +
-> > > > >             /* Header must be checked, and gso_segs recomputed. */
-> > > > >             shinfo->gso_type |= SKB_GSO_DODGY;
-> > > > >             shinfo->gso_segs = 0;
-> > > > >
-> > >
-> > >
->
+	Joerg
