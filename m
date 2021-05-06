@@ -2,98 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19AB737515B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D9BE37516B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:20:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbhEFJR4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:17:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33490 "EHLO
+        id S233361AbhEFJVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:21:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231815AbhEFJRz (ORCPT
+        with ESMTP id S233216AbhEFJVk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:17:55 -0400
+        Thu, 6 May 2021 05:21:40 -0400
 Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83C49C061574;
-        Thu,  6 May 2021 02:16:57 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E5FC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 02:20:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
         d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
         References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
         Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hDlhIpbeqoCuO5RsCW5NsbO4jPToGyvU3+tnRRJpx4c=; b=iYuUkaMe+/U1GiNT1IvXMm1Ghs
-        ClsV1L3x+mn8IeGIMWAI6+/uU63Vae7mcNy9L7RXxx1w+Eu8p75msl4QVc7Pdf0cnY0LnCAx+3MnN
-        1zQbiQTVyYk32bsO3nfxmLzMuE6/WibB/lvXr3m5OmQWUXokK9gO0+v0JViftpRWo9lnWP9w7IzcM
-        WqQ43Nru5hOMTrd22q6xIs80jwkt241Ac0zrYfMxSrF97YLKZephHtCpfaA6kNuMIluUULlz7gaZY
-        RawR5gJ8n2qAwozVzbo0Ya/S5s4HJcblYyZx3a4gWAxAg2uIPTzWtezuDe4wFk+esyl7tElDIPm3y
-        hbqpuM+w==;
+        bh=gqwbzSXbrw1GKfT0NFkEh+Wl8x5nZXjehzcXALXxRbo=; b=syZXdjjijpJDxxhmNaevOdZ/ed
+        IOmongEzh9jClU8ysIJlUEzGaXOXdCWMg79/bFjg58v2l2mVNPiqJQ3aiP3MxvDM8XwQpr/QBe1g9
+        tMaLmjucUGX8HyrcrRVDyllHyKlRQAkUVmVK4mG5OACmBffg4JL+erihHVznJAiUiD44QRcFaZsn7
+        jamnjK/nfQq2XHcKtaf9eCFN+H7PNZPTmjfcWXlNPWbecrTJPN7hg7yANSRkj4dfIXK5Ql973ugvN
+        iulgjBR98H0cKUQPeP6jry+7tWvtmleqANL7MeQ7OPr3oqDD8DB5Lybzxmo4BDaUETDuzVjCNKnZG
+        5hbL27zg==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
         by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lea4x-001Woe-Jg; Thu, 06 May 2021 09:14:25 +0000
+        id 1lea8Z-001X1j-N8; Thu, 06 May 2021 09:17:55 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 1921E30030F;
-        Thu,  6 May 2021 11:13:52 +0200 (CEST)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BF209300103;
+        Thu,  6 May 2021 11:17:38 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C6C342018C406; Thu,  6 May 2021 11:13:52 +0200 (CEST)
-Date:   Thu, 6 May 2021 11:13:52 +0200
+        id 9CF4D2018C406; Thu,  6 May 2021 11:17:38 +0200 (CEST)
+Date:   Thu, 6 May 2021 11:17:38 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
-To:     Balbir Singh <bsingharora@gmail.com>
-Cc:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, pbonzini@redhat.com, maz@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        riel@surriel.com, hannes@cmpxchg.org
-Subject: Re: [PATCH 0/6] sched,delayacct: Some cleanups
-Message-ID: <YJOzUAg30LZWSHcI@hirez.programming.kicks-ass.net>
-References: <20210505105940.190490250@infradead.org>
- <20210505222940.GA4236@balbir-desktop>
+To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.comi>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v2 3/4] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+Message-ID: <YJO0MiHsdeW7umUL@hirez.programming.kicks-ass.net>
+References: <20210414020436.12980-1-ricardo.neri-calderon@linux.intel.com>
+ <20210414020436.12980-4-ricardo.neri-calderon@linux.intel.com>
+ <YI/H2dBB5M5da6ba@hirez.programming.kicks-ass.net>
+ <20210506042844.GB3388@ranerica-svr.sc.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210505222940.GA4236@balbir-desktop>
+In-Reply-To: <20210506042844.GB3388@ranerica-svr.sc.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 08:29:40AM +1000, Balbir Singh wrote:
-> On Wed, May 05, 2021 at 12:59:40PM +0200, Peter Zijlstra wrote:
-> > Hi,
-> > 
-> > Due to:
-> > 
-> >   https://lkml.kernel.org/r/0000000000001d43ac05c0f5c6a0@google.com
-> > 
-> > and general principle, delayacct really shouldn't be using ktime (pvclock also
-> > really shouldn't be doing what it does, but that's another story). This lead me
-> > to looking at the SCHED_INFO, SCHEDSTATS, DELAYACCT (and PSI) accounting hell.
-> > 
-> > The rest of the patches are an attempt at simplifying all that a little. All
-> > that crud is enabled by default for distros which is leading to a death by a
-> > thousand cuts.
-> > 
-> > The last patch is an attempt at default disabling DELAYACCT, because I don't
-> > think anybody actually uses that much, but what do I know, there were no ill
-> > effects on my testbox. Perhaps we should mirror
-> > /proc/sys/kernel/sched_schedstats and provide a delayacct sysctl for runtime
-> > frobbing.
-> >
-> 
-> There are tools like iotop that use delayacct to display information. 
+On Wed, May 05, 2021 at 09:28:44PM -0700, Ricardo Neri wrote:
+> Thank you Peter! This code worked well and it looks better than what I
+> proposed. May I add your Originally-by: and Signed-off-by: tags in a
+> patch when I post v3?
 
-Right, but how many actual people use that? Does that justify saddling
-the whole sodding world with the overhead?
-
-> When the
-> code was checked in, we did run SPEC* back in the day 2006 to find overheads,
-> nothing significant showed. Do we have any date on the overhead your seeing?
-
-I've not looked, but having it disabled saves that per-task allocation
-and that spinlock in delayacct_end() for iowait wakeups and a bunch of
-cache misses ofcourse.
-
-I doubt SPEC is a benchmark that tickles those paths much if at all.
-
-The thing is; we can't just keep growing more and more stats, that'll
-kill us quite dead.
+Sure
