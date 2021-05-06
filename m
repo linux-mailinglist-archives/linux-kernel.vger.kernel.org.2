@@ -2,101 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CAE2374F10
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 07:54:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED94E374F15
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 07:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233248AbhEFFzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 01:55:33 -0400
-Received: from mail-wr1-f50.google.com ([209.85.221.50]:42638 "EHLO
-        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbhEFFz2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 01:55:28 -0400
-Received: by mail-wr1-f50.google.com with SMTP id l2so4212673wrm.9;
-        Wed, 05 May 2021 22:54:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fZFNMndNVaBhyUia9c6L9GGITkvd1krOQV1BdK3Tt/Y=;
-        b=RJhjtPlVArXiueF2x8ZSeWoDNIOUlw40plfB9F+SwYC5VxOEQVWzgpHx973o9EhaZU
-         68aHEshcttsJ9pZNI+jEJJNU2j7Ov7Zi3jeBTbWCqfdsRu6MP0B6vtQ6ctF84qkZMNpH
-         i15AOSR2dhq9+fKCUMnA+cPET1xICF5Q6snFGhg0Ergu6G7met1d6y22S4/64Pf6UPNJ
-         7q0K8tPGk/NlJaXHRhKcRUut1OPisMtkuGBpTMQd6EpAQSzOujNlhx23XIRl0r9saf56
-         PDdgP7VQvI/9rBIhkzVH1Ty7lkQdCAvSRmjDK/aVbbYK8AfgO3/+qPSB9B8ji6ARc7Uh
-         Fx9A==
-X-Gm-Message-State: AOAM531chZpm8Yjl4J5aXehMofWz7/VB+45OLsJH+mx/eOCMCv8vH1rz
-        3R0b6sIai8iiMzqQjWMLSm4=
-X-Google-Smtp-Source: ABdhPJyjyx3cZYxO2KbrMGYpBa9eBhrDdyULSsYBaCe2XoZp4EOe3EmTe5fnSnIqsYrujwQ/dFCjcQ==
-X-Received: by 2002:adf:ef90:: with SMTP id d16mr2804825wro.359.1620280468760;
-        Wed, 05 May 2021 22:54:28 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id y14sm2342252wrs.64.2021.05.05.22.54.27
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 22:54:28 -0700 (PDT)
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-From:   Jiri Slaby <jirislaby@kernel.org>
-To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
-        Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-References: <20210423130530.GA6564@kitsune.suse.cz>
- <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
- <20210423175528.GF6564@kitsune.suse.cz>
- <20210425111545.GL15381@kitsune.suse.cz>
- <20210426113215.GM15381@kitsune.suse.cz>
- <20210426121220.GN15381@kitsune.suse.cz>
- <20210426121401.GO15381@kitsune.suse.cz>
- <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
- <YIcRlHQWWKbOlcXr@krava> <20210505135612.GZ6564@kitsune.suse.cz>
- <5a225970-32a2-1617-b264-bc40a2179618@kernel.org>
-Message-ID: <09399b84-0ee3-bd18-68ed-290851bc63f6@kernel.org>
-Date:   Thu, 6 May 2021 07:54:27 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S233267AbhEFF4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 01:56:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47032 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232985AbhEFF4j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 01:56:39 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E5DC061176;
+        Thu,  6 May 2021 05:55:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620280541;
+        bh=r/f6HR9ysli6NCcEi1eXOMOSqjPye+kqEX8LgIuGMi0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UnYNpmq7UCbmkwA/82qaRJhRQPWBVTITREVcvFLofpzOpG7YDk/ITZaUzAn/1bELA
+         /XSH9caxaeZNwypbkRss4kaaCUb8XyOM7wtQR04JyNyYVRnOu1+JjylzK9Fbk41fUP
+         x7v9SDbflOXNShRmIBSU7fnxg2NTokejO3Abfr0w21GAGACJLvLF5OUTM0NRj8doAM
+         24ToMPJ0mSCc/wZ2CyAYCHvXtVFnjg4KcYrH7K+sdAwAYTkEQf4R2YpVSvuV13Y1L0
+         PN61ZJ2ftm/qJFpAOYiIQ2KW+/rjWX+loMBRIT5fFTImDwXNkGmBo++6oQccV3TjbA
+         x37ksqrfZ1siQ==
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Shuah Khan <shuah@kernel.org>
+Cc:     linux-sgx@vger.kernel.org, dave.hansen@intel.com,
+        Jarkko Sakkinen <jarkko@kernel.org>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] selftests/sgx: Rename 'eenter' and 'sgx_call_vdso'
+Date:   Thu,  6 May 2021 08:55:36 +0300
+Message-Id: <20210506055537.132199-1-jarkko@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <5a225970-32a2-1617-b264-bc40a2179618@kernel.org>
-Content-Type: text/plain; charset=windows-1252; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 05. 21, 6:31, Jiri Slaby wrote:
->>>> this one was reported by Jesper and was fixed by upgrading pahole
->>>> that contains the new function generation fixes (v1.19)
->>
->> It needs pahole 1.21 here, 1.19 was not sufficient. Even then it
->> regressed again after 5.12 on arm64:
-> 
-> Could you try against devel:tools? I've removed the ftrace filter from 
-> dwarves there (sr#890247 to factory).
+Rename symbols for better clarity:
 
-Yes, works for me.
+* 'eenter' -> 'vdso_sgx_enter_enclave'
+* 'sgx_call_vdso' -> 'sgx_enter_enclave'
 
->>    LD      vmlinux
->> ld: warning: -z relro ignored
->>    BTFIDS  vmlinux
->> FAILED unresolved symbol cubictcp_state
->> make[1]: *** 
->> [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12.0.13670.g5e321ded302d/linux-5.12-13670-g5e321ded302d/Makefile:1196: 
->> vmlinux] Error 255
->> make: *** [../Makefile:215: __sub-make] Error 2
+Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
+---
 
+v2:
+Refined the renames just a bit.
 
+ tools/testing/selftests/sgx/call.S |  6 +++---
+ tools/testing/selftests/sgx/main.c | 25 +++++++++++++------------
+ tools/testing/selftests/sgx/main.h |  4 ++--
+ 3 files changed, 18 insertions(+), 17 deletions(-)
+
+diff --git a/tools/testing/selftests/sgx/call.S b/tools/testing/selftests/sgx/call.S
+index 4ecadc7490f4..b09a25890f3b 100644
+--- a/tools/testing/selftests/sgx/call.S
++++ b/tools/testing/selftests/sgx/call.S
+@@ -5,8 +5,8 @@
+ 
+ 	.text
+ 
+-	.global sgx_call_vdso
+-sgx_call_vdso:
++	.global sgx_enter_enclave
++sgx_enter_enclave:
+ 	.cfi_startproc
+ 	push	%r15
+ 	.cfi_adjust_cfa_offset	8
+@@ -27,7 +27,7 @@ sgx_call_vdso:
+ 	.cfi_adjust_cfa_offset	8
+ 	push	0x38(%rsp)
+ 	.cfi_adjust_cfa_offset	8
+-	call	*eenter(%rip)
++	call	*vdso_sgx_enter_enclave(%rip)
+ 	add	$0x10, %rsp
+ 	.cfi_adjust_cfa_offset	-0x10
+ 	pop	%rbx
+diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
+index d304a4044eb9..43da68388e25 100644
+--- a/tools/testing/selftests/sgx/main.c
++++ b/tools/testing/selftests/sgx/main.c
+@@ -21,7 +21,7 @@
+ #include "../kselftest.h"
+ 
+ static const uint64_t MAGIC = 0x1122334455667788ULL;
+-vdso_sgx_enter_enclave_t eenter;
++vdso_sgx_enter_enclave_t vdso_sgx_enter_enclave;
+ 
+ struct vdso_symtab {
+ 	Elf64_Sym *elf_symtab;
+@@ -149,7 +149,7 @@ int main(int argc, char *argv[])
+ {
+ 	struct sgx_enclave_run run;
+ 	struct vdso_symtab symtab;
+-	Elf64_Sym *eenter_sym;
++	Elf64_Sym *sgx_enter_enclave_sym;
+ 	uint64_t result = 0;
+ 	struct encl encl;
+ 	unsigned int i;
+@@ -194,29 +194,30 @@ int main(int argc, char *argv[])
+ 	if (!vdso_get_symtab(addr, &symtab))
+ 		goto err;
+ 
+-	eenter_sym = vdso_symtab_get(&symtab, "__vdso_sgx_enter_enclave");
+-	if (!eenter_sym)
++	sgx_enter_enclave_sym = vdso_symtab_get(&symtab, "__vdso_sgx_enter_enclave");
++	if (!sgx_enter_enclave_sym)
+ 		goto err;
+ 
+-	eenter = addr + eenter_sym->st_value;
++	vdso_sgx_enter_enclave = addr + sgx_enter_enclave_sym->st_value;
+ 
+-	ret = sgx_call_vdso((void *)&MAGIC, &result, 0, EENTER, NULL, NULL, &run);
+-	if (!report_results(&run, ret, result, "sgx_call_vdso"))
++	ret = sgx_enter_enclave((void *)&MAGIC, &result, 0, EENTER,
++					    NULL, NULL, &run);
++	if (!report_results(&run, ret, result, "sgx_enter_enclave_unclobbered"))
+ 		goto err;
+ 
+ 
+ 	/* Invoke the vDSO directly. */
+ 	result = 0;
+-	ret = eenter((unsigned long)&MAGIC, (unsigned long)&result, 0, EENTER,
+-		     0, 0, &run);
+-	if (!report_results(&run, ret, result, "eenter"))
++	ret = vdso_sgx_enter_enclave((unsigned long)&MAGIC, (unsigned long)&result,
++				     0, EENTER, 0, 0, &run);
++	if (!report_results(&run, ret, result, "sgx_enter_enclave"))
+ 		goto err;
+ 
+ 	/* And with an exit handler. */
+ 	run.user_handler = (__u64)user_handler;
+ 	run.user_data = 0xdeadbeef;
+-	ret = eenter((unsigned long)&MAGIC, (unsigned long)&result, 0, EENTER,
+-		     0, 0, &run);
++	ret = vdso_sgx_enter_enclave((unsigned long)&MAGIC, (unsigned long)&result,
++				     0, EENTER, 0, 0, &run);
+ 	if (!report_results(&run, ret, result, "user_handler"))
+ 		goto err;
+ 
+diff --git a/tools/testing/selftests/sgx/main.h b/tools/testing/selftests/sgx/main.h
+index 67211a708f04..68672fd86cf9 100644
+--- a/tools/testing/selftests/sgx/main.h
++++ b/tools/testing/selftests/sgx/main.h
+@@ -35,7 +35,7 @@ bool encl_load(const char *path, struct encl *encl);
+ bool encl_measure(struct encl *encl);
+ bool encl_build(struct encl *encl);
+ 
+-int sgx_call_vdso(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
+-		  struct sgx_enclave_run *run);
++int sgx_enter_enclave(void *rdi, void *rsi, long rdx, u32 function, void *r8, void *r9,
++		      struct sgx_enclave_run *run);
+ 
+ #endif /* MAIN_H */
 -- 
-js
+2.31.1
+
