@@ -2,110 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6EEEE375149
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:10:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B363375151
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:13:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234044AbhEFJLC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:11:02 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:34813 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233765AbhEFJLB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:11:01 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FbSTQ2frfz9sTC;
-        Thu,  6 May 2021 11:10:02 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 84Jh_hPK5OFm; Thu,  6 May 2021 11:10:02 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FbSTQ1jkgz9sSD;
-        Thu,  6 May 2021 11:10:02 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1748E8B7F1;
-        Thu,  6 May 2021 11:10:02 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 4nw4S1JpHMM8; Thu,  6 May 2021 11:10:02 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id DA4788B7EC;
-        Thu,  6 May 2021 11:10:01 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 99FA564884; Thu,  6 May 2021 09:10:01 +0000 (UTC)
-Message-Id: <13f7532f21df3196e8c78b4f82a9c8d5487aca35.1620292185.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/32s: Remove m8260_gorom()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu,  6 May 2021 09:10:01 +0000 (UTC)
+        id S234043AbhEFJOA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:14:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60872 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233765AbhEFJN6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 05:13:58 -0400
+Received: from theia.8bytes.org (8bytes.org [IPv6:2a01:238:4383:600:38bc:a715:4b6d:a889])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24423C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 02:12:59 -0700 (PDT)
+Received: by theia.8bytes.org (Postfix, from userid 1000)
+        id 25BCE379; Thu,  6 May 2021 11:12:57 +0200 (CEST)
+Date:   Thu, 6 May 2021 11:12:54 +0200
+From:   Joerg Roedel <joro@8bytes.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] x86/cpu: Init exception handling from cpu_init()
+Message-ID: <YJOzFr1uanpaUFTe@8bytes.org>
+References: <20210504171745.2249-1-bp@alien8.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504171745.2249-1-bp@alien8.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Last user of m8260_gorom() was removed by
-Commit 917f0af9e5a9 ("powerpc: Remove arch/ppc and include/asm-ppc")
-removed last user of m8260_gorom().
+On Tue, May 04, 2021 at 07:17:45PM +0200, Borislav Petkov wrote:
+> From: Borislav Petkov <bp@suse.de>
+> 
+> SEV-ES guests require properly setup task register with which the TSS
+> descriptor in the GDT can be located so that the IST-type #VC exception
+> handler which they need to function properly, can be executed.
+> 
+> This setup needs to happen before attempting to load microcode in
+> ucode_cpu_init() which can cause such #VC exceptions.
+> 
+> Simplify the machinery by running that exception setup from cpu_init()
+> directly.
+> 
+> There should be no functional changes resulting from this patch.
+> 
+> Signed-off-by: Borislav Petkov <bp@suse.de>
+> ---
+>  arch/x86/include/asm/processor.h |  1 -
+>  arch/x86/kernel/cpu/common.c     | 14 +++-----------
+>  arch/x86/kernel/smpboot.c        |  1 -
+>  3 files changed, 3 insertions(+), 13 deletions(-)
 
-In fact m8260_gorom() was ported to arch/powerpc/ but the
-platform using it died with arch/ppc/
-
-Remove it.
-
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/head_book3s_32.S | 36 ----------------------------
- 1 file changed, 36 deletions(-)
-
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index c1d2f0d1d6b2..74296708b35e 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -1204,42 +1204,6 @@ setup_usbgecko_bat:
- 	blr
- #endif
- 
--#ifdef CONFIG_8260
--/* Jump into the system reset for the rom.
-- * We first disable the MMU, and then jump to the ROM reset address.
-- *
-- * r3 is the board info structure, r4 is the location for starting.
-- * I use this for building a small kernel that can load other kernels,
-- * rather than trying to write or rely on a rom monitor that can tftp load.
-- */
--       .globl  m8260_gorom
--m8260_gorom:
--	mfmsr	r0
--	rlwinm	r0,r0,0,17,15	/* clear MSR_EE in r0 */
--	sync
--	mtmsr	r0
--	sync
--	mfspr	r11, SPRN_HID0
--	lis	r10, 0
--	ori	r10,r10,HID0_ICE|HID0_DCE
--	andc	r11, r11, r10
--	mtspr	SPRN_HID0, r11
--	isync
--	li	r5, MSR_ME|MSR_RI
--	lis	r6,2f@h
--	addis	r6,r6,-KERNELBASE@h
--	ori	r6,r6,2f@l
--	mtspr	SPRN_SRR0,r6
--	mtspr	SPRN_SRR1,r5
--	isync
--	sync
--	rfi
--2:
--	mtlr	r4
--	blr
--#endif
--
--
- /*
-  * We put a few things here that have to be page-aligned.
-  * This stuff goes at the beginning of the data segment,
--- 
-2.25.0
+Acked-by: Joerg Roedel <jroedel@suse.de>
 
