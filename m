@@ -2,78 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69B43375D4D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:06:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 555CA375D53
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:07:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhEFXGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 19:06:30 -0400
-Received: from mail-ej1-f52.google.com ([209.85.218.52]:37841 "EHLO
-        mail-ej1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231230AbhEFXGZ (ORCPT
+        id S231630AbhEFXIV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 19:08:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231557AbhEFXIU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 19:06:25 -0400
-Received: by mail-ej1-f52.google.com with SMTP id w3so10709452ejc.4;
-        Thu, 06 May 2021 16:05:26 -0700 (PDT)
+        Thu, 6 May 2021 19:08:20 -0400
+Received: from mail-qv1-xf29.google.com (mail-qv1-xf29.google.com [IPv6:2607:f8b0:4864:20::f29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F09DC061574;
+        Thu,  6 May 2021 16:07:21 -0700 (PDT)
+Received: by mail-qv1-xf29.google.com with SMTP id g17so3986657qvl.9;
+        Thu, 06 May 2021 16:07:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hdoQKvWPL9i1TBAUsjZf0P4J7XliNekoDzOXUw16ac0=;
+        b=WtVmoKZvUBY2suy7YuVFx53lCrAJzQ+Iz1WtCTP0c1SuWz+EFuek2wNMZmxGs4MPAl
+         1c3AdMhHS1ruqfdnwwL98gIPO2+YBEoIY1D+r+5ZiT2n4DcLeBl/ss9z/pn+7Mv85nzr
+         9pby1hzKSfRnz5YvbMoqStht2DrLe9T7NnOEs3P6zs1qTRGLEVcc8Iyay8r/ql4Oa409
+         wkXoL2M/FDQAzkI4sSw3oxmLc/o8/G1NBJZbjaCpn/ymmD7ubqE92ro/0fh041tqvrfj
+         Wf74Myl96UKOj/dkxGxvhTWg4PWz/DYL74rZCLckw3CzUSoOk1+L9uGjl47zTxUp3qq7
+         h+TA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:organization:mime-version:content-transfer-encoding;
-        bh=xiYsX+pQ+W+XclZNAbSUgXe8vQZK960XlPejiQx4G+I=;
-        b=umw/x2klhJpQj/yDrADVNyma3sN0BplIYB3pGtpZ1U+Z78+JRhy/klM5bjK0Y/jVBa
-         HeQ49S64RSW5dtulAmitPOQmbqNqqcIrUAfZ3deO/rkJGPofwLhn0aWt3KQTGY5U/Bg0
-         B7NZZLpZ+2y5RBtHj1lH9SoFwdvy7u3AsIEr3Ruadz9qagxv8kQ6Oiqqxj+15ilO8ViE
-         v0pGdllQsfolTYRQJ3U1bzWVJdtIA0Q6l1A5klGo18vawEwekrzKg6RloqDdm6YehwG7
-         Py69k4nANU0HS8wNGqAxXMPbBcIKfpyGpsEvSOwfIZB/FicKCrvIAiHM4EftC2MnFkHn
-         RXlA==
-X-Gm-Message-State: AOAM5326D0ZUXjMfwiyAHnHpzgvGTH74sCsH94hgR/zD+eC3kMA+QTrP
-        Layws4zZ8LR4LeRWGtjJPh0=
-X-Google-Smtp-Source: ABdhPJxfEa+LefWTL1HLMhIgkl4H2WnscZs0bTzFRszejT/IRNra9eIDiRqzVXWDMFGjuBQ+Kat2lQ==
-X-Received: by 2002:a17:906:b1cc:: with SMTP id bv12mr6803610ejb.407.1620342325288;
-        Thu, 06 May 2021 16:05:25 -0700 (PDT)
-Received: from localhost (net-188-152-97-238.cust.dsl.teletu.it. [188.152.97.238])
-        by smtp.gmail.com with ESMTPSA id v26sm2341203ejk.66.2021.05.06.16.05.24
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=hdoQKvWPL9i1TBAUsjZf0P4J7XliNekoDzOXUw16ac0=;
+        b=IurPAqaDP1MJtlgWwaaXSlvpCfH+srwtLzBZkV5ZoAmACyC2J+4fqHUzSCBzx4c1dO
+         mUt3+7dpHymOz4ZtBbXdILzMkSfFmZ5y8490dDbpuNlnSaZmlZlR+XGbDGDTl6T8xiQ9
+         QMIPOxHvr5cmPD7xDOlxANufBNZan0jLH2RUxd7QC5lLSEqDR0s2DLq3g1Fiq80Ofc4q
+         2AyNv3kTRn1ZGHem19cyGVMYzQsjXqvai3GWkhKn/XXULYunW+Hs0/IHCibmCBJziKxv
+         T9X6/CkzWNp+VpHMguOnTcQ16UFFlOR1Jlknm9Y0S6QYMF3gJZAMsICNZhGc7/4W4+P+
+         VuIQ==
+X-Gm-Message-State: AOAM530VCUFchZdwJosD//zXEJhmnlEU7wo1PImjGqzyQ6UK60VEknKx
+        ZIr59A3zr+CMPvVPeU+lEF692HYFbUeN2RUh
+X-Google-Smtp-Source: ABdhPJwEHz02mhC8X+DsKOaecOgpqtF7urmqyiL8Q4SSWBZB3QjIgouyobhW7pIJcKAkQ3pfPU7UoA==
+X-Received: by 2002:ad4:48c4:: with SMTP id v4mr7051528qvx.16.1620342440573;
+        Thu, 06 May 2021 16:07:20 -0700 (PDT)
+Received: from localhost.localdomain ([107.171.200.67])
+        by smtp.googlemail.com with ESMTPSA id m22sm3514150qtu.43.2021.05.06.16.07.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 16:05:24 -0700 (PDT)
-Date:   Fri, 7 May 2021 01:05:18 +0200
-From:   Matteo Croce <mcroce@linux.microsoft.com>
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-Subject: Re: [PATCH 21/24] KVM: x86/mmu: Tweak auditing WARN for A/D bits to
- !PRESENT (was MMIO)
-Message-ID: <20210507010518.26aa74f0@linux.microsoft.com>
-In-Reply-To: <20210225204749.1512652-22-seanjc@google.com>
-References: <20210225204749.1512652-1-seanjc@google.com>
-        <20210225204749.1512652-22-seanjc@google.com>
-Organization: Microsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        Thu, 06 May 2021 16:07:20 -0700 (PDT)
+From:   Michael John Sakellaropoulos <mjsakellaropoulos@gmail.com>
+To:     Marek Vasut <marex@denx.de>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael John Sakellaropoulos <mjsakellaropoulos@gmail.com>,
+        Hansem Ro <hansemro@outlook.com>
+Subject: [PATCH] Fix ili210x touchdata coordinates endianness.
+Date:   Thu,  6 May 2021 19:06:01 -0400
+Message-Id: <20210506230601.429756-1-mjsakellaropoulos@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 25 Feb 2021 12:47:46 -0800
-Sean Christopherson <seanjc@google.com> wrote:
+This fixes how coordinates are parsed from ili210x touchdata. Through observation 
+and manual probing of the i2c bus, we have confirmed that the values stored in 
+the registers are Little Endian.
+(Tested on Amazon Kindle Fire Gen1 : arch/arm/boot/dts/omap4-kc1.dts)
 
-> Tweak the MMU_WARN that guards against weirdness when querying A/D
-> status to fire on a !MMU_PRESENT SPTE, as opposed to a MMIO SPTE.
-> Attempting to query A/D status on any kind of !MMU_PRESENT SPTE, MMIO
-> or otherwise, indicates a KVM bug.  Case in point, several now-fixed
-> bugs were identified by enabling this new WARN.
-> 
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+This patch is a follow-up to the earlier one by Hansem Ro. I am also working on another patch
+that queries the touchscreen controller for the active panel resolution (via REG_PANEL_INFO)
+so we can report the correct resolution to evdev (right now it's hardcoded).
 
-You made the 1.000.000th commit, congrats!
+Signed-off-by: Michael John Sakellaropoulos <mjsakellaropoulos@gmail.com>
+Tested-by: Hansem Ro <hansemro@outlook.com>
+Fixes: e3559442afd2a ("ili210x - rework the touchscreen sample processing")
+---
+ drivers/input/touchscreen/ili210x.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-$ git log --oneline --reverse |sed '1000000!d'
-8f366ae6d8c5 KVM: x86/mmu: Tweak auditing WARN for A/D bits to !PRESENT (was MMIO)
-
-Cheers,
+diff --git a/drivers/input/touchscreen/ili210x.c b/drivers/input/touchscreen/ili210x.c
+index d8fccf048bf4..15e68d5a96d8 100644
+--- a/drivers/input/touchscreen/ili210x.c
++++ b/drivers/input/touchscreen/ili210x.c
+@@ -90,8 +90,8 @@ static bool ili210x_touchdata_to_coords(const u8 *touchdata,
+ 	if (touchdata[0] & BIT(finger))
+ 		return false;
+ 
+-	*x = get_unaligned_be16(touchdata + 1 + (finger * 4) + 0);
+-	*y = get_unaligned_be16(touchdata + 1 + (finger * 4) + 2);
++	*x = get_unaligned_le16(touchdata + 1 + (finger * 4) + 0);
++	*y = get_unaligned_le16(touchdata + 1 + (finger * 4) + 2);
+ 
+ 	return true;
+ }
 -- 
-per aspera ad upstream
+2.27.0
+
