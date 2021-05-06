@@ -2,178 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDBED37528F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:44:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45CF4375296
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234583AbhEFKpc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:45:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234403AbhEFKp2 (ORCPT
+        id S234581AbhEFKqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:46:55 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20422 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234434AbhEFKqv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:45:28 -0400
-Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 21CD4C061574;
-        Thu,  6 May 2021 03:44:29 -0700 (PDT)
-Received: by mail-ed1-x536.google.com with SMTP id s7so915244edq.12;
-        Thu, 06 May 2021 03:44:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=I2+WVTkmT2ktDZMN/gY7kY+twfnNnV+x4l5PitKJK0w=;
-        b=nUkdF9IgSr/6K/Vuo+H/lruDCGCJ7GTGvJRCFYRgncapK1FXL+5yUEf+CO4J/pZQWw
-         sJNi2wEI0ZNq1iecitg2nvJPZzSZJomCEo7UQ2Udi0/7IUivhrL1tLS4BDTsUVIlkX4I
-         h/7M/iN4WG2XtkuFBisncd7VuT+8ISFpVS8NYF4RDNV0M+YNcu3V7MzK6hlxTDnaoDC+
-         AVFf+56zSYynBs3vfrckPipldWkZF2ds2wWRbtjhXnwFtL6mKGtDYP+LDuRy6onXJwiH
-         F03A2I5ErQlDFchlYBC66EGHpryZNj2SB92UaHdLSKyc5YL+zO+Vf1c0M35R0+7BEGTg
-         YrlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=I2+WVTkmT2ktDZMN/gY7kY+twfnNnV+x4l5PitKJK0w=;
-        b=noCkTfqeBs7/hEvyQO6Xqel+FWVahgHL4yurHHsFoPf3uJ9eLJ5mzRtkLmNmAiAYlJ
-         4s0oRbtBqdJHWOtZxAhoVpA7I4rc0Tlc+llllB7g9PNEp2+0cWkbbqzPW1xS6qDFzT+/
-         XYZczHwYJk+L0jpsLdVocN/SBhOj+5JoWwvHre9d194I+kz/Lol66GdmS8cyOks6NEtL
-         /cqFs97oiblilRuGlTFGF3ykAKB1S9khpWOW/x6krz6DwmhPPAH/Ne5cWw4udQm9xjd8
-         gZNNxTYD2Z15yfI1WwsABSfvPrITJsgTirr+SoUmz8/bzby0I0CfYElq5uQ0fll4znQn
-         Fb+Q==
-X-Gm-Message-State: AOAM532O5oHC8EtlPuB6O/gQcwr5+89vq4hF6jjN6N0E/TYjbRmvFOtm
-        VTmKsJFlscooL4EwGTlimDhtAKn9KjFXzJq4JIQ=
-X-Google-Smtp-Source: ABdhPJzeQvXEOGH5WM7j5lVvi9H+XSSoduC5KnE1Y1zWtx62lW2trtKLpZIVz/pUBVYXxgZsUSS6I/N92RiCPXIvvaE=
-X-Received: by 2002:a05:6402:268c:: with SMTP id w12mr4566374edd.234.1620297867594;
- Thu, 06 May 2021 03:44:27 -0700 (PDT)
+        Thu, 6 May 2021 06:46:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620297953;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=KVkdguIRZcC8kG8uFbbU6Tel1su1nem8qyfWf8WXCfk=;
+        b=bViCuPCgWUi6HgFRuTZkpshcZdQUpqBOal6ulLTUXL8zyQEqtncZG/FbNMS0F3N96zMoZT
+        It6cGWsgJjYFI7HqxdfX7X4tTsXd9+81lz8kAXRptp/7jai3IQn0qtTNq0fU4jNt/jzTA6
+        hR1yszp5ka+T9aJB5gN3BiW9MV13pcE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-147-tEG8W9mZPi6VLXLjB6pkUA-1; Thu, 06 May 2021 06:45:51 -0400
+X-MC-Unique: tEG8W9mZPi6VLXLjB6pkUA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D2EAF18397BE;
+        Thu,  6 May 2021 10:45:49 +0000 (UTC)
+Received: from gondolin.fritz.box (ovpn-113-111.ams2.redhat.com [10.36.113.111])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5992B18BB8;
+        Thu,  6 May 2021 10:45:44 +0000 (UTC)
+Date:   Thu, 6 May 2021 12:45:41 +0200
+From:   Cornelia Huck <cohuck@redhat.com>
+To:     Tony Krowiak <akrowiak@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        borntraeger@de.ibm.com, pasic@linux.vnet.ibm.com,
+        jjherne@linux.ibm.com, jgg@nvidia.com, alex.williamson@redhat.com,
+        kwankhede@nvidia.com, stable@vger.kernel.org,
+        Tony Krowiak <akrowiak@stny.rr.com>
+Subject: Re: [PATCH] s390/vfio-ap: fix memory leak in mdev remove callback
+Message-ID: <20210506124541.63e98b64.cohuck@redhat.com>
+In-Reply-To: <20210506122245.20f4ba21.cohuck@redhat.com>
+References: <20210505172826.105304-1-akrowiak@linux.ibm.com>
+        <20210506122245.20f4ba21.cohuck@redhat.com>
+Organization: Red Hat GmbH
 MIME-Version: 1.0
-References: <20210505191126.1239309-1-aford173@gmail.com>
-In-Reply-To: <20210505191126.1239309-1-aford173@gmail.com>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Thu, 6 May 2021 05:44:17 -0500
-Message-ID: <CAHCN7xK2GLeeoRgaa1m5A9CxBieyGQe4PLZRJSEMYu+h4Wheuw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] arm64: dts: imx8mm-beacon: Enable more audio
-To:     arm-soc <linux-arm-kernel@lists.infradead.org>
-Cc:     Adam Ford-BE <aford@beaconembedded.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 2:11 PM Adam Ford <aford173@gmail.com> wrote:
->
-> There are audio ports for SPDIF and MICFIL on the baseboard.
-> Enable them.
->
+On Thu, 6 May 2021 12:22:45 +0200
+Cornelia Huck <cohuck@redhat.com> wrote:
 
-Sorry for the noise,  I copied these bindings from NXP's 5.10 branch,
-but I didn't realize that fsl,imx-audio-micfil doesn't exist upstream.
-I'm going to see if a simple audio driver will work.  Either way, I'll
-NAK my own work and submit a V2 later.
+> On Wed,  5 May 2021 13:28:26 -0400
+> Tony Krowiak <akrowiak@linux.ibm.com> wrote:
+> 
+> > The mdev remove callback for the vfio_ap device driver bails out with
+> > -EBUSY if the mdev is in use by a KVM guest. The intended purpose was
+> > to prevent the mdev from being removed while in use; however, returning a
+> > non-zero rc does not prevent removal. This could result in a memory leak
+> > of the resources allocated when the mdev was created. In addition, the
+> > KVM guest will still have access to the AP devices assigned to the mdev
+> > even though the mdev no longer exists.
+> > 
+> > To prevent this scenario, cleanup will be done - including unplugging the
+> > AP adapters, domains and control domains - regardless of whether the mdev
+> > is in use by a KVM guest or not.
+> > 
+> > Fixes: 258287c994de ("s390: vfio-ap: implement mediated device open callback")
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Tony Krowiak <akrowiak@stny.rr.com>
+> > Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> > ---
+> >  drivers/s390/crypto/vfio_ap_ops.c | 39 +++++++++++++++++++++++--------
+> >  1 file changed, 29 insertions(+), 10 deletions(-)
+> > 
+> > diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> > index b2c7e10dfdcd..757166da947e 100644
+> > --- a/drivers/s390/crypto/vfio_ap_ops.c
+> > +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> > @@ -335,6 +335,32 @@ static void vfio_ap_matrix_init(struct ap_config_info *info,
+> >  	matrix->adm_max = info->apxa ? info->Nd : 15;
+> >  }
+> >  
+> > +static bool vfio_ap_mdev_has_crycb(struct ap_matrix_mdev *matrix_mdev)
+> > +{
+> > +	return (matrix_mdev->kvm && matrix_mdev->kvm->arch.crypto.crycbd);
+> > +}
+> > +
+> > +static void vfio_ap_mdev_clear_apcb(struct ap_matrix_mdev *matrix_mdev)
+> > +{
+> > +	/*
+> > +	 * If the KVM pointer is in the process of being set, wait until the
+> > +	 * process has completed.
+> > +	 */
+> > +	wait_event_cmd(matrix_mdev->wait_for_kvm,
+> > +		       !matrix_mdev->kvm_busy,
+> > +		       mutex_unlock(&matrix_dev->lock),
+> > +		       mutex_lock(&matrix_dev->lock));
+> > +
+> > +	if (vfio_ap_mdev_has_crycb(matrix_mdev)) {
+> > +		matrix_mdev->kvm_busy = true;
+> > +		mutex_unlock(&matrix_dev->lock);
+> > +		kvm_arch_crypto_clear_masks(matrix_mdev->kvm);
+> > +		mutex_lock(&matrix_dev->lock);
+> > +		matrix_mdev->kvm_busy = false;
+> > +		wake_up_all(&matrix_mdev->wait_for_kvm);
+> > +	}
+> > +}  
+> 
+> Looking at vfio_ap_mdev_unset_kvm(), do you need to unhook the kvm here
+> as well?
+> 
+> (Or can you maybe even combine the two functions into one?)
 
-adam
-> Signed-off-by: Adam Ford <aford173@gmail.com>
->
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-> index 6f5e63696ec0..3039a030f3d8 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mm-beacon-baseboard.dtsi
-> @@ -65,6 +65,20 @@ sound {
->                         "AMIC", "MICBIAS",
->                         "IN3R", "AMIC";
->         };
-> +
-> +       sound-micfil {
-> +               compatible = "fsl,imx-audio-micfil";
-> +               model = "imx-audio-micfil";
-> +               cpu-dai = <&micfil>;
-> +       };
-> +
-> +       sound-spdif {
-> +               compatible = "fsl,imx-audio-spdif";
-> +               model = "imx-spdif";
-> +               spdif-controller = <&spdif1>;
-> +               spdif-out;
-> +               spdif-in;
-> +       };
->  };
->
->  &ecspi2 {
-> @@ -141,6 +155,15 @@ pca6416_1: gpio@21 {
->         };
->  };
->
-> +&micfil {
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_micfil>;
-> +       assigned-clocks = <&clk IMX8MM_CLK_PDM>;
-> +       assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
-> +       assigned-clock-rates = <196608000>;
-> +       status = "okay";
-> +};
-> +
->  &sai3 {
->         pinctrl-names = "default";
->         pinctrl-0 = <&pinctrl_sai3>;
-> @@ -155,6 +178,23 @@ &snvs_pwrkey {
->         status = "okay";
->  };
->
-> +&spdif1 {
-> +       pinctrl-names = "default";
-> +       pinctrl-0 = <&pinctrl_spdif1>;
-> +       assigned-clocks = <&clk IMX8MM_CLK_SPDIF1>;
-> +       assigned-clock-parents = <&clk IMX8MM_AUDIO_PLL1_OUT>;
-> +       assigned-clock-rates = <24576000>;
-> +       clocks = <&clk IMX8MM_CLK_AUDIO_AHB>, <&clk IMX8MM_CLK_24M>,
-> +               <&clk IMX8MM_CLK_SPDIF1>, <&clk IMX8MM_CLK_DUMMY>,
-> +               <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>,
-> +               <&clk IMX8MM_CLK_AUDIO_AHB>, <&clk IMX8MM_CLK_DUMMY>,
-> +               <&clk IMX8MM_CLK_DUMMY>, <&clk IMX8MM_CLK_DUMMY>,
-> +               <&clk IMX8MM_AUDIO_PLL1_OUT>, <&clk IMX8MM_AUDIO_PLL2_OUT>;
-> +       clock-names = "core", "rxtx0", "rxtx1", "rxtx2", "rxtx3",
-> +               "rxtx4", "rxtx5", "rxtx6", "rxtx7", "spba", "pll8k", "pll11k";
-> +       status = "okay";
-> +};
-> +
->  &uart2 { /* console */
->         pinctrl-names = "default";
->         pinctrl-0 = <&pinctrl_uart2>;
-> @@ -209,6 +249,13 @@ MX8MM_IOMUXC_SAI3_RXFS_GPIO4_IO28  0x41
->                 >;
->         };
->
-> +       pinctrl_micfil: micfilgrp {
-> +               fsl,pins = <
-> +                       MX8MM_IOMUXC_SAI5_RXC_PDM_CLK           0xd6
-> +                       MX8MM_IOMUXC_SAI5_RXD0_PDM_DATA0        0xd6
-> +               >;
-> +       };
-> +
->         pinctrl_pcal6414: pcal6414-gpiogrp {
->                 fsl,pins = <
->                         MX8MM_IOMUXC_SAI2_MCLK_GPIO4_IO27               0x19
-> @@ -225,6 +272,14 @@ MX8MM_IOMUXC_SAI3_RXD_SAI3_RX_DATA0        0xd6
->                 >;
->         };
->
-> +       pinctrl_spdif1: spdif1grp {
-> +               fsl,pins = <
-> +                       MX8MM_IOMUXC_SPDIF_TX_SPDIF1_OUT        0xd6
-> +                       MX8MM_IOMUXC_SPDIF_RX_SPDIF1_IN         0xd6
-> +                       MX8MM_IOMUXC_SPDIF_EXT_CLK_SPDIF1_EXT_CLK       0xd6
-> +               >;
-> +       };
-> +
->         pinctrl_uart2: uart2grp {
->                 fsl,pins = <
->                         MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX     0x140
-> --
-> 2.25.1
->
+Staring at the code some more, the rules where you unset the kvm stuff
+seem pretty confusing (at least to me). Does this partial unhooking in
+the remove callback make sense?
+
+> 
+> > +
+> >  static int vfio_ap_mdev_create(struct mdev_device *mdev)
+> >  {
+> >  	struct ap_matrix_mdev *matrix_mdev;
+> > @@ -366,16 +392,9 @@ static int vfio_ap_mdev_remove(struct mdev_device *mdev)
+> >  	struct ap_matrix_mdev *matrix_mdev = mdev_get_drvdata(mdev);
+> >  
+> >  	mutex_lock(&matrix_dev->lock);
+> > -
+> > -	/*
+> > -	 * If the KVM pointer is in flux or the guest is running, disallow
+> > -	 * un-assignment of control domain.
+> > -	 */
+> > -	if (matrix_mdev->kvm_busy || matrix_mdev->kvm) {
+> > -		mutex_unlock(&matrix_dev->lock);
+> > -		return -EBUSY;
+> > -	}
+> > -
+> > +	WARN(vfio_ap_mdev_has_crycb(matrix_mdev),
+> > +	     "Removing mdev leaves KVM guest without any crypto devices");
+> > +	vfio_ap_mdev_clear_apcb(matrix_mdev);
+> >  	vfio_ap_mdev_reset_queues(mdev);
+> >  	list_del(&matrix_mdev->node);
+> >  	kfree(matrix_mdev);  
+> 
+
