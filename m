@@ -2,160 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA983375C26
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:18:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 146E2375C2A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233666AbhEFUTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 16:19:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        id S233959AbhEFU1H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 16:27:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233714AbhEFUTF (ORCPT
+        with ESMTP id S229965AbhEFU1E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 16:19:05 -0400
-Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B045C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 13:18:07 -0700 (PDT)
-Received: by mail-io1-xd29.google.com with SMTP id z24so5987775ioj.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 13:18:07 -0700 (PDT)
+        Thu, 6 May 2021 16:27:04 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3B16C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 13:26:04 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id c3so9609821lfs.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 13:26:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=9FpP0oYJ5o5WVaMKta2Gw4ucGc3wzpzA9zy0oojQ72k=;
-        b=cVRBVTdIe2G3kEyjvc30fD55v7pIgnGqkAdDAuF8SLTWZ5d6SygwRGMbmQH2+zfG59
-         M+DLsIJSLgq5ec6kQZI4yAaUaE/xcdKWyxfVHH/1yKTbCTcI7TBq4YGrQFMsU2Pt4OPo
-         WfsO8GItV90u8aye4WD+uDdHHD6LrTbZdY9JM=
+        bh=1ZJJpWnA5QBmwVYH3cUwpevDYWEenuEP/75drNSjJCY=;
+        b=S0+QLDISnbSh1ONFqwJCL8w4tNmRaDfvMYrwRyDl6rYGCwzjNgv7bw4fuskxy8KcJr
+         6T25FNlnG3YLNrvUnnejT3wA+6r/ndayJgncOTb1W9pl3866LWC8EGinLtF1i1UdHZQJ
+         +sfry1urEFO3iXViQogTaezEWwYDmJegWlkdW7Nxa1rh4dD5sbubhycdchTVT+LabKMR
+         cU5PIdvMI7rXQvlvV/8ESxutbN8mk1ScYNPnxXYjG9PtrEPjUdm8DNapt/XYvFKatnpU
+         L+0FI6FXZELFvotrgCkGwN5Yz+UWbTZ3NOCWcNh5k5q8FNDrxzWGrOj8w2hyhgSUIH65
+         yedA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=9FpP0oYJ5o5WVaMKta2Gw4ucGc3wzpzA9zy0oojQ72k=;
-        b=rvzEfwkZiAxGZ41ovaphrVgEpVMws2qN5LhNXouJi1OY5w2/Gwj1QgGIkzIwHjNT2D
-         BL26uYIoaYCVsIb7qwjIPqOpgjwR+ZyszZSE/p8cJQBt4PooucHweOgBF+lesSHwKRmb
-         1yAXgTu7ZVN5GGIgdBFHpyNWFKU9x6rD5J+bFBQ/ptDeIktGz2+nklVamSKHq2guuzie
-         HxfMImucrePfe8nj3BQOcpvunfatZ3vrR5o6zzLcqabWDzP+6ZMLyRFOweyMhV6jbVrR
-         Hj9s5N8khxwrU//d3IWdZCv1uIkhepnf6hkijLxd05gIV9hwq/LY6nPQT1phTSj3647V
-         ojbQ==
-X-Gm-Message-State: AOAM531PC6r7XYMlf744Kw6wHCrqKvdeCdRyfYL0ShkIey6HCOiSFFrA
-        OmsShhtRLlRKMi42J/5UIMM70q2cEmmEZYbCZ2dXXw==
-X-Google-Smtp-Source: ABdhPJzKCz7oLH/S1hED4I6RCK9rzyC7Lxfl8spOMc8YJw7Q1j0aHPnnOCOprQg/aFmbOnCt1XRF9dSHT4Xpoe1Bzt8=
-X-Received: by 2002:a6b:dc06:: with SMTP id s6mr4938895ioc.130.1620332286076;
- Thu, 06 May 2021 13:18:06 -0700 (PDT)
+        bh=1ZJJpWnA5QBmwVYH3cUwpevDYWEenuEP/75drNSjJCY=;
+        b=LbgIb2z1K9FUFCebLB6eHy3fvklMGCaYODHDdrzzltSRSa0D2ciAE9HSwzb8eSdSCv
+         6YAlB+xugoqkdRqCCYp+1K/ore2I+kLId67SCUHli5tIunDcTJvGV+BdbYo5QWivwXAJ
+         xYdB0ElrIsuyIbBRNyIO0BkGG9+DU5/fhl9RRwq85INnZCyjbEHNNWhnDSWhTB2DtKUk
+         oE6HM9E+0PbdB/jjzZQ/ZpydiWS1Zn1d6prUlfEaFsJmR4pttZwRnKczs0h+WpbnPjZe
+         KUL/Gl98KJSaZ786HGajxpbXHokmGmCPcDzk1DzdwYrMUMTFGt1ULKw1/lN9XYxL56IV
+         hK2w==
+X-Gm-Message-State: AOAM5319ELtNwZ2f76QF/njwhxNXuFySh+GUwYYtD/NP7zKF0y5R2pcz
+        LbzwbKnSOOIUxuC4ZQzWthg82cxcI6W4SO0rmvjzZQlx76KR3w==
+X-Google-Smtp-Source: ABdhPJyUZumnhAS1Pbr7OXmFMAO1l3HlGin0F9L+J7NfQ0DdxjTjvc41B/s7EhTyO0zhVhv3KJlmA1JPIwyRuDT1ywg=
+X-Received: by 2002:a05:6512:130c:: with SMTP id x12mr4163234lfu.423.1620332762896;
+ Thu, 06 May 2021 13:26:02 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210505162307.2545061-1-revest@chromium.org> <CAEf4BzZiK1ncN7RzeJ-62e=itekn34VuFf7WNhUF=9OoznMP6Q@mail.gmail.com>
- <fe37ff8f-ebf0-25ec-4f3c-df3373944efa@iogearbox.net> <CAEf4BzYsAXQ1t6GUJ4f8c0qGLdnO4NLDVJLRMhAY2oaiarDd6g@mail.gmail.com>
- <CAEf4BzYqUxgj28p7e1ng_5gfebXdVdrCVyPK4bjA31O4wgppeA@mail.gmail.com>
- <CABRcYmJBxY5AQMzO2vuuhVN7hs=1h+ursEnVAXpCPJ3DrkRrUA@mail.gmail.com> <CAEf4BzY4a6R-apnS0AZsb_Mtht2N8be1HvEN9hD9aSByoD1EHQ@mail.gmail.com>
-In-Reply-To: <CAEf4BzY4a6R-apnS0AZsb_Mtht2N8be1HvEN9hD9aSByoD1EHQ@mail.gmail.com>
-From:   Florent Revest <revest@chromium.org>
-Date:   Thu, 6 May 2021 22:17:54 +0200
-Message-ID: <CABRcYm+3AjHa3zO5AHSk6SbyFK6o6dLd8Fbz_sOznchWL2dumQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Don't WARN_ON_ONCE in bpf_bprintf_prepare
-To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot@syzkaller.appspotmail.com>
+References: <20210430123822.13825-1-brijesh.singh@amd.com> <20210430123822.13825-22-brijesh.singh@amd.com>
+In-Reply-To: <20210430123822.13825-22-brijesh.singh@amd.com>
+From:   Peter Gonda <pgonda@google.com>
+Date:   Thu, 6 May 2021 14:25:50 -0600
+Message-ID: <CAMkAt6pF-AS7NJsAMhnezuvo9tcTQhhq_e-eKDatjzbKBAHp0Q@mail.gmail.com>
+Subject: Re: [PATCH Part2 RFC v2 21/37] KVM: SVM: Add KVM_SNP_INIT command
+To:     Brijesh Singh <brijesh.singh@amd.com>
+Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
+        kvm list <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, jroedel@suse.de,
+        "Lendacky, Thomas" <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>, peterz@infradead.org,
+        "H. Peter Anvin" <hpa@zytor.com>, tony.luck@intel.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 8:52 PM Andrii Nakryiko
-<andrii.nakryiko@gmail.com> wrote:
+On Fri, Apr 30, 2021 at 6:44 AM Brijesh Singh <brijesh.singh@amd.com> wrote:
 >
-> On Wed, May 5, 2021 at 3:29 PM Florent Revest <revest@chromium.org> wrote:
-> >
-> > On Wed, May 5, 2021 at 10:52 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> > >
-> > > On Wed, May 5, 2021 at 1:48 PM Andrii Nakryiko
-> > > <andrii.nakryiko@gmail.com> wrote:
-> > > >
-> > > > On Wed, May 5, 2021 at 1:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> > > > >
-> > > > > On 5/5/21 8:55 PM, Andrii Nakryiko wrote:
-> > > > > > On Wed, May 5, 2021 at 9:23 AM Florent Revest <revest@chromium.org> wrote:
-> > > > > >>
-> > > > > >> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
-> > > > > >> per-cpu buffer that they use to store temporary data (arguments to
-> > > > > >> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
-> > > > > >> by the end of their scope with bpf_bprintf_cleanup.
-> > > > > >>
-> > > > > >> If one of these helpers gets called within the scope of one of these
-> > > > > >> helpers, for example: a first bpf program gets called, uses
-> > > > > >
-> > > > > > Can we afford having few struct bpf_printf_bufs? They are just 512
-> > > > > > bytes, so can we have 3-5 of them? Tracing low-level stuff isn't the
-> > > > > > only situation where this can occur, right? If someone is doing
-> > > > > > bpf_snprintf() and interrupt occurs and we run another BPF program, it
-> > > > > > will be impossible to do bpf_snprintf() or bpf_trace_printk() from the
-> > > > > > second BPF program, etc. We can't eliminate the probability, but
-> > > > > > having a small stack of buffers would make the probability so
-> > > > > > miniscule as to not worry about it at all.
-> > > > > >
-> > > > > > Good thing is that try_get_fmt_tmp_buf() abstracts all the details, so
-> > > > > > the changes are minimal. Nestedness property is preserved for
-> > > > > > non-sleepable BPF programs, right? If we want this to work for
-> > > > > > sleepable we'd need to either: 1) disable migration or 2) instead of
-> > > >
-> > > > oh wait, we already disable migration for sleepable BPF progs, so it
-> > > > should be good to do nestedness level only
-> > >
-> > > actually, migrate_disable() might not be enough. Unless it is
-> > > impossible for some reason I miss, worst case it could be that two
-> > > sleepable programs (A and B) can be intermixed on the same CPU: A
-> > > starts&sleeps - B starts&sleeps - A continues&returns - B continues
-> > > and nestedness doesn't work anymore. So something like "reserving a
-> > > slot" would work better.
-> >
-> > Iiuc try_get_fmt_tmp_buf does preempt_enable to avoid that situation ?
-> >
-> > > >
-> > > > > > assuming a stack of buffers, do a loop to find unused one. Should be
-> > > > > > acceptable performance-wise, as it's not the fastest code anyway
-> > > > > > (printf'ing in general).
-> > > > > >
-> > > > > > In any case, re-using the same buffer for sort-of-optional-to-work
-> > > > > > bpf_trace_printk() and probably-important-to-work bpf_snprintf() is
-> > > > > > suboptimal, so seems worth fixing this.
-> > > > > >
-> > > > > > Thoughts?
-> > > > >
-> > > > > Yes, agree, it would otherwise be really hard to debug. I had the same
-> > > > > thought on why not allowing nesting here given users very likely expect
-> > > > > these helpers to just work for all the contexts.
-> > > > >
-> > > > > Thanks,
-> > > > > Daniel
-> >
-> > What would you think of just letting the helpers own these 512 bytes
-> > buffers as local variables on their stacks ? Then bpf_prepare_bprintf
-> > would only need to write there, there would be no acquire semantic
-> > (like try_get_fmt_tmp_buf) and the stack frame would just be freed on
-> > the helper return so there would be no bpf_printf_cleanup either. We
-> > would also not pre-reserve static memory for all CPUs and it becomes
-> > trivial to handle re-entrant helper calls.
-> >
-> > I inherited this per-cpu buffer from the pre-existing bpf_seq_printf
-> > code but I've not been convinced of its necessity.
+> The KVM_SNP_INIT command is used by the hypervisor to initialize the
+> SEV-SNP platform context. In a typical workflow, this command should be the
+> first command issued. When creating SEV-SNP guest, the VMM must use this
+> command instead of the KVM_SEV_INIT or KVM_SEV_ES_INIT.
 >
-> I got the impression that extra 512 bytes on the kernel stack is quite
-> a lot and that's why we have per-cpu buffers. Especially that
-> bpf_trace_printk() can be called from any context, including NMI.
+> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
+> ---
+>  arch/x86/kvm/svm/sev.c   | 18 ++++++++++++++++--
+>  include/uapi/linux/kvm.h |  3 +++
+>  2 files changed, 19 insertions(+), 2 deletions(-)
+>
+> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+> index 200d227f9232..ea74dd9e03d3 100644
+> --- a/arch/x86/kvm/svm/sev.c
+> +++ b/arch/x86/kvm/svm/sev.c
+> @@ -230,8 +230,9 @@ static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
+>
+>  static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>  {
+> +       bool es_active = (argp->id == KVM_SEV_ES_INIT || argp->id == KVM_SEV_SNP_INIT);
+>         struct kvm_sev_info *sev = &to_kvm_svm(kvm)->sev_info;
+> -       bool es_active = argp->id == KVM_SEV_ES_INIT;
+> +       bool snp_active = argp->id == KVM_SEV_SNP_INIT;
+>         int asid, ret;
+>
+>         if (kvm->created_vcpus)
+> @@ -242,12 +243,16 @@ static int sev_guest_init(struct kvm *kvm, struct kvm_sev_cmd *argp)
+>                 return ret;
+>
+>         sev->es_active = es_active;
+> +       sev->snp_active = snp_active;
+>         asid = sev_asid_new(sev);
+>         if (asid < 0)
+>                 goto e_no_asid;
+>         sev->asid = asid;
+>
+> -       ret = sev_platform_init(&argp->error);
+> +       if (snp_active)
+> +               ret = sev_snp_init(&argp->error);
+> +       else
+> +               ret = sev_platform_init(&argp->error);
+>         if (ret)
+>                 goto e_free;
+>
+> @@ -583,6 +588,9 @@ static int sev_es_sync_vmsa(struct vcpu_svm *svm)
+>         save->pkru = svm->vcpu.arch.pkru;
+>         save->xss  = svm->vcpu.arch.ia32_xss;
+>
+> +       if (sev_snp_guest(svm->vcpu.kvm))
+> +               save->sev_features |= SVM_SEV_FEATURES_SNP_ACTIVE;
+> +
+>         /*
+>          * SEV-ES will use a VMSA that is pointed to by the VMCB, not
+>          * the traditional VMSA that is part of the VMCB. Copy the
+> @@ -1525,6 +1533,12 @@ int svm_mem_enc_op(struct kvm *kvm, void __user *argp)
+>         }
+>
+>         switch (sev_cmd.id) {
+> +       case KVM_SEV_SNP_INIT:
+> +               if (!sev_snp_enabled) {
+> +                       r = -ENOTTY;
+> +                       goto out;
+> +               }
+> +               fallthrough;
+>         case KVM_SEV_ES_INIT:
+>                 if (!sev_es_enabled) {
+>                         r = -ENOTTY;
+> diff --git a/include/uapi/linux/kvm.h b/include/uapi/linux/kvm.h
+> index 3fd9a7e9d90c..aaa2d62f09b5 100644
+> --- a/include/uapi/linux/kvm.h
+> +++ b/include/uapi/linux/kvm.h
+> @@ -1678,6 +1678,9 @@ enum sev_cmd_id {
+>         /* Guest Migration Extension */
+>         KVM_SEV_SEND_CANCEL,
+>
+> +       /* SNP specific commands */
+> +       KVM_SEV_SNP_INIT,
+> +
 
-Ok, I understand.
+Do you want to reserve some more enum values for SEV in case
+additional functionality is added, or is this very unlikely?
 
-What about having one buffer per helper, synchronized with a spinlock?
-Actually, bpf_trace_printk already has that, not for the bprintf
-arguments but for the bprintf output so this wouldn't change much to
-the performance of the helpers anyway:
-https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/trace/bpf_trace.c?id=9d31d2338950293ec19d9b095fbaa9030899dcb4#n385
-
-These helpers are not performance sensitive so a per-cpu stack of
-buffers feels over-engineered to me (and is also complexity I feel a
-bit uncomfortable with).
+>         KVM_SEV_NR_MAX,
+>  };
+>
+> --
+> 2.17.1
+>
