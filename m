@@ -2,94 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 077C537582E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1588375831
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:07:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235782AbhEFQHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:07:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41278 "EHLO
+        id S235513AbhEFQIi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:08:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41580 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235156AbhEFQHT (ORCPT
+        with ESMTP id S235156AbhEFQIf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:07:19 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05B68C061574;
-        Thu,  6 May 2021 09:06:20 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id C7DBA89D;
-        Thu,  6 May 2021 18:06:18 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1620317179;
-        bh=pPRN7aviLixXqbXvHZ811Lqc8oDiwN3xjtvymz/3+pY=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=o8j4QTHg69dGi6GRqr/9rBeBfIaf8RzOgt1yRTEB+bA+Boz37zOvPVxSCZvAQeTma
-         2MM7ZhvxYcC1Jzc4Ssgs5EhEOUfdJ0sK9/U4e4kYt9OoYz5O+a4/H/NP0BGiJca/8g
-         9h1PeQarvjTI9HE/x3u9GKkQQ2ZVwsqaTMAfeNDM=
-Date:   Thu, 6 May 2021 19:06:14 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-renesas-soc@vger.kernel.org
-Subject: Re: [PATCH v5 23/25] media: vsp1: use pm_runtime_resume_and_get()
-Message-ID: <YJQT9hXnGn5hrjQA@pendragon.ideasonboard.com>
-References: <cover.1620314616.git.mchehab+huawei@kernel.org>
- <8e8ca03fd0dfa1b3245c0ff0201f3cf9a522ede2.1620314616.git.mchehab+huawei@kernel.org>
+        Thu, 6 May 2021 12:08:35 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FC21C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 09:07:37 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id s25so7782021lji.0
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 09:07:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6hHJ2if4WJkg2du4T57AGBZ6P/jf0214NaTU4kr7th0=;
+        b=d+zf6gym8dKCyDd+UW2gOZhjv9TbxL+FJK8ovpix4foAPy8PgxTh8HkOnZDMQ/cd26
+         WGRoTUYFIYN69v5oodnGIbj20EyykcmxDgIZWoyp/1w0l9muEsYf9Uk/tfZiHoYJCBfi
+         BCjZKZ5gq0Lxjohp3E8Pr6WYBt4oIh+6lw6uTaWaQZ2aBWi1SzUaRWklhTvAAPD58Zvj
+         V5yJrXUENoSbELQPDjZoCE1TVtfzCVleSru6ZHEl5Txc5G5XcRPl/Lha+BpLumBgd911
+         uZnYv10zevCWk1djhUDzkakEUnhG6oLg7C6aFXvvUQ38kSYeZxkWHaU6gaPF22aPGCmt
+         KSBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6hHJ2if4WJkg2du4T57AGBZ6P/jf0214NaTU4kr7th0=;
+        b=ZDWQrth1wVJruiNoSrrtJGqzhHInhuneoHyvOGieO7B5ZNtpHJBSKIb6bY+28MGGt5
+         4mWkedXk0WtEY86dreZICIo0dyVO5AQd1i7IKfrKI3Z5ehrPW2aADB7nk22/WsbIYtQH
+         Moned8ipEwi5KUrOeLHaynH/lGNkHiLO1uQOI3mHo/XiupC0vTJAKASd1s3eK5y+JqmX
+         wydAtVGOHRrbNrxSFID/iN2lYLp67Vu/fUrjKnea4O2l4iFnngUHwk71twqiwlL6VXPd
+         Qzj3CABm0t5AqGHp8SQ2N0WIHaJ3BgZsq2hTpd57v1RtGDBGiadRq+5eXDBl33uF6etN
+         3ukA==
+X-Gm-Message-State: AOAM530OJA8Nf89y5B78eW5my8ZWa/gRX24DPVmVfS6jLhuRjxWoZPtq
+        UaQR9FUadagSIHY5kqcsJ64VdTVp8l1xQimmuQFgNA==
+X-Google-Smtp-Source: ABdhPJzn2EhM7XMXkXkyTxRS57EaFcBBQXV19tsKpHBUxqufilM9fckZn6puZV9zDw22uUMMC4ZL5urO+Urx9IobDGo=
+X-Received: by 2002:a2e:a491:: with SMTP id h17mr4203019lji.34.1620317255566;
+ Thu, 06 May 2021 09:07:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <8e8ca03fd0dfa1b3245c0ff0201f3cf9a522ede2.1620314616.git.mchehab+huawei@kernel.org>
+References: <20210505200610.13943-1-longman@redhat.com> <20210505200610.13943-3-longman@redhat.com>
+ <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
+In-Reply-To: <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 6 May 2021 09:07:24 -0700
+Message-ID: <CALvZod69Ge5QzQsbNbf6gwHvSY92TGo0Cc5pxyyu55CHfNhfZg@mail.gmail.com>
+Subject: Re: [PATCH v4 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n> caches
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Cgroups <cgroups@vger.kernel.org>, Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mauro,
+On Thu, May 6, 2021 at 9:00 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+>
+> On 5/5/21 10:06 PM, Waiman Long wrote:
+> > There are currently two problems in the way the objcg pointer array
+> > (memcg_data) in the page structure is being allocated and freed.
+> >
+> > On its allocation, it is possible that the allocated objcg pointer
+> > array comes from the same slab that requires memory accounting. If this
+> > happens, the slab will never become empty again as there is at least
+> > one object left (the obj_cgroup array) in the slab.
+> >
+> > When it is freed, the objcg pointer array object may be the last one
+> > in its slab and hence causes kfree() to be called again. With the
+> > right workload, the slab cache may be set up in a way that allows the
+> > recursive kfree() calling loop to nest deep enough to cause a kernel
+> > stack overflow and panic the system.
+> >
+> > One way to solve this problem is to split the kmalloc-<n> caches
+> > (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
+> > (KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
+> > kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
+> > the other caches can still allow a mix of accounted and unaccounted
+> > objects.
+> >
+> > With this change, all the objcg pointer array objects will come from
+> > KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+> > both the recursive kfree() problem and non-freeable slab problem are
+> > gone.
+> >
+> > Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
+> > mixed accounted and unaccounted objects, this will slightly reduce the
+> > number of objcg pointer arrays that need to be allocated and save a bit
+> > of memory. On the other hand, creating a new set of kmalloc caches does
+> > have the effect of reducing cache utilization. So it is properly a wash.
+> >
+> > The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
+> > KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
+> > will include the newly added caches without change.
+> >
+> > Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+> > Signed-off-by: Waiman Long <longman@redhat.com>
+> > Reviewed-by: Shakeel Butt <shakeelb@google.com>
+>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+>
+> I still believe the cgroup.memory=nokmem parameter should be respected,
+> otherwise the caches are not only created, but also used. I offer this followup
+> for squashing into your patch if you and Andrew agree:
+>
+> ----8<----
+> From c87378d437d9a59b8757033485431b4721c74173 Mon Sep 17 00:00:00 2001
+> From: Vlastimil Babka <vbabka@suse.cz>
+> Date: Thu, 6 May 2021 17:53:21 +0200
+> Subject: [PATCH] mm: memcg/slab: don't create kmalloc-cg caches with
+>  cgroup.memory=nokmem
+>
+> The caches should not be created when kmemcg is disabled on boot, otherwise
+> they are also filled by kmalloc(__GFP_ACCOUNT) allocations. When booted with
+> cgroup.memory=nokmem, link the kmalloc_caches[KMALLOC_CGROUP] entries to
+> KMALLOC_NORMAL entries instead.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
-Thank you for the patch.
+Yes this makes sense:
 
-On Thu, May 06, 2021 at 05:26:01PM +0200, Mauro Carvalho Chehab wrote:
-> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> added pm_runtime_resume_and_get() in order to automatically handle
-> dev->power.usage_count decrement on errors.
-> 
-> Use the new API, in order to cleanup the error check logic.
-> 
-> As a bonus, pm_runtime_resume_and_get() always return 0 on success.
-> So, the code can be simplified.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
->  drivers/media/platform/vsp1/vsp1_drv.c | 10 +---------
->  1 file changed, 1 insertion(+), 9 deletions(-)
-> 
-> diff --git a/drivers/media/platform/vsp1/vsp1_drv.c b/drivers/media/platform/vsp1/vsp1_drv.c
-> index aa66e4f5f3f3..de442d6c9926 100644
-> --- a/drivers/media/platform/vsp1/vsp1_drv.c
-> +++ b/drivers/media/platform/vsp1/vsp1_drv.c
-> @@ -559,15 +559,7 @@ static int vsp1_device_init(struct vsp1_device *vsp1)
->   */
->  int vsp1_device_get(struct vsp1_device *vsp1)
->  {
-> -	int ret;
-> -
-> -	ret = pm_runtime_get_sync(vsp1->dev);
-> -	if (ret < 0) {
-> -		pm_runtime_put_noidle(vsp1->dev);
-> -		return ret;
-> -	}
-> -
-> -	return 0;
-> +	return pm_runtime_resume_and_get(vsp1->dev);
->  }
->  
->  /*
-
--- 
-Regards,
-
-Laurent Pinchart
+Reviewed-by: Shakeel Butt <shakeelb@google.com>
