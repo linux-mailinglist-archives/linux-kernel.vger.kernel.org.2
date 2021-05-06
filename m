@@ -2,146 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8470B3750E4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:30:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B220E3750E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:31:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233408AbhEFIbT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 04:31:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58693 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231880AbhEFIbQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 04:31:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620289818;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JRKbW/sCgPPWfrkPLI5ab6dF91rPfojdvFAM5kCKO64=;
-        b=XkdO0nBNj7p2TDp0Wv5rgx8a9K1hteiFMOqqKS9NOFIj08D/wxG/pqSrB3wb2i63ZmegrS
-        ShpT6S8nUjXB25YvWWE8Wf+Zao6rd/aeN70NqtYWAgclif14yH7R94m64RrhOuyedCmwWo
-        xgHKD8yLA2BB+joOEXniWfUkIHzit/c=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-217-rCunSlY1MgCsZj4jJ8anqQ-1; Thu, 06 May 2021 04:30:14 -0400
-X-MC-Unique: rCunSlY1MgCsZj4jJ8anqQ-1
-Received: by mail-ed1-f69.google.com with SMTP id g17-20020aa7dd910000b029038843570b67so2246533edv.9
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 01:30:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=JRKbW/sCgPPWfrkPLI5ab6dF91rPfojdvFAM5kCKO64=;
-        b=brbDsEGmEgno5dc5Dq3NweZTrq3KH1m14CD2xAOOEy7Mm7FMLENFd+MZa72I08YvmZ
-         3oSQpFuxHc+GcyjTKLwuGdeqUvXMqdylAeFCsiiWqjbMsJnOOXz214sBhlMQJY1AqLha
-         L8h0nhNF8BcK7uiBkC6QejNNMgECvL7gi3dIP0/21IjY9fM6laMJKAw3/qk8WDWurh1u
-         2ifqWSHTNbQfCR09uYM7NlFGq5z+6cMnMBfDvko6T/ShNvj270eI769PQCufmKioUoWU
-         QVnwoFtYWHig7fBe/SFQTK1p/mNnP/oFUddAtcU7Xom+s7yciblkBNMXjlyjFZDo5/ZK
-         lPDQ==
-X-Gm-Message-State: AOAM531AGAzeGbzSr0Tr/Hij0sTiioPqmD0fxxDX/nvy+0xdTxvIQBV6
-        whPXK4D5zFk6aJq9fPeKhyhTHe8qU1MNJBZAMzi5R+aM+wf9f5vAxIdPLqZ38AM9FOy2OFRwllP
-        TrfiH9/1kGhL1J7GEdHjA3IXT
-X-Received: by 2002:a17:907:7216:: with SMTP id dr22mr3131470ejc.185.1620289812993;
-        Thu, 06 May 2021 01:30:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzaTJLRRAe4z6xxP1wNQ3FfUihWzvJu3i6TGt4G0aTcNF32m7/5tO+Y7AeF4ilAxH6schuy5g==
-X-Received: by 2002:a17:907:7216:: with SMTP id dr22mr3131456ejc.185.1620289812828;
-        Thu, 06 May 2021 01:30:12 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id um2sm939292ejb.4.2021.05.06.01.30.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 01:30:12 -0700 (PDT)
-Subject: Re: [PATCH] iio:accel:stk8312: Remove ACPI support
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel test robot <lkp@intel.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20210506035659.765109-1-linux@roeck-us.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <8d6a5c4e-f81a-51c2-cd7f-4a9e9895c8c1@redhat.com>
-Date:   Thu, 6 May 2021 10:30:12 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S233437AbhEFIce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:32:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52546 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231228AbhEFIcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 04:32:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id A0D41613BA
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 08:31:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620289895;
+        bh=tXoVVhjMUlqtpW3yZ+4IlGtS4t3/pnMFT/53JNA7qRc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=YQcghHsUBUdRYVj63qX5JqPfgwar7Q+0InI1U2ymGYvDBNauESDgXfrws+AuqX7QD
+         MAO+nQI/m9pM7kABDkPe04LITaLqmY7qjpYLbDj5lcQHlb9nu15z2cbeZ1oTxWqLfD
+         6smnk05vfRhHga/+5MsSkuYGAdLyS5U4aC0hFRQb5mum+/wzvZK1HuNliXIdD+RJ/z
+         2gcmcw5RE1P7UPnCKrg9e9AxhDwx+yq/hawOFC7KPRyEeJd68vGjSwFzCWAzbwW2mH
+         ounIGIzaSjm500C1/pQ4VHVw0QjWvvmLCS5mwfa5kPDzshPiE5FzjiVQtvegM42sNJ
+         SUYNiRl+zVzxg==
+Received: by mail-wr1-f49.google.com with SMTP id z6so4650416wrm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 01:31:35 -0700 (PDT)
+X-Gm-Message-State: AOAM5307dV3DS8d5FL2Gm7EJfTIS0Lv4otR6Nzr26N9YFa6vXx8HEOr1
+        YqLpUIxfPstaam8gQrJzo+onLJIbEV96D08NUCc=
+X-Google-Smtp-Source: ABdhPJzNR7fHlt24feGy7yyLHVNwGnN5mAc84FS0FJ3pbuLAjyZFwPPDidP62YWYi8FRgyGc0R44O+MVwLCCCUtcNw4=
+X-Received: by 2002:adf:d223:: with SMTP id k3mr3557467wrh.99.1620289894075;
+ Thu, 06 May 2021 01:31:34 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210506035659.765109-1-linux@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210505211300.3174456-1-arnd@kernel.org> <87czu4slom.fsf@yhuang6-desk1.ccr.corp.intel.com>
+ <CAK8P3a1SBDXqHE5FgG_WfzrcbeT6V6kg5T+xTGU8Cp_vLLdMqA@mail.gmail.com> <877dkcs2h8.fsf@yhuang6-desk1.ccr.corp.intel.com>
+In-Reply-To: <877dkcs2h8.fsf@yhuang6-desk1.ccr.corp.intel.com>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Thu, 6 May 2021 10:30:49 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3kZ9_VoKV+2eZh=WqncRqFKzRmRHUjAT9iFMtJpKzb1w@mail.gmail.com>
+Message-ID: <CAK8P3a3kZ9_VoKV+2eZh=WqncRqFKzRmRHUjAT9iFMtJpKzb1w@mail.gmail.com>
+Subject: Re: [PATCH] [v2] smp: fix smp_call_function_single_async prototype
+To:     "Huang, Ying" <ying.huang@intel.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        He Ying <heying24@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, May 6, 2021 at 10:14 AM Huang, Ying <ying.huang@intel.com> wrote:
+>
+> Arnd Bergmann <arnd@kernel.org> writes:
+>
+> > On Thu, May 6, 2021 at 3:20 AM Huang, Ying <ying.huang@intel.com> wrote:
+> >>
+> >> Arnd Bergmann <arnd@kernel.org> writes:
+> >>
+> >> > From: Arnd Bergmann <arnd@arndb.de>
+> >> >
+> >> > As of commit 966a967116e6 ("smp: Avoid using two cache lines for struct
+> >> > call_single_data"), the smp code prefers 32-byte aligned call_single_data
+> >> > objects for performance reasons, but the block layer includes an instance
+> >> > of this structure in the main 'struct request' that is more senstive
+> >> > to size than to performance here, see 4ccafe032005 ("block: unalign
+> >> > call_single_data in struct request").
+> >> >
+> >> > The result is a violation of the calling conventions that clang correctly
+> >> > points out:
+> >> >
+> >> > block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to 32-byte aligned parameter 2 of 'smp_call_function_single_async' may result in an unaligned pointer access [-Walign-mismatch]
+> >> >                 smp_call_function_single_async(cpu, &rq->csd);
+> >>
+> >> Can this be silenced by
+> >>
+> >>                 smp_call_function_single_async(cpu, (call_single_data_t *)&rq->csd);
+> >
+> > Probably, but casting from smaller alignment to larger alignment is undefined
+> > behavior
+>
+> We cannot avoid type cast in Linux kernel, such as container_of(), is
+> there some difference here?
 
-On 5/6/21 5:56 AM, Guenter Roeck wrote:
-> With CONFIG_ACPI=n, W=1 and -Werror, 0-day reports:
-> 
-> drivers/iio/accel/stk8312.c:644:36: error:
-> 	'stk8312_acpi_id' defined but not used
-> 
-> Apparently STK8312 is not a valid ACPI ID. Remove it and with it
-> ACPI support from the stk8312 driver.
-> 
-> Reported-by: kernel test robot <lkp@intel.com>
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+container_of() does not cause any alignment problems. Assuming the outer
+structure is aligned correctly, then the inner structure also is.
 
-Thanks, patch looks good to me:
+> > and I'd rather not go there in case this triggers some runtime
+> > misbehavior or ubsan check in the future. Making the function accept a
+> > pointer with the smaller alignment avoids getting into undefined behavior
+> > and doesn't require a cast.
+>
+> In its raw form as above, this looks bad.  If we encapsulate it, it may
+> look better, for example,
+>
+> static inline int __smp_call_function_single_async(int cpu, struct __call_single_data *csd)
+> {
+>         smp_call_function_single_async(cpu, (call_single_data_t *)csd);
+> }
+>
+> Then, we can do
+>
+>         __smp_call_function_single_async(cpu, &rq->csd);
 
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
+Same problem, it's still calling a function that expects stricter alignment.
+It would work if we do it the other way around though:
 
-Regards,
+static inline int smp_call_function_single_async(int cpu,
+call_single_data_t *csd)
+{
+        return __smp_call_function_single_async(cpu, csd);
+}
 
-Hans
+That should even work without the cast.
 
-
-
-> ---
-> There is another patch pending which makes whitespace changes in struct
-> acpi_device_id stk8312_acpi_id. This will result in a conflict if this
-> patch is applied. In that patch, it is claimed that the driver would
-> possibly only be used based on its ACPI ID (even though that ACPI device
-> ID is not official).
-> Link: https://patchwork.kernel.org/project/linux-iio/patch/20210401144226.225928-1-jic23@kernel.org/
-> I can not determine if that claim has any truth in it. Still, it appears
-> that the device ID is not an official device ID.  
-> 
->  drivers/iio/accel/stk8312.c | 9 ---------
->  1 file changed, 9 deletions(-)
-> 
-> diff --git a/drivers/iio/accel/stk8312.c b/drivers/iio/accel/stk8312.c
-> index 157d8faefb9e..2fc30cfe1457 100644
-> --- a/drivers/iio/accel/stk8312.c
-> +++ b/drivers/iio/accel/stk8312.c
-> @@ -7,7 +7,6 @@
->   * IIO driver for STK8312; 7-bit I2C address: 0x3D.
->   */
->  
-> -#include <linux/acpi.h>
->  #include <linux/i2c.h>
->  #include <linux/interrupt.h>
->  #include <linux/kernel.h>
-> @@ -640,18 +639,10 @@ static const struct i2c_device_id stk8312_i2c_id[] = {
->  };
->  MODULE_DEVICE_TABLE(i2c, stk8312_i2c_id);
->  
-> -static const struct acpi_device_id stk8312_acpi_id[] = {
-> -	{"STK8312", 0},
-> -	{}
-> -};
-> -
-> -MODULE_DEVICE_TABLE(acpi, stk8312_acpi_id);
-> -
->  static struct i2c_driver stk8312_driver = {
->  	.driver = {
->  		.name = STK8312_DRIVER_NAME,
->  		.pm = STK8312_PM_OPS,
-> -		.acpi_match_table = ACPI_PTR(stk8312_acpi_id),
->  	},
->  	.probe =            stk8312_probe,
->  	.remove =           stk8312_remove,
-> 
-
+        Arnd
