@@ -2,159 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD06E375970
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:34:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B00CD375973
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236369AbhEFRfC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:35:02 -0400
-Received: from alexa-out.qualcomm.com ([129.46.98.28]:43156 "EHLO
-        alexa-out.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236291AbhEFRex (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:34:53 -0400
-Received: from ironmsg09-lv.qualcomm.com ([10.47.202.153])
-  by alexa-out.qualcomm.com with ESMTP; 06 May 2021 10:33:55 -0700
-X-QCInternal: smtphost
-Received: from ironmsg02-blr.qualcomm.com ([10.86.208.131])
-  by ironmsg09-lv.qualcomm.com with ESMTP/TLS/AES256-SHA; 06 May 2021 10:33:54 -0700
-X-QCInternal: smtphost
-Received: from gubbaven-linux.qualcomm.com ([10.206.64.32])
-  by ironmsg02-blr.qualcomm.com with ESMTP; 06 May 2021 23:03:16 +0530
-Received: by gubbaven-linux.qualcomm.com (Postfix, from userid 2365015)
-        id C878622008; Thu,  6 May 2021 23:03:14 +0530 (IST)
-From:   Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com,
-        devicetree@vger.kernel.org
-Cc:     mka@chromium.org, linux-kernel@vger.kernel.org,
-        linux-bluetooth@vger.kernel.org, hemantg@codeaurora.org,
-        linux-arm-msm@vger.kernel.org, bgodavar@codeaurora.org,
-        rjliao@codeaurora.org, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org,
-        Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Subject: [PATCH v3 5/5] dt-bindings: net: bluetooth: Add device tree bindings for QTI chip wcn6750
-Date:   Thu,  6 May 2021 23:03:12 +0530
-Message-Id: <1620322392-27148-6-git-send-email-gubbaven@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620322392-27148-1-git-send-email-gubbaven@codeaurora.org>
-References: <1620322392-27148-1-git-send-email-gubbaven@codeaurora.org>
+        id S236394AbhEFRfG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:35:06 -0400
+Received: from mga03.intel.com ([134.134.136.65]:38161 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236297AbhEFRe5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 13:34:57 -0400
+IronPort-SDR: AnfvO6FxHR70Lt2dx3vm/+z6pacB0L1/5Lrk7rwaQzqqJq4D0tH2F3Dwfg8FmCkl9MzlfW5Fch
+ GIVOYz+bpfdQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="198590371"
+X-IronPort-AV: E=Sophos;i="5.82,278,1613462400"; 
+   d="scan'208";a="198590371"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 10:33:56 -0700
+IronPort-SDR: tgPWbbwUbAnnBDk5DujqGt1ruOtdLSgGIJIiPMjUS1hvjtnitWBhT5tvbVwpx5QiRqXo13tEgo
+ dvKfDlneh6Ew==
+X-IronPort-AV: E=Sophos;i="5.82,278,1613462400"; 
+   d="scan'208";a="434481005"
+Received: from tchrzano-mobl.ger.corp.intel.com (HELO localhost) ([10.252.42.214])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 10:33:53 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>,
+        ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Intel-gfx] [PATCH 1/3] New function to avoid duplicate code in upcomming commits
+In-Reply-To: <3796a7b9-8035-38ea-1c3d-b1ffe89aa19e@tuxedocomputers.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210505172401.1453178-1-wse@tuxedocomputers.com> <20210505172401.1453178-2-wse@tuxedocomputers.com> <87v97ww4e5.fsf@intel.com> <3796a7b9-8035-38ea-1c3d-b1ffe89aa19e@tuxedocomputers.com>
+Date:   Thu, 06 May 2021 20:33:51 +0300
+Message-ID: <87fsyzwyv4.fsf@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch enables regulators and gpios for the Qualcomm Bluetooth wcn6750
-controller.
+On Thu, 06 May 2021, Werner Sembach <wse@tuxedocomputers.com> wrote:
+> Am 06.05.21 um 12:19 schrieb Jani Nikula:
+>> On Wed, 05 May 2021, Werner Sembach <wse@tuxedocomputers.com> wrote:
+>>> Moves some checks that later will be performed 2 times to an own fuction. This
+>>> avoids duplicate code later on.
+>>>
+>>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+>>> ---
+>>>
+>>> From 42a4a3a7d9ea9948b4071f406e7fcae23bfa0bdf Mon Sep 17 00:00:00 2001
+>>> From: Werner Sembach <wse@tuxedocomputers.com>
+>>> Date: Mon, 3 May 2021 14:35:39 +0200
+>>> Subject: [PATCH 1/3] New function to avoid duplicate code in upcomming commits
+>> What are you using to generate and send the patches? This looks like
+>> unnecessary cruft, and our CI fails to apply and test the changes.
+>>
+>> BR,
+>> Jani.
+> I'm using git send-email with --compose and --annotate. The From, Date, and Subject lines are automatically generated by it and I then add the commit message above.
 
-Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
----
- .../bindings/net/qualcomm-bluetooth.yaml           | 71 ++++++++++++++++++++++
- 1 file changed, 71 insertions(+)
+I'm not sure I understand correctly. You should write the commit
+messages in your git commits when you commit them. When you do 'git
+commit'. You shouldn't have to annotate any of the patches while
+sending, except to perhaps add a cover letter with --compose.
 
-diff --git a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
-index 3f3ec4d..0a90335 100644
---- a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
-+++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
-@@ -21,11 +21,17 @@ properties:
-       - qcom,wcn3991-bt
-       - qcom,wcn3998-bt
-       - qcom,qca6390-bt
-+      - qcom,wcn6750-bt
- 
-   enable-gpios:
-     maxItems: 1
-     description: gpio specifier used to enable chip
- 
-+  swctrl-gpios:
-+    maxItems: 1
-+    description: gpio specifier is used to find status
-+                 of clock supply to SoC
-+
-   clocks:
-     maxItems: 1
-     description: clock provided to the controller (SUSCLK_32KHZ)
-@@ -42,6 +48,30 @@ properties:
-   vddch0-supply:
-     description: VDD_CH0 supply regulator handle
- 
-+  vddaon-supply:
-+    description: VDD_AON supply regulator handle
-+
-+  vddbtcxmx-supply:
-+    description: VDD_BT_CXMX supply regulator handle
-+
-+  vddrfacmn-supply:
-+    description: VDD_RFA_CMN supply regulator handle
-+
-+  vddrfa0p8-supply:
-+    description: VDD_RFA_0P8 suppply regulator handle
-+
-+  vddrfa1p7-supply:
-+    description: VDD_RFA_1P7 supply regulator handle
-+
-+  vddrfa1p2-supply:
-+    description: VDD_RFA_1P2 supply regulator handle
-+
-+  vddrfa2p2-supply:
-+    description: VDD_RFA_2P2 supply regulator handle
-+
-+  vddasd-supply:
-+    description: VDD_ASD supply regulator handle
-+
-   max-speed:
-     description: see Documentation/devicetree/bindings/serial/serial.yaml
- 
-@@ -84,6 +114,25 @@ allOf:
-         - vddrf-supply
-         - vddch0-supply
- 
-+  - if:
-+      properties:
-+        compatible:
-+          contains:
-+            enum:
-+              - qcom,wcn6750-bt
-+    then:
-+      required:
-+        - enable-gpios
-+        - swctrl-gpios
-+        - vddio-supply
-+        - vddaon-supply
-+        - vddbtcxmx-supply
-+        - vddrfacmn-supply
-+        - vddrfa0p8-supply
-+        - vddrfa1p7-supply
-+        - vddrfa1p2-supply
-+        - vddasd-supply
-+
- examples:
-   - |
-     #include <dt-bindings/gpio/gpio.h>
-@@ -109,3 +158,25 @@ examples:
-             firmware-name = "crnv21.bin";
-         };
-     };
-+  - |
-+    serial {
-+
-+        bluetooth {
-+            compatible = "qcom,wcn6750-bt";
-+            pinctrl-names = "default";
-+            pinctrl-0 = <&bt_en_default>;
-+            enable-gpios = <&tlmm 85 GPIO_ACTIVE_HIGH>;
-+            swctrl-gpios = <&tlmm 86 GPIO_ACTIVE_HIGH>;
-+            vddio-supply = <&vreg_l19b_1p8>;
-+            vddaon-supply = <&vreg_s7b_0p9>;
-+            vddbtcxmx-supply = <&vreg_s7b_0p9>;
-+            vddrfacmn-supply = <&vreg_s7b_0p9>;
-+            vddrfa0p8-supply = <&vreg_s7b_0p9>;
-+            vddrfa1p7-supply = <&vreg_s1b_1p8>;
-+            vddrfa1p2-supply = <&vreg_s8b_1p2>;
-+            vddrfa2p2-supply = <&vreg_s1c_2p2>;
-+            vddasd-supply = <&vreg_l11c_2p8>;
-+            max-speed = <3200000>;
-+            firmware-name = "msnv11.bin";
-+        };
-+    };
+BR,
+Jani.
+
+>
+> After reading https://www.kernel.org/doc/html/v5.12/process/submitting-patches.html#the-canonical-patch-format I thought the format was:
+>
+> <commit message for upstream and signed of lines>
+> ---
+> <additional comments only for mailing list/stuff that gets ignored by the tools>
+> ---
+> <the patch>
+>
+> With the middle part being optional. (I only tested with "git apply" which worked fine with the format)
+>
+> I will resend the patches without the middle part, and the drm/i915/display in all subject lines.
+>
+>>
+>>> ---
+>>>  drivers/gpu/drm/i915/display/intel_hdmi.c | 41 ++++++++++++++---------
+>>>  1 file changed, 26 insertions(+), 15 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>>> index 46de56af33db..576d3d910d06 100644
+>>> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+>>> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>>> @@ -1861,6 +1861,31 @@ static int intel_hdmi_port_clock(int clock, int bpc)
+>>>  	return clock * bpc / 8;
+>>>  }
+>>>  
+>>> +static enum drm_mode_status
+>>> +intel_hdmi_mode_clock_valid(struct intel_hdmi *hdmi, int clock, bool has_hdmi_sink)
+>>> +{
+>>> +	struct drm_device *dev = intel_hdmi_to_dev(hdmi);
+>>> +	struct drm_i915_private *dev_priv = to_i915(dev);
+>>> +	enum drm_mode_status status;
+>>> +
+>>> +	/* check if we can do 8bpc */
+>>> +	status = hdmi_port_clock_valid(hdmi, clock, true, has_hdmi_sink);
+>>> +
+>>> +	if (has_hdmi_sink) {
+>>> +		/* if we can't do 8bpc we may still be able to do 12bpc */
+>>> +		if (status != MODE_OK && !HAS_GMCH(dev_priv))
+>>> +			status = hdmi_port_clock_valid(hdmi, clock * 3 / 2,
+>>> +						       true, has_hdmi_sink);
+>>> +
+>>> +		/* if we can't do 8,12bpc we may still be able to do 10bpc */
+>>> +		if (status != MODE_OK && INTEL_GEN(dev_priv) >= 11)
+>>> +			status = hdmi_port_clock_valid(hdmi, clock * 5 / 4,
+>>> +						       true, has_hdmi_sink);
+>>> +	}
+>>> +
+>>> +	return status;
+>>> +}
+>>> +
+>>>  static enum drm_mode_status
+>>>  intel_hdmi_mode_valid(struct drm_connector *connector,
+>>>  		      struct drm_display_mode *mode)
+>>> @@ -1891,21 +1916,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
+>>>  	if (drm_mode_is_420_only(&connector->display_info, mode))
+>>>  		clock /= 2;
+>>>  
+>>> -	/* check if we can do 8bpc */
+>>> -	status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 8),
+>>> -				       true, has_hdmi_sink);
+>>> -
+>>> -	if (has_hdmi_sink) {
+>>> -		/* if we can't do 8bpc we may still be able to do 12bpc */
+>>> -		if (status != MODE_OK && !HAS_GMCH(dev_priv))
+>>> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 12),
+>>> -						       true, has_hdmi_sink);
+>>> -
+>>> -		/* if we can't do 8,12bpc we may still be able to do 10bpc */
+>>> -		if (status != MODE_OK && DISPLAY_VER(dev_priv) >= 11)
+>>> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 10),
+>>> -						       true, has_hdmi_sink);
+>>> -	}
+>>> +	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
+>>>  	if (status != MODE_OK)
+>>>  		return status;
+
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a member 
-of Code Aurora Forum, hosted by The Linux Foundation
-
+Jani Nikula, Intel Open Source Graphics Center
