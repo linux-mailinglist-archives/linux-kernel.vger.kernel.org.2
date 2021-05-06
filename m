@@ -2,143 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4E4C37539F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:15:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A0683753BA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:20:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232868AbhEFMQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:16:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37264 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229777AbhEFMQ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:16:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 85D71B1BC;
-        Thu,  6 May 2021 12:15:29 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 0D3691F2C5C; Thu,  6 May 2021 14:15:29 +0200 (CEST)
-Date:   Thu, 6 May 2021 14:15:29 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     yebin <yebin10@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ext4: Fix bug on in ext4_es_cache_extent as
- ext4_split_extent_at failed
-Message-ID: <20210506121529.GC22189@quack2.suse.cz>
-References: <20210428085158.3728201-1-yebin10@huawei.com>
- <20210430125853.GB5315@quack2.suse.cz>
- <60921135.3030900@huawei.com>
- <20210505104105.GA29867@quack2.suse.cz>
- <6093A830.3000704@huawei.com>
- <20210506101915.GA22189@quack2.suse.cz>
- <6093D73F.70909@huawei.com>
+        id S230386AbhEFMVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:21:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46324 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229733AbhEFMVb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 08:21:31 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 314F1C061574;
+        Thu,  6 May 2021 05:20:32 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id t4so3295671plc.6;
+        Thu, 06 May 2021 05:20:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LulMt2AX6VSvSL+kvUAMyg5m7exs1nDV1kdCnAZEKBM=;
+        b=JNWqwWuPeySXhlL1jCocu88stukh5d/CaAxpheuDXoMkx61i24UJFQBKM47AGc7qKI
+         CJxeKt5b7QzoAMVs5zDbQrZNrXrqtxwr10AZXrZakGSjqdbD5Pjgu+9t+GFAtg8ClRWP
+         gvbDdYjKP95yErpOsIjUVC6j20ndxT438M4MEIiDKl00FeSV+XolrYVaUR36z3ZG2Vs+
+         yL31Po9nNn8cbUBUDJmTRDzH8r7eIJ3V2FzjlvaMXvnfdNMgL9tXZ0FzI1eSpCbs19dZ
+         esyvJ3hP1dUymtQOZ+DInR+3veH0/Y9nZ5ocsGAErE7BSk3ul6vALLWw8/1+g308n+2a
+         ye+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LulMt2AX6VSvSL+kvUAMyg5m7exs1nDV1kdCnAZEKBM=;
+        b=WBU/ROdU286e8zKQiLVrwrQDqZOncZPq3TMuuk3TMAPCuRoCLW2kJh4C3FcBkw3pmE
+         9KDXMEnISe+tryetIqR7ZAlxIdXb5IKzwJleHJ/1BTcEgUzFm6L6HdnbHHUYuTd8nddE
+         Cl0XeFyipSNktTm5Ipc0rt1NKBZCKM2Frf2KhMhhtDY9FavGTAPTMjmk3hod6alMZ6QM
+         OKb2fumXJq710eAQesEM5kX69kgToj8uJdtiPlANkVv9K50vS9PHR+k1QPlrlGm2ATmn
+         nO3t3ssogXw0FiTN6S+Oyl6iSsbTYmtzdAp7sPKVjUxpeF9YBWUO56rOWGSCj6rpzw4S
+         YeaA==
+X-Gm-Message-State: AOAM532aAbshv10g1ioybt0vjfkyWMV0ViMLx0RiHpo6kSjEOZD1zJ93
+        LW/bRKQaNFYm8kcxccpccFRsokILgQy0EeUHPEo=
+X-Google-Smtp-Source: ABdhPJzpFmTJgr+RciAsMyrWc64o7qB4IVbyvENuxcITdwqKqdLoheGuZ9HOBTcsjhKp5k2RWIkKIQ==
+X-Received: by 2002:a17:902:a40e:b029:e9:7253:8198 with SMTP id p14-20020a170902a40eb02900e972538198mr4453763plq.82.1620303631415;
+        Thu, 06 May 2021 05:20:31 -0700 (PDT)
+Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
+        by smtp.gmail.com with ESMTPSA id k20sm2140298pfa.34.2021.05.06.05.20.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 05:20:31 -0700 (PDT)
+From:   Wei Ming Chen <jj251510319013@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     corbet@lwn.net, linux-usb@vger.kernel.org,
+        linux-doc@vger.kernel.org, Wei Ming Chen <jj251510319013@gmail.com>
+Subject: [PATCH] docs: usb: function: Modify path name
+Date:   Thu,  6 May 2021 20:20:20 +0800
+Message-Id: <20210506122020.7117-1-jj251510319013@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6093D73F.70909@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 06-05-21 19:47:11, yebin wrote:
-> 
-> 
-> On 2021/5/6 18:19, Jan Kara wrote:
-> > On Thu 06-05-21 16:26:24, yebin wrote:
-> > > Thanks for your suggesttion. If you have no objection to following
-> > > modification, i will send it as V4.
-> > > 
-> > > diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> > > index 77c84d6f1af6..f9cbd11e1eae 100644
-> > > --- a/fs/ext4/extents.c
-> > > +++ b/fs/ext4/extents.c
-> > > @@ -3206,7 +3206,10 @@ static int ext4_split_extent_at(handle_t *handle,
-> > >                  ext4_ext_mark_unwritten(ex2);
-> > > 
-> > >          err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
-> > > -       if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
-> > > +       if (err != -ENOSPC && err != -EDQUOT)
-> > > +                goto out;
-> > > +
-> > > +       if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
-> > You need:
-> > 
-> > if (err && (EXT4_EXT_MAY_ZEROOUT & split_flag))
-> > 
-> > there, don't you? You don't want to zero-out if there's no error.
-> 
-> If (err != -ENOSPC && err != -EDQUOT) already goto out, so there is needn't
-> judge "err" again.
+Original path does not exists, so changed to
+"Documentation/ABI/testing/configfs-usb-gadget"
 
-Right, my fault. I was confused.
+Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+---
+ Documentation/usb/gadget_configfs.rst | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > > @@ -3232,22 +3235,23 @@ static int ext4_split_extent_at(handle_t *handle,
-> > > ext4_ext_pblock(&orig_ex));
-> > >                  }
-> > > 
-> > > -               if (err)
-> > > -                       goto fix_extent_len;
-> > > -               /* update the extent length and mark as initialized */
-> > > -               ex->ee_len = cpu_to_le16(ee_len);
-> > > -               ext4_ext_try_to_merge(handle, inode, path, ex);
-> > > -               err = ext4_ext_dirty(handle, inode, path + path->p_depth);
-> > > -               if (err)
-> > > -                       goto fix_extent_len;
-> > > -
-> > > -               /* update extent status tree */
-> > > -               err = ext4_zeroout_es(inode, &zero_ex);
-> > > -
-> > > -               goto out;
-> > > -       } else if (err)
-> > > -               goto fix_extent_len;
-> > > -
-> > > +               if (!err) {
-> > > +                       /* update the extent length and mark as initialized
-> > > */
-> > > +                        ex->ee_len = cpu_to_le16(ee_len);
-> > > +                        ext4_ext_try_to_merge(handle, inode, path, ex);
-> > > +                        err = ext4_ext_dirty(handle, inode, path +
-> > > path->p_depth);
-> > > +                        if (!err)
-> > > +                               /* update extent status tree */
-> > > +                                err = ext4_zeroout_es(inode, &zero_ex);
-> > > +                        /* At here, ext4_ext_try_to_merge maybe already
-> > > merge
-> > > +                         * extent, if fix origin extent length may lead to
-> > > +                         * overwritten.
-> > > +                         */
-> > I'd rephrase the comment as:
-> > 
-> > /*
-> >   * If we failed at this point, we don't know in which state the extent tree
-> >   * exactly is so don't try to fix length of the original extent as it may do
-> >   * even more damage.
-> >   */
-> I will replace it with your comment.
-> > 
-> > > +                        goto out;
-> > > +                }
-> > > +       }
-> > > +        if (err)
-> > > +                goto fix_extent_len;
-> > And you can move this if (err) before if (!err) above to make code easier
-> > to read and save one indentation level.
-> if (EXT4_EXT_MAY_ZEROOUT & split_flag) do zero-out,  if  failed, we don't
-> need fix extent length.
-> But if (!EXT4_EXT_MAY_ZEROOUT & split_flag) we need to fix extent length.
-> Maybe i can move
-> label "out"  behind  label "fix_extent_len", then this judement can be
-> removed.
-> Did i misunderstand what you meant earlier?
-
-Thanks for the update! The diff now looks good to me so feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-for your next posting.
-
-								Honza
+diff --git a/Documentation/usb/gadget_configfs.rst b/Documentation/usb/gadget_configfs.rst
+index 158e48dab586..e4566ffb223f 100644
+--- a/Documentation/usb/gadget_configfs.rst
++++ b/Documentation/usb/gadget_configfs.rst
+@@ -140,7 +140,7 @@ is an arbitrary string allowed in a filesystem, e.g.::
+ Each function provides its specific set of attributes, with either read-only
+ or read-write access. Where applicable they need to be written to as
+ appropriate.
+-Please refer to Documentation/ABI/*/configfs-usb-gadget* for more information.
++Please refer to Documentation/ABI/testing/configfs-usb-gadget for more information.
+ 
+ 4. Associating the functions with their configurations
+ ------------------------------------------------------
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.25.1
+
