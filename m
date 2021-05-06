@@ -2,94 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C62E4374DB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66008374DB9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:53:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231417AbhEFCxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:53:47 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:18002 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhEFCxq (ORCPT
+        id S232355AbhEFCyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:54:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhEFCye (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:53:46 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FbJ2K6KkYzPwpT;
-        Thu,  6 May 2021 10:49:29 +0800 (CST)
-Received: from [10.174.178.208] (10.174.178.208) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 6 May 2021 10:52:41 +0800
-Subject: Re: [PATCH 5.10 00/29] 5.10.35-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210505112326.195493232@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <0dee0995-7078-4217-5ee7-59b378f72ed9@huawei.com>
-Date:   Thu, 6 May 2021 10:52:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Wed, 5 May 2021 22:54:34 -0400
+Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A53C061761
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 19:53:37 -0700 (PDT)
+Received: by mail-pl1-x631.google.com with SMTP id s20so2624727plr.13
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 19:53:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YewfXLV+s6eseo7hxW6W1xEDd4aCTIQYY6fGFTM6318=;
+        b=1g6apy4Azt+HLbznoibVPTszQApPwt5wzruvbJC5FJnjkaIHYHo+Bkd4lgwAWi7NPW
+         FG2uf5WbZPNeI1sj9AWI79NRQyIGbGgASl8Hvh9TLzdRahLtITbx/vWLQcLAEOMeoqt6
+         o4CoFGCvqeBFGVkxvhGlpgZkReqTi1xh1Dh619tg3WDYfd+rUBX21oe8O4oiiW11A+/S
+         F/Fp3g5j0ChlmaFmRneBoxrv5Jxqs87Wd5p2WI+xAlYMSqilKnXV/Q4HJd34PXoHiOOF
+         CMc54ObYAPTg0Fe3Hd1Ammk7j0VlJY6u2D9DGWx8UTwCwMRl95U0OpcLwdtZAbsQSD57
+         UQ/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YewfXLV+s6eseo7hxW6W1xEDd4aCTIQYY6fGFTM6318=;
+        b=TRze3gY5+z5n2cXYDYySCLlT7RouhVvuwBX69L5xGtmkDJJdFTPg4UjXJyyw2+q0nE
+         qcUCmWSmQiGZin3iAvkm+bBjBN+iNmJoQtP1rIBW+Ece3ITyb/1MbpSC8PrKbXPoa8E3
+         BJT5oNJG4Ub5LpgKs0NLs+Ajc0rbYjq2ZUGxEAEJrmQFAEezh0W4Eg94rYXmnJaQsvDZ
+         bkLn6Z4yJ+Ac+56xvaMNUpiV/yk6FciP1XJ6i05S5n3psOVuwh46PiL4ntuTQ8afyEmZ
+         0XOgFmE8U9B8MGS88le2pqvMd59BUjjr2TDT6kU1jAOFDp0rN8Ubrv9tuDZ6PfQ5LNhZ
+         SUvA==
+X-Gm-Message-State: AOAM533pZg45P8juTk+Bq8zaHM/QcOxPRbRxE1yyLRXQi3a+jTIIieir
+        aZldi+sKD59WamUWIvAXf0jSdwypHHjItijNr24U9Q==
+X-Google-Smtp-Source: ABdhPJxB5teGJjRreLimTCPrUixDSsqCQ2MyfSkZEup9YXKNFbxR8Ed4DozyMoPQhS+fYL8hHVGbgv6P46OeJcEIY7I=
+X-Received: by 2002:a17:902:e54e:b029:ed:6ed2:d0ab with SMTP id
+ n14-20020a170902e54eb02900ed6ed2d0abmr2031887plf.24.1620269616937; Wed, 05
+ May 2021 19:53:36 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-CFilter-Loop: Reflected
+References: <20210430031352.45379-1-songmuchun@bytedance.com>
+ <20210430031352.45379-7-songmuchun@bytedance.com> <c2e8bc43-44dc-825d-9f59-0de300815fa4@oracle.com>
+In-Reply-To: <c2e8bc43-44dc-825d-9f59-0de300815fa4@oracle.com>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Thu, 6 May 2021 10:52:58 +0800
+Message-ID: <CAMZfGtWaSGCUaubv6kwc1hzRoc9=O2eXJBcU9t8bX3XeQtP9Yw@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH v22 6/9] mm: hugetlb: alloc the vmemmap
+ pages associated with each HugeTLB page
+To:     Mike Kravetz <mike.kravetz@oracle.com>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
+        X86 ML <x86@kernel.org>, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
+        pawan.kumar.gupta@linux.intel.com,
+        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
+        anshuman.khandual@arm.com, jroedel@suse.de,
+        Mina Almasry <almasrymina@google.com>,
+        David Rientjes <rientjes@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Michal Hocko <mhocko@suse.com>,
+        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
+        David Hildenbrand <david@redhat.com>,
+        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>,
+        Joao Martins <joao.m.martins@oracle.com>,
+        Xiongchun duan <duanxiongchun@bytedance.com>,
+        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 6, 2021 at 6:21 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+>
+> On 4/29/21 8:13 PM, Muchun Song wrote:
+> > When we free a HugeTLB page to the buddy allocator, we need to allocate
+> > the vmemmap pages associated with it. However, we may not be able to
+> > allocate the vmemmap pages when the system is under memory pressure. In
+> > this case, we just refuse to free the HugeTLB page. This changes behavior
+> > in some corner cases as listed below:
+> >
+> >  1) Failing to free a huge page triggered by the user (decrease nr_pages).
+> >
+> >     User needs to try again later.
+> >
+> >  2) Failing to free a surplus huge page when freed by the application.
+> >
+> >     Try again later when freeing a huge page next time.
+> >
+> >  3) Failing to dissolve a free huge page on ZONE_MOVABLE via
+> >     offline_pages().
+> >
+> >     This can happen when we have plenty of ZONE_MOVABLE memory, but
+> >     not enough kernel memory to allocate vmemmmap pages.  We may even
+> >     be able to migrate huge page contents, but will not be able to
+> >     dissolve the source huge page.  This will prevent an offline
+> >     operation and is unfortunate as memory offlining is expected to
+> >     succeed on movable zones.  Users that depend on memory hotplug
+> >     to succeed for movable zones should carefully consider whether the
+> >     memory savings gained from this feature are worth the risk of
+> >     possibly not being able to offline memory in certain situations.
+> >
+> >  4) Failing to dissolve a huge page on CMA/ZONE_MOVABLE via
+> >     alloc_contig_range() - once we have that handling in place. Mainly
+> >     affects CMA and virtio-mem.
+> >
+> >     Similar to 3). virito-mem will handle migration errors gracefully.
+> >     CMA might be able to fallback on other free areas within the CMA
+> >     region.
+> >
+> > Vmemmap pages are allocated from the page freeing context. In order for
+> > those allocations to be not disruptive (e.g. trigger oom killer)
+> > __GFP_NORETRY is used. hugetlb_lock is dropped for the allocation
+> > because a non sleeping allocation would be too fragile and it could fail
+> > too easily under memory pressure. GFP_ATOMIC or other modes to access
+> > memory reserves is not used because we want to prevent consuming
+> > reserves under heavy hugetlb freeing.
+> >
+> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> > ---
+> >  Documentation/admin-guide/mm/hugetlbpage.rst    |  8 ++
+> >  Documentation/admin-guide/mm/memory-hotplug.rst | 13 ++++
+> >  include/linux/hugetlb.h                         |  3 +
+> >  include/linux/mm.h                              |  2 +
+> >  mm/hugetlb.c                                    | 98 +++++++++++++++++++++----
+> >  mm/hugetlb_vmemmap.c                            | 34 +++++++++
+> >  mm/hugetlb_vmemmap.h                            |  6 ++
+> >  mm/migrate.c                                    |  5 +-
+> >  mm/sparse-vmemmap.c                             | 75 ++++++++++++++++++-
+> >  9 files changed, 227 insertions(+), 17 deletions(-)
+> >
+> > diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
+> > index f7b1c7462991..6988895d09a8 100644
+> > --- a/Documentation/admin-guide/mm/hugetlbpage.rst
+> > +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
+> > @@ -60,6 +60,10 @@ HugePages_Surp
+> >          the pool above the value in ``/proc/sys/vm/nr_hugepages``. The
+> >          maximum number of surplus huge pages is controlled by
+> >          ``/proc/sys/vm/nr_overcommit_hugepages``.
+> > +     Note: When the feature of freeing unused vmemmap pages associated
+> > +     with each hugetlb page is enabled, the number of surplus huge pages
+> > +     may be temporarily larger than the maximum number of surplus huge
+> > +     pages when the system is under memory pressure.
+> >  Hugepagesize
+> >       is the default hugepage size (in Kb).
+> >  Hugetlb
+> > @@ -80,6 +84,10 @@ returned to the huge page pool when freed by a task.  A user with root
+> >  privileges can dynamically allocate more or free some persistent huge pages
+> >  by increasing or decreasing the value of ``nr_hugepages``.
+> >
+> > +Note: When the feature of freeing unused vmemmap pages associated with each
+> > +hugetlb page is enabled, we can fail to free the huge pages triggered by
+> > +the user when ths system is under memory pressure.  Please try again later.
+> > +
+> >  Pages that are used as huge pages are reserved inside the kernel and cannot
+> >  be used for other purposes.  Huge pages cannot be swapped out under
+> >  memory pressure.
+> > diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
+> > index 05d51d2d8beb..c6bae2d77160 100644
+> > --- a/Documentation/admin-guide/mm/memory-hotplug.rst
+> > +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
+> > @@ -357,6 +357,19 @@ creates ZONE_MOVABLE as following.
+> >     Unfortunately, there is no information to show which memory block belongs
+> >     to ZONE_MOVABLE. This is TBD.
+> >
+> > +   Memory offlining can fail when dissolving a free huge page on ZONE_MOVABLE
+> > +   and the feature of freeing unused vmemmap pages associated with each hugetlb
+> > +   page is enabled.
+> > +
+> > +   This can happen when we have plenty of ZONE_MOVABLE memory, but not enough
+> > +   kernel memory to allocate vmemmmap pages.  We may even be able to migrate
+> > +   huge page contents, but will not be able to dissolve the source huge page.
+> > +   This will prevent an offline operation and is unfortunate as memory offlining
+> > +   is expected to succeed on movable zones.  Users that depend on memory hotplug
+> > +   to succeed for movable zones should carefully consider whether the memory
+> > +   savings gained from this feature are worth the risk of possibly not being
+> > +   able to offline memory in certain situations.
+> > +
+> >  .. note::
+> >     Techniques that rely on long-term pinnings of memory (especially, RDMA and
+> >     vfio) are fundamentally problematic with ZONE_MOVABLE and, therefore, memory
+> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
+> > index d523a345dc86..d3abaaec2a22 100644
+> > --- a/include/linux/hugetlb.h
+> > +++ b/include/linux/hugetlb.h
+> > @@ -525,6 +525,7 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
+> >   *   code knows it has only reference.  All other examinations and
+> >   *   modifications require hugetlb_lock.
+> >   * HPG_freed - Set when page is on the free lists.
+> > + * HPG_vmemmap_optimized - Set when the vmemmap pages of the page are freed.
+> >   *   Synchronization: hugetlb_lock held for examination and modification.
+>
+> You just moved the Synchronization comment so that it applies to both
+> HPG_freed and HPG_vmemmap_optimized.  However, HPG_vmemmap_optimized is
+> checked/modified both with and without hugetlb_lock.  Nothing wrong with
+> that, just need to update/fix the comment.
+>
 
+Thanks, Mike. I will update the comment.
 
-On 2021/5/5 20:05, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.35 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-> Anything received after that time might be too late.
-> 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.10.35-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.10.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
-
-Tested on arm64 and x86 for 5.10.35-rc1,
-
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-5.10.y
-Version: 5.10.35-rc1
-Commit: 5f894e4a8758db7af6eeb43311c0e9314871b031
-Compiler: gcc version 7.3.0 (GCC)
-
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8476
-passed: 8476
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8476
-passed: 8476
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+> Everything else looks good to me,
+>
+> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+>
+> --
+> Mike Kravetz
