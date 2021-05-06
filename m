@@ -2,92 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A4A5375C66
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:48:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B22D375C68
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233329AbhEFUtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 16:49:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33832 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230104AbhEFUtA (ORCPT
+        id S233572AbhEFUt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 16:49:28 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:43955 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230306AbhEFUtZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 16:49:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620334081;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=iNyKa3qN4dnX6up4J3TEfAYRRZRzTgh3ft7OZjiOwtQ=;
-        b=bit0HHSq3OUtPNbj0MpHwZ6JXbIdFZJgTx5dDgsS8AWmu0PsNj93yml4WjAkxcD99dU/JZ
-        Zh9eQYmOiIvHnIrx/AewXyOLP/7xpBs7Bj08NnkfrKNZuYC0t1XsSRpzk1yEol/3rQ+Tua
-        +LM6B345zGV50N2ugfDEuFYzn9my9Q8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-562-Zbj15EzQPIuZbIraAY5evg-1; Thu, 06 May 2021 16:47:57 -0400
-X-MC-Unique: Zbj15EzQPIuZbIraAY5evg-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2B91801B28;
-        Thu,  6 May 2021 20:47:56 +0000 (UTC)
-Received: from [172.30.42.188] (ovpn-113-225.phx2.redhat.com [10.3.113.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EBC7690F3;
-        Thu,  6 May 2021 20:47:51 +0000 (UTC)
-Subject: [PATCH 5.11.y, 5.10.y, 5.4.y] vfio: Depend on MMU
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com
-Date:   Thu, 06 May 2021 14:47:51 -0600
-Message-ID: <162033393037.4094195.18215062546427210332.stgit@omen>
-User-Agent: StGit/1.0-8-g6af9-dirty
+        Thu, 6 May 2021 16:49:25 -0400
+Received: by mail-ot1-f45.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso5302852ots.10;
+        Thu, 06 May 2021 13:48:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bM7mNDdiOUZmeeObZqbnT+glfKVgqMgaIDdHVATsGTA=;
+        b=cjsY7vwfaI05s8w+/Y7zampz7V4EDShdRdKPuLq8ZsORsMWbba9QlufCo6JORdmcrj
+         /xIVhG4e2ntus+qNdoKozITGt+R+mIgQr+bg7Yy9o33ThjZhtIWbaJS8pffXMQsZB6r2
+         KMarKfgVPzkQL8tsBlPHniaE0pib7H/tEfYsz6SEuGG/hyDOI9vzKzjsm0EggO5d2nZ8
+         mGdyNr/j8by03pHB2iYoBAyU44YOLC/owdypiLT5TO032jfH5zfH1gcNAgQ4pt8w7g52
+         6Jo4yuk19bRFL6GdsV/XPB6DSlP83gC8K890wNwr3saBUk/sqAl8rbx6A5kNlDWQCEUe
+         kaBw==
+X-Gm-Message-State: AOAM533MXs7j9JFYrnG9r8CxPD81p3Kp8Nbika4WHThrGPUuLdlsdoWK
+        TObBBOBiIqS/F35iTyyDXw==
+X-Google-Smtp-Source: ABdhPJx12QWqOGOWr2UyyDEwlPKiJHLXHbUgBE8IbfUNRLj53eVq51YTwDrdTr+th8GX9IrsgV/ugQ==
+X-Received: by 2002:a05:6830:24af:: with SMTP id v15mr744597ots.165.1620334105882;
+        Thu, 06 May 2021 13:48:25 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id u207sm618265oie.56.2021.05.06.13.48.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 13:48:25 -0700 (PDT)
+Received: (nullmailer pid 776804 invoked by uid 1000);
+        Thu, 06 May 2021 20:48:24 -0000
+Date:   Thu, 6 May 2021 15:48:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: add vendor prefix for Insignal Ltd
+Message-ID: <20210506204824.GA776775@robh.at.kernel.org>
+References: <20210504120742.12922-1-krzysztof.kozlowski@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504120742.12922-1-krzysztof.kozlowski@canonical.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Jason Gunthorpe <jgg@nvidia.com>
+On Tue, 04 May 2021 08:07:42 -0400, Krzysztof Kozlowski wrote:
+> Add vendor prefix for Insignal Ltd (http://www.insignal.co.kr).
+> 
+> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
-commit b2b12db53507bc97d96f6b7cb279e831e5eafb00 upstream
-
-VFIO_IOMMU_TYPE1 does not compile with !MMU:
-
-../drivers/vfio/vfio_iommu_type1.c: In function 'follow_fault_pfn':
-../drivers/vfio/vfio_iommu_type1.c:536:22: error: implicit declaration of function 'pte_write'; did you mean 'vfs_write'? [-Werror=implicit-function-declaration]
-
-So require it.
-
-Suggested-by: Cornelia Huck <cohuck@redhat.com>
-Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-Message-Id: <0-v1-02cb5500df6e+78-vfio_no_mmu_jgg@nvidia.com>
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
-Cc: stable@vger.kernel.org # 5.11.y, 5.10.y, 5.4.y
-Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
----
-
-The noted stable branches include upstream commit 179209fa1270
-("vfio: IOMMU_API should be selected") without the follow-up commit
-b2b12db53507 ("vfio: Depend on MMU"), which should have included a
-Fixes: tag for the prior commit.  Without this latter commit, we're
-susceptible to randconfig failures with !MMU configs.  Thanks!
-
- drivers/vfio/Kconfig |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
-index 90c0525b1e0c..67d0bf4efa16 100644
---- a/drivers/vfio/Kconfig
-+++ b/drivers/vfio/Kconfig
-@@ -22,7 +22,7 @@ config VFIO_VIRQFD
- menuconfig VFIO
- 	tristate "VFIO Non-Privileged userspace driver framework"
- 	select IOMMU_API
--	select VFIO_IOMMU_TYPE1 if (X86 || S390 || ARM || ARM64)
-+	select VFIO_IOMMU_TYPE1 if MMU && (X86 || S390 || ARM || ARM64)
- 	help
- 	  VFIO provides a framework for secure userspace device drivers.
- 	  See Documentation/driver-api/vfio.rst for more details.
-
-
+Applied, thanks!
