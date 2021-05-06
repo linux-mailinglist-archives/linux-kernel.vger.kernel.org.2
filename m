@@ -2,107 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AF69375634
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:06:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F2D6375637
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:07:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234992AbhEFPHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:07:43 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:40916 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234918AbhEFPHm (ORCPT
+        id S235032AbhEFPIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:08:15 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:52564 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234918AbhEFPIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:07:42 -0400
-Received: from mail-qt1-f197.google.com ([209.85.160.197])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lefaM-0001UY-Ia
-        for linux-kernel@vger.kernel.org; Thu, 06 May 2021 15:06:42 +0000
-Received: by mail-qt1-f197.google.com with SMTP id j3-20020ac874c30000b02901bab5879d6aso3744679qtr.0
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:06:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zSTA6cfN/qaK4lBFMa4RvAaYG+jH1EwyfhL01aLLFFI=;
-        b=turh/oOUnNQPupXBwz2I6pf/wQIR/w/aw/OhvpgjY70JTa7SzRnhRCPdKyVFD5Q+a4
-         nrZjK4l0n9dDIcVmDspOhfIbT1sgHhh/1SitY/T10KZHjhoJXDA0+hqJWnbYvVCVdko/
-         RLiS/4Qym43Y1Gmi/0rDyY5T+dfV2/biEMm0JwDUwQWdKKqXyDEqEWNtQI/z5c9awivv
-         u45AP+QFrea+pZ7NvaPAibetzKic583G64itdaoUyP/2v+S91p4Po34lLD+CSTbKe8qk
-         kZg7NymOFKN4pkrg0MlneEyhelq+joMvdX2qW71iJvefk3L1AQWAD3zmDuFXkgJxlw2V
-         9+YQ==
-X-Gm-Message-State: AOAM533WQ5FIcitJHAxNJNJ8cpJYfNV6bQGkMUtXZpLFXzjxxGOqPhaC
-        2tIyVPijgGVdHrl29UujPCzGrlF4MpgMhIr+nS/tn4WvIkwjLhkQTY2nAGphO/Nt7O1HyM/iXPQ
-        5w43PitWSAZPN2lnHPwUUsZf1tbKScF4z/uxyK6fL5g==
-X-Received: by 2002:ac8:4756:: with SMTP id k22mr4683313qtp.193.1620313601722;
-        Thu, 06 May 2021 08:06:41 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzXHibdcno/SU3vySZ0SKbY5rMtER8hN0dvVyva6Yz9XHsYNpregf/rzBekPqY22OhXzN+zzA==
-X-Received: by 2002:ac8:4756:: with SMTP id k22mr4683294qtp.193.1620313601524;
-        Thu, 06 May 2021 08:06:41 -0700 (PDT)
-Received: from localhost.localdomain ([45.237.49.1])
-        by smtp.gmail.com with ESMTPSA id 189sm2236192qkh.99.2021.05.06.08.06.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 08:06:41 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Peter Rosin <peda@axentia.se>, Jonathan Cameron <jic23@kernel.org>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Subject: [PATCH] dt-bindings: iio: afe: current-sense-shunt: add io-channel-cells
-Date:   Thu,  6 May 2021 11:06:37 -0400
-Message-Id: <20210506150637.35288-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 6 May 2021 11:08:11 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 146F0SjN152944;
+        Thu, 6 May 2021 15:07:05 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=LdNFXLZvIrWNeAXvM8wGQFKUXDBQOjYA9/qHDh84w7Y=;
+ b=cnDl7rQX2qZBzuBhqsSJFDPiaLix+S21ov8jtqBnh+mYnOOsrP0A4fZw+kJ44PNvN522
+ Ggn36xyHp3bD03Ku+Wbvow+VCIueGiHa3VWtatIgIIxAi1jQWS1GYbeJrvVePm0hdDOt
+ yRLLyOQXqip9YCo6yUoUKVUv5U1jJ4ISXlTC9V4AiZCTr0SWf+ug8+L1suf7SihOVyjU
+ xj2Jt5eaTNGV/lRnSZacVEXS8Pb/1g9KPZjzMAbzAv9PnjN19oV0DVKTKnfHQ4UW7Sdx
+ 59/MV70atRuqcVYGzrlbOo7dzrQ8FmsTXPqnrOcW4Pbp0a0jtBADHM3tk6ESEMd5HHsY fA== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 38bebc5bff-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 May 2021 15:07:05 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 146F1MHP012619;
+        Thu, 6 May 2021 15:07:05 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38bebvfgc9-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 May 2021 15:07:05 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 146F62TM045877;
+        Thu, 6 May 2021 15:07:04 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 38bebvfgbk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 May 2021 15:07:04 +0000
+Received: from abhmp0016.oracle.com (abhmp0016.oracle.com [141.146.116.22])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 146F738w031942;
+        Thu, 6 May 2021 15:07:03 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 May 2021 08:07:02 -0700
+Date:   Thu, 6 May 2021 18:06:55 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Dmitry Vyukov <dvyukov@google.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>,
+        USB list <linux-usb@vger.kernel.org>,
+        Linux Media Mailing List <linux-media@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Subject: Re: [syzbot] WARNING in __vmalloc_node_range
+Message-ID: <20210506150655.GD1955@kadam>
+References: <000000000000fdc0be05c1a6d68f@google.com>
+ <20210506142210.GA37570@pc638.lan>
+ <20210506145722.GC1955@kadam>
+ <CACT4Y+bEpri=MaveEOSeGGa3i-hwVgt3Cq13GMQxPLWu7g+ThA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CACT4Y+bEpri=MaveEOSeGGa3i-hwVgt3Cq13GMQxPLWu7g+ThA@mail.gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: ugl8PibTVt-L5ke14gFtMgCVzSchfDh7
+X-Proofpoint-GUID: ugl8PibTVt-L5ke14gFtMgCVzSchfDh7
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9976 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 priorityscore=1501 lowpriorityscore=0
+ phishscore=0 spamscore=0 adultscore=0 clxscore=1011 mlxscore=0
+ malwarescore=0 mlxlogscore=999 impostorscore=0 bulkscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2105060108
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current-sense-shunt is an IIO provider thus can be referenced by IIO
-consumers (via "io-channels" property in consumer device node).
-Such provider is required to describe number of cells used in phandle
-lookup with "io-channel-cells" property.  This also fixes dtbs_check
-warnings like:
+On Thu, May 06, 2021 at 05:00:41PM +0200, 'Dmitry Vyukov' via syzkaller-bugs wrote:
+> On Thu, May 6, 2021 at 4:57 PM Dan Carpenter <dan.carpenter@oracle.com> wrote:
+> >
+> > On Thu, May 06, 2021 at 04:22:10PM +0200, Uladzislau Rezki wrote:
+> > > Seems like vmalloc() is called with zero size passed:
+> > >
+> > > <snip>
+> > > void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> > >                       unsigned long start, unsigned long end, gfp_t gfp_mask,
+> > >                       pgprot_t prot, unsigned long vm_flags, int node,
+> > >                       const void *caller)
+> > > {
+> > >       struct vm_struct *area;
+> > >       void *addr;
+> > >       unsigned long real_size = size;
+> > >       unsigned long real_align = align;
+> > >       unsigned int shift = PAGE_SHIFT;
+> > >
+> > > 2873  if (WARN_ON_ONCE(!size))
+> > >               return NULL;
+> > > <snip>
+> > >
+> > > from the dvb_dmx_init() driver:
+> > >
+> > > <snip>
+> > > int dvb_dmx_init(struct dvb_demux *dvbdemux)
+> > > {
+> > >       int i;
+> > >       struct dmx_demux *dmx = &dvbdemux->dmx;
+> > >
+> > >       dvbdemux->cnt_storage = NULL;
+> > >       dvbdemux->users = 0;
+> > > 1251  dvbdemux->filter = vmalloc(array_size(sizeof(struct dvb_demux_filter),
+> > > <snip>                                              dvbdemux->filternum));
+> >
+> > Indeed.
+> >
+> > It is a mystery because array_size() should never return less than
+> > sizeof(struct dvb_demux_filter).  That's the whole point of the
+> > array_size() function is that it returns ULONG_MAX if there is an
+> > integer overflow.
+> 
+> But it will return 0 if dvbdemux->filternum==0, right?
+> 
 
-  arch/arm/boot/dts/s5pv210-fascinate4g.dt.yaml: current-sense-shunt:
-    '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+Heh...  I'm an idiot.  I was thinking of struct_size().  Sorry.
 
-Fixes: ce66e52b6c16 ("dt-bindings:iio:afe:current-sense-shunt: txt to yaml conversion.")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- .../devicetree/bindings/iio/afe/current-sense-shunt.yaml     | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml b/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
-index 90439a8dc785..05166d8a3124 100644
---- a/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
-+++ b/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
-@@ -24,12 +24,16 @@ properties:
-     description: |
-       Channel node of a voltage io-channel.
- 
-+  "#io-channel-cells":
-+    const: 0
-+
-   shunt-resistor-micro-ohms:
-     description: The shunt resistance.
- 
- required:
-   - compatible
-   - io-channels
-+  - "#io-channel-cells"
-   - shunt-resistor-micro-ohms
- 
- additionalProperties: false
-@@ -57,6 +61,7 @@ examples:
-     sysi {
-         compatible = "current-sense-shunt";
-         io-channels = <&tiadc 0>;
-+        #io-channel-cells = <0>;
- 
-         /* Divide the voltage by 3300000/1000000 (or 3.3) for the current. */
-         shunt-resistor-micro-ohms = <3300000>;
--- 
-2.25.1
+regards,
+dan carpenter
 
