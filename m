@@ -2,228 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B8D537547B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:11:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B7B8375480
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:14:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhEFNMe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:12:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
+        id S233591AbhEFNPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:15:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232985AbhEFNMb (ORCPT
+        with ESMTP id S229946AbhEFNPC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:12:31 -0400
-Received: from mail-wr1-x42f.google.com (mail-wr1-x42f.google.com [IPv6:2a00:1450:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 378FDC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 06:11:31 -0700 (PDT)
-Received: by mail-wr1-x42f.google.com with SMTP id a4so5570200wrr.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 06:11:31 -0700 (PDT)
+        Thu, 6 May 2021 09:15:02 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D17C061574;
+        Thu,  6 May 2021 06:14:03 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id 124so7733104lff.5;
+        Thu, 06 May 2021 06:14:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kynesim-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:references:in-reply-to
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=zLVLoCTZSwdGtIWCx1oxuHJ77KyosnHNt8+6TJIcliM=;
-        b=mwcIAoYD9bw60tZhtCdcXNldYBx2EearFFTehyAs9iqn222cg8NMecuNxW0fPkCh4f
-         5vItp1Rr75DpnXnO7H7tZcnrnWKua0e/wjVZD17WTc37h+vKMH2rICEDZkrzH6aBdRO/
-         tI6A70RsA9biUwMn5TLQNlPdPyIobZ/u5GciHqAblW9ly9CIow1Ie9sF8K2iruSkSXTX
-         CYij1rlm69oVBMeTn5LB7tKJAVVhwgyffHVaG8wXPLSJCpDbX2H9QGuZEDWHzbF2BsHi
-         ywcMrlGFk1CW/fMA2G1cwJYOSJ9nhtPqgn99ih8scAmYp80KM2+biCGzISJb3bEW4zyl
-         aqjA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BIQmySH5rKYkaTCMdU5HD5HriPXQiPhjgd9Q3vz0FwQ=;
+        b=iwwdl9SJ9MXhgLtAr3AL0yPOQSixzfVczE8lcM3b2WqWvzIZIIu86Kt9HJi+05YU9R
+         rVAwfYk05XNIFyIIhl3fBAhn/FjLpXs+n8tOqw3vWZwxpsERZAxJalPMS03QDwIHrUW3
+         ktIdd+qUIoQoY6UXl9JcqQOacmNOoI5N7nOW7VkxXeK+Oqi8RXnklDUqrSojF2TdzhJl
+         QI1LaPgMu9zijBhmIao0LyfvnAOphpQyh/hUtIQEayIZEXuXb6XJwPXX0s7FPdiRu0jM
+         lgS5PeZ1Iit96KZfpw4oGzTOKtr5ib4zyssMXsQ3zVUptLpu9PfUJR5R0FE9AZIhZnpU
+         im7w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:references
-         :in-reply-to:user-agent:mime-version:content-transfer-encoding;
-        bh=zLVLoCTZSwdGtIWCx1oxuHJ77KyosnHNt8+6TJIcliM=;
-        b=EwGDfLP8aLPlsbsemBNBIkbvM4RXru7BurnzSnDXS2DwyeZDTPIIEdiLV9aKLfLU2N
-         oL9r7Xx2zkrEY+b6+kYGb1kOvZAQXIQ/RWNS9eOsRIknMeWhULjUONnFGx+VRS/q9ONq
-         7zRUGf+YlLxQKkDmBIyWnXm+LqlYY3Je8YHxC34ZW3K8kswdAFYtWz1nKcsqe6nFNKSD
-         X+RT50sd7EzGP/QabuYPQXm9/SDvFHQoGuVtw7yMpH0ktEojuAa+hrUdFGpw3mFanMog
-         07YbJinG3goSgtzjg3RDmrAplq2QtZ3W2wS8wAcy2aXppltkMR2F4kuTiNUEZrYh4JD2
-         v8fg==
-X-Gm-Message-State: AOAM53235MrqrIj716IgUP+DZwCja9DaVV3NwWwf4QdgggP+l7qwZGFn
-        5i87/Ggu6QT0OPs7rLt9Og2FYg==
-X-Google-Smtp-Source: ABdhPJy08fvoyofymLrgTx2HJxauv5qh8y5Pod7Fm4yzLYyhRzL+8NBXfEaygWMS1PPMEEwnRLiNCA==
-X-Received: by 2002:adf:fa50:: with SMTP id y16mr5231928wrr.63.1620306689920;
-        Thu, 06 May 2021 06:11:29 -0700 (PDT)
-Received: from CTHALPA.outer.uphall.net (cpc1-cmbg20-2-0-cust759.5-4.cable.virginm.net. [86.21.218.248])
-        by smtp.gmail.com with ESMTPSA id q12sm8757823wmj.7.2021.05.06.06.11.28
-        (version=TLS1 cipher=ECDHE-ECDSA-AES128-SHA bits=128/128);
-        Thu, 06 May 2021 06:11:29 -0700 (PDT)
-From:   John Cox <jc@kynesim.co.uk>
-To:     Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     Benjamin Gaignard <benjamin.gaignard@collabora.com>,
-        ezequiel@collabora.com, p.zabel@pengutronix.de, mchehab@kernel.org,
-        robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, lee.jones@linaro.org,
-        gregkh@linuxfoundation.org, mripard@kernel.org,
-        paul.kocialkowski@bootlin.com, wens@csie.org,
-        jernej.skrabec@siol.net, emil.l.velikov@gmail.com,
-        kernel@pengutronix.de, linux-imx@nxp.com,
-        linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        kernel@collabora.com, cphealy@gmail.com
-Subject: Re: [PATCH v10 6/9] media: uapi: Add a control for HANTRO driver
-Date:   Thu, 06 May 2021 14:11:28 +0100
-Message-ID: <n7q79gl86gvdo00sgsg1r5beittohsu4ta@4ax.com>
-References: <20210420121046.181889-1-benjamin.gaignard@collabora.com> <20210420121046.181889-7-benjamin.gaignard@collabora.com> <a7c9fe23-2900-ac90-7131-21380fbfc793@xs4all.nl> <1cf94540-7f4d-0179-dd1e-0b82ee30f6d2@collabora.com> <815a4bd6-599b-cfb8-9ddc-efa4b7092c23@xs4all.nl>
-In-Reply-To: <815a4bd6-599b-cfb8-9ddc-efa4b7092c23@xs4all.nl>
-User-Agent: ForteAgent/8.00.32.1272
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BIQmySH5rKYkaTCMdU5HD5HriPXQiPhjgd9Q3vz0FwQ=;
+        b=VyVx5x4SpD67g7zroG/hJMuYtZ3rVD8TybzvX1UWK63GK5IU0BY4xzexWFYMBs/LdR
+         mHAGrl2ME2msFqroWGpM4QSQl2E951Eip0uKp4pVa621Ru41WVTr6eS88OrjcGY+RpHO
+         BHn4lEi7CWjq74Oab9tGaagPLtU3iAuV7S3q+L05PYrw68GTu27egVpVq1iVGYvAjzXW
+         1M6iphBwl5DCylZRhX1/hizdCuNFl8+fff83/U2HIWH1j2mdL8Ig1l+xAjDFJStXITA6
+         c6cuB6iW/fgzREcQyKjE5uO/4EjDgp94Tv1zrnA+gUXmQ+pR/dmvSzaMr5Q1Jm5HoF5O
+         z6VA==
+X-Gm-Message-State: AOAM533TxOZhI3Cb0dkhgYYh6m7f2QRaqVM9QFpLECOsoRcIkyrT/ipb
+        yp17S0zYGl8XM5x+zwBQH8Hb+C/tqfpuvtyu
+X-Google-Smtp-Source: ABdhPJzRDF2BBtmUtOrZOOvY9BImc9I/xrh2tEMvP4C+fQKZ43Hb9abMvWsRMPNd8DNISQR8RQENgQ==
+X-Received: by 2002:ac2:5feb:: with SMTP id s11mr2742580lfg.99.1620306841532;
+        Thu, 06 May 2021 06:14:01 -0700 (PDT)
+Received: from localhost.localdomain ([185.30.229.161])
+        by smtp.googlemail.com with ESMTPSA id v21sm867332ljv.80.2021.05.06.06.14.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 06:14:01 -0700 (PDT)
+From:   Dmitry Koshelev <karaghiozis@gmail.com>
+Cc:     Dmitry Koshelev <karaghiozis@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] perf: Fix swapping of cpu_map and stat_config records
+Date:   Thu,  6 May 2021 13:11:49 +0000
+Message-Id: <20210506131244.13328-1-karaghiozis@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->On 05/05/2021 17:20, Benjamin Gaignard wrote:
->>=20
->> Le 05/05/2021 =C3=A0 16:55, Hans Verkuil a =C3=A9crit=C2=A0:
->>> On 20/04/2021 14:10, Benjamin Gaignard wrote:
->>>> The HEVC HANTRO driver needs to know the number of bits to skip at
->>>> the beginning of the slice header.
->>>> That is a hardware specific requirement so create a dedicated =
-control
->>>> for this purpose.
->>>>
->>>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
->>>> ---
->>>>   .../userspace-api/media/drivers/hantro.rst    | 19 =
-+++++++++++++++++++
->>>>   .../userspace-api/media/drivers/index.rst     |  1 +
->>>>   include/media/hevc-ctrls.h                    | 13 +++++++++++++
->>>>   3 files changed, 33 insertions(+)
->>>>   create mode 100644 =
-Documentation/userspace-api/media/drivers/hantro.rst
->>>>
->>>> diff --git a/Documentation/userspace-api/media/drivers/hantro.rst =
-b/Documentation/userspace-api/media/drivers/hantro.rst
->>>> new file mode 100644
->>>> index 000000000000..cd9754b4e005
->>>> --- /dev/null
->>>> +++ b/Documentation/userspace-api/media/drivers/hantro.rst
->>>> @@ -0,0 +1,19 @@
->>>> +.. SPDX-License-Identifier: GPL-2.0
->>>> +
->>>> +Hantro video decoder driver
->>>> =
-+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D
->>>> +
->>>> +The Hantro video decoder driver implements the following =
-driver-specific controls:
->>>> +
->>>> +``V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP (integer)``
->>>> +    Specifies to Hantro HEVC video decoder driver the number of =
-data (in bits) to
->>>> +    skip in the slice segment header.
->>>> +    If non-IDR, the bits to be skipped go from syntax element =
-"pic_output_flag"
->>>> +    to before syntax element "slice_temporal_mvp_enabled_flag".
->>>> +    If IDR, the skipped bits are just "pic_output_flag"
->>>> +    (separate_colour_plane_flag is not supported).
->>> I'm not very keen on this. Without this information the video data =
-cannot be
->>> decoded, or will it just be suboptimal?
->>=20
->> Without that information the video can't be decoded.
->>=20
->>>
->>> The problem is that a generic decoder would have to know that the HW =
-is a hantro,
->>> and then call this control. If they don't (and are testing on =
-non-hantro HW), then
->>> it won't work, thus defeating the purpose of the HW independent =
-decoder API.
->>>
->>> Since hantro is widely used, and if there is no other way to do this =
-beside explitely
->>> setting this control, then perhaps this should be part of the =
-standard HEVC API.
->>> Non-hantro drivers that do not need this can just skip it.
->>=20
->> Even if I put this parameter in decode_params structure that would =
-means that a generic
->> userland decoder will have to know how the compute this value for =
-hantro HW since it
->> isn't something that could be done on kernel side.
->
->But since hantro is very common, any userland decoder will need to =
-calculate this anyway.
->So perhaps it is better to have this as part of the decode_params?
->
->I'd like to know what others think about this.
+'data' field in perf_record_cpu_map_data struct is 16-bit
+wide and so should be swapped using bswap_16().
 
-I don't know exactly what I think on this - its all a bit of a mess. I
-don't think this is going to be the last HEVC decoder that needs some
-non-standard setup that can't be trivially extracted from a standard
-slice header parse. So if future decoders are going to have to generate
-custom attributes to cope with their quirks then Hantro probably should
-too. And if Hantro is common then the userspace progs will at least have
-a framework for dealing with this sort of thing so when the next oddity
-comes along.
+'nr' field in perf_record_stat_config struct should be
+swapped before being used for size calculation.
 
-Regards
+Signed-off-by: Dmitry Koshelev <karaghiozis@gmail.com>
+---
+ tools/perf/util/session.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-John Cox
+diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+index a12cf4f0e97a..106b3d60881a 100644
+--- a/tools/perf/util/session.c
++++ b/tools/perf/util/session.c
+@@ -904,7 +904,7 @@ static void perf_event__cpu_map_swap(union perf_event *event,
+ 	struct perf_record_record_cpu_map *mask;
+ 	unsigned i;
+ 
+-	data->type = bswap_64(data->type);
++	data->type = bswap_16(data->type);
+ 
+ 	switch (data->type) {
+ 	case PERF_CPU_MAP__CPUS:
+@@ -937,7 +937,7 @@ static void perf_event__stat_config_swap(union perf_event *event,
+ {
+ 	u64 size;
+ 
+-	size  = event->stat_config.nr * sizeof(event->stat_config.data[0]);
++	size  = bswap_64(event->stat_config.nr) * sizeof(event->stat_config.data[0]);
+ 	size += 1; /* nr item itself */
+ 	mem_bswap_64(&event->stat_config.nr, size);
+ }
+-- 
+2.25.1
 
->Regards,
->
->	Hans
->
->>=20
->>=20
->> Regards,
->> Benjamin
->>=20
->>>
->>> Regards,
->>>
->>> 	Hans
->>>
->>>> +
->>>> +.. note::
->>>> +
->>>> +        This control is not yet part of the public kernel API and
->>>> +        it is expected to change.
->>>> diff --git a/Documentation/userspace-api/media/drivers/index.rst =
-b/Documentation/userspace-api/media/drivers/index.rst
->>>> index 1a9038f5f9fa..12e3c512d718 100644
->>>> --- a/Documentation/userspace-api/media/drivers/index.rst
->>>> +++ b/Documentation/userspace-api/media/drivers/index.rst
->>>> @@ -33,6 +33,7 @@ For more details see the file COPYING in the =
-source distribution of Linux.
->>>>  =20
->>>>   	ccs
->>>>   	cx2341x-uapi
->>>> +        hantro
->>>>   	imx-uapi
->>>>   	max2175
->>>>   	meye-uapi
->>>> diff --git a/include/media/hevc-ctrls.h b/include/media/hevc-ctrls.h
->>>> index 8e0109eea454..b713eeed1915 100644
->>>> --- a/include/media/hevc-ctrls.h
->>>> +++ b/include/media/hevc-ctrls.h
->>>> @@ -224,4 +224,17 @@ struct v4l2_ctrl_hevc_decode_params {
->>>>   	__u64	flags;
->>>>   };
->>>>  =20
->>>> +/*  MPEG-class control IDs specific to the Hantro driver as defined=
- by V4L2 */
->>>> +#define V4L2_CID_CODEC_HANTRO_BASE				(V4L2_CTRL_CLASS_CODEC | =
-0x1200)
->>>> +/*
->>>> + * V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP -
->>>> + * the number of data (in bits) to skip in the
->>>> + * slice segment header.
->>>> + * If non-IDR, the bits to be skipped go from syntax element =
-"pic_output_flag"
->>>> + * to before syntax element "slice_temporal_mvp_enabled_flag".
->>>> + * If IDR, the skipped bits are just "pic_output_flag"
->>>> + * (separate_colour_plane_flag is not supported).
->>>> + */
->>>> +#define V4L2_CID_HANTRO_HEVC_SLICE_HEADER_SKIP	=
-(V4L2_CID_CODEC_HANTRO_BASE + 0)
->>>> +
->>>>   #endif
->>>>
->>>
