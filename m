@@ -2,98 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA9C1375BD8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:37:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD37C375BDA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:38:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235577AbhEFTie (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 15:38:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235249AbhEFTi3 (ORCPT
+        id S235596AbhEFTjn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 15:39:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21920 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235249AbhEFTjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 15:38:29 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82BC1C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 12:37:30 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so3626563wmh.4
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 12:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TSVx5CbmWpab/75galcw5Pa/8ztDkRzEwSLi+NS3A7k=;
-        b=Jq2A15Gz5PE1cEoVvf0sDubiqJqFMFK1Idrcb8LiXvxbiF7g9qdu4b2DTZIpuwsCA4
-         7kcPp02VsRxagEFt1RVqfekjFehEp6ICoafkCw8cbWIqBP3CZqaafvVvEvuZyUZGfM/s
-         V1WbatqTjV79mgM7+vsoyWZLGqpg5FoNAFIjiHkDQVuCuT5P3chbe2JgMjrF2wY8pRGr
-         o++JaSYLmLu+ZM1w2dcjZJzQr0JVlv6bms2AW/trkQ4VAkcEcdwTIb8dXOdiTSfqvKHP
-         DnMWGlASHCJnFHOOMlnWpu4B5sl5y8LstISSF2v8t94qqORqvb71QB5d5aDZFURsm5lE
-         1osw==
+        Thu, 6 May 2021 15:39:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620329922;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mD9rk0OEj0XYhxeQH5IDJPNbrX+PSqo6PoFdlh4Fuj4=;
+        b=XImLsgWo+QKlmyFO/XlEDIt+Ur0g+yEHU0vNvIGZicLxOMFTDhm1SMaHO6kHyvo+R96HLJ
+        n8OuKEvm76zWoLN1ebZLdUs0FWjwaxGFUmckZConLy9xqNBdCPnXixRPsDjCcUVmbTzaR/
+        j4eieEbJSRhovwhXNb5AA0XnCwnN1kY=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-487-1l_AaHJ3OQm0ocxUNv9pvA-1; Thu, 06 May 2021 15:38:40 -0400
+X-MC-Unique: 1l_AaHJ3OQm0ocxUNv9pvA-1
+Received: by mail-wm1-f72.google.com with SMTP id g199-20020a1c9dd00000b02901355dd71edaso3026069wme.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 12:38:40 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=TSVx5CbmWpab/75galcw5Pa/8ztDkRzEwSLi+NS3A7k=;
-        b=ZRIiZVCSgOi4WXiAUtNi7YDdtd0ckTEPMt4jyBO/oF8AOCnW18yusWvzEQWwwR9wbs
-         ntD9IZ11/PZHMcyRu5yiKEwWczPHpse8McV9iiAeBUsE7kNyKaCs6prNdXMrQWg1bIxI
-         mHS6fOjGbcf4RJY86rkGrS2sV5RTYCTaYHR8dGOkidTQlaq2Oz1sBmNmDmU4FJ3vK0qq
-         GeobJAk3/PaZk2QRtO0X9AvqaM7xxD8FR1aTjalTSPF5BcNqS7LxkdUJ3F99+yGcePMy
-         gg4QrbsmN2UbDv0AXyC6PBL8NTEkUfw4guSWyZp7Wv2vD4Zw9tDpU+oZYBGDGQCqM1TE
-         hldw==
-X-Gm-Message-State: AOAM530UY1g4GzjDXiSineqPjX+h8Du/ZCTCpaSpwAyWLjXBOlttATQ4
-        HEwpvYQeG38drZBnrrQOUXM=
-X-Google-Smtp-Source: ABdhPJy5jsXtFyy/sHf+QZgYXkSQMnZ7gDvCAWROoFB5N9TjGqn/i7Wet2KcmDxh0hawVoc2QW5+LQ==
-X-Received: by 2002:a05:600c:190c:: with SMTP id j12mr16948157wmq.41.1620329849249;
-        Thu, 06 May 2021 12:37:29 -0700 (PDT)
-Received: from luca020400-laptop-arch.lan ([2001:b07:5d33:19f:ea1f:2342:ea78:219a])
-        by smtp.googlemail.com with ESMTPSA id 61sm6564402wrm.52.2021.05.06.12.37.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 12:37:28 -0700 (PDT)
-From:   Luca Stefani <luca.stefani.ge1@gmail.com>
-Cc:     Luca Stefani <luca.stefani.ge1@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        =?UTF-8?q?Arve=20Hj=C3=B8nnev=C3=A5g?= <arve@android.com>,
-        Todd Kjos <tkjos@android.com>,
-        Martijn Coenen <maco@android.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Christian Brauner <christian@brauner.io>,
-        Hridya Valsaraju <hridya@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Hang Lu <hangl@codeaurora.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH] binder: Return EFAULT if we fail BINDER_ENABLE_ONEWAY_SPAM_DETECTION
-Date:   Thu,  6 May 2021 21:37:25 +0200
-Message-Id: <20210506193726.45118-1-luca.stefani.ge1@gmail.com>
-X-Mailer: git-send-email 2.31.1
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=mD9rk0OEj0XYhxeQH5IDJPNbrX+PSqo6PoFdlh4Fuj4=;
+        b=ND5FbGFxc503hkTwE5xDE6k3H1J37X5p0TyltfBBp5jxdU5eADmNRUk8qSc2tPFjIz
+         Zy6R/4kIIaUIpNRX2DY4hl4ptiKCfIn74XjbbRUqGUxmQ7C1EjjbVjf0FrVfofIAsRcR
+         TVkRNRKATCLxg9wU94q/HuZUExo2ghggt+VsaR4HxaTih0nEeU2eepAV6F8g4zo3V5fr
+         5kOi77US4S8C24J4u1zoxs3HIFYXwqB0zCC1Qx7l4HQeP5gznLqxdmn0wBl59QwkYfkF
+         JWxpFBYMin3pUUhrc2InBjPvQ9YuyRzgNVc1wEO/ak3OXIMN6PZ13w5NWzbbqgqj8o98
+         D9Dw==
+X-Gm-Message-State: AOAM533ipcpEpoQBKl0KK1MIyU5edXgPuj4vagEEqCFrrfy6ulICtp7w
+        E9lnyHZ41khaWbp9yiKVkLEUcj0w2GBzngbZtIdnoTlmMluKmG86IC/7HmuOgwUg1zeXb6dj3B6
+        EfC4oGzsqD8w+jrJENGVbQClz
+X-Received: by 2002:a5d:51d2:: with SMTP id n18mr7392209wrv.69.1620329919136;
+        Thu, 06 May 2021 12:38:39 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxOC06i3MicUKjMNEqxEnGDL/rTRmiJEviad77ONpxe7ogE7ETHVYywYhvhoyD41LPb0MdTmQ==
+X-Received: by 2002:a5d:51d2:: with SMTP id n18mr7392182wrv.69.1620329918917;
+        Thu, 06 May 2021 12:38:38 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64ae.dip0.t-ipconnect.de. [91.12.100.174])
+        by smtp.gmail.com with ESMTPSA id q10sm4494733wmc.31.2021.05.06.12.38.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 12:38:38 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/7] Memory hotplug/hotremove at subsection size
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Zi Yan <ziy@nvidia.com>, Oscar Salvador <osalvador@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org
+References: <20210506152623.178731-1-zi.yan@sent.com>
+ <fb60eabd-f8ef-2cb1-7338-7725efe3c286@redhat.com>
+ <9D7FD316-988E-4B11-AC1C-64FF790BA79E@nvidia.com>
+ <3a51f564-f3d1-c21f-93b5-1b91639523ec@redhat.com>
+ <16962E62-7D1E-4E06-B832-EC91F54CC359@nvidia.com>
+ <f3a2152c-685b-2141-3e33-b2bcab8b6010@redhat.com>
+ <3A6D54CF-76F4-4401-A434-84BEB813A65A@nvidia.com>
+ <0e850dcb-c69a-188b-7ab9-09e6644af3ab@redhat.com>
+ <20210506193026.GE388843@casper.infradead.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <d2e3c89d-a1fe-e7bc-c2ec-586df2073951@redhat.com>
+Date:   Thu, 6 May 2021 21:38:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+In-Reply-To: <20210506193026.GE388843@casper.infradead.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the other ioctl paths return EFAULT in case the
-copy_from_user/copy_to_user call fails, make oneway spam detection
-follow the same paradigm.
+On 06.05.21 21:30, Matthew Wilcox wrote:
+> On Thu, May 06, 2021 at 09:10:52PM +0200, David Hildenbrand wrote:
+>> I have to admit that I am not really a friend of that. I still think our
+>> target goal should be to have gigantic THP *in addition to* ordinary THP.
+>> Use gigantic THP where enabled and possible, and just use ordinary THP
+>> everywhere else. Having one pageblock granularity is a real limitation IMHO
+>> and requires us to hack the system to support it to some degree.
+> 
+> You're thinking too small with only two THP sizes ;-)  I'm aiming to
 
-Fixes: a7dc1e6f99df ("binder: tell userspace to dump current backtrace
-when detected oneway spamming")
-Signed-off-by: Luca Stefani <luca.stefani.ge1@gmail.com>
----
- drivers/android/binder.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Well, I raised in my other mail that we will have multiple different use 
+cases, including multiple different THP e.g., on aarch64 ;)
 
-diff --git a/drivers/android/binder.c b/drivers/android/binder.c
-index 61d34e1dc59c..bcec598b89f2 100644
---- a/drivers/android/binder.c
-+++ b/drivers/android/binder.c
-@@ -4918,7 +4918,7 @@ static long binder_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
- 		uint32_t enable;
- 
- 		if (copy_from_user(&enable, ubuf, sizeof(enable))) {
--			ret = -EINVAL;
-+			ret = -EFAULT;
- 			goto err;
- 		}
- 		binder_inner_proc_lock(proc);
+> support arbitrary power-of-two memory allocations.  I think there's a
+> fruitful discussion to be had about how that works for anonymous memory --
+> with page cache, we have readahead to tell us when our predictions of use
+> are actually fulfilled.  It doesn't tell us what percentage of the pages
+
+Right, and I think we have to think about a better approach than just 
+increasing the pageblock_order.
+
+> allocated were actually used, but it's a hint.  It's a big lift to go from
+> 2MB all the way to 1GB ... if you can look back to see that the previous
+> 1GB was basically fully populated, then maybe jump up from allocating
+> 2MB folios to allocating a 1GB folio, but wow, that's a big step.
+> 
+> This goal really does mean that we want to allocate from the page
+> allocator, and so we do want to grow MAX_ORDER.  I suppose we could
+> do somethig ugly like
+> 
+> 	if (order <= MAX_ORDER)
+> 		alloc_page()
+> 	else
+> 		alloc_really_big_page()
+> 
+> but that feels like unnecessary hardship to place on the user.
+
+I had something similar for the sort term in mind, relying on 
+alloc_contig_pages() (and maybe ZONE_MOVABLE to make allocations more 
+likely to succeed). Devil's in the details (page migration, ...).
+
+
 -- 
-2.31.1
+Thanks,
+
+David / dhildenb
 
