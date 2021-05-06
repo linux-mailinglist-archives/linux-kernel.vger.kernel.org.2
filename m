@@ -2,208 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2D293755D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:43:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C79C3755D4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234841AbhEFOos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:44:48 -0400
-Received: from mga04.intel.com ([192.55.52.120]:29769 "EHLO mga04.intel.com"
+        id S234914AbhEFOp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:45:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234879AbhEFOoo (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:44:44 -0400
-IronPort-SDR: MGAqm3kgkelHPbPBOZS+ulxU6ASvUr6YMSpBQ8QCxZqti25yJoC5dneQaLGKjgWveQotUUFNq8
- AMqBZpdrkP0Q==
-X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="196466070"
-X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
-   d="scan'208";a="196466070"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 07:43:45 -0700
-IronPort-SDR: sE8INicbJTsKqjFUieVRs/DsyzxtV8lKQGDS/Rfr41Kwcv3yeMncxqsBteQNgJGeAVy/7Zd8rl
- M7kpTOs0nZ4g==
-X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
-   d="scan'208";a="434381589"
-Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.255.29.104]) ([10.255.29.104])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 07:43:41 -0700
-Subject: Re: [PATCH v1 2/2] perf header: Support hybrid CPU_PMU_CAPS
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210430074602.3028-1-yao.jin@linux.intel.com>
- <20210430074602.3028-2-yao.jin@linux.intel.com> <YJFjTCsk9dCd6QP7@krava>
- <c0bd3baa-3209-23f3-7058-c6908434de2d@linux.intel.com>
- <YJPtmyzTEe/IUID4@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <5cafb729-1dcd-ad4a-507b-1155c16a785e@linux.intel.com>
-Date:   Thu, 6 May 2021 22:43:39 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S234836AbhEFOp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 10:45:27 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F86B6103E;
+        Thu,  6 May 2021 14:44:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620312268;
+        bh=BOhOb6YgchE5ciMqLJmE7uRp8FW6NeGqAmUnITHfSVU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hvDyxTYYz+7gnw5cNYYNCDXxdLfrZECQ3xI/3yWIQ3URVZNyowehM36n2Juet/7AB
+         WuY+G79hTYxn6YL45OCZuVoieyqD60yM46C4qcTJJR2r1l58pHhr++zBIPq5DhbudN
+         zeLG3Uaeqhe3qtTcmfIuuITVrZFPG93O9TdvDjevkth3BBpUyX18VciivkyJXSyl/7
+         5aQ5GI+V+6A4WmJfdJzFRtFjqDPx32uZoCJlaNxkdgFnJd2PuicV8miLFmyl4tqbVm
+         bd1p4T8uEMXTRa/EpHhTcz6wx4WYyC2mDLOQHRFBYifvpM027W7e7NYZAIg4aPt0Az
+         aBHviYEG6l7qQ==
+Date:   Thu, 6 May 2021 15:43:52 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 4/4] arm64: Handle funtion graph tracer better in
+ the unwinder
+Message-ID: <20210506144352.GF4642@sirena.org.uk>
+References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
+ <20210503173615.21576-1-madvenka@linux.microsoft.com>
+ <20210503173615.21576-5-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <YJPtmyzTEe/IUID4@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="A9z/3b/E4MkkD+7G"
+Content-Disposition: inline
+In-Reply-To: <20210503173615.21576-5-madvenka@linux.microsoft.com>
+X-Cookie: If it ain't baroque, don't phiques it.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
 
-On 5/6/2021 9:22 PM, Jiri Olsa wrote:
-> On Thu, May 06, 2021 at 12:59:08PM +0800, Jin, Yao wrote:
->> Hi Jiri,
->>
->> On 5/4/2021 11:07 PM, Jiri Olsa wrote:
->>> On Fri, Apr 30, 2021 at 03:46:02PM +0800, Jin Yao wrote:
->>>> On hybrid platform, it may have several cpu pmus, such as,
->>>> "cpu_core" and "cpu_atom". The CPU_PMU_CAPS feature in perf
->>>> header needs to be improved to support multiple cpu pmus.
->>>>
->>>> The new layout in header is defined as:
->>>>
->>>> <nr_caps>
->>>> <caps string>
->>>> <caps string>
->>>> <pmu name>
->>>> <nr of rest pmus>
->>>
->>> not sure why is the 'nr of rest pmus' needed
->>>
->>
->> The 'nr of rest pmus' indicates the remaining pmus which are waiting for process.
->>
->> For example,
->>
->> <nr_caps>
->> <caps string>
->> "cpu_core"
->> 1
->> <nr_caps>
->> <caps string>
->> "cpu_atom"
->> 0
->>
->> When we see '0' in data file processing, we know all the pmu have been processed yet.
->>
->>> the current format is:
->>>
->>>           u32 nr_cpu_pmu_caps;
->>>           {
->>>                   char    name[];
->>>                   char    value[];
->>>           } [nr_cpu_pmu_caps]
->>>
->>>
->>> I guess we could extend it to:
->>>
->>>           u32 nr_cpu_pmu_caps;
->>>           {
->>>                   char    name[];
->>>                   char    value[];
->>>           } [nr_cpu_pmu_caps]
->>> 	char pmu_name[]
->>>
->>>           u32 nr_cpu_pmu_caps;
->>>           {
->>>                   char    name[];
->>>                   char    value[];
->>>           } [nr_cpu_pmu_caps]
->>> 	char pmu_name[]
->>>
->>> 	...
->>>
->>> and we could detect the old format by checking that there's no
->>> pmu name.. but maybe I'm missing something, I did not check deeply,
->>> please let me know
->>>
->>
->> Actually we do the same thing, but I just add an extra 'nr of rest pmus'
->> after the pmu_name. The purpose of 'nr of rest pmus' is when we see '0' at
->> 'nr of rest pmus', we know that all pmus have been processed.
->>
->> Otherwise, we have to continue reading data file till we find something
->> incorrect and then finally drop the last read data.
-> 
-> you have the size of the feature data right? I think we use
-> it in other cases to check if there are more data
-> 
+--A9z/3b/E4MkkD+7G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-The challenge for us is if we need to compatible with the old perf.data which was generated by old 
-perf tool.
+On Mon, May 03, 2021 at 12:36:15PM -0500, madvenka@linux.microsoft.com wrot=
+e:
+> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+>=20
+> The Function Graph Tracer modifies the return address of a traced function
+> to a return trampoline (return_to_handler()) to gather tracing data on
+> function return. When the unwinder encounters return_to_handler(), it cal=
+ls
+> ftrace_graph_get_ret_stack() to lookup the original return address in the
+> return address stack.
 
-For the old perf.data, the layout in header is:
+This makes sense to me, I'll need to re-review properly with the changes
+earlier on in the series but should be fine.
 
-nr of caps
-caps string 1
-caps string 2
-...
-caps string N
+--A9z/3b/E4MkkD+7G
+Content-Type: application/pgp-signature; name="signature.asc"
 
-It doesn't carry with any other fields such as size of caps data.
+-----BEGIN PGP SIGNATURE-----
 
-To be compatible with old perf.data, so I have to extend the layout to:
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCUAKcACgkQJNaLcl1U
+h9AW0gf/UurypPhoAeS5tOMAkEizbXPWkIR/0u9nPaBTkZHxtXZw07LAQrvIQ/wC
+Q2UqJ3qIzHtM1KGaSWU+VOS2GYMY7WGmlhr6JNCmIk3LUuSoFxtlUYjwDoYWdKB+
+UL7DhFiXJHHj6UfEquGtXpQ8WE9rl5s7c0MIxhbRmvXQVi12PLHobB0ksvZpGIkG
+tcceN55GrlF6fTByLeQQwstNiD35/5dByUW0Swg3zXeYalbqd3GIlCv63K69IvFG
+vCw4PoDBO6KCkped6KVPH9Mu7Ddf/8v8ZSOYVVTAVlRC+YNqpVDk942WbQsa7rBC
+p8/D0psgllhFHPKxnwfUli1sECzxVw==
+=zBTy
+-----END PGP SIGNATURE-----
 
-nr of caps for pmu 1
-caps string 1
-caps string 2
-...
-caps string N
-name of pmu 1
-nr of rest pmus
-
-nr of caps for pmu2
-caps string 1
-caps string 2
-...
-caps string N
-name of pmu 2
-nr of rest pmus
-
-When the new perf tool detects the string such as "cpu_", it can know that it's the pmu name field 
-in new perf.data, otherwise it's the old perf.data.
-
-If we add new field such as "size" to the layout, I'm afraid the new perf tool can not process the 
-old perf.data correctly.
-
-If we don't need to support old perf.data, that makes things easy.
-
->>
->> So is this solution acceptable?
->>
->>> also would be great to move the format change and storing hybrid
->>> pmus in separate patches
->>>
->>
->> Maybe we have to put the storing and processing into one patch.
->>
->> Say patch 1 contains the format change and storing hybrid pmus. And patch 2
->> contains the processing for the new format. If the repo only contains the
->> patch 1, I'm afraid that may introduce the compatible issue.
-> 
-> maybe you can have change of caps format in one patch
-> and storing/processing hybrid pmus in another?
-> 
-
-But there is no data structure defined in header.h for each feature.
-
-It directly uses do_write/do_write_string in 'write()' ops to write the feature data.
-
-So for the new layout, as I mentioned above, if we change the layout to
-
-nr of caps for pmu 1
-caps string 1
-caps string 2
-...
-caps string N
-"cpu"
-0
-
-We need to call do_write/do_write_string, actually it's the storing method. So I don't understand 
-well for having changes of caps format in one patch, I'm sorry about that. :(
-
-Thanks
-Jin Yao
-
-> jirka
-> 
+--A9z/3b/E4MkkD+7G--
