@@ -2,223 +2,221 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 05273374F4E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 08:20:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94E31374F55
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 08:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230294AbhEFGV0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 02:21:26 -0400
-Received: from mail-lj1-f172.google.com ([209.85.208.172]:36426 "EHLO
-        mail-lj1-f172.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhEFGVY (ORCPT
+        id S231352AbhEFG2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 02:28:20 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17134 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229622AbhEFG2T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 02:21:24 -0400
-Received: by mail-lj1-f172.google.com with SMTP id o16so5613878ljp.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 23:20:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=asz0o+ww4mmNig5SIwpCSnyWVWIADswVDxZtWPHHJro=;
-        b=ld8ZCYEmE4cXoHzM3PG3BJi8SkkeN0/MFDtoVATmIcAJD/hSiUlP2l8NhxWYwL1S/Q
-         RVg67HCOVF2TIE/Ud2Wv4D5ppglpwgENYSHuN36kcW3cesuXjJtVfWXiE5u0U2JE8+lI
-         Is1dqdo8W+PIl1MXLWSgkW+3Db961U1FakyZ7DJ3a76ASxY7ZydrnKsEqFK/Bn4JnZAJ
-         ZysB/f93J1oYbfwCDdf2waCbYySU83m8aQD3i7oS44fyRC+Bl10laLfk4TKQJAy2Mrc1
-         GO2dpNFbOIawatZ+amTcuCRg7EUdeLgzHraJe549kALEqJvaLMbNJ/IkjNgnhKi1GlF7
-         FNLw==
-X-Gm-Message-State: AOAM531PdYLMQVccMRBuJT2sV/xS+ujCqxtL+RNyocQ+FiIVeJSNE42Q
-        2ho1XS5qubfyuN1F8teumZeSWKGh9rgZrLb0/os=
-X-Google-Smtp-Source: ABdhPJxbsrDGg83cYgmrVRl9HSSYqACaqYIW07+UV6qrqd1RqFn6g13OnmBa7zxGXqkoRqu5aEMSqZ0W0JOyQpAkGPQ=
-X-Received: by 2002:a2e:8e21:: with SMTP id r1mr2002498ljk.166.1620282025942;
- Wed, 05 May 2021 23:20:25 -0700 (PDT)
+        Thu, 6 May 2021 02:28:19 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FbNnw120nzmfjZ;
+        Thu,  6 May 2021 14:24:04 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.214) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 6 May 2021
+ 14:27:17 +0800
+Subject: Re: [PATCH v2] f2fs: reduce expensive checkpoint trigger frequency
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Yunlei He <heyunlei@hihonor.com>
+References: <20210425011053.44436-1-yuchao0@huawei.com>
+ <YIbzwPGOJoKZvFnv@google.com>
+ <3338f2bc-6985-c1a4-9f3d-e59a474027f9@huawei.com>
+ <YJFb5GWijGzHOAV6@google.com>
+ <912459e6-3eef-59b7-e8a3-1097efd22750@huawei.com>
+ <YJNz6YJC1oSF8wL4@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <591a2572-8025-5c9f-13ce-a90f26733775@huawei.com>
+Date:   Thu, 6 May 2021 14:27:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <cover.1619781188.git.alexey.v.bayduraev@linux.intel.com>
-In-Reply-To: <cover.1619781188.git.alexey.v.bayduraev@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 5 May 2021 23:20:14 -0700
-Message-ID: <CAM9d7citW_NGb0vjMM2ytp=Mbq5YNe4GEaWspEkMGf=KAm+ugw@mail.gmail.com>
-Subject: Re: [PATCH v5 00/20] Introduce threaded trace streaming for basic
- perf record operation
-To:     Alexey Bayduraev <alexey.v.bayduraev@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Alexander Antonov <alexander.antonov@linux.intel.com>,
-        Alexei Budankov <abudankov@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YJNz6YJC1oSF8wL4@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 2021/5/6 12:43, Jaegeuk Kim wrote:
+> On 05/06, Chao Yu wrote:
+>> On 2021/5/4 22:36, Jaegeuk Kim wrote:
+>>> On 04/27, Chao Yu wrote:
+>>>> On 2021/4/27 1:09, Jaegeuk Kim wrote:
+>>>>> On 04/25, Chao Yu wrote:
+>>>>>> We may trigger high frequent checkpoint for below case:
+>>>>>> 1. mkdir /mnt/dir1; set dir1 encrypted
+>>>>>> 2. touch /mnt/file1; fsync /mnt/file1
+>>>>>> 3. mkdir /mnt/dir2; set dir2 encrypted
+>>>>>> 4. touch /mnt/file2; fsync /mnt/file2
+>>>>>> ...
+>>>>>>
+>>>>>> Although, newly created dir and file are not related, due to
+>>>>>> commit bbf156f7afa7 ("f2fs: fix lost xattrs of directories"), we will
+>>>>>> trigger checkpoint whenever fsync() comes after a new encrypted dir
+>>>>>> created.
+>>>>>>
+>>>>>> In order to avoid such condition, let's record an entry including
+>>>>>> directory's ino into global cache when we initialize encryption policy
+>>>>>> in a checkpointed directory, and then only trigger checkpoint() when
+>>>>>> target file's parent has non-persisted encryption policy, for the case
+>>>>>> its parent is not checkpointed, need_do_checkpoint() has cover that
+>>>>>> by verifying it with f2fs_is_checkpointed_node().
+>>>>>>
+>>>>>> Reported-by: Yunlei He <heyunlei@hihonor.com>
+>>>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>>>>> ---
+>>>>>> v2:
+>>>>>> - fix to set ENC_DIR_INO only for encrypted directory
+>>>>>>     fs/f2fs/f2fs.h              | 2 ++
+>>>>>>     fs/f2fs/file.c              | 3 +++
+>>>>>>     fs/f2fs/xattr.c             | 6 ++++--
+>>>>>>     include/trace/events/f2fs.h | 3 ++-
+>>>>>>     4 files changed, 11 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>>>>> index b9d5317db0a7..0fe881309a20 100644
+>>>>>> --- a/fs/f2fs/f2fs.h
+>>>>>> +++ b/fs/f2fs/f2fs.h
+>>>>>> @@ -246,6 +246,7 @@ enum {
+>>>>>>     	APPEND_INO,		/* for append ino list */
+>>>>>>     	UPDATE_INO,		/* for update ino list */
+>>>>>>     	TRANS_DIR_INO,		/* for trasactions dir ino list */
+>>>>>> +	ENC_DIR_INO,		/* for encrypted dir ino list */
+>>>>>>     	FLUSH_INO,		/* for multiple device flushing */
+>>>>>>     	MAX_INO_ENTRY,		/* max. list */
+>>>>>>     };
+>>>>>> @@ -1090,6 +1091,7 @@ enum cp_reason_type {
+>>>>>>     	CP_FASTBOOT_MODE,
+>>>>>>     	CP_SPEC_LOG_NUM,
+>>>>>>     	CP_RECOVER_DIR,
+>>>>>> +	CP_ENC_DIR,
+>>>>>>     };
+>>>>>>     enum iostat_type {
+>>>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>>>>> index a595050c56d3..62af29ec0879 100644
+>>>>>> --- a/fs/f2fs/file.c
+>>>>>> +++ b/fs/f2fs/file.c
+>>>>>> @@ -218,6 +218,9 @@ static inline enum cp_reason_type need_do_checkpoint(struct inode *inode)
+>>>>>>     		f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+>>>>>>     							TRANS_DIR_INO))
+>>>>>>     		cp_reason = CP_RECOVER_DIR;
+>>>>>> +	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+>>>>>> +							ENC_DIR_INO))
+>>>>>> +		cp_reason = CP_ENC_DIR;
+>>>>>>     	return cp_reason;
+>>>>>>     }
+>>>>>> diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
+>>>>>> index c8f34decbf8e..70615d504f7e 100644
+>>>>>> --- a/fs/f2fs/xattr.c
+>>>>>> +++ b/fs/f2fs/xattr.c
+>>>>>> @@ -630,6 +630,7 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+>>>>>>     			const char *name, const void *value, size_t size,
+>>>>>>     			struct page *ipage, int flags)
+>>>>>>     {
+>>>>>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>>>>>     	struct f2fs_xattr_entry *here, *last;
+>>>>>>     	void *base_addr, *last_base_addr;
+>>>>>>     	int found, newsize;
+>>>>>> @@ -745,8 +746,9 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+>>>>>>     			!strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT))
+>>>>>>     		f2fs_set_encrypted_inode(inode);
+>>>>>>     	f2fs_mark_inode_dirty_sync(inode, true);
+>>>>>> -	if (!error && S_ISDIR(inode->i_mode))
+>>>>>> -		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
+>>>>>> +	if (!error && S_ISDIR(inode->i_mode) && f2fs_encrypted_file(inode) &&
+>>>>>> +			f2fs_is_checkpointed_node(sbi, inode->i_ino))
+>>>>>> +		f2fs_add_ino_entry(sbi, inode->i_ino, ENC_DIR_INO);
+>>>>>
+>>>>> What will happen, if we need to checkpoint xattr_nid on this directory?
+>>>>
+>>>> need_do_checkpoint()
+>>>>
+>>>> a)	else if (!f2fs_is_checkpointed_node(sbi, F2FS_I(inode)->i_pino))
+>>>> 		cp_reason = CP_NODE_NEED_CP;
+>>>
+>>> This will change the current behavior which does checkpoint regardless of the
+>>> parent being checkpointed. If i_pino was checkpointed but xnid wasn't, can we
+>>> get xnid being checkpointed?
+>>
+>> Yes,
+>>
+>>>> If parent is checkpointed, after converting parent to encrypted directory
+>>>> and create the file in parent, fsync this file will trigger checkpoint() due
+>>>> to b)
+>>
+>> If i_pino was checkpointed, but xnid wasn't due to enable encryption on this
+> 
+> I keep asking no encryption case where
+> 1) parent is checkpointed
+> 2) set_xattr(dir) w/ new new xnid
+> 3) create(file)
+> 4) fsync(file)
+> 
+> In that case, previousely we do checkpoint, but this change does not. Yes?
 
-On Tue, May 4, 2021 at 12:05 AM Alexey Bayduraev
-<alexey.v.bayduraev@linux.intel.com> wrote:
->
-> Changes in v5:
-> - fixed leaks in record__init_thread_masks_spec()
-> - fixed leaks after failed realloc
-> - replaced "%m" to strerror()
-> - added masks examples to the documentation
-> - captured Acked-by: tags by Andi Kleen
-> - do not allow --thread option for full_auxtrace mode
-> - split patch 06/12 to 06/20 and 07/20
-> - split patch 08/12 to 09/20 and 10/20
-> - split patches 11/12 and 11/12 to 13/20-20/20
->
-> v4: https://lore.kernel.org/lkml/6c15adcb-6a9d-320e-70b5-957c4c8b6ff2@linux.intel.com/
->
-> Changes in v4:
-> - renamed 'comm' structure to 'pipes'
-> - moved thread fd/maps messages to verbose=2
-> - fixed leaks during allocation of thread_data structures
-> - fixed leaks during allocation of thread masks
-> - fixed possible fails when releasing thread masks
->
-> v3: https://lore.kernel.org/lkml/7d197a2d-56e2-896d-bf96-6de0a4db1fb8@linux.intel.com/
->
-> Changes in v3:
-> - avoided skipped redundant patch 3/15
-> - applied "data file" and "data directory" terms allover the patch set
-> - captured Acked-by: tags by Namhyung Kim
-> - avoided braces where don't needed
-> - employed thread local variable for serial trace streaming
-> - added specs for --thread option - core, socket, numa and user defined
-> - added parallel loading of data directory files similar to the prototype [1]
->
-> v2: https://lore.kernel.org/lkml/1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com/
->
-> Changes in v2:
-> - explicitly added credit tags to patches 6/15 and 15/15,
->   additionally to cites [1], [2]
-> - updated description of 3/15 to explicitly mention the reason
->   to open data directories in read access mode (e.g. for perf report)
-> - implemented fix for compilation error of 2/15
-> - explicitly elaborated on found issues to be resolved for
->   threaded AUX trace capture
->
-> v1: https://lore.kernel.org/lkml/810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com/
->
-> Patch set provides parallel threaded trace streaming mode for basic
-> perf record operation. Provided mode mitigates profiling data losses
-> and resolves scalability issues of serial and asynchronous (--aio)
-> trace streaming modes on multicore server systems. The design and
-> implementation are based on the prototype [1], [2].
->
-> Parallel threaded mode executes trace streaming threads that read kernel
-> data buffers and write captured data into several data files located at
-> data directory. Layout of trace streaming threads and their mapping to data
-> buffers to read can be configured using a value of --thread command line
-> option. Specification value provides masks separated by colon so the masks
-> define cpus to be monitored by one thread and thread affinity mask is
-> separated by slash. <cpus mask 1>/<affinity mask 1>:<cpu mask 2>/<affinity mask 2>
-> specifies parallel threads layout that consists of two threads with
-> corresponding assigned cpus to be monitored. Specification value can be
-> a string e.g. "cpu", "core" or "socket" meaning creation of data streaming
-> thread for monitoring every cpu, whole core or socket. The option provided
-> with no or empty value defaults to "cpu" layout creating data streaming
-> thread for every cpu being monitored. Specification masks are filtered
-> by the mask provided via -C option.
->
-> Parallel streaming mode is compatible with Zstd compression/decompression
-> (--compression-level) and external control commands (--control). The mode
-> is not enabled for pipe mode. The mode is not enabled for AUX area tracing,
-> related and derived modes like --snapshot or --aux-sample. --switch-output-*
-> and --timestamp-filename options are not enabled for parallel streaming.
-> Initial intent to enable AUX area tracing faced the need to define some
-> optimal way to store index data in data directory. --switch-output-* and
-> --timestamp-filename use cases are not clear for data directories.
-> Asynchronous(--aio) trace streaming and affinity (--affinity) modes are
-> mutually exclusive to parallel streaming mode.
->
-> Basic analysis of data directories is provided in perf report mode.
-> Raw dump and aggregated reports are available for data directories,
-> still with no memory consumption optimizations.
+In this case, we won't checkpoint xnid, instead, just flushing file's data/node.
 
-Do you have an idea how to improve it?
+So yes, actually this patch will change the policy, which looks posix compliance,
+that mean we only persist the file's meta/data after fsync(file).
 
-I have to say again that I don't like merely adding more threads to
-record.  Yeah, parallelizing the perf record is good, but we have to
-think about the perf report (and others) too.
+How about keeping original policy in FSYNC_MODE_STRICT mode, and using current
+policy in FSYNC_MODE_POSIX mode?
 
 Thanks,
-Namhyung
 
-
->
-> Tested:
->
-> tools/perf/perf record -o prof.data --threads -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads= -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=cpu -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=core -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=socket -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=numa -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -C 2,5 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -C 3,4 --threads=0-3/3:4-7/4 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=core -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data -C 0,4,2,6 --threads=numa -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads -g --call-graph dwarf,4096 --compression-level=3 -- matrix.gcc.g.O3
-> tools/perf/perf record -o prof.data --threads -a
-> tools/perf/perf record -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
-> tools/perf/perf record --threads -D -1 -e cpu-cycles -a --control fd:10,11 -- sleep 30
->
-> tools/perf/perf report -i prof.data
-> tools/perf/perf report -i prof.data --call-graph=callee
-> tools/perf/perf report -i prof.data --stdio --header
-> tools/perf/perf report -i prof.data -D --header
->
-> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
-> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
->
-> ---
->
-> Alexey Bayduraev (20):
->   perf record: introduce thread affinity and mmap masks
->   perf record: introduce thread specific data array
->   perf record: introduce thread local variable
->   perf record: stop threads in the end of trace streaming
->   perf record: start threads in the beginning of trace streaming
->   perf record: introduce data file at mmap buffer object
->   perf record: introduce data transferred and compressed stats
->   perf record: init data file at mmap buffer object
->   tools lib: introduce bitmap_intersects() operation
->   perf record: introduce --threads=<spec> command line option
->   perf record: document parallel data streaming mode
->   perf report: output data file name in raw trace dump
->   perf session: move reader structure to the top
->   perf session: introduce reader_state in reader object
->   perf session: introduce reader objects in session object
->   perf session: introduce decompressor into trace reader object
->   perf session: move init into reader__init function
->   perf session: move map/unmap into reader__mmap function
->   perf session: load single file for analysis
->   perf session: load data directory files for analysis
->
->  tools/include/linux/bitmap.h             |   11 +
->  tools/lib/api/fd/array.c                 |   17 +
->  tools/lib/api/fd/array.h                 |    1 +
->  tools/lib/bitmap.c                       |   14 +
->  tools/perf/Documentation/perf-record.txt |   30 +
->  tools/perf/builtin-inject.c              |    3 +-
->  tools/perf/builtin-record.c              | 1066 ++++++++++++++++++++--
->  tools/perf/util/evlist.c                 |   16 +
->  tools/perf/util/evlist.h                 |    1 +
->  tools/perf/util/mmap.c                   |    6 +
->  tools/perf/util/mmap.h                   |    6 +
->  tools/perf/util/ordered-events.h         |    1 +
->  tools/perf/util/record.h                 |    2 +
->  tools/perf/util/session.c                |  491 +++++++---
->  tools/perf/util/session.h                |    5 +
->  tools/perf/util/tool.h                   |    3 +-
->  16 files changed, 1474 insertions(+), 199 deletions(-)
->
-> --
-> 2.19.0
->
+> 
+>> directory, fsync() this file will trigger checkpoint() to make sure xnid
+>> checkpointed due to b) case.
+>>
+>> Thanks,
+>>
+>>>
+>>>>
+>>>> b)	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+>>>> 							ENC_DIR_INO))
+>>>> 		cp_reason = CP_ENC_DIR;
+>>>>
+>>>> If parent is not checkpointed, after converting parent to encrypted directory
+>>>> and create the file in parent, fsync this file will trigger checkpoint() due
+>>>> to a)
+>>>>
+>>>> If parent is checkpointed, after converting parent to encrypted directory
+>>>> and create the file in parent, fsync this file will trigger checkpoint() due
+>>>> to b)
+>>>>
+>>>> Am I missing any cases?
+>>>>
+>>>> Thanks,
+>>>>
+>>>>>
+>>>>>>     same:
+>>>>>>     	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
+>>>>>> diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+>>>>>> index 56b113e3cd6a..ca0cf12226e9 100644
+>>>>>> --- a/include/trace/events/f2fs.h
+>>>>>> +++ b/include/trace/events/f2fs.h
+>>>>>> @@ -145,7 +145,8 @@ TRACE_DEFINE_ENUM(CP_RESIZE);
+>>>>>>     		{ CP_NODE_NEED_CP,	"node needs cp" },		\
+>>>>>>     		{ CP_FASTBOOT_MODE,	"fastboot mode" },		\
+>>>>>>     		{ CP_SPEC_LOG_NUM,	"log type is 2" },		\
+>>>>>> -		{ CP_RECOVER_DIR,	"dir needs recovery" })
+>>>>>> +		{ CP_RECOVER_DIR,	"dir needs recovery" },		\
+>>>>>> +		{ CP_ENC_DIR,		"persist encryption policy" })
+>>>>>>     #define show_shutdown_mode(type)					\
+>>>>>>     	__print_symbolic(type,						\
+>>>>>> -- 
+>>>>>> 2.29.2
+>>>>> .
+>>>>>
+>>> .
+>>>
+> .
+> 
