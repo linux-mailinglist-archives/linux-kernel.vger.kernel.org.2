@@ -2,127 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4470B375227
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:19:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 787E4375228
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:19:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234057AbhEFKUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:20:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55002 "EHLO mx2.suse.de"
+        id S234098AbhEFKUv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:20:51 -0400
+Received: from mga05.intel.com ([192.55.52.43]:46667 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233416AbhEFKUP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:20:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 014D8B175;
-        Thu,  6 May 2021 10:19:16 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id 7575F1F2C60; Thu,  6 May 2021 12:19:15 +0200 (CEST)
-Date:   Thu, 6 May 2021 12:19:15 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     yebin <yebin10@huawei.com>
-Cc:     Jan Kara <jack@suse.cz>, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ext4: Fix bug on in ext4_es_cache_extent as
- ext4_split_extent_at failed
-Message-ID: <20210506101915.GA22189@quack2.suse.cz>
-References: <20210428085158.3728201-1-yebin10@huawei.com>
- <20210430125853.GB5315@quack2.suse.cz>
- <60921135.3030900@huawei.com>
- <20210505104105.GA29867@quack2.suse.cz>
- <6093A830.3000704@huawei.com>
+        id S231976AbhEFKUu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 06:20:50 -0400
+IronPort-SDR: ymccfx1WWiU5+6wJZOK2+OuUwZYUAbZpeLeMp/+qrlGBtIryEYA5uOZ8N0YSQLGaj1P78QW1Ka
+ SMtgK5981vvg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="283876528"
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="283876528"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 03:19:52 -0700
+IronPort-SDR: 2A5Ljam3LnzMWnpH2wyu5qYcOWIQYB5VoR7Ikh1p1P1PAc8QD7oFU9TCiD7RBkX9diy98QEvlr
+ 97zmELTih3Sg==
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="434281726"
+Received: from tchrzano-mobl.ger.corp.intel.com (HELO localhost) ([10.252.42.214])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 03:19:49 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>, wse@tuxedocomputers.com,
+        ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Intel-gfx] [PATCH 1/3] New function to avoid duplicate code in upcomming commits
+In-Reply-To: <20210505172401.1453178-2-wse@tuxedocomputers.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210505172401.1453178-1-wse@tuxedocomputers.com> <20210505172401.1453178-2-wse@tuxedocomputers.com>
+Date:   Thu, 06 May 2021 13:19:46 +0300
+Message-ID: <87v97ww4e5.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6093A830.3000704@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 06-05-21 16:26:24, yebin wrote:
-> Thanks for your suggesttion. If you have no objection to following
-> modification, i will send it as V4.
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 77c84d6f1af6..f9cbd11e1eae 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -3206,7 +3206,10 @@ static int ext4_split_extent_at(handle_t *handle,
->                 ext4_ext_mark_unwritten(ex2);
-> 
->         err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
-> -       if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
-> +       if (err != -ENOSPC && err != -EDQUOT)
-> +                goto out;
+On Wed, 05 May 2021, Werner Sembach <wse@tuxedocomputers.com> wrote:
+> Moves some checks that later will be performed 2 times to an own fuction. This
+> avoids duplicate code later on.
+>
+> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+> ---
+>
+> From 42a4a3a7d9ea9948b4071f406e7fcae23bfa0bdf Mon Sep 17 00:00:00 2001
+> From: Werner Sembach <wse@tuxedocomputers.com>
+> Date: Mon, 3 May 2021 14:35:39 +0200
+> Subject: [PATCH 1/3] New function to avoid duplicate code in upcomming commits
+
+What are you using to generate and send the patches? This looks like
+unnecessary cruft, and our CI fails to apply and test the changes.
+
+BR,
+Jani.
+
+>
+> ---
+>  drivers/gpu/drm/i915/display/intel_hdmi.c | 41 ++++++++++++++---------
+>  1 file changed, 26 insertions(+), 15 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> index 46de56af33db..576d3d910d06 100644
+> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+> @@ -1861,6 +1861,31 @@ static int intel_hdmi_port_clock(int clock, int bpc)
+>  	return clock * bpc / 8;
+>  }
+>  
+> +static enum drm_mode_status
+> +intel_hdmi_mode_clock_valid(struct intel_hdmi *hdmi, int clock, bool has_hdmi_sink)
+> +{
+> +	struct drm_device *dev = intel_hdmi_to_dev(hdmi);
+> +	struct drm_i915_private *dev_priv = to_i915(dev);
+> +	enum drm_mode_status status;
 > +
-> +       if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
-
-You need:
-
-if (err && (EXT4_EXT_MAY_ZEROOUT & split_flag))
-
-there, don't you? You don't want to zero-out if there's no error.
-
-> @@ -3232,22 +3235,23 @@ static int ext4_split_extent_at(handle_t *handle,
-> ext4_ext_pblock(&orig_ex));
->                 }
-> 
-> -               if (err)
-> -                       goto fix_extent_len;
-> -               /* update the extent length and mark as initialized */
-> -               ex->ee_len = cpu_to_le16(ee_len);
-> -               ext4_ext_try_to_merge(handle, inode, path, ex);
-> -               err = ext4_ext_dirty(handle, inode, path + path->p_depth);
-> -               if (err)
-> -                       goto fix_extent_len;
+> +	/* check if we can do 8bpc */
+> +	status = hdmi_port_clock_valid(hdmi, clock, true, has_hdmi_sink);
+> +
+> +	if (has_hdmi_sink) {
+> +		/* if we can't do 8bpc we may still be able to do 12bpc */
+> +		if (status != MODE_OK && !HAS_GMCH(dev_priv))
+> +			status = hdmi_port_clock_valid(hdmi, clock * 3 / 2,
+> +						       true, has_hdmi_sink);
+> +
+> +		/* if we can't do 8,12bpc we may still be able to do 10bpc */
+> +		if (status != MODE_OK && INTEL_GEN(dev_priv) >= 11)
+> +			status = hdmi_port_clock_valid(hdmi, clock * 5 / 4,
+> +						       true, has_hdmi_sink);
+> +	}
+> +
+> +	return status;
+> +}
+> +
+>  static enum drm_mode_status
+>  intel_hdmi_mode_valid(struct drm_connector *connector,
+>  		      struct drm_display_mode *mode)
+> @@ -1891,21 +1916,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
+>  	if (drm_mode_is_420_only(&connector->display_info, mode))
+>  		clock /= 2;
+>  
+> -	/* check if we can do 8bpc */
+> -	status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 8),
+> -				       true, has_hdmi_sink);
 > -
-> -               /* update extent status tree */
-> -               err = ext4_zeroout_es(inode, &zero_ex);
+> -	if (has_hdmi_sink) {
+> -		/* if we can't do 8bpc we may still be able to do 12bpc */
+> -		if (status != MODE_OK && !HAS_GMCH(dev_priv))
+> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 12),
+> -						       true, has_hdmi_sink);
 > -
-> -               goto out;
-> -       } else if (err)
-> -               goto fix_extent_len;
-> -
-> +               if (!err) {
-> +                       /* update the extent length and mark as initialized
-> */
-> +                        ex->ee_len = cpu_to_le16(ee_len);
-> +                        ext4_ext_try_to_merge(handle, inode, path, ex);
-> +                        err = ext4_ext_dirty(handle, inode, path +
-> path->p_depth);
-> +                        if (!err)
-> +                               /* update extent status tree */
-> +                                err = ext4_zeroout_es(inode, &zero_ex);
-> +                        /* At here, ext4_ext_try_to_merge maybe already
-> merge
-> +                         * extent, if fix origin extent length may lead to
-> +                         * overwritten.
-> +                         */
+> -		/* if we can't do 8,12bpc we may still be able to do 10bpc */
+> -		if (status != MODE_OK && DISPLAY_VER(dev_priv) >= 11)
+> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 10),
+> -						       true, has_hdmi_sink);
+> -	}
+> +	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
+>  	if (status != MODE_OK)
+>  		return status;
 
-I'd rephrase the comment as:
-
-/*
- * If we failed at this point, we don't know in which state the extent tree
- * exactly is so don't try to fix length of the original extent as it may do
- * even more damage.
- */
-
-
-> +                        goto out;
-> +                }
-> +       }
-> +        if (err)
-> +                goto fix_extent_len;
-
-And you can move this if (err) before if (!err) above to make code easier
-to read and save one indentation level.
-
->  out:
->         ext4_ext_show_leaf(inode, path);
->         return err;
-> 
-> 
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jani Nikula, Intel Open Source Graphics Center
