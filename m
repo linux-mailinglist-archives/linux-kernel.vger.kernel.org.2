@@ -2,154 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6424375CEB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:38:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3E48375CEC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:40:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230128AbhEFVjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:39:41 -0400
-Received: from www62.your-server.de ([213.133.104.62]:39980 "EHLO
-        www62.your-server.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhEFVjj (ORCPT
+        id S230349AbhEFVlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 17:41:12 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46970 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhEFVlJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 17:39:39 -0400
-Received: from sslproxy05.your-server.de ([78.46.172.2])
-        by www62.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92.3)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lelhf-0009JR-Fh; Thu, 06 May 2021 23:38:39 +0200
-Received: from [85.7.101.30] (helo=linux.home)
-        by sslproxy05.your-server.de with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <daniel@iogearbox.net>)
-        id 1lelhf-000GZv-7s; Thu, 06 May 2021 23:38:39 +0200
-Subject: Re: [PATCH bpf] bpf: Don't WARN_ON_ONCE in bpf_bprintf_prepare
-To:     Florent Revest <revest@chromium.org>,
-        Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc:     bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot@syzkaller.appspotmail.com>
-References: <20210505162307.2545061-1-revest@chromium.org>
- <CAEf4BzZiK1ncN7RzeJ-62e=itekn34VuFf7WNhUF=9OoznMP6Q@mail.gmail.com>
- <fe37ff8f-ebf0-25ec-4f3c-df3373944efa@iogearbox.net>
- <CAEf4BzYsAXQ1t6GUJ4f8c0qGLdnO4NLDVJLRMhAY2oaiarDd6g@mail.gmail.com>
- <CAEf4BzYqUxgj28p7e1ng_5gfebXdVdrCVyPK4bjA31O4wgppeA@mail.gmail.com>
- <CABRcYmJBxY5AQMzO2vuuhVN7hs=1h+ursEnVAXpCPJ3DrkRrUA@mail.gmail.com>
- <CAEf4BzY4a6R-apnS0AZsb_Mtht2N8be1HvEN9hD9aSByoD1EHQ@mail.gmail.com>
- <CABRcYm+3AjHa3zO5AHSk6SbyFK6o6dLd8Fbz_sOznchWL2dumQ@mail.gmail.com>
-From:   Daniel Borkmann <daniel@iogearbox.net>
-Message-ID: <875174b0-c0f1-8a41-ef00-3f0fe0396288@iogearbox.net>
-Date:   Thu, 6 May 2021 23:38:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.2
+        Thu, 6 May 2021 17:41:09 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 1C99B1C0B77; Thu,  6 May 2021 23:40:10 +0200 (CEST)
+Date:   Thu, 6 May 2021 23:40:09 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Kees Cook <keescook@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
+        tech-board@lists.linux-foundation.org
+Subject: Re: Report on University of Minnesota Breach-of-Trust Incident
+Message-ID: <20210506214009.GA6494@amd>
+References: <202105051005.49BFABCE@keescook>
+ <20210506082616.GA20224@duo.ucw.cz>
+ <202105061042.E99B414F0A@keescook>
 MIME-Version: 1.0
-In-Reply-To: <CABRcYm+3AjHa3zO5AHSk6SbyFK6o6dLd8Fbz_sOznchWL2dumQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Authenticated-Sender: daniel@iogearbox.net
-X-Virus-Scanned: Clear (ClamAV 0.103.2/26162/Thu May  6 13:11:07 2021)
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="UlVJffcvxoiEqYs2"
+Content-Disposition: inline
+In-Reply-To: <202105061042.E99B414F0A@keescook>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/6/21 10:17 PM, Florent Revest wrote:
-> On Thu, May 6, 2021 at 8:52 PM Andrii Nakryiko
-> <andrii.nakryiko@gmail.com> wrote:
->> On Wed, May 5, 2021 at 3:29 PM Florent Revest <revest@chromium.org> wrote:
->>> On Wed, May 5, 2021 at 10:52 PM Andrii Nakryiko
->>> <andrii.nakryiko@gmail.com> wrote:
->>>> On Wed, May 5, 2021 at 1:48 PM Andrii Nakryiko
->>>> <andrii.nakryiko@gmail.com> wrote:
->>>>> On Wed, May 5, 2021 at 1:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
->>>>>> On 5/5/21 8:55 PM, Andrii Nakryiko wrote:
->>>>>>> On Wed, May 5, 2021 at 9:23 AM Florent Revest <revest@chromium.org> wrote:
->>>>>>>>
->>>>>>>> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
->>>>>>>> per-cpu buffer that they use to store temporary data (arguments to
->>>>>>>> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
->>>>>>>> by the end of their scope with bpf_bprintf_cleanup.
->>>>>>>>
->>>>>>>> If one of these helpers gets called within the scope of one of these
->>>>>>>> helpers, for example: a first bpf program gets called, uses
->>>>>>>
->>>>>>> Can we afford having few struct bpf_printf_bufs? They are just 512
->>>>>>> bytes, so can we have 3-5 of them? Tracing low-level stuff isn't the
->>>>>>> only situation where this can occur, right? If someone is doing
->>>>>>> bpf_snprintf() and interrupt occurs and we run another BPF program, it
->>>>>>> will be impossible to do bpf_snprintf() or bpf_trace_printk() from the
->>>>>>> second BPF program, etc. We can't eliminate the probability, but
->>>>>>> having a small stack of buffers would make the probability so
->>>>>>> miniscule as to not worry about it at all.
->>>>>>>
->>>>>>> Good thing is that try_get_fmt_tmp_buf() abstracts all the details, so
->>>>>>> the changes are minimal. Nestedness property is preserved for
->>>>>>> non-sleepable BPF programs, right? If we want this to work for
->>>>>>> sleepable we'd need to either: 1) disable migration or 2) instead of
->>>>>
->>>>> oh wait, we already disable migration for sleepable BPF progs, so it
->>>>> should be good to do nestedness level only
->>>>
->>>> actually, migrate_disable() might not be enough. Unless it is
->>>> impossible for some reason I miss, worst case it could be that two
->>>> sleepable programs (A and B) can be intermixed on the same CPU: A
->>>> starts&sleeps - B starts&sleeps - A continues&returns - B continues
->>>> and nestedness doesn't work anymore. So something like "reserving a
->>>> slot" would work better.
->>>
->>> Iiuc try_get_fmt_tmp_buf does preempt_enable to avoid that situation ?
->>>
->>>>>>> assuming a stack of buffers, do a loop to find unused one. Should be
->>>>>>> acceptable performance-wise, as it's not the fastest code anyway
->>>>>>> (printf'ing in general).
->>>>>>>
->>>>>>> In any case, re-using the same buffer for sort-of-optional-to-work
->>>>>>> bpf_trace_printk() and probably-important-to-work bpf_snprintf() is
->>>>>>> suboptimal, so seems worth fixing this.
->>>>>>>
->>>>>>> Thoughts?
->>>>>>
->>>>>> Yes, agree, it would otherwise be really hard to debug. I had the same
->>>>>> thought on why not allowing nesting here given users very likely expect
->>>>>> these helpers to just work for all the contexts.
->>>>>>
->>>>>> Thanks,
->>>>>> Daniel
->>>
->>> What would you think of just letting the helpers own these 512 bytes
->>> buffers as local variables on their stacks ? Then bpf_prepare_bprintf
->>> would only need to write there, there would be no acquire semantic
->>> (like try_get_fmt_tmp_buf) and the stack frame would just be freed on
->>> the helper return so there would be no bpf_printf_cleanup either. We
->>> would also not pre-reserve static memory for all CPUs and it becomes
->>> trivial to handle re-entrant helper calls.
->>>
->>> I inherited this per-cpu buffer from the pre-existing bpf_seq_printf
->>> code but I've not been convinced of its necessity.
->>
->> I got the impression that extra 512 bytes on the kernel stack is quite
->> a lot and that's why we have per-cpu buffers. Especially that
->> bpf_trace_printk() can be called from any context, including NMI.
-> 
-> Ok, I understand.
-> 
-> What about having one buffer per helper, synchronized with a spinlock?
-> Actually, bpf_trace_printk already has that, not for the bprintf
-> arguments but for the bprintf output so this wouldn't change much to
-> the performance of the helpers anyway:
-> https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/trace/bpf_trace.c?id=9d31d2338950293ec19d9b095fbaa9030899dcb4#n385
-> 
-> These helpers are not performance sensitive so a per-cpu stack of
-> buffers feels over-engineered to me (and is also complexity I feel a
-> bit uncomfortable with).
 
-But wouldn't this have same potential of causing a deadlock? Simple example
-would be if you have a tracing prog attached to bstr_printf(), and one of
-the other helpers using the same lock called from a non-tracing prog. If
-it can be avoided fairly easily, I'd also opt for per-cpu buffers as Andrii
-mentioned earlier. We've had few prior examples with similar issues [0].
+--UlVJffcvxoiEqYs2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-   [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9594dc3c7e71b9f52bee1d7852eb3d4e3aea9e99
+Hi!
+
+> > # Commits from @umn.edu addresses have been found to be submitted in "b=
+ad
+> > # faith" to try to test the kernel community's ability to review "known
+> > # malicious" changes.
+>=20
+> I would agree that the phrasing here is sub-optimal in that it could
+> more clearly separate a few related things (e.g. "malicious change" vs
+> "valid fix"). If I were writing this, I would have said something along
+> the lines of:
+>=20
+>   Commits from UMN authors have been found to be submitted with intention=
+al
+>   flaws to try to test the kernel community's ability to review "known
+>   malicious" changes. ...
+>   During review of all submissions, some patches were found to be
+>   unintentionally flawed. ...
+>   Out of an abundance of caution all submissions from this group must be
+>   reverted from the tree and will need to be re-review again. ...
+
+Thank you.
+
+> > UMN apologized. Our reaction to their apology was:
+> >=20
+> > https://lore.kernel.org/lkml/YIV+pLR0nt94q0xQ@kroah.com/#t
+> >=20
+> > Do we owe them apology, too?
+>=20
+> I will defer to Greg on what he thinks his duties are there, but in
+> trying to figure out who "we" is, I'll just point out that I attempted
+> to clarify the incorrect assumptions about the intent of historical UMN
+> patches, and spoke for the entire TAB (Greg included) here:
+> https://lore.kernel.org/lkml/202104221451.292A6ED4@keescook/
+> The report repeated this in several places, and we explained our need
+> for due diligence.
+
+Well, in https://lore.kernel.org/lkml/YIV+pLR0nt94q0xQ@kroah.com/#t
+Greg says:
+
+"Until those actions are taken, we do not have anything further to
+discuss about this issue."
+
+I'm not sure on behalf of whom he is speaking in the email (and I
+believe he is unneccessarily harsh with them).
+
+I could reply to that saying "hey, Greg is probably speaking only for
+himself there, he certainly can't speak for whole linux community",
+but I believe it would be better if TAB did that.
+
+Best regards,
+								Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--UlVJffcvxoiEqYs2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmCUYjkACgkQMOfwapXb+vIgqACgul6m/ov6Iq3ywwLaZ5vbaC+O
+7Y8An1htBprvIw05430rK0TG4qDiNmG6
+=Mtog
+-----END PGP SIGNATURE-----
+
+--UlVJffcvxoiEqYs2--
