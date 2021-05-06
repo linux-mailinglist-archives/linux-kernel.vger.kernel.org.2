@@ -2,120 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EB333754A7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:21:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FEBB3754AA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:22:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234091AbhEFNWr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:22:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233973AbhEFNWi (ORCPT
+        id S234027AbhEFNXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:23:44 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32870 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230381AbhEFNXm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:22:38 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 849CCC061574;
-        Thu,  6 May 2021 06:21:40 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620307297;
+        Thu, 6 May 2021 09:23:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620307364;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=k3SAmK6PNHm2b2zFkrHARkJbvGAqBIerSBhAmmsNkFM=;
-        b=OApNYyCD6aEdUkgUnti0+ogPOHAugcEFF8S9McbFYvTz4yS+6tx6RGxzKkSChnkU0qfOUj
-        sYjDxz0ejpaXyQDVlinDUEExWHfkLn+3DIobnheS+9ylYYmGpsgeTrsBVjduAG90bHO3P8
-        0tvijCl7Z+TNU1atlcnPQrPwB1frehR93OI8IveIMaqQaJeXdiJa9QTF5UE742LLgIUsQT
-        /9mND3Jv2DbE4MaOWSObmNff1Bh1B84a2t/VPgyp56VCkg6q5sICWO1UcradqkJE3Ox6tE
-        32XDhqKt+f7XIdFWoHgw/YQJWKBrbD2v8nUv81k5rtDBJQTdk4xbGGcy8pt3cQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620307297;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=k3SAmK6PNHm2b2zFkrHARkJbvGAqBIerSBhAmmsNkFM=;
-        b=5HVx8sqEMjvqJ0Z615RK83KbwMf3vhMjvfhE20dwTHjYH2pvEai0C12uGtEFElVI3MYoxT
-        XdZbaO3+A7uweiBQ==
-To:     kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: KVM: x86: Prevent deadlock against tk_core.seq
-Date:   Thu, 06 May 2021 15:21:37 +0200
-Message-ID: <87h7jgm1zy.ffs@nanos.tec.linutronix.de>
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=FQjaa15o2fK61wUjT8Q/Wis3ZEDIoJxzmVyjAFUonbA=;
+        b=IRlFeZpSw5yrbhugRA/IA+uNMXcK618VZIoUQ3Z5XsQQEx6bqjwiLCDFxIG+knR6ZoZOYd
+        2jySzmcRg5sUNy24ScZXtUsHB8f6H4pmK4T50j1I0kL4V5LDN/1sH5eV6paklD6bZIDo63
+        ykAdTg24rAYoddS19+uHHsgxCDWW2Rg=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-31-CNlBKJxgNJuRGfAj_TJ8tg-1; Thu, 06 May 2021 09:22:40 -0400
+X-MC-Unique: CNlBKJxgNJuRGfAj_TJ8tg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B2AC1801817;
+        Thu,  6 May 2021 13:22:38 +0000 (UTC)
+Received: from krava (unknown [10.40.193.227])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6DD8219D9F;
+        Thu,  6 May 2021 13:22:36 +0000 (UTC)
+Date:   Thu, 6 May 2021 15:22:35 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     "Jin, Yao" <yao.jin@linux.intel.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+Subject: Re: [PATCH v1 2/2] perf header: Support hybrid CPU_PMU_CAPS
+Message-ID: <YJPtmyzTEe/IUID4@krava>
+References: <20210430074602.3028-1-yao.jin@linux.intel.com>
+ <20210430074602.3028-2-yao.jin@linux.intel.com>
+ <YJFjTCsk9dCd6QP7@krava>
+ <c0bd3baa-3209-23f3-7058-c6908434de2d@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c0bd3baa-3209-23f3-7058-c6908434de2d@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported a possible deadlock in pvclock_gtod_notify():
+On Thu, May 06, 2021 at 12:59:08PM +0800, Jin, Yao wrote:
+> Hi Jiri,
+> 
+> On 5/4/2021 11:07 PM, Jiri Olsa wrote:
+> > On Fri, Apr 30, 2021 at 03:46:02PM +0800, Jin Yao wrote:
+> > > On hybrid platform, it may have several cpu pmus, such as,
+> > > "cpu_core" and "cpu_atom". The CPU_PMU_CAPS feature in perf
+> > > header needs to be improved to support multiple cpu pmus.
+> > > 
+> > > The new layout in header is defined as:
+> > > 
+> > > <nr_caps>
+> > > <caps string>
+> > > <caps string>
+> > > <pmu name>
+> > > <nr of rest pmus>
+> > 
+> > not sure why is the 'nr of rest pmus' needed
+> > 
+> 
+> The 'nr of rest pmus' indicates the remaining pmus which are waiting for process.
+> 
+> For example,
+> 
+> <nr_caps>
+> <caps string>
+> "cpu_core"
+> 1
+> <nr_caps>
+> <caps string>
+> "cpu_atom"
+> 0
+> 
+> When we see '0' in data file processing, we know all the pmu have been processed yet.
+> 
+> > the current format is:
+> > 
+> >          u32 nr_cpu_pmu_caps;
+> >          {
+> >                  char    name[];
+> >                  char    value[];
+> >          } [nr_cpu_pmu_caps]
+> > 
+> > 
+> > I guess we could extend it to:
+> > 
+> >          u32 nr_cpu_pmu_caps;
+> >          {
+> >                  char    name[];
+> >                  char    value[];
+> >          } [nr_cpu_pmu_caps]
+> > 	char pmu_name[]
+> > 
+> >          u32 nr_cpu_pmu_caps;
+> >          {
+> >                  char    name[];
+> >                  char    value[];
+> >          } [nr_cpu_pmu_caps]
+> > 	char pmu_name[]
+> > 
+> > 	...
+> > 
+> > and we could detect the old format by checking that there's no
+> > pmu name.. but maybe I'm missing something, I did not check deeply,
+> > please let me know
+> > 
+> 
+> Actually we do the same thing, but I just add an extra 'nr of rest pmus'
+> after the pmu_name. The purpose of 'nr of rest pmus' is when we see '0' at
+> 'nr of rest pmus', we know that all pmus have been processed.
+> 
+> Otherwise, we have to continue reading data file till we find something
+> incorrect and then finally drop the last read data.
 
-CPU 0  		  	   	    	    CPU 1
-write_seqcount_begin(&tk_core.seq);
-  pvclock_gtod_notify()			    spin_lock(&pool->lock);
-    queue_work(..., &pvclock_gtod_work)	    ktime_get()
-     spin_lock(&pool->lock);		      do {
-     						seq = read_seqcount_begin(tk_core.seq)
-						...
-				              } while (read_seqcount_retry(&tk_core.seq, seq);
+you have the size of the feature data right? I think we use
+it in other cases to check if there are more data
 
-While this is unlikely to happen, it's possible.
+> 
+> So is this solution acceptable?
+> 
+> > also would be great to move the format change and storing hybrid
+> > pmus in separate patches
+> > 
+> 
+> Maybe we have to put the storing and processing into one patch.
+> 
+> Say patch 1 contains the format change and storing hybrid pmus. And patch 2
+> contains the processing for the new format. If the repo only contains the
+> patch 1, I'm afraid that may introduce the compatible issue.
 
-Delegate queue_work() to irq_work() which postpones it until the
-tk_core.seq write held region is left and interrupts are reenabled.
+maybe you can have change of caps format in one patch
+and storing/processing hybrid pmus in another?
 
-Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
-Reported-by: syzbot+6beae4000559d41d80f8@syzkaller.appspotmail.com
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
----
-Link: https://lore.kernel.org/r/0000000000001d43ac05c0f5c6a0@google.com
----
- arch/x86/kvm/x86.c |   22 ++++++++++++++++++----
- 1 file changed, 18 insertions(+), 4 deletions(-)
+jirka
 
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -8040,6 +8040,18 @@ static void pvclock_gtod_update_fn(struc
- static DECLARE_WORK(pvclock_gtod_work, pvclock_gtod_update_fn);
- 
- /*
-+ * Indirection to move queue_work() out of the tk_core.seq write held
-+ * region to prevent possible deadlocks against time accessors which
-+ * are invoked with work related locks held.
-+ */
-+static void pvclock_irq_work_fn(struct irq_work *w)
-+{
-+	queue_work(system_long_wq, &pvclock_gtod_work);
-+}
-+
-+static DEFINE_IRQ_WORK(pvclock_irq_work, pvclock_irq_work_fn);
-+
-+/*
-  * Notification about pvclock gtod data update.
-  */
- static int pvclock_gtod_notify(struct notifier_block *nb, unsigned long unused,
-@@ -8050,13 +8062,14 @@ static int pvclock_gtod_notify(struct no
- 
- 	update_pvclock_gtod(tk);
- 
--	/* disable master clock if host does not trust, or does not
--	 * use, TSC based clocksource.
-+	/*
-+	 * Disable master clock if host does not trust, or does not use,
-+	 * TSC based clocksource. Delegate queue_work() to irq_work as
-+	 * this is invoked with tk_core.seq write held.
- 	 */
- 	if (!gtod_is_based_on_tsc(gtod->clock.vclock_mode) &&
- 	    atomic_read(&kvm_guest_has_master_clock) != 0)
--		queue_work(system_long_wq, &pvclock_gtod_work);
--
-+		irq_work_queue(&pvclock_irq_work);
- 	return 0;
- }
- 
-@@ -8168,6 +8181,7 @@ void kvm_arch_exit(void)
- 	cpuhp_remove_state_nocalls(CPUHP_AP_X86_KVM_CLK_ONLINE);
- #ifdef CONFIG_X86_64
- 	pvclock_gtod_unregister_notifier(&pvclock_gtod_notifier);
-+	irq_work_sync(&pvclock_irq_work);
- 	cancel_work_sync(&pvclock_gtod_work);
- #endif
- 	kvm_x86_ops.hardware_enable = NULL;
