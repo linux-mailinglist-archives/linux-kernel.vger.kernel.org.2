@@ -2,167 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1F07C37593E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:25:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E553375943
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:26:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236283AbhEFR0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:26:10 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47357 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236228AbhEFR0G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:26:06 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620321907;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jExgBas4mYe2R7HQ1xBXEHvzUr1CEHDDU82ObrbRp1A=;
-        b=caHbs9Sn6Bed3l2X080RGSPQ6Rr28FsneVtVYxJSY+XPbk81P7C0bJHHsjjlSMS2dA3WMz
-        kPrl4+DSZLXe4UJf/pna7xPYlDvC+nw82FHa2LQWwlSj+3axeUG5yr1SvcuUQY3Sn9kkAe
-        An1O3b1eBPYjY9ZOBkkrh6KRiYaYGew=
-Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
- [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-99-ea7S7rVDO9C-yAkAe5BXXg-1; Thu, 06 May 2021 13:24:47 -0400
-X-MC-Unique: ea7S7rVDO9C-yAkAe5BXXg-1
-Received: by mail-ed1-f72.google.com with SMTP id z12-20020aa7d40c0000b0290388179cc8bfso2987852edq.21
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 10:24:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=jExgBas4mYe2R7HQ1xBXEHvzUr1CEHDDU82ObrbRp1A=;
-        b=nCaiStaW8NTYq3ZX9qjfby1Yfdto0PJztFXswnjPFKHnGfa4H9HK8e95jFTnKsqEtf
-         Kfjq5IyHFPNgL3n/oWrhiSjK2hDX3IMsKC9fm93tSoNyc43dnCj1AMVMcga/xxs/BUNd
-         KtI0iwHF29oDMRvnfP8l0QOWCQFWfnrbc8glGltT56Ke0X8hl011M8bSUd5t2B2j3r6z
-         GEwcO15mDEgXm01BtouuWYOUjIJyd5NwxviO+jup+CjvtvQZc2BP+ojwJg6jyR35qFQB
-         m+XOi9t16zV17QpZ4MwEXtY49Z+ExF8ZKJi6LlD0STSgShGBESQZ5qyXVU0HT6kYH7f3
-         K/yw==
-X-Gm-Message-State: AOAM530Vi8aKnRFxIV+7Q7PdEqav02xvgUNT9nbig4ruN/lztrjMmbSt
-        7hNV4PAtYbsl3vY3THnvF1HmtEJHHzlFbTVvhZtXLI8FDoHWkPrMNWqoYzTIRK5TB6fWNObOi+L
-        p6kdheKM8ufSmbUDpDxHlQEwQ
-X-Received: by 2002:aa7:d952:: with SMTP id l18mr6506579eds.83.1620321886025;
-        Thu, 06 May 2021 10:24:46 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz0HYEbkAPLbEzE0RQH/Kg006zDXqRhpGiJee/o6TGxungGJENUOS9lWTxREQMEK2RJtQPDnQ==
-X-Received: by 2002:aa7:d952:: with SMTP id l18mr6506560eds.83.1620321885798;
-        Thu, 06 May 2021 10:24:45 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64ae.dip0.t-ipconnect.de. [91.12.100.174])
-        by smtp.gmail.com with ESMTPSA id y19sm2147544edc.73.2021.05.06.10.24.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 10:24:45 -0700 (PDT)
-To:     jejb@linux.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20210303162209.8609-1-rppt@kernel.org>
- <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
- <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
- <996dbc29-e79c-9c31-1e47-cbf20db2937d@redhat.com>
- <8eb933f921c9dfe4c9b1b304e8f8fa4fbc249d84.camel@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <a5b19a4f-5d7b-9840-fd70-67a39bc8969e@redhat.com>
-Date:   Thu, 6 May 2021 19:24:43 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S236259AbhEFR1x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:27:53 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:15153 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236230AbhEFR1v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 13:27:51 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620322013; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=P0OkbcD1NslTul+PF7Nxw/MNizW+0u/kMj7oLmG5KSA=;
+ b=hBXJCD3EHBBLN3qII4PBq6WoGBoTtcjctAoPdHneL1tlkoxSjdRqktoPPCOennSKtv5Y0UHN
+ h/1+yjgTUMJxQY7OklxmL1w+dWaHsCxBu74dshGQWmrKvpMx2KZZfzyLLqTQRjh8HOZKYBy+
+ 7vIKsw8bN5GSCECG6iefxZBGpI4=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 609426dc8166b7eff752791c (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 17:26:52
+ GMT
+Sender: gubbaven=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id A20B8C43147; Thu,  6 May 2021 17:26:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: gubbaven)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 88F06C4338A;
+        Thu,  6 May 2021 17:26:50 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <8eb933f921c9dfe4c9b1b304e8f8fa4fbc249d84.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 06 May 2021 22:56:50 +0530
+From:   gubbaven@codeaurora.org
+To:     Rob Herring <robh@kernel.org>
+Cc:     marcel@holtmann.org, johan.hedberg@gmail.com,
+        devicetree@vger.kernel.org, mka@chromium.org,
+        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
+        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
+        bgodavar@codeaurora.org, rjliao@codeaurora.org,
+        hbandi@codeaurora.org, abhishekpandit@chromium.org
+Subject: Re: [PATCH v2 2/3] dt-bindings: net: bluetooth: Convert to DT schema
+In-Reply-To: <20210421171009.GA1300559@robh.at.kernel.org>
+References: <1618936010-16579-1-git-send-email-gubbaven@codeaurora.org>
+ <1618936010-16579-3-git-send-email-gubbaven@codeaurora.org>
+ <20210421171009.GA1300559@robh.at.kernel.org>
+Message-ID: <b6aa923de63e287101d2d7d7babde00e@codeaurora.org>
+X-Sender: gubbaven@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>> Is this intended to protect keys/etc after the attacker has
->>>> gained the ability to run arbitrary kernel-mode code?  If so,
->>>> that seems optimistic, doesn't it?
->>>
->>> Not exactly: there are many types of kernel attack, but mostly the
->>> attacker either manages to effect a privilege escalation to root or
->>> gets the ability to run a ROP gadget.  The object of this code is
->>> to be completely secure against root trying to extract the secret
->>> (some what similar to the lockdown idea), thus defeating privilege
->>> escalation and to provide "sufficient" protection against ROP
->>> gadget.
->>
->> What stops "root" from mapping /dev/mem and reading that memory?
+Hi Rob Herring,
+
+On 2021-04-21 22:40, Rob Herring wrote:
+> On Tue, Apr 20, 2021 at 09:56:49PM +0530, Venkata Lakshmi Narayana 
+> Gubba wrote:
+>> Converted Qualcomm Bluetooth binidings to DT schema.
+>> 
+>> Signed-off-by: Venkata Lakshmi Narayana Gubba 
+>> <gubbaven@codeaurora.org>
+>> ---
+>>  .../devicetree/bindings/net/qualcomm-bluetooth.txt | 69 
+>> -----------------
+>>  .../bindings/net/qualcomm-bluetooth.yaml           | 87 
+>> ++++++++++++++++++++++
+>>  2 files changed, 87 insertions(+), 69 deletions(-)
+>>  delete mode 100644 
+>> Documentation/devicetree/bindings/net/qualcomm-bluetooth.txt
+>>  create mode 100644 
+>> Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
 > 
-> /dev/mem uses the direct map for the copy at least for read/write, so
-> it gets a fault in the same way root trying to use ptrace does.  I
-> think we've protected mmap, but Mike would know that better than I.
+>> diff --git 
+>> a/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml 
+>> b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+>> new file mode 100644
+>> index 0000000..55cd995
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/net/qualcomm-bluetooth.yaml
+>> @@ -0,0 +1,87 @@
+>> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/net/qualcomm-bluetooth.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Qualcomm Bluetooth Chips
+>> +
+>> +maintainers:
+>> +  - Rob Herring <robh@kernel.org>
+>> +  - Marcel Holtmann <marcel@holtmann.org>
 > 
-
-I'm more concerned about the mmap case -> remap_pfn_range(). Anybody 
-going via the VMA shouldn't see the struct page, at least when 
-vma_normal_page() is properly used; so you cannot detect secretmem
-memory mapped via /dev/mem reliably. At least that's my theory :)
-
-[...]
-
->> Also, there is a way to still read that memory when root by
->>
->> 1. Having kdump active (which would often be the case, but maybe not
->> to dump user pages )
->> 2. Triggering a kernel crash (easy via proc as root)
->> 3. Waiting for the reboot after kump() created the dump and then
->> reading the content from disk.
+> This should be someone that knows and cares about this h/w. I don't.
 > 
-> Anything that can leave physical memory intact but boot to a kernel
-> where the missing direct map entry is restored could theoretically
-> extract the secret.  However, it's not exactly going to be a stealthy
-> extraction ...
+[Venkata]:
+I will remove your name in next patchset.
+>> +
+>> +description:
+>> +  This binding describes Qualcomm UART-attached bluetooth chips.
+>> +
+>> +properties:
+>> +  compatible:
+>> +    enum:
+>> +      - qcom,qca6174-bt
+>> +      - qcom,qca9377-bt
+>> +      - qcom,wcn3990-bt
+>> +      - qcom,wcn3991-bt
+>> +      - qcom,wcn3998-bt
+>> +      - qcom,qca6390-bt
+>> +
+>> +  enable-gpios:
+>> +    maxItems: 1
+>> +    description: gpio specifier used to enable chip
+>> +
+>> +  clocks:
+>> +    maxItems: 1
+>> +    description: clock provided to the controller (SUSCLK_32KHZ)
+>> +
+>> +  vddio-supply:
+>> +    description: VDD_IO supply regulator handle
+>> +
+>> +  vddxo-supply:
+>> +    description: VDD_XO supply regulator handle
+>> +
+>> +  vddrf-supply:
+>> +    description: VDD_RF supply regulator handle
+>> +
+>> +  vddch0-supply:
+>> +    description: VDD_CH0 supply regulator handle
+>> +
+>> +  max-speed:
+>> +    description: see 
+>> Documentation/devicetree/bindings/serial/serial.yaml
+>> +
+>> +  firmware-name:
+>> +    description: specify the name of nvm firmware to load
+>> +
+>> +  local-bd-address:
+>> +    description: see 
+>> Documentation/devicetree/bindings/net/bluetooth.txt
+>> +
+>> +
+>> +required:
+>> +  - compatible
+>> +
+>> +additionalProperties: false
+>> +
+>> +examples:
+>> +  - |
+>> +    #include <dt-bindings/gpio/gpio.h>
+>> +    uart {
+>> +        label = "BT-UART";
 > 
->> Or, as an attacker, load a custom kexec() kernel and read memory
->> from the new environment. Of course, the latter two are advanced
->> mechanisms, but they are possible when root. We might be able to
->> mitigate, for example, by zeroing out secretmem pages before booting
->> into the kexec kernel, if we care :)
+> Why do you need a label for in internal port where you've described the
+> connection?
 > 
-> I think we could handle it by marking the region, yes, and a zero on
-> shutdown might be useful ... it would prevent all warm reboot type
-> attacks.
+[Venkata]:
+I will remove in next patchset.
+>> +        status = "okay";
+> 
+> Don't show status in examples.
+> 
+[Venkata]:
+Sure, I will remove in next patchset.
+>> +
+>> +        bluetooth {
+>> +            compatible = "qcom,qca6174-bt";
+>> +            enable-gpios = <&pm8994_gpios 19 GPIO_ACTIVE_HIGH>;
+>> +            clocks = <&divclk4>;
+>> +            firmware-name = "nvm_00440302.bin";
+>> +        };
+>> +    };
+>> +  - |
+>> +    uart {
+>> +
+>> +        bluetooth {
+>> +            compatible = "qcom,wcn3990-bt";
+>> +            vddio-supply = <&vreg_s4a_1p8>;
+>> +            vddxo-supply = <&vreg_l7a_1p8>;
+>> +            vddrf-supply = <&vreg_l17a_1p3>;
+>> +            vddch0-supply = <&vreg_l25a_3p3>;
+>> +            max-speed = <3200000>;
+>> +            firmware-name = "crnv21.bin";
+>> +        };
+>> +    };
+>> --
+>> QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+>> member
+>> of Code Aurora Forum, hosted by The Linux Foundation
+>> 
 
-Right. But I guess when you're actually root, you can just write a 
-kernel module to extract the information you need (unless we have signed 
-modules, so it could be harder/impossible).
-
--- 
-Thanks,
-
-David / dhildenb
-
+Regards,
+Venkata.
