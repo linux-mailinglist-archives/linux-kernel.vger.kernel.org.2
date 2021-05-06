@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD7FA375271
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:35:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE46C37527C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:36:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234545AbhEFKgL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:36:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51022 "EHLO
+        id S234575AbhEFKhj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:37:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51406 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234406AbhEFKgI (ORCPT
+        with ESMTP id S234453AbhEFKhi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:36:08 -0400
-Received: from mail-lj1-x22a.google.com (mail-lj1-x22a.google.com [IPv6:2a00:1450:4864:20::22a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55CAC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 03:35:10 -0700 (PDT)
-Received: by mail-lj1-x22a.google.com with SMTP id e12so6416771ljn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 03:35:10 -0700 (PDT)
+        Thu, 6 May 2021 06:37:38 -0400
+Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 862A5C061763
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 03:36:39 -0700 (PDT)
+Received: by mail-lf1-x12d.google.com with SMTP id x20so7096927lfu.6
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 03:36:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=008lPizmeuHrx5W10oGv1XvRUscDXN1KC0lNh4i2SaM=;
-        b=c7UsAnb3CmQgI4yk5wN//yVhgXXoeHeYcnak0tVrmZeYIlFkjlCen6jaclPG3TwtvE
-         T34pb00F3ZTuXTDiCSSs1lmaZxHZSEu85Zvm7fZQByr3zKwSEVxNr74Aoyk5Ij36TRIu
-         fYjRtDJI0CMxEBi2QOMIpRLndl2rlOUblmvNT0od04KXJwyOUenT28MqxkETVIABgo/4
-         JdtnAL0FnCsTsTlYuGSgVjAskvExEwGC16BA5ev5NbtGTnh8tLMe87lKcdmyogwrnLut
-         jeq7ERMKu5TmkQuQQJe+HsPK96tr3LErNpRXp+EDu5uV+5YUOqwFHMABf3N1Z9tf8ubv
-         SHjg==
+        bh=OXbQKzDbxQwqwkLGFQ0kqzvk73zXrjdXLLcNMoTV+r8=;
+        b=EKJwqQdW7hdH0N+0G7zzaqw0678I42oJOPhKbcaU+aiQY4MPMMVqbYl7Foc5QkbTBn
+         qsQXlg+ekmi6DvvQjYFHEilJzBdtTL7juq0eEH3BwcjKXcyOmlhSk5o2a3fOJ4zgzj7l
+         DTcu7Wk08bmdkLWeGxXU4XuEy4XYY4nOSLWqcsEHi6IOLAVuG/aAOLTiFEEDbTS4k2//
+         8sX+vTfytXkSYIalpuMPo0jgHFZL3pulLLPeE02LYOAt6M84bgdy11RFgwXJnGA2z8ya
+         P4b17+UBSCEvGJrfG0mcitA9IEwypQHKV1Xjjs/rMg6NHkK5xAi0ZztCRba73XQDn1cz
+         uvbA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=008lPizmeuHrx5W10oGv1XvRUscDXN1KC0lNh4i2SaM=;
-        b=O7mZXgC5B4sxezFNV13shnb7m9hhIUgV1HjfZLG+J+PTh1/mLXRiDhWhPzNjSz8By4
-         YjWqswmbaRSwRjjx7r0AetFxxgImh+TOjzJI0MCXO8K+ex0NalV+1oyeGzr/atxlR8RL
-         xXuh5R1p42bY1tZsBCeMski7F+EdMPzEkR37cVa/w5WDRqVwrded0fGdhGrQ3oNWDmu1
-         pPHIlrlW7C/9YmNxdjc4xkcn+BQXsI2LwbsnO4Xrgg5iYhfLzDt+HiUiLAeoxrcPzlqm
-         BYREv5SLqQ0lvkSEiF/CrDP6i/lj5EtvutxReCJsajgGfJ6/TMC0J+tRi8HVxM2wmZ4J
-         GsNg==
-X-Gm-Message-State: AOAM533EqCxe8DDirA4P6KpQUrg3BG53Xn4k64yboAEKSx0if2qhCpvb
-        xMnwNNBoR1d2irZqDJ8ubUTlbS20UyrtR59zn5rHBw==
-X-Google-Smtp-Source: ABdhPJxqMwYZh4Nk3uCSXsZm0XhweGYNeqg/rvzKy9QH+Q/9EgDbcDl68Wpexm4l9x2R/PkDWIhYdwDw61WPVRvLObc=
-X-Received: by 2002:a2e:889a:: with SMTP id k26mr2764542lji.438.1620297309219;
- Thu, 06 May 2021 03:35:09 -0700 (PDT)
+        bh=OXbQKzDbxQwqwkLGFQ0kqzvk73zXrjdXLLcNMoTV+r8=;
+        b=gyVITmqgRDgb9Z5X22LIT+0NhpCp4N6kiqz+cv5XnRvui75Xs9lvaTudHePgNVtvn4
+         9xEiRwq8zh8U2qtqmHh7Jdi0r76srTKHwICErBB8Q+2ak3aKxyroTZIyvHYMvAswvEu4
+         cjU4PwGR3Tgtp/6UBUhEvMkq6S5ZoyUGGM5zmT/XuZmKW4gZUXUEAi0NOb+6F4L2up/8
+         6ivDe8YJbHPVxbJQyDOEMtT67qncaa5I+sNrJVL/LNp6LTpz5dan1iFS9yHTP3gBJcWc
+         BoZwWIJsAg5pOf1xfzBq7MpwrJD5iDm6WWEc+SIdkltSop1fF9S8LzpNd3tU3YlzkgjW
+         lgMQ==
+X-Gm-Message-State: AOAM531ZYvFxFd3hYByRSG6qXgdYeI95jFUDFeU8nhlVql5jHdg9ejL0
+        U6eRwpVFuk87SGvfztZOTISyTghCW4AUZ5X3jOd9QA==
+X-Google-Smtp-Source: ABdhPJz6obQ5zFKGwi0WheVhpUVw5Y1L6DwEcdTp0kskObIxJm1918KFGbwHbcS6FYyobPFu0XY446QPjXd7AVCNTUg=
+X-Received: by 2002:ac2:544f:: with SMTP id d15mr2400667lfn.465.1620297398076;
+ Thu, 06 May 2021 03:36:38 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210503195048.1575007-1-clabbe@baylibre.com>
-In-Reply-To: <20210503195048.1575007-1-clabbe@baylibre.com>
+References: <20210503195048.1575007-1-clabbe@baylibre.com> <20210503195048.1575007-2-clabbe@baylibre.com>
+In-Reply-To: <20210503195048.1575007-2-clabbe@baylibre.com>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 6 May 2021 12:34:58 +0200
-Message-ID: <CACRpkdb72LCHpBm-EhgJ4y68hE1=oHjL1L4m-=R5fD4FDc-WiA@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: convert rtc/faraday,ftrtc01 to yaml
+Date:   Thu, 6 May 2021 12:36:26 +0200
+Message-ID: <CACRpkdZeTfRHO9EQ0L_ZCiSmqBtjMt4Q9Zb3qHRFgKNMburHqQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: dts: gemini: use the right rtc compatible
 To:     Corentin Labbe <clabbe@baylibre.com>
 Cc:     Alexandre Belloni <alexandre.belloni@bootlin.com>,
         Alessandro Zummo <a.zummo@towertech.it>,
@@ -68,13 +68,11 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Mon, May 3, 2021 at 9:50 PM Corentin Labbe <clabbe@baylibre.com> wrote:
 
-> Converts rtc/faraday,ftrtc01.txt to yaml.
-> This permits to detect some missing properties: reg, resets, interrupts
+> The rtc compatible was not following the dt-binding.
 >
 > Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 
-Thanks for doing this, LGTM
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+Patch applied!
 
 Yours,
 Linus Walleij
