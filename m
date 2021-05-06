@@ -2,208 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD640375D01
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:53:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D6C8375D10
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 00:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230349AbhEFVyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:54:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229572AbhEFVyh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 17:54:37 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84ECC061574;
-        Thu,  6 May 2021 14:53:38 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id n2so7163381wrm.0;
-        Thu, 06 May 2021 14:53:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ehzMC3baDkP+yU9cvxxvTEPGYM2hhUOxxcM3hdvysfQ=;
-        b=O8fOTg6dQISM5IB3x5hG/4Ine6HRgFqc+NBNViVxZ43acOatagnfhGfS558F1a0+OR
-         o2KqG/rq33CaR04gu4YlrviliC2BiWzJcF2bwcAh9zGYdx9cXswU+1f6L3F1sTfNZ7y8
-         I6JTenvJNTZ3JN/ASPkxtN17EYDXW8ljGJK7icLWTc8cmomvl1Rni08L0b6QcTzcJUtL
-         R5ioemMnUDYssVXI5rl06+90nH5mopZh3ma6qJ5K/ARMKvRbcJVKiS2pYoK6RDpFrK6i
-         ikTQ45dJf6cn51hVetLv119JCN+IJ71kTmZ2fUA87LCfwjihT5o622DM5Zs/54qluQSO
-         vbTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ehzMC3baDkP+yU9cvxxvTEPGYM2hhUOxxcM3hdvysfQ=;
-        b=MwMyw8ncMH0fr2OtNUe5fNd5ZRjrHHkF3YG0LkSMdVeZaocQ3fAFB+OdEdnqelNu2L
-         bD/l0gM5OBsiiGstXLT/8hj+koXYRRRAfWtM/dFhUEgdJ/Zk+QCFTje2sssc5Y0O8Tid
-         MgxisTQ2qz76HR/92FSbpjsZuKL5xGQWzzK0Epm7pspJ30zQnbU+WXnVYdhr5eSIz1+9
-         1eLySB9GgBpuFdbtW4ynjLCdIv5WmAaZd4uuceH8W+1MbYUYA2QvyI2INlcHMI56G78b
-         5EVa4TrFM974EpoFYDFbWKmIqZZJZk+xkR2/JSllsV280TUyhSwJRHWCjbX9xRbSWgc6
-         PbZA==
-X-Gm-Message-State: AOAM530LTx5Gd4mWMW1dd0vSxkpm7ZWaVWTNihxjaDLl2xYsTvEQyjUB
-        uu8XgSdaKxUFXfahflSLELU=
-X-Google-Smtp-Source: ABdhPJxbyUBN+2bcDAAjZ8tiJSW+nRnLSqUlAXqZmoWd7Hvg/o3j8V3cRAnJpHby/P3r7OChV+iTaQ==
-X-Received: by 2002:a5d:6687:: with SMTP id l7mr8153408wru.235.1620338017483;
-        Thu, 06 May 2021 14:53:37 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.gmail.com with ESMTPSA id c5sm6089071wrs.73.2021.05.06.14.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 14:53:36 -0700 (PDT)
-Date:   Thu, 6 May 2021 23:53:36 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v3 13/20] net: dsa: qca8k: make rgmii delay
- configurable
-Message-ID: <YJRlYAOtFHaaIguW@Ansuel-xps.localdomain>
-References: <20210504222915.17206-1-ansuelsmth@gmail.com>
- <20210504222915.17206-13-ansuelsmth@gmail.com>
- <20210506111033.w4v4jj3amwhyj4r3@skbuf>
+        id S230413AbhEFWGf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 18:06:35 -0400
+Received: from mga14.intel.com ([192.55.52.115]:25401 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230149AbhEFWGT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 18:06:19 -0400
+IronPort-SDR: aVvx8E7eLZcNY2kpyYVI9cjFAH3s1B8suKPVmc8z36twu9Sru51jqtCPpJH8q0ulLsXDPWk8Vn
+ lo0AZI0zHw7Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="198233911"
+X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
+   d="scan'208";a="198233911"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 15:05:18 -0700
+IronPort-SDR: E3B3lZ5t9BIU7x8JT3XoIkdfTP2uDRLb1wtuJN38MAl21fRXDH3sv+Vcf7oDpbQ+XVVkx4ab22
+ JaNUBAXX/BSw==
+X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
+   d="scan'208";a="434596777"
+Received: from yyu32-mobl1.amr.corp.intel.com (HELO [10.251.158.199]) ([10.251.158.199])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 15:05:16 -0700
+Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
+ signals for shadow stack)
+From:   "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        Linux API <linux-api@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Balbir Singh <bsingharora@gmail.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Cyrill Gorcunov <gorcunov@gmail.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Eugene Syromiatnikov <esyr@redhat.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Nadav Amit <nadav.amit@gmail.com>,
+        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Weijiang Yang <weijiang.yang@intel.com>,
+        Pengfei Xu <pengfei.xu@intel.com>,
+        Haitao Huang <haitao.huang@intel.com>
+References: <20210427204315.24153-1-yu-cheng.yu@intel.com>
+ <20210427204315.24153-26-yu-cheng.yu@intel.com>
+ <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
+ <8fd86049-930d-c9b7-379c-56c02a12cd77@intel.com>
+ <CALCETrX9z-73wpy-SCy8NE1XfQgXAN0mCmjv0jXDDomMyS7TKg@mail.gmail.com>
+ <a7c332c8-9368-40b1-e221-ec921f7db948@intel.com>
+ <5fc5dea4-0705-2aad-cf8f-7ff78a5e518a@intel.com>
+Message-ID: <bf16ab7e-bf27-68eb-efc9-c0468fb1c651@intel.com>
+Date:   Thu, 6 May 2021 15:05:15 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506111033.w4v4jj3amwhyj4r3@skbuf>
+In-Reply-To: <5fc5dea4-0705-2aad-cf8f-7ff78a5e518a@intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 02:10:33PM +0300, Vladimir Oltean wrote:
-> On Wed, May 05, 2021 at 12:29:07AM +0200, Ansuel Smith wrote:
-> > The legacy qsdk code used a different delay instead of the max value.
-> > Qsdk use 1 ps for rx and 2 ps for tx. Make these values configurable
-> > using the standard rx/tx-internal-delay-ps ethernet binding and apply
-> > qsdk values by default. The connected gmac doesn't add any delay so no
-> > additional delay is added to tx/rx.
-> > 
-> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> > ---
-> >  drivers/net/dsa/qca8k.c | 51 +++++++++++++++++++++++++++++++++++++++--
-> >  drivers/net/dsa/qca8k.h | 11 +++++----
-> >  2 files changed, 55 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
-> > index 22334d416f53..cb9b44769e92 100644
-> > --- a/drivers/net/dsa/qca8k.c
-> > +++ b/drivers/net/dsa/qca8k.c
-> > @@ -779,6 +779,47 @@ qca8k_setup_mdio_bus(struct qca8k_priv *priv)
-> >  	return 0;
-> >  }
-> >  
-> > +static int
-> > +qca8k_setup_of_rgmii_delay(struct qca8k_priv *priv)
-> > +{
-> > +	struct device_node *ports, *port;
-> > +	u32 val;
-> > +
-> > +	ports = of_get_child_by_name(priv->dev->of_node, "ports");
-> 
-> Consider falling back to searching for the "ethernet-ports" name too,
-> DSA should now support both.
->
+On 5/4/2021 1:49 PM, Yu, Yu-cheng wrote:
+> On 4/30/2021 11:32 AM, Yu, Yu-cheng wrote:
+>> On 4/30/2021 10:47 AM, Andy Lutomirski wrote:
+>>> On Fri, Apr 30, 2021 at 10:00 AM Yu, Yu-cheng <yu-cheng.yu@intel.com> 
+>>> wrote:
+>>>>
+>>>> On 4/28/2021 4:03 PM, Andy Lutomirski wrote:
+>>>>> On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com> 
+>>>>> wrote:
+>>>>>>
+>>>>>> When shadow stack is enabled, a task's shadow stack states must be 
+>>>>>> saved
+>>>>>> along with the signal context and later restored in sigreturn. 
+>>>>>> However,
+>>>>>> currently there is no systematic facility for extending a signal 
+>>>>>> context.
+>>>>>> There is some space left in the ucontext, but changing ucontext is 
+>>>>>> likely
+>>>>>> to create compatibility issues and there is not enough space for 
+>>>>>> further
+>>>>>> extensions.
+>>>>>>
+>>>>>> Introduce a signal context extension struct 'sc_ext', which is 
+>>>>>> used to save
+>>>>>> shadow stack restore token address.  The extension is located 
+>>>>>> above the fpu
+>>>>>> states, plus alignment.  The struct can be extended (such as the 
+>>>>>> ibt's
+>>>>>> wait_endbr status to be introduced later), and sc_ext.total_size 
+>>>>>> field
+>>>>>> keeps track of total size.
+>>>>>
+>>>>> I still don't like this.
+>>>>>
 
-The function qca8k_setup_mdio_bus also checks for ports node. Should I
-also there the fallback correct?
+[...]
 
-> > +	if (!ports)
-> > +		return -EINVAL;
-> > +
-> > +	/* Assume only one port with rgmii-id mode */
-> > +	for_each_available_child_of_node(ports, port) {
-> > +		if (!of_property_match_string(port, "phy-mode", "rgmii-id"))
-> > +			continue;
-> > +
-> > +		if (of_property_read_u32(port, "rx-internal-delay-ps", &val))
-> > +			val = 2;
-> > +
-> > +		if (val > QCA8K_MAX_DELAY) {
-> > +			dev_err(priv->dev, "rgmii rx delay is limited to more than 3ps, setting to the max value");
-> > +			priv->rgmii_rx_delay = 3;
+>>>>>
+>>>>> That's where we are right now upstream.  The kernel has a parser for
+>>>>> the FPU state that is bugs piled upon bugs and is going to have to be
+>>>>> rewritten sometime soon.  On top of all this, we have two upcoming
+>>>>> features, both of which require different kinds of extensions:
+>>>>>
+>>>>> 1. AVX-512.  (Yeah, you thought this story was over a few years ago,
+>>>>> but no.  And AMX makes it worse.)  To make a long story short, we
+>>>>> promised user code many years ago that a signal frame fit in 2048
+>>>>> bytes with some room to spare.  With AVX-512 this is false.  With AMX
+>>>>> it's so wrong it's not even funny.  The only way out of the mess
+>>>>> anyone has come up with involves making the length of the FPU state
+>>>>> vary depending on which features are INIT, i.e. making it more compact
+>>>>> than "compact" mode is.  This has a side effect: it's no longer
+>>>>> possible to modify the state in place, because enabling a feature with
+>>>>> no space allocated will make the structure bigger, and the stack won't
+>>>>> have room.  Fortunately, one can relocate the entire FPU state, update
+>>>>> the pointer in mcontext, and the kernel will happily follow the
+>>>>> pointer.  So new code on a new kernel using a super-compact state
+>>>>> could expand the state by allocating new memory (on the heap? very
+>>>>> awkwardly on the stack?) and changing the pointer.  For all we know,
+>>>>> some code already fiddles with the pointer.  This is great, except
+>>>>> that your patch sticks more data at the end of the FPU block that no
+>>>>> one is expecting, and your sigreturn code follows that pointer, and
+>>>>> will read off into lala land.
+>>>>>
+>>>>
+>>>> Then, what about we don't do that at all.  Is it possible from now 
+>>>> on we
+>>>> don't stick more data at the end, and take the relocating-fpu approach?
+>>>>
+>>>>> 2. CET.  CET wants us to find a few more bytes somewhere, and those
+>>>>> bytes logically belong in ucontext, and here we are.
+>>>>>
+>>>>
+>>>> Fortunately, we can spare CET the need of ucontext extension.  When the
+>>>> kernel handles sigreturn, the user-mode shadow stack pointer is 
+>>>> right at
+>>>> the restore token.  There is no need to put that in ucontext.
+>>>
+>>> That seems entirely reasonable.  This might also avoid needing to
+>>> teach CRIU about CET at all.
+>>>
+>>>>
+>>>> However, the WAIT_ENDBR status needs to be saved/restored for signals.
+>>>> Since IBT is now dependent on shadow stack, we can use a spare bit of
+>>>> the shadow stack restore token for that.
+>>>
+>>> That seems like unnecessary ABI coupling.  We have plenty of bits in
+>>> uc_flags, and we have an entire reserved word in sigcontext.  How
+>>> about just sticking this bit in one of those places?
+>>
+>> Yes, I will make it UC_WAIT_ENDBR.
 > 
-> ?!
-> 3 picoseconds is not a lot of clock skew for a 125/25/2.5 MHz clock. 3 nanoseconds maybe?
+> Personally, I think an explicit flag is cleaner than using a reserved 
+> word somewhere.  However, there is a small issue: ia32 has no uc_flags.
 > 
-> > +		} else {
-> > +			priv->rgmii_rx_delay = val;
-> > +		}
-> > +
-> > +		if (of_property_read_u32(port, "rx-internal-delay-ps", &val))
-> > +			val = 1;
-> > +
-> > +		if (val > QCA8K_MAX_DELAY) {
-> > +			dev_err(priv->dev, "rgmii tx delay is limited to more than 3ps, setting to the max value");
-> > +			priv->rgmii_tx_delay = 3;
-> > +		} else {
-> > +			priv->rgmii_rx_delay = val;
-> > +		}
-> > +	}
-> > +
-> > +	of_node_put(ports);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> >  static int
-> >  qca8k_setup(struct dsa_switch *ds)
-> >  {
-> > @@ -808,6 +849,10 @@ qca8k_setup(struct dsa_switch *ds)
-> >  	if (ret)
-> >  		return ret;
-> >  
-> > +	ret = qca8k_setup_of_rgmii_delay(priv);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> >  	/* Enable CPU Port */
-> >  	ret = qca8k_reg_set(priv, QCA8K_REG_GLOBAL_FW_CTRL0,
-> >  			    QCA8K_GLOBAL_FW_CTRL0_CPU_PORT_EN);
-> > @@ -1018,8 +1063,10 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
-> >  		 */
-> >  		qca8k_write(priv, reg,
-> >  			    QCA8K_PORT_PAD_RGMII_EN |
-> > -			    QCA8K_PORT_PAD_RGMII_TX_DELAY(QCA8K_MAX_DELAY) |
-> > -			    QCA8K_PORT_PAD_RGMII_RX_DELAY(QCA8K_MAX_DELAY));
-> > +			    QCA8K_PORT_PAD_RGMII_TX_DELAY(priv->rgmii_tx_delay) |
-> > +			    QCA8K_PORT_PAD_RGMII_RX_DELAY(priv->rgmii_rx_delay) |
-> > +			    QCA8K_PORT_PAD_RGMII_TX_DELAY_EN |
-> > +			    QCA8K_PORT_PAD_RGMII_RX_DELAY_EN);
-> >  		/* QCA8337 requires to set rgmii rx delay */
-> >  		if (data->id == QCA8K_ID_QCA8337)
-> >  			qca8k_write(priv, QCA8K_REG_PORT5_PAD_CTRL,
-> > diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
-> > index 0b503f78bf92..80830bb42736 100644
-> > --- a/drivers/net/dsa/qca8k.h
-> > +++ b/drivers/net/dsa/qca8k.h
-> > @@ -36,12 +36,11 @@
-> >  #define QCA8K_REG_PORT5_PAD_CTRL			0x008
-> >  #define QCA8K_REG_PORT6_PAD_CTRL			0x00c
-> >  #define   QCA8K_PORT_PAD_RGMII_EN			BIT(26)
-> > -#define   QCA8K_PORT_PAD_RGMII_TX_DELAY(x)		\
-> > -						((0x8 + (x & 0x3)) << 22)
-> > -#define   QCA8K_PORT_PAD_RGMII_RX_DELAY(x)		\
-> > -						((0x10 + (x & 0x3)) << 20)
-> > -#define   QCA8K_MAX_DELAY				3
-> > +#define   QCA8K_PORT_PAD_RGMII_TX_DELAY(x)		((x) << 22)
-> > +#define   QCA8K_PORT_PAD_RGMII_RX_DELAY(x)		((x) << 20)
-> > +#define	  QCA8K_PORT_PAD_RGMII_TX_DELAY_EN		BIT(25)
-> >  #define   QCA8K_PORT_PAD_RGMII_RX_DELAY_EN		BIT(24)
-> > +#define   QCA8K_MAX_DELAY				3
-> >  #define   QCA8K_PORT_PAD_SGMII_EN			BIT(7)
-> >  #define QCA8K_REG_PWS					0x010
-> >  #define   QCA8K_PWS_SERDES_AEN_DIS			BIT(7)
-> > @@ -251,6 +250,8 @@ struct qca8k_match_data {
-> >  
-> >  struct qca8k_priv {
-> >  	u8 switch_revision;
-> > +	u8 rgmii_tx_delay;
-> > +	u8 rgmii_rx_delay;
-> >  	struct regmap *regmap;
-> >  	struct mii_bus *bus;
-> >  	struct ar8xxx_port_status port_sts[QCA8K_NUM_PORTS];
-> > -- 
-> > 2.30.2
-> > 
+> This series can support legacy apps up to now.  But, instead of creating 
+> too many special cases, perhaps we should drop CET support of ia32?
+> 
+> Thoughts?
+> 
+
+Once we have UC_WAIT_ENDBR, IBT signal handling becomes quite simple. 
+Like the following:
+
+diff --git a/arch/x86/include/uapi/asm/ucontext.h 
+b/arch/x86/include/uapi/asm/ucontext.h
+index 5657b7a49f03..96375d609e11 100644
+--- a/arch/x86/include/uapi/asm/ucontext.h
++++ b/arch/x86/include/uapi/asm/ucontext.h
+@@ -49,6 +49,11 @@
+   */
+  #define UC_SIGCONTEXT_SS	0x2
+  #define UC_STRICT_RESTORE_SS	0x4
++
++/*
++ * UC_WAIT_ENDBR indicates the task is in wait-ENDBR status.
++ */
++#define UC_WAIT_ENDBR		0x08
+  #endif
+
+  #include <asm-generic/ucontext.h>
+diff --git a/arch/x86/kernel/ibt.c b/arch/x86/kernel/ibt.c
+index d2563dd4759f..da804314ddc4 100644
+--- a/arch/x86/kernel/ibt.c
++++ b/arch/x86/kernel/ibt.c
+@@ -66,3 +66,32 @@ void ibt_disable(void)
+  	ibt_set_clear_msr_bits(0, CET_ENDBR_EN);
+  	current->thread.cet.ibt = 0;
+  }
++
++int ibt_get_clear_wait_endbr(void)
++{
++	u64 msr_val = 0;
++
++	if (!current->thread.cet.ibt)
++		return 0;
++
++	fpregs_lock();
++
++	if (test_thread_flag(TIF_NEED_FPU_LOAD))
++		__fpregs_load_activate();
++
++	if (!rdmsrl_safe(MSR_IA32_U_CET, &msr_val))
++		wrmsrl(MSR_IA32_U_CET, msr_val & ~CET_WAIT_ENDBR);
++
++	fpregs_unlock();
++
++	return msr_val & CET_WAIT_ENDBR;
++}
++
++int ibt_set_wait_endbr(void)
++{
++	if (!current->thread.cet.ibt)
++		return 0;
++
++
++	return ibt_set_clear_msr_bits(CET_WAIT_ENDBR, 0);
++}
+diff --git a/arch/x86/kernel/signal.c b/arch/x86/kernel/signal.c
+index 66b662e57e19..5afd15419006 100644
+--- a/arch/x86/kernel/signal.c
++++ b/arch/x86/kernel/signal.c
+@@ -46,6 +46,7 @@
+  #include <asm/syscall.h>
+  #include <asm/sigframe.h>
+  #include <asm/signal.h>
++#include <asm/cet.h>
+
+  #ifdef CONFIG_X86_64
+  /*
+@@ -134,6 +135,9 @@ static int restore_sigcontext(struct pt_regs *regs,
+  	 */
+  	if (unlikely(!(uc_flags & UC_STRICT_RESTORE_SS) && 
+user_64bit_mode(regs)))
+  		force_valid_ss(regs);
++
++	if (uc_flags & UC_WAIT_ENDBR)
++		ibt_set_wait_endbr();
+  #endif
+
+  	return fpu__restore_sig((void __user *)sc.fpstate,
+@@ -433,6 +437,9 @@ static unsigned long frame_uc_flags(struct pt_regs 
+*regs)
+  	if (likely(user_64bit_mode(regs)))
+  		flags |= UC_STRICT_RESTORE_SS;
+
++	if (ibt_get_clear_wait_endbr())
++		flags |= UC_WAIT_ENDBR;
++
+  	return flags;
+  }
+
+
+However, this cannot handle ia32 with no SA_SIGINFO.  For that, can we 
+create a synthetic token on the shadow stack?
+
+- The token points to itself with reserved bit[1] set, and cannot be 
+used for RSTORSSP.
+- The token only exists for ia32 with no SA_SIGINFO *AND* when the task 
+is in wait-endbr.
+
+The signal shadow stack will look like this:
+
+--> ssp before signal
+     synthetic IBT token (for ia32 no SA_SIGINFO)
+     shadow stack restore token
+     sigreturn address
+
+The synthetic token is not valid in other situations.
+How is that?
+
+Thanks,
+Yu-cheng
