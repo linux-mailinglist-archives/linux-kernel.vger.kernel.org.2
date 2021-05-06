@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A75D3759EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 20:00:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F548375974
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:34:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236382AbhEFSBw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 14:01:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38768 "EHLO
+        id S236405AbhEFRfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:35:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60826 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236362AbhEFSBv (ORCPT
+        with ESMTP id S236312AbhEFRe6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 14:01:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B4DC061574;
-        Thu,  6 May 2021 11:00:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=Myawrg/Eh1KKgeTyc8ETEcq2kjGMoYOMLzTzDqOVZ8M=; b=e1iQYj3+gozYvU6ezrdcNd1QV7
-        1igZVEJMBjQgsXbWw3o1LId2dxXxUwIzERDtwbZH9np9H49DxNcTZP5rOtEiNy8Qk6136BD3b6aEm
-        TIRQ7A7IMFbPVndkLVi2JlngFtakfotDoxPUyutj+vRgEZwNTuBedmr3LWgzE2GEZ8cNke/KUl/1E
-        R3208cffmARKSrUwB5+AoKN3AHMAqaw+11+4GAWO0Ip5IvUOI8XKIGHvCZI+s6Pyf1hxvY/11fNZU
-        mlQ2ghYICxRp7q7xrCk/xA/nPJh91+pNNa+HZJ1n6Skwmg9chI1VSPLgi8i6D01lh9y8U6D/ebs2Y
-        ewi8ZWdQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1leiHO-0023DI-4n; Thu, 06 May 2021 17:59:42 +0000
-Date:   Thu, 6 May 2021 18:59:18 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Mike Rapoport <rppt@kernel.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        dave.hansen@intel.com, luto@kernel.org, linux-mm@kvack.org,
-        x86@kernel.org, akpm@linux-foundation.org,
-        linux-hardening@vger.kernel.org,
-        kernel-hardening@lists.openwall.com, ira.weiny@intel.com,
-        dan.j.williams@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC 5/9] x86, mm: Use cache of page tables
-Message-ID: <20210506175918.GC388843@casper.infradead.org>
-References: <20210505003032.489164-1-rick.p.edgecombe@intel.com>
- <20210505003032.489164-6-rick.p.edgecombe@intel.com>
- <YJJcqyrMEJipbevT@hirez.programming.kicks-ass.net>
- <YJKK5RUMOzv488DO@kernel.org>
+        Thu, 6 May 2021 13:34:58 -0400
+Received: from mail-ed1-x536.google.com (mail-ed1-x536.google.com [IPv6:2a00:1450:4864:20::536])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A0D0C061761;
+        Thu,  6 May 2021 10:33:59 -0700 (PDT)
+Received: by mail-ed1-x536.google.com with SMTP id n15so2485726edw.8;
+        Thu, 06 May 2021 10:33:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CcThJDtQ981B2x/N73MHCvt7MQmPMdERZyhj+4MLJ2A=;
+        b=n940lKCUxawS1BhdCJB2Dhl0QKq7WDa6YOQvt9BCAMKfMZYWEJrpJmTKeJxkJLJ7zB
+         Bm/hhJV4yhJNSnQauhJ7K4Atx1IMWqj86Am7NMXDdMvsnsU9r0itUU2g9pn61kJbX/ZY
+         vDQv2WmRWq49gYIQb2YpBraBqcfZImV5wGcU8fDuiGLCthZ2huK0w9PDH72V8jffUxNV
+         RTc3OFiI9WNCVz3cqfOshKcuZMCfCbHiSfAX9EX8VW1nY3EMvfKL7LsqxB7W7i8Er32A
+         z4n+qMC8ncARY5/Db62qCZs6drdMRjsMaH3GKEZg/kGgK6r1qmsafJr1tI/c60QeMOoJ
+         nezw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=CcThJDtQ981B2x/N73MHCvt7MQmPMdERZyhj+4MLJ2A=;
+        b=FSBcZqWpY9KWjoq2iTF0a8IMMtBB/qndjmyqyWg5F45G+KqTuPcgHHZlFiDeywAtMg
+         VWWXaRpCDRLn+MsMnNi0DSTkuqqAcI7h3aErucKS3Y/uNeAcUWHFhkyrf08jE9giZiZ6
+         SZu5G19xXoYD4ZXzXgiTxgTd+5SjUl9KzySrluvk/H6rbdc6XrZn3og+tPX3cPd4swsn
+         nzenkzwR1yEk4u+wCsCH5JhgIXY03MmqR3PdryzpM3wfYIKMtVzHiqy+Am7hbeC+3cqH
+         PMYyvNpoTQo0NGz5d6Z5FfyU+Odkt9SafSf+jm2n0fgcuPsThrH8xzbIy/BBHsRWhXgr
+         LtWA==
+X-Gm-Message-State: AOAM5315BH/2F9dukEJeKHxdjadP9LwXn0f0cPNdWPA+e+GqgbU4ROz/
+        032PPsKnmMyGee+t/OZTJPM=
+X-Google-Smtp-Source: ABdhPJz/HzA4DZ2bzXhVn81vPZQ+z436nEd9211YTbTDxTNCwn5GeRK+iD873rdkN8yTQnPzIsINBw==
+X-Received: by 2002:aa7:c495:: with SMTP id m21mr6637964edq.123.1620322438192;
+        Thu, 06 May 2021 10:33:58 -0700 (PDT)
+Received: from localhost.localdomain ([212.15.177.85])
+        by smtp.gmail.com with ESMTPSA id ca20sm1801800ejb.84.2021.05.06.10.33.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 10:33:57 -0700 (PDT)
+From:   Ivan Bakula <wamreu@gmail.com>
+To:     robh@kernel.org
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ivan Bakula <wamreu@gmail.com>
+Subject: [PATCH] TTY: serdev: Replace depricated macros
+Date:   Thu,  6 May 2021 20:32:28 +0200
+Message-Id: <20210506183228.33981-1-wamreu@gmail.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJKK5RUMOzv488DO@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 03:09:09PM +0300, Mike Rapoport wrote:
-> On Wed, May 05, 2021 at 10:51:55AM +0200, Peter Zijlstra wrote:
-> > On Tue, May 04, 2021 at 05:30:28PM -0700, Rick Edgecombe wrote:
-> > > @@ -54,6 +98,8 @@ void ___pte_free_tlb(struct mmu_gather *tlb, struct page *pte)
-> > >  {
-> > >  	pgtable_pte_page_dtor(pte);
-> > >  	paravirt_release_pte(page_to_pfn(pte));
-> > > +	/* Set Page Table so swap knows how to free it */
-> > > +	__SetPageTable(pte);
-> > >  	paravirt_tlb_remove_table(tlb, pte);
-> > >  }
-> > >  
-> > > @@ -70,12 +116,16 @@ void ___pmd_free_tlb(struct mmu_gather *tlb, pmd_t *pmd)
-> > >  	tlb->need_flush_all = 1;
-> > >  #endif
-> > >  	pgtable_pmd_page_dtor(page);
-> > > +	/* Set Page Table so swap nows how to free it */
-> > > +	__SetPageTable(virt_to_page(pmd));
-> > >  	paravirt_tlb_remove_table(tlb, page);
-> > >  }
-> > >  
-> > >  #if CONFIG_PGTABLE_LEVELS > 3
-> > >  void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
-> > >  {
-> > > +	/* Set Page Table so swap nows how to free it */
-> > > +	__SetPageTable(virt_to_page(pud));
-> > >  	paravirt_release_pud(__pa(pud) >> PAGE_SHIFT);
-> > >  	paravirt_tlb_remove_table(tlb, virt_to_page(pud));
-> > >  }
-> > > @@ -83,6 +133,8 @@ void ___pud_free_tlb(struct mmu_gather *tlb, pud_t *pud)
-> > >  #if CONFIG_PGTABLE_LEVELS > 4
-> > >  void ___p4d_free_tlb(struct mmu_gather *tlb, p4d_t *p4d)
-> > >  {
-> > > +	/* Set Page Table so swap nows how to free it */
-> > > +	__SetPageTable(virt_to_page(p4d));
-> > >  	paravirt_release_p4d(__pa(p4d) >> PAGE_SHIFT);
-> > >  	paravirt_tlb_remove_table(tlb, virt_to_page(p4d));
-> > >  }
-> > 
-> > This, to me, seems like a really weird place to __SetPageTable(), why
-> > can't we do that on allocation?
-> 
-> We call __ClearPageTable() at pgtable_pxy_page_dtor(), so at least for pte
-> and pmd we need to somehow tell release_pages() what kind of page it was.
+Replace depricated macros ida_simple_get and ida_simple_remove with
+appropriate function calls to ida_alloc and ida_free.
 
-One of the things I've been thinking about doing is removing the pgtable
-dtors and instead calling the pgtable dtor in __put_page() if PageTable().
-Might work nicely with this ...
+Signed-off-by: Ivan Bakula <wamreu@gmail.com>
+---
+ drivers/tty/serdev/core.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+index aead0c0c9..5f873960b 100644
+--- a/drivers/tty/serdev/core.c
++++ b/drivers/tty/serdev/core.c
+@@ -75,7 +75,7 @@ static bool is_serdev_device(const struct device *dev)
+ static void serdev_ctrl_release(struct device *dev)
+ {
+ 	struct serdev_controller *ctrl = to_serdev_controller(dev);
+-	ida_simple_remove(&ctrl_ida, ctrl->nr);
++	ida_free(&ctrl_ida, ctrl->nr);
+ 	kfree(ctrl);
+ }
+ 
+@@ -488,7 +488,7 @@ struct serdev_controller *serdev_controller_alloc(struct device *parent,
+ 	if (!ctrl)
+ 		return NULL;
+ 
+-	id = ida_simple_get(&ctrl_ida, 0, 0, GFP_KERNEL);
++	id = ida_alloc(&ctrl_ida, GFP_KERNEL);
+ 	if (id < 0) {
+ 		dev_err(parent,
+ 			"unable to allocate serdev controller identifier.\n");
+-- 
+2.31.1
+
