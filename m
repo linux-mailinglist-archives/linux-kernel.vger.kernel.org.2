@@ -2,112 +2,193 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1389C3754FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:42:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C96FA3754FF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:43:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234306AbhEFNnN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:43:13 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25177 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233973AbhEFNnL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:43:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620308533;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/JFKzJsZWKfZev+/Rh9j9dVZ1lFg13LxLM7R/XtjBvQ=;
-        b=ZXr/Y8kq6U7xKrRgcvRJ6LUEgrux1+S4EST31QbaOL0YcPy5e8pMUIPDMsp4yxzU3N7414
-        miOHNFkQVpyzBHsuKyyENRl49KO/Nr1Q10UYSTMAeTSv09QpYjwKhkF5RKtVqk7zufQGRD
-        0iw9uMXAWn2ngsQBLjPKuAorDXKmAbA=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-peIpyyRAMCm8Eb9RvV6yKg-1; Thu, 06 May 2021 09:42:12 -0400
-X-MC-Unique: peIpyyRAMCm8Eb9RvV6yKg-1
-Received: by mail-ej1-f70.google.com with SMTP id zo1-20020a170906ff41b02903973107d7b5so1699506ejb.21
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 06:42:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/JFKzJsZWKfZev+/Rh9j9dVZ1lFg13LxLM7R/XtjBvQ=;
-        b=jTXOwcVGrZ+bJryBcGNxPg0fJj/8Z0KMEkPbJmoQlcL8YDLizNppWn5hYrpeAKmpja
-         Maknrumhng3UmnMRk4khTEcmy4idGM2q+5EyWxi4HLqYSGWDmYpfbabQuno1VSkVMpys
-         9HkUd7b1V14qT2QuCuW4M36IPhjco+QxpG6K1eEWby5yZZWsaj8SANA+XN73o79Jb0lj
-         ks1pcgxlApLkWtSkfZg3DzWYK4p56AqSETvOX4s2jKEKw7fvsnhAugBDMSIlLi5XaLmz
-         rwSu7cl5rR8H5p77bJhBkuEk2CDiBQCyFGLBShjzeUF2GDOe3q+Eg+wlNIZv1fukvUxx
-         QWhg==
-X-Gm-Message-State: AOAM5309lUB8O1uSBE+rJO1+/zrhgKu3C+LcC3GBMWmsdHrLS4feP2RL
-        9b3RxmTEk+OoF/2lFAYgMLIeRkT8IBTEfCOvfCkZuomBXtDXreEwU7tHm1zqb3lwlElQVcWdCL4
-        AxHbO1cTd2CKfSwTVoY+PjJwN
-X-Received: by 2002:a17:907:2117:: with SMTP id qn23mr4504976ejb.48.1620308529838;
-        Thu, 06 May 2021 06:42:09 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx3wxu/IZ9ntNTNuPeckWWVyR06mYdB053KKHEZETX5A+51tqYWcq2oTBKVUX2IhbEoR8+dQA==
-X-Received: by 2002:a17:907:2117:: with SMTP id qn23mr4504954ejb.48.1620308529647;
-        Thu, 06 May 2021 06:42:09 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id z22sm1906428edm.57.2021.05.06.06.42.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 06:42:09 -0700 (PDT)
-Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-References: <20210506034332.752263-1-linux@roeck-us.net>
- <CAHp75Vd0N5s=D9LFiVU75gYCLnpqOwfBogbWUTwZNC1CV2n88Q@mail.gmail.com>
- <20210506133754.GA2266661@roeck-us.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <768c06ff-663c-eacb-fd3c-628b4e4ba449@redhat.com>
-Date:   Thu, 6 May 2021 15:42:08 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S234315AbhEFNoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:44:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234072AbhEFNoM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 09:44:12 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 29903610FC;
+        Thu,  6 May 2021 13:43:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620308593;
+        bh=OYpxcOggYx63k10dSDJieTJURALlTSmR6/wTmA0hY24=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AlXO6q4RNjT4/PuBH8FKEMx4eSHHq8h0qUvZqbdOP3l95nS7rgnBwh3SSOSeOBY7I
+         SGqwlbPez1b46fkWlVPf+qKrN4NYk1f3lhO7QCdqlng6/PwMOeNWURpwHiw/uf+DyZ
+         LTcgUpCM9qxldONQaaLJ/k4Gnk0HNi7iMls4JGBg=
+Date:   Thu, 6 May 2021 15:43:10 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     linux-kernel@vger.kernel.org,
+        Atul Gopinathan <atulgopinathan@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 27/69] cdrom: gdrom: deallocate struct gdrom_unit fields
+ in remove_gdrom
+Message-ID: <YJPybgcWYKLpyBdK@kroah.com>
+References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
+ <20210503115736.2104747-28-gregkh@linuxfoundation.org>
+ <223d5bda-bf02-a4a8-ab1d-de25e32b8d47@axentia.se>
+ <YJPDzqAAnP0jDRDF@kroah.com>
+ <dd716d04-b9fa-986a-50dd-5c385ea745b2@axentia.se>
 MIME-Version: 1.0
-In-Reply-To: <20210506133754.GA2266661@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <dd716d04-b9fa-986a-50dd-5c385ea745b2@axentia.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 5/6/21 3:37 PM, Guenter Roeck wrote:
-> On Thu, May 06, 2021 at 12:28:40PM +0300, Andy Shevchenko wrote:
->> On Thu, May 6, 2021 at 6:43 AM Guenter Roeck <linux@roeck-us.net> wrote:
->>>
->>> With CONFIG_ACPI=n and -Werror, 0-day reports:
->>>
->>> drivers/iio/chemical/bme680_i2c.c:46:36: error:
->>>         'bme680_acpi_match' defined but not used
->>>
->>> Apparently BME0680 is not a valid ACPI ID. Remove it and with it
->>> ACPI support from the bme680_i2c driver.
->>
->> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
->>
->> with the SPI part amended in the same way.
->>
-> Right. I just sent a patch doing that. Oddly enough 0-day didn't complain
-> about that one to me, nor about many other drivers with the same problem.
-> No idea how it decides if and when to make noise.
+On Thu, May 06, 2021 at 03:08:08PM +0200, Peter Rosin wrote:
+> Hi!
 > 
-> Is there a way to determine invalid ACPI IDs ?
+> On 2021-05-06 12:24, Greg Kroah-Hartman wrote:
+> > On Mon, May 03, 2021 at 04:13:18PM +0200, Peter Rosin wrote:
+> >> Hi!
+> >>
+> >> On 2021-05-03 13:56, Greg Kroah-Hartman wrote:
+> >>> From: Atul Gopinathan <atulgopinathan@gmail.com>
+> >>>
+> >>> The fields, "toc" and "cd_info", of "struct gdrom_unit gd" are allocated
+> >>> in "probe_gdrom()". Prevent a memory leak by making sure "gd.cd_info" is
+> >>> deallocated in the "remove_gdrom()" function.
+> >>>
+> >>> Also prevent double free of the field "gd.toc" by moving it from the
+> >>> module's exit function to "remove_gdrom()". This is because, in
+> >>> "probe_gdrom()", the function makes sure to deallocate "gd.toc" in case
+> >>> of any errors, so the exit function invoked later would again free
+> >>> "gd.toc".
+> >>>
+> >>> The patch also maintains consistency by deallocating the above mentioned
+> >>> fields in "remove_gdrom()" along with another memory allocated field
+> >>> "gd.disk".
+> >>>
+> >>> Suggested-by: Jens Axboe <axboe@kernel.dk>
+> >>> Cc: Peter Rosin <peda@axentia.se>
+> >>> Cc: stable <stable@vger.kernel.org>
+> >>> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
+> >>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >>> ---
+> >>>  drivers/cdrom/gdrom.c | 3 ++-
+> >>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >>>
+> >>> diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
+> >>> index 7f681320c7d3..6c4f6139f853 100644
+> >>> --- a/drivers/cdrom/gdrom.c
+> >>> +++ b/drivers/cdrom/gdrom.c
+> >>> @@ -830,6 +830,8 @@ static int remove_gdrom(struct platform_device *devptr)
+> >>>  	if (gdrom_major)
+> >>>  		unregister_blkdev(gdrom_major, GDROM_DEV_NAME);
+> >>>  	unregister_cdrom(gd.cd_info);
+> >>> +	kfree(gd.cd_info);
+> >>> +	kfree(gd.toc);
+> >>>  
+> >>>  	return 0;
+> >>>  }
+> >>> @@ -861,7 +863,6 @@ static void __exit exit_gdrom(void)
+> >>>  {
+> >>>  	platform_device_unregister(pd);
+> >>>  	platform_driver_unregister(&gdrom_driver);
+> >>> -	kfree(gd.toc);
+> >>>  }
+> >>>  
+> >>>  module_init(init_gdrom);
+> >>>
+> >>
+> >> I worry about the gd.toc = NULL; statement in init_gdrom(). It sets off
+> >> all kinds of warnings with me. It looks completely bogus, but the fact
+> >> that it's there at all makes me go hmmmm.
+> > 
+> > Yeah, that's bogus.
+> > 
+> >> probe_gdrom_setupcd() will arrange for gdrom_ops to be used, including
+> >> .get_last_session pointing to gdrom_get_last_session() 
+> >>
+> >> gdrom_get_last_session() will use gd.toc, if it is non-NULL.
+> >>
+> >> The above will all be registered externally to the driver with the call
+> >> to register_cdrom() in probe_gdrom(), before a possible stale gd.toc is
+> >> overwritten with a new one at the end of probe_gdrom().
+> > 
+> > But can that really happen given that it hasn't ever happened before in
+> > a real system?  :)
+> > 
+> >> Side note, .get_last_session is an interesting name in this context, but
+> >> I have no idea if it might be called in the "bad" window (but relying on
+> >> that to not be the case would be ... subtle).
+> >>
+> >> So, by simply freeing gd.toc in remove_gdrom() without also setting
+> >> it to NULL, it looks like a potential use after free of gd.toc is
+> >> introduced, replacing a potential leak. Not good.
+> > 
+> > So should we set it to NULL after freeing it?  Is that really going to
+> > help here given that the probe failed?  Nothing can use it after
+> > remove_gdrom() is called because unregiser_* is called already.
+> > 
+> > I don't see the race here, sorry.
+> > 
+> >> The same is not true for gd.cd_info as far as I can tell, but it's a bit
+> >> subtle. gdrom_probe() calls gdrom_execute_diagnostics() before the stale
+> >> gd.cd_info is overwritten, and gdrom_execute_diagnostic() passes the
+> >> stale pointer to gdrom_hardreset(), which luckily doesn't use it. But
+> >> this is - as hinted - a bit too subtle for me. I would prefer to have
+> >> remove_gdrom() also clear out the gd.cd_info pointer.
+> > 
+> > Ok, but again, how can that be used after remove_gdrom() is called?
+> > 
+> >> In addition to adding these clears of gd.toc and gd.cd_info to
+> >> remove_gdrom(), they also need to be cleared in case probe fails.
+> >>
+> >> Or instead, maybe add a big fat
+> >> 	memset(&gd, 0, sizeof(gd));
+> >> at the top of probe?
+> > 
+> > Really, that's what is happening today as there is only 1 device here,
+> > and the whole structure was zeroed out already.  So that would be a
+> > no-op.
+> > 
+> >> Or maybe the struct gdrom_unit should simply be kzalloc:ed? But that
+> >> triggers some . to -> churn...
+> > 
+> > Yes, ideally that would be the correct change, but given that you can
+> > only have 1 device in the system at a time of this type, it's not going
+> > to make much difference at all here.
+> > 
+> >> Anyway, the patch as proposed gets a NACK from me.
+> > 
+> > Why?  It fixes the obvious memory leak, right?  Worst case you are
+> > saying we should also set to NULL these pointers, but I can not see how
+> > they are accessed as we have already torn everything down.
+> 
+> I'm thinking this:
+> 
+> 1. init_gdrom() is called. gd.toc is NULL and is bogusly re-set to NULL.
+> 2. probe_gdrom() is called and succeeds. gd.toc is allocted.
+> 3. device is used, etc etc, whatever
+> 4. remove_gdrom() is called. gd.toc is freed (but not set to NULL).
+> 5. probe_gdrom() is called again. Boom.
 
-No, unfortunately not. There is a format which ACPI IDs are
-supposed to follow, but some "out in the wild" API ids don't
-follow this; and many fake (made up) ACPI ids do follow it...
+Ah.  Well, adding/removing platform devices is a hard thing, and if you
+do it, you deserve the pieces you get :)
 
-We (mostly Andy and me) are not even 100% sure this one is
-a fake ACPI ID, but we do pretty strongly believe that it is.
+It would be trivial to fix this by setting all of &gd to 0 as you
+mention above, so yes, that would be good.  But that's an add-on patch
+and not relevant to this "fix" here.
 
-Regards,
+> In 5, gd.toc is not NULL, and is pointing to whatever. It is
+> potentially used by probe_gdrom() before it is (re-)allocated.
+> 
+> I suppose the above can only happen if the module is compiled in.
 
-Hans
+You can add/remove platform devices through sysfs if the code is a
+module as well.
 
+I'll go make a new commit that zeros everything at probe_gdrom() that
+goes on top of this one.
+
+thanks,
+
+greg k-h
