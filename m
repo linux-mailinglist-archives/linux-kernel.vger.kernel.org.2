@@ -2,92 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79D6737525F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB413375264
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:33:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234478AbhEFKdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:33:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50296 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbhEFKdM (ORCPT
+        id S234476AbhEFKeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:34:22 -0400
+Received: from mail-il1-f200.google.com ([209.85.166.200]:42933 "EHLO
+        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234451AbhEFKeS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:33:12 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57EE5C061763
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 03:32:13 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id e12so6407013ljn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 03:32:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=CO6hp7+jjo2iwhz+Us2x3qq2lqayYac9jn7GVF93Eck=;
-        b=Z+WdpPau49MhZKAmAk25uSLdLiGwVy1svhI7afA3PnRv89a2AEjVovgOWVcbjwN0qs
-         IiXBuqy787YTMXnI2OxbsMh/WgGk78teisS+phOimTwSWC2fLLicJ1vDbiq6zhC8aZTi
-         fI7ydRXm8tafcwpBV5EkuIW1+lxr+81DKNi3utImROo8kWDivJRY3KSLKFTtDlGZTMDf
-         2Fs7p3+XQurndEZqkM9DhEHBqTfbEntk18Fs4365MtrV9/h5kyA6RRu+65NJqGLX9WFb
-         BqsW2ofsBcNI2yh3HQlFi7qHfGQPnnhL+xBGm6mbQzExtl1G13cxmzDfAwRdj88cQ3cS
-         0+2Q==
+        Thu, 6 May 2021 06:34:18 -0400
+Received: by mail-il1-f200.google.com with SMTP id d3-20020a9287430000b0290181f7671fa1so3984356ilm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 03:33:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=CO6hp7+jjo2iwhz+Us2x3qq2lqayYac9jn7GVF93Eck=;
-        b=RqU8LCQcKRVoOA5CTwGf28eP5RxqEgJM8bhmUFLVL2GO6a0sKzTE3UlDcvYoRIJkrR
-         Y9Il5KSJTrvDQpgyn6Rxt6TyGiFfrogC0FZoIBvny1Ehfl1cQbnAvXQ8sI14FS/Q2gjn
-         m9oxrL2Gr2u8dMH4T8VqTc1+1+0lgOSpLDXBvFSTaB+FHK4rN4rjLXJtnS8dD9PVkqKc
-         jo88IHVOa3YoANorXAVoiQFO+yHHyZ3SBwcWPH98b/wSTt+eg0dYDQil+kyvaQVUeAUM
-         dXeGCPkonyYdGtS5m1Iwqif70VlATIgH/L87xf2OhHIFUpCd8ptAxgfgR18XzS/rQxX6
-         qJiA==
-X-Gm-Message-State: AOAM531CERMooADAbWKel0cfeUxhoPhgbw/lHK2w+NbR2AHgLCLyMDcT
-        qEe1mklllQEnnr+a5G0JzE93YRegEhxM0AdI6MNLQ6CeOkA=
-X-Google-Smtp-Source: ABdhPJy629XqkraW6pK+wU+groCxJVkbvvEqgSn24Im7YzBJunJPs/1AUsNWtNhGA5pM58sSUnawA/uUHqauyvN65hk=
-X-Received: by 2002:a2e:81d0:: with SMTP id s16mr2954883ljg.74.1620297131799;
- Thu, 06 May 2021 03:32:11 -0700 (PDT)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=gEzWFeT+0h8lPmc7NREAgF3P5/yzcA+Z7mY7aMEhe+Y=;
+        b=PiHM0TatiWj8iWC8Hq5Ja0raU3qO1rO6Pf9wqebC072ISZ2ZMoJZ2oy0+JbuIJI1dO
+         J2DN+G+AokxxQvS1Gj9Cf4vy7sTkD26vZKIzaxQ84hdegEHeUehhqnu+OhJWuRpwl3F6
+         h9FD77JfdmaYes5bVtuYWnHCtAI7dllcx4OztqTmCQqln2VVB7n5dWNm18g5Djvw7PnW
+         7aLJDeu+fGIgxDHqbHHrBHF5S3iuuCtjoxFAbtz58h6xy3HXmC74587Nm+NF9cdBabVB
+         azglOsBv5hzSQf5M4Ft9d/j9azDsvbzb/VbOzGsYcRYkmw+5sFwTp3oFKfKEYFlIDgSt
+         yUpA==
+X-Gm-Message-State: AOAM531aGgjfT8daqoH/jUy28ydGxzqvrTaIAfw/O6p8h1iz2X274+rA
+        RhLYq9d/fjmJspsRUKzIfU8sNqRMLNiaq+1BUCBiOjeM5InS
+X-Google-Smtp-Source: ABdhPJySOCjGht6lWTW0mzsnRkQtohwvqYtIdOms1blaP3GGjeVqYEXUE1B4a0nSz+NXISL06HKKoADHHrnN8H2/KYWBPOb9Xkjd
 MIME-Version: 1.0
-References: <20210503185228.1518131-1-clabbe@baylibre.com>
-In-Reply-To: <20210503185228.1518131-1-clabbe@baylibre.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 6 May 2021 12:32:00 +0200
-Message-ID: <CACRpkda4cMaDKU7ro4-q=-A3Y_AhiniV5=wK-3cnFynRxttavw@mail.gmail.com>
-Subject: Re: [PATCH 1/2] dt-bindings: pci: convert faraday,ftpci100 to yaml
-To:     Corentin Labbe <clabbe@baylibre.com>
-Cc:     Bjorn Helgaas <bhelgaas@google.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Hans Ulli Kroll <ulli.kroll@googlemail.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>
+X-Received: by 2002:a92:cd8a:: with SMTP id r10mr3579681ilb.282.1620297199237;
+ Thu, 06 May 2021 03:33:19 -0700 (PDT)
+Date:   Thu, 06 May 2021 03:33:19 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000fdc0be05c1a6d68f@google.com>
+Subject: [syzbot] WARNING in __vmalloc_node_range
+From:   syzbot <syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com>
+To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-usb@vger.kernel.org, mchehab@kernel.org,
+        syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 8:52 PM Corentin Labbe <clabbe@baylibre.com> wrote:
+Hello,
 
-> Converts pci/faraday,ftpci100.txt to yaml.
-> Some change are also made:
-> - example has wrong interrupts place
->
-> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+syzbot found the following issue on:
 
-Looks correct to me!
+HEAD commit:    d665ea6e Merge tag 'for-linus-5.13-rc1' of git://git.kerne..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
+console output: https://syzkaller.appspot.com/x/log.txt?x=148bff43d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f635d6ce17da8a68
+dashboard link: https://syzkaller.appspot.com/bug?extid=7336195c02c1bd2f64e1
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e963e1d00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116eec2dd00000
 
-> +#I/O space considerations:
-> +
-> +#The plain variant has 128MiB of non-prefetchable memory space, whereas the
-> +#"dual" variant has 64MiB. Take this into account when describing the ranges.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com
 
-(...)
+usb 1-1: media controller created
+dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
+cxusb: set interface failed
+dvb-usb: bulk message failed: -22 (1/0)
+DVB: Unable to find symbol mt352_attach()
+dvb-usb: no frontend was attached by 'DViCO FusionHDTV DVB-T USB (LGZ201)'
+dvbdev: DVB: registering new adapter (DViCO FusionHDTV DVB-T USB (LGZ201))
+usb 1-1: media controller created
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 7 at mm/vmalloc.c:2873 __vmalloc_node_range+0x769/0x970 mm/vmalloc.c:2873
+Modules linked in:
+CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.12.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+RIP: 0010:__vmalloc_node_range+0x769/0x970 mm/vmalloc.c:2873
+Code: c7 04 24 00 00 00 00 eb 93 e8 93 b7 d9 ff 44 89 fa 44 89 f6 4c 89 ef e8 75 20 07 00 48 89 04 24 e9 be fb ff ff e8 77 b7 d9 ff <0f> 0b 48 c7 04 24 00 00 00 00 e9 63 ff ff ff e8 63 b7 d9 ff 8b 7c
+RSP: 0018:ffffc9000007ee30 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: ffffffff8403d464 RCX: 0000000000000000
+RDX: ffff888100283680 RSI: ffffffff81673599 RDI: 0000000000000003
+RBP: 0000000000000001 R08: 0000000000000000 R09: 8000000000000163
+R10: ffffffff81672ed2 R11: 0000000000000000 R12: 0000000000000000
+R13: ffffc90000000000 R14: dffffc0000000000 R15: 00000000ffffffff
+FS:  0000000000000000(0000) GS:ffff8881f6a00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fffeb9f7c40 CR3: 00000001033f2000 CR4: 00000000001506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ __vmalloc_node mm/vmalloc.c:2963 [inline]
+ vmalloc+0x67/0x80 mm/vmalloc.c:2996
+ dvb_dmx_init+0xe4/0xb90 drivers/media/dvb-core/dvb_demux.c:1251
+ dvb_usb_adapter_dvb_init+0x564/0x860 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:184
+ dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:86 [inline]
+ dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:184 [inline]
+ dvb_usb_device_init.cold+0xc94/0x146e drivers/media/usb/dvb-usb/dvb-usb-init.c:308
+ cxusb_probe+0x159/0x5e0 drivers/media/usb/dvb-usb/cxusb.c:1634
+ usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
+ really_probe+0x291/0xf60 drivers/base/dd.c:576
+ driver_probe_device+0x298/0x410 drivers/base/dd.c:763
+ __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x4b0 drivers/base/dd.c:938
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xbe0/0x2100 drivers/base/core.c:3319
+ usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
+ usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
+ usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
+ really_probe+0x291/0xf60 drivers/base/dd.c:576
+ driver_probe_device+0x298/0x410 drivers/base/dd.c:763
+ __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
+ bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
+ __device_attach+0x228/0x4b0 drivers/base/dd.c:938
+ bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
+ device_add+0xbe0/0x2100 drivers/base/core.c:3319
+ usb_new_device.cold+0x721/0x1058 drivers/usb/core/hub.c:2556
+ hub_port_connect drivers/usb/core/hub.c:5276 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5416 [inline]
+ port_event drivers/usb/core/hub.c:5562 [inline]
+ hub_event+0x2357/0x4320 drivers/usb/core/hub.c:5644
+ process_one_work+0x98d/0x1580 kernel/workqueue.c:2275
+ worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
+ kthread+0x38c/0x460 kernel/kthread.c:313
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
 
-I would just move this in under the top level description. YAML
-has this funky syntax for pre-formatted text that you can use,
-but I don't know it off the top of my head, Rob?
 
-With that fix:
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Yours,
-Linus Walleij
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
