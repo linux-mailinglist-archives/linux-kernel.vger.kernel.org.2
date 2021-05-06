@@ -2,134 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CB413375264
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:33:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA819375266
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234476AbhEFKeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:34:22 -0400
-Received: from mail-il1-f200.google.com ([209.85.166.200]:42933 "EHLO
-        mail-il1-f200.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234451AbhEFKeS (ORCPT
+        id S234505AbhEFKem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:34:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47999 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234451AbhEFKel (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:34:18 -0400
-Received: by mail-il1-f200.google.com with SMTP id d3-20020a9287430000b0290181f7671fa1so3984356ilm.9
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 03:33:19 -0700 (PDT)
+        Thu, 6 May 2021 06:34:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620297223;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=dIrauQWKrgKlJ2IkBx9XuRlcsIVoZXgHnV4iQtHeuIc=;
+        b=MswXTCmnBm2jYKr4eqOQnrKNKSX7xiPm07OpO0vKauIpIVw1i20tB3xa6kJ8XMaEigneeH
+        j0oGPb3gXm7U1ABhymwz9i62bhqkdg8M9kyw5I/2b2cFjQSavkYfhhha2jxXOVbhU0Z4Ql
+        /5ugMDQdwWz6nxeMonc9kN80bYInw4w=
+Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
+ [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-493-vR3T1oe9PqSJpm9SKExjYQ-1; Thu, 06 May 2021 06:33:41 -0400
+X-MC-Unique: vR3T1oe9PqSJpm9SKExjYQ-1
+Received: by mail-wm1-f69.google.com with SMTP id w21-20020a7bc1150000b029014a850581efso1181631wmi.6
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 03:33:41 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=gEzWFeT+0h8lPmc7NREAgF3P5/yzcA+Z7mY7aMEhe+Y=;
-        b=PiHM0TatiWj8iWC8Hq5Ja0raU3qO1rO6Pf9wqebC072ISZ2ZMoJZ2oy0+JbuIJI1dO
-         J2DN+G+AokxxQvS1Gj9Cf4vy7sTkD26vZKIzaxQ84hdegEHeUehhqnu+OhJWuRpwl3F6
-         h9FD77JfdmaYes5bVtuYWnHCtAI7dllcx4OztqTmCQqln2VVB7n5dWNm18g5Djvw7PnW
-         7aLJDeu+fGIgxDHqbHHrBHF5S3iuuCtjoxFAbtz58h6xy3HXmC74587Nm+NF9cdBabVB
-         azglOsBv5hzSQf5M4Ft9d/j9azDsvbzb/VbOzGsYcRYkmw+5sFwTp3oFKfKEYFlIDgSt
-         yUpA==
-X-Gm-Message-State: AOAM531aGgjfT8daqoH/jUy28ydGxzqvrTaIAfw/O6p8h1iz2X274+rA
-        RhLYq9d/fjmJspsRUKzIfU8sNqRMLNiaq+1BUCBiOjeM5InS
-X-Google-Smtp-Source: ABdhPJySOCjGht6lWTW0mzsnRkQtohwvqYtIdOms1blaP3GGjeVqYEXUE1B4a0nSz+NXISL06HKKoADHHrnN8H2/KYWBPOb9Xkjd
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=dIrauQWKrgKlJ2IkBx9XuRlcsIVoZXgHnV4iQtHeuIc=;
+        b=S5AvRZPjGseRkhqgvyCYR9sRGy2AT2Hr1ObfiyQ+Q8dLQJHFJS14byQW43VYo8huRT
+         TnItIQY50HbDzytUYKTrHV/JFFeqMieptru4hlZJ9drKJjzGfBqsqERoBy96lmfJqk83
+         2xUBpTObhq1VOxGA4b+5VBbVohsGmPdV1s0xql7tkn8W2jZ2WxJuZOMkls82LOXvg22U
+         FCipAmYyeHu9j9VzGlFFX89oFMx1HmcfYWLrNp5KYvC+6Gn63toq9eMXvYHaXel8b1Nc
+         I1i3ytkXyCQtlkTHeG9birBcHTmXJyUFkRoO/xbuQMZAbuyGpx3PRxLnioXpEEvRr9tu
+         B+PA==
+X-Gm-Message-State: AOAM532n6Fgj2DeTNfYAkVNnExSQ8qe6eYNksdKLwLcukoHDNu/TGkiI
+        eJm+VDdgcjrzWvVk0adjuQ48dG2UYhBipP08L60/hJd/lgTJFYnpiys01r4rZz5aTKkuDRZG7WG
+        tgFXE5KJg6iTDQ6HsmPtsPDbBbU/gOKnpIi7rNh5OATBZRS0k6Jg5SU5TyOvjMZ59c4Ya3SLk+A
+        nN
+X-Received: by 2002:a05:6000:1cc:: with SMTP id t12mr4275851wrx.156.1620297220356;
+        Thu, 06 May 2021 03:33:40 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz8ioqHO8gRMvGSsg3FHVHgHVtKjHU1Wkx2j/p0e207woS8iH5h7VM09jxqtJ9vux2Z9VU6uA==
+X-Received: by 2002:a05:6000:1cc:: with SMTP id t12mr4275827wrx.156.1620297220131;
+        Thu, 06 May 2021 03:33:40 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id h14sm4234316wrq.45.2021.05.06.03.33.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 03:33:39 -0700 (PDT)
+Subject: Re: [PATCH v2] KVM: x86: Prevent KVM SVM from loading on kernels with
+ 5-level paging
+To:     Sean Christopherson <seanjc@google.com>
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20210505204221.1934471-1-seanjc@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <5d8105ec-c350-1988-5aa1-6d3b31e8136c@redhat.com>
+Date:   Thu, 6 May 2021 12:33:38 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-X-Received: by 2002:a92:cd8a:: with SMTP id r10mr3579681ilb.282.1620297199237;
- Thu, 06 May 2021 03:33:19 -0700 (PDT)
-Date:   Thu, 06 May 2021 03:33:19 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fdc0be05c1a6d68f@google.com>
-Subject: [syzbot] WARNING in __vmalloc_node_range
-From:   syzbot <syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com>
-To:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-usb@vger.kernel.org, mchehab@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210505204221.1934471-1-seanjc@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 05/05/21 22:42, Sean Christopherson wrote:
+> Disallow loading KVM SVM if 5-level paging is supported.  In theory, NPT
+> for L1 should simply work, but there unknowns with respect to how the
+> guest's MAXPHYADDR will be handled by hardware.
+> 
+> Nested NPT is more problematic, as running an L1 VMM that is using
+> 2-level page tables requires stacking single-entry PDP and PML4 tables in
+> KVM's NPT for L2, as there are no equivalent entries in L1's NPT to
+> shadow.  Barring hardware magic, for 5-level paging, KVM would need stack
+> another layer to handle PML5.
+> 
+> Opportunistically rename the lm_root pointer, which is used for the
+> aforementioned stacking when shadowing 2-level L1 NPT, to pml4_root to
+> call out that it's specifically for PML4.
+> 
+> Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>   arch/x86/include/asm/kvm_host.h |  2 +-
+>   arch/x86/kvm/mmu/mmu.c          | 20 ++++++++++----------
+>   arch/x86/kvm/svm/svm.c          |  5 +++++
+>   3 files changed, 16 insertions(+), 11 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+> index 3e5fc80a35c8..bf35f369b49e 100644
+> --- a/arch/x86/include/asm/kvm_host.h
+> +++ b/arch/x86/include/asm/kvm_host.h
+> @@ -407,7 +407,7 @@ struct kvm_mmu {
+>   	u32 pkru_mask;
+>   
+>   	u64 *pae_root;
+> -	u64 *lm_root;
+> +	u64 *pml4_root;
+>   
+>   	/*
+>   	 * check zero bits on shadow page table entries, these
+> diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+> index 930ac8a7e7c9..04c869794ab3 100644
+> --- a/arch/x86/kvm/mmu/mmu.c
+> +++ b/arch/x86/kvm/mmu/mmu.c
+> @@ -3310,12 +3310,12 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>   	if (mmu->shadow_root_level == PT64_ROOT_4LEVEL) {
+>   		pm_mask |= PT_ACCESSED_MASK | PT_WRITABLE_MASK | PT_USER_MASK;
+>   
+> -		if (WARN_ON_ONCE(!mmu->lm_root)) {
+> +		if (WARN_ON_ONCE(!mmu->pml4_root)) {
+>   			r = -EIO;
+>   			goto out_unlock;
+>   		}
+>   
+> -		mmu->lm_root[0] = __pa(mmu->pae_root) | pm_mask;
+> +		mmu->pml4_root[0] = __pa(mmu->pae_root) | pm_mask;
+>   	}
+>   
+>   	for (i = 0; i < 4; ++i) {
+> @@ -3335,7 +3335,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>   	}
+>   
+>   	if (mmu->shadow_root_level == PT64_ROOT_4LEVEL)
+> -		mmu->root_hpa = __pa(mmu->lm_root);
+> +		mmu->root_hpa = __pa(mmu->pml4_root);
+>   	else
+>   		mmu->root_hpa = __pa(mmu->pae_root);
+>   
+> @@ -3350,7 +3350,7 @@ static int mmu_alloc_shadow_roots(struct kvm_vcpu *vcpu)
+>   static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>   {
+>   	struct kvm_mmu *mmu = vcpu->arch.mmu;
+> -	u64 *lm_root, *pae_root;
+> +	u64 *pml4_root, *pae_root;
+>   
+>   	/*
+>   	 * When shadowing 32-bit or PAE NPT with 64-bit NPT, the PML4 and PDP
+> @@ -3369,14 +3369,14 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>   	if (WARN_ON_ONCE(mmu->shadow_root_level != PT64_ROOT_4LEVEL))
+>   		return -EIO;
+>   
+> -	if (mmu->pae_root && mmu->lm_root)
+> +	if (mmu->pae_root && mmu->pml4_root)
+>   		return 0;
+>   
+>   	/*
+>   	 * The special roots should always be allocated in concert.  Yell and
+>   	 * bail if KVM ends up in a state where only one of the roots is valid.
+>   	 */
+> -	if (WARN_ON_ONCE(!tdp_enabled || mmu->pae_root || mmu->lm_root))
+> +	if (WARN_ON_ONCE(!tdp_enabled || mmu->pae_root || mmu->pml4_root))
+>   		return -EIO;
+>   
+>   	/*
+> @@ -3387,14 +3387,14 @@ static int mmu_alloc_special_roots(struct kvm_vcpu *vcpu)
+>   	if (!pae_root)
+>   		return -ENOMEM;
+>   
+> -	lm_root = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+> -	if (!lm_root) {
+> +	pml4_root = (void *)get_zeroed_page(GFP_KERNEL_ACCOUNT);
+> +	if (!pml4_root) {
+>   		free_page((unsigned long)pae_root);
+>   		return -ENOMEM;
+>   	}
+>   
+>   	mmu->pae_root = pae_root;
+> -	mmu->lm_root = lm_root;
+> +	mmu->pml4_root = pml4_root;
+>   
+>   	return 0;
+>   }
+> @@ -5261,7 +5261,7 @@ static void free_mmu_pages(struct kvm_mmu *mmu)
+>   	if (!tdp_enabled && mmu->pae_root)
+>   		set_memory_encrypted((unsigned long)mmu->pae_root, 1);
+>   	free_page((unsigned long)mmu->pae_root);
+> -	free_page((unsigned long)mmu->lm_root);
+> +	free_page((unsigned long)mmu->pml4_root);
+>   }
+>   
+>   static int __kvm_mmu_create(struct kvm_vcpu *vcpu, struct kvm_mmu *mmu)
+> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+> index 14ff7f0963e9..d29dfe4a6503 100644
+> --- a/arch/x86/kvm/svm/svm.c
+> +++ b/arch/x86/kvm/svm/svm.c
+> @@ -447,6 +447,11 @@ static int has_svm(void)
+>   		return 0;
+>   	}
+>   
+> +	if (pgtable_l5_enabled()) {
+> +		pr_info("KVM doesn't yet support 5-level paging on AMD SVM\n");
+> +		return 0;
+> +	}
+> +
+>   	return 1;
+>   }
+>   
+> 
 
-syzbot found the following issue on:
+Queued, thanks.
 
-HEAD commit:    d665ea6e Merge tag 'for-linus-5.13-rc1' of git://git.kerne..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/usb.git usb-testing
-console output: https://syzkaller.appspot.com/x/log.txt?x=148bff43d00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f635d6ce17da8a68
-dashboard link: https://syzkaller.appspot.com/bug?extid=7336195c02c1bd2f64e1
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16e963e1d00000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=116eec2dd00000
+Paolo
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com
-
-usb 1-1: media controller created
-dvbdev: dvb_create_media_entity: media entity 'dvb-demux' registered.
-cxusb: set interface failed
-dvb-usb: bulk message failed: -22 (1/0)
-DVB: Unable to find symbol mt352_attach()
-dvb-usb: no frontend was attached by 'DViCO FusionHDTV DVB-T USB (LGZ201)'
-dvbdev: DVB: registering new adapter (DViCO FusionHDTV DVB-T USB (LGZ201))
-usb 1-1: media controller created
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 7 at mm/vmalloc.c:2873 __vmalloc_node_range+0x769/0x970 mm/vmalloc.c:2873
-Modules linked in:
-CPU: 0 PID: 7 Comm: kworker/0:1 Not tainted 5.12.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Workqueue: usb_hub_wq hub_event
-RIP: 0010:__vmalloc_node_range+0x769/0x970 mm/vmalloc.c:2873
-Code: c7 04 24 00 00 00 00 eb 93 e8 93 b7 d9 ff 44 89 fa 44 89 f6 4c 89 ef e8 75 20 07 00 48 89 04 24 e9 be fb ff ff e8 77 b7 d9 ff <0f> 0b 48 c7 04 24 00 00 00 00 e9 63 ff ff ff e8 63 b7 d9 ff 8b 7c
-RSP: 0018:ffffc9000007ee30 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffffff8403d464 RCX: 0000000000000000
-RDX: ffff888100283680 RSI: ffffffff81673599 RDI: 0000000000000003
-RBP: 0000000000000001 R08: 0000000000000000 R09: 8000000000000163
-R10: ffffffff81672ed2 R11: 0000000000000000 R12: 0000000000000000
-R13: ffffc90000000000 R14: dffffc0000000000 R15: 00000000ffffffff
-FS:  0000000000000000(0000) GS:ffff8881f6a00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fffeb9f7c40 CR3: 00000001033f2000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- __vmalloc_node mm/vmalloc.c:2963 [inline]
- vmalloc+0x67/0x80 mm/vmalloc.c:2996
- dvb_dmx_init+0xe4/0xb90 drivers/media/dvb-core/dvb_demux.c:1251
- dvb_usb_adapter_dvb_init+0x564/0x860 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:184
- dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:86 [inline]
- dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:184 [inline]
- dvb_usb_device_init.cold+0xc94/0x146e drivers/media/usb/dvb-usb/dvb-usb-init.c:308
- cxusb_probe+0x159/0x5e0 drivers/media/usb/dvb-usb/cxusb.c:1634
- usb_probe_interface+0x315/0x7f0 drivers/usb/core/driver.c:396
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3319
- usb_set_configuration+0x113f/0x1910 drivers/usb/core/message.c:2164
- usb_generic_driver_probe+0xba/0x100 drivers/usb/core/generic.c:238
- usb_probe_device+0xd9/0x2c0 drivers/usb/core/driver.c:293
- really_probe+0x291/0xf60 drivers/base/dd.c:576
- driver_probe_device+0x298/0x410 drivers/base/dd.c:763
- __device_attach_driver+0x203/0x2c0 drivers/base/dd.c:870
- bus_for_each_drv+0x15f/0x1e0 drivers/base/bus.c:431
- __device_attach+0x228/0x4b0 drivers/base/dd.c:938
- bus_probe_device+0x1e4/0x290 drivers/base/bus.c:491
- device_add+0xbe0/0x2100 drivers/base/core.c:3319
- usb_new_device.cold+0x721/0x1058 drivers/usb/core/hub.c:2556
- hub_port_connect drivers/usb/core/hub.c:5276 [inline]
- hub_port_connect_change drivers/usb/core/hub.c:5416 [inline]
- port_event drivers/usb/core/hub.c:5562 [inline]
- hub_event+0x2357/0x4320 drivers/usb/core/hub.c:5644
- process_one_work+0x98d/0x1580 kernel/workqueue.c:2275
- worker_thread+0x64c/0x1120 kernel/workqueue.c:2421
- kthread+0x38c/0x460 kernel/kthread.c:313
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
