@@ -2,23 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71D2A3751F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:05:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7D2A37520C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:08:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234324AbhEFKGu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:06:50 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:30079 "EHLO
+        id S234363AbhEFKJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:09:20 -0400
+Received: from twspam01.aspeedtech.com ([211.20.114.71]:38052 "EHLO
         twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhEFKGr (ORCPT
+        with ESMTP id S233964AbhEFKJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:06:47 -0400
+        Thu, 6 May 2021 06:09:18 -0400
 Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1469pS6x024644;
-        Thu, 6 May 2021 17:51:28 +0800 (GMT-8)
+        by twspam01.aspeedtech.com with ESMTP id 1469pTG0024645;
+        Thu, 6 May 2021 17:51:29 +0800 (GMT-8)
         (envelope-from steven_lee@aspeedtech.com)
 Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
  (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 6 May
- 2021 18:03:16 +0800
+ 2021 18:03:17 +0800
 From:   Steven Lee <steven_lee@aspeedtech.com>
 To:     Andrew Jeffery <andrew@aj.id.au>,
         Ulf Hansson <ulf.hansson@linaro.org>,
@@ -37,9 +37,9 @@ To:     Andrew Jeffery <andrew@aj.id.au>,
         open list <linux-kernel@vger.kernel.org>
 CC:     <steven_lee@aspeedtech.com>, <Hongweiz@ami.com>,
         <ryan_chen@aspeedtech.com>, <chin-ting_kuo@aspeedtech.com>
-Subject: [PATCH v3 4/5] mmc: sdhci-of-aspeed: Add a helper for updating capability register.
-Date:   Thu, 6 May 2021 18:03:11 +0800
-Message-ID: <20210506100312.1638-5-steven_lee@aspeedtech.com>
+Subject: [PATCH v3 5/5] mmc: sdhci-of-aspeed: Assert/Deassert reset signal before probing eMMC
+Date:   Thu, 6 May 2021 18:03:12 +0800
+Message-ID: <20210506100312.1638-6-steven_lee@aspeedtech.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20210506100312.1638-1-steven_lee@aspeedtech.com>
 References: <20210506100312.1638-1-steven_lee@aspeedtech.com>
@@ -49,110 +49,122 @@ X-Originating-IP: [192.168.100.253]
 X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
  (192.168.0.24)
 X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1469pS6x024644
+X-MAIL: twspam01.aspeedtech.com 1469pTG0024645
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The patch add a new function aspeed_sdc_set_slot_capability() for
-updating sdhci capability register.
+For cleaning up the AST2600 eMMC controller, the reset signal should be
+asserted and deasserted before it is probed.
 
 Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
 ---
- drivers/mmc/host/sdhci-of-aspeed.c | 57 ++++++++++++++++++++++++++++++
- 1 file changed, 57 insertions(+)
+ drivers/mmc/host/sdhci-of-aspeed.c | 49 ++++++++++++++++++++++++------
+ 1 file changed, 40 insertions(+), 9 deletions(-)
 
 diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index d001c51074a0..4979f98ffb52 100644
+index 4979f98ffb52..8ef06f32abff 100644
 --- a/drivers/mmc/host/sdhci-of-aspeed.c
 +++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -31,6 +31,11 @@
- #define   ASPEED_SDC_S0_PHASE_OUT_EN	GENMASK(1, 0)
- #define   ASPEED_SDC_PHASE_MAX		31
+@@ -13,6 +13,7 @@
+ #include <linux/of.h>
+ #include <linux/of_platform.h>
+ #include <linux/platform_device.h>
++#include <linux/reset.h>
+ #include <linux/spinlock.h>
  
-+/* SDIO{10,20} */
-+#define ASPEED_SDC_CAP1_1_8V           (0 * 32 + 26)
-+/* SDIO{14,24} */
-+#define ASPEED_SDC_CAP2_SDR104         (1 * 32 + 1)
+ #include "sdhci-pltfm.h"
+@@ -36,9 +37,16 @@
+ /* SDIO{14,24} */
+ #define ASPEED_SDC_CAP2_SDR104         (1 * 32 + 1)
+ 
++#define PROBE_AFTER_ASSET_DEASSERT	0x1
++
++struct aspeed_sdc_info {
++	u32 flag;
++};
 +
  struct aspeed_sdc {
  	struct clk *clk;
  	struct resource *res;
-@@ -70,8 +75,42 @@ struct aspeed_sdhci {
- 	u32 width_mask;
- 	struct mmc_clk_phase_map phase_map;
- 	const struct aspeed_sdhci_phase_desc *phase_desc;
-+
++	struct reset_control *rst;
+ 
+ 	spinlock_t lock;
+ 	void __iomem *regs;
+@@ -78,6 +86,10 @@ struct aspeed_sdhci {
+ 
  };
  
-+/*
-+ * The function sets the mirror register for updating
-+ * capbilities of the current slot.
-+ *
-+ *   slot | capability  | caps_reg | mirror_reg
-+ *   -----|-------------|----------|------------
-+ *     0  | CAP1_1_8V   | SDIO140  |   SDIO10
-+ *     0  | CAP2_SDR104 | SDIO144  |   SDIO14
-+ *     1  | CAP1_1_8V   | SDIO240  |   SDIO20
-+ *     1  | CAP2_SDR104 | SDIO244  |   SDIO24
-+ */
-+static void aspeed_sdc_set_slot_capability(struct sdhci_host *host,
-+					   struct aspeed_sdc *sdc,
-+					   int capability,
-+					   bool enable,
-+					   u8 slot)
-+{
-+	u8 cap_reg;
-+	u32 mirror_reg_offset, cap_val;
++struct aspeed_sdc_info ast2600_sdc_info = {
++	.flag = PROBE_AFTER_ASSET_DEASSERT
++};
 +
-+	if (slot > 1)
-+		return;
+ /*
+  * The function sets the mirror register for updating
+  * capbilities of the current slot.
+@@ -533,11 +545,22 @@ static struct platform_driver aspeed_sdhci_driver = {
+ 	.remove		= aspeed_sdhci_remove,
+ };
+ 
++static const struct of_device_id aspeed_sdc_of_match[] = {
++	{ .compatible = "aspeed,ast2400-sd-controller", },
++	{ .compatible = "aspeed,ast2500-sd-controller", },
++	{ .compatible = "aspeed,ast2600-sd-controller", .data = &ast2600_sdc_info},
++	{ }
++};
 +
-+	cap_reg = capability / 32;
-+	cap_val = sdhci_readl(host, 0x40 + (cap_reg * 4));
-+	if (enable)
-+		cap_val |= BIT(capability % 32);
-+	else
-+		cap_val &= ~BIT(capability % 32);
-+	mirror_reg_offset = ((slot + 1) * 0x10) + (cap_reg * 4);
-+	writel(cap_val, sdc->regs + mirror_reg_offset);
-+}
++MODULE_DEVICE_TABLE(of, aspeed_sdc_of_match);
 +
- static void aspeed_sdc_configure_8bit_mode(struct aspeed_sdc *sdc,
- 					   struct aspeed_sdhci *sdhci,
- 					   bool bus8)
-@@ -329,6 +368,7 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
+ static int aspeed_sdc_probe(struct platform_device *pdev)
+ 
  {
- 	const struct aspeed_sdhci_pdata *aspeed_pdata;
- 	struct sdhci_pltfm_host *pltfm_host;
-+	struct device_node *np = pdev->dev.of_node;
- 	struct aspeed_sdhci *dev;
- 	struct sdhci_host *host;
- 	struct resource *res;
-@@ -372,6 +412,23 @@ static int aspeed_sdhci_probe(struct platform_device *pdev)
+ 	struct device_node *parent, *child;
+ 	struct aspeed_sdc *sdc;
++	const struct of_device_id *match = NULL;
++	const struct aspeed_sdc_info *info = NULL;
+ 	int ret;
  
- 	sdhci_get_of_property(pdev);
+ 	sdc = devm_kzalloc(&pdev->dev, sizeof(*sdc), GFP_KERNEL);
+@@ -546,6 +569,23 @@ static int aspeed_sdc_probe(struct platform_device *pdev)
  
-+	if (of_property_read_bool(np, "mmc-hs200-1_8v") ||
-+	    of_property_read_bool(np, "sd-uhs-sdr104")) {
-+		aspeed_sdc_set_slot_capability(host,
-+					       dev->parent,
-+					       ASPEED_SDC_CAP1_1_8V,
-+					       true,
-+					       slot);
+ 	spin_lock_init(&sdc->lock);
+ 
++	match = of_match_device(aspeed_sdc_of_match, &pdev->dev);
++	if (!match)
++		return -ENODEV;
++
++	if (match->data)
++		info = match->data;
++
++	if (info) {
++		if (info->flag & PROBE_AFTER_ASSET_DEASSERT) {
++			sdc->rst = devm_reset_control_get(&pdev->dev, NULL);
++			if (!IS_ERR(sdc->rst)) {
++				reset_control_assert(sdc->rst);
++				reset_control_deassert(sdc->rst);
++			}
++		}
 +	}
 +
-+	if (of_property_read_bool(np, "sd-uhs-sdr104")) {
-+		aspeed_sdc_set_slot_capability(host,
-+					       dev->parent,
-+					       ASPEED_SDC_CAP2_SDR104,
-+					       true,
-+					       slot);
-+	}
-+
- 	pltfm_host->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(pltfm_host->clk))
- 		return PTR_ERR(pltfm_host->clk);
+ 	sdc->clk = devm_clk_get(&pdev->dev, NULL);
+ 	if (IS_ERR(sdc->clk))
+ 		return PTR_ERR(sdc->clk);
+@@ -593,15 +633,6 @@ static int aspeed_sdc_remove(struct platform_device *pdev)
+ 	return 0;
+ }
+ 
+-static const struct of_device_id aspeed_sdc_of_match[] = {
+-	{ .compatible = "aspeed,ast2400-sd-controller", },
+-	{ .compatible = "aspeed,ast2500-sd-controller", },
+-	{ .compatible = "aspeed,ast2600-sd-controller", },
+-	{ }
+-};
+-
+-MODULE_DEVICE_TABLE(of, aspeed_sdc_of_match);
+-
+ static struct platform_driver aspeed_sdc_driver = {
+ 	.driver		= {
+ 		.name	= "sd-controller-aspeed",
 -- 
 2.17.1
 
