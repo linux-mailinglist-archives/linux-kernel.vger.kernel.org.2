@@ -2,168 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF62375298
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:46:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7544D3752A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:52:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234621AbhEFKrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:47:02 -0400
-Received: from foss.arm.com ([217.140.110.172]:32832 "EHLO foss.arm.com"
+        id S234606AbhEFKxx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:53:53 -0400
+Received: from foss.arm.com ([217.140.110.172]:32996 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234614AbhEFKrA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:47:00 -0400
+        id S234508AbhEFKxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 06:53:51 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 67372D6E;
-        Thu,  6 May 2021 03:46:02 -0700 (PDT)
-Received: from [10.57.83.253] (unknown [10.57.83.253])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4EF6D3F73B;
-        Thu,  6 May 2021 03:46:00 -0700 (PDT)
-Subject: Re: [PATCH 2/7] perf cs-etm: Only search timestamp in current
- sample's queue.
-To:     coresight@lists.linaro.org
-Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 89FF4D6E;
+        Thu,  6 May 2021 03:52:53 -0700 (PDT)
+Received: from lpieralisi (e121166-lin.cambridge.arm.com [10.1.196.255])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5BD663F73B;
+        Thu,  6 May 2021 03:52:50 -0700 (PDT)
+Date:   Thu, 6 May 2021 11:52:45 +0100
+From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+To:     Mike Rapoport <rppt@kernel.org>
+Cc:     Boqun Feng <boqun.feng@gmail.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Arnd Bergmann <arnd@arndb.de>, Marc Zyngier <maz@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Sebastian Hesselbarth <sebastian.hesselbarth@gmail.com>,
+        Gregory Clement <gregory.clement@bootlin.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will@kernel.org>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210212144513.31765-1-james.clark@arm.com>
- <20210212144513.31765-3-james.clark@arm.com>
-From:   James Clark <james.clark@arm.com>
-Message-ID: <69b81af7-8d94-a6fa-b2e3-ca4e8483d5c0@arm.com>
-Date:   Thu, 6 May 2021 13:45:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Rob Herring <robh@kernel.org>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jon Derrick <jonathan.derrick@intel.com>,
+        Sunil Muthuswamy <sunilmut@microsoft.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-hyperv@vger.kernel.org
+Subject: Re: [RFC v2 1/7] PCI: Introduce pci_host_bridge::domain_nr
+Message-ID: <20210506105245.GA26351@lpieralisi>
+References: <20210503144635.2297386-1-boqun.feng@gmail.com>
+ <20210503144635.2297386-2-boqun.feng@gmail.com>
+ <YJDYrn7Nt+xyHbyr@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20210212144513.31765-3-james.clark@arm.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJDYrn7Nt+xyHbyr@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 12/02/2021 16:45, James Clark wrote:
-> Change initial timestamp search to only operate on the queue
-> related to the current event. In a later change the bounds
-> of the aux record will also be used to reset the decoder and
-> the record is only relevant to a single queue.
+On Tue, May 04, 2021 at 08:16:30AM +0300, Mike Rapoport wrote:
+> On Mon, May 03, 2021 at 10:46:29PM +0800, Boqun Feng wrote:
+> > Currently we retrieve the PCI domain number of the host bridge from the
+> > bus sysdata (or pci_config_window if PCI_DOMAINS_GENERIC=y). Actually
+> > we have the information at PCI host bridge probing time, and it makes
+> > sense that we store it into pci_host_bridge. One benefit of doing so is
+> > the requirement for supporting PCI on Hyper-V for ARM64, because the
+> > host bridge of Hyper-V doesnt' have pci_config_window, whereas ARM64 is
+> > a PCI_DOMAINS_GENERIC=y arch, so we cannot retrieve the PCI domain
+> > number from pci_config_window on ARM64 Hyper-V guest.
+> > 
+> > As the preparation for ARM64 Hyper-V PCI support, we introduce the
+> > domain_nr in pci_host_bridge, and set it properly at probing time, then
+> > for PCI_DOMAINS_GENERIC=y archs, bus domain numbers are set by the
+> > bridge domain_nr.
+> > 
+> > Signed-off-by: Boqun Feng <boqun.feng@gmail.com>
+> > ---
+> >  arch/arm/kernel/bios32.c              |  2 ++
+> >  arch/arm/mach-dove/pcie.c             |  2 ++
+> >  arch/arm/mach-mv78xx0/pcie.c          |  2 ++
+> >  arch/arm/mach-orion5x/pci.c           |  2 ++
+> >  arch/arm64/kernel/pci.c               |  3 +--
+> >  arch/mips/pci/pci-legacy.c            |  2 ++
+> >  arch/mips/pci/pci-xtalk-bridge.c      |  2 ++
+> >  drivers/pci/controller/pci-ftpci100.c |  2 ++
+> >  drivers/pci/controller/pci-mvebu.c    |  2 ++
+> >  drivers/pci/pci.c                     |  4 ++--
+> >  drivers/pci/probe.c                   |  7 ++++++-
+> >  include/linux/pci.h                   | 11 ++++++++---
+> >  12 files changed, 33 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/arch/arm/kernel/bios32.c b/arch/arm/kernel/bios32.c
+> > index e7ef2b5bea9c..4942cd681e41 100644
+> > --- a/arch/arm/kernel/bios32.c
+> > +++ b/arch/arm/kernel/bios32.c
+> > @@ -471,6 +471,8 @@ static void pcibios_init_hw(struct device *parent, struct hw_pci *hw,
+> >  				bridge->sysdata = sys;
+> >  				bridge->busnr = sys->busnr;
+> >  				bridge->ops = hw->ops;
+> > +				if (IS_ENABLED(CONFIG_PCI_DOMAINS_GENERIC))
+> > +					bridge->domain_nr = pci_bus_find_domain_nr(sys, parent);
+> >  
+> >  				ret = pci_scan_root_bus_bridge(bridge);
+> >  			}
+> > diff --git a/arch/arm/mach-dove/pcie.c b/arch/arm/mach-dove/pcie.c
+> > index ee91ac6b5ebf..92eb8484b49b 100644
+> > --- a/arch/arm/mach-dove/pcie.c
+> > +++ b/arch/arm/mach-dove/pcie.c
+> > @@ -167,6 +167,8 @@ dove_pcie_scan_bus(int nr, struct pci_host_bridge *bridge)
+> >  	bridge->sysdata = sys;
+> >  	bridge->busnr = sys->busnr;
+> >  	bridge->ops = &pcie_ops;
+> > +	if (IS_ENABLED(CONFIG_PCI_DOMAINS_GENERIC))
+> > +		bridge->domain_nr = pci_bus_find_domain_nr(sys, NULL);
 > 
-> This change makes some files that had coresight data
-> but didn't syntesise any events start working and generating
-> events. I'm not sure of the reason for that. I'd expect this
-> change to only affect the ordering of events.
-
-I've gotten to the bottom of this mystery of why decoding starts working because of this change.
-Currently:
-
- * _All_ decoding happens on the first AUX record
- * Decoding depends on binary data (so also depends on MMAP records)
- * Ordering of AUX records and MMAP records is timing sensitive
-
-So there are two scenarios:
- 1) The perf.data file contains MMAPs followed by AUX records. Everything works
- 2) The perf.data file contains an AUX record, followed by MMAPS, then further AUX records. Decoding never worked.
-
-Per-thread mode (timeless) always worked because we wait for EXIT rather than AUX to start the decode, which is after MMAPS.
-Per-cpu mode was always at the mercy of the ordering of events. So it's not a regression that this patchset changes the behaviour
-here and it's doing more of 'the right thing' now.
-
-As a separate change I will add a warning to cs_etm__mem_access() when it fails to find the right binary as this is a current sore point.
- 
-James
-
+> The check for CONFIG_PCI_DOMAINS_GENERIC is excessive because there is a
+> stub for pci_bus_find_domain_nr().
 > 
-> Signed-off-by: James Clark <james.clark@arm.com>
-> ---
->  tools/perf/util/cs-etm.c | 30 ++++++++++++++----------------
->  1 file changed, 14 insertions(+), 16 deletions(-)
+> I'm not an expert in PCI, but maybe the repeated assignment of
+> bridge->domain_nr can live in the generic code, say, in
+> pci_scan_root_bus_bridge(). E.g. it will set the domain_nr when it is zero.
 > 
-> diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-> index 27894facae5e..8f8b448632fb 100644
-> --- a/tools/perf/util/cs-etm.c
-> +++ b/tools/perf/util/cs-etm.c
-> @@ -97,7 +97,7 @@ struct cs_etm_queue {
->  /* RB tree for quick conversion between traceID and metadata pointers */
->  static struct intlist *traceid_list;
->  
-> -static int cs_etm__update_queues(struct cs_etm_auxtrace *etm);
-> +static int cs_etm__update_queues(struct cs_etm_auxtrace *etm, int cpu);
->  static int cs_etm__process_queues(struct cs_etm_auxtrace *etm);
->  static int cs_etm__process_timeless_queues(struct cs_etm_auxtrace *etm,
->  					   pid_t tid);
-> @@ -524,7 +524,6 @@ static void cs_etm__dump_event(struct cs_etm_auxtrace *etm,
->  static int cs_etm__flush_events(struct perf_session *session,
->  				struct perf_tool *tool)
->  {
-> -	int ret;
->  	struct cs_etm_auxtrace *etm = container_of(session->auxtrace,
->  						   struct cs_etm_auxtrace,
->  						   auxtrace);
-> @@ -534,11 +533,6 @@ static int cs_etm__flush_events(struct perf_session *session,
->  	if (!tool->ordered_events)
->  		return -EINVAL;
->  
-> -	ret = cs_etm__update_queues(etm);
-> -
-> -	if (ret < 0)
-> -		return ret;
-> -
->  	if (etm->timeless_decoding)
->  		return cs_etm__process_timeless_queues(etm, -1);
->  
-> @@ -851,10 +845,7 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
->  	etmq->queue_nr = queue_nr;
->  	etmq->offset = 0;
->  
-> -	if (etm->timeless_decoding)
-> -		return 0;
-> -	else
-> -		return cs_etm__search_first_timestamp(etmq);
-> +	return 0;
->  }
->  
->  static int cs_etm__setup_queues(struct cs_etm_auxtrace *etm)
-> @@ -874,14 +865,20 @@ static int cs_etm__setup_queues(struct cs_etm_auxtrace *etm)
->  	return 0;
->  }
->  
-> -static int cs_etm__update_queues(struct cs_etm_auxtrace *etm)
-> +static int cs_etm__update_queues(struct cs_etm_auxtrace *etm, int cpu)
->  {
-> +	int ret;
->  	if (etm->queues.new_data) {
->  		etm->queues.new_data = false;
-> -		return cs_etm__setup_queues(etm);
-> +		ret = cs_etm__setup_queues(etm);
-> +		if (ret)
-> +			return ret;
->  	}
->  
-> -	return 0;
-> +	if (!etm->timeless_decoding)
-> +		return cs_etm__search_first_timestamp(etm->queues.queue_array[cpu].priv);
-> +	else
-> +		return 0;
->  }
->  
->  static inline
-> @@ -2358,8 +2355,9 @@ static int cs_etm__process_event(struct perf_session *session,
->  	else
->  		timestamp = 0;
->  
-> -	if (timestamp || etm->timeless_decoding) {
-> -		err = cs_etm__update_queues(etm);
-> +	if ((timestamp || etm->timeless_decoding)
-> +			&& event->header.type == PERF_RECORD_AUX) {
-> +		err = cs_etm__update_queues(etm, sample->cpu);
->  		if (err)
->  			return err;
->  	}
-> 
+> >  
+
+Yes, this churn should be avoided. We need a sentinel value to detect
+whether the domain_nr is invalid (0 is a valid domain) so generic code
+(ie pci_scan_root_bus_bridge() and friends) has to call generic
+functions to get it (pci_bus_find_domain_nr()).
+
+We can implement it as a flag or function pointer in the struct
+pci_host_bridge, if the flag or function pointer is not set the
+generic pci_bus_find_domain_nr() should be called.
+
+Lorenzo
