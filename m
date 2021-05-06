@@ -2,265 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F1D3750F4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:34:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AAB43750F5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:35:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233574AbhEFIfn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 May 2021 04:35:43 -0400
-Received: from de-smtp-delivery-105.mimecast.com ([194.104.109.105]:32931 "EHLO
-        de-smtp-delivery-105.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232947AbhEFIfl (ORCPT
+        id S233655AbhEFIgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:36:41 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:42214 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231880AbhEFIgk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 04:35:41 -0400
-Received: from GBR01-LO2-obe.outbound.protection.outlook.com
- (mail-lo2gbr01lp2056.outbound.protection.outlook.com [104.47.21.56]) (Using
- TLS) by relay.mimecast.com with ESMTP id de-mta-3-_G7CpgtzMbSOE9YBQrOvfQ-1;
- Thu, 06 May 2021 10:34:41 +0200
-X-MC-Unique: _G7CpgtzMbSOE9YBQrOvfQ-1
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM (2603:10a6:400:89::10)
- by CWLP265MB1636.GBRP265.PROD.OUTLOOK.COM (2603:10a6:401:34::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4065.27; Thu, 6 May
- 2021 08:34:39 +0000
-Received: from CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958]) by CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
- ([fe80::a91f:361d:5554:3958%5]) with mapi id 15.20.4108.027; Thu, 6 May 2021
- 08:34:39 +0000
-From:   =?iso-8859-1?Q?Christian_L=F6hle?= <CLoehle@hyperstone.com>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        "pali@kernel.org" <pali@kernel.org>,
-        "huyue2@yulong.com" <huyue2@yulong.com>,
-        "tiantao6@hisilicon.com" <tiantao6@hisilicon.com>
-Subject: Re: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
-Thread-Topic: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
-Thread-Index: AQHXN3kp02z8n6vh+UmW3TCHxA6qwqrUvpuAgAAEiK+AAEGXgIABLmmg
-Date:   Thu, 6 May 2021 08:34:39 +0000
-Message-ID: <CWXP265MB268017F74D102670845901AAC4589@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
-References: <CWXP265MB2680766F673A99D2F296B878C4469@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>
- <CAPDyKFqvTgRZ0QEgBXJgbhbEmQvxBqzZuGh2MrZGS1mRyYz9mg@mail.gmail.com>
- <CWXP265MB26802E4E0F1AE7B6FE2836AAC4599@CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM>,<CAPDyKFrAS8SP5AMX2fi_ZbsmGm49ZFo4YKcczwYZOmN-AnPn7A@mail.gmail.com>
-In-Reply-To: <CAPDyKFrAS8SP5AMX2fi_ZbsmGm49ZFo4YKcczwYZOmN-AnPn7A@mail.gmail.com>
-Accept-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [185.80.168.10]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: b248aa62-fe20-446b-f965-08d91069c9d9
-x-ms-traffictypediagnostic: CWLP265MB1636:
-x-microsoft-antispam-prvs: <CWLP265MB16363909C8EFB46A190940D7C4589@CWLP265MB1636.GBRP265.PROD.OUTLOOK.COM>
-x-ms-oob-tlc-oobclassifiers: OLM:8882
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0
-x-microsoft-antispam-message-info: +Wb10IOBDlTnJP40kBHMgnD07gey4rB+iEnfZfWdSQanRb3C4Mr3ZRGfoHRgqD8YI2puULVnjFUW8t+Ohz4LFmpc7x8x55KkjK5CCTFbCaO98GcCBf76SDIlBJp1lENI1fFiLD1cpNGSc4gsbwdWMkwGUj/VXCZbV+IQRWMD4mOltIXDJFt9D5j2eIR3TWcdRnueoJCNQ8EFqoGsAffeC9hfWpckhNtwcJPIWosrFwCgSF9k0OzPhjmIiX9QGBDWxONUBZlU7cTJftSSToIsCccnYpH7QjiyL4e/nMJDCng5LwBum0ZhckuPWHjAy5LxyxQQ510TMM+UvAtvkG/x/TFB+S3GZ/93hxuMbQREXgna6dnGiP/nalf/cZLPtDh7D1QB9N70itnFvtXk2Wfe0Qqe3czRxssz047Cu3UrGMSStxvHcTsgINKVVMnfGuoh4hSwmvvpnFvnnpRAJL7eqC+yRbJ1D5PPzwGS+iiqWvT5yFJzT7gxUl0MbueMeq1ZoQkjt6Zat9hnoB6N9Dv2M0LrbZdy6btX11ZEhtfpN4e+zjncuf0dTHpGyRN1llT0wwUNpPbbHH1L1ndTj7lECSTdkqbEtpVYRG/IfmwVe2BMDT5Dk06hcb7vMRetcjzpFyXT+GSUbh0dwiX95QuMKpqAwLk87x4GkpJTGuH+kgxB4e5KuB/KRpn8QiBgW++9
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(346002)(376002)(396003)(136003)(39830400003)(366004)(6916009)(186003)(6506007)(53546011)(71200400001)(33656002)(83380400001)(7696005)(2906002)(54906003)(26005)(55016002)(316002)(478600001)(9686003)(5660300002)(66556008)(66946007)(8676002)(66476007)(52536014)(76116006)(8936002)(64756008)(66446008)(86362001)(38100700002)(122000001)(4326008)(91956017)(966005)(66574015);DIR:OUT;SFP:1101
-x-ms-exchange-antispam-messagedata: =?iso-8859-1?Q?0k5a3FHV0vCpK3oowOoFvTpxrCUeuSTzG9fQU0Wg1PSQImad/kTHssHAIK?=
- =?iso-8859-1?Q?ykMnph2dL+ymxULnKcLqnFd+y1GY5hZ6DQzUI+C/AF+6NtzeAM3PZsQnNh?=
- =?iso-8859-1?Q?j89tJdP8YX1RpdljldbNZymwqC2kCZEW3JtCd2I0zaQyWA+vYgDx3Eq6s4?=
- =?iso-8859-1?Q?7UXfvOGl5HYT6Z1j0rOtSZQCD/+C0m5sfCy/1iwqtVgS1JBHw1RycLuDen?=
- =?iso-8859-1?Q?yJ1sWWR2UkclFNEJYeK1DU5NHvq90jUEpXNhFp1qVEgj9Bf56uEX6yvxb0?=
- =?iso-8859-1?Q?ND+nr2bkmkllDSfvJoE/VaYlKlg0fn3esAQr4MYtqUJ340NOC2qOPT6x6q?=
- =?iso-8859-1?Q?s22NTrlmI9Qf0KkLGDlE5eFKC/DrBizGELpVah+Y/Tb0SopmiEtQ7LjGhq?=
- =?iso-8859-1?Q?ljoINxEjBjRMETct+RMqVr17obFnsAnSwxOzDvjvModyYRx5ohOBYGJIn8?=
- =?iso-8859-1?Q?3KM0GxazkZr++muQFPGthsMUSM1BpXhipGCnokmJ31gHBUuPYKwJ7RH4yx?=
- =?iso-8859-1?Q?a/G2zLq4C7O/VFZvLj48lvZOrFoqwwWYDwIVFoZNNE+cHeptQbpLwcHiNo?=
- =?iso-8859-1?Q?vXpi/ZBX9VHA5dszrmlmuzY8l1hFp7fyGUWvjxEAurGvEROusGq3UwWRV+?=
- =?iso-8859-1?Q?i9jHtoO4GlbT+BY001ITfDFJmXdcbUo8q1DmueAhtg4oxjV5T0vir69tRK?=
- =?iso-8859-1?Q?p5oguDoLPbysByta8xwq+Dxde7q48FqF37CzxHh5sPjtLCyVVPK/smxdDm?=
- =?iso-8859-1?Q?aMMCjAjU4toDYdRSJpwCwds1VTwD2WqETT8wAGueps54m/jRuvqChpoogJ?=
- =?iso-8859-1?Q?6yZOZaAJ/AGSO2YTuLbbPRihfJ0OnM0HAuupMxUKaFXVDvTBdVo97Vw9r0?=
- =?iso-8859-1?Q?ILtlNGMfvY/bkoT4jb8JSSmjOW3DjFKsMeQ3VQa8CysnyTO3LJY57IfPAt?=
- =?iso-8859-1?Q?cQp1ccO8XqYzgT8p3ksBRThdMReJgJ923DEr2kTakEKdQvwhj4r3Fv0Uba?=
- =?iso-8859-1?Q?JtInmw116QcpZzNfHnmNRedh8CNExce1mQe2R3kn76dgqdqfhdVOvxqAHy?=
- =?iso-8859-1?Q?ywJEGxX9suJqltY/lKihs1CDnAznGb4OQnAirrWd+KWtymbDySBgtrrqwp?=
- =?iso-8859-1?Q?03l5m9S95/QBosOlrYFKiEKhm9TfLmlZ3rKWizTPvauovW0s0wsynNCF86?=
- =?iso-8859-1?Q?Z2LuK3dpDfHX5kfXK96pllHL7aw1ecGz8PiiP6soWhEtj0cUfF2/FzOIBb?=
- =?iso-8859-1?Q?glbHojE1D6RDklK5N/qA1TqrF4YbfONPABZha3p4xs2Rz4aLvFotS+segh?=
- =?iso-8859-1?Q?J57Q3mkHujm9NZVySZdyYvFem22YR5ml+Pu3Yslk02F6iDI=3D?=
-x-ms-exchange-transport-forked: True
-MIME-Version: 1.0
-X-OriginatorOrg: hyperstone.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: CWXP265MB2680.GBRP265.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: b248aa62-fe20-446b-f965-08d91069c9d9
-X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2021 08:34:39.2507
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 86f203eb-e878-4188-b297-34c118c18b11
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 3EJYJJ7s42/Exx3RH9vhRLdssm1OKFyvkK/MuUNGlDJyZAKzUHueS9+d47PnFTpLFtevGnNBr9mgZf4JcvOS3g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP265MB1636
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CDE5A68 smtp.mailfrom=cloehle@hyperstone.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: hyperstone.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Thu, 6 May 2021 04:36:40 -0400
+Received: from minint-m3g9p8n.europe.corp.microsoft.com (unknown [49.207.195.141])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 6D60520B7178;
+        Thu,  6 May 2021 01:35:40 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6D60520B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620290142;
+        bh=uHEyc6gEkmpQ8MDeew9UNjfOeJf96WgjbUsOQcoORok=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+        b=SxEu96Rb436DGqNmZhU1DeZjxJzB+1PQAR0kuRdtzep5K0tgSXx/X/3098xyoQRHc
+         +ggWYMe+1N6XPDUXn7IE93d9sYS7rABdLW8SxdgEEbVfYJiPw9KDUytGg8EeLgqbF5
+         FB+uZ8t9OPoHtQlQcQyJIco5s0KeSN8TE0RQhlbE=
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH v2 1/2] optee: fix tee out of memory failure seen during
+ kexec reboot
+From:   Allen Pais <apais@linux.microsoft.com>
+In-Reply-To: <CAHUa44G9qoqwou8et_EaQWF5SdHMuG+iXgpYmzLNHm-C7ETJKQ@mail.gmail.com>
+Date:   Thu, 6 May 2021 14:05:37 +0530
+Cc:     Allen Pais <allen.lkml@gmail.com>, zajec5@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <E5403A4A-D250-4B31-AFD3-25A54F929896@linux.microsoft.com>
+References: <20210225090610.242623-1-allen.lkml@gmail.com>
+ <20210225090610.242623-2-allen.lkml@gmail.com>
+ <CAHUa44F5Ew6U80t7PPmV1J4KunXBm_izBxVrxg=x8azjBz0r9Q@mail.gmail.com>
+ <9a6c017c-d156-f939-f907-d6dfe83c41ac@linux.microsoft.com>
+ <CAHUa44FyGOj5=Z80km_2T-avKiJpGVD8cWjTC3ZCX8csazP3rw@mail.gmail.com>
+ <409F60D9-F0FB-4B69-B64B-CC6B3704038E@linux.microsoft.com>
+ <CAHUa44EZprsEKbd_mzGhxQKQgu5XB5nLtREJh2j_9J3zPO4gNg@mail.gmail.com>
+ <51FC863B-96C5-47BA-8EBF-3D9FB6DE7DD2@linux.microsoft.com>
+ <CAHUa44HTYcPyK95E+Mo2GNnCB9TfstA-n_4911JQh8V7-4vyjg@mail.gmail.com>
+ <CBC53D4C-120E-4252-B251-46E064A63250@linux.microsoft.com>
+ <CAHUa44G9qoqwou8et_EaQWF5SdHMuG+iXgpYmzLNHm-C7ETJKQ@mail.gmail.com>
+To:     Jens Wiklander <jens.wiklander@linaro.org>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Well I am definitely for keeping this bug as a feature
-and utilizing UHS with this patch ;)
-I have tried all SDSC cards I could get my hands on and
-have not seen any 'accidentally' reporting UHS support.
 
-I tested the patch with own custom cards.
-(Hyperstone, my employer, develops controllers for flash
-storage.)
 
-There you would have to make the same choice, disabling
-UHS support reporting for all SDSC cards, but as some
-hosts accept UHS (including voltage switch) without checking
-CCS, this would throttle performance.
-(One such host is e.g.
-8564:4000 Transcend Information, Inc. microSD/SD/CF UHS-II Card Reader)
+>>=20
+>>>>=20
+>>>>>>>>>> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+>>>>>>>>>> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with =
+error -22
+>>>>>>>>>>=20
+>>>>>>>>>> tee_shm_release() is not invoked on dma shm buffer.
+>>>>>>>>>>=20
+>>>>>>>>>> Implement .shutdown() method to handle the release of the =
+buffers
+>>>>>>>>>> correctly.
+>>>>>>>>>>=20
+>>>>>>>>>> More info:
+>>>>>>>>>> https://github.com/OP-TEE/optee_os/issues/3637
+>>>>>>>>>>=20
+>>>>>>>>>> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+>>>>>>>>>> ---
+>>>>>>>>>> drivers/tee/optee/core.c | 20 ++++++++++++++++++++
+>>>>>>>>>> 1 file changed, 20 insertions(+)
+>>>>>>>>>=20
+>>>>>>>>> This looks good to me. Do you have a practical way of testing =
+this on
+>>>>>>>>> QEMU for instance?
+>>>>>>>>>=20
+>>>>>>>>=20
+>>>>>>>> Jens,
+>>>>>>>>=20
+>>>>>>>> I could not reproduce nor create a setup using QEMU, I could =
+only
+>>>>>>>> do it on a real h/w.
+>>>>>>>>=20
+>>>>>>>> I have extensively tested the fix and I don't see any issues.
+>>>>>>>=20
+>>>>>>> I did a few test runs too, seems OK.
+>>>>>>=20
+>>>>>> I carried these changes and have not run into any issues with =
+Kexec so far.
+>>>>>> Last week, while trying out kdump, we ran into a crash(this is =
+when the
+>>>>>> Kdump kernel reboots).
+>>>>>>=20
+>>>>>> $echo c > /proc/sysrq-trigger
+>>>>>>=20
+>>>>>> Leads to:
+>>>>>>=20
+>>>>>> [   18.004831] Unable to handle kernel paging request at virtual =
+address ffff0008dcef6758
+>>>>>> [   18.013002] Mem abort info:
+>>>>>> [   18.015885]   ESR =3D 0x96000005
+>>>>>> [   18.019034]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+>>>>>> [   18.024516]   SET =3D 0, FnV =3D 0
+>>>>>> [   18.027667]   EA =3D 0, S1PTW =3D 0
+>>>>>> [   18.030905] Data abort info:
+>>>>>> [   18.033877]   ISV =3D 0, ISS =3D 0x00000005
+>>>>>> [   18.037835]   CM =3D 0, WnR =3D 0
+>>>>>> [   18.040896] swapper pgtable: 4k pages, 48-bit VAs, =
+pgdp=3D0000000970a78000
+>>>>>> [   18.047811] [ffff0008dcef6758] pgd=3D000000097fbf9003, =
+pud=3D0000000000000000
+>>>>>> [   18.054819] Internal error: Oops: 96000005 [#1] SMP
+>>>>>> [   18.059850] Modules linked in: bnxt_en pcie_iproc_platform =
+pcie_iproc diagbe(O)
+>>>>>> [   18.067395] CPU: 3 PID: 1 Comm: systemd-shutdow Tainted: G     =
+      O      5.4.83-microsoft-standard #1
+>>>>>> [   18.077174] Hardware name: Overlake (DT)
+>>>>>> [   18.081219] pstate: 80400005 (Nzcv daif +PAN -UAO)
+>>>>>> [   18.086170] pc : tee_shm_free+0x18/0x48
+>>>>>> [   18.090126] lr : optee_disable_shm_cache+0xa4/0xf0
+>>>>>> [   18.095066] sp : ffff80001005bb90
+>>>>>> [   18.098484] x29: ffff80001005bb90 x28: ffff000037e20000
+>>>>>> [   18.103962] x27: 0000000000000000 x26: ffff00003ed10490
+>>>>>> [   18.109440] x25: ffffca760e975f90 x24: 0000000000000000
+>>>>>> [   18.114918] x23: ffffca760ed79808 x22: ffff00003ec66e18
+>>>>>> [   18.120396] x21: ffff80001005bc08 x20: 00000000b200000a
+>>>>>> [   18.125874] x19: ffff0008dcef6700 x18: 0000000000000010
+>>>>>> [   18.131352] x17: 0000000000000000 x16: 0000000000000000
+>>>>>> [   18.136829] x15: ffffffffffffffff x14: ffffca760ed79808
+>>>>>> [   18.142307] x13: ffff80009005b897 x12: ffff80001005b89f
+>>>>>> [   18.147786] x11: ffffca760eda4000 x10: ffff80001005b820
+>>>>>> [   18.153264] x9 : 00000000ffffffd0 x8 : ffffca760e59b2c0
+>>>>>> [   18.158742] x7 : 0000000000000000 x6 : 0000000000000000
+>>>>>> [   18.164220] x5 : 0000000000000000 x4 : 0000000000000000
+>>>>>> [   18.169698] x3 : 0000000000000000 x2 : ffff0008dcef6700
+>>>>>> [   18.175175] x1 : 00000000ffff0008 x0 : ffffca760e59ca04
+>>>>>> [   18.180654] Call trace:
+>>>>>> [   18.183176]  tee_shm_free+0x18/0x48
+>>>>>> [   18.186773]  optee_disable_shm_cache+0xa4/0xf0
+>>>>>> [   18.191356]  optee_shutdown+0x20/0x30
+>>>>>> [   18.195135]  platform_drv_shutdown+0x2c/0x38
+>>>>>> [   18.199538]  device_shutdown+0x180/0x298
+>>>>>> [   18.203586]  kernel_restart_prepare+0x44/0x50
+>>>>>> [   18.208078]  kernel_restart+0x20/0x68
+>>>>>> [   18.211853]  __do_sys_reboot+0x104/0x258
+>>>>>> [   18.215899]  __arm64_sys_reboot+0x2c/0x38
+>>>>>> [   18.220035]  el0_svc_handler+0x90/0x138
+>>>>>> [   18.223991]  el0_svc+0x8/0x208
+>>>>>> [   18.227143] Code: f9000bf3 aa0003f3 aa1e03e0 d503201f =
+(b9405a60)
+>>>>>> [   18.233435] ---[ end trace 835d756cd66aa959 ]---
+>>>>>> [   18.238621] Kernel panic - not syncing: Fatal exception
+>>>>>> [   18.244014] Kernel Offset: 0x4a75fde00000 from =
+0xffff800010000000
+>>>>>> [   18.250299] PHYS_OFFSET: 0xffff99c680000000
+>>>>>> [   18.254613] CPU features: 0x0002,21806008
+>>>>>> [   18.258747] Memory Limit: none
+>>>>>> [   18.262310] ---[ end Kernel panic - not syncing: Fatal =
+exception ]=E2=80=94
+>>>>>>=20
+>>>>>> I see that before secure world returns =
+OPTEE_SMC_RETURN_ENOTAVAIL(which
+>>>>>> Should disable and clear all the cache) we run into the crash =
+trying to free shm.
+>>>>>>=20
+>>>>>> Thoughts?
+>>>>>=20
+>>>>> It seems that the pointer is invalid, but the pointer doesn't look
+>>>>> like garbage. Could the kernel have unmapped the memory area =
+covering
+>>>>> that address?
+>>>>>=20
+>>>>=20
+>>>> Yes, I am not entirely sure if the kernel had the time to unmap the =
+memory.
+>>>> Right after triggering the crash the kdump kernel is booted and I =
+see the following
+>>>>=20
+>>>> [ 2.050145] optee: probing for conduit method.
+>>>> [ 2.054743] optee: revision 3.6 (f84427aa)
+>>>> [ 2.054821] optee: dynamic shared memory is enabled
+>>>> [ 2.066186] optee: initialized driver
+>>>>=20
+>>>> Could this be previous un-released maps causing corruption?
+>>>=20
+>>> Aha, yes, that could be it.
+>>>=20
+>>=20
+>> How about checking for the ptr?
+>>=20
+>> diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+>> index aadedec3bfe7..8dc4fe9a1588 100644
+>> --- a/drivers/tee/optee/call.c
+>> +++ b/drivers/tee/optee/call.c
+>> @@ -426,10 +426,12 @@ void optee_disable_shm_cache(struct optee =
+*optee)
+>>                if (res.result.status =3D=3D =
+OPTEE_SMC_RETURN_ENOTAVAIL)
+>>                        break; /* All shm's freed */
+>>                if (res.result.status =3D=3D OPTEE_SMC_RETURN_OK) {
+>> -                       struct tee_shm *shm;
+>> +                       struct tee_shm *shm =3D NULL;
+>>=20
+>>                        shm =3D =
+reg_pair_to_ptr(res.result.shm_upper32,
+>>                                              res.result.shm_lower32);
+>> +                       if (IS_ERR(shm))
+>> +                               return PTR_ERR(shm);
+>>                        tee_shm_free(shm);
+>=20
+> I don't think that will help. If your theory is correct then that
+> pointer is from an older incarnation of the kernel. It could be worth
+> trying calling this function just before the call to
+> optee_enable_shm_cache() in optee_probe() but skipping the calls to
+> `tee_shm_free()` in that case. Since the kernel has restarted these
+> returned pointers are not valid any more and there's nothing to free,
+> we just need to make sure that secure world stops using those too.
+>=20
 
-It would be nice to have this in linux-mmc as arguably the most
-important SD native host.
-I'm sure the other manufacturers either do not disable UHS
-support for SDSC cards, or have at least been playing with the idea.
+I thought about it too, but was not very sure.=20
 
-Regards,
-Christian
+Calling optee_disable_shm_cache() before the enable call to ensure
+That we have dropped all references to the secure world and looking
+To start of fresh. Lemme try that out.
 
-From: Ulf Hansson <ulf.hansson@linaro.org>
-Sent: Wednesday, May 5, 2021 4:20 PM
-To: Christian Löhle <CLoehle@hyperstone.com>
-Cc: linux-kernel@vger.kernel.org <linux-kernel@vger.kernel.org>; linux-mmc@vger.kernel.org <linux-mmc@vger.kernel.org>; pali@kernel.org <pali@kernel.org>; huyue2@yulong.com <huyue2@yulong.com>; tiantao6@hisilicon.com <tiantao6@hisilicon.com>
-Subject: Re: [PATCH] mmc: enable UHS voltage switch for SDSC if supported 
- 
-On Wed, 5 May 2021 at 14:13, Christian Löhle <CLoehle@hyperstone.com> wrote:
->
-> So two cards that advertise UHS:
-> https://www.euric.de/de/flash-speicher/sd-microsd/sd/
-> Model SDI790
-> and
-> https://na.industrial.panasonic.com/products/storage-media/industrial-sd-cards/lineup/industrial-grade-2d-nand/series/71695
-
-Thanks for the links!
-
-Are these the ones that you have been using for testing?
-
-> Hopefully that suffices as a couple, otherwise I would buy some
-> that do not advertise it and actually check if they support it anyway.
-> But 2GB SLC listings are kind of rare these days, so it's not as
-> easy to find many that are still sold and available.
-
-Right. I have a whole bunch of old SD cards that I can test. I will
-let you know when I have got some time to test some of them.
-
-The main worry (but I may be wrong) I have with the patch is that it
-could cause problems for other older SDSC cards, which happens to
-incorrectly set the S18A bit. I mean, before UHS-I was introduced in
-the SD spec, this bit was just being reserved and potentially it could
-have *any* value by the card manufacturer. As I said, let me do some
-tests of my older SD cards.
-
->
-> My point about deviating from the standard was that these cards
-> are already initialized as UHS, they just don't do the voltage switch.
-> So anything reserved for UHS-I (e.g. CMD23 )is already being done
-> by the host with the current linux-mmc,
-> so the standard deviation is already there.
-> Just the voltage switch is missing.
-
-Ah, yes you are right!
-
-We call mmc_sd_init_uhs_card() no matter whether the CCS bit is set.
-Certainly this is a bug. Both the card and host aren't designed to
-work under these conditions/timings.
-
->
-> Regards,
-> Christian
->
-
-Kind regards
-Uffe
-
->
-> From: Ulf Hansson <ulf.hansson@linaro.org>
-> Sent: Wednesday, May 5, 2021 12:09 PM
-> To: Christian Löhle <CLoehle@hyperstone.com>
-> Subject: Re: [PATCH] mmc: enable UHS voltage switch for SDSC if supported
->
-> On Thu, 22 Apr 2021 at 15:18, Christian Löhle <CLoehle@hyperstone.com> wrote:
-> >
-> > Ignore the reported capacity if the card otherwise reports UHS support.
-> >
-> > Currently SDSC cards reporting UHS support except for the CCS do not run
-> > through the voltage switch.
-> > While strictly speaking a SDSC card cannot support UHS in compliance
-> > with the standard, there is no good reason to throttle them that way.
->
-> Maybe not, but I think the code just tries to conform to the SD spec.
->
-> > Especially for pSLCs in practice such cards benefit greatly by this patch,
-> > as they can be new and UHS supporting, but must not lie about their CCS.
->
-> Can you provide some concrete examples of SDSC cards that support UHS-I?
->
-> > The behaviour of linux-mmc for SDSC is deviating from the standard anyway
-> > in such a case, as the card is treated as UHS card not supporting the
-> > voltage switch in general.
-> > Such a card will come up as
-> > mmc0: new ultra high speed SDR25 SD card at address 0001.
-> > Thus the subsystem will support CMD23 and others to the card.
-> > But if we deviate from the standard anyway, then we might as well
-> > not throttle SDSC to 25MB/s.
->
-> Not sure I understand this correctly? Can you elaborate a bit more, so
-> I understand how we deviate from the SD spec here?
->
-> As far as I understand the spec, SDSC cards shouldn't support UHS-I.
-> If we decide to deviate from the spec to support this anyway, at least
-> we need to know about a couple of cards that actually supports this.
->
-> Kind regards
-> Uffe
->
-> >
-> > Signed-off-by: Christian Loehle <cloehle@hyperstone.com>
-> > ---
-> >  drivers/mmc/core/sd.c | 7 +++----
-> >  1 file changed, 3 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-> > index 6fa51a6ed058..281ca2da8e0b 100644
-> > --- a/drivers/mmc/core/sd.c
-> > +++ b/drivers/mmc/core/sd.c
-> > @@ -841,11 +841,10 @@ int mmc_sd_get_cid(struct mmc_host *host, u32 ocr, u32 *cid, u32 *rocr)
-> >                 return err;
-> >
-> >         /*
-> > -        * In case CCS and S18A in the response is set, start Signal Voltage
-> > -        * Switch procedure. SPI mode doesn't support CMD11.
-> > +        * In case S18A in the response is set, start Signal Voltage Switch
-> > +        * procedure. SPI mode doesn't support CMD11.
-> >          */
-> > -       if (!mmc_host_is_spi(host) && rocr &&
-> > -          ((*rocr & 0x41000000) == 0x41000000)) {
-> > +       if (!mmc_host_is_spi(host) && rocr && (*rocr & 0x01000000)) {
-> >                 err = mmc_set_uhs_voltage(host, pocr);
-> >                 if (err == -EAGAIN) {
-> >                         retries--;
-> > --
-> > 2.31.1
-> >
-> > Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-> > Managing Directors: Dr. Jan Peter Berns.
-> > Commercial register of local courts: Freiburg HRB381782
-> >
->
-> Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-> Managing Directors: Dr. Jan Peter Berns.
-> Commercial register of local courts: Freiburg HRB381782
->
-
-Hyperstone GmbH | Line-Eid-Strasse 3 | 78467 Konstanz
-Managing Directors: Dr. Jan Peter Berns.
-Commercial register of local courts: Freiburg HRB381782
+Thanks.
 
