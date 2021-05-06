@@ -2,252 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A0D375841
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA7A6375844
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:11:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235710AbhEFQMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42438 "EHLO
+        id S235848AbhEFQMv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:12:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42534 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235176AbhEFQM1 (ORCPT
+        with ESMTP id S235395AbhEFQMu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:12:27 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 486BBC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 09:11:29 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id a11so3654197plh.3
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 09:11:29 -0700 (PDT)
+        Thu, 6 May 2021 12:12:50 -0400
+Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98180C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 09:11:52 -0700 (PDT)
+Received: by mail-oo1-xc35.google.com with SMTP id s24-20020a4aead80000b02901fec6deb28aso1345659ooh.11
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 09:11:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=joBZO2EuUGmN/P5upzQHQzAEiuX94k7ShmHvJ9FOemo=;
-        b=ZD6h9R+F4/uMQWTdK41klFKGncWIdr39EC1I0XnlWWb2kMqVfRP0piB6Reht3xWpzI
-         qsc/YzJ+ZEf7E31IAFWjBlpYXQtswOUNv0r8otDjCayOzMWkrjlWj7dfgoYpeGBoaHyt
-         2MyV78sRt17LSUWaSfrGg3XER3fjKGONW+bzptAJvULiMLkqB5ttbPESQEslGgaQh3tL
-         ELddIEPvT+knJaYrY8BS/OoEo/P32uLxg46f40ujDOzRnmXhBLF3NigTda9xSo2LqR24
-         jFV9oSfB6mP1gszI1ti+9KToOS6WT0TFVCMpkYd/GiW9cDCdLNcQIwaPyAq6Fy1HWQOy
-         Ck6g==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qeQfKYm2bS74Zn3vvyUj9tpVPEGDUabI+L4zJ/QF7Ws=;
+        b=DKmRPn6skb/CCNECeRh0U3xJqCuPavQHF1tJi/vLpW9GR0nRxKhhojPJ1ryQsp9hwL
+         Fbc5GqHiGsJSt/ehqDybO9zqplZwOe0nNdTT4wFvv8kKAwb+078Dh/VH46PNklfkBbVn
+         Suoix3Q5etSUC3PxBFt0OeNI5BCezcA8r2rIadoLeQKEw1RKuLnEHDnEVxgrDF2GupRc
+         +tcOTBra+WLRwQeaNSgdUql5rPMblTvi75379dFGw8sZJl9udXO7JlqhiF1Oaoc/b5JP
+         yN7wRK0gyYCdkX5sJZRDoOk+zspBrMQ5BqaDbE50PIlETmKkvcFQ7Qu09t4T3L1Guwsd
+         p4hA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=joBZO2EuUGmN/P5upzQHQzAEiuX94k7ShmHvJ9FOemo=;
-        b=ohKiefOuA0N/u+GIUaicEPTwi0l/IPTgT4xrJhYArPfq4x4Iqj2YjFnJfpe+A1Gce2
-         BQXJLhjajppngw3eIvScQjVVsqDO0MvkJI4lqbFelicle31NAmZCnw3JJsshDwjwD/0e
-         KSFkxRTvzaGbUXv5MTCyt30ApxjSDRXTtqRxCNnpbB6LnJmpJNEvDDPbDlJDEriN8kD0
-         D56wiJp2qDmIqVJMlnVpmAFTbVoY1tpK1TFoVsXC4mj6gaNyDHc/FIbOM8RwrkCKKJk3
-         XuXIeQJhisN49TcFepy1ZE9msg2ruGacb1j3GToFpUfRG59ZnJAYZQRbhHkzmxXuuCwu
-         1sUw==
-X-Gm-Message-State: AOAM533P5FqoXKk1Q0W/ASyPwWEphE06thCEiy/FDBzj/gGVW1m9t5gU
-        j0kWYpjPorPJBuByoFiuopgKIw==
-X-Google-Smtp-Source: ABdhPJzObUur+TjQiT6SzsHBylqtcJ8knSBvnsqzTLAPKU54bXpp8bUj7Gt7vbmUASD20WyJfQiMuQ==
-X-Received: by 2002:a17:902:b683:b029:ee:f0e3:7a50 with SMTP id c3-20020a170902b683b02900eef0e37a50mr5549593pls.7.1620317488726;
-        Thu, 06 May 2021 09:11:28 -0700 (PDT)
-Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
-        by smtp.gmail.com with ESMTPSA id b21sm2455098pfl.82.2021.05.06.09.11.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 09:11:27 -0700 (PDT)
-Date:   Thu, 6 May 2021 10:11:25 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH v3 5/6] rpmsg: char: Introduce a rpmsg driver for the
- rpmsg char device
-Message-ID: <20210506161125.GA1804623@xps15>
-References: <20210429135507.8264-1-arnaud.pouliquen@foss.st.com>
- <20210429135507.8264-6-arnaud.pouliquen@foss.st.com>
- <20210505164159.GB1766375@xps15>
- <5a41e653-4d75-c5d5-a8e3-e247a50507f3@foss.st.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qeQfKYm2bS74Zn3vvyUj9tpVPEGDUabI+L4zJ/QF7Ws=;
+        b=i+ZrIZqKBDtxJWbF0KS+cazUhMWFiju2J/nPXBrk0ufX6rMg4s/EkN2PFu+njxpEEa
+         z0cLDboluj8jdBzGf6jNBF/FPbWks+Kq02CagRwXHhLRqQjnV6av3Pl/bQkGS66Bed4+
+         eT0UA6RyeeeULBkUabhUytX8LDPyTy5ryssDYmaO87mhUSI4zOjpfZpJthBn7N81A1rY
+         cdXBYtJlMsSLnRF44Yisg7QuBY6n9QraLIDW9l3twJGYDMRCLwibcMHUydtzu6lWPhAa
+         mdOYjfmqM3IAIWiuW28vAD/cAvYJ96vTcNY2Ugz0wXEopEsSRHTyMWteEvvRLoFNxEtr
+         xhLw==
+X-Gm-Message-State: AOAM533TCPh38aHSaE0sj8wuCfw+ECe1FBd1X6dt/eromDvHu/KJczpf
+        wnhsuCab3Xr2Guor+vJ+elUppGiCsRJFGqcYiU4ptg==
+X-Google-Smtp-Source: ABdhPJwZowjdjz6M7oOMBaQIM/f1bFeevFTXYG6HrMP8e+Q4Hrgud/16vePb/aywo7/ti11PECmx5C3WN86KsBMb8LE=
+X-Received: by 2002:a4a:e715:: with SMTP id y21mr4106465oou.54.1620317511833;
+ Thu, 06 May 2021 09:11:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5a41e653-4d75-c5d5-a8e3-e247a50507f3@foss.st.com>
+References: <20210506132827.3198497-1-elver@google.com> <CABJPP5D_azxBiKq08_m_WVmcEy8qbMCa0EsAgu57t2T+eDJA0A@mail.gmail.com>
+ <CAKXUXMx4dOSb8xub+JtOR8HBrLi_WtGL+L_+3c-rdQQc3XEPLw@mail.gmail.com>
+In-Reply-To: <CAKXUXMx4dOSb8xub+JtOR8HBrLi_WtGL+L_+3c-rdQQc3XEPLw@mail.gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Thu, 6 May 2021 18:11:40 +0200
+Message-ID: <CANpmjNMsbyG7T2+BW2+QEtHnnznOVJQvydddOP+VLQZK8nTG2w@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: warn about direct use of send_sig_info and force_sig_info
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Andy Whitcroft <apw@canonical.com>,
+        Joe Perches <joe@perches.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good day,
+On Thu, 6 May 2021 at 18:02, Lukas Bulwahn <lukas.bulwahn@gmail.com> wrote:
+> On Thu, May 6, 2021 at 5:02 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
+> > On Thu, May 6, 2021 at 6:59 PM Marco Elver <elver@google.com> wrote:
+> > >
+> > > Setting up siginfo and using send_sig_info() and force_sig_info()
+> > > directly is discouraged. Instead, new code wanting to generate signals
+> > > should use the appropriate helper specific to the signal.
+> > >
+> > > Eric mentioned that he'd like to make these static at some point, but
+> > > until that can happen, let's try to avoid introducing new users of them.
+> > >
+> > > Cc: Eric W. Biederman <ebiederm@xmission.com>
+> > > Signed-off-by: Marco Elver <elver@google.com>
+> > > ---
+> > > Eric,
+> > >
+> > > While siginfo doesn't need changing often, when it does, it's quite the
+> > > adventure. We now have the various static asserts. The other thing is
+> > > usage of {send,force}_sig_info.
+> > >
+> > > I think the best option right now is to teach checkpatch.pl about it
+> > > until they become static.
+> > >
+> > > Fyi, I noticed one such new user here:
+> > > https://lkml.kernel.org/r/20210421024826.13529-1-wangjunqiang@iscas.ac.cn
+> > >
+> > > Thanks,
+> > > -- Marco
+> > > ---
+> > >  scripts/checkpatch.pl | 6 ++++++
+> > >  1 file changed, 6 insertions(+)
+> > >
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > > index ccb412a74725..3a86aafc3bcd 100755
+> > > --- a/scripts/checkpatch.pl
+> > > +++ b/scripts/checkpatch.pl
+> > > @@ -7153,6 +7153,12 @@ sub process {
+> > >                              "Where possible, use lockdep_assert_held instead of assertions based on spin_is_locked\n" . $herecurr);
+> > >                 }
+> > >
+> > > +# check for direct use of send_sig_info(), force_sig_info()
+> > > +               if ($line =~ /\b((force|send)_sig_info)\(/) {
+> >
+> > I think this might be a little better as:
+> > if ($line =~ /\b((?:force|send)_sig_info)\(/) {
+> >
+> > Otherwise it's good as it is.
+> > Tested-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> >
+>
+> Dwaipayan, do you want to also document this new rule on the
+> checkpatch documentation?
+> Marco, maybe you can assist us here with some pointer (lore.kernel.org
+> link) to the original discussion you had.
 
-On Wed, May 05, 2021 at 08:25:24PM +0200, Arnaud POULIQUEN wrote:
-> Hi Mathieu,
-> 
-> On 5/5/21 6:41 PM, Mathieu Poirier wrote:
-> > Hi Arnaud,
-> > 
-> > On Thu, Apr 29, 2021 at 03:55:06PM +0200, Arnaud Pouliquen wrote:
-> >> A rpmsg char device allows to probe the endpoint device on a remote name
-> >> service announcement.
-> >>
-> >> With this patch the /dev/rpmsgX interface is created either by a user
-> >> application or by the remote firmware.
-> >>
-> >> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
-> >>
-> >> ---
-> >> update from V1:
-> >>
-> >>  - add missing unregister_rpmsg_driver call on module exit.
-> >> ---
-> >>  drivers/rpmsg/rpmsg_char.c | 53 +++++++++++++++++++++++++++++++++++++-
-> >>  1 file changed, 52 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
-> >> index 5c6a7da6e4d7..9166454c1310 100644
-> >> --- a/drivers/rpmsg/rpmsg_char.c
-> >> +++ b/drivers/rpmsg/rpmsg_char.c
-> >> @@ -18,6 +18,8 @@
-> >>  
-> >>  #include "rpmsg_char.h"
-> >>  
-> >> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
-> >> +
-> >>  static dev_t rpmsg_major;
-> >>  static struct class *rpmsg_class;
-> >>  
-> >> @@ -413,6 +415,40 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
-> >>  }
-> >>  EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
-> >>  
-> >> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
-> >> +{
-> >> +	struct rpmsg_channel_info chinfo;
-> >> +
-> >> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
-> >> +	chinfo.src = rpdev->src;
-> >> +	chinfo.dst = rpdev->dst;
-> >> +
-> >> +	return __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo, true);
-> >> +}
-> >> +
-> >> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
-> >> +{
-> >> +	int ret;
-> >> +
-> >> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
-> >> +	if (ret)
-> >> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
-> >> +}
-> >> +
-> >> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
-> >> +	{ .name	= RPMSG_CHAR_DEVNAME },
-> >> +	{ },
-> >> +};
-> >> +
-> >> +static struct rpmsg_driver rpmsg_chrdev_driver = {
-> >> +	.probe = rpmsg_chrdev_probe,
-> >> +	.remove = rpmsg_chrdev_remove,
-> >> +	.id_table = rpmsg_chrdev_id_table,
-> >> +	.drv = {
-> >> +		.name = "rpmsg_chrdev",
-> >> +	},
-> >> +};
-> > 
-> > The sole purpose of doing this is to create instances of rpmsg_chrdevs from the
-> > name service - but is it really needed?  Up to now and aside from GLINK and SMD,
-> > there asn't been other users of it so I'm wondering if it is worth going through
-> > all this trouble.
-> 
-> It is a good point.
-> 
-> Just as a reminder, the need of ST and, I assume, some other companies, is to
-> have a basic/generic communication channel to control a remote processor
-> application.
-> 
-> Nothing generic exists today for a virtio transport based implementation.
-> Companies have to create their own driver.
-> 
-> The purpose of my work is to allow our customer to use RPMsg without developing
-> a specific driver to control remote applications.
-> 
-> The rpmsg_chrdev char is a good candidate for this. No protocol, just a simple
-> inter-processor link to send and receive data. The rpmsg_tty is another one.
-> 
-> Focusing on the rpmsg_chrdev:
-> We did a part of the work with the first patch set that would be in 5.13.
-> But is it simple to use it for virtio transport based platforms?
-> If we don't implement the NS announcement support in rpmsg_chrdev, using
-> rpmsg_chrdev for a user application seems rather tricky.
-> How to instantiate the communication?
+It started somewhere here:
+https://lkml.kernel.org/r/m17dkjttpj.fsf@fess.ebiederm.org
 
-Since we already have /dev/rpmsg_ctrlX user space can instantiate an rpmsg_chrdev
-using that interface, which is how things are done in the GLINK/SMD world.
+Eric has the full history here -- if I missed something, hopefully
+he'll nack or ack.
 
-Wouldn't that cover the usecases you had in mind?
-
-As you pointed out above rpmsg_chrdev should be light and simple - eliminating
-patches 4, 5 and 6 would yield that.
-
-> The application will probably has to scan the /sys/bus/rpmsg/devices/ folder to
-> determine the services and associated remote address.
-> 
-> I don't think the QCOM drivers have the same problem because they seems to
-> initiate the communication and work directly with the RPMsg endpoints ( new
-> channel creation on endpoint creation) while Virtio works with the RPMsg channel.
-> 
-> By introducing the ability to instantiate rpmsg_chrdevs through the NS
-> announcement, we make this easy for applications to use.
-> 
-> And without rpmsg_chrdevs instantiation, It also means that we can't create an
-> RPMsg channel for the rpmsg_chrdevs using a new RPMSG_CREATE_DEV_IOCTL control,
-> right?
-> 
-> That said, If we consider that the aim was only to extract the rpmsg_ctrl part,
-> I'm not against leaving the rpmsg_char in this state and switching to the
-> rpmsg_tty driver upstream including the work on the rpmsg_ctrl to create rpmsg
-> channels.
-> 
-> We could come back on this if requested by someone else.
-> 
-> Thanks,
-> Arnaud
-> 
-> > 
-> > As such I suggest we don't go out of our way to expose rpmsg_chrdevs to the name
-> > service.  That way patches 4, 5 and 6 of this set can be dropped.
-> > 
-> > Thanks,
-> > Mathieu
-> > 
-> >> +
-> >>  static int rpmsg_chrdev_init(void)
-> >>  {
-> >>  	int ret;
-> >> @@ -427,15 +463,30 @@ static int rpmsg_chrdev_init(void)
-> >>  	if (IS_ERR(rpmsg_class)) {
-> >>  		pr_err("failed to create rpmsg class\n");
-> >>  		unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >> -		return PTR_ERR(rpmsg_class);
-> >> +		ret = PTR_ERR(rpmsg_class);
-> >> +		goto free_region;
-> >> +	}
-> >> +
-> >> +	ret = register_rpmsg_driver(&rpmsg_chrdev_driver);
-> >> +	if (ret < 0) {
-> >> +		pr_err("rpmsg: failed to register rpmsg raw driver\n");
-> >> +		goto free_class;
-> >>  	}
-> >>  
-> >>  	return 0;
-> >> +
-> >> +free_class:
-> >> +	class_destroy(rpmsg_class);
-> >> +free_region:
-> >> +	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >> +
-> >> +	return ret;
-> >>  }
-> >>  postcore_initcall(rpmsg_chrdev_init);
-> >>  
-> >>  static void rpmsg_chrdev_exit(void)
-> >>  {
-> >> +	unregister_rpmsg_driver(&rpmsg_chrdev_driver);
-> >>  	class_destroy(rpmsg_class);
-> >>  	unregister_chrdev_region(rpmsg_major, RPMSG_DEV_MAX);
-> >>  }
-> >> -- 
-> >> 2.17.1
-> >>
+Thanks,
+-- Marco
