@@ -2,87 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A842375897
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:40:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31FAF37589A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:41:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236011AbhEFQls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:41:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
+        id S235997AbhEFQml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:42:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235295AbhEFQlh (ORCPT
+        with ESMTP id S235700AbhEFQmj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:41:37 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E84C061574;
-        Thu,  6 May 2021 09:40:39 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Thu, 6 May 2021 12:42:39 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF8AC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 09:41:40 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id E2205C800AE;
+        Thu,  6 May 2021 18:41:37 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
+        with LMTP id P9VmPmbXH6xr; Thu,  6 May 2021 18:41:37 +0200 (CEST)
+Received: from [IPv6:2003:e3:7f12:f200:8bde:d9a7:b37:e3f5] (p200300e37F12f2008bdED9a70B37E3f5.dip0.t-ipconnect.de [IPv6:2003:e3:7f12:f200:8bde:d9a7:b37:e3f5])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
         (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 0C2882224F;
-        Thu,  6 May 2021 18:40:37 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620319237;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=w4MY3G564NdTEkuj4VLGNFihTv4+RO4yLopFAh40/24=;
-        b=eBCH6kXReCxnXQmOrX+gIktbnA5fzQj9nqLHJ1ypRpAhiQmg7Qh8Pbj2w8oYM3UhEos720
-        +tiRVVbBxs/H7DQp5/Fbf4FIb0aN/CCDCoguDSIRQ8NsTOigBcAERDSqv2zwNwt9o5nyRZ
-        EzjZ4JRZVb6njr92JIGU0FBVNbuH/UM=
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPSA id 9B537C800AB;
+        Thu,  6 May 2021 18:41:35 +0200 (CEST)
+Subject: Re: [Intel-gfx] [PATCH 1/3] New function to avoid duplicate code in
+ upcomming commits
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <20210505172401.1453178-1-wse@tuxedocomputers.com>
+ <20210505172401.1453178-2-wse@tuxedocomputers.com> <87v97ww4e5.fsf@intel.com>
+From:   Werner Sembach <wse@tuxedocomputers.com>
+Message-ID: <3796a7b9-8035-38ea-1c3d-b1ffe89aa19e@tuxedocomputers.com>
+Date:   Thu, 6 May 2021 18:41:34 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <87v97ww4e5.fsf@intel.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 06 May 2021 18:40:37 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Robert Marko <robert.marko@sartura.hr>, lee.jones@linaro.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        jdelvare@suse.com, linux@roeck-us.net, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, luka.perkov@sartura.hr,
-        jmp@epiphyte.org, pmenzel@molgen.mpg.de, buczek@molgen.mpg.de
-Subject: Re: [PATCH 3/6] gpio: Add Delta TN48M CPLD GPIO driver
-In-Reply-To: <20210506140024.GB3340759@robh.at.kernel.org>
-References: <20210430123511.116057-1-robert.marko@sartura.hr>
- <20210430123511.116057-3-robert.marko@sartura.hr>
- <20210506140024.GB3340759@robh.at.kernel.org>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <3905879e67d50d6a7f73fcd83982c052@walle.cc>
-X-Sender: michael@walle.cc
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-06 16:00, schrieb Rob Herring:
-> On Fri, Apr 30, 2021 at 02:35:08PM +0200, Robert Marko wrote:
->> Delta TN48M CPLD is used as a GPIO expander for the SFP GPIOs.
->> 
->> It is a mix of input only and output only pins.
->> 
->> Since there is no logical GPIO numbering arbitrary one is used
->> along dt-bindings to make it humanly readable.
->> 
->> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+
+Am 06.05.21 um 12:19 schrieb Jani Nikula:
+> On Wed, 05 May 2021, Werner Sembach <wse@tuxedocomputers.com> wrote:
+>> Moves some checks that later will be performed 2 times to an own fuction. This
+>> avoids duplicate code later on.
+>>
+>> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
 >> ---
->>  drivers/gpio/Kconfig      |  12 +++
->>  drivers/gpio/Makefile     |   1 +
->>  drivers/gpio/gpio-tn48m.c | 191 
->> ++++++++++++++++++++++++++++++++++++++
->>  drivers/mfd/tn48m-cpld.c  |   6 +-
->>  include/linux/mfd/tn48m.h |   3 +
->>  5 files changed, 212 insertions(+), 1 deletion(-)
->>  create mode 100644 drivers/gpio/gpio-tn48m.c
-> 
-> 
->> +static const struct platform_device_id tn48m_gpio_id_table[] = {
->> +	{ "delta,tn48m-gpio", },
-> 
-> Looks like a compatible, but is not. I think you can drop this and just
-> use 'tm48m-gpio' (the driver name).
+>>
+>> From 42a4a3a7d9ea9948b4071f406e7fcae23bfa0bdf Mon Sep 17 00:00:00 2001
+>> From: Werner Sembach <wse@tuxedocomputers.com>
+>> Date: Mon, 3 May 2021 14:35:39 +0200
+>> Subject: [PATCH 1/3] New function to avoid duplicate code in upcomming commits
+> What are you using to generate and send the patches? This looks like
+> unnecessary cruft, and our CI fails to apply and test the changes.
+>
+> BR,
+> Jani.
+I'm using git send-email with --compose and --annotate. The From, Date, and Subject lines are automatically generated by it and I then add the commit message above.
 
-I'm just curious, why isn't the vendor included here (as there
-might be a chance for name clashes in the future).
+After reading https://www.kernel.org/doc/html/v5.12/process/submitting-patches.html#the-canonical-patch-format I thought the format was:
 
--michael
+<commit message for upstream and signed of lines>
+---
+<additional comments only for mailing list/stuff that gets ignored by the tools>
+---
+<the patch>
+
+With the middle part being optional. (I only tested with "git apply" which worked fine with the format)
+
+I will resend the patches without the middle part, and the drm/i915/display in all subject lines.
+
+>
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_hdmi.c | 41 ++++++++++++++---------
+>>  1 file changed, 26 insertions(+), 15 deletions(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> index 46de56af33db..576d3d910d06 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
+>> @@ -1861,6 +1861,31 @@ static int intel_hdmi_port_clock(int clock, int bpc)
+>>  	return clock * bpc / 8;
+>>  }
+>>  
+>> +static enum drm_mode_status
+>> +intel_hdmi_mode_clock_valid(struct intel_hdmi *hdmi, int clock, bool has_hdmi_sink)
+>> +{
+>> +	struct drm_device *dev = intel_hdmi_to_dev(hdmi);
+>> +	struct drm_i915_private *dev_priv = to_i915(dev);
+>> +	enum drm_mode_status status;
+>> +
+>> +	/* check if we can do 8bpc */
+>> +	status = hdmi_port_clock_valid(hdmi, clock, true, has_hdmi_sink);
+>> +
+>> +	if (has_hdmi_sink) {
+>> +		/* if we can't do 8bpc we may still be able to do 12bpc */
+>> +		if (status != MODE_OK && !HAS_GMCH(dev_priv))
+>> +			status = hdmi_port_clock_valid(hdmi, clock * 3 / 2,
+>> +						       true, has_hdmi_sink);
+>> +
+>> +		/* if we can't do 8,12bpc we may still be able to do 10bpc */
+>> +		if (status != MODE_OK && INTEL_GEN(dev_priv) >= 11)
+>> +			status = hdmi_port_clock_valid(hdmi, clock * 5 / 4,
+>> +						       true, has_hdmi_sink);
+>> +	}
+>> +
+>> +	return status;
+>> +}
+>> +
+>>  static enum drm_mode_status
+>>  intel_hdmi_mode_valid(struct drm_connector *connector,
+>>  		      struct drm_display_mode *mode)
+>> @@ -1891,21 +1916,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
+>>  	if (drm_mode_is_420_only(&connector->display_info, mode))
+>>  		clock /= 2;
+>>  
+>> -	/* check if we can do 8bpc */
+>> -	status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 8),
+>> -				       true, has_hdmi_sink);
+>> -
+>> -	if (has_hdmi_sink) {
+>> -		/* if we can't do 8bpc we may still be able to do 12bpc */
+>> -		if (status != MODE_OK && !HAS_GMCH(dev_priv))
+>> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 12),
+>> -						       true, has_hdmi_sink);
+>> -
+>> -		/* if we can't do 8,12bpc we may still be able to do 10bpc */
+>> -		if (status != MODE_OK && DISPLAY_VER(dev_priv) >= 11)
+>> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 10),
+>> -						       true, has_hdmi_sink);
+>> -	}
+>> +	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
+>>  	if (status != MODE_OK)
+>>  		return status;
