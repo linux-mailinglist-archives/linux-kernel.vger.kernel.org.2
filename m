@@ -2,80 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89771374D48
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:09:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6748A374D4E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:10:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230498AbhEFCKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:10:20 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17466 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhEFCKS (ORCPT
+        id S231256AbhEFCLe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:11:34 -0400
+Received: from mail-m176218.qiye.163.com ([59.111.176.218]:63312 "EHLO
+        mail-m176218.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229900AbhEFCLc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:10:18 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FbH510mBPzkWpY;
-        Thu,  6 May 2021 10:06:45 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 6 May 2021
- 10:09:18 +0800
-Subject: Re: [PATCH] f2fs: set file as cold when file defragmentation
-To:     <daejun7.park@samsung.com>,
-        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
-        "chao@kernel.org" <chao@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-f2fs-devel@lists.sourceforge.net" 
-        <linux-f2fs-devel@lists.sourceforge.net>
-References: <CGME20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
- <20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <3a0ab201-9546-d523-abc7-79df5f637f14@huawei.com>
-Date:   Thu, 6 May 2021 10:09:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
+        Wed, 5 May 2021 22:11:32 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m176218.qiye.163.com (Hmail) with ESMTPA id 45F7A32009E;
+        Thu,  6 May 2021 10:10:33 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Wan Jiabing <wanjiabing@vivo.com>,
+        Yang Li <yang.lee@linux.alibaba.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] ASoC: codecs: lpass-rx-macro: Remove unneeded semicolon
+Date:   Thu,  6 May 2021 10:09:49 +0800
+Message-Id: <20210506021005.4897-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGktKS1ZLSEJLHxpJH0hLHk1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NzY6PQw4GT8QQ0MfSjAhExI4
+        FA4KCR5VSlVKTUlLSU1MS0hPS01LVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJS09KNwY+
+X-HM-Tid: 0a793f70e415d978kuws45f7a32009e
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/4/29 14:20, Daejun Park wrote:
-> In file defragmentation by ioctl, all data blocks in the file are
-> re-written out-of-place. File defragmentation implies user will not update
-> and mostly read the file. So before the defragmentation, we set file
-> temperature as cold for better block allocation.
+Fix the following coccicheck warning:
 
-I don't think all fragmented files are cold, e.g. db file.
+./sound/soc/codecs/lpass-rx-macro.c:2631:2-3: Unneeded semicolon
 
-We have separated interface (via f2fs_xattr_advise_handler, e.g. setfattr -n
-"system.advise" -v value) to indicate this file is a hot/cold file, so my
-suggestion is after file defragmentation, if you think this file is cold, and
-use setxattr() to set it as cold.
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ sound/soc/codecs/lpass-rx-macro.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
+diff --git a/sound/soc/codecs/lpass-rx-macro.c b/sound/soc/codecs/lpass-rx-macro.c
+index b0ebfc8d180c..8dff72fc7bab 100644
+--- a/sound/soc/codecs/lpass-rx-macro.c
++++ b/sound/soc/codecs/lpass-rx-macro.c
+@@ -2628,7 +2628,7 @@ static int rx_macro_enable_rx_path_clk(struct snd_soc_dapm_widget *w,
+ 		break;
+ 	default:
+ 		break;
+-	};
++	}
+ 	return 0;
+ }
+ 
+-- 
+2.25.1
 
-> 
-> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
-> ---
->   fs/f2fs/file.c | 3 +++
->   1 file changed, 3 insertions(+)
-> 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index d697c8900fa7..dcac965a05fe 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -2669,6 +2669,9 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
->   	map.m_len = pg_end - pg_start;
->   	total = 0;
->   
-> +	if (!file_is_cold(inode))
-> +		file_set_cold(inode);
-> +
->   	while (map.m_lblk < pg_end) {
->   		pgoff_t idx;
->   		int cnt = 0;
-> 
