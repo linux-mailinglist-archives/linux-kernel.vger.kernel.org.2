@@ -2,109 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B7B8375480
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:14:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2640437547E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:13:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233591AbhEFNPH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:15:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229946AbhEFNPC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:15:02 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12D17C061574;
-        Thu,  6 May 2021 06:14:03 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id 124so7733104lff.5;
-        Thu, 06 May 2021 06:14:02 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BIQmySH5rKYkaTCMdU5HD5HriPXQiPhjgd9Q3vz0FwQ=;
-        b=iwwdl9SJ9MXhgLtAr3AL0yPOQSixzfVczE8lcM3b2WqWvzIZIIu86Kt9HJi+05YU9R
-         rVAwfYk05XNIFyIIhl3fBAhn/FjLpXs+n8tOqw3vWZwxpsERZAxJalPMS03QDwIHrUW3
-         ktIdd+qUIoQoY6UXl9JcqQOacmNOoI5N7nOW7VkxXeK+Oqi8RXnklDUqrSojF2TdzhJl
-         QI1LaPgMu9zijBhmIao0LyfvnAOphpQyh/hUtIQEayIZEXuXb6XJwPXX0s7FPdiRu0jM
-         lgS5PeZ1Iit96KZfpw4oGzTOKtr5ib4zyssMXsQ3zVUptLpu9PfUJR5R0FE9AZIhZnpU
-         im7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BIQmySH5rKYkaTCMdU5HD5HriPXQiPhjgd9Q3vz0FwQ=;
-        b=VyVx5x4SpD67g7zroG/hJMuYtZ3rVD8TybzvX1UWK63GK5IU0BY4xzexWFYMBs/LdR
-         mHAGrl2ME2msFqroWGpM4QSQl2E951Eip0uKp4pVa621Ru41WVTr6eS88OrjcGY+RpHO
-         BHn4lEi7CWjq74Oab9tGaagPLtU3iAuV7S3q+L05PYrw68GTu27egVpVq1iVGYvAjzXW
-         1M6iphBwl5DCylZRhX1/hizdCuNFl8+fff83/U2HIWH1j2mdL8Ig1l+xAjDFJStXITA6
-         c6cuB6iW/fgzREcQyKjE5uO/4EjDgp94Tv1zrnA+gUXmQ+pR/dmvSzaMr5Q1Jm5HoF5O
-         z6VA==
-X-Gm-Message-State: AOAM533TxOZhI3Cb0dkhgYYh6m7f2QRaqVM9QFpLECOsoRcIkyrT/ipb
-        yp17S0zYGl8XM5x+zwBQH8Hb+C/tqfpuvtyu
-X-Google-Smtp-Source: ABdhPJzRDF2BBtmUtOrZOOvY9BImc9I/xrh2tEMvP4C+fQKZ43Hb9abMvWsRMPNd8DNISQR8RQENgQ==
-X-Received: by 2002:ac2:5feb:: with SMTP id s11mr2742580lfg.99.1620306841532;
-        Thu, 06 May 2021 06:14:01 -0700 (PDT)
-Received: from localhost.localdomain ([185.30.229.161])
-        by smtp.googlemail.com with ESMTPSA id v21sm867332ljv.80.2021.05.06.06.14.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 06:14:01 -0700 (PDT)
-From:   Dmitry Koshelev <karaghiozis@gmail.com>
-Cc:     Dmitry Koshelev <karaghiozis@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] perf: Fix swapping of cpu_map and stat_config records
-Date:   Thu,  6 May 2021 13:11:49 +0000
-Message-Id: <20210506131244.13328-1-karaghiozis@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S233545AbhEFNOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:14:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36608 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229946AbhEFNOX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 09:14:23 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D4988610FA;
+        Thu,  6 May 2021 13:13:24 +0000 (UTC)
+Date:   Thu, 6 May 2021 09:13:23 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Luo Jiaxing <luojiaxing@huawei.com>
+Cc:     <pmladek@suse.com>, <sergey.senozhatsky@gmail.com>,
+        <john.ogness@linutronix.de>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <bobo.shaobowang@huawei.com>
+Subject: Re: [PATCH] printk: stop spining waiter when console resume to
+ flush prb
+Message-ID: <20210506091323.20ba2464@gandalf.local.home>
+In-Reply-To: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
+References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'data' field in perf_record_cpu_map_data struct is 16-bit
-wide and so should be swapped using bswap_16().
+On Thu, 6 May 2021 16:00:26 +0800
+Luo Jiaxing <luojiaxing@huawei.com> wrote:
 
-'nr' field in perf_record_stat_config struct should be
-swapped before being used for size calculation.
+> Some threads still call printk() for printing when resume_console() is
+> being executed. In practice, the printk() is executed for a period of time
+> and then returned. The duration is determined by the number of prints
+> cached in the prb during the suspend/resume process. At the same time,
+> resume_console() returns quickly.
+> 
+> Base on owner/waiter machanism, the frist one who fail to lock console will
+> become waiter, and start spining. When current owner finish print one
+> informance, if a waiter is waitting, owner will give up and let waiter
+> become a new owner. New owner need to flush the whole prb unitl prb empty
+> or another new waiter come and take the job from him.
+> 
+> So the first waiter after resume_console() will take seconds to help to
+> flush prb, but driver which call printk() may be bothered by this. New
+> a flag to mark resume flushing prb. When the console resume, before the
+> prb is empty, stop to set a new waiter temporarily.
+> 
+> Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+> ---
+>  kernel/printk/printk.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 575a34b..2c680a5 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -287,6 +287,9 @@ EXPORT_SYMBOL(console_set_on_cmdline);
+>  /* Flag: console code may call schedule() */
+>  static int console_may_schedule;
+>  
+> +/* Flags: console flushing prb when resume */
+> +static atomic_t console_resume_flush_prb = ATOMIC_INIT(0);
 
-Signed-off-by: Dmitry Koshelev <karaghiozis@gmail.com>
----
- tools/perf/util/session.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Why are you using an atomic? It's accessed within locks.
 
-diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-index a12cf4f0e97a..106b3d60881a 100644
---- a/tools/perf/util/session.c
-+++ b/tools/perf/util/session.c
-@@ -904,7 +904,7 @@ static void perf_event__cpu_map_swap(union perf_event *event,
- 	struct perf_record_record_cpu_map *mask;
- 	unsigned i;
- 
--	data->type = bswap_64(data->type);
-+	data->type = bswap_16(data->type);
- 
- 	switch (data->type) {
- 	case PERF_CPU_MAP__CPUS:
-@@ -937,7 +937,7 @@ static void perf_event__stat_config_swap(union perf_event *event,
- {
- 	u64 size;
- 
--	size  = event->stat_config.nr * sizeof(event->stat_config.data[0]);
-+	size  = bswap_64(event->stat_config.nr) * sizeof(event->stat_config.data[0]);
- 	size += 1; /* nr item itself */
- 	mem_bswap_64(&event->stat_config.nr, size);
- }
--- 
-2.25.1
+static bool console_resuming;
+
+
+> +
+>  enum con_msg_format_flags {
+>  	MSG_FORMAT_DEFAULT	= 0,
+>  	MSG_FORMAT_SYSLOG	= (1 << 0),
+> @@ -1781,7 +1784,8 @@ static int console_trylock_spinning(void)
+>  	raw_spin_lock(&console_owner_lock);
+>  	owner = READ_ONCE(console_owner);
+>  	waiter = READ_ONCE(console_waiter);
+
+	resuming = READ_ONCE(console_removing);
+
+> -	if (!waiter && owner && owner != current) {
+
+	if (!resuming && (!waiter ...
+
+> +	if (!waiter && owner && owner != current &&
+> +	    !atomic_read(&console_resume_flush_prb)) {
+>  		WRITE_ONCE(console_waiter, true);
+>  		spin = true;
+>  	}
+> @@ -2355,6 +2359,7 @@ void resume_console(void)
+>  	if (!console_suspend_enabled)
+>  		return;
+>  	down_console_sem();
+> +	atomic_set(&console_resume_flush_prb, 1);
+>  	console_suspended = 0;
+
+	resuming = true;
+
+>  	console_unlock();
+
+	/* Keep clearing resume from entering the console_unlock */
+	smp_wmb();
+	resuming = false;
+
+
+>  }
+> @@ -2592,6 +2597,8 @@ void console_unlock(void)
+>  	raw_spin_unlock(&logbuf_lock);
+>  
+>  	up_console_sem();
+> +	if (atomic_read(&console_resume_flush_prb))
+> +		atomic_set(&console_resume_flush_prb, 0);
+
+Get rid of the above.
+
+-- Steve
+
+>  
+>  	/*
+>  	 * Someone could have filled up the buffer again, so re-check if there's
 
