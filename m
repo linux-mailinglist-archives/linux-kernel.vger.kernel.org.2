@@ -2,88 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20485375075
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:57:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F53137507F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:59:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhEFH6t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:58:49 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:28908 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233541AbhEFH6r (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:58:47 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-157-Egn_HFQhOoSF-KNyXXlsnw-1; Thu, 06 May 2021 08:57:46 +0100
-X-MC-Unique: Egn_HFQhOoSF-KNyXXlsnw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Thu, 6 May 2021 08:57:44 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Thu, 6 May 2021 08:57:44 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>
-CC:     Josh Poimboeuf <jpoimboe@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        "Waiman Long" <longman@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Thomas Gleixner" <tglx@linutronix.de>,
-        Andrew Cooper <andrew.cooper3@citrix.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "Mark Rutland" <mark.rutland@arm.com>,
-        Borislav Petkov <bp@alien8.de>
-Subject: RE: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Topic: [PATCH v4 3/4] x86/uaccess: Use pointer masking to limit uaccess
- speculation
-Thread-Index: AQHXQWJqu8vqbxm3x0CYXgd0hdGkc6rUkPgwgACVc4CAAPDYwA==
-Date:   Thu, 6 May 2021 07:57:44 +0000
-Message-ID: <ea9607e9c30e4ed0b2f0c0aa4bc98c6c@AcuMS.aculab.com>
-References: <cover.1620186182.git.jpoimboe@redhat.com>
- <5ba93cdbf35ab40264a9265fc24575a9b2f813b3.1620186182.git.jpoimboe@redhat.com>
- <2f75c496ac774444b75ff808854b8e5f@AcuMS.aculab.com>
- <CAHk-=wh-a6B11tH3upLG+-P5_yFPs3PB8tiXO5JKaQjUvhOMYg@mail.gmail.com>
-In-Reply-To: <CAHk-=wh-a6B11tH3upLG+-P5_yFPs3PB8tiXO5JKaQjUvhOMYg@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S233658AbhEFIAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:00:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37828 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233602AbhEFIAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 04:00:03 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EC428613B5;
+        Thu,  6 May 2021 07:59:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620287945;
+        bh=uCfde1LX4DjDU+mPSYhIcs+Z/3xSasgqoWoypH4z0Ow=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ugMB5xplqYdquPFXAuYdacC0fmGUX/EwjPEzgpnLEBtBh4kr80mNAR4zDV1oqbWKI
+         Cm+ijZILhNUFT4QNoy6DQpDOQFNMsgeKcJZbn9i0HUsVopvPxedHpQVZqEKlemhAh1
+         BLmqGtTYmUMsG/pXdv/TDeoiGIAj5phmPjGbP8z0=
+Date:   Thu, 6 May 2021 09:59:03 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.4 00/21] 5.4.117-rc1 review
+Message-ID: <YJOhx+pkHj2ZDJgH@kroah.com>
+References: <20210505112324.729798712@linuxfoundation.org>
+ <20210505214938.GA817073@roeck-us.net>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505214938.GA817073@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMDUgTWF5IDIwMjEgMTk6MzINCj4gDQo+IE9u
-IFdlZCwgTWF5IDUsIDIwMjEgYXQgMTo0OCBBTSBEYXZpZCBMYWlnaHQgPERhdmlkLkxhaWdodEBh
-Y3VsYWIuY29tPiB3cm90ZToNCj4gPg0KPiA+IFRoaXMgd291bGQgZXJyb3IgcmVxdWVzdHMgZm9y
-IGFkZHJlc3MgMCBlYXJsaWVyIC0gYnV0IEkgZG9uJ3QNCj4gPiBiZWxpZXZlIHRoZXkgYXJlIGV2
-ZXIgdmFsaWQgaW4gTGludXguDQo+ID4gKFNvbWUgaGlzdG9yaWMgeDg2IGEub3V0IGZvcm1hdHMg
-ZGlkIGxvYWQgdG8gYWRkcmVzcyAwLikNCj4gDQo+IE5vdCBvbmx5IGxvYWRpbmcgYXQgYWRkcmVz
-cyAwIC0gdGhlcmUgYXJlIHZhcmlvdXMgcmVhbCByZWFzb24gcyB3aHkNCj4gYWRkcmVzcyAwIG1p
-Z2h0IGFjdHVhbGx5IGJlIG5lZWRlZC4NCj4gDQo+IEFueWJvZHkgd2hvIHN0aWxsIHJ1bnMgYSAz
-Mi1iaXQga2VybmVsIGFuZCB3YW50cyB0byB1c2Ugdm04NiBtb2RlLCBmb3INCj4gZXhhbXBsZSwg
-cmVxdWlyZXMgYWRkcmVzcyAwIGJlY2F1c2UgdGhhdCdzIHNpbXBseSBob3cgdGhlIGhhcmR3YXJl
-DQo+IHdvcmtzLg0KPiANCj4gU28gbm8uICJtYXNrIHRvIHplcm8gYW5kIG1ha2UgemVybyBpbnZh
-bGlkIiBpcyBub3QgYSBwcm9wZXIgbW9kZWwuDQoNCkkgaGFkIG15IGRvdWJ0cy4NCkJ1dCBsZXR0
-aW5nIHVzZXJzcGFjZSBtYXAgYWRkcmVzcyB6ZXJvIGhhcyBiZWVuIGEgc2VjdXJpdHkgcHJvYmxl
-bS4NCkl0IGNhbiB0dXJuIGEga2VybmVsIHBhbmljIGludG8gZXhlY3V0aW5nICd1c2VyJyBjb2Rl
-IHdpdGgNCnN1cGVydmlzb3IgcGVybWlzc2lvbnMuDQoNClNvIEkgZGlkIHdvbmRlciBpZiBpdCBo
-YWQgYmVlbiBiYW5uZWQgY29tcGxldGVseS4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRk
-cmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBN
-SzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Wed, May 05, 2021 at 02:49:38PM -0700, Guenter Roeck wrote:
+> On Wed, May 05, 2021 at 02:04:14PM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 5.4.117 release.
+> > There are 21 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> > Anything received after that time might be too late.
+> > 
+> > The whole patch series can be found in one patch at:
+> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.117-rc1.gz
+> > or in the git tree and branch at:
+> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
+> > and the diffstat can be found below.
+> > 
+> > thanks,
+> > 
+> > greg k-h
+> > 
+> > -------------
+> > Pseudo-Shortlog of commits:
+> > 
+> > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> >     Linux 5.4.117-rc1
+> > 
+> > Ondrej Mosnacek <omosnace@redhat.com>
+> >     perf/core: Fix unconditional security_locked_down() call
+> > 
+> > Miklos Szeredi <mszeredi@redhat.com>
+> >     ovl: allow upperdir inside lowerdir
+> > 
+> > Dan Carpenter <dan.carpenter@oracle.com>
+> >     scsi: ufs: Unlock on a couple error paths
+> > 
+> > Mark Pearson <markpearson@lenovo.com>
+> >     platform/x86: thinkpad_acpi: Correct thermal sensor allocation
+> > 
+> > Shengjiu Wang <shengjiu.wang@nxp.com>
+> >     ASoC: ak5558: Add MODULE_DEVICE_TABLE
+> > 
+> > Shengjiu Wang <shengjiu.wang@nxp.com>
+> >     ASoC: ak4458: Add MODULE_DEVICE_TABLE
+> 
+> Twice ? Why ?
+> 
+> This gives me a compile error (the second time it is added at the wrong
+> place).
+> 
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/sound/soc/codecs/ak4458.c:722:1: error: redefinition of '__mod_of__ak4458_of_match_device_table'
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: MODULE_DEVICE_TABLE(of, ak4458_of_match);
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/include/linux/module.h:227:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: extern typeof(name) __mod_##type##__##name##_device_table               \
+> chromeos-kernel-5_4-5.4.117_rc1-r2159:                     ^
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: <scratch space>:119:1: note: expanded from here
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: __mod_of__ak4458_of_match_device_table
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/sound/soc/codecs/ak4458.c:711:1: note: previous definition is here
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: MODULE_DEVICE_TABLE(of, ak4458_of_match);
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/include/linux/module.h:227:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
+> chromeos-kernel-5_4-5.4.117_rc1-r2159: extern typeof(name) __mod_##type##__##name##_device_table               \
+> 
+> Oddly enough, I only see the error when I try to merge the
+> code into ChromeOS, not in my test builds. I guess that has
+> to do with "-Werror".
 
+Ah, these came into Linus's tree with two different commits, which is
+why I didn't notice it was already present.  I'll go drop these two from
+all stable trees now, thanks for letting me know.
+
+greg k-h
