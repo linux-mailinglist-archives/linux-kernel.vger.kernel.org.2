@@ -2,90 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1519A3754AE
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:25:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ECC93754B0
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:27:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233887AbhEFN0w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:26:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59528 "EHLO mail.kernel.org"
+        id S233933AbhEFN2f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:28:35 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:36323 "EHLO pegase2.c-s.fr"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230381AbhEFN0v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:26:51 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D3735613DA;
-        Thu,  6 May 2021 13:25:51 +0000 (UTC)
-Date:   Thu, 6 May 2021 09:25:50 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     linux-riscv@lists.infradead.org, mingo@redhat.com,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, mhiramat@kernel.org, zong.li@sifive.com,
-        guoren@linux.alibaba.com, Atish Patra <Atish.Patra@wdc.com>,
-        linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Changbin Du <changbin.du@gmail.com>
-Subject: Re: [PATCH] RISC-V: Don't check text_mutex during stop_machine
-Message-ID: <20210506092550.6c2206b3@gandalf.local.home>
-In-Reply-To: <20210506071041.417854-1-palmer@dabbelt.com>
-References: <20210506071041.417854-1-palmer@dabbelt.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        id S233811AbhEFN2d (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 09:28:33 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FbZBW72S8z9sVL;
+        Thu,  6 May 2021 15:27:31 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id FUbtJ3WmSgka; Thu,  6 May 2021 15:27:31 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FbZBW68cWz9sV0;
+        Thu,  6 May 2021 15:27:31 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id B31AF8B801;
+        Thu,  6 May 2021 15:27:31 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id BIwZu-HeAFJI; Thu,  6 May 2021 15:27:31 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 6C6798B800;
+        Thu,  6 May 2021 15:27:31 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 455096489F; Thu,  6 May 2021 13:27:31 +0000 (UTC)
+Message-Id: <848f18d213b8341939add7302dc4ef80cc7a12e3.1620307636.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/32s: Speed up likely path of kuap_update_sr()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  6 May 2021 13:27:31 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  6 May 2021 00:10:41 -0700
-Palmer Dabbelt <palmer@dabbelt.com> wrote:
+In most cases, kuap_update_sr() will update a single segment
+register.
 
-> ---
-> In theory we should be able to avoid using stop_machine() with some
-> clever code sequences, but that's too big of a change to be considered a
-> fix.  I also can't find the text I thought was in the ISA manual about
-> the allowed behaviors for concurrent modification of the instruction
-> stream, so I might have just mis-remembered that.
-> ---
+We know that first update will always be done, if there is no
+segment register to update at all, kuap_update_sr() is not
+called.
 
-I wonder if you could at least use break points, as some other archs do,
-and what x86 does.
+Avoid recurring calculations and tests in that case.
 
-If you have this make believe machine code:
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/book3s/32/kup.h | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-	00 00 00 00		nop
+diff --git a/arch/powerpc/include/asm/book3s/32/kup.h b/arch/powerpc/include/asm/book3s/32/kup.h
+index 1670dfe9d4f1..c1f7c2e625a6 100644
+--- a/arch/powerpc/include/asm/book3s/32/kup.h
++++ b/arch/powerpc/include/asm/book3s/32/kup.h
+@@ -15,11 +15,13 @@ static inline void kuap_update_sr(u32 sr, u32 addr, u32 end)
+ {
+ 	addr &= 0xf0000000;	/* align addr to start of segment */
+ 	barrier();	/* make sure thread.kuap is updated before playing with SRs */
+-	while (addr < end) {
++	for (;;) {
+ 		mtsr(sr, addr);
++		addr += 0x10000000;	/* address of next segment */
++		if (addr >= end)
++			break;
+ 		sr += 0x111;		/* next VSID */
+ 		sr &= 0xf0ffffff;	/* clear VSID overflow */
+-		addr += 0x10000000;	/* address of next segment */
+ 	}
+ 	isync();	/* Context sync required after mtsr() */
+ }
+-- 
+2.25.0
 
-And you want to turn it into a call.
-
-	aa 12 34 56		bl ftrace_caller
-
-And if your architecture has a way to inject a break point on live code.
-Let's call this FF for the break point code.
-
-You can inject that first:
-
-	FF 00 00 00
-
-sync all CPUs where now all callers will hit this and jump to the break
-point handler, which simply does:
-
-	ip = ip + 4;
-	return;
-
-and returns back to the instruction after this nop/call.
-
-Change the rest of the instruction.
-
-	FF 12 34 56
-
-sync all CPUs so that they all see this new instruction, but are still
-triggering the break point.
-
-Then finally remove the break point.
-
-	aa 12 34 56
-
-And you just switched from the nop to the call without using stop machine.
-
--- Steve
