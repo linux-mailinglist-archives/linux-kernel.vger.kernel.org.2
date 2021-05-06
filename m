@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C55A374E36
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:04:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC1ED374E39
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:06:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231630AbhEFEFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 00:05:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49522 "EHLO
+        id S230302AbhEFEHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 00:07:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhEFEFD (ORCPT
+        with ESMTP id S229564AbhEFEHl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 00:05:03 -0400
-Received: from mail-oo1-xc35.google.com (mail-oo1-xc35.google.com [IPv6:2607:f8b0:4864:20::c35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57AECC061574;
-        Wed,  5 May 2021 21:04:05 -0700 (PDT)
-Received: by mail-oo1-xc35.google.com with SMTP id u48-20020a4a97330000b02901fa060b8066so972193ooi.8;
-        Wed, 05 May 2021 21:04:05 -0700 (PDT)
+        Thu, 6 May 2021 00:07:41 -0400
+Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93EBC061574;
+        Wed,  5 May 2021 21:06:42 -0700 (PDT)
+Received: by mail-ot1-x32f.google.com with SMTP id c36-20020a05683034a4b02902a5b84b1d12so3760094otu.8;
+        Wed, 05 May 2021 21:06:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:subject:to:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=ZppPkkpILjz9xHXGVzekPzViH65IxhCUYQ8Bpo4Nd1c=;
-        b=F01ttwXmsKHVZT9gOo4PNKhDZGk6xE4TUZOO3lex3lJq7W2vGfAVlpsP4ZI8obkAvo
-         CtGGNS1jbIjY9Q0NP2K6rIduFjOlo6+CwJNCOfazCYAncU5dYSFRKjUo4ENbEluHyx03
-         Tz9rh0G7hvrn6nWP/AaGMoA7d9cjUyFrw3G0JCge6ek6wHbYPolDeItKhC7fSnPW4OJv
-         A8D6c/VqdTTSfC7883Y+PJwOIA4zQttE1J0aDPpWwtY0V4IHwAaa2uNjYL7anv4oeFTE
-         OHlmUVWrzGein47HlHQp/r6Ou1XqrH6ZbCw8oRwb/Fv0B5NDzJ/kJb9wkzFf76Ish+Fp
-         ik8A==
+        bh=45qqyDWvz+dGKIejtJRqM5vC5ZpgYtzj+432XuvSFYg=;
+        b=gp/MscTpC9wD2RAN5/6tv+vppvbIP3BxG9jekPePdyodY50TmeynGGlWfuesbQfzFe
+         8Y3S5EV3E3vEw7lW8NJFfi5YvPHpN1l/i4r3kCeCQbGCplik5gHxAJBod5pznHGwtQgz
+         lU2WxaCryWtd3Pue3nHD4RS9UIi6RPIbaUJAF4KP5kwZe91jA3O0D90sRMZP1jF9JlJv
+         U4K34yW8pID9tr7TSzq7aTgnvg1iedfjsQpIF7eEaNPgcR2azllm3PMiDGI9UA4+KRGU
+         5k8I6H8ceM4dtvRYIpt1rtjj2Tjpylot135U6VTL8wlguxn2L7SEmTzO9rtQgq7PrleA
+         Fzyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:subject:to:references:from:message-id
          :date:user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=ZppPkkpILjz9xHXGVzekPzViH65IxhCUYQ8Bpo4Nd1c=;
-        b=tVU8rV+e9+YANJzuUeJuI/0uzkw2yQ0lpEIw/ew//l6vjHMy0oaYru7tLr8EjGFYRi
-         XV1PCW7sOcsN8N+cirLCcjuKqSpmUlUjwR6HwBZlOeluzfK3fW/FqIycyAaVlJPoAUmI
-         gtLnXKXwMtgOfcPuBd4EW9FsAJWvWyLLh6xoi3GVoBclR0CtjU3sJftQkOsrjoHyybrD
-         zyZEgnF1X5M3a5t3KZAyxHhc9vi86mC6kNV1T9w9VWgCKwB13v2CRggS1sVwoqXBCJo9
-         Li6FWWDCpWtudX4Y1PmomtfenJmRKSIG+OXLWAVNrnN61O1nU6EtUFtOrdgBFWr3uFDo
-         Jydg==
-X-Gm-Message-State: AOAM530czGGTJwSE14PGZze/LmynErhEjE8ErssYNbv17cptykjer3wY
-        oIXWZa/tkUeFA4An1/zoyXB8FI0MS4g=
-X-Google-Smtp-Source: ABdhPJwzcyzK2icbAkmCf+wq7s1E/jpzBeYbrNng8EzetLm/dFRY2L/KVpWAtOyyewAPnKWNGcR/2w==
-X-Received: by 2002:a4a:37cf:: with SMTP id r198mr1657054oor.26.1620273844441;
-        Wed, 05 May 2021 21:04:04 -0700 (PDT)
+        bh=45qqyDWvz+dGKIejtJRqM5vC5ZpgYtzj+432XuvSFYg=;
+        b=Nr6/86m6Mnagvi9D7f29WIXFgw2jEoj78WK9Rtd+F5Q+BqIbitQ58PZG5IOtMKE8Dm
+         jpUxHka2hI8UH17ylkPmQu6341lZc66exBs5UDJj+ZGvNHb7qxM/LyGmdJXjlaes4ujp
+         iF4nf1UWD42xxnklAOVh7Trht8Z6J3HVRaq+oG/zbw+WkTsmXrwQsfyEj8uAPhlva5VV
+         RCWLyrWvtHMlOGINxtfxZWByRvFQ407Wu2LuombGez1fo+/aGhrXjW6fSi78T/5G/mDB
+         7A/ziaUqZ6Dar833My2XN6/kahBi4PyVoR4/JMd9QRRcLZ3TprYKCvWCfMv9SM0vnhxB
+         sdOA==
+X-Gm-Message-State: AOAM531OF4WPHPtlAHGBEE7g/LIr92zvhr5LXOs45RiHrImsZJhN2m6Z
+        qymBDkwLDxEwgwhO2KqsUr96EXJ0qeE=
+X-Google-Smtp-Source: ABdhPJyua4JKgWxjygaf+08jeyJd8yarpAuA7LLJpt9pEOCQ8JKNz2JnZN3KwkqK0HrnYvMFVOkTNg==
+X-Received: by 2002:a9d:247:: with SMTP id 65mr1661261otb.330.1620274001747;
+        Wed, 05 May 2021 21:06:41 -0700 (PDT)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r63sm238211oia.43.2021.05.05.21.04.03
+        by smtp.gmail.com with ESMTPSA id d3sm241371oic.48.2021.05.05.21.06.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 21:04:03 -0700 (PDT)
+        Wed, 05 May 2021 21:06:41 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 2/3] hwmon: (pmbus) Add documentation for new flags
+Subject: Re: [PATCH 1/3] hwmon: (pmbus) Add new flag
+ PMBUS_READ_STATUS_AFTER_FAILED_CHECK
 To:     Erik Rosen <erik.rosen@metormote.com>,
         Jean Delvare <jdelvare@suse.com>,
         Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
         linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20210505183248.57082-1-erik.rosen@metormote.com>
- <20210505183248.57082-3-erik.rosen@metormote.com>
+ <20210505183248.57082-2-erik.rosen@metormote.com>
 From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <135199c5-19ef-4daf-bc88-410f6849a6a2@roeck-us.net>
-Date:   Wed, 5 May 2021 21:04:02 -0700
+Message-ID: <bbbe1330-dd94-29a1-0680-b9cf91e8f962@roeck-us.net>
+Date:   Wed, 5 May 2021 21:06:39 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
 MIME-Version: 1.0
-In-Reply-To: <20210505183248.57082-3-erik.rosen@metormote.com>
+In-Reply-To: <20210505183248.57082-2-erik.rosen@metormote.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -72,61 +73,61 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 5/5/21 11:32 AM, Erik Rosen wrote:
-> Add documentation for the new pmbus flags PMBUS_WRITE_PROTECTED and
-> PMBUS_READ_STATUS_AFTER_FAILED_CHECK
+> Some PMBus chips end up in an undefined state when trying to read an
+> unsupported register. For such chips, it is necessary to reset the
+> chip pmbus controller to a known state after a failed register check.
+> This can be done by reading a known register. By setting this flag the
+> driver will try to read the STATUS register after each failed
+> register check. This read may fail, but it will put the chip into a
+> known state.
 > 
 > Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
+
+For my reference:
+
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+
 > ---
->  Documentation/hwmon/pmbus-core.rst | 24 ++++++++++++++++++++++--
->  1 file changed, 22 insertions(+), 2 deletions(-)
+>  drivers/hwmon/pmbus/pmbus_core.c |  2 ++
+>  include/linux/pmbus.h            | 13 +++++++++++++
+>  2 files changed, 15 insertions(+)
 > 
-> diff --git a/Documentation/hwmon/pmbus-core.rst b/Documentation/hwmon/pmbus-core.rst
-> index 73e23ab42cc3..001c64f0f8c0 100644
-> --- a/Documentation/hwmon/pmbus-core.rst
-> +++ b/Documentation/hwmon/pmbus-core.rst
-> @@ -289,9 +289,13 @@ PMBus driver platform data
->  ==========================
+> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
+> index aadea85fe630..cb0b3c7c3434 100644
+> --- a/drivers/hwmon/pmbus/pmbus_core.c
+> +++ b/drivers/hwmon/pmbus/pmbus_core.c
+> @@ -512,6 +512,8 @@ static bool pmbus_check_register(struct i2c_client *client,
+>  	rv = func(client, page, reg);
+>  	if (rv >= 0 && !(data->flags & PMBUS_SKIP_STATUS_CHECK))
+>  		rv = pmbus_check_status_cml(client);
+> +	if (rv < 0 && (data->flags & PMBUS_READ_STATUS_AFTER_FAILED_CHECK))
+> +		data->read_status(client, -1);
+>  	pmbus_clear_fault_page(client, -1);
+>  	return rv >= 0;
+>  }
+> diff --git a/include/linux/pmbus.h b/include/linux/pmbus.h
+> index 12cbbf305969..edd7c84fef65 100644
+> --- a/include/linux/pmbus.h
+> +++ b/include/linux/pmbus.h
+> @@ -43,6 +43,19 @@
+>   */
+>  #define PMBUS_NO_CAPABILITY			BIT(2)
 >  
->  PMBus platform data is defined in include/linux/pmbus.h. Platform data
-> -currently only provides a flag field with a single bit used::
-> +currently only provides a flag field with three bits used::
+> +/*
+> + * PMBUS_READ_STATUS_AFTER_FAILED_CHECK
+> + *
+> + * Some PMBus chips end up in an undefined state when trying to read an
+> + * unsupported register. For such chips, it is necessary to reset the
+> + * chip pmbus controller to a known state after a failed register check.
+> + * This can be done by reading a known register. By setting this flag the
+> + * driver will try to read the STATUS register after each failed
+> + * register check. This read may fail, but it will put the chip in a
+> + * known state.
+> + */
+> +#define PMBUS_READ_STATUS_AFTER_FAILED_CHECK	BIT(3)
+> +
+>  struct pmbus_platform_data {
+>  	u32 flags;		/* Device specific flags */
 >  
-> -	#define PMBUS_SKIP_STATUS_CHECK (1 << 0)
-> +	#define PMBUS_SKIP_STATUS_CHECK  BIT(0)
-> +
-> +  #define PMBUS_WRITE_PROTECTED BIT(1)
-> +
-> +  #define PMBUS_READ_STATUS_AFTER_FAILED_CHECK  BIT(2)
->  
->  	struct pmbus_platform_data {
->  		u32 flags;              /* Device specific flags */
-> @@ -315,3 +319,19 @@ status register must be disabled.
->  Some i2c controllers do not support single-byte commands (write commands with
->  no data, i2c_smbus_write_byte()). With such controllers, clearing the status
->  register is impossible, and the PMBUS_SKIP_STATUS_CHECK flag must be set.
-> +
-> +PMBUS_WRITE_PROTECTED
-> +
-> +Set if the chip is write protected and write protection is not determined
-> +by the standard WRITE_PROTECT command.
-> +
-> +PMBUS_READ_STATUS_AFTER_FAILED_CHECK
-> +  Read the STATUS register after each failed register check.
-> +
-> +Some PMBus chips end up in an undefined state when trying to read an
-> +unsupported register. For such chips, it is necessary to reset the
-> +chip pmbus controller to a known state after a failed register check.
-> +This can be done by reading a known register. By setting this flag the
-> +driver will try to read the STATUS register after each failed
-> +register check. This read may fail, but it will put the chip into a
-> +known state.
-> \ No newline at end of file
 > 
-
-Formatting looks way off in this file. Please update to have
-it look nice.
-
-Thanks,
-Guenter
-
 
