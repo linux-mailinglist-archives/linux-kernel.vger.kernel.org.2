@@ -2,462 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3358937533D
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:53:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA0A375345
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:56:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231458AbhEFLyP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 07:54:15 -0400
-Received: from mail-40134.protonmail.ch ([185.70.40.134]:29598 "EHLO
-        mail-40134.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhEFLyN (ORCPT
+        id S231622AbhEFL44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 07:56:56 -0400
+Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:10872 "EHLO
+        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231452AbhEFL4y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 07:54:13 -0400
-Date:   Thu, 06 May 2021 11:53:08 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail; t=1620301993;
-        bh=YYc5fiUe0QHS2rZ02pcb8ZujlzpdTRdExJzGjfrY+BA=;
-        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
-        b=XHWyoId+t+YNO1u2VmlKq+svDFLPgw16LYw0VJuiUZmCwE+DcmmnpZ4mysu3bgcFx
-         +ZHmkjhWQDfcXi6exfM2b+mzaanEpgy2LriZ29FoqpUV/0ppgoaV0Ol5Cv6XdXYpnO
-         CjgW55N42QNEsvCjGed7o1OB0dfCjKjx6kerwA5g=
-To:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-From:   =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Cc:     "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>,
-        Ash Logan <ash@heyquark.com>,
-        =?utf-8?Q?Jonathan_Neusch=C3=A4fer?= <j.ne@posteo.net>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Reply-To: =?utf-8?Q?Barnab=C3=A1s_P=C5=91cze?= <pobrn@protonmail.com>
-Subject: Re: [PATCH 1/4] HID: wiiu-drc: Add a driver for this gamepad
-Message-ID: <1DGv0iSqshLzGMDycGbSQ9hRJ7I3sNTH8O2QJQMkv2fylloDJWOLlTOKNL9P1HCi_2rb5GItJ12F8tRQPO7ylg5YqeLip2BbfpN2PKQxYDQ=@protonmail.com>
-In-Reply-To: <20210502232836.26134-2-linkmauve@linkmauve.fr>
-References: <20210502232836.26134-1-linkmauve@linkmauve.fr> <20210502232836.26134-2-linkmauve@linkmauve.fr>
+        Thu, 6 May 2021 07:56:54 -0400
+Received: from pps.filterd (m0170394.ppops.net [127.0.0.1])
+        by mx0b-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146BqAfF005337;
+        Thu, 6 May 2021 07:55:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-type :
+ content-transfer-encoding; s=smtpout1;
+ bh=LYonly/uyklDQji1ynBs3Ip/p70gV4rRL4QGzYkhGDk=;
+ b=u19q8H8ccGLkA27Gs3DGnuRwncpiO7kGp9Fcip+XUepG3IyRsQx7EJaCOT+BKzqIgoO9
+ 4d6RdCCuaZPSHgh0T1i/cbMqrijkzjnCIKrrpCbpKOQB6fviM/MkJFOy2mwY7+NKK+uJ
+ fHs+cy4qgAloBPoJDhM9Pe8pqvhCKujz3nGfbtv+hwgqygSupfGfPmGLdlrdmrQaM/EV
+ faPBu7VIWS6W0lF00bsHp/83hpYjG3Fmoagq04ys2FubGrsv647K4SGaBodDI7FShdJL
+ U8qd3rLyCylS2nV+J5bIwqbKS3O9IStsMeumc4WI5o4PHhUdJhNrV4unRLqPAwl7s1Cz xA== 
+Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
+        by mx0b-00154904.pphosted.com with ESMTP id 38bec9q3dr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 May 2021 07:55:55 -0400
+Received: from pps.filterd (m0134746.ppops.net [127.0.0.1])
+        by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146Bo7NY010460;
+        Thu, 6 May 2021 07:55:54 -0400
+Received: from esaploutpc121.us.dell.com ([143.166.85.210])
+        by mx0a-00154901.pphosted.com with ESMTP id 38cc3y391c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 May 2021 07:55:54 -0400
+X-LoopCount0: from 10.69.132.19
+X-PREM-Routing: D-Outbound
+X-IronPort-AV: E=Sophos;i="5.82,277,1613455200"; 
+   d="scan'208";a="10515614"
+From:   Perry Yuan <Perry.Yuan@dell.com>
+To:     pobrn@protonmail.com, pierre-louis.bossart@linux.intel.com,
+        oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
+        hdegoede@redhat.com, mgross@linux.intel.com
+Cc:     lgirdwood@gmail.com, broonie@kernel.org,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        platform-driver-x86@vger.kernel.org, Perry.Yuan@dell.com,
+        mario.limonciello@outlook.com, Dell.Client.Kernel@dell.com
+Subject: [PATCH v8 0/2] hardware-privacy-implementation-for-dell-laptop
+Date:   Thu,  6 May 2021 19:55:29 +0800
+Message-Id: <20210506115529.15572-1-Perry_Yuan@Dell.com>
+X-Mailer: git-send-email 2.19.2.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
-        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
-        autolearn=disabled version=3.4.4
-X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
-        mailout.protonmail.ch
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-06_08:2021-05-06,2021-05-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=973
+ malwarescore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ priorityscore=1501 clxscore=1015 phishscore=0 impostorscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2105060083
+X-Proofpoint-GUID: GrBuiE7eFe5XbmcSxmdp3fAuWqQ2rnde
+X-Proofpoint-ORIG-GUID: GrBuiE7eFe5XbmcSxmdp3fAuWqQ2rnde
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 phishscore=0
+ suspectscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2105060083
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+From: Perry Yuan <perry_yuan@dell.com>
+
+Hi All,
+This patch set is a new driver for Dell mobile platform that has the
+hardware privacy feature including micmute,camera mute.
+
+For micmute led control, the hotkey is Fn + F4, it is a hardware based
+mute state, and new privacy will prevent micphone void input from
+hardware layer, any application cannot get voice data when micmute
+activated.
+
+Camera mute use a new hardware design to control the camrea shutter.
+When video is muted, no OS application should be functionally able to
+capture images of the person/environment in front of the system
+
+Older history:
+[1]https://patchwork.kernel.org/project/platform-driver-x86/patch/20201228132855.17544-1-Perry_Yuan@Dell.com/
+[2]https://patchwork.kernel.org/project/alsa-devel/patch/20201103125859.8759-1-Perry_Yuan@Dell.com/#23733605
+[3]https://www.spinics.net/lists/alsa-devel/msg120537.html
+[4]https://github.com/thesofproject/linux/pull/2660
+[5]https://github.com/thesofproject/linux/issues/2496
 
 
-2021. m=C3=A1jus 3., h=C3=A9tf=C5=91 1:28 keltez=C3=A9ssel, Emmanuel Gil Pe=
-yrot =C3=ADrta:
+Perry Yuan (2):
+  platform/x86: dell-privacy: Add support for Dell hardware privacy
+  ASoC: rt715:add micmute led state control supports
 
-> From: Ash Logan <ash@heyquark.com>
->
-> This driver is for the DRC (wireless gamepad) when plugged to the DRH of
-> the Wii U, a chip exposing it as a USB device.
->
-> This first patch exposes the buttons and sticks of this device, so that
-> it can act as a plain game controller.
->
-> Signed-off-by: Ash Logan <ash@heyquark.com>
-> Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-> ---
->  drivers/hid/Kconfig        |   7 +
->  drivers/hid/Makefile       |   1 +
->  drivers/hid/hid-ids.h      |   1 +
->  drivers/hid/hid-quirks.c   |   3 +
->  drivers/hid/hid-wiiu-drc.c | 270 +++++++++++++++++++++++++++++++++++++
->  5 files changed, 282 insertions(+)
->  create mode 100644 drivers/hid/hid-wiiu-drc.c
->
-> diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-> index 4bf263c2d61a..01116c315459 100644
-> --- a/drivers/hid/Kconfig
-> +++ b/drivers/hid/Kconfig
-> @@ -1105,6 +1105,13 @@ config HID_WACOM
->  =09  To compile this driver as a module, choose M here: the
->  =09  module will be called wacom.
->
-> +config HID_WIIU_DRC
-> +=09tristate "Nintendo Wii U gamepad over internal DRH"
-> +=09depends on HID
-> +=09help
-> +=09  Support for the Wii U gamepad, when connected with the Wii U=
-=E2=80=99s
-> +=09  internal DRH chip.
-> +
->  config HID_WIIMOTE
->  =09tristate "Nintendo Wii / Wii U peripherals"
->  =09depends on HID
-> diff --git a/drivers/hid/Makefile b/drivers/hid/Makefile
-> index 193431ec4db8..8fcaaeae4d65 100644
-> --- a/drivers/hid/Makefile
-> +++ b/drivers/hid/Makefile
-> @@ -134,6 +134,7 @@ wacom-objs=09=09=09:=3D wacom_wac.o wacom_sys.o
->  obj-$(CONFIG_HID_WACOM)=09=09+=3D wacom.o
->  obj-$(CONFIG_HID_WALTOP)=09+=3D hid-waltop.o
->  obj-$(CONFIG_HID_WIIMOTE)=09+=3D hid-wiimote.o
-> +obj-$(CONFIG_HID_WIIU_DRC)=09+=3D hid-wiiu-drc.o
->  obj-$(CONFIG_HID_SENSOR_HUB)=09+=3D hid-sensor-hub.o
->  obj-$(CONFIG_HID_SENSOR_CUSTOM_SENSOR)=09+=3D hid-sensor-custom.o
->
-> diff --git a/drivers/hid/hid-ids.h b/drivers/hid/hid-ids.h
-> index 84b8da3e7d09..fbac0dd021f1 100644
-> --- a/drivers/hid/hid-ids.h
-> +++ b/drivers/hid/hid-ids.h
-> @@ -916,6 +916,7 @@
->  #define USB_VENDOR_ID_NINTENDO=09=090x057e
->  #define USB_DEVICE_ID_NINTENDO_WIIMOTE=090x0306
->  #define USB_DEVICE_ID_NINTENDO_WIIMOTE2=090x0330
-> +#define USB_DEVICE_ID_NINTENDO_WIIU_DRH=090x0341
->
->  #define USB_VENDOR_ID_NOVATEK=09=090x0603
->  #define USB_DEVICE_ID_NOVATEK_PCT=090x0600
-> diff --git a/drivers/hid/hid-quirks.c b/drivers/hid/hid-quirks.c
-> index 3dd6f15f2a67..af400177537e 100644
-> --- a/drivers/hid/hid-quirks.c
-> +++ b/drivers/hid/hid-quirks.c
-> @@ -513,6 +513,9 @@ static const struct hid_device_id hid_have_special_dr=
-iver[] =3D {
->  =09{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_NINTENDO, USB_DEVICE_ID_NINTENDO=
-_WIIMOTE) },
->  =09{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_NINTENDO, USB_DEVICE_ID_NINTENDO=
-_WIIMOTE2) },
->  #endif
-> +#if IS_ENABLED(CONFIG_HID_WIIU_DRC)
-> +=09{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_NINTENDO, USB_DEVICE_ID_NINTENDO=
-_WIIU_DRH) },
-> +#endif
->  #if IS_ENABLED(CONFIG_HID_NTI)
->  =09{ HID_USB_DEVICE(USB_VENDOR_ID_NTI, USB_DEVICE_ID_USB_SUN) },
->  #endif
-> diff --git a/drivers/hid/hid-wiiu-drc.c b/drivers/hid/hid-wiiu-drc.c
-> new file mode 100644
-> index 000000000000..018cbdb53a2c
-> --- /dev/null
-> +++ b/drivers/hid/hid-wiiu-drc.c
-> @@ -0,0 +1,270 @@
-> +// SPDX-License-Identifier: GPL-2.0-or-later
-> +/*
-> + * HID driver for Nintendo Wii U gamepad, connected via console-internal=
- DRH
-> + *
-> + * Copyright (C) 2021 Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-> + * Copyright (C) 2019 Ash Logan <ash@heyquark.com>
-> + * Copyright (C) 2013 Mema Hacking
-> + *
-> + * Based on the excellent work at http://libdrc.org/docs/re/sc-input.htm=
-l and
-> + * https://bitbucket.org/memahaxx/libdrc/src/master/src/input-receiver.c=
-pp .
-> + * libdrc code is licensed under BSD 2-Clause.
-> + * Driver based on hid-udraw-ps3.c.
-> + */
-> +
-> +#include <linux/device.h>
-> +#include <linux/hid.h>
-> +#include <linux/module.h>
-> +#include "hid-ids.h"
+ .../testing/sysfs-platform-dell-privacy-wmi   |  55 +++
+ drivers/platform/x86/dell/Kconfig             |  14 +
+ drivers/platform/x86/dell/Makefile            |   1 +
+ drivers/platform/x86/dell/dell-laptop.c       |  13 +-
+ drivers/platform/x86/dell/dell-privacy-wmi.c  | 394 ++++++++++++++++++
+ drivers/platform/x86/dell/dell-privacy-wmi.h  |  25 ++
+ drivers/platform/x86/dell/dell-wmi.c          |   9 +-
+ sound/soc/codecs/rt715-sdca.c                 |  42 ++
+ sound/soc/codecs/rt715.c                      |  42 ++
+ 9 files changed, 591 insertions(+), 4 deletions(-)
+ create mode 100644 Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
+ create mode 100644 drivers/platform/x86/dell/dell-privacy-wmi.c
+ create mode 100644 drivers/platform/x86/dell/dell-privacy-wmi.h
 
-It's usually best if you don't rely indirect includes. Include everything y=
-ou use.
-E.g. here linux/input.h is missing.
+-- 
+2.25.1
 
-
-> +
-> +#define DEVICE_NAME=09"Nintendo Wii U gamepad"
-> +
-> +/* Button and stick constants */
-> +#define VOLUME_MIN=090
-> +#define VOLUME_MAX=09255
-> +#define NUM_STICK_AXES=094
-> +#define STICK_MIN=09900
-> +#define STICK_MAX=093200
-> +
-> +#define BUTTON_SYNC=09BIT(0)
-> +#define BUTTON_HOME=09BIT(1)
-> +#define BUTTON_MINUS=09BIT(2)
-> +#define BUTTON_PLUS=09BIT(3)
-> +#define BUTTON_R=09BIT(4)
-> +#define BUTTON_L=09BIT(5)
-> +#define BUTTON_ZR=09BIT(6)
-> +#define BUTTON_ZL=09BIT(7)
-> +#define BUTTON_DOWN=09BIT(8)
-> +#define BUTTON_UP=09BIT(9)
-> +#define BUTTON_RIGHT=09BIT(10)
-> +#define BUTTON_LEFT=09BIT(11)
-> +#define BUTTON_Y=09BIT(12)
-> +#define BUTTON_X=09BIT(13)
-> +#define BUTTON_B=09BIT(14)
-> +#define BUTTON_A=09BIT(15)
-> +
-> +#define BUTTON_TV=09BIT(21)
-> +#define BUTTON_R3=09BIT(22)
-> +#define BUTTON_L3=09BIT(23)
-> +
-> +#define BUTTON_POWER=09BIT(25)
-> +
-> +/*
-> + * The device is setup with multiple input devices:
-> + * - A joypad with the buttons and sticks.
-> + */
-> +
-> +struct drc {
-> +=09struct input_dev *joy_input_dev;
-> +=09struct hid_device *hdev;
-> +};
-> +
-> +static int drc_raw_event(struct hid_device *hdev, struct hid_report *rep=
-ort,
-> +=09 u8 *data, int len)
-> +{
-> +=09struct drc *drc =3D hid_get_drvdata(hdev);
-> +=09int i;
-> +=09u32 buttons;
-> +
-> +=09if (len !=3D 128)
-> +=09=09return 0;
-> +
-> +=09buttons =3D (data[4] << 24) | (data[80] << 16) | (data[2] << 8) | dat=
-a[3];
-> +=09/* joypad */
-> +=09input_report_key(drc->joy_input_dev, BTN_DPAD_RIGHT, buttons & BUTTON=
-_RIGHT);
-> +=09input_report_key(drc->joy_input_dev, BTN_DPAD_DOWN, buttons & BUTTON_=
-DOWN);
-> +=09input_report_key(drc->joy_input_dev, BTN_DPAD_LEFT, buttons & BUTTON_=
-LEFT);
-> +=09input_report_key(drc->joy_input_dev, BTN_DPAD_UP, buttons & BUTTON_UP=
-);
-> +
-> +=09input_report_key(drc->joy_input_dev, BTN_EAST, buttons & BUTTON_A);
-> +=09input_report_key(drc->joy_input_dev, BTN_SOUTH, buttons & BUTTON_B);
-> +=09input_report_key(drc->joy_input_dev, BTN_NORTH, buttons & BUTTON_X);
-> +=09input_report_key(drc->joy_input_dev, BTN_WEST, buttons & BUTTON_Y);
-> +
-> +=09input_report_key(drc->joy_input_dev, BTN_TL, buttons & BUTTON_L);
-> +=09input_report_key(drc->joy_input_dev, BTN_TL2, buttons & BUTTON_ZL);
-> +=09input_report_key(drc->joy_input_dev, BTN_TR, buttons & BUTTON_R);
-> +=09input_report_key(drc->joy_input_dev, BTN_TR2, buttons & BUTTON_ZR);
-> +
-> +=09input_report_key(drc->joy_input_dev, BTN_Z, buttons & BUTTON_TV);
-> +=09input_report_key(drc->joy_input_dev, BTN_THUMBL, buttons & BUTTON_L3)=
-;
-> +=09input_report_key(drc->joy_input_dev, BTN_THUMBR, buttons & BUTTON_R3)=
-;
-> +
-> +=09input_report_key(drc->joy_input_dev, BTN_SELECT, buttons & BUTTON_MIN=
-US);
-> +=09input_report_key(drc->joy_input_dev, BTN_START, buttons & BUTTON_PLUS=
-);
-> +=09input_report_key(drc->joy_input_dev, BTN_MODE, buttons & BUTTON_HOME)=
-;
-> +
-> +=09input_report_key(drc->joy_input_dev, BTN_DEAD, buttons & BUTTON_POWER=
-);
-> +
-> +=09for (i =3D 0; i < NUM_STICK_AXES; i++) {
-> +=09=09s16 val =3D (data[7 + 2*i] << 8) | data[6 + 2*i];
-> +=09=09/* clamp */
-> +=09=09if (val < STICK_MIN)
-> +=09=09=09val =3D STICK_MIN;
-> +=09=09if (val > STICK_MAX)
-> +=09=09=09val =3D STICK_MAX;
-
-There's `clamp()` in linux/minmax.h, you might want to use that.
-
-
-> +
-> +=09=09switch (i) {
-> +=09=09case 0:
-> +=09=09=09input_report_abs(drc->joy_input_dev, ABS_X, val);
-> +=09=09=09break;
-> +=09=09case 1:
-> +=09=09=09input_report_abs(drc->joy_input_dev, ABS_Y, val);
-> +=09=09=09break;
-> +=09=09case 2:
-> +=09=09=09input_report_abs(drc->joy_input_dev, ABS_RX, val);
-> +=09=09=09break;
-> +=09=09case 3:
-> +=09=09=09input_report_abs(drc->joy_input_dev, ABS_RY, val);
-> +=09=09=09break;
-> +=09=09default:
-> +=09=09=09break;
-> +=09=09}
-> +=09}
-> +
-> +=09input_report_abs(drc->joy_input_dev, ABS_VOLUME, data[14]);
-> +
-> +=09input_sync(drc->joy_input_dev);
-> +
-> +=09/* let hidraw and hiddev handle the report */
-> +=09return 0;
-> +}
-> +
-> +static int drc_open(struct input_dev *dev)
-> +{
-> +=09struct drc *drc =3D input_get_drvdata(dev);
-> +
-> +=09return hid_hw_open(drc->hdev);
-> +}
-> +
-> +static void drc_close(struct input_dev *dev)
-> +{
-> +=09struct drc *drc =3D input_get_drvdata(dev);
-> +
-> +=09hid_hw_close(drc->hdev);
-> +}
-> +
-> +static struct input_dev *allocate_and_setup(struct hid_device *hdev,
-> +=09=09const char *name)
-> +{
-> +=09struct input_dev *input_dev;
-> +
-> +=09input_dev =3D devm_input_allocate_device(&hdev->dev);
-> +=09if (!input_dev)
-> +=09=09return NULL;
-> +
-> +=09input_dev->name =3D name;
-> +=09input_dev->phys =3D hdev->phys;
-> +=09input_dev->dev.parent =3D &hdev->dev;
-> +=09input_dev->open =3D drc_open;
-> +=09input_dev->close =3D drc_close;
-> +=09input_dev->uniq =3D hdev->uniq;
-> +=09input_dev->id.bustype =3D hdev->bus;
-> +=09input_dev->id.vendor  =3D hdev->vendor;
-> +=09input_dev->id.product =3D hdev->product;
-> +=09input_dev->id.version =3D hdev->version;
-> +=09input_set_drvdata(input_dev, hid_get_drvdata(hdev));
-> +
-> +=09return input_dev;
-> +}
-> +
-> +static bool drc_setup_joypad(struct drc *drc,
-> +=09=09struct hid_device *hdev)
-> +{
-> +=09struct input_dev *input_dev;
-> +
-> +=09input_dev =3D allocate_and_setup(hdev, DEVICE_NAME " Joypad");
-> +=09if (!input_dev)
-> +=09=09return false;
-> +
-> +=09input_dev->evbit[0] =3D BIT(EV_KEY) | BIT(EV_ABS);
-
-`input_set_abs_params()` already sets EV_ABS.
-
-
-> +
-> +=09set_bit(BTN_DPAD_RIGHT, input_dev->keybit);
-> +=09set_bit(BTN_DPAD_DOWN, input_dev->keybit);
-> +=09set_bit(BTN_DPAD_LEFT, input_dev->keybit);
-> +=09set_bit(BTN_DPAD_UP, input_dev->keybit);
-> +=09set_bit(BTN_EAST, input_dev->keybit);
-> +=09set_bit(BTN_SOUTH, input_dev->keybit);
-> +=09set_bit(BTN_NORTH, input_dev->keybit);
-> +=09set_bit(BTN_WEST, input_dev->keybit);
-> +=09set_bit(BTN_TL, input_dev->keybit);
-> +=09set_bit(BTN_TL2, input_dev->keybit);
-> +=09set_bit(BTN_TR, input_dev->keybit);
-> +=09set_bit(BTN_TR2, input_dev->keybit);
-> +=09set_bit(BTN_THUMBL, input_dev->keybit);
-> +=09set_bit(BTN_THUMBR, input_dev->keybit);
-> +=09set_bit(BTN_SELECT, input_dev->keybit);
-> +=09set_bit(BTN_START, input_dev->keybit);
-> +=09set_bit(BTN_MODE, input_dev->keybit);
-> +
-> +=09/* These two buttons are actually TV control and Power. */
-> +=09set_bit(BTN_Z, input_dev->keybit);
-> +=09set_bit(BTN_DEAD, input_dev->keybit);
-
-You could use `input_set_capability(device, EV_KEY, ...)` (potentially in a=
- loop)
-instead of manually setting the bits. And then `input_dev->evbit[0] =3D BIT=
-(EV_KEY) | BIT(EV_ABS);`
-would be unnecessary.
-
-
-> +
-> +=09input_set_abs_params(input_dev, ABS_X, STICK_MIN, STICK_MAX, 0, 0);
-> +=09input_set_abs_params(input_dev, ABS_Y, STICK_MIN, STICK_MAX, 0, 0);
-> +=09input_set_abs_params(input_dev, ABS_RX, STICK_MIN, STICK_MAX, 0, 0);
-> +=09input_set_abs_params(input_dev, ABS_RY, STICK_MIN, STICK_MAX, 0, 0);
-> +=09input_set_abs_params(input_dev, ABS_VOLUME, VOLUME_MIN, VOLUME_MAX, 0=
-, 0);
-> +
-> +=09drc->joy_input_dev =3D input_dev;
-> +
-> +=09return true;
-> +}
-> +
-> +static int drc_probe(struct hid_device *hdev, const struct hid_device_id=
- *id)
-> +{
-> +=09struct drc *drc;
-> +=09int ret;
-> +
-> +=09drc =3D devm_kzalloc(&hdev->dev, sizeof(struct drc), GFP_KERNEL);
-> +=09if (!drc)
-> +=09=09return -ENOMEM;
-> +
-> +=09drc->hdev =3D hdev;
-> +
-> +=09hid_set_drvdata(hdev, drc);
-> +
-> +=09ret =3D hid_parse(hdev);
-> +=09if (ret) {
-> +=09=09hid_err(hdev, "parse failed\n");
-> +=09=09return ret;
-> +=09}
-> +
-> +=09if (!drc_setup_joypad(drc, hdev)) {
-> +=09=09hid_err(hdev, "could not allocate interface\n");
-> +=09=09return -ENOMEM;
-> +=09}
-> +
-> +=09ret =3D input_register_device(drc->joy_input_dev);
-> +=09if (ret) {
-> +=09=09hid_err(hdev, "failed to register interface\n");
-> +=09=09return ret;
-> +=09}
-> +
-> +=09ret =3D hid_hw_start(hdev, HID_CONNECT_HIDRAW | HID_CONNECT_DRIVER);
-
-As far as I'm aware, `hid_hw_start()` should be called before `hid_hw_open(=
-)`.
-Since you register the input device first, I think it is possible that `hid=
-_hw_open()`
-will be called first.
-
-
-> +=09if (ret) {
-> +=09=09hid_err(hdev, "hw start failed\n");
-> +=09=09return ret;
-> +=09}
-> +
-> +=09return 0;
-> +}
-> +
-> +static const struct hid_device_id drc_devices[] =3D {
-> +=09{ HID_USB_DEVICE(USB_VENDOR_ID_NINTENDO, USB_DEVICE_ID_NINTENDO_WIIU_=
-DRH) },
-> +=09{ }
-> +};
-> +MODULE_DEVICE_TABLE(hid, drc_devices);
-> +
-> +static struct hid_driver drc_driver =3D {
-> +=09.name =3D "hid-wiiu-drc",
-> +=09.id_table =3D drc_devices,
-> +=09.raw_event =3D drc_raw_event,
-> +=09.probe =3D drc_probe,
-> +};
-> +module_hid_driver(drc_driver);
-> +
-> +MODULE_AUTHOR("Ash Logan <ash@heyquark.com>");
-> +MODULE_DESCRIPTION("Nintendo Wii U gamepad driver");
-> +MODULE_LICENSE("GPL");
-> --
-> 2.31.1
-
-
-Regards,
-Barnab=C3=A1s P=C5=91cze
