@@ -2,74 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7B637501A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:24:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B371375012
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:23:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233406AbhEFHZU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:25:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233378AbhEFHZT (ORCPT
+        id S233351AbhEFHY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:24:29 -0400
+Received: from lb2-smtp-cloud9.xs4all.net ([194.109.24.26]:56117 "EHLO
+        lb2-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233163AbhEFHY0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:25:19 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95BABC061574;
-        Thu,  6 May 2021 00:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=mmRnwL0+7c5+Z5SO1e0LYjJ5FVGGCBEN51tuNvrP2X0=; b=dpl4IyQPo0BlhWM2jTUcSNiOM5
-        /T1JxZKErUyUJ9ETGjthgTvZ6+0OE2eNrB29F18aCLTSE3AY/xVRTw0W6UErf9xzj/pLYAIKskR24
-        9gkXrFzSnnoR6b0tbjou7qUCFLHVaZaFpamiS+LSYEmXJ79F/OeUbkj/AyGD+HpBOz7desj14+edY
-        lUSejZFA7BuloJKBWWjRevjeIajZvfhMZGc2TxvSzC/4NWlQelWzgRFJ0GQWskjKdESm2Q71fXyDM
-        MKGsLUXv63Uiz1DdJstZdNuaRRiLTFtehgz1ms52fqVkX+gi+cE6P/G5IoCOYg3wFwXgGl1M0HtoM
-        TzrY8boA==;
-Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1leYKz-001QP0-T6; Thu, 06 May 2021 07:22:27 +0000
-Date:   Thu, 6 May 2021 08:22:21 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Will Deacon <will@kernel.org>, Vikram Sethi <vsethi@nvidia.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        Mark Kettenis <mark.kettenis@xs4all.nl>,
-        Marc Zyngier <maz@kernel.org>,
-        Shanker Donthineni <sdonthineni@nvidia.com>,
-        "christoffer.dall@arm.com" <christoffer.dall@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Jason Sequeira <jsequeira@nvidia.com>
-Subject: Re: [RFC 1/2] vfio/pci: keep the prefetchable attribute of a BAR
- region in VMA
-Message-ID: <20210506072221.GA338890@infradead.org>
-References: <BL0PR12MB2532CC436EBF626966B15994BD5E9@BL0PR12MB2532.namprd12.prod.outlook.com>
- <87eeeqvm1d.wl-maz@kernel.org>
- <BL0PR12MB25329EF5DFA7BBAA732064A7BD5C9@BL0PR12MB2532.namprd12.prod.outlook.com>
- <87bl9sunnw.wl-maz@kernel.org>
- <c1bd514a531988c9@bloch.sibelius.xs4all.nl>
- <BL0PR12MB253296086906C4A850EC68E6BD5B9@BL0PR12MB2532.namprd12.prod.outlook.com>
- <20210503084432.75e0126d@x1.home.shazbot.org>
- <BL0PR12MB2532BEAE226E7D68A8A2F97EBD5B9@BL0PR12MB2532.namprd12.prod.outlook.com>
- <20210504083005.GA12290@willie-the-truck>
- <20210505180228.GA3874@arm.com>
+        Thu, 6 May 2021 03:24:26 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id eYLwlT8KlWztCeYLzlNQhC; Thu, 06 May 2021 09:23:26 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1620285806; bh=LR3clUHjVBftDzFCX3LyxLbFvneYwPcjG1houGAXXzI=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=kBTbvO1LoW285EE9kFRPCPIp2VGwBeQN6DoGePMofuj/wVXD+IrNkiE8cOrYzRAIr
+         8LEwXzscpCO+ChGSFb1JYHa8z2rMvBrjBOU55fRU31HYfDVThi5dT4HCGgizwHcLoA
+         AEFWvQVisvgtWJMXmnn5OCc97t/IjthSzMmp0H7UmDq1LDvezmns6lvI5z/b8Xb3WC
+         fH/JZiSjz7WxR/pEwD0VqOxTifHc8/IaEoLUeampOdDrM3TSJuIzJADhzoNvewKNYD
+         Q15PV1gPqo+gAc0ISpdcoiKYhr8C6qJSZOJyC96GbaVeXY7xapdvcEnjHiWN52mKk4
+         6Dxv4kyLfVM3w==
+Subject: Re: [PATCH v3] media:exynos4-is: Fix a use after free in
+ isp_video_release
+To:     lyl2019@mail.ustc.edu.cn
+Cc:     s.nawrocki@samsung.com, mchehab@kernel.org, krzk@kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210427132734.5212-1-lyl2019@mail.ustc.edu.cn>
+ <44f264d9-e039-66b6-6e4b-1a5b3c386aa4@xs4all.nl>
+ <3f2f155c.72fa7.179408b6b2e.Coremail.lyl2019@mail.ustc.edu.cn>
+From:   Hans Verkuil <hverkuil@xs4all.nl>
+Message-ID: <c3f03430-e595-38a8-b60d-4a338c751c04@xs4all.nl>
+Date:   Thu, 6 May 2021 09:23:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505180228.GA3874@arm.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <3f2f155c.72fa7.179408b6b2e.Coremail.lyl2019@mail.ustc.edu.cn>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfHt/vWvFyV4O9vViaNtKEIB+ZQgCzc42RFxLaPmLWlVwc0FvmH08rP/GLz1Hcvk0MDzzy6YSdmg7lisLd5PgYlcTRjEw9Qwir8P1krPMzTpgzcEsT114
+ VcxCcnCxGaHlG91sLQsZrS3NLPFfSrMMq66jycMcDxSqu8b/UTJOeIF4WHDVBetrhPUknqYNqYrkI4UpkY9L254yUX0tnSVYF4CCVpFDueJKvBTBVCKtoAXh
+ 7ROtKCvkU/dCXv5aqJVePDCkXD+RC3RPfad2muFwHdaw5S1o8/IS5a1TOmaHwWBl5ea5wrtNQX30wNyBMyBh8tx11IFiNRiOFC1x8mLSPNKwu5TC1qOMDmN1
+ qERT7wUK5lczgbDr6njpyg6J4TLsrCxok/EB4qIs5ssvPs2lk+D4ok9boOaS3tjy/3bvz9H05TI5WMRmI12fOt4S04G5Wl4l69FbDZtt0p8A/YLc+Wo=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 07:02:31PM +0100, Catalin Marinas wrote:
-> > Furthermore, ioremap() already gives you a Device memory type, and we're
-> > tight on MAIR space.
+On 06/05/2021 09:19, lyl2019@mail.ustc.edu.cn wrote:
 > 
-> We have MT_DEVICE_GRE currently reserved though no in-kernel user, we
-> might as well remove it.
+> 
+> 
+>> -----原始邮件-----
+>> 发件人: "Hans Verkuil" <hverkuil@xs4all.nl>
+>> 发送时间: 2021-05-05 17:31:04 (星期三)
+>> 收件人: "Lv Yunlong" <lyl2019@mail.ustc.edu.cn>, s.nawrocki@samsung.com, mchehab@kernel.org, krzk@kernel.org
+>> 抄送: linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+>> 主题: Re: [PATCH v3] media:exynos4-is: Fix a use after free in isp_video_release
+>>
+>> Hi Lv Yunlong,
+>>
+>> On 27/04/2021 15:27, Lv Yunlong wrote:
+>>> In isp_video_release, file->private_data is freed via
+>>> _vb2_fop_release()->v4l2_fh_release(). But the freed
+>>> file->private_data is still used in v4l2_fh_is_singular_file()
+>>> ->v4l2_fh_is_singular(file->private_data), which is a use
+>>> after free bug.
+>>>
+>>> My patch sets file->private_data to NULL after _vb2_fop_release()
+>>> to avoid the use after free, and uses a variable 'is_singular_file'
+>>> to keep the original function unchanged.
+>>
+>> Actually, it is the use of 'is_singular_file' that fixes the bug,
+>> the 'file->private_data = NULL;' is unnecessary here.
+>>
+>> That said, it would be a really good idea if in a separate patch you
+>> make v4l2_fh_release() more robust by setting filp->private_data to
+>> NULL after the kfree(fh).
+>>
+>> Regards,
+>>
+>> 	Hans
+>>
+>>>
+>>> Fixes: 34947b8aebe3f ("[media] exynos4-is: Add the FIMC-IS ISP capture DMA driver")
+>>> Signed-off-by: Lv Yunlong <lyl2019@mail.ustc.edu.cn>
+>>> ---
+>>>  drivers/media/platform/exynos4-is/fimc-isp-video.c | 8 ++++++--
+>>>  1 file changed, 6 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/drivers/media/platform/exynos4-is/fimc-isp-video.c b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+>>> index 612b9872afc8..c07dcb0bccc2 100644
+>>> --- a/drivers/media/platform/exynos4-is/fimc-isp-video.c
+>>> +++ b/drivers/media/platform/exynos4-is/fimc-isp-video.c
+>>> @@ -306,17 +306,21 @@ static int isp_video_release(struct file *file)
+>>>  	struct fimc_is_video *ivc = &isp->video_capture;
+>>>  	struct media_entity *entity = &ivc->ve.vdev.entity;
+>>>  	struct media_device *mdev = entity->graph_obj.mdev;
+>>> +	bool is_singular_file;
+>>>  
+>>>  	mutex_lock(&isp->video_lock);
+>>>  
+>>> -	if (v4l2_fh_is_singular_file(file) && ivc->streaming) {
+>>> +	is_singular_file = v4l2_fh_is_singular_file(file);
+>>> +
+>>> +	if (is_singular_file && ivc->streaming) {
+>>>  		media_pipeline_stop(entity);
+>>>  		ivc->streaming = 0;
+>>>  	}
+>>>  
+>>>  	_vb2_fop_release(file, NULL);
+>>> +	file->private_data = NULL;
+>>>  
+>>> -	if (v4l2_fh_is_singular_file(file)) {
+>>> +	if (is_singular_file) {
+>>>  		fimc_pipeline_call(&ivc->ve, close);
+>>>  
+>>>  		mutex_lock(&mdev->graph_mutex);
+>>>
+>>
+> 
+> 
+> Ok, thanks for your suggestion.
+> 
+> Do you means i need submit a new path to set filp->private_data = NULL
+> after kfree(fh) in v4l2_fh_release() ?
 
-Please do.  The more we can cut down on different memory types, the
-better.
+Yes, so one updated patch for fimc-isp-video.c and a second patch for v4l2-fh.c.
+
+Regards,
+
+	Hans
+
+> 
+> Lv Yunlong
+> 
+
