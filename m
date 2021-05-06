@@ -2,81 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 986A63752F8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:21:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C7A13752FC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:25:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234820AbhEFLVx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 07:21:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234756AbhEFLVw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 07:21:52 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB69DC061761;
-        Thu,  6 May 2021 04:20:53 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso4581112wmc.1;
-        Thu, 06 May 2021 04:20:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=mvFbkvQ5VEcFaBQBYLgUC3qPOWAANW4uhpr/PRzv3bw=;
-        b=pFNflUuaOWurwW49KEo8O3XL06LjXCHRNT+sDxviEulc90DqsaYtyJN+HYuB30g7Kr
-         tkcgDaEVZJnPaepNLHRNkhKTLLylR1OND9ie5HinMCy9lXEDSaQepzRrmDAYaE5TuJCv
-         sTV4TwbDl7jhkUyeL4Fw6MzkISXPKmaZ+nscPaNhSo62+17mFpno8U3KxZwJxOoBupJr
-         fBN1s6M+qGTYIToMKKvriUtBuSmnHWWQ9YMNnzNBjgT3ZrN9n3Bi5MJ+4SRJolzQCctp
-         qqEJae8PXeP4tvYqMkHJXTjGK1akmA6iRJNNVUpdjoe/ODEfsvYKSN26VC0LSYypk0TD
-         SeVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=mvFbkvQ5VEcFaBQBYLgUC3qPOWAANW4uhpr/PRzv3bw=;
-        b=biagKlK7yW+naGlJhIP4k145WcbtYn/jIOnbw68Kxyyucrv+JI7Essa4XY0TNwmkwC
-         0PPF/rYKKBvH+5THtic62O5xUT+S/gPcg5vbsJdm8R1JkrTOxydbynLW446hR2miek1y
-         d3L39Cco46AWSEBR/Er4wRQXFyPUt3N4Nl9HglFau1DVB74JJse5k0fzkQVJxfQ2VEeJ
-         4L5Vu8Z6ju8iwSbfPiDw9UsTKG1HSxtAzoTM/P0hSq/NRf94nRQWfLCncFNLzc69cJ1t
-         WGWlECSTCsqW+h1pu6c0MJQvOW7NZUWOH5E0077jqYHlcjE8Ps0/bMVIcf8Lj96ITcmH
-         br9g==
-X-Gm-Message-State: AOAM533V0I3spw1+/O7Ugy+ALjkWEpCLVlop5auWqDUnKkiZ0kmm3UWz
-        dILccYvfOvc3j0MLHZdzSI0Y66hPve4=
-X-Google-Smtp-Source: ABdhPJweankzTnYz84yyj1lHKrKrnDHLQgrSE9N4PTU1Dky9xvVRZJdxJesXH89VETdQ2GVOqCvZxg==
-X-Received: by 2002:a1c:5945:: with SMTP id n66mr3390669wmb.139.1620300052494;
-        Thu, 06 May 2021 04:20:52 -0700 (PDT)
-Received: from skbuf ([86.127.41.210])
-        by smtp.gmail.com with ESMTPSA id n6sm3806323wro.23.2021.05.06.04.20.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 04:20:52 -0700 (PDT)
-Date:   Thu, 6 May 2021 14:20:50 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v3 08/20] net: dsa: qca8k: add support for
- qca8327 switch
-Message-ID: <20210506112050.gccgrck2i7ylsc5n@skbuf>
-References: <20210504222915.17206-1-ansuelsmth@gmail.com>
- <20210504222915.17206-8-ansuelsmth@gmail.com>
+        id S234696AbhEFLZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 07:25:59 -0400
+Received: from mga02.intel.com ([134.134.136.20]:15098 "EHLO mga02.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234589AbhEFLZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 07:25:58 -0400
+IronPort-SDR: b4QAR52UMyRmCQnbjpzenfSFUHGZkbqpBZGkDLJchjkGQXNg+gA1Fm2Md71noZnmG9WGvmD6vj
+ 9BzQqbNOTusQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="185576497"
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="185576497"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 04:25:00 -0700
+IronPort-SDR: UwzLFitVhz94btr00mR08mTaF5Z2ww1afaHhfyIKOUZR6ofQbOQ/oF5i/mPQ7FKnUJILvRrqUC
+ pY7hXA1cBWOw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="434305522"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by orsmga008.jf.intel.com with ESMTP; 06 May 2021 04:24:59 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lec7m-000AZ4-F9; Thu, 06 May 2021 11:24:58 +0000
+Date:   Thu, 06 May 2021 19:24:17 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "Paul E. McKenney" <paulmck@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [rcu:dev.2021.05.02a] BUILD SUCCESS WITH WARNING
+ 35d2c62851bc03a945ae81ab0726985f726107b1
+Message-ID: <6093d1e1.mXsFI1aq2SlF88mE%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504222915.17206-8-ansuelsmth@gmail.com>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 12:29:02AM +0200, Ansuel Smith wrote:
-> qca8327 switch is a low tier version of the more recent qca8337.
-> It does share the same regs used by the qca8k driver and can be
-> supported with minimal change.
-> 
-> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
-> ---
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.05.02a
+branch HEAD: 35d2c62851bc03a945ae81ab0726985f726107b1  refscale: Add measurement of clock readout
 
-Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
+Warning reports:
+
+https://lore.kernel.org/lkml/202105061040.osgFAKrJ-lkp@intel.com
+
+Warning in current branch:
+
+kernel/rcu/refscale.c:472:15: warning: variable 'x' set but not used [-Wunused-but-set-variable]
+
+Warning ids grouped by kconfigs:
+
+gcc_recent_errors
+|-- alpha-allyesconfig
+|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+|-- nds32-allyesconfig
+|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+|-- nios2-allyesconfig
+|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+|-- nios2-randconfig-r014-20210505
+|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+|-- parisc-allyesconfig
+|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+|-- riscv-allmodconfig
+|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+|-- s390-allmodconfig
+|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+|-- s390-allyesconfig
+|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+|-- s390-defconfig
+|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+`-- sh-allmodconfig
+    `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
+
+elapsed time: 724m
+
+configs tested: 113
+configs skipped: 2
+
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+riscv                            allyesconfig
+i386                             allyesconfig
+sh                           se7705_defconfig
+sh                             sh03_defconfig
+um                                  defconfig
+sh                         ecovec24_defconfig
+powerpc                     tqm8541_defconfig
+mips                           gcw0_defconfig
+h8300                     edosk2674_defconfig
+xtensa                          iss_defconfig
+ia64                         bigsur_defconfig
+powerpc                     mpc5200_defconfig
+mips                     loongson1b_defconfig
+arm                          iop32x_defconfig
+arm                         nhk8815_defconfig
+mips                           ip27_defconfig
+sh                          r7785rp_defconfig
+mips                        omega2p_defconfig
+sparc64                          alldefconfig
+arc                     nsimosci_hs_defconfig
+powerpc                 mpc836x_rdk_defconfig
+arm                             pxa_defconfig
+powerpc                      ep88xc_defconfig
+sparc                            allyesconfig
+xtensa                generic_kc705_defconfig
+mips                  maltasmvp_eva_defconfig
+powerpc                       holly_defconfig
+alpha                            allyesconfig
+arm                            mps2_defconfig
+openrisc                  or1klitex_defconfig
+arc                 nsimosci_hs_smp_defconfig
+mips                        qi_lb60_defconfig
+arm                         palmz72_defconfig
+mips                       bmips_be_defconfig
+sh                           se7619_defconfig
+powerpc                     redwood_defconfig
+openrisc                            defconfig
+powerpc                   lite5200b_defconfig
+powerpc                     tqm8548_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+m68k                                defconfig
+m68k                             allyesconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+s390                                defconfig
+sparc                               defconfig
+i386                                defconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210506
+i386                 randconfig-a006-20210506
+i386                 randconfig-a001-20210506
+i386                 randconfig-a005-20210506
+i386                 randconfig-a004-20210506
+i386                 randconfig-a002-20210506
+x86_64               randconfig-a001-20210505
+x86_64               randconfig-a003-20210505
+x86_64               randconfig-a005-20210505
+x86_64               randconfig-a002-20210505
+x86_64               randconfig-a006-20210505
+x86_64               randconfig-a004-20210505
+i386                 randconfig-a015-20210505
+i386                 randconfig-a013-20210505
+i386                 randconfig-a016-20210505
+i386                 randconfig-a014-20210505
+i386                 randconfig-a012-20210505
+i386                 randconfig-a011-20210505
+riscv                    nommu_k210_defconfig
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                              defconfig
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
+
+clang tested configs:
+x86_64               randconfig-a014-20210505
+x86_64               randconfig-a015-20210505
+x86_64               randconfig-a012-20210505
+x86_64               randconfig-a013-20210505
+x86_64               randconfig-a011-20210505
+x86_64               randconfig-a016-20210505
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
