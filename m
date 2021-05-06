@@ -2,137 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A3537590A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:14:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E27F6375913
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:17:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236194AbhEFRPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:15:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46960 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236042AbhEFRPX (ORCPT
+        id S236210AbhEFRSf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:18:35 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:42017 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236202AbhEFRSe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:15:23 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620321265;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=WHt7BDD9RIfUmR/n7ErimXYampz84sK/Te7hVMTDzGg=;
-        b=GlRAmHlwMfktC99//a0DBE8ce/3wOGOy7nTtAmlO90eIKHKtYBEbnbLF1JItXZg9DcoVWx
-        feTtJnTCShkelUJlpo7rRAaE1CYVWDt/vTtEvGopNxCZA2tmbaLsfmDQM/I1zmB6zFhEf1
-        akhT8801MMQZUzmcRwazN4JF7UF6J2c=
-Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
- [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-43-tbP73XjYNQaM3NVbtiLnmg-1; Thu, 06 May 2021 13:14:13 -0400
-X-MC-Unique: tbP73XjYNQaM3NVbtiLnmg-1
-Received: by mail-qv1-f72.google.com with SMTP id b10-20020a0cf04a0000b02901bda1df3afbso4647640qvl.13
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 10:14:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:organization:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=WHt7BDD9RIfUmR/n7ErimXYampz84sK/Te7hVMTDzGg=;
-        b=PrZjSJdVsAsqV47E6joCpYh1qZ1H0MPXH9qpyTQMn2CBdR1memOJ8sFY2nCjngJgNx
-         kL7Nw5nvmWGPB3oFSQN/lqOQezBhtpij6vLDglhz+TIKKz3h1/DFD5Pjq4EDFltTfgWR
-         fGM3/PUUO/dJOqM+1J/wrboN0YVaRFwhu4Jf3tAFUWzfG5uQAxnEXBVKEuPGeUXv8mUz
-         Jq56/Bz2EcqnUQjsRpKN4vNq+0HcxF/YES60NRQKSjJAhHtCU39fsZzzd3mZAdkrX5h5
-         XL9sjh4PKP+WPniOKuOp5Z25oIeg0nNVfLRFGTMbFpwi6RfGl7AKul07VGFCniptLYXh
-         liiw==
-X-Gm-Message-State: AOAM5334mXcVTIdzHuEckGjUjRevx84NiWEpU3o4Xw3FJX/aIRcYr7iv
-        XlUwe9x6ZzToWB6+IxIZ2WNfSPrq0ikFRIdAm1y7VZSw3jiVbStKFY1FK525b13Aa6l+HQGw1H3
-        EYKexpNhsP0MkzChjSogOCvfL
-X-Received: by 2002:ae9:dc41:: with SMTP id q62mr4943870qkf.22.1620321252601;
-        Thu, 06 May 2021 10:14:12 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzjEwnhoBPGfrifNUIwk2RVyavP6PRLpFE5xqW6/Y3DxB14jDNDqb1w/0e5lbnPGihQCWj+RQ==
-X-Received: by 2002:ae9:dc41:: with SMTP id q62mr4943844qkf.22.1620321252385;
-        Thu, 06 May 2021 10:14:12 -0700 (PDT)
-Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
-        by smtp.gmail.com with ESMTPSA id f5sm2475312qkk.12.2021.05.06.10.14.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 10:14:11 -0700 (PDT)
-Message-ID: <59cd454b3a104a3a469a94be95cc860ced7581bd.camel@redhat.com>
-Subject: Re: [PATCH AUTOSEL 4.9 08/24] drm/bridge/analogix/anx78xx: Setup
- encoder before registering connector
-From:   Lyude Paul <lyude@redhat.com>
-To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
-        stable@vger.kernel.org
-Cc:     Robert Foss <robert.foss@linaro.org>,
-        dri-devel@lists.freedesktop.org
-Date:   Thu, 06 May 2021 13:14:10 -0400
-In-Reply-To: <20210503164252.2854487-8-sashal@kernel.org>
-References: <20210503164252.2854487-1-sashal@kernel.org>
-         <20210503164252.2854487-8-sashal@kernel.org>
-Organization: Red Hat
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 6 May 2021 13:18:34 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620321456; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=sZbTSso1rQbpoLwNuweS38D/XCG6W6+Ms1mW2K4ZuG4=; b=LGbZvWOUXgPKc6FOM/FMOGogqrFf45KgExeQopVlF3hxB+2v5xnYuHGZdYFx+jaj/QxO2hbx
+ a3UBotGohOyKQTKRUV6NA6V1HurUjCxqw466JovjWz6IjT9575mBcUkVQnLGwI16G+l/FjZd
+ DVea/HQdFvfZvNhhZJGWJTQ4AQQ=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n04.prod.us-east-1.postgun.com with SMTP id
+ 609424ab8166b7eff7472b8f (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 17:17:31
+ GMT
+Sender: deesin=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id D8293C43143; Thu,  6 May 2021 17:17:30 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [192.168.1.3] (unknown [122.163.131.242])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: deesin)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 79AC1C4338A;
+        Thu,  6 May 2021 17:17:26 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 79AC1C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@codeaurora.org
+Subject: Re: [PATCH V6 2/4] rpmsg: glink: Add support to handle signals
+ command
+To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
+        sibis@codeaurora.org, manivannan.sadhasivam@linaro.org,
+        mathieu.poirier@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-remoteproc@vger.kernel.org,
+        Arun Kumar Neelakantam <aneela@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>
+References: <1620320818-2206-1-git-send-email-deesin@codeaurora.org>
+ <1593182819-30747-3-git-send-email-deesin@codeaurora.org>
+From:   Deepak Kumar Singh <deesin@codeaurora.org>
+Message-ID: <9095e858-61c3-1115-dc59-d290d81a4b4b@codeaurora.org>
+Date:   Thu, 6 May 2021 22:47:17 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1593182819-30747-3-git-send-email-deesin@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I would drop this patch for all of the stable kernel versions, it doesn't
-really fix any user reported issues.
+Please ignore this instance. Wrongly pushed.
 
-The other patches CC'd to me look fine for stable though
-
-On Mon, 2021-05-03 at 12:42 -0400, Sasha Levin wrote:
-> From: Lyude Paul <lyude@redhat.com>
-> 
-> [ Upstream commit 9962849d0871f5e53d0e3b3d84561f8f2847fbf4 ]
-> 
-> Since encoder mappings for connectors are exposed to userspace, we should
-> be attaching the encoder before exposing the connector to userspace. Just a
-> drive-by fix for an issue I noticed while fixing up usages of
-> drm_dp_aux_init()/drm_dp_aux_register() across the tree.
-> 
-> Signed-off-by: Lyude Paul <lyude@redhat.com>
-> Reviewed-by: Robert Foss <robert.foss@linaro.org>
-> Link:
-> https://patchwork.freedesktop.org/patch/msgid/20210219215326.2227596-9-lyude@redhat.com
-> Signed-off-by: Sasha Levin <sashal@kernel.org>
+On 5/6/2021 10:36 PM, Deepak Kumar Singh wrote:
+> From: Arun Kumar Neelakantam <aneela@codeaurora.org>
+>
+> Remote peripherals send signal notifications over glink with commandID 15.
+>
+> Add support to send and receive the signal command and convert the signals
+> from NATIVE to TIOCM while receiving and vice versa while sending.
+>
+> Signed-off-by: Chris Lew <clew@codeaurora.org>
+> Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
+> Signed-off-by: Arun Kumar Neelakantam <aneela@codeaurora.org>
 > ---
->  drivers/gpu/drm/bridge/analogix-anx78xx.c | 12 ++++++------
->  1 file changed, 6 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/bridge/analogix-anx78xx.c
-> b/drivers/gpu/drm/bridge/analogix-anx78xx.c
-> index eb97e88a103c..16babacb7cf0 100644
-> --- a/drivers/gpu/drm/bridge/analogix-anx78xx.c
-> +++ b/drivers/gpu/drm/bridge/analogix-anx78xx.c
-> @@ -1045,12 +1045,6 @@ static int anx78xx_bridge_attach(struct drm_bridge
-> *bridge)
->         drm_connector_helper_add(&anx78xx->connector,
->                                  &anx78xx_connector_helper_funcs);
->  
-> -       err = drm_connector_register(&anx78xx->connector);
-> -       if (err) {
-> -               DRM_ERROR("Failed to register connector: %d\n", err);
-> -               return err;
-> -       }
-> -
->         anx78xx->connector.polled = DRM_CONNECTOR_POLL_HPD;
->  
->         err = drm_mode_connector_attach_encoder(&anx78xx->connector,
-> @@ -1060,6 +1054,12 @@ static int anx78xx_bridge_attach(struct drm_bridge
-> *bridge)
->                 return err;
->         }
->  
-> +       err = drm_connector_register(&anx78xx->connector);
-> +       if (err) {
-> +               DRM_ERROR("Failed to register connector: %d\n", err);
-> +               return err;
-> +       }
+>   drivers/rpmsg/qcom_glink_native.c | 125 ++++++++++++++++++++++++++++++++++++++
+>   1 file changed, 125 insertions(+)
+>
+> diff --git a/drivers/rpmsg/qcom_glink_native.c b/drivers/rpmsg/qcom_glink_native.c
+> index 0e8a28c0..1bf3235 100644
+> --- a/drivers/rpmsg/qcom_glink_native.c
+> +++ b/drivers/rpmsg/qcom_glink_native.c
+> @@ -17,6 +17,7 @@
+>   #include <linux/rpmsg.h>
+>   #include <linux/sizes.h>
+>   #include <linux/slab.h>
+> +#include <linux/termios.h>
+>   #include <linux/workqueue.h>
+>   #include <linux/mailbox_client.h>
+>   
+> @@ -150,6 +151,8 @@ enum {
+>    * @intent_req_lock: Synchronises multiple intent requests
+>    * @intent_req_result: Result of intent request
+>    * @intent_req_comp: Completion for intent_req signalling
+> + * @lsigs:	local side signals
+> + * @rsigs:	remote side signals
+>    */
+>   struct glink_channel {
+>   	struct rpmsg_endpoint ept;
+> @@ -181,6 +184,10 @@ struct glink_channel {
+>   	struct mutex intent_req_lock;
+>   	bool intent_req_result;
+>   	struct completion intent_req_comp;
 > +
->         return 0;
->  }
->  
-
--- 
-Cheers,
- Lyude Paul (she/her)
- Software Engineer at Red Hat
-
+> +	unsigned int lsigs;
+> +	unsigned int rsigs;
+> +
+>   };
+>   
+>   #define to_glink_channel(_ept) container_of(_ept, struct glink_channel, ept)
+> @@ -201,9 +208,15 @@ static const struct rpmsg_endpoint_ops glink_endpoint_ops;
+>   #define RPM_CMD_TX_DATA_CONT		12
+>   #define RPM_CMD_READ_NOTIF		13
+>   #define RPM_CMD_RX_DONE_W_REUSE		14
+> +#define RPM_CMD_SIGNALS			15
+>   
+>   #define GLINK_FEATURE_INTENTLESS	BIT(1)
+>   
+> +#define NATIVE_DTR_SIG			BIT(31)
+> +#define NATIVE_CTS_SIG			BIT(30)
+> +#define NATIVE_CD_SIG			BIT(29)
+> +#define NATIVE_RI_SIG			BIT(28)
+> +
+>   static void qcom_glink_rx_done_work(struct work_struct *work);
+>   
+>   static struct glink_channel *qcom_glink_alloc_channel(struct qcom_glink *glink,
+> @@ -975,6 +988,76 @@ static int qcom_glink_rx_open_ack(struct qcom_glink *glink, unsigned int lcid)
+>   	return 0;
+>   }
+>   
+> +/**
+> + * qcom_glink_send_signals() - convert a signal cmd to wire format and transmit
+> + * @glink:	The transport to transmit on.
+> + * @channel:	The glink channel
+> + * @sigs:	The signals to encode.
+> + *
+> + * Return: 0 on success or standard Linux error code.
+> + */
+> +static int qcom_glink_send_signals(struct qcom_glink *glink,
+> +				   struct glink_channel *channel,
+> +				   u32 sigs)
+> +{
+> +	struct glink_msg msg;
+> +
+> +	/* convert signals from TIOCM to NATIVE */
+> +	sigs &= 0x0fff;
+> +	if (sigs & TIOCM_DTR)
+> +		sigs |= NATIVE_DTR_SIG;
+> +	if (sigs & TIOCM_RTS)
+> +		sigs |= NATIVE_CTS_SIG;
+> +	if (sigs & TIOCM_CD)
+> +		sigs |= NATIVE_CD_SIG;
+> +	if (sigs & TIOCM_RI)
+> +		sigs |= NATIVE_RI_SIG;
+> +
+> +	msg.cmd = cpu_to_le16(RPM_CMD_SIGNALS);
+> +	msg.param1 = cpu_to_le16(channel->lcid);
+> +	msg.param2 = cpu_to_le32(sigs);
+> +
+> +	return qcom_glink_tx(glink, &msg, sizeof(msg), NULL, 0, true);
+> +}
+> +
+> +static int qcom_glink_handle_signals(struct qcom_glink *glink,
+> +				     unsigned int rcid, unsigned int signals)
+> +{
+> +	struct glink_channel *channel;
+> +	unsigned long flags;
+> +	u32 old;
+> +
+> +	spin_lock_irqsave(&glink->idr_lock, flags);
+> +	channel = idr_find(&glink->rcids, rcid);
+> +	spin_unlock_irqrestore(&glink->idr_lock, flags);
+> +	if (!channel) {
+> +		dev_err(glink->dev, "signal for non-existing channel\n");
+> +		return -EINVAL;
+> +	}
+> +
+> +	old = channel->rsigs;
+> +
+> +	/* convert signals from NATIVE to TIOCM */
+> +	if (signals & NATIVE_DTR_SIG)
+> +		signals |= TIOCM_DSR;
+> +	if (signals & NATIVE_CTS_SIG)
+> +		signals |= TIOCM_CTS;
+> +	if (signals & NATIVE_CD_SIG)
+> +		signals |= TIOCM_CD;
+> +	if (signals & NATIVE_RI_SIG)
+> +		signals |= TIOCM_RI;
+> +	signals &= 0x0fff;
+> +
+> +	channel->rsigs = signals;
+> +
+> +	if (channel->ept.sig_cb) {
+> +		channel->ept.sig_cb(channel->ept.rpdev, channel->ept.priv,
+> +				    old, channel->rsigs);
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   static irqreturn_t qcom_glink_native_intr(int irq, void *data)
+>   {
+>   	struct qcom_glink *glink = data;
+> @@ -1036,6 +1119,10 @@ static irqreturn_t qcom_glink_native_intr(int irq, void *data)
+>   			qcom_glink_handle_intent_req_ack(glink, param1, param2);
+>   			qcom_glink_rx_advance(glink, ALIGN(sizeof(msg), 8));
+>   			break;
+> +		case RPM_CMD_SIGNALS:
+> +			qcom_glink_handle_signals(glink, param1, param2);
+> +			qcom_glink_rx_advance(glink, ALIGN(sizeof(msg), 8));
+> +			break;
+>   		default:
+>   			dev_err(glink->dev, "unhandled rx cmd: %d\n", cmd);
+>   			ret = -EINVAL;
+> @@ -1332,6 +1419,42 @@ static int qcom_glink_trysend(struct rpmsg_endpoint *ept, void *data, int len)
+>   	return __qcom_glink_send(channel, data, len, false);
+>   }
+>   
+> +static int qcom_glink_get_sigs(struct rpmsg_endpoint *ept)
+> +{
+> +	struct glink_channel *channel = to_glink_channel(ept);
+> +
+> +	return channel->rsigs;
+> +}
+> +
+> +static int qcom_glink_set_sigs(struct rpmsg_endpoint *ept, u32 set, u32 clear)
+> +{
+> +	struct glink_channel *channel = to_glink_channel(ept);
+> +	struct qcom_glink *glink = channel->glink;
+> +	u32 sigs = channel->lsigs;
+> +
+> +	if (set & TIOCM_DTR)
+> +		sigs |= TIOCM_DTR;
+> +	if (set & TIOCM_RTS)
+> +		sigs |= TIOCM_RTS;
+> +	if (set & TIOCM_CD)
+> +		sigs |= TIOCM_CD;
+> +	if (set & TIOCM_RI)
+> +		sigs |= TIOCM_RI;
+> +
+> +	if (clear & TIOCM_DTR)
+> +		sigs &= ~TIOCM_DTR;
+> +	if (clear & TIOCM_RTS)
+> +		sigs &= ~TIOCM_RTS;
+> +	if (clear & TIOCM_CD)
+> +		sigs &= ~TIOCM_CD;
+> +	if (clear & TIOCM_RI)
+> +		sigs &= ~TIOCM_RI;
+> +
+> +	channel->lsigs = sigs;
+> +
+> +	return qcom_glink_send_signals(glink, channel, sigs);
+> +}
+> +
+>   /*
+>    * Finds the device_node for the glink child interested in this channel.
+>    */
+> @@ -1365,6 +1488,8 @@ static const struct rpmsg_endpoint_ops glink_endpoint_ops = {
+>   	.destroy_ept = qcom_glink_destroy_ept,
+>   	.send = qcom_glink_send,
+>   	.trysend = qcom_glink_trysend,
+> +	.get_signals = qcom_glink_get_sigs,
+> +	.set_signals = qcom_glink_set_sigs,
+>   };
+>   
+>   static void qcom_glink_rpdev_release(struct device *dev)
+>
