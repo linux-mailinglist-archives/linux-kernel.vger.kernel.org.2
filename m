@@ -2,119 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 461AF374E4C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:17:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95545374E93
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:27:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231795AbhEFESJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 00:18:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52348 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhEFESI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 00:18:08 -0400
-Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F4AC061574;
-        Wed,  5 May 2021 21:17:11 -0700 (PDT)
-Received: by mail-pf1-x430.google.com with SMTP id k19so4189240pfu.5;
-        Wed, 05 May 2021 21:17:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=cUcH8PCyuKxxWH0B21SELBwroBtwWU2e6ZCH9Q1x7rE=;
-        b=rp9odEzzlhnx82O9YcW7k9uR9NfXdvb8wb3fXQaAUW/G7/OCn0xVyOc+rSHAWTCy0x
-         L8wkrb3OuMMIuFtrNFY6YqiGj+w31uHljZ22HNp6nADLSBPoDdCb0fjFBQrig2DRGNNR
-         z650tScq37rJkRw5OB7QjC02w+qHh2nSCYD8gt12iXvTXS9DApBoJ2xMQPtovv3Hll1/
-         oHDnc1/zjNvo7Ea3VI/3lm2PR1BCzlBIhoEUbWU4a0nBqSZxap8U0kMwu+b/x3iu5TIu
-         D1r85ZZ5jEUFuDWTElSv4mOvLs5b7oAHNpfBkt/2KJDlvsThNFHHIZo/UsPnJhF57+At
-         xjww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=cUcH8PCyuKxxWH0B21SELBwroBtwWU2e6ZCH9Q1x7rE=;
-        b=dXoMVZyN0dBi2TeoJmXsvmb99WlvWxL/UBkQxOfFJoyILfKVvqKk+dHo4IsUjk8kN4
-         CMWWZALYId6dwiBVT1k1erw4Ci8thtu3AYFQQ9beg8K1ROHe1tsAC+G2cj+lqw93wNDI
-         ko489SndFiVSz6XJBPEFe6BfpQupFnFFrvTxGdAv80UB9Y9Cue4b7CTQjCtrvF6TuSRH
-         43TBk7Nl3eEHpbwSi42qS4bv3T3NxowIBV+0sHaoRaagl//HpmVmOZS+iWdUHJ8GKYP3
-         YtZkLMtp8rKAnzl0aSDF0JNppDQsXgZ8RhPqlQI+qyGjceAMqObZnpKfOA4b56PJMSXm
-         TZLQ==
-X-Gm-Message-State: AOAM531H4N9XWR4+9oV36S7fr1680Cpzb8HSvdnFTIC1OAVfalosZgpY
-        eLIyu58Vp4TKN4o13bIjk0O5mCapNA8=
-X-Google-Smtp-Source: ABdhPJxWiCMxR3OdZ8ocwtGr+7peeUVDXrYe/IuxOxB3UAgxPnUzqRhQM1QGrXneL5YZIbXVcbAd9g==
-X-Received: by 2002:a62:ee09:0:b029:211:1113:2e7c with SMTP id e9-20020a62ee090000b029021111132e7cmr2262101pfi.49.1620274630665;
-        Wed, 05 May 2021 21:17:10 -0700 (PDT)
-Received: from user ([2001:4490:4409:27b0:f9dc:322b:84de:6680])
-        by smtp.gmail.com with ESMTPSA id m188sm672343pfm.167.2021.05.05.21.17.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 21:17:09 -0700 (PDT)
-Date:   Thu, 6 May 2021 09:47:03 +0530
-From:   Saurav Girepunje <saurav.girepunje@gmail.com>
-To:     johannes@sipsolutions.net, davem@davemloft.net, kuba@kernel.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     saurav.girepunje@hotmail.com
-Subject: [PATCH] net: mac80211: remove unused local variable
-Message-ID: <20210506041703.GA5681@user>
+        id S232853AbhEFE2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 00:28:13 -0400
+Received: from mga01.intel.com ([192.55.52.88]:31222 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229748AbhEFE2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 00:28:11 -0400
+IronPort-SDR: 5vde3BUTY7/SV8j4SJuhNjAucOypDkPjeJx6bSkrhmheh6G1l7QCdgfJW0FtdVwOHDo87fd3/O
+ e7xgLE3rDyOA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="219249618"
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="219249618"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 21:27:11 -0700
+IronPort-SDR: bn4SsDTv6RX2r2OpyNL9PZVdTWdMpYaMnRnMf/Z6XUf6u1SL+0dtUWDewQWoUBhQFlk5F5u3Cs
+ 4cLLnnlQuxMA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="430313274"
+Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
+  by fmsmga008.fm.intel.com with ESMTP; 05 May 2021 21:27:11 -0700
+Date:   Wed, 5 May 2021 21:26:27 -0700
+From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.comi>, Mel Gorman <mgorman@suse.de>,
+        Len Brown <len.brown@intel.com>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
+        Ricardo Neri <ricardo.neri@intel.com>,
+        Quentin Perret <qperret@google.com>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: [PATCH v2 3/4] sched/fair: Consider SMT in ASYM_PACKING load
+ balance
+Message-ID: <20210506042627.GA3388@ranerica-svr.sc.intel.com>
+References: <20210414020436.12980-1-ricardo.neri-calderon@linux.intel.com>
+ <20210414020436.12980-4-ricardo.neri-calderon@linux.intel.com>
+ <YI/KSfWuGLhPnilr@hirez.programming.kicks-ass.net>
+ <YI/PKAkjLeaKEXrn@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <YI/PKAkjLeaKEXrn@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In ieee80211_process_addba_request() first argument is never
-used.
+On Mon, May 03, 2021 at 12:23:36PM +0200, Peter Zijlstra wrote:
+> On Mon, May 03, 2021 at 12:02:49PM +0200, Peter Zijlstra wrote:
+> > On Tue, Apr 13, 2021 at 07:04:35PM -0700, Ricardo Neri wrote:
+> > > @@ -8507,6 +8616,18 @@ static bool update_sd_pick_busiest(struct lb_env *env,
+> > >  	if (!sgs->sum_h_nr_running)
+> > >  		return false;
+> > >  
+> > > +	/*
+> > > +	 * @sg may have been tentatively classified as group_asym_packing.
+> > > +	 * Now that we have sufficient information about @sds.local, reassess
+> > > +	 * if asym packing migration can be done. Reclassify @sg. The only
+> > > +	 * possible results are group_has_spare and group_fully_busy.
+> > > +	 */
+> > > +	if (sgs->group_type == group_asym_packing &&
+> > > +	    !asym_can_pull_tasks(env->dst_cpu, sds, sgs, sg)) {
+> > > +		sgs->group_asym_packing = 0;
+> > > +		sgs->group_type = group_classify(env->sd->imbalance_pct, sg, sgs);
+> > > +	}
+> > 
+> > So if this really is all about not having sds.local in
+> > update_sd_lb_stats(), then that seems fixable. Let me haz a try.
+> 
+> How's this then?
+> 
+> ---
+>  kernel/sched/fair.c | 25 ++++++++++++++++++++-----
+>  1 file changed, 20 insertions(+), 5 deletions(-)
+> 
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 3bdc41f22909..e9dcbee5b3d9 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -8437,6 +8437,21 @@ group_type group_classify(unsigned int imbalance_pct,
+>  	return group_has_spare;
+>  }
+>  
+> +static inline bool
+> +sched_asym(struct lb_env *env, struct sd_lb_stats *sds, struct sched_group *group)
 
-Signed-off-by: Saurav Girepunje <saurav.girepunje@gmail.com>
----
- net/mac80211/agg-rx.c      | 3 +--
- net/mac80211/ieee80211_i.h | 3 +--
- net/mac80211/iface.c       | 4 ++--
- 3 files changed, 4 insertions(+), 6 deletions(-)
+Thank you Peter for this code! It worked well. I had to make a couple of
+tweaks. My proposed asym_can_pull_tasks() also needs the statistics of
+@group. Thus, I added them to the arguments of sched_asym(). Also...
 
-diff --git a/net/mac80211/agg-rx.c b/net/mac80211/agg-rx.c
-index cce28e3b2232..3075570e7968 100644
---- a/net/mac80211/agg-rx.c
-+++ b/net/mac80211/agg-rx.c
-@@ -471,8 +471,7 @@ static void __ieee80211_start_rx_ba_session(struct sta_info *sta,
- 	mutex_unlock(&sta->ampdu_mlme.mtx);
- }
+> +{
+> +	/*
+> +	 * Because sd->groups starts with the local group, anything that isn't
+> +	 * the local group will have access to the local state.
+> +	 */
+> +	if (group == sds->local)
+> +		return false;
+> +
+> +	/* XXX do magic here */
+> +
+> +	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
+> +}
+> +
+>  /**
+>   * update_sg_lb_stats - Update sched_group's statistics for load balancing.
+>   * @env: The load balancing environment.
+> @@ -8445,6 +8460,7 @@ group_type group_classify(unsigned int imbalance_pct,
+>   * @sg_status: Holds flag indicating the status of the sched_group
+>   */
+>  static inline void update_sg_lb_stats(struct lb_env *env,
+> +				      struct sd_lb_stats *sds,
+>  				      struct sched_group *group,
+>  				      struct sg_lb_stats *sgs,
+>  				      int *sg_status)
+> @@ -8453,7 +8469,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>  
+>  	memset(sgs, 0, sizeof(*sgs));
+>  
+> -	local_group = cpumask_test_cpu(env->dst_cpu, sched_group_span(group));
+> +	local_group = group == sds->local;
+>  
+>  	for_each_cpu_and(i, sched_group_span(group), env->cpus) {
+>  		struct rq *rq = cpu_rq(i);
+> @@ -8498,9 +8514,8 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>  
+>  	/* Check if dst CPU is idle and preferred to this group */
+>  	if (env->sd->flags & SD_ASYM_PACKING &&
+> -	    env->idle != CPU_NOT_IDLE &&
+> -	    sgs->sum_h_nr_running &&
+> -	    sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu)) {
+> +	    env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
+> +	    sched_asym(env, sds, group)) {
+>  		sgs->group_asym_packing = 1;
 
--void ieee80211_process_addba_request(struct ieee80211_local *local,
--				     struct sta_info *sta,
-+void ieee80211_process_addba_request(struct sta_info *sta,
- 				     struct ieee80211_mgmt *mgmt,
- 				     size_t len)
- {
-diff --git a/net/mac80211/ieee80211_i.h b/net/mac80211/ieee80211_i.h
-index 8fcbaa1eedf3..9e3e5aaddaf6 100644
---- a/net/mac80211/ieee80211_i.h
-+++ b/net/mac80211/ieee80211_i.h
-@@ -1859,8 +1859,7 @@ void ieee80211_process_addba_resp(struct ieee80211_local *local,
- 				  struct sta_info *sta,
- 				  struct ieee80211_mgmt *mgmt,
- 				  size_t len);
--void ieee80211_process_addba_request(struct ieee80211_local *local,
--				     struct sta_info *sta,
-+void ieee80211_process_addba_request(struct sta_info *sta,
- 				     struct ieee80211_mgmt *mgmt,
- 				     size_t len);
+... I moved this code to be executed after computing sgs->weight as
+asym_can_pull_tasks() needs this datum as well.
 
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 7032a2b59249..4fe599bf9f9c 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1351,8 +1351,8 @@ static void ieee80211_iface_work(struct work_struct *work)
- 			if (sta) {
- 				switch (mgmt->u.action.u.addba_req.action_code) {
- 				case WLAN_ACTION_ADDBA_REQ:
--					ieee80211_process_addba_request(
--							local, sta, mgmt, len);
-+					ieee80211_process_addba_request(sta,
-+									mgmt, len);
- 					break;
- 				case WLAN_ACTION_ADDBA_RESP:
- 					ieee80211_process_addba_resp(local, sta,
---
-2.25.1
+May I add your Co-developed-by and Signed-off-by tags to a patch with these
+changes in my v3 posting?
 
+BR,
+Ricardo
