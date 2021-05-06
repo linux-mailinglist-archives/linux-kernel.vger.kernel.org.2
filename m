@@ -2,67 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB2AB374D21
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:57:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A761374D18
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:52:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230443AbhEFB6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 21:58:09 -0400
-Received: from mail-m176231.qiye.163.com ([59.111.176.231]:15368 "EHLO
-        mail-m176231.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhEFB6I (ORCPT
+        id S230305AbhEFBxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 21:53:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48930 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229872AbhEFBxE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 21:58:08 -0400
-X-Greylist: delayed 338 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 May 2021 21:58:07 EDT
-Received: from vivo.com (localhost [127.0.0.1])
-        by mail-m176231.qiye.163.com (Hmail) with ESMTP id 3D56A6C00CF;
-        Thu,  6 May 2021 09:51:30 +0800 (CST)
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
-Message-ID: <APgAqgAuDm48oWX*tq6AkKqd.3.1620265890239.Hmail.wangqing@vivo.com>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWOSAxLzJdIHdhdGNoZG9nOiBtdGs6IHN1cHBvcnQgcHJlLXRpbWVvdXQgd2hlbiB0aGUgYmFyayBpcnEgaXMgYXZhaWxhYmxl?=
-X-Priority: 3
-X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
-X-Originating-IP: 36.152.145.182
-In-Reply-To: <45ff044d-80ff-9001-1d4f-d39d0ae63060@roeck-us.net>
+        Wed, 5 May 2021 21:53:04 -0400
+Received: from mail-ot1-x332.google.com (mail-ot1-x332.google.com [IPv6:2607:f8b0:4864:20::332])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1BD7CC061574;
+        Wed,  5 May 2021 18:52:07 -0700 (PDT)
+Received: by mail-ot1-x332.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso3530784otg.9;
+        Wed, 05 May 2021 18:52:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=uPVoWqI0d8mrsmQqBc3M9Jr4PjLHSXjZkH0pJDYcatE=;
+        b=pn8I6OsQfi0b3iInJAl/r3pDK1TLjHQ+fWX5U0OH/pmyb1XzWFZwwaJhnQuYahxvEA
+         Mh0ksHunduHwBrpg0V4RPMsTo8UHzrOmUUj3GgVbCGez/ufvZwpv4K8IgHtOpxXksKVI
+         xzt8Cc6w/pCmRcr71Sgr41WAwRj3rz9fR2vtjCQJobODnE2caEqpp/azOO+XOcCd2FsF
+         NGpkMufGAe2YHXNQDBw/+EJgOi2fjnhEMSphX7LNO5acFL7p8Mvf8h6Fj+9Fk/7pBov/
+         Aia0Q+7rggHMOnAKN/nCbiybNl9UgyFrWfRev09RBsMDGaCJ/LF1mMF1crSZ8ndbLEab
+         IA/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=uPVoWqI0d8mrsmQqBc3M9Jr4PjLHSXjZkH0pJDYcatE=;
+        b=sLNxpJO02nKy2bUJvkNil/vuG5eyBdQK0r/z6WfEDPGwNoOJ9DnAydY+wDaCcG/GTq
+         VagkRwqPTfdOMLLQopfj53/hUbgFmlVlapJQOuPcwEmG50muPkC2vS9ksKXXa2oQHSvT
+         blxZs0NZHGgEvAmSi1SBIvR6EtHF2Z9nvwl9/XwRXtq+HnZ7WMNG9f1JfMCgIJMcsy69
+         ycHmc1X7kJ4VdSahs0Y0RIMm3e9wSFiJWuh5OagDlVc1PAahPIiFZ6v8soaQxnNpBRSL
+         dV96+XKHnHCK+NWmB8fdnIl8xQD2MrWEHLnlZ8cpwDS9WnXXRVZsnTHuinNXVQRqISke
+         Celg==
+X-Gm-Message-State: AOAM533kUhQaCWPOdBGNoo6rqPmdhynOP9/MXMtlM2XD2sIazzjLlPbz
+        mlwlUky9GUfMdc1PTbgTviQ=
+X-Google-Smtp-Source: ABdhPJydK4UvVszfRDGVLnafUNtIQWSlLBYSc/9ea5PChWoHa6oxU3ST3i7f7B67kqNrmY6MP0BNUg==
+X-Received: by 2002:a9d:7f0c:: with SMTP id j12mr1339735otq.299.1620265926582;
+        Wed, 05 May 2021 18:52:06 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id d62sm188847oia.37.2021.05.05.18.52.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 18:52:06 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 5 May 2021 18:52:04 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.11 00/31] 5.11.19-rc1 review
+Message-ID: <20210506015204.GE731872@roeck-us.net>
+References: <20210505112326.672439569@linuxfoundation.org>
 MIME-Version: 1.0
-Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 6 May 2021 09:51:30 +0800 (GMT+08:00)
-From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
-Date:   Thu, 6 May 2021 09:51:30 +0800 (GMT+08:00)
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQh0aQlYaGUhPTh5OHkJCHUJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kJHlYWEh9ZQU1ISU9KTUlPQ0JON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
-        WUc6Kxw6Chw6Dj8WT0MULCNRDwpNOhAwCh9VSFVKTUlLSU1OQ0JLTkpLVTMWGhIXVQwaFRwKEhUc
-        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBSExOTDcG
-X-HM-Tid: 0a793f5f71d1d9a9kuws3d56a6c00cf
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Cj5PbiA0LzI0LzIxIDY6NTIgUE0sIFdhbmcgUWluZyB3cm90ZToKPj4gVXNlIHRoZSBiYXJrIGlu
-dGVycnVwdCBhcyB0aGUgcHJldGltZW91dCBub3RpZmllciBpZiBhdmFpbGFibGUuCj4+IAo+PiBX
-aGVuIHRoZSB3YXRjaGRvZyB0aW1lciBleHBpcmVzIGluIGR1YWwgbW9kZSwgYW4gaW50ZXJydXB0
-IHdpbGwgYmUKPj4gdHJpZ2dlcmVkIGZpcnN0LCB0aGVuIHRoZSB0aW1pbmcgcmVzdGFydHMuIFRo
-ZSByZXNldCBzaWduYWwgd2lsbCBiZQo+PiBpbml0aWF0ZWQgd2hlbiB0aGUgdGltZXIgZXhwaXJl
-cyBhZ2Fpbi4KPj4gCj4+IFRoZSBwcmV0aW1lb3V0IG5vdGlmaWNhdGlvbiBzaGFsbCBvY2N1ciBh
-dCB0aW1lb3V0LXNlYy8yLgo+PiAKPj4gVjI6Cj4+IC0gcGFuaWMoKSBieSBkZWZhdWx0IGlmIFdB
-VENIRE9HX1BSRVRJTUVPVVRfR09WIGlzIG5vdCBlbmFibGVkLgo+PiAKPj4gVjM6Cj4+IC0gTW9k
-aWZ5IHRoZSBwcmV0aW1lb3V0IGJlaGF2aW9yLCBtYW51YWxseSByZXNldCBhZnRlciB0aGUgcHJl
-dGltZW91dAo+PiAtIGlzIHByb2Nlc3NlZCBhbmQgd2FpdCB1bnRpbCB0aW1lb3V0Lgo+PiAKPj4g
-VjQ6Cj4+IC0gUmVtb3ZlIHByZXRpbWVvdXQgcmVsYXRlZCBwcm9jZXNzaW5nLiAKPj4gLSBBZGQg
-ZHVhbCBtb2RlIGNvbnRyb2wgc2VwYXJhdGVseS4KPj4gCj4+IFY1Ogo+PiAtIEZpeCBzb21lIGZv
-cm1hdHRpbmcgYW5kIHByaW50aW5nIHByb2JsZW1zLgo+PiAKPj4gVjY6Cj4+IC0gUmVhbGl6ZSBw
-cmV0aW1lb3V0IHByb2Nlc3NpbmcgdGhyb3VnaCBkdWFsbW9kZS4KPj4gCj4+IFY3Ogo+PiAtIEFk
-ZCBzZXRfcHJldGltZW91dCgpLgo+PiAKPj4gVjgvVjk6Cj4+IC0gRml4IHNvbWUgZm9ybWF0dGlu
-ZyBwcm9ibGVtcy4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IFdhbmcgUWluZyA8d2FuZ3FpbmdAdml2
-by5jb20+Cj4KPlJldmlld2VkLWJ5OiBHdWVudGVyIFJvZWNrIDxsaW51eEByb2Vjay11cy5uZXQ+
-Cj4KPk5vdGUgdGhhdCB0aGUgdmVyc2lvbiBoaXN0b3J5IHNob3VsZCBiZSBhZnRlciAiLS0tIi4K
-Pgo+R3VlbnRlcgo+CgpUaGFua3MsIEd1ZW50ZXIuCkFuZCB3aGF0IGRvIEkgbmVlZCB0byBkbyBp
-ZiBJIHdhbnQgbWVyZ2UgaW50byB0aGUgbmV4dC10cmVlPwoKUWluZwoNCg0K
+On Wed, May 05, 2021 at 02:05:49PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.11.19 release.
+> There are 31 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
+> 
+[ ... ]
+> 
+> Shengjiu Wang <shengjiu.wang@nxp.com>
+>     ASoC: ak5558: Add MODULE_DEVICE_TABLE
+> 
+> Shengjiu Wang <shengjiu.wang@nxp.com>
+>     ASoC: ak4458: Add MODULE_DEVICE_TABLE
+> 
+Please remove one of the above. Other than that,
+
+Build results:
+	total: 155 pass: 155 fail: 0
+Qemu test results:
+	total: 461 pass: 461 fail: 0
+
+Tested-by: Guenter Roeck <linux@roeck-us.net>
+
+Guenter
