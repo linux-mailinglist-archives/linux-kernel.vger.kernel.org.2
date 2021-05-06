@@ -2,403 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B42A4375BF4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:51:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B21B1375C05
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:52:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230161AbhEFTv4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 15:51:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35124 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229710AbhEFTvz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 15:51:55 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B04BEC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 12:50:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=hYJLwt/tpRb2XSJ5VPkN+BBUz4IKn3OQXUELKnPJuQ8=; b=ECEPDEnO8CSyYzf6lQ9/Sgx8NI
-        ZT/zsrLXAT2dHxZZwdo4ENT+NYlcCHcZVtzoumgvsnIDoMye9Vsh2ts20+KX2iqy/NOetH9lnDTV+
-        zOKjKAJjpwJkClDOS9Rz/RfgjDqx1mMBHrl9CEXM1ybuqnVYp5Jea+BptRXYYP2uAkvPMx0CUtrQr
-        N+ZP/ZyYQesUAxrlxaTW9CrYd/31nM0mqqMOvgwlCceHqqbb/PF8FW/Jm82pvpMOWA4s9IMDOffhY
-        r6jCMAVCsrGqTPem8l9EU9RL8rvsP1Li+BrszeK4iyuTvXGVrV1vQfJYxNyG5sRkHdj2CfbM0P5in
-        L8xKOYIw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lek0W-002AWC-7s; Thu, 06 May 2021 19:50:03 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DBEBB3001D0;
-        Thu,  6 May 2021 21:49:59 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id BCB2220B96F9C; Thu,  6 May 2021 21:49:59 +0200 (CEST)
-Date:   Thu, 6 May 2021 21:49:59 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
-        rostedt@goodmis.org, ardb@kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 13/13] jump_label,x86: Allow short NOPs
-Message-ID: <YJRIZ7+uZvpBClvW@hirez.programming.kicks-ass.net>
-References: <20210506193352.719596001@infradead.org>
- <20210506194158.216763632@infradead.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506194158.216763632@infradead.org>
+        id S231792AbhEFTxS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 15:53:18 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:13233 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S232182AbhEFTxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 15:53:11 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620330733; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=6hsvNiLm6snfgYT1gETxO981lyXB3iHndDKxbMsOxfE=; b=MpnJ65BMz84PRELbuUcQDidpJdEgqUAgjMzr81kmp21WFJNiczXA9/bX6iv2OdH8+ZIcXwU6
+ Uyj1E/gn++TREavgJansH82ovZtRrrS+to9qp0YUDkFv1ZIa11xmjb2nNmeP2cmIxIKAg9Om
+ NJ7/LCFqVZCbe303ZGXyHbomdYg=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 609448dafebcffa80f1626c6 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 19:51:54
+ GMT
+Sender: bbhatt=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C7816C433D3; Thu,  6 May 2021 19:51:53 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from malabar-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: bbhatt)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4F74C433D3;
+        Thu,  6 May 2021 19:51:52 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org A4F74C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=bbhatt@codeaurora.org
+From:   Bhaumik Bhatt <bbhatt@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, hemantk@codeaurora.org,
+        jhugo@codeaurora.org, linux-kernel@vger.kernel.org,
+        loic.poulain@linaro.org, linux-wireless@vger.kernel.org,
+        kvalo@codeaurora.org, ath11k@lists.infradead.org,
+        Bhaumik Bhatt <bbhatt@codeaurora.org>
+Subject: [PATCH v4 0/6] BHI/BHIe improvements for MHI power purposes
+Date:   Thu,  6 May 2021 12:51:39 -0700
+Message-Id: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 09:34:05PM +0200, Peter Zijlstra wrote:
-> +#ifdef CONFIG_STACK_VALIDATION
+This patch series improves the power up behavior by allowing MHI host driver to
+set BHI and/or BHIe offsets early on in the preparation phase and fail pre-power
+up if offsets are not found or not within a limited MMIO region. This also
+allows MHI host to clean up the offsets in the unprepare after power down phase.
 
-Do we want something like this?
+Going forward, controllers will be required to specify a reg_len field which
+will be used to check whether the BHI/BHIe offsets are in range or not.
 
----
---- a/Documentation/x86/orc-unwinder.rst
-+++ b/Documentation/x86/orc-unwinder.rst
-@@ -15,7 +15,7 @@ the ORC unwinder to be much simpler and
- The ORC data consists of unwind tables which are generated by objtool.
- They contain out-of-band data which is used by the in-kernel ORC
- unwinder.  Objtool generates the ORC data by first doing compile-time
--stack metadata validation (CONFIG_STACK_VALIDATION).  After analyzing
-+stack metadata validation (CONFIG_OBJTOOL).  After analyzing
- all the code paths of a .o file, it determines information about the
- stack state at each instruction address in the file and outputs that
- information to the .orc_unwind and .orc_unwind_ip sections.
---- a/Makefile
-+++ b/Makefile
-@@ -1091,12 +1091,12 @@ HOST_LIBELF_LIBS = $(shell pkg-config li
- has_libelf = $(call try-run,\
-                echo "int main() {}" | $(HOSTCC) $(KBUILD_HOSTLDFLAGS) -xc -o /dev/null $(HOST_LIBELF_LIBS) -,1,0)
- 
--ifdef CONFIG_STACK_VALIDATION
-+ifdef CONFIG_OBJTOOL
-   ifeq ($(has_libelf),1)
-     objtool_target := tools/objtool FORCE
-   else
--    SKIP_STACK_VALIDATION := 1
--    export SKIP_STACK_VALIDATION
-+    SKIP_OBJTOOL := 1
-+    export SKIP_OBJTOOL
-   endif
- endif
- 
-@@ -1247,7 +1247,7 @@ asm-generic: uapi-asm-generic
- 
- PHONY += prepare-objtool prepare-resolve_btfids
- prepare-objtool: $(objtool_target)
--ifeq ($(SKIP_STACK_VALIDATION),1)
-+ifeq ($(SKIP_OBJTOOL),1)
- ifdef CONFIG_FTRACE_MCOUNT_USE_OBJTOOL
- 	@echo "error: Cannot generate __mcount_loc for CONFIG_DYNAMIC_FTRACE=y, please install libelf-dev, libelf-devel or elfutils-libelf-devel" >&2
- 	@false
-@@ -1256,7 +1256,7 @@ ifdef CONFIG_UNWINDER_ORC
- 	@echo "error: Cannot generate ORC metadata for CONFIG_UNWINDER_ORC=y, please install libelf-dev, libelf-devel or elfutils-libelf-devel" >&2
- 	@false
- else
--	@echo "warning: Cannot use CONFIG_STACK_VALIDATION=y, please install libelf-dev, libelf-devel or elfutils-libelf-devel" >&2
-+	@echo "warning: Cannot use CONFIG_OBJTOOL=y, please install libelf-dev, libelf-devel or elfutils-libelf-devel" >&2
- endif
- endif
- 
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -984,7 +984,7 @@ config ARCH_WANT_DEFAULT_TOPDOWN_MMAP_LA
- 	depends on MMU
- 	select ARCH_HAS_ELF_RANDOMIZE
- 
--config HAVE_STACK_VALIDATION
-+config HAVE_OBJTOOL
- 	bool
- 	help
- 	  Architecture supports the 'objtool check' host tool command, which
---- a/arch/x86/Kconfig
-+++ b/arch/x86/Kconfig
-@@ -76,7 +76,7 @@ config X86
- 	select ARCH_HAS_FILTER_PGPROT
- 	select ARCH_HAS_FORTIFY_SOURCE
- 	select ARCH_HAS_GCOV_PROFILE_ALL
--	select ARCH_HAS_KCOV			if X86_64 && STACK_VALIDATION
-+	select ARCH_HAS_KCOV			if X86_64 && OBJTOOL
- 	select ARCH_HAS_MEM_ENCRYPT
- 	select ARCH_HAS_MEMBARRIER_SYNC_CORE
- 	select ARCH_HAS_NON_OVERLAPPING_ADDRESS_SPACE
-@@ -181,7 +181,7 @@ config X86
- 	select HAVE_CONTEXT_TRACKING		if X86_64
- 	select HAVE_CONTEXT_TRACKING_OFFSTACK	if HAVE_CONTEXT_TRACKING
- 	select HAVE_C_RECORDMCOUNT
--	select HAVE_OBJTOOL_MCOUNT		if STACK_VALIDATION
-+	select HAVE_OBJTOOL_MCOUNT		if OBJTOOL
- 	select HAVE_DEBUG_KMEMLEAK
- 	select HAVE_DMA_CONTIGUOUS
- 	select HAVE_DYNAMIC_FTRACE
-@@ -232,13 +232,13 @@ config X86
- 	select MMU_GATHER_RCU_TABLE_FREE		if PARAVIRT
- 	select HAVE_POSIX_CPU_TIMERS_TASK_WORK
- 	select HAVE_REGS_AND_STACK_ACCESS_API
--	select HAVE_RELIABLE_STACKTRACE		if X86_64 && (UNWINDER_FRAME_POINTER || UNWINDER_ORC) && STACK_VALIDATION
-+	select HAVE_RELIABLE_STACKTRACE		if X86_64 && (UNWINDER_FRAME_POINTER || UNWINDER_ORC) && OBJTOOL
- 	select HAVE_FUNCTION_ARG_ACCESS_API
- 	select HAVE_SOFTIRQ_ON_OWN_STACK
- 	select HAVE_STACKPROTECTOR		if CC_HAS_SANE_STACKPROTECTOR
--	select HAVE_STACK_VALIDATION		if X86_64
-+	select HAVE_OBJTOOL		if X86_64
- 	select HAVE_STATIC_CALL
--	select HAVE_STATIC_CALL_INLINE		if HAVE_STACK_VALIDATION
-+	select HAVE_STATIC_CALL_INLINE		if HAVE_OBJTOOL
- 	select HAVE_PREEMPT_DYNAMIC
- 	select HAVE_RSEQ
- 	select HAVE_SYSCALL_TRACEPOINTS
-@@ -255,7 +255,7 @@ config X86
- 	select RTC_MC146818_LIB
- 	select SPARSE_IRQ
- 	select SRCU
--	select STACK_VALIDATION			if HAVE_STACK_VALIDATION && (HAVE_STATIC_CALL_INLINE || RETPOLINE)
-+	select OBJTOOL			if HAVE_OBJTOOL && (HAVE_STATIC_CALL_INLINE || RETPOLINE)
- 	select SYSCTL_EXCEPTION_TRACE
- 	select THREAD_INFO_IN_TASK
- 	select USER_STACKTRACE_SUPPORT
---- a/arch/x86/Kconfig.debug
-+++ b/arch/x86/Kconfig.debug
-@@ -240,7 +240,7 @@ choice
- config UNWINDER_ORC
- 	bool "ORC unwinder"
- 	depends on X86_64
--	select STACK_VALIDATION
-+	select OBJTOOL
- 	help
- 	  This option enables the ORC (Oops Rewind Capability) unwinder for
- 	  unwinding kernel stack traces.  It uses a custom data format which is
---- a/arch/x86/include/asm/jump_label.h
-+++ b/arch/x86/include/asm/jump_label.h
-@@ -20,7 +20,7 @@
- 	_ASM_PTR "%c0 + %c1 - .\n\t"			\
- 	".popsection \n\t"
- 
--#ifdef CONFIG_STACK_VALIDATION
-+#ifdef CONFIG_OBJTOOL
- 
- static __always_inline bool arch_static_branch(struct static_key *key, bool branch)
- {
-@@ -48,7 +48,7 @@ static __always_inline bool arch_static_
- 	return true;
- }
- 
--#endif /* STACK_VALIDATION */
-+#endif /* OBJTOOL */
- 
- static __always_inline bool arch_static_branch_jump(struct static_key * const key, const bool branch)
- {
---- a/include/linux/compiler.h
-+++ b/include/linux/compiler.h
-@@ -109,7 +109,7 @@ void ftrace_likely_update(struct ftrace_
- #endif
- 
- /* Unreachable code */
--#ifdef CONFIG_STACK_VALIDATION
-+#ifdef CONFIG_OBJTOOL
- /*
-  * These macros help objtool understand GCC code flow for unreachable code.
-  * The __COUNTER__ based labels are a hack to make each instance of the macros
---- a/include/linux/instrumentation.h
-+++ b/include/linux/instrumentation.h
-@@ -2,7 +2,7 @@
- #ifndef __LINUX_INSTRUMENTATION_H
- #define __LINUX_INSTRUMENTATION_H
- 
--#if defined(CONFIG_DEBUG_ENTRY) && defined(CONFIG_STACK_VALIDATION)
-+#if defined(CONFIG_DEBUG_ENTRY) && defined(CONFIG_OBJTOOL)
- 
- /* Begin/end of an instrumentation safe region */
- #define instrumentation_begin() ({					\
---- a/include/linux/objtool.h
-+++ b/include/linux/objtool.h
-@@ -38,7 +38,7 @@ struct unwind_hint {
- #define UNWIND_HINT_TYPE_REGS_PARTIAL	2
- #define UNWIND_HINT_TYPE_FUNC		3
- 
--#ifdef CONFIG_STACK_VALIDATION
-+#ifdef CONFIG_OBJTOOL
- 
- #ifndef __ASSEMBLY__
- 
-@@ -120,7 +120,7 @@ struct unwind_hint {
- 
- #endif /* __ASSEMBLY__ */
- 
--#else /* !CONFIG_STACK_VALIDATION */
-+#else /* !CONFIG_OBJTOOL */
- 
- #ifndef __ASSEMBLY__
- 
-@@ -135,6 +135,6 @@ struct unwind_hint {
- .endm
- #endif
- 
--#endif /* CONFIG_STACK_VALIDATION */
-+#endif /* CONFIG_OBJTOOL */
- 
- #endif /* _LINUX_OBJTOOL_H */
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -428,9 +428,9 @@ config FRAME_POINTER
- 	  larger and slower, but it gives very useful debugging information
- 	  in case of kernel bugs. (precise oopses/stacktraces/warnings)
- 
--config STACK_VALIDATION
-+config OBJTOOL
- 	bool "Compile-time stack metadata validation"
--	depends on HAVE_STACK_VALIDATION
-+	depends on HAVE_OBJTOOL
- 	default n
- 	help
- 	  Add compile-time checks to validate stack metadata, including frame
-@@ -445,7 +445,7 @@ config STACK_VALIDATION
- 
- config VMLINUX_VALIDATION
- 	bool
--	depends on STACK_VALIDATION && DEBUG_ENTRY && !PARAVIRT
-+	depends on OBJTOOL && DEBUG_ENTRY && !PARAVIRT
- 	default y
- 
- config VMLINUX_MAP
---- a/lib/Kconfig.ubsan
-+++ b/lib/Kconfig.ubsan
-@@ -106,7 +106,7 @@ config UBSAN_UNREACHABLE
- 	bool "Perform checking for unreachable code"
- 	# objtool already handles unreachable checking and gets angry about
- 	# seeing UBSan instrumentation located in unreachable places.
--	depends on !STACK_VALIDATION
-+	depends on !OBJTOOL
- 	depends on $(cc-option,-fsanitize=unreachable)
- 	help
- 	  This option enables -fsanitize=unreachable which checks for control
---- a/scripts/Makefile.build
-+++ b/scripts/Makefile.build
-@@ -217,9 +217,9 @@ cmd_record_mcount = $(if $(findstring $(
- 	$(sub_cmd_record_mcount))
- endif # CONFIG_FTRACE_MCOUNT_USE_RECORDMCOUNT
- 
--ifdef CONFIG_STACK_VALIDATION
-+ifdef CONFIG_OBJTOOL
- ifndef CONFIG_LTO_CLANG
--ifneq ($(SKIP_STACK_VALIDATION),1)
-+ifneq ($(SKIP_OBJTOOL),1)
- 
- __objtool_obj := $(objtree)/tools/objtool/objtool
- 
-@@ -233,14 +233,14 @@ objtool_obj = $(if $(patsubst y%,, \
- 	$(OBJECT_FILES_NON_STANDARD_$(basetarget).o)$(OBJECT_FILES_NON_STANDARD)n), \
- 	$(__objtool_obj))
- 
--endif # SKIP_STACK_VALIDATION
-+endif # SKIP_OBJTOOL
- endif # CONFIG_LTO_CLANG
--endif # CONFIG_STACK_VALIDATION
-+endif # CONFIG_OBJTOOL
- 
- # Rebuild all objects when objtool changes, or is enabled/disabled.
- objtool_dep = $(objtool_obj)					\
- 	      $(wildcard include/config/ORC_UNWINDER		\
--			 include/config/STACK_VALIDATION)
-+			 include/config/OBJTOOL)
- 
- ifdef CONFIG_TRIM_UNUSED_KSYMS
- cmd_gen_ksymdeps = \
---- a/scripts/Makefile.modfinal
-+++ b/scripts/Makefile.modfinal
-@@ -38,14 +38,14 @@ prelink-ext := .lto
- # ELF processing was skipped earlier because we didn't have native code,
- # so let's now process the prelinked binary before we link the module.
- 
--ifdef CONFIG_STACK_VALIDATION
--ifneq ($(SKIP_STACK_VALIDATION),1)
-+ifdef CONFIG_OBJTOOL
-+ifneq ($(SKIP_OBJTOOL),1)
- cmd_ld_ko_o +=								\
- 	$(objtree)/tools/objtool/objtool $(objtool_args)		\
- 		$(@:.ko=$(prelink-ext).o);
- 
--endif # SKIP_STACK_VALIDATION
--endif # CONFIG_STACK_VALIDATION
-+endif # SKIP_OBJTOOL
-+endif # CONFIG_OBJTOOL
- 
- endif # CONFIG_LTO_CLANG
- 
---- a/scripts/link-vmlinux.sh
-+++ b/scripts/link-vmlinux.sh
-@@ -106,7 +106,7 @@ objtool_link()
- 	local objtoolcmd;
- 	local objtoolopt;
- 
--	if [ "${CONFIG_LTO_CLANG} ${CONFIG_STACK_VALIDATION}" = "y y" ]; then
-+	if [ "${CONFIG_LTO_CLANG} ${CONFIG_OBJTOOL}" = "y y" ]; then
- 		# Don't perform vmlinux validation unless explicitly requested,
- 		# but run objtool on vmlinux.o now that we have an object file.
- 		if [ -n "${CONFIG_UNWINDER_ORC}" ]; then
---- a/scripts/package/builddeb
-+++ b/scripts/package/builddeb
-@@ -67,7 +67,7 @@ deploy_kernel_headers () {
- 	) > debian/hdrsrcfiles
- 
- 	{
--		if is_enabled CONFIG_STACK_VALIDATION; then
-+		if is_enabled CONFIG_OBJTOOL; then
- 			echo tools/objtool/objtool
- 		fi
- 
---- a/tools/include/linux/objtool.h
-+++ b/tools/include/linux/objtool.h
-@@ -38,7 +38,7 @@ struct unwind_hint {
- #define UNWIND_HINT_TYPE_REGS_PARTIAL	2
- #define UNWIND_HINT_TYPE_FUNC		3
- 
--#ifdef CONFIG_STACK_VALIDATION
-+#ifdef CONFIG_OBJTOOL
- 
- #ifndef __ASSEMBLY__
- 
-@@ -120,7 +120,7 @@ struct unwind_hint {
- 
- #endif /* __ASSEMBLY__ */
- 
--#else /* !CONFIG_STACK_VALIDATION */
-+#else /* !CONFIG_OBJTOOL */
- 
- #ifndef __ASSEMBLY__
- 
-@@ -135,6 +135,6 @@ struct unwind_hint {
- .endm
- #endif
- 
--#endif /* CONFIG_STACK_VALIDATION */
-+#endif /* CONFIG_OBJTOOL */
- 
- #endif /* _LINUX_OBJTOOL_H */
---- a/tools/objtool/Documentation/stack-validation.txt
-+++ b/tools/objtool/Documentation/stack-validation.txt
-@@ -5,7 +5,7 @@ Compile-time stack metadata validation
- Overview
- --------
- 
--The kernel CONFIG_STACK_VALIDATION option enables a host tool named
-+The kernel CONFIG_OBJTOOL option enables a host tool named
- objtool which runs at compile time.  It has a "check" subcommand which
- analyzes every .o file and ensures the validity of its stack metadata.
- It enforces a set of rules on asm code and C inline assembly code so
---- a/tools/testing/selftests/wireguard/qemu/debug.config
-+++ b/tools/testing/selftests/wireguard/qemu/debug.config
-@@ -1,6 +1,6 @@
- CONFIG_LOCALVERSION="-debug"
- CONFIG_FRAME_POINTER=y
--CONFIG_STACK_VALIDATION=y
-+CONFIG_OBJTOOL=y
- CONFIG_DEBUG_KERNEL=y
- CONFIG_DEBUG_INFO=y
- CONFIG_DEBUG_INFO_DWARF4=y
+This series has been tested on X86_64 architecture with the PCI generic driver
+as controller and an SDX55 device.
+
+v4:
+-Added reviewed-by tags
+-Updated range check patch to include BHI/e offsets in the error message
+
+v3:
+-Added reviewed-by tags
+-Updated order of reg_len in mhi_controller structure documentation
+
+v2:
+-Added reviewed-by tags
+-Moved reg_len entry in mhi_controller structure to allow for a packed struct
+
+Bhaumik Bhatt (6):
+  bus: mhi: core: Set BHI/BHIe offsets on power up preparation
+  bus: mhi: core: Set BHI and BHIe pointers to NULL in clean-up
+  bus: mhi: Add MMIO region length to controller structure
+  ath11k: set register access length for MHI driver
+  bus: mhi: pci_generic: Set register access length for MHI driver
+  bus: mhi: core: Add range checks for BHI and BHIe
+
+ drivers/bus/mhi/core/init.c           | 61 ++++++++++++++++++++++++-----------
+ drivers/bus/mhi/core/pm.c             | 28 +++-------------
+ drivers/bus/mhi/pci_generic.c         |  1 +
+ drivers/net/wireless/ath/ath11k/mhi.c |  1 +
+ include/linux/mhi.h                   |  2 ++
+ 5 files changed, 50 insertions(+), 43 deletions(-)
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
+
