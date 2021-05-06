@@ -2,261 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1DC37560C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:58:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549E637561E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:00:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235011AbhEFO7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:59:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234998AbhEFO7k (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:59:40 -0400
-Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6575C061763
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 07:58:41 -0700 (PDT)
-Received: by mail-lj1-x22e.google.com with SMTP id w4so7426279ljw.9
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 07:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=82Mp/+3WiDiX0+TFdKaDBvNV5KTPMZG8BPbOyDcjQEo=;
-        b=Hfeq2mPTtjJcg4XLGumY1HeGkmZp7vTnsf8ptjdjVyfbfVoChqCpfWdWAyyc10l/lX
-         TxSSni46a86kKQc2v8mfXyUBFob+vdfUhDWwERSIJE5KgN5oHMzx/YlCfCOC7PXmtDGv
-         liwv/n2QfLNI+MWE+6kg38Y52VyiBBuNVfN3LlRnFDSPyhiviDbH+xI7ykeXFDB04an7
-         QH8Cdy+e3hpOaMO9WV2pPSzXedbnlr/rvNKW1gg1ZLKzMnHj1XZf8BXJXFSYqH8enxmu
-         Duj7IlwYWRP41oAUyJJ0m7KYsIGYGZlLsYNqKMIOWYuANq2QpVMgbo307MZN72Xl1XUs
-         heEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=82Mp/+3WiDiX0+TFdKaDBvNV5KTPMZG8BPbOyDcjQEo=;
-        b=gBQf2SVrecxcdEXeWC5xjk1b2RivilgJnmBMwsLxMWnMZYi5FBU4ieUc6SWkM1WzZl
-         Casq/JDsC7CoYFpuRnypGlg4l+N15fYiiIJHi20XLVlRVmTa69aXPylje7r4PgAbYlrJ
-         87UEzBtACvjyJvXLr3+HmKGkc2aMFkzWYR/am2b4gMdfg/J2gxspXacGXrbR8GXVE1H3
-         vlHsgY6n0fVs7cYo7wMO41uIgCGIqB6qhT2+EG1gqnF0t/xHSujFqoXvVKhfjM5hoKfn
-         5EtdU5EfNfcGY8miWLD9rBnDPK25JGljHYf7G21QbXKmDglnEYHzVDTtMU/FMq4mWG7t
-         vH0A==
-X-Gm-Message-State: AOAM530cUugG6z7QPM6Ldwck4VQSpc5bHx6J2449cplYqjMjRHXBTmTW
-        iDw3LicHichI25HIpNAvJJgXO9m6G9V0b+ib
-X-Google-Smtp-Source: ABdhPJydchd1pmp2rGfbHH/jeQdqsrTGtFFsDh++WDcg8vT9ARXlabU2aXYLJVWd+CZNAnOqlqk/FQ==
-X-Received: by 2002:a2e:9f49:: with SMTP id v9mr3688514ljk.44.1620313120233;
-        Thu, 06 May 2021 07:58:40 -0700 (PDT)
-Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id g24sm968774ljl.44.2021.05.06.07.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 07:58:39 -0700 (PDT)
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
-        Adrian Hunter <adrian.hunter@intel.com>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] mmc: core: Add support for cache ctrl for SD cards
-Date:   Thu,  6 May 2021 16:58:29 +0200
-Message-Id: <20210506145829.198823-3-ulf.hansson@linaro.org>
+        id S235055AbhEFPBn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:01:43 -0400
+Received: from m12-11.163.com ([220.181.12.11]:47165 "EHLO m12-11.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235008AbhEFPBi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:01:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=From:Subject:Date:Message-Id:MIME-Version; bh=ClSwa
+        n6SM+8zC9QsxPq4sN4EIGEeUwrSpnXtb/5CeI8=; b=psLRBtEOzR4fnVHFBiwnR
+        Flm8HClg2wsB0isu8qp+16c3jOFam/rfRF+9FUaSNuJpx3R/3XbwBsxaixwzU3/p
+        2UF6gFktDGj2nM5OJFuqV5ujt+juS/WiQyQYV47+8EtzyZ+DCplQx7SAwQi+B+Gx
+        aszMTljbazC3wqtzKAjMFA=
+Received: from mjs-Inspiron-3668.www.tendawifi.com (unknown [61.152.154.80])
+        by smtp7 (Coremail) with SMTP id C8CowAAXZ688BJRgsn00bA--.15323S4;
+        Thu, 06 May 2021 22:59:16 +0800 (CST)
+From:   meijusan <meijusan@163.com>
+To:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        meijusan <meijusan@163.com>
+Subject: [PATCH] net/ipv4/ip_fragment:fix missing Flags reserved bit set in iphdr
+Date:   Thu,  6 May 2021 22:59:05 +0800
+Message-Id: <20210506145905.3884-1-meijusan@163.com>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210506145829.198823-1-ulf.hansson@linaro.org>
-References: <20210506145829.198823-1-ulf.hansson@linaro.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID: C8CowAAXZ688BJRgsn00bA--.15323S4
+X-Coremail-Antispam: 1Uf129KBjvJXoWxAFykXrW8ZFWDZrWkur4xtFb_yoW7Jr1fp3
+        Z8K395Ja18JrnrAwn7JrWayw4Skw1vka4akr4Fy3yrA34qyryFqF92gFyYqF45Gr45Zr13
+        try3t3y5Wr4DX37anT9S1TB71UUUUbUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jNMa5UUUUU=
+X-Originating-IP: [61.152.154.80]
+X-CM-SenderInfo: xphly3xvdqqiywtou0bp/1tbiFgWKHl44P6QkcwAAst
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In SD spec v6.x the SD function extension registers for performance
-enhancements were introduced. As a part of this an optional internal cache
-on the SD card, can be used to improve performance.
+ip frag with the iphdr flags reserved bit set,via router,ip frag reasm or
+fragment,causing the reserved bit is reset to zero.
 
-The let the SD card use the cache, the host needs to enable it and manage
-flushing of the cache, so let's add support for this.
+Keep reserved bit set is not modified in ip frag  defrag or fragment.
 
-Note that for an SD card supporting the cache it's mandatory for it, to
-also support the poweroff notification feature. According to the SD spec,
-if the cache has been enabled and a poweroff notification is sent to the
-card, that implicitly also means that the card should flush its internal
-cache. Therefore, dealing with cache flushing for REQ_OP_FLUSH block
-requests is sufficient.
-
-Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: meijusan <meijusan@163.com>
 ---
- drivers/mmc/core/mmc_ops.c |  1 +
- drivers/mmc/core/mmc_ops.h |  1 +
- drivers/mmc/core/sd.c      | 98 ++++++++++++++++++++++++++++++++++++++
- include/linux/mmc/card.h   |  1 +
- 4 files changed, 101 insertions(+)
+ include/net/ip.h       |  3 ++-
+ net/ipv4/ip_fragment.c |  9 +++++++++
+ net/ipv4/ip_output.c   | 14 ++++++++++++++
+ 3 files changed, 25 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-index af423acc4c88..3c58f6d0f482 100644
---- a/drivers/mmc/core/mmc_ops.c
-+++ b/drivers/mmc/core/mmc_ops.c
-@@ -456,6 +456,7 @@ static int mmc_busy_cb(void *cb_data, bool *busy)
- 		err = R1_STATUS(status) ? -EIO : 0;
- 		break;
- 	case MMC_BUSY_HPI:
-+	case MMC_BUSY_EXTR_SINGLE:
- 		break;
- 	default:
- 		err = -EINVAL;
-diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
-index c3c1d9c2577e..41ab4f573a31 100644
---- a/drivers/mmc/core/mmc_ops.h
-+++ b/drivers/mmc/core/mmc_ops.h
-@@ -14,6 +14,7 @@ enum mmc_busy_cmd {
- 	MMC_BUSY_CMD6,
- 	MMC_BUSY_ERASE,
- 	MMC_BUSY_HPI,
-+	MMC_BUSY_EXTR_SINGLE,
+diff --git a/include/net/ip.h b/include/net/ip.h
+index e20874059f82..ae0c75fca61d 100644
+--- a/include/net/ip.h
++++ b/include/net/ip.h
+@@ -134,7 +134,7 @@ struct ip_ra_chain {
+ #define IP_DF		0x4000		/* Flag: "Don't Fragment"	*/
+ #define IP_MF		0x2000		/* Flag: "More Fragments"	*/
+ #define IP_OFFSET	0x1FFF		/* "Fragment Offset" part	*/
+-
++#define IP_EVIL	0x8000		/* Flag: "reserve bit"	*/
+ #define IP_FRAG_TIME	(30 * HZ)		/* fragment lifetime	*/
+ 
+ struct msghdr;
+@@ -194,6 +194,7 @@ struct ip_frag_state {
+ 	int		offset;
+ 	int		ptr;
+ 	__be16		not_last_frag;
++	bool		ip_evil;
  };
  
- struct mmc_host;
-diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
-index 760aa86bd54d..773444853607 100644
---- a/drivers/mmc/core/sd.c
-+++ b/drivers/mmc/core/sd.c
-@@ -67,6 +67,7 @@ static const unsigned int sd_au_size[] = {
- 	})
+ void ip_frag_init(struct sk_buff *skb, unsigned int hlen, unsigned int ll_rs,
+diff --git a/net/ipv4/ip_fragment.c b/net/ipv4/ip_fragment.c
+index cfeb8890f94e..52eb53007c48 100644
+--- a/net/ipv4/ip_fragment.c
++++ b/net/ipv4/ip_fragment.c
+@@ -62,6 +62,7 @@ struct ipq {
+ 	struct inet_frag_queue q;
  
- #define SD_POWEROFF_NOTIFY_TIMEOUT_MS 2000
-+#define SD_WRITE_EXTR_SINGLE_TIMEOUT_MS 1000
+ 	u8		ecn; /* RFC3168 support */
++	bool		ip_evil; /*frag with evil bit set */
+ 	u16		max_df_size; /* largest frag with DF set seen */
+ 	int             iif;
+ 	unsigned int    rid;
+@@ -88,6 +89,7 @@ static void ip4_frag_init(struct inet_frag_queue *q, const void *a)
  
- struct sd_busy_data {
- 	struct mmc_card *card;
-@@ -1287,6 +1288,94 @@ static int sd_read_ext_regs(struct mmc_card *card)
- 	return err;
- }
+ 	q->key.v4 = *key;
+ 	qp->ecn = 0;
++	qp->ip_evil = false;
+ 	qp->peer = q->fqdir->max_dist ?
+ 		inet_getpeer_v4(net->ipv4.peers, key->saddr, key->vif, 1) :
+ 		NULL;
+@@ -278,6 +280,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
+ 	unsigned int fragsize;
+ 	int err = -ENOENT;
+ 	u8 ecn;
++	bool  ip_evil;
  
-+static bool sd_cache_enabled(struct mmc_host *host)
-+{
-+	return host->card->ext_perf.feature_enabled & SD_EXT_PERF_CACHE;
-+}
-+
-+static int sd_flush_cache(struct mmc_host *host)
-+{
-+	struct mmc_card *card = host->card;
-+	u8 *reg_buf, fno, page;
-+	u16 offset;
-+	int err;
-+
-+	if (!sd_cache_enabled(host))
-+		return 0;
-+
-+	reg_buf = kzalloc(512, GFP_KERNEL);
-+	if (!reg_buf)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Set the Flush Cache bit in the performance enhancement register at
-+	 * 261 bytes offset.
-+	 */
-+	fno = card->ext_perf.fno;
-+	page = card->ext_perf.page;
-+	offset = card->ext_perf.offset + 261;
-+
-+	err = sd_write_ext_reg(card, fno, page, offset, 0x1);
-+	if (err) {
-+		pr_warn("%s: error %d writing Cache Flush bit\n",
-+			mmc_hostname(host), err);
-+		goto out;
-+	}
-+
-+	err = mmc_poll_for_busy(card, SD_WRITE_EXTR_SINGLE_TIMEOUT_MS, false,
-+				MMC_BUSY_EXTR_SINGLE);
-+	if (err)
-+		goto out;
-+
-+	/*
-+	 * Read the Flush Cache bit. The card shall reset it, to confirm that
-+	 * it's has completed the flushing of the cache.
-+	 */
-+	err = sd_read_ext_reg(card, fno, page, offset, 1, reg_buf);
-+	if (err) {
-+		pr_warn("%s: error %d reading Cache Flush bit\n",
-+			mmc_hostname(host), err);
-+		goto out;
-+	}
-+
-+	if (reg_buf[0] & 0x1)
-+		err = -ETIMEDOUT;
-+out:
-+	kfree(reg_buf);
-+	return err;
-+}
-+
-+static int sd_enable_cache(struct mmc_card *card)
-+{
-+	u8 *reg_buf;
-+	int err;
-+
-+	reg_buf = kzalloc(512, GFP_KERNEL);
-+	if (!reg_buf)
-+		return -ENOMEM;
-+
-+	/*
-+	 * Set the Cache Enable bit in the performance enhancement register at
-+	 * 260 bytes offset.
-+	 */
-+	err = sd_write_ext_reg(card, card->ext_perf.fno, card->ext_perf.page,
-+			       card->ext_perf.offset + 260, 0x1);
-+	if (err) {
-+		pr_warn("%s: error %d writing Cache Enable bit\n",
-+			mmc_hostname(card->host), err);
-+		goto out;
-+	}
-+
-+	err = mmc_poll_for_busy(card, SD_WRITE_EXTR_SINGLE_TIMEOUT_MS, false,
-+				MMC_BUSY_EXTR_SINGLE);
-+	if (!err)
-+		card->ext_perf.feature_enabled |= SD_EXT_PERF_CACHE;
-+
-+out:
-+	kfree(reg_buf);
-+	return err;
-+}
-+
- /*
-  * Handle the detection and initialisation of a card.
-  *
-@@ -1442,6 +1531,13 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
- 			goto free_card;
+ 	if (qp->q.flags & INET_FRAG_COMPLETE)
+ 		goto err;
+@@ -295,6 +298,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
+ 	offset &= IP_OFFSET;
+ 	offset <<= 3;		/* offset is in 8-byte chunks */
+ 	ihl = ip_hdrlen(skb);
++	ip_evil = flags & IP_EVIL ?  true : false;
+ 
+ 	/* Determine the position of this fragment. */
+ 	end = offset + skb->len - skb_network_offset(skb) - ihl;
+@@ -350,6 +354,7 @@ static int ip_frag_queue(struct ipq *qp, struct sk_buff *skb)
+ 	qp->q.stamp = skb->tstamp;
+ 	qp->q.meat += skb->len;
+ 	qp->ecn |= ecn;
++	qp->ip_evil = ip_evil;
+ 	add_frag_mem_limit(qp->q.fqdir, skb->truesize);
+ 	if (offset == 0)
+ 		qp->q.flags |= INET_FRAG_FIRST_IN;
+@@ -451,6 +456,10 @@ static int ip_frag_reasm(struct ipq *qp, struct sk_buff *skb,
+ 		iph->frag_off = 0;
  	}
  
-+	/* Enable internal SD cache if supported. */
-+	if (card->ext_perf.feature_support & SD_EXT_PERF_CACHE) {
-+		err = sd_enable_cache(card);
-+		if (err)
-+			goto free_card;
-+	}
++	/*when ip or bridge forward, keep the origin evil bit set*/
++	if (qp->ip_evil)
++		iph->frag_off |= htons(IP_EVIL);
 +
- 	if (host->cqe_ops && !host->cqe_enabled) {
- 		err = host->cqe_ops->cqe_enable(host, card);
- 		if (!err) {
-@@ -1694,6 +1790,8 @@ static const struct mmc_bus_ops mmc_sd_ops = {
- 	.alive = mmc_sd_alive,
- 	.shutdown = mmc_sd_suspend,
- 	.hw_reset = mmc_sd_hw_reset,
-+	.cache_enabled = sd_cache_enabled,
-+	.flush_cache = sd_flush_cache,
- };
+ 	ip_send_check(iph);
  
- /*
-diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
-index 2867af0635f8..74e6c0624d27 100644
---- a/include/linux/mmc/card.h
-+++ b/include/linux/mmc/card.h
-@@ -196,6 +196,7 @@ struct sd_ext_reg {
- 	u8			page;
- 	u16			offset;
- 	u8			rev;
-+	u8			feature_enabled;
- 	u8			feature_support;
- /* Power Management Function. */
- #define SD_EXT_POWER_OFF_NOTIFY	(1<<0)
+ 	__IP_INC_STATS(net, IPSTATS_MIB_REASMOKS);
+diff --git a/net/ipv4/ip_output.c b/net/ipv4/ip_output.c
+index 3aab53beb4ea..a8a9a0af29b2 100644
+--- a/net/ipv4/ip_output.c
++++ b/net/ipv4/ip_output.c
+@@ -610,6 +610,8 @@ void ip_fraglist_init(struct sk_buff *skb, struct iphdr *iph,
+ 	skb->len = first_len;
+ 	iph->tot_len = htons(first_len);
+ 	iph->frag_off = htons(IP_MF);
++	if (ntohs(iph->frag_off) & IP_EVIL)
++		iph->frag_off |= htons(IP_EVIL);
+ 	ip_send_check(iph);
+ }
+ EXPORT_SYMBOL(ip_fraglist_init);
+@@ -631,6 +633,7 @@ void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
+ 	unsigned int hlen = iter->hlen;
+ 	struct iphdr *iph = iter->iph;
+ 	struct sk_buff *frag;
++	bool ip_evil = false;
+ 
+ 	frag = iter->frag;
+ 	frag->ip_summed = CHECKSUM_NONE;
+@@ -638,6 +641,8 @@ void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
+ 	__skb_push(frag, hlen);
+ 	skb_reset_network_header(frag);
+ 	memcpy(skb_network_header(frag), iph, hlen);
++	if (ntohs(iph->frag_off) & IP_EVIL)
++		ip_evil = true;
+ 	iter->iph = ip_hdr(frag);
+ 	iph = iter->iph;
+ 	iph->tot_len = htons(frag->len);
+@@ -646,6 +651,10 @@ void ip_fraglist_prepare(struct sk_buff *skb, struct ip_fraglist_iter *iter)
+ 	iph->frag_off = htons(iter->offset >> 3);
+ 	if (frag->next)
+ 		iph->frag_off |= htons(IP_MF);
++
++	if (ip_evil)
++		iph->frag_off |= htons(IP_EVIL);
++
+ 	/* Ready, complete checksum */
+ 	ip_send_check(iph);
+ }
+@@ -667,6 +676,7 @@ void ip_frag_init(struct sk_buff *skb, unsigned int hlen,
+ 
+ 	state->offset = (ntohs(iph->frag_off) & IP_OFFSET) << 3;
+ 	state->not_last_frag = iph->frag_off & htons(IP_MF);
++	state->ip_evil = (ntohs(iph->frag_off) & IP_EVIL) ? true : false;
+ }
+ EXPORT_SYMBOL(ip_frag_init);
+ 
+@@ -752,6 +762,10 @@ struct sk_buff *ip_frag_next(struct sk_buff *skb, struct ip_frag_state *state)
+ 	 */
+ 	if (state->left > 0 || state->not_last_frag)
+ 		iph->frag_off |= htons(IP_MF);
++
++	if (state->ip_evil)
++		iph->frag_off |= htons(IP_EVIL);
++
+ 	state->ptr += len;
+ 	state->offset += len;
+ 
 -- 
 2.25.1
 
