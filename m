@@ -2,91 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33EAF374FEC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED0F374FF0
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:19:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233222AbhEFHUA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:20:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35660 "EHLO
+        id S233326AbhEFHUU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:20:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35734 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229733AbhEFHT7 (ORCPT
+        with ESMTP id S229640AbhEFHUS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:19:59 -0400
-Received: from mail-pf1-x42f.google.com (mail-pf1-x42f.google.com [IPv6:2607:f8b0:4864:20::42f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A380AC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:19:01 -0700 (PDT)
-Received: by mail-pf1-x42f.google.com with SMTP id i13so4587360pfu.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:19:01 -0700 (PDT)
+        Thu, 6 May 2021 03:20:18 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id BE833C061574;
+        Thu,  6 May 2021 00:19:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ff6iClsWGOy2S69S3t4caAKrwDBzIMs9yWLn5gps7VU=;
-        b=1nj1YicF1Nrd74sETWXvmza4aB8KIMQv+jFBpSry5u0//OZEWNQ6KGo2cDQHusIm9Q
-         aHGJ9VwgbqW6yVmZmvQYMmVH+FhQMj9WQ+EiM963Cd6pgMrOPo1JCJHZYWzuQ6gPo/bh
-         2AbbhVKT3K4C/HGGDJSQjD29dOFHv4cQiBvivnfgZVIuRsHBQ4RQpaUVoY5ccjgI1Kwd
-         5wG/DDsGK2qXQUBnj2Xpd14Ip4bCrQSKZhOX5qgzdmLyi0/GZ1P3xv/ypK+K1bRIdCa0
-         tmFjujgL5q8cb56ZDCCwUACSst+znlhSjHjG80zoBij6QLf0np2xAZ1gp6xfz7EBaaL/
-         9InQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=ff6iClsWGOy2S69S3t4caAKrwDBzIMs9yWLn5gps7VU=;
-        b=alZwo3Pzi3W+/+UqStVdtt9KyhQJQ17fRiJZT8NSeEX7sk4ySPUHgznF5MYnwUbeV2
-         E48emDXewxrmSUBtpzU5zIsLiFoVt0Q1z2NW7kdb85B4ZW7m5W7xDdymqOi6MTecnsOw
-         tu/ytUXIeSepprafofkG4J5grihLSqai5zbxowwq4rgWUV6JFgqIatb3DMiNo5vfMy4o
-         q82OhH5tT3Ga24xF6pPUlTm/Q38m7toMo4hVE2VstfQIzHRHFUJpkCnHUXcvcQkowKSA
-         WcZhj0j+0lImBBt1TXXpgOaQsZWOzvT/cJllZ2b330AeIPfGJ0qBF3g4ZfFSFnyeof5f
-         +bCQ==
-X-Gm-Message-State: AOAM5337y/wEs2EWUGcCAsLYHc6yeufpP3kWG4Ydn0/29ehftjjzhQMx
-        2FKzSet/6r+62kiIqa8PMQmqpw==
-X-Google-Smtp-Source: ABdhPJxpAJhWX5TTFyynpL+sjUHgdm5DptIpWf5u41d4l2+6z1Wg4UYRdxCjIrhVTIu4yb/ngKmP4g==
-X-Received: by 2002:aa7:81d8:0:b029:28e:6e31:7c9a with SMTP id c24-20020aa781d80000b029028e6e317c9amr3116972pfn.56.1620285540533;
-        Thu, 06 May 2021 00:19:00 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id k8sm1389832pfp.99.2021.05.06.00.18.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 00:19:00 -0700 (PDT)
-Date:   Thu, 06 May 2021 00:19:00 -0700 (PDT)
-X-Google-Original-Date: Thu, 06 May 2021 00:18:58 PDT (-0700)
-Subject:     Re: [PATCH] riscv: remove unused handle_exception symbol
-In-Reply-To: <20210501185359.64043-1-rouven@czerwinskis.de>
-CC:     Paul Walmsley <paul.walmsley@sifive.com>, aou@eecs.berkeley.edu,
-        kernel@pengutronix.de, rouven@czerwinskis.de,
-        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     rouven@czerwinskis.de
-Message-ID: <mhng-84f8c8d7-96c4-4c9c-a254-5fa19a390bbf@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        In-Reply-To:References:Content-Transfer-Encoding:Content-Type:
+        MIME-Version:Message-ID; bh=FBOZ4Wnj05nzGETLo6GOsoIxerikGh7kei6G
+        4HU8i9A=; b=RscCmcbR6lVf4NOo87d/vCwLTBFJe7I3M9RDVDWIYauQ1WdQzkPB
+        FnAGVz93PGpOrAJ50TFY3r3sPCTUlHLzXrgifeOliXMQKev4JgppKYX86xUsf+vw
+        KPSdL1pRsR4WsKfOLYzZhPctWCjBZMvXZpGjxqaRr1jnAaeQkLBM9+g=
+Received: by ajax-webmail-newmailweb.ustc.edu.cn (Coremail) ; Thu, 6 May
+ 2021 15:19:09 +0800 (GMT+08:00)
+X-Originating-IP: [202.38.69.14]
+Date:   Thu, 6 May 2021 15:19:09 +0800 (GMT+08:00)
+X-CM-HeaderCharset: UTF-8
+From:   lyl2019@mail.ustc.edu.cn
+To:     "Hans Verkuil" <hverkuil@xs4all.nl>
+Cc:     s.nawrocki@samsung.com, mchehab@kernel.org, krzk@kernel.org,
+        linux-media@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: Re: [PATCH v3] media:exynos4-is: Fix a use after free in
+ isp_video_release
+X-Priority: 3
+X-Mailer: Coremail Webmail Server Version XT3.0.8 dev build
+ 20190610(cb3344cf) Copyright (c) 2002-2021 www.mailtech.cn ustc-xl
+In-Reply-To: <44f264d9-e039-66b6-6e4b-1a5b3c386aa4@xs4all.nl>
+References: <20210427132734.5212-1-lyl2019@mail.ustc.edu.cn>
+ <44f264d9-e039-66b6-6e4b-1a5b3c386aa4@xs4all.nl>
+X-SendMailWithSms: false
+Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=UTF-8
+MIME-Version: 1.0
+Message-ID: <3f2f155c.72fa7.179408b6b2e.Coremail.lyl2019@mail.ustc.edu.cn>
+X-Coremail-Locale: zh_CN
+X-CM-TRANSID: LkAmygAnLJxtmJNgpDWSAA--.3W
+X-CM-SenderInfo: ho1ojiyrz6zt1loo32lwfovvfxof0/1tbiAQsNBlQhn6tCNwAAs1
+X-Coremail-Antispam: 1Ur529EdanIXcx71UUUUU7IcSsGvfJ3iIAIbVAYjsxI4VWxJw
+        CS07vEb4IE77IF4wCS07vE1I0E4x80FVAKz4kxMIAIbVAFxVCaYxvI4VCIwcAKzIAtYxBI
+        daVFxhVjvjDU=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 01 May 2021 11:53:58 PDT (-0700), rouven@czerwinskis.de wrote:
-> Since commit 79b1feba5455 ("RISC-V: Setup exception vector early")
-> exception vectors are setup early and the handle_exception symbol from
-> the asm files is no longer referenced in traps.c. Remove it.
->
-> Signed-off-by: Rouven Czerwinski <rouven@czerwinskis.de>
-> ---
->  arch/riscv/kernel/traps.c | 2 --
->  1 file changed, 2 deletions(-)
->
-> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
-> index 1357abf79570..6810fc9c775d 100644
-> --- a/arch/riscv/kernel/traps.c
-> +++ b/arch/riscv/kernel/traps.c
-> @@ -25,8 +25,6 @@
->
->  int show_unhandled_signals = 1;
->
-> -extern asmlinkage void handle_exception(void);
-> -
->  static DEFINE_SPINLOCK(die_lock);
->
->  void die(struct pt_regs *regs, const char *str)
-
-Thanks, this is on for-next.
+DQoNCg0KPiAtLS0tLeWOn+Wni+mCruS7ti0tLS0tDQo+IOWPkeS7tuS6ujogIkhhbnMgVmVya3Vp
+bCIgPGh2ZXJrdWlsQHhzNGFsbC5ubD4NCj4g5Y+R6YCB5pe26Ze0OiAyMDIxLTA1LTA1IDE3OjMx
+OjA0ICjmmJ/mnJ/kuIkpDQo+IOaUtuS7tuS6ujogIkx2IFl1bmxvbmciIDxseWwyMDE5QG1haWwu
+dXN0Yy5lZHUuY24+LCBzLm5hd3JvY2tpQHNhbXN1bmcuY29tLCBtY2hlaGFiQGtlcm5lbC5vcmcs
+IGtyemtAa2VybmVsLm9yZw0KPiDmioTpgIE6IGxpbnV4LW1lZGlhQHZnZXIua2VybmVsLm9yZywg
+bGludXgtYXJtLWtlcm5lbEBsaXN0cy5pbmZyYWRlYWQub3JnLCBsaW51eC1zYW1zdW5nLXNvY0B2
+Z2VyLmtlcm5lbC5vcmcsIGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmcNCj4g5Li76aKYOiBS
+ZTogW1BBVENIIHYzXSBtZWRpYTpleHlub3M0LWlzOiBGaXggYSB1c2UgYWZ0ZXIgZnJlZSBpbiBp
+c3BfdmlkZW9fcmVsZWFzZQ0KPiANCj4gSGkgTHYgWXVubG9uZywNCj4gDQo+IE9uIDI3LzA0LzIw
+MjEgMTU6MjcsIEx2IFl1bmxvbmcgd3JvdGU6DQo+ID4gSW4gaXNwX3ZpZGVvX3JlbGVhc2UsIGZp
+bGUtPnByaXZhdGVfZGF0YSBpcyBmcmVlZCB2aWENCj4gPiBfdmIyX2ZvcF9yZWxlYXNlKCktPnY0
+bDJfZmhfcmVsZWFzZSgpLiBCdXQgdGhlIGZyZWVkDQo+ID4gZmlsZS0+cHJpdmF0ZV9kYXRhIGlz
+IHN0aWxsIHVzZWQgaW4gdjRsMl9maF9pc19zaW5ndWxhcl9maWxlKCkNCj4gPiAtPnY0bDJfZmhf
+aXNfc2luZ3VsYXIoZmlsZS0+cHJpdmF0ZV9kYXRhKSwgd2hpY2ggaXMgYSB1c2UNCj4gPiBhZnRl
+ciBmcmVlIGJ1Zy4NCj4gPiANCj4gPiBNeSBwYXRjaCBzZXRzIGZpbGUtPnByaXZhdGVfZGF0YSB0
+byBOVUxMIGFmdGVyIF92YjJfZm9wX3JlbGVhc2UoKQ0KPiA+IHRvIGF2b2lkIHRoZSB1c2UgYWZ0
+ZXIgZnJlZSwgYW5kIHVzZXMgYSB2YXJpYWJsZSAnaXNfc2luZ3VsYXJfZmlsZScNCj4gPiB0byBr
+ZWVwIHRoZSBvcmlnaW5hbCBmdW5jdGlvbiB1bmNoYW5nZWQuDQo+IA0KPiBBY3R1YWxseSwgaXQg
+aXMgdGhlIHVzZSBvZiAnaXNfc2luZ3VsYXJfZmlsZScgdGhhdCBmaXhlcyB0aGUgYnVnLA0KPiB0
+aGUgJ2ZpbGUtPnByaXZhdGVfZGF0YSA9IE5VTEw7JyBpcyB1bm5lY2Vzc2FyeSBoZXJlLg0KPiAN
+Cj4gVGhhdCBzYWlkLCBpdCB3b3VsZCBiZSBhIHJlYWxseSBnb29kIGlkZWEgaWYgaW4gYSBzZXBh
+cmF0ZSBwYXRjaCB5b3UNCj4gbWFrZSB2NGwyX2ZoX3JlbGVhc2UoKSBtb3JlIHJvYnVzdCBieSBz
+ZXR0aW5nIGZpbHAtPnByaXZhdGVfZGF0YSB0bw0KPiBOVUxMIGFmdGVyIHRoZSBrZnJlZShmaCku
+DQo+IA0KPiBSZWdhcmRzLA0KPiANCj4gCUhhbnMNCj4gDQo+ID4gDQo+ID4gRml4ZXM6IDM0OTQ3
+YjhhZWJlM2YgKCJbbWVkaWFdIGV4eW5vczQtaXM6IEFkZCB0aGUgRklNQy1JUyBJU1AgY2FwdHVy
+ZSBETUEgZHJpdmVyIikNCj4gPiBTaWduZWQtb2ZmLWJ5OiBMdiBZdW5sb25nIDxseWwyMDE5QG1h
+aWwudXN0Yy5lZHUuY24+DQo+ID4gLS0tDQo+ID4gIGRyaXZlcnMvbWVkaWEvcGxhdGZvcm0vZXh5
+bm9zNC1pcy9maW1jLWlzcC12aWRlby5jIHwgOCArKysrKystLQ0KPiA+ICAxIGZpbGUgY2hhbmdl
+ZCwgNiBpbnNlcnRpb25zKCspLCAyIGRlbGV0aW9ucygtKQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQg
+YS9kcml2ZXJzL21lZGlhL3BsYXRmb3JtL2V4eW5vczQtaXMvZmltYy1pc3AtdmlkZW8uYyBiL2Ry
+aXZlcnMvbWVkaWEvcGxhdGZvcm0vZXh5bm9zNC1pcy9maW1jLWlzcC12aWRlby5jDQo+ID4gaW5k
+ZXggNjEyYjk4NzJhZmM4Li5jMDdkY2IwYmNjYzIgMTAwNjQ0DQo+ID4gLS0tIGEvZHJpdmVycy9t
+ZWRpYS9wbGF0Zm9ybS9leHlub3M0LWlzL2ZpbWMtaXNwLXZpZGVvLmMNCj4gPiArKysgYi9kcml2
+ZXJzL21lZGlhL3BsYXRmb3JtL2V4eW5vczQtaXMvZmltYy1pc3AtdmlkZW8uYw0KPiA+IEBAIC0z
+MDYsMTcgKzMwNiwyMSBAQCBzdGF0aWMgaW50IGlzcF92aWRlb19yZWxlYXNlKHN0cnVjdCBmaWxl
+ICpmaWxlKQ0KPiA+ICAJc3RydWN0IGZpbWNfaXNfdmlkZW8gKml2YyA9ICZpc3AtPnZpZGVvX2Nh
+cHR1cmU7DQo+ID4gIAlzdHJ1Y3QgbWVkaWFfZW50aXR5ICplbnRpdHkgPSAmaXZjLT52ZS52ZGV2
+LmVudGl0eTsNCj4gPiAgCXN0cnVjdCBtZWRpYV9kZXZpY2UgKm1kZXYgPSBlbnRpdHktPmdyYXBo
+X29iai5tZGV2Ow0KPiA+ICsJYm9vbCBpc19zaW5ndWxhcl9maWxlOw0KPiA+ICANCj4gPiAgCW11
+dGV4X2xvY2soJmlzcC0+dmlkZW9fbG9jayk7DQo+ID4gIA0KPiA+IC0JaWYgKHY0bDJfZmhfaXNf
+c2luZ3VsYXJfZmlsZShmaWxlKSAmJiBpdmMtPnN0cmVhbWluZykgew0KPiA+ICsJaXNfc2luZ3Vs
+YXJfZmlsZSA9IHY0bDJfZmhfaXNfc2luZ3VsYXJfZmlsZShmaWxlKTsNCj4gPiArDQo+ID4gKwlp
+ZiAoaXNfc2luZ3VsYXJfZmlsZSAmJiBpdmMtPnN0cmVhbWluZykgew0KPiA+ICAJCW1lZGlhX3Bp
+cGVsaW5lX3N0b3AoZW50aXR5KTsNCj4gPiAgCQlpdmMtPnN0cmVhbWluZyA9IDA7DQo+ID4gIAl9
+DQo+ID4gIA0KPiA+ICAJX3ZiMl9mb3BfcmVsZWFzZShmaWxlLCBOVUxMKTsNCj4gPiArCWZpbGUt
+PnByaXZhdGVfZGF0YSA9IE5VTEw7DQo+ID4gIA0KPiA+IC0JaWYgKHY0bDJfZmhfaXNfc2luZ3Vs
+YXJfZmlsZShmaWxlKSkgew0KPiA+ICsJaWYgKGlzX3Npbmd1bGFyX2ZpbGUpIHsNCj4gPiAgCQlm
+aW1jX3BpcGVsaW5lX2NhbGwoJml2Yy0+dmUsIGNsb3NlKTsNCj4gPiAgDQo+ID4gIAkJbXV0ZXhf
+bG9jaygmbWRldi0+Z3JhcGhfbXV0ZXgpOw0KPiA+IA0KPiANCg0KDQpPaywgdGhhbmtzIGZvciB5
+b3VyIHN1Z2dlc3Rpb24uDQoNCkRvIHlvdSBtZWFucyBpIG5lZWQgc3VibWl0IGEgbmV3IHBhdGgg
+dG8gc2V0IGZpbHAtPnByaXZhdGVfZGF0YSA9IE5VTEwNCmFmdGVyIGtmcmVlKGZoKSBpbiB2NGwy
+X2ZoX3JlbGVhc2UoKSA/DQoNCkx2IFl1bmxvbmc=
