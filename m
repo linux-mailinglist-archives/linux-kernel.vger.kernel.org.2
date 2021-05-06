@@ -2,98 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9203375041
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:38:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47ECF37503F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:37:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231330AbhEFHjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:39:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229908AbhEFHjN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:39:13 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488F7C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:38:15 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so2468537wmi.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:38:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BFSD4uGaE91vOCDyD3VHqMF98ejMiHJ+FiRdefnTj0g=;
-        b=VBJeTd7HszUPNixsj9t36oyb5ZqEIj5qKC5tG0ZAClEBjco5Ju03rYdlNSEVSOspps
-         29m816gL++zACGr6HQOp0SRh1pjEeGzP9qisBOKHXZc2rUXz2jU0X+sULRVkixzbB9o5
-         DdPPv0fVW8Ppcnt72O8LvsBP5Fv+9qcQER1UaF3SYaNyEqhyosteYSLV4mnPt6ajY3Gj
-         Xx5pW3xkgxcGJzK/ujaL0lDW/2fY+nBqj21S59nwmeQ86q6CwUr0i8GdWtmHQaYeNPsL
-         mSVPGbdEZMJmWdadXTY01m4XBEDcrlbkHCdIuUG/VbcBijGRtmudgUlEk/mKBrHHk/H+
-         Zlcw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=BFSD4uGaE91vOCDyD3VHqMF98ejMiHJ+FiRdefnTj0g=;
-        b=M6jS4k9j7VU8kwQ9eOmH3BSSjKG9uApETsuSvFR2QtfqOSRUx428+3avwIn/5pwgCs
-         IR0XzmJh5E3AioIHC1WDZ2bgY47bF89MPFe8sZY4NRBtTmLS83ozhVos+zbVO6wfY3vQ
-         HAxyaYAvgq0IFLpbjm0lLQjAKdEBivWAjdSESq08Kvt2rI4az30jz4QzUMivvMF0FXiZ
-         vJ5sIFkPwax3JWhb6mnmY1hleSYJfKQNLncA8Ak+bCVC5kd1/rUuwF9UOEAuHsgk6NNY
-         P1XufojDe7u+K7XuH/s50ZaQSuvkOcD0VwVK836rIAvrj95IOHyHWB20L6Rf2FiqnpRa
-         9orw==
-X-Gm-Message-State: AOAM532jCxafEPR5vlDvzYAI9grMPKZWgtq/N6sm6nkAHFRxHnDLfrAg
-        1HOxwDxFrCaJKJ5wCtiiTtV6/g==
-X-Google-Smtp-Source: ABdhPJweCdyJcXFwXr1m+xV2IWUuo4EQUeSc0PhZURQ42/IYavPNONbljbeUDmDtJVa7QhK8hu8nHA==
-X-Received: by 2002:a1c:b403:: with SMTP id d3mr2454314wmf.79.1620286694019;
-        Thu, 06 May 2021 00:38:14 -0700 (PDT)
-Received: from localhost.localdomain (30.34.155.90.in-addr.arpa. [90.155.34.30])
-        by smtp.gmail.com with ESMTPSA id o82sm2184823wmo.36.2021.05.06.00.38.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 00:38:13 -0700 (PDT)
-From:   Phillip Potter <phil@philpotter.co.uk>
-To:     jejb@linux.ibm.com
-Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] scsi: sd: skip checks when media is present if sd_read_capacity reports zero
-Date:   Thu,  6 May 2021 08:36:10 +0100
-Message-Id: <20210506073610.33867-1-phil@philpotter.co.uk>
-X-Mailer: git-send-email 2.30.2
+        id S233500AbhEFHiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:38:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57840 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233281AbhEFHiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 03:38:15 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B981611CB;
+        Thu,  6 May 2021 07:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620286637;
+        bh=iXe3DLUvgiP5Cycf6dDSuZIym/h/K9iMDajCibIIC1o=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qqYakRsyddaITLilOvv5y0/bv03pi4+7eoLXGgnKAPgFbtwYGecSdJgXFUwI1RFpS
+         4qdBvj+jbXeQe9ihX1Pt15i6iEy94ML7knOu59h2WzqtcVinvtZ/72LEraJmO15s5x
+         u/Zn54eu9N/CZMPgN7tz7p7TP1RtYPiIdKXmEc3M=
+Date:   Thu, 6 May 2021 09:37:15 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Mathias Nyman <mathias.nyman@intel.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Ikjoon Jang <ikjn@chromium.org>,
+        Eddie Hung <eddie.hung@mediatek.com>
+Subject: Re: [PATCH v2 1/3] usb: xhci-mtk: use bitfield instead of bool
+Message-ID: <YJOcq+Pq5omZz3p1@kroah.com>
+References: <20210506063116.41757-1-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506063116.41757-1-chunfeng.yun@mediatek.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In sd_revalidate_disk, if sdkp->media_present is set, then sdkp->capacity
-should not be zero. Therefore, jump to end of if block and skip remaining
-checks/calls. Fixes a KMSAN-found uninit-value bug reported by syzbot at:
-https://syzkaller.appspot.com/bug?id=197c8a3a2de61720a9b500ad485a7aba0065c6af
+On Thu, May 06, 2021 at 02:31:14PM +0800, Chunfeng Yun wrote:
+> Use bitfield instead of bool in struct
+> 
+> Refer to coding-style.rst 17) Using bool:
+> "If a structure has many true/false values, consider consolidating
+> them into a bitfield with 1 bit members, or using an appropriate
+> fixed width type, such as u8."
+> 
+> Due to @has_ippc's default vaule is 0, no need set it again if fail
+> to get ippc base address
 
-Reported-by: syzbot+6b02c1da3865f750164a@syzkaller.appspotmail.com
-Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
----
- drivers/scsi/sd.c | 3 +++
- 1 file changed, 3 insertions(+)
+Please split this change out into a separate patch, as it has nothing to
+do with the "change to bitfield" change.
 
-diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
-index ed0b1bb99f08..a7fe53f492ae 100644
---- a/drivers/scsi/sd.c
-+++ b/drivers/scsi/sd.c
-@@ -3201,6 +3201,8 @@ static int sd_revalidate_disk(struct gendisk *disk)
- 	 */
- 	if (sdkp->media_present) {
- 		sd_read_capacity(sdkp, buffer);
-+		if (!sdkp->capacity)
-+			goto present_block_end;
- 
- 		/*
- 		 * set the default to rotational.  All non-rotational devices
-@@ -3226,6 +3228,7 @@ static int sd_revalidate_disk(struct gendisk *disk)
- 		sd_read_write_same(sdkp, buffer);
- 		sd_read_security(sdkp, buffer);
- 	}
-+present_block_end:
- 
- 	/*
- 	 * We now have all cache related info, determine how we deal
--- 
-2.30.2
+thanks,
 
+greg k-h
