@@ -2,207 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22A0437502C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:29:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 027C937502F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:31:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233394AbhEFHan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:30:43 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:33886 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232271AbhEFHam (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:30:42 -0400
-Received: from minint-m3g9p8n.europe.corp.microsoft.com (unknown [49.207.195.141])
-        by linux.microsoft.com (Postfix) with ESMTPSA id C4D3120B7178;
-        Thu,  6 May 2021 00:29:42 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com C4D3120B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620286184;
-        bh=+D2bXIhtPis6G949XVk0e9GC9p12MK88hwh6XdzmYHA=;
-        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
-        b=q6U1sjxoBgBWc46EWZ/JyYKyMBKfB0uBFyvpg9eOq0yHv9q+t/vawmJqgcBxI6Cpw
-         ezLytgctJuDUfUtSHVydpMc5et4vMI3mOkHw7yFHNSFI5iiNxWRXvrIGQfd9fkRqTq
-         Y+cBQn4vXhxPRnxW/A8PmJnkzs+9+30bUelzwoH4=
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v2 1/2] optee: fix tee out of memory failure seen during
- kexec reboot
-From:   Allen Pais <apais@linux.microsoft.com>
-In-Reply-To: <CAHUa44HTYcPyK95E+Mo2GNnCB9TfstA-n_4911JQh8V7-4vyjg@mail.gmail.com>
-Date:   Thu, 6 May 2021 12:59:40 +0530
-Cc:     Allen Pais <allen.lkml@gmail.com>, zajec5@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <CBC53D4C-120E-4252-B251-46E064A63250@linux.microsoft.com>
-References: <20210225090610.242623-1-allen.lkml@gmail.com>
- <20210225090610.242623-2-allen.lkml@gmail.com>
- <CAHUa44F5Ew6U80t7PPmV1J4KunXBm_izBxVrxg=x8azjBz0r9Q@mail.gmail.com>
- <9a6c017c-d156-f939-f907-d6dfe83c41ac@linux.microsoft.com>
- <CAHUa44FyGOj5=Z80km_2T-avKiJpGVD8cWjTC3ZCX8csazP3rw@mail.gmail.com>
- <409F60D9-F0FB-4B69-B64B-CC6B3704038E@linux.microsoft.com>
- <CAHUa44EZprsEKbd_mzGhxQKQgu5XB5nLtREJh2j_9J3zPO4gNg@mail.gmail.com>
- <51FC863B-96C5-47BA-8EBF-3D9FB6DE7DD2@linux.microsoft.com>
- <CAHUa44HTYcPyK95E+Mo2GNnCB9TfstA-n_4911JQh8V7-4vyjg@mail.gmail.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        id S233440AbhEFHbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:31:55 -0400
+Received: from mail-eopbgr1400040.outbound.protection.outlook.com ([40.107.140.40]:10592
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232271AbhEFHby (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 03:31:54 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=YYc0pmDR5q6D0sRlGKBzc4S5hQyn5oGLr5bvLDq4vdrNx+9bJUJ4gVk56Kdxt2wCbazQpvWjFj+YpgSIBQ80ntFJer801CSPILmoL/ptyodOAEa+LtxYKQkgQaryoTo+8X09u8KX4Uvi916ibxYiixzqaw8lGQcMzoshuBu36Ysr0vO6in10O+v3eAhHcxgrPq5fSN4Vd62iGgJmk+GY7i8Vn6HjWspWyXJ8Kny2Mfk3IQsQ54ygd3bt0VfdGxP4dGqgkbkEAKVllwi3AMYXu036BBwu7WwVRVPcC5+hrkk7l77eDulXLaSfjzFyhpyo74AqtsksmdqljvRHKzXjzA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FUcPWnOxMBx+92GlOjobZgma9YjwiLEnMoI2pgatpGY=;
+ b=L0UGwc+TMbFro2ClXuXYfitet9/naaflX+lB0LACayttN/YGgo7XyD/HleV6A5HYKD0rCdNONiuaguG7VWMAqZXer6YpXk+fjB16jYxPA8IC+3BjSeoEo/AefBZ0l6F4RaJZg/80dIulriJjdSxmtlrk0j5iTa45/r4PpLT7/G1QLaIliISyADsx7A0khslu+vnbmU2lP7Eefyw9/0h24M9xYVXcfgETaOSvAhn9v0wxmT0kNUUxqpi0P4X40ihNxqTFtS6rnTZarQ7nVIy7ztInkncj7oS308iXkA+D3lMTgUWIlFgBTtGhfcV+1Rdjru5xIuU7UPHA37HJMQ4Obg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=FUcPWnOxMBx+92GlOjobZgma9YjwiLEnMoI2pgatpGY=;
+ b=cO8dUYOJoKLvRTa1WK9Yj5TJhuygaaIMbExAI6DKXVcLo09jGddYEDecnwFpMjv1IEGRjIszbXlNobvwVtkMiL+x9OcfE0hwYhHXcEOyMWp07hW3L7UPG+Pv/pqA3TCMjdZoSkK0usZW+Ze5+FxdleROa1txl/twHwI9p0WA8Mk=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TYCPR01MB6770.jpnprd01.prod.outlook.com (2603:1096:400:b1::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
+ 2021 07:30:55 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72%7]) with mapi id 15.20.4065.039; Thu, 6 May 2021
+ 07:30:55 +0000
+From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+To:     Ding Hui <dinghui@sangfor.com.cn>
+CC:     David Hildenbrand <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH] mm/page_alloc: fix counting of free pages after take
+ off from buddy
+Thread-Topic: [RFC PATCH] mm/page_alloc: fix counting of free pages after take
+ off from buddy
+Thread-Index: AQHXNlLKvz3SGzZaekOMSRQ4ewYPVarKEEWAgAvIBICAABQTAIAAOn6A
+Date:   Thu, 6 May 2021 07:30:55 +0000
+Message-ID: <20210506073055.GA1848917@hori.linux.bs1.fc.nec.co.jp>
+References: <20210421020426.5914-1-dinghui@sangfor.com.cn>
+ <dd242708-e3f5-ab9f-64d4-9efe3b7168ce@redhat.com>
+ <20210506024943.GA1777607@hori.linux.bs1.fc.nec.co.jp>
+ <33be44ea-f377-c049-03ff-3b45289ab5f7@sangfor.com.cn>
+In-Reply-To: <33be44ea-f377-c049-03ff-3b45289ab5f7@sangfor.com.cn>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: sangfor.com.cn; dkim=none (message not signed)
+ header.d=none;sangfor.com.cn; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.97.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 27a7158f-359d-41a5-5c06-08d91060e2c1
+x-ms-traffictypediagnostic: TYCPR01MB6770:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYCPR01MB6770E5A7A7198FFEA28D526AE7589@TYCPR01MB6770.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 3UOmho3zMK/f8Y97XJYHll1XzPFE+amAf++0a9uU+NOVhb28Xc37i4Ttq9gGuSpRGdCGbVhY9LG9rnmeWYNPKXerSXTkDZyLKvcnDo0lZyiikGO10M63lliDcr9pzscdWlU3mtiW22EzHx+fByHwBE61BIdIfwcf9WKYylJDc63fwBXD4n6LvAKn95zXB1XzfXCYQNeLdb36Pz1j4j+uSauLLLBMy6fXn5Udg7VWTvpBOBCF4a/urLaL7UFh0RzfsxnTGAwF9IaZ4U4yMwVU7dpZCkHmpQ2PXvJ1CF5eG/BBZJRLUhU+Quw6sBBLJukxkN1xbhpvm+GZ3ohdYaUL3nLJPVTSLcxGg2bNjCOIHGbPXKZJeurtlafUjsBML41VXz85zREJ/S+rS3wAmweo/DBrLZib1wbnYQrHExlCY2uzgxrDadZ6HWphui4D4kE84vWw+B2h44GxAVtvxiCAgIVu2H6Q1bT9fGq3f0Mni05oYg31MNIs65n7/ePd8ANrq8nBF97Q5I2bxZiVhq57gj8WcRYrQNNlC0JHr6xlbQlYPXygoXysKSo3P384M48yVP7+3/aRm/FFCMi5qHIdIyLW7QBHWK66OS2h55uJsF+O1mt9R1nYquArkwoP9IwlUGSeul3xJFQNyCFXpmKVM7CbjVaC5rbAAzk2yo7A+Vl2VLBNFPvDm1RnThAlrKmd
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(376002)(396003)(136003)(346002)(366004)(71200400001)(6512007)(966005)(316002)(186003)(2906002)(8676002)(4326008)(53546011)(55236004)(66946007)(66446008)(76116006)(66556008)(64756008)(66476007)(33656002)(9686003)(38100700002)(122000001)(6916009)(1076003)(86362001)(54906003)(8936002)(85182001)(6506007)(478600001)(5660300002)(6486002)(26005)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?RFdRZGNqMks5N3Z2L1Y1SzFqR1VzYzM5aWNaR2pEYXkvZFp6TCtGL0packxy?=
+ =?utf-8?B?UjhOTmpDRjZzWTVuczJLMXBqWWpoT3JVOU1EOUdzK3RjTUkvOERzd1VNWWhU?=
+ =?utf-8?B?U1Mrdk15TjZrSkx0YWFrN2FxcjIrL3pvZzRwZEEzVlJzL0ovTGRTMG5uQVZF?=
+ =?utf-8?B?MnVnNGppbHY1TnhiM2xvb3Y3aXROajI0NzROdWNLRU1oT1hKcktPSk1xdHcy?=
+ =?utf-8?B?QXBkbEJETzFQaXZnQ1ZWS01zdE9iaTBLMThsbGltZGt5blNsT2hzT0tQc0RR?=
+ =?utf-8?B?bGgwbW14MHMyZktPZnJOZ3FXT1h3N0w1NWZvN3VmamV3WVdvUGZ2UG9nZ2hT?=
+ =?utf-8?B?SklZQTRUMDloSVgwc1JUc0V5anpKNDNqWG5nL21yZU5TUDlQd1psT3NYeU03?=
+ =?utf-8?B?b0VlcE1sWWlXUGxtN3JCL2pLYXVNczVQZjAvNmJzcUwvelJBWXJodzNSNmFH?=
+ =?utf-8?B?S2I2S3JvVXFrMXNndHRzRWV3a0hrYWN5WFZ0dHhIL0h3cnZaWVVwazJudUpD?=
+ =?utf-8?B?ZE5oOWo1V2FKNHh6Z1poUkpNbWZzbHJoVytvVTN3STk1OHlRemo5elVSdWFU?=
+ =?utf-8?B?a3JTbWxBd0xUSjI1V1hEZ3AzalRqVW9WNmpJZHZxTTlsN3llYnZ0WWRFQjFQ?=
+ =?utf-8?B?QXVhTW4yTkIyMzdmWU9qaGpSZHZQekRPZGU1b0VDYUl0Y3oybCtPVFdueTh0?=
+ =?utf-8?B?bU1LSnliRHh5aWFLQ0Z2Wk42VjhGRGhOdUFjLzZJQnVTSExFZzNsaE9QazZV?=
+ =?utf-8?B?eU9Vak05Z3gvVUZTWTJsU1ByOFJjUm9rczJiVHFudjdpUkpNblBLQVBmR0Fu?=
+ =?utf-8?B?NGt5dFQrallCMldKcnlLZkU4OEVDbUkzR0pOUFdmelAwOHJnbFhZMU04b1Q4?=
+ =?utf-8?B?b2t6bVVSK1UwbVdITUMyRG03TWpRaWQ1NmZPU0FNV3VhU3A3WHlHVEVHcGtW?=
+ =?utf-8?B?ajBvd2J2emhqMTd1T0FkdlJEUi9pOUxwV2h4K1dSNmY5NXRuejdHNGhIOWF5?=
+ =?utf-8?B?NEJaUU9ZTDlCNkJiQUtFWVZ0Sm5EalV5MXFwVU9CaFNBZ1d1ZHJ6azZMQzM3?=
+ =?utf-8?B?eHZPTHNReVFZeDREd3EvVFlqUTFKb29DRCtyMmR5dlIyS2RwaDJSNDBhMkEy?=
+ =?utf-8?B?N1VuTzNRdXVyckpQUUMxVU42ZjNLeU1VMnpGdUczeStOU3JmdWxwUldKcU5q?=
+ =?utf-8?B?dllwa3RNaTFXSmFkWUZjcmNkMmpoQ2Qzd0NnajhMOS90Nmt1WnhNbHYwQ3pU?=
+ =?utf-8?B?Z0ZRZndwdUNzQ2J0dWlMWHNxTGdqQzB5VkhTYUViWjRsZW1IeWJMS0NNN2V5?=
+ =?utf-8?B?S1B1TDhEWnNtd3NBTUpXS3A0eXZ3Vm1oMTUwOU1MM1l2S1lvdUZqVXNrSm5L?=
+ =?utf-8?B?U2ZHbTB6Yy94SW5LcUM1TTdiOE43bzJRSTRRZWg2Y3FobkpLWEc0WW9jaWhh?=
+ =?utf-8?B?UmEzU2hHbitoM0JpQnlDSUhtWjZWbWxTaVhRZDZ3dFBVTkovdnJEaUQrMEk2?=
+ =?utf-8?B?cytpMnorZVdTVkJiU2ZtUHh3c29QaDJDZGxMc1hqZksrelFOVGQ3am5vU1dk?=
+ =?utf-8?B?WFRxa2U5YUsvV1V3WTJzT3l5cXd5d0FMQk5HalNIaHE3RVJuMVhndzZXSlRM?=
+ =?utf-8?B?eWJEWWVPSDVvK1ZjcTNkdDFXV0JoYzBsRzJZajlKUTdXazVtaytjNnlYQVdZ?=
+ =?utf-8?B?dXBpVnpBSk1DN1paREl5VnNHT1piM3RZUFRmMnp1a3ZHT3RIU3JUbHAvZjdt?=
+ =?utf-8?Q?lcyiZMF5qs1wRDP4DC2tz40+IPmfkLUUUjoxtH5?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <864472A8CD111F40871565536A1EA2BE@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
+MIME-Version: 1.0
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 27a7158f-359d-41a5-5c06-08d91060e2c1
+X-MS-Exchange-CrossTenant-originalarrivaltime: 06 May 2021 07:30:55.5894
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8peRI7lkIDicnL5st+GcD6F9zMPU3vFHWW1tEyVcTbUvuBt4FJiUO7OCMR2jaEICbcCDzFsfputU/aTaFgsBEQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYCPR01MB6770
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>=20
->>>>>>>> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
->>>>>>>> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with =
-error -22
->>>>>>>>=20
->>>>>>>> tee_shm_release() is not invoked on dma shm buffer.
->>>>>>>>=20
->>>>>>>> Implement .shutdown() method to handle the release of the =
-buffers
->>>>>>>> correctly.
->>>>>>>>=20
->>>>>>>> More info:
->>>>>>>> https://github.com/OP-TEE/optee_os/issues/3637
->>>>>>>>=20
->>>>>>>> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
->>>>>>>> ---
->>>>>>>> drivers/tee/optee/core.c | 20 ++++++++++++++++++++
->>>>>>>> 1 file changed, 20 insertions(+)
->>>>>>>=20
->>>>>>> This looks good to me. Do you have a practical way of testing =
-this on
->>>>>>> QEMU for instance?
->>>>>>>=20
->>>>>>=20
->>>>>> Jens,
->>>>>>=20
->>>>>> I could not reproduce nor create a setup using QEMU, I could only
->>>>>> do it on a real h/w.
->>>>>>=20
->>>>>> I have extensively tested the fix and I don't see any issues.
->>>>>=20
->>>>> I did a few test runs too, seems OK.
->>>>=20
->>>> I carried these changes and have not run into any issues with Kexec =
-so far.
->>>> Last week, while trying out kdump, we ran into a crash(this is when =
-the
->>>> Kdump kernel reboots).
->>>>=20
->>>> $echo c > /proc/sysrq-trigger
->>>>=20
->>>> Leads to:
->>>>=20
->>>> [   18.004831] Unable to handle kernel paging request at virtual =
-address ffff0008dcef6758
->>>> [   18.013002] Mem abort info:
->>>> [   18.015885]   ESR =3D 0x96000005
->>>> [   18.019034]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->>>> [   18.024516]   SET =3D 0, FnV =3D 0
->>>> [   18.027667]   EA =3D 0, S1PTW =3D 0
->>>> [   18.030905] Data abort info:
->>>> [   18.033877]   ISV =3D 0, ISS =3D 0x00000005
->>>> [   18.037835]   CM =3D 0, WnR =3D 0
->>>> [   18.040896] swapper pgtable: 4k pages, 48-bit VAs, =
-pgdp=3D0000000970a78000
->>>> [   18.047811] [ffff0008dcef6758] pgd=3D000000097fbf9003, =
-pud=3D0000000000000000
->>>> [   18.054819] Internal error: Oops: 96000005 [#1] SMP
->>>> [   18.059850] Modules linked in: bnxt_en pcie_iproc_platform =
-pcie_iproc diagbe(O)
->>>> [   18.067395] CPU: 3 PID: 1 Comm: systemd-shutdow Tainted: G       =
-    O      5.4.83-microsoft-standard #1
->>>> [   18.077174] Hardware name: Overlake (DT)
->>>> [   18.081219] pstate: 80400005 (Nzcv daif +PAN -UAO)
->>>> [   18.086170] pc : tee_shm_free+0x18/0x48
->>>> [   18.090126] lr : optee_disable_shm_cache+0xa4/0xf0
->>>> [   18.095066] sp : ffff80001005bb90
->>>> [   18.098484] x29: ffff80001005bb90 x28: ffff000037e20000
->>>> [   18.103962] x27: 0000000000000000 x26: ffff00003ed10490
->>>> [   18.109440] x25: ffffca760e975f90 x24: 0000000000000000
->>>> [   18.114918] x23: ffffca760ed79808 x22: ffff00003ec66e18
->>>> [   18.120396] x21: ffff80001005bc08 x20: 00000000b200000a
->>>> [   18.125874] x19: ffff0008dcef6700 x18: 0000000000000010
->>>> [   18.131352] x17: 0000000000000000 x16: 0000000000000000
->>>> [   18.136829] x15: ffffffffffffffff x14: ffffca760ed79808
->>>> [   18.142307] x13: ffff80009005b897 x12: ffff80001005b89f
->>>> [   18.147786] x11: ffffca760eda4000 x10: ffff80001005b820
->>>> [   18.153264] x9 : 00000000ffffffd0 x8 : ffffca760e59b2c0
->>>> [   18.158742] x7 : 0000000000000000 x6 : 0000000000000000
->>>> [   18.164220] x5 : 0000000000000000 x4 : 0000000000000000
->>>> [   18.169698] x3 : 0000000000000000 x2 : ffff0008dcef6700
->>>> [   18.175175] x1 : 00000000ffff0008 x0 : ffffca760e59ca04
->>>> [   18.180654] Call trace:
->>>> [   18.183176]  tee_shm_free+0x18/0x48
->>>> [   18.186773]  optee_disable_shm_cache+0xa4/0xf0
->>>> [   18.191356]  optee_shutdown+0x20/0x30
->>>> [   18.195135]  platform_drv_shutdown+0x2c/0x38
->>>> [   18.199538]  device_shutdown+0x180/0x298
->>>> [   18.203586]  kernel_restart_prepare+0x44/0x50
->>>> [   18.208078]  kernel_restart+0x20/0x68
->>>> [   18.211853]  __do_sys_reboot+0x104/0x258
->>>> [   18.215899]  __arm64_sys_reboot+0x2c/0x38
->>>> [   18.220035]  el0_svc_handler+0x90/0x138
->>>> [   18.223991]  el0_svc+0x8/0x208
->>>> [   18.227143] Code: f9000bf3 aa0003f3 aa1e03e0 d503201f (b9405a60)
->>>> [   18.233435] ---[ end trace 835d756cd66aa959 ]---
->>>> [   18.238621] Kernel panic - not syncing: Fatal exception
->>>> [   18.244014] Kernel Offset: 0x4a75fde00000 from =
-0xffff800010000000
->>>> [   18.250299] PHYS_OFFSET: 0xffff99c680000000
->>>> [   18.254613] CPU features: 0x0002,21806008
->>>> [   18.258747] Memory Limit: none
->>>> [   18.262310] ---[ end Kernel panic - not syncing: Fatal exception =
-]=E2=80=94
->>>>=20
->>>> I see that before secure world returns =
-OPTEE_SMC_RETURN_ENOTAVAIL(which
->>>> Should disable and clear all the cache) we run into the crash =
-trying to free shm.
->>>>=20
->>>> Thoughts?
->>>=20
->>> It seems that the pointer is invalid, but the pointer doesn't look
->>> like garbage. Could the kernel have unmapped the memory area =
-covering
->>> that address?
->>>=20
->>=20
->> Yes, I am not entirely sure if the kernel had the time to unmap the =
-memory.
->> Right after triggering the crash the kdump kernel is booted and I see =
-the following
->>=20
->> [ 2.050145] optee: probing for conduit method.
->> [ 2.054743] optee: revision 3.6 (f84427aa)
->> [ 2.054821] optee: dynamic shared memory is enabled
->> [ 2.066186] optee: initialized driver
->>=20
->> Could this be previous un-released maps causing corruption?
->=20
-> Aha, yes, that could be it.
->=20
-
-How about checking for the ptr?
-
-diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-index aadedec3bfe7..8dc4fe9a1588 100644
---- a/drivers/tee/optee/call.c
-+++ b/drivers/tee/optee/call.c
-@@ -426,10 +426,12 @@ void optee_disable_shm_cache(struct optee *optee)
-                if (res.result.status =3D=3D OPTEE_SMC_RETURN_ENOTAVAIL)
-                        break; /* All shm's freed */
-                if (res.result.status =3D=3D OPTEE_SMC_RETURN_OK) {
--                       struct tee_shm *shm;
-+                       struct tee_shm *shm =3D NULL;
-=20
-                        shm =3D reg_pair_to_ptr(res.result.shm_upper32,
-                                              res.result.shm_lower32);
-+                       if (IS_ERR(shm))
-+                               return PTR_ERR(shm);
-                        tee_shm_free(shm);
-
-Thanks.=
+T24gVGh1LCBNYXkgMDYsIDIwMjEgYXQgMTI6MDE6MzRQTSArMDgwMCwgRGluZyBIdWkgd3JvdGU6
+DQo+IE9uIDIwMjEvNS82IDEwOjQ5LCBIT1JJR1VDSEkgTkFPWUEo5aCA5Y+jIOebtOS5nykgd3Jv
+dGU6DQo+ID4gT24gV2VkLCBBcHIgMjgsIDIwMjEgYXQgMDQ6NTQ6NTlQTSArMDIwMCwgRGF2aWQg
+SGlsZGVuYnJhbmQgd3JvdGU6DQo+ID4gPiBPbiAyMS4wNC4yMSAwNDowNCwgRGluZyBIdWkgd3Jv
+dGU6DQo+ID4gPiA+IFJlY2VudGx5IHdlIGZvdW5kIHRoZXJlIGlzIGEgbG90IE1lbUZyZWUgbGVm
+dCBpbiAvcHJvYy9tZW1pbmZvIGFmdGVyDQo+ID4gPiA+IGRvIGEgbG90IG9mIHBhZ2VzIHNvZnQg
+b2ZmbGluZS4NCj4gPiA+ID4gDQo+ID4gPiA+IEkgdGhpbmsgaXQncyBpbmNvcnJlY3Qgc2luY2Ug
+TlJfRlJFRV9QQUdFUyBzaG91bGQgbm90IGNvbnRhaW4gSFdQb2lzb24gcGFnZXMuDQo+ID4gPiA+
+IEFmdGVyIHRha2VfcGFnZV9vZmZfYnVkZHksIHRoZSBwYWdlIGlzIG5vIGxvbmdlciBiZWxvbmcg
+dG8gYnVkZHkNCj4gPiA+ID4gYWxsb2NhdG9yLCBhbmQgd2lsbCBub3QgYmUgdXNlZCBhbnkgbW9y
+ZSwgYnV0IHdlIG1heWJlIG1pc3NlZCBhY2NvdW50aW5nDQo+ID4gPiA+IE5SX0ZSRUVfUEFHRVMg
+aW4gdGhpcyBzaXR1YXRpb24uDQo+ID4gPiA+IA0KPiA+ID4gPiBTaWduZWQtb2ZmLWJ5OiBEaW5n
+IEh1aSA8ZGluZ2h1aUBzYW5nZm9yLmNvbS5jbj4NCj4gPiA+ID4gLS0tDQo+ID4gPiA+ICAgIG1t
+L3BhZ2VfYWxsb2MuYyB8IDEgKw0KPiA+ID4gPiAgICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRp
+b24oKykNCj4gPiA+ID4gDQo+ID4gPiA+IGRpZmYgLS1naXQgYS9tbS9wYWdlX2FsbG9jLmMgYi9t
+bS9wYWdlX2FsbG9jLmMNCj4gPiA+ID4gaW5kZXggY2ZjNzI4NzM5NjFkLi44ZDY1YjYyNzg0ZDgg
+MTAwNjQ0DQo+ID4gPiA+IC0tLSBhL21tL3BhZ2VfYWxsb2MuYw0KPiA+ID4gPiArKysgYi9tbS9w
+YWdlX2FsbG9jLmMNCj4gPiA+ID4gQEAgLTg5NDcsNiArODk0Nyw3IEBAIGJvb2wgdGFrZV9wYWdl
+X29mZl9idWRkeShzdHJ1Y3QgcGFnZSAqcGFnZSkNCj4gPiA+ID4gICAgCQkJZGVsX3BhZ2VfZnJv
+bV9mcmVlX2xpc3QocGFnZV9oZWFkLCB6b25lLCBwYWdlX29yZGVyKTsNCj4gPiA+ID4gICAgCQkJ
+YnJlYWtfZG93bl9idWRkeV9wYWdlcyh6b25lLCBwYWdlX2hlYWQsIHBhZ2UsIDAsDQo+ID4gPiA+
+ICAgIAkJCQkJCXBhZ2Vfb3JkZXIsIG1pZ3JhdGV0eXBlKTsNCj4gPiA+ID4gKwkJCV9fbW9kX3pv
+bmVfcGFnZV9zdGF0ZSh6b25lLCBOUl9GUkVFX1BBR0VTLCAtMSk7DQo+ID4gPiA+ICAgIAkJCXJl
+dCA9IHRydWU7DQo+ID4gPiA+ICAgIAkJCWJyZWFrOw0KPiA+ID4gPiAgICAJCX0NCj4gPiA+ID4g
+DQo+ID4gPiANCj4gPiA+IFNob3VsZCB0aGlzIHVzZSBfX21vZF96b25lX2ZyZWVwYWdlX3N0YXRl
+KCkgaW5zdGVhZD8NCj4gPiANCj4gPiBZZXMsIF9fbW9kX3pvbmVfZnJlZXBhZ2Vfc3RhdGUoKSBs
+b29rcyBiZXR0ZXIgdG8gbWUuDQo+ID4gDQo+ID4gQW5kIEkgdGhpbmsgdGhhdCBtYXliZSBhbiBh
+ZGRpdGlvbmFsIF9fbW9kX3pvbmVfZnJlZXBhZ2Vfc3RhdGUoKSBpbg0KPiA+IHVucG9pc29uX21l
+bW9yeSgpIGlzIG5lY2Vzc2FyeSB0byBjYW5jZWwgdGhlIGRlY3JlbWVudC4gIEkgdGhvdWdodCBv
+ZiB0aGUNCj4gPiBmb2xsb3dpbmcsIGJ1dCBpdCBkb2Vzbid0IGJ1aWxkIGJlY2F1c2UgZ2V0X3Bm
+bmJsb2NrX21pZ3JhdGV0eXBlKCkgaXMNCj4gPiBhdmFpbGFibGUgb25seSBpbiBtbS9wYWdlX2Fs
+bG9jLmMsIHNvIHlvdSBtaWdodCB3YW50IHRvIGFkZCBhIHNtYWxsIGV4cG9ydGVkDQo+ID4gcm91
+dGluZSBpbiBtbS9wYWdlX2FsbG9jLmMgYW5kIGxldCBpdCBjYWxsZWQgZnJvbSB1bnBvaXNvbl9t
+ZW1vcnkoKS4NCj4gPiANCj4gPiAgICBAQCAtMTg5OSw4ICsxODk5LDEyIEBAIGludCB1bnBvaXNv
+bl9tZW1vcnkodW5zaWduZWQgbG9uZyBwZm4pDQo+ID4gICAgICAgICAgICB9DQo+ID4gICAgICAg
+ICAgICBpZiAoIWdldF9od3BvaXNvbl9wYWdlKHAsIGZsYWdzLCAwKSkgew0KPiA+ICAgIC0gICAg
+ICAgICAgICAgICBpZiAoVGVzdENsZWFyUGFnZUhXUG9pc29uKHApKQ0KPiA+ICAgICsgICAgICAg
+ICAgICAgICBpZiAoVGVzdENsZWFyUGFnZUhXUG9pc29uKHApKSB7DQo+ID4gICAgKyAgICAgICAg
+ICAgICAgICAgICAgICAgaW50IG1pZ3JhdGV0eXBlID0gZ2V0X3BmbmJsb2NrX21pZ3JhdGV0eXBl
+KHAsIHBmbik7DQo+ID4gICAgKw0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgIG51bV9w
+b2lzb25lZF9wYWdlc19kZWMoKTsNCj4gPiAgICArICAgICAgICAgICAgICAgICAgICAgICBfX21v
+ZF96b25lX2ZyZWVwYWdlX3N0YXRlKHBhZ2Vfem9uZShwKSwgMSwgbWlncmF0ZXR5cGUpOw0KPiA+
+ICAgICsgICAgICAgICAgICAgICB9DQo+ID4gICAgICAgICAgICAgICAgICAgIHVucG9pc29uX3By
+X2luZm8oIlVucG9pc29uOiBTb2Z0d2FyZS11bnBvaXNvbmVkIGZyZWUgcGFnZSAlI2x4XG4iLA0K
+PiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHBmbiwgJnVucG9pc29uX3Jz
+KTsNCj4gPiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDA7DQo+ID4gDQo+IA0KPiBJIHRoaW5r
+IHRoZXJlIGlzIGFub3RoZXIgcHJvYmxlbToNCj4gSW4gbm9ybWFsIGNhc2UsIHdlIGtlZXAgdGhl
+IGxhc3QgcmVmY291bnQgb2YgdGhlIGh3cG9pc29uIHBhZ2UsIHNvDQo+IGdldF9od3BvaXNvbl9w
+YWdlIHNob3VsZCByZXR1cm4gMS4gVGhlIE5SX0ZSRUVfUEFHRVMgd2lsbCBiZSBhZGp1c3RlZCB3
+aGVuDQo+IGNhbGwgcHV0X3BhZ2UuDQoNCkkgdGhpbmsgdGhhdCB0YWtlX3BhZ2Vfb2ZmX2J1ZGR5
+KCkgc2hvdWxkIG5vdCBiZSBjYWxsZWQgZm9yIHRoaXMgY2FzZQ0KKHRoZSBlcnJvciBwYWdlIGhh
+dmUgcmVtYWluaW5nIHJlZmNvdW50KS4gIFNvIGl0IHNlZW1zIHRoYXQgbm8gbmVlZCB0bw0KdXBk
+YXRlIE5SX0ZSRUVfUEFHRVMgPw0KDQo+IEF0IHJhY2UgY29uZGl0aW9uLCB3ZSBtYXliZSBsZWFr
+IHRoZSBwYWdlIGJlY2F1c2Ugd2UgZG9lcyBub3QgcHV0IGl0IGJhY2sgdG8NCj4gYnVkZHkgaW4g
+dW5wb2lzb25fbWVtb3J5LCBob3dldmVyIHRoZSBIV1BvaXNvbiBmbGFnLCBudW1fcG9pc29uZWRf
+cGFnZXMsDQo+IE5SX0ZSRUVfUEFHRVMgaXMgYWRqdXN0ZWQgY29ycmVjdGx5Lg0KPiANCj4gQ1BV
+MCAgICAgICAgICAgICAgICAgICAgICAgIENQVTENCj4gDQo+IHNvZnRfb2ZmbGluZV9wYWdlDQo+
+ICAgc29mdF9vZmZsaW5lX2ZyZWVfcGFnZQ0KPiAgICAgcGFnZV9oYW5kbGVfcG9pc29uDQo+ICAg
+ICAgIHRha2VfcGFnZV9vZmZfYnVkZHkNCj4gICAgICAgU2V0UGFnZUhXUG9pc29uDQo+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICB1bnBvaXNvbl9tZW1vcnkNCj4gICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgaWYgKCFnZXRfaHdwb2lzb25fcGFnZShwKSkNCj4gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBUZXN0Q2xlYXJQYWdlSFdQb2lzb24NCj4gICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgIG51bV9wb2lzb25lZF9wYWdlc19kZWMNCj4gICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBfX21vZF96b25lX2ZyZWVwYWdlX3N0YXRlDQo+ICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgcmV0dXJuIDANCj4gICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAvKiBtaXNzIHB1dCB0aGUgcGFnZSBiYWNrIHRvIGJ1ZGR5ICovDQo+ICAg
+ICAgIHBhZ2VfcmVmX2luYw0KPiAgICAgICBudW1fcG9pc29uZWRfcGFnZXNfaW5jDQoNClRoYW5r
+cyBmb3IgY2hlY2tpbmcgdGhpcywgdW5wb2lzb25fbWVtb3J5KCkgaXMgcmFjeS4gIFJlY2VudGx5
+IHdlIGFyZSBzdWdnZXN0aW5nDQp0byBpbnRyb2R1Y2UgbWZfbXV0ZXggYnkgWzFdLiAgQWx0aG91
+Z2ggdGhpcyBwYXRjaCBpcyBub3QgbWVyZ2VkIHRvIG1haW5saW5lIHlldCwNCmJ1dCBpdCBjb3Vs
+ZCBiZSB1c2VkIHRvIHByZXZlbnQgdGhlIGFib3ZlIHJhY2UgdG9vLg0KDQpbMV0gaHR0cHM6Ly9s
+b3JlLmtlcm5lbC5vcmcvbGludXgtbW0vMjAyMTA0MjcwNjI5NTMuMjA4MDI5My0yLW5hby5ob3Jp
+Z3VjaGlAZ21haWwuY29tLw0KDQo+IA0KPiBIb3cgYWJvdXQgZG8gbm90aGluZyBhbmQgcmV0dXJu
+IC1FQlVTWSAoc28gdGhlIGNhbGxlciBjYW4gcmV0cnkpIGlmIHVucG9pc29uDQo+IGEgemVybyBy
+ZWZjb3VudCBwYWdlICwgb3IgcmV0dXJuIDAgbGlrZSAyMzBhYzcxOWM1MDAgKCJtbS9od3BvaXNv
+bjogZG9uJ3QNCj4gdHJ5IHRvIHVucG9pc29uIGNvbnRhaW5tZW50LWZhaWxlZCBwYWdlcyIpIGRv
+ZXMgPw0KPiANCj4gICBAQCAtMTczNiwxMSArMTczNiw5IEBAIGludCB1bnBvaXNvbl9tZW1vcnko
+dW5zaWduZWQgbG9uZyBwZm4pDQo+ICAgICB9DQo+IA0KPiAgICAgaWYgKCFnZXRfaHdwb2lzb25f
+cGFnZShwLCBmbGFncywgMCkpIHsNCj4gICAtICAgICAgIGlmIChUZXN0Q2xlYXJQYWdlSFdQb2lz
+b24ocCkpDQo+ICAgLSAgICAgICAgICAgbnVtX3BvaXNvbmVkX3BhZ2VzX2RlYygpOw0KPiAgIC0g
+ICAgICAgdW5wb2lzb25fcHJfaW5mbygiVW5wb2lzb246IFNvZnR3YXJlLXVucG9pc29uZWQgZnJl
+ZSBwYWdlICUjbHhcbiIsDQo+ICAgKyAgICAgICB1bnBvaXNvbl9wcl9pbmZvKCJVbnBvaXNvbjog
+U29mdHdhcmUtdW5wb2lzb25lZCB6ZXJvIHJlZmNvdW50IHBhZ2UNCj4gJSNseFxuIiwNCj4gICAJ
+CQkJIHBmbiwgJnVucG9pc29uX3JzKTsNCj4gICAtICAgICAgIHJldHVybiAwOw0KPiAgICsgICAg
+ICAgcmV0dXJuIC1FQlVTWTsNCg0KQ3VycmVudGx5IHVucG9pc29uX21lbW9yeSgpIGRvZXMgbm90
+IHdvcmsgYXMgcmV2ZXJzZSBvcGVyYXRpb24gb2YgdGFrZV9wYWdlX29mZl9idWRkeSgpDQooaXQn
+cyBzaW1wbHkgYnJva2VuKSwgc28gaW1wbGVtZW50aW5nIGl0IGF0IG9uZSB0aW1lIHdvdWxkIGJl
+IGJldHRlci4NCkknbGwgdGFrZSB0aW1lIHRvIGZpeCB1bnBvaXNvbl9tZW1vcnkoKS4NCg0KVGhh
+bmtzLA0KTmFveWEgSG9yaWd1Y2hp
