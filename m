@@ -2,246 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 678DF3755B4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:32:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 801E63755B9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234878AbhEFOdP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:33:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47990 "EHLO
+        id S234895AbhEFOeN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:34:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48224 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbhEFOdN (ORCPT
+        with ESMTP id S234485AbhEFOeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:33:13 -0400
-Received: from mail-pl1-x629.google.com (mail-pl1-x629.google.com [IPv6:2607:f8b0:4864:20::629])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 259C1C061574;
-        Thu,  6 May 2021 07:32:14 -0700 (PDT)
-Received: by mail-pl1-x629.google.com with SMTP id t21so3500366plo.2;
-        Thu, 06 May 2021 07:32:14 -0700 (PDT)
+        Thu, 6 May 2021 10:34:12 -0400
+Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0867BC061574;
+        Thu,  6 May 2021 07:33:14 -0700 (PDT)
+Received: by mail-wm1-x32b.google.com with SMTP id y124-20020a1c32820000b029010c93864955so5426617wmy.5;
+        Thu, 06 May 2021 07:33:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WVfr4odGyjYCFkn+cWmYchYIKtyNAZgTplQ3rJaoLBg=;
-        b=PoMoohbt54IW/RSLkF/VgsYbGNEz9AdeKHoKagbdpK+qrg8xBgUZZg/tS1lvc83PT1
-         xXmDrYFJZBiGPzhoJoRJoZBK1jkomGsdkqfVeWmYt70DKrkCsYOnmFPaUZysv+ORiS9+
-         4i+z+4CjKSgiSblR+HGe6cQH6+KicaVHMbqRgfKEDhkdodfkzvO3XtxtekEzxvb+3Tfi
-         rVm+OgZIVjOBtrT8F3rPnW/JWeD0gKmIyWT2TmAjimytdrwXL14zqFQcVB+oZJlnxKPk
-         XXvHT1Lo5sL/psBbGxI385K9P6nKbENjj4VlMNl39Nnkg+GC0n/8qMorsFF3xoqvfsoY
-         b2jw==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MQSKGPpDeg5IBUffP4uoiRdtBRjKmwAiguuNo92yskc=;
+        b=WUj/k97DXc4e4L5vP5Bf69+pNXQNA0smtIO8k3gWM5qOpsw/wGBV9kwWm8shtOn0Wl
+         3PP1rpzoQ0nDfEo6BtQFofBd3hE63Xq0kdePmYMtj34HLoMSfk9wobGfZCnQvM2btL30
+         AZ8Z8VC0bTMPJCsiitVLbT2MzzC7YShfW3vDmvU8hH2Suf6dkgm59oi6YyO+3Kcx0fZz
+         jwwWOyrM5SzZDIsgxNnTvKIFI2c9xZc/KF25QgzHfejN53v1Ng8flBPCpialcyhPKrt4
+         kxL095aImh6HN4lH+3jTidEAvy4W27kwoB5GB55eX7Yluorl4cABt0c+8vWduG7tdtKg
+         Hr5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WVfr4odGyjYCFkn+cWmYchYIKtyNAZgTplQ3rJaoLBg=;
-        b=cm90RTyu6m8FQG64X2VMoUhsS6yeWr0TF8+VHeeHkFihRxZ+giU0zK2NnoXuxN8S9o
-         Js54aIie8VmWV/kcA8lX6i3MbKksuYbUuRP4PBCC9anky5tc4Kbz30BhlKnZDsWhpe5t
-         eE+GrylKtszThiMmpzL/CpIiqHOvA8S25+KlsUD1EyKuFmEowbCjFuvcB/OtqfyuiUNU
-         663P6s6ShLnLnIFWsvgwGcNXVeXVvffIbwz36p8/TIUrnXDK2v/LxF3VjjVVsv96uTti
-         SvbTJ9VHkL3DeM88U83ZOu0JDfVQbMQUqvI8JOmJKXsFqN/AEba4PVvtqGFcg7lZG4Mc
-         PPDw==
-X-Gm-Message-State: AOAM532gQrKtguyPwdCLCUg9WwBhQlFXwuFeZAS3zgKof65RzphxBomR
-        dDZt1kqC8Wr6xjxR2hi6wDv0HcPt7Qg=
-X-Google-Smtp-Source: ABdhPJz22zMcfrUvRfstit40VF01ft/4yUsm3/j7/2G86ipdCBi+pkixmCvKDPoVmwW1x3NCQQDJgw==
-X-Received: by 2002:a17:90a:de17:: with SMTP id m23mr5043492pjv.16.1620311533579;
-        Thu, 06 May 2021 07:32:13 -0700 (PDT)
-Received: from atulu-nitro ([122.178.201.168])
-        by smtp.gmail.com with ESMTPSA id u1sm2462759pfb.97.2021.05.06.07.32.11
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=MQSKGPpDeg5IBUffP4uoiRdtBRjKmwAiguuNo92yskc=;
+        b=qGmzbCZsY4+qbFaTE0VnqP1k8hRH+2utHSem/GOGWE6Ish5F5GKrhcHrSqNKoC3v16
+         42reuH9R0SJscUCHr1iXUCTTIQFYL3TuNnfaleWd4m/ZSqYWPqEtCoHc0UfpENN8EmOj
+         FgtW5vdR7ZsLn7+fdKh9LWGjXGf46H1/hkB59ft+/ufq7bm8/b7Nu5dcjwzC4Mew9Oky
+         xewEvHHUEI3iD6oFnq7xtcFlhPWmrRDOsdIPYUcWbB7qxwbr4tiDowC1C1ThlM9ZMItk
+         4M1fYe/AscJAy2cOA4GbK40Ml6IfTUXk4ilfeBZskluDotFbmEbEdbUyi+m7XUblugyQ
+         qufA==
+X-Gm-Message-State: AOAM532C7AAcZiXWoJfzdOSxlcq5HHo1+aftPuf9yDr1ZtZbFEr3nnJV
+        tuq7vjIoPH9W6OR3PTS1o5+mjuctgZksOQ==
+X-Google-Smtp-Source: ABdhPJwkClpEg4vbYTmAlWwlabyXOS6LiFNR84dM56Rj9o5pUo6tHJlcrGXCTI7iE1wMofRUVB2g1A==
+X-Received: by 2002:a1c:3d44:: with SMTP id k65mr4191046wma.121.1620311592749;
+        Thu, 06 May 2021 07:33:12 -0700 (PDT)
+Received: from kwango.redhat.com (ip-94-112-132-16.net.upcbroadband.cz. [94.112.132.16])
+        by smtp.gmail.com with ESMTPSA id b20sm4455702wmj.3.2021.05.06.07.33.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 07:32:12 -0700 (PDT)
-Date:   Thu, 6 May 2021 20:02:08 +0530
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 27/69] cdrom: gdrom: deallocate struct gdrom_unit fields
- in remove_gdrom
-Message-ID: <20210506143208.GA7971@atulu-nitro>
-References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
- <20210503115736.2104747-28-gregkh@linuxfoundation.org>
- <223d5bda-bf02-a4a8-ab1d-de25e32b8d47@axentia.se>
- <YJPDzqAAnP0jDRDF@kroah.com>
- <dd716d04-b9fa-986a-50dd-5c385ea745b2@axentia.se>
+        Thu, 06 May 2021 07:33:12 -0700 (PDT)
+From:   Ilya Dryomov <idryomov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph updates for 5.13-rc1
+Date:   Thu,  6 May 2021 16:33:12 +0200
+Message-Id: <20210506143312.22281-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.19.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dd716d04-b9fa-986a-50dd-5c385ea745b2@axentia.se>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 03:08:08PM +0200, Peter Rosin wrote:
-> Hi!
-> 
-> On 2021-05-06 12:24, Greg Kroah-Hartman wrote:
-> > On Mon, May 03, 2021 at 04:13:18PM +0200, Peter Rosin wrote:
-> >> Hi!
-> >>
-> >> On 2021-05-03 13:56, Greg Kroah-Hartman wrote:
-> >>> From: Atul Gopinathan <atulgopinathan@gmail.com>
-> >>>
-> >>> The fields, "toc" and "cd_info", of "struct gdrom_unit gd" are allocated
-> >>> in "probe_gdrom()". Prevent a memory leak by making sure "gd.cd_info" is
-> >>> deallocated in the "remove_gdrom()" function.
-> >>>
-> >>> Also prevent double free of the field "gd.toc" by moving it from the
-> >>> module's exit function to "remove_gdrom()". This is because, in
-> >>> "probe_gdrom()", the function makes sure to deallocate "gd.toc" in case
-> >>> of any errors, so the exit function invoked later would again free
-> >>> "gd.toc".
-> >>>
-> >>> The patch also maintains consistency by deallocating the above mentioned
-> >>> fields in "remove_gdrom()" along with another memory allocated field
-> >>> "gd.disk".
-> >>>
-> >>> Suggested-by: Jens Axboe <axboe@kernel.dk>
-> >>> Cc: Peter Rosin <peda@axentia.se>
-> >>> Cc: stable <stable@vger.kernel.org>
-> >>> Signed-off-by: Atul Gopinathan <atulgopinathan@gmail.com>
-> >>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >>> ---
-> >>>  drivers/cdrom/gdrom.c | 3 ++-
-> >>>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>>
-> >>> diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
-> >>> index 7f681320c7d3..6c4f6139f853 100644
-> >>> --- a/drivers/cdrom/gdrom.c
-> >>> +++ b/drivers/cdrom/gdrom.c
-> >>> @@ -830,6 +830,8 @@ static int remove_gdrom(struct platform_device *devptr)
-> >>>  	if (gdrom_major)
-> >>>  		unregister_blkdev(gdrom_major, GDROM_DEV_NAME);
-> >>>  	unregister_cdrom(gd.cd_info);
-> >>> +	kfree(gd.cd_info);
-> >>> +	kfree(gd.toc);
-> >>>  
-> >>>  	return 0;
-> >>>  }
-> >>> @@ -861,7 +863,6 @@ static void __exit exit_gdrom(void)
-> >>>  {
-> >>>  	platform_device_unregister(pd);
-> >>>  	platform_driver_unregister(&gdrom_driver);
-> >>> -	kfree(gd.toc);
-> >>>  }
-> >>>  
-> >>>  module_init(init_gdrom);
-> >>>
-> >>
-> >> I worry about the gd.toc = NULL; statement in init_gdrom(). It sets off
-> >> all kinds of warnings with me. It looks completely bogus, but the fact
-> >> that it's there at all makes me go hmmmm.
-> > 
-> > Yeah, that's bogus.
-> > 
-> >> probe_gdrom_setupcd() will arrange for gdrom_ops to be used, including
-> >> .get_last_session pointing to gdrom_get_last_session() 
-> >>
-> >> gdrom_get_last_session() will use gd.toc, if it is non-NULL.
-> >>
-> >> The above will all be registered externally to the driver with the call
-> >> to register_cdrom() in probe_gdrom(), before a possible stale gd.toc is
-> >> overwritten with a new one at the end of probe_gdrom().
-> > 
-> > But can that really happen given that it hasn't ever happened before in
-> > a real system?  :)
-> > 
-> >> Side note, .get_last_session is an interesting name in this context, but
-> >> I have no idea if it might be called in the "bad" window (but relying on
-> >> that to not be the case would be ... subtle).
-> >>
-> >> So, by simply freeing gd.toc in remove_gdrom() without also setting
-> >> it to NULL, it looks like a potential use after free of gd.toc is
-> >> introduced, replacing a potential leak. Not good.
-> > 
-> > So should we set it to NULL after freeing it?  Is that really going to
-> > help here given that the probe failed?  Nothing can use it after
-> > remove_gdrom() is called because unregiser_* is called already.
-> > 
-> > I don't see the race here, sorry.
-> > 
-> >> The same is not true for gd.cd_info as far as I can tell, but it's a bit
-> >> subtle. gdrom_probe() calls gdrom_execute_diagnostics() before the stale
-> >> gd.cd_info is overwritten, and gdrom_execute_diagnostic() passes the
-> >> stale pointer to gdrom_hardreset(), which luckily doesn't use it. But
-> >> this is - as hinted - a bit too subtle for me. I would prefer to have
-> >> remove_gdrom() also clear out the gd.cd_info pointer.
-> > 
-> > Ok, but again, how can that be used after remove_gdrom() is called?
-> > 
-> >> In addition to adding these clears of gd.toc and gd.cd_info to
-> >> remove_gdrom(), they also need to be cleared in case probe fails.
-> >>
-> >> Or instead, maybe add a big fat
-> >> 	memset(&gd, 0, sizeof(gd));
-> >> at the top of probe?
-> > 
-> > Really, that's what is happening today as there is only 1 device here,
-> > and the whole structure was zeroed out already.  So that would be a
-> > no-op.
-> > 
-> >> Or maybe the struct gdrom_unit should simply be kzalloc:ed? But that
-> >> triggers some . to -> churn...
-> > 
-> > Yes, ideally that would be the correct change, but given that you can
-> > only have 1 device in the system at a time of this type, it's not going
-> > to make much difference at all here.
-> > 
-> >> Anyway, the patch as proposed gets a NACK from me.
-> > 
-> > Why?  It fixes the obvious memory leak, right?  Worst case you are
-> > saying we should also set to NULL these pointers, but I can not see how
-> > they are accessed as we have already torn everything down.
-> 
-> I'm thinking this:
-> 
-> 1. init_gdrom() is called. gd.toc is NULL and is bogusly re-set to NULL.
-> 2. probe_gdrom() is called and succeeds. gd.toc is allocted.
-> 3. device is used, etc etc, whatever
-> 4. remove_gdrom() is called. gd.toc is freed (but not set to NULL).
-> 5. probe_gdrom() is called again. Boom.
-> 
-> In 5, gd.toc is not NULL, and is pointing to whatever. It is
-> potentially used by probe_gdrom() before it is (re-)allocated.
+Hi Linus,
 
-I guess I'm late and it seems like a conclusion has already been
-reached, so this mail doesn't really add up to anything. I just had a
-doubt in my mind which I wanted to clarify:
+The following changes since commit 9f4ad9e425a1d3b6a34617b8ea226d56a119a717:
 
-as Peter said, probe_gdrom() calls "probe_gdrom_setupcd()" which defines
-the ops, this includes "gdrom_get_last_session()" which is the only
-function that uses the data of "gd.toc".
+  Linux 5.12 (2021-04-25 13:49:08 -0700)
 
-It then calls "register_cdrom()", I went through the function definition
-of this and found only one line which has anything to do with
-".get_last_session":
+are available in the Git repository at:
 
-	int register_cdrom(struct gendisk *disk, struct cdrom_device_info *cdi)
-	{
-		static char banner_printed;
-		const struct cdrom_device_ops *cdo = cdi->ops;
-		.
-		.<snipped>
-		.
------>		ENSURE(cdo, get_last_session, CDC_MULTI_SESSION);
-		.
-	}
+  https://github.com/ceph/ceph-client.git tags/ceph-for-5.13-rc1
 
-The defintion of the ENSURE macro is this:
+for you to fetch changes up to 3f1c6f2122fc780560f09735b6d1dbf39b44eb0f:
 
-	#define ENSURE(cdo, call, bits)					\
-	do {								\
-		if (cdo->call == NULL)					\
-			WARN_ON_ONCE((cdo)->capability & (bits));	\
-	} while (0)
+  libceph: allow addrvecs with a single NONE/blank address (2021-05-04 16:06:15 +0200)
 
-So here it is only checking if .get_last_session field is null or not,
-and not calling it.
+There is a merge conflict in fs/ceph/dir.c because Jeff's inode
+type handling patch went through the vfs tree together with Al's
+inode_wrong_type() helper.  for-linus-merged has the resolution.
 
-Apart from this, I don't see gdrom_get_last_session() being called
-anywhere. But I could be missing something obvious too. 
+----------------------------------------------------------------
+Notable items here are a series to take advantage of David Howells'
+netfs helper library from Jeff, three new filesystem client metrics
+from Xiubo, ceph.dir.rsnaps vxattr from Yanhu and two auth-related
+fixes from myself, marked for stable.  Interspersed is a smattering
+of assorted fixes and cleanups across the filesystem.
 
-If you don't mind, could you point out where gd.toc is being used in
-probe_gdrom() before it is kzalloc-ed in the same function.
+----------------------------------------------------------------
+Gustavo A. R. Silva (1):
+      ceph: fix fall-through warnings for Clang
 
+Ilya Dryomov (4):
+      Merge remote-tracking branch 'dhowells/netfs-lib'
+      libceph: bump CephXAuthenticate encoding version
+      libceph: don't set global_id until we get an auth ticket
+      libceph: allow addrvecs with a single NONE/blank address
 
-Thanks for the review!
-Atul
+Jeff Layton (16):
+      ceph: rip out old fscache readpage handling
+      ceph: rework PageFsCache handling
+      ceph: fix fscache invalidation
+      ceph: convert ceph_readpage to netfs_readpage
+      ceph: convert ceph_write_begin to netfs_write_begin
+      ceph: convert ceph_readpages to ceph_readahead
+      ceph: don't clobber i_snap_caps on non-I_NEW inode
+      ceph: don't use d_add in ceph_handle_snapdir
+      ceph: use attach/detach_page_private for tracking snap context
+      ceph: fix kerneldoc copypasta over ceph_start_io_direct
+      ceph: only check pool permissions for regular files
+      ceph: fix inode leak on getattr error in __fh_to_dentry
+      ceph: drop pinned_page parameter from ceph_get_caps
+      ceph: convert some PAGE_SIZE invocations to thp_size()
+      ceph: fix up some bare fetches of i_size
+      ceph: don't allow access to MDS-private inodes
+
+Xiubo Li (3):
+      ceph: rename the metric helpers
+      ceph: avoid counting the same request twice or more
+      ceph: send opened files/pinned caps/opened inodes metrics to MDS daemon
+
+Yanhu Cao (1):
+      ceph: support getting ceph.dir.rsnaps vxattr
+
+ fs/ceph/Kconfig      |   1 +
+ fs/ceph/addr.c       | 626 +++++++++++++++++++++------------------------------
+ fs/ceph/cache.c      | 125 ----------
+ fs/ceph/cache.h      | 101 ++-------
+ fs/ceph/caps.c       |  27 +--
+ fs/ceph/debugfs.c    |  12 +-
+ fs/ceph/dir.c        |  32 ++-
+ fs/ceph/export.c     |  12 +-
+ fs/ceph/file.c       |  52 ++---
+ fs/ceph/inode.c      |  36 +--
+ fs/ceph/io.c         |   2 +-
+ fs/ceph/mds_client.c |  20 +-
+ fs/ceph/mds_client.h |   1 +
+ fs/ceph/metric.c     |  62 +++--
+ fs/ceph/metric.h     |  56 ++++-
+ fs/ceph/snap.c       |   2 +-
+ fs/ceph/super.h      |  32 ++-
+ fs/ceph/xattr.c      |   7 +
+ net/ceph/auth.c      |  36 +--
+ net/ceph/auth_x.c    |   2 +-
+ net/ceph/decode.c    |  20 +-
+ 21 files changed, 562 insertions(+), 702 deletions(-)
