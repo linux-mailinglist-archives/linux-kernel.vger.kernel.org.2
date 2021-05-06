@@ -2,108 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DED103757A3
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:39:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D23473757A5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:39:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235841AbhEFPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:40:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41890 "EHLO mx2.suse.de"
+        id S235646AbhEFPkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:40:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49892 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236172AbhEFPiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:38:24 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 45852B207;
-        Thu,  6 May 2021 15:37:25 +0000 (UTC)
-Subject: Re: [PATCH v4 1/3] mm: memcg/slab: Properly set up gfp flags for
- objcg pointer array
-To:     Waiman Long <longman@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210505200610.13943-1-longman@redhat.com>
- <20210505200610.13943-2-longman@redhat.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <46fb83c8-d875-9f85-da2c-ac2ba4847c07@suse.cz>
-Date:   Thu, 6 May 2021 17:37:24 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S236250AbhEFPjd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:39:33 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 756AF610A1;
+        Thu,  6 May 2021 15:38:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620315513;
+        bh=Q0AranOJ2+2R5VGGKS2I1dV1saSj95Pxw1bkJgk4TOw=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=K1dYaLVfKwmMdywlq+dp4lgLL14sAB8nlpvKcKEPfl+/a7xB+/v/MiccBHrmR8g6X
+         NGqmPtk9l4W1PbH4KpxwUA67EjnyJqksUqPw3gvxRJDIU8FD6LNhnHU0kSn+WBA3F4
+         opWFJwZG+zhydS0F6nY1gpNgSDstCGtDLoBq6ApRtGEX4hSdJzLgYdpnxG/0w+l+Mn
+         R5dvmmQNssVIYz2622Bzs2k+04fwHchUAaz+nYcpMLNSsmTzcameH7ojKVDYnr4Ccr
+         dfCkk0CmirETJrI9dLPH7oY/XqiWP84SClNqsRX05e1/G/1sY1MlD/UAY5YWgFijh/
+         ynC7OtLGhZUTA==
+Date:   Thu, 6 May 2021 16:37:56 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 3/4] arm64: Handle miscellaneous functions in
+ .text and .init.text
+Message-ID: <20210506153756.GA3377@sirena.org.uk>
+References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
+ <20210503173615.21576-1-madvenka@linux.microsoft.com>
+ <20210503173615.21576-4-madvenka@linux.microsoft.com>
+ <20210506141211.GE4642@sirena.org.uk>
+ <8268fde8-5f3b-0781-971b-b29b5e0916cf@linux.microsoft.com>
 MIME-Version: 1.0
-In-Reply-To: <20210505200610.13943-2-longman@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Dxnq1zWXvFF0Q93v"
+Content-Disposition: inline
+In-Reply-To: <8268fde8-5f3b-0781-971b-b29b5e0916cf@linux.microsoft.com>
+X-Cookie: Is this really happening?
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 10:06 PM, Waiman Long wrote:
-> Since the merging of the new slab memory controller in v5.9, the page
-> structure may store a pointer to obj_cgroup pointer array for slab pages.
-> Currently, only the __GFP_ACCOUNT bit is masked off. However, the array
-> is not readily reclaimable and doesn't need to come from the DMA buffer.
-> So those GFP bits should be masked off as well.
-> 
-> Do the flag bit clearing at memcg_alloc_page_obj_cgroups() to make sure
-> that it is consistently applied no matter where it is called.
-> 
-> Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+--Dxnq1zWXvFF0Q93v
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> ---
->  mm/memcontrol.c | 8 ++++++++
->  mm/slab.h       | 1 -
->  2 files changed, 8 insertions(+), 1 deletion(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c100265dc393..5e3b4f23b830 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -2863,6 +2863,13 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
->  }
->  
->  #ifdef CONFIG_MEMCG_KMEM
-> +/*
-> + * The allocated objcg pointers array is not accounted directly.
-> + * Moreover, it should not come from DMA buffer and is not readily
-> + * reclaimable. So those GFP bits should be masked off.
-> + */
-> +#define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
-> +
->  int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
->  				 gfp_t gfp, bool new_page)
->  {
-> @@ -2870,6 +2877,7 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
->  	unsigned long memcg_data;
->  	void *vec;
->  
-> +	gfp &= ~OBJCGS_CLEAR_MASK;
->  	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
->  			   page_to_nid(page));
->  	if (!vec)
-> diff --git a/mm/slab.h b/mm/slab.h
-> index 18c1927cd196..b3294712a686 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -309,7 +309,6 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
->  	if (!memcg_kmem_enabled() || !objcg)
->  		return;
->  
-> -	flags &= ~__GFP_ACCOUNT;
->  	for (i = 0; i < size; i++) {
->  		if (likely(p[i])) {
->  			page = virt_to_head_page(p[i]);
-> 
+On Thu, May 06, 2021 at 10:30:21AM -0500, Madhavan T. Venkataraman wrote:
+> On 5/6/21 9:12 AM, Mark Brown wrote:
+> > On Mon, May 03, 2021 at 12:36:14PM -0500, madvenka@linux.microsoft.com wrote:
 
+> > I was thinking it'd be good to do this by modifying SYM_CODE_START() to
+> > emit the section, that way nobody can forget to put any SYM_CODE into a
+> > special section.  That does mean we'd have to first introduce a new
+
+> OK. I could make the section an argument to SYM_CODE*() so that a developer
+> will never miss that. Some documentation may be in order so the guidelines
+> are clear. I will do the doc patch separately, if that is alright with
+> you all.
+
+I was thinking to have standard SYM_CODE default to a section then a
+variant for anything that cares (like how we have SYM_FUNC_PI and
+friends for the PI code for EFI).
+
+> > We also have a bunch of things like __cpu_soft_restart which don't seem
+> > to be called out here but need to be in .idmap.text.
+
+> It is already in .idmap.text.
+
+Right, I meant that I was expecting to see things that need to be in a
+specific section other than .code.text called out separately here if
+we're enumerating them.  Though if the annotations are done separately
+then this patch wouldn't need to do that calling out at all, it'd be
+covered as part of fiddling around with the annotations.
+
+--Dxnq1zWXvFF0Q93v
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCUDVMACgkQJNaLcl1U
+h9Drpwf/SRzqFMWq22H1Ml8s27Hh49gC4CLFUccseoSmz/co/VzB6TRhYlOyIfHE
+CquUlAiLLDlHRaIeZLOc9bPRdafdaXoC58VYe8TUsyKHl0+pmWo4X2A9ky2Ig9RM
+pFFvTMAU2xA1wAh6JRpJVYU0tPZv5nrQ7HSOmoDkySeimDkMbE64RJLIrOr/uxMw
+LPuqYgruwUirX05C7FPyEQHPCle7/IkJ448nrY9noXSJ5Qh69Mf5YyfKCvVQI1bC
+mKhjwpj9r13kF0dpMa8haPuLNmu1pbFcCgTcwzpJ87w7AQ1LtGPy+Pmvzj7ESM6y
+lu03JhhYAU9hJSRQAfMFkyb/FTqShg==
+=HPop
+-----END PGP SIGNATURE-----
+
+--Dxnq1zWXvFF0Q93v--
