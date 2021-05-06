@@ -2,109 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DA0C375DBD
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 02:00:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C41FF375DC0
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 02:00:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233227AbhEGAAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 20:00:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43538 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233079AbhEGAAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 20:00:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 208F4613C5
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 23:59:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620345559;
-        bh=zt8bWHlggl9h8cOqWZ+6K4hluYlKzNhk7MdtQ+pN8o0=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YBFKSHosY/1h5SOWpUPMcsT8zpWk/YxOOPldruawOZWsEZyXIWz4GezDpxTX6q+mE
-         5tsshZwgxtx8HAQifHVYSp2lFSt0B1eaE/8UXM4I5PwZUfHyoaFbB21xYJuHcX5Dt+
-         9U6yvvNb+XkTdlHbdtGCdFmoYgRu3V42A/leIAp1a/scNn1YinnnDMCfrlrRSWlRve
-         Hd5jKK2AhCra0WgFWirm82ZrgLHR4kBGrf2suyz9tZ4by+hSvqQGSIiwNXe5Hsl/5w
-         0+DVlgqBLkX8aJM8RMzSpRgndaSC7utoJlr4FJXtgbUrIJqERbS4a3P7VA2AyWF6C2
-         3lMio8jfw7e5g==
-Received: by mail-ej1-f51.google.com with SMTP id zg3so10856001ejb.8
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 16:59:19 -0700 (PDT)
-X-Gm-Message-State: AOAM530rHJfa7zjp7W0DSCUIoIYDBl57Pd2jd+g2gfVHtGMR+hcqtkUY
-        hG9QsNISGh+a5xRFJb5xwyGE8lzuZtNaLLd6PABFQg==
-X-Google-Smtp-Source: ABdhPJwEEc+Uu0FuOkvehhv2TwcGtzoUoMKDmPBjxunt1tNzewz+tZsx8dQXWaLxUe28dkQUjXBRSnduZU85SsoSc5M=
-X-Received: by 2002:a17:906:f742:: with SMTP id jp2mr7173182ejb.199.1620345557507;
- Thu, 06 May 2021 16:59:17 -0700 (PDT)
+        id S233360AbhEGAAm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 20:00:42 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:47798 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233312AbhEGAAk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 20:00:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:In-Reply-To:MIME-Version:Date:
+        Message-ID:From:References:Cc:To:content-disposition;
+        bh=lutt0mRx1qejbd/KzcxWOBkc0pyjO3VgQZn/+HsAIag=; b=tOkHvek+83IjhQiCfL3GVpPHEz
+        LbEurXfHUNzzROcmLSSaXdORwYe+S8wQ6YjP5FgHzL9zkBxCjtspkcXueFktPt+htL2KCkKjDRsVz
+        XNPqDPGyecK4bVgZjR7aY4L+2UdND3io9SpayZY9JC9Uy3qCZf1PBs5rh0jltsjsMA/11ad/lPH5t
+        6D8zdFq+sLfJGKtZwY1Pnu6OienaGECcsL3fXAMUzp0UrL3pnzVq2Q+UHbYalfgJfJ62E3S4NkH7S
+        pPOK7AfODC/AgmfHxvesokiRhS/Kv0C7N5MH0STByLV9tzPPH4hzVaNIbd0DDNo4be13qKrwmr3gV
+        I6qRFqDw==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1lentq-0003Fs-1C; Thu, 06 May 2021 17:59:23 -0600
+To:     John Hubbard <jhubbard@nvidia.com>, linux-kernel@vger.kernel.org,
+        linux-nvme@lists.infradead.org, linux-block@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-mm@kvack.org,
+        iommu@lists.linux-foundation.org
+Cc:     Stephen Bates <sbates@raithlin.com>,
+        Christoph Hellwig <hch@lst.de>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        =?UTF-8?Q?Christian_K=c3=b6nig?= <christian.koenig@amd.com>,
+        Don Dutile <ddutile@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Jakowski Andrzej <andrzej.jakowski@intel.com>,
+        Minturn Dave B <dave.b.minturn@intel.com>,
+        Jason Ekstrand <jason@jlekstrand.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Xiong Jianxin <jianxin.xiong@intel.com>,
+        Bjorn Helgaas <helgaas@kernel.org>,
+        Ira Weiny <ira.weiny@intel.com>,
+        Robin Murphy <robin.murphy@arm.com>
+References: <20210408170123.8788-1-logang@deltatee.com>
+ <20210408170123.8788-12-logang@deltatee.com>
+ <560b2653-ad00-9cc3-0645-df7aff278321@nvidia.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <196d2d78-2c63-74cf-743d-1f3322431f88@deltatee.com>
+Date:   Thu, 6 May 2021 17:59:09 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <20210430204939.5152-1-sargun@sargun.me> <20210430204939.5152-3-sargun@sargun.me>
- <CALCETrXWFbB7v8wRKeNC-gxMqUZ9ZJUZx9nQiLu64qYi2Bx5FQ@mail.gmail.com>
- <CAMp4zn8A2n7EtbR_=fG99MPgpDTgn-Ju-AzQ8F2rYU9Fri3YTg@mail.gmail.com> <CACaBj2a3OGci7A9buLdmB9sMoh5dRaYN_K7p8X7esNfmPPLhvQ@mail.gmail.com>
-In-Reply-To: <CACaBj2a3OGci7A9buLdmB9sMoh5dRaYN_K7p8X7esNfmPPLhvQ@mail.gmail.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 6 May 2021 16:59:05 -0700
-X-Gmail-Original-Message-ID: <CALCETrX5UJ075oH6-Cm3Uxz_XZQffi_5vZOtc8Yq3ZRmKfcDhg@mail.gmail.com>
-Message-ID: <CALCETrX5UJ075oH6-Cm3Uxz_XZQffi_5vZOtc8Yq3ZRmKfcDhg@mail.gmail.com>
-Subject: Re: [PATCH v2 2/5] seccomp: Add wait_killable semantic to seccomp
- user notifier
-To:     Rodrigo Campos <rodrigo@kinvolk.io>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        Andy Lutomirski <luto@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        =?UTF-8?Q?Mauricio_V=C3=A1squez_Bernal?= <mauricio@kinvolk.io>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <560b2653-ad00-9cc3-0645-df7aff278321@nvidia.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: robin.murphy@arm.com, ira.weiny@intel.com, helgaas@kernel.org, jianxin.xiong@intel.com, dave.hansen@linux.intel.com, jason@jlekstrand.net, dave.b.minturn@intel.com, andrzej.jakowski@intel.com, daniel.vetter@ffwll.ch, willy@infradead.org, ddutile@redhat.com, christian.koenig@amd.com, jgg@ziepe.ca, dan.j.williams@intel.com, hch@lst.de, sbates@raithlin.com, iommu@lists.linux-foundation.org, linux-mm@kvack.org, linux-pci@vger.kernel.org, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, jhubbard@nvidia.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-6.9 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A autolearn=ham autolearn_force=no version=3.4.2
+Subject: Re: [PATCH 11/16] iommu/dma: Support PCI P2PDMA pages in dma-iommu
+ map_sg
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 12:35 PM Rodrigo Campos <rodrigo@kinvolk.io> wrote:
+Sorry, I think I missed responding to this one so here are the answers:
 
-> We want to be woken-up in seccomp_do_user_notification() so we know we
-> received a signal and notify to the supervisor about it. IMHO, we want
-> an additional "if" here[2], like (haven't checked the retun codes of
-> functions) "if err != 0"  and do a "wake_up_poll(&match->wqh, EPOLLIN
-> | EPOLLRDNORM);" or POLLPRI or something, and then "goto wait". IOW,
-> we only return when the supervisor tells us to, if a signal arrives we
-> just let the supervisor know and continue waiting for a response. The
-> proper response might be "I wrote partial data, return only 3 bytes",
-> etc. This way we can properly emulate it.
->
-> What is not clear to me, and I'd like others to comment is:
->
-> 1. How should this new "the supervisor should handle signals" mode be enabled?
->    a. If we use an extra ioctl, as Andy suggested, I think we have a
-> race too: from the moment the seccomp syscall is issued until the new
-> ioctl is called there is a race. If the container does a syscall in
-> that window, it _can_ incorrectly return EINTR as it does now. This
-> race can be very small and the ioctl can make _all the next syscalls_
-> wait in this new mode, so maybe the race is so small that we don't
-> care in practice.
+On 2021-05-02 7:14 p.m., John Hubbard wrote:
+> On 4/8/21 10:01 AM, Logan Gunthorpe wrote:
+>> When a PCI P2PDMA page is seen, set the IOVA length of the segment
+>> to zero so that it is not mapped into the IOVA. Then, in finalise_sg(),
+>> apply the appropriate bus address to the segment. The IOVA is not
+>> created if the scatterlist only consists of P2PDMA pages.
+>>
+>> Similar to dma-direct, the sg_mark_pci_p2pdma() flag is used to
+>> indicate bus address segments. On unmap, P2PDMA segments are skipped
+>> over when determining the start and end IOVA addresses.
+>>
+>> With this change, the flags variable in the dma_map_ops is
+>> set to DMA_F_PCI_P2PDMA_SUPPORTED to indicate support for
+>> P2PDMA pages.
+>>
+>> Signed-off-by: Logan Gunthorpe <logang@deltatee.com>
+>> ---
+>>   drivers/iommu/dma-iommu.c | 66 ++++++++++++++++++++++++++++++++++-----
+>>   1 file changed, 58 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/drivers/iommu/dma-iommu.c b/drivers/iommu/dma-iommu.c
+>> index af765c813cc8..ef49635f9819 100644
+>> --- a/drivers/iommu/dma-iommu.c
+>> +++ b/drivers/iommu/dma-iommu.c
+>> @@ -20,6 +20,7 @@
+>>   #include <linux/mm.h>
+>>   #include <linux/mutex.h>
+>>   #include <linux/pci.h>
+>> +#include <linux/pci-p2pdma.h>
+>>   #include <linux/swiotlb.h>
+>>   #include <linux/scatterlist.h>
+>>   #include <linux/vmalloc.h>
+>> @@ -864,6 +865,16 @@ static int __finalise_sg(struct device *dev,
+>> struct scatterlist *sg, int nents,
+>>           sg_dma_address(s) = DMA_MAPPING_ERROR;
+>>           sg_dma_len(s) = 0;
+>>   +        if (is_pci_p2pdma_page(sg_page(s)) && !s_iova_len) {
+> 
+> Newbie question: I'm in the dark as to why the !s_iova_len check is there,
+> can you please enlighten me?
 
-If the ioctl is sticky, it can presumably avoid the race entirely by
-having whoever calls seccomp() immediately do a dummy syscall or
-otherwise wait for the notifier to confirm that it has done the ioctl.
-Admittedly, this may be annoying.
+The loop in iommu_dma_map_sg() will decide what to do with P2PDMA pages.
+If it is to map it with the bus address it will set s_iova_len to zero
+so that no space is allocated in the IOVA. If it is to map it through
+the host bridge, then it it will leave s_iova_len alone and create the
+appropriate mapping with the CPU physical address.
 
->    b. But if we want to really fully solve the issue, the other option
-> that comes to mind is adding a new flag for the seccomp syscall, to
-> signal that the supervisor will handle signals and should be
-> forwarded. This way, if the container does a new syscall it will be
-> put to wait in this new mode (we have the information that the new
-> mode should be used already). Something like
-> SECCOMP_FILTER_FLAG_NEW_LISTENER_SOMETHING (today we have
-> SECCOMP_FILTER_FLAG_NEW_LISTENER). Ideally shorter :D
+This condition notices that s_iova_len was set to zero and fills in a SG
+segment with the PCI bus address for that region.
 
-I like that better.
 
->
-> 2. What should we notify to the supervisor? Only that a signal arrived
-> or also which signal it was? If we do the EPOLLPRI thingy, as Andy
-> mentioned in a previous thread, IIUC we will only notify that _a_
-> signal arrived, but not _which_. To notify which signal arrived might
-> be complex, though, (not sure, I haven't explored how that should be).
+> 
+>> +            if (i > 0)
+>> +                cur = sg_next(cur);
+>> +
+>> +            pci_p2pdma_map_bus_segment(s, cur);
+>> +            count++;
+>> +            cur_len = 0;
+>> +            continue;
+>> +        }
+>> +
+> 
+> This is really an if/else condition. And arguably, it would be better
+> to split out two subroutines, and call one or the other depending on
+> the result of if is_pci_p2pdma_page(), instead of this "continue" approach.
 
-Are there any examples in the kernel of syscalls that care *which*
-signal came in?  As far as I know, there are really only three states
-that matter: no signal is pending, a kill is pending, or a regular
-signal is pending.  (The latter means that there's a signal that is
-unmasked, etc and will should therefore interrupt a syscall if the
-syscall can be interrupted.
+I really disagree here. Putting the exceptional condition in it's own if
+statement and leaving the normal case un-indented is easier to read and
+understand. It also saves an extra level of indentation in code that is
+already starting to look a little squished.
+
+
+>>           /*
+>>            * Now fill in the real DMA data. If...
+>>            * - there is a valid output segment to append to
+>> @@ -961,10 +972,12 @@ static int iommu_dma_map_sg(struct device *dev,
+>> struct scatterlist *sg,
+>>       struct iova_domain *iovad = &cookie->iovad;
+>>       struct scatterlist *s, *prev = NULL;
+>>       int prot = dma_info_to_prot(dir, dev_is_dma_coherent(dev), attrs);
+>> +    struct dev_pagemap *pgmap = NULL;
+>> +    enum pci_p2pdma_map_type map_type;
+>>       dma_addr_t iova;
+>>       size_t iova_len = 0;
+>>       unsigned long mask = dma_get_seg_boundary(dev);
+>> -    int i;
+>> +    int i, ret = 0;
+>>         if (static_branch_unlikely(&iommu_deferred_attach_enabled) &&
+>>           iommu_deferred_attach(dev, domain))
+>> @@ -993,6 +1006,31 @@ static int iommu_dma_map_sg(struct device *dev,
+>> struct scatterlist *sg,
+>>           s_length = iova_align(iovad, s_length + s_iova_off);
+>>           s->length = s_length;
+>>   +        if (is_pci_p2pdma_page(sg_page(s))) {
+>> +            if (sg_page(s)->pgmap != pgmap) {
+>> +                pgmap = sg_page(s)->pgmap;
+>> +                map_type = pci_p2pdma_map_type(pgmap, dev,
+>> +                                   attrs);
+>> +            }
+>> +
+>> +            switch (map_type) {
+>> +            case PCI_P2PDMA_MAP_BUS_ADDR:
+>> +                /*
+>> +                 * A zero length will be ignored by
+>> +                 * iommu_map_sg() and then can be detected
+>> +                 * in __finalise_sg() to actually map the
+>> +                 * bus address.
+>> +                 */
+>> +                s->length = 0;
+>> +                continue;
+>> +            case PCI_P2PDMA_MAP_THRU_HOST_BRIDGE:
+>> +                break;
+>> +            default:
+>> +                ret = -EREMOTEIO;
+>> +                goto out_restore_sg;
+>> +            }
+>> +        }
+>> +
+>>           /*
+>>            * Due to the alignment of our single IOVA allocation, we can
+>>            * depend on these assumptions about the segment boundary mask:
+>> @@ -1015,6 +1053,9 @@ static int iommu_dma_map_sg(struct device *dev,
+>> struct scatterlist *sg,
+>>           prev = s;
+>>       }
+>>   +    if (!iova_len)
+>> +        return __finalise_sg(dev, sg, nents, 0);
+>> +
+> 
+> ohhh, we're really slicing up this function pretty severely, what with the
+> continue and the early out and several other control flow changes. I think
+> it would be better to spend some time factoring this function into two
+> cases, now that you're adding a second case for PCI P2PDMA. Roughly,
+> two subroutines would do it.
+
+I don't see how we can factor this into two cases. The SGL may contain
+normal pages or P2PDMA pages or a mix of both and we have to create an
+IOVA area for all the regions that map the CPU physical address (ie
+normal pages and some P2PDMA pages) then also insert segments for any
+PCI bus address.
+
+> As it is, this leaves behind a routine that is extremely hard to mentally
+> verify as correct.
+
+Yes, this is tricky code, but not that incomprehensible. Most of the
+difficulty is in understanding how it works before adding the P2PDMA bits.
+
+There are two loops: one to prepare the IOVA region and another to fill
+in the SGL. We have to add cases in both loops to skip the segments that
+need to be mapped with the bus address in the first loop, and insert the
+dma SGL segments in the second loop.
+
+Logan
