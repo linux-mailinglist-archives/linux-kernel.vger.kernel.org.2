@@ -2,163 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D83A13752A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:54:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BFE93752A7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234610AbhEFKzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:55:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55282 "EHLO
+        id S234634AbhEFKzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:55:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55298 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234508AbhEFKzI (ORCPT
+        with ESMTP id S234611AbhEFKzM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:55:08 -0400
-Received: from mail-qv1-xf49.google.com (mail-qv1-xf49.google.com [IPv6:2607:f8b0:4864:20::f49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 054A7C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 03:54:10 -0700 (PDT)
-Received: by mail-qv1-xf49.google.com with SMTP id x6-20020a0cda060000b02901c4b3f7d3d9so3835014qvj.0
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 03:54:09 -0700 (PDT)
+        Thu, 6 May 2021 06:55:12 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DA7CAC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 03:54:12 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id x10-20020adfc18a0000b029010d83c83f2aso2036859wre.8
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 03:54:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=eT7PK1MfSj45qzsyr5rJofBwC+yPAyYAfH4B2yGSTNk=;
-        b=MvlkqRk1Ya3oqXBoCPvWPVDaHZpwiYg9xXgMMSEFOSvtP8bPibdGJIQUlCq7BhPRzC
-         9vW/5dkQrbV0SEZRwqEPqz4UJFY6185V27KIV6dZVlIYUnRRKadPG68/H3i4xPvjczOw
-         2f53vvnLftyp08d1K+emWxJGSonZD819wIVfqYxmv6MMbZYMfwlqZDMXENbh9vYB7xmN
-         m9qYIdYDaJuUuUV2dxwPTdVvd10Bkd02wBfZdcS9Af7y/vupbUVptDbPvWNBtZnNjpyZ
-         gky/omQRCwbXZcvUvXXO+Vbd/DtO5lKCihAbNJIysl+P4jCRFCDetpBU5HRJD20hEaTv
-         +GxQ==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=ipcG+5uCgsazZ7SR+haE6w/wCwHthGEmmd5v1cTEP/8=;
+        b=Dt5VHadtdFALJNc2V8NVWfsRwTuNJvem5dJIW6zihJXQSNYad98je3UEUvAryxgUjx
+         BRAY/7A0Qjj1kZbAiaaVjlJBJ0Fhfa/kWwAYG+kGD1JIh5jOaan0hQysxjH6j4mqAN3m
+         o4foBxQrb36gzuEDwy342mjrN7DX/UB8DK3AXqzjho+xEEfc4WylZYrmmv7q8OWNFQ5z
+         sN4p9TLHJOa3lTnbdfFrvGDheSsK9Y387iacN2mMdvc7xkNodiGBZYEHIB2mEW/NTGep
+         gmdqC2xdDwlyw7AoL9u8hIjSZ6KGzTQcQGo9+kaltMMvPc6OHQsX/s7NF6jXhm1fvuri
+         w7+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=eT7PK1MfSj45qzsyr5rJofBwC+yPAyYAfH4B2yGSTNk=;
-        b=EivdmGRoXAu0nosJ3wzPycQKQHiDw98uGfVIM+xQzZuYSjpqmbwI6WRzR3ZJHnqzwd
-         dfp5nxwcxP/YW5kJIqmfgbIwml4ahP9SqaPfq5MC0rZJmmrX0zNToHjt87BvnSmHlvhF
-         B0GV6QmSeGjXAPIWIDhsVcDLXHjg02x5T4MTT5fPyeQwcGHDJsxuwFL3SRUpwJF4ELgc
-         Mix3YmUOWZU958DOCkOXrYQiB1lLGmEf/E/9EDRIh+SPUzNKlIzmXjZIhjjyv/zgry+u
-         psEGya7sTFXgS2Qjft2uQmqqKz4NtvbrkIwIxCr8gNoXSPSFtNNxXs8wnXXN/oL4aOip
-         cl/Q==
-X-Gm-Message-State: AOAM5318KXLdIoJQi1XNqi8oe2ombCTXV44uTsBqdmwKJjjAr4Fw1Itd
-        1cu4z6iiolDE1ekDZu50NTpLwleouM4=
-X-Google-Smtp-Source: ABdhPJyc+tQqnZ+TKycxxwOIKHbu/+si7EvDzckjH/oJQY4JiOqj4ec+eRvV8dLxJfYBCyco3PEXBqfvu9M=
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=ipcG+5uCgsazZ7SR+haE6w/wCwHthGEmmd5v1cTEP/8=;
+        b=fdW4klnvlBARAedRHRkBAYSXQGIjc9Ltu+rirqBHn8F5masQBokILuRVJI6on+qxBg
+         NeMzIaMHCv6etgQ4UehtHNn4vgipV/7CmobvhSx/pSJgxNOoKKXuOLHgJYuTXPjwJqa/
+         nPxreqtWn4h9Nrk30IZy52glTrBtaW1hhsZuYN7dhVPO1WyaXqo2DSBSWeCIYff/KOpe
+         WNonDZ/0eVrThzt4Hyt+M/HT+Tz6h4NsEAgv+o2SNKdn9F706ySAfBy3yomdYcFaTWOK
+         QK4rhF1ig6MW0GO31f0cKbmO46jbOS4roT4C+cJ1b3FuyTYjbEiyNeoBfzMYraNhuX7o
+         yLMg==
+X-Gm-Message-State: AOAM530JCmT0fhFIFSbInZQRGnEbmfMqIzmIq3wDctb2s9FTUAZZIg5l
+        3vMa87wqR3eqZcF7iB6NwFUQPL1N5to=
+X-Google-Smtp-Source: ABdhPJyI4tYi07VP6AcDu1zYJvLTRf5hulbyrr5zLv7ZRLrHEwhdxwIvgr7nn0FOX+y6VSPUX4Xy2JCWDNk=
 X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:14b:3523:e987:8aa8])
- (user=glider job=sendgmr) by 2002:a05:6214:c2d:: with SMTP id
- a13mr3480060qvd.37.1620298449149; Thu, 06 May 2021 03:54:09 -0700 (PDT)
-Date:   Thu,  6 May 2021 12:54:04 +0200
-Message-Id: <20210506105405.3535023-1-glider@google.com>
+ (user=glider job=sendgmr) by 2002:a1c:804a:: with SMTP id b71mr3337751wmd.82.1620298451425;
+ Thu, 06 May 2021 03:54:11 -0700 (PDT)
+Date:   Thu,  6 May 2021 12:54:05 +0200
+In-Reply-To: <20210506105405.3535023-1-glider@google.com>
+Message-Id: <20210506105405.3535023-2-glider@google.com>
 Mime-Version: 1.0
+References: <20210506105405.3535023-1-glider@google.com>
 X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH v2 1/2] printk: introduce dump_stack_lvl()
+Subject: [PATCH v2 2/2] kasan: use dump_stack_lvl(KERN_ERR) to print stacks
 From:   Alexander Potapenko <glider@google.com>
 To:     akpm@linux-foundation.org, pmladek@suse.com, mingo@kernel.org
 Cc:     bo.he@intel.com, yanmin_zhang@linux.intel.com,
         psodagud@quicinc.com, dvyukov@google.com, elver@google.com,
         linux-kernel@vger.kernel.org, ryabinin.a.a@gmail.com,
-        Alexander Potapenko <glider@google.com>, he@google.com
+        Alexander Potapenko <glider@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-dump_stack() is used for many different cases, which may require a log
-level consistent with other kernel messages surrounding the dump_stack()
-call.
-Without that, certain systems that are configured to ignore the default
-level messages will miss stack traces in critical error reports.
-
-This patch introduces dump_stack_lvl() that behaves similarly to
-dump_stack(), but accepts a custom log level.
-The old dump_stack() becomes equal to dump_stack_lvl(KERN_DEFAULT).
-
-A somewhat similar patch has been proposed in 2012:
-https://lore.kernel.org/lkml/1332493269.2359.9.camel@hebo/
-, but wasn't merged.
+Most of the contents of KASAN reports are printed with pr_err(), so use
+a consistent logging level to print the memory access stacks.
 
 Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Petr Mladek <pmladek@suse.com>
-Cc: Ingo Molnar <mingo@kernel.org>
-Cc: he, bo <bo.he@intel.com>
-Cc: Yanmin Zhang <yanmin_zhang@linux.intel.com>
+Cc: Andrey Ryabinin <ryabinin.a.a@gmail.com>
 Cc: Prasad Sodagudi <psodagud@quicinc.com>
 Cc: Dmitry Vyukov <dvyukov@google.com>
 Cc: Marco Elver <elver@google.com>
 Cc: linux-kernel@vger.kernel.org
 Signed-off-by: Alexander Potapenko <glider@google.com>
-
 ---
+ mm/kasan/report.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-v2:
- -- export dump_stack_lvl() (spotted by Marco Elver)
----
- include/linux/printk.h |  1 +
- lib/dump_stack.c       | 20 +++++++++++++-------
- 2 files changed, 14 insertions(+), 7 deletions(-)
-
-diff --git a/include/linux/printk.h b/include/linux/printk.h
-index fe7eb2351610..abe274305d79 100644
---- a/include/linux/printk.h
-+++ b/include/linux/printk.h
-@@ -206,6 +206,7 @@ void __init setup_log_buf(int early);
- __printf(1, 2) void dump_stack_set_arch_desc(const char *fmt, ...);
- void dump_stack_print_info(const char *log_lvl);
- void show_regs_print_info(const char *log_lvl);
-+extern asmlinkage void dump_stack_lvl(const char *log_lvl) __cold;
- extern asmlinkage void dump_stack(void) __cold;
- extern void printk_safe_flush(void);
- extern void printk_safe_flush_on_panic(void);
-diff --git a/lib/dump_stack.c b/lib/dump_stack.c
-index f5a33b6f773f..586e3f2c6a15 100644
---- a/lib/dump_stack.c
-+++ b/lib/dump_stack.c
-@@ -73,10 +73,10 @@ void show_regs_print_info(const char *log_lvl)
- 	dump_stack_print_info(log_lvl);
- }
- 
--static void __dump_stack(void)
-+static void __dump_stack(const char *log_lvl)
+diff --git a/mm/kasan/report.c b/mm/kasan/report.c
+index 14bd51ea2348..8fff1825b22c 100644
+--- a/mm/kasan/report.c
++++ b/mm/kasan/report.c
+@@ -230,7 +230,7 @@ static void print_address_description(void *addr, u8 tag)
  {
--	dump_stack_print_info(KERN_DEFAULT);
--	show_stack(NULL, NULL, KERN_DEFAULT);
-+	dump_stack_print_info(log_lvl);
-+	show_stack(NULL, NULL, log_lvl);
+ 	struct page *page = kasan_addr_to_page(addr);
+ 
+-	dump_stack();
++	dump_stack_lvl(KERN_ERR);
+ 	pr_err("\n");
+ 
+ 	if (page && PageSlab(page)) {
+@@ -375,7 +375,7 @@ void kasan_report_async(void)
+ 	pr_err("BUG: KASAN: invalid-access\n");
+ 	pr_err("Asynchronous mode enabled: no access details available\n");
+ 	pr_err("\n");
+-	dump_stack();
++	dump_stack_lvl(KERN_ERR);
+ 	end_report(&flags, 0);
  }
- 
- /**
-@@ -87,7 +87,7 @@ static void __dump_stack(void)
- #ifdef CONFIG_SMP
- static atomic_t dump_lock = ATOMIC_INIT(-1);
- 
--asmlinkage __visible void dump_stack(void)
-+asmlinkage __visible void dump_stack_lvl(const char *log_lvl)
- {
- 	unsigned long flags;
- 	int was_locked;
-@@ -117,7 +117,7 @@ asmlinkage __visible void dump_stack(void)
- 		goto retry;
+ #endif /* CONFIG_KASAN_HW_TAGS */
+@@ -420,7 +420,7 @@ static void __kasan_report(unsigned long addr, size_t size, bool is_write,
+ 		pr_err("\n");
+ 		print_memory_metadata(info.first_bad_addr);
+ 	} else {
+-		dump_stack();
++		dump_stack_lvl(KERN_ERR);
  	}
  
--	__dump_stack();
-+	__dump_stack(log_lvl);
- 
- 	if (!was_locked)
- 		atomic_set(&dump_lock, -1);
-@@ -125,9 +125,15 @@ asmlinkage __visible void dump_stack(void)
- 	local_irq_restore(flags);
- }
- #else
--asmlinkage __visible void dump_stack(void)
-+asmlinkage __visible void dump_stack_lvl(const char *log_lvl)
- {
--	__dump_stack();
-+	__dump_stack(log_lvl);
- }
- #endif
-+EXPORT_SYMBOL(dump_stack_lvl);
-+
-+asmlinkage __visible void dump_stack(void)
-+{
-+	dump_stack_lvl(KERN_DEFAULT);
-+}
- EXPORT_SYMBOL(dump_stack);
+ 	end_report(&flags, addr);
 -- 
 2.31.1.527.g47e6f16901-goog
 
