@@ -2,63 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B22D375C68
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6358D375C77
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:54:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233572AbhEFUt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 16:49:28 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:43955 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230306AbhEFUtZ (ORCPT
+        id S230048AbhEFUzm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 16:55:42 -0400
+Received: from thorn.bewilderbeest.net ([71.19.156.171]:51875 "EHLO
+        thorn.bewilderbeest.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229784AbhEFUzl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 16:49:25 -0400
-Received: by mail-ot1-f45.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso5302852ots.10;
-        Thu, 06 May 2021 13:48:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bM7mNDdiOUZmeeObZqbnT+glfKVgqMgaIDdHVATsGTA=;
-        b=cjsY7vwfaI05s8w+/Y7zampz7V4EDShdRdKPuLq8ZsORsMWbba9QlufCo6JORdmcrj
-         /xIVhG4e2ntus+qNdoKozITGt+R+mIgQr+bg7Yy9o33ThjZhtIWbaJS8pffXMQsZB6r2
-         KMarKfgVPzkQL8tsBlPHniaE0pib7H/tEfYsz6SEuGG/hyDOI9vzKzjsm0EggO5d2nZ8
-         mGdyNr/j8by03pHB2iYoBAyU44YOLC/owdypiLT5TO032jfH5zfH1gcNAgQ4pt8w7g52
-         6Jo4yuk19bRFL6GdsV/XPB6DSlP83gC8K890wNwr3saBUk/sqAl8rbx6A5kNlDWQCEUe
-         kaBw==
-X-Gm-Message-State: AOAM533MXs7j9JFYrnG9r8CxPD81p3Kp8Nbika4WHThrGPUuLdlsdoWK
-        TObBBOBiIqS/F35iTyyDXw==
-X-Google-Smtp-Source: ABdhPJx12QWqOGOWr2UyyDEwlPKiJHLXHbUgBE8IbfUNRLj53eVq51YTwDrdTr+th8GX9IrsgV/ugQ==
-X-Received: by 2002:a05:6830:24af:: with SMTP id v15mr744597ots.165.1620334105882;
-        Thu, 06 May 2021 13:48:25 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u207sm618265oie.56.2021.05.06.13.48.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 13:48:25 -0700 (PDT)
-Received: (nullmailer pid 776804 invoked by uid 1000);
-        Thu, 06 May 2021 20:48:24 -0000
-Date:   Thu, 6 May 2021 15:48:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-Cc:     Rob Herring <robh+dt@kernel.org>, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org
-Subject: Re: [PATCH] dt-bindings: add vendor prefix for Insignal Ltd
-Message-ID: <20210506204824.GA776775@robh.at.kernel.org>
-References: <20210504120742.12922-1-krzysztof.kozlowski@canonical.com>
+        Thu, 6 May 2021 16:55:41 -0400
+Received: from hatter.bewilderbeest.net (unknown [IPv6:2600:6c44:7f:ba20::7c6])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        (Authenticated sender: zev)
+        by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 0ADC7475;
+        Thu,  6 May 2021 13:54:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
+        s=thorn; t=1620334482;
+        bh=vNoReDMKLGxtVQ/HUO76L61RXlajosDXB81QNCQh3t4=;
+        h=From:To:Cc:Subject:Date:From;
+        b=UqSiwV1TYfmc9tMThAqiUf57dvCOYSLJQ72d9rXD293X2le3KSui72Bi7EaXgth+F
+         SZ3XSRkNJD1pRIK+AEvFsuLzpDYNjYAnAYEXHbh12wL+eLVM/m8BzDMiJetd+iLt/k
+         HtvwZnY/7/g/PsZBOupIujs+EK+8ymakCOnzKruE=
+From:   Zev Weiss <zev@bewilderbeest.net>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Zev Weiss <zev@bewilderbeest.net>, Joel Stanley <joel@jms.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Andrew Jeffery <andrew@aj.id.au>, linux-i2c@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] i2c: aspeed: disable additional device addresses on ast2[56]xx
+Date:   Thu,  6 May 2021 15:54:19 -0500
+Message-Id: <20210506205419.26294-1-zev@bewilderbeest.net>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504120742.12922-1-krzysztof.kozlowski@canonical.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 04 May 2021 08:07:42 -0400, Krzysztof Kozlowski wrote:
-> Add vendor prefix for Insignal Ltd (http://www.insignal.co.kr).
-> 
-> Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
+The ast25xx and ast26xx have, respectively, two and three configurable
+slave device addresses to the ast24xx's one.  We only support using
+one at a time, but the others may come up in an indeterminate state
+depending on hardware/bootloader behavior, so we need to make sure we
+disable them so as to avoid ending up with phantom devices on the bus.
 
-Applied, thanks!
+Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
+---
+
+Changes since v1 [0]:
+ - reduced to simplified approach suggested by Joel
+
+[0] https://lore.kernel.org/linux-arm-kernel/20200915184525.29665-1-zev@bewilderbeest.net/
+
+ drivers/i2c/busses/i2c-aspeed.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/i2c/busses/i2c-aspeed.c b/drivers/i2c/busses/i2c-aspeed.c
+index 724bf30600d6..67e8b97c0c95 100644
+--- a/drivers/i2c/busses/i2c-aspeed.c
++++ b/drivers/i2c/busses/i2c-aspeed.c
+@@ -727,10 +727,14 @@ static void __aspeed_i2c_reg_slave(struct aspeed_i2c_bus *bus, u16 slave_addr)
+ {
+ 	u32 addr_reg_val, func_ctrl_reg_val;
+ 
+-	/* Set slave addr. */
+-	addr_reg_val = readl(bus->base + ASPEED_I2C_DEV_ADDR_REG);
+-	addr_reg_val &= ~ASPEED_I2CD_DEV_ADDR_MASK;
+-	addr_reg_val |= slave_addr & ASPEED_I2CD_DEV_ADDR_MASK;
++	/*
++	 * Set slave addr.  Reserved bits can all safely be written with zeros
++	 * on all of ast2[456]00, so zero everything else to ensure we only
++	 * enable a single slave address (ast2500 has two, ast2600 has three,
++	 * the enable bits for which are also in this register) so that we don't
++	 * end up with additional phantom devices responding on the bus.
++	 */
++	addr_reg_val = slave_addr & ASPEED_I2CD_DEV_ADDR_MASK;
+ 	writel(addr_reg_val, bus->base + ASPEED_I2C_DEV_ADDR_REG);
+ 
+ 	/* Turn on slave mode. */
+-- 
+2.31.1
+
