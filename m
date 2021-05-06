@@ -2,128 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B220E3750E6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:31:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D2AC3750EC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:32:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233437AbhEFIce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 04:32:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52546 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231228AbhEFIcd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 04:32:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id A0D41613BA
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 08:31:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620289895;
-        bh=tXoVVhjMUlqtpW3yZ+4IlGtS4t3/pnMFT/53JNA7qRc=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=YQcghHsUBUdRYVj63qX5JqPfgwar7Q+0InI1U2ymGYvDBNauESDgXfrws+AuqX7QD
-         MAO+nQI/m9pM7kABDkPe04LITaLqmY7qjpYLbDj5lcQHlb9nu15z2cbeZ1oTxWqLfD
-         6smnk05vfRhHga/+5MsSkuYGAdLyS5U4aC0hFRQb5mum+/wzvZK1HuNliXIdD+RJ/z
-         2gcmcw5RE1P7UPnCKrg9e9AxhDwx+yq/hawOFC7KPRyEeJd68vGjSwFzCWAzbwW2mH
-         ounIGIzaSjm500C1/pQ4VHVw0QjWvvmLCS5mwfa5kPDzshPiE5FzjiVQtvegM42sNJ
-         SUYNiRl+zVzxg==
-Received: by mail-wr1-f49.google.com with SMTP id z6so4650416wrm.4
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 01:31:35 -0700 (PDT)
-X-Gm-Message-State: AOAM5307dV3DS8d5FL2Gm7EJfTIS0Lv4otR6Nzr26N9YFa6vXx8HEOr1
-        YqLpUIxfPstaam8gQrJzo+onLJIbEV96D08NUCc=
-X-Google-Smtp-Source: ABdhPJzNR7fHlt24feGy7yyLHVNwGnN5mAc84FS0FJ3pbuLAjyZFwPPDidP62YWYi8FRgyGc0R44O+MVwLCCCUtcNw4=
-X-Received: by 2002:adf:d223:: with SMTP id k3mr3557467wrh.99.1620289894075;
- Thu, 06 May 2021 01:31:34 -0700 (PDT)
+        id S233625AbhEFIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:33:42 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:45908 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233479AbhEFIco (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 04:32:44 -0400
+Received: by mail-wm1-f47.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so2555467wmh.4;
+        Thu, 06 May 2021 01:31:39 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=jdCwYwppTlBb66RQGVcaxMJxswPj0yVdGz+T2ee7UvU=;
+        b=i2eHiRRvzlTL+6+4hSJnIfvQKv9h4CpOe+4lo8XUPqy65RpwF11of7nnpOWEZNzY+i
+         qobPYi79FPH48Xkl2F5C97tFMaFAD8/OSdYIDZL8+urN3n8vDa0B9hCZgv6Wyjazpt+S
+         JDr70Td4qT4ye2hzejp3TNZJ6pLRSuKKJueId3NGqhfp4cgbKSlxPHLsxFL0z5xFbn3g
+         gkIp8pTonbFApDbzdvN7qodb8rsChhYtGBh0bZgIje1etZRsBYOk3wtd1i2W0SN10Of+
+         KvGEXrcMqVRdVtDl4FTY9mt6mjJNGXQha1vqvy86y5rOQ2PnbOYRQVKcV2mbDcs5EmNF
+         2tZQ==
+X-Gm-Message-State: AOAM532g+QVCjND0BK2cX5LrAxfNxrZZ5YsU38lVWcpU5Sw85RJGpX8g
+        7NUG9BpXT4UBtk4/ohh4Oi90QNBlbUjyWw==
+X-Google-Smtp-Source: ABdhPJyteP3dy+j3FLa84WwMPk1u2FJXXKvIr5hwaOJRXcEmLu3SLt583QIZYlTF1065M2uhsd7Iug==
+X-Received: by 2002:a1c:b60b:: with SMTP id g11mr14092208wmf.68.1620289898367;
+        Thu, 06 May 2021 01:31:38 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id q20sm15785912wmq.2.2021.05.06.01.31.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 01:31:37 -0700 (PDT)
+Subject: Re: [PATCH 34/35] tty: make tty_get_byte_size available
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Joe Perches <joe@perches.com>
+Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
+        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210505091928.22010-1-jslaby@suse.cz>
+ <20210505091928.22010-35-jslaby@suse.cz>
+ <ef1bd57095e941560530be43806791966a6735ad.camel@perches.com>
+ <CAHp75Vfq6ABW7ukwaKmZOF2DszmuHD28S=wcLcFowvRdXTnWmg@mail.gmail.com>
+From:   Jiri Slaby <jirislaby@kernel.org>
+Message-ID: <7830c076-0d42-662c-5baa-2baecf1ad3b0@kernel.org>
+Date:   Thu, 6 May 2021 10:31:36 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210505211300.3174456-1-arnd@kernel.org> <87czu4slom.fsf@yhuang6-desk1.ccr.corp.intel.com>
- <CAK8P3a1SBDXqHE5FgG_WfzrcbeT6V6kg5T+xTGU8Cp_vLLdMqA@mail.gmail.com> <877dkcs2h8.fsf@yhuang6-desk1.ccr.corp.intel.com>
-In-Reply-To: <877dkcs2h8.fsf@yhuang6-desk1.ccr.corp.intel.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Thu, 6 May 2021 10:30:49 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3kZ9_VoKV+2eZh=WqncRqFKzRmRHUjAT9iFMtJpKzb1w@mail.gmail.com>
-Message-ID: <CAK8P3a3kZ9_VoKV+2eZh=WqncRqFKzRmRHUjAT9iFMtJpKzb1w@mail.gmail.com>
-Subject: Re: [PATCH] [v2] smp: fix smp_call_function_single_async prototype
-To:     "Huang, Ying" <ying.huang@intel.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Borislav Petkov <bp@suse.de>,
-        Eric Dumazet <eric.dumazet@gmail.com>,
-        Juergen Gross <jgross@suse.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        He Ying <heying24@huawei.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHp75Vfq6ABW7ukwaKmZOF2DszmuHD28S=wcLcFowvRdXTnWmg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 10:14 AM Huang, Ying <ying.huang@intel.com> wrote:
->
-> Arnd Bergmann <arnd@kernel.org> writes:
->
-> > On Thu, May 6, 2021 at 3:20 AM Huang, Ying <ying.huang@intel.com> wrote:
-> >>
-> >> Arnd Bergmann <arnd@kernel.org> writes:
-> >>
-> >> > From: Arnd Bergmann <arnd@arndb.de>
-> >> >
-> >> > As of commit 966a967116e6 ("smp: Avoid using two cache lines for struct
-> >> > call_single_data"), the smp code prefers 32-byte aligned call_single_data
-> >> > objects for performance reasons, but the block layer includes an instance
-> >> > of this structure in the main 'struct request' that is more senstive
-> >> > to size than to performance here, see 4ccafe032005 ("block: unalign
-> >> > call_single_data in struct request").
-> >> >
-> >> > The result is a violation of the calling conventions that clang correctly
-> >> > points out:
-> >> >
-> >> > block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to 32-byte aligned parameter 2 of 'smp_call_function_single_async' may result in an unaligned pointer access [-Walign-mismatch]
-> >> >                 smp_call_function_single_async(cpu, &rq->csd);
-> >>
-> >> Can this be silenced by
-> >>
-> >>                 smp_call_function_single_async(cpu, (call_single_data_t *)&rq->csd);
-> >
-> > Probably, but casting from smaller alignment to larger alignment is undefined
-> > behavior
->
-> We cannot avoid type cast in Linux kernel, such as container_of(), is
-> there some difference here?
+On 06. 05. 21, 10:24, Andy Shevchenko wrote:
+> if (!account_flags)
+>    return bits;
+> 
+> ?
 
-container_of() does not cause any alignment problems. Assuming the outer
-structure is aligned correctly, then the inner structure also is.
+So I have:
 
-> > and I'd rather not go there in case this triggers some runtime
-> > misbehavior or ubsan check in the future. Making the function accept a
-> > pointer with the smaller alignment avoids getting into undefined behavior
-> > and doesn't require a cast.
->
-> In its raw form as above, this looks bad.  If we encapsulate it, it may
-> look better, for example,
->
-> static inline int __smp_call_function_single_async(int cpu, struct __call_single_data *csd)
-> {
->         smp_call_function_single_async(cpu, (call_single_data_t *)csd);
-> }
->
-> Then, we can do
->
->         __smp_call_function_single_async(cpu, &rq->csd);
-
-Same problem, it's still calling a function that expects stricter alignment.
-It would work if we do it the other way around though:
-
-static inline int smp_call_function_single_async(int cpu,
-call_single_data_t *csd)
+unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags)
 {
-        return __smp_call_function_single_async(cpu, csd);
+         unsigned char bits;
+
+         switch (cflag & CSIZE) {
+         case CS5:
+                 bits = 5;
+                 break;
+         case CS6:
+                 bits = 6;
+                 break;
+         case CS7:
+                 bits = 7;
+                 break;
+         case CS8:
+         default:
+                 bits = 8;
+                 break;
+         }
+
+         if (!account_flags)
+                 return bits;
+
+         if (cflag & CSTOPB)
+                 bits++;
+         if (cflag & PARENB)
+                 bits++;
+
+         return bits + 2;
 }
 
-That should even work without the cast.
-
-        Arnd
+thanks,
+-- 
+js
+suse labs
