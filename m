@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 728C4375510
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:48:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DC0E375512
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:48:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234367AbhEFNtS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:49:18 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:40434 "EHLO
+        id S233980AbhEFNtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:49:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40464 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233980AbhEFNtQ (ORCPT
+        with ESMTP id S234033AbhEFNtT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:49:16 -0400
-Date:   Thu, 06 May 2021 13:48:16 -0000
+        Thu, 6 May 2021 09:49:19 -0400
+Date:   Thu, 06 May 2021 13:48:18 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620308897;
+        s=2020; t=1620308899;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=V+E1jza673rsP7eF2/pxH4zfwde33e7WTNJOHAFJAlQ=;
-        b=TS+NLAPCl+zkvWBf0X2OTfBa1mcni0j2pNMzqf6w1tazuxHe0/iaFhihVU4JPP5+qucGKH
-        4tOinHfqK0CzWwy6VrNibSpBHQmP2QgbiedFk00owV1//uQ8LLU/LfSWmhpfa56G+N9vI4
-        mK4BgIkzZERrq8RGzi14LZPeOprZvio+ROnNFHnOECsrxoqNDluWGgYnz0z8tOSIL31q9r
-        s2OCQLtAxPGpCFl8+gE76bU2uW6QHgRYeq2T5PtHLeri9V9Vpdav1YxfoctvC8CHjyJJpQ
-        /wxLlDkTiu39cQ4NJAeXeP7RS1hO+KZg1bdrg2u/VghLt40hqDsFQf/qqz/PAg==
+        bh=zuqG7zDjHOvJGRUdaha22LJ3Sayo8vnyPDl9IGBoSyY=;
+        b=EwuVSPmVJ57+O4NShKRNrtKQfJA8epABMmsDpNbKE/p/sg9AvFFIeTCdb4PYQvLQslOuDZ
+        0v39EL06BdhxdUt+rKQ3K9/MC0cLO+KoSqTSoB+2GtE8wSXyx10RY5Bl3mTghp36rmUCrG
+        0ItcH5YNA6vkR3dw6/pmn56+JpmlC+bzOm1LfdeVNTU3qbmWxUyNQQG414eI5F7XejkvJ1
+        yGeNNXkJT6Zx0vHFUxqLtdDjGDP8o+8U7xr2Cc1KmF+EbZTtaisuWsbORuTU/eymPyQBwL
+        iSkZR6V2DFzs7r7pjEYTU7PwE7LXNERmG+TgneM5xBX3rV4GFFWB0ZfFndAVmA==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620308897;
+        s=2020e; t=1620308899;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=V+E1jza673rsP7eF2/pxH4zfwde33e7WTNJOHAFJAlQ=;
-        b=AtQNP+3ZaXeZdBHz/rKUGajjdbilvb4DtF0NODBTLSzW7dA3qCsg9Uije6DrMdvy2AtXrZ
-        lpvcmykDTiAXT1Dg==
-From:   "tip-bot2 for Waiman Long" <tip-bot2@linutronix.de>
+        bh=zuqG7zDjHOvJGRUdaha22LJ3Sayo8vnyPDl9IGBoSyY=;
+        b=7ucQVoHjOAHGmQ5s3ZbeogHHa9lBq0QY2NMC3BzEw7NatPdQF+YL1zoIW5MjgPug1bLLHr
+        rQDmGX8ZbbOKQxAg==
+From:   "tip-bot2 for Suravee Suthikulpanit" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: locking/urgent] locking/qrwlock: Cleanup queued_write_lock_slowpath()
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Waiman Long <longman@redhat.com>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Will Deacon <will@kernel.org>, x86@kernel.org,
+Subject: [tip: perf/urgent] x86/events/amd/iommu: Fix invalid Perf result due
+ to IOMMU PMC power-gating
+Cc:     Alexander Monakov <amonakov@ispras.ru>,
+        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210426185017.19815-1-longman@redhat.com>
-References: <20210426185017.19815-1-longman@redhat.com>
+In-Reply-To: <20210504065236.4415-1-suravee.suthikulpanit@amd.com>
+References: <20210504065236.4415-1-suravee.suthikulpanit@amd.com>
 MIME-Version: 1.0
-Message-ID: <162030889600.29796.9867411555566955804.tip-bot2@tip-bot2>
+Message-ID: <162030889887.29796.12426716742809018792.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,55 +58,141 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the locking/urgent branch of tip:
+The following commit has been merged into the perf/urgent branch of tip:
 
-Commit-ID:     28ce0e70ecc30cc7d558a0304e6b816d70848f9a
-Gitweb:        https://git.kernel.org/tip/28ce0e70ecc30cc7d558a0304e6b816d70848f9a
-Author:        Waiman Long <longman@redhat.com>
-AuthorDate:    Mon, 26 Apr 2021 14:50:17 -04:00
+Commit-ID:     e10de314287c2c14b0e6f0e3e961975ce2f4a83d
+Gitweb:        https://git.kernel.org/tip/e10de314287c2c14b0e6f0e3e961975ce2f4a83d
+Author:        Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
+AuthorDate:    Tue, 04 May 2021 01:52:36 -05:00
 Committer:     Peter Zijlstra <peterz@infradead.org>
-CommitterDate: Thu, 06 May 2021 15:33:49 +02:00
+CommitterDate: Thu, 06 May 2021 15:33:37 +02:00
 
-locking/qrwlock: Cleanup queued_write_lock_slowpath()
+x86/events/amd/iommu: Fix invalid Perf result due to IOMMU PMC power-gating
 
-Make the code more readable by replacing the atomic_cmpxchg_acquire()
-by an equivalent atomic_try_cmpxchg_acquire() and change atomic_add()
-to atomic_or().
+On certain AMD platforms, when the IOMMU performance counter source
+(csource) field is zero, power-gating for the counter is enabled, which
+prevents write access and returns zero for read access.
 
-For architectures that use qrwlock, I do not find one that has an
-atomic_add() defined but not an atomic_or().  I guess it should be fine
-by changing atomic_add() to atomic_or().
+This can cause invalid perf result especially when event multiplexing
+is needed (i.e. more number of events than available counters) since
+the current logic keeps track of the previously read counter value,
+and subsequently re-program the counter to continue counting the event.
+With power-gating enabled, we cannot gurantee successful re-programming
+of the counter.
 
-Note that the previous use of atomic_add() isn't wrong as only one
-writer that is the wait_lock owner can set the waiting flag and the
-flag will be cleared later on when acquiring the write lock.
+Workaround this issue by :
 
-Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Waiman Long <longman@redhat.com>
+1. Modifying the ordering of setting/reading counters and enabing/
+   disabling csources to only access the counter when the csource
+   is set to non-zero.
+
+2. Since AMD IOMMU PMU does not support interrupt mode, the logic
+   can be simplified to always start counting with value zero,
+   and accumulate the counter value when stopping without the need
+   to keep track and reprogram the counter with the previously read
+   counter value.
+
+This has been tested on systems with and without power-gating.
+
+Fixes: 994d6608efe4 ("iommu/amd: Remove performance counter pre-initialization test")
+Suggested-by: Alexander Monakov <amonakov@ispras.ru>
+Signed-off-by: Suravee Suthikulpanit <suravee.suthikulpanit@amd.com>
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Acked-by: Will Deacon <will@kernel.org>
-Link: https://lkml.kernel.org/r/20210426185017.19815-1-longman@redhat.com
+Link: https://lkml.kernel.org/r/20210504065236.4415-1-suravee.suthikulpanit@amd.com
 ---
- kernel/locking/qrwlock.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+ arch/x86/events/amd/iommu.c | 47 +++++++++++++++++++-----------------
+ 1 file changed, 26 insertions(+), 21 deletions(-)
 
-diff --git a/kernel/locking/qrwlock.c b/kernel/locking/qrwlock.c
-index b94f383..ec36b73 100644
---- a/kernel/locking/qrwlock.c
-+++ b/kernel/locking/qrwlock.c
-@@ -66,12 +66,12 @@ void queued_write_lock_slowpath(struct qrwlock *lock)
- 	arch_spin_lock(&lock->wait_lock);
+diff --git a/arch/x86/events/amd/iommu.c b/arch/x86/events/amd/iommu.c
+index 6a98a76..2da6139 100644
+--- a/arch/x86/events/amd/iommu.c
++++ b/arch/x86/events/amd/iommu.c
+@@ -18,8 +18,6 @@
+ #include "../perf_event.h"
+ #include "iommu.h"
  
- 	/* Try to acquire the lock directly if no reader is present */
--	if (!atomic_read(&lock->cnts) &&
--	    (atomic_cmpxchg_acquire(&lock->cnts, 0, _QW_LOCKED) == 0))
-+	if (!(cnts = atomic_read(&lock->cnts)) &&
-+	    atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED))
- 		goto unlock;
+-#define COUNTER_SHIFT		16
+-
+ /* iommu pmu conf masks */
+ #define GET_CSOURCE(x)     ((x)->conf & 0xFFULL)
+ #define GET_DEVID(x)       (((x)->conf >> 8)  & 0xFFFFULL)
+@@ -285,22 +283,31 @@ static void perf_iommu_start(struct perf_event *event, int flags)
+ 	WARN_ON_ONCE(!(hwc->state & PERF_HES_UPTODATE));
+ 	hwc->state = 0;
  
- 	/* Set the waiting flag to notify readers that a writer is pending */
--	atomic_add(_QW_WAITING, &lock->cnts);
-+	atomic_or(_QW_WAITING, &lock->cnts);
++	/*
++	 * To account for power-gating, which prevents write to
++	 * the counter, we need to enable the counter
++	 * before setting up counter register.
++	 */
++	perf_iommu_enable_event(event);
++
+ 	if (flags & PERF_EF_RELOAD) {
+-		u64 prev_raw_count = local64_read(&hwc->prev_count);
++		u64 count = 0;
+ 		struct amd_iommu *iommu = perf_event_2_iommu(event);
  
- 	/* When no more readers or writers, set the locked flag */
- 	do {
++		/*
++		 * Since the IOMMU PMU only support counting mode,
++		 * the counter always start with value zero.
++		 */
+ 		amd_iommu_pc_set_reg(iommu, hwc->iommu_bank, hwc->iommu_cntr,
+-				     IOMMU_PC_COUNTER_REG, &prev_raw_count);
++				     IOMMU_PC_COUNTER_REG, &count);
+ 	}
+ 
+-	perf_iommu_enable_event(event);
+ 	perf_event_update_userpage(event);
+-
+ }
+ 
+ static void perf_iommu_read(struct perf_event *event)
+ {
+-	u64 count, prev, delta;
++	u64 count;
+ 	struct hw_perf_event *hwc = &event->hw;
+ 	struct amd_iommu *iommu = perf_event_2_iommu(event);
+ 
+@@ -311,14 +318,11 @@ static void perf_iommu_read(struct perf_event *event)
+ 	/* IOMMU pc counter register is only 48 bits */
+ 	count &= GENMASK_ULL(47, 0);
+ 
+-	prev = local64_read(&hwc->prev_count);
+-	if (local64_cmpxchg(&hwc->prev_count, prev, count) != prev)
+-		return;
+-
+-	/* Handle 48-bit counter overflow */
+-	delta = (count << COUNTER_SHIFT) - (prev << COUNTER_SHIFT);
+-	delta >>= COUNTER_SHIFT;
+-	local64_add(delta, &event->count);
++	/*
++	 * Since the counter always start with value zero,
++	 * simply just accumulate the count for the event.
++	 */
++	local64_add(count, &event->count);
+ }
+ 
+ static void perf_iommu_stop(struct perf_event *event, int flags)
+@@ -328,15 +332,16 @@ static void perf_iommu_stop(struct perf_event *event, int flags)
+ 	if (hwc->state & PERF_HES_UPTODATE)
+ 		return;
+ 
++	/*
++	 * To account for power-gating, in which reading the counter would
++	 * return zero, we need to read the register before disabling.
++	 */
++	perf_iommu_read(event);
++	hwc->state |= PERF_HES_UPTODATE;
++
+ 	perf_iommu_disable_event(event);
+ 	WARN_ON_ONCE(hwc->state & PERF_HES_STOPPED);
+ 	hwc->state |= PERF_HES_STOPPED;
+-
+-	if (hwc->state & PERF_HES_UPTODATE)
+-		return;
+-
+-	perf_iommu_read(event);
+-	hwc->state |= PERF_HES_UPTODATE;
+ }
+ 
+ static int perf_iommu_add(struct perf_event *event, int flags)
