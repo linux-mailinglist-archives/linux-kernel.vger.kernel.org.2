@@ -2,205 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E995375C86
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:03:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9595375C8D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:05:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhEFVEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:04:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51102 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230072AbhEFVEM (ORCPT
+        id S230085AbhEFVG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 17:06:28 -0400
+Received: from mail-ot1-f41.google.com ([209.85.210.41]:33405 "EHLO
+        mail-ot1-f41.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229672AbhEFVG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 17:04:12 -0400
-Received: from mail-qv1-xf2a.google.com (mail-qv1-xf2a.google.com [IPv6:2607:f8b0:4864:20::f2a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B2C0C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 14:03:14 -0700 (PDT)
-Received: by mail-qv1-xf2a.google.com with SMTP id q6so3855249qvb.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 14:03:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metztli-com.20150623.gappssmtp.com; s=20150623;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :user-agent:mime-version:content-transfer-encoding;
-        bh=SJEMPPPvUXgNtuCo5YPMGXk+vuxsoQVcXBSqyWI9084=;
-        b=SytE2+Xzv9B03rkXMz6EGbmOeaJQVTLrpH1JJyEf0GN/a76yhxaFzOJsMdpBmDU6Mn
-         aljCuulzPq+fNSp3lXX2ZnN/R3H/ysNZT/nXkROPPLh1GOnBaXdFKbhWg+SF+7J12dl5
-         DM/5ZwUNzXkTmocOxNhEm5XIqXGeVb2ShlUFJSvrKf+PWKlxnuuBZwfNuCH9rJP1WmVS
-         9lec9kRhlmkWCqli8fFTwnS+3Fuwxca/wfGzRSuJ1yYf0vLIoJ18HOG4U03HTuTIVT31
-         Ymrn1lj9vqiivTWDJzedh0W111YZpvF6IgxS8OR8V2Xu/46aBUnt8hBonmpM46TW49zg
-         X3fA==
+        Thu, 6 May 2021 17:06:27 -0400
+Received: by mail-ot1-f41.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so2130384oto.0;
+        Thu, 06 May 2021 14:05:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
-         :references:user-agent:mime-version:content-transfer-encoding;
-        bh=SJEMPPPvUXgNtuCo5YPMGXk+vuxsoQVcXBSqyWI9084=;
-        b=eCTfs4TeF/J8IbVoF1ZGmMTlWkgXMN1WEWyrUTnX/sBxLOtJ/GfUKU3aN0FX3ORWN3
-         KqPMOG4igdgi8tnq8p0CqHXGnO5ouUUGTWLxzhRwhqq7NBN3Vxl9rXus/929ZeWKK2do
-         5USnzoKbNMvk0CtKrH7aq7NZ2pX9vRZ4AxN60wT+J5xgKGpx+umq01GX4OLhkBk0mkh4
-         Jl77EJMA3XoX22jDf0HBKmOP344g1o4M9pYAQO5Ag2Bv5FpPBVyr4/T3ATNXwuMUsE6w
-         lBk4pJm6Vn5PFJ2oUX4IBUu5dpWYRXaG2AKgBfCFS3gCjyNw+NatGf71/Ia9D6heDCbH
-         zoQA==
-X-Gm-Message-State: AOAM533rIBdwONXGMmE0gPnTwO5fDiGX+uGBNGLIqAFAw1zOgsg+44Xr
-        WUUQp8FfcNT1Cy/nsOu9Z83Blw==
-X-Google-Smtp-Source: ABdhPJwgKTH30CdBhbRAxqkKyJebgS46U4yDlDJz71JD/aIrskOadQyDKWvRrgy82/hnIsV2OzyyNg==
-X-Received: by 2002:a0c:fd62:: with SMTP id k2mr6507129qvs.51.1620334993332;
-        Thu, 06 May 2021 14:03:13 -0700 (PDT)
-Received: from ?IPv6:2600:1700:6470:27a0:4e80:93ff:fe00:3ff7? ([2600:1700:6470:27a0:4e80:93ff:fe00:3ff7])
-        by smtp.gmail.com with ESMTPSA id r8sm2981110qtc.24.2021.05.06.14.02.55
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=bKeryIHrEzJrWyO+r99fo0J5qhxhhnLfQ516dxutmXs=;
+        b=Eedg63MwFxFxLCXYfGLDhQakpS/4c996MerKEH1ikJYdPB4Bue4Y75jvvMkYI7lJ18
+         OTft7QpZKBbR4UR2gEK8OS9NbMWBdisR4hRHtJHNirdUeAKmOk1GtialVgB65t4gW7B/
+         DIxFk6R0lZ4Rl3Myh1e+9DxY/QQCDqT7WrDZPOlMq67uPcUCOF+zTGTk9sQQqW0q3mk0
+         Zc8G4HfP4SHwU9H+QPfpfMWmOMb7L5axyS5tJIn835gL2lywcQ0tf/Tm0bm5OGX3bxSQ
+         YfId5Ehi4UhJdqgAZgmxdoYt5pdVd0Y7eLIW2PqVNxjOGCq8Kb4+gSAErvCQjAshTbY9
+         ztgg==
+X-Gm-Message-State: AOAM533/gHjKONtmWE4j2udZhCJN/GJubAeZFybCsvFrbz/NDZ+UB83q
+        nThABLIxhFg3vglk35uSQw==
+X-Google-Smtp-Source: ABdhPJxS+hi8/dkxulvYqF7PxTofXU6XPdnpBsVIPNchAm9VdqcSjuluRoBpfJrPza7tru4o2I7o2A==
+X-Received: by 2002:a9d:2de3:: with SMTP id g90mr5284461otb.274.1620335128276;
+        Thu, 06 May 2021 14:05:28 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a14sm789863otl.52.2021.05.06.14.05.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 14:03:01 -0700 (PDT)
-Message-ID: <4eb59c7815d86d85e42b50c45f10e47273c5e0e0.camel@metztli.com>
-Subject: Re: Report on University of Minnesota Breach-of-Trust Incident
-From:   Metztli Information Technology <jose.r.r@metztli.com>
-To:     Kees Cook <keescook@chromium.org>, Pavel Machek <pavel@ucw.cz>
-Cc:     linux-kernel@vger.kernel.org, Kangjie Lu <kjlu@umn.edu>,
-        tech-board@lists.linux-foundation.org,
-        Edward Shishkin <edward.shishkin@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>
-Date:   Thu, 06 May 2021 14:02:47 -0700
-In-Reply-To: <202105061042.E99B414F0A@keescook>
-References: <202105051005.49BFABCE@keescook>
-         <20210506082616.GA20224@duo.ucw.cz> <202105061042.E99B414F0A@keescook>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.3-1 
+        Thu, 06 May 2021 14:05:27 -0700 (PDT)
+Received: (nullmailer pid 799624 invoked by uid 1000);
+        Thu, 06 May 2021 21:05:27 -0000
+Date:   Thu, 6 May 2021 16:05:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Sean Anderson <sean.anderson@seco.com>
+Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        michal.simek@xilinx.com, Alvaro Gamez <alvaro.gamez@hazent.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: pwm: Add Xilinx AXI Timer
+Message-ID: <20210506210527.GA789155@robh.at.kernel.org>
+References: <20210504184925.3399934-1-sean.anderson@seco.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504184925.3399934-1-sean.anderson@seco.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-06 at 11:40 -0700, Kees Cook wrote:
-> On Thu, May 06, 2021 at 10:26:16AM +0200, Pavel Machek wrote:
-> > Hi!
-> > 
-> > > Report on University of Minnesota Breach-of-Trust Incident
-> > > 
-> > >         or
-> > > 
-> > > "An emergency re-review of kernel commits authored by members of
-> > > the
-> > >  University of Minnesota, due to the Hypocrite Commits research
-> > > paper."
-> > > 
-> > > May 5, 2021
-> > 
-> > Thanks for doing this. I believe short summary is that there was
-> > some
-> > deception from UMN researches in 2020:
-> > 
-> > > 2020 August:
-> > >   - "Hypocrite Commits" patches from UMN researchers sent to
-> > > kernel developers
-> > >     under false identities:
-> > >     - Aug 4 13:36-0500
-> > >         https://lore.kernel.org/lkml/20200804183650.4024-1-jameslouisebond@gmail.com
-> > >     - Aug 9 17:14-0500
-> > >         https://lore.kernel.org/lkml/20200809221453.10235-1-jameslouisebond@gmail.com
-> > >     - Aug 20 22:12-0500
-> > >         https://lore.kernel.org/lkml/20200821031209.21279-1-acostag.ubuntu@gmail.com
-> > >     - Aug 20 22:44-0500
-> > >         https://lore.kernel.org/lkml/20200821034458.22472-1-acostag.ubuntu@gmail.com
-> > >     - Aug 21 02:05-0500
-> > >         https://lore.kernel.org/lkml/20200821070537.30317-1-jameslouisebond@gmail.com
-> > 
-> > But there was no deception from UMN in 2021. Yet, we were
-> > spreading... let's say inaccurate information as late as this:
-> > 
-> > > 2021 April 29:
-> > >   - Greg posts an update on the re-review along with some more
-> > > reverts.
-> > >         https://lore.kernel.org/lkml/20210429130811.3353369-1-gregkh@linuxfoundation.org
-> > 
-> > # Commits from @umn.edu addresses have been found to be submitted
-> > in "bad
-> > # faith" to try to test the kernel community's ability to review
-> > "known
-> > # malicious" changes.
+On Tue, May 04, 2021 at 02:49:24PM -0400, Sean Anderson wrote:
+> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
+> a "soft" block, so it has many parameters which would not be
+> configurable in most hardware. This binding is usually automatically
+> generated by Xilinx's tools, so the names and values of properties
+> must be kept as they are.
 > 
-> I would agree that the phrasing here is sub-optimal in that it could
-> more clearly separate a few related things (e.g. "malicious change"
-> vs
-> "valid fix"). If I were writing this, I would have said something
-> along
-> the lines of:
+> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
+> ---
 > 
->   Commits from UMN authors have been found to be submitted with
-> intentional
->   flaws to try to test the kernel community's ability to review
-> "known
->   malicious" changes. ...
->   During review of all submissions, some patches were found to be
->   unintentionally flawed. ...
->   Out of an abundance of caution all submissions from this group must
-> be
->   reverted from the tree and will need to be re-review again. ...
+> Changes in v2:
+> - Use 32-bit addresses for example binding
 > 
-> I would also note that in that thread Greg reviewed all the mentioned
-> patches, clearing all but two of them (which were duplicates to
-> earlier
-> review).
+>  .../bindings/pwm/xlnx,axi-timer.yaml          | 91 +++++++++++++++++++
+>  1 file changed, 91 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
 > 
-> > UMN apologized. Our reaction to their apology was:
-> > 
-> > https://lore.kernel.org/lkml/YIV+pLR0nt94q0xQ@kroah.com/#t
-> > 
-> > Do we owe them apology, too?
+> diff --git a/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
+> new file mode 100644
+> index 000000000000..bd014134c322
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
+> @@ -0,0 +1,91 @@
+> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pwm/xlnx,axi-timer.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Xilinx LogiCORE IP AXI Timer Device Tree Binding
+> +
+> +maintainers:
+> +  - Sean Anderson <sean.anderson@seco.com>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - const: xlnx,axi-timer-2.0
+> +      - const: xlnx,xps-timer-1.00.a
+> +
+> +  clocks:
+> +    maxItems: 1
+> +
+> +  clock-names:
+> +    const: s_axi_aclk
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +  xlnx,count-width:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    minimum: 8
+> +    maximum: 32
+> +    description:
+> +      The width of the counters, in bits.
+> +
+> +  xlnx,gen0-assert:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 0, 1 ]
+> +    description:
+> +      The polarity of the generateout0 signal. 0 for active-low, 1 for active-high.
+> +
+> +  xlnx,gen1-assert:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 0, 1 ]
+> +    description:
+> +      The polarity of the generateout1 signal. 0 for active-low, 1 for active-high.
+> +
+> +  xlnx,one-timer-only:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 0, 1 ]
+> +    description:
+> +      Whether only one timer is present in this block.
+> +
+> +  xlnx,trig0-assert:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 0, 1 ]
+> +    description:
+> +      The polarity of the capturetrig0 signal. 0 for active-low, 1 for active-high.
+> +
+> +  xlnx,trig1-assert:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    enum: [ 0, 1 ]
+> +    description:
+> +      The polarity of the capturetrig1 signal. 0 for active-low, 1 for active-high.
+
+Can't all these be boolean?
+
+> +
+> +required:
+> +  - compatible
+> +  - clocks
+> +  - reg
+> +  - xlnx,count-width
+> +  - xlnx,gen0-assert
+> +  - xlnx,gen1-assert
+> +  - xlnx,one-timer-only
+> +  - xlnx,trig0-assert
+> +  - xlnx,trig1-assert
+> +
+> +additionalProperties: true
+> +
+> +examples:
+> +  - |
+> +    axi_timer_0: timer@800e0000 {
+> +        clock-frequency = <99999001>;
+> +        clock-names = "s_axi_aclk";
+> +        clocks = <&zynqmp_clk 71>;
+> +        compatible = "xlnx,axi-timer-2.0", "xlnx,xps-timer-1.00.a";
+> +        reg = <0x800e0000 0x10000>;
+> +        xlnx,count-width = <0x20>;
+> +        xlnx,gen0-assert = <0x1>;
+> +        xlnx,gen1-assert = <0x1>;
+> +        xlnx,one-timer-only = <0x0>;
+> +        xlnx,trig0-assert = <0x1>;
+> +        xlnx,trig1-assert = <0x1>;
+> +    };
+> -- 
+> 2.25.1
 > 
-> I will defer to Greg on what he thinks his duties are there, but in
-> trying to figure out who "we" is, I'll just point out that I
-> attempted
-> to clarify the incorrect assumptions about the intent of historical
-> UMN
-> patches, and spoke for the entire TAB (Greg included) here:
-> https://lore.kernel.org/lkml/202104221451.292A6ED4@keescook/
-> The report repeated this in several places, and we explained our need
-> for due diligence.
-> 
-> -Kees
-> 
-
-This has aged well:
-
-"Linux has a problem, which is that with success it is attracting
-people with more skill than what it started with, and it is not doing a
-very good job of handling that. In fact, it downright stinks at it,
-behaving in the worst way it could choose for handling that. [Linux]
-have lost quite a number of FS developers who just don't want to deal
-with people who know less than they do but are obnoxious and
-disrespectful to submissions because they enjoy powertripping...
-*[Linux] should develop a culture in which acceptance is more based on
-whose code measurably performs well [,i.e, meritocracy, rather] than on
-who is friends with whom.*~
-
-< https://lkml.org/lkml/2006/7/21/109 >
-
-Yet when self-believing 'badass' Linux developers engage in what is
-essentially masturbation by 'fixing' obsolete security issues[1]
-< https://lkml.org/lkml/2020/8/17/174 >
-rather than reviewing how 'friend' contributors' patches fit within the
-overall kernel development structure, it is to be expected to end up
-with a *sabotaged* kernel.
-
-[1] https://www.theregister.com/2020/10/25/linux_5_10_rc1/
-
-
-Best Professional Regards.
-
--- 
--- 
-Jose R R
-http://metztli.it
------------------------------------------------------------------------
-----------------------
-Download Metztli Reiser4: Debian Buster w/ Linux 5.10.26 AMD64
------------------------------------------------------------------------
-----------------------
-feats ZSTD compression https://sf.net/projects/metztli-reiser4/
------------------------------------------------------------------------
-----------------------
-or SFRN 5.1.3, Metztli Reiser5 https://sf.net/projects/debian-reiser4/
------------------------------------------------------------------------
---------------------
-Official current Reiser4 resources: https://reiser4.wiki.kernel.org/
-
-
