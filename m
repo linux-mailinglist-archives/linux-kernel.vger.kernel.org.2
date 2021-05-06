@@ -2,199 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26E43375D73
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:31:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47EB5375D77
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232391AbhEFXcW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 19:32:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52910 "EHLO mail.kernel.org"
+        id S232525AbhEFXd6 convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 May 2021 19:33:58 -0400
+Received: from mga02.intel.com ([134.134.136.20]:11647 "EHLO mga02.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S232209AbhEFXcS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 19:32:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 04051613E9
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 23:31:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620343880;
-        bh=IITCyoi4hOnQGgAjRVqRr7RtIsMxc4kk9HMuRUc4kAA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dzOaN+y3YvGy/qiIgwPQ336zp8h4Qgn5S+x18V/7U5Z832vjobSnQaneW+3LoIEKJ
-         2a2jNix2ICu4wrie+QaMY1ZYi5JeLqwvsNAzAkbGZZ/nUllk3sHS9tkSZvZjgqpkC9
-         kCK+x05evvBumC0UY5a9mo0bnq7OW0c0GyYLbShG175267sg3d+ec8jXISGY66r0AR
-         AbpkldqZtEenweVoVFX9nG8O6guWKtwnusnBxzl23d3PVIca/bebwBdDsB6yXoXDDJ
-         ExL5i7BsuB+eGTaLABjvVKpR9zfL2ZkRE2jCVJbxEAjQIK6W00wxgMqVOOgqE5CPd4
-         7TyKigSjS9thg==
-Received: by mail-ej1-f46.google.com with SMTP id l4so10759129ejc.10
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 16:31:19 -0700 (PDT)
-X-Gm-Message-State: AOAM532s4j3TIzD/9MztPQoNOHXGq+o6x71O788KJBIvBYJ3IrGpAkHB
-        bibssITBLIpTITQQCfFKYkan3EIzVecGbMcJs1/u9Q==
-X-Google-Smtp-Source: ABdhPJy/HzUeyVBBOPMQzBeIl7qYyB1Cn0Bw3qIUSRljI0+cxPtL7Jufl+V2qYgyD4Kr53bGa8ynkwEWn9q1gDRzC2M=
-X-Received: by 2002:a17:906:c010:: with SMTP id e16mr7123175ejz.214.1620343878143;
- Thu, 06 May 2021 16:31:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210427204315.24153-1-yu-cheng.yu@intel.com> <20210427204315.24153-26-yu-cheng.yu@intel.com>
- <CALCETrVTeYfzO-XWh+VwTuKCyPyp-oOMGH=QR_msG9tPQ4xPmA@mail.gmail.com>
- <8fd86049-930d-c9b7-379c-56c02a12cd77@intel.com> <CALCETrX9z-73wpy-SCy8NE1XfQgXAN0mCmjv0jXDDomMyS7TKg@mail.gmail.com>
- <a7c332c8-9368-40b1-e221-ec921f7db948@intel.com> <5fc5dea4-0705-2aad-cf8f-7ff78a5e518a@intel.com>
- <bf16ab7e-bf27-68eb-efc9-c0468fb1c651@intel.com>
-In-Reply-To: <bf16ab7e-bf27-68eb-efc9-c0468fb1c651@intel.com>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 6 May 2021 16:31:06 -0700
-X-Gmail-Original-Message-ID: <CALCETrWbOP_exK9cHT9vEDsQjorqC4SjhyU+gUzmGNdanO-enw@mail.gmail.com>
-Message-ID: <CALCETrWbOP_exK9cHT9vEDsQjorqC4SjhyU+gUzmGNdanO-enw@mail.gmail.com>
-Subject: Re: extending ucontext (Re: [PATCH v26 25/30] x86/cet/shstk: Handle
- signals for shadow stack)
-To:     "Yu, Yu-cheng" <yu-cheng.yu@intel.com>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>, X86 ML <x86@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>,
+        id S231976AbhEFXd5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 19:33:57 -0400
+IronPort-SDR: R5+qV8xclRUTeEOJWRptI7qJzNonRtpqj3ncqK1fwMM4VT9i9guUxaDwIidQ0iRGlTL5KKDxln
+ hsl6FM2ouDEQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="185734856"
+X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
+   d="scan'208";a="185734856"
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 16:32:58 -0700
+IronPort-SDR: SyYW2Uu45XN+OQnBcYgF7KtLJ/Ct2eQfE2TkRgO5N1AWRpzfcQwyu2GG/1T9WmGjQvHga6jIzw
+ JkpsVkBTgnig==
+X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
+   d="scan'208";a="389805902"
+Received: from jbrandeb-mobl4.amr.corp.intel.com (HELO localhost) ([10.212.202.181])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 16:32:57 -0700
+Date:   Thu, 6 May 2021 16:32:57 -0700
+From:   Jesse Brandeburg <jesse.brandeburg@intel.com>
+To:     Alexander Duyck <alexander.duyck@gmail.com>
+Cc:     Oleksandr Natalenko <oleksandr@natalenko.name>,
+        Jakub Kicinski <kuba@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Balbir Singh <bsingharora@gmail.com>,
-        Borislav Petkov <bp@alien8.de>,
-        Cyrill Gorcunov <gorcunov@gmail.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Eugene Syromiatnikov <esyr@redhat.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        "H.J. Lu" <hjl.tools@gmail.com>, Jann Horn <jannh@google.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Kees Cook <keescook@chromium.org>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Nadav Amit <nadav.amit@gmail.com>,
-        Oleg Nesterov <oleg@redhat.com>, Pavel Machek <pavel@ucw.cz>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Vedvyas Shanbhogue <vedvyas.shanbhogue@intel.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        Weijiang Yang <weijiang.yang@intel.com>,
-        Pengfei Xu <pengfei.xu@intel.com>,
-        Haitao Huang <haitao.huang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+        "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        intel-wired-lan <intel-wired-lan@lists.osuosl.org>,
+        Netdev <netdev@vger.kernel.org>
+Subject: Re: [igb] netconsole triggers warning in netpoll_poll_dev
+Message-ID: <20210506163257.000036fe@intel.com>
+In-Reply-To: <CAKgT0Uemubh8yP+UXh-n-YceheFRZO+hYpxtqs+=vedv7hbv4w@mail.gmail.com>
+References: <20210406123619.rhvtr73xwwlbu2ll@spock.localdomain>
+        <20210406114734.0e00cb2f@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210407060053.wyo75mqwcva6w6ci@spock.localdomain>
+        <20210407083748.56b9c261@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAKgT0UfLLQycLsAZQ98ofBGYPwejA6zHbG6QsNrU92mizS7e0g@mail.gmail.com>
+        <20210407110722.1eb4ebf2@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <CAKgT0UcQXVOifi_2r_Y6meg_zvHDBf1me8VwA4pvEtEMzOaw2Q@mail.gmail.com>
+        <20210423081944.kvvm4v7jcdyj74l3@spock.localdomain>
+        <20210423155836.25ef1e77@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+        <20210426064736.7efynita4brzos4u@spock.localdomain>
+        <CAKgT0Uemubh8yP+UXh-n-YceheFRZO+hYpxtqs+=vedv7hbv4w@mail.gmail.com>
+X-Mailer: Claws Mail 3.12.0 (GTK+ 2.24.28; i686-w64-mingw32)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 3:05 PM Yu, Yu-cheng <yu-cheng.yu@intel.com> wrote:
->
-> On 5/4/2021 1:49 PM, Yu, Yu-cheng wrote:
-> > On 4/30/2021 11:32 AM, Yu, Yu-cheng wrote:
-> >> On 4/30/2021 10:47 AM, Andy Lutomirski wrote:
-> >>> On Fri, Apr 30, 2021 at 10:00 AM Yu, Yu-cheng <yu-cheng.yu@intel.com>
-> >>> wrote:
-> >>>>
-> >>>> On 4/28/2021 4:03 PM, Andy Lutomirski wrote:
-> >>>>> On Tue, Apr 27, 2021 at 1:44 PM Yu-cheng Yu <yu-cheng.yu@intel.com>
-> >>>>> wrote:
-> >>>>>>
-> >>>>>> When shadow stack is enabled, a task's shadow stack states must be
-> >>>>>> saved
-> >>>>>> along with the signal context and later restored in sigreturn.
-> >>>>>> However,
-> >>>>>> currently there is no systematic facility for extending a signal
-> >>>>>> context.
-> >>>>>> There is some space left in the ucontext, but changing ucontext is
-> >>>>>> likely
-> >>>>>> to create compatibility issues and there is not enough space for
-> >>>>>> further
-> >>>>>> extensions.
-> >>>>>>
-> >>>>>> Introduce a signal context extension struct 'sc_ext', which is
-> >>>>>> used to save
-> >>>>>> shadow stack restore token address.  The extension is located
-> >>>>>> above the fpu
-> >>>>>> states, plus alignment.  The struct can be extended (such as the
-> >>>>>> ibt's
-> >>>>>> wait_endbr status to be introduced later), and sc_ext.total_size
-> >>>>>> field
-> >>>>>> keeps track of total size.
-> >>>>>
-> >>>>> I still don't like this.
-> >>>>>
->
-> [...]
->
-> >>>>>
-> >>>>> That's where we are right now upstream.  The kernel has a parser for
-> >>>>> the FPU state that is bugs piled upon bugs and is going to have to be
-> >>>>> rewritten sometime soon.  On top of all this, we have two upcoming
-> >>>>> features, both of which require different kinds of extensions:
-> >>>>>
-> >>>>> 1. AVX-512.  (Yeah, you thought this story was over a few years ago,
-> >>>>> but no.  And AMX makes it worse.)  To make a long story short, we
-> >>>>> promised user code many years ago that a signal frame fit in 2048
-> >>>>> bytes with some room to spare.  With AVX-512 this is false.  With AMX
-> >>>>> it's so wrong it's not even funny.  The only way out of the mess
-> >>>>> anyone has come up with involves making the length of the FPU state
-> >>>>> vary depending on which features are INIT, i.e. making it more compact
-> >>>>> than "compact" mode is.  This has a side effect: it's no longer
-> >>>>> possible to modify the state in place, because enabling a feature with
-> >>>>> no space allocated will make the structure bigger, and the stack won't
-> >>>>> have room.  Fortunately, one can relocate the entire FPU state, update
-> >>>>> the pointer in mcontext, and the kernel will happily follow the
-> >>>>> pointer.  So new code on a new kernel using a super-compact state
-> >>>>> could expand the state by allocating new memory (on the heap? very
-> >>>>> awkwardly on the stack?) and changing the pointer.  For all we know,
-> >>>>> some code already fiddles with the pointer.  This is great, except
-> >>>>> that your patch sticks more data at the end of the FPU block that no
-> >>>>> one is expecting, and your sigreturn code follows that pointer, and
-> >>>>> will read off into lala land.
-> >>>>>
-> >>>>
-> >>>> Then, what about we don't do that at all.  Is it possible from now
-> >>>> on we
-> >>>> don't stick more data at the end, and take the relocating-fpu approach?
-> >>>>
-> >>>>> 2. CET.  CET wants us to find a few more bytes somewhere, and those
-> >>>>> bytes logically belong in ucontext, and here we are.
-> >>>>>
-> >>>>
-> >>>> Fortunately, we can spare CET the need of ucontext extension.  When the
-> >>>> kernel handles sigreturn, the user-mode shadow stack pointer is
-> >>>> right at
-> >>>> the restore token.  There is no need to put that in ucontext.
-> >>>
-> >>> That seems entirely reasonable.  This might also avoid needing to
-> >>> teach CRIU about CET at all.
-> >>>
-> >>>>
-> >>>> However, the WAIT_ENDBR status needs to be saved/restored for signals.
-> >>>> Since IBT is now dependent on shadow stack, we can use a spare bit of
-> >>>> the shadow stack restore token for that.
-> >>>
-> >>> That seems like unnecessary ABI coupling.  We have plenty of bits in
-> >>> uc_flags, and we have an entire reserved word in sigcontext.  How
-> >>> about just sticking this bit in one of those places?
-> >>
-> >> Yes, I will make it UC_WAIT_ENDBR.
+Alexander Duyck wrote:
+
+> On Sun, Apr 25, 2021 at 11:47 PM Oleksandr Natalenko
+> <oleksandr@natalenko.name> wrote:
 > >
-> > Personally, I think an explicit flag is cleaner than using a reserved
-> > word somewhere.  However, there is a small issue: ia32 has no uc_flags.
+> > Hello.
 > >
-> > This series can support legacy apps up to now.  But, instead of creating
-> > too many special cases, perhaps we should drop CET support of ia32?
+> > On Fri, Apr 23, 2021 at 03:58:36PM -0700, Jakub Kicinski wrote:
+> > > On Fri, 23 Apr 2021 10:19:44 +0200 Oleksandr Natalenko wrote:
+> > > > On Wed, Apr 07, 2021 at 04:06:29PM -0700, Alexander Duyck wrote:
+> > > > > On Wed, Apr 7, 2021 at 11:07 AM Jakub Kicinski <kuba@kernel.org> wrote:
+> > > > > > Sure, that's simplest. I wasn't sure something is supposed to prevent
+> > > > > > this condition or if it's okay to cover it up.
+> > > > >
+> > > > > I'm pretty sure it is okay to cover it up. In this case the "budget -
+> > > > > 1" is supposed to be the upper limit on what can be reported. I think
+> > > > > it was assuming an unsigned value anyway.
+> > > > >
+> > > > > Another alternative would be to default clean_complete to !!budget.
+> > > > > Then if budget is 0 clean_complete would always return false.
+> > > >
+> > > > So, among all the variants, which one to try? Or there was a separate
+> > > > patch sent to address this?
+> > >
+> > > Alex's suggestion is probably best.
+> > >
+> > > I'm not aware of the fix being posted. Perhaps you could take over and
+> > > post the patch if Intel doesn't chime in?
 > >
-> > Thoughts?
+> > So, IIUC, Alex suggests this:
+> >
+> > ```
+> > diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+> > index a45cd2b416c8..7503d5bf168a 100644
+> > --- a/drivers/net/ethernet/intel/igb/igb_main.c
+> > +++ b/drivers/net/ethernet/intel/igb/igb_main.c
+> > @@ -7981,7 +7981,7 @@ static int igb_poll(struct napi_struct *napi, int budget)
+> >                                                      struct igb_q_vector,
+> >                                                      napi);
+> >         bool clean_complete = true;
+> > -       int work_done = 0;
+> > +       unsigned int work_done = 0;
+> >
+> >  #ifdef CONFIG_IGB_DCA
+> >         if (q_vector->adapter->flags & IGB_FLAG_DCA_ENABLED)
+> > @@ -8008,7 +8008,7 @@ static int igb_poll(struct napi_struct *napi, int budget)
+> >         if (likely(napi_complete_done(napi, work_done)))
+> >                 igb_ring_irq_enable(q_vector);
+> >
+> > -       return min(work_done, budget - 1);
+> > +       return min_t(unsigned int, work_done, budget - 1);
+> >  }
+> >
+> >  /**
+> > ```
+> >
+> > Am I right?
+> >
+> > Thanks.
+> 
+> Actually a better way to go would be to probably just initialize
+> "clean_complete = !!budget". With that we don't have it messing with
+> the interrupt enables which would probably be a better behavior.
 
-I'm really not thrilled about coupling IBT and SHSTK like this.
 
-Here are a couple of possible solutions:
+Thanks guys for the suggestions here! Finally got some time for
+this, so here is the patch I'm going to queue shortly.
 
-- Don't support IBT in 32-bit mode, or maybe just don't support IBT
-with legacy 32-bit signals.  The actual mechanics of this could be
-awkward.  Maybe we would reject the sigaction() call or the
-IBT-enabling request if they conflict?
+From ffd24e90d688ee347ab051266bfc7fca00324a68 Mon Sep 17 00:00:00 2001
+From: Jesse Brandeburg <jesse.brandeburg@intel.com>
+Date: Thu, 6 May 2021 14:41:11 -0700
+Subject: [PATCH net] igb: fix netpoll exit with traffic
+To: netdev,
+    Oleksandr Natalenko <oleksandr@natalenko.name>
+Cc: Jakub Kicinski <kuba@kernel.org>, LKML <linux-kernel@vger.kernel.org>, "Brandeburg, Jesse" <jesse.brandeburg@intel.com>, "Nguyen, Anthony L" <anthony.l.nguyen@intel.com>, "David S. Miller" <davem@davemloft.net>, intel-wired-lan <intel-wired-lan@lists.osuosl.org>, Alexander Duyck <alexander.duyck@gmail.com>
 
-- Find some space in the signal frame for these flags.  Looking around
-a bit, sigframe_ia32 has fpstate_unused, but I can imagine things like
-CRIU getting very confused if it stops being unused.  sigframe_ia32
-uses sigcontext_32, which has a bunch of reserved space in __gsh,
-__fsh, etc.
+Oleksandr brought a bug report where netpoll causes trace messages in
+the log on igb.
 
-rt_sigframe_ia32 has uc_flags, so this isn't a real problem.
+[22038.710800] ------------[ cut here ]------------
+[22038.710801] igb_poll+0x0/0x1440 [igb] exceeded budget in poll
+[22038.710802] WARNING: CPU: 12 PID: 40362 at net/core/netpoll.c:155 netpoll_poll_dev+0x18a/0x1a0
 
-I don't have a brilliant solution here.
+After some discussion and debug from the list, it was deemed that the
+right thing to do is initialize the clean_complete variable to false
+when the "netpoll mode" of passing a zero budget is used.
+
+This logic should be sane and not risky because the only time budget
+should be zero on entry is netpoll.  Change includes a small refactor
+of local variable assignments to clean up the look.
+
+Fixes: 16eb8815c235 ("igb: Refactor clean_rx_irq to reduce overhead and improve performance")
+Reported-by: Oleksandr Natalenko <oleksandr@natalenko.name>
+Suggested-by: Alexander Duyck <alexander.duyck@gmail.com>
+Signed-off-by: Jesse Brandeburg <jesse.brandeburg@intel.com>
+---
+
+Compile tested ONLY, but functionally it should be exactly the same for
+all cases except when budget is zero on entry, which will hopefully fix
+the bug.
+---
+ drivers/net/ethernet/intel/igb/igb_main.c | 12 ++++++++----
+ 1 file changed, 8 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/net/ethernet/intel/igb/igb_main.c b/drivers/net/ethernet/intel/igb/igb_main.c
+index 0cd37ad81b4e..b0a9bed14071 100644
+--- a/drivers/net/ethernet/intel/igb/igb_main.c
++++ b/drivers/net/ethernet/intel/igb/igb_main.c
+@@ -7991,12 +7991,16 @@ static void igb_ring_irq_enable(struct igb_q_vector *q_vector)
+  **/
+ static int igb_poll(struct napi_struct *napi, int budget)
+ {
+-	struct igb_q_vector *q_vector = container_of(napi,
+-						     struct igb_q_vector,
+-						     napi);
+-	bool clean_complete = true;
++	struct igb_q_vector *q_vector;
++	bool clean_complete;
+ 	int work_done = 0;
+ 
++	/* if budget is zero, we have a special case for netconsole, so
++	 * make sure to set clean_complete to false in that case.
++	 */
++	clean_complete = !!budget;
++
++	q_vector = container_of(napi, struct igb_q_vector, napi);
+ #ifdef CONFIG_IGB_DCA
+ 	if (q_vector->adapter->flags & IGB_FLAG_DCA_ENABLED)
+ 		igb_update_dca(q_vector);
+-- 
+2.30.2
+
