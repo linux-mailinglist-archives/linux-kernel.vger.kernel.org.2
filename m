@@ -2,280 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B0F33750F0
+	by mail.lfdr.de (Postfix) with ESMTP id 641433750F1
 	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:33:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233735AbhEFIdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 04:33:45 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:39548 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232791AbhEFIdV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 04:33:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620289943;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=7JqjdR2kw/Cet6YKuUtlMslbFesxe737tHzI7djxdT8=;
-        b=LBFyS2JiRon6spRJ8mqlFluAffHPAUJ09IG1iBq4mLwYY2lF0s3WWAf0imTnZ+VLkfWlM1
-        rkXAsRex1fJsyfZ3nuuoBi9mbBU/i4lDcYYuIjQbXZR5jK09K6HgWQ5kzNw5nySdC8iOa3
-        paSAtazpppglR+ev9UYducguD1acEM0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-507-SBCbzLB-PXOHSPRggJCGXA-1; Thu, 06 May 2021 04:32:21 -0400
-X-MC-Unique: SBCbzLB-PXOHSPRggJCGXA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1187F8014D8;
-        Thu,  6 May 2021 08:32:20 +0000 (UTC)
-Received: from T590 (ovpn-12-93.pek2.redhat.com [10.72.12.93])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 8841E687F2;
-        Thu,  6 May 2021 08:32:11 +0000 (UTC)
-Date:   Thu, 6 May 2021 16:32:07 +0800
-From:   Ming Lei <ming.lei@redhat.com>
-To:     John Garry <john.garry@huawei.com>
-Cc:     axboe@kernel.dk, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        kashyap.desai@broadcom.com, chenxiang66@hisilicon.com,
-        yama@redhat.com
-Subject: Re: [PATCH] blk-mq: Use request queue-wide tags for tagset-wide
- sbitmap
-Message-ID: <YJOph1oI8CTJjzQx@T590>
-References: <1620037333-2495-1-git-send-email-john.garry@huawei.com>
+        id S233831AbhEFIeD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:34:03 -0400
+Received: from mail-vi1eur05on2112.outbound.protection.outlook.com ([40.107.21.112]:35809
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S233568AbhEFIdj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 04:33:39 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ELqUp+iyzKuayPjAwXhYkxfDsYXN/90F0mh8B56ax7AUBKacG155zorPRlW+rt2L3i6hbZidYLwbJXri41scE03uW1W9QdASw48AIQ5RCKMdFnaXD/sMGFCpyFDsYj02kyah8j0ncjzyUcMzPbiiHAIsU5Iw8eaqbuJaVVVA31iJhfi4XEC7Htr9oA5jN6O0djLxFHnhpG2ZTmGU5fIwRlzKwsk2+wYsLyrYlNxZyWyzDwzZh8EhT79ySsoskYveSs2mnv8V3cPijrDWwqthqd6jEPqSAlLvFRnq2e0L7VKUa5UwI8gulrATjznkLHj7Kebw21FXHfnOTQll2o8mxg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+so1Y+X9gnFoTIK95vbpd1Bibk73V/vw9UtDeWj9SQM=;
+ b=JeVd0UNoFdMo8eOzuShbAeY9oSUY1UcK7QbtW1wnbg/x8oRMLw4FIYy5dTzGLvllKtaSxKlNgG2C3GzqJX7iIfwgq7CwMukoMsuRb3ILpgS+AqhNXZYqBI17UX1eH9371qr52Dru23zfiZ1ttFxrOsOInSM0LltAFoYgbEGjcfSGieAJJGke7H3dks47LhtmPVnlzzCQMaIbHqd5ywvJVNnPWIqrnSWP6AlxZRKF72txX68x+epUw2drvU1LlP+dXWgOMhq/AMZDIWC2d1QTm/D+FTJJtdmiHCNN2ytJmtoDWjCpmIQ16+NKZ21DAw686TCcdMKzO43Yb6LOeOGXMg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+so1Y+X9gnFoTIK95vbpd1Bibk73V/vw9UtDeWj9SQM=;
+ b=jWrHhKfMB7jd4BQmAQUXD1SXLUdGqBe1TBSYIqHdnpdYQtrwPSHFvvAPkEGpGxkviG+p7B+wTQ0T2niDvztmflCjdK0E0N/a5pIrhO/IqSvdUrCkm79zGK1Kqxg1C0BUmpjtU81XVDTJba0ibJh/W1vHZlEBOQkBX8x2emxnfHI=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM9PR10MB4322.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:26b::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Thu, 6 May
+ 2021 08:32:32 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87%7]) with mapi id 15.20.4108.026; Thu, 6 May 2021
+ 08:32:32 +0000
+Subject: Re: [PATCH V2 00/13] soc: imx: gpcv2: support i.MX8MM
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        p.zabel@pengutronix.de, l.stach@pengutronix.de, krzk@kernel.org,
+        agx@sigxcpu.org, marex@denx.de, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ping.bai@nxp.com, aford173@gmail.com,
+        abel.vesa@nxp.com, Peng Fan <peng.fan@nxp.com>
+References: <20210506010440.7016-1-peng.fan@oss.nxp.com>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+Message-ID: <3c5ef283-0895-05ab-7568-0d108b761008@kontron.de>
+Date:   Thu, 6 May 2021 10:32:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210506010440.7016-1-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [89.244.180.42]
+X-ClientProxiedBy: AM6P193CA0113.EURP193.PROD.OUTLOOK.COM
+ (2603:10a6:209:85::18) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620037333-2495-1-git-send-email-john.garry@huawei.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [192.168.10.27] (89.244.180.42) by AM6P193CA0113.EURP193.PROD.OUTLOOK.COM (2603:10a6:209:85::18) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Thu, 6 May 2021 08:32:30 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: a688bdf9-5151-4773-a4ff-08d910697d5c
+X-MS-TrafficTypeDiagnostic: AM9PR10MB4322:
+X-Microsoft-Antispam-PRVS: <AM9PR10MB4322297370ED679F4636803AE9589@AM9PR10MB4322.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: x+JvYibHBz3+xJ5eyOjyOw5PW3fpS3i2ovBqem/onrqALe8UqEGL72Pj7oxzLHmDFl0z0qkKrFzAv+tGYEsgPETliOQxZYEDpoaDYdGi/GwObG5dAnzIHwGWM9GL1KunTGZGGPHrG7yajDIhMfSkNY7WG4jvidFXxswBbAv7Gl9XWGcMVwJvweVHSTFddIAnuwW+HDh6XabreXNfc6pnPuAkYNYq5GSLabIWHreyp4yX7nQB5yMQm3yl2OWNEQ4W20Gsto1mhHQTdMeCitorJvBZ4Y3SdW6WenggzL9Ph/bmhMf9dWHw4+COr/Jed8W2tRSB5ymhZdzIwOQ4CWJLSEbpof7v9SrnqFEh4uWwIbyBAFXC//U4zoMqvX9t+rXXjtnv5ObsrQ1pf5CyVgois955/mj4KhSHWgShZ3+N60jUL05dAHrFMzpt0TXxYDsx0rMLSXsLQM4C9iEzUV/3fYvGPmULNuns/yxt4+aGbvSzuYlKbVfQyOYM5OV8YhuXeDoqGo0LKHTjgnUdtSyOEyCROTcxYpAYWyhnabaBw4gh6Fm5laBXy1a+7lTLLiNaehHqxstG7dirnk5QRGpliZG3Wa/ZMYso1LiXM6cG02z1XzaIkhCHGXWdlmL0gXTLL34Q/01UW6XQw8+/51l1tH4acy4ifTEUebZx0dX176ExeAaooPSCnnLshNotgmhn
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(39850400004)(366004)(376002)(136003)(86362001)(8936002)(66476007)(66946007)(66556008)(316002)(8676002)(7416002)(36756003)(6486002)(31696002)(4326008)(478600001)(2906002)(53546011)(956004)(186003)(83380400001)(2616005)(38100700002)(16576012)(26005)(5660300002)(16526019)(31686004)(44832011)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?cjZYeWwyYXFUbENocUY1bncxT2IxQzZ1aUdmQjhHMEVxbVg3K3gyN2FFcWFF?=
+ =?utf-8?B?L3hyM2RRN1VoL3JQZlg4UHhYRC9jRTROOS9qenZ4MyszazhvSS85b1o2citK?=
+ =?utf-8?B?dXFWVy9Ua1BVVE5nQXNwTW14ZURnR2JoM25BTC8vT0dtNTRnOFp2REl0eFVO?=
+ =?utf-8?B?WWNqQUJLazVFQy82LzB0ODFDR3cwWENOZTB3VDEzNWJKQ3RJOHc3eno3QW9J?=
+ =?utf-8?B?OGxManRNZGFsNHFSMURRWTBKcFNTM2VJeVFEUlFYbmZ1K2dKVFdxalEyUHpT?=
+ =?utf-8?B?UGt6UVIxaS9IdjFzVUNTUnpBRmlMVm01Y2wvc0ZxZzl1UkUyVFZzUzJjcmJw?=
+ =?utf-8?B?b2pjdVh2UkVLNnlrYS9XWncvVEdVb0RNenF4NXF0N1ZBY2dSeTY1OGdGQ0Rw?=
+ =?utf-8?B?N3UxME9aM1l5NXBiNVpWb0piWDlOZ1dFeDVHWml0UUcxN1RXMEY3ckpYNGRM?=
+ =?utf-8?B?YWsybDE2WUtOSkdXRzVOL2pzNzlKTTVHM2JWNGQ0akdZbSt1a2tCR01KcUJQ?=
+ =?utf-8?B?b21NdUhUTHBvbWljSDRadFRXQ0llYTd4akpsVktSYlg1d3AwQzFKQWxoSVla?=
+ =?utf-8?B?d0ZSd21iaUoybWVyRHNlbGFRc3dxaFFzSFdEYzBuNW8yeUdRS0VrZitYU05H?=
+ =?utf-8?B?SXBKZ3JvWXhsSzNuejZYQXVvYVdvSjAwdnF1N2FreU9GMURnSndiMFVCRktE?=
+ =?utf-8?B?M2dhYVN3eWc2aUpyenYrSm9QZUtCTDRqV0pyWTVZOFVoN2FlUFliZXI5VFZk?=
+ =?utf-8?B?RFZQT09QN01jK00zTlVhbjIrWi9IVjJVUFdjVDl0eTc5VGFUam9xNXA3R1li?=
+ =?utf-8?B?ZW5GNWlKWGdERFBMcnNmcWtjSUtER3N4dHR0WkZkSm05TGx4YjNtc29Ta2ll?=
+ =?utf-8?B?UmVadlVDVkw2bWF0czBEc0d5QnV4VFVLTEdJUENycGNYWi9wTzdBb0NYNk84?=
+ =?utf-8?B?THZ1djQ5QjFpUG5jUzd3OU91UXlVd21TUWZEQXhWS21qd1E0UEZUQU4vcUcr?=
+ =?utf-8?B?STRRTWl6NkNtdmorVW9QREtiTC9aM2JkOEdlTVpjeUppeHh4THZtVnVWNGh4?=
+ =?utf-8?B?ZGdGWWptbVU3SnhiOG52ZndKNjZLZy9TdHdnQzdCcmhZRkx2VVUzakdJV2NM?=
+ =?utf-8?B?L1JIejVMdGJ5eXZQWWNRVU1Jbi8vOHRpKy9LdmxnSlhLYUNpUmhoVk9JOUJR?=
+ =?utf-8?B?VUZNUldRQWR5aUZrWDdYQ29xT1JiSmNFV2hKKzBFc0xOMnh5ZkRmbXlvbXh1?=
+ =?utf-8?B?c0ZGTWQ4OHl2cWErYkl2Y3VWS0NOUGo3TkdqakRrOXhHWHllTlhibEw3bUVu?=
+ =?utf-8?B?LzBBcUlBVXprYUw5SnUyRnRPVTU0YXB0RGZmQS9OVUJTL0Q1enF1WlJ5aVBM?=
+ =?utf-8?B?S1E2OUYyclBVM1NjcUM2NlBoT2tZSmtGOGpaRUM2dVFGMmlFWjJyMzA4VC9i?=
+ =?utf-8?B?R01yYy9qSDg3eFlwd2V2cHZhYWJicCtRNm1yK3pLQWl1L1Z6ZEhoU0lIMlFX?=
+ =?utf-8?B?dFYxZnRXdmpmNU12Q3BjVWZONWFwNTVGNkJiMkMzR2c2Yk55T0Q1OEE5SGlo?=
+ =?utf-8?B?YWwva3JhSmM2Z1FRcUN2UVVOMFljRU9Ja1hDeTUrclFTOVRmcCtqUkRzbzRS?=
+ =?utf-8?B?SmVEWkJBWVRKY3pZTVkySHM2dTZCdW5CVFFzVDhlcHgza0RsU1lFTXUvclMw?=
+ =?utf-8?B?ZkZUTDBiT3hIczNhNGsyMEtpMmwrM2U5QVhSdDJmbjFuREFVYVgrenhNenZl?=
+ =?utf-8?Q?WM/4dI7jJjJk95CABqqvp30mjjxwBiGZJYFXCaT?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: a688bdf9-5151-4773-a4ff-08d910697d5c
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 08:32:32.5621
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fWRWlF7flmNxBWoEfqDt3YSvof1JFL1b7I1AcIyZP4A+IgxVPqNHH2TptMFljn4YdOaufGAWcw5jHdgyz6o1mtZSwAwaSROqIUWUTcpXDrQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR10MB4322
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 06:22:13PM +0800, John Garry wrote:
-> The tags used for an IO scheduler are currently per hctx.
+On 06.05.21 03:04, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
 > 
-> As such, when q->nr_hw_queues grows, so does the request queue total IO
-> scheduler tag depth.
 > 
-> This may cause problems for SCSI MQ HBAs whose total driver depth is
-> fixed.
+> V2:
+>  - Add R-b/A-b tag
+>  - Merge V1 patch 13 to V2 patch 6
+>  - Drop V1 patch 15
+>  - Merge V1 patch 16 to V2 patch 5 and add comments in patch 5 to explain
+>  details
+>  - Add explaination in patch 8 for "why the resets are not defined"
 > 
-> Ming and Yanhui report higher CPU usage and lower throughput in scenarios
-> where the fixed total driver tag depth is appreciably lower than the total
-> scheduler tag depth:
-> https://lore.kernel.org/linux-block/440dfcfc-1a2c-bd98-1161-cec4d78c6dfc@huawei.com/T/#mc0d6d4f95275a2743d1c8c3e4dc9ff6c9aa3a76b
+> This patchset is a pick up Lucas's gpcv2 work for i.MX8MM and several
+> minor changes from me to make it could work with i.MX BLK-CTL driver.
 > 
-> In that scenario, since the scheduler tag is got first, much contention
-> is introduced since a driver tag may not be available after we have got
-> the sched tag.
+> Thanks for Lucas's work and suggestion, Frieder Schrempf for collecting
+> all the patches, Jacky Bai on help debug issues.
+
+I tested this series together with the BLK CTL patches by using the GPU and the display stack. Everything looks good to me.
+
+Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de> 
+
 > 
-> Improve this scenario by introducing request queue-wide tags for when
-> a tagset-wide sbitmap is used. The static sched requests are still
-> allocated per hctx, as requests are initialised per hctx, as in
-> blk_mq_init_request(..., hctx_idx, ...) ->
-> set->ops->init_request(.., hctx_idx, ...).
+> Lucas Stach (12):
+>   soc: imx: gpcv2: move to more ideomatic error handling in probe
+>   soc: imx: gpcv2: move domain mapping to domain driver probe
+>   soc: imx: gpcv2: switch to clk_bulk_* API
+>   soc: imx: gpcv2: split power up and power down sequence control
+>   soc: imx: gpcv2: wait for ADB400 handshake
+>   soc: imx: gpcv2: add runtime PM support for power-domains
+>   soc: imx: gpcv2: allow domains without power-sequence control
+>   dt-bindings: imx: gpcv2: add support for optional resets
+>   soc: imx: gpcv2: add support for optional resets
+>   dt-bindings: power: add defines for i.MX8MM power domains
+>   soc: imx: gpcv2: add support for i.MX8MM power domains
+>   soc: imx: gpcv2: Add support for missing i.MX8MM VPU/DISPMIX power
+>     domains
 > 
-> For simplicity of resizing the request queue sbitmap when updating the
-> request queue depth, just init at the max possible size, so we don't need
-> to deal with the possibly with swapping out a new sbitmap for old if
-> we need to grow.
+> Peng Fan (1):
+>   soc: imx: gpcv2: move reset assert after requesting domain power up
 > 
-> Signed-off-by: John Garry <john.garry@huawei.com>
+>  .../bindings/power/fsl,imx-gpcv2.yaml         |   9 +
+>  drivers/soc/imx/gpcv2.c                       | 542 ++++++++++++++----
+>  include/dt-bindings/power/imx8mm-power.h      |  22 +
+>  3 files changed, 458 insertions(+), 115 deletions(-)
+>  create mode 100644 include/dt-bindings/power/imx8mm-power.h
 > 
-> diff --git a/block/blk-mq-sched.c b/block/blk-mq-sched.c
-> index e1e997af89a0..121207abc026 100644
-> --- a/block/blk-mq-sched.c
-> +++ b/block/blk-mq-sched.c
-> @@ -497,11 +497,9 @@ static void blk_mq_sched_free_tags(struct blk_mq_tag_set *set,
->  				   struct blk_mq_hw_ctx *hctx,
->  				   unsigned int hctx_idx)
->  {
-> -	unsigned int flags = set->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
-> -
->  	if (hctx->sched_tags) {
->  		blk_mq_free_rqs(set, hctx->sched_tags, hctx_idx);
-> -		blk_mq_free_rq_map(hctx->sched_tags, flags);
-> +		blk_mq_free_rq_map(hctx->sched_tags, set->flags);
->  		hctx->sched_tags = NULL;
->  	}
->  }
-> @@ -511,12 +509,10 @@ static int blk_mq_sched_alloc_tags(struct request_queue *q,
->  				   unsigned int hctx_idx)
->  {
->  	struct blk_mq_tag_set *set = q->tag_set;
-> -	/* Clear HCTX_SHARED so tags are init'ed */
-> -	unsigned int flags = set->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
->  	int ret;
->  
->  	hctx->sched_tags = blk_mq_alloc_rq_map(set, hctx_idx, q->nr_requests,
-> -					       set->reserved_tags, flags);
-> +					       set->reserved_tags, set->flags);
->  	if (!hctx->sched_tags)
->  		return -ENOMEM;
->  
-> @@ -534,11 +530,8 @@ static void blk_mq_sched_tags_teardown(struct request_queue *q)
->  	int i;
->  
->  	queue_for_each_hw_ctx(q, hctx, i) {
-> -		/* Clear HCTX_SHARED so tags are freed */
-> -		unsigned int flags = hctx->flags & ~BLK_MQ_F_TAG_HCTX_SHARED;
-> -
->  		if (hctx->sched_tags) {
-> -			blk_mq_free_rq_map(hctx->sched_tags, flags);
-> +			blk_mq_free_rq_map(hctx->sched_tags, hctx->flags);
->  			hctx->sched_tags = NULL;
->  		}
->  	}
-> @@ -568,12 +561,25 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
->  	queue_for_each_hw_ctx(q, hctx, i) {
->  		ret = blk_mq_sched_alloc_tags(q, hctx, i);
->  		if (ret)
-> -			goto err;
-> +			goto err_free_tags;
-> +	}
-> +
-> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
-> +		ret = blk_mq_init_sched_shared_sbitmap(q);
-> +		if (ret)
-> +			goto err_free_tags;
-> +
-> +		queue_for_each_hw_ctx(q, hctx, i) {
-> +			hctx->sched_tags->bitmap_tags =
-> +					q->sched_bitmap_tags;
-> +			hctx->sched_tags->breserved_tags =
-> +					q->sched_breserved_tags;
-> +		}
->  	}
->  
->  	ret = e->ops.init_sched(q, e);
->  	if (ret)
-> -		goto err;
-> +		goto err_free_sbitmap;
->  
->  	blk_mq_debugfs_register_sched(q);
->  
-> @@ -584,6 +590,7 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
->  				eq = q->elevator;
->  				blk_mq_sched_free_requests(q);
->  				blk_mq_exit_sched(q, eq);
-> +				blk_mq_exit_sched_shared_sbitmap(q);
-
-blk_mq_exit_sched_shared_sbitmap() has been called in blk_mq_exit_sched() already.
-
->  				kobject_put(&eq->kobj);
->  				return ret;
->  			}
-> @@ -593,7 +600,10 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
->  
->  	return 0;
->  
-> -err:
-> +err_free_sbitmap:
-> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
-> +		blk_mq_exit_sched_shared_sbitmap(q);
-> +err_free_tags:
->  	blk_mq_sched_free_requests(q);
->  	blk_mq_sched_tags_teardown(q);
->  	q->elevator = NULL;
-> @@ -631,5 +641,7 @@ void blk_mq_exit_sched(struct request_queue *q, struct elevator_queue *e)
->  	if (e->type->ops.exit_sched)
->  		e->type->ops.exit_sched(e);
->  	blk_mq_sched_tags_teardown(q);
-> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
-> +		blk_mq_exit_sched_shared_sbitmap(q);
->  	q->elevator = NULL;
->  }
-> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
-> index 2a37731e8244..734fedceca7d 100644
-> --- a/block/blk-mq-tag.c
-> +++ b/block/blk-mq-tag.c
-> @@ -466,19 +466,40 @@ static int blk_mq_init_bitmap_tags(struct blk_mq_tags *tags,
->  	return -ENOMEM;
->  }
->  
-> -int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set, unsigned int flags)
-> +static int __blk_mq_init_bitmaps(struct sbitmap_queue *bitmap_tags,
-> +				 struct sbitmap_queue *breserved_tags,
-> +				 struct blk_mq_tag_set *set,
-> +				 unsigned int queue_depth,
-> +				 unsigned int reserved)
->  {
-> -	unsigned int depth = set->queue_depth - set->reserved_tags;
-> +	unsigned int depth = queue_depth - reserved;
->  	int alloc_policy = BLK_MQ_FLAG_TO_ALLOC_POLICY(set->flags);
->  	bool round_robin = alloc_policy == BLK_TAG_ALLOC_RR;
-> -	int i, node = set->numa_node;
->  
-> -	if (bt_alloc(&set->__bitmap_tags, depth, round_robin, node))
-> +	if (bt_alloc(bitmap_tags, depth, round_robin, set->numa_node))
->  		return -ENOMEM;
-> -	if (bt_alloc(&set->__breserved_tags, set->reserved_tags,
-> -		     round_robin, node))
-> +	if (bt_alloc(breserved_tags, set->reserved_tags,
-> +		     round_robin, set->numa_node))
->  		goto free_bitmap_tags;
->  
-> +	return 0;
-> +
-> +free_bitmap_tags:
-> +	sbitmap_queue_free(bitmap_tags);
-> +	return -ENOMEM;
-> +}
-> +
-> +int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set)
-
-IMO, this function should be named as blk_mq_init_shared_tags
-and moved to blk-mq-sched.c
-
-> +{
-> +	int i, ret;
-> +
-> +	ret = __blk_mq_init_bitmaps(&set->__bitmap_tags,
-> +				    &set->__breserved_tags,
-> +				    set, set->queue_depth,
-> +				    set->reserved_tags);
-> +	if (ret)
-> +		return ret;
-> +
->  	for (i = 0; i < set->nr_hw_queues; i++) {
->  		struct blk_mq_tags *tags = set->tags[i];
->  
-> @@ -487,9 +508,6 @@ int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set, unsigned int flags)
->  	}
->  
->  	return 0;
-> -free_bitmap_tags:
-> -	sbitmap_queue_free(&set->__bitmap_tags);
-> -	return -ENOMEM;
->  }
->  
->  void blk_mq_exit_shared_sbitmap(struct blk_mq_tag_set *set)
-> @@ -498,6 +516,52 @@ void blk_mq_exit_shared_sbitmap(struct blk_mq_tag_set *set)
->  	sbitmap_queue_free(&set->__breserved_tags);
->  }
->  
-> +#define MAX_SCHED_RQ (16 * BLKDEV_MAX_RQ)
-> +
-> +int blk_mq_init_sched_shared_sbitmap(struct request_queue *queue)
-> +{
-> +	struct blk_mq_tag_set *set = queue->tag_set;
-> +	int ret;
-> +
-> +	queue->sched_bitmap_tags =
-> +		kmalloc(sizeof(*queue->sched_bitmap_tags), GFP_KERNEL);
-> +	queue->sched_breserved_tags =
-> +		kmalloc(sizeof(*queue->sched_breserved_tags), GFP_KERNEL);
-> +	if (!queue->sched_bitmap_tags || !queue->sched_breserved_tags)
-> +		goto err;
-
-The two sbitmap queues can be embedded into 'request queue', so that
-we can avoid to re-allocation in every elevator switch.
-
-I will ask Yanhui to test the patch and see if it can make a difference.
-
-
-Thanks,
-Ming
-
