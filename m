@@ -2,97 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48031375D55
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:10:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DF2CC375D57
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhEFXLO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 19:11:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44406 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231216AbhEFXLJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 19:11:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AC94E6105A;
-        Thu,  6 May 2021 23:10:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620342611;
-        bh=pGwapwfIwZOhQarw96L9tvVjL5uL4dSL5MqgEDL7QV4=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=VS40+lW6QNMPALXuZKJZKkfsBtDahDjCHJwNqZN03r9k6KqwKZ+xuvARenFSzbPD8
-         2le/gXGEBrCurSqiQzGSplBT9ZoiQREwp5u3HXehJ0GBFE1lLn24VZe99Psx4F+2GL
-         po33WChdPWTjY/tASJDhYyGILjoJwgIB9THQNwwuqkUdEsCjBfaHy3VXj23jzua583
-         uLeOaFRu5Mx0UauIOmXTJ1NruJe+dHW1rE9hvbtR6/Wf5dOrFfbFIK7bhrjdyEt1Gx
-         W3WkzxrhPqbagLj2WtWXEepVAGVp3VIhaqWfHMEI1COk4Bryru5O0REmMKmCBbtYMW
-         DEyf4K3ARYSlQ==
-Date:   Thu, 6 May 2021 18:10:09 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/42] PCI: pci-bridge-emul: Add PCIe Root Capabilities
- Register
-Message-ID: <20210506231009.GA1444269@bjorn-Precision-5520>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506153153.30454-6-pali@kernel.org>
+        id S231335AbhEFXQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 19:16:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhEFXQq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 19:16:46 -0400
+Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5CDC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 16:15:46 -0700 (PDT)
+Received: by mail-qt1-x84a.google.com with SMTP id g21-20020ac86f150000b02901c94e794dd7so4551644qtv.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 16:15:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
+        bh=S0EFe95CIa83FH/uR0CK5DeEnOSiVvW2gb1ym2pZaOs=;
+        b=YI8500gjXbsMPkTWeUd9d4qkOvRGR55b+Blh1YjsV7bTdx2Uu23DX43NCLrLm8jXNX
+         8IwQG+Bw3nBl+X9aSivNLLmVZ4aePC8vIMnLBJso7IoGPJHNUHQxR4Fo93zJ6LEqOCOV
+         KjfjSvbBKo/0uxcH+ynv1MPrfLtpVxaY1U7WrYpsym+YZ6nZJNwptq2kobYrsamRb4WH
+         WofcJtCp6Na3+C3ZVcnu8OhoLH0Cv8FYlYU0TO29X6W/mfqDiBXQzoOhHPFWxa0MmrVP
+         D0WIIU3/McDobkN5q+u7omIzNr8cfySOmNoDuo4YsM5NRbUHPxabYK6uR7lVtANCaRcF
+         y97Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
+         :from:to:cc;
+        bh=S0EFe95CIa83FH/uR0CK5DeEnOSiVvW2gb1ym2pZaOs=;
+        b=o/tfg/RigvYpsVK+ObFmc0jFH7FlythVpNCrAwHF5k4t6qFvBZ/8xFUEw/vsB0fkFt
+         tHDSh6o4eBwABB7JkLlMDzBMAafy/VFdgJ+N0beWZ12X0QlKWastFv5CGwqIQuXIwNly
+         PGZ0N1cudKHo+rmXYwvjLtGklFNEhGFuGovJnyLYRAoquPAVhWBPyWDBh65rsBpgqUTL
+         5Rwa2+USobhXSn2IKTjP8zOAzngvhEtafXXXEN1rtB73wSbyWvaEAFBY7h/K3977TqqG
+         Y3Q+3xygoq+CBTZkz+4vKIFqkA9aZWK/UJLe+5dzFrBwF9KZ3brJBC2wG/bElQ+ZwuYD
+         4Vew==
+X-Gm-Message-State: AOAM532SBJ0usgaHHCsaAoAh6Tg2DC/5rpvgJNITiA0aZWCm/wAa8/c/
+        BRjR+eOXfmV+xRRa0EXHunNn3KAnSx4=
+X-Google-Smtp-Source: ABdhPJx/QMmmBfM7/niLPM9tz2+a7Ayuom0BmFJwoWUMdwo30QH3UjsA/dZPrPqzpkWJgIJB/5IQp304d9c=
+X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:818d:5ca3:d49c:cfc8])
+ (user=seanjc job=sendgmr) by 2002:a05:6214:241:: with SMTP id
+ k1mr7031611qvt.29.1620342945773; Thu, 06 May 2021 16:15:45 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date:   Thu,  6 May 2021 16:15:42 -0700
+Message-Id: <20210506231542.2331138-1-seanjc@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+Subject: [PATCH] KVM: SVM: Invert user pointer casting in SEV {en,de}crypt helpers
+From:   Sean Christopherson <seanjc@google.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Brijesh Singh <brijesh.singh@amd.com>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Ashish Kalra <ashish.kalra@amd.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 05:31:16PM +0200, Pali Rohár wrote:
-> This is 16-bit register at offset 0x1E. Rename current 'rsvd' struct member
-> to 'rootcap'.
+Invert the user pointer params for SEV's helpers for encrypting and
+decrypting guest memory so that they take a pointer and cast to an
+unsigned long as necessary, as opposed to doing the opposite.  Tagging a
+non-pointer as __user is confusing and weird since a cast of some form
+needs to occur to actually access the user data.  This also fixes Sparse
+warnings triggered by directly consuming the unsigned longs, which are
+"noderef" due to the __user tag.
 
-"The 16-bit Root Capabilities register is at offset 0x1e in the PCIe
-Capability."
+Cc: Brijesh Singh <brijesh.singh@amd.com>
+Cc: Tom Lendacky <thomas.lendacky@amd.com>
+Cc: Ashish Kalra <ashish.kalra@amd.com>
+Signed-off-by: Sean Christopherson <seanjc@google.com>
+---
+ arch/x86/kvm/svm/sev.c | 24 +++++++++++-------------
+ 1 file changed, 11 insertions(+), 13 deletions(-)
 
-Please make the commit log complete in itself.  In some contexts, the
-subject line is not visible at the same time.  It's fine to repeat the
-subject in the commit log.
+diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
+index a9d8d6aafdb8..bba4544fbaba 100644
+--- a/arch/x86/kvm/svm/sev.c
++++ b/arch/x86/kvm/svm/sev.c
+@@ -763,7 +763,7 @@ static int __sev_dbg_decrypt(struct kvm *kvm, unsigned long src_paddr,
+ }
+ 
+ static int __sev_dbg_decrypt_user(struct kvm *kvm, unsigned long paddr,
+-				  unsigned long __user dst_uaddr,
++				  void __user *dst_uaddr,
+ 				  unsigned long dst_paddr,
+ 				  int size, int *err)
+ {
+@@ -787,8 +787,7 @@ static int __sev_dbg_decrypt_user(struct kvm *kvm, unsigned long paddr,
+ 
+ 	if (tpage) {
+ 		offset = paddr & 15;
+-		if (copy_to_user((void __user *)(uintptr_t)dst_uaddr,
+-				 page_address(tpage) + offset, size))
++		if (copy_to_user(dst_uaddr, page_address(tpage) + offset, size))
+ 			ret = -EFAULT;
+ 	}
+ 
+@@ -800,9 +799,9 @@ static int __sev_dbg_decrypt_user(struct kvm *kvm, unsigned long paddr,
+ }
+ 
+ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
+-				  unsigned long __user vaddr,
++				  void __user *vaddr,
+ 				  unsigned long dst_paddr,
+-				  unsigned long __user dst_vaddr,
++				  void __user *dst_vaddr,
+ 				  int size, int *error)
+ {
+ 	struct page *src_tpage = NULL;
+@@ -810,13 +809,12 @@ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
+ 	int ret, len = size;
+ 
+ 	/* If source buffer is not aligned then use an intermediate buffer */
+-	if (!IS_ALIGNED(vaddr, 16)) {
++	if (!IS_ALIGNED((unsigned long)vaddr, 16)) {
+ 		src_tpage = alloc_page(GFP_KERNEL);
+ 		if (!src_tpage)
+ 			return -ENOMEM;
+ 
+-		if (copy_from_user(page_address(src_tpage),
+-				(void __user *)(uintptr_t)vaddr, size)) {
++		if (copy_from_user(page_address(src_tpage), vaddr, size)) {
+ 			__free_page(src_tpage);
+ 			return -EFAULT;
+ 		}
+@@ -830,7 +828,7 @@ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
+ 	 *   - copy the source buffer in an intermediate buffer
+ 	 *   - use the intermediate buffer as source buffer
+ 	 */
+-	if (!IS_ALIGNED(dst_vaddr, 16) || !IS_ALIGNED(size, 16)) {
++	if (!IS_ALIGNED((unsigned long)dst_vaddr, 16) || !IS_ALIGNED(size, 16)) {
+ 		int dst_offset;
+ 
+ 		dst_tpage = alloc_page(GFP_KERNEL);
+@@ -855,7 +853,7 @@ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
+ 			       page_address(src_tpage), size);
+ 		else {
+ 			if (copy_from_user(page_address(dst_tpage) + dst_offset,
+-					   (void __user *)(uintptr_t)vaddr, size)) {
++					   vaddr, size)) {
+ 				ret = -EFAULT;
+ 				goto e_free;
+ 			}
+@@ -935,15 +933,15 @@ static int sev_dbg_crypt(struct kvm *kvm, struct kvm_sev_cmd *argp, bool dec)
+ 		if (dec)
+ 			ret = __sev_dbg_decrypt_user(kvm,
+ 						     __sme_page_pa(src_p[0]) + s_off,
+-						     dst_vaddr,
++						     (void __user *)dst_vaddr,
+ 						     __sme_page_pa(dst_p[0]) + d_off,
+ 						     len, &argp->error);
+ 		else
+ 			ret = __sev_dbg_encrypt_user(kvm,
+ 						     __sme_page_pa(src_p[0]) + s_off,
+-						     vaddr,
++						     (void __user *)vaddr,
+ 						     __sme_page_pa(dst_p[0]) + d_off,
+-						     dst_vaddr,
++						     (void __user *)dst_vaddr,
+ 						     len, &argp->error);
+ 
+ 		sev_unpin_memory(kvm, src_p, n);
+-- 
+2.31.1.607.g51e8a6a459-goog
 
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Reviewed-by: Marek Behún <kabel@kernel.org>
-> Fixes: 23a5fba4d941 ("PCI: Introduce PCI bridge emulated config space common logic")
-> Cc: stable@vger.kernel.org # e0d9d30b7354 ("PCI: pci-bridge-emul: Fix big-endian support")
-
-I'm not sure how people would deal with *two* SHA1s.
-
-This patch adds functionality, so it's not really fixing a bug in
-23a5fba4d941.  I see that e0d9d30b7354 came along later and did
-"s/u16 rsvd/__le16 rsvd/".
-
-But it seems like a lot to expect for distros and stable kernel
-maintainers to interpret this.
-
-Personally I think I would omit both Fixes: and the stable tag since
-these two patches (05 and 06) are just adding functionality.
-
-> ---
->  drivers/pci/pci-bridge-emul.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/pci-bridge-emul.h b/drivers/pci/pci-bridge-emul.h
-> index b31883022a8e..49bbd37ee318 100644
-> --- a/drivers/pci/pci-bridge-emul.h
-> +++ b/drivers/pci/pci-bridge-emul.h
-> @@ -54,7 +54,7 @@ struct pci_bridge_emul_pcie_conf {
->  	__le16 slotctl;
->  	__le16 slotsta;
->  	__le16 rootctl;
-> -	__le16 rsvd;
-> +	__le16 rootcap;
->  	__le32 rootsta;
->  	__le32 devcap2;
->  	__le16 devctl2;
-> -- 
-> 2.20.1
-> 
