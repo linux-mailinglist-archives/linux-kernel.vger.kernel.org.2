@@ -2,103 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A1D3754C8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A9343754C9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:32:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234137AbhEFNdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S234221AbhEFNd0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:33:26 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:55095 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234121AbhEFNdT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 May 2021 09:33:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55873 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233247AbhEFNdR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:33:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620307938;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QR+VFmQanOLc8acTpLhJwPk0qO2xnMjuAmazbsWfrfM=;
-        b=T5vm+RD0wyqS1jIBtIvV8ATg6dukK2ag6CD0D1shQceGpSxJ3A6XNMfk26zDgkpjA0mVQT
-        fjsDURUVvIPSbUgtz3IoB4BkeQ/nbDmjLLPL7+Hl/swGAy0FFFB88G6AXGSjUT/8aCNJtS
-        fbCvZJCYDfAOl+ZvBsObKUNRRSJl51Y=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-488-IolX54RbOXWn1jr5JnHCtg-1; Thu, 06 May 2021 09:32:15 -0400
-X-MC-Unique: IolX54RbOXWn1jr5JnHCtg-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 829B41926DA6;
-        Thu,  6 May 2021 13:32:13 +0000 (UTC)
-Received: from krava (unknown [10.40.193.227])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 1EFB861F55;
-        Thu,  6 May 2021 13:32:10 +0000 (UTC)
-Date:   Thu, 6 May 2021 15:32:10 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Dmitry Koshelev <karaghiozis@gmail.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf: Fix swapping of cpu_map and stat_config records
-Message-ID: <YJPv2u6NBuYX9FUX@krava>
-References: <20210506131244.13328-1-karaghiozis@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506131244.13328-1-karaghiozis@gmail.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FbZJ32qRxz9sYY;
+        Thu,  6 May 2021 15:32:19 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id jSUkJrLu2TXY; Thu,  6 May 2021 15:32:19 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FbZJ31wnHz9sYF;
+        Thu,  6 May 2021 15:32:19 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E6B658B801;
+        Thu,  6 May 2021 15:32:18 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id U8gQ-CHr9pXt; Thu,  6 May 2021 15:32:18 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 95BAC8B800;
+        Thu,  6 May 2021 15:32:18 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 470946489F; Thu,  6 May 2021 13:32:18 +0000 (UTC)
+Message-Id: <7f4aaa479569328a1e5b07c96c08fbca0cd7dd88.1620307890.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/32s: Remove asm/book3s/32/hash.h
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Thu,  6 May 2021 13:32:18 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 01:11:49PM +0000, Dmitry Koshelev wrote:
-> 'data' field in perf_record_cpu_map_data struct is 16-bit
-> wide and so should be swapped using bswap_16().
-> 
-> 'nr' field in perf_record_stat_config struct should be
-> swapped before being used for size calculation.
-> 
-> Signed-off-by: Dmitry Koshelev <karaghiozis@gmail.com>
+Move the PAGE bits into pgtable.h to be more similar to book3s/64.
 
-Acked-by: Jiri Olsa <jolsa@redhat.com>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/include/asm/book3s/32/hash.h    | 45 --------------------
+ arch/powerpc/include/asm/book3s/32/pgtable.h | 38 ++++++++++++++++-
+ 2 files changed, 37 insertions(+), 46 deletions(-)
+ delete mode 100644 arch/powerpc/include/asm/book3s/32/hash.h
 
-thanks,
-jirka
-
-> ---
->  tools/perf/util/session.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index a12cf4f0e97a..106b3d60881a 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -904,7 +904,7 @@ static void perf_event__cpu_map_swap(union perf_event *event,
->  	struct perf_record_record_cpu_map *mask;
->  	unsigned i;
->  
-> -	data->type = bswap_64(data->type);
-> +	data->type = bswap_16(data->type);
->  
->  	switch (data->type) {
->  	case PERF_CPU_MAP__CPUS:
-> @@ -937,7 +937,7 @@ static void perf_event__stat_config_swap(union perf_event *event,
->  {
->  	u64 size;
->  
-> -	size  = event->stat_config.nr * sizeof(event->stat_config.data[0]);
-> +	size  = bswap_64(event->stat_config.nr) * sizeof(event->stat_config.data[0]);
->  	size += 1; /* nr item itself */
->  	mem_bswap_64(&event->stat_config.nr, size);
->  }
-> -- 
-> 2.25.1
-> 
+diff --git a/arch/powerpc/include/asm/book3s/32/hash.h b/arch/powerpc/include/asm/book3s/32/hash.h
+deleted file mode 100644
+index 2a0a467d2985..000000000000
+--- a/arch/powerpc/include/asm/book3s/32/hash.h
++++ /dev/null
+@@ -1,45 +0,0 @@
+-/* SPDX-License-Identifier: GPL-2.0 */
+-#ifndef _ASM_POWERPC_BOOK3S_32_HASH_H
+-#define _ASM_POWERPC_BOOK3S_32_HASH_H
+-#ifdef __KERNEL__
+-
+-/*
+- * The "classic" 32-bit implementation of the PowerPC MMU uses a hash
+- * table containing PTEs, together with a set of 16 segment registers,
+- * to define the virtual to physical address mapping.
+- *
+- * We use the hash table as an extended TLB, i.e. a cache of currently
+- * active mappings.  We maintain a two-level page table tree, much
+- * like that used by the i386, for the sake of the Linux memory
+- * management code.  Low-level assembler code in hash_low_32.S
+- * (procedure hash_page) is responsible for extracting ptes from the
+- * tree and putting them into the hash table when necessary, and
+- * updating the accessed and modified bits in the page table tree.
+- */
+-
+-#define _PAGE_PRESENT	0x001	/* software: pte contains a translation */
+-#define _PAGE_HASHPTE	0x002	/* hash_page has made an HPTE for this pte */
+-#define _PAGE_USER	0x004	/* usermode access allowed */
+-#define _PAGE_GUARDED	0x008	/* G: prohibit speculative access */
+-#define _PAGE_COHERENT	0x010	/* M: enforce memory coherence (SMP systems) */
+-#define _PAGE_NO_CACHE	0x020	/* I: cache inhibit */
+-#define _PAGE_WRITETHRU	0x040	/* W: cache write-through */
+-#define _PAGE_DIRTY	0x080	/* C: page changed */
+-#define _PAGE_ACCESSED	0x100	/* R: page referenced */
+-#define _PAGE_EXEC	0x200	/* software: exec allowed */
+-#define _PAGE_RW	0x400	/* software: user write access allowed */
+-#define _PAGE_SPECIAL	0x800	/* software: Special page */
+-
+-#ifdef CONFIG_PTE_64BIT
+-/* We never clear the high word of the pte */
+-#define _PTE_NONE_MASK	(0xffffffff00000000ULL | _PAGE_HASHPTE)
+-#else
+-#define _PTE_NONE_MASK	_PAGE_HASHPTE
+-#endif
+-
+-#define _PMD_PRESENT	0
+-#define _PMD_PRESENT_MASK (PAGE_MASK)
+-#define _PMD_BAD	(~PAGE_MASK)
+-
+-#endif /* __KERNEL__ */
+-#endif /* _ASM_POWERPC_BOOK3S_32_HASH_H */
+diff --git a/arch/powerpc/include/asm/book3s/32/pgtable.h b/arch/powerpc/include/asm/book3s/32/pgtable.h
+index 83c65845a1a9..609c80f67194 100644
+--- a/arch/powerpc/include/asm/book3s/32/pgtable.h
++++ b/arch/powerpc/include/asm/book3s/32/pgtable.h
+@@ -4,7 +4,43 @@
+ 
+ #include <asm-generic/pgtable-nopmd.h>
+ 
+-#include <asm/book3s/32/hash.h>
++/*
++ * The "classic" 32-bit implementation of the PowerPC MMU uses a hash
++ * table containing PTEs, together with a set of 16 segment registers,
++ * to define the virtual to physical address mapping.
++ *
++ * We use the hash table as an extended TLB, i.e. a cache of currently
++ * active mappings.  We maintain a two-level page table tree, much
++ * like that used by the i386, for the sake of the Linux memory
++ * management code.  Low-level assembler code in hash_low_32.S
++ * (procedure hash_page) is responsible for extracting ptes from the
++ * tree and putting them into the hash table when necessary, and
++ * updating the accessed and modified bits in the page table tree.
++ */
++
++#define _PAGE_PRESENT	0x001	/* software: pte contains a translation */
++#define _PAGE_HASHPTE	0x002	/* hash_page has made an HPTE for this pte */
++#define _PAGE_USER	0x004	/* usermode access allowed */
++#define _PAGE_GUARDED	0x008	/* G: prohibit speculative access */
++#define _PAGE_COHERENT	0x010	/* M: enforce memory coherence (SMP systems) */
++#define _PAGE_NO_CACHE	0x020	/* I: cache inhibit */
++#define _PAGE_WRITETHRU	0x040	/* W: cache write-through */
++#define _PAGE_DIRTY	0x080	/* C: page changed */
++#define _PAGE_ACCESSED	0x100	/* R: page referenced */
++#define _PAGE_EXEC	0x200	/* software: exec allowed */
++#define _PAGE_RW	0x400	/* software: user write access allowed */
++#define _PAGE_SPECIAL	0x800	/* software: Special page */
++
++#ifdef CONFIG_PTE_64BIT
++/* We never clear the high word of the pte */
++#define _PTE_NONE_MASK	(0xffffffff00000000ULL | _PAGE_HASHPTE)
++#else
++#define _PTE_NONE_MASK	_PAGE_HASHPTE
++#endif
++
++#define _PMD_PRESENT	0
++#define _PMD_PRESENT_MASK (PAGE_MASK)
++#define _PMD_BAD	(~PAGE_MASK)
+ 
+ /* And here we include common definitions */
+ 
+-- 
+2.25.0
 
