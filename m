@@ -2,99 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E564A375540
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:00:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5492B37554C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:00:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234547AbhEFOB2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:01:28 -0400
-Received: from mail-ot1-f46.google.com ([209.85.210.46]:41684 "EHLO
-        mail-ot1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbhEFOBZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:01:25 -0400
-Received: by mail-ot1-f46.google.com with SMTP id c36-20020a05683034a4b02902a5b84b1d12so4935556otu.8;
-        Thu, 06 May 2021 07:00:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=hubMrxC9QQYXjgi7dy68ZaTpf75wgUYvH/C6a+Uaz+g=;
-        b=dcYjeGL33nP3z9CO3l6kWbSDfahBS1mFeYzj3gKxL80JcSkRJX6lIsZZQpemqrmqja
-         aDzEtLhdFWRhpVMcX5zXTZfo9XQLRqLszOa9bJfO0GAmujwzo1tuUSb4/SDb6zRGRrvc
-         U/It5SNRth0yedLIK4Hf3oLay7KFLcztsebuNNoLvjNVHY0BzA3mZnkB0jyVOjZ6BIwr
-         GTcgeRrb9Wyhzcbqbo8wBwomPZzWi6e7YXe2JccsP8gMOpw2W4vRmldoVw5qM7LXbS/e
-         WvVT/qu4yOfaQ/7uI0VWW+AOMRkw1jHoXardfX4HE5uGEOssIiZPsJhzpU5qAckpD/Sg
-         OSUw==
-X-Gm-Message-State: AOAM532jmjJZa7WVRai/i3Mz8JwMNTtEZJFEeCx+DI/AcjlwCrRDIpsu
-        AdPFCdKtqn8eM7ANTTJHmQ==
-X-Google-Smtp-Source: ABdhPJxt69flBdzgxkBwftZhwACly8LWduQwM/VXsjhVEp1lsBG3o51WA+c1IVJr1Bi2YuNnql5sgA==
-X-Received: by 2002:a9d:62d2:: with SMTP id z18mr3774871otk.78.1620309627083;
-        Thu, 06 May 2021 07:00:27 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p22sm599281otf.25.2021.05.06.07.00.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 07:00:26 -0700 (PDT)
-Received: (nullmailer pid 244779 invoked by uid 1000);
-        Thu, 06 May 2021 14:00:24 -0000
-Date:   Thu, 6 May 2021 09:00:24 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     lee.jones@linaro.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, jdelvare@suse.com, linux@roeck-us.net,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
-        buczek@molgen.mpg.de
-Subject: Re: [PATCH 3/6] gpio: Add Delta TN48M CPLD GPIO driver
-Message-ID: <20210506140024.GB3340759@robh.at.kernel.org>
-References: <20210430123511.116057-1-robert.marko@sartura.hr>
- <20210430123511.116057-3-robert.marko@sartura.hr>
+        id S234562AbhEFOBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:01:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37248 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234303AbhEFOBr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 10:01:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3832B610FC;
+        Thu,  6 May 2021 14:00:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620309649;
+        bh=iq4hOzh6K2US8KJMLeXxFDLRjf5bYv2Fq5efxCMz7yI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=FH03nBluc5WCGvlxaUmU7xgUh3uEJaz377/KWmzp1HrHitOoiCR8Hwhj9/MGWMrla
+         bpOJX3RXB/sn9k62a2BAjMDJOUUtocUEhIE/EXRUjs0S8+XpmTyfq8K/tdpFzs3oLZ
+         4TVzrvPE1g7mvfh5+ZTUAhcZ9jFyVC5vWHF+XtZo=
+Date:   Thu, 6 May 2021 16:00:47 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     linux-kernel@vger.kernel.org,
+        Atul Gopinathan <atulgopinathan@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, stable <stable@vger.kernel.org>
+Subject: [PATCH] cdrom: gdrom: initialize global variable at init time
+Message-ID: <YJP2j6AU82MqEY2M@kroah.com>
+References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
+ <20210503115736.2104747-28-gregkh@linuxfoundation.org>
+ <223d5bda-bf02-a4a8-ab1d-de25e32b8d47@axentia.se>
+ <YJPDzqAAnP0jDRDF@kroah.com>
+ <dd716d04-b9fa-986a-50dd-5c385ea745b2@axentia.se>
+ <YJPybgcWYKLpyBdK@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210430123511.116057-3-robert.marko@sartura.hr>
+In-Reply-To: <YJPybgcWYKLpyBdK@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 02:35:08PM +0200, Robert Marko wrote:
-> Delta TN48M CPLD is used as a GPIO expander for the SFP GPIOs.
-> 
-> It is a mix of input only and output only pins.
-> 
-> Since there is no logical GPIO numbering arbitrary one is used
-> along dt-bindings to make it humanly readable.
-> 
-> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
-> ---
->  drivers/gpio/Kconfig      |  12 +++
->  drivers/gpio/Makefile     |   1 +
->  drivers/gpio/gpio-tn48m.c | 191 ++++++++++++++++++++++++++++++++++++++
->  drivers/mfd/tn48m-cpld.c  |   6 +-
->  include/linux/mfd/tn48m.h |   3 +
->  5 files changed, 212 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/gpio/gpio-tn48m.c
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 
+As Peter points out, if we were to disconnect and then reconnect this
+driver from a device, the "global" state of the device would contain odd
+values and could cause problems.  Fix this up by just initializing the
+whole thing to 0 at probe() time.
 
-> +static const struct platform_device_id tn48m_gpio_id_table[] = {
-> +	{ "delta,tn48m-gpio", },
+Ideally this would be a per-device variable, but given the age and the
+total lack of users of it, that would require a lot of s/./->/g changes
+for really no good reason.
 
-Looks like a compatible, but is not. I think you can drop this and just 
-use 'tm48m-gpio' (the driver name).
+Reported-by: Peter Rosin <peda@axentia.se>
+Cc: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+---
 
-Same for hwmon.
+Note, this goes on top of my previous "gdrom" patch submitted here:
+	https://lore.kernel.org/lkml/20210503115736.2104747-28-gregkh@linuxfoundation.org/
 
-Rob
+And I'll just take it in the same series.
 
-> +	{ }
-> +};
-> +MODULE_DEVICE_TABLE(platform, tn48m_gpio_id_table);
-> +
-> +static struct platform_driver tn48m_gpio_driver = {
-> +	.driver = {
-> +		.name = "tn48m-gpio",
-> +	},
-> +	.probe = tn48m_gpio_probe,
-> +	.id_table = tn48m_gpio_id_table,
-> +};
-> +module_platform_driver(tn48m_gpio_driver);
+ drivers/cdrom/gdrom.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/cdrom/gdrom.c b/drivers/cdrom/gdrom.c
+index 6c4f6139f853..c6d8c0f59722 100644
+--- a/drivers/cdrom/gdrom.c
++++ b/drivers/cdrom/gdrom.c
+@@ -744,6 +744,13 @@ static const struct blk_mq_ops gdrom_mq_ops = {
+ static int probe_gdrom(struct platform_device *devptr)
+ {
+ 	int err;
++
++	/*
++	 * Ensure our "one" device is initialized properly in case of previous
++	 * usages of it
++	 */
++	memset(&gd, 0, sizeof(gd));
++
+ 	/* Start the device */
+ 	if (gdrom_execute_diagnostic() != 1) {
+ 		pr_warn("ATA Probe for GDROM failed\n");
+@@ -847,7 +854,7 @@ static struct platform_driver gdrom_driver = {
+ static int __init init_gdrom(void)
+ {
+ 	int rc;
+-	gd.toc = NULL;
++
+ 	rc = platform_driver_register(&gdrom_driver);
+ 	if (rc)
+ 		return rc;
+-- 
+2.31.1
+
