@@ -2,116 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA0A375345
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:56:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89958375343
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:55:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231622AbhEFL44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 07:56:56 -0400
-Received: from mx0b-00154904.pphosted.com ([148.163.137.20]:10872 "EHLO
-        mx0b-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231452AbhEFL4y (ORCPT
+        id S231571AbhEFL4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 07:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229733AbhEFL4s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 07:56:54 -0400
-Received: from pps.filterd (m0170394.ppops.net [127.0.0.1])
-        by mx0b-00154904.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146BqAfF005337;
-        Thu, 6 May 2021 07:55:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type :
- content-transfer-encoding; s=smtpout1;
- bh=LYonly/uyklDQji1ynBs3Ip/p70gV4rRL4QGzYkhGDk=;
- b=u19q8H8ccGLkA27Gs3DGnuRwncpiO7kGp9Fcip+XUepG3IyRsQx7EJaCOT+BKzqIgoO9
- 4d6RdCCuaZPSHgh0T1i/cbMqrijkzjnCIKrrpCbpKOQB6fviM/MkJFOy2mwY7+NKK+uJ
- fHs+cy4qgAloBPoJDhM9Pe8pqvhCKujz3nGfbtv+hwgqygSupfGfPmGLdlrdmrQaM/EV
- faPBu7VIWS6W0lF00bsHp/83hpYjG3Fmoagq04ys2FubGrsv647K4SGaBodDI7FShdJL
- U8qd3rLyCylS2nV+J5bIwqbKS3O9IStsMeumc4WI5o4PHhUdJhNrV4unRLqPAwl7s1Cz xA== 
-Received: from mx0a-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0b-00154904.pphosted.com with ESMTP id 38bec9q3dr-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 May 2021 07:55:55 -0400
-Received: from pps.filterd (m0134746.ppops.net [127.0.0.1])
-        by mx0a-00154901.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146Bo7NY010460;
-        Thu, 6 May 2021 07:55:54 -0400
-Received: from esaploutpc121.us.dell.com ([143.166.85.210])
-        by mx0a-00154901.pphosted.com with ESMTP id 38cc3y391c-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 07:55:54 -0400
-X-LoopCount0: from 10.69.132.19
-X-PREM-Routing: D-Outbound
-X-IronPort-AV: E=Sophos;i="5.82,277,1613455200"; 
-   d="scan'208";a="10515614"
-From:   Perry Yuan <Perry.Yuan@dell.com>
-To:     pobrn@protonmail.com, pierre-louis.bossart@linux.intel.com,
-        oder_chiou@realtek.com, perex@perex.cz, tiwai@suse.com,
-        hdegoede@redhat.com, mgross@linux.intel.com
-Cc:     lgirdwood@gmail.com, broonie@kernel.org,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        platform-driver-x86@vger.kernel.org, Perry.Yuan@dell.com,
-        mario.limonciello@outlook.com, Dell.Client.Kernel@dell.com
-Subject: [PATCH v8 0/2] hardware-privacy-implementation-for-dell-laptop
-Date:   Thu,  6 May 2021 19:55:29 +0800
-Message-Id: <20210506115529.15572-1-Perry_Yuan@Dell.com>
-X-Mailer: git-send-email 2.19.2.windows.1
+        Thu, 6 May 2021 07:56:48 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A25C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 04:55:50 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id z6so5308683wrm.4
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 04:55:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=gDqY6Wm/vZlz9V2q3RUMuSorzrRpkJy7OXAMktCuQ74=;
+        b=DZUsC5k2YKg2G+As0+ed2vnc4JhTjGccbDuzCfcfuqhwYSets+ThU/JGUoGnn73nRw
+         9iRWCElTYuDBsyLq7W/KZ0v+fLBm3yObHiIf67G05kuYo2SG6peQiKgnIdN1WX5g0RTX
+         3zwUFx5j2h3H6lAVqda7NmREnlYmFL5n1hTcVu5V5fYK4v38MkXJtgPUCra/EuLndEgA
+         amU/N3Q4N6V3Yb4OgidFxFuafgkHSmSWS+ewWZFvGT+gWlcI2Dx9KlRROSCR7EwHcjVQ
+         TtFX8/xlaz7PcGDiBpIVyB5FJhsjFkoYp0wv5yyajUAutGfO+Qyw8/dNo8leoSTNMVFL
+         pN0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gDqY6Wm/vZlz9V2q3RUMuSorzrRpkJy7OXAMktCuQ74=;
+        b=GSUF3/M1pV3SWpSOPMy5nmiJ4TbLWOLHT2YoJUQX8OflpWMVtk4GEJAjwYOV52/h8O
+         DFSnKWCnryNUo5XAmDfCm4GMJsaB0NExPL3rGV2Fm7MMiR6hudV9UdOp1V6fq5RyPSh8
+         V+rSLj476S+bAU0aOtaaBflZU/4eiGIpX8jz3ZX4kfLQMI1zqMDJTOs1jkPCoav4bCBx
+         SGou4gY5kj8mN7Qam4VTwmiML4pqs/atwfrEQPwobBmXkknYEAYZO+OcoNBC/e+Qpxgo
+         gQEl39VmutfdlQDJqbDd2/90NRP7PzUkPZIRS1GZPK8YIxMNYxOnCeJxASHGyP8jxUzH
+         nrjA==
+X-Gm-Message-State: AOAM531EQMZAMvPy2d++UV4KIf54gypyx8JURkFWIPYU2McGMgash7Fx
+        YMjKd6XoOdjF/sTDpammXyM=
+X-Google-Smtp-Source: ABdhPJwVCAKsjzewcpmn6JVFJPzi6LaWLRouM5HEPtHw4z/A4YC2XF/zv9s+iMuRVGNPmx3R8xgdxw==
+X-Received: by 2002:adf:f50f:: with SMTP id q15mr4455250wro.279.1620302149427;
+        Thu, 06 May 2021 04:55:49 -0700 (PDT)
+Received: from michael-VirtualBox (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
+        by smtp.gmail.com with ESMTPSA id l18sm4023264wrt.97.2021.05.06.04.55.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 04:55:48 -0700 (PDT)
+Date:   Thu, 6 May 2021 14:55:46 +0300
+From:   Michael Zaidman <michael.zaidman@gmail.com>
+To:     kernel test robot <lkp@intel.com>
+Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
+        linux-kernel@vger.kernel.org, Jiri Kosina <jkosina@suse.cz>,
+        Jiri Kosina <jikos@kernel.org>,
+        Michael Zaidman <michael.zaidman@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: drivers/hid/hid-ft260.c:794:44: warning: format specifies type
+ 'short' but the argument has type 'int'
+Message-ID: <20210506115546.GA1745@michael-VirtualBox>
+References: <202105060637.LeEC6ztp-lkp@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-06_08:2021-05-06,2021-05-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=973
- malwarescore=0 bulkscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
- priorityscore=1501 clxscore=1015 phishscore=0 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2105060083
-X-Proofpoint-GUID: GrBuiE7eFe5XbmcSxmdp3fAuWqQ2rnde
-X-Proofpoint-ORIG-GUID: GrBuiE7eFe5XbmcSxmdp3fAuWqQ2rnde
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 bulkscore=0 phishscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2105060083
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202105060637.LeEC6ztp-lkp@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Perry Yuan <perry_yuan@dell.com>
+On Thu, May 06, 2021 at 06:47:46AM +0800, kernel test robot wrote:
+> 
+>    drivers/hid/hid-ft260.c:515:59: warning: variable 'len' is uninitialized when used here [-Wuninitialized]
+>                    hid_err(hdev, "%s: unsupported wr len: %d\n", __func__, len);
+>                                                                            ^~~
+>    include/linux/hid.h:1190:30: note: expanded from macro 'hid_err'
+>            dev_err(&(hid)->dev, fmt, ##__VA_ARGS__)
+>                                        ^~~~~~~~~~~
+>    include/linux/dev_printk.h:112:32: note: expanded from macro 'dev_err'
+>            _dev_err(dev, dev_fmt(fmt), ##__VA_ARGS__)
+>                                          ^~~~~~~~~~~
+>    drivers/hid/hid-ft260.c:507:9: note: initialize the variable 'len' to silence this warning
+>            int len, ret;
+>                   ^
+>                    = 0
 
-Hi All,
-This patch set is a new driver for Dell mobile platform that has the
-hardware privacy feature including micmute,camera mute.
-
-For micmute led control, the hotkey is Fn + F4, it is a hardware based
-mute state, and new privacy will prevent micphone void input from
-hardware layer, any application cannot get voice data when micmute
-activated.
-
-Camera mute use a new hardware design to control the camrea shutter.
-When video is muted, no OS application should be functionally able to
-capture images of the person/environment in front of the system
-
-Older history:
-[1]https://patchwork.kernel.org/project/platform-driver-x86/patch/20201228132855.17544-1-Perry_Yuan@Dell.com/
-[2]https://patchwork.kernel.org/project/alsa-devel/patch/20201103125859.8759-1-Perry_Yuan@Dell.com/#23733605
-[3]https://www.spinics.net/lists/alsa-devel/msg120537.html
-[4]https://github.com/thesofproject/linux/pull/2660
-[5]https://github.com/thesofproject/linux/issues/2496
-
-
-Perry Yuan (2):
-  platform/x86: dell-privacy: Add support for Dell hardware privacy
-  ASoC: rt715:add micmute led state control supports
-
- .../testing/sysfs-platform-dell-privacy-wmi   |  55 +++
- drivers/platform/x86/dell/Kconfig             |  14 +
- drivers/platform/x86/dell/Makefile            |   1 +
- drivers/platform/x86/dell/dell-laptop.c       |  13 +-
- drivers/platform/x86/dell/dell-privacy-wmi.c  | 394 ++++++++++++++++++
- drivers/platform/x86/dell/dell-privacy-wmi.h  |  25 ++
- drivers/platform/x86/dell/dell-wmi.c          |   9 +-
- sound/soc/codecs/rt715-sdca.c                 |  42 ++
- sound/soc/codecs/rt715.c                      |  42 ++
- 9 files changed, 591 insertions(+), 4 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-platform-dell-privacy-wmi
- create mode 100644 drivers/platform/x86/dell/dell-privacy-wmi.c
- create mode 100644 drivers/platform/x86/dell/dell-privacy-wmi.h
-
--- 
-2.25.1
+This warning has already been found and fixed by Dan Carpenter in
+the "HID: ft260: fix an error message in ft260_i2c_write_read()" commit
+on March 18, 2021.
 
