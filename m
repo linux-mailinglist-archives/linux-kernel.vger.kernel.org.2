@@ -2,108 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6C5374FD4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:11:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 526B1374FDC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:14:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233174AbhEFHMb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:12:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33992 "EHLO
+        id S232934AbhEFHPo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:15:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231641AbhEFHM3 (ORCPT
+        with ESMTP id S231254AbhEFHPn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:12:29 -0400
-Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6B58BC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:11:31 -0700 (PDT)
-Received: by mail-pj1-x1035.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so2960025pjv.1
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:11:31 -0700 (PDT)
+        Thu, 6 May 2021 03:15:43 -0400
+Received: from mail-ed1-x52c.google.com (mail-ed1-x52c.google.com [IPv6:2a00:1450:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4B2CC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:14:44 -0700 (PDT)
+Received: by mail-ed1-x52c.google.com with SMTP id bf4so4913423edb.11
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:14:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:subject:in-reply-to:cc:from:to:message-id:mime-version
-         :content-transfer-encoding;
-        bh=9ypg5c6MOAqzsS7CxmmS3kas8+OOs5J41FOXrsXLyMA=;
-        b=pimC6SNQfwwV1A/7teF0rBbZCIvJBHIk3nI/FTZW1rIMK42e57LWtDVFrOfDkpOak3
-         fEEMsW/FcsRwrQv/fixflPyhTT11olpZ4NT2ajJjbjFGAxE6s/IfcPz9aDjdac1NmZwp
-         zGTRkKDJpPClTcCijZ0/rIX00y9sqlPljv6+v9BMMOp4HJpk4C6fAIT2JxzF+HC60J/u
-         tAGQFRPj6Q46OpuFhQeO7DGhN+4eNwJmePKtJXUEMsm3D78LA968Y5LnqBzgnbVOd1WC
-         7YxPcbAgO434kLHeYHt9qpBqnNPtqfA//iK8NO7pYRFHZ05w6aAQX9J/7cJVv+9DXx5M
-         g+Cw==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=2ylmmxs+TaB3xrkE/2Zlsxz/yNTcrgLEBXV0nI/0Rr4=;
+        b=VxUxHYmXfisn0UtQuKY9Y0B7RTXRoJ/Fnv9zcEnTk4XUk4JsoMfLEbfil+q0xLNy+U
+         8Y6c9dvBUh54whtKA8/XBEmQbvlafFxV4/1sV9cFEUH30/HJ8dm/R/6U45I8l3bnsDed
+         gjQDSRtqhLOztytJLJ0KI/pzkb5/VRduGBvirwuMiRnmf6HxkUQUeUtsIknGwJZWmVg+
+         rmYMdQFYgILJq2bmBjJ3KGb99PsVGP93gHA8nUX0opQoxGkvWAFpzFX84OOE00KN6uOM
+         vcpZ2lMLwI/BtXMARC6NQNsgUzAUoqUuWzMSyNGVuTTGIDiLHArUEuhfZx7HSJObdhQI
+         jDPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:in-reply-to:cc:from:to:message-id
-         :mime-version:content-transfer-encoding;
-        bh=9ypg5c6MOAqzsS7CxmmS3kas8+OOs5J41FOXrsXLyMA=;
-        b=I5NHxqpwxIYCJpySp3ozOvv4pNNa2ss8wM4uWhhI/TQwIkQdIZ6qeHIhKuA6BfRPZJ
-         MOcBrxpKRAwIJjUNIp+u4ooE0vaS6jXr8FBR3X2XCTZjjewXYmfZmWyRXoC5x7GEy90F
-         lsytvDMtUx4LNB10SOrKDoC4zyGkXkow42w/AUBrtEpEWqq3zJAPFKNAXxNx5y063ESd
-         0KY5NDJZiS2eqRTo26N9Ff0XGm2iTg1XoVLPdJaLgZD9Wx4dqfbkzXrE1Uj4UBVxd+yQ
-         6PzdmuesKMXq1vPTa0ikJuoHlbWHOUYofdigKgJIIYywnqsR2VB+BCHSsxy/IQ3caLqe
-         hM7A==
-X-Gm-Message-State: AOAM530yYsogngH33aioS3lymHGD1qkvMgnAj0EhA2DeCC0M8F6KrSs/
-        HFNzUPYkQpwhAH30c/wjAdp9og==
-X-Google-Smtp-Source: ABdhPJxf2ZuzWR6KCVivm+jms8uWGnTwz+EWrQxN7mdrJPcJcT/JJmRO4O91kbQ4LJDaH+BA+OuwSw==
-X-Received: by 2002:a17:90a:6345:: with SMTP id v5mr9278882pjs.139.1620285090692;
-        Thu, 06 May 2021 00:11:30 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id g18sm1275741pfb.178.2021.05.06.00.11.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 00:11:30 -0700 (PDT)
-Date:   Thu, 06 May 2021 00:11:30 -0700 (PDT)
-X-Google-Original-Date: Thu, 06 May 2021 00:02:03 PDT (-0700)
-Subject:     Re: [PATCH] RISC-V: insn: Use a raw spinlock to protect TEXT_POKE*
-In-Reply-To: <mhng-dbd1fd8c-37f7-4b60-a61e-3f8d22e5baf0@palmerdabbelt-glaptop>
-CC:     Anup Patel <Anup.Patel@wdc.com>, changbin.du@gmail.com,
-        linux-riscv@lists.infradead.org,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        aou@eecs.berkeley.edu, peterz@infradead.org, jpoimboe@redhat.com,
-        jbaron@akamai.com, ardb@kernel.org,
-        Atish Patra <Atish.Patra@wdc.com>, akpm@linux-foundation.org,
-        rppt@kernel.org, mhiramat@kernel.org, zong.li@sifive.com,
-        guoren@linux.alibaba.com, wangkefeng.wang@huawei.com,
-        0x7f454c46@gmail.com, chenhuang5@huawei.com,
-        linux-kernel@vger.kernel.org, kernel-team@android.com
-From:   Palmer Dabbelt <palmerdabbelt@google.com>
-To:     rostedt@goodmis.org
-Message-ID: <mhng-08581a54-f9c8-4119-97bb-a9be86f19e41@palmerdabbelt-glaptop>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=2ylmmxs+TaB3xrkE/2Zlsxz/yNTcrgLEBXV0nI/0Rr4=;
+        b=IbYIJfaeG1H9/g52N5lHILwfCyFUs7wrrDvX1x1l0ctmY9xLVQgh4f8RxPyZMGP23o
+         Q6LrUFtWcdE+IDxh0aEGZzkAjJQ8nTe8sRmi+mqshgtMuHWzxQreHqmdCXOf2sX2T4Dz
+         PRvk06ObOR/jES02CCdYkLHv1st8r6YYr4mZrIUc1PQFJ2pncBBOYqCnf9ZqpMr9SyCL
+         oUEEskuCXRKe1WwCDSeht0ZW+kYl9+zbQHuv0t9ikBodyL6UkJz7XKHZWcveqgHVw4oB
+         xtIAp7FWo8Q2aefwNiI3NvKCm+8kykza5qsJr3ywDblTqVwhvcQikGGPQ65P/PPAEMTi
+         SVWA==
+X-Gm-Message-State: AOAM530xLHL8dmOPJ78pdDO8nlWUOHXyBYqay98T9qrcDh/Bnhl9Hh/N
+        PMcVb9EPWeRzhRnfMy7bz5OeODg2EMFX1Bp9ubs4+g==
+X-Google-Smtp-Source: ABdhPJx0kcdPAe+JYobud457UWeAKWmB1LuF2zhEwEL+62ASH5Z2h4D514Rhv+bsFntjrexXSj8ON+pBmB1j7mSPZtE=
+X-Received: by 2002:aa7:c78a:: with SMTP id n10mr3322356eds.239.1620285283235;
+ Thu, 06 May 2021 00:14:43 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210505112326.672439569@linuxfoundation.org>
+In-Reply-To: <20210505112326.672439569@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 6 May 2021 12:44:31 +0530
+Message-ID: <CA+G9fYv_HVktCp-pB4HKM4KG-Suu=ZmR_qOTdF5KYHih9Oxt3Q@mail.gmail.com>
+Subject: Re: [PATCH 5.11 00/31] 5.11.19-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 30 Apr 2021 12:44:37 PDT (-0700), Palmer Dabbelt wrote:
-> On Fri, 30 Apr 2021 04:34:31 PDT (-0700), rostedt@goodmis.org wrote:
->> On Fri, 30 Apr 2021 04:06:35 +0000
->> Anup Patel <Anup.Patel@wdc.com> wrote:
->>
->>> This patch only takes care of ftrace path.
->>>
->>> The RISC-V instruction patching is used by RISC-V jump label implementation
->>> as well and will called from various critical parts of core kernel.
->>>
->>> The RAW spinlock approach allows same instruction patching to be used
->>> for kprobes, ftrace, and jump label.
->>
->> So what path hits this outside of stop machine?
+On Wed, 5 May 2021 at 17:39, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
 >
-> I didn't actually dig through all the usages of jump_label, I just saw a
-> handful in places where it's generally not sane to assume that sleeping
-> is safe -- for example, thoughout kernel/sched.  If you think it's OK to
-> rely on users of the static branch stuff (IIUC the only jump_label user
-> in the kernel?) to know that it can sleep then I'm fine keeping the
-> text_mutex call in jump_label and adding one to ftrace (I'm fine with
-> something generic, but it's simple to do in arch/riscv).
+> This is the start of the stable review cycle for the 5.11.19 release.
+> There are 31 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 >
-> IMO if the static branch stuff can be expected to sleep it'd be good to
-> call that out in the documentation, and I'd like to audit the uses
-> before committing to that.  I'm happy to do that, we can just take the
-> lock in arch/riscv's frace code for now to get around the lockdep
-> assertion failure -- IIUC that's indicating a real bug, as nothing in
-> ftrace avoids concurrency with jump_label and kprobes.
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.11.19-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.11.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-Turns out I'd actually opened the wrong thread and was looking at a 
-stack trace from a bur reported a year ago, which is why nothing I was 
-saying here makes any sense.  That bug has already been fixed, I have a 
-proper fix for this one.  It turns out to be almost exactly the same as 
-something Steven suggested in this thread.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
+
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
+
+## Build
+* kernel: 5.11.19-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.11.y
+* git commit: cffd2a415e649b47f93b2f10fd7b7fa2441c3585
+* git describe: v5.11.18-32-gcffd2a415e64
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.11.y/build/v5.11=
+.18-32-gcffd2a415e64
+
+## No regressions (compared to v5.11.18-9-g7c5623736e0c)
+
+## No fixes (compared to v5.11.18-9-g7c5623736e0c)
+
+## Test result summary
+ total: 84037, pass: 69465, fail: 2557, skip: 11736, xfail: 279,
+
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 0 passed, 1 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
+
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
