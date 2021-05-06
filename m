@@ -2,131 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B24123754CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:34:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2F393754D8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:37:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234110AbhEFNf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:35:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48680 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233461AbhEFNfY (ORCPT
+        id S234208AbhEFNiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:38:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233461AbhEFNh5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:35:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620308066;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=tPc+W/XTdGwFLPXo+j4WvorK8DhXEDBZU8KGl987Scc=;
-        b=HezdePtU9eE67/UkbfzxJu2kNIQQqziDD+bQdhqhClifYNc7QlKIJ9/7hS3JBc80NbH+J2
-        wHYndC/RC40Vfb7CHP0gKtVuoIhuZW/zsvu6gmYcim4MVJvFOsvAZwrmSiYte+OIyUtz2e
-        UVYEOFpg+RhzIH2ehGu/xkP0wI+E6zo=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-284-KAYT67QLPuCzoxgF73n4rg-1; Thu, 06 May 2021 09:34:22 -0400
-X-MC-Unique: KAYT67QLPuCzoxgF73n4rg-1
-Received: by mail-ej1-f69.google.com with SMTP id r14-20020a1709062cceb0290373a80b4002so1694100ejr.20
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 06:34:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tPc+W/XTdGwFLPXo+j4WvorK8DhXEDBZU8KGl987Scc=;
-        b=Z5RNe9ZajgxneTN22hM5LBAwpUs3XLSO+gqAWysckQTsw/WSEgeFHKu+2TY6MbNT55
-         /mg4ghJCh5ysiNXhNGf/fjQQ+UE7il8weyYJtGmw5u16MTaZCOG3UfGA4bm5Kh3QiD13
-         ND1318NpqMYp1ozMvAvK+qsJKGePznS5T2+iqZDpfxmtqYroPmn/XdWOsIECf1DfF015
-         tb/B39s+j/ynev4TRF6huI81EHFvxaGvbqCYnR9RrVMG/Ue2NaE7k0LCLvySi44vLvsV
-         pc/gu5PXFw+Y0LKhjj67RJeUa4P0MUQbKSU2aaLWRUag8zMMCaG8hExRkXxsTNs6hCgg
-         gM2Q==
-X-Gm-Message-State: AOAM53086A/2yjkd7ra0YWDy3rcbEtmKtWJwlgydn//e9lJcYnzIY2Ax
-        1hmibXkLXdESZWDtKndIfr3Ha2V1FaXFgHSTCvJ5DSrAuGDqyE1ivFuNRTH5HxjYAKJRBuAigiY
-        uAZ1TqZNV1xYvaIBfD1ED4/CH
-X-Received: by 2002:a17:906:4553:: with SMTP id s19mr4437562ejq.117.1620308061620;
-        Thu, 06 May 2021 06:34:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxjcUafqwF3p+FEiROr7dUWC9UVn6oG30p4J15nqDKeTSU6ntNMN3NwQeZBpZpi0zPBWgAZEg==
-X-Received: by 2002:a17:906:4553:: with SMTP id s19mr4437548ejq.117.1620308061481;
-        Thu, 06 May 2021 06:34:21 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id v14sm1718061edx.5.2021.05.06.06.34.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 06:34:20 -0700 (PDT)
-Subject: Re: [PATCH] iio: bme680_spi: Remove ACPI support
-To:     Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Cameron <jic23@kernel.org>
-Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <20210506133145.2266604-1-linux@roeck-us.net>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <034f8cbf-775c-6ee6-1c41-0a951368e998@redhat.com>
-Date:   Thu, 6 May 2021 15:34:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 6 May 2021 09:37:57 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A47C061761;
+        Thu,  6 May 2021 06:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=cZKl1g221hvgsUM4ruH5PC7LZQBfPUMAAeP8YaPjGAU=; b=iCvBIdp7CfSO/0BJGcxbWozcPf
+        t5+tSFPC4ck12ybfCEVvVxo8U9LY1fxOS9JBCsesLSJjScpvyFriKQ5I121sTTU1wduIRAToqxDWQ
+        GUihxZ+vvPpjjBG0m720St9/4O5srJjJswCAjDCQDB2hZTwbdav9kAZIHPV6njAwGAGhzH6xRvEqz
+        Cwd2WqijKlvf7k5hA1Ys4CSZ4t3jNrVLPEMozQv6gelS2+1Bzb6NL82XwqXWmUaLKKA+giVqeDHYN
+        e9oTf6PG6n/UTia4wqFcyPO9x27cCS8wnVcM6LiKUFR8vSJDzU8TZk0je2A9cZctcj2GA0skSqibN
+        MTKubsqA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lee9l-001lUf-GN; Thu, 06 May 2021 13:35:26 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 031A93001DB;
+        Thu,  6 May 2021 15:35:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id D2CEC202641BA; Thu,  6 May 2021 15:35:07 +0200 (CEST)
+Date:   Thu, 6 May 2021 15:35:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: KVM: x86: Prevent deadlock against tk_core.seq
+Message-ID: <YJPwi0FSObIjOSd7@hirez.programming.kicks-ass.net>
+References: <87h7jgm1zy.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-In-Reply-To: <20210506133145.2266604-1-linux@roeck-us.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87h7jgm1zy.ffs@nanos.tec.linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On 5/6/21 3:31 PM, Guenter Roeck wrote:
-> BME0680 is not an official ACPI ID, so let's remove it before someone
-> starts using it.
+On Thu, May 06, 2021 at 03:21:37PM +0200, Thomas Gleixner wrote:
+> syzbot reported a possible deadlock in pvclock_gtod_notify():
 > 
-> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
-> Cc: Hans de Goede <hdegoede@redhat.com>
-> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-
-Thanks, patch looks good to me:
-
-Reviewed-by: Hans de Goede <hdegoede@redhat.com>
-
-Regards,
-
-Hans
-
-
-> ---
->  drivers/iio/chemical/bme680_spi.c | 8 --------
->  1 file changed, 8 deletions(-)
+> CPU 0  		  	   	    	    CPU 1
+> write_seqcount_begin(&tk_core.seq);
+>   pvclock_gtod_notify()			    spin_lock(&pool->lock);
+>     queue_work(..., &pvclock_gtod_work)	    ktime_get()
+>      spin_lock(&pool->lock);		      do {
+>      						seq = read_seqcount_begin(tk_core.seq)
+> 						...
+> 				              } while (read_seqcount_retry(&tk_core.seq, seq);
 > 
-> diff --git a/drivers/iio/chemical/bme680_spi.c b/drivers/iio/chemical/bme680_spi.c
-> index 6f56ad48cc40..cc579a7ac5ce 100644
-> --- a/drivers/iio/chemical/bme680_spi.c
-> +++ b/drivers/iio/chemical/bme680_spi.c
-> @@ -4,7 +4,6 @@
->   *
->   * Copyright (C) 2018 Himanshu Jha <himanshujha199640@gmail.com>
->   */
-> -#include <linux/acpi.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/regmap.h>
-> @@ -145,12 +144,6 @@ static const struct spi_device_id bme680_spi_id[] = {
->  };
->  MODULE_DEVICE_TABLE(spi, bme680_spi_id);
->  
-> -static const struct acpi_device_id bme680_acpi_match[] = {
-> -	{"BME0680", 0},
-> -	{},
-> -};
-> -MODULE_DEVICE_TABLE(acpi, bme680_acpi_match);
-> -
->  static const struct of_device_id bme680_of_spi_match[] = {
->  	{ .compatible = "bosch,bme680", },
->  	{},
-> @@ -160,7 +153,6 @@ MODULE_DEVICE_TABLE(of, bme680_of_spi_match);
->  static struct spi_driver bme680_spi_driver = {
->  	.driver = {
->  		.name			= "bme680_spi",
-> -		.acpi_match_table	= ACPI_PTR(bme680_acpi_match),
->  		.of_match_table		= bme680_of_spi_match,
->  	},
->  	.probe = bme680_spi_probe,
+> While this is unlikely to happen, it's possible.
 > 
+> Delegate queue_work() to irq_work() which postpones it until the
+> tk_core.seq write held region is left and interrupts are reenabled.
+> 
+> Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
+> Reported-by: syzbot+6beae4000559d41d80f8@syzkaller.appspotmail.com
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
