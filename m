@@ -2,146 +2,338 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31FAF37589A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:41:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C13A437589D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235997AbhEFQml (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:42:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49140 "EHLO
+        id S236048AbhEFQmv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:42:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49180 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235700AbhEFQmj (ORCPT
+        with ESMTP id S236009AbhEFQms (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:42:39 -0400
-Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EF8AC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 09:41:40 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id E2205C800AE;
-        Thu,  6 May 2021 18:41:37 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10024)
-        with LMTP id P9VmPmbXH6xr; Thu,  6 May 2021 18:41:37 +0200 (CEST)
-Received: from [IPv6:2003:e3:7f12:f200:8bde:d9a7:b37:e3f5] (p200300e37F12f2008bdED9a70B37E3f5.dip0.t-ipconnect.de [IPv6:2003:e3:7f12:f200:8bde:d9a7:b37:e3f5])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPSA id 9B537C800AB;
-        Thu,  6 May 2021 18:41:35 +0200 (CEST)
-Subject: Re: [Intel-gfx] [PATCH 1/3] New function to avoid duplicate code in
- upcomming commits
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-References: <20210505172401.1453178-1-wse@tuxedocomputers.com>
- <20210505172401.1453178-2-wse@tuxedocomputers.com> <87v97ww4e5.fsf@intel.com>
-From:   Werner Sembach <wse@tuxedocomputers.com>
-Message-ID: <3796a7b9-8035-38ea-1c3d-b1ffe89aa19e@tuxedocomputers.com>
-Date:   Thu, 6 May 2021 18:41:34 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        Thu, 6 May 2021 12:42:48 -0400
+Received: from mail-ot1-x331.google.com (mail-ot1-x331.google.com [IPv6:2607:f8b0:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8068EC061574;
+        Thu,  6 May 2021 09:41:49 -0700 (PDT)
+Received: by mail-ot1-x331.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso5408488otg.9;
+        Thu, 06 May 2021 09:41:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=htiCxuZshJkux8cbRyREXQ3BRqeGVd2tm3LHKemMtAA=;
+        b=UI4a5ZAGFDxxCUpbiBiH2ojMcl+b3ouaTbiK9ODHoPJctkx/aWuG2vGo4nPia7z//L
+         jQhEq54fYJLV/4/7Y9Ix1L1DbaITKS1DYU8kSH+Qx6mbiTcPgBySzj9hxlmsDGETtOJR
+         J8NxVln9Y0fpopHTLqpajjru5MXkYYen2ZYWY4Bb/3ZrsgSoKPJqhGksdVPRH8ALLHSN
+         WZ27SxZuCjJLqUCjVja8mjh0tXN73VY/FnoAkp+KWBKX/IopWXwLPo24HPtrEj3GErnc
+         g2h7Lj0WYr0WavhtoYeUMevTERmNpWXjC6ROEp9dCOTR2BCuAo0OenGuVxhBH8Fajosp
+         0twA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=htiCxuZshJkux8cbRyREXQ3BRqeGVd2tm3LHKemMtAA=;
+        b=ramZglHNLl6loA+tfUSG6ukMPMUnhcKLK2qqkKdIxOv4gcoznGvKtfTZcGqVj+VoG4
+         x8dz0/djU4wyQq+D+0apUkiJ1VoMruKFv0k91JUkoDq4jd+srDvj03GKzdKGaBv/0Jvp
+         iNgAFLems8rsw21Jku9l7ONbAS7hlGytfJU8XiJHrPXCQxBtprx5XvE9vswKXyjp24W5
+         rC0UDQaCjqTTMOXgcTjk3zCTz32Y1S+eoTTgjL/ODjTYK4sX9dqGNF6SIFh8mwJnNSMP
+         mKHF6uGM28SB6ukUThdmC60HhdYSoSldwo46GWkmjwSHGy68APql5upaCWGyDg64jHk6
+         rO2g==
+X-Gm-Message-State: AOAM532/iddDeoVs2ox8pRnfj7zobgZArRCBkquiQA8mzLIvEoHc+BK9
+        BEVen5sjIsL+X6BbopwvQvVd+6Ms8G1LL1w7Z20=
+X-Google-Smtp-Source: ABdhPJxb+TJnfSbdW/n0EBWvchvI28tIs8PFhZTcYhFDatEMrrFy80ojNdfn3GvDihmUcyK7A4dgSeEiwF/NPiH+H38=
+X-Received: by 2002:a9d:4e9a:: with SMTP id v26mr4482846otk.74.1620319308829;
+ Thu, 06 May 2021 09:41:48 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87v97ww4e5.fsf@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <20210501133647.14350-1-sergio.paracuellos@gmail.com> <20210506151839.GA322729@robh.at.kernel.org>
+In-Reply-To: <20210506151839.GA322729@robh.at.kernel.org>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Thu, 6 May 2021 18:41:36 +0200
+Message-ID: <CAMhs-H_Ae4Erx06j2fGSiZXpGo9UWRAkSPPQhFGnZ1D8=NM8cg@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: staging: mt7621-pci: PCIe binding
+ documentation for MT76721 SoCs
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-staging@lists.linux.dev,
+        Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Rob,
 
-Am 06.05.21 um 12:19 schrieb Jani Nikula:
-> On Wed, 05 May 2021, Werner Sembach <wse@tuxedocomputers.com> wrote:
->> Moves some checks that later will be performed 2 times to an own fuction. This
->> avoids duplicate code later on.
->>
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->> ---
->>
->> From 42a4a3a7d9ea9948b4071f406e7fcae23bfa0bdf Mon Sep 17 00:00:00 2001
->> From: Werner Sembach <wse@tuxedocomputers.com>
->> Date: Mon, 3 May 2021 14:35:39 +0200
->> Subject: [PATCH 1/3] New function to avoid duplicate code in upcomming commits
-> What are you using to generate and send the patches? This looks like
-> unnecessary cruft, and our CI fails to apply and test the changes.
+Thanks for the review.
+
+On Thu, May 6, 2021 at 5:18 PM Rob Herring <robh@kernel.org> wrote:
 >
-> BR,
-> Jani.
-I'm using git send-email with --compose and --annotate. The From, Date, and Subject lines are automatically generated by it and I then add the commit message above.
+> On Sat, May 01, 2021 at 03:36:46PM +0200, Sergio Paracuellos wrote:
+> > Add device tree binding documentation for PCIe in MT7621 SoCs.
+> >
+> > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > ---
+> >
+> > Hi Rob,
+> >
+> > Some concerns here. I was not be able to found any case similar to
+> > this binding where sub-nodes describing each pcie port interface
+> > are needed. I added them to the 'examples' directly without saying
+> > anything about properties in any other place since its properties
+> > seems to be covered in 'pci-bus.yaml' schema definition. I don't
+> > know if this is the way, I have checked against schema and I noticed
+> > I am forced to add 'device_type' property in each subnode because
+> > schema checker complains that this is mandatory. So I have added
+> > it and schema is properly being validated:
+> >
+> > Before add the 'device_type' in each subnode:
+> > /home/sergio/staging/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml: pcie@0,0: 'device_type' is a required property
+> > >From schema: /home/sergio/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
+> > /home/sergio/staging/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml: pcie@1,0: 'device_type' is a required property
+> > >From schema: /home/sergio/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
+> > /home/sergio/staging/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml: pcie@2,0: 'device_type' is a required property
+> > >From schema: /home/sergio/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
+>
+> Each port is a PCI bridge, right? If so, then 'pcie' for the node name
+> and 'device_type = "pci";' are correct.
 
-After reading https://www.kernel.org/doc/html/v5.12/process/submitting-patches.html#the-canonical-patch-format I thought the format was:
-
-<commit message for upstream and signed of lines>
----
-<additional comments only for mailing list/stuff that gets ignored by the tools>
----
-<the patch>
-
-With the middle part being optional. (I only tested with "git apply" which worked fine with the format)
-
-I will resend the patches without the middle part, and the drm/i915/display in all subject lines.
+Yes it is, thanks for clarification.
 
 >
->> ---
->>  drivers/gpu/drm/i915/display/intel_hdmi.c | 41 ++++++++++++++---------
->>  1 file changed, 26 insertions(+), 15 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
->> index 46de56af33db..576d3d910d06 100644
->> --- a/drivers/gpu/drm/i915/display/intel_hdmi.c
->> +++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
->> @@ -1861,6 +1861,31 @@ static int intel_hdmi_port_clock(int clock, int bpc)
->>  	return clock * bpc / 8;
->>  }
->>  
->> +static enum drm_mode_status
->> +intel_hdmi_mode_clock_valid(struct intel_hdmi *hdmi, int clock, bool has_hdmi_sink)
->> +{
->> +	struct drm_device *dev = intel_hdmi_to_dev(hdmi);
->> +	struct drm_i915_private *dev_priv = to_i915(dev);
->> +	enum drm_mode_status status;
->> +
->> +	/* check if we can do 8bpc */
->> +	status = hdmi_port_clock_valid(hdmi, clock, true, has_hdmi_sink);
->> +
->> +	if (has_hdmi_sink) {
->> +		/* if we can't do 8bpc we may still be able to do 12bpc */
->> +		if (status != MODE_OK && !HAS_GMCH(dev_priv))
->> +			status = hdmi_port_clock_valid(hdmi, clock * 3 / 2,
->> +						       true, has_hdmi_sink);
->> +
->> +		/* if we can't do 8,12bpc we may still be able to do 10bpc */
->> +		if (status != MODE_OK && INTEL_GEN(dev_priv) >= 11)
->> +			status = hdmi_port_clock_valid(hdmi, clock * 5 / 4,
->> +						       true, has_hdmi_sink);
->> +	}
->> +
->> +	return status;
->> +}
->> +
->>  static enum drm_mode_status
->>  intel_hdmi_mode_valid(struct drm_connector *connector,
->>  		      struct drm_display_mode *mode)
->> @@ -1891,21 +1916,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
->>  	if (drm_mode_is_420_only(&connector->display_info, mode))
->>  		clock /= 2;
->>  
->> -	/* check if we can do 8bpc */
->> -	status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 8),
->> -				       true, has_hdmi_sink);
->> -
->> -	if (has_hdmi_sink) {
->> -		/* if we can't do 8bpc we may still be able to do 12bpc */
->> -		if (status != MODE_OK && !HAS_GMCH(dev_priv))
->> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 12),
->> -						       true, has_hdmi_sink);
->> -
->> -		/* if we can't do 8,12bpc we may still be able to do 10bpc */
->> -		if (status != MODE_OK && DISPLAY_VER(dev_priv) >= 11)
->> -			status = hdmi_port_clock_valid(hdmi, intel_hdmi_port_clock(clock, 10),
->> -						       true, has_hdmi_sink);
->> -	}
->> +	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
->>  	if (status != MODE_OK)
->>  		return status;
+> >
+> > After adding it:
+> > CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+>
+> Validates all the schema
+>
+> > SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+>
+> Preprocesses all the schema
+>
+> > DTEX    Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dts
+>
+> Extracts the example to dts file
+>
+> > DTC     Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml
+>
+> Converts the example to yaml
+>
+> > CHECK   Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml
+>
+> Runs the checks.
+>
+> >
+> > Looks a bit redundant and maybe I am doing something wrong...
+
+I meant redundant the 'device_type=pci' in all of the child nodes, not
+the messages I got when check against the schema but thanks also for
+explanation :).
+
+> >
+> > Thanks in advance for clarification.
+> >
+> > Best regards,
+> >     Sergio Paracuellos
+> >
+> >
+> >  .../bindings/pci/mediatek,mt7621-pci.yaml     | 144 ++++++++++++++++++
+> >  .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 -------------
+> >  2 files changed, 144 insertions(+), 104 deletions(-)
+> >  create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> >  delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+> >
+> > diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > new file mode 100644
+> > index 000000000000..9c1d05d929a2
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > @@ -0,0 +1,144 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/pci/mediatek,mt7621-pci.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: MediaTek MT7621 PCIe controller
+> > +
+> > +maintainers:
+> > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > +
+> > +description: |+
+> > +  MediaTek MT7621 PCIe subsys supports single Root complex (RC)
+> > +  with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link
+> > +
+> > +allOf:
+> > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > +
+> > +properties:
+> > +  compatible:
+> > +    const: mediatek,mt7621-pci
+> > +
+> > +  reg:
+> > +    items:
+> > +      - description: host-pci bridge registers
+> > +      - description: pcie port 0 RC control registers
+> > +      - description: pcie port 1 RC control registers
+> > +      - description: pcie port 2 RC control registers
+>
+> Are these config space registers or MT7621 specific?
+
+All of them are MT7621 specific.
+
+>
+> > +
+> > +  ranges:
+> > +    maxItems: 2
+> > +
+> > +  interrupts:
+> > +    maxItems: 3
+>
+> What are the 3 interrupts?
+
+These are one interrupt per root port. In next version this will
+change in favour of using interrupt-map and interrupt-map-mask instead
+of use interrupts and a custom 'map_irq' callback in driver code.
+Please see:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=aed0b711cc791d075e716c397ff6b26bf50345a6
+https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=3e278e3064511b1606d406db0e26b2fee593fb55
+
+This is the way used in mt7623 already mainlined binding.
+
+> > +
+> > +  resets:
+> > +    items:
+> > +      - description: pcie port 0 reset.
+> > +      - description: pcie port 1 reset.
+> > +      - description: pcie port 2 reset.
+>
+> This and clocks should perhaps be in each child node.
+
+I followed here style in mt7623 already mainlined bindings which are
+in the main node. Is there a strong reason to be changed into child
+nodes or can I maintain this as it is?
+
+>
+> > +
+> > +  reset-names:
+> > +    items:
+> > +      - const: pcie0
+> > +      - const: pcie1
+> > +      - const: pcie2
+> > +
+> > +  clocks:
+> > +    items:
+> > +      - description: pcie port 0 clock.
+> > +      - description: pcie port 1 clock.
+> > +      - description: pcie port 2 clock.
+> > +
+> > +  clock-names:
+> > +    items:
+> > +      - const: pcie0
+> > +      - const: pcie1
+> > +      - const: pcie2
+> > +
+> > +  phys:
+> > +    items:
+> > +      - description: Dual-ported phy for pcie port 0 and 1.
+> > +      - description: Phy for pcie port 2.
+> > +
+> > +  phy-names:
+> > +    items:
+> > +      - const: pcie-phy0
+> > +      - const: pcie-phy2
+> > +
+> > +required:
+> > +  - compatible
+> > +  - reg
+> > +  - ranges
+> > +  - interrupts
+> > +  - resets
+> > +  - reset-names
+> > +  - clocks
+> > +  - clock-names
+> > +  - phys
+> > +  - phy-names
+> > +  - reset-gpios
+> > +
+> > +unevaluatedProperties: false
+> > +
+> > +examples:
+> > +  - |
+> > +    #include <dt-bindings/gpio/gpio.h>
+> > +    #include <dt-bindings/interrupt-controller/mips-gic.h>
+> > +
+> > +    pcie: pcie@1e140000 {
+> > +        compatible = "mediatek,mt7621-pci";
+> > +        reg = <0x1e140000 0x100>,
+> > +              <0x1e142000 0x100>,
+> > +              <0x1e143000 0x100>,
+> > +              <0x1e144000 0x100>;
+> > +
+> > +        #address-cells = <3>;
+> > +        #size-cells = <2>;
+> > +        pinctrl-names = "default";
+> > +        pinctrl-0 = <&pcie_pins>;
+> > +        device_type = "pci";
+> > +        bus-range = <0 255>;
+>
+> That's the default, so not needed.
+
+Ok, will drop this.
+
+>
+> > +        ranges = <0x02000000 0 0x00000000 0x60000000 0 0x10000000>,  /* pci memory */
+> > +                 <0x01000000 0 0x00000000 0x1e160000 0 0x00010000>;  /* io space */
+> > +        interrupt-parent = <&gic>;
+> > +        interrupts = <GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
+> > +        resets = <&rstctrl 24>, <&rstctrl 25>, <&rstctrl 26>;
+> > +        reset-names = "pcie0", "pcie1", "pcie2";
+> > +        clocks = <&clkctrl 24>, <&clkctrl 25>, <&clkctrl 26>;
+> > +        clock-names = "pcie0", "pcie1", "pcie2";
+> > +        phys = <&pcie0_phy 1>, <&pcie2_phy 0>;
+> > +        phy-names = "pcie-phy0", "pcie-phy2";
+> > +        reset-gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
+> > +
+> > +        pcie@0,0 {
+> > +            reg = <0x0000 0 0 0 0>;
+> > +            #address-cells = <3>;
+> > +            #size-cells = <2>;
+> > +            device_type = "pci";
+> > +            ranges;
+> > +            bus-range = <0x00 0xff>;
+>
+> Besides being the default, I don't think this makes sense here as it
+> belongs in the parent unless you had some subset of bus numbers allowed
+> by the parent.
+
+That's not the case so I will drop bus-ranges property from all the
+child nodes also.
+>
+> > +        };
+> > +
+> > +        pcie@1,0 {
+> > +            reg = <0x0800 0 0 0 0>;
+> > +            #address-cells = <3>;
+> > +            #size-cells = <2>;
+> > +            device_type = "pci";
+> > +            ranges;
+> > +            bus-range = <0x00 0xff>;
+> > +        };
+> > +
+> > +        pcie@2,0 {
+> > +            reg = <0x1000 0 0 0 0>;
+> > +            #address-cells = <3>;
+> > +            #size-cells = <2>;
+> > +            device_type = "pci";
+> > +            ranges;
+> > +            bus-range = <0x00 0xff>;
+> > +        };
+> > +    };
+> > +...
+
+Best regards,
+    Sergio Paracuellos
