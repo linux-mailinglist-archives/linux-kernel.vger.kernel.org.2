@@ -2,154 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2695374DD5
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 05:11:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 818E2374DD7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 05:12:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232658AbhEFDMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 23:12:41 -0400
-Received: from mga14.intel.com ([192.55.52.115]:36219 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230078AbhEFDMk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 23:12:40 -0400
-IronPort-SDR: mRvMXsoBxE+05dHRknEuSHO3Bxz49gUtSD+aMYVuaNM8yLpCzwPfSIptQ/MSN3Q7xlV+0xI5L8
- 1hgzH32tXBDw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="197999382"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="197999382"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 20:11:41 -0700
-IronPort-SDR: ud5s9b3VcWvCVf93UfKRxL2GW59wh8d2FKeG6xK+FOzLX8BnG9ofQo8FgD040JaPNg4ehydTAx
- Jr32T1v3TE3g==
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="469246591"
-Received: from lingshan-mobl5.ccr.corp.intel.com (HELO [10.254.209.97]) ([10.254.209.97])
-  by orsmga001-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 20:11:39 -0700
-Subject: Re: [PATCH V4 2/3] vDPA/ifcvf: enable Intel C5000X-PL virtio-block
- for vDPA
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     jasowang@redhat.com, lulu@redhat.com, sgarzare@redhat.com,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210419063326.3748-1-lingshan.zhu@intel.com>
- <20210419063326.3748-3-lingshan.zhu@intel.com>
- <20210503043801-mutt-send-email-mst@kernel.org>
-From:   "Zhu, Lingshan" <lingshan.zhu@intel.com>
-Message-ID: <bb4b9fe1-3a4e-f88a-5258-c9b2c63ed203@intel.com>
-Date:   Thu, 6 May 2021 11:11:36 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232764AbhEFDMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 23:12:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232838AbhEFDMp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 23:12:45 -0400
+Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF38C06138A;
+        Wed,  5 May 2021 20:11:47 -0700 (PDT)
+Received: by mail-qk1-x733.google.com with SMTP id v20so3731964qkv.5;
+        Wed, 05 May 2021 20:11:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Zc0foFEf07MuR8qaneLKD/X5hm20pyFwaRxV9GZ2KfE=;
+        b=CH99u9WVl9l1o63moek4ExybUAXX8763nmXJ5/Z5YVN/q/eG9n7M59QFu65Nur6BVi
+         DxSvwonY4ZLUUg/zcqMyYf6AJTCQFo7WcraaUP5cJqfcdFEVPUdESMz6EHerT9nESQJz
+         4CZag33e3hOmTBECqQTuR7ktZOW35p2j/JGI3ReqdO0IrrdUW5wGXFxPI2DXeUwmr9Uz
+         ZVg7VCxmtFdnUQwqCbgIzggJl/34Txn+StQYkzftXBiuSA6lNRnlEoXGk7y0W6/OK/Rb
+         ndSoITm1Z/uSH4b8RNu7EB2qJAfitv0RLtLMWtlhFSJFh7ltcbAJNJzXr/p6C2PkYa1p
+         +qJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zc0foFEf07MuR8qaneLKD/X5hm20pyFwaRxV9GZ2KfE=;
+        b=jpy4TSgk6GUwU6OrIC2KAbQN14BNx3xODFcLBpDZBurnmezHvlT61Dq3v+6b5OPQz9
+         kx3Nz3L9ekIbytW085ueD/Qak1IyDWuZ5DSA2LlEHkYooNoXG/u6I4MtOi5FE2DXFql0
+         vAdoDyTVDGLsM3WqCQKTS0VTo6SjV0t8UOui8/BVF/ixYsDK+ZuNj/nM9LojZV4Iw+Pn
+         4xtVJj+1F7KhKQ9RpD0OD7QNMSM9d2icHkUWQ8AcrPC4zTkr3RNO5TQlklJHQzhOPzLE
+         B4Z6LYZhWMV2jL2XqUiBjhIBhjmj2UtzYnU6k/X5mCRtQx/uIBG70bxXrRd/1qfX3ZIm
+         s44w==
+X-Gm-Message-State: AOAM531xozYzNZLYtUDt2xNQuShJhfj84h/xpPzDkHt2BwPUF5s5WDsI
+        sLVinpd56s55X/sba/ejOPdtP8/H9PB8f+bH09Kpl4Id
+X-Google-Smtp-Source: ABdhPJyaDpHlAXmnOf7gjN0KdB/9SHzvyjBkqysUTMm4Kuy0d74TwTnGSBPrzWEgPu3aDsd+dk34EaKl4dU9u1V/SHc=
+X-Received: by 2002:a05:620a:2903:: with SMTP id m3mr1924718qkp.37.1620270707000;
+ Wed, 05 May 2021 20:11:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210503043801-mutt-send-email-mst@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+References: <1619664627-12470-1-git-send-email-shengjiu.wang@nxp.com>
+ <1619664627-12470-2-git-send-email-shengjiu.wang@nxp.com> <CAOMZO5A3-GjEv_U4RmQXz__s=SmHkkJid-DXxr2Om6pB6_imAg@mail.gmail.com>
+In-Reply-To: <CAOMZO5A3-GjEv_U4RmQXz__s=SmHkkJid-DXxr2Om6pB6_imAg@mail.gmail.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Thu, 6 May 2021 11:11:36 +0800
+Message-ID: <CAA+D8ANC_J8gHcKs2YVCv3efUimb-dq6uTcGM=252N0jMg5ctQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] ARM: dts: imx6qdl-sabresd: Configure the gpio for hp detect
+To:     Fabio Estevam <festevam@gmail.com>
+Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/3/2021 4:47 PM, Michael S. Tsirkin wrote:
-> On Mon, Apr 19, 2021 at 02:33:25PM +0800, Zhu Lingshan wrote:
->> This commit enabled Intel FPGA SmartNIC C5000X-PL virtio-block
->> for vDPA.
->>
->> Signed-off-by: Zhu Lingshan <lingshan.zhu@intel.com>
->> Reviewed-by: Stefano Garzarella <sgarzare@redhat.com>
->> Acked-by: Jason Wang <jasowang@redhat.com>
->> ---
->>   drivers/vdpa/ifcvf/ifcvf_base.h |  8 +++++++-
->>   drivers/vdpa/ifcvf/ifcvf_main.c | 19 ++++++++++++++++++-
->>   2 files changed, 25 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/vdpa/ifcvf/ifcvf_base.h b/drivers/vdpa/ifcvf/ifcvf_base.h
->> index 1c04cd256fa7..0111bfdeb342 100644
->> --- a/drivers/vdpa/ifcvf/ifcvf_base.h
->> +++ b/drivers/vdpa/ifcvf/ifcvf_base.h
->> @@ -15,6 +15,7 @@
->>   #include <linux/pci_regs.h>
->>   #include <linux/vdpa.h>
->>   #include <uapi/linux/virtio_net.h>
->> +#include <uapi/linux/virtio_blk.h>
->>   #include <uapi/linux/virtio_config.h>
->>   #include <uapi/linux/virtio_pci.h>
->>   
->> @@ -28,7 +29,12 @@
->>   #define C5000X_PL_SUBSYS_VENDOR_ID	0x8086
->>   #define C5000X_PL_SUBSYS_DEVICE_ID	0x0001
->>   
->> -#define IFCVF_SUPPORTED_FEATURES \
->> +#define C5000X_PL_BLK_VENDOR_ID		0x1AF4
+On Mon, May 3, 2021 at 10:38 PM Fabio Estevam <festevam@gmail.com> wrote:
 >
-> Come on this is just PCI_VENDOR_ID_REDHAT_QUMRANET right?
-Hi Michael,
-
-I will re-use the predefined macro in next patches
-
-#define C5000X_PL_BLK_VENDOR_ID	  PCI_VENDOR_ID_REDHAT_QUMRANET
-#define C5000X_PL_BLK_SUBSYS_DEVICE_ID	VIRTIO_ID_BLOCK?
-
-to keep the readabilities in probe().
-
+> Hi Shengjiu,
 >
+> On Thu, Apr 29, 2021 at 12:06 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
 >
+> > +               pinctrl_hp: hpgrp {
+> > +                       fsl,pins = <
+> > +                               MX6QDL_PAD_SD3_RST__GPIO7_IO08          0x80000000
+> > +                               MX6QDL_PAD_GPIO_9__GPIO1_IO09           0x80000000
 >
->> +#define C5000X_PL_BLK_DEVICE_ID		0x1001
-> 0x1001 is a transitional blk device from virtio spec too right? Let's add these to virtio_ids.h?
-will update virtio_ids.h in next patchset.
+> Please avoid using 0x80000000. Use the real PAD_CTL value instead.
 
-Thanks
-Zhu Lingshan
->
->> +#define C5000X_PL_BLK_SUBSYS_VENDOR_ID	0x8086
->> +#define C5000X_PL_BLK_SUBSYS_DEVICE_ID	0x0002
-> VIRTIO_ID_BLOCK?
->
->> +
->> +#define IFCVF_NET_SUPPORTED_FEATURES \
->>   		((1ULL << VIRTIO_NET_F_MAC)			| \
->>   		 (1ULL << VIRTIO_F_ANY_LAYOUT)			| \
->>   		 (1ULL << VIRTIO_F_VERSION_1)			| \
->> diff --git a/drivers/vdpa/ifcvf/ifcvf_main.c b/drivers/vdpa/ifcvf/ifcvf_main.c
->> index 66927ec81fa5..9a4a6df91f08 100644
->> --- a/drivers/vdpa/ifcvf/ifcvf_main.c
->> +++ b/drivers/vdpa/ifcvf/ifcvf_main.c
->> @@ -168,10 +168,23 @@ static struct ifcvf_hw *vdpa_to_vf(struct vdpa_device *vdpa_dev)
->>   
->>   static u64 ifcvf_vdpa_get_features(struct vdpa_device *vdpa_dev)
->>   {
->> +	struct ifcvf_adapter *adapter = vdpa_to_adapter(vdpa_dev);
->>   	struct ifcvf_hw *vf = vdpa_to_vf(vdpa_dev);
->> +	struct pci_dev *pdev = adapter->pdev;
->> +
->>   	u64 features;
->>   
->> -	features = ifcvf_get_features(vf) & IFCVF_SUPPORTED_FEATURES;
->> +	switch (vf->dev_type) {
->> +	case VIRTIO_ID_NET:
->> +		features = ifcvf_get_features(vf) & IFCVF_NET_SUPPORTED_FEATURES;
->> +		break;
->> +	case VIRTIO_ID_BLOCK:
->> +		features = ifcvf_get_features(vf);
->> +		break;
->> +	default:
->> +		features = 0;
->> +		IFCVF_ERR(pdev, "VIRTIO ID %u not supported\n", vf->dev_type);
->> +	}
->>   
->>   	return features;
->>   }
->> @@ -514,6 +527,10 @@ static struct pci_device_id ifcvf_pci_ids[] = {
->>   			 C5000X_PL_DEVICE_ID,
->>   			 C5000X_PL_SUBSYS_VENDOR_ID,
->>   			 C5000X_PL_SUBSYS_DEVICE_ID) },
->> +	{ PCI_DEVICE_SUB(C5000X_PL_BLK_VENDOR_ID,
->> +			 C5000X_PL_BLK_DEVICE_ID,
->> +			 C5000X_PL_BLK_SUBSYS_VENDOR_ID,
->> +			 C5000X_PL_BLK_SUBSYS_DEVICE_ID) },
->>   
->>   	{ 0 },
->>   };
->> -- 
->> 2.27.0
+Ok, will send v2.
 
+best regards
+wang shengjiu
