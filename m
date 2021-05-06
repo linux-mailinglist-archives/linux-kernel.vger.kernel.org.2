@@ -2,94 +2,285 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA6883754DE
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:38:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4570E3754F1
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234274AbhEFNi5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:38:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35606 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234072AbhEFNiz (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:38:55 -0400
-Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E215C061574;
-        Thu,  6 May 2021 06:37:56 -0700 (PDT)
-Received: by mail-ot1-x32b.google.com with SMTP id i23-20020a9d68d70000b02902dc19ed4c15so874269oto.0;
-        Thu, 06 May 2021 06:37:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=MKp58PwXeLobakDHtjAgwNkEIWieKBtjzpMSHs6E8T4=;
-        b=PAeDzOI8wMyfqopzx1o0r/NMghUjK5dW9fJxnd743jrIc/BbEBjSmWpgaoqkFNRr97
-         yxFYwtNl4YueKodgnccawFq0/63RurUBz1EjtilGvisCWjRiDjRGACKDZaObNY0pyrmC
-         uIZJNFdF5icSrAbg1VPb90Az5L1RHe2o4jjK44cOS1iTH4z8kxhREFYl8N08ARNASAcr
-         CeODrBvj1XVmfe8+Ua/rBV9lhihTMWwvEOPt5ZHSc88BoqcwnLt5rTSM1Vck0GnrBxRf
-         Yv2tfjtMYJvCi+HfitgJI0m/MR7AKlCnzr566OJEfHREk/FeWSgZ2V4nez09Ff1gorH4
-         AFAA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=MKp58PwXeLobakDHtjAgwNkEIWieKBtjzpMSHs6E8T4=;
-        b=R1VuSsD4KFo/Q9VLNaJfQcc+VobMyY/6IaGcjG6j56Qe6DlnF6qIcF8N8+aaUoE3t5
-         ZSaQ8QNor0tTkVFbGTrddBeJnejpNn+gQcD0I7xAfHZTDGJRarKY/HCsPmkfi+gIiuti
-         QBmy4GLCNWxI9af6F631htsL6SN64g808zMsB1zo3po19vNOSl5iO2ImuciauWF+Q1Ha
-         V1JPX1Z7s6AFEq68Iz18rp2vmAmgOujIVihM4dMa1UDKE2AG4XFmId6SU/zV4Cmmg4sb
-         O1tIINe2a7D2ddBb+8xhpfitk4pfKhYQLadmjrYvYgbZX81NYZdQtCnI81ys8zwMGdAu
-         rzgw==
-X-Gm-Message-State: AOAM531dnubG0CiN87wV5G4/R3IPsca7+ojMFJf+voQ8FbTfZWOM01+O
-        EMqNJFFN/q/UrtIovHh3DVw=
-X-Google-Smtp-Source: ABdhPJxXtKtjALjahA5qGAYSaqUOktqzjnmvB7cyAaHTXdAwZeuxvSrdyLiYFSQ0hG1R6+ySzkLlMQ==
-X-Received: by 2002:a9d:4c1a:: with SMTP id l26mr3614916otf.181.1620308276134;
-        Thu, 06 May 2021 06:37:56 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id y11sm402517oiv.19.2021.05.06.06.37.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 06:37:55 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Thu, 6 May 2021 06:37:54 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>,
-        Hans de Goede <hdegoede@redhat.com>
-Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
-Message-ID: <20210506133754.GA2266661@roeck-us.net>
-References: <20210506034332.752263-1-linux@roeck-us.net>
- <CAHp75Vd0N5s=D9LFiVU75gYCLnpqOwfBogbWUTwZNC1CV2n88Q@mail.gmail.com>
+        id S234416AbhEFNk3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:40:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45858 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234160AbhEFNk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 09:40:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620308368; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=isffFuAqYvQRxq43Uwf4LK3lRlkWJqVGxTnfDDi6N1c=;
+        b=T0MMv8GGNU22GGa2u2zTLCNkE7OQ3SOLIoD01Yr4Q1xoT4yRTF0rGUELMrlDCMJ4EQJDKK
+        QwkH4hP9YLe6tp4fV8pmYvQPHoENx1qwyn8IigW2x/14cbSzgSpOKDKqgE5RnPdSkULgMq
+        NwXKJ4vqJUhaq04UAAj4M5ZKAE0IBC8=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 533B4B035;
+        Thu,  6 May 2021 13:39:28 +0000 (UTC)
+Date:   Thu, 6 May 2021 15:39:27 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Luo Jiaxing <luojiaxing@huawei.com>
+Cc:     sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
+        john.ogness@linutronix.de, linux-kernel@vger.kernel.org,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        linuxarm@huawei.com, bobo.shaobowang@huawei.com
+Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
+ prb
+Message-ID: <YJPxj83F1sBjHHAE@alley>
+References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHp75Vd0N5s=D9LFiVU75gYCLnpqOwfBogbWUTwZNC1CV2n88Q@mail.gmail.com>
+In-Reply-To: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 12:28:40PM +0300, Andy Shevchenko wrote:
-> On Thu, May 6, 2021 at 6:43 AM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > With CONFIG_ACPI=n and -Werror, 0-day reports:
-> >
-> > drivers/iio/chemical/bme680_i2c.c:46:36: error:
-> >         'bme680_acpi_match' defined but not used
-> >
-> > Apparently BME0680 is not a valid ACPI ID. Remove it and with it
-> > ACPI support from the bme680_i2c driver.
-> 
-> Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-> 
-> with the SPI part amended in the same way.
-> 
-Right. I just sent a patch doing that. Oddly enough 0-day didn't complain
-about that one to me, nor about many other drivers with the same problem.
-No idea how it decides if and when to make noise.
+On Thu 2021-05-06 16:00:26, Luo Jiaxing wrote:
+> Some threads still call printk() for printing when resume_console() is
+> being executed. In practice, the printk() is executed for a period of time
+> and then returned. The duration is determined by the number of prints
+> cached in the prb during the suspend/resume process. At the same time,
+> resume_console() returns quickly.
 
-Is there a way to determine invalid ACPI IDs ? I could write a coccinelle
-script to remove the code automatically.
+The last sentence is a bit misleading. resume_console() returns
+quickly only when @console_owner was passed to another process.
 
-Thanks,
-Guenter
+
+> Base on owner/waiter machanism, the frist one who fail to lock console will
+> become waiter, and start spining. When current owner finish print one
+> informance, if a waiter is waitting, owner will give up and let waiter
+> become a new owner. New owner need to flush the whole prb unitl prb empty
+> or another new waiter come and take the job from him.
+>
+> So the first waiter after resume_console() will take seconds to help to
+
+It need not to be the first waiter. The console_lock owner might be passed
+several times.
+
+But you have a point. Many messages might get accumulated when the
+console was suspended and any console_owner might spend a long time
+processing them. resume_console() seems to be always called in
+preemptible context, so it is safe to process all messages here.
+
+
+> flush prb, but driver which call printk() may be bothered by this. New
+> a flag to mark resume flushing prb. When the console resume, before the
+> prb is empty, stop to set a new waiter temporarily.
+
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -287,6 +287,9 @@ EXPORT_SYMBOL(console_set_on_cmdline);
+>  /* Flag: console code may call schedule() */
+>  static int console_may_schedule;
+>  
+> +/* Flags: console flushing prb when resume */
+> +static atomic_t console_resume_flush_prb = ATOMIC_INIT(0);
+> +
+>  enum con_msg_format_flags {
+>  	MSG_FORMAT_DEFAULT	= 0,
+>  	MSG_FORMAT_SYSLOG	= (1 << 0),
+> @@ -1781,7 +1784,8 @@ static int console_trylock_spinning(void)
+>  	raw_spin_lock(&console_owner_lock);
+>  	owner = READ_ONCE(console_owner);
+>  	waiter = READ_ONCE(console_waiter);
+> -	if (!waiter && owner && owner != current) {
+> +	if (!waiter && owner && owner != current &&
+> +	    !atomic_read(&console_resume_flush_prb)) {
+
+atomic_set()/atomic_read() do not provide any memory barriers.
+IMHO, the atomic operations are not enough to serialize @console_owner
+and @console_resume_flush_prb manipulation.
+
+See below.
+
+>  		WRITE_ONCE(console_waiter, true);
+>  		spin = true;
+>  	}
+> @@ -2355,6 +2359,7 @@ void resume_console(void)
+>  	if (!console_suspend_enabled)
+>  		return;
+>  	down_console_sem();
+> +	atomic_set(&console_resume_flush_prb, 1);
+>  	console_suspended = 0;
+>  	console_unlock();
+>  }
+> @@ -2592,6 +2597,8 @@ void console_unlock(void)
+>  	raw_spin_unlock(&logbuf_lock);
+>  
+>  	up_console_sem();
+> +	if (atomic_read(&console_resume_flush_prb))
+> +		atomic_set(&console_resume_flush_prb, 0);
+
+This should be done under console_lock. Othwerwise,
+it is not serialized at all.
+
+Also there is one more return from console_unlock():
+
+	if (!can_use_console()) {
+		console_locked = 0;
+		up_console_sem();
+		return;
+	}
+
+@console_resume_flush_prb must be cleared here as well.
+Otherwise, the next random console_unlock() caller will not
+be allowed to pass the console lock owner.
+
+
+OK, the above patch tries to tell console_trylock_spinning()
+that it should ignore console_owner even when set.
+@console_resume_flush_prb variable is set/read by different
+processes in parallel which makes it complicated.
+
+Instead, we should simply tell console_unlock() that it should not
+set console_owner in this case. The most strightforward
+way is to pass this via parameter.
+
+Such console_unlock() might be used even on another locations
+with preemptible context.
+
+
+What about the following patch?
+
+
+From 574e844f512c9f450e64832f09cc389bc9915f83 Mon Sep 17 00:00:00 2001
+From: Petr Mladek <pmladek@suse.com>
+Date: Thu, 6 May 2021 12:40:56 +0200
+Subject: [PATCH] printk: Prevent softlockup when resuming console
+
+Many printk messages might get accumulated when consoles were suspended.
+They are proceed when console_unlock() is called in resume_console().
+
+The possibility to pass the console lock owner was added to reduce the risk
+of softlockup when too many messages were handled in an atomic context.
+
+Now, resume_console() is always in a preemptible context that is safe
+to handle all accumulated messages. The possibility to pass the console
+lock owner actually makes things worse. The new owner might be in an atomic
+context and might cause softlockup when processing all messages accumulated
+when the console was suspended.
+
+Create new console_unlock_preemptible() that will not allow to pass
+the console lock owner. As a result, all accumulated messages will
+be proceed in the safe preemptible process.
+
+Use it in resume_console(). But it might be used also on other locations
+where console lock was used in preemptible context and many messages
+might get accumulated when the process was sleeping.
+
+Reported-by: Luo Jiaxing <luojiaxing@huawei.com>
+Suggested-by: Luo Jiaxing <luojiaxing@huawei.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+ include/linux/console.h |  1 +
+ kernel/printk/printk.c  | 39 +++++++++++++++++++++++++++++++++------
+ 2 files changed, 34 insertions(+), 6 deletions(-)
+
+diff --git a/include/linux/console.h b/include/linux/console.h
+index 20874db50bc8..0c444c6448e8 100644
+--- a/include/linux/console.h
++++ b/include/linux/console.h
+@@ -174,6 +174,7 @@ extern struct console *console_drivers;
+ extern void console_lock(void);
+ extern int console_trylock(void);
+ extern void console_unlock(void);
++extern void console_unlock_preemptible(void);
+ extern void console_conditional_schedule(void);
+ extern void console_unblank(void);
+ extern void console_flush_on_panic(enum con_flush_mode mode);
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 421c35571797..a7e94c898646 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -2425,7 +2425,7 @@ void resume_console(void)
+ 		return;
+ 	down_console_sem();
+ 	console_suspended = 0;
+-	console_unlock();
++	console_unlock_preemptible();
+ }
+ 
+ /**
+@@ -2534,10 +2534,8 @@ static inline int can_use_console(void)
+  * the output prior to releasing the lock.
+  *
+  * If there is output waiting, we wake /dev/kmsg and syslog() users.
+- *
+- * console_unlock(); may be called from any context.
+  */
+-void console_unlock(void)
++void __console_unlock(bool spinning_enabled)
+ {
+ 	static char ext_text[CONSOLE_EXT_LOG_MAX];
+ 	static char text[CONSOLE_LOG_MAX];
+@@ -2546,6 +2544,7 @@ void console_unlock(void)
+ 	struct printk_info info;
+ 	struct printk_record r;
+ 
++
+ 	if (console_suspended) {
+ 		up_console_sem();
+ 		return;
+@@ -2637,13 +2636,15 @@ void console_unlock(void)
+ 		 * finish. This task can not be preempted if there is a
+ 		 * waiter waiting to take over.
+ 		 */
+-		console_lock_spinning_enable();
++		if (spinning_enabled)
++			console_lock_spinning_enable();
+ 
+ 		stop_critical_timings();	/* don't trace print latency */
+ 		call_console_drivers(ext_text, ext_len, text, len);
+ 		start_critical_timings();
+ 
+-		if (console_lock_spinning_disable_and_check()) {
++		if (spinning_enabled &&
++		    console_lock_spinning_disable_and_check()) {
+ 			printk_safe_exit_irqrestore(flags);
+ 			return;
+ 		}
+@@ -2670,8 +2671,34 @@ void console_unlock(void)
+ 	if (retry && console_trylock())
+ 		goto again;
+ }
++
++/*
++ * Classic console_unlock() that might be called in any context.
++ *
++ * It allows to pass the console lock owner when processing the buffered
++ * messages. It helps to prevent soft lockups in an atomic context.
++ */
++void console_unlock()
++{
++	__console_unlock(true);
++}
+ EXPORT_SYMBOL(console_unlock);
+ 
++/*
++ * Variant of the console unlock that can be called only in preemptible
++ * context.
++ *
++ * All messages are processed in this safe context. It helps to prevent
++ * softlockups when the console lock owner was passed to an atomic context.
++ */
++void console_unlock_preemptible()
++{
++	lockdep_assert_preemption_enabled();
++
++	__console_unlock(false);
++}
++EXPORT_SYMBOL(console_unlock_preemptible);
++
+ /**
+  * console_conditional_schedule - yield the CPU if required
+  *
+-- 
+2.26.2
+
