@@ -2,132 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC1ED374E39
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:06:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E440374E7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:25:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230302AbhEFEHm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 00:07:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50084 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229564AbhEFEHl (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 00:07:41 -0400
-Received: from mail-ot1-x32f.google.com (mail-ot1-x32f.google.com [IPv6:2607:f8b0:4864:20::32f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A93EBC061574;
-        Wed,  5 May 2021 21:06:42 -0700 (PDT)
-Received: by mail-ot1-x32f.google.com with SMTP id c36-20020a05683034a4b02902a5b84b1d12so3760094otu.8;
-        Wed, 05 May 2021 21:06:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:subject:to:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=45qqyDWvz+dGKIejtJRqM5vC5ZpgYtzj+432XuvSFYg=;
-        b=gp/MscTpC9wD2RAN5/6tv+vppvbIP3BxG9jekPePdyodY50TmeynGGlWfuesbQfzFe
-         8Y3S5EV3E3vEw7lW8NJFfi5YvPHpN1l/i4r3kCeCQbGCplik5gHxAJBod5pznHGwtQgz
-         lU2WxaCryWtd3Pue3nHD4RS9UIi6RPIbaUJAF4KP5kwZe91jA3O0D90sRMZP1jF9JlJv
-         U4K34yW8pID9tr7TSzq7aTgnvg1iedfjsQpIF7eEaNPgcR2azllm3PMiDGI9UA4+KRGU
-         5k8I6H8ceM4dtvRYIpt1rtjj2Tjpylot135U6VTL8wlguxn2L7SEmTzO9rtQgq7PrleA
-         Fzyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:subject:to:references:from:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=45qqyDWvz+dGKIejtJRqM5vC5ZpgYtzj+432XuvSFYg=;
-        b=Nr6/86m6Mnagvi9D7f29WIXFgw2jEoj78WK9Rtd+F5Q+BqIbitQ58PZG5IOtMKE8Dm
-         jpUxHka2hI8UH17ylkPmQu6341lZc66exBs5UDJj+ZGvNHb7qxM/LyGmdJXjlaes4ujp
-         iF4nf1UWD42xxnklAOVh7Trht8Z6J3HVRaq+oG/zbw+WkTsmXrwQsfyEj8uAPhlva5VV
-         RCWLyrWvtHMlOGINxtfxZWByRvFQ407Wu2LuombGez1fo+/aGhrXjW6fSi78T/5G/mDB
-         7A/ziaUqZ6Dar833My2XN6/kahBi4PyVoR4/JMd9QRRcLZ3TprYKCvWCfMv9SM0vnhxB
-         sdOA==
-X-Gm-Message-State: AOAM531OF4WPHPtlAHGBEE7g/LIr92zvhr5LXOs45RiHrImsZJhN2m6Z
-        qymBDkwLDxEwgwhO2KqsUr96EXJ0qeE=
-X-Google-Smtp-Source: ABdhPJyua4JKgWxjygaf+08jeyJd8yarpAuA7LLJpt9pEOCQ8JKNz2JnZN3KwkqK0HrnYvMFVOkTNg==
-X-Received: by 2002:a9d:247:: with SMTP id 65mr1661261otb.330.1620274001747;
-        Wed, 05 May 2021 21:06:41 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id d3sm241371oic.48.2021.05.05.21.06.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 05 May 2021 21:06:41 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Subject: Re: [PATCH 1/3] hwmon: (pmbus) Add new flag
- PMBUS_READ_STATUS_AFTER_FAILED_CHECK
-To:     Erik Rosen <erik.rosen@metormote.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org,
-        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210505183248.57082-1-erik.rosen@metormote.com>
- <20210505183248.57082-2-erik.rosen@metormote.com>
-From:   Guenter Roeck <linux@roeck-us.net>
-Message-ID: <bbbe1330-dd94-29a1-0680-b9cf91e8f962@roeck-us.net>
-Date:   Wed, 5 May 2021 21:06:39 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S232003AbhEFEZ5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 00:25:57 -0400
+Received: from mail-eopbgr80082.outbound.protection.outlook.com ([40.107.8.82]:9806
+        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229622AbhEFEZx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 00:25:53 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QUgJqFzXIttvtFZllCAiNF522T1O1eZOvVnUt6iOI6DXzMNq/f9HGKQ2QvZdFuD61NHa7S+fIjnYUr6SPrB3NWzKjFuVyXQKPZqYzYZ4RaTX3XeHi+eo5dZlrrYvMps18EWYoVJ2FvUiB05bIs77XkIC9eH6kx9seXR4QxbJSgrcgDuUKJyHR7N1gsjDilTVi94PBRg+zUAmNkemD/parD8lGCXkChSJFwU9duAKVrFuYxeOx8LEVxZvE6v2HiEL477DHYKmSozDg2cP1BkxJjtZ3uSIYoSum0trUciu0rGZlHgbhQFRk6I0XRH0one3M5M/rhyyoT/VXCQY5UpQlg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KdgVcs4rOB/8ql6CSDDLwSkqxj2vSEa/x+8Ul1ZGOk0=;
+ b=gpBLcYpycqOR1SEzryoS8K7Blt9we/ab0r9hp+RjRcuhCHiKiwLwCUZozYJeiuskKg8fOeclMA/790HwKTZ9k18XgOXjNjzlJyb1MnKTNLDkNemdTiYNhaUtEOFQgL25TUYO/8+P1S7XNdD09lz9xZtSY8N/TXDzJxa/79NAF1m+MCIFP5n/LD07QQHoYFcPf/zK3nppyag03+euFcR46xRV/gD+3kjCSlz/48phrvW0asxHOFNLUeukz4coSeQ6Kg4GKffktuqRkq9Z6nFXzxNQ2c1LLrdtrDhtC5jZUDx+yN0ZXjKZmoOpuF5GdVgZpzDms0HThBA7CR+Wj+GPew==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
+ dkim=pass header.d=oss.nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
+ s=selector2-NXP1-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=KdgVcs4rOB/8ql6CSDDLwSkqxj2vSEa/x+8Ul1ZGOk0=;
+ b=idKKhfEAj0Rv6mjib9ef9nCncuO+5DmuQeDc2kGp1BoGiCTqB1zVKKVNut1khZRyB11Xj7nEpDB9K/fN6pHkH8/fkoopNNwVvuJh8GH+u83lR00EK1CyhNNWim7nNBp3ghVQFnEdXMZ/cgF2JsVUZcneDvzAkbAUBAeTz3p7PIc=
+Authentication-Results: wizery.com; dkim=none (message not signed)
+ header.d=none;wizery.com; dmarc=none action=none header.from=oss.nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB4940.eurprd04.prod.outlook.com (2603:10a6:10:22::26) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
+ 2021 04:24:52 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4065.039; Thu, 6 May 2021
+ 04:24:52 +0000
+From:   peng.fan@oss.nxp.com
+To:     ohad@wizery.com, bjorn.andersson@linaro.org,
+        mathieu.poirier@linaro.org, o.rempel@pengutronix.de,
+        robh+dt@kernel.org, devicetree@vger.kernel.org
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-remoteproc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V6 0/8] remoteproc: imx_rproc: support i.MX7ULP/8MN/8MP
+Date:   Thu,  6 May 2021 12:08:35 +0800
+Message-Id: <1620274123-1461-1-git-send-email-peng.fan@oss.nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR02CA0055.apcprd02.prod.outlook.com
+ (2603:1096:4:54::19) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-In-Reply-To: <20210505183248.57082-2-erik.rosen@metormote.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0055.apcprd02.prod.outlook.com (2603:1096:4:54::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.4108.25 via Frontend Transport; Thu, 6 May 2021 04:24:48 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 01e1a697-2c03-41f2-e85c-08d91046e4a3
+X-MS-TrafficTypeDiagnostic: DB7PR04MB4940:
+X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR04MB4940253AFC041C8EAA2DD305C9589@DB7PR04MB4940.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ttgKuM4javyv2I28duvJ915cviTubeYrUucZNOVo7UhUovYf7FSv1WjlGCiTbsH0chBHJeUVyAbxmg43AdeLV8TtNjXzZZFU4CgJTukqv5ZvMR1IBZQjBN4z8NAGLGNNaEdGi36mYhc2gjZIqXXv1OxLLhYSuQE3qPSMIf4HOJTqBiq4JFSI2uSHUB92o0iyL8JJMJt7P7jxWB8s1UtSkD0VB+egJQCCEs5T4GybdxDjcP9diJzz5sMLDeIoCwMuO5FtdCoS056yU/6/gZiI+xOmnWjaF5YpgdsY12WLcTBuKYjay71EbU+pWh+LQN+sdkAfBokY+04izUxlX2AAPPq85fBXju50Cx3w+7VcVca8UgF8bQw9IFLjshOMf0IEkIIbnc+BtsKQUo7fcN9M2rh+O6TL4d6jNLAKPSojAQ4h8/SjQwyAr1P3xmEYqvASudZfnOv4h05NZv/0B24acrpKXWnMtnHsWBUAz0u58jxUvPx/i8gZ6db3rEHjdnukkIq9kdtuF4yfGHH2sCnga0hcrQNyet4C9GpYz3E+DCEHbo++p8JVCZ/EtRDigOmD6CVs12XKxRTKg5I6oLUb5Wj17guW8LPIVpMLyITxtNhBmBXnxFxYp3tF4znyo3IRYMCxAY6YzaC7F4pMid0OumrXZrjvAxdYelU/I+WzXfw2K4XK5u4U8JUZJKORZZB/
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(396003)(346002)(39850400004)(6666004)(38100700002)(38350700002)(6486002)(7416002)(66556008)(16526019)(316002)(478600001)(9686003)(2616005)(83380400001)(2906002)(186003)(8936002)(26005)(52116002)(66946007)(6512007)(5660300002)(8676002)(6506007)(956004)(66476007)(4326008)(86362001)(69590400013);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?5dHc06JVXTCHYxCK8vaz2ttQN0urFVmyIIWUnkRUIvOSkn3gcm4ftG566fiz?=
+ =?us-ascii?Q?ZEUDEpkMyeBRXWPVQU5v0EuWTrDFHj2JL93LdrRP1f+MEkkVCVXNFJi0+bB3?=
+ =?us-ascii?Q?y7ZApge2PMZqIeB7bi0GqsPECIUjCmjfW9o+TsUIYSibhfLDZQVWWbr2aMFQ?=
+ =?us-ascii?Q?FToXNN/hsiwBE25nFGcz2EjPcpjQVQNxTDJUhNwB6eOl+CWf0RR4dnXswlsQ?=
+ =?us-ascii?Q?BIJ3FCngSHLsZBt+0RJ5Xilrgwlo/ctudrESOhzfTmrH3mcuhUOl7nFhneW9?=
+ =?us-ascii?Q?uSB1YCgAhzjxCWHd/A9r1Grx439PSBqfYZJ+CpwapM9KqGNjNVLh6Qj8Zg6z?=
+ =?us-ascii?Q?ax0Adu47rLRwTOh+knhxj6i0fhCGMwQNt671WjSEKjyUeHmkHJZf5wPJEgDS?=
+ =?us-ascii?Q?+SmnkmP7U+51FAD5RyIftUqEdVZvILfgSR24k8Tgss1PBKazqf2B/SkPB5Hf?=
+ =?us-ascii?Q?C842dV/i3+Y9WX/4LlDhLXvsD7aq4D9AUyuy4QOWlCpwQhJ1l0RYicfSJ3QE?=
+ =?us-ascii?Q?TPyQBxFvBHeRAhI1vEK9M0dLJHKxmBpoCypqAcGbmEPZ4s+kR/Y8jUz/8n+s?=
+ =?us-ascii?Q?ljErO02PWeXULnZXfI0suOZIvFqd/drPKnYgMaSmfICvoebMIN6cH8anXNCP?=
+ =?us-ascii?Q?z77rgXPVAh5PnsWyRCG/GjD1j5ympjEO9R23IYmmWfkPSxHkXqCUD6R8Jxte?=
+ =?us-ascii?Q?W5Fh7x4cdkLMzbcx2IP4yIDkwcsQRL6q/H43i91yjZU4PrecQ4suMens3OY+?=
+ =?us-ascii?Q?X4fA8L9z0Bjy+Fk7jSuKICZyu+L1/+RxfMh+0tuBmLpXqhEp9/qYZcMohV0P?=
+ =?us-ascii?Q?7LryotPCJ9RYIV9+/r9tVdKGpQwW6SHqD7eJ+4IFEzr46+HOufdZRHe8ji/i?=
+ =?us-ascii?Q?K180xKmSPuvDcbaovpORoFdOjfok/LPXPOIcGmVFV9EfPXWkjyCeCb8pLYTc?=
+ =?us-ascii?Q?unM+FC0eJbDGkmaRIYw6xAtwRYj4utJMIzKGrVXRer+wGl4Rkd+WgTjN2Muh?=
+ =?us-ascii?Q?ml+SwcyerfUVRb1mSAzGTkdspkdtSk0H6dmYBFG8kEYJ0yspf9rjPSeSElxR?=
+ =?us-ascii?Q?ARJQTYZcu/bRIK0PR4BIL8QOBYnFA0vn1GOZYdMTw87QzY2tFYgHYQLTqKqu?=
+ =?us-ascii?Q?PSDlFjdjB0vlgagFpBHqbXanhuC9GwPrxi9hH1GsruvsuFT0whM6+yY7mkIB?=
+ =?us-ascii?Q?CH4/63HY/lRDnU6uAVbva1v5Oav6nqxHfrLZkl62OGKenhz+83vvkGTA5Y4M?=
+ =?us-ascii?Q?wgkKh39b60stO6W5lvbtrE7+YjdLnzYdjdX5R8/1XlaAvPD3vfV3Lfm0sJVc?=
+ =?us-ascii?Q?HCd52i1j2i2mGnVnObOjHyya7Ucf4KQgwlNbToLaZC8gpw=3D=3D?=
+X-OriginatorOrg: oss.nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 01e1a697-2c03-41f2-e85c-08d91046e4a3
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 04:24:52.1826
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W5YnMl57qe57TORmn3ZyAfS66AhGHerldOyQZuxCGs5cPvCMYE6LxwpeumN0MtN9FdyWyKIZHVvvAx7cifD6Rw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB4940
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/21 11:32 AM, Erik Rosen wrote:
-> Some PMBus chips end up in an undefined state when trying to read an
-> unsupported register. For such chips, it is necessary to reset the
-> chip pmbus controller to a known state after a failed register check.
-> This can be done by reading a known register. By setting this flag the
-> driver will try to read the STATUS register after each failed
-> register check. This read may fail, but it will put the chip into a
-> known state.
-> 
-> Signed-off-by: Erik Rosen <erik.rosen@metormote.com>
+From: Peng Fan <peng.fan@nxp.com>
 
-For my reference:
+V6:
+ Addressed the comments and add R-b tag for patch [5,7,8] from Mathieu, now
+ all patches has got R-b or A-b tag. Thanks.
+ The patchset could be directly applied to linux-next/master of 20210506
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+V5:
+ Add R-b tag
+ Move the change in detect mode of patch 5 to patch 7 Per Mathieu's
+ comments
 
-> ---
->  drivers/hwmon/pmbus/pmbus_core.c |  2 ++
->  include/linux/pmbus.h            | 13 +++++++++++++
->  2 files changed, 15 insertions(+)
-> 
-> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-> index aadea85fe630..cb0b3c7c3434 100644
-> --- a/drivers/hwmon/pmbus/pmbus_core.c
-> +++ b/drivers/hwmon/pmbus/pmbus_core.c
-> @@ -512,6 +512,8 @@ static bool pmbus_check_register(struct i2c_client *client,
->  	rv = func(client, page, reg);
->  	if (rv >= 0 && !(data->flags & PMBUS_SKIP_STATUS_CHECK))
->  		rv = pmbus_check_status_cml(client);
-> +	if (rv < 0 && (data->flags & PMBUS_READ_STATUS_AFTER_FAILED_CHECK))
-> +		data->read_status(client, -1);
->  	pmbus_clear_fault_page(client, -1);
->  	return rv >= 0;
->  }
-> diff --git a/include/linux/pmbus.h b/include/linux/pmbus.h
-> index 12cbbf305969..edd7c84fef65 100644
-> --- a/include/linux/pmbus.h
-> +++ b/include/linux/pmbus.h
-> @@ -43,6 +43,19 @@
->   */
->  #define PMBUS_NO_CAPABILITY			BIT(2)
->  
-> +/*
-> + * PMBUS_READ_STATUS_AFTER_FAILED_CHECK
-> + *
-> + * Some PMBus chips end up in an undefined state when trying to read an
-> + * unsupported register. For such chips, it is necessary to reset the
-> + * chip pmbus controller to a known state after a failed register check.
-> + * This can be done by reading a known register. By setting this flag the
-> + * driver will try to read the STATUS register after each failed
-> + * register check. This read may fail, but it will put the chip in a
-> + * known state.
-> + */
-> +#define PMBUS_READ_STATUS_AFTER_FAILED_CHECK	BIT(3)
-> +
->  struct pmbus_platform_data {
->  	u32 flags;		/* Device specific flags */
->  
-> 
+V4:
+ Typo fix
+ patch 4: take state as a check condition
+ patch 5: move regmap lookup/attach to imx_rproc_detect_mode
+ patch 6: add imx_rproc_clk_enable for optional clk
+ patch 8: use switch/case in imx_rproc_detect_mode
+V3:
+ Add A-b tag for Patch 1/2
+ Fix the checkpatch warning for Patch 6,8
+
+V2:
+ Patch 1/8, use fsl as vendor, typo fix
+ Because patchset [1] has v2 version, patch 5,6,7,8 are adapted that
+ change.
+
+This patchset is to support i.MX7ULP/8MN/8MP, also includes a patch to
+parse fsl,auto-boot
+
+The dependency patchset has already merged in linux/master,
+so no dependency now.
+
+Peng Fan (8):
+  dt-bindings: remoteproc: imx_rproc: add fsl,auto-boot property
+  dt-bindings: remoteproc: imx_rproc: add i.MX7ULP support
+  dt-bindings: remoteproc: imx_rproc: support i.MX8MN/P
+  remoteproc: imx_rproc: parse fsl,auto-boot
+  remoteproc: imx_rproc: initial support for mutilple start/stop method
+  remoteproc: imx_rproc: make clk optional
+  remoteproc: imx_rproc: support i.MX7ULP
+  remoteproc: imx_rproc: support i.MX8MN/P
+
+ .../bindings/remoteproc/fsl,imx-rproc.yaml    |  11 +-
+ drivers/remoteproc/imx_rproc.c                | 196 +++++++++++++++---
+ 2 files changed, 173 insertions(+), 34 deletions(-)
+
+-- 
+2.30.0
 
