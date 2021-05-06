@@ -2,128 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 614E33751AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:40:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 208403751B1
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234128AbhEFJlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:41:15 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:56066 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233365AbhEFJlO (ORCPT
+        id S234125AbhEFJmW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:42:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38952 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232268AbhEFJmV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:41:14 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1469Nv35144833;
-        Thu, 6 May 2021 09:39:51 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=5irk9gSaHYvOafywfiaQ6O0umB/nPBxDjaFdRajuYDU=;
- b=A+akp7mDTpAw4Lqf1hIJU4NAciwDVJfqpQGqDy8Y+jfZRehv1jYZHZBqRHYu+47zkqaE
- 4yOvUpr4Bk7FZIw2VHchDBRuAwdOtnMgX1JBzb3Y5cAatsqKNwajIMM2V+bywJT9at6R
- 6aKRG1+89pJjNSub5B/CG8JsDlgNuhN/x3X2qdjkmW9gmp4n3NpkvE8b3yvcPZIbR0Rx
- 7uVi1d6Yj70Fm4+GoesDWvFRUYI94jlbTiml+RqzCt0vgHHRSCHjY6SA0+iG6zA5hHgP
- uv3Sxn8Qajn9gVNdC218THA+RziUuHjJRIhZ6Tp0vrgRuPeiNnYQ+yeMqrH/bhUKZlr3 nw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2130.oracle.com with ESMTP id 38begjcc9q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 09:39:50 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1469QaiK002604;
-        Thu, 6 May 2021 09:39:50 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 38bebkyncc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 09:39:50 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1469doGp056382;
-        Thu, 6 May 2021 09:39:50 GMT
-Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
-        by aserp3020.oracle.com with ESMTP id 38bebkync5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 09:39:50 +0000
-Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
-        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1469dmdG006037;
-        Thu, 6 May 2021 09:39:48 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 May 2021 02:39:47 -0700
-Date:   Thu, 6 May 2021 12:39:41 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     "Martin K. Petersen" <martin.petersen@oracle.com>
-Cc:     stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: handling Fixes tags on rebased trees
-Message-ID: <20210506083905.GB1922@kadam>
-References: <20210504184635.GT21598@kadam>
- <yq1h7jijnxu.fsf@ca-mkp.ca.oracle.com>
+        Thu, 6 May 2021 05:42:21 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBA1AC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 02:41:23 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id d11so4868970wrw.8
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 02:41:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=im3bW5S/RccCslH1ytS/60IAtgmqJ8ojz0Ph9k/9qWs=;
+        b=xfTmqsaKXwpEB/rXveA+jNE+YDH8DxS5V8W4znJwi7rH20ezI1Xrtcq77tNM9VCLV8
+         HrR9Bfv/QVMfw60TQz+HIJJaTUqJvXQjqXzcUyrmrLqiwqOWvVMTYCVka+RlavzOpDSh
+         yD4N4CdTVSS0b+pRv53KUui/kPT6g2IqFzXv4pvOkQod92RjSJFxucoGlcCspr5Rguz1
+         5hy5Ow9EnjvhZzHZIEFt71R0XjY2fLujLcUYBmqCoTCIFwEpCIM4Ha2oPlYqf5tMCazS
+         HvkSZQEh7TNwa0vgDVMoMIlAr34PaHPupBnbldtf6jpgDGC55ojrm8k42PZYLQ2N/isB
+         VxnQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=im3bW5S/RccCslH1ytS/60IAtgmqJ8ojz0Ph9k/9qWs=;
+        b=XOmAOzPhSYo4QtwnAWXNnTOwXVmLRD5i8UXnXuJblSM/oI0H7Nor2AWMeehXRckaQC
+         n/JofpnZoEPrTBxKxy29TMhhrSLMobACZt/igX6GyCKbj0UOYPGZDeac1jLQqzr6uWa2
+         ORJrA2oqK4a82al+j1eYGxZO2xwZv1QEKQx9v6VUnC1/j14t5QLHLftcYvnm34e+eqAp
+         fOvLFuFtdR1/02GkaIRQ3kVFfcMiHvDmx2kOlVvHptAC0y8HRrM+L/5IDPYla5PAR5z8
+         qMusc03A2qoizWlrDAPZ+zAAfQxu1lWPJCfJ4AYg126H5cWdYTG11/sosAqd617+M1Lg
+         tXcQ==
+X-Gm-Message-State: AOAM530/L1ZPeF+gRjKQavmsdG18xJySI3Yj9VnKdc6ER+pEA3YBc3vo
+        OCqZz3jiZmQCrAPmkv0Cf9s/Xg==
+X-Google-Smtp-Source: ABdhPJyyacVKUsInWu2QNVxNsp4hBSCs/PIda849V+LVCcMhPZfTLMy8u/hxAPB4PZauPG21v3Qb1A==
+X-Received: by 2002:a5d:47a9:: with SMTP id 9mr3987777wrb.298.1620294082122;
+        Thu, 06 May 2021 02:41:22 -0700 (PDT)
+Received: from groot.home ([2a01:cb19:826e:8e00:2492:c5b6:6c3f:6de4])
+        by smtp.gmail.com with ESMTPSA id y14sm3360421wrs.64.2021.05.06.02.41.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 02:41:21 -0700 (PDT)
+From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
+To:     Lee Jones <lee.jones@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>
+Cc:     Fabien Parent <fparent@baylibre.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Mattijs Korpershoek <mkorpershoek@baylibre.com>
+Subject: [PATCH 0/3] MT6358 PMIC button support
+Date:   Thu,  6 May 2021 11:41:12 +0200
+Message-Id: <20210506094116.638527-1-mkorpershoek@baylibre.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <yq1h7jijnxu.fsf@ca-mkp.ca.oracle.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-GUID: ugBN8cNEYjLTb2DhBcF1MJYhU7fK0aeE
-X-Proofpoint-ORIG-GUID: ugBN8cNEYjLTb2DhBcF1MJYhU7fK0aeE
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9975 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 clxscore=1011 malwarescore=0
- mlxlogscore=999 lowpriorityscore=0 bulkscore=0 spamscore=0 adultscore=0
- impostorscore=0 priorityscore=1501 suspectscore=0 mlxscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
- definitions=main-2105060065
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It turns that rebasing without updating the Fixes tag is sort of common.
-I wrote a script to find the invalid tags from the last month and have
-include the output below.  Two of the patches are in -mm and presumably
-Andrew is going fold the Fixes commit into the original commit when
-these are sent upstream so those aren't a real issue.
+The MediaTek MT6358 PMIC has support for two buttons: PWR and HOME.
 
-We could probably try catching rebased trees when they are merged in
-linux-next?  I'll play with this and see if it works.  But we're going
-to end up missing some.  Maybe we need a file with a mapping of rebased
-hashes which has something like:
+The interrupt logic is a little different than other PMICs from the
+same family:
+* for MT6323 and MT6397, we have one interrupt source per button
+* for MT6358, we have two interrupts lines per button: the press and
+* release interrupts are distinct sources.
 
-28252e08649f 0df68ce4c26a ("iscv: Prepare ptdump for vm layout dynamic addresses")
-42ae341756da d338ae6ff2d8 ("userfaultfd: add minor fault registration mode")
+This series depends on [1]
 
-regards,
-dan carpenter
+[1] https://lore.kernel.org/linux-arm-kernel/20210429143811.2030717-1-mkorpershoek@baylibre.com/
 
-#!/usr/bin/perl
+Mattijs Korpershoek (3):
+  mfd: mt6397: add mt6358 register definitions for power key
+  mfd: mt6397: keys: use named IRQs instead of index
+  mfd: mt6397: add PMIC keys for MT6358
 
-open HASHES, '-|', 'git log --since="1 month ago" --grep="Fixes:" --pretty=format:"%h"' or die $@;
+ drivers/mfd/mt6397-core.c            | 20 ++++++++++++++++----
+ include/linux/mfd/mt6358/registers.h |  2 ++
+ 2 files changed, 18 insertions(+), 4 deletions(-)
 
-my $hash;
-while (defined($hash = <HASHES>)) {
-    chomp($hash);
-    my @commit_msg=`git show --pretty="%b" -s $hash`;
-
-    foreach my $line (@commit_msg) {
-        if ($line =~ /^Fixes: ([0-9a-f]*?) /) {
-            my $fix_hash = $1;
-            if (system("git merge-base --is-ancestor $fix_hash linux-next")) {
-                print "$hash $line";
-            }
-        }
-    }
-}
-close HASHES;
-
-Here is the output, of invalid fixes tag in the last month.
-
-28252e08649f Fixes: e9efb21fe352 ("riscv: Prepare ptdump for vm layout dynamic addresses")
-42ae341756da Fixes: f2bf15fb0969 ("userfaultfd: add minor fault registration mode")
-eda5613016da Fixes: 5b109cc1cdcc ("hugetlb/userfaultfd: forbid huge pmd sharing when uffd enabled")
-85021fe9d800 Fixes: 1ace37b873c2 ("drm/amdgpu/display: Implement functions to let DC allocate GPU memory")
-caa93d9bd2d7 Fixes: 855b35ea96c4 ("usb: common: move function's kerneldoc next to its definition")
-0f66f043d0dc Fixes: cabcebc31de4 ("cifsd: introduce SMB3 kernel server")
-3ada5c1c27ca Fixes: 788b6f45c1d2 ("cifsd: add server-side procedures for SMB3")
-0e672f306a28 Fixes: 6788fa154546 ("veth: allow enabling NAPI even without XDP")
-aec00aa04b11 Fixes: 830027e2cb55 ("KEYS: trusted: Add generic trusted keys framework")
-ef32e0513a13 Fixes: 67982dfa59de ("usb: cdns3: imx: add power lost support for system resume")
+-- 
+2.27.0
 
