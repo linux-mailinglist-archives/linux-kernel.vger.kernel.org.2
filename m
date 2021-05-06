@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE83E375415
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:49:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF4B37541A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:50:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230348AbhEFMuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:50:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
+        id S231745AbhEFMvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:51:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53038 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229584AbhEFMuU (ORCPT
+        with ESMTP id S231461AbhEFMv3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:50:20 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED8CC061574;
-        Thu,  6 May 2021 05:49:22 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id 10so5189720pfl.1;
-        Thu, 06 May 2021 05:49:22 -0700 (PDT)
+        Thu, 6 May 2021 08:51:29 -0400
+Received: from mail-lf1-x131.google.com (mail-lf1-x131.google.com [IPv6:2a00:1450:4864:20::131])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64CAAC06138C
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 05:50:30 -0700 (PDT)
+Received: by mail-lf1-x131.google.com with SMTP id j10so7564419lfb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 05:50:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=15GKIU/VxVFZXf36o9Yrp20X9pUI530VMRJk1YXWiwQ=;
-        b=WaPLP2+sW2dXb3g0PkjwtlmmNygtk1fmVSauKRC6BdLAn9Xh2YifmDoyXppx0ENOBU
-         FCUUHd5cZOpnVGFtG7oCtF5y1UVMaCoD8AlZ1DZgdXbpW5NIvyBgjHOxZ/oGQOc0OgZY
-         78bFr6UfsJjYuY/E2oGbc89HD36tBIPzQECtcGnhFVjXXlTRVWkSUY63sgj7xDYDAS7T
-         vWgmLUUva2oFYNJJl74E1NdF1Flyjww4udb31qO3nDM4+vZPIWhWWebg1YCLUNFpZ67z
-         C5ZK1s4P6bHYis1UgBJcuIjI027b7jLo5YayW+1fQ/SfWf05Z79FWfSsrobOSRDyJy0L
-         qt2A==
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=8Ih4+p3zLbJgKbtyGHTBqIMZl1xrskHK8H9INh+Uv4Q=;
+        b=tOVCF1VosorbmnojI82fLeeHSIKUGSQH/nyYU/9ksMYfnCNNk2WPdG6ay/mpoSJmoM
+         LshYTzx//dMlid0bY/5z0+7Z7hG/1nZGsU1JgTerosNm2lPILJiPmxtQyBHTAK5K+1AU
+         A74pBMjCDOnEpS6zXJLq5N9YkF6B4uk790O6cby6esqWbZS2qIihy0rgkg/oL8j5lk9E
+         SERTcIDzkqSXuDPFC1z5cLQLpQYjgreb5Q4En7GoRGdQ4UnUpdKrZ8nmYj5yD6QA+fRQ
+         lfATfeTiCPEZnx7QJrwGjflZxs9eOb4FVSEGGuxPImV0SOsOayxsGZAL81ftjfobmfUy
+         LRQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=15GKIU/VxVFZXf36o9Yrp20X9pUI530VMRJk1YXWiwQ=;
-        b=f0CMWUAoIgMLuPB3L8FXGYminxXCBAyAi9VdoDIsTy+RfnPjPNWaNf95OfaiI3JqLL
-         ZbXNX0MW8TBCf7apVaSEEEEudLrD70zDs/aiugMBb6qHMEU47fIIu8prkKKMJpL1shFk
-         ScAH2KidUXEUQYgbCHDq1o3YBQQ4+BC25SQQugCAcKZ4QHduRtAlIb5uF8ZVsugqlOZA
-         X/Pix/xPz0AkbIfdKuGaf5Xs8/zcPBZPRFhQBcz8xytCprt0034TA+tYQJeBVkhQPjAx
-         VQ/m1A4jokzPdKqh8y5LIc18d/rdJ6eOHMF5TLIC1UFhOjVW4gdJy7YEip5DRELRw0C3
-         /yVg==
-X-Gm-Message-State: AOAM533/gOIz8ntHptdxipElZOpRBCabr1Tibj39BjxlfkAH1UI5bIN4
-        3aysJ2SqDclvSrH/AMKxD6fAKBdRpnWu+kPjcr0=
-X-Google-Smtp-Source: ABdhPJxIZt9y1cqlh0eCQWAF6Siwalsz3UBUCaUrJylH/fSA2f8rMHcHPF/3bZbYrx4yCnXKaDPlfQ==
-X-Received: by 2002:a63:7e13:: with SMTP id z19mr4114613pgc.184.1620305361551;
-        Thu, 06 May 2021 05:49:21 -0700 (PDT)
-Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
-        by smtp.gmail.com with ESMTPSA id t12sm1991313pjw.51.2021.05.06.05.49.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 05:49:21 -0700 (PDT)
-From:   Wei Ming Chen <jj251510319013@gmail.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
-        Wei Ming Chen <jj251510319013@gmail.com>
-Subject: [PATCH] ACPICA: Use fallthrough pseudo-keyword
-Date:   Thu,  6 May 2021 20:49:12 +0800
-Message-Id: <20210506124912.7725-1-jj251510319013@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8Ih4+p3zLbJgKbtyGHTBqIMZl1xrskHK8H9INh+Uv4Q=;
+        b=If7X8ROIJ6+msS8gWiJ5D65efpGWrsE4UohqyRDwavywHaDOuM7Td0EwUe9BvVMloo
+         TvOstdAeKUu7OJr5P+nkm2RsZZx+GpTME3tF9A0LciW3oMmObyAFO8OeoQrNUbM5J2tA
+         EFx1nmUO976j4QX0+stSAcEXYiauBCj3XAswWjIrWlhiBp3bvdka+oRQDoRgyzXgBcvq
+         Ng/TpsLhyiyXyQNtMf+/aKxnGdMIyCqg1a7xgvI3k/cj1SOfd+TyiRv1d1PHPQWhwO0u
+         3Lp8RfpImlTYRoN/KjUNZDJznzNwgSuw4svvnLyZ/IIBMyhaEebeePFa7lKAi0EmOLbQ
+         HlNg==
+X-Gm-Message-State: AOAM532CuSFRC7en8IWP5JdKe538kjf9PvhqGg49i9/cFMki+eze6iY1
+        KufDhlCmJq/DHv6/7xiXUDI6+l79z7h678ynGEcDQA==
+X-Google-Smtp-Source: ABdhPJzE0Z+zj23Q02inSzPqU6dizoYqkz7PVA6JO3I+kCwKxDGAnYJLv5iu6gj3sJSx5oylXPN9Gz/3NPn+3xWHDF8=
+X-Received: by 2002:a19:a418:: with SMTP id q24mr2665011lfc.649.1620305428769;
+ Thu, 06 May 2021 05:50:28 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210504161222.101536-1-ulf.hansson@linaro.org> <20210504161222.101536-2-ulf.hansson@linaro.org>
+In-Reply-To: <20210504161222.101536-2-ulf.hansson@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 6 May 2021 14:50:17 +0200
+Message-ID: <CACRpkdYbsfVDrTpMa6P8uia0McQD2KhSKQVA-jh84ZPwBS3C6Q@mail.gmail.com>
+Subject: Re: [PATCH 01/11] mmc: core: Drop open coding when preparing commands
+ with busy signaling
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace /* FALLTHROUGH */ comment with pseudo-keyword macro fallthrough[1]
+On Tue, May 4, 2021 at 6:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> Similar code for validating the host->max_busy_timeout towards the current
+> command's busy timeout, exists in mmc_do_erase(), mmc_sleep() and
+> __mmc_switch(). Let's move the common code into a helper function.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
----
- drivers/acpi/acpica/utprint.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+This is a really nice refactoring in its own right.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c
-index e37d612e8db5..0b511434b80b 100644
---- a/drivers/acpi/acpica/utprint.c
-+++ b/drivers/acpi/acpica/utprint.c
-@@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const char *format, va_list args)
- 		case 'X':
- 
- 			type |= ACPI_FORMAT_UPPER;
--			/* FALLTHROUGH */
-+			fallthrough;
- 
- 		case 'x':
- 
--- 
-2.25.1
-
+Yours,
+Linus Walleij
