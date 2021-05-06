@@ -2,196 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A63F374CC3
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:10:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AD5374CCE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:20:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230129AbhEFBL2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 21:11:28 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:40379 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229708AbhEFBLW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 21:11:22 -0400
-Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 69F1D891B0;
-        Thu,  6 May 2021 13:10:21 +1200 (NZST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1620263421;
-        bh=gBEcofK4p1A630R6Q3AHSfqkVuQENtsMTmONpfzCBKk=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=CJO2vyhY5WhFQWa9eulWExgthvqn/SFzPyx5lj3yZZS+vH0W9rwZVD+0MWQ3tt/a+
-         2H/qPPw+Bt7ITXNTU2p7DzjAVhJn+KCH9Y1IY+tuCVtOnXy5wRiiEBPDDPVmbTuzbE
-         YcFjo97n4Eovkyv6OiMdXoFjc/qn/ruCRUzf9e+XHu89rzuikPfb6qeNhTneKAl+HU
-         jppaQYsJ2V7IM+mqlkZFGcoY54EA1nlGofza8wRgDtu6nRN5qi4jHru5RhwVM2H5SS
-         IZ/BnSG8Ub5x17Jq/KwuXbGkT//KOPzkdO1Qkd2hQB7aD70DZQxkPG0grz8ysNBCCS
-         4AWpVgqB7d2hw==
-Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
-        id <B609341fd0000>; Thu, 06 May 2021 13:10:21 +1200
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by pat.atlnz.lc (Postfix) with ESMTP id 0986413ECA6;
-        Thu,  6 May 2021 13:10:21 +1200 (NZST)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id 051E3283A60; Thu,  6 May 2021 13:10:21 +1200 (NZST)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     wsa@kernel.org, andriy.shevchenko@linux.intel.com,
-        andy.shevchenko@gmail.com, robh+dt@kernel.org, mpe@ellerman.id.au
-Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH 3/3] i2c: mpc: implement erratum A-004447 workaround
-Date:   Thu,  6 May 2021 13:10:14 +1200
-Message-Id: <20210506011015.17347-4-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210506011015.17347-1-chris.packham@alliedtelesis.co.nz>
-References: <20210506011015.17347-1-chris.packham@alliedtelesis.co.nz>
+        id S229916AbhEFBVB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 21:21:01 -0400
+Received: from mga05.intel.com ([192.55.52.43]:60385 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229465AbhEFBU7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 21:20:59 -0400
+IronPort-SDR: QjW6wl/2ZL2Er58FzjlPo/Y6Qtrx6pxZFh0zsiAbC08CwWQt1C5AuQFrIYSPho2dLiNPzglHgv
+ N9kt/xSZ8k3g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="283779782"
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="283779782"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 18:20:00 -0700
+IronPort-SDR: l4kFtJD3/ikRP0/cineXO5j1mZl2xsfXzeJs4D/vCyix2IgZxFrH2mZSWYn89ZSJx0uB2Ck57g
+ e9u96KeNP8CQ==
+X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
+   d="scan'208";a="434095098"
+Received: from yhuang6-desk1.sh.intel.com (HELO yhuang6-desk1.ccr.corp.intel.com) ([10.239.13.1])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 18:19:55 -0700
+From:   "Huang, Ying" <ying.huang@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Jens Axboe <axboe@kernel.dk>, Jian Cai <jiancai@google.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Borislav Petkov <bp@suse.de>,
+        Eric Dumazet <eric.dumazet@gmail.com>,
+        Juergen Gross <jgross@suse.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        He Ying <heying24@huawei.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] [v2] smp: fix smp_call_function_single_async prototype
+References: <20210505211300.3174456-1-arnd@kernel.org>
+Date:   Thu, 06 May 2021 09:19:53 +0800
+In-Reply-To: <20210505211300.3174456-1-arnd@kernel.org> (Arnd Bergmann's
+        message of "Wed, 5 May 2021 23:12:42 +0200")
+Message-ID: <87czu4slom.fsf@yhuang6-desk1.ccr.corp.intel.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=B+jHL9lM c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=5FLXtPjwQuUA:10 a=w4j1xu5M8ypyE8uBZIYA:9
-X-SEG-SpamProfiler-Score: 0
+Content-Type: text/plain; charset=ascii
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The P2040/P2041 has an erratum where the normal i2c recovery mechanism
-does not work. Implement the alternative recovery mechanism documented
-in the P2040 Chip Errata Rev Q.
+Arnd Bergmann <arnd@kernel.org> writes:
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
- drivers/i2c/busses/i2c-mpc.c | 88 +++++++++++++++++++++++++++++++++++-
- 1 file changed, 86 insertions(+), 2 deletions(-)
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> As of commit 966a967116e6 ("smp: Avoid using two cache lines for struct
+> call_single_data"), the smp code prefers 32-byte aligned call_single_data
+> objects for performance reasons, but the block layer includes an instance
+> of this structure in the main 'struct request' that is more senstive
+> to size than to performance here, see 4ccafe032005 ("block: unalign
+> call_single_data in struct request").
+>
+> The result is a violation of the calling conventions that clang correctly
+> points out:
+>
+> block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to 32-byte aligned parameter 2 of 'smp_call_function_single_async' may result in an unaligned pointer access [-Walign-mismatch]
+>                 smp_call_function_single_async(cpu, &rq->csd);
 
-diff --git a/drivers/i2c/busses/i2c-mpc.c b/drivers/i2c/busses/i2c-mpc.c
-index 30d9e89a3db2..052e37718771 100644
---- a/drivers/i2c/busses/i2c-mpc.c
-+++ b/drivers/i2c/busses/i2c-mpc.c
-@@ -45,6 +45,7 @@
- #define CCR_MTX  0x10
- #define CCR_TXAK 0x08
- #define CCR_RSTA 0x04
-+#define CCR_RSVD 0x02
-=20
- #define CSR_MCF  0x80
- #define CSR_MAAS 0x40
-@@ -97,7 +98,7 @@ struct mpc_i2c {
- 	u32 block;
- 	int rc;
- 	int expect_rxack;
--
-+	bool has_errata_A004447;
- };
-=20
- struct mpc_i2c_divider {
-@@ -136,6 +137,83 @@ static void mpc_i2c_fixup(struct mpc_i2c *i2c)
- 	}
- }
-=20
-+static int i2c_mpc_wait_sr(struct mpc_i2c *i2c, int mask)
-+{
-+	unsigned long timeout =3D jiffies + usecs_to_jiffies(100);
-+	int ret =3D 0;
-+
-+	while ((readb(i2c->base + MPC_I2C_SR) & mask) =3D=3D 0) {
-+		if (time_after(jiffies, timeout)) {
-+			ret =3D -ETIMEDOUT;
-+			break;
-+		}
-+		cond_resched();
-+	}
-+
-+	return ret;
-+}
-+
-+/*
-+ * Workaround for Erratum A004447. From the P2040CE Rev Q
-+ *
-+ * 1.  Set up the frequency divider and sampling rate.
-+ * 2.  I2CCR - a0h
-+ * 3.  Poll for I2CSR[MBB] to get set.
-+ * 4.  If I2CSR[MAL] is set (an indication that SDA is stuck low), then =
-go to
-+ *     step 5. If MAL is not set, then go to step 13.
-+ * 5.  I2CCR - 00h
-+ * 6.  I2CCR - 22h
-+ * 7.  I2CCR - a2h
-+ * 8.  Poll for I2CSR[MBB] to get set.
-+ * 9.  Issue read to I2CDR.
-+ * 10. Poll for I2CSR[MIF] to be set.
-+ * 11. I2CCR - 82h
-+ * 12. Workaround complete. Skip the next steps.
-+ * 13. Issue read to I2CDR.
-+ * 14. Poll for I2CSR[MIF] to be set.
-+ * 15. I2CCR - 80h
-+ */
-+static void mpc_i2c_fixup_A004447(struct mpc_i2c *i2c)
-+{
-+	int ret;
-+	u32 val;
-+
-+	writeccr(i2c, CCR_MEN | CCR_MSTA);
-+	ret =3D i2c_mpc_wait_sr(i2c, CSR_MBB);
-+	if (ret) {
-+		dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+		return;
-+	}
-+
-+	val =3D readb(i2c->base + MPC_I2C_SR);
-+
-+	if (val & CSR_MAL) {
-+		writeccr(i2c, 0x00);
-+		writeccr(i2c, CCR_MSTA | CCR_RSVD);
-+		writeccr(i2c, CCR_MEN | CCR_MSTA | CCR_RSVD);
-+		ret =3D i2c_mpc_wait_sr(i2c, CSR_MBB);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MBB\n");
-+			return;
-+		}
-+		val =3D readb(i2c->base + MPC_I2C_DR);
-+		ret =3D i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN | CCR_RSVD);
-+	} else {
-+		val =3D readb(i2c->base + MPC_I2C_DR);
-+		ret =3D i2c_mpc_wait_sr(i2c, CSR_MIF);
-+		if (ret) {
-+			dev_err(i2c->dev, "timeout waiting for CSR_MIF\n");
-+			return;
-+		}
-+		writeccr(i2c, CCR_MEN);
-+	}
-+}
-+
- #if defined(CONFIG_PPC_MPC52xx) || defined(CONFIG_PPC_MPC512x)
- static const struct mpc_i2c_divider mpc_i2c_dividers_52xx[] =3D {
- 	{20, 0x20}, {22, 0x21}, {24, 0x22}, {26, 0x23},
-@@ -670,7 +748,10 @@ static int fsl_i2c_bus_recovery(struct i2c_adapter *=
-adap)
- {
- 	struct mpc_i2c *i2c =3D i2c_get_adapdata(adap);
-=20
--	mpc_i2c_fixup(i2c);
-+	if (i2c->has_errata_A004447)
-+		mpc_i2c_fixup_A004447(i2c);
-+	else
-+		mpc_i2c_fixup(i2c);
-=20
- 	return 0;
- }
-@@ -767,6 +848,9 @@ static int fsl_i2c_probe(struct platform_device *op)
- 	}
- 	dev_info(i2c->dev, "timeout %u us\n", mpc_ops.timeout * 1000000 / HZ);
-=20
-+	if (of_property_read_bool(op->dev.of_node, "fsl,i2c-erratum-a004447"))
-+		i2c->has_errata_A004447 =3D true;
-+
- 	i2c->adap =3D mpc_ops;
- 	scnprintf(i2c->adap.name, sizeof(i2c->adap.name),
- 		  "MPC adapter (%s)", of_node_full_name(op->dev.of_node));
---=20
-2.31.1
+Can this be silenced by
 
+		smp_call_function_single_async(cpu, (call_single_data_t *)&rq->csd);
+
+Best Regards,
+Huang, Ying
+
+[snip]
