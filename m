@@ -2,63 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C19A375218
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:13:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1112537521B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:14:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233897AbhEFKOZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:14:25 -0400
-Received: from out30-133.freemail.mail.aliyun.com ([115.124.30.133]:41858 "EHLO
-        out30-133.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232512AbhEFKOY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:14:24 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R181e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=9;SR=0;TI=SMTPD_---0UXyQ2MH_1620296003;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0UXyQ2MH_1620296003)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Thu, 06 May 2021 18:13:24 +0800
-From:   Yang Li <yang.lee@linux.alibaba.com>
-To:     leon@kernel.org
-Cc:     dledford@redhat.com, jgg@ziepe.ca, nathan@kernel.org,
-        ndesaulniers@google.com, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH] RDMA/mlx5: Remove redundant assignment to ret
-Date:   Thu,  6 May 2021 18:13:21 +0800
-Message-Id: <1620296001-120406-1-git-send-email-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 1.8.3.1
+        id S234014AbhEFKPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:15:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46794 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233332AbhEFKPT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 06:15:19 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2E7F8611AC;
+        Thu,  6 May 2021 10:14:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620296060;
+        bh=plZ63zK9R9UDZd34lXcnuKV+/8tuQT/kyARVDigr8TU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=kYr2V6hWwtaS9Nouj84ehMMpJ9Zd7GNfd7oSuyTd27hENVNoBYd9m2JRSAX/ErXTU
+         wea37xTXyliAkU9shM0xQ8DFWJYe7Q+7G9rUPlY/HQ1P2rsw1ExMTNPeS1Wt9czbgR
+         CIm4ZIeYE+/QGu4BJm5WIHMVY2jNe6J5Y44KhloY=
+Date:   Thu, 6 May 2021 12:14:18 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Martin Kaiser <martin@kaiser.cx>
+Cc:     Larry Finger <Larry.Finger@lwfinger.net>,
+        linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/6] staging: rtl8188eu: remove nic_hdl from struct
+ mlme_priv
+Message-ID: <YJPBekheQ/7eiCDN@kroah.com>
+References: <20210505202622.11087-1-martin@kaiser.cx>
+ <20210505202622.11087-5-martin@kaiser.cx>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505202622.11087-5-martin@kaiser.cx>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Variable 'ret' is set to the rerurn value of function
-mlx5_mr_cache_alloc() but this value is never read as it is
-overwritten with a new value later on, hence it is a redundant
-assignment and can be removed
+On Wed, May 05, 2021 at 10:26:21PM +0200, Martin Kaiser wrote:
+> struct mlme_priv is an element of struct adapter. Use container_of
+> to get a pointer to the enclosing struct.
+> 
+> Signed-off-by: Martin Kaiser <martin@kaiser.cx>
+> ---
+>  drivers/staging/rtl8188eu/core/rtw_mlme.c    | 5 +----
+>  drivers/staging/rtl8188eu/include/rtw_mlme.h | 2 --
+>  2 files changed, 1 insertion(+), 6 deletions(-)
 
-Clean up the following clang-analyzer warning:
+This patch didn't apply to my tree, can you rebase and resend just this
+one as I've taken your others?
 
-drivers/infiniband/hw/mlx5/odp.c:421:2: warning: Value stored to 'ret'
-is never read [clang-analyzer-deadcode.DeadStores]
+thanks,
 
-Reported-by: Abaci Robot <abaci@linux.alibaba.com>
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- drivers/infiniband/hw/mlx5/odp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/infiniband/hw/mlx5/odp.c b/drivers/infiniband/hw/mlx5/odp.c
-index 782b2af..87fa0b2 100644
---- a/drivers/infiniband/hw/mlx5/odp.c
-+++ b/drivers/infiniband/hw/mlx5/odp.c
-@@ -418,7 +418,7 @@ static struct mlx5_ib_mr *implicit_get_child_mr(struct mlx5_ib_mr *imr,
- 	if (IS_ERR(odp))
- 		return ERR_CAST(odp);
- 
--	ret = mr = mlx5_mr_cache_alloc(
-+	mr = mlx5_mr_cache_alloc(
- 		mr_to_mdev(imr), MLX5_IMR_MTT_CACHE_ENTRY, imr->access_flags);
- 	if (IS_ERR(mr)) {
- 		ib_umem_odp_release(odp);
--- 
-1.8.3.1
-
+greg k-h
