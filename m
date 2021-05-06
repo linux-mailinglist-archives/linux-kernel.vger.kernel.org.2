@@ -2,109 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4426F374CB8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:08:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 719D5374CC1
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:10:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230072AbhEFBJ0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 21:09:26 -0400
-Received: from mx21.baidu.com ([220.181.3.85]:40406 "EHLO baidu.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229768AbhEFBJT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 21:09:19 -0400
-Received: from BC-Mail-Ex17.internal.baidu.com (unknown [172.31.51.11])
-        by Forcepoint Email with ESMTPS id 702F2C581018852B74DE;
-        Thu,  6 May 2021 09:08:14 +0800 (CST)
-Received: from BC-Mail-Ex20.internal.baidu.com (172.31.51.14) by
- BC-Mail-Ex17.internal.baidu.com (172.31.51.11) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2242.4; Thu, 6 May 2021 09:08:14 +0800
-Received: from BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) by
- BC-Mail-Ex20.internal.baidu.com ([172.31.51.14]) with mapi id 15.01.2242.008;
- Thu, 6 May 2021 09:08:13 +0800
-From:   "Chu,Kaiping" <chukaiping@baidu.com>
-To:     Rafael Aquini <aquini@redhat.com>
-CC:     "mcgrof@kernel.org" <mcgrof@kernel.org>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "yzaikin@google.com" <yzaikin@google.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "vbabka@suse.cz" <vbabka@suse.cz>,
-        "nigupta@nvidia.com" <nigupta@nvidia.com>,
-        "bhe@redhat.com" <bhe@redhat.com>,
-        "khalid.aziz@oracle.com" <khalid.aziz@oracle.com>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "mateusznosek0@gmail.com" <mateusznosek0@gmail.com>,
-        "sh_def@163.com" <sh_def@163.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: =?utf-8?B?562U5aSNOiDnrZTlpI06IFtQQVRDSCB2M10gbW0vY29tcGFjdGlvbjpsZXQg?=
- =?utf-8?Q?proactive_compaction_order_configurable?=
-Thread-Topic: =?utf-8?B?562U5aSNOiBbUEFUQ0ggdjNdIG1tL2NvbXBhY3Rpb246bGV0IHByb2FjdGl2?=
- =?utf-8?Q?e_compaction_order_configurable?=
-Thread-Index: AQHXOjvUEYLrBaldBU+yjbigXZxebarJI3/QgAJCYICACk14IA==
-Date:   Thu, 6 May 2021 01:08:13 +0000
-Message-ID: <3040239c32144c5caf44e0c96afa4c49@baidu.com>
-References: <1619313662-30356-1-git-send-email-chukaiping@baidu.com>
- <YIYX22JLVHN1PhGs@t490s.aquini.net>
- <f355248969f14e5897ad6dcfe3834297@baidu.com> <YIsM4UtV9UqKhsNB@optiplex-fbsd>
-In-Reply-To: <YIsM4UtV9UqKhsNB@optiplex-fbsd>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [172.22.194.18]
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S230110AbhEFBL1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 21:11:27 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:40352 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229768AbhEFBLW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 21:11:22 -0400
+Received: from svr-chch-seg1.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id B9056806B6;
+        Thu,  6 May 2021 13:10:20 +1200 (NZST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1620263420;
+        bh=QaVXYXC9HAPRyg9kDvGT+lsfZD0ND1BQRe4K8Jdr8M0=;
+        h=From:To:Cc:Subject:Date;
+        b=m7NejHDl1PGWc9qGDJgMllAMBQu+ZS3MZtztHKBrCmJ1/sKtrdBd/kytWu4O1Cu5E
+         pvv8Pb4z2KalcC39DDGdEcWA+zXCOr0U/UGEU54EA0TRTi0NQ+TDBneFHvvW6ePyZu
+         VKgEDmKceMC59oBbiA8Mo77aNqGIzzRpkWfU6i8s19fKnFkHPTO0A+2QMmAR3Xc+zx
+         XQYLiGpknbGlIw1QgP86cThlLuZzvKgk9iw3f2ZQX0/UbB/SNWaxov6jQrb5RNffUF
+         Tc9SMviVJBIb9iirn47uNABsTWOn9EPAu0N/B42m3HIzh6ltFSZwikB/siv2j1HZtx
+         V0+e+46KPRikw==
+Received: from pat.atlnz.lc (Not Verified[10.32.16.33]) by svr-chch-seg1.atlnz.lc with Trustwave SEG (v8,2,6,11305)
+        id <B609341fc0000>; Thu, 06 May 2021 13:10:20 +1200
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by pat.atlnz.lc (Postfix) with ESMTP id 93FD113ECA6;
+        Thu,  6 May 2021 13:10:20 +1200 (NZST)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 8F14A283A60; Thu,  6 May 2021 13:10:20 +1200 (NZST)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     wsa@kernel.org, andriy.shevchenko@linux.intel.com,
+        andy.shevchenko@gmail.com, robh+dt@kernel.org, mpe@ellerman.id.au
+Cc:     linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH 0/3] P2040/P2041 i2c recovery erratum
+Date:   Thu,  6 May 2021 13:10:11 +1200
+Message-Id: <20210506011015.17347-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-SEG-SpamProfiler-Analysis: v=2.3 cv=B+jHL9lM c=1 sm=1 tr=0 a=KLBiSEs5mFS1a/PbTCJxuA==:117 a=5FLXtPjwQuUA:10 a=LMdnaIF9TloyW3KOcEsA:9
+X-SEG-SpamProfiler-Score: 0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DQoNCi0tLS0t6YKu5Lu25Y6f5Lu2LS0tLS0NCuWPkeS7tuS6ujogUmFmYWVsIEFxdWluaSA8YXF1
-aW5pQHJlZGhhdC5jb20+IA0K5Y+R6YCB5pe26Ze0OiAyMDIx5bm0NOaciDMw5pelIDM6NDYNCuaU
-tuS7tuS6ujogQ2h1LEthaXBpbmcgPGNodWthaXBpbmdAYmFpZHUuY29tPg0K5oqE6YCBOiBtY2dy
-b2ZAa2VybmVsLm9yZzsga2Vlc2Nvb2tAY2hyb21pdW0ub3JnOyB5emFpa2luQGdvb2dsZS5jb207
-IGFrcG1AbGludXgtZm91bmRhdGlvbi5vcmc7IHZiYWJrYUBzdXNlLmN6OyBuaWd1cHRhQG52aWRp
-YS5jb207IGJoZUByZWRoYXQuY29tOyBraGFsaWQuYXppekBvcmFjbGUuY29tOyBpYW1qb29uc29v
-LmtpbUBsZ2UuY29tOyBtYXRldXN6bm9zZWswQGdtYWlsLmNvbTsgc2hfZGVmQDE2My5jb207IGxp
-bnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWZzZGV2ZWxAdmdlci5rZXJuZWwub3Jn
-OyBsaW51eC1tbUBrdmFjay5vcmcNCuS4u+mimDogUmU6IOetlOWkjTogW1BBVENIIHYzXSBtbS9j
-b21wYWN0aW9uOmxldCBwcm9hY3RpdmUgY29tcGFjdGlvbiBvcmRlciBjb25maWd1cmFibGUNCg0K
-T24gV2VkLCBBcHIgMjgsIDIwMjEgYXQgMDE6MTc6NDBBTSArMDAwMCwgQ2h1LEthaXBpbmcgd3Jv
-dGU6DQo+IFBsZWFzZSBzZWUgbXkgYW5zd2VyIGlubGluZS4NCj4gDQo+IC0tLS0t6YKu5Lu25Y6f
-5Lu2LS0tLS0NCj4g5Y+R5Lu25Lq6OiBSYWZhZWwgQXF1aW5pIDxhcXVpbmlAcmVkaGF0LmNvbT4N
-Cj4g5Y+R6YCB5pe26Ze0OiAyMDIx5bm0NOaciDI25pelIDk6MzENCj4g5pS25Lu25Lq6OiBDaHUs
-S2FpcGluZyA8Y2h1a2FpcGluZ0BiYWlkdS5jb20+DQo+IOaKhOmAgTogbWNncm9mQGtlcm5lbC5v
-cmc7IGtlZXNjb29rQGNocm9taXVtLm9yZzsgeXphaWtpbkBnb29nbGUuY29tOyANCj4gYWtwbUBs
-aW51eC1mb3VuZGF0aW9uLm9yZzsgdmJhYmthQHN1c2UuY3o7IG5pZ3VwdGFAbnZpZGlhLmNvbTsg
-DQo+IGJoZUByZWRoYXQuY29tOyBraGFsaWQuYXppekBvcmFjbGUuY29tOyBpYW1qb29uc29vLmtp
-bUBsZ2UuY29tOyANCj4gbWF0ZXVzem5vc2VrMEBnbWFpbC5jb207IHNoX2RlZkAxNjMuY29tOyBs
-aW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyANCj4gbGludXgtZnNkZXZlbEB2Z2VyLmtlcm5l
-bC5vcmc7IGxpbnV4LW1tQGt2YWNrLm9yZw0KPiDkuLvpopg6IFJlOiBbUEFUQ0ggdjNdIG1tL2Nv
-bXBhY3Rpb246bGV0IHByb2FjdGl2ZSBjb21wYWN0aW9uIG9yZGVyIA0KPiBjb25maWd1cmFibGUN
-Cj4gDQo+IE9uIFN1biwgQXByIDI1LCAyMDIxIGF0IDA5OjIxOjAyQU0gKzA4MDAsIGNodWthaXBp
-bmcgd3JvdGU6DQo+ID4gQ3VycmVudGx5IHRoZSBwcm9hY3RpdmUgY29tcGFjdGlvbiBvcmRlciBp
-cyBmaXhlZCB0byANCj4gPiBDT01QQUNUSU9OX0hQQUdFX09SREVSKDkpLCBpdCdzIE9LIGluIG1v
-c3QgbWFjaGluZXMgd2l0aCBsb3RzIG9mIA0KPiA+IG5vcm1hbCA0S0IgbWVtb3J5LCBidXQgaXQn
-cyB0b28gaGlnaCBmb3IgdGhlIG1hY2hpbmVzIHdpdGggc21hbGwgDQo+ID4gbm9ybWFsIG1lbW9y
-eSwgZm9yIGV4YW1wbGUgdGhlIG1hY2hpbmVzIHdpdGggbW9zdCBtZW1vcnkgY29uZmlndXJlZCAN
-Cj4gPiBhcyAxR0IgaHVnZXRsYmZzIGh1Z2UgcGFnZXMuIEluIHRoZXNlIG1hY2hpbmVzIHRoZSBt
-YXggb3JkZXIgb2YgZnJlZSANCj4gPiBwYWdlcyBpcyBvZnRlbiBiZWxvdyA5LCBhbmQgaXQncyBh
-bHdheXMgYmVsb3cgOSBldmVuIHdpdGggaGFyZCANCj4gPiBjb21wYWN0aW9uLiBUaGlzIHdpbGwg
-bGVhZCB0byBwcm9hY3RpdmUgY29tcGFjdGlvbiBiZSB0cmlnZ2VyZWQgdmVyeSANCj4gPiBmcmVx
-dWVudGx5LiBJbiB0aGVzZSBtYWNoaW5lcyB3ZSBvbmx5IGNhcmUgYWJvdXQgb3JkZXIgb2YgMyBv
-ciA0Lg0KPiA+IFRoaXMgcGF0Y2ggZXhwb3J0IHRoZSBvZGVyIHRvIHByb2MgYW5kIGxldCBpdCBj
-b25maWd1cmFibGUgYnkgdXNlciwgDQo+ID4gYW5kIHRoZSBkZWZhdWx0IHZhbHVlIGlzIHN0aWxs
-IENPTVBBQ1RJT05fSFBBR0VfT1JERVIuDQo+ID4gDQo+ID4gU2lnbmVkLW9mZi1ieTogY2h1a2Fp
-cGluZyA8Y2h1a2FpcGluZ0BiYWlkdS5jb20+DQo+ID4gUmVwb3J0ZWQtYnk6IGtlcm5lbCB0ZXN0
-IHJvYm90IDxsa3BAaW50ZWwuY29tPg0KPiANCj4gVHdvIG1pbm9yIG5pdHMgb24gdGhlIGNvbW1p
-dCBsb2cgbWVzc2FnZTogDQo+ICogdGhlcmUgc2VlbXMgdG8gYmUgYSB3aGl0ZXNwYWdlIG1pc3Np
-bmcgaW4geW91ciBzaG9ydCBsb2c6IA0KPiAgICIuLi4gbW0vY29tcGFjdGlvbjpsZXQgLi4uIg0K
-PiAtLT4gSSB3aWxsIGZpeCBpdCBpbiBuZXh0IHBhdGNoLg0KPiANCj4gKiBoYXMgdGhlIHBhdGgg
-cmVhbGx5IGJlZW4gcmVwb3J0ZWQgYnkgYSB0ZXN0IHJvYm90Pw0KPiAtLT4gWWVzLiBUaGVyZSBp
-cyBhIGNvbXBpbGUgZXJyb3IgaW4gdjEsIEkgZml4ZWQgaXQgaW4gdjIuDQo+DQoNCj4gU28sIG5v
-Li4uIHRoZSB0ZXN0IHJvYm90IHNob3VsZCBub3QgYmUgbGlzdGVkIGFzIFJlcG9ydGVkLWJ5LiAN
-CkkgZGlkIGl0IGFzIGJlbG93IHN1Z2dlc3Rpb24gaW4gdGhlIGJ1aWxkIGVycm9yIG5vdGlmaWNh
-dGlvbiBlbWFpbCBzZW50IGJ5IGtlcm5lbCB0ZXN0IHJvYm90Lg0KIiBJZiB5b3UgZml4IHRoZSBp
-c3N1ZSwga2luZGx5IGFkZCBmb2xsb3dpbmcgdGFnIGFzIGFwcHJvcHJpYXRlDQpSZXBvcnRlZC1i
-eToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+Ig0KDQo=
+The P2040/P2041 has an erratum where the i2c recovery scheme
+documented in the reference manual (and currently implemented
+in the i2c-mpc.c driver) does not work. The errata document
+provides an alternative that does work. This series implements
+that alternative and uses a property in the devicetree to
+decide when the alternative mechanism is needed.
+
+Chris Packham (3):
+  dt-bindings: i2c: mpc: Add fsl,i2c-erratum-a004447 flag
+  powerpc/fsl: set fsl,i2c-erratum-a004447 flag for P2041 i2c
+    controllers
+  i2c: mpc: implement erratum A-004447 workaround
+
+ .../devicetree/bindings/i2c/i2c-mpc.yaml      |  7 ++
+ arch/powerpc/boot/dts/fsl/p2041si-post.dtsi   | 16 ++++
+ drivers/i2c/busses/i2c-mpc.c                  | 88 ++++++++++++++++++-
+ 3 files changed, 109 insertions(+), 2 deletions(-)
+
+--=20
+2.31.1
+
