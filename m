@@ -2,204 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C7A13752FC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:25:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67B39375300
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:25:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234696AbhEFLZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S234764AbhEFL0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 07:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34028 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234675AbhEFLZ7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 May 2021 07:25:59 -0400
-Received: from mga02.intel.com ([134.134.136.20]:15098 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234589AbhEFLZ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 07:25:58 -0400
-IronPort-SDR: b4QAR52UMyRmCQnbjpzenfSFUHGZkbqpBZGkDLJchjkGQXNg+gA1Fm2Md71noZnmG9WGvmD6vj
- 9BzQqbNOTusQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="185576497"
-X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
-   d="scan'208";a="185576497"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 04:25:00 -0700
-IronPort-SDR: UwzLFitVhz94btr00mR08mTaF5Z2ww1afaHhfyIKOUZR6ofQbOQ/oF5i/mPQ7FKnUJILvRrqUC
- pY7hXA1cBWOw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
-   d="scan'208";a="434305522"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga008.jf.intel.com with ESMTP; 06 May 2021 04:24:59 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lec7m-000AZ4-F9; Thu, 06 May 2021 11:24:58 +0000
-Date:   Thu, 06 May 2021 19:24:17 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "Paul E. McKenney" <paulmck@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [rcu:dev.2021.05.02a] BUILD SUCCESS WITH WARNING
- 35d2c62851bc03a945ae81ab0726985f726107b1
-Message-ID: <6093d1e1.mXsFI1aq2SlF88mE%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+Received: from mail-wr1-x42b.google.com (mail-wr1-x42b.google.com [IPv6:2a00:1450:4864:20::42b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A36BC061574;
+        Thu,  6 May 2021 04:25:01 -0700 (PDT)
+Received: by mail-wr1-x42b.google.com with SMTP id v12so5196835wrq.6;
+        Thu, 06 May 2021 04:25:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=HxnqpNt6mcYg+tpVO7/VIuYyoF/XTeRz4KcEC8rcBIU=;
+        b=qgQpFcrKCuEv3kku5bcrlB/6jGtGWkUTXJ64cCChAhteGhcYFl4EmU+MDBmel1MXvl
+         yXbrPy3oCeqfbZMYyQ7uHduWjhFNhIP1xALPp3kVm+qGuWecczZNqPT/ouLmz5SYP4gT
+         TGMMcVSWWP68NdS9G2EErM8tqgdyEzk1J2AIXtljVlIK0U7oqVXl72HRxefrK0XBsjEH
+         jWAabxt3ndxrnlcB/5zmZaTNUxh3iHBxBSBsER8xlaMkML6zguDb7mX4CH5QxSaR2/vw
+         OJu8hzamHgc6w6Xdwg9f6qZXAtOOPwO3vtte4U/cOo33pDeoi5ec8gGs9B+xZFkS/osW
+         buvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=HxnqpNt6mcYg+tpVO7/VIuYyoF/XTeRz4KcEC8rcBIU=;
+        b=fy5yuEn3sk+fLz154YfAojvku/AZVy0yC4zCHwb6hgg9URRPYTkfGSFCPx0juIJ3UJ
+         YZ4acqB8VJcUx5RvoENtO8uOCkqyA51Zs1JZD7Nw3mXWgMrYUeSGLKO+efX1lkTo+oS7
+         ntHDmIXo8bDJnM7AGlFdrlWDOwLdRSEoM+JZR6n9oAL9flZKQIc8Q4BPkZ1BJjGJUTnT
+         9xyEu8zyh4WSjD3JG7xPkjZxvXEqxE5V1AO16P6qAxNCtrVMkE4u1YTlp/Io6gtBFgq4
+         rFGlaAv47XFe8oqCuN8wq93aA/lWJi2l3uYzcI9fFPWracU2VAv7GTJbdGnkXkBmN1YR
+         p60Q==
+X-Gm-Message-State: AOAM5317H8Rahwga2417dgTs8F3iF/Vuth49xeixeDcxD1xZACXE5uq/
+        zsX5rsuNfmXGQJZHstYdYQo=
+X-Google-Smtp-Source: ABdhPJyWGNtsyGTB6YDQ0H3zkQ3hRmApt1oi8C1ykbwMELhDidG71jw6V5eNNDJ47Apn7a7JUIDbPA==
+X-Received: by 2002:adf:ef47:: with SMTP id c7mr4435013wrp.297.1620300300191;
+        Thu, 06 May 2021 04:25:00 -0700 (PDT)
+Received: from skbuf ([86.127.41.210])
+        by smtp.gmail.com with ESMTPSA id s10sm3736138wru.55.2021.05.06.04.24.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 04:24:59 -0700 (PDT)
+Date:   Thu, 6 May 2021 14:24:58 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v3 19/20] net: dsa: qca8k: pass
+ switch_revision info to phy dev_flags
+Message-ID: <20210506112458.yhgbpifebusc2eal@skbuf>
+References: <20210504222915.17206-1-ansuelsmth@gmail.com>
+ <20210504222915.17206-19-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20210504222915.17206-19-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/paulmck/linux-rcu.git dev.2021.05.02a
-branch HEAD: 35d2c62851bc03a945ae81ab0726985f726107b1  refscale: Add measurement of clock readout
+On Wed, May 05, 2021 at 12:29:13AM +0200, Ansuel Smith wrote:
+> Define get_phy_flags to pass switch_Revision needed to tweak the
+> internal PHY with debug values based on the revision.
+> 
+> Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> ---
+>  drivers/net/dsa/qca8k.c | 19 +++++++++++++++++++
+>  1 file changed, 19 insertions(+)
+> 
+> diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> index b4cd891ad35d..237e09bb1425 100644
+> --- a/drivers/net/dsa/qca8k.c
+> +++ b/drivers/net/dsa/qca8k.c
+> @@ -1654,6 +1654,24 @@ qca8k_port_vlan_del(struct dsa_switch *ds, int port,
+>  	return ret;
+>  }
+>  
+> +static u32 qca8k_get_phy_flags(struct dsa_switch *ds, int port)
+> +{
+> +	struct qca8k_priv *priv = ds->priv;
+> +
+> +	pr_info("revision from phy %d", priv->switch_revision);
 
-Warning reports:
+Log spam.
 
-https://lore.kernel.org/lkml/202105061040.osgFAKrJ-lkp@intel.com
+> +	/* Communicate to the phy internal driver the switch revision.
+> +	 * Based on the switch revision different values needs to be
+> +	 * set to the dbg and mmd reg on the phy.
+> +	 * The first 2 bit are used to communicate the switch revision
+> +	 * to the phy driver.
+> +	 */
+> +	if (port > 0 && port < 6)
+> +		return priv->switch_revision;
+> +
+> +	return 0;
+> +}
+> +
+>  static enum dsa_tag_protocol
+>  qca8k_get_tag_protocol(struct dsa_switch *ds, int port,
+>  		       enum dsa_tag_protocol mp)
+> @@ -1687,6 +1705,7 @@ static const struct dsa_switch_ops qca8k_switch_ops = {
+>  	.phylink_mac_config	= qca8k_phylink_mac_config,
+>  	.phylink_mac_link_down	= qca8k_phylink_mac_link_down,
+>  	.phylink_mac_link_up	= qca8k_phylink_mac_link_up,
+> +	.get_phy_flags		= qca8k_get_phy_flags,
+>  };
+>  
+>  static int qca8k_read_switch_id(struct qca8k_priv *priv)
+> -- 
+> 2.30.2
+> 
 
-Warning in current branch:
-
-kernel/rcu/refscale.c:472:15: warning: variable 'x' set but not used [-Wunused-but-set-variable]
-
-Warning ids grouped by kconfigs:
-
-gcc_recent_errors
-|-- alpha-allyesconfig
-|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-|-- nds32-allyesconfig
-|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-|-- nios2-allyesconfig
-|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-|-- nios2-randconfig-r014-20210505
-|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-|-- parisc-allyesconfig
-|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-|-- riscv-allmodconfig
-|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-|-- s390-allmodconfig
-|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-|-- s390-allyesconfig
-|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-|-- s390-defconfig
-|   `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-`-- sh-allmodconfig
-    `-- kernel-rcu-refscale.c:warning:variable-x-set-but-not-used
-
-elapsed time: 724m
-
-configs tested: 113
-configs skipped: 2
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-riscv                            allyesconfig
-i386                             allyesconfig
-sh                           se7705_defconfig
-sh                             sh03_defconfig
-um                                  defconfig
-sh                         ecovec24_defconfig
-powerpc                     tqm8541_defconfig
-mips                           gcw0_defconfig
-h8300                     edosk2674_defconfig
-xtensa                          iss_defconfig
-ia64                         bigsur_defconfig
-powerpc                     mpc5200_defconfig
-mips                     loongson1b_defconfig
-arm                          iop32x_defconfig
-arm                         nhk8815_defconfig
-mips                           ip27_defconfig
-sh                          r7785rp_defconfig
-mips                        omega2p_defconfig
-sparc64                          alldefconfig
-arc                     nsimosci_hs_defconfig
-powerpc                 mpc836x_rdk_defconfig
-arm                             pxa_defconfig
-powerpc                      ep88xc_defconfig
-sparc                            allyesconfig
-xtensa                generic_kc705_defconfig
-mips                  maltasmvp_eva_defconfig
-powerpc                       holly_defconfig
-alpha                            allyesconfig
-arm                            mps2_defconfig
-openrisc                  or1klitex_defconfig
-arc                 nsimosci_hs_smp_defconfig
-mips                        qi_lb60_defconfig
-arm                         palmz72_defconfig
-mips                       bmips_be_defconfig
-sh                           se7619_defconfig
-powerpc                     redwood_defconfig
-openrisc                            defconfig
-powerpc                   lite5200b_defconfig
-powerpc                     tqm8548_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                               defconfig
-i386                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210506
-i386                 randconfig-a006-20210506
-i386                 randconfig-a001-20210506
-i386                 randconfig-a005-20210506
-i386                 randconfig-a004-20210506
-i386                 randconfig-a002-20210506
-x86_64               randconfig-a001-20210505
-x86_64               randconfig-a003-20210505
-x86_64               randconfig-a005-20210505
-x86_64               randconfig-a002-20210505
-x86_64               randconfig-a006-20210505
-x86_64               randconfig-a004-20210505
-i386                 randconfig-a015-20210505
-i386                 randconfig-a013-20210505
-i386                 randconfig-a016-20210505
-i386                 randconfig-a014-20210505
-i386                 randconfig-a012-20210505
-i386                 randconfig-a011-20210505
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a014-20210505
-x86_64               randconfig-a015-20210505
-x86_64               randconfig-a012-20210505
-x86_64               randconfig-a013-20210505
-x86_64               randconfig-a011-20210505
-x86_64               randconfig-a016-20210505
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Florian, I think at one point you said that a correct user of
+phydev->dev_flags should first check the PHY revision and not apply
+dev_flags in blind, since they are namespaced to each PHY driver?
+It sounds a bit circular to pass the PHY revision to the PHY through
+phydev->dev_flags, either that or I'm missing some piece.
