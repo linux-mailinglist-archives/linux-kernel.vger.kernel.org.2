@@ -2,87 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 818E2374DD7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 05:12:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3F20374DE0
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 05:17:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232764AbhEFDMx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 23:12:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38134 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232838AbhEFDMp (ORCPT
+        id S229796AbhEFDSh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 23:18:37 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34716 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230421AbhEFDSg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 23:12:45 -0400
-Received: from mail-qk1-x733.google.com (mail-qk1-x733.google.com [IPv6:2607:f8b0:4864:20::733])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAF38C06138A;
-        Wed,  5 May 2021 20:11:47 -0700 (PDT)
-Received: by mail-qk1-x733.google.com with SMTP id v20so3731964qkv.5;
-        Wed, 05 May 2021 20:11:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zc0foFEf07MuR8qaneLKD/X5hm20pyFwaRxV9GZ2KfE=;
-        b=CH99u9WVl9l1o63moek4ExybUAXX8763nmXJ5/Z5YVN/q/eG9n7M59QFu65Nur6BVi
-         DxSvwonY4ZLUUg/zcqMyYf6AJTCQFo7WcraaUP5cJqfcdFEVPUdESMz6EHerT9nESQJz
-         4CZag33e3hOmTBECqQTuR7ktZOW35p2j/JGI3ReqdO0IrrdUW5wGXFxPI2DXeUwmr9Uz
-         ZVg7VCxmtFdnUQwqCbgIzggJl/34Txn+StQYkzftXBiuSA6lNRnlEoXGk7y0W6/OK/Rb
-         ndSoITm1Z/uSH4b8RNu7EB2qJAfitv0RLtLMWtlhFSJFh7ltcbAJNJzXr/p6C2PkYa1p
-         +qJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zc0foFEf07MuR8qaneLKD/X5hm20pyFwaRxV9GZ2KfE=;
-        b=jpy4TSgk6GUwU6OrIC2KAbQN14BNx3xODFcLBpDZBurnmezHvlT61Dq3v+6b5OPQz9
-         kx3Nz3L9ekIbytW085ueD/Qak1IyDWuZ5DSA2LlEHkYooNoXG/u6I4MtOi5FE2DXFql0
-         vAdoDyTVDGLsM3WqCQKTS0VTo6SjV0t8UOui8/BVF/ixYsDK+ZuNj/nM9LojZV4Iw+Pn
-         4xtVJj+1F7KhKQ9RpD0OD7QNMSM9d2icHkUWQ8AcrPC4zTkr3RNO5TQlklJHQzhOPzLE
-         B4Z6LYZhWMV2jL2XqUiBjhIBhjmj2UtzYnU6k/X5mCRtQx/uIBG70bxXrRd/1qfX3ZIm
-         s44w==
-X-Gm-Message-State: AOAM531xozYzNZLYtUDt2xNQuShJhfj84h/xpPzDkHt2BwPUF5s5WDsI
-        sLVinpd56s55X/sba/ejOPdtP8/H9PB8f+bH09Kpl4Id
-X-Google-Smtp-Source: ABdhPJyaDpHlAXmnOf7gjN0KdB/9SHzvyjBkqysUTMm4Kuy0d74TwTnGSBPrzWEgPu3aDsd+dk34EaKl4dU9u1V/SHc=
-X-Received: by 2002:a05:620a:2903:: with SMTP id m3mr1924718qkp.37.1620270707000;
- Wed, 05 May 2021 20:11:47 -0700 (PDT)
+        Wed, 5 May 2021 23:18:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620271058;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=mHcgWqiBds5lBtditwajbBOEjZ3IZCTkxDstlE/eLZI=;
+        b=AF/jtVFXxAfeuNk7RSln6Ub7VTH5fBYAj/Bd5z18bmSPjs2yxI0EEASW6R4nPi93AwQ1D3
+        LhUs2t64mejMzX7wCYuhrnPT8KCA/iHIKbuGybH5ufTi4ruFf1aXr/5KajPBGZ+VTZy/gc
+        hk1RpHuLK17m2U+KbfFmGXyLyXZOPgc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-hfWxXVjoNJ6ug_c-ehhd0g-1; Wed, 05 May 2021 23:17:35 -0400
+X-MC-Unique: hfWxXVjoNJ6ug_c-ehhd0g-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1E2E71006C80;
+        Thu,  6 May 2021 03:17:34 +0000 (UTC)
+Received: from wangxiaodeMacBook-Air.local (ovpn-13-159.pek2.redhat.com [10.72.13.159])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id CD130BA6F;
+        Thu,  6 May 2021 03:17:28 +0000 (UTC)
+Subject: Re: [PATCH] vhost-iotlb: fix vhost_iotlb_del_range() documentation
+To:     Stefano Garzarella <sgarzare@redhat.com>,
+        virtualization@lists.linux-foundation.org
+Cc:     netdev@vger.kernel.org, "Michael S. Tsirkin" <mst@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210504135444.158716-1-sgarzare@redhat.com>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <93e4cb04-105e-e853-e2b6-d95435ca55f2@redhat.com>
+Date:   Thu, 6 May 2021 11:17:27 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.10.0
 MIME-Version: 1.0
-References: <1619664627-12470-1-git-send-email-shengjiu.wang@nxp.com>
- <1619664627-12470-2-git-send-email-shengjiu.wang@nxp.com> <CAOMZO5A3-GjEv_U4RmQXz__s=SmHkkJid-DXxr2Om6pB6_imAg@mail.gmail.com>
-In-Reply-To: <CAOMZO5A3-GjEv_U4RmQXz__s=SmHkkJid-DXxr2Om6pB6_imAg@mail.gmail.com>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Thu, 6 May 2021 11:11:36 +0800
-Message-ID: <CAA+D8ANC_J8gHcKs2YVCv3efUimb-dq6uTcGM=252N0jMg5ctQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ARM: dts: imx6qdl-sabresd: Configure the gpio for hp detect
-To:     Fabio Estevam <festevam@gmail.com>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20210504135444.158716-1-sgarzare@redhat.com>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 3, 2021 at 10:38 PM Fabio Estevam <festevam@gmail.com> wrote:
->
-> Hi Shengjiu,
->
-> On Thu, Apr 29, 2021 at 12:06 AM Shengjiu Wang <shengjiu.wang@nxp.com> wrote:
->
-> > +               pinctrl_hp: hpgrp {
-> > +                       fsl,pins = <
-> > +                               MX6QDL_PAD_SD3_RST__GPIO7_IO08          0x80000000
-> > +                               MX6QDL_PAD_GPIO_9__GPIO1_IO09           0x80000000
->
-> Please avoid using 0x80000000. Use the real PAD_CTL value instead.
 
-Ok, will send v2.
+ÔÚ 2021/5/4 ÏÂÎç9:54, Stefano Garzarella Ð´µÀ:
+> Trivial change for the vhost_iotlb_del_range() documentation,
+> fixing the function name in the comment block.
+>
+> Discovered with `make C=2 M=drivers/vhost`:
+> ../drivers/vhost/iotlb.c:92: warning: expecting prototype for vring_iotlb_del_range(). Prototype was for vhost_iotlb_del_range() instead
+>
+> Signed-off-by: Stefano Garzarella <sgarzare@redhat.com>
+> ---
 
-best regards
-wang shengjiu
+
+Acked-by: Jason Wang <jasowang@redhat.com>
+
+
+>   drivers/vhost/iotlb.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/iotlb.c b/drivers/vhost/iotlb.c
+> index 0fd3f87e913c..0582079e4bcc 100644
+> --- a/drivers/vhost/iotlb.c
+> +++ b/drivers/vhost/iotlb.c
+> @@ -83,7 +83,7 @@ int vhost_iotlb_add_range(struct vhost_iotlb *iotlb,
+>   EXPORT_SYMBOL_GPL(vhost_iotlb_add_range);
+>   
+>   /**
+> - * vring_iotlb_del_range - delete overlapped ranges from vhost IOTLB
+> + * vhost_iotlb_del_range - delete overlapped ranges from vhost IOTLB
+>    * @iotlb: the IOTLB
+>    * @start: start of the IOVA range
+>    * @last: last of IOVA range
+
