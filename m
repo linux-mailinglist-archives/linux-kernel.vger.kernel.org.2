@@ -2,171 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3AC237555A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7710337556A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:11:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234464AbhEFOEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:04:07 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17136 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233982AbhEFOEE (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:04:04 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FbZvl24N7zqSgq;
-        Thu,  6 May 2021 21:59:47 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 6 May 2021
- 22:02:56 +0800
-From:   Ye Bin <yebin10@huawei.com>
-To:     <tytso@mit.edu>, <jack@suse.cz>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Ye Bin <yebin10@huawei.com>
-Subject: [PATCH v4] ext4: Fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
-Date:   Thu, 6 May 2021 22:10:42 +0800
-Message-ID: <20210506141042.3298679-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.25.4
+        id S234490AbhEFOMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:12:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44296 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233737AbhEFOMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 10:12:20 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EEE9060FF2;
+        Thu,  6 May 2021 14:11:21 +0000 (UTC)
+Date:   Thu, 6 May 2021 10:11:20 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Subject: [GIT PULL] tracing: Fix probes written to the set_ftrace_filter
+ file
+Message-ID: <20210506101120.77792a09@gandalf.local.home>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.175.127.227]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We got follow bug_on when run fsstress with injecting IO fault:
-[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
-[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
-......
-[130747.334329] Call trace:
-[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
-[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
-[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
-[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
-[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
-[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
-[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
-[130747.337359]  generic_file_buffered_read+0x410/0xae8
-[130747.337767]  generic_file_read_iter+0x114/0x190
-[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
-[130747.338556]  __vfs_read+0x11c/0x188
-[130747.338851]  vfs_read+0x94/0x150
-[130747.339110]  ksys_read+0x74/0xf0
 
-If call ext4_ext_insert_extent failed but new extent already inserted, we just
-update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
-cause bug on when cache extent.
-If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
-Maybe there will lead to block leak, but it can be fixed by fsck later.
+Linus,
 
-After we fixed above issue with v2 patch, but we got the same issue.
-ext4_split_extent_at:
-{
-        ......
-        err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
-        if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
-            ......
-            ext4_ext_try_to_merge(handle, inode, path, ex); ->step(1)
-            err = ext4_ext_dirty(handle, inode, path + path->p_depth); ->step(2)
-            if (err)
-                goto fix_extent_len;
-        ......
-        }
-        ......
-fix_extent_len:
-        ex->ee_len = orig_ex.ee_len; ->step(3)
-        ......
-}
-If step(1) have been merged, but step(2) dirty extent failed, then go to
-fix_extent_len label to fix ex->ee_len with orig_ex.ee_len. But "ex" may not be
-old one, will cause overwritten. Then will trigger the same issue as previous.
-If step(2) failed, just return error, don't fix ex->ee_len with old value.
+Now that there's a library that accesses the tracefs file system,
+(libtracefs), the way the files are interacted with is slightly
+different than the command line. For instance, the write() system
+call is used directly instead of an echo. This exposes some old bugs.
 
-This patch's modification is according to Jan Kara's suggestion in V3 patch:
-("https://patchwork.ozlabs.org/project/linux-ext4/patch/20210428085158.3728201-1-yebin10@huawei.com/")
-"I see. Now I understand your patch. Honestly, seeing how fragile is trying
-to fix extent tree after split has failed in the middle, I would probably
-go even further and make sure we fix the tree properly in case of ENOSPC
-and EDQUOT (those are easily user triggerable).  Anything else indicates a
-HW problem or fs corruption so I'd rather leave the extent tree as is and
-don't try to fix it (which also means we will not create overlapping
-extents)."
+If a probe is written to "set_ftrace_filter" without any white space
+after it, it will be ignored. This is because the write expects
+that a string written to it that does not end with white spaces thinks
+there is more to come. But if the file is closed, the release function
+needs to finish it. The "set_ftrace_filter" release function handles
+the filter part of the "set_ftrace_filter" file, but did not handle
+the probe part.
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/extents.c | 43 +++++++++++++++++++++++--------------------
- 1 file changed, 23 insertions(+), 20 deletions(-)
 
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 77c84d6f1af6..cbf37b2cf871 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3206,7 +3206,10 @@ static int ext4_split_extent_at(handle_t *handle,
- 		ext4_ext_mark_unwritten(ex2);
+Please pull the latest trace-v5.13-2 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/rostedt/linux-trace.git
+trace-v5.13-2
+
+Tag SHA1: 82d2456e6fd7e77cb6bbc30c78302680e6115cb1
+Head SHA1: 8c9af478c06bb1ab1422f90d8ecbc53defd44bc3
+
+
+Steven Rostedt (VMware) (1):
+      ftrace: Handle commands when closing set_ftrace_filter file
+
+----
+ kernel/trace/ftrace.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+---------------------------
+commit 8c9af478c06bb1ab1422f90d8ecbc53defd44bc3
+Author: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Date:   Wed May 5 10:38:24 2021 -0400
+
+    ftrace: Handle commands when closing set_ftrace_filter file
+    
+     # echo switch_mm:traceoff > /sys/kernel/tracing/set_ftrace_filter
+    
+    will cause switch_mm to stop tracing by the traceoff command.
+    
+     # echo -n switch_mm:traceoff > /sys/kernel/tracing/set_ftrace_filter
+    
+    does nothing.
+    
+    The reason is that the parsing in the write function only processes
+    commands if it finished parsing (there is white space written after the
+    command). That's to handle:
+    
+     write(fd, "switch_mm:", 10);
+     write(fd, "traceoff", 8);
+    
+    cases, where the command is broken over multiple writes.
+    
+    The problem is if the file descriptor is closed, then the write call is
+    not processed, and the command needs to be processed in the release code.
+    The release code can handle matching of functions, but does not handle
+    commands.
+    
+    Cc: stable@vger.kernel.org
+    Fixes: eda1e32855656 ("tracing: handle broken names in ftrace filter")
+    Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+
+diff --git a/kernel/trace/ftrace.c b/kernel/trace/ftrace.c
+index 057e962ca5ce..c57508445faa 100644
+--- a/kernel/trace/ftrace.c
++++ b/kernel/trace/ftrace.c
+@@ -5591,7 +5591,10 @@ int ftrace_regex_release(struct inode *inode, struct file *file)
  
- 	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
--	if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
-+	if (err != -ENOSPC && err != -EDQUOT)
-+		goto out;
+ 	parser = &iter->parser;
+ 	if (trace_parser_loaded(parser)) {
+-		ftrace_match_records(iter->hash, parser->buffer, parser->idx);
++		int enable = !(iter->flags & FTRACE_ITER_NOTRACE);
 +
-+	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
- 		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
- 			if (split_flag & EXT4_EXT_DATA_VALID1) {
- 				err = ext4_ext_zeroout(inode, ex2);
-@@ -3232,25 +3235,22 @@ static int ext4_split_extent_at(handle_t *handle,
- 					      ext4_ext_pblock(&orig_ex));
- 		}
++		ftrace_process_regex(iter, parser->buffer,
++				     parser->idx, enable);
+ 	}
  
--		if (err)
--			goto fix_extent_len;
--		/* update the extent length and mark as initialized */
--		ex->ee_len = cpu_to_le16(ee_len);
--		ext4_ext_try_to_merge(handle, inode, path, ex);
--		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
--		if (err)
--			goto fix_extent_len;
--
--		/* update extent status tree */
--		err = ext4_zeroout_es(inode, &zero_ex);
--
--		goto out;
--	} else if (err)
--		goto fix_extent_len;
--
--out:
--	ext4_ext_show_leaf(inode, path);
--	return err;
-+		if (!err) {
-+			/* update the extent length and mark as initialized */
-+			ex->ee_len = cpu_to_le16(ee_len);
-+			ext4_ext_try_to_merge(handle, inode, path, ex);
-+			err = ext4_ext_dirty(handle, inode, path + path->p_depth);
-+			if (!err)
-+				/* update extent status tree */
-+				err = ext4_zeroout_es(inode, &zero_ex);
-+			/* If we failed at this point, we don't know in which
-+			 * state the extent tree exactly is so don't try to fix
-+			 * length of the original extent as it may do even more
-+			 * damage.
-+			 */
-+			goto out;
-+		}
-+	}
- 
- fix_extent_len:
- 	ex->ee_len = orig_ex.ee_len;
-@@ -3260,6 +3260,9 @@ static int ext4_split_extent_at(handle_t *handle,
- 	 */
- 	ext4_ext_dirty(handle, inode, path + path->p_depth);
- 	return err;
-+out:
-+	ext4_ext_show_leaf(inode, path);
-+	return err;
- }
- 
- /*
--- 
-2.25.4
-
+ 	trace_parser_put(parser);
