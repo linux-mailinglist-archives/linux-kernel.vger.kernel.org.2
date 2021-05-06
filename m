@@ -2,114 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE95337579E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:38:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 963E93757A2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235461AbhEFPjk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:39:40 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40524 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236071AbhEFPhd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:37:33 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 398A7AC36;
-        Thu,  6 May 2021 15:36:33 +0000 (UTC)
-To:     Sagi Grimberg <sagi@grimberg.me>, Keith Busch <kbusch@kernel.org>
-Cc:     "Ewan D. Milne" <emilne@redhat.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>
-References: <20210301175601.116405-1-dwagner@suse.de>
- <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
- <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
- <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
- <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
- <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
- <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
- <756aef10-e693-276f-82ac-514a2832b07f@grimberg.me>
-From:   Hannes Reinecke <hare@suse.de>
-Organization: SUSE Linux GmbH
-Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
- processing it
-Message-ID: <492b8393-fc35-f58a-3768-94632a083c93@suse.de>
-Date:   Thu, 6 May 2021 17:36:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        id S235224AbhEFPjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:39:55 -0400
+Received: from mail-bn7nam10on2055.outbound.protection.outlook.com ([40.107.92.55]:62977
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S236170AbhEFPiW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:38:22 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=FPN3Vtq71/AIplxqLw1M7kkASYtj2ER1h6bC3BecQ3Y6UP+G0/OVaXIRMQcb/a1mE9+oACP/azbSOyLHi851hO9IE/qLVLgMcgf4YXY0zviwV6Tf86R2leYG8GqevEWmyW0hknv1S+SyadubAgp5BduywgNVF1PbfTsy1fwHUb+e+FSx5imuSzBqxagTEfHOc/OAWYEIHJh2n24c4OJPNDGzR0E3NCEuxTomOhpGjHNUdPamSiQHSpQcuh8I+UgqtFgy3E58DmGMpQn4xSse+cTV/+3GTerlofaXcb2cXLFKOYkvOqGJ76kIncCld81VPrp+8Wj78WAEQqaP69llxw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CgtgXQrH0EO88ortFz8WULLNVVyBTVnkFegymJEXa3Q=;
+ b=NqYCZAmNBr46NxV9zqePvCFwW2657BbqsAC0EZP5ohvrzUWwqwSCYA2czz6G/P4r9yzU8XIVurdq3/PxXLakucrTo0dRgw9uE76sj4QokAwJ9ykZCEKtI/ud5QA2jObbil+svlKLGc1KuPPIQVg9CwpPKps6JYbz9lqAnYqkxmQuDsIu3HKZ4ikuSxMPzERVNyX7tpgpOY4yxGhZDArDYs9qXY1iVVvRizqBFA1uE2mqbnVWFyZv/Dmlh+cfnoMi4ATpTFZvl/7R0pTCFDsUeE9bJDsg5y+TXUX/n/r3ZicPQkaBusxV4ouvoKPTNehVMP6JOZBxaWa8c3JfUncODg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=CgtgXQrH0EO88ortFz8WULLNVVyBTVnkFegymJEXa3Q=;
+ b=O/pSaiWa+POdtJGLv6NwkRVJdEbjuZ1cYIgqsjaKgGCvCGneSb+HlYLSly87+06ZTCoPn/RXw8wrv8bKqhELSmQsFUc+djtMv+4JEns9grGwvD6wOCIei54kAlGhOzs1/JyOZmn2L+tcxwyh+p7cZ5rtNt4XbOH29F8lsCyZkuOM2CYoHi4hwIIiuoWXwxzQaZmm3RSf+0Jj3a5zcS63byDRb7ulHKoLBzAlQtgEy4g+W3ofePiNLx8dk1eOcNh93pWaGq5Lj8wah4oMnH8/lCJ2ODnvOQUmTFnTQvutU95h8YrNBVdB7Y41vRYKzrCIPn9DzflgEjVJuugIPcZtmQ==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com (2603:10b6:208:168::26)
+ by BL0PR12MB4994.namprd12.prod.outlook.com (2603:10b6:208:1ca::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Thu, 6 May
+ 2021 15:37:23 +0000
+Received: from MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::ccd7:fb49:6f2d:acf2]) by MN2PR12MB3823.namprd12.prod.outlook.com
+ ([fe80::ccd7:fb49:6f2d:acf2%7]) with mapi id 15.20.4108.026; Thu, 6 May 2021
+ 15:37:23 +0000
+From:   "Zi Yan" <ziy@nvidia.com>
+To:     "David Hildenbrand" <david@redhat.com>
+Cc:     "Oscar Salvador" <osalvador@suse.de>,
+        "Michael Ellerman" <mpe@ellerman.id.au>,
+        "Benjamin Herrenschmidt" <benh@kernel.crashing.org>,
+        "Thomas Gleixner" <tglx@linutronix.de>, x86@kernel.org,
+        "Andy Lutomirski" <luto@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        "Andrew Morton" <akpm@linux-foundation.org>,
+        "Mike Rapoport" <rppt@kernel.org>,
+        "Anshuman Khandual" <anshuman.khandual@arm.com>,
+        "Michal Hocko" <mhocko@suse.com>,
+        "Dan Williams" <dan.j.williams@intel.com>,
+        "Wei Yang" <richard.weiyang@linux.alibaba.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org
+Subject: Re: [RFC PATCH 0/7] Memory hotplug/hotremove at subsection size
+Date:   Thu, 06 May 2021 11:37:15 -0400
+X-Mailer: MailMate (1.14r5757)
+Message-ID: <9D7FD316-988E-4B11-AC1C-64FF790BA79E@nvidia.com>
+In-Reply-To: <fb60eabd-f8ef-2cb1-7338-7725efe3c286@redhat.com>
+References: <20210506152623.178731-1-zi.yan@sent.com>
+ <fb60eabd-f8ef-2cb1-7338-7725efe3c286@redhat.com>
+Content-Type: multipart/signed;
+ boundary="=_MailMate_20560B3D-9CB2-4483-BBC2-6D4DFD4AF167_=";
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [216.228.112.22]
+X-ClientProxiedBy: BL0PR02CA0023.namprd02.prod.outlook.com
+ (2603:10b6:207:3c::36) To MN2PR12MB3823.namprd12.prod.outlook.com
+ (2603:10b6:208:168::26)
 MIME-Version: 1.0
-In-Reply-To: <756aef10-e693-276f-82ac-514a2832b07f@grimberg.me>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.2.63.7] (216.228.112.22) by BL0PR02CA0023.namprd02.prod.outlook.com (2603:10b6:207:3c::36) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Thu, 6 May 2021 15:37:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d7fd83b3-25bd-4039-0d7e-08d910a4d798
+X-MS-TrafficTypeDiagnostic: BL0PR12MB4994:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BL0PR12MB4994BB42D1312F0B96A1C969C2589@BL0PR12MB4994.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: XdMIeQjcux8kuF2n7FdEPxCPIW0Ahg7w+nU92aITKeHR2XvjgXFz0KWxosMltpW7A3opBQMhi2SbX6I+QYYmTRcRNANV1XA2GkmfjGFk7pcBu2nmRHe7WjyKC2+5y09bF9oeezPhWdTQOhwrifK9uZvZ7NTe+jF1VjJvzyfScVk3N3v1XRbrANr26Txx1L/YIHjsrphWyUWHyhDdPkQ1o7yEamSetbnRCrp4tE5IpevNkZnxO6WsI11zstA7I0uvggPFXgDyp6hr+oK4VVZ8Skndco1UEBnhdkOyMF3AZGx8sjaQp5I0JXaBpc58Ka2FrtPPUv9Fb3vYRf94OFa0+jPushGtULOuCbxTFPBbBQyQAhWbHPcjjaueEaK5w0m+sr1lR0eYmZGHvrwvZ8TWPiKXyPPjxwQzFcfmAk+5so8rL5wPmX6Edn+/UP8o9tocjpJBvmkUMeqRgWl7hVwDGmVODbxhIzv5H284zhReWQvmkCXkqV8wfkbh0vmY4dHoOBCclVrcUSqCaQU0jDdicCLeooBYDqeszo37zs2RWGEtZZv3yJ2KVXBUa8guuFkl+ZHo5lwY6NLkGKZBneRL/tv1jMS46SeV9KPZJcLOexYFQdkUBQFIdPJjgRFpYkxMx6djulYkligPHGFc/2X3N+buqBTBXhoULgIZcxoN/Kg=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN2PR12MB3823.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(396003)(39860400002)(376002)(346002)(4326008)(6486002)(5660300002)(8676002)(16576012)(86362001)(66476007)(54906003)(33656002)(8936002)(316002)(6666004)(33964004)(2906002)(235185007)(66946007)(66556008)(186003)(956004)(36756003)(6916009)(83380400001)(7416002)(2616005)(16526019)(26005)(478600001)(38100700002)(53546011)(45980500001)(72826003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?dGRRTE52d2RoNEIxRGphaFZBWUJkVnBPRmxTcVhtKzhkQlJqOXdmSUFSSURk?=
+ =?utf-8?B?N1gyL1lUYnpIaHVySjBXTkg5amJBaU80ZmVwbHl1bFdUaitIV0YvMnRXeUFy?=
+ =?utf-8?B?Vm5YVGJnSDM0QUpMeFRJdC9lQ0JWdVg5alBuYVkyNkdQREU3ZzVtTVE5MHdi?=
+ =?utf-8?B?M0VZWGRtNXlFeVBQVlZ1VmxRUVA5SnJoOXFNbnkrVk1GV0tLakNIZkVnYllF?=
+ =?utf-8?B?ZU5RKzQrWjJZNVdSQTJoZG0rRVUvQlEwWG5jWWRick1xRzlsZWpSdndkK2lx?=
+ =?utf-8?B?WFhmNjd4RGV6R01zeUw4TVZEb2s4YmZTMzRTbTBNc0VkKzhXOHZGa01iQ0ox?=
+ =?utf-8?B?S2dzZTY0Qnl4bkZLcjA3aEJRcVNnYWZ2aHZ0WExKWEhaL2Y0dmdrcFlVcklw?=
+ =?utf-8?B?T2duNUwwOWhEbm5icDI3dUZhVXpuQU5LNllyc2w0c3VnS01UYzYzaDk2NVhE?=
+ =?utf-8?B?OTZ0TkV5MXBYYkI5YitsVHBVcDBnRkZQMmdJeDl4a2tnQ01DWExydzBzOFk1?=
+ =?utf-8?B?V29iVHA1TU1sTEw5a0xGOVdySndTNHMySUc0ZXRsSU44aFVyM1J6UTFCbUVR?=
+ =?utf-8?B?UzVBbXM5Szk5dFFMMjBZa3hyZlZlQmo5ZFp4YUxmVVlrdmdldkF3anRoSGVq?=
+ =?utf-8?B?L2pZbVRXMzJ5R3ZvRWpQWkR4dEJJMURVaVNlUHJZVlFPdmxFT3p4bUxDcW9y?=
+ =?utf-8?B?WUUyeVlGY3VSaCt4R1Q5NGVRRHBzYnFKSkVKN2VwZXd2SHVkbDBJQ0lPSnlG?=
+ =?utf-8?B?YjlLUm5XS1l5eUEvYlRrM2VMVXA2MG1GSFJaazNRSWttWi9sWGdnWFdOK1Uw?=
+ =?utf-8?B?dTB0dzlsQktBSkVHZ1hDZzJiTVF4VFFoNk01bk5GeGo4MGNWTDk4dmRSUTJJ?=
+ =?utf-8?B?b2VHMXR1QTNhQWhQNFRHYmU1YzFDM0tzaExaemZiVEJzcmdibzVoWjNDSnVE?=
+ =?utf-8?B?M05qSCtBSUlkclUyd0xkQzU5MTBhOGo3eTFTa3Vud3E3VmxVQUJ0MWF3d0tk?=
+ =?utf-8?B?NzdBRitHanpaR3hUK1drKzBZYlVuQWtyeXlnQWpmVllnTnFWYnVEUExOVFVa?=
+ =?utf-8?B?WFM5cis3OVdtQzVyWVJUenBlY2FLdUlzcmlIaEZUQTVBdXJlM0EyMGhkRU42?=
+ =?utf-8?B?a014K21tcXB0N3EwNVZDM3J0dGdLcnE2RWVEamxtSTRIb21BYlIvQUl2M2dk?=
+ =?utf-8?B?NmN0TW1yQmlVNEhueWdGU3lMOGVMTEQ5ZEZyYlArRU96QVdQc2lMb2dQNmRQ?=
+ =?utf-8?B?dkUvL0JzaVp3bTgzdXFmeUJIelJYTUM3cTJIakR4MlgzRTJJZml2MWVUT1ZH?=
+ =?utf-8?B?N0pqWVZhakFka2lsQURwdXhRT0JKVHhkdzFSWWVHUUpIZnJJR0JtWE9MTkI5?=
+ =?utf-8?B?Tzd5ZkdnZXh3TVNBYWJ5bkpyS1Q0RHZGYllLcDBzYms5eWhZb2VUaDBMTmFN?=
+ =?utf-8?B?eTgrOVRkaUNxRHg3MHdDaXhFODYyaUdhRWVMYjhoOEw4Vkh1d0pIbytrdE92?=
+ =?utf-8?B?ZGJDcmU3c2tieFphY0RMMzU4TUsyL1l4WS9lL2lnYmx5K2pMT2l3QkpuQzBr?=
+ =?utf-8?B?SDYvUm91VnZvSUozMklUWEZ4OFphK05XSnhXeGVSRWJxUGcxMDlOUllnclAv?=
+ =?utf-8?B?bDZmSm51RmJYUThPUm1DYmpMV09rYVpqVW9Gb3NTdnNVcGdZUWh5dEZmSCtm?=
+ =?utf-8?B?K01hTEkxU2pVUWV6eG44Ry9SeGxCUUM0ZEo5WGdPR2tzU2ZabW1KL3h5NVRE?=
+ =?utf-8?Q?Nm65QYelq9kdq8rTbEyKO8MFTGkTf9ZkcWEbCL6?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: d7fd83b3-25bd-4039-0d7e-08d910a4d798
+X-MS-Exchange-CrossTenant-AuthSource: MN2PR12MB3823.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 15:37:23.0191
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: nNB+l+qCGPOQn+A24ccGxUE74zg+DrPhKUQ76HxLzLDutu2gyCP8Y4Tv/cdSjPc+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR12MB4994
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 4/1/21 12:37 AM, Sagi Grimberg wrote:
-> 
->>>>> It is, but in this situation, the controller is sending a second
->>>>> completion that results in a use-after-free, which makes the
->>>>> transport irrelevant. Unless there is some other flow (which is
->>>>> unclear
->>>>> to me) that causes this which is a bug that needs to be fixed rather
->>>>> than hidden with a safeguard.
->>>>>
->>>>
->>>> The kernel should not crash regardless of any network traffic that is
->>>> sent to the system.  It should not be possible to either intentionally
->>>> of mistakenly contruct packets that will deny service in this way.
->>>
->>> This is not specific to nvme-tcp. I can build an rdma or pci controller
->>> that can trigger the same crash... I saw a similar patch from Hannes
->>> implemented in the scsi level, and not the individual scsi transports..
+--=_MailMate_20560B3D-9CB2-4483-BBC2-6D4DFD4AF167_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On 6 May 2021, at 11:31, David Hildenbrand wrote:
+
+> On 06.05.21 17:26, Zi Yan wrote:
+>> From: Zi Yan <ziy@nvidia.com>
 >>
->> If scsi wants this too, this could be made generic at the blk-mq level.
->> We just need to make something like blk_mq_tag_to_rq(), but return NULL
->> if the request isn't started.
-> 
-> Makes sense...
-> 
->>> I would also mention, that a crash is not even the scariest issue that
->>> we can see here, because if the request happened to be reused we are
->>> in the silent data corruption realm...
+>> Hi all,
 >>
->> If this does happen, I think we have to come up with some way to
->> mitigate it. We're not utilizing the full 16 bits of the command_id, so
->> maybe we can append something like a generation sequence number that can
->> be checked for validity.
-> 
-> That's actually a great idea. scsi needs unique tags so it encodes the
-> hwq in the upper 16 bits giving the actual tag the lower 16 bits which
-> is more than enough for a single queue. We can do the same with
-> a gencnt that will increment in both submission and completion and we
-> can validate against it.
-> 
-> This will be useful for all transports, so maintaining it in
-> nvme_req(rq)->genctr and introducing a helper like:
-> rq = nvme_find_tag(tagset, cqe->command_id)
-> That will filter genctr, locate the request.
-> 
-> Also:
-> nvme_validate_request_gen(rq, cqe->command_id) that would
-> compare against it.
-> 
-> 
-> And then a helper to set the command_id like:
-> cmd->common.command_id = nvme_request_command_id(rq)
-> that will both increment the genctr and build a command_id
-> from it.
-> 
-> Thoughts?
-> 
+>> This patchset tries to remove the restriction on memory hotplug/hotrem=
+ove
+>> granularity, which is always greater or equal to memory section size[1=
+].
+>> With the patchset, kernel is able to online/offline memory at a size i=
+ndependent
+>> of memory section size, as small as 2MB (the subsection size).
+>
+> ... which doesn't make any sense as we can only online/offline whole me=
+mory block devices.
 
-Well, that would require a modification to the CQE specification, no?
-fmds was not amused when I proposed that :-(
+Why limit the memory block size to section size? Patch 3 removes the rest=
+riction
+by using (start_pfn, nr_pages) to allow memory block size goes below sect=
+ion size.
+Also we have subsection bitmap available to tell us which subsection is o=
+nline,
+there is no reason to force memory block size to match section size.
 
-Cheers,
+>
+>>
+>> The motivation is to increase MAX_ORDER of the buddy allocator and pag=
+eblock
+>> size without increasing memory hotplug/hotremove granularity at the sa=
+me time,
+>
+> Gah, no. Please no. No.
+>
+>> so that the kernel can allocator 1GB pages using buddy allocator and u=
+tilizes
+>> existing pageblock based anti-fragmentation, paving the road for 1GB T=
+HP
+>> support[2].
+>
+> Not like this, please no.
+>
+>>
+>> The patchset utilizes the existing subsection support[3] and changes t=
+he
+>> section size alignment checks to subsection size alignment checks. The=
+re are
+>> also changes to pageblock code to support partial pageblocks, when pag=
+eblock
+>> size is increased along with MAX_ORDER. Increasing pageblock size can =
+enable
+>> kernel to utilize existing anti-fragmentation mechanism for gigantic p=
+age
+>> allocations.
+>
+> Please not like this.
+>
+>>
+>> The last patch increases SECTION_SIZE_BITS to demonstrate the use of m=
+emory
+>> hotplug/hotremove subsection, but is not intended to be merged as is. =
+It is
+>> there in case one wants to try this out and will be removed during the=
+ final
+>> submission.
+>>
+>> Feel free to give suggestions and comments. I am looking forward to yo=
+ur
+>> feedback.
+>
+> Please not like this.
 
-Hannes
--- 
-Dr. Hannes Reinecke		        Kernel Storage Architect
-hare@suse.de			               +49 911 74053 688
-SUSE Software Solutions Germany GmbH, 90409 Nürnberg
-GF: F. Imendörffer, HRB 36809 (AG Nürnberg)
+Do you mind sharing more useful feedback instead of just saying a lot of =
+No?
+
+Thanks.
+
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_20560B3D-9CB2-4483-BBC2-6D4DFD4AF167_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename=signature.asc
+Content-Type: application/pgp-signature; name=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAmCUDSsPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKuzEP/jmIOHHfzAPAXeBAyTyp5XWNQJbjDR7uTubU
+wbuJC5jOofGdiSKypbdGSB5ta/srQPxD8wEeXFfBDKgTeL438WTPlchWYTQE0rst
+hzSVWGQYddrh5V3BGXqRTRoUIIJicIVo053gqojjoDhxNWnCA+xThcoIpFoIADe3
+PlG5o4CQjzfE+vjawuuiCRhSW8vlFg0Sxyg2TV1T47IMdvogvazYSJVuhuUp/5l2
+iOfaartwDXifmb+88qMGXuulvThLlD5I7eXCqrs/Y1AtkW3O++cwmCOSwKrT/9r9
+6vs3fRel0PSM66B2lLpWynmv0EjtQbSW2yq7RMBswI62WhjwSNaieTtLX+1VG+tT
+19MlmlrAdg97LIkWRh97si6z1xTsh7C712gPLXfijBPebruYtVts3XDSDwTS982+
+1HIEYnnM7BUDxvoZ8F1zRTHIauSioFyV1IhJnYxhfamYBtZzAfbbT/hOsi28nVZ7
+6PXf4oyJeLLcjlbQ+9MROFbbwZNhDoABW3iIfwalNL0IdErLP8Uh34AF2YOLdKOy
+Xv2hWs+1SNnhqZH1XfHRvFFxdte2P/rpXVh7qR48MfPw/58bWGgnLJvwNecighkm
+vLE6VBMxUjtTI9N5gu+KqCJwNIvhGGfUCffA+e9UQ5xPrB7NgkH4W2kDMpocCiUE
+hODKA/KB
+=h9b6
+-----END PGP SIGNATURE-----
+
+--=_MailMate_20560B3D-9CB2-4483-BBC2-6D4DFD4AF167_=--
