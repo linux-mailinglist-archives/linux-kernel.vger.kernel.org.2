@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 21F87374C5E
+	by mail.lfdr.de (Postfix) with ESMTP id B5E2F374C60
 	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:32:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230007AbhEFAdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 20:33:39 -0400
-Received: from mail-eopbgr20089.outbound.protection.outlook.com ([40.107.2.89]:19931
+        id S230103AbhEFAdp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 20:33:45 -0400
+Received: from mail-eopbgr20058.outbound.protection.outlook.com ([40.107.2.58]:8576
         "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230033AbhEFAdh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 20:33:37 -0400
+        id S230033AbhEFAdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 20:33:43 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ZADEeQdLglSaL/hYbojkXhGdtBBuV3ZLxckBqBWWD6S9ErUDBphx2pa88nEhO0ix8blVgaKeFc3i2qO+LAn9CUQHYhq9JsYUGVE0BUnJlt1/I5zfiggHw6Pu+S+QsJYD+k8T6QPOfV6YI8quWPw2j6bonxa0AQe5//YjH68mZ0xtulPNg5qPiYRBysxWcBTNkTubPLwEqh+7l0iQgQxeIy/oxWg+ANTZlnKBg2R10LTFVlQa2Emohbg8WSbrLVbbYeXcUeMMUL3DZ3FDc9tcDiPeMQBVIpVGFPvBv51a97CNCEX0RoZSbNjBLz65URZ8lN7eI+09WC88ZzpNohtSjA==
+ b=fEPPGOli8yVX4SxOc7Luw1uXvCLyVg9cJNOwYQ7BW8LhVZi9v19qqR1lCEt250XO1Cd5oZYvb6sTv9E2PX2EQAIWULnzNSmFsgdnehElkOtapXFSKRQzsI43sO4LUC4sI5z3X9ZuZry5EkUfpjtpTOWfjG5hMNJN+Eb4E4POhQC5oqHZP31tAkZFM++KUDEYZYdywZXK0nWMbL3IzP11+f5MI7XTSqsuUZlh+dJkvTwRr51VgMlZ7Xuz4DSh6ylXfDQcBRo0k0+0r6xSww4H2hKkFYE/95CmOL1tb6TnEmu5qSjS60PzsO45aHutEs0s6ZAjUuYd/bRmIjqGKsfHpQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ADvY3uwR0b4YnAaDRJ1VfVXAKRvif228LknCs1wLTJ0=;
- b=VfmUv8TXd5eoXT6Wn4ypRxbKSAKzXVrN6YcD0YMu9COMOoD7eLxikhR9I7vg6n+JzJ3p9c3xMuUZSiox+sgnlVw46Hrn+ypmm3s1SAwWyQ8Fw8nLqseUXkpenspevrj+LmkTm/fbQ/eS2DYTX5xbvnVa5C6kIuHOjXw1NU83adqHARs/ExqFWKhHnbR/Z1YF2gRbkswRaBdHeFworrfvgs/lpYyFccpnRWb76+dRQxAXLasrhdYMaeNDMnNqSqRfWkOQpzEZVk/d/3o+XLU5a9P4xRxB6Suo3SjbvlVZ5ka4tvldVGWE62UNzTAj9PphjQsnm6DzueVl7ZUaNlPw/Q==
+ bh=apTgxsDDu7MmEcc1j3aB7YJcbDuiEFS3xchs7nSKczA=;
+ b=RloQX0x8+P7ZKIERieEikpJhgQUW/zplub5Q5UGlyxTym6ji4j+9VR+WC94TKb59xjFQy28DG9cEOW4aQzl+zsOPgNzh+kn+5INTGhNa1IhWUFnPCRR0M7FrpYkb6moWUAtT7T1Y+g7ebd4NQywOx72DdHj/soLuRIM4a4oD4dQHqiS1j7w8tohjpD/4MrsoWWCaOH3ripieRiu/xJy7xWEfR1XOw7WTPgc98qVWKFL+SFnUC/zi4QRjchMxdZnr3OYU99o7j7aBedgWG3aHV/aHQM9d/nxQQ21d2cn1y+gSqB2aehESBlHzcbljRSa5jfOhfwXPQ7vg4PYs/zIh9g==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ADvY3uwR0b4YnAaDRJ1VfVXAKRvif228LknCs1wLTJ0=;
- b=CSX6Sw3ITVDGlxopuMgrtU5Vf9RMyDa8LsrMatsMqGA/CNUgQURliXweRiH6gVFcqrejTAcVVAIx5XBzN05l89UT/N/v007pvsiRnqPPPY+mdWarzKf4q6yfFM9ta0mvNvXkGcnUFiqNA8OXM4skr1muIULuw//2/NXceMP6mEA=
+ bh=apTgxsDDu7MmEcc1j3aB7YJcbDuiEFS3xchs7nSKczA=;
+ b=hmh1i0ilG1J56Usi/FeyAOCm6Nb7+icxXZnR7OQXYCiLqgZiIVC7k0CKVW22ilEUeC77C04YoBeLziTbCS0RlYjRF4Sw5kFlrYA4mK/N68zoddgFDg5K4j8jJqx5UuYvrA8yMZq9M3f+CBAojDTph7oToRAj1QioJv5UCIbdcyE=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
  by DB8PR04MB6714.eurprd04.prod.outlook.com (2603:10a6:10:10e::15) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
- 2021 00:32:38 +0000
+ 2021 00:32:43 +0000
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4065.039; Thu, 6 May 2021
- 00:32:38 +0000
+ 00:32:43 +0000
 From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
 To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
 Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
@@ -45,10 +45,11 @@ Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
         agx@sigxcpu.org, marex@denx.de, andrew.smirnov@gmail.com,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
         linux-kernel@vger.kernel.org, ping.bai@nxp.com,
-        frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com
-Subject: [PATCH V2 02/13] soc: imx: gpcv2: move domain mapping to domain driver probe
-Date:   Thu,  6 May 2021 09:04:29 +0800
-Message-Id: <20210506010440.7016-3-peng.fan@oss.nxp.com>
+        frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH V2 03/13] soc: imx: gpcv2: switch to clk_bulk_* API
+Date:   Thu,  6 May 2021 09:04:30 +0800
+Message-Id: <20210506010440.7016-4-peng.fan@oss.nxp.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210506010440.7016-1-peng.fan@oss.nxp.com>
 References: <20210506010440.7016-1-peng.fan@oss.nxp.com>
@@ -59,51 +60,51 @@ X-ClientProxiedBy: SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22)
  To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Thu, 6 May 2021 00:32:32 +0000
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Thu, 6 May 2021 00:32:38 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 52674c07-794e-4e3b-6846-08d910267327
+X-MS-Office365-Filtering-Correlation-Id: 319fef44-8fcd-4f5e-8586-08d9102676a8
 X-MS-TrafficTypeDiagnostic: DB8PR04MB6714:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB8PR04MB671463B873AE39166533C150C9589@DB8PR04MB6714.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-Microsoft-Antispam-PRVS: <DB8PR04MB6714D56AFBAADE752AEB281BC9589@DB8PR04MB6714.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3276;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Lu2fuerzQFj8VSdi9AJuGDiirS6TmuBus/9gpJ4cClv3a8gP3D1xe0fnzzGwWrC9EXVH4XNSAFE+xgXDbWQlabmUTRlyrBUrhDwYe+3hslFMIaDnFc+WLsvZ6J4I2Twl8wo59neUUAO3lSHRWnY2t7pK9TKN5zdDJEFHBGCASQL+AQNa9/MULOF7dUX/2Jq2sfW8yz49IP8pbBo148Q6sYySa4A7K5HHFCyk7ua7KaNDt1Iu8sLFUt5PnAJj7I8qRExLKNBvmV03WNoI+AxS+63zPqq9Y4yBmrJVnc98R7jcHZovWiZk9ILACvFY17BNXoqrE9LdhoGOHYR/VYb8WJvpPRAoPjYTaJo6dJClHqa9lrp+0d4FennUQBjlOypxt73nCNNlVE/lC0eFDz1Hv2/XXRpiSCSyLKX93PpBT/WiiKJxI1CVFk2qWZSGRcX7aa6eEJrJc/mML50ArLYe6NdcnH6wX5DVkUlKRdVJbOnHtQ3AiKIHkDy1Ni/HP86Qz2IeX1arDXlHkPjuiRbJqGvzAsHVUtcqRCojCUJ3kpPytHs7n1lMaGtCb+UADsY0GknPn80VqdqnExrt2otg2d22BhtXlDeCL5amFXt8Pm1RaGn6tX7uiM2L9vb35pGvXlbkb2MXRJTyAENoU/yj6byL/mKgSB3b4gk7G5qLuYw=
+X-Microsoft-Antispam-Message-Info: 9qfVRVEx5RTJjucKIRwFcryt64gm46Ur0J2oDFmyAwOeFolBAw6utaAVrMiNbKqszOP7JXrnSyMBl5SGK5gYYON8IHua1ye8I6jnjNfHqHTQf240+JHHzotvwnH/V9/FPs2OsrO03XpVaiJEkpRMkdsnahzZXHZ8UBs8S/5E0kj2EqltEQrMe07VUoGhcmAirzEXY2c8esbyNmC/a73hfiBR52bm/0K2Iks2si09mBRutpEyhrrJUNP3fRc+Q2cqMJkZ1FrDTLkmwRWVupMwnDKzaTm07Plvq6HjloJdUoBIINH+nZ943q24tJesm2DcGOGoBJ01MEGOW/HmQjqhQWqKuue2C1a5OOiaWtGjaOUQQEzN3uSp+NHwmMwJASwg+xaPFTyuxsTDbv34z9gxC9uChlZgA9Vh7ENbqXtdqXM44XHSG2miuNWWJBdK9JEmoIgvfIemNlbedymiCCEMVLcq/N/9HADZRBLxhNlhTluEePkO4jdkI7NVe2lIDvf+6NKax3JqCGa12wtRCHuHRwn1Zrr589f1+a/KeYzed9wQmhBwsE1zlkl01qaEyyiYv0rn/Tyy2DKaJwYuvPEIgrcO+BjDVAYj20t6AUta+xd1ZFkCrlz8tLn8AfCxXuWeZfYW5BvYHJS548oGn2/e8BOy3klM0bdmP1DmWXWu5k4=
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(396003)(376002)(346002)(39860400002)(366004)(52116002)(86362001)(2616005)(16526019)(83380400001)(956004)(6506007)(8936002)(5660300002)(7416002)(6512007)(6486002)(316002)(186003)(4326008)(2906002)(6666004)(478600001)(26005)(1076003)(38350700002)(38100700002)(8676002)(66946007)(66476007)(66556008);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?a5olukok6RZzZYdsxBopaTnUMiVjGYp04yUOJD0zOiBZ0xFypyiAlBWjJ2b4?=
- =?us-ascii?Q?1UVyx4xIHyO6poabt0HySAxykyoQoqXBhuQ/BriOvNw3DOouWzmVwqMe51Ys?=
- =?us-ascii?Q?dopUaxMewRWOsT5Hit94PqKoTcrgGaukGqkQgzlm8KIPfnOSYC1Ml35N9WKB?=
- =?us-ascii?Q?Tfedl3nGQ5F7rb1Fp45VFR/wippKWty6PF/rglnGGe+sBYmcpoZLD0hTpkih?=
- =?us-ascii?Q?wkF8vx5KKMh3b9NDhrpVrtpnSbbZWTgasWShJ5IvYnlx184M5qXKJ2Dcamn+?=
- =?us-ascii?Q?k1StI8AzG4W7p0+3dqHWvznNt5Sy/c3a9HlpICM74I6HnWL+CrRppsVK0cJd?=
- =?us-ascii?Q?Ia/WkslUeaY07oTTaP3r+6UW5Z6uXqry1bhPMl41Pq3pHPTM9Hrm91OqEWNy?=
- =?us-ascii?Q?DtGI+w0IXmTKAA4t2g8L1Fx8yf12q/Mj3cVrThNoAcn7FzdJUVbpL1pqSBPS?=
- =?us-ascii?Q?1YuxyIpvqiZCSAF4bXJ1lOORrsZKYy/iSGigIPmZH4Ou+b7j3bnU5QzEU5BU?=
- =?us-ascii?Q?3ZRco8/q9LTXnEfo1O+UsOlooAj9/4jKKTSDTybf9mdZNa3i64cuIEJtujmB?=
- =?us-ascii?Q?q3x89HiX4VI3inKaQoHyhn36dH9aiY/oiyOj3ofwOmPPmkuZUvYqgna1r2UL?=
- =?us-ascii?Q?Lve8WX8BicSkYqEy2QFNelbhHnt8UF7ZpjytXB+6aQM5f3ewCbMWn85MS7qj?=
- =?us-ascii?Q?zS+yJdXQycUBbKOjiaXgKNeyfEWOxXhYZ/e5u0L69/VjG9YnrrYPz4HtjBka?=
- =?us-ascii?Q?nzWcVSzJyB5UlhRqCm1lZhB1HWWjWhEcuSAUCIwKVZoQN7JElfzz+9iKUUeH?=
- =?us-ascii?Q?/Vf7M9//u0TXVTdm6HTfcAqpTwvXWjJiuke4DXVZo8h5VRHw9q8gWXVHlwy2?=
- =?us-ascii?Q?uAe7wJMHartOk+QzN4YbH2xY/Io5nVgrs126OxDNW/dGylM1jEDu6YcUjs8V?=
- =?us-ascii?Q?4Rhuc/zPewTuXrYp+DN0IcP47TdalTAWwnhrGELiWNHwkkRE/D4o49m/vGMM?=
- =?us-ascii?Q?Q7JPCF5tWdPXHkhHYFqo3OFRtTN4VL+PqzV7m0bWWups8MAx3hseZt+4aEBA?=
- =?us-ascii?Q?b14tvn81Y3enSOfsmFxlXJWSmXWFEBp8JGuqkY9w5dWbtv5CGBI50gQt+kzY?=
- =?us-ascii?Q?DhN6p/QMnj2ae+bm54aHEarNRDHDlegx3MgBbkchbnAWylBeEd7dSGXOofPB?=
- =?us-ascii?Q?0aqaO5UG/+yP+Z0ezY+8nfLU5HsJK7zB2wyNjbjHxOMoPs1PHHJH83G0sn5M?=
- =?us-ascii?Q?mqeDrUjvyboQFpdxpTEp8Pl7Sg+8qRho+edL1RMhHzg0e9JmJwx9uKj4mnW/?=
- =?us-ascii?Q?CEK1qGCya7U8w41kA3APo/Hc?=
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?khQvWkyiFUE1bGK1YOOy7zGeMZpt9XOBpcN/15aIdUImJHiONlmrePxfhmPz?=
+ =?us-ascii?Q?yiTL7ICD6bXNUSL7QExqFaExGMr6CBk7PN2JyveA00vzdaprpaiB+dOhKwBI?=
+ =?us-ascii?Q?+w+WVQZM548IittYhi7lMAQeV4PctsU0l4AdjCXtJpBwRHyqc3hhdOKAaPfC?=
+ =?us-ascii?Q?jVLNy3J8jBNazSYTVcmwjiv341XNAPbHXVAlySf5YBw5hgMeRpBXogmqtiZ0?=
+ =?us-ascii?Q?9ox8YURld6mGRWL7XxXaKPtpxCLaHF9boFa8By+gNe6il8T6EbvObGWqyOIe?=
+ =?us-ascii?Q?UOnRwIUjQY9DHSjbkJV8iRQtqWQoqr4JZByEmlikxhBdZdzMTXUr7O6W1Zm9?=
+ =?us-ascii?Q?xBJvfnbxPZFrrwgbnCbEFoeqMDoSrqQtVkNgFnzsZz5IvYPV54kEp2GIxKrN?=
+ =?us-ascii?Q?51hPqfOR5umqE6lA+mA9W1UN7jA79pbKUDsLR9y0jTAwLCDkSdHLAshwnNjL?=
+ =?us-ascii?Q?jfYQpwElxVpqs3dnUssO2T6nC+CAkVqzMowv0U/6M/eTTCXsDAdvBGRarxKj?=
+ =?us-ascii?Q?WWURuCl22/Di//8miNfthB9BkQEbJXGnFG0y9jvyZY7gz5kykuQwrlMyTNVh?=
+ =?us-ascii?Q?H3b/lV3b0sx7PTG070oo+Okrgz7jrLB7ksnJkk71u5qoZycRMmsRp/Dj6DMk?=
+ =?us-ascii?Q?c38C4l4u+0cmfluMBnOMX6G7TifQ0dkcvCj1NYK11Y/ykyjvxDqiRVHzriHE?=
+ =?us-ascii?Q?zQXst3cZju4DRg213g2SYfH10leahxAFbIR5pwhUWpaABgA74odl/jy0mrWm?=
+ =?us-ascii?Q?e1RpkAtuayT2G0zoyZjHFiZj4B5GTL785f360pApx8H2vKjgvOdZoAZ5qKqY?=
+ =?us-ascii?Q?I8kjXcqNpACjUXPI3LdvAw0O/s4fOj3iaTNbyT82uxoli6wSGMr1AWOBzzHr?=
+ =?us-ascii?Q?dBn9un0tBhaFUX0c5YtvtmNmYVTxWrIpPpGwnqjmMbWteCBBJCe4MmkHxcAV?=
+ =?us-ascii?Q?1jPmVcF0CBmC+pWh9OgcF+ch1TciMYrwIK3V65Wpd6nHnakp8xcc+QMBNkRh?=
+ =?us-ascii?Q?veX5X1DegW2AcMCc5xeTxcKaNolR7RpHRSSrOYnsr9FFx2OMY//mzLn/V+Iy?=
+ =?us-ascii?Q?vdmX/VcG2prWx9/N4KMNr2/5wLYHm6ucGB7byU6XY/PAIzS5W4fALvaORthZ?=
+ =?us-ascii?Q?8pv3qtsvvEiE+WIah1GgY9eMHIaM7i4TYLm96mIjOUIB1T8SFSl3BzxHFaCr?=
+ =?us-ascii?Q?rJCEjK1SEeS1zsYbdFMHcMseX7K2rB2OeWrRMedSJzOHCDHBBI9/J5+DJ4s9?=
+ =?us-ascii?Q?ijgrzs9CRbJ7wF80YLMaQy/7XTzS/ncbPE0PPd1RjXBb/i0aztxsuH49G/9x?=
+ =?us-ascii?Q?a8Q1ctYaZRGcYcZK67EOu4In?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 52674c07-794e-4e3b-6846-08d910267327
+X-MS-Exchange-CrossTenant-Network-Message-Id: 319fef44-8fcd-4f5e-8586-08d9102676a8
 X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 00:32:37.8179
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 00:32:43.7142
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: xJ00Ep4Nj0LED5kc/cnI7pm8Zcz/Ir2egiBZYADXvDnmUw/+Vfej0IUUdnwKgNRy6fx0rBWsI7HapHhrpjiUVQ==
+X-MS-Exchange-CrossTenant-UserPrincipalName: zt7XZJr5QR16dyunlHdbcARM0CtGKt8mxoNqYCHzgold+iJFT1up/9vcMV4xB4lpR2I3SVyY9G66bGJLgy/JZw==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB6714
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -111,85 +112,132 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lucas Stach <l.stach@pengutronix.de>
 
-As long as the power domain driver is active we want power control
-over the domain (which is what the mapping bit requests), so there
-is no point in whacking it for every power control action, simply
-set the bit in driver probe and clear it when the driver is removed.
+Use clk_bulk API to simplify the code a bit. Also add some error
+checking to the clk_prepare_enable calls.
 
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/soc/imx/gpcv2.c | 22 +++++++++++++---------
- 1 file changed, 13 insertions(+), 9 deletions(-)
+ drivers/soc/imx/gpcv2.c | 60 +++++++++--------------------------------
+ 1 file changed, 12 insertions(+), 48 deletions(-)
 
 diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
-index 512e6f4acafd..552d3e6bee52 100644
+index 552d3e6bee52..4222b6e87e7c 100644
 --- a/drivers/soc/imx/gpcv2.c
 +++ b/drivers/soc/imx/gpcv2.c
-@@ -140,14 +140,11 @@ static int imx_gpc_pu_pgc_sw_pxx_req(struct generic_pm_domain *genpd,
- 	int i, ret = 0;
- 	u32 pxx_req;
+@@ -100,13 +100,11 @@
  
--	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
--			   domain->bits.map, domain->bits.map);
+ #define GPC_PGC_CTRL_PCR		BIT(0)
+ 
+-#define GPC_CLK_MAX		6
 -
- 	if (has_regulator && on) {
- 		ret = regulator_enable(domain->regulator);
- 		if (ret) {
- 			dev_err(domain->dev, "failed to enable regulator\n");
--			goto unmap;
-+			return ret;
- 		}
+ struct imx_pgc_domain {
+ 	struct generic_pm_domain genpd;
+ 	struct regmap *regmap;
+ 	struct regulator *regulator;
+-	struct clk *clk[GPC_CLK_MAX];
++	struct clk_bulk_data *clks;
+ 	int num_clks;
+ 
+ 	unsigned int pgc;
+@@ -149,8 +147,12 @@ static int imx_gpc_pu_pgc_sw_pxx_req(struct generic_pm_domain *genpd,
  	}
  
-@@ -203,9 +200,7 @@ static int imx_gpc_pu_pgc_sw_pxx_req(struct generic_pm_domain *genpd,
- 		/* Preserve earlier error code */
- 		ret = ret ?: err;
+ 	/* Enable reset clocks for all devices in the domain */
+-	for (i = 0; i < domain->num_clks; i++)
+-		clk_prepare_enable(domain->clk[i]);
++	ret = clk_bulk_prepare_enable(domain->num_clks, domain->clks);
++	if (ret) {
++		dev_err(domain->dev, "failed to enable reset clocks\n");
++		regulator_disable(domain->regulator);
++		return ret;
++	}
+ 
+ 	if (enable_power_control)
+ 		regmap_update_bits(domain->regmap, GPC_PGC_CTRL(domain->pgc),
+@@ -187,8 +189,7 @@ static int imx_gpc_pu_pgc_sw_pxx_req(struct generic_pm_domain *genpd,
+ 				   GPC_PGC_CTRL_PCR, 0);
+ 
+ 	/* Disable reset clocks for all devices in the domain */
+-	for (i = 0; i < domain->num_clks; i++)
+-		clk_disable_unprepare(domain->clk[i]);
++	clk_bulk_disable_unprepare(domain->num_clks, domain->clks);
+ 
+ 	if (has_regulator && !on) {
+ 		int err;
+@@ -438,41 +439,6 @@ static const struct imx_pgc_domain_data imx8m_pgc_domain_data = {
+ 	.reg_access_table = &imx8m_access_table,
+ };
+ 
+-static int imx_pgc_get_clocks(struct imx_pgc_domain *domain)
+-{
+-	int i, ret;
+-
+-	for (i = 0; ; i++) {
+-		struct clk *clk = of_clk_get(domain->dev->of_node, i);
+-		if (IS_ERR(clk))
+-			break;
+-		if (i >= GPC_CLK_MAX) {
+-			dev_err(domain->dev, "more than %d clocks\n",
+-				GPC_CLK_MAX);
+-			ret = -EINVAL;
+-			goto clk_err;
+-		}
+-		domain->clk[i] = clk;
+-	}
+-	domain->num_clks = i;
+-
+-	return 0;
+-
+-clk_err:
+-	while (i--)
+-		clk_put(domain->clk[i]);
+-
+-	return ret;
+-}
+-
+-static void imx_pgc_put_clocks(struct imx_pgc_domain *domain)
+-{
+-	int i;
+-
+-	for (i = domain->num_clks - 1; i >= 0; i--)
+-		clk_put(domain->clk[i]);
+-}
+-
+ static int imx_pgc_domain_probe(struct platform_device *pdev)
+ {
+ 	struct imx_pgc_domain *domain = pdev->dev.platform_data;
+@@ -490,9 +456,10 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
+ 				      domain->voltage, domain->voltage);
  	}
--unmap:
--	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
--			   domain->bits.map, 0);
-+
+ 
+-	ret = imx_pgc_get_clocks(domain);
+-	if (ret)
+-		return dev_err_probe(domain->dev, ret, "Failed to get domain's clocks\n");
++	domain->num_clks = devm_clk_bulk_get_all(domain->dev, &domain->clks);
++	if (domain->num_clks < 0)
++		return dev_err_probe(domain->dev, domain->num_clks,
++				     "Failed to get domain's clocks\n");
+ 
+ 	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
+ 			   domain->bits.map, domain->bits.map);
+@@ -517,7 +484,6 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
+ out_domain_unmap:
+ 	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
+ 			   domain->bits.map, 0);
+-	imx_pgc_put_clocks(domain);
+ 
  	return ret;
  }
+@@ -532,8 +498,6 @@ static int imx_pgc_domain_remove(struct platform_device *pdev)
+ 	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
+ 			   domain->bits.map, 0);
  
-@@ -499,10 +494,13 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
- 	if (ret)
- 		return dev_err_probe(domain->dev, ret, "Failed to get domain's clocks\n");
- 
-+	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+			   domain->bits.map, domain->bits.map);
-+
- 	ret = pm_genpd_init(&domain->genpd, NULL, true);
- 	if (ret) {
- 		dev_err(domain->dev, "Failed to init power domain\n");
--		goto out_put_clocks;
-+		goto out_domain_unmap;
- 	}
- 
- 	ret = of_genpd_add_provider_simple(domain->dev->of_node,
-@@ -516,7 +514,9 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
- 
- out_genpd_remove:
- 	pm_genpd_remove(&domain->genpd);
--out_put_clocks:
-+out_domain_unmap:
-+	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+			   domain->bits.map, 0);
- 	imx_pgc_put_clocks(domain);
- 
- 	return ret;
-@@ -528,6 +528,10 @@ static int imx_pgc_domain_remove(struct platform_device *pdev)
- 
- 	of_genpd_del_provider(domain->dev->of_node);
- 	pm_genpd_remove(&domain->genpd);
-+
-+	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+			   domain->bits.map, 0);
-+
- 	imx_pgc_put_clocks(domain);
- 
+-	imx_pgc_put_clocks(domain);
+-
  	return 0;
+ }
+ 
 -- 
 2.30.0
 
