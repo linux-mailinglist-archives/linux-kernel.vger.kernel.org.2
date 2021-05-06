@@ -2,58 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47ECF37503F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63A3E375055
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:43:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233500AbhEFHiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:38:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57840 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233281AbhEFHiP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:38:15 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3B981611CB;
-        Thu,  6 May 2021 07:37:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620286637;
-        bh=iXe3DLUvgiP5Cycf6dDSuZIym/h/K9iMDajCibIIC1o=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qqYakRsyddaITLilOvv5y0/bv03pi4+7eoLXGgnKAPgFbtwYGecSdJgXFUwI1RFpS
-         4qdBvj+jbXeQe9ihX1Pt15i6iEy94ML7knOu59h2WzqtcVinvtZ/72LEraJmO15s5x
-         u/Zn54eu9N/CZMPgN7tz7p7TP1RtYPiIdKXmEc3M=
-Date:   Thu, 6 May 2021 09:37:15 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Mathias Nyman <mathias.nyman@intel.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        linux-usb@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Ikjoon Jang <ikjn@chromium.org>,
-        Eddie Hung <eddie.hung@mediatek.com>
-Subject: Re: [PATCH v2 1/3] usb: xhci-mtk: use bitfield instead of bool
-Message-ID: <YJOcq+Pq5omZz3p1@kroah.com>
-References: <20210506063116.41757-1-chunfeng.yun@mediatek.com>
+        id S233532AbhEFHoi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:44:38 -0400
+Received: from lb1-smtp-cloud9.xs4all.net ([194.109.24.22]:40531 "EHLO
+        lb1-smtp-cloud9.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233340AbhEFHoe (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 03:44:34 -0400
+Received: from cust-b5b5937f ([IPv6:fc0c:c16d:66b8:757f:c639:739b:9d66:799d])
+        by smtp-cloud9.xs4all.net with ESMTPA
+        id eYfUlTIqRWztCeYfXlNV8B; Thu, 06 May 2021 09:43:35 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xs4all.nl; s=s2;
+        t=1620287015; bh=unHdzur1Mkh9esYlD770TAZ6YmoFAcm5mK7Os/coVIw=;
+        h=Subject:To:From:Message-ID:Date:MIME-Version:Content-Type:From:
+         Subject;
+        b=sMFoYJbXILvJnVOJ4VXd3xsSNTTYBc7Ccl/qKglRHZfzJCqFGC3mcPSmP3II+QZtc
+         GTQfvXC9WTxr8tCFanOQxw92kqL0WQMDsitdOzvdDkYxMWhYmAg63e7/4HagXvkyt/
+         kDrYNpEQi5XLkMgb/6OdUdcLIACABExbcqsE9BrbZ94R+Jt91F6r2GpSyCDBaV+6TO
+         pmvRj6jy5JksIzFHzjwSwSRc3CjiAvL6QdyFu21IPZaJNVwIgvwXrhksGzkBRaIoOq
+         4AZnbCYthXhzwJojLt4YFlrEwjDBeiMClaeo7nA8B316ITuObXOFffS0itTJw3EOxR
+         TQ9LxEzmKrhGg==
+Subject: Re: [PATCH v2] media: em28xx: Fix possible memory leak of em28xx
+ struct
+To:     Shuah Khan <skhan@linuxfoundation.org>,
+        Igor Matheus Andrade Torrente <igormtorrente@gmail.com>,
+        mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20210504183249.6307-1-igormtorrente@gmail.com>
+ <21f59c86-f1ae-5913-cde9-078fe4f6f752@linuxfoundation.org>
+From:   Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Message-ID: <cc3a655a-e29d-34f1-a1bb-faab01a1f756@xs4all.nl>
+Date:   Thu, 6 May 2021 09:43:32 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506063116.41757-1-chunfeng.yun@mediatek.com>
+In-Reply-To: <21f59c86-f1ae-5913-cde9-078fe4f6f752@linuxfoundation.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CMAE-Envelope: MS4xfLpAPFWbzxG1n5DD1kdMHLqnUyirtt8Hneq0LxPZ1+BryYPj/aDOYGkwJ8xNP9D7/TkB4QXqWNJbUffbjK9PwUhd4z+INi+SsBrD4kWcNWY39R15ShSE
+ bjLMOY9igusoWvTFQic+dPBsKii6b00QVF1yxGbNV83Dl5Otuf+w+UPkAlTKLamUN3Dm7RTqXBuMgcj2j9M0iIQ0eqqdFb4k0Tew/A3qzdlD93zvAEV6aj4E
+ fz8uCkqBAeVjAC73HBCPnqMNlurYQXVXrswn7QO3I3L7uoFrQUKz3aSLmRQsb03apMVB3gxgF6xyKXBxJNeQfMoNE5uQ5CWLtrRksGORkjgUeleDcSKnrI2C
+ qANBB3Kv
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 02:31:14PM +0800, Chunfeng Yun wrote:
-> Use bitfield instead of bool in struct
+On 05/05/2021 17:54, Shuah Khan wrote:
+> On 5/4/21 2:32 PM, Igor Matheus Andrade Torrente wrote:
+>> The em28xx struct kref isn't being decreased after an error in the
+>> em28xx_ir_init, leading to a possible memory leak.
+>>
+>> A kref_put and em28xx_shutdown_buttons is added to the error handler code.
+>>
+>> Signed-off-by: Igor Matheus Andrade Torrente <igormtorrente@gmail.com>
+>> ---
 > 
-> Refer to coding-style.rst 17) Using bool:
-> "If a structure has many true/false values, consider consolidating
-> them into a bitfield with 1 bit members, or using an appropriate
-> fixed width type, such as u8."
+> Hi Igor,
 > 
-> Due to @has_ippc's default vaule is 0, no need set it again if fail
-> to get ippc base address
+> Please look at Hans's response and comments to your v1 patch. v4l core
+> addresses the lifetime issues now and this driver could be updated to
+> use them instead if fixing the problems in this driver's resource
+> lifetime mgmt code.
 
-Please split this change out into a separate patch, as it has nothing to
-do with the "change to bitfield" change.
+Actually, this patch is fine (I think, still need to review it). This is
+related to the input part, not v4l2.
 
-thanks,
+Regards,
 
-greg k-h
+	Hans
+
+> 
+> Please follow his review comments to address the issue based on his 
+> suggestions.
+> 
+> thanks,
+> -- Shuah
+> 
+
