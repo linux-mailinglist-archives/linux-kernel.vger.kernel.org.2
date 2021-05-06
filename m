@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 14C7D374F0E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 07:53:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAE2374F10
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 07:54:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233214AbhEFFy2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 01:54:28 -0400
-Received: from mail-lj1-f181.google.com ([209.85.208.181]:42624 "EHLO
-        mail-lj1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231172AbhEFFy0 (ORCPT
+        id S233248AbhEFFzd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 01:55:33 -0400
+Received: from mail-wr1-f50.google.com ([209.85.221.50]:42638 "EHLO
+        mail-wr1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231172AbhEFFz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 01:54:26 -0400
-Received: by mail-lj1-f181.google.com with SMTP id w4so5513496ljw.9
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 22:53:28 -0700 (PDT)
+        Thu, 6 May 2021 01:55:28 -0400
+Received: by mail-wr1-f50.google.com with SMTP id l2so4212673wrm.9;
+        Wed, 05 May 2021 22:54:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mxuapDkJ8h8w1UrmTgnz+lzQPK4Vf1G94dpavyVSvag=;
-        b=uoa+4TnXdmzw1kd/J9I0bud7E8Qj5A7Qq93I/GlvBw8vaNBMvUUFcIMftNcWwgNPlf
-         biRG9Zahy15PjkTxlZa8Wx5w7x4E3Qvq4xj9C4l14l2nr36YqMB+S2kgivUQ6YywmvNo
-         VwmepFTE+KmnOW5Rrx7o3RPfxcZenOZbigHXypEp3EXagIyncMQq86JGZY0gZkT/owdr
-         se0EvtY2P9KYdbramGejY6fzjl9ITaBW9ilVEGFRRfS1CIYYFu5873ww+TDkrnnbcwSD
-         gdfNVwQwOftutNXtYlE68ITVdh2Oq3WHy/fbil1p3mJuTizej37hFkQn6C0e/P5qR/Ge
-         JHkw==
-X-Gm-Message-State: AOAM533MunhKlVonw+33uI2PfA9n5FqFqooRb0cLPuF6NvY68KjtS7eP
-        ZcRKNDWQ1HhpVBPYFyZHlpP/89i79oB26hKrCfI=
-X-Google-Smtp-Source: ABdhPJw/2jVUUTo+IeF4Y9yPhQUktZUxPj6rn1kPeLRHUeV7GH97zL4//zOALPmvutaqED0PMt2Pcr+DV+ypFIlTqkY=
-X-Received: by 2002:a2e:b746:: with SMTP id k6mr1853690ljo.275.1620280407894;
- Wed, 05 May 2021 22:53:27 -0700 (PDT)
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fZFNMndNVaBhyUia9c6L9GGITkvd1krOQV1BdK3Tt/Y=;
+        b=RJhjtPlVArXiueF2x8ZSeWoDNIOUlw40plfB9F+SwYC5VxOEQVWzgpHx973o9EhaZU
+         68aHEshcttsJ9pZNI+jEJJNU2j7Ov7Zi3jeBTbWCqfdsRu6MP0B6vtQ6ctF84qkZMNpH
+         i15AOSR2dhq9+fKCUMnA+cPET1xICF5Q6snFGhg0Ergu6G7met1d6y22S4/64Pf6UPNJ
+         7q0K8tPGk/NlJaXHRhKcRUut1OPisMtkuGBpTMQd6EpAQSzOujNlhx23XIRl0r9saf56
+         PDdgP7VQvI/9rBIhkzVH1Ty7lkQdCAvSRmjDK/aVbbYK8AfgO3/+qPSB9B8ji6ARc7Uh
+         Fx9A==
+X-Gm-Message-State: AOAM531chZpm8Yjl4J5aXehMofWz7/VB+45OLsJH+mx/eOCMCv8vH1rz
+        3R0b6sIai8iiMzqQjWMLSm4=
+X-Google-Smtp-Source: ABdhPJyjyx3cZYxO2KbrMGYpBa9eBhrDdyULSsYBaCe2XoZp4EOe3EmTe5fnSnIqsYrujwQ/dFCjcQ==
+X-Received: by 2002:adf:ef90:: with SMTP id d16mr2804825wro.359.1620280468760;
+        Wed, 05 May 2021 22:54:28 -0700 (PDT)
+Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
+        by smtp.gmail.com with ESMTPSA id y14sm2342252wrs.64.2021.05.05.22.54.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 05 May 2021 22:54:28 -0700 (PDT)
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+From:   Jiri Slaby <jirislaby@kernel.org>
+To:     =?UTF-8?Q?Michal_Such=c3=a1nek?= <msuchanek@suse.de>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
+        Martin KaFai Lau <kafai@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+References: <20210423130530.GA6564@kitsune.suse.cz>
+ <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
+ <20210423175528.GF6564@kitsune.suse.cz>
+ <20210425111545.GL15381@kitsune.suse.cz>
+ <20210426113215.GM15381@kitsune.suse.cz>
+ <20210426121220.GN15381@kitsune.suse.cz>
+ <20210426121401.GO15381@kitsune.suse.cz>
+ <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
+ <YIcRlHQWWKbOlcXr@krava> <20210505135612.GZ6564@kitsune.suse.cz>
+ <5a225970-32a2-1617-b264-bc40a2179618@kernel.org>
+Message-ID: <09399b84-0ee3-bd18-68ed-290851bc63f6@kernel.org>
+Date:   Thu, 6 May 2021 07:54:27 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.1
 MIME-Version: 1.0
-References: <20210210083327.22726-1-namhyung@kernel.org> <20210210083327.22726-3-namhyung@kernel.org>
- <CAM9d7cgWDNiKBj14TA0Yj_aOhAxzF-xGtstOVRJmQnM6RBDdYg@mail.gmail.com>
-In-Reply-To: <CAM9d7cgWDNiKBj14TA0Yj_aOhAxzF-xGtstOVRJmQnM6RBDdYg@mail.gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 5 May 2021 22:53:16 -0700
-Message-ID: <CAM9d7cg4C-fXEquFjttHnx0mqCKA2E1yL19ybKxqATGoPJ5AHw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] perf tools: Add 'cgroup-switches' software event
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>
-Cc:     Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <5a225970-32a2-1617-b264-bc40a2179618@kernel.org>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Apr 19, 2021 at 11:02 AM Namhyung Kim <namhyung@kernel.org> wrote:
->
-> Hi Arnaldo,
->
-> Could you please pick this up?  The kernel part is landed in the
-> tip.git already.
+On 06. 05. 21, 6:31, Jiri Slaby wrote:
+>>>> this one was reported by Jesper and was fixed by upgrading pahole
+>>>> that contains the new function generation fixes (v1.19)
+>>
+>> It needs pahole 1.21 here, 1.19 was not sufficient. Even then it
+>> regressed again after 5.12 on arm64:
+> 
+> Could you try against devel:tools? I've removed the ftrace filter from 
+> dwarves there (sr#890247 to factory).
 
-Ping!
+Yes, works for me.
 
-Thanks,
-Namhyung
+>>    LD      vmlinux
+>> ld: warning: -z relro ignored
+>>    BTFIDS  vmlinux
+>> FAILED unresolved symbol cubictcp_state
+>> make[1]: *** 
+>> [/home/abuild/rpmbuild/BUILD/kernel-vanilla-5.12.0.13670.g5e321ded302d/linux-5.12-13670-g5e321ded302d/Makefile:1196: 
+>> vmlinux] Error 255
+>> make: *** [../Makefile:215: __sub-make] Error 2
 
 
-> On Wed, Feb 10, 2021 at 5:33 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > It counts how often cgroups are changed actually during the context
-> > switches.
-> >
-> >   # perf stat -a -e context-switches,cgroup-switches -a sleep 1
-> >
-> >    Performance counter stats for 'system wide':
-> >
-> >               11,267      context-switches
-> >               10,950      cgroup-switches
-> >
-> >          1.015634369 seconds time elapsed
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/include/uapi/linux/perf_event.h | 1 +
-> >  tools/perf/util/parse-events.c        | 4 ++++
-> >  tools/perf/util/parse-events.l        | 1 +
-> >  3 files changed, 6 insertions(+)
-> >
-> > diff --git a/tools/include/uapi/linux/perf_event.h b/tools/include/uapi/linux/perf_event.h
-> > index b15e3447cd9f..16b9538ad89b 100644
-> > --- a/tools/include/uapi/linux/perf_event.h
-> > +++ b/tools/include/uapi/linux/perf_event.h
-> > @@ -112,6 +112,7 @@ enum perf_sw_ids {
-> >         PERF_COUNT_SW_EMULATION_FAULTS          = 8,
-> >         PERF_COUNT_SW_DUMMY                     = 9,
-> >         PERF_COUNT_SW_BPF_OUTPUT                = 10,
-> > +       PERF_COUNT_SW_CGROUP_SWITCHES           = 11,
-> >
-> >         PERF_COUNT_SW_MAX,                      /* non-ABI */
-> >  };
-> > diff --git a/tools/perf/util/parse-events.c b/tools/perf/util/parse-events.c
-> > index 42c84adeb2fb..09ff678519f3 100644
-> > --- a/tools/perf/util/parse-events.c
-> > +++ b/tools/perf/util/parse-events.c
-> > @@ -145,6 +145,10 @@ struct event_symbol event_symbols_sw[PERF_COUNT_SW_MAX] = {
-> >                 .symbol = "bpf-output",
-> >                 .alias  = "",
-> >         },
-> > +       [PERF_COUNT_SW_CGROUP_SWITCHES] = {
-> > +               .symbol = "cgroup-switches",
-> > +               .alias  = "",
-> > +       },
-> >  };
-> >
-> >  #define __PERF_EVENT_FIELD(config, name) \
-> > diff --git a/tools/perf/util/parse-events.l b/tools/perf/util/parse-events.l
-> > index 9db5097317f4..88f203bb6fab 100644
-> > --- a/tools/perf/util/parse-events.l
-> > +++ b/tools/perf/util/parse-events.l
-> > @@ -347,6 +347,7 @@ emulation-faults                            { return sym(yyscanner, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_EM
-> >  dummy                                          { return sym(yyscanner, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_DUMMY); }
-> >  duration_time                                  { return tool(yyscanner, PERF_TOOL_DURATION_TIME); }
-> >  bpf-output                                     { return sym(yyscanner, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_BPF_OUTPUT); }
-> > +cgroup-switches                                        { return sym(yyscanner, PERF_TYPE_SOFTWARE, PERF_COUNT_SW_CGROUP_SWITCHES); }
-> >
-> >         /*
-> >          * We have to handle the kernel PMU event cycles-ct/cycles-t/mem-loads/mem-stores separately.
-> > --
-> > 2.30.0.478.g8a0d178c01-goog
-> >
+-- 
+js
