@@ -2,72 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C1729375CB1
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:13:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017BE375CBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:18:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230265AbhEFVOt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:14:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53530 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhEFVOq (ORCPT
+        id S230128AbhEFVTU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 17:19:20 -0400
+Received: from mail-41104.protonmail.ch ([185.70.41.104]:25311 "EHLO
+        mail-41104.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhEFVTS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 17:14:46 -0400
-Received: from sipsolutions.net (s3.sipsolutions.net [IPv6:2a01:4f8:191:4433::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6ABD1C061574;
-        Thu,  6 May 2021 14:13:47 -0700 (PDT)
-Received: by sipsolutions.net with esmtpsa (TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-        (Exim 4.94.2)
-        (envelope-from <johannes@sipsolutions.net>)
-        id 1lelJR-0059iY-CI; Thu, 06 May 2021 23:13:37 +0200
-Message-ID: <285a8ab279d5ac6caa6e44d808ec2b0ae134bc1e.camel@sipsolutions.net>
-Subject: Re: [PATCH v1] mac80211_hwsim: add concurrent channels scanning
- support over virtio
-From:   Johannes Berg <johannes@sipsolutions.net>
-To:     Weilun Du <wdu@google.com>
-Cc:     Kalle Valo <kvalo@codeaurora.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kernel-team@android.com,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Thu, 06 May 2021 23:13:36 +0200
-In-Reply-To: <CAD-gUuCt5ugOyo-9Ge5omTgNJu26OORZFEZ2tSnQEiNLZN9ZyA@mail.gmail.com> (sfid-20210506_231208_394097_2355C230)
-References: <20210506180530.3418576-1-wdu@google.com>
-         <cc2f068d6c82d12de920b19270c6f42dfcabfd11.camel@sipsolutions.net>
-         <CAD-gUuCt5ugOyo-9Ge5omTgNJu26OORZFEZ2tSnQEiNLZN9ZyA@mail.gmail.com>
-         (sfid-20210506_231208_394097_2355C230)
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        Thu, 6 May 2021 17:19:18 -0400
+Received: from mail-02.mail-europe.com (mail-0201.mail-europe.com [51.77.79.158])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (4096 bits))
+        (No client certificate requested)
+        by mail-41104.protonmail.ch (Postfix) with ESMTPS id 4Fbmd3067jz4x786
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 21:17:43 +0000 (UTC)
+Authentication-Results: mail-41104.protonmail.ch;
+        dkim=pass (1024-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="tly7cjq4"
+Date:   Thu, 06 May 2021 21:17:34 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail; t=1620335858;
+        bh=WbErNjctHFDeme6xYOOtYWUvtSVdvDm3QyjUvzqlOV8=;
+        h=Date:To:From:Cc:Reply-To:Subject:From;
+        b=tly7cjq45DGKYenjoeYa32Qj3TY8BscAKPwFP96TIc9zq8K5amMwzS2W8eeq8dbiq
+         0k20FmTzwXoA8lZ19eR0DKzAMAt1ucePbuQFqy5fhWLDS836w4/A0CubZQLS8czTCN
+         nBk6FPlNqfWuwQiCLQoQ7AhuhrPryyVCj4f8Defg=
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org
+From:   Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Yassine Oudjana <y.oudjana@protonmail.com>,
+        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Konrad Dybcio <konrad.dybcio@somainline.org>,
+        linux-kernel@vger.kernel.org, ~postmarketos/upstreaming@lists.sr.ht
+Reply-To: Yassine Oudjana <y.oudjana@protonmail.com>
+Subject: [PATCH 0/3] msm8996: Add qcom_q6v5_pas power domains
+Message-ID: <5JzviCPueYdcC0mDxsTnsVrkpfSjvvZ1QR0o8bMMEs@cp4-web-040.plabs.ch>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-malware-bazaar: not-scanned
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FREEMAIL_FROM shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-06 at 14:11 -0700, Weilun Du wrote:
-> On Thu, May 6, 2021 at 11:19 AM Johannes Berg <johannes@sipsolutions.net> wrote:
-> > 
-> > On Thu, 2021-05-06 at 11:05 -0700, Weilun Du wrote:
-> > > This fixed the crash when setting channels to 2 or more when
-> > > communicating over virtio.
-> > 
-> > Interesting, I thought I was probably the only user of virtio? :)
-> > 
-> > johannes
-> > 
-> Hi Johannes,
-> Actually, Android Emulator uses mac80211_hwsim for wifi simulation
-> over virtio and it's working. This patch fixed the crash when we set
-> channels=2 to speed up scanning. I am trying to see if it makes sense
-> to upstream this patch since it's not Android-specific. Thanks!
-> 
-Oh sure, I'll take a look and will probably apply it for the next cycle,
-haven't done an in-depth review. I was just surprised somebody actually
-*used* the virtio thing :-)
+This patchset adds power domains required by ADSP and SLPI.
 
-Does that mean virt_wifi isn't used anymore by the Android emulator?
-Maybe then we should remove that again, it had some obscure bugs that
-syzkaller found? Not that I mind it being around much, but ...
+Yassine Oudjana (3):
+  remoteproc: qcom: pas: Use the same init resources for MSM8996 and
+    MSM8998
+  dt-bindings: remoteproc: qcom: pas: Add power domains for MSM8996
+  arm64: dts: qcom: msm8996: Disable ADSP and add power domains
 
-johannes
+ .../devicetree/bindings/remoteproc/qcom,adsp.yaml |  2 ++
+ arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi      |  4 ++++
+ arch/arm64/boot/dts/qcom/msm8996.dtsi             |  6 ++++++
+ drivers/remoteproc/qcom_q6v5_pas.c                | 15 ++-------------
+ 4 files changed, 14 insertions(+), 13 deletions(-)
+
+--=20
+2.31.1
+
 
