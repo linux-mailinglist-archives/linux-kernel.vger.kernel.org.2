@@ -2,194 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D7BF375D26
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 00:22:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ADDAF375D28
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 00:23:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230464AbhEFWXo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 18:23:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40374 "EHLO
+        id S230487AbhEFWYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 18:24:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230149AbhEFWXm (ORCPT
+        with ESMTP id S230149AbhEFWYt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 18:23:42 -0400
-Received: from mail-oi1-x235.google.com (mail-oi1-x235.google.com [IPv6:2607:f8b0:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 702D7C061574;
-        Thu,  6 May 2021 15:22:42 -0700 (PDT)
-Received: by mail-oi1-x235.google.com with SMTP id c3so6892056oic.8;
-        Thu, 06 May 2021 15:22:42 -0700 (PDT)
+        Thu, 6 May 2021 18:24:49 -0400
+Received: from mail-pf1-x430.google.com (mail-pf1-x430.google.com [IPv6:2607:f8b0:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 530ACC061574;
+        Thu,  6 May 2021 15:23:51 -0700 (PDT)
+Received: by mail-pf1-x430.google.com with SMTP id i13so6328742pfu.2;
+        Thu, 06 May 2021 15:23:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=sBgk8yqlIg3aMfwvIL6xIju1SKVrlJ8W/h8goDlzw+w=;
-        b=PteqmwL1ZA/U9XK4buyKHhVROutI8sOtPf1Dvn0NOhqk/J28TzmHYoGTSagN1LTTUS
-         +UuzP78bZNf4e0XhippGxpoIZLxdh/UKRys2IT3mabviS22WlknhAgg4yLabWFt/Lnfq
-         v2Ws1Z4YjDbRu1S7eB5S/oKQw3u/qY/u067rvC+bUDH481ayQMfifsCKRMK9b3I9bDWK
-         sv13pHuJASixfS3pE92bc2f2lO4LmV+7JuORYXahjgWlYm2s78lkdYcI4u4rxfhtyG7G
-         Vakn4LuCjE6Ema6vFqSK0laS09IOPNAShMu4qON41VZDXfTkFcXpOOno3mPQ9w52QNGD
-         n+lg==
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :content-transfer-encoding;
+        bh=3UQY3IaQICwwk6HbxIX3pUDsru+1PJgdeqcE0XjsYls=;
+        b=ruhSDf56/+eG6E19cF20Wg2y46MRQYFkzGXA8x6sGX/ZK+Gc8y1Yhu1sy08JxPcHeT
+         JP72ueO2j+6j9z419b2cLnfdiOWjn64l/dPNS/pLBnO3txGlVJWEjQ12S3YT8ayaJjwf
+         j8PXK3WEv9IG5D2k99ukpO/wR8KnkCpL2JKnCrcXKpk67YDHmZZR04+cvi385JwgnqAg
+         +grD7j7QA5cSS1FCh71+d72aZ+nGv6aJkNDtPavpZ7L/uWj4NR1oe9aH6bAQarl2xlhL
+         W+otHSnjHHOMopKsP1OJlkETdyev+hNxEyKwoAmDhpPbuZJY+LWx2MUh3f2OmcTlhw87
+         dEHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=sBgk8yqlIg3aMfwvIL6xIju1SKVrlJ8W/h8goDlzw+w=;
-        b=qBPCBxzh/8l9v6/xFVLY93xvgon5eI3yvw3IbJrysvh/v3xQbDpK+/i10/JIpDi8Dp
-         c1RKEQvvWcbhITAwr6/0Lun/UZfpMrN883cuJiyqSJWoYBQa+yxPswE2EuGgzxQpAvRk
-         ZFrLLegLEAZijX5ezb2iLH3heCTTOKj8m5U+pNNRnAqdJi8f0Ki2M39phwA4cnlAoP5f
-         6M04uHGlaFABgHD9u4Ebphw7zJbAEnvbtBspSGUA3QAuGKdV40Y9pf5wrOcmDCdIAgsF
-         /Guaf0Ei5oYF1bYx1hu9cMiqY+nnvXWVy4zVX3sbAoZci10PEyD/t8CBoz67zw/hSU45
-         AQ8g==
-X-Gm-Message-State: AOAM530QIiWAcTeyBRCTVWYNIRIpJj7wL/2/mL0ZE5plyRtexNHMChCF
-        N6LSFwWFJpjF5LwTnuGwIkS1k7wWRkq2HR171vQ=
-X-Google-Smtp-Source: ABdhPJxrqWZKuFtZ3qVlKxkiI+NpgeAmbcoEp2hAmAOXWszgB5IahgxKxxYepTlJX6FqpCxAZ4YUNXMeFH9S4BsHRGA=
-X-Received: by 2002:aca:f5c7:: with SMTP id t190mr12073481oih.67.1620339761766;
- Thu, 06 May 2021 15:22:41 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:content-transfer-encoding;
+        bh=3UQY3IaQICwwk6HbxIX3pUDsru+1PJgdeqcE0XjsYls=;
+        b=omoczzkUm6IeAHUowAE04dKaowUqO1Zlo3mAJo3CwyQgjq1hrAZxJ9CICKOzhxwafw
+         U8K/G9yjvuCbTuHJWTByxMC55PEz9vE4yGhdGRAs99Cn3R+rqwMsqrQMVm6Y8roehjBV
+         bxXioDRjWfW+6OMHjKiTVhI8+nHfFBPAiEX2uYiujaqpePquZBpTihHSaXzHwYduVQHB
+         BX2EX4se/4OxMrYk6xwlZqOfY314OtfY5PLbBL8G0goeROqkCsMcuPcBgEIypugIChOO
+         CWPOZmMrOZaHwOf2uKDMujhzxDsh5AMWNNFPLQlfcPQbp92zqX0eVoVZCepm8m8cA2Q7
+         3PtQ==
+X-Gm-Message-State: AOAM533GKN8G5xCvBCADRfMsTpBtnNDuaPZTP5VPlA++uEdBySQEPkSl
+        SaExB5y94KtE8UrbxsG0pcU=
+X-Google-Smtp-Source: ABdhPJxuSshNtiWlkAgD3FAX4hBaPAa9EAUkxSTVaVVuvGORTOI5mwz4Vzra5SD3t5u0NJPASayufw==
+X-Received: by 2002:a65:68d7:: with SMTP id k23mr6713922pgt.410.1620339830832;
+        Thu, 06 May 2021 15:23:50 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:5228:3770:a497:742])
+        by smtp.gmail.com with ESMTPSA id j7sm10966877pjw.4.2021.05.06.15.23.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 15:23:49 -0700 (PDT)
+Date:   Thu, 6 May 2021 15:23:47 -0700
+From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+Subject: [git pull] Input updates for v5.13-rc0
+Message-ID: <YJRsc3LxpkFNTknm@google.com>
 MIME-Version: 1.0
-References: <yq15zo86nvk.fsf@oracle.com> <20190819163546.915-1-khorenko@virtuozzo.com>
-In-Reply-To: <20190819163546.915-1-khorenko@virtuozzo.com>
-From:   James Hilliard <james.hilliard1@gmail.com>
-Date:   Thu, 6 May 2021 16:22:30 -0600
-Message-ID: <CADvTj4rVS-wJy1B=dgEO1AOADNYgL3XkZ01Aq=RTfPGEZC+VMA@mail.gmail.com>
-Subject: Re: [PATCH v3 0/1] aacraid: Host adapter Adaptec 6405 constantly
- resets under high io load
-To:     Konstantin Khorenko <khorenko@virtuozzo.com>
-Cc:     "Martin K . Petersen" <martin.petersen@oracle.com>,
-        Sagar Biradar <sagar.biradar@microchip.com>,
-        linux-scsi@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Adaptec OEM Raid Solutions <aacraid@microsemi.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Aug 19, 2019 at 10:35 AM Konstantin Khorenko
-<khorenko@virtuozzo.com> wrote:
->
-> Problem description:
-> ====================
-> A node with Adaptec 6405 controller, latest BIOS V5.3-0[19204]
-Hitting this on a Adaptec RAID 71605 as well with BIOS V7.5.0[32118]
-> A lot of disks attached to the controller.
-> Simple test: running mkfs.ext4 on many disks on the same controller in
-> parallel (mkfs is not important here, any serious io load triggers controller
-> aborts)
-I saw a zfs resilver trigger this.
->
->
-> Results:
-> * no problems (controller resets) with kernels prior to
->   395e5df79a95 ("scsi: aacraid: Remove reference to Series-9")
->
-> * latest ms kernel v5.2-rc6-15-g249155c20f9b - mkfs processes are in D state,
->   lot of complains in logs like:
->
->   [  654.894633] aacraid: Host adapter abort request.
->   aacraid: Outstanding commands on (0,1,43,0):
->   [  699.441034] aacraid: Host adapter abort request.
->   aacraid: Outstanding commands on (0,1,40,0):
->   [  699.442950] aacraid: Host adapter reset request. SCSI hang ?
->   [  714.457428] aacraid: Host adapter reset request. SCSI hang ?
->   ...
->   [  759.514759] aacraid: Host adapter reset request. SCSI hang ?
->   [  759.514869] aacraid 0000:03:00.0: outstanding cmd: midlevel-0
->   [  759.514870] aacraid 0000:03:00.0: outstanding cmd: lowlevel-0
->   [  759.514872] aacraid 0000:03:00.0: outstanding cmd: error handler-498
->   [  759.514873] aacraid 0000:03:00.0: outstanding cmd: firmware-471
->   [  759.514875] aacraid 0000:03:00.0: outstanding cmd: kernel-60
->   [  759.514912] aacraid 0000:03:00.0: Controller reset type is 3
->   [  759.515013] aacraid 0000:03:00.0: Issuing IOP reset
->   [  850.296705] aacraid 0000:03:00.0: IOP reset succeeded
->
-> Same complains on Ubuntu kernel 4.15.0-50-generic:
-> https://bugs.launchpad.net/ubuntu/+source/linux/+bug/1777586
-It's popping up in proxmox as well looks like:
-https://forum.proxmox.com/threads/aacraid-host-adapter-abort-request-errors.86903/
+Hi Linus,
 
-When I tested this patch it appears to reduce the frequency of the
-issue although I did
-still hit an abort request:
-aacraid: Host adapter abort request.
-aacraid: Outstanding commands on (0,1,47,0):
->
->
->
-> Controller:
-> ===========
-> 03:00.0 RAID bus controller: Adaptec Series 6 - 6G SAS/PCIe 2 (rev 01)
->          Subsystem: Adaptec Series 6 - ASR-6405 - 4 internal 6G SAS ports
->
-> Test:
-> =====
-> # cat dev.list
-> /dev/sdq1
-> /dev/sde1
-> /dev/sds1
-> /dev/sdb1
-> /dev/sdk1
-> /dev/sdaj1
-> /dev/sdaf1
-> /dev/sdd1
-> /dev/sdac1
-> /dev/sdai1
-> /dev/sdz1
-> /dev/sdj1
-> /dev/sdy1
-> /dev/sdn1
-> /dev/sdae1
-> /dev/sdg1
-> /dev/sdi1
-> /dev/sdc1
-> /dev/sdf1
-> /dev/sdl1
-> /dev/sda1
-> /dev/sdab1
-> /dev/sdr1
-> /dev/sdo1
-> /dev/sdah1
-> /dev/sdm1
-> /dev/sdt1
-> /dev/sdp1
-> /dev/sdad1
-> /dev/sdh1
->
-> ===========================================
-> # cat run_mkfs.sh
-> #!/bin/bash
->
-> while read i; do
->    mkfs.ext4 $i -q -E lazy_itable_init=1 -O uninit_bg -m 0 &
-> done
->
-> =================================
-> # cat dev.list | ./run_mkfs.sh
->
-> The issue is 100% reproducible.
->
-> i've bisected to the culprit patch, it's
-> 395e5df79a95 ("scsi: aacraid: Remove reference to Series-9")
->
-> it changes arc ctrl checks for Series-6 controllers
-> and i've checked that resurrection of original logic in arc ctrl checks
-> eliminates controller hangs/resets.
->
-> Konstantin Khorenko (1):
->   scsi: aacraid: resurrect correct arc ctrl checks for Series-6
->
-> --
-> v3 changes:
->  * introduced another wrapper to check for devices except for Series 6
->    controllers upon request from Sagar Biradar (Microchip)
->
->  * dropped mentions of private bug ids
->
->
->  drivers/scsi/aacraid/aacraid.h  | 11 +++++++++++
->  drivers/scsi/aacraid/comminit.c |  5 ++---
->  drivers/scsi/aacraid/linit.c    |  2 +-
->  3 files changed, 14 insertions(+), 4 deletions(-)
->
-> --
-> 2.15.1
->
->
+Please pull from:
+
+	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+
+to receive updates for the input subsystem. You will get:
+
+- 3 new touchscreen drivers: Hycon HY46XX, ILITEK Lego Series, and
+   MStar MSG2638
+- a new driver for Azoteq IQS626A proximity and touch controller
+- addition of Amazon Game Controller to the list of devices handled by
+  xpad driver
+- Elan touchscreen driver will avoid binding to devices described as
+  I2CHID compatible in ACPI tables
+- various driver fixes.
+
+
+Changelog:
+---------
+
+Andy Shevchenko (2):
+      Input: tsc2007 - convert to GPIO descriptors
+      Input: tsc2007 - make use of device properties
+
+Barry Song (1):
+      Input: move to use request_irq by IRQF_NO_AUTOEN flag
+
+Bhaskar Chowdhury (1):
+      Input: silead - fix a typo
+
+Dmitry Osipenko (2):
+      dt-bindings: input: atmel_mxt_ts: Document atmel,wakeup-method and WAKE line GPIO
+      Input: atmel_mxt_ts - support wakeup methods
+
+Dmitry Torokhov (3):
+      Input: wacom_i2c - do not force interrupt trigger
+      Input: wacom_i2c - switch to using managed resources
+      Input: gpio-keys - fix crash when disabliing GPIO-less buttons
+
+Fabio Estevam (1):
+      Input: imx_keypad - convert to a DT-only driver
+
+Giulio Benetti (3):
+      dt-bindings: Add Hycon Technology vendor prefix
+      dt-bindings: touchscreen: Add HY46XX bindings
+      Input: add driver for the Hycon HY46XX touchpanel series
+
+Hans de Goede (2):
+      Input: elants_i2c - do not bind to i2c-hid compatible ACPI instantiated devices
+      Input: silead - add workaround for x86 BIOS-es which bring the chip up in a stuck state
+
+Hansem Ro (1):
+      Input: ili210x - add missing negation for touch indication on ili210x
+
+Heikki Krogerus (1):
+      Input: rotary-encoder - update docs according to the latest API changes
+
+Jeff LaBundy (11):
+      Input: iqs5xx - update vendor's URL
+      Input: iqs5xx - optimize axis definition and validation
+      Input: iqs5xx - expose firmware revision to user space
+      Input: iqs5xx - remove superfluous revision validation
+      Input: iqs5xx - close bootloader using hardware reset
+      Input: touchscreen - move helper functions to core
+      Input: touchscreen - broaden use-cases described in comments
+      dt-bindings: input: Add bindings for Azoteq IQS626A
+      Input: Add support for Azoteq IQS626A
+      Input: iqs5xx - make reset GPIO optional
+      dt-bindings: input: iqs5xx: Convert to YAML
+
+Jiapeng Chong (1):
+      Input: apbps2 - remove useless variable
+
+Jingle Wu (1):
+      Input: elan_i2c - reduce the resume time for new devices
+
+Joe Hung (2):
+      dt-bindings: input: touchscreen: ilitek_ts_i2c: Add bindings
+      Input: Add support for ILITEK Lego Series
+
+Johan Hovold (1):
+      Input: ims-pcu - drop redundant driver-data assignment
+
+Krzysztof Kozlowski (1):
+      dt-bindings: input: atmel,maxtouch: add wakeup-source
+
+Linus Walleij (8):
+      Input: cyttsp - verbose error on soft reset
+      Input: mms114 - convert bindings to YAML and extend
+      Input: mms114 - support MMS136
+      Input: cyttsp - error message on boot mode exit error
+      Input: cyttsp - reduce reset pulse timings
+      Input: cyttsp - drop the phys path
+      Input: cyttsp - set abs params for ABS_MT_TOUCH_MAJOR
+      Input: cyttsp - flag the device properly
+
+Lucas Stach (4):
+      Input: exc3000 - split MT event handling from IRQ handler
+      Input: exc3000 - factor out vendor data request
+      Input: exc3000 - fix firmware version query for device in bootloader
+      Input: exc3000 - add type sysfs attribute
+
+Lukas Bulwahn (1):
+      MAINTAINERS: repair reference in HYCON HY46XX TOUCHSCREEN SUPPORT
+
+Matt Reynolds (1):
+      Input: xpad - add support for Amazon Game Controller
+
+Nikolai Kostrigin (1):
+      Input: elan_i2c - fix a typo in parameter name
+
+Paul Cercueil (3):
+      Input: gpio-keys - remove extra call to input_sync
+      Input: gpio-keys - use hrtimer for release timer
+      Input: gpio-keys - use hrtimer for software debounce, if possible
+
+Uwe Kleine-König (1):
+      Input: max8997 - simplify open coding of a division using up to 64 divisions
+
+Vincent Knecht (2):
+      dt-bindings: input/touchscreen: add bindings for msg2638
+      Input: add MStar MSG2638 touchscreen driver
+
+edison.jiang (1):
+      Input: lpc32xx_ts - convert to use BIT()
+
+Diffstat:
+--------
+
+ .../ABI/testing/sysfs-driver-input-exc3000         |    9 +
+ .../devicetree/bindings/input/atmel,maxtouch.yaml  |   32 +
+ .../devicetree/bindings/input/iqs626a.yaml         |  843 +++++++++
+ .../bindings/input/touchscreen/azoteq,iqs5xx.yaml  |   75 +
+ .../bindings/input/touchscreen/hycon,hy46xx.yaml   |  119 ++
+ .../bindings/input/touchscreen/ilitek_ts_i2c.yaml  |   73 +
+ .../bindings/input/touchscreen/iqs5xx.txt          |   80 -
+ .../bindings/input/touchscreen/melfas,mms114.yaml  |   87 +
+ .../bindings/input/touchscreen/mms114.txt          |   42 -
+ .../bindings/input/touchscreen/mstar,msg2638.yaml  |   69 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |    2 +
+ Documentation/input/devices/rotary-encoder.rst     |    8 +-
+ MAINTAINERS                                        |    7 +
+ drivers/input/Makefile                             |    1 +
+ drivers/input/joystick/xpad.c                      |    2 +
+ drivers/input/keyboard/gpio_keys.c                 |  105 +-
+ drivers/input/keyboard/imx_keypad.c                |   13 +-
+ drivers/input/keyboard/tca6416-keypad.c            |    3 +-
+ drivers/input/keyboard/tegra-kbc.c                 |    5 +-
+ drivers/input/misc/Kconfig                         |   11 +
+ drivers/input/misc/Makefile                        |    1 +
+ drivers/input/misc/ims-pcu.c                       |    1 -
+ drivers/input/misc/iqs626a.c                       | 1838 ++++++++++++++++++++
+ drivers/input/misc/max8997_haptic.c                |    9 +-
+ drivers/input/mouse/elan_i2c.h                     |    7 +-
+ drivers/input/mouse/elan_i2c_core.c                |   58 +-
+ drivers/input/serio/apbps2.c                       |    3 +-
+ .../of_touchscreen.c => touchscreen.c}             |   13 +-
+ drivers/input/touchscreen/Kconfig                  |   39 +-
+ drivers/input/touchscreen/Makefile                 |    4 +-
+ drivers/input/touchscreen/ar1021_i2c.c             |    5 +-
+ drivers/input/touchscreen/atmel_mxt_ts.c           |   83 +-
+ drivers/input/touchscreen/bu21029_ts.c             |    4 +-
+ drivers/input/touchscreen/cyttsp_core.c            |   39 +-
+ drivers/input/touchscreen/cyttsp_core.h            |    1 -
+ drivers/input/touchscreen/elants_i2c.c             |   44 +-
+ drivers/input/touchscreen/exc3000.c                |  253 +--
+ drivers/input/touchscreen/hycon-hy46xx.c           |  591 +++++++
+ drivers/input/touchscreen/ili210x.c                |    2 +-
+ drivers/input/touchscreen/ilitek_ts_i2c.c          |  690 ++++++++
+ drivers/input/touchscreen/iqs5xx.c                 |  171 +-
+ drivers/input/touchscreen/lpc32xx_ts.c             |   10 +-
+ drivers/input/touchscreen/melfas_mip4.c            |    5 +-
+ drivers/input/touchscreen/mms114.c                 |   26 +-
+ drivers/input/touchscreen/msg2638.c                |  337 ++++
+ drivers/input/touchscreen/silead.c                 |   46 +-
+ drivers/input/touchscreen/stmfts.c                 |    3 +-
+ drivers/input/touchscreen/tsc2007.h                |    4 +-
+ drivers/input/touchscreen/tsc2007_core.c           |   60 +-
+ drivers/input/touchscreen/wacom_i2c.c              |   56 +-
+ drivers/input/touchscreen/wm831x-ts.c              |    3 +-
+ drivers/input/touchscreen/zinitix.c                |    4 +-
+ include/dt-bindings/input/atmel-maxtouch.h         |   10 +
+ 53 files changed, 5469 insertions(+), 537 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/input/iqs626a.yaml
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/azoteq,iqs5xx.yaml
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/hycon,hy46xx.yaml
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/ilitek_ts_i2c.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/iqs5xx.txt
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/melfas,mms114.yaml
+ delete mode 100644 Documentation/devicetree/bindings/input/touchscreen/mms114.txt
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/mstar,msg2638.yaml
+ create mode 100644 drivers/input/misc/iqs626a.c
+ rename drivers/input/{touchscreen/of_touchscreen.c => touchscreen.c} (93%)
+ create mode 100644 drivers/input/touchscreen/hycon-hy46xx.c
+ create mode 100644 drivers/input/touchscreen/ilitek_ts_i2c.c
+ create mode 100644 drivers/input/touchscreen/msg2638.c
+ create mode 100644 include/dt-bindings/input/atmel-maxtouch.h
+
+Thanks.
+
+
+-- 
+Dmitry
