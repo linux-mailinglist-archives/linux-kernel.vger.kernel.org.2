@@ -2,120 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE6A375600
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:57:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1920375606
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:58:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234970AbhEFO6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:58:36 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:35326 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234759AbhEFO6f (ORCPT
+        id S234979AbhEFO7h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:59:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234943AbhEFO7g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:58:35 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 146EeG98026492;
-        Thu, 6 May 2021 14:57:32 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=9NwOQB/Et0NI01bmeVajBOtpbM8rx1n/lujh3iY+hRM=;
- b=fv4XoKqKWNaAS9Y9EMRylr4jDDTeoM4l5UlVL59Vq6DGcLnWPzqR1GXRAgYLviaqQos2
- k4l2luH0VmwzBZuVLXG9me1tZ3lx1xhDGYj+bL0KRSJmYsxz6SbD+snMS420whdp8COz
- 63HOjlqWhqyI2UsPb6x4IaG52Qy4nqOkMT6Zyu++J1/QD8WK40rB2VhINuYfBvkv77jr
- GowpMPkiYOtLbTH1gSmCpIiynwS2xhpNNxfMcFqxt2PvrrQL21AOmBuZs4YkfHOOf2Lx
- LhOTfKRrmLvAnhGuLgjf7lmgMCDm0UJ0YgFoWHxDTD26D9CbC3dBTc8fk/6hOMb4YOBG TQ== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by aserp2120.oracle.com with ESMTP id 38bemjn96p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 14:57:32 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 146EfKWl093503;
-        Thu, 6 May 2021 14:57:32 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38bebvf2et-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 14:57:32 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 146EvVob184135;
-        Thu, 6 May 2021 14:57:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 38bebvf2e5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 06 May 2021 14:57:31 +0000
-Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 146EvTAt004550;
-        Thu, 6 May 2021 14:57:29 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 May 2021 14:57:28 +0000
-Date:   Thu, 6 May 2021 17:57:22 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Uladzislau Rezki <urezki@gmail.com>
-Cc:     linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, mchehab@kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in __vmalloc_node_range
-Message-ID: <20210506145722.GC1955@kadam>
-References: <000000000000fdc0be05c1a6d68f@google.com>
- <20210506142210.GA37570@pc638.lan>
+        Thu, 6 May 2021 10:59:36 -0400
+Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEB2DC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 07:58:37 -0700 (PDT)
+Received: by mail-lj1-x231.google.com with SMTP id o16so7459248ljp.3
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 07:58:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pJwR0jpCnsf9y/FTF427NMZV9yLVm+aDyiKh9n5GVw8=;
+        b=ckf5P4FnVIgnAHqJq6sdLjCngYSbfUg9saTg+UiXj9SlkI/WGnQwAHvP73bcuenuLn
+         L7egDnA2Bpz69apbjpLOE9r6EvVccEOT1FRPTuv6dRbIkAe3xO+6Qxn4jdiaEjQKInIJ
+         BQLQlDiQyEAN5jFMAZ7L2W1G+ko0d7WyDTHA2pQnoBvLhq0Ij6AfAApkFBDbicUmsAC2
+         W+X2caWQmRzlxeeDNdFVtIzN23PKzcZnUnc4ohOaw9A2s8xGoLzaqQPZKqP4ZRHzLEfG
+         j87mbrJYImqP1sc8y03BhRUTRTVhzmPdK81KPskIoRSyU5dfmt7eJfJWnrld24OYkG4D
+         Msag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pJwR0jpCnsf9y/FTF427NMZV9yLVm+aDyiKh9n5GVw8=;
+        b=UVK/fXgbDJ4fA78ES8X5C4i4Kh+Hht0DW1yBTQ0wSGWPEsEB4tcMS5+9Wp6XFN3JoK
+         ObVAxqu/ElfsVAZRdTUqSCllV4rQymjvaK3uQ3m7nn9G3QMEYgnAd/df0BXEzCzRG+Sh
+         zofgpgJgkc7eYjfedn7oyps9reqWpYj/dxtM3CbuXS7jartRmUazrW01hNfgDTrmo23j
+         XDx9fceNhVRUC9J8X5WJCekYVii2CkAiv/kYSwpFalWU6Skw/70mOK39AhISCFEnn0J8
+         mACF3+KGl4/vVVOEQUCma0p5ruo866UjoDCTVMNkLxuWPQmkZf/5E+Ec6mh+MzVhda4Z
+         4vAw==
+X-Gm-Message-State: AOAM530TIf2qYuWLoLQ2b+6TghZMtazJwSNCXsA6AI1b3jJJZedUAi2k
+        6G8Thn9ckWTYqKXfmp2xv9WOdQ==
+X-Google-Smtp-Source: ABdhPJzv7VVM6GvFLywf+ZD+Zrrlqtw+C+gVfu7nh8M9qTE51onRSgb9pssQA/ZXXGrDIZCqFFfsKg==
+X-Received: by 2002:a2e:a0ca:: with SMTP id f10mr3882282ljm.66.1620313116244;
+        Thu, 06 May 2021 07:58:36 -0700 (PDT)
+Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
+        by smtp.gmail.com with ESMTPSA id g24sm968774ljl.44.2021.05.06.07.58.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 07:58:35 -0700 (PDT)
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Cc:     Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] mmc: core: Implement support for cache ctrl for SD cards
+Date:   Thu,  6 May 2021 16:58:27 +0200
+Message-Id: <20210506145829.198823-1-ulf.hansson@linaro.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506142210.GA37570@pc638.lan>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: 1r7J5qZnCUGUwhTbfY8KSqVZi0gwtJS7
-X-Proofpoint-GUID: 1r7J5qZnCUGUwhTbfY8KSqVZi0gwtJS7
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9976 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- phishscore=0 impostorscore=0 priorityscore=1501 spamscore=0
- mlxlogscore=999 malwarescore=0 suspectscore=0 mlxscore=0 clxscore=1011
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105060107
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 04:22:10PM +0200, Uladzislau Rezki wrote:
-> Seems like vmalloc() is called with zero size passed:
-> 
-> <snip>
-> void *__vmalloc_node_range(unsigned long size, unsigned long align,
-> 			unsigned long start, unsigned long end, gfp_t gfp_mask,
-> 			pgprot_t prot, unsigned long vm_flags, int node,
-> 			const void *caller)
-> {
-> 	struct vm_struct *area;
-> 	void *addr;
-> 	unsigned long real_size = size;
-> 	unsigned long real_align = align;
-> 	unsigned int shift = PAGE_SHIFT;
-> 
-> 2873	if (WARN_ON_ONCE(!size))
-> 		return NULL;
-> <snip>
-> 
-> from the dvb_dmx_init() driver:
-> 
-> <snip>
-> int dvb_dmx_init(struct dvb_demux *dvbdemux)
-> {
-> 	int i;
-> 	struct dmx_demux *dmx = &dvbdemux->dmx;
-> 
-> 	dvbdemux->cnt_storage = NULL;
-> 	dvbdemux->users = 0;
-> 1251	dvbdemux->filter = vmalloc(array_size(sizeof(struct dvb_demux_filter),
-> <snip>					      dvbdemux->filternum));
+In the SD spec v6.x the SD function extension registers for performance
+enhancements were introduced. As a part of this an optional internal cache on
+the SD card can be used to improve performance.
 
-Indeed.
+To let the SD card use the cache, the host needs to enable it and take care of
+flushing of the cache. This series implement support for this.
 
-It is a mystery because array_size() should never return less than
-sizeof(struct dvb_demux_filter).  That's the whole point of the
-array_size() function is that it returns ULONG_MAX if there is an
-integer overflow.
+Note that, there are no HW updates needed for the host to support this feature.
+This has been tested on 64GB Sandisk Extreme PRO UHS-I A2 card.
 
-regards,
-dan carpenter
+The series is based upon another recently posted series [1] that added support
+for poweroff notification.
 
+Tests and reviews are of course greatly appreciated!
 
+Kind regards
+Ulf Hansson
+
+[1]
+https://patchwork.kernel.org/project/linux-mmc/list/?series=476933
+
+Ulf Hansson (2):
+  mmc: core: Move eMMC cache flushing to a new bus_ops callback
+  mmc: core: Add support for cache ctrl for SD cards
+
+ drivers/mmc/core/block.c   |  2 +-
+ drivers/mmc/core/core.h    |  9 ++++
+ drivers/mmc/core/mmc.c     | 25 +++++++++-
+ drivers/mmc/core/mmc_ops.c | 22 +--------
+ drivers/mmc/core/mmc_ops.h |  2 +-
+ drivers/mmc/core/sd.c      | 98 ++++++++++++++++++++++++++++++++++++++
+ include/linux/mmc/card.h   |  1 +
+ 7 files changed, 134 insertions(+), 25 deletions(-)
+
+-- 
+2.25.1
 
