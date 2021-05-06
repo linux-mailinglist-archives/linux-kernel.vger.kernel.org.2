@@ -2,196 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9AF93757BA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DED103757A3
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:39:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235920AbhEFPln (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:41:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35394 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235890AbhEFPlL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:41:11 -0400
-Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED99DC061264
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 08:37:30 -0700 (PDT)
-Received: by mail-wm1-x32c.google.com with SMTP id o26-20020a1c4d1a0000b0290146e1feccdaso5023476wmh.0
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:37:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=IEDSCcz9DuURhhNfs/tK0QYp1lnSjVV5pxew10G8dSk=;
-        b=V/zeaR1TaQIoeM9XJufp+iP5G92k1G7iWvx0YDJBs9KSTMlmsMkOC9Ez5goto83id3
-         VXJxFioSnQras5VmtoC1mS86Qn6xMuxeNrsN/w4dmPcZZwzKkzT1j184TkYmlgqNOGsG
-         D7mX3kuycZVBBaJHLTu1jL1YE7cH2iwDCqLePnMy8MsUUpKaZvLyUA9YciXt4I3M7J2n
-         8bFSPupQId613OvNqc/ecuxQ67Bn2wha7tcANjBBO7oitXR669EwypI8JNq+BavI82WX
-         5zjHjOWvU5ig2060eSyBeA0UVJAhBeNAgxSDXHRlho7sk2UkPALdYWnKdS8RBX5s+mOn
-         Qjkg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=IEDSCcz9DuURhhNfs/tK0QYp1lnSjVV5pxew10G8dSk=;
-        b=ESsDWc+/VN0H0gej5MOTP9bHTshW7hV2i3Yp2YUqErb/dT7ChL1H9RwwWl7225SkDW
-         HIpfCZZfmiApg9l9e+r0JmFSpRWlaUkv7Skah2HsUhhKnNOjxyvn6QryepGgfVHsaxAr
-         DokIc6o3YpKEww6r9kDUSzESVJh2F4KaGGwUyDerEzMy+tLnYpiLEG0lxWUIdw/AfX7Q
-         W88kO84a7ad2O+tugeson6/FrmPuRiEQ1PY3I9Zi2XDKL9aw94pzoYVfp4mZi/Yge5kQ
-         JU9dHFPisigYIz/Q1gnZMJIvxRa14hCpLrW5yBwyKhXPGlFrMU2/LzwJRBEkZhry3lI4
-         VdiA==
-X-Gm-Message-State: AOAM530pVGOpvl7dnqnyylIbprQwe0G3uzyzzgFJKppzhqcHCoxVrzgl
-        m4HBcENXzOumJN/LjCeIzi51xw==
-X-Google-Smtp-Source: ABdhPJxAlzAXFBB33Dmk47O2hysPZnFEIjDmjMGitDd9gQpK+W5laXn9eipEYkrU5GFJKGiqW4CfSw==
-X-Received: by 2002:a05:600c:322a:: with SMTP id r42mr4723194wmp.98.1620315449674;
-        Thu, 06 May 2021 08:37:29 -0700 (PDT)
-Received: from groot.home ([2a01:cb19:826e:8e00:5fe0:3a70:ad4a:a29b])
-        by smtp.gmail.com with ESMTPSA id o13sm3788673wmh.34.2021.05.06.08.37.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 08:37:29 -0700 (PDT)
-From:   Mattijs Korpershoek <mkorpershoek@baylibre.com>
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-Cc:     Fabien Parent <fparent@baylibre.com>, linux-input@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Mattijs Korpershoek <mkorpershoek@baylibre.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org
-Subject: [PATCH 3/3] Input: mtk-pmic-keys - add support for MT6358
-Date:   Thu,  6 May 2021 17:37:18 +0200
-Message-Id: <20210506153718.256903-4-mkorpershoek@baylibre.com>
-X-Mailer: git-send-email 2.27.0
-In-Reply-To: <20210506153718.256903-1-mkorpershoek@baylibre.com>
-References: <20210506153718.256903-1-mkorpershoek@baylibre.com>
+        id S235841AbhEFPkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:40:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41890 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236172AbhEFPiY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:38:24 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 45852B207;
+        Thu,  6 May 2021 15:37:25 +0000 (UTC)
+Subject: Re: [PATCH v4 1/3] mm: memcg/slab: Properly set up gfp flags for
+ objcg pointer array
+To:     Waiman Long <longman@redhat.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505200610.13943-1-longman@redhat.com>
+ <20210505200610.13943-2-longman@redhat.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <46fb83c8-d875-9f85-da2c-ac2ba4847c07@suse.cz>
+Date:   Thu, 6 May 2021 17:37:24 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210505200610.13943-2-longman@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MT6358 pmic keys behave differently than mt6397 and mt6323: there are
-two interrupts per key: one for press, the other one for release (_r)
+On 5/5/21 10:06 PM, Waiman Long wrote:
+> Since the merging of the new slab memory controller in v5.9, the page
+> structure may store a pointer to obj_cgroup pointer array for slab pages.
+> Currently, only the __GFP_ACCOUNT bit is masked off. However, the array
+> is not readily reclaimable and doesn't need to come from the DMA buffer.
+> So those GFP bits should be masked off as well.
+> 
+> Do the flag bit clearing at memcg_alloc_page_obj_cgroups() to make sure
+> that it is consistently applied no matter where it is called.
+> 
+> Fixes: 286e04b8ed7a ("mm: memcg/slab: allocate obj_cgroups for non-root slab pages")
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> Reviewed-by: Shakeel Butt <shakeelb@google.com>
 
-Signed-off-by: Mattijs Korpershoek <mkorpershoek@baylibre.com>
----
- drivers/input/keyboard/mtk-pmic-keys.c | 49 ++++++++++++++++++++++++--
- 1 file changed, 47 insertions(+), 2 deletions(-)
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 
-diff --git a/drivers/input/keyboard/mtk-pmic-keys.c b/drivers/input/keyboard/mtk-pmic-keys.c
-index d1abf95d5701..5496a7020104 100644
---- a/drivers/input/keyboard/mtk-pmic-keys.c
-+++ b/drivers/input/keyboard/mtk-pmic-keys.c
-@@ -9,6 +9,7 @@
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
- #include <linux/mfd/mt6323/registers.h>
-+#include <linux/mfd/mt6358/registers.h>
- #include <linux/mfd/mt6397/core.h>
- #include <linux/mfd/mt6397/registers.h>
- #include <linux/module.h>
-@@ -74,11 +75,22 @@ static const struct mtk_pmic_regs mt6323_regs = {
- 	.pmic_rst_reg = MT6323_TOP_RST_MISC,
- };
- 
-+static const struct mtk_pmic_regs mt6358_regs = {
-+	.keys_regs[MTK_PMIC_PWRKEY_INDEX] =
-+		MTK_PMIC_KEYS_REGS(MT6358_TOPSTATUS,
-+		0x2, MT6358_PSC_TOP_INT_CON0, 0x5),
-+	.keys_regs[MTK_PMIC_HOMEKEY_INDEX] =
-+		MTK_PMIC_KEYS_REGS(MT6358_TOPSTATUS,
-+		0x8, MT6358_PSC_TOP_INT_CON0, 0xa),
-+	.pmic_rst_reg = MT6358_TOP_RST_MISC,
-+};
-+
- struct mtk_pmic_keys_info {
- 	struct mtk_pmic_keys *keys;
- 	const struct mtk_pmic_keys_regs *regs;
- 	unsigned int keycode;
- 	int irq;
-+	int irq_r; /* optional: release irq if different */
- 	bool wakeup:1;
- };
- 
-@@ -188,6 +200,19 @@ static int mtk_pmic_key_setup(struct mtk_pmic_keys *keys,
- 		return ret;
- 	}
- 
-+	if (info->irq_r > 0) {
-+		ret = devm_request_threaded_irq(
-+			keys->dev, info->irq_r, NULL,
-+			mtk_pmic_keys_irq_handler_thread,
-+			IRQF_ONESHOT | IRQF_TRIGGER_HIGH, "mtk-pmic-keys",
-+			info);
-+		if (ret) {
-+			dev_err(keys->dev, "Failed to request IRQ_r: %d: %d\n",
-+				info->irq, ret);
-+			return ret;
-+		}
-+	}
-+
- 	input_set_capability(keys->input_dev, EV_KEY, info->keycode);
- 
- 	return 0;
-@@ -199,8 +224,11 @@ static int __maybe_unused mtk_pmic_keys_suspend(struct device *dev)
- 	int index;
- 
- 	for (index = 0; index < MTK_PMIC_MAX_KEY_COUNT; index++) {
--		if (keys->keys[index].wakeup)
-+		if (keys->keys[index].wakeup) {
- 			enable_irq_wake(keys->keys[index].irq);
-+			if (keys->keys[index].irq_r > 0)
-+				enable_irq_wake(keys->keys[index].irq_r);
-+		}
- 	}
- 
- 	return 0;
-@@ -212,8 +240,11 @@ static int __maybe_unused mtk_pmic_keys_resume(struct device *dev)
- 	int index;
- 
- 	for (index = 0; index < MTK_PMIC_MAX_KEY_COUNT; index++) {
--		if (keys->keys[index].wakeup)
-+		if (keys->keys[index].wakeup) {
- 			disable_irq_wake(keys->keys[index].irq);
-+			if (keys->keys[index].irq_r > 0)
-+				disable_irq_wake(keys->keys[index].irq_r);
-+		}
- 	}
- 
- 	return 0;
-@@ -229,6 +260,9 @@ static const struct of_device_id of_mtk_pmic_keys_match_tbl[] = {
- 	}, {
- 		.compatible = "mediatek,mt6323-keys",
- 		.data = &mt6323_regs,
-+	}, {
-+		.compatible = "mediatek,mt6358-keys",
-+		.data = &mt6358_regs,
- 	}, {
- 		/* sentinel */
- 	}
-@@ -242,6 +276,7 @@ static int mtk_pmic_keys_probe(struct platform_device *pdev)
- 	struct mt6397_chip *pmic_chip = dev_get_drvdata(pdev->dev.parent);
- 	struct device_node *node = pdev->dev.of_node, *child;
- 	static const char *const irqnames[] = { "powerkey", "homekey" };
-+	static const char *const irqnames_r[] = { "powerkey_r", "homekey_r" };
- 	struct mtk_pmic_keys *keys;
- 	const struct mtk_pmic_regs *mtk_pmic_regs;
- 	struct input_dev *input_dev;
-@@ -285,6 +320,16 @@ static int mtk_pmic_keys_probe(struct platform_device *pdev)
- 			return keys->keys[index].irq;
- 		}
- 
-+		if (of_device_is_compatible(node, "mediatek,mt6358-keys")) {
-+			keys->keys[index].irq_r = platform_get_irq_byname(
-+				pdev, irqnames_r[index]);
-+
-+			if (keys->keys[index].irq_r < 0) {
-+				of_node_put(child);
-+				return keys->keys[index].irq_r;
-+			}
-+		}
-+
- 		error = of_property_read_u32(child,
- 			"linux,keycodes", &keys->keys[index].keycode);
- 		if (error) {
--- 
-2.27.0
+> ---
+>  mm/memcontrol.c | 8 ++++++++
+>  mm/slab.h       | 1 -
+>  2 files changed, 8 insertions(+), 1 deletion(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index c100265dc393..5e3b4f23b830 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -2863,6 +2863,13 @@ static struct mem_cgroup *get_mem_cgroup_from_objcg(struct obj_cgroup *objcg)
+>  }
+>  
+>  #ifdef CONFIG_MEMCG_KMEM
+> +/*
+> + * The allocated objcg pointers array is not accounted directly.
+> + * Moreover, it should not come from DMA buffer and is not readily
+> + * reclaimable. So those GFP bits should be masked off.
+> + */
+> +#define OBJCGS_CLEAR_MASK	(__GFP_DMA | __GFP_RECLAIMABLE | __GFP_ACCOUNT)
+> +
+>  int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+>  				 gfp_t gfp, bool new_page)
+>  {
+> @@ -2870,6 +2877,7 @@ int memcg_alloc_page_obj_cgroups(struct page *page, struct kmem_cache *s,
+>  	unsigned long memcg_data;
+>  	void *vec;
+>  
+> +	gfp &= ~OBJCGS_CLEAR_MASK;
+>  	vec = kcalloc_node(objects, sizeof(struct obj_cgroup *), gfp,
+>  			   page_to_nid(page));
+>  	if (!vec)
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 18c1927cd196..b3294712a686 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -309,7 +309,6 @@ static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+>  	if (!memcg_kmem_enabled() || !objcg)
+>  		return;
+>  
+> -	flags &= ~__GFP_ACCOUNT;
+>  	for (i = 0; i < size; i++) {
+>  		if (likely(p[i])) {
+>  			page = virt_to_head_page(p[i]);
+> 
 
