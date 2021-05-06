@@ -2,76 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F393754D8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1864F3754CF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234208AbhEFNiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35378 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233461AbhEFNh5 (ORCPT
+        id S234074AbhEFNg1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:36:27 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:52663 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232992AbhEFNg0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:37:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30A47C061761;
-        Thu,  6 May 2021 06:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=cZKl1g221hvgsUM4ruH5PC7LZQBfPUMAAeP8YaPjGAU=; b=iCvBIdp7CfSO/0BJGcxbWozcPf
-        t5+tSFPC4ck12ybfCEVvVxo8U9LY1fxOS9JBCsesLSJjScpvyFriKQ5I121sTTU1wduIRAToqxDWQ
-        GUihxZ+vvPpjjBG0m720St9/4O5srJjJswCAjDCQDB2hZTwbdav9kAZIHPV6njAwGAGhzH6xRvEqz
-        Cwd2WqijKlvf7k5hA1Ys4CSZ4t3jNrVLPEMozQv6gelS2+1Bzb6NL82XwqXWmUaLKKA+giVqeDHYN
-        e9oTf6PG6n/UTia4wqFcyPO9x27cCS8wnVcM6LiKUFR8vSJDzU8TZk0je2A9cZctcj2GA0skSqibN
-        MTKubsqA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lee9l-001lUf-GN; Thu, 06 May 2021 13:35:26 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 031A93001DB;
-        Thu,  6 May 2021 15:35:07 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id D2CEC202641BA; Thu,  6 May 2021 15:35:07 +0200 (CEST)
-Date:   Thu, 6 May 2021 15:35:07 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>, x86@kernel.org,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: KVM: x86: Prevent deadlock against tk_core.seq
-Message-ID: <YJPwi0FSObIjOSd7@hirez.programming.kicks-ass.net>
-References: <87h7jgm1zy.ffs@nanos.tec.linutronix.de>
+        Thu, 6 May 2021 09:36:26 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id DB2ED2224B;
+        Thu,  6 May 2021 15:35:26 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1620308127;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CmDntFODvjLgdXN3wFi4anvzO+7I/PTtPR0QlpBa/lc=;
+        b=ZB3ENoRhzOZBXkOrrv0FWa5XdDbCE1JABsyK3NBQohAb4Hkt7HYk/4p0oKveXP8ef5EhKP
+        WfKsvr8t+8tYFrtPmX7Xh5fWeVwK+2MoPvdogJzl6ZtRAJKjEI4cGdYm9X0X5a4lgRzlK0
+        sTkSBedifHMKadgDGkMuuKG4fc2owas=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87h7jgm1zy.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 06 May 2021 15:35:26 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Mark Brown <broonie@kernel.org>
+Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>
+Subject: Re: [PATCH 1/2] regmap: add regmap_might_sleep()
+In-Reply-To: <20210506124342.GC4642@sirena.org.uk>
+References: <20210430130645.31562-1-michael@walle.cc>
+ <20210430151908.GC5981@sirena.org.uk>
+ <df27a6508e9edcd8b56058ac4834fd56@walle.cc>
+ <20210430172603.GE5981@sirena.org.uk>
+ <128a6d51af1b7c9ed24a5848347c66b9@walle.cc>
+ <20210506124342.GC4642@sirena.org.uk>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <5921b32058d00a1bffda82b72286db09@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 03:21:37PM +0200, Thomas Gleixner wrote:
-> syzbot reported a possible deadlock in pvclock_gtod_notify():
+Am 2021-05-06 14:43, schrieb Mark Brown:
+> On Sat, May 01, 2021 at 12:10:16AM +0200, Michael Walle wrote:
+>> Am 2021-04-30 19:26, schrieb Mark Brown:
 > 
-> CPU 0  		  	   	    	    CPU 1
-> write_seqcount_begin(&tk_core.seq);
->   pvclock_gtod_notify()			    spin_lock(&pool->lock);
->     queue_work(..., &pvclock_gtod_work)	    ktime_get()
->      spin_lock(&pool->lock);		      do {
->      						seq = read_seqcount_begin(tk_core.seq)
-> 						...
-> 				              } while (read_seqcount_retry(&tk_core.seq, seq);
+>> > But that's a driver for a specific device AFAICT which looks like it's
+>> > only got an I2C binding on the MFD so the driver knows that it's for a
+>> > device that's on a bus that's going to sleep and doesn't need to infer
+>> > anything?  This looks like the common case I'd expect where there's no
+>> > variation.
 > 
-> While this is unlikely to happen, it's possible.
+>> You are right, at the moment this driver only has an I2C binding. But
+>> the idea was that this IP block and driver can be reused behind any
+>> kind of bridge; I2C, SPI or MMIO. Actually, I had the impression
 > 
-> Delegate queue_work() to irq_work() which postpones it until the
-> tk_core.seq write held region is left and interrupts are reenabled.
-> 
-> Fixes: 16e8d74d2da9 ("KVM: x86: notifier for clocksource changes")
-> Reported-by: syzbot+6beae4000559d41d80f8@syzkaller.appspotmail.com
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Is this actually a way people are building hardware though?
 
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Granted, this might be a special case because the driver is for an
+IP inside CPLD/FPGA, thus you could easily switch the bridge.
+
+>> that all you need to do to convert it to MMIO is to replace the
+>> "kontron,sl28cpld" compatible with a "syscon" compatible. But it isn't
+>> that easy. Anyway, the idea is that you don't need to change anything
+>> in the gpio-sl28cpld driver, just change the parent. But if we can't
+>> ask the regmap what type it is, then we'll have to modify the
+>> gpio-sl28cpld driver and we will have to figure it out by some other
+>> means.
+> 
+> Well, you don't need to change anything at all - the driver will work
+> perfectly fine if it's flagging up the GPIOs as potentially sleeping
+> even if they end up not actually sleeping.
+
+Unless you need the non-sleeping version for a gpio.
+
+>> > If users happen to end up with a map flagged as fast they can work on
+>> > the whatever driver uses this stuff and not realise they're breaking
+>> > other users of the same driver that end up with slow I/O.  The whole
+>> > point of the flag in GPIO is AIUI warnings to help with that case.
+> 
+>> Hm, but as of now, the only thing which makes the gpio-regmap driver
+>> slow i/o is the regmap itself.
+> 
+> Surely it's just a case of the device that's creating the gpio regmap
+> setting a flag when it instantiates it?  It's just one more thing that
+> the parent knows about the device.  This doesn't seem insurmountable.
+
+No its not. It just seemed like it is way easier to just ask the regmap.
+
+-michael
