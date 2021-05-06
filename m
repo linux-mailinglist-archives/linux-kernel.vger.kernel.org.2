@@ -2,169 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E7D2A37520C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:08:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F89B375203
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:07:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234363AbhEFKJU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:09:20 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:38052 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233964AbhEFKJS (ORCPT
+        id S234346AbhEFKIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:08:15 -0400
+Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:49506 "EHLO
+        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233573AbhEFKIL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:09:18 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1469pTG0024645;
-        Thu, 6 May 2021 17:51:29 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from localhost.localdomain (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 6 May
- 2021 18:03:17 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Ryan Chen <ryanchen.aspeed@gmail.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>
-CC:     <steven_lee@aspeedtech.com>, <Hongweiz@ami.com>,
-        <ryan_chen@aspeedtech.com>, <chin-ting_kuo@aspeedtech.com>
-Subject: [PATCH v3 5/5] mmc: sdhci-of-aspeed: Assert/Deassert reset signal before probing eMMC
-Date:   Thu, 6 May 2021 18:03:12 +0800
-Message-ID: <20210506100312.1638-6-steven_lee@aspeedtech.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210506100312.1638-1-steven_lee@aspeedtech.com>
-References: <20210506100312.1638-1-steven_lee@aspeedtech.com>
+        Thu, 6 May 2021 06:08:11 -0400
+Received: by luna.linkmauve.fr (Postfix, from userid 1000)
+        id C2EB0F4059A; Thu,  6 May 2021 12:07:05 +0200 (CEST)
+Date:   Thu, 6 May 2021 12:07:05 +0200
+From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
+Cc:     linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/4] HID: wiiu-drc: Add a driver for this gamepad
+Message-ID: <20210506100705.5bcpywy25kfqwgkn@luna>
+Jabber-ID: linkmauve@linkmauve.fr
+References: <20210502232836.26134-1-linkmauve@linkmauve.fr>
+ <20210502232836.26134-2-linkmauve@linkmauve.fr>
+ <YJMdK8zQR7Al3wWC@latitude>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1469pTG0024645
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="jtw7k5qsxufz3nus"
+Content-Disposition: inline
+In-Reply-To: <YJMdK8zQR7Al3wWC@latitude>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For cleaning up the AST2600 eMMC controller, the reset signal should be
-asserted and deasserted before it is probed.
 
-Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
----
- drivers/mmc/host/sdhci-of-aspeed.c | 49 ++++++++++++++++++++++++------
- 1 file changed, 40 insertions(+), 9 deletions(-)
+--jtw7k5qsxufz3nus
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-index 4979f98ffb52..8ef06f32abff 100644
---- a/drivers/mmc/host/sdhci-of-aspeed.c
-+++ b/drivers/mmc/host/sdhci-of-aspeed.c
-@@ -13,6 +13,7 @@
- #include <linux/of.h>
- #include <linux/of_platform.h>
- #include <linux/platform_device.h>
-+#include <linux/reset.h>
- #include <linux/spinlock.h>
- 
- #include "sdhci-pltfm.h"
-@@ -36,9 +37,16 @@
- /* SDIO{14,24} */
- #define ASPEED_SDC_CAP2_SDR104         (1 * 32 + 1)
- 
-+#define PROBE_AFTER_ASSET_DEASSERT	0x1
-+
-+struct aspeed_sdc_info {
-+	u32 flag;
-+};
-+
- struct aspeed_sdc {
- 	struct clk *clk;
- 	struct resource *res;
-+	struct reset_control *rst;
- 
- 	spinlock_t lock;
- 	void __iomem *regs;
-@@ -78,6 +86,10 @@ struct aspeed_sdhci {
- 
- };
- 
-+struct aspeed_sdc_info ast2600_sdc_info = {
-+	.flag = PROBE_AFTER_ASSET_DEASSERT
-+};
-+
- /*
-  * The function sets the mirror register for updating
-  * capbilities of the current slot.
-@@ -533,11 +545,22 @@ static struct platform_driver aspeed_sdhci_driver = {
- 	.remove		= aspeed_sdhci_remove,
- };
- 
-+static const struct of_device_id aspeed_sdc_of_match[] = {
-+	{ .compatible = "aspeed,ast2400-sd-controller", },
-+	{ .compatible = "aspeed,ast2500-sd-controller", },
-+	{ .compatible = "aspeed,ast2600-sd-controller", .data = &ast2600_sdc_info},
-+	{ }
-+};
-+
-+MODULE_DEVICE_TABLE(of, aspeed_sdc_of_match);
-+
- static int aspeed_sdc_probe(struct platform_device *pdev)
- 
- {
- 	struct device_node *parent, *child;
- 	struct aspeed_sdc *sdc;
-+	const struct of_device_id *match = NULL;
-+	const struct aspeed_sdc_info *info = NULL;
- 	int ret;
- 
- 	sdc = devm_kzalloc(&pdev->dev, sizeof(*sdc), GFP_KERNEL);
-@@ -546,6 +569,23 @@ static int aspeed_sdc_probe(struct platform_device *pdev)
- 
- 	spin_lock_init(&sdc->lock);
- 
-+	match = of_match_device(aspeed_sdc_of_match, &pdev->dev);
-+	if (!match)
-+		return -ENODEV;
-+
-+	if (match->data)
-+		info = match->data;
-+
-+	if (info) {
-+		if (info->flag & PROBE_AFTER_ASSET_DEASSERT) {
-+			sdc->rst = devm_reset_control_get(&pdev->dev, NULL);
-+			if (!IS_ERR(sdc->rst)) {
-+				reset_control_assert(sdc->rst);
-+				reset_control_deassert(sdc->rst);
-+			}
-+		}
-+	}
-+
- 	sdc->clk = devm_clk_get(&pdev->dev, NULL);
- 	if (IS_ERR(sdc->clk))
- 		return PTR_ERR(sdc->clk);
-@@ -593,15 +633,6 @@ static int aspeed_sdc_remove(struct platform_device *pdev)
- 	return 0;
- }
- 
--static const struct of_device_id aspeed_sdc_of_match[] = {
--	{ .compatible = "aspeed,ast2400-sd-controller", },
--	{ .compatible = "aspeed,ast2500-sd-controller", },
--	{ .compatible = "aspeed,ast2600-sd-controller", },
--	{ }
--};
--
--MODULE_DEVICE_TABLE(of, aspeed_sdc_of_match);
--
- static struct platform_driver aspeed_sdc_driver = {
- 	.driver		= {
- 		.name	= "sd-controller-aspeed",
--- 
-2.17.1
+On Wed, May 05, 2021 at 10:33:15PM +0000, Jonathan Neusch=C3=A4fer wrote:
+> Hi,
 
+Hi,
+
+>=20
+> some mostly trivial remarks and questions of curiosity below, because
+> I'm not very qualified to review the input subsystem side of things.
+
+Thanks for the questions anyway, I can probably make things clearer in
+the patch thanks to them. :)
+
+[=E2=80=A6]
+> Out of curiosity:
+>=20
+> Do the HID reports travel over the wireless link from DRC to DRH, or are
+> they formed in DRH firmware?
+
+This HID report is a 1:1 copy of what the DRC sends, with no
+modification that I could find.
+
+>=20
+> Is there a reference of the device-specific HID format? I briefly looked
+> at https://libdrc.org/docs/index.html but couldn't find it there.
+
+You were very close, the input report is described here:
+https://libdrc.org/docs/re/sc-input.html
+
+This project wrote a userland driver for using the DRC without the DRH,
+but it requires a very specific wifi chip which makes it quite
+cumbersome to use.
+
+>=20
+>=20
+> >  drivers/hid/Kconfig        |   7 +
+> >  drivers/hid/Makefile       |   1 +
+> >  drivers/hid/hid-ids.h      |   1 +
+> >  drivers/hid/hid-quirks.c   |   3 +
+> >  drivers/hid/hid-wiiu-drc.c | 270 +++++++++++++++++++++++++++++++++++++
+> >  5 files changed, 282 insertions(+)
+> >  create mode 100644 drivers/hid/hid-wiiu-drc.c
+> >=20
+> > diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
+> > index 4bf263c2d61a..01116c315459 100644
+> > --- a/drivers/hid/Kconfig
+> > +++ b/drivers/hid/Kconfig
+> > @@ -1105,6 +1105,13 @@ config HID_WACOM
+> >  	  To compile this driver as a module, choose M here: the
+> >  	  module will be called wacom.
+> > =20
+> > +config HID_WIIU_DRC
+> > +	tristate "Nintendo Wii U gamepad over internal DRH"
+>=20
+>                                  gamepad (DRC)
+>=20
+> ... so it's clearer where the "DRC" name comes from.
+
+Will do in v2.
+
+>=20
+> > +#if IS_ENABLED(CONFIG_HID_WIIU_DRC)
+> > +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_NINTENDO, USB_DEVICE_ID_NINTENDO=
+_WIIU_DRH) },
+> > +#endif
+>=20
+> Is the DRC connection the only USB function that the DRH provides?
+
+As far as I know, yes.
+
+But the DRC also sends microphone and camera data, which gets exposed by
+the DRH, but juuuuuust not quite standard enough to work as is using
+snd_usb_audio or uvcvideo.  There is also a NFC reader which no one has
+reversed yet to my knowledge.
+
+There are two DRCs exposed by the DRH, despite only one of them being
+bundled with each Wii=C2=A0U, and no game ever making use of more.
+
+>=20
+>=20
+> > +++ b/drivers/hid/hid-wiiu-drc.c
+> > @@ -0,0 +1,270 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+> > +/*
+> > + * HID driver for Nintendo Wii U gamepad, connected via console-intern=
+al DRH
+>=20
+>                                     gamepad (DRC)
+
+Ack, will be fixed in v2.
+
+>=20
+>=20
+> > +static int drc_raw_event(struct hid_device *hdev, struct hid_report *r=
+eport,
+> > +	 u8 *data, int len)
+> > +{
+> > +	struct drc *drc =3D hid_get_drvdata(hdev);
+> > +	int i;
+> > +	u32 buttons;
+> > +
+> > +	if (len !=3D 128)
+> > +		return 0;
+>=20
+> From include/linux/hid.h:
+>=20
+>  * raw_event and event should return negative on error, any other value w=
+ill
+>  * pass the event on to .event() typically return 0 for success.
+>=20
+> Not sure if returning 0 as you do above is appropriate.
+
+Oops, thanks for noticing, this will be fixed in v2.
+
+>=20
+>=20
+> > +static bool drc_setup_joypad(struct drc *drc,
+> > +		struct hid_device *hdev)
+> > +{
+> > +	struct input_dev *input_dev;
+> > +
+> > +	input_dev =3D allocate_and_setup(hdev, DEVICE_NAME " Joypad");
+>=20
+> "Nintendo Wii U gamepad Joypad" looks a bit sub-optimal, but I'm not
+> sure about the conventions here.
+
+"Nintendo Wii U gamepad buttons and sticks" would be better I think.
+
+>=20
+>=20
+> > +
+> > +	/* These two buttons are actually TV control and Power. */
+> > +	set_bit(BTN_Z, input_dev->keybit);
+> > +	set_bit(BTN_DEAD, input_dev->keybit);
+>=20
+> Hmm... from what I've deen the TV control button opens a menu on the
+> gamepad itself. Does it send the input event in addition to that?
+> Or is there a mode where it opens the TV menu, and a mode where it
+> forwards the button press to the Wii U?
+
+It does draw a line of text near the bottom of the screen, saying =E2=80=9C=
+TV
+Remote can be configured in System Settings.=E2=80=9D, but also sends the b=
+utton
+as a normal button in the report.  It could be possible to change its
+behaviour (in System Settings perhaps?) but so far I=E2=80=99ve been avoidi=
+ng
+interacting with the proprietary OS.
+
+The power button also has a special behaviour: when it is held for four
+seconds, it will power off the DRC.
+
+>=20
+>=20
+> > +MODULE_AUTHOR("Ash Logan <ash@heyquark.com>");
+>=20
+> Since you're submitting the driver, rather than Ash, maybe adjust the
+> author field here? (totally your choice.)
+
+I=E2=80=99ll ask them, I=E2=80=99m perfectly fine with becoming the author,=
+ but they
+wrote most of that code, I only fixed the last few missing pieces and
+did some cleanup.
+
+>=20
+>=20
+>=20
+> Thanks,
+> Jonathan
+
+Thanks!
+
+--=20
+Emmanuel Gil Peyrot
+
+--jtw7k5qsxufz3nus
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmCTv8AACgkQOWgfYkb2
+LpCeaAf/X3dtreCXE5NVSLSA0zloCS5Y7WAPlshsE2Zc8NCVKcRPNamkHSFWtENf
++OkJ6mZyQ8dGBEwqlrxPMyn1mL8FnIgvZOeNfIzCbNcodpdfLoL+noM+7hrOQRUj
+0vACbVkhCVYT3Gu9cDE9/2wQLHnvm/W1u4RWeWO2YLb+hjFzyWx4DmE2AdL2KeWw
+gy9BDiH6eao3StD3p1mhuMtg9YQD5Dj6C+c0hvzNRx9933fS+CvBsEQqVNpCdczi
+giGJ9vbngW83Y+OcRcfJIMwL4yKsI/ABngFwy6t4IWIN1lP73o5T56Kei6y0idlO
+kBHFMKSy3SAq/MVOyBsUIhv871tnXw==
+=F43R
+-----END PGP SIGNATURE-----
+
+--jtw7k5qsxufz3nus--
