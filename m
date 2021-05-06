@@ -2,102 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 659BC3757AC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:40:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C63D13757BC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:40:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235566AbhEFPk7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:40:59 -0400
-Received: from mail-oi1-f181.google.com ([209.85.167.181]:42905 "EHLO
-        mail-oi1-f181.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235755AbhEFPki (ORCPT
+        id S235527AbhEFPlq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:41:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:25478 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235537AbhEFPlS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:40:38 -0400
-Received: by mail-oi1-f181.google.com with SMTP id v24so5860919oiv.9;
-        Thu, 06 May 2021 08:39:39 -0700 (PDT)
+        Thu, 6 May 2021 11:41:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620315620;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zt1CMVCYEfkxyd9UNysxUz4SpT8ZgoiU+x8AV2J3Qcc=;
+        b=HmYgesH4zOZHiP2jS3YRke1g+9zU6IFtdcvgLDslYENOMT+6xwIgET0f2+dZUOJJ5rizYc
+        i3NjoHH+BW2zMU8ACGngt3R2hbpF6KJxiRUcuVPoUPWcwOT4ocBtqNwoVGd0ArJreYnzT5
+        Dwgj68IKLWH40WiaCkLf/iwJMFLchmY=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-402-JHqmbhZIMduL2nwXfnqpjQ-1; Thu, 06 May 2021 11:40:18 -0400
+X-MC-Unique: JHqmbhZIMduL2nwXfnqpjQ-1
+Received: by mail-ed1-f69.google.com with SMTP id z12-20020aa7d40c0000b0290388179cc8bfso2835283edq.21
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:40:18 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=sdjQ0pJ/CZ8t7dbJVu4aunJF6Pe/uNssbk7mGeRm9Qc=;
-        b=XvG+MdzxTOBEjnSaHDdEIrddGqikdrmxoSpjPs8R+0/HYDSxIJ0MlIowNtLRvSqzoz
-         0oxG810botw6uMDNcZwnAy7zQsLCSARBcN5W2zx5IDMtt/EXzcmYu3zEhdzc3gPv+Yua
-         bCBszPqX2DTI/oiggUld3HAyhcdvQiFd/Ec3p5VuFgs5I+98dv66wFk0KEVrJVMAUBbv
-         TCIsL7VGTnE8CUPZDhkuE/BKz9v4zBfz8WMu34LSCQfP6YqZ15EwJ44hwfh3wCySlb59
-         VxPyRteMpr3Ke0LB3qeAGlxZbaSWNAE2ptcJYd9zZTxiYxnft8B+pTL6ncIrKOffrBpw
-         Z9Gw==
-X-Gm-Message-State: AOAM5334vSi3FDOybhniUn7GS9R6uQ8QexfeiwylhXIAttfAuAVvyTMW
-        82s1iUTXBVp2zK8hqJBy2aHZuNR9yBuIeRWu3XpAlP7Sv1s=
-X-Google-Smtp-Source: ABdhPJyL2IddCEkm8O1kz510+fbDkAwQL7i4c9S254ThXXAQl0anHxWLSslGGI+frvYlcT+aVdOTbfbsQecZEoavQu8=
-X-Received: by 2002:aca:bc89:: with SMTP id m131mr3672209oif.71.1620315579236;
- Thu, 06 May 2021 08:39:39 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=zt1CMVCYEfkxyd9UNysxUz4SpT8ZgoiU+x8AV2J3Qcc=;
+        b=HGIb6MJZuY9i5uz36FOLSj2eHfl7cmWr6hD6xcE37iustTs6/UfchbeAWMgEtDlH3B
+         9YILyYOQsF8qI/XZTgjlanpbotnqnd4SBB2/N/Iv6MTR+YxqzFVw7iJsbULFVSP1HZr6
+         CuJBq+hCxWpW8LnkQRMSZCJEx+zM4PJJoVvbBJzSwWqaPGrmPTAxD6zriuASXbTsXsq1
+         CdPVfJc/sSZpeUwKNRJOIdRxJ+fIiOcpT2nEDINGxJfwliFrXKe/JVBKHdnGycle9p+p
+         RPi2lz+R4X0eLJThD9Rkqtrz87dFdH5B4/C8uGbxGbkDujsOwinVF2/OWZUoef5OXKfi
+         4AMQ==
+X-Gm-Message-State: AOAM533F1RAcfqJ/zyJwLrM8+zAo087e/oHEPSYqxbr69og+os/ALA4n
+        x/qqiiDA4s7rflY9+btb9SnOyx5XAuirZ1OvTkBhUKj4nw6WDoBUAZEg0TFX7/cyyykTAjD3lk2
+        xwFYgblBjlJPCVOHQ2sv95D5f
+X-Received: by 2002:a05:6402:4313:: with SMTP id m19mr5915836edc.263.1620315617609;
+        Thu, 06 May 2021 08:40:17 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzzk0LjFrMyClreAxpxpyn2/1+H3Xm8pkFKVU4ZpBXb5EXnGWXP797OFz3GwiryEOPHyCBR4Q==
+X-Received: by 2002:a05:6402:4313:: with SMTP id m19mr5915815edc.263.1620315617456;
+        Thu, 06 May 2021 08:40:17 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64ae.dip0.t-ipconnect.de. [91.12.100.174])
+        by smtp.gmail.com with ESMTPSA id k9sm1740567eje.102.2021.05.06.08.40.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 08:40:17 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/7] Memory hotplug/hotremove at subsection size
+To:     Zi Yan <ziy@nvidia.com>
+Cc:     Oscar Salvador <osalvador@suse.de>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org
+References: <20210506152623.178731-1-zi.yan@sent.com>
+ <fb60eabd-f8ef-2cb1-7338-7725efe3c286@redhat.com>
+ <9D7FD316-988E-4B11-AC1C-64FF790BA79E@nvidia.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <3a51f564-f3d1-c21f-93b5-1b91639523ec@redhat.com>
+Date:   Thu, 6 May 2021 17:40:15 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 6 May 2021 17:39:28 +0200
-Message-ID: <CAJZ5v0hLfXuUNRw2B48S7mQK5bnsZFFKQfqf5mCncMnak6uXYw@mail.gmail.com>
-Subject: [GIT PULL] ACPI fixes for v5.13-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <9D7FD316-988E-4B11-AC1C-64FF790BA79E@nvidia.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+>>> The last patch increases SECTION_SIZE_BITS to demonstrate the use of memory
+>>> hotplug/hotremove subsection, but is not intended to be merged as is. It is
+>>> there in case one wants to try this out and will be removed during the final
+>>> submission.
+>>>
+>>> Feel free to give suggestions and comments. I am looking forward to your
+>>> feedback.
+>>
+>> Please not like this.
+> 
+> Do you mind sharing more useful feedback instead of just saying a lot of No?
 
-Please pull from the tag
+I remember reasoning about this already in another thread, no? Either 
+you're ignoring my previous feedback or my mind is messing with me.
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- acpi-5.13-rc1-2
+-- 
+Thanks,
 
-with top-most commit 3da53c754502acf74d4d9ba8ac23fc356e6c3d0f
+David / dhildenb
 
- Merge branches 'acpi-pm' and 'acpi-docs'
-
-on top of commit d8f9176b4ece17e831306072678cd9ae49688cf5
-
- Merge tag 'acpi-5.13-rc1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-
-to receive ACPI fixes for 5.13-rc1.
-
-These revert one recent commit that turned out to be problematic,
-address two issues in the ACPI "custom method" interface and
-update GPIO properties documentation.
-
-Specifics:
-
- - Revent recent commit related to the handling of ACPI power
-   resources during initialization, because it turned out to cause
-   problems to occur on some systems (Rafael Wysocki).
-
- - Fix potential use-after-free and potential memory leak in the
-   ACPI "custom method" debugfs interface (Mark Langsdorf).
-
- - Update ACPI GPIO properties documentation to cover assumptions
-   regarding GPIO polarity (Andy Shevchenko).
-
-Thanks!
-
-
----------------
-
-Andy Shevchenko (1):
-      Documentation: firmware-guide: gpio-properties: Add note to SPI CS case
-
-Mark Langsdorf (2):
-      ACPI: custom_method: fix potential use-after-free issue
-      ACPI: custom_method: fix a possible memory leak
-
-Rafael J. Wysocki (1):
-      Revert "ACPI: scan: Turn off unused power resources during initialization"
-
----------------
-
- Documentation/firmware-guide/acpi/gpio-properties.rst | 6 ++++++
- drivers/acpi/custom_method.c                          | 4 +++-
- drivers/acpi/internal.h                               | 1 -
- drivers/acpi/power.c                                  | 2 +-
- drivers/acpi/scan.c                                   | 2 --
- drivers/acpi/sleep.h                                  | 1 +
- 6 files changed, 11 insertions(+), 5 deletions(-)
