@@ -2,63 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014C4374EEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 07:39:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B21374EF2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 07:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232987AbhEFFkB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 01:40:01 -0400
-Received: from smtp03.smtpout.orange.fr ([80.12.242.125]:29967 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230088AbhEFFj6 (ORCPT
+        id S233085AbhEFFmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 01:42:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42288 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231758AbhEFFln (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 01:39:58 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d79 with ME
-        id 1Hez2500521Fzsu03Hez1A; Thu, 06 May 2021 07:38:59 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 06 May 2021 07:38:59 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mchehab@kernel.org, sean@mess.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: rc: i2c: Fix an error message
-Date:   Thu,  6 May 2021 07:38:56 +0200
-Message-Id: <179fb4cda2b79904fc9cf1d7d8e61153e30fae6b.1620279452.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 6 May 2021 01:41:43 -0400
+Received: from mail-pg1-x52d.google.com (mail-pg1-x52d.google.com [IPv6:2607:f8b0:4864:20::52d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1427AC06174A
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 22:40:25 -0700 (PDT)
+Received: by mail-pg1-x52d.google.com with SMTP id m12so3936652pgr.9
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 22:40:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=MhaWH0xm/odULRUgpRN30Lg5qdDn6Ee/GPJGPBWoxIc=;
+        b=kWWIvWmemVePN6f4NUYr3ql/fQ/y+NfVsXuY2PGRy7EXGajH2Ojxx3ywApl8p66z/O
+         x9D5r9ye7+jXNRqGoXPyhxKqvhLbPbRMq8d8vGR5JvnnLOMuaoLUbmJUDrATGTzr6yKi
+         kIL8PZrWMDEXt9A+EyZBGoUxleGC0ttY3I4zC97CFKhb3WTycnQ0eTMD+7WYnv6JKARr
+         8W7FfNaCQqP3dwbWiVNy7/rz+jCS1jXm6HLjsV2680ztFcW/7uAEtyf60GvSHixpFAv0
+         sea2dyiyBvZy3WPLSfM++V3sRXWaitGm3P616B4m94d+6t/ZMGadOJVXyzxUaYpuxyGp
+         /G8g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=MhaWH0xm/odULRUgpRN30Lg5qdDn6Ee/GPJGPBWoxIc=;
+        b=iMQ9WRPrUcAj9/dX5AOHcM34qRJCtjN9mJ+HB0EzxLTJ3JH3HeeLFONiThgR18scPF
+         ZzsZtQZ2RrQiFz6pqJ7lazgavlabBNhFz3ZvTZegXF/tDlyHScfCwCMYEdbSj/+grdvP
+         6Ct7ktgwsAT130EoY/i8CUIloQaDO3rvmWyCepvj4YA8fkULMh5lGI3FwBjglTbIsZD/
+         7NGDoH7BLwGtadd50x16IMsl1ajG+fNGHYzzx1mjgLaTgooko20HfmJv2RdZATG91XWR
+         xjEnCigCZBRLxnL3aX5JtUQhb2lTY1cC2rMsYn7VZFGkzpII7c9bmSqnAditKJcDFSgG
+         /2dw==
+X-Gm-Message-State: AOAM5303GTJFMmJSnh0/4z9541eACyZzkWKdHR5SyG7vFVmk8lMdnl6H
+        4YoC/f0A16GSXifjAqlphfemBXqEmov3JbBjocw=
+X-Google-Smtp-Source: ABdhPJx47Ny3zSe2cQRZEjyQdDmyvYdHVZdDbaZ5dRZ8dTbP046c+q7lZheKgdRm25pyM+/3clyf1+feZojO5bOQJDs=
+X-Received: by 2002:a63:1064:: with SMTP id 36mr2606708pgq.164.1620279624460;
+ Wed, 05 May 2021 22:40:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: by 2002:a05:6a11:48e:0:0:0:0 with HTTP; Wed, 5 May 2021 22:40:23
+ -0700 (PDT)
+Reply-To: isabella.ferreira@yandex.com
+From:   "Isabella.Ferreira" <drdavidchris500@gmail.com>
+Date:   Wed, 5 May 2021 23:40:23 -0600
+Message-ID: <CAC-V+SMd8enpCKeTjwNA2cp0O9DoHLi+OkK8k8U4Q93wgTqZfg@mail.gmail.com>
+Subject: Greetings,
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'ret' is known to be 1 here. In fact 'i' is expected instead.
-Store the return value of 'i2c_master_recv()' in 'ret' so that the error
-message print the correct error code.
+Greetings,
 
-Fixes: acaa34bf06e9 ('media: rc: implement zilog transmitter")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
- drivers/media/i2c/ir-kbd-i2c.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+I wonder why you continue neglecting my emails. Please, acknowledge
+the receipt of this message in reference to the subject above as I
+intend to send to you the details of the mail. Sometimes, try to check
+your spam box because most of these correspondences fall out sometimes
+in SPAM folder.
 
-diff --git a/drivers/media/i2c/ir-kbd-i2c.c b/drivers/media/i2c/ir-kbd-i2c.c
-index e8119ad0bc71..92376592455e 100644
---- a/drivers/media/i2c/ir-kbd-i2c.c
-+++ b/drivers/media/i2c/ir-kbd-i2c.c
-@@ -678,8 +678,8 @@ static int zilog_tx(struct rc_dev *rcdev, unsigned int *txbuf,
- 		goto out_unlock;
- 	}
- 
--	i = i2c_master_recv(ir->tx_c, buf, 1);
--	if (i != 1) {
-+	ret = i2c_master_recv(ir->tx_c, buf, 1);
-+	if (ret != 1) {
- 		dev_err(&ir->rc->dev, "i2c_master_recv failed with %d\n", ret);
- 		ret = -EIO;
- 		goto out_unlock;
--- 
-2.30.2
-
+Best regards,
+Isabella
