@@ -2,156 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B8133755CD
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:42:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2D293755D0
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:43:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234931AbhEFOnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:43:01 -0400
-Received: from ssl.serverraum.org ([176.9.125.105]:46997 "EHLO
-        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234694AbhEFOmw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:42:52 -0400
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id D20892224B;
-        Thu,  6 May 2021 16:41:51 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620312112;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GuA+4sdxtI/hmbjVq0gs21HsQjNMUl4w3yNrwMHelvY=;
-        b=suCseM4bfzq/SZtMdL0bB6+YBUWFiltAu8P0KUiNA+3Drf/Om7pUpKABkLJ22IfZpVypJ0
-        9ZA6E7ehkh6GfoDCL2EXx2ZZM3FaKmJ9bgI56NsdJGLI/Y/6F3r2K8ujvH5kjOYJyMQ4uY
-        7c//1SnULrOVGD66kZ51XuYUEBSHUAA=
+        id S234841AbhEFOos (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:44:48 -0400
+Received: from mga04.intel.com ([192.55.52.120]:29769 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234879AbhEFOoo (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 10:44:44 -0400
+IronPort-SDR: MGAqm3kgkelHPbPBOZS+ulxU6ASvUr6YMSpBQ8QCxZqti25yJoC5dneQaLGKjgWveQotUUFNq8
+ AMqBZpdrkP0Q==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="196466070"
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="196466070"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 07:43:45 -0700
+IronPort-SDR: sE8INicbJTsKqjFUieVRs/DsyzxtV8lKQGDS/Rfr41Kwcv3yeMncxqsBteQNgJGeAVy/7Zd8rl
+ M7kpTOs0nZ4g==
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="434381589"
+Received: from yjin15-mobl1.ccr.corp.intel.com (HELO [10.255.29.104]) ([10.255.29.104])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 07:43:41 -0700
+Subject: Re: [PATCH v1 2/2] perf header: Support hybrid CPU_PMU_CAPS
+To:     Jiri Olsa <jolsa@redhat.com>
+Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com,
+        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com
+References: <20210430074602.3028-1-yao.jin@linux.intel.com>
+ <20210430074602.3028-2-yao.jin@linux.intel.com> <YJFjTCsk9dCd6QP7@krava>
+ <c0bd3baa-3209-23f3-7058-c6908434de2d@linux.intel.com>
+ <YJPtmyzTEe/IUID4@krava>
+From:   "Jin, Yao" <yao.jin@linux.intel.com>
+Message-ID: <5cafb729-1dcd-ad4a-507b-1155c16a785e@linux.intel.com>
+Date:   Thu, 6 May 2021 22:43:39 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <YJPtmyzTEe/IUID4@krava>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Thu, 06 May 2021 16:41:51 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
-        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
-        allan.nielsen@microchip.com,
-        Claudiu Manoil <claudiu.manoil@nxp.com>, davem@davemloft.net,
-        idosch@mellanox.com, joergen.andreasen@microchip.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Po Liu <po.liu@nxp.com>, vinicius.gomes@intel.com
-Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for TAS
- config
-In-Reply-To: <20210506135007.ul3gpdecq427tvgr@skbuf>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
- <20210504170514.10729-1-michael@walle.cc>
- <20210504181833.w2pecbp2qpuiactv@skbuf>
- <c7618025da6723418c56a54fe4683bd7@walle.cc>
- <20210504185040.ftkub3ropuacmyel@skbuf>
- <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
- <20210504191739.73oejybqb6z7dlxr@skbuf>
- <d933eef300cb1e1db7d36ca2cb876ef6@walle.cc>
- <20210504213259.l5rbnyhxrrbkykyg@skbuf>
- <efe5ac03ceddc8ff472144b5fe9fd046@walle.cc>
- <20210506135007.ul3gpdecq427tvgr@skbuf>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <879df38ab1fb6d8fb8f371bfd5e8c213@walle.cc>
-X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-05-06 15:50, schrieb Vladimir Oltean:
-> On Thu, May 06, 2021 at 03:25:07PM +0200, Michael Walle wrote:
->> Am 2021-05-04 23:33, schrieb Vladimir Oltean:
->> > [ trimmed the CC list, as this is most likely spam for most people ]
->> >
->> > On Tue, May 04, 2021 at 10:23:11PM +0200, Michael Walle wrote:
->> > > Am 2021-05-04 21:17, schrieb Vladimir Oltean:
->> > > > On Tue, May 04, 2021 at 09:08:00PM +0200, Michael Walle wrote:
->> > > > > > > > > As explained in another mail in this thread, all queues are marked as
->> > > > > > > > > scheduled. So this is actually a no-op, correct? It doesn't matter if
->> > > > > > > > > it set or not set for now. Dunno why we even care for this bit then.
->> > > > > > > >
->> > > > > > > > It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the available
->> > > > > > > > throughput when set.
->> > > > > > >
->> > > > > > > Ahh, I see now. All queues are "scheduled" but the guard band only
->> > > > > > > applies
->> > > > > > > for "non-scheduled" -> "scheduled" transitions. So the guard band is
->> > > > > > > never
->> > > > > > > applied, right? Is that really what we want?
->> > > > > >
->> > > > > > Xiaoliang explained that yes, this is what we want. If the end user
->> > > > > > wants a guard band they can explicitly add a "sched-entry 00" in the
->> > > > > > tc-taprio config.
->> > > > >
->> > > > > You're disabling the guard band, then. I figured, but isn't that
->> > > > > suprising for the user? Who else implements taprio? Do they do it in
->> > > > > the
->> > > > > same way? I mean this behavior is passed right to the userspace and
->> > > > > have
->> > > > > a direct impact on how it is configured. Of course a user can add it
->> > > > > manually, but I'm not sure that is what we want here. At least it
->> > > > > needs
->> > > > > to be documented somewhere. Or maybe it should be a switchable option.
->> > > > >
->> > > > > Consider the following:
->> > > > > sched-entry S 01 25000
->> > > > > sched-entry S fe 175000
->> > > > > basetime 0
->> > > > >
->> > > > > Doesn't guarantee, that queue 0 is available at the beginning of
->> > > > > the cycle, in the worst case it takes up to
->> > > > > <begin of cycle> + ~12.5us until the frame makes it through (given
->> > > > > gigabit and 1518b frames).
->> > > > >
->> > > > > Btw. there are also other implementations which don't need a guard
->> > > > > band (because they are store-and-forward and cound the remaining
->> > > > > bytes). So yes, using a guard band and scheduling is degrading the
->> > > > > performance.
->> > > >
->> > > > What is surprising for the user, and I mentioned this already in another
->> > > > thread on this patch, is that the Felix switch overruns the time gate (a
->> > > > packet taking 2 us to transmit will start transmission even if there is
->> > > > only 1 us left of its time slot, delaying the packets from the next time
->> > > > slot by 1 us). I guess that this is why the ALWAYS_GUARD_BAND_SCH_Q bit
->> > > > exists, as a way to avoid these overruns, but it is a bit of a poor tool
->> > > > for that job. Anyway, right now we disable it and live with the
->> > > > overruns.
->> > >
->> > > We are talking about the same thing here. Why is that a poor tool?
->> >
->> > It is a poor tool because it revolves around the idea of "scheduled
->> > queues" and "non-scheduled queues".
->> >
->> > Consider the following tc-taprio schedule:
->> >
->> > 	sched-entry S 81 2000 # TC 7 and 0 open, all others closed
->> > 	sched-entry S 82 2000 # TC 7 and 1 open, all others closed
->> > 	sched-entry S 84 2000 # TC 7 and 2 open, all others closed
->> > 	sched-entry S 88 2000 # TC 7 and 3 open, all others closed
->> > 	sched-entry S 90 2000 # TC 7 and 4 open, all others closed
->> > 	sched-entry S a0 2000 # TC 7 and 5 open, all others closed
->> > 	sched-entry S c0 2000 # TC 7 and 6 open, all others closed
->> >
->> > Otherwise said, traffic class 7 should be able to send any time it
->> > wishes.
->> 
->> What is the use case behind that? TC7 (with the highest priority)
->> may always take precedence of the other TCs, thus what is the point
->> of having a dedicated window for the others.
+Hi Jiri,
+
+On 5/6/2021 9:22 PM, Jiri Olsa wrote:
+> On Thu, May 06, 2021 at 12:59:08PM +0800, Jin, Yao wrote:
+>> Hi Jiri,
+>>
+>> On 5/4/2021 11:07 PM, Jiri Olsa wrote:
+>>> On Fri, Apr 30, 2021 at 03:46:02PM +0800, Jin Yao wrote:
+>>>> On hybrid platform, it may have several cpu pmus, such as,
+>>>> "cpu_core" and "cpu_atom". The CPU_PMU_CAPS feature in perf
+>>>> header needs to be improved to support multiple cpu pmus.
+>>>>
+>>>> The new layout in header is defined as:
+>>>>
+>>>> <nr_caps>
+>>>> <caps string>
+>>>> <caps string>
+>>>> <pmu name>
+>>>> <nr of rest pmus>
+>>>
+>>> not sure why is the 'nr of rest pmus' needed
+>>>
+>>
+>> The 'nr of rest pmus' indicates the remaining pmus which are waiting for process.
+>>
+>> For example,
+>>
+>> <nr_caps>
+>> <caps string>
+>> "cpu_core"
+>> 1
+>> <nr_caps>
+>> <caps string>
+>> "cpu_atom"
+>> 0
+>>
+>> When we see '0' in data file processing, we know all the pmu have been processed yet.
+>>
+>>> the current format is:
+>>>
+>>>           u32 nr_cpu_pmu_caps;
+>>>           {
+>>>                   char    name[];
+>>>                   char    value[];
+>>>           } [nr_cpu_pmu_caps]
+>>>
+>>>
+>>> I guess we could extend it to:
+>>>
+>>>           u32 nr_cpu_pmu_caps;
+>>>           {
+>>>                   char    name[];
+>>>                   char    value[];
+>>>           } [nr_cpu_pmu_caps]
+>>> 	char pmu_name[]
+>>>
+>>>           u32 nr_cpu_pmu_caps;
+>>>           {
+>>>                   char    name[];
+>>>                   char    value[];
+>>>           } [nr_cpu_pmu_caps]
+>>> 	char pmu_name[]
+>>>
+>>> 	...
+>>>
+>>> and we could detect the old format by checking that there's no
+>>> pmu name.. but maybe I'm missing something, I did not check deeply,
+>>> please let me know
+>>>
+>>
+>> Actually we do the same thing, but I just add an extra 'nr of rest pmus'
+>> after the pmu_name. The purpose of 'nr of rest pmus' is when we see '0' at
+>> 'nr of rest pmus', we know that all pmus have been processed.
+>>
+>> Otherwise, we have to continue reading data file till we find something
+>> incorrect and then finally drop the last read data.
 > 
-> Worst case latency is obviously better for an intermittent stream (not
-> more than one packet in flight at a time) in TC7 than it is for any
-> stream in TC6-TC0. But intermittent streams in TC6-TC0 also have their
-> own worst case guarantees (assuming that 2000 ns is enough to fit one
-> TC 7 frame and one frame from the TC6-TC0 range).
+> you have the size of the feature data right? I think we use
+> it in other cases to check if there are more data
+> 
 
-Oh and I missed that, TC0-TC6 probably won't work because that gate is
-too narrow (12.5us guard band) unless of course you set MAXSDU to a
-smaller value. Which would IMHO be the correct thing to do here.
+The challenge for us is if we need to compatible with the old perf.data which was generated by old 
+perf tool.
 
--michael
+For the old perf.data, the layout in header is:
+
+nr of caps
+caps string 1
+caps string 2
+...
+caps string N
+
+It doesn't carry with any other fields such as size of caps data.
+
+To be compatible with old perf.data, so I have to extend the layout to:
+
+nr of caps for pmu 1
+caps string 1
+caps string 2
+...
+caps string N
+name of pmu 1
+nr of rest pmus
+
+nr of caps for pmu2
+caps string 1
+caps string 2
+...
+caps string N
+name of pmu 2
+nr of rest pmus
+
+When the new perf tool detects the string such as "cpu_", it can know that it's the pmu name field 
+in new perf.data, otherwise it's the old perf.data.
+
+If we add new field such as "size" to the layout, I'm afraid the new perf tool can not process the 
+old perf.data correctly.
+
+If we don't need to support old perf.data, that makes things easy.
+
+>>
+>> So is this solution acceptable?
+>>
+>>> also would be great to move the format change and storing hybrid
+>>> pmus in separate patches
+>>>
+>>
+>> Maybe we have to put the storing and processing into one patch.
+>>
+>> Say patch 1 contains the format change and storing hybrid pmus. And patch 2
+>> contains the processing for the new format. If the repo only contains the
+>> patch 1, I'm afraid that may introduce the compatible issue.
+> 
+> maybe you can have change of caps format in one patch
+> and storing/processing hybrid pmus in another?
+> 
+
+But there is no data structure defined in header.h for each feature.
+
+It directly uses do_write/do_write_string in 'write()' ops to write the feature data.
+
+So for the new layout, as I mentioned above, if we change the layout to
+
+nr of caps for pmu 1
+caps string 1
+caps string 2
+...
+caps string N
+"cpu"
+0
+
+We need to call do_write/do_write_string, actually it's the storing method. So I don't understand 
+well for having changes of caps format in one patch, I'm sorry about that. :(
+
+Thanks
+Jin Yao
+
+> jirka
+> 
