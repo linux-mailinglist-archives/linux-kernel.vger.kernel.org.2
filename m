@@ -2,79 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19E6B374D47
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 89771374D48
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:09:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230473AbhEFCKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:10:02 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17589 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhEFCJ7 (ORCPT
+        id S230498AbhEFCKU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:10:20 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17466 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhEFCKS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:09:59 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FbH4d4KqQz1BHys;
-        Thu,  6 May 2021 10:06:25 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.72) by DGGEMS407-HUB.china.huawei.com
- (10.3.19.207) with Microsoft SMTP Server id 14.3.498.0; Thu, 6 May 2021
- 10:08:59 +0800
-Subject: Re: [PATCH v2 1/3] dt-bindings: serial: Normalize the node name of
- the serial port
-To:     Rob Herring <robh@kernel.org>
-CC:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-serial <linux-serial@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <20210422085837.513-1-thunder.leizhen@huawei.com>
- <20210422085837.513-2-thunder.leizhen@huawei.com>
- <20210430151825.GA3339934@robh.at.kernel.org>
-From:   "Leizhen (ThunderTown)" <thunder.leizhen@huawei.com>
-Message-ID: <f50b1b84-cac1-0f2e-4821-5e1c76af5e31@huawei.com>
-Date:   Thu, 6 May 2021 10:08:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Wed, 5 May 2021 22:10:18 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FbH510mBPzkWpY;
+        Thu,  6 May 2021 10:06:45 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 6 May 2021
+ 10:09:18 +0800
+Subject: Re: [PATCH] f2fs: set file as cold when file defragmentation
+To:     <daejun7.park@samsung.com>,
+        "jaegeuk@kernel.org" <jaegeuk@kernel.org>,
+        "chao@kernel.org" <chao@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-f2fs-devel@lists.sourceforge.net" 
+        <linux-f2fs-devel@lists.sourceforge.net>
+References: <CGME20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
+ <20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <3a0ab201-9546-d523-abc7-79df5f637f14@huawei.com>
+Date:   Thu, 6 May 2021 10:09:18 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-In-Reply-To: <20210430151825.GA3339934@robh.at.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20210429062005epcms2p352ef77f96ab66cbffe0c0ab6c1b62d8a@epcms2p3>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.177.72]
+X-Originating-IP: [10.136.110.154]
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2021/4/29 14:20, Daejun Park wrote:
+> In file defragmentation by ioctl, all data blocks in the file are
+> re-written out-of-place. File defragmentation implies user will not update
+> and mostly read the file. So before the defragmentation, we set file
+> temperature as cold for better block allocation.
 
+I don't think all fragmented files are cold, e.g. db file.
 
-On 2021/4/30 23:18, Rob Herring wrote:
-> On Thu, Apr 22, 2021 at 04:58:35PM +0800, Zhen Lei wrote:
->> Only letters, digits, and commas that describe the base address of the
->> serial port in hexadecimal format are allowed.
->>
->> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
->> ---
->>  Documentation/devicetree/bindings/serial/serial.yaml | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/serial/serial.yaml b/Documentation/devicetree/bindings/serial/serial.yaml
->> index 65e75d040521..71aec7fda07d 100644
->> --- a/Documentation/devicetree/bindings/serial/serial.yaml
->> +++ b/Documentation/devicetree/bindings/serial/serial.yaml
->> @@ -21,7 +21,7 @@ description:
->>  
->>  properties:
->>    $nodename:
->> -    pattern: "^serial(@.*)?$"
->> +    pattern: "^serial(@[0-9a-f,]+)?$"
-> 
-> The format of unit-addresses is dictated by the bus (parent), so this is 
-> the wrong place to enforce this. 
+We have separated interface (via f2fs_xattr_advise_handler, e.g. setfattr -n
+"system.advise" -v value) to indicate this file is a hot/cold file, so my
+suggestion is after file defragmentation, if you think this file is cold, and
+use setxattr() to set it as cold.
 
-Okay, so I'll leave this place unchanged.
+Thanks,
 
 > 
-> Rob
+> Signed-off-by: Daejun Park <daejun7.park@samsung.com>
+> ---
+>   fs/f2fs/file.c | 3 +++
+>   1 file changed, 3 insertions(+)
 > 
-> .
+> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+> index d697c8900fa7..dcac965a05fe 100644
+> --- a/fs/f2fs/file.c
+> +++ b/fs/f2fs/file.c
+> @@ -2669,6 +2669,9 @@ static int f2fs_defragment_range(struct f2fs_sb_info *sbi,
+>   	map.m_len = pg_end - pg_start;
+>   	total = 0;
+>   
+> +	if (!file_is_cold(inode))
+> +		file_set_cold(inode);
+> +
+>   	while (map.m_lblk < pg_end) {
+>   		pgoff_t idx;
+>   		int cnt = 0;
 > 
-
