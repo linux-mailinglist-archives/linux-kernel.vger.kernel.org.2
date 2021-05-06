@@ -2,69 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B71037566F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:20:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B548A375672
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:20:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235135AbhEFPVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:21:40 -0400
-Received: from mail-oo1-f45.google.com ([209.85.161.45]:36726 "EHLO
-        mail-oo1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235036AbhEFPVj (ORCPT
+        id S235149AbhEFPVu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:21:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:41499 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234993AbhEFPVs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:21:39 -0400
-Received: by mail-oo1-f45.google.com with SMTP id c6-20020a4aacc60000b02901e6260b12e2so1317576oon.3;
-        Thu, 06 May 2021 08:20:41 -0700 (PDT)
+        Thu, 6 May 2021 11:21:48 -0400
+Received: from mail-qk1-f197.google.com ([209.85.222.197])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lefo1-00037s-ET
+        for linux-kernel@vger.kernel.org; Thu, 06 May 2021 15:20:49 +0000
+Received: by mail-qk1-f197.google.com with SMTP id b19-20020a05620a0893b02902e956b29f5dso3668872qka.16
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:20:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=whsr6U50KYm9D8L6FmJ2OAyclexbSVjplvjpW1E11vw=;
-        b=dMwEn+zu7UPL9dqLN1GDg6VlPhQEEX6QsL7sojI/bxcBJTQSdn30weaxFG1DOBM1Bc
-         uMmZy9y6jUGlPCvbgKIY1gq98DryNZXqsT4WS4YGnwX1bii0xoomnJev8hLv1higwxnC
-         Agv5NlXBw3XMtO7a3a+uEKA+wwHN2FklJP3Bh42TOV38QHA2qiI/hWVty9NhXvCoT6GF
-         mYiQ9TwkbBVK07MNcWmxUCnyKFW685QsgQkyvsivaKepDtEioGrQKQYeiZQxnzdr73J7
-         nZ9ZNMTJcx+oyk1ejKkWG8BSsbcHs0Fez7sc+QSoLWUfnc5NFKPA9sqFCn8e4HPCc5pG
-         SM4w==
-X-Gm-Message-State: AOAM531ekSp+pTJX8kvwUfOO/TYkaD+r4UqLlF7V7pAV9d/01AjGUZpH
-        q5WQ1lYeetk6ATGaJnDn0GTwFbobJA==
-X-Google-Smtp-Source: ABdhPJw16sVpGPNgz7HqYvCPwzzgvWhVKxjCZmI5H5DOosESfBXIBGTFr34MVbIbmTi40r5y5+KmHw==
-X-Received: by 2002:a4a:1d85:: with SMTP id 127mr3947759oog.18.1620314440638;
-        Thu, 06 May 2021 08:20:40 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id f13sm638536ote.46.2021.05.06.08.20.39
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=cQf4MjiqPeV3cfZrYpEWKZORZH0m9Y7Wed5/vpwhH/8=;
+        b=N3hMPnuNj6HTnxpQ+RhQACw4wBNDyOveNNbUKNt9q4DM+LLPco7jhFnACN4L5QifBR
+         DCl59wGkZIagoNEW7OmMjOJfzBa6EcHH1Q1wTKa3tDDKJoJ8tx0BsNkih3dn1u4YwtJq
+         mgLe9FS7y2Hevet8WE/RTu6yd68Jy0e8dI24EW3rfIZh+g8OLuvmqG6PAPFFAS7VkSR8
+         SbW8tNUS/cMMnuMuxDh6lGsbDBQgvqaeAB0wDU5lxCuZgHwQMVOfHNjU6KzxOtfxCLib
+         mmJJFuEJIvjA4cnw0FPi7fasIo9vgcTBvm4dbh/obHqBbg2fBBk5Yq4kimwMyU6kqXN/
+         KmFQ==
+X-Gm-Message-State: AOAM532Yz4gj7RywgAsUQCf7yKE0UHz9ChTzfnFCI32vpwXzz0B5SVPK
+        jg7JWguzouwGFy+Kd3izUQS90MfJkuqZCVV+ABHpgeRk1WtZqJMrM/8A7ZEu90G6uASMeiznu/h
+        B1FFcFU+xzeVdpNJ6mvmL9XN8ulUhDrIQkNgFg4X9Qw==
+X-Received: by 2002:a37:6850:: with SMTP id d77mr4605623qkc.57.1620314448558;
+        Thu, 06 May 2021 08:20:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwiaCcE9k/KLZzFM/F0Z3mcERK+7wGrNRw+WINMCIvWA+NLoEI5nNx/djusvRAdAwLVIH/T7g==
+X-Received: by 2002:a37:6850:: with SMTP id d77mr4605603qkc.57.1620314448407;
+        Thu, 06 May 2021 08:20:48 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.49.3])
+        by smtp.gmail.com with ESMTPSA id 19sm2115882qkn.111.2021.05.06.08.20.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 08:20:39 -0700 (PDT)
-Received: (nullmailer pid 347795 invoked by uid 1000);
-        Thu, 06 May 2021 15:20:38 -0000
-Date:   Thu, 6 May 2021 10:20:38 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-Cc:     Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Mark Brown <broonie@kernel.org>,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Kathiravan T <kathirav@codeaurora.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Andy Gross <agross@kernel.org>
-Subject: Re: [PATCH 1/2] dt-bindings: regulator: qcom: Document PM8226 smd
- regulator
-Message-ID: <20210506152038.GA347737@robh.at.kernel.org>
-References: <20210502115304.8570-1-bartosz.dudziak@snejp.pl>
+        Thu, 06 May 2021 08:20:47 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] ARM: dts: s5pv210: remove unused Atmel touchscreen properties in Goni
+Date:   Thu,  6 May 2021 11:20:44 -0400
+Message-Id: <20210506152044.37579-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210502115304.8570-1-bartosz.dudziak@snejp.pl>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 02 May 2021 13:53:03 +0200, Bartosz Dudziak wrote:
-> Document the PM8226 SMD-RPM regulator entry.
-> 
-> Signed-off-by: Bartosz Dudziak <bartosz.dudziak@snejp.pl>
-> ---
->  .../bindings/regulator/qcom,smd-rpm-regulator.yaml           | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
+The Atmel bindings and driver do not use custom properties like
+x/y-size, burst length, threshold and so on.  The driver gets necessary
+data from the device directly.  Remove unused properties to fix
+dtbs_check warning:
 
-Acked-by: Rob Herring <robh@kernel.org>
+  arch/arm/boot/dts/s5pv210-goni.dt.yaml: touchscreen@4a:
+    'atmel,burst-length', 'atmel,orientation', 'atmel,threshold', 'atmel,x-line', 'atmel,x-size',
+    'atmel,y-line', 'atmel,y-size' do not match any of the regexes
+
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ arch/arm/boot/dts/s5pv210-goni.dts | 9 ---------
+ 1 file changed, 9 deletions(-)
+
+diff --git a/arch/arm/boot/dts/s5pv210-goni.dts b/arch/arm/boot/dts/s5pv210-goni.dts
+index 5c1e12d39747..c6f39147cb96 100644
+--- a/arch/arm/boot/dts/s5pv210-goni.dts
++++ b/arch/arm/boot/dts/s5pv210-goni.dts
+@@ -358,15 +358,6 @@ touchscreen@4a {
+ 		reg = <0x4a>;
+ 		interrupt-parent = <&gpj0>;
+ 		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
+-
+-		atmel,x-line = <17>;
+-		atmel,y-line = <11>;
+-		atmel,x-size = <800>;
+-		atmel,y-size = <480>;
+-		atmel,burst-length = <0x21>;
+-		atmel,threshold = <0x28>;
+-		atmel,orientation = <1>;
+-
+ 		vdd-supply = <&tsp_reg>;
+ 	};
+ };
+-- 
+2.25.1
+
