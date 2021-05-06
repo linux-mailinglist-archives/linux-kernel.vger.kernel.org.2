@@ -2,96 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AF2F3751A0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1150C3751A6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:38:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232929AbhEFJjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:39:15 -0400
-Received: from mail.kingsoft.com ([114.255.44.146]:3140 "EHLO
-        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232268AbhEFJjL (ORCPT
+        id S233847AbhEFJju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:39:50 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40703 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S232268AbhEFJjs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:39:11 -0400
-X-AuditID: 0a580157-bd3ff70000027901-ed-6093b8f85b22
-Received: from mail.kingsoft.com (localhost [10.88.1.79])
-        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (Client did not present a certificate)
-        by mail.kingsoft.com (SMG-1-NODE-87) with SMTP id E1.2D.30977.8F8B3906; Thu,  6 May 2021 17:38:00 +0800 (HKT)
-Received: from alex-virtual-machine (10.88.1.103) by KSBJMAIL4.kingsoft.cn
- (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 6 May 2021
- 17:37:58 +0800
-Date:   Thu, 6 May 2021 17:37:57 +0800
-From:   Aili Yao <yaoaili@kingsoft.com>
-To:     Naoya Horiguchi <nao.horiguchi@gmail.com>
-CC:     <linux-mm@kvack.org>, Tony Luck <tony.luck@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        "David Hildenbrand" <david@redhat.com>,
-        Borislav Petkov <bp@alien8.de>,
-        "Andy Lutomirski" <luto@kernel.org>,
-        Naoya Horiguchi <naoya.horiguchi@nec.com>,
-        Jue Wang <juew@google.com>, <linux-kernel@vger.kernel.org>,
-        <yaoaili126@gmail.com>
-Subject: Re: [PATCH v4 1/2] mm/memory-failure: Use a mutex to avoid
- memory_failure() races
-Message-ID: <20210506173757.586580bd@alex-virtual-machine>
-In-Reply-To: <20210427062953.2080293-2-nao.horiguchi@gmail.com>
-References: <20210427062953.2080293-1-nao.horiguchi@gmail.com>
-        <20210427062953.2080293-2-nao.horiguchi@gmail.com>
-Organization: kingsoft
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
+        Thu, 6 May 2021 05:39:48 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620293930;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=p52RRVDShx6NwBL9aQkjgj+5ixdcF28Fa0Bi2oa7Re8=;
+        b=Y74+q95l+avRgtjVgovZ1GVmy81xk7ftI5l543OAkCFY+3V4hjzyaj0TIz72oKI85dajGt
+        7DVYSuuDVEHy/i8RuoLt+Z2mW5GG+7izqlmcmexvxsLZz51lQmIN1NTHJGlKmQj+4gxWWk
+        T9FsI5lcv+nAXQSRLIObGNtdsfk7bCM=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-500-pOzWRkK4OFKYLDv66KN6gQ-1; Thu, 06 May 2021 05:38:49 -0400
+X-MC-Unique: pOzWRkK4OFKYLDv66KN6gQ-1
+Received: by mail-ed1-f69.google.com with SMTP id d13-20020a056402144db0290387e63c95d8so2344119edx.11
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 02:38:48 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=p52RRVDShx6NwBL9aQkjgj+5ixdcF28Fa0Bi2oa7Re8=;
+        b=kCYLAj3BOjQulagHMjNRpY3U5p/ox9Xoqkoazo9kARlN9o2ziBM8XloFYQ9ZnmBdDl
+         JbWByGmdUO5dYzYislRxFMeky2lhoggVUPzLeARuViuGR0OhIJ7Mj8/+XA+ac13arOq+
+         boqRjw5a/cRcxegmDpkXSl/kJb3Qp4uMu0dZ4u0ya3HczYPC0iOW1l4UrbDnRwKcf8yh
+         A6rG3v/HGjUet6L6rcWgFW4x9T/W+WoL/gBuWovTf35zT+7dSNRR+owokhIeuJBJ4Jdg
+         jqbft0cMG6fO0uRJ/u2vE9rU5ue54rqIdItx9Z4PIlKoH3yduqaDvh1Ytv4IMN25yRmP
+         Grww==
+X-Gm-Message-State: AOAM5300IFLamX95LHPFC4yFpWCDDTTA1GvzCl/7U2to5MAOIqFCsvOj
+        tOCl2xlJsxn9nlPYFDIhzVVlcwja+p0ZaLKNVR3+SnoQDboIHBolgZMYHpltrpDuJs5+6YgYxfT
+        vJyVdkLdlm6HLvnnSR2TBQV4P
+X-Received: by 2002:aa7:d84e:: with SMTP id f14mr4064238eds.220.1620293927881;
+        Thu, 06 May 2021 02:38:47 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx+4qyVOHI06BR7s1AYqjMSV9ZbPDO6ac3yUuTtnTY2Clx45ALcLve0fnR6T0PF02cdmOccWQ==
+X-Received: by 2002:aa7:d84e:: with SMTP id f14mr4064221eds.220.1620293927722;
+        Thu, 06 May 2021 02:38:47 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
+        by smtp.gmail.com with ESMTPSA id e4sm1015832ejh.98.2021.05.06.02.38.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 02:38:47 -0700 (PDT)
+Subject: Re: [PATCH v7 1/7] MAINTAINERS: Add Advantech AHC1EC0 embedded
+ controller entry
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Campion Kang <campion.kang@advantech.com.tw>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Mark Gross <mgross@linux.intel.com>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Jean Delvare <jdelvare@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-watchdog@vger.kernel.org, linux-hwmon@vger.kernel.org,
+        Linux Documentation List <linux-doc@vger.kernel.org>,
+        Platform Driver <platform-driver-x86@vger.kernel.org>,
+        AceLan Kao <chia-lin.kao@canonical.com>
+References: <20210506081619.2443-1-campion.kang@advantech.com.tw>
+ <6b86bd36-b934-c204-9e56-079ab8cd4b54@redhat.com>
+ <CAHp75VdPmkKTf_fbjAjrD3GC1ZZLuYsTJa0QtA3tuYtWwCgPMQ@mail.gmail.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <cf181436-152c-7cd8-76cf-350705cd2bcb@redhat.com>
+Date:   Thu, 6 May 2021 11:38:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
+In-Reply-To: <CAHp75VdPmkKTf_fbjAjrD3GC1ZZLuYsTJa0QtA3tuYtWwCgPMQ@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.88.1.103]
-X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
- (10.88.1.79)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprMIsWRmVeSWpSXmKPExsXCFcHor/tjx+QEg2U3mS3mrF/DZvF5wz82
-        i6/rfzFb3LxlYnF51xw2i3tr/rNanN+1ltVi1bw7zBYXGw8wWpyZVmTx5sI9FotnrVdZHHg8
-        vrf2sXjsnHWX3WPBplKPxXteMnlsWtXJ5rHp0yR2jxMzfrN4vLi6kcXj/b6rbB6bT1d7fN4k
-        F8AdxWWTkpqTWZZapG+XwJVxs/8SW8EGjoolNwwbGO+zdTFycEgImEg8euzaxcjFISQwnUni
-        0LUt7BDOM0aJ95OuMXcxcnKwCKhILF13lQXEZhNQldh1bxYriC0ioCsxYVsvI0gDs8A/JolJ
-        Vw8wgSSEBWIkdrzYxwhi8wpYSay6cBmsgVPAXqJh/SGwQUICxRLr7s0Cq+EXEJPovfKfCeIi
-        e4nH6xUhWgUlTs58AlbOLKAjcWLVMWYIW15i+9s5zBBjFCUOL/nFDmJLAMXv/p7OCGHHSjQd
-        uMU2gVF4FpJRs5CMmoVk1AJG5lWMLMW56YabGCHxFr6DcV7TR71DjEwcjIcYJTiYlUR4Ty+a
-        nCDEm5JYWZValB9fVJqTWnyIUZqDRUmct3EmUEogPbEkNTs1tSC1CCbLxMEp1cBUZbvVJ99r
-        n4ThOy4mn/e2fWu3dxpECWcFPfi6bndBDPuW+nwRPlHeX7PS5abv/jvnnPfW/lt3F8TdP+v8
-        /V4UM9/0PzqrtnYI3Dly9/yEe4t5I0pYlHdaS+mwxjZOcW1dKTol/RKPVui5Y/tr+B9NfnOM
-        QX7v+5f/ty4v9RBz6Pbr3u2TMWVjx46K1WGRYp9er07c8IQ1ZTLjkxUfvT13s+tvNrtj2Cn5
-        T7Ut9aDBhOh2Tk+dG7tn7bwn+ThW7sSPlpJrrcsCV9dF7i09lS2wOOvewjVFpzsXFztfWln2
-        6vXJX5VVeVdePN4Y83St5dfqvq2fip1yZz2TNjEOjTZctq7Bf4mU5zdPC2H+CpWtSizFGYmG
-        WsxFxYkAVOlEXCYDAAA=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Apr 2021 15:29:52 +0900
-Naoya Horiguchi <nao.horiguchi@gmail.com> wrote:
+Hi,
 
-> From: Tony Luck <tony.luck@intel.com>
+On 5/6/21 11:23 AM, Andy Shevchenko wrote:
+> On Thu, May 6, 2021 at 11:48 AM Hans de Goede <hdegoede@redhat.com> wrote:
+>> I'm replying here since this series has no cover-letter, for
+>> the next version for a series touching so many different
+>> sub-systems it would be good to start with a cover-letter
+>> providing some background info on the series.
+>>
+>> I see this is binding to an ACPI device, yet it is also using
+>> devicetree bindings and properties.
+>>
+>> So I take it this means that your ACPI tables are using the
+>> optional capability of embedded device-tree blobs inside the
+>> ACPI tables ?
+>>
+>> That is an unusual combination on a x86 device, note it is
+>> not wrong
 > 
-> There can be races when multiple CPUs consume poison from the same
-> page. The first into memory_failure() atomically sets the HWPoison
-> page flag and begins hunting for tasks that map this page. Eventually
-> it invalidates those mappings and may send a SIGBUS to the affected
-> tasks.
-> 
-> But while all that work is going on, other CPUs see a "success"
-> return code from memory_failure() and so they believe the error
-> has been handled and continue executing.
-> 
-> Fix by wrapping most of the internal parts of memory_failure() in
-> a mutex.
-> 
-> Signed-off-by: Tony Luck <tony.luck@intel.com>
-> Signed-off-by: Naoya Horiguchi <naoya.horiguchi@nec.com>
-> Reviewed-by: Borislav Petkov <bp@suse.de>
+> It's actually not okay. We have agreed at some point with DT people,
+> that ACPI should not use non-native variants of natively supported
+> things. For example, it shouldn't use "interrupt" property for IOxAPIC
+> (or xIC) provided interrupts, rather Interrupt() has to be used and so
+> on.
 
-Sorry to interrupt, I just thought one thing:
+Right, but that is not the case here, they are using 2 device-tree
+properties (1), from patch 3/7:
 
-This mutex seems not been bind to the error page, will there be some core case
-like test code or multi-poison case whick will break this mutex?
++properties:
++  compatible:
++    const: advantech,ahc1ec0
++
++  advantech,hwmon-profile:
++    description:
++      The number of sub-devices specified in the platform. Defines for the
++      hwmon profiles can found in dt-bindings/mfd/ahc1ec0-dt.
++    $ref: /schemas/types.yaml#/definitions/uint32
++    maxItems: 1
++
++  advantech,has-watchdog:
++    description:
++      Some implementations of the EC include a watchdog used to monitor the
++      system. This boolean flag is used to specify whether this watchdog is
++      present or not. Default is true, otherwise set to false.
++    type: boolean
 
-Thanks!
-Aili Yao 
+
+>> but AFAIK you are the first to do this on x86.
+> 
+> No, not the first. Once Intel tried to invent the pin control
+> configuration and muxing properties in ACPI, it was luckily rejected
+> (ACPI 6.x OTOH provides a set of special resources for that).
+> 
+> So, NAK from me, *if* it's really the case. ACPI tables must be revisited.
+
+AFAIK Advantech are not defining things for which an ACPI standard exists,
+although these 2 properties might just as well may be 2 simple ACPI integer
+methods, which would actually make things a bit simpler (.e.g it would
+allow dropping patch 2/7 and 3/7 from the set).
+
+Campion, any reason why you went this route; and can the ACPI tables
+still be changed? 
+
+Regards,
+
+Hans
+
