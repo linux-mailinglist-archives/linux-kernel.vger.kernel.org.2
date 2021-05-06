@@ -2,110 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E1FB375563
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:07:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3AC237555A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:03:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234449AbhEFOIZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:08:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42388 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234002AbhEFOIX (ORCPT
+        id S234464AbhEFOEH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:04:07 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17136 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233982AbhEFOEE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:08:23 -0400
-Received: from mail-pf1-x434.google.com (mail-pf1-x434.google.com [IPv6:2607:f8b0:4864:20::434])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CF806C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 07:07:25 -0700 (PDT)
-Received: by mail-pf1-x434.google.com with SMTP id c17so5221849pfn.6
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 07:07:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=EYJF+CvXD3aBnAOU+Y0IFXIVYLLmux02f20vgzqn8HA=;
-        b=F5/9Nqm/pfsKawCWoQRSLLilxxv4BIUx9YKwg7Xa48SlvX87tDXvKQOeFDoEy7ZSay
-         SRU6t8H9DgJgp3Kbu6LtHLI0rFljPgRy8nwXLF8KH3k9VPfzUlK9wO81rZEG1ltrfK6M
-         wkCLYzy8i3Cw9lsdvowJH6bXQAmkFcoRkbLOI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=EYJF+CvXD3aBnAOU+Y0IFXIVYLLmux02f20vgzqn8HA=;
-        b=o5MTGrzcEaIyzIKg20M3pH/K0KTd/awd7qE/wKGjmPEljIBOHP7SrtQ7V6uAjeswO/
-         Hx52bM03ntLWLjUQ+HFd1ujaaB3xL8TCPjFuwwfrAHGKXPx/VvnSp1lbjABgZooujNV5
-         FG8TEb1LDXkIplYVa2JrWY43ejvDl5sOTSmNd4HhM/FsMfpIwQ/beyjd9ErCxiH9QIvx
-         blzbU7e95MdkqYSI39naUJ6BtR+qqhfmi5FPFu0WEmVGqgshKSepBpkizRdWupb5hiED
-         Yp77YLQeEWMrDgpEEsl5WLaRoroCRuk0V3x0WxLmihph9hWiL31QPQHauXUX4KYWPN0X
-         854w==
-X-Gm-Message-State: AOAM532FJp2XoRdmN0GJVMMHrVY0gJ9PYe5IHJpRYFYx55YonRuBIut0
-        QBCVohzeRcRFdQkI04oz2CHb1w==
-X-Google-Smtp-Source: ABdhPJzZIZMveJcinDNL9FXFLEAxnZs+j5CTquso3wImVAZqo9hpD+3ZLETj8pci5tWzCHgeAZfs+Q==
-X-Received: by 2002:a65:4106:: with SMTP id w6mr4512760pgp.420.1620310045377;
-        Thu, 06 May 2021 07:07:25 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:421f:8358:b929:bc6d])
-        by smtp.gmail.com with ESMTPSA id t19sm2267387pjs.23.2021.05.06.07.07.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 07:07:24 -0700 (PDT)
-Date:   Thu, 6 May 2021 23:07:19 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Luo Jiaxing <luojiaxing@huawei.com>, sergey.senozhatsky@gmail.com,
-        rostedt@goodmis.org, john.ogness@linutronix.de,
-        linux-kernel@vger.kernel.org,
-        Sergey Senozhatsky <senozhatsky@chromium.org>,
-        linuxarm@huawei.com, bobo.shaobowang@huawei.com
-Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
- prb
-Message-ID: <YJP4F1UIt/eRZ96s@google.com>
-References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
- <YJPxj83F1sBjHHAE@alley>
+        Thu, 6 May 2021 10:04:04 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FbZvl24N7zqSgq;
+        Thu,  6 May 2021 21:59:47 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.498.0; Thu, 6 May 2021
+ 22:02:56 +0800
+From:   Ye Bin <yebin10@huawei.com>
+To:     <tytso@mit.edu>, <jack@suse.cz>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC:     Ye Bin <yebin10@huawei.com>
+Subject: [PATCH v4] ext4: Fix bug on in ext4_es_cache_extent as ext4_split_extent_at failed
+Date:   Thu, 6 May 2021 22:10:42 +0800
+Message-ID: <20210506141042.3298679-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJPxj83F1sBjHHAE@alley>
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.175.127.227]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for Cc-ing Petr
+We got follow bug_on when run fsstress with injecting IO fault:
+[130747.323114] kernel BUG at fs/ext4/extents_status.c:762!
+[130747.323117] Internal error: Oops - BUG: 0 [#1] SMP
+......
+[130747.334329] Call trace:
+[130747.334553]  ext4_es_cache_extent+0x150/0x168 [ext4]
+[130747.334975]  ext4_cache_extents+0x64/0xe8 [ext4]
+[130747.335368]  ext4_find_extent+0x300/0x330 [ext4]
+[130747.335759]  ext4_ext_map_blocks+0x74/0x1178 [ext4]
+[130747.336179]  ext4_map_blocks+0x2f4/0x5f0 [ext4]
+[130747.336567]  ext4_mpage_readpages+0x4a8/0x7a8 [ext4]
+[130747.336995]  ext4_readpage+0x54/0x100 [ext4]
+[130747.337359]  generic_file_buffered_read+0x410/0xae8
+[130747.337767]  generic_file_read_iter+0x114/0x190
+[130747.338152]  ext4_file_read_iter+0x5c/0x140 [ext4]
+[130747.338556]  __vfs_read+0x11c/0x188
+[130747.338851]  vfs_read+0x94/0x150
+[130747.339110]  ksys_read+0x74/0xf0
 
-On (21/05/06 15:39), Petr Mladek wrote:
-> 
-> Many printk messages might get accumulated when consoles were suspended.
-> They are proceed when console_unlock() is called in resume_console().
-> 
-> The possibility to pass the console lock owner was added to reduce the risk
-> of softlockup when too many messages were handled in an atomic context.
-> 
-> Now, resume_console() is always in a preemptible context that is safe
-> to handle all accumulated messages. The possibility to pass the console
-> lock owner actually makes things worse. The new owner might be in an atomic
-> context and might cause softlockup when processing all messages accumulated
-> when the console was suspended.
-> 
-> Create new console_unlock_preemptible() that will not allow to pass
-> the console lock owner. As a result, all accumulated messages will
-> be proceed in the safe preemptible process.
+If call ext4_ext_insert_extent failed but new extent already inserted, we just
+update "ex->ee_len = orig_ex.ee_len", this will lead to extent overlap, then
+cause bug on when cache extent.
+If call ext4_ext_insert_extent failed don't update ex->ee_len with old value.
+Maybe there will lead to block leak, but it can be fixed by fsck later.
 
-If we have a lot of pending messages in the logbuf, then there is
-something chatty - some context (task, irq) or maybe several contexts.
-And those contexts can continue adding messages, while we print them
-_exclusively_ from preemptible context only. without ever throttling down
-printk() callers - something that console_owner spinning and handover
-does for us. And those printk() callers can even preempt
-console_unlock_preemptible() and cause delays and lost messages.
+After we fixed above issue with v2 patch, but we got the same issue.
+ext4_split_extent_at:
+{
+        ......
+        err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+        if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
+            ......
+            ext4_ext_try_to_merge(handle, inode, path, ex); ->step(1)
+            err = ext4_ext_dirty(handle, inode, path + path->p_depth); ->step(2)
+            if (err)
+                goto fix_extent_len;
+        ......
+        }
+        ......
+fix_extent_len:
+        ex->ee_len = orig_ex.ee_len; ->step(3)
+        ......
+}
+If step(1) have been merged, but step(2) dirty extent failed, then go to
+fix_extent_len label to fix ex->ee_len with orig_ex.ee_len. But "ex" may not be
+old one, will cause overwritten. Then will trigger the same issue as previous.
+If step(2) failed, just return error, don't fix ex->ee_len with old value.
 
-In this regard, I'm afraid, console_unlock_preemptible() is somewhat
-similar, IMHO, to the solution which we reverted - removal of
-preempt_disable() before console_unlock() in vprintk_emit().
+This patch's modification is according to Jan Kara's suggestion in V3 patch:
+("https://patchwork.ozlabs.org/project/linux-ext4/patch/20210428085158.3728201-1-yebin10@huawei.com/")
+"I see. Now I understand your patch. Honestly, seeing how fragile is trying
+to fix extent tree after split has failed in the middle, I would probably
+go even further and make sure we fix the tree properly in case of ENOSPC
+and EDQUOT (those are easily user triggerable).  Anything else indicates a
+HW problem or fs corruption so I'd rather leave the extent tree as is and
+don't try to fix it (which also means we will not create overlapping
+extents)."
 
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/extents.c | 43 +++++++++++++++++++++++--------------------
+ 1 file changed, 23 insertions(+), 20 deletions(-)
 
-How about this.
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 77c84d6f1af6..cbf37b2cf871 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3206,7 +3206,10 @@ static int ext4_split_extent_at(handle_t *handle,
+ 		ext4_ext_mark_unwritten(ex2);
+ 
+ 	err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
+-	if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
++	if (err != -ENOSPC && err != -EDQUOT)
++		goto out;
++
++	if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
+ 		if (split_flag & (EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
+ 			if (split_flag & EXT4_EXT_DATA_VALID1) {
+ 				err = ext4_ext_zeroout(inode, ex2);
+@@ -3232,25 +3235,22 @@ static int ext4_split_extent_at(handle_t *handle,
+ 					      ext4_ext_pblock(&orig_ex));
+ 		}
+ 
+-		if (err)
+-			goto fix_extent_len;
+-		/* update the extent length and mark as initialized */
+-		ex->ee_len = cpu_to_le16(ee_len);
+-		ext4_ext_try_to_merge(handle, inode, path, ex);
+-		err = ext4_ext_dirty(handle, inode, path + path->p_depth);
+-		if (err)
+-			goto fix_extent_len;
+-
+-		/* update extent status tree */
+-		err = ext4_zeroout_es(inode, &zero_ex);
+-
+-		goto out;
+-	} else if (err)
+-		goto fix_extent_len;
+-
+-out:
+-	ext4_ext_show_leaf(inode, path);
+-	return err;
++		if (!err) {
++			/* update the extent length and mark as initialized */
++			ex->ee_len = cpu_to_le16(ee_len);
++			ext4_ext_try_to_merge(handle, inode, path, ex);
++			err = ext4_ext_dirty(handle, inode, path + path->p_depth);
++			if (!err)
++				/* update extent status tree */
++				err = ext4_zeroout_es(inode, &zero_ex);
++			/* If we failed at this point, we don't know in which
++			 * state the extent tree exactly is so don't try to fix
++			 * length of the original extent as it may do even more
++			 * damage.
++			 */
++			goto out;
++		}
++	}
+ 
+ fix_extent_len:
+ 	ex->ee_len = orig_ex.ee_len;
+@@ -3260,6 +3260,9 @@ static int ext4_split_extent_at(handle_t *handle,
+ 	 */
+ 	ext4_ext_dirty(handle, inode, path + path->p_depth);
+ 	return err;
++out:
++	ext4_ext_show_leaf(inode, path);
++	return err;
+ }
+ 
+ /*
+-- 
+2.25.4
 
-Can we count the number of lines that we print from the `current` context
-in console_unlock() and if after N messages there is no console_lock waiter
-waiting for the `current` to handover console lock ownership, then create
-one: schedule IRQ work that will become a console lock owner, spin on
-console lock and call console_unlock() once it acquired the ownership.
-That 'artificial' console lock owner will do the same - print N
-messages, if nothing wants to become a console lock owner then it'll
-queue another IRQ work.
