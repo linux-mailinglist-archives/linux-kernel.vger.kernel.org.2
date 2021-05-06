@@ -2,113 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F53137507F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:59:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11E78375082
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:00:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233658AbhEFIAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 04:00:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37828 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233602AbhEFIAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 04:00:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EC428613B5;
-        Thu,  6 May 2021 07:59:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620287945;
-        bh=uCfde1LX4DjDU+mPSYhIcs+Z/3xSasgqoWoypH4z0Ow=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ugMB5xplqYdquPFXAuYdacC0fmGUX/EwjPEzgpnLEBtBh4kr80mNAR4zDV1oqbWKI
-         Cm+ijZILhNUFT4QNoy6DQpDOQFNMsgeKcJZbn9i0HUsVopvPxedHpQVZqEKlemhAh1
-         BLmqGtTYmUMsG/pXdv/TDeoiGIAj5phmPjGbP8z0=
-Date:   Thu, 6 May 2021 09:59:03 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.4 00/21] 5.4.117-rc1 review
-Message-ID: <YJOhx+pkHj2ZDJgH@kroah.com>
-References: <20210505112324.729798712@linuxfoundation.org>
- <20210505214938.GA817073@roeck-us.net>
+        id S233663AbhEFIBZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:01:25 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:17471 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233565AbhEFIBY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 04:01:24 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FbQt61WgMzkWpZ;
+        Thu,  6 May 2021 15:57:50 +0800 (CST)
+Received: from huawei.com (10.69.192.56) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.498.0; Thu, 6 May 2021
+ 16:00:18 +0800
+From:   Luo Jiaxing <luojiaxing@huawei.com>
+To:     <pmladek@suse.com>, <sergey.senozhatsky@gmail.com>,
+        <rostedt@goodmis.org>, <john.ogness@linutronix.de>
+CC:     <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <luojiaxing@huawei.com>, <bobo.shaobowang@huawei.com>
+Subject: [PATCH] printk: stop spining waiter when console resume to flush prb
+Date:   Thu, 6 May 2021 16:00:26 +0800
+Message-ID: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
+X-Mailer: git-send-email 2.7.4
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505214938.GA817073@roeck-us.net>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.56]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:49:38PM -0700, Guenter Roeck wrote:
-> On Wed, May 05, 2021 at 02:04:14PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.4.117 release.
-> > There are 21 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-> > Anything received after that time might be too late.
-> > 
-> > The whole patch series can be found in one patch at:
-> > 	https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.4.117-rc1.gz
-> > or in the git tree and branch at:
-> > 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> > 
-> > thanks,
-> > 
-> > greg k-h
-> > 
-> > -------------
-> > Pseudo-Shortlog of commits:
-> > 
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >     Linux 5.4.117-rc1
-> > 
-> > Ondrej Mosnacek <omosnace@redhat.com>
-> >     perf/core: Fix unconditional security_locked_down() call
-> > 
-> > Miklos Szeredi <mszeredi@redhat.com>
-> >     ovl: allow upperdir inside lowerdir
-> > 
-> > Dan Carpenter <dan.carpenter@oracle.com>
-> >     scsi: ufs: Unlock on a couple error paths
-> > 
-> > Mark Pearson <markpearson@lenovo.com>
-> >     platform/x86: thinkpad_acpi: Correct thermal sensor allocation
-> > 
-> > Shengjiu Wang <shengjiu.wang@nxp.com>
-> >     ASoC: ak5558: Add MODULE_DEVICE_TABLE
-> > 
-> > Shengjiu Wang <shengjiu.wang@nxp.com>
-> >     ASoC: ak4458: Add MODULE_DEVICE_TABLE
-> 
-> Twice ? Why ?
-> 
-> This gives me a compile error (the second time it is added at the wrong
-> place).
-> 
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/sound/soc/codecs/ak4458.c:722:1: error: redefinition of '__mod_of__ak4458_of_match_device_table'
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: MODULE_DEVICE_TABLE(of, ak4458_of_match);
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/include/linux/module.h:227:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: extern typeof(name) __mod_##type##__##name##_device_table               \
-> chromeos-kernel-5_4-5.4.117_rc1-r2159:                     ^
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: <scratch space>:119:1: note: expanded from here
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: __mod_of__ak4458_of_match_device_table
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/sound/soc/codecs/ak4458.c:711:1: note: previous definition is here
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: MODULE_DEVICE_TABLE(of, ak4458_of_match);
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys-kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.117_rc1/include/linux/module.h:227:21: note: expanded from macro 'MODULE_DEVICE_TABLE'
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: extern typeof(name) __mod_##type##__##name##_device_table               \
-> 
-> Oddly enough, I only see the error when I try to merge the
-> code into ChromeOS, not in my test builds. I guess that has
-> to do with "-Werror".
+Some threads still call printk() for printing when resume_console() is
+being executed. In practice, the printk() is executed for a period of time
+and then returned. The duration is determined by the number of prints
+cached in the prb during the suspend/resume process. At the same time,
+resume_console() returns quickly.
 
-Ah, these came into Linus's tree with two different commits, which is
-why I didn't notice it was already present.  I'll go drop these two from
-all stable trees now, thanks for letting me know.
+Base on owner/waiter machanism, the frist one who fail to lock console will
+become waiter, and start spining. When current owner finish print one
+informance, if a waiter is waitting, owner will give up and let waiter
+become a new owner. New owner need to flush the whole prb unitl prb empty
+or another new waiter come and take the job from him.
 
-greg k-h
+So the first waiter after resume_console() will take seconds to help to
+flush prb, but driver which call printk() may be bothered by this. New
+a flag to mark resume flushing prb. When the console resume, before the
+prb is empty, stop to set a new waiter temporarily.
+
+Signed-off-by: Luo Jiaxing <luojiaxing@huawei.com>
+---
+ kernel/printk/printk.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index 575a34b..2c680a5 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -287,6 +287,9 @@ EXPORT_SYMBOL(console_set_on_cmdline);
+ /* Flag: console code may call schedule() */
+ static int console_may_schedule;
+ 
++/* Flags: console flushing prb when resume */
++static atomic_t console_resume_flush_prb = ATOMIC_INIT(0);
++
+ enum con_msg_format_flags {
+ 	MSG_FORMAT_DEFAULT	= 0,
+ 	MSG_FORMAT_SYSLOG	= (1 << 0),
+@@ -1781,7 +1784,8 @@ static int console_trylock_spinning(void)
+ 	raw_spin_lock(&console_owner_lock);
+ 	owner = READ_ONCE(console_owner);
+ 	waiter = READ_ONCE(console_waiter);
+-	if (!waiter && owner && owner != current) {
++	if (!waiter && owner && owner != current &&
++	    !atomic_read(&console_resume_flush_prb)) {
+ 		WRITE_ONCE(console_waiter, true);
+ 		spin = true;
+ 	}
+@@ -2355,6 +2359,7 @@ void resume_console(void)
+ 	if (!console_suspend_enabled)
+ 		return;
+ 	down_console_sem();
++	atomic_set(&console_resume_flush_prb, 1);
+ 	console_suspended = 0;
+ 	console_unlock();
+ }
+@@ -2592,6 +2597,8 @@ void console_unlock(void)
+ 	raw_spin_unlock(&logbuf_lock);
+ 
+ 	up_console_sem();
++	if (atomic_read(&console_resume_flush_prb))
++		atomic_set(&console_resume_flush_prb, 0);
+ 
+ 	/*
+ 	 * Someone could have filled up the buffer again, so re-check if there's
+-- 
+2.7.4
+
