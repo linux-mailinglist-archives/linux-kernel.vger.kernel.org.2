@@ -2,110 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5175375485
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:15:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC511375488
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:16:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233763AbhEFNQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:16:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233521AbhEFNQR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:16:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9EE0E61042;
-        Thu,  6 May 2021 13:15:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620306919;
-        bh=op5ex0Fi0Betr2wW0CnZmbJS/BItv19K7TubLeKLbxY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Z/ZVl76QgCTkqTmxLGuVHc9CvcDL/+h2UVorkUG5WLTnJ0//+ijHvok1wgpoi/ciJ
-         YtwUCJjA0ETRPX66J8teG1/Gkg6RpGjd4cmWDCQ3HASqcoC1J1TBnYD/Au0a5364SN
-         JkwjuMyu4BYj7uK7CkpzCto6bnG+pvPEL1PRk5m6KOqJXXEg0dLbmT+ae9Fr7oOzmw
-         wkxNQmzCPrD7dqHljlxX5MDxiNpYAkLAl7Yg72SNF8pHTO8C8A+VT9TLsDPYJQEEOT
-         Yvx5nauN6Bez7IstSKOtqzsOBllYhoUyKY6N+AyhwBjTlbd76y81O54BMzW1MVQXkJ
-         q2JdfUO7PwS9w==
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     "Paul E . McKenney" <paulmck@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>
-Subject: [PATCH 3/3] torture: Update bare metal advices to latest kvm.sh options
-Date:   Thu,  6 May 2021 15:15:10 +0200
-Message-Id: <20210506131510.51488-4-frederic@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210506131510.51488-1-frederic@kernel.org>
-References: <20210506131510.51488-1-frederic@kernel.org>
+        id S233833AbhEFNRv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:17:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:30761 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231993AbhEFNRu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 09:17:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620307011;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aFyoCh/Cvv5uFlEu/CTPouwkWlGfZVHzYvmAxhYjM4o=;
+        b=Tq4etUMlv9rWYGwy9kI5cjv3WwB15vNRm49Wql4asSLCGzzz9uaBQPwlNUaXlIFn+AdiaY
+        xJawyPBEdlUqnHXPaPTdguIQyE0q6VJU78bpEA0rF/TzefrkIDTQA190Oeibe0tZnrT9/d
+        fenSHH3aEsanSELP9xE6HOoe3RWg0KI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-587-luWD0peDPHCz8cVEamg4ww-1; Thu, 06 May 2021 09:16:49 -0400
+X-MC-Unique: luWD0peDPHCz8cVEamg4ww-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C931F1008063;
+        Thu,  6 May 2021 13:16:44 +0000 (UTC)
+Received: from krava (unknown [10.40.193.227])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id C6728620DE;
+        Thu,  6 May 2021 13:16:36 +0000 (UTC)
+Date:   Thu, 6 May 2021 15:16:35 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Martin KaFai Lau <kafai@fb.com>
+Cc:     Jiri Slaby <jirislaby@kernel.org>,
+        Michal =?iso-8859-1?Q?Such=E1nek?= <msuchanek@suse.de>,
+        Yonghong Song <yhs@fb.com>, linux-kernel@vger.kernel.org,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>,
+        dwarves@vger.kernel.org, Arnaldo Carvalho de Melo <acme@redhat.com>
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+Message-ID: <YJPsM0McnVgsHS15@krava>
+References: <YIcRlHQWWKbOlcXr@krava>
+ <20210427121237.GK6564@kitsune.suse.cz>
+ <20210430174723.GP15381@kitsune.suse.cz>
+ <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+ <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
+ <4e051459-8532-7b61-c815-f3435767f8a0@kernel.org>
+ <cbaf50c3-c85d-9239-0b37-c88e8cbed8c8@kernel.org>
+ <YI/LgjLxo9VCN/d+@krava>
+ <8c3cbd22-eb26-ea8b-c8bb-35a629d6d2d8@kernel.org>
+ <20210506053152.e5rnv44zsitob3sn@kafai-mbp.dhcp.thefacebook.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210506053152.e5rnv44zsitob3sn@kafai-mbp.dhcp.thefacebook.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-kvm.sh is perfectly able to build a new kernel config from an existing
-one instead of using a defconfig. All we need to do is to pass:
+On Wed, May 05, 2021 at 10:31:52PM -0700, Martin KaFai Lau wrote:
+> On Tue, May 04, 2021 at 08:41:47AM +0200, Jiri Slaby wrote:
+> > On 03. 05. 21, 12:08, Jiri Olsa wrote:
+> > > On Mon, May 03, 2021 at 10:59:44AM +0200, Jiri Slaby wrote:
+> > > > CCing pahole people.
+> > > > 
+> > > > On 03. 05. 21, 9:59, Jiri Slaby wrote:
+> > > > > On 03. 05. 21, 8:11, Jiri Slaby wrote:
+> > > > > > > > > > > looks like vfs_truncate did not get into BTF data,
+> > > > > > > > > > > I'll try to reproduce
+> > > > > > > 
+> > > > > > > _None_ of the functions are generated by pahole -J from
+> > > > > > > debuginfo on ppc64. debuginfo appears to be correct. Neither
+> > > > > > > pahole -J fs/open.o works correctly. collect_functions in
+> > > > > > > dwarves seems to be defunct on ppc64... "functions" array is
+> > > > > > > bogus (so find_function -- the bsearch -- fails).
+> > > > > > 
+> > > > > > It's not that bogus. I forgot an asterisk:
+> > > > > > > #0  find_function (btfe=0x100269f80, name=0x10024631c
+> > > > > > > "stream_open") at
+> > > > > > > /usr/src/debug/dwarves-1.21-1.1.ppc64/btf_encoder.c:350
+> > > > > > > (gdb) p (*functions)@84
+> > > > > > > $5 = {{name = 0x7ffff68e0922 ".__se_compat_sys_ftruncate", addr
+> > > > > > > = 75232, size = 72, sh_addr = 65536, generated = false}, {
+> > > > > > >      name = 0x7ffff68e019e ".__se_compat_sys_open", addr = 80592,
+> > > > > > > size = 216, sh_addr = 65536, generated = false}, {
+> > > > > > >      name = 0x7ffff68e0076 ".__se_compat_sys_openat", addr =
+> > > > > > > 80816, size = 232, sh_addr = 65536, generated = false}, {
+> > > > > > >      name = 0x7ffff68e0908 ".__se_compat_sys_truncate", addr =
+> > > > > > > 74304, size = 100, sh_addr = 65536, generated = false}, {
+> > > > > > ...
+> > > > > > >      name = 0x7ffff68e0808 ".stream_open", addr = 65824, size =
+> > > > > > > 72, sh_addr = 65536, generated = false}, {
+> > > > > > ...
+> > > > > > >      name = 0x7ffff68e0751 ".vfs_truncate", addr = 73392, size =
+> > > > > > > 544, sh_addr = 65536, generated = false}}
+> > > > > > 
+> > > > > > The dot makes the difference, of course. The question is why is it
+> > > > > > there? I keep looking into it. Only if someone has an immediate
+> > > > > > idea...
+> > > > > 
+> > > > > Well, .vfs_truncate is in .text (and contains an ._mcount call). And
+> > > > > vfs_truncate is in .opd (w/o an ._mcount call). Since setup_functions
+> > > > > excludes all functions without the ._mcount call, is_ftrace_func later
+> > > > > returns false for such functions and they are filtered before the BTF
+> > > > > processing.
+> > > > > 
+> > > > > Technically, get_vmlinux_addrs looks at a list of functions between
+> > > > > __start_mcount_loc and __stop_mcount_loc and considers only the listed.
+> > > > > 
+> > > > > I don't know what the correct fix is (exclude .opd functions from the
+> > > > > filter?). Neither why cross compiler doesn't fail, nor why ebi v2 avoids
+> > > > > this too.
+> > > > 
+> > > > Attaching a patch for pahole which fixes the issue, but I have no idea
+> > > > whether it is the right fix at all.
+> > > 
+> > > hi,
+> > > we're considering to disable ftrace filter completely,
+> > > I guess that would solve this issue for ppc as well
+> > > 
+> > >    https://lore.kernel.org/bpf/20210501001653.x3b4rk4vk4iqv3n7@kafai-mbp.dhcp.thefacebook.com/
+> > 
+> > Right, the attached patch fixes it for me too.
+> Ah, I just noticed the attachment while replying an earlier message in
+> this thread.
+> 
+> Please feel free to add SOB to mine or
+> repost yours and toss mine.  Either way works for me.
+> 
 
-	--defconfig oldconfig
+I think this patch is missing the same removal I just commented
+on your patch.. either way is ok for me
 
-This is much easier than manually modifying a .config from a
-ConfigFragment file.
-
-Then with the latest parameters that got added on kvm.sh, it's now
-easy to build a bare metal .config for a cross target for example:
-
-	./kvm.sh --configs "TREE01" --defconfig oldconfig --configonly
-		--cmdline-to-config --kmake-arg ARCH=arm64 --no-initrd
-
-After that all we need to do is to build the updated .config and run
-the resulting image.
-
-Update bare metal advices to propose that.
-
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
----
- .../rcutorture/bin/kvm-test-1-run.sh          | 21 ++++++++++---------
- 1 file changed, 11 insertions(+), 10 deletions(-)
-
-diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-index 6df9efc77469..47d69668ab37 100755
---- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-+++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-@@ -190,27 +190,28 @@ echo To run this scenario on bare metal: >> $resdir/bare-metal
- echo >> $resdir/bare-metal
- echo " 1." Set your bare-metal build tree to the state shown in this file: >> $resdir/bare-metal
- echo "   " $testid_txt >> $resdir/bare-metal
--echo " 2." Update your bare-metal build tree"'"s .config based on this file: >> $resdir/bare-metal
--echo "   " $resdir/ConfigFragment >> $resdir/bare-metal
--echo " 3." Make the bare-metal kernel"'"s build system aware of your .config updates: >> $resdir/bare-metal
--echo "   " $ 'yes "" | make oldconfig' >> $resdir/bare-metal
--echo " 4." Build your bare-metal kernel. >> $resdir/bare-metal
-+echo " 2." Prepare your bare-metal build tree"'"s .config on your root kernel directory >> $resdir/bare-metal
-+echo " 3." Run this scenario with "'--defconfig oldconfig --configonly --no-initrd'" >> $resdir/bare-metal
-+echo " 4." If you"'"re cross compiling then append the appropriate make arguments >> $resdir/bare-metal
-+echo "   " eg: "'--kmake-arg ARCH=arm64'" >> $resdir/bare-metal
- echo " 5." Boot your bare-metal kernel with the following parameters: >> $resdir/bare-metal
- echo "   " $kboot_args >> $resdir/bare-metal
- echo " 6." Start the test with the following command: >> $resdir/bare-metal
- echo "   " $ modprobe $TORTURE_MOD $modprobe_args >> $resdir/bare-metal
- echo " 7." After some time, end the test with the following command: >> $resdir/bare-metal
- echo "   " $ rmmod $TORTURE_MOD >> $resdir/bare-metal
--echo " 8." Copy your bare-metal kernel"'"s .config file, overwriting this file: >> $resdir/bare-metal
-+echo " 8." Alternatively if you run rcutorture in a built-in fashion and your kernel arguments are already >> $resdir/bare-metal
-+echo "   " hardcoded in the kernel config, skip the previous 5/6/7 steps and append to kvm.sh arguments: >> $resdir/bare-metal
-+echo "   " --cmdline-to-config >> $resdir/bare-metal
-+echo "   " Then simply boot your kernel and wait for the end of the tests >> $resdir/bare-metal
-+echo " 9." Copy your bare-metal kernel"'"s .config file, overwriting this file: >> $resdir/bare-metal
- echo "   " $resdir/.config >> $resdir/bare-metal
--echo " 9." Copy the console output from just before the modprobe to just after >> $resdir/bare-metal
-+echo "10." Copy the console output from just before the modprobe to just after >> $resdir/bare-metal
- echo "   " the rmmod into this file: >> $resdir/bare-metal
- echo "   " $resdir/console.log >> $resdir/bare-metal
--echo "10." Check for runtime errors using the following command: >> $resdir/bare-metal
-+echo "11." Check for runtime errors using the following command: >> $resdir/bare-metal
- echo "   " $ tools/testing/selftests/rcutorture/bin/kvm-recheck.sh `dirname $resdir` >> $resdir/bare-metal
- echo >> $resdir/bare-metal
--echo Some of the above steps may be skipped if you build your bare-metal >> $resdir/bare-metal
--echo kernel here: `head -n 1 $testid_txt | sed -e 's/^Build directory: //'`  >> $resdir/bare-metal
- 
- echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" $TORTURE_QEMU_GDB_ARG > $resdir/qemu-cmd
- echo "# TORTURE_SHUTDOWN_GRACE=$TORTURE_SHUTDOWN_GRACE" >> $resdir/qemu-cmd
--- 
-2.25.1
+jirka
 
