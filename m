@@ -2,179 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5071E375C20
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:15:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA983375C26
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:18:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233704AbhEFUP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 16:15:57 -0400
-Received: from mail-bn7nam10on2083.outbound.protection.outlook.com ([40.107.92.83]:1825
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233572AbhEFUPz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 16:15:55 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XcH/mAwgVUSiK3tmkFpf51O5MuWB2toFF8KzJvvdDOmhZ83oicUmldjB9BLxVns5r3ReA3ldfrha06lZ0pv5QIdoE8MwsCTa+JzsAL9bcbpK8scRBmLN149xtS2Ebh6OB2e0YdCFf/2E51AlO/kWLPXMAp77tSrqE+Jtd76K2NpNu3uctRGkO3EqJt+zuDQSuiWEQWI1m7jR9e4IApp80M0t9LD1ypi2g9XlcapzlqX9Ae3IS8Dwuxw5+hk2TOHXPjxuWpNhIozAcgW5qi5RIGa1ZsdZJEEv2ITw2yV+ayqvdZpvQ40syze4Grdu5cL7TpQLoI92Tobf7l757Yv6rw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z8CIZrvBAGJs/QawVq0AwmgWuOWA8aw6TENObZMBMO0=;
- b=llUvI9mpqTvpLtmfo1zhhVPCYLIxz9FcVDd1b1pP6DxP1Lr5L4sq6b/RdWnX4vBz+V+7lo2WIrQIxVMmBmPu72wd3Im4EWgKXO3dfnzZdBAVkOPrtyRHQ/HC+QIyoYtCwJsiu9xXNB1Nyfs03GXyvG04Xpx7UXhv6g7v9FJvYPKLAPGpnRG4rMu4B5DfXdlFbXfKyBNAZS+PTiqWlXvhuz0n33bv67R6BewL3bt3lL68GQe/1NYrc3tJCUCARWG8v2kJb183H0xoLEjrE1adwc3ijysXndzKzBu3tMCyLjmW1WLdkkHBxsTFefu/7EBeLNd613/p85QdYfmYJ6VCTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z8CIZrvBAGJs/QawVq0AwmgWuOWA8aw6TENObZMBMO0=;
- b=LkV2dp7GwSWc46RzDEFSmeWrnQX960ySBL00X0cPojSnaJSB5VIaVVzZjl5ToHW4lThMl2PguCrCrrEGoxGqQxC7GKE2UHt/DQF81Ii70Z/GV/Q/YFpLYEW1dqSEi3oX32y65Y08i6mQWwFWXKtwOQpo4amnh+YFgNxNyVaV0Tg=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM6PR12MB4958.namprd12.prod.outlook.com (2603:10b6:5:20a::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4108.26; Thu, 6 May 2021 20:14:55 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4108.026; Thu, 6 May 2021
- 20:14:55 +0000
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Subject: [PATCH] KVM: SVM: Move GHCB unmapping to fix RCU warning
-Date:   Thu,  6 May 2021 15:14:41 -0500
-Message-Id: <b2f9b79d15166f2c3e4375c0d9bc3268b7696455.1620332081.git.thomas.lendacky@amd.com>
-X-Mailer: git-send-email 2.31.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.77.1]
-X-ClientProxiedBy: SN1PR12CA0057.namprd12.prod.outlook.com
- (2603:10b6:802:20::28) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        id S233666AbhEFUTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 16:19:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41100 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233714AbhEFUTF (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 16:19:05 -0400
+Received: from mail-io1-xd29.google.com (mail-io1-xd29.google.com [IPv6:2607:f8b0:4864:20::d29])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2B045C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 13:18:07 -0700 (PDT)
+Received: by mail-io1-xd29.google.com with SMTP id z24so5987775ioj.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 13:18:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9FpP0oYJ5o5WVaMKta2Gw4ucGc3wzpzA9zy0oojQ72k=;
+        b=cVRBVTdIe2G3kEyjvc30fD55v7pIgnGqkAdDAuF8SLTWZ5d6SygwRGMbmQH2+zfG59
+         M+DLsIJSLgq5ec6kQZI4yAaUaE/xcdKWyxfVHH/1yKTbCTcI7TBq4YGrQFMsU2Pt4OPo
+         WfsO8GItV90u8aye4WD+uDdHHD6LrTbZdY9JM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9FpP0oYJ5o5WVaMKta2Gw4ucGc3wzpzA9zy0oojQ72k=;
+        b=rvzEfwkZiAxGZ41ovaphrVgEpVMws2qN5LhNXouJi1OY5w2/Gwj1QgGIkzIwHjNT2D
+         BL26uYIoaYCVsIb7qwjIPqOpgjwR+ZyszZSE/p8cJQBt4PooucHweOgBF+lesSHwKRmb
+         1yAXgTu7ZVN5GGIgdBFHpyNWFKU9x6rD5J+bFBQ/ptDeIktGz2+nklVamSKHq2guuzie
+         HxfMImucrePfe8nj3BQOcpvunfatZ3vrR5o6zzLcqabWDzP+6ZMLyRFOweyMhV6jbVrR
+         Hj9s5N8khxwrU//d3IWdZCv1uIkhepnf6hkijLxd05gIV9hwq/LY6nPQT1phTSj3647V
+         ojbQ==
+X-Gm-Message-State: AOAM531PC6r7XYMlf744Kw6wHCrqKvdeCdRyfYL0ShkIey6HCOiSFFrA
+        OmsShhtRLlRKMi42J/5UIMM70q2cEmmEZYbCZ2dXXw==
+X-Google-Smtp-Source: ABdhPJzKCz7oLH/S1hED4I6RCK9rzyC7Lxfl8spOMc8YJw7Q1j0aHPnnOCOprQg/aFmbOnCt1XRF9dSHT4Xpoe1Bzt8=
+X-Received: by 2002:a6b:dc06:: with SMTP id s6mr4938895ioc.130.1620332286076;
+ Thu, 06 May 2021 13:18:06 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from tlendack-t1.amd.com (165.204.77.1) by SN1PR12CA0057.namprd12.prod.outlook.com (2603:10b6:802:20::28) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 6 May 2021 20:14:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: b4bb3163-5bd8-4ff0-c488-08d910cb9d59
-X-MS-TrafficTypeDiagnostic: DM6PR12MB4958:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DM6PR12MB4958C6FA8491B06A7E7C779EEC589@DM6PR12MB4958.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:6430;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pZMatCLiMkY+i5XexglfvLanbwIjDhibxK44ktmw+OJf6zp9oyx9Dih+lu1RJtvGcG8CV0QTs/zd4ETjsSNs8lU/4+iOQ/oAMQVQ8Fmzorz+4BPP51h6YVHS5ULMjlb7vaJZXC05vMC7+S63eboe8e6gVjLYS3ZsgRWcFtTrR3p56rfjudJ/tUs+6wFvcRQ2HNv+L6y9LLSCnVT0IrzDG8x40TT2+b6ZTAupb14uIKkcIbwY4Nan2kBFDWpaLhXMGAbOvaBokTwHoaa0SkcEG0CbPbZ4TVxF9BecimEmsszplKj2h8cM/phb0jMdGd4Ukma3r5UCMiPDzE5dToG79RV6qstBrCIGR0kNXlD/QxZISEjro4Kj9Kp85bYWCas+mbQodn3kdC3MYHrdkAmEm21QxmDIn0y5IavnqIx3vt6sX/Jg9ukPR2kTYx15RAJO3qWPqidAXBNbr9eNLreMH0T9EIyOnMvsgdA8WRraV07MH4GCha+g6oqwY8jiMc7ezgnN0/lz1Wjk8Dp4oVPYdDZDh0KHtPUc7eCqWj3wSju+/gLTG1mrazG2YxR18UIdvPNUB945HzVP4cIWkSKbontTDE5jiJwWK9kNaEK2JXmj2Cqq3Ue0R5Gnh0+ropl6JnAAqp+XzEy7QW8ihd0M3w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(366004)(346002)(396003)(6486002)(16526019)(66556008)(5660300002)(956004)(83380400001)(38350700002)(66476007)(86362001)(8676002)(4326008)(38100700002)(66946007)(2616005)(316002)(7416002)(8936002)(52116002)(54906003)(2906002)(7696005)(26005)(6666004)(36756003)(186003)(478600001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?MbqMK58H4s4dvNEqm4sE/yaburecBu3zwTkhzn2k5NcCQRT843IBSH9X/nDq?=
- =?us-ascii?Q?BVQQncb5mqWHbX/FUeX4Ce8AEunmCu+NAOpP7y4YT4XjeSXbAiDwnG4Kq+uz?=
- =?us-ascii?Q?j8jc9R+SCIpEawAinZjwcHomh0rCn3aQQ72HiNCF5RzrN0A2Wfmo2ozmYDBH?=
- =?us-ascii?Q?BSZgmC7W8GY3MqZ7NsRbVUH29EKhrWO+qK0qCmCRAs+zOgQBUY/M32TTm18q?=
- =?us-ascii?Q?WnjXDdGcDFPoJxFD/7g1SJIf7FTaHkLeTd581FF0kaJBTTb4FMrpJeT7455t?=
- =?us-ascii?Q?O667RwLeDgmYZSekyQDTMnkJJQZfjasay4Sktpju3WQ53adQGXmin0n/HKDF?=
- =?us-ascii?Q?LiIFH8rZYKhtAzYV3UTm+zDfg7TEyUVe/2nX+OPP7GVxrMPWU/euPvQwzHWb?=
- =?us-ascii?Q?1Vgq3udTCpo6SAkWZpzYHfUU5P/Jbcif4b5TcCWAEksVjO9O3WIH+J3OOx6r?=
- =?us-ascii?Q?Fks5h7s/JsUiQ6G1sKbEzxmFL8cfgLgHHc1RYAzWf/QWIaKPYhMa0TvOzhBK?=
- =?us-ascii?Q?PmzR/4PNFP6rQ5pnAmBDmH32hfVZIMg+utgpn0LQlvNi/Co8xRV8dNXWAYMR?=
- =?us-ascii?Q?PGp05zNM9Ih5jHwDZNLDHffiH73AL7W7IpoNolsLudChd4fCi/6tbmMYik/v?=
- =?us-ascii?Q?d3d2aNrRRCpQ2Yg5j2ZvR3qazAOHVKZFf0wRHOIxjtFajqlAM0QuqD8FLVq1?=
- =?us-ascii?Q?pTeHyjrZTjKWG9Sr6pWnaa2Z9xLuFMzZH8+bcofB7/sOsYhmQq1AZnngXBWm?=
- =?us-ascii?Q?Iiv0YkzHTEersJfw6eS7U+xhB8LbcLZQ/wfDb3wWVJNtSTAMO5ZxMGvs7Kmt?=
- =?us-ascii?Q?4+pazFzNzeNAk+FWvaBtwSHItz6HZV20okqlfRDD6fiXafqt/p4WxHP4Rq00?=
- =?us-ascii?Q?qtkRMSPSZjsmApP+VdEdmXLt3Pe4jPIrNPwJTzchwquHgFk/8t1GB2bQe0KQ?=
- =?us-ascii?Q?k+bRwt+PzpyZvWpwlyGstnyop/Y/QvPCG+tee4GetarggLhBWsdk3RFyQFUn?=
- =?us-ascii?Q?nxSuqGbokI9EAP98jdb25z/0rdqJOI2r2tI0s4/USnMOTQu8pQ9y7/GOKo5/?=
- =?us-ascii?Q?7q8wagh91n63ZRXreifBBQwK2lvEkHkGupmeny/8AfDBz+XcxVoaaZ7opqg+?=
- =?us-ascii?Q?aY4ksLL3Y/KJKMt8TvY8ancUxFNXRvqk9nUKA5rdFH5VlYoG/cb214aLOtZL?=
- =?us-ascii?Q?XcR9y4qn9kIlqVVYP06dOoUkvduT2OQUPrlq7hrEH5Nt5ZpFSdtejCASJQJs?=
- =?us-ascii?Q?crDOeoUOj2/s1jzomdS+MrVaGeJl1AU5nMc+WJ6zdeJ00zeQpmuQkeMnLolR?=
- =?us-ascii?Q?SucEW9W/xNEbVspvlXudb5hx?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4bb3163-5bd8-4ff0-c488-08d910cb9d59
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 20:14:55.5626
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Z5EF1SkhDZGs7qLQeiQbOgHIakJyhVfm7vza5WG4CvoDkQj59aLWJpHbR0w2L+avfYaMruQneul79SwyWhMHow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4958
+References: <20210505162307.2545061-1-revest@chromium.org> <CAEf4BzZiK1ncN7RzeJ-62e=itekn34VuFf7WNhUF=9OoznMP6Q@mail.gmail.com>
+ <fe37ff8f-ebf0-25ec-4f3c-df3373944efa@iogearbox.net> <CAEf4BzYsAXQ1t6GUJ4f8c0qGLdnO4NLDVJLRMhAY2oaiarDd6g@mail.gmail.com>
+ <CAEf4BzYqUxgj28p7e1ng_5gfebXdVdrCVyPK4bjA31O4wgppeA@mail.gmail.com>
+ <CABRcYmJBxY5AQMzO2vuuhVN7hs=1h+ursEnVAXpCPJ3DrkRrUA@mail.gmail.com> <CAEf4BzY4a6R-apnS0AZsb_Mtht2N8be1HvEN9hD9aSByoD1EHQ@mail.gmail.com>
+In-Reply-To: <CAEf4BzY4a6R-apnS0AZsb_Mtht2N8be1HvEN9hD9aSByoD1EHQ@mail.gmail.com>
+From:   Florent Revest <revest@chromium.org>
+Date:   Thu, 6 May 2021 22:17:54 +0200
+Message-ID: <CABRcYm+3AjHa3zO5AHSk6SbyFK6o6dLd8Fbz_sOznchWL2dumQ@mail.gmail.com>
+Subject: Re: [PATCH bpf] bpf: Don't WARN_ON_ONCE in bpf_bprintf_prepare
+To:     Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Cc:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        KP Singh <kpsingh@kernel.org>,
+        Brendan Jackman <jackmanb@google.com>,
+        Stanislav Fomichev <sdf@google.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        syzbot <syzbot@syzkaller.appspotmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When an SEV-ES guest is running, the GHCB is unmapped as part of the
-vCPU run support. However, kvm_vcpu_unmap() triggers an RCU dereference
-warning with CONFIG_PROVE_LOCKING=y because the SRCU lock is released
-before invoking the vCPU run support.
+On Thu, May 6, 2021 at 8:52 PM Andrii Nakryiko
+<andrii.nakryiko@gmail.com> wrote:
+>
+> On Wed, May 5, 2021 at 3:29 PM Florent Revest <revest@chromium.org> wrote:
+> >
+> > On Wed, May 5, 2021 at 10:52 PM Andrii Nakryiko
+> > <andrii.nakryiko@gmail.com> wrote:
+> > >
+> > > On Wed, May 5, 2021 at 1:48 PM Andrii Nakryiko
+> > > <andrii.nakryiko@gmail.com> wrote:
+> > > >
+> > > > On Wed, May 5, 2021 at 1:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+> > > > >
+> > > > > On 5/5/21 8:55 PM, Andrii Nakryiko wrote:
+> > > > > > On Wed, May 5, 2021 at 9:23 AM Florent Revest <revest@chromium.org> wrote:
+> > > > > >>
+> > > > > >> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
+> > > > > >> per-cpu buffer that they use to store temporary data (arguments to
+> > > > > >> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
+> > > > > >> by the end of their scope with bpf_bprintf_cleanup.
+> > > > > >>
+> > > > > >> If one of these helpers gets called within the scope of one of these
+> > > > > >> helpers, for example: a first bpf program gets called, uses
+> > > > > >
+> > > > > > Can we afford having few struct bpf_printf_bufs? They are just 512
+> > > > > > bytes, so can we have 3-5 of them? Tracing low-level stuff isn't the
+> > > > > > only situation where this can occur, right? If someone is doing
+> > > > > > bpf_snprintf() and interrupt occurs and we run another BPF program, it
+> > > > > > will be impossible to do bpf_snprintf() or bpf_trace_printk() from the
+> > > > > > second BPF program, etc. We can't eliminate the probability, but
+> > > > > > having a small stack of buffers would make the probability so
+> > > > > > miniscule as to not worry about it at all.
+> > > > > >
+> > > > > > Good thing is that try_get_fmt_tmp_buf() abstracts all the details, so
+> > > > > > the changes are minimal. Nestedness property is preserved for
+> > > > > > non-sleepable BPF programs, right? If we want this to work for
+> > > > > > sleepable we'd need to either: 1) disable migration or 2) instead of
+> > > >
+> > > > oh wait, we already disable migration for sleepable BPF progs, so it
+> > > > should be good to do nestedness level only
+> > >
+> > > actually, migrate_disable() might not be enough. Unless it is
+> > > impossible for some reason I miss, worst case it could be that two
+> > > sleepable programs (A and B) can be intermixed on the same CPU: A
+> > > starts&sleeps - B starts&sleeps - A continues&returns - B continues
+> > > and nestedness doesn't work anymore. So something like "reserving a
+> > > slot" would work better.
+> >
+> > Iiuc try_get_fmt_tmp_buf does preempt_enable to avoid that situation ?
+> >
+> > > >
+> > > > > > assuming a stack of buffers, do a loop to find unused one. Should be
+> > > > > > acceptable performance-wise, as it's not the fastest code anyway
+> > > > > > (printf'ing in general).
+> > > > > >
+> > > > > > In any case, re-using the same buffer for sort-of-optional-to-work
+> > > > > > bpf_trace_printk() and probably-important-to-work bpf_snprintf() is
+> > > > > > suboptimal, so seems worth fixing this.
+> > > > > >
+> > > > > > Thoughts?
+> > > > >
+> > > > > Yes, agree, it would otherwise be really hard to debug. I had the same
+> > > > > thought on why not allowing nesting here given users very likely expect
+> > > > > these helpers to just work for all the contexts.
+> > > > >
+> > > > > Thanks,
+> > > > > Daniel
+> >
+> > What would you think of just letting the helpers own these 512 bytes
+> > buffers as local variables on their stacks ? Then bpf_prepare_bprintf
+> > would only need to write there, there would be no acquire semantic
+> > (like try_get_fmt_tmp_buf) and the stack frame would just be freed on
+> > the helper return so there would be no bpf_printf_cleanup either. We
+> > would also not pre-reserve static memory for all CPUs and it becomes
+> > trivial to handle re-entrant helper calls.
+> >
+> > I inherited this per-cpu buffer from the pre-existing bpf_seq_printf
+> > code but I've not been convinced of its necessity.
+>
+> I got the impression that extra 512 bytes on the kernel stack is quite
+> a lot and that's why we have per-cpu buffers. Especially that
+> bpf_trace_printk() can be called from any context, including NMI.
 
-Move the GHCB unmapping into the prepare_guest_switch callback, which is
-invoked while still holding the SRCU lock, eliminating the RCU dereference
-warning.
+Ok, I understand.
 
-Fixes: 291bd20d5d88 ("KVM: SVM: Add initial support for a VMGEXIT VMEXIT")
-Reported-by: Borislav Petkov <bp@alien8.de>
-Signed-off-by: Tom Lendacky <thomas.lendacky@amd.com>
----
- arch/x86/kvm/svm/sev.c | 5 +----
- arch/x86/kvm/svm/svm.c | 3 +++
- arch/x86/kvm/svm/svm.h | 1 +
- 3 files changed, 5 insertions(+), 4 deletions(-)
+What about having one buffer per helper, synchronized with a spinlock?
+Actually, bpf_trace_printk already has that, not for the bprintf
+arguments but for the bprintf output so this wouldn't change much to
+the performance of the helpers anyway:
+https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/trace/bpf_trace.c?id=9d31d2338950293ec19d9b095fbaa9030899dcb4#n385
 
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index a9d8d6aafdb8..5f70be4e36aa 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -2198,7 +2198,7 @@ static int sev_es_validate_vmgexit(struct vcpu_svm *svm)
- 	return -EINVAL;
- }
- 
--static void pre_sev_es_run(struct vcpu_svm *svm)
-+void sev_es_unmap_ghcb(struct vcpu_svm *svm)
- {
- 	if (!svm->ghcb)
- 		return;
-@@ -2234,9 +2234,6 @@ void pre_sev_run(struct vcpu_svm *svm, int cpu)
- 	struct svm_cpu_data *sd = per_cpu(svm_data, cpu);
- 	int asid = sev_get_asid(svm->vcpu.kvm);
- 
--	/* Perform any SEV-ES pre-run actions */
--	pre_sev_es_run(svm);
--
- 	/* Assign the asid allocated with this SEV guest */
- 	svm->asid = asid;
- 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index a7271f31df47..e9f9aacc8f51 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1424,6 +1424,9 @@ static void svm_prepare_guest_switch(struct kvm_vcpu *vcpu)
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	struct svm_cpu_data *sd = per_cpu(svm_data, vcpu->cpu);
- 
-+	if (sev_es_guest(vcpu->kvm))
-+		sev_es_unmap_ghcb(svm);
-+
- 	if (svm->guest_state_loaded)
- 		return;
- 
-diff --git a/arch/x86/kvm/svm/svm.h b/arch/x86/kvm/svm/svm.h
-index 84b3133c2251..e44567ceb865 100644
---- a/arch/x86/kvm/svm/svm.h
-+++ b/arch/x86/kvm/svm/svm.h
-@@ -581,6 +581,7 @@ void sev_es_init_vmcb(struct vcpu_svm *svm);
- void sev_es_create_vcpu(struct vcpu_svm *svm);
- void sev_vcpu_deliver_sipi_vector(struct kvm_vcpu *vcpu, u8 vector);
- void sev_es_prepare_guest_switch(struct vcpu_svm *svm, unsigned int cpu);
-+void sev_es_unmap_ghcb(struct vcpu_svm *svm);
- 
- /* vmenter.S */
- 
--- 
-2.31.0
-
+These helpers are not performance sensitive so a per-cpu stack of
+buffers feels over-engineered to me (and is also complexity I feel a
+bit uncomfortable with).
