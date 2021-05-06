@@ -2,133 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18186374C34
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:12:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D9B8374C55
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:28:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229955AbhEFANP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 20:13:15 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:62265 "EHLO m43-7.mailgun.net"
+        id S229909AbhEFA3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 20:29:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47590 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhEFANN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 20:13:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620259936; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=pKhzewIExom3v+dwxtzsTkBsKL6YMTRwhAWb3ai83A4=; b=dhL32IURF058pZnwr61EH/r0yskiFxtqWp5t48SOH07geRFjru595OZBhzmvarKxxDBP4xeA
- 6QNjpPMLEHgTs+024x6gGhN7VnaWSG52NsPqgbupD6UJfruLajsmXuKLYe78n1JkL87ndECO
- RcNcRedFsmhEDwlFqJ18DrKBSg4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 6093346055b14811b42c5a96 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 00:12:16
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id B820DC43460; Thu,  6 May 2021 00:12:15 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 7E519C433D3;
-        Thu,  6 May 2021 00:12:14 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 7E519C433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v3 6/6] bus: mhi: core: Add range checks for BHI and BHIe
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        linux-wireless@vger.kernel.org, kvalo@codeaurora.org,
-        ath11k@lists.infradead.org
-References: <1620234501-30461-1-git-send-email-bbhatt@codeaurora.org>
- <1620234501-30461-7-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <4eb740c7-d95f-8962-a06e-677404ebe84d@codeaurora.org>
-Date:   Wed, 5 May 2021 17:12:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S229488AbhEFA3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 20:29:09 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 81A7E61090;
+        Thu,  6 May 2021 00:28:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620260892;
+        bh=q7IDlMGI6xpMvyU4SnCUl+S8bj1v2u/RUGU5QhZTaRg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aXMzLTxaQdRhtLL2BuaGd2t4RSdoCkEh03m80QkyfDzdg/J3sgMzo+rg2uG/3N+R3
+         476WXcXMKefA/3kdSqkEz6OmvT2KDS7YMbCB9yJg6Hm+ETLv6Plb0Omr6gppPKKAZ+
+         dR6eSUJRaMZ3MI0HfpanEbG3GmB+ORrN9R095/swWaZUkia3VW3sZbDnDSM3FJaoFJ
+         yfn2RAqcOYEnJsEx3EHlRKD2sNVuj5CUHAz5C5y9ha9nxBpnpDxddfUfhJAx0Jnlhq
+         9T7vcnTHxPuypzlCj3UBLJg+tYHt9UgZ5qHfepEfhiooDhWpZdlqKlZauEC4Twt1LL
+         HlnPUNME8rNSA==
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, Kees Cook <keescook@chromium.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
+        Nathan Chancellor <nathan@kernel.org>,
+        kernel test robot <lkp@intel.com>
+Subject: [PATCH] vmlinux.lds.h: Handle decrypted data section with !SMP
+Date:   Wed,  5 May 2021 17:14:11 -0700
+Message-Id: <20210506001410.1026691-1-nathan@kernel.org>
+X-Mailer: git-send-email 2.31.1.442.g7e39198978
 MIME-Version: 1.0
-In-Reply-To: <1620234501-30461-7-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-Patchwork-Bot: notify
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bhaumik,
+With x86_64_defconfig and the following configs, there is an orphan
+section warning:
 
-On 5/5/21 10:08 AM, Bhaumik Bhatt wrote:
-> When obtaining the BHI or BHIe offsets during the power up
-> preparation phase, range checks are missing. These can help
-> controller drivers avoid accessing any address outside of the
-> MMIO region. Ensure that mhi_cntrl->reg_len is set before MHI
-> registration as it is a required field and range checks will
-> fail without it.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
-> ---
->   drivers/bus/mhi/core/init.c | 15 ++++++++++++++-
->   1 file changed, 14 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-> index 1cc2f22..86ad06e 100644
-> --- a/drivers/bus/mhi/core/init.c
-> +++ b/drivers/bus/mhi/core/init.c
-> @@ -885,7 +885,8 @@ int mhi_register_controller(struct mhi_controller *mhi_cntrl,
->   	if (!mhi_cntrl || !mhi_cntrl->cntrl_dev || !mhi_cntrl->regs ||
->   	    !mhi_cntrl->runtime_get || !mhi_cntrl->runtime_put ||
->   	    !mhi_cntrl->status_cb || !mhi_cntrl->read_reg ||
-> -	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs || !mhi_cntrl->irq)
-> +	    !mhi_cntrl->write_reg || !mhi_cntrl->nr_irqs ||
-> +	    !mhi_cntrl->irq || !mhi_cntrl->reg_len)
->   		return -EINVAL;
->   
->   	ret = parse_config(mhi_cntrl, config);
-> @@ -1077,6 +1078,12 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
->   		dev_err(dev, "Error getting BHI offset\n");
->   		goto error_reg_offset;
->   	}
-> +
-> +	if (bhi_off >= mhi_cntrl->reg_len) {
-> +		dev_err(dev, "BHI offset is out of range\n");
-Does is make sense to also log bhi_off and/or reg_len values in error if 
-it helps in debugging
-> +		ret = -EINVAL;
-> +		goto error_reg_offset;
-> +	}
->   	mhi_cntrl->bhi = mhi_cntrl->regs + bhi_off;
->   
->   	if (mhi_cntrl->fbc_download || mhi_cntrl->rddm_size) {
-> @@ -1086,6 +1093,12 @@ int mhi_prepare_for_power_up(struct mhi_controller *mhi_cntrl)
->   			dev_err(dev, "Error getting BHIE offset\n");
->   			goto error_reg_offset;
->   		}
-> +
-> +		if (bhie_off >= mhi_cntrl->reg_len) {
-> +			dev_err(dev, "BHIe offset is out of range\n");
-Same comment as above
-> +			ret = -EINVAL;
-> +			goto error_reg_offset;
-> +		}
->   		mhi_cntrl->bhie = mhi_cntrl->regs + bhie_off;
->   	}
->   
-> 
+CONFIG_SMP=n
+CONFIG_AMD_MEM_ENCRYPT=y
+CONFIG_HYPERVISOR_GUEST=y
+CONFIG_KVM=y
+CONFIG_PARAVIRT=y
 
-Thanks,
-Hemant
+ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/cpu/vmware.o' being placed in section `.data..decrypted'
+ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/kvm.o' being placed in section `.data..decrypted'
+
+These sections are created with DEFINE_PER_CPU_DECRYPTED, which
+ultimately turns into __PCPU_ATTRS, which in turn has a section
+attribute with a value of PER_CPU_BASE_SECTION + the section name. When
+CONFIG_SMP is not set, the base section is .data and that is not
+currently handled in any linker script.
+
+Add .data..decrypted to PERCPU_DECRYPTED_SECTION, which is included in
+PERCPU_INPUT -> PERCPU_SECTION, which is include in the x86 linker
+script when either CONFIG_X86_64 or CONFIG_SMP is unset, taking care of
+the warning.
+
+Fixes: ac26963a1175 ("percpu: Introduce DEFINE_PER_CPU_DECRYPTED")
+Link: https://github.com/ClangBuiltLinux/linux/issues/1360
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Nathan Chancellor <nathan@kernel.org>
+---
+
+I took the simple fix route with this patch since I highly doubt someone
+is actually running a CONFIG_AMD_MEM_ENCRYPT=y + CONFIG_SMP=n kernel. If
+this section should actually be in .data, I can respin.
+
+ include/asm-generic/vmlinux.lds.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+index 40a9c101565e..17325416e2de 100644
+--- a/include/asm-generic/vmlinux.lds.h
++++ b/include/asm-generic/vmlinux.lds.h
+@@ -960,6 +960,7 @@
+ #ifdef CONFIG_AMD_MEM_ENCRYPT
+ #define PERCPU_DECRYPTED_SECTION					\
+ 	. = ALIGN(PAGE_SIZE);						\
++	*(.data..decrypted)						\
+ 	*(.data..percpu..decrypted)					\
+ 	. = ALIGN(PAGE_SIZE);
+ #else
+
+base-commit: 8404c9fbc84b741f66cff7d4934a25dd2c344452
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.31.1.442.g7e39198978
+
