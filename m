@@ -2,221 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66008374DB9
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:53:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 114D5374DBC
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232355AbhEFCyg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:54:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34214 "EHLO
+        id S231349AbhEFDAq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 23:00:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhEFCye (ORCPT
+        with ESMTP id S229465AbhEFDAp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:54:34 -0400
-Received: from mail-pl1-x631.google.com (mail-pl1-x631.google.com [IPv6:2607:f8b0:4864:20::631])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98A53C061761
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 19:53:37 -0700 (PDT)
-Received: by mail-pl1-x631.google.com with SMTP id s20so2624727plr.13
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 19:53:37 -0700 (PDT)
+        Wed, 5 May 2021 23:00:45 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A806CC061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 19:59:47 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id l129so3697110qke.8
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 19:59:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=YewfXLV+s6eseo7hxW6W1xEDd4aCTIQYY6fGFTM6318=;
-        b=1g6apy4Azt+HLbznoibVPTszQApPwt5wzruvbJC5FJnjkaIHYHo+Bkd4lgwAWi7NPW
-         FG2uf5WbZPNeI1sj9AWI79NRQyIGbGgASl8Hvh9TLzdRahLtITbx/vWLQcLAEOMeoqt6
-         o4CoFGCvqeBFGVkxvhGlpgZkReqTi1xh1Dh619tg3WDYfd+rUBX21oe8O4oiiW11A+/S
-         F/Fp3g5j0ChlmaFmRneBoxrv5Jxqs87Wd5p2WI+xAlYMSqilKnXV/Q4HJd34PXoHiOOF
-         CMc54ObYAPTg0Fe3Hd1Ammk7j0VlJY6u2D9DGWx8UTwCwMRl95U0OpcLwdtZAbsQSD57
-         UQ/A==
+        bh=5nU1vgirtCThHvyYn1ZRBNMbOfWAmoUamSH+LcH56a8=;
+        b=bV0lkOJUu5s4BbJ6rOBiItcFnuvbF+pPAhICL7Ag0S8hMCilMdMA4h1XNFzN990UGg
+         DXxyd2rDycv94LpUuP9K+XIGsdJ1jE+FBVWhinoriPc6FS1PJXhNiJa+KmYAtD0QNcox
+         YLOG2tCqtb7TWLtLkt8HjH2rDcpiHVLukewopVAnLSow3YvNLj2nBXP7VkfM7YxKtGOw
+         mhiFBao0G/SVg/yiavea5HiyXhCvruWpuNQvaMkzX0uhfbHillZsPq/yeJ3D8BNUfmB2
+         y0L8qmXCaTVRTsv6ycs+qIsaDYZKvFy8If6GsPAX7q5kidOzd2hB/HHRbPHw1h8BHqEm
+         h7BQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=YewfXLV+s6eseo7hxW6W1xEDd4aCTIQYY6fGFTM6318=;
-        b=TRze3gY5+z5n2cXYDYySCLlT7RouhVvuwBX69L5xGtmkDJJdFTPg4UjXJyyw2+q0nE
-         qcUCmWSmQiGZin3iAvkm+bBjBN+iNmJoQtP1rIBW+Ece3ITyb/1MbpSC8PrKbXPoa8E3
-         BJT5oNJG4Ub5LpgKs0NLs+Ajc0rbYjq2ZUGxEAEJrmQFAEezh0W4Eg94rYXmnJaQsvDZ
-         bkLn6Z4yJ+Ac+56xvaMNUpiV/yk6FciP1XJ6i05S5n3psOVuwh46PiL4ntuTQ8afyEmZ
-         0XOgFmE8U9B8MGS88le2pqvMd59BUjjr2TDT6kU1jAOFDp0rN8Ubrv9tuDZ6PfQ5LNhZ
-         SUvA==
-X-Gm-Message-State: AOAM533pZg45P8juTk+Bq8zaHM/QcOxPRbRxE1yyLRXQi3a+jTIIieir
-        aZldi+sKD59WamUWIvAXf0jSdwypHHjItijNr24U9Q==
-X-Google-Smtp-Source: ABdhPJxB5teGJjRreLimTCPrUixDSsqCQ2MyfSkZEup9YXKNFbxR8Ed4DozyMoPQhS+fYL8hHVGbgv6P46OeJcEIY7I=
-X-Received: by 2002:a17:902:e54e:b029:ed:6ed2:d0ab with SMTP id
- n14-20020a170902e54eb02900ed6ed2d0abmr2031887plf.24.1620269616937; Wed, 05
- May 2021 19:53:36 -0700 (PDT)
+        bh=5nU1vgirtCThHvyYn1ZRBNMbOfWAmoUamSH+LcH56a8=;
+        b=PQ60gbfx/H7ITedD0XrNCe1BKxO76RJP0h/aPa4XMQdxsoZ452yGziPBIi7mA+CMmN
+         YJa3xoXY+vbuqcoTONLJt8eBE8DbtANKpAC+CjHuEBQxxijksvK/uCcgbBZrIISQqXWM
+         Mtc+oyEEHQPM+KiyBwn8HqfbypiDyOYAEm3CqrgRGiRUsi0ieYiUn1ctETebsub422Ap
+         n7+wvtUkNUkCLHP1NJxfKcuO23qSCzccRG8xAUpN1vDPQ+2u2bwnLhhENgvva8Uh06Ja
+         tJ0NbVXaBERLYpMBKFPmrjAQkHXIaKhGDIk15lLpTKz1ECP5aBssx1DxANEHGwkPTHGf
+         oNyQ==
+X-Gm-Message-State: AOAM53016JyBP/iYbEcDHirpu5Lx9f0u6MjqXs06uUzn/z1cQxnbVEu6
+        oBW6zGn/wpQ+I26/Wzs0jpya9hQlogfNm2L4+SU=
+X-Google-Smtp-Source: ABdhPJzDff6nOz49nsVXQ8WHxc36EDEAfLfOpn0EAONrS6s8pZ5dBpXMkQjbHpcdA6HIl/tZ0mtx4etMgnd41dZYB7w=
+X-Received: by 2002:a05:620a:2903:: with SMTP id m3mr1886281qkp.37.1620269986820;
+ Wed, 05 May 2021 19:59:46 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210430031352.45379-1-songmuchun@bytedance.com>
- <20210430031352.45379-7-songmuchun@bytedance.com> <c2e8bc43-44dc-825d-9f59-0de300815fa4@oracle.com>
-In-Reply-To: <c2e8bc43-44dc-825d-9f59-0de300815fa4@oracle.com>
-From:   Muchun Song <songmuchun@bytedance.com>
-Date:   Thu, 6 May 2021 10:52:58 +0800
-Message-ID: <CAMZfGtWaSGCUaubv6kwc1hzRoc9=O2eXJBcU9t8bX3XeQtP9Yw@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH v22 6/9] mm: hugetlb: alloc the vmemmap
- pages associated with each HugeTLB page
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, bp@alien8.de,
-        X86 ML <x86@kernel.org>, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andrew Morton <akpm@linux-foundation.org>, paulmck@kernel.org,
-        pawan.kumar.gupta@linux.intel.com,
-        Randy Dunlap <rdunlap@infradead.org>, oneukum@suse.com,
-        anshuman.khandual@arm.com, jroedel@suse.de,
-        Mina Almasry <almasrymina@google.com>,
-        David Rientjes <rientjes@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Oscar Salvador <osalvador@suse.de>,
-        Michal Hocko <mhocko@suse.com>,
-        "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>,
-        David Hildenbrand <david@redhat.com>,
-        =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>,
-        Joao Martins <joao.m.martins@oracle.com>,
-        Xiongchun duan <duanxiongchun@bytedance.com>,
-        fam.zheng@bytedance.com, zhengqi.arch@bytedance.com,
-        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>
+References: <20210506022452.5762-1-wanjiabing@vivo.com>
+In-Reply-To: <20210506022452.5762-1-wanjiabing@vivo.com>
+From:   Shengjiu Wang <shengjiu.wang@gmail.com>
+Date:   Thu, 6 May 2021 10:59:35 +0800
+Message-ID: <CAA+D8AOLyjnjD2gc=a20zYCfJp1EoJ9En4Q9JQXR5qbV9Mpzyg@mail.gmail.com>
+Subject: Re: [PATCH] ASoC: fsl_xcvr: Remove unneeded semicolon
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, alsa-devel@alsa-project.org,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>, kael_w@yeah.net
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 6:21 AM Mike Kravetz <mike.kravetz@oracle.com> wrote:
+On Thu, May 6, 2021 at 10:26 AM Wan Jiabing <wanjiabing@vivo.com> wrote:
 >
-> On 4/29/21 8:13 PM, Muchun Song wrote:
-> > When we free a HugeTLB page to the buddy allocator, we need to allocate
-> > the vmemmap pages associated with it. However, we may not be able to
-> > allocate the vmemmap pages when the system is under memory pressure. In
-> > this case, we just refuse to free the HugeTLB page. This changes behavior
-> > in some corner cases as listed below:
-> >
-> >  1) Failing to free a huge page triggered by the user (decrease nr_pages).
-> >
-> >     User needs to try again later.
-> >
-> >  2) Failing to free a surplus huge page when freed by the application.
-> >
-> >     Try again later when freeing a huge page next time.
-> >
-> >  3) Failing to dissolve a free huge page on ZONE_MOVABLE via
-> >     offline_pages().
-> >
-> >     This can happen when we have plenty of ZONE_MOVABLE memory, but
-> >     not enough kernel memory to allocate vmemmmap pages.  We may even
-> >     be able to migrate huge page contents, but will not be able to
-> >     dissolve the source huge page.  This will prevent an offline
-> >     operation and is unfortunate as memory offlining is expected to
-> >     succeed on movable zones.  Users that depend on memory hotplug
-> >     to succeed for movable zones should carefully consider whether the
-> >     memory savings gained from this feature are worth the risk of
-> >     possibly not being able to offline memory in certain situations.
-> >
-> >  4) Failing to dissolve a huge page on CMA/ZONE_MOVABLE via
-> >     alloc_contig_range() - once we have that handling in place. Mainly
-> >     affects CMA and virtio-mem.
-> >
-> >     Similar to 3). virito-mem will handle migration errors gracefully.
-> >     CMA might be able to fallback on other free areas within the CMA
-> >     region.
-> >
-> > Vmemmap pages are allocated from the page freeing context. In order for
-> > those allocations to be not disruptive (e.g. trigger oom killer)
-> > __GFP_NORETRY is used. hugetlb_lock is dropped for the allocation
-> > because a non sleeping allocation would be too fragile and it could fail
-> > too easily under memory pressure. GFP_ATOMIC or other modes to access
-> > memory reserves is not used because we want to prevent consuming
-> > reserves under heavy hugetlb freeing.
-> >
-> > Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> > ---
-> >  Documentation/admin-guide/mm/hugetlbpage.rst    |  8 ++
-> >  Documentation/admin-guide/mm/memory-hotplug.rst | 13 ++++
-> >  include/linux/hugetlb.h                         |  3 +
-> >  include/linux/mm.h                              |  2 +
-> >  mm/hugetlb.c                                    | 98 +++++++++++++++++++++----
-> >  mm/hugetlb_vmemmap.c                            | 34 +++++++++
-> >  mm/hugetlb_vmemmap.h                            |  6 ++
-> >  mm/migrate.c                                    |  5 +-
-> >  mm/sparse-vmemmap.c                             | 75 ++++++++++++++++++-
-> >  9 files changed, 227 insertions(+), 17 deletions(-)
-> >
-> > diff --git a/Documentation/admin-guide/mm/hugetlbpage.rst b/Documentation/admin-guide/mm/hugetlbpage.rst
-> > index f7b1c7462991..6988895d09a8 100644
-> > --- a/Documentation/admin-guide/mm/hugetlbpage.rst
-> > +++ b/Documentation/admin-guide/mm/hugetlbpage.rst
-> > @@ -60,6 +60,10 @@ HugePages_Surp
-> >          the pool above the value in ``/proc/sys/vm/nr_hugepages``. The
-> >          maximum number of surplus huge pages is controlled by
-> >          ``/proc/sys/vm/nr_overcommit_hugepages``.
-> > +     Note: When the feature of freeing unused vmemmap pages associated
-> > +     with each hugetlb page is enabled, the number of surplus huge pages
-> > +     may be temporarily larger than the maximum number of surplus huge
-> > +     pages when the system is under memory pressure.
-> >  Hugepagesize
-> >       is the default hugepage size (in Kb).
-> >  Hugetlb
-> > @@ -80,6 +84,10 @@ returned to the huge page pool when freed by a task.  A user with root
-> >  privileges can dynamically allocate more or free some persistent huge pages
-> >  by increasing or decreasing the value of ``nr_hugepages``.
-> >
-> > +Note: When the feature of freeing unused vmemmap pages associated with each
-> > +hugetlb page is enabled, we can fail to free the huge pages triggered by
-> > +the user when ths system is under memory pressure.  Please try again later.
-> > +
-> >  Pages that are used as huge pages are reserved inside the kernel and cannot
-> >  be used for other purposes.  Huge pages cannot be swapped out under
-> >  memory pressure.
-> > diff --git a/Documentation/admin-guide/mm/memory-hotplug.rst b/Documentation/admin-guide/mm/memory-hotplug.rst
-> > index 05d51d2d8beb..c6bae2d77160 100644
-> > --- a/Documentation/admin-guide/mm/memory-hotplug.rst
-> > +++ b/Documentation/admin-guide/mm/memory-hotplug.rst
-> > @@ -357,6 +357,19 @@ creates ZONE_MOVABLE as following.
-> >     Unfortunately, there is no information to show which memory block belongs
-> >     to ZONE_MOVABLE. This is TBD.
-> >
-> > +   Memory offlining can fail when dissolving a free huge page on ZONE_MOVABLE
-> > +   and the feature of freeing unused vmemmap pages associated with each hugetlb
-> > +   page is enabled.
-> > +
-> > +   This can happen when we have plenty of ZONE_MOVABLE memory, but not enough
-> > +   kernel memory to allocate vmemmmap pages.  We may even be able to migrate
-> > +   huge page contents, but will not be able to dissolve the source huge page.
-> > +   This will prevent an offline operation and is unfortunate as memory offlining
-> > +   is expected to succeed on movable zones.  Users that depend on memory hotplug
-> > +   to succeed for movable zones should carefully consider whether the memory
-> > +   savings gained from this feature are worth the risk of possibly not being
-> > +   able to offline memory in certain situations.
-> > +
-> >  .. note::
-> >     Techniques that rely on long-term pinnings of memory (especially, RDMA and
-> >     vfio) are fundamentally problematic with ZONE_MOVABLE and, therefore, memory
-> > diff --git a/include/linux/hugetlb.h b/include/linux/hugetlb.h
-> > index d523a345dc86..d3abaaec2a22 100644
-> > --- a/include/linux/hugetlb.h
-> > +++ b/include/linux/hugetlb.h
-> > @@ -525,6 +525,7 @@ unsigned long hugetlb_get_unmapped_area(struct file *file, unsigned long addr,
-> >   *   code knows it has only reference.  All other examinations and
-> >   *   modifications require hugetlb_lock.
-> >   * HPG_freed - Set when page is on the free lists.
-> > + * HPG_vmemmap_optimized - Set when the vmemmap pages of the page are freed.
-> >   *   Synchronization: hugetlb_lock held for examination and modification.
+> Fix the following coccicheck warning:
 >
-> You just moved the Synchronization comment so that it applies to both
-> HPG_freed and HPG_vmemmap_optimized.  However, HPG_vmemmap_optimized is
-> checked/modified both with and without hugetlb_lock.  Nothing wrong with
-> that, just need to update/fix the comment.
+> ./sound/soc/fsl/fsl_xcvr.c:739:2-3: Unneeded semicolon
 >
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-Thanks, Mike. I will update the comment.
+Acked-by: Shengjiu Wang <shengjiu.wang@gmail.com>
 
-> Everything else looks good to me,
+> ---
+>  sound/soc/fsl/fsl_xcvr.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> Reviewed-by: Mike Kravetz <mike.kravetz@oracle.com>
+> diff --git a/sound/soc/fsl/fsl_xcvr.c b/sound/soc/fsl/fsl_xcvr.c
+> index 6cb558165848..df7c189d97dd 100644
+> --- a/sound/soc/fsl/fsl_xcvr.c
+> +++ b/sound/soc/fsl/fsl_xcvr.c
+> @@ -736,7 +736,7 @@ static int fsl_xcvr_load_firmware(struct fsl_xcvr *xcvr)
+>                         /* clean current page, including data memory */
+>                         memset_io(xcvr->ram_addr, 0, size);
+>                 }
+> -       };
+> +       }
 >
+>  err_firmware:
+>         release_firmware(fw);
 > --
-> Mike Kravetz
+> 2.25.1
+>
