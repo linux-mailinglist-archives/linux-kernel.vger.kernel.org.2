@@ -2,123 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4215337562D
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:03:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AF69375634
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:06:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235068AbhEFPD5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:03:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55030 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235027AbhEFPD4 (ORCPT
+        id S234992AbhEFPHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:07:43 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:40916 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234918AbhEFPHm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:03:56 -0400
-Received: from mail-lf1-x12d.google.com (mail-lf1-x12d.google.com [IPv6:2a00:1450:4864:20::12d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68771C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 08:02:57 -0700 (PDT)
-Received: by mail-lf1-x12d.google.com with SMTP id z9so8208214lfu.8
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:02:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=2eT0MKbpTIaqZ/oJJXKFKrCsA1epQVqWlKwWBElbZrI=;
-        b=a7ldHXxoGJnYNifiZFiaxOjvVn6lCQYNc72X7fa0fLXdEMl6UAuoTYpXrDwmE9jBT7
-         XKPbiZ/688M3/5xT/QfLV94WByJWGbYvysZ2LYMsn/X09wjxinSg1Rx0xbChxr2ZQFnO
-         eiS4IjAHijBkkhUFl9IX6+9htSmuCaeTG9+dpkO51q2Kf3xj/UQc9RxzpENnqmtmVstH
-         L6N5ldxYfeTXr76Xe+pNhBRdSae1aatUdJkIVx/LTHTApRT0m3BBY1X7PGlTKKTqKEpS
-         jafv7TdJPCa2Mz0WqcPPbShcFei6f75ULekI9DJoiHzO7YMHsn2hwPWhLPnLQfiOnZpE
-         y+XQ==
+        Thu, 6 May 2021 11:07:42 -0400
+Received: from mail-qt1-f197.google.com ([209.85.160.197])
+        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+        (Exim 4.93)
+        (envelope-from <krzysztof.kozlowski@canonical.com>)
+        id 1lefaM-0001UY-Ia
+        for linux-kernel@vger.kernel.org; Thu, 06 May 2021 15:06:42 +0000
+Received: by mail-qt1-f197.google.com with SMTP id j3-20020ac874c30000b02901bab5879d6aso3744679qtr.0
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:06:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=2eT0MKbpTIaqZ/oJJXKFKrCsA1epQVqWlKwWBElbZrI=;
-        b=psfLq532A5jrURw0bsewrP/EkQC8zIE+OvcRy12/6pHc0pfRXzcy91MvVVj5xePB6u
-         uXVpmarDwTpwcxjAyBpCBBuKjrEQqQMEIhgP1i+PKicMk3nKGr51evzXxVivbMGdkTaF
-         fcW6X3jn3+tVRL55YgLQ/BKc9h7B+tO5rtGcEl90q151ut2VWVeKQ+g5ZtyrY+i35fBE
-         NFv8Qx+s0sRZ4T+C5izTpbtRzPaLAvwIDXPoVLftEZxGkaq0UnpraOeSZsx10RLCKjue
-         FvL4nUis2qKUWUKvM4nnLuAK18TRS68bGO6X3pjRHbWM40DcOsM3GGbmQvt2F4+C68tB
-         K7Xg==
-X-Gm-Message-State: AOAM531qB5uc+JgP5lIEf2rUs7DZWt7ZcQZkx5qcdnQuErxGMTt8dzta
-        n/YjVMhoviaCkV5/UuBLHS78LmnDJpZ6Tkd4nUA=
-X-Google-Smtp-Source: ABdhPJyASNQ9/T2R91F11z8YHDRJrGIKbU9c4ZwZBBBHaiXtAopq22bipsOaxZjbJjdaDktzDZJb0uD4dnwioBly040=
-X-Received: by 2002:a05:6512:1190:: with SMTP id g16mr3486886lfr.342.1620313375599;
- Thu, 06 May 2021 08:02:55 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zSTA6cfN/qaK4lBFMa4RvAaYG+jH1EwyfhL01aLLFFI=;
+        b=turh/oOUnNQPupXBwz2I6pf/wQIR/w/aw/OhvpgjY70JTa7SzRnhRCPdKyVFD5Q+a4
+         nrZjK4l0n9dDIcVmDspOhfIbT1sgHhh/1SitY/T10KZHjhoJXDA0+hqJWnbYvVCVdko/
+         RLiS/4Qym43Y1Gmi/0rDyY5T+dfV2/biEMm0JwDUwQWdKKqXyDEqEWNtQI/z5c9awivv
+         u45AP+QFrea+pZ7NvaPAibetzKic583G64itdaoUyP/2v+S91p4Po34lLD+CSTbKe8qk
+         kZg7NymOFKN4pkrg0MlneEyhelq+joMvdX2qW71iJvefk3L1AQWAD3zmDuFXkgJxlw2V
+         9+YQ==
+X-Gm-Message-State: AOAM533WQ5FIcitJHAxNJNJ8cpJYfNV6bQGkMUtXZpLFXzjxxGOqPhaC
+        2tIyVPijgGVdHrl29UujPCzGrlF4MpgMhIr+nS/tn4WvIkwjLhkQTY2nAGphO/Nt7O1HyM/iXPQ
+        5w43PitWSAZPN2lnHPwUUsZf1tbKScF4z/uxyK6fL5g==
+X-Received: by 2002:ac8:4756:: with SMTP id k22mr4683313qtp.193.1620313601722;
+        Thu, 06 May 2021 08:06:41 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzXHibdcno/SU3vySZ0SKbY5rMtER8hN0dvVyva6Yz9XHsYNpregf/rzBekPqY22OhXzN+zzA==
+X-Received: by 2002:ac8:4756:: with SMTP id k22mr4683294qtp.193.1620313601524;
+        Thu, 06 May 2021 08:06:41 -0700 (PDT)
+Received: from localhost.localdomain ([45.237.49.1])
+        by smtp.gmail.com with ESMTPSA id 189sm2236192qkh.99.2021.05.06.08.06.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 08:06:41 -0700 (PDT)
+From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+To:     Peter Rosin <peda@axentia.se>, Jonathan Cameron <jic23@kernel.org>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+Subject: [PATCH] dt-bindings: iio: afe: current-sense-shunt: add io-channel-cells
+Date:   Thu,  6 May 2021 11:06:37 -0400
+Message-Id: <20210506150637.35288-1-krzysztof.kozlowski@canonical.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210506132827.3198497-1-elver@google.com>
-In-Reply-To: <20210506132827.3198497-1-elver@google.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Thu, 6 May 2021 20:32:43 +0530
-Message-ID: <CABJPP5D_azxBiKq08_m_WVmcEy8qbMCa0EsAgu57t2T+eDJA0A@mail.gmail.com>
-Subject: Re: [PATCH] checkpatch: warn about direct use of send_sig_info and force_sig_info
-To:     Marco Elver <elver@google.com>
-Cc:     "Eric W . Biederman" <ebiederm@xmission.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Joe Perches <joe@perches.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 6:59 PM Marco Elver <elver@google.com> wrote:
->
-> Setting up siginfo and using send_sig_info() and force_sig_info()
-> directly is discouraged. Instead, new code wanting to generate signals
-> should use the appropriate helper specific to the signal.
->
-> Eric mentioned that he'd like to make these static at some point, but
-> until that can happen, let's try to avoid introducing new users of them.
->
-> Cc: Eric W. Biederman <ebiederm@xmission.com>
-> Signed-off-by: Marco Elver <elver@google.com>
-> ---
-> Eric,
->
-> While siginfo doesn't need changing often, when it does, it's quite the
-> adventure. We now have the various static asserts. The other thing is
-> usage of {send,force}_sig_info.
->
-> I think the best option right now is to teach checkpatch.pl about it
-> until they become static.
->
-> Fyi, I noticed one such new user here:
-> https://lkml.kernel.org/r/20210421024826.13529-1-wangjunqiang@iscas.ac.cn
->
-> Thanks,
-> -- Marco
-> ---
->  scripts/checkpatch.pl | 6 ++++++
->  1 file changed, 6 insertions(+)
->
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index ccb412a74725..3a86aafc3bcd 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -7153,6 +7153,12 @@ sub process {
->                              "Where possible, use lockdep_assert_held instead of assertions based on spin_is_locked\n" . $herecurr);
->                 }
->
-> +# check for direct use of send_sig_info(), force_sig_info()
-> +               if ($line =~ /\b((force|send)_sig_info)\(/) {
+The current-sense-shunt is an IIO provider thus can be referenced by IIO
+consumers (via "io-channels" property in consumer device node).
+Such provider is required to describe number of cells used in phandle
+lookup with "io-channel-cells" property.  This also fixes dtbs_check
+warnings like:
 
-I think this might be a little better as:
-if ($line =~ /\b((?:force|send)_sig_info)\(/) {
+  arch/arm/boot/dts/s5pv210-fascinate4g.dt.yaml: current-sense-shunt:
+    '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
 
-Otherwise it's good as it is.
-Tested-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+Fixes: ce66e52b6c16 ("dt-bindings:iio:afe:current-sense-shunt: txt to yaml conversion.")
+Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+---
+ .../devicetree/bindings/iio/afe/current-sense-shunt.yaml     | 5 +++++
+ 1 file changed, 5 insertions(+)
 
-Thanks,
-Dwaipayan.
+diff --git a/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml b/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
+index 90439a8dc785..05166d8a3124 100644
+--- a/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
++++ b/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
+@@ -24,12 +24,16 @@ properties:
+     description: |
+       Channel node of a voltage io-channel.
+ 
++  "#io-channel-cells":
++    const: 0
++
+   shunt-resistor-micro-ohms:
+     description: The shunt resistance.
+ 
+ required:
+   - compatible
+   - io-channels
++  - "#io-channel-cells"
+   - shunt-resistor-micro-ohms
+ 
+ additionalProperties: false
+@@ -57,6 +61,7 @@ examples:
+     sysi {
+         compatible = "current-sense-shunt";
+         io-channels = <&tiadc 0>;
++        #io-channel-cells = <0>;
+ 
+         /* Divide the voltage by 3300000/1000000 (or 3.3) for the current. */
+         shunt-resistor-micro-ohms = <3300000>;
+-- 
+2.25.1
 
-> +                       WARN("USE_SIGINFO_HELPER",
-> +                            "Where possible, avoid using '$1' directly and use a signal-specific helper setting required siginfo fields (see include/linux/sched/signal.h).\n" . $herecurr);
-> +               }
-> +
->  # check for deprecated apis
->                 if ($line =~ /\b($deprecated_apis_search)\b\s*\(/) {
->                         my $deprecated_api = $1;
-> --
-> 2.31.1.607.g51e8a6a459-goog
->
