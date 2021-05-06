@@ -2,181 +2,208 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 226F6375CFF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:50:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD640375D01
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:53:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230311AbhEFVvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:51:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:42455 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229572AbhEFVvY (ORCPT
+        id S230349AbhEFVyi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 17:54:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhEFVyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 17:51:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620337825;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Q9h3TdRqA3v9lLQkKiiTDr2ssav5eexul01Jy9Pakf4=;
-        b=fO4mkEN6myhHPlFhiJ24WHhKkaZy36xomXXLejScodSS9DnG9oqjb6o3d3QyBcc8kGVrPc
-        8KsowldXPG2NukCp1YtrEqKouK406paEOX8wZaBxrGYSTm+7QMfiyrUnItOzIMWR5wwgAE
-        f90ih79bbLGW5mt24S+wzrOTavvQOGw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196-eeDIo886N2awTTLzwNq-Ug-1; Thu, 06 May 2021 17:50:21 -0400
-X-MC-Unique: eeDIo886N2awTTLzwNq-Ug-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5A7B7802938;
-        Thu,  6 May 2021 21:50:20 +0000 (UTC)
-Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 48D845D9CA;
-        Thu,  6 May 2021 21:50:05 +0000 (UTC)
-Date:   Thu, 6 May 2021 15:50:04 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Maxime Coquelin <maxime.coquelin@redhat.com>
-Cc:     jmorris@namei.org, dhowells@redhat.com,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org, kvm@vger.kernel.org,
-        mjg59@srcf.ucam.org, keescook@chromium.org, cohuck@redhat.com
-Subject: Re: [PATCH] vfio: Lock down no-IOMMU mode when kernel is locked
- down
-Message-ID: <20210506155004.7e214d8f@redhat.com>
-In-Reply-To: <20210506091859.6961-1-maxime.coquelin@redhat.com>
-References: <20210506091859.6961-1-maxime.coquelin@redhat.com>
+        Thu, 6 May 2021 17:54:37 -0400
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E84ECC061574;
+        Thu,  6 May 2021 14:53:38 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id n2so7163381wrm.0;
+        Thu, 06 May 2021 14:53:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ehzMC3baDkP+yU9cvxxvTEPGYM2hhUOxxcM3hdvysfQ=;
+        b=O8fOTg6dQISM5IB3x5hG/4Ine6HRgFqc+NBNViVxZ43acOatagnfhGfS558F1a0+OR
+         o2KqG/rq33CaR04gu4YlrviliC2BiWzJcF2bwcAh9zGYdx9cXswU+1f6L3F1sTfNZ7y8
+         I6JTenvJNTZ3JN/ASPkxtN17EYDXW8ljGJK7icLWTc8cmomvl1Rni08L0b6QcTzcJUtL
+         R5ioemMnUDYssVXI5rl06+90nH5mopZh3ma6qJ5K/ARMKvRbcJVKiS2pYoK6RDpFrK6i
+         ikTQ45dJf6cn51hVetLv119JCN+IJ71kTmZ2fUA87LCfwjihT5o622DM5Zs/54qluQSO
+         vbTA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ehzMC3baDkP+yU9cvxxvTEPGYM2hhUOxxcM3hdvysfQ=;
+        b=MwMyw8ncMH0fr2OtNUe5fNd5ZRjrHHkF3YG0LkSMdVeZaocQ3fAFB+OdEdnqelNu2L
+         bD/l0gM5OBsiiGstXLT/8hj+koXYRRRAfWtM/dFhUEgdJ/Zk+QCFTje2sssc5Y0O8Tid
+         MgxisTQ2qz76HR/92FSbpjsZuKL5xGQWzzK0Epm7pspJ30zQnbU+WXnVYdhr5eSIz1+9
+         1eLySB9GgBpuFdbtW4ynjLCdIv5WmAaZd4uuceH8W+1MbYUYA2QvyI2INlcHMI56G78b
+         5EVa4TrFM974EpoFYDFbWKmIqZZJZk+xkR2/JSllsV280TUyhSwJRHWCjbX9xRbSWgc6
+         PbZA==
+X-Gm-Message-State: AOAM530LTx5Gd4mWMW1dd0vSxkpm7ZWaVWTNihxjaDLl2xYsTvEQyjUB
+        uu8XgSdaKxUFXfahflSLELU=
+X-Google-Smtp-Source: ABdhPJxbyUBN+2bcDAAjZ8tiJSW+nRnLSqUlAXqZmoWd7Hvg/o3j8V3cRAnJpHby/P3r7OChV+iTaQ==
+X-Received: by 2002:a5d:6687:: with SMTP id l7mr8153408wru.235.1620338017483;
+        Thu, 06 May 2021 14:53:37 -0700 (PDT)
+Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
+        by smtp.gmail.com with ESMTPSA id c5sm6089071wrs.73.2021.05.06.14.53.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 14:53:36 -0700 (PDT)
+Date:   Thu, 6 May 2021 23:53:36 +0200
+From:   Ansuel Smith <ansuelsmth@gmail.com>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next v3 13/20] net: dsa: qca8k: make rgmii delay
+ configurable
+Message-ID: <YJRlYAOtFHaaIguW@Ansuel-xps.localdomain>
+References: <20210504222915.17206-1-ansuelsmth@gmail.com>
+ <20210504222915.17206-13-ansuelsmth@gmail.com>
+ <20210506111033.w4v4jj3amwhyj4r3@skbuf>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506111033.w4v4jj3amwhyj4r3@skbuf>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu,  6 May 2021 11:18:59 +0200
-Maxime Coquelin <maxime.coquelin@redhat.com> wrote:
-
-> When no-IOMMU mode is enabled, VFIO is as unsafe as accessing
-> the PCI BARs via the device's sysfs, which is locked down when
-> the kernel is locked down.
+On Thu, May 06, 2021 at 02:10:33PM +0300, Vladimir Oltean wrote:
+> On Wed, May 05, 2021 at 12:29:07AM +0200, Ansuel Smith wrote:
+> > The legacy qsdk code used a different delay instead of the max value.
+> > Qsdk use 1 ps for rx and 2 ps for tx. Make these values configurable
+> > using the standard rx/tx-internal-delay-ps ethernet binding and apply
+> > qsdk values by default. The connected gmac doesn't add any delay so no
+> > additional delay is added to tx/rx.
+> > 
+> > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > ---
+> >  drivers/net/dsa/qca8k.c | 51 +++++++++++++++++++++++++++++++++++++++--
+> >  drivers/net/dsa/qca8k.h | 11 +++++----
+> >  2 files changed, 55 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> > index 22334d416f53..cb9b44769e92 100644
+> > --- a/drivers/net/dsa/qca8k.c
+> > +++ b/drivers/net/dsa/qca8k.c
+> > @@ -779,6 +779,47 @@ qca8k_setup_mdio_bus(struct qca8k_priv *priv)
+> >  	return 0;
+> >  }
+> >  
+> > +static int
+> > +qca8k_setup_of_rgmii_delay(struct qca8k_priv *priv)
+> > +{
+> > +	struct device_node *ports, *port;
+> > +	u32 val;
+> > +
+> > +	ports = of_get_child_by_name(priv->dev->of_node, "ports");
 > 
-> Indeed, it is possible for an attacker to craft DMA requests
-> to modify kernel's code or leak secrets stored in the kernel,
-> since the device is not isolated by an IOMMU.
+> Consider falling back to searching for the "ethernet-ports" name too,
+> DSA should now support both.
+>
+
+The function qca8k_setup_mdio_bus also checks for ports node. Should I
+also there the fallback correct?
+
+> > +	if (!ports)
+> > +		return -EINVAL;
+> > +
+> > +	/* Assume only one port with rgmii-id mode */
+> > +	for_each_available_child_of_node(ports, port) {
+> > +		if (!of_property_match_string(port, "phy-mode", "rgmii-id"))
+> > +			continue;
+> > +
+> > +		if (of_property_read_u32(port, "rx-internal-delay-ps", &val))
+> > +			val = 2;
+> > +
+> > +		if (val > QCA8K_MAX_DELAY) {
+> > +			dev_err(priv->dev, "rgmii rx delay is limited to more than 3ps, setting to the max value");
+> > +			priv->rgmii_rx_delay = 3;
 > 
-> This patch introduces a new integrity lockdown reason for the
-> unsafe VFIO no-iommu mode.
-
-I'm hoping security folks will chime in here as I'm not familiar with
-the standard practices for new lockdown reasons.  The vfio no-iommu
-backend is clearly an integrity risk, which is why it's already hidden
-behind a separate Kconfig option, requires RAWIO capabilities, and
-taints the kernel if it's used, but I agree that preventing it during
-lockdown seems like a good additional step.
-
-Is it generally advised to create specific reasons, like done here, or
-should we aim to create a more generic reason related to unrestricted
-userspace DMA?
-
-I understand we don't want to re-use PCI_ACCESS because the vfio
-no-iommu backend is device agnostic, it can be used for both PCI and
-non-PCI devices.
-
-> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
-> ---
->  drivers/vfio/vfio.c      | 13 +++++++++----
->  include/linux/security.h |  1 +
->  security/security.c      |  1 +
->  3 files changed, 11 insertions(+), 4 deletions(-)
+> ?!
+> 3 picoseconds is not a lot of clock skew for a 125/25/2.5 MHz clock. 3 nanoseconds maybe?
 > 
-> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> index 5e631c359ef2..fe466d6ea5d8 100644
-> --- a/drivers/vfio/vfio.c
-> +++ b/drivers/vfio/vfio.c
-> @@ -25,6 +25,7 @@
->  #include <linux/pci.h>
->  #include <linux/rwsem.h>
->  #include <linux/sched.h>
-> +#include <linux/security.h>
->  #include <linux/slab.h>
->  #include <linux/stat.h>
->  #include <linux/string.h>
-> @@ -165,7 +166,8 @@ static void *vfio_noiommu_open(unsigned long arg)
->  {
->  	if (arg != VFIO_NOIOMMU_IOMMU)
->  		return ERR_PTR(-EINVAL);
-> -	if (!capable(CAP_SYS_RAWIO))
-> +	if (!capable(CAP_SYS_RAWIO) ||
-> +			security_locked_down(LOCKDOWN_VFIO_NOIOMMU))
->  		return ERR_PTR(-EPERM);
->  
->  	return NULL;
-> @@ -1280,7 +1282,8 @@ static int vfio_group_set_container(struct vfio_group *group, int container_fd)
->  	if (atomic_read(&group->container_users))
->  		return -EINVAL;
->  
-> -	if (group->noiommu && !capable(CAP_SYS_RAWIO))
-> +	if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
-> +			security_locked_down(LOCKDOWN_VFIO_NOIOMMU)))
->  		return -EPERM;
->  
->  	f = fdget(container_fd);
-> @@ -1362,7 +1365,8 @@ static int vfio_group_get_device_fd(struct vfio_group *group, char *buf)
->  	    !group->container->iommu_driver || !vfio_group_viable(group))
->  		return -EINVAL;
->  
-> -	if (group->noiommu && !capable(CAP_SYS_RAWIO))
-> +	if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
-> +			security_locked_down(LOCKDOWN_VFIO_NOIOMMU)))
->  		return -EPERM;
->  
->  	device = vfio_device_get_from_name(group, buf);
-> @@ -1490,7 +1494,8 @@ static int vfio_group_fops_open(struct inode *inode, struct file *filep)
->  	if (!group)
->  		return -ENODEV;
->  
-> -	if (group->noiommu && !capable(CAP_SYS_RAWIO)) {
-> +	if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
-> +			security_locked_down(LOCKDOWN_VFIO_NOIOMMU))) {
->  		vfio_group_put(group);
->  		return -EPERM;
->  	}
-
-In these cases where we're testing RAWIO, the idea is to raise the
-barrier of passing file descriptors to unprivileged users.  Is lockdown
-sufficiently static that we might really only need the test on open?
-The latter three cases here only make sense if the user were able to
-open a no-iommu context when lockdown is not enabled, then lockdown is
-later enabled preventing them from doing anything with that context...
-but not preventing ongoing unsafe usage that might already exist.  I
-suspect for that reason that lockdown is static and we really only need
-the test on open.  Thanks,
-
-Alex
-
-> diff --git a/include/linux/security.h b/include/linux/security.h
-> index 06f7c50ce77f..f29388180fab 100644
-> --- a/include/linux/security.h
-> +++ b/include/linux/security.h
-> @@ -120,6 +120,7 @@ enum lockdown_reason {
->  	LOCKDOWN_MMIOTRACE,
->  	LOCKDOWN_DEBUGFS,
->  	LOCKDOWN_XMON_WR,
-> +	LOCKDOWN_VFIO_NOIOMMU,
->  	LOCKDOWN_INTEGRITY_MAX,
->  	LOCKDOWN_KCORE,
->  	LOCKDOWN_KPROBES,
-> diff --git a/security/security.c b/security/security.c
-> index b38155b2de83..33c3ddb6dcab 100644
-> --- a/security/security.c
-> +++ b/security/security.c
-> @@ -58,6 +58,7 @@ const char *const lockdown_reasons[LOCKDOWN_CONFIDENTIALITY_MAX+1] = {
->  	[LOCKDOWN_MMIOTRACE] = "unsafe mmio",
->  	[LOCKDOWN_DEBUGFS] = "debugfs access",
->  	[LOCKDOWN_XMON_WR] = "xmon write access",
-> +	[LOCKDOWN_VFIO_NOIOMMU] = "VFIO unsafe no-iommu mode",
->  	[LOCKDOWN_INTEGRITY_MAX] = "integrity",
->  	[LOCKDOWN_KCORE] = "/proc/kcore access",
->  	[LOCKDOWN_KPROBES] = "use of kprobes",
-
+> > +		} else {
+> > +			priv->rgmii_rx_delay = val;
+> > +		}
+> > +
+> > +		if (of_property_read_u32(port, "rx-internal-delay-ps", &val))
+> > +			val = 1;
+> > +
+> > +		if (val > QCA8K_MAX_DELAY) {
+> > +			dev_err(priv->dev, "rgmii tx delay is limited to more than 3ps, setting to the max value");
+> > +			priv->rgmii_tx_delay = 3;
+> > +		} else {
+> > +			priv->rgmii_rx_delay = val;
+> > +		}
+> > +	}
+> > +
+> > +	of_node_put(ports);
+> > +
+> > +	return 0;
+> > +}
+> > +
+> >  static int
+> >  qca8k_setup(struct dsa_switch *ds)
+> >  {
+> > @@ -808,6 +849,10 @@ qca8k_setup(struct dsa_switch *ds)
+> >  	if (ret)
+> >  		return ret;
+> >  
+> > +	ret = qca8k_setup_of_rgmii_delay(priv);
+> > +	if (ret)
+> > +		return ret;
+> > +
+> >  	/* Enable CPU Port */
+> >  	ret = qca8k_reg_set(priv, QCA8K_REG_GLOBAL_FW_CTRL0,
+> >  			    QCA8K_GLOBAL_FW_CTRL0_CPU_PORT_EN);
+> > @@ -1018,8 +1063,10 @@ qca8k_phylink_mac_config(struct dsa_switch *ds, int port, unsigned int mode,
+> >  		 */
+> >  		qca8k_write(priv, reg,
+> >  			    QCA8K_PORT_PAD_RGMII_EN |
+> > -			    QCA8K_PORT_PAD_RGMII_TX_DELAY(QCA8K_MAX_DELAY) |
+> > -			    QCA8K_PORT_PAD_RGMII_RX_DELAY(QCA8K_MAX_DELAY));
+> > +			    QCA8K_PORT_PAD_RGMII_TX_DELAY(priv->rgmii_tx_delay) |
+> > +			    QCA8K_PORT_PAD_RGMII_RX_DELAY(priv->rgmii_rx_delay) |
+> > +			    QCA8K_PORT_PAD_RGMII_TX_DELAY_EN |
+> > +			    QCA8K_PORT_PAD_RGMII_RX_DELAY_EN);
+> >  		/* QCA8337 requires to set rgmii rx delay */
+> >  		if (data->id == QCA8K_ID_QCA8337)
+> >  			qca8k_write(priv, QCA8K_REG_PORT5_PAD_CTRL,
+> > diff --git a/drivers/net/dsa/qca8k.h b/drivers/net/dsa/qca8k.h
+> > index 0b503f78bf92..80830bb42736 100644
+> > --- a/drivers/net/dsa/qca8k.h
+> > +++ b/drivers/net/dsa/qca8k.h
+> > @@ -36,12 +36,11 @@
+> >  #define QCA8K_REG_PORT5_PAD_CTRL			0x008
+> >  #define QCA8K_REG_PORT6_PAD_CTRL			0x00c
+> >  #define   QCA8K_PORT_PAD_RGMII_EN			BIT(26)
+> > -#define   QCA8K_PORT_PAD_RGMII_TX_DELAY(x)		\
+> > -						((0x8 + (x & 0x3)) << 22)
+> > -#define   QCA8K_PORT_PAD_RGMII_RX_DELAY(x)		\
+> > -						((0x10 + (x & 0x3)) << 20)
+> > -#define   QCA8K_MAX_DELAY				3
+> > +#define   QCA8K_PORT_PAD_RGMII_TX_DELAY(x)		((x) << 22)
+> > +#define   QCA8K_PORT_PAD_RGMII_RX_DELAY(x)		((x) << 20)
+> > +#define	  QCA8K_PORT_PAD_RGMII_TX_DELAY_EN		BIT(25)
+> >  #define   QCA8K_PORT_PAD_RGMII_RX_DELAY_EN		BIT(24)
+> > +#define   QCA8K_MAX_DELAY				3
+> >  #define   QCA8K_PORT_PAD_SGMII_EN			BIT(7)
+> >  #define QCA8K_REG_PWS					0x010
+> >  #define   QCA8K_PWS_SERDES_AEN_DIS			BIT(7)
+> > @@ -251,6 +250,8 @@ struct qca8k_match_data {
+> >  
+> >  struct qca8k_priv {
+> >  	u8 switch_revision;
+> > +	u8 rgmii_tx_delay;
+> > +	u8 rgmii_rx_delay;
+> >  	struct regmap *regmap;
+> >  	struct mii_bus *bus;
+> >  	struct ar8xxx_port_status port_sts[QCA8K_NUM_PORTS];
+> > -- 
+> > 2.30.2
+> > 
