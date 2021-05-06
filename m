@@ -2,183 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A198D3755C9
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:40:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B8133755CD
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:42:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234913AbhEFOlX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:41:23 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33887 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234694AbhEFOlL (ORCPT
+        id S234931AbhEFOnB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:43:01 -0400
+Received: from ssl.serverraum.org ([176.9.125.105]:46997 "EHLO
+        ssl.serverraum.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234694AbhEFOmw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:41:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620312012;
+        Thu, 6 May 2021 10:42:52 -0400
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id D20892224B;
+        Thu,  6 May 2021 16:41:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1620312112;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=I+6e6IJwQMWg9nzfOfA+qtdnGN/AsqAvgKqcEhV3ImQ=;
-        b=VTNx5rsPrWh+Q12aCIvveLqstAPLTItvhAvEjbOEbFi92a5yi9XQBVZ/1fuhbvhJbSmepM
-        GnUt4yddoFUAH54wvq90zGkiLclXNKWODRjjRKMXNDYp+UwmoHzlP6X+dfWy9XOZ8yxtOo
-        pK0BO7SI1OeEDthtgk1yVmjcIsfqnNY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-451-KdjuqoalOhSMoBAiDc1Ilw-1; Thu, 06 May 2021 10:40:04 -0400
-X-MC-Unique: KdjuqoalOhSMoBAiDc1Ilw-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id D81BB6D5C8;
-        Thu,  6 May 2021 14:40:02 +0000 (UTC)
-Received: from krava (unknown [10.40.193.227])
-        by smtp.corp.redhat.com (Postfix) with SMTP id E69BE10027A5;
-        Thu,  6 May 2021 14:40:00 +0000 (UTC)
-Date:   Thu, 6 May 2021 16:40:00 +0200
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Denys Zagorui <dzagorui@cisco.com>
-Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org,
-        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
-        alexander.shishkin@linux.intel.com, namhyung@kernel.org
-Subject: Re: [PATCH v4 2/3] perf tests: avoid storing an absolute path in
- perf binary
-Message-ID: <YJP/wDx/cIKLkpLk@krava>
-References: <20210430133350.20504-1-dzagorui@cisco.com>
- <20210430133350.20504-2-dzagorui@cisco.com>
+        bh=GuA+4sdxtI/hmbjVq0gs21HsQjNMUl4w3yNrwMHelvY=;
+        b=suCseM4bfzq/SZtMdL0bB6+YBUWFiltAu8P0KUiNA+3Drf/Om7pUpKABkLJ22IfZpVypJ0
+        9ZA6E7ehkh6GfoDCL2EXx2ZZM3FaKmJ9bgI56NsdJGLI/Y/6F3r2K8ujvH5kjOYJyMQ4uY
+        7c//1SnULrOVGD66kZ51XuYUEBSHUAA=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210430133350.20504-2-dzagorui@cisco.com>
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 06 May 2021 16:41:51 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
+        Xiaoliang Yang <xiaoliang.yang_1@nxp.com>,
+        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
+        allan.nielsen@microchip.com,
+        Claudiu Manoil <claudiu.manoil@nxp.com>, davem@davemloft.net,
+        idosch@mellanox.com, joergen.andreasen@microchip.com,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Po Liu <po.liu@nxp.com>, vinicius.gomes@intel.com
+Subject: Re: [net-next] net: dsa: felix: disable always guard band bit for TAS
+ config
+In-Reply-To: <20210506135007.ul3gpdecq427tvgr@skbuf>
+References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
+ <20210504170514.10729-1-michael@walle.cc>
+ <20210504181833.w2pecbp2qpuiactv@skbuf>
+ <c7618025da6723418c56a54fe4683bd7@walle.cc>
+ <20210504185040.ftkub3ropuacmyel@skbuf>
+ <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
+ <20210504191739.73oejybqb6z7dlxr@skbuf>
+ <d933eef300cb1e1db7d36ca2cb876ef6@walle.cc>
+ <20210504213259.l5rbnyhxrrbkykyg@skbuf>
+ <efe5ac03ceddc8ff472144b5fe9fd046@walle.cc>
+ <20210506135007.ul3gpdecq427tvgr@skbuf>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <879df38ab1fb6d8fb8f371bfd5e8c213@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Apr 30, 2021 at 06:33:49AM -0700, Denys Zagorui wrote:
-> python binding test uses PYTHONPATH definition to find python/perf.so
-> library. This definition is an absolute path that makes perf binary
-> unreproducible. This path can be found during runtime execution.
+Am 2021-05-06 15:50, schrieb Vladimir Oltean:
+> On Thu, May 06, 2021 at 03:25:07PM +0200, Michael Walle wrote:
+>> Am 2021-05-04 23:33, schrieb Vladimir Oltean:
+>> > [ trimmed the CC list, as this is most likely spam for most people ]
+>> >
+>> > On Tue, May 04, 2021 at 10:23:11PM +0200, Michael Walle wrote:
+>> > > Am 2021-05-04 21:17, schrieb Vladimir Oltean:
+>> > > > On Tue, May 04, 2021 at 09:08:00PM +0200, Michael Walle wrote:
+>> > > > > > > > > As explained in another mail in this thread, all queues are marked as
+>> > > > > > > > > scheduled. So this is actually a no-op, correct? It doesn't matter if
+>> > > > > > > > > it set or not set for now. Dunno why we even care for this bit then.
+>> > > > > > > >
+>> > > > > > > > It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the available
+>> > > > > > > > throughput when set.
+>> > > > > > >
+>> > > > > > > Ahh, I see now. All queues are "scheduled" but the guard band only
+>> > > > > > > applies
+>> > > > > > > for "non-scheduled" -> "scheduled" transitions. So the guard band is
+>> > > > > > > never
+>> > > > > > > applied, right? Is that really what we want?
+>> > > > > >
+>> > > > > > Xiaoliang explained that yes, this is what we want. If the end user
+>> > > > > > wants a guard band they can explicitly add a "sched-entry 00" in the
+>> > > > > > tc-taprio config.
+>> > > > >
+>> > > > > You're disabling the guard band, then. I figured, but isn't that
+>> > > > > suprising for the user? Who else implements taprio? Do they do it in
+>> > > > > the
+>> > > > > same way? I mean this behavior is passed right to the userspace and
+>> > > > > have
+>> > > > > a direct impact on how it is configured. Of course a user can add it
+>> > > > > manually, but I'm not sure that is what we want here. At least it
+>> > > > > needs
+>> > > > > to be documented somewhere. Or maybe it should be a switchable option.
+>> > > > >
+>> > > > > Consider the following:
+>> > > > > sched-entry S 01 25000
+>> > > > > sched-entry S fe 175000
+>> > > > > basetime 0
+>> > > > >
+>> > > > > Doesn't guarantee, that queue 0 is available at the beginning of
+>> > > > > the cycle, in the worst case it takes up to
+>> > > > > <begin of cycle> + ~12.5us until the frame makes it through (given
+>> > > > > gigabit and 1518b frames).
+>> > > > >
+>> > > > > Btw. there are also other implementations which don't need a guard
+>> > > > > band (because they are store-and-forward and cound the remaining
+>> > > > > bytes). So yes, using a guard band and scheduling is degrading the
+>> > > > > performance.
+>> > > >
+>> > > > What is surprising for the user, and I mentioned this already in another
+>> > > > thread on this patch, is that the Felix switch overruns the time gate (a
+>> > > > packet taking 2 us to transmit will start transmission even if there is
+>> > > > only 1 us left of its time slot, delaying the packets from the next time
+>> > > > slot by 1 us). I guess that this is why the ALWAYS_GUARD_BAND_SCH_Q bit
+>> > > > exists, as a way to avoid these overruns, but it is a bit of a poor tool
+>> > > > for that job. Anyway, right now we disable it and live with the
+>> > > > overruns.
+>> > >
+>> > > We are talking about the same thing here. Why is that a poor tool?
+>> >
+>> > It is a poor tool because it revolves around the idea of "scheduled
+>> > queues" and "non-scheduled queues".
+>> >
+>> > Consider the following tc-taprio schedule:
+>> >
+>> > 	sched-entry S 81 2000 # TC 7 and 0 open, all others closed
+>> > 	sched-entry S 82 2000 # TC 7 and 1 open, all others closed
+>> > 	sched-entry S 84 2000 # TC 7 and 2 open, all others closed
+>> > 	sched-entry S 88 2000 # TC 7 and 3 open, all others closed
+>> > 	sched-entry S 90 2000 # TC 7 and 4 open, all others closed
+>> > 	sched-entry S a0 2000 # TC 7 and 5 open, all others closed
+>> > 	sched-entry S c0 2000 # TC 7 and 6 open, all others closed
+>> >
+>> > Otherwise said, traffic class 7 should be able to send any time it
+>> > wishes.
+>> 
+>> What is the use case behind that? TC7 (with the highest priority)
+>> may always take precedence of the other TCs, thus what is the point
+>> of having a dedicated window for the others.
 > 
-> Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
-> ---
->  tools/perf/tests/Build        |  2 +-
->  tools/perf/tests/python-use.c | 19 ++++++++++++++++++-
->  tools/perf/util/util.c        | 21 +++++++++++++++++++++
->  tools/perf/util/util.h        |  2 ++
->  4 files changed, 42 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-> index 650aec19d490..a20098dcdbc4 100644
-> --- a/tools/perf/tests/Build
-> +++ b/tools/perf/tests/Build
-> @@ -98,5 +98,5 @@ perf-$(CONFIG_DWARF_UNWIND) += dwarf-unwind.o
->  endif
->  
->  CFLAGS_attr.o         += -DBINDIR="BUILD_STR($(bindir_SQ))" -DPYTHON="BUILD_STR($(PYTHON_WORD))"
-> -CFLAGS_python-use.o   += -DPYTHONPATH="BUILD_STR($(OUTPUT)python)" -DPYTHON="BUILD_STR($(PYTHON_WORD))"
-> +CFLAGS_python-use.o   += -DPYTHON="BUILD_STR($(PYTHON_WORD))"
->  CFLAGS_dwarf-unwind.o += -fno-optimize-sibling-calls
-> diff --git a/tools/perf/tests/python-use.c b/tools/perf/tests/python-use.c
-> index 98c6d474aa6f..c7a0c9b5366f 100644
-> --- a/tools/perf/tests/python-use.c
-> +++ b/tools/perf/tests/python-use.c
-> @@ -8,18 +8,35 @@
->  #include <linux/compiler.h>
->  #include "tests.h"
->  #include "util/debug.h"
-> +#include "util/util.h"
-> +#include <sys/stat.h>
->  
->  int test__python_use(struct test *test __maybe_unused, int subtest __maybe_unused)
->  {
->  	char *cmd;
->  	int ret;
-> +	char *exec_path;
-> +	char *pythonpath;
-> +	struct stat sb;
-> +
-> +	exec_path = perf_exe_path();
-> +	if (exec_path == NULL)
-> +		return -1;
+> Worst case latency is obviously better for an intermittent stream (not
+> more than one packet in flight at a time) in TC7 than it is for any
+> stream in TC6-TC0. But intermittent streams in TC6-TC0 also have their
+> own worst case guarantees (assuming that 2000 ns is enough to fit one
+> TC 7 frame and one frame from the TC6-TC0 range).
 
-should we return TEST_SKIP in here?
+Oh and I missed that, TC0-TC6 probably won't work because that gate is
+too narrow (12.5us guard band) unless of course you set MAXSDU to a
+smaller value. Which would IMHO be the correct thing to do here.
 
-> +
-> +	if (asprintf(&pythonpath, "%spython", exec_path) < 0)
-> +		return -1;
-
-leaking exec_path
-
-> +
-> +	if (stat(pythonpath, &sb) || !S_ISDIR(sb.st_mode))
-> +		pythonpath[0] = 0;
->  
->  	if (asprintf(&cmd, "echo \"import sys ; sys.path.append('%s'); import perf\" | %s %s",
-> -		     PYTHONPATH, PYTHON, verbose > 0 ? "" : "2> /dev/null") < 0)
-> +		     pythonpath, PYTHON, verbose > 0 ? "" : "2> /dev/null") < 0)
->  		return -1;
-
-leaking exec_path and pythonpath
-
->  
->  	pr_debug("python usage test: \"%s\"\n", cmd);
->  	ret = system(cmd) ? -1 : 0;
->  	free(cmd);
-> +	free(exec_path);
-> +	free(pythonpath);
->  	return ret;
->  }
-> diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
-> index 3bba74e431ed..54e80452887c 100644
-> --- a/tools/perf/util/util.c
-> +++ b/tools/perf/util/util.c
-> @@ -388,3 +388,24 @@ char *perf_exe(char *buf, int len)
->  	}
->  	return strcpy(buf, "perf");
->  }
-> +
-> +char *perf_exe_path(void)
-> +{
-> +	int i;
-> +	char *buf;
-> +
-> +	buf = malloc(PATH_MAX);
-
-need to check buf != NULL
-
-> +	buf = perf_exe(buf, PATH_MAX);
-> +
-> +	for (i = strlen(buf) - 1; i != 0 && buf[i] != '/'; i--)
-> +		;
-
-could we call dirname for this?
-
-thanks,
-jirka
-
-> +
-> +	if (!i) {
-> +		free(buf);
-> +		return NULL;
-> +	}
-> +
-> +	buf[i + 1] = 0;
-> +
-> +	return buf;
-> +}
-> diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
-> index 80b194ee6c7d..4e871e890ef8 100644
-> --- a/tools/perf/util/util.h
-> +++ b/tools/perf/util/util.h
-> @@ -49,6 +49,8 @@ void perf_set_singlethreaded(void);
->  void perf_set_multithreaded(void);
->  
->  char *perf_exe(char *buf, int len);
-> +/* perf_exe_path return malloc'd string on success, caller must free it */
-> +char *perf_exe_path(void);
->  
->  #ifndef O_CLOEXEC
->  #ifdef __sparc__
-> -- 
-> 2.26.2.Cisco
-> 
-
+-michael
