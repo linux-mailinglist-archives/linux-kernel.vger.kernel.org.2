@@ -2,275 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFE46374FAB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 08:56:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 32FA4374FA8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 08:56:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233042AbhEFG5y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 02:57:54 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([194.104.109.102]:21120 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232554AbhEFG5w (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 02:57:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1620284214;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=nPP2oedJa0y7csQG0hE8rjTkcLshU+LA6mzl9i8rFww=;
-        b=IqF8ITr4Da+WaNtBEOyyv//aIFE18/XD7CdI1Ju/GwIiwXtHkf6N/H3M2A4JHywjAQo0ah
-        iIYR2LBivpuwQK6xZra0DGnhYvZLyTpjifJ0CBOaRklWQV2/BlWnf6FoAK8uYrUAA6Q1xN
-        nemvLkDPvX0GnMQKJ+hfQyY/RpnnUVE=
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com
- (mail-ve1eur01lp2057.outbound.protection.outlook.com [104.47.1.57]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-17-DGyAriILMS6ZmW73w0bc3g-1; Thu, 06 May 2021 08:56:53 +0200
-X-MC-Unique: DGyAriILMS6ZmW73w0bc3g-1
+        id S233007AbhEFG5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 02:57:39 -0400
+Received: from mail-eopbgr10127.outbound.protection.outlook.com ([40.107.1.127]:23108
+        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S232904AbhEFG5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 02:57:38 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QFIfHqLBSFHlbqKhl9Kvl3JtNAYS0tKuc9Kw7L2/+ZVkDOQ5syjtqOmclHMiVXYyves/5tXd9zcSF4VzX+Vb5i9atsUQvGC/jKK9E7g4x9rJ6MxLnfUDT56hMt3XOefC26SnH+a8hsjVqJLumQ+0te6y7N9DrAKjfbMGNhUAlkg14ZnD+NRb9+eetgzXEhX2A0bfycBu6DQ7BH4jajT4+PpqlcYgy5GulxfD0qm5NaV19Q9jdXPdhrfbvQqkxI3B+3n6wIhcnvC+HSVT+PvaiB8nKA0trpI4CN0xiSK659zgXCwToZdrYn2QFQ7WXzJvY2Evvk9BpjnL1nKA3Y54og==
+ b=oSTwpvtdyOqNsM0xGqbKOm071DmUwF4VmWCGXwOWrFWQXVezwwaQ1DR0M575bka6DEMmNYHwRA08tdFBumluTAzdYx4cYeD/RRlTqkSVev4lR1ksmoZFOGNv4b4sREe7F7r0DWp9UzI/wNAaj932NLEuXDje2tCEIVPp+OqBSVCsxwxlAiFtEGnF0dEUgLgQltw0twT844NktIiUgNsWFBZ/Kl/s4Sr+fwCX2zHceNSG92jp1rd1dnI588yKx0pUg2RCWaFjf5fGIuHftsZNma9TRX+367Uu3QX5kUxXWf+WPR8R0I9GZbHvl3mRRbvvL6oKefnkAlAhI049W0uv2A==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IhnT8KKzjCaiXAfshxCAlVECwmBx7ITVBsRQ+iF5/Yw=;
- b=Xn5nIoP1W5Ij59ovxNAtH7f6mVj9P2pwnyxnrxRYD3W79pKFdu5I0m869N7wHdUwgWuuwknWv8213jEZcqE2HdZXT9VxCz0BlT1LmwFtOonQJlaWa/qUWddr5WktLrDAXfEimvmRpsKHWgDE/MyJr50V7S7R7uYKFrUqyKArZ77vZLnvoVvz6ofMGAJSnfuZ/46FMxfl4LIcl++QJ7W4MyeqSNvNPmiAyj7/NjbvUofTuI7sWFdzYxbEYcqXeG1XeT39rdH6j51A14QYdxS40NHR/OC3pzdu9k4BVMWXrp6lOEnuXG1UzfzwYQ4WakjJDqnV1x1ar2CQiHdDYwIvPg==
+ bh=qryp2D8iNMgl67CtXn5tvpLeRqjT/vrfshFoO6Ta6xM=;
+ b=E+hPPQYnUqbONHhp1Y2jAd1aXUGW0UkhN6nK5J6f91arA7ZaYJB/4+1sUEGWEjDZR+anjYCL561L8rTb0tCW1A1Olixl086FhDOAV5MCtCzIqeZMhRK3r0MjxIiGDPQvfivbID/q/in3n09G1gHCd4nWVj9TTOtYjlECcYgME+IAsrQeo/Nff8aK5rylptTdi7MGq7o7xBAqzyNKEwqG5i5jpGstzO0fEG25iu6bUP9JiZOvQhWhNRK2FP5xg+7UFYTvM9XAuNpvaHEgKy7m+Tvs/wevKYwAAENSCU1q9R7IEFwVjXSGCtNok2VpZoY1PVOdaSkW5ep8HC6lhusTrg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=suse.com;
-Received: from AM0PR04MB5650.eurprd04.prod.outlook.com (2603:10a6:208:128::18)
- by AM0PR04MB7009.eurprd04.prod.outlook.com (2603:10a6:208:19b::24) with
+ smtp.mailfrom=kontron.de; dmarc=pass action=none header.from=kontron.de;
+ dkim=pass header.d=kontron.de; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mysnt.onmicrosoft.com;
+ s=selector2-mysnt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qryp2D8iNMgl67CtXn5tvpLeRqjT/vrfshFoO6Ta6xM=;
+ b=SoXm1zo7YBQag1M6rAhlCvz7/wX4tp3ZNdFeHV7erWoPvHxtTCOZsX9QhqRZtrSPlePBkbmn28wylDYv7zGkkCZoBY/JKcohMbFVQbbq8F0MKLN1KoGEfk8aJdDxJvZtnmvh2R5AOBsDXavlYqGfz7jBAf3UEVLEcBAvT4TRXas=
+Authentication-Results: nxp.com; dkim=none (message not signed)
+ header.d=none;nxp.com; dmarc=none action=none header.from=kontron.de;
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:208:157::14)
+ by AM8PR10MB3986.EURPRD10.PROD.OUTLOOK.COM (2603:10a6:20b:1e0::9) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
- 2021 06:56:51 +0000
-Received: from AM0PR04MB5650.eurprd04.prod.outlook.com
- ([fe80::756a:86b8:8283:733d]) by AM0PR04MB5650.eurprd04.prod.outlook.com
- ([fe80::756a:86b8:8283:733d%6]) with mapi id 15.20.4108.027; Thu, 6 May 2021
- 06:56:51 +0000
-From:   Varad Gautam <varad.gautam@suse.com>
-To:     linux-kernel@vger.kernel.org
-CC:     varad.gautam@suse.com,
-        Matthias von Faber <matthias.vonfaber@aox-tech.de>,
-        stable@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Oleg Nesterov <oleg@redhat.com>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Manfred Spraul <manfred@colorfullife.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        Serge Hallyn <serge@hallyn.com>,
-        James Morris <jamorris@linux.microsoft.com>
-Subject: [PATCH v2] ipc/mqueue: Avoid relying on a stack reference past its expiry
-Date:   Thu,  6 May 2021 08:56:19 +0200
-Message-ID: <20210506065621.9292-1-varad.gautam@suse.com>
-X-Mailer: git-send-email 2.30.2
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-Originating-IP: [95.90.93.216]
-X-ClientProxiedBy: FR3P281CA0069.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:4b::16) To AM0PR04MB5650.eurprd04.prod.outlook.com
- (2603:10a6:208:128::18)
+ 2021 06:56:38 +0000
+Received: from AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87]) by AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ ([fe80::3d8a:f56b:3a0c:8a87%7]) with mapi id 15.20.4108.026; Thu, 6 May 2021
+ 06:56:38 +0000
+Subject: Re: [PATCH V2 13/13] soc: imx: gpcv2: move reset assert after
+ requesting domain power up
+To:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, robh+dt@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de
+Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
+        p.zabel@pengutronix.de, l.stach@pengutronix.de, krzk@kernel.org,
+        agx@sigxcpu.org, marex@denx.de, andrew.smirnov@gmail.com,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, ping.bai@nxp.com, aford173@gmail.com,
+        abel.vesa@nxp.com, Peng Fan <peng.fan@nxp.com>
+References: <20210506010440.7016-1-peng.fan@oss.nxp.com>
+ <20210506010440.7016-14-peng.fan@oss.nxp.com>
+From:   Frieder Schrempf <frieder.schrempf@kontron.de>
+Message-ID: <b0d9eae3-0f3d-acf1-8553-0a80e6f6c96f@kontron.de>
+Date:   Thu, 6 May 2021 08:56:35 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
+In-Reply-To: <20210506010440.7016-14-peng.fan@oss.nxp.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [89.244.180.42]
+X-ClientProxiedBy: FR0P281CA0051.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:48::12) To AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
+ (2603:10a6:208:157::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from xps13.suse.de (95.90.93.216) by FR3P281CA0069.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:4b::16) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.12 via Frontend Transport; Thu, 6 May 2021 06:56:49 +0000
+Received: from [192.168.10.27] (89.244.180.42) by FR0P281CA0051.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:48::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.12 via Frontend Transport; Thu, 6 May 2021 06:56:37 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 0067fa06-9486-4a3d-edf1-08d9105c202a
-X-MS-TrafficTypeDiagnostic: AM0PR04MB7009:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <AM0PR04MB7009AF8130BFA0E8B4313D0DE0589@AM0PR04MB7009.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
+X-MS-Office365-Filtering-Correlation-Id: 4cf7e457-d51f-42d1-d3d0-08d9105c1878
+X-MS-TrafficTypeDiagnostic: AM8PR10MB3986:
+X-Microsoft-Antispam-PRVS: <AM8PR10MB3986276FFA752313F9C1402BE9589@AM8PR10MB3986.EURPRD10.PROD.OUTLOOK.COM>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pRNWcurdb2se8DCxgH3Cd9RHu1mZdKwRJQtPRKiakM5B56LEOyD4QlVyL9+hUxDsbpg3SY7Lxz+GUvyva5vPGy98szPnL6hjBSsW7q8RSUhcIZLXM+YKsILA3EGdbhVBjZyRDY3C8r4zrZWvc7iOIdyGTsaNJDIBKyRj55Go5FTnN4iRwuB4D90XpXNxs/M0uG7JdebeECmy/ipP9KAFRY8EvHjzBLbDedmYvNV+GRwIeuoBZAqIA6Vr3p3CgwcID3fATcXbnnW/74C6q6QSdfL/4CWJ95tn67gaAyR6H2yrRsk8GxwYiBEZxMhgtbrQOlj46TgxXyeS/bPmnfd2aUvfptuSM8i8erd57diV2jIBnXlumAKf5qNqE0yNU3LVjsknJclwRiqa62h0MxSVGh8rZa7LvmG6mFMuw5AxiRmpgvomzcfD2G8lyw+ceKyhuaF8CDbBT8XDHuwGjT0DDcRzbP53GBcJUxou08ImvtLGluHlzjsElRshzYep/DkEpBqZ4taCS3uim9Uwm3yDexbk12NxDebfHJk0Ucc56q/f5XmEuScwLqIwYTz92Pvw6ciWmV5s4RclVVMntkvfU7n4PVLqc/R7kCxYx5+D7IZ6AKsLYF1BbOdS/BrSVcV7snjcHxYp0Rm7ASRuoKhMTQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB5650.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(366004)(346002)(136003)(376002)(6486002)(7416002)(6916009)(186003)(6666004)(83380400001)(36756003)(86362001)(54906003)(26005)(44832011)(16526019)(1076003)(5660300002)(6512007)(8676002)(4326008)(2616005)(66556008)(66476007)(2906002)(52116002)(38350700002)(8936002)(38100700002)(66946007)(478600001)(316002)(956004)(6506007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?k0CYrfqlH152Lm7esuhCe7xPMDbIR7xqN1ycGS9M3lkkpmW8jAzR4GXH5lwr?=
- =?us-ascii?Q?9249SbrTozfSFpwTdq9992oY2SPT4WK5Mxa/79Ycyw9U3FPcO0ks3l46/vea?=
- =?us-ascii?Q?m8Y+pChG4XqQvg3RrJUlQIAM9+t+b7Izp/9FaH8Kk1cioeFg4cGXhLXPm8m6?=
- =?us-ascii?Q?N6RktTyMD1pag/tpREGkONtsZUZ2GxECNd+MT1Dh7Ls7TO4inaGKcbCVr5+O?=
- =?us-ascii?Q?eqGxDYZmCBZEk5NfmsfVseEc418OMAV9BzZV22kXfYarjiF1iCFzGixAVu7g?=
- =?us-ascii?Q?UCNngtuE/6FW1oRMSKCpvDjF18RKhL/5wld4z8jWDeoywEBtafNa8Pa9eu9o?=
- =?us-ascii?Q?zvRmQLbRde8z6m1g9AY4JdrSS+0yWs332xSJcd9ChQesVYQ/VAFOwSIeX6B7?=
- =?us-ascii?Q?AlsqGH474Ejxs5R5lngiGQmu357UVSS1BaSqNKMG21TpNpgGaFcc0ikYMcLN?=
- =?us-ascii?Q?GtD/Ac5z9AhTCwU1k+MY1bUCfCIU5iclSKlTVuA6eg9O7+BzhFwnAqVTEu+R?=
- =?us-ascii?Q?baoygqv0eyFrDe3OfPlaC2wYpaYzhrmDMzHR+jQenbhuqT7F3DVdnFaxUt2K?=
- =?us-ascii?Q?5X6Q+FgBT4FoPXWhNb+bjDBj8bpkd8ogR6Hn+j+d+gB/EPs2AwfDoDo68j56?=
- =?us-ascii?Q?iF0uy068hI3k7IAfZFd3Q7SpHpR/DHPoEvOSHTypi+RANmIdePaYP41+HAai?=
- =?us-ascii?Q?H1iYWz49hHK2yP0lgzF6cUgpYN1PR/k3BUF8G024ipaA/1f0Bp+zP+9tacJd?=
- =?us-ascii?Q?wnVx7FJtmb2bX7Vb8Wt0jSRRR5KsKsEEibFE1wDa/ZBkEqxogiay/RL8c7ye?=
- =?us-ascii?Q?9vZvSS0jAG7jgpYjArQrDWKgdOdUWbmt0L8AQeUhJrtpldVOBHMlrectIV8g?=
- =?us-ascii?Q?udxmtwZictcSXfXinNpbvLrPkgi4Ca2bNFTIeoVkrTCeE7m76CUXWdt1FnEQ?=
- =?us-ascii?Q?FYCDDxdYDi+XQgGsCuRr5ZQHCMXJxoJT++KK3OWEbS2hdaL3c5PBD3cPmYPP?=
- =?us-ascii?Q?Z+spT/ScRDkY4BJT4E8/PPam1TATQaIP1Cqscm/3XiyJv8T/jIWqHRxW9pIg?=
- =?us-ascii?Q?LxscFDv19ESjlOfPM5krtJshh3vuRPRPcmgvW+e5Ifh+6GHyCYoXT5RqBJzX?=
- =?us-ascii?Q?kyWTbda69LPjAq4uXZsjWKkLg0Dj3Md0EDzL70rYCpfqtVfYl4XKtA1a5eI2?=
- =?us-ascii?Q?DP7Y501aRW1OS5wIj3jJAuhCWozkTeHz+3NocYFBcf1D/OmWrz3Ch/ulMEG7?=
- =?us-ascii?Q?mdQgk961vOoGoxyEwB2GXKi1Xg3Hse/2giOmgq5TjZb9E9Vcppjvluz0C4r6?=
- =?us-ascii?Q?Uy6RFOYQtlGoFY8wewl+Hctx?=
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 0067fa06-9486-4a3d-edf1-08d9105c202a
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB5650.eurprd04.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: twh89OYVPwObk6tSUyqEuoJw6wQSMKGn5X/BPsN19U7gsVjyFRMv19r6++rEsV8KXKvc7ODpl3/bI/L3OifA1I1D4StJmaBKe9QKUR92tCfxVlpJwnTpaE0+hwqSphn7ckTNXZa1yht9w5YJgLMkWVuN9bVTTVHMM+O1PRc53+3bm7jtHZeTnWiRlhbRenFb/RfGh2oxrQbEijCg1TzGV4/gQvCfRnhxvIoGqPvtZ29UXFVTMnZ/Jj1cG08ks6fdZPmGU0x4Zkaqob1Zfb1srgYGaQE0pEulvBcJNFUwHKth4P05J2mTej92PinJCsXzeQlGwrDmHzi+zbmcth0LiYegPg4uzmlJzN6HsGU/dvi9OENDhlRomQJKt+P6/0+yPKDobAx8hQPothcBabpdjcRWZT/xIx0/NsC7S1lHMhbafvat73UDgEAPMij8/KY6+pM5vIqz/x+yYCVqW4Zo0h+FU2HXWBQw/nwMUMZBzi9Bx9XNWXtIDGJjspCWI6edca9D2b/EvG4lE5bTNwp31kpX6KqXi+yGSxiQjAHTS0VMvJevTSuDLCAkhroUHRVKZvbjqHGQBvxuyFXGYkkZW7JoDaHZtGz/rGghA2rZCilInro4Eayzk4w82SMPr2bHSFz/DkU3FZFDqhUGeiV1AAFx6v52YR3hmeSe239MIAqOXRuQcdrIXm0nTvFUC0OT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(4636009)(396003)(366004)(39860400002)(346002)(376002)(136003)(2906002)(38100700002)(83380400001)(7416002)(53546011)(956004)(316002)(86362001)(16576012)(31696002)(4326008)(66476007)(44832011)(8936002)(26005)(31686004)(186003)(5660300002)(16526019)(2616005)(6486002)(36756003)(66946007)(8676002)(478600001)(66556008)(43740500002)(45980500001);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?ZkdnYjhHTm5oc1d5aUVVcS9GeGJnMGsvOHM1Mzl6SkdYTWNZaS9NdTU2SFF2?=
+ =?utf-8?B?cnBsZUM5TjRqYWVOVjFPcWpHK1RmMTJzc3Nqa3Z2UW5BVnoyR1NtaUpGY2Z2?=
+ =?utf-8?B?ckdXRlpuRVZyTzlVRkVIVXhxbForUThFWVl3WlhjS0cwMWlyVGF6R0hoemQx?=
+ =?utf-8?B?b0hDbGJseDFFQkdQVjB5Z0NCajdVR3RWNWpTUkU1MnZ1d0Z5U2Q1emRIeDd5?=
+ =?utf-8?B?Z2NncGIwaGJnZ3ZObm5wQ2d3amc3ZFE5aVVMREhFSVhiRlVEUGVNTWtiUmxO?=
+ =?utf-8?B?c0tFU0s4cFI3aElJOFc4b2xvQjBlN29GVE9YSldQZnhpVGo3d2NUMGppVVNm?=
+ =?utf-8?B?TG43ZmtLRjBVS01DRXpZSVNqVDlSQzdHV2JHcVdLYlEzMFhFZE5TVXJLVmc1?=
+ =?utf-8?B?ZXhGYjJzbC8rM0NyNWQ1Z0JHdGE1QTFOYXVJZm15ZHllUFN3ODIyZkdRZk9K?=
+ =?utf-8?B?dTNFQzVsUkZrTDBiT1hPd0hDcHlicEVUanNETWp5Z0ZhTmhPM0xCWVB0N3JJ?=
+ =?utf-8?B?WDJVYUczaWkwdnNrNTNjRTY4Ym9ZSmtzVllKNytxTVo2NTlXVVh2R2hHU0xk?=
+ =?utf-8?B?WjZvYVdoUmJlUXZrTW5kNFdwbVpHZU56T1liTE5aSkM5aW85Q1BicW4xOW11?=
+ =?utf-8?B?OGtVaXhPeVBDVTBzWHhDQWg3L1lsUkhqMnA1RzRTTTBJSE4rUm9NeGZGMDUv?=
+ =?utf-8?B?UmtQL1dnZlkveU10enhieEluTWc0a01qSEdpQ3RFR1NGa3VoeitWSlpFaXZG?=
+ =?utf-8?B?ZzN6aHhwWlpiQzJkM1BTZFVKM043dGRHMHNabFFjRm53cmYyWHEwMVpzcWtK?=
+ =?utf-8?B?QXRiTDA3TVJ0aS8ySlNHRXgzSlhZMFhsVDNrdHVvN2M3d052cjFPNTJMMXlo?=
+ =?utf-8?B?MXVyQlNZOFBzRzBLVFNMb2dyVmRmUTREb3pPTGU1OWdlTlpxa1BEdkV4Njdl?=
+ =?utf-8?B?ajRFLzFFdVdTa285UER0d2szdVRqNGFIWlRXd0lnM0hVNVdPZkxYYUpRRnpq?=
+ =?utf-8?B?T2RGRTNaZTdjcXpCUytESmFDbHgvYVRXSDYvMWduL2lmazg2amNOVE1QUGwv?=
+ =?utf-8?B?R2tQK2NZays3Z2U4cWxuaFNqSmU2WXFscUxWU2ZuQTZmS1pZUWNtODNoeTdo?=
+ =?utf-8?B?aXlMZXdrSmtSQWVTVFBydGw2SFhCM3VWVW1sZ2hQS21qbG54bkttS0ZGdVl4?=
+ =?utf-8?B?VGUweXhjQlFsNXh6SDFIMkE3ZU9jMmpDZFdRN0U5NFl0OGtjOW5zdkkvMUw2?=
+ =?utf-8?B?ZFY3bFVTUjkzeEMzWFBWT2dyRkhTVFlpb3MvNko0U2Q1YWpiS29DZVFuUmNx?=
+ =?utf-8?B?ZEJMWjkrZFhYMlhQVU5ERVlmeEZHTFprUzJTbzV6MjBhNjdTQVNWS3g2VTdK?=
+ =?utf-8?B?dm5IczZ3QitCQXBxR2JuWHVFTlVpSE1nN2xtUFFxL2w5QncrdWVaUlI5Ni82?=
+ =?utf-8?B?RmtEWGlIVjBLSmNxUVJySkVlMWNBUW9RUllQSGh6UDNxWWxaU0Jzdkljc0VS?=
+ =?utf-8?B?U0VCSnkzYXZqalJXamo3c3ZjYkVaS3pnWitLcTlUekhqQUhKc1A5b3JMOXli?=
+ =?utf-8?B?cGQvbnc4TUwwb2pwS3N6TFBkRzRnVTR6RnBwRWlpWURIcytEcTNlN0VPSHov?=
+ =?utf-8?B?WHkzQWNTSGw4OVdReU1Rd2pZa1pabzNoclZQWHoveTZVN3dGbXJTRU5BMXVO?=
+ =?utf-8?B?OXAzN3hCQ1Z1RlgzTDBFUDJZbGpvRDlTREdLdGpDSHJrL2NacU1YdWVoQW9x?=
+ =?utf-8?Q?QJOf4i6wepFg+40G++mfqghNADWXsNPtsN/yI3l?=
+X-OriginatorOrg: kontron.de
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4cf7e457-d51f-42d1-d3d0-08d9105c1878
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR10MB2963.EURPRD10.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 06:56:51.3755
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 06:56:38.5441
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-Id: 8c9d3c97-3fd9-41c8-a2b1-646f3942daf1
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2xKlTdnxANMGIaMzHbpzZ4mnw1RQITSeg7LlxaGTZgditA/0NM7w+KCrmdb97ZgozDX7ZpznYotEweypslKfiQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR04MB7009
+X-MS-Exchange-CrossTenant-UserPrincipalName: QWdXTvVpFZXtngwHubvAXYQpzN6Gs1PWbjzu2VDMc7Y/rHlusUD3PoM7hwq/3NbFRsBAWpmips8E+6UM0+a3s7qr1lie8dOwUpFhOUfGwLM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR10MB3986
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_mq_timedreceive calls wq_sleep with a stack local address. The
-sender (do_mq_timedsend) uses this address to later call
-pipelined_send.
+On 06.05.21 03:04, Peng Fan (OSS) wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> The i.MX8MM VPU power up sequence is a bit special, it must follow:
+> 1. request power up
+> 2. reset assert
+> 3. reset deassert
+> 
+> This change in this patch will not affect other domains, because
+> the power domain default is in asserted state, unless bootloader
+> deassert the reset. It also applies to GPU power domain.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
 
-This leads to a very hard to trigger race where a do_mq_timedreceive call
-might return and leave do_mq_timedsend to rely on an invalid address,
-causing the following crash:
+I don't really like that there is a dependency on TF-A/bootloader as we never really know what they will do, but from my point of view the approach is ok and it seems to work properly as far as I have tested it (only with GPU).
 
-[  240.739977] RIP: 0010:wake_q_add_safe+0x13/0x60
-[  240.739991] Call Trace:
-[  240.739999]  __x64_sys_mq_timedsend+0x2a9/0x490
-[  240.740003]  ? auditd_test_task+0x38/0x40
-[  240.740007]  ? auditd_test_task+0x38/0x40
-[  240.740011]  do_syscall_64+0x80/0x680
-[  240.740017]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  240.740019] RIP: 0033:0x7f5928e40343
+Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+Tested-by: Frieder Schrempf <frieder.schrempf@kontron.de>
 
-The race occurs as:
-
-1. do_mq_timedreceive calls wq_sleep with the address of
-`struct ext_wait_queue` on function stack (aliased as `ewq_addr` here)
-- it holds a valid `struct ext_wait_queue *` as long as the stack has
-not been overwritten.
-
-2. `ewq_addr` gets added to info->e_wait_q[RECV].list in wq_add, and
-do_mq_timedsend receives it via wq_get_first_waiter(info, RECV) to call
-__pipelined_op.
-
-3. Sender calls __pipelined_op::smp_store_release(&this->state, STATE_READY=
-).
-Here is where the race window begins. (`this` is `ewq_addr`.)
-
-4. If the receiver wakes up now in do_mq_timedreceive::wq_sleep, it
-will see `state =3D=3D STATE_READY` and break. `ewq_addr` gets removed from
-info->e_wait_q[RECV].list.
-
-5. do_mq_timedreceive returns, and `ewq_addr` is no longer guaranteed
-to be a `struct ext_wait_queue *` since it was on do_mq_timedreceive's
-stack. (Although the address may not get overwritten until another
-function happens to touch it, which means it can persist around for an
-indefinite time.)
-
-6. do_mq_timedsend::__pipelined_op() still believes `ewq_addr` is a
-`struct ext_wait_queue *`, and uses it to find a task_struct to pass
-to the wake_q_add_safe call. In the lucky case where nothing has
-overwritten `ewq_addr` yet, `ewq_addr->task` is the right task_struct.
-In the unlucky case, __pipelined_op::wake_q_add_safe gets handed a
-bogus address as the receiver's task_struct causing the crash.
-
-do_mq_timedsend::__pipelined_op() should not dereference `this` after
-setting STATE_READY, as the receiver counterpart is now free to return.
-Change __pipelined_op to call wake_q_add before setting STATE_READY
-which ensures that the receiver's task_struct can still be found via
-`this`.
-
-Fixes: c5b2cbdbdac563 ("ipc/mqueue.c: update/document memory barriers")
-Signed-off-by: Varad Gautam <varad.gautam@suse.com>
-Reported-by: Matthias von Faber <matthias.vonfaber@aox-tech.de>
-Cc: <stable@vger.kernel.org> # 5.6
-Cc: Christian Brauner <christian.brauner@ubuntu.com>
-Cc: Oleg Nesterov <oleg@redhat.com>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: Manfred Spraul <manfred@colorfullife.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Davidlohr Bueso <dbueso@suse.de>
----
-v2: Call wake_q_add before smp_store_release, instead of using a
-    get_task_struct/wake_q_add_safe combination across
-    smp_store_release. (Davidlohr Bueso)
-
- ipc/mqueue.c | 33 ++++++++++++++++++++++++---------
- 1 file changed, 24 insertions(+), 9 deletions(-)
-
-diff --git a/ipc/mqueue.c b/ipc/mqueue.c
-index 8031464ed4ae..bfcb6f81a824 100644
---- a/ipc/mqueue.c
-+++ b/ipc/mqueue.c
-@@ -78,11 +78,13 @@ struct posix_msg_tree_node {
-  * MQ_BARRIER:
-  * To achieve proper release/acquire memory barrier pairing, the state is =
-set to
-  * STATE_READY with smp_store_release(), and it is read with READ_ONCE fol=
-lowed
-- * by smp_acquire__after_ctrl_dep(). In addition, wake_q_add_safe() is use=
-d.
-+ * by smp_acquire__after_ctrl_dep(). The state change to STATE_READY must =
-be
-+ * the last write operation, after which the blocked task can immediately
-+ * return and exit.
-  *
-  * This prevents the following races:
-  *
-- * 1) With the simple wake_q_add(), the task could be gone already before
-+ * 1) With wake_q_add(), the task could be gone already before
-  *    the increase of the reference happens
-  * Thread A
-  *				Thread B
-@@ -97,10 +99,25 @@ struct posix_msg_tree_node {
-  * sys_exit()
-  *				get_task_struct() // UaF
-  *
-- * Solution: Use wake_q_add_safe() and perform the get_task_struct() befor=
-e
-- * the smp_store_release() that does ->state =3D STATE_READY.
-+ * 2) With wake_q_add(), the receiver task could have returned from the
-+ *    syscall and had its stack-allocated waiter overwritten before the
-+ *    sender could add it to the wake_q
-+ * Thread A
-+ *				Thread B
-+ * WRITE_ONCE(wait.state, STATE_NONE);
-+ * schedule_hrtimeout()
-+ *				->state =3D STATE_READY
-+ * <timeout returns>
-+ * if (wait.state =3D=3D STATE_READY) return;
-+ * sysret to user space
-+ * overwrite receiver's stack
-+ *				wake_q_add(A)
-+ *				if (cmpxchg()) // corrupted waiter
-  *
-- * 2) Without proper _release/_acquire barriers, the woken up task
-+ * Solution: Queue the task for wakeup before the smp_store_release() that
-+ * does ->state =3D STATE_READY.
-+ *
-+ * 3) Without proper _release/_acquire barriers, the woken up task
-  *    could read stale data
-  *
-  * Thread A
-@@ -116,7 +133,7 @@ struct posix_msg_tree_node {
-  *
-  * Solution: use _release and _acquire barriers.
-  *
-- * 3) There is intentionally no barrier when setting current->state
-+ * 4) There is intentionally no barrier when setting current->state
-  *    to TASK_INTERRUPTIBLE: spin_unlock(&info->lock) provides the
-  *    release memory barrier, and the wakeup is triggered when holding
-  *    info->lock, i.e. spin_lock(&info->lock) provided a pairing
-@@ -1005,11 +1022,9 @@ static inline void __pipelined_op(struct wake_q_head=
- *wake_q,
- 				  struct ext_wait_queue *this)
- {
- 	list_del(&this->list);
--	get_task_struct(this->task);
--
-+	wake_q_add(wake_q, this->task);
- 	/* see MQ_BARRIER for purpose/pairing */
- 	smp_store_release(&this->state, STATE_READY);
--	wake_q_add_safe(wake_q, this->task);
- }
-=20
- /* pipelined_send() - send a message directly to the task waiting in
---=20
-2.30.2
-
+> ---
+>  drivers/soc/imx/gpcv2.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
+> index 65b562cbcc6d..325a34833ffa 100644
+> --- a/drivers/soc/imx/gpcv2.c
+> +++ b/drivers/soc/imx/gpcv2.c
+> @@ -217,8 +217,6 @@ static int imx_pgc_power_up(struct generic_pm_domain *genpd)
+>  		goto out_regulator_disable;
+>  	}
+>  
+> -	reset_control_assert(domain->reset);
+> -
+>  	if (domain->bits.pxx) {
+>  		/* request the domain to power up */
+>  		regmap_update_bits(domain->regmap, GPC_PU_PGC_SW_PUP_REQ,
+> @@ -241,6 +239,8 @@ static int imx_pgc_power_up(struct generic_pm_domain *genpd)
+>  				  GPC_PGC_CTRL_PCR);
+>  	}
+>  
+> +	reset_control_assert(domain->reset);
+> +
+>  	/* delay for reset to propagate */
+>  	udelay(5);
+>  
+> 
