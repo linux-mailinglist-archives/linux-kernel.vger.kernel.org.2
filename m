@@ -2,171 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CD5F374D38
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E111374D3D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230462AbhEFCCN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:02:13 -0400
-Received: from mga07.intel.com ([134.134.136.100]:28138 "EHLO mga07.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230033AbhEFCCL (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:02:11 -0400
-IronPort-SDR: MmN0zxkwQcINTTBu4Ygk/S66i6pjxjy/Ft5bGvMtVVPKxFdN2tTgw6UoohVic5Z8wjCDkBZHTT
- uub08o3hlVRg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="262292467"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="262292467"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 19:01:14 -0700
-IronPort-SDR: aAnfqvc6IdLHlPJ3JWKllbX6KVxqknmOxdAJzqmsf/DrmPha2tRrx926OE1wu09rL97QWU0unt
- 8bFwFtU0Kr6g==
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="434107824"
-Received: from unknown (HELO [10.238.4.82]) ([10.238.4.82])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 19:01:09 -0700
-Subject: Re: [PATCH v1 1/2] perf header: Support HYBRID_TOPOLOGY feature
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210430074602.3028-1-yao.jin@linux.intel.com>
- <YJFgC9tS9m9/DJP8@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <1d256f3e-14b3-0c37-610a-2b3777827d95@linux.intel.com>
-Date:   Thu, 6 May 2021 10:01:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S231131AbhEFCDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:03:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229872AbhEFCDJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 22:03:09 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA62DC061574;
+        Wed,  5 May 2021 19:02:10 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso3548545otg.9;
+        Wed, 05 May 2021 19:02:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=KR+Zt8gatAmFm5zUbDUeqsKRamrBGMznhlklBB2oTek=;
+        b=jWaEWsBkDYTQ0h6VtG/MoIVUEv8KAgY2F6RWWO0V8i//l3OrFxvSXENkY/Gw5J9Hh8
+         fMm7SjHLr9gpCne6NF6fsBwo9RUpWs3B05GxLGN3IiTq4timkOiIjfDJ4BjBtXSvUW1G
+         UExAOBBkjYVdrRQocZou8b2rIXTbO9MPB3SwQQHgojw7GX7/vdoT0dULvSmgzQf8ysdf
+         pSTfTz/9oxbpHVTzSi1U1G5GHAftFPgCbMSdu5N3nefBhQgUkP3qaKl6+emC8PRVfxaG
+         GQ0YViUNPWRGetBjy4132TLPrtt2ooidPl/uE1Dtx1JhpYYeXpfgmZq0vAjfuq4hj0+x
+         54fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=KR+Zt8gatAmFm5zUbDUeqsKRamrBGMznhlklBB2oTek=;
+        b=uJJB9QrXj0WgwDGYunqz+tR53w3u6yvGLME1+MfWfNq9FUc3/dcAuA0rGs5pBin5/u
+         Z0/Gl9SJ2KJ9Hn4+pA6+00H/i4Ihxy/No1v4xWC0Kgg7794/msiTTDq1BIDgeO5K6bpM
+         3UtqY29Ze+5ObC+QcbOvZRLeKHQk1LQtLa0lgIoYISDRh1R/RFwBvPDHqh54Zfq3wvDl
+         QWtfC280r0OmQQ1Ehw1zFvxoPsN8qDY4za1DBNyvSA5sfWcS52t1SVkE4xFiBoEAT038
+         XUpwJHOPqC7Iko8GJhd+bJMRYzf5sG2gZYCiVwaONRs2u8iiJKrcl+PvUO+CdNaMLWN5
+         6BIw==
+X-Gm-Message-State: AOAM5323LYoqEhpu6Ohzt+QN/W4PV9CghoSLiuapy5enrnredPbCxozy
+        p8PYemYBDydhqsuI9DZUw+E=
+X-Google-Smtp-Source: ABdhPJwYF5Y4G+gpm3NKLL1CetgXScObMtBAgDJEswnglyUNOlYH9jchaVImJa3amGcoCnkuKtgTmQ==
+X-Received: by 2002:a9d:7f19:: with SMTP id j25mr1385414otq.319.1620266530276;
+        Wed, 05 May 2021 19:02:10 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r9sm254444ool.3.2021.05.05.19.02.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 05 May 2021 19:02:09 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Wed, 5 May 2021 19:02:08 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+        f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/15] 4.19.190-rc1 review
+Message-ID: <20210506020208.GA732733@roeck-us.net>
+References: <20210505120503.781531508@linuxfoundation.org>
+ <20210506014741.GB731872@roeck-us.net>
 MIME-Version: 1.0
-In-Reply-To: <YJFgC9tS9m9/DJP8@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506014741.GB731872@roeck-us.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
-
-On 5/4/2021 10:54 PM, Jiri Olsa wrote:
-> On Fri, Apr 30, 2021 at 03:46:01PM +0800, Jin Yao wrote:
+On Wed, May 05, 2021 at 06:47:43PM -0700, Guenter Roeck wrote:
+> On Wed, May 05, 2021 at 02:05:05PM +0200, Greg Kroah-Hartman wrote:
+> > This is the start of the stable review cycle for the 4.19.190 release.
+> > There are 15 patches in this series, all will be posted as a response
+> > to this one.  If anyone has any issues with these being applied, please
+> > let me know.
+> > 
+> > Responses should be made by Fri, 07 May 2021 12:04:54 +0000.
+> > Anything received after that time might be too late.
+> > 
+[ ... ]
+> > 
+> > Shengjiu Wang <shengjiu.wang@nxp.com>
+> >     ASoC: ak5558: Add MODULE_DEVICE_TABLE
+> > 
+> > Shengjiu Wang <shengjiu.wang@nxp.com>
+> >     ASoC: ak4458: Add MODULE_DEVICE_TABLE
+> > 
+> Wait, this also has the double commit. Can you please remove the bad one ?
 > 
-> SNIP
-> 
->> +static int write_hybrid_topology(struct feat_fd *ff,
->> +				 struct evlist *evlist __maybe_unused)
->> +{
->> +	struct hybrid_topology *tp;
->> +	int ret;
->> +	u32 i;
->> +
->> +	tp = hybrid_topology__new();
->> +	if (!tp)
->> +		return -1;
->> +
->> +	ret = do_write(ff, &tp->nr, sizeof(u32));
->> +	if (ret < 0)
->> +		goto err;
->> +
->> +	for (i = 0; i < tp->nr; i++) {
->> +		struct hybrid_topology_node *n = &tp->nodes[i];
->> +
->> +		ret = do_write_string(ff, n->pmu_name);
->> +		if (ret < 0)
->> +			goto err;
->> +
->> +		ret = do_write_string(ff, n->cpus);
->> +		if (ret < 0)
->> +			goto err;
->> +	}
->> +
->> +	ret = 0;
->> +
->> +err:
->> +	hybrid_topology__delete(tp);
->> +	return ret;
->> +}
->> +
->>   static int write_dir_format(struct feat_fd *ff,
->>   			    struct evlist *evlist __maybe_unused)
->>   {
->> @@ -1623,6 +1657,19 @@ static void print_clock_data(struct feat_fd *ff, FILE *fp)
->>   		    clockid_name(clockid));
->>   }
->>   
->> +static void print_hybrid_topology(struct feat_fd *ff, FILE *fp)
->> +{
->> +	int i;
->> +	struct hybrid_node *n;
->> +
->> +	for (i = 0; i < ff->ph->env.nr_hybrid_nodes; i++) {
->> +		n = &ff->ph->env.hybrid_nodes[i];
->> +
->> +		fprintf(fp, "# %s cpu list : ", n->pmu_name);
->> +		cpu_map__fprintf(n->map, fp);
-> 
-> do you plan to do anything else with n->map in the future?
-> because right now you could just print the stored cpus string no?
-> it should be already in the cpumask shape
-> 
-> jirka
-> 
+Actually, both need to be removed because they are already in the tree:
 
-Yes, you are right, we don't need to use n->map at least now.
+$ git describe
+v4.19.189-16-g5a3ba2f90f87
+$ git log --oneline v4.19.. sound/soc/codecs/ak4458.c sound/soc/codecs/ak5558.c
+e32ee6f6fbcd ASoC: ak5558: Add MODULE_DEVICE_TABLE
+5d0fe4839d63 ASoC: ak4458: Add MODULE_DEVICE_TABLE
+04bb225a4824 ASoC: ak5558: Add MODULE_DEVICE_TABLE
+25a09f4aad56 ASoC: ak4458: Add MODULE_DEVICE_TABLE
+3f8d3c9506a5 ASoC: ak4458: rstn_control - return a non-zero on error only
+4c31b4b4ba65 ASoC: ak4458: add return value for ak4458_probe
 
-Following code should be much simpler.
+This applies to all branches.
 
-+struct hybrid_node {
-+       char    *pmu_name;
-+       char    *cpus;
-+};
-
-+static int process_hybrid_topology(struct feat_fd *ff,
-+                                  void *data __maybe_unused)
-+{
-+       struct hybrid_node *nodes, *n;
-+       u32 nr, i;
-+
-+       /* nr nodes */
-+       if (do_read_u32(ff, &nr))
-+               return -1;
-+
-+       nodes = zalloc(sizeof(*nodes) * nr);
-+       if (!nodes)
-+               return -ENOMEM;
-+
-+       for (i = 0; i < nr; i++) {
-+               n = &nodes[i];
-+
-+               n->pmu_name = do_read_string(ff);
-+               if (!n->pmu_name)
-+                       goto error;
-+
-+               n->cpus = do_read_string(ff);
-+               if (!n->cpus)
-+                       goto error;
-+       }
-+
-+       ff->ph->env.nr_hybrid_nodes = nr;
-+       ff->ph->env.hybrid_nodes = nodes;
-+       return 0;
-+
-+error:
-...
-
-+static void print_hybrid_topology(struct feat_fd *ff, FILE *fp)
-+{
-+       int i;
-+       struct hybrid_node *n;
-+
-+       for (i = 0; i < ff->ph->env.nr_hybrid_nodes; i++) {
-+               n = &ff->ph->env.hybrid_nodes[i];
-+               fprintf(fp, "# %s cpu list : %s\n", n->pmu_name, n->cpus);
-+       }
-+}
-
-Thanks
-Jin Yao
-
-
-
+Thanks,
+Guenter
