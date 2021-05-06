@@ -2,64 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8063754A8
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F3B375481
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:15:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233937AbhEFNXc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:23:32 -0400
-Received: from cmccmta2.chinamobile.com ([221.176.66.80]:7479 "EHLO
-        cmccmta2.chinamobile.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230381AbhEFNXb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:23:31 -0400
-Received: from spf.mail.chinamobile.com (unknown[172.16.121.11]) by rmmx-syy-dmz-app05-12005 (RichMail) with SMTP id 2ee56093eb65f18-a2159; Thu, 06 May 2021 21:13:12 +0800 (CST)
-X-RM-TRANSID: 2ee56093eb65f18-a2159
-X-RM-TagInfo: emlType=0                                       
-X-RM-SPAM-FLAG: 00000000
-Received: from localhost.localdomain (unknown[112.22.251.0])
-        by rmsmtp-syy-appsvr06-12006 (RichMail) with SMTP id 2ee66093eb639af-b000e;
-        Thu, 06 May 2021 21:13:11 +0800 (CST)
-X-RM-TRANSID: 2ee66093eb639af-b000e
-From:   Tang Bin <tangbin@cmss.chinamobile.com>
-To:     akpm@linux-foundation.org, ch0.han@lge.com
-Cc:     linux-kernel@vger.kernel.org,
-        Tang Bin <tangbin@cmss.chinamobile.com>,
-        Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Subject: [PATCH] tools/vm/page_owner_sort.c: Fix the potential stack overflow risk
-Date:   Thu,  6 May 2021 21:14:02 +0800
-Message-Id: <20210506131402.10416-1-tangbin@cmss.chinamobile.com>
-X-Mailer: git-send-email 2.20.1.windows.1
+        id S233647AbhEFNQT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:16:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229946AbhEFNQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 09:16:13 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 91694610FA;
+        Thu,  6 May 2021 13:15:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620306915;
+        bh=iK5LPujzM68XwfVrW5opfDHlAEC1spsQjEQ6K9YqZnc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=DVTRwGCbOIFepl9I2tiDnyzfpo3iDQtHJXTC5A9+xFlE4ihwYWossLnDm3ag3t7Dc
+         0+7go3ao3k2yXKCgCr12zSdgltcbsQhKfuLboi8DmNfZhyulK5QQNo1HrHS2ROwcPe
+         Q18Sja8XIOb89JP+fwwrYMV294csv7gILoLrgTawbkVhaz/k7FinOE8PvABDWdbZKh
+         hjdPu5YbgOSfBRM5RNS3yM8CvrJkv39/q4jHMyAsF/ruCi0Wxb5TpOZlO3nNdSHGkD
+         SJdvLIgv+p++iTTB5dhXsFN1mVXd+KhitpnzPWyEb04c/IF5n6l5dyhZ0MvrrC86ij
+         3DV9XBrhnDP8Q==
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Paul E . McKenney" <paulmck@kernel.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH 0/3] torture: Update bare metal config generation
+Date:   Thu,  6 May 2021 15:15:07 +0200
+Message-Id: <20210506131510.51488-1-frederic@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add judgment to fix the potential stack overflow risk
+Hi,
 
-Signed-off-by: Zhang Shengju <zhangshengju@cmss.chinamobile.com>
-Signed-off-by: Tang Bin <tangbin@cmss.chinamobile.com>
+I've been using these changes for my bare-metal testings for a few weeks
+now and I figured I should share even though I bet I'm the only one who
+runs rcutorture on bare-metal, but who knows?
+
+git://git.kernel.org/pub/scm/linux/kernel/git/frederic/linux-dynticks.git
+	rcu/dev
+
+HEAD: 2ffb53f35976a1e12c481fd059701e66a6cd28ae
+
+Thanks,
+	Frederic
 ---
- tools/vm/page_owner_sort.c | 4 ++++
- 1 file changed, 4 insertions(+)
 
-diff --git a/tools/vm/page_owner_sort.c b/tools/vm/page_owner_sort.c
-index 85eb65ea1..bb7c35b77 100644
---- a/tools/vm/page_owner_sort.c
-+++ b/tools/vm/page_owner_sort.c
-@@ -132,6 +132,10 @@ int main(int argc, char **argv)
- 	qsort(list, list_size, sizeof(list[0]), compare_txt);
- 
- 	list2 = malloc(sizeof(*list) * list_size);
-+	if (!list2) {
-+		printf("Out of memory\n");
-+		exit(1);
-+	}
- 
- 	printf("culling\n");
- 
--- 
-2.20.1.windows.1
+Frederic Weisbecker (3):
+      torture: Add --cmdline-to-config parameter to kvm.sh
+      torture: Add --configonly parameter for kvm.sh
+      torture: Update bare metal advices to latest kvm.sh options
 
 
-
+ .../testing/selftests/rcutorture/bin/configinit.sh | 13 +++++
+ .../testing/selftests/rcutorture/bin/kvm-build.sh  |  9 ++-
+ .../selftests/rcutorture/bin/kvm-recheck.sh        |  6 +-
+ .../selftests/rcutorture/bin/kvm-test-1-run.sh     | 67 +++++++++++++---------
+ tools/testing/selftests/rcutorture/bin/kvm.sh      | 32 ++++++++---
+ 5 files changed, 91 insertions(+), 36 deletions(-)
