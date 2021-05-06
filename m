@@ -2,103 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EFA2375893
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:40:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A842375897
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:40:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236001AbhEFQlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:41:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
+        id S236011AbhEFQls (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:41:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48910 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235295AbhEFQlM (ORCPT
+        with ESMTP id S235295AbhEFQlh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:41:12 -0400
-Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DD4C061761;
-        Thu,  6 May 2021 09:40:13 -0700 (PDT)
-Received: by mail-pf1-x42d.google.com with SMTP id 10so5686819pfl.1;
-        Thu, 06 May 2021 09:40:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=xXizdXUAjSz2jlshC5sOnX3iWhZuSTNGCElXukfmD5M=;
-        b=cR1tnwk3T/Wvlf5i9dst9jZsGLRtAexfDn11Uag1slcnP4yE6mHoDHZBR7IwSlcU0Q
-         6L2LTwSOtFe8robwxXO+Rm/EOV5d00Jo+lsHdOv5UvPYsCicJIjSSTMaG0bvzx6rKAGW
-         Div/waoPb4F9hvalAUjlf6OAOanR/o1ROOP3J5aJ6ENyc5aXoPxtdlgcMPQsptVOxRxm
-         YLRtc6+aqtjUHf4X8rPjeCN0gOBcbde4/iZsmg+6l/ezwPCnA52ns1Amk8EYbbe6QN+m
-         jctKrRRcsB8XnqJcLZoQ6QNbVYLk1pDMV05XF2P/x85vwu/cRJkKaEtzUmtzfBZsxNcE
-         oeaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xXizdXUAjSz2jlshC5sOnX3iWhZuSTNGCElXukfmD5M=;
-        b=uduPj7unvm7AwXn7hS6LBdgvJqVio6cj2E85vrgwitf5hfjD+lScr28rp13tIoZYyb
-         aKdIl/YLZtR1zaXYa/xfqO0wUgBZFgWcUWOokfzFhS1iHcZG0hK2tHVp4fLMbt6Vl6jO
-         otcDqHFKmbGBCAyZgIdBWJQLbrGDVDw9iCOMVsOxKlczNSMklydoNe0pSSkO2x5/kXNZ
-         JLnaku9JiHCGsbmeyd/NFVsU7398wj4I1jAU6+YDrTltdKR0U7BemEtYxUq+qgxzLbH+
-         O2vOuhtamLgi0rJj3MiCCrzi1QMFXJsad1jSe5BHTOrmx67L+7zxVd8LfL++3l0D2azB
-         88RA==
-X-Gm-Message-State: AOAM532zOn/9OG3rTDzyCUuM2u8eR9vbXH1sbF01hm5ynulMQnU160Gl
-        mTuHld5srj12gC1/cCv7U7ti3j8jea8=
-X-Google-Smtp-Source: ABdhPJwkAm4sp2Mpia1QZcz8GR74jexVpEP3bV089siY28rgybUrpG3UPDNl5YQIkKDLtXCXh+TwtA==
-X-Received: by 2002:a63:4c0e:: with SMTP id z14mr5198740pga.30.1620319213313;
-        Thu, 06 May 2021 09:40:13 -0700 (PDT)
-Received: from atulu-nitro ([122.178.201.168])
-        by smtp.gmail.com with ESMTPSA id lx15sm9867586pjb.56.2021.05.06.09.40.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 09:40:12 -0700 (PDT)
-Date:   Thu, 6 May 2021 22:10:08 +0530
-From:   Atul Gopinathan <atulgopinathan@gmail.com>
-To:     Peter Rosin <peda@axentia.se>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        stable <stable@vger.kernel.org>
-Subject: Re: [PATCH 27/69] cdrom: gdrom: deallocate struct gdrom_unit fields
- in remove_gdrom
-Message-ID: <20210506164008.GA6283@atulu-nitro>
-References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
- <20210503115736.2104747-28-gregkh@linuxfoundation.org>
- <223d5bda-bf02-a4a8-ab1d-de25e32b8d47@axentia.se>
- <YJPDzqAAnP0jDRDF@kroah.com>
- <dd716d04-b9fa-986a-50dd-5c385ea745b2@axentia.se>
- <20210506143208.GA7971@atulu-nitro>
- <1912bddd-0788-5586-1cb0-0400630c32f8@axentia.se>
+        Thu, 6 May 2021 12:41:37 -0400
+Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 36E84C061574;
+        Thu,  6 May 2021 09:40:39 -0700 (PDT)
+Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by ssl.serverraum.org (Postfix) with ESMTPSA id 0C2882224F;
+        Thu,  6 May 2021 18:40:37 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
+        t=1620319237;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=w4MY3G564NdTEkuj4VLGNFihTv4+RO4yLopFAh40/24=;
+        b=eBCH6kXReCxnXQmOrX+gIktbnA5fzQj9nqLHJ1ypRpAhiQmg7Qh8Pbj2w8oYM3UhEos720
+        +tiRVVbBxs/H7DQp5/Fbf4FIb0aN/CCDCoguDSIRQ8NsTOigBcAERDSqv2zwNwt9o5nyRZ
+        EzjZ4JRZVb6njr92JIGU0FBVNbuH/UM=
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1912bddd-0788-5586-1cb0-0400630c32f8@axentia.se>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 06 May 2021 18:40:37 +0200
+From:   Michael Walle <michael@walle.cc>
+To:     Rob Herring <robh@kernel.org>
+Cc:     Robert Marko <robert.marko@sartura.hr>, lee.jones@linaro.org,
+        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
+        jdelvare@suse.com, linux@roeck-us.net, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
+        linux-hwmon@vger.kernel.org, luka.perkov@sartura.hr,
+        jmp@epiphyte.org, pmenzel@molgen.mpg.de, buczek@molgen.mpg.de
+Subject: Re: [PATCH 3/6] gpio: Add Delta TN48M CPLD GPIO driver
+In-Reply-To: <20210506140024.GB3340759@robh.at.kernel.org>
+References: <20210430123511.116057-1-robert.marko@sartura.hr>
+ <20210430123511.116057-3-robert.marko@sartura.hr>
+ <20210506140024.GB3340759@robh.at.kernel.org>
+User-Agent: Roundcube Webmail/1.4.11
+Message-ID: <3905879e67d50d6a7f73fcd83982c052@walle.cc>
+X-Sender: michael@walle.cc
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 05:43:14PM +0200, Peter Rosin wrote:
-> Hi!
+Am 2021-05-06 16:00, schrieb Rob Herring:
+> On Fri, Apr 30, 2021 at 02:35:08PM +0200, Robert Marko wrote:
+>> Delta TN48M CPLD is used as a GPIO expander for the SFP GPIOs.
+>> 
+>> It is a mix of input only and output only pins.
+>> 
+>> Since there is no logical GPIO numbering arbitrary one is used
+>> along dt-bindings to make it humanly readable.
+>> 
+>> Signed-off-by: Robert Marko <robert.marko@sartura.hr>
+>> ---
+>>  drivers/gpio/Kconfig      |  12 +++
+>>  drivers/gpio/Makefile     |   1 +
+>>  drivers/gpio/gpio-tn48m.c | 191 
+>> ++++++++++++++++++++++++++++++++++++++
+>>  drivers/mfd/tn48m-cpld.c  |   6 +-
+>>  include/linux/mfd/tn48m.h |   3 +
+>>  5 files changed, 212 insertions(+), 1 deletion(-)
+>>  create mode 100644 drivers/gpio/gpio-tn48m.c
 > 
-> On 2021-05-06 16:32, Atul Gopinathan wrote:
-> > 
-> > Apart from this, I don't see gdrom_get_last_session() being called
-> > anywhere. But I could be missing something obvious too. 
-> > 
-> > If you don't mind, could you point out where gd.toc is being used in
-> > probe_gdrom() before it is kzalloc-ed in the same function.
 > 
-> You are very probably correct in your analysis, and I can't find it in me
-> to spend the time to dig any further.
+>> +static const struct platform_device_id tn48m_gpio_id_table[] = {
+>> +	{ "delta,tn48m-gpio", },
 > 
-> I simply thought it bad enough to hand off a pointer to a function that
-> uses a stale pointer to some other driver. I never dug into that other
-> module like you did. Relying on that other piece of code to not use the
-> function that was just handed to it is way too subtle (for me at least).
-> When you "register" with something else, you should be ready to get the
-> calls.
-> 
-> This is true especially in the context of what we are fixing up here;
-> broken shit related to people that are fond of weaknesses later to be
-> activated by other innocuous commits.
+> Looks like a compatible, but is not. I think you can drop this and just
+> use 'tm48m-gpio' (the driver name).
 
-Ah, I see, that makes sense. I just wanted to confirm if I was getting
-things right. Thanks for clarifying!
+I'm just curious, why isn't the vendor included here (as there
+might be a chance for name clashes in the future).
 
-Regards,
-Atul
+-michael
