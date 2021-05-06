@@ -2,153 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AE8C3758EF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:08:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B2A0F3758F7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:10:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236149AbhEFRJM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:09:12 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:42754 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236194AbhEFRJK (ORCPT
+        id S236190AbhEFRLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:11:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236042AbhEFRLi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:09:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620320892; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=tUjhteZTwtjUFaDAD6KHJwd6NW9O0JNn7peHuFifXiU=; b=KV8+Mtzqc59PSDcO9V9U2HCpJmc3O6ROZFIcLQ6oO0xbinvT8697rzl2cXuV708N93Tyh3Jz
- xmI26vx2T7Ms+1anoG1BAK4gC3lrijrodPns1dxt3HapCU/Hf8mRiL7HZOlYqhQKy+XeIiTq
- IKYFJzQrwVbG9TJkksRirwemrKo=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n04.prod.us-west-2.postgun.com with SMTP id
- 60942267f34440a9d487ba8d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 17:07:51
- GMT
-Sender: deesin=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 71167C433D3; Thu,  6 May 2021 17:07:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
-        autolearn=no autolearn_force=no version=3.4.0
-Received: from deesin-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: deesin)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4C3B5C4360C;
-        Thu,  6 May 2021 17:07:48 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 4C3B5C4360C
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=deesin@codeaurora.org
-From:   Deepak Kumar Singh <deesin@codeaurora.org>
-To:     bjorn.andersson@linaro.org, clew@codeaurora.org,
-        sibis@codeaurora.org, manivannan.sadhasivam@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-remoteproc@vger.kernel.org,
-        Deepak Kumar Singh <deesin@codeaurora.org>,
-        Andy Gross <agross@kernel.org>
-Subject: [PATCH V3 2/2] soc: qcom: aoss: Add debugfs entry
-Date:   Thu,  6 May 2021 22:36:54 +0530
-Message-Id: <1620320818-2206-3-git-send-email-deesin@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1620320818-2206-1-git-send-email-deesin@codeaurora.org>
-References: <1620320818-2206-1-git-send-email-deesin@codeaurora.org>
+        Thu, 6 May 2021 13:11:38 -0400
+Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AF5C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 10:10:39 -0700 (PDT)
+Received: by mail-qv1-xf4a.google.com with SMTP id t9-20020a0cde090000b02901c4c7ae0cceso4630032qvk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 10:10:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=i5hbcI2b08ctJKsV+uyax41mbRV5yx+2PLw98oS0cyA=;
+        b=cYpbRdAInq0ahsOxhhQDHOVzl2EHq7QVAlu3VoOnoHoPM6dHTEedg7JrMLWcyLuzPm
+         zlccXnYyNnRJdTCctN9qIPMqNiLY6fAJ+nUlTZ0lebyuD/vF+pYur5RTcesMRk9OLfsM
+         /3IrgJOi6R99I3LwrJ78YHoLKGs6fdUDCNdsDW3a4VyrASvdCsTrz1wTxbFbL5tWB4Tm
+         INrtE2x+683XsreqXP5EE9uEaPq/d/8mxRHZqgX/AQrWb9UxCjYOmCw3Ez4JpoFbXKTj
+         RPUOEUX1mgCDthTtab3HNoMvl8x2eFfFt0s/ZWLVRl/vbPbfzRAqfK4MV6WH8DqGnYLm
+         +OtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=i5hbcI2b08ctJKsV+uyax41mbRV5yx+2PLw98oS0cyA=;
+        b=CaVX55IUFcD2Z9j9JtsqSflT3rx7Kb2XpAsPNI/pfW7VmsrUzegScoHrfU+MWO8HL/
+         saM0PY4CJ88pmRJo7GixF9zClJp2/8HdYvmWM+3873JKsxeQBh7/d3YCjsGyl5nDTxfn
+         amqkNBj2JrDUvacuTDJQ1qEFwptgtWqgJe0gZ+A6s/wuB8FRdtW52FV0lt8X7Z74tLFs
+         1ECJ2rm0mT+rpE3dAY1h2NH7QCT5xdf+YprM1AcW1oUf0hNegQmaRh3xO/sgrwlitj1I
+         l5ilAieklInIwvsgogH+bOaZIJfe/Xp7emktxV0txTkzSh555dNruMSgSRNwXDIRq6Pt
+         Du8w==
+X-Gm-Message-State: AOAM532Muh/VLT3ohanrT3gfSYHOeXGE0WZqj2Q30W2/xiHLkjcqPOTa
+        gNM2rWiOEL0TJBtZVZhjyN4B0g06R3wS
+X-Google-Smtp-Source: ABdhPJx1Qh9ZnnpOXcw0rDlmx7IiVVSYANT+aJil6BYGXaRj01+yFGWnYY3Ec6O2jMqPdCop9rpd19kEvrlY
+X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:9a5c:8de0:4c79:ba52])
+ (user=kyletso job=sendgmr) by 2002:a0c:e6c5:: with SMTP id
+ l5mr5829060qvn.2.1620321038643; Thu, 06 May 2021 10:10:38 -0700 (PDT)
+Date:   Fri,  7 May 2021 01:10:24 +0800
+Message-Id: <20210506171026.1736828-1-kyletso@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH v2 0/2] VDM management improvement and some bug fixes
+From:   Kyle Tso <kyletso@google.com>
+To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
+        gregkh@linuxfoundation.org
+Cc:     badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It can be useful to control the different power states of various
-parts of hardware for device testing. Add a debugfs node for qmp so
-messages can be sent to aoss for debugging and testing purposes.
+usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated work
+- nothing changed since v1
+- Hi, Greg, do I need to add "Reviewed-by:" and "Acked-by:" ?
 
-Signed-off-by: Chris Lew <clew@codeaurora.org>
-Signed-off-by: Deepak Kumar Singh <deesin@codeaurora.org>
----
- drivers/soc/qcom/qcom_aoss.c | 39 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 39 insertions(+)
+usb: typec: tcpm: Fix wrong handling for Not_Supported in VDM AMS
+- I stacked these two patches because they are somewhat relevant.
+- This patch solved 3 bugs
+  1. Not_Supported should be acceptable in VDM AMS. Previous design will
+     send Soft_Reset after receiving Not_Supported
+  2. vdm_sm_running flag should be cleared in some VDM states
+  3. If port partner responds Busy, the VDM AMS should finish.
 
-diff --git a/drivers/soc/qcom/qcom_aoss.c b/drivers/soc/qcom/qcom_aoss.c
-index cd75d4d..438adc9 100644
---- a/drivers/soc/qcom/qcom_aoss.c
-+++ b/drivers/soc/qcom/qcom_aoss.c
-@@ -4,6 +4,7 @@
-  */
- #include <dt-bindings/power/qcom-aoss-qmp.h>
- #include <linux/clk-provider.h>
-+#include <linux/debugfs.h>
- #include <linux/interrupt.h>
- #include <linux/io.h>
- #include <linux/mailbox_client.h>
-@@ -89,6 +90,9 @@ struct qmp {
- 	struct clk_hw qdss_clk;
- 	struct genpd_onecell_data pd_data;
- 	struct qmp_cooling_device *cooling_devs;
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	struct dentry *debugfs_file;
-+#endif /* CONFIG_DEBUG_FS */
- };
- 
- struct qmp_pd {
-@@ -575,6 +579,32 @@ void qmp_put(struct qmp *qmp)
- }
- EXPORT_SYMBOL(qmp_put);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+static ssize_t aoss_dbg_write(struct file *file, const char __user *userstr,
-+			      size_t len, loff_t *pos)
-+{
-+	struct qmp *qmp = file->private_data;
-+	char buf[QMP_MSG_LEN] = {};
-+	int ret;
-+
-+	if (!len || len >= QMP_MSG_LEN)
-+		return len;
-+
-+	ret  = copy_from_user(buf, userstr, len);
-+	if (ret)
-+		return len;
-+
-+	ret = qmp_send(qmp, buf, QMP_MSG_LEN);
-+
-+	return ret ? ret : len;
-+}
-+
-+static const struct file_operations aoss_dbg_fops = {
-+	.open = simple_open,
-+	.write = aoss_dbg_write,
-+};
-+#endif /* CONFIG_DEBUG_FS */
-+
- static int qmp_probe(struct platform_device *pdev)
- {
- 	struct resource *res;
-@@ -632,6 +662,11 @@ static int qmp_probe(struct platform_device *pdev)
- 
- 	atomic_set(&qmp->orphan, 0);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	qmp->debugfs_file = debugfs_create_file("aoss_send_message", 0220, NULL,
-+						qmp, &aoss_dbg_fops);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	return 0;
- 
- err_remove_qdss_clk:
-@@ -649,6 +684,10 @@ static int qmp_remove(struct platform_device *pdev)
- {
- 	struct qmp *qmp = platform_get_drvdata(pdev);
- 
-+#if IS_ENABLED(CONFIG_DEBUG_FS)
-+	debugfs_remove(qmp->debugfs_file);
-+#endif /* CONFIG_DEBUG_FS */
-+
- 	qmp_qdss_clk_remove(qmp);
- 	qmp_pd_remove(qmp);
- 	qmp_cooling_devices_remove(qmp);
+Kyle Tso (2):
+  usb: typec: tcpm: Send DISCOVER_IDENTITY from dedicated work
+  usb: typec: tcpm: Fix wrong handling for Not_Supported in VDM AMS
+
+ drivers/usb/typec/tcpm/tcpm.c | 99 ++++++++++++++++++++++++++++++-----
+ 1 file changed, 87 insertions(+), 12 deletions(-)
+
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.31.1.527.g47e6f16901-goog
 
