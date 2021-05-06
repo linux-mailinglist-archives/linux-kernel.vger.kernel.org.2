@@ -2,97 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D9B8374C55
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:28:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2159374C3C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:14:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229909AbhEFA3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 20:29:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47590 "EHLO mail.kernel.org"
+        id S230082AbhEFAP3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 20:15:29 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:62265 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhEFA3J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 20:29:09 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 81A7E61090;
-        Thu,  6 May 2021 00:28:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620260892;
-        bh=q7IDlMGI6xpMvyU4SnCUl+S8bj1v2u/RUGU5QhZTaRg=;
-        h=From:To:Cc:Subject:Date:From;
-        b=aXMzLTxaQdRhtLL2BuaGd2t4RSdoCkEh03m80QkyfDzdg/J3sgMzo+rg2uG/3N+R3
-         476WXcXMKefA/3kdSqkEz6OmvT2KDS7YMbCB9yJg6Hm+ETLv6Plb0Omr6gppPKKAZ+
-         dR6eSUJRaMZ3MI0HfpanEbG3GmB+ORrN9R095/swWaZUkia3VW3sZbDnDSM3FJaoFJ
-         yfn2RAqcOYEnJsEx3EHlRKD2sNVuj5CUHAz5C5y9ha9nxBpnpDxddfUfhJAx0Jnlhq
-         9T7vcnTHxPuypzlCj3UBLJg+tYHt9UgZ5qHfepEfhiooDhWpZdlqKlZauEC4Twt1LL
-         HlnPUNME8rNSA==
-From:   Nathan Chancellor <nathan@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, Kees Cook <keescook@chromium.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nathan Chancellor <nathan@kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] vmlinux.lds.h: Handle decrypted data section with !SMP
-Date:   Wed,  5 May 2021 17:14:11 -0700
-Message-Id: <20210506001410.1026691-1-nathan@kernel.org>
-X-Mailer: git-send-email 2.31.1.442.g7e39198978
+        id S230102AbhEFAPW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 20:15:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620260065; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=5fwKcjHax50dfp3M7rm8cG/FTAK0v0ueeXfFMFBGvSw=; b=tIKZ7BbsvijAgA7WFMFAiuUI4Lsey7RVFHWVxrKlucrCteqoL76/1hl5pOexexeNgnh12h+w
+ EqOQ9apz7d1lb2iiaWc0boGN3Oqu04yW3KmY/MOqRn9wwAiAFaiB3nEDmH8b0mJjoTlWR8C4
+ 62+iC4D5BcyPV8x1anK/1Js6C8U=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-east-1.postgun.com with SMTP id
+ 609334dc87ce1fbb56178f1b (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 00:14:20
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 53B0DC43460; Thu,  6 May 2021 00:14:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 457B6C433D3;
+        Thu,  6 May 2021 00:14:18 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 457B6C433D3
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+Subject: Re: [PATCH v3 5/6] bus: mhi: pci_generic: Set register access length
+ for MHI driver
+To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org
+Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
+        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
+        linux-wireless@vger.kernel.org, kvalo@codeaurora.org,
+        ath11k@lists.infradead.org
+References: <1620234501-30461-1-git-send-email-bbhatt@codeaurora.org>
+ <1620234501-30461-6-git-send-email-bbhatt@codeaurora.org>
+From:   Hemant Kumar <hemantk@codeaurora.org>
+Message-ID: <eb0ead5a-94e6-d5c5-4450-04e4515b59b8@codeaurora.org>
+Date:   Wed, 5 May 2021 17:14:17 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <1620234501-30461-6-git-send-email-bbhatt@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With x86_64_defconfig and the following configs, there is an orphan
-section warning:
 
-CONFIG_SMP=n
-CONFIG_AMD_MEM_ENCRYPT=y
-CONFIG_HYPERVISOR_GUEST=y
-CONFIG_KVM=y
-CONFIG_PARAVIRT=y
 
-ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/cpu/vmware.o' being placed in section `.data..decrypted'
-ld: warning: orphan section `.data..decrypted' from `arch/x86/kernel/kvm.o' being placed in section `.data..decrypted'
+On 5/5/21 10:08 AM, Bhaumik Bhatt wrote:
+> MHI driver requires register space length to add range checks and
+> prevent memory region accesses outside of that for MMIO space.
+> Set it from the PCI generic controller driver before registering
+> the MHI controller.
+> 
+> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
 
-These sections are created with DEFINE_PER_CPU_DECRYPTED, which
-ultimately turns into __PCPU_ATTRS, which in turn has a section
-attribute with a value of PER_CPU_BASE_SECTION + the section name. When
-CONFIG_SMP is not set, the base section is .data and that is not
-currently handled in any linker script.
+Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
 
-Add .data..decrypted to PERCPU_DECRYPTED_SECTION, which is included in
-PERCPU_INPUT -> PERCPU_SECTION, which is include in the x86 linker
-script when either CONFIG_X86_64 or CONFIG_SMP is unset, taking care of
-the warning.
-
-Fixes: ac26963a1175 ("percpu: Introduce DEFINE_PER_CPU_DECRYPTED")
-Link: https://github.com/ClangBuiltLinux/linux/issues/1360
-Reported-by: kernel test robot <lkp@intel.com>
-Signed-off-by: Nathan Chancellor <nathan@kernel.org>
----
-
-I took the simple fix route with this patch since I highly doubt someone
-is actually running a CONFIG_AMD_MEM_ENCRYPT=y + CONFIG_SMP=n kernel. If
-this section should actually be in .data, I can respin.
-
- include/asm-generic/vmlinux.lds.h | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index 40a9c101565e..17325416e2de 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -960,6 +960,7 @@
- #ifdef CONFIG_AMD_MEM_ENCRYPT
- #define PERCPU_DECRYPTED_SECTION					\
- 	. = ALIGN(PAGE_SIZE);						\
-+	*(.data..decrypted)						\
- 	*(.data..percpu..decrypted)					\
- 	. = ALIGN(PAGE_SIZE);
- #else
-
-base-commit: 8404c9fbc84b741f66cff7d4934a25dd2c344452
 -- 
-2.31.1.442.g7e39198978
-
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
