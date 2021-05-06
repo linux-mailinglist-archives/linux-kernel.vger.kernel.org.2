@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9A99A375BE3
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:43:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E65A4375BE8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:44:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235745AbhEFTn7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 15:43:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33278 "EHLO
+        id S235855AbhEFTo7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 15:44:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235634AbhEFTnu (ORCPT
+        with ESMTP id S235649AbhEFTox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 15:43:50 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 126E4C0613ED
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 12:42:52 -0700 (PDT)
+        Thu, 6 May 2021 15:44:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06531C0613ED
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 12:43:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=4/Kg4dI+18FY0Fs01of1GO1sfd1Na4+Q4lbePNnqLrE=; b=G80oCrU9/4hgbYUKt7h4dBj4DG
-        aXbgll7J/2vaDZ7chwTHauHQHlxBbmqYi0xJmf4R9MjlY12SNf8cPAlW7+oI6X3f1cAyOf2Y7bh/9
-        K3c6KY+WcW9DbeDdzLC0eZGpa7EVYn4fES3aCHi+yjIbB0aGk+OCQCz/LIhSOV+rup02ms1/ehZIq
-        BReZ8Rq+yXk97nrvUZVVZSBpi5dUEvvjRpA4p0SWsKyxgAI+2ZCcYohF9Fnb/4oypn3cr7jmVBS6r
-        wnaV2DoyoAfTn+2T+3DSqsPqkDAaTDNn65uU5C/lzwEpOlknLGj83vdKjQSnSVHxF5R0GefPsrNP8
-        euZEujhg==;
+        bh=kFfqEufoIQb0/o5iFIo5FIoTlMfJ/zwdMcpq4uS6qSs=; b=hq8qP9rmExfa7s3B5OVsv6VyQw
+        EEvAGibZ2qBKj9IHdFFTttrGz2g3Dv3ZZdbrHeBuXH/zFTyVnXs6xxCnIB5+GD+MFqMy+z/rHXrOG
+        K8FUn6jGRTSplDLkzTI7kQqC8yKl0AEjBQQeTZpddQnrEb6cc8I0L3cbInbgMjYXqCD6VX13fSnjv
+        xHftAlcBtIPe+9jlbUK68qAr0K7IgFFZCswkCI9NQZyvHuRPuOZTeiS7U3LLV3NXwPoSxhrkCVFIq
+        Rvf+QHlu1cx+8doYyDr9nP4AANGvrPwGA/oNTybPq+/tOzLHnEDG0UXkIIVfLxnswsk/8bvkJOkv3
+        atR8B9/Q==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lejtT-005BMC-9e; Thu, 06 May 2021 19:42:43 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lejtT-002ADI-VR; Thu, 06 May 2021 19:42:54 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2870B300386;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 296DF300391;
         Thu,  6 May 2021 21:42:39 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id D2CDE20B96F92; Thu,  6 May 2021 21:42:38 +0200 (CEST)
-Message-ID: <20210506194158.153101906@infradead.org>
+        id DC65B20B96F96; Thu,  6 May 2021 21:42:38 +0200 (CEST)
+Message-ID: <20210506194158.216763632@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 06 May 2021 21:34:04 +0200
+Date:   Thu, 06 May 2021 21:34:05 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
         rostedt@goodmis.org, ardb@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH 12/13] objtool: Provide stats for jump_labels
+Subject: [PATCH 13/13] jump_label,x86: Allow short NOPs
 References: <20210506193352.719596001@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,73 +51,57 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add objtool --stats to count the jump_label sites it encounters.
+Now that objtool is able to rewrite jump_label instructions, have the
+compiler emit a JMP, such that it can decide on the optimal encoding,
+and set jump_entry::key bit1 to indicate that objtool should rewrite
+the instruction to a matching NOP.
+
+For x86_64-allyesconfig this gives:
+
+jl\     NOP     JMP
+short:  22997   124
+long:   30874   90
+
+IOW, we save (22997+124) * 3 bytes of kernel text in hotpaths.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- tools/objtool/check.c                   |   22 ++++++++++++++++++++--
- tools/objtool/include/objtool/objtool.h |    3 +++
- 2 files changed, 23 insertions(+), 2 deletions(-)
+ arch/x86/include/asm/jump_label.h |   18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
---- a/tools/objtool/check.c
-+++ b/tools/objtool/check.c
-@@ -1225,8 +1225,15 @@ static int handle_jump_alt(struct objtoo
- 			   struct instruction *orig_insn,
- 			   struct instruction **new_insn)
+--- a/arch/x86/include/asm/jump_label.h
++++ b/arch/x86/include/asm/jump_label.h
+@@ -28,6 +28,22 @@
+ 	_ASM_PTR "%c0 + %c1 - .\n\t"			\
+ 	".popsection \n\t"
+ 
++#ifdef CONFIG_STACK_VALIDATION
++
++static __always_inline bool arch_static_branch(struct static_key *key, bool branch)
++{
++	asm_volatile_goto("1:"
++		"jmp %l[l_yes] # objtool NOPs this \n\t"
++		JUMP_TABLE_ENTRY
++		: :  "i" (key), "i" (2 | branch) : : l_yes);
++
++	return false;
++l_yes:
++	return true;
++}
++
++#else
++
+ static __always_inline bool arch_static_branch(struct static_key * const key, const bool branch)
  {
--	if (orig_insn->type == INSN_NOP)
-+	if (orig_insn->type == INSN_NOP) {
-+do_nop:
-+		if (orig_insn->len == 2)
-+			file->jl_nop_short++;
-+		else
-+			file->jl_nop_long++;
-+
- 		return 0;
-+	}
- 
- 	if (orig_insn->type != INSN_JUMP_UNCONDITIONAL) {
- 		WARN_FUNC("unsupported instruction at jump label",
-@@ -1245,9 +1252,14 @@ static int handle_jump_alt(struct objtoo
- 			       orig_insn->offset, orig_insn->len,
- 			       arch_nop_insn(orig_insn->len));
- 		orig_insn->type = INSN_NOP;
--		return 0;
-+		goto do_nop;
- 	}
- 
-+	if (orig_insn->len == 2)
-+		file->jl_short++;
-+	else
-+		file->jl_long++;
-+
- 	*new_insn = list_next_entry(orig_insn, list);
- 	return 0;
+ 	asm_volatile_goto("1:"
+@@ -40,6 +56,8 @@ static __always_inline bool arch_static_
+ 	return true;
  }
-@@ -1328,6 +1340,12 @@ static int add_special_section_alts(stru
- 		free(special_alt);
- 	}
  
-+	if (stats) {
-+		printf("jl\\\tNOP\tJMP\n");
-+		printf("short:\t%ld\t%ld\n", file->jl_nop_short, file->jl_short);
-+		printf("long:\t%ld\t%ld\n", file->jl_nop_long, file->jl_long);
-+	}
++#endif /* STACK_VALIDATION */
 +
- out:
- 	return ret;
- }
---- a/tools/objtool/include/objtool/objtool.h
-+++ b/tools/objtool/include/objtool/objtool.h
-@@ -22,6 +22,9 @@ struct objtool_file {
- 	struct list_head static_call_list;
- 	struct list_head mcount_loc_list;
- 	bool ignore_unreachables, c_file, hints, rodata;
-+
-+	unsigned long jl_short, jl_long;
-+	unsigned long jl_nop_short, jl_nop_long;
- };
- 
- struct objtool_file *objtool_open_read(const char *_objname);
+ static __always_inline bool arch_static_branch_jump(struct static_key * const key, const bool branch)
+ {
+ 	asm_volatile_goto("1:"
 
 
