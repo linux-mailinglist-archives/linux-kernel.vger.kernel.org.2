@@ -2,100 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 719F93751D0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E47D3751D7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:54:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234281AbhEFJvA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:51:00 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:50993 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231194AbhEFJu7 (ORCPT
+        id S234296AbhEFJy6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:54:58 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:41868 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231194AbhEFJy4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:50:59 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailnew.nyi.internal (Postfix) with ESMTP id E2B19580722;
-        Thu,  6 May 2021 05:50:00 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Thu, 06 May 2021 05:50:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm3; bh=ZSvFMwP2scW534jrzgylOkXMM+D
-        rqeNkQQCfs8dEMTQ=; b=TcKzVnVACRyvMQcr0Jpo4kTVxHyvp3ZSRlzVpfpmPoZ
-        OrwNbHBm4HjlSXfA8In/HDqugJZbQFlCt/76ctzs2P24OCcTAAiZmdMLkQlsr4Uo
-        h4u8uZmAjL2guZekK74CFH4Kn/8JRPA10NVMP3/694q6yhGCWH8Y6C7v5yYA0RXV
-        DeznYaCuCDkGecJalBNRjeoJfVkL5aKakO/i3UW1jgNa6dhoYAq+uvOZiUH/Ce8L
-        YWNq15w0/ZkzhnNTsm4+6l+Ub7fkShAKbD1QIOVojsQgAZYrbcReCFWfcycNzn6E
-        Kv+82JziDZQCYApE+6ZMhXv0tKhbDutH2IN8RCfL/Ww==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=ZSvFMw
-        P2scW534jrzgylOkXMM+DrqeNkQQCfs8dEMTQ=; b=Z4FgGOKAMsiG0hn515iB9/
-        N4k1v0FpIZ3r+icG+gDnqw/mO2hXbrZd+nLdGPIK0YHeL0EfbmsYr33nAvbtP3vh
-        46T6qh2FppQdC//ndjjqqawmU84uEoWfIXA3kklzD1xURYPk1CgpiS8R4rE2pC1s
-        +c8k47v9DlNu5uBkwgP5qdpxGkkdM2YfskxR1yc13Gkx4iWUciu9nrpjjFpYqytN
-        jJMk/L05JZw7lgnZyROk59Abxj+h9SmiHNLnnDRit316X33xhxulhfWjgSSWCGnM
-        W9RJ6Eu/j+O4Cr0LpnTFCLG+5zWzkS8+d0hcr8w5xVsqfFtyY4wblCMfMlrhroBQ
-        ==
-X-ME-Sender: <xms:x7uTYNEhHygCf-wTl0MiEKz-NtJezo_qZq_3OI_2te-yQ9SLQJE7Mw>
-    <xme:x7uTYCVIRcAIXd2Gik-3CgvTEIA4GucEfXLq1Qbq33nxXhU-cT2X7cvURMi9LaHO6
-    ZfhT5ZRjQU36A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegtddgvddtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
-    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeevueehje
-    fgfffgiedvudekvdektdelleelgefhleejieeugeegveeuuddukedvteenucfkphepkeef
-    rdekiedrjeegrdeigeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrih
-    hlfhhrohhmpehgrhgvgheskhhrohgrhhdrtghomh
-X-ME-Proxy: <xmx:x7uTYPJNzavCrM8BMM9t8yZt4ccn1ClYZtwS1cQ5dl1YgV3UrcY06g>
-    <xmx:x7uTYDEIbZaUcHuSrJTSsdWXY9332S6Eel00AqxgbOGX5wo-l17tbQ>
-    <xmx:x7uTYDVHOEnicTkS6u_BCm_l6fDV2J71ieNf-2gH3jIr_zZLJ-nRUA>
-    <xmx:yLuTYAUMdGfspwgiK17gc1Kd0ZbN8AA6bQ8rXS_u5u_N-hV-gA4RlQ>
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Thu,  6 May 2021 05:49:59 -0400 (EDT)
-Date:   Thu, 6 May 2021 11:49:57 +0200
-From:   Greg KH <greg@kroah.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     "Martin K. Petersen" <martin.petersen@oracle.com>,
-        stable@vger.kernel.org, Sasha Levin <sashal@kernel.org>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: handling Fixes tags on rebased trees
-Message-ID: <YJO7xTZ6GKsvY3X4@kroah.com>
-References: <20210504184635.GT21598@kadam>
- <yq1h7jijnxu.fsf@ca-mkp.ca.oracle.com>
- <20210506083905.GB1922@kadam>
+        Thu, 6 May 2021 05:54:56 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-138-SkAPRRxqPq-oJXvQAjJ0Rg-1; Thu, 06 May 2021 10:53:55 +0100
+X-MC-Unique: SkAPRRxqPq-oJXvQAjJ0Rg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Thu, 6 May 2021 10:53:53 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Thu, 6 May 2021 10:53:53 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Andy Lutomirski' <luto@kernel.org>,
+        'Simon Marchi' <simon.marchi@polymtl.ca>
+CC:     'Stefan Metzmacher' <metze@samba.org>,
+        'Borislav Petkov' <bp@alien8.de>,
+        'Peter Zijlstra' <peterz@infradead.org>,
+        'Linus Torvalds' <torvalds@linux-foundation.org>,
+        'Thomas Gleixner' <tglx@linutronix.de>,
+        'Jens Axboe' <axboe@kernel.dk>,
+        'Linux Kernel Mailing List' <linux-kernel@vger.kernel.org>,
+        'io-uring' <io-uring@vger.kernel.org>,
+        "'the arch/x86 maintainers'" <x86@kernel.org>,
+        "'linux-toolchains@vger.kernel.org'" 
+        <linux-toolchains@vger.kernel.org>
+Subject: RE: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+Thread-Topic: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
+ registers for io_threads
+Thread-Index: AQHXQfuSElK5zn4+eUeudkt5GoEV9qrWNZZwgAABpwA=
+Date:   Thu, 6 May 2021 09:53:53 +0000
+Message-ID: <d75fe3d7c898497e803658e0053c2701@AcuMS.aculab.com>
+References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
+ <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
+ <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
+ <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net> <YJFptPyDtow//5LU@zn.tnic>
+ <044d0bad-6888-a211-e1d3-159a4aeed52d@polymtl.ca>
+ <932d65e1-5a8f-c86a-8673-34f0e006c27f@samba.org>
+ <30e248aa-534d-37ff-2954-a70a454391fc@polymtl.ca>
+ <CALCETrUF5M+Qw+RfY8subR7nzmpMyFsE3NHSAPoMVWMz6_hr-w@mail.gmail.com>
+ <f6f7e559d6454f56a009190649bc745a@AcuMS.aculab.com>
+In-Reply-To: <f6f7e559d6454f56a009190649bc745a@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506083905.GB1922@kadam>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 12:39:41PM +0300, Dan Carpenter wrote:
-> It turns that rebasing without updating the Fixes tag is sort of common.
-> I wrote a script to find the invalid tags from the last month and have
-> include the output below.  Two of the patches are in -mm and presumably
-> Andrew is going fold the Fixes commit into the original commit when
-> these are sent upstream so those aren't a real issue.
-> 
-> We could probably try catching rebased trees when they are merged in
-> linux-next?  I'll play with this and see if it works.  But we're going
-> to end up missing some.  Maybe we need a file with a mapping of rebased
-> hashes which has something like:
-> 
-> 28252e08649f 0df68ce4c26a ("iscv: Prepare ptdump for vm layout dynamic addresses")
-> 42ae341756da d338ae6ff2d8 ("userfaultfd: add minor fault registration mode")
+PiA+IChUbyBhdm9pZCBjb25mdXNpb24sIHRoaXMgaXMgbm90IGEgdW5pdmVyc2FsIHByb3BlcnR5
+IG9mIExpbnV4LiAgYXJtNjQNCj4gPiBhbmQgYXJtMzIgdGFza3Mgb24gYW4gYXJtNjQgTGludXgg
+aG9zdCBhcmUgZGlmZmVyZW50IGFuZCBjYW5ub3QNCj4gPiBhcmJpdHJhcmlseSBzd2l0Y2ggbW9k
+ZXMuKQ0KPiANCj4gQWx0aG91Z2ggdGhlcmUgYXJlIHBhdGNoZXMgbHVya2luZyB0byBjaGFuZ2Ug
+dGhhdC4NCj4gKG5vdCBmcm9tIG1lKS4NCg0KQWN0dWFsbHkgdGhleSBtYXkgYmUganVzdCB0byBh
+bGxvdyA2NGJpdCB0YXNrcyBtYWtlIDMyYml0IHN5c3RlbSBjYWxscy4NClRoZSBjb2RlIGlzIGFs
+bW9zdCBjZXJ0YWlubHkgc3RpbGwgNTRiaXQuDQoNCglEYXZpZA0KDQotDQpSZWdpc3RlcmVkIEFk
+ZHJlc3MgTGFrZXNpZGUsIEJyYW1sZXkgUm9hZCwgTW91bnQgRmFybSwgTWlsdG9uIEtleW5lcywg
+TUsxIDFQVCwgVUsNClJlZ2lzdHJhdGlvbiBObzogMTM5NzM4NiAoV2FsZXMpDQo=
 
-I thought Stephen's scripts already catch the "this commit isn't in the
-tree" issue?  I use them when I take patches, so that logic came from
-somewhere :)
-
-thanks,
-
-greg k-h
