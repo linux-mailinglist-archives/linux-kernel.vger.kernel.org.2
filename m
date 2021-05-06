@@ -2,64 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B2523754C1
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:31:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CF93754C4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:31:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234104AbhEFNcT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:32:19 -0400
-Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44608 "EHLO
-        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S233461AbhEFNcS (ORCPT
+        id S233964AbhEFNct (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:32:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34218 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233461AbhEFNcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:32:18 -0400
-Received: from cwcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
-        (authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 146DV3kH003361
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 6 May 2021 09:31:04 -0400
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-        id 72CD515C39BD; Thu,  6 May 2021 09:31:03 -0400 (EDT)
-Date:   Thu, 6 May 2021 09:31:03 -0400
-From:   "Theodore Ts'o" <tytso@mit.edu>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Carlos Bilbao <bilbao@vt.edu>, corbet@lwn.net, hdegoede@redhat.com,
-        Jonathan.Cameron@huawei.com, gregkh@linuxfoundation.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] Fixed typos in all directories of Documentation/ABI/
-Message-ID: <YJPvl6Si9Xi0w5tG@mit.edu>
-References: <2219636.ElGaqSPkdT@iron-maiden>
- <20210506084237.1f8363ba@coco.lan>
+        Thu, 6 May 2021 09:32:47 -0400
+Received: from mail-ot1-x32d.google.com (mail-ot1-x32d.google.com [IPv6:2607:f8b0:4864:20::32d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8F07EC061574;
+        Thu,  6 May 2021 06:31:49 -0700 (PDT)
+Received: by mail-ot1-x32d.google.com with SMTP id b5-20020a9d5d050000b02902a5883b0f4bso4876014oti.2;
+        Thu, 06 May 2021 06:31:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=P8vTm6LFqOcXYbhWLI03aqqmDAB5t4QuyZ3aOZMng/o=;
+        b=MlWTQgLoMleT38daPfFFasX49qETqxKEwfRtaZstPxvxqrskQRJVkM/PfcoUm52soD
+         uCXubnJ/Wh/5ccf5+zoZLz2bJrOXq3mQssl2YehCnUngAdqFz0movjpJuT1pPUyzlGSj
+         gXK6NhtU55kGlsFAoUlEWOR67KClU0XXkoFz029RTk4IUw5GM7EXeL7bc6cvtAgxK1Uz
+         NS4K4+enBwRzXtHr3BTDERDzs5JfYN08MYGhKUuNyLCqnXA2C2ftZrO1rysZEeJ7u6+h
+         JwGu6If0iEeh7cI9hynMqfkGm6vcte/u3VlouILBjsi1RPqotYB5vtCl8GcrIGd+d0Gn
+         MRSg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=P8vTm6LFqOcXYbhWLI03aqqmDAB5t4QuyZ3aOZMng/o=;
+        b=d0RjTpcwFpNAKilV0o17Y9g33vpG3ZRml78qi2GGKRL3SomCFxbcN0LyjJNSWrLbYb
+         hmBjvbTBTaS+6DMokA69SyA/znqI5Ourc38JqeGFW0NJ04ur9L8WQkBXSMBJ/xwajd2R
+         H5fzyKixBft4Xd8gpxRPg7UBtgsNAjAifG5f6Su2smDpYxmX3Bw2B5TMdVYj7ecvHFJF
+         o+fNyYoL4HnxSSjpfp8eWKXvAL0QTyZvXtVeKmERHgAfDWdBH2qnQTLYcJOVDjIm/5d5
+         YvWx+aF/zaSlbBZ2KxGCNCCy1xbTrlKNPcCZIX+qNscpDkj9W1noWxjaSmTTOcrtNNAp
+         wt4w==
+X-Gm-Message-State: AOAM533637T4B40FbWIMdlAoUwbmUqQrLfmjimr4z6CMG3WDF7RJloPS
+        EYCtQXU9YWsZcfUgKnQ8f/c+zDKnJSc=
+X-Google-Smtp-Source: ABdhPJxAmftdjBKI8QMXjEz6LkVd3q9l9N0DMepklvWPnSdSfSu/udWSsKtkxcxKEMtDPHG+IrwzCA==
+X-Received: by 2002:a9d:4115:: with SMTP id o21mr3588897ote.52.1620307909043;
+        Thu, 06 May 2021 06:31:49 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 65sm558061otj.17.2021.05.06.06.31.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 06:31:48 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Jonathan Cameron <jic23@kernel.org>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Guenter Roeck <linux@roeck-us.net>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: [PATCH] iio: bme680_spi: Remove ACPI support
+Date:   Thu,  6 May 2021 06:31:45 -0700
+Message-Id: <20210506133145.2266604-1-linux@roeck-us.net>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506084237.1f8363ba@coco.lan>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 08:42:37AM +0200, Mauro Carvalho Chehab wrote:
->  
-> > diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> > index ef00fada2efb..bfd017204563 100644
-> > --- a/Documentation/ABI/testing/sysfs-bus-pci
-> > +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> > @@ -139,7 +139,7 @@ Description:
-> >  		binary file containing the Vital Product Data for the
-> >  		device.  It should follow the VPD format defined in
-> >  		PCI Specification 2.1 or 2.2, but users should consider
-> > -		that some devices may have malformatted data.  If the
-> > +		that some devices may have malformed data.  If the
-> >  		underlying VPD has a writable section then the
-> >  		corresponding section of this file will be writable.
-> >  
-> 
-> (not a native English speaker here)
-> 
-> I'm in doubt about this one. The description is talking about the
-> "VPD format".
+BME0680 is not an official ACPI ID, so let's remove it before someone
+starts using it.
 
-Maybe "badly formatted" or to be more clear, "some devices may be
-reported incorrectly forrmatted data"?
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Hans de Goede <hdegoede@redhat.com>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+---
+ drivers/iio/chemical/bme680_spi.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-						- Ted
+diff --git a/drivers/iio/chemical/bme680_spi.c b/drivers/iio/chemical/bme680_spi.c
+index 6f56ad48cc40..cc579a7ac5ce 100644
+--- a/drivers/iio/chemical/bme680_spi.c
++++ b/drivers/iio/chemical/bme680_spi.c
+@@ -4,7 +4,6 @@
+  *
+  * Copyright (C) 2018 Himanshu Jha <himanshujha199640@gmail.com>
+  */
+-#include <linux/acpi.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+ #include <linux/regmap.h>
+@@ -145,12 +144,6 @@ static const struct spi_device_id bme680_spi_id[] = {
+ };
+ MODULE_DEVICE_TABLE(spi, bme680_spi_id);
+ 
+-static const struct acpi_device_id bme680_acpi_match[] = {
+-	{"BME0680", 0},
+-	{},
+-};
+-MODULE_DEVICE_TABLE(acpi, bme680_acpi_match);
+-
+ static const struct of_device_id bme680_of_spi_match[] = {
+ 	{ .compatible = "bosch,bme680", },
+ 	{},
+@@ -160,7 +153,6 @@ MODULE_DEVICE_TABLE(of, bme680_of_spi_match);
+ static struct spi_driver bme680_spi_driver = {
+ 	.driver = {
+ 		.name			= "bme680_spi",
+-		.acpi_match_table	= ACPI_PTR(bme680_acpi_match),
+ 		.of_match_table		= bme680_of_spi_match,
+ 	},
+ 	.probe = bme680_spi_probe,
+-- 
+2.25.1
+
