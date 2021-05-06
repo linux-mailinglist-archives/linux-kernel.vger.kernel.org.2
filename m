@@ -2,84 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E36337542C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:54:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AE9A37542D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:54:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232777AbhEFMzA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:55:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53838 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229622AbhEFMy7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:54:59 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C8DEC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 05:54:00 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id e12so6901583ljn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 05:54:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d+OPQctMT5v0HvXEs0KL3xl4z57JF9IlElnIypbIafY=;
-        b=MdnUPYwzkZPQjM5OIgcsszZlz/F/h+pGFm2t9OL+0ov7BsfZ1hS1jLjDLMxDtn9O2f
-         BlEDl91hDASPTzTf2BPF6Eoq4rdB1K2cwNiUfiFAEFO+DOjeqC96sM65xiAJXtSqj0YP
-         oi6h+ipCV6YG+cxzHUVhZijDusqMUAyWOl539L/2vIyretdReLPTIttMM+PccVAjbscM
-         sA4F1I46sBr+taK3W5lQDClb4IAV8cRsKskb0CFOZq5Du3tKF6zpay/zzczJpoETBnfj
-         RIaTlWujAtqpvW2qQX+gIa8/WvdrZZwWQoSxtViSRP4Wu2oULsxoSRKHqfcFOY8sliJs
-         nRHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d+OPQctMT5v0HvXEs0KL3xl4z57JF9IlElnIypbIafY=;
-        b=MbJ2qe06WuwF8Odh+0JVOdsDIFvOJeadax4Dzw4/vXt8zfDDb78z1RIeK4qHACsuGP
-         vuhoalIOwKyVF4KM8X8JgYoVuPrVz6jaN4zKcsRoJEJytfhFf5q22O6uk54Gnd20lYJp
-         9dMctf0EX4dn2Xf/YWgXbH32Swru66cW4UQPmVE6cw7pBExIQzl5LH96B710yPJwYuqp
-         lt4vdBSosIrWtuoD+xPqrZeemiZWULHzl5UQcaymckG0qr7QFjaydAR2CvfwLUSA0CoF
-         lt8ZmNY49H4E0Pd1hFcJZuh3joJomKyt9sLdrtTYmz7ZlsU29ZjnQDNYHluu8g/CgJHn
-         qaAA==
-X-Gm-Message-State: AOAM532hkBL/SYDmVckgG4QgYfh3LtO0V08EwgiYjzYyZhnkpA2naYbs
-        Yx2ASDGw+1YQKkiv7sOC6obQZNAstIRTk6tS1ZvQGw==
-X-Google-Smtp-Source: ABdhPJwdOYHWiEjJghr3gE+4URcaew1fSeNhWpBS3+NVycFSi/NI/vSXe6Kw3TPGd35JtJGnHS4z1TSO+6fxNN+mrB4=
-X-Received: by 2002:a2e:a54c:: with SMTP id e12mr3257006ljn.326.1620305638900;
- Thu, 06 May 2021 05:53:58 -0700 (PDT)
+        id S232871AbhEFMzM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:55:12 -0400
+Received: from mga05.intel.com ([192.55.52.43]:58162 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229622AbhEFMzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 08:55:08 -0400
+IronPort-SDR: Mdol3zQXvqj/6JZgP2blUB83pwlKihDjuVY8jz79eNdXhKk1TwKHYLRoLHjkVOkzurspzV1wW3
+ 5myiGso0yswQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="283904167"
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="283904167"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 05:54:08 -0700
+IronPort-SDR: FeRQh2OsmYOUcKOhZDmRgF8y0Ydytfdb0EWGbxxLKjqdy0rQT9JnZYMhKouTlMiXzMgcJwMqt3
+ BGkjup2pxlKQ==
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="434336194"
+Received: from hongyuni-mobl1.ccr.corp.intel.com (HELO [10.254.214.82]) ([10.254.214.82])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 05:54:05 -0700
+Subject: Re: [PATCH 00/19] sched: Core Scheduling
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     joel@joelfernandes.org, chris.hyser@oracle.com, joshdon@google.com,
+        mingo@kernel.org, vincent.guittot@linaro.org,
+        valentin.schneider@arm.com, mgorman@suse.de,
+        linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        "Li, Aubrey" <aubrey.li@linux.intel.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>
+References: <20210422120459.447350175@infradead.org>
+ <a49ea23a-998e-2282-4c93-5c6c94f2c28d@linux.intel.com>
+ <YJPFA/s44ChuGV9+@hirez.programming.kicks-ass.net>
+From:   "Ning, Hongyu" <hongyu.ning@linux.intel.com>
+Message-ID: <d9f72764-2766-d663-4343-a7d5d0a9145f@linux.intel.com>
+Date:   Thu, 6 May 2021 20:53:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20210504161222.101536-1-ulf.hansson@linaro.org> <20210504161222.101536-5-ulf.hansson@linaro.org>
-In-Reply-To: <20210504161222.101536-5-ulf.hansson@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 6 May 2021 14:53:47 +0200
-Message-ID: <CACRpkdZ_5v0fe9YzZvhRvRovYd1CWTBX3X3uSPc3GeN6ygZxaw@mail.gmail.com>
-Subject: Re: [PATCH 04/11] mmc: core: Extend re-use of __mmc_poll_for_busy()
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <YJPFA/s44ChuGV9+@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 6:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-> Via __mmc_poll_for_busy() we end up polling with the ->card_busy() host ops
-> or by sending the CMD13. To allow polling of different types, which is
-> needed to support a few new SD card features, let's rework the code around
-> __mmc_poll_for_busy() to make it more generic.
->
-> More precisely, let __mmc_poll_for_busy() take a pointer to a callback
-> function as in-parameter, which it calls to poll for busy state completion.
-> Additionally, let's share __mmc_poll_for_busy() to allow it to be re-used
-> outside of mmc_ops.c. Subsequent changes will make use of it.
->
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+On 2021/5/6 18:29, Peter Zijlstra wrote:
+> On Fri, Apr 30, 2021 at 02:47:00PM +0800, Ning, Hongyu wrote:
+>> Adding sysbench/uperf/wis performance results for reference:
+>>
+>> - kernel under test:
+>> 	-- above patchset of core-scheduling + local fix for softlockup issue: https://lore.kernel.org/lkml/5c289c5a-a120-a1d0-ca89-2724a1445fe8@linux.intel.com/
+>> 	-- coresched_v10 kernel source: https://github.com/digitalocean/linux-coresched/commits/coresched/v10-v5.10.y
+> 
+> Shall I summarize all this as:
+> 
+> Tested-by: Hongyu Ning <hongyu.ning@linux.intel.com>
+> 
+> ?
+> 
 
-Yours,
-Linus Walleij
+Yes, that would be great.
+
+Regards,
+Hongyu
