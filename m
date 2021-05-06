@@ -2,154 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1150C3751A6
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:38:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22E473751A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:39:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233847AbhEFJju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:39:50 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40703 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S232268AbhEFJjs (ORCPT
+        id S234092AbhEFJke (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:40:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231206AbhEFJkd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:39:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620293930;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=p52RRVDShx6NwBL9aQkjgj+5ixdcF28Fa0Bi2oa7Re8=;
-        b=Y74+q95l+avRgtjVgovZ1GVmy81xk7ftI5l543OAkCFY+3V4hjzyaj0TIz72oKI85dajGt
-        7DVYSuuDVEHy/i8RuoLt+Z2mW5GG+7izqlmcmexvxsLZz51lQmIN1NTHJGlKmQj+4gxWWk
-        T9FsI5lcv+nAXQSRLIObGNtdsfk7bCM=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-500-pOzWRkK4OFKYLDv66KN6gQ-1; Thu, 06 May 2021 05:38:49 -0400
-X-MC-Unique: pOzWRkK4OFKYLDv66KN6gQ-1
-Received: by mail-ed1-f69.google.com with SMTP id d13-20020a056402144db0290387e63c95d8so2344119edx.11
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 02:38:48 -0700 (PDT)
+        Thu, 6 May 2021 05:40:33 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0F8FC06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 02:39:34 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id n2so7298879ejy.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 02:39:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=lSJfukBNYGaR57fjMkjDjV2hADrBhZIekKAIeFVmjPU=;
+        b=UxhNagcdu2V+GDeis2IeCglIznQHfqWoSqZkH+jUJ9BR/cEL+qNvR121e1xvnOVJi5
+         NSXjpZ5PY8lMdZtHyX8yRIuEZP8OktJVSJP95m9WI8o3gbmPvxCh9T8xkAUUcudkwRPp
+         863q08U3Xqrhwmk0lbh6iijnKy5si28jLuTKs6zvYorjd3HMWqjikHL6Xf9e7mzwgWoq
+         4xwE6nX5L/w67AaZcEo18poyzYfdZx4ZRdNxVIWUDHRcFdvTkhGA6EjoRQfvoXMK+9Mt
+         FS0TJ1ulkmGlGy8URPLNcHre1g0vM+cKMYbk1wFGCw0iB1j/FtrkG+aT8SDFrPN72Z3B
+         ysCg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=p52RRVDShx6NwBL9aQkjgj+5ixdcF28Fa0Bi2oa7Re8=;
-        b=kCYLAj3BOjQulagHMjNRpY3U5p/ox9Xoqkoazo9kARlN9o2ziBM8XloFYQ9ZnmBdDl
-         JbWByGmdUO5dYzYislRxFMeky2lhoggVUPzLeARuViuGR0OhIJ7Mj8/+XA+ac13arOq+
-         boqRjw5a/cRcxegmDpkXSl/kJb3Qp4uMu0dZ4u0ya3HczYPC0iOW1l4UrbDnRwKcf8yh
-         A6rG3v/HGjUet6L6rcWgFW4x9T/W+WoL/gBuWovTf35zT+7dSNRR+owokhIeuJBJ4Jdg
-         jqbft0cMG6fO0uRJ/u2vE9rU5ue54rqIdItx9Z4PIlKoH3yduqaDvh1Ytv4IMN25yRmP
-         Grww==
-X-Gm-Message-State: AOAM5300IFLamX95LHPFC4yFpWCDDTTA1GvzCl/7U2to5MAOIqFCsvOj
-        tOCl2xlJsxn9nlPYFDIhzVVlcwja+p0ZaLKNVR3+SnoQDboIHBolgZMYHpltrpDuJs5+6YgYxfT
-        vJyVdkLdlm6HLvnnSR2TBQV4P
-X-Received: by 2002:aa7:d84e:: with SMTP id f14mr4064238eds.220.1620293927881;
-        Thu, 06 May 2021 02:38:47 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx+4qyVOHI06BR7s1AYqjMSV9ZbPDO6ac3yUuTtnTY2Clx45ALcLve0fnR6T0PF02cdmOccWQ==
-X-Received: by 2002:aa7:d84e:: with SMTP id f14mr4064221eds.220.1620293927722;
-        Thu, 06 May 2021 02:38:47 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id e4sm1015832ejh.98.2021.05.06.02.38.47
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 02:38:47 -0700 (PDT)
-Subject: Re: [PATCH v7 1/7] MAINTAINERS: Add Advantech AHC1EC0 embedded
- controller entry
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Campion Kang <campion.kang@advantech.com.tw>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        AceLan Kao <chia-lin.kao@canonical.com>
-References: <20210506081619.2443-1-campion.kang@advantech.com.tw>
- <6b86bd36-b934-c204-9e56-079ab8cd4b54@redhat.com>
- <CAHp75VdPmkKTf_fbjAjrD3GC1ZZLuYsTJa0QtA3tuYtWwCgPMQ@mail.gmail.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <cf181436-152c-7cd8-76cf-350705cd2bcb@redhat.com>
-Date:   Thu, 6 May 2021 11:38:46 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=lSJfukBNYGaR57fjMkjDjV2hADrBhZIekKAIeFVmjPU=;
+        b=IvAmS29N8dWxOaCLAzGLJJti1DTx9z2vxc0omYm3jdpDWoumqjuwoeWPbbHB4kCPTc
+         y/n5UqHgIBwb8z+helmIvYEcCzumUm9SgTLoyRK5kHahWuhGQE4UF9RGQrAQZBAkJLaO
+         9p5ndz82OQfPOMgwu8aT/5kgtUraGwUGrMM0Morwb+pTAVywn8AWCXaTqb4CBOHW24wf
+         TjALCGJ4mR7Ctf/b7JSsgEdwKVas4EG5HFLyoPsumL/kStl8pcF4E2INVs8XyskDXR2K
+         1oJX04W++Wsx+k7A2+llzPOs9cjKb0exY0WGyuVhGUrkpR3+Q45osrtYi57v9bdOGpzk
+         YT2g==
+X-Gm-Message-State: AOAM5312XUKY2vbDRj4i4gE8gsjvvxHgmnoaZ8XvXqVirJtXoRxTcfbT
+        UXiff9in90svO9XH7/RQryqiyGr4Ed8ZQjyL/aywkg==
+X-Google-Smtp-Source: ABdhPJxsy3zOr7hbZSdPe1CwK0WxFZh1IZfDCLdBcZvEIJDfPe4vkfrj6tpGplne1z26QvlF73VQKaAYtl4bU/usmV8=
+X-Received: by 2002:a17:906:4a8c:: with SMTP id x12mr3375585eju.133.1620293973119;
+ Thu, 06 May 2021 02:39:33 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <CAHp75VdPmkKTf_fbjAjrD3GC1ZZLuYsTJa0QtA3tuYtWwCgPMQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210505120503.781531508@linuxfoundation.org>
+In-Reply-To: <20210505120503.781531508@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 6 May 2021 15:09:21 +0530
+Message-ID: <CA+G9fYtROOt8A4hbcrm_s=pkS8s_=aEMEXhYaJVwbYjCW-AzhQ@mail.gmail.com>
+Subject: Re: [PATCH 4.19 00/15] 4.19.190-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Wed, 5 May 2021 at 17:35, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 4.19.190 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 07 May 2021 12:04:54 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-=
+4.19.190-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-4.19.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-On 5/6/21 11:23 AM, Andy Shevchenko wrote:
-> On Thu, May 6, 2021 at 11:48 AM Hans de Goede <hdegoede@redhat.com> wrote:
->> I'm replying here since this series has no cover-letter, for
->> the next version for a series touching so many different
->> sub-systems it would be good to start with a cover-letter
->> providing some background info on the series.
->>
->> I see this is binding to an ACPI device, yet it is also using
->> devicetree bindings and properties.
->>
->> So I take it this means that your ACPI tables are using the
->> optional capability of embedded device-tree blobs inside the
->> ACPI tables ?
->>
->> That is an unusual combination on a x86 device, note it is
->> not wrong
-> 
-> It's actually not okay. We have agreed at some point with DT people,
-> that ACPI should not use non-native variants of natively supported
-> things. For example, it shouldn't use "interrupt" property for IOxAPIC
-> (or xIC) provided interrupts, rather Interrupt() has to be used and so
-> on.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-Right, but that is not the case here, they are using 2 device-tree
-properties (1), from patch 3/7:
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-+properties:
-+  compatible:
-+    const: advantech,ahc1ec0
-+
-+  advantech,hwmon-profile:
-+    description:
-+      The number of sub-devices specified in the platform. Defines for the
-+      hwmon profiles can found in dt-bindings/mfd/ahc1ec0-dt.
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    maxItems: 1
-+
-+  advantech,has-watchdog:
-+    description:
-+      Some implementations of the EC include a watchdog used to monitor the
-+      system. This boolean flag is used to specify whether this watchdog is
-+      present or not. Default is true, otherwise set to false.
-+    type: boolean
+## Build
+* kernel: 4.19.190-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-4.19.y
+* git commit: 5a3ba2f90f8789162a03e07a37224bab4c643d1d
+* git describe: v4.19.189-16-g5a3ba2f90f87
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-4.19.y/build/v4.19=
+.189-16-g5a3ba2f90f87
 
+## No regressions (compared to v4.19.189-2-g1bd8f1c8ad2f)
 
->> but AFAIK you are the first to do this on x86.
-> 
-> No, not the first. Once Intel tried to invent the pin control
-> configuration and muxing properties in ACPI, it was luckily rejected
-> (ACPI 6.x OTOH provides a set of special resources for that).
-> 
-> So, NAK from me, *if* it's really the case. ACPI tables must be revisited.
+## No fixes (compared to v4.19.189-2-g1bd8f1c8ad2f)
 
-AFAIK Advantech are not defining things for which an ACPI standard exists,
-although these 2 properties might just as well may be 2 simple ACPI integer
-methods, which would actually make things a bit simpler (.e.g it would
-allow dropping patch 2/7 and 3/7 from the set).
+## Test result summary
+ total: 68631, pass: 54812, fail: 2758, skip: 10808, xfail: 253,
 
-Campion, any reason why you went this route; and can the ACPI tables
-still be changed? 
+## Build Summary
+* arm: 96 total, 96 passed, 0 failed
+* arm64: 24 total, 24 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 13 total, 13 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 39 total, 39 passed, 0 failed
+* s390: 9 total, 9 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 14 total, 14 passed, 0 failed
 
-Regards,
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
 
-Hans
-
+--
+Linaro LKFT
+https://lkft.linaro.org
