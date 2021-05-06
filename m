@@ -2,87 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CC33375839
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7836D375842
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:11:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235846AbhEFQJd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:09:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235176AbhEFQJa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:09:30 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24D33C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 09:08:32 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <l.stach@pengutronix.de>)
-        id 1legY7-0002z8-8C; Thu, 06 May 2021 18:08:27 +0200
-Message-ID: <7900502879b346e18727f956965ace34a146c0f1.camel@pengutronix.de>
-Subject: Re: [RESEND v4 1/2] dt-bindings: imx6q-pcie: add one regulator used
- to power up pcie phy
-From:   Lucas Stach <l.stach@pengutronix.de>
-To:     lorenzo.pieralisi@arm.com
-Cc:     linux-pci@vger.kernel.org, linux-imx@nxp.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        kernel@pengutronix.de, Richard Zhu <hongxing.zhu@nxp.com>,
-        andrew.smirnov@gmail.com, shawnguo@kernel.org, kw@linux.com,
-        bhelgaas@google.com, stefan@agner.ch
-Date:   Thu, 06 May 2021 18:08:24 +0200
-In-Reply-To: <1617091701-6444-2-git-send-email-hongxing.zhu@nxp.com>
-References: <1617091701-6444-1-git-send-email-hongxing.zhu@nxp.com>
-         <1617091701-6444-2-git-send-email-hongxing.zhu@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+        id S235834AbhEFQMl convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 May 2021 12:12:41 -0400
+Received: from foss.arm.com ([217.140.110.172]:37258 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235616AbhEFQMa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 12:12:30 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id D67FC31B;
+        Thu,  6 May 2021 09:11:30 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1C21C3F718;
+        Thu,  6 May 2021 09:11:27 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Oliver Sang <oliver.sang@intel.com>
+Cc:     0day robot <lkp@intel.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        ying.huang@intel.com, feng.tang@intel.com, zhengjun.xing@intel.com,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>, aubrey.li@linux.intel.com,
+        yu.c.chen@intel.com, Mel Gorman <mgorman@suse.de>
+Subject: Re: [sched/fair]  38ac256d1c:  stress-ng.vm-segv.ops_per_sec -13.8% regression
+In-Reply-To: <87k0omxe6w.mognet@arm.com>
+References: <20210414052151.GB21236@xsang-OptiPlex-9020> <87im4on5u5.mognet@arm.com> <20210421032022.GA13430@xsang-OptiPlex-9020> <87bla8ue3e.mognet@arm.com> <20210422074742.GE31382@xsang-OptiPlex-9020> <87wnsutzi9.mognet@arm.com> <87mttqt5jc.mognet@arm.com> <87k0omxe6w.mognet@arm.com>
+Date:   Thu, 06 May 2021 17:11:20 +0100
+Message-ID: <871rajkfkn.mognet@arm.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: l.stach@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lorenzo,
+On 28/04/21 23:00, Valentin Schneider wrote:
+> As far as I can tell, the culprit is the loss of LBF_SOME_PINNED. By some
+> happy accident, the load balancer repeatedly iterates over PCPU kthreads,
+> sets LBF_SOME_PINNED and causes a group to be classified as group_imbalanced
+> in a later load-balance. This, in turn, forces a 1-task pull, and repeating
+> this pattern ~25 times a sec ends up increasing CPU utilization by ~5% over the
+> span of the benchmark.
 
-have those two patches fallen through some crack? AFAICS they are gone
-from patchwork, but I also can't find them in any branch in the usual
-git repos.
+So this is where I got to:
 
-Regards,
-Lucas
+Because pcpu kthreads run periodically, they sometimes get iterated over by the
+periodic load-balance and can cause LBF_SOME_PINNED. This can lead to setting
 
-Am Dienstag, dem 30.03.2021 um 16:08 +0800 schrieb Richard Zhu:
-> Both 1.8v and 3.3v power supplies can be used by i.MX8MQ PCIe PHY.
-> In default, the PCIE_VPH voltage is suggested to be 1.8v refer to data
-> sheet. When PCIE_VPH is supplied by 3.3v in the HW schematic design,
-> the VREG_BYPASS bits of GPR registers should be cleared from default
-> value 1b'1 to 1b'0. Thus, the internal 3v3 to 1v8 translator would be
-> turned on.
-> 
-> Signed-off-by: Richard Zhu <hongxing.zhu@nxp.com>
-> Reviewed-by: Lucas Stach <l.stach@pengutronix.de>
-> ---
->  Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> index de4b2baf91e8..d8971ab99274 100644
-> --- a/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> +++ b/Documentation/devicetree/bindings/pci/fsl,imx6q-pcie.txt
-> @@ -38,6 +38,9 @@ Optional properties:
->    The regulator will be enabled when initializing the PCIe host and
->    disabled either as part of the init process or when shutting down the
->    host.
-> +- vph-supply: Should specify the regulator in charge of VPH one of the three
-> +  PCIe PHY powers. This regulator can be supplied by both 1.8v and 3.3v voltage
-> +  supplies.
->  
-> 
->  Additional required properties for imx6sx-pcie:
->  - clock names: Must include the following additional entries:
+  env->sd->parent->sg->sgc->imbalance
+
+which may cause later load balance attempts to classify the designated group
+span as group_imbalanced. Note that this will affect periodic load balance
+*and* fork/exec balance.
 
 
+On a 2-node system with SMT, MC and NUMA topology levels, this means that
+load-balance at MC level will periodically set LBF_SOME_PINNED, opening a
+window where any subsequent fork() issued on that node will see
+find_idlest_cpu() being biased towards the remote node (find_idlest_cpu()
+tries to minimize group_type, and group_imbalanced is the second highest).
+In the benchmark's case, the NUMA groups are only ever classified as
+group_has_spare, making this a hard bias.
+
+Digging down into find_idlest_cpu(), this periodic bias seems to act as an
+override to allow_numa_imbalance(): the benchmark spawns 6 stressors which
+AFAICT each spawn a child, so that's at most 12 total runnable tasks. In
+this particular case, the 25% domain size threshold of
+allow_numa_imbalance() maps to 16, so the condition is pretty much always
+true (confirmed via tracing).
+
+On this particular machine (dual-socket Xeon Gold 5120 @ 2.20GHz, 64 CPUs)
+with this particular benchmark this seems to happen for ~1% of forks, but
+causes a performance improvement between of 5% to 13%. I'm not exactly sure
+on the why, but I suspect that the tasks having a very short runtime (avg
+6µs) means fork-time balance is the only real opportunity for them to move
+to a different NUMA node.
+
+One could argue the benchmark itself gets what it deserves since forking ad
+nauseam isn't such a great idea [1], and perhaps it should pin the
+stressors to a single NUMA node. I did try to make allow_numa_imbalance()
+"smarter", but couldn't find any winning formula. Adding to this the fact
+that this regression isn't reproducible on a lot of systems (I got either
+noise or improvements on all the arm64 systems I tried), so I'm somewhat
+stumped TBH.
+
+[1]: Unless you're trying to summon Slaanesh
