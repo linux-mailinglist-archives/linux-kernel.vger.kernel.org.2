@@ -2,201 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EFD37540F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:48:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EE83E375415
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:49:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232357AbhEFMs6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:48:58 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17590 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231673AbhEFMs4 (ORCPT
+        id S230348AbhEFMuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:50:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52778 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229584AbhEFMuU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:48:56 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FbYFr4TdPz1BJCs;
-        Thu,  6 May 2021 20:45:20 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 6 May 2021 20:47:52 +0800
-Subject: Re: arm32: panic in move_freepages (Was [PATCH v2 0/4] arm64: drop
- pfn_valid_within() and simplify pfn_valid())
-To:     Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Mike Rapoport" <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <YIet5X7lgygD9rpZ@kernel.org>
- <259d14df-a713-72e7-4ccb-c06a8ee31e13@huawei.com>
- <YIj5zcbHBHt7CC8B@kernel.org>
- <6ad2956c-70ae-c423-ed7d-88e94c88060f@huawei.com>
- <YIpY8TXCSc7Lfa2Z@kernel.org>
- <0cb013e4-1157-f2fa-96ec-e69e60833f72@huawei.com>
- <YIvTM5Yqit8AB4W8@kernel.org>
- <ca5b00bd-1312-0c69-ab69-a1bd749f51b6@huawei.com>
- <YI+XrAg4KOzOyt7c@kernel.org>
- <24b37c01-fc75-d459-6e61-d67e8f0cf043@redhat.com>
- <YI+32ocTbec5Rm4e@kernel.org>
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-Message-ID: <82cfbb7f-dd4f-12d8-dc76-847f06172200@huawei.com>
-Date:   Thu, 6 May 2021 20:47:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Thu, 6 May 2021 08:50:20 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED8CC061574;
+        Thu,  6 May 2021 05:49:22 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id 10so5189720pfl.1;
+        Thu, 06 May 2021 05:49:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=15GKIU/VxVFZXf36o9Yrp20X9pUI530VMRJk1YXWiwQ=;
+        b=WaPLP2+sW2dXb3g0PkjwtlmmNygtk1fmVSauKRC6BdLAn9Xh2YifmDoyXppx0ENOBU
+         FCUUHd5cZOpnVGFtG7oCtF5y1UVMaCoD8AlZ1DZgdXbpW5NIvyBgjHOxZ/oGQOc0OgZY
+         78bFr6UfsJjYuY/E2oGbc89HD36tBIPzQECtcGnhFVjXXlTRVWkSUY63sgj7xDYDAS7T
+         vWgmLUUva2oFYNJJl74E1NdF1Flyjww4udb31qO3nDM4+vZPIWhWWebg1YCLUNFpZ67z
+         C5ZK1s4P6bHYis1UgBJcuIjI027b7jLo5YayW+1fQ/SfWf05Z79FWfSsrobOSRDyJy0L
+         qt2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=15GKIU/VxVFZXf36o9Yrp20X9pUI530VMRJk1YXWiwQ=;
+        b=f0CMWUAoIgMLuPB3L8FXGYminxXCBAyAi9VdoDIsTy+RfnPjPNWaNf95OfaiI3JqLL
+         ZbXNX0MW8TBCf7apVaSEEEEudLrD70zDs/aiugMBb6qHMEU47fIIu8prkKKMJpL1shFk
+         ScAH2KidUXEUQYgbCHDq1o3YBQQ4+BC25SQQugCAcKZ4QHduRtAlIb5uF8ZVsugqlOZA
+         X/Pix/xPz0AkbIfdKuGaf5Xs8/zcPBZPRFhQBcz8xytCprt0034TA+tYQJeBVkhQPjAx
+         VQ/m1A4jokzPdKqh8y5LIc18d/rdJ6eOHMF5TLIC1UFhOjVW4gdJy7YEip5DRELRw0C3
+         /yVg==
+X-Gm-Message-State: AOAM533/gOIz8ntHptdxipElZOpRBCabr1Tibj39BjxlfkAH1UI5bIN4
+        3aysJ2SqDclvSrH/AMKxD6fAKBdRpnWu+kPjcr0=
+X-Google-Smtp-Source: ABdhPJxIZt9y1cqlh0eCQWAF6Siwalsz3UBUCaUrJylH/fSA2f8rMHcHPF/3bZbYrx4yCnXKaDPlfQ==
+X-Received: by 2002:a63:7e13:: with SMTP id z19mr4114613pgc.184.1620305361551;
+        Thu, 06 May 2021 05:49:21 -0700 (PDT)
+Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
+        by smtp.gmail.com with ESMTPSA id t12sm1991313pjw.51.2021.05.06.05.49.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 05:49:21 -0700 (PDT)
+From:   Wei Ming Chen <jj251510319013@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     linux-acpi@vger.kernel.org, devel@acpica.org,
+        Wei Ming Chen <jj251510319013@gmail.com>
+Subject: [PATCH] ACPICA: Use fallthrough pseudo-keyword
+Date:   Thu,  6 May 2021 20:49:12 +0800
+Message-Id: <20210506124912.7725-1-jj251510319013@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <YI+32ocTbec5Rm4e@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Replace /* FALLTHROUGH */ comment with pseudo-keyword macro fallthrough[1]
 
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-On 2021/5/3 16:44, Mike Rapoport wrote:
-> On Mon, May 03, 2021 at 10:07:01AM +0200, David Hildenbrand wrote:
->> On 03.05.21 08:26, Mike Rapoport wrote:
->>> On Fri, Apr 30, 2021 at 07:24:37PM +0800, Kefeng Wang wrote:
->>>>
->>>>
->>>> On 2021/4/30 17:51, Mike Rapoport wrote:
->>>>> On Thu, Apr 29, 2021 at 06:22:55PM +0800, Kefeng Wang wrote:
->>>>>>
->>>>>> On 2021/4/29 14:57, Mike Rapoport wrote:
->>>>>>
->>>>>>>>> Do you use SPARSMEM? If yes, what is your section size?
->>>>>>>>> What is the value if CONFIG_FORCE_MAX_ZONEORDER in your configuration?
->>>>>>>> Yes,
->>>>>>>>
->>>>>>>> CONFIG_SPARSEMEM=y
->>>>>>>>
->>>>>>>> CONFIG_SPARSEMEM_STATIC=y
->>>>>>>>
->>>>>>>> CONFIG_FORCE_MAX_ZONEORDER = 11
->>>>>>>>
->>>>>>>> CONFIG_PAGE_OFFSET=0xC0000000
->>>>>>>> CONFIG_HAVE_ARCH_PFN_VALID=y
->>>>>>>> CONFIG_HIGHMEM=y
->>>>>>>> #define SECTION_SIZE_BITS    26
->>>>>>>> #define MAX_PHYSADDR_BITS    32
->>>>>>>> #define MAX_PHYSMEM_BITS     32
->>>>>>
->>>>>>
->>>>>> With the patch,  the addr is aligned, but the panic still occurred,
->>>>>
->>>>> Is this the same panic at move_freepages() for range [de600, de7ff]?
->>>>>
->>>>> Do you enable CONFIG_ARM_LPAE?
->>>>
->>>> no, the CONFIG_ARM_LPAE is not set, and yes with same panic at
->>>> move_freepages at
->>>>
->>>> start_pfn/end_pfn [de600, de7ff], [de600000, de7ff000] :  pfn =de600, page
->>>> =ef3cc000, page-flags = ffffffff,  pfn2phy = de600000
->>>>
->>>>>> __free_memory_core, range: 0xb0200000 - 0xc0000000, pfn: b0200 - b0200
->>>>>> __free_memory_core, range: 0xcc000000 - 0xdca00000, pfn: cc000 - b0200
->>>>>> __free_memory_core, range: 0xde700000 - 0xdea00000, pfn: de700 - b0200
->>>
->>> Hmm, [de600, de7ff] is not added to the free lists which is correct. But
->>> then it's unclear how the page for de600 gets to move_freepages()...
->>>
->>> Can't say I have any bright ideas to try here...
->>
->> Are we missing some checks (e.g., PageReserved()) that pfn_valid_within()
->> would have "caught" before?
-> 
-> Unless I'm missing something the crash happens in __rmqueue_fallback():
-> 
-> do_steal:
-> 	page = get_page_from_free_area(area, fallback_mt);
-> 
-> 	steal_suitable_fallback(zone, page, alloc_flags, start_migratetype,
-> 								can_steal);
-> 		-> move_freepages()
-> 			-> BUG()
-> 
-> So a page from free area should be sane as the freed range was never added
-> it to the free lists.
+Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+---
+ drivers/acpi/acpica/utprint.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Sorry for the late response due to the vacation.
+diff --git a/drivers/acpi/acpica/utprint.c b/drivers/acpi/acpica/utprint.c
+index e37d612e8db5..0b511434b80b 100644
+--- a/drivers/acpi/acpica/utprint.c
++++ b/drivers/acpi/acpica/utprint.c
+@@ -475,7 +475,7 @@ int vsnprintf(char *string, acpi_size size, const char *format, va_list args)
+ 		case 'X':
+ 
+ 			type |= ACPI_FORMAT_UPPER;
+-			/* FALLTHROUGH */
++			fallthrough;
+ 
+ 		case 'x':
+ 
+-- 
+2.25.1
 
-The pfn in range [de600, de7ff] won't be added into the free lists via 
-__free_memory_core(), but the pfn could be added into freelists via 
-free_highmem_page()
-
-I add some debug[1] in add_to_free_list(), we could see the calltrace
-
-free_highpages, range_pfn [b0200, c0000], range_addr [b0200000, c0000000]
-free_highpages, range_pfn [cc000, dca00], range_addr [cc000000, dca00000]
-free_highpages, range_pfn [de700, dea00], range_addr [de700000, dea00000]
-add_to_free_list, ===> pfn = de700
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 0 at mm/page_alloc.c:900 add_to_free_list+0x8c/0xec
-pfn = de700
-Modules linked in:
-CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0+ #48
-Hardware name: Hisilicon A9
-[<c010a600>] (show_stack) from [<c04b21c4>] (dump_stack+0x9c/0xc0)
-[<c04b21c4>] (dump_stack) from [<c011c708>] (__warn+0xc0/0xec)
-[<c011c708>] (__warn) from [<c011c7a8>] (warn_slowpath_fmt+0x74/0xa4)
-[<c011c7a8>] (warn_slowpath_fmt) from [<c023721c>] 
-(add_to_free_list+0x8c/0xec)
-[<c023721c>] (add_to_free_list) from [<c0237e00>] 
-(free_pcppages_bulk+0x200/0x278)
-[<c0237e00>] (free_pcppages_bulk) from [<c0238d14>] 
-(free_unref_page+0x58/0x68)
-[<c0238d14>] (free_unref_page) from [<c023bb54>] 
-(free_highmem_page+0xc/0x50)
-[<c023bb54>] (free_highmem_page) from [<c070620c>] (mem_init+0x21c/0x254)
-[<c070620c>] (mem_init) from [<c0700b38>] (start_kernel+0x258/0x5c0)
-[<c0700b38>] (start_kernel) from [<00000000>] (0x0)
-
-so any idea?
-
-[1] debug
-diff --git a/arch/arm/mm/init.c b/arch/arm/mm/init.c
-index 1ba9f9f9dbd8..ee3619c04f93 100644
---- a/arch/arm/mm/init.c
-+++ b/arch/arm/mm/init.c
-@@ -286,7 +286,7 @@ static void __init free_highpages(void)
-                 /* Truncate partial highmem entries */
-                 if (start < max_low)
-                         start = max_low;
--
-+               pr_info("%s, range_pfn [%lx, %lx], range_addr [%x, 
-%x]\n", __func__, start, end, range_start, range_end);
-                 for (; start < end; start++)
-                         free_highmem_page(pfn_to_page(start));
-
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 592479f43c74..920f041f0c6f 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -892,7 +892,14 @@ compaction_capture(struct capture_control *capc, 
-struct page *page,
-  static inline void add_to_free_list(struct page *page, struct zone *zone,
-                                     unsigned int order, int migratetype)
-  {
-+       unsigned long pfn;
-         struct free_area *area = &zone->free_area[order];
-+       pfn = page_to_pfn(page);
-+       if (pfn >= 0xde600 && pfn < 0xde7ff) {
-+               pr_info("%s, ===> pfn = %lx", __func__, pfn);
-+               WARN_ONCE(pfn == 0xde700, "pfn = %lx", pfn);
-+       }
-
-
-
-> 
-> And honestly, with the memory layout reported elsewhere in the stack I'd
-> say that the bootloader/fdt beg for fixes...
-> 
