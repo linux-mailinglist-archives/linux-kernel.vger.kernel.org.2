@@ -2,88 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B6623757F7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:54:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 643E03757FD
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235296AbhEFPzR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:55:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235136AbhEFPzL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:55:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C6B55610A0;
-        Thu,  6 May 2021 15:54:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620316452;
-        bh=3cDNvuD9KU1PpzpUQmY9KlttPCy/ZUYq/znJ1YRrs7s=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uZBGfJvrZwdAAGt3rnHXrQWzCrcdkBZT0JRJZrSkWeS7qwPCRf+meTV7trBvdmeh7
-         mLEwC4LndCFSiqO67bjR3QIbommxma/nXXWj+u5JyugK4VBg5QCIIHuQmikvRdPsKR
-         CsfvYkbovQDDa19ucwU4vuh5dnPgTEH6hI63u04udKsPXFugggwKJSUAjWG6tkcdGn
-         HCz/4riZTEdumAs0rpTOCu28+u/O0RUzDYvabs6Sc6+hynUsr+pMkukj+JqEAdt+Up
-         c2F+vqmZ0nXK5Te0BcGeMq73NdIwAlJc8gUCAGi66Phkt503luWGaWtZatj5lkGegn
-         7tvOJBVBVNVYQ==
-Date:   Thu, 6 May 2021 16:53:35 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Michael Walle <michael@walle.cc>
-Cc:     linux-kernel@vger.kernel.org, linux-gpio@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J . Wysocki" <rafael@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: Re: [PATCH 1/2] regmap: add regmap_might_sleep()
-Message-ID: <20210506155335.GC3377@sirena.org.uk>
-References: <20210430130645.31562-1-michael@walle.cc>
- <20210430151908.GC5981@sirena.org.uk>
- <df27a6508e9edcd8b56058ac4834fd56@walle.cc>
- <20210430172603.GE5981@sirena.org.uk>
- <128a6d51af1b7c9ed24a5848347c66b9@walle.cc>
- <20210506124342.GC4642@sirena.org.uk>
- <5921b32058d00a1bffda82b72286db09@walle.cc>
+        id S235293AbhEFP5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:57:36 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:43248 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235136AbhEFP5b (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:57:31 -0400
+Received: from [192.168.254.32] (unknown [47.187.223.33])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 4CE4120B7178;
+        Thu,  6 May 2021 08:56:32 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 4CE4120B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620316592;
+        bh=GIfCoV9KFWohoBxPazrWBAeAPjccvuUsv3Ddnomlpaw=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=ObphGfDCiPUN6Uqd2LI5zwRgrMDWHee5gSUO/gDYosOVrYKrj6UIGHs+mLkEmImov
+         aIwo4KKCWNQnAXyB4EGvGMlDTyAqAWXlSP3B74Oa6I59d0rpZ4aPrBWIjL8oEzDMMU
+         1BqbJIcnB/SiClMcS7Jk9X5WBR05nNrypXJ1+wLw=
+Subject: Re: [RFC PATCH v3 3/4] arm64: Handle miscellaneous functions in .text
+ and .init.text
+To:     Mark Brown <broonie@kernel.org>
+Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
+ <20210503173615.21576-1-madvenka@linux.microsoft.com>
+ <20210503173615.21576-4-madvenka@linux.microsoft.com>
+ <20210506141211.GE4642@sirena.org.uk>
+ <8268fde8-5f3b-0781-971b-b29b5e0916cf@linux.microsoft.com>
+ <cb2c47ee-97d7-15d8-05db-b8e3e260b782@linux.microsoft.com>
+ <20210506154449.GB3377@sirena.org.uk>
+From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
+Message-ID: <71e2f293-2bd4-173e-163c-694a80390f6c@linux.microsoft.com>
+Date:   Thu, 6 May 2021 10:56:31 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="QRj9sO5tAVLaXnSD"
-Content-Disposition: inline
-In-Reply-To: <5921b32058d00a1bffda82b72286db09@walle.cc>
-X-Cookie: Is this really happening?
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20210506154449.GB3377@sirena.org.uk>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---QRj9sO5tAVLaXnSD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Thu, May 06, 2021 at 03:35:26PM +0200, Michael Walle wrote:
-> Am 2021-05-06 14:43, schrieb Mark Brown:
+On 5/6/21 10:44 AM, Mark Brown wrote:
+> On Thu, May 06, 2021 at 10:32:30AM -0500, Madhavan T. Venkataraman wrote:
+>> On 5/6/21 10:30 AM, Madhavan T. Venkataraman wrote:
+> 
+>>> OK. I could make the section an argument to SYM_CODE*() so that a developer
+>>> will never miss that. Some documentation may be in order so the guidelines
+>>> are clear. I will do the doc patch separately, if that is alright with
+>>> you all.
+> 
+>> There is just one problem with this. Sometimes, there is some data in the
+>> same text section. That data will not get included when we do the SYM_CODE(section)
+>> change.
+> 
+> Yes, data would need to be handled separately still.  That doesn't seem
+> insurmountable though?
+> 
 
-> > Surely it's just a case of the device that's creating the gpio regmap
-> > setting a flag when it instantiates it?  It's just one more thing that
-> > the parent knows about the device.  This doesn't seem insurmountable.
+I will think of something.
 
-> No its not. It just seemed like it is way easier to just ask the regmap.
-
-I'd rather cause a small amount of hoop jumping for one or two users
-than open up an API that feels like it's going to encourage dodgy usage,
-there's already enough problems with things like regulator_get_optional()
-and this feels like it's going down similar roads.
-
---QRj9sO5tAVLaXnSD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCUEP4ACgkQJNaLcl1U
-h9A1Swf8C0PxLVkatS4C5F0XnBrEZICyePH1nDUAKWLrCPB1AHvxbvV6zjtjpi9v
-ooZtjHPHPuHyvqwKe7VCVk8RFeAvKAAbnCScqLM4mz/DfVrdd05rkEw2f8kkw+eE
-eT3zQVe7ghB5oJcaZwR5ngGK6zI/ErnDGFAynhNoQeX7uEDUDgqasuvsm75KvsSp
-89uF38y35FBpiEF0EPt9zPR/FUZPy79fBZ+7Ug/OJO5MlvwHf4Kc49hlhp4A07hx
-afwUV3BfbRU5/m3iV8FFsnzkczN1SGcKlQw7rESbjMPqV4UCYvqTNzrif0/SWuVe
-kA2O66f8RjLZjKp5Ke02e8UZitFMjg==
-=+iA1
------END PGP SIGNATURE-----
-
---QRj9sO5tAVLaXnSD--
+Madhavan
