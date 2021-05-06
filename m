@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F11FA374C69
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:33:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD81C374C6A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:33:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230232AbhEFAeQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 20:34:16 -0400
+        id S230316AbhEFAeX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 20:34:23 -0400
 Received: from mail-eopbgr70070.outbound.protection.outlook.com ([40.107.7.70]:44676
         "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S230236AbhEFAeI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 20:34:08 -0400
+        id S230308AbhEFAeN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 20:34:13 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hMo5myKfbR+gnsEWEdcRSjNvJUf7F3YN+SkAVNKAcmKYQ9DIwxHW6Zj/Op8f4hAXZD4//CIzJuejDHeuS/ymnLAYRPmGflkykNnJz6/G44Ohspim3fBnYKXuMy3lr/iaR7p4JpelmeHtqFPRRN3wYUB8o3csLEXrwNvVdUXBGsy4n76Mam4kKMQZde+hkNDIigGjEqiLEBnZkVMbZPFLqQ4H1PmUlzXqlvmlo4IZ8jgztoGA25knZLcVCC0lU6ilgmfxkYaizZwGKOvseRp2x/uQtZc1emIOZ0SQD/Etv2TO+FIHxo2ZsByqWK/ET4+H5BqQNrHpON881xj4JceDaQ==
+ b=LQYnMurrsQ9a9Sk5H9GFELuv6PfDqUkg7PCXEYCIAekWXcdqFbpRE5kqm23ceECOWG2U15dLhy+eSsWdHYlsElZ2ibZi+Zpr2CNK1IfdZpr6L9n4N64WTwvSfs/vETlwRLxSM5xhSO5xdUtIIsfVKfpjxaMsxYjsR4UJQmzxWbKG4eFu9V0PR4bFBRQKjNw3PhEKR69kSMJpiRcT5FP3WAPQlYQfe3xjR68j9guLXZjF7u1piVePMg2WsuSbUZc0EidNraGsmxLNQjymNF0FUsEiQV8ay3+PKYXuECtmhNDNarqLJ9edRW+qYOkoSmor4aO0Tli4ieAApzjXmhvwPw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h7+Zv4gz8BeNScjIZFS/TAvZShU1paVfL4jFrmQcdUY=;
- b=WhYeLFBDJ7I5xF07NS76BHafymUBsMw7LUDwJewvZj8dJpXNhCl9vITqZL9oJ8gXsAsWVKzw+3WySmX5oHu+SGnqKJzEVaHIVE0bkCvBhb2ApV/dU9eIMCuLhB0/VsmdOlh8iLpvLS7uPnKE9LFWmC6mUfqjiPQR4QHmUbpZan97OM1aew/6ugGJKLKhzoXCmP3/PV33/xOei+c2Fj683/Lgfci2SoYUr5T5Fw4Bd7P+ZZrvNQzKdxebma3nAdTBNt6JGsd7KTvl+dJwppBodkP9heAe6cqMsBHUCGNFJJio0vnMiWSF7fEdsl+hYpIHjfauJkPPNO4NAXnyil9piw==
+ bh=JFkEvPEwerxpXRsOXrSUzxy2F/JitvdWDQyJlv7Y9W8=;
+ b=Y2xKhse/D6bw3XyPa9Vku8lGNSBX1+0NOurrOUThp0UHnOvLdc0XG1g0zTZmHyGAXPoHORyYL5xDnNqukt5Mnhbapqliv5tE02kwfx7X4MH0Ev0zcUf58HxeJDs89WgXnS55y0TPVGu31UT6VnsXv6DTd+fwDphn3SSXYthz3xLFUkfyU0cyAv7ZFiH0KFBZRwiEzeEZWbZ0w7Bn9uz0jOhDebzTumxyZREeS5YxKDvkYoWIM/LaHKmiS24lMgHTGb1f4ajRtieWtcuKWlmg2RFH9J6kKRXzbSgdXirLsmGCKNSTAE69Dx43tX045gGnfJ7Q83rTIlAB+EIwpnJ2Eg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oss.nxp.com; dmarc=pass action=none header.from=oss.nxp.com;
  dkim=pass header.d=oss.nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=NXP1.onmicrosoft.com;
  s=selector2-NXP1-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=h7+Zv4gz8BeNScjIZFS/TAvZShU1paVfL4jFrmQcdUY=;
- b=gMglgxpBPmGaJNrp9rnGoYzA2Ea7qVF66jldKtrL5CHy3EJFbSBYeCqYcruLyXBGoNa+nICrepet+i1O0s3Mg5504v0awI+lZN0NwM8mLuiLfFzm1p0/mAEhogpgzDSpBafXg90Hul4qKjMuHnD5DhC/Mb3/L9z9aGJ4wK+AReU=
+ bh=JFkEvPEwerxpXRsOXrSUzxy2F/JitvdWDQyJlv7Y9W8=;
+ b=hfU2W2+Y2DUf2FMqveFMuXVYUHojhRD6S/lZAM0xz7dBCAZJUaEimfYztHDkYXqCqaj81MiH/imorZywpk5QEIBKDBwqLFJULwdJVEDMVJOkvebA13ZbrcIqOr3zckHMt/tr857fffvvQuGgVWxlxl7TJ+QWMx/BQBh1fGCKz9M=
 Authentication-Results: kernel.org; dkim=none (message not signed)
  header.d=none;kernel.org; dmarc=none action=none header.from=oss.nxp.com;
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
  by DBBPR04MB7884.eurprd04.prod.outlook.com (2603:10a6:10:1f2::11) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.41; Thu, 6 May
- 2021 00:33:07 +0000
+ 2021 00:33:13 +0000
 Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
  ([fe80::45b9:c993:87ec:9a64%8]) with mapi id 15.20.4065.039; Thu, 6 May 2021
- 00:33:07 +0000
+ 00:33:13 +0000
 From:   "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
 To:     robh+dt@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de
 Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
@@ -47,9 +47,9 @@ Cc:     kernel@pengutronix.de, festevam@gmail.com, linux-imx@nxp.com,
         linux-kernel@vger.kernel.org, ping.bai@nxp.com,
         frieder.schrempf@kontron.de, aford173@gmail.com, abel.vesa@nxp.com,
         Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V2 07/13] soc: imx: gpcv2: allow domains without power-sequence control
-Date:   Thu,  6 May 2021 09:04:34 +0800
-Message-Id: <20210506010440.7016-8-peng.fan@oss.nxp.com>
+Subject: [PATCH V2 08/13] dt-bindings: imx: gpcv2: add support for optional resets
+Date:   Thu,  6 May 2021 09:04:35 +0800
+Message-Id: <20210506010440.7016-9-peng.fan@oss.nxp.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20210506010440.7016-1-peng.fan@oss.nxp.com>
 References: <20210506010440.7016-1-peng.fan@oss.nxp.com>
@@ -60,51 +60,51 @@ X-ClientProxiedBy: SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22)
  To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Thu, 6 May 2021 00:33:01 +0000
+Received: from linux-1xn6.ap.freescale.net (119.31.174.71) by SGAP274CA0010.SGPP274.PROD.OUTLOOK.COM (2603:1096:4:b6::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Thu, 6 May 2021 00:33:07 +0000
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: afb9b3e3-abc8-4b5d-555c-08d9102684b0
+X-MS-Office365-Filtering-Correlation-Id: 868959f2-6bf3-485e-57af-08d910268846
 X-MS-TrafficTypeDiagnostic: DBBPR04MB7884:
 X-MS-Exchange-SharedMailbox-RoutingAgent-Processed: True
 X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DBBPR04MB7884C6F9B2F054A53CCE4B05C9589@DBBPR04MB7884.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-Microsoft-Antispam-PRVS: <DBBPR04MB7884C62AD76DC4F2C3AD6502C9589@DBBPR04MB7884.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8273;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Btb+mv5ukdmc+M2wLfR/xrirp7YWY9R5c9iMlZ9DEJjqeH6AkKo4EhyOvhN3qGLaWq6nx6bnm7S01jBXM9C48I66X6wWCTggKD4toeCWk6ntlqYE7LT8vQTXi0BF+OBE8elE2+SR0WQGce61oTlUCmx/fXf3UiJ997EY8MspdJINaq7pileDJxFpafM6dxVKrz8ngzU+vKgqsibieeeO2suZXMMWPxHeSZMxXy10AMr+Mfsay1IXEzzqFdTkmAsGCjE5rFBKrQw2XWxhZ58J6091s7HQiLn3Clc3e9cLpVr4RxP904eiW44DUQUjz79THAgUxH0QfF9sZiE9ZinzYjOJuHbFBVqnKaLO+5IstbXB7Idns/8J041tzMiCnZkqFLEFuUhBQ+0PJVvZQRUywtbiKXkdswffWOhqllJvTILr/Gtyo3yfeY0b3DJuigqFFRwsZpru2f5Wzs8kdBdnR7XHjqFgl024PNBBRKmt9q8rp7aHFnrDLn3BNqXGi8nqJ/3tF+YngqIcOME44DhIFEPvfQ2lB3AzRUrjzpSISuE5tKUpcpkOwv+8FGtka/EQQVYPwRF15XJKNc95sM5vIcGVIxfRFqO2NX0r5aJvMCuipNPeP+GlZ6JkoVJ3jCKYqx3b0LixOk4mKQQyptugpoO2rLhyyV3zqkjX9HHhSmg=
+X-Microsoft-Antispam-Message-Info: C0nCm4nzR7eTaEIgRVJC4RnpDW9+1Ajg1f/mchI7iGeQCQ5anWF87LRNf7yO6493q+wLO2gS13ma0qNHtU5DXb4pDwAycD87dnTJmWPbnt/aXlUrKcAv3gjWEfBxCEVQA2yblwmVdX/kINdLTpp3+QRDh+960ghLJnPnJeVdbcUG0X/vKAmRsz5EFwcrG+/yzdv6jd0AU/6vkv389O5ulNTPcR1EFE4xOsi1+xJkOz8G8HAnOCg0AEnOnU2s/OqvWnMV0I9aTZsNRT2wcjtt38uYvuSkt3OfTfWcqBhETkHHRYvhA9JCE9He58CQr0wkKcWOD7/JuevXjA0p0pj/JYlNx7cFiGN+fs1CoxxHco+Fy55iRm9Ktrd7NCJLVZ6sXUL3E3+M8EKBDqG8HNSrTgj0rSYEnD0rYBWRwNP/0+QTnwnq/BwH+1lmZo3J3bgmNK7Y9j/ekFeBguxOY7MbTeda/BaG/uZN/cwlJLGkQgwc9t4noQ6vp6CCMEOuRVq4OK1w1zmycjMI6wM4jy4oz+idd5OXKijapyhhBvc37wykeRL4EAezVIr3HqP05cIk35+JX2sbzNhEPWWmgDVhnShdkvqzyiAv3fdI4AbCaONFXdKPXk9LHc9Nrn7pw62Os1Fzyw8dq1L++AnBzJR0LA==
 X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(366004)(346002)(396003)(39860400002)(136003)(52116002)(186003)(6666004)(5660300002)(6512007)(478600001)(2906002)(1076003)(26005)(6506007)(16526019)(6486002)(83380400001)(956004)(8936002)(86362001)(8676002)(38350700002)(316002)(38100700002)(66946007)(66476007)(2616005)(66556008)(4326008)(7416002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?7Fs/2aGZT2ARViQlQaoEJ7PcxI9E9dzFmntFQnTw2JymJezYCLgC9lRQnyXm?=
- =?us-ascii?Q?JLI/DDrP2DoSEF696AkFZsD+uV8a4+i2SQ5lmNtZIRbOwLVegvmWEcNcG4ao?=
- =?us-ascii?Q?eI82H+tqG/6rk3Q6QO1rBUn+CWlP6H4gp2mHCKTNE2bHb2HDTfOsWuJ4ibr9?=
- =?us-ascii?Q?4GmmPZFZEO4fGgT6vIQ1K62y7UTcolEaRnENWLwa+J3FhyjLlcjajqn4ar+m?=
- =?us-ascii?Q?pCrTphYacbMxWX46tQ7i/Be+pjONjQ2siz3V53gCSeMukn7uK1ZBgFsXwD3L?=
- =?us-ascii?Q?08K21gSzBbXKIe0SjELvQIrzGhWV90sWIzvHxKqnfyLRui049ZUlFrsRP9gK?=
- =?us-ascii?Q?xi0uS+Q7YJd2jbWbcxNttFZP2CQ5rhkLEMRGfpDvo2JdAfDoaI1+bkH8dV9G?=
- =?us-ascii?Q?LM+7R++7lNQ461hpKngW1CzrH+YiWKCdnziCpSlHE/qx9Dqgx3e0O5xhK/6M?=
- =?us-ascii?Q?/xjtpPWmfVCVI87uyEjwlFQf0+yqh6E7Z4RUIT4d+Ib8pAPrqJYRj2w8+AnD?=
- =?us-ascii?Q?Phyi5/5yKZxRRzDGCzEJ0nnt0nXmOgQ18peZUWXmrS8mvL/5UECOnT2Prl2/?=
- =?us-ascii?Q?yEoRyZgAUzLq2MhNarcOtp2qIpjxQLbRy/COW+wy2VrhDIG4438Dpeuk3wPL?=
- =?us-ascii?Q?nq8ZhAzqRo2XJYrJwiDj9GxLqxFvYmIWMiEU6uVB9Z+M2iLRAm1/lt7tP4IX?=
- =?us-ascii?Q?9g57p3HJ2omoWer3t8iyUHhdYTh93fytmqqvZV2OqFRuAU7uWJxfuE3NShJC?=
- =?us-ascii?Q?dEgLJ39h2P/FSVledohSJEs5d4A24+1Hf7attul2BVhW60sRYOKTcdYch4gy?=
- =?us-ascii?Q?6OJku3tsHOclq0E1xdkbP0oK6GKpGYZX8S3AiSR9JKVXn2zoC7ODacEc/9P7?=
- =?us-ascii?Q?DCBFdGXf0FzFgHWcH1pHwEJ7uAb+PtX1YT22VvK/c2m4Alxn50G1TFzlFgBS?=
- =?us-ascii?Q?fjFBQMkN8j1YTyo8GgTzPB1Dv7YcUhJUNnXTSdVk3zeJhKDgZR7/FS/0H0hu?=
- =?us-ascii?Q?xdvioBeL4OvXBnrlfojPo/V2VljOxJjxI95CYUhsV+YRSNTvhIum6WFP36K4?=
- =?us-ascii?Q?3oim32P/nkNfdlUnSnOuTn7bIzspfmg4rQDXSQiA8SiSLETAMzKlW221PtMB?=
- =?us-ascii?Q?gLnwNUDU3fgx6SNryF37z+outLbGqrW1OmHQk2JHwjskcoXv7xcwleU3OMPV?=
- =?us-ascii?Q?6tR/qnetbieJGqEf2Rt1neSxvvw30IuMrfxOAj03+BE5TkzIjsA/WyibVO1c?=
- =?us-ascii?Q?ip2zV289k4SKy4+pd3kNBAYKeFMmeP8lTVJ6c/P0tp4xwfUDVQ2W5TFDy2wX?=
- =?us-ascii?Q?YdO+QKR/AMcEOV0yR/r0mzJc?=
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?v0UdMTXAE4knzquRUQR5dx6puHp7h+OTV/oBlqqVbdenV8K3vRMUvuZV5y0J?=
+ =?us-ascii?Q?EpDq1ER/TH/Xbt6WZPgce34t+3cHqsXkBPGHuRsknPmCtjmQgp9QZD/q15mS?=
+ =?us-ascii?Q?GpzOAr3qf/LbdeI0A9ns+p1TqPT1ksC7/3gZTlScUpi1WAFoWBDkip+gE3eX?=
+ =?us-ascii?Q?VG6DWic1ZL9ZZIoS4KVmJuzfu9ZQxv9hWPsXXC959mBsWtHKJ1vdOE8gI/13?=
+ =?us-ascii?Q?ABjUjphGiQMCw9vbeb99DXhtsFOr9pqOLQpzdmUATova8NY3Z2AbVRr27f+p?=
+ =?us-ascii?Q?uEDwCyX3BpVQGT4XMC2nJuTLLb9eY78cBLq7Jow/SEP6zTwDhR7Ou/PbgMxG?=
+ =?us-ascii?Q?iZvPpiI1zuisAQWT/wQaWhIb5xSZyvOxM/p7T0BfQJz5CF1U4KaSaxeZKz7c?=
+ =?us-ascii?Q?UH4tKb9pwTwftduGsy+cSFrr7PQvjvr7RpQtE/u/5AFgYwX5zjQRvrJVuYYc?=
+ =?us-ascii?Q?2iN51C8eb+iXRPcXEjweYUscy7CVBWKLStJPh3GMuekmYjJRgVoXChKWuJaP?=
+ =?us-ascii?Q?zvgmRp0e7iNrCzWQFFQqI++jh26DWxnOM1LnIUwksEuo99AVv1DB04VCSd5l?=
+ =?us-ascii?Q?LzlHuq57wqw1slV8J6VV5Ud8zCjxHuL9LAGX1e3JweU2sS8LKd3lsqCkQjVX?=
+ =?us-ascii?Q?yH/FpO2GySAPkP/PPWF2IfgOC5K6g2P2rfhL4U88HQwEhOgTsxjlSdmt1wyV?=
+ =?us-ascii?Q?x3Zpf4jz2LC/lYcnQdfNpnB79tMCaqYI31u9ODx4wV44hY4K5syJScUfYSng?=
+ =?us-ascii?Q?e+qwb2iZt2QjUHo9rjzJXQt6vDWbs+872XG85ETCJZ0HXD5YtuNtdSCPOJ/7?=
+ =?us-ascii?Q?jUF5DoYJN5L1wPqFQ3kvQFz0RCdWB/0Wm6ncbFXylE3OaNj7wocrOpR0ySaf?=
+ =?us-ascii?Q?8VWfgjaNTD0NhzRs0O4rJplPBnf7M+WhSbmufR+/vsJ64TrPQfj65oczrcsL?=
+ =?us-ascii?Q?2u472O2Uq+vMSxi5L+h6KntyOUPVzZdNxfn8uQgBKsiaEwGqLqvf77QKih4l?=
+ =?us-ascii?Q?lbxznf3WTiO1qWYc9ajFVd/kr1Nn+iLMqp01uOpRI2ZgPCFmbnCJBuhzFG8y?=
+ =?us-ascii?Q?154xjDOlZtp10WnziELjZGi6cATCFQmJEkxSungltIYIZYP3XQDDMn22Yu+x?=
+ =?us-ascii?Q?Dn6rCZWEedQnSpXQHWdaxHl3UFlVrcVHhImT2itCQy25OaBTiEjhy7FBvyBo?=
+ =?us-ascii?Q?/0D3OzaVE7MCmlGhENJF0NZx6IUAw/aUHw9J26xfAEcV4ix+qmMFgJflb22k?=
+ =?us-ascii?Q?xCm5L/taiXTqR/0codAKelaMQUgCItmjCq0V/7GBxs8BB54DndydsK9Wyzws?=
+ =?us-ascii?Q?hJsFC3DcNlIxLwCpkEiRlq+b?=
 X-OriginatorOrg: oss.nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: afb9b3e3-abc8-4b5d-555c-08d9102684b0
+X-MS-Exchange-CrossTenant-Network-Message-Id: 868959f2-6bf3-485e-57af-08d910268846
 X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 00:33:07.3374
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 00:33:13.3187
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: HV5mEZq/3QzcDZQVZeV8OBQBfAd90Fj6B4ZE5glYbUrHPGwoSgZr33feAGBmRbatts/1u6F10VeQWfrChxwYWw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: 5r/nmpAdsokCs/N4DN9t2TN+HK060bOCQz5Uf7yIY7i0lmsVCZDiqfRenVZ5V8H9zxEiVpJDyl4wnwX9+/rKqg==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: DBBPR04MB7884
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -112,147 +112,39 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Lucas Stach <l.stach@pengutronix.de>
 
-Some of the PGC domains only control the handshake with the ADB400
-and don't have any power sequence controls. Make such domains work
-by allowing the pxx and map bits to be empty and skip all actions
-using those controls.
+For some domains the resets of the devices in the domain are not
+automatically triggered. Add an optional resets property to allow
+the GPC driver to trigger those resets explicitly.
 
-Reviewed-by: Frieder Schrempf <frieder.schrempf@kontron.de>
+The resets belong to devices located inside the power domain,
+which need to be held in reset across the power-up sequence. So we
+have no means to specify what each reset is in a generic power-domain
+binding. Same situation as with the clocks in this binding actually.
+
 Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
 Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/soc/imx/gpcv2.c | 89 +++++++++++++++++++++++------------------
- 1 file changed, 49 insertions(+), 40 deletions(-)
+ Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml | 7 +++++++
+ 1 file changed, 7 insertions(+)
 
-diff --git a/drivers/soc/imx/gpcv2.c b/drivers/soc/imx/gpcv2.c
-index bfea8560cb64..0428f0eddee0 100644
---- a/drivers/soc/imx/gpcv2.c
-+++ b/drivers/soc/imx/gpcv2.c
-@@ -163,24 +163,27 @@ static int imx_pgc_power_up(struct generic_pm_domain *genpd)
- 		goto out_regulator_disable;
- 	}
+diff --git a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
+index a96e6dbf1858..4330c73a2c30 100644
+--- a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
++++ b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
+@@ -66,6 +66,13 @@ properties:
  
--	/* request the domain to power up */
--	regmap_update_bits(domain->regmap, GPC_PU_PGC_SW_PUP_REQ,
--			   domain->bits.pxx, domain->bits.pxx);
--	/*
--	 * As per "5.5.9.4 Example Code 4" in IMX7DRM.pdf wait
--	 * for PUP_REQ/PDN_REQ bit to be cleared
--	 */
--	ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PGC_SW_PUP_REQ,
--				       reg_val, !(reg_val & domain->bits.pxx),
--				       0, USEC_PER_MSEC);
--	if (ret) {
--		dev_err(domain->dev, "failed to command PGC\n");
--		goto out_clk_disable;
--	}
-+	if (domain->bits.pxx) {
-+		/* request the domain to power up */
-+		regmap_update_bits(domain->regmap, GPC_PU_PGC_SW_PUP_REQ,
-+				   domain->bits.pxx, domain->bits.pxx);
-+		/*
-+		 * As per "5.5.9.4 Example Code 4" in IMX7DRM.pdf wait
-+		 * for PUP_REQ/PDN_REQ bit to be cleared
-+		 */
-+		ret = regmap_read_poll_timeout(domain->regmap,
-+					       GPC_PU_PGC_SW_PUP_REQ, reg_val,
-+					       !(reg_val & domain->bits.pxx),
-+					       0, USEC_PER_MSEC);
-+		if (ret) {
-+			dev_err(domain->dev, "failed to command PGC\n");
-+			goto out_clk_disable;
-+		}
+           power-supply: true
  
--	/* disable power control */
--	regmap_clear_bits(domain->regmap, GPC_PGC_CTRL(domain->pgc),
--			  GPC_PGC_CTRL_PCR);
-+		/* disable power control */
-+		regmap_clear_bits(domain->regmap, GPC_PGC_CTRL(domain->pgc),
-+				  GPC_PGC_CTRL_PCR);
-+	}
- 
- 	/* request the ADB400 to power up */
- 	if (domain->bits.hskreq) {
-@@ -245,23 +248,26 @@ static int imx_pgc_power_down(struct generic_pm_domain *genpd)
- 		}
- 	}
- 
--	/* enable power control */
--	regmap_update_bits(domain->regmap, GPC_PGC_CTRL(domain->pgc),
--			   GPC_PGC_CTRL_PCR, GPC_PGC_CTRL_PCR);
--
--	/* request the domain to power down */
--	regmap_update_bits(domain->regmap, GPC_PU_PGC_SW_PDN_REQ,
--			   domain->bits.pxx, domain->bits.pxx);
--	/*
--	 * As per "5.5.9.4 Example Code 4" in IMX7DRM.pdf wait
--	 * for PUP_REQ/PDN_REQ bit to be cleared
--	 */
--	ret = regmap_read_poll_timeout(domain->regmap, GPC_PU_PGC_SW_PDN_REQ,
--				       reg_val, !(reg_val & domain->bits.pxx),
--				       0, USEC_PER_MSEC);
--	if (ret) {
--		dev_err(domain->dev, "failed to command PGC\n");
--		goto out_clk_disable;
-+	if (domain->bits.pxx) {
-+		/* enable power control */
-+		regmap_update_bits(domain->regmap, GPC_PGC_CTRL(domain->pgc),
-+				   GPC_PGC_CTRL_PCR, GPC_PGC_CTRL_PCR);
++          resets:
++            description: |
++              A number of phandles to resets that need to be asserted during
++              power-up sequencing of the domain.
++            minItems: 1
++            maxItems: 4
 +
-+		/* request the domain to power down */
-+		regmap_update_bits(domain->regmap, GPC_PU_PGC_SW_PDN_REQ,
-+				   domain->bits.pxx, domain->bits.pxx);
-+		/*
-+		 * As per "5.5.9.4 Example Code 4" in IMX7DRM.pdf wait
-+		 * for PUP_REQ/PDN_REQ bit to be cleared
-+		 */
-+		ret = regmap_read_poll_timeout(domain->regmap,
-+					       GPC_PU_PGC_SW_PDN_REQ, reg_val,
-+					       !(reg_val & domain->bits.pxx),
-+					       0, USEC_PER_MSEC);
-+		if (ret) {
-+			dev_err(domain->dev, "failed to command PGC\n");
-+			goto out_clk_disable;
-+		}
- 	}
- 
- 	/* Disable reset clocks for all devices in the domain */
-@@ -536,8 +542,9 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
- 
- 	pm_runtime_enable(domain->dev);
- 
--	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
--			   domain->bits.map, domain->bits.map);
-+	if (domain->bits.map)
-+		regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+				   domain->bits.map, domain->bits.map);
- 
- 	ret = pm_genpd_init(&domain->genpd, NULL, true);
- 	if (ret) {
-@@ -557,8 +564,9 @@ static int imx_pgc_domain_probe(struct platform_device *pdev)
- out_genpd_remove:
- 	pm_genpd_remove(&domain->genpd);
- out_domain_unmap:
--	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
--			   domain->bits.map, 0);
-+	if (domain->bits.map)
-+		regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+				   domain->bits.map, 0);
- 	pm_runtime_disable(domain->dev);
- 
- 	return ret;
-@@ -571,8 +579,9 @@ static int imx_pgc_domain_remove(struct platform_device *pdev)
- 	of_genpd_del_provider(domain->dev->of_node);
- 	pm_genpd_remove(&domain->genpd);
- 
--	regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
--			   domain->bits.map, 0);
-+	if (domain->bits.map)
-+		regmap_update_bits(domain->regmap, GPC_PGC_CPU_MAPPING,
-+				   domain->bits.map, 0);
- 
- 	pm_runtime_disable(domain->dev);
- 
+         required:
+           - '#power-domain-cells'
+           - reg
 -- 
 2.30.0
 
