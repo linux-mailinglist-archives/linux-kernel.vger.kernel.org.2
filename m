@@ -2,148 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51B0F374C7B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:44:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F916374C7E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:45:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229804AbhEFAp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 20:45:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229488AbhEFApY (ORCPT
+        id S229948AbhEFAqL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 20:46:11 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:35574 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229867AbhEFAqJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 20:45:24 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74287C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 17:44:27 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id a3-20020a2580430000b02904f7a1a09012so4243580ybn.3
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 17:44:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=FIYfWaI3YWf0DYz8YdznL9GRGAZ6Fujs7G6sHSJoW08=;
-        b=F81HM63dfakzEtPzPGJfAvVwabd9GULG3vw+sE1lsDWClbnnmHcUG6+0B/zSPxVJLZ
-         Lr9H9/0Nf1Oc+9FXEMGfgPGWxG2kUfHxnHdSYCQqUhiSluugfSdBdIvSogMCzWTEdlEX
-         MIcufUtVUNccgFzr1x5NgfDAyQKogQjwVv2Ug2+G/X94Fh+7iYFEq7dSXgohySMdxz4x
-         3pBsNZ885BulHmlf7UHqpHKrCe9bYVy6dFlLJHoyAaheg7nPN2n1ABkVtp1HCuGGjp1H
-         Npa7NT6c05Nye4sVNxeQ9IIWT+PGLMAh4EHXtbIPGLVkkIHUYQtEKbe0/QiaY7SGlIhX
-         cA7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=FIYfWaI3YWf0DYz8YdznL9GRGAZ6Fujs7G6sHSJoW08=;
-        b=PZobUvGjUkNjOqsQGzRRjo7gozDIFnI+VvZDwQQkHSwRqOkrB5Ujm7lzpkNsvpjkgS
-         iArSvNUTuVvB065OQtonMwolONjNNtVcfNYEY3kmy2jJS1u/HExGvH0Lnwnccs5Bf65v
-         GNRcIeDjWaKsVhstsMPLOaNHbm7qQJHCkNENJvqgG0nlSe/iFLwQW6B5Fq7quhwocZzl
-         hu7Nog9WXHWHee/wsuhFnXW56dNiWfQaQDEQ4MhnL88XrUtQBJak5eLeJZ+4AoRe01wJ
-         oNKeH32Oa3yljBUvpFoYKvZNlhKLF3k6FpjELV59MKOQtYAoVGpwK9W+Jl5RXWhzqlnw
-         yzMQ==
-X-Gm-Message-State: AOAM531obc9V/xKizRgLwX7ltjNfaH17J5TTK1Xnk5geYdWGoaTCsTFK
-        BL9RN99uUNBwgUJrlDPZRuJzuq4rlkAAOCI=
-X-Google-Smtp-Source: ABdhPJywu5JWRxK+B9j2uRu1VgtWzYJwE2BP9lNYPJ54EuyBhnjLhVD53mw4Mxt1fpFfj3XMCqVb9fY4YZ7pxCE=
-X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7dba:15b:e3fd:a2e5])
- (user=saravanak job=sendgmr) by 2002:a5b:f02:: with SMTP id
- x2mr2082887ybr.99.1620261866544; Wed, 05 May 2021 17:44:26 -0700 (PDT)
-Date:   Wed,  5 May 2021 17:44:22 -0700
-Message-Id: <20210506004423.345199-1-saravanak@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH v1] usb: typec: tcpm: Don't block probing of consumers of
- "connector" nodes
-From:   Saravana Kannan <saravanak@google.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Len Brown <lenb@kernel.org>,
-        Saravana Kannan <saravanak@google.com>
-Cc:     John Stultz <john.stultz@linaro.org>, kernel-team@android.com,
-        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 5 May 2021 20:46:09 -0400
+Received: from epcas2p1.samsung.com (unknown [182.195.41.53])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210506004510epoutp03eef4e2d763c023c76d0b7f7e4822d980~8U5_bsR9W0428104281epoutp03P
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:45:10 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210506004510epoutp03eef4e2d763c023c76d0b7f7e4822d980~8U5_bsR9W0428104281epoutp03P
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1620261910;
+        bh=CiOK3qGZ7nBWoEAHSm+8G1elh3nIWvLZdgFSdlkXHcE=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=gvxJMo7d1beHIupqu5lrZmc9blb3ljuNP6jauNtfhsDDpfIcYbrbvpLQ4nRKRn6gw
+         BntHVRfJrdLcs6mVT3LSmJbXo1r2ESqmHfy2pwEwf2wSuPaSONdAtVaje6flra2NNn
+         h/QaFUHY39PMp86Ma8aHHCWRivzJ7FBIyOVNUkgY=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas2p2.samsung.com (KnoxPortal) with ESMTP id
+        20210506004510epcas2p2b2d6f174318e9894fc6b022182bd4c93~8U59x0lO-1290612906epcas2p2k;
+        Thu,  6 May 2021 00:45:10 +0000 (GMT)
+Received: from epsmges2p1.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4FbFGr6TBCz4x9QJ; Thu,  6 May
+        2021 00:45:08 +0000 (GMT)
+Received: from epcas2p1.samsung.com ( [182.195.41.53]) by
+        epsmges2p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        3A.CF.09604.41C33906; Thu,  6 May 2021 09:45:08 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210506004508epcas2p18bf556bc66604f19e3613badc48e5831~8U5763EJr2032920329epcas2p1e;
+        Thu,  6 May 2021 00:45:08 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210506004508epsmtrp1ff420a29a508c8a748ca8e7a68e547db~8U575_u9x0403004030epsmtrp1j;
+        Thu,  6 May 2021 00:45:08 +0000 (GMT)
+X-AuditID: b6c32a45-38939a8000002584-0f-60933c1449ee
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        C9.46.08163.41C33906; Thu,  6 May 2021 09:45:08 +0900 (KST)
+Received: from KORDO035731 (unknown [12.36.185.47]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20210506004507epsmtip1cab4cc63a47d8d01d1d811ad76a2c1a4~8U57rMT1Y0420704207epsmtip1T;
+        Thu,  6 May 2021 00:45:07 +0000 (GMT)
+From:   "Dongseok Yi" <dseok.yi@samsung.com>
+To:     "'Daniel Borkmann'" <daniel@iogearbox.net>, <bpf@vger.kernel.org>
+Cc:     "'Alexei Starovoitov'" <ast@kernel.org>,
+        "'Andrii Nakryiko'" <andrii@kernel.org>,
+        "'Martin KaFai Lau'" <kafai@fb.com>,
+        "'Song Liu'" <songliubraving@fb.com>,
+        "'Yonghong Song'" <yhs@fb.com>,
+        "'John Fastabend'" <john.fastabend@gmail.com>,
+        "'KP Singh'" <kpsingh@kernel.org>,
+        "'David S. Miller'" <davem@davemloft.net>,
+        "'Jakub Kicinski'" <kuba@kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <willemdebruijn.kernel@gmail.com>
+In-Reply-To: <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
+Subject: RE: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
+ to 4
+Date:   Thu, 6 May 2021 09:45:07 +0900
+Message-ID: <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: ko
+Thread-Index: AQKypHYW3xad5/j2XvChPebQmKG2owG+YoocAqFpyMuo+9TVEA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDJsWRmVeSWpSXmKPExsWy7bCmqa6IzeQEg4+ztS2+/57NbPHl5212
+        i89HjrNZLF74jdlizvkWFoumHSuYLF58eMJo8XxfL5PFhW19rBaXd81hszi2QMzi5+EzzBaL
+        f24Aqlgyg9GBz2PLyptMHhOb37F77Jx1l92j68YlZo9NqzrZPD5vkgtgi8qxyUhNTEktUkjN
+        S85PycxLt1XyDo53jjc1MzDUNbS0MFdSyEvMTbVVcvEJ0HXLzAG6VkmhLDGnFCgUkFhcrKRv
+        Z1OUX1qSqpCRX1xiq5RakJJTYGhYoFecmFtcmpeul5yfa2VoYGBkClSZkJNx4+oDxoK5IhVH
+        Fl9nb2DczN/FyMkhIWAiseNSA0sXIxeHkMAORomrv54yQzifGCV6Xs1mA6kSEvjMKPH0tz5M
+        x/H9s1khinYxSuzYsIUdwnnBKNGw6RcLSBWbgJbEm1ntQFUcHCICrhJHP8aAhJkFTjNLPHti
+        AGJzCjhKHJ/8iRnEFhYIlng6qYkJxGYRUJF49mgOK4jNK2ApcfzwV2YIW1Di5MwnLBBz5CW2
+        v53DDHGQgsTPp8tYIeIiErM728DiIgJOEtcuH2EEuU1C4AqHxMo3v1khGlwkfh1/ygZhC0u8
+        Og7yAIgtJfGyv40d5GYJgXqJ1u4YiN4eRokr+yAWSwgYS8x61s4IUsMsoCmxfpc+RLmyxJFb
+        UKfxSXQc/gs1hVeio00IwlSSmPglHmKGhMSLk5NZJjAqzULy1ywkf81C8ssshFULGFlWMYql
+        FhTnpqcWGxUYIsf0JkZwMtZy3cE4+e0HvUOMTByMhxglOJiVRHgL1vYnCPGmJFZWpRblxxeV
+        5qQWH2I0BYb0RGYp0eR8YD7IK4k3NDUyMzOwNLUwNTOyUBLn/ZlalyAkkJ5YkpqdmlqQWgTT
+        x8TBKdXAZFMe+FnjWKb9qokqbs+W/qw8eNz/mGxbC3vSjp2LxYS5T7OYX5K71OOf2Nd59OG7
+        adrCm+I56ooNta8l7P1g9nH2/ALr4tMHBGXXrgw9pycr4LRDk13NfZ2XwX25O+yyHFm9r9an
+        7ZzJ9yk3rHxG9STfv4nP//F0HnuS/J7xXS+jhvm6x5sfyr55dP+enWSeziT+1q/H7UvVTztv
+        npvb8j7JIlMiUfvT2n8vnmcudXnWLblnr/3B6JfhyS5/pyXomM6+bPLw9QbXUxFR9Ycf1zxJ
+        NY4xVvrNIRId2xez/1zo8R3SnufPZtyaysCa2BT8JaDxqOIiofzCTPm/QTtMUicsOuyRrlvp
+        UpcVXP9DiaU4I9FQi7moOBEALna7V08EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrFIsWRmVeSWpSXmKPExsWy7bCSnK6IzeQEg1vr2Cy+/57NbPHl5212
+        i89HjrNZLF74jdlizvkWFoumHSuYLF58eMJo8XxfL5PFhW19rBaXd81hszi2QMzi5+EzzBaL
+        f24Aqlgyg9GBz2PLyptMHhOb37F77Jx1l92j68YlZo9NqzrZPD5vkgtgi+KySUnNySxLLdK3
+        S+DKuHH1AWPBXJGKI4uvszcwbubvYuTkkBAwkTi+fzZrFyMXh5DADkaJZxuvsncxcgAlJCR2
+        bXaFqBGWuN9yBKrmGaPElO4eZpAEm4CWxJtZ7awg9SIC7hLbjheD1DALXGWW2LBxBVTDKUaJ
+        lTt/soM0cAo4Shyf/AmsWVggUKL/3y1GEJtFQEXi2aM5rCA2r4ClxPHDX5khbEGJkzOfsIDY
+        zALaEr0PWxkhbHmJ7W/nMENcpyDx8+kyVoi4iMTszjawuIiAk8S1y0cYJzAKz0IyahaSUbOQ
+        jJqFpH0BI8sqRsnUguLc9NxiwwKjvNRyveLE3OLSvHS95PzcTYzg6NTS2sG4Z9UHvUOMTByM
+        hxglOJiVRHgL1vYnCPGmJFZWpRblxxeV5qQWH2KU5mBREue90HUyXkggPbEkNTs1tSC1CCbL
+        xMEp1cDkYZCmb9/wZ5eb9D8es0+iER8WFGX8WRSdLr5gmf9WDu0HLy1f8m05nBmuMIP/sZS6
+        qojBJIdF6oVPS3frMVknx5e2vOYq9QypYEn5c5rr4DnTldkl18y+3HSb2XZKWSXknOyBrw1B
+        7rMtbv0N/bRsdkjtk0+/n35wMDG3Wf32ldkilu7Z8mfmZDsksgTsCc6zn3PQlvOV3MF0dZP9
+        K/NrYy77xCdzH7pYXf737sp13QdLJyzbZciUmXa+4urpLqXg0tmzlP/ocegW1l/61qCUW5m9
+        fu4imU3850uN9hV1ZNW1Niq90uIqu3vmb7dnL4totF/yl+mFV06nPrO/Z8Cp+uFyxdlLbaLB
+        036Vr1JiKc5INNRiLipOBABIWw+cPQMAAA==
+X-CMS-MailID: 20210506004508epcas2p18bf556bc66604f19e3613badc48e5831
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210429102143epcas2p4c8747c09a9de28f003c20389c050394a
+References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
+        <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
+        <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-fw_devlink expects DT device nodes with "compatible" property to have
-struct devices created for them. Since the connector node might not be
-populated as a device, mark it as such so that fw_devlink knows not to
-wait on this fwnode being populated as a struct device.
+On Wed, May 05, 2021 at 10:55:10PM +0200, Daniel Borkmann wrote:
+> On 4/29/21 12:08 PM, Dongseok Yi wrote:
+> > tcp_gso_segment check for the size of GROed payload if it is bigger
+> > than the mss. bpf_skb_proto_6_to_4 increases mss, but the mss can be
+> > bigger than the size of GROed payload unexpectedly if data_len is not
+> > big enough.
+> >
+> > Assume that skb gso_size = 1372 and data_len = 8. bpf_skb_proto_6_to_4
+> > would increse the gso_size to 1392. tcp_gso_segment will get an error
+> > with 1380 <= 1392.
+> >
+> > Check for the size of GROed payload if it is really bigger than target
+> > mss when increase mss.
+> >
+> > Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
+> > Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
+> > ---
+> >   net/core/filter.c | 4 +++-
+> >   1 file changed, 3 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/net/core/filter.c b/net/core/filter.c
+> > index 9323d34..3f79e3c 100644
+> > --- a/net/core/filter.c
+> > +++ b/net/core/filter.c
+> > @@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
+> >   		}
+> >
+> >   		/* Due to IPv4 header, MSS can be upgraded. */
+> > -		skb_increase_gso_size(shinfo, len_diff);
+> > +		if (skb->data_len > len_diff)
+> 
+> Could you elaborate some more on what this has to do with data_len specifically
+> here? I'm not sure I follow exactly your above commit description. Are you saying
+> that you're hitting in tcp_gso_segment():
+> 
+>          [...]
+>          mss = skb_shinfo(skb)->gso_size;
+>          if (unlikely(skb->len <= mss))
+>                  goto out;
+>          [...]
 
-Without this patch, USB functionality can be broken on some boards.
+Yes, right
 
-Fixes: f7514a663016 ("of: property: fw_devlink: Add support for remote-endpoint")
-Reported-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Saravana Kannan <saravanak@google.com>
----
-Greg,
+> 
+> Please provide more context on the bug, thanks!
 
-Probably better to take this in driver-core in case I need more fixes
-for fw_devlink on top of this. Those fixes are more likely to land in
-driver-core.
+tcp_gso_segment():
+        [...]
+	__skb_pull(skb, thlen);
 
-Hi John,
+        mss = skb_shinfo(skb)->gso_size;
+        if (unlikely(skb->len <= mss))
+        [...]
 
-Can you please test this and give a Tested-by?
+skb->len will have total GROed TCP payload size after __skb_pull.
+skb->len <= mss will not be happened in a normal GROed situation. But
+bpf_skb_proto_6_to_4 would upgrade MSS by increasing gso_size, it can
+hit an error condition.
 
--Saravana
+We should ensure the following condition.
+total GROed TCP payload > the original mss + (IPv6 size - IPv4 size)
 
- drivers/base/core.c           | 3 ++-
- drivers/usb/typec/tcpm/tcpm.c | 9 +++++++++
- include/linux/fwnode.h        | 1 +
- 3 files changed, 12 insertions(+), 1 deletion(-)
+Due to
+total GROed TCP payload = the original mss + skb->data_len
+IPv6 size - IPv4 size = len_diff
 
-diff --git a/drivers/base/core.c b/drivers/base/core.c
-index 4a8bf8cda52b..628e33939aca 100644
---- a/drivers/base/core.c
-+++ b/drivers/base/core.c
-@@ -150,7 +150,7 @@ void fwnode_links_purge(struct fwnode_handle *fwnode)
- 	fwnode_links_purge_consumers(fwnode);
- }
- 
--static void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
-+void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
- {
- 	struct fwnode_handle *child;
- 
-@@ -164,6 +164,7 @@ static void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
- 	fwnode_for_each_available_child_node(fwnode, child)
- 		fw_devlink_purge_absent_suppliers(child);
- }
-+EXPORT_SYMBOL_GPL(fw_devlink_purge_absent_suppliers);
- 
- #ifdef CONFIG_SRCU
- static DEFINE_MUTEX(device_links_lock);
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index c4fdc00a3bc8..bffa342d4e38 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -5754,6 +5754,15 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
- 	if (!fwnode)
- 		return -EINVAL;
- 
-+	/*
-+	 * This fwnode has a "compatible" property, but is never populated as a
-+	 * struct device. Instead we simply parse it to read the properties.
-+	 * This it breaks fw_devlink=on. To maintain backward compatibility
-+	 * with existing DT files, we work around this by deleting any
-+	 * fwnode_links to/from this fwnode.
-+	 */
-+	fw_devlink_purge_absent_suppliers(fwnode);
-+
- 	/* USB data support is optional */
- 	ret = fwnode_property_read_string(fwnode, "data-role", &cap_str);
- 	if (ret == 0) {
-diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
-index ed4e67a7ff1c..59828516ebaf 100644
---- a/include/linux/fwnode.h
-+++ b/include/linux/fwnode.h
-@@ -187,5 +187,6 @@ extern u32 fw_devlink_get_flags(void);
- extern bool fw_devlink_is_strict(void);
- int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
- void fwnode_links_purge(struct fwnode_handle *fwnode);
-+void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
- 
- #endif
--- 
-2.31.1.527.g47e6f16901-goog
+Finally, we can get the condition.
+skb->data_len > len_diff
+
+> 
+> > +			skb_increase_gso_size(shinfo, len_diff);
+> > +
+> >   		/* Header must be checked, and gso_segs recomputed. */
+> >   		shinfo->gso_type |= SKB_GSO_DODGY;
+> >   		shinfo->gso_segs = 0;
+> >
+
 
