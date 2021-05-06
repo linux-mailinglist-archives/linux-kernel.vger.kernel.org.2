@@ -2,72 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 756213758B7
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:51:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 040A13758BF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:52:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236039AbhEFQwO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:52:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49358 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236000AbhEFQwN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:52:13 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8F50561177;
-        Thu,  6 May 2021 16:51:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620319874;
-        bh=F1DFxIGpJicBhGexwPvhepSUAEDx4pcv9TaGvCXT+ac=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=pgLzgydPZegPnSSJgBoGZ4L0NTMcKHxUQgo2Exv9ocyuSV+lmn4y+kEH7BSWqlWvg
-         1ir9uX+lvIuzR8f1LvZ6vCPQ/kcDdjc7VrgYE+8AenLUnl0IxGw9+ANLzOGY/pJ3ml
-         ZMqhY9UyUPbtE2UDHGWBIYAPUD6ziiBaYVEpdLp7Unp3MJ0otH/bxzcL8Vra9DOS3d
-         hfXfEzOOhziWYJtHZfQ8e47xOQbpMvZCdmOoNU189lPEjrCLD9r9K3O3cZnte/B3tY
-         gHilmw+CVpTb66ej5JDMz/AmM7DQhgesB1NB6eJw3thN8bpkwXvH5N9LlSNZpCaIID
-         nejjCtLBLYxsw==
-Date:   Thu, 6 May 2021 18:51:09 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Carlos Bilbao <bilbao@vt.edu>
-Cc:     gregkh@linuxfoundation.org, Jonathan.Cameron@huawei.com,
-        corbet@lwn.net, hdegoede@redhat.com, linux-kernel@vger.kernel.org,
-        tytso@mit.edu, rdunlap@infradead.org
-Subject: Re: [PATCH v3] Fixed typos in all directories of Documentation/ABI/
-Message-ID: <20210506185109.1d5ac46d@coco.lan>
-In-Reply-To: <4312859.LvFx2qVVIh@iron-maiden>
-References: <2219636.ElGaqSPkdT@iron-maiden>
-        <YJPvl6Si9Xi0w5tG@mit.edu>
-        <5458216.DvuYhMxLoT@iron-maiden>
-        <4312859.LvFx2qVVIh@iron-maiden>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
+        id S236150AbhEFQxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:53:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51646 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236123AbhEFQxp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 12:53:45 -0400
+Received: from mail-lf1-x132.google.com (mail-lf1-x132.google.com [IPv6:2a00:1450:4864:20::132])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C14F0C061763
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 09:52:45 -0700 (PDT)
+Received: by mail-lf1-x132.google.com with SMTP id 124so8768863lff.5
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 09:52:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=RWUyBsKmAFKnzuyTle8X+IqQwBw635MonpJL6f0XlXs=;
+        b=Toi2dF2JP14eu4kDfyv/A1fcV9pf6T+Oy+B/5i1euIBOSEjCs0r1EEBYOP0PvA837S
+         F3eZH0yldWBxMDKkApRB8/r4ihrk53nSarJ8P+bAJKHUUjAZxB6tuMnMXudJJCPPXAdJ
+         ANsg5C6zlsR30xcTNcPKU1hbbeizg3CKUy4gI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=RWUyBsKmAFKnzuyTle8X+IqQwBw635MonpJL6f0XlXs=;
+        b=EbX+Apuq/nXxQNCqcIlapyb8sN0RGHJ7CC6QePOsxpqg2BaufQkmR5jC1owgEZsPgQ
+         hfNEaiyps3kCpkSxV6koJDPXm/A7F0xK3Bw2bJak1xsFFv8JXucMiclsUs6BPH3lRsSw
+         pJIshLYWP8+vXt8HY9+Uy0eVXsqRsajTVYtFGjau/kW+ROpdKqxvQabuZ7pf2fDneaiV
+         BQ45W+gfXqipBCdAQrjuQH4WVMsa+qwjvrVZchBTze/MsdI4GwgCPocBxnkELU36RO7O
+         A9sPG5mXo5eFBC7C+yfx98BzzPpFGWugIHDkhzURTv1rxZeRwmqsqvylNkjcLdRJMKOi
+         vn3A==
+X-Gm-Message-State: AOAM53213XlQxn50BQEvBLNDlIF4N+q1E3YP4CQl0XAGxZwSvhKlKQac
+        qpywwDx816P4sY+gxeMO6RSzPB1LrbxGj+zRNS0=
+X-Google-Smtp-Source: ABdhPJwV+KMzyyqkNAB4vqHmjI4n9qNzMkySywePgTV503k7CqkOn4Lv+7nlLHZMy/o33OeCVJ0vLw==
+X-Received: by 2002:ac2:4c4b:: with SMTP id o11mr3595444lfk.173.1620319964089;
+        Thu, 06 May 2021 09:52:44 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id m11sm1073825ljp.36.2021.05.06.09.52.42
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 09:52:43 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id x20so8769999lfu.6
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 09:52:42 -0700 (PDT)
+X-Received: by 2002:a05:6512:1095:: with SMTP id j21mr3512256lfg.40.1620319962710;
+ Thu, 06 May 2021 09:52:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <a81e116ba3d64aab8d379703bedcf032@codeaurora.org>
+ <CAHk-=wgU-ERpeM0CJnN8JTVVUsBRtgpvU33sKke67V6pZj6A=g@mail.gmail.com> <81ecc015b1bd773f583cc86490e392a0@codeaurora.org>
+In-Reply-To: <81ecc015b1bd773f583cc86490e392a0@codeaurora.org>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 6 May 2021 09:52:26 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiOp-Q0sFhmzGy2R=uMNV7Q26yqjeKNnwCnXgffnuDc9Q@mail.gmail.com>
+Message-ID: <CAHk-=wiOp-Q0sFhmzGy2R=uMNV7Q26yqjeKNnwCnXgffnuDc9Q@mail.gmail.com>
+Subject: Re: [GIT PULL] hexagon changes for v5.13
+To:     Brian Cain <bcain@codeaurora.org>
+Cc:     linux-hexagon <linux-hexagon@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        sidneym@codeaurora.org,
+        clang-built-linux <clang-built-linux@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, 06 May 2021 11:19:54 -0400
-Carlos Bilbao <bilbao@vt.edu> escreveu:
+On Thu, May 6, 2021 at 9:17 AM <bcain@codeaurora.org> wrote:
+>
+> I apologize -- in my initial account setup I'd done the key creation
+> without a signing feature/capability.  So in order to sign the tag I
+> realized I needed a new subkey for signing.  I tried broadcasting the
+> new key but perhaps I did not send it correctly.  I'll try it again
+> today.
+>
+> http://keyserver.ubuntu.com/pks/lookup?search=bcain&fingerprint=on&op=index
 
-> diff --git a/Documentation/ABI/testing/sysfs-bus-pci b/Documentation/ABI/testing/sysfs-bus-pci
-> index ef00fada2efb..93f9c3789d0f 100644
-> --- a/Documentation/ABI/testing/sysfs-bus-pci
-> +++ b/Documentation/ABI/testing/sysfs-bus-pci
-> @@ -139,8 +139,8 @@ Description:
->  		binary file containing the Vital Product Data for the
->  		device.  It should follow the VPD format defined in
->  		PCI Specification 2.1 or 2.2, but users should consider
-> -		that some devices may have malformatted data.  If the
-> -		underlying VPD has a writable section then the
-> +		that some devices may have incorrectly formatted data.  
-> +                If the underlying VPD has a writable section then the
->  		corresponding section of this file will be writable.
+Ok, that ubuntu keyserver worked for me now, and I can verify the tag. Thanks.
 
-Nitpick: please use tabs at the new text, in order to follow
-the same pattern ;-)
-
-With such change:
-
-Reviewed-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-
-
-Thanks,
-Mauro
+         Linus
