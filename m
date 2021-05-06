@@ -2,103 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A0A37546A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:06:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BAAB37546C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:07:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233590AbhEFNHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:07:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56700 "EHLO
+        id S233609AbhEFNI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:08:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56944 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233053AbhEFNHS (ORCPT
+        with ESMTP id S231265AbhEFNIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:07:18 -0400
-Received: from mail-ej1-x62a.google.com (mail-ej1-x62a.google.com [IPv6:2a00:1450:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C84ADC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 06:06:20 -0700 (PDT)
-Received: by mail-ej1-x62a.google.com with SMTP id b25so8154287eju.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 06:06:20 -0700 (PDT)
+        Thu, 6 May 2021 09:08:25 -0400
+Received: from mail-lf1-x12c.google.com (mail-lf1-x12c.google.com [IPv6:2a00:1450:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91379C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 06:07:25 -0700 (PDT)
+Received: by mail-lf1-x12c.google.com with SMTP id z9so7660245lfu.8
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 06:07:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmusvillemoes.dk; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=KWJg+Vt3Q8NVH2ewzCg+bN0L04a/eNeDOHTWG7S8+10=;
-        b=TEUqXuWA7rir5GMdojTKBQi0ozHKO/kw2Kyn2TmsraaXDBG0RE/vEg0hCoiED19Ysh
-         YemqzZVLc/nzKTawNq7bAwRzhgOvdyzbCQtBOE8B2RGxOXGZWra//4uGWU9VIUIW0lRm
-         bSZZlnXHg+plaV5Aza1BbWzs+BJ6laNTL5IRs=
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=s2qBYSONFf8oTRJo223fI5ppnTybdoSNatNgsyTAANk=;
+        b=wzR7O9Exm5PyYdlIe1FDgrFDOr7hTDVS5QgTbB/j/KdTpFChF+64xKDQKoeSzmLEXd
+         aoUjjdo5oWzzvhRJL2ODcKYh6BZsfPS0F4vKyQsp1quojhNXr1NAKdTVhsoxqq5teYSx
+         JSCx4BUpHHEvEwrUoJAZ/8SxbbBsxk6NUjSSV6d//jA38yW8fcC9WR/TMs1Z5+TCb9fp
+         DrKauYDjG/ZqXZ/+LYI8t8l+7pcsNP+HXtFVJ8vJ6oS/Y8N1snz+WlOQTEdKRpqwWvZL
+         QhNm1X1cPxPjXKe1MISIU1EY3YU/oEUMCVgjH6yuttYvn0TbeDaW9lB/fF2+EAIHSHV9
+         bZYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KWJg+Vt3Q8NVH2ewzCg+bN0L04a/eNeDOHTWG7S8+10=;
-        b=NF+ilg1pKRvBP9H1GnB1SgL3uukghhECt1U6Rij2xY8ORgaJ1VU6+UBWbPUn3UnsIi
-         ruMV3MIAgPgFK/YPsYoXeFuzl9ujiQw/I+jv7TJ3LvFYRNuG1wiqhxJv3F91jnlukPMB
-         Lmsgyrt//zCoQSmVu+VuiibDWu/EUZofj4VRs8SAx1Lkf4uEgqWSIAZWwtNbaiWdrr80
-         rqrZc1UfDrpmbEgwYDxkiUzupue0c4pf+HPyXwQ4vA5vDUy0eRQ5JrJrH5OAr+uPVebA
-         r/VzJDKBY5VqgptaKQVvslHEySZICaRNQ9m+PUSUbX+Kt+wfOC9BQVHzRpkv05PjM6g7
-         +hUQ==
-X-Gm-Message-State: AOAM530/4kTd+emzzgpcUiaObZ7b28WslPfbNzleD0wHNbXZoDONOfoZ
-        KOLUspovn6hVeV5vvtjQYtCefjiiPXDIRIYS+qY=
-X-Google-Smtp-Source: ABdhPJxGoEZFw1zzzvPrZ6QjKuGkiPMEf/oV0Q5C+88F8WrG/wmLZSf6SCZIQjq46irVRTAM2LD5iQ==
-X-Received: by 2002:a17:906:46d0:: with SMTP id k16mr4295291ejs.105.1620306379262;
-        Thu, 06 May 2021 06:06:19 -0700 (PDT)
-Received: from [192.168.1.149] ([80.208.71.248])
-        by smtp.gmail.com with ESMTPSA id l26sm1368799ejz.27.2021.05.06.06.06.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 06:06:18 -0700 (PDT)
-Subject: Re: [PATCH] docs: admin-guide: update description for kernel.hotplug
- sysctl
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Kay Sievers <kay.sievers@vrfy.org>,
-        Greg Kroah-Hartman <gregkh@suse.de>
-Cc:     linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210420120638.1104016-1-linux@rasmusvillemoes.dk>
-From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Message-ID: <58ed4157-b8f8-be1b-65f7-89fc2e318a43@rasmusvillemoes.dk>
-Date:   Thu, 6 May 2021 15:06:17 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=s2qBYSONFf8oTRJo223fI5ppnTybdoSNatNgsyTAANk=;
+        b=JHgIEqclDPgAJQVXFier2D15IajBHVagAhhWUE/ocgCFAbPOfVGQg0HnbksDuYBS0b
+         xEKb39K8vm8/AWocEUAMlbvSzzny9bPn9eKNcLj5ig8w5iqjpcVwp5GWaumkWCO6hj/d
+         iCW1xltHdUY3se0SMMvdI9Uk441YZ72Pc+xKwov6lWsaaVpWcXUeS7njduUnCs3CBUHJ
+         0UxH6qfjAwuDvz3120WkHWSZW3hKdgsDZt9sEiLfC+EsM7/5VWEWnFN3fHlQiYLCCQWw
+         WU+kASG8DDuH0d/ALHtu79K+aR5MvYEhOondd7ZKGhvCQfXx3gZjhnVmHYNi7S8rhOas
+         zoPg==
+X-Gm-Message-State: AOAM533qz/6SvkZiiJet+hD2ScETrU347plCpHWtvgGvNPG3wyYDGSrw
+        5JyDZDjSr/Tu+VziQinZthL71fSYe89flxWxv6/JoQ==
+X-Google-Smtp-Source: ABdhPJzR0emV6Ru3vGRyX2JFlINRH5COYpUOUBc7sWBMBmKFHZDusG8gT+rIHcy3lJdt4cRizrkrMAXcf9S968ch0nQ=
+X-Received: by 2002:a19:a418:: with SMTP id q24mr2720790lfc.649.1620306444116;
+ Thu, 06 May 2021 06:07:24 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20210420120638.1104016-1-linux@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210504161222.101536-1-ulf.hansson@linaro.org> <20210504161222.101536-12-ulf.hansson@linaro.org>
+In-Reply-To: <20210504161222.101536-12-ulf.hansson@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 6 May 2021 15:07:12 +0200
+Message-ID: <CACRpkdbvZarQYREKk8g7NFc6wUveMTDdPVxC7+2ny6p=L63UFA@mail.gmail.com>
+Subject: Re: [PATCH 11/11] mmc: core: Add support for Power Off Notification
+ for SD cards
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/04/2021 14.06, Rasmus Villemoes wrote:
-> It's been a few releases since this defaulted to /sbin/hotplug. Update
-> the text, and include pointers to the two CONFIG_UEVENT_HELPER{,_PATH}
-> config knobs whose help text could provide more info, but also hint
-> that the user probably doesn't need to care at all.
-> 
-> Fixes: 7934779a69f1 ("Driver-Core: disable /sbin/hotplug by default")
-> Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+On Tue, May 4, 2021 at 6:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-Ping.
+> Rather than only deselecting the SD card via a CMD7, before we cut power to
+> it at system suspend, at runtime suspend or at shutdown, let's add support
+> for a graceful power off sequence via enabling the SD Power Off
+> Notification feature.
+>
+> Note that, the Power Off Notification feature was added in the SD spec
+> v4.x, which is several years ago. However, it's still a bit unclear how
+> often the SD card vendors decides to implement support for it. To validate
+> these changes a Sandisk Extreme PRO A2 64GB has been used, which seems to
+> work nicely.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-> ---
->  Documentation/admin-guide/sysctl/kernel.rst | 7 ++++++-
->  1 file changed, 6 insertions(+), 1 deletion(-)
-> 
-> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> index 1d56a6b73a4e..c24f57f2c782 100644
-> --- a/Documentation/admin-guide/sysctl/kernel.rst
-> +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> @@ -333,7 +333,12 @@ hotplug
->  =======
->  
->  Path for the hotplug policy agent.
-> -Default value is "``/sbin/hotplug``".
-> +Default value is ``CONFIG_UEVENT_HELPER_PATH``, which in turn defaults
-> +to the empty string.
-> +
-> +This file only exists when ``CONFIG_UEVENT_HELPER`` is enabled. Most
-> +modern systems rely exclusively on the netlink-based uevent source and
-> +don't need this.
->  
->  
->  hung_task_all_cpu_backtrace
-> 
+Given how these things work in some quarters I would not be
+surprised if some SD card vendors tend to start to implement
+this when they see that Linux (Android) has started to support
+it. So let's encourage them:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
+Yours,
+Linus Walleij
