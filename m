@@ -2,48 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41AA1375BE0
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:42:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B339D375BEA
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 21:44:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235670AbhEFTnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 15:43:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33266 "EHLO
+        id S235908AbhEFTpF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 15:45:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33560 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235188AbhEFTnu (ORCPT
+        with ESMTP id S235713AbhEFTox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 15:43:50 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C7C7C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 12:42:51 -0700 (PDT)
+        Thu, 6 May 2021 15:44:53 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0CC4BC06138A
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 12:43:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=b0nnO7A4PZ/ugtZRyGAfLnX1a7hO4hxIVjnHyJDt6sU=; b=IVcHd5OWS4ge6jemhNo4QSbKZP
-        r+7Dj0UWsispFsEaOcG9jNtXm2+RIvZvyChNbVmYpshSz9NyVKouBzdsFNYhi+1CfriFRvyZs7vIT
-        TKBe965rO4r+wXn/n4Z+ImfFJtbUf2xCXsEMZGIVFPeYgNDeB2c8YGgwvtu5ihQc1RA5VtbY6w794
-        YBMyah1DQnuAx2ImcOCyGZJm6saj1zgqhfPX8kzwuzyyd8h3lynBKD3OrM9c+xqT+3U2P/rrQ/nZx
-        KY+fiWJAVIWO74lLqYD/HC+J2XuTYKeaVyXmRS6xCRUPZOSVxOroA46kJxpm3CQG1yM5G6BGRQx8b
-        HsveM8lQ==;
+        bh=rlYMRZGazuFxOBC6DEC/CW1aZdoxBofpz85ptrnldiM=; b=MUzkI2cnL+zcwziKK+s3VV2aNB
+        AeClJPt5r458zOCoeT1BAPlvAR0Wniq1TJiS5Ulqd+YFW7eHK24PLPmWo+tTsk4ZDMRGAzX+59L68
+        s/xLB2EcbI4ORXxaREGro57GXvcancyu+W+5/GctbnH1n9zh9Mw78mHc/eUvh/c3Jn/H4kOzOFUyL
+        MUpMa5xUoppuMU9YpsS/l7lAo5DKw1QDgxf4ohxwsW2y6EQjbRZ5UcX2ajwXVaT8bwfg6UafLDj4f
+        gHsTongUpuPkg6mORNOLow9NmeUhP4+gqKpgsT0ue3kwd2AQipT5c/pD/Kh7t4806+yo6S0oWQOhd
+        J+lGZ0wQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lejtS-005BLu-DW; Thu, 06 May 2021 19:42:42 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lejtT-002ADG-5P; Thu, 06 May 2021 19:42:48 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
          key-exchange X25519 server-signature RSA-PSS (2048 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18A8130035C;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 18A6730035A;
         Thu,  6 May 2021 21:42:39 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id B61A520B96F8C; Thu,  6 May 2021 21:42:38 +0200 (CEST)
-Message-ID: <20210506194157.846870383@infradead.org>
+        id BA99C20B96F8D; Thu,  6 May 2021 21:42:38 +0200 (CEST)
+Message-ID: <20210506194157.906893264@infradead.org>
 User-Agent: quilt/0.66
-Date:   Thu, 06 May 2021 21:33:59 +0200
+Date:   Thu, 06 May 2021 21:34:00 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     x86@kernel.org, jpoimboe@redhat.com, jbaron@akamai.com,
         rostedt@goodmis.org, ardb@kernel.org
 Cc:     linux-kernel@vger.kernel.org, peterz@infradead.org
-Subject: [PATCH 07/13] jump_label, x86: Add variable length patching support
+Subject: [PATCH 08/13] jump_label: Free jump_entry::key bit1 for build use
 References: <20210506193352.719596001@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -51,130 +51,63 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This allows the patching to to emit 2 byte JMP/NOP instruction in
-addition to the 5 byte JMP/NOP we already did. This allows for more
-compact code.
-
-This code is not yet used, as we don't emit shorter code at compile
-time yet.
+Have jump_label_init() set jump_entry::key bit1 to either 0 ot 1
+unconditionally. This makes it available for build-time games.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- arch/x86/kernel/jump_label.c |   53 ++++++++++++++++++++++++++++---------------
- 1 file changed, 35 insertions(+), 18 deletions(-)
+ include/linux/jump_label.h |    7 +++++--
+ kernel/jump_label.c        |   10 ++++++----
+ 2 files changed, 11 insertions(+), 6 deletions(-)
 
---- a/arch/x86/kernel/jump_label.c
-+++ b/arch/x86/kernel/jump_label.c
-@@ -23,44 +23,63 @@ int arch_jump_entry_size(struct jump_ent
- 	return JMP32_INSN_SIZE;
+--- a/include/linux/jump_label.h
++++ b/include/linux/jump_label.h
+@@ -171,9 +171,12 @@ static inline bool jump_entry_is_init(co
+ 	return (unsigned long)entry->key & 2UL;
  }
  
--static const void *
--__jump_label_set_jump_code(struct jump_entry *entry, enum jump_label_type type)
-+struct jump_label_patch {
-+	const void *code;
-+	int size;
-+};
-+
-+static struct jump_label_patch
-+__jump_label_patch(struct jump_entry *entry, enum jump_label_type type)
+-static inline void jump_entry_set_init(struct jump_entry *entry)
++static inline void jump_entry_set_init(struct jump_entry *entry, bool set)
  {
--	const void *expect, *code;
-+	const void *expect, *code, *nop;
- 	const void *addr, *dest;
-+	int size;
- 
- 	addr = (void *)jump_entry_code(entry);
- 	dest = (void *)jump_entry_target(entry);
- 
--	code = text_gen_insn(JMP32_INSN_OPCODE, addr, dest);
-+	size = arch_jump_entry_size(entry);
-+	switch (size) {
-+	case JMP8_INSN_SIZE:
-+		code = text_gen_insn(JMP8_INSN_OPCODE, addr, dest);
-+		nop = x86_nops[size];
-+		break;
-+
-+	case JMP32_INSN_SIZE:
-+		code = text_gen_insn(JMP32_INSN_OPCODE, addr, dest);
-+		nop = x86_nops[size];
-+		break;
-+
-+	default: BUG();
-+	}
- 
- 	if (type == JUMP_LABEL_JMP)
--		expect = x86_nops[5];
-+		expect = nop;
- 	else
- 		expect = code;
- 
--	if (memcmp(addr, expect, JUMP_LABEL_NOP_SIZE)) {
-+	if (memcmp(addr, expect, size)) {
- 		/*
- 		 * The location is not an op that we were expecting.
- 		 * Something went wrong. Crash the box, as something could be
- 		 * corrupting the kernel.
- 		 */
--		pr_crit("jump_label: Fatal kernel bug, unexpected op at %pS [%p] (%5ph != %5ph)) type:%d\n",
--				addr, addr, addr, expect, type);
-+		pr_crit("jump_label: Fatal kernel bug, unexpected op at %pS [%p] (%5ph != %5ph)) size:%d type:%d\n",
-+				addr, addr, addr, expect, size, type);
- 		BUG();
- 	}
- 
- 	if (type == JUMP_LABEL_NOP)
--		code = x86_nops[5];
-+		code = nop;
- 
--	return code;
-+	return (struct jump_label_patch){.code = code, .size = size};
+-	entry->key |= 2;
++	if (set)
++		entry->key |= 2;
++	else
++		entry->key &= ~2;
  }
  
- static inline void __jump_label_transform(struct jump_entry *entry,
- 					  enum jump_label_type type,
- 					  int init)
- {
--	const void *opcode = __jump_label_set_jump_code(entry, type);
-+	const struct jump_label_patch jlp = __jump_label_patch(entry, type);
+ static inline int jump_entry_size(struct jump_entry *entry)
+--- a/kernel/jump_label.c
++++ b/kernel/jump_label.c
+@@ -475,13 +475,14 @@ void __init jump_label_init(void)
  
- 	/*
- 	 * As long as only a single processor is running and the code is still
-@@ -74,12 +93,11 @@ static inline void __jump_label_transfor
- 	 * always nop being the 'currently valid' instruction
- 	 */
- 	if (init || system_state == SYSTEM_BOOTING) {
--		text_poke_early((void *)jump_entry_code(entry), opcode,
--				JUMP_LABEL_NOP_SIZE);
-+		text_poke_early((void *)jump_entry_code(entry), jlp.code, jlp.size);
- 		return;
- 	}
+ 	for (iter = iter_start; iter < iter_stop; iter++) {
+ 		struct static_key *iterk;
++		bool in_init;
  
--	text_poke_bp((void *)jump_entry_code(entry), opcode, JUMP_LABEL_NOP_SIZE, NULL);
-+	text_poke_bp((void *)jump_entry_code(entry), jlp.code, jlp.size, NULL);
- }
+ 		/* rewrite NOPs */
+ 		if (jump_label_type(iter) == JUMP_LABEL_NOP)
+ 			arch_jump_label_transform_static(iter, JUMP_LABEL_NOP);
  
- static void __ref jump_label_transform(struct jump_entry *entry,
-@@ -100,7 +118,7 @@ void arch_jump_label_transform(struct ju
- bool arch_jump_label_transform_queue(struct jump_entry *entry,
- 				     enum jump_label_type type)
- {
--	const void *opcode;
-+	struct jump_label_patch jlp;
+-		if (init_section_contains((void *)jump_entry_code(iter), 1))
+-			jump_entry_set_init(iter);
++		in_init = init_section_contains((void *)jump_entry_code(iter), 1);
++		jump_entry_set_init(iter, in_init);
  
- 	if (system_state == SYSTEM_BOOTING) {
- 		/*
-@@ -111,9 +129,8 @@ bool arch_jump_label_transform_queue(str
- 	}
+ 		iterk = jump_entry_key(iter);
+ 		if (iterk == key)
+@@ -626,9 +627,10 @@ static int jump_label_add_module(struct
  
- 	mutex_lock(&text_mutex);
--	opcode = __jump_label_set_jump_code(entry, type);
--	text_poke_queue((void *)jump_entry_code(entry),
--			opcode, JUMP_LABEL_NOP_SIZE, NULL);
-+	jlp = __jump_label_patch(entry, type);
-+	text_poke_queue((void *)jump_entry_code(entry), jlp.code, jlp.size, NULL);
- 	mutex_unlock(&text_mutex);
- 	return true;
- }
+ 	for (iter = iter_start; iter < iter_stop; iter++) {
+ 		struct static_key *iterk;
++		bool in_init;
+ 
+-		if (within_module_init(jump_entry_code(iter), mod))
+-			jump_entry_set_init(iter);
++		in_init = within_module_init(jump_entry_code(iter), mod);
++		jump_entry_set_init(iter, in_init);
+ 
+ 		iterk = jump_entry_key(iter);
+ 		if (iterk == key)
 
 
