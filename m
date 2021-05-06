@@ -2,151 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7E7A375094
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:12:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FE437509B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:15:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233681AbhEFIN1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 04:13:27 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40886 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233638AbhEFINY (ORCPT
+        id S233705AbhEFIQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:16:13 -0400
+Received: from mail-m176216.qiye.163.com ([59.111.176.216]:19512 "EHLO
+        mail-m176216.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229461AbhEFIQL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 04:13:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620288746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=UC82bAJniKzYDd1rr6hFdgedXUqInssRFspajndQMpU=;
-        b=SK8K2O+TEh9ofT+OChMOa8gvXEKqeKOs94Zso8TwxRT8LPF92W6hNmXxbr9UoUVJY6bRMv
-        Zq9lwm6mmJrdbKrvg75l43ovexfx6ledyQgI67J5MT7hlNS3IviyzQhFWNdGe4JbvlMvsS
-        KObIJy0ZVi5FzBY8WY5eoquaVYCau3Q=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-205-YY5BTwI6P0mqAAaqanTUlg-1; Thu, 06 May 2021 04:12:23 -0400
-X-MC-Unique: YY5BTwI6P0mqAAaqanTUlg-1
-Received: by mail-wr1-f70.google.com with SMTP id x10-20020adfc18a0000b029010d83c83f2aso1867278wre.8
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 01:12:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=UC82bAJniKzYDd1rr6hFdgedXUqInssRFspajndQMpU=;
-        b=FxbHuyNUhnL0p3wL3x5oIN6/mVuy5qXba78ngIEEzCGczvr+toLEeu22Ag+nkm6ShX
-         kYJBrIZ39nlM+c8tlEgxCAG51lreGdLCzvBRVGOU6IAIQfBKcGF4QqY+AAYS5wFEj+du
-         nZjXzQBZFRmi2nXTLZrqBBHDKlHEKIMh1imh2c1MQ/EiQQCamZcGV/gO+eUIxYr840HC
-         UcKYaV9a5rvoQmXU1vzDBkD7PxJF+d4PYg5fJCNE6tnhKO5+3tjmwpYRbRgzSYOdYRyz
-         sYaaIoFCDzo+0RHNW0qgOgQcUj2mE3VnNJjqkvYoYfWROmVYuZSyl1/x00jLU1ynUkfn
-         FImw==
-X-Gm-Message-State: AOAM533TsxFcAPdSLp0Pgcrkb6FqHQgAXOdX1NiMNxOr4qNggGn65mPY
-        zAU3ToBsTe1ynEqx187MEh5W5lOuwkRwHSmYn28ikWr2l9N7uOBvKudm6AXpNf3Cln/DKWdCsm4
-        py4IFfYK2M3S8/bCTNZZqaCis
-X-Received: by 2002:a5d:5351:: with SMTP id t17mr3541246wrv.83.1620288741816;
-        Thu, 06 May 2021 01:12:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxYOEaMbdcz5IXpIt214SV5btSIHDzQM7uxpcmfvjwnZSCT2BWQX5LFXPNw221igJoGM2NA4Q==
-X-Received: by 2002:a5d:5351:: with SMTP id t17mr3541224wrv.83.1620288741611;
-        Thu, 06 May 2021 01:12:21 -0700 (PDT)
-Received: from redhat.com ([2a10:8004:640e:0:d1db:1802:5043:7b85])
-        by smtp.gmail.com with ESMTPSA id x65sm10637130wmg.36.2021.05.06.01.12.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 01:12:20 -0700 (PDT)
-Date:   Thu, 6 May 2021 04:12:17 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Jason Wang <jasowang@redhat.com>
-Cc:     virtualization@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, xieyongji@bytedance.com,
-        stefanha@redhat.com, file@sect.tu-berlin.de, ashish.kalra@amd.com,
-        konrad.wilk@oracle.com, kvm@vger.kernel.org, hch@infradead.org
-Subject: Re: [RFC PATCH V2 0/7] Do not read from descripto ring
-Message-ID: <20210506041057-mutt-send-email-mst@kernel.org>
-References: <20210423080942.2997-1-jasowang@redhat.com>
- <0e9d70b7-6c8a-4ff5-1fa9-3c4f04885bb8@redhat.com>
+        Thu, 6 May 2021 04:16:11 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m176216.qiye.163.com (Hmail) with ESMTPA id 16285C20158;
+        Thu,  6 May 2021 16:15:12 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        "Alexander A. Klimov" <grandmaster@al2klimov.de>,
+        Wan Jiabing <wanjiabing@vivo.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net
+Subject: [PATCH] docs/zh_CN: fix reference file and update translations
+Date:   Thu,  6 May 2021 16:14:01 +0800
+Message-Id: <20210506081414.14004-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0e9d70b7-6c8a-4ff5-1fa9-3c4f04885bb8@redhat.com>
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQh4eHVZDT0IeQkIfGEhOQxhVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6PE06Mww4ND8TPEIsAhMuGTgM
+        KTAKFE9VSlVKTUlLSUNDQkpJTUhOVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFIT0xPNwY+
+X-HM-Tid: 0a7940bebb63d976kuws16285c20158
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 11:20:30AM +0800, Jason Wang wrote:
-> 
-> 在 2021/4/23 下午4:09, Jason Wang 写道:
-> > Hi:
-> > 
-> > Sometimes, the driver doesn't trust the device. This is usually
-> > happens for the encrtpyed VM or VDUSE[1]. In both cases, technology
-> > like swiotlb is used to prevent the poking/mangling of memory from the
-> > device. But this is not sufficient since current virtio driver may
-> > trust what is stored in the descriptor table (coherent mapping) for
-> > performing the DMA operations like unmap and bounce so the device may
-> > choose to utilize the behaviour of swiotlb to perform attacks[2].
-> > 
-> > To protect from a malicous device, this series store and use the
-> > descriptor metadata in an auxiliay structure which can not be accessed
-> > via swiotlb instead of the ones in the descriptor table. This means
-> > the descriptor table is write-only from the view of the driver.
-> > 
-> > Actually, we've almost achieved that through packed virtqueue and we
-> > just need to fix a corner case of handling mapping errors. For split
-> > virtqueue we just follow what's done in the packed.
-> > 
-> > Note that we don't duplicate descriptor medata for indirect
-> > descriptors since it uses stream mapping which is read only so it's
-> > safe if the metadata of non-indirect descriptors are correct.
-> > 
-> > For split virtqueue, the change increase the footprint due the the
-> > auxiliary metadata but it's almost neglectlable in the simple test
-> > like pktgen or netpef.
-> > 
-> > Slightly tested with packed on/off, iommu on/of, swiotlb force/off in
-> > the guest.
-> > 
-> > Please review.
-> > 
-> > Changes from V1:
-> > - Always use auxiliary metadata for split virtqueue
-> > - Don't read from descripto when detaching indirect descriptor
-> 
-> 
-> Hi Michael:
-> 
-> Our QE see no regression on the perf test for 10G but some regressions
-> (5%-10%) on 40G card.
-> 
-> I think this is expected since we increase the footprint, are you OK with
-> this and we can try to optimize on top or you have other ideas?
-> 
-> Thanks
+In commit da514157c4f06 ("docs: make reporting-bugs.rst obsolete"),
+reporting-bugs.rst was deleted and replaced by reporting-issues.rst.
 
-Let's try for just a bit, won't make this window anyway:
+In commit cf6d6fc279360 ("docs: process/howto.rst: make sections on
+bug reporting match practice"), related sections were adjusted.
 
-I have an old idea. Add a way to find out that unmap is a nop
-(or more exactly does not use the address/length).
-Then in that case even with DMA API we do not need
-the extra data. Hmm?
+Fix the reference file and update some translations.
 
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ .../translations/zh_CN/process/howto.rst         | 16 +++++++---------
+ 1 file changed, 7 insertions(+), 9 deletions(-)
 
-> 
-> > 
-> > [1]
-> > https://lore.kernel.org/netdev/fab615ce-5e13-a3b3-3715-a4203b4ab010@redhat.com/T/
-> > [2]
-> > https://yhbt.net/lore/all/c3629a27-3590-1d9f-211b-c0b7be152b32@redhat.com/T/#mc6b6e2343cbeffca68ca7a97e0f473aaa871c95b
-> > 
-> > Jason Wang (7):
-> >    virtio-ring: maintain next in extra state for packed virtqueue
-> >    virtio_ring: rename vring_desc_extra_packed
-> >    virtio-ring: factor out desc_extra allocation
-> >    virtio_ring: secure handling of mapping errors
-> >    virtio_ring: introduce virtqueue_desc_add_split()
-> >    virtio: use err label in __vring_new_virtqueue()
-> >    virtio-ring: store DMA metadata in desc_extra for split virtqueue
-> > 
-> >   drivers/virtio/virtio_ring.c | 201 +++++++++++++++++++++++++----------
-> >   1 file changed, 144 insertions(+), 57 deletions(-)
-> > 
+diff --git a/Documentation/translations/zh_CN/process/howto.rst b/Documentation/translations/zh_CN/process/howto.rst
+index ee3dee476d57..930ebc215fad 100644
+--- a/Documentation/translations/zh_CN/process/howto.rst
++++ b/Documentation/translations/zh_CN/process/howto.rst
+@@ -275,14 +275,8 @@ Linux-next 集成测试树
+ 报告bug
+ -------
+ 
+-bugzilla.kernel.org是Linux内核开发者们用来跟踪内核Bug的网站。我们鼓励用
+-户在这个工具中报告找到的所有bug。如何使用内核bugzilla的细节请访问：
+-
+-	http://test.kernel.org/bugzilla/faq.html
+-
+-内核源码主目录中的:ref:`admin-guide/reporting-bugs.rst <reportingbugs>`
+-文件里有一个很好的模板。它指导用户如何报告可能的内核bug以及需要提供哪些信息
+-来帮助内核开发者们找到问题的根源。
++内核源码主目录中的 'Documentation/admin-guide/reporting-issues.rst' 文件介绍了
++如何报告可能的内核bug，以及需要提供哪些信息来帮助内核开发者们找到问题的根源。
+ 
+ 
+ 利用bug报告
+@@ -293,7 +287,11 @@ bugzilla.kernel.org是Linux内核开发者们用来跟踪内核Bug的网站。
+ 者感受到你的存在。修改bug是赢得其他开发者赞誉的最好办法，因为并不是很多
+ 人都喜欢浪费时间去修改别人报告的bug。
+ 
+-要尝试修改已知的bug，请访问 http://bugzilla.kernel.org 网址。
++要尝试修复已知的bug，请找到你感兴趣的子系统，查看报告该子系统bug的
++MAINTAINERS文件，通常它是一个邮件列表，很少有bug追踪信息。在这个
++文件搜索获取最新的报告，并在你认为合适的地方提供帮助。你可能还需要查看
++https://bugzilla.kernel.org 以获取bug报告，只有少数一些内核子系统积极地
++通过它进行报告或追踪，但是整个内核的bug都被归档在那里。
+ 
+ 
+ 邮件列表
+-- 
+2.25.1
 
