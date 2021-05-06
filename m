@@ -2,77 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D9BE37516B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:20:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1921B375160
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:18:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233361AbhEFJVl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:21:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34366 "EHLO
+        id S234103AbhEFJTA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:19:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33746 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233216AbhEFJVk (ORCPT
+        with ESMTP id S229800AbhEFJS7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:21:40 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E5FC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 02:20:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=gqwbzSXbrw1GKfT0NFkEh+Wl8x5nZXjehzcXALXxRbo=; b=syZXdjjijpJDxxhmNaevOdZ/ed
-        IOmongEzh9jClU8ysIJlUEzGaXOXdCWMg79/bFjg58v2l2mVNPiqJQ3aiP3MxvDM8XwQpr/QBe1g9
-        tMaLmjucUGX8HyrcrRVDyllHyKlRQAkUVmVK4mG5OACmBffg4JL+erihHVznJAiUiD44QRcFaZsn7
-        jamnjK/nfQq2XHcKtaf9eCFN+H7PNZPTmjfcWXlNPWbecrTJPN7hg7yANSRkj4dfIXK5Ql973ugvN
-        iulgjBR98H0cKUQPeP6jry+7tWvtmleqANL7MeQ7OPr3oqDD8DB5Lybzxmo4BDaUETDuzVjCNKnZG
-        5hbL27zg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lea8Z-001X1j-N8; Thu, 06 May 2021 09:17:55 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BF209300103;
-        Thu,  6 May 2021 11:17:38 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 9CF4D2018C406; Thu,  6 May 2021 11:17:38 +0200 (CEST)
-Date:   Thu, 6 May 2021 11:17:38 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.comi>, Mel Gorman <mgorman@suse.de>,
-        Len Brown <len.brown@intel.com>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Ravi V. Shankar" <ravi.v.shankar@intel.com>,
-        Ricardo Neri <ricardo.neri@intel.com>,
-        Quentin Perret <qperret@google.com>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-kernel@vger.kernel.org, Aubrey Li <aubrey.li@intel.com>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>
-Subject: Re: [PATCH v2 3/4] sched/fair: Consider SMT in ASYM_PACKING load
- balance
-Message-ID: <YJO0MiHsdeW7umUL@hirez.programming.kicks-ass.net>
-References: <20210414020436.12980-1-ricardo.neri-calderon@linux.intel.com>
- <20210414020436.12980-4-ricardo.neri-calderon@linux.intel.com>
- <YI/H2dBB5M5da6ba@hirez.programming.kicks-ass.net>
- <20210506042844.GB3388@ranerica-svr.sc.intel.com>
+        Thu, 6 May 2021 05:18:59 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49631C061574;
+        Thu,  6 May 2021 02:18:01 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620292678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZcmkqlUylzbd3OMjA5tEcjCZWOb3uLI4wszbu/QMDdA=;
+        b=pTxZiMW8fMVAvtX4OcqL0lRGMDH+idxl0h5uAnsf2QVf29ScCs8GIWlkUWHU9e1Lcb6I3o
+        x0gak6589F/KTg5JzzjtYvjJsFMNV03nQHS+KftaJi028jnXr7aRYgRJfQ58RGXdkwMp5u
+        SsqDfsQWivhdpoaaSpMxT4sfBO4rhyRMKpS9SFpsgDzX1rdGm9qfBC7uqg2T38LyIXGVX7
+        6pO0PBYQIimY0kkgazs+w141yUz+uWQe1haKD3nQZpbFf0PzUbrofUKsaVWnU6eQsPer/D
+        UlVCpZZEGC7r944EnCi7KUlf4gDpih4Ze0iGohxSpwm3lSxZt6ZLf6kAcx2fcg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620292678;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZcmkqlUylzbd3OMjA5tEcjCZWOb3uLI4wszbu/QMDdA=;
+        b=/pmsrQuVa/AWf+JQDp9slyDj6xABmiEb9mz10RFpaM4czEv6pgI4pskSrQvmF/4+xxRInN
+        84IHCgi/QGH8AZBw==
+To:     Jens Axboe <axboe@kernel.dk>, Stefan Metzmacher <metze@samba.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andy Lutomirski <luto@kernel.org>, linux-kernel@vger.kernel.org,
+        io-uring@vger.kernel.org, x86@kernel.org
+Subject: Re: [PATCH v2] io_thread/x86: setup io_threads more like normal user space threads
+In-Reply-To: <ff1f6a6c-9a11-acda-13cc-e67440a85d87@kernel.dk>
+References: <20210411152705.2448053-1-metze@samba.org> <20210505110310.237537-1-metze@samba.org> <df4b116a-3324-87b7-ff40-67d134b4e55c@kernel.dk> <878s4soncx.ffs@nanos.tec.linutronix.de> <875yzwomvk.ffs@nanos.tec.linutronix.de> <ff1f6a6c-9a11-acda-13cc-e67440a85d87@kernel.dk>
+Date:   Thu, 06 May 2021 11:17:57 +0200
+Message-ID: <87y2csmda2.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506042844.GB3388@ranerica-svr.sc.intel.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 09:28:44PM -0700, Ricardo Neri wrote:
-> Thank you Peter! This code worked well and it looks better than what I
-> proposed. May I add your Originally-by: and Signed-off-by: tags in a
-> patch when I post v3?
+On Wed, May 05 2021 at 17:49, Jens Axboe wrote:
+> On 5/5/21 4:07 PM, Thomas Gleixner wrote:
+> Thanks, I've added that and modified the subject line to adhere to that
+> style.
+>
+> Again, I'm fine with this going through the tip tree, just wanted to
+> make sure it wasn't lost. So do just let me know, it's head-of-branch
+> here and easy to chop if need be.
 
-Sure
+Let it there.
