@@ -2,180 +2,234 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1371F3758DC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:04:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62F6C3758E6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:06:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236156AbhEFRFM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:05:12 -0400
-Received: from mx0b-002c1b01.pphosted.com ([148.163.155.12]:22664 "EHLO
-        mx0b-002c1b01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236052AbhEFRFL (ORCPT
+        id S236187AbhEFRH1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:07:27 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:51354 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236042AbhEFRHY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:05:11 -0400
-Received: from pps.filterd (m0127841.ppops.net [127.0.0.1])
-        by mx0b-002c1b01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146GvSHv004005;
-        Thu, 6 May 2021 10:03:10 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nutanix.com; h=from : to : cc :
- subject : date : message-id : content-transfer-encoding : content-type :
- mime-version; s=proofpoint20171006;
- bh=PI+3+N0cuqklw2gpE3JR2fvCp/DBCDavESkuZhmTGJA=;
- b=OC8RA8c4fjJ7x2QM2mBgzYmBVcDHD7yLxB7xsYDggsnRry5OOF8ORtGRBFvbg7IFaCX+
- WoxBCYkszZU3HCWHg1qkyOVUY3rxzR1L6X4gYrrryq5geHyz363MJegZV1MNdXukbPZb
- AK6JJXc6nnUgeNePKxGyobwj+bJXASojWnaO2FGuluv5n0hg5eiBkdfGeEK8d1iStSU9
- srsgBitAYlCFNfAhw5egmbG+E73RjDx1Dq/6W/Qd3Dr+guQwEWlsmg5/mcMagZ3ge29Q
- MQ17tkJP2YoUIk1mw6ZgtcipMK4ZNtr8RNzaBQPxMWu1K45cPqeSuR2jhvofqViOqqOg vA== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2102.outbound.protection.outlook.com [104.47.58.102])
-        by mx0b-002c1b01.pphosted.com with ESMTP id 38chwf8da4-1
+        Thu, 6 May 2021 13:07:24 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146H3VX3004413;
+        Thu, 6 May 2021 13:05:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : reply-to : to : cc : date : in-reply-to : references : content-type
+ : mime-version : content-transfer-encoding; s=pp1;
+ bh=pGWlz4VwvIVnhlCISXuTLo7g6RVkGHUJxaqvyitGnUs=;
+ b=L4JbCYQKpia4zXEErVwRDpp3Tt9eZ6nBFNsGgLbhcYZqFeu+uQs6PI8f85SflHt2lxSl
+ tX8Rup9C43dsj33fdN60oXaBui0xhN4RsXwji4kfe79AOroNNVZTtYPxE9p17xBnMFKu
+ o99/UowDYgNxHWs/tGYwcpqHbGZTadtN14pIhNj3FzFENZiYDPY14pJNi7oLUrDPap+J
+ JUDYF1ULAoOLbtodlf17rc6MUKVLyEUCzGfxFZ3EddNcEJJGKjYzucEDZcFbzYyOS5Rp
+ 8Ob2ngvz+gq5+S0m46xbA6u3TP39dagXhgMeljI8P8gjjA5znTskdztw8IjMCJorcC4N dg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38cmbsrbrb-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 May 2021 10:03:09 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Mb1CwvcNlx3uCU2fGkcMLYAHKUCEVRTKoZAH8NzUZRE6zoi6aGx+ZKCfjKzAD8q9DeE4ozF403VkLknYOeBkgChFX5+jKlh7ChRSYvphzXjn7EXzaORr8V4l+cUw9PApGZu4bkenCZs2G6yT4qnt2Ozt4Ch5fIFd7hY2yfACg/R4yAQzbv71emPFB4ersbfMdhVPfRtAiNU+YmzoDUNAlYQOhcZmI/v3tOlCiuX52Hs93tsgiaVM9/aaRLqEIuHytR2yAg2oYFKDnHyQvJYPWxVzGq7026ptsd3wlg9EhtfmTHWO8hW/VqZfQvSvei7wqxdcTvwaocFuXcnQ19AQMQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=PI+3+N0cuqklw2gpE3JR2fvCp/DBCDavESkuZhmTGJA=;
- b=ZZSxe/8ZilEnbtGS+8xZ+/JLQ0Z9dXkkS1xqHVJ46iU8f4XE4MPuXXne0My7gHB4JUbXaXMmyNj0+Tl6L8ucxsuxq69gfZeZGdsyd8rpVtK5XA/lV0zdDIPtOadjbvGyXh8PZrpS1awJbxy5qktmaDe9sfFyihx8xoVNpPXDJeHMDM4ONAarHJLHqGEnzNYw9axlkSnyClexmQJUSR41HSfrx9Bzio0pvZ5GMdorbEy/5obPUP+ec6VsAeufs+bCEvu7R0c9QQejQVP5jIRGl6VLc9Z1yth/JNRLrmhzrjcufEg25G7kmijjL6xV8pLIa3L6Ut0gPPGRkGOp510nAw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nutanix.com; dmarc=pass action=none header.from=nutanix.com;
- dkim=pass header.d=nutanix.com; arc=none
-Authentication-Results: nutanix.com; dkim=none (message not signed)
- header.d=none;nutanix.com; dmarc=none action=none header.from=nutanix.com;
-Received: from BL0PR02MB4579.namprd02.prod.outlook.com (2603:10b6:208:4b::10)
- by MN2PR02MB6464.namprd02.prod.outlook.com (2603:10b6:208:184::29) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.25; Thu, 6 May
- 2021 17:03:08 +0000
-Received: from BL0PR02MB4579.namprd02.prod.outlook.com
- ([fe80::75cf:5b99:f963:cc07]) by BL0PR02MB4579.namprd02.prod.outlook.com
- ([fe80::75cf:5b99:f963:cc07%5]) with mapi id 15.20.4087.045; Thu, 6 May 2021
- 17:03:07 +0000
-From:   Jon Kohler <jon@nutanix.com>
-Cc:     Jon Kohler <jon@nutanix.com>, stable@vger.kernel.org,
-        Babu Moger <babu.moger@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        =?UTF-8?q?Radim=20Kr=C4=8Dm=C3=A1=C5=99?= <rkrcmar@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
+        Thu, 06 May 2021 13:05:46 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.43/8.16.0.43) with SMTP id 146H5RCk018275;
+        Thu, 6 May 2021 13:05:46 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38cmbsrbqh-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 May 2021 13:05:46 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 146GwcO7001722;
+        Thu, 6 May 2021 17:05:44 GMT
+Received: from b03cxnp07027.gho.boulder.ibm.com (b03cxnp07027.gho.boulder.ibm.com [9.17.130.14])
+        by ppma03dal.us.ibm.com with ESMTP id 38bee8rj2f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 May 2021 17:05:44 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp07027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 146H5h4m21692716
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 May 2021 17:05:43 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 3093178063;
+        Thu,  6 May 2021 17:05:43 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2275978066;
+        Thu,  6 May 2021 17:05:30 +0000 (GMT)
+Received: from jarvis (unknown [9.80.192.238])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu,  6 May 2021 17:05:29 +0000 (GMT)
+Message-ID: <8eb933f921c9dfe4c9b1b304e8f8fa4fbc249d84.camel@linux.ibm.com>
+Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to
+ create "secret" memory areas
+From:   James Bottomley <jejb@linux.ibm.com>
+Reply-To: jejb@linux.ibm.com
+To:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] KVM: x86: move saving of arch.host_pkru to kvm_arch_vcpu_load in 5.4.y
-Date:   Thu,  6 May 2021 13:02:41 -0400
-Message-Id: <20210506170241.72133-1-jon@nutanix.com>
-X-Mailer: git-send-email 2.30.1 (Apple Git-130)
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [2601:19b:c501:64d0:a9a2:6149:85cc:8a4]
-X-ClientProxiedBy: BN9PR03CA0337.namprd03.prod.outlook.com
- (2603:10b6:408:f6::12) To BL0PR02MB4579.namprd02.prod.outlook.com
- (2603:10b6:208:4b::10)
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Date:   Thu, 06 May 2021 10:05:27 -0700
+In-Reply-To: <996dbc29-e79c-9c31-1e47-cbf20db2937d@redhat.com>
+References: <20210303162209.8609-1-rppt@kernel.org>
+         <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
+         <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
+         <996dbc29-e79c-9c31-1e47-cbf20db2937d@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from C02F13YVQ05N.corp.nutanix.com (2601:19b:c501:64d0:a9a2:6149:85cc:8a4) by BN9PR03CA0337.namprd03.prod.outlook.com (2603:10b6:408:f6::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Thu, 6 May 2021 17:03:06 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 910866a2-8cfe-4407-e8c4-08d910b0d231
-X-MS-TrafficTypeDiagnostic: MN2PR02MB6464:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <MN2PR02MB6464A2C3D069594638756385AF589@MN2PR02MB6464.namprd02.prod.outlook.com>
-x-proofpoint-crosstenant: true
-X-MS-Oob-TLC-OOBClassifiers: OLM:612;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: o4UVTiCD4fEH3zDNwCD4XEMMjxXX4hIIDnjIO5hXX9Z1GTjdNAe/kpAch9UCAsSsUMYEjEUT8CUqqfXrjDCFj0eb9zkAy6p19X1VXGgk56UHzCcBfSusabZsexgfwUPxgnJJDFxl/GJL8uZWnYZhK2HJ3C9NrqcrRg7SnSaeP7LV3xJdiqi1YfXMgRLBm97sgNCqx/zWH7cv/Kx9wre5gyR7gjabEpwFgZK8oRVorSCRP1/c/55QFARlQe/PnW1R/8CiMoml7L2vk2kPV1p3W6JKOx9VfVoBohD3FcJ5u8QYhi99Qr74Wsj+lw4M035vEJi0Jsh9iApRx9D3HMfQpr8pOxufSJr/ngZkJEsjTYF5STm2c4vh9tZPwu4DU0YPgNNoAW4VVNRUYdJnFnrtDjdaUjCM1ZpYgcBrm/gwdJIlUsCyyRTisR0gV/iOtqCkalPpryNDZ5QvNBE0SX/VxqjrlawZwl0vfQydimn1XZfGP65zdPru7CPPmqx3OnOaioPlZ9URMyCegfSSQdDhBt9qbvB4jY/17iSx7nuVdUlbUl1xJUVUnxN/31LcAjUv4o2mTKWQIZbI+89CDuKFBoOW0FnxlSeob31VvjZiutSisMzYn66cSuqc+eToBkAaMnlGzyv0C5OtCxoJiX61cg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR02MB4579.namprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(346002)(376002)(39850400004)(396003)(136003)(366004)(83380400001)(66476007)(16526019)(186003)(66556008)(38100700002)(6666004)(1076003)(2616005)(66946007)(86362001)(54906003)(2906002)(7696005)(478600001)(6486002)(109986005)(316002)(7416002)(52116002)(8676002)(8936002)(36756003)(5660300002)(4326008)(266003);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ExFbT6AF0k8cJ4JwjCQWkqlV9C+gtHfrTR4b2VgmbYutbXqAbDbGoJihlJZL?=
- =?us-ascii?Q?y4fs0bxIXn4U0YnSJUFSXepI4H4ovfT4Jz9Jlc+wDusQLu9MiePxNuALmY1y?=
- =?us-ascii?Q?K4aac3mPNwMOZnZjmbmV9qFct8rrkvcefvJ9L638z4YshG/6YpDULQPISlha?=
- =?us-ascii?Q?a4MXJ6qJ6woMSeZ3mZXiWKR8WKsiy14AVfdKVzQKd/IT3FdCda2OiPws7W5z?=
- =?us-ascii?Q?c7k2gfpHKJ/1eUDLO84l0IorsJPvJxBiB+Ur3bpoGjD6Hk79KH2wvHO7Rv84?=
- =?us-ascii?Q?yL5ISmeu1ujZYdUfkiyr81p2fK6vUC78H3aYDxxSx0oWHHtRe27JNIADVgGM?=
- =?us-ascii?Q?xNGQLTQix0rA0PfQ87LV5GZoqNMHvzSChqh0UCHV1yVNuynUdZ2BbzGmgZIM?=
- =?us-ascii?Q?Js39eb0wuUqALK3xR4a30hl2joxt5Bg5P/MRLs4iIsM6wUD9S4EIom89+JLD?=
- =?us-ascii?Q?m3cFtzRhtX0um4Qk+8MQ526puNADi2TUHy/YJ0tpcrSJVaf5BUFujGXXCsfZ?=
- =?us-ascii?Q?904WtJyTpottpbKXK4iZ1z5OHEFSciHa52FuUhXT5RhAJzeFJfoRLstwRkXD?=
- =?us-ascii?Q?dpCgxZE1RmAQZwye7uLvbzKNd+KcADt5fZp66rNBSre8uAkzbnrnbUvVvjHf?=
- =?us-ascii?Q?AxenMPEA1QCaNXLcJCEOSUE+lA+G8xg5hQ57iDhvJrmjHhqnh28M3IR6bTXM?=
- =?us-ascii?Q?F7pPxyPSp/Du+PuCQHOlxSd4D2VKQ4au4G4MIeQPqZZcEsHiPpeawfnh6m+B?=
- =?us-ascii?Q?cw90n4LIFuCMvHDku7s4uYboNqN9wWyvEMaO78Vr38cbmV6tpDZiDWlcjgeG?=
- =?us-ascii?Q?1jYEDzsN2TZtmSUQONIxhL14SQRP1jnXKgSasYgoYpbDQgSBI+5FoKoUkriK?=
- =?us-ascii?Q?YSLIn395BseYsLO7eYvbeuaPv75aUeFvBwrRxhTd4Psp2Gwfymx54I/cWE7E?=
- =?us-ascii?Q?mpvIyxFk+ilB+bb8Hm5GqVzXmeiycAblY+CIBmJl9+INSw97OQk+Au5MygJb?=
- =?us-ascii?Q?90cTH5u+Fm1pSFR+CPqErET8v7Goztb0WVJSP/gG08Tggr17+W8B3U4E6O8U?=
- =?us-ascii?Q?gEEs4WwNcxSW3q8XY9tHPySJDV9QnOqbYwxsAn7dURomx53LZgHi7AjY8viY?=
- =?us-ascii?Q?BrPZkhL5og8pclCSWvAtOWUD/TKHeFhY/wdGqCRp+o1R1TZCvpyK19L942rw?=
- =?us-ascii?Q?d0yhV6+OxJxhX5lbhExLgvpBv0l8UQQWlbQwOXqUikaz37xAjOnaVxOyci/Z?=
- =?us-ascii?Q?n525ZDLDy5Da8tlzVG8uL++xCas9dYuFe7De8c1+aNnIeYkksQKBf1+nzXux?=
- =?us-ascii?Q?+7ert9AS4zRAwoBuMJRavz2l9dYI04vA3NFMQIcv6SZJTSdDQlX4AC6vR4p/?=
- =?us-ascii?Q?UM3LAIRKts5mXFuv9o/EygNvxZcR?=
-X-OriginatorOrg: nutanix.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 910866a2-8cfe-4407-e8c4-08d910b0d231
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR02MB4579.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 17:03:07.8049
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bb047546-786f-4de1-bd75-24e5b6f79043
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: VHG/kIMnWfSftmRmrf4SKPtMfCbbVInLv/5s99id4YwkkEuC2fCkfUfyR0y4sUoXO/K+TqYY5+sDPR2pO+aD9MX/lk0QIzfrv6tOnK0pFBs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN2PR02MB6464
-X-Proofpoint-ORIG-GUID: IjWa_SNOYMXzEnyYEdQFXr5blDfUhqlt
-X-Proofpoint-GUID: IjWa_SNOYMXzEnyYEdQFXr5blDfUhqlt
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 0d6KK0iqrRhJxGIQqX0knMWgBsxJjth9
+X-Proofpoint-GUID: lpT8nr0vq331XradvviecCL776aCH-PF
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-05-06_10:2021-05-06,2021-05-06 signatures=0
-X-Proofpoint-Spam-Reason: safe
-To:     unlisted-recipients:; (no To-header on input)
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 mlxscore=0
+ suspectscore=0 bulkscore=0 priorityscore=1501 impostorscore=0
+ lowpriorityscore=0 spamscore=0 adultscore=0 phishscore=0 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105060118
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 37486135d3a7b03acc7755b63627a130437f066a upstream.
+On Thu, 2021-05-06 at 18:45 +0200, David Hildenbrand wrote:
+> On 06.05.21 17:26, James Bottomley wrote:
+> > On Wed, 2021-05-05 at 12:08 -0700, Andrew Morton wrote:
+> > > On Wed,  3 Mar 2021 18:22:00 +0200 Mike Rapoport <rppt@kernel.org
+> > > >
+> > > wrote:
+> > > 
+> > > > This is an implementation of "secret" mappings backed by a file
+> > > > descriptor.
+> > > > 
+> > > > The file descriptor backing secret memory mappings is created
+> > > > using a dedicated memfd_secret system call The desired
+> > > > protection mode for the memory is configured using flags
+> > > > parameter of the system call. The mmap() of the file descriptor
+> > > > created with memfd_secret() will create a "secret" memory
+> > > > mapping. The pages in that mapping will be marked as not
+> > > > present in the direct map and will be present only in the page
+> > > > table of the owning mm.
+> > > > 
+> > > > Although normally Linux userspace mappings are protected from
+> > > > other users, such secret mappings are useful for environments
+> > > > where a hostile tenant is trying to trick the kernel into
+> > > > giving them access to other tenants mappings.
+> > > 
+> > > I continue to struggle with this and I don't recall seeing much
+> > > enthusiasm from others.  Perhaps we're all missing the value
+> > > point and some additional selling is needed.
+> > > 
+> > > Am I correct in understanding that the overall direction here is
+> > > to protect keys (and perhaps other things) from kernel
+> > > bugs?  That if the kernel was bug-free then there would be no
+> > > need for this feature?  If so, that's a bit sad.  But realistic I
+> > > guess.
+> > 
+> > Secret memory really serves several purposes. The "increase the
+> > level of difficulty of secret exfiltration" you describe.  And, as
+> > you say, if the kernel were bug free this wouldn't be necessary.
+> > 
+> > But also:
+> > 
+> >     1. Memory safety for use space code.  Once the secret memory is
+> >        allocated, the user can't accidentally pass it into the
+> > kernel to be
+> >        transmitted somewhere.
+> 
+> That's an interesting point I didn't realize so far.
+> 
+> >     2. It also serves as a basis for context protection of virtual
+> >        machines, but other groups are working on this aspect, and
+> > it is
+> >        broadly similar to the secret exfiltration from the kernel
+> > problem.
+> > 
+> 
+> I was wondering if this also helps against CPU microcode issues like 
+> spectre and friends.
 
-In 5.4.y only, vcpu->arch.host_pkru is being set on every run thru
-of vcpu_enter_guest, when it really only needs to be set on load. As
-a result, we're doing a rdpkru on supported CPUs on every iteration
-of vcpu_enter_guest even though the value never changes.
+It can for VMs, but not really for the user space secret memory use
+cases ... the in-kernel mitigations already present are much more
+effective.
 
-Mainline and 5.10.y already has host_pkru being initialized in
-kvm_arch_vcpu_load. This change is 5.4.y specific and moves
-host_pkru save to kvm_arch_vcpu_load.
+> 
+> > > Is this intended to protect keys/etc after the attacker has
+> > > gained the ability to run arbitrary kernel-mode code?  If so,
+> > > that seems optimistic, doesn't it?
+> > 
+> > Not exactly: there are many types of kernel attack, but mostly the
+> > attacker either manages to effect a privilege escalation to root or
+> > gets the ability to run a ROP gadget.  The object of this code is
+> > to be completely secure against root trying to extract the secret
+> > (some what similar to the lockdown idea), thus defeating privilege
+> > escalation and to provide "sufficient" protection against ROP
+> > gadget.
+> 
+> What stops "root" from mapping /dev/mem and reading that memory?
 
-Fixes: 99e392a4979b ("KVM: x86: Fix pkru save/restore when guest CR4.PKE=0, move it to x86.c")
-Cc: stable@vger.kernel.org # 5.4.y
-Cc: Babu Moger <babu.moger@amd.com>
-Signed-off-by: Jon Kohler <jon@nutanix.com>
----
- arch/x86/kvm/x86.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+/dev/mem uses the direct map for the copy at least for read/write, so
+it gets a fault in the same way root trying to use ptrace does.  I
+think we've protected mmap, but Mike would know that better than I.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 153659e8f403..1f7521752a94 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -3507,6 +3507,9 @@ void kvm_arch_vcpu_load(struct kvm_vcpu *vcpu, int cpu)
- 
- 	kvm_x86_ops->vcpu_load(vcpu, cpu);
- 
-+	/* Save host pkru register if supported */
-+	vcpu->arch.host_pkru = read_pkru();
-+
- 	/* Apply any externally detected TSC adjustments (due to suspend) */
- 	if (unlikely(vcpu->arch.tsc_offset_adjustment)) {
- 		adjust_tsc_offset_host(vcpu, vcpu->arch.tsc_offset_adjustment);
-@@ -8253,9 +8256,6 @@ static int vcpu_enter_guest(struct kvm_vcpu *vcpu)
- 	trace_kvm_entry(vcpu->vcpu_id);
- 	guest_enter_irqoff();
- 
--	/* Save host pkru register if supported */
--	vcpu->arch.host_pkru = read_pkru();
--
- 	fpregs_assert_state_consistent();
- 	if (test_thread_flag(TIF_NEED_FPU_LOAD))
- 		switch_fpu_return();
--- 
-2.30.1 (Apple Git-130)
+> IOW, would we want to enforce "CONFIG_STRICT_DEVMEM" with
+> CONFIG_SECRETMEM?
+
+Unless there's a corner case I haven't thought of, I don't think it
+adds much.  However, doing a full lockdown on a public system where
+users want to use secret memory is best practice I think (except I
+think you want it to be the full secure boot lockdown to close all the
+root holes).
+
+> Also, there is a way to still read that memory when root by
+> 
+> 1. Having kdump active (which would often be the case, but maybe not
+> to dump user pages )
+> 2. Triggering a kernel crash (easy via proc as root)
+> 3. Waiting for the reboot after kump() created the dump and then
+> reading the content from disk.
+
+Anything that can leave physical memory intact but boot to a kernel
+where the missing direct map entry is restored could theoretically
+extract the secret.  However, it's not exactly going to be a stealthy
+extraction ...
+
+> Or, as an attacker, load a custom kexec() kernel and read memory
+> from the new environment. Of course, the latter two are advanced
+> mechanisms, but they are possible when root. We might be able to
+> mitigate, for example, by zeroing out secretmem pages before booting
+> into the kexec kernel, if we care :)
+
+I think we could handle it by marking the region, yes, and a zero on
+shutdown might be useful ... it would prevent all warm reboot type
+attacks.
+
+James
 
