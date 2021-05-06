@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55FFE375388
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:14:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D024637538A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:14:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233340AbhEFMPQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:15:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44842 "EHLO
+        id S233405AbhEFMPU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:15:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44846 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232836AbhEFMPE (ORCPT
+        with ESMTP id S232869AbhEFMPE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 May 2021 08:15:04 -0400
 Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67635C061761;
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B91E1C0613ED;
         Thu,  6 May 2021 05:14:05 -0700 (PDT)
-Date:   Thu, 06 May 2021 12:14:02 -0000
+Date:   Thu, 06 May 2021 12:14:03 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620303243;
+        s=2020; t=1620303244;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GAZROfdPR5Ma0vGOTUz0TuchvP7f6VZotsvygKerrnQ=;
-        b=M0c/awy24zSnaX5vIXf7Dp3c1B5r5CENXfW9b9i4w/YzHb1YcypfetQ1zV+RyWaWE3aBY5
-        vN6KF0TvqANWfic2JjKf/ayDtQ2LmM+P4So1ZCuG5d/N4hjQbe5A1Ip3iMaSrnoZDO/LFM
-        2gFXGMyP2Z9juB2j3ip8n8coPgrR6O59DgAn601c+7JOFcoPty9QcszFHI4TZYvp5U+m4b
-        DUiWeSK/HgHb3JeZ57iDk2M3PR/3IX5ZWPlwpJWIfcVofVOQIDqna+SLSZh1HXgGYBGgve
-        TH1ynMY1nR0zFdEbNdw0DYJU6V75YjO9dWDlEmf4Dt/rPOFPcS4WnAPabTeR1Q==
+        bh=zSvFbLIjk74W8yD1rpTaoXfaIOhGdQXdT9Ru7usZd7A=;
+        b=BURXdjDpEdqfv6pnLjx0wP+Op49E5YU7Ee7PCScIlIBnGMR/635rdxyvKTbrX2BYdMr7Am
+        om9de+o2710XM9dt0UFiPDtDRpKZYA16zbVqIog7Mmh4IFyAP+OvaOo0iJKKXtaauA+kFH
+        ODO72eay7a4/1AAnWm3iLQ8UX++QiS+npMyYRODEEvjCJw38D9eEbrMSk2BIPyD6lVDeWa
+        44Dp+Jh0fbweXvb6nG1B6KMRi+THK9XkqwbrhMYlyKXTcj3geY+1XnN490RRAgG6MSKKKA
+        AjSQE6M7m0N+WfVWuTHh7sxRrKR0W1gg3ilL0acUFIwe1BflDmMgiGVLtTo4QQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620303243;
+        s=2020e; t=1620303244;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=GAZROfdPR5Ma0vGOTUz0TuchvP7f6VZotsvygKerrnQ=;
-        b=yfH2IX8WMi227Xgrst2bIXTbmOQ+75JggOcSLuYzURYr+XZL1RwyYddDyfx1GDMF2nbFtW
-        NVi/rTdS+pKJnPCw==
+        bh=zSvFbLIjk74W8yD1rpTaoXfaIOhGdQXdT9Ru7usZd7A=;
+        b=JFyCRd4YFPnDcdmnFijzY5dPmm9et3tITr8mK31gLsdZsAhMLJwgmkhNTREvsRozh712MU
+        7ID5GC5r8xoeqWBQ==
 From:   "tip-bot2 for Sean Christopherson" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] KVM: x86: Consolidate guest enter/exit logic to
- common helpers
+Subject: [tip: x86/urgent] sched/vtime: Move guest enter/exit vtime accounting
+ to vtime.h
 Cc:     Sean Christopherson <seanjc@google.com>,
         Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
         linux-kernel@vger.kernel.org
-In-Reply-To: <20210505002735.1684165-9-seanjc@google.com>
-References: <20210505002735.1684165-9-seanjc@google.com>
+In-Reply-To: <20210505002735.1684165-6-seanjc@google.com>
+References: <20210505002735.1684165-6-seanjc@google.com>
 MIME-Version: 1.0
-Message-ID: <162030324232.29796.17958886782368055460.tip-bot2@tip-bot2>
+Message-ID: <162030324370.29796.4261476367596129273.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2@linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -62,198 +62,159 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/urgent branch of tip:
 
-Commit-ID:     bc908e091b3264672889162733020048901021fb
-Gitweb:        https://git.kernel.org/tip/bc908e091b3264672889162733020048901021fb
+Commit-ID:     6f922b89e5518143920b10e3643e556d9df58d94
+Gitweb:        https://git.kernel.org/tip/6f922b89e5518143920b10e3643e556d9df58d94
 Author:        Sean Christopherson <seanjc@google.com>
-AuthorDate:    Tue, 04 May 2021 17:27:35 -07:00
+AuthorDate:    Tue, 04 May 2021 17:27:32 -07:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 05 May 2021 22:54:12 +02:00
+CommitterDate: Wed, 05 May 2021 22:54:11 +02:00
 
-KVM: x86: Consolidate guest enter/exit logic to common helpers
+sched/vtime: Move guest enter/exit vtime accounting to vtime.h
 
-Move the enter/exit logic in {svm,vmx}_vcpu_enter_exit() to common
-helpers.  Opportunistically update the somewhat stale comment about the
-updates needing to occur immediately after VM-Exit.
+Provide separate helpers for guest enter vtime accounting (in addition to
+the existing guest exit helpers), and move all vtime accounting helpers
+to vtime.h where the existing #ifdef infrastructure can be leveraged to
+better delineate the different types of accounting.  This will also allow
+future cleanups via deduplication of context tracking code.
+
+Opportunstically delete the vtime_account_kernel() stub now that all
+callers are wrapped with CONFIG_VIRT_CPU_ACCOUNTING_NATIVE=y.
 
 No functional change intended.
 
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210505002735.1684165-9-seanjc@google.com
+Link: https://lore.kernel.org/r/20210505002735.1684165-6-seanjc@google.com
 
 ---
- arch/x86/kvm/svm/svm.c | 39 +-----------------------------------
- arch/x86/kvm/vmx/vmx.c | 39 +-----------------------------------
- arch/x86/kvm/x86.h     | 45 +++++++++++++++++++++++++++++++++++++++++-
- 3 files changed, 49 insertions(+), 74 deletions(-)
+ include/linux/context_tracking.h | 17 +-----------
+ include/linux/vtime.h            | 46 ++++++++++++++++++++++++++-----
+ 2 files changed, 41 insertions(+), 22 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index c400def..b649f92 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -3710,25 +3710,7 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu)
- 	struct vcpu_svm *svm = to_svm(vcpu);
- 	unsigned long vmcb_pa = svm->current_vmcb->pa;
- 
--	/*
--	 * VMENTER enables interrupts (host state), but the kernel state is
--	 * interrupts disabled when this is invoked. Also tell RCU about
--	 * it. This is the same logic as for exit_to_user_mode().
--	 *
--	 * This ensures that e.g. latency analysis on the host observes
--	 * guest mode as interrupt enabled.
--	 *
--	 * guest_enter_irqoff() informs context tracking about the
--	 * transition to guest mode and if enabled adjusts RCU state
--	 * accordingly.
--	 */
--	instrumentation_begin();
--	trace_hardirqs_on_prepare();
--	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
--	instrumentation_end();
--
--	guest_enter_irqoff();
--	lockdep_hardirqs_on(CALLER_ADDR0);
-+	kvm_guest_enter_irqoff();
- 
- 	if (sev_es_guest(vcpu->kvm)) {
- 		__svm_sev_es_vcpu_run(vmcb_pa);
-@@ -3748,24 +3730,7 @@ static noinstr void svm_vcpu_enter_exit(struct kvm_vcpu *vcpu)
- 		vmload(__sme_page_pa(sd->save_area));
- 	}
- 
--	/*
--	 * VMEXIT disables interrupts (host state), but tracing and lockdep
--	 * have them in state 'on' as recorded before entering guest mode.
--	 * Same as enter_from_user_mode().
--	 *
--	 * context_tracking_guest_exit() restores host context and reinstates
--	 * RCU if enabled and required.
--	 *
--	 * This needs to be done before the below as native_read_msr()
--	 * contains a tracepoint and x86_spec_ctrl_restore_host() calls
--	 * into world and some more.
--	 */
--	lockdep_hardirqs_off(CALLER_ADDR0);
--	context_tracking_guest_exit();
--
--	instrumentation_begin();
--	trace_hardirqs_off_finish();
--	instrumentation_end();
-+	kvm_guest_exit_irqoff();
+diff --git a/include/linux/context_tracking.h b/include/linux/context_tracking.h
+index 4f45562..56c648b 100644
+--- a/include/linux/context_tracking.h
++++ b/include/linux/context_tracking.h
+@@ -137,14 +137,6 @@ static __always_inline void context_tracking_guest_exit(void)
+ 		__context_tracking_exit(CONTEXT_GUEST);
  }
  
- static __no_kcsan fastpath_t svm_vcpu_run(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-index e108fb4..d000cdd 100644
---- a/arch/x86/kvm/vmx/vmx.c
-+++ b/arch/x86/kvm/vmx/vmx.c
-@@ -6664,25 +6664,7 @@ static fastpath_t vmx_exit_handlers_fastpath(struct kvm_vcpu *vcpu)
- static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
- 					struct vcpu_vmx *vmx)
+-static __always_inline void vtime_account_guest_exit(void)
+-{
+-	if (vtime_accounting_enabled_this_cpu())
+-		vtime_guest_exit(current);
+-	else
+-		current->flags &= ~PF_VCPU;
+-}
+-
+ static __always_inline void guest_exit_irqoff(void)
  {
--	/*
--	 * VMENTER enables interrupts (host state), but the kernel state is
--	 * interrupts disabled when this is invoked. Also tell RCU about
--	 * it. This is the same logic as for exit_to_user_mode().
--	 *
--	 * This ensures that e.g. latency analysis on the host observes
--	 * guest mode as interrupt enabled.
--	 *
--	 * guest_enter_irqoff() informs context tracking about the
--	 * transition to guest mode and if enabled adjusts RCU state
--	 * accordingly.
--	 */
--	instrumentation_begin();
--	trace_hardirqs_on_prepare();
--	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
--	instrumentation_end();
--
--	guest_enter_irqoff();
--	lockdep_hardirqs_on(CALLER_ADDR0);
-+	kvm_guest_enter_irqoff();
- 
- 	/* L1D Flush includes CPU buffer clear to mitigate MDS */
- 	if (static_branch_unlikely(&vmx_l1d_should_flush))
-@@ -6698,24 +6680,7 @@ static noinstr void vmx_vcpu_enter_exit(struct kvm_vcpu *vcpu,
- 
- 	vcpu->arch.cr2 = native_read_cr2();
- 
--	/*
--	 * VMEXIT disables interrupts (host state), but tracing and lockdep
--	 * have them in state 'on' as recorded before entering guest mode.
--	 * Same as enter_from_user_mode().
--	 *
--	 * context_tracking_guest_exit() restores host context and reinstates
--	 * RCU if enabled and required.
--	 *
--	 * This needs to be done before the below as native_read_msr()
--	 * contains a tracepoint and x86_spec_ctrl_restore_host() calls
--	 * into world and some more.
--	 */
--	lockdep_hardirqs_off(CALLER_ADDR0);
--	context_tracking_guest_exit();
--
--	instrumentation_begin();
--	trace_hardirqs_off_finish();
--	instrumentation_end();
-+	kvm_guest_exit_irqoff();
+ 	context_tracking_guest_exit();
+@@ -163,20 +155,13 @@ static __always_inline void guest_enter_irqoff(void)
+ 	 * to flush.
+ 	 */
+ 	instrumentation_begin();
+-	vtime_account_kernel(current);
+-	current->flags |= PF_VCPU;
++	vtime_account_guest_enter();
+ 	rcu_virt_note_context_switch(smp_processor_id());
+ 	instrumentation_end();
  }
  
- static fastpath_t vmx_vcpu_run(struct kvm_vcpu *vcpu)
-diff --git a/arch/x86/kvm/x86.h b/arch/x86/kvm/x86.h
-index 8ddd381..521f74e 100644
---- a/arch/x86/kvm/x86.h
-+++ b/arch/x86/kvm/x86.h
-@@ -8,6 +8,51 @@
- #include "kvm_cache_regs.h"
- #include "kvm_emulate.h"
+ static __always_inline void context_tracking_guest_exit(void) { }
  
-+static __always_inline void kvm_guest_enter_irqoff(void)
-+{
-+	/*
-+	 * VMENTER enables interrupts (host state), but the kernel state is
-+	 * interrupts disabled when this is invoked. Also tell RCU about
-+	 * it. This is the same logic as for exit_to_user_mode().
-+	 *
-+	 * This ensures that e.g. latency analysis on the host observes
-+	 * guest mode as interrupt enabled.
-+	 *
-+	 * guest_enter_irqoff() informs context tracking about the
-+	 * transition to guest mode and if enabled adjusts RCU state
-+	 * accordingly.
-+	 */
-+	instrumentation_begin();
-+	trace_hardirqs_on_prepare();
-+	lockdep_hardirqs_on_prepare(CALLER_ADDR0);
-+	instrumentation_end();
+-static __always_inline void vtime_account_guest_exit(void)
+-{
+-	vtime_account_kernel(current);
+-	current->flags &= ~PF_VCPU;
+-}
+-
+ static __always_inline void guest_exit_irqoff(void)
+ {
+ 	instrumentation_begin();
+diff --git a/include/linux/vtime.h b/include/linux/vtime.h
+index 6a43175..3684487 100644
+--- a/include/linux/vtime.h
++++ b/include/linux/vtime.h
+@@ -3,21 +3,18 @@
+ #define _LINUX_KERNEL_VTIME_H
+ 
+ #include <linux/context_tracking_state.h>
++#include <linux/sched.h>
 +
-+	guest_enter_irqoff();
-+	lockdep_hardirqs_on(CALLER_ADDR0);
+ #ifdef CONFIG_VIRT_CPU_ACCOUNTING_NATIVE
+ #include <asm/vtime.h>
+ #endif
+ 
+-
+-struct task_struct;
+-
+ /*
+  * Common vtime APIs
+  */
+ #ifdef CONFIG_VIRT_CPU_ACCOUNTING
+ extern void vtime_account_kernel(struct task_struct *tsk);
+ extern void vtime_account_idle(struct task_struct *tsk);
+-#else /* !CONFIG_VIRT_CPU_ACCOUNTING */
+-static inline void vtime_account_kernel(struct task_struct *tsk) { }
+ #endif /* !CONFIG_VIRT_CPU_ACCOUNTING */
+ 
+ #ifdef CONFIG_VIRT_CPU_ACCOUNTING_GEN
+@@ -55,6 +52,18 @@ static inline void vtime_flush(struct task_struct *tsk) { }
+ static inline bool vtime_accounting_enabled_this_cpu(void) { return true; }
+ extern void vtime_task_switch(struct task_struct *prev);
+ 
++static __always_inline void vtime_account_guest_enter(void)
++{
++	vtime_account_kernel(current);
++	current->flags |= PF_VCPU;
 +}
 +
-+static __always_inline void kvm_guest_exit_irqoff(void)
++static __always_inline void vtime_account_guest_exit(void)
 +{
-+	/*
-+	 * VMEXIT disables interrupts (host state), but tracing and lockdep
-+	 * have them in state 'on' as recorded before entering guest mode.
-+	 * Same as enter_from_user_mode().
-+	 *
-+	 * context_tracking_guest_exit() restores host context and reinstates
-+	 * RCU if enabled and required.
-+	 *
-+	 * This needs to be done immediately after VM-Exit, before any code
-+	 * that might contain tracepoints or call out to the greater world,
-+	 * e.g. before x86_spec_ctrl_restore_host().
-+	 */
-+	lockdep_hardirqs_off(CALLER_ADDR0);
-+	context_tracking_guest_exit();
-+
-+	instrumentation_begin();
-+	trace_hardirqs_off_finish();
-+	instrumentation_end();
++	vtime_account_kernel(current);
++	current->flags &= ~PF_VCPU;
 +}
 +
- #define KVM_NESTED_VMENTER_CONSISTENCY_CHECK(consistency_check)		\
- ({									\
- 	bool failed = (consistency_check);				\
+ #elif defined(CONFIG_VIRT_CPU_ACCOUNTING_GEN)
+ 
+ /*
+@@ -86,12 +95,37 @@ static inline void vtime_task_switch(struct task_struct *prev)
+ 		vtime_task_switch_generic(prev);
+ }
+ 
++static __always_inline void vtime_account_guest_enter(void)
++{
++	if (vtime_accounting_enabled_this_cpu())
++		vtime_guest_enter(current);
++	else
++		current->flags |= PF_VCPU;
++}
++
++static __always_inline void vtime_account_guest_exit(void)
++{
++	if (vtime_accounting_enabled_this_cpu())
++		vtime_guest_exit(current);
++	else
++		current->flags &= ~PF_VCPU;
++}
++
+ #else /* !CONFIG_VIRT_CPU_ACCOUNTING */
+ 
+-static inline bool vtime_accounting_enabled_cpu(int cpu) {return false; }
+ static inline bool vtime_accounting_enabled_this_cpu(void) { return false; }
+ static inline void vtime_task_switch(struct task_struct *prev) { }
+ 
++static __always_inline void vtime_account_guest_enter(void)
++{
++	current->flags |= PF_VCPU;
++}
++
++static __always_inline void vtime_account_guest_exit(void)
++{
++	current->flags &= ~PF_VCPU;
++}
++
+ #endif
+ 
+ 
