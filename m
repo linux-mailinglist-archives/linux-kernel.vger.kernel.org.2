@@ -2,51 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC7B63758AA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:46:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 40DD03758AB
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:46:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236107AbhEFQrX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:47:23 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:1796 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236073AbhEFQrU (ORCPT
+        id S236143AbhEFQra (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:47:30 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:46322 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S236071AbhEFQrU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 May 2021 12:47:20 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146GXQL7118984;
-        Thu, 6 May 2021 12:46:06 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146GXNap092866;
+        Thu, 6 May 2021 12:46:08 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : content-transfer-encoding
- : mime-version; s=pp1; bh=koD3SVbYf2BTRS2iRBFusve8abxTZjjlBjDjo1/VsEM=;
- b=bF4ss4jzXgcp9QuGcz5/BAoajxFDRyBVXmgIRsn7eHDXpep35xZ2PGpZte0DrM4naovk
- ZN821uuNi1RfmE22C1rEM9kw6IJGKaWLNIQ/iZJLyY6GfdrpDPVX1P8Pz/9U6AoHo0z7
- PmJ1CWfuOAh1FbKoaoHqfRnHQwq2xSSi6TKeTHH6BL5AcW3hlwdaDUJc5uUz4CM7kgfA
- Zl+oO2jw1RZBujQ8Cq1pL65cSKwK8Od9WWnxztsi7jQ/lomlk3mYrBnOU+RLjYXWuZwL
- bXDxiZ4TPYaP09NXzl/gXxdsZZcJG1jznusH+7EgJlpbbMuuIR31YrHrw1PetDd2lEEU 5w== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 38cgf3reke-1
+ : date : message-id : in-reply-to : references : mime-version :
+ content-transfer-encoding; s=pp1;
+ bh=KJJfK6VcUGMqXPaYvvV0fxYKhM9XFouA2kVrzK0Cau4=;
+ b=EBM8LfOk3OdhtxNXa6mFZE4lum0geQaCehiZM3hvJ9eyjwchw+kMRL+crvDk4pmLraTY
+ W/8emgIaz/dGI0fn7r2OYwLnJxeh8DbW9aVVIdhqs4FV/vUxCgP7+1+Spl4OlMQK/p1P
+ xLEUB2liwfAfb1Get4/kHQFGKcRDbxOZLEuRATHbgCr3tEDbKnyGGsKBY5T5sxJsAPay
+ xPi+YxpQlpKYnsjm3z1dTvX/jhXSwK2QdF/Yr/Kgl9CRiYOOZBhioanbpowWCOS5aVyH
+ 74ODCtfF6Dr4Jsm7puB93CmYsR2MimcQkRAY+ytPimtk2UMfWoH5zI8mbnvzjAPl1HkU uA== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 38cke7hksr-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 May 2021 12:46:06 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 146GgXCW017950;
-        Thu, 6 May 2021 16:46:04 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma02fra.de.ibm.com with ESMTP id 38bee2gkrn-1
+        Thu, 06 May 2021 12:46:08 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 146GhaiU028686;
+        Thu, 6 May 2021 16:46:06 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 38beeeh2y5-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 06 May 2021 16:46:04 +0000
+        Thu, 06 May 2021 16:46:06 +0000
 Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 146Gk1PV18219308
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 146GjcGZ34472424
         (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 6 May 2021 16:46:01 GMT
+        Thu, 6 May 2021 16:45:38 GMT
 Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 4714FA4059;
+        by IMSVA (Postfix) with ESMTP id 3C6BCA4055;
+        Thu,  6 May 2021 16:46:04 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 9CE57A404D;
         Thu,  6 May 2021 16:46:01 +0000 (GMT)
-Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B34D8A4040;
-        Thu,  6 May 2021 16:45:58 +0000 (GMT)
 Received: from saptagiri.in.ibm.com (unknown [9.77.204.81])
         by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu,  6 May 2021 16:45:58 +0000 (GMT)
+        Thu,  6 May 2021 16:46:01 +0000 (GMT)
 From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 To:     Ingo Molnar <mingo@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>
@@ -59,58 +60,60 @@ Cc:     LKML <linux-kernel@vger.kernel.org>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Michael Neuling <mikey@neuling.org>,
         Gautham R Shenoy <ego@linux.vnet.ibm.com>,
         Parth Shah <parth@linux.ibm.com>
-Subject: [PATCH v2 4/8] sched/fair: Prefer idle CPU to cache affinity
-Date:   Thu,  6 May 2021 22:15:39 +0530
-Message-Id: <20210506164543.90688-5-srikar@linux.vnet.ibm.com>
+Subject: [PATCH v2 5/8] sched/fair: Use affine_idler_llc for wakeups across LLC
+Date:   Thu,  6 May 2021 22:15:40 +0530
+Message-Id: <20210506164543.90688-6-srikar@linux.vnet.ibm.com>
 X-Mailer: git-send-email 2.26.3
 In-Reply-To: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
 References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: H5JNuf36Mzci_ptRcHpWI81-TIeXR1Vt
-X-Proofpoint-ORIG-GUID: H5JNuf36Mzci_ptRcHpWI81-TIeXR1Vt
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: PlDCaB4UOB66C8jx8YCpG_lUfSP-0jQQ
+X-Proofpoint-ORIG-GUID: PlDCaB4UOB66C8jx8YCpG_lUfSP-0jQQ
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
  definitions=2021-05-06_10:2021-05-06,2021-05-06 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
- malwarescore=0 impostorscore=0 spamscore=0 clxscore=1015 bulkscore=0
- lowpriorityscore=0 phishscore=0 suspectscore=0 priorityscore=1501
- mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104060000 definitions=main-2105060114
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
+ lowpriorityscore=0 phishscore=0 suspectscore=0 impostorscore=0 spamscore=0
+ clxscore=1015 bulkscore=0 priorityscore=1501 adultscore=0 mlxlogscore=962
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104060000
+ definitions=main-2105060114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current order of preference to pick a LLC while waking a wake-affine
-task:
-1. Between the waker CPU and previous CPU, prefer the LLC of the CPU
-   that is idle.
+Currently if a waker is the only running thread of the CPU, and waking a
+wakee (both of them interacting over a pipe aka sync wakeups) with the
+wakee previously running on a different LLC), then wakee is pulled and
+queued on the CPU that is running the waker.
 
-2. Between the waker CPU and previous CPU, prefer the LLC of the CPU
-   that is less lightly loaded.
+This is true even if the previous CPU was completely idle. The rationale
+being waker would soon relinquish the CPU and wakee would benefit from
+the cache access. However if the previous CPU is idle, then wakee thread
+will incur latency cost of migration to the waker CPU + latency cost of
+the waker context switching.
 
-In the current situation where waker and previous CPUs are busy, but
-only one of its LLC has an idle CPU, Scheduler may end up picking a LLC
-with no idle CPUs. To mitigate this, add a method where Scheduler
-compares idle CPUs in waker and previous LLCs and picks the appropriate
-one.
+Before the waker switches out, load balancer could also kick in and pull
+the wakee out resulting in another migration cost. This will mostly hurt
+systems where LLC have just one core. For example:- Hackbench. Both the
+threads of hackbench would then end up running on the same core
+resulting in CPUs running in higher SMT modes, more load balances and
+non optimal performance.
 
-The new method looks at idle-core to figure out idle LLC. If there are
-no idle LLCs, it compares the ratio of busy CPUs to the total number of
-CPUs in the LLC. This method will only be useful to compare 2 LLCs. If
-the previous CPU and the waking CPU are in the same LLC, this method
-would not be useful. For now the new method is disabled by default.
+It would be beneficial to run the wakee thread on the same CPU as waker
+only if other CPUs are busy. To achieve this move this part of the code
+that check if waker is the only running thread to early part of
+wake_affine_weight().
 
-sync flag decides which CPU/LLC to try first. If sync is set, choose
-current LLC, else choose previous LLC.
+Also post this change, wake_affine_idle() will only look at wakeups
+within the LLC.  For wakeups within LLC, there should be no difference
+between sync and no-sync. For wakeups across LLC boundaries, lets use
+wake_affine_idler_llc.
 
 Cc: LKML <linux-kernel@vger.kernel.org>
 Cc: Michael Ellerman <mpe@ellerman.id.au>
-Cc: Michael Neuling <mikey@neuling.org>
 Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
 Cc: Parth Shah <parth@linux.ibm.com>
 Cc: Ingo Molnar <mingo@kernel.org>
@@ -122,134 +125,83 @@ Cc: Vincent Guittot <vincent.guittot@linaro.org>
 Cc: Rik van Riel <riel@surriel.com>
 Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
 ---
-Changelog: v1->v2:
- - Swap the cpus, if the wakeup is not sync, so that a single order of
- code suffices for both sync and non-sync wakeups.
+Changelog v1->v2:
+- Update the patch subject line.
 
- - Mel reported a crash. Apparently two threads can race to find an
- idle-core. I now cache the idlecore. Also use compare-exchange, so
- that no 2 waking tasks contend on the same CPU.
-
-Also Based on similar posting:
-http://lore.kernel.org/lkml/20210226164029.122432-1-srikar@linux.vnet.ibm.com/t/#u
-- Make WA_WAKER default (Suggested by Rik) : done in next patch
-- Make WA_WAKER check more conservative: (Suggested by Rik / Peter)
-- Rename WA_WAKER to WA_IDLER_LLC (Suggested by Vincent)
-- s/pllc_size/tllc_size while checking for busy case: (Pointed by Dietmar)
-- Add rcu_read_lock and check for validity of shared domains
-- Add idle-core support
-
- kernel/sched/fair.c     | 66 +++++++++++++++++++++++++++++++++++++++++
- kernel/sched/features.h |  1 +
- 2 files changed, 67 insertions(+)
+ kernel/sched/fair.c     | 22 +++++++++++-----------
+ kernel/sched/features.h |  2 +-
+ 2 files changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 50da2363317d..72bf1996903d 100644
+index 72bf1996903d..c30587631a24 100644
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -5869,6 +5869,59 @@ wake_affine_weight(struct sched_domain *sd, struct task_struct *p,
- 	return this_eff_load < prev_eff_load ? this_cpu : nr_cpumask_bits;
+@@ -5799,8 +5799,7 @@ static int wake_wide(struct task_struct *p)
+  *			  scheduling latency of the CPUs. This seems to work
+  *			  for the overloaded case.
+  */
+-static int
+-wake_affine_idle(int this_cpu, int prev_cpu, int sync)
++static int wake_affine_idle(int this_cpu, int prev_cpu)
+ {
+ 	/*
+ 	 * If this_cpu is idle, it implies the wakeup is from interrupt
+@@ -5814,15 +5813,12 @@ wake_affine_idle(int this_cpu, int prev_cpu, int sync)
+ 	 * a cpufreq perspective, it's better to have higher utilisation
+ 	 * on one CPU.
+ 	 */
+-	if (available_idle_cpu(this_cpu) && cpus_share_cache(this_cpu, prev_cpu))
+-		return available_idle_cpu(prev_cpu) ? prev_cpu : this_cpu;
++	if (available_idle_cpu(prev_cpu) || sched_idle_cpu(prev_cpu))
++		return prev_cpu;
+ 
+-	if (sync && cpu_rq(this_cpu)->nr_running == 1)
++	if (available_idle_cpu(this_cpu) || sched_idle_cpu(this_cpu))
+ 		return this_cpu;
+ 
+-	if (available_idle_cpu(prev_cpu))
+-		return prev_cpu;
+-
+ 	return nr_cpumask_bits;
  }
  
-+static inline bool test_reset_idle_core(struct sched_domain_shared *sds, int val);
+@@ -5838,6 +5834,9 @@ wake_affine_weight(struct sched_domain *sd, struct task_struct *p,
+ 	if (sync) {
+ 		unsigned long current_load = task_h_load(current);
+ 
++		if (cpu_rq(this_cpu)->nr_running <= 1)
++			return this_cpu;
 +
-+static int wake_affine_idler_llc(struct task_struct *p, int pref_cpu, int try_cpu, int sync)
-+{
-+#ifdef CONFIG_NO_HZ_COMMON
-+	int tnr_busy, tllc_size, pnr_busy, pllc_size;
-+#endif
-+	struct sched_domain_shared *pref_sds, *try_sds;
-+	int diff, idle_core;
-+
-+	if (!sync)
-+		swap(pref_cpu, try_cpu);
-+
-+	pref_sds = rcu_dereference(per_cpu(sd_llc_shared, pref_cpu));
-+	try_sds = rcu_dereference(per_cpu(sd_llc_shared, try_cpu));
-+	if (!pref_sds || !try_sds)
-+		return nr_cpumask_bits;
-+
-+	if (available_idle_cpu(pref_cpu) || sched_idle_cpu(pref_cpu))
-+		return pref_cpu;
-+
-+	idle_core = READ_ONCE(pref_sds->idle_core);
-+	if (idle_core > -1 && cpumask_test_cpu(idle_core, p->cpus_ptr) &&
-+				test_reset_idle_core(pref_sds, idle_core))
-+		return idle_core;
-+
-+	if (available_idle_cpu(try_cpu) || sched_idle_cpu(try_cpu))
-+		return try_cpu;
-+
-+	idle_core = READ_ONCE(try_sds->idle_core);
-+	if (idle_core > -1 && cpumask_test_cpu(idle_core, p->cpus_ptr) &&
-+				test_reset_idle_core(try_sds, idle_core))
-+		return idle_core;
-+
-+#ifdef CONFIG_NO_HZ_COMMON
-+	pnr_busy = atomic_read(&pref_sds->nr_busy_cpus);
-+	tnr_busy = atomic_read(&try_sds->nr_busy_cpus);
-+	pllc_size = per_cpu(sd_llc_size, pref_cpu);
-+	tllc_size = per_cpu(sd_llc_size, try_cpu);
-+
-+	if (tnr_busy == tllc_size && pnr_busy == pllc_size)
-+		return nr_cpumask_bits;
-+
-+	diff = tnr_busy * pllc_size - pnr_busy * tllc_size;
-+	if (diff > 0)
-+		return pref_cpu;
-+	if (diff < 0)
-+		return try_cpu;
-+#endif /* CONFIG_NO_HZ_COMMON */
-+
-+	return nr_cpumask_bits;
-+}
-+
+ 		if (current_load > this_eff_load)
+ 			return this_cpu;
+ 
+@@ -5925,12 +5924,13 @@ static int wake_affine_idler_llc(struct task_struct *p, int pref_cpu, int try_cp
  static int wake_affine(struct sched_domain *sd, struct task_struct *p,
  		       int this_cpu, int prev_cpu, int sync)
  {
-@@ -5877,6 +5930,9 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
- 	if (sched_feat(WA_IDLE))
- 		target = wake_affine_idle(this_cpu, prev_cpu, sync);
++	bool share_caches = cpus_share_cache(prev_cpu, this_cpu);
+ 	int target = nr_cpumask_bits;
  
-+	if (sched_feat(WA_IDLER_LLC) && target == nr_cpumask_bits)
-+		target = wake_affine_idler_llc(p, this_cpu, prev_cpu, sync);
-+
+-	if (sched_feat(WA_IDLE))
+-		target = wake_affine_idle(this_cpu, prev_cpu, sync);
++	if (sched_feat(WA_IDLE) && share_caches)
++		target = wake_affine_idle(this_cpu, prev_cpu);
+ 
+-	if (sched_feat(WA_IDLER_LLC) && target == nr_cpumask_bits)
++	else if (sched_feat(WA_IDLER_LLC) && !share_caches)
+ 		target = wake_affine_idler_llc(p, this_cpu, prev_cpu, sync);
+ 
  	if (sched_feat(WA_WEIGHT) && target == nr_cpumask_bits)
- 		target = wake_affine_weight(sd, p, this_cpu, prev_cpu, sync);
- 
-@@ -6044,6 +6100,11 @@ static inline int get_idle_core(int cpu, int def)
- 	return def;
- }
- 
-+static inline bool test_reset_idle_core(struct sched_domain_shared *sds, int val)
-+{
-+	return cmpxchg(&sds->idle_core, val, -1) == val;
-+}
-+
- static void set_next_idle_core(struct sched_domain *sd, int target)
- {
- 	struct cpumask *cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-@@ -6161,6 +6222,11 @@ static inline bool get_idle_core(int cpu, int def)
- 	return def;
- }
- 
-+static inline bool test_reset_idle_core(struct sched_domain_shared *sds, int val)
-+{
-+	return false;
-+}
-+
- static inline int select_idle_core(struct task_struct *p, int core, struct cpumask *cpus, int *idle_cpu)
- {
- 	return __select_idle_cpu(core);
 diff --git a/kernel/sched/features.h b/kernel/sched/features.h
-index 1bc2b158fc51..c77349a47e01 100644
+index c77349a47e01..c60a6d2b2126 100644
 --- a/kernel/sched/features.h
 +++ b/kernel/sched/features.h
-@@ -83,6 +83,7 @@ SCHED_FEAT(ATTACH_AGE_LOAD, true)
+@@ -83,7 +83,7 @@ SCHED_FEAT(ATTACH_AGE_LOAD, true)
  
  SCHED_FEAT(WA_IDLE, true)
  SCHED_FEAT(WA_WEIGHT, true)
-+SCHED_FEAT(WA_IDLER_LLC, false)
+-SCHED_FEAT(WA_IDLER_LLC, false)
++SCHED_FEAT(WA_IDLER_LLC, true)
  SCHED_FEAT(WA_BIAS, true)
  
  /*
