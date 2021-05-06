@@ -2,148 +2,325 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF844375990
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:42:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B7B91375993
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:43:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236290AbhEFRnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:43:21 -0400
-Received: from out02.mta.xmission.com ([166.70.13.232]:47818 "EHLO
-        out02.mta.xmission.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236042AbhEFRnS (ORCPT
+        id S236299AbhEFRo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:44:29 -0400
+Received: from mail-oo1-f46.google.com ([209.85.161.46]:40496 "EHLO
+        mail-oo1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236042AbhEFRoZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:43:18 -0400
-Received: from in01.mta.xmission.com ([166.70.13.51])
-        by out02.mta.xmission.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lei0n-005md5-4q; Thu, 06 May 2021 11:42:09 -0600
-Received: from ip68-227-160-95.om.om.cox.net ([68.227.160.95] helo=fess.xmission.com)
-        by in01.mta.xmission.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.87)
-        (envelope-from <ebiederm@xmission.com>)
-        id 1lei0m-0003nZ-2F; Thu, 06 May 2021 11:42:08 -0600
-From:   ebiederm@xmission.com (Eric W. Biederman)
-To:     Joerg Roedel <joro@8bytes.org>
-Cc:     x86@kernel.org, kexec@lists.infradead.org,
-        Joerg Roedel <jroedel@suse.de>, stable@vger.kernel.org,
-        hpa@zytor.com, Andy Lutomirski <luto@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jiri Slaby <jslaby@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Juergen Gross <jgross@suse.com>,
-        Kees Cook <keescook@chromium.org>,
-        David Rientjes <rientjes@google.com>,
-        Cfir Cohen <cfir@google.com>,
-        Erdem Aktas <erdemaktas@google.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Mike Stunes <mstunes@vmware.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, virtualization@lists.linux-foundation.org
-References: <20210506093122.28607-1-joro@8bytes.org>
-        <20210506093122.28607-3-joro@8bytes.org>
-Date:   Thu, 06 May 2021 12:42:03 -0500
-In-Reply-To: <20210506093122.28607-3-joro@8bytes.org> (Joerg Roedel's message
-        of "Thu, 6 May 2021 11:31:22 +0200")
-Message-ID: <m17dkb4v4k.fsf@fess.ebiederm.org>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Thu, 6 May 2021 13:44:25 -0400
+Received: by mail-oo1-f46.google.com with SMTP id o202-20020a4a2cd30000b02901fcaada0306so1416208ooo.7;
+        Thu, 06 May 2021 10:43:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=KY+lNZjWq9ZgLiUiLyt3DXqjhKZuimW2lNubxuPtsOc=;
+        b=bIoSo19GdjgxlLvrIpS1QKl8iFyetKc/gvphV3O284rE/nZDVWKwMvHz+lkZd6rVLF
+         zp+w8K6qv6gw37TSajQM9iwNIqvZp6xzTwRtHt4zxxdEocvwgaPNgAYIDsD0COdgUSC7
+         hnqcV9M2wRB0rqIpIUl4O/JMqONDCpF1GFqFVYeD5qXwuQ4xPlf2rhzCltlmUCfcfVeJ
+         cV93hGltvvC9is7nuUq2Aps6GFs3aHx2R5f56p9wpcxOlhPikgn4EzzO/Y2CK4ohCrrA
+         BhyTofsbwyXY3WHXdjTHR9NsxyGv+32o4OuU3edjBRQ67PSOyawLHK9ZXKBVlX0mnIlF
+         REew==
+X-Gm-Message-State: AOAM530d40YV9PLc/6mK5ZDUoEH0taOxDua94QyKKJUa1DK/gK7LH9xr
+        cZ9wELRKlVkKhVLwqfOctA==
+X-Google-Smtp-Source: ABdhPJxbdtvMkpUek+cv6nQacMp2/jGhvnepprPGdWk8cRVD77uMXDL1Il7T9l8mnLZkvp/1ZUVoNg==
+X-Received: by 2002:a4a:8311:: with SMTP id f17mr1183015oog.83.1620323005650;
+        Thu, 06 May 2021 10:43:25 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m67sm673301otm.69.2021.05.06.10.43.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 10:43:24 -0700 (PDT)
+Received: (nullmailer pid 536127 invoked by uid 1000);
+        Thu, 06 May 2021 17:43:22 -0000
+Date:   Thu, 6 May 2021 12:43:22 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     bhelgaas@google.com, linus.walleij@linaro.org,
+        ulli.kroll@googlemail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH 1/2] dt-bindings: pci: convert faraday,ftpci100 to yaml
+Message-ID: <20210506174322.GA523813@robh.at.kernel.org>
+References: <20210503185228.1518131-1-clabbe@baylibre.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-XM-SPF: eid=1lei0m-0003nZ-2F;;;mid=<m17dkb4v4k.fsf@fess.ebiederm.org>;;;hst=in01.mta.xmission.com;;;ip=68.227.160.95;;;frm=ebiederm@xmission.com;;;spf=neutral
-X-XM-AID: U2FsdGVkX18K6SvQ88nM/nPpaU9bp8QcNl7ZXSm1Ea8=
-X-SA-Exim-Connect-IP: 68.227.160.95
-X-SA-Exim-Mail-From: ebiederm@xmission.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on sa02.xmission.com
-X-Spam-Level: **
-X-Spam-Status: No, score=2.0 required=8.0 tests=ALL_TRUSTED,BAYES_50,
-        DCC_CHECK_NEGATIVE,T_TM2_M_HEADER_IN_MSG,T_TooManySym_01,XMNoVowels,
-        XMSubLong autolearn=disabled version=3.4.2
-X-Spam-Virus: No
-X-Spam-Report: * -1.0 ALL_TRUSTED Passed through trusted hosts only via SMTP
-        *  0.8 BAYES_50 BODY: Bayes spam probability is 40 to 60%
-        *      [score: 0.5000]
-        *  1.5 XMNoVowels Alpha-numberic number with no vowels
-        *  0.7 XMSubLong Long Subject
-        *  0.0 T_TM2_M_HEADER_IN_MSG BODY: No description available.
-        * -0.0 DCC_CHECK_NEGATIVE Not listed in DCC
-        *      [sa02 1397; Body=1 Fuz1=1 Fuz2=1]
-        *  0.0 T_TooManySym_01 4+ unique symbols in subject
-X-Spam-DCC: XMission; sa02 1397; Body=1 Fuz1=1 Fuz2=1 
-X-Spam-Combo: **;Joerg Roedel <joro@8bytes.org>
-X-Spam-Relay-Country: 
-X-Spam-Timing: total 608 ms - load_scoreonly_sql: 0.04 (0.0%),
-        signal_user_changed: 4.3 (0.7%), b_tie_ro: 2.8 (0.5%), parse: 1.46
-        (0.2%), extract_message_metadata: 11 (1.9%), get_uri_detail_list: 1.16
-        (0.2%), tests_pri_-1000: 6 (0.9%), tests_pri_-950: 1.07 (0.2%),
-        tests_pri_-900: 0.84 (0.1%), tests_pri_-90: 182 (30.0%), check_bayes:
-        168 (27.7%), b_tokenize: 7 (1.2%), b_tok_get_all: 26 (4.3%),
-        b_comp_prob: 2.5 (0.4%), b_tok_touch_all: 130 (21.3%), b_finish: 0.82
-        (0.1%), tests_pri_0: 246 (40.5%), check_dkim_signature: 0.37 (0.1%),
-        check_dkim_adsp: 2.6 (0.4%), poll_dns_idle: 140 (23.0%), tests_pri_10:
-        2.5 (0.4%), tests_pri_500: 148 (24.4%), rewrite_mail: 0.00 (0.0%)
-Subject: Re: [PATCH 2/2] x86/kexec/64: Forbid kexec when running as an SEV-ES guest
-X-Spam-Flag: No
-X-SA-Exim-Version: 4.2.1 (built Thu, 05 May 2016 13:38:54 -0600)
-X-SA-Exim-Scanned: Yes (on in01.mta.xmission.com)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210503185228.1518131-1-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Joerg Roedel <joro@8bytes.org> writes:
-
-> From: Joerg Roedel <jroedel@suse.de>
->
-> For now, kexec is not supported when running as an SEV-ES guest. Doing
-> so requires additional hypervisor support and special code to hand
-> over the CPUs to the new kernel in a safe way.
->
-> Until this is implemented, do not support kexec in SEV-ES guests.
-
-I don't understand this.
-
-Fundamentally kexec is about doing things more or less inspite of
-what the firmware is doing.
-
-I don't have any idea what a SEV-ES is.  But the normal x86 boot doesn't
-do anything special.  Is cross cpu IPI emulation buggy?
-
-If this is a move in your face hypervisor like Xen is sometimes I can
-see perhaps needing a little bit of different work during bootup.
-Perhaps handing back a cpu on system shutdown and asking for more cpus
-on system boot up.
-
-What is the actual problem you are trying to avoid?
-
-And yes for a temporary hack the suggestion of putting code into
-machine_kexec_prepare seems much more reasonable so we don't have to
-carry special case infrastructure for the forseeable future.
-
-Eric
-
-
-> Cc: stable@vger.kernel.org # v5.10+
-> Signed-off-by: Joerg Roedel <jroedel@suse.de>
+On Mon, May 03, 2021 at 06:52:27PM +0000, Corentin Labbe wrote:
+> Converts pci/faraday,ftpci100.txt to yaml.
+> Some change are also made:
+> - example has wrong interrupts place
+> 
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
 > ---
->  arch/x86/kernel/machine_kexec_64.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->
-> diff --git a/arch/x86/kernel/machine_kexec_64.c b/arch/x86/kernel/machine_kexec_64.c
-> index c078b0d3ab0e..f902cc9cc634 100644
-> --- a/arch/x86/kernel/machine_kexec_64.c
-> +++ b/arch/x86/kernel/machine_kexec_64.c
-> @@ -620,3 +620,11 @@ void arch_kexec_pre_free_pages(void *vaddr, unsigned int pages)
->  	 */
->  	set_memory_encrypted((unsigned long)vaddr, pages);
->  }
+>  .../bindings/pci/faraday,ftpci100.txt         | 135 -----------
+>  .../bindings/pci/faraday,ftpci100.yaml        | 211 ++++++++++++++++++
+>  2 files changed, 211 insertions(+), 135 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/pci/faraday,ftpci100.txt
+>  create mode 100644 Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
+
+
+> diff --git a/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml b/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
+> new file mode 100644
+> index 000000000000..9be27e71526c
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/pci/faraday,ftpci100.yaml
+> @@ -0,0 +1,211 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/pci/faraday,ftpci100.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +/*
-> + * Kexec is not supported in SEV-ES guests yet
-> + */
-> +bool arch_kexec_supported(void)
-> +{
-> +	return !sev_es_active();
-> +}
+> +title: Faraday Technology FTPCI100 PCI Host Bridge
+> +
+> +maintainers:
+> +  - Linus Walleij <linus.walleij@linaro.org>
+> +
+> +description: |
+> +    This PCI bridge is found inside that Cortina Systems Gemini SoC platform and
+> +    is a generic IP block from Faraday Technology. It exists in two variants:
+> +    plain and dual PCI. The plain version embeds a cascading interrupt controller
+> +    into the host bridge. The dual version routes the interrupts to the host
+> +    chips interrupt controller.
+> +    The host controller appear on the PCI bus with vendor ID 0x159b (Faraday
+> +    Technology) and product ID 0x4321.
+> +
+> +allOf:
+> +  - $ref: /schemas/pci/pci-bus.yaml#
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - const: "cortina,gemini-pci"
+> +          - const: "faraday,ftpci100"
+> +      - items:
+> +          - const: "cortina,gemini-pci-dual"
+> +          - const: "faraday,ftpci100-dual"
+> +      - const: "faraday,ftpci100"
+> +      - const: "faraday,ftpci100-dual"
+
+Don't need quotes.
+
+> +
+> +  reg:
+> +    minItems: 1
+> +
+
+> +  "#address-cells":
+> +    const: 3
+> +
+> +  "#size-cells":
+> +    const: 2
+
+Covered by pci-bus.yaml.
+
+> +
+> +  "#interrupt-cells":
+> +    const: 1
+> +
+> +  bus-range:
+> +    items:
+> +      - const: 0x00
+> +      - const: 0xff
+
+That's the default range, so drop.
+
+> +
+> +  ranges:
+> +    minItems: 2
+> +    description: see pci.txt
+
+Drop the description.
+
+> +
+> +  dma-ranges:
+> +    minItems: 3
+> +    description: |
+> +      three ranges for the inbound memory region. The ranges must
+> +      be aligned to a 1MB boundary, and may be 1MB, 2MB, 4MB, 8MB, 16MB, 32MB, 64MB,
+> +      128MB, 256MB, 512MB, 1GB or 2GB in size. The memory should be marked as
+> +      pre-fetchable.
+> +
+> +  clocks:
+> +    minItems: 2
+> +    description: |
+> +      when present, this should contain the peripheral clock (PCLK) and the
+> +      PCI clock (PCICLK). If these are not present, they are assumed to be
+> +      hard-wired enabled and always on. The PCI clock will be 33 or 66 MHz.
+
+Split the description:
+
+items:
+  - description: peripheral clock (PCLK)
+  - description: PCI bus? clock (PCICLK). The PCI clock will be 33 or 66 MHz.
+
+
+> +
+> +  clock-names:
+> +    items:
+> +      - const: "PCLK"
+> +      - const: "PCICLK"
+
+Drop quotes.
+
+> +
+> +  interrupt-controller:
+> +    allOf:
+> +      - $ref: /schemas/interrupt-controller.yaml#
+
+Drop, this will be applied based on the node name.
+
+> +    type: object
+> +    properties:
+> +      interrupts:
+> +        minItems: 1
+> +
+> +      interrupt-controller: true
+> +
+> +      "#address-cells":
+> +        const: 0
+> +
+> +      "#interrupt-cells":
+> +        const: 1
+> +
+> +    required:
+> +      - interrupts
+> +      - interrupt-controller
+> +      - "#address-cells"
+> +      - "#interrupt-cells"
+> +
+> +required:
+> +  - reg
+> +  - compatible
+> +  - "#address-cells"
+> +  - "#size-cells"
+> +  - "#interrupt-cells"
+> +  - bus-range
+> +  - ranges
+> +  - interrupt-map-mask
+> +  - interrupt-map
+> +  - dma-ranges
+
+Drop all the ones required in pci-bus.yaml already.
+
+> +
+> +if:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        items:
+> +          - const: cortina,gemini-pci
+> +          - const: faraday,ftpci100
+> +then:
+> +  required:
+> +    - interrupt-controller
+> +
+> +unevaluatedProperties: false
+> +
+> +#I/O space considerations:
+> +
+> +#The plain variant has 128MiB of non-prefetchable memory space, whereas the
+> +#"dual" variant has 64MiB. Take this into account when describing the ranges.
+
+Could go under 'ranges'?
+
+> +
+> +#Interrupt map considerations:
+
+Could go under 'interrupt-map'.
+
+> +
+> +#The "dual" variant will get INT A, B, C, D from the system interrupt controller
+> +#and should point to respective interrupt in that controller in its
+> +#interrupt-map.
+> +
+> +#The code which is the only documentation of how the Faraday PCI (the non-dual
+> +#variant) interrupts assigns the default interrupt mapping/swizzling has
+> +#typically been like this, doing the swizzling on the interrupt controller side
+> +#rather than in the interconnect:
+> +
+> +#interrupt-map-mask = <0xf800 0 0 7>;
+> +#interrupt-map =
+> +#	<0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
+> +#	<0x4800 0 0 2 &pci_intc 1>,
+> +#	<0x4800 0 0 3 &pci_intc 2>,
+> +#	<0x4800 0 0 4 &pci_intc 3>,
+> +#	<0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
+> +#	<0x5000 0 0 2 &pci_intc 2>,
+> +#	<0x5000 0 0 3 &pci_intc 3>,
+> +#	<0x5000 0 0 4 &pci_intc 0>,
+> +#	<0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
+> +#	<0x5800 0 0 2 &pci_intc 3>,
+> +#	<0x5800 0 0 3 &pci_intc 0>,
+> +#	<0x5800 0 0 4 &pci_intc 1>,
+> +#	<0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
+> +#	<0x6000 0 0 2 &pci_intc 0>,
+> +#	<0x6000 0 0 3 &pci_intc 1>,
+> +#	<0x6000 0 0 4 &pci_intc 2>;
+> +
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +    pci@50000000 {
+> +      compatible = "cortina,gemini-pci", "faraday,ftpci100";
+> +      reg = <0x50000000 0x100>;
+> +      device_type = "pci";
+> +      #address-cells = <3>;
+> +      #size-cells = <2>;
+> +      #interrupt-cells = <1>;
+> +
+> +      bus-range = <0x00 0xff>;
+> +      ranges = /* 1MiB I/O space 0x50000000-0x500fffff */
+> +        <0x01000000 0 0          0x50000000 0 0x00100000>,
+> +        /* 128MiB non-prefetchable memory 0x58000000-0x5fffffff */
+> +        <0x02000000 0 0x58000000 0x58000000 0 0x08000000>;
+> +
+> +      /* DMA ranges */
+> +      dma-ranges =
+> +        /* 128MiB at 0x00000000-0x07ffffff */
+> +        <0x02000000 0 0x00000000 0x00000000 0 0x08000000>,
+> +        /* 64MiB at 0x00000000-0x03ffffff */
+> +        <0x02000000 0 0x00000000 0x00000000 0 0x04000000>,
+> +        /* 64MiB at 0x00000000-0x03ffffff */
+> +        <0x02000000 0 0x00000000 0x00000000 0 0x04000000>;
+> +
+> +      interrupt-map-mask = <0xf800 0 0 7>;
+> +      interrupt-map =
+> +        <0x4800 0 0 1 &pci_intc 0>, /* Slot 9 */
+> +        <0x4800 0 0 2 &pci_intc 1>,
+> +        <0x4800 0 0 3 &pci_intc 2>,
+> +        <0x4800 0 0 4 &pci_intc 3>,
+> +        <0x5000 0 0 1 &pci_intc 1>, /* Slot 10 */
+> +        <0x5000 0 0 2 &pci_intc 2>,
+> +        <0x5000 0 0 3 &pci_intc 3>,
+> +        <0x5000 0 0 4 &pci_intc 0>,
+> +        <0x5800 0 0 1 &pci_intc 2>, /* Slot 11 */
+> +        <0x5800 0 0 2 &pci_intc 3>,
+> +        <0x5800 0 0 3 &pci_intc 0>,
+> +        <0x5800 0 0 4 &pci_intc 1>,
+> +        <0x6000 0 0 1 &pci_intc 3>, /* Slot 12 */
+> +        <0x6000 0 0 2 &pci_intc 0>,
+> +        <0x6000 0 0 3 &pci_intc 0>,
+> +        <0x6000 0 0 4 &pci_intc 0>;
+> +      pci_intc: interrupt-controller {
+> +        interrupt-parent = <&intcon>;
+> +        interrupt-controller;
+> +        interrupts = <8 IRQ_TYPE_LEVEL_HIGH>;
+> +        #address-cells = <0>;
+> +        #interrupt-cells = <1>;
+> +      };
+> +    };
+> -- 
+> 2.26.3
+> 
