@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37D6F374D14
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:51:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB2AB374D21
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:57:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230268AbhEFBvy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 21:51:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230134AbhEFBvx (ORCPT
+        id S230443AbhEFB6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 21:58:09 -0400
+Received: from mail-m176231.qiye.163.com ([59.111.176.231]:15368 "EHLO
+        mail-m176231.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhEFB6I (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 21:51:53 -0400
-Received: from mail-ot1-x335.google.com (mail-ot1-x335.google.com [IPv6:2607:f8b0:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9EE52C061574;
-        Wed,  5 May 2021 18:50:52 -0700 (PDT)
-Received: by mail-ot1-x335.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso2756082ots.10;
-        Wed, 05 May 2021 18:50:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=tSgGUCKxTJuWl9JFY4/2Jxrs6tE4U/e+d6isMh+EsQM=;
-        b=ghzSourcKEu1nc0+C+Q1N0OmmZrXpyORs6VBMts9u8WY5wCoHhvculTHwKQxxfsQ3l
-         U7LZHyrfBTq1yoXQ2qrAPlAd9NRGzyv2xo5jw5juk/WIFfKFzo7dF4NKpys960QKFznP
-         g66QYyKkAXFfCyL4MNdFmt/i7fKZVDvR8UkbIfAhOYfau8ghHyOG3uBs8hXSMrlkMxrM
-         4xb7ki2h72L/jr5+erlhiBocFfCigmj2giCcJgQu9d5g3qbsNO9F3sRytZNr3bpXqa8b
-         CcC4T5kfKN6mfLA2pfh9XQkkelYucLaxnP5H9mRXtcswcTwJ94biFMRVOBrm7lIaUjPt
-         q3xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=tSgGUCKxTJuWl9JFY4/2Jxrs6tE4U/e+d6isMh+EsQM=;
-        b=H4CUdsyqDP5fn9tvpiZZLVn8s3l6XTmJtjXqyIZ5m5HmStsi6OpBaHJfMkbd1k8MRj
-         hWv4dTvuRnlPEofQzBl7nFiPs1GfOZdEEIptRKdKQCAmZ0YFlCSmbEfIUS1W871oS3oW
-         5Ig7vGCkBYGLVd1+OHg64CoVc1/GsNXtj8WTcRaD4ALf2Qu4xLTVEDILgWNxfJiDAzvl
-         K009AO2lXDS6FMQe+VMdOz2kQvEEh8MD77RtRtM/5I9oaoRp73zyqsQzdp6d6kRy6zq6
-         +90v2wVw7KHGvotQ80OJFlekPwuCLKhw9b09SutjFRME9+Tn8uYMBRRTeGN5aLg/m93W
-         ygQw==
-X-Gm-Message-State: AOAM533E/AwUYqsst6pgAvUJiYLO298FNmuEr9ZGVYx8uRzBWK0dQxS5
-        bnWvyBsSyP3UsdZU9t7Mczw=
-X-Google-Smtp-Source: ABdhPJwB4HlLJHm8Ey1gtoujJdqXxoDlZI10CIKT2B0ZO0G2OOFY36BFf1X2Nxb/uAG4YaAxXecHVA==
-X-Received: by 2002:a05:6830:55b:: with SMTP id l27mr1332771otb.260.1620265852151;
-        Wed, 05 May 2021 18:50:52 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id o64sm187447oif.50.2021.05.05.18.50.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 18:50:51 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 5 May 2021 18:50:50 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 5.10 00/29] 5.10.35-rc1 review
-Message-ID: <20210506015050.GD731872@roeck-us.net>
-References: <20210505112326.195493232@linuxfoundation.org>
+        Wed, 5 May 2021 21:58:08 -0400
+X-Greylist: delayed 338 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 May 2021 21:58:07 EDT
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m176231.qiye.163.com (Hmail) with ESMTP id 3D56A6C00CF;
+        Thu,  6 May 2021 09:51:30 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <APgAqgAuDm48oWX*tq6AkKqd.3.1620265890239.Hmail.wangqing@vivo.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Wim Van Sebroeck <wim@linux-watchdog.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        linux-watchdog@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSCBWOSAxLzJdIHdhdGNoZG9nOiBtdGs6IHN1cHBvcnQgcHJlLXRpbWVvdXQgd2hlbiB0aGUgYmFyayBpcnEgaXMgYXZhaWxhYmxl?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.182
+In-Reply-To: <45ff044d-80ff-9001-1d4f-d39d0ae63060@roeck-us.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
+Received: from wangqing@vivo.com( [36.152.145.182) ] by ajax-webmail ( [127.0.0.1] ) ; Thu, 6 May 2021 09:51:30 +0800 (GMT+08:00)
+From:   =?UTF-8?B?546L5pOO?= <wangqing@vivo.com>
+Date:   Thu, 6 May 2021 09:51:30 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZQh0aQlYaGUhPTh5OHkJCHUJVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1ISU9KTUlPQ0JON1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6Kxw6Chw6Dj8WT0MULCNRDwpNOhAwCh9VSFVKTUlLSU1OQ0JLTkpLVTMWGhIXVQwaFRwKEhUc
+        Ow0SDRRVGBQWRVlXWRILWUFZSE1VSk5JVUpPTlVKQ0lZV1kIAVlBSExOTDcG
+X-HM-Tid: 0a793f5f71d1d9a9kuws3d56a6c00cf
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:05:03PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 5.10.35 release.
-> There are 29 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
-> 
-> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-> Anything received after that time might be too late.
-> 
-[ ... ]
-> 
-> Shengjiu Wang <shengjiu.wang@nxp.com>
->     ASoC: ak5558: Add MODULE_DEVICE_TABLE
-> 
-> Shengjiu Wang <shengjiu.wang@nxp.com>
->     ASoC: ak4458: Add MODULE_DEVICE_TABLE
-> 
-
-Please remove one of the above.
-
-Other than that,
-
-Build results:
-	total: 156 pass: 156 fail: 0
-Qemu test results:
-	total: 455 pass: 455 fail: 0
-
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+Cj5PbiA0LzI0LzIxIDY6NTIgUE0sIFdhbmcgUWluZyB3cm90ZToKPj4gVXNlIHRoZSBiYXJrIGlu
+dGVycnVwdCBhcyB0aGUgcHJldGltZW91dCBub3RpZmllciBpZiBhdmFpbGFibGUuCj4+IAo+PiBX
+aGVuIHRoZSB3YXRjaGRvZyB0aW1lciBleHBpcmVzIGluIGR1YWwgbW9kZSwgYW4gaW50ZXJydXB0
+IHdpbGwgYmUKPj4gdHJpZ2dlcmVkIGZpcnN0LCB0aGVuIHRoZSB0aW1pbmcgcmVzdGFydHMuIFRo
+ZSByZXNldCBzaWduYWwgd2lsbCBiZQo+PiBpbml0aWF0ZWQgd2hlbiB0aGUgdGltZXIgZXhwaXJl
+cyBhZ2Fpbi4KPj4gCj4+IFRoZSBwcmV0aW1lb3V0IG5vdGlmaWNhdGlvbiBzaGFsbCBvY2N1ciBh
+dCB0aW1lb3V0LXNlYy8yLgo+PiAKPj4gVjI6Cj4+IC0gcGFuaWMoKSBieSBkZWZhdWx0IGlmIFdB
+VENIRE9HX1BSRVRJTUVPVVRfR09WIGlzIG5vdCBlbmFibGVkLgo+PiAKPj4gVjM6Cj4+IC0gTW9k
+aWZ5IHRoZSBwcmV0aW1lb3V0IGJlaGF2aW9yLCBtYW51YWxseSByZXNldCBhZnRlciB0aGUgcHJl
+dGltZW91dAo+PiAtIGlzIHByb2Nlc3NlZCBhbmQgd2FpdCB1bnRpbCB0aW1lb3V0Lgo+PiAKPj4g
+VjQ6Cj4+IC0gUmVtb3ZlIHByZXRpbWVvdXQgcmVsYXRlZCBwcm9jZXNzaW5nLiAKPj4gLSBBZGQg
+ZHVhbCBtb2RlIGNvbnRyb2wgc2VwYXJhdGVseS4KPj4gCj4+IFY1Ogo+PiAtIEZpeCBzb21lIGZv
+cm1hdHRpbmcgYW5kIHByaW50aW5nIHByb2JsZW1zLgo+PiAKPj4gVjY6Cj4+IC0gUmVhbGl6ZSBw
+cmV0aW1lb3V0IHByb2Nlc3NpbmcgdGhyb3VnaCBkdWFsbW9kZS4KPj4gCj4+IFY3Ogo+PiAtIEFk
+ZCBzZXRfcHJldGltZW91dCgpLgo+PiAKPj4gVjgvVjk6Cj4+IC0gRml4IHNvbWUgZm9ybWF0dGlu
+ZyBwcm9ibGVtcy4KPj4gCj4+IFNpZ25lZC1vZmYtYnk6IFdhbmcgUWluZyA8d2FuZ3FpbmdAdml2
+by5jb20+Cj4KPlJldmlld2VkLWJ5OiBHdWVudGVyIFJvZWNrIDxsaW51eEByb2Vjay11cy5uZXQ+
+Cj4KPk5vdGUgdGhhdCB0aGUgdmVyc2lvbiBoaXN0b3J5IHNob3VsZCBiZSBhZnRlciAiLS0tIi4K
+Pgo+R3VlbnRlcgo+CgpUaGFua3MsIEd1ZW50ZXIuCkFuZCB3aGF0IGRvIEkgbmVlZCB0byBkbyBp
+ZiBJIHdhbnQgbWVyZ2UgaW50byB0aGUgbmV4dC10cmVlPwoKUWluZwoNCg0K
