@@ -2,117 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B302375644
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01F88375649
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:12:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234998AbhEFPMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:12:37 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33514 "EHLO mail.kernel.org"
+        id S235044AbhEFPNI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:13:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33862 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234888AbhEFPMg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:12:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id C9989613BA
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 15:11:37 +0000 (UTC)
+        id S234888AbhEFPNH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:13:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7452D61041;
+        Thu,  6 May 2021 15:12:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620313897;
-        bh=uYngsBOEXyuKUF30zOjK0g2fvk2gImdmQXO7lICHy9I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=dnak2iMZQcwx6REhUPFjuXbafE+Dh5BlolqB1oWMlwAmRearJ24bjq+QX2s7U8oBi
-         +e4FLIA0mM8sknSsa8rdugEK2THZiPfsnVqi1Ty/UG93Bxewi0VD2bjNi3oTFzhpXj
-         uK22126uBgMTyrMeS10Hzsj2OiUH9BAcOwmYSAEJuftnNE0l3r3mtndVKiaiN7Nyfo
-         qmWpHKHeDF5pgHS8oGT/qkQKTYzyrq9V0SA30fQNqhgCnItq3+NAr/fyBbQm6xFaEm
-         Niciqhgq5s5BUrpcCCaOWVmkrlNGH27jsh6Y/v9plqgzAmiHBlCz1WslXbdIaIIUPr
-         kf/pOJl0OllSg==
-Received: by mail-ed1-f54.google.com with SMTP id h10so6555870edt.13
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:11:37 -0700 (PDT)
-X-Gm-Message-State: AOAM533JPXgmXzv4TB/errRabAUpE+I7AsCjVoSd6rnqGbs5bLFs314z
-        hUZUMtfb5s3Ya8hSxN5kppjuWieHacDAh72tdD8lzQ==
-X-Google-Smtp-Source: ABdhPJz4IG9+/ZvyOV8PwvhW9TihJRyb6c1OlqPbuhF0F4hv48qHpBsFcXI7M4MTuzGCZQr1yQLTqyrwhwHiUDIZLao=
-X-Received: by 2002:aa7:dd96:: with SMTP id g22mr5983284edv.222.1620313896213;
- Thu, 06 May 2021 08:11:36 -0700 (PDT)
+        s=k20201202; t=1620313928;
+        bh=5pyBiTEHvMxAj8e/yO3yGgrWonLAEYO6vTvkoiWBA6I=;
+        h=Date:From:Cc:Subject:In-Reply-To:References:From;
+        b=gCHwiMQxRg/34kpnWeUtVHGRkYuqPEOIQkZjVTbPZZPFy2jqZ6oslJA4TOQa+gcHd
+         Z0NptbjOm1CDOQB3ZQKMyntN6xQ5y7grAgI5pG3HJhrWpTilFGoxYfvmb6EoYj445K
+         CQ0uc3Z4NuK9pz7n4SC/EZcPlSxDibZYfzeHq83K3HcpNS0SlwJvX6wThXiW6AEk2u
+         hMwzEy9DylBCX+jg+CvlvqsbQ2ABQrFVf8X1Vi88Uh4ZWYq9UGScRPv8ih+Dd5UE7z
+         mmJ11YeiM3YEzKEgUBlxxi6W4vsOo94Lj61ii0dn8Sbwu0SCHHobKO2iHWqCOgTTiV
+         lZpsKjD8tnxqw==
+Date:   Thu, 6 May 2021 17:11:57 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        "Lad, Prabhakar" <prabhakar.csengg@gmail.com>,
+        "Paul J. Murphy" <paul.j.murphy@intel.com>,
+        Andrzej Pietrasiewicz <andrzejtp2010@gmail.com>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Daniele Alessandrelli <daniele.alessandrelli@intel.com>,
+        Ezequiel Garcia <ezequiel@collabora.com>,
+        Fabio Estevam <festevam@gmail.com>,
+        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Rui Miguel Silva <rmfrfs@gmail.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        Steve Longerbeam <slongerbeam@gmail.com>,
+        Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-renesas-soc@vger.kernel.org,
+        linux-rockchip@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH 00/25] Fix some PM runtime issues at the media subsystem
+Message-ID: <20210506171157.678f5c15@coco.lan>
+In-Reply-To: <cover.1620207353.git.mchehab+huawei@kernel.org>
+References: <cover.1620207353.git.mchehab+huawei@kernel.org>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de> <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net> <YJFptPyDtow//5LU@zn.tnic>
- <044d0bad-6888-a211-e1d3-159a4aeed52d@polymtl.ca> <932d65e1-5a8f-c86a-8673-34f0e006c27f@samba.org>
- <30e248aa-534d-37ff-2954-a70a454391fc@polymtl.ca> <CALCETrUF5M+Qw+RfY8subR7nzmpMyFsE3NHSAPoMVWMz6_hr-w@mail.gmail.com>
- <f4d0c304-2fe0-087f-90f4-1ad9c1b32694@polymtl.ca>
-In-Reply-To: <f4d0c304-2fe0-087f-90f4-1ad9c1b32694@polymtl.ca>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 6 May 2021 08:11:24 -0700
-X-Gmail-Original-Message-ID: <CALCETrUP1+Vy=PJASbXWgUUFHTrskLb+fO2-1huQT7A_GZpTyA@mail.gmail.com>
-Message-ID: <CALCETrUP1+Vy=PJASbXWgUUFHTrskLb+fO2-1huQT7A_GZpTyA@mail.gmail.com>
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Simon Marchi <simon.marchi@polymtl.ca>
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Stefan Metzmacher <metze@samba.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        linux-toolchains@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 6:04 PM Simon Marchi <simon.marchi@polymtl.ca> wrote:
->
-> On 2021-05-05 6:11 p.m., Andy Lutomirski wrote:
+Em Wed,  5 May 2021 11:41:50 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
 
-> I looked at how GDB reads registers from a "64-bit" task and a "32-bit"
-> task (I have to quote now, since I now know it's an abuse of
-> terminology) side by side.  And indeed, GDB reads a full 64-bit state in
-> both cases.  For the 32-bit case, it picks the 32-bit values from that
-> buffer.  For example, to get the eax value it picks the low 4 bytes of
-> rax (well, ax in user_regs_struct).
->
-> So I suppose that if GDB wanted to tell nothing but the truth, it would
-> present the full 64-bit register state to the user even when debugging a
-> 32-bit program.  But at the end of the day, the typical user debugging a
-> 32-bit program on a 64-bit probably just wants the illusion that they
-> are on i386.
+> As part of an effort to cleanup pm_runtime*get* calls, I detected a number
+> of issues at the media subsystem.
+> 
+> Most of the patches here were submitted previously at:
+> 
+> 	https://lore.kernel.org/linux-media/cover.1619621413.git.mchehab+huawei@kernel.org/
+> 
+> This series contain just the bug fixes and other related issues that are
+> present with the current code on media.
 
-True.  I see no reason, especially by default, to show the extra
-registers.  On the other hand, if the program switches modes, having
-gdb notice would be nice.  And, if gdb handled this correctly, all
-this io_uring stuff would be entirely moot.  The made-up register
-state of the io_uring thread would have no bearing on the debugging of
-other threads.
+Series merged on my stage tree, at:
+	https://git.linuxtv.org/media_stage.git/log/
 
->
-> > Now I realize that the ptrace() API is awful and makes life difficult
-> > in several respects for no good reason but, if gdb is ever interested
-> > in fixing its ideas about architecture to understand that all tasks,
-> > even those that think of themselves as "compat", have full 64-bit
-> > state, I would be more than willing to improve the ptrace() API as
-> > needed to make this work well.
->
-> Just wondering, do you have specific ptrace shortcomings in mind when
-> saying this?  As I found above, ptrace lets us read the whole 64-bit
-> register state.  After that it's up to us to analyze the state of the
-> program based on its registers and memory.  What more could ptrace give
-> us?
+I'll be merging it at media_tree (either for 5.13 or 5.14) after the
+end of the merge window (likely next week).
 
-Two specific issues come to mind:
+Please let me know if you find any problems on it.
 
-1. PTRACE_GETREGSET and PTRACE_SETREGSET are terminally broken.  See
-the comment above task_user_regset_view() in arch/x86/kernel/ptrace.c.
-We need a new version of those APIs that takes an e_machine parameter.
-(I don't even see how you can call these APIs safely at all, short of
-allocating a buffer with a guard page or intentionally over-allocating
-and calculating the maximum possible size of buffer that could be used
-in case of a screwup.)
+PS.: please notice that my stage tree can be rebased.
 
-2. There should be an API to either read the descriptor table or to
-look up a specific descriptor.  How else are you supposed to know
-whether CS.L is set?  (Keep in mind that 0x33 is not necessarily the
-only long mode segment that gets used.  Linux on Xen PV has an extra
-one.)
+Regards,
+Mauro
 
---Andy
+> 
+> It address the points from the existing reviews. I also did my own
+> set of reviews, in order to avoid regressions.
+> 
+> Changes from v4 of the previous changeset:
+> 
+> - reworked i2c/css RPM get logic;
+> - dropped two patches that could cause regressions;
+> - am437x: keep using pm_runtime_get_sync on suspend/resume;
+> - atmel: fix the returned code and add a print on failures at start streaming;
+> - simplify some checks for return code > 0;
+> - mdk-vcodec: properly handle RPM errors at device on logic;
+> - venus: rework venus_sys_error_handler() logic;
+> - sti/delta: fix an issue at the error checking logic.
+> 
+> Mauro Carvalho Chehab (25):
+>   staging: media: rkvdec: fix pm_runtime_get_sync() usage count
+>   staging: media: imx7-mipi-csis: fix pm_runtime_get_sync() usage count
+>   media: venus: Rework error fail recover logic
+>   media: s5p_cec: decrement usage count if disabled
+>   media: i2c: ccs-core: return the right error code at suspend
+>   media: i2c: imx334: fix the pm runtime get logic
+>   media: exynos-gsc: don't resume at remove time
+>   media: atmel: properly get pm_runtime
+>   media: hantro: do a PM resume earlier
+>   media: marvel-ccic: fix some issues when getting pm_runtime
+>   media: mdk-mdp: fix pm_runtime_get_sync() usage count
+>   media: rcar_fdp1: simplify error check logic at fdp_open()
+>   media: rcar_fdp1: fix pm_runtime_get_sync() usage count
+>   media: renesas-ceu: Properly check for PM errors
+>   media: s5p: fix pm_runtime_get_sync() usage count
+>   media: am437x: fix pm_runtime_get_sync() usage count
+>   media: sh_vou: fix pm_runtime_get_sync() usage count
+>   media: mtk-vcodec: fix PM runtime get logic
+>   media: s5p-jpeg: fix pm_runtime_get_sync() usage count
+>   media: sti/delta: use pm_runtime_resume_and_get()
+>   media: sunxi: fix pm_runtime_get_sync() usage count
+>   media: sti/bdisp: fix pm_runtime_get_sync() usage count
+>   media: exynos4-is: fix pm_runtime_get_sync() usage count
+>   media: exynos-gsc: fix pm_runtime_get_sync() usage count
+>   media: i2c: ccs-core: fix pm_runtime_get_sync() usage count
+> 
+>  drivers/media/cec/platform/s5p/s5p_cec.c      |  7 ++-
+>  drivers/media/i2c/ccs/ccs-core.c              | 41 ++++++++-----
+>  drivers/media/i2c/imx334.c                    |  7 ++-
+>  drivers/media/platform/am437x/am437x-vpfe.c   | 15 ++++-
+>  drivers/media/platform/atmel/atmel-isc-base.c | 30 +++++++---
+>  drivers/media/platform/atmel/atmel-isi.c      | 19 ++++--
+>  drivers/media/platform/exynos-gsc/gsc-core.c  | 11 ++--
+>  drivers/media/platform/exynos-gsc/gsc-m2m.c   |  4 +-
+>  .../media/platform/exynos4-is/fimc-capture.c  |  6 +-
+>  drivers/media/platform/exynos4-is/fimc-is.c   |  4 +-
+>  .../platform/exynos4-is/fimc-isp-video.c      |  3 +-
+>  drivers/media/platform/exynos4-is/fimc-isp.c  |  7 +--
+>  drivers/media/platform/exynos4-is/fimc-lite.c |  5 +-
+>  drivers/media/platform/exynos4-is/fimc-m2m.c  |  5 +-
+>  drivers/media/platform/exynos4-is/media-dev.c |  9 +--
+>  drivers/media/platform/exynos4-is/mipi-csis.c | 10 ++--
+>  .../media/platform/marvell-ccic/mcam-core.c   |  9 ++-
+>  drivers/media/platform/mtk-mdp/mtk_mdp_m2m.c  |  6 +-
+>  .../platform/mtk-vcodec/mtk_vcodec_dec_drv.c  |  4 +-
+>  .../platform/mtk-vcodec/mtk_vcodec_dec_pm.c   |  8 ++-
+>  .../platform/mtk-vcodec/mtk_vcodec_dec_pm.h   |  2 +-
+>  drivers/media/platform/qcom/venus/core.c      | 59 +++++++++++++++----
+>  drivers/media/platform/rcar_fdp1.c            | 28 ++++++---
+>  drivers/media/platform/renesas-ceu.c          |  4 +-
+>  drivers/media/platform/s5p-jpeg/jpeg-core.c   |  5 +-
+>  drivers/media/platform/sh_vou.c               |  6 +-
+>  drivers/media/platform/sti/bdisp/bdisp-v4l2.c |  7 ++-
+>  drivers/media/platform/sti/delta/delta-v4l2.c |  8 +--
+>  .../sunxi/sun8i-rotate/sun8i_rotate.c         |  2 +-
+>  drivers/staging/media/hantro/hantro_drv.c     |  7 ++-
+>  drivers/staging/media/imx/imx7-mipi-csis.c    |  7 +--
+>  drivers/staging/media/rkvdec/rkvdec.c         |  2 +-
+>  32 files changed, 220 insertions(+), 127 deletions(-)
+> 
+
+
+
+Thanks,
+Mauro
