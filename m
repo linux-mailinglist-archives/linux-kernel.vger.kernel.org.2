@@ -2,174 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF2CC375D57
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:15:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 033D9375D59
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 01:16:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231335AbhEFXQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 19:16:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51958 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230460AbhEFXQq (ORCPT
+        id S231622AbhEFXR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 19:17:27 -0400
+Received: from mailgate.ics.forth.gr ([139.91.1.2]:16245 "EHLO
+        mailgate.ics.forth.gr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230460AbhEFXRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 19:16:46 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE5CDC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 16:15:46 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id g21-20020ac86f150000b02901c94e794dd7so4551644qtv.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 16:15:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:message-id:mime-version:subject:from:to:cc;
-        bh=S0EFe95CIa83FH/uR0CK5DeEnOSiVvW2gb1ym2pZaOs=;
-        b=YI8500gjXbsMPkTWeUd9d4qkOvRGR55b+Blh1YjsV7bTdx2Uu23DX43NCLrLm8jXNX
-         8IwQG+Bw3nBl+X9aSivNLLmVZ4aePC8vIMnLBJso7IoGPJHNUHQxR4Fo93zJ6LEqOCOV
-         KjfjSvbBKo/0uxcH+ynv1MPrfLtpVxaY1U7WrYpsym+YZ6nZJNwptq2kobYrsamRb4WH
-         WofcJtCp6Na3+C3ZVcnu8OhoLH0Cv8FYlYU0TO29X6W/mfqDiBXQzoOhHPFWxa0MmrVP
-         D0WIIU3/McDobkN5q+u7omIzNr8cfySOmNoDuo4YsM5NRbUHPxabYK6uR7lVtANCaRcF
-         y97Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:message-id:mime-version:subject
-         :from:to:cc;
-        bh=S0EFe95CIa83FH/uR0CK5DeEnOSiVvW2gb1ym2pZaOs=;
-        b=o/tfg/RigvYpsVK+ObFmc0jFH7FlythVpNCrAwHF5k4t6qFvBZ/8xFUEw/vsB0fkFt
-         tHDSh6o4eBwABB7JkLlMDzBMAafy/VFdgJ+N0beWZ12X0QlKWastFv5CGwqIQuXIwNly
-         PGZ0N1cudKHo+rmXYwvjLtGklFNEhGFuGovJnyLYRAoquPAVhWBPyWDBh65rsBpgqUTL
-         5Rwa2+USobhXSn2IKTjP8zOAzngvhEtafXXXEN1rtB73wSbyWvaEAFBY7h/K3977TqqG
-         Y3Q+3xygoq+CBTZkz+4vKIFqkA9aZWK/UJLe+5dzFrBwF9KZ3brJBC2wG/bElQ+ZwuYD
-         4Vew==
-X-Gm-Message-State: AOAM532SBJ0usgaHHCsaAoAh6Tg2DC/5rpvgJNITiA0aZWCm/wAa8/c/
-        BRjR+eOXfmV+xRRa0EXHunNn3KAnSx4=
-X-Google-Smtp-Source: ABdhPJx/QMmmBfM7/niLPM9tz2+a7Ayuom0BmFJwoWUMdwo30QH3UjsA/dZPrPqzpkWJgIJB/5IQp304d9c=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:818d:5ca3:d49c:cfc8])
- (user=seanjc job=sendgmr) by 2002:a05:6214:241:: with SMTP id
- k1mr7031611qvt.29.1620342945773; Thu, 06 May 2021 16:15:45 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Thu,  6 May 2021 16:15:42 -0700
-Message-Id: <20210506231542.2331138-1-seanjc@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH] KVM: SVM: Invert user pointer casting in SEV {en,de}crypt helpers
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ashish Kalra <ashish.kalra@amd.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 6 May 2021 19:17:20 -0400
+Received: from av3.ics.forth.gr (av3in.ics.forth.gr [139.91.1.77])
+        by mailgate.ics.forth.gr (8.15.2/ICS-FORTH/V10-1.8-GATE) with ESMTP id 146NGIu7043560
+        for <linux-kernel@vger.kernel.org>; Fri, 7 May 2021 02:16:20 +0300 (EEST)
+DKIM-Signature: v=1; a=rsa-sha256; d=ics.forth.gr; s=av; c=relaxed/simple;
+        q=dns/txt; i=@ics.forth.gr; t=1620342973; x=1622934973;
+        h=From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=uf0onNfnHBzOPbID0tZ8t011w+r/nxI4x/Q1TyEOdQE=;
+        b=PM4UzE0tjJb0ton6+hFqgkCcvCPtBByAxRm712TdGgM8oH0uKI3fYmQulecm+EDP
+        VX/y3RFo1wqeqd0M0KT/NGXp67dMJ3EswjXL7/Rvs2m3exSNibfkcTfc4Ds1LdVZ
+        zIO1mwOOSeXB/gkB+gBayO9ehtfE1kOLWrgcVaes3kdO9vNH4wOxJv3okCWEcOXq
+        7wxQ55OdhLAsE3nZ4q/4x7s7ycQC0w3Gol5dj1eF7An6hnmST3jy8YU3tIa2mTWi
+        ctsjP4o/QYbATmSPpaRFC0hLvogkCgCc8SAFLAmz5IdYCrO9I64z/wBrUohkg55F
+        bxOCRdo40Lnk7VwOyEhcoA==;
+X-AuditID: 8b5b014d-a70347000000209f-ba-609478bd5c23
+Received: from enigma.ics.forth.gr (enigma.ics.forth.gr [139.91.151.35])
+        by av3.ics.forth.gr (Symantec Messaging Gateway) with SMTP id EB.87.08351.DB874906; Fri,  7 May 2021 02:16:13 +0300 (EEST)
+X-ICS-AUTH-INFO: Authenticated user:  at ics.forth.gr
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Fri, 07 May 2021 02:16:03 +0300
+From:   Nick Kossifidis <mick@ics.forth.gr>
+To:     jejb@linux.ibm.com
+Cc:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Organization: FORTH
+In-Reply-To: <8eb933f921c9dfe4c9b1b304e8f8fa4fbc249d84.camel@linux.ibm.com>
+References: <20210303162209.8609-1-rppt@kernel.org>
+ <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
+ <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
+ <996dbc29-e79c-9c31-1e47-cbf20db2937d@redhat.com>
+ <8eb933f921c9dfe4c9b1b304e8f8fa4fbc249d84.camel@linux.ibm.com>
+Message-ID: <77fe28bd940b2c1afd69d65b6d349352@mailhost.ics.forth.gr>
+X-Sender: mick@mailhost.ics.forth.gr
+User-Agent: Roundcube Webmail/1.3.16
+X-Brightmail-Tracker: H4sIAAAAAAAAA03SfUwTZxzA8Tx317uDrOFEGZdKwNWRbGwrmsn8JTKijs2LRuLMFhUW5AI3
+        YEMkLRAmc2EC8qqjtS+uRXlRAUlHoWUwCoQXZQUFXwpaNhHr4I91MNxkTEaHjK5bwj9PPsnv
+        l+f5/vHQuH+HSEKnpmcK8nQ+TUr6EmVxus1vdOeoE7Y8rwmBSpORhGXV9xTMNz8n4UldOQLH
+        n7MIdJo7CH5uLkKwYFrCoW5eTcCC6g4J2pZAqB1vw8CorMHB8qyYhGLrAgHmqfsi6OoeImDU
+        WkmCbuIJCZPGFRHkKx9Q0DZfQMJt6zciuOK4i8GjszvB3luNwb3HBgJuVDgpcI2W43Ba7we2
+        M70YLP+wegzftIvguqkdg3F1Hgl992cQqF1NFFjMGhxODZgwuL1sE0HBRAS4F1cfXWyeEu18
+        jXtWeJbgjBeNiHMvqRA363IRnDJ/juI69A8prtqcxVkawrhLXS6MMzeWkJz5qYri5m7dorjB
+        826Cmx7TYVxFbS/iLg69fyAo1jcySUhLzRbk4VEJvilu0zSWcdUvx5CnovKQ9oVS5EOzzDZ2
+        pP4SKkW+tD8zgNjxDhXlHUSwhu4S5LGYWccOfT1NeIwzwGrGepDXIWz+twbcY4IJZQunlzGP
+        SeZVtsret7pP0xuYF9k5Y7B3fUHMOpThHq9nBLbu0SjpsR+znn368K7IYx9mH/tTWRfh7WnE
+        2CbVH/81RLNttnukt+1l9je3k/LcH7BqywVpBVqnX1OqX1OqX1NajfBGxPDZb8pSExWyj4/L
+        M1NkyXIz+vd3of3foQeWX2X9CKNRP2JpXLpBfLP2XIK/OIn/7IQgP35UnpUmKPrRRpqQBorF
+        soqj/kwynyl8KggZgvz/KUb7SPIw2ye49vWaA7G7646gV97u3FS/vSc+sGAXzQTzA+8ym22D
+        fVdq9w5+0HCygX4skW48Nzw+c3lP/kRMg7mocleU6PCxbbGNY6f4SbrqWkzPaEn5mb25xS99
+        eCI0Lqp+UR2wPTc7aEYjuyHZpI4+KZS3HYmov1z11Wyc1nb+gmEpMqA874uglMPD82NO7Zxj
+        x+fh4cnYwc6t6SO7i6xJDvvgis+P7YfYmD36GVPxlwMfheXwzEF5xu9ME52YteN0HHM1VP2L
+        zKjtlBiynFH7nWVNrVN/C9b49ux3qt5rPRapmNTxRSst5MhkdHohWWFShiRu+ev6W/amVs2h
+        ay1B4vjS4FwpoUjht4bhcgX/D3XLkQHMAwAA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Invert the user pointer params for SEV's helpers for encrypting and
-decrypting guest memory so that they take a pointer and cast to an
-unsigned long as necessary, as opposed to doing the opposite.  Tagging a
-non-pointer as __user is confusing and weird since a cast of some form
-needs to occur to actually access the user data.  This also fixes Sparse
-warnings triggered by directly consuming the unsigned longs, which are
-"noderef" due to the __user tag.
+Στις 2021-05-06 20:05, James Bottomley έγραψε:
+> On Thu, 2021-05-06 at 18:45 +0200, David Hildenbrand wrote:
+>> 
+>> Also, there is a way to still read that memory when root by
+>> 
+>> 1. Having kdump active (which would often be the case, but maybe not
+>> to dump user pages )
+>> 2. Triggering a kernel crash (easy via proc as root)
+>> 3. Waiting for the reboot after kump() created the dump and then
+>> reading the content from disk.
+> 
+> Anything that can leave physical memory intact but boot to a kernel
+> where the missing direct map entry is restored could theoretically
+> extract the secret.  However, it's not exactly going to be a stealthy
+> extraction ...
+> 
+>> Or, as an attacker, load a custom kexec() kernel and read memory
+>> from the new environment. Of course, the latter two are advanced
+>> mechanisms, but they are possible when root. We might be able to
+>> mitigate, for example, by zeroing out secretmem pages before booting
+>> into the kexec kernel, if we care :)
+> 
+> I think we could handle it by marking the region, yes, and a zero on
+> shutdown might be useful ... it would prevent all warm reboot type
+> attacks.
+> 
 
-Cc: Brijesh Singh <brijesh.singh@amd.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>
-Cc: Ashish Kalra <ashish.kalra@amd.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/svm/sev.c | 24 +++++++++++-------------
- 1 file changed, 11 insertions(+), 13 deletions(-)
-
-diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-index a9d8d6aafdb8..bba4544fbaba 100644
---- a/arch/x86/kvm/svm/sev.c
-+++ b/arch/x86/kvm/svm/sev.c
-@@ -763,7 +763,7 @@ static int __sev_dbg_decrypt(struct kvm *kvm, unsigned long src_paddr,
- }
- 
- static int __sev_dbg_decrypt_user(struct kvm *kvm, unsigned long paddr,
--				  unsigned long __user dst_uaddr,
-+				  void __user *dst_uaddr,
- 				  unsigned long dst_paddr,
- 				  int size, int *err)
- {
-@@ -787,8 +787,7 @@ static int __sev_dbg_decrypt_user(struct kvm *kvm, unsigned long paddr,
- 
- 	if (tpage) {
- 		offset = paddr & 15;
--		if (copy_to_user((void __user *)(uintptr_t)dst_uaddr,
--				 page_address(tpage) + offset, size))
-+		if (copy_to_user(dst_uaddr, page_address(tpage) + offset, size))
- 			ret = -EFAULT;
- 	}
- 
-@@ -800,9 +799,9 @@ static int __sev_dbg_decrypt_user(struct kvm *kvm, unsigned long paddr,
- }
- 
- static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
--				  unsigned long __user vaddr,
-+				  void __user *vaddr,
- 				  unsigned long dst_paddr,
--				  unsigned long __user dst_vaddr,
-+				  void __user *dst_vaddr,
- 				  int size, int *error)
- {
- 	struct page *src_tpage = NULL;
-@@ -810,13 +809,12 @@ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
- 	int ret, len = size;
- 
- 	/* If source buffer is not aligned then use an intermediate buffer */
--	if (!IS_ALIGNED(vaddr, 16)) {
-+	if (!IS_ALIGNED((unsigned long)vaddr, 16)) {
- 		src_tpage = alloc_page(GFP_KERNEL);
- 		if (!src_tpage)
- 			return -ENOMEM;
- 
--		if (copy_from_user(page_address(src_tpage),
--				(void __user *)(uintptr_t)vaddr, size)) {
-+		if (copy_from_user(page_address(src_tpage), vaddr, size)) {
- 			__free_page(src_tpage);
- 			return -EFAULT;
- 		}
-@@ -830,7 +828,7 @@ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
- 	 *   - copy the source buffer in an intermediate buffer
- 	 *   - use the intermediate buffer as source buffer
- 	 */
--	if (!IS_ALIGNED(dst_vaddr, 16) || !IS_ALIGNED(size, 16)) {
-+	if (!IS_ALIGNED((unsigned long)dst_vaddr, 16) || !IS_ALIGNED(size, 16)) {
- 		int dst_offset;
- 
- 		dst_tpage = alloc_page(GFP_KERNEL);
-@@ -855,7 +853,7 @@ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
- 			       page_address(src_tpage), size);
- 		else {
- 			if (copy_from_user(page_address(dst_tpage) + dst_offset,
--					   (void __user *)(uintptr_t)vaddr, size)) {
-+					   vaddr, size)) {
- 				ret = -EFAULT;
- 				goto e_free;
- 			}
-@@ -935,15 +933,15 @@ static int sev_dbg_crypt(struct kvm *kvm, struct kvm_sev_cmd *argp, bool dec)
- 		if (dec)
- 			ret = __sev_dbg_decrypt_user(kvm,
- 						     __sme_page_pa(src_p[0]) + s_off,
--						     dst_vaddr,
-+						     (void __user *)dst_vaddr,
- 						     __sme_page_pa(dst_p[0]) + d_off,
- 						     len, &argp->error);
- 		else
- 			ret = __sev_dbg_encrypt_user(kvm,
- 						     __sme_page_pa(src_p[0]) + s_off,
--						     vaddr,
-+						     (void __user *)vaddr,
- 						     __sme_page_pa(dst_p[0]) + d_off,
--						     dst_vaddr,
-+						     (void __user *)dst_vaddr,
- 						     len, &argp->error);
- 
- 		sev_unpin_memory(kvm, src_p, n);
--- 
-2.31.1.607.g51e8a6a459-goog
-
+I had similar concerns about recovering secrets with kdump, and 
+considered cleaning up keyrings before jumping to the new kernel. The 
+problem is we can't provide guarantees in that case, once the kernel has 
+crashed and we are on our way to run crashkernel, we can't be sure we 
+can reliably zero-out anything, the more code we add to that path the 
+more risky it gets. However during reboot/normal kexec() we should do 
+some cleanup, it makes sense and secretmem can indeed be useful in that 
+case. Regarding loading custom kexec() kernels, we mitigate this with 
+the kexec file-based API where we can verify the signature of the loaded 
+kimage (assuming the system runs a kernel provided by a trusted 3rd 
+party and we 've maintained a chain of trust since booting).
