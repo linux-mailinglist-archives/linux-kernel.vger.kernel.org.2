@@ -2,233 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F89B375203
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:07:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA1F3375202
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:07:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234346AbhEFKIP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:08:15 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:49506 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233573AbhEFKIL (ORCPT
+        id S233602AbhEFKIK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:08:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44642 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229836AbhEFKIJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:08:11 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id C2EB0F4059A; Thu,  6 May 2021 12:07:05 +0200 (CEST)
-Date:   Thu, 6 May 2021 12:07:05 +0200
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
-Cc:     linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/4] HID: wiiu-drc: Add a driver for this gamepad
-Message-ID: <20210506100705.5bcpywy25kfqwgkn@luna>
-Jabber-ID: linkmauve@linkmauve.fr
-References: <20210502232836.26134-1-linkmauve@linkmauve.fr>
- <20210502232836.26134-2-linkmauve@linkmauve.fr>
- <YJMdK8zQR7Al3wWC@latitude>
+        Thu, 6 May 2021 06:08:09 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2302CC061574;
+        Thu,  6 May 2021 03:07:11 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id u5-20020a7bc0450000b02901480e40338bso4467494wmc.1;
+        Thu, 06 May 2021 03:07:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qk0Phljf3pVZNUl13wCN9M+I5aWffl2B9luGQSwYHpc=;
+        b=iV3HAGzn+GnBYPl9kQo/JilbKrUptI4R+VPvICC2rqLmdZBvRl3cwUOY2peu9VKKVn
+         trobQB1DTlGnjhd+8diK3G3yzMmsA9dvb8NjcTWXMPDfOEXAaPtUrAfnI8DVV3redEpX
+         Xr80c9VlM9Ao07Tf7+4ZOImXrdKd7jPYytqgE3R10eDLIEthAi4rQd7tfU1+Fv0l4Bf+
+         gzZoH6kH//QVC/p7VE9VMNKZSIAwO0v8NNE/ggoXEeKIcfe7InkKBbO/rOeZq2p0NH18
+         NbRefFIN1klL8KA4Qbkr3Q60nn5uBRcSeRplUGWzWfk33xMrkloNaBFq37FY+qAyrYss
+         M3Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=qk0Phljf3pVZNUl13wCN9M+I5aWffl2B9luGQSwYHpc=;
+        b=g2LXNOOvsf3uYhwxPuE0GTJ/No0KuC10rcE9fbS7BAAmowlhpjlN1z581Q8HKEMpvu
+         rUGzAbD3oncGo8GtQI8R0lGmCmSB0qUB6iJq2ccbVOc9KEgOS1ACp6XHC/Ty3Kb2qz9h
+         Xazhi8wWqX1uyXAqhyv2FGWsaIw5z+rCod4z1Rn/pWL3ohAbVsN/F4SC99XfzMiSTe2B
+         by8YQcQ/MHuzgC/V/ZbxEnCZGdfbdAbZe0U0GIP/06AWbLc4kRNpieNj/4BBh9atcoqr
+         cyA7uPZpLVCZL7BkJYVDAaR5H4EVjxhfKNoiTObp45Ugb5fVmFdqpATjKnUMuThPAjjN
+         ZMrw==
+X-Gm-Message-State: AOAM531lkIK5ce7sxCVAgxLlB7gddJl+hfLo/mlSW/29xL5we+04HSde
+        F4jZy1EwSB5YKltOpWT/9vo=
+X-Google-Smtp-Source: ABdhPJxkKPhZJtBPWeassX/n7aUlEdgs0FT0D7cBU0L6ss6x81LSJz/epZqKIIYN532BDV7n1N+MBA==
+X-Received: by 2002:a05:600c:249:: with SMTP id 9mr3081162wmj.175.1620295629835;
+        Thu, 06 May 2021 03:07:09 -0700 (PDT)
+Received: from debian (host-2-98-62-17.as13285.net. [2.98.62.17])
+        by smtp.gmail.com with ESMTPSA id k10sm16470828wmf.0.2021.05.06.03.07.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 03:07:09 -0700 (PDT)
+Date:   Thu, 6 May 2021 11:07:07 +0100
+From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 5.10 00/29] 5.10.35-rc1 review
+Message-ID: <YJO/y4Lv/hu6xEAY@debian>
+References: <20210505112326.195493232@linuxfoundation.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="jtw7k5qsxufz3nus"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YJMdK8zQR7Al3wWC@latitude>
+In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Greg,
 
---jtw7k5qsxufz3nus
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On Wed, May 05, 2021 at 02:05:03PM +0200, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 5.10.35 release.
+> There are 29 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
 
-On Wed, May 05, 2021 at 10:33:15PM +0000, Jonathan Neusch=C3=A4fer wrote:
-> Hi,
+Build test:
+mips (gcc version 11.1.1 20210430): 63 configs -> no failure
+arm (gcc version 11.1.1 20210430): 105 configs -> no new failure
+x86_64 (gcc version 10.2.1 20210110): 2 configs -> no failure
 
-Hi,
+Boot test:
+x86_64: Booted on my test laptop. No regression.
+x86_64: Booted on qemu. No regression.
 
->=20
-> some mostly trivial remarks and questions of curiosity below, because
-> I'm not very qualified to review the input subsystem side of things.
+Tested-by: Sudip Mukherjee <sudip.mukherjee@codethink.co.uk>
 
-Thanks for the questions anyway, I can probably make things clearer in
-the patch thanks to them. :)
 
-[=E2=80=A6]
-> Out of curiosity:
->=20
-> Do the HID reports travel over the wireless link from DRC to DRH, or are
-> they formed in DRH firmware?
-
-This HID report is a 1:1 copy of what the DRC sends, with no
-modification that I could find.
-
->=20
-> Is there a reference of the device-specific HID format? I briefly looked
-> at https://libdrc.org/docs/index.html but couldn't find it there.
-
-You were very close, the input report is described here:
-https://libdrc.org/docs/re/sc-input.html
-
-This project wrote a userland driver for using the DRC without the DRH,
-but it requires a very specific wifi chip which makes it quite
-cumbersome to use.
-
->=20
->=20
-> >  drivers/hid/Kconfig        |   7 +
-> >  drivers/hid/Makefile       |   1 +
-> >  drivers/hid/hid-ids.h      |   1 +
-> >  drivers/hid/hid-quirks.c   |   3 +
-> >  drivers/hid/hid-wiiu-drc.c | 270 +++++++++++++++++++++++++++++++++++++
-> >  5 files changed, 282 insertions(+)
-> >  create mode 100644 drivers/hid/hid-wiiu-drc.c
-> >=20
-> > diff --git a/drivers/hid/Kconfig b/drivers/hid/Kconfig
-> > index 4bf263c2d61a..01116c315459 100644
-> > --- a/drivers/hid/Kconfig
-> > +++ b/drivers/hid/Kconfig
-> > @@ -1105,6 +1105,13 @@ config HID_WACOM
-> >  	  To compile this driver as a module, choose M here: the
-> >  	  module will be called wacom.
-> > =20
-> > +config HID_WIIU_DRC
-> > +	tristate "Nintendo Wii U gamepad over internal DRH"
->=20
->                                  gamepad (DRC)
->=20
-> ... so it's clearer where the "DRC" name comes from.
-
-Will do in v2.
-
->=20
-> > +#if IS_ENABLED(CONFIG_HID_WIIU_DRC)
-> > +	{ HID_BLUETOOTH_DEVICE(USB_VENDOR_ID_NINTENDO, USB_DEVICE_ID_NINTENDO=
-_WIIU_DRH) },
-> > +#endif
->=20
-> Is the DRC connection the only USB function that the DRH provides?
-
-As far as I know, yes.
-
-But the DRC also sends microphone and camera data, which gets exposed by
-the DRH, but juuuuuust not quite standard enough to work as is using
-snd_usb_audio or uvcvideo.  There is also a NFC reader which no one has
-reversed yet to my knowledge.
-
-There are two DRCs exposed by the DRH, despite only one of them being
-bundled with each Wii=C2=A0U, and no game ever making use of more.
-
->=20
->=20
-> > +++ b/drivers/hid/hid-wiiu-drc.c
-> > @@ -0,0 +1,270 @@
-> > +// SPDX-License-Identifier: GPL-2.0-or-later
-> > +/*
-> > + * HID driver for Nintendo Wii U gamepad, connected via console-intern=
-al DRH
->=20
->                                     gamepad (DRC)
-
-Ack, will be fixed in v2.
-
->=20
->=20
-> > +static int drc_raw_event(struct hid_device *hdev, struct hid_report *r=
-eport,
-> > +	 u8 *data, int len)
-> > +{
-> > +	struct drc *drc =3D hid_get_drvdata(hdev);
-> > +	int i;
-> > +	u32 buttons;
-> > +
-> > +	if (len !=3D 128)
-> > +		return 0;
->=20
-> From include/linux/hid.h:
->=20
->  * raw_event and event should return negative on error, any other value w=
-ill
->  * pass the event on to .event() typically return 0 for success.
->=20
-> Not sure if returning 0 as you do above is appropriate.
-
-Oops, thanks for noticing, this will be fixed in v2.
-
->=20
->=20
-> > +static bool drc_setup_joypad(struct drc *drc,
-> > +		struct hid_device *hdev)
-> > +{
-> > +	struct input_dev *input_dev;
-> > +
-> > +	input_dev =3D allocate_and_setup(hdev, DEVICE_NAME " Joypad");
->=20
-> "Nintendo Wii U gamepad Joypad" looks a bit sub-optimal, but I'm not
-> sure about the conventions here.
-
-"Nintendo Wii U gamepad buttons and sticks" would be better I think.
-
->=20
->=20
-> > +
-> > +	/* These two buttons are actually TV control and Power. */
-> > +	set_bit(BTN_Z, input_dev->keybit);
-> > +	set_bit(BTN_DEAD, input_dev->keybit);
->=20
-> Hmm... from what I've deen the TV control button opens a menu on the
-> gamepad itself. Does it send the input event in addition to that?
-> Or is there a mode where it opens the TV menu, and a mode where it
-> forwards the button press to the Wii U?
-
-It does draw a line of text near the bottom of the screen, saying =E2=80=9C=
-TV
-Remote can be configured in System Settings.=E2=80=9D, but also sends the b=
-utton
-as a normal button in the report.  It could be possible to change its
-behaviour (in System Settings perhaps?) but so far I=E2=80=99ve been avoidi=
-ng
-interacting with the proprietary OS.
-
-The power button also has a special behaviour: when it is held for four
-seconds, it will power off the DRC.
-
->=20
->=20
-> > +MODULE_AUTHOR("Ash Logan <ash@heyquark.com>");
->=20
-> Since you're submitting the driver, rather than Ash, maybe adjust the
-> author field here? (totally your choice.)
-
-I=E2=80=99ll ask them, I=E2=80=99m perfectly fine with becoming the author,=
- but they
-wrote most of that code, I only fixed the last few missing pieces and
-did some cleanup.
-
->=20
->=20
->=20
-> Thanks,
-> Jonathan
-
-Thanks!
-
---=20
-Emmanuel Gil Peyrot
-
---jtw7k5qsxufz3nus
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmCTv8AACgkQOWgfYkb2
-LpCeaAf/X3dtreCXE5NVSLSA0zloCS5Y7WAPlshsE2Zc8NCVKcRPNamkHSFWtENf
-+OkJ6mZyQ8dGBEwqlrxPMyn1mL8FnIgvZOeNfIzCbNcodpdfLoL+noM+7hrOQRUj
-0vACbVkhCVYT3Gu9cDE9/2wQLHnvm/W1u4RWeWO2YLb+hjFzyWx4DmE2AdL2KeWw
-gy9BDiH6eao3StD3p1mhuMtg9YQD5Dj6C+c0hvzNRx9933fS+CvBsEQqVNpCdczi
-giGJ9vbngW83Y+OcRcfJIMwL4yKsI/ABngFwy6t4IWIN1lP73o5T56Kei6y0idlO
-kBHFMKSy3SAq/MVOyBsUIhv871tnXw==
-=F43R
------END PGP SIGNATURE-----
-
---jtw7k5qsxufz3nus--
+--
+Regards
+Sudip
