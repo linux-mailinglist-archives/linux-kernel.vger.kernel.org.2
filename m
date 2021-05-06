@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B441B374D05
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:47:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1000374D07
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230377AbhEFBr5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 21:47:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47788 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230330AbhEFBr4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 21:47:56 -0400
-Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39DD7C061574;
-        Wed,  5 May 2021 18:46:59 -0700 (PDT)
-Received: by mail-ot1-x329.google.com with SMTP id u25-20020a0568302319b02902ac3d54c25eso3562064ote.1;
-        Wed, 05 May 2021 18:46:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Z0kQbsf6JHtFPCC/U+X5ibHZaLwDuVRZ55PNlj5+UEU=;
-        b=JcI+MCu0ucR7bNAqgqeYpJwKNE72iylf3tD+e9Ld2jWrb4lr0yKuyRSnuXqK1UeoAy
-         LvpbSeZOaEu1/kmcRb69+azZMF+QMw9T/aYxhFq8SGldbTVm0+ZxplA0r9+0ueMUwm3Q
-         DIbxap6pvooFdCe/5H7jR1X0hGFUfjcNYA1o2sAkdWpVJSgiHL2AuqLyT/rvXYT9Kp3g
-         7p+1ByFAlkAaxvFhCp0AzW48TOJD72FYAzxug7YUjctWiyKE07eJHT/KIEgAIc9vCxAX
-         IdZJOutFbtTKrRkGYEjr1JDfVhDKg9eXO3wBZumxS7jIFJTIbBPRXyIMryVRcSjUh/u/
-         vMxw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Z0kQbsf6JHtFPCC/U+X5ibHZaLwDuVRZ55PNlj5+UEU=;
-        b=IoXjTRyQNg35WDYVFIgX+3xWtPKigyFGwxKh5VQX7iG2idhvIYVbluRfMQv/TaVX+r
-         x2Yu0tBfTy3+mvJQvnvjPH4HgMgbjxkNrHPZjet0BuDGl2bVAsWKMEY6Zd0nDiV5vZZR
-         STcwqbNArE+a7A7EV7PJYbGOzbDUh/Gt8N5UzFtNwF1wBS5+pX7AklOPX5H9zDgyYgGC
-         umEoSnoPes9HL48D+EeOIiCOe5O8xR2fMaQMOo+wjT7VjGdWNyjgJZGMY2MuXP16FCtO
-         yfOgqB2W7Aa+cX+Zmmmd9Tomb4KHybpLr97f1YX5mR5HqXRLSllDEdfySHkMhwG7ACce
-         6Txw==
-X-Gm-Message-State: AOAM530OPaP4XHR8lWKcM0Rd+cGYo5K+6l5gxJu3J04Ks8HOdzarFSnz
-        oSP5/nmD6/vaDzOFgjdqdP5BjTS09Ls=
-X-Google-Smtp-Source: ABdhPJzQh1WD2j46HJTcFdI3YAB0vgvbdGq4oDSb0xsCgq2qGn21kHRZYzNLgdCJT7JMQ0SCIxI/Ew==
-X-Received: by 2002:a05:6830:1b61:: with SMTP id d1mr1310826ote.171.1620265618579;
-        Wed, 05 May 2021 18:46:58 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id i130sm186088oif.49.2021.05.05.18.46.56
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 18:46:57 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 5 May 2021 18:46:56 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/15] 4.19.190-rc1 review
-Message-ID: <20210506014656.GA731872@roeck-us.net>
-References: <20210505120503.781531508@linuxfoundation.org>
+        id S230410AbhEFBsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 21:48:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48764 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229752AbhEFBsb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 21:48:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id BDFEE613B4;
+        Thu,  6 May 2021 01:47:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620265654;
+        bh=m/FucFqXwnvEgJZYcs2ulmK47101wLuoMnPmPvt7+94=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=SDEdnnG07dODGDPyh1N43aqloKlcg8vcq1JCyYtNVuh3nPz5+e6AlomaiZFK2CDvo
+         hhAeL7Vyq2kTxfXLefIpl8kPpDZ6TzMbuVyFsjU7282j1Mg7diHYKRxT949X8IgrlO
+         ADG2JCOXOq7EUam6hASIVVf0t2IICw0NfEFMdpOGL/P/NJ+lTsQJm8UhfOD2Ppo1Ad
+         HIdlv0ZDK7yN04e2FRqPxv5u9j9JXgYoIN4Ddgbkdjfu7PuLHj0bZB3WIqAHBb1bPm
+         L2pxFQ0fxJNXBx1OdC5g9Jc8r472CaHa/WZ5GZ3gnC5Ird7JMx7yzX/qfwWZN95EHC
+         svfZipkxquB9A==
+Date:   Thu, 6 May 2021 04:47:31 +0300
+From:   Jarkko Sakkinen <jarkko@kernel.org>
+To:     Lino Sanfilippo <LinoSanfilippo@gmx.de>
+Cc:     peterhuewe@gmx.de, jgg@ziepe.ca, stefanb@linux.vnet.ibm.com,
+        James.Bottomley@hansenpartnership.com, keescook@chromium.org,
+        jsnitsel@redhat.com, ml.linux@elloe.vision,
+        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/4] tpm: Simplify locality handling
+Message-ID: <YJNKs8bUMGOzFre+@kernel.org>
+References: <20210501135727.17747-1-LinoSanfilippo@gmx.de>
+ <20210501135727.17747-3-LinoSanfilippo@gmx.de>
+ <YJAby8mmiJ74qWAh@kernel.org>
+ <6722bf6f-1a3f-ee9c-55e2-cf63c64266a9@gmx.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210505120503.781531508@linuxfoundation.org>
+In-Reply-To: <6722bf6f-1a3f-ee9c-55e2-cf63c64266a9@gmx.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 02:05:05PM +0200, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.190 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Wed, May 05, 2021 at 01:15:29AM +0200, Lino Sanfilippo wrote:
+> Hi,
 > 
-> Responses should be made by Fri, 07 May 2021 12:04:54 +0000.
-> Anything received after that time might be too late.
+> On 03.05.21 at 17:50, Jarkko Sakkinen wrote:
+> > What the heck is "simplification" and what that has to do with fixing
+> > anything? I don't understand your terminology.
 > 
+> 
+> The intention for this patch is not to fix anything. Please read the cover
+> letter and the commit message.
+> This patch is about making the locality handling easier by not claiming/releasing
+> it multiple times over the driver life time, but claiming it once at driver
+> startup and only releasing it at driver shutdown.
+> 
+> Right now we have locality request/release combos in
+> 
+> - probe_itpm()
+> - tpm_tis_gen_interrupt()
+> - tpm_tis_core_init()
+> - tpm_chip_start()
+> 
+> and there is still one combo missing for
+> 
+> - tpm2_get_timeouts()
+> 
+> which is the reason why we get the "TPM returned invalid status" bug in case
+> of TPM2 (and this is the bug which is _incidentally_ fixed by this patch, see
+> below).
+> 
+> And if we are going to enable interrupts, we have to introduce yet another combo,
+> for accessing the status register in the interrupt handler, since TPM 2.0
+> requires holding the locality for writing to the status register. That makes
+> 6 different code places in which we take and release the locality.
+> 
+> With this patch applied we only take the locality at one place. Furthermore
+> with interrupts enabled we dont have to claim the locality for each handler
+> execution, saving us countless claim/release combinations at runtime.
+> 
+> Hence the term "simplification" which is perfectly justified IMO.
+> 
+> So again, this patch is "only" in preparation for the next patch when interrupts
+> are actually enabled and we would have to take the locality in the interrupt
+> handler without this patch.
 
-Build results:
-	total: 155 pass: 155 fail: 0
-Qemu test results:
-	total: 423 pass: 423 fail: 0
+So: what problem this patch does solve?
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
-
-Guenter
+/Jarkko
