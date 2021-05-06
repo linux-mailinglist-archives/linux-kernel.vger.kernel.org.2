@@ -2,180 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5A3374FD1
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:10:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2FCAC374FD5
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:11:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233167AbhEFHLo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:11:44 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:59678 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232793AbhEFHLm (ORCPT
+        id S233238AbhEFHMm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:12:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34000 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232876AbhEFHMa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:11:42 -0400
-Received: from minint-m3g9p8n.europe.corp.microsoft.com (unknown [49.207.195.141])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 70F7A20B7178;
-        Thu,  6 May 2021 00:10:43 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 70F7A20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620285045;
-        bh=PD9SiN6yE0HEGCtL5cXmJaYf2RP4vpF1uy5fBLBdzpQ=;
-        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
-        b=P/CENEbftU+S9u4KQoeNhSwmblH6LnQ47l+CEGwFRiFIJoeUi00ByIDK7mOj667/x
-         7fY0Nak/JJgyR+D/2BWGcg4/VnUp73jsUyRAECtiI/XzM86k35Ng20nltCCdCCvI4P
-         iPKG2hsN5b1jKef7ae4y76R1XyjbCQCViIR+h6mE=
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
-Subject: Re: [PATCH v2 1/2] optee: fix tee out of memory failure seen during
- kexec reboot
-From:   Allen Pais <apais@linux.microsoft.com>
-In-Reply-To: <CAHUa44EZprsEKbd_mzGhxQKQgu5XB5nLtREJh2j_9J3zPO4gNg@mail.gmail.com>
-Date:   Thu, 6 May 2021 12:40:40 +0530
-Cc:     Allen Pais <allen.lkml@gmail.com>, zajec5@gmail.com,
-        bcm-kernel-feedback-list@broadcom.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <51FC863B-96C5-47BA-8EBF-3D9FB6DE7DD2@linux.microsoft.com>
-References: <20210225090610.242623-1-allen.lkml@gmail.com>
- <20210225090610.242623-2-allen.lkml@gmail.com>
- <CAHUa44F5Ew6U80t7PPmV1J4KunXBm_izBxVrxg=x8azjBz0r9Q@mail.gmail.com>
- <9a6c017c-d156-f939-f907-d6dfe83c41ac@linux.microsoft.com>
- <CAHUa44FyGOj5=Z80km_2T-avKiJpGVD8cWjTC3ZCX8csazP3rw@mail.gmail.com>
- <409F60D9-F0FB-4B69-B64B-CC6B3704038E@linux.microsoft.com>
- <CAHUa44EZprsEKbd_mzGhxQKQgu5XB5nLtREJh2j_9J3zPO4gNg@mail.gmail.com>
-To:     Jens Wiklander <jens.wiklander@linaro.org>
-X-Mailer: Apple Mail (2.3654.60.0.2.21)
+        Thu, 6 May 2021 03:12:30 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 073A6C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:11:33 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id e15so4417178pfv.10
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:11:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:date:message-id:mime-version:content-transfer-encoding:cc
+         :from:to;
+        bh=RKE6jjXcJ0imsPN/Jcdv9I0BKrwvTPJLbt84HGfjOKU=;
+        b=cVTBP3osPNsPjzgzQh1Ow7dy1X6bO3T0NsqwfkgRAygGaaHQr2D4cisPBz/HvaHfOn
+         9ohX/ECpyU7rjhfKpMZ3u8EegIPDv+ywdGt5MTNdY7ZMJGVsNQPMCy76d7lnRIjCdiKQ
+         SCdpV1ZhdIisiF1Did7to27dEP/PP+zAvRM07D7XuugW1ULhs5Gj7ceIbywrclcoDh3n
+         /BgGeBa99rolzayb1B7Oj/jNM/YiLg8MUKv/fPKT8FrCkb63yrnfGxauau2u4LRxfuAV
+         jeQwMv9il3ACnu+eduoy8uFHcGPlQd4qN/cPIpUPoHtJNCB88WJDIqaoKaKBJqO+Z2y9
+         pcJQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:date:message-id:mime-version
+         :content-transfer-encoding:cc:from:to;
+        bh=RKE6jjXcJ0imsPN/Jcdv9I0BKrwvTPJLbt84HGfjOKU=;
+        b=g3aAfgqoMlgH8nMdqnZWmDcgSfwspBaCPAlToXxwYMCJHlgu3Z/w+IlLv8R196aOGv
+         ptxK7QzhtOY9mjp1PZ/OzzGFZ+52bnbhldsv9rr4ksO1JIVgZyZEvrHnY7BliexJASvj
+         e2dncaXcNa1iphIbvGiHXnj2WtAvHNO4JlkkeJV5RZwXoY5GpBb39ajuh9lRLz3RY4WE
+         sK89fEfvphc6rCFOTBG/M/pBmZE0Z//uQ/Lnv60HIQ5YQcTyU29jrV7EQyniX0VsYhgY
+         oIYJWllqON+DXfyMU3xiQYcRz8N8sLojxBUdmQfR7N+dYOFotFl2H8NxhVIS+NnIMAI5
+         eajA==
+X-Gm-Message-State: AOAM532g8vJhbTeb8K/fEWAoI0uSiAwakYskpe/38blfuFrN+90Eh6Kx
+        fQHOykAXQ4Pm36/ID1GoVNyVqw==
+X-Google-Smtp-Source: ABdhPJxhhfP8Rl5Euect2HwVRpdR8zXlp7FMlVmo2xpLE+q5oMhxVN/MdhVs+fCOwAtp/P09lJULHA==
+X-Received: by 2002:a05:6a00:ad6:b029:28c:c28d:d3c5 with SMTP id c22-20020a056a000ad6b029028cc28dd3c5mr3280987pfl.54.1620285092455;
+        Thu, 06 May 2021 00:11:32 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id h22sm1234313pfn.55.2021.05.06.00.11.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 00:11:31 -0700 (PDT)
+Subject: [PATCH] RISC-V: Don't check text_mutex during stop_machine
+Date:   Thu,  6 May 2021 00:10:41 -0700
+Message-Id: <20210506071041.417854-1-palmer@dabbelt.com>
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Cc:     rostedt@goodmis.org, mingo@redhat.com,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>, aou@eecs.berkeley.edu,
+        mhiramat@kernel.org, zong.li@sifive.com, guoren@linux.alibaba.com,
+        Atish Patra <Atish.Patra@wdc.com>,
+        linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com, Palmer Dabbelt <palmerdabbelt@google.com>,
+        Changbin Du <changbin.du@gmail.com>
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:         linux-riscv@lists.infradead.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Palmer Dabbelt <palmerdabbelt@google.com>
 
->>>>>> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
->>>>>> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with =
-error -22
->>>>>>=20
->>>>>> tee_shm_release() is not invoked on dma shm buffer.
->>>>>>=20
->>>>>> Implement .shutdown() method to handle the release of the buffers
->>>>>> correctly.
->>>>>>=20
->>>>>> More info:
->>>>>> https://github.com/OP-TEE/optee_os/issues/3637
->>>>>>=20
->>>>>> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
->>>>>> ---
->>>>>> drivers/tee/optee/core.c | 20 ++++++++++++++++++++
->>>>>> 1 file changed, 20 insertions(+)
->>>>>=20
->>>>> This looks good to me. Do you have a practical way of testing this =
-on
->>>>> QEMU for instance?
->>>>>=20
->>>>=20
->>>> Jens,
->>>>=20
->>>>  I could not reproduce nor create a setup using QEMU, I could only
->>>> do it on a real h/w.
->>>>=20
->>>>  I have extensively tested the fix and I don't see any issues.
->>>=20
->>> I did a few test runs too, seems OK.
->>=20
->> I carried these changes and have not run into any issues with Kexec =
-so far.
->> Last week, while trying out kdump, we ran into a crash(this is when =
-the
->> Kdump kernel reboots).
->>=20
->> $echo c > /proc/sysrq-trigger
->>=20
->> Leads to:
->>=20
->> [   18.004831] Unable to handle kernel paging request at virtual =
-address ffff0008dcef6758
->> [   18.013002] Mem abort info:
->> [   18.015885]   ESR =3D 0x96000005
->> [   18.019034]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->> [   18.024516]   SET =3D 0, FnV =3D 0
->> [   18.027667]   EA =3D 0, S1PTW =3D 0
->> [   18.030905] Data abort info:
->> [   18.033877]   ISV =3D 0, ISS =3D 0x00000005
->> [   18.037835]   CM =3D 0, WnR =3D 0
->> [   18.040896] swapper pgtable: 4k pages, 48-bit VAs, =
-pgdp=3D0000000970a78000
->> [   18.047811] [ffff0008dcef6758] pgd=3D000000097fbf9003, =
-pud=3D0000000000000000
->> [   18.054819] Internal error: Oops: 96000005 [#1] SMP
->> [   18.059850] Modules linked in: bnxt_en pcie_iproc_platform =
-pcie_iproc diagbe(O)
->> [   18.067395] CPU: 3 PID: 1 Comm: systemd-shutdow Tainted: G         =
-  O      5.4.83-microsoft-standard #1
->> [   18.077174] Hardware name: Overlake (DT)
->> [   18.081219] pstate: 80400005 (Nzcv daif +PAN -UAO)
->> [   18.086170] pc : tee_shm_free+0x18/0x48
->> [   18.090126] lr : optee_disable_shm_cache+0xa4/0xf0
->> [   18.095066] sp : ffff80001005bb90
->> [   18.098484] x29: ffff80001005bb90 x28: ffff000037e20000
->> [   18.103962] x27: 0000000000000000 x26: ffff00003ed10490
->> [   18.109440] x25: ffffca760e975f90 x24: 0000000000000000
->> [   18.114918] x23: ffffca760ed79808 x22: ffff00003ec66e18
->> [   18.120396] x21: ffff80001005bc08 x20: 00000000b200000a
->> [   18.125874] x19: ffff0008dcef6700 x18: 0000000000000010
->> [   18.131352] x17: 0000000000000000 x16: 0000000000000000
->> [   18.136829] x15: ffffffffffffffff x14: ffffca760ed79808
->> [   18.142307] x13: ffff80009005b897 x12: ffff80001005b89f
->> [   18.147786] x11: ffffca760eda4000 x10: ffff80001005b820
->> [   18.153264] x9 : 00000000ffffffd0 x8 : ffffca760e59b2c0
->> [   18.158742] x7 : 0000000000000000 x6 : 0000000000000000
->> [   18.164220] x5 : 0000000000000000 x4 : 0000000000000000
->> [   18.169698] x3 : 0000000000000000 x2 : ffff0008dcef6700
->> [   18.175175] x1 : 00000000ffff0008 x0 : ffffca760e59ca04
->> [   18.180654] Call trace:
->> [   18.183176]  tee_shm_free+0x18/0x48
->> [   18.186773]  optee_disable_shm_cache+0xa4/0xf0
->> [   18.191356]  optee_shutdown+0x20/0x30
->> [   18.195135]  platform_drv_shutdown+0x2c/0x38
->> [   18.199538]  device_shutdown+0x180/0x298
->> [   18.203586]  kernel_restart_prepare+0x44/0x50
->> [   18.208078]  kernel_restart+0x20/0x68
->> [   18.211853]  __do_sys_reboot+0x104/0x258
->> [   18.215899]  __arm64_sys_reboot+0x2c/0x38
->> [   18.220035]  el0_svc_handler+0x90/0x138
->> [   18.223991]  el0_svc+0x8/0x208
->> [   18.227143] Code: f9000bf3 aa0003f3 aa1e03e0 d503201f (b9405a60)
->> [   18.233435] ---[ end trace 835d756cd66aa959 ]---
->> [   18.238621] Kernel panic - not syncing: Fatal exception
->> [   18.244014] Kernel Offset: 0x4a75fde00000 from 0xffff800010000000
->> [   18.250299] PHYS_OFFSET: 0xffff99c680000000
->> [   18.254613] CPU features: 0x0002,21806008
->> [   18.258747] Memory Limit: none
->> [   18.262310] ---[ end Kernel panic - not syncing: Fatal exception =
-]=E2=80=94
->>=20
->> I see that before secure world returns =
-OPTEE_SMC_RETURN_ENOTAVAIL(which
->> Should disable and clear all the cache) we run into the crash trying =
-to free shm.
->>=20
->> Thoughts?
->=20
-> It seems that the pointer is invalid, but the pointer doesn't look
-> like garbage. Could the kernel have unmapped the memory area covering
-> that address?
->=20
+We're currently using stop_machine() to update ftrace, which means that
+the thread that takes text_mutex during ftrace_prepare() may not be the
+same as the thread that eventually patches the code.  This isn't
+actually a race because the lock is still held (preventing any other
+concurrent accesses) and there is only one thread running during
+stop_machine(), but it does trigger a lockdep failure.
 
- Yes, I am not entirely sure if the kernel had the time to unmap the =
-memory.
-Right after triggering the crash the kdump kernel is booted and I see =
-the following
+This patch just elides the lockdep check during stop_machine.
 
-[ 2.050145] optee: probing for conduit method.=20
-[ 2.054743] optee: revision 3.6 (f84427aa)=20
-[ 2.054821] optee: dynamic shared memory is enabled=20
-[ 2.066186] optee: initialized driver=20
+Fixes: c15ac4fd60d5 ("riscv/ftrace: Add dynamic function tracer support")
+Suggested-by: Steven Rostedt <rostedt@goodmis.org>
+Reported-by: Changbin Du <changbin.du@gmail.com>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+---
+In theory we should be able to avoid using stop_machine() with some
+clever code sequences, but that's too big of a change to be considered a
+fix.  I also can't find the text I thought was in the ISA manual about
+the allowed behaviors for concurrent modification of the instruction
+stream, so I might have just mis-remembered that.
+---
+ arch/riscv/include/asm/ftrace.h |  4 ++++
+ arch/riscv/kernel/ftrace.c      | 15 +++++++++++++++
+ arch/riscv/kernel/patch.c       | 10 +++++++++-
+ 3 files changed, 28 insertions(+), 1 deletion(-)
 
-Could this be previous un-released maps causing corruption?
+diff --git a/arch/riscv/include/asm/ftrace.h b/arch/riscv/include/asm/ftrace.h
+index 04dad3380041..ee8f07b4dbee 100644
+--- a/arch/riscv/include/asm/ftrace.h
++++ b/arch/riscv/include/asm/ftrace.h
+@@ -85,4 +85,8 @@ int ftrace_init_nop(struct module *mod, struct dyn_ftrace *rec);
+ 
+ #endif
+ 
++#ifndef __ASSEMBLY__
++extern int riscv_ftrace_in_stop_machine;
++#endif
++
+ #endif /* _ASM_RISCV_FTRACE_H */
+diff --git a/arch/riscv/kernel/ftrace.c b/arch/riscv/kernel/ftrace.c
+index 7f1e5203de88..da2405652f1d 100644
+--- a/arch/riscv/kernel/ftrace.c
++++ b/arch/riscv/kernel/ftrace.c
+@@ -11,6 +11,8 @@
+ #include <asm/cacheflush.h>
+ #include <asm/patch.h>
+ 
++int riscv_ftrace_in_stop_machine;
++
+ #ifdef CONFIG_DYNAMIC_FTRACE
+ int ftrace_arch_code_modify_prepare(void) __acquires(&text_mutex)
+ {
+@@ -232,3 +234,16 @@ int ftrace_disable_ftrace_graph_caller(void)
+ }
+ #endif /* CONFIG_DYNAMIC_FTRACE */
+ #endif /* CONFIG_FUNCTION_GRAPH_TRACER */
++
++void arch_ftrace_update_code(int command)
++{
++	/*
++	 * The code sequences we use for ftrace can't be patched while the
++	 * kernel is running, so we need to use stop_machine() to modify them
++	 * for now.  This doesn't play nice with text_mutex, we use this flag
++	 * to elide the check.
++	 */
++	riscv_ftrace_in_stop_machine = true;
++	ftrace_run_stop_machine(command);
++	riscv_ftrace_in_stop_machine = false;
++}
+diff --git a/arch/riscv/kernel/patch.c b/arch/riscv/kernel/patch.c
+index 0b552873a577..7983dba477f0 100644
+--- a/arch/riscv/kernel/patch.c
++++ b/arch/riscv/kernel/patch.c
+@@ -11,6 +11,7 @@
+ #include <asm/kprobes.h>
+ #include <asm/cacheflush.h>
+ #include <asm/fixmap.h>
++#include <asm/ftrace.h>
+ #include <asm/patch.h>
+ 
+ struct patch_insn {
+@@ -59,8 +60,15 @@ static int patch_insn_write(void *addr, const void *insn, size_t len)
+ 	 * Before reaching here, it was expected to lock the text_mutex
+ 	 * already, so we don't need to give another lock here and could
+ 	 * ensure that it was safe between each cores.
++	 *
++	 * We're currently using stop_machine() for ftrace, and while that
++	 * ensures text_mutex is held before installing the mappings it does
++	 * not ensure text_mutex is held by the calling thread.  That's safe
++	 * but triggers a lockdep failure, so just elide it for that specific
++	 * case.
+ 	 */
+-	lockdep_assert_held(&text_mutex);
++	if (!riscv_ftrace_in_stop_machine)
++		lockdep_assert_held(&text_mutex);
+ 
+ 	if (across_pages)
+ 		patch_map(addr + len, FIX_TEXT_POKE1);
+-- 
+2.31.1.527.g47e6f16901-goog
 
-Thanks.=
