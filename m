@@ -2,84 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C79C3755D4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95D0B3755E7
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234914AbhEFOp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:45:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234836AbhEFOp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:45:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3F86B6103E;
-        Thu,  6 May 2021 14:44:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620312268;
-        bh=BOhOb6YgchE5ciMqLJmE7uRp8FW6NeGqAmUnITHfSVU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hvDyxTYYz+7gnw5cNYYNCDXxdLfrZECQ3xI/3yWIQ3URVZNyowehM36n2Juet/7AB
-         WuY+G79hTYxn6YL45OCZuVoieyqD60yM46C4qcTJJR2r1l58pHhr++zBIPq5DhbudN
-         zeLG3Uaeqhe3qtTcmfIuuITVrZFPG93O9TdvDjevkth3BBpUyX18VciivkyJXSyl/7
-         5aQ5GI+V+6A4WmJfdJzFRtFjqDPx32uZoCJlaNxkdgFnJd2PuicV8miLFmyl4tqbVm
-         bd1p4T8uEMXTRa/EpHhTcz6wx4WYyC2mDLOQHRFBYifvpM027W7e7NYZAIg4aPt0Az
-         aBHviYEG6l7qQ==
-Date:   Thu, 6 May 2021 15:43:52 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     madvenka@linux.microsoft.com
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 4/4] arm64: Handle funtion graph tracer better in
- the unwinder
-Message-ID: <20210506144352.GF4642@sirena.org.uk>
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-5-madvenka@linux.microsoft.com>
+        id S234950AbhEFOts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:49:48 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:39838 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234759AbhEFOtq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 10:49:46 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: tonyk)
+        with ESMTPSA id 13DDA1F439BE
+Subject: Re: [PATCH v3 00/13] Add futex2 syscalls
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>, Darren Hart <dvhart@infradead.org>,
+        linux-kernel@vger.kernel.org, Steven Rostedt <rostedt@goodmis.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        kernel@collabora.com, krisman@collabora.com,
+        pgriffais@valvesoftware.com, z.figura12@gmail.com,
+        joel@joelfernandes.org, malteskarupke@fastmail.fm,
+        linux-api@vger.kernel.org, fweimer@redhat.com,
+        libc-alpha@sourceware.org, linux-kselftest@vger.kernel.org,
+        shuah@kernel.org, acme@kernel.org, corbet@lwn.net,
+        Peter Oskolkov <posk@posk.io>
+References: <20210427231248.220501-1-andrealmeid@collabora.com>
+ <YJKQLkHuTH3EWJoR@hirez.programming.kicks-ass.net>
+ <87bl9pi7if.ffs@nanos.tec.linutronix.de>
+From:   =?UTF-8?Q?Andr=c3=a9_Almeida?= <andrealmeid@collabora.com>
+Message-ID: <36e6951e-e7a9-5e82-200e-17668f02447f@collabora.com>
+Date:   Thu, 6 May 2021 11:48:36 -0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="A9z/3b/E4MkkD+7G"
-Content-Disposition: inline
-In-Reply-To: <20210503173615.21576-5-madvenka@linux.microsoft.com>
-X-Cookie: If it ain't baroque, don't phiques it.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87bl9pi7if.ffs@nanos.tec.linutronix.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Thomas, Peter,
 
---A9z/3b/E4MkkD+7G
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Às 11:23 de 05/05/21, Thomas Gleixner escreveu:
+> On Wed, May 05 2021 at 14:31, Peter Zijlstra wrote:
+> 
+>> On Tue, Apr 27, 2021 at 08:12:35PM -0300, André Almeida wrote:
+>>> Hi,
+>>>
+>>> This patch series introduces the futex2 syscalls.
+>>
+>> I still utterly detest that this adds a second hash-table for no
+>> descernable reason.
+>>
+>> The new syscall interface does not depend on that in any way, you
+>> previously implemented the multi-wait thing in the current futex code.
+>>
+>> Like I said last time; I'm okay with the new interface, but I don't see
+>> why you need to reimplement the insides, that's all pointless code
+>> duplication.
+> 
+> The real question is whether we really need to model all of this along
+> the existing futex functionality. I wouldn't mind a new infrastructure
+> which addresses all the other known issues of futexes and makes the
+> overall design less horrible than what we have now.
+> 
 
-On Mon, May 03, 2021 at 12:36:15PM -0500, madvenka@linux.microsoft.com wrot=
-e:
-> From: "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
->=20
-> The Function Graph Tracer modifies the return address of a traced function
-> to a return trampoline (return_to_handler()) to gather tracing data on
-> function return. When the unwinder encounters return_to_handler(), it cal=
-ls
-> ftrace_graph_get_ret_stack() to lookup the original return address in the
-> return address stack.
+Thank you for the feedback. I think we are completing another full 
+circle on the proposals. I've proposed a futex2 interface that would use 
+the current futex infrastructure[0], but my understanding is that this 
+is discouraged given it needs to do big changes in the current futex 
+code. Given that, I proceeded with developing a new code for futex2, 
+taking in consideration those new use cases (waitv, NUMA, sizes) and 
+known issues.
 
-This makes sense to me, I'll need to re-review properly with the changes
-earlier on in the series but should be fine.
+As you know, my original goal with this work is to have a native and 
+efficient way to wait on multiple objects. Right now, we've proposed it 
+in three different ways, but so far none had much success in being 
+merged. Of course, I want to take the approach that better fits the 
+community goals, as this patchset suggests - a work that goes away 
+further than just implementing a multi-wait feature. But for the benefit 
+of not walking in circles, what we need back is a clear direction, in 
+order to proceed that.
 
---A9z/3b/E4MkkD+7G
-Content-Type: application/pgp-signature; name="signature.asc"
+> But that needs input from futex users (libraries and other horrible
+> wrappers) to figure out what they really need, hate, like or do not care
+> about.
+> 
 
------BEGIN PGP SIGNATURE-----
+I think it's clear the use case for "wait on multiple" as a way to 
+emulate WinAPI and for Linux native loads like game engines is valid. 
+We have been running it in the field with success for the past year or 
+so. I'm also working with userspace communities to get a better sense of 
+how this and other features would work in the real world. You can read 
+an example of that effort with Chromium developers at [1], and there are 
+more to come.
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCUAKcACgkQJNaLcl1U
-h9AW0gf/UurypPhoAeS5tOMAkEizbXPWkIR/0u9nPaBTkZHxtXZw07LAQrvIQ/wC
-Q2UqJ3qIzHtM1KGaSWU+VOS2GYMY7WGmlhr6JNCmIk3LUuSoFxtlUYjwDoYWdKB+
-UL7DhFiXJHHj6UfEquGtXpQ8WE9rl5s7c0MIxhbRmvXQVi12PLHobB0ksvZpGIkG
-tcceN55GrlF6fTByLeQQwstNiD35/5dByUW0Swg3zXeYalbqd3GIlCv63K69IvFG
-vCw4PoDBO6KCkped6KVPH9Mu7Ddf/8v8ZSOYVVTAVlRC+YNqpVDk942WbQsa7rBC
-p8/D0psgllhFHPKxnwfUli1sECzxVw==
-=zBTy
------END PGP SIGNATURE-----
+Maybe support for multiple futexes and futex2 are disjoint things? The 
+multi-wait can be achieved through a (somewhat) simple implementation, 
+on the old interface or in a new one, while for futex2 we are still 
+unsure about how it should look like and its blocking this feature.
 
---A9z/3b/E4MkkD+7G--
+> Without that we are bound to pile more crap on the existing pile of
+> horrors forever.
+> 
+> Thanks,
+> 
+>          tglx
+> 
+
+Thanks,
+	André
+
+[0] 
+https://lore.kernel.org/lkml/20200612185122.327860-2-andrealmeid@collabora.com/
+[1] https://groups.google.com/a/chromium.org/g/chromium-dev/c/5hpH3ckr6_Y
