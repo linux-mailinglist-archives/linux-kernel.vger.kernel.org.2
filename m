@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD463752E0
+	by mail.lfdr.de (Postfix) with ESMTP id F25763752E3
 	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:15:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234737AbhEFLQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 07:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60080 "EHLO
+        id S234750AbhEFLQk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 07:16:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60090 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234717AbhEFLQf (ORCPT
+        with ESMTP id S234722AbhEFLQf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 May 2021 07:16:35 -0400
-Received: from mail-wm1-x32b.google.com (mail-wm1-x32b.google.com [IPv6:2a00:1450:4864:20::32b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6E762C061761;
-        Thu,  6 May 2021 04:15:36 -0700 (PDT)
-Received: by mail-wm1-x32b.google.com with SMTP id l24-20020a7bc4580000b029014ac3b80020so5118427wmi.1;
-        Thu, 06 May 2021 04:15:36 -0700 (PDT)
+Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 620DAC061574;
+        Thu,  6 May 2021 04:15:37 -0700 (PDT)
+Received: by mail-wr1-x42a.google.com with SMTP id l2so5167746wrm.9;
+        Thu, 06 May 2021 04:15:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=yB+63PgRDM1iyviDORNDC1cNZU2QIzi0OniCvWqYcas=;
-        b=r5MNcwCk/unl+3evjl1ScAq7BM1g7s0th1VDYBoe31faBujaA8UxZV/AxfibTG4gdg
-         2CVeoKS2qXJun3cABqZGXijgW3sp/MQbDojoMTOb578htTrFotqlGRUdm9LyvRnVOrgU
-         PJJD7mre6+zIyjlLZj5TLbGfZL0mYCHSDrO8yPS3tumjtsUx3Ydf1noHAYFuTS1YKT0m
-         /oS1eUXTCekbWsKcw/6MHZeNB04mHSc0HxI1njeK3md3VN6LZMNPnK94HPEDGv+zeD4Z
-         nBID16zPinnRGBpsxUPBxUt7xeo+K9oajkJjjdSdH3tot4/a/KffYdjcAnCf55IyNvkK
-         /uVQ==
+        bh=bcj0pWWA8nFHZcaEeJrGAFY0Y2i6kRxQp4Wf+dRkrMc=;
+        b=nx33U0MdKytL2LeL/A3OBCQcElimwWw/4yEPpHFwZbFDqisrnuREQLuAZyx6jvlrj5
+         58b3UFV9rfe94VikNAaI3ueEPEzBPPI+LdGlhP6ZOrbhn0oDAzn2XS6uyOGvYA+2NUb4
+         5/wGOKqulsUeNdvxzpb+ULOH/m6a1ggvUUwRszekCdlmOPSxOU8HFgjoNrL8JRhlJ1Wz
+         MBgWZ4VCPS70SSWsFZVNMqkVCE1i50s7huEVZEx40X2N5gG7VzNMJO0FJfVyfTpLvAt3
+         6JrDRkA4VXw94kiB2n0LHLUE7Gywwcn/rSLvDehqTiOqtguPnMQ80xFnsF+znBHRqW6Y
+         DybA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=yB+63PgRDM1iyviDORNDC1cNZU2QIzi0OniCvWqYcas=;
-        b=NhGNeDBJJHeVDBAJy5Pa1jd//OFtyxlNIk9YquaQbLixAjLcGkzVcRtQ+rL7edMYWi
-         73t1QWRCdB0Dt+MWSNaLpBAUWPJgDjzYudtavNk7bu0yeqnGlN3d7VXXwXWL94SohcrB
-         vFEGz89Rfi6IVdNbpLcYLZiB8Q8RG1BpPUAZv0tehEq8/2R43U0v1TAkK9jXaT+IvAg7
-         yzjm5eHLcKDuXu7HwcMjTNxYh1wIeB1No3FSoN6B/61kO9Sgy/j+vSQx4JYZkJ3a41NO
-         HcePNEps60S33JrJXYeuccVDSzwgyI8bH2949DUS+BsYOm0CdLTd7hVucZe/0of+sAxQ
-         dUZg==
-X-Gm-Message-State: AOAM532O23nsalm8RDw3JwYLyHOscKfaN3wpTFiaZA8x1mqrMhura1ee
-        GJIWoE43m/1OqUWXuKNDatY=
-X-Google-Smtp-Source: ABdhPJwQfzxRYHpKnPIQCx/PqOoEanXnfY+4NyrQ2w7d5BnNcUH2wVkxSbnS4mrZ1TPCAsEetdFZYg==
-X-Received: by 2002:a7b:cc83:: with SMTP id p3mr3374846wma.170.1620299735254;
-        Thu, 06 May 2021 04:15:35 -0700 (PDT)
+        bh=bcj0pWWA8nFHZcaEeJrGAFY0Y2i6kRxQp4Wf+dRkrMc=;
+        b=EBs+HqQkbIC5Lawhv9rI7bDbT2AilmI3omSVE1MSIGOqTpNeF3Bw+JGaa4tzlbiTB+
+         KeazuXT6sNZtpvD0G+VzZSGVvbnTXbDcvTBEOvgZ1EiMNAttr/hPP7uFjbZTiHiZmfRB
+         w6eygCNW7JvZYty+DXwmj8WT0Moqmg5PvWjjbDwqizAVnA2k8A/cp4RyqKRPfAHTQzkt
+         LdAHkcVg62g2HJipX5VCBU3Pgi4qkCXXJep3Cge25pmbmVoGK24rxSXMJKRkS2k09Qq8
+         /GVHDTS9Oadxxt7IbWnKeh3QGZiPLQUOBf8iYNH471VoqrJuQqd3vE31/WP0SFolHIke
+         tOAg==
+X-Gm-Message-State: AOAM5330KYFNRNcvVetRQc99pqhZo3hXEuq5Q9Dv4TC+WufmrTlmu3yC
+        7xeAyXqROh6pq3Or7Wst64s=
+X-Google-Smtp-Source: ABdhPJxJ9grl1B/XxF/8opkBocpLHYlo2dk8HqNadhlsu7dvjNCfyEqecrxPRlVTxJXSiMy/6ZpGiQ==
+X-Received: by 2002:a05:6000:1541:: with SMTP id 1mr4539384wry.364.1620299736213;
+        Thu, 06 May 2021 04:15:36 -0700 (PDT)
 Received: from localhost.localdomain (231.red-83-51-243.dynamicip.rima-tde.net. [83.51.243.231])
-        by smtp.gmail.com with ESMTPSA id u5sm3642433wrt.38.2021.05.06.04.15.34
+        by smtp.gmail.com with ESMTPSA id u5sm3642433wrt.38.2021.05.06.04.15.35
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 May 2021 04:15:34 -0700 (PDT)
+        Thu, 06 May 2021 04:15:35 -0700 (PDT)
 From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
 To:     vkoul@kernel.org
 Cc:     linux-phy@lists.infradead.org, kishon@ti.com, robh+dt@kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-staging@lists.linux.dev, gregkh@linuxfoundation.org,
         neil@brown.name, ilya.lipnitskiy@gmail.com
-Subject: [PATCH 1/5] staging: mt7621-dts: use clock in pci phy nodes
-Date:   Thu,  6 May 2021 13:15:27 +0200
-Message-Id: <20210506111531.21978-2-sergio.paracuellos@gmail.com>
+Subject: [PATCH 2/5] dt-bindings: phy: mediatek,mt7621-pci-phy: add clock entries
+Date:   Thu,  6 May 2021 13:15:28 +0200
+Message-Id: <20210506111531.21978-3-sergio.paracuellos@gmail.com>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210506111531.21978-1-sergio.paracuellos@gmail.com>
 References: <20210506111531.21978-1-sergio.paracuellos@gmail.com>
@@ -68,35 +68,50 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 MT7621 SoC clock driver has already mainlined in
 'commit 48df7a26f470 ("clk: ralink: add clock driver for mt7621 SoC")'
-Hence we can use the clock in pcie phy nodes to
-be able to get it from there in driver code.
+Hence update schema with the add of the entries related to
+clock.
 
 Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 ---
- drivers/staging/mt7621-dts/mt7621.dtsi | 4 ++++
- 1 file changed, 4 insertions(+)
+ .../bindings/phy/mediatek,mt7621-pci-phy.yaml        | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
-index 5623d542bcf2..001ff8f51033 100644
---- a/drivers/staging/mt7621-dts/mt7621.dtsi
-+++ b/drivers/staging/mt7621-dts/mt7621.dtsi
-@@ -549,12 +549,16 @@ pcie@2,0 {
- 	pcie0_phy: pcie-phy@1e149000 {
- 		compatible = "mediatek,mt7621-pci-phy";
- 		reg = <0x1e149000 0x0700>;
-+		clocks = <&sysc MT7621_CLK_XTAL>;
-+		clock-names = "sys_clk";
- 		#phy-cells = <1>;
- 	};
+diff --git a/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml b/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml
+index 0ccaded3f245..d8614ef8995c 100644
+--- a/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml
++++ b/Documentation/devicetree/bindings/phy/mediatek,mt7621-pci-phy.yaml
+@@ -16,6 +16,14 @@ properties:
+   reg:
+     maxItems: 1
  
- 	pcie2_phy: pcie-phy@1e14a000 {
- 		compatible = "mediatek,mt7621-pci-phy";
- 		reg = <0x1e14a000 0x0700>;
-+		clocks = <&sysc MT7621_CLK_XTAL>;
-+		clock-names = "sys_clk";
- 		#phy-cells = <1>;
- 	};
- };
++  clocks:
++    maxItems: 1
++    description:
++      PHY reference clock. Must contain an entry in clock-names.
++
++  clock-names:
++    const: sys_clk
++
+   "#phy-cells":
+     const: 1
+     description: selects if the phy is dual-ported
+@@ -23,6 +31,8 @@ properties:
+ required:
+   - compatible
+   - reg
++  - clocks
++  - clock-names
+   - "#phy-cells"
+ 
+ additionalProperties: false
+@@ -32,5 +42,7 @@ examples:
+     pcie0_phy: pcie-phy@1e149000 {
+       compatible = "mediatek,mt7621-pci-phy";
+       reg = <0x1e149000 0x0700>;
++      clocks = <&sysc 0>;
++      clock-names = "sys_clk";
+       #phy-cells = <1>;
+     };
 -- 
 2.25.1
 
