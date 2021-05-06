@@ -2,103 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D2AC3750EC
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:32:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B4A33750EE
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:33:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233625AbhEFIdm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 04:33:42 -0400
-Received: from mail-wm1-f47.google.com ([209.85.128.47]:45908 "EHLO
-        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233479AbhEFIco (ORCPT
+        id S233687AbhEFIdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:33:44 -0400
+Received: from mail-m176216.qiye.163.com ([59.111.176.216]:39172 "EHLO
+        mail-m176216.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233354AbhEFIdV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 04:32:44 -0400
-Received: by mail-wm1-f47.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so2555467wmh.4;
-        Thu, 06 May 2021 01:31:39 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=jdCwYwppTlBb66RQGVcaxMJxswPj0yVdGz+T2ee7UvU=;
-        b=i2eHiRRvzlTL+6+4hSJnIfvQKv9h4CpOe+4lo8XUPqy65RpwF11of7nnpOWEZNzY+i
-         qobPYi79FPH48Xkl2F5C97tFMaFAD8/OSdYIDZL8+urN3n8vDa0B9hCZgv6Wyjazpt+S
-         JDr70Td4qT4ye2hzejp3TNZJ6pLRSuKKJueId3NGqhfp4cgbKSlxPHLsxFL0z5xFbn3g
-         gkIp8pTonbFApDbzdvN7qodb8rsChhYtGBh0bZgIje1etZRsBYOk3wtd1i2W0SN10Of+
-         KvGEXrcMqVRdVtDl4FTY9mt6mjJNGXQha1vqvy86y5rOQ2PnbOYRQVKcV2mbDcs5EmNF
-         2tZQ==
-X-Gm-Message-State: AOAM532g+QVCjND0BK2cX5LrAxfNxrZZ5YsU38lVWcpU5Sw85RJGpX8g
-        7NUG9BpXT4UBtk4/ohh4Oi90QNBlbUjyWw==
-X-Google-Smtp-Source: ABdhPJyteP3dy+j3FLa84WwMPk1u2FJXXKvIr5hwaOJRXcEmLu3SLt583QIZYlTF1065M2uhsd7Iug==
-X-Received: by 2002:a1c:b60b:: with SMTP id g11mr14092208wmf.68.1620289898367;
-        Thu, 06 May 2021 01:31:38 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id q20sm15785912wmq.2.2021.05.06.01.31.37
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 01:31:37 -0700 (PDT)
-Subject: Re: [PATCH 34/35] tty: make tty_get_byte_size available
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Joe Perches <joe@perches.com>
-Cc:     "gregkh@linuxfoundation.org" <gregkh@linuxfoundation.org>,
-        "linux-serial@vger.kernel.org" <linux-serial@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210505091928.22010-1-jslaby@suse.cz>
- <20210505091928.22010-35-jslaby@suse.cz>
- <ef1bd57095e941560530be43806791966a6735ad.camel@perches.com>
- <CAHp75Vfq6ABW7ukwaKmZOF2DszmuHD28S=wcLcFowvRdXTnWmg@mail.gmail.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <7830c076-0d42-662c-5baa-2baecf1ad3b0@kernel.org>
-Date:   Thu, 6 May 2021 10:31:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Thu, 6 May 2021 04:33:21 -0400
+Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
+        by mail-m176216.qiye.163.com (Hmail) with ESMTPA id DD0E6C20147;
+        Thu,  6 May 2021 16:32:18 +0800 (CST)
+From:   Wan Jiabing <wanjiabing@vivo.com>
+To:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
+Subject: [PATCH] docs/zh_CN: make reporting-bugs.rst obsolete
+Date:   Thu,  6 May 2021 16:32:07 +0800
+Message-Id: <20210506083207.15705-1-wanjiabing@vivo.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <CAHp75Vfq6ABW7ukwaKmZOF2DszmuHD28S=wcLcFowvRdXTnWmg@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGkxDQlYfH0pLSE4YTB1LTE1VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6OlE6Dhw*CD8LNEIzEhIiHhMs
+        MRAaCjxVSlVKTUlLSUNCQkhCTEpLVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
+        TVVKTklVSk9OVUpDSVlXWQgBWUFJTkJINwY+
+X-HM-Tid: 0a7940ce6684d976kuwsdd0e6c20147
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 05. 21, 10:24, Andy Shevchenko wrote:
-> if (!account_flags)
->    return bits;
-> 
-> ?
+In commit d2ce285378b09 ("docs: make reporting-issues.rst official
+and delete reporting-bugs.rst"),reporting-bugs.rst was deleted and
+replaced by reporting-issues.rst.
 
-So I have:
+In commit da514157c4f06 ("docs: make reporting-bugs.rst obsolete"),
+it made reporting-bugs.rst obsolete in docs.
 
-unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags)
-{
-         unsigned char bits;
+Fix it in docs/zh_CN to make reporting-bugs.rst obsolete.
 
-         switch (cflag & CSIZE) {
-         case CS5:
-                 bits = 5;
-                 break;
-         case CS6:
-                 bits = 6;
-                 break;
-         case CS7:
-                 bits = 7;
-                 break;
-         case CS8:
-         default:
-                 bits = 8;
-                 break;
-         }
+Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
+---
+ Documentation/translations/zh_CN/SecurityBugs | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-         if (!account_flags)
-                 return bits;
-
-         if (cflag & CSTOPB)
-                 bits++;
-         if (cflag & PARENB)
-                 bits++;
-
-         return bits + 2;
-}
-
-thanks,
+diff --git a/Documentation/translations/zh_CN/SecurityBugs b/Documentation/translations/zh_CN/SecurityBugs
+index 2d0fffd122ce..adf4042ba7f8 100644
+--- a/Documentation/translations/zh_CN/SecurityBugs
++++ b/Documentation/translations/zh_CN/SecurityBugs
+@@ -31,9 +31,9 @@ linux内核安全团队可以通过email<security@kernel.org>来联系。这是
+ 一组独立的安全工作人员，可以帮助改善漏洞报告并且公布和取消一个修复。安
+ 全团队有可能会从部分的维护者那里引进额外的帮助来了解并且修复安全漏洞。
+ 当遇到任何漏洞，所能提供的信息越多就越能诊断和修复。如果你不清楚什么
+-是有帮助的信息，那就请重温一下admin-guide/reporting-bugs.rst文件中的概述过程。任
+-何攻击性的代码都是非常有用的，未经报告者的同意不会被取消，除非它已经
+-被公布于众。
++是有帮助的信息，那就请重温一下admin-guide/reporting-issues.rst文件中的
++概述过程。任何攻击性的代码都是非常有用的，未经报告者的同意不会被取消，
++除非它已经被公布于众。
+ 
+ 2) 公开
+ 
 -- 
-js
-suse labs
+2.25.1
+
