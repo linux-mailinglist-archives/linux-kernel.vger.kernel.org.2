@@ -2,162 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 571D9375731
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:30:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2FA1375733
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235202AbhEFPba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:31:30 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:39622 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235167AbhEFPbV (ORCPT
+        id S235219AbhEFPcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:32:18 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:48081 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235147AbhEFPcN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:31:21 -0400
-Received: from [192.168.254.32] (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7CC0620B7178;
-        Thu,  6 May 2021 08:30:22 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7CC0620B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620315023;
-        bh=oOr6oWLNHl5OnLWE/DfiEsabe3j4uXEH45hDNM9rU+k=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=X6aXc3oIkpBHMKkJLeTziMHQ5IMjhZR/dNw7gsy5jn+zxwAkWPgqm9Tg5wW6VVnez
-         5OaVLAP3oHl89xq9HwL8VAtPzggXN0sNNdUThakOXFHExpCO8iaB3Ct61p6n17O/8e
-         lT0nLF1TCnlrcVtzTpRYRxGLZtJM9Evbq5HKnHLk=
-Subject: Re: [RFC PATCH v3 3/4] arm64: Handle miscellaneous functions in .text
- and .init.text
-To:     Mark Brown <broonie@kernel.org>
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-4-madvenka@linux.microsoft.com>
- <20210506141211.GE4642@sirena.org.uk>
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Message-ID: <8268fde8-5f3b-0781-971b-b29b5e0916cf@linux.microsoft.com>
-Date:   Thu, 6 May 2021 10:30:21 -0500
+        Thu, 6 May 2021 11:32:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620315073;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=M3gJNK8hV6eVduRJTKvIL/+ipOjUBkl33BLAv9gMTmY=;
+        b=VLHTiybD1m6GB1ZwNWwTjlJ0oyYkKuiMxUjGE40ttfEGckY5/TWunHEBi9o8B9wcXWbcgh
+        9R2HRTDK+PDgrxJqC3L4SFMmhVzremInl+e95g6a8lVjNZOkQEZeRKx8UjWFZwqMMtzXE8
+        sLtEISrzVNLaH7YBS+57yiz8yjiR8Bg=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207-mYIlnC2iNKiIlslx9l1VgQ-1; Thu, 06 May 2021 11:31:12 -0400
+X-MC-Unique: mYIlnC2iNKiIlslx9l1VgQ-1
+Received: by mail-wm1-f72.google.com with SMTP id t7-20020a1cc3070000b029014131bbe82eso2794866wmf.3
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 08:31:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=M3gJNK8hV6eVduRJTKvIL/+ipOjUBkl33BLAv9gMTmY=;
+        b=Pd9GERnCLmNAfR6iDVCT7HLcFQkEd9epO/As/vOojMK9WczODI+Pj6+YySpBY2+aLT
+         gaZPbtVx02aV0wMlqMt27FaFow3Vz/vLsJaTH0yNeBorqkBgVA0/bqZtRikRAmKfBV/d
+         nhWEoEJNGdBuep0cTdETh8RTg6haXOgab5y3czgvmjf9/fpxP65mTl5QiMiKagxLyeay
+         TFif+PGx/wk2UsZcxSLrCIirlpDMLXnxsjkLemEsgOOM2rWaIyPNSXUVmjKBlPlfSSJk
+         G8ePH/IUcf43rokL4yQvaBpu2+Qq/stmNet6WaFbdDwItSbQUuBH14QyWDctNhGUAbFD
+         jFOw==
+X-Gm-Message-State: AOAM53273nQmcgy8y36cGhXF1NCoqrG8Zr7zoxzWuvtgws7uWGa9fll/
+        iupJhdlAKcg+hGn1GPRokkvwgua/YLy9mPHrcatJL94RD3AioZ92l6m3UnzHb0GArOTw/RnrQby
+        p8zZL8kXbQsQXTy77BrbWBtSr
+X-Received: by 2002:a05:600c:4982:: with SMTP id h2mr4597225wmp.108.1620315071105;
+        Thu, 06 May 2021 08:31:11 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw3M0/nH4wBS9mN36/5FP5OpLaVlIbwQucgba+bN4wivCLyv9VNcf9OZFL+ORcvt4/JggAUXw==
+X-Received: by 2002:a05:600c:4982:: with SMTP id h2mr4597190wmp.108.1620315070857;
+        Thu, 06 May 2021 08:31:10 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64ae.dip0.t-ipconnect.de. [91.12.100.174])
+        by smtp.gmail.com with ESMTPSA id q12sm9157467wmj.7.2021.05.06.08.31.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 08:31:10 -0700 (PDT)
+Subject: Re: [RFC PATCH 0/7] Memory hotplug/hotremove at subsection size
+To:     Zi Yan <ziy@nvidia.com>, Oscar Salvador <osalvador@suse.de>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org
+References: <20210506152623.178731-1-zi.yan@sent.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <fb60eabd-f8ef-2cb1-7338-7725efe3c286@redhat.com>
+Date:   Thu, 6 May 2021 17:31:09 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210506141211.GE4642@sirena.org.uk>
-Content-Type: text/plain; charset=windows-1252
+In-Reply-To: <20210506152623.178731-1-zi.yan@sent.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 5/6/21 9:12 AM, Mark Brown wrote:
-> On Mon, May 03, 2021 at 12:36:14PM -0500, madvenka@linux.microsoft.com wrote:
+On 06.05.21 17:26, Zi Yan wrote:
+> From: Zi Yan <ziy@nvidia.com>
 > 
->> There are some SYM_CODE functions that are currently in ".text" or
->> ".init.text" sections. Some of these are functions that the unwinder
->> does not care about as they are not "interesting" to livepatch. These
->> will remain in their current sections. The rest I have moved into a
->> new section called ".code.text".
+> Hi all,
 > 
-> I was thinking it'd be good to do this by modifying SYM_CODE_START() to
-> emit the section, that way nobody can forget to put any SYM_CODE into a
-> special section.  That does mean we'd have to first introduce a new
-> variant for specifying a section that lets us override things that need
-> to be in some specific section and convert everything that's in a
-> special section over to that first which is a bit annoying but feels
-> like it's worth it for the robustness.  It'd also put some of the don't
-> cares into .code.text but so long as they are actually don't cares that
-> should be fine!
+> This patchset tries to remove the restriction on memory hotplug/hotremove
+> granularity, which is always greater or equal to memory section size[1].
+> With the patchset, kernel is able to online/offline memory at a size independent
+> of memory section size, as small as 2MB (the subsection size).
+
+... which doesn't make any sense as we can only online/offline whole 
+memory block devices.
+
 > 
+> The motivation is to increase MAX_ORDER of the buddy allocator and pageblock
+> size without increasing memory hotplug/hotremove granularity at the same time,
 
-OK. I could make the section an argument to SYM_CODE*() so that a developer
-will never miss that. Some documentation may be in order so the guidelines
-are clear. I will do the doc patch separately, if that is alright with
-you all.
+Gah, no. Please no. No.
 
-About the don't car functions - most of them are OK to be moved into
-.code.text. But the hypervisor vector related code has a problem. I
-have not debugged that yet. If I add that code in .code.text, KVM
-initialization fails in one case. In another case, when I actually
-test with a VM, the VM does not come up.
+> so that the kernel can allocator 1GB pages using buddy allocator and utilizes
+> existing pageblock based anti-fragmentation, paving the road for 1GB THP
+> support[2].
 
-I am not sure. But it looks like there may be some reloc issue going on.
-I don't have a handle on this yet. So, for now, I will leave the hypervisor
-stuff in .text. But I will mark it as TBD in the cover letter so we don't
-lose track of it.
+Not like this, please no.
 
-
->> Don't care functions
->> ====================
 > 
-> We also have a bunch of things like __cpu_soft_restart which don't seem
-> to be called out here but need to be in .idmap.text.
+> The patchset utilizes the existing subsection support[3] and changes the
+> section size alignment checks to subsection size alignment checks. There are
+> also changes to pageblock code to support partial pageblocks, when pageblock
+> size is increased along with MAX_ORDER. Increasing pageblock size can enable
+> kernel to utilize existing anti-fragmentation mechanism for gigantic page
+> allocations.
+
+Please not like this.
+
 > 
+> The last patch increases SECTION_SIZE_BITS to demonstrate the use of memory
+> hotplug/hotremove subsection, but is not intended to be merged as is. It is
+> there in case one wants to try this out and will be removed during the final
+> submission.
+> 
+> Feel free to give suggestions and comments. I am looking forward to your
+> feedback.
 
-It is already in .idmap.text.
+Please not like this.
 
+-- 
+Thanks,
 
+David / dhildenb
 
-/* SPDX-License-Identifier: GPL-2.0-only */
-/*
- * CPU reset routines
- *
- * Copyright (C) 2001 Deep Blue Solutions Ltd.
- * Copyright (C) 2012 ARM Ltd.
- * Copyright (C) 2015 Huawei Futurewei Technologies.
- */
-
-#include <linux/linkage.h>
-#include <asm/assembler.h>
-#include <asm/sysreg.h>
-#include <asm/virt.h>
-
-.text
-.pushsection    .idmap.text, "awx"
-
-/*
- * __cpu_soft_restart(el2_switch, entry, arg0, arg1, arg2) - Helper for
- * cpu_soft_restart.
- *
- * @el2_switch: Flag to indicate a switch to EL2 is needed.
- * @entry: Location to jump to for soft reset.
- * arg0: First argument passed to @entry. (relocation list)
- * arg1: Second argument passed to @entry.(physical kernel entry)
- * arg2: Third argument passed to @entry. (physical dtb address)
- *
- * Put the CPU into the same state as it would be if it had been reset, and
- * branch to what would be the reset vector. It must be executed with the
- * flat identity mapping.
- */
-SYM_CODE_START(__cpu_soft_restart)
-        mov_q   x12, INIT_SCTLR_EL1_MMU_OFF
-        pre_disable_mmu_workaround
-        /*
-         * either disable EL1&0 translation regime or disable EL2&0 translation
-         * regime if HCR_EL2.E2H == 1
-         */
-        msr     sctlr_el1, x12
-        isb
-
-        cbz     x0, 1f                          // el2_switch?
-        mov     x0, #HVC_SOFT_RESTART
-        hvc     #0                              // no return
-
-1:      mov     x8, x1                          // entry
-        mov     x0, x2                          // arg0
-        mov     x1, x3                          // arg1
-        mov     x2, x4                          // arg2
-        br      x8
-SYM_CODE_END(__cpu_soft_restart)
-
-.popsection
-
-
-I will double check all the *.S files and make sure that every function is accounted
-for in version 4.
-
-Stay tuned.
-
-Thanks.
-
-Madhavan
