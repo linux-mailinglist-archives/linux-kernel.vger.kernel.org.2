@@ -2,106 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09DB1375178
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:24:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3523A375182
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 11:29:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233473AbhEFJZN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 05:25:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35134 "EHLO
+        id S233565AbhEFJ34 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 05:29:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36170 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229698AbhEFJZL (ORCPT
+        with ESMTP id S229698AbhEFJ3y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 05:25:11 -0400
-Received: from mail-pj1-x1036.google.com (mail-pj1-x1036.google.com [IPv6:2607:f8b0:4864:20::1036])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE851C061574;
-        Thu,  6 May 2021 02:24:13 -0700 (PDT)
-Received: by mail-pj1-x1036.google.com with SMTP id j6-20020a17090adc86b02900cbfe6f2c96so3133143pjv.1;
-        Thu, 06 May 2021 02:24:13 -0700 (PDT)
+        Thu, 6 May 2021 05:29:54 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0758BC061574;
+        Thu,  6 May 2021 02:28:56 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id i14so4315480pgk.5;
+        Thu, 06 May 2021 02:28:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WKiDmkU9aHDvsmqpyK/IMx1+CZITM8siFJbBXZS1Hm4=;
-        b=m/S33qPgDnwR0eQwpEX8kQkaKZz8+2cVoq/PLi1wAqJCPcvVkEYfoN+gGCQLG1zfvj
-         cQ1paj8eNe+5FeBhZPwC6Ex6hLc3w9mlfowY35XHIOo1YECmD6nUvvJGvNUPqroS6ICl
-         kq0DB991bSxWxnL/AzHdn9IjxnfRVvoe9texpDpexMGRAaH6eU6Q3E9+dy+m7q9w4beJ
-         XvLJUYnJ0DtkAZr0It+xDJyKUGDKOtrFa9FJtw9JA/o1KiLf567kBVGnebOdxKf0Q9EB
-         YuDRsC8rh7BCSLx2qw2lkXboIoXHnr48wWq/XmK+jRzbVYp8N5Wqb+AVbHKYSNsa8CuX
-         HrwA==
+        bh=/2OxY0itqW/K9RuckxThZQ0745sax8UHdbGDHkDYmfo=;
+        b=MDNrXbQ1/0TuGKKpElrU49/V0Kva6Z2rutmeHLYJfAobmnNA0gQ8eBfRebRWmSHShB
+         cilHjkymOxSfXdAshiscKIIWiHe+bF0kS+YC3GXvX+2VTU5kxIiMXi0u4UszGaIQ4Hrd
+         wtDo0Z8IO+D5V0j2r1EIH0ZDL3WWr/Xg1z9i74npRxxXSfrg86H4sgBS368dO07NPTEU
+         Li5Xae+Mz2LVXfiiIk1+DpRGqo1T9TSxeGCR/mZg+Q1wXLoyih6v5Di4qa0dkqLm7DwM
+         ILrbH+hPxQmqewXnsso2bOu4TW7aA+qOx9qwl8Og/so5NiZKjz0aQOTjaBMT0HZTW3JZ
+         uMZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WKiDmkU9aHDvsmqpyK/IMx1+CZITM8siFJbBXZS1Hm4=;
-        b=R10M9HV09qFA7fIZtXa74oV71W9o4WT/lhYxmNE65gU5HBoPS1Ua4kdV9RkjagiWgy
-         F3wJpN2nYG3SXkZbZB458lI/vXfHBP4PdLLUEUfR8+kBlylV7hmaCu3+S88CMOw1Uwfi
-         9Lu6MmHRtfMAyUgZIfcHAmrvtjy7tTSlg8bsPb1AuYIwOIWPFgPI2th+SXcElC7MPbUB
-         BkvOqjrZtBRvCrc3P7JVgqOgG1V7RzQJcGOt2n2OMhqn2SXUoh1YQGjtRm7kWn7StW6Q
-         cVtcAa8VVtB0sTL71V9BWbaRDvJvwOvYQr3h5L11jd1qpHyAOG2YP4xe5FciR3LBQ/Z2
-         FCpA==
-X-Gm-Message-State: AOAM531lgzH4dJay9GBhdR8on9atMnfp+LoyKpQeZo7+E04bI75VKUqL
-        HbliKt696SYyBRrzbZNyvD34lyG6XiqlVUPZKLm63HUADDM=
-X-Google-Smtp-Source: ABdhPJzSrPxCJzIEupsbxwmbdAEf8MtqFEnS+0WwzbdBDzDgRc2+vS7yZgJiJjvj0/M9ymzO/WpMULfLzqRBMMHIP0Q=
-X-Received: by 2002:a17:902:ecc6:b029:ee:af8f:899e with SMTP id
- a6-20020a170902ecc6b02900eeaf8f899emr3745174plh.21.1620293053157; Thu, 06 May
- 2021 02:24:13 -0700 (PDT)
+        bh=/2OxY0itqW/K9RuckxThZQ0745sax8UHdbGDHkDYmfo=;
+        b=BNA+5aMj4l8buNji9DGWkxWmY0RpaYkFODatuUaLKa5d0WNbOY2K7P34gxVLxNVtNF
+         ZZ9uG5BBYBNSq/2SUa6y5VvXCpGV3AQih4Xqp8YJGEUoR4FjpW0j+AT/2tDKEDNZI73h
+         N5Cx6EwlMOAk/KUaO4vl/CVbdhLibKhgFUCIOguYDAHoGQ6zhaSeFV/5mO/Q0XnUzKJl
+         T8gDtPm3hzAaW2KWyfQiKeiI8NvQkHwUDF4vdDbRaFr3peDpnVAC04wVFJJza6v4Q/RK
+         TT7Dxbh0ZJ1n2VwoYZ1LjlBv2Zk562Rz307x0CLEJffhHkp4sgeGg1j8bdITM2MrFKMl
+         pHCg==
+X-Gm-Message-State: AOAM530zRfPAcsMHSzfDaUUYjuUhnqjtcO5cZNzxyewXV5D3DO/ic/uK
+        ecKTnVwzVM6jmzMSbDKJUjgfoqvX668ZqIt76A8=
+X-Google-Smtp-Source: ABdhPJy+h7UjAI7SetjkxiP6oCkauAuEGCVpnM8KbqBguhRSM4CUXlO8f6c8gOplqSWLCYiX5+91wl4ktxA1pJccd2w=
+X-Received: by 2002:a65:5a4d:: with SMTP id z13mr3404821pgs.4.1620293336317;
+ Thu, 06 May 2021 02:28:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210506081619.2443-1-campion.kang@advantech.com.tw> <6b86bd36-b934-c204-9e56-079ab8cd4b54@redhat.com>
-In-Reply-To: <6b86bd36-b934-c204-9e56-079ab8cd4b54@redhat.com>
+References: <20210506034332.752263-1-linux@roeck-us.net>
+In-Reply-To: <20210506034332.752263-1-linux@roeck-us.net>
 From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 6 May 2021 12:23:57 +0300
-Message-ID: <CAHp75VdPmkKTf_fbjAjrD3GC1ZZLuYsTJa0QtA3tuYtWwCgPMQ@mail.gmail.com>
-Subject: Re: [PATCH v7 1/7] MAINTAINERS: Add Advantech AHC1EC0 embedded
- controller entry
-To:     Hans de Goede <hdegoede@redhat.com>
-Cc:     Campion Kang <campion.kang@advantech.com.tw>,
-        Lee Jones <lee.jones@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Mark Gross <mgross@linux.intel.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        devicetree <devicetree@vger.kernel.org>,
+Date:   Thu, 6 May 2021 12:28:40 +0300
+Message-ID: <CAHp75Vd0N5s=D9LFiVU75gYCLnpqOwfBogbWUTwZNC1CV2n88Q@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
+To:     Guenter Roeck <linux@roeck-us.net>
+Cc:     Jonathan Cameron <jic23@kernel.org>,
+        linux-iio <linux-iio@vger.kernel.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-watchdog@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        Linux Documentation List <linux-doc@vger.kernel.org>,
-        Platform Driver <platform-driver-x86@vger.kernel.org>,
-        AceLan Kao <chia-lin.kao@canonical.com>
+        kernel test robot <lkp@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 11:48 AM Hans de Goede <hdegoede@redhat.com> wrote:
-> I'm replying here since this series has no cover-letter, for
-> the next version for a series touching so many different
-> sub-systems it would be good to start with a cover-letter
-> providing some background info on the series.
+On Thu, May 6, 2021 at 6:43 AM Guenter Roeck <linux@roeck-us.net> wrote:
 >
-> I see this is binding to an ACPI device, yet it is also using
-> devicetree bindings and properties.
+> With CONFIG_ACPI=n and -Werror, 0-day reports:
 >
-> So I take it this means that your ACPI tables are using the
-> optional capability of embedded device-tree blobs inside the
-> ACPI tables ?
+> drivers/iio/chemical/bme680_i2c.c:46:36: error:
+>         'bme680_acpi_match' defined but not used
 >
-> That is an unusual combination on a x86 device, note it is
-> not wrong
+> Apparently BME0680 is not a valid ACPI ID. Remove it and with it
+> ACPI support from the bme680_i2c driver.
 
-It's actually not okay. We have agreed at some point with DT people,
-that ACPI should not use non-native variants of natively supported
-things. For example, it shouldn't use "interrupt" property for IOxAPIC
-(or xIC) provided interrupts, rather Interrupt() has to be used and so
-on.
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-> but AFAIK you are the first to do this on x86.
+with the SPI part amended in the same way.
 
-No, not the first. Once Intel tried to invent the pin control
-configuration and muxing properties in ACPI, it was luckily rejected
-(ACPI 6.x OTOH provides a set of special resources for that).
+Thanks!
 
-So, NAK from me, *if* it's really the case. ACPI tables must be revisited.
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+> ---
+> v2: Instead of making bme680_acpi_match conditional,
+>     remove ACPI support entirely since the ACPI ID is
+>     not valid.
+>
+>  drivers/iio/chemical/bme680_i2c.c | 8 --------
+>  1 file changed, 8 deletions(-)
+>
+> diff --git a/drivers/iio/chemical/bme680_i2c.c b/drivers/iio/chemical/bme680_i2c.c
+> index 29c0dfa4702b..74cf89c82c0a 100644
+> --- a/drivers/iio/chemical/bme680_i2c.c
+> +++ b/drivers/iio/chemical/bme680_i2c.c
+> @@ -11,7 +11,6 @@
+>   * Note: SDO pin cannot be left floating otherwise I2C address
+>   *      will be undefined.
+>   */
+> -#include <linux/acpi.h>
+>  #include <linux/i2c.h>
+>  #include <linux/module.h>
+>  #include <linux/regmap.h>
+> @@ -42,12 +41,6 @@ static const struct i2c_device_id bme680_i2c_id[] = {
+>  };
+>  MODULE_DEVICE_TABLE(i2c, bme680_i2c_id);
+>
+> -static const struct acpi_device_id bme680_acpi_match[] = {
+> -       {"BME0680", 0},
+> -       {},
+> -};
+> -MODULE_DEVICE_TABLE(acpi, bme680_acpi_match);
+> -
+>  static const struct of_device_id bme680_of_i2c_match[] = {
+>         { .compatible = "bosch,bme680", },
+>         {},
+> @@ -57,7 +50,6 @@ MODULE_DEVICE_TABLE(of, bme680_of_i2c_match);
+>  static struct i2c_driver bme680_i2c_driver = {
+>         .driver = {
+>                 .name                   = "bme680_i2c",
+> -               .acpi_match_table       = ACPI_PTR(bme680_acpi_match),
+>                 .of_match_table         = bme680_of_i2c_match,
+>         },
+>         .probe = bme680_i2c_probe,
+> --
+> 2.25.1
+>
+
 
 -- 
 With Best Regards,
