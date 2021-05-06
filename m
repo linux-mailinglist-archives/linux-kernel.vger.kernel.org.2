@@ -2,350 +2,269 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85351374C93
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:03:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 049CC374C98
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:03:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229960AbhEFBES (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 21:04:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53222 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229465AbhEFBEQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 21:04:16 -0400
-Received: from oasis.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7911A610EA;
-        Thu,  6 May 2021 01:03:18 +0000 (UTC)
-Date:   Wed, 5 May 2021 21:03:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     LKML <linux-kernel@vger.kernel.org>
-Cc:     Stefan Hajnoczi <stefanha@redhat.com>,
-        Stefano Garzarella <sgarzare@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Joel Fernandes <joelaf@google.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [RFC][PATCH] vhost/vsock: Add vsock_list file to map cid with
- vhost tasks
-Message-ID: <20210505210316.11e1bbcd@oasis.local.home>
-In-Reply-To: <20210505163855.32dad8e7@gandalf.local.home>
-References: <20210505163855.32dad8e7@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230048AbhEFBEu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 21:04:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229973AbhEFBEm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 21:04:42 -0400
+Received: from mail-yb1-xb30.google.com (mail-yb1-xb30.google.com [IPv6:2607:f8b0:4864:20::b30])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 91CA1C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 18:03:44 -0700 (PDT)
+Received: by mail-yb1-xb30.google.com with SMTP id m9so5212095ybm.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 18:03:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=FBkp32GshYrkb603e1Upi0wbWnkjpZZV/bjtxuylxJM=;
+        b=FXD+G87mcAUITwzWc/x5fMK+Tepos5bdZcDaDQJkD6dCVwmHUV5yYlIneVveaGvu4O
+         TvzlpzWDj0PWBp/8zE4KriQK5C3V9onh+Y/fQrE3qeaYCPxGZWeAsMOkAwNyPMW2uSpG
+         c+c/sMyisBPTzklndRIEqsUFWYfhT1yMhsHqX073NM38HMAGsUEEnjaHcCuYnzsBMCZF
+         ofPyhXJ1iVbQLwnKm5LvuIlZBvT4jR+wv02+Ale51AVfYR7zHQy/5IFeEBvypQiko+Qx
+         RVfLxVOwWsSEt8CQ/ECvSZKkDTkm6l4y5KN7bYaaBevKXSBPnAFPPYaabi7zGZ+tv+c1
+         wEDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=FBkp32GshYrkb603e1Upi0wbWnkjpZZV/bjtxuylxJM=;
+        b=BftlikhdOTHn8TnioAFhp3vO1gW7tRlIOr8tczXYq/A6qQBhGeY5ByPTK01lRzXEWF
+         TRUJDtuptO7Hl3Ou3PVuD190BFguyNEUzCv04hxZDBoBAQK+rXngy+/LeiZWud/9fsXF
+         JEHIm+kkZnVIUGhua95J6daCZXDZBuKDB27dcY6EB19Orj26ZyAJMgujDalTIvIol68O
+         /n8Lnj0oFeOH6nzoc0H7noS3OoVAJDEiZmLGD+kjGWEqE7fnjM+EeFT+/3mvPD3Urx+w
+         y4VOobjCuQeYpMmXLzBnMG2rVps4hFrfZrrR13vZkXRpOj2zEGhbIeHLnbjO7fFelDtp
+         Wqkg==
+X-Gm-Message-State: AOAM530X2Uu9Tu7q+VUw3eRFEU0B9uPcExnUNT6Z9ct+x7sg/dNhS2eX
+        rk7bDx/l7cI7kvcsRShEAPp00haLWjK5evjrahJZKw==
+X-Google-Smtp-Source: ABdhPJwjdKygNk0LDV699O9HlpKnDvAKBoL3zujK1SqTpzYP68cOzuvi/TvGfBcTziwe+Aw2FuHe6IcHj8kMYG9h7x0=
+X-Received: by 2002:a25:c591:: with SMTP id v139mr2136670ybe.511.1620263023577;
+ Wed, 05 May 2021 18:03:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="MP_/7JbDmOvvGcBoZTDb=tjglhB"
+References: <20210416203522.2397801-1-jiancai@google.com> <20210416232341.2421342-1-jiancai@google.com>
+ <YJMJAiwMPqlWmr8Y@archlinux-ax161>
+In-Reply-To: <YJMJAiwMPqlWmr8Y@archlinux-ax161>
+From:   Jian Cai <jiancai@google.com>
+Date:   Wed, 5 May 2021 18:03:32 -0700
+Message-ID: <CA+SOCLLhEfy+VCASsexnKTvGVc5cwd46+DmrB-nk+X1zkLHG0Q@mail.gmail.com>
+Subject: Re: [PATCH v3] arm64: vdso: remove commas between macro name and arguments
+To:     Nathan Chancellor <nathan@kernel.org>
+Cc:     "# 3.4.x" <stable@vger.kernel.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Manoj Gupta <manojgupta@google.com>,
+        Luis Lozano <llozano@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---MP_/7JbDmOvvGcBoZTDb=tjglhB
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Hi Nathan,
 
-For kicks, I wrote this program that uses libtracefs to search all CIDS
-(1-255), and find the kvm guests that are attached to them.
+Please find my comments inlined.
 
-It traces the sched_wakeup and kvm_exit, looking for:
+Thanks,
+Jian
 
- this_task -> wakeup -> wakeup -> kvm_exit
+On Wed, May 5, 2021 at 2:07 PM Nathan Chancellor <nathan@kernel.org> wrote:
+>
+> Hi Jian,
+>
+> On Fri, Apr 16, 2021 at 04:23:41PM -0700, Jian Cai wrote:
+> > LLVM's integrated assembler does not support using commas separating
+> > the name and arguments in .macro. However, only spaces are used in the
+> > manual page. This replaces commas between macro names and the subsequen=
+t
+> > arguments with space in calls to clock_gettime_return to make it
+> > compatible with IAS.
+> >
+> > Link:
+> > https://sourceware.org/binutils/docs/as/Macro.html#Macro
+> > https://github.com/ClangBuiltLinux/linux/issues/1349
+> >
+> > Signed-off-by: Jian Cai <jiancai@google.com>
+>
+> The actual patch itself looks fine to me but there should be some more
+> explanation in the commit message that this patch is for 4.19 only and
+> why it is not applicable upstream. Additionally, I would recommend using
+> the '--subject-prefix=3D' flag to 'git format-patch' to clarify that as
+> well, something like '--subject-prefix=3D"PATCH 4.19 ONLY"'?
+>
+> My explanation would be something like (take bits and pieces as you feel
+> necessary):
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> [PATCH 4.19 ONLY] arm64: vdso: remove commas between macro name and
+> arguments
+>
+> LLVM's integrated assembler does not support using a comma to separate
+> a macro name and its arguments when there is only one argument with a
+> default value:
+>
+> arch/arm64/kernel/vdso/gettimeofday.S:230:24: error: too many positional
+> arguments
+>  clock_gettime_return, shift=3D1
+>                        ^
+> arch/arm64/kernel/vdso/gettimeofday.S:253:24: error: too many positional
+> arguments
+>  clock_gettime_return, shift=3D1
+>                        ^
+> arch/arm64/kernel/vdso/gettimeofday.S:274:24: error: too many positional
+> arguments
+>  clock_gettime_return, shift=3D1
+>                        ^
+>
+> This error is not in mainline because commit 28b1a824a4f4 ("arm64: vdso:
+> Substitute gettimeofday() with C implementation") rewrote this assembler
+> file in C as part of a 25 patch series that is unsuitable for stable.
+> Just remove the comma in the clock_gettime_return invocations in 4.19 so
+> that GNU as and LLVM's integrated assembler work the same.
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+> I worded the first sentence the way that I did because correct me if I
+> am wrong but it seems that the integrated assembler has no issues with
+> the use of commas separating the arguments in a .macro definition as
+> that is done everywhere in arch/arm64, just not when there is a single
+> parameter with a default value because essentially what it is evaluating
+> it to is "clock_gettime_return ,shift=3D1", which according to the GAS
+> manual [1] means that "shift" is actually being set to 0 then there is an
+> other parameter, when it expects only one.
+>
+> [1]: After the definition is complete, you can call the macro either as
+> =E2=80=98reserve_str a,b=E2=80=99 (with =E2=80=98\p1=E2=80=99 evaluating =
+to a and =E2=80=98\p2=E2=80=99 evaluating to
+> b), or as =E2=80=98reserve_str ,b=E2=80=99 (with =E2=80=98\p1=E2=80=99 ev=
+aluating as the default, in
+> this case =E2=80=980=E2=80=99, and =E2=80=98\p2=E2=80=99 evaluating to b)=
+.
 
-when doing a connect to a cid.
+Ah you are right! I played with IAS a little and it did not have
+problem parsing commas between the name and its arguments in a macro
+expansion. However, IAS appears to assume an argument with default
+value is passed whenever it sees a comma right after the macro name.
+It will be fine if the number of following arguments is one less than
+the number of parameters specified in the macro definition. Otherwise,
+it fails with the reporter error. This happens to macros with multiple
+parameters as well. For example, the following code works
 
-When it finds the pid that did a kvm_exit, it knows that's the PID that
-is woken by the vhost worker task. It's a little slow, and I would
-really like a better way to do this, but it's at least an option that
-is available now.
+```
+$ cat foo.s
+.macro  foo arg1=3D2, arg2=3D4
+        ldr r0, [r1, #\arg1]
+        ldr r0, [r1, #\arg2]
+.endm
 
--- Steve
+foo, arg2=3D8
 
---MP_/7JbDmOvvGcBoZTDb=tjglhB
-Content-Type: text/x-c++src
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename=vsock-list.c
+$ llvm-mc -triple=3Darmv7a -filetype=3Dobj foo.s -o ias.o
+arm-linux-gnueabihf-objdump -dr ias.o
 
-#define _GNU_SOURCE
-#include <asm/types.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
-#include <string.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <linux/vm_sockets.h>
-
-#include <tracefs.h>
-
-#define MAX_CID		256
-
-static int this_pid;
-
-static int open_vsock(unsigned int cid, unsigned int port)
-{
-	struct sockaddr_vm addr = {
-		.svm_family = AF_VSOCK,
-		.svm_cid = cid,
-		.svm_port = port,
-	};
-	int sd;
-
-	sd = socket(AF_VSOCK, SOCK_STREAM, 0);
-	if (sd < 0)
-		return -1;
-
-	if (connect(sd, (struct sockaddr *)&addr, sizeof(addr)))
-		return -1;
-
-	return sd;
-}
-
-struct pids {
-	struct pids		*next;
-	int			pid;
-};
-
-struct trace_info {
-	struct tracefs_instance		*instance;
-	struct tep_handle		*tep;
-	struct tep_event		*wake_up;
-	struct tep_event		*kvm_exit;
-	struct tep_format_field		*common_pid;
-	struct tep_format_field		*wake_pid;
-	struct pids			*pids;
-	int				cid;
-	int				pid;
-};
-
-static void tear_down_trace(struct trace_info *info)
-{
-	tracefs_instance_file_write(info->instance, "events/enable", "0");
-	tracefs_instance_destroy(info->instance);
-	tracefs_instance_free(info->instance);
-	tep_free(info->tep);
-}
-
-static int setup_trace(struct trace_info *info)
-{
-	const char *systems[] = { "sched", "kvm", NULL};
-	char *name;
-	int ret;
-
-	info->pids = NULL;
-
-	ret = asprintf(&name, "vsock_find-%d\n", getpid());
-	if (ret < 0)
-		return ret;
-
-	info->instance = tracefs_instance_create(name);
-	free(name);
-	if (!info->instance)
-		return -1;
-
-	tracefs_trace_off(info->instance);
-	info->tep = tracefs_local_events_system(NULL, systems);
-	if (!info->tep)
-		goto fail;
-
-	info->wake_up = tep_find_event_by_name(info->tep, "sched", "sched_waking");
-	if (!info->wake_up) {
-		fprintf(stderr, "Failed to find sched_waking\n");
-		goto fail;
-	}
-
-	info->kvm_exit = tep_find_event_by_name(info->tep, "kvm", "kvm_exit");
-	if (!info->kvm_exit) {
-		fprintf(stderr, "Failed to find kvm_exit\n");
-		goto fail;
-	}
-
-	info->wake_pid = tep_find_any_field(info->wake_up, "pid");
-	if (!info->wake_pid) {
-		fprintf(stderr, "Failed to find wake up pid\n");
-		goto fail;
-	}
-
-	info->common_pid = tep_find_common_field(info->wake_up,
-						 "common_pid");
-	if (!info->common_pid) {
-		fprintf(stderr, "Failed to find common pid\n");
-		goto fail;
-	}
-
-	ret = tracefs_instance_file_write(info->instance, "events/sched/sched_waking/enable", "1");
-	if (ret < 0) {
-		fprintf(stderr, "Failed to enable sched_waking\n");
-		goto fail;
-	}
-
-	ret = tracefs_instance_file_write(info->instance, "events/kvm/kvm_exit/enable", "1");
-	if (ret < 0) {
-		fprintf(stderr, "Failed to enable kvm_exit\n");
-		goto fail;
-	}
-
-	return 0;
-fail:
-	tear_down_trace(info);
-	return -1;
-}
+ias.o:     file format elf32-littlearm
 
 
-static void free_pids(struct pids *pids)
-{
-	struct pids *next;
+Disassembly of section .text:
 
-	while (pids) {
-		next = pids;
-		pids = pids->next;
-		free(next);
-	}
-}
+00000000 <.text>:
+   0: e5910001 ldr r0, [r1, #2]
+   4: e5910003 ldr r0, [r1, #8]
+```
 
-static void add_pid(struct pids **pids, int pid)
-{
-	struct pids *new_pid;
+But the the following code fails,
 
-	new_pid = malloc(sizeof(*new_pid));
-	if (!new_pid)
-		return;
+```
+$ cat foo.s
+.macro  foo arg1=3D2, arg2=3D4
+        ldr r0, [r1, #\arg1]
+        ldr r0, [r1, #\arg2]
+.endm
 
-	new_pid->pid = pid;
-	new_pid->next = *pids;
-	*pids = new_pid;
-}
+foo, arg1=3D2, arg2=3D8
 
-static bool match_pid(struct pids *pids, int pid)
-{
-	while (pids) {
-		if (pids->pid == pid)
-			return true;
-		pids = pids->next;
-	}
-	return false;
-}
+$ llvm-mc -triple=3Darmv7a -filetype=3Dobj foo.s -o ias.o
+foo.s:6:14: error: too many positional arguments
+foo, arg1=3D2, arg2=3D8
+```
 
-static int callback(struct tep_event *event, struct tep_record *record,
-		    int cpu, void *data)
-{
-	struct trace_info *info = data;
-	struct tep_handle *tep = info->tep;
-	unsigned long long val;
-	int type;
-	int pid;
-	int ret;
+I will update the commit message accordingly.
 
-	ret = tep_read_number_field(info->common_pid, record->data, &val);
-	if (ret < 0)
-		return 0;
 
-	pid = val;
+> Lastly, Will or Catalin should ack this as an explicitly out of mainline
+> patch so that Greg or Sasha can take it. I would put them on the "To:"
+> line in addition to Greg and Sasha.
+>
+> Hopefully this is helpful!
 
-	if (!match_pid(info->pids, pid))
-		return 0;
+Thanks for the information!
 
-	type = tep_data_type(tep, record);
-	if (type == info->kvm_exit->id) {
-		info->pid = pid;
-		return -1;
-	}
-
-	if (type != info->wake_up->id)
-		return 0;
-
-	ret = tep_read_number_field(info->wake_pid, record->data, &val);
-	if (ret < 0)
-		return 0;
-
-	add_pid(&info->pids, (int)val);
-	return 0;
-}
-
-static void print_cid_pid(int cid, int pid)
-{
-	FILE *fp;
-	char *path;
-	char *buf = NULL;
-	char *save;
-	size_t l = 0;
-	int tgid = -1;
-
-	if (asprintf(&path, "/proc/%d/status", pid) < 0)
-		return;
-
-	fp = fopen(path, "r");
-	free(path);
-	if (!fp)
-		return;
-
-	while (getline(&buf, &l, fp) > 0) {
-		char *tok;
-
-		if (strncmp(buf, "Tgid:", 5) != 0)
-			continue;
-		tok = strtok_r(buf, ":", &save);
-		if (!tok)
-			continue;
-		tok = strtok_r(NULL, ":", &save);
-		if (!tok)
-			continue;
-		while (isspace(*tok))
-			tok++;
-		tgid = strtol(tok, NULL, 0);
-		break;
-	}
-	free(buf);
-
-	if (tgid >= 0)
-		printf("%d\t%d\n", cid, tgid);
-}
-
-static void find_cid(struct trace_info *info, int cid)
-{
-	int fd;
-
-	add_pid(&info->pids, this_pid);
-
-	tracefs_instance_file_clear(info->instance, "trace");
-	tracefs_trace_on(info->instance);
-	fd = open_vsock(cid, -1);
-	tracefs_trace_off(info->instance);
-	if (fd >= 0)
-		close(fd);
-	info->cid = cid;
-	info->pid = -1;
-	tracefs_iterate_raw_events(info->tep, info->instance,
-				   NULL, 0, callback, info);
-	if (info->pid >= 0)
-		print_cid_pid(cid, info->pid);
-	tracefs_trace_off(info->instance);
-	free_pids(info->pids);
-	info->pids = NULL;
-}
-
-static int find_cids(void)
-{
-	struct trace_info info ;
-	int cid;
-
-	if (setup_trace(&info) < 0)
-		return -1;
-
-	for (cid = 0; cid < MAX_CID; cid++)
-		find_cid(&info, cid);
-
-	tear_down_trace(&info);
-	return 0;
-}
-
-int main(int argc, char *argv[])
-{
-	this_pid = getpid();
-	find_cids();
-	exit(0);
-}
-
---MP_/7JbDmOvvGcBoZTDb=tjglhB--
+>
+> Cheers,
+> Nathan
+>
+> > ---
+> >
+> > Changes v1 -> v2:
+> >   Keep the comma in the macro definition to be consistent with other
+> >   definitions.
+> >
+> > Changes v2 -> v3:
+> >   Edit tags.
+> >
+> >  arch/arm64/kernel/vdso/gettimeofday.S | 6 +++---
+> >  1 file changed, 3 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/arch/arm64/kernel/vdso/gettimeofday.S b/arch/arm64/kernel/=
+vdso/gettimeofday.S
+> > index 856fee6d3512..b6faf8b5d1fe 100644
+> > --- a/arch/arm64/kernel/vdso/gettimeofday.S
+> > +++ b/arch/arm64/kernel/vdso/gettimeofday.S
+> > @@ -227,7 +227,7 @@ realtime:
+> >       seqcnt_check fail=3Drealtime
+> >       get_ts_realtime res_sec=3Dx10, res_nsec=3Dx11, \
+> >               clock_nsec=3Dx15, xtime_sec=3Dx13, xtime_nsec=3Dx14, nsec=
+_to_sec=3Dx9
+> > -     clock_gettime_return, shift=3D1
+> > +     clock_gettime_return shift=3D1
+> >
+> >       ALIGN
+> >  monotonic:
+> > @@ -250,7 +250,7 @@ monotonic:
+> >               clock_nsec=3Dx15, xtime_sec=3Dx13, xtime_nsec=3Dx14, nsec=
+_to_sec=3Dx9
+> >
+> >       add_ts sec=3Dx10, nsec=3Dx11, ts_sec=3Dx3, ts_nsec=3Dx4, nsec_to_=
+sec=3Dx9
+> > -     clock_gettime_return, shift=3D1
+> > +     clock_gettime_return shift=3D1
+> >
+> >       ALIGN
+> >  monotonic_raw:
+> > @@ -271,7 +271,7 @@ monotonic_raw:
+> >               clock_nsec=3Dx15, nsec_to_sec=3Dx9
+> >
+> >       add_ts sec=3Dx10, nsec=3Dx11, ts_sec=3Dx13, ts_nsec=3Dx14, nsec_t=
+o_sec=3Dx9
+> > -     clock_gettime_return, shift=3D1
+> > +     clock_gettime_return shift=3D1
+> >
+> >       ALIGN
+> >  realtime_coarse:
+> > --
+> > 2.31.1.368.gbe11c130af-goog
+> >
