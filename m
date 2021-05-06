@@ -2,187 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 76DE7375C95
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:06:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7F3E375C97
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:06:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhEFVHj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:07:39 -0400
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:52099 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230251AbhEFVHh (ORCPT
+        id S231290AbhEFVHv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 17:07:51 -0400
+Received: from mail-ot1-f47.google.com ([209.85.210.47]:39725 "EHLO
+        mail-ot1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230419AbhEFVHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 17:07:37 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d54 with ME
-        id 1Z6c2500B21Fzsu03Z6dmj; Thu, 06 May 2021 23:06:37 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 06 May 2021 23:06:37 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] media: ttpci: switch from 'pci_' to 'dma_' API
-Date:   Thu,  6 May 2021 23:06:34 +0200
-Message-Id: <5fedfb7d18b8b1ae9c9fee0dd894e87f735f70f6.1620335119.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 6 May 2021 17:07:50 -0400
+Received: by mail-ot1-f47.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso6138519otv.6;
+        Thu, 06 May 2021 14:06:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8NvB2tyPckkIgewV0lmTw4rJstRnCjKDzoP9iBSvnfQ=;
+        b=qW88VfD4jNcqg951sapoOn3pyHqHzZXcvBqnGm1KTDQr2Ffc7t/7QKj05v2SACKY7U
+         MVWamKbrSIp+sCt0zuZ5KmrmREkpvJHU/jdYtIjed/h0QGqwMrjyTyynbB52P2Sm8gdZ
+         3CHyrN5nbdCGox5712whyBvmrqtcn7Q/lBL5hJipT/+4QxvgjIP7/9i6MdS57Z/KVcHI
+         2whKyIv2lD6mlq1fuFk2bbiCtLxIx9x1qewYdUyxoTdOdXRZ8+qm9hMSIyri5d1q9CCm
+         bzJOwFXV+aIfQkatpRjjjSB8gNo/ek1Jlvx1OvKc/MRm7X50GaTVmJSWUabXXFUakLG1
+         tgdg==
+X-Gm-Message-State: AOAM533JPb0YOHCDeed4G+d1E5v5s6YmFGwomzGPTFTgd3TyWNK3p+1e
+        BmjRumGQ3LmcGFgbQsRo6A==
+X-Google-Smtp-Source: ABdhPJwFIx0e8c86RcR2tVo7iJB2J6CR53YsYNw6wGVQ7XCn1k0eh+UfytGsFuiJoJspx6n2BQ/8Pw==
+X-Received: by 2002:a05:6830:1690:: with SMTP id k16mr5270532otr.54.1620335211551;
+        Thu, 06 May 2021 14:06:51 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id k7sm729416ood.36.2021.05.06.14.06.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 14:06:51 -0700 (PDT)
+Received: (nullmailer pid 801808 invoked by uid 1000);
+        Thu, 06 May 2021 21:06:49 -0000
+Date:   Thu, 6 May 2021 16:06:49 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     linux-arm-kernel@lists.infradead.org, kaloz@openwrt.org,
+        robh+dt@kernel.org, arnd@arndb.de, khalasa@piap.pl,
+        linusw@kernel.org, linux@armlinux.org.uk, olof@lixom.net,
+        soc@kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4/5] dt-bindings: arm: intel-ixp4xx: add welltech,epbx100
+Message-ID: <20210506210649.GA801760@robh.at.kernel.org>
+References: <20210504193457.4008384-1-clabbe@baylibre.com>
+ <20210504193457.4008384-5-clabbe@baylibre.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210504193457.4008384-5-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The wrappers in include/linux/pci-dma-compat.h should go away.
+On Tue, 04 May 2021 19:34:56 +0000, Corentin Labbe wrote:
+> Adds welltech,epbx100 as a valid intel-ixp4xx board.
+> 
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+> ---
+>  Documentation/devicetree/bindings/arm/intel-ixp4xx.yaml | 1 +
+>  1 file changed, 1 insertion(+)
+> 
 
-The patch has been generated with the coccinelle script below and has been
-hand modified to replace GFP_ with a correct flag.
-It has been compile tested.
-
-When memory is allocated in 'ace_allocate_descriptors()' and
-'ace_init()' GFP_KERNEL can be used because both functions are called from
-the probe function and no lock is acquired.
-
-
-@@
-@@
--    PCI_DMA_BIDIRECTIONAL
-+    DMA_BIDIRECTIONAL
-
-@@
-@@
--    PCI_DMA_TODEVICE
-+    DMA_TO_DEVICE
-
-@@
-@@
--    PCI_DMA_FROMDEVICE
-+    DMA_FROM_DEVICE
-
-@@
-@@
--    PCI_DMA_NONE
-+    DMA_NONE
-
-@@
-expression e1, e2, e3;
-@@
--    pci_alloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3;
-@@
--    pci_zalloc_consistent(e1, e2, e3)
-+    dma_alloc_coherent(&e1->dev, e2, e3, GFP_)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_free_consistent(e1, e2, e3, e4)
-+    dma_free_coherent(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_single(e1, e2, e3, e4)
-+    dma_map_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_single(e1, e2, e3, e4)
-+    dma_unmap_single(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4, e5;
-@@
--    pci_map_page(e1, e2, e3, e4, e5)
-+    dma_map_page(&e1->dev, e2, e3, e4, e5)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_page(e1, e2, e3, e4)
-+    dma_unmap_page(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_map_sg(e1, e2, e3, e4)
-+    dma_map_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_unmap_sg(e1, e2, e3, e4)
-+    dma_unmap_sg(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_cpu(e1, e2, e3, e4)
-+    dma_sync_single_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_single_for_device(e1, e2, e3, e4)
-+    dma_sync_single_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_cpu(e1, e2, e3, e4)
-+    dma_sync_sg_for_cpu(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2, e3, e4;
-@@
--    pci_dma_sync_sg_for_device(e1, e2, e3, e4)
-+    dma_sync_sg_for_device(&e1->dev, e2, e3, e4)
-
-@@
-expression e1, e2;
-@@
--    pci_dma_mapping_error(e1, e2)
-+    dma_mapping_error(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_dma_mask(e1, e2)
-+    dma_set_mask(&e1->dev, e2)
-
-@@
-expression e1, e2;
-@@
--    pci_set_consistent_dma_mask(e1, e2)
-+    dma_set_coherent_mask(&e1->dev, e2)
-
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
----
-If needed, see post from Christoph Hellwig on the kernel-janitors ML:
-   https://marc.info/?l=kernel-janitors&m=158745678307186&w=4
----
- drivers/media/pci/ttpci/budget-core.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/media/pci/ttpci/budget-core.c b/drivers/media/pci/ttpci/budget-core.c
-index d405eea5c37f..5d5796f24469 100644
---- a/drivers/media/pci/ttpci/budget-core.c
-+++ b/drivers/media/pci/ttpci/budget-core.c
-@@ -180,7 +180,8 @@ static void vpeirq(struct tasklet_struct *t)
- 	u32 count;
- 
- 	/* Ensure streamed PCI data is synced to CPU */
--	pci_dma_sync_sg_for_cpu(budget->dev->pci, budget->pt.slist, budget->pt.nents, PCI_DMA_FROMDEVICE);
-+	dma_sync_sg_for_cpu(&budget->dev->pci->dev, budget->pt.slist,
-+			    budget->pt.nents, DMA_FROM_DEVICE);
- 
- 	/* nearest lower position divisible by 188 */
- 	newdma -= newdma % 188;
--- 
-2.30.2
-
+Acked-by: Rob Herring <robh@kernel.org>
