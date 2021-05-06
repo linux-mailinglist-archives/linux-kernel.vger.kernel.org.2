@@ -2,63 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5943F375C5C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:46:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A4A5375C66
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 22:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230486AbhEFUrE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 16:47:04 -0400
-Received: from smtp01.smtpout.orange.fr ([80.12.242.123]:53589 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230104AbhEFUrD (ORCPT
+        id S233329AbhEFUtD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 16:49:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:33832 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230104AbhEFUtA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 16:47:03 -0400
-Received: from localhost.localdomain ([86.243.172.93])
-        by mwinf5d54 with ME
-        id 1Ym32500121Fzsu03Ym3uY; Thu, 06 May 2021 22:46:04 +0200
-X-ME-Helo: localhost.localdomain
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Thu, 06 May 2021 22:46:04 +0200
-X-ME-IP: 86.243.172.93
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-To:     ohad@wizery.com, bjorn.andersson@linaro.org,
-        mathieu.poirier@linaro.org, s-anna@ti.com
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Subject: [PATCH] remoteproc: k3-r5: Fix an error message
-Date:   Thu,  6 May 2021 22:46:01 +0200
-Message-Id: <d6e29d903b48957bf59c67229d54b0fc215e31ae.1620333870.git.christophe.jaillet@wanadoo.fr>
-X-Mailer: git-send-email 2.30.2
+        Thu, 6 May 2021 16:49:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620334081;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=iNyKa3qN4dnX6up4J3TEfAYRRZRzTgh3ft7OZjiOwtQ=;
+        b=bit0HHSq3OUtPNbj0MpHwZ6JXbIdFZJgTx5dDgsS8AWmu0PsNj93yml4WjAkxcD99dU/JZ
+        Zh9eQYmOiIvHnIrx/AewXyOLP/7xpBs7Bj08NnkfrKNZuYC0t1XsSRpzk1yEol/3rQ+Tua
+        +LM6B345zGV50N2ugfDEuFYzn9my9Q8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-562-Zbj15EzQPIuZbIraAY5evg-1; Thu, 06 May 2021 16:47:57 -0400
+X-MC-Unique: Zbj15EzQPIuZbIraAY5evg-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C2B91801B28;
+        Thu,  6 May 2021 20:47:56 +0000 (UTC)
+Received: from [172.30.42.188] (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EBC7690F3;
+        Thu,  6 May 2021 20:47:51 +0000 (UTC)
+Subject: [PATCH 5.11.y, 5.10.y, 5.4.y] vfio: Depend on MMU
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     gregkh@linuxfoundation.org, stable@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, jgg@nvidia.com
+Date:   Thu, 06 May 2021 14:47:51 -0600
+Message-ID: <162033393037.4094195.18215062546427210332.stgit@omen>
+User-Agent: StGit/1.0-8-g6af9-dirty
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-'ret' is known to be 0 here.
-Reorder the code so that the expected error code is printed.
+From: Jason Gunthorpe <jgg@nvidia.com>
 
-Fixes: 6dedbd1d5443 ("remoteproc: k3-r5: Add a remoteproc driver for R5F subsystem")
-Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+commit b2b12db53507bc97d96f6b7cb279e831e5eafb00 upstream
+
+VFIO_IOMMU_TYPE1 does not compile with !MMU:
+
+../drivers/vfio/vfio_iommu_type1.c: In function 'follow_fault_pfn':
+../drivers/vfio/vfio_iommu_type1.c:536:22: error: implicit declaration of function 'pte_write'; did you mean 'vfs_write'? [-Werror=implicit-function-declaration]
+
+So require it.
+
+Suggested-by: Cornelia Huck <cohuck@redhat.com>
+Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+Message-Id: <0-v1-02cb5500df6e+78-vfio_no_mmu_jgg@nvidia.com>
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+Cc: stable@vger.kernel.org # 5.11.y, 5.10.y, 5.4.y
+Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
 ---
- drivers/remoteproc/ti_k3_r5_remoteproc.c | 2 +-
+
+The noted stable branches include upstream commit 179209fa1270
+("vfio: IOMMU_API should be selected") without the follow-up commit
+b2b12db53507 ("vfio: Depend on MMU"), which should have included a
+Fixes: tag for the prior commit.  Without this latter commit, we're
+susceptible to randconfig failures with !MMU configs.  Thanks!
+
+ drivers/vfio/Kconfig |    2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/remoteproc/ti_k3_r5_remoteproc.c b/drivers/remoteproc/ti_k3_r5_remoteproc.c
-index 5cf8d030a1f0..4104e4846dbf 100644
---- a/drivers/remoteproc/ti_k3_r5_remoteproc.c
-+++ b/drivers/remoteproc/ti_k3_r5_remoteproc.c
-@@ -1272,9 +1272,9 @@ static int k3_r5_core_of_init(struct platform_device *pdev)
- 
- 	core->tsp = k3_r5_core_of_get_tsp(dev, core->ti_sci);
- 	if (IS_ERR(core->tsp)) {
-+		ret = PTR_ERR(core->tsp);
- 		dev_err(dev, "failed to construct ti-sci proc control, ret = %d\n",
- 			ret);
--		ret = PTR_ERR(core->tsp);
- 		goto err;
- 	}
- 
--- 
-2.30.2
+diff --git a/drivers/vfio/Kconfig b/drivers/vfio/Kconfig
+index 90c0525b1e0c..67d0bf4efa16 100644
+--- a/drivers/vfio/Kconfig
++++ b/drivers/vfio/Kconfig
+@@ -22,7 +22,7 @@ config VFIO_VIRQFD
+ menuconfig VFIO
+ 	tristate "VFIO Non-Privileged userspace driver framework"
+ 	select IOMMU_API
+-	select VFIO_IOMMU_TYPE1 if (X86 || S390 || ARM || ARM64)
++	select VFIO_IOMMU_TYPE1 if MMU && (X86 || S390 || ARM || ARM64)
+ 	help
+ 	  VFIO provides a framework for secure userspace device drivers.
+ 	  See Documentation/driver-api/vfio.rst for more details.
+
 
