@@ -2,135 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EC26374CB2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:05:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52F8C374CB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 03:08:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230215AbhEFBGF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 21:06:05 -0400
-Received: from smtp.polymtl.ca ([132.207.4.11]:58035 "EHLO smtp.polymtl.ca"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229956AbhEFBGE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 21:06:04 -0400
-Received: from simark.ca (simark.ca [158.69.221.121])
-        (authenticated bits=0)
-        by smtp.polymtl.ca (8.14.7/8.14.7) with ESMTP id 14614Yoa022533
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 5 May 2021 21:04:39 -0400
-DKIM-Filter: OpenDKIM Filter v2.11.0 smtp.polymtl.ca 14614Yoa022533
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=polymtl.ca;
-        s=default; t=1620263082;
-        bh=uUo+JyP3qzUuqgNQ/RvU1uL6jonWVAN28uarKh6TD/c=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Lv18hIk2Y1RyBaDJ+UApPpMNy4tAABqYbqxt+KBIVTRkTC8bflIpGKsCt/WjN1kp9
-         /6KqtHVILhxp3gaPYAOO4pFIL1lXU5nVsMHOGekwwe5lqvWLOlIoTsI/w2ZpR35BOB
-         hNbJ3/M1t+tRxZwNZOJsiZNHUbcgQP0ocQ3O/GdM=
-Received: from [10.0.0.11] (192-222-157-6.qc.cable.ebox.net [192.222.157.6])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-        (No client certificate requested)
-        by simark.ca (Postfix) with ESMTPSA id AAE551E01F;
-        Wed,  5 May 2021 21:04:32 -0400 (EDT)
-Subject: Re: [PATCH] io_thread/x86: don't reset 'cs', 'ss', 'ds' and 'es'
- registers for io_threads
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Stefan Metzmacher <metze@samba.org>,
-        Borislav Petkov <bp@alien8.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jens Axboe <axboe@kernel.dk>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        io-uring <io-uring@vger.kernel.org>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        linux-toolchains@vger.kernel.org
-References: <8735v3ex3h.ffs@nanos.tec.linutronix.de>
- <3C41339D-29A2-4AB1-958F-19DB0A92D8D7@amacapital.net>
- <CAHk-=wh0KoEZXPYMGkfkeVEerSCEF1AiCZSvz9TRrx=Kj74D+Q@mail.gmail.com>
- <YJEIOx7GVyZ+36zJ@hirez.programming.kicks-ass.net> <YJFptPyDtow//5LU@zn.tnic>
- <044d0bad-6888-a211-e1d3-159a4aeed52d@polymtl.ca>
- <932d65e1-5a8f-c86a-8673-34f0e006c27f@samba.org>
- <30e248aa-534d-37ff-2954-a70a454391fc@polymtl.ca>
- <CALCETrUF5M+Qw+RfY8subR7nzmpMyFsE3NHSAPoMVWMz6_hr-w@mail.gmail.com>
-From:   Simon Marchi <simon.marchi@polymtl.ca>
-Message-ID: <f4d0c304-2fe0-087f-90f4-1ad9c1b32694@polymtl.ca>
-Date:   Wed, 5 May 2021 21:04:32 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S229801AbhEFBJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 21:09:19 -0400
+Received: from mail.kingsoft.com ([114.255.44.146]:3060 "EHLO
+        mail.kingsoft.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229465AbhEFBJP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 21:09:15 -0400
+X-Greylist: delayed 719 seconds by postgrey-1.27 at vger.kernel.org; Wed, 05 May 2021 21:09:15 EDT
+X-AuditID: 0a580155-c83ff700000401e3-45-6093417f4c7f
+Received: from mail.kingsoft.com (localhost [10.88.1.79])
+        (using TLS with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (Client did not present a certificate)
+        by mail.kingsoft.com (SMG-2-NODE-85) with SMTP id 85.BA.00483.F7143906; Thu,  6 May 2021 09:08:15 +0800 (HKT)
+Received: from alex-virtual-machine (10.88.1.103) by KSBJMAIL4.kingsoft.cn
+ (10.88.1.79) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Thu, 6 May 2021
+ 09:08:13 +0800
+Date:   Thu, 6 May 2021 09:08:07 +0800
+From:   Aili Yao <yaoaili@kingsoft.com>
+To:     Michal Hocko <mhocko@suse.com>
+CC:     David Hildenbrand <david@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "Alexey Dobriyan" <adobriyan@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        "Steven Price" <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        "Jiri Bohac" <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        "Haiyang Zhang" <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        <linux-hyperv@vger.kernel.org>,
+        <virtualization@lists.linux-foundation.org>,
+        <linux-fsdevel@vger.kernel.org>, <linux-mm@kvack.org>,
+        <yaoaili126@gmail.com>
+Subject: Re: [PATCH v1 3/7] mm: rename and move page_is_poisoned()
+Message-ID: <20210506090807.5a7b8691@alex-virtual-machine>
+In-Reply-To: <YJKhi6T33UmiZ/kE@dhcp22.suse.cz>
+References: <20210429122519.15183-1-david@redhat.com>
+        <20210429122519.15183-4-david@redhat.com>
+        <YJKZ5yXdl18m9YSM@dhcp22.suse.cz>
+        <0710d8d5-2608-aeed-10c7-50a272604d97@redhat.com>
+        <YJKdS+Q8CgSlgmFf@dhcp22.suse.cz>
+        <57ac524c-b49a-99ec-c1e4-ef5027bfb61b@redhat.com>
+        <YJKhi6T33UmiZ/kE@dhcp22.suse.cz>
+Organization: kingsoft
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.30; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CALCETrUF5M+Qw+RfY8subR7nzmpMyFsE3NHSAPoMVWMz6_hr-w@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: text/plain; charset="US-ASCII"
 Content-Transfer-Encoding: 7bit
-X-Poly-FromMTA: (simark.ca [158.69.221.121]) at Thu,  6 May 2021 01:04:34 +0000
+X-Originating-IP: [10.88.1.103]
+X-ClientProxiedBy: KSBJMAIL1.kingsoft.cn (10.88.1.31) To KSBJMAIL4.kingsoft.cn
+ (10.88.1.79)
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrFIsWRmVeSWpSXmKPExsXCFcHor1vvODnBYNcfPYvpjV4Wc9avYbNY
+        d7yL2eLr+l9AYtIFNotr2z0sll36zGRx4+BmNosnq7eyW+zZe5LFYurED2wWl3fNYbO4t+Y/
+        q8X9PgeLj/uDLf7/esVqcbHxAKPFmWlFFkfWb2eyaDzyns3i7eGDzBbLz85jszi86RaTxe8f
+        QI3PWq+yOEh6rJm3htFjYvM7do+ds+6ye2xeoeWxaVUnm8emT5PYPU7M+M3isfOhpcfkG8sZ
+        PVp3/GX3eHF1I4vHx6e3WDze77vK5rF+y1UWjzMLjgB1nq4OEIzisklJzcksSy3St0vgynje
+        m1RwjqPi3hypBsbDbF2MnBwSAiYSbzYeZu5i5OIQEpjOJDF16j92COcZo8THtU+BMhwcLAIq
+        EieWRYA0sAmoSuy6N4sVxBYRUJLo2ryTDaSeWaCdXaLj+wywhLCAk8Tx5zcZQWxeASuJlTf3
+        gcU5BfQkbk55zgSxYCuTxMSGxSwgCX4BMYneK/+ZQJZJCNhLPF6vCNErKHFy5hOwEmYBHYkT
+        q44xQ9jyEtvfzgGzhQQUJQ4v+cUO8Y28xN3f0xkh7FiJpgO32CYwCs9CMmoWklGzkIxawMi8
+        ipGlODfdaBMjJDmE7mCc0fRR7xAjEwfjIUYJDmYlEd6Ctf0JQrwpiZVVqUX58UWlOanFhxil
+        OViUxHnZC7sShATSE0tSs1NTC1KLYLJMHJxSDUzLRXWXLGk6reP3V4nz66O/KW/XMMlExEm2
+        yrRsTS7fWnAqv6sgZ49Lmnj20kfJYQUfNJ4JTHc0l1i5bY6vyAORj8t+SRYKbzz17LiQ0Lop
+        V90t9a+evPtgG3Pynl0m6mcfCBzduzI9/ueUpGm9C9jObfb8vO3a8SeWn/9aVwqtfKQ4x+Ty
+        0Vm3ZRbVy4fKagjscW/h/7urkFniRNllMVmutuNL3zJkH+oMUf/mqn1SWP+aSeztP/IH9f7s
+        elSZerCsYiNvqYEA1+es1iPqKZVWHsfqxDllT7y7bxog1swSIHrvUXbmXF/x8qTtae5unAkW
+        9eo+56ttDXPvPljXstZk55zwx3La6i27+K9J7FBiKc5INNRiLipOBAAQjQW8fQMAAA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-05 6:11 p.m., Andy Lutomirski wrote:
-> For what it's worth, this is already fundamentally incorrect.  On
-> x86_64 Linux, a process *does* *not* *have* an architecture.  Every
-> task on an x86_64 Linux host has a full 64-bit register state.  The
-> task can, and sometimes does, change CS using far transfers or other
-> bizarre techniques, and neither the kernel nor GDB will be notified or
-> have a chance to take any action in response.  ELF files can be
-> 32-bit, CS:rIP can point at 32-bit code, and system calls can be
-> 32-bit (even from 64-bit code), but *tasks* are not 32-bit.
+On Wed, 5 May 2021 15:45:47 +0200
+Michal Hocko <mhocko@suse.com> wrote:
 
-Thanks for that explanation: I didn't know that "32-bit" tasks had the
-same register state as any other task.  I never really looked into it,
-but I was assuming that tasks were either 32-bit or 64-bit (based on the
-ELF header of the file they exec'd or something) and that 32-bit tasks
-had the register state as a task on an i386 machine would have.  And
-that PEEKUSER would return the 64-bit register state for 64-bit tasks,
-and 32-bit register state for 32-bit tasks.
+> On Wed 05-05-21 15:39:08, David Hildenbrand wrote:
+> > > > Long story short, this should be good enough for the cases we actually can
+> > > > handle? What am I missing?  
+> > > 
+> > > I am not sure I follow. My point is that I fail to see any added value
+> > > of the check as it doesn't prevent the race (it fundamentally cannot as
+> > > the page can be poisoned at any time) but the failure path doesn't
+> > > put_page which is incorrect even for hwpoison pages.  
+> > 
+> > Oh, I think you are right. If we have a page and return NULL we would leak a
+> > reference.
+> > 
+> > Actually, we discussed in that thread handling this entirely differently,
+> > which resulted in a v7 [1]; however Andrew moved forward with this
+> > (outdated?) patch, maybe that was just a mistake?
+> > 
+> > Yes, I agree we should revert that patch for now.  
+> 
+> OK, Let me send the revert to Andrew.
+> 
 
-I looked at how GDB reads registers from a "64-bit" task and a "32-bit"
-task (I have to quote now, since I now know it's an abuse of
-terminology) side by side.  And indeed, GDB reads a full 64-bit state in
-both cases.  For the 32-bit case, it picks the 32-bit values from that
-buffer.  For example, to get the eax value it picks the low 4 bytes of
-rax (well, ax in user_regs_struct).
+Got this!
+Anyway, I will try to post a new patch for this issue based on the previous patch v7.
 
-So I suppose that if GDB wanted to tell nothing but the truth, it would
-present the full 64-bit register state to the user even when debugging a
-32-bit program.  But at the end of the day, the typical user debugging a
-32-bit program on a 64-bit probably just wants the illusion that they
-are on i386.
-
-> Now I realize that the ptrace() API is awful and makes life difficult
-> in several respects for no good reason but, if gdb is ever interested
-> in fixing its ideas about architecture to understand that all tasks,
-> even those that think of themselves as "compat", have full 64-bit
-> state, I would be more than willing to improve the ptrace() API as
-> needed to make this work well.
-
-Just wondering, do you have specific ptrace shortcomings in mind when
-saying this?  As I found above, ptrace lets us read the whole 64-bit
-register state.  After that it's up to us to analyze the state of the
-program based on its registers and memory.  What more could ptrace give
-us?
-
-> Since I'm not holding my breath, please at least keep in mind that
-> anything you do here is merely a heuristic, cannot be fully correct,
-> and then whenever gdb determines that a thread group or a thread is
-> "32-bit", gdb is actually deciding to operate in a degraded mode for
-> that task, is not accurately representing the task state, and is at
-> risk of crashing, malfunctioning, or crashing the inferior due to its
-> incorrect assumptions.  If you have ever attached gdb to QEMU's
-> gdbserver and tried to debug the early boot process of a 64-bit Linux
-> kernel, you may have encountered this class of bugs.  gdb works very,
-> very poorly for this use case.
-
-Yes, that QEMU case comes up often.  I wish that things were better, but
-the reality is that this is an edge case, it would require somebody with
-that particular itch to scratch to work on GDB to improve that use case.
-So as you said, don't hold your breath :).
-
-I completely understand that GDB putting processes in the "32-bit" or
-"64-bit" bin is not the right thing to do in general, from a kernel
-perspective.  But it converged to this because it's enough for and
-useful to the 99.9% of users who debug programs that don't do funky
-things.  At least, it's good to know about it in case problems related
-to this arise in the future.
-
-Simon
+Thanks!
+Aili Yao
