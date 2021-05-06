@@ -2,138 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26D91374EBF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:59:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D383374ECB
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 07:11:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232288AbhEFFAu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 01:00:50 -0400
-Received: from mga11.intel.com ([192.55.52.93]:60748 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233007AbhEFFAn (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 01:00:43 -0400
-IronPort-SDR: 7FhMJVenzKpw8pb1bRjaFrbsBnpn4zpxz1UOLij/rjiJ6qQ0LMbSM+bOxBJD7OoV0BLp/Iruh4
- 2s/2J7ZxO6YQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="195258082"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="195258082"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 21:59:14 -0700
-IronPort-SDR: 87FNLb4TGmATRx26ipmTDl9KyMkhHNJcNIEC40LvWVDsBC+9BDbV8o7QxbNQe9K2Y19JrBfP5J
- bFGfUKT9fh2g==
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="434161883"
-Received: from unknown (HELO [10.238.4.82]) ([10.238.4.82])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 21:59:10 -0700
-Subject: Re: [PATCH v1 2/2] perf header: Support hybrid CPU_PMU_CAPS
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com,
-        Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com
-References: <20210430074602.3028-1-yao.jin@linux.intel.com>
- <20210430074602.3028-2-yao.jin@linux.intel.com> <YJFjTCsk9dCd6QP7@krava>
-From:   "Jin, Yao" <yao.jin@linux.intel.com>
-Message-ID: <c0bd3baa-3209-23f3-7058-c6908434de2d@linux.intel.com>
-Date:   Thu, 6 May 2021 12:59:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232846AbhEFFMu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 01:12:50 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:33652 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S231488AbhEFFMs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 01:12:48 -0400
+X-UUID: 4cd21c391cb3437aa423f9b883b4b40f-20210506
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=GCNKDKTbKe0DL6QViifjAcHqLVE5WHHmvfm15Wnjq68=;
+        b=btlYBP/a1yUxC+VlWy6TA7S1BU1rjc+ip11uRRaw5iwHF03pwf1d90BOs1GgFTH+fxj/K0ieIgklg4sWg5hzIH6nRo/8l+q1v9gZI8AR3tg3WGfavXACY5d4IKSK/XYIa63+7YnEImrvCJOiOdkIBLLFT02cB4hidw5aC72yWcg=;
+X-UUID: 4cd21c391cb3437aa423f9b883b4b40f-20210506
+Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw02.mediatek.com
+        (envelope-from <michael.kao@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 29911232; Thu, 06 May 2021 13:11:46 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n2.mediatek.inc (172.21.101.101) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 6 May 2021 13:11:44 +0800
+Received: from mtksdccf07 (172.21.84.99) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 6 May 2021 13:11:44 +0800
+Message-ID: <7ae074f1f80d6c874e5db12d2650e301d8e4a080.camel@mediatek.com>
+Subject: Re: [PATCH 1/1] arm64: dts: mt8183-kukui: Enable thermal Tboard
+From:   Michael Kao <michael.kao@mediatek.com>
+To:     Hsin-Yi Wang <hsinyi@chromium.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        <Ben.Tseng@mediatek.com>
+CC:     <fan.chen@mediatek.com>, Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        <srv_heupstream@mediatek.com>,
+        Eduardo Valentin <edubezval@gmail.com>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        "Matthias Brugger" <matthias.bgg@gmail.com>,
+        Devicetree List <devicetree@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>
+Date:   Thu, 6 May 2021 13:11:44 +0800
+In-Reply-To: <CAJMQK-gXfR2Ca-Ay5fwcRgQ4F6h4xXVt1bbAL+3LFwgotwYREA@mail.gmail.com>
+References: <20210409071158.2346-1-michael.kao@mediatek.com>
+         <CAJMQK-gXfR2Ca-Ay5fwcRgQ4F6h4xXVt1bbAL+3LFwgotwYREA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
 MIME-Version: 1.0
-In-Reply-To: <YJFjTCsk9dCd6QP7@krava>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-TM-SNTS-SMTP: 364551A4171664A9486A254729F726B04D8DD073D523B4A856147DA05543CF1C2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jiri,
+SGkgTWFpbnRhaW5lcnMsDQoNCkdlbnRsZSBwaW4gZm9yIHRoaXMgcGF0Y2guDQoNClRoYW5rcw0K
+DQpPbiBGcmksIDIwMjEtMDQtMDkgYXQgMTU6MTYgKzA4MDAsIEhzaW4tWWkgV2FuZyB3cm90ZToN
+Cj4gT24gRnJpLCBBcHIgOSwgMjAyMSBhdCAzOjEyIFBNIE1pY2hhZWwgS2FvIDxtaWNoYWVsLmth
+b0BtZWRpYXRlay5jb20+DQo+IHdyb3RlOg0KPiA+IA0KPiA+IEFkZCBUYm9hcmQgdGhlcm1hbCBz
+ZW5zb3Igc2V0dGluZ3MuDQo+ID4gDQo+ID4gcHVsbC11cCB2b2x0YWdlOiAxODAwIG12DQo+ID4g
+cHVsbC11cCByZXNpc3RvcjogNzVLDQo+ID4gDQo+ID4gVnNlbnNlID0gcHVsbC11cCB2b2x0YWdl
+ICogUm50YyAvICggcHVsbC11cCByZXNpc3RvciArIFJudGMgKQ0KPiA+IEF1eEluID0gVnNlbnNl
+ICogNDA5NiAvIDE1MDANCj4gPiANCj4gPiBURVNUPWJvb3Qga3VrdWkNCj4gPiAgICAgIGNoZWNr
+IC9zeXMvY2xhc3MvdGhlcm1hbC90aGVybWFsX3pvbmUqL3R5cGUNCj4gPiAgICAgIGNoZWNrIC9z
+eXMvY2xhc3MvdGhlcm1hbC90aGVybWFsX3pvbmUqL3RlbXANCj4gDQo+IHRoZSBURVNUIGxpbmVz
+IGNhbiBiZSByZW1vdmVkLg0KPiANCj4gPiANCj4gPiBTaWduZWQtb2ZmLWJ5OiBNaWNoYWVsIEth
+byA8bWljaGFlbC5rYW9AbWVkaWF0ZWsuY29tPg0KPiA+IFNpZ25lZC1vZmYtYnk6IE5pY29sYXMg
+Qm9pY2hhdCA8ZHJpbmtjYXRAY2hyb21pdW0ub3JnPg0KPiA+IC0tLQ0KPiANCj4gVGVzdGVkLWJ5
+OiBIc2luLVlpIFdhbmcgPGhzaW55aUBjaHJvbWl1bS5vcmc+DQo+IA0KPiBUaGlzIHJlbW92ZXMg
+Zm9sbG93aW5nIGVycm9yOg0KPiBbICAgMTAuODgyMzI1XSBnZW5lcmljLWFkYy10aGVybWFsIHRo
+ZXJtYWwtc2Vuc29yMTogVGhlcm1hbCB6b25lDQo+IHNlbnNvciByZWdpc3RlciBmYWlsZWQ6IC0x
+OQ0KPiBbICAgMTAuOTExOTEyXSBnZW5lcmljLWFkYy10aGVybWFsIHRoZXJtYWwtc2Vuc29yMjog
+VGhlcm1hbCB6b25lDQo+IHNlbnNvciByZWdpc3RlciBmYWlsZWQ6IC0xOQ0KPiANCj4gPiAgYXJj
+aC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxODMta3VrdWkuZHRzaSB8IDE0ICsrKysrKysr
+KysrKysrDQo+ID4gIGFyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTgzLmR0c2kgICAg
+ICAgfCAgMiArLQ0KPiA+ICAyIGZpbGVzIGNoYW5nZWQsIDE1IGluc2VydGlvbnMoKyksIDEgZGVs
+ZXRpb24oLSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRp
+YXRlay9tdDgxODMta3VrdWkuZHRzaQ0KPiA+IGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRl
+ay9tdDgxODMta3VrdWkuZHRzaQ0KPiA+IGluZGV4IGJmMmFkMTI5NGRkMy4uMjAyYWNiNTQyYjEy
+IDEwMDY0NA0KPiA+IC0tLSBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTgzLWt1
+a3VpLmR0c2kNCj4gPiArKysgYi9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE4My1r
+dWt1aS5kdHNpDQo+ID4gQEAgLTgwMSw2ICs4MDEsMjAgQEANCj4gPiAgICAgICAgIHN0YXR1cyA9
+ICJva2F5IjsNCj4gPiAgfTsNCj4gPiANCj4gPiArJnRoZXJtYWxfem9uZXMgew0KPiA+ICsgICAg
+ICAgVGJvYXJkMSB7DQo+ID4gKyAgICAgICAgICAgICAgIHBvbGxpbmctZGVsYXkgPSA8MTAwMD47
+IC8qIG1pbGxpc2Vjb25kcyAqLw0KPiA+ICsgICAgICAgICAgICAgICBwb2xsaW5nLWRlbGF5LXBh
+c3NpdmUgPSA8MD47IC8qIG1pbGxpc2Vjb25kcyAqLw0KPiA+ICsgICAgICAgICAgICAgICB0aGVy
+bWFsLXNlbnNvcnMgPSA8JnRib2FyZF90aGVybWlzdG9yMT47DQo+ID4gKyAgICAgICB9Ow0KPiA+
+ICsNCj4gPiArICAgICAgIFRib2FyZDIgew0KPiA+ICsgICAgICAgICAgICAgICBwb2xsaW5nLWRl
+bGF5ID0gPDEwMDA+OyAvKiBtaWxsaXNlY29uZHMgKi8NCj4gPiArICAgICAgICAgICAgICAgcG9s
+bGluZy1kZWxheS1wYXNzaXZlID0gPDA+OyAvKiBtaWxsaXNlY29uZHMgKi8NCj4gPiArICAgICAg
+ICAgICAgICAgdGhlcm1hbC1zZW5zb3JzID0gPCZ0Ym9hcmRfdGhlcm1pc3RvcjI+Ow0KPiA+ICsg
+ICAgICAgfTsNCj4gPiArfTsNCj4gPiArDQo+ID4gICZ1M3BoeSB7DQo+ID4gICAgICAgICBzdGF0
+dXMgPSAib2theSI7DQo+ID4gIH07DQo+ID4gZGlmZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9k
+dHMvbWVkaWF0ZWsvbXQ4MTgzLmR0c2kNCj4gPiBiL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0
+ZWsvbXQ4MTgzLmR0c2kNCj4gPiBpbmRleCAxYWQwYTFkNTVkNTMuLmYwNzE5ZGJlZjI0OSAxMDA2
+NDQNCj4gPiAtLS0gYS9hcmNoL2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE4My5kdHNpDQo+
+ID4gKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxODMuZHRzaQ0KPiA+IEBA
+IC02NzMsNyArNjczLDcgQEANCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICBudm1lbS1jZWxs
+LW5hbWVzID0gImNhbGlicmF0aW9uLWRhdGEiOw0KPiA+ICAgICAgICAgICAgICAgICB9Ow0KPiA+
+IA0KPiA+IC0gICAgICAgICAgICAgICB0aGVybWFsLXpvbmVzIHsNCj4gPiArICAgICAgICAgICAg
+ICAgdGhlcm1hbF96b25lczogdGhlcm1hbC16b25lcyB7DQo+ID4gICAgICAgICAgICAgICAgICAg
+ICAgICAgY3B1X3RoZXJtYWw6IGNwdV90aGVybWFsIHsNCj4gPiAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgIHBvbGxpbmctZGVsYXktcGFzc2l2ZSA9IDwxMDA+Ow0KPiA+ICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgcG9sbGluZy1kZWxheSA9IDw1MDA+Ow0KPiA+IC0tDQo+
+ID4gMi4xOC4wDQo+ID4gDQo=
 
-On 5/4/2021 11:07 PM, Jiri Olsa wrote:
-> On Fri, Apr 30, 2021 at 03:46:02PM +0800, Jin Yao wrote:
->> On hybrid platform, it may have several cpu pmus, such as,
->> "cpu_core" and "cpu_atom". The CPU_PMU_CAPS feature in perf
->> header needs to be improved to support multiple cpu pmus.
->>
->> The new layout in header is defined as:
->>
->> <nr_caps>
->> <caps string>
->> <caps string>
->> <pmu name>
->> <nr of rest pmus>
-> 
-> not sure why is the 'nr of rest pmus' needed
-> 
-
-The 'nr of rest pmus' indicates the remaining pmus which are waiting for process.
-
-For example,
-
-<nr_caps>
-<caps string>
-"cpu_core"
-1
-<nr_caps>
-<caps string>
-"cpu_atom"
-0
-
-When we see '0' in data file processing, we know all the pmu have been processed yet.
-
-> the current format is:
-> 
->          u32 nr_cpu_pmu_caps;
->          {
->                  char    name[];
->                  char    value[];
->          } [nr_cpu_pmu_caps]
-> 
-> 
-> I guess we could extend it to:
-> 
->          u32 nr_cpu_pmu_caps;
->          {
->                  char    name[];
->                  char    value[];
->          } [nr_cpu_pmu_caps]
-> 	char pmu_name[]
-> 
->          u32 nr_cpu_pmu_caps;
->          {
->                  char    name[];
->                  char    value[];
->          } [nr_cpu_pmu_caps]
-> 	char pmu_name[]
-> 
-> 	...
-> 
-> and we could detect the old format by checking that there's no
-> pmu name.. but maybe I'm missing something, I did not check deeply,
-> please let me know
->
-
-Actually we do the same thing, but I just add an extra 'nr of rest pmus' after the pmu_name. The 
-purpose of 'nr of rest pmus' is when we see '0' at 'nr of rest pmus', we know that all pmus have 
-been processed.
-
-Otherwise, we have to continue reading data file till we find something incorrect and then finally 
-drop the last read data.
-
-So is this solution acceptable?
-
-> also would be great to move the format change and storing hybrid
-> pmus in separate patches
-> 
-
-Maybe we have to put the storing and processing into one patch.
-
-Say patch 1 contains the format change and storing hybrid pmus. And patch 2 contains the processing 
-for the new format. If the repo only contains the patch 1, I'm afraid that may introduce the 
-compatible issue.
-
-Thanks
-Jin Yao
-
-> thanks,
-> jirka
-> 
