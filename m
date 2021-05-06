@@ -2,161 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DB24375245
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:25:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62698375254
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234394AbhEFK0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:26:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48758 "EHLO
+        id S234447AbhEFKax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:30:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231863AbhEFK03 (ORCPT
+        with ESMTP id S234428AbhEFKaw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:26:29 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B300C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 03:25:31 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lebBr-0007Y4-Hd; Thu, 06 May 2021 12:25:07 +0200
-Received: from pza by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <pza@pengutronix.de>)
-        id 1lebBi-0006VF-Tg; Thu, 06 May 2021 12:24:58 +0200
-Date:   Thu, 6 May 2021 12:24:58 +0200
-From:   Philipp Zabel <p.zabel@pengutronix.de>
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Ryan Chen <ryanchen.aspeed@gmail.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>, Hongweiz@ami.com,
-        ryan_chen@aspeedtech.com, chin-ting_kuo@aspeedtech.com
-Subject: Re: [PATCH v3 5/5] mmc: sdhci-of-aspeed: Assert/Deassert reset
- signal before probing eMMC
-Message-ID: <20210506102458.GA20777@pengutronix.de>
-References: <20210506100312.1638-1-steven_lee@aspeedtech.com>
- <20210506100312.1638-6-steven_lee@aspeedtech.com>
+        Thu, 6 May 2021 06:30:52 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0E1EC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 03:29:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=YHiOmQcboiZT0WmWlONHNVufQWuYbrVaBoVPrk1FeJo=; b=IsMSmLWJ+cjgzChWIiiei/Om7B
+        ziblmlpG9Nx2fPC5gk7RLg9xmlD7hpNq+V1GG/BnLSmD3lXysswgqHhElC7ulRZHOEAubKAc6KsKz
+        XPmekUU91OLP/n6IAgUVgYKkN8taZVWk5tY6dz0swZyCXLR0OZycOU0BpsQKUtJ394DRgtLc74sWs
+        TrneRqsqr1neb4gmRvbUxD8s/bYb+fCZTqhm1EqsuHZ2avJujeQcouMOpe9Z8epVkIkpUQYW78oFU
+        QNISP3qWcuisvrmKwkZppEggr3L6PEhv6C8jkYmn7yoiWnngCN0To1Yyg45YkRn8YEVfHw60orwjM
+        XF1rPK3g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lebCf-001aqc-8T; Thu, 06 May 2021 10:26:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 954B6300103;
+        Thu,  6 May 2021 12:25:55 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 6F2DE20D11F6F; Thu,  6 May 2021 12:25:55 +0200 (CEST)
+Date:   Thu, 6 May 2021 12:25:55 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Don Hiatt <dhiatt@digitalocean.com>
+Cc:     Josh Don <joshdon@google.com>, Aubrey Li <aubrey.intel@gmail.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH 04/19] sched: Prepare for Core-wide rq->lock
+Message-ID: <YJPEM1DPrG2zlvY0@hirez.programming.kicks-ass.net>
+References: <20210422120459.447350175@infradead.org>
+ <20210422123308.196692074@infradead.org>
+ <CAERHkrsC9rC4Jrkz8r-7kp4SFPM6aU+EHN+Y+uQiTuPG5S72bA@mail.gmail.com>
+ <CABk29NuS-B3n4sbmavo0NDA1OCCsz6Zf2VDjjFQvAxBMQoJ_Lg@mail.gmail.com>
+ <YJD56sBCGviSDOTK@hirez.programming.kicks-ass.net>
+ <CAOY2Wowj-EEARi7b4X2wvaJExj_yQ1w5tgBRdnXX5BYJY0U15g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210506100312.1638-6-steven_lee@aspeedtech.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL:  http://www.pengutronix.de/
-X-IRC:  #ptxdist @freenode
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-Uptime: 12:10:55 up 77 days, 13:34, 104 users,  load average: 0.57, 0.39,
- 0.37
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: pza@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <CAOY2Wowj-EEARi7b4X2wvaJExj_yQ1w5tgBRdnXX5BYJY0U15g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
-
-On Thu, May 06, 2021 at 06:03:12PM +0800, Steven Lee wrote:
-> For cleaning up the AST2600 eMMC controller, the reset signal should be
-> asserted and deasserted before it is probed.
+On Wed, May 05, 2021 at 09:20:38AM -0700, Don Hiatt wrote:
+> On Tue, May 4, 2021 at 12:38 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> >
+> > On Thu, Apr 29, 2021 at 01:39:54PM -0700, Josh Don wrote:
+> >
+> > > > > +void double_rq_lock(struct rq *rq1, struct rq *rq2)
+> > > > > +{
+> > > > > +       lockdep_assert_irqs_disabled();
+> > > > > +
+> > > > > +       if (rq1->cpu > rq2->cpu)
+> > > >
+> > > > It's still a bit hard for me to digest this function, I guess using (rq->cpu)
+> > > > can't guarantee the sequence of locking when coresched is enabled.
+> > > >
+> > > > - cpu1 and cpu7 shares lockA
+> > > > - cpu2 and cpu8 shares lockB
+> > > >
+> > > > double_rq_lock(1,8) leads to lock(A) and lock(B)
+> > > > double_rq_lock(7,2) leads to lock(B) and lock(A)
+> >
+> > Good one!
 > 
-> Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> ---
->  drivers/mmc/host/sdhci-of-aspeed.c | 49 ++++++++++++++++++++++++------
->  1 file changed, 40 insertions(+), 9 deletions(-)
+> Hi Peter,
 > 
-> diff --git a/drivers/mmc/host/sdhci-of-aspeed.c b/drivers/mmc/host/sdhci-of-aspeed.c
-> index 4979f98ffb52..8ef06f32abff 100644
-> --- a/drivers/mmc/host/sdhci-of-aspeed.c
-> +++ b/drivers/mmc/host/sdhci-of-aspeed.c
-[...]
-> @@ -533,11 +545,22 @@ static struct platform_driver aspeed_sdhci_driver = {
->  	.remove		= aspeed_sdhci_remove,
->  };
->  
-> +static const struct of_device_id aspeed_sdc_of_match[] = {
-> +	{ .compatible = "aspeed,ast2400-sd-controller", },
-> +	{ .compatible = "aspeed,ast2500-sd-controller", },
-> +	{ .compatible = "aspeed,ast2600-sd-controller", .data = &ast2600_sdc_info},
-> +	{ }
-> +};
-> +
-> +MODULE_DEVICE_TABLE(of, aspeed_sdc_of_match);
-> +
->  static int aspeed_sdc_probe(struct platform_device *pdev)
->  
->  {
->  	struct device_node *parent, *child;
->  	struct aspeed_sdc *sdc;
-> +	const struct of_device_id *match = NULL;
-> +	const struct aspeed_sdc_info *info = NULL;
+> I've been running the same set-cookie tests on your latest repo for
+> the last 24 hours and haven't had a single lockup. Thank you very
+> much!
 
-There is no need to initialize these variables to NULL, see below:
-
->  	int ret;
->  
->  	sdc = devm_kzalloc(&pdev->dev, sizeof(*sdc), GFP_KERNEL);
-> @@ -546,6 +569,23 @@ static int aspeed_sdc_probe(struct platform_device *pdev)
->  
->  	spin_lock_init(&sdc->lock);
->  
-> +	match = of_match_device(aspeed_sdc_of_match, &pdev->dev);
-
-match is set unconditionally before it is used,
-
-> +	if (!match)
-> +		return -ENODEV;
-> +
-> +	if (match->data)
-> +		info = match->data;
-
-and info could be set unconditionally as well:
-
-	info = match->data;
-
-> +	if (info) {
-> +		if (info->flag & PROBE_AFTER_ASSET_DEASSERT) {
-> +			sdc->rst = devm_reset_control_get(&pdev->dev, NULL);
-
-Please use devm_reset_control_get_exclusive() or
-devm_reset_control_get_optional_exclusive().
-
-> +			if (!IS_ERR(sdc->rst)) {
-
-Please just return errors here instead of ignoring them.
-The reset_control_get_optional variants return NULL in case the
-device node doesn't contain a resets phandle, in case you really
-consider this reset to be optional even though the flag is set?
-
-> +				reset_control_assert(sdc->rst);
-> +				reset_control_deassert(sdc->rst);
-
-Is there no need for delays between assertion and deassertion or after
-the reset is deasserted?
-
-> +			}
-> +		}
-> +	}
-> +
->  	sdc->clk = devm_clk_get(&pdev->dev, NULL);
->  	if (IS_ERR(sdc->clk))
->  		return PTR_ERR(sdc->clk);
-
-In general, I would assert/deassert the reset only after all resources
-are successfully acquired. This might avoid unnecessary resets in case
-of probe deferrals.
-
-regards
-Philipp
+Excellent, applied your Tested-by, thanks!
