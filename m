@@ -2,86 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8948375CF1
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:41:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 783A0375CEF
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:41:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230428AbhEFVmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:42:38 -0400
-Received: from smtprelay0085.hostedemail.com ([216.40.44.85]:60806 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229572AbhEFVmd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S230370AbhEFVmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Thu, 6 May 2021 17:42:33 -0400
-Received: from omf20.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay07.hostedemail.com (Postfix) with ESMTP id C845F181D337B;
-        Thu,  6 May 2021 21:41:33 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf20.hostedemail.com (Postfix) with ESMTPA id B57B718A5F1;
-        Thu,  6 May 2021 21:41:32 +0000 (UTC)
-Message-ID: <2bea96ba2525c31b18185f51fffea2d2052aa8a0.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: warn about direct use of send_sig_info
- and force_sig_info
-From:   Joe Perches <joe@perches.com>
-To:     Marco Elver <elver@google.com>,
-        "Eric W . Biederman" <ebiederm@xmission.com>,
-        Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
-        Andy Whitcroft <apw@canonical.com>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Thu, 06 May 2021 14:41:31 -0700
-In-Reply-To: <YJQJoq+7MAJosrHg@elver.google.com>
-References: <20210506132827.3198497-1-elver@google.com>
-         <CABJPP5D_azxBiKq08_m_WVmcEy8qbMCa0EsAgu57t2T+eDJA0A@mail.gmail.com>
-         <YJQJoq+7MAJosrHg@elver.google.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: B57B718A5F1
-X-Spam-Status: No, score=-1.40
-X-Stat-Signature: rmbqdd1f7zd69wjedhqbpyjjxip6gg5g
-X-Rspamd-Server: rspamout02
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+hBJaFq2jPLbIgp2RNQYdgnMu9j9P57as=
-X-HE-Tag: 1620337292-37696
+Received: from mail.kernel.org ([198.145.29.99]:43932 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S230071AbhEFVmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 17:42:31 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 465EB61077;
+        Thu,  6 May 2021 21:41:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620337291;
+        bh=FY/ocjRlemocM3ziqWePXGxR0o2RJSQymV7kU0n807M=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=rO7kh0E2QsMpEffj1Zhhv/6ohCG0QfLoUBum4DPIE9Hfv/1fhTK5EldCCNIuFEzLd
+         jVlN2qskYkt8lxY7AudBCgL6IlXfPt3VqMNOIENm0x65yx160rE/3fbN6YgUTsIdk6
+         4lnd1rh/Fc0gVsxqei3j9TEK+IhOyCzng9X9+jTHAdwdEcr3g9CxgloIgcMWU7AUIx
+         55IM1ejUIkyqZTCHGtYHoP+/syRR3C6Ki+punBb4McPBp0C+FmP/lAPrfid4i9lhFH
+         nDLqjYKCGdPU56DZPufCH8hEWFRaL2iGm7GiLE9bdsDm+1mO+fNTR36K1dugRtfbWL
+         Aq8OHrhB1YMog==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 407A7609E8;
+        Thu,  6 May 2021 21:41:31 +0000 (UTC)
+Subject: Re: [GIT PULL] VFIO updates for v5.13-rc1 pt2
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210506123111.6b6c0bf3@redhat.com>
+References: <20210506123111.6b6c0bf3@redhat.com>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210506123111.6b6c0bf3@redhat.com>
+X-PR-Tracked-Remote: git://github.com/awilliam/linux-vfio.git tags/vfio-v5.13-rc1pt2
+X-PR-Tracked-Commit-Id: cc35518d29bc8e38902866b74874b4a3f1ad3617
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: a2de4bbddce3e98bd2444bb027dc84418a0066b1
+Message-Id: <162033729125.2467.13311999969059190277.pr-tracker-bot@kernel.org>
+Date:   Thu, 06 May 2021 21:41:31 +0000
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>, hi@alyssa.is,
+        dan.carpenter@oracle.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2021-05-06 at 17:22 +0200, Marco Elver wrote:
-> Setting up siginfo and using send_sig_info() or force_sig_info()
-> directly is discouraged. Instead, new code wanting to generate signals
-> should use the appropriate helper specific to the signal.
-> 
-> Eric mentioned that he'd like to make these static at some point, but
-> until that can happen, let's try to avoid introducing new users of them.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -7153,6 +7153,12 @@ sub process {
->  			     "Where possible, use lockdep_assert_held instead of assertions based on spin_is_locked\n" . $herecurr);
->  		}
->  
-> 
-> +# check for direct use of send_sig_info(), force_sig_info()
-> +		if ($line =~ /\b((?:force|send)_sig_info)\(/) {
+The pull request you sent on Thu, 6 May 2021 12:31:11 -0600:
 
-You want to be able to find uses like 'force_sig_info (<foo>...'
-so you should add a \s* after the capture group.
-And it's probably simpler and more readable to use
-		if ($sline =~ /\b(force_sig_info|send_sig_info)\s*\(/) {
-instead of the more complex regex
+> git://github.com/awilliam/linux-vfio.git tags/vfio-v5.13-rc1pt2
 
-(sline is stripped of comments, $line is not)
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/a2de4bbddce3e98bd2444bb027dc84418a0066b1
 
-> +			WARN("USE_SIGINFO_HELPER",
-> +			     "Where possible, avoid using '$1' directly and use a signal-specific helper setting required siginfo fields (see include/linux/sched/signal.h).\n" . $herecurr);
+Thank you!
 
-A rather long and complex sentence.
-How about
-	"Prefer signal-specific helpers over use of '$1' (see: include/linux/sched/signal.h)\n"
-
-And in that signal.h file, there's no obvious reference to
-these signal-specific helpers.  Is there a better reference
-in the Documentation/ tree?
-
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
