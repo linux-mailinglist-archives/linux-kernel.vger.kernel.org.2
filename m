@@ -2,67 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4991D375890
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:38:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EFA2375893
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:40:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235961AbhEFQjo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:39:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48472 "EHLO
+        id S236001AbhEFQlN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:41:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48804 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235617AbhEFQjn (ORCPT
+        with ESMTP id S235295AbhEFQlM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:39:43 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFCDFC061574;
-        Thu,  6 May 2021 09:38:44 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id 22A5A22264;
-        Thu,  6 May 2021 18:38:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620319121;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=gVkMrQ/iSFng03q+vYord5gGnO9YCbe1HWJWRJRnKCw=;
-        b=tZRv7ehGNivRylG+i8rjxXn6P3Oet0VvP3pgg0iiMgBi01bNy8aVimYNhElPhS5tNj6RHC
-        xLY3+Pam7GGhH/1/XVL1qkYSCuAry3mi/ax18dB4tAqCHi7N8jfmGbtY/KuGGJalr8UubP
-        Fn+UTsg3La1ERywSoB/SQpBaBRcu6Lg=
+        Thu, 6 May 2021 12:41:12 -0400
+Received: from mail-pf1-x42d.google.com (mail-pf1-x42d.google.com [IPv6:2607:f8b0:4864:20::42d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9DD4C061761;
+        Thu,  6 May 2021 09:40:13 -0700 (PDT)
+Received: by mail-pf1-x42d.google.com with SMTP id 10so5686819pfl.1;
+        Thu, 06 May 2021 09:40:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=xXizdXUAjSz2jlshC5sOnX3iWhZuSTNGCElXukfmD5M=;
+        b=cR1tnwk3T/Wvlf5i9dst9jZsGLRtAexfDn11Uag1slcnP4yE6mHoDHZBR7IwSlcU0Q
+         6L2LTwSOtFe8robwxXO+Rm/EOV5d00Jo+lsHdOv5UvPYsCicJIjSSTMaG0bvzx6rKAGW
+         Div/waoPb4F9hvalAUjlf6OAOanR/o1ROOP3J5aJ6ENyc5aXoPxtdlgcMPQsptVOxRxm
+         YLRtc6+aqtjUHf4X8rPjeCN0gOBcbde4/iZsmg+6l/ezwPCnA52ns1Amk8EYbbe6QN+m
+         jctKrRRcsB8XnqJcLZoQ6QNbVYLk1pDMV05XF2P/x85vwu/cRJkKaEtzUmtzfBZsxNcE
+         oeaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=xXizdXUAjSz2jlshC5sOnX3iWhZuSTNGCElXukfmD5M=;
+        b=uduPj7unvm7AwXn7hS6LBdgvJqVio6cj2E85vrgwitf5hfjD+lScr28rp13tIoZYyb
+         aKdIl/YLZtR1zaXYa/xfqO0wUgBZFgWcUWOokfzFhS1iHcZG0hK2tHVp4fLMbt6Vl6jO
+         otcDqHFKmbGBCAyZgIdBWJQLbrGDVDw9iCOMVsOxKlczNSMklydoNe0pSSkO2x5/kXNZ
+         JLnaku9JiHCGsbmeyd/NFVsU7398wj4I1jAU6+YDrTltdKR0U7BemEtYxUq+qgxzLbH+
+         O2vOuhtamLgi0rJj3MiCCrzi1QMFXJsad1jSe5BHTOrmx67L+7zxVd8LfL++3l0D2azB
+         88RA==
+X-Gm-Message-State: AOAM532zOn/9OG3rTDzyCUuM2u8eR9vbXH1sbF01hm5ynulMQnU160Gl
+        mTuHld5srj12gC1/cCv7U7ti3j8jea8=
+X-Google-Smtp-Source: ABdhPJwkAm4sp2Mpia1QZcz8GR74jexVpEP3bV089siY28rgybUrpG3UPDNl5YQIkKDLtXCXh+TwtA==
+X-Received: by 2002:a63:4c0e:: with SMTP id z14mr5198740pga.30.1620319213313;
+        Thu, 06 May 2021 09:40:13 -0700 (PDT)
+Received: from atulu-nitro ([122.178.201.168])
+        by smtp.gmail.com with ESMTPSA id lx15sm9867586pjb.56.2021.05.06.09.40.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 09:40:12 -0700 (PDT)
+Date:   Thu, 6 May 2021 22:10:08 +0530
+From:   Atul Gopinathan <atulgopinathan@gmail.com>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        stable <stable@vger.kernel.org>
+Subject: Re: [PATCH 27/69] cdrom: gdrom: deallocate struct gdrom_unit fields
+ in remove_gdrom
+Message-ID: <20210506164008.GA6283@atulu-nitro>
+References: <20210503115736.2104747-1-gregkh@linuxfoundation.org>
+ <20210503115736.2104747-28-gregkh@linuxfoundation.org>
+ <223d5bda-bf02-a4a8-ab1d-de25e32b8d47@axentia.se>
+ <YJPDzqAAnP0jDRDF@kroah.com>
+ <dd716d04-b9fa-986a-50dd-5c385ea745b2@axentia.se>
+ <20210506143208.GA7971@atulu-nitro>
+ <1912bddd-0788-5586-1cb0-0400630c32f8@axentia.se>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 06 May 2021 18:38:41 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Robert Marko <robert.marko@sartura.hr>
-Cc:     lee.jones@linaro.org, robh+dt@kernel.org, linus.walleij@linaro.org,
-        bgolaszewski@baylibre.com, jdelvare@suse.com, linux@roeck-us.net,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-gpio@vger.kernel.org, linux-hwmon@vger.kernel.org,
-        luka.perkov@sartura.hr, jmp@epiphyte.org, pmenzel@molgen.mpg.de,
-        buczek@molgen.mpg.de
-Subject: Re: [PATCH 3/6] gpio: Add Delta TN48M CPLD GPIO driver
-In-Reply-To: <20210430123511.116057-3-robert.marko@sartura.hr>
-References: <20210430123511.116057-1-robert.marko@sartura.hr>
- <20210430123511.116057-3-robert.marko@sartura.hr>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <10b67a4dce693f013eccfd6f46ecb4c4@walle.cc>
-X-Sender: michael@walle.cc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1912bddd-0788-5586-1cb0-0400630c32f8@axentia.se>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Am 2021-04-30 14:35, schrieb Robert Marko:
-> Delta TN48M CPLD is used as a GPIO expander for the SFP GPIOs.
+On Thu, May 06, 2021 at 05:43:14PM +0200, Peter Rosin wrote:
+> Hi!
 > 
-> It is a mix of input only and output only pins.
+> On 2021-05-06 16:32, Atul Gopinathan wrote:
+> > 
+> > Apart from this, I don't see gdrom_get_last_session() being called
+> > anywhere. But I could be missing something obvious too. 
+> > 
+> > If you don't mind, could you point out where gd.toc is being used in
+> > probe_gdrom() before it is kzalloc-ed in the same function.
 > 
-> Since there is no logical GPIO numbering arbitrary one is used
-> along dt-bindings to make it humanly readable.
+> You are very probably correct in your analysis, and I can't find it in me
+> to spend the time to dig any further.
+> 
+> I simply thought it bad enough to hand off a pointer to a function that
+> uses a stale pointer to some other driver. I never dug into that other
+> module like you did. Relying on that other piece of code to not use the
+> function that was just handed to it is way too subtle (for me at least).
+> When you "register" with something else, you should be ready to get the
+> calls.
+> 
+> This is true especially in the context of what we are fixing up here;
+> broken shit related to people that are fond of weaknesses later to be
+> activated by other innocuous commits.
 
-Can gpio/gpio-regmap.c be used here? See gpio/gpio-sl28cpld.c
-for an example.
+Ah, I see, that makes sense. I just wanted to confirm if I was getting
+things right. Thanks for clarifying!
 
--michael
+Regards,
+Atul
