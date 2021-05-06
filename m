@@ -2,93 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63A40375394
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05E1737539B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:15:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231950AbhEFMQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 08:16:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44866 "EHLO
+        id S233727AbhEFMQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:16:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44978 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233051AbhEFMPI (ORCPT
+        with ESMTP id S233833AbhEFMPv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:15:08 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73224C061761;
-        Thu,  6 May 2021 05:14:10 -0700 (PDT)
-Date:   Thu, 06 May 2021 12:14:08 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620303249;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1frjhNAPdWu6iknMPF4As0BhSenaX59gl6MM1luhtVs=;
-        b=OYnZSiumvcH7WUHtqm2pdpbtnssmhL6G05Ui/8b03CEAgEX80tTMBGqUDtp6Z9nqJbQ93W
-        VD0DWa/NCp3qxh/T7ajULdEN2wCIt1nnfVRxjJmxc7phoWCuwJpd8s0S8pxoCvMxqM5dE1
-        9XaFeRKYqaiLZU0a6UBRoqGPrAKy9Y63a8a7Q2uZD+eTLT7eO8Vh6O7fDmNPwwx4AXP4sC
-        PushOcAXUkNd4Em3F38g2L8sxmvHgDheiaIdktMUjOHkTRTc4exRvNkrRYXzf47QfvDBJV
-        hqvnup2XfbEZmAoxPBftqjyplNfGKZ1MpjgCWFi1dsh1gy98El8CYjVh3L1QAg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620303249;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=1frjhNAPdWu6iknMPF4As0BhSenaX59gl6MM1luhtVs=;
-        b=XxQ+s4pfaKNAzMb79PnLf4gVDbDT4iIW/sY//ORPLcYD25d0MOfkMc5C8z8g2MAUdITVFc
-        HZlLyWym3yonxuDA==
-From:   "tip-bot2 for Wan Jiabing" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/urgent] x86/smpboot: Remove duplicate includes
-Cc:     Wan Jiabing <wanjiabing@vivo.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
-        linux-kernel@vger.kernel.org
-In-Reply-To: <20210427063835.9039-1-wanjiabing@vivo.com>
-References: <20210427063835.9039-1-wanjiabing@vivo.com>
+        Thu, 6 May 2021 08:15:51 -0400
+Received: from viti.kaiser.cx (viti.kaiser.cx [IPv6:2a01:238:43fe:e600:cd0c:bd4a:7a3:8e9f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6178C0613ED;
+        Thu,  6 May 2021 05:14:52 -0700 (PDT)
+Received: from ipservice-092-217-072-007.092.217.pools.vodafone-ip.de ([92.217.72.7] helo=martin-debian-2.paytec.ch)
+        by viti.kaiser.cx with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.89)
+        (envelope-from <martin@kaiser.cx>)
+        id 1lectz-0005c3-Sg; Thu, 06 May 2021 14:14:47 +0200
+From:   Martin Kaiser <martin@kaiser.cx>
+To:     Larry Finger <Larry.Finger@lwfinger.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-staging@lists.linux.dev, kernel-janitors@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Martin Kaiser <martin@kaiser.cx>
+Subject: [PATCH v2] staging: rtl8188eu: remove nic_hdl from struct mlme_priv
+Date:   Thu,  6 May 2021 14:14:10 +0200
+Message-Id: <20210506121410.17613-1-martin@kaiser.cx>
+X-Mailer: git-send-email 2.20.1
+In-Reply-To: <20210505202622.11087-1-martin@kaiser.cx>
+References: <20210505202622.11087-1-martin@kaiser.cx>
 MIME-Version: 1.0
-Message-ID: <162030324849.29796.7973695577093488360.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2@linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/urgent branch of tip:
+struct mlme_priv is an element of struct adapter. Use container_of
+to get a pointer to the enclosing struct.
 
-Commit-ID:     3cf4524ce40b204418537e6a3a55ed44911b3f53
-Gitweb:        https://git.kernel.org/tip/3cf4524ce40b204418537e6a3a55ed44911b3f53
-Author:        Wan Jiabing <wanjiabing@vivo.com>
-AuthorDate:    Tue, 27 Apr 2021 14:38:26 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Wed, 05 May 2021 21:50:13 +02:00
-
-x86/smpboot: Remove duplicate includes
-
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20210427063835.9039-1-wanjiabing@vivo.com
-
+Signed-off-by: Martin Kaiser <martin@kaiser.cx>
 ---
- arch/x86/kernel/smpboot.c | 3 ---
- 1 file changed, 3 deletions(-)
+v2:
+ - rebased against current staging-testing branch
 
-diff --git a/arch/x86/kernel/smpboot.c b/arch/x86/kernel/smpboot.c
-index 7ffb0cf..0ad5214 100644
---- a/arch/x86/kernel/smpboot.c
-+++ b/arch/x86/kernel/smpboot.c
-@@ -1865,9 +1865,6 @@ static bool slv_set_max_freq_ratio(u64 *base_freq, u64 *turbo_freq)
- 	return true;
- }
+ drivers/staging/rtl8188eu/core/rtw_mlme.c    | 5 +----
+ drivers/staging/rtl8188eu/include/rtw_mlme.h | 2 --
+ 2 files changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/drivers/staging/rtl8188eu/core/rtw_mlme.c b/drivers/staging/rtl8188eu/core/rtw_mlme.c
+index 049e25455849..159465b073c2 100644
+--- a/drivers/staging/rtl8188eu/core/rtw_mlme.c
++++ b/drivers/staging/rtl8188eu/core/rtw_mlme.c
+@@ -32,8 +32,6 @@ int rtw_init_mlme_priv(struct adapter *padapter)
  
--#include <asm/cpu_device_id.h>
--#include <asm/intel-family.h>
+ 	/*  We don't need to memset padapter->XXX to zero, because adapter is allocated by vzalloc(). */
+ 
+-	pmlmepriv->nic_hdl = (u8 *)padapter;
 -
- #define X86_MATCH(model)					\
- 	X86_MATCH_VENDOR_FAM_MODEL_FEATURE(INTEL, 6,		\
- 		INTEL_FAM6_##model, X86_FEATURE_APERFMPERF, NULL)
+ 	pmlmepriv->pscanned = NULL;
+ 	pmlmepriv->fw_state = 0;
+ 	pmlmepriv->cur_network.network.InfrastructureMode = Ndis802_11AutoUnknown;
+@@ -1446,7 +1444,7 @@ int rtw_select_and_join_from_scanned_queue(struct mlme_priv *pmlmepriv)
+ {
+ 	int ret;
+ 	struct list_head *phead;
+-	struct adapter *adapter;
++	struct adapter *adapter = container_of(pmlmepriv, struct adapter, mlmepriv);
+ 	struct __queue *queue = &pmlmepriv->scanned_queue;
+ 	struct wlan_network *pnetwork = NULL;
+ 	struct wlan_network *candidate = NULL;
+@@ -1454,7 +1452,6 @@ int rtw_select_and_join_from_scanned_queue(struct mlme_priv *pmlmepriv)
+ 
+ 	spin_lock_bh(&pmlmepriv->scanned_queue.lock);
+ 	phead = get_list_head(queue);
+-	adapter = (struct adapter *)pmlmepriv->nic_hdl;
+ 	list_for_each(pmlmepriv->pscanned, phead) {
+ 		pnetwork = list_entry(pmlmepriv->pscanned,
+ 				      struct wlan_network, list);
+diff --git a/drivers/staging/rtl8188eu/include/rtw_mlme.h b/drivers/staging/rtl8188eu/include/rtw_mlme.h
+index 1b74b32b8a81..f5e805c13442 100644
+--- a/drivers/staging/rtl8188eu/include/rtw_mlme.h
++++ b/drivers/staging/rtl8188eu/include/rtw_mlme.h
+@@ -111,8 +111,6 @@ struct mlme_priv {
+ 	u8 to_join; /* flag */
+ 	u8 to_roaming; /*  roaming trying times */
+ 
+-	u8 *nic_hdl;
+-
+ 	struct list_head *pscanned;
+ 	struct __queue free_bss_pool;
+ 	struct __queue scanned_queue;
+-- 
+2.20.1
+
