@@ -2,106 +2,237 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3543D37550A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:46:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDF437550F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234340AbhEFNrS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:47:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52362 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233918AbhEFNrR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:47:17 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0F48B61027;
-        Thu,  6 May 2021 13:46:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620308779;
-        bh=DIhfGeaxAF5Hk1en/OO3GvL7gcgjS1Hb4ylbBzg5nFg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=BP76V0dtuhX8xo3/WhwVAhFBvwQw/u0q/Bm4dNSZ7G+jWlXSGETVAWYMiWpc5FLLR
-         JjrJ/ZmrdDfvr1yhrf0ckiraPrWFWODcxxdZGfyhxMDDS285T8WE563w85ZMv8oLxQ
-         nbema7O1knM88idtTdkEuQ+dvPt95isyfmZR5UTHGpMeZt9ViZmIN6RxdzbqGfumbQ
-         UzVj0LqXPvK+hbOGLlIGcicWuKbxuU62UVD0K4U5lqnC9z/7ZEHphFreZGpS3a6osC
-         lXhqEng1JWhFws3MTGbSY2ha2AMZGG84+LTtq4QlkIA/ezLpwiItqYgG0QumEUOIZV
-         8TuYmpLSNjF1g==
-Date:   Thu, 6 May 2021 14:45:42 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH v3 2/4] arm64: Check the return PC against unreliable
- code sections
-Message-ID: <20210506134542.GD4642@sirena.org.uk>
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-3-madvenka@linux.microsoft.com>
- <20210504160508.GC7094@sirena.org.uk>
- <1bd2b177-509a-21d9-e349-9b2388db45eb@linux.microsoft.com>
- <0f72c4cb-25ef-ee23-49e4-986542be8673@linux.microsoft.com>
- <20210505164648.GC4541@sirena.org.uk>
- <9781011e-2d99-7f46-592c-621c66ea66c3@linux.microsoft.com>
+        id S234310AbhEFNtR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:49:17 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40440 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233854AbhEFNtQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 09:49:16 -0400
+Date:   Thu, 06 May 2021 13:48:16 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620308897;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+H8MYZgxThC6BOGKn3tgQs+IICBpGBPAa6SRxKU/Cq8=;
+        b=TSf9fwj+E53EQCnkfshiX5BEAoIgUTu+I2WzHhRmQd6u7ddg0PEWI/hRXEDhS8Tts5+Yh6
+        YIIyktYHfiRrqRSgqCO3mY4Jak1Ahajzuc8Nd4ig+lYIMgeyDyTjz1AViuV59oKE1f3jQv
+        C0tuL/Ej5mve9I1+42b97sQfHXrquFGGRImNKVZH7r3+vA20Ti98uLc0eARp4oBcXARHNQ
+        RYcj6MtZpeEAGa4KSYFhF/48KDCBVw6qj65hPsIyLa9pNGmKFqNEDdDWie/EFN3Vvolk6H
+        1BNm+5BwHS1lPbeGY/GrCTmP7ppJ0GCFmYE6lJYsbpyMRrFwpXJLbKZNcbNwWg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620308897;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+H8MYZgxThC6BOGKn3tgQs+IICBpGBPAa6SRxKU/Cq8=;
+        b=A89n36N2fT1TC3R66qsQmZgRcUE5Q3JvwOWeWmIjd83vxu37v3eL9aKqS1b85BaXLiopSe
+        NSI27HTxLzdGRQAQ==
+From:   "tip-bot2 for Arnd Bergmann" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: locking/urgent] smp: Fix smp_call_function_single_async prototype
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Jens Axboe <axboe@kernel.dk>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20210505211300.3174456-1-arnd@kernel.org>
+References: <20210505211300.3174456-1-arnd@kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OaZoDhBhXzo6bW1J"
-Content-Disposition: inline
-In-Reply-To: <9781011e-2d99-7f46-592c-621c66ea66c3@linux.microsoft.com>
-X-Cookie: If it ain't baroque, don't phiques it.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Message-ID: <162030889655.29796.14817964445442674284.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The following commit has been merged into the locking/urgent branch of tip:
 
---OaZoDhBhXzo6bW1J
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Commit-ID:     1139aeb1c521eb4a050920ce6c64c36c4f2a3ab7
+Gitweb:        https://git.kernel.org/tip/1139aeb1c521eb4a050920ce6c64c36c4f2a3ab7
+Author:        Arnd Bergmann <arnd@arndb.de>
+AuthorDate:    Wed, 05 May 2021 23:12:42 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 06 May 2021 15:33:49 +02:00
 
-On Wed, May 05, 2021 at 01:48:21PM -0500, Madhavan T. Venkataraman wrote:
-> On 5/5/21 11:46 AM, Mark Brown wrote:
+smp: Fix smp_call_function_single_async prototype
 
-> > I think that works even if it's hard to love the goto, might want some
-> > defensiveness to ensure we can't somehow end up in an infinite loop with
-> > a sufficiently badly formed stack.
+As of commit 966a967116e6 ("smp: Avoid using two cache lines for struct
+call_single_data"), the smp code prefers 32-byte aligned call_single_data
+objects for performance reasons, but the block layer includes an instance
+of this structure in the main 'struct request' that is more senstive
+to size than to performance here, see 4ccafe032005 ("block: unalign
+call_single_data in struct request").
 
-> I could do something like this:
+The result is a violation of the calling conventions that clang correctly
+points out:
 
-> unwind_frame()
-> {
-> 	int	i;
-> 	...
->=20
-> 	for (i =3D 0; i < MAX_CHECKS; i++) {
-> 		if (!check_frame(tsk, frame))
-> 			break;
-> 	}
+block/blk-mq.c:630:39: warning: passing 8-byte aligned argument to 32-byte aligned parameter 2 of 'smp_call_function_single_async' may result in an unaligned pointer access [-Walign-mismatch]
+                smp_call_function_single_async(cpu, &rq->csd);
 
-I think that could work, yes.  Have to see the actual code (and other
-people's opinions!).
+It does seem that the usage of the call_single_data without cache line
+alignment should still be allowed by the smp code, so just change the
+function prototype so it accepts both, but leave the default alignment
+unchanged for the other users. This seems better to me than adding
+a local hack to shut up an otherwise correct warning in the caller.
 
-> If this is acceptable, then the only question is - what should be the val=
-ue of
-> MAX_CHECKS (I will rename it to something more appropriate)?
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Acked-by: Jens Axboe <axboe@kernel.dk>
+Link: https://lkml.kernel.org/r/20210505211300.3174456-1-arnd@kernel.org
+---
+ include/linux/smp.h |  2 +-
+ kernel/smp.c        | 26 +++++++++++++-------------
+ kernel/up.c         |  2 +-
+ 3 files changed, 15 insertions(+), 15 deletions(-)
 
-I'd expect something like 10 to be way more than we'd ever need, or we
-could define it down to the 2 checks we expect to be possible ATM to be
-conservative.  I'm tempted to be permissive if we have sufficient other
-checks but I'm not 100% sure on that.
-
---OaZoDhBhXzo6bW1J
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCT8wYACgkQJNaLcl1U
-h9A5/Qf5AQzIK1iGk05+Ew7d4dR1Bd1YEuSiIlmDHZ+9WIWaZ0SR0GNG5mtqwX1B
-pJhBkSXH7XsChPi1INElGPgOomaF8H2V2Z7C/QUI/KW1PqyQHmlFOQahHNPaRn6/
-kxuuG1prGKfuPZ2+wFCdJZXHk1FWm/VpjVpiweX/E0kzx+V8NHNbKFwMuBSNCEH6
-Jo8VMKsTSMghThbfpVAuYxPCaJB/kCaYU1KQL2Ktzq+n0CXsOdyHXolOE9D/0N8A
-KgLCewUwIOpFXU+8gJspoxYXd1VIEzRG+lgKwCYuv6XBCZIOK2cXLvtPMU4xw9wj
-mVA3fT2D8o0uPAQF+2Zy24K/f6wbgA==
-=eeY2
------END PGP SIGNATURE-----
-
---OaZoDhBhXzo6bW1J--
+diff --git a/include/linux/smp.h b/include/linux/smp.h
+index 84a0b48..f0d3ef6 100644
+--- a/include/linux/smp.h
++++ b/include/linux/smp.h
+@@ -53,7 +53,7 @@ int smp_call_function_single(int cpuid, smp_call_func_t func, void *info,
+ void on_each_cpu_cond_mask(smp_cond_func_t cond_func, smp_call_func_t func,
+ 			   void *info, bool wait, const struct cpumask *mask);
+ 
+-int smp_call_function_single_async(int cpu, call_single_data_t *csd);
++int smp_call_function_single_async(int cpu, struct __call_single_data *csd);
+ 
+ /*
+  * Call a function on all processors
+diff --git a/kernel/smp.c b/kernel/smp.c
+index e210749..52bf159 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -211,7 +211,7 @@ static u64 cfd_seq_inc(unsigned int src, unsigned int dst, unsigned int type)
+ 	} while (0)
+ 
+ /* Record current CSD work for current CPU, NULL to erase. */
+-static void __csd_lock_record(call_single_data_t *csd)
++static void __csd_lock_record(struct __call_single_data *csd)
+ {
+ 	if (!csd) {
+ 		smp_mb(); /* NULL cur_csd after unlock. */
+@@ -226,13 +226,13 @@ static void __csd_lock_record(call_single_data_t *csd)
+ 		  /* Or before unlock, as the case may be. */
+ }
+ 
+-static __always_inline void csd_lock_record(call_single_data_t *csd)
++static __always_inline void csd_lock_record(struct __call_single_data *csd)
+ {
+ 	if (static_branch_unlikely(&csdlock_debug_enabled))
+ 		__csd_lock_record(csd);
+ }
+ 
+-static int csd_lock_wait_getcpu(call_single_data_t *csd)
++static int csd_lock_wait_getcpu(struct __call_single_data *csd)
+ {
+ 	unsigned int csd_type;
+ 
+@@ -282,7 +282,7 @@ static const char *csd_lock_get_type(unsigned int type)
+ 	return (type >= ARRAY_SIZE(seq_type)) ? "?" : seq_type[type];
+ }
+ 
+-static void csd_lock_print_extended(call_single_data_t *csd, int cpu)
++static void csd_lock_print_extended(struct __call_single_data *csd, int cpu)
+ {
+ 	struct cfd_seq_local *seq = &per_cpu(cfd_seq_local, cpu);
+ 	unsigned int srccpu = csd->node.src;
+@@ -321,7 +321,7 @@ static void csd_lock_print_extended(call_single_data_t *csd, int cpu)
+  * the CSD_TYPE_SYNC/ASYNC types provide the destination CPU,
+  * so waiting on other types gets much less information.
+  */
+-static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, int *bug_id)
++static bool csd_lock_wait_toolong(struct __call_single_data *csd, u64 ts0, u64 *ts1, int *bug_id)
+ {
+ 	int cpu = -1;
+ 	int cpux;
+@@ -387,7 +387,7 @@ static bool csd_lock_wait_toolong(call_single_data_t *csd, u64 ts0, u64 *ts1, in
+  * previous function call. For multi-cpu calls its even more interesting
+  * as we'll have to ensure no other cpu is observing our csd.
+  */
+-static void __csd_lock_wait(call_single_data_t *csd)
++static void __csd_lock_wait(struct __call_single_data *csd)
+ {
+ 	int bug_id = 0;
+ 	u64 ts0, ts1;
+@@ -401,7 +401,7 @@ static void __csd_lock_wait(call_single_data_t *csd)
+ 	smp_acquire__after_ctrl_dep();
+ }
+ 
+-static __always_inline void csd_lock_wait(call_single_data_t *csd)
++static __always_inline void csd_lock_wait(struct __call_single_data *csd)
+ {
+ 	if (static_branch_unlikely(&csdlock_debug_enabled)) {
+ 		__csd_lock_wait(csd);
+@@ -431,17 +431,17 @@ static void __smp_call_single_queue_debug(int cpu, struct llist_node *node)
+ #else
+ #define cfd_seq_store(var, src, dst, type)
+ 
+-static void csd_lock_record(call_single_data_t *csd)
++static void csd_lock_record(struct __call_single_data *csd)
+ {
+ }
+ 
+-static __always_inline void csd_lock_wait(call_single_data_t *csd)
++static __always_inline void csd_lock_wait(struct __call_single_data *csd)
+ {
+ 	smp_cond_load_acquire(&csd->node.u_flags, !(VAL & CSD_FLAG_LOCK));
+ }
+ #endif
+ 
+-static __always_inline void csd_lock(call_single_data_t *csd)
++static __always_inline void csd_lock(struct __call_single_data *csd)
+ {
+ 	csd_lock_wait(csd);
+ 	csd->node.u_flags |= CSD_FLAG_LOCK;
+@@ -454,7 +454,7 @@ static __always_inline void csd_lock(call_single_data_t *csd)
+ 	smp_wmb();
+ }
+ 
+-static __always_inline void csd_unlock(call_single_data_t *csd)
++static __always_inline void csd_unlock(struct __call_single_data *csd)
+ {
+ 	WARN_ON(!(csd->node.u_flags & CSD_FLAG_LOCK));
+ 
+@@ -501,7 +501,7 @@ void __smp_call_single_queue(int cpu, struct llist_node *node)
+  * for execution on the given CPU. data must already have
+  * ->func, ->info, and ->flags set.
+  */
+-static int generic_exec_single(int cpu, call_single_data_t *csd)
++static int generic_exec_single(int cpu, struct __call_single_data *csd)
+ {
+ 	if (cpu == smp_processor_id()) {
+ 		smp_call_func_t func = csd->func;
+@@ -784,7 +784,7 @@ EXPORT_SYMBOL(smp_call_function_single);
+  * NOTE: Be careful, there is unfortunately no current debugging facility to
+  * validate the correctness of this serialization.
+  */
+-int smp_call_function_single_async(int cpu, call_single_data_t *csd)
++int smp_call_function_single_async(int cpu, struct __call_single_data *csd)
+ {
+ 	int err = 0;
+ 
+diff --git a/kernel/up.c b/kernel/up.c
+index bf20b4a..c732130 100644
+--- a/kernel/up.c
++++ b/kernel/up.c
+@@ -25,7 +25,7 @@ int smp_call_function_single(int cpu, void (*func) (void *info), void *info,
+ }
+ EXPORT_SYMBOL(smp_call_function_single);
+ 
+-int smp_call_function_single_async(int cpu, call_single_data_t *csd)
++int smp_call_function_single_async(int cpu, struct __call_single_data *csd)
+ {
+ 	unsigned long flags;
+ 
