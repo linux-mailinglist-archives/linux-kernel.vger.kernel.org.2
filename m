@@ -2,56 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7449637544B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:00:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC5C037544E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:01:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232982AbhEFNBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:01:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55396 "EHLO
+        id S233160AbhEFNCO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:02:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231265AbhEFNBi (ORCPT
+        with ESMTP id S231265AbhEFNCN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:01:38 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2CABBC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 06:00:39 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id x20so7667477lfu.6
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 06:00:39 -0700 (PDT)
+        Thu, 6 May 2021 09:02:13 -0400
+Received: from mail-lj1-x233.google.com (mail-lj1-x233.google.com [IPv6:2a00:1450:4864:20::233])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DEC57C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 06:01:14 -0700 (PDT)
+Received: by mail-lj1-x233.google.com with SMTP id v6so6930238ljj.5
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 06:01:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=co6Tu6p7gwdreS8j+kzhyH/BpJmEW7gcEZ8FRox2VLM=;
-        b=imjkp9zgX91dHPVMnXtZjX6RL8An3N4T5kLaqqZ6UKOJo9faTrNHFaPZELcNYuaypq
-         uQ0/erVuIlCfOsrMExtH/3x/rE9AIDaoYdRD7IrMtbmzzNF+jCZ91F3hF4DXulvJ6zP/
-         MuHOWqMS5MWRUIAAm/gj0Ow6coQgPBzRVIiF0tbBbonfjtA0fkRH7Ofu2gJc4sFh4VdW
-         sMUdEY07akP+Z82iHfIBKrK5uAdOQyVWleVZtjHg9DWsguCqgfIU/qgMkTmCwb6F0X6c
-         dykfROgNLyZEnLXx3Ol6DzFYXh8Gi3IuCvomWSHe7l1JjMTLqe1pyPpxL6b2H45b1H1J
-         TQag==
+        bh=1o9YU1cRcYXzkHmKraCEMWOkwDyM4TPN0AO5wmmdGTY=;
+        b=QGh/DMr3YWyJIdVxRuhgHcwYIwiGHeFKTvJnh/dtmauMQqI1wHd5Evea76xe9greed
+         XtlHlw0rF6mL92DCBVZeB2+U7xlO0HJJZqamj5hTGEMkci98EHlifnwnNF0IiKcVuXgf
+         cBmN3x8SvgbS7DWu+3Vun+cEPE6P/0YkUqjtLY6Se4NZ9vXx+dAfER56e+NsAzxJFHpl
+         Wy/VupXQjfBonvEZeg3XnOwVi/P0sWXhuzY+txk2/wjJOva2ppjDV86zKuVu95wVUgBL
+         lZL3AKRPWncJSitolznnmAbmQV7ZDE5fPfQfBgaxygmNRphn0k0jk7jGCdSoqvhkWfQy
+         ZC+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=co6Tu6p7gwdreS8j+kzhyH/BpJmEW7gcEZ8FRox2VLM=;
-        b=SArrZfMa4hchaBsrIifmoMDJO/mAIyciPNlcPT9PuLrSxwbd7l6Kuc3w+RxhFtQ1s0
-         Qg/tGXX+dAIzGlZBy+fngSrVqnBuT43ojASdrXWD5xqY5RGCfvQ1DqOYfB04dv0KERCt
-         n4WJBUJacG/c2K+A1Jn8nC9eNjhOviPGMv+DhXT3ipdX0o4DD21LyKkmEGQej5wKhK4R
-         sNDGg3Tlj81DUcgUQuWPGF0D+uCLvYJJXh1CjRYRTlPAQH+93iX21v/QmCWyl0TQ1dGC
-         k6YJ2D30Q918u/cpPdb9mDP5UwN61Ec9Y4pRYXJrY7mx4RkqV9yR41m9KVTuMqJvFHYP
-         0SDQ==
-X-Gm-Message-State: AOAM5320z4F9kFO2qZadJDFf0PsvQATmnO/IhxsmTvKpP+OCUpDd2M0x
-        SfK558Q0vEOa5tfuE9gDB5thhGtKxLnrFzI14xbruQ==
-X-Google-Smtp-Source: ABdhPJwechm8k/LJgQ4yWdTtDYG9Go8iYVJJpJ+sWs2TdhwxF8w4kKFdR4XnUVrgxVAIpiJ8CaDV03AcGU3DFLg9ZH0=
-X-Received: by 2002:a19:a418:: with SMTP id q24mr2688212lfc.649.1620306037628;
- Thu, 06 May 2021 06:00:37 -0700 (PDT)
+        bh=1o9YU1cRcYXzkHmKraCEMWOkwDyM4TPN0AO5wmmdGTY=;
+        b=AyETCfvIxM4zguyBl/Q2kVrRrKxFhb76UDZ1rhorr7RFJnjgyeK6OGbHmZA+UTKBOw
+         lm/Ht84kMg0Kwt+CU2GUoPUWIkYd8xO/yvZr5bQE4hUYFkSVOtTJAbR3+0U6rgmI1YUp
+         uZhJpbyGgjtiTNimvVSEwbrb5POCJ5HUhkpYQanPNkoVQuEcPgyCqtvFSuOQx4j//W7/
+         lXX4ynow6WsXhkPzoCL6UJ0TGyBXeLcm++UFIP9pCZho4JtMsFo9XHTTw6MpgNc+SCtN
+         ab2Zf7sUsNYAIdvm7q1XjdKzoh8+WPuPZjrXQ3QfuHvPEaaPpm9+H0Wi/suQ1q5LuYHE
+         TELg==
+X-Gm-Message-State: AOAM532NwTHCmIieemXeIK4OyaNBy8UAYvDkyNffW/ALA0+XWBhNGDdR
+        3htEKMfWgROY4oRNON8Dp/ce28S/nNCw4ifDUxn6Zg==
+X-Google-Smtp-Source: ABdhPJxumvyre7G9VDri6pSA5PmkdD26UhUC2qL62jApVicOYFEU8vPDiZEavFOFM6F7HT1ITASFFaIz9QjawzPlJys=
+X-Received: by 2002:a2e:889a:: with SMTP id k26mr3177134lji.438.1620306071975;
+ Thu, 06 May 2021 06:01:11 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210504161222.101536-1-ulf.hansson@linaro.org> <20210504161222.101536-7-ulf.hansson@linaro.org>
-In-Reply-To: <20210504161222.101536-7-ulf.hansson@linaro.org>
+References: <20210504161222.101536-1-ulf.hansson@linaro.org> <20210504161222.101536-9-ulf.hansson@linaro.org>
+In-Reply-To: <20210504161222.101536-9-ulf.hansson@linaro.org>
 From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 6 May 2021 15:00:26 +0200
-Message-ID: <CACRpkdZUWP5hOCLpVvOSfR3YNXF6HC4GaO5ptYify2_EPa=wOQ@mail.gmail.com>
-Subject: Re: [PATCH 06/11] mmc: core: Prepare mmc_send_cxd_data() to be
- re-used for additional cmds
+Date:   Thu, 6 May 2021 15:01:01 +0200
+Message-ID: <CACRpkda9fWzeqLvSX4-fr1hcP7KqWrRQGSFvCM2STYNM_FkL9Q@mail.gmail.com>
+Subject: Re: [PATCH 08/11] mmc: core: Parse the SD SCR register for support of
+ CMD48/49 and CMD58/59
 To:     Ulf Hansson <ulf.hansson@linaro.org>
 Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
         Adrian Hunter <adrian.hunter@intel.com>,
@@ -68,21 +68,14 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 On Tue, May 4, 2021 at 6:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
->   * NOTE: void *buf, caller for the buf is required to use DMA-capable
->   * buffer or on-stack buffer (with some overhead in callee).
->   */
-> -static int
-> -mmc_send_cxd_data(struct mmc_card *card, struct mmc_host *host,
-> -               u32 opcode, void *buf, unsigned len)
-> +int mmc_send_adtc_data(struct mmc_card *card, struct mmc_host *host, u32 opcode,
-> +                      u32 args, void *buf, unsigned len)
+> In SD spec v4.x the support for CMD48/49 and CMD58/59 were introduced as
+> optional features. To let the card announce whether it supports the
+> commands, the SCR register has been extended with corresponding support
+> bits. Let's parse and store this information for later use.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-Just a note here (the change is good)
-
-When applying please add some kerneldoc above mmc_send_adtc_data()
-and expand the ADTC acronym and add some info explaining what it
-is maybe a small protocol ref or so, so readers of the code get an
-intuitive feeling for what this function does and what ADTC is.
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
 Yours,
-Linus Walleijq
+Linus Walleij
