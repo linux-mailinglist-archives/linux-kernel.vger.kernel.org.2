@@ -2,94 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 199B8375A33
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 20:31:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAAEB375A37
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 20:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234487AbhEFScS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 14:32:18 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:56358 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231839AbhEFScR (ORCPT
+        id S234650AbhEFSdR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 14:33:17 -0400
+Received: from netrider.rowland.org ([192.131.102.5]:36961 "HELO
+        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with SMTP id S234481AbhEFSdN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 14:32:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620325878;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=RKug1+n7aNUKpd2/5y9E1AAuMfgec3Gz+e4TxaTVI6A=;
-        b=Pl28TeUjKLaTcbjP42wBsz3iUBgpEkG7b6gSjYvdV7CIyCvU7rVlSJ/ifiG4vlonz8GkJp
-        JMylwjfjv2H1PY0U/zvCEY6XB//LZfBvD1G67ZM5UN/SCvGN8R2FixwUwPe+gDGt/b5jBL
-        MfyfFrbZXxMQwxTdKexHRMJPNOZU4uM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-265-tKPEBZXnM1CNUh-qlS8Vww-1; Thu, 06 May 2021 14:31:15 -0400
-X-MC-Unique: tKPEBZXnM1CNUh-qlS8Vww-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 9C5D68014D8;
-        Thu,  6 May 2021 18:31:13 +0000 (UTC)
-Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 382D65D9DE;
-        Thu,  6 May 2021 18:31:12 +0000 (UTC)
-Date:   Thu, 6 May 2021 12:31:11 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>, hi@alyssa.is,
-        dan.carpenter@oracle.com
-Subject: [GIT PULL] VFIO updates for v5.13-rc1 pt2
-Message-ID: <20210506123111.6b6c0bf3@redhat.com>
+        Thu, 6 May 2021 14:33:13 -0400
+Received: (qmail 748263 invoked by uid 1000); 6 May 2021 14:32:14 -0400
+Date:   Thu, 6 May 2021 14:32:13 -0400
+From:   Alan Stern <stern@rowland.harvard.edu>
+To:     Guido Kiener <Guido.Kiener@rohde-schwarz.com>
+Cc:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "dpenkler@gmail.com" <dpenkler@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
+Message-ID: <20210506183213.GA748114@rowland.harvard.edu>
+References: <be62c93e1e384f49865915b9bda1f12e@rohde-schwarz.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <be62c93e1e384f49865915b9bda1f12e@rohde-schwarz.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, May 06, 2021 at 05:44:55PM +0000, Guido Kiener wrote:
+> > -----Original Message-----
+> > From: Alan Stern
+> > Sent: Thursday, May 6, 2021 3:49 PM
+> > To: Kiener Guido 14DS1 <Guido.Kiener@rohde-schwarz.com>
+> > >
+> > > Thanks for your assessment. I agree with the general feeling. I
+> > > counted about hundred specific usb drivers, so wouldn't it be better to fix the
+> > problem in some of the host drivers (e.g. urb.c)?
+> > > We could return an error when calling usb_submit_urb() on an erroneous pipe.
+> > > I cannot estimate the side effects and we need to check all drivers
+> > > again how they deal with the error situation. Maybe there are some special driver
+> > that need a specialized error handling.
+> > > In this case these drivers could reset the (new?) error flag to allow
+> > > calling usb_submit_urb() again without error. This could work, isn't it?
+> > 
+> > That is feasible, although it would be an awkward approach.  As you said, the side
+> > effects aren't clear.  But it might work.
+> 
+> Otherwise I see only the other approach to change hundred drivers and add the
+> cases EPROTO, EILSEQ and ETIME in each callback handler. The usbtmc driver
+> already respects the EILSEQ and ETIME, and only EPROTO is missing.
+> The rest should be more a management task.
+> BTW do you assume it is only a problem for INT pipes or is it also a problem
+> for isochronous and bulk transfers?
 
-A 2nd small set of commits for this merge window, primarily to unbreak
-some deletions from our uAPI header before rc1.  Thanks,
+All of them.  Control too.
 
-Alex
+> > Will you be able to test patches?
+> 
+> I only can test the USBTMC function in some different PCs. I do not have automated
+> regression tests for USB drivers or Linux kernels.
+> Maybe there is company who could do that.
 
-The following changes since commit 5e321ded302da4d8c5d5dd953423d9b748ab3775:
+Well then, if I do find time to write a patch, I'll ask you to try it 
+out with the usbtmc driver.
 
-  Merge tag 'for-5.13/parisc' of git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux (2021-05-03 13:47:17 -0700)
-
-are available in the Git repository at:
-
-  git://github.com/awilliam/linux-vfio.git tags/vfio-v5.13-rc1pt2
-
-for you to fetch changes up to cc35518d29bc8e38902866b74874b4a3f1ad3617:
-
-  docs: vfio: fix typo (2021-05-05 10:20:33 -0600)
-
-----------------------------------------------------------------
-VFIO updates for v5.13-rc1 pt2
-
- - Additional mdev sample driver cleanup (Dan Carpenter)
-
- - Doc fix (Alyssa Ross)
-
- - Unbreak uAPI from NVLink2 support removal (Alex Williamson)
-
-----------------------------------------------------------------
-Alex Williamson (1):
-      vfio/pci: Revert nvlink removal uAPI breakage
-
-Alyssa Ross (1):
-      docs: vfio: fix typo
-
-Dan Carpenter (1):
-      vfio/mdev: remove unnecessary NULL check in mbochs_create()
-
- Documentation/driver-api/vfio.rst |  2 +-
- include/uapi/linux/vfio.h         | 46 +++++++++++++++++++++++++++++++++++----
- samples/vfio-mdev/mbochs.c        |  2 --
- samples/vfio-mdev/mdpy.c          |  3 +--
- 4 files changed, 44 insertions(+), 9 deletions(-)
-
+Alan Stern
