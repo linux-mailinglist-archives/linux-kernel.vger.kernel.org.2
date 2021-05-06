@@ -2,105 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E111374D3D
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:02:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10835374D3F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:03:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231131AbhEFCDK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:03:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51204 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229872AbhEFCDJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:03:09 -0400
-Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA62DC061574;
-        Wed,  5 May 2021 19:02:10 -0700 (PDT)
-Received: by mail-ot1-x330.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso3548545otg.9;
-        Wed, 05 May 2021 19:02:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=KR+Zt8gatAmFm5zUbDUeqsKRamrBGMznhlklBB2oTek=;
-        b=jWaEWsBkDYTQ0h6VtG/MoIVUEv8KAgY2F6RWWO0V8i//l3OrFxvSXENkY/Gw5J9Hh8
-         fMm7SjHLr9gpCne6NF6fsBwo9RUpWs3B05GxLGN3IiTq4timkOiIjfDJ4BjBtXSvUW1G
-         UExAOBBkjYVdrRQocZou8b2rIXTbO9MPB3SwQQHgojw7GX7/vdoT0dULvSmgzQf8ysdf
-         pSTfTz/9oxbpHVTzSi1U1G5GHAftFPgCbMSdu5N3nefBhQgUkP3qaKl6+emC8PRVfxaG
-         GQ0YViUNPWRGetBjy4132TLPrtt2ooidPl/uE1Dtx1JhpYYeXpfgmZq0vAjfuq4hj0+x
-         54fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=KR+Zt8gatAmFm5zUbDUeqsKRamrBGMznhlklBB2oTek=;
-        b=uJJB9QrXj0WgwDGYunqz+tR53w3u6yvGLME1+MfWfNq9FUc3/dcAuA0rGs5pBin5/u
-         Z0/Gl9SJ2KJ9Hn4+pA6+00H/i4Ihxy/No1v4xWC0Kgg7794/msiTTDq1BIDgeO5K6bpM
-         3UtqY29Ze+5ObC+QcbOvZRLeKHQk1LQtLa0lgIoYISDRh1R/RFwBvPDHqh54Zfq3wvDl
-         QWtfC280r0OmQQ1Ehw1zFvxoPsN8qDY4za1DBNyvSA5sfWcS52t1SVkE4xFiBoEAT038
-         XUpwJHOPqC7Iko8GJhd+bJMRYzf5sG2gZYCiVwaONRs2u8iiJKrcl+PvUO+CdNaMLWN5
-         6BIw==
-X-Gm-Message-State: AOAM5323LYoqEhpu6Ohzt+QN/W4PV9CghoSLiuapy5enrnredPbCxozy
-        p8PYemYBDydhqsuI9DZUw+E=
-X-Google-Smtp-Source: ABdhPJwYF5Y4G+gpm3NKLL1CetgXScObMtBAgDJEswnglyUNOlYH9jchaVImJa3amGcoCnkuKtgTmQ==
-X-Received: by 2002:a9d:7f19:: with SMTP id j25mr1385414otq.319.1620266530276;
-        Wed, 05 May 2021 19:02:10 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r9sm254444ool.3.2021.05.05.19.02.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 May 2021 19:02:09 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Wed, 5 May 2021 19:02:08 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-        akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-        f.fainelli@gmail.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4.19 00/15] 4.19.190-rc1 review
-Message-ID: <20210506020208.GA732733@roeck-us.net>
-References: <20210505120503.781531508@linuxfoundation.org>
- <20210506014741.GB731872@roeck-us.net>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506014741.GB731872@roeck-us.net>
+        id S231183AbhEFCD4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:03:56 -0400
+Received: from mail.loongson.cn ([114.242.206.163]:55036 "EHLO loongson.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229872AbhEFCDz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 5 May 2021 22:03:55 -0400
+Received: from bogon.localdomain (unknown [113.200.148.30])
+        by mail.loongson.cn (Coremail) with SMTP id AQAAf9CxiclLTpNgm4sSAA--.29005S2;
+        Thu, 06 May 2021 10:02:51 +0800 (CST)
+From:   Youling Tang <tangyouling@loongson.cn>
+To:     Huacai Chen <chenhuacai@kernel.org>,
+        Jiaxun Yang <jiaxun.yang@flygoat.com>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     linux-mips@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] MIPS: Loongson64: Fix build error 'secondary_kexec_args' undeclared under !SMP
+Date:   Thu,  6 May 2021 10:02:50 +0800
+Message-Id: <1620266570-21585-1-git-send-email-tangyouling@loongson.cn>
+X-Mailer: git-send-email 2.1.0
+X-CM-TRANSID: AQAAf9CxiclLTpNgm4sSAA--.29005S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur1fKr1UZry3WrW7JFykuFg_yoW8WrWxpa
+        15C348tFZ5Wr42yr4rZryDZ34ru398JrW7JFWfC3s5K3srtw1qqFyvvFnrXFykuw43KFWf
+        XrsIgr48ZF13C37anT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUk2b7Iv0xC_tr1lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwV
+        C2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVAC
+        Y4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVWUJV
+        W8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc2xSY4AK67AK6r4UMxAI
+        w28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr
+        4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxG
+        rwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8Jw
+        CI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+        z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUc2-eUUUUU
+X-CM-SenderInfo: 5wdqw5prxox03j6o00pqjv00gofq/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 06:47:43PM -0700, Guenter Roeck wrote:
-> On Wed, May 05, 2021 at 02:05:05PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 4.19.190 release.
-> > There are 15 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> > 
-> > Responses should be made by Fri, 07 May 2021 12:04:54 +0000.
-> > Anything received after that time might be too late.
-> > 
-[ ... ]
-> > 
-> > Shengjiu Wang <shengjiu.wang@nxp.com>
-> >     ASoC: ak5558: Add MODULE_DEVICE_TABLE
-> > 
-> > Shengjiu Wang <shengjiu.wang@nxp.com>
-> >     ASoC: ak4458: Add MODULE_DEVICE_TABLE
-> > 
-> Wait, this also has the double commit. Can you please remove the bad one ?
-> 
-Actually, both need to be removed because they are already in the tree:
+On the Loongson64 platform, if CONFIG_SMP is not set, the following build
+error will occur:
+arch/mips/loongson64/reset.c:133:2: error:'secondary_kexec_args' undeclared
 
-$ git describe
-v4.19.189-16-g5a3ba2f90f87
-$ git log --oneline v4.19.. sound/soc/codecs/ak4458.c sound/soc/codecs/ak5558.c
-e32ee6f6fbcd ASoC: ak5558: Add MODULE_DEVICE_TABLE
-5d0fe4839d63 ASoC: ak4458: Add MODULE_DEVICE_TABLE
-04bb225a4824 ASoC: ak5558: Add MODULE_DEVICE_TABLE
-25a09f4aad56 ASoC: ak4458: Add MODULE_DEVICE_TABLE
-3f8d3c9506a5 ASoC: ak4458: rstn_control - return a non-zero on error only
-4c31b4b4ba65 ASoC: ak4458: add return value for ak4458_probe
+Because the definition and declaration of secondary_kexec_args are in the
+CONFIG_SMP, the secondary_kexec_args variable should be used in CONFIG_SMP.
 
-This applies to all branches.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Youling Tang <tangyouling@loongson.cn>
+---
+ arch/mips/loongson64/reset.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-Thanks,
-Guenter
+diff --git a/arch/mips/loongson64/reset.c b/arch/mips/loongson64/reset.c
+index c97bfdc..758d5d2 100644
+--- a/arch/mips/loongson64/reset.c
++++ b/arch/mips/loongson64/reset.c
+@@ -126,11 +126,12 @@ static void loongson_kexec_shutdown(void)
+ 	for_each_possible_cpu(cpu)
+ 		if (!cpu_online(cpu))
+ 			cpu_device_up(get_cpu_device(cpu));
++
++	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+ #endif
+ 	kexec_args[0] = kexec_argc;
+ 	kexec_args[1] = fw_arg1;
+ 	kexec_args[2] = fw_arg2;
+-	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
+ 	memcpy((void *)fw_arg1, kexec_argv, KEXEC_ARGV_SIZE);
+ 	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+ }
+@@ -141,7 +142,9 @@ static void loongson_crash_shutdown(struct pt_regs *regs)
+ 	kexec_args[0] = kdump_argc;
+ 	kexec_args[1] = fw_arg1;
+ 	kexec_args[2] = fw_arg2;
++#ifdef CONFIG_SMP
+ 	secondary_kexec_args[0] = TO_UNCAC(0x3ff01000);
++#endif
+ 	memcpy((void *)fw_arg1, kdump_argv, KEXEC_ARGV_SIZE);
+ 	memcpy((void *)fw_arg2, kexec_envp, KEXEC_ENVP_SIZE);
+ }
+-- 
+2.1.0
+
