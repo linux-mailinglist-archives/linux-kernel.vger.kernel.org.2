@@ -2,150 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D6DE374FB4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:01:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFCDB374FB6
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:02:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233079AbhEFHCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:02:11 -0400
-Received: from mail-vs1-f52.google.com ([209.85.217.52]:38498 "EHLO
-        mail-vs1-f52.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232873AbhEFHCJ (ORCPT
+        id S233113AbhEFHDu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:03:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60318 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230248AbhEFHDs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:02:09 -0400
-Received: by mail-vs1-f52.google.com with SMTP id j128so2425040vsc.5;
-        Thu, 06 May 2021 00:01:11 -0700 (PDT)
+        Thu, 6 May 2021 03:03:48 -0400
+Received: from mail-wr1-x435.google.com (mail-wr1-x435.google.com [IPv6:2a00:1450:4864:20::435])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5E9EC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:02:49 -0700 (PDT)
+Received: by mail-wr1-x435.google.com with SMTP id l2so4375325wrm.9
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:02:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=N3HgVaF3RMzGGbCifmq26jt1yiiaYTugFuDo4ApAevw=;
+        b=tsYh3PgWde1L5odLG63YNcORcanS3q3lifJ5W8y+xwW6xWgpZa3zM01cPyPjkoWoPr
+         J1rNNFtkKaROzub3zQWoflTXLo9r+lxjEVLZixKxnu7Am9Idww+9XFKUGKy785uQGCDX
+         Z1vi0r4b2nHhkcENsU9e+ZC60zRJ5oa4GEVTX4fAGfsHEX9YXZhSHk+LoGzadILMZOUB
+         SFDZJGERFFHDeyeL1ESX2IrKfKzGY7MWbRSM1ZHI8NFG4r5FzyfuPkyRsVLeIUTBNgIe
+         0evgLvMmMgDnoB3yRdXxaIBPOgSDYsfA8djRXkLVCaGxBovmgibwhYsGp/XXak4UrbCM
+         a7tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NoT+A0718WNsTbHBS5BGp5G+tj2RfytrZk7R7tgIl08=;
-        b=X248YRswNzAfo6iG1kNtPokKkdBeSO8s61uJm6eTDuG4PrFnr/zB6gAcYTzegMUI4Z
-         7Fx2czLZ55vauWk8OQ5WrPkt42CQ5BJI5FjbLf8m1xhxBX0tHRJvP9U+vBHMeNyaxAJI
-         AV7hCQsNQXyGuIGDFTSgGFIl9JE0CQF4goqEE3mPsHqbcjaI65xlc4l+3iL2yZG6HiyF
-         2AoZEQL10iJD0Q0NgwAI+s6QUMEaiSoOnHOmv4E33xUxYk6oHbbEn2yn38w+LsFYf75e
-         zxIDlf2LrgGp6pYfceDVsbje3BNhitT06tWGt/xR9GPFrsLjM9itTWpHyqR5YibvMTgH
-         JbLg==
-X-Gm-Message-State: AOAM533z2oqp/Njt2gXVBeP4JbJ/wH3mLrRaHR+z67MOlVfxdnHQAJ4j
-        7niDnJlGECU7b+fv8m91nNSTIAZSSNJxQ6fPIBfuqH4jwpA=
-X-Google-Smtp-Source: ABdhPJwtWn/D8K3Zn0jy1HK/vfeVlKteOEghQDe5DwJ1/OrY0tE/MhHEc0uYnsYlAuAKkFm96EHQ1hlHO1JAX4ayqVg=
-X-Received: by 2002:a67:f503:: with SMTP id u3mr1764571vsn.3.1620284470626;
- Thu, 06 May 2021 00:01:10 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=N3HgVaF3RMzGGbCifmq26jt1yiiaYTugFuDo4ApAevw=;
+        b=mi6abxbTbNDA9y1MC0dPHxm9ik6LXPEp6p0FYzUBiIqm3RiKsJN2yZqDFVpUeg6P1S
+         QMRlk9v57WX2yBhstRDPz76I7C5zR2oC4OzZ77LcgZsYHya9TMMl5yOgsOWWPT51737y
+         223jYn/lZXM/iEAQPLNvxFkBSJtl6tNeQGcFndovMRGsvaYhuewrSSfFjORCk37UuOyh
+         1qHK5NZur1yPpiPunazCt3bBRZ5R7QKowUnpLkOY+JI6S7nqfqQmdDdH6/ZOJBimszPP
+         XgGFgPNMdXAPj9SOFHToYlPKUYzpJoe+a8x70qxMI4jvq3cSq0x2Ibaw5BNiznxco2lH
+         i9fg==
+X-Gm-Message-State: AOAM530CWJ51FY8xdMyfxLos3Apse5g6+K/GOUU9Bdm+jqe2XnIQL78g
+        KKrXKHEjAPyoV3E0/+N9g2+nXTr8w6s8jxtKMi86gg==
+X-Google-Smtp-Source: ABdhPJw+PLdeWroPlp8PupbsrelY9U7ubYQpgPEBDaI9LU/6fexgZd1Z6Xj6rzHfVOElekgFGFgarOYfKPvYHt0RABA=
+X-Received: by 2002:a5d:6402:: with SMTP id z2mr3106340wru.7.1620284568404;
+ Thu, 06 May 2021 00:02:48 -0700 (PDT)
 MIME-Version: 1.0
-References: <YIpkvGrBFGlB5vNj@elver.google.com> <m11rat9f85.fsf@fess.ebiederm.org>
- <CAK8P3a0+uKYwL1NhY6Hvtieghba2hKYGD6hcKx5n8=4Gtt+pHA@mail.gmail.com>
- <m15z031z0a.fsf@fess.ebiederm.org> <YIxVWkT03TqcJLY3@elver.google.com>
- <m1zgxfs7zq.fsf_-_@fess.ebiederm.org> <m1r1irpc5v.fsf@fess.ebiederm.org>
- <CANpmjNNfiSgntiOzgMc5Y41KVAV_3VexdXCMADekbQEqSP3vqQ@mail.gmail.com>
- <m1czuapjpx.fsf@fess.ebiederm.org> <CANpmjNNyifBNdpejc6ofT6+n6FtUw-Cap_z9Z9YCevd7Wf3JYQ@mail.gmail.com>
- <m14kfjh8et.fsf_-_@fess.ebiederm.org> <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-In-Reply-To: <m1tuni8ano.fsf_-_@fess.ebiederm.org>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 6 May 2021 09:00:59 +0200
-Message-ID: <CAMuHMdUXh45iNmzrqqQc1kwD_OELHpujpst1BTMXDYTe7vKSCg@mail.gmail.com>
-Subject: Re: [PATCH v3 00/12] signal: sort out si_trapno and si_perf
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     Marco Elver <elver@google.com>, Arnd Bergmann <arnd@arndb.de>,
-        Florian Weimer <fweimer@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Peter Collingbourne <pcc@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        sparclinux <sparclinux@vger.kernel.org>,
-        linux-arch <linux-arch@vger.kernel.org>,
+References: <20210225090610.242623-1-allen.lkml@gmail.com> <20210225090610.242623-2-allen.lkml@gmail.com>
+ <CAHUa44F5Ew6U80t7PPmV1J4KunXBm_izBxVrxg=x8azjBz0r9Q@mail.gmail.com>
+ <9a6c017c-d156-f939-f907-d6dfe83c41ac@linux.microsoft.com>
+ <CAHUa44FyGOj5=Z80km_2T-avKiJpGVD8cWjTC3ZCX8csazP3rw@mail.gmail.com> <409F60D9-F0FB-4B69-B64B-CC6B3704038E@linux.microsoft.com>
+In-Reply-To: <409F60D9-F0FB-4B69-B64B-CC6B3704038E@linux.microsoft.com>
+From:   Jens Wiklander <jens.wiklander@linaro.org>
+Date:   Thu, 6 May 2021 09:02:37 +0200
+Message-ID: <CAHUa44EZprsEKbd_mzGhxQKQgu5XB5nLtREJh2j_9J3zPO4gNg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] optee: fix tee out of memory failure seen during
+ kexec reboot
+To:     Allen Pais <apais@linux.microsoft.com>
+Cc:     Allen Pais <allen.lkml@gmail.com>, zajec5@gmail.com,
+        bcm-kernel-feedback-list@broadcom.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux API <linux-api@vger.kernel.org>,
-        kasan-dev <kasan-dev@googlegroups.com>
+        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Eric,
-
-On Tue, May 4, 2021 at 11:14 PM Eric W. Biederman <ebiederm@xmission.com> wrote:
-> This set of changes sorts out the ABI issues with SIGTRAP TRAP_PERF, and
-> hopefully will can get merged before any userspace code starts using the
-> new ABI.
+On Wed, May 5, 2021 at 3:45 PM Allen Pais <apais@linux.microsoft.com> wrote=
+:
 >
-> The big ideas are:
-> - Placing the asserts first to prevent unexpected ABI changes
-> - si_trapno becomming ordinary fault subfield.
-> - struct signalfd_siginfo is almost full
+> Jens,
 >
-> This set of changes starts out with Marco's static_assert changes and
-> additional one of my own that enforces the fact that the alignment of
-> siginfo_t is also part of the ABI.  Together these build time
-> checks verify there are no unexpected ABI changes in the changes
-> that follow.
+> >>>> [    0.368428] tee_bnxt_fw optee-clnt0: tee_shm_alloc failed
+> >>>> [    0.368461] tee_bnxt_fw: probe of optee-clnt0 failed with error -=
+22
+> >>>>
+> >>>> tee_shm_release() is not invoked on dma shm buffer.
+> >>>>
+> >>>> Implement .shutdown() method to handle the release of the buffers
+> >>>> correctly.
+> >>>>
+> >>>> More info:
+> >>>> https://github.com/OP-TEE/optee_os/issues/3637
+> >>>>
+> >>>> Signed-off-by: Allen Pais <apais@linux.microsoft.com>
+> >>>> ---
+> >>>>  drivers/tee/optee/core.c | 20 ++++++++++++++++++++
+> >>>>  1 file changed, 20 insertions(+)
+> >>>
+> >>> This looks good to me. Do you have a practical way of testing this on
+> >>> QEMU for instance?
+> >>>
+> >>
+> >> Jens,
+> >>
+> >>   I could not reproduce nor create a setup using QEMU, I could only
+> >> do it on a real h/w.
+> >>
+> >>   I have extensively tested the fix and I don't see any issues.
+> >
+> > I did a few test runs too, seems OK.
 >
-> The field si_trapno is changed to become an ordinary extension of the
-> _sigfault member of siginfo.
+>  I carried these changes and have not run into any issues with Kexec so f=
+ar.
+> Last week, while trying out kdump, we ran into a crash(this is when the
+> Kdump kernel reboots).
 >
-> The code is refactored a bit and then si_perf_type is added along side
-> si_perf_data in the _perf subfield of _sigfault of siginfo_t.
+> $echo c > /proc/sysrq-trigger
 >
-> Finally the signalfd_siginfo fields are removed as they appear to be
-> filling up the structure without userspace actually being able to use
-> them.
+> Leads to:
+>
+> [   18.004831] Unable to handle kernel paging request at virtual address =
+ffff0008dcef6758
+> [   18.013002] Mem abort info:
+> [   18.015885]   ESR =3D 0x96000005
+> [   18.019034]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+> [   18.024516]   SET =3D 0, FnV =3D 0
+> [   18.027667]   EA =3D 0, S1PTW =3D 0
+> [   18.030905] Data abort info:
+> [   18.033877]   ISV =3D 0, ISS =3D 0x00000005
+> [   18.037835]   CM =3D 0, WnR =3D 0
+> [   18.040896] swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000970a7=
+8000
+> [   18.047811] [ffff0008dcef6758] pgd=3D000000097fbf9003, pud=3D000000000=
+0000000
+> [   18.054819] Internal error: Oops: 96000005 [#1] SMP
+> [   18.059850] Modules linked in: bnxt_en pcie_iproc_platform pcie_iproc =
+diagbe(O)
+> [   18.067395] CPU: 3 PID: 1 Comm: systemd-shutdow Tainted: G           O=
+      5.4.83-microsoft-standard #1
+> [   18.077174] Hardware name: Overlake (DT)
+> [   18.081219] pstate: 80400005 (Nzcv daif +PAN -UAO)
+> [   18.086170] pc : tee_shm_free+0x18/0x48
+> [   18.090126] lr : optee_disable_shm_cache+0xa4/0xf0
+> [   18.095066] sp : ffff80001005bb90
+> [   18.098484] x29: ffff80001005bb90 x28: ffff000037e20000
+> [   18.103962] x27: 0000000000000000 x26: ffff00003ed10490
+> [   18.109440] x25: ffffca760e975f90 x24: 0000000000000000
+> [   18.114918] x23: ffffca760ed79808 x22: ffff00003ec66e18
+> [   18.120396] x21: ffff80001005bc08 x20: 00000000b200000a
+> [   18.125874] x19: ffff0008dcef6700 x18: 0000000000000010
+> [   18.131352] x17: 0000000000000000 x16: 0000000000000000
+> [   18.136829] x15: ffffffffffffffff x14: ffffca760ed79808
+> [   18.142307] x13: ffff80009005b897 x12: ffff80001005b89f
+> [   18.147786] x11: ffffca760eda4000 x10: ffff80001005b820
+> [   18.153264] x9 : 00000000ffffffd0 x8 : ffffca760e59b2c0
+> [   18.158742] x7 : 0000000000000000 x6 : 0000000000000000
+> [   18.164220] x5 : 0000000000000000 x4 : 0000000000000000
+> [   18.169698] x3 : 0000000000000000 x2 : ffff0008dcef6700
+> [   18.175175] x1 : 00000000ffff0008 x0 : ffffca760e59ca04
+> [   18.180654] Call trace:
+> [   18.183176]  tee_shm_free+0x18/0x48
+> [   18.186773]  optee_disable_shm_cache+0xa4/0xf0
+> [   18.191356]  optee_shutdown+0x20/0x30
+> [   18.195135]  platform_drv_shutdown+0x2c/0x38
+> [   18.199538]  device_shutdown+0x180/0x298
+> [   18.203586]  kernel_restart_prepare+0x44/0x50
+> [   18.208078]  kernel_restart+0x20/0x68
+> [   18.211853]  __do_sys_reboot+0x104/0x258
+> [   18.215899]  __arm64_sys_reboot+0x2c/0x38
+> [   18.220035]  el0_svc_handler+0x90/0x138
+> [   18.223991]  el0_svc+0x8/0x208
+> [   18.227143] Code: f9000bf3 aa0003f3 aa1e03e0 d503201f (b9405a60)
+> [   18.233435] ---[ end trace 835d756cd66aa959 ]---
+> [   18.238621] Kernel panic - not syncing: Fatal exception
+> [   18.244014] Kernel Offset: 0x4a75fde00000 from 0xffff800010000000
+> [   18.250299] PHYS_OFFSET: 0xffff99c680000000
+> [   18.254613] CPU features: 0x0002,21806008
+> [   18.258747] Memory Limit: none
+> [   18.262310] ---[ end Kernel panic - not syncing: Fatal exception ]=E2=
+=80=94
+>
+> I see that before secure world returns OPTEE_SMC_RETURN_ENOTAVAIL(which
+> Should disable and clear all the cache) we run into the crash trying to f=
+ree shm.
+>
+> Thoughts?
 
-Thanks for your series, which is now in next-20210506.
+It seems that the pointer is invalid, but the pointer doesn't look
+like garbage. Could the kernel have unmapped the memory area covering
+that address?
 
->  arch/alpha/include/uapi/asm/siginfo.h              |   2 -
->  arch/alpha/kernel/osf_sys.c                        |   2 +-
->  arch/alpha/kernel/signal.c                         |   4 +-
->  arch/alpha/kernel/traps.c                          |  24 ++---
->  arch/alpha/mm/fault.c                              |   4 +-
->  arch/arm/kernel/signal.c                           |  39 +++++++
->  arch/arm64/kernel/signal.c                         |  39 +++++++
->  arch/arm64/kernel/signal32.c                       |  39 +++++++
->  arch/mips/include/uapi/asm/siginfo.h               |   2 -
->  arch/sparc/include/uapi/asm/siginfo.h              |   3 -
->  arch/sparc/kernel/process_64.c                     |   2 +-
->  arch/sparc/kernel/signal32.c                       |  37 +++++++
->  arch/sparc/kernel/signal_64.c                      |  36 +++++++
->  arch/sparc/kernel/sys_sparc_32.c                   |   2 +-
->  arch/sparc/kernel/sys_sparc_64.c                   |   2 +-
->  arch/sparc/kernel/traps_32.c                       |  22 ++--
->  arch/sparc/kernel/traps_64.c                       |  44 ++++----
->  arch/sparc/kernel/unaligned_32.c                   |   2 +-
->  arch/sparc/mm/fault_32.c                           |   2 +-
->  arch/sparc/mm/fault_64.c                           |   2 +-
->  arch/x86/kernel/signal_compat.c                    |  15 ++-
-
-No changes needed for other architectures?
-All m68k configs are broken with
-
-arch/m68k/kernel/signal.c:626:35: error: 'siginfo_t' {aka 'struct
-siginfo'} has no member named 'si_perf'; did you mean 'si_errno'?
-
-See e.g. http://kisskb.ellerman.id.au/kisskb/buildresult/14537820/
-
-There are still a few more references left to si_perf:
-
-$ git grep -n -w si_perf
-Next/merge.log:2902:Merging userns/for-next (4cf4e48fff05 signal: sort
-out si_trapno and si_perf)
-arch/m68k/kernel/signal.c:626:  BUILD_BUG_ON(offsetof(siginfo_t,
-si_perf) != 0x10);
-include/uapi/linux/perf_event.h:467:     * siginfo_t::si_perf, e.g. to
-permit user to identify the event.
-tools/testing/selftests/perf_events/sigtrap_threads.c:46:/* Unique
-value to check si_perf is correctly set from
-perf_event_attr::sig_data. */
-
-Thanks!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Cheers,
+Jens
