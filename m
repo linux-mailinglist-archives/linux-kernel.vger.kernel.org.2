@@ -2,84 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D56FA37570F
+	by mail.lfdr.de (Postfix) with ESMTP id 438E237570D
 	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:28:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235467AbhEFP3C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:29:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41060 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235566AbhEFP1x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:27:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1AD9A61969;
-        Thu,  6 May 2021 15:26:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620314784;
-        bh=CljwneJOzsAzCxr1z7NSaPn2lzrNFeMbh5spoGp6sG0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=JpkDG+1kkaRH/dCZPmcLtq3DaDCDXgF5xWcjAlKhOuiUr1z/IQVXCsgyYy2omoce6
-         /J75nCgEPRGrT+lFqehcRMdlScj/mf7jCFr2Z9aBMBMxECtiL4J6s64/MbFBeptZlX
-         NZDUMytGMTCucl0bBrCTjkzqxTUtfV8jvInIhciF+n+CBWTTMvyzPwd01dvWT+aKuc
-         O0fDecAngeMhSfJ2WbQRVDCOwVvnmXm3mb0lMpLfQ3Wg4d9Buv7RFYV5CMBMueHuLm
-         G2QP2lombNU9zFcZ9gkn7ogCARdt5wj9AvXbuLpzWkKC640nDWOaY8D5R+22RRDvr4
-         mBIh405q8I3mg==
-Received: by mail.kernel.org with local (Exim 4.94.2)
-        (envelope-from <mchehab@kernel.org>)
-        id 1left8-000SCd-FN; Thu, 06 May 2021 17:26:06 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Ezequiel Garcia <ezequiel@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-rockchip@lists.infradead.org, linux-staging@lists.linux.dev
-Subject: [PATCH v5 25/25] media: hantro: use pm_runtime_resume_and_get()
-Date:   Thu,  6 May 2021 17:26:03 +0200
-Message-Id: <0505970478fcb86e190ecdc4aefe55c9982ae7d5.1620314616.git.mchehab+huawei@kernel.org>
+        id S235760AbhEFP25 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:28:57 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:33385 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235495AbhEFP1u (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 11:27:50 -0400
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 42165580B72;
+        Thu,  6 May 2021 11:26:50 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute5.internal (MEProxy); Thu, 06 May 2021 11:26:50 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=from
+        :to:cc:subject:date:message-id:reply-to:mime-version
+        :content-transfer-encoding; s=fm3; bh=idfxFi2niIlXphs1rSRpisMaNe
+        RwPzwfRsm8hAUYBvQ=; b=hdYJWH8eNG6Nd+MRc3r283kN9IufmtoATaqfCU96YH
+        ZKyLzDOs9mGhZSlD83jeL7H3DOqnFDCXn/VXD229UiHg68Vz+1cHYe64OVsP7fXV
+        7i456IoTE2D8mIiUzaHreIvLE4WMfptERGMoBchm/EYEioelxClLvi0cEjk2Z8se
+        Arvfi8vRUcvLA33pxjnXxQmlCVsyXNryd5LfhOBp+3pZvqI36t6IK+pdROusiIec
+        gXu5SgWTBHSw0qxydioj5F1Ec3AtLzDDc5vIue2gJTGi+JN2UwBs88PaeFZ6CQwn
+        7QhhXtghvdNckXVzjjQVUrQkB4SzeptEzI7DHQV/sbdw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:date:from
+        :message-id:mime-version:reply-to:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=idfxFi
+        2niIlXphs1rSRpisMaNeRwPzwfRsm8hAUYBvQ=; b=qf4gh/OodsbTyJHDo4/xMy
+        XWnV10CwU190E3R4EbQH9v7/GANI/SHKBnKoNo+YtkMbM4Vnc0BA5STeVvOx5JAk
+        QbOEJpYSN6+uvVxGfYHFJ7L3SvqPtmevmMEDxN1/w8HICPWdYg8gr/6WF1OWeC4H
+        x2aX6/hzkjEnSGvUlD4WKg8F33YuV3SGpHhpJSiE/1iJqiNVsfPZAdb84Jetu6qY
+        XNunEtvZhRhT1qIed+Qn+KrN2qp8++eFknjSTrCea322qDnqF8r0r698iXZ52kMQ
+        De9S9QiodAWedpRqKM1DYX+rI3FeGwLbUo0bV5DgW4WFjPJIr4TakXPY/JZ5BjHg
+        ==
+X-ME-Sender: <xms:uAqUYGrwd9gPeAKsoo4Q35DN0k21ih8YX-F7vzB6dcZOwBTsluMPHA>
+    <xme:uAqUYEq1vsKttdYmZns8vQbuUYqZk39i0XwlelX-r-VtyfJ3I2ACSUXUGpHbFA3EP
+    wWe297Cea3xOilLwg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegtddgkeelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkfforhgggfestdhqredtredttdenucfhrhhomhepkghiucgjrghn
+    uceoiihirdihrghnsehsvghnthdrtghomheqnecuggftrfgrthhtvghrnhepleetvddtvd
+    dttdetffdvkeehffdtjefhkedtheffjeehvdejueektedukedufeffnecukfhppeefhedr
+    udeigedrvdegiedrfeegnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
+X-ME-Proxy: <xmx:uAqUYLMErIUfUFgMn1Vg0Q8SCoKDDurhsnrKYRq-xtYdzqauGYzLgw>
+    <xmx:uAqUYF4-Xkq7P3NYOoeHTxUKG1hdAQ7AhkWafRv4kOcorhVsc6ei9w>
+    <xmx:uAqUYF7GFJU0sPIbPhr2222mLMhPSovf0-OhxdVibP6BnVZGPfaFkg>
+    <xmx:ugqUYJrOGyYPTPEPpXL4CcsRluA-FRybwYHrtZtKjxQVPTg6ZHctJQ>
+Received: from Threadripper.local (ec2-35-164-246-34.us-west-2.compute.amazonaws.com [35.164.246.34])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Thu,  6 May 2021 11:26:44 -0400 (EDT)
+From:   Zi Yan <zi.yan@sent.com>
+To:     David Hildenbrand <david@redhat.com>,
+        Oscar Salvador <osalvador@suse.de>
+Cc:     Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org,
+        Andy Lutomirski <luto@kernel.org>,
+        "Rafael J . Wysocki" <rafael@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        linux-ia64@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org,
+        Zi Yan <ziy@nvidia.com>
+Subject: [RFC PATCH 0/7] Memory hotplug/hotremove at subsection size
+Date:   Thu,  6 May 2021 11:26:16 -0400
+Message-Id: <20210506152623.178731-1-zi.yan@sent.com>
 X-Mailer: git-send-email 2.30.2
-In-Reply-To: <cover.1620314616.git.mchehab+huawei@kernel.org>
-References: <cover.1620314616.git.mchehab+huawei@kernel.org>
+Reply-To: Zi Yan <ziy@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
-To:     unlisted-recipients:; (no To-header on input)
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-added pm_runtime_resume_and_get() in order to automatically handle
-dev->power.usage_count decrement on errors.
+From: Zi Yan <ziy@nvidia.com>
 
-While there's nothing wrong with the current usage on this driver,
-as we're getting rid of the pm_runtime_get_sync() call all over
-the media subsystem, let's remove the last occurrence on this
-driver.
+Hi all,
 
-Reviewed-by: Ezequiel Garcia <ezequiel@collabora.com>
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- drivers/staging/media/hantro/hantro_drv.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+This patchset tries to remove the restriction on memory hotplug/hotremove
+granularity, which is always greater or equal to memory section size[1].
+With the patchset, kernel is able to online/offline memory at a size indepe=
+ndent
+of memory section size, as small as 2MB (the subsection size).
 
-diff --git a/drivers/staging/media/hantro/hantro_drv.c b/drivers/staging/media/hantro/hantro_drv.c
-index eea2009fa17b..74d6545395f9 100644
---- a/drivers/staging/media/hantro/hantro_drv.c
-+++ b/drivers/staging/media/hantro/hantro_drv.c
-@@ -160,9 +160,8 @@ static void device_run(void *priv)
- 	src = hantro_get_src_buf(ctx);
- 	dst = hantro_get_dst_buf(ctx);
- 
--	ret = pm_runtime_get_sync(ctx->dev->dev);
--	if (ret < 0) {
--		pm_runtime_put_noidle(ctx->dev->dev);
-+	ret = pm_runtime_resume_and_get(ctx->dev->dev);
-+	if (ret < 0)
- 		goto err_cancel_job;
- 	}
- 
--- 
+The motivation is to increase MAX_ORDER of the buddy allocator and pageblock
+size without increasing memory hotplug/hotremove granularity at the same ti=
+me,
+so that the kernel can allocator 1GB pages using buddy allocator and utiliz=
+es
+existing pageblock based anti-fragmentation, paving the road for 1GB THP
+support[2].
+
+The patchset utilizes the existing subsection support[3] and changes the
+section size alignment checks to subsection size alignment checks. There are
+also changes to pageblock code to support partial pageblocks, when pageblock
+size is increased along with MAX_ORDER. Increasing pageblock size can enable
+kernel to utilize existing anti-fragmentation mechanism for gigantic page
+allocations.
+
+The last patch increases SECTION_SIZE_BITS to demonstrate the use of memory
+hotplug/hotremove subsection, but is not intended to be merged as is. It is
+there in case one wants to try this out and will be removed during the final
+submission.
+
+Feel free to give suggestions and comments. I am looking forward to your
+feedback.
+
+Thanks.
+
+Zi Yan (7):
+  mm: sparse: set/clear subsection bitmap when pages are
+    onlined/offlined.
+  mm: set pageblock_order to the max of HUGETLB_PAGE_ORDER and
+    MAX_ORDER-1
+  mm: memory_hotplug: decouple memory_block size with section size.
+  mm: pageblock: allow set/unset migratetype for partial pageblock
+  mm: memory_hotplug, sparse: enable memory hotplug/hotremove
+    subsections
+  arch: x86: no MAX_ORDER exceeds SECTION_SIZE check for 32bit vdso.
+  [not for merge] mm: increase SECTION_SIZE_BITS to 31
+
+ arch/ia64/Kconfig                |   1 -
+ arch/powerpc/Kconfig             |   1 -
+ arch/x86/Kconfig                 |  15 +++
+ arch/x86/entry/vdso/Makefile     |   1 +
+ arch/x86/include/asm/sparsemem.h |   2 +-
+ drivers/base/memory.c            | 176 +++++++++++++++----------------
+ drivers/base/node.c              |   2 +-
+ include/linux/memory.h           |   8 +-
+ include/linux/mmzone.h           |   2 +
+ include/linux/page-isolation.h   |   8 +-
+ include/linux/pageblock-flags.h  |   9 --
+ mm/Kconfig                       |   7 --
+ mm/memory_hotplug.c              |  22 ++--
+ mm/page_alloc.c                  |  40 ++++---
+ mm/page_isolation.c              |  30 +++---
+ mm/sparse.c                      |  55 ++++++++--
+ 16 files changed, 219 insertions(+), 160 deletions(-)
+
+--=20
 2.30.2
 
