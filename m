@@ -2,130 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7B33758FB
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:10:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 77A3537590A
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:14:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236229AbhEFRLv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:11:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55662 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236198AbhEFRLu (ORCPT
+        id S236194AbhEFRPZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:15:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:46960 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236042AbhEFRPX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:11:50 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8A5AC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 10:10:50 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id i8-20020a0569020688b02904ef3bd00ce7so6717448ybt.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 10:10:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=bJfhWmzCEqBf7RcCkH3EB8f08paJPyJ+O6NagWukv6U=;
-        b=V5yFPBFWU/ofw5k+uRKoMu4NIcr+A/WTzrYffNWRjnEwCsSrl3isnoecMrGuEavL9h
-         oR3iDGlWaeDDaU1TcxETQbIiK6GxkuoAvSpJZhg4m4M1Nl3NomfiDSb/fptNAHCvr3tz
-         q1mEOfMlWrpHnoYAbZ/TleegRZg71ZGv3OEJLJ9wZDkvoniw+5JEF6XCoV2OkHP+lMGo
-         ayd2Hq0VWh4vo7PubK+Ok21BMBXhuGYQSQkjsYOr1t++yzOR8Zn9aR7wKuRthPtfk9Uz
-         MPJT3naf+SFLWKhHXZ09gIC64tQ03gCqAR9z1B8ZYpWBve/fRe8xVldeCD9PUtr/y2q8
-         OH6A==
+        Thu, 6 May 2021 13:15:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620321265;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=WHt7BDD9RIfUmR/n7ErimXYampz84sK/Te7hVMTDzGg=;
+        b=GlRAmHlwMfktC99//a0DBE8ce/3wOGOy7nTtAmlO90eIKHKtYBEbnbLF1JItXZg9DcoVWx
+        feTtJnTCShkelUJlpo7rRAaE1CYVWDt/vTtEvGopNxCZA2tmbaLsfmDQM/I1zmB6zFhEf1
+        akhT8801MMQZUzmcRwazN4JF7UF6J2c=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-43-tbP73XjYNQaM3NVbtiLnmg-1; Thu, 06 May 2021 13:14:13 -0400
+X-MC-Unique: tbP73XjYNQaM3NVbtiLnmg-1
+Received: by mail-qv1-f72.google.com with SMTP id b10-20020a0cf04a0000b02901bda1df3afbso4647640qvl.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 10:14:13 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=bJfhWmzCEqBf7RcCkH3EB8f08paJPyJ+O6NagWukv6U=;
-        b=D251hmXx7hCbz/Fe0k+UNoccniqOXC0YdDStq60lNYqxDxwj3wxq0fmVrWte7Os9Cq
-         nFNRvtNLweml8m+7/nzG6iTrPEIPN9Np63brG4bi8K52SNKa9SmXnTxUFToP7epdI+2n
-         wmcYoVSnkY8lVKwJsRVvXN37Z8KSumFvKP7qKnLsYsDrL95fvEr5FRt7CCGseQTvpXgI
-         kU8i7uxbrE1zmCfB4OqeQz0cQzXShBhv9b9Yer0efcGWjEhiaaQgPAg6Htt+e6Qb9Guh
-         1bNWjfebxiThuY1seofTfIL1xUbWtJmSnNV+ruz0s1rjBtEObjML2IrRFGhNyh4oKrx3
-         SK8g==
-X-Gm-Message-State: AOAM530Z6SDeiQArXgloOEN87GjsCklWZYHhvpGwXVKLBaYlIj6wIrEH
-        Qi1a3bgT9oyW6W3/GSBfzsGNotwHOA+v
-X-Google-Smtp-Source: ABdhPJwqcl2r+9STr96Pm6e9fSrlA9NZNqIU8pZCFUDTOsJbg4lXVx3E85jZh5f9FxVQ89q55YK4WhKQn/Ns
-X-Received: from kyletso.ntc.corp.google.com ([2401:fa00:fc:202:9a5c:8de0:4c79:ba52])
- (user=kyletso job=sendgmr) by 2002:a25:99c1:: with SMTP id
- q1mr6973855ybo.517.1620321050053; Thu, 06 May 2021 10:10:50 -0700 (PDT)
-Date:   Fri,  7 May 2021 01:10:26 +0800
-In-Reply-To: <20210506171026.1736828-1-kyletso@google.com>
-Message-Id: <20210506171026.1736828-3-kyletso@google.com>
-Mime-Version: 1.0
-References: <20210506171026.1736828-1-kyletso@google.com>
-X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
-Subject: [PATCH v2 2/2] usb: typec: tcpm: Fix wrong handling for Not_Supported
- in VDM AMS
-From:   Kyle Tso <kyletso@google.com>
-To:     linux@roeck-us.net, heikki.krogerus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     badhri@google.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Kyle Tso <kyletso@google.com>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=WHt7BDD9RIfUmR/n7ErimXYampz84sK/Te7hVMTDzGg=;
+        b=PrZjSJdVsAsqV47E6joCpYh1qZ1H0MPXH9qpyTQMn2CBdR1memOJ8sFY2nCjngJgNx
+         kL7Nw5nvmWGPB3oFSQN/lqOQezBhtpij6vLDglhz+TIKKz3h1/DFD5Pjq4EDFltTfgWR
+         fGM3/PUUO/dJOqM+1J/wrboN0YVaRFwhu4Jf3tAFUWzfG5uQAxnEXBVKEuPGeUXv8mUz
+         Jq56/Bz2EcqnUQjsRpKN4vNq+0HcxF/YES60NRQKSjJAhHtCU39fsZzzd3mZAdkrX5h5
+         XL9sjh4PKP+WPniOKuOp5Z25oIeg0nNVfLRFGTMbFpwi6RfGl7AKul07VGFCniptLYXh
+         liiw==
+X-Gm-Message-State: AOAM5334mXcVTIdzHuEckGjUjRevx84NiWEpU3o4Xw3FJX/aIRcYr7iv
+        XlUwe9x6ZzToWB6+IxIZ2WNfSPrq0ikFRIdAm1y7VZSw3jiVbStKFY1FK525b13Aa6l+HQGw1H3
+        EYKexpNhsP0MkzChjSogOCvfL
+X-Received: by 2002:ae9:dc41:: with SMTP id q62mr4943870qkf.22.1620321252601;
+        Thu, 06 May 2021 10:14:12 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzjEwnhoBPGfrifNUIwk2RVyavP6PRLpFE5xqW6/Y3DxB14jDNDqb1w/0e5lbnPGihQCWj+RQ==
+X-Received: by 2002:ae9:dc41:: with SMTP id q62mr4943844qkf.22.1620321252385;
+        Thu, 06 May 2021 10:14:12 -0700 (PDT)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id f5sm2475312qkk.12.2021.05.06.10.14.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 10:14:11 -0700 (PDT)
+Message-ID: <59cd454b3a104a3a469a94be95cc860ced7581bd.camel@redhat.com>
+Subject: Re: [PATCH AUTOSEL 4.9 08/24] drm/bridge/analogix/anx78xx: Setup
+ encoder before registering connector
+From:   Lyude Paul <lyude@redhat.com>
+To:     Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+        stable@vger.kernel.org
+Cc:     Robert Foss <robert.foss@linaro.org>,
+        dri-devel@lists.freedesktop.org
+Date:   Thu, 06 May 2021 13:14:10 -0400
+In-Reply-To: <20210503164252.2854487-8-sashal@kernel.org>
+References: <20210503164252.2854487-1-sashal@kernel.org>
+         <20210503164252.2854487-8-sashal@kernel.org>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Not_Supported Message is acceptable in VDM AMS. Redirect the VDM state
-machine to VDM_STATE_DONE when receiving Not_Supported and finish the
-VDM AMS.
+I would drop this patch for all of the stable kernel versions, it doesn't
+really fix any user reported issues.
 
-Also, after the loop in vdm_state_machine_work, add more conditions of
-VDM states to clear the vdm_sm_running flag because those are all
-stopping states when leaving the loop.
+The other patches CC'd to me look fine for stable though
 
-In addition, finish the VDM AMS if the port partner responds BUSY.
+On Mon, 2021-05-03 at 12:42 -0400, Sasha Levin wrote:
+> From: Lyude Paul <lyude@redhat.com>
+> 
+> [ Upstream commit 9962849d0871f5e53d0e3b3d84561f8f2847fbf4 ]
+> 
+> Since encoder mappings for connectors are exposed to userspace, we should
+> be attaching the encoder before exposing the connector to userspace. Just a
+> drive-by fix for an issue I noticed while fixing up usages of
+> drm_dp_aux_init()/drm_dp_aux_register() across the tree.
+> 
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> Reviewed-by: Robert Foss <robert.foss@linaro.org>
+> Link:
+> https://patchwork.freedesktop.org/patch/msgid/20210219215326.2227596-9-lyude@redhat.com
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
+> ---
+>  drivers/gpu/drm/bridge/analogix-anx78xx.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/bridge/analogix-anx78xx.c
+> b/drivers/gpu/drm/bridge/analogix-anx78xx.c
+> index eb97e88a103c..16babacb7cf0 100644
+> --- a/drivers/gpu/drm/bridge/analogix-anx78xx.c
+> +++ b/drivers/gpu/drm/bridge/analogix-anx78xx.c
+> @@ -1045,12 +1045,6 @@ static int anx78xx_bridge_attach(struct drm_bridge
+> *bridge)
+>         drm_connector_helper_add(&anx78xx->connector,
+>                                  &anx78xx_connector_helper_funcs);
+>  
+> -       err = drm_connector_register(&anx78xx->connector);
+> -       if (err) {
+> -               DRM_ERROR("Failed to register connector: %d\n", err);
+> -               return err;
+> -       }
+> -
+>         anx78xx->connector.polled = DRM_CONNECTOR_POLL_HPD;
+>  
+>         err = drm_mode_connector_attach_encoder(&anx78xx->connector,
+> @@ -1060,6 +1054,12 @@ static int anx78xx_bridge_attach(struct drm_bridge
+> *bridge)
+>                 return err;
+>         }
+>  
+> +       err = drm_connector_register(&anx78xx->connector);
+> +       if (err) {
+> +               DRM_ERROR("Failed to register connector: %d\n", err);
+> +               return err;
+> +       }
+> +
+>         return 0;
+>  }
+>  
 
-Fixes: 8dea75e11380 ("usb: typec: tcpm: Protocol Error handling")
-Fixes: 8d3a0578ad1a ("usb: typec: tcpm: Respond Wait if VDM state machine is running")
-Signed-off-by: Kyle Tso <kyletso@google.com>
----
- drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++++--
- 1 file changed, 12 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
-index 07a449f0e8fa..bf97db232f09 100644
---- a/drivers/usb/typec/tcpm/tcpm.c
-+++ b/drivers/usb/typec/tcpm/tcpm.c
-@@ -1897,7 +1897,6 @@ static void vdm_run_state_machine(struct tcpm_port *port)
- 
- 			if (res < 0) {
- 				port->vdm_state = VDM_STATE_ERR_BUSY;
--				port->vdm_sm_running = false;
- 				return;
- 			}
- 		}
-@@ -1913,6 +1912,7 @@ static void vdm_run_state_machine(struct tcpm_port *port)
- 		port->vdo_data[0] = port->vdo_retry;
- 		port->vdo_count = 1;
- 		port->vdm_state = VDM_STATE_READY;
-+		tcpm_ams_finish(port);
- 		break;
- 	case VDM_STATE_BUSY:
- 		port->vdm_state = VDM_STATE_ERR_TMOUT;
-@@ -1978,7 +1978,7 @@ static void vdm_state_machine_work(struct kthread_work *work)
- 		 port->vdm_state != VDM_STATE_BUSY &&
- 		 port->vdm_state != VDM_STATE_SEND_MESSAGE);
- 
--	if (port->vdm_state == VDM_STATE_ERR_TMOUT)
-+	if (port->vdm_state < VDM_STATE_READY)
- 		port->vdm_sm_running = false;
- 
- 	mutex_unlock(&port->lock);
-@@ -2569,6 +2569,16 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
- 			port->sink_cap_done = true;
- 			tcpm_set_state(port, ready_state(port), 0);
- 			break;
-+		case SRC_READY:
-+		case SNK_READY:
-+			if (port->vdm_state > VDM_STATE_READY) {
-+				port->vdm_state = VDM_STATE_DONE;
-+				if (tcpm_vdm_ams(port))
-+					tcpm_ams_finish(port);
-+				mod_vdm_delayed_work(port, 0);
-+				break;
-+			}
-+			fallthrough;
- 		default:
- 			tcpm_pd_handle_state(port,
- 					     port->pwr_role == TYPEC_SOURCE ?
 -- 
-2.31.1.527.g47e6f16901-goog
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
 
