@@ -2,64 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79822375309
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:29:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7622537530E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:32:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234760AbhEFLaz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 07:30:55 -0400
-Received: from mail-m176216.qiye.163.com ([59.111.176.216]:20042 "EHLO
-        mail-m176216.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234645AbhEFLaw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 07:30:52 -0400
-Received: from wanjb-virtual-machine.localdomain (unknown [36.152.145.182])
-        by mail-m176216.qiye.163.com (Hmail) with ESMTPA id 9AE4DC201B5;
-        Thu,  6 May 2021 19:29:51 +0800 (CST)
-From:   Wan Jiabing <wanjiabing@vivo.com>
-To:     Patrik Jakobsson <patrik.r.jakobsson@gmail.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Cc:     kael_w@yeah.net, Wan Jiabing <wanjiabing@vivo.com>
-Subject: [PATCH] drm/gma500: update comment of psb_spank()
-Date:   Thu,  6 May 2021 19:28:51 +0800
-Message-Id: <20210506112851.20315-1-wanjiabing@vivo.com>
-X-Mailer: git-send-email 2.25.1
+        id S234758AbhEFLdH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 07:33:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234603AbhEFLdG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 07:33:06 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D6F9613D9;
+        Thu,  6 May 2021 11:32:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620300727;
+        bh=IFnFYKDkDaVRIdqWKKiKINUs4W6CScJJBZQMfv7J0hg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vCuhHrvuVM9xyINHg7Q+NhXsf24qyF88GmDe4KfpUKMhks5B1u7Axo9JV9nhiwWGW
+         3ZeCjUQ3FIefjeqm3Xddf8a/ZZllZuK1OPUqvBjIaEp6Cv2aYzS+95wzOI3QVcI5nc
+         xp3wNrIyipc3qJu3DFofHicQIVxjuzS22sWgezsb2XsTFq9D9BeI10U3RWiDdNTUKi
+         iRqyoqbFRrNPRZ1IS35huvHzdNAkqe4nzhC8NabCcodWLXFFPngN1/Ir+nVW9G4t2g
+         zXMq4Xqbq6wq1bhcq6uamyMEQiHYtrtXItrr+v5x4XGBrzTRh/H/WgZBR+BZ8S1DxC
+         +4Z5SaXIY/TQQ==
+Date:   Thu, 6 May 2021 14:32:03 +0300
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Yang Li <yang.lee@linux.alibaba.com>
+Cc:     dledford@redhat.com, jgg@ziepe.ca, nathan@kernel.org,
+        ndesaulniers@google.com, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: Re: [PATCH] RDMA/mlx5: Remove redundant assignment to ret
+Message-ID: <YJPTs9Znjz/XBxae@unreal>
+References: <1620296001-120406-1-git-send-email-yang.lee@linux.alibaba.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZQkhPH1ZMHk1OTB5JTEhMTkxVEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        hKQ1VLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NEk6Fgw5Cz8PPEI5FjNMMTI5
-        Nw8KC0lVSlVKTUlLSEtLTkJJSUlLVTMWGhIXVQwaFRESGhkSFRw7DRINFFUYFBZFWVdZEgtZQVlI
-        TVVKTklVSk9OVUpDSVlXWQgBWUFKQ0pINwY+
-X-HM-Tid: 0a794170f2c9d976kuws9ae4dc201b5
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620296001-120406-1-git-send-email-yang.lee@linux.alibaba.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 5c209d8056b9 ("drm/gma500: psb_spank() doesn't need it's
-own file"), accel_2d.c was deleted and psb_spank() was moved into
-psb_drv.c. Fix the comment here.
+On Thu, May 06, 2021 at 06:13:21PM +0800, Yang Li wrote:
+> Variable 'ret' is set to the rerurn value of function
+> mlx5_mr_cache_alloc() but this value is never read as it is
+> overwritten with a new value later on, hence it is a redundant
+> assignment and can be removed
+> 
+> Clean up the following clang-analyzer warning:
+> 
+> drivers/infiniband/hw/mlx5/odp.c:421:2: warning: Value stored to 'ret'
+> is never read [clang-analyzer-deadcode.DeadStores]
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
+> ---
+>  drivers/infiniband/hw/mlx5/odp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
 
-Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
----
- drivers/gpu/drm/gma500/psb_drv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Fixes: e6fb246ccafb ("RDMA/mlx5: Consolidate MR destruction to mlx5_ib_dereg_mr()")
 
-diff --git a/drivers/gpu/drm/gma500/psb_drv.h b/drivers/gpu/drm/gma500/psb_drv.h
-index 49afa577d442..d6e7c2c2c947 100644
---- a/drivers/gpu/drm/gma500/psb_drv.h
-+++ b/drivers/gpu/drm/gma500/psb_drv.h
-@@ -646,7 +646,7 @@ extern u32 psb_get_vblank_counter(struct drm_crtc *crtc);
- extern int psbfb_probed(struct drm_device *dev);
- extern int psbfb_remove(struct drm_device *dev,
- 			struct drm_framebuffer *fb);
--/* accel_2d.c */
-+/* psb_drv.c */
- extern void psb_spank(struct drm_psb_private *dev_priv);
- 
- /* psb_reset.c */
--- 
-2.25.1
-
+Thanks,
+Reviewed-by: Leon Romanovsky <leonro@nvidia.com>
