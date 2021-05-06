@@ -2,206 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F82437505A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:44:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF33E37505F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:47:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233534AbhEFHpB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:45:01 -0400
-Received: from mail-bn1nam07on2050.outbound.protection.outlook.com ([40.107.212.50]:16718
-        "EHLO NAM02-BN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S233527AbhEFHpA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:45:00 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jd35PqN0jolJVQ177nPOm2qyAyeBXqUiWqSTMM+C08+3q7cnfjm53pE05xJ4P88lmmCJXfTGUFu1vWZQzF2wXVKVlAcFPBoyDV84P+BMzYPLTMOgjPId1p9qR0KkEZH43e/8/AIbTI63iwm/hUaEdbcKneT52rBnWZ/S5/76MXQVY74fQv69lZ3nWng/Pm0AeXiJBAEF80VhOpqt/KX+kscGT0lPlbrUkCTNQIbkWuxq02D+51/quySmjEcQbFTp51B3lJEXDURPKQmlsvic18I8vJAEzUdro/lSZjTv8DlXnH+P9R/CuOYnb6NVOVIGS0Xu1VEpxUjqEYc8K+szyQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LDE9XH1jM5+h7rrVVVx4PrH/36hBQ28evpnHntDvfd0=;
- b=XMHj4togSAntuJytVbTM219MSA45QoKUpyyCDp/h+7VNGNlj/exxwcj41pvtZITvU4NhcfID5nJ2G8pUefcu7KGopL4r29XE0dSoI66QPo8pPzlH1bGzMlkhNIWHnh2fTRKuSlA79h9h+xKKuYB4hpy3t4nyDYlqF3mCh8MU0UXs1Ge1/0cU9gaeXDOoQEExOLB2uPGB0kTpPwBOc2B+QJ3X/i9J3j/ykE6dY16Dto6f2Wk481RPij9JrB1X7DVNGEYAhTG5Jtul4ozXu0z33ZhhvR3/48+MHtJAcKtyu3UpPLTDiZqBxEIinamimHTCWi0gUflJQnZyOVvL/32LIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.112.34) smtp.rcpttodomain=infradead.org smtp.mailfrom=nvidia.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=nvidia.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=LDE9XH1jM5+h7rrVVVx4PrH/36hBQ28evpnHntDvfd0=;
- b=rAFPDb5AfEbupSy6C0zW8cw0bEeC8U0wpmScGgF0wCKmXqurr5xuNAjEj3Elv/A/OXn4MjoYJvPrw060AGSohMlK+ilOxqyHPUKETctwejYiUQfrLexCqmuk1OZabSKj2vBC/RcsYl3M9G/67mclaAE4q73qG3t3IrBP/CiXEDBNHYrUC2bOBY0i2BcQUlIDXaJVz/DFRGbnHmM/mfaIKrOYZ2SItq2n57xilSjZruYMhepHMiTQ+995DYfodlKTFhmGKnroxSncG+b/jSQflYsex3MLvsW06kCwZqJMX3fMmxE3p/0+xAWNGSNjx5iQYD4cGbGE7fPZ76Xv5x7EFg==
-Received: from MWHPR2201CA0050.namprd22.prod.outlook.com
- (2603:10b6:301:16::24) by BN6PR12MB1185.namprd12.prod.outlook.com
- (2603:10b6:404:1e::10) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.35; Thu, 6 May
- 2021 07:44:00 +0000
-Received: from CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
- (2603:10b6:301:16:cafe::5c) by MWHPR2201CA0050.outlook.office365.com
- (2603:10b6:301:16::24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend
- Transport; Thu, 6 May 2021 07:44:00 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.112.34)
- smtp.mailfrom=nvidia.com; infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.112.34 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.112.34; helo=mail.nvidia.com;
-Received: from mail.nvidia.com (216.228.112.34) by
- CO1NAM11FT061.mail.protection.outlook.com (10.13.175.200) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id
- 15.20.4108.25 via Frontend Transport; Thu, 6 May 2021 07:43:59 +0000
-Received: from nvdebian.localnet (172.20.145.6) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 6 May
- 2021 07:43:55 +0000
-From:   Alistair Popple <apopple@nvidia.com>
-To:     <linux-mm@kvack.org>
-CC:     <nouveau@lists.freedesktop.org>, <bskeggs@redhat.com>,
-        <akpm@linux-foundation.org>, <linux-doc@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <dri-devel@lists.freedesktop.org>,
-        <jhubbard@nvidia.com>, <rcampbell@nvidia.com>,
-        <jglisse@redhat.com>, <jgg@nvidia.com>, <hch@infradead.org>,
-        <daniel@ffwll.ch>, <willy@infradead.org>, <bsingharora@gmail.com>
-Subject: Re: [PATCH v8 0/8] Add support for SVM atomics in Nouveau
-Date:   Thu, 6 May 2021 17:43:53 +1000
-Message-ID: <2550644.JnOt3SL4Yy@nvdebian>
-In-Reply-To: <20210407084238.20443-1-apopple@nvidia.com>
-References: <20210407084238.20443-1-apopple@nvidia.com>
+        id S233543AbhEFHsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:48:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41858 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233340AbhEFHr6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 03:47:58 -0400
+Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EBF95C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:47:00 -0700 (PDT)
+Received: by mail-ej1-x636.google.com with SMTP id u21so6807448ejo.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:47:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=ouTCmWFpKTDg5oT/XmF36k/Rr3gENRlT/LMcL8SykNo=;
+        b=N3iPImlzvbiZ5dMkmaoyqcz69E+X1DJ0tpyEVJb0dTpDPOxU6Kw1ibv3LfE4wkMAEp
+         uoqo/fEk5QGB63iROU8XoSj/J/6oqUGlEcW09H0rF+seckLYLzGUtY3eHU27zb/dZhbL
+         U8D+Ww1n3Rti7vDTOBQ2HEgi3E1uSsp67TtnGyKQhkLsKQRHtsEag7U68QpfLbA5HeX5
+         B3MeOv4pqZv9XKeTcX1lVgh8LtPRXe8IwRgVrjEvCdu1LZSV6UKRU4jTxhkg4UeItt4R
+         91XSCDQbCWstvB0ojWKgVTVCtHC6NidNg4wzgaZBHHmNKCF6ceM8cpBdE+UYtxGwRspg
+         bKhQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=ouTCmWFpKTDg5oT/XmF36k/Rr3gENRlT/LMcL8SykNo=;
+        b=uaJIg+kZ3nkbxRqELbPiHq4+g8nHHYy4yxVAvt7lhxCPdR3vsTocth2H6kXWCQvzeh
+         5hle0Xef4p77PSNuzVJ85UcU3s2dLlgkYpXoKBx3GuhVivkvCft35H7+ghQCUwx/KDOd
+         wVIppEvrR0sHjd6CXcNOPXU86MgAcHEWdhHtotypOmIZS5xolIw1nOHNNaPlPfuvvMio
+         6FECfVKn1w6Yec0dXcEokKyBCOAGUnfh4ZObS2zbyWe+BkeOSrCEcbY0DOORixVsKfFq
+         7CRxLtMcY9KNdz8K6bUbs49z6WPFzQJ0u0ccIugl5ihj6ai0Hl9BxM/sKA3nLMb/xmTe
+         UOgg==
+X-Gm-Message-State: AOAM530oxx6vuwA3kF5ZKqcqAgglDVPKTju9Uf3MkPulGzP0syomUtAa
+        BGXt3n8wRqpfXttWPkJaHeU572Ke4oi2k1MREBqvRw==
+X-Google-Smtp-Source: ABdhPJx1KiJ65Bx8Buxnj46ldfs+vff1TRQPCh+N5FQoEVbjHtE8YrK1kWMW4yQ8IeftoQiQJojc0xFagm9vEdUTedk=
+X-Received: by 2002:a17:906:85da:: with SMTP id i26mr2986106ejy.287.1620287219373;
+ Thu, 06 May 2021 00:46:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [172.20.145.6]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 1a9016d9-b380-40fc-5918-08d91062b5ba
-X-MS-TrafficTypeDiagnostic: BN6PR12MB1185:
-X-Microsoft-Antispam-PRVS: <BN6PR12MB11859E7FE6713DE06E6BCC60DF589@BN6PR12MB1185.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: lPJ3PEH9pc2VBkC5HQXnqPFaRG5QulQJDgW0gSnYnSUvTIfbLEE9L1vzA4mrGXFws02DxqSnhugVbSSBn5Tg76T8jtggxHw93+ZQ/Hwtt3o8kGJIeatwJZkEBkiTUvcwyoN0sE6HzMjMbBiobu5Zg0PC/5u4+V7PcBUTWH6sl3k5nBJiBW3czFmhjuAxWKoyxZHAnXwUGu9vhs9sfhuqdqgAyMoxlxyw+eA5VlNZqoy62eBn/1uEbF3N3ewZjVg/RePYT4Ul8nPlUYNaZVcgXL+hV005RXl/QQSi9wuu4nyqu6vUKS8cKBeqIW+AYee2YRZSmOV1AXaCbioOXYdI/FEjA6+ngdtveh3VLhQNxUGHJFVDzdRz/ovClVg5F3wP0e2PNKfy5njHtqibIRrxU+Rp+wEuCLOMNw4mX3qYU/1NIoOUFmKApj6KwsbYHGIO2Sd0am936kmhfkXv46BhSmWoDt4WVHKe+7/BZ7PgxSKGuY1rHEz2kiAy94E/BhAfnGIQs2zCkYxl9N0zkkk5etSAm3CGMGRkzCkZl98jkVhk5upDFXzYHo3yNEMnFY+NKIf+t2F3CNeq9tQT8JPX31R/u82k8Krv58R9/nAaSXJViu/GkDBo9QVIBHOyW/Wwu8yLxfRECf/jIQclnDOqO4MS3cmJCHMVHX3yQfOc30MfrpFC+u1wVdWbyb6njRxfwKvtscqHio5OCF+/9KW01AFipDacnTIrjQdo1IzycJsYhP9CsyuA3HTfn3CxMtEn
-X-Forefront-Antispam-Report: CIP:216.228.112.34;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:schybrid03.nvidia.com;CAT:NONE;SFS:(4636009)(136003)(39860400002)(376002)(346002)(396003)(36840700001)(46966006)(5660300002)(186003)(7636003)(316002)(478600001)(336012)(2906002)(16526019)(9686003)(426003)(70206006)(54906003)(36860700001)(33716001)(966005)(9576002)(6916009)(8676002)(7416002)(47076005)(86362001)(4326008)(8936002)(82310400003)(70586007)(82740400003)(26005)(356005)(83380400001)(39026012);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 07:43:59.0784
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a9016d9-b380-40fc-5918-08d91062b5ba
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.112.34];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource: CO1NAM11FT061.eop-nam11.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN6PR12MB1185
+References: <20210505112326.195493232@linuxfoundation.org>
+In-Reply-To: <20210505112326.195493232@linuxfoundation.org>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Thu, 6 May 2021 13:16:47 +0530
+Message-ID: <CA+G9fYurME_qyOTEbZneX_+nX8bVQsJWFyZq8qE=LS8AQ3JBCg@mail.gmail.com>
+Subject: Re: [PATCH 5.10 00/29] 5.10.35-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Shuah Khan <shuah@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>, patches@kernelci.org,
+        lkft-triage@lists.linaro.org, Jon Hunter <jonathanh@nvidia.com>,
+        linux-stable <stable@vger.kernel.org>,
+        Pavel Machek <pavel@denx.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew,
+On Wed, 5 May 2021 at 17:37, Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+>
+> This is the start of the stable review cycle for the 5.10.35 release.
+> There are 29 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>
+> Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
+> Anything received after that time might be too late.
+>
+> The whole patch series can be found in one patch at:
+>         https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
+5.10.35-rc1.gz
+> or in the git tree and branch at:
+>         git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
+-rc.git linux-5.10.y
+> and the diffstat can be found below.
+>
+> thanks,
+>
+> greg k-h
 
-There is currently no outstanding feedback for this series so I am hoping it 
-may be considered for inclusion (or at least the mm portions - I still need 
-Reviews/Acks for the Nouveau bits). The main change for v8 was removal of 
-entries on fork rather than copying in response to feedback from Jason so any 
-follow up comments on patch 5 would also be welcome. The series contains a 
-number of general clean-ups suggested by Christoph along with a feature to 
-temporarily make selected user page mappings write-protected.
+Results from Linaro=E2=80=99s test farm.
+No regressions on arm64, arm, x86_64, and i386.
 
-This is needed to support OpenCL atomic operations in Nouveau to shared 
-virtual memory (SVM) regions allocated with the CL_MEM_SVM_ATOMICS clSVMAlloc 
-flag. A more complete description of the OpenCL SVM feature is available at 
-https://www.khronos.org/registry/OpenCL/specs/3.0-unified/html/
-OpenCL_API.html#_shared_virtual_memory .
+Tested-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-I have been testing this with Mesa 21.1.0 and a simple OpenCL program which 
-checks GPU atomic accesses to system memory are atomic. Without this series 
-the test fails as there is no way of write-protecting the userspace page 
-mapping which results in the device clobbering CPU writes. For reference the 
-test is available at https://ozlabs.org/~apopple/opencl_svm_atomics/ .
+## Build
+* kernel: 5.10.35-rc1
+* git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-=
+rc.git
+* git branch: linux-5.10.y
+* git commit: 5f894e4a8758db7af6eeb43311c0e9314871b031
+* git describe: v5.10.34-30-g5f894e4a8758
+* test details:
+https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-5.10.y/build/v5.10=
+.34-30-g5f894e4a8758
 
- - Alistair
+## No regressions (compared to v5.10.34-8-g14447ec121b3)
 
-On Wednesday, 7 April 2021 6:42:30 PM AEST Alistair Popple wrote:
-> This is the eighth version of a series to add support to Nouveau for atomic
-> memory operations on OpenCL shared virtual memory (SVM) regions.
-> 
-> The main change for this version is a simplification of device exclusive
-> entry handling. Instead of copying entries for copy-on-write mappings
-> during fork they are removed instead. This is safer because there could be
-> unique corner cases when copying, particularly for pinned pages which
-> should follow the same logic as copy_present_page(). Removing entries
-> avoids this possiblity by treating them as normal ptes.
-> 
-> Exclusive device access is implemented by adding a new swap entry type
-> (SWAP_DEVICE_EXCLUSIVE) which is similar to a migration entry. The main
-> difference is that on fault the original entry is immediately restored by
-> the fault handler instead of waiting.
-> 
-> Restoring the entry triggers calls to MMU notifers which allows a device
-> driver to revoke the atomic access permission from the GPU prior to the CPU
-> finalising the entry.
-> 
-> Patches 1 & 2 refactor existing migration and device private entry
-> functions.
-> 
-> Patches 3 & 4 rework try_to_unmap_one() by splitting out unrelated
-> functionality into separate functions - try_to_migrate_one() and
-> try_to_munlock_one(). These should not change any functionality, but any
-> help testing would be much appreciated as I have not been able to test
-> every usage of try_to_unmap_one().
-> 
-> Patch 5 contains the bulk of the implementation for device exclusive
-> memory.
-> 
-> Patch 6 contains some additions to the HMM selftests to ensure everything
-> works as expected.
-> 
-> Patch 7 is a cleanup for the Nouveau SVM implementation.
-> 
-> Patch 8 contains the implementation of atomic access for the Nouveau
-> driver.
-> 
-> This has been tested using the latest upstream Mesa userspace with a simple
-> OpenCL test program which checks the results of atomic GPU operations on a
-> SVM buffer whilst also writing to the same buffer from the CPU.
-> 
-> Alistair Popple (8):
->   mm: Remove special swap entry functions
->   mm/swapops: Rework swap entry manipulation code
->   mm/rmap: Split try_to_munlock from try_to_unmap
->   mm/rmap: Split migration into its own function
->   mm: Device exclusive memory access
->   mm: Selftests for exclusive device memory
->   nouveau/svm: Refactor nouveau_range_fault
->   nouveau/svm: Implement atomic SVM access
-> 
->  Documentation/vm/hmm.rst                      |  19 +-
->  Documentation/vm/unevictable-lru.rst          |  33 +-
->  arch/s390/mm/pgtable.c                        |   2 +-
->  drivers/gpu/drm/nouveau/include/nvif/if000c.h |   1 +
->  drivers/gpu/drm/nouveau/nouveau_svm.c         | 156 ++++-
->  drivers/gpu/drm/nouveau/nvkm/subdev/mmu/vmm.h |   1 +
->  .../drm/nouveau/nvkm/subdev/mmu/vmmgp100.c    |   6 +
->  fs/proc/task_mmu.c                            |  23 +-
->  include/linux/mmu_notifier.h                  |  26 +-
->  include/linux/rmap.h                          |  11 +-
->  include/linux/swap.h                          |   8 +-
->  include/linux/swapops.h                       | 123 ++--
->  lib/test_hmm.c                                | 126 +++-
->  lib/test_hmm_uapi.h                           |   2 +
->  mm/debug_vm_pgtable.c                         |  12 +-
->  mm/hmm.c                                      |  12 +-
->  mm/huge_memory.c                              |  45 +-
->  mm/hugetlb.c                                  |  10 +-
->  mm/memcontrol.c                               |   2 +-
->  mm/memory.c                                   | 196 +++++-
->  mm/migrate.c                                  |  51 +-
->  mm/mlock.c                                    |  10 +-
->  mm/mprotect.c                                 |  18 +-
->  mm/page_vma_mapped.c                          |  15 +-
->  mm/rmap.c                                     | 612 +++++++++++++++---
->  tools/testing/selftests/vm/hmm-tests.c        | 158 +++++
->  26 files changed, 1366 insertions(+), 312 deletions(-)
-> 
-> 
+## No fixes (compared to v5.10.34-8-g14447ec121b3)
 
 
+## Test result summary
+ total: 75625, pass: 61937, fail: 2558, skip: 10882, xfail: 248,
 
+## Build Summary
+* arc: 10 total, 10 passed, 0 failed
+* arm: 193 total, 193 passed, 0 failed
+* arm64: 27 total, 27 passed, 0 failed
+* dragonboard-410c: 1 total, 1 passed, 0 failed
+* hi6220-hikey: 1 total, 1 passed, 0 failed
+* i386: 26 total, 26 passed, 0 failed
+* juno-r2: 1 total, 1 passed, 0 failed
+* mips: 45 total, 45 passed, 0 failed
+* parisc: 9 total, 9 passed, 0 failed
+* powerpc: 27 total, 27 passed, 0 failed
+* riscv: 21 total, 21 passed, 0 failed
+* s390: 18 total, 18 passed, 0 failed
+* sh: 18 total, 18 passed, 0 failed
+* sparc: 9 total, 9 passed, 0 failed
+* x15: 1 total, 1 passed, 0 failed
+* x86: 1 total, 1 passed, 0 failed
+* x86_64: 27 total, 27 passed, 0 failed
 
+## Test suites summary
+* fwts
+* igt-gpu-tools
+* install-android-platform-tools-r2600
+* kselftest-
+* kselftest-android
+* kselftest-bpf
+* kselftest-breakpoints
+* kselftest-capabilities
+* kselftest-cgroup
+* kselftest-clone3
+* kselftest-core
+* kselftest-cpu-hotplug
+* kselftest-cpufreq
+* kselftest-drivers
+* kselftest-efivarfs
+* kselftest-filesystems
+* kselftest-firmware
+* kselftest-fpu
+* kselftest-futex
+* kselftest-gpio
+* kselftest-intel_pstate
+* kselftest-ipc
+* kselftest-ir
+* kselftest-kcmp
+* kselftest-kexec
+* kselftest-kvm
+* kselftest-lib
+* kselftest-livepatch
+* kselftest-lkdtm
+* kselftest-membarrier
+* kselftest-memfd
+* kselftest-memory-hotplug
+* kselftest-mincore
+* kselftest-mount
+* kselftest-mqueue
+* kselftest-net
+* kselftest-netfilter
+* kselftest-nsfs
+* kselftest-openat2
+* kselftest-pid_namespace
+* kselftest-pidfd
+* kselftest-proc
+* kselftest-pstore
+* kselftest-ptrace
+* kselftest-rseq
+* kselftest-rtc
+* kselftest-seccomp
+* kselftest-sigaltstack
+* kselftest-size
+* kselftest-splice
+* kselftest-static_keys
+* kselftest-sync
+* kselftest-sysctl
+* kselftest-tc-testing
+* kselftest-timens
+* kselftest-timers
+* kselftest-tmpfs
+* kselftest-tpm2
+* kselftest-user
+* kselftest-vm
+* kselftest-vsyscall-mode-native-
+* kselftest-vsyscall-mode-none-
+* kselftest-x86
+* kselftest-zram
+* kunit
+* kvm-unit-tests
+* libhugetlbfs
+* linux-log-parser
+* ltp-cap_bounds-tests
+* ltp-commands-tests
+* ltp-containers-tests
+* ltp-controllers-tests
+* ltp-cpuhotplug-tests
+* ltp-crypto-tests
+* ltp-cve-tests
+* ltp-dio-tests
+* ltp-fcntl-locktests-tests
+* ltp-filecaps-tests
+* ltp-fs-tests
+* ltp-fs_bind-tests
+* ltp-fs_perms_simple-tests
+* ltp-fsx-tests
+* ltp-hugetlb-tests
+* ltp-io-tests
+* ltp-ipc-tests
+* ltp-math-tests
+* ltp-mm-tests
+* ltp-nptl-tests
+* ltp-open-posix-tests
+* ltp-pty-tests
+* ltp-sched-tests
+* ltp-securebits-tests
+* ltp-syscalls-tests
+* ltp-tracing-tests
+* network-basic-tests
+* packetdrill
+* perf
+* rcutorture
+* ssuite
+* v4l2-compliance
+
+--
+Linaro LKFT
+https://lkft.linaro.org
