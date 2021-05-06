@@ -2,283 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ACDA937532F
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:47:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D88AC375332
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 13:48:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231165AbhEFLsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 07:48:16 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:18357 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229777AbhEFLsO (ORCPT
+        id S231320AbhEFLtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 07:49:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39194 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231216AbhEFLtN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 07:48:14 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4FbWwN17Dkzlc5w;
-        Thu,  6 May 2021 19:45:08 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- DGGEMS409-HUB.china.huawei.com (10.3.19.209) with Microsoft SMTP Server id
- 14.3.498.0; Thu, 6 May 2021 19:47:11 +0800
-Subject: Re: [PATCH v3] ext4: Fix bug on in ext4_es_cache_extent as
- ext4_split_extent_at failed
-To:     Jan Kara <jack@suse.cz>
-References: <20210428085158.3728201-1-yebin10@huawei.com>
- <20210430125853.GB5315@quack2.suse.cz> <60921135.3030900@huawei.com>
- <20210505104105.GA29867@quack2.suse.cz> <6093A830.3000704@huawei.com>
- <20210506101915.GA22189@quack2.suse.cz>
-CC:     <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-From:   yebin <yebin10@huawei.com>
-Message-ID: <6093D73F.70909@huawei.com>
-Date:   Thu, 6 May 2021 19:47:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+        Thu, 6 May 2021 07:49:13 -0400
+Received: from mail-wm1-x334.google.com (mail-wm1-x334.google.com [IPv6:2a00:1450:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC298C061574;
+        Thu,  6 May 2021 04:48:14 -0700 (PDT)
+Received: by mail-wm1-x334.google.com with SMTP id s5-20020a7bc0c50000b0290147d0c21c51so2877405wmh.4;
+        Thu, 06 May 2021 04:48:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=AA7rwHKkDu014cTKd9NxKCpVNUL0Wnr6JWgERveJ2WY=;
+        b=OqewioGX7zUn70JN2xPh43HBNTI/Zv48ATFcJW+HdY108QarLQEAfZcJL2NWwOIEQP
+         HOuUgmAd3XhlL2UmAm7S1l3XGK/VyhFl+hFZST0ED6bQviLfefBPZkHXxC14J7kv2vhD
+         D1+ArsYl3QaMlW1es1TH8qxPfKmykvOVL4mgmX7U3O0gJ2ILQ4VwgoTzNQxB5nR9BNOU
+         lrRFITF0Ov3j7NqZX6/LvtH/kNJZqsNgzr+zwyQh2aiGaa0q9tLXq+Bk581Y8jpQLAkf
+         OIVp3K6RxZHojjokGLMJxWf9QCdevtAogfaiEP1y4FjgZkr1F86xoW6S6uJ+XMhgUnBb
+         hHjA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=AA7rwHKkDu014cTKd9NxKCpVNUL0Wnr6JWgERveJ2WY=;
+        b=QFdZeXbZqkrYxKXKrddLJAwfEKnpu8IuUaycSaaic/ChAmYxInlM8o/HMto2/kGzkF
+         Ry2Xk1w9oRSeEJyMDdAUKUYRqOitKwkP983Jg+jmgfn4Do03APgdEYeBlYivoWkhy9qu
+         tprM1Ex4F/jE6owMxTHff4pcrbYZqwKmclLJ1hFw5PsZyezH/8bpdqnEu88MelIyX69i
+         NAYsnQwTTQgKw2yExqr+3SJhm7Dkk/l+Wv0atzicvCfQ8d8z6zSGpxt1O7fD2XvtNQNb
+         FI5tE+sYN0dSVMywcoUNj2YspMwyb2Mj2qUz7R6TsGzTe7qZbM/m7EEU2xDcisjK5cUO
+         S2zQ==
+X-Gm-Message-State: AOAM531yg0nz1rkc2oGbmho3Xk752hmRBMN9gGSOyU+ndmZoJy8qUpjM
+        1BX7vomaG8XUMCPvfCO50oqhu9Bo9LU=
+X-Google-Smtp-Source: ABdhPJxWaOHqxEYLD/SeMJjnnTA8VEuB+Mq8RR2XPlYvqhDNgJxpc53CtcIuVCbo8xpCa0OA9pxV7Q==
+X-Received: by 2002:a05:600c:4f4d:: with SMTP id m13mr3610259wmq.4.1620301693518;
+        Thu, 06 May 2021 04:48:13 -0700 (PDT)
+Received: from skbuf ([86.127.41.210])
+        by smtp.gmail.com with ESMTPSA id u5sm3797210wrt.38.2021.05.06.04.48.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 04:48:13 -0700 (PDT)
+Date:   Thu, 6 May 2021 14:48:11 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     DENG Qingfang <dqfext@gmail.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Landen Chao <Landen.Chao@mediatek.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
+        linux-staging@lists.linux.dev, devicetree@vger.kernel.org,
+        netdev@vger.kernel.org, Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        =?utf-8?B?UmVuw6k=?= van Dorst <opensource@vdorst.com>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Subject: Re: [PATCH net-next 4/4] staging: mt7621-dts: enable MT7530
+ interrupt controller
+Message-ID: <20210506114811.zkj7klujcqn54zun@skbuf>
+References: <20210429062130.29403-1-dqfext@gmail.com>
+ <20210429062130.29403-5-dqfext@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20210506101915.GA22189@quack2.suse.cz>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.185]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210429062130.29403-5-dqfext@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Apr 29, 2021 at 02:21:30PM +0800, DENG Qingfang wrote:
+> Enable MT7530 interrupt controller in the MT7621 SoC.
+> 
+> Signed-off-by: DENG Qingfang <dqfext@gmail.com>
+> ---
+> RFC v4 -> PATCH v1:
+> - No changes.
+> 
+>  drivers/staging/mt7621-dts/mt7621.dtsi | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/drivers/staging/mt7621-dts/mt7621.dtsi b/drivers/staging/mt7621-dts/mt7621.dtsi
+> index 16fc94f65486..0f7e487883a5 100644
+> --- a/drivers/staging/mt7621-dts/mt7621.dtsi
+> +++ b/drivers/staging/mt7621-dts/mt7621.dtsi
+> @@ -447,6 +447,10 @@ switch0: switch0@0 {
+>  				mediatek,mcm;
+>  				resets = <&rstctrl 2>;
+>  				reset-names = "mcm";
+> +				interrupt-controller;
+> +				#interrupt-cells = <1>;
+> +				interrupt-parent = <&gic>;
+> +				interrupts = <GIC_SHARED 23 IRQ_TYPE_LEVEL_HIGH>;
+>  
+>  				ports {
+>  					#address-cells = <1>;
+> -- 
+> 2.25.1
+> 
 
+I don't remember if I mentioned this before, but a short-hand way of
+expressing this is using:
 
-On 2021/5/6 18:19, Jan Kara wrote:
-> On Thu 06-05-21 16:26:24, yebin wrote:
->> Thanks for your suggesttion. If you have no objection to following
->> modification, i will send it as V4.
->>
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index 77c84d6f1af6..f9cbd11e1eae 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -3206,7 +3206,10 @@ static int ext4_split_extent_at(handle_t *handle,
->>                  ext4_ext_mark_unwritten(ex2);
->>
->>          err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
->> -       if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
->> +       if (err != -ENOSPC && err != -EDQUOT)
->> +                goto out;
->> +
->> +       if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
-> You need:
->
-> if (err && (EXT4_EXT_MAY_ZEROOUT & split_flag))
->
-> there, don't you? You don't want to zero-out if there's no error.
+	interrupts-extended = <&gic GIC_SHARED 23 IRQ_TYPE_LEVEL_HIGH>;
 
-If (err != -ENOSPC && err != -EDQUOT) already goto out, so there is needn't
-judge "err" again.
+but the entire drivers/staging/mt7621-dts/mt7621.dtsi file uses
+interrupt-parent, so this is fine.
 
->
->> @@ -3232,22 +3235,23 @@ static int ext4_split_extent_at(handle_t *handle,
->> ext4_ext_pblock(&orig_ex));
->>                  }
->>
->> -               if (err)
->> -                       goto fix_extent_len;
->> -               /* update the extent length and mark as initialized */
->> -               ex->ee_len = cpu_to_le16(ee_len);
->> -               ext4_ext_try_to_merge(handle, inode, path, ex);
->> -               err = ext4_ext_dirty(handle, inode, path + path->p_depth);
->> -               if (err)
->> -                       goto fix_extent_len;
->> -
->> -               /* update extent status tree */
->> -               err = ext4_zeroout_es(inode, &zero_ex);
->> -
->> -               goto out;
->> -       } else if (err)
->> -               goto fix_extent_len;
->> -
->> +               if (!err) {
->> +                       /* update the extent length and mark as initialized
->> */
->> +                        ex->ee_len = cpu_to_le16(ee_len);
->> +                        ext4_ext_try_to_merge(handle, inode, path, ex);
->> +                        err = ext4_ext_dirty(handle, inode, path +
->> path->p_depth);
->> +                        if (!err)
->> +                               /* update extent status tree */
->> +                                err = ext4_zeroout_es(inode, &zero_ex);
->> +                        /* At here, ext4_ext_try_to_merge maybe already
->> merge
->> +                         * extent, if fix origin extent length may lead to
->> +                         * overwritten.
->> +                         */
-> I'd rephrase the comment as:
->
-> /*
->   * If we failed at this point, we don't know in which state the extent tree
->   * exactly is so don't try to fix length of the original extent as it may do
->   * even more damage.
->   */
-I will replace it with your comment.
->
->> +                        goto out;
->> +                }
->> +       }
->> +        if (err)
->> +                goto fix_extent_len;
-> And you can move this if (err) before if (!err) above to make code easier
-> to read and save one indentation level.
-if (EXT4_EXT_MAY_ZEROOUT & split_flag) do zero-out,  if  failed, we 
-don't need fix extent length.
-But if (!EXT4_EXT_MAY_ZEROOUT & split_flag) we need to fix extent 
-length.  Maybe i can move
-label "out"  behind  label "fix_extent_len", then this judement can be 
-removed.
-Did i misunderstand what you meant earlier?
->>   out:
->>          ext4_ext_show_leaf(inode, path);
->>          return err;
->>
->>
-> 								Honza
-The diff as following:
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 77c84d6f1af6..cbf37b2cf871 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -3206,7 +3206,10 @@ static int ext4_split_extent_at(handle_t *handle,
-                 ext4_ext_mark_unwritten(ex2);
+Also, I panicked for a second thinking that this is the ARM GIC which
+supports the GIC_SHARED flag, but I see that mt7621 is MIPS.
 
-         err = ext4_ext_insert_extent(handle, inode, ppath, &newex, flags);
--       if (err == -ENOSPC && (EXT4_EXT_MAY_ZEROOUT & split_flag)) {
-+       if (err != -ENOSPC && err != -EDQUOT)
-+               goto out;
-+
-+       if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
-                 if (split_flag & 
-(EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
-                         if (split_flag & EXT4_EXT_DATA_VALID1) {
-                                 err = ext4_ext_zeroout(inode, ex2);
-@@ -3232,25 +3235,22 @@ static int ext4_split_extent_at(handle_t *handle,
-ext4_ext_pblock(&orig_ex));
-                 }
-
--               if (err)
--                       goto fix_extent_len;
--               /* update the extent length and mark as initialized */
--               ex->ee_len = cpu_to_le16(ee_len);
--               ext4_ext_try_to_merge(handle, inode, path, ex);
--               err = ext4_ext_dirty(handle, inode, path + path->p_depth);
--               if (err)
--                       goto fix_extent_len;
--
--               /* update extent status tree */
--               err = ext4_zeroout_es(inode, &zero_ex);
--
--               goto out;
--       } else if (err)
--               goto fix_extent_len;
--
--out:
--       ext4_ext_show_leaf(inode, path);
--       return err;
-+               if (!err) {
-+                       /* update the extent length and mark as 
-initialized */
-+                       ex->ee_len = cpu_to_le16(ee_len);
-+                       ext4_ext_try_to_merge(handle, inode, path, ex);
-+                       err = ext4_ext_dirty(handle, inode, path + 
-path->p_depth);
-+                       if (!err)
-+                               /* update extent status tree */
-+                               err = ext4_zeroout_es(inode, &zero_ex);
-+                       /* If we failed at this point, we don't know in 
-which
-+                        * state the extent tree exactly is so don't try 
-to fix
-+                        * length of the original extent as it may do 
-even more
-+                        * damage.
-+                        */
-+                       goto out;
-+               }
-+       }
-
-  fix_extent_len:
-         ex->ee_len = orig_ex.ee_len;
-@@ -3260,6 +3260,9 @@ static int ext4_split_extent_at(handle_t *handle,
-          */
-         ext4_ext_dirty(handle, inode, path + path->p_depth);
-         return err;
-+out:
-+       ext4_ext_show_leaf(inode, path);
-+       return err;
-  }
-
-The whole code as folowing:
-ext4_split_extent_at:
-.......
-3208         err = ext4_ext_insert_extent(handle, inode, ppath, &newex, 
-flags);
-3209         if (err != -ENOSPC && err != -EDQUOT)
-3210                 goto out;
-3211
-3212         if (EXT4_EXT_MAY_ZEROOUT & split_flag) {
-3213                 if (split_flag & 
-(EXT4_EXT_DATA_VALID1|EXT4_EXT_DATA_VALID2)) {
-3214                         if (split_flag & EXT4_EXT_DATA_VALID1) {
-3215                                 err = ext4_ext_zeroout(inode, ex2);
-3216                                 zero_ex.ee_block = ex2->ee_block;
-3217                                 zero_ex.ee_len = cpu_to_le16(
-3218 ext4_ext_get_actual_len(ex2));
-3219 ext4_ext_store_pblock(&zero_ex,
-3220 ext4_ext_pblock(ex2));
-3221                         } else {
-3222                                 err = ext4_ext_zeroout(inode, ex);
-3223                                 zero_ex.ee_block = ex->ee_block;
-3224                                 zero_ex.ee_len = cpu_to_le16(
-3225 ext4_ext_get_actual_len(ex));
-3226 ext4_ext_store_pblock(&zero_ex,
-3227 ext4_ext_pblock(ex));
-3228                         }
-3229                 } else {
-3230                         err = ext4_ext_zeroout(inode, &orig_ex);
-3231                         zero_ex.ee_block = orig_ex.ee_block;
-3232                         zero_ex.ee_len = cpu_to_le16(
-3233 ext4_ext_get_actual_len(&orig_ex));
-3234                         ext4_ext_store_pblock(&zero_ex,
-3235 ext4_ext_pblock(&orig_ex));
-3236                 }
-3237
-3238                 if (!err) {
-3239                         /* update the extent length and mark as 
-initialized */
-3240                         ex->ee_len = cpu_to_le16(ee_len);
-3241                         ext4_ext_try_to_merge(handle, inode, path, ex);
-3242                         err = ext4_ext_dirty(handle, inode, path + 
-path->p_depth);
-3243                         if (!err)
-3244                                 /* update extent status tree */
-3245                                 err = ext4_zeroout_es(inode, &zero_ex);
-3246                         /* If we failed at this point, we don't 
-know in which
-3247                          * state the extent tree exactly is so 
-don't try to fix
-3248                          * length of the original extent as it may 
-do even more
-3249                          * damage.
-3250                          */
-3251                         goto out;
-3252                 }
-3253         }
-3254
-3255 fix_extent_len:
-3256         ex->ee_len = orig_ex.ee_len;
-3257         /*
-3258          * Ignore ext4_ext_dirty return value since we are already 
-in error path
-3259          * and err is a non-zero error code.
-3260          */
-3261         ext4_ext_dirty(handle, inode, path + path->p_depth);
-3262         return err;
-3263 out:
-3264         ext4_ext_show_leaf(inode, path);
-3265         return err;
-3266 }
-
-
+Reviewed-by: Vladimir Oltean <olteanv@gmail.com>
