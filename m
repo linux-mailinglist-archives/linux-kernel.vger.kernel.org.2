@@ -2,85 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85D8D374C50
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:25:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51B0F374C7B
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 02:44:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229886AbhEFA0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 20:26:40 -0400
-Received: from so254-9.mailgun.net ([198.61.254.9]:33517 "EHLO
-        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229465AbhEFA0i (ORCPT
+        id S229804AbhEFAp1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 20:45:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34138 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229488AbhEFApY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 20:26:38 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620260741; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=t86AX5J1LPQ0F9dkoMI/7zO/SFpx4ZgWBgEKui4KQrU=; b=glhR/5UBvDtBDTrEfT2VCWKqQRd67a+dQr29CWrN4oK7OCPBrnvB21QvfDAhHZi4FuMyTzMy
- Frl62HfVYe/e+o2NXEb7uEPig7Qmg+lm3PTri04/i4kxcSa+kRGK+VBgv7QIApQAF1A8vjOP
- bZSuu38NULmsiOHmVfaKuvryL0U=
-X-Mailgun-Sending-Ip: 198.61.254.9
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
- 6093377879b6f9e57bf7b07e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 06 May 2021 00:25:28
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 40F48C43460; Thu,  6 May 2021 00:25:28 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 27A70C433F1;
-        Thu,  6 May 2021 00:25:27 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 27A70C433F1
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v3 1/6] bus: mhi: core: Set BHI/BHIe offsets on power up
- preparation
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        linux-wireless@vger.kernel.org, kvalo@codeaurora.org,
-        ath11k@lists.infradead.org
-References: <1620234501-30461-1-git-send-email-bbhatt@codeaurora.org>
- <1620234501-30461-2-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <d4371467-f9ea-a143-a1a0-3ce4bc86c6ed@codeaurora.org>
-Date:   Wed, 5 May 2021 17:25:26 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <1620234501-30461-2-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        Wed, 5 May 2021 20:45:24 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74287C061574
+        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 17:44:27 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id a3-20020a2580430000b02904f7a1a09012so4243580ybn.3
+        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 17:44:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=FIYfWaI3YWf0DYz8YdznL9GRGAZ6Fujs7G6sHSJoW08=;
+        b=F81HM63dfakzEtPzPGJfAvVwabd9GULG3vw+sE1lsDWClbnnmHcUG6+0B/zSPxVJLZ
+         Lr9H9/0Nf1Oc+9FXEMGfgPGWxG2kUfHxnHdSYCQqUhiSluugfSdBdIvSogMCzWTEdlEX
+         MIcufUtVUNccgFzr1x5NgfDAyQKogQjwVv2Ug2+G/X94Fh+7iYFEq7dSXgohySMdxz4x
+         3pBsNZ885BulHmlf7UHqpHKrCe9bYVy6dFlLJHoyAaheg7nPN2n1ABkVtp1HCuGGjp1H
+         Npa7NT6c05Nye4sVNxeQ9IIWT+PGLMAh4EHXtbIPGLVkkIHUYQtEKbe0/QiaY7SGlIhX
+         cA7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=FIYfWaI3YWf0DYz8YdznL9GRGAZ6Fujs7G6sHSJoW08=;
+        b=PZobUvGjUkNjOqsQGzRRjo7gozDIFnI+VvZDwQQkHSwRqOkrB5Ujm7lzpkNsvpjkgS
+         iArSvNUTuVvB065OQtonMwolONjNNtVcfNYEY3kmy2jJS1u/HExGvH0Lnwnccs5Bf65v
+         GNRcIeDjWaKsVhstsMPLOaNHbm7qQJHCkNENJvqgG0nlSe/iFLwQW6B5Fq7quhwocZzl
+         hu7Nog9WXHWHee/wsuhFnXW56dNiWfQaQDEQ4MhnL88XrUtQBJak5eLeJZ+4AoRe01wJ
+         oNKeH32Oa3yljBUvpFoYKvZNlhKLF3k6FpjELV59MKOQtYAoVGpwK9W+Jl5RXWhzqlnw
+         yzMQ==
+X-Gm-Message-State: AOAM531obc9V/xKizRgLwX7ltjNfaH17J5TTK1Xnk5geYdWGoaTCsTFK
+        BL9RN99uUNBwgUJrlDPZRuJzuq4rlkAAOCI=
+X-Google-Smtp-Source: ABdhPJywu5JWRxK+B9j2uRu1VgtWzYJwE2BP9lNYPJ54EuyBhnjLhVD53mw4Mxt1fpFfj3XMCqVb9fY4YZ7pxCE=
+X-Received: from saravanak.san.corp.google.com ([2620:15c:2d:3:7dba:15b:e3fd:a2e5])
+ (user=saravanak job=sendgmr) by 2002:a5b:f02:: with SMTP id
+ x2mr2082887ybr.99.1620261866544; Wed, 05 May 2021 17:44:26 -0700 (PDT)
+Date:   Wed,  5 May 2021 17:44:22 -0700
+Message-Id: <20210506004423.345199-1-saravanak@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.527.g47e6f16901-goog
+Subject: [PATCH v1] usb: typec: tcpm: Don't block probing of consumers of
+ "connector" nodes
+From:   Saravana Kannan <saravanak@google.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Len Brown <lenb@kernel.org>,
+        Saravana Kannan <saravanak@google.com>
+Cc:     John Stultz <john.stultz@linaro.org>, kernel-team@android.com,
+        linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        linux-acpi@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+fw_devlink expects DT device nodes with "compatible" property to have
+struct devices created for them. Since the connector node might not be
+populated as a device, mark it as such so that fw_devlink knows not to
+wait on this fwnode being populated as a struct device.
 
+Without this patch, USB functionality can be broken on some boards.
 
-On 5/5/21 10:08 AM, Bhaumik Bhatt wrote:
-> Set the BHI and/or BHIe offsets in mhi_prepare_for_power_up(),
-> rearrange the function, and remove the equivalent from
-> mhi_async_power_up(). This helps consolidate multiple checks
-> in different parts of the driver and can help MHI fail early on
-> before power up begins if the offsets are not read correctly.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+Fixes: f7514a663016 ("of: property: fw_devlink: Add support for remote-endpoint")
+Reported-by: John Stultz <john.stultz@linaro.org>
+Signed-off-by: Saravana Kannan <saravanak@google.com>
+---
+Greg,
 
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+Probably better to take this in driver-core in case I need more fixes
+for fw_devlink on top of this. Those fixes are more likely to land in
+driver-core.
 
+Hi John,
+
+Can you please test this and give a Tested-by?
+
+-Saravana
+
+ drivers/base/core.c           | 3 ++-
+ drivers/usb/typec/tcpm/tcpm.c | 9 +++++++++
+ include/linux/fwnode.h        | 1 +
+ 3 files changed, 12 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index 4a8bf8cda52b..628e33939aca 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -150,7 +150,7 @@ void fwnode_links_purge(struct fwnode_handle *fwnode)
+ 	fwnode_links_purge_consumers(fwnode);
+ }
+ 
+-static void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
++void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
+ {
+ 	struct fwnode_handle *child;
+ 
+@@ -164,6 +164,7 @@ static void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode)
+ 	fwnode_for_each_available_child_node(fwnode, child)
+ 		fw_devlink_purge_absent_suppliers(child);
+ }
++EXPORT_SYMBOL_GPL(fw_devlink_purge_absent_suppliers);
+ 
+ #ifdef CONFIG_SRCU
+ static DEFINE_MUTEX(device_links_lock);
+diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+index c4fdc00a3bc8..bffa342d4e38 100644
+--- a/drivers/usb/typec/tcpm/tcpm.c
++++ b/drivers/usb/typec/tcpm/tcpm.c
+@@ -5754,6 +5754,15 @@ static int tcpm_fw_get_caps(struct tcpm_port *port,
+ 	if (!fwnode)
+ 		return -EINVAL;
+ 
++	/*
++	 * This fwnode has a "compatible" property, but is never populated as a
++	 * struct device. Instead we simply parse it to read the properties.
++	 * This it breaks fw_devlink=on. To maintain backward compatibility
++	 * with existing DT files, we work around this by deleting any
++	 * fwnode_links to/from this fwnode.
++	 */
++	fw_devlink_purge_absent_suppliers(fwnode);
++
+ 	/* USB data support is optional */
+ 	ret = fwnode_property_read_string(fwnode, "data-role", &cap_str);
+ 	if (ret == 0) {
+diff --git a/include/linux/fwnode.h b/include/linux/fwnode.h
+index ed4e67a7ff1c..59828516ebaf 100644
+--- a/include/linux/fwnode.h
++++ b/include/linux/fwnode.h
+@@ -187,5 +187,6 @@ extern u32 fw_devlink_get_flags(void);
+ extern bool fw_devlink_is_strict(void);
+ int fwnode_link_add(struct fwnode_handle *con, struct fwnode_handle *sup);
+ void fwnode_links_purge(struct fwnode_handle *fwnode);
++void fw_devlink_purge_absent_suppliers(struct fwnode_handle *fwnode);
+ 
+ #endif
 -- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+2.31.1.527.g47e6f16901-goog
+
