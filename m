@@ -2,76 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A42B937506A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:55:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2FFA375097
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 10:13:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233575AbhEFH4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:56:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43658 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231596AbhEFH4S (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:56:18 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04FC3C06174A
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:55:21 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id i14so4164545pgk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:55:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ESVV/fMaAxNkE4WvbW0fxbJidb4bTYMGXoio537XTy8=;
-        b=CBl6iUCMWBc1+XteGpbJ9leQZsxPoMSOwx/iAOt5hsVC8kF9j8ypdYuGO1NLGxRqgf
-         3Ykk1ylqzolhm9eRIbT68h92NVteUANOM1QfT0FYefqAV18aaXzlczPZ45hztQHrFb+a
-         gBbpnbW6Y49Lpts8ib15JwNOaHgWZoc9wZTZ9cdz0IFMH5Nu5zrJTlQBNsZCjHmTVZyn
-         tl2Y4l3ES+7g3boCezH0i/M934Qc7jBnF/aHXKTo/18PFCu+BbVtiuo076Nt9W6eNOXA
-         sg9YqOHJ7wRmVywkTdw4YdnzYb/EOOmYxhTQKtUnx61935Ac57esFpzZeAspbfmKjgeR
-         HIgg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ESVV/fMaAxNkE4WvbW0fxbJidb4bTYMGXoio537XTy8=;
-        b=IASYsQBkO45YRGTzYHODRhmUMjjjvlkGU5P7gVw6s2gFRnKIuZNzuEoV/r5wztg9US
-         92cw3pnA1v+ZASp3/uRxE5ZXHjEWJFYT4Sj/RN73a2KAkzubFzxcS3Acbzrn1EOFfvgm
-         JqIcqCCLglHo3rbLDcibtkWrpRT1PQO45AMtE2khcSbKS6X9BXF2SkRNE4qaH7ukHu70
-         OGCUE0Q2J3LqE4gW5nTkEGtQfr77J96c9sEgB59kj4iULUdI7c97UsqGG0GaRH+FWrP+
-         XHsdSi9Q9rmk5lFBM0tVLEMQaYuB96zyfjHdOn8NJTk4db/dKc3//56nqi9NL+w1CTIA
-         bgYA==
-X-Gm-Message-State: AOAM5323PHh2q+3nG4rh3gKygQlCoWCGXMgbZYygBMfhus9KYdOu/NrV
-        eM5LLuryIyZYwDQTahHabJM8WC0VpJMkneRebbN1lQ==
-X-Google-Smtp-Source: ABdhPJz9+BbLcod0C8x9IKaB+7PNgAIm6oZ/AvRXYy2PJxruNemP5ifp+mZctZppylusL3o8E5DacbRjvD7abeeEMnE=
-X-Received: by 2002:a63:9d4e:: with SMTP id i75mr2924857pgd.443.1620287720183;
- Thu, 06 May 2021 00:55:20 -0700 (PDT)
+        id S233697AbhEFIOq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 04:14:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:41122 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhEFIOp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 04:14:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1620288825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+         mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ko5Il7tnnaRh/+DWXvFr0zXq1UzJJiHuAYa3FhMkhY8=;
+        b=DvYo4XmNOYmmrEoAZYXLTtTy/YE4UC2FnkoOEJAMP+jxdN2+/tgKZjwR+JpMPKjXgMNecI
+        0uMm3ZjM0hg3VyIcL18eYC3Iu7lciFzXgVkNc+pbYqPyCcNmcg8Gj5JmWj3OPdzg1aaCws
+        6E4OkjKv23e4xHMFUeG3Mk+1OSIY6Tg=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E7909B1C3;
+        Thu,  6 May 2021 08:13:43 +0000 (UTC)
+Date:   Thu, 6 May 2021 09:55:51 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Aili Yao <yaoaili@kingsoft.com>
+Cc:     David Hildenbrand <david@redhat.com>, linux-kernel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        Alexey Dobriyan <adobriyan@gmail.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        Roman Gushchin <guro@fb.com>,
+        Alex Shi <alex.shi@linux.alibaba.com>,
+        Steven Price <steven.price@arm.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Jiri Bohac <jbohac@suse.cz>,
+        "K. Y. Srinivasan" <kys@microsoft.com>,
+        Haiyang Zhang <haiyangz@microsoft.com>,
+        Stephen Hemminger <sthemmin@microsoft.com>,
+        Wei Liu <wei.liu@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        linux-hyperv@vger.kernel.org,
+        virtualization@lists.linux-foundation.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        yaoaili126@gmail.com
+Subject: Re: [PATCH v1 3/7] mm: rename and move page_is_poisoned()
+Message-ID: <YJOhBxiXIpaJpq+K@dhcp22.suse.cz>
+References: <20210429122519.15183-1-david@redhat.com>
+ <20210429122519.15183-4-david@redhat.com>
+ <YJKZ5yXdl18m9YSM@dhcp22.suse.cz>
+ <0710d8d5-2608-aeed-10c7-50a272604d97@redhat.com>
+ <YJKdS+Q8CgSlgmFf@dhcp22.suse.cz>
+ <20210506085611.1ec21588@alex-virtual-machine>
+ <YJOVZlFGcSG+mmIk@dhcp22.suse.cz>
+ <20210506152805.13fe775e@alex-virtual-machine>
 MIME-Version: 1.0
-References: <1620234501-30461-1-git-send-email-bbhatt@codeaurora.org> <1620234501-30461-6-git-send-email-bbhatt@codeaurora.org>
-In-Reply-To: <1620234501-30461-6-git-send-email-bbhatt@codeaurora.org>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Thu, 6 May 2021 10:03:53 +0200
-Message-ID: <CAMZdPi8_MKyF8imaOc+9MGz4ifOKX=UMA1CzHe3aPuXC2BEoOg@mail.gmail.com>
-Subject: Re: [PATCH v3 5/6] bus: mhi: pci_generic: Set register access length
- for MHI driver
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>
-Cc:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Hemant Kumar <hemantk@codeaurora.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-wireless@vger.kernel.org, Kalle Valo <kvalo@codeaurora.org>,
-        ath11k@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506152805.13fe775e@alex-virtual-machine>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 at 19:08, Bhaumik Bhatt <bbhatt@codeaurora.org> wrote:
->
-> MHI driver requires register space length to add range checks and
-> prevent memory region accesses outside of that for MMIO space.
-> Set it from the PCI generic controller driver before registering
-> the MHI controller.
->
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
+On Thu 06-05-21 15:28:05, Aili Yao wrote:
+> On Thu, 6 May 2021 09:06:14 +0200
+> Michal Hocko <mhocko@suse.com> wrote:
+> 
+> > On Thu 06-05-21 08:56:11, Aili Yao wrote:
+> > > On Wed, 5 May 2021 15:27:39 +0200
+> > > Michal Hocko <mhocko@suse.com> wrote:
+[...]
+> > > > I am not sure I follow. My point is that I fail to see any added value
+> > > > of the check as it doesn't prevent the race (it fundamentally cannot as
+> > > > the page can be poisoned at any time) but the failure path doesn't
+> > > > put_page which is incorrect even for hwpoison pages.  
+> > > 
+> > > Sorry, I have something to say:
+> > > 
+> > > I have noticed the ref count leak in the previous topic ,but  I don't think
+> > > it's a really matter. For memory recovery case for user pages, we will keep one
+> > > reference to the poison page so the error page will not be freed to buddy allocator.
+> > > which can be checked in memory_faulure() function.  
+> > 
+> > So what would happen if those pages are hwpoisoned from userspace rather
+> > than by HW. And repeatedly so?
+> 
+> Sorry, I may be not totally understand what you mean.
+> 
+> Do you mean hard page offline from mcelog?
 
-Reviewed-by: Loic Poulain <loic.poulain@linaro.org>
+No I mean soft hwpoison from userspace (e.g. by MADV_HWPOISON but there
+are other interfaces AFAIK).
+
+And just to be explicit. All those interfaces are root only
+(CAP_SYS_ADMIN) so I am not really worried about any malitious abuse of
+the reference leak. I am mostly concerned that this is obviously broken
+without a good reason. The most trivial fix would have been to put_page
+in the return path but as I've mentioned in other email thread the fix
+really needs a deeper thought and consider other things.
+
+Hope that clarifies this some more.
+-- 
+Michal Hocko
+SUSE Labs
