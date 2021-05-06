@@ -2,116 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2192737522B
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:20:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A886F37522E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:20:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234196AbhEFKUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:20:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38437 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234110AbhEFKUx (ORCPT
+        id S234210AbhEFKVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:21:13 -0400
+Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:49634 "EHLO
+        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233791AbhEFKVM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:20:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620296394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/4AlmcxHNK6jvbhK2/zhBDdPr/gsgwHyIrd/Q6pHQ5E=;
-        b=XDsPx4L64PsS8cOSdIKokxGUSJ5XsLS9vXRTIegCTXQjoFATlYUweEtZwWp/ZFUxkD+t+k
-        Tx1MK1j+oBVMrHJMeY8pi3M8cAZM48nKyaLSdjGH/SWZS6ne+V5dAtyu4NMsCgrdWK9dy7
-        Sohw525GL3NwHecqpmto/imjpXcpaNw=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-300--lgM1z95MmW6aldHKc7-hg-1; Thu, 06 May 2021 06:19:53 -0400
-X-MC-Unique: -lgM1z95MmW6aldHKc7-hg-1
-Received: by mail-wr1-f72.google.com with SMTP id l2-20020adf9f020000b029010d6bb7f1cbso1994904wrf.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 03:19:53 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=/4AlmcxHNK6jvbhK2/zhBDdPr/gsgwHyIrd/Q6pHQ5E=;
-        b=FfKwNOa9KtIVnIjxyzbvAatL/LUodv98xTO95W0qFXcDYQ3kAyxqzGG5aOwIMUWwLj
-         aNlHRQjAZGor9AKxAzahc1RAEvAi0zcS5ikCOUNSysmBzyYbCpnfYv+j2VKYWMNRotrY
-         3AFcAIegQEgufIDkUAR1jQsP9rOdg8Qzgz7WSeyddyjaIEvBP6mBsJ7ZkBKlC6/LnFtz
-         1y60aifJX8q2qDiWt3O7Kd1oI+A/TrBwH61Skn2kVlOhb5fQFV3LaR7ddwOmM4BasXv0
-         +QiFZO4UCgmRjw7oixHgpZRlC3foqayhKgx+01s7eL8DVorzJh0ZLKbCK+o7ApKJ/NOG
-         lgvg==
-X-Gm-Message-State: AOAM531gDP3w/G1Vakz20jXbkIH4QFDo6z/OAU5Cf8NQrCYPvkCRbLl7
-        v48F/TnN9x+/olUvf8+cKZNYx2ZBKObPNLtCkGiqG8fCSXqqo/SSuqnW5YHQQ2IOZfE87aHoZEK
-        RDZNOn0zhzTPGaNT6lqczTCiAh0EkUgFWTo+9dAMRf88ywDX0WbyHhpR2h79lknxZWgsxQPRds3
-        Qf
-X-Received: by 2002:a7b:c8ca:: with SMTP id f10mr3240039wml.118.1620296391829;
-        Thu, 06 May 2021 03:19:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz2RzhaNbA2WpOR6chOGiG4O6PtUzpc3NV+HioaR04QGKhmGmhPqls4+o0IVxWuBoWJ0ynqfg==
-X-Received: by 2002:a7b:c8ca:: with SMTP id f10mr3240015wml.118.1620296391552;
-        Thu, 06 May 2021 03:19:51 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
-        by smtp.gmail.com with ESMTPSA id d9sm3463587wrp.47.2021.05.06.03.19.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 03:19:50 -0700 (PDT)
-Subject: Re: [PATCH v2 1/3] KVM: X86: Rename DR6_INIT to DR6_ACTIVE_LOW
-To:     Chenyi Qiang <chenyi.qiang@intel.com>,
-        "Li, Xiaoyao" <xiaoyao.li@intel.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210202090433.13441-1-chenyi.qiang@intel.com>
- <20210202090433.13441-2-chenyi.qiang@intel.com>
- <3db069ba-b4e0-1288-ec79-66ac44938682@redhat.com>
- <6678520f-e69e-6116-88c9-e9d6cd450934@intel.com>
- <ea9eaa84-999b-82cb-ef40-66fde361704d@redhat.com>
- <dc22f0a2-97c5-d54d-a521-c02f802c2229@intel.com>
- <3d7455a7-dca7-3c60-0c34-3a3ab8f7f1fb@redhat.com>
- <f8d6f502-e870-b374-afc4-62fd49dd5571@intel.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <f64eb246-e3a8-a22d-cf34-10f10b55d8b4@redhat.com>
-Date:   Thu, 6 May 2021 12:19:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 6 May 2021 06:21:12 -0400
+Received: by luna.linkmauve.fr (Postfix, from userid 1000)
+        id D3472F4059A; Thu,  6 May 2021 12:20:12 +0200 (CEST)
+Date:   Thu, 6 May 2021 12:20:12 +0200
+From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
+Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
+        linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
+        Jiri Kosina <jikos@kernel.org>,
+        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/4] HID: wiiu-drc: Implement touch reports
+Message-ID: <20210506102012.xj2kmgiiskyig6d3@luna>
+Jabber-ID: linkmauve@linkmauve.fr
+References: <20210502232836.26134-1-linkmauve@linkmauve.fr>
+ <20210502232836.26134-3-linkmauve@linkmauve.fr>
+ <YJMfq9MbY2guEhpv@latitude>
 MIME-Version: 1.0
-In-Reply-To: <f8d6f502-e870-b374-afc4-62fd49dd5571@intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cmnlxxyxr3u4vfon"
+Content-Disposition: inline
+In-Reply-To: <YJMfq9MbY2guEhpv@latitude>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/05/21 10:21, Chenyi Qiang wrote:
-> 
-> 
-> On 4/2/2021 5:01 PM, Paolo Bonzini wrote:
->> On 02/04/21 10:53, Xiaoyao Li wrote:
->>>>
->>>
->>> Hi Paolo,
->>>
->>> Fenghua's bare metal support is in tip tree now.
->>> https://lore.kernel.org/lkml/20210322135325.682257-1-fenghua.yu@intel.com/ 
->>>
->>>
->>> Will the rest KVM patches get into 5.13 together?
->>
->> Yes, they will.
->>
->> Thanks for the notice!
->>
-> 
-> Hi Paolo,
-> 
-> I notice the patch 1 is merged but the remaining patch 2 and 3 are not 
-> included yet. The bare metal support is merged. Will the rest KVM parts 
-> be in 5.13 as well?
 
-Yes.
+--cmnlxxyxr3u4vfon
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Paolo
+On Wed, May 05, 2021 at 10:43:55PM +0000, Jonathan Neusch=C3=A4fer wrote:
+> Hi,
+>=20
+> some more comments below. Enjoy :)
+>=20
+> On Mon, May 03, 2021 at 01:28:33AM +0200, Emmanuel Gil Peyrot wrote:
+> > There is a 100=C3=97200 inaccessible border on each side, and the Y axi=
+s is
+> > inverted, these are the two main quirks of this touch panel.
+>=20
+> Does that mean 100 px borders left and right, and 200 px borders top and
+> bottom?
 
+Correct, I=E2=80=99ll reformulate in v2. :)
+
+>=20
+> 100=C3=97200 evokes the image of a rectangle of that size, which I found
+> confusing for a moment.
+>=20
+> >=20
+> > I=E2=80=99ve been testing with weston-simple-touch mostly, but it also =
+with the
+> > rest of Weston.
+> >=20
+> > Signed-off-by: Ash Logan <ash@heyquark.com>
+> > Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
+> > ---
+> >  drivers/hid/hid-wiiu-drc.c | 83 +++++++++++++++++++++++++++++++++++---
+> >  1 file changed, 78 insertions(+), 5 deletions(-)
+> >=20
+> > diff --git a/drivers/hid/hid-wiiu-drc.c b/drivers/hid/hid-wiiu-drc.c
+> > index 018cbdb53a2c..77e70827c37d 100644
+> > --- a/drivers/hid/hid-wiiu-drc.c
+> > +++ b/drivers/hid/hid-wiiu-drc.c
+> > @@ -49,13 +49,27 @@
+> > =20
+> >  #define BUTTON_POWER	BIT(25)
+> > =20
+> > +/* Touch constants */
+> > +/* Resolution in pixels */
+> > +#define RES_X		854
+> > +#define RES_Y		480
+> > +/* Display/touch size in mm */
+> > +#define WIDTH		138
+> > +#define HEIGHT		79
+> > +#define NUM_TOUCH_POINTS 10
+> > +#define MAX_TOUCH_RES	(1 << 12)
+> > +#define TOUCH_BORDER_X	100
+> > +#define TOUCH_BORDER_Y	200
+>=20
+> [...]
+> > +	/* touch */
+> > +	/* Average touch points for improved accuracy. */
+> > +	x =3D y =3D 0;
+> > +	for (i =3D 0; i < NUM_TOUCH_POINTS; i++) {
+> > +		base =3D 36 + 4 * i;
+> > +
+> > +		x +=3D ((data[base + 1] & 0xF) << 8) | data[base];
+> > +		y +=3D ((data[base + 3] & 0xF) << 8) | data[base + 2];
+> > +	}
+> > +	x /=3D NUM_TOUCH_POINTS;
+> > +	y /=3D NUM_TOUCH_POINTS;
+>=20
+> Given that there are 10 possible touch points: Does the gamepad actually
+> support multitouch (usefully)?
+>=20
+> If so, I think it would be better to report all touch points
+> individually to userspace, to allow for multitouch gestures;
+> userspace can still implement averaging if desired.
+
+Sadly no, in my testing all ten reports are always within a few units
+=66rom each other, even if I press two (or more) different points on the
+touchscreen at the same time.
+
+My guess would be, the firmware and report format got written before
+Nintendo decided whether to go for a capacitive or resistive touch
+panel, and they didn=E2=80=99t get changed once the final decision was made=
+ to
+go for a non-multitouch-aware resistive panel.
+
+I=E2=80=99ll add some factual comment about this in v2.
+
+>=20
+>=20
+>=20
+> Thanks,
+> Jonathan
+
+Thanks!
+
+--=20
+Emmanuel Gil Peyrot
+
+--cmnlxxyxr3u4vfon
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmCTwtkACgkQOWgfYkb2
+LpBkRQf/QbOY3Qhj75fRd4GHclxmA3pI/VKMJH/DeW8dQd4Veq7jagFfHXMkvOeX
+CfmF2DHtUiAzzabNhBKWuHwI3uW0VntR1BpbQXMPBtmjcgqU5CyEugjQRqs37qzO
+moEPS+gEXohhAM9Y8AUAizQ0O2kvx7IoUaD0E4+0N3WGT75Gn5UjnyMXU8KISp6e
+tecclqfaShos32SzAw9UwB8R1yRBd5MYQfaJDw8hsklcyWpVFoZdbw+3qqnIEEMe
+u+xTgsj7t6N89EQXzin2CTpz4aDO3AvrY5pCrjDt8DtrN5qz+J/i7ZCyL3cNmqZ6
+tm3tYRMuZ55YenBDT31yo8uiVOyRvA==
+=MwQI
+-----END PGP SIGNATURE-----
+
+--cmnlxxyxr3u4vfon--
