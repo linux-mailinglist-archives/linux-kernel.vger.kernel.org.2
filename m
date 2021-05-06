@@ -2,165 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3849375997
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0EAFB37599D
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:45:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236309AbhEFRof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:44:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59704 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236301AbhEFRod (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:44:33 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E23686102A;
-        Thu,  6 May 2021 17:43:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620323014;
-        bh=LJzHyecmZhWMd6TrHOugsQjNslKCwtZOvVulyfCZyTk=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Zh6a1Jz2O2ox82vIqGJ6TMm/hw9CM9L8WRMPjIaDY5Jc9Hwu2/ZQdzjtvi+Ak/7GT
-         sK8r29obvojVKDxXENw3L07RHlOrRO3wjjgWwDA8EM8lUgGdlrvKketRQ25kJwEDqx
-         RuzAx/Yn9EMz6YkPnX/SsUjfs6iIwU6orGxeyVtU2i5RfxvjveuClG0PIdpkUNkb3Z
-         0enjqcTstAM4apHKhOHx8YhHp3RW+lqMKdkjw1pDd3br4L85Ydykmu75sEuF0VH8/Y
-         73moXI/9dbkgd+LcANqVOc/z1RUei6IKLCtJnXYt3+prZlVcdwTYZMgNRQQL1Ohzzr
-         X5iPdn/6u95Lg==
-Subject: Re: [PATCH 4.19 ONLY v4] arm64: vdso: remove commas between macro
- name and arguments
-To:     Jian Cai <jiancai@google.com>, gregkh@linuxfoundation.org,
-        sashal@kernel.org, will@kernel.org, catalin.marinas@arm.com
-Cc:     stable@vger.kernel.org, ndesaulniers@google.com,
-        manojgupta@google.com, llozano@google.com,
-        clang-built-linux@googlegroups.com,
-        Will Deacon <will.deacon@arm.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20210506012508.3822221-1-jiancai@google.com>
-From:   Nathan Chancellor <nathan@kernel.org>
-Message-ID: <fd08dce2-71c0-3414-d661-d065480c04ff@kernel.org>
-Date:   Thu, 6 May 2021 10:43:33 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        id S236291AbhEFRp7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:45:59 -0400
+Received: from mail02.rohde-schwarz.com ([80.246.32.97]:29310 "EHLO
+        mail02.rohde-schwarz.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236224AbhEFRp5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 13:45:57 -0400
+Received: from amu316.rsint.net (10.0.26.65) by mail-emea.rohde-schwarz.com
+ (172.21.64.152) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.858.5; Thu, 6 May 2021
+ 19:44:57 +0200
+Received: from GMU418.rsint.net ([10.0.230.144])
+          by amu316.rsint.net (Totemo SMTP Server) with SMTP ID 855;
+          Thu, 6 May 2021 19:44:57 +0200 (CEST)
+Received: from GMU003.rsint.net (10.0.2.61) by GMU418.rsint.net (10.0.230.144)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2242.4; Thu, 6 May 2021
+ 19:44:56 +0200
+Received: from GMU006.rsint.net (10.0.2.28) by GMU003.rsint.net (10.0.2.61)
+ with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2242.4; Thu, 6 May
+ 2021 19:44:55 +0200
+Received: from GMU006.rsint.net ([fe80::81e7:6ea1:2437:698b]) by
+ GMU006.rsint.net ([fe80::81e7:6ea1:2437:698b%12]) with mapi id
+ 15.01.2242.008; Thu, 6 May 2021 19:44:55 +0200
+From:   Guido Kiener <Guido.Kiener@rohde-schwarz.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+CC:     Dmitry Vyukov <dvyukov@google.com>,
+        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "dpenkler@gmail.com" <dpenkler@gmail.com>,
+        "lee.jones@linaro.org" <lee.jones@linaro.org>,
+        USB list <linux-usb@vger.kernel.org>,
+        "bp@alien8.de" <bp@alien8.de>,
+        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "x86@kernel.org" <x86@kernel.org>
+Subject: RE: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
+Thread-Topic: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx /ur/
+Thread-Index: AddCn1vLnT1ptH8pTMyqkmF/h3+ebg==
+Date:   Thu, 6 May 2021 17:44:55 +0000
+Message-ID: <be62c93e1e384f49865915b9bda1f12e@rohde-schwarz.com>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-rus_sensitivity: 10
+hvs-classificationid: 8485d17c-1b45-47c0-b496-903334a11e28
+hvs-prefix: R_S
+x-originating-ip: [10.0.9.40]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-In-Reply-To: <20210506012508.3822221-1-jiancai@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-IQAV: YES
+X-GBS-PROC: ijJGnd7ryUNXAjn+Z3XHJ9HQeEa439o4WKV7Y1dJIJAjoOyTSXAGzK3Zo66c0eppkH3W5oTj8TxA196QoGtlRBjZ9be3PgBZrEa46NjcPpKm+KDOtLeLZcQI7hPaGAfA
+X-GBS-PROCJOB: aqr7T7RqA7eNWKJjW5jzc+1N2Z/nRA0uUVvTaaxWqT5CVGjAAq3DISDvpoEpIWMn
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/5/2021 6:25 PM, Jian Cai wrote:
-> LLVM's integrated assembler appears to assume an argument with default
-> value is passed whenever it sees a comma right after the macro name.
-> It will be fine if the number of following arguments is one less than
-> the number of parameters specified in the macro definition. Otherwise,
-> it fails. For example, the following code works:
-> 
-> $ cat foo.s
-> .macro  foo arg1=2, arg2=4
->          ldr r0, [r1, #\arg1]
->          ldr r0, [r1, #\arg2]
-> .endm
-> 
-> foo, arg2=8
-> 
-> $ llvm-mc -triple=armv7a -filetype=obj foo.s -o ias.o
-> arm-linux-gnueabihf-objdump -dr ias.o
-> 
-> ias.o:     file format elf32-littlearm
-> 
-> Disassembly of section .text:
-> 
-> 00000000 <.text>:
->     0: e5910001 ldr r0, [r1, #2]
->     4: e5910003 ldr r0, [r1, #8]
-> 
-> While the the following code would fail:
-> 
-> $ cat foo.s
-> .macro  foo arg1=2, arg2=4
->          ldr r0, [r1, #\arg1]
->          ldr r0, [r1, #\arg2]
-> .endm
-> 
-> foo, arg1=2, arg2=8
-> 
-> $ llvm-mc -triple=armv7a -filetype=obj foo.s -o ias.o
-> foo.s:6:14: error: too many positional arguments
-> foo, arg1=2, arg2=8
-> 
-> This causes build failures as follows:
-> 
-> arch/arm64/kernel/vdso/gettimeofday.S:230:24: error: too many positional
-> arguments
->   clock_gettime_return, shift=1
->                         ^
-> arch/arm64/kernel/vdso/gettimeofday.S:253:24: error: too many positional
-> arguments
->   clock_gettime_return, shift=1
->                         ^
-> arch/arm64/kernel/vdso/gettimeofday.S:274:24: error: too many positional
-> arguments
->   clock_gettime_return, shift=1
-> 
-> This error is not in mainline because commit 28b1a824a4f4 ("arm64: vdso:
-> Substitute gettimeofday() with C implementation") rewrote this assembler
-> file in C as part of a 25 patch series that is unsuitable for stable.
-> Just remove the comma in the clock_gettime_return invocations in 4.19 so
-> that GNU as and LLVM's integrated assembler work the same.
-> 
-> Link:
-> https://github.com/ClangBuiltLinux/linux/issues/1349
-> 
-> Suggested-by: Nathan Chancellor <nathan@kernel.org>
-> Signed-off-by: Jian Cai <jiancai@google.com>
-
-Thanks for the updated example and explanation, this looks good to me now.
-
-Reviewed-by: Nathan Chancellor <nathan@kernel.org>
-
-> ---
-> Changes v1 -> v2:
->    Keep the comma in the macro definition to be consistent with other
->    definitions.
-> 
-> Changes v2 -> v3:
->    Edit tags.
-> 
-> Changes v3 -> v4:
->    Update the commit message based on Nathan's comments.
-> 
->   arch/arm64/kernel/vdso/gettimeofday.S | 6 +++---
->   1 file changed, 3 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/arm64/kernel/vdso/gettimeofday.S b/arch/arm64/kernel/vdso/gettimeofday.S
-> index 856fee6d3512..b6faf8b5d1fe 100644
-> --- a/arch/arm64/kernel/vdso/gettimeofday.S
-> +++ b/arch/arm64/kernel/vdso/gettimeofday.S
-> @@ -227,7 +227,7 @@ realtime:
->   	seqcnt_check fail=realtime
->   	get_ts_realtime res_sec=x10, res_nsec=x11, \
->   		clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
-> -	clock_gettime_return, shift=1
-> +	clock_gettime_return shift=1
->   
->   	ALIGN
->   monotonic:
-> @@ -250,7 +250,7 @@ monotonic:
->   		clock_nsec=x15, xtime_sec=x13, xtime_nsec=x14, nsec_to_sec=x9
->   
->   	add_ts sec=x10, nsec=x11, ts_sec=x3, ts_nsec=x4, nsec_to_sec=x9
-> -	clock_gettime_return, shift=1
-> +	clock_gettime_return shift=1
->   
->   	ALIGN
->   monotonic_raw:
-> @@ -271,7 +271,7 @@ monotonic_raw:
->   		clock_nsec=x15, nsec_to_sec=x9
->   
->   	add_ts sec=x10, nsec=x11, ts_sec=x13, ts_nsec=x14, nsec_to_sec=x9
-> -	clock_gettime_return, shift=1
-> +	clock_gettime_return shift=1
->   
->   	ALIGN
->   realtime_coarse:
-> 
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBBbGFuIFN0ZXJuDQo+IFNlbnQ6
+IFRodXJzZGF5LCBNYXkgNiwgMjAyMSAzOjQ5IFBNDQo+IFRvOiBLaWVuZXIgR3VpZG8gMTREUzEg
+PEd1aWRvLktpZW5lckByb2hkZS1zY2h3YXJ6LmNvbT4NCj4gDQo+IE9uIFdlZCwgTWF5IDA1LCAy
+MDIxIGF0IDEwOjIyOjI0UE0gKzAwMDAsIEd1aWRvIEtpZW5lciB3cm90ZToNCj4gPiA+IERyaXZl
+cnMgYXJlIG5vdCBjb25zaXN0ZW50IGluIHRoZSB3YXkgdGhleSBoYW5kbGUgdGhlc2UgZXJyb3Jz
+LCBhcw0KPiA+ID4geW91IGhhdmUgc2Vlbi4gIEEgZmV3IHRyeSB0byB0YWtlIGFjdGl2ZSBtZWFz
+dXJlcywgc3VjaCBhcyByZXRyeXMNCj4gPiA+IHdpdGggaW5jcmVhc2luZyB0aW1lb3V0cy4gIE1h
+bnkgZHJpdmVycyBqdXN0IGlnbm9yZSB0aGVtLCB3aGljaCBpcyBub3QgYSB2ZXJ5DQo+IGdvb2Qg
+aWRlYS4NCj4gPiA+DQo+ID4gPiBUaGUgZ2VuZXJhbCBmZWVsaW5nIGFtb25nIGtlcm5lbCBVU0Ig
+ZGV2ZWxvcGVycyBpcyB0aGF0IGEgLUVQUk9UTywNCj4gPiA+IC1FSUxTRVEsIG9yIC1FVElNRSBl
+cnJvciBzaG91bGQgYmUgcmVnYXJkZWQgYXMgZmF0YWwsIG11Y2ggdGhlIHNhbWUNCj4gPiA+IGFz
+IGFuIHVucGx1ZyBldmVudC4gIFRoZSBkcml2ZXIgc2hvdWxkIGF2b2lkIHJlc3VibWl0dGluZyBV
+UkJzIGFuZCBqdXN0IHdhaXQgdG8NCj4gYmUgdW5ib3VuZCBmcm9tIHRoZSBkZXZpY2UuDQo+ID4N
+Cj4gPiBUaGFua3MgZm9yIHlvdXIgYXNzZXNzbWVudC4gSSBhZ3JlZSB3aXRoIHRoZSBnZW5lcmFs
+IGZlZWxpbmcuIEkNCj4gPiBjb3VudGVkIGFib3V0IGh1bmRyZWQgc3BlY2lmaWMgdXNiIGRyaXZl
+cnMsIHNvIHdvdWxkbid0IGl0IGJlIGJldHRlciB0byBmaXggdGhlDQo+IHByb2JsZW0gaW4gc29t
+ZSBvZiB0aGUgaG9zdCBkcml2ZXJzIChlLmcuIHVyYi5jKT8NCj4gPiBXZSBjb3VsZCByZXR1cm4g
+YW4gZXJyb3Igd2hlbiBjYWxsaW5nIHVzYl9zdWJtaXRfdXJiKCkgb24gYW4gZXJyb25lb3VzIHBp
+cGUuDQo+ID4gSSBjYW5ub3QgZXN0aW1hdGUgdGhlIHNpZGUgZWZmZWN0cyBhbmQgd2UgbmVlZCB0
+byBjaGVjayBhbGwgZHJpdmVycw0KPiA+IGFnYWluIGhvdyB0aGV5IGRlYWwgd2l0aCB0aGUgZXJy
+b3Igc2l0dWF0aW9uLiBNYXliZSB0aGVyZSBhcmUgc29tZSBzcGVjaWFsIGRyaXZlcg0KPiB0aGF0
+IG5lZWQgYSBzcGVjaWFsaXplZCBlcnJvciBoYW5kbGluZy4NCj4gPiBJbiB0aGlzIGNhc2UgdGhl
+c2UgZHJpdmVycyBjb3VsZCByZXNldCB0aGUgKG5ldz8pIGVycm9yIGZsYWcgdG8gYWxsb3cNCj4g
+PiBjYWxsaW5nIHVzYl9zdWJtaXRfdXJiKCkgYWdhaW4gd2l0aG91dCBlcnJvci4gVGhpcyBjb3Vs
+ZCB3b3JrLCBpc24ndCBpdD8NCj4gDQo+IFRoYXQgaXMgZmVhc2libGUsIGFsdGhvdWdoIGl0IHdv
+dWxkIGJlIGFuIGF3a3dhcmQgYXBwcm9hY2guICBBcyB5b3Ugc2FpZCwgdGhlIHNpZGUNCj4gZWZm
+ZWN0cyBhcmVuJ3QgY2xlYXIuICBCdXQgaXQgbWlnaHQgd29yay4NCg0KT3RoZXJ3aXNlIEkgc2Vl
+IG9ubHkgdGhlIG90aGVyIGFwcHJvYWNoIHRvIGNoYW5nZSBodW5kcmVkIGRyaXZlcnMgYW5kIGFk
+ZCB0aGUNCmNhc2VzIEVQUk9UTywgRUlMU0VRIGFuZCBFVElNRSBpbiBlYWNoIGNhbGxiYWNrIGhh
+bmRsZXIuIFRoZSB1c2J0bWMgZHJpdmVyDQphbHJlYWR5IHJlc3BlY3RzIHRoZSBFSUxTRVEgYW5k
+IEVUSU1FLCBhbmQgb25seSBFUFJPVE8gaXMgbWlzc2luZy4NClRoZSByZXN0IHNob3VsZCBiZSBt
+b3JlIGEgbWFuYWdlbWVudCB0YXNrLg0KQlRXIGRvIHlvdSBhc3N1bWUgaXQgaXMgb25seSBhIHBy
+b2JsZW0gZm9yIElOVCBwaXBlcyBvciBpcyBpdCBhbHNvIGEgcHJvYmxlbQ0KZm9yIGlzb2Nocm9u
+b3VzIGFuZCBidWxrIHRyYW5zZmVycz8NCg0KPiA+ID4gSWYgeW91IHdvdWxkIGxpa2UgdG8gYXVk
+aXQgZHJpdmVycyBhbmQgZml4IHRoZW0gdXAgdG8gYmVoYXZlIHRoaXMNCj4gPiA+IHdheSwgdGhh
+dCB3b3VsZCBiZSBncmVhdC4NCj4gPg0KPiA+IEN1cnJlbnRseSBub3QuIEkgY2Fubm90IHB1bGwg
+dGhlIFVTQiBjYWJsZSBpbiBob21lIG9mZmljZSA6LSksIGJ1dCBJIHdpbGwga2VlcCBhbiBleWUN
+Cj4gb24gaXQuDQo+ID4gV2hlbiBJJ20gbW9yZSBpbnZvbHZlZCBpbiB0aGUgbmV4dCBVU0IgZHJp
+dmVyIGlzc3VlIHRoYW4gSSB3aWxsIHRlc3QNCj4gPiBiYWQgY2FibGVzIGFuZCBtYXliZSBnZXQg
+bW9yZSBpZGVhcyBob3cgd2UgY291bGQgdGVzdCBhbmQgZml4IHRoaXMgcmFyZSBlcnJvci4NCj4g
+DQo+IFdpbGwgeW91IGJlIGFibGUgdG8gdGVzdCBwYXRjaGVzPw0KDQpJIG9ubHkgY2FuIHRlc3Qg
+dGhlIFVTQlRNQyBmdW5jdGlvbiBpbiBzb21lIGRpZmZlcmVudCBQQ3MuIEkgZG8gbm90IGhhdmUg
+YXV0b21hdGVkDQpyZWdyZXNzaW9uIHRlc3RzIGZvciBVU0IgZHJpdmVycyBvciBMaW51eCBrZXJu
+ZWxzLg0KTWF5YmUgdGhlcmUgaXMgY29tcGFueSB3aG8gY291bGQgZG8gdGhhdC4NCg0KLUd1aWRv
+DQo=
