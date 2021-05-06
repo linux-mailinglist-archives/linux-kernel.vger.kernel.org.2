@@ -2,86 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D7D33755FA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:54:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE6A375600
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:57:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234958AbhEFOzf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:55:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234759AbhEFOze (ORCPT
+        id S234970AbhEFO6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:58:36 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:35326 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234759AbhEFO6f (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:55:34 -0400
-Received: from mail-qk1-x72e.google.com (mail-qk1-x72e.google.com [IPv6:2607:f8b0:4864:20::72e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9740C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 07:54:35 -0700 (PDT)
-Received: by mail-qk1-x72e.google.com with SMTP id q136so5141804qka.7
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 07:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:organization:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ONw+m9Aj9DrqajdNs9lDDlKWZxRvhGUtNfmBdcikAZc=;
-        b=gk9IcW0cbqmgLxZxzE47jd6ql3mfqSFpg02J47Oitbsyb11xJp6txA+F1L6DCw1IkE
-         /w85NTH8h3Sb0uAYjNBkFKUh6sXr/rR7SK4VqvP3KQRGPc2c6O05519SZTwsShmc2iLZ
-         0sAejjcxSAA3QMp7VeDybU7aGiw+RIQgQ/l5FszM1sebZUhyfs4V16pw2jWRfXPt3M20
-         hwN8OhJLvI9UbGAaBFUcq4nbEgud9RFkVERsl7DvyhSMcMDFLJxV1LWCqIaEsKS3HgNg
-         K/trjG22Yi6uQRy+p6C7awgBsAD6JVFLPHJ24vp9gVeOdfFAMjSaYHEb03gWuSE6OJ32
-         jvbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:organization
-         :in-reply-to:references:mime-version:content-transfer-encoding;
-        bh=ONw+m9Aj9DrqajdNs9lDDlKWZxRvhGUtNfmBdcikAZc=;
-        b=I9hxXBXaHX7Ktbt9Kb8Dojfj4/7NOWWbp8Gru/3jk3GJINtbxCCUETOeF4NtVASs94
-         2lDUJN985brVFaq+LUo7DqlJLzylSJDfyTBlx4tchSfbpFc7YG/x6NOXwmH+gj6No23C
-         vGukvOMNMUQdU9cFDYheC2Fi5rosZU3atHFpFlAqEzOjfUVQo/vEbhYlQpaOk5pKx0EQ
-         hdBPsD7IN6lA9xwjdzr9HvfpwjNAlvXjyciPXyP9SvJcJ2npM+TgecGTe9P0MDg7i6TM
-         gHklZIAxNGLXD3PzFKpTWPBAzrirINoI0lYnL8A6d5Rn/BMz3ROOFV4jVQ+Q0523g/0g
-         yNzw==
-X-Gm-Message-State: AOAM532yYzENa8+VpuPrnxgK9Z5xe09xiiHbPKKXdZijq1ciH+0xXWnQ
-        Q18CIm9gSi9+jQieiurJZX3MFtYQsPV7s79hWrY=
-X-Google-Smtp-Source: ABdhPJwYxFzVWIzhazQ3t3WxV05BA1jR2S1HubT6CcPn02M9uJvd8g2hGsyt9qyDBszvNrIYJHW2gA==
-X-Received: by 2002:a37:a854:: with SMTP id r81mr4196187qke.83.1620312874870;
-        Thu, 06 May 2021 07:54:34 -0700 (PDT)
-Received: from iron-maiden.localnet ([66.199.90.164])
-        by smtp.gmail.com with ESMTPSA id p187sm2263691qkd.92.2021.05.06.07.54.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 07:54:34 -0700 (PDT)
-From:   Carlos Bilbao <bilbao@vt.edu>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Theodore Ts'o <tytso@mit.edu>
-Cc:     corbet@lwn.net, hdegoede@redhat.com, Jonathan.Cameron@huawei.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        rdunlap@infradead.org
-Subject: Re: [PATCH] Fixed typos in all directories of Documentation/ABI/
-Date:   Thu, 06 May 2021 10:54:33 -0400
-Message-ID: <5458216.DvuYhMxLoT@iron-maiden>
-Organization: Virginia Tech
-In-Reply-To: <YJPvl6Si9Xi0w5tG@mit.edu>
-References: <2219636.ElGaqSPkdT@iron-maiden> <20210506084237.1f8363ba@coco.lan> <YJPvl6Si9Xi0w5tG@mit.edu>
+        Thu, 6 May 2021 10:58:35 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 146EeG98026492;
+        Thu, 6 May 2021 14:57:32 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=9NwOQB/Et0NI01bmeVajBOtpbM8rx1n/lujh3iY+hRM=;
+ b=fv4XoKqKWNaAS9Y9EMRylr4jDDTeoM4l5UlVL59Vq6DGcLnWPzqR1GXRAgYLviaqQos2
+ k4l2luH0VmwzBZuVLXG9me1tZ3lx1xhDGYj+bL0KRSJmYsxz6SbD+snMS420whdp8COz
+ 63HOjlqWhqyI2UsPb6x4IaG52Qy4nqOkMT6Zyu++J1/QD8WK40rB2VhINuYfBvkv77jr
+ GowpMPkiYOtLbTH1gSmCpIiynwS2xhpNNxfMcFqxt2PvrrQL21AOmBuZs4YkfHOOf2Lx
+ LhOTfKRrmLvAnhGuLgjf7lmgMCDm0UJ0YgFoWHxDTD26D9CbC3dBTc8fk/6hOMb4YOBG TQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by aserp2120.oracle.com with ESMTP id 38bemjn96p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 May 2021 14:57:32 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 146EfKWl093503;
+        Thu, 6 May 2021 14:57:32 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3030.oracle.com with ESMTP id 38bebvf2et-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 May 2021 14:57:32 +0000
+Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 146EvVob184135;
+        Thu, 6 May 2021 14:57:31 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3030.oracle.com with ESMTP id 38bebvf2e5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 06 May 2021 14:57:31 +0000
+Received: from abhmp0002.oracle.com (abhmp0002.oracle.com [141.146.116.8])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 146EvTAt004550;
+        Thu, 6 May 2021 14:57:29 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 May 2021 14:57:28 +0000
+Date:   Thu, 6 May 2021 17:57:22 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Uladzislau Rezki <urezki@gmail.com>
+Cc:     linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mchehab@kernel.org,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in __vmalloc_node_range
+Message-ID: <20210506145722.GC1955@kadam>
+References: <000000000000fdc0be05c1a6d68f@google.com>
+ <20210506142210.GA37570@pc638.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506142210.GA37570@pc638.lan>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: 1r7J5qZnCUGUwhTbfY8KSqVZi0gwtJS7
+X-Proofpoint-GUID: 1r7J5qZnCUGUwhTbfY8KSqVZi0gwtJS7
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9976 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ phishscore=0 impostorscore=0 priorityscore=1501 spamscore=0
+ mlxlogscore=999 malwarescore=0 suspectscore=0 mlxscore=0 clxscore=1011
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105060107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello both, thanks for the feedback. 
-
-> > 
-> > (not a native English speaker here)
-> > 
-> > I'm in doubt about this one. The description is talking about the
-> > "VPD format".
+On Thu, May 06, 2021 at 04:22:10PM +0200, Uladzislau Rezki wrote:
+> Seems like vmalloc() is called with zero size passed:
 > 
-> Maybe "badly formatted" or to be more clear, "some devices may be
-> reported incorrectly forrmatted data"?
+> <snip>
+> void *__vmalloc_node_range(unsigned long size, unsigned long align,
+> 			unsigned long start, unsigned long end, gfp_t gfp_mask,
+> 			pgprot_t prot, unsigned long vm_flags, int node,
+> 			const void *caller)
+> {
+> 	struct vm_struct *area;
+> 	void *addr;
+> 	unsigned long real_size = size;
+> 	unsigned long real_align = align;
+> 	unsigned int shift = PAGE_SHIFT;
 > 
-> 						- Ted
+> 2873	if (WARN_ON_ONCE(!size))
+> 		return NULL;
+> <snip>
+> 
+> from the dvb_dmx_init() driver:
+> 
+> <snip>
+> int dvb_dmx_init(struct dvb_demux *dvbdemux)
+> {
+> 	int i;
+> 	struct dmx_demux *dmx = &dvbdemux->dmx;
+> 
+> 	dvbdemux->cnt_storage = NULL;
+> 	dvbdemux->users = 0;
+> 1251	dvbdemux->filter = vmalloc(array_size(sizeof(struct dvb_demux_filter),
+> <snip>					      dvbdemux->filternum));
 
-This looks even better. I am going to change that and use the chance to send
-the patch again with the proper changelog (v2,v3) and Subject, as Randy pointed
-out.
+Indeed.
+
+It is a mystery because array_size() should never return less than
+sizeof(struct dvb_demux_filter).  That's the whole point of the
+array_size() function is that it returns ULONG_MAX if there is an
+integer overflow.
+
+regards,
+dan carpenter
+
 
 
