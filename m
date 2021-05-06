@@ -2,175 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9DE374D55
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:15:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45B78374D53
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 04:15:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230506AbhEFCQb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 5 May 2021 22:16:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54104 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230228AbhEFCQ0 (ORCPT
+        id S230196AbhEFCQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 5 May 2021 22:16:23 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:18001 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229465AbhEFCQW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 5 May 2021 22:16:26 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EED53C061574
-        for <linux-kernel@vger.kernel.org>; Wed,  5 May 2021 19:15:27 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so3589045oth.5
-        for <linux-kernel@vger.kernel.org>; Wed, 05 May 2021 19:15:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AcPxGvo4DTEq0tZ93ZhbcWhj47fEylwOLceycjaHK5I=;
-        b=u3imbGOM5XVGgqZjY9lrnzRjwRP+tcNA0VFdrHtoLvOarhzhRsCvCymTKzxo2IPXGq
-         FaeW10mA4tW9NTObLrvNNI3XbfzfSPLB5BzokRn3BZIsD1mSDA0U6f0ocfRvc+r+jnle
-         o5jvt9gb1Sn9+9PbNfwWp532WoMK/ARM7i0z8M1EGOTdoIgvC0a/vg3Tr3sWbHGuOkRr
-         1C8ZSDZaSJ5gnMuAnkDUBwt3vE8vICe2jQtPeNEE+RZGhKnScfMZmi8O5mYW3oESQ1b2
-         RPUuIj6gJExspXPSyuBuW6y05zqdRj0Wzvdx4FNhzEGjkrYC7vfxnJHoCZQOZJ1J+PGJ
-         DWIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AcPxGvo4DTEq0tZ93ZhbcWhj47fEylwOLceycjaHK5I=;
-        b=bkxjcHibU+ocJHqTGC1dejoYSucyl/mp6gPstGJwS4JG1sJlKPdDeM3pEy/gaKhCiA
-         aYIhUs8aOVwM/rt895DXPGYOsnMYLzi0u08kfhOVz7c9D6YdiDjjEblyd0AytKC53G5K
-         Lv84/j4CorrNfq7+PkNPNjkGncUa1YavXgkM7H9ibi1j1S6b1G+GF+BPMuWVIkxx382B
-         YinGUndD4nItNP35e9XWKlfqQiC/LdwCDRCOFB71SAH6ST4BILlzO1s+F+oo6SXgTv0/
-         +NLer3cy/y1F8etd/o+8NzArYspIM6oQBuyroElQiC9am8yRNEPCR7T3wqtzDOdkWaKW
-         QnoA==
-X-Gm-Message-State: AOAM530IVi42ZgSQBPxx5aQht2IMphJmT4HratWwFsPyb7R0+moSHqhl
-        DrR62waE3Ymj3+hQVRVe9UY5s4cGA5+C3mBhue7+OA==
-X-Google-Smtp-Source: ABdhPJx3oxn6WUwRIIlpeu2O6HboD8CTh3HEGo5xnyXIpmDmNndO2g0miwJ7v6pKWQKfqelX8RJ/aLXy3xFoUXQidfk=
-X-Received: by 2002:a9d:6b85:: with SMTP id b5mr1413250otq.172.1620267327215;
- Wed, 05 May 2021 19:15:27 -0700 (PDT)
+        Wed, 5 May 2021 22:16:22 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FbHCC0wXmzPwTm;
+        Thu,  6 May 2021 10:12:07 +0800 (CST)
+Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server (TLS) id 14.3.498.0; Thu, 6 May 2021
+ 10:15:20 +0800
+Subject: Re: [PATCH v2] f2fs: reduce expensive checkpoint trigger frequency
+To:     Jaegeuk Kim <jaegeuk@kernel.org>
+CC:     <linux-f2fs-devel@lists.sourceforge.net>,
+        <linux-kernel@vger.kernel.org>, <chao@kernel.org>,
+        Yunlei He <heyunlei@hihonor.com>
+References: <20210425011053.44436-1-yuchao0@huawei.com>
+ <YIbzwPGOJoKZvFnv@google.com>
+ <3338f2bc-6985-c1a4-9f3d-e59a474027f9@huawei.com>
+ <YJFb5GWijGzHOAV6@google.com>
+From:   Chao Yu <yuchao0@huawei.com>
+Message-ID: <912459e6-3eef-59b7-e8a3-1097efd22750@huawei.com>
+Date:   Thu, 6 May 2021 10:15:19 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
+ Thunderbird/52.9.1
 MIME-Version: 1.0
-References: <20210505112324.729798712@linuxfoundation.org> <20210505214938.GA817073@roeck-us.net>
-In-Reply-To: <20210505214938.GA817073@roeck-us.net>
-From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
-Date:   Wed, 5 May 2021 21:15:14 -0500
-Message-ID: <CAEUSe79HYzZpUWRBz6uPyiWN6smxdUEm02_H4_YL5XyT4x9MGw@mail.gmail.com>
-Subject: Re: [PATCH 5.4 00/21] 5.4.117-rc1 review
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Shuah Khan <shuah@kernel.org>, patches@kernelci.org,
-        lkft-triage@lists.linaro.org, Pavel Machek <pavel@denx.de>,
-        jonathanh@nvidia.com, f.fainelli@gmail.com,
-        linux- stable <stable@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YJFb5GWijGzHOAV6@google.com>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.136.110.154]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
+On 2021/5/4 22:36, Jaegeuk Kim wrote:
+> On 04/27, Chao Yu wrote:
+>> On 2021/4/27 1:09, Jaegeuk Kim wrote:
+>>> On 04/25, Chao Yu wrote:
+>>>> We may trigger high frequent checkpoint for below case:
+>>>> 1. mkdir /mnt/dir1; set dir1 encrypted
+>>>> 2. touch /mnt/file1; fsync /mnt/file1
+>>>> 3. mkdir /mnt/dir2; set dir2 encrypted
+>>>> 4. touch /mnt/file2; fsync /mnt/file2
+>>>> ...
+>>>>
+>>>> Although, newly created dir and file are not related, due to
+>>>> commit bbf156f7afa7 ("f2fs: fix lost xattrs of directories"), we will
+>>>> trigger checkpoint whenever fsync() comes after a new encrypted dir
+>>>> created.
+>>>>
+>>>> In order to avoid such condition, let's record an entry including
+>>>> directory's ino into global cache when we initialize encryption policy
+>>>> in a checkpointed directory, and then only trigger checkpoint() when
+>>>> target file's parent has non-persisted encryption policy, for the case
+>>>> its parent is not checkpointed, need_do_checkpoint() has cover that
+>>>> by verifying it with f2fs_is_checkpointed_node().
+>>>>
+>>>> Reported-by: Yunlei He <heyunlei@hihonor.com>
+>>>> Signed-off-by: Chao Yu <yuchao0@huawei.com>
+>>>> ---
+>>>> v2:
+>>>> - fix to set ENC_DIR_INO only for encrypted directory
+>>>>    fs/f2fs/f2fs.h              | 2 ++
+>>>>    fs/f2fs/file.c              | 3 +++
+>>>>    fs/f2fs/xattr.c             | 6 ++++--
+>>>>    include/trace/events/f2fs.h | 3 ++-
+>>>>    4 files changed, 11 insertions(+), 3 deletions(-)
+>>>>
+>>>> diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+>>>> index b9d5317db0a7..0fe881309a20 100644
+>>>> --- a/fs/f2fs/f2fs.h
+>>>> +++ b/fs/f2fs/f2fs.h
+>>>> @@ -246,6 +246,7 @@ enum {
+>>>>    	APPEND_INO,		/* for append ino list */
+>>>>    	UPDATE_INO,		/* for update ino list */
+>>>>    	TRANS_DIR_INO,		/* for trasactions dir ino list */
+>>>> +	ENC_DIR_INO,		/* for encrypted dir ino list */
+>>>>    	FLUSH_INO,		/* for multiple device flushing */
+>>>>    	MAX_INO_ENTRY,		/* max. list */
+>>>>    };
+>>>> @@ -1090,6 +1091,7 @@ enum cp_reason_type {
+>>>>    	CP_FASTBOOT_MODE,
+>>>>    	CP_SPEC_LOG_NUM,
+>>>>    	CP_RECOVER_DIR,
+>>>> +	CP_ENC_DIR,
+>>>>    };
+>>>>    enum iostat_type {
+>>>> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+>>>> index a595050c56d3..62af29ec0879 100644
+>>>> --- a/fs/f2fs/file.c
+>>>> +++ b/fs/f2fs/file.c
+>>>> @@ -218,6 +218,9 @@ static inline enum cp_reason_type need_do_checkpoint(struct inode *inode)
+>>>>    		f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+>>>>    							TRANS_DIR_INO))
+>>>>    		cp_reason = CP_RECOVER_DIR;
+>>>> +	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+>>>> +							ENC_DIR_INO))
+>>>> +		cp_reason = CP_ENC_DIR;
+>>>>    	return cp_reason;
+>>>>    }
+>>>> diff --git a/fs/f2fs/xattr.c b/fs/f2fs/xattr.c
+>>>> index c8f34decbf8e..70615d504f7e 100644
+>>>> --- a/fs/f2fs/xattr.c
+>>>> +++ b/fs/f2fs/xattr.c
+>>>> @@ -630,6 +630,7 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+>>>>    			const char *name, const void *value, size_t size,
+>>>>    			struct page *ipage, int flags)
+>>>>    {
+>>>> +	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+>>>>    	struct f2fs_xattr_entry *here, *last;
+>>>>    	void *base_addr, *last_base_addr;
+>>>>    	int found, newsize;
+>>>> @@ -745,8 +746,9 @@ static int __f2fs_setxattr(struct inode *inode, int index,
+>>>>    			!strcmp(name, F2FS_XATTR_NAME_ENCRYPTION_CONTEXT))
+>>>>    		f2fs_set_encrypted_inode(inode);
+>>>>    	f2fs_mark_inode_dirty_sync(inode, true);
+>>>> -	if (!error && S_ISDIR(inode->i_mode))
+>>>> -		set_sbi_flag(F2FS_I_SB(inode), SBI_NEED_CP);
+>>>> +	if (!error && S_ISDIR(inode->i_mode) && f2fs_encrypted_file(inode) &&
+>>>> +			f2fs_is_checkpointed_node(sbi, inode->i_ino))
+>>>> +		f2fs_add_ino_entry(sbi, inode->i_ino, ENC_DIR_INO);
+>>>
+>>> What will happen, if we need to checkpoint xattr_nid on this directory?
+>>
+>> need_do_checkpoint()
+>>
+>> a)	else if (!f2fs_is_checkpointed_node(sbi, F2FS_I(inode)->i_pino))
+>> 		cp_reason = CP_NODE_NEED_CP;
+> 
+> This will change the current behavior which does checkpoint regardless of the
+> parent being checkpointed. If i_pino was checkpointed but xnid wasn't, can we
+> get xnid being checkpointed?
 
-On Wed, 5 May 2021 at 16:49, Guenter Roeck <linux@roeck-us.net> wrote:
->
-> On Wed, May 05, 2021 at 02:04:14PM +0200, Greg Kroah-Hartman wrote:
-> > This is the start of the stable review cycle for the 5.4.117 release.
-> > There are 21 patches in this series, all will be posted as a response
-> > to this one.  If anyone has any issues with these being applied, please
-> > let me know.
-> >
-> > Responses should be made by Fri, 07 May 2021 11:23:16 +0000.
-> > Anything received after that time might be too late.
-> >
-> > The whole patch series can be found in one patch at:
-> >       https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-=
-5.4.117-rc1.gz
-> > or in the git tree and branch at:
-> >       git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable=
--rc.git linux-5.4.y
-> > and the diffstat can be found below.
-> >
-> > thanks,
-> >
-> > greg k-h
-> >
-> > -------------
-> > Pseudo-Shortlog of commits:
-> >
-> > Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> >     Linux 5.4.117-rc1
-> >
-> > Ondrej Mosnacek <omosnace@redhat.com>
-> >     perf/core: Fix unconditional security_locked_down() call
-> >
-> > Miklos Szeredi <mszeredi@redhat.com>
-> >     ovl: allow upperdir inside lowerdir
-> >
-> > Dan Carpenter <dan.carpenter@oracle.com>
-> >     scsi: ufs: Unlock on a couple error paths
-> >
-> > Mark Pearson <markpearson@lenovo.com>
-> >     platform/x86: thinkpad_acpi: Correct thermal sensor allocation
-> >
-> > Shengjiu Wang <shengjiu.wang@nxp.com>
-> >     ASoC: ak5558: Add MODULE_DEVICE_TABLE
-> >
-> > Shengjiu Wang <shengjiu.wang@nxp.com>
-> >     ASoC: ak4458: Add MODULE_DEVICE_TABLE
->
-> Twice ? Why ?
+Yes,
 
-But different, right? One for 4458 and the other for 5558:
+ >> If parent is checkpointed, after converting parent to encrypted directory
+ >> and create the file in parent, fsync this file will trigger checkpoint() due
+ >> to b)
 
-sound/soc/codecs/ak4458.c:
-+MODULE_DEVICE_TABLE(of, ak4458_of_match);
+If i_pino was checkpointed, but xnid wasn't due to enable encryption on this
+directory, fsync() this file will trigger checkpoint() to make sure xnid
+checkpointed due to b) case.
 
-sound/soc/codecs/ak5558.c:
-+MODULE_DEVICE_TABLE(of, ak5558_i2c_dt_ids);
+Thanks,
 
-FWIW, our builds passed with that pair of commits.
-
-Greetings!
-
-Daniel D=C3=ADaz
-daniel.diaz@linaro.org
-
-
-
-> This gives me a compile error (the second time it is added at the wrong
-> place).
->
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys=
--kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.=
-117_rc1/sound/soc/codecs/ak4458.c:722:1: error: redefinition of '__mod_of__=
-ak4458_of_match_device_table'
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: MODULE_DEVICE_TABLE(of, ak4458_of_=
-match);
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys=
--kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.=
-117_rc1/include/linux/module.h:227:21: note: expanded from macro 'MODULE_DE=
-VICE_TABLE'
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: extern typeof(name) __mod_##type##=
-__##name##_device_table               \
-> chromeos-kernel-5_4-5.4.117_rc1-r2159:                     ^
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: <scratch space>:119:1: note: expan=
-ded from here
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: __mod_of__ak4458_of_match_device_t=
-able
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys=
--kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.=
-117_rc1/sound/soc/codecs/ak4458.c:711:1: note: previous definition is here
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: MODULE_DEVICE_TABLE(of, ak4458_of_=
-match);
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: ^
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: /build/arm-generic/tmp/portage/sys=
--kernel/chromeos-kernel-5_4-5.4.117_rc1-r2159/work/chromeos-kernel-5_4-5.4.=
-117_rc1/include/linux/module.h:227:21: note: expanded from macro 'MODULE_DE=
-VICE_TABLE'
-> chromeos-kernel-5_4-5.4.117_rc1-r2159: extern typeof(name) __mod_##type##=
-__##name##_device_table               \
->
-> Oddly enough, I only see the error when I try to merge the
-> code into ChromeOS, not in my test builds. I guess that has
-> to do with "-Werror".
->
-> Guenter
+> 
+>>
+>> b)	else if (f2fs_exist_written_data(sbi, F2FS_I(inode)->i_pino,
+>> 							ENC_DIR_INO))
+>> 		cp_reason = CP_ENC_DIR;
+>>
+>> If parent is not checkpointed, after converting parent to encrypted directory
+>> and create the file in parent, fsync this file will trigger checkpoint() due
+>> to a)
+>>
+>> If parent is checkpointed, after converting parent to encrypted directory
+>> and create the file in parent, fsync this file will trigger checkpoint() due
+>> to b)
+>>
+>> Am I missing any cases?
+>>
+>> Thanks,
+>>
+>>>
+>>>>    same:
+>>>>    	if (is_inode_flag_set(inode, FI_ACL_MODE)) {
+>>>> diff --git a/include/trace/events/f2fs.h b/include/trace/events/f2fs.h
+>>>> index 56b113e3cd6a..ca0cf12226e9 100644
+>>>> --- a/include/trace/events/f2fs.h
+>>>> +++ b/include/trace/events/f2fs.h
+>>>> @@ -145,7 +145,8 @@ TRACE_DEFINE_ENUM(CP_RESIZE);
+>>>>    		{ CP_NODE_NEED_CP,	"node needs cp" },		\
+>>>>    		{ CP_FASTBOOT_MODE,	"fastboot mode" },		\
+>>>>    		{ CP_SPEC_LOG_NUM,	"log type is 2" },		\
+>>>> -		{ CP_RECOVER_DIR,	"dir needs recovery" })
+>>>> +		{ CP_RECOVER_DIR,	"dir needs recovery" },		\
+>>>> +		{ CP_ENC_DIR,		"persist encryption policy" })
+>>>>    #define show_shutdown_mode(type)					\
+>>>>    	__print_symbolic(type,						\
+>>>> -- 
+>>>> 2.29.2
+>>> .
+>>>
+> .
+> 
