@@ -2,252 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26643375CA5
+	by mail.lfdr.de (Postfix) with ESMTP id DA0B4375CA7
 	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:11:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230015AbhEFVLy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:11:54 -0400
-Received: from mail-eopbgr80049.outbound.protection.outlook.com ([40.107.8.49]:29438
-        "EHLO EUR04-VI1-obe.outbound.protection.outlook.com"
+        id S230128AbhEFVL5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 17:11:57 -0400
+Received: from mail-mw2nam12on2052.outbound.protection.outlook.com ([40.107.244.52]:20879
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229544AbhEFVLu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 17:11:50 -0400
+        id S230037AbhEFVLy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 17:11:54 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jLrHHjHXT+b+cZHUwfPm/4QjrMFsBIQst8dFlLe81r76gZLmAtHuNI5Asj5kx3LB3qbrigJwswlcFMMeSHuiAeaDDryhfauUD7aUcFvHCxoLSIQ9kioEPQypt45rQvaraRAVokAF8A8+gRDVip2ULnW+IfWq2mELIhLo9SUGQb5BenUYxjznaMmYKW6yf7Yhdzsjfygw13mbYyEshDr0Pm2OSuUem4JkJfsqYhfieWmxam9tsWueHkT2YOWgujfo34tIyveEr9diFynzcpiO5Ed+XnppX4DTqzeOFwUWfqgcNkPhBPQF9gai1lp6Y2RiPljoVhbOINcFkm6M6Cq7bw==
+ b=UhzyBnThMh6xKl3o9SOSqZpnzbcF8kMkvN0qOjkwNegNv+tAdQNtVZdO/5sKyX66dLdMMf34D79S4m2S0LQ9WAn/rdhnlMLuqW39qkzVGPgFlqBybe5n+TmSLUc/nLPK3hmWJhonYAw5yaa4PL1qzgsQjFWIj4cMVop4Zt/AR/WtUJoCCsSfoxM0thYdIkfS2ZMhh8sdA7Z/+u9lhPtRPqlVmy7u8cZwaBc3TOMl5UyfUrbRQV1+ESUHFIen1K6wr3hDFxarXJlZ73dnHMdnUICTpEtFsNqFvQ3swugcX8F5f3E1RGGXc9MQMmU327hOpZ6O0rHV4TGFXVHwAbZblA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P5B2mqFNOuBNTXFHP9Ct803l641hZZfjNG1uhVNXojM=;
- b=XVHZlcKrYQt64iWqZRJKxr1vgl/meLYyvFDXbAsZwLnr1svzSmcN/FZoQLGicXeKqbM4sQMPtIDUsXXINBdGxnhmWZSiqve2wqKo0leTq65KInGp5WmrepHrEsKtctmktXROHScMkYiuhejFCQyhQfdtUw+U32PnBgplS7cLmSnlfcSL58cJ1je9LWlwYgmR3NkRlso5p8J7p2QaRQfT0V1RFiPoAkqZH87ZGni9AExoP1aeEfAcP2iBlKwMVUe47ywu6GuKKw4XEUZR371mcov1sCALFbq5wLt2hGWmAmpg0gekodRqM9CahTkLuAEjGEKnAHCA5skxnOAln5sl4Q==
+ bh=N7u6+MIFLSEtWl+ecOXTqXmJ4Xm44pRV44S8rKk/Xnk=;
+ b=lHWQse198N0hGCZSIxR212MyxlBJm3KnVKFy6VVE6m0305gXwKHRLnqGnk90w97CN2iQgPETH/iQvzkpInFMLInNzYh1eem6X0t62z5C5daDamPG4FSnFFISy1mSN2M69oKcAxHFBV5evnzwtzpAFgMtluQpluhJzsfOwbiGCUzfAaap51/jd2LP1eOqTJTRTgXGlryIpdkp3/vpNTr8ORDWLrpDdku1efVOy7jgQJgwFbL+yMfD3Q2ludSiiOA34hofI09V7h53zNckinoKEBa5UXnZx/4cWJcCoryEmJc3rB2j4Oe0a+lnggexq18fRwaUmnqwxFvGebDG4AzEBQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=seco.com; dmarc=pass action=none header.from=seco.com;
- dkim=pass header.d=seco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=secospa.onmicrosoft.com; s=selector2-secospa-onmicrosoft-com;
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=P5B2mqFNOuBNTXFHP9Ct803l641hZZfjNG1uhVNXojM=;
- b=DnRd+sPAq1H9LTSm/rXu0uIxmLrWJnHn+TNtYasQvJJ2O4TY4LHdG9yx1pZz6c17ffmroVL9MdDa9EVqqK3zTGmirEgrceX6ZZAnqIXQXlu3/m5/zlBUCI2XWRKPTC15H/NQYA3claps6sbzHVc5JsRQRtgT0VdSC8FuzbUD3tU=
-Authentication-Results: hazent.com; dkim=none (message not signed)
- header.d=none;hazent.com; dmarc=none action=none header.from=seco.com;
-Received: from AM0PR03MB4514.eurprd03.prod.outlook.com (2603:10a6:208:d0::10)
- by AM0PR03MB5122.eurprd03.prod.outlook.com (2603:10a6:208:10b::18) with
+ bh=N7u6+MIFLSEtWl+ecOXTqXmJ4Xm44pRV44S8rKk/Xnk=;
+ b=WV/OaZFjPeGVpird0I+5Jbwv/Jiay5Gcf2N4QTvfAacGLAVYkUK4T0G8hN08Vd2psOrS0JGfzFevXMRjbeGPEoivQNLsAik9D8611VQcXpXp3WF8cIhBe2ajjOXxUviiWTAF94VfEfrGRwG/0EwopoYtvC6vg9iL5oXDGARqNdy6x53HOArgtCcR3FTJ5hhVTDrrx0tr+irmJrhoC3K821hXOuFZ5CX6PzIGAUT9eJL8aBOJXLkINOlmyq6tUJ+WN2hI8LnnOZkh6x8LUTK81brBQoVgz7F8SCBXdT+iP5Xtf2tAA6vFa4hD7SHkzrP3L0hj6mNDmZikpwT6vhbpSQ==
+Authentication-Results: redhat.com; dkim=none (message not signed)
+ header.d=none;redhat.com; dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
+ by DM5PR1201MB0201.namprd12.prod.outlook.com (2603:10b6:4:5b::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.27; Thu, 6 May
- 2021 21:10:48 +0000
-Received: from AM0PR03MB4514.eurprd03.prod.outlook.com
- ([fe80::4986:3655:d3b5:b3d2]) by AM0PR03MB4514.eurprd03.prod.outlook.com
- ([fe80::4986:3655:d3b5:b3d2%5]) with mapi id 15.20.4087.044; Thu, 6 May 2021
- 21:10:47 +0000
-Subject: Re: [PATCH v2 1/2] dt-bindings: pwm: Add Xilinx AXI Timer
-To:     Rob Herring <robh@kernel.org>
-Cc:     linux-pwm@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        michal.simek@xilinx.com, Alvaro Gamez <alvaro.gamez@hazent.com>
-References: <20210504184925.3399934-1-sean.anderson@seco.com>
- <20210506210527.GA789155@robh.at.kernel.org>
-From:   Sean Anderson <sean.anderson@seco.com>
-Message-ID: <b736d78f-4eaa-1057-71bf-02c3b44ec51e@seco.com>
-Date:   Thu, 6 May 2021 17:10:42 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-In-Reply-To: <20210506210527.GA789155@robh.at.kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [50.195.82.171]
-X-ClientProxiedBy: BL1PR13CA0110.namprd13.prod.outlook.com
- (2603:10b6:208:2b9::25) To AM0PR03MB4514.eurprd03.prod.outlook.com
- (2603:10a6:208:d0::10)
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Thu, 6 May
+ 2021 21:10:55 +0000
+Received: from DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039]) by DM6PR12MB3834.namprd12.prod.outlook.com
+ ([fe80::ddb4:2cbb:4589:f039%4]) with mapi id 15.20.4108.026; Thu, 6 May 2021
+ 21:10:54 +0000
+Date:   Thu, 6 May 2021 18:10:53 -0300
+From:   Jason Gunthorpe <jgg@nvidia.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     gregkh@linuxfoundation.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5.11.y, 5.10.y, 5.4.y] vfio: Depend on MMU
+Message-ID: <20210506211053.GR1370958@nvidia.com>
+References: <162033393037.4094195.18215062546427210332.stgit@omen>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <162033393037.4094195.18215062546427210332.stgit@omen>
+X-Originating-IP: [47.55.113.94]
+X-ClientProxiedBy: BL1PR13CA0441.namprd13.prod.outlook.com
+ (2603:10b6:208:2c3::26) To DM6PR12MB3834.namprd12.prod.outlook.com
+ (2603:10b6:5:14a::12)
 MIME-Version: 1.0
 X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [172.27.1.65] (50.195.82.171) by BL1PR13CA0110.namprd13.prod.outlook.com (2603:10b6:208:2b9::25) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.28 via Frontend Transport; Thu, 6 May 2021 21:10:46 +0000
+Received: from mlx.ziepe.ca (47.55.113.94) by BL1PR13CA0441.namprd13.prod.outlook.com (2603:10b6:208:2c3::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4129.12 via Frontend Transport; Thu, 6 May 2021 21:10:54 +0000
+Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1lelGn-002XrX-Hl; Thu, 06 May 2021 18:10:53 -0300
 X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 4a4890b6-4152-4f94-d098-08d910d36b7e
-X-MS-TrafficTypeDiagnostic: AM0PR03MB5122:
-X-Microsoft-Antispam-PRVS: <AM0PR03MB5122473A0771BB322B4675B296589@AM0PR03MB5122.eurprd03.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
+X-MS-Office365-Filtering-Correlation-Id: 5b34ef63-9370-4837-9313-08d910d36f8c
+X-MS-TrafficTypeDiagnostic: DM5PR1201MB0201:
+X-Microsoft-Antispam-PRVS: <DM5PR1201MB0201D44C725B99528C8C6B9CC2589@DM5PR1201MB0201.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:8882;
 X-MS-Exchange-SenderADCheck: 1
 X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: bCMTnDRIuGjR0YkqwvgDtY+goiSfUksmDiL1oD0neWoaGu8/ssnK5oqO9lSFUtxc+1JL9c5mJdS0gEg1OSKb7OMlnWv1ggIf8ZCu9aHNe8nDi5RzHfh+a1U4mUVNVGWA8noaphhGbsG/OoSvcIjyo9OODAHmceG5WdqCqIcgTd9LKIrVObIv+56Y3I5egJibw7Sm5BzAthM4SNFKKCPn3Kfs92Y6M1g9kU5x/RS3NpscfnQ0B6d1tvBrn8IA6M6VvwYvx6u+T5drfjATLccZqEUdNzEKltAcofC63rf5ePnZ1mxLRQy0gVKcaTmg7GVD6eqBq5wT+srXZBi3HgDWgiYmYRGilI5IfHziEH0JWdZN3wcnmWhZLqZz6H12dU57o5xQ/6y6R8s5t0gbE7FtUb2EvvRTKFs1+7e4D87j5ydUtPmVoN4xH5aHQxornyrimctRBS/wpb8ZLhLJDX3KWgiw/Q5Emo7SaKjlwJY/JDo2bTF389wKIzrTv+fIPnCUpOjvzSgrzsQbL5q6hMHXaedNVx2eK2mEOIakPrTX0v1QOcZdgAjuhm0NoxD9awv8sjr6Jh6wAcxtn7sO4+Gecpt3KUwvlgmdhqTmCWlmX91U9YZhmOVyNX2aiuM0YM3p7T2WqFL8e0ypTN6gL0RC02qNCZto55l6J8dME5flVJpPZONbxGfGqcObZM2IMw9VBjP2uJl//vXHcslMrAS3eTDDoiDBgbt5MJujddaI0X7KrQTTbAa3U48HkX1Kcv4mdPn8uEG5PYvEPOh+gZYtZm48lFvGXWYgf6WstK+FUKg=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR03MB4514.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(39830400003)(346002)(376002)(136003)(396003)(366004)(16526019)(186003)(2906002)(478600001)(966005)(8676002)(31696002)(38100700002)(5660300002)(6486002)(31686004)(956004)(38350700002)(44832011)(52116002)(26005)(66946007)(316002)(16576012)(6916009)(66476007)(6666004)(83380400001)(66556008)(53546011)(86362001)(36756003)(4326008)(2616005)(8936002)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?OUZxTzRvTmIrOWN4NmFSbTF1SkgzUzZpUmIzb05LT2JQQ2xYaGk0SVEyU0tY?=
- =?utf-8?B?QVEvbVMvR0dxZ3NHbWZFRFpSR1JoanRzMzk5Q2ptOUFZQ09kZ1VpbjJDWFEz?=
- =?utf-8?B?VzBOSnBhZ2sxOTV4ejh2S3ZFOXRiQ1BMSmZTQTJNUHFSU3ZpSTlnTU5CQ0ZF?=
- =?utf-8?B?bThvemJTL21BcVh6WGUyeVlaT3dxdkt4VWpDcmgxVFBBeUdrZ1JWN1hIRUE5?=
- =?utf-8?B?TkhNeURJY2J6bGY4S2Y0eFhnd1MyMHZoRzJwK3V2TFduMlZLWk1aVUE2MEFO?=
- =?utf-8?B?L1ZCeHp6Rkp4Y29lVzNXU3hrZGpqTGo3SGpWSkFrcGkyYlZQT1FvZ3l0OVV5?=
- =?utf-8?B?eTZxbVd0Y0NSeVg2NnJ4K2VVb3E5cFhVQjYwN0YydWNxRGxmb1N4WEJacVZP?=
- =?utf-8?B?cGtlV0E0MDBvaGwzR21YM2tkNFhFUGtrSjdIcGJWVlh5L3E1dmFvUDlZd1Fr?=
- =?utf-8?B?Z0JnZVpFS0p3ekJLR1JNWWxPeDgrYS9JOURQNnR5TjBySE5hQjBZeHl1NElh?=
- =?utf-8?B?VFB2SStibDc0OXVCSUg4MUxHQ2ltQjNtdEZZM2lQT3NIc0dmRE5jemtvNzBQ?=
- =?utf-8?B?UFJISzNFQlUzWStXNy94VEtiODRQczZuUlY0SEVkN1dUWVI5Q1Qxc2FGUDZt?=
- =?utf-8?B?VGFQci80TytuL3BUdTdSS255ZUFrejFkZG5HY3I4cmJvazZBZzY4QUhRQ1RU?=
- =?utf-8?B?a3RmR0tKU2dBdGd3Yis5VWF6eHovM2NRclA1Z3JGdE0yamkxbkg2T1pmbU9S?=
- =?utf-8?B?dTFQczkvQVNlSVYyaFE3L0xRR1p5eTZVYXVWNmpPQ1MwT1RzMXV1RkVZcVR1?=
- =?utf-8?B?OE9keUNNdDZWQ2grNXhodXlUcThkaVY2RGRXNmNNdE5ocmVuc1VNQ2M0SEhG?=
- =?utf-8?B?ZmdORmp1ZGkzZzFGOEFwQmExU0YwU3ZrK2prWklRdEhRc05GRTVURHI5MHNV?=
- =?utf-8?B?YW9wSzhzOU90bmlvblpSa2RIb3BVWUdwMytnM1RDNG9Gc1MyeUhvTDRyQk1t?=
- =?utf-8?B?YlhjRGlLS3ViZW8zYnBOYlpuS0puNW5XV2FjUHdGSWRoT0IrVVBaN1AwVTBi?=
- =?utf-8?B?cDRucXM4VXJEUmpyVVphQUdBZUpIcEZPTUlPZUw5RWp3RzBCWFI3VHh1THJQ?=
- =?utf-8?B?RHpQWDROY1ZFOWc1MTl5bnRPU1hpZDc1UkZXenFkQTVZNENBc0lLeWVmWk1G?=
- =?utf-8?B?SGhzZThhcGFZM0ZBbWM1L0Rrci85QnMrb2dtcVhOU05xRXJPTGJERWRrNjZn?=
- =?utf-8?B?eUxBN0Q1NFAvaGZoWDlCRlJSditJa1Y0aFFXdm5NS2llRUxOQWp1Zk9Zb25s?=
- =?utf-8?B?YktpV3JGemVLTlZzRVM0S1k0cG1XTUFIejI2MU85MURuQTZBb3lFWVVKNU9S?=
- =?utf-8?B?elJmc0ZJbFhtR0d1WlBNUjVrWkNYaEFPQkRWdnZjMUs4WExWQ2pZRGNMS053?=
- =?utf-8?B?MkNkdjVkVS9oZDBUeFZienpOclJteXo5T0JrTUxEb0RtcmVhalp6Q2JVOFBw?=
- =?utf-8?B?aGVQSFRZKzhkZmFsT0R6azRkbGgxMTNIVVgxNlQ3aEhZUDBrNUdpUUI3Wnhx?=
- =?utf-8?B?VHpwMFB1Z25ZdFlyQ0N3ZFRsRm05T0lldXpQTmpGUHdEbmE4YWpiWGl4Mlgz?=
- =?utf-8?B?NTQydDd2Z3ZDOXpsMHVYQ2E5cXhURmZwUXI3dkdndklaY2V1MXNGbW9JcDNm?=
- =?utf-8?B?OHJzKzhUZGc2dHY3U3ZubUlUY0IxOTJ3QmpETlYwL1Z4SzBTSDN4ampkeC9q?=
- =?utf-8?Q?yslhE0WRDu4OLlBqxwrcIysd0AoambcFQR+ZZV4?=
-X-OriginatorOrg: seco.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4a4890b6-4152-4f94-d098-08d910d36b7e
-X-MS-Exchange-CrossTenant-AuthSource: AM0PR03MB4514.eurprd03.prod.outlook.com
+X-Microsoft-Antispam-Message-Info: UnOH2NqpbbIjEc8IJErn8uJjFOzbz/4jTx4VDc7cUVehu66elRKpdQIFbej3xgDjKbeswFH0qbzE0V6+Eq6gfEbkunlC/MDrOM0FTomZO5BH6EJ23ND2MnWU24uwQvL+sZCx0YtmtWDW6XGXGDeJrIHKgn/z+cn/d64IK1rGLjiWuRDm9UVjFeSmikSvihZdAS3+1NooYAiAhAvP5OmKDxb/LMcCMEvQ58OuK1q10647KeRPA82GXNVj9lrdJzHdXSKPm6JPONaOP56MT6tn1Cf5SWF18+omoOWu/oxdscUh+PXdtuomZwCvbrPE0ZXxEooqTj6O9pxnxgn0ObO9oa87sTqC+asf/ezoVvzJXXH7rNvcnkgMgkQ4S8Iih3DX4uZqo0t+6V24uUAczqcO2O8n9x6ljHE8aILyEp+xqygvh59qgC5EjvX8yiVa9vb8wMISFNeEM6fwgTfy4edA2LMCpbAX8LJRRvt18WJ1WTcdfI8gHepLtKERpNyRltIqNfEqFA8IvWyD3UiseHqnnD5uwPKNByZR5IsaFDQUlE1IDQbSUjijFRsIhUyK12/IOd8SCA9tMqOkrliNDJ6KJXL5EuoXR7vGM2Iw04vGX/o=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3834.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(366004)(39860400002)(136003)(346002)(66946007)(36756003)(66556008)(426003)(9746002)(86362001)(2906002)(1076003)(9786002)(8936002)(33656002)(66476007)(316002)(26005)(38100700002)(186003)(83380400001)(5660300002)(6916009)(8676002)(4326008)(2616005)(478600001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?us-ascii?Q?vj6LWa7PTi194bw0rnlvHhNCBl46E/ezsLSEL0UviXD2bpSgVSqCU8HniAPQ?=
+ =?us-ascii?Q?Z3xUCWX9RO+ppeKVPYFe+IolnwRydPcw4cauhIebeRIi2Ui93CuBHynpBVzD?=
+ =?us-ascii?Q?p6stkaX4hQJzVXQfGaMCDJyjavLWYbbt4sWfU86YMgi9gFBINDmBtWE3C0my?=
+ =?us-ascii?Q?pCx1l6ZOpAknQ3LwOEykSQSD2AWvmsxkRlqEOiA5uHMlzLkC6P1hhU+4o+sn?=
+ =?us-ascii?Q?lxcC85CbuDPEUV2zqQL6zeP0pFicBXEOcb5Kh8at6u/eAp2ypB9b4nFHupam?=
+ =?us-ascii?Q?/vLB8hWVyU5g73pQDaK3qAPv7mgDh/LO+/OHOEuIAzo7xV3uG1EHpJbfAP6B?=
+ =?us-ascii?Q?g1CgBK62DHcvbof1telpb2qbS39/tDz6bk8YRqBZ6fJQtjHGmw2qX2IZhY+T?=
+ =?us-ascii?Q?zlSgDBvjyxWV94nriGswJaP5GDft5wyySNVVHd1oTFkk+/Cg9bt2kvXPU6mH?=
+ =?us-ascii?Q?uykGb4M5NjXunKdr944Lu5AENcTPJpFY1BGdclBIrKto6x3gqnsuKuR8ahV2?=
+ =?us-ascii?Q?4WNOu90OmeEIfW/EbcypcR5TSZ+PSexsAfCO1fx3e2ch3GgoPcgqjgUwZ6Iu?=
+ =?us-ascii?Q?kng1uGkvQteXbICnOsw5S2iIBhBSYqVNRivY9FhCH+kXo3S/pr7069XkuTgg?=
+ =?us-ascii?Q?KiPyzCT2w29OjzRFiIEGhVZIE6uSbqEx9darDopDZ36gztHbMNk2Qfttv27S?=
+ =?us-ascii?Q?LrDNyQK43aagY9TcI8p3PP6SgJ/Lc6600fUY3IWn8xHcg/ENT+Ti3f+Ep3FJ?=
+ =?us-ascii?Q?v0QdGLlyphQ+xBBjSuwaSjWmJh1r7cRgHES6b9fVYOCUsJM2293zxCDKT/5Q?=
+ =?us-ascii?Q?o8bIjZ3ZtA4Jq6yxlQhVmeBc+kp7HNf4kzWVGqsv25k7Ut/ztRuzZGYsNUfm?=
+ =?us-ascii?Q?C0WPTtpoWrKfjb9t1J/AhW9XLsJu9EyTwllE4hI0MbJ1igCCdRafxlpYgLXh?=
+ =?us-ascii?Q?Ki2IC/SAXazlrdNm/rsvRKEiL6Jwi9n+KTTe+nYjEtzDIYLzw4hKZNzz0IWr?=
+ =?us-ascii?Q?swdTsrTqYirVfQ/er6kjk0hCdh4ZmopYxMGjWBpWeosOPWt3d6EokZlmcg+/?=
+ =?us-ascii?Q?O7lZk9kouJl82JtcSjqsoCiLI4tU9vroupq6X3UhUL1fU4eG/jOEJObX+9Jm?=
+ =?us-ascii?Q?jP+cJJNISgK8HMoQdjC2atuHL3Kc6cQkOiygBGxdspwk2l57pFufHGoPc0wO?=
+ =?us-ascii?Q?232OPF4VTaw7uVOhasiFiZjMST6PZLU7V+W8bvZHn3y17X+6D7bOxltfU4ON?=
+ =?us-ascii?Q?8piuNUiH+nYwrhEURjWbdJLtajtFmHj3GLJpJST33RPDFubFR7yTxa59hjWU?=
+ =?us-ascii?Q?S6A8Hxe1lugCMfLVPMwEyGqO?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5b34ef63-9370-4837-9313-08d910d36f8c
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3834.namprd12.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 21:10:47.8811
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 06 May 2021 21:10:54.6602
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: bebe97c3-6438-442e-ade3-ff17aa50e733
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3OdXrRmnUXwOOp0ce1zH4S4OqKLS3Vsr9J4oxqw4sh3OngDzGyCEwr7JGVh3nY1VmiJh61IS/y5vl/VemTA//A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM0PR03MB5122
+X-MS-Exchange-CrossTenant-UserPrincipalName: c101MfPhaLPhbAFG6X1CHL9X3Hh8d0TcJO/h3hddXcuW8mZaoB67Sfdr9L1rC4kc
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1201MB0201
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 06, 2021 at 02:47:51PM -0600, Alex Williamson wrote:
+> From: Jason Gunthorpe <jgg@nvidia.com>
+> 
+> commit b2b12db53507bc97d96f6b7cb279e831e5eafb00 upstream
+> 
+> VFIO_IOMMU_TYPE1 does not compile with !MMU:
+> 
+> ../drivers/vfio/vfio_iommu_type1.c: In function 'follow_fault_pfn':
+> ../drivers/vfio/vfio_iommu_type1.c:536:22: error: implicit declaration of function 'pte_write'; did you mean 'vfs_write'? [-Werror=implicit-function-declaration]
+> 
+> So require it.
+> 
+> Suggested-by: Cornelia Huck <cohuck@redhat.com>
+> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
+> Message-Id: <0-v1-02cb5500df6e+78-vfio_no_mmu_jgg@nvidia.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> Cc: stable@vger.kernel.org # 5.11.y, 5.10.y, 5.4.y
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> 
+> The noted stable branches include upstream commit 179209fa1270
+> ("vfio: IOMMU_API should be selected") without the follow-up commit
+> b2b12db53507 ("vfio: Depend on MMU"), which should have included a
+> Fixes: tag for the prior commit.  Without this latter commit, we're
+> susceptible to randconfig failures with !MMU configs.  Thanks!
 
+Right. It would also be a fine solution to not include '1792 in any
+stable branches either
 
-On 5/6/21 5:05 PM, Rob Herring wrote:
- > On Tue, May 04, 2021 at 02:49:24PM -0400, Sean Anderson wrote:
- >> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
- >> a "soft" block, so it has many parameters which would not be
- >> configurable in most hardware. This binding is usually automatically
- >> generated by Xilinx's tools, so the names and values of properties
- >> must be kept as they are.
- >>
- >> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
- >> ---
- >>
- >> Changes in v2:
- >> - Use 32-bit addresses for example binding
- >>
- >>   .../bindings/pwm/xlnx,axi-timer.yaml          | 91 +++++++++++++++++++
- >>   1 file changed, 91 insertions(+)
- >>   create mode 100644 Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
- >>
- >> diff --git a/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
- >> new file mode 100644
- >> index 000000000000..bd014134c322
- >> --- /dev/null
- >> +++ b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
- >> @@ -0,0 +1,91 @@
- >> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
- >> +%YAML 1.2
- >> +---
- >> +$id: http://devicetree.org/schemas/pwm/xlnx,axi-timer.yaml#
- >> +$schema: http://devicetree.org/meta-schemas/core.yaml#
- >> +
- >> +title: Xilinx LogiCORE IP AXI Timer Device Tree Binding
- >> +
- >> +maintainers:
- >> +  - Sean Anderson <sean.anderson@seco.com>
- >> +
- >> +properties:
- >> +  compatible:
- >> +    items:
- >> +      - const: xlnx,axi-timer-2.0
- >> +      - const: xlnx,xps-timer-1.00.a
- >> +
- >> +  clocks:
- >> +    maxItems: 1
- >> +
- >> +  clock-names:
- >> +    const: s_axi_aclk
- >> +
- >> +  reg:
- >> +    maxItems: 1
- >> +
- >> +  xlnx,count-width:
- >> +    $ref: /schemas/types.yaml#/definitions/uint32
- >> +    minimum: 8
- >> +    maximum: 32
- >> +    description:
- >> +      The width of the counters, in bits.
- >> +
- >> +  xlnx,gen0-assert:
- >> +    $ref: /schemas/types.yaml#/definitions/uint32
- >> +    enum: [ 0, 1 ]
- >> +    description:
- >> +      The polarity of the generateout0 signal. 0 for active-low, 1 for active-high.
- >> +
- >> +  xlnx,gen1-assert:
- >> +    $ref: /schemas/types.yaml#/definitions/uint32
- >> +    enum: [ 0, 1 ]
- >> +    description:
- >> +      The polarity of the generateout1 signal. 0 for active-low, 1 for active-high.
- >> +
- >> +  xlnx,one-timer-only:
- >> +    $ref: /schemas/types.yaml#/definitions/uint32
- >> +    enum: [ 0, 1 ]
- >> +    description:
- >> +      Whether only one timer is present in this block.
- >> +
- >> +  xlnx,trig0-assert:
- >> +    $ref: /schemas/types.yaml#/definitions/uint32
- >> +    enum: [ 0, 1 ]
- >> +    description:
- >> +      The polarity of the capturetrig0 signal. 0 for active-low, 1 for active-high.
- >> +
- >> +  xlnx,trig1-assert:
- >> +    $ref: /schemas/types.yaml#/definitions/uint32
- >> +    enum: [ 0, 1 ]
- >> +    description:
- >> +      The polarity of the capturetrig1 signal. 0 for active-low, 1 for active-high.
- >
- > Can't all these be boolean?
-
-They could, but
-
- > This binding is usually automatically generated by Xilinx's tools, so
- > the names and values of properties must be kept as they are.
-
-Because this is a soft device, the binding may be (very conveniently)
-auto-generated. I am not opposed to adding additional properties which
-could be used by new code, but we should still accept this auto-generated
-output.
-
---Sean
-
- >
- >> +
- >> +required:
- >> +  - compatible
- >> +  - clocks
- >> +  - reg
- >> +  - xlnx,count-width
- >> +  - xlnx,gen0-assert
- >> +  - xlnx,gen1-assert
- >> +  - xlnx,one-timer-only
- >> +  - xlnx,trig0-assert
- >> +  - xlnx,trig1-assert
- >> +
- >> +additionalProperties: true
- >> +
- >> +examples:
- >> +  - |
- >> +    axi_timer_0: timer@800e0000 {
- >> +        clock-frequency = <99999001>;
- >> +        clock-names = "s_axi_aclk";
- >> +        clocks = <&zynqmp_clk 71>;
- >> +        compatible = "xlnx,axi-timer-2.0", "xlnx,xps-timer-1.00.a";
- >> +        reg = <0x800e0000 0x10000>;
- >> +        xlnx,count-width = <0x20>;
- >> +        xlnx,gen0-assert = <0x1>;
- >> +        xlnx,gen1-assert = <0x1>;
- >> +        xlnx,one-timer-only = <0x0>;
- >> +        xlnx,trig0-assert = <0x1>;
- >> +        xlnx,trig1-assert = <0x1>;
- >> +    };
- >> --
- >> 2.25.1
- >>
+Jason
