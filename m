@@ -2,30 +2,30 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 95545374E93
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:27:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D5D46374E94
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 06:29:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232853AbhEFE2N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 00:28:13 -0400
-Received: from mga01.intel.com ([192.55.52.88]:31222 "EHLO mga01.intel.com"
+        id S230321AbhEFEa2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 00:30:28 -0400
+Received: from mga11.intel.com ([192.55.52.93]:58974 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229748AbhEFE2L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 00:28:11 -0400
-IronPort-SDR: 5vde3BUTY7/SV8j4SJuhNjAucOypDkPjeJx6bSkrhmheh6G1l7QCdgfJW0FtdVwOHDo87fd3/O
- e7xgLE3rDyOA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="219249618"
+        id S229748AbhEFEa1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 00:30:27 -0400
+IronPort-SDR: ahkqBt97W945wynfONz7ZxHGbY4QrTWcn5JtQL5Y6POyn/m+bWQYlasfOG/079sa31FXABYHQZ
+ 17zRQZBcqtuQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="195254725"
 X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="219249618"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 21:27:11 -0700
-IronPort-SDR: bn4SsDTv6RX2r2OpyNL9PZVdTWdMpYaMnRnMf/Z6XUf6u1SL+0dtUWDewQWoUBhQFlk5F5u3Cs
- 4cLLnnlQuxMA==
+   d="scan'208";a="195254725"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 May 2021 21:29:28 -0700
+IronPort-SDR: zKc8VwUEo+XZEcRZFCHamf+Ff8talyddBJo0FUhf5BMVgKiXH79m6bMOxkH7DLaC1DRHL3TlJW
+ GosgI/4MHdbw==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="430313274"
+   d="scan'208";a="464531318"
 Received: from ranerica-svr.sc.intel.com ([172.25.110.23])
-  by fmsmga008.fm.intel.com with ESMTP; 05 May 2021 21:27:11 -0700
-Date:   Wed, 5 May 2021 21:26:27 -0700
+  by fmsmga002.fm.intel.com with ESMTP; 05 May 2021 21:29:28 -0700
+Date:   Wed, 5 May 2021 21:28:44 -0700
 From:   Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
 To:     Peter Zijlstra <peterz@infradead.org>
 Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
@@ -46,112 +46,146 @@ Cc:     Ingo Molnar <mingo@kernel.org>, Juri Lelli <juri.lelli@redhat.com>,
         Daniel Bristot de Oliveira <bristot@redhat.com>
 Subject: Re: [PATCH v2 3/4] sched/fair: Consider SMT in ASYM_PACKING load
  balance
-Message-ID: <20210506042627.GA3388@ranerica-svr.sc.intel.com>
+Message-ID: <20210506042844.GB3388@ranerica-svr.sc.intel.com>
 References: <20210414020436.12980-1-ricardo.neri-calderon@linux.intel.com>
  <20210414020436.12980-4-ricardo.neri-calderon@linux.intel.com>
- <YI/KSfWuGLhPnilr@hirez.programming.kicks-ass.net>
- <YI/PKAkjLeaKEXrn@hirez.programming.kicks-ass.net>
+ <YI/H2dBB5M5da6ba@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <YI/PKAkjLeaKEXrn@hirez.programming.kicks-ass.net>
+In-Reply-To: <YI/H2dBB5M5da6ba@hirez.programming.kicks-ass.net>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03, 2021 at 12:23:36PM +0200, Peter Zijlstra wrote:
-> On Mon, May 03, 2021 at 12:02:49PM +0200, Peter Zijlstra wrote:
-> > On Tue, Apr 13, 2021 at 07:04:35PM -0700, Ricardo Neri wrote:
-> > > @@ -8507,6 +8616,18 @@ static bool update_sd_pick_busiest(struct lb_env *env,
-> > >  	if (!sgs->sum_h_nr_running)
-> > >  		return false;
-> > >  
-> > > +	/*
-> > > +	 * @sg may have been tentatively classified as group_asym_packing.
-> > > +	 * Now that we have sufficient information about @sds.local, reassess
-> > > +	 * if asym packing migration can be done. Reclassify @sg. The only
-> > > +	 * possible results are group_has_spare and group_fully_busy.
-> > > +	 */
-> > > +	if (sgs->group_type == group_asym_packing &&
-> > > +	    !asym_can_pull_tasks(env->dst_cpu, sds, sgs, sg)) {
-> > > +		sgs->group_asym_packing = 0;
-> > > +		sgs->group_type = group_classify(env->sd->imbalance_pct, sg, sgs);
-> > > +	}
-> > 
-> > So if this really is all about not having sds.local in
-> > update_sd_lb_stats(), then that seems fixable. Let me haz a try.
+On Mon, May 03, 2021 at 11:52:25AM +0200, Peter Zijlstra wrote:
+> On Tue, Apr 13, 2021 at 07:04:35PM -0700, Ricardo Neri wrote:
+> > +static bool cpu_group_is_smt(int cpu, struct sched_group *sg)
+> > +{
+> > +#ifdef CONFIG_SCHED_SMT
+> > +	if (!static_branch_likely(&sched_smt_present))
+> > +		return false;
+> > +
+> > +	if (sg->group_weight == 1)
+> > +		return false;
+> > +
+> > +	return cpumask_equal(sched_group_span(sg), cpu_smt_mask(cpu));
+> > +#else
+> > +	return false;
+> > +#endif
+> > +}
+> > +
+> > +/**
+> > + * asym_can_pull_tasks - Check whether the load balancing CPU can pull tasks
+> > + * @dst_cpu:	CPU doing the load balancing
+> > + * @sds:	Load-balancing data with statistics of the local group
+> > + * @sgs:	Load-balancing statistics of the candidate busiest group
+> > + * @sg:		The candidate busiet group
+> > + *
+> > + * Check the state of the SMT siblings of both @sds::local and @sg and decide
+> > + * if @dst_cpu can pull tasks. If @dst_cpu does not have SMT siblings, it can
+> > + * pull tasks if two or more of the SMT siblings of @sg are busy. If only one
+> > + * CPU in @sg is busy, pull tasks only if @dst_cpu has higher priority.
+> > + *
+> > + * If both @dst_cpu and @sg have SMT siblings. Even the number of idle CPUs
+> > + * between @sds::local and @sg. Thus, pull tasks from @sg if the difference
+> > + * between the number of busy CPUs is 2 or more. If the difference is of 1,
+> > + * only pull if @dst_cpu has higher priority. If @sg does not have SMT siblings
+> > + * only pull tasks if all of the SMT siblings of @dst_cpu are idle and @sg
+> > + * has lower priority.
+> > + */
+> > +static bool asym_can_pull_tasks(int dst_cpu, struct sd_lb_stats *sds,
+> > +				struct sg_lb_stats *sgs, struct sched_group *sg)
+> > +{
+> > +#ifdef CONFIG_SCHED_SMT
+> > +	int cpu, local_busy_cpus, sg_busy_cpus;
+> > +	bool local_is_smt, sg_is_smt;
+> > +
+> > +	if (!arch_asym_check_smt_siblings())
+> > +		return true;
+> > +
+> > +	cpu = group_first_cpu(sg);
+> > +	local_is_smt = cpu_group_is_smt(dst_cpu, sds->local);
+> > +	sg_is_smt = cpu_group_is_smt(cpu, sg);
 > 
-> How's this then?
+> Would something like this make sense?
 > 
 > ---
->  kernel/sched/fair.c | 25 ++++++++++++++++++++-----
->  1 file changed, 20 insertions(+), 5 deletions(-)
-> 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index 3bdc41f22909..e9dcbee5b3d9 100644
 > --- a/kernel/sched/fair.c
 > +++ b/kernel/sched/fair.c
-> @@ -8437,6 +8437,21 @@ group_type group_classify(unsigned int imbalance_pct,
->  	return group_has_spare;
+> @@ -8533,21 +8533,6 @@ static inline void update_sg_lb_stats(st
+>  				sgs->group_capacity;
 >  }
 >  
-> +static inline bool
-> +sched_asym(struct lb_env *env, struct sd_lb_stats *sds, struct sched_group *group)
-
-Thank you Peter for this code! It worked well. I had to make a couple of
-tweaks. My proposed asym_can_pull_tasks() also needs the statistics of
-@group. Thus, I added them to the arguments of sched_asym(). Also...
-
-> +{
-> +	/*
-> +	 * Because sd->groups starts with the local group, anything that isn't
-> +	 * the local group will have access to the local state.
-> +	 */
-> +	if (group == sds->local)
-> +		return false;
-> +
-> +	/* XXX do magic here */
-> +
-> +	return sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu);
-> +}
-> +
+> -static bool cpu_group_is_smt(int cpu, struct sched_group *sg)
+> -{
+> -#ifdef CONFIG_SCHED_SMT
+> -	if (!static_branch_likely(&sched_smt_present))
+> -		return false;
+> -
+> -	if (sg->group_weight == 1)
+> -		return false;
+> -
+> -	return cpumask_equal(sched_group_span(sg), cpu_smt_mask(cpu));
+> -#else
+> -	return false;
+> -#endif
+> -}
+> -
 >  /**
->   * update_sg_lb_stats - Update sched_group's statistics for load balancing.
->   * @env: The load balancing environment.
-> @@ -8445,6 +8460,7 @@ group_type group_classify(unsigned int imbalance_pct,
->   * @sg_status: Holds flag indicating the status of the sched_group
->   */
->  static inline void update_sg_lb_stats(struct lb_env *env,
-> +				      struct sd_lb_stats *sds,
->  				      struct sched_group *group,
->  				      struct sg_lb_stats *sgs,
->  				      int *sg_status)
-> @@ -8453,7 +8469,7 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+>   * asym_can_pull_tasks - Check whether the load balancing CPU can pull tasks
+>   * @dst_cpu:	CPU doing the load balancing
+> @@ -8578,8 +8563,8 @@ static bool asym_can_pull_tasks(int dst_
+>  		return true;
 >  
->  	memset(sgs, 0, sizeof(*sgs));
+>  	cpu = group_first_cpu(sg);
+> -	local_is_smt = cpu_group_is_smt(dst_cpu, sds->local);
+> -	sg_is_smt = cpu_group_is_smt(cpu, sg);
+> +	local_is_smt = sds->local->flags & SD_SHARE_CPUCAPACITY;
+> +	sg_is_smt = sg->flags & SD_SHARE_CPUCAPACITY;
 >  
-> -	local_group = cpumask_test_cpu(env->dst_cpu, sched_group_span(group));
-> +	local_group = group == sds->local;
+>  	sg_busy_cpus = sgs->group_weight - sgs->idle_cpus;
 >  
->  	for_each_cpu_and(i, sched_group_span(group), env->cpus) {
->  		struct rq *rq = cpu_rq(i);
-> @@ -8498,9 +8514,8 @@ static inline void update_sg_lb_stats(struct lb_env *env,
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1795,6 +1795,7 @@ struct sched_group {
+>  	unsigned int		group_weight;
+>  	struct sched_group_capacity *sgc;
+>  	int			asym_prefer_cpu;	/* CPU of highest priority in group */
+> +	int			flags;
 >  
->  	/* Check if dst CPU is idle and preferred to this group */
->  	if (env->sd->flags & SD_ASYM_PACKING &&
-> -	    env->idle != CPU_NOT_IDLE &&
-> -	    sgs->sum_h_nr_running &&
-> -	    sched_asym_prefer(env->dst_cpu, group->asym_prefer_cpu)) {
-> +	    env->idle != CPU_NOT_IDLE && sgs->sum_h_nr_running &&
-> +	    sched_asym(env, sds, group)) {
->  		sgs->group_asym_packing = 1;
+>  	/*
+>  	 * The CPUs this group covers.
+> --- a/kernel/sched/topology.c
+> +++ b/kernel/sched/topology.c
+> @@ -916,10 +916,12 @@ build_group_from_child_sched_domain(stru
+>  		return NULL;
+>  
+>  	sg_span = sched_group_span(sg);
+> -	if (sd->child)
+> +	if (sd->child) {
+>  		cpumask_copy(sg_span, sched_domain_span(sd->child));
+> -	else
+> +		sg->flags = sd->child->flags;
+> +	} else {
+>  		cpumask_copy(sg_span, sched_domain_span(sd));
+> +	}
+>  
+>  	atomic_inc(&sg->ref);
+>  	return sg;
+> @@ -1169,6 +1171,7 @@ static struct sched_group *get_group(int
+>  	if (child) {
+>  		cpumask_copy(sched_group_span(sg), sched_domain_span(child));
+>  		cpumask_copy(group_balance_mask(sg), sched_group_span(sg));
+> +		sg->flags = child->flags;
+>  	} else {
+>  		cpumask_set_cpu(cpu, sched_group_span(sg));
+>  		cpumask_set_cpu(cpu, group_balance_mask(sg));
 
-... I moved this code to be executed after computing sgs->weight as
-asym_can_pull_tasks() needs this datum as well.
-
-May I add your Co-developed-by and Signed-off-by tags to a patch with these
-changes in my v3 posting?
+Thank you Peter! This code worked well and it looks better than what I
+proposed. May I add your Originally-by: and Signed-off-by: tags in a
+patch when I post v3?
 
 BR,
 Ricardo
