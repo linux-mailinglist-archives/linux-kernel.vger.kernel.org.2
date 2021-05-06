@@ -2,99 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D00DF37503A
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:35:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9203375041
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:38:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233493AbhEFHgE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:36:04 -0400
-Received: from mga12.intel.com ([192.55.52.136]:34295 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233434AbhEFHgC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:36:02 -0400
-IronPort-SDR: HnCSxWkO+Jw3W+lpIabYVhrVh+r5xZDExUJAedDFnIEw93OuyIGLki8+7s114ZNfVvqHe+LVOO
- JBopI9BaZ6HQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="177962423"
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="177962423"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 00:35:02 -0700
-IronPort-SDR: K/awh/hcHMJgDOX9e1uSo8IJdPhOPsljWaFL0YJ3VPDe8e80hfQ8r+jS7koHQsB/ezZUYy17uY
- AcJBa0Mhf+kg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,276,1613462400"; 
-   d="scan'208";a="464601070"
-Received: from shbuild999.sh.intel.com ([10.239.147.94])
-  by fmsmga002.fm.intel.com with ESMTP; 06 May 2021 00:35:00 -0700
-From:   Feng Tang <feng.tang@intel.com>
-To:     linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>
-Cc:     Feng Tang <feng.tang@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andi Kleen <ak@linux.intel.com>
-Subject: [PATCH] Makefile: extend 32B aligned debug option to 64B aligned
-Date:   Thu,  6 May 2021 15:34:59 +0800
-Message-Id: <1620286499-40999-1-git-send-email-feng.tang@intel.com>
-X-Mailer: git-send-email 2.7.4
+        id S231330AbhEFHjP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:39:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39898 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229908AbhEFHjN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 03:39:13 -0400
+Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 488F7C06174A
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 00:38:15 -0700 (PDT)
+Received: by mail-wm1-x331.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so2468537wmi.5
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:38:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=philpotter-co-uk.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BFSD4uGaE91vOCDyD3VHqMF98ejMiHJ+FiRdefnTj0g=;
+        b=VBJeTd7HszUPNixsj9t36oyb5ZqEIj5qKC5tG0ZAClEBjco5Ju03rYdlNSEVSOspps
+         29m816gL++zACGr6HQOp0SRh1pjEeGzP9qisBOKHXZc2rUXz2jU0X+sULRVkixzbB9o5
+         DdPPv0fVW8Ppcnt72O8LvsBP5Fv+9qcQER1UaF3SYaNyEqhyosteYSLV4mnPt6ajY3Gj
+         Xx5pW3xkgxcGJzK/ujaL0lDW/2fY+nBqj21S59nwmeQ86q6CwUr0i8GdWtmHQaYeNPsL
+         mSVPGbdEZMJmWdadXTY01m4XBEDcrlbkHCdIuUG/VbcBijGRtmudgUlEk/mKBrHHk/H+
+         Zlcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=BFSD4uGaE91vOCDyD3VHqMF98ejMiHJ+FiRdefnTj0g=;
+        b=M6jS4k9j7VU8kwQ9eOmH3BSSjKG9uApETsuSvFR2QtfqOSRUx428+3avwIn/5pwgCs
+         IR0XzmJh5E3AioIHC1WDZ2bgY47bF89MPFe8sZY4NRBtTmLS83ozhVos+zbVO6wfY3vQ
+         HAxyaYAvgq0IFLpbjm0lLQjAKdEBivWAjdSESq08Kvt2rI4az30jz4QzUMivvMF0FXiZ
+         vJ5sIFkPwax3JWhb6mnmY1hleSYJfKQNLncA8Ak+bCVC5kd1/rUuwF9UOEAuHsgk6NNY
+         P1XufojDe7u+K7XuH/s50ZaQSuvkOcD0VwVK836rIAvrj95IOHyHWB20L6Rf2FiqnpRa
+         9orw==
+X-Gm-Message-State: AOAM532jCxafEPR5vlDvzYAI9grMPKZWgtq/N6sm6nkAHFRxHnDLfrAg
+        1HOxwDxFrCaJKJ5wCtiiTtV6/g==
+X-Google-Smtp-Source: ABdhPJweCdyJcXFwXr1m+xV2IWUuo4EQUeSc0PhZURQ42/IYavPNONbljbeUDmDtJVa7QhK8hu8nHA==
+X-Received: by 2002:a1c:b403:: with SMTP id d3mr2454314wmf.79.1620286694019;
+        Thu, 06 May 2021 00:38:14 -0700 (PDT)
+Received: from localhost.localdomain (30.34.155.90.in-addr.arpa. [90.155.34.30])
+        by smtp.gmail.com with ESMTPSA id o82sm2184823wmo.36.2021.05.06.00.38.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 00:38:13 -0700 (PDT)
+From:   Phillip Potter <phil@philpotter.co.uk>
+To:     jejb@linux.ibm.com
+Cc:     martin.petersen@oracle.com, linux-scsi@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] scsi: sd: skip checks when media is present if sd_read_capacity reports zero
+Date:   Thu,  6 May 2021 08:36:10 +0100
+Message-Id: <20210506073610.33867-1-phil@philpotter.co.uk>
+X-Mailer: git-send-email 2.30.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-commit 09c60546f04f ("./Makefile: add debug option to enable
-function aligned on 32 bytes") was introduced to help debugging
-strange kernel performance changes caused by code alignment
-change.
+In sd_revalidate_disk, if sdkp->media_present is set, then sdkp->capacity
+should not be zero. Therefore, jump to end of if block and skip remaining
+checks/calls. Fixes a KMSAN-found uninit-value bug reported by syzbot at:
+https://syzkaller.appspot.com/bug?id=197c8a3a2de61720a9b500ad485a7aba0065c6af
 
-Recently we found 2 similar cases [1][2] caused by code-alignment
-changes, which can only be identified by forcing 64 bytes aligned
-for all functions.
-
-Originally, 32 bytes was used mainly for not wasting too much
-text space, but this option is only for debug anyway where text
-space is not a big concern. So extend the alignment to 64 bytes
-to cover more similar cases.
-
-[1].https://lore.kernel.org/lkml/20210427090013.GG32408@xsang-OptiPlex-9020/
-[2].https://lore.kernel.org/lkml/20210420030837.GB31773@xsang-OptiPlex-9020/
-Signed-off-by: Feng Tang <feng.tang@intel.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>
-Cc: Andi Kleen <ak@linux.intel.com>
+Reported-by: syzbot+6b02c1da3865f750164a@syzkaller.appspotmail.com
+Signed-off-by: Phillip Potter <phil@philpotter.co.uk>
 ---
- Makefile          | 4 ++--
- lib/Kconfig.debug | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/scsi/sd.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/Makefile b/Makefile
-index 72af8e4..a9f6715 100644
---- a/Makefile
-+++ b/Makefile
-@@ -958,8 +958,8 @@ KBUILD_CFLAGS	+= $(CC_FLAGS_CFI)
- export CC_FLAGS_CFI
- endif
+diff --git a/drivers/scsi/sd.c b/drivers/scsi/sd.c
+index ed0b1bb99f08..a7fe53f492ae 100644
+--- a/drivers/scsi/sd.c
++++ b/drivers/scsi/sd.c
+@@ -3201,6 +3201,8 @@ static int sd_revalidate_disk(struct gendisk *disk)
+ 	 */
+ 	if (sdkp->media_present) {
+ 		sd_read_capacity(sdkp, buffer);
++		if (!sdkp->capacity)
++			goto present_block_end;
  
--ifdef CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_32B
--KBUILD_CFLAGS += -falign-functions=32
-+ifdef CONFIG_DEBUG_FORCE_FUNCTION_ALIGN_64B
-+KBUILD_CFLAGS += -falign-functions=64
- endif
+ 		/*
+ 		 * set the default to rotational.  All non-rotational devices
+@@ -3226,6 +3228,7 @@ static int sd_revalidate_disk(struct gendisk *disk)
+ 		sd_read_write_same(sdkp, buffer);
+ 		sd_read_security(sdkp, buffer);
+ 	}
++present_block_end:
  
- # arch Makefile may override CC so keep this after arch Makefile is included
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 678c1396..6ce26b8 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -400,8 +400,8 @@ config SECTION_MISMATCH_WARN_ONLY
- 
- 	  If unsure, say Y.
- 
--config DEBUG_FORCE_FUNCTION_ALIGN_32B
--	bool "Force all function address 32B aligned" if EXPERT
-+config DEBUG_FORCE_FUNCTION_ALIGN_64B
-+	bool "Force all function address 64B aligned" if EXPERT
- 	help
- 	  There are cases that a commit from one domain changes the function
- 	  address alignment of other domains, and cause magic performance
+ 	/*
+ 	 * We now have all cache related info, determine how we deal
 -- 
-2.7.4
+2.30.2
 
