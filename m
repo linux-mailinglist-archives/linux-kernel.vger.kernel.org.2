@@ -2,193 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 739FC3758A4
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:45:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8073B3758A9
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:46:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236009AbhEFQqM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:46:12 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:40182 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235933AbhEFQqK (ORCPT
+        id S236092AbhEFQrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:47:21 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:10566 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236041AbhEFQrR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:46:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620319511;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0s/7VDcOT9Z56vBvGNlao04OZufq+cCm9HLSATOe2hs=;
-        b=YKgqzUJ4GOTx6bmW4NSxv6DPiIY3WWTz3FO8rQ9MCvHhPyTMuh9yxAK3jWqjYG+oTtyTrK
-        FmZ1McC87KPhPOaBsNJfacaqvRUgVuc4LR9lkAyuKIEyxOvZq1T4/SzaK6ibEd7/xIjK4X
-        /bZeAWZxWEv9GLcVfWb2W6jkgzXXN4k=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-151-f8cQdCYTOp-rerV8u3SOuA-1; Thu, 06 May 2021 12:45:10 -0400
-X-MC-Unique: f8cQdCYTOp-rerV8u3SOuA-1
-Received: by mail-ej1-f70.google.com with SMTP id 16-20020a1709063010b029037417ca2d43so1945508ejz.5
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 09:45:09 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:to:cc:references:from:organization:subject
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=0s/7VDcOT9Z56vBvGNlao04OZufq+cCm9HLSATOe2hs=;
-        b=CS44VYveaTbN98HNJbeijXzSxokfdjulO5Gusa1inkGpld7CqxOrjdn5Gyh6ChzndV
-         MkA29dMIS+3wpqqprgJTpXDjzL4etVMowxDuvhOxBf7GTlYO6Qjz0BbWl/Kq5SxslM3b
-         ZLYKX91Bi8KMs9OEN6YeNqbiXASbdV1YGvv0ThZPA/sfhkqA1fWNRREVm7fGtxC+ZiQw
-         PF9c4BtMS7MyIoQJlzlls5ObRyi2Te8K5IVvFXsksIaxoLY/Onu2OBEQroYuW0UJl9rd
-         iERp1ecAIPOIUeU9F2AGJX6kL+X/jTXcf1OAafObZ3wqvy0R4AkuQ8hllCtfdlI85f4E
-         SFdg==
-X-Gm-Message-State: AOAM530HwZeM292saTivQChNj19wTll5XR8JlMegp49Mc33Xxb2KR3vP
-        kOsSMlUv7fitpuUxlShxfyN0XJKRufI6pxpFijjUT6bC8eh6rT9tJQye5O4iwGyWohVD2Z+gNhs
-        az4w6D4wVLQDaem+d4Hbb1sDU
-X-Received: by 2002:a17:907:1c98:: with SMTP id nb24mr5478119ejc.206.1620319508729;
-        Thu, 06 May 2021 09:45:08 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzw+5/fwG+KvK+SBzoVexxr801GBTZ6Zrmz5O+rAzTFPxJI4yj9g+Ax3izTWEuuMsZJC630XQ==
-X-Received: by 2002:a17:907:1c98:: with SMTP id nb24mr5478083ejc.206.1620319508409;
-        Thu, 06 May 2021 09:45:08 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c64ae.dip0.t-ipconnect.de. [91.12.100.174])
-        by smtp.gmail.com with ESMTPSA id f19sm2095318edu.12.2021.05.06.09.45.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 09:45:08 -0700 (PDT)
-To:     jejb@linux.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
+        Thu, 6 May 2021 12:47:17 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146GX8sK002411;
+        Thu, 6 May 2021 12:45:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : content-transfer-encoding : mime-version; s=pp1;
+ bh=PMxYJHOiD6ESMQ9IKIMbpD/aE3fIE9foyGgC4PN9yVs=;
+ b=QIEqYMWxif+wyRDE1sMFusdOeR2s0BR0/xcQgBgafUufobk+cbrEfnqk9rvdwNpCXob2
+ E9Ys0PSCL0cMoQ4U7ILvzBUXxWAizkvHY0EDwlR/MbO5RKeFOpjdQ6GLrLdSDBme9aPv
+ jX0e5itldq37PpVjvZzgSS0Zuh6zJXgIVapPb/oxM5a3aDG3/vwYwUZZpa6ouBwgwOt0
+ FIphjVrKfM8tHCR+Y+NAV9mj1V2yfeDfJZePTROC7eyg6auLClfz8UmOGsdtGzajz4N7
+ kuW+xVz6CoUilP0PyyFn/nK1r7zpwufpkUQg12vSa/aqQGdCzGy2Sk9XatiCv3B2JNY8 XQ== 
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38ckm6ha1m-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 May 2021 12:45:55 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 146Gi6sd028826;
+        Thu, 6 May 2021 16:45:52 GMT
+Received: from b06avi18626390.portsmouth.uk.ibm.com (b06avi18626390.portsmouth.uk.ibm.com [9.149.26.192])
+        by ppma04ams.nl.ibm.com with ESMTP id 38beeeh2y0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 May 2021 16:45:52 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06avi18626390.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 146GjO2L34013602
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 May 2021 16:45:24 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4F6F8A404D;
+        Thu,  6 May 2021 16:45:50 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id C3B42A4051;
+        Thu,  6 May 2021 16:45:47 +0000 (GMT)
+Received: from saptagiri.in.ibm.com (unknown [9.77.204.81])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu,  6 May 2021 16:45:47 +0000 (GMT)
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Srikar Dronamraju <srikar@linux.vnet.ibm.com>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
-        x86@kernel.org
-References: <20210303162209.8609-1-rppt@kernel.org>
- <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
- <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <996dbc29-e79c-9c31-1e47-cbf20db2937d@redhat.com>
-Date:   Thu, 6 May 2021 18:45:05 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: [PATCH v2 0/8] sched/fair: wake_affine improvements
+Date:   Thu,  6 May 2021 22:15:35 +0530
+Message-Id: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
+X-Mailer: git-send-email 2.26.3
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: Z1QcAVT4JKxlaOsTn3TG5H61YnULJcOq
+X-Proofpoint-GUID: Z1QcAVT4JKxlaOsTn3TG5H61YnULJcOq
 Content-Transfer-Encoding: 8bit
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+MIME-Version: 1.0
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-06_10:2021-05-06,2021-05-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0
+ priorityscore=1501 mlxlogscore=999 spamscore=0 phishscore=0 malwarescore=0
+ adultscore=0 impostorscore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105060114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.05.21 17:26, James Bottomley wrote:
-> On Wed, 2021-05-05 at 12:08 -0700, Andrew Morton wrote:
->> On Wed,  3 Mar 2021 18:22:00 +0200 Mike Rapoport <rppt@kernel.org>
->> wrote:
->>
->>> This is an implementation of "secret" mappings backed by a file
->>> descriptor.
->>>
->>> The file descriptor backing secret memory mappings is created using
->>> a dedicated memfd_secret system call The desired protection mode
->>> for the memory is configured using flags parameter of the system
->>> call. The mmap() of the file descriptor created with memfd_secret()
->>> will create a "secret" memory mapping. The pages in that mapping
->>> will be marked as not present in the direct map and will be present
->>> only in the page table of the owning mm.
->>>
->>> Although normally Linux userspace mappings are protected from other
->>> users, such secret mappings are useful for environments where a
->>> hostile tenant is trying to trick the kernel into giving them
->>> access to other tenants mappings.
->>
->> I continue to struggle with this and I don't recall seeing much
->> enthusiasm from others.  Perhaps we're all missing the value point
->> and some additional selling is needed.
->>
->> Am I correct in understanding that the overall direction here is to
->> protect keys (and perhaps other things) from kernel bugs?  That if
->> the kernel was bug-free then there would be no need for this
->> feature?  If so, that's a bit sad.  But realistic I guess.
-> 
-> Secret memory really serves several purposes. The "increase the level
-> of difficulty of secret exfiltration" you describe.  And, as you say,
-> if the kernel were bug free this wouldn't be necessary.
-> 
-> But also:
-> 
->     1. Memory safety for use space code.  Once the secret memory is
->        allocated, the user can't accidentally pass it into the kernel to be
->        transmitted somewhere.
+Changelog v1->v2:
+v1 Link: http://lore.kernel.org/lkml/20210422102326.35889-1-srikar@linux.vnet.ibm.com/t/#u
+ - Fallback LLC domain has been split out as a subsequent patchset.
+   					(suggested by Mel)
+ - Fix a panic due to two wakeups racing for the same idle-core
+					(Reported by Mel)
+ - Differentiate if a LLC surely has no idle-cores(-2) vs a LLC may or
+   may not have idle-cores(-1).
+ - Rebased to v5.12
 
-That's an interesting point I didn't realize so far.
+Recently we found that some of the benchmark numbers on Power10 were lesser
+than expected. Some analysis showed that the problem lies in the fact that
+L2-Cache on Power10 is at core level i.e only 4 threads share the L2-cache.
 
->     2. It also serves as a basis for context protection of virtual
->        machines, but other groups are working on this aspect, and it is
->        broadly similar to the secret exfiltration from the kernel problem.
-> 
+One probable solution to the problem was worked by Gautham where he posted
+http://lore.kernel.org/lkml/1617341874-1205-1-git-send-email-ego@linux.vnet.ibm.com/t/#u
+a patch that marks MC domain as LLC.
 
-I was wondering if this also helps against CPU microcode issues like 
-spectre and friends.
+Here the focus is on improving the current core scheduler's wakeup
+mechanism by looking at idle-cores and nr_busy_cpus that is already
+maintained per Last level cache(aka LLC)
 
->>
->> Is this intended to protect keys/etc after the attacker has gained
->> the ability to run arbitrary kernel-mode code?  If so, that seems
->> optimistic, doesn't it?
-> 
-> Not exactly: there are many types of kernel attack, but mostly the
-> attacker either manages to effect a privilege escalation to root or
-> gets the ability to run a ROP gadget.  The object of this code is to be
-> completely secure against root trying to extract the secret (some what
-> similar to the lockdown idea), thus defeating privilege escalation and
-> to provide "sufficient" protection against ROP gadget.
+Hence this approach can work well with the mc-llc too. It can help
+other architectures too.
 
-What stops "root" from mapping /dev/mem and reading that memory?
+Request you to please review and provide your feedback.
 
-IOW, would we want to enforce "CONFIG_STRICT_DEVMEM" with CONFIG_SECRETMEM?
+Benchmarking numbers are from Power 10 but I have verified that we don't
+regress on Power 9 setup.
 
+# lscpu
+Architecture:        ppc64le
+Byte Order:          Little Endian
+CPU(s):              80
+On-line CPU(s) list: 0-79
+Thread(s) per core:  8
+Core(s) per socket:  10
+Socket(s):           1
+NUMA node(s):        1
+Model:               1.0 (pvr 0080 0100)
+Model name:          POWER10 (architected), altivec supported
+Hypervisor vendor:   pHyp
+Virtualization type: para
+L1d cache:           64K
+L1i cache:           32K
+L2 cache:            256K
+L3 cache:            8K
+NUMA node2 CPU(s):   0-79
 
-Also, there is a way to still read that memory when root by
+Hackbench: (latency, lower is better)
 
-1. Having kdump active (which would often be the case, but maybe not to 
-dump user pages )
-2. Triggering a kernel crash (easy via proc as root)
-3. Waiting for the reboot after kump() created the dump and then reading 
-the content from disk.
+v5.12-rc5
+instances = 1, min = 24.102529 usecs/op, median =  usecs/op, max = 24.102529 usecs/op
+instances = 2, min = 24.096112 usecs/op, median = 24.096112 usecs/op, max = 24.178903 usecs/op
+instances = 4, min = 24.080541 usecs/op, median = 24.082990 usecs/op, max = 24.166873 usecs/op
+instances = 8, min = 24.088969 usecs/op, median = 24.116081 usecs/op, max = 24.199853 usecs/op
+instances = 16, min = 24.267228 usecs/op, median = 26.204510 usecs/op, max = 29.218360 usecs/op
+instances = 32, min = 30.680071 usecs/op, median = 32.911664 usecs/op, max = 37.380470 usecs/op
+instances = 64, min = 43.908331 usecs/op, median = 44.454343 usecs/op, max = 46.210298 usecs/op
+instances = 80, min = 44.585754 usecs/op, median = 56.738546 usecs/op, max = 60.625826 usecs/op
 
-Or, as an attacker, load a custom kexec() kernel and read memory from 
-the new environment. Of course, the latter two are advanced mechanisms, 
-but they are possible when root. We might be able to mitigate, for 
-example, by zeroing out secretmem pages before booting into the kexec 
-kernel, if we care :)
+v5.12-rc5 + mc-llc+
+instances = 1, min = 18.676505 usecs/op, median =  usecs/op, max = 18.676505 usecs/op
+instances = 2, min = 18.488627 usecs/op, median = 18.488627 usecs/op, max = 18.574946 usecs/op
+instances = 4, min = 18.428399 usecs/op, median = 18.589051 usecs/op, max = 18.872548 usecs/op
+instances = 8, min = 18.597389 usecs/op, median = 18.783815 usecs/op, max = 19.265532 usecs/op
+instances = 16, min = 21.922350 usecs/op, median = 22.737792 usecs/op, max = 24.832429 usecs/op
+instances = 32, min = 29.770446 usecs/op, median = 31.996687 usecs/op, max = 34.053042 usecs/op
+instances = 64, min = 53.067842 usecs/op, median = 53.295139 usecs/op, max = 53.473059 usecs/op
+instances = 80, min = 44.423288 usecs/op, median = 44.713767 usecs/op, max = 45.159761 usecs/op
+
+v5.12-rc5 + this patchset
+instances = 1, min = 19.240824 usecs/op, median =  usecs/op, max = 19.240824 usecs/op
+instances = 2, min = 19.143470 usecs/op, median = 19.143470 usecs/op, max = 19.249875 usecs/op
+instances = 4, min = 19.399812 usecs/op, median = 19.487433 usecs/op, max = 19.501298 usecs/op
+instances = 8, min = 19.024297 usecs/op, median = 19.908682 usecs/op, max = 20.741605 usecs/op
+instances = 16, min = 22.209444 usecs/op, median = 23.971275 usecs/op, max = 25.145198 usecs/op
+instances = 32, min = 31.220392 usecs/op, median = 32.689189 usecs/op, max = 34.081588 usecs/op
+instances = 64, min = 39.012110 usecs/op, median = 44.062042 usecs/op, max = 45.370525 usecs/op
+instances = 80, min = 43.884358 usecs/op, median = 44.326417 usecs/op, max = 48.031303 usecs/op
+
+Summary:
+mc-llc and this patchset seem to be performing much better than vanilla v5.12-rc5
+
+DayTrader (throughput, higher is better)
+		     v5.12-rc5   v5.12-rc5     v5.12-rc5
+                                 + mc-llc      + patchset
+64CPUs/1JVM/ 60Users  6373.7      7520.5        7375.6
+64CPUs/1JVM/ 80Users  6742.1      7940.9        7832.9
+64CPUs/1JVM/100Users  6482.2      7730.3        7538.4
+64CPUs/2JVM/ 60Users  6335        8081.6        8000.2
+64CPUs/2JVM/ 80Users  6360.8      8259.6        8315.4
+64CPUs/2JVM/100Users  6215.6      8046.5        8049.4
+64CPUs/4JVM/ 60Users  5385.4      7685.3        8013.5
+64CPUs/4JVM/ 80Users  5380.8      7753.3        7868
+64CPUs/4JVM/100Users  5275.2      7549.2        7620
+
+Summary: Across all profiles, this patchset or mc-llc out perform
+vanilla v5.12-rc5
+Not: Only 64 cores were online during this test.
+
+schbench (latency: lesser is better)
+======== Running schbench -m 3 -r 30 =================
+Latency percentiles (usec) runtime 10 (s) (2545 total samples)
+v5.12-rc5                  |  v5.12-rc5 + mc-llc                 | v5.12-rc5 + patchset
+
+50.0th: 56 (1301 samples)  |     50.0th: 49 (1309 samples)       | 50.0th: 53 (1285 samples)
+75.0th: 76 (623 samples)   |     75.0th: 66 (628 samples)        | 75.0th: 72 (635 samples)
+90.0th: 93 (371 samples)   |     90.0th: 78 (371 samples)        | 90.0th: 88 (388 samples)
+95.0th: 107 (123 samples)  |     95.0th: 87 (117 samples)        | 95.0th: 94 (118 samples)
+*99.0th: 12560 (102 samples)    *99.0th: 100 (97 samples)        | *99.0th: 108 (108 samples)
+99.5th: 15312 (14 samples) |     99.5th: 104 (12 samples)        | 99.5th: 108 (0 samples)
+99.9th: 19936 (9 samples)  |     99.9th: 106 (8 samples)         | 99.9th: 110 (8 samples)
+min=13, max=20684          |     min=15, max=113                 | min=15, max=1433
+
+Latency percentiles (usec) runtime 20 (s) (7649 total samples)
+
+50.0th: 51 (3884 samples)  |     50.0th: 50 (3935 samples)       | 50.0th: 51 (3843 samples)
+75.0th: 69 (1859 samples)  |     75.0th: 66 (1817 samples)       | 75.0th: 69 (1962 samples)
+90.0th: 87 (1173 samples)  |     90.0th: 80 (1204 samples)       | 90.0th: 84 (1103 samples)
+95.0th: 97 (368 samples)   |     95.0th: 87 (342 samples)        | 95.0th: 93 (386 samples)
+*99.0th: 8624 (290 samples)|     *99.0th: 98 (294 samples)       | *99.0th: 107 (297 samples)
+99.5th: 11344 (37 samples) |     99.5th: 102 (37 samples)        | 99.5th: 110 (39 samples)
+99.9th: 18592 (31 samples) |     99.9th: 106 (30 samples)        | 99.9th: 1714 (27 samples)
+min=13, max=20684          |     min=12, max=113                 | min=15, max=4456
+
+Latency percentiles (usec) runtime 30 (s) (12785 total samples)
+
+50.0th: 50 (6614 samples)  |     50.0th: 49 (6544 samples)       | 50.0th: 50 (6443 samples)
+75.0th: 67 (3059 samples)  |     75.0th: 65 (3100 samples)       | 75.0th: 67 (3263 samples)
+90.0th: 84 (1894 samples)  |     90.0th: 79 (1912 samples)       | 90.0th: 82 (1890 samples)
+95.0th: 94 (586 samples)   |     95.0th: 87 (646 samples)        | 95.0th: 92 (652 samples)
+*99.0th: 8304 (507 samples)|     *99.0th: 101 (496 samples)      | *99.0th: 107 (464 samples)
+99.5th: 11696 (62 samples) |     99.5th: 104 (45 samples)        | 99.5th: 110 (61 samples)
+99.9th: 18592 (51 samples) |     99.9th: 110 (51 samples)        | 99.9th: 1434 (47 samples)
+min=12, max=21421          |     min=1, max=126                  | min=15, max=4456
+
+Summary:
+mc-llc is the best option, but this patchset also helps compared to vanilla v5.12-rc5
+
+mongodb (threads=6) (throughput, higher is better)
+					 Throughput         read        clean      update
+					                    latency     latency    latency
+v5.12-rc5            JVM=YCSB_CLIENTS=14  68116.05 ops/sec   1109.82 us  944.19 us  1342.29 us
+v5.12-rc5            JVM=YCSB_CLIENTS=21  64802.69 ops/sec   1772.64 us  944.69 us  2099.57 us
+v5.12-rc5            JVM=YCSB_CLIENTS=28  61792.78 ops/sec   2490.48 us  930.09 us  2928.03 us
+v5.12-rc5            JVM=YCSB_CLIENTS=35  59604.44 ops/sec   3236.86 us  870.28 us  3787.48 us
+
+v5.12-rc5 + mc-llc   JVM=YCSB_CLIENTS=14  70948.51 ops/sec   1060.21 us  842.02 us  1289.44 us
+v5.12-rc5 + mc-llc   JVM=YCSB_CLIENTS=21  68732.48 ops/sec   1669.91 us  871.57 us  1975.19 us
+v5.12-rc5 + mc-llc   JVM=YCSB_CLIENTS=28  66674.81 ops/sec   2313.79 us  889.59 us  2702.36 us
+v5.12-rc5 + mc-llc   JVM=YCSB_CLIENTS=35  64397.51 ops/sec   3010.66 us  966.28 us  3484.19 us
+
+v5.12-rc5 + patchset JVM=YCSB_CLIENTS=14  67604.51 ops/sec   1117.91 us  947.07 us  1353.41 us
+v5.12-rc5 + patchset JVM=YCSB_CLIENTS=21  63979.39 ops/sec   1793.63 us  869.72 us  2130.22 us
+v5.12-rc5 + patchset JVM=YCSB_CLIENTS=28  62032.34 ops/sec   2475.89 us  869.06 us  2922.01 us
+v5.12-rc5 + patchset JVM=YCSB_CLIENTS=35  60152.96 ops/sec   3203.84 us  972.00 us  3756.52 us
+
+Summary:
+mc-llc outperforms, this patchset and upstream almost give similar performance.
+
+Cc: LKML <linux-kernel@vger.kernel.org>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
+Cc: Parth Shah <parth@linux.ibm.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Valentin Schneider <valentin.schneider@arm.com>
+Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: Mel Gorman <mgorman@techsingularity.net>
+Cc: Vincent Guittot <vincent.guittot@linaro.org>
+Cc: Rik van Riel <riel@surriel.com>
+
+Srikar Dronamraju (8):
+  sched/fair: Update affine statistics when needed
+  sched/fair: Maintain the identity of idle-core
+  sched/fair: Update idle-core more often
+  sched/fair: Prefer idle CPU to cache affinity
+  sched/fair: Use affine_idler_llc for wakeups across LLC
+  sched/idle: Move busy_cpu accounting to idle callback
+  sched/fair: Remove ifdefs in waker_affine_idler_llc
+  sched/fair: Dont iterate if no idle CPUs
+
+ include/linux/sched/topology.h |   2 +-
+ kernel/sched/fair.c            | 204 ++++++++++++++++++++++++++-------
+ kernel/sched/features.h        |   1 +
+ kernel/sched/idle.c            |  33 +++++-
+ kernel/sched/sched.h           |   6 +
+ kernel/sched/topology.c        |   9 ++
+ 6 files changed, 214 insertions(+), 41 deletions(-)
 
 -- 
-Thanks,
-
-David / dhildenb
+2.18.2
 
