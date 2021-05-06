@@ -2,73 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FD2E375737
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 05FA837579C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 17:38:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235200AbhEFPde (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 11:33:34 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:39910 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235179AbhEFPda (ORCPT
+        id S236184AbhEFPia (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 11:38:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236114AbhEFPeu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 11:33:30 -0400
-Received: from [192.168.254.32] (unknown [47.187.223.33])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 6DC3B20B7178;
-        Thu,  6 May 2021 08:32:31 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 6DC3B20B7178
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1620315152;
-        bh=J7MaQ16/i/vdDMbMFnz19i3iHpZFSCik0FINQjchwQo=;
-        h=Subject:From:To:Cc:References:Date:In-Reply-To:From;
-        b=oXIuYDEK1mGkk3pngEhxkO0JowlBIeaup8lce0VRvzUO1qhNArg6x3ve39QOgF1qS
-         Z7bPbD7lqECnhIaqBvVeiHH1BaXtQ+Sief2HDqpBHz4/KywJ+iIjcWjCPyhF+aNhH+
-         L8pv9C7xb+OajMFSeOlIDTUZky1sHygf3HJ6CrPY=
-Subject: Re: [RFC PATCH v3 3/4] arm64: Handle miscellaneous functions in .text
- and .init.text
-From:   "Madhavan T. Venkataraman" <madvenka@linux.microsoft.com>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
-        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
-        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
-        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
- <20210503173615.21576-1-madvenka@linux.microsoft.com>
- <20210503173615.21576-4-madvenka@linux.microsoft.com>
- <20210506141211.GE4642@sirena.org.uk>
- <8268fde8-5f3b-0781-971b-b29b5e0916cf@linux.microsoft.com>
-Message-ID: <cb2c47ee-97d7-15d8-05db-b8e3e260b782@linux.microsoft.com>
-Date:   Thu, 6 May 2021 10:32:30 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Thu, 6 May 2021 11:34:50 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85564C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 08:33:52 -0700 (PDT)
+Received: from [2a02:fe0:c700:2:559d:4a7b:2050:4789] (port=57168)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C@purplenoise.eu>)
+        id 1leg0b-0007xe-29
+        for linux-kernel@vger.kernel.org; Thu, 06 May 2021 17:33:49 +0200
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C@purplenoise.eu>
+Subject: Fair Pay: Bit of info on my homepage
+Message-ID: <c6f83e2a-bad1-dc31-d874-a8f40dc254f3@purplenoise.eu>
+Date:   Thu, 6 May 2021 17:33:43 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-In-Reply-To: <8268fde8-5f3b-0781-971b-b29b5e0916cf@linux.microsoft.com>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Bit of info on my homepage: www.purplenoise.eu
 
+May Grow.
 
-On 5/6/21 10:30 AM, Madhavan T. Venkataraman wrote:
->> I was thinking it'd be good to do this by modifying SYM_CODE_START() to
->> emit the section, that way nobody can forget to put any SYM_CODE into a
->> special section.  That does mean we'd have to first introduce a new
->> variant for specifying a section that lets us override things that need
->> to be in some specific section and convert everything that's in a
->> special section over to that first which is a bit annoying but feels
->> like it's worth it for the robustness.  It'd also put some of the don't
->> cares into .code.text but so long as they are actually don't cares that
->> should be fine!
->>
-> OK. I could make the section an argument to SYM_CODE*() so that a developer
-> will never miss that. Some documentation may be in order so the guidelines
-> are clear. I will do the doc patch separately, if that is alright with
-> you all.
-
-There is just one problem with this. Sometimes, there is some data in the
-same text section. That data will not get included when we do the SYM_CODE(section)
-change.
-
-Madhavan
+Serenity.
