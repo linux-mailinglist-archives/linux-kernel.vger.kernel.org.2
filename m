@@ -2,153 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A886F37522E
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E10337522F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 12:21:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234210AbhEFKVN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 06:21:13 -0400
-Received: from 82-65-109-163.subs.proxad.net ([82.65.109.163]:49634 "EHLO
-        luna.linkmauve.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233791AbhEFKVM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 06:21:12 -0400
-Received: by luna.linkmauve.fr (Postfix, from userid 1000)
-        id D3472F4059A; Thu,  6 May 2021 12:20:12 +0200 (CEST)
-Date:   Thu, 6 May 2021 12:20:12 +0200
-From:   Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-To:     Jonathan =?utf-8?Q?Neusch=C3=A4fer?= <j.ne@posteo.net>
-Cc:     Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>,
-        linux-input@vger.kernel.org, Ash Logan <ash@heyquark.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+        id S234309AbhEFKWQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 06:22:16 -0400
+Received: from mga18.intel.com ([134.134.136.126]:61189 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234255AbhEFKWP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 06:22:15 -0400
+IronPort-SDR: FSFa3PgHD7EGpT+4FlVQXZbpYEJ0kmC1fhTDqdn5HGs36qPi7UtgGTFzKhPigevB7qJdLUsRLn
+ BWl8Lr7tys+A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9975"; a="185898700"
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="185898700"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 03:21:16 -0700
+IronPort-SDR: GgolOtDyPmHA/AIXB+KiwHGt5NW9QGzfa9aW81ZjEibtnyclbuj615P6XnszvPQ32QQ1hregfS
+ LUCS18Prlk6Q==
+X-IronPort-AV: E=Sophos;i="5.82,277,1613462400"; 
+   d="scan'208";a="430465859"
+Received: from tchrzano-mobl.ger.corp.intel.com (HELO localhost) ([10.252.42.214])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 03:21:11 -0700
+From:   Jani Nikula <jani.nikula@linux.intel.com>
+To:     Werner Sembach <wse@tuxedocomputers.com>, wse@tuxedocomputers.com,
+        ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] HID: wiiu-drc: Implement touch reports
-Message-ID: <20210506102012.xj2kmgiiskyig6d3@luna>
-Jabber-ID: linkmauve@linkmauve.fr
-References: <20210502232836.26134-1-linkmauve@linkmauve.fr>
- <20210502232836.26134-3-linkmauve@linkmauve.fr>
- <YJMfq9MbY2guEhpv@latitude>
+Subject: Re: [Intel-gfx] [PATCH 1/3] New function to avoid duplicate code in upcomming commits
+In-Reply-To: <20210505172401.1453178-2-wse@tuxedocomputers.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20210505172401.1453178-1-wse@tuxedocomputers.com> <20210505172401.1453178-2-wse@tuxedocomputers.com>
+Date:   Thu, 06 May 2021 13:21:08 +0300
+Message-ID: <87pmy4w4bv.fsf@intel.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="cmnlxxyxr3u4vfon"
-Content-Disposition: inline
-In-Reply-To: <YJMfq9MbY2guEhpv@latitude>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 05 May 2021, Werner Sembach <wse@tuxedocomputers.com> wrote:
+> Subject: [PATCH 1/3] New function to avoid duplicate code in upcomming commits
 
---cmnlxxyxr3u4vfon
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Also, the subject should have a prefix, such as "drm/i915/hdmi: "
+etc. depending on what you're changing. See git log on the files for
+examples.
 
-On Wed, May 05, 2021 at 10:43:55PM +0000, Jonathan Neusch=C3=A4fer wrote:
-> Hi,
->=20
-> some more comments below. Enjoy :)
->=20
-> On Mon, May 03, 2021 at 01:28:33AM +0200, Emmanuel Gil Peyrot wrote:
-> > There is a 100=C3=97200 inaccessible border on each side, and the Y axi=
-s is
-> > inverted, these are the two main quirks of this touch panel.
->=20
-> Does that mean 100 px borders left and right, and 200 px borders top and
-> bottom?
+BR,
+Jani.
 
-Correct, I=E2=80=99ll reformulate in v2. :)
 
->=20
-> 100=C3=97200 evokes the image of a rectangle of that size, which I found
-> confusing for a moment.
->=20
-> >=20
-> > I=E2=80=99ve been testing with weston-simple-touch mostly, but it also =
-with the
-> > rest of Weston.
-> >=20
-> > Signed-off-by: Ash Logan <ash@heyquark.com>
-> > Signed-off-by: Emmanuel Gil Peyrot <linkmauve@linkmauve.fr>
-> > ---
-> >  drivers/hid/hid-wiiu-drc.c | 83 +++++++++++++++++++++++++++++++++++---
-> >  1 file changed, 78 insertions(+), 5 deletions(-)
-> >=20
-> > diff --git a/drivers/hid/hid-wiiu-drc.c b/drivers/hid/hid-wiiu-drc.c
-> > index 018cbdb53a2c..77e70827c37d 100644
-> > --- a/drivers/hid/hid-wiiu-drc.c
-> > +++ b/drivers/hid/hid-wiiu-drc.c
-> > @@ -49,13 +49,27 @@
-> > =20
-> >  #define BUTTON_POWER	BIT(25)
-> > =20
-> > +/* Touch constants */
-> > +/* Resolution in pixels */
-> > +#define RES_X		854
-> > +#define RES_Y		480
-> > +/* Display/touch size in mm */
-> > +#define WIDTH		138
-> > +#define HEIGHT		79
-> > +#define NUM_TOUCH_POINTS 10
-> > +#define MAX_TOUCH_RES	(1 << 12)
-> > +#define TOUCH_BORDER_X	100
-> > +#define TOUCH_BORDER_Y	200
->=20
-> [...]
-> > +	/* touch */
-> > +	/* Average touch points for improved accuracy. */
-> > +	x =3D y =3D 0;
-> > +	for (i =3D 0; i < NUM_TOUCH_POINTS; i++) {
-> > +		base =3D 36 + 4 * i;
-> > +
-> > +		x +=3D ((data[base + 1] & 0xF) << 8) | data[base];
-> > +		y +=3D ((data[base + 3] & 0xF) << 8) | data[base + 2];
-> > +	}
-> > +	x /=3D NUM_TOUCH_POINTS;
-> > +	y /=3D NUM_TOUCH_POINTS;
->=20
-> Given that there are 10 possible touch points: Does the gamepad actually
-> support multitouch (usefully)?
->=20
-> If so, I think it would be better to report all touch points
-> individually to userspace, to allow for multitouch gestures;
-> userspace can still implement averaging if desired.
-
-Sadly no, in my testing all ten reports are always within a few units
-=66rom each other, even if I press two (or more) different points on the
-touchscreen at the same time.
-
-My guess would be, the firmware and report format got written before
-Nintendo decided whether to go for a capacitive or resistive touch
-panel, and they didn=E2=80=99t get changed once the final decision was made=
- to
-go for a non-multitouch-aware resistive panel.
-
-I=E2=80=99ll add some factual comment about this in v2.
-
->=20
->=20
->=20
-> Thanks,
-> Jonathan
-
-Thanks!
-
---=20
-Emmanuel Gil Peyrot
-
---cmnlxxyxr3u4vfon
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEjrVT1SzTln43kCLJOWgfYkb2LpAFAmCTwtkACgkQOWgfYkb2
-LpBkRQf/QbOY3Qhj75fRd4GHclxmA3pI/VKMJH/DeW8dQd4Veq7jagFfHXMkvOeX
-CfmF2DHtUiAzzabNhBKWuHwI3uW0VntR1BpbQXMPBtmjcgqU5CyEugjQRqs37qzO
-moEPS+gEXohhAM9Y8AUAizQ0O2kvx7IoUaD0E4+0N3WGT75Gn5UjnyMXU8KISp6e
-tecclqfaShos32SzAw9UwB8R1yRBd5MYQfaJDw8hsklcyWpVFoZdbw+3qqnIEEMe
-u+xTgsj7t6N89EQXzin2CTpz4aDO3AvrY5pCrjDt8DtrN5qz+J/i7ZCyL3cNmqZ6
-tm3tYRMuZ55YenBDT31yo8uiVOyRvA==
-=MwQI
------END PGP SIGNATURE-----
-
---cmnlxxyxr3u4vfon--
+-- 
+Jani Nikula, Intel Open Source Graphics Center
