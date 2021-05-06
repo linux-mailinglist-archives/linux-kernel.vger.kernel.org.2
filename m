@@ -2,180 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E39CD375435
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:55:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 432E7375437
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 14:55:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230383AbhEFM4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S233172AbhEFM4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 08:56:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54148 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233070AbhEFM4O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 6 May 2021 08:56:14 -0400
-Received: from foss.arm.com ([217.140.110.172]:34196 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229946AbhEFM4J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 08:56:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFFD6106F;
-        Thu,  6 May 2021 05:55:10 -0700 (PDT)
-Received: from C02TD0UTHF1T.local (unknown [10.57.31.158])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6C5893F73B;
-        Thu,  6 May 2021 05:55:09 -0700 (PDT)
-Date:   Thu, 6 May 2021 13:54:57 +0100
-From:   Mark Rutland <mark.rutland@arm.com>
-To:     Kees Cook <keescook@chromium.org>
-Cc:     linux-hardening@vger.kernel.org, Qing Zhao <qing.zhao@oracle.com>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Michal Marek <michal.lkml@markovi.net>,
-        linux-kernel@vger.kernel.org, linux-kbuild@vger.kernel.org,
-        linux-security-module@vger.kernel.org
-Subject: Re: [PATCH] Makefile: Introduce CONFIG_ZERO_CALL_USED_REGS
-Message-ID: <20210506125457.GA34956@C02TD0UTHF1T.local>
-References: <20210505191804.4015873-1-keescook@chromium.org>
+Received: from mail-lf1-x12a.google.com (mail-lf1-x12a.google.com [IPv6:2a00:1450:4864:20::12a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B65DFC061761
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 05:55:14 -0700 (PDT)
+Received: by mail-lf1-x12a.google.com with SMTP id c3so7622387lfs.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 05:55:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wqkbdKsOdWjTK7WgnVxR1G7Gje4G1wMYFsQzSKPfbAo=;
+        b=WZ7v02+KE4wO7unCZvbfDLWFG1BRsiNeeiqwWtqYzNOqQASTg2Nx2XeJHesK7+D3i8
+         2JQfF4stnA2fdQBg2FnNMBkVC/kF+kk/n7Ux2nNLiHXhJI8qVoCcSAjc8GHrDgI8yghv
+         xGJDjI1jaRfOPqkXEJft2jPTJukttHcTAS6A0PvGYzKYNMLvUCUpMOIEwjn5ZbM7hktj
+         Hs8saBV8RonqMxpUkZMPrdRzH+Ly0qzK/W6sz5FanvYdM38165f8sGdp+TsJtCtIFRcT
+         pQc3QrChiZoCSOug9HHoE0ZWPCh2msWrev/R2BMiqXMy9GjDFcKTN+aUSnWaTYQI8CtR
+         oseg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wqkbdKsOdWjTK7WgnVxR1G7Gje4G1wMYFsQzSKPfbAo=;
+        b=AdNK8kij2sKGgfbD7ElcddXbhWaEEbpDJFABHxDrWu82cTsvKwGaQ0ZKOUysbnFITo
+         15ecOBKpJg21t4SOQfkDyXSFZ1mY99G8oiiLdCfinBSl24IqNJOWCpymw5sJPrc3qdd5
+         SAghFnj8Bs+PXehRR/E9+eetVonBbkGxfLd7AIgu01nG5ItdmxgE0ug3aFERivdBRkeZ
+         4I/fA7BGLDk6v4XZzMCmDWefO7UdAtgtY7XytM5IXknJ9DWdi1SMONaxwHyCgea/p6g4
+         47j06WGi9POtobVjWtbuVEWo4e4qhZltShJbEdbpLJ3yjEBOMTiGw9meB8EFOa+J/R0J
+         M48Q==
+X-Gm-Message-State: AOAM533GS+db95Mj16WUJ5sWvZAGOilHJmujG+q6RLtmBou4aBtEeFvZ
+        W51UwPEhQiWSlkmVAY7pUzuUsP/hysLzxVWjNexvxw==
+X-Google-Smtp-Source: ABdhPJwkS8PxjjDr2n5hfY2szPG9nSo1a5AJ4gvyeQ22qeS/fiE1q1FlxvsZwPnrHxg063ycasrTZYc3jhQ0K8KX3ds=
+X-Received: by 2002:a05:6512:149:: with SMTP id m9mr2640542lfo.157.1620305713264;
+ Thu, 06 May 2021 05:55:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505191804.4015873-1-keescook@chromium.org>
+References: <20210504161222.101536-1-ulf.hansson@linaro.org> <20210504161222.101536-6-ulf.hansson@linaro.org>
+In-Reply-To: <20210504161222.101536-6-ulf.hansson@linaro.org>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Thu, 6 May 2021 14:55:01 +0200
+Message-ID: <CACRpkdY2fScL3jvKoyR1m3+Yxj2=Nj3PPGm1cAqyn3kBS78aow@mail.gmail.com>
+Subject: Re: [PATCH 05/11] mmc: core: Enable eMMC sleep commands to use HW
+ busy polling
+To:     Ulf Hansson <ulf.hansson@linaro.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Kees,
+On Tue, May 4, 2021 at 6:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 
-On Wed, May 05, 2021 at 12:18:04PM -0700, Kees Cook wrote:
-> When CONFIG_ZERO_CALL_USED_REGS is enabled, build the kernel with
-> "-fzero-call-used-regs=used-gpr" (in GCC 11). This option will zero any
-> caller-used register contents just before returning from a function,
-> ensuring that temporary values are not leaked beyond the function
-> boundary. This means that register contents are less likely to be
-> available for side channel attacks and information exposures.
-> 
-> Additionally this helps reduce the number of useful ROP gadgets in the
-> kernel image by about 20%:
-> 
-> $ ROPgadget.py --nosys --nojop --binary vmlinux.stock | tail -n1
-> Unique gadgets found: 337245
-> 
-> $ ROPgadget.py --nosys --nojop --binary vmlinux.zero-call-regs | tail -n1
-> Unique gadgets found: 267175
-> 
-> and more notably removes simple "write-what-where" gadgets:
-> 
-> $ ROPgadget.py --ropchain --binary vmlinux.stock | sed -n '/Step 1/,/Step 2/p'
-> - Step 1 -- Write-what-where gadgets
-> 
->         [+] Gadget found: 0xffffffff8102d76c mov qword ptr [rsi], rdx ; ret
->         [+] Gadget found: 0xffffffff81000cf5 pop rsi ; ret
->         [+] Gadget found: 0xffffffff8104d7c8 pop rdx ; ret
->         [-] Can't find the 'xor rdx, rdx' gadget. Try with another 'mov [reg], reg'
-> 
->         [+] Gadget found: 0xffffffff814c2b4c mov qword ptr [rsi], rdi ; ret
->         [+] Gadget found: 0xffffffff81000cf5 pop rsi ; ret
->         [+] Gadget found: 0xffffffff81001e51 pop rdi ; ret
->         [-] Can't find the 'xor rdi, rdi' gadget. Try with another 'mov [reg], reg'
-> 
->         [+] Gadget found: 0xffffffff81540d61 mov qword ptr [rsi], rdi ; pop rbx ; pop rbp ; ret
->         [+] Gadget found: 0xffffffff81000cf5 pop rsi ; ret
->         [+] Gadget found: 0xffffffff81001e51 pop rdi ; ret
->         [-] Can't find the 'xor rdi, rdi' gadget. Try with another 'mov [reg], reg'
-> 
->         [+] Gadget found: 0xffffffff8105341e mov qword ptr [rsi], rax ; ret
->         [+] Gadget found: 0xffffffff81000cf5 pop rsi ; ret
->         [+] Gadget found: 0xffffffff81029a11 pop rax ; ret
->         [+] Gadget found: 0xffffffff811f1c3b xor rax, rax ; ret
-> 
-> - Step 2 -- Init syscall number gadgets
-> 
-> $ ROPgadget.py --ropchain --binary vmlinux.zero* | sed -n '/Step 1/,/Step 2/p'
-> - Step 1 -- Write-what-where gadgets
-> 
->         [-] Can't find the 'mov qword ptr [r64], r64' gadget
-> 
-> In parallel build tests, this has a less than 1% performance impact,
-> and grows the image size less than 1%:
-> 
-> $ size vmlinux.stock vmlinux.zero-call-regs
->    text    data     bss     dec     hex filename
-> 22437676   8559152 14127340 45124168 2b08a48 vmlinux.stock
-> 22453184   8563248 14110956 45127388 2b096dc vmlinux.zero-call-regs
+> After the eMMC sleep command (CMD5) has been sent, the card start signals
+> busy on the DAT0 line, which can be monitored to understand when it's
+> allowed to proceed to power off the VCC regulator.
+>
+> When MMC_CAP_WAIT_WHILE_BUSY isn't supported by the host the DAT0 line
+> isn't being monitored for busy completion, but instead we are waiting a
+> fixed period of time. The time corresponds to the sleep timeout that is
+> specified in the EXT_CSD register of the eMMC card. This is many cases
+> suboptimal, as the timeout corresponds to the worst case scenario.
+>
+> To improve the situation add support for HW busy polling through the
+> ->card_busy() host ops, when the host supports this.
+>
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 
-FWIW, I gave this a go on arm64, and the size increase is a fair bit
-larger:
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
 
-| [mark@lakrids:~/src/linux]% ls -l Image* 
-| -rw-r--r-- 1 mark mark 31955456 May  6 13:36 Image.stock
-| -rw-r--r-- 1 mark mark 33724928 May  6 13:23 Image.zero-call-regs
-
-| [mark@lakrids:~/src/linux]% size vmlinux.stock vmlinux.zero-call-regs 
-|    text    data     bss     dec     hex filename
-| 20728552        11086474         505540 32320566        1ed2c36 vmlinux.stock
-| 22500688        11084298         505540 34090526        2082e1e vmlinux.zero-call-regs
-
-The Image is ~5.5% bigger, and the .text in the vmlinux is ~8.5% bigger
-
-The resulting Image appears to work, but I haven't done anything beyond
-booting, and I wasn't able to get ROPgadget.py going to quantify the
-number of gadgets.
-
-> Signed-off-by: Kees Cook <keescook@chromium.org>
-> ---
->  Makefile                   |  5 +++++
->  security/Kconfig.hardening | 17 +++++++++++++++++
->  2 files changed, 22 insertions(+)
-> 
-> diff --git a/Makefile b/Makefile
-> index 31dcdb3d61fa..810600618490 100644
-> --- a/Makefile
-> +++ b/Makefile
-> @@ -811,6 +811,11 @@ KBUILD_CFLAGS	+= -ftrivial-auto-var-init=zero
->  KBUILD_CFLAGS	+= -enable-trivial-auto-var-init-zero-knowing-it-will-be-removed-from-clang
->  endif
->  
-> +# Clear used registers at func exit (to reduce data lifetime and ROP gadgets).
-> +ifdef CONFIG_ZERO_CALL_USED_REGS
-> +KBUILD_CFLAGS	+= -fzero-call-used-regs=used-gpr
-> +endif
-> +
->  DEBUG_CFLAGS	:=
->  
->  # Workaround for GCC versions < 5.0
-> diff --git a/security/Kconfig.hardening b/security/Kconfig.hardening
-> index 269967c4fc1b..85f7f2036725 100644
-> --- a/security/Kconfig.hardening
-> +++ b/security/Kconfig.hardening
-> @@ -217,6 +217,23 @@ config INIT_ON_FREE_DEFAULT_ON
->  	  touching "cold" memory areas. Most cases see 3-5% impact. Some
->  	  synthetic workloads have measured as high as 8%.
->  
-> +config CC_HAS_ZERO_CALL_USED_REGS
-> +	def_bool $(cc-option,-fzero-call-used-regs=used-gpr)
-> +
-> +config ZERO_CALL_USED_REGS
-> +	bool "Enable register zeroing on function exit"
-> +	depends on CC_HAS_ZERO_CALL_USED_REGS
-> +	help
-> +	  At the end of functions, always zero any caller-used register
-> +	  contents. This helps ensure that temporary values are not
-> +	  leaked beyond the function boundary. This means that register
-> +	  contents are less likely to be available for side channels
-> +	  and information exposures. Additionally, this helps reduce the
-> +	  number of useful ROP gadgets by about 20% (and removes compiler
-> +	  generated "write-what-where" gadgets) in the resulting kernel
-> +	  image. This has a less than 1% performance impact on most
-> +	  workloads, and grows the image size less than 1%.
-
-I think the numbers need an "on x86" caveat, since they're not
-necessarily representative of other architectures.
-
-This shows up under the "Memory initialization" sub-menu, but I assume
-it was meant to be directly under the "Kernel hardening options" menu...
-
-> +
->  endmenu
-
-... and should presumably be here?
-
-Thanks,
-Mark.
-
->  
->  endmenu
-> -- 
-> 2.25.1
-> 
+Yours,
+Linus Walleij
