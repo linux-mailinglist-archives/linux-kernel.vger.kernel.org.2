@@ -2,437 +2,287 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EC7F3758CA
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EC5B3758C2
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 18:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236189AbhEFQzx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 12:55:53 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:18005 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236075AbhEFQzw (ORCPT
+        id S236089AbhEFQyu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 12:54:50 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:50518 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236006AbhEFQyt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 12:55:52 -0400
-Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fbfjz391HzQjt7;
-        Fri,  7 May 2021 00:51:35 +0800 (CST)
-Received: from A2006125610.china.huawei.com (10.47.85.115) by
- DGGEMS410-HUB.china.huawei.com (10.3.19.210) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 7 May 2021 00:54:44 +0800
-From:   Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
-To:     <linux-arm-kernel@lists.infradead.org>,
-        <kvmarm@lists.cs.columbia.edu>, <linux-kernel@vger.kernel.org>
-CC:     <maz@kernel.org>, <will@kernel.org>, <catalin.marinas@arm.com>,
-        <james.morse@arm.com>, <julien.thierry.kdev@gmail.com>,
-        <suzuki.poulose@arm.com>, <jean-philippe@linaro.org>,
-        <linuxarm@huawei.com>
-Subject: [RFC PATCH 3/3] kvm/arm: Align the VMID allocation with the arm64 ASID one
-Date:   Thu, 6 May 2021 17:52:32 +0100
-Message-ID: <20210506165232.1969-4-shameerali.kolothum.thodi@huawei.com>
-X-Mailer: git-send-email 2.12.0.windows.1
-In-Reply-To: <20210506165232.1969-1-shameerali.kolothum.thodi@huawei.com>
-References: <20210506165232.1969-1-shameerali.kolothum.thodi@huawei.com>
+        Thu, 6 May 2021 12:54:49 -0400
+Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 146GXPSq118938;
+        Thu, 6 May 2021 12:53:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : reply-to : references : mime-version : content-type
+ : in-reply-to; s=pp1; bh=oN4YcI/MwrKGj+l8/8ycPGzT2RPoCHQsr1hy2vj/MyE=;
+ b=UcCZWS+kLYT2twT3YtdrVDCqRZ4L4WHxPFhPErTGsPY59X6EUMdYw+HsUftPyAv+OrTx
+ tc2nKlBkNTokXz1r3kxiWDIq/vIhn4Gp3Vz6ZobcWJtTLYqDZz0pnSufnV8+bzLxxeJX
+ juQKvCiBUbhr6WmRuOsoK4NI5/l2aJD7fFKzdZx8+M12LFV6w2qw4Q8maJsr9sDM9LvE
+ O3qQKkGZR8aWJpZYveyOxcpzrB6D1uI1w1tVqhV+1lPU5dtvub89eL71TWidgcq8OHIY
+ mzebiaCQXC87R4Os7P55g5yNQ6zogoqOo/v8sf+ZImbz7Wt1bIX8p1Y1b7tnC/0KsVU3 3w== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 38cgf3rn7p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 May 2021 12:53:35 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 146GrXJH005178;
+        Thu, 6 May 2021 16:53:33 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 38cfrqr869-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 06 May 2021 16:53:33 +0000
+Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 146Gr5o037683668
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 6 May 2021 16:53:05 GMT
+Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 06C285204F;
+        Thu,  6 May 2021 16:53:31 +0000 (GMT)
+Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
+        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id ADBD05204E;
+        Thu,  6 May 2021 16:53:28 +0000 (GMT)
+Date:   Thu, 6 May 2021 22:23:28 +0530
+From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+To:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Rik van Riel <riel@surriel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
+        Parth Shah <parth@linux.ibm.com>
+Subject: Re: [PATCH v2 0/8] sched/fair: wake_affine improvements
+Message-ID: <20210506165328.GO2633526@linux.vnet.ibm.com>
+Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.47.85.115]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+In-Reply-To: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: T7fKUvBjZftDErS9e1fkJ1hKxabdsll1
+X-Proofpoint-ORIG-GUID: T7fKUvBjZftDErS9e1fkJ1hKxabdsll1
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-06_10:2021-05-06,2021-05-06 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ malwarescore=0 impostorscore=0 spamscore=0 clxscore=1015 bulkscore=0
+ lowpriorityscore=0 phishscore=0 suspectscore=0 priorityscore=1501
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2104060000 definitions=main-2105060114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Julien Grall <julien.grall@arm.com>
+* Srikar Dronamraju <srikar@linux.vnet.ibm.com> [2021-05-06 22:15:35]:
 
-At the moment, the VMID algorithm will send an SGI to all the CPUs to
-force an exit and then broadcast a full TLB flush and I-Cache
-invalidation.
+Mel had asked for additional profile data that could be collected 
+for idlecore
 
-This patch use the new VMID allocator. The
-benefits are:
-    - CPUs are not forced to exit at roll-over. Instead the VMID will be
-    marked reserved and the context will be flushed at next exit. This
-    will reduce the IPIs traffic.
-    - Context invalidation is now per-CPU rather than broadcasted.
-    - Catalin has a formal model of the ASID allocator.
+# lscpu
+Architecture:                    x86_64
+CPU op-mode(s):                  32-bit, 64-bit
+Byte Order:                      Little Endian
+Address sizes:                   46 bits physical, 48 bits virtual
+CPU(s):                          48
+On-line CPU(s) list:             0-47
+Thread(s) per core:              2
+Core(s) per socket:              12
+Socket(s):                       2
+NUMA node(s):                    2
+Vendor ID:                       GenuineIntel
+CPU family:                      6
+Model:                           63
+Model name:                      Intel(R) Xeon(R) CPU E5-2690 v3 @ 2.60GHz
+Stepping:                        2
+CPU MHz:                         1200.000
+CPU max MHz:                     3500.0000
+CPU min MHz:                     1200.0000
+BogoMIPS:                        5200.05
+Virtualization:                  VT-x
+L1d cache:                       768 KiB
+L1i cache:                       768 KiB
+L2 cache:                        6 MiB
+L3 cache:                        60 MiB
+NUMA node0 CPU(s):               0-11,24-35
+NUMA node1 CPU(s):               12-23,36-47
 
-With the new algo, the code is now adapted:
-    - The function __kvm_flush_vm_context() has been renamed to
-    __kvm_tlb_flush_local_all() and now only flushing the current CPU
-    context.
-    - The call to update_vmid() will be done with preemption disabled
-    as the new algo requires to store information per-CPU.
-    - The TLBs associated to EL1 will be flushed when booting a CPU to
-    deal with stale information. This was previously done on the
-    allocation of the first VMID of a new generation.
+# cat test.sh
+#! /bin/bash
+tbench_srv &
 
-Signed-off-by: Julien Grall <julien.grall@arm.com>
-Signed-off-by: Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>
----
- arch/arm64/include/asm/kvm_asm.h   |   4 +-
- arch/arm64/include/asm/kvm_host.h  |   5 +-
- arch/arm64/include/asm/kvm_mmu.h   |   3 +-
- arch/arm64/kvm/Makefile            |   2 +-
- arch/arm64/kvm/arm.c               | 115 ++++++++---------------------
- arch/arm64/kvm/hyp/nvhe/hyp-main.c |   6 +-
- arch/arm64/kvm/hyp/nvhe/tlb.c      |  10 +--
- arch/arm64/kvm/hyp/vhe/tlb.c       |  10 +--
- arch/arm64/kvm/mmu.c               |   1 -
- 9 files changed, 51 insertions(+), 105 deletions(-)
+#20 iterations of tbench on 48 CPU, 2 node syste
+for i in $(seq 1 20); do
+	#enable schedstat just before tbench
+	echo 1 | sudo tee /proc/sys/kernel/sched_schedstats
+	tbench -t 60 48 127.0.0.1
+	#disable schedstat just before tbench
+	echo 0 | sudo tee /proc/sys/kernel/sched_schedstats
+	IDLE_COUNT=$(awk '/nr_idlecore_write/{a+=$NF}END{print a}' /proc/sched_debug)
+	NR_IDLE_COUNT=$(($IDLE_COUNT-$NR_IDLE_COUNT))
+	SELECT_COUNT=$(awk '/nr_idlecore_select/{a+=$NF}END{print a}' /proc/sched_debug)
+	NR_SELECT_COUNT=$(($SELECT_COUNT-$NR_SELECT_COUNT))
+	# select means we selected an idle core when the preferred CPU is
+	# busy. write means, unconditional set of idlecore.
+	# seqno total_updates=select+write select write
+	echo $i $(($NR_IDLE_COUNT+$NR_SELECT_COUNT)) $NR_SELECT_COUNT $NR_IDLE_COUNT
+done
+#
 
-diff --git a/arch/arm64/include/asm/kvm_asm.h b/arch/arm64/include/asm/kvm_asm.h
-index a7ab84f781f7..29697c5ab2c2 100644
---- a/arch/arm64/include/asm/kvm_asm.h
-+++ b/arch/arm64/include/asm/kvm_asm.h
-@@ -44,7 +44,7 @@
- 
- #define __KVM_HOST_SMCCC_FUNC___kvm_hyp_init			0
- #define __KVM_HOST_SMCCC_FUNC___kvm_vcpu_run			1
--#define __KVM_HOST_SMCCC_FUNC___kvm_flush_vm_context		2
-+#define __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_local_all		2
- #define __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid_ipa		3
- #define __KVM_HOST_SMCCC_FUNC___kvm_tlb_flush_vmid		4
- #define __KVM_HOST_SMCCC_FUNC___kvm_flush_cpu_context		5
-@@ -182,7 +182,7 @@ DECLARE_KVM_NVHE_SYM(__per_cpu_end);
- DECLARE_KVM_HYP_SYM(__bp_harden_hyp_vecs);
- #define __bp_harden_hyp_vecs	CHOOSE_HYP_SYM(__bp_harden_hyp_vecs)
- 
--extern void __kvm_flush_vm_context(void);
-+extern void __kvm_tlb_flush_local_all(void);
- extern void __kvm_flush_cpu_context(struct kvm_s2_mmu *mmu);
- extern void __kvm_tlb_flush_vmid_ipa(struct kvm_s2_mmu *mmu, phys_addr_t ipa,
- 				     int level);
-diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
-index 9d476f1f34af..c06370f387cb 100644
---- a/arch/arm64/include/asm/kvm_host.h
-+++ b/arch/arm64/include/asm/kvm_host.h
-@@ -70,9 +70,7 @@ int kvm_reset_vcpu(struct kvm_vcpu *vcpu);
- void kvm_arm_vcpu_destroy(struct kvm_vcpu *vcpu);
- 
- struct kvm_vmid {
--	/* The VMID generation used for the virt. memory system */
--	u64    vmid_gen;
--	u32    vmid;
-+	atomic64_t id;
- };
- 
- struct kvm_s2_mmu {
-@@ -631,7 +629,6 @@ void kvm_arm_resume_guest(struct kvm *kvm);
- 		ret;							\
- 	})
- 
--void force_vm_exit(const cpumask_t *mask);
- void kvm_mmu_wp_memory_region(struct kvm *kvm, int slot);
- 
- int handle_exit(struct kvm_vcpu *vcpu, int exception_index);
-diff --git a/arch/arm64/include/asm/kvm_mmu.h b/arch/arm64/include/asm/kvm_mmu.h
-index c3080966ef83..43e83df87e3a 100644
---- a/arch/arm64/include/asm/kvm_mmu.h
-+++ b/arch/arm64/include/asm/kvm_mmu.h
-@@ -252,7 +252,8 @@ static __always_inline u64 kvm_get_vttbr(struct kvm_s2_mmu *mmu)
- 	u64 cnp = system_supports_cnp() ? VTTBR_CNP_BIT : 0;
- 
- 	baddr = mmu->pgd_phys;
--	vmid_field = (u64)vmid->vmid << VTTBR_VMID_SHIFT;
-+	vmid_field = atomic64_read(&vmid->id) << VTTBR_VMID_SHIFT;
-+	vmid_field &= VTTBR_VMID_MASK(kvm_get_vmid_bits());
- 	return kvm_phys_to_vttbr(baddr) | vmid_field | cnp;
- }
- 
-diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
-index 589921392cb1..717c4cbf557a 100644
---- a/arch/arm64/kvm/Makefile
-+++ b/arch/arm64/kvm/Makefile
-@@ -16,7 +16,7 @@ kvm-y := $(KVM)/kvm_main.o $(KVM)/coalesced_mmio.o $(KVM)/eventfd.o \
- 	 inject_fault.o va_layout.o handle_exit.o \
- 	 guest.o debug.o reset.o sys_regs.o \
- 	 vgic-sys-reg-v3.o fpsimd.o pmu.o \
--	 arch_timer.o trng.o\
-+	 arch_timer.o trng.o vmid.o \
- 	 vgic/vgic.o vgic/vgic-init.o \
- 	 vgic/vgic-irqfd.o vgic/vgic-v2.o \
- 	 vgic/vgic-v3.o vgic/vgic-v4.o \
-diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-index 7f06ba76698d..4f58db358f72 100644
---- a/arch/arm64/kvm/arm.c
-+++ b/arch/arm64/kvm/arm.c
-@@ -55,11 +55,6 @@ static DEFINE_PER_CPU(unsigned long, kvm_arm_hyp_stack_page);
- unsigned long kvm_arm_hyp_percpu_base[NR_CPUS];
- DECLARE_KVM_NVHE_PER_CPU(struct kvm_nvhe_init_params, kvm_init_params);
- 
--/* The VMID used in the VTTBR */
--static atomic64_t kvm_vmid_gen = ATOMIC64_INIT(1);
--static u32 kvm_next_vmid;
--static DEFINE_SPINLOCK(kvm_vmid_lock);
--
- static bool vgic_present;
- 
- static DEFINE_PER_CPU(unsigned char, kvm_arm_hardware_enabled);
-@@ -486,85 +481,13 @@ bool kvm_arch_vcpu_in_kernel(struct kvm_vcpu *vcpu)
- 	return vcpu_mode_priv(vcpu);
- }
- 
--/* Just ensure a guest exit from a particular CPU */
--static void exit_vm_noop(void *info)
--{
--}
--
--void force_vm_exit(const cpumask_t *mask)
--{
--	preempt_disable();
--	smp_call_function_many(mask, exit_vm_noop, NULL, true);
--	preempt_enable();
--}
--
--/**
-- * need_new_vmid_gen - check that the VMID is still valid
-- * @vmid: The VMID to check
-- *
-- * return true if there is a new generation of VMIDs being used
-- *
-- * The hardware supports a limited set of values with the value zero reserved
-- * for the host, so we check if an assigned value belongs to a previous
-- * generation, which requires us to assign a new value. If we're the first to
-- * use a VMID for the new generation, we must flush necessary caches and TLBs
-- * on all CPUs.
-- */
--static bool need_new_vmid_gen(struct kvm_vmid *vmid)
--{
--	u64 current_vmid_gen = atomic64_read(&kvm_vmid_gen);
--	smp_rmb(); /* Orders read of kvm_vmid_gen and kvm->arch.vmid */
--	return unlikely(READ_ONCE(vmid->vmid_gen) != current_vmid_gen);
--}
--
- /**
-  * update_vmid - Update the vmid with a valid VMID for the current generation
-  * @vmid: The stage-2 VMID information struct
-  */
- static void update_vmid(struct kvm_vmid *vmid)
- {
--	if (!need_new_vmid_gen(vmid))
--		return;
--
--	spin_lock(&kvm_vmid_lock);
--
--	/*
--	 * We need to re-check the vmid_gen here to ensure that if another vcpu
--	 * already allocated a valid vmid for this vm, then this vcpu should
--	 * use the same vmid.
--	 */
--	if (!need_new_vmid_gen(vmid)) {
--		spin_unlock(&kvm_vmid_lock);
--		return;
--	}
--
--	/* First user of a new VMID generation? */
--	if (unlikely(kvm_next_vmid == 0)) {
--		atomic64_inc(&kvm_vmid_gen);
--		kvm_next_vmid = 1;
--
--		/*
--		 * On SMP we know no other CPUs can use this CPU's or each
--		 * other's VMID after force_vm_exit returns since the
--		 * kvm_vmid_lock blocks them from reentry to the guest.
--		 */
--		force_vm_exit(cpu_all_mask);
--		/*
--		 * Now broadcast TLB + ICACHE invalidation over the inner
--		 * shareable domain to make sure all data structures are
--		 * clean.
--		 */
--		kvm_call_hyp(__kvm_flush_vm_context);
--	}
--
--	vmid->vmid = kvm_next_vmid;
--	kvm_next_vmid++;
--	kvm_next_vmid &= (1 << kvm_get_vmid_bits()) - 1;
--
--	smp_wmb();
--	WRITE_ONCE(vmid->vmid_gen, atomic64_read(&kvm_vmid_gen));
--
--	spin_unlock(&kvm_vmid_lock);
-+	kvm_arm_update_vmid(&vmid->id, NULL);
- }
- 
- static int kvm_vcpu_first_run_init(struct kvm_vcpu *vcpu)
-@@ -728,8 +651,6 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		 */
- 		cond_resched();
- 
--		update_vmid(&vcpu->arch.hw_mmu->vmid);
--
- 		check_vcpu_requests(vcpu);
- 
- 		/*
-@@ -739,6 +660,15 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		 */
- 		preempt_disable();
- 
-+		/*
-+		 * The VMID allocator only tracks active VMIDs per
-+		 * physical CPU, and therefore the VMID allocated may not be
-+		 * preserved on VMID roll-over if the task was preempted,
-+		 * making a thread's VMID inactive. So we need to call
-+		 * update_vttbr in non-premptible context.
-+		 */
-+		update_vmid(&vcpu->arch.hw_mmu->vmid);
-+
- 		kvm_pmu_flush_hwstate(vcpu);
- 
- 		local_irq_disable();
-@@ -777,8 +707,7 @@ int kvm_arch_vcpu_ioctl_run(struct kvm_vcpu *vcpu)
- 		 */
- 		smp_store_mb(vcpu->mode, IN_GUEST_MODE);
- 
--		if (ret <= 0 || need_new_vmid_gen(&vcpu->arch.hw_mmu->vmid) ||
--		    kvm_request_pending(vcpu)) {
-+		if (ret <= 0 || kvm_request_pending(vcpu)) {
- 			vcpu->mode = OUTSIDE_GUEST_MODE;
- 			isb(); /* Ensure work in x_flush_hwstate is committed */
- 			kvm_pmu_sync_hwstate(vcpu);
-@@ -1460,6 +1389,8 @@ static void cpu_hyp_reset(void)
- {
- 	if (!is_kernel_in_hyp_mode())
- 		__hyp_reset_vectors();
-+
-+	kvm_call_hyp(__kvm_tlb_flush_local_all);
- }
- 
- /*
-@@ -1635,9 +1566,26 @@ static bool init_psci_relay(void)
- 
- static int init_common_resources(void)
- {
-+	int err;
-+
-+	/*
-+	 * Initialize the VMID allocator telling it to allocate a single
-+	 * VMID per VM.
-+	 */
-+	err = kvm_arm_vmid_alloc_init();
-+	if (err) {
-+		kvm_err("Failed to initialize VMID allocator.\n");
-+		return err;
-+	}
-+
- 	return kvm_set_ipa_limit();
- }
- 
-+static void free_common_resources(void)
-+{
-+	kvm_arm_vmid_alloc_free();
-+}
-+
- static int init_subsystems(void)
- {
- 	int err = 0;
-@@ -1918,7 +1866,7 @@ int kvm_arch_init(void *opaque)
- 
- 	err = kvm_arm_init_sve();
- 	if (err)
--		return err;
-+		goto out_err;
- 
- 	if (!in_hyp_mode) {
- 		err = init_hyp_mode();
-@@ -1952,6 +1900,7 @@ int kvm_arch_init(void *opaque)
- 	if (!in_hyp_mode)
- 		teardown_hyp_mode();
- out_err:
-+	free_common_resources();
- 	return err;
- }
- 
-diff --git a/arch/arm64/kvm/hyp/nvhe/hyp-main.c b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-index 936328207bde..62027448d534 100644
---- a/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-+++ b/arch/arm64/kvm/hyp/nvhe/hyp-main.c
-@@ -25,9 +25,9 @@ static void handle___kvm_vcpu_run(struct kvm_cpu_context *host_ctxt)
- 	cpu_reg(host_ctxt, 1) =  __kvm_vcpu_run(kern_hyp_va(vcpu));
- }
- 
--static void handle___kvm_flush_vm_context(struct kvm_cpu_context *host_ctxt)
-+static void handle___kvm_tlb_flush_local_all(struct kvm_cpu_context *host_ctxt)
- {
--	__kvm_flush_vm_context();
-+	__kvm_tlb_flush_local_all();
- }
- 
- static void handle___kvm_tlb_flush_vmid_ipa(struct kvm_cpu_context *host_ctxt)
-@@ -112,7 +112,7 @@ typedef void (*hcall_t)(struct kvm_cpu_context *);
- 
- static const hcall_t host_hcall[] = {
- 	HANDLE_FUNC(__kvm_vcpu_run),
--	HANDLE_FUNC(__kvm_flush_vm_context),
-+	HANDLE_FUNC(__kvm_tlb_flush_local_all),
- 	HANDLE_FUNC(__kvm_tlb_flush_vmid_ipa),
- 	HANDLE_FUNC(__kvm_tlb_flush_vmid),
- 	HANDLE_FUNC(__kvm_flush_cpu_context),
-diff --git a/arch/arm64/kvm/hyp/nvhe/tlb.c b/arch/arm64/kvm/hyp/nvhe/tlb.c
-index 229b06748c20..3f1fc5125e9e 100644
---- a/arch/arm64/kvm/hyp/nvhe/tlb.c
-+++ b/arch/arm64/kvm/hyp/nvhe/tlb.c
-@@ -138,10 +138,10 @@ void __kvm_flush_cpu_context(struct kvm_s2_mmu *mmu)
- 	__tlb_switch_to_host(&cxt);
- }
- 
--void __kvm_flush_vm_context(void)
-+void __kvm_tlb_flush_local_all(void)
- {
--	dsb(ishst);
--	__tlbi(alle1is);
-+	dsb(nshst);
-+	__tlbi(alle1);
- 
- 	/*
- 	 * VIPT and PIPT caches are not affected by VMID, so no maintenance
-@@ -153,7 +153,7 @@ void __kvm_flush_vm_context(void)
- 	 *
- 	 */
- 	if (icache_is_vpipt())
--		asm volatile("ic ialluis");
-+		asm volatile("ic iallu" : : );
- 
--	dsb(ish);
-+	dsb(nsh);
- }
-diff --git a/arch/arm64/kvm/hyp/vhe/tlb.c b/arch/arm64/kvm/hyp/vhe/tlb.c
-index 66f17349f0c3..89f229e77b7d 100644
---- a/arch/arm64/kvm/hyp/vhe/tlb.c
-+++ b/arch/arm64/kvm/hyp/vhe/tlb.c
-@@ -142,10 +142,10 @@ void __kvm_flush_cpu_context(struct kvm_s2_mmu *mmu)
- 	__tlb_switch_to_host(&cxt);
- }
- 
--void __kvm_flush_vm_context(void)
-+void __kvm_tlb_flush_local_all(void)
- {
--	dsb(ishst);
--	__tlbi(alle1is);
-+	dsb(nshst);
-+	__tlbi(alle1);
- 
- 	/*
- 	 * VIPT and PIPT caches are not affected by VMID, so no maintenance
-@@ -157,7 +157,7 @@ void __kvm_flush_vm_context(void)
- 	 *
- 	 */
- 	if (icache_is_vpipt())
--		asm volatile("ic ialluis");
-+		asm volatile("ic iallu" : : );
- 
--	dsb(ish);
-+	dsb(nsh);
- }
-diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-index 8711894db8c2..4933fc9a13fb 100644
---- a/arch/arm64/kvm/mmu.c
-+++ b/arch/arm64/kvm/mmu.c
-@@ -390,7 +390,6 @@ int kvm_init_stage2_mmu(struct kvm *kvm, struct kvm_s2_mmu *mmu)
- 	mmu->kvm = kvm;
- 	mmu->pgt = pgt;
- 	mmu->pgd_phys = __pa(pgt->pgd);
--	mmu->vmid.vmid_gen = 0;
- 	return 0;
- 
- out_destroy_pgtable:
+a5e13c6df0e4 aka v5.12-rc5
+seqno  nr_update_idle_core  nr_select_idle_core  nr_write_idle_core
+1      11515                0                    11515
+2      13439                0                    13439
+3      42339                0                    42339
+4      13642                0                    13642
+5      44770                0                    44770
+6      32402                0                    32402
+7      65638                0                    65638
+8      106601               0                    106601
+9      99819                0                    99819
+10     106754               0                    106754
+11     107899               0                    107899
+12     112432               0                    112432
+13     125329               0                    125329
+14     127363               0                    127363
+15     133821               0                    133821
+16     127495               0                    127495
+17     133957               0                    133957
+18     185021               0                    185021
+19     137139               0                    137139
+20     221413               0                    221413
+
+ N           Min           Max        Median           Avg        Stddev
+20         11515        221413        107899       97439.4     57524.696
+
+Average of 1353 updates per second.
+
+
+635bb392f382 aka v5.12-rc5 + patches
+seqno  nr_update_idle_core  nr_select_idle_core  nr_write_idle_core
+1      2112856              218                  2112638
+2      1727892              84                   1727808
+3      3662807              280                  3662527
+4      3623563              220                  3623343
+5      4972825              308                  4972517
+6      3625828              258                  3625570
+7      6703820              407                  6703413
+8      5565289              390                  5564899
+9      8376039              528                  8375511
+10     6643273              405                  6642868
+11     10041803             605                  10041198
+12     8322148              537                  8321611
+13     11941494             729                  11940765
+14     10125633             704                  10124929
+15     12810965             797                  12810168
+16     12269912             857                  12269055
+17     14798232             912                  14797320
+18     14378202             980                  14377222
+19     15705273             935                  15704338
+20     16407305             1122                 16406183
+
+ N           Min           Max        Median           Avg        Stddev
+20       1727892      16407305       8376039     8690757.9     4718172.5
+
+Average of 120704 updates per second which is around 89X times without the
+patch.
+
 -- 
-2.17.1
+Thanks and Regards
+Srikar Dronamraju
 
+---->8----------------------------------------------------8<--------------
+
+From e361fdd4234ff718247f0ee20f4f836ccbbc1df8 Mon Sep 17 00:00:00 2001
+From: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+Date: Thu, 6 May 2021 19:33:51 +0530
+Subject: sched: Show idlecore update stats
+
+Not for inclusion; Just for demonstration.
+
+nr_idlecore_write: idlecore set unconditionally.
+nr_idlecore_select; wakeup found an idle core when the current CPU was
+busy.
+
+nr_idlecore updates = nr_idlecore_write + nr_idlecore_select
+
+Not-Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
+---
+ kernel/sched/debug.c |  2 ++
+ kernel/sched/fair.c  | 12 +++++++++---
+ kernel/sched/sched.h |  2 ++
+ 3 files changed, 13 insertions(+), 3 deletions(-)
+
+diff --git a/kernel/sched/debug.c b/kernel/sched/debug.c
+index 486f403a778b..b50e0c5acf46 100644
+--- a/kernel/sched/debug.c
++++ b/kernel/sched/debug.c
+@@ -715,6 +715,8 @@ do {									\
+ 		P(ttwu_count);
+ 		P(ttwu_local);
+ 	}
++	P(nr_idlecore_write);
++	P(nr_idlecore_select);
+ #undef P
+ 
+ 	spin_lock_irqsave(&sched_debug_lock, flags);
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 83104d3bd0f9..4ef0b7d959d5 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5890,16 +5890,20 @@ static int wake_affine_idler_llc(struct task_struct *p, int pref_cpu, int try_cp
+ 
+ 	idle_core = READ_ONCE(pref_sds->idle_core);
+ 	if (idle_core > -1 && cpumask_test_cpu(idle_core, p->cpus_ptr) &&
+-				test_reset_idle_core(pref_sds, idle_core))
++				test_reset_idle_core(pref_sds, idle_core)) {
++		schedstat_inc(cpu_rq(idle_core)->nr_idlecore_select);
+ 		return idle_core;
++	}
+ 
+ 	if (available_idle_cpu(try_cpu) || sched_idle_cpu(try_cpu))
+ 		return try_cpu;
+ 
+ 	idle_core = READ_ONCE(try_sds->idle_core);
+ 	if (idle_core > -1 && cpumask_test_cpu(idle_core, p->cpus_ptr) &&
+-				test_reset_idle_core(try_sds, idle_core))
++				test_reset_idle_core(try_sds, idle_core)) {
++		schedstat_inc(cpu_rq(idle_core)->nr_idlecore_select);
+ 		return idle_core;
++	}
+ 
+ 	pnr_busy = atomic_read(&pref_sds->nr_busy_cpus);
+ 	tnr_busy = atomic_read(&try_sds->nr_busy_cpus);
+@@ -6082,8 +6086,10 @@ static inline void set_idle_core(int cpu, int val)
+ 	struct sched_domain_shared *sds;
+ 
+ 	sds = rcu_dereference(per_cpu(sd_llc_shared, cpu));
+-	if (sds)
++	if (sds) {
+ 		WRITE_ONCE(sds->idle_core, val);
++		schedstat_inc(cpu_rq(cpu)->nr_idlecore_write);
++	}
+ }
+ 
+ static inline int get_idle_core(int cpu, int def)
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index baf8d9a4cb26..06d81a9e0a48 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1060,6 +1060,8 @@ struct rq {
+ #ifdef CONFIG_SMP
+ 	unsigned int		nr_pinned;
+ #endif
++	unsigned int		nr_idlecore_write;
++	unsigned int		nr_idlecore_select;
+ 	unsigned int		push_busy;
+ 	struct cpu_stop_work	push_work;
+ };
+-- 
+2.25.1
