@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70993375609
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:58:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1DC37560C
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:58:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234997AbhEFO7k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:59:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53956 "EHLO
+        id S235011AbhEFO7n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:59:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234943AbhEFO7i (ORCPT
+        with ESMTP id S234998AbhEFO7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:59:38 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D426AC061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 07:58:39 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id x2so8194328lff.10
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 07:58:39 -0700 (PDT)
+        Thu, 6 May 2021 10:59:40 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B6575C061763
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 07:58:41 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id w4so7426279ljw.9
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 07:58:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=pMkfZ9EIibr4K3KFH7NDHi8SFeCMCdnE2OEuvOfMmWI=;
-        b=ropSb77Z7ZrvZWrWv2bmJfXeH/HzlRDinr63ZcMxxBBVdHQotkVsjMZbDvofMAONzz
-         qT8r+iXzXXOD01g+ip5mkthcRroRfqlQbSrm3pmVcFQ9EzTCPTHCYgg7uvt47fHJm1AM
-         dO4PbF9DwlRbrtRTMQfnLLtWxfp1ZksVh4bnjzwQHUyWsjr1zmL1EQS3DL2VoDPLOOLX
-         4SZlpMdyET23pLEL0Mln9+bsUfsMn6qbv9JFMjw1nP48U31xrY6uDocaCh29tO2BZTGt
-         z4toTYgG2gLPmxQGkYlCDC1IWGiWlsY/evMJY1Hp+UAtsSB2HM4rhl2/ve4bhnQgZhfx
-         Gheg==
+        bh=82Mp/+3WiDiX0+TFdKaDBvNV5KTPMZG8BPbOyDcjQEo=;
+        b=Hfeq2mPTtjJcg4XLGumY1HeGkmZp7vTnsf8ptjdjVyfbfVoChqCpfWdWAyyc10l/lX
+         TxSSni46a86kKQc2v8mfXyUBFob+vdfUhDWwERSIJE5KgN5oHMzx/YlCfCOC7PXmtDGv
+         liwv/n2QfLNI+MWE+6kg38Y52VyiBBuNVfN3LlRnFDSPyhiviDbH+xI7ykeXFDB04an7
+         QH8Cdy+e3hpOaMO9WV2pPSzXedbnlr/rvNKW1gg1ZLKzMnHj1XZf8BXJXFSYqH8enxmu
+         Duj7IlwYWRP41oAUyJJ0m7KYsIGYGZlLsYNqKMIOWYuANq2QpVMgbo307MZN72Xl1XUs
+         heEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=pMkfZ9EIibr4K3KFH7NDHi8SFeCMCdnE2OEuvOfMmWI=;
-        b=WJDx8YEc6l+0tCAyqwram4r9aT7dGab0eSrzKKNYuHPb4+c2/2lv6HU9EaF1oOhCrg
-         b6LU85q4cJcAygsO+N6iPnmN2Q3h9sJuU9X0QX7pZ5yai8rM1jz+438OchswYROnZldj
-         ZjBMuz5VthVTmLgs7e1/l2Zdcce8zw8HftC/vFBbbDJWNrzXNColA9ZSiFQJ7idPGv5q
-         nMvCBnJiUGll7M3xIxmVpXRwSI/QnfSZKw7ps2BBc3sF66n1MAZRL0AnGlwge6IO5/V1
-         DeTprs3mCc+9bToV3iif5c7d6+gy7DmPfUZsZrqiH3iYqwd6J7W6mUbHolynLF38nJNX
-         knHg==
-X-Gm-Message-State: AOAM5305LV4HyjDiKUwoLhFcXyJmSJV8xS4GtGl94KgE43LJPTSrkew7
-        tvGyrnkxjMM9cQ7BsIY/2aYMiA==
-X-Google-Smtp-Source: ABdhPJxqAiOCtWASA9ZL0VYB9iWkxgoY7P6chLaBXA9n4TxQrVRKBX1sDd549LroNkvZ/HS6sG43Ug==
-X-Received: by 2002:ac2:48a5:: with SMTP id u5mr3244496lfg.346.1620313118333;
-        Thu, 06 May 2021 07:58:38 -0700 (PDT)
+        bh=82Mp/+3WiDiX0+TFdKaDBvNV5KTPMZG8BPbOyDcjQEo=;
+        b=gBQf2SVrecxcdEXeWC5xjk1b2RivilgJnmBMwsLxMWnMZYi5FBU4ieUc6SWkM1WzZl
+         Casq/JDsC7CoYFpuRnypGlg4l+N15fYiiIJHi20XLVlRVmTa69aXPylje7r4PgAbYlrJ
+         87UEzBtACvjyJvXLr3+HmKGkc2aMFkzWYR/am2b4gMdfg/J2gxspXacGXrbR8GXVE1H3
+         vlHsgY6n0fVs7cYo7wMO41uIgCGIqB6qhT2+EG1gqnF0t/xHSujFqoXvVKhfjM5hoKfn
+         5EtdU5EfNfcGY8miWLD9rBnDPK25JGljHYf7G21QbXKmDglnEYHzVDTtMU/FMq4mWG7t
+         vH0A==
+X-Gm-Message-State: AOAM530cUugG6z7QPM6Ldwck4VQSpc5bHx6J2449cplYqjMjRHXBTmTW
+        iDw3LicHichI25HIpNAvJJgXO9m6G9V0b+ib
+X-Google-Smtp-Source: ABdhPJydchd1pmp2rGfbHH/jeQdqsrTGtFFsDh++WDcg8vT9ARXlabU2aXYLJVWd+CZNAnOqlqk/FQ==
+X-Received: by 2002:a2e:9f49:: with SMTP id v9mr3688514ljk.44.1620313120233;
+        Thu, 06 May 2021 07:58:40 -0700 (PDT)
 Received: from localhost.localdomain (h-155-4-129-146.NA.cust.bahnhof.se. [155.4.129.146])
-        by smtp.gmail.com with ESMTPSA id g24sm968774ljl.44.2021.05.06.07.58.36
+        by smtp.gmail.com with ESMTPSA id g24sm968774ljl.44.2021.05.06.07.58.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 07:58:37 -0700 (PDT)
+        Thu, 06 May 2021 07:58:39 -0700 (PDT)
 From:   Ulf Hansson <ulf.hansson@linaro.org>
 To:     linux-mmc@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>,
         Adrian Hunter <adrian.hunter@intel.com>
@@ -57,9 +57,9 @@ Cc:     Linus Walleij <linus.walleij@linaro.org>,
         Avri Altman <avri.altman@wdc.com>,
         Masami Hiramatsu <masami.hiramatsu@linaro.org>,
         linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] mmc: core: Move eMMC cache flushing to a new bus_ops callback
-Date:   Thu,  6 May 2021 16:58:28 +0200
-Message-Id: <20210506145829.198823-2-ulf.hansson@linaro.org>
+Subject: [PATCH 2/2] mmc: core: Add support for cache ctrl for SD cards
+Date:   Thu,  6 May 2021 16:58:29 +0200
+Message-Id: <20210506145829.198823-3-ulf.hansson@linaro.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20210506145829.198823-1-ulf.hansson@linaro.org>
 References: <20210506145829.198823-1-ulf.hansson@linaro.org>
@@ -69,174 +69,194 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To prepare to add internal cache management for SD cards, let's start by
-moving the eMMC specific code into a new ->flush_cache() bus_ops callback.
+In SD spec v6.x the SD function extension registers for performance
+enhancements were introduced. As a part of this an optional internal cache
+on the SD card, can be used to improve performance.
 
-In this way, it becomes straight forward to add the SD specific parts,
-as subsequent changes are about to show.
+The let the SD card use the cache, the host needs to enable it and manage
+flushing of the cache, so let's add support for this.
+
+Note that for an SD card supporting the cache it's mandatory for it, to
+also support the poweroff notification feature. According to the SD spec,
+if the cache has been enabled and a poweroff notification is sent to the
+card, that implicitly also means that the card should flush its internal
+cache. Therefore, dealing with cache flushing for REQ_OP_FLUSH block
+requests is sufficient.
 
 Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
 ---
- drivers/mmc/core/block.c   |  2 +-
- drivers/mmc/core/core.h    |  9 +++++++++
- drivers/mmc/core/mmc.c     | 25 +++++++++++++++++++++++--
- drivers/mmc/core/mmc_ops.c | 21 ---------------------
- drivers/mmc/core/mmc_ops.h |  1 -
- 5 files changed, 33 insertions(+), 25 deletions(-)
+ drivers/mmc/core/mmc_ops.c |  1 +
+ drivers/mmc/core/mmc_ops.h |  1 +
+ drivers/mmc/core/sd.c      | 98 ++++++++++++++++++++++++++++++++++++++
+ include/linux/mmc/card.h   |  1 +
+ 4 files changed, 101 insertions(+)
 
-diff --git a/drivers/mmc/core/block.c b/drivers/mmc/core/block.c
-index 689eb9afeeed..d73d7be1af2f 100644
---- a/drivers/mmc/core/block.c
-+++ b/drivers/mmc/core/block.c
-@@ -1159,7 +1159,7 @@ static void mmc_blk_issue_flush(struct mmc_queue *mq, struct request *req)
- 	struct mmc_card *card = md->queue.card;
- 	int ret = 0;
- 
--	ret = mmc_flush_cache(card);
-+	ret = mmc_flush_cache(card->host);
- 	blk_mq_end_request(req, ret ? BLK_STS_IOERR : BLK_STS_OK);
- }
- 
-diff --git a/drivers/mmc/core/core.h b/drivers/mmc/core/core.h
-index db3c9c68875d..0c4de2030b3f 100644
---- a/drivers/mmc/core/core.h
-+++ b/drivers/mmc/core/core.h
-@@ -30,6 +30,7 @@ struct mmc_bus_ops {
- 	int (*hw_reset)(struct mmc_host *);
- 	int (*sw_reset)(struct mmc_host *);
- 	bool (*cache_enabled)(struct mmc_host *);
-+	int (*flush_cache)(struct mmc_host *);
+diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+index af423acc4c88..3c58f6d0f482 100644
+--- a/drivers/mmc/core/mmc_ops.c
++++ b/drivers/mmc/core/mmc_ops.c
+@@ -456,6 +456,7 @@ static int mmc_busy_cb(void *cb_data, bool *busy)
+ 		err = R1_STATUS(status) ? -EIO : 0;
+ 		break;
+ 	case MMC_BUSY_HPI:
++	case MMC_BUSY_EXTR_SINGLE:
+ 		break;
+ 	default:
+ 		err = -EINVAL;
+diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
+index c3c1d9c2577e..41ab4f573a31 100644
+--- a/drivers/mmc/core/mmc_ops.h
++++ b/drivers/mmc/core/mmc_ops.h
+@@ -14,6 +14,7 @@ enum mmc_busy_cmd {
+ 	MMC_BUSY_CMD6,
+ 	MMC_BUSY_ERASE,
+ 	MMC_BUSY_HPI,
++	MMC_BUSY_EXTR_SINGLE,
  };
  
- void mmc_attach_bus(struct mmc_host *host, const struct mmc_bus_ops *ops);
-@@ -172,4 +173,12 @@ static inline bool mmc_cache_enabled(struct mmc_host *host)
- 	return false;
+ struct mmc_host;
+diff --git a/drivers/mmc/core/sd.c b/drivers/mmc/core/sd.c
+index 760aa86bd54d..773444853607 100644
+--- a/drivers/mmc/core/sd.c
++++ b/drivers/mmc/core/sd.c
+@@ -67,6 +67,7 @@ static const unsigned int sd_au_size[] = {
+ 	})
+ 
+ #define SD_POWEROFF_NOTIFY_TIMEOUT_MS 2000
++#define SD_WRITE_EXTR_SINGLE_TIMEOUT_MS 1000
+ 
+ struct sd_busy_data {
+ 	struct mmc_card *card;
+@@ -1287,6 +1288,94 @@ static int sd_read_ext_regs(struct mmc_card *card)
+ 	return err;
  }
  
-+static inline int mmc_flush_cache(struct mmc_host *host)
++static bool sd_cache_enabled(struct mmc_host *host)
 +{
-+	if (host->bus_ops->flush_cache)
-+		return host->bus_ops->flush_cache(host);
-+
-+	return 0;
++	return host->card->ext_perf.feature_enabled & SD_EXT_PERF_CACHE;
 +}
 +
- #endif
-diff --git a/drivers/mmc/core/mmc.c b/drivers/mmc/core/mmc.c
-index 13074aa1f605..838726b68ff3 100644
---- a/drivers/mmc/core/mmc.c
-+++ b/drivers/mmc/core/mmc.c
-@@ -28,6 +28,7 @@
- 
- #define DEFAULT_CMD6_TIMEOUT_MS	500
- #define MIN_CACHE_EN_TIMEOUT_MS 1600
-+#define CACHE_FLUSH_TIMEOUT_MS 30000 /* 30s */
- 
- static const unsigned int tran_exp[] = {
- 	10000,		100000,		1000000,	10000000,
-@@ -2036,6 +2037,25 @@ static bool _mmc_cache_enabled(struct mmc_host *host)
- 	       host->card->ext_csd.cache_ctrl & 1;
- }
- 
-+/*
-+ * Flush the internal cache of the eMMC to non-volatile storage.
-+ */
-+static int _mmc_flush_cache(struct mmc_host *host)
++static int sd_flush_cache(struct mmc_host *host)
 +{
-+	int err = 0;
++	struct mmc_card *card = host->card;
++	u8 *reg_buf, fno, page;
++	u16 offset;
++	int err;
 +
-+	if (_mmc_cache_enabled(host)) {
-+		err = mmc_switch(host->card, EXT_CSD_CMD_SET_NORMAL,
-+				 EXT_CSD_FLUSH_CACHE, 1,
-+				 CACHE_FLUSH_TIMEOUT_MS);
-+		if (err)
-+			pr_err("%s: cache flush error %d\n",
-+			       mmc_hostname(host), err);
++	if (!sd_cache_enabled(host))
++		return 0;
++
++	reg_buf = kzalloc(512, GFP_KERNEL);
++	if (!reg_buf)
++		return -ENOMEM;
++
++	/*
++	 * Set the Flush Cache bit in the performance enhancement register at
++	 * 261 bytes offset.
++	 */
++	fno = card->ext_perf.fno;
++	page = card->ext_perf.page;
++	offset = card->ext_perf.offset + 261;
++
++	err = sd_write_ext_reg(card, fno, page, offset, 0x1);
++	if (err) {
++		pr_warn("%s: error %d writing Cache Flush bit\n",
++			mmc_hostname(host), err);
++		goto out;
 +	}
 +
++	err = mmc_poll_for_busy(card, SD_WRITE_EXTR_SINGLE_TIMEOUT_MS, false,
++				MMC_BUSY_EXTR_SINGLE);
++	if (err)
++		goto out;
++
++	/*
++	 * Read the Flush Cache bit. The card shall reset it, to confirm that
++	 * it's has completed the flushing of the cache.
++	 */
++	err = sd_read_ext_reg(card, fno, page, offset, 1, reg_buf);
++	if (err) {
++		pr_warn("%s: error %d reading Cache Flush bit\n",
++			mmc_hostname(host), err);
++		goto out;
++	}
++
++	if (reg_buf[0] & 0x1)
++		err = -ETIMEDOUT;
++out:
++	kfree(reg_buf);
 +	return err;
 +}
 +
- static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
- {
- 	int err = 0;
-@@ -2047,7 +2067,7 @@ static int _mmc_suspend(struct mmc_host *host, bool is_suspend)
- 	if (mmc_card_suspended(host->card))
- 		goto out;
++static int sd_enable_cache(struct mmc_card *card)
++{
++	u8 *reg_buf;
++	int err;
++
++	reg_buf = kzalloc(512, GFP_KERNEL);
++	if (!reg_buf)
++		return -ENOMEM;
++
++	/*
++	 * Set the Cache Enable bit in the performance enhancement register at
++	 * 260 bytes offset.
++	 */
++	err = sd_write_ext_reg(card, card->ext_perf.fno, card->ext_perf.page,
++			       card->ext_perf.offset + 260, 0x1);
++	if (err) {
++		pr_warn("%s: error %d writing Cache Enable bit\n",
++			mmc_hostname(card->host), err);
++		goto out;
++	}
++
++	err = mmc_poll_for_busy(card, SD_WRITE_EXTR_SINGLE_TIMEOUT_MS, false,
++				MMC_BUSY_EXTR_SINGLE);
++	if (!err)
++		card->ext_perf.feature_enabled |= SD_EXT_PERF_CACHE;
++
++out:
++	kfree(reg_buf);
++	return err;
++}
++
+ /*
+  * Handle the detection and initialisation of a card.
+  *
+@@ -1442,6 +1531,13 @@ static int mmc_sd_init_card(struct mmc_host *host, u32 ocr,
+ 			goto free_card;
+ 	}
  
--	err = mmc_flush_cache(host->card);
-+	err = _mmc_flush_cache(host);
- 	if (err)
- 		goto out;
- 
-@@ -2188,7 +2208,7 @@ static int _mmc_hw_reset(struct mmc_host *host)
- 	 * In the case of recovery, we can't expect flushing the cache to work
- 	 * always, but we have a go and ignore errors.
- 	 */
--	mmc_flush_cache(host->card);
-+	_mmc_flush_cache(host);
- 
- 	if ((host->caps & MMC_CAP_HW_RESET) && host->ops->hw_reset &&
- 	     mmc_can_reset(card)) {
-@@ -2216,6 +2236,7 @@ static const struct mmc_bus_ops mmc_ops = {
- 	.shutdown = mmc_shutdown,
- 	.hw_reset = _mmc_hw_reset,
- 	.cache_enabled = _mmc_cache_enabled,
-+	.flush_cache = _mmc_flush_cache,
++	/* Enable internal SD cache if supported. */
++	if (card->ext_perf.feature_support & SD_EXT_PERF_CACHE) {
++		err = sd_enable_cache(card);
++		if (err)
++			goto free_card;
++	}
++
+ 	if (host->cqe_ops && !host->cqe_enabled) {
+ 		err = host->cqe_ops->cqe_enable(host, card);
+ 		if (!err) {
+@@ -1694,6 +1790,8 @@ static const struct mmc_bus_ops mmc_sd_ops = {
+ 	.alive = mmc_sd_alive,
+ 	.shutdown = mmc_sd_suspend,
+ 	.hw_reset = mmc_sd_hw_reset,
++	.cache_enabled = sd_cache_enabled,
++	.flush_cache = sd_flush_cache,
  };
  
  /*
-diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
-index b1da8f1950ee..af423acc4c88 100644
---- a/drivers/mmc/core/mmc_ops.c
-+++ b/drivers/mmc/core/mmc_ops.c
-@@ -20,7 +20,6 @@
- #include "mmc_ops.h"
- 
- #define MMC_BKOPS_TIMEOUT_MS		(120 * 1000) /* 120s */
--#define MMC_CACHE_FLUSH_TIMEOUT_MS	(30 * 1000) /* 30s */
- #define MMC_SANITIZE_TIMEOUT_MS		(240 * 1000) /* 240s */
- 
- static const u8 tuning_blk_pattern_4bit[] = {
-@@ -964,26 +963,6 @@ void mmc_run_bkops(struct mmc_card *card)
- }
- EXPORT_SYMBOL(mmc_run_bkops);
- 
--/*
-- * Flush the cache to the non-volatile storage.
-- */
--int mmc_flush_cache(struct mmc_card *card)
--{
--	int err = 0;
--
--	if (mmc_cache_enabled(card->host)) {
--		err = mmc_switch(card, EXT_CSD_CMD_SET_NORMAL,
--				 EXT_CSD_FLUSH_CACHE, 1,
--				 MMC_CACHE_FLUSH_TIMEOUT_MS);
--		if (err)
--			pr_err("%s: cache flush error %d\n",
--					mmc_hostname(card->host), err);
--	}
--
--	return err;
--}
--EXPORT_SYMBOL(mmc_flush_cache);
--
- static int mmc_cmdq_switch(struct mmc_card *card, bool enable)
- {
- 	u8 val = enable ? EXT_CSD_CMDQ_MODE_ENABLED : 0;
-diff --git a/drivers/mmc/core/mmc_ops.h b/drivers/mmc/core/mmc_ops.h
-index 2b1d730e56bf..c3c1d9c2577e 100644
---- a/drivers/mmc/core/mmc_ops.h
-+++ b/drivers/mmc/core/mmc_ops.h
-@@ -51,7 +51,6 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
- int mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
- 		unsigned int timeout_ms);
- void mmc_run_bkops(struct mmc_card *card);
--int mmc_flush_cache(struct mmc_card *card);
- int mmc_cmdq_enable(struct mmc_card *card);
- int mmc_cmdq_disable(struct mmc_card *card);
- int mmc_sanitize(struct mmc_card *card, unsigned int timeout_ms);
+diff --git a/include/linux/mmc/card.h b/include/linux/mmc/card.h
+index 2867af0635f8..74e6c0624d27 100644
+--- a/include/linux/mmc/card.h
++++ b/include/linux/mmc/card.h
+@@ -196,6 +196,7 @@ struct sd_ext_reg {
+ 	u8			page;
+ 	u16			offset;
+ 	u8			rev;
++	u8			feature_enabled;
+ 	u8			feature_support;
+ /* Power Management Function. */
+ #define SD_EXT_POWER_OFF_NOTIFY	(1<<0)
 -- 
 2.25.1
 
