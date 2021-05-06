@@ -2,151 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94BB7374FF2
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:19:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4BD6374FF4
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 09:20:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233342AbhEFHUe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 03:20:34 -0400
-Received: from mail-wm1-f46.google.com ([209.85.128.46]:52007 "EHLO
-        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233262AbhEFHUd (ORCPT
+        id S233356AbhEFHU5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 03:20:57 -0400
+Received: from mail-vs1-f48.google.com ([209.85.217.48]:40513 "EHLO
+        mail-vs1-f48.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233127AbhEFHUy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 03:20:33 -0400
-Received: by mail-wm1-f46.google.com with SMTP id n205so2774538wmf.1;
-        Thu, 06 May 2021 00:19:35 -0700 (PDT)
+        Thu, 6 May 2021 03:20:54 -0400
+Received: by mail-vs1-f48.google.com with SMTP id o192so2437420vsd.7
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 00:19:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=7eMcgdHi/j8YW5PeXfqZNQnqB9mn6+EoVANH2pmJ2rs=;
-        b=EHVW+Qbly12RMjc56UG7y8aI8i/knyienVQs69HjKUINogRVR2HoMAGk3DnUlE2QMW
-         pjERsIa10ifiAm2TmVxti7WRiZW1NHshKcZM8TU/kZJVcl2dicHg6Y4m5IOuEO6DE5uD
-         d2xTiPy/ggnjdpAUWAG9Y9c+RbWibL9omKJ3p0fShhFMK2MgW3klngbDPQPByzJcdtLO
-         Cr2RlulefKUU7ZN0oexRBjZALOpzKgZukGACd8a3ceCdYLUfXgXlNu/ZZv1Xd3Wg7mlM
-         O7MXIzC57tz50bipKMPSMKbmfymbf2mrnRM8D921gaEaPlJe/TtC9neNzC6Kx/U1lJma
-         3DAA==
-X-Gm-Message-State: AOAM533JBAUBCq+wTGvk4/Nbkb4rxu1bhiZLhnuElw2QSx0z3O7A3hyD
-        h1PK2/6n/gDklCcK2CGz6HgLHpriUSc=
-X-Google-Smtp-Source: ABdhPJxP9EWtuFWuPWGBwOci6DwojMB+rL/xGNMSOZU+ZSD3U2jsl5xcUlqOXWYFZPOpLqwbNntE2w==
-X-Received: by 2002:a7b:c348:: with SMTP id l8mr14077054wmj.152.1620285574624;
-        Thu, 06 May 2021 00:19:34 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id c15sm2757695wrr.3.2021.05.06.00.19.33
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 00:19:33 -0700 (PDT)
-Subject: Re: [PATCH 34/35] tty: make tty_get_byte_size available
-To:     Joe Perches <joe@perches.com>, gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20210505091928.22010-1-jslaby@suse.cz>
- <20210505091928.22010-35-jslaby@suse.cz>
- <ef1bd57095e941560530be43806791966a6735ad.camel@perches.com>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <949f77aa-2429-3fe9-9163-5a7b2c5c499a@kernel.org>
-Date:   Thu, 6 May 2021 09:19:32 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=WNhCIMMz7EzD3Z1FLPhhrJxU/Pgtk8lSDeyYeHyvjnk=;
+        b=l759jmjeaf3yFBDuOjS16wacqTsuGq+UF+0Z82XA8l+vBNUxz2knrAU+nSEksZ63oz
+         eEqGlv5bBFWiz7ZA6pFpeV74Ze/MUNAcT5nOytDGfd4KegABlyXX96H+EPG19DpptjL7
+         +POCpt32b6Z05KtnUR8vMwnO+xS4/Kz3tmy3E4sKWoESvEYwQIS0c2OQK9hvqD9FfXNO
+         bY9vMpzPBQnRY5gzncqTpBWu1kxuvoCKE1ByMH1NxunvYkUEN3YD/cSgKZ1hesAwZTIs
+         UW/vsoy2P/SoLmCy/G5NukfxDn2zyk/Dm3EOmTVUiOYFfVQayEcKMaieDdF6CVpK/3/v
+         KOGw==
+X-Gm-Message-State: AOAM531/t5n5uBpWBbrswvOTh5UB6CnuYx7Oa9X1Cge0ZjYejhMy0LgA
+        5l4P0s1H1QggZj4d4VmBFZvGyhnMQPxxqlHGUIo=
+X-Google-Smtp-Source: ABdhPJzTeKFGFQqvUEjFf5Vbfbp5PKOUppqjU6DRC6fr+Pd7kUthXHrPr+geHxvbYr1zsn8WsIfhFueF7awWQJmholI=
+X-Received: by 2002:a67:f25a:: with SMTP id y26mr2273655vsm.40.1620285596056;
+ Thu, 06 May 2021 00:19:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <ef1bd57095e941560530be43806791966a6735ad.camel@perches.com>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
+In-Reply-To: <baa95d7235921dff23bed6320518f3fa90396603.1612681353.git.fthain@telegraphics.com.au>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 6 May 2021 09:19:44 +0200
+Message-ID: <CAMuHMdVurQcwHcP7QnOrxLVuqUAnokJ-2R+11FOyG-htS9Fu9w@mail.gmail.com>
+Subject: Re: [PATCH] m68k: Drop -fno-strength-reduce from KBUILD_CFLAGS
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06. 05. 21, 9:16, Joe Perches wrote:
-> On Wed, 2021-05-05 at 11:19 +0200, Jiri Slaby wrote:
->> Many tty drivers contain code to compute bits count depending on termios
->> cflags. So extract this code from serial core to a separate tty helper
->> function called tty_get_byte_size.
-> []
->> diff --git a/drivers/tty/tty_ioctl.c b/drivers/tty/tty_ioctl.c
-> []
->> +/**
->> + *	tty_get_byte_size	-	get size of a byte
->> + *	@cflag: termios cflag value
->> + *	@account_flags: account for start and stop bits, second stop bit (if
->> + *			set), and parity (if set)
->> + *
->> + *	Get the size of a byte in bits depending on @cflag. Depending on
->> + *	@account_flags parameter, the result also accounts start and stop bits,
->> + *	the second stop bit, and parity bit.
->> + */
->> +unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags)
->> +{
->> +	unsigned char bits = account_flags ? 2 : 0;
->> +
->> +	/* byte size and parity */
->> +	switch (cflag & CSIZE) {
->> +	case CS5:
->> +		bits += 5;
->> +		break;
->> +	case CS6:
->> +		bits += 6;
->> +		break;
->> +	case CS7:
->> +		bits += 7;
->> +		break;
->> +	case CS8:
->> +	default:
->> +		bits += 8;
->> +		break;
->> +	}
->> +
->> +	if (account_flags && (cflag & CSTOPB))
->> +		bits++;
->> +
->> +	if (account_flags && (cflag & PARENB))
->> +		bits++;
->> +
->> +	return bits;
->> +}
->> +EXPORT_SYMBOL_GPL(tty_get_byte_size);
-> 
-> Perhaps clearer not testing account_flags multiple times.
+On Sun, Feb 7, 2021 at 8:08 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> This workaround became redundant either when the driver in question was
+> removed (in Linux v2.6.23) or when the compiler flag became a no-op
+> (in GCC v4.2). Linux has required GCC v4.6 or later since v4.19.
+>
+> Link: https://gcc.gnu.org/git/?p=gcc.git;a=commitdiff;h=efa1cdf01850b28c2f6f7035ebd4420259494615
+> References: commit 565bae6a4a8f ("[SCSI] 53c7xx: kill driver")
+> References: commit cafa0010cd51 ("Raise the minimum required gcc version to 4.6")
+> Signed-off-by: Finn Thain <fthain@telegraphics.com.au>
 
-Right. Originally, I had account_start_stop, account_stop, and 
-account_parity parameters. But they were either all false or all true. 
-So I unified them to account_flags, but the code remained overly complex.
+Reviewed-by: Geert Uytterhoeven <geert@linux-m68k.org>
+i.e. will queue in the m68k for-v5.14 branch.
 
-> unsigned char tty_get_byte_size(unsigned int cflag, bool account_flags)
-> {
-> 	unsigned char bits;
-> 
-> 	/* byte size and parity */
-> 	switch (cflag & CSIZE) {
-> 	case CS5:
-> 		bits = 5;
-> 		break;
-> 	case CS6:
-> 		bits = 6;
-> 		break;
-> 	case CS7:
-> 		bits = 7;
-> 		break;
-> 	case CS8:
-> 	default:
-> 		bits = 8;
-> 		break;
-> 	}
-> 
-> 	if (account_flags) {
-> 		bits += 2;	/* start/stop bits */
-> 
-> 		if (cflag & CSTOPB)
-> 			bits++;
-> 
-> 		if (cflag & PARENB)
-> 			bits++;
-> 	}
-> 
-> 	return bits;
-> }
-> 
-> 
+> --- a/arch/m68k/Makefile
+> +++ b/arch/m68k/Makefile
+> @@ -66,8 +66,7 @@ KBUILD_CFLAGS += $(cpuflags-y)
+>  KBUILD_CFLAGS += -pipe -ffreestanding
+>
+>  ifdef CONFIG_MMU
+> -# without -fno-strength-reduce the 53c7xx.c driver fails ;-(
+> -KBUILD_CFLAGS += -fno-strength-reduce -ffixed-a2
+> +KBUILD_CFLAGS += -ffixed-a2
+>  else
+>  # we can use a m68k-linux-gcc toolchain with these in place
+>  KBUILD_CPPFLAGS += -DUTS_SYSNAME=\"uClinux\"
 
-thanks,
+Gr{oetje,eeting}s,
+
+                        Geert
+
 -- 
-js
-suse labs
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
