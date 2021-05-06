@@ -2,85 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2445375465
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C5DF375468
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 15:05:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233434AbhEFNGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 09:06:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56442 "EHLO
+        id S233568AbhEFNGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 09:06:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56568 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233129AbhEFNGN (ORCPT
+        with ESMTP id S233053AbhEFNGq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 09:06:13 -0400
-Received: from mail-lf1-x12f.google.com (mail-lf1-x12f.google.com [IPv6:2a00:1450:4864:20::12f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 504B5C061763
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 06:05:15 -0700 (PDT)
-Received: by mail-lf1-x12f.google.com with SMTP id x20so7690828lfu.6
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 06:05:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=TuRMg/p3XcDliVBSgwL/6V4gjxClpTJd4DW+g4l8Xng=;
-        b=tY+IThXQYOpe6FQ492ndMN8tzQu2mNCijbG2rwp5heuJDJq5LUmUtVtReXzJpH+u7F
-         p//mzGeN8KObivJXyDIhwX04m3RygLMWCBcV3bL04diWQjaKe5uDGfWjQlVQ/3qg1rMV
-         Gd2kZhwaJIzAwLAMLSpY1dl54VDQymjcVxOvD2QWyHTiRueiwbz9cO6cbPPKXkSqtFZp
-         iVK8Q3/btQM5gDAy6LlvIT9swLzP+qARz3ioMeduP3rMplhFgP7c80zm5Woclb0+7BcQ
-         TT/vKeT+F/0svsfArijPMxaGvAlBTlVN01DMxcl2qh9LyPH0ovQ91xgI1nySphIM1z1u
-         oicw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=TuRMg/p3XcDliVBSgwL/6V4gjxClpTJd4DW+g4l8Xng=;
-        b=OPGqs+uC8wgYxHW3mIAH70Bk5YAx/jGxQke0G8E2bLFG13bgVu/Q3zn+RDRwFsQ0Fj
-         6zCwelfosUunIfDM6qfhC4b0pPeHbaHxS4gfsGuYbJ8tGauq2MLki1sLL3L7zuVlojDM
-         PgnfzfzBupPMGhH6+lAuGDlCarFfPip89xgglFKpJ+ndYz+tPxi8sFJlEt0roowgBRJY
-         CSyvvf8UX+l7RlY5ft82wRllCmw1byr3T7MHyPE8piSdbvECCkQlmq+c1N1cJIdRXq4I
-         izfMjrNUp6ztSGiUEOobzHMvsmDcGcyxfAG7saUmPzA8an13yDfH/h372WhC9u+enroz
-         C02Q==
-X-Gm-Message-State: AOAM5318u4eMfRQGrgiBaFrpwk/DmiuPw032SX8cyRy1Nt5NqVGRt8aT
-        Vq3u8d19ttabGOOERrdZWgi1XC+EX+ohfPdteXtezw==
-X-Google-Smtp-Source: ABdhPJyUGRSu7ce4hdQJtL6n62WTj9npsWK0hdYAHjTMtnVkF0ZjJGViA4xhHzR1vUmUsDTkrNKtph4dSkX1R94xwPg=
-X-Received: by 2002:a05:6512:6d5:: with SMTP id u21mr2857313lff.586.1620306313768;
- Thu, 06 May 2021 06:05:13 -0700 (PDT)
+        Thu, 6 May 2021 09:06:46 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B758BC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 06:05:48 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1ledhI-0001o9-0k; Thu, 06 May 2021 15:05:44 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1ledhG-0003xm-8g; Thu, 06 May 2021 15:05:42 +0200
+Date:   Thu, 6 May 2021 15:05:42 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Vladimir Oltean <olteanv@gmail.com>
+Cc:     Woojung Huh <woojung.huh@microchip.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Michael Grzeschik <m.grzeschik@pengutronix.de>,
+        kernel@pengutronix.de, Jakub Kicinski <kuba@kernel.org>,
+        UNGLinuxDriver@microchip.com,
+        "David S. Miller" <davem@davemloft.net>
+Subject: Re: [RFC PATCH v1 2/9] net: dsa: microchip: ksz8795: add phylink
+ support
+Message-ID: <20210506130542.2j3pnq7t5ydxssyo@pengutronix.de>
+References: <20210505092025.8785-1-o.rempel@pengutronix.de>
+ <20210505092025.8785-3-o.rempel@pengutronix.de>
+ <20210506121321.kny72yc5gx35pyms@skbuf>
 MIME-Version: 1.0
-References: <20210504161222.101536-1-ulf.hansson@linaro.org> <20210504161222.101536-11-ulf.hansson@linaro.org>
-In-Reply-To: <20210504161222.101536-11-ulf.hansson@linaro.org>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Thu, 6 May 2021 15:05:02 +0200
-Message-ID: <CACRpkdaUVx3mRkTbRki1vXDpP7Cjvj_tYiR0iefjjX6=uGeDfA@mail.gmail.com>
-Subject: Re: [PATCH 10/11] mmc: core: Read performance enhancements registers
- for SD cards
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        linux-block <linux-block@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210506121321.kny72yc5gx35pyms@skbuf>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 15:01:15 up 155 days,  3:07, 49 users,  load average: 0.09, 0.07,
+ 0.02
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, May 4, 2021 at 6:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
+Hi Vladimir,
 
-> In SD spec v6.x the SD function extension registers for performance
-> enhancements were introduced. These registers let the SD card announce
-> supports for various performance related features, like "self-maintenance",
-> "cache" and "command queuing".
->
-> Let's extend the parsing of SD function extension registers and store the
-> information in the struct mmc_card. This prepares for subsequent changes to
-> implement the complete support for new the performance enhancement
-> features.
->
-> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+On Thu, May 06, 2021 at 03:13:21PM +0300, Vladimir Oltean wrote:
+> Hi Oleksij,
+> 
+> On Wed, May 05, 2021 at 11:20:18AM +0200, Oleksij Rempel wrote:
+> > From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> > 
+> > This patch adds the phylink support to the ksz8795 driver, since
+> > phylib is obsolete for dsa drivers.
+> > 
+> > Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+> > Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> > ---
+> >  drivers/net/dsa/microchip/ksz8795.c | 73 +++++++++++++++++++++++++++++
+> >  1 file changed, 73 insertions(+)
+> > 
+> > diff --git a/drivers/net/dsa/microchip/ksz8795.c b/drivers/net/dsa/microchip/ksz8795.c
+> > index 4ca352fbe81c..0ddaf2547f18 100644
+> > --- a/drivers/net/dsa/microchip/ksz8795.c
+> > +++ b/drivers/net/dsa/microchip/ksz8795.c
+> > @@ -18,6 +18,7 @@
+> >  #include <linux/micrel_phy.h>
+> >  #include <net/dsa.h>
+> >  #include <net/switchdev.h>
+> > +#include <linux/phylink.h>
+> >  
+> >  #include "ksz_common.h"
+> >  #include "ksz8795_reg.h"
+> > @@ -1420,11 +1421,83 @@ static int ksz8_setup(struct dsa_switch *ds)
+> >  	return 0;
+> >  }
+> >  
+> > +static int ksz_get_state(struct dsa_switch *ds, int port,
+> > +					  struct phylink_link_state *state)
+> > +{
+> > +	struct ksz_device *dev = ds->priv;
+> > +	struct ksz8 *ksz8 = dev->priv;
+> > +	const u8 *regs = ksz8->regs;
+> > +	u8 speed, link;
+> > +
+> > +	ksz_pread8(dev, port, regs[P_LINK_STATUS], &link);
+> > +	ksz_pread8(dev, port, regs[P_SPEED_STATUS], &speed);
+> > +
+> > +	state->link = !!(link & PORT_STAT_LINK_GOOD);
+> > +	if (state->link) {
+> > +		state->speed =
+> > +			(speed & PORT_STAT_SPEED_100MBIT) ? SPEED_100 : SPEED_10;
+> > +		state->duplex =
+> > +			(speed & PORT_STAT_FULL_DUPLEX) ? DUPLEX_FULL : DUPLEX_HALF;
+> > +	}
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +static void ksz_validate(struct dsa_switch *ds, int port,
+> > +			       unsigned long *supported,
+> > +			       struct phylink_link_state *state)
+> > +{
+> > +	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
+> > +	struct ksz_device *dev = ds->priv;
+> > +
+> > +	if (port == dev->cpu_port) {
+> > +		if ((state->interface != PHY_INTERFACE_MODE_RMII) &&
+> > +		   (state->interface != PHY_INTERFACE_MODE_MII))
+> > +			goto unsupported;
+> > +	} else if (port > dev->port_cnt) {
+> > +		bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
+> > +		dev_err(ds->dev, "Unsupported port: %i\n", port);
+> > +		return;
+> > +	} else {
+> > +		if (state->interface != PHY_INTERFACE_MODE_INTERNAL)
+> > +			goto unsupported;
+> > +	}
+> > +
+> > +	/* Allow all the expected bits */
+> > +	phylink_set_port_modes(mask);
+> > +	phylink_set(mask, Autoneg);
+> > +
+> > +	phylink_set(mask, Pause);
+> > +	/* Silicon Errata Sheet (DS80000830A): Asym_Pause limit to port 2 */
+> > +	if (port || !ksz_is_ksz88x3(dev))
+> > +		phylink_set(mask, Asym_Pause);
+> > +
+> > +	/* 10M and 100M are only supported */
+> > +	phylink_set(mask, 10baseT_Half);
+> > +	phylink_set(mask, 10baseT_Full);
+> > +	phylink_set(mask, 100baseT_Half);
+> > +	phylink_set(mask, 100baseT_Full);
+> > +
+> > +	bitmap_and(supported, supported, mask,
+> > +		   __ETHTOOL_LINK_MODE_MASK_NBITS);
+> > +	bitmap_and(state->advertising, state->advertising, mask,
+> > +		   __ETHTOOL_LINK_MODE_MASK_NBITS);
+> > +
+> > +	return;
+> > +
+> > +unsupported:
+> > +	bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
+> > +	dev_err(ds->dev, "Unsupported interface: %d, port: %d\n",
+> > +		state->interface, port);
+> > +}
+> > +
+> >  static const struct dsa_switch_ops ksz8_switch_ops = {
+> >  	.get_tag_protocol	= ksz8_get_tag_protocol,
+> >  	.setup			= ksz8_setup,
+> >  	.phy_read		= ksz_phy_read16,
+> >  	.phy_write		= ksz_phy_write16,
+> > +	.phylink_validate	= ksz_validate,
+> > +	.phylink_mac_link_state	= ksz_get_state,
+> >  	.phylink_mac_link_down	= ksz_mac_link_down,
+> >  	.port_enable		= ksz_enable_port,
+> >  	.get_strings		= ksz8_get_strings,
+> > -- 
+> > 2.29.2
+> > 
+> 
+> I've asked Prasanna about this too, but for one reason or another I am
+> still not edified. Is this change a compliance thing, or do you actually
+> gain anything at all from phylink?
+> https://patchwork.kernel.org/project/netdevbpf/patch/20210422094257.1641396-6-prasanna.vengateshan@microchip.com/
+> What made you submit the patch?
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+This switch has proper flow control only on one port, see 
+Module 4: Port 1 does not respond to received flow control PAUSE frames:
+http://ww1.microchip.com/downloads/en/DeviceDoc/KSZ8873-Errata-DS80000830A.pdf
 
-Yours,
-Linus Walleij
+With phylink we can disable Pause here, instead of bypassing it to the PHY
+driver.
+
+Regards,
+Oleksij
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
