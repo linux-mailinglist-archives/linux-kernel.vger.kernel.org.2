@@ -2,118 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1B4B3375938
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:24:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F07C37593E
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 19:25:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236272AbhEFRZD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 13:25:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58592 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236263AbhEFRYy (ORCPT
+        id S236283AbhEFR0K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 13:26:10 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47357 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236228AbhEFR0G (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 13:24:54 -0400
-Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAB7BC061763
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 10:23:55 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 4209CC800AE;
-        Thu,  6 May 2021 19:23:54 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id CsIGQ_C43pi9; Thu,  6 May 2021 19:23:54 +0200 (CEST)
-Received: from wsembach-tuxedo.fritz.box (p200300e37F12f2008bdED9a70B37E3f5.dip0.t-ipconnect.de [IPv6:2003:e3:7f12:f200:8bde:d9a7:b37:e3f5])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id 04212C800AB;
-        Thu,  6 May 2021 19:23:54 +0200 (CEST)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Cc:     Werner Sembach <wse@tuxedocomputers.com>
-Subject: [PATCH 3/3] drm/i915/display: Use YCbCr420 as fallback when RGB fails
-Date:   Thu,  6 May 2021 19:23:25 +0200
-Message-Id: <20210506172325.1995964-4-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210506172325.1995964-1-wse@tuxedocomputers.com>
-References: <20210506172325.1995964-1-wse@tuxedocomputers.com>
+        Thu, 6 May 2021 13:26:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620321907;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=jExgBas4mYe2R7HQ1xBXEHvzUr1CEHDDU82ObrbRp1A=;
+        b=caHbs9Sn6Bed3l2X080RGSPQ6Rr28FsneVtVYxJSY+XPbk81P7C0bJHHsjjlSMS2dA3WMz
+        kPrl4+DSZLXe4UJf/pna7xPYlDvC+nw82FHa2LQWwlSj+3axeUG5yr1SvcuUQY3Sn9kkAe
+        An1O3b1eBPYjY9ZOBkkrh6KRiYaYGew=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-99-ea7S7rVDO9C-yAkAe5BXXg-1; Thu, 06 May 2021 13:24:47 -0400
+X-MC-Unique: ea7S7rVDO9C-yAkAe5BXXg-1
+Received: by mail-ed1-f72.google.com with SMTP id z12-20020aa7d40c0000b0290388179cc8bfso2987852edq.21
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 10:24:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=jExgBas4mYe2R7HQ1xBXEHvzUr1CEHDDU82ObrbRp1A=;
+        b=nCaiStaW8NTYq3ZX9qjfby1Yfdto0PJztFXswnjPFKHnGfa4H9HK8e95jFTnKsqEtf
+         Kfjq5IyHFPNgL3n/oWrhiSjK2hDX3IMsKC9fm93tSoNyc43dnCj1AMVMcga/xxs/BUNd
+         KtI0iwHF29oDMRvnfP8l0QOWCQFWfnrbc8glGltT56Ke0X8hl011M8bSUd5t2B2j3r6z
+         GEwcO15mDEgXm01BtouuWYOUjIJyd5NwxviO+jup+CjvtvQZc2BP+ojwJg6jyR35qFQB
+         m+XOi9t16zV17QpZ4MwEXtY49Z+ExF8ZKJi6LlD0STSgShGBESQZ5qyXVU0HT6kYH7f3
+         K/yw==
+X-Gm-Message-State: AOAM530Vi8aKnRFxIV+7Q7PdEqav02xvgUNT9nbig4ruN/lztrjMmbSt
+        7hNV4PAtYbsl3vY3THnvF1HmtEJHHzlFbTVvhZtXLI8FDoHWkPrMNWqoYzTIRK5TB6fWNObOi+L
+        p6kdheKM8ufSmbUDpDxHlQEwQ
+X-Received: by 2002:aa7:d952:: with SMTP id l18mr6506579eds.83.1620321886025;
+        Thu, 06 May 2021 10:24:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz0HYEbkAPLbEzE0RQH/Kg006zDXqRhpGiJee/o6TGxungGJENUOS9lWTxREQMEK2RJtQPDnQ==
+X-Received: by 2002:aa7:d952:: with SMTP id l18mr6506560eds.83.1620321885798;
+        Thu, 06 May 2021 10:24:45 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c64ae.dip0.t-ipconnect.de. [91.12.100.174])
+        by smtp.gmail.com with ESMTPSA id y19sm2147544edc.73.2021.05.06.10.24.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 10:24:45 -0700 (PDT)
+To:     jejb@linux.ibm.com, Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20210303162209.8609-1-rppt@kernel.org>
+ <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
+ <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
+ <996dbc29-e79c-9c31-1e47-cbf20db2937d@redhat.com>
+ <8eb933f921c9dfe4c9b1b304e8f8fa4fbc249d84.camel@linux.ibm.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <a5b19a4f-5d7b-9840-fd70-67a39bc8969e@redhat.com>
+Date:   Thu, 6 May 2021 19:24:43 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <8eb933f921c9dfe4c9b1b304e8f8fa4fbc249d84.camel@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When encoder validation of a display mode fails, retry with less bandwidth
-heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
-to support 4k60Hz output, which previously failed silently.
+>>>> Is this intended to protect keys/etc after the attacker has
+>>>> gained the ability to run arbitrary kernel-mode code?  If so,
+>>>> that seems optimistic, doesn't it?
+>>>
+>>> Not exactly: there are many types of kernel attack, but mostly the
+>>> attacker either manages to effect a privilege escalation to root or
+>>> gets the ability to run a ROP gadget.  The object of this code is
+>>> to be completely secure against root trying to extract the secret
+>>> (some what similar to the lockdown idea), thus defeating privilege
+>>> escalation and to provide "sufficient" protection against ROP
+>>> gadget.
+>>
+>> What stops "root" from mapping /dev/mem and reading that memory?
+> 
+> /dev/mem uses the direct map for the copy at least for read/write, so
+> it gets a fault in the same way root trying to use ptrace does.  I
+> think we've protected mmap, but Mike would know that better than I.
+> 
 
-AMDGPU had nearly the exact same issue. This problem description is
-therefore copied from my commit message of the AMDGPU patch.
+I'm more concerned about the mmap case -> remap_pfn_range(). Anybody 
+going via the VMA shouldn't see the struct page, at least when 
+vma_normal_page() is properly used; so you cannot detect secretmem
+memory mapped via /dev/mem reliably. At least that's my theory :)
 
-On some setups, while the monitor and the gpu support display modes with
-pixel clocks of up to 600MHz, the link encoder might not. This prevents
-YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
-possible. However, which color mode is used is decided before the link
-encoder capabilities are checked. This patch fixes the problem by retrying
-to find a display mode with YCbCr420 enforced and using it, if it is
-valid.
+[...]
 
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
----
- drivers/gpu/drm/i915/display/intel_hdmi.c | 23 ++++++++++++++++++++---
- 1 file changed, 20 insertions(+), 3 deletions(-)
+>> Also, there is a way to still read that memory when root by
+>>
+>> 1. Having kdump active (which would often be the case, but maybe not
+>> to dump user pages )
+>> 2. Triggering a kernel crash (easy via proc as root)
+>> 3. Waiting for the reboot after kump() created the dump and then
+>> reading the content from disk.
+> 
+> Anything that can leave physical memory intact but boot to a kernel
+> where the missing direct map entry is restored could theoretically
+> extract the secret.  However, it's not exactly going to be a stealthy
+> extraction ...
+> 
+>> Or, as an attacker, load a custom kexec() kernel and read memory
+>> from the new environment. Of course, the latter two are advanced
+>> mechanisms, but they are possible when root. We might be able to
+>> mitigate, for example, by zeroing out secretmem pages before booting
+>> into the kexec kernel, if we care :)
+> 
+> I think we could handle it by marking the region, yes, and a zero on
+> shutdown might be useful ... it would prevent all warm reboot type
+> attacks.
 
-diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index b0201d4f27eb..7815569267e3 100644
---- a/drivers/gpu/drm/i915/display/intel_hdmi.c
-+++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -1897,6 +1897,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 	int clock = mode->clock;
- 	int max_dotclk = to_i915(connector->dev)->max_dotclk_freq;
- 	bool has_hdmi_sink = intel_has_hdmi_sink(hdmi, connector->state);
-+	bool ycbcr_420_only;
- 
- 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
- 		return MODE_NO_DBLESCAN;
-@@ -1913,12 +1914,20 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 		clock *= 2;
- 	}
- 
--	if (drm_mode_is_420_only(&connector->display_info, mode))
-+	ycbcr_420_only = drm_mode_is_420_only(&connector->display_info, mode);
-+	if (ycbcr_420_only)
- 		clock /= 2;
- 
- 	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
--	if (status != MODE_OK)
--		return status;
-+	if (status != MODE_OK) {
-+		if (ycbcr_420_only || !connector->ycbcr_420_allowed || !drm_mode_is_420_also(&connector->display_info, mode))
-+			return status;
-+
-+		clock /= 2;
-+		status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
-+		if (status != MODE_OK)
-+			return status;
-+	}
- 
- 	return intel_mode_valid_max_plane_size(dev_priv, mode, false);
- }
-@@ -2125,6 +2134,14 @@ static int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
- 	}
- 
- 	ret = intel_hdmi_compute_clock(encoder, crtc_state);
-+	if (ret) {
-+		if (crtc_state->output_format != INTEL_OUTPUT_FORMAT_YCBCR420 &&
-+				connector->ycbcr_420_allowed &&
-+				drm_mode_is_420_also(&connector->display_info, adjusted_mode)) {
-+			crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
-+			ret = intel_hdmi_compute_clock(encoder, crtc_state);
-+		}
-+	}
- 
- 	return ret;
- }
+Right. But I guess when you're actually root, you can just write a 
+kernel module to extract the information you need (unless we have signed 
+modules, so it could be harder/impossible).
+
 -- 
-2.25.1
+Thanks,
+
+David / dhildenb
 
