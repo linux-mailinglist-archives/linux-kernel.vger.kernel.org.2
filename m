@@ -2,61 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 783A0375CEF
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 15F7C375CF8
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 23:46:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230370AbhEFVmd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 17:42:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43932 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230071AbhEFVmb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 17:42:31 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id 465EB61077;
-        Thu,  6 May 2021 21:41:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620337291;
-        bh=FY/ocjRlemocM3ziqWePXGxR0o2RJSQymV7kU0n807M=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=rO7kh0E2QsMpEffj1Zhhv/6ohCG0QfLoUBum4DPIE9Hfv/1fhTK5EldCCNIuFEzLd
-         jVlN2qskYkt8lxY7AudBCgL6IlXfPt3VqMNOIENm0x65yx160rE/3fbN6YgUTsIdk6
-         4lnd1rh/Fc0gVsxqei3j9TEK+IhOyCzng9X9+jTHAdwdEcr3g9CxgloIgcMWU7AUIx
-         55IM1ejUIkyqZTCHGtYHoP+/syRR3C6Ki+punBb4McPBp0C+FmP/lAPrfid4i9lhFH
-         nDLqjYKCGdPU56DZPufCH8hEWFRaL2iGm7GiLE9bdsDm+1mO+fNTR36K1dugRtfbWL
-         Aq8OHrhB1YMog==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 407A7609E8;
-        Thu,  6 May 2021 21:41:31 +0000 (UTC)
-Subject: Re: [GIT PULL] VFIO updates for v5.13-rc1 pt2
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210506123111.6b6c0bf3@redhat.com>
-References: <20210506123111.6b6c0bf3@redhat.com>
-X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210506123111.6b6c0bf3@redhat.com>
-X-PR-Tracked-Remote: git://github.com/awilliam/linux-vfio.git tags/vfio-v5.13-rc1pt2
-X-PR-Tracked-Commit-Id: cc35518d29bc8e38902866b74874b4a3f1ad3617
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: a2de4bbddce3e98bd2444bb027dc84418a0066b1
-Message-Id: <162033729125.2467.13311999969059190277.pr-tracker-bot@kernel.org>
-Date:   Thu, 06 May 2021 21:41:31 +0000
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>, hi@alyssa.is,
-        dan.carpenter@oracle.com
+        id S230220AbhEFVrV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 17:47:21 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:47388 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229572AbhEFVrT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 17:47:19 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 156131C0B77; Thu,  6 May 2021 23:46:20 +0200 (CEST)
+Date:   Thu, 6 May 2021 23:46:19 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+        akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
+        patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
+        jonathanh@nvidia.com, f.fainelli@gmail.com, stable@vger.kernel.org
+Subject: Re: [PATCH 4.19 00/15] 4.19.190-rc1 review
+Message-ID: <20210506214619.GA7363@amd>
+References: <20210505120503.781531508@linuxfoundation.org>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
+Content-Disposition: inline
+In-Reply-To: <20210505120503.781531508@linuxfoundation.org>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 6 May 2021 12:31:11 -0600:
 
-> git://github.com/awilliam/linux-vfio.git tags/vfio-v5.13-rc1pt2
+--NzB8fVQJ5HfG6fxh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/a2de4bbddce3e98bd2444bb027dc84418a0066b1
+Hi!
 
-Thank you!
+> This is the start of the stable review cycle for the 4.19.190 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+>=20
+> Responses should be made by Fri, 07 May 2021 12:04:54 +0000.
+> Anything received after that time might be too late.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+CIP testing did not find any kernel problems here: (testing
+infrastructure has some problems)
+
+https://gitlab.com/cip-project/cip-testing/linux-stable-rc-ci/-/tree/linux-=
+4.19.y
+
+Tested-by: Pavel Machek (CIP) <pavel@denx.de>
+
+Best regards,
+                                                                Pavel
+--=20
+DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--NzB8fVQJ5HfG6fxh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iEYEARECAAYFAmCUY6sACgkQMOfwapXb+vJzOwCeNLkPCqbvBooV1w+fHMjyO9Iu
+HpsAoLh6ReshuozJ85zCsApUXh9s6pLV
+=+abS
+-----END PGP SIGNATURE-----
+
+--NzB8fVQJ5HfG6fxh--
