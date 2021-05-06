@@ -2,97 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3438037556C
-	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:12:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22ABD37556F
+	for <lists+linux-kernel@lfdr.de>; Thu,  6 May 2021 16:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234573AbhEFONI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 10:13:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234402AbhEFONG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 10:13:06 -0400
-Received: from mail-pl1-x62c.google.com (mail-pl1-x62c.google.com [IPv6:2607:f8b0:4864:20::62c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78BE5C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 07:12:08 -0700 (PDT)
-Received: by mail-pl1-x62c.google.com with SMTP id t4so3458919plc.6
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 07:12:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=wqyyyHnK8FiNMaf9JVPI3razJE+a2ZRHcYe96jC3lb0=;
-        b=MeSMvYenteOQAETWwt+P404i5W2zP9ivfegBQCpWp++yIwNvPEwJyPxU3DlepBQ28t
-         8lSvInNgZmRM1XlWLMDjbkAyv1pP0oollrKs7UsPf8WyXPPa2ZERIyaTlFBL4dC7xDzY
-         FtBAr5kPatLJfpves0RlM4WcmXfvOAPTJvsTs=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=wqyyyHnK8FiNMaf9JVPI3razJE+a2ZRHcYe96jC3lb0=;
-        b=kPArQU6obiLDs4S63RDE9AZsNsAIK2dSwSAYPB8NIDqVViHj1MGbJtD7Lx+BQThbJq
-         TgUCf0r2/7TZEsUC4E7tFvrlY6fopE+soR/PJ6subXr6bVAsGtds857VII6fg013cR+m
-         Pupunll/PZw4njY/xUeIqoOFbgKZzMH0S6cYHnjd3/B08NwUH8VN4AQhiJ+Kn90XQPPh
-         izuF/Tki056pmswT7YFSN3AldRfYQ9R49FNpUvUDNX7hvoqd5Akw3CenF6P9twRHmtUS
-         pO3/Ia6zZx4l+ysgVr5Z8URNo0CejMA0ES+M/OgFcbqv61c5kt1nMa/0Sj7RAxyaUlGk
-         WMjw==
-X-Gm-Message-State: AOAM5317c4QCA3Ux6nLwMmgWL9QDjrycC9VGtUTxo5n+JYZFnWkVJnNB
-        RTKYrFsPULwAyJKOchQX3f4tvg==
-X-Google-Smtp-Source: ABdhPJwt5W28EF0bUkMcCskx9dyuHMHHz0Kxt62Ysg/VZ5ORxUy214EOdczX3dECSRhBnpLFaJp5vA==
-X-Received: by 2002:a17:90a:9312:: with SMTP id p18mr17446752pjo.171.1620310328048;
-        Thu, 06 May 2021 07:12:08 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:421f:8358:b929:bc6d])
-        by smtp.gmail.com with ESMTPSA id m15sm2027845pgu.4.2021.05.06.07.12.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 07:12:07 -0700 (PDT)
-Date:   Thu, 6 May 2021 23:12:02 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Luo Jiaxing <luojiaxing@huawei.com>, sergey.senozhatsky@gmail.com,
-        rostedt@goodmis.org, john.ogness@linutronix.de,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        bobo.shaobowang@huawei.com,
-        Sergey Senozhatsky <senozhatsky@chromium.org>
-Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
- prb
-Message-ID: <YJP5MnkJ8pJevXM6@google.com>
-References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
- <YJPxj83F1sBjHHAE@alley>
- <YJP4F1UIt/eRZ96s@google.com>
+        id S234669AbhEFONt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 10:13:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45222 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233737AbhEFONq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 10:13:46 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 3E0C0610A6;
+        Thu,  6 May 2021 14:12:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620310367;
+        bh=Gtp++8OISnKlL7igW1jsmr8lSaw32BvY9v1KfWv5ncU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=dvbWjFFU2pzS4gM2+/va2sQm/uvGhbrXjdWBmOorH903z16u8tbwh24qRUnzY0Ivf
+         ZgBqPscl7PccHeK3TJh+2tYecsXbytQl+SXDXgjbdHXIcy26HuVPS/s8fi3C6XoPcS
+         NZ+dzxu5VgZRaBBdtBrdF9JML0mUZZGuWD8uJt1qk3u76/qSX2KbP1qG6lCERAmwxN
+         Z2/3ruLnSpWpvTFX91Dsm5bRQCMJwXrRUvr0BsxRtlwVZgW6ZX0tceSONXJ/yOrzYB
+         0KRc70WlZMt9TzYjuHa/Jm4WwTTpVchtvqJ40zqtUqYiH1+rNL6FJw19oeeibyekZr
+         M4EV3QrH9efRw==
+Date:   Thu, 6 May 2021 15:12:11 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     madvenka@linux.microsoft.com
+Cc:     jpoimboe@redhat.com, mark.rutland@arm.com, jthierry@redhat.com,
+        catalin.marinas@arm.com, will@kernel.org, jmorris@namei.org,
+        pasha.tatashin@soleen.com, linux-arm-kernel@lists.infradead.org,
+        live-patching@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH v3 3/4] arm64: Handle miscellaneous functions in
+ .text and .init.text
+Message-ID: <20210506141211.GE4642@sirena.org.uk>
+References: <65cf4dfbc439b010b50a0c46ec500432acde86d6>
+ <20210503173615.21576-1-madvenka@linux.microsoft.com>
+ <20210503173615.21576-4-madvenka@linux.microsoft.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9l24NVCWtSuIVIod"
 Content-Disposition: inline
-In-Reply-To: <YJP4F1UIt/eRZ96s@google.com>
+In-Reply-To: <20210503173615.21576-4-madvenka@linux.microsoft.com>
+X-Cookie: If it ain't baroque, don't phiques it.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/06 23:07), Sergey Senozhatsky wrote:
-> 
-> Can we count the number of lines that we print from the `current` context
-> in console_unlock() and if after N messages there is no console_lock waiter
-> waiting for the `current` to handover console lock ownership, then create
-> one: schedule IRQ work that will become a console lock owner, spin on
-> console lock and call console_unlock() once it acquired the ownership.
-> That 'artificial' console lock owner will do the same - print N
-> messages, if nothing wants to become a console lock owner then it'll
-> queue another IRQ work.
 
-Or even simpler
+--9l24NVCWtSuIVIod
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-console_unlock()
-{
-	...
+On Mon, May 03, 2021 at 12:36:14PM -0500, madvenka@linux.microsoft.com wrote:
 
-	if (printed_messages > limit && !console_lock_spinning_disable_and_check()) {
-		printk_safe_exit_irqrestore(flags);
+> There are some SYM_CODE functions that are currently in ".text" or
+> ".init.text" sections. Some of these are functions that the unwinder
+> does not care about as they are not "interesting" to livepatch. These
+> will remain in their current sections. The rest I have moved into a
+> new section called ".code.text".
 
-		console_locked = 0;
-		up_console_sem();
+I was thinking it'd be good to do this by modifying SYM_CODE_START() to
+emit the section, that way nobody can forget to put any SYM_CODE into a
+special section.  That does mean we'd have to first introduce a new
+variant for specifying a section that lets us override things that need
+to be in some specific section and convert everything that's in a
+special section over to that first which is a bit annoying but feels
+like it's worth it for the robustness.  It'd also put some of the don't
+cares into .code.text but so long as they are actually don't cares that
+should be fine!
 
-		defer_console_output();
-		return;
-	}
+> Don't care functions
+> ====================
 
-	...
-}
+We also have a bunch of things like __cpu_soft_restart which don't seem
+to be called out here but need to be in .idmap.text.
+
+--9l24NVCWtSuIVIod
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCT+ToACgkQJNaLcl1U
+h9ABFgf/Z5OheyVXijHxIjnaaC+SDZlNsGtc6XqdehcMncCJVr16obC0q5aBjRLy
+i4VZOPM2GQ0pxk0Dx/xujpeeRhb6owdcraXotZDQNJNUy0IhFGXZ0hCKTei2ow/U
+f8OTvJVvrGzSuC7YwvkkEOgwnj4ZwVK1hMn/fvcifC5qGbIeuUFDQmxiRAke2Hcf
+zd0NzogA1c3RAyNx2HJTQVDF7O0LHeTwq31TPpS6sx94A9Jaadk/G/MtuZvWMiri
+jQTp8nTuDuLBlN5ToSeV0Y1u5F5KVnddt+g0GqXsxelvhCcujmIesVPCePX3jXAE
+3FIUnUQGQBv/iJYyjJ9v6h8oEp0obg==
+=COOq
+-----END PGP SIGNATURE-----
+
+--9l24NVCWtSuIVIod--
