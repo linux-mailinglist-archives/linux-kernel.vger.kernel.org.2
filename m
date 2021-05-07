@@ -2,217 +2,297 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C2913760CC
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:00:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CCBA3760D0
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:00:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235020AbhEGHB2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 May 2021 03:01:28 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:40873 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231216AbhEGHBY (ORCPT
+        id S235034AbhEGHBm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:01:42 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:44780 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231355AbhEGHBi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:01:24 -0400
-Received: from smtpclient.apple (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 0D4AFCECD9;
-        Fri,  7 May 2021 09:08:14 +0200 (CEST)
+        Fri, 7 May 2021 03:01:38 -0400
+Received: from minint-m3g9p8n.europe.corp.microsoft.com (unknown [49.207.195.141])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 5829E20B7178;
+        Fri,  7 May 2021 00:00:36 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 5829E20B7178
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1620370839;
+        bh=juupss22foYcpZymKqUksNf88DXt4O8bI54oKjTR0n0=;
+        h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+        b=SgEaDOIrDrLcHRtsDBjt4RVrhDZ/e6wH8+LXCy+JMPTK09FJu+/eZTYb0SroIGaZ/
+         mqolOktnY9YRGlcjr43R4EiHJ4v6ccX2vLFYFFfVSEVHGC/HCzYO3oOulTeqWhFNB6
+         fcORXmQkpKr5jdIF7e0SKX6IQbtgoSKnwP6CPNh0=
 Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH v3 2/5] Bluetooth: btqca: Add support for firmware image
- with mbn type for WCN6750
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1620322392-27148-3-git-send-email-gubbaven@codeaurora.org>
-Date:   Fri, 7 May 2021 09:00:22 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        devicetree@vger.kernel.org, mka@chromium.org,
-        linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org,
-        hemantg@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        bgodavar@codeaurora.org, rjliao@codeaurora.org,
-        hbandi@codeaurora.org, abhishekpandit@chromium.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <0285BA82-111D-4CA9-9C74-E6BBFDD0FB42@holtmann.org>
-References: <1620322392-27148-1-git-send-email-gubbaven@codeaurora.org>
- <1620322392-27148-3-git-send-email-gubbaven@codeaurora.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.60.0.2.21\))
+Subject: Re: [PATCH] optee: Disable shm cache when booting the crash kernel
+From:   Allen Pais <apais@linux.microsoft.com>
+In-Reply-To: <20210507035816.426585-1-tyhicks@linux.microsoft.com>
+Date:   Fri, 7 May 2021 12:30:33 +0530
+Cc:     jens.wiklander@linaro.org, zajec5@gmail.com,
+        Allen Pais <allen.lkml@gmail.com>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        op-tee@lists.trustedfirmware.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <720CDF03-42F9-43C3-B3B3-999E4A5E2864@linux.microsoft.com>
+References: <20210225090610.242623-1-allen.lkml@gmail.com>
+ <20210507035816.426585-1-tyhicks@linux.microsoft.com>
+To:     Tyler Hicks <tyhicks@linux.microsoft.com>
+X-Mailer: Apple Mail (2.3654.60.0.2.21)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Venkata,
 
-> 1. Added support to download firmware image with mbn type for wcn6750
->   as it supports mbn type image.
-> 2. If mbn type image is not present then check for tlv type image.
-> 3. Added debug logs for mbn type image.
-> 
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+
+> On 07-May-2021, at 9:28 AM, Tyler Hicks <tyhicks@linux.microsoft.com> =
+wrote:
+>=20
+> The .shutdown hook is not called after a kernel crash when a kdump
+> kernel is pre-loaded. A kexec into the kdump kernel takes place as
+> quickly as possible without allowing drivers to clean up.
+>=20
+> That means that the OP-TEE shared memory cache, which was initialized =
+by
+> the kernel that crashed, is still in place when the kdump kernel is
+> booted. As the kdump kernel is shutdown, the .shutdown hook is called,
+> which calls optee_disable_shm_cache(), and OP-TEE's
+> OPTEE_SMC_DISABLE_SHM_CACHE API returns virtual addresses that are not
+> mapped for the kdump kernel since the cache was set up by the previous
+> kernel. Trying to dereference the tee_shm pointer or otherwise =
+translate
+> the address results in a fault that cannot be handled:
+>=20
+> Unable to handle kernel paging request at virtual address =
+ffff4317b9c09744
+> Mem abort info:
+>   ESR =3D 0x96000004
+>   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
+>   SET =3D 0, FnV =3D 0
+>   EA =3D 0, S1PTW =3D 0
+> Data abort info:
+>   ISV =3D 0, ISS =3D 0x00000004
+>   CM =3D 0, WnR =3D 0
+> swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000970b1e000
+> [ffff4317b9c09744] pgd=3D0000000000000000, p4d=3D0000000000000000
+> Internal error: Oops: 96000004 [#1] SMP
+> Modules linked in: bnxt_en pcie_iproc_platform pcie_iproc diagbe(O)
+> CPU: 4 PID: 1 Comm: systemd-shutdow Tainted: G           O      =
+5.10.19.8 #1
+> Hardware name: Redacted (DT)
+> pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=3D--)
+> pc : tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
+> lr : optee_disable_shm_cache =
+(/usr/src/kernel/drivers/tee/optee/call.c:441)
+> sp : ffff80001005bb70
+> x29: ffff80001005bb70 x28: ffff608e74648e00
+> x27: ffff80001005bb98 x26: dead000000000100
+> x25: ffff80001005bbb8 x24: aaaaaaaaaaaaaaaa
+> x23: ffff608e74cf8818 x22: ffff608e738be600
+> x21: ffff80001005bbc8 x20: ffff608e738be638
+> x19: ffff4317b9c09700 x18: ffffffffffffffff
+> x17: 0000000000000041 x16: ffffba61b5171764
+> x15: 0000000000000004 x14: 0000000000000fff
+> x13: ffffba61b5c9dfc8 x12: 0000000000000003
+> x11: 0000000000000000 x10: 0000000000000000
+> x9 : ffffba61b5413824 x8 : 00000000ffff4317
+> x7 : 0000000000000000 x6 : 0000000000000000
+> x5 : 0000000000000000 x4 : 0000000000000000
+> x3 : 0000000000000000 x2 : ffff4317b9c09700
+> x1 : 00000000ffff4317 x0 : ffff4317b9c09700
+> Call trace:
+> tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
+> optee_disable_shm_cache (/usr/src/kernel/drivers/tee/optee/call.c:441)
+> optee_shutdown (/usr/src/kernel/drivers/tee/optee/core.c:636)
+> platform_drv_shutdown (/usr/src/kernel/drivers/base/platform.c:800)
+> device_shutdown (/usr/src/kernel/include/linux/device.h:758 =
+/usr/src/kernel/drivers/base/core.c:4078)
+> kernel_restart (/usr/src/kernel/kernel/reboot.c:221 =
+/usr/src/kernel/kernel/reboot.c:248)
+> __arm64_sys_reboot (/usr/src/kernel/kernel/reboot.c:349 =
+/usr/src/kernel/kernel/reboot.c:312 /usr/src/kernel/kernel/reboot.c:312)
+> do_el0_svc (/usr/src/kernel/arch/arm64/kernel/syscall.c:56 =
+/usr/src/kernel/arch/arm64/kernel/syscall.c:158 =
+/usr/src/kernel/arch/arm64/kernel/syscall.c:197)
+> el0_svc (/usr/src/kernel/arch/arm64/kernel/entry-common.c:368)
+> el0_sync_handler =
+(/usr/src/kernel/arch/arm64/kernel/entry-common.c:428)
+> el0_sync (/usr/src/kernel/arch/arm64/kernel/entry.S:671)
+> Code: aa0003f3 b5000060 12800003 14000002 (b9404663)
+>=20
+> When booting the kdump kernel, drain the shared memory cache while =
+being
+> careful to not translate the addresses returned from
+> OPTEE_SMC_DISABLE_SHM_CACHE. Once the invalid cache objects are =
+drained
+> and the cache is disabled, proceed with re-enabling the cache so that =
+we
+> aren't dealing with invalid addresses while shutting down the kdump
+> kernel.
+>=20
+> Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
 > ---
-> drivers/bluetooth/btqca.c | 69 +++++++++++++++++++++++++++++++++++------------
-> drivers/bluetooth/btqca.h |  3 ++-
-> 2 files changed, 54 insertions(+), 18 deletions(-)
-> 
-> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-> index fce808c..320c555 100644
-> --- a/drivers/bluetooth/btqca.c
-> +++ b/drivers/bluetooth/btqca.c
-> @@ -182,7 +182,8 @@ int qca_send_pre_shutdown_cmd(struct hci_dev *hdev)
+>=20
+> This patch fixes a crash introduced by "optee: fix tee out of memory
+> failure seen during kexec reboot"[1]. However, I don't think that the
+> original two patch series[2] plus this patch is the full solution to
+> properly handling OP-TEE shared memory across kexec.
+>=20
+> While testing this fix, I did about 10 kexec reboots and then =
+triggered
+> a kernel crash by writing 'c' to /proc/sysrq-trigger. The kdump kernel
+> became unresponsive during boot while steadily streaming the following
+> errors to the serial console:
+>=20
+> arm-smmu 64000000.mmu: Blocked unknown Stream ID 0x2000; boot with =
+"arm-smmu.disable_bypass=3D0" to allow, but this may have security =
+implications
+> arm-smmu 64000000.mmu:     GFSR 0x00000002, GFSYNR0 0x00000002, =
+GFSYNR1 0x00002000, GFSYNR2 0x00000000
+>=20
+> I suspect that this is related to the problems of OP-TEE shared memory
+> handling across kexec. My current hunch is that while we've disabled =
+the
+> shared memory cache with this patch, we haven't unregistered all of =
+the
+> addresses that the previous kernel (which crashed) had registered with
+> OP-TEE and that perhaps OP-TEE OS is still trying to make use those
+> addresses?
+>=20
+> I'm still pretty early in investigating that assumption and
+> I'm learning about OP-TEE as I go but I wanted to get this initial
+> fix-of-the-fix out so that it was clear that the v2 of the series[2] =
+is
+> not complete.
+>=20
+> [1] =
+https://lore.kernel.org/lkml/20210225090610.242623-2-allen.lkml@gmail.com/=
+
+> [2] =
+https://lore.kernel.org/lkml/20210225090610.242623-1-allen.lkml@gmail.com/=
+#t
+>=20
+> drivers/tee/optee/call.c          | 11 ++++++++++-
+> drivers/tee/optee/core.c          | 13 +++++++++++--
+> drivers/tee/optee/optee_private.h |  2 +-
+> 3 files changed, 22 insertions(+), 4 deletions(-)
+>=20
+> diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
+> index 6132cc8d014c..799e84bec63d 100644
+> --- a/drivers/tee/optee/call.c
+> +++ b/drivers/tee/optee/call.c
+> @@ -417,8 +417,10 @@ void optee_enable_shm_cache(struct optee *optee)
+>  * optee_disable_shm_cache() - Disables caching of some shared memory =
+allocation
+>  *			      in OP-TEE
+>  * @optee:	main service struct
+> + * @is_mapped:	true if the cached shared memory addresses were =
+mapped by this
+> + *		kernel, are safe to dereference, and should be freed
+>  */
+> -void optee_disable_shm_cache(struct optee *optee)
+> +void optee_disable_shm_cache(struct optee *optee, bool is_mapped)
+> {
+> 	struct optee_call_waiter w;
+>=20
+> @@ -437,6 +439,13 @@ void optee_disable_shm_cache(struct optee *optee)
+> 		if (res.result.status =3D=3D OPTEE_SMC_RETURN_OK) {
+> 			struct tee_shm *shm;
+>=20
+
+ Thanks Tyler.
+ =46rom what I understand from my email exchange with Jens, I don=E2=80=99=
+t
+Think we want to touch optee_disable_shm_cache(), I could be wrong too,
+@Jens, comments?
+
+> +			/*
+> +			 * Shared memory references that were not mapped =
+by
+> +			 * this kernel must be ignored to prevent a =
+crash.
+> +			 */
+> +			if (!is_mapped)
+> +				continue;
+> +
+> 			shm =3D reg_pair_to_ptr(res.result.shm_upper32,
+> 					      res.result.shm_lower32);
+> 			tee_shm_free(shm);
+> diff --git a/drivers/tee/optee/core.c b/drivers/tee/optee/core.c
+> index 69d1f698907c..9985c671bd1f 100644
+> --- a/drivers/tee/optee/core.c
+> +++ b/drivers/tee/optee/core.c
+> @@ -6,6 +6,7 @@
+> #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>=20
+> #include <linux/arm-smccc.h>
+> +#include <linux/crash_dump.h>
+> #include <linux/errno.h>
+> #include <linux/io.h>
+> #include <linux/module.h>
+> @@ -588,7 +589,7 @@ static int optee_remove(struct platform_device =
+*pdev)
+> 	 * reference counters and also avoid wild pointers in secure =
+world
+> 	 * into the old shared memory range.
+> 	 */
+> -	optee_disable_shm_cache(optee);
+> +	optee_disable_shm_cache(optee, true);
+>=20
+> 	/*
+> 	 * The two devices have to be unregistered before we can free =
+the
+> @@ -618,7 +619,7 @@ static int optee_remove(struct platform_device =
+*pdev)
+>  */
+> static void optee_shutdown(struct platform_device *pdev)
+> {
+> -	optee_disable_shm_cache(platform_get_drvdata(pdev));
+> +	optee_disable_shm_cache(platform_get_drvdata(pdev), true);
 > }
-> EXPORT_SYMBOL_GPL(qca_send_pre_shutdown_cmd);
-> 
-> -static void qca_tlv_check_data(struct qca_fw_config *config,
-> +static void qca_tlv_check_data(struct hci_dev *hdev,
-> +			       struct qca_fw_config *config,
-> 		const struct firmware *fw, enum qca_btsoc_type soc_type)
-> {
-> 	const u8 *data;
-> @@ -194,19 +195,21 @@ static void qca_tlv_check_data(struct qca_fw_config *config,
-> 	struct tlv_type_nvm *tlv_nvm;
-> 	uint8_t nvm_baud_rate = config->user_baud_rate;
-> 
-> -	tlv = (struct tlv_type_hdr *)fw->data;
-> -
-> -	type_len = le32_to_cpu(tlv->type_len);
-> -	length = (type_len >> 8) & 0x00ffffff;
-> -
-> -	BT_DBG("TLV Type\t\t : 0x%x", type_len & 0x000000ff);
-> -	BT_DBG("Length\t\t : %d bytes", length);
-> -
-> 	config->dnld_mode = QCA_SKIP_EVT_NONE;
-> 	config->dnld_type = QCA_SKIP_EVT_NONE;
-> 
-> 	switch (config->type) {
-> +	case ELF_TYPE_PATCH:
-> +		config->dnld_mode = QCA_SKIP_EVT_VSE_CC;
-> +		config->dnld_type = QCA_SKIP_EVT_VSE_CC;
+>=20
+> static int optee_probe(struct platform_device *pdev)
+> @@ -705,6 +706,14 @@ static int optee_probe(struct platform_device =
+*pdev)
+> 	optee->memremaped_shm =3D memremaped_shm;
+> 	optee->pool =3D pool;
+>=20
+> +	/*
+> +	 * The kexec into the crash kernel did not call our .shutdown =
+hook. The
+> +	 * shm cache objects registered with OP-TEE are not valid for =
+the crash
+> +	 * kernel.
+> +	 */
+> +	if (is_kdump_kernel())
+> +		optee_disable_shm_cache(optee, false);
 > +
-> +		bt_dev_dbg(hdev, "File Class        : 0x%x", fw->data[4]);
-> +		bt_dev_dbg(hdev, "Data Encoding     : 0x%x", fw->data[5]);
-> +		bt_dev_dbg(hdev, "File version      : 0x%x", fw->data[6]);
-> +		break;
-> 	case TLV_TYPE_PATCH:
-> +		tlv = (struct tlv_type_hdr *)fw->data;
 
-Is this casting always necessary.
+ Am glad this solves the kdump crash that we have been seeing.
 
-> +		type_len = le32_to_cpu(tlv->type_len);
-> 		tlv_patch = (struct tlv_type_patch *)tlv->data;
-> 
-> 		/* For Rome version 1.1 to 3.1, all segment commands
-> @@ -218,6 +221,7 @@ static void qca_tlv_check_data(struct qca_fw_config *config,
-> 		config->dnld_mode = tlv_patch->download_mode;
-> 		config->dnld_type = config->dnld_mode;
-> 
-> +		BT_DBG("TLV Type\t\t : 0x%x", type_len & 0x000000ff);
-> 		BT_DBG("Total Length           : %d bytes",
-> 		       le32_to_cpu(tlv_patch->total_size));
-> 		BT_DBG("Patch Data Length      : %d bytes",
-> @@ -243,6 +247,14 @@ static void qca_tlv_check_data(struct qca_fw_config *config,
-> 		break;
-> 
-> 	case TLV_TYPE_NVM:
-> +		tlv = (struct tlv_type_hdr *)fw->data;
-> +
-> +		type_len = le32_to_cpu(tlv->type_len);
-> +		length = (type_len >> 8) & 0x00ffffff;
-> +
-> +		BT_DBG("TLV Type\t\t : 0x%x", type_len & 0x000000ff);
-> +		BT_DBG("Length\t\t : %d bytes", length);
-> +
-> 		idx = 0;
-> 		data = tlv->data;
-> 		while (idx < length) {
-> @@ -387,7 +399,8 @@ static int qca_inject_cmd_complete_event(struct hci_dev *hdev)
-> 
-> static int qca_download_firmware(struct hci_dev *hdev,
-> 				 struct qca_fw_config *config,
-> -				 enum qca_btsoc_type soc_type)
-> +				 enum qca_btsoc_type soc_type,
-> +				 u8 rom_ver)
-> {
-> 	const struct firmware *fw;
-> 	const u8 *segment;
-> @@ -397,12 +410,30 @@ static int qca_download_firmware(struct hci_dev *hdev,
-> 
-> 	ret = request_firmware(&fw, config->fwname, &hdev->dev);
-> 	if (ret) {
-> -		bt_dev_err(hdev, "QCA Failed to request file: %s (%d)",
-> -			   config->fwname, ret);
-> -		return ret;
-> +		/* For WCN6750, if mbn file is not present then check for
-> +		 * tlv file.
-> +		 */
-> +		if (soc_type == QCA_WCN6750 && config->type == ELF_TYPE_PATCH) {
-> +			bt_dev_dbg(hdev, "QCA Failed to request file: %s (%d)",
-> +				   config->fwname, ret);
-> +			config->type = TLV_TYPE_PATCH;
-> +			snprintf(config->fwname, sizeof(config->fwname),
-> +				 "qca/msbtfw%02x.tlv", rom_ver);
-> +			bt_dev_info(hdev, "QCA Downloading %s", config->fwname);
-> +			ret = request_firmware(&fw, config->fwname, &hdev->dev);
-> +			if (ret) {
-> +				bt_dev_err(hdev, "QCA Failed to request file: %s (%d)",
-> +					   config->fwname, ret);
-> +				return ret;
-> +			}
-> +		} else {
-> +			bt_dev_err(hdev, "QCA Failed to request file: %s (%d)",
-> +				   config->fwname, ret);
-> +			return ret;
-> +		}
-> 	}
-> 
-> -	qca_tlv_check_data(config, fw, soc_type);
-> +	qca_tlv_check_data(hdev, config, fw, soc_type);
-> 
-> 	segment = fw->data;
-> 	remain = fw->size;
-> @@ -520,14 +551,18 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
-> 	} else if (soc_type == QCA_WCN6750) {
-> 		rom_ver = ((soc_ver & 0x00000f00) >> 0x04) |
-> 			    (soc_ver & 0x0000000f);
-> +		/* Choose mbn file by default.If mbn file is not found
-> +		 * then choose tlv file
-> +		 */
-> +		config.type = ELF_TYPE_PATCH;
-> 		snprintf(config.fwname, sizeof(config.fwname),
-> -			 "qca/msbtfw%02x.tlv", rom_ver);
-> +			 "qca/msbtfw%02x.mbn", rom_ver);
-> 	} else {
-> 		snprintf(config.fwname, sizeof(config.fwname),
-> 			 "qca/rampatch_%08x.bin", soc_ver);
-> 	}
-> 
-> -	err = qca_download_firmware(hdev, &config, soc_type);
-> +	err = qca_download_firmware(hdev, &config, soc_type, rom_ver);
-> 	if (err < 0) {
-> 		bt_dev_err(hdev, "QCA Failed to download patch (%d)", err);
-> 		return err;
-> @@ -560,7 +595,7 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
-> 		snprintf(config.fwname, sizeof(config.fwname),
-> 			 "qca/nvm_%08x.bin", soc_ver);
-> 
-> -	err = qca_download_firmware(hdev, &config, soc_type);
-> +	err = qca_download_firmware(hdev, &config, soc_type, rom_ver);
-> 	if (err < 0) {
-> 		bt_dev_err(hdev, "QCA Failed to download NVM (%d)", err);
-> 		return err;
-> diff --git a/drivers/bluetooth/btqca.h b/drivers/bluetooth/btqca.h
-> index dd82d2c..5a5e699 100644
-> --- a/drivers/bluetooth/btqca.h
-> +++ b/drivers/bluetooth/btqca.h
-> @@ -80,7 +80,8 @@ enum qca_tlv_dnld_mode {
-> 
-> enum qca_tlv_type {
-> 	TLV_TYPE_PATCH = 1,
-> -	TLV_TYPE_NVM
-> +	TLV_TYPE_NVM,
-> +	ELF_TYPE_PATCH
-> };
+- Allen
 
-If you end the enum in a , then future diffs only show a single line of addition. So please ELF_TYPE_PATCH,.
-
-Regards
-
-Marcel
+> 	optee_enable_shm_cache(optee);
+>=20
+> 	if (optee->sec_caps & OPTEE_SMC_SEC_CAP_DYNAMIC_SHM)
+> diff --git a/drivers/tee/optee/optee_private.h =
+b/drivers/tee/optee/optee_private.h
+> index e25b216a14ef..16d8c82213e7 100644
+> --- a/drivers/tee/optee/optee_private.h
+> +++ b/drivers/tee/optee/optee_private.h
+> @@ -158,7 +158,7 @@ int optee_invoke_func(struct tee_context *ctx, =
+struct tee_ioctl_invoke_arg *arg,
+> int optee_cancel_req(struct tee_context *ctx, u32 cancel_id, u32 =
+session);
+>=20
+> void optee_enable_shm_cache(struct optee *optee);
+> -void optee_disable_shm_cache(struct optee *optee);
+> +void optee_disable_shm_cache(struct optee *optee, bool is_mapped);
+>=20
+> int optee_shm_register(struct tee_context *ctx, struct tee_shm *shm,
+> 		       struct page **pages, size_t num_pages,
+> --=20
+> 2.25.1
 
