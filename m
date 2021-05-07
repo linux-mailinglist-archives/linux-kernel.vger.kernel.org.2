@@ -2,70 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFD1D3764DD
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:04:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA48F3764DF
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:04:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235980AbhEGMFI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:05:08 -0400
-Received: from aclms3.advantech.com.tw ([125.252.70.86]:49524 "EHLO
-        aclms3.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232559AbhEGMFD (ORCPT
+        id S235984AbhEGMFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:05:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232559AbhEGMFe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:05:03 -0400
-Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS4.ADVANTECH.CORP
- (Clearswift SMTPRS 5.6.0) with ESMTP id <Te654d69a59ac14110e2488@ACLMS4.ADVANTECH.CORP>;
- Fri, 7 May 2021 20:03:48 +0800
-Received: from localhost (172.16.13.205) by taipei09.ADVANTECH.CORP
- (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 7 May
- 2021 20:03:48 +0800
-From:   Campion Kang <campion.kang@advantech.com.tw>
-To:     <robh@kernel.org>
-CC:     <campion.kang@advantech.com.tw>, <chia-lin.kao@canonical.com>,
-        <corbet@lwn.net>, <devicetree@vger.kernel.org>,
-        <hdegoede@redhat.com>, <jdelvare@suse.com>, <lee.jones@linaro.org>,
-        <linux-doc@vger.kernel.org>, <linux-hwmon@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-watchdog@vger.kernel.org>,
-        <linux@roeck-us.net>, <mgross@linux.intel.com>,
-        <platform-driver-x86@vger.kernel.org>, <wim@linux-watchdog.org>
-Subject: Re: [PATCH v7 1/7] MAINTAINERS: Add Advantech AHC1EC0 embedded controller entry
-Date:   Fri, 7 May 2021 20:03:47 +0800
-Message-ID: <20210507120347.27286-1-campion.kang@advantech.com.tw>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210507005006.GA854303@robh.at.kernel.org>
-References: <20210507005006.GA854303@robh.at.kernel.org>
+        Fri, 7 May 2021 08:05:34 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADC0C061761
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 05:04:34 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id d25so4560664vsp.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 05:04:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cQHsYCv/veghSWphtSoC5Y2vDR65oOelmQfRVgs2/nY=;
+        b=xWIa52Ewjy8iAbEUz1PZVMFV+vl9x6urA4NnFkUj04WJ8ccEyDY9POZgIcJQttEd9d
+         qGJXEoIxSz6WPMsRlGTW6nRKrnFMnfaZgHYcOdYKV3YscdLyoJQONjOk/w5Fmj4y2x2u
+         G+y3Eg+Vpd9/Tje2+QZ2IORMVtx2qrbbDeUYZI0FoQkxPCAyrMFlw18+NcAx7EzZY/tR
+         aKyxJRgkwkJXPWRmsw/u+TCSyLVJZ56IKlFkWVwJ7z1nBJ/vND9JfZr1wHvpt20cStiv
+         zUpisAXnBTPB3skH3Nj17yo6s88+2bfu7jSNCGk3NIA+UQIbm7r+LqqFmPAduoEypUZ1
+         hvOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cQHsYCv/veghSWphtSoC5Y2vDR65oOelmQfRVgs2/nY=;
+        b=bPVWofbHv7SeHz9QRgQib+znqbwQRQXJk9ZqqbUzpEiUqWgwLOll/d6OHooIA5oYQe
+         rpOdYhqHHvB1L1qQv/t8C0x2wN9NmkTWos4J3aO7xwxkKirghb8PnYn2R3YUt55Bb079
+         oczyCxy3rJyv7C53ehBfzLfVpoomza5JEipXwVoOfK5/tXsBiNmqu4B1hN8y8a6Ltzrm
+         G3DEIWoRdNeQGaJpHklfIAN82NFJ5ynqjSfhew3PDTPFrDel+qiGbbqLP6W0QXFxDiuF
+         cU+dBeRUcS5NR3fPYW/1HAzatxtMgcQY2ft5tNrkWndrgXped6eRbmTePbv1KozwM8Bm
+         CMiA==
+X-Gm-Message-State: AOAM5313aJdy3SRU/hEbqQyEljvjPeggPi71CcN5cBnuxnn9bFSOgPtW
+        2CDWAWE6tIDAvn1bmLUR02JJWoZ4ORj4dfFMKEMkWg==
+X-Google-Smtp-Source: ABdhPJwM/BRpKmh0zWcpYmBXd8iYZX7X+0IZgY1frY8trVcEq+DpmrHdNypgNdSsBTfenafQZ0Hp2GJfD8IUw4d79r8=
+X-Received: by 2002:a67:64c5:: with SMTP id y188mr7319294vsb.19.1620389073750;
+ Fri, 07 May 2021 05:04:33 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [172.16.13.205]
-X-ClientProxiedBy: ACLCAS4.ADVANTECH.CORP (172.20.2.20) To
- taipei09.ADVANTECH.CORP (172.20.0.236)
-X-TM-SNTS-SMTP: 01A26C7359DB37B0FA7B736665FC203ACD2687985A6849E28AE9921DA234C2DE2000:8
+References: <20210505110915.6861-1-tony@atomide.com>
+In-Reply-To: <20210505110915.6861-1-tony@atomide.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 7 May 2021 14:03:57 +0200
+Message-ID: <CAPDyKFp36huF2Gu19T+KvUm90xSsd97VDCxst1KT+Qf0F5Vm5g@mail.gmail.com>
+Subject: Re: [PATCH] PM: runtime: Fix unpaired parent child_count for force_resume
+To:     Tony Lindgren <tony@atomide.com>
+Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->-----Original Message-----
->From: Rob Herring <robh@kernel.org>
->Sent: Friday, May 7, 2021 8:50 AM
->Subject: Re: [PATCH v7 1/7] MAINTAINERS: Add Advantech AHC1EC0
->embedded controller entry
+On Wed, 5 May 2021 at 13:09, Tony Lindgren <tony@atomide.com> wrote:
 >
->On Thu, May 06, 2021 at 10:47:22AM +0200, Hans de Goede wrote:
->> Hi,
->>
->> I'm replying here since this series has no cover-letter, for
->> the next version for a series touching so many different
->> sub-systems it would be good to start with a cover-letter
->> providing some background info on the series.
->>
->> I see this is binding to an ACPI device, yet it is also using
->> devicetree bindings and properties.
->>
->> So I take it this means that your ACPI tables are using the
->> optional capability of embedded device-tree blobs inside the
->> ACPI tables ?
+> As pm_runtime_need_not_resume() relies also on usage_count, it can return
+> a different value in pm_runtime_force_suspend() compared to when called in
+> pm_runtime_force_resume(). Different return values can happen if anything
+> calls PM runtime functions in between, and causes the parent child_count
+> to increase on every resume.
 >
->Ugg, really. I would have stopped caring if I had realized.
+> So far I've seen the issue only for omapdrm that does complicated things
+> with PM runtime calls during system suspend for legacy reasons:
+>
+> omap_atomic_commit_tail() for omapdrm.0
+>  dispc_runtime_get()
+>   wakes up 58000000.dss as it's the dispc parent
+>    dispc_runtime_resume()
+>     rpm_resume() increases parent child_count
+>  dispc_runtime_put() won't idle, PM runtime suspend blocked
+> pm_runtime_force_suspend() for 58000000.dss, !pm_runtime_need_not_resume()
+>  __update_runtime_status()
+> system suspended
+> pm_runtime_force_resume() for 58000000.dss, pm_runtime_need_not_resume()
+>  pm_runtime_enable() only called because of pm_runtime_need_not_resume()
+> omap_atomic_commit_tail() for omapdrm.0
+>  dispc_runtime_get()
+>   wakes up 58000000.dss as it's the dispc parent
+>    dispc_runtime_resume()
+>     rpm_resume() increases parent child_count
+>  dispc_runtime_put() won't idle, PM runtime suspend blocked
+> ...
+> rpm_suspend for 58000000.dss but parent child_count is now unbalanced
+>
+> Let's fix the issue by adding a flag for needs_force_resume and use it in
+> pm_runtime_force_resume() instead of pm_runtime_need_not_resume().
 
-I am very grateful for any comments you have made in the past, and please feel free to give friendly guidance.
+Thanks for sharing the details, much appreciated.
 
+>
+> Additionally omapdrm system suspend could be simplified later on to avoid
+> lots of unnecessary PM runtime calls and the complexity it adds. The
+> driver can just use internal functions that are shared between the PM
+> runtime and system suspend related functions.
+>
+> Fixes: 4918e1f87c5f ("PM / runtime: Rework pm_runtime_force_suspend/resume()")
+
+Actually, I think the problem has been there from the beginning
+(unless I am mistaken), when we introduced the functions. So maybe the
+fixes tag isn't entirely correct.
+
+Although, I certainly think we should tag this for stable kernels.
+
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Kind regards
+Uffe
+
+> ---
+>  drivers/base/power/runtime.c | 10 +++++++---
+>  include/linux/pm.h           |  1 +
+>  2 files changed, 8 insertions(+), 3 deletions(-)
+>
+> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
+> --- a/drivers/base/power/runtime.c
+> +++ b/drivers/base/power/runtime.c
+> @@ -1637,6 +1637,7 @@ void pm_runtime_init(struct device *dev)
+>         dev->power.request_pending = false;
+>         dev->power.request = RPM_REQ_NONE;
+>         dev->power.deferred_resume = false;
+> +       dev->power.needs_force_resume = 0;
+>         INIT_WORK(&dev->power.work, pm_runtime_work);
+>
+>         dev->power.timer_expires = 0;
+> @@ -1804,10 +1805,12 @@ int pm_runtime_force_suspend(struct device *dev)
+>          * its parent, but set its status to RPM_SUSPENDED anyway in case this
+>          * function will be called again for it in the meantime.
+>          */
+> -       if (pm_runtime_need_not_resume(dev))
+> +       if (pm_runtime_need_not_resume(dev)) {
+>                 pm_runtime_set_suspended(dev);
+> -       else
+> +       } else {
+>                 __update_runtime_status(dev, RPM_SUSPENDED);
+> +               dev->power.needs_force_resume = 1;
+> +       }
+>
+>         return 0;
+>
+> @@ -1834,7 +1837,7 @@ int pm_runtime_force_resume(struct device *dev)
+>         int (*callback)(struct device *);
+>         int ret = 0;
+>
+> -       if (!pm_runtime_status_suspended(dev) || pm_runtime_need_not_resume(dev))
+> +       if (!pm_runtime_status_suspended(dev) || !dev->power.needs_force_resume)
+>                 goto out;
+>
+>         /*
+> @@ -1853,6 +1856,7 @@ int pm_runtime_force_resume(struct device *dev)
+>
+>         pm_runtime_mark_last_busy(dev);
+>  out:
+> +       dev->power.needs_force_resume = 0;
+>         pm_runtime_enable(dev);
+>         return ret;
+>  }
+> diff --git a/include/linux/pm.h b/include/linux/pm.h
+> --- a/include/linux/pm.h
+> +++ b/include/linux/pm.h
+> @@ -602,6 +602,7 @@ struct dev_pm_info {
+>         unsigned int            idle_notification:1;
+>         unsigned int            request_pending:1;
+>         unsigned int            deferred_resume:1;
+> +       unsigned int            needs_force_resume:1;
+>         unsigned int            runtime_auto:1;
+>         bool                    ignore_children:1;
+>         unsigned int            no_callbacks:1;
+> --
+> 2.31.1
