@@ -2,254 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A89C63766E3
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:11:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C55423766EB
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236851AbhEGOMc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 10:12:32 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:34434 "EHLO
+        id S237517AbhEGOOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 10:14:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:31552 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237528AbhEGOM0 (ORCPT
+        by vger.kernel.org with ESMTP id S230306AbhEGOO1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 10:12:26 -0400
+        Fri, 7 May 2021 10:14:27 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620396686;
+        s=mimecast20190719; t=1620396807;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=3xemaWuClFSKLtaEonBaCJQAvDoWvpQU/PJ5oe6FUAg=;
-        b=T51nSFmtzdrKwEN5KUV2hqyNwyOLnwEprC20lZdEMd0LyjQ0i6vsrrSzvz9M7c4jd1rePf
-        l+fcSBvA/7fZtE6RN3D9nyfi32e8YzSwiFwNf/bwo7WpQO8wyuno1hLwKH/b0MjGMB1FTP
-        GqAGQ64PQ4BmfBatZzJK+vQrXaCckL8=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-598-wUmCtsPWNw-AgYswrsyT9g-1; Fri, 07 May 2021 10:11:24 -0400
-X-MC-Unique: wUmCtsPWNw-AgYswrsyT9g-1
-Received: by mail-ed1-f71.google.com with SMTP id k10-20020a50cb8a0000b0290387e0173bf7so4553564edi.8
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 07:11:24 -0700 (PDT)
+        bh=ZYOO3UAjlF+hfKg9yF+CEPnA0Soqks99ZWxEcE/K28Q=;
+        b=FqsJVtvD6owY++YzbPhZP6+ko/jwf8ubIAH2RsPZT1FplLrxW5f0o6L/DNvzndcvEkBXp/
+        ncALnWWTsf6WFHvTa/oVeSTwrtw5dE+scrjJtsF7kLdtTGRthIB1M/NIW7Z3uQN2puulB/
+        3U3QiuLFn3ag2XdHDNwZum9SgFmzjww=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-vZcRFdaSPB6lPGWSSlA-LA-1; Fri, 07 May 2021 10:13:25 -0400
+X-MC-Unique: vZcRFdaSPB6lPGWSSlA-LA-1
+Received: by mail-qv1-f69.google.com with SMTP id o6-20020a0ccb060000b02901c0933b76e1so6719688qvk.8
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 07:13:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=3xemaWuClFSKLtaEonBaCJQAvDoWvpQU/PJ5oe6FUAg=;
-        b=lwyN4Zxnr5diLWc86QhDHuZpFYvhrqHg0QWcGiWXASpO1N2nHlQHR8el+DSpA45cS0
-         1qJV25gBcGksaM7AEfisMqLHbz84iyzFwlnuwTFRZz6A2paAzWxdm6bqdbcxoOMQHjsa
-         tflRUNvyVA2nyDBC+1XRz/NZzjEKgI/ZtnRIBsKBAd4uHriOaZ/d375tAACvbadUTBEY
-         78w8fQY/8GekKBosaysO1IKsAPrhqHjB3QaDMNks9h/3wLFnjLHl33esbnCdHYOwm4YD
-         ZiCNuluHkQR/xT/2+kUe+lEFJ/HTYE1l1q+y6OqoJ7fhP6AMPoHeUrmRFn1lWTUR5q3Q
-         eAcQ==
-X-Gm-Message-State: AOAM532XaTjwb/XuZSge2+oYj1R64/ZhUA3pqoQlFxh6pc8axWYz7gKX
-        WJx5KekBw+6ggGJ2sDseWJvZMPzdN4GC30cJRnJ6zSb0vVA9XwKJsf18Im/HmYt1UKMZUQYFd0l
-        gPo1KljiAGfYjsw+Os3BjJ7qU
-X-Received: by 2002:a17:906:b0cd:: with SMTP id bk13mr10393827ejb.184.1620396683538;
-        Fri, 07 May 2021 07:11:23 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyXr8UvxvxaXMzinyfRTZbCVHa8v6FhIvaqZukbWNaaGPDQqQTGT/mEtRf9SwSMNBw9IPtE+Q==
-X-Received: by 2002:a17:906:b0cd:: with SMTP id bk13mr10393792ejb.184.1620396683250;
-        Fri, 07 May 2021 07:11:23 -0700 (PDT)
-Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
-        by smtp.gmail.com with ESMTPSA id k5sm4910773edk.46.2021.05.07.07.11.22
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZYOO3UAjlF+hfKg9yF+CEPnA0Soqks99ZWxEcE/K28Q=;
+        b=jBEGPBS8rHpvQedSIP3l6AtPgUrZlzE6G+9yQ68R4E+fRlEuBZ+Bgt8Zjpw6/mqLRi
+         hG4/YbBsr2NN9qANq6JvAHEosdr14Nvg+LO74HFZw38OZwmy9Q+k+cnyOJ7AHMUtjH26
+         J8oJrdkfDZqilwGWR0q/5wd42kZbHw0XlFdPwVgVicNrG1bIblz+pVoGKiZGvimbgOsy
+         e5vXXSwedA788v85+W8aSDqXQuG+zWVbwrXT8hm9AY0FV/pWFnnSI4jX00vL1/i7grxD
+         0gSH/uXqpoKNh6ba7covoVV76dAAwHIHznIGrbl5RrlVdi3UKf8LBpXtFA/Zi6kgjkCi
+         Yq/Q==
+X-Gm-Message-State: AOAM532O+0B3HMT7Ddd0yY+GV9i1uuOUy8Kx5Z52Px7ijB85d+nXQQqQ
+        jMGGngj8aWePSk599fGSYAjWx/nDmOO416OepqLY838b+GDSwAK31zAWhZbqAcc7wLfMz/qmlvk
+        JXpoMRqFBydMHoV3+zc3YvK57
+X-Received: by 2002:a37:bbc4:: with SMTP id l187mr9631378qkf.153.1620396804604;
+        Fri, 07 May 2021 07:13:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJybb6hUAjm6c0snSkcA9xF1jcgUFqAKMSK05z3GVbIOoar26/N2ZrzQutQliHhwe/3DHxuWag==
+X-Received: by 2002:a37:bbc4:: with SMTP id l187mr9631350qkf.153.1620396804336;
+        Fri, 07 May 2021 07:13:24 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id q126sm4704696qkd.48.2021.05.07.07.13.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 07:11:22 -0700 (PDT)
-Date:   Fri, 7 May 2021 16:11:20 +0200
-From:   Stefano Garzarella <sgarzare@redhat.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Joel Fernandes <joelaf@google.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [RFC][PATCH] vhost/vsock: Add vsock_list file to map cid with
- vhost tasks
-Message-ID: <20210507141120.ot6xztl4h5zyav2c@steredhat>
-References: <20210505163855.32dad8e7@gandalf.local.home>
+        Fri, 07 May 2021 07:13:23 -0700 (PDT)
+Date:   Fri, 7 May 2021 10:13:21 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     John Hubbard <jhubbard@nvidia.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 2/3] mm: gup: allow FOLL_PIN to scale in SMP
+Message-ID: <YJVLAXXt2NlhfS9m@t490s>
+References: <20210506232537.165788-1-peterx@redhat.com>
+ <20210506232537.165788-3-peterx@redhat.com>
+ <a270cf3a-ffbf-de77-eff0-4a4da8864978@nvidia.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20210505163855.32dad8e7@gandalf.local.home>
+In-Reply-To: <a270cf3a-ffbf-de77-eff0-4a4da8864978@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steven,
+On Thu, May 06, 2021 at 11:07:32PM -0700, John Hubbard wrote:
+> On 5/6/21 4:25 PM, Peter Xu wrote:
+> > From: Andrea Arcangeli <aarcange@redhat.com>
+> > 
+> > has_pinned cannot be written by each pin-fast or it won't scale in
+> > SMP. This isn't "false sharing" strictly speaking (it's more like
+> > "true non-sharing"), but it creates the same SMP scalability
+> > bottleneck of "false sharing".
+> > 
+> > To verify the improvement a new "pin_fast.c" program was added to
+> > the will-it-scale benchmark.
+> ...
+> > 
+> > This commits increases the SMP scalability of pin_user_pages_fast()
+> > executed by different threads of the same process by more than 4000%.
+> > 
+> 
+> Remarkable! I mean, yes, everyone knows that atomic writes are
+> "expensive", but this is a fun, dramatic example of just *how*
+> expensive they can get, once you start doing contended atomic writes.
+> 
+> 
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
+> 
+> Other notes, that don't have any effect on the above reviewed-by
+> tag:
+> 
+> On the commit log, I will add a "+1" to the idea of deleting the
+> pin_fast.c contents from the commit log, and just providing a URL
+> instead. No need to put C programs in the commit log, IMHO, especially
+> when you have them elsewhere anyway.
 
-On Wed, May 05, 2021 at 04:38:55PM -0400, Steven Rostedt wrote:
->The new trace-cmd 3.0 (which is almost ready to be released) allows for
->tracing between host and guests with timestamp synchronization such that
->the events on the host and the guest can be interleaved in the proper order
->that they occur. KernelShark now has a plugin that visualizes this
->interaction.
->
->The implementation requires that the guest has a vsock CID assigned, and on
->the guest a "trace-cmd agent" is running, that will listen on a port for
->the CID. The on the host a "trace-cmd record -A guest@cid:port -e events"
->can be called and the host will connect to the guest agent through the
->cid/port pair and have the agent enable tracing on behalf of the host and
->send the trace data back down to it.
->
->The problem is that there is no sure fire way to find the CID for a guest.
->Currently, the user must know the cid, or we have a hack that looks for the
->qemu process and parses the --guest-cid parameter from it. But this is
->prone to error and does not work on other implementation (was told that
->crosvm does not use qemu).
+I guess it's put there only because it does not exist elsewhere. :)
 
-For debug I think could be useful to link the vhost-vsock kthread to the=20
-CID, but for the user point of view, maybe is better to query the VM=20
-management layer, for example if you're using libvirt, you can easily do:
+I didn't run it, but I think it needs to be put into tests/ of if-it-scale repo
+and build, something like that.
 
-$ virsh dumpxml fedora34 | grep cid
-     <cid auto=3D'yes' address=3D'3'/>
+https://github.com/antonblanchard/will-it-scale/tree/master/tests
 
->
->As I can not find a way to discover CIDs assigned to guests via any kernel
->interface, I decided to create this one. Note, I'm not attached to it. If
->there's a better way to do this, I would love to have it. But since I'm not
->an expert in the networking layer nor virtio, I decided to stick to what I
->know and add a debugfs interface that simply lists all the registered=20
->CIDs
->and the worker task that they are associated with. The worker task at
->least has the PID of the task it represents.
+But yeah since we've got the 1st patch which can also reproduce this, I'll
+reference that instead in the commit mesasge and I'll be able to shrink it.
 
-I honestly don't know if it's the best interface, like I said maybe for=20
-debugging it's fine, but if we want to expose it to the user in some=20
-way, we could support devlink/netlink to provide information about the=20
-vsock devices currently in use.
+I'll also start to use parentheses as Linus suggested.  My thanks to both of
+you on the quick comments!
 
->
->Now I can find the cid / host process in charge of the guest pair:
->
->  # cat /sys/kernel/debug/vsock_list
->  3	vhost-1954:2002
->
->  # ps aux | grep 1954
->  qemu        1954  9.9 21.3 1629092 796148 ?      Sl   16:22   0:58  /usr=
-/bin/qemu-kvm -name guest=3DFedora21,debug-threads=3Don -S -object secret,i=
-d=3DmasterKey0,format=3Draw,file=3D/var/lib/libvirt/qemu/domain-1-Fedora21/=
-master-key.aes -machine pc-1.2,accel=3Dkvm,usb=3Doff,dump-guest-core=3Doff =
--cpu qemu64 -m 1000 -overcommit mem-lock=3Doff -smp 2,sockets=3D2,cores=3D1=
-,threads=3D1 -uuid 1eefeeb0-3ac7-07c1-926e-236908313b4c -no-user-config -no=
-defaults -chardev socket,id=3Dcharmonitor,fd=3D32,server,nowait -mon charde=
-v=3Dcharmonitor,id=3Dmonitor,mode=3Dcontrol -rtc base=3Dutc -no-shutdown -b=
-oot strict=3Don -device piix3-usb-uhci,id=3Dusb,bus=3Dpci.0,addr=3D0x1.0x2 =
--device virtio-serial-pci,id=3Dvirtio-serial0,bus=3Dpci.0,addr=3D0x6 -block=
-dev {"driver":"host_device","filename":"/dev/mapper/vg_bxtest-GuestFedora",=
-"node-name":"libvirt-1-storage","auto-read-only":true,"discard":"unmap"} -b=
-lockdev {"node-name":"libvirt-1-format","read-only":false,"driver":"raw","f=
-ile":"libvirt-1-storage"} -device ide-hd,bus=3Dide.0,unit=3D0,drive=3Dlibvi=
-rt-1-
-> format,id=3Dide0-0-0,bootindex=3D1 -netdev tap,fd=3D34,id=3Dhostnet0 -dev=
-ice rtl8139,netdev=3Dhostnet0,id=3Dnet0,mac=3D52:54:00:9f:e9:d5,bus=3Dpci.0=
-,addr=3D0x3 -netdev tap,fd=3D35,id=3Dhostnet1 -device virtio-net-pci,netdev=
-=3Dhostnet1,id=3Dnet1,mac=3D52:54:00:ec:dc:6e,bus=3Dpci.0,addr=3D0x5 -chard=
-ev pty,id=3Dcharserial0 -device isa-serial,chardev=3Dcharserial0,id=3Dseria=
-l0 -chardev pipe,id=3Dcharchannel0,path=3D/var/lib/trace-cmd/virt/Fedora21/=
-trace-pipe-cpu0 -device virtserialport,bus=3Dvirtio-serial0.0,nr=3D1,charde=
-v=3Dcharchannel0,id=3Dchannel0,name=3Dtrace-pipe-cpu0 -chardev pipe,id=3Dch=
-archannel1,path=3D/var/lib/trace-cmd/virt/Fedora21/trace-pipe-cpu1 -device =
-virtserialport,bus=3Dvirtio-serial0.0,nr=3D2,chardev=3Dcharchannel1,id=3Dch=
-annel1,name=3Dtrace-pipe-cpu1 -vnc 127.0.0.1:0 -device cirrus-vga,id=3Dvide=
-o0,bus=3Dpci.0,addr=3D0x2 -device virtio-balloon-pci,id=3Dballoon0,bus=3Dpc=
-i.0,addr=3D0x4 -sandbox on,obsolete=3Ddeny,elevateprivileges=3Ddeny,spawn=
-=3Ddeny,resourcecontrol=3Ddeny -device vhost-vsock-pci,id=3Dvsock0,guest-ci=
-d=3D3,vhostfd=3D16,bus=3Dpci.0,addr=3D0x7 -msg
-> timestamp=3Don
->  root        2000  0.0  0.0      0     0 ?        S    16:22   0:00 [kvm-=
-pit/1954]
->  root        2002  0.0  0.0      0     0 ?        S    16:22   0:00 [vhos=
-t-1954]
->
->
->This is just an example of what I'm looking for. Just a way to find what
->process is using what cid.
->
->Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
->---
->diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
->index 5e78fb719602..4f03b25b23c1 100644
->--- a/drivers/vhost/vsock.c
->+++ b/drivers/vhost/vsock.c
->@@ -15,6 +15,7 @@
-> #include <linux/virtio_vsock.h>
-> #include <linux/vhost.h>
-> #include <linux/hashtable.h>
->+#include <linux/debugfs.h>
->
-> #include <net/af_vsock.h>
-> #include "vhost.h"
->@@ -900,6 +901,128 @@ static struct miscdevice vhost_vsock_misc =3D {
-> 	.fops =3D &vhost_vsock_fops,
-> };
->
->+static struct dentry *vsock_file;
->+
->+struct vsock_file_iter {
->+	struct hlist_node	*node;
->+	int			index;
->+};
->+
->+
->+static void *vsock_next(struct seq_file *m, void *v, loff_t *pos)
->+{
->+	struct vsock_file_iter *iter =3D v;
->+	struct vhost_vsock *vsock;
->+
->+	if (pos)
->+		(*pos)++;
->+
->+	if (iter->index >=3D (int)HASH_SIZE(vhost_vsock_hash))
->+		return NULL;
->+
->+	if (iter->node)
->+		iter->node =3D rcu_dereference_raw(hlist_next_rcu(iter->node));
->+
->+	for (;;) {
->+		if (iter->node) {
->+			vsock =3D hlist_entry_safe(rcu_dereference_raw(iter->node),
->+						 struct vhost_vsock, hash);
->+			if (vsock->guest_cid)
->+				break;
->+			iter->node =3D rcu_dereference_raw(hlist_next_rcu(iter->node));
->+			continue;
->+		}
->+		iter->index++;
->+		if (iter->index >=3D HASH_SIZE(vhost_vsock_hash))
->+			return NULL;
->+
->+		iter->node =3D rcu_dereference_raw(hlist_first_rcu(&vhost_vsock_hash[it=
-er->index]));
->+	}
->+	return iter;
->+}
->+
->+static void *vsock_start(struct seq_file *m, loff_t *pos)
->+{
->+	struct vsock_file_iter *iter =3D m->private;
->+	loff_t l =3D 0;
->+	void *t;
->+
->+	rcu_read_lock();
-
-Instead of keeping this rcu lock between vsock_start() and vsock_stop(),=20
-maybe it's better to make a dump here of the bindings (pid/cid), save it=20
-in an array, and iterate it in vsock_next().
-
->+
->+	iter->index =3D -1;
->+	iter->node =3D NULL;
->+	t =3D vsock_next(m, iter, NULL);
->+
->+	for (; iter->index < HASH_SIZE(vhost_vsock_hash) && l < *pos;
->+	     t =3D vsock_next(m, iter, &l))
->+		;
-
-A while() maybe was more readable...
-
-Thanks,
-Stefano
+-- 
+Peter Xu
 
