@@ -2,73 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133EA376AB6
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 21:30:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782F5376A9E
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 21:19:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229920AbhEGTbU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 15:31:20 -0400
-Received: from relay7-d.mail.gandi.net ([217.70.183.200]:54825 "EHLO
-        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhEGTbQ (ORCPT
+        id S229869AbhEGTUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 15:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36006 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhEGTUl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 15:31:16 -0400
-X-Originating-IP: 90.65.108.55
-Received: from localhost (lfbn-lyo-1-1676-55.w90-65.abo.wanadoo.fr [90.65.108.55])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id C485C20003;
-        Fri,  7 May 2021 19:30:15 +0000 (UTC)
-Date:   Fri, 7 May 2021 21:30:15 +0200
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-i3c@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] I3C changes for 5.13
-Message-ID: <YJWVRyqnPVlz5vY5@piout.net>
+        Fri, 7 May 2021 15:20:41 -0400
+Received: from mail-ej1-x634.google.com (mail-ej1-x634.google.com [IPv6:2a00:1450:4864:20::634])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 670E9C061574;
+        Fri,  7 May 2021 12:19:40 -0700 (PDT)
+Received: by mail-ej1-x634.google.com with SMTP id f24so15178759ejc.6;
+        Fri, 07 May 2021 12:19:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9m7MMdVqLKAy3chOmd9o8x3GgGbbXRzbchSC4T+XsRI=;
+        b=KY0d3e3IEUTZBH5JzSrg6Mj1XkZNF99NKMXm5l9scfi0MdX99qxpoH73iqkKF17s1y
+         Wo3k5EBCgudNoNYx1dv0hs2+laRhHFBEr2Zw7hw9LoweZ5BfPZh1+apa1PgY5ZOUpUn/
+         EXKgQYM1kEN5ahCcpXWwn773uEaGBlACE91XZQJKou8wkylt5n6EypjyH9MBUf9dVZUH
+         7AD5n+pEDM7i7rUclwSZ4U2rVTZmHi18lTTXehB/ycLkceSu5RUg5KsMJGVk2thku4pf
+         vbpoOYMu8TQLC+rPuv1eDyk1n5tAMrNJzuZFwWHcAAWaTkmZaWFU17GIwVm8UiUNLtHl
+         tQzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9m7MMdVqLKAy3chOmd9o8x3GgGbbXRzbchSC4T+XsRI=;
+        b=dWhe+W6sNkJ7l+WAhDswWycqjaQqy1X24JklobiITtdrkoKq/5DRueo4+agONiNOQt
+         DaqO7SU5CMi6KuehMSCNNdV0fHugAPM8EBYTTW1Fi4RNmYgPSfa84+rwdTN99/FOt8a+
+         B5TQ9xaSjym3EHbKq4z+FsYYl+nkqHcdDIuYZxZo3y8EsbPnU/mVaqu2fXiKRXjwePqY
+         PNwHJGhs5JWdGUxamY05GQKBRBwSHOUlNoGncOPdJ8sNcpl7z6PWTcjGpfOQmwzigZIP
+         UWYoUoxQEO984dMZrSOkDZDicf1uldJ0hDtTm5L9T0NlKCs62X8j3r1BTLRf2+x50jsQ
+         O1RQ==
+X-Gm-Message-State: AOAM532dxaVvlPdX+fLb57U7Tbr0uPHkK5Y+Kx9bulKUGlvoO5bF9qRJ
+        K6lbiQQAkcLfUa0KHiLtlNSgnwP3vQTgkwFq
+X-Google-Smtp-Source: ABdhPJwkTnOB6rNhcQ5WxYos6n/lFZIFyXKgvJlPwbIBrWwIb4iPbrKJdgX+hWtz+LAfaJ4++1FbEg==
+X-Received: by 2002:a17:906:f6d0:: with SMTP id jo16mr11645678ejb.461.1620415178115;
+        Fri, 07 May 2021 12:19:38 -0700 (PDT)
+Received: from r00t ([212.15.178.107])
+        by smtp.gmail.com with ESMTPSA id rs28sm3965783ejb.35.2021.05.07.12.19.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 12:19:37 -0700 (PDT)
+Date:   Fri, 7 May 2021 22:18:13 +0200
+From:   Ivan Bakula <wamreu@gmail.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     robh@kernel.org, jirislaby@kernel.org,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] TTY: serdev: Replace depricated macros
+Message-ID: <YJWghQC8hJ3UO6lG@r00t>
+References: <20210506183228.33981-1-wamreu@gmail.com>
+ <YJQp4W2X/tuvLfVA@kroah.com>
+ <YJUhZP1FwMlUfWrw@r00t>
+ <YJUbv3t05ai+g2k0@kroah.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <YJUbv3t05ai+g2k0@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Linus,
+Ok, got it.
 
-Here is the I3C pull request for 5.13. Only three fixes this cycle.
+Thank you for your time,
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
-
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/i3c/linux.git tags/i3c/for-5.13
-
-for you to fetch changes up to 0d95f41ebde40d552bb4fea64b1d618607915fd6:
-
-  Revert "i3c master: fix missing destroy_workqueue() on error in i3c_master_register" (2021-04-24 22:21:01 +0200)
-
-----------------------------------------------------------------
-I3C for 5.13
-
-Subsystem:
- - Fix i3c_master_register error path.
-
-----------------------------------------------------------------
-Colin Ian King (1):
-      i3c: master: svc: remove redundant assignment to cmd->read_len
-
-Jae Hyun Yoo (1):
-      Revert "i3c master: fix missing destroy_workqueue() on error in i3c_master_register"
-
-Rob Herring (1):
-      dt-bindings: i3c: Fix silvaco,i3c-master-v1 compatible string
-
- Documentation/devicetree/bindings/i3c/silvaco,i3c-master.yaml | 2 +-
- drivers/i3c/master.c                                          | 5 +----
- drivers/i3c/master/svc-i3c-master.c                           | 1 -
- 3 files changed, 2 insertions(+), 6 deletions(-)
-
--- 
-Alexandre Belloni, co-owner and COO, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
-
+I.B.
