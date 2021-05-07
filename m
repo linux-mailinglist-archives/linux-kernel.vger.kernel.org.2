@@ -2,94 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6604B376A26
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:48:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E4F2376A27
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:50:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229591AbhEGStk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 14:49:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEGSti (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 14:49:38 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9414C061574;
-        Fri,  7 May 2021 11:48:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
-        Content-ID:Content-Description:In-Reply-To:References;
-        bh=nlmrWt3RdCjxd40aRkl4OMBCYBjOlN6FJnUkKCOtyzg=; b=C30Z4AOZ9HjHYWUODHEmdtm1vz
-        HUNCxLCSeALzbf2821w5LxTsKsra21lnzVi2Q0HLc5wUGgrrTfUYKvgATfK6PFzsT+TQjeq65G+hn
-        hY3crME0FDfqNNCJVET0G0z7QOLr9dHs/R6CGHYl+mxwY2gmQO+3EkWKZb+yOY2yezyveWGSGNQid
-        aMEJjGQcYc3wY3qkPusNpsbxDPnIiIktPnj2u6HsjH++fNPldVUgifKYfuwYV14Alud/xhlWun3Un
-        OEz1o31+d80VtBWP7kIUD/O9RWxrKBC0q/lWj+UxvXRsokrRexzyife8TeTTw9BFWYPmgXNjkWyEt
-        2Wa8/yMw==;
-Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lf5Wf-0076tv-Qg; Fri, 07 May 2021 18:48:37 +0000
-From:   Randy Dunlap <rdunlap@infradead.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org
-Subject: [PATCH v2] ia64: headers: drop duplicated words
-Date:   Fri,  7 May 2021 11:48:37 -0700
-Message-Id: <20210507184837.10754-1-rdunlap@infradead.org>
-X-Mailer: git-send-email 2.26.2
+        id S229652AbhEGSvh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 14:51:37 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49298 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229476AbhEGSvg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 14:51:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 9600261480
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 18:50:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620413436;
+        bh=nu9gk8X4jBTmgeiETWHNXdh2I0I6lDvEUX4MoVO8sYY=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=hrN9Pv39mSVCQunPwzc5WxTr9Bh+rAVWVBauW8cDRE+TFGBPsIwCUM2g+J6VlNtyf
+         RvgbA+xFvcuvHwrtUibWB0CXkXPM/l/r2gUyhqADinzP5xF9F5LsVPrPopPMorvSR8
+         rCYN37VvzLmZanUEo3ghIEyNKyRE0XhFlCyAVay2TZ119eeVfX21iwjGcwE6UQZOdn
+         e8YZS8Y1CPqcfcEHCOurNaXf4Al/uk/SwsyK0AICv+casHxJLVmoZGMaZVGiZdzlR+
+         kpExWwjhjZCwHpxxQw/M7Gbn4afuk7sQDeke84Rp5eUZu6LgKyQMGTCd+IfSAMj5Tn
+         iUkkHPlF07nDw==
+Received: by mail-ed1-f51.google.com with SMTP id g14so11371775edy.6
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 11:50:36 -0700 (PDT)
+X-Gm-Message-State: AOAM532e9lMS5xIq5d2ruQDXY6ajQsVduvMQJmrrhirJNOvc33un/mXe
+        +sLEq0bpJekDXXopuabwB2b9Xutf0xl/WITeXGaEGQ==
+X-Google-Smtp-Source: ABdhPJwaDCEq2PmFhwg76/x6fKTGXB1Im1noTBYi9pl4gmoPbTsfXNBKILjGmSRRSTT+Yg5CHU832WaiPIQvIFmIRFM=
+X-Received: by 2002:a50:fc91:: with SMTP id f17mr13185057edq.23.1620413434996;
+ Fri, 07 May 2021 11:50:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu>
+ <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com>
+ <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com>
+ <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com>
+ <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com>
+ <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com>
+ <87bl9s8kfb.fsf@oldenburg.str.redhat.com> <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com>
+ <87o8dmmljh.ffs@nanos.tec.linutronix.de>
+In-Reply-To: <87o8dmmljh.ffs@nanos.tec.linutronix.de>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 7 May 2021 11:50:20 -0700
+X-Gmail-Original-Message-ID: <CALCETrWG7E2LCSyvaay05R4Sa3mU_t5C5W4rYGuA3+dzaBF9tQ@mail.gmail.com>
+Message-ID: <CALCETrWG7E2LCSyvaay05R4Sa3mU_t5C5W4rYGuA3+dzaBF9tQ@mail.gmail.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
+        "Bae, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-abi@vger.kernel.org,
+        "libc-alpha@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Delete the repeated words "to" and "the".
+On Fri, May 7, 2021 at 11:44 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>
+> On Mon, May 03 2021 at 06:43, Dave Hansen wrote:
+> > On 5/2/21 10:18 PM, Florian Weimer wrote:
+> >>> 5. If the feature is enabled in XCR0, the user happily uses it.
+> >>>
+> >>>     For AMX, Linux implements "transparent first use"
+> >>>     so that it doesn't have to allocate 8KB context switch
+> >>>     buffers for tasks that don't actually use AMX.
+> >>>     It does this by arming XFD for all tasks, and taking a #NM
+> >>>     to allocate a context switch buffer only for those tasks
+> >>>     that actually execute AMX instructions.
+> >> What happens if the kernel cannot allocate that additional context
+> >> switch buffer?
+> >
+> > Well, it's vmalloc()'d and currently smaller that the kernel stack,
+> > which is also vmalloc()'d.  While it can theoretically fail, if it
+> > happens you have bigger problems on your hands.
+>
+> Such a buffer allocation might also exceed a per process/cgroup
+> limitation. Anything else which is accounted happens in syscall context
+> which then returns an error on which the application can react.
+>
+> So what's the consequence when the allocation fails? Kill it right away
+> from #NM? Kill it on the first signal? Do nothing and see what happens?
+>
 
-Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Tony Luck <tony.luck@intel.com>
-Cc: Fenghua Yu <fenghua.yu@intel.com>
-Cc: linux-ia64@vger.kernel.org
----
-v2: combine 3 patches; drop previous perfmon patches (files have been
-    removed); rebase & resend
+It has to be an immediate signal or kill.  A failure to load FPU state
+is somewhat tolerable (and has to be for CET), but a failure to *save*
+FPU state on a context switch would be a really nasty can of worms.
+At the very least we will want arch_prctl(ARCH_ALLOCTE_XSTATE, mask)
+to allow HPC workloads to manually allocate the state and get an error
+code if it fails.
 
- arch/ia64/include/asm/pal.h       |    2 +-
- arch/ia64/include/asm/spinlock.h  |    2 +-
- arch/ia64/include/asm/uv/uv_hub.h |    2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
---- linux-next-20210507.orig/arch/ia64/include/asm/pal.h
-+++ linux-next-20210507/arch/ia64/include/asm/pal.h
-@@ -1086,7 +1086,7 @@ static inline long ia64_pal_freq_base(un
- 
- /*
-  * Get the ratios for processor frequency, bus frequency and interval timer to
-- * to base frequency of the platform
-+ * the base frequency of the platform
-  */
- static inline s64
- ia64_pal_freq_ratios (struct pal_freq_ratio *proc_ratio, struct pal_freq_ratio *bus_ratio,
---- linux-next-20210507.orig/arch/ia64/include/asm/spinlock.h
-+++ linux-next-20210507/arch/ia64/include/asm/spinlock.h
-@@ -26,7 +26,7 @@
-  * the queue, and the other indicating the current tail. The lock is acquired
-  * by atomically noting the tail and incrementing it by one (thus adding
-  * ourself to the queue and noting our position), then waiting until the head
-- * becomes equal to the the initial value of the tail.
-+ * becomes equal to the initial value of the tail.
-  * The pad bits in the middle are used to prevent the next_ticket number
-  * overflowing into the now_serving number.
-  *
---- linux-next-20210507.orig/arch/ia64/include/asm/uv/uv_hub.h
-+++ linux-next-20210507/arch/ia64/include/asm/uv/uv_hub.h
-@@ -257,7 +257,7 @@ static inline int uv_numa_blade_id(void)
- 	return 0;
- }
- 
--/* Convert a cpu number to the the UV blade number */
-+/* Convert a cpu number to the UV blade number */
- static inline int uv_cpu_to_blade_id(int cpu)
- {
- 	return 0;
+--Andy
