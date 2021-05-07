@@ -2,128 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 524EB3762E0
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:31:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CD1023762E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:33:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236693AbhEGJc2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 05:32:28 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17145 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhEGJc1 (ORCPT
+        id S236711AbhEGJek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 05:34:40 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3037 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236701AbhEGJej (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 05:32:27 -0400
-Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fc4qr3RyHzqSth;
-        Fri,  7 May 2021 17:28:08 +0800 (CST)
-Received: from [10.67.110.136] (10.67.110.136) by
- DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 7 May 2021 17:31:22 +0800
-Subject: Re: [PATCH v3 03/16] arm64: Allow IPIs to be handled as normal
- interrupts
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <vincent.guittot@linaro.org>, <Valentin.Schneider@arm.com>,
-        <andrew@lunn.ch>, <catalin.marinas@arm.com>,
-        <f.fainelli@gmail.com>, <gregory.clement@bootlin.com>,
-        <kernel-team@android.com>, <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@arm.linux.org.uk>,
-        <saravanak@google.com>, <sumit.garg@linaro.org>,
-        <tglx@linutronix.de>, <will@kernel.org>
-References: <CAKfTPtD3GkTd+qQvyCmyU7Atu1ictDQ82YbPRdY9a+Kkr2DjvA@mail.gmail.com>
- <c66367b0-e8a0-2b7b-13c3-c9413462357c@huawei.com>
- <87pmy4qe7e.wl-maz@kernel.org>
- <d6936b80-25ad-5e06-5fcc-c211adb70ceb@huawei.com>
- <87lf8qq5vr.wl-maz@kernel.org>
-From:   He Ying <heying24@huawei.com>
-Message-ID: <46db52fe-b69e-3ea9-4581-858658be8a2c@huawei.com>
-Date:   Fri, 7 May 2021 17:31:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 7 May 2021 05:34:39 -0400
+Received: from fraeml739-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fc4qR05wbz6rn6n;
+        Fri,  7 May 2021 17:27:47 +0800 (CST)
+Received: from lhreml710-chm.china.huawei.com (10.201.108.61) by
+ fraeml739-chm.china.huawei.com (10.206.15.220) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 7 May 2021 11:33:38 +0200
+Received: from localhost (10.52.124.175) by lhreml710-chm.china.huawei.com
+ (10.201.108.61) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 7 May 2021
+ 10:33:37 +0100
+Date:   Fri, 7 May 2021 10:31:54 +0100
+From:   Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To:     Guenter Roeck <linux@roeck-us.net>
+CC:     Jonathan Cameron <jic23@kernel.org>, <linux-iio@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, kernel test robot <lkp@intel.com>,
+        "Andy Shevchenko" <andy.shevchenko@gmail.com>,
+        Hans de Goede <hdegoede@redhat.com>
+Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
+Message-ID: <20210507103154.00006763@Huawei.com>
+In-Reply-To: <20210506034332.752263-1-linux@roeck-us.net>
+References: <20210506034332.752263-1-linux@roeck-us.net>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; i686-w64-mingw32)
 MIME-Version: 1.0
-In-Reply-To: <87lf8qq5vr.wl-maz@kernel.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.136]
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.52.124.175]
+X-ClientProxiedBy: lhreml733-chm.china.huawei.com (10.201.108.84) To
+ lhreml710-chm.china.huawei.com (10.201.108.61)
 X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed,  5 May 2021 20:43:32 -0700
+Guenter Roeck <linux@roeck-us.net> wrote:
 
-在 2021/5/7 16:56, Marc Zyngier 写道:
-> On Fri, 07 May 2021 08:30:06 +0100,
-> He Ying <heying24@huawei.com> wrote:
->>
->> 在 2021/5/6 19:44, Marc Zyngier 写道:
->>> On Thu, 06 May 2021 08:50:42 +0100,
->>> He Ying <heying24@huawei.com> wrote:
->>>> Hello Marc,
->>>>
->>>> We have faced a performance regression for handling ipis since this
->>>> commit. I think it's the same issue reported by Vincent.
->>> Can you share more details on what regression you have observed?
->>> What's the workload, the system, the performance drop?
->> OK. We have just calculated the pmu cycles from the entry of gic_handle_irq
->> to the entry of do_handle_ipi. Here is some more information about our test:
->>
->> CPU: Hisilicon hip05-d02
->>
->> Applying the patch series: 1115 cycles
->> Reverting the patch series: 599 cycles
-> And? How is that meaningful? Interrupts are pretty rare compared to
-> everything that happens in the system. How does it affect the
-> behaviour of the system as a whole?
-OK.
->
->>>> I found you pointed out the possible two causes:
->>>>
->>>> (1) irq_enter/exit on the rescheduling IPI means we reschedule much
->>>> more often.
->>> It turned out to be a red herring. We don't reschedule more often, but
->>> we instead suffer from the overhead of irq_enter()/irq_exit().
->>> However, this only matters for silly benchmarks, and no real-life
->>> workload showed any significant regression. Have you identified such
->>> realistic workload?
->> I'm afraid not. We just run some benchmarks and calculated pmu cycle
->> counters.  But we have observed running time from the entry of
->> gic_handle_irq to the entry of do_handle_ipi almost doubles. Doesn't
->> it affect realistic workload?
-> Then I'm not that interested. Show me an actual regression in a real
-> workload that affects people, and I'll be a bit more sympathetic to
-> your complain. But quoting raw numbers do not help.
->
-> There is a number of advantages to having IPI as IRQs, as it allows us
-> to deal with proper allocation (other subsystem want to use IPIs), and
-> eventually NMIs. There is a trade-off, and if that means wasting a few
-> cycles, so be it.
-OK. I see.
->
->>>> (2) irq_domain lookups add some overhead.
->>> While this is also a potential source of overhead, it turned out not
->>> to be the case.
->> OK.
->>>> But I don't see any following patches in mainline. So, are you still
->>>> working on this issue?  Looking forward to your reply.
->>> See [1]. However, there is probably better things to do than this
->>> low-level specialisation of IPIs, and Thomas outlined what needs to be
->>> done (see v1 of the patch series).
->> OK. I see the patch series. Would it be applied to the mainline
->> someday? I notice that more than 5 months have passed since you sent
->> the patch series.
-> I have no plan to merge these patches any time soon, given that nobody
-> has shown a measurable regression using something other than a trivial
-> benchmark. If you come up with such an example, I will of course
-> reconsider this position.
+> With CONFIG_ACPI=n and -Werror, 0-day reports:
+> 
+> drivers/iio/chemical/bme680_i2c.c:46:36: error:
+> 	'bme680_acpi_match' defined but not used
+> 
+> Apparently BME0680 is not a valid ACPI ID. Remove it and with it
+> ACPI support from the bme680_i2c driver.
+> 
+> Reported-by: kernel test robot <lkp@intel.com>
+> Cc: Andy Shevchenko <andy.shevchenko@gmail.com>
+> Cc: Hans de Goede <hdegoede@redhat.com>
+> Signed-off-by: Guenter Roeck <linux@roeck-us.net>
 
-OK. Thanks a lot for all your reply. If I come up with a measurable 
-regression
+A note for these is that I'll change the patch titles when applying.
+We aren't removing ACPI support from the drivers, we are simply
+removing the ACPI ID table entries.  For most of these PRP0001 magic
+will work just fine with the OF table.  That's probably the
+right way for small companies etc to use these in products without
+having to jump through the hoops of getting an ACPI ID.
 
-with a realistic workload, I'll contact you again.
+Jonathan
 
+> ---
+> v2: Instead of making bme680_acpi_match conditional,
+>     remove ACPI support entirely since the ACPI ID is
+>     not valid.
+> 
+>  drivers/iio/chemical/bme680_i2c.c | 8 --------
+>  1 file changed, 8 deletions(-)
+> 
+> diff --git a/drivers/iio/chemical/bme680_i2c.c b/drivers/iio/chemical/bme680_i2c.c
+> index 29c0dfa4702b..74cf89c82c0a 100644
+> --- a/drivers/iio/chemical/bme680_i2c.c
+> +++ b/drivers/iio/chemical/bme680_i2c.c
+> @@ -11,7 +11,6 @@
+>   * Note: SDO pin cannot be left floating otherwise I2C address
+>   *	 will be undefined.
+>   */
+> -#include <linux/acpi.h>
+>  #include <linux/i2c.h>
+>  #include <linux/module.h>
+>  #include <linux/regmap.h>
+> @@ -42,12 +41,6 @@ static const struct i2c_device_id bme680_i2c_id[] = {
+>  };
+>  MODULE_DEVICE_TABLE(i2c, bme680_i2c_id);
+>  
+> -static const struct acpi_device_id bme680_acpi_match[] = {
+> -	{"BME0680", 0},
+> -	{},
+> -};
+> -MODULE_DEVICE_TABLE(acpi, bme680_acpi_match);
+> -
+>  static const struct of_device_id bme680_of_i2c_match[] = {
+>  	{ .compatible = "bosch,bme680", },
+>  	{},
+> @@ -57,7 +50,6 @@ MODULE_DEVICE_TABLE(of, bme680_of_i2c_match);
+>  static struct i2c_driver bme680_i2c_driver = {
+>  	.driver = {
+>  		.name			= "bme680_i2c",
+> -		.acpi_match_table       = ACPI_PTR(bme680_acpi_match),
+>  		.of_match_table		= bme680_of_i2c_match,
+>  	},
+>  	.probe = bme680_i2c_probe,
 
-Thanks.
-
->
-> Thanks,
->
-> 	M.
->
