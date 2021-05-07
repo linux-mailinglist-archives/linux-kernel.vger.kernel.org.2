@@ -2,94 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7147C375E33
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:06:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F02EF375E37
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:08:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbhEGBHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 21:07:49 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:18343 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234202AbhEGBHr (ORCPT
+        id S234257AbhEGBJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 21:09:19 -0400
+Received: from mail-oi1-f176.google.com ([209.85.167.176]:41886 "EHLO
+        mail-oi1-f176.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234310AbhEGBJP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 21:07:47 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FbsfK5Y90zCr5J;
-        Fri,  7 May 2021 09:04:09 +0800 (CST)
-Received: from [10.174.178.208] (10.174.178.208) by
- DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 7 May 2021 09:06:42 +0800
-Subject: Re: [PATCH 4.19 00/15] 4.19.190-rc1 review
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        <linux-kernel@vger.kernel.org>
-CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
-        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
-        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
-        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
-        <stable@vger.kernel.org>
-References: <20210505120503.781531508@linuxfoundation.org>
-From:   Samuel Zou <zou_wei@huawei.com>
-Message-ID: <069dd10a-ad04-ff76-d193-98d6381d656c@huawei.com>
-Date:   Fri, 7 May 2021 09:06:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.7.0
+        Thu, 6 May 2021 21:09:15 -0400
+Received: by mail-oi1-f176.google.com with SMTP id c3so7215399oic.8;
+        Thu, 06 May 2021 18:08:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6W67RaksQjLOYNdnbdfa9p+lVZInKWZVCWpoKGgd/9A=;
+        b=eT8157QS5BbAF525re8fPsiOf1Nf0zTnOcnXQ4u5jhLtH05kdlnfFctrlaoBgstVRq
+         9IZYay/gPyirlbZTgSS+qXd1qppOgrHHQJyDDeTj44Hvls2mhfSiaT0nhS615bAVzeQN
+         Rrhaab+6QvRE5cN3xoKaK0dpdeqdP9Kal0eP+VpyhtvCSPSPBkzoj/6kvvXzq6VzW3/E
+         BnzvqTbiaqFsF+klGorPZF2hfzOwwE7MyvJlYuZdD1iACqe/TW6DrkKsCWgVgGXlL2ku
+         2YTUEfNtWFPNltAPCj5BLxK8kNEYyeWA2f4EtbFE/Zy6DEeMkyvj1zkRDCfBDdgvRb8l
+         mx6w==
+X-Gm-Message-State: AOAM533aorK0w7x0//kb7SRrOe1sFXDkY8qdOdGWkwge5PRov28rkBY6
+        yezPnzNoM/GnUEn9WDdqeg==
+X-Google-Smtp-Source: ABdhPJydS+y6C4SE9bnB/eY0GFTj76KejxPRwA3cPRPWNm3aKDpDwriU4T1PtWSn1k5qw2lPTbQDWw==
+X-Received: by 2002:a54:4d83:: with SMTP id y3mr13034438oix.97.1620349696505;
+        Thu, 06 May 2021 18:08:16 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id p65sm721005oia.46.2021.05.06.18.08.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 18:08:15 -0700 (PDT)
+Received: (nullmailer pid 1118308 invoked by uid 1000);
+        Fri, 07 May 2021 01:08:14 -0000
+Date:   Thu, 6 May 2021 20:08:14 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Billy Tsai <billy_tsai@aspeedtech.com>
+Cc:     lee.jones@linaro.org, joel@jms.id.au, andrew@aj.id.au,
+        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
+        p.zabel@pengutronix.de, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        linux-pwm@vger.kernel.org, BMC-SW@aspeedtech.com
+Subject: Re: [v3 1/2] dt-bindings: Add bindings for aspeed pwm-tach and pwm.
+Message-ID: <20210507010814.GB1110621@robh.at.kernel.org>
+References: <20210506061050.8001-1-billy_tsai@aspeedtech.com>
+ <20210506061050.8001-2-billy_tsai@aspeedtech.com>
 MIME-Version: 1.0
-In-Reply-To: <20210505120503.781531508@linuxfoundation.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.178.208]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506061050.8001-2-billy_tsai@aspeedtech.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 2021/5/5 20:05, Greg Kroah-Hartman wrote:
-> This is the start of the stable review cycle for the 4.19.190 release.
-> There are 15 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Thu, May 06, 2021 at 02:10:49PM +0800, Billy Tsai wrote:
+> This patch adds device bindings for aspeed pwm-tach device which is a
+> multi-function device include pwn and tach function and pwm device which
+> should be the sub-node of pwm-tach device.
 > 
-> Responses should be made by Fri, 07 May 2021 12:04:54 +0000.
-> Anything received after that time might be too late.
+> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
+> ---
+>  .../bindings/mfd/aspeed,ast2600-pwm-tach.yaml | 55 +++++++++++++++++++
+>  .../bindings/pwm/aspeed,ast2600-pwm.yaml      | 41 ++++++++++++++
+>  2 files changed, 96 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+>  create mode 100644 Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
 > 
-> The whole patch series can be found in one patch at:
-> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.190-rc1.gz
-> or in the git tree and branch at:
-> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
-> and the diffstat can be found below.
-> 
-> thanks,
-> 
-> greg k-h
-> 
+> diff --git a/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml b/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+> new file mode 100644
+> index 000000000000..9626bbd50acd
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
+> @@ -0,0 +1,55 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (C) 2021 ASPEED, Inc.
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/mfd/aspeed,ast2600-pwm-tach.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: PWM Tach controller Device Tree Bindings
+> +
+> +description: |
+> +  The PWM Tach controller is represented as a multi-function device which
+> +  includes:
+> +    PWM
+> +    Tach
+> +
+> +maintainers:
+> +  - Billy Tsai <billy_tsai@aspeedtech.com>
+> +
+> +properties:
+> +  compatible:
+> +    items:
+> +      - enum:
+> +          - aspeed,ast2600-pwm-tach
+> +      - const: syscon
+> +      - const: simple-mfd
+> +  reg:
+> +    maxItems: 1
+> +  clocks:
+> +    maxItems: 1
+> +  resets:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - clocks
+> +  - resets
+> +
+> +additionalProperties:
+> +  type: object
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/ast2600-clock.h>
+> +    pwm_tach: pwm_tach@1e610000 {
+> +      compatible = "aspeed,ast2600-pwm-tach", "syscon", "simple-mfd";
+> +      reg = <0x1e610000 0x100>;
+> +      clocks = <&syscon ASPEED_CLK_AHB>;
+> +      resets = <&syscon ASPEED_RESET_PWM>;
+> +
+> +      pwm: pwm {
+> +        compatible = "aspeed,ast2600-pwm";
+> +        #pwm-cells = <3>;
 
-Tested on arm64 and x86 for 4.19.190-rc1,
+There's no need for a child node here. Just put #pwm-cells in the 
+parent node.
 
-Kernel repo:
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
-Branch: linux-4.19.y
-Version: 4.19.190-rc1
-Commit: 5a3ba2f90f8789162a03e07a37224bab4c643d1d
-Compiler: gcc version 7.3.0 (GCC)
+Of course this all looks incomplete if you ever plan to hook up fans and 
+have more than 1 PWM and Tach signal.
 
-arm64:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8435
-passed: 8435
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-x86:
---------------------------------------------------------------------
-Testcase Result Summary:
-total: 8435
-passed: 8435
-failed: 0
-timeout: 0
---------------------------------------------------------------------
-
-Tested-by: Hulk Robot <hulkrobot@huawei.com>
+> +      };
+> +    };
