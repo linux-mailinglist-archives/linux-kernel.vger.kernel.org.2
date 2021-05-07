@@ -2,47 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 37280376274
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:59:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5C7937627D
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:00:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236514AbhEGJAQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 05:00:16 -0400
-Received: from foss.arm.com ([217.140.110.172]:50330 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235546AbhEGJAP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 05:00:15 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B198D106F;
-        Fri,  7 May 2021 01:59:15 -0700 (PDT)
-Received: from bogus (unknown [10.57.33.10])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 359DD3F718;
-        Fri,  7 May 2021 01:59:14 -0700 (PDT)
-Date:   Fri, 7 May 2021 09:59:11 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     cristian.marussi@arm.com, rjw@rjwysocki.net,
-        viresh.kumar@linaro.org, nicola.mazzucato@arm.com,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] cpufreq: scmi: Fix an error message
-Message-ID: <20210507085911.yqdwutmn5rev7xdv@bogus>
-References: <b0c09698216af60d97bfd30b55bad89dc0f70112.1620328067.git.christophe.jaillet@wanadoo.fr>
+        id S236541AbhEGJBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 05:01:03 -0400
+Received: from frasgout.his.huawei.com ([185.176.79.56]:3034 "EHLO
+        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236530AbhEGJBB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 05:01:01 -0400
+Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.206])
+        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fc44d3ChRz6rnCk;
+        Fri,  7 May 2021 16:54:09 +0800 (CST)
+Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
+ fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2176.2; Fri, 7 May 2021 11:00:00 +0200
+Received: from [10.47.82.108] (10.47.82.108) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 7 May 2021
+ 09:59:59 +0100
+Subject: Re: [PATCH] perf jevents: Silence warning for ArchStd files
+To:     Ian Rogers <irogers@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        "Namhyung Kim" <namhyung@kernel.org>,
+        Kajol Jain <kjain@linux.ibm.com>,
+        Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Kim Phillips <kim.phillips@amd.com>,
+        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20210506225640.1461000-1-irogers@google.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <4f9a4f20-82ac-dd68-4aee-b560396755f2@huawei.com>
+Date:   Fri, 7 May 2021 09:59:30 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b0c09698216af60d97bfd30b55bad89dc0f70112.1620328067.git.christophe.jaillet@wanadoo.fr>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20210506225640.1461000-1-irogers@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.47.82.108]
+X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 09:09:48PM +0200, Christophe JAILLET wrote:
-> 'ret' is known to be 0 here.
-> The last error code is stored in 'nr_opp', so use it in the error message.
->
+On 06/05/2021 23:56, Ian Rogers wrote:
+> json files in the level 1 directory are used for ArchStd events (see
+> preprocess_arch_std_files), as such they shouldn't be warned about.
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+>   tools/perf/pmu-events/jevents.c | 6 ++++--
+>   1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+> index ed4f0bd72e5a..7422b0ea8790 100644
+> --- a/tools/perf/pmu-events/jevents.c
+> +++ b/tools/perf/pmu-events/jevents.c
+> @@ -1123,8 +1123,10 @@ static int process_one_file(const char *fpath, const struct stat *sb,
+>   			mapfile = strdup(fpath);
+>   			return 0;
+>   		}
+> -
+> -		pr_info("%s: Ignoring file %s\n", prog, fpath);
+> +		if (is_json_file(bname))
+> +			pr_debug("%s: ArchStd json is preprocessed %s\n", prog, fpath)
+We could get more elaborate and add the same first debug print in 
+process_one_file() to preprocess_arch_std_file() to give the allusion 
+that they are preprocessed, and change the logic not print that for arch 
+std files (in process_one_file()). But not sure it's worth it.
 
-Reviewed-by: Sudeep Holla <sudeep.holla@arm.com>
+Or else we could also just omit any print here for archstd files here.
 
---
-Regards,
-Sudeep
+But I suppose what you are doing is ok...
+
+Thanks,
+John
+
+> +		else
+> +			pr_info("%s: Ignoring file %s\n", prog, fpath);
+>   		return 0;
+>   	}
+>   
+> 
+
