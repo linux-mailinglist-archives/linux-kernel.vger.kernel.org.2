@@ -2,85 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93F83376AA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 21:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69237376AA3
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 21:22:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229542AbhEGTXM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 15:23:12 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:50911 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229748AbhEGTXL (ORCPT
+        id S229864AbhEGTXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 15:23:21 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:51386 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229606AbhEGTXU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 15:23:11 -0400
-Received: from smtpclient.apple (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 7E6F4CECE9;
-        Fri,  7 May 2021 21:30:00 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH] bluetooth: fix potential gfp
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <YJVnxe2s5LWhGS6t@hovoldconsulting.com>
-Date:   Fri, 7 May 2021 21:22:09 +0200
-Cc:     Pavel Skripkin <paskripkin@gmail.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>, linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: 7bit
-Message-Id: <C8DBF891-99FF-4B21-A7EA-57C07DCF1DFF@holtmann.org>
-References: <20210501150445.4055-1-paskripkin@gmail.com>
- <9A08CBDA-3501-48F6-9F7A-60958C5CF888@holtmann.org>
- <YJU8iP+O9aSYwYp/@hovoldconsulting.com>
- <CDE30B55-E91B-4513-80E4-2198F8A32217@holtmann.org>
- <YJVdJEMKz6YcnwOW@hovoldconsulting.com>
- <BFCF660F-B919-47EB-874D-5568E41927C6@holtmann.org>
- <YJVnxe2s5LWhGS6t@hovoldconsulting.com>
-To:     Johan Hovold <johan@kernel.org>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        Fri, 7 May 2021 15:23:20 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620415339;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ORUuoUk8DJpvMhKQmGSDce5dSlAguNz2DeA4Kqt7HbQ=;
+        b=bjhQDjeBlOjjsz24EuAiTVQam0CwX43eBcx/62NQHMC/Gb5w0WUzKL9Udvo20IvjRLQeoV
+        GeumJrz+67KiP6l60XJiDJq0BFWsn8qS0rFknBhS6SbOHYk6qX1tj3X6gc8kvSEbrdx5p0
+        7OZpcEiZhtsn5KA9Y0zOAN9dWrnIGvTA/voSCJdcXK5RgMhWCdZf5oe1322Oe8ULw+RF1V
+        /RQss4faY0+057dfPvfMP8uXrMb9hSC8igfriVyw27yKci7iXHk7ZdRIKWcclpOA5faVWE
+        208MneA3Q5/7KgtJiLzOAz+e5GWyoM0tiFVJ/k18y4guswq9zgGnqStvTUNuEA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620415339;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=ORUuoUk8DJpvMhKQmGSDce5dSlAguNz2DeA4Kqt7HbQ=;
+        b=tclfaHK/1ZJRJghVXP1ksCNWC85cpf/DqYc+NVH3+t2rPEjNLEtjYGBffvj0+MxFoT6CLy
+        H/sAnp8YPNvZiRDA==
+To:     Andy Lutomirski <luto@kernel.org>
+Cc:     Dave Hansen <dave.hansen@intel.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Len Brown <lenb@kernel.org>, Borislav Petkov <bp@alien8.de>,
+        Willy Tarreau <w@1wt.eu>, Andy Lutomirski <luto@kernel.org>,
+        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-abi@vger.kernel.org,
+        "libc-alpha\@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+In-Reply-To: <CALCETrWG7E2LCSyvaay05R4Sa3mU_t5C5W4rYGuA3+dzaBF9tQ@mail.gmail.com>
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu> <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com> <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com> <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com> <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com> <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com> <87bl9s8kfb.fsf@oldenburg.str.redhat.com> <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com> <87o8dmmljh.ffs@nanos.tec.linutronix.de> <CALCETrWG7E2LCSyvaay05R4Sa3mU_t5C5W4rYGuA3+dzaBF9tQ@mail.gmail.com>
+Date:   Fri, 07 May 2021 21:22:18 +0200
+Message-ID: <87lf8qmjrp.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Johan,
+On Fri, May 07 2021 at 11:50, Andy Lutomirski wrote:
 
->>>>>>> In qca_power_shutdown() qcadev local variable is
->>>>>>> initialized by hu->serdev.dev private data, but
->>>>>>> hu->serdev can be NULL and there is a check for it.
->>>>>>> 
->>>>>>> Since, qcadev is not used before
->>>>>>> 
->>>>>>> 	if (!hu->serdev)
->>>>>>> 		return;
->>>>>>> 
->>>>>>> we can move its initialization after this "if" to
->>>>>>> prevent gfp.
->>>>>>> 
->>>>>>> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
->>>>>>> ---
->>>>>>> drivers/bluetooth/hci_qca.c | 4 ++--
->>>>>>> 1 file changed, 2 insertions(+), 2 deletions(-)
->>>>>> 
->>>>>> patch has been applied to bluetooth-next tree.
->>>>> 
->>>>> Why did you pick the v1 when it is clear from thread that a v2 has been
->>>>> posted?
->>>> 
->>>> because I only saw that email after I applied the patch and the v2 is
->>>> nowhere in sight as it seems. If it shows up, I replace this one then.
->>> 
->>> Here it is
->>> 
->>> 	https://lore.kernel.org/lkml/20210503100605.5223-1-paskripkin@gmail.com/
->> 
->> seems to have missed my inbox. Fixed now.
-> 
-> Would you mind adding my Reviewed-by tag from the reply to that patch as
-> well?
+> On Fri, May 7, 2021 at 11:44 AM Thomas Gleixner <tglx@linutronix.de> wrote:
+>>
+>> On Mon, May 03 2021 at 06:43, Dave Hansen wrote:
+>> > On 5/2/21 10:18 PM, Florian Weimer wrote:
+>> >>> 5. If the feature is enabled in XCR0, the user happily uses it.
+>> >>>
+>> >>>     For AMX, Linux implements "transparent first use"
+>> >>>     so that it doesn't have to allocate 8KB context switch
+>> >>>     buffers for tasks that don't actually use AMX.
+>> >>>     It does this by arming XFD for all tasks, and taking a #NM
+>> >>>     to allocate a context switch buffer only for those tasks
+>> >>>     that actually execute AMX instructions.
+>> >> What happens if the kernel cannot allocate that additional context
+>> >> switch buffer?
+>> >
+>> > Well, it's vmalloc()'d and currently smaller that the kernel stack,
+>> > which is also vmalloc()'d.  While it can theoretically fail, if it
+>> > happens you have bigger problems on your hands.
+>>
+>> Such a buffer allocation might also exceed a per process/cgroup
+>> limitation. Anything else which is accounted happens in syscall context
+>> which then returns an error on which the application can react.
+>>
+>> So what's the consequence when the allocation fails? Kill it right away
+>> from #NM? Kill it on the first signal? Do nothing and see what happens?
+>>
+> It has to be an immediate signal or kill.
 
-sure thing.
+Killing it right there is the only sensible thing to do.
 
-Regards
+> A failure to load FPU state is somewhat tolerable (and has to be for
+> CET), but a failure to *save* FPU state on a context switch would be a
+> really nasty can of worms.
 
-Marcel
+:)
 
+> At the very least we will want arch_prctl(ARCH_ALLOCTE_XSTATE, mask)
+> to allow HPC workloads to manually allocate the state and get an error
+> code if it fails.
+
+Yes.
+
+Thanks,
+
+        tglx
