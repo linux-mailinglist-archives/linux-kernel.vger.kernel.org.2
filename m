@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CE6B3764EB
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:12:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1811F376501
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:20:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236156AbhEGMNx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:13:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54406 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235823AbhEGMNv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:13:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57CBEC061574;
-        Fri,  7 May 2021 05:12:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=k+dVAaeGDRsnm7EmZB30VNrWQIAr0E+eqyzh293MfUQ=; b=nSYc1btXv3M2cw8GwJYsDpojwf
-        8fALC/wqrfHNdOiQ2do676uByniOeGmKNO5onornYVp9Aqh1bdkst+q9Zur5Km6mVCOGnf5oWGlf/
-        +Y3htQnDJAj/9e9kFhwcUw9+ohnIOmCXKcw+nGxbDdymITysK3JWwVu5hoK4r6k+bR/c7zbQi5Hqq
-        sWrJD0VUWbZuzE3STv5H9Q8sz51G58WmaD823jZxmH0i58oWchef4JoedBUmRkLaWuy07Fe00ntTh
-        af/iaNLYW2BBi42t+PvFiwGoC9OugycjFbmz7o4freBLANqQP1R+2vVUWEiuSEa3mK6WdGVlBaIzQ
-        uenoHALQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1lezL8-0039ft-PK; Fri, 07 May 2021 12:12:32 +0000
-Date:   Fri, 7 May 2021 13:12:18 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Ondrej Mosnacek <omosnace@redhat.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>, selinux@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        James Morris <jmorris@namei.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] debugfs: fix security_locked_down() call for SELinux
-Message-ID: <YJUuoiKFjM8Jdx6U@casper.infradead.org>
-References: <20210507114150.139102-1-omosnace@redhat.com>
- <YJUseJLHBdvKYEOK@kroah.com>
+        id S236331AbhEGMVq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:21:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49208 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229637AbhEGMVp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 08:21:45 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 862746144F;
+        Fri,  7 May 2021 12:20:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620390045;
+        bh=+UDEkNthDyGtOTchh5vC4lABQ4yWmQP1bEakFLVxwqA=;
+        h=From:To:Cc:Subject:Date:From;
+        b=MbqFpogPuHpoSOYx5L+TYLP/gBK2PW4sjx96WeYJoujBi7bdXbYX01kKDiAC/GPD9
+         DLtrqzWrigSSoIzGxB8DdvDiYyUjwEhDa8B6hnBpkd/N+NpQJ6nWlkqJtKrcXVZ45M
+         uZdqldj0c5tYEwruktElmk/ysc76vPeIZ+BFSRD1mBlBQDBUQCHvlGR9I8lD10e0Ph
+         nS6/KZC8nFYKXlol/QJ7lhG6Oul0jgvd9zbWWNjTxK/PRgV751384pZklx6iXDrEiN
+         5KfKu7aDADwP47esOLMeGYP7yFPIUZmAR91PhRMxUABomBZaRgNg/mRVFPtxhVG6Db
+         HUiVgYHOReyxg==
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Russell King <linux@armlinux.org.uk>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jessica Yu <jeyu@kernel.org>
+Subject: [PATCH] ARM: module: treat exit sections the same as init sections when !CONFIG_MODULE_UNLOAD
+Date:   Fri,  7 May 2021 14:13:22 +0200
+Message-Id: <20210507121322.6441-1-jeyu@kernel.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJUseJLHBdvKYEOK@kroah.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 02:03:04PM +0200, Greg Kroah-Hartman wrote:
-> On Fri, May 07, 2021 at 01:41:50PM +0200, Ondrej Mosnacek wrote:
-> > Make sure that security_locked_down() is checked last so that a bogus
-> > denial is not reported by SELinux when (ia->ia_valid & (ATTR_MODE |
-> > ATTR_UID | ATTR_GID)) is zero.
-> 
-> Why would this be "bogus"?
+Dynamic code patching (alternatives, jump_label and static_call) can
+have sites in __exit code, even if __exit is never executed. Therefore
+__exit must be present at runtime, at least for as long as __init code is.
 
-I presume selinux is logging a denial ... but we don't then actually
-deny the operation.
+Additionally, for jump_label and static_call, the __exit sites must also
+identify as within_module_init(), such that the infrastructure is aware
+to never touch them after module init -- alternatives are only ran once
+at init and hence don't have this particular constraint.
 
-> > Note: this was introduced by commit 5496197f9b08 ("debugfs: Restrict
-> > debugfs when the kernel is locked down"), but it didn't matter at that
-> > time, as the SELinux support came in later.
-> > 
-> > Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
-> 
-> What does this "fix"?
-> 
-> What is happening in selinux that it can not handle this sequence now?
-> That commit showed up a long time ago, this feels "odd"...
-> 
-> thanks,
-> 
-> greg k-h
+Previously, the module loader never loaded the exit sections in the first
+place when CONFIG_MODULE_UNLOAD=n. Commit 33121347fb1c ("module: treat exit
+sections the same as init sections when !CONFIG_MODULE_UNLOAD") addressed
+the issue by having the module loader load the exit sections and then making
+__exit identify as __init for !MODULE_UNLOAD. Then, since they are treated
+like init sections, they will be also discarded after init.
+
+That commit satisfied the above requirements for jump_labels and
+static_calls by modifying the checks in the core module_init_section()
+function in kernel/module.c to include exit sections. However, ARM
+overrides these and implements their own module_{init,exit}_section()
+functions. Add a similar check for exit sections to ARM's
+module_init_section() function so that all arches are on the same page.
+
+Fixes: 33121347fb1c ("module: treat exit sections the same as init
+sections when !CONFIG_MODULE_UNLOAD")
+Link: https://lore.kernel.org/lkml/YFiuphGw0RKehWsQ@gunter/
+Link: https://lore.kernel.org/r/20210323142756.11443-1-jeyu@kernel.org
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
+---
+ arch/arm/kernel/module.c | 7 +++++++
+ 1 file changed, 7 insertions(+)
+
+diff --git a/arch/arm/kernel/module.c b/arch/arm/kernel/module.c
+index beac45e89ba6..9d403fc1893b 100644
+--- a/arch/arm/kernel/module.c
++++ b/arch/arm/kernel/module.c
+@@ -56,9 +56,16 @@ void *module_alloc(unsigned long size)
+ 
+ bool module_init_section(const char *name)
+ {
++#ifndef CONFIG_MODULE_UNLOAD
++	return strstarts(name, ".init") ||
++		strstarts(name, ".ARM.extab.init") ||
++		strstarts(name, ".ARM.exidx.init") ||
++		module_exit_section(name);
++#else
+ 	return strstarts(name, ".init") ||
+ 		strstarts(name, ".ARM.extab.init") ||
+ 		strstarts(name, ".ARM.exidx.init");
++#endif
+ }
+ 
+ bool module_exit_section(const char *name)
+-- 
+2.31.1
+
