@@ -2,185 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA48F3764DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:04:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C56E3764E0
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:06:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235984AbhEGMFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:05:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232559AbhEGMFe (ORCPT
+        id S236061AbhEGMHL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:07:11 -0400
+Received: from sender4-of-o53.zoho.com ([136.143.188.53]:21368 "EHLO
+        sender4-of-o53.zoho.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232559AbhEGMHJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:05:34 -0400
-Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADC0C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 05:04:34 -0700 (PDT)
-Received: by mail-vs1-xe33.google.com with SMTP id d25so4560664vsp.1
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 05:04:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cQHsYCv/veghSWphtSoC5Y2vDR65oOelmQfRVgs2/nY=;
-        b=xWIa52Ewjy8iAbEUz1PZVMFV+vl9x6urA4NnFkUj04WJ8ccEyDY9POZgIcJQttEd9d
-         qGJXEoIxSz6WPMsRlGTW6nRKrnFMnfaZgHYcOdYKV3YscdLyoJQONjOk/w5Fmj4y2x2u
-         G+y3Eg+Vpd9/Tje2+QZ2IORMVtx2qrbbDeUYZI0FoQkxPCAyrMFlw18+NcAx7EzZY/tR
-         aKyxJRgkwkJXPWRmsw/u+TCSyLVJZ56IKlFkWVwJ7z1nBJ/vND9JfZr1wHvpt20cStiv
-         zUpisAXnBTPB3skH3Nj17yo6s88+2bfu7jSNCGk3NIA+UQIbm7r+LqqFmPAduoEypUZ1
-         hvOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cQHsYCv/veghSWphtSoC5Y2vDR65oOelmQfRVgs2/nY=;
-        b=bPVWofbHv7SeHz9QRgQib+znqbwQRQXJk9ZqqbUzpEiUqWgwLOll/d6OHooIA5oYQe
-         rpOdYhqHHvB1L1qQv/t8C0x2wN9NmkTWos4J3aO7xwxkKirghb8PnYn2R3YUt55Bb079
-         oczyCxy3rJyv7C53ehBfzLfVpoomza5JEipXwVoOfK5/tXsBiNmqu4B1hN8y8a6Ltzrm
-         G3DEIWoRdNeQGaJpHklfIAN82NFJ5ynqjSfhew3PDTPFrDel+qiGbbqLP6W0QXFxDiuF
-         cU+dBeRUcS5NR3fPYW/1HAzatxtMgcQY2ft5tNrkWndrgXped6eRbmTePbv1KozwM8Bm
-         CMiA==
-X-Gm-Message-State: AOAM5313aJdy3SRU/hEbqQyEljvjPeggPi71CcN5cBnuxnn9bFSOgPtW
-        2CDWAWE6tIDAvn1bmLUR02JJWoZ4ORj4dfFMKEMkWg==
-X-Google-Smtp-Source: ABdhPJwM/BRpKmh0zWcpYmBXd8iYZX7X+0IZgY1frY8trVcEq+DpmrHdNypgNdSsBTfenafQZ0Hp2GJfD8IUw4d79r8=
-X-Received: by 2002:a67:64c5:: with SMTP id y188mr7319294vsb.19.1620389073750;
- Fri, 07 May 2021 05:04:33 -0700 (PDT)
+        Fri, 7 May 2021 08:07:09 -0400
+ARC-Seal: i=1; a=rsa-sha256; t=1620389165; cv=none; 
+        d=zohomail.com; s=zohoarc; 
+        b=UpEQCoHhDQKGv6r3fN5d01+wDAwQaB1PKZypPzxAbm+lLmM2wexZhU2ssq64TTDHEGDpi6Z7Leq9mUoWbHhPb6s9JH8lQ5uqSnKcwmyMFNpz+7dOeGyzULAYlO1YUn7RXO/OKv6fc9IpDRosMfO30LqV/Qlq85e1D0jz3vtgZZU=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+        t=1620389165; h=Content-Type:Content-Transfer-Encoding:Cc:Date:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:To; 
+        bh=p3Pk7bLis/jKEPW//LziYX2PKmJ0sD7MTLSUsjG64FY=; 
+        b=j1ByB3WR3rZwytaAv+0v8Z/SJME8GbXvIuGCXIgrJUPYgwNnPko1mJgrRDdyEzLbN271WXWM5cujJWkQ0da8CPg5l5tB4V5Vxsk8hZVcGU9RawknpVL+R+GC21PBICc+uR7YveSA92mDa/OYdzF8OH/9vj+ESM47qXxjDAv1SEo=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+        dkim=pass  header.i=anirudhrb.com;
+        spf=pass  smtp.mailfrom=mail@anirudhrb.com;
+        dmarc=pass header.from=<mail@anirudhrb.com> header.from=<mail@anirudhrb.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1620389165;
+        s=zoho; d=anirudhrb.com; i=mail@anirudhrb.com;
+        h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To;
+        bh=p3Pk7bLis/jKEPW//LziYX2PKmJ0sD7MTLSUsjG64FY=;
+        b=ldO7Q7pbL1ogBwqgRQXuzZQacYC8EuRrU5lnBkIuqD7DOnIy5F+KDi9Y5tWWe1ql
+        oJjTvogwD9Y+Spmp90lNSzpIgIKX4Gurrcp38xyNCiyUgzHldy4BmWSTskC7uJ0OQ8R
+        3unZnjdO1DZiOfDn46sxxWqHFGH6ctabQ60K9uZQ=
+Received: from anirudhrb.com (49.207.210.243 [49.207.210.243]) by mx.zohomail.com
+        with SMTPS id 1620389154890739.5910943620871; Fri, 7 May 2021 05:05:54 -0700 (PDT)
+Date:   Fri, 7 May 2021 17:35:48 +0530
+From:   Anirudh Rayabharam <mail@anirudhrb.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Matt Porter <mporter@kernel.crashing.org>,
+        Alexandre Bounine <alex.bou9@gmail.com>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] rapidio: fix unused variable warning in rio_cm.c
+Message-ID: <YJUtHCSm//0PlyYf@anirudhrb.com>
+References: <20210506181837.4758-1-mail@anirudhrb.com>
+ <YJTgmXwZyOgFPIHf@kroah.com>
 MIME-Version: 1.0
-References: <20210505110915.6861-1-tony@atomide.com>
-In-Reply-To: <20210505110915.6861-1-tony@atomide.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 7 May 2021 14:03:57 +0200
-Message-ID: <CAPDyKFp36huF2Gu19T+KvUm90xSsd97VDCxst1KT+Qf0F5Vm5g@mail.gmail.com>
-Subject: Re: [PATCH] PM: runtime: Fix unpaired parent child_count for force_resume
-To:     Tony Lindgren <tony@atomide.com>
-Cc:     "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <YJTgmXwZyOgFPIHf@kroah.com>
+X-ZohoMailClient: External
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 5 May 2021 at 13:09, Tony Lindgren <tony@atomide.com> wrote:
->
-> As pm_runtime_need_not_resume() relies also on usage_count, it can return
-> a different value in pm_runtime_force_suspend() compared to when called in
-> pm_runtime_force_resume(). Different return values can happen if anything
-> calls PM runtime functions in between, and causes the parent child_count
-> to increase on every resume.
->
-> So far I've seen the issue only for omapdrm that does complicated things
-> with PM runtime calls during system suspend for legacy reasons:
->
-> omap_atomic_commit_tail() for omapdrm.0
->  dispc_runtime_get()
->   wakes up 58000000.dss as it's the dispc parent
->    dispc_runtime_resume()
->     rpm_resume() increases parent child_count
->  dispc_runtime_put() won't idle, PM runtime suspend blocked
-> pm_runtime_force_suspend() for 58000000.dss, !pm_runtime_need_not_resume()
->  __update_runtime_status()
-> system suspended
-> pm_runtime_force_resume() for 58000000.dss, pm_runtime_need_not_resume()
->  pm_runtime_enable() only called because of pm_runtime_need_not_resume()
-> omap_atomic_commit_tail() for omapdrm.0
->  dispc_runtime_get()
->   wakes up 58000000.dss as it's the dispc parent
->    dispc_runtime_resume()
->     rpm_resume() increases parent child_count
->  dispc_runtime_put() won't idle, PM runtime suspend blocked
-> ...
-> rpm_suspend for 58000000.dss but parent child_count is now unbalanced
->
-> Let's fix the issue by adding a flag for needs_force_resume and use it in
-> pm_runtime_force_resume() instead of pm_runtime_need_not_resume().
+On Fri, May 07, 2021 at 08:39:21AM +0200, Greg KH wrote:
+> On Thu, May 06, 2021 at 11:48:36PM +0530, Anirudh Rayabharam wrote:
+> > GCC produces an unused variable warning for 'rc':
+> > 
+> > 	drivers/rapidio/rio_cm.c: In function ‘rio_txcq_handler’:
+> > 	drivers/rapidio/rio_cm.c:673:7: warning: variable ‘rc’ set but
+> > 	not used [-Wunused-but-set-variable]
+> > 
+> > The return value of rio_add_outb_message() is assigned to 'rc' but it
+> > is never used. Fix this warning by logging an error if 'rc' is non-zero.
+> > 
+> > Signed-off-by: Anirudh Rayabharam <mail@anirudhrb.com>
+> > ---
+> > 
+> > Changes in v2:
+> > Log an error instead of just removing 'rc'.
+> > 
+> > v1: https://lore.kernel.org/lkml/20210501055018.9244-1-mail@anirudhrb.com/
+> > 
+> > ---
+> >  drivers/rapidio/rio_cm.c | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/drivers/rapidio/rio_cm.c b/drivers/rapidio/rio_cm.c
+> > index 50ec53d67a4c..971a36f1a23a 100644
+> > --- a/drivers/rapidio/rio_cm.c
+> > +++ b/drivers/rapidio/rio_cm.c
+> > @@ -677,6 +677,11 @@ static void rio_txcq_handler(struct cm_dev *cm, int slot)
+> >  			cm->tx_buf[cm->tx_slot] = req->buffer;
+> >  			rc = rio_add_outb_message(cm->mport, req->rdev, cmbox,
+> >  						  req->buffer, req->len);
+> > +			if (rc) {
+> > +				riocm_error("Failed to add msg to tx queue (err=%d)",
+> > +						rc);
+> 
+> That's pretty pointless (and no need for {}).
 
-Thanks for sharing the details, much appreciated.
+The point is that this fixes the compiler warning.
 
->
-> Additionally omapdrm system suspend could be simplified later on to avoid
-> lots of unnecessary PM runtime calls and the complexity it adds. The
-> driver can just use internal functions that are shared between the PM
-> runtime and system suspend related functions.
->
-> Fixes: 4918e1f87c5f ("PM / runtime: Rework pm_runtime_force_suspend/resume()")
+I used the {} because I had to split the statement into two lines and
+thought it is more readable with the {}. checkpatch didn't complain
+about it either.
 
-Actually, I think the problem has been there from the beginning
-(unless I am mistaken), when we introduced the functions. So maybe the
-fixes tag isn't entirely correct.
+> 
+> If an error happens, properly recover from it, don't just punt and tell
+> the user something bad happened and then ignore it.
 
-Although, I certainly think we should tag this for stable kernels.
+The primary motivation behind this patch is to fix the compiler warning.
+This error is ignored even in the current tree. My patch at least logs it
+so that people know that it's happening. And once they know that it's
+happening and someone wants to propagate the error code to userspace or
+handle it differently they can write a patch to do so.
 
-> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
-> Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> Signed-off-by: Tony Lindgren <tony@atomide.com>
+Thanks!
 
-Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-
-Kind regards
-Uffe
-
-> ---
->  drivers/base/power/runtime.c | 10 +++++++---
->  include/linux/pm.h           |  1 +
->  2 files changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/drivers/base/power/runtime.c b/drivers/base/power/runtime.c
-> --- a/drivers/base/power/runtime.c
-> +++ b/drivers/base/power/runtime.c
-> @@ -1637,6 +1637,7 @@ void pm_runtime_init(struct device *dev)
->         dev->power.request_pending = false;
->         dev->power.request = RPM_REQ_NONE;
->         dev->power.deferred_resume = false;
-> +       dev->power.needs_force_resume = 0;
->         INIT_WORK(&dev->power.work, pm_runtime_work);
->
->         dev->power.timer_expires = 0;
-> @@ -1804,10 +1805,12 @@ int pm_runtime_force_suspend(struct device *dev)
->          * its parent, but set its status to RPM_SUSPENDED anyway in case this
->          * function will be called again for it in the meantime.
->          */
-> -       if (pm_runtime_need_not_resume(dev))
-> +       if (pm_runtime_need_not_resume(dev)) {
->                 pm_runtime_set_suspended(dev);
-> -       else
-> +       } else {
->                 __update_runtime_status(dev, RPM_SUSPENDED);
-> +               dev->power.needs_force_resume = 1;
-> +       }
->
->         return 0;
->
-> @@ -1834,7 +1837,7 @@ int pm_runtime_force_resume(struct device *dev)
->         int (*callback)(struct device *);
->         int ret = 0;
->
-> -       if (!pm_runtime_status_suspended(dev) || pm_runtime_need_not_resume(dev))
-> +       if (!pm_runtime_status_suspended(dev) || !dev->power.needs_force_resume)
->                 goto out;
->
->         /*
-> @@ -1853,6 +1856,7 @@ int pm_runtime_force_resume(struct device *dev)
->
->         pm_runtime_mark_last_busy(dev);
->  out:
-> +       dev->power.needs_force_resume = 0;
->         pm_runtime_enable(dev);
->         return ret;
->  }
-> diff --git a/include/linux/pm.h b/include/linux/pm.h
-> --- a/include/linux/pm.h
-> +++ b/include/linux/pm.h
-> @@ -602,6 +602,7 @@ struct dev_pm_info {
->         unsigned int            idle_notification:1;
->         unsigned int            request_pending:1;
->         unsigned int            deferred_resume:1;
-> +       unsigned int            needs_force_resume:1;
->         unsigned int            runtime_auto:1;
->         bool                    ignore_children:1;
->         unsigned int            no_callbacks:1;
-> --
-> 2.31.1
+	- Anirudh.
