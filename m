@@ -2,92 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBDEB376810
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:32:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE8FE376812
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:33:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237909AbhEGPdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 11:33:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56106 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237859AbhEGPdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 11:33:10 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id E3F4B61460;
-        Fri,  7 May 2021 15:32:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620401530;
-        bh=O3zHx8gGy8AU49D+Cnr2TBWRAoXneuMN59DU/Ks3vhs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=RjOYIsvAC5gLtDgOeipF0F06gxKKV6y4oHApV4eIapZor+2Jwj5gHQ1ya1MhHIyme
-         bn61u5vsDc+ZcuMPSOH8v51zHMySSD8emcgVya6okdgrrzXFEwxxa//ImRHWGV1gJl
-         sHauyc5dg4V1lXYoUc+almVuAt38m/6XSH8ERigfRMQ7VQWrj8BibB6n8Q5FsVZ/cm
-         kvZ+evUd1a3JB8VP9Zh54XD9EHXQxm4XwVvCPMJ7P1rOOdwGkb7AAM04G8tAH2OFlK
-         0eu0oPZlAUEz/mqY+wnHxXUmeLJj3RCmP9mID3ZsScJvArFw7MoNkFYFTMyEy+EEP3
-         QZZHlc+e1zE9A==
-Date:   Fri, 7 May 2021 16:31:32 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH 4/6] spi: spi-mem: reject partial cycle transfers in
- 8D-8D-8D mode
-Message-ID: <20210507153132.GC6383@sirena.org.uk>
-References: <20210506191829.8271-1-p.yadav@ti.com>
- <20210506191829.8271-5-p.yadav@ti.com>
- <20210507125533.GA6383@sirena.org.uk>
- <20210507135631.maue7gorfzsv4qpk@ti.com>
+        id S237932AbhEGPeo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 11:34:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50240 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230386AbhEGPem (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 11:34:42 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620401621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=puuKmPm6gMZ82fM8Br4IvWjvLvrdClJN7zrP9vWnsN4=;
+        b=F2HHw5jqZ18/TJSN+SvvqP/QJ6Hb8JF8V6AByT7RqOvGGT64C4U6cUtD3tzZbZhV1uGO6x
+        x3xmpngQ6Jc2+ihmo4hc0IzJSo3oPKmqm+F784xhQ+/W/v9S48ZpSTnfMZEz4E9e08BsUW
+        TRsG6xpDRR1IamIYEv3eWjzZl1iU3m7ewjT2GvfL9SGj6uVmcK32ZNskLkn9BgYknM4idx
+        81ZGMrua+Gt0KHpcm9ePvdeWwxi1RNC2UYgmeLdWMggPThovD5N8uH2SLpGebKkD1wcjPn
+        k1HoBNsHQTrLPqZm+7qWvG8vzNTZMYZvtgoFGE07aVAyWMuRVAWb8vxhNEu/Cw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620401621;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=puuKmPm6gMZ82fM8Br4IvWjvLvrdClJN7zrP9vWnsN4=;
+        b=X0qMbXgBUxCljx/5QNwwodjxl8JaONvMXspXyQkEjNsi/fWn3iOcFwS2fjMiv9M0VwunGJ
+        n9J2nvRn/kh6/sBg==
+To:     "Saripalli\, RK" <rsaripal@amd.com>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, mingo@redhat.com,
+        bp@alien8.de, hpa@zytor.com, Jonathan Corbet <corbet@lwn.net>,
+        bsd@redhat.com, Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [PATCH v5 1/1] x86/cpufeatures: Implement Predictive Store Forwarding control.
+In-Reply-To: <661f2603-1db3-9601-617a-6cc44b6e94ab@amd.com>
+References: <20210505190923.276051-1-rsaripal@amd.com> <20210505190923.276051-2-rsaripal@amd.com> <87wnsamvaa.ffs@nanos.tec.linutronix.de> <661f2603-1db3-9601-617a-6cc44b6e94ab@amd.com>
+Date:   Fri, 07 May 2021 17:33:41 +0200
+Message-ID: <87tunemucq.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="/e2eDi0V/xtL+Mc8"
-Content-Disposition: inline
-In-Reply-To: <20210507135631.maue7gorfzsv4qpk@ti.com>
-X-Cookie: Postage will be paid by addressee.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 07 2021 at 10:23, RK Saripalli wrote:
+> On 5/7/2021 10:13 AM, Thomas Gleixner wrote:
+>> Something like the below. You get the idea.
+>
+> I agree and the first patchset did indeed treat this vulnerability just
+> like others. It was converted to this patchset based on reviews from the upstream
+> community.
 
---/e2eDi0V/xtL+Mc8
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Yes, I saw that and said so.
 
-On Fri, May 07, 2021 at 07:26:33PM +0530, Pratyush Yadav wrote:
+But I fundamentaly disagree with that for the reasons I mentioned. Sorry
+for not paying attention early on.
 
-> Patches 2 and 3 are a slightly different matter. They add an extra=20
-> register write. But most controllers I've come across don't support=20
-> 1-byte writes in 8D mode. It is likely that they are sending=20
-> bogus/undefined values in the second byte and deasserting CS only after=
-=20
-> the cycle is done. So they should _in theory_ change undefined behaviour=
-=20
-> to defined behaviour.
+Thanks,
 
-> Still, they introduce an extra register write. I'm not sure how=20
-> risk-tolerant you want to be for stable backports. I will leave the=20
-> judgement to you or Tudor or Vignesh.
+        tglx
 
-Ah, given that if nobody's seeing any issues I'd probably just hold off
-there TBH.
-
---/e2eDi0V/xtL+Mc8
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCVXVQACgkQJNaLcl1U
-h9B8HAf9GZh6wXoQyIjqchDq4kgwLgCdMTMAnT1LjmrcRaeTiLr30MVfyjO+eLan
-tCZYatA9w4eVKm2NbXI1G0JqZ+ZlmuGlgFEb1kRrSdWn/A6rUF0fHlCjygq6wQTR
-GBqZ4wWImXKcry+Wc8GsZWggtV7XCkQYE3bp4l2QfXkhFtASgPkSYtLfYbOOKjOP
-1Xpc4kqpfpaZIRDPJKqwTykeJaeTxY+T3Lfz/IUjFUa9mtr0RC6FjnA5+ekboY4C
-pEMICHbnrt2WDRAk6HXqypb5N+HJ2V84XLi3Q/uMjFlgC4+2lLe/OEIkgzGDJns3
-8/2LTp0aNJ+CgvTMYbnSmdorhvF2wA==
-=+ofb
------END PGP SIGNATURE-----
-
---/e2eDi0V/xtL+Mc8--
