@@ -2,158 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAF2137632E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:58:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7158A376332
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234097AbhEGJ7c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 05:59:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:53158 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233487AbhEGJ73 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 05:59:29 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 93F1C113E;
-        Fri,  7 May 2021 02:58:29 -0700 (PDT)
-Received: from e121896.arm.com (unknown [10.57.84.144])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPA id 8F2C23F718;
-        Fri,  7 May 2021 02:58:25 -0700 (PDT)
-From:   James Clark <james.clark@arm.com>
-To:     coresight@lists.linaro.org, mathieu.poirier@linaro.org
-Cc:     al.grant@arm.com, branislav.rankov@arm.com, denik@chromium.org,
-        suzuki.poulose@arm.com, anshuman.khandual@arm.com,
-        James Clark <james.clark@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Leo Yan <leo.yan@linaro.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        John Garry <john.garry@huawei.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [RFC PATCH] perf cs-etm: Handle valid-but-zero timestamps
-Date:   Fri,  7 May 2021 12:58:13 +0300
-Message-Id: <20210507095814.17933-1-james.clark@arm.com>
-X-Mailer: git-send-email 2.28.0
+        id S234637AbhEGKAe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 06:00:34 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.85.151]:58918 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233487AbhEGKAc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 06:00:32 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-124-XIgOuarZNwyN-c2JrDVmUg-1; Fri, 07 May 2021 10:59:29 +0100
+X-MC-Unique: XIgOuarZNwyN-c2JrDVmUg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Fri, 7 May 2021 10:59:27 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Fri, 7 May 2021 10:59:27 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Steven Price' <steven.price@arm.com>,
+        Catalin Marinas <catalin.marinas@arm.com>
+CC:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        "Suzuki K Poulose" <suzuki.poulose@arm.com>,
+        "kvmarm@lists.cs.columbia.edu" <kvmarm@lists.cs.columbia.edu>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Dave Martin <Dave.Martin@arm.com>,
+        "Mark Rutland" <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+Subject: RE: [PATCH v11 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
+Thread-Topic: [PATCH v11 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
+Thread-Index: AQHXQyWd0YdlNuDzYEavAjiQNQoHN6rXyCEQ
+Date:   Fri, 7 May 2021 09:59:27 +0000
+Message-ID: <42fd9c5ceb974be3b2aae5dd288507e8@AcuMS.aculab.com>
+References: <20210416154309.22129-1-steven.price@arm.com>
+ <20210416154309.22129-6-steven.price@arm.com>
+ <20210427175844.GB17872@arm.com>
+ <340d35c2-46ed-35ea-43fa-e5cb64c27230@arm.com> <YJGIBTor+blelKKT@arm.com>
+ <25c85740-0119-549e-6ddb-aea69c5efc76@arm.com>
+In-Reply-To: <25c85740-0119-549e-6ddb-aea69c5efc76@arm.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is an intermittent issue on Trogdor devices that
-results in all Coresight timestamps having a value of zero.
-Because zero is currently treated as "not found" rather
-than "found but zero", this breaks the decoding flow
-when it would otherwise work.
-
-This patch adds an out parameter and return code so
-the difference between zero and non-existent timestamps
-can be determined.
-
-There is also a change to fix an underflow.
-
-Although this is a workaround, the change is technically
-a valid way of writing the cs_etm__etmq_get_timestamp()
-function. It could have been written similarly to this
-without trying to work around this issue, so it's no less
-correct. But, because it's a workaround to a problem
-elsewhere, I will submit this as an RFC for feedback.
-
-This patch applies on top of the "[PATCH v2 0/2] perf
-cs-etm: Set time on synthesised samples to preserve ordering"
-patchset.
-
-Co-developed-by: Denis Nikitin <denik@chromium.org>
-Signed-off-by: Denis Nikitin <denik@chromium.org>
-Signed-off-by: James Clark <james.clark@arm.com>
----
- .../perf/util/cs-etm-decoder/cs-etm-decoder.c |  5 ++++-
- tools/perf/util/cs-etm.c                      | 22 +++++++++----------
- 2 files changed, 15 insertions(+), 12 deletions(-)
-
-diff --git a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-index b01d363b9301..947e44413c6e 100644
---- a/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-+++ b/tools/perf/util/cs-etm-decoder/cs-etm-decoder.c
-@@ -320,7 +320,10 @@ cs_etm_decoder__do_hard_timestamp(struct cs_etm_queue *etmq,
- 	 * which instructions started by subtracting the number of instructions
- 	 * executed to the timestamp.
- 	 */
--	packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
-+	if (packet_queue->instr_count >= elem->timestamp)
-+		packet_queue->cs_timestamp = 0;
-+	else
-+		packet_queue->cs_timestamp = elem->timestamp - packet_queue->instr_count;
- 	packet_queue->next_cs_timestamp = elem->timestamp;
- 	packet_queue->instr_count = 0;
- 
-diff --git a/tools/perf/util/cs-etm.c b/tools/perf/util/cs-etm.c
-index e5c1a1b22a2a..1969921c406a 100644
---- a/tools/perf/util/cs-etm.c
-+++ b/tools/perf/util/cs-etm.c
-@@ -210,13 +210,14 @@ void cs_etm__etmq_set_traceid_queue_timestamp(struct cs_etm_queue *etmq,
- 	etmq->pending_timestamp_chan_id = trace_chan_id;
- }
- 
--static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
-+static int cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
-+				      u64 *timestamp,
- 				      u8 *trace_chan_id)
- {
- 	struct cs_etm_packet_queue *packet_queue;
- 
- 	if (!etmq->pending_timestamp_chan_id)
--		return 0;
-+		return -ENODATA;
- 
- 	if (trace_chan_id)
- 		*trace_chan_id = etmq->pending_timestamp_chan_id;
-@@ -224,13 +225,15 @@ static u64 cs_etm__etmq_get_timestamp(struct cs_etm_queue *etmq,
- 	packet_queue = cs_etm__etmq_get_packet_queue(etmq,
- 						     etmq->pending_timestamp_chan_id);
- 	if (!packet_queue)
--		return 0;
-+		return -ENODATA;
- 
- 	/* Acknowledge pending status */
- 	etmq->pending_timestamp_chan_id = 0;
- 
- 	/* See function cs_etm_decoder__do_{hard|soft}_timestamp() */
--	return packet_queue->cs_timestamp;
-+	if (timestamp)
-+		*timestamp = packet_queue->cs_timestamp;
-+	return 0;
- }
- 
- static void cs_etm__clear_packet_queue(struct cs_etm_packet_queue *queue)
-@@ -864,11 +867,10 @@ static int cs_etm__setup_queue(struct cs_etm_auxtrace *etm,
- 		 * Function cs_etm_decoder__do_{hard|soft}_timestamp() does all
- 		 * the timestamp calculation for us.
- 		 */
--		cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
--
--		/* We found a timestamp, no need to continue. */
--		if (cs_timestamp)
-+		if (!cs_etm__etmq_get_timestamp(etmq, &cs_timestamp, &trace_chan_id)) {
-+			/* We found a timestamp, no need to continue. */
- 			break;
-+		}
- 
- 		/*
- 		 * We didn't find a timestamp so empty all the traceid packet
-@@ -2286,9 +2288,7 @@ static int cs_etm__process_queues(struct cs_etm_auxtrace *etm)
- 		if (ret)
- 			goto out;
- 
--		cs_timestamp = cs_etm__etmq_get_timestamp(etmq, &trace_chan_id);
--
--		if (!cs_timestamp) {
-+		if (cs_etm__etmq_get_timestamp(etmq, &cs_timestamp, &trace_chan_id)) {
- 			/*
- 			 * Function cs_etm__decode_data_block() returns when
- 			 * there is no more traces to decode in the current
--- 
-2.28.0
+RnJvbTogU3RldmVuIFByaWNlIDxzdGV2ZW4ucHJpY2VAYXJtLmNvbT4NCj4gU2VudDogMDcgTWF5
+IDIwMjEgMTA6NDUNCj4gDQo+IE9uIDA0LzA1LzIwMjEgMTg6NDQsIENhdGFsaW4gTWFyaW5hcyB3
+cm90ZToNCj4gPiBPbiBUaHUsIEFwciAyOSwgMjAyMSBhdCAwNTowNjowN1BNICswMTAwLCBTdGV2
+ZW4gUHJpY2Ugd3JvdGU6DQo+ID4+IE9uIDI3LzA0LzIwMjEgMTg6NTgsIENhdGFsaW4gTWFyaW5h
+cyB3cm90ZToNCj4gPj4+IE9uIEZyaSwgQXByIDE2LCAyMDIxIGF0IDA0OjQzOjA4UE0gKzAxMDAs
+IFN0ZXZlbiBQcmljZSB3cm90ZToNCj4gPj4+PiBkaWZmIC0tZ2l0IGEvYXJjaC9hcm02NC9pbmNs
+dWRlL3VhcGkvYXNtL2t2bS5oIGIvYXJjaC9hcm02NC9pbmNsdWRlL3VhcGkvYXNtL2t2bS5oDQo+
+ID4+Pj4gaW5kZXggMjQyMjNhZGFlMTUwLi4yYjg1YTA0N2MzN2QgMTAwNjQ0DQo+ID4+Pj4gLS0t
+IGEvYXJjaC9hcm02NC9pbmNsdWRlL3VhcGkvYXNtL2t2bS5oDQo+ID4+Pj4gKysrIGIvYXJjaC9h
+cm02NC9pbmNsdWRlL3VhcGkvYXNtL2t2bS5oDQo+ID4+Pj4gQEAgLTE4NCw2ICsxODQsMjAgQEAg
+c3RydWN0IGt2bV92Y3B1X2V2ZW50cyB7DQo+ID4+Pj4gICAgCV9fdTMyIHJlc2VydmVkWzEyXTsN
+Cj4gPj4+PiAgICB9Ow0KPiA+Pj4+ICtzdHJ1Y3Qga3ZtX2FybV9jb3B5X210ZV90YWdzIHsNCj4g
+Pj4+PiArCV9fdTY0IGd1ZXN0X2lwYTsNCj4gPj4+PiArCV9fdTY0IGxlbmd0aDsNCj4gPj4+PiAr
+CXVuaW9uIHsNCj4gPj4+PiArCQl2b2lkIF9fdXNlciAqYWRkcjsNCj4gPj4+PiArCQlfX3U2NCBw
+YWRkaW5nOw0KPiA+Pj4+ICsJfTsNCj4gPj4+PiArCV9fdTY0IGZsYWdzOw0KPiA+Pj4+ICsJX191
+NjQgcmVzZXJ2ZWRbMl07DQo+ID4+Pj4gK307DQo+ID4gWy4uLl0NCj4gPj4+IE1heWJlIGFkZCB0
+aGUgdHdvIHJlc2VydmVkDQo+ID4+PiB2YWx1ZXMgdG8gdGhlIHVuaW9uIGluIGNhc2Ugd2Ugd2Fu
+dCB0byBzdG9yZSBzb21ldGhpbmcgZWxzZSBpbiB0aGUNCj4gPj4+IGZ1dHVyZS4NCj4gPj4NCj4g
+Pj4gSSdtIG5vdCBzdXJlIHdoYXQgeW91IG1lYW4gaGVyZS4gV2hhdCB3b3VsZCB0aGUgcmVzZXJ2
+ZWQgZmllbGRzIGJlIHVuaW9uZWQNCj4gPj4gd2l0aD8gQW5kIHN1cmVseSB0aGV5IGFyZSBubyBs
+b25nZXIgcmVzZXJ2ZWQgaW4gdGhhdCBjYXNlPw0KPiA+DQo+ID4gSW4gY2FzZSB5b3Ugd2FudCB0
+byBrZWVwIHRoZSBzdHJ1Y3R1cmUgc2l6ZSB0aGUgc2FtZSBmb3IgZnV0dXJlDQo+ID4gZXhwYW5z
+aW9uIGFuZCB0aGUgZXhwYW5zaW9uIG9ubHkgaGFwcGVucyB2aWEgdGhlIHVuaW9uLCB5b3UnZCBh
+ZGQgc29tZQ0KPiA+IHBhZGRpbmcgaW4gdGhlcmUganVzdCBpbiBjYXNlLiBXZSBkbyB0aGlzIGZv
+ciBzdHJ1Y3Qgc2lnaW5mbyB3aXRoIGFuDQo+ID4gX3NpX3BhZFtdIGFycmF5IGluIHRoZSB1bmlv
+bi4NCj4gPg0KPiANCj4gQWggSSBzZWUgd2hhdCB5b3UgbWVhbi4gSW4gdGhpcyBjYXNlICJwYWRk
+aW5nIiBpcyBqdXN0IGEgc2l6ZXIgdG8gZW5zdXJlDQo+IHRoYXQgZmxhZ3MgaXMgYWx3YXlzIHRo
+ZSBzYW1lIGFsaWdubWVudCAtIGl0J3Mgbm90IGludGVuZGVkIHRvIGJlIHVzZWQuDQo+IEFzIEkg
+bm90ZWQgcHJldmlvdXNseSB0aG91Z2ggaXQncyBjb21wbGV0ZWx5IHBvaW50bGVzcyBhcyB0aGlz
+IG9ubHkgb24NCj4gYXJtNjQgYW5kIGV2ZW4gMzIgYml0IEFybSB3b3VsZCBuYXR1cmFsbHkgYWxp
+Z24gdGhlIGZvbGxvd2luZyBfX3U2NC4NCg0KSXQgaXMgbmljZSB0byBiZSBleHBsaWNpdCB0aG91
+Z2guDQpZb3UgYWxzbyBoYXZlIHRoZSBwcm9ibGVtIHRoYXQgYSAzMmJpdCAoTEUpIGFwcGxpY2F0
+aW9uIHdvdWxkIGxlYXZlIHRoZQ0KaGlnaCBiaXRzIG9mIHRoZSB1c2VyIGFkZHJlc3MgdW5kZWZp
+bmVkLg0KDQpBbGwgbW9vdCBhbmQgcG9pbnRsZXNzIGlmIDY0Yml0IG9ubHkgdGhvdWdoLg0KDQoJ
+RGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1v
+dW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEz
+OTczODYgKFdhbGVzKQ0K
 
