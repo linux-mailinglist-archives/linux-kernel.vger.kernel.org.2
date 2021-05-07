@@ -2,57 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82E6337692D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:59:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D117376930
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:00:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238475AbhEGRA5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 13:00:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33622 "EHLO
+        id S238486AbhEGRBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 13:01:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238462AbhEGRAz (ORCPT
+        with ESMTP id S238462AbhEGRA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 13:00:55 -0400
-Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1544C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 09:59:55 -0700 (PDT)
-Received: by mail-qk1-x74a.google.com with SMTP id b3-20020a05620a0cc3b02902e9d5ca06f2so6623216qkj.19
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 09:59:55 -0700 (PDT)
+        Fri, 7 May 2021 13:00:59 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89457C06138A
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 09:59:58 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id a3-20020a2580430000b02904f7a1a09012so10744898ybn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 09:59:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=reply-to:date:in-reply-to:message-id:mime-version:references
          :subject:from:to:cc;
-        bh=VEqazMRlmbfIIn+WG70+8s+sSnlsOL4Ks0sRraeMi3w=;
-        b=KoPzAD/24Udvfs3SJG4WetUnaKKUe3D0ar4Ivq2GQhThmRCDu9l3O7QsQNtw++wfHh
-         65iBehtJpcXdNz3xkh/Ix9UCiyymzFgug1Sg+w/mb0ROVv7JPh5UYcyQti4LU6jfe7g7
-         dtGAhaS6Sdo4ly9Q4bDmaT2UK0xrMhaghZ4W6ykzK5nrIdB8+UzANZ9GUfXcQl648dw9
-         R7NFiAxmDheyavR+Pr4wT+sSwHDWTZAaDA+96U7yikIbrtBk7mha0v3DzFR3CjcSm/rc
-         tBSFA94qgJnk3ayhcLFDYQJaZf2MJOeEO8pVot6E2fQd8w99wXF/+Zkjmb3dhWAVuY+R
-         exnA==
+        bh=nXbsQzZRKADxmz3jPQyGk2mwipulmK8ydHFPEpTQQXY=;
+        b=cZAvPBhNqujbaGxJlK4D8mIW+Swf1BC4L7PwZB3GQ7JVWWxdeAIL3qOpHbD1N7+IDP
+         tlcRAsw/mMjLviNrHz0tBXTi1JaNLfNk8c+7bk9+0nD6VUhcdBo88t7lHPuldYqc+OP0
+         U17N9Sf8vPB2ez0F3tKHgHTGKEuCK5D6KPo26i3BaiXYrC9bKDjH76kSLoXyWhJOB5BR
+         Y0vh1d9xhzxQLAnuh6E9lnuowGCPTtBhYd5K7Nbu7a10Nq8InGHZVUwUzrTcxak9TjPW
+         YCa1Cy35GJsLR09nU0UHI+GD9Vf3JnTOxzrSetvQ3vn0dWxX03VZvc2vsqlz2az75D6r
+         LERw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:reply-to:date:in-reply-to:message-id
          :mime-version:references:subject:from:to:cc;
-        bh=VEqazMRlmbfIIn+WG70+8s+sSnlsOL4Ks0sRraeMi3w=;
-        b=md7Jc1pHSU44E72SBwBFY5PX2Njw6LMbNU8q7R/wsmz4V/SQPBaDBlRPkiP+bbz7Ag
-         VUoHFPoa3cMbAw+owJ/cN9yawtbqi1bEysu0MzRYWb/irwrK2ubtPD3RxAgysWB40QWT
-         c8w1YgmoB0mT6olrWd2JkTERhvPSQVu/ThX+Nlzixaghhtv9+JNNIsIc6K/j1xtQbKAh
-         xYzNOMggY96lqroaWR4/hV8yD8ysTX5wThFWV2aXk4RxVZmZAxZ+cmMnepbWyYaM5XEY
-         3KadVSn3Ebqs+duR9EyhjB0ZlorW+zRkzpSNc8coMTF+U19dbuZu/Qv66mj9nvZslDym
-         d4Iw==
-X-Gm-Message-State: AOAM531J9L2iue+4XZrR1Y3E4qJ+I7EgNaajbyuWhhNmu2S7fTlkcrgf
-        X2d+UuhCZZ06XWLG3AZW22jJxPHfOmQ=
-X-Google-Smtp-Source: ABdhPJw6zN0EFivUJ5aFuE1VE0FDRIzkiTdsJFLSDUACFvRn3SazAnoaxoqkJWhO97XADtkBnhJNB/aZ9FA=
+        bh=nXbsQzZRKADxmz3jPQyGk2mwipulmK8ydHFPEpTQQXY=;
+        b=RsEKU0ehBvPj3maXx6s8RnIhxgPSBeqEyzFbO/KJCYWlhDcomuoGwaWe7Pbxl5xdfp
+         IOBXCWU2INnO8288IkTjJN3D19P8w+c4i6UGZK/jGMIPQIHQmvVvONLgW+qiYUDNYbJJ
+         Wmh3EzttRDNDTC8LW45VjRiJFfhm379k9mW9fXLFgRDt2JQBxnrkt5N8w/L48PtRZaQW
+         w6flW5c6dLCE5PuNubPAtyi/opilh8Q5N4joNJVYvhe+K7c3nL8GDfJKtHqtEjUN/LgN
+         HmJV9Q0O4Od+Z2BN27digM9hOW0ibJhfTBs8z7mXPEQkUSPE5qH2gTsKPoioWQJKG3wF
+         Dn7Q==
+X-Gm-Message-State: AOAM531HJsxXKH2Yj2nEVRt3lB5UBRhyPWgUcx+Ogu+f6BXgOeMqfUIv
+        fl72fMDqXSJx1+PyT96qKgyWZ174rnA=
+X-Google-Smtp-Source: ABdhPJxTl5XVJuekxZhnDVHK/OX5tlB0XW7XCBsx4xJY6H7vJRWejR56oTeCAQd64J3MY/dfJjlgiNulBOs=
 X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:7352:5279:7518:418f])
- (user=seanjc job=sendgmr) by 2002:ad4:4e44:: with SMTP id eb4mr10683142qvb.3.1620406794805;
- Fri, 07 May 2021 09:59:54 -0700 (PDT)
+ (user=seanjc job=sendgmr) by 2002:a25:30d5:: with SMTP id w204mr14454275ybw.416.1620406797719;
+ Fri, 07 May 2021 09:59:57 -0700 (PDT)
 Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  7 May 2021 09:59:46 -0700
+Date:   Fri,  7 May 2021 09:59:47 -0700
 In-Reply-To: <20210507165947.2502412-1-seanjc@google.com>
-Message-Id: <20210507165947.2502412-2-seanjc@google.com>
+Message-Id: <20210507165947.2502412-3-seanjc@google.com>
 Mime-Version: 1.0
 References: <20210507165947.2502412-1-seanjc@google.com>
 X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH 1/2] KVM: SVM: Update EFER software model on CR0 trap for SEV-ES
+Subject: [PATCH 2/2] KVM: x86: Allow userspace to update tracked sregs for
+ protected guests
 From:   Sean Christopherson <seanjc@google.com>
 To:     Paolo Bonzini <pbonzini@redhat.com>
 Cc:     Sean Christopherson <seanjc@google.com>,
@@ -67,44 +68,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For protected guests, a.k.a. SEV-ES guests, update KVM's model of EFER
-when processing the side effect of the CPU entering long mode when paging
-is enabled.  The whole point of intercepting CR0/CR4/EFER is to keep
-KVM's software model up-to-date.
+Allow userspace to set CR0, CR4, CR8, and EFER via KVM_SET_SREGS for
+protected guests, e.g. for SEV-ES guests with an encrypted VMSA.  KVM
+tracks the aforementioned registers by trapping guest writes, and also
+exposes the values to userspace via KVM_GET_SREGS.  Skipping the regs
+in KVM_SET_SREGS prevents userspace from updating KVM's CPU model to
+match the known hardware state.
 
-Fixes: f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under SEV-ES")
+Fixes: 5265713a0737 ("KVM: x86: Update __get_sregs() / __set_sregs() to support SEV-ES")
 Reported-by: Peter Gonda <pgonda@google.com>
 Cc: stable@vger.kernel.org
+Cc: Maxim Levitsky <mlevitsk@redhat.com>
 Signed-off-by: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/kvm/svm/svm.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ arch/x86/kvm/x86.c | 73 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 42 insertions(+), 31 deletions(-)
 
-diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-index a7271f31df47..d271fe8e58de 100644
---- a/arch/x86/kvm/svm/svm.c
-+++ b/arch/x86/kvm/svm/svm.c
-@@ -1696,15 +1696,17 @@ void svm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
- 	u64 hcr0 = cr0;
+diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+index 3bf52ba5f2bb..1b7d0e97c82b 100644
+--- a/arch/x86/kvm/x86.c
++++ b/arch/x86/kvm/x86.c
+@@ -9963,21 +9963,25 @@ static int __set_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
+ 	if (kvm_set_apic_base(vcpu, &apic_base_msr))
+ 		goto out;
  
- #ifdef CONFIG_X86_64
--	if (vcpu->arch.efer & EFER_LME && !vcpu->arch.guest_state_protected) {
-+	if (vcpu->arch.efer & EFER_LME) {
- 		if (!is_paging(vcpu) && (cr0 & X86_CR0_PG)) {
- 			vcpu->arch.efer |= EFER_LMA;
--			svm->vmcb->save.efer |= EFER_LMA | EFER_LME;
-+			if (!vcpu->arch.guest_state_protected)
-+				svm->vmcb->save.efer |= EFER_LMA | EFER_LME;
- 		}
+-	if (vcpu->arch.guest_state_protected)
+-		goto skip_protected_regs;
++	if (!vcpu->arch.guest_state_protected) {
++		dt.size = sregs->idt.limit;
++		dt.address = sregs->idt.base;
++		static_call(kvm_x86_set_idt)(vcpu, &dt);
++		dt.size = sregs->gdt.limit;
++		dt.address = sregs->gdt.base;
++		static_call(kvm_x86_set_gdt)(vcpu, &dt);
  
- 		if (is_paging(vcpu) && !(cr0 & X86_CR0_PG)) {
- 			vcpu->arch.efer &= ~EFER_LMA;
--			svm->vmcb->save.efer &= ~(EFER_LMA | EFER_LME);
-+			if (!vcpu->arch.guest_state_protected)
-+				svm->vmcb->save.efer &= ~(EFER_LMA | EFER_LME);
- 		}
+-	dt.size = sregs->idt.limit;
+-	dt.address = sregs->idt.base;
+-	static_call(kvm_x86_set_idt)(vcpu, &dt);
+-	dt.size = sregs->gdt.limit;
+-	dt.address = sregs->gdt.base;
+-	static_call(kvm_x86_set_gdt)(vcpu, &dt);
+-
+-	vcpu->arch.cr2 = sregs->cr2;
+-	mmu_reset_needed |= kvm_read_cr3(vcpu) != sregs->cr3;
+-	vcpu->arch.cr3 = sregs->cr3;
+-	kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
++		vcpu->arch.cr2 = sregs->cr2;
++		mmu_reset_needed |= kvm_read_cr3(vcpu) != sregs->cr3;
++		vcpu->arch.cr3 = sregs->cr3;
++		kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
++	}
+ 
++	/*
++	 * Writes to CR0, CR4, CR8, and EFER are trapped (after the instruction
++	 * completes) for SEV-EV guests, thus userspace is allowed to set them
++	 * so that KVM's model can be updated to mirror hardware state.
++	 */
+ 	kvm_set_cr8(vcpu, sregs->cr8);
+ 
+ 	mmu_reset_needed |= vcpu->arch.efer != sregs->efer;
+@@ -9990,35 +9994,42 @@ static int __set_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
+ 	mmu_reset_needed |= kvm_read_cr4(vcpu) != sregs->cr4;
+ 	static_call(kvm_x86_set_cr4)(vcpu, sregs->cr4);
+ 
+-	idx = srcu_read_lock(&vcpu->kvm->srcu);
+-	if (is_pae_paging(vcpu)) {
++	/*
++	 * PDPTEs, like regular PTEs, are always encrypted, thus reading them
++	 * will return garbage.  Shadow paging, including nested NPT, isn't
++	 * compatible with protected guests, so ignoring the PDPTEs is a-ok.
++	 */
++	if (!vcpu->arch.guest_state_protected && is_pae_paging(vcpu)) {
++		idx = srcu_read_lock(&vcpu->kvm->srcu);
+ 		load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu));
++		srcu_read_unlock(&vcpu->kvm->srcu, idx);
++
+ 		mmu_reset_needed = 1;
  	}
- #endif
+-	srcu_read_unlock(&vcpu->kvm->srcu, idx);
+ 
+ 	if (mmu_reset_needed)
+ 		kvm_mmu_reset_context(vcpu);
+ 
+-	kvm_set_segment(vcpu, &sregs->cs, VCPU_SREG_CS);
+-	kvm_set_segment(vcpu, &sregs->ds, VCPU_SREG_DS);
+-	kvm_set_segment(vcpu, &sregs->es, VCPU_SREG_ES);
+-	kvm_set_segment(vcpu, &sregs->fs, VCPU_SREG_FS);
+-	kvm_set_segment(vcpu, &sregs->gs, VCPU_SREG_GS);
+-	kvm_set_segment(vcpu, &sregs->ss, VCPU_SREG_SS);
++	if (!vcpu->arch.guest_state_protected) {
++		kvm_set_segment(vcpu, &sregs->cs, VCPU_SREG_CS);
++		kvm_set_segment(vcpu, &sregs->ds, VCPU_SREG_DS);
++		kvm_set_segment(vcpu, &sregs->es, VCPU_SREG_ES);
++		kvm_set_segment(vcpu, &sregs->fs, VCPU_SREG_FS);
++		kvm_set_segment(vcpu, &sregs->gs, VCPU_SREG_GS);
++		kvm_set_segment(vcpu, &sregs->ss, VCPU_SREG_SS);
+ 
+-	kvm_set_segment(vcpu, &sregs->tr, VCPU_SREG_TR);
+-	kvm_set_segment(vcpu, &sregs->ldt, VCPU_SREG_LDTR);
++		kvm_set_segment(vcpu, &sregs->tr, VCPU_SREG_TR);
++		kvm_set_segment(vcpu, &sregs->ldt, VCPU_SREG_LDTR);
+ 
+-	update_cr8_intercept(vcpu);
++		update_cr8_intercept(vcpu);
+ 
+-	/* Older userspace won't unhalt the vcpu on reset. */
+-	if (kvm_vcpu_is_bsp(vcpu) && kvm_rip_read(vcpu) == 0xfff0 &&
+-	    sregs->cs.selector == 0xf000 && sregs->cs.base == 0xffff0000 &&
+-	    !is_protmode(vcpu))
+-		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
++		/* Older userspace won't unhalt the vcpu on reset. */
++		if (kvm_vcpu_is_bsp(vcpu) && kvm_rip_read(vcpu) == 0xfff0 &&
++		    sregs->cs.selector == 0xf000 &&
++		    sregs->cs.base == 0xffff0000 && !is_protmode(vcpu))
++			vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
++	}
+ 
+-skip_protected_regs:
+ 	max_bits = KVM_NR_INTERRUPTS;
+ 	pending_vec = find_first_bit(
+ 		(const unsigned long *)sregs->interrupt_bitmap, max_bits);
 -- 
 2.31.1.607.g51e8a6a459-goog
 
