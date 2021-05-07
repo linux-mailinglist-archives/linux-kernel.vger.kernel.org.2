@@ -2,130 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC2773768DF
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F12443768E6
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:35:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238225AbhEGQfj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 12:35:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56162 "EHLO
+        id S238235AbhEGQgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 12:36:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56384 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234463AbhEGQfi (ORCPT
+        with ESMTP id S236992AbhEGQgg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 12:35:38 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BB4BC061761
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 09:34:38 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id l14so9898959wrx.5
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 09:34:38 -0700 (PDT)
+        Fri, 7 May 2021 12:36:36 -0400
+Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 371EBC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 09:35:36 -0700 (PDT)
+Received: by mail-pg1-x52c.google.com with SMTP id i5so2777882pgm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 09:35:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=O99QLS/XuXmi5sOenN2CFxQz7Q5z0xeHfl0XAzi4THc=;
-        b=U+IByuCcxULK3nxRVkk7JSImKY8trLGHWZcfLZTgiCNxRgComAbd5SB0Cfj6jYZ996
-         9lS6uV6uHIiiE4JuSIZxyPiEFBQLgBWjXWWpjAxbl8UM05Asr4O0C2J4hfCVuPJJkeXk
-         Lp1lfV5LSbB4AJ6q9iEoC6lTzRO2xg0DHZElM=
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ZMLMORoNSvvC0BEtc8Mea8MIFzdSS313j2tZp/uDuPQ=;
+        b=Lyk4fFFPqxtBzGz4GyOl/2QfhfwKm6bSsEF5JLZ8/kM0OcCFP5CoYp4SdscSSONsZ2
+         B9wckw2/DN7c0XrDDbVvqTnA3HmAbR4QeEp/UPBVgNySVi/m7fBgchfma/HiUzzmcqfZ
+         s1vhfnJ4WADdOLqrbr/XWH/vEng2k1UC8PH/20sPnmGmFXJRTIlwKY7v89k1FQJ6r/U+
+         7eVb9s4t8OlRB5Vkt251LyLhkTnPbSHcYNi2FrdF9bGTJqZxUBJTd1OCuolqfzzebFm+
+         0xictBiH5rpEQT+mQkZPPR+3rkVALa7LAcZyOUsMlVWDpLcRmZVOE7Tt+d8CjKilcJHy
+         aQxg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :content-transfer-encoding:in-reply-to;
-        bh=O99QLS/XuXmi5sOenN2CFxQz7Q5z0xeHfl0XAzi4THc=;
-        b=GST9S9Vlde1dXNS5sb84x2oWJ0KzeK11akHkU7eK3Ayay+CbFy/uJQ6NdumEVhdcoQ
-         5VlMG7/hVYDd3tj+y8jfxH/7HMqwkWU3IdoIibtf6zzgFKkiEnJD84v6FkDh2hBUiWnD
-         iMgsA/sCHfnWSf0YdfNznzcH6gvX+TWA9Pnr0ztUgFBxR2SjvaLflHeYRE9AmbRwx7sK
-         PBnzWD0GvMRrQvDDn/rE+DOs8xGXOcBtpKko0AzFIaDAzMBzrBS0EXgkQIhJdwJ9iIv/
-         SJuYITkX9swa7eAvfjRoBgs06/Y/cTnrfwPp6rhxnee/B4Qf/I2GKD8+DrQLs3F8oJqQ
-         A5xA==
-X-Gm-Message-State: AOAM5311LxWewe68SXTOGYjAgYm4oZkFN0GrgZ9zyDkJ7ucuAfl8G131
-        rH36AgyDyCL9MGhPVpqI/n3+yA==
-X-Google-Smtp-Source: ABdhPJz9eV+VjyShaXPfAx4WvqHMrnt9SIWVOMU/ZLtthyBfUy5zg6ri6iuFlihrahEEp1TfX0GW8g==
-X-Received: by 2002:a5d:6181:: with SMTP id j1mr13620583wru.16.1620405276947;
-        Fri, 07 May 2021 09:34:36 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id r2sm8702898wrt.79.2021.05.07.09.34.35
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ZMLMORoNSvvC0BEtc8Mea8MIFzdSS313j2tZp/uDuPQ=;
+        b=fem9fOici5DPqSjqsxEiH3Oyvt8msbA3Nnpqe8DS931VBNqi6B9ycB0LLd5YlSnxMP
+         8m+R22nWJI5yewtJY2BDFWSSTZDCiOL5wlI7eMXgRKx6opR8XjQmZSh0Y1ryGQ3fN184
+         8RrKyeuiVkXeSQnHtsEAYcy3AJHCt3fKycaa1UEvNke2R9cmDxJ8WHedo569towiffkv
+         RPyHQj3y23QPXEY3mFdtPPmvcW2qshtzme4/OuypQyoRjQisWicGBszc3vMyaaxcKgo8
+         6C0sFxeVRjNHZyPe9YAgtIFnS+6VOcyacKydB1Su20isA59BPQLToJ0n1RA+mKt8qr+F
+         d4FA==
+X-Gm-Message-State: AOAM531hXbfJdu9xvV1muYJb5lI8waJAdyC+Zikdm/7Z76Q97HdG+8Pc
+        B8NlCuMJqpavKT+1uOQ++wShiQ==
+X-Google-Smtp-Source: ABdhPJy+gYj4c6p+Qvxd8IgRELIQUs0AlI0WJ+dM0qTl0KtleHQYLpTXiD57qyv43dwMUsmRoMImNQ==
+X-Received: by 2002:a65:4185:: with SMTP id a5mr10658573pgq.388.1620405335686;
+        Fri, 07 May 2021 09:35:35 -0700 (PDT)
+Received: from xps15 (S0106889e681aac74.cg.shawcable.net. [68.147.0.187])
+        by smtp.gmail.com with ESMTPSA id y64sm5175789pfy.204.2021.05.07.09.35.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 09:34:36 -0700 (PDT)
-Date:   Fri, 7 May 2021 18:34:34 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-fbdev@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel-janitors@vger.kernel.org,
-        krzysztof.h1@poczta.fm, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, j.beisert@pengutronix.de,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] video: fbdev: imxfb: Fix an error message
-Message-ID: <YJVsGn4+rbh0+b+I@phenom.ffwll.local>
-Mail-Followup-To: Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        linux-fbdev@vger.kernel.org, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel-janitors@vger.kernel.org,
-        krzysztof.h1@poczta.fm, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, j.beisert@pengutronix.de,
-        linux-imx@nxp.com, kernel@pengutronix.de,
-        linux-arm-kernel@lists.infradead.org
-References: <d7b25026f82659da3c6f7159eea480faa9d738be.1620327302.git.christophe.jaillet@wanadoo.fr>
- <20210507050503.iwrcis2xzhjjthmp@pengutronix.de>
+        Fri, 07 May 2021 09:35:35 -0700 (PDT)
+Date:   Fri, 7 May 2021 10:35:33 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Julien Massot <julien.massot@iot.bzh>
+Cc:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+Subject: Re: [PATCH v3 5/6] rpmsg: char: Introduce a rpmsg driver for the
+ rpmsg char device
+Message-ID: <20210507163533.GB1907885@xps15>
+References: <20210429135507.8264-1-arnaud.pouliquen@foss.st.com>
+ <20210429135507.8264-6-arnaud.pouliquen@foss.st.com>
+ <20210505164159.GB1766375@xps15>
+ <5a41e653-4d75-c5d5-a8e3-e247a50507f3@foss.st.com>
+ <d840a1dc-c908-1be1-8354-ddd404045df6@iot.bzh>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210507050503.iwrcis2xzhjjthmp@pengutronix.de>
-X-Operating-System: Linux phenom 5.10.32scarlett+ 
+In-Reply-To: <d840a1dc-c908-1be1-8354-ddd404045df6@iot.bzh>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 07:05:03AM +0200, Uwe Kleine-König wrote:
-> Hello Christophe,
+Good morning Julien,
+
+On Fri, May 07, 2021 at 10:17:12AM +0200, Julien Massot wrote:
+> Hi Mathieu, Arnaud,
 > 
-> On Thu, May 06, 2021 at 08:57:05PM +0200, Christophe JAILLET wrote:
-> > 'ret' is known to be 0 here.
-> > No error code is available, so just remove it from the error message.
+> On 5/5/21 8:25 PM, Arnaud POULIQUEN wrote:
+> > Hi Mathieu,
 > > 
-> > Fixes: 72330b0eeefc ("i.MX Framebuffer: Use readl/writel instead of direct pointer deref")
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > ---
-> >  drivers/video/fbdev/imxfb.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > On 5/5/21 6:41 PM, Mathieu Poirier wrote:
+> > > Hi Arnaud,
+> > > 
+> > > On Thu, Apr 29, 2021 at 03:55:06PM +0200, Arnaud Pouliquen wrote:
+> > > > A rpmsg char device allows to probe the endpoint device on a remote name
+> > > > service announcement.
+> > > > 
+> > > > With this patch the /dev/rpmsgX interface is created either by a user
+> > > > application or by the remote firmware.
+> > > > 
+> > > > Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+> > > > 
+> > > > ---
+> > > > update from V1:
+> > > > 
+> > > >   - add missing unregister_rpmsg_driver call on module exit.
+> > > > ---
+> > > >   drivers/rpmsg/rpmsg_char.c | 53 +++++++++++++++++++++++++++++++++++++-
+> > > >   1 file changed, 52 insertions(+), 1 deletion(-)
+> > > > 
+> > > > diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+> > > > index 5c6a7da6e4d7..9166454c1310 100644
+> > > > --- a/drivers/rpmsg/rpmsg_char.c
+> > > > +++ b/drivers/rpmsg/rpmsg_char.c
+> > > > @@ -18,6 +18,8 @@
+> > > >   #include "rpmsg_char.h"
+> > > > +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
+> > > > +
+> > > >   static dev_t rpmsg_major;
+> > > >   static struct class *rpmsg_class;
+> > > > @@ -413,6 +415,40 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
+> > > >   }
+> > > >   EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
+> > > > +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+> > > > +{
+> > > > +	struct rpmsg_channel_info chinfo;
+> > > > +
+> > > > +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
+> > > > +	chinfo.src = rpdev->src;
+> > > > +	chinfo.dst = rpdev->dst;
+> > > > +
+> > > > +	return __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo, true);
+> > > > +}
+> > > > +
+> > > > +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+> > > > +{
+> > > > +	int ret;
+> > > > +
+> > > > +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
+> > > > +	if (ret)
+> > > > +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
+> > > > +}
+> > > > +
+> > > > +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
+> > > > +	{ .name	= RPMSG_CHAR_DEVNAME },
+> > > > +	{ },
+> > > > +};
+> > > > +
+> > > > +static struct rpmsg_driver rpmsg_chrdev_driver = {
+> > > > +	.probe = rpmsg_chrdev_probe,
+> > > > +	.remove = rpmsg_chrdev_remove,
+> > > > +	.id_table = rpmsg_chrdev_id_table,
+> > > > +	.drv = {
+> > > > +		.name = "rpmsg_chrdev",
+> > > > +	},
+> > > > +};
+> > > 
+> > > The sole purpose of doing this is to create instances of rpmsg_chrdevs from the
+> > > name service - but is it really needed?  Up to now and aside from GLINK and SMD,
+> > > there asn't been other users of it so I'm wondering if it is worth going through
+> > > all this trouble.
 > > 
-> > diff --git a/drivers/video/fbdev/imxfb.c b/drivers/video/fbdev/imxfb.c
-> > index 7f8debd2da06..ad598257ab38 100644
-> > --- a/drivers/video/fbdev/imxfb.c
-> > +++ b/drivers/video/fbdev/imxfb.c
-> > @@ -992,7 +992,7 @@ static int imxfb_probe(struct platform_device *pdev)
-> >  	info->screen_buffer = dma_alloc_wc(&pdev->dev, fbi->map_size,
-> >  					   &fbi->map_dma, GFP_KERNEL);
-> >  	if (!info->screen_buffer) {
-> > -		dev_err(&pdev->dev, "Failed to allocate video RAM: %d\n", ret);
-> > +		dev_err(&pdev->dev, "Failed to allocate video RAM\n");
-> >  		ret = -ENOMEM;
-> >  		goto failed_map;
-> >  	}
+> > It is a good point.
+> > 
+> > Just as a reminder, the need of ST and, I assume, some other companies, is to
+> > have a basic/generic communication channel to control a remote processor
+> > application.
+> > 
+> > Nothing generic exists today for a virtio transport based implementation.
+> > Companies have to create their own driver.
+> > 
+> > The purpose of my work is to allow our customer to use RPMsg without developing
+> > a specific driver to control remote applications.
+> > 
+> > The rpmsg_chrdev char is a good candidate for this. No protocol, just a simple
+> > inter-processor link to send and receive data. The rpmsg_tty is another one.
+> > 
+> > Focusing on the rpmsg_chrdev:
+> > We did a part of the work with the first patch set that would be in 5.13.
+> > But is it simple to use it for virtio transport based platforms?
+> > If we don't implement the NS announcement support in rpmsg_chrdev, using
+> > rpmsg_chrdev for a user application seems rather tricky.
+> > How to instantiate the communication?
+> > The application will probably has to scan the /sys/bus/rpmsg/devices/ folder to
+> > determine the services and associated remote address.
+> > 
+> > I don't think the QCOM drivers have the same problem because they seems to
+> > initiate the communication and work directly with the RPMsg endpoints ( new
+> > channel creation on endpoint creation) while Virtio works with the RPMsg channel.
+> > 
+> > By introducing the ability to instantiate rpmsg_chrdevs through the NS
+> > announcement, we make this easy for applications to use.
+> > 
+> > And without rpmsg_chrdevs instantiation, It also means that we can't create an
+> > RPMsg channel for the rpmsg_chrdevs using a new RPMSG_CREATE_DEV_IOCTL control,
+> > right?
+> > 
+> > That said, If we consider that the aim was only to extract the rpmsg_ctrl part,
+> > I'm not against leaving the rpmsg_char in this state and switching to the
+> > rpmsg_tty driver upstream including the work on the rpmsg_ctrl to create rpmsg
+> > channels.
+> > 
+> > We could come back on this if requested by someone else.
 > 
-> Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> I'm personnaly following this thread, our project is to be able to do RPC call
+> from Linux to an RTOS (Zephyr). Our plan is to do that in userspace using the nameservice
+> announcement from virtio/rpmsg.
 
-Thanks for patch& review, queued for 5.14 in drm-misc-next.
--Daniel
+Good to know.  I highly encourage you to review patches and provide comments -
+that will be very helpful to us.
+
+Thanks,
+Mathieu
 
 > 
-> Are you using this driver, or did you find that problem using some
-> static checker?
+> We did an hackish patch to do that internally:
+> https://github.com/iotbzh/meta-rcar-zephyr/blob/master/recipes-kernel/linux/linux-renesas/0001-Add-device-driver-for-rcar-r7-
+> rpmsg.patch
 > 
-> Best regards
-> Uwe
+> That we will be really happy to drop by any cleaner solution.
 > 
-> -- 
-> Pengutronix e.K.                           | Uwe Kleine-König            |
-> Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
-
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+> Thanks for your work !
+> Julien
