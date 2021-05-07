@@ -2,148 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3C89376BDB
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:40:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B06A376BDC
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:42:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbhEGVlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:41:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38648 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEGVlH (ORCPT
+        id S229699AbhEGVn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:43:29 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35534 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229482AbhEGVn1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:41:07 -0400
-Received: from mail-pj1-x102a.google.com (mail-pj1-x102a.google.com [IPv6:2607:f8b0:4864:20::102a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D896C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 14:40:07 -0700 (PDT)
-Received: by mail-pj1-x102a.google.com with SMTP id z6-20020a17090a1706b0290155e8a752d8so6204248pjd.4
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:40:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=heBShxPKsWyHOPMr3E9Pq9ytp7o/FJlhqYNiMv9oyMs=;
-        b=MKYsYXSnu5Pu9NWy301Uo4CswCZhvRE960GZONYOpHkqvcx/L1BduwD7LfATeJLTfX
-         +abIfq0zOuNuswRh5OKBegxWGtzKQCO9LCNy4N9ZXi219jYtSDSLCu9nvyl4Uw5ciDXp
-         6AyPlQujdFEcUUQ6W6MkWsQh/uMZmXo3D99NntDItRZlcsGKABNPMqtMI1O7zcY9ohMt
-         /bOHn19Edsl8PT/wVAqFxWPOvYVrmuQJ2Uc3L/tMcbF8OTgz6imYV/RMABjsd6z7yxgu
-         vxX3dcBaQ/swD1QfEGY8alokJZWUUV0IpwHE8FneLWbkew1E0QIFK1QsvyPq4RXOMPBX
-         2xwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=heBShxPKsWyHOPMr3E9Pq9ytp7o/FJlhqYNiMv9oyMs=;
-        b=VmR9QYXWBihDr5TNAn3GiT2D7mCObbZWfZyB2L7nih8sPFdVtqL1HDxxoowsCWKE3N
-         KneV6xA8E2nfFbICOpc9gKDiCJlxorfyZ9xHIsRR5OIA+ojlu6Obgt+nNgGl4cvqNFY/
-         bAJ42aeU3UNJzzOfEsdNqVcfrffC2iW9/qagBoz4wiMJmYxbdHqw43AeGqAXWiStMg+6
-         kkQArpMLOwmGFmssgahWcvbi29UdP4y857T3x4y8lbUvyAQNpjNsS1UGCFiMKg2L6e0+
-         4rF7hrRC1yvP5exenOjB/ZyEHFeArdkdW/z/9/ZNN6qtHmXr4vT+4upcL2sA0thSII/o
-         2/3Q==
-X-Gm-Message-State: AOAM530aRswG1qG0X0YNl9HRxwC+8al8vE01MTbMxhUpshs3GF8PfryW
-        jcogEIKi10uhmxZ64plWvpwN2A==
-X-Google-Smtp-Source: ABdhPJyWC9O/dQ3xCDNb7KbkAcEdr6g1R41NYEREsgjB0LqGfsB9Pq3oN5AR8dR+247TGuvnP34ptg==
-X-Received: by 2002:a17:902:70c5:b029:ec:9a57:9cc8 with SMTP id l5-20020a17090270c5b02900ec9a579cc8mr12167253plt.73.1620423606211;
-        Fri, 07 May 2021 14:40:06 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:fad3:ac6c:7eeb:331a])
-        by smtp.gmail.com with ESMTPSA id q19sm6081919pfl.171.2021.05.07.14.40.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 14:40:05 -0700 (PDT)
-Date:   Fri, 7 May 2021 14:39:58 -0700
-From:   Benson Leung <bleung@google.com>
-To:     torvalds@linux-foundation.org
-Cc:     enric.balletbo@collabora.com, bleung@chromium.org,
-        bleung@google.com, bleung@kernel.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] chrome-platform changes for v5.13
-Message-ID: <YJWzrs7pu38YD6G7@google.com>
+        Fri, 7 May 2021 17:43:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620423746;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=ZoTcHkNvjmIdSHWRw1A3T95KgNRdw8mZxQhxd84MX8M=;
+        b=M/nCoSNNFxhgcR6kM2h+oPf6MA1roa34aBjp+PpBofM4LGqm7VIMhLdAdpTaWuwLXTd5Lh
+        kZXOYqEMGowpp6cszZQfaK2rjL+vtPF2sUcsLQo0ebf25ZToc8kmeqw6LmX8nUUccgs32P
+        QT1xPr8JFHUV/MLeq5dzYVkX+TXGBwM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-591-bjLmcu3kO4GejKlhh4TTGA-1; Fri, 07 May 2021 17:42:25 -0400
+X-MC-Unique: bjLmcu3kO4GejKlhh4TTGA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9253107ACCA;
+        Fri,  7 May 2021 21:42:23 +0000 (UTC)
+Received: from Ruby.redhat.com (ovpn-112-131.rdu2.redhat.com [10.10.112.131])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 288C563B8C;
+        Fri,  7 May 2021 21:42:21 +0000 (UTC)
+From:   Lyude Paul <lyude@redhat.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
+        <ville.syrjala@linux.intel.com>,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] drm/dp: Fix bogus DPCD version check in drm_dp_read_downstream_info()
+Date:   Fri,  7 May 2021 17:42:09 -0400
+Message-Id: <20210507214209.554866-1-lyude@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="RfbyHblOmKMsJT/+"
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Ville pointed this out to me when fixing some issues in
+drm_dp_read_downstream_info() - the DPCD version check here is bogus as
+there's no DisplayPort versions prior to 1.0. The original code from i915
+that this was extracted from actually did:
 
---RfbyHblOmKMsJT/+
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+  dpcd[DP_DPCD_REV] == DP_DPCD_REV_10
 
-Hi Linus,
+Which is correct, and somehow got missed when extracting this function. So
+let's fix this. Note that as far as I'm aware, I don't think this fixes any
+actual issues users are hitting.
 
-The following changes since commit a38fd8748464831584a19438cbb3082b5a2dab15:
+Signed-off-by: Lyude Paul <lyude@redhat.com>
+Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
+---
+ drivers/gpu/drm/drm_dp_helper.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Linux 5.12-rc2 (2021-03-05 17:33:41 -0800)
+diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
+index 0f84df8798ab..55b53df6ce34 100644
+--- a/drivers/gpu/drm/drm_dp_helper.c
++++ b/drivers/gpu/drm/drm_dp_helper.c
+@@ -677,7 +677,7 @@ int drm_dp_read_downstream_info(struct drm_dp_aux *aux,
+ 	memset(downstream_ports, 0, DP_MAX_DOWNSTREAM_PORTS);
+ 
+ 	/* No downstream info to read */
+-	if (!drm_dp_is_branch(dpcd) || dpcd[DP_DPCD_REV] < DP_DPCD_REV_10)
++	if (!drm_dp_is_branch(dpcd) || dpcd[DP_DPCD_REV] == DP_DPCD_REV_10)
+ 		return 0;
+ 
+ 	/* Some branches advertise having 0 downstream ports, despite also advertising they have a
+-- 
+2.30.2
 
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git t=
-ags/tag-chrome-platform-for-v5.13
-
-for you to fetch changes up to d61b3f9b91be32f714b218377ab5081932e3ebc2:
-
-  platform/chrome: cros_ec_lpc: Use DEFINE_MUTEX() for mutex lock (2021-04-=
-21 10:00:30 +0200)
-
-----------------------------------------------------------------
-chrome platform changes for 5.13
-
-cros_ec_typec:
-* Changes around DP mode check, hard reset, tracking port change.
-
-cros_ec misc:
-* wilco_ec: Convert stream-like files from nonseekable to stream open
-* cros_usbpd_notify: Listen to EC_HSOT_EVENT_USB_MUX host event
-* fix format warning in cros_ec_typec
-
-----------------------------------------------------------------
-Arnd Bergmann (1):
-      platform/chrome: cros_ec_typec: fix clang -Wformat warning
-
-Pi-Hsun Shih (1):
-      platform/chrome: cros_usbpd_notify: Listen to EC_HOST_EVENT_USB_MUX h=
-ost event
-
-Prashant Malani (5):
-      platform/chrome: cros_ec_typec: Check for device within remove functi=
-on
-      platform/chrome: cros_ec_typec: Track port role
-      platform/chrome: cros_ec: Add Type C hard reset
-      platform/chrome: cros_ec_typec: Handle hard reset
-      platform/chrome: cros_ec_typec: Add DP mode check
-
-Yang Li (1):
-      platform/chrome: wilco_ec: convert stream-like files from nonseekable=
-_open -> stream_open
-
-Ye Bin (1):
-      platform/chrome: cros_ec_lpc: Use DEFINE_MUTEX() for mutex lock
-
- drivers/platform/chrome/cros_ec_lpc_mec.c      |  3 +-
- drivers/platform/chrome/cros_ec_typec.c        | 47 +++++++++++++++++++---=
-----
- drivers/platform/chrome/cros_usbpd_notify.c    |  3 +-
- drivers/platform/chrome/wilco_ec/telemetry.c   |  2 +-
- include/linux/platform_data/cros_ec_commands.h |  1 +
- 5 files changed, 39 insertions(+), 17 deletions(-)
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---RfbyHblOmKMsJT/+
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCYJWzrgAKCRBzbaomhzOw
-wnLjAP9UpLPFEywkeA/sqXoLIIqY94e7HbUK3AOEpgS0RU4PYAD8DA0yzL+OQ1Fh
-GovHeNDrWZ8Sn7vV2M4d7V6DFhcMwgQ=
-=BS2Q
------END PGP SIGNATURE-----
-
---RfbyHblOmKMsJT/+--
