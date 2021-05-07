@@ -2,163 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AFE6376941
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:06:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 27E63376944
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:06:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238490AbhEGRHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 13:07:16 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:2516 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S236726AbhEGRHP (ORCPT
+        id S238503AbhEGRHe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 13:07:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:35859 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S238494AbhEGRH1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 13:07:15 -0400
-Received: from pps.filterd (m0098416.ppops.net [127.0.0.1])
-        by mx0b-001b2d01.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 147H3wfD174952;
-        Fri, 7 May 2021 13:05:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : reply-to : references : mime-version : content-type
- : in-reply-to; s=pp1; bh=z+GMRAxLdLXOiv0ZhaJTW5dz/i7wtXIX/9u6P8VtgLw=;
- b=NXI6Up6AnbvRaN9W/GdcatAqi45NHrrjqpr/WskI4K4dmMcnW4cT6FGe3h5KnQCovECh
- XMm8vMNKn7ZbFMQOFCr3PF81jciiFJtr4+t2W1gxYmA9NRRLh3Z8EnBjj/1OOwzf6aOf
- 8F860ljEXcdJ1v/E+i5C/pmNpXMDNzIruJhWvgLlslZuOX1Cq0U4/h7a/GefaQsIY+Lr
- DUp2vlNdrny6/wKP5DXzkb+0Wd1hfIRPnAJvExEzWP1s/C7UR5eXP2L5G2JKDn2Mzkhv
- br1tfOcBGgxXjwEiEnOhQM59VG3zpwuYoxoUBIsPN2mYHRPlKw9Rv6ZaNDhJZEvxDka7 BA== 
-Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
-        by mx0b-001b2d01.pphosted.com with ESMTP id 38d9cq8fha-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 07 May 2021 13:05:49 -0400
-Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
-        by ppma04ams.nl.ibm.com (8.16.0.43/8.16.0.43) with SMTP id 147GvGQe008017;
-        Fri, 7 May 2021 17:05:47 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma04ams.nl.ibm.com with ESMTP id 38csq10dpk-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 07 May 2021 17:05:47 +0000
-Received: from d06av21.portsmouth.uk.ibm.com (d06av21.portsmouth.uk.ibm.com [9.149.105.232])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 147H5jG526673640
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 7 May 2021 17:05:45 GMT
-Received: from d06av21.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 5A3AF5204E;
-        Fri,  7 May 2021 17:05:45 +0000 (GMT)
-Received: from linux.vnet.ibm.com (unknown [9.126.150.29])
-        by d06av21.portsmouth.uk.ibm.com (Postfix) with SMTP id 2414B52059;
-        Fri,  7 May 2021 17:05:42 +0000 (GMT)
-Date:   Fri, 7 May 2021 22:35:42 +0530
-From:   Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Fri, 7 May 2021 13:07:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620407187;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=aMtPDGFy4Ih0lIydf3qtNax2aFwdbLPaij5zXJDzDrA=;
+        b=VJE7bQtDDy7i13TRikbgpNuqS7tdtE4u6tbM8xwZo+1pmHCDOghWAg57ppz7BbhlxSHubw
+        UGNMPe/eYVlomULkKzP3jP/8mCabQydKccv7T+MFAo6pUML26FIuJtbH3TZFGwgZ81OPEe
+        ZqM99uzM+VepjXJI1AXpSr9Awh62D0o=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-224-cdnh2p0CML6wPTPbIo9ppA-1; Fri, 07 May 2021 13:06:23 -0400
+X-MC-Unique: cdnh2p0CML6wPTPbIo9ppA-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 882E6107ACCD;
+        Fri,  7 May 2021 17:06:20 +0000 (UTC)
+Received: from redhat.com (ovpn-113-225.phx2.redhat.com [10.3.113.225])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id F304060CCB;
+        Fri,  7 May 2021 17:06:14 +0000 (UTC)
+Date:   Fri, 7 May 2021 11:06:14 -0600
+From:   Alex Williamson <alex.williamson@redhat.com>
+To:     "Tian, Kevin" <kevin.tian@intel.com>
+Cc:     Jason Gunthorpe <jgg@nvidia.com>, "Liu, Yi L" <yi.l.liu@intel.com>,
+        "Jacob Pan" <jacob.jun.pan@linux.intel.com>,
+        Auger Eric <eric.auger@redhat.com>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
         LKML <linux-kernel@vger.kernel.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Rik van Riel <riel@surriel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Gautham R Shenoy <ego@linux.vnet.ibm.com>,
-        Parth Shah <parth@linux.ibm.com>
-Subject: Re: [PATCH v2 1/8] sched/fair: Update affine statistics when needed
-Message-ID: <20210507170542.GQ2633526@linux.vnet.ibm.com>
-Reply-To: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-References: <20210506164543.90688-1-srikar@linux.vnet.ibm.com>
- <20210506164543.90688-2-srikar@linux.vnet.ibm.com>
- <87sg2yil1q.mognet@arm.com>
+        Joerg Roedel <joro@8bytes.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
+        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
+        "Jiang, Dave" <dave.jiang@intel.com>
+Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
+ allocation APIs
+Message-ID: <20210507110614.7b8e6998@redhat.com>
+In-Reply-To: <MWHPR11MB1886E0A7897758AA7BE509058C579@MWHPR11MB1886.namprd11.prod.outlook.com>
+References: <20210421162307.GM1370958@nvidia.com>
+        <20210421105451.56d3670a@redhat.com>
+        <20210421175203.GN1370958@nvidia.com>
+        <20210421133312.15307c44@redhat.com>
+        <20210421230301.GP1370958@nvidia.com>
+        <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210422121020.GT1370958@nvidia.com>
+        <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210423114944.GF1370958@nvidia.com>
+        <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210426123817.GQ1370958@nvidia.com>
+        <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
+        <20210428090625.5a05dae8@redhat.com>
+        <MWHPR11MB1886E0A7897758AA7BE509058C579@MWHPR11MB1886.namprd11.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-In-Reply-To: <87sg2yil1q.mognet@arm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: VRu5mE_iS0atFZHA16CEuPnH4rn7-4qn
-X-Proofpoint-ORIG-GUID: VRu5mE_iS0atFZHA16CEuPnH4rn7-4qn
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-07_06:2021-05-06,2021-05-07 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
- adultscore=0 impostorscore=0 lowpriorityscore=0 phishscore=0
- malwarescore=0 spamscore=0 clxscore=1015 mlxlogscore=818 suspectscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2104190000 definitions=main-2105070111
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Valentin Schneider <valentin.schneider@arm.com> [2021-05-07 17:08:17]:
+On Fri, 7 May 2021 07:36:49 +0000
+"Tian, Kevin" <kevin.tian@intel.com> wrote:
 
-> On 06/05/21 22:15, Srikar Dronamraju wrote:
-> > wake_affine_idle() can return prev_cpu. Even in such a scenario,
-> > scheduler was going ahead and updating schedstats related to wake
-> > affine. i.e even if the task is not moved across LLC domains,
-> > schedstats would have accounted.
-> >
-> > Hence add a check before updating schedstats.
-> >
-
-Thanks Valentin for taking a look at the patch.
-
+> > From: Alex Williamson <alex.williamson@redhat.com>
+> > Sent: Wednesday, April 28, 2021 11:06 PM
+> > 
+> > On Wed, 28 Apr 2021 06:34:11 +0000
+> > "Tian, Kevin" <kevin.tian@intel.com> wrote:
+> > >
+> > > Can you or Alex elaborate where the complexity and performance problem
+> > > locate in VFIO map/umap? We'd like to understand more detail and see  
+> > how  
+> > > to avoid it in the new interface.  
+> > 
+> > 
+> > The map/unmap interface is really only good for long lived mappings,
+> > the overhead is too high for things like vIOMMU use cases or any case
+> > where the mapping is intended to be dynamic.  Userspace drivers must
+> > make use of a long lived buffer mapping in order to achieve performance.  
 > 
-> I briefly glanced at the git history but didn't find any proper description
-> of that stat. As it stands, it counts the number of times wake_affine()
-> purposedly steered a task towards a particular CPU (waker or wakee's prev),
-> so nr_wakeups_affine / nr_wakeups_affine_attempts is your wake_affine()
-> "success rate" - how often could it make a choice with the available data.
+> This is not a limitation of VFIO map/unmap. It's the limitation of any
+> map/unmap semantics since the fact of long-lived vs. short-lived is 
+> imposed by userspace. Nested translation is the only viable optimization
+> allowing 2nd-level to be a long-lived mapping even w/ vIOMMU. From 
+> this angle I'm not sure how a new map/unmap implementation could 
+> address this perf limitation alone.
+
+Sure, we don't need to try to tackle every problem at once, a map/unmap
+interface compatible with what we have is a good place to start and
+nested translation may provide the high performance option.  That's not
+to say that we couldn't, in the future, extend the map/unmap with memory
+pre-registration like done in the spapr IOMMU to see how that could
+reduce latency.
+
+> > The mapping and unmapping granularity has been a problem as well,
+> > type1v1 allowed arbitrary unmaps to bisect the original mapping, with
+> > the massive caveat that the caller relies on the return value of the
+> > unmap to determine what was actually unmapped because the IOMMU use
+> > of
+> > superpages is transparent to the caller.  This led to type1v2 that
+> > simply restricts the user to avoid ever bisecting mappings.  That still
+> > leaves us with problems for things like virtio-mem support where we
+> > need to create initial mappings with a granularity that allows us to
+> > later remove entries, which can prevent effective use of IOMMU
+> > superpages.  
 > 
-> I could see a point in only incrementing the count if wake_affine() steers
-> towards the waker rather than the wakee (i.e. don't increment if choice is
-> prev), but then that has no link with LLC spans
-
-Lets say if prev CPU and this CPU were part of the same LLC, and the prev
-CPU was busy (or busier than this CPU), should consider this as a wake
-affine? If prev was idle, we would have surely consider prev CPU. Also since
-both are part of same LLC, we cant say this CPU is more affine than prev
-CPU. Or may be I am confusing wake_affine with cache_affine.
-
+> We could start with a semantics similar to type1v2. 
 > 
-> > Cc: LKML <linux-kernel@vger.kernel.org>
-> > Cc: Gautham R Shenoy <ego@linux.vnet.ibm.com>
-> > Cc: Parth Shah <parth@linux.ibm.com>
-> > Cc: Ingo Molnar <mingo@kernel.org>
-> > Cc: Peter Zijlstra <peterz@infradead.org>
-> > Cc: Valentin Schneider <valentin.schneider@arm.com>
-> > Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>
-> > Cc: Mel Gorman <mgorman@techsingularity.net>
-> > Cc: Vincent Guittot <vincent.guittot@linaro.org>
-> > Cc: Rik van Riel <riel@surriel.com>
-> > Signed-off-by: Srikar Dronamraju <srikar@linux.vnet.ibm.com>
-> > ---
-> >  kernel/sched/fair.c | 6 ++++--
-> >  1 file changed, 4 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index 794c2cb945f8..a258a84cfdfd 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -5884,8 +5884,10 @@ static int wake_affine(struct sched_domain *sd, struct task_struct *p,
-> >       if (target == nr_cpumask_bits)
-> >               return prev_cpu;
-> >
-> > -	schedstat_inc(sd->ttwu_move_affine);
-> > -	schedstat_inc(p->se.statistics.nr_wakeups_affine);
-> > +	if (!cpus_share_cache(prev_cpu, target)) {
+> btw why does virtio-mem require a smaller granularity? Can we split
+> superpages in-the-fly when removal actually happens (just similar
+> to page split in VM live migration for efficient dirty page tracking)?
+
+The IOMMU API doesn't currently support those semantics.  If the IOMMU
+used a superpage, then a superpage gets unmapped, it doesn't get
+atomically broken down into smaller pages.  Therefore virtio-mem
+proposes a fixed mapping granularity to allow for that same unmapping
+granularity.
+
+> and isn't it another problem imposed by userspace? How could a new
+> map/unmap implementation mitigate this problem if the userspace 
+> insists on a smaller granularity for initial mappings?
+
+Currently if userspace wants to guarantee unmap granularity, they need
+to make the same restriction themselves on the mapping granularity.
+For instance, userspace cannot currently map a 1GB IOVA range while
+guaranteeing 2MB unmap granularity of that range with a single ioctl.
+Instead userspace would need to make 512, 2MB mappings calls.
+
+> > Locked page accounting has been another constant issue.  We perform
+> > locked page accounting at the container level, where each container
+> > accounts independently.  A user may require multiple containers, the
+> > containers may pin the same physical memory, but be accounted against
+> > the user once per container.  
 > 
-> Per the above, why? Why not just if(target == this_cpu) ?
+> for /dev/ioasid there is still an open whether an process is allowed to
+> open /dev/ioasid once or multiple times. If there is only one ioasid_fd
+> per process, the accounting can be made accurately. otherwise the
+> same problem still exists as each ioasid_fd is akin to the container, then
+> we need find a better solution.
 
-We could use target == this_cpu. However if prev CPU and this CPU share the
-same LLC, then should we consider moving to this_cpu as an affine wakeup?
-
-I could have probably moved this patch a later in the patch series, but one
-of the patch that introduces wake_affine_idler_llc() may end up returning
-neither this_cpu, prev_cpu or nr_cpumask_bits. In such a case where it
-returns a CPU closer to this_cpu, then I would still mark it as wake_affine.
-
+We had tossed around an idea of a super-container with vfio, it's maybe
+something we'd want to incorporate into this design.  For instance, if
+memory could be pre-registered with a super container, which would
+handle the locked memory accounting for that memory, then
+sub-containers could all handle the IOMMU context of their sets of
+devices relative to that common memory pool.
+ 
+> > Those are the main ones I can think of.  It is nice to have a simple
+> > map/unmap interface, I'd hope that a new /dev/ioasid interface wouldn't
+> > raise the barrier to entry too high, but the user needs to have the
+> > ability to have more control of their mappings and locked page
+> > accounting should probably be offloaded somewhere.  Thanks,
+> >   
 > 
-> > +		schedstat_inc(sd->ttwu_move_affine);
-> > +		schedstat_inc(p->se.statistics.nr_wakeups_affine);
-> > +	}
-> >       return target;
-> >  }
-> >
-> > --
-> > 2.18.2
+> Based on your feedbacks I feel it's probably reasonable to start with
+> a type1v2 semantics for the new interface. Locked accounting could
+> also start with the same VFIO restriction and then improve it
+> incrementally, if a cleaner way is intrusive (if not affecting uAPI).
+> But I didn't get the suggestion on "more control of their mappings".
+> Can you elaborate?
 
--- 
-Thanks and Regards
-Srikar Dronamraju
+Things like I note above, userspace cannot currently specify mapping
+granularity nor has any visibility to the granularity they get from the
+IOMMU.  What actually happens in the IOMMU is pretty opaque to the user
+currently.  Thanks,
+
+Alex
+
