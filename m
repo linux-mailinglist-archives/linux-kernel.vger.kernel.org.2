@@ -2,58 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D98D637617B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:51:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 45A6B37617D
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:51:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235793AbhEGHwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:52:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39618 "EHLO mail.kernel.org"
+        id S235815AbhEGHwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:52:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39866 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230007AbhEGHwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:52:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id C113861431;
-        Fri,  7 May 2021 07:51:36 +0000 (UTC)
+        id S235799AbhEGHwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 03:52:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id AA22961431;
+        Fri,  7 May 2021 07:51:43 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620373896;
-        bh=v4gRAs2C6EM1QGqwpyvwBhoC32x4EUYsf3hNJVl9MQU=;
+        s=k20201202; t=1620373903;
+        bh=54w0k5sqcPlMUtrAtS0ClNSU/LGrv7FQXtkFcE2NjJ0=;
         h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=p/wEDgqC9oH///ia7emQYIgdQlxtKScYWfBJbA1G2fqDX2N2SkdNkc735BdZw/Klb
-         UmFOz+zV1gyOGzNCYRoVFhbsI6ci7gaod8f6+s67Kcxp0LyEpkSlF7GS5IQwBi53C2
-         5ZAnFS+R2TjgLnNcuv/HubNttAZkFj1vJ8un+ipAdXikRCadP0umH3aull06JDWXKl
-         xuPnQ3t2eu+BEwnEf2MAcQE7cSY1ApWUvSvY2sxBiWcJs4yy9FuXtpgnJlT0HFDdQl
-         gRJluIx+KZAR784gxRezloEMM5P/i9CaZC5N8lk6N5GK1t3v5NOy9EMIKaHREgnbAV
-         JSYMurAUKpvZg==
+        b=gMvVlCp6UXUsqAU3zHP00uxb82LLFe+i/pnRLnmF1q6lGf8YPqrxx4OoJs2v5ss3y
+         zii/pPsOn8MW6ExWDvqaF5GjW4H/XVmmcbTpb5UtRtnR1UaYsQ05M6GEIyTWo/Wcok
+         QRw07c8By52SbEiiF0CRo+AUeC5D/7ZCe8za0Ns/DBEO86N8BO7EnOfB4TtEOoag9L
+         031iaV+LtxL1aHAdWyQOeMmwCi9Jx2dQAOc1G5ZuKPL9f0UUwbe+AYgO20utju+7Xj
+         +49tnkSMrtNyEhx8/+86GXKhG7S62FUfVr4Ct9Pd4Rb884raqSKbwk1yHEvw+g9dJZ
+         57OqeQl/P3Onw==
 Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id BBB6A60A01;
-        Fri,  7 May 2021 07:51:36 +0000 (UTC)
-Subject: Re: [GIT PULL] iomap: one more change for 5.13-rc1
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A489C609AC;
+        Fri,  7 May 2021 07:51:43 +0000 (UTC)
+Subject: Re: [git pull] Input updates for v5.13-rc0
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20210507003748.GG8582@magnolia>
-References: <20210507003748.GG8582@magnolia>
-X-PR-Tracked-List-Id: <linux-xfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20210507003748.GG8582@magnolia>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.13-merge-3
-X-PR-Tracked-Commit-Id: 6e552494fb90acae005d74ce6a2ee102d965184b
+In-Reply-To: <YJRsc3LxpkFNTknm@google.com>
+References: <YJRsc3LxpkFNTknm@google.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <YJRsc3LxpkFNTknm@google.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+X-PR-Tracked-Commit-Id: 05665cef4b745cb46b1d1b8e96deaa25464092d3
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 05da1f643f00ae9aabb8318709e40579789b7c64
-Message-Id: <162037389676.26493.15809453894943437236.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 May 2021 07:51:36 +0000
-To:     "Darrick J. Wong" <djwong@kernel.org>
+X-PR-Merge-Commit-Id: aef511fb91b6efb2d355c2704cf979f3202d310a
+Message-Id: <162037390366.26493.3264925485074967088.pr-tracker-bot@kernel.org>
+Date:   Fri, 07 May 2021 07:51:43 +0000
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 6 May 2021 17:37:48 -0700:
+The pull request you sent on Thu, 6 May 2021 15:23:47 -0700:
 
-> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/iomap-5.13-merge-3
+> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/05da1f643f00ae9aabb8318709e40579789b7c64
+https://git.kernel.org/torvalds/c/aef511fb91b6efb2d355c2704cf979f3202d310a
 
 Thank you!
 
