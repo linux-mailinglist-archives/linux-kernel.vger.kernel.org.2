@@ -2,87 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83575376038
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 08:26:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EF46937603B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 08:27:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234136AbhEGG1t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 02:27:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43028 "EHLO mail.kernel.org"
+        id S234203AbhEGG2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 02:28:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43524 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230380AbhEGG1s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 02:27:48 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1E20C610FA;
-        Fri,  7 May 2021 06:26:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620368809;
-        bh=26lW/SlE/3tJXeTGnqnhmb7qE4S+ECkvLL6V6VcGy/c=;
+        id S230380AbhEGG2s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 02:28:48 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 4EEC061154;
+        Fri,  7 May 2021 06:27:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620368867;
+        bh=g1Waw8S6g5srkV3sVXlOHNgN6nlneoJfnIMAns1P+VE=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QY/O7ugwDFC6NdsFh2BVxwy0nlopRdBeqyFlCL9G4d5FMH1aoe3c5KPUbucOrobZX
-         An4KwX3zBs3/9NYI9JlzJ8XF3s4jvqH3x4VBNEVdy1sGO9cH+M0J/p2AYfS3yzJ8mQ
-         UE6ocjIkqyiBTw7N3+tIoK5VLMyipFy93ryG6QS3+heoKGeQ9KSV4jatwHFhz3elgm
-         5Ayat9Y0AaHu6aFQn7ctwKXdGnjgLl7Gqlv5burxcyd5/cJrFTFS5yUgsIRauOZYK/
-         HJuAwC1cuWCbHpI6D45phnn0k3NQdbY1mTEt98ajudqb88DYelL+RWOzWUxkOkPdG9
-         lS14JTBbedlNg==
-Date:   Thu, 6 May 2021 23:26:47 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net
-Subject: Re: [f2fs-dev] [PATCH] f2fs: return -EPERM given generic mask
-Message-ID: <YJTdp0Rj170TYm24@sol.localdomain>
-References: <20210506191347.1242802-1-jaegeuk@kernel.org>
+        b=g3PEIreIaW+nzWBEdSVfqdJhwEdc7NN2leomcf4N40HwAPfbHgdf7YujMkCYmvX0w
+         XTz2sIWLKvRx3AQny+FBTl0mCFB8WygbodegvGHknye+iUaV6Si7889MDZKi0/K/Bi
+         e+rhleY+RpuarDC9B8Q4yOoIqRwYiGIIFUMnTqGU=
+Date:   Fri, 7 May 2021 08:27:45 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     vkoul@kernel.org, linux-phy@lists.infradead.org, kishon@ti.com,
+        linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev,
+        neil@brown.name, ilya.lipnitskiy@gmail.com,
+        kernel test robot <lkp@intel.com>
+Subject: Re: [PATCH] phy: ralink: phy-mt7621-pci: properly print pointer
+ address
+Message-ID: <YJTd4cl6ZsPieC1b@kroah.com>
+References: <20210507060142.17049-1-sergio.paracuellos@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210506191347.1242802-1-jaegeuk@kernel.org>
+In-Reply-To: <20210507060142.17049-1-sergio.paracuellos@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 12:13:47PM -0700, Jaegeuk Kim wrote:
-> In f2fs_fileattr_set(),
+On Fri, May 07, 2021 at 08:01:42AM +0200, Sergio Paracuellos wrote:
+> The way of printing the pointer address for the 'port_base'
+> address got into compile warnings on some architectures
+> [-Wpointer-to-int-cast]. Instead of use '%08x' and cast
+> to an 'unsigned int' just make use of '%px' and avoid the
+> cast.
 > 
-> 	if (!fa->flags_valid)
-> 		mask &= FS_COMMON_FL;
-> 
-> In this case, we should not allow to set FS_COMPR_FL, instead of BUG_ON.
-> 
-> /* Flags shared betwen flags/xflags */
-> 	(FS_SYNC_FL | FS_IMMUTABLE_FL | FS_APPEND_FL | \
-> 	 FS_NODUMP_FL |	FS_NOATIME_FL | FS_DAX_FL | \
-> 	 FS_PROJINHERIT_FL)
-> 
-> Fixes: 4c5b47997521 ("vfs: add fileattr ops")
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> Fixes: d87da32372a0 ("phy: ralink: Add PHY driver for MT7621 PCIe PHY")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 > ---
->  fs/f2fs/file.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  drivers/phy/ralink/phy-mt7621-pci.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
-> index e01ce802cf10..38015ef84893 100644
-> --- a/fs/f2fs/file.c
-> +++ b/fs/f2fs/file.c
-> @@ -1817,7 +1817,9 @@ static int f2fs_setflags_common(struct inode *inode, u32 iflags, u32 mask)
->  	struct f2fs_inode_info *fi = F2FS_I(inode);
->  	u32 masked_flags = fi->i_flags & mask;
+> diff --git a/drivers/phy/ralink/phy-mt7621-pci.c b/drivers/phy/ralink/phy-mt7621-pci.c
+> index 753cb5bab930..4705931fb072 100644
+> --- a/drivers/phy/ralink/phy-mt7621-pci.c
+> +++ b/drivers/phy/ralink/phy-mt7621-pci.c
+> @@ -272,8 +272,8 @@ static struct phy *mt7621_pcie_phy_of_xlate(struct device *dev,
 >  
-> -	f2fs_bug_on(F2FS_I_SB(inode), (iflags & ~mask));
-> +	/* mask can be shrunk by flags_valid selector */
-> +	if (iflags & ~mask)
-> +		return -EPERM;
+>  	mt7621_phy->has_dual_port = args->args[0];
 >  
->  	/* Is it quota file? Do not allow user to mess with it */
->  	if (IS_NOQUOTA(inode))
-> -- 
-> 2.31.1.607.g51e8a6a459-goog
+> -	dev_info(dev, "PHY for 0x%08x (dual port = %d)\n",
+> -		 (unsigned int)mt7621_phy->port_base, mt7621_phy->has_dual_port);
+> +	dev_info(dev, "PHY for 0x%px (dual port = %d)\n",
+> +		 mt7621_phy->port_base, mt7621_phy->has_dual_port);
 
-This looks like the wrong fix.  AFAICS, 'mask' is the set of inode flags that
-the specific ioctl (FS_IOC_SETFLAGS or FS_IOC_FSSETXATTR) can potentially
-modify, while 'iflags' is the new set of inode flags among the set that either
-ioctl can potentially modify.  So this change will stop FS_IOC_FSSETXATTR from
-working on files that have already flags set which are only modifiable by
-FS_IOC_SETFLAGS, e.g. the compression flag.
+This whole message should be dropped as drivers should be quiet if all
+is going well, and only print messages when things go wrong.
 
-I think the correct fix would be to just do something like 'iflags &= mask'.
+And why cc: linux-staging?
 
-- Eric
+thanks,
+
+greg k-h
