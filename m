@@ -2,152 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E537C376B85
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:14:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E440376B87
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:14:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229681AbhEGVPk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:15:40 -0400
-Received: from mail-ot1-f50.google.com ([209.85.210.50]:41561 "EHLO
-        mail-ot1-f50.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEGVPi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:15:38 -0400
-Received: by mail-ot1-f50.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so2774485oth.8;
-        Fri, 07 May 2021 14:14:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7veamalGpZ3JPYDEzgwvaohfG+qmQaU3ikes2gGH9cY=;
-        b=so6LJ1RBcGzpR+s3GBJ2bspHXUghZvAg8bmKPaIsOa7VtNbOzkDEcmO/jsRPzWHM7d
-         RXL4OfYKw7eEed+8cUyCxuXVGHgXHUgnyhXePc+MOyJSt83qZb/OxAZnXhWaDtwjDaf0
-         F1PEywpwxdDK0q1XZ1IA+VjzUtkI4cZbRygdEaU8ZqTgjFWkz77LumaLSa7rRawm5cmX
-         zDioXvOsesDO/U9jpUwGzU9I2oWKR/hFo33yKBR8WuirO4hWSFVzFB0OBz8IUWYImdJ/
-         iKMPjy3ytRqPCXq07ZG5fDU5HoqG+vcjFXwR8NfOrgZcsa+MyQi0mFzgfM05vWhKA2MY
-         PdxQ==
-X-Gm-Message-State: AOAM530VTkZ1a1F7jQGCLiz+ERkiHNEIXWA0ZLcPoww3f3+k6+1/UDaQ
-        0dnlmFOPpFji2yd976mieJJ73lBHEg==
-X-Google-Smtp-Source: ABdhPJws1frb5rRP1SOGObFpTLxgTjiWmAFCGMur/wBJeGgvCd26jhJ/gW4kSV1Zn+ctT9nDKHskEA==
-X-Received: by 2002:a9d:7593:: with SMTP id s19mr10190187otk.268.1620422076830;
-        Fri, 07 May 2021 14:14:36 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id c18sm128622otm.1.2021.05.07.14.14.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 14:14:35 -0700 (PDT)
-Received: (nullmailer pid 2897610 invoked by uid 1000);
-        Fri, 07 May 2021 21:14:34 -0000
-Date:   Fri, 7 May 2021 16:14:34 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Bhupesh Sharma <bhupesh.sharma@linaro.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Thara Gopinath <thara.gopinath@linaro.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Vinod Koul <vkoul@kernel.org>, dmaengine@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-crypto@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bhupesh.linux@gmail.com
-Subject: Re: [PATCH v2 00/17]  Enable Qualcomm Crypto Engine on sm8250
-Message-ID: <20210507211434.GA2879094@robh.at.kernel.org>
-References: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
+        id S229713AbhEGVP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:15:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41206 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhEGVP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 17:15:56 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B9A00611ED;
+        Fri,  7 May 2021 21:14:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620422096;
+        bh=EJHAtYwT3QjDp7/8mwWtXV3pJ7lbc25j/slwrHC70yk=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=HfkllBZTxO/p9w6l+754P3bQ2nJ+J32Wywu5CnnDoVc7nEp+pRxZXSgE9CnOgSuY7
+         dqFwM+GwC5mYWXBiYYr97o4Z+VUVuPsQtV4xR8YcBmK505Evm4lGL50/cwQr//e1+k
+         94hrtuKk6W4UyVW/J02QTS+ZURwQcHo1g29Vg05b3ptiqXH3F9ZCPQmSC8bdm2wdat
+         F+MfVQ2lsbfy+qEwcoYDHVlmJiKIOfvc8hGMRQ+PNldu57RR+6yt1u23V0Qt/zwFGk
+         f2Jw4AG64Gx4YHufgQLZslSuKKKETXq1CKV+wEXV5KgS2Lmq8WYuHOIf25b9WUVgJO
+         Q5Ey852xJ6KJw==
+Date:   Fri, 7 May 2021 16:14:54 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Wang Xingang <wangxingang5@huawei.com>
+Cc:     will@kernel.org, joro@8bytes.org, bhelgaas@google.com,
+        gregkh@linuxfoundation.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        xieyingtai@huawei.com
+Subject: Re: [PATCH 1/1] iommu/of: Fix request and enable ACS for
+ of_iommu_configure
+Message-ID: <20210507211454.GA1518899@bjorn-Precision-5520>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210505213731.538612-1-bhupesh.sharma@linaro.org>
+In-Reply-To: <1620391793-18744-2-git-send-email-wangxingang5@huawei.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 03:07:14AM +0530, Bhupesh Sharma wrote:
-> Changes since v1:
-> =================
-> - v1 can be seen here: https://lore.kernel.org/linux-arm-msm/20210310052503.3618486-1-bhupesh.sharma@linaro.org/ 
-> - v1 did not work well as reported earlier by Dmitry, so v2 contains the following
->   changes/fixes:
->   ~ Enable the interconnect path b/w BAM DMA and main memory first
->     before trying to access the BAM DMA registers.
->   ~ Enable the interconnect path b/w qce crytpo and main memory first
->     before trying to access the qce crypto registers.
->   ~ Make sure to document the required and optional properties for both
->     BAM DMA and qce crypto drivers.
->   ~ Add a few debug related print messages in case the qce crypto driver
->     passes or fails to probe.
->   ~ Convert the qce crypto driver probe to a defered one in case the BAM DMA
->     or the interconnect driver(s) (needed on specific Qualcomm parts) are not
->     yet probed.
+On Fri, May 07, 2021 at 12:49:53PM +0000, Wang Xingang wrote:
+> From: Xingang Wang <wangxingang5@huawei.com>
 > 
-> Qualcomm crypto engine is also available on sm8250 SoC.
-> It supports hardware accelerated algorithms for encryption
-> and authentication. It also provides support for aes, des, 3des
-> encryption algorithms and sha1, sha256, hmac(sha1), hmac(sha256)
-> authentication algorithms.
+> When request ACS for PCI device in of_iommu_configure, the pci device
+> has already been scanned and added with 'pci_acs_enable=0'. So the
+> pci_request_acs() in current procedure does not work for enabling ACS.
+> Besides, the ACS should be enabled only if there's an IOMMU in system.
+> So this fix the call of pci_request_acs() and call pci_enable_acs() to
+> make sure ACS is enabled for the pci_device.
+
+For consistency:
+
+  s/of_iommu_configure/of_iommu_configure()/
+  s/pci device/PCI device/
+  s/pci_device/PCI device/
+
+But I'm confused about what problem this fixes.  On x86, I think we
+*do* set pci_acs_enable=1 in this path:
+
+  start_kernel
+    mm_init
+      mem_init
+        pci_iommu_alloc
+          p->detect()
+            detect_intel_iommu       # IOMMU_INIT_POST(detect_intel_iommu)
+              pci_request_acs
+                pci_acs_enable = 1
+
+before enumerating any PCI devices.
+
+But you mentioned pci_host_common_probe(), which I think is mostly
+used on non-x86 architectures, and I'm guessing those arches detect
+the IOMMU differently.
+
+So my question is, can we figure out how to detect IOMMUs the same way
+across all arches?
+
+> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
+> configuring IOMMU linkage")
+> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
+> ---
+>  drivers/iommu/of_iommu.c | 10 +++++++++-
+>  drivers/pci/pci.c        |  2 +-
+>  include/linux/pci.h      |  1 +
+>  3 files changed, 11 insertions(+), 2 deletions(-)
 > 
-> Tested the enabled crypto algorithms with cryptsetup test utilities
-> on sm8250-mtp and RB5 board (see [1]).
-> 
-> While at it, also make a minor fix in 'sdm845.dtsi', to make
-> sure it confirms with the other .dtsi files which expose
-> crypto nodes on qcom SoCs.
-> 
-> Cc: Thara Gopinath <thara.gopinath@linaro.org>
-> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
-> Cc: Rob Herring <robh+dt@kernel.org>
-> Cc: Andy Gross <agross@kernel.org>
-> Cc: Herbert Xu <herbert@gondor.apana.org.au>
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Stephen Boyd <sboyd@kernel.org>
-> Cc: Michael Turquette <mturquette@baylibre.com>
-> Cc: Vinod Koul <vkoul@kernel.org>
-> Cc: dmaengine@vger.kernel.org
-> Cc: linux-clk@vger.kernel.org
-> Cc: linux-crypto@vger.kernel.org
-> Cc: devicetree@vger.kernel.org
-> Cc: linux-kernel@vger.kernel.org
-> Cc: bhupesh.linux@gmail.com
+> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
+> index a9d2df001149..dc621861ae72 100644
+> --- a/drivers/iommu/of_iommu.c
+> +++ b/drivers/iommu/of_iommu.c
+> @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+>  			.np = master_np,
+>  		};
 >  
-> Bhupesh Sharma (14):
->   dt-bindings: qcom-bam: Add 'interconnects' & 'interconnect-names' to
->     optional properties
->   dt-bindings: qcom-bam: Add 'iommus' to required properties
->   dt-bindings: qcom-qce: Add 'iommus' to required properties
->   dt-bindings: qcom-qce: Add 'interconnects' and move 'clocks' to
->     optional properties
->   arm64/dts: qcom: sdm845: Use RPMH_CE_CLK macro directly
->   dt-bindings: crypto : Add new compatible strings for qcom-qce
+> -		pci_request_acs();
+>  		err = pci_for_each_dma_alias(to_pci_dev(dev),
+>  					     of_pci_iommu_init, &info);
+>  	} else {
+> @@ -222,6 +221,15 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
+>  		/* The fwspec pointer changed, read it again */
+>  		fwspec = dev_iommu_fwspec_get(dev);
+>  		ops    = fwspec->ops;
+> +
+> +		/*
+> +		 * If we found an IOMMU and the device is pci,
+> +		 * make sure we enable ACS.
 
-Please convert these bindings to schemas.
+s/pci/PCI/ for consistency.
 
-
->   arm64/dts: qcom: Use new compatibles for crypto nodes
->   crypto: qce: Add new compatibles for qce crypto driver
->   crypto: qce: Print a failure msg in case probe() fails
->   crypto: qce: Convert the device found dev_dbg() to dev_info()
->   dma: qcom: bam_dma: Create a new header file for BAM DMA driver
->   crypto: qce: Defer probing if BAM dma is not yet initialized
->   crypto: qce: Defer probe in case interconnect is not yet initialized
->   arm64/dts: qcom: sm8250: Add dt entries to support crypto engine.
-> 
-> Thara Gopinath (3):
->   dma: qcom: bam_dma: Add support to initialize interconnect path
->   crypto: qce: core: Add support to initialize interconnect path
->   crypto: qce: core: Make clocks optional
-> 
->  .../devicetree/bindings/crypto/qcom-qce.txt   |  22 +-
->  .../devicetree/bindings/dma/qcom_bam_dma.txt  |   5 +
->  arch/arm64/boot/dts/qcom/ipq6018.dtsi         |   2 +-
->  arch/arm64/boot/dts/qcom/sdm845.dtsi          |   6 +-
->  arch/arm64/boot/dts/qcom/sm8250.dtsi          |  28 ++
->  drivers/crypto/qce/core.c                     | 112 +++++--
->  drivers/crypto/qce/core.h                     |   3 +
->  drivers/dma/qcom/bam_dma.c                    | 306 ++----------------
->  include/soc/qcom/bam_dma.h                    | 290 +++++++++++++++++
->  9 files changed, 457 insertions(+), 317 deletions(-)
->  create mode 100644 include/soc/qcom/bam_dma.h
-> 
+> +		 */
+> +		if (dev_is_pci(dev)) {
+> +			pci_request_acs();
+> +			pci_enable_acs(to_pci_dev(dev));
+> +		}
+>  	}
+>  	/*
+>  	 * If we have reason to believe the IOMMU driver missed the initial
+> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+> index b717680377a9..4e4f98ee2870 100644
+> --- a/drivers/pci/pci.c
+> +++ b/drivers/pci/pci.c
+> @@ -926,7 +926,7 @@ static void pci_std_enable_acs(struct pci_dev *dev)
+>   * pci_enable_acs - enable ACS if hardware support it
+>   * @dev: the PCI device
+>   */
+> -static void pci_enable_acs(struct pci_dev *dev)
+> +void pci_enable_acs(struct pci_dev *dev)
+>  {
+>  	if (!pci_acs_enable)
+>  		goto disable_acs_redir;
+> diff --git a/include/linux/pci.h b/include/linux/pci.h
+> index c20211e59a57..e6a8bfbc9c98 100644
+> --- a/include/linux/pci.h
+> +++ b/include/linux/pci.h
+> @@ -2223,6 +2223,7 @@ static inline struct pci_dev *pcie_find_root_port(struct pci_dev *dev)
+>  }
+>  
+>  void pci_request_acs(void);
+> +void pci_enable_acs(struct pci_dev *dev);
+>  bool pci_acs_enabled(struct pci_dev *pdev, u16 acs_flags);
+>  bool pci_acs_path_enabled(struct pci_dev *start,
+>  			  struct pci_dev *end, u16 acs_flags);
 > -- 
-> 2.30.2
+> 2.19.1
 > 
