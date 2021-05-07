@@ -2,164 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB749376D89
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 01:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 048BE376D8E
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 01:58:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230184AbhEGX6I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 19:58:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40582 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229959AbhEGX6H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 19:58:07 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 63197601FA;
-        Fri,  7 May 2021 23:57:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620431826;
-        bh=75/UCOvPi5A/3+VxLXqhJqocyY02+9r1OPTzZlGM5fU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PGa9HZz2Ejb6ioHTOtFfaUy9BjfK1W122wYXztFvfEo+hqw+qBEq1Ao8LFIwD2ffN
-         5NSP27QmgXe/Bd9owAOZwh0Y+yJs1WkWBNlsA1kBR3kaHFUT7IPvNsejtQdtGkMO8Z
-         PLt2RIbR/lJb43KZeV6pUme3lsvqvkVIylBKv0mAHaj8/s6vDvQC/T6uqDptcs+yjR
-         6wpyyllIKCZxSa0HuuIxXLCarqM0e+N/Bc8tvrCwsCARAUzkfBp3q71p+/vTZThdrh
-         bRkcdfjtLG85DL5Ym0KssfzDEYsJ03D/dteGVuy9r+xki1dv3SaA8xEx/4XbOvT+VB
-         IQ9eB+++myZlA==
-Date:   Fri, 7 May 2021 16:57:03 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yunsheng Lin <linyunsheng@huawei.com>
-Cc:     <davem@davemloft.net>, <olteanv@gmail.com>, <ast@kernel.org>,
-        <daniel@iogearbox.net>, <andriin@fb.com>, <edumazet@google.com>,
-        <weiwan@google.com>, <cong.wang@bytedance.com>,
-        <ap420073@gmail.com>, <netdev@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linuxarm@openeuler.org>,
-        <mkl@pengutronix.de>, <linux-can@vger.kernel.org>,
-        <jhs@mojatatu.com>, <xiyou.wangcong@gmail.com>, <jiri@resnulli.us>,
-        <andrii@kernel.org>, <kafai@fb.com>, <songliubraving@fb.com>,
-        <yhs@fb.com>, <john.fastabend@gmail.com>, <kpsingh@kernel.org>,
-        <bpf@vger.kernel.org>, <jonas.bonn@netrounds.com>,
-        <pabeni@redhat.com>, <mzhivich@akamai.com>, <johunt@akamai.com>,
-        <albcamus@gmail.com>, <kehuan.feng@gmail.com>,
-        <a.fatoum@pengutronix.de>, <atenart@kernel.org>,
-        <alexander.duyck@gmail.com>, <hdanton@sina.com>, <jgross@suse.com>,
-        <JKosina@suse.com>, <mkubecek@suse.cz>, <bjorn@kernel.org>
-Subject: Re: [PATCH net v5 1/3] net: sched: fix packet stuck problem for
- lockless qdisc
-Message-ID: <20210507165703.70771c55@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1620266264-48109-2-git-send-email-linyunsheng@huawei.com>
-References: <1620266264-48109-1-git-send-email-linyunsheng@huawei.com>
-        <1620266264-48109-2-git-send-email-linyunsheng@huawei.com>
+        id S230213AbhEGX7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 19:59:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40850 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229920AbhEGX7A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 19:59:00 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6E1C0613ED
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 16:57:59 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id lp4so6106256pjb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 16:57:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=2iQQvEB0+fCpb/rAB5HWawShZb8qZlIcaFuxaSL0oes=;
+        b=EqhSZy45d2y8OQQwraWGhlD9n54vClwPwSn7UuK9xZviJIBJseEIUX0aF36GebrTNP
+         3Y9esEq2VEVMdpYAd+09juu7yIqSSNYhNNt+rVs1po+n6QlJ3kc6cbxhUV5wUfFprLGx
+         TjvIY1CeOIbcMr4b7WQIEnR9bfI+n///RODlA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2iQQvEB0+fCpb/rAB5HWawShZb8qZlIcaFuxaSL0oes=;
+        b=sYUb4YfSeuKhtoWFWF+O/0dqncw/YOL69ypIGZNPrZDIqEwNsFaCKKi+c+DE2aAyzu
+         jA98o+2G94BBkMZZCWsJScP3hNy25w4G7dFRbF9AnvGCjvcDto5h+FK5rgEnOlGprrs4
+         NDNXDUtJDDVX0xURZ5u+gpyviF0d8xP6/UNOvbb1hiTIKxFSjPAtrlM1ksGkLXmXq9Lk
+         aYI/pQjZ1F71KTfZA/O3+cOu2sLHGCty2HzdX0RqAP5HETgXu7aFQ7LbdXSt6IgS1kaP
+         C9wjzTF0rZAp9zXk2kyiaNtq4jqIpQMFrqrb8SFLxUpuOpWfE/NTXfE2I7aXalNwrevT
+         46WQ==
+X-Gm-Message-State: AOAM5312+ZP576tW4ptJi9eN+8/s/oOSLzaqkEbJ28L1PEvS1niH+Fpq
+        UPxIuYpA4rvjnICa9f5chqLJWA==
+X-Google-Smtp-Source: ABdhPJwW5et97Z//abVIXmo2gBu5V8/Vzg230KpxBawys34RoMW6n/H4x7d7dTWApKrw1+7V8ZstIg==
+X-Received: by 2002:a17:902:ff09:b029:ed:3b29:ff43 with SMTP id f9-20020a170902ff09b02900ed3b29ff43mr12583115plj.14.1620431878548;
+        Fri, 07 May 2021 16:57:58 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id ha14sm5011198pjb.40.2021.05.07.16.57.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 16:57:56 -0700 (PDT)
+Date:   Fri, 7 May 2021 16:57:55 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     James Bottomley <jejb@linux.ibm.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <202105071620.E834B1FA92@keescook>
+References: <20210303162209.8609-1-rppt@kernel.org>
+ <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
+ <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
+ <202105060916.ECDEC21@keescook>
+ <9e1953a1412fad06a9f7988a280d2d9a74ab0464.camel@linux.ibm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9e1953a1412fad06a9f7988a280d2d9a74ab0464.camel@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 6 May 2021 09:57:42 +0800 Yunsheng Lin wrote:
-> @@ -159,8 +160,37 @@ static inline bool qdisc_is_empty(const struct Qdisc *qdisc)
->  static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->  {
->  	if (qdisc->flags & TCQ_F_NOLOCK) {
-> +		bool dont_retry = test_bit(__QDISC_STATE_MISSED,
-> +					   &qdisc->state);
-> +
-> +		if (spin_trylock(&qdisc->seqlock))
-> +			goto nolock_empty;
-> +
-> +		/* If the flag is set before doing the spin_trylock() and
-> +		 * the above spin_trylock() return false, it means other cpu
-> +		 * holding the lock will do dequeuing for us, or it wil see
+On Thu, May 06, 2021 at 11:47:47AM -0700, James Bottomley wrote:
+> On Thu, 2021-05-06 at 10:33 -0700, Kees Cook wrote:
+> > On Thu, May 06, 2021 at 08:26:41AM -0700, James Bottomley wrote:
+> [...]
+> > > > I think that a very complete description of the threats which
+> > > > this feature addresses would be helpful.  
+> > > 
+> > > It's designed to protect against three different threats:
+> > > 
+> > >    1. Detection of user secret memory mismanagement
+> > 
+> > I would say "cross-process secret userspace memory exposures" (via a
+> > number of common interfaces by blocking it at the GUP level).
+> > 
+> > >    2. significant protection against privilege escalation
+> > 
+> > I don't see how this series protects against privilege escalation.
+> > (It protects against exfiltration.) Maybe you mean include this in
+> > the first bullet point (i.e. "cross-process secret userspace memory
+> > exposures, even in the face of privileged processes")?
+> 
+> It doesn't prevent privilege escalation from happening in the first
+> place, but once the escalation has happened it protects against
+> exfiltration by the newly minted root attacker.
 
-s/wil/will/
+So, after thinking a bit more about this, I don't think there is
+protection here against privileged execution. This feature kind of helps
+against cross-process read/write attempts, but it doesn't help with
+sufficiently privileged (i.e. ptraced) execution, since we can just ask
+the process itself to do the reading:
 
-> +		 * the flag set after releasing lock and reschedule the
-> +		 * net_tx_action() to do the dequeuing.
+$ gdb ./memfd_secret
+...
+ready: 0x7ffff7ffb000
+Breakpoint 1, ...
+(gdb) compile code unsigned long addr = 0x7ffff7ffb000UL; printf("%016lx\n", *((unsigned long *)addr));
+55555555555555555
 
-I don't understand why MISSED is checked before the trylock.
-Could you explain why it can't be tested directly here?
+And since process_vm_readv() requires PTRACE_ATTACH, there's very little
+difference in effort between process_vm_readv() and the above.
 
-> +		 */
-> +		if (dont_retry)
-> +			return false;
-> +
-> +		/* We could do set_bit() before the first spin_trylock(),
-> +		 * and avoid doing second spin_trylock() completely, then
-> +		 * we could have multi cpus doing the set_bit(). Here use
-> +		 * dont_retry to avoid doing the set_bit() and the second
-> +		 * spin_trylock(), which has 5% performance improvement than
-> +		 * doing the set_bit() before the first spin_trylock().
-> +		 */
-> +		set_bit(__QDISC_STATE_MISSED, &qdisc->state);
-> +
-> +		/* Retry again in case other CPU may not see the new flag
-> +		 * after it releases the lock at the end of qdisc_run_end().
-> +		 */
->  		if (!spin_trylock(&qdisc->seqlock))
->  			return false;
-> +
-> +nolock_empty:
->  		WRITE_ONCE(qdisc->empty, false);
->  	} else if (qdisc_is_running(qdisc)) {
->  		return false;
-> @@ -176,8 +206,13 @@ static inline bool qdisc_run_begin(struct Qdisc *qdisc)
->  static inline void qdisc_run_end(struct Qdisc *qdisc)
->  {
->  	write_seqcount_end(&qdisc->running);
-> -	if (qdisc->flags & TCQ_F_NOLOCK)
-> +	if (qdisc->flags & TCQ_F_NOLOCK) {
->  		spin_unlock(&qdisc->seqlock);
-> +
-> +		if (unlikely(test_bit(__QDISC_STATE_MISSED,
-> +				      &qdisc->state)))
-> +			__netif_schedule(qdisc);
-> +	}
->  }
->  
->  static inline bool qdisc_may_bulk(const struct Qdisc *qdisc)
-> diff --git a/net/sched/sch_generic.c b/net/sched/sch_generic.c
-> index 44991ea..9bc73ea 100644
-> --- a/net/sched/sch_generic.c
-> +++ b/net/sched/sch_generic.c
-> @@ -640,8 +640,10 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->  {
->  	struct pfifo_fast_priv *priv = qdisc_priv(qdisc);
->  	struct sk_buff *skb = NULL;
-> +	bool need_retry = true;
->  	int band;
->  
-> +retry:
->  	for (band = 0; band < PFIFO_FAST_BANDS && !skb; band++) {
->  		struct skb_array *q = band2list(priv, band);
->  
-> @@ -652,6 +654,16 @@ static struct sk_buff *pfifo_fast_dequeue(struct Qdisc *qdisc)
->  	}
->  	if (likely(skb)) {
->  		qdisc_update_stats_at_dequeue(qdisc, skb);
-> +	} else if (need_retry &&
-> +		   test_and_clear_bit(__QDISC_STATE_MISSED,
-> +				      &qdisc->state)) {
+So, what other paths through GUP exist that aren't covered by
+PTRACE_ATTACH? And if none, then should this actually just be done by
+setting the process undumpable? (This is already what things like gnupg
+do.)
 
-Why test_and_clear_bit() here? AFAICT this is the only place the bit 
-is cleared. So the test and clear do not have to be atomic.
+So, the user-space side of this doesn't seem to really help. The kernel
+side protection is interesting for kernel read/write flaws, though, in
+the sense that the process is likely not being attacked from "current",
+so a kernel-side attack would need to either walk the page tables and
+create new ones, or spawn a new userspace process to do the ptracing.
 
-To my limited understanding on x86 test_bit() is never a locked
-operation, while test_and_clear_bit() is always locked. So we'd save
-an atomic operation in un-contended case if we tested first and then
-cleared.
+So, while I like the idea of this stuff, and I see how it provides
+certain coverages, I'm curious to learn more about the threat model to
+make sure it's actually providing meaningful hurdles to attacks.
 
-> +		/* do another dequeuing after clearing the flag to
-> +		 * avoid calling __netif_schedule().
-> +		 */
-> +		smp_mb__after_atomic();
-
-test_and_clear_bit() which returned true implies a memory barrier,
-AFAIU, so the barrier is not needed with the code as is. It will be
-needed if we switch to test_bit() + clear_bit(), but please clarify
-what it is paring with.
-
-> +		need_retry = false;
-> +
-> +		goto retry;
->  	} else {
->  		WRITE_ONCE(qdisc->empty, true);
->  	}
-
+-- 
+Kees Cook
