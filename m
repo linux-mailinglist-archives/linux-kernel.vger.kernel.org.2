@@ -2,209 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6B1F37635C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:16:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6631C376360
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235877AbhEGKRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 06:17:04 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3039 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229812AbhEGKRB (ORCPT
+        id S235912AbhEGKR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 06:17:27 -0400
+Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:36333 "EHLO
+        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229812AbhEGKRR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 06:17:01 -0400
-Received: from fraeml713-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fc5jh2Bw7z71ffb;
-        Fri,  7 May 2021 18:07:52 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml713-chm.china.huawei.com (10.206.15.32) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 7 May 2021 12:15:58 +0200
-Received: from [10.47.82.108] (10.47.82.108) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 7 May 2021
- 11:15:57 +0100
-Subject: Re: [PATCH] blk-mq: Use request queue-wide tags for tagset-wide
- sbitmap
-To:     Ming Lei <ming.lei@redhat.com>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
-        "chenxiang (M)" <chenxiang66@hisilicon.com>,
-        "yama@redhat.com" <yama@redhat.com>
-References: <1620037333-2495-1-git-send-email-john.garry@huawei.com>
- <YJOph1oI8CTJjzQx@T590>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <4d5893e2-13f0-ce6f-4fd7-44c7ecf8553f@huawei.com>
-Date:   Fri, 7 May 2021 11:15:28 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
-MIME-Version: 1.0
-In-Reply-To: <YJOph1oI8CTJjzQx@T590>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.82.108]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+        Fri, 7 May 2021 06:17:17 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04400;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=16;SR=0;TI=SMTPD_---0UY2dchp_1620382555;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UY2dchp_1620382555)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 07 May 2021 18:16:14 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     mcgrof@kernel.org
+Cc:     keescook@chromium.org, yzaikin@google.com, ast@kernel.org,
+        daniel@iogearbox.net, andrii@kernel.org, kafai@fb.com,
+        songliubraving@fb.com, yhs@fb.com, john.fastabend@gmail.com,
+        kpsingh@kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, netdev@vger.kernel.org,
+        bpf@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] sysctl: Remove redundant assignment to first
+Date:   Fri,  7 May 2021 18:15:54 +0800
+Message-Id: <1620382554-62511-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/05/2021 09:32, Ming Lei wrote:
->> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags)) {
->> +		ret = blk_mq_init_sched_shared_sbitmap(q);
->> +		if (ret)
->> +			goto err_free_tags;
->> +
->> +		queue_for_each_hw_ctx(q, hctx, i) {
->> +			hctx->sched_tags->bitmap_tags =
->> +					q->sched_bitmap_tags;
->> +			hctx->sched_tags->breserved_tags =
->> +					q->sched_breserved_tags;
->> +		}
->>   	}
->>   
->>   	ret = e->ops.init_sched(q, e);
->>   	if (ret)
->> -		goto err;
->> +		goto err_free_sbitmap;
->>   
->>   	blk_mq_debugfs_register_sched(q);
->>   
->> @@ -584,6 +590,7 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
->>   				eq = q->elevator;
->>   				blk_mq_sched_free_requests(q);
->>   				blk_mq_exit_sched(q, eq);
->> +				blk_mq_exit_sched_shared_sbitmap(q);
-> blk_mq_exit_sched_shared_sbitmap() has been called in blk_mq_exit_sched() already.
+Variable first is set to '0', but this value is never read as it is
+not used later on, hence it is a redundant assignment and can be
+removed.
 
-ah, yes
+Clean up the following clang-analyzer warning:
 
-> 
->>   				kobject_put(&eq->kobj);
->>   				return ret;
->>   			}
->> @@ -593,7 +600,10 @@ int blk_mq_init_sched(struct request_queue *q, struct elevator_type *e)
->>   
->>   	return 0;
->>   
->> -err:
->> +err_free_sbitmap:
->> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
->> +		blk_mq_exit_sched_shared_sbitmap(q);
->> +err_free_tags:
->>   	blk_mq_sched_free_requests(q);
->>   	blk_mq_sched_tags_teardown(q);
->>   	q->elevator = NULL;
->> @@ -631,5 +641,7 @@ void blk_mq_exit_sched(struct request_queue *q, struct elevator_queue *e)
->>   	if (e->type->ops.exit_sched)
->>   		e->type->ops.exit_sched(e);
->>   	blk_mq_sched_tags_teardown(q);
->> +	if (blk_mq_is_sbitmap_shared(q->tag_set->flags))
->> +		blk_mq_exit_sched_shared_sbitmap(q);
->>   	q->elevator = NULL;
->>   }
->> diff --git a/block/blk-mq-tag.c b/block/blk-mq-tag.c
->> index 2a37731e8244..734fedceca7d 100644
->> --- a/block/blk-mq-tag.c
->> +++ b/block/blk-mq-tag.c
->> @@ -466,19 +466,40 @@ static int blk_mq_init_bitmap_tags(struct blk_mq_tags *tags,
->>   	return -ENOMEM;
->>   }
->>   
->> -int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set, unsigned int flags)
->> +static int __blk_mq_init_bitmaps(struct sbitmap_queue *bitmap_tags,
->> +				 struct sbitmap_queue *breserved_tags,
->> +				 struct blk_mq_tag_set *set,
->> +				 unsigned int queue_depth,
->> +				 unsigned int reserved)
->>   {
->> -	unsigned int depth = set->queue_depth - set->reserved_tags;
->> +	unsigned int depth = queue_depth - reserved;
->>   	int alloc_policy = BLK_MQ_FLAG_TO_ALLOC_POLICY(set->flags);
->>   	bool round_robin = alloc_policy == BLK_TAG_ALLOC_RR;
->> -	int i, node = set->numa_node;
->>   
->> -	if (bt_alloc(&set->__bitmap_tags, depth, round_robin, node))
->> +	if (bt_alloc(bitmap_tags, depth, round_robin, set->numa_node))
->>   		return -ENOMEM;
->> -	if (bt_alloc(&set->__breserved_tags, set->reserved_tags,
->> -		     round_robin, node))
->> +	if (bt_alloc(breserved_tags, set->reserved_tags,
->> +		     round_robin, set->numa_node))
->>   		goto free_bitmap_tags;
->>   
->> +	return 0;
->> +
->> +free_bitmap_tags:
->> +	sbitmap_queue_free(bitmap_tags);
->> +	return -ENOMEM;
->> +}
->> +
->> +int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set)
-> IMO, this function should be named as blk_mq_init_shared_tags
-> and moved to blk-mq-sched.c
+kernel/sysctl.c:1562:4: warning: Value stored to 'first' is never read
+[clang-analyzer-deadcode.DeadStores].
 
-But this is for regular tags.
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+---
+ kernel/sysctl.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-I assume you mean blk_mq_init_sched_shared_sbitmap(), below.
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 14edf84..58beeba 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -1559,7 +1559,6 @@ int proc_do_large_bitmap(struct ctl_table *table, int write,
+ 			}
+ 
+ 			bitmap_set(tmp_bitmap, val_a, val_b - val_a + 1);
+-			first = 0;
+ 			proc_skip_char(&p, &left, '\n');
+ 		}
+ 		left += skipped;
+-- 
+1.8.3.1
 
-If so, I can relocate it.
-
-As for "sbitmap" vs "tags" in the name, I'm just being consistent 
-between preexisting blk_mq_init_shared_sbitmap() and 
-blk_mq_sbitmap_shared(),  and new blk_mq_init_sched_shared_sbitmap()
-
-> 
->> +{
->> +	int i, ret;
->> +
->> +	ret = __blk_mq_init_bitmaps(&set->__bitmap_tags,
->> +				    &set->__breserved_tags,
->> +				    set, set->queue_depth,
->> +				    set->reserved_tags);
->> +	if (ret)
->> +		return ret;
->> +
->>   	for (i = 0; i < set->nr_hw_queues; i++) {
->>   		struct blk_mq_tags *tags = set->tags[i];
->>   
->> @@ -487,9 +508,6 @@ int blk_mq_init_shared_sbitmap(struct blk_mq_tag_set *set, unsigned int flags)
->>   	}
->>   
->>   	return 0;
->> -free_bitmap_tags:
->> -	sbitmap_queue_free(&set->__bitmap_tags);
->> -	return -ENOMEM;
->>   }
->>   
->>   void blk_mq_exit_shared_sbitmap(struct blk_mq_tag_set *set)
->> @@ -498,6 +516,52 @@ void blk_mq_exit_shared_sbitmap(struct blk_mq_tag_set *set)
->>   	sbitmap_queue_free(&set->__breserved_tags);
->>   }
->>   
->> +#define MAX_SCHED_RQ (16 * BLKDEV_MAX_RQ)
->> +
->> +int blk_mq_init_sched_shared_sbitmap(struct request_queue *queue)
->> +{
->> +	struct blk_mq_tag_set *set = queue->tag_set;
->> +	int ret;
->> +
->> +	queue->sched_bitmap_tags =
->> +		kmalloc(sizeof(*queue->sched_bitmap_tags), GFP_KERNEL);
->> +	queue->sched_breserved_tags =
->> +		kmalloc(sizeof(*queue->sched_breserved_tags), GFP_KERNEL);
->> +	if (!queue->sched_bitmap_tags || !queue->sched_breserved_tags)
->> +		goto err;
-> The two sbitmap queues can be embedded into 'request queue', so that
-> we can avoid to re-allocation in every elevator switch.
-
-ok
-
-> 
-> I will ask Yanhui to test the patch and see if it can make a difference.
-
-Thanks
