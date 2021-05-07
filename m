@@ -2,67 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61CE437660E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:21:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36C58376612
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:23:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237247AbhEGNWA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 09:22:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230499AbhEGNV7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 09:21:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 0065F6143F;
-        Fri,  7 May 2021 13:20:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620393659;
-        bh=sobQ8pQQF202nP8+bQmgCwGEkUv/nvmLT0VVBtITVhw=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hkHh6Q7P/Ojek+wyXL2YSye3vNMX7L/8Ls+tnsAGHNVGwlYzT1xDUxdR4cY4EbwkY
-         MD9C54t5ee8gqUVDyROeFbSlpI3geNEocCjfIQZKzcvfLjpiJcD8t7tAtSyBCj44IV
-         ruEjjjUKxiTBmPbxmiNVmaakoELTddImqSNBGodA=
-Date:   Fri, 7 May 2021 15:20:56 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Wei Ming Chen <jj251510319013@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org
-Subject: Re: [PATCH] serial: 8250_pci: Use fallthrough pseudo-keyword
-Message-ID: <YJU+uJcJ6Y+2PEUc@kroah.com>
-References: <20210507130403.11144-1-jj251510319013@gmail.com>
+        id S236752AbhEGNYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 09:24:53 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:60262 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230499AbhEGNYv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 09:24:51 -0400
+Received: from [192.168.1.111] (91-157-208-71.elisa-laajakaista.fi [91.157.208.71])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4E444EF;
+        Fri,  7 May 2021 15:23:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1620393830;
+        bh=Z+/qATPuVcKfDSUD7dOeGR9wKJY7p3Dw+vktDAXvPbU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=rA0/tLLo8qyaWE8DHa3y6WKj1IFO9evM61CpPBZDU3ELl6XSIhQ3SDXOLrR7Do6xl
+         7xQmU4C7zflQ1Ed6iiXTqQAjnMM2bedyeg4486cq5gjfOc7468nPDgWqneuMfuR4zd
+         Fd6MyawtVrsv7elD0eX+l4WddBI4tjs639h7OkIQ=
+Subject: Re: [PATCH] PM: runtime: Fix unpaired parent child_count for
+ force_resume
+To:     Tony Lindgren <tony@atomide.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>
+Cc:     Ulf Hansson <ulf.hansson@linaro.org>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>
+References: <20210505110915.6861-1-tony@atomide.com>
+From:   Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Message-ID: <8ee97450-a568-765f-77b8-d48a494f1da1@ideasonboard.com>
+Date:   Fri, 7 May 2021 16:23:49 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210507130403.11144-1-jj251510319013@gmail.com>
+In-Reply-To: <20210505110915.6861-1-tony@atomide.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 09:04:03PM +0800, Wei Ming Chen wrote:
-> Add pseudo-keyword macro fallthrough[1]
+On 05/05/2021 14:09, Tony Lindgren wrote:
+> As pm_runtime_need_not_resume() relies also on usage_count, it can return
+> a different value in pm_runtime_force_suspend() compared to when called in
+> pm_runtime_force_resume(). Different return values can happen if anything
+> calls PM runtime functions in between, and causes the parent child_count
+> to increase on every resume.
 > 
-> [1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
+> So far I've seen the issue only for omapdrm that does complicated things
+> with PM runtime calls during system suspend for legacy reasons:
 > 
-> Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+> omap_atomic_commit_tail() for omapdrm.0
+>   dispc_runtime_get()
+>    wakes up 58000000.dss as it's the dispc parent
+>     dispc_runtime_resume()
+>      rpm_resume() increases parent child_count
+>   dispc_runtime_put() won't idle, PM runtime suspend blocked
+> pm_runtime_force_suspend() for 58000000.dss, !pm_runtime_need_not_resume()
+>   __update_runtime_status()
+> system suspended
+> pm_runtime_force_resume() for 58000000.dss, pm_runtime_need_not_resume()
+>   pm_runtime_enable() only called because of pm_runtime_need_not_resume()
+> omap_atomic_commit_tail() for omapdrm.0
+>   dispc_runtime_get()
+>    wakes up 58000000.dss as it's the dispc parent
+>     dispc_runtime_resume()
+>      rpm_resume() increases parent child_count
+>   dispc_runtime_put() won't idle, PM runtime suspend blocked
+> ...
+> rpm_suspend for 58000000.dss but parent child_count is now unbalanced
+> 
+> Let's fix the issue by adding a flag for needs_force_resume and use it in
+> pm_runtime_force_resume() instead of pm_runtime_need_not_resume().
+> 
+> Additionally omapdrm system suspend could be simplified later on to avoid
+> lots of unnecessary PM runtime calls and the complexity it adds. The
+> driver can just use internal functions that are shared between the PM
+> runtime and system suspend related functions.
+> 
+> Fixes: 4918e1f87c5f ("PM / runtime: Rework pm_runtime_force_suspend/resume()")
+> Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+> Cc: Sebastian Reichel <sebastian.reichel@collabora.com>
+> Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
 > ---
->  drivers/tty/serial/8250/8250_pci.c | 3 +++
->  1 file changed, 3 insertions(+)
-> 
-> diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
-> index 689d8227f95f..4158f06de4d5 100644
-> --- a/drivers/tty/serial/8250/8250_pci.c
-> +++ b/drivers/tty/serial/8250/8250_pci.c
-> @@ -847,8 +847,11 @@ static int pci_netmos_init(struct pci_dev *dev)
->  
->  	switch (dev->device) { /* FALLTHROUGH on all */
->  	case PCI_DEVICE_ID_NETMOS_9904:
-> +		fallthrough;
->  	case PCI_DEVICE_ID_NETMOS_9912:
-> +		fallthrough;
->  	case PCI_DEVICE_ID_NETMOS_9922:
-> +		fallthrough;
->  	case PCI_DEVICE_ID_NETMOS_9900:
+>   drivers/base/power/runtime.c | 10 +++++++---
+>   include/linux/pm.h           |  1 +
+>   2 files changed, 8 insertions(+), 3 deletions(-)
 
-I really doubt this is needed here.  If so, something is really wrong
-with the static checkers.
+Tested on DRA76 EVM, with and without HDMI plugged in. I can see DSS 
+shutting down properly by looking at the CM_DSS_DSS_CLKCTRL register.
 
-thanks,
+Tested-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
-greg k-h
+  Tomi
