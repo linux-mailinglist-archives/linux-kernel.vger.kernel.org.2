@@ -2,366 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EAA8376165
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:46:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA96737616C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235704AbhEGHrY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:47:24 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:51490 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S235625AbhEGHrR (ORCPT
+        id S235707AbhEGHse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:48:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58532 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235565AbhEGHsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:47:17 -0400
-X-UUID: be52cf69576f4a53a6a136ae357a5099-20210507
-X-UUID: be52cf69576f4a53a6a136ae357a5099-20210507
-Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw01.mediatek.com
-        (envelope-from <louis.kuo@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-        with ESMTP id 1200558302; Fri, 07 May 2021 15:46:12 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 7 May 2021 15:46:11 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 7 May 2021 15:46:11 +0800
-From:   Louis Kuo <louis.kuo@mediatek.com>
-To:     <sakari.ailus@linux.intel.com>,
-        <laurent.pinchart@ideasonboard.com>, <mchehab@kernel.org>,
-        <matthias.bgg@gmail.com>, <hverkuil-cisco@xs4all.nl>,
-        <arnd@arndb.de>, <louis.kuo@mediatek.com>,
-        <sergey.senozhatsky@gmail.com>, <helen.koike@collabora.com>,
-        <niklas.soderlund+renesas@ragnatech.se>, <yepeilin.cs@gmail.com>
-CC:     <frederic.chen@mediatek.com>, <linux-media@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>
-Subject: [RESENT PATCH V0 4/4] media: pixfmt: Add ISP Camsys formats
-Date:   Fri, 7 May 2021 15:46:04 +0800
-Message-ID: <20210507074604.15079-5-louis.kuo@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20210507074604.15079-1-louis.kuo@mediatek.com>
-References: <20210507074604.15079-1-louis.kuo@mediatek.com>
+        Fri, 7 May 2021 03:48:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620373622;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=MjTfOWRFplHW4qhrQ7zOMVBfSNAJ5R+pkXcG3p+0xi0=;
+        b=KaHU0o2CaTdtt545qUKhcPaJTv/qc4egjVWQqsUi1P7Hh4fHZdnkitz8VnMmNnmfmFoMrf
+        5Yer1mK2lYkVRqcJxn8uv0eZ2xtEvN4FAMooFu268Xu0xHuHRdU5bLmDKlVV4WMuDLcdfd
+        wYumEAWHD6saxKQRcaHo51jUhcyXrvE=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-141-Z_9rBPtSMhigZahJU86eEA-1; Fri, 07 May 2021 03:47:00 -0400
+X-MC-Unique: Z_9rBPtSMhigZahJU86eEA-1
+Received: by mail-wm1-f72.google.com with SMTP id w21-20020a7bc1150000b029014a850581efso1942717wmi.6
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:46:59 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=MjTfOWRFplHW4qhrQ7zOMVBfSNAJ5R+pkXcG3p+0xi0=;
+        b=IoFs9XMfuYDqn7CfcS2pN1DCi8pFAhba8bjFMY9hAYY52/HhVpeN9tSt8iBSGBoF2R
+         arQsXYl5D5MvS9j0OvalLMa4oQGjN1xWu7AXPmsVibqcmqdKJwUshIGQMCN15pZsAEdT
+         e574PoIN7xs0kyES6PGZSiY+WNTkyV8mYLJowZnaZU2Iol6f0w+zlGlPeQQGYZyXndjv
+         S8nqjTQ8NTn2QEdfURRh5D+C34hYgdAfpe3SgrNQP/9v49b1kntVNACR2ix0pzRYvUcW
+         CWPy3ZwPINBrUo7KtAWBBOs6SnOCft6qFC8giRF2hnK81Ra5MjPC03UBbN/vM6gEZsv+
+         qkFQ==
+X-Gm-Message-State: AOAM533Nwgn6kvsyAj3FVwLTXzrjNLRleeIRsgynXbBHFUq5301xg04o
+        wXQa+djGzvkQWsRkuiUTRl8fZltkKFU4a+a34KwgwZk3UFWCwKtcYl5G7k0tnb/2hzn1JR+6sDU
+        40Tx9mrT4UPEXUDMsiIPOT28Q
+X-Received: by 2002:a7b:cf3a:: with SMTP id m26mr8536948wmg.49.1620373618863;
+        Fri, 07 May 2021 00:46:58 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy3ABXXREF6G0BEptIn/dlgqnNGYgI3mMFUWhMtILgC74LuGx9M/WBEq0+EnJc/mDur6Bezew==
+X-Received: by 2002:a7b:cf3a:: with SMTP id m26mr8536923wmg.49.1620373618604;
+        Fri, 07 May 2021 00:46:58 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c63c0.dip0.t-ipconnect.de. [91.12.99.192])
+        by smtp.gmail.com with ESMTPSA id x4sm12287407wmj.17.2021.05.07.00.46.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 May 2021 00:46:58 -0700 (PDT)
+Subject: Re: [PATCH v3 2/8] KVM: x86/mmu: Factor out allocating memslot rmap
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+References: <20210506184241.618958-1-bgardon@google.com>
+ <20210506184241.618958-3-bgardon@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <97d085a0-185d-2546-f32e-ea1c55579ba0@redhat.com>
+Date:   Fri, 7 May 2021 09:46:57 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
+In-Reply-To: <20210506184241.618958-3-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add packed bayer formats with 10/12/14 bit for image output.
-Add packed/unpacked yuv formats with 10/12 bit for image output.
-Add specific meta formats for parameter processing and 3A/other
-statistics.
+On 06.05.21 20:42, Ben Gardon wrote:
+> Small refactor to facilitate allocating rmaps for all memslots at once.
+> 
+> No functional change expected.
+> 
+> Signed-off-by: Ben Gardon <bgardon@google.com>
+> ---
+>   arch/x86/kvm/x86.c | 41 ++++++++++++++++++++++++++++++++---------
+>   1 file changed, 32 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index 5bcf07465c47..fc32a7dbe4c4 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10842,10 +10842,37 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+>   	kvm_page_track_free_memslot(slot);
+>   }
+>   
+> +static int alloc_memslot_rmap(struct kvm_memory_slot *slot,
+> +			      unsigned long npages)
 
-Signed-off-by: Louis Kuo <louis.kuo@mediatek.com>
----
- drivers/media/v4l2-core/v4l2-ioctl.c | 145 ++++++++++++++++++++++++++-
- include/uapi/linux/videodev2.h       | 101 +++++++++++++++++++
- 2 files changed, 245 insertions(+), 1 deletion(-)
+I'd have called the functions memslot_rmap_alloc() and memslot_rmap_free()
 
-diff --git a/drivers/media/v4l2-core/v4l2-ioctl.c b/drivers/media/v4l2-core/v4l2-ioctl.c
-index 823ebd175f3a..00dba596893a 100644
---- a/drivers/media/v4l2-core/v4l2-ioctl.c
-+++ b/drivers/media/v4l2-core/v4l2-ioctl.c
-@@ -1259,6 +1259,30 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_PIX_FMT_YVYU:		descr = "YVYU 4:2:2"; break;
- 	case V4L2_PIX_FMT_UYVY:		descr = "UYVY 4:2:2"; break;
- 	case V4L2_PIX_FMT_VYUY:		descr = "VYUY 4:2:2"; break;
-+	case V4L2_PIX_FMT_YUYV10:
-+		descr = "YUYV 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_YVYU10:
-+		descr = "YVYU 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_UYVY10:
-+		descr = "UYVY 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_VYUY10:
-+		descr = "VYUY 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_YUYV12:
-+		descr = "YUYV 4:2:2 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_YVYU12:
-+		descr = "YVYU 4:2:2 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_UYVY12:
-+		descr = "UYVY 4:2:2 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_VYUY12:
-+		descr = "VYUY 4:2:2 12 bits";
-+		break;
- 	case V4L2_PIX_FMT_YUV422P:	descr = "Planar YUV 4:2:2"; break;
- 	case V4L2_PIX_FMT_YUV411P:	descr = "Planar YUV 4:1:1"; break;
- 	case V4L2_PIX_FMT_Y41P:		descr = "YUV 4:1:1 (Packed)"; break;
-@@ -1282,6 +1306,30 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_PIX_FMT_NV61:		descr = "Y/CrCb 4:2:2"; break;
- 	case V4L2_PIX_FMT_NV24:		descr = "Y/CbCr 4:4:4"; break;
- 	case V4L2_PIX_FMT_NV42:		descr = "Y/CrCb 4:4:4"; break;
-+	case V4L2_PIX_FMT_NV12_10:
-+		descr = "Y/CbCr 4:2:0 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV21_10:
-+		descr = "Y/CrCb 4:2:0 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV16_10:
-+		descr = "Y/CbCr 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV61_10:
-+		descr = "Y/CrCb 4:2:2 10 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV12_12:
-+		descr = "Y/CbCr 4:2:0 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV21_12:
-+		descr = "Y/CrCb 4:2:0 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV16_12:
-+		descr = "Y/CbCr 4:2:2 12 bits";
-+		break;
-+	case V4L2_PIX_FMT_NV61_12:
-+		descr = "Y/CrCb 4:2:2 12 bits";
-+		break;
- 	case V4L2_PIX_FMT_NV12M:	descr = "Y/CbCr 4:2:0 (N-C)"; break;
- 	case V4L2_PIX_FMT_NV21M:	descr = "Y/CrCb 4:2:0 (N-C)"; break;
- 	case V4L2_PIX_FMT_NV16M:	descr = "Y/CbCr 4:2:2 (N-C)"; break;
-@@ -1348,6 +1396,90 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_PIX_FMT_KONICA420:	descr = "GSPCA KONICA420"; break;
- 	case V4L2_PIX_FMT_HSV24:	descr = "24-bit HSV 8-8-8"; break;
- 	case V4L2_PIX_FMT_HSV32:	descr = "32-bit XHSV 8-8-8-8"; break;
-+	case V4L2_PIX_FMT_MTISP_SBGGR10:
-+		descr = "10-bit Bayer BGGR MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGBRG10:
-+		descr = "10-bit Bayer GBRG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGRBG10:
-+		descr = "10-bit Bayer GRBG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SRGGB10:
-+		descr = "10-bit Bayer RGGB MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SBGGR12:
-+		descr = "12-bit Bayer BGGR MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGBRG12:
-+		descr = "12-bit Bayer GBRG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGRBG12:
-+		descr = "12-bit Bayer GRBG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SRGGB12:
-+		descr = "12-bit Bayer RGGB MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SBGGR14:
-+		descr = "14-bit Bayer BGGR MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGBRG14:
-+		descr = "14-bit Bayer GBRG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SGRBG14:
-+		descr = "14-bit Bayer GRBG MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_SRGGB14:
-+		descr = "14-bit Bayer RGGB MTISP Packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV12_10P:
-+		descr = "Y/CbCr 4:2:0 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV21_10P:
-+		descr = "Y/CrCb 4:2:0 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV16_10P:
-+		descr = "Y/CbCr 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV61_10P:
-+		descr = "Y/CrCb 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_YUYV10P:
-+		descr = "YUYV 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_YVYU10P:
-+		descr = "YVYU 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_UYVY10P:
-+		descr = "UYVY 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_VYUY10P:
-+		descr = "VYUY 4:2:2 10 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV12_12P:
-+		descr = "Y/CbCr 4:2:0 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV21_12P:
-+		descr = "Y/CrCb 4:2:0 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV16_12P:
-+		descr = "Y/CbCr 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_NV61_12P:
-+		descr = "Y/CrCb 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_YUYV12P:
-+		descr = "YUYV 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_YVYU12P:
-+		descr = "YVYU 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_UYVY12P:
-+		descr = "UYVY 4:2:2 12 bits packed";
-+		break;
-+	case V4L2_PIX_FMT_MTISP_VYUY12P:
-+		descr = "VYUY 4:2:2 12 bits packed";
-+		break;
- 	case V4L2_SDR_FMT_CU8:		descr = "Complex U8"; break;
- 	case V4L2_SDR_FMT_CU16LE:	descr = "Complex U16LE"; break;
- 	case V4L2_SDR_FMT_CS8:		descr = "Complex S8"; break;
-@@ -1367,7 +1499,18 @@ static void v4l_fill_fmtdesc(struct v4l2_fmtdesc *fmt)
- 	case V4L2_META_FMT_VIVID:       descr = "Vivid Metadata"; break;
- 	case V4L2_META_FMT_RK_ISP1_PARAMS:	descr = "Rockchip ISP1 3A Parameters"; break;
- 	case V4L2_META_FMT_RK_ISP1_STAT_3A:	descr = "Rockchip ISP1 3A Statistics"; break;
--
-+	case V4L2_META_FMT_MTISP_AF:
-+		descr = "AF Histogram";
-+		break;
-+	case V4L2_META_FMT_MTISP_LCS:
-+		descr = "Local Contrast Enhancement Stat";
-+		break;
-+	case V4L2_META_FMT_MTISP_LMV:
-+		descr = "Local Motion Vector Histogram";
-+		break;
-+	case V4L2_META_FMT_MTISP_PARAMS:
-+		descr = "MTK ISP Tuning Metadata";
-+		break;
- 	default:
- 		/* Compressed formats */
- 		flags = V4L2_FMT_FLAG_COMPRESSED;
-diff --git a/include/uapi/linux/videodev2.h b/include/uapi/linux/videodev2.h
-index 6641194b3fab..c86ab1c18284 100644
---- a/include/uapi/linux/videodev2.h
-+++ b/include/uapi/linux/videodev2.h
-@@ -593,6 +593,22 @@ struct v4l2_pix_format {
- #define V4L2_PIX_FMT_VUYA32  v4l2_fourcc('V', 'U', 'Y', 'A') /* 32  VUYA-8-8-8-8  */
- #define V4L2_PIX_FMT_VUYX32  v4l2_fourcc('V', 'U', 'Y', 'X') /* 32  VUYX-8-8-8-8  */
- #define V4L2_PIX_FMT_M420    v4l2_fourcc('M', '4', '2', '0') /* 12  YUV 4:2:0 2 lines y, 1 line uv interleaved */
-+#define V4L2_PIX_FMT_YUYV10  v4l2_fourcc('Y', 'U', 'Y', 'A')
-+/* 16  YUV 4:2:2 10-bit */
-+#define V4L2_PIX_FMT_YVYU10  v4l2_fourcc('Y', 'V', 'Y', 'A')
-+/* 16  YUV 4:2:2 10-bit */
-+#define V4L2_PIX_FMT_UYVY10  v4l2_fourcc('U', 'Y', 'V', 'A')
-+/* 16  YUV 4:2:2 10-bit */
-+#define V4L2_PIX_FMT_VYUY10  v4l2_fourcc('V', 'Y', 'U', 'A')
-+/* 16  YUV 4:2:2 10-bit */
-+#define V4L2_PIX_FMT_YUYV12  v4l2_fourcc('Y', 'U', 'Y', 'C')
-+/* 16  YUV 4:2:2 12-bit */
-+#define V4L2_PIX_FMT_YVYU12  v4l2_fourcc('Y', 'V', 'Y', 'C')
-+/* 16  YUV 4:2:2 12-bit */
-+#define V4L2_PIX_FMT_UYVY12  v4l2_fourcc('U', 'Y', 'V', 'C')
-+/* 16  YUV 4:2:2 12-bit */
-+#define V4L2_PIX_FMT_VYUY12  v4l2_fourcc('V', 'Y', 'U', 'C')
-+/* 16  YUV 4:2:2 12-bit */
- 
- /* two planes -- one Y, one Cr + Cb interleaved  */
- #define V4L2_PIX_FMT_NV12    v4l2_fourcc('N', 'V', '1', '2') /* 12  Y/CbCr 4:2:0  */
-@@ -602,6 +618,22 @@ struct v4l2_pix_format {
- #define V4L2_PIX_FMT_NV24    v4l2_fourcc('N', 'V', '2', '4') /* 24  Y/CbCr 4:4:4  */
- #define V4L2_PIX_FMT_NV42    v4l2_fourcc('N', 'V', '4', '2') /* 24  Y/CrCb 4:4:4  */
- #define V4L2_PIX_FMT_HM12    v4l2_fourcc('H', 'M', '1', '2') /*  8  YUV 4:2:0 16x16 macroblocks */
-+#define V4L2_PIX_FMT_NV12_10 v4l2_fourcc('1', '2', 'A', 'U')
-+	/* 12  Y/CbCr 4:2:0 10 bits un-packed */
-+#define V4L2_PIX_FMT_NV21_10 v4l2_fourcc('2', '1', 'A', 'U')
-+	/* 12  Y/CrCb 4:2:0 10 bits un-packed */
-+#define V4L2_PIX_FMT_NV16_10 v4l2_fourcc('1', '6', 'A', 'U')
-+	/* 16  Y/CbCr 4:2:2 10 bits un-packed */
-+#define V4L2_PIX_FMT_NV61_10 v4l2_fourcc('6', '1', 'A', 'U')
-+	/* 16  Y/CrCb 4:2:2 10 bits un-packed */
-+#define V4L2_PIX_FMT_NV12_12 v4l2_fourcc('1', '2', 'C', 'U')
-+	/* 12  Y/CbCr 4:2:0 12 bits un-packed */
-+#define V4L2_PIX_FMT_NV21_12 v4l2_fourcc('2', '1', 'C', 'U')
-+	/* 12  Y/CrCb 4:2:0 12 bits un-packed */
-+#define V4L2_PIX_FMT_NV16_12 v4l2_fourcc('1', '6', 'C', 'U')
-+	/* 16  Y/CbCr 4:2:2 12 bits un-packed */
-+#define V4L2_PIX_FMT_NV61_12 v4l2_fourcc('6', '1', 'C', 'U')
-+	/* 16  Y/CrCb 4:2:2 12 bits un-packed */
- 
- /* two non contiguous planes - one Y, one Cr + Cb interleaved  */
- #define V4L2_PIX_FMT_NV12M   v4l2_fourcc('N', 'M', '1', '2') /* 12  Y/CbCr 4:2:0  */
-@@ -743,6 +775,75 @@ struct v4l2_pix_format {
- #define V4L2_PIX_FMT_IPU3_SGBRG10	v4l2_fourcc('i', 'p', '3', 'g') /* IPU3 packed 10-bit GBRG bayer */
- #define V4L2_PIX_FMT_IPU3_SGRBG10	v4l2_fourcc('i', 'p', '3', 'G') /* IPU3 packed 10-bit GRBG bayer */
- #define V4L2_PIX_FMT_IPU3_SRGGB10	v4l2_fourcc('i', 'p', '3', 'r') /* IPU3 packed 10-bit RGGB bayer */
-+	/* Vendor specific - Mediatek ISP bayer formats */
-+#define V4L2_PIX_FMT_MTISP_SBGGR10  v4l2_fourcc('M', 'B', 'B', 'A')
-+	/*  Packed 10-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGBRG10  v4l2_fourcc('M', 'B', 'G', 'A')
-+	/*  Packed 10-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGRBG10  v4l2_fourcc('M', 'B', 'g', 'A')
-+	/*  Packed 10-bit  */
-+#define V4L2_PIX_FMT_MTISP_SRGGB10  v4l2_fourcc('M', 'B', 'R', 'A')
-+	/*  Packed 10-bit  */
-+#define V4L2_PIX_FMT_MTISP_SBGGR12  v4l2_fourcc('M', 'B', 'B', 'C')
-+	/*  Packed 12-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGBRG12  v4l2_fourcc('M', 'B', 'G', 'C')
-+	/*  Packed 12-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGRBG12  v4l2_fourcc('M', 'B', 'g', 'C')
-+	/*  Packed 12-bit  */
-+#define V4L2_PIX_FMT_MTISP_SRGGB12  v4l2_fourcc('M', 'B', 'R', 'C')
-+	/*  Packed 12-bit  */
-+#define V4L2_PIX_FMT_MTISP_SBGGR14  v4l2_fourcc('M', 'B', 'B', 'E')
-+	/*  Packed 14-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGBRG14  v4l2_fourcc('M', 'B', 'G', 'E')
-+	/*  Packed 14-bit  */
-+#define V4L2_PIX_FMT_MTISP_SGRBG14  v4l2_fourcc('M', 'B', 'g', 'E')
-+	/*  Packed 14-bit  */
-+#define V4L2_PIX_FMT_MTISP_SRGGB14  v4l2_fourcc('M', 'B', 'R', 'E')
-+	/*  Packed 14-bit  */
-+/* Vendor specific - Mediatek Luminance+Chrominance formats */
-+#define V4L2_PIX_FMT_MTISP_YUYV10P v4l2_fourcc('Y', 'U', 'A', 'P')
-+/* YUV 4:2:2 10-bit packed */
-+#define V4L2_PIX_FMT_MTISP_YVYU10P v4l2_fourcc('Y', 'V', 'A', 'P')
-+/* YUV 4:2:2 10-bit packed */
-+#define V4L2_PIX_FMT_MTISP_UYVY10P v4l2_fourcc('U', 'Y', 'A', 'P')
-+/* YUV 4:2:2 10-bit packed */
-+#define V4L2_PIX_FMT_MTISP_VYUY10P v4l2_fourcc('V', 'Y', 'A', 'P')
-+/* YUV 4:2:2 10-bit packed */
-+#define V4L2_PIX_FMT_MTISP_NV12_10P v4l2_fourcc('1', '2', 'A', 'P')
-+/* Y/CbCr 4:2:0 10 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV21_10P v4l2_fourcc('2', '1', 'A', 'P')
-+/* Y/CrCb 4:2:0 10 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV16_10P v4l2_fourcc('1', '6', 'A', 'P')
-+/* Y/CbCr 4:2:2 10 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV61_10P v4l2_fourcc('6', '1', 'A', 'P')
-+/* Y/CrCb 4:2:2 10 bits packed */
-+#define V4L2_PIX_FMT_MTISP_YUYV12P v4l2_fourcc('Y', 'U', 'C', 'P')
-+/* YUV 4:2:2 12-bit packed */
-+#define V4L2_PIX_FMT_MTISP_YVYU12P v4l2_fourcc('Y', 'V', 'C', 'P')
-+/* YUV 4:2:2 12-bit packed */
-+#define V4L2_PIX_FMT_MTISP_UYVY12P v4l2_fourcc('U', 'Y', 'C', 'P')
-+/* YUV 4:2:2 12-bit packed */
-+#define V4L2_PIX_FMT_MTISP_VYUY12P v4l2_fourcc('V', 'Y', 'C', 'P')
-+/* YUV 4:2:2 12-bit packed */
-+#define V4L2_PIX_FMT_MTISP_NV12_12P v4l2_fourcc('1', '2', 'C', 'P')
-+/* Y/CbCr 4:2:0 12 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV21_12P v4l2_fourcc('2', '1', 'C', 'P')
-+/* Y/CrCb 4:2:0 12 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV16_12P v4l2_fourcc('1', '6', 'C', 'P')
-+/* Y/CbCr 4:2:2 12 bits packed */
-+#define V4L2_PIX_FMT_MTISP_NV61_12P v4l2_fourcc('6', '1', 'C', 'P')
-+/* Y/CrCb 4:2:2 12 bits packed */
-+/* Vendor specific - Mediatek ISP parameters for firmware */
-+#define V4L2_META_FMT_MTISP_PARAMS v4l2_fourcc('M', 'T', 'f', 'p')
-+	/* ISP tuning parameters */
-+#define V4L2_META_FMT_MTISP_3A     v4l2_fourcc('M', 'T', 'f', 'a')
-+	/* AE/AWB histogram */
-+#define V4L2_META_FMT_MTISP_AF     v4l2_fourcc('M', 'T', 'f', 'f')
-+	/* AF histogram */
-+#define V4L2_META_FMT_MTISP_LCS    v4l2_fourcc('M', 'T', 'f', 'c')
-+	/* Local contrast enhanced statistics */
-+#define V4L2_META_FMT_MTISP_LMV    v4l2_fourcc('M', 'T', 'f', 'm')
-+	/* Local motion vector histogram */
- 
- /* SDR formats - used only for Software Defined Radio devices */
- #define V4L2_SDR_FMT_CU8          v4l2_fourcc('C', 'U', '0', '8') /* IQ u8 */
+
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+> +		int lpages;
+> +		int level = i + 1;
+> +
+> +		lpages = gfn_to_index(slot->base_gfn + npages - 1,
+> +				      slot->base_gfn, level) + 1;
+> +
+> +		slot->arch.rmap[i] =
+> +			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
+> +				 GFP_KERNEL_ACCOUNT);
+> +		if (!slot->arch.rmap[i])
+> +			goto out_free;
+
+you can just avoid the goto here and do the free_memslot_rmap() right away.
+
+> +	}
+> +
+> +	return 0;
+> +
+> +out_free:
+> +	free_memslot_rmap(slot);
+> +	return -ENOMEM;
+> +}
+> +
+>   static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>   				      unsigned long npages)
+>   {
+>   	int i;
+> +	int r;
+>   
+>   	/*
+>   	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
+> @@ -10854,7 +10881,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>   	 */
+>   	memset(&slot->arch, 0, sizeof(slot->arch));
+>   
+> -	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+> +	r = alloc_memslot_rmap(slot, npages);
+> +	if (r)
+> +		return r;
+> +
+> +	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
+>   		struct kvm_lpage_info *linfo;
+>   		unsigned long ugfn;
+>   		int lpages;
+> @@ -10863,14 +10894,6 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>   		lpages = gfn_to_index(slot->base_gfn + npages - 1,
+>   				      slot->base_gfn, level) + 1;
+>   
+> -		slot->arch.rmap[i] =
+> -			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
+> -				 GFP_KERNEL_ACCOUNT);
+> -		if (!slot->arch.rmap[i])
+> -			goto out_free;
+> -		if (i == 0)
+> -			continue;
+> -
+>   		linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
+>   		if (!linfo)
+>   			goto out_free;
+> 
+
+apart from that LGTM
+
 -- 
-2.18.0
+Thanks,
+
+David / dhildenb
 
