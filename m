@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1013376079
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 08:37:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C9037607A
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 08:38:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233340AbhEGGiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 02:38:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35886 "EHLO
+        id S233704AbhEGGjF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 02:39:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35936 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230007AbhEGGix (ORCPT
+        with ESMTP id S230007AbhEGGjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 02:38:53 -0400
-Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD32C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 23:37:53 -0700 (PDT)
-Received: by mail-pj1-x1031.google.com with SMTP id k3-20020a17090ad083b0290155b934a295so4760640pju.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 23:37:53 -0700 (PDT)
+        Fri, 7 May 2021 02:39:05 -0400
+Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B43C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 23:38:05 -0700 (PDT)
+Received: by mail-pj1-x1032.google.com with SMTP id gc22-20020a17090b3116b02901558435aec1so4832832pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 23:38:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vaXy2JHrBxaYnwLyYH5HyUVs0F4XBdNV67c88m2iH3U=;
-        b=iqHj1wWBR2w+PKWJzc7bFOcWn9lY0PCpSl3c8GrsmL4DbRau4Z9aIbXTHv4G0eqnBm
-         JliY2NYI80upo/JdrYmvEzX9MewYx22TvkJa5n/x5fSX7n8Eep419s4Qa9QQElFFH+CN
-         jSkxhUU5K/0S7Ehc5g0L/h5bRYOzyIcDBpKxA=
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=D8n6iEvOkp7JFMHexk5IlQ4+H1eYCStP31Up2Te53h8=;
+        b=eYRoMuYrsgXth/nt3aA95A0Ju5CDtmbNodAMrTcTWjzzch30d9zDPj1Pk41pfvPOXh
+         bmtynlX9pri0zqwcv0ugGOckny3IyCN907m6hO9ueWM04m7w6KVWE1DDaRR8MgJwB5aP
+         tKhot9yqISnmLO9IswFCHRDB/8zufUNFf1ufs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=vaXy2JHrBxaYnwLyYH5HyUVs0F4XBdNV67c88m2iH3U=;
-        b=RK/jFmF62zc/ZWsH45ViAMOO1uXCFLV0FG4N0RFvHAunCHzvxrYqqmdIjtqyQQcJXF
-         uPBS5+EbBj+o5LxrRXYfBa+TTaN8VQSbuR8a19b6C5fMxBruP0CW69aavBVNwY6tScaS
-         I5TqIQFXhOkBsGU4koKgkoaUS9oyKgyCmPeMz7oqhpn9RYbHyyahlH1/TYZJDEqzfuoL
-         yBzruSp/7DO8yUEPsJIVmu4MLMJ1RrSTERTBUjGPFM2+lijlfPn3Al8vcgs502T2Bv0o
-         RuvadF+a5ZOxu09oJh2smMd0ihSunbKPpGWFsQSHSqWHTaWsflf4smciPz89vRbzCgxP
-         Tq/w==
-X-Gm-Message-State: AOAM533Rv3zcAV8AgQRvbXKh95nN95nLHpQUWnpC8zzPnfH4UvhqLD68
-        mgbo6XxqhLEwYmk+whAkuMLibg==
-X-Google-Smtp-Source: ABdhPJxhBWiBeTxygAX2edAC+Bd58rixGrcB3WjwLgKLzGYH7tHoh0AWGp11Ex0MxAzqYoJ6hp4fLg==
-X-Received: by 2002:a17:90a:d582:: with SMTP id v2mr9358680pju.88.1620369473423;
-        Thu, 06 May 2021 23:37:53 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=D8n6iEvOkp7JFMHexk5IlQ4+H1eYCStP31Up2Te53h8=;
+        b=R5e7NT27R2sNcE2ryvI6gZSyWIEfxC+ktgd50SAuCw10z3R43lqI5wCbSLN6WXpXQk
+         Ct0mTmv3bRT5YnYpbXz0+84nOuF+kgC6GZpr0LUff2JZ9PuQCTWCDRDzh/3XKvQrZHEV
+         V8u7E2so9B3k0/T2yosDixesl6tLPoVIHWdfrUgkEMb6OgfpWua0mTdKNcdTImgsGoBL
+         3vCtnLTWeN8/ZSnyqRv2ZmPtDmsTlDlU0eW1ZSLqYv6wNnoiTihCHdT23zBILWd0493O
+         fhq+9b5sY7VxJP4aOup1rGc76uFbbkE5IWadAIfTWTL/1bOZUC9g4yAmEgmtFon9IlmL
+         H91Q==
+X-Gm-Message-State: AOAM530UFfyKHhUxdvxU6lTpcQ+uduyRrBicRGBNgQ96ZudhSzHZuyE1
+        tFTh1VJ70TMdEZxKPgbDAbXERg==
+X-Google-Smtp-Source: ABdhPJzUkdsAWpxxZdSFoS6HX7Z3ySRUQePju+VXk3kq5Gi68K6cD7mpqAe5LA2qX/M0mQILuEakmw==
+X-Received: by 2002:a17:90a:7063:: with SMTP id f90mr21964188pjk.95.1620369485497;
+        Thu, 06 May 2021 23:38:05 -0700 (PDT)
 Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
-        by smtp.googlemail.com with ESMTPSA id d16sm3713345pgk.34.2021.05.06.23.37.50
+        by smtp.googlemail.com with ESMTPSA id d16sm3713345pgk.34.2021.05.06.23.38.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 23:37:52 -0700 (PDT)
+        Thu, 06 May 2021 23:38:05 -0700 (PDT)
 From:   Pi-Hsun Shih <pihsun@chromium.org>
 Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
         Tzung-Bi Shih <tzungbi@google.com>,
@@ -56,14 +56,16 @@ Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
         Jernej Skrabec <jernej.skrabec@siol.net>,
         David Airlie <airlied@linux.ie>,
         Daniel Vetter <daniel@ffwll.ch>, Xin Ji <xji@analogixsemi.com>,
-        Hsin-Yi Wang <hsinyi@chromium.org>,
         Sam Ravnborg <sam@ravnborg.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
         dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
         linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH 1/2] drm/bridge: anx7625: refactor power control to use runtime PM framework
-Date:   Fri,  7 May 2021 14:35:47 +0800
-Message-Id: <20210507063620.390280-1-pihsun@chromium.org>
+Subject: [PATCH 2/2] drm/bridge: anx7625: add suspend / resume hooks
+Date:   Fri,  7 May 2021 14:35:48 +0800
+Message-Id: <20210507063620.390280-2-pihsun@chromium.org>
 X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+In-Reply-To: <20210507063620.390280-1-pihsun@chromium.org>
+References: <20210507063620.390280-1-pihsun@chromium.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 To:     unlisted-recipients:; (no To-header on input)
@@ -71,304 +73,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver originally use an atomic_t for keep track of the power
-status, which makes the driver more complicated than needed, and has
-some race condition as it's possible to have the power on and power off
-sequence going at the same time.
-
-This patch remove the usage of the atomic_t power_status, and use the
-kernel runtime power management framework instead.
+Add suspend / resume hooks for anx7625 driver, that power off the device
+on suspend and power on the device on resume if it was previously
+powered.
 
 Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
-Change-Id: I58e19680b6d9ffb04be2a90f458400a1433925aa
+Change-Id: I62122cc2a4eafdfce4859cbb419edc39875ebe3b
 ---
- drivers/gpu/drm/bridge/analogix/anx7625.c | 147 +++++++++-------------
- drivers/gpu/drm/bridge/analogix/anx7625.h |   1 -
- 2 files changed, 62 insertions(+), 86 deletions(-)
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 27 +++++++++++++++++++++++
+ 1 file changed, 27 insertions(+)
 
 diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
-index 23283ba0c4f9..0d90cd63fc27 100644
+index 0d90cd63fc27..dd23db9bc3d4 100644
 --- a/drivers/gpu/drm/bridge/analogix/anx7625.c
 +++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
-@@ -11,6 +11,7 @@
- #include <linux/kernel.h>
- #include <linux/module.h>
- #include <linux/mutex.h>
-+#include <linux/pm_runtime.h>
- #include <linux/regulator/consumer.h>
- #include <linux/slab.h>
- #include <linux/types.h>
-@@ -1005,33 +1006,6 @@ static void anx7625_power_on_init(struct anx7625_data *ctx)
- 	}
+@@ -1705,7 +1705,34 @@ static int __maybe_unused anx7625_runtime_pm_resume(struct device *dev)
+ 	return 0;
  }
  
--static void anx7625_chip_control(struct anx7625_data *ctx, int state)
--{
--	struct device *dev = &ctx->client->dev;
--
--	DRM_DEV_DEBUG_DRIVER(dev, "before set, power_state(%d).\n",
--			     atomic_read(&ctx->power_status));
--
--	if (!ctx->pdata.low_power_mode)
--		return;
--
--	if (state) {
--		atomic_inc(&ctx->power_status);
--		if (atomic_read(&ctx->power_status) == 1)
--			anx7625_power_on_init(ctx);
--	} else {
--		if (atomic_read(&ctx->power_status)) {
--			atomic_dec(&ctx->power_status);
--
--			if (atomic_read(&ctx->power_status) == 0)
--				anx7625_power_standby(ctx);
--		}
--	}
--
--	DRM_DEV_DEBUG_DRIVER(dev, "after set, power_state(%d).\n",
--			     atomic_read(&ctx->power_status));
--}
--
- static void anx7625_init_gpio(struct anx7625_data *platform)
- {
- 	struct device *dev = &platform->client->dev;
-@@ -1061,9 +1035,6 @@ static void anx7625_stop_dp_work(struct anx7625_data *ctx)
- 	ctx->hpd_status = 0;
- 	ctx->hpd_high_cnt = 0;
- 	ctx->display_timing_valid = 0;
--
--	if (ctx->pdata.low_power_mode == 0)
--		anx7625_disable_pd_protocol(ctx);
- }
- 
- static void anx7625_start_dp_work(struct anx7625_data *ctx)
-@@ -1105,49 +1076,26 @@ static void anx7625_hpd_polling(struct anx7625_data *ctx)
- 	int ret, val;
- 	struct device *dev = &ctx->client->dev;
- 
--	if (atomic_read(&ctx->power_status) != 1) {
--		DRM_DEV_DEBUG_DRIVER(dev, "No need to poling HPD status.\n");
--		return;
--	}
--
- 	ret = readx_poll_timeout(anx7625_read_hpd_status_p0,
- 				 ctx, val,
- 				 ((val & HPD_STATUS) || (val < 0)),
- 				 5000,
- 				 5000 * 100);
- 	if (ret) {
--		DRM_DEV_ERROR(dev, "HPD polling timeout!\n");
--	} else {
--		DRM_DEV_DEBUG_DRIVER(dev, "HPD raise up.\n");
--		anx7625_reg_write(ctx, ctx->i2c.tcpc_client,
--				  INTR_ALERT_1, 0xFF);
--		anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
--				  INTERFACE_CHANGE_INT, 0);
-+		DRM_DEV_ERROR(dev, "no hpd.\n");
-+		return;
- 	}
- 
--	anx7625_start_dp_work(ctx);
--}
--
--static void anx7625_disconnect_check(struct anx7625_data *ctx)
--{
--	if (atomic_read(&ctx->power_status) == 0)
--		anx7625_stop_dp_work(ctx);
--}
--
--static void anx7625_low_power_mode_check(struct anx7625_data *ctx,
--					 int state)
--{
--	struct device *dev = &ctx->client->dev;
-+	DRM_DEV_DEBUG_DRIVER(dev, "system status: 0x%x. HPD raise up.\n", val);
-+	anx7625_reg_write(ctx, ctx->i2c.tcpc_client,
-+			  INTR_ALERT_1, 0xFF);
-+	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
-+			  INTERFACE_CHANGE_INT, 0);
- 
--	DRM_DEV_DEBUG_DRIVER(dev, "low power mode check, state(%d).\n", state);
-+	anx7625_start_dp_work(ctx);
- 
--	if (ctx->pdata.low_power_mode) {
--		anx7625_chip_control(ctx, state);
--		if (state)
--			anx7625_hpd_polling(ctx);
--		else
--			anx7625_disconnect_check(ctx);
--	}
-+	if (!ctx->pdata.panel_bridge && ctx->bridge_attached)
-+		drm_helper_hpd_irq_event(ctx->bridge.dev);
- }
- 
- static void anx7625_remove_edid(struct anx7625_data *ctx)
-@@ -1180,9 +1128,6 @@ static int anx7625_hpd_change_detect(struct anx7625_data *ctx)
- 	int intr_vector, status;
- 	struct device *dev = &ctx->client->dev;
- 
--	DRM_DEV_DEBUG_DRIVER(dev, "power_status=%d\n",
--			     (u32)atomic_read(&ctx->power_status));
--
- 	status = anx7625_reg_write(ctx, ctx->i2c.tcpc_client,
- 				   INTR_ALERT_1, 0xFF);
- 	if (status < 0) {
-@@ -1228,22 +1173,25 @@ static void anx7625_work_func(struct work_struct *work)
- 						struct anx7625_data, work);
- 
- 	mutex_lock(&ctx->lock);
-+
-+	if (pm_runtime_suspended(&ctx->client->dev))
-+		goto unlock;
-+
- 	event = anx7625_hpd_change_detect(ctx);
--	mutex_unlock(&ctx->lock);
- 	if (event < 0)
--		return;
-+		goto unlock;
- 
- 	if (ctx->bridge_attached)
- 		drm_helper_hpd_irq_event(ctx->bridge.dev);
-+
-+unlock:
-+	mutex_unlock(&ctx->lock);
- }
- 
- static irqreturn_t anx7625_intr_hpd_isr(int irq, void *data)
- {
- 	struct anx7625_data *ctx = (struct anx7625_data *)data;
- 
--	if (atomic_read(&ctx->power_status) != 1)
--		return IRQ_NONE;
--
- 	queue_work(ctx->workqueue, &ctx->work);
- 
- 	return IRQ_HANDLED;
-@@ -1305,9 +1253,9 @@ static struct edid *anx7625_get_edid(struct anx7625_data *ctx)
- 		return (struct edid *)edid;
- 	}
- 
--	anx7625_low_power_mode_check(ctx, 1);
-+	pm_runtime_get_sync(dev);
- 	edid_num = sp_tx_edid_read(ctx, p_edid->edid_raw_data);
--	anx7625_low_power_mode_check(ctx, 0);
-+	pm_runtime_put(dev);
- 
- 	if (edid_num < 1) {
- 		DRM_DEV_ERROR(dev, "Fail to read EDID: %d\n", edid_num);
-@@ -1611,10 +1559,7 @@ static void anx7625_bridge_enable(struct drm_bridge *bridge)
- 
- 	DRM_DEV_DEBUG_DRIVER(dev, "drm enable\n");
- 
--	anx7625_low_power_mode_check(ctx, 1);
--
--	if (WARN_ON(!atomic_read(&ctx->power_status)))
--		return;
-+	pm_runtime_get_sync(dev);
- 
- 	anx7625_dp_start(ctx);
- }
-@@ -1624,14 +1569,11 @@ static void anx7625_bridge_disable(struct drm_bridge *bridge)
- 	struct anx7625_data *ctx = bridge_to_anx7625(bridge);
- 	struct device *dev = &ctx->client->dev;
- 
--	if (WARN_ON(!atomic_read(&ctx->power_status)))
--		return;
--
- 	DRM_DEV_DEBUG_DRIVER(dev, "drm disable\n");
- 
- 	anx7625_dp_stop(ctx);
- 
--	anx7625_low_power_mode_check(ctx, 0);
-+	pm_runtime_put(dev);
- }
- 
- static enum drm_connector_status
-@@ -1735,6 +1677,38 @@ static void anx7625_unregister_i2c_dummy_clients(struct anx7625_data *ctx)
- 	i2c_unregister_device(ctx->i2c.tcpc_client);
- }
- 
-+static int __maybe_unused anx7625_runtime_pm_suspend(struct device *dev)
++static int __maybe_unused anx7625_resume(struct device *dev)
 +{
 +	struct anx7625_data *ctx = dev_get_drvdata(dev);
 +
-+	mutex_lock(&ctx->lock);
++	if (!ctx->pdata.intp_irq)
++		return 0;
 +
-+	anx7625_stop_dp_work(ctx);
-+	anx7625_power_standby(ctx);
-+
-+	mutex_unlock(&ctx->lock);
++	if (!pm_runtime_enabled(dev) || !pm_runtime_suspended(dev))
++		anx7625_runtime_pm_resume(dev);
 +
 +	return 0;
 +}
 +
-+static int __maybe_unused anx7625_runtime_pm_resume(struct device *dev)
++static int __maybe_unused anx7625_suspend(struct device *dev)
 +{
 +	struct anx7625_data *ctx = dev_get_drvdata(dev);
 +
-+	mutex_lock(&ctx->lock);
++	if (!ctx->pdata.intp_irq)
++		return 0;
 +
-+	anx7625_power_on_init(ctx);
-+	anx7625_hpd_polling(ctx);
-+
-+	mutex_unlock(&ctx->lock);
++	if (!pm_runtime_enabled(dev) || !pm_runtime_suspended(dev))
++		anx7625_runtime_pm_suspend(dev);
 +
 +	return 0;
 +}
 +
-+static const struct dev_pm_ops anx7625_pm_ops = {
-+	SET_RUNTIME_PM_OPS(anx7625_runtime_pm_suspend, anx7625_runtime_pm_resume, NULL)
-+};
-+
- static int anx7625_i2c_probe(struct i2c_client *client,
- 			     const struct i2c_device_id *id)
- {
-@@ -1778,8 +1752,6 @@ static int anx7625_i2c_probe(struct i2c_client *client,
- 	}
- 	anx7625_init_gpio(platform);
+ static const struct dev_pm_ops anx7625_pm_ops = {
++	SET_SYSTEM_SLEEP_PM_OPS(anx7625_suspend, anx7625_resume) \
+ 	SET_RUNTIME_PM_OPS(anx7625_runtime_pm_suspend, anx7625_runtime_pm_resume, NULL)
+ };
  
--	atomic_set(&platform->power_status, 0);
--
- 	mutex_init(&platform->lock);
- 
- 	platform->pdata.intp_irq = client->irq;
-@@ -1809,9 +1781,11 @@ static int anx7625_i2c_probe(struct i2c_client *client,
- 		goto free_wq;
- 	}
- 
--	if (platform->pdata.low_power_mode == 0) {
-+	pm_runtime_enable(dev);
-+
-+	if (!platform->pdata.low_power_mode) {
- 		anx7625_disable_pd_protocol(platform);
--		atomic_set(&platform->power_status, 1);
-+		pm_runtime_get_sync(dev);
- 	}
- 
- 	/* Add work function */
-@@ -1847,6 +1821,9 @@ static int anx7625_i2c_remove(struct i2c_client *client)
- 	if (platform->pdata.intp_irq)
- 		destroy_workqueue(platform->workqueue);
- 
-+	if (!platform->pdata.low_power_mode)
-+		pm_runtime_put_sync_suspend(&client->dev);
-+
- 	anx7625_unregister_i2c_dummy_clients(platform);
- 
- 	kfree(platform);
-diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
-index e4a086b3a3d7..034c3840028f 100644
---- a/drivers/gpu/drm/bridge/analogix/anx7625.h
-+++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
-@@ -369,7 +369,6 @@ struct anx7625_i2c_client {
- 
- struct anx7625_data {
- 	struct anx7625_platform_data pdata;
--	atomic_t power_status;
- 	int hpd_status;
- 	int hpd_high_cnt;
- 	/* Lock for work queue */
-
-base-commit: e48661230cc35b3d0f4367eddfc19f86463ab917
 -- 
 2.31.1.607.g51e8a6a459-goog
 
