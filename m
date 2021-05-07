@@ -2,91 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDE0C375FD5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:45:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 609B6375FD9
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:46:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232818AbhEGFqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 01:46:54 -0400
-Received: from pegase2.c-s.fr ([93.17.235.10]:33125 "EHLO pegase2.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230302AbhEGFqx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 01:46:53 -0400
-Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
-        by localhost (Postfix) with ESMTP id 4FbzvP06vCz9sYf;
-        Fri,  7 May 2021 07:45:53 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase2.c-s.fr ([172.26.127.65])
-        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id VC9JLFNKSe6A; Fri,  7 May 2021 07:45:52 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase2.c-s.fr (Postfix) with ESMTP id 4FbzvN6HXNz9sYd;
-        Fri,  7 May 2021 07:45:52 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id B97168B817;
-        Fri,  7 May 2021 07:45:52 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id mL3gFu1YspUD; Fri,  7 May 2021 07:45:52 +0200 (CEST)
-Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 890798B764;
-        Fri,  7 May 2021 07:45:52 +0200 (CEST)
-Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 62463648FD; Fri,  7 May 2021 05:45:52 +0000 (UTC)
-Message-Id: <62743846cbd493e5d9a02e197c2672a1d30df149.1620366342.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH] powerpc/mmu: Don't duplicate radix_enabled()
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Fri,  7 May 2021 05:45:52 +0000 (UTC)
+        id S233932AbhEGFrb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 01:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52748 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230302AbhEGFr3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 01:47:29 -0400
+Received: from mail-pj1-x1035.google.com (mail-pj1-x1035.google.com [IPv6:2607:f8b0:4864:20::1035])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2EC92C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 22:46:30 -0700 (PDT)
+Received: by mail-pj1-x1035.google.com with SMTP id gc22-20020a17090b3116b02901558435aec1so4770100pjb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 22:46:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=5QMYEa6puQXBOEG+O6tTaTEgtrWwSdoO23hCLMWVhmA=;
+        b=hdyY/ZRp0zaTHGB93v9guBByXiAWJNp82XAvn21vWb8WxO24CM2HZaJiiwXKWs235W
+         UI+CAmzo0KybZ+vPgEvBiSfvXX1Yu85mHvxsBPJU9PdaQbFCJ6HDeMDAtLd9P6VGR116
+         6DBmpEhJfAEJBpe7AzbWn/r3yfA+QzAxQW2/axKv6MNb3kxg49GXHQwtQTwXrwDnzTF6
+         lCQoyBGfe9hJbbolVuZPADjY0sU4m4axB/4TxCIT4odv99TeM6v8ru90NNnK1Vzz6Mu6
+         N6kqyzSRYygq2DfqB2Z2UcirOmcOiyWjQ24lC5OXWiV3XCXzaAymp6LLlzRZEErwpT0h
+         qG9Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=5QMYEa6puQXBOEG+O6tTaTEgtrWwSdoO23hCLMWVhmA=;
+        b=VNwCk4vAGYTPRHQFeD2PPf19VFOfu/h0vhNWgwDqyzahi6LejRP6OwHFrD+LQ6atwH
+         1Jl3+sdgE3hXTqNgutxRSG7YSaladTTZaVHOsrZbrAMBhzl3sb9+Q99l12MPZs1tJnWS
+         ZGciqptl2QjegdJVNhQIh5ZQHoO8qD/8SXciQjrvsf1m/LoC8GykZqWOr9u6rJ6z5ekg
+         jfd6RperAXv4TVUlCbzkIuXUu8rSaEU05xXKyuYLTVAp/EhAfuCQGxFMqOFtqV29rmpX
+         3BpKTm1jvsxRkt8Skinix6wqP3DpBptbg/pDHn65K6Hq9R3vKapxJQNHLkKQ7PWKdsr9
+         EzEQ==
+X-Gm-Message-State: AOAM5319WO9qJEkD/HI6oFdvsFQKskYBzlxjh8lzxPhLjREdb6pArMHh
+        dNlVRC9cS21LEHp9Xy3NJ4DzShem6gXP/80fh32r4g==
+X-Google-Smtp-Source: ABdhPJwBHnWooalbHPmdSUpXCowHfy3SHRmS+7fnjNEon7F2Y9NK9R/hhSADwZCSxVqHcubCFzZvs7pRBteBN2R6fAU=
+X-Received: by 2002:a17:902:e54e:b029:ed:6ed2:d0ab with SMTP id
+ n14-20020a170902e54eb02900ed6ed2d0abmr8084770plf.24.1620366389736; Thu, 06
+ May 2021 22:46:29 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210428094949.43579-1-songmuchun@bytedance.com>
+ <20210430004903.GF1872259@dread.disaster.area> <YItf3GIUs2skeuyi@carbon.dhcp.thefacebook.com>
+ <20210430032739.GG1872259@dread.disaster.area> <CAMZfGtXawtMT4JfBtDLZ+hES4iEHFboe2UgJee_s-NhZR5faAw@mail.gmail.com>
+ <20210502235843.GJ1872259@dread.disaster.area> <CAMZfGtVK2Sracf=ongpNJqacafmC2ZsNy-KxEL67fVCAGXz3xA@mail.gmail.com>
+ <20210505011331.GM1872259@dread.disaster.area>
+In-Reply-To: <20210505011331.GM1872259@dread.disaster.area>
+From:   Muchun Song <songmuchun@bytedance.com>
+Date:   Fri, 7 May 2021 13:45:53 +0800
+Message-ID: <CAMZfGtW-Ad0wrtkx7qvfYOcjPFa67vyPZ2SKEJSdq118+Z8myA@mail.gmail.com>
+Subject: Re: [External] Re: [PATCH 0/9] Shrink the list lru size on memory
+ cgroup removal
+To:     Dave Chinner <david@fromorbit.com>
+Cc:     Roman Gushchin <guro@fb.com>, Matthew Wilcox <willy@infradead.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Yang Shi <shy828301@gmail.com>, alexs@kernel.org,
+        Wei Yang <richard.weiyang@gmail.com>,
+        linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux Memory Management List <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mmu_has_feature(MMU_FTR_TYPE_RADIX) can be evaluated regardless of
-CONFIG_PPC_RADIX_MMU.
+On Wed, May 5, 2021 at 9:13 AM Dave Chinner <david@fromorbit.com> wrote:
+>
+> On Mon, May 03, 2021 at 02:33:21PM +0800, Muchun Song wrote:
+> > On Mon, May 3, 2021 at 7:58 AM Dave Chinner <david@fromorbit.com> wrote:
+> > > > If the user wants to insert the allocated object to its lru list in
+> > > > the feature. The
+> > > > user should use list_lru_kmem_cache_alloc() instead of kmem_cache_alloc().
+> > > > I have looked at the code closely. There are 3 different kmem_caches that
+> > > > need to use this new API to allocate memory. They are inode_cachep,
+> > > > dentry_cache and radix_tree_node_cachep. I think that it is easy to migrate.
+> > >
+> > > It might work, but I think you may have overlooked the complexity
+> > > of inode allocation for filesystems. i.e.  alloc_inode() calls out
+> > > to filesystem allocation functions more often than it allocates
+> > > directly from the inode_cachep.  i.e.  Most filesystems provide
+> > > their own ->alloc_inode superblock operation, and they allocate
+> > > inodes out of their own specific slab caches, not the inode_cachep.
+> >
+> > I didn't realize this before. You are right. Most filesystems
+> > have their own kmem_cache instead of inode_cachep.
+> > We need a lot of filesystems special to be changed.
+> > Thanks for your reminder.
+> >
+> > >
+> > > And then you have filesystems like XFS, where alloc_inode() will
+> > > never be called, and implement ->alloc_inode as:
+> > >
+> > > /* Catch misguided souls that try to use this interface on XFS */
+> > > STATIC struct inode *
+> > > xfs_fs_alloc_inode(
+> > >         struct super_block      *sb)
+> > > {
+> > >         BUG();
+> > >         return NULL;
+> > > }
+> > >
+> > > Because all the inode caching and allocation is internal to XFS and
+> > > VFS inode management interfaces are not used.
+> > >
+> > > So I suspect that an external wrapper function is not the way to go
+> > > here - either internalising the LRU management into the slab
+> > > allocation or adding the memcg code to alloc_inode() and filesystem
+> > > specific routines would make a lot more sense to me.
+> >
+> > Sure. If we introduce kmem_cache_alloc_lru, all filesystems
+> > need to migrate to kmem_cache_alloc_lru. I cannot figure out
+> > an approach that does not need to change filesystems code.
+>
+> Right, I don't think there's a way to avoid changing all the
+> filesystem code if we are touching the cache allocation routines.
+> However, if we hide it all inside the allocation routine, then
+> the changes to each filesystem is effectively just a 1-liner like:
+>
+> -       inode = kmem_cache_alloc(inode_cache, GFP_NOFS);
+> +       inode = kmem_cache_alloc_lru(inode_cache, sb->s_inode_lru, GFP_NOFS);
+>
+> Or perhaps, define a generic wrapper function like:
+>
+> static inline void *
+> alloc_inode_sb(struct superblock *sb, struct kmem_cache *cache, gfp_flags_t gfp)
+> {
+>         return kmem_cache_alloc_lru(cache, sb->s_inode_lru, gfp);
+> }
 
-When CONFIG_PPC_RADIX_MMU is not set, mmu_has_feature(MMU_FTR_TYPE_RADIX)
-will evaluate to 'false' at build time because MMU_FTR_TYPE_RADIX
-wont be included in MMU_FTRS_POSSIBLE.
+Good idea. I am doing this. A preliminary patch is expected next week.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/include/asm/mmu.h | 12 ------------
- 1 file changed, 12 deletions(-)
+Thanks.
 
-diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
-index 607168b1aef4..0a6a77437ab8 100644
---- a/arch/powerpc/include/asm/mmu.h
-+++ b/arch/powerpc/include/asm/mmu.h
-@@ -324,7 +324,6 @@ static inline void assert_pte_locked(struct mm_struct *mm, unsigned long addr)
- }
- #endif /* !CONFIG_DEBUG_VM */
- 
--#ifdef CONFIG_PPC_RADIX_MMU
- static inline bool radix_enabled(void)
- {
- 	return mmu_has_feature(MMU_FTR_TYPE_RADIX);
-@@ -334,17 +333,6 @@ static inline bool early_radix_enabled(void)
- {
- 	return early_mmu_has_feature(MMU_FTR_TYPE_RADIX);
- }
--#else
--static inline bool radix_enabled(void)
--{
--	return false;
--}
--
--static inline bool early_radix_enabled(void)
--{
--	return false;
--}
--#endif
- 
- #ifdef CONFIG_STRICT_KERNEL_RWX
- static inline bool strict_kernel_rwx_enabled(void)
--- 
-2.25.0
-
+>
+> And then each filesystem ends up with:
+>
+> -       inode = kmem_cache_alloc(inode_cache, GFP_NOFS);
+> +       inode = alloc_inode_sb(sb, inode_cache, GFP_NOFS);
+>
+> so that all the superblock LRU stuff is also hidden from the
+> filesystems...
+>
+> Cheers,
+>
+> Dave.
+> --
+> Dave Chinner
+> david@fromorbit.com
