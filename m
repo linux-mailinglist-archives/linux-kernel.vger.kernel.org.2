@@ -2,338 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE32B376BB2
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AED14376BB5
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhEGV00 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:26:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35286 "EHLO
+        id S229747AbhEGV1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:27:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35558 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229747AbhEGV0L (ORCPT
+        with ESMTP id S229470AbhEGV1S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:26:11 -0400
-Received: from mail-pg1-x533.google.com (mail-pg1-x533.google.com [IPv6:2607:f8b0:4864:20::533])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03AA6C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 14:25:11 -0700 (PDT)
-Received: by mail-pg1-x533.google.com with SMTP id m37so8286998pgb.8
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:25:10 -0700 (PDT)
+        Fri, 7 May 2021 17:27:18 -0400
+Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F1DC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 14:26:16 -0700 (PDT)
+Received: by mail-io1-xd35.google.com with SMTP id z24so9282970ioi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:26:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oPhUQbXG7R8X2jOQyavNRDbK8zQ1lt29JM0olvEd6PQ=;
-        b=YXdR3h0ajhLbtUPggFTKw7aRLvQEPxVypdSmdKuTcPNmu2BkdbFaNrh21YYwZkcU3S
-         8HI6uCRQYUt+r/0NcM04/b8g/qLDmYsKYkNOPqnxtTv2ISHnuyTtGtXNqUHZgyW4c4XD
-         ibH8rzVa1r4Ak8ubuD+e2u9Qd9cCCt4231sgY=
+        d=konsulko.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=STKiO9AWpCH39xgVyEDHDKCth0FNOrDqcymI0L9meSo=;
+        b=WARh69Kczqdp+LQIYesVKz6ExULo6eoSYeI7iIW/Q+OO6F+Zl5OkQNgdNgi3Jt4I8W
+         c44rh4RqJQSf3jvfLzNFUDGlTH2SVWAWW5ahnXhhWlUCBacsApAEp8p+PvhlxjwEHKuU
+         Gxgcpb8oh5wu5pVWwQi3ILcI5ZRmabNvZkT/M=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oPhUQbXG7R8X2jOQyavNRDbK8zQ1lt29JM0olvEd6PQ=;
-        b=s2HhQCVGp5cQo1+To91ww/B9Y2eSxxy1vcFqD6QMbC0sLIc8cbyBR6q4p/bKjctPKD
-         zaHw5kU6XcFq+9+g7d1ee1i9M3iKMk3axxqgfEaHz2Nq5+4reIIDrCV5s5HpZbBqJRSm
-         7Ogo7T+pR9Z4TIwT7PwgzNKC/UN0gaDYM/ZSl59FptvC1NlhQrh+DXWLYO9C6wRwmxrP
-         TKVnZWSiccfhmcIFvHpZQ8S56dsrI6IIjNPbBLs3GDe+RvLzNwcYW2UO0Kgw3w1+KCLZ
-         0+pjJxZX5nhBaTh6pDIzWyB+e69CgfnwBCb8Xpfu8ugZS8V3mmYFGfwZhxX6xidGEx4h
-         /SCg==
-X-Gm-Message-State: AOAM531ekzd97f3FXVQizAadZobH+pEGFzsa3ApwtOUEnnvlBWH6z0Lm
-        ok4zsjX3p8rJ04zhf8TwiKeq5g==
-X-Google-Smtp-Source: ABdhPJyEMXQEvGTkBlCsP+Gb6Sbe/3bU5vBg3c5J0yYX7KTOUksQ/Habp7gr4cjV345Pp2XDZWPlBg==
-X-Received: by 2002:a65:4185:: with SMTP id a5mr11906182pgq.388.1620422710622;
-        Fri, 07 May 2021 14:25:10 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:ab8b:4a3d:46ab:361c])
-        by smtp.gmail.com with ESMTPSA id t1sm4996298pjo.33.2021.05.07.14.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 14:25:10 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, freedreno@lists.freedesktop.org,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Kuogee Hsieh <khsieh@codeaurora.org>, aravindh@codeaurora.org,
-        Sean Paul <sean@poorly.run>
-Subject: [PATCH 3/3] drm/msm/dp: Handle aux timeouts, nacks, defers
-Date:   Fri,  7 May 2021 14:25:05 -0700
-Message-Id: <20210507212505.1224111-4-swboyd@chromium.org>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-In-Reply-To: <20210507212505.1224111-1-swboyd@chromium.org>
-References: <20210507212505.1224111-1-swboyd@chromium.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=STKiO9AWpCH39xgVyEDHDKCth0FNOrDqcymI0L9meSo=;
+        b=fM+NRQVbUlq3KwOAT3gOPT1Uzrgbp6Xl07bzIhxOQTDqJOjqSCUjLcpoVWaDOmEoHD
+         MPjp7jr0G4dUKl07HjNKSE86bAOGXHqOCoJ9fftWikTBtfcT0t3nAWonaxc4POML1WaE
+         nbT9VasibudPkG7Tz0Hi0d1KJ8bQ9RuKtNQIMM62Tm3s8baw/u+HPIzbfq4SD+xQVMPA
+         Simotmy/uo1fUxejD8RuH0hoX6+K7ej46ALjA/PKx08xLN68unQHqjIEovWgAn5T+qYx
+         ikXLJJCtBzemIXyZ9+RTfogMLWwruwjCJLYxZL4bS5cUYFsbsNaQpaxVxc4yVBXXeyod
+         j/bw==
+X-Gm-Message-State: AOAM532/nmVEfyZao5VPL6NiMvW5HEw8vZ77r91ituw28oSWMZW3MdLS
+        nWc97F1XYRxBukhgxFskvApUZCjOY4mQPEtV57uzUg==
+X-Google-Smtp-Source: ABdhPJxEvAGnj2AJE+vvIJ2GGQoEcb6+aGVGE/J72s4ZVmpvaQAUKg/kHn3pW4/LwiH8dI51b1se5InfpZo3BeRnJ8s=
+X-Received: by 2002:a6b:cdc6:: with SMTP id d189mr8797891iog.46.1620422776360;
+ Fri, 07 May 2021 14:26:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1620314098.git.mchehab+huawei@kernel.org> <f6efc87d96826e3d2067b874e034b5edf73bb593.1620314098.git.mchehab+huawei@kernel.org>
+In-Reply-To: <f6efc87d96826e3d2067b874e034b5edf73bb593.1620314098.git.mchehab+huawei@kernel.org>
+From:   Matt Ranostay <matt.ranostay@konsulko.com>
+Date:   Fri, 7 May 2021 14:26:05 -0700
+Message-ID: <CAJCx=gnP0oK2YqmffH=CfeWQbCcAa4hS_QRXwu49tdG3kW8TWQ@mail.gmail.com>
+Subject: Re: [PATCH v5 29/30] media: i2c: video-i2c: use pm_runtime_resume_and_get()
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-media <linux-media@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's look at the irq status bits after a transfer and see if we got a
-nack or a defer or a timeout, instead of telling drm layers that
-everything was fine, while still printing an error message. I wasn't
-sure about NACK+DEFER so I lumped all those various errors along with a
-nack so that the drm core can figure out that things are just not going
-well. The important thing is that we're now returning -ETIMEDOUT when
-the message times out and nacks for bad addresses.
+On Thu, May 6, 2021 at 8:23 AM Mauro Carvalho Chehab
+<mchehab+huawei@kernel.org> wrote:
+>
+> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
+> added pm_runtime_resume_and_get() in order to automatically handle
+> dev->power.usage_count decrement on errors.
+>
+> Use the new API, in order to cleanup the error check logic.
+>
 
-Cc: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Abhinav Kumar <abhinavk@codeaurora.org>
-Cc: Kuogee Hsieh <khsieh@codeaurora.org>
-Cc: aravindh@codeaurora.org
-Cc: Sean Paul <sean@poorly.run>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
- drivers/gpu/drm/msm/dp/dp_aux.c | 140 ++++++++++++++------------------
- drivers/gpu/drm/msm/dp/dp_aux.h |   8 --
- 2 files changed, 61 insertions(+), 87 deletions(-)
+Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
 
-diff --git a/drivers/gpu/drm/msm/dp/dp_aux.c b/drivers/gpu/drm/msm/dp/dp_aux.c
-index b49810396513..4a3293b590b0 100644
---- a/drivers/gpu/drm/msm/dp/dp_aux.c
-+++ b/drivers/gpu/drm/msm/dp/dp_aux.c
-@@ -9,7 +9,15 @@
- #include "dp_reg.h"
- #include "dp_aux.h"
- 
--#define DP_AUX_ENUM_STR(x)		#x
-+enum msm_dp_aux_err {
-+	DP_AUX_ERR_NONE,
-+	DP_AUX_ERR_ADDR,
-+	DP_AUX_ERR_TOUT,
-+	DP_AUX_ERR_NACK,
-+	DP_AUX_ERR_DEFER,
-+	DP_AUX_ERR_NACK_DEFER,
-+	DP_AUX_ERR_PHY,
-+};
- 
- struct dp_aux_private {
- 	struct device *dev;
-@@ -18,7 +26,7 @@ struct dp_aux_private {
- 	struct mutex mutex;
- 	struct completion comp;
- 
--	u32 aux_error_num;
-+	enum msm_dp_aux_err aux_error_num;
- 	u32 retry_cnt;
- 	bool cmd_busy;
- 	bool native;
-@@ -33,62 +41,45 @@ struct dp_aux_private {
- 
- #define MAX_AUX_RETRIES			5
- 
--static const char *dp_aux_get_error(u32 aux_error)
--{
--	switch (aux_error) {
--	case DP_AUX_ERR_NONE:
--		return DP_AUX_ENUM_STR(DP_AUX_ERR_NONE);
--	case DP_AUX_ERR_ADDR:
--		return DP_AUX_ENUM_STR(DP_AUX_ERR_ADDR);
--	case DP_AUX_ERR_TOUT:
--		return DP_AUX_ENUM_STR(DP_AUX_ERR_TOUT);
--	case DP_AUX_ERR_NACK:
--		return DP_AUX_ENUM_STR(DP_AUX_ERR_NACK);
--	case DP_AUX_ERR_DEFER:
--		return DP_AUX_ENUM_STR(DP_AUX_ERR_DEFER);
--	case DP_AUX_ERR_NACK_DEFER:
--		return DP_AUX_ENUM_STR(DP_AUX_ERR_NACK_DEFER);
--	default:
--		return "unknown";
--	}
--}
--
--static u32 dp_aux_write(struct dp_aux_private *aux,
-+static ssize_t dp_aux_write(struct dp_aux_private *aux,
- 			struct drm_dp_aux_msg *msg)
- {
--	u32 data[4], reg, len;
-+	u8 data[4];
-+	u32 reg;
-+	ssize_t len;
- 	u8 *msgdata = msg->buffer;
- 	int const AUX_CMD_FIFO_LEN = 128;
- 	int i = 0;
- 
- 	if (aux->read)
--		len = 4;
-+		len = 0;
- 	else
--		len = msg->size + 4;
-+		len = msg->size;
- 
- 	/*
- 	 * cmd fifo only has depth of 144 bytes
- 	 * limit buf length to 128 bytes here
- 	 */
--	if (len > AUX_CMD_FIFO_LEN) {
-+	if (len > AUX_CMD_FIFO_LEN - 4) {
- 		DRM_ERROR("buf size greater than allowed size of 128 bytes\n");
--		return 0;
-+		return -EINVAL;
- 	}
- 
- 	/* Pack cmd and write to HW */
--	data[0] = (msg->address >> 16) & 0xf; /* addr[19:16] */
-+	data[0] = (msg->address >> 16) & 0xf;	/* addr[19:16] */
- 	if (aux->read)
--		data[0] |=  BIT(4); /* R/W */
-+		data[0] |=  BIT(4);		/* R/W */
- 
--	data[1] = (msg->address >> 8) & 0xff;	/* addr[15:8] */
--	data[2] = msg->address & 0xff;		/* addr[7:0] */
--	data[3] = (msg->size - 1) & 0xff;	/* len[7:0] */
-+	data[1] = msg->address >> 8;		/* addr[15:8] */
-+	data[2] = msg->address;			/* addr[7:0] */
-+	data[3] = msg->size - 1;		/* len[7:0] */
- 
--	for (i = 0; i < len; i++) {
-+	for (i = 0; i < len + 4; i++) {
- 		reg = (i < 4) ? data[i] : msgdata[i - 4];
-+		reg <<= DP_AUX_DATA_OFFSET;
-+		reg &= DP_AUX_DATA_MASK;
-+		reg |= DP_AUX_DATA_WRITE;
- 		/* index = 0, write */
--		reg = (((reg) << DP_AUX_DATA_OFFSET)
--		       & DP_AUX_DATA_MASK) | DP_AUX_DATA_WRITE;
- 		if (i == 0)
- 			reg |= DP_AUX_DATA_INDEX_WRITE;
- 		aux->catalog->aux_data = reg;
-@@ -116,39 +107,27 @@ static u32 dp_aux_write(struct dp_aux_private *aux,
- 	return len;
- }
- 
--static int dp_aux_cmd_fifo_tx(struct dp_aux_private *aux,
-+static ssize_t dp_aux_cmd_fifo_tx(struct dp_aux_private *aux,
- 			      struct drm_dp_aux_msg *msg)
- {
--	u32 ret, len, timeout;
--	int aux_timeout_ms = HZ/4;
-+	ssize_t ret;
-+	unsigned long time_left;
- 
- 	reinit_completion(&aux->comp);
- 
--	len = dp_aux_write(aux, msg);
--	if (len == 0) {
--		DRM_ERROR("DP AUX write failed\n");
--		return -EINVAL;
--	}
-+	ret = dp_aux_write(aux, msg);
-+	if (ret < 0)
-+		return ret;
- 
--	timeout = wait_for_completion_timeout(&aux->comp, aux_timeout_ms);
--	if (!timeout) {
--		DRM_ERROR("aux %s timeout\n", (aux->read ? "read" : "write"));
-+	time_left = wait_for_completion_timeout(&aux->comp,
-+						msecs_to_jiffies(250));
-+	if (!time_left)
- 		return -ETIMEDOUT;
--	}
--
--	if (aux->aux_error_num == DP_AUX_ERR_NONE) {
--		ret = len;
--	} else {
--		DRM_ERROR_RATELIMITED("aux err: %s\n",
--			dp_aux_get_error(aux->aux_error_num));
--
--		ret = -EINVAL;
--	}
- 
- 	return ret;
- }
- 
--static void dp_aux_cmd_fifo_rx(struct dp_aux_private *aux,
-+static ssize_t dp_aux_cmd_fifo_rx(struct dp_aux_private *aux,
- 		struct drm_dp_aux_msg *msg)
- {
- 	u32 data;
-@@ -175,9 +154,10 @@ static void dp_aux_cmd_fifo_rx(struct dp_aux_private *aux,
- 
- 		actual_i = (data >> DP_AUX_DATA_INDEX_OFFSET) & 0xFF;
- 		if (i != actual_i)
--			DRM_ERROR("Index mismatch: expected %d, found %d\n",
--				i, actual_i);
-+			break;
- 	}
-+
-+	return i;
- }
- 
- static void dp_aux_native_handler(struct dp_aux_private *aux, u32 isr)
-@@ -367,36 +347,38 @@ static ssize_t dp_aux_transfer(struct drm_dp_aux *dp_aux,
- 	}
- 
- 	ret = dp_aux_cmd_fifo_tx(aux, msg);
--
- 	if (ret < 0) {
- 		if (aux->native) {
- 			aux->retry_cnt++;
- 			if (!(aux->retry_cnt % MAX_AUX_RETRIES))
- 				dp_catalog_aux_update_cfg(aux->catalog);
- 		}
--		usleep_range(400, 500); /* at least 400us to next try */
--		goto unlock_exit;
--	}
--
--	if (aux->aux_error_num == DP_AUX_ERR_NONE) {
--		if (aux->read)
--			dp_aux_cmd_fifo_rx(aux, msg);
--
--		msg->reply = aux->native ?
--			DP_AUX_NATIVE_REPLY_ACK : DP_AUX_I2C_REPLY_ACK;
- 	} else {
--		/* Reply defer to retry */
--		msg->reply = aux->native ?
--			DP_AUX_NATIVE_REPLY_DEFER : DP_AUX_I2C_REPLY_DEFER;
-+		aux->retry_cnt = 0;
-+		switch (aux->aux_error_num) {
-+		case DP_AUX_ERR_NONE:
-+			if (aux->read)
-+				ret = dp_aux_cmd_fifo_rx(aux, msg);
-+			msg->reply = aux->native ? DP_AUX_NATIVE_REPLY_ACK : DP_AUX_I2C_REPLY_ACK;
-+			break;
-+		case DP_AUX_ERR_DEFER:
-+			msg->reply = aux->native ? DP_AUX_NATIVE_REPLY_DEFER : DP_AUX_I2C_REPLY_DEFER;
-+			break;
-+		case DP_AUX_ERR_PHY:
-+		case DP_AUX_ERR_ADDR:
-+		case DP_AUX_ERR_NACK:
-+		case DP_AUX_ERR_NACK_DEFER:
-+			msg->reply = aux->native ? DP_AUX_NATIVE_REPLY_NACK : DP_AUX_I2C_REPLY_NACK;
-+			break;
-+		case DP_AUX_ERR_TOUT:
-+			ret = -ETIMEDOUT;
-+			break;
-+		}
- 	}
- 
--	/* Return requested size for success or retry */
--	ret = msg->size;
--	aux->retry_cnt = 0;
--
--unlock_exit:
- 	aux->cmd_busy = false;
- 	mutex_unlock(&aux->mutex);
-+
- 	return ret;
- }
- 
-diff --git a/drivers/gpu/drm/msm/dp/dp_aux.h b/drivers/gpu/drm/msm/dp/dp_aux.h
-index f8b8ba919465..0728cc09c9ec 100644
---- a/drivers/gpu/drm/msm/dp/dp_aux.h
-+++ b/drivers/gpu/drm/msm/dp/dp_aux.h
-@@ -9,14 +9,6 @@
- #include "dp_catalog.h"
- #include <drm/drm_dp_helper.h>
- 
--#define DP_AUX_ERR_NONE		0
--#define DP_AUX_ERR_ADDR		-1
--#define DP_AUX_ERR_TOUT		-2
--#define DP_AUX_ERR_NACK		-3
--#define DP_AUX_ERR_DEFER	-4
--#define DP_AUX_ERR_NACK_DEFER	-5
--#define DP_AUX_ERR_PHY		-6
--
- int dp_aux_register(struct drm_dp_aux *dp_aux);
- void dp_aux_unregister(struct drm_dp_aux *dp_aux);
- void dp_aux_isr(struct drm_dp_aux *dp_aux);
--- 
-https://chromeos.dev
-
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/media/i2c/video-i2c.c | 12 ++++--------
+>  1 file changed, 4 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/media/i2c/video-i2c.c b/drivers/media/i2c/video-i2c.c
+> index 0465832a4090..de12f38f347c 100644
+> --- a/drivers/media/i2c/video-i2c.c
+> +++ b/drivers/media/i2c/video-i2c.c
+> @@ -286,11 +286,9 @@ static int amg88xx_read(struct device *dev, enum hwmon_sensor_types type,
+>         __le16 buf;
+>         int tmp;
+>
+> -       tmp = pm_runtime_get_sync(regmap_get_device(data->regmap));
+> -       if (tmp < 0) {
+> -               pm_runtime_put_noidle(regmap_get_device(data->regmap));
+> +       tmp = pm_runtime_resume_and_get(regmap_get_device(data->regmap));
+> +       if (tmp < 0)
+>                 return tmp;
+> -       }
+>
+>         tmp = regmap_bulk_read(data->regmap, AMG88XX_REG_TTHL, &buf, 2);
+>         pm_runtime_mark_last_busy(regmap_get_device(data->regmap));
+> @@ -512,11 +510,9 @@ static int start_streaming(struct vb2_queue *vq, unsigned int count)
+>         if (data->kthread_vid_cap)
+>                 return 0;
+>
+> -       ret = pm_runtime_get_sync(dev);
+> -       if (ret < 0) {
+> -               pm_runtime_put_noidle(dev);
+> +       ret = pm_runtime_resume_and_get(dev);
+> +       if (ret < 0)
+>                 goto error_del_list;
+> -       }
+>
+>         ret = data->chip->setup(data);
+>         if (ret)
+> --
+> 2.30.2
+>
