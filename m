@@ -2,108 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B283B375E30
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:06:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7147C375E33
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:06:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234153AbhEGBHD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 21:07:03 -0400
-Received: from mail-oi1-f178.google.com ([209.85.167.178]:34741 "EHLO
-        mail-oi1-f178.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231268AbhEGBHC (ORCPT
+        id S234253AbhEGBHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 21:07:49 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:18343 "EHLO
+        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234202AbhEGBHr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 21:07:02 -0400
-Received: by mail-oi1-f178.google.com with SMTP id l6so7310043oii.1;
-        Thu, 06 May 2021 18:06:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=qNz9umZ4AwFT7+0+9QX1oMvRnHAxwDwQzkL23KUHYkY=;
-        b=XV5BdpQB35EClzUANf9YAt2GhaQ3kL+/VNDC9QVKwl6Aptt6XFElXVIeG+v+ajnIBw
-         S00+BZ2am+/922ud97e1FpGRi5i/CDXAu3Z7QnrUuHa7txPAOggHrByhuXsQZ2mmYGgc
-         PHDkNbzeDHyeKvD3IVAIt08oK8g+8bbfioTM5RNbYAHqCpdWG2mAOhq+JE0W2lRm53Vy
-         K1JlUYeB78Rs/G1NZqI6InDEZiforYG6j81XFRxE/YCcCpazDlqH6YytuSZsLUDtE6Mc
-         dCUhMy1xXn2mzAonjwZ8U5+i48as/vNVab4zo4BgYmba4NVen+gOR81wUtXdpar2uBf6
-         +Cmg==
-X-Gm-Message-State: AOAM530Op8AlsLgcKOTuyoikEs7fgbpovB81qJuwV4K7r1N1+xpdXdkf
-        nxW+f95tDjgIDQxkXGkEU0POuOLXMw==
-X-Google-Smtp-Source: ABdhPJx5iGfusIGqyuo8OAS7ETonBnhCqs0VbRUpxTjFfadb0udpobnAeLQ5u5krefupdXNR/CJgMQ==
-X-Received: by 2002:a54:410a:: with SMTP id l10mr12692079oic.15.1620349563250;
-        Thu, 06 May 2021 18:06:03 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id e20sm834132oot.11.2021.05.06.18.06.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 18:06:02 -0700 (PDT)
-Received: (nullmailer pid 1115466 invoked by uid 1000);
-        Fri, 07 May 2021 01:06:01 -0000
-Date:   Thu, 6 May 2021 20:06:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Billy Tsai <billy_tsai@aspeedtech.com>
-Cc:     lee.jones@linaro.org, joel@jms.id.au, andrew@aj.id.au,
-        thierry.reding@gmail.com, u.kleine-koenig@pengutronix.de,
-        p.zabel@pengutronix.de, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        linux-pwm@vger.kernel.org, BMC-SW@aspeedtech.com
-Subject: Re: [v3 0/2] Support pwm driver for aspeed ast26xx
-Message-ID: <20210507010601.GA1110621@robh.at.kernel.org>
-References: <20210506061050.8001-1-billy_tsai@aspeedtech.com>
+        Thu, 6 May 2021 21:07:47 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FbsfK5Y90zCr5J;
+        Fri,  7 May 2021 09:04:09 +0800 (CST)
+Received: from [10.174.178.208] (10.174.178.208) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 7 May 2021 09:06:42 +0800
+Subject: Re: [PATCH 4.19 00/15] 4.19.190-rc1 review
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        <linux-kernel@vger.kernel.org>
+CC:     <torvalds@linux-foundation.org>, <akpm@linux-foundation.org>,
+        <linux@roeck-us.net>, <shuah@kernel.org>, <patches@kernelci.org>,
+        <lkft-triage@lists.linaro.org>, <pavel@denx.de>,
+        <jonathanh@nvidia.com>, <f.fainelli@gmail.com>,
+        <stable@vger.kernel.org>
+References: <20210505120503.781531508@linuxfoundation.org>
+From:   Samuel Zou <zou_wei@huawei.com>
+Message-ID: <069dd10a-ad04-ff76-d193-98d6381d656c@huawei.com>
+Date:   Fri, 7 May 2021 09:06:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.7.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506061050.8001-1-billy_tsai@aspeedtech.com>
+In-Reply-To: <20210505120503.781531508@linuxfoundation.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.178.208]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 02:10:48PM +0800, Billy Tsai wrote:
-> The legacy driver of aspeed pwm is binding with tach controller and it
-> doesn't follow the pwm framworks usage. In addition, the pwm register
-> usage of the 6th generation of ast26xx has drastic change. So these
-> patch serials add the new aspeed pwm driver to fix up the problem above.
-> 
-> Changes since v2:
-> - Remove the tach node, #address-cells and #size-cells from pwm-tach.yaml
 
-So you don't need tach functions, they don't need it to be described in 
-DT any more, or you plan to add them back later? The last one is not 
-acceptable.
 
-> - Add clocks and reset properties to pwm-tach.yaml
-> - Kconfig/Makfile sorted alphabetically
-> - pwm-aspeed-g6.c suggested by Uwe Kleine-König
->   - Add more hardware descriptions at top of the driver.
->   - Remove unused api request and free
->   - Move the initialize settings of all pwm channel to probe.
->   - Change the method of getting the approximate period.
->   - Read the hardware register values to fill the state for .get_state()
+On 2021/5/5 20:05, Greg Kroah-Hartman wrote:
+> This is the start of the stable review cycle for the 4.19.190 release.
+> There are 15 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
 > 
-> Changes since v1:
-> - Fix the dt_binding_check fail suggested by Rob Herring
-> - Add depends to PWM_ASPEED_G6 configure suggested by Uwe Kleine-Konig
-> - pwm-aspeed-g6.c suggested by Uwe Kleine-König
->   - Fix license header
->   - Use bitfiled.h macro to define register fields
->   - Implement .remove device function
->   - Implement .get_state pwm api
+> Responses should be made by Fri, 07 May 2021 12:04:54 +0000.
+> Anything received after that time might be too late.
 > 
+> The whole patch series can be found in one patch at:
+> 	https://www.kernel.org/pub/linux/kernel/v4.x/stable-review/patch-4.19.190-rc1.gz
+> or in the git tree and branch at:
+> 	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
 > 
-> Billy Tsai (2):
->   dt-bindings: Add bindings for aspeed pwm-tach and pwm.
->   pwm: Add Aspeed ast2600 PWM support
+> thanks,
 > 
->  .../bindings/mfd/aspeed,ast2600-pwm-tach.yaml |  55 +++
->  .../bindings/pwm/aspeed,ast2600-pwm.yaml      |  41 ++
->  drivers/pwm/Kconfig                           |   8 +
->  drivers/pwm/Makefile                          |   1 +
->  drivers/pwm/pwm-aspeed-g6.c                   | 368 ++++++++++++++++++
->  5 files changed, 473 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/aspeed,ast2600-pwm-tach.yaml
->  create mode 100644 Documentation/devicetree/bindings/pwm/aspeed,ast2600-pwm.yaml
->  create mode 100644 drivers/pwm/pwm-aspeed-g6.c
+> greg k-h
 > 
-> -- 
-> 2.25.1
-> 
+
+Tested on arm64 and x86 for 4.19.190-rc1,
+
+Kernel repo:
+https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
+Branch: linux-4.19.y
+Version: 4.19.190-rc1
+Commit: 5a3ba2f90f8789162a03e07a37224bab4c643d1d
+Compiler: gcc version 7.3.0 (GCC)
+
+arm64:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8435
+passed: 8435
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+x86:
+--------------------------------------------------------------------
+Testcase Result Summary:
+total: 8435
+passed: 8435
+failed: 0
+timeout: 0
+--------------------------------------------------------------------
+
+Tested-by: Hulk Robot <hulkrobot@huawei.com>
