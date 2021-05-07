@@ -2,200 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD920376720
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 18D6737672D
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:44:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237683AbhEGOll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 10:41:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54714 "EHLO mail.kernel.org"
+        id S237684AbhEGOpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 10:45:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56050 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233545AbhEGOlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 10:41:39 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 622A361157;
-        Fri,  7 May 2021 14:40:38 +0000 (UTC)
-Date:   Fri, 7 May 2021 10:40:36 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Stefan Hajnoczi <stefanha@redhat.com>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Jason Wang <jasowang@redhat.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
-        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
-        Joel Fernandes <joelaf@google.com>,
-        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
-Subject: Re: [RFC][PATCH] vhost/vsock: Add vsock_list file to map cid with
- vhost tasks
-Message-ID: <20210507104036.711b0b10@gandalf.local.home>
-In-Reply-To: <20210507141120.ot6xztl4h5zyav2c@steredhat>
-References: <20210505163855.32dad8e7@gandalf.local.home>
-        <20210507141120.ot6xztl4h5zyav2c@steredhat>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S234601AbhEGOpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 10:45:24 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id B30456142D;
+        Fri,  7 May 2021 14:44:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620398664;
+        bh=tOyYubD20B7eSiiEeDtUIxasKweAQTKTmGLHTG6n28M=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=bTDHStB+vPLGERkhLdyIeeSfXe2aOzj0sA1Xt+ov72eEyDK9GeWjuDGMdMkWWC2+K
+         JXpGNybsSk+Cp/MmgiX42/aW1meYbHC4xJes+WupnGImdLf7c58sOmHTYhnhwT5cND
+         MYRCkZNr4NsfEdcwnWizNlvUNrY/wVvIkRUcgfeBkPXQxM36V9IpXGDECcHRPQ5ahw
+         aPb4f+BrQ2sicgGIhAllMIlMc1cvJ7BAVAyvUWDG75UeLJ3zKS0VqT+97oR9OhlNmD
+         MRj8gfu2ZfBnhI4DacOHnHakGxAFFExpOUVSDBcZFp/ltCzzWscMF5mFvyRK2+z7L8
+         qGkwgpU31i+5w==
+Received: by pali.im (Postfix)
+        id 258357E0; Fri,  7 May 2021 16:44:21 +0200 (CEST)
+Date:   Fri, 7 May 2021 16:44:20 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/42] PCI: aardvark: Fix support for MSI interrupts
+Message-ID: <20210507144420.24aess56cc7ie2x2@pali>
+References: <20210506153153.30454-1-pali@kernel.org>
+ <20210506153153.30454-18-pali@kernel.org>
+ <87czu2q25h.wl-maz@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <87czu2q25h.wl-maz@kernel.org>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021 16:11:20 +0200
-Stefano Garzarella <sgarzare@redhat.com> wrote:
-
-> Hi Steven,
+On Friday 07 May 2021 11:16:58 Marc Zyngier wrote:
+> On Thu, 06 May 2021 16:31:28 +0100,
+> Pali Rohár <pali@kernel.org> wrote:
+> > 
+> > MSI domain callback .alloc (implemented by advk_msi_irq_domain_alloc()
+> > function) should return zero on success. Returning non-zero value indicates
+> > failure. Fix return value of this function as in many cases it now returns
+> > failure while allocating IRQs.
+> > 
+> > Aardvark hardware supports Multi-MSI and MSI_FLAG_MULTI_PCI_MSI is already
+> > set. But when allocating MSI interrupt numbers for Multi-MSI, they need to
+> > be properly aligned, otherwise endpoint devices send MSI interrupt with
+> > incorrect numbers. Fix this issue by using function bitmap_find_free_region()
+> > instead of bitmap_find_next_zero_area().
+> > 
+> > To ensure that aligned MSI interrupt numbers are used by endpoint devices,
+> > we cannot use Linux virtual irq numbers (as they are random and not
+> > properly aligned). So use hwirq numbers allocated by the function
+> > bitmap_find_free_region(), which are aligned. This needs an update in
+> > advk_msi_irq_compose_msi_msg() and advk_pcie_handle_msi() functions to do
+> > proper mapping between Linux virtual irq numbers and hwirq MSI inner domain
+> > numbers.
+> > 
+> > Also the whole 16-bit MSI number is stored in the PCIE_MSI_PAYLOAD_REG
+> > register, not only lower 8 bits. Fix reading content of this register.
+> > 
+> > This change fixes receiving MSI interrupts on Armada 3720 boards and allows
+> > using NVMe disks which use Multi-MSI feature with 3 interrupts.
+> > 
+> > Without this change, NVMe disks just freeze booting Linux on Armada 3720
+> > boards as linux nvme-core.c driver is waiting 60s for an interrupt.
+> > 
+> > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > Reviewed-by: Marek Behún <kabel@kernel.org>
+> > Cc: stable@vger.kernel.org # f21a8b1b6837 ("PCI: aardvark: Move to MSI handling using generic MSI support")
+> > ---
+> >  drivers/pci/controller/pci-aardvark.c | 32 ++++++++++++++++-----------
+> >  1 file changed, 19 insertions(+), 13 deletions(-)
+> > 
+> > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > index 366d7480bc1b..498810c00b6d 100644
+> > --- a/drivers/pci/controller/pci-aardvark.c
+> > +++ b/drivers/pci/controller/pci-aardvark.c
+> > @@ -118,6 +118,7 @@
+> >  #define PCIE_MSI_STATUS_REG			(CONTROL_BASE_ADDR + 0x58)
+> >  #define PCIE_MSI_MASK_REG			(CONTROL_BASE_ADDR + 0x5C)
+> >  #define PCIE_MSI_PAYLOAD_REG			(CONTROL_BASE_ADDR + 0x9C)
+> > +#define     PCIE_MSI_DATA_MASK			GENMASK(15, 0)
 > 
-> On Wed, May 05, 2021 at 04:38:55PM -0400, Steven Rostedt wrote:
-> >The new trace-cmd 3.0 (which is almost ready to be released) allows for
-> >tracing between host and guests with timestamp synchronization such that
-> >the events on the host and the guest can be interleaved in the proper order
-> >that they occur. KernelShark now has a plugin that visualizes this
-> >interaction.
-> >
-> >The implementation requires that the guest has a vsock CID assigned, and on
-> >the guest a "trace-cmd agent" is running, that will listen on a port for
-> >the CID. The on the host a "trace-cmd record -A guest@cid:port -e events"
-> >can be called and the host will connect to the guest agent through the
-> >cid/port pair and have the agent enable tracing on behalf of the host and
-> >send the trace data back down to it.
-> >
-> >The problem is that there is no sure fire way to find the CID for a guest.
-> >Currently, the user must know the cid, or we have a hack that looks for the
-> >qemu process and parses the --guest-cid parameter from it. But this is
-> >prone to error and does not work on other implementation (was told that
-> >crosvm does not use qemu).  
+> See my comment below about this addition.
 > 
-> For debug I think could be useful to link the vhost-vsock kthread to the 
-> CID, but for the user point of view, maybe is better to query the VM 
-> management layer, for example if you're using libvirt, you can easily do:
+> >  /* LMI registers base address and register offsets */
+> >  #define LMI_BASE_ADDR				0x6000
+> > @@ -861,7 +862,7 @@ static void advk_msi_irq_compose_msi_msg(struct irq_data *data,
+> >  
+> >  	msg->address_lo = lower_32_bits(msi_msg);
+> >  	msg->address_hi = upper_32_bits(msi_msg);
+> > -	msg->data = data->irq;
+> > +	msg->data = data->hwirq;
+> >  }
+> >  
+> >  static int advk_msi_set_affinity(struct irq_data *irq_data,
+> > @@ -878,15 +879,11 @@ static int advk_msi_irq_domain_alloc(struct irq_domain *domain,
+> >  	int hwirq, i;
+> >  
+> >  	mutex_lock(&pcie->msi_used_lock);
+> > -	hwirq = bitmap_find_next_zero_area(pcie->msi_used, MSI_IRQ_NUM,
+> > -					   0, nr_irqs, 0);
+> > -	if (hwirq >= MSI_IRQ_NUM) {
+> > -		mutex_unlock(&pcie->msi_used_lock);
+> > -		return -ENOSPC;
+> > -	}
+> > -
+> > -	bitmap_set(pcie->msi_used, hwirq, nr_irqs);
+> > +	hwirq = bitmap_find_free_region(pcie->msi_used, MSI_IRQ_NUM,
+> > +					order_base_2(nr_irqs));
+> >  	mutex_unlock(&pcie->msi_used_lock);
+> > +	if (hwirq < 0)
+> > +		return -ENOSPC;
+> >  
+> >  	for (i = 0; i < nr_irqs; i++)
+> >  		irq_domain_set_info(domain, virq + i, hwirq + i,
+> > @@ -894,7 +891,7 @@ static int advk_msi_irq_domain_alloc(struct irq_domain *domain,
+> >  				    domain->host_data, handle_simple_irq,
+> >  				    NULL, NULL);
+> >  
+> > -	return hwirq;
+> > +	return 0;
+> >  }
+> >  
+> >  static void advk_msi_irq_domain_free(struct irq_domain *domain,
+> > @@ -904,7 +901,7 @@ static void advk_msi_irq_domain_free(struct irq_domain *domain,
+> >  	struct advk_pcie *pcie = domain->host_data;
+> >  
+> >  	mutex_lock(&pcie->msi_used_lock);
+> > -	bitmap_clear(pcie->msi_used, d->hwirq, nr_irqs);
+> > +	bitmap_release_region(pcie->msi_used, d->hwirq, order_base_2(nr_irqs));
+> >  	mutex_unlock(&pcie->msi_used_lock);
+> >  }
+> >  
+> > @@ -1048,6 +1045,7 @@ static void advk_pcie_handle_msi(struct advk_pcie *pcie)
+> >  {
+> >  	u32 msi_val, msi_mask, msi_status, msi_idx;
+> >  	u16 msi_data;
+> > +	int virq;
+> >  
+> >  	msi_mask = advk_readl(pcie, PCIE_MSI_MASK_REG);
+> >  	msi_val = advk_readl(pcie, PCIE_MSI_STATUS_REG);
+> > @@ -1057,9 +1055,17 @@ static void advk_pcie_handle_msi(struct advk_pcie *pcie)
+> >  		if (!(BIT(msi_idx) & msi_status))
+> >  			continue;
+> >  
+> > +		/*
+> > +		 * msi_idx contains bits [4:0] of the msi_data and msi_data
+> > +		 * contains 16bit MSI interrupt number from MSI inner domain
+> > +		 */
+> >  		advk_writel(pcie, BIT(msi_idx), PCIE_MSI_STATUS_REG);
+> > -		msi_data = advk_readl(pcie, PCIE_MSI_PAYLOAD_REG) & 0xFF;
+> > -		generic_handle_irq(msi_data);
+> > +		msi_data = advk_readl(pcie, PCIE_MSI_PAYLOAD_REG) & PCIE_MSI_DATA_MASK;
 > 
-> $ virsh dumpxml fedora34 | grep cid
->      <cid auto='yes' address='3'/>
+> Can this be moved to a separate patch? It seems like this patch should
+> only focus on correctly dealing with the irq/hwirq issues.
 
-We looked into going this route, but then that means trace-cmd host/guest
-tracing needs a way to handle every layer, as some people use libvirt
-(myself included), some people use straight qemu, some people us Xen, and
-some people use crosvm. We need to support all of them. Which is why I'm
-looking at doing this from the lowest common denominator, and since vsock
-is a requirement from trace-cmd to do this tracing, getting the thread
-that's related to the vsock is that lowest denominator.
+Well, hwirq is read from PCIE_MSI_PAYLOAD_REG register and it is 16-bit.
+That is why I included this change in this patch, to fix also reading
+IRQ number, not only setting IRQ number.
 
+> > +		virq = irq_find_mapping(pcie->msi_inner_domain, msi_data);
+> > +		if (virq)
+> > +			generic_handle_irq(virq);
+> > +		else
+> > +			dev_err(&pcie->pdev->dev, "unexpected MSI 0x%04hx\n", msi_data);
 > 
-> >
-> >As I can not find a way to discover CIDs assigned to guests via any kernel
-> >interface, I decided to create this one. Note, I'm not attached to it. If
-> >there's a better way to do this, I would love to have it. But since I'm not
-> >an expert in the networking layer nor virtio, I decided to stick to what I
-> >know and add a debugfs interface that simply lists all the registered 
-> >CIDs
-> >and the worker task that they are associated with. The worker task at
-> >least has the PID of the task it represents.  
+> Same concern about the unmitigated screaming.
 > 
-> I honestly don't know if it's the best interface, like I said maybe for 
-> debugging it's fine, but if we want to expose it to the user in some 
-> way, we could support devlink/netlink to provide information about the 
-> vsock devices currently in use.
-
-Ideally, a devlink/netlink is the right approach. I just had no idea on how
-to implement that ;-)  So I went with what I know, which is debugfs files!
-
-
-
-> >Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> >---
-> >diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
-> >index 5e78fb719602..4f03b25b23c1 100644
-> >--- a/drivers/vhost/vsock.c
-> >+++ b/drivers/vhost/vsock.c
-> >@@ -15,6 +15,7 @@
-> > #include <linux/virtio_vsock.h>
-> > #include <linux/vhost.h>
-> > #include <linux/hashtable.h>
-> >+#include <linux/debugfs.h>
-> >
-> > #include <net/af_vsock.h>
-> > #include "vhost.h"
-> >@@ -900,6 +901,128 @@ static struct miscdevice vhost_vsock_misc = {
-> > 	.fops = &vhost_vsock_fops,
-> > };
-> >
-> >+static struct dentry *vsock_file;
-> >+
-> >+struct vsock_file_iter {
-> >+	struct hlist_node	*node;
-> >+	int			index;
-> >+};
-> >+
-> >+
-> >+static void *vsock_next(struct seq_file *m, void *v, loff_t *pos)
-> >+{
-> >+	struct vsock_file_iter *iter = v;
-> >+	struct vhost_vsock *vsock;
-> >+
-> >+	if (pos)
-> >+		(*pos)++;
-> >+
-> >+	if (iter->index >= (int)HASH_SIZE(vhost_vsock_hash))
-> >+		return NULL;
-> >+
-> >+	if (iter->node)
-> >+		iter->node = rcu_dereference_raw(hlist_next_rcu(iter->node));
-> >+
-> >+	for (;;) {
-> >+		if (iter->node) {
-> >+			vsock = hlist_entry_safe(rcu_dereference_raw(iter->node),
-> >+						 struct vhost_vsock, hash);
-> >+			if (vsock->guest_cid)
-> >+				break;
-> >+			iter->node = rcu_dereference_raw(hlist_next_rcu(iter->node));
-> >+			continue;
-> >+		}
-> >+		iter->index++;
-> >+		if (iter->index >= HASH_SIZE(vhost_vsock_hash))
-> >+			return NULL;
-> >+
-> >+		iter->node = rcu_dereference_raw(hlist_first_rcu(&vhost_vsock_hash[iter->index]));
-> >+	}
-> >+	return iter;
-> >+}
-> >+
-> >+static void *vsock_start(struct seq_file *m, loff_t *pos)
-> >+{
-> >+	struct vsock_file_iter *iter = m->private;
-> >+	loff_t l = 0;
-> >+	void *t;
-> >+
-> >+	rcu_read_lock();  
+> Thanks,
 > 
-> Instead of keeping this rcu lock between vsock_start() and vsock_stop(), 
-> maybe it's better to make a dump here of the bindings (pid/cid), save it 
-> in an array, and iterate it in vsock_next().
-
-The start/stop of a seq_file() is made for taking locks. I do this with all
-my code in ftrace. Yeah, there's a while loop between the two, but that's
-just to fill the buffer. It's not that long and it never goes to userspace
-between the two. You can even use this for spin locks (but I wouldn't
-recommend doing it for raw ones).
-
+> 	M.
 > 
-> >+
-> >+	iter->index = -1;
-> >+	iter->node = NULL;
-> >+	t = vsock_next(m, iter, NULL);
-> >+
-> >+	for (; iter->index < HASH_SIZE(vhost_vsock_hash) && l < *pos;
-> >+	     t = vsock_next(m, iter, &l))
-> >+		;  
-> 
-> A while() maybe was more readable...
-
-Again, I just cut and pasted from my other code.
-
-If you have a good idea on how to implement this with netlink (something
-that ss or netstat can dislpay), I think that's the best way to go.
-
-Thanks for looking at this!
-
--- Steve
+> -- 
+> Without deviation from the norm, progress is not possible.
