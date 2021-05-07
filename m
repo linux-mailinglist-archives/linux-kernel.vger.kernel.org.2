@@ -2,130 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20D5376924
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:57:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58F7E376926
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:58:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237120AbhEGQ62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 12:58:28 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41415 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234440AbhEGQ6Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 12:58:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620406643;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=h4E6LMUOwxUgdkNVzwo77vN2ykIjCnu70MVW4GN+mng=;
-        b=fN/K9B0D8rNGmMa28UsqcsWJ7m4NYL+fGuZ0FoSy/zHYR81WzcsO/pHBC09edZ7i5EmTWb
-        gBzn1sCBN8CQ2QrX5JXRbHP5LLzTfa1Bxl31MnDFimgBqTDNTv3ne6HtLpYUNQJFg44vDk
-        cJ1QmTBEKFVW4rYUc43qtd33D0B92jU=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-448-HbI4XHsCMXOk_FajH5--7Q-1; Fri, 07 May 2021 12:57:20 -0400
-X-MC-Unique: HbI4XHsCMXOk_FajH5--7Q-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76C2E1854E24;
-        Fri,  7 May 2021 16:57:19 +0000 (UTC)
-Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2CF2D36E0;
-        Fri,  7 May 2021 16:57:19 +0000 (UTC)
-Received: by fuller.cnet (Postfix, from userid 1000)
-        id EB3C741887F4; Fri,  7 May 2021 13:57:10 -0300 (-03)
-Date:   Fri, 7 May 2021 13:57:10 -0300
-From:   Marcelo Tosatti <mtosatti@redhat.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Frederic Weisbecker <frederic@kernel.org>,
-        Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: [PATCH] Revert "isolcpus: Affine unbound kernel threads to
- housekeeping cpus"
-Message-ID: <20210507165710.GA429056@fuller.cnet>
+        id S238446AbhEGQ7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 12:59:42 -0400
+Received: from mga12.intel.com ([192.55.52.136]:55083 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236002AbhEGQ7k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 12:59:40 -0400
+IronPort-SDR: n2lbfxXYpqBylyttp97PIqKZ74LzJ7uMEem5lA4bK899nKRfM4FFa4oLwhbqdLNzusbkZOJ1VM
+ XjSSPsY8b21A==
+X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="178332823"
+X-IronPort-AV: E=Sophos;i="5.82,281,1613462400"; 
+   d="scan'208";a="178332823"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 09:58:40 -0700
+IronPort-SDR: YgqrEfFZRrHLPBBBcck8G5GdEs4aOzKt/p8qHr+MwtXXqLuF4Yjvh3wlkbDqCrkSBHCBjuxBwE
+ jjRidWlEdXxg==
+X-IronPort-AV: E=Sophos;i="5.82,281,1613462400"; 
+   d="scan'208";a="431446391"
+Received: from msandrid-mobl.amr.corp.intel.com (HELO [10.212.134.124]) ([10.212.134.124])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 09:58:39 -0700
+Subject: Re: [PATCH] KVM: x86: add hint to skip hidden rdpkru under
+ kvm_load_host_xsave_state
+To:     Paolo Bonzini <pbonzini@redhat.com>, Jon Kohler <jon@nutanix.com>
+Cc:     Babu Moger <babu.moger@amd.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Yu-cheng Yu <yu-cheng.yu@intel.com>,
+        Tony Luck <tony.luck@intel.com>,
+        Uros Bizjak <ubizjak@gmail.com>,
+        Petteri Aimonen <jpa@git.mail.kapsi.fi>,
+        Kan Liang <kan.liang@linux.intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Benjamin Thiel <b.thiel@posteo.de>,
+        Fan Yang <Fan_Yang@sjtu.edu.cn>,
+        Juergen Gross <jgross@suse.com>,
+        Dave Jiang <dave.jiang@intel.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>,
+        Arvind Sankar <nivedita@alum.mit.edu>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+References: <20210507164456.1033-1-jon@nutanix.com>
+ <16af038e-5b30-2509-4e3b-3b3ed9d4b81e@redhat.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <709442d7-68e8-32a8-05b4-8a16748d9f11@intel.com>
+Date:   Fri, 7 May 2021 09:58:38 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <16af038e-5b30-2509-4e3b-3b3ed9d4b81e@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 5/7/21 9:52 AM, Paolo Bonzini wrote:
+> This can be optimized as well, can't it?  This means that the only case
+> that needs the rdpkru is in switch_fpu_finish, and __write_pkru can be
+> removed completely:
+> 
+> - do the rdpkru+wrpkru in switch_fpu_finish
+> 
+> - just use wrpkru in KVM
 
+I was going to suggest exactly the same thing.  It doesn't require the
+compiler to be smart, and wrpkru() is available in the same header as
+__write_pkru().
 
-commit 9cc5b8656892a72438ee7deb introduced a new housekeeping flag,
-HK_FLAG_KTHREAD, that when enabled sets the CPU affinity for the 
-kthreadd process (therefore all unbounded kernel threads created
-from that point on will use the housekeeping cpumask).
-
-This is not necessary, since its possible to control placement of
-kthreadd from userspace:
-
-# taskset -c -p 0 `pgrep kthreadd`
-pid 2's current affinity list: 1
-pid 2's new affinity list: 0
-
-Unbounded kernel threads started from that point on will inherit
-the kthreadd cpumask.
-
-Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
-
-Index: linux-2.6/include/linux/sched/isolation.h
-===================================================================
---- linux-2.6.orig/include/linux/sched/isolation.h
-+++ linux-2.6/include/linux/sched/isolation.h
-@@ -14,7 +14,6 @@ enum hk_flags {
- 	HK_FLAG_DOMAIN		= (1 << 5),
- 	HK_FLAG_WQ		= (1 << 6),
- 	HK_FLAG_MANAGED_IRQ	= (1 << 7),
--	HK_FLAG_KTHREAD		= (1 << 8),
- };
- 
- #ifdef CONFIG_CPU_ISOLATION
-Index: linux-2.6/kernel/kthread.c
-===================================================================
---- linux-2.6.orig/kernel/kthread.c
-+++ linux-2.6/kernel/kthread.c
-@@ -27,7 +27,6 @@
- #include <linux/ptrace.h>
- #include <linux/uaccess.h>
- #include <linux/numa.h>
--#include <linux/sched/isolation.h>
- #include <trace/events/sched.h>
- 
- 
-@@ -405,8 +404,7 @@ struct task_struct *__kthread_create_on_
- 		 * The kernel thread should not inherit these properties.
- 		 */
- 		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
--		set_cpus_allowed_ptr(task,
--				     housekeeping_cpumask(HK_FLAG_KTHREAD));
-+		set_cpus_allowed_ptr(task, cpu_possible_mask);
- 	}
- 	kfree(create);
- 	return task;
-@@ -655,7 +653,7 @@ int kthreadd(void *unused)
- 	/* Setup a clean context for our children to inherit. */
- 	set_task_comm(tsk, "kthreadd");
- 	ignore_signals(tsk);
--	set_cpus_allowed_ptr(tsk, housekeeping_cpumask(HK_FLAG_KTHREAD));
-+	set_cpus_allowed_ptr(tsk, cpu_possible_mask);
- 	set_mems_allowed(node_states[N_MEMORY]);
- 
- 	current->flags |= PF_NOFREEZE;
-Index: linux-2.6/kernel/sched/isolation.c
-===================================================================
---- linux-2.6.orig/kernel/sched/isolation.c
-+++ linux-2.6/kernel/sched/isolation.c
-@@ -140,8 +140,7 @@ static int __init housekeeping_nohz_full
- {
- 	unsigned int flags;
- 
--	flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU |
--		HK_FLAG_MISC | HK_FLAG_KTHREAD;
-+	flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU | HK_FLAG_MISC;
- 
- 	return housekeeping_setup(str, flags);
- }
-
+I also detest the mysterious true/false arguments to functions where you
+have no clue what they're doing at the call site without comments.
