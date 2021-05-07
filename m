@@ -2,116 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D274A3760EF
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:07:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D8B33760F5
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:10:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235078AbhEGHIo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:08:44 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:48531 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233730AbhEGHIm (ORCPT
+        id S235117AbhEGHKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:10:44 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:37244 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231649AbhEGHKn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:08:42 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id EDB0F58124E;
-        Fri,  7 May 2021 03:07:42 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Fri, 07 May 2021 03:07:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm2; bh=q+VAC568GzCcDMwNCnFEDtF1412nCnb
-        auFVwJbsbwuM=; b=WXyJPMT4ZWdAIyCkoeAsXwq6dmXIAnL5Lagij8d9NaJasTp
-        gMEmdzxHWb5kxAsNbRM9HZfddh6ttG/sYDs25cvmWO/DXtPFO71WpRWV4+TKnSyK
-        8prGrbS6mOX2+RGbXZLRGcY1W5IvZrvBvVJqgSSWqAGz+EkMVQHmkjDuWejNUAeI
-        S6zaf4Eul7CQReOrFj8pH8og2xJ94egkn/O8UlP7YgnYiPZypwUgGjZrPa44F2kI
-        A2yRR1/ZyI6bAeWbNiwlg+DpD71rUWY1eBgBwFSN59Mib/gtqRBlw9Jra5e+jJOz
-        AE/o3AOF1t4f/8Zd7ga/cFPJX8sBenpmOpV/alg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=q+VAC5
-        68GzCcDMwNCnFEDtF1412nCnbauFVwJbsbwuM=; b=cl9pdSrnMTdDTAhtRs2BaO
-        N9iFPUJjIFO6QorSloXzuKZjTCF0hRy5y107XXN6gOTYanFVn17535Wmeh5nquEJ
-        jnfO5P9I7Xm/IrDMmscjRNCMYL4n00cHPbjtF7OrT7S9vN3zERiVAQtAreYOtShC
-        7l+PXGTBbBe+ZaRBs3Fo+ge+UUgoA9YsUsglS0X+/LoiXPFm87j4AwGoAZi8NjK1
-        6LNY82X9i9dH8j3oEbmIVFB8gggDUuYSSN7EU2QvDOW4pgryfGe8+I13LrR1gTHo
-        VAIhHB8/yhOlZ+RVR/Aqw/1i8jYbEPceUmBpX2TX2mFAxE5rScClOqKlEUGDFftA
-        ==
-X-ME-Sender: <xms:POeUYFPapsp60JK4ld9l76Q52_r5FtzkegSOpGSteWeHzuVqhodTfg>
-    <xme:POeUYH-jq7cZbWm0b-wWC0WiwvHRg4-KSoT_7OdSF5Zn9JgeZnuFOsRvXC6wRqNTz
-    6DwxbeGkw7LkfcyNw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeguddguddtlecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehn
-    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
-    frrghtthgvrhhnpedutddtkeeugeegvddttdeukeeiuddtgfeuuddtfeeiueetfeeileet
-    tedvtdfhieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegrnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:POeUYEQPbTt891MALMQcYNL3pwsR7mMmfv4MKkhIwfbgGY22uK10xQ>
-    <xmx:POeUYBsEupgfUrDCQoIlYbStqtchVo1wFEpcHZxDeQcBikgoqdrb0Q>
-    <xmx:POeUYNfFC5bh8udiKYhNCDCWZxX0CdMdKSBq0zGJg46uRIka1_SHRA>
-    <xmx:PueUYA_TEcYpIFl85kGI-8qemAGULjMUmk-0ps8PDAmplNLkx0Kkxw>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id D246BA00079; Fri,  7 May 2021 03:07:40 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
-Mime-Version: 1.0
-Message-Id: <e895e05b-fdcc-4192-befe-500c386ac64a@www.fastmail.com>
-In-Reply-To: <20210507065918.GE23749@aspeedtech.com>
-References: <20210506100312.1638-1-steven_lee@aspeedtech.com>
- <20210506100312.1638-5-steven_lee@aspeedtech.com>
- <fecc9021-ab4b-4047-a664-47b1bd867cb3@www.fastmail.com>
- <20210507065918.GE23749@aspeedtech.com>
-Date:   Fri, 07 May 2021 16:37:19 +0930
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Steven Lee" <steven_lee@aspeedtech.com>
-Cc:     "Ulf Hansson" <ulf.hansson@linaro.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>,
-        "Adrian Hunter" <adrian.hunter@intel.com>,
-        "Philipp Zabel" <p.zabel@pengutronix.de>,
-        "Ryan Chen" <ryanchen.aspeed@gmail.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list" <linux-kernel@vger.kernel.org>,
-        "Hongwei Zhang" <Hongweiz@ami.com>,
-        "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>
-Subject: =?UTF-8?Q?Re:_[PATCH_v3_4/5]_mmc:_sdhci-of-aspeed:_Add_a_helper_for_upda?=
- =?UTF-8?Q?ting_capability_register.?=
-Content-Type: text/plain
+        Fri, 7 May 2021 03:10:43 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1476iwlH036349;
+        Fri, 7 May 2021 07:09:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=/dWssVvW+OYhyXRH8CslM4h4dts36Wl65nMFcErQWHk=;
+ b=tLInDZH+S3h9oaiJHi+kOoynlSDH0vaVS89ZviS+JhCvIzKYv2qEJBlp+5pzbvq36ToU
+ TSLlEGf7e5SNFysjPS7nU0zmrv5g6Ry2V/wyN4AwA9Z02Ads9z2R1rRPFNi+QS7b29Ab
+ zeYM9pHQZ/q/qtzMWJ+JqVnlEusothq2VJTGZ5lGrKO0tYKPi+apI6Wwy90d2MiqaEK0
+ 7pbE8sr04iOMy54jEDivdDPjpym0XSQP4ePEqakaojtAqnTvPv0JQnRoEj31U1hSUlZD
+ QzMFoQKshoFDB9tpez76jVhLLbvL4q288JRCYarzOzY0Qk+zmaZy/5C1wj425L/u6Uqz DQ== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 38ctjv0hqt-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 07 May 2021 07:09:09 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14775hcw169282;
+        Fri, 7 May 2021 07:09:09 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 38csrgjk6n-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 07 May 2021 07:09:09 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 147798fr182448;
+        Fri, 7 May 2021 07:09:08 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 38csrgjk59-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 07 May 2021 07:09:08 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 147793LM016898;
+        Fri, 7 May 2021 07:09:03 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 07 May 2021 00:09:02 -0700
+Date:   Fri, 7 May 2021 10:08:43 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
+Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        gregkh@linuxfoundation.org, shubhankarvk@gmail.com,
+        lee.jones@linaro.org, gustavoars@kernel.org, vulab@iscas.ac.cn,
+        john453@faraday-tech.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] usb: fotg210-hcd: Fix an error message
+Message-ID: <20210507070843.GG1955@kadam>
+References: <94531bcff98e46d4f9c20183a90b7f47f699126c.1620333419.git.christophe.jaillet@wanadoo.fr>
+ <1620354030.10796.6.camel@mhfsdcap03>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1620354030.10796.6.camel@mhfsdcap03>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: ER7NlGwMOivUgjwtyF4Q5Z87RSE5Wp3_
+X-Proofpoint-GUID: ER7NlGwMOivUgjwtyF4Q5Z87RSE5Wp3_
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9976 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
+ malwarescore=0 phishscore=0 mlxscore=0 clxscore=1011 priorityscore=1501
+ bulkscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105070048
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, 7 May 2021, at 16:29, Steven Lee wrote:
-> The 05/07/2021 10:13, Andrew Jeffery wrote:
-> > > +/*
-> > > + * The function sets the mirror register for updating
-> > > + * capbilities of the current slot.
-> > > + *
-> > > + *   slot | capability  | caps_reg | mirror_reg
-> > > + *   -----|-------------|----------|------------
-> > > + *     0  | CAP1_1_8V   | SDIO140  |   SDIO10
-> > > + *     0  | CAP2_SDR104 | SDIO144  |   SDIO14
-> > > + *     1  | CAP1_1_8V   | SDIO240  |   SDIO20
-> > > + *     1  | CAP2_SDR104 | SDIO244  |   SDIO24
+On Fri, May 07, 2021 at 10:20:30AM +0800, Chunfeng Yun wrote:
+> On Thu, 2021-05-06 at 22:39 +0200, Christophe JAILLET wrote:
+> > 'retval' is known to be -ENODEV here.
+> > This is a hard-coded default error code which is not useful in the error
+> > message. Moreover, another error message is printed at the end of the
+> > error handling path. The corresponding error code (-ENOMEM) is more
+> > informative.
 > > 
-> > It would be nice to align the columns to improve readability.
+> > So remove simplify the first error message.
 > > 
-> 
-> Columns seems are aligned in my mail client(mutt) and my editor(vim).
-> I paste the above comment in Notepad++, columns are aligned as well.
-> 
+> > While at it, also remove the useless initialization of 'retval'.
+> > 
+> > Fixes: 7d50195f6c50 ("usb: host: Faraday fotg210-hcd driver")
+> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+> > ---
+> >  drivers/usb/host/fotg210-hcd.c | 4 ++--
+> >  1 file changed, 2 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
+> > index 6cac642520fc..9c2eda0918e1 100644
+> > --- a/drivers/usb/host/fotg210-hcd.c
+> > +++ b/drivers/usb/host/fotg210-hcd.c
+> > @@ -5568,7 +5568,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
+> >  	struct usb_hcd *hcd;
+> >  	struct resource *res;
+> >  	int irq;
+> > -	int retval = -ENODEV;
+> > +	int retval;
+> >  	struct fotg210_hcd *fotg210;
+> >  
+> >  	if (usb_disabled())
+> > @@ -5588,7 +5588,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
+> >  	hcd = usb_create_hcd(&fotg210_fotg210_hc_driver, dev,
+> >  			dev_name(dev));
+> >  	if (!hcd) {
+> > -		dev_err(dev, "failed to create hcd with err %d\n", retval);
+> > +		dev_err(dev, "failed to create hcd\n");
+> >  		retval = -ENOMEM;
+> How about moving this line before dev_err()? then could keep error log
+> unchanged.
 
-Ah, it's probably my mail client then. Sorry for the noise!
+Then the error message would print misleading information.  The
+usb_create_hcd() does not return -ENOMEM, it returns NULL.
 
-Andrew
+regards,
+dan carpenter
+
