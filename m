@@ -2,344 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9AAB737646A
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:25:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06AC937646D
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231500AbhEGL0y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 07:26:54 -0400
-Received: from alln-iport-3.cisco.com ([173.37.142.90]:5526 "EHLO
-        alln-iport-3.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229537AbhEGL0x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 07:26:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=5051; q=dns/txt; s=iport;
-  t=1620386753; x=1621596353;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Hhn+Irzvs3ZzePzr0dDk5/Hd49LSPH7/dyztBRVUrGw=;
-  b=Es5klRn0iV+ww7TBQXIOyA6lE/XCjgA86PKhUmC2HYJt0BH8uOdMwz3a
-   RM6xMbbFzwuTPl4kVJZn+8K06/XpPFYDWNkZG90sKxtU4mpehl4BIIy0+
-   CCEPBdNUHT1kvgYhznGdREza6hVmtpaZGYHTTO3lZfR/HJ9QsAC6Z+z/P
-   M=;
-X-IPAS-Result: =?us-ascii?q?A0ByAAAVI5Vg/49dJa1aHAEBAQEBAQcBARIBAQQEAQFAg?=
- =?us-ascii?q?UMHAQELAYFSUQd3WjYxC4gBA4RZYIh2gQyYS4EugSUDVAsBAQENAQEgEgIEA?=
- =?us-ascii?q?QGBFgGDOQKCAwIlNAkOAgQBAQEDAgMBAQEBAQUBAQECAQYEcROFUA2GRAEBA?=
- =?us-ascii?q?QMBOgYBATcBDwIBCA4DAgIBAQEeEDIdCAIEDgUIgmqCVQMOIQGdGwKKH3iBN?=
- =?us-ascii?q?IEBggYBAQYEBIUiGIITCYE6AYJ4imYnHIFJQoEVQ4IpNj6EQgKDS4IrgjkLB?=
- =?us-ascii?q?wGBDhOTUoMdpzkKI4JviX2TUBCFFqASuRgCBAIEBQIOAQEGgVQ6gVlwFYMkC?=
- =?us-ascii?q?UcXAg6OHwwWgzUZhnGDbHMCNgIGCgEBAwl8iwMBgQ8BAQ?=
-IronPort-PHdr: A9a23:IK2BZx87AnhMof9uWD3oyV9kXcBvk6/5Mg4c9twsjLcdOqig/pG3O
- kvZ6L0tiVLSRozU5rpCjPaeqKHvX2EMoPPj+HAPeZBBTVkJ3MMRmQFzGsOJCUTnavXtan9yE
- MFLTlQw+Xa9PABcE9r/YFuHpHq04HYSFxzzOBAzKP7yH9vZjt+80Ka5/JiACzg=
-IronPort-HdrOrdr: A9a23:3UhiN6+6LGYrjCn329xuk+ENdb1zdoMgy1knxilNoENuE/Bwxv
- rBoB1E73DJYW4qKQ4dcdDpAtjmfZquz+8K3WB3B8biYOCGghrnEGgG1+vfKlLbalbDH4JmpM
- Jdmu1FeaHN5DtB/IbHCWuDYqwdKbC8mcjC74qzvhQdLz2CKZsQkjuRYTzrdHGeMTM2fabRY6
- Dsn/avyQDQHUg/X4CePD0oTuLDr9rEmNbNehgdHSMq7wGIkHeB9KP6OwLw5GZcbxp/hZMZtU
- TVmQ3w4auu99uhzAXH6mPV55NK3PP819p4AtCWgMR9EESvtu/oXvUlZ1SxhkFznAid0idtrD
- AKmWZ4Ay1H0QKUQohym2q05+Cv6kd015ao8y7ovZKqm72IeNt9MbsauWqcGSGpt3bJe7pHof
- 92NiuixulqJAKFkyLn69fSURZ20kKyvHo5iOYWy2dSSI0EddZq3MEiFW5uYdw99RjBmcoa+S
- hVfbfhDf1tAB+nhrDizyFSKfmXLzsO9zu9Mzw/U/2uonFrdSpCvj4lLeQk7wA9HbwGOut529
- g=
-X-IronPort-Anti-Spam-Filtered: true
-X-IronPort-AV: E=Sophos;i="5.82,280,1613433600"; 
-   d="scan'208";a="695549275"
-Received: from rcdn-core-7.cisco.com ([173.37.93.143])
-  by alln-iport-3.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 07 May 2021 11:25:53 +0000
-Received: from mail.cisco.com (xbe-rcd-003.cisco.com [173.37.102.18])
-        by rcdn-core-7.cisco.com (8.15.2/8.15.2) with ESMTPS id 147BPrTa004240
-        (version=TLSv1.2 cipher=AES256-SHA bits=256 verify=OK);
-        Fri, 7 May 2021 11:25:53 GMT
-Received: from xfe-aln-002.cisco.com (173.37.135.122) by xbe-rcd-003.cisco.com
- (173.37.102.18) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; Fri, 7 May 2021
- 06:25:52 -0500
-Received: from xfe-rcd-002.cisco.com (173.37.227.250) by xfe-aln-002.cisco.com
- (173.37.135.122) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3; Fri, 7 May 2021
- 06:25:52 -0500
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (72.163.14.9) by
- xfe-rcd-002.cisco.com (173.37.227.250) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.792.3
- via Frontend Transport; Fri, 7 May 2021 06:25:52 -0500
+        id S233020AbhEGL1h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 07:27:37 -0400
+Received: from mail-eopbgr70072.outbound.protection.outlook.com ([40.107.7.72]:55182
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229537AbhEGL1e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 07:27:34 -0400
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MBMvjuluMtMHNuYELvRwpEMSPW/VpPYsLN03v80/yRAFQ+QY7Ei4IvdVUviWgetwG8h8Y5KDQB5UN6iq3MNWT5GmtYP4lYL+F+0UDk5Cabf0Yup7kShKeNKaz83iDRbatnkoLp9bFm41XkBAJc9U4RPh1cTACEJ6FyzHIAp+vzLeRbIuzl+63hD2V/9Ss3YhB4o9uKjYCYVbPWRroDHL91hdPPIwrfAjnwHwqs66IrtcpzeG0tj1AxOuAAE0CjATshuDMiJtfxwe7Lz0VoHTtyKzkPrqQRLbLpzDxVGnOG5APzQjVS2PuNXeI5H/x57IlguwP9BSS1nNSvIB3s3V+g==
+ b=DZNCtgK4ftgEYtmFyV1vZl9r+1mC7o4U4Q3bfSnY+B276SItpJCJJ5oRam7z6oRyp9cidYC6xv672k/O0ss8Pd3PeWH0ezd6DlAvyt4bM5hlRCPxpuEZrgPsCDRY/N7YlNLbasHeKu9cLxYe+EtEqucX6BunZwoAPJfl/1STQkxDhPwXX08IyFmTdthuVQ/gCzqZvMVn0myfJUNtwM1hvAToEcE2HjlAzjjM/IU3MQ0Myymdd4JRmEB4q8pjInWmoRRxWVTkDNwYANs1TT71gNKzgoeWKg3wnj+79Dvr92MunHv6yxYu8Ara2EEnuvC2jjqm1EOm1SuapV487S+T4w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qwirxJQV5chnuoWTUncOLI6IKRRc6BFCESAr1VG2yMI=;
- b=VqnWA0wsRdCA5T3Z4a60rLeRiTIPVlG4oJurWsiNHZ44mpPfcdczsJ+LsVGVjgl8Os9mcnzP2Sir+xMG/MNQONYtMRC5ib9Upx3BSWQ0FvGw+ZBR3Z1JPPD6TjfFpTCTT7531T2WyaoS5yFLm+joAomNT1wPDbT4Snk1JBxJdCFc77ajLA44H3/0wYsjCcxfa7eSWXoSdysFYk8qg9jgqgfIAPMEbmj5C17vLI9PKE8fD/PzF9+UpX0GXY+odWsnP7adjNmN+RQgPaHBZxO2NrOev2Fyvbt/s9Rc/Li0aag/2NxWPV2HVfq5xtuvCv7QafErugve06KWJqbTlGLDYA==
+ bh=TFem0918/XIY5YWk0jtq7YAhytA7zex/6q+fnnoy64o=;
+ b=gXnd9n9KRU9E6T7hBvKBFIstHbh0+PLrte/ByOq6GYg1f5UKTQBLn3o7dx1qVCwavxlgxieetRD4sWnr48MWO9j8+g4E4V0TRxP7+2KEBrP+HHUXRnYHdYTtdT85UDkcWKAkZlbnfeCBdCqyT5/FD+A1XM9kHa8a6b23Q3dw0omtwXIflkk+ACzP7mX3slQVutPzC6CLZj1GzSFM9m5K8krKMtaSpvdNgGniHAps7p+2EJ2f7nWiESXZIOF1ssaM2KPA02omXFBsH4TUyKgC9zgOY7KedTK2V6vmiGBbsI3BSiLgDovc0ntaKXV7emKb7jwglb7R2Mif/mvx6wwGkQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.onmicrosoft.com;
- s=selector2-cisco-onmicrosoft-com;
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qwirxJQV5chnuoWTUncOLI6IKRRc6BFCESAr1VG2yMI=;
- b=RnJLZ5tgRcy07XyocrH1p4HBJeP/a9qkBq6lLC4BUTUf9chQJ3mnXAXPqv6GK0P1kg/ddBBNAdetndeVKRv6HNy4UgEtvWEWsZ6FXC4CoDpc8IbrZHPh0gbDhfIqLk6nA0ejUoNVUnrmZ2sy9Fb/Er0QchZmV16/kQleN7a/po4=
-Received: from BY5PR11MB4024.namprd11.prod.outlook.com (2603:10b6:a03:192::24)
- by BY5PR11MB4069.namprd11.prod.outlook.com (2603:10b6:a03:191::24) with
+ bh=TFem0918/XIY5YWk0jtq7YAhytA7zex/6q+fnnoy64o=;
+ b=AWvybLiBEtJUsdYWtQISk0ntnM0ujbrbJcF1egkTsmhhuUB12+OD4x6BZpSTLM2I15xRHWTiZ1Mpj0WcNfhk7QCZWpQbKDn5LsnxCpXfrnoR97lC0+L5yeBCpPB3ZATr3DifChiORumbWncGiYjZTzEdVmMyX/Mi7ZXgBgKefTw=
+Received: from DB7PR04MB5017.eurprd04.prod.outlook.com (2603:10a6:10:1b::21)
+ by DB6PR0401MB2422.eurprd04.prod.outlook.com (2603:10a6:4:50::21) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.29; Fri, 7 May
- 2021 11:25:51 +0000
-Received: from BY5PR11MB4024.namprd11.prod.outlook.com
- ([fe80::9553:3e54:a296:63de]) by BY5PR11MB4024.namprd11.prod.outlook.com
- ([fe80::9553:3e54:a296:63de%6]) with mapi id 15.20.4108.029; Fri, 7 May 2021
- 11:25:51 +0000
-From:   "Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)" 
-        <dzagorui@cisco.com>
-To:     Jiri Olsa <jolsa@redhat.com>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "acme@kernel.org" <acme@kernel.org>,
-        "mark.rutland@arm.com" <mark.rutland@arm.com>,
-        "alexander.shishkin@linux.intel.com" 
-        <alexander.shishkin@linux.intel.com>,
-        "namhyung@kernel.org" <namhyung@kernel.org>
-Subject: Re: [PATCH v4 2/3] perf tests: avoid storing an absolute path in perf
- binary
-Thread-Topic: [PATCH v4 2/3] perf tests: avoid storing an absolute path in
- perf binary
-Thread-Index: AQHXQoXAMcfZOmyFyUqfrBbHL7WC86rX4Udi
-Date:   Fri, 7 May 2021 11:25:51 +0000
-Message-ID: <BY5PR11MB4024A423BC46263285CC19B4D9579@BY5PR11MB4024.namprd11.prod.outlook.com>
-References: <20210430133350.20504-1-dzagorui@cisco.com>
- <20210430133350.20504-2-dzagorui@cisco.com>,<YJP/wDx/cIKLkpLk@krava>
-In-Reply-To: <YJP/wDx/cIKLkpLk@krava>
-Accept-Language: en-GB, en-US
-Content-Language: en-GB
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Fri, 7 May
+ 2021 11:26:32 +0000
+Received: from DB7PR04MB5017.eurprd04.prod.outlook.com
+ ([fe80::854e:3ceb:76a4:21fc]) by DB7PR04MB5017.eurprd04.prod.outlook.com
+ ([fe80::854e:3ceb:76a4:21fc%6]) with mapi id 15.20.4108.027; Fri, 7 May 2021
+ 11:26:32 +0000
+From:   "Y.b. Lu" <yangbo.lu@nxp.com>
+To:     Tobias Waldekranz <tobias@waldekranz.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+CC:     Richard Cochran <richardcochran@gmail.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Kurt Kanzenbach <kurt@linutronix.de>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Claudiu Manoil <claudiu.manoil@nxp.com>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        "UNGLinuxDriver@microchip.com" <UNGLinuxDriver@microchip.com>,
+        "linux-doc@vger.kernel.org" <linux-doc@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [net-next, v2, 3/7] net: dsa: free skb->cb usage in core driver
+Thread-Topic: [net-next, v2, 3/7] net: dsa: free skb->cb usage in core driver
+Thread-Index: AQHXOn8Jr4d6SG7MRkyMg7TxAYZcc6rKZYAAgA2IDNA=
+Date:   Fri, 7 May 2021 11:26:32 +0000
+Message-ID: <DB7PR04MB5017DD1C470A06A66ADBB5DEF8579@DB7PR04MB5017.eurprd04.prod.outlook.com>
+References: <20210426093802.38652-1-yangbo.lu@nxp.com>
+ <20210426093802.38652-4-yangbo.lu@nxp.com> <87y2d2noe5.fsf@waldekranz.com>
+In-Reply-To: <87y2d2noe5.fsf@waldekranz.com>
+Accept-Language: en-US
+Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=cisco.com;
-x-originating-ip: [173.38.209.11]
+authentication-results: waldekranz.com; dkim=none (message not signed)
+ header.d=none;waldekranz.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [119.31.174.73]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: e6cdd3dc-f3ea-41c2-2908-08d9114adecd
-x-ms-traffictypediagnostic: BY5PR11MB4069:
-x-microsoft-antispam-prvs: <BY5PR11MB4069C690BE316FD6C182143AD9579@BY5PR11MB4069.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:800;
+x-ms-office365-filtering-correlation-id: eb6dd04c-1b96-409d-86e7-08d9114af759
+x-ms-traffictypediagnostic: DB6PR0401MB2422:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DB6PR0401MB24223966DD5A18D352314416F8579@DB6PR0401MB2422.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:10000;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: /8nK1B/4yS9Pgl8Bpx2pv3w73SwajG4e7tURTBBeHNJ0hyPVDtvrfTFmNxKnA3j8pqosT7Eidzl45a/jxOVV5OLl0yCthEr5QPdsi9M2IjtRczn/4oKDiDRyLAX1jotLxmmvcTrnQZqyP/W5Ejlfn0YyWNuZGutnhMLdnFyvUQ7Qy8idsscD/1nx0kWIPZ/u77Pyla/aIRx0cX+ZCFaXVOdZ+GMlkJoi/whGuJbI9peas2vPZNSDB0CE+VTmayrKv6Ys5nrc2PSeK9/oa8eEn2SyhBCbMcn13Ix7dLeHYw0BVkdRI+EDsKuVXrQwvLeRGBb3y39DGfFDgC6ov+P4W7h/O/JdWsTX5Cd68HvDUg2OsEUTjSW+g3QSpsNehs8ogXI9BpfpXV+ir1prT/EJflrCE+GOoTFUFoBBRDl5jy5tp0RTnc3xCx5bzHHOm6VGwCaUIQE0AXxwvy6ihYSXkMFhUTlH6p8FCvDip01QSJwbaBooRgKXgBOsg8MfQXniICTQAYc2sjdNjPxPMlAFKiydM7v9Ha+EGQrXSZPz5mnNityneKRYMXEmH8esrnjQrNavKgTMOMY9firYQTTn2gjxaTxSz2kbs7epyKnRqQ0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR11MB4024.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(39860400002)(136003)(346002)(376002)(478600001)(54906003)(8676002)(6916009)(186003)(4326008)(8936002)(5660300002)(66556008)(66476007)(64756008)(66446008)(66946007)(316002)(9686003)(55016002)(2906002)(38100700002)(33656002)(91956017)(76116006)(52536014)(7696005)(83380400001)(6506007)(53546011)(26005)(86362001)(71200400001)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?qBBs98vBUaQi3aq7Qs1uM0YSflZx9kgfzqWUTWjpdfjTv8/kduxdsXnJvgvJ?=
- =?us-ascii?Q?QAQtDbaP7jmMZLK5iz2maKLNBKNT+mnslTswxEKx6d36ypbEe4G4jvJBqdgI?=
- =?us-ascii?Q?S4y6yTncUaoQTqVcnNhQlX0hIqH4oFF+7AVT4m/01gnfrkIBhQ7wr6ibYGQ/?=
- =?us-ascii?Q?TvVW5eu5yl6pJR85pNLawK3M+sG+7jOkXlXdHkfov5j2hgxlqeYh9xWQdRyb?=
- =?us-ascii?Q?MchrFcEK8MPdLR6L9Biiq59rLzHKY2dPwgrNe27/OaoTLQ7teNVtKwEZ39oZ?=
- =?us-ascii?Q?L2qChLdnCnZ+29AZ0nwJZJP8kmUWo7Q5b4J/myjdbynXlWF9Wsx7dUJWJvhK?=
- =?us-ascii?Q?rD9xkvQYnVrot1reT0DpMpQ5tMFkCKZFRlQo4sBpiSZVZP2lpfF5Ei8C7Roy?=
- =?us-ascii?Q?CR4duRCvEGPIOrj9hvt/NW2x4xdIh5CFDSoIZTloqB5vdDc5CA8fxBjnXFyd?=
- =?us-ascii?Q?24+KTjVDgUcYL2EGeMqhgd6r1lCQZYhc+MIPTo7rWJgbCzsNjp37hQ0Nr8po?=
- =?us-ascii?Q?mafZ0cMqurWACK6qbmuR0yyYBhN66nZaU4bxADD23H/+wCbVoex/3vxMr0mH?=
- =?us-ascii?Q?lUWB1Y7/aZNGgfMSusLz0qye5HHz+3rXttbrtWwC7i79czNoCRWSnoS6a4+8?=
- =?us-ascii?Q?Fj12sNfHZsvafNQK0NVQHzrIrhiVlipWCLuAkYcDB9g7UY7eeb0t2UxhGaZb?=
- =?us-ascii?Q?N66LnyhMEEs/idVi9q2dKuUKAZzsZvGRk2ZLl3qmKCagOJXEn+AYfpnBQltr?=
- =?us-ascii?Q?5+C0otvFnaWvNsXmopSlO36P7Vpst7BGFmzXel1CSHv3v6/PG6zyxX+zNLY+?=
- =?us-ascii?Q?YXbjJiUt2ioq3v9iJeCLyganH2zziu4DtV+DxiuOW1X4+tyjAcYfRJQsy2ct?=
- =?us-ascii?Q?UW8DfLSLqNboKuZqYQ/SD5VsHCavVAZ4INrGFii4Zcp9AR8gfx59vuWqZrmF?=
- =?us-ascii?Q?2kzQZMAd+0F3+IwJj8pE28XzxSCrDMwt6lMM2FktlKR5hG+GzqcfBuC2xa9F?=
- =?us-ascii?Q?X87yS8DpomUWZdLq9p79wTleYZaX4WtVGczfTuEB5hb53SbLGogHZPmP4y88?=
- =?us-ascii?Q?XzdJYp7uSfnPvG5GyzPJntTN+Fu1kRyx/cXsOheJtCDD2w5OJXRqirRWyuU4?=
- =?us-ascii?Q?pVyb0y3+b9AB/HR89UXSUYxvkJSfz1Sa4mFT9gAo0vEnOxq07ZwqgwIZtkUW?=
- =?us-ascii?Q?j84o3mKtgMvt3+mF0DH3OlLOJuQDtKV6WjB8fBbpjWdKggNw3qbdI1y1mY3K?=
- =?us-ascii?Q?wiTKSUjTbv1c/BJPWRToGViqv25Iod0xjFur4G+jkNGykAt2Q4wmmI25vWLH?=
- =?us-ascii?Q?Z4g=3D?=
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+x-microsoft-antispam-message-info: hzMpIT0sp24RmooMxHaf6HV8FcwEDfjkm5CAbUFpGD5rGSup6mTLIkidTRqjaNU0TSD06f0kmW3zGjwqepFNVViPY8kfcSKOz+AwS7t6hy/MIVj4X3NxY33T2HOW0BSf69rByQG5bOiVAb+ML0+KzmoPkvn48r2rukW+QCGFiesvsljOE3G04UIUrPq1MMzXAT9Ij0hQr8EomYy5A6MFTxStsdR67r6XUzc0q6dxZM2GJu/8G9U89jIMq4ZN4ktribrE2j88t7GZQh8wmdYHBHkVNXcHlsT2dR/jRJybCPxFOCtGGi5f+bQpwlg8ruYGNvxULzaiN19JE7dQJPo7bh6gIB/pUmAyXVJTYepK1NXVoku/HZfNxEM2dBhfYYIWnfkknnjq998qi4Um4QuK0wQo/4jm4ZHp0fVGePLJjObWYgBuzwAs8d8PQMb+kp6grEfrFxLgLFXTfsnpvcoyGXNbFs2odtchYGMbnuhNWn04BtSqHdid4pGZAEFDiCilkGK6Y2Qc/mM4hhPkS+9apc0mNjv/BbQvCjVzIrUETdhbZd5eU2jWGcchb95J1xhh37vFbG/aiEOiGlVDyv0UbnFit/66Yz/i5wfNFbxooNo=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB7PR04MB5017.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(136003)(366004)(39850400004)(346002)(396003)(478600001)(316002)(7696005)(55016002)(52536014)(33656002)(83380400001)(76116006)(66446008)(66556008)(26005)(66946007)(38100700002)(5660300002)(71200400001)(7416002)(54906003)(4326008)(66476007)(9686003)(186003)(53546011)(2906002)(6506007)(110136005)(122000001)(8676002)(8936002)(64756008)(86362001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?gb2312?B?SzhPeGZSR2RHWlY5Zyt5bGZZMkpmMWY4SG9lTlRKS2ZZa3JueDdVck9YVXgr?=
+ =?gb2312?B?ZlNzbGU4eXN4eDloLzhaL1Y1R3lmYTBqNzBBSUJxNGdjbk4wTXhZc0oxYW9I?=
+ =?gb2312?B?S2I1L2s4NThOMmF6KzJLUjN3VlBqQXZhc3BjZUk3dW1VaU9DN0EwOTd0SHFw?=
+ =?gb2312?B?WERKWTdZZmtzM2xWdUpZUVpwZVk5UUU0T2ppS1RQYTI2K0g4M1F6bXk4SUtr?=
+ =?gb2312?B?RnI0NXJGZStKempxV0FGZkEvRXlnejRyRXB2UHZMWW5EaEsvNkZJek1xN01V?=
+ =?gb2312?B?M0tmMjlFdENVMjU0aUxoRGU4bTNPNXRJYk83WllnSU0wWlpURkQvLzU2cFRv?=
+ =?gb2312?B?aHQ3bEZJQytPQUFmTEU0RW9rdjVrNzIwMEdUb0plNlM1MFUwQ0VCTmFuZ2NC?=
+ =?gb2312?B?VG5nazVhSkJHUGFORjZkY2ZtWkdaczNwN3RBL2s0KzNrQVF3SXlzak8wZ0dR?=
+ =?gb2312?B?RnlwZGJaNS9OL28vMlNmS0VHM3BETGFpckdrdlppVU5KUW5IWm02ZTVhOThj?=
+ =?gb2312?B?QlpFNk1tQXlVVGVJZjhLcjltdnJOYnEvN1lmTWU0WVVSLzFIaU1nem82UFdO?=
+ =?gb2312?B?S0d6K0FNZWNmRlFNL0huUnExcmg5dW14d1RiUGtROE1rcmFueDlmeVNFTCty?=
+ =?gb2312?B?WGpvWXQ1ZXFKeUVFN2pQaS9NQkc1RWpUSXdXQzh3V0tlTE9hSEFrTTRmS1ZC?=
+ =?gb2312?B?eG9wa21YVk9UL3IrOWhLZStkZlAxYU9pYjhoOWpoT2YxMjNZRCtCZnc1TzNa?=
+ =?gb2312?B?THdQZVoramVJemRLVGNoWTZScExxTzB3M3ViQWlPcHpCTFYzRzRrZG1KYXkv?=
+ =?gb2312?B?bkQ3c3VNazJKRFptOHROWG9aWjV0UTlzTGVIUGpMZmRxemQzWnkxb0tNZkRV?=
+ =?gb2312?B?NUFVUVM1bXgycXZLb1dNajl6d2dJVFdTWkp0eXM4eFQ4WEJmMFpTSUpaaTlV?=
+ =?gb2312?B?OUxKdURDUmFBY3pNcm9QdFhKSjlDT0IvRmQ3UDdHWDVZYXdMRFdiQWd6d2tl?=
+ =?gb2312?B?NU1KdDdQYzNVdTFSNW13VjRBQVNFSmNQQUluWmhaYmV6ckpJUm9ldVdOOGZY?=
+ =?gb2312?B?RXlJRDNDMjVLN3RHY1B2Sk00Z2h0ckNCR3BFMEpZS3p6MTBHZzBDSnJXY2I2?=
+ =?gb2312?B?WUN5REtwUTVlUEh2N2JLeXUwK2MwRUFTR0F4VEttalJUMzZkQk9lMFdzcFBO?=
+ =?gb2312?B?bldCZ25kWlpUUFE4ZWdRSUFpL2NiTXJTaHFyamFaR3NMVlUza1R0SVpZcUxC?=
+ =?gb2312?B?RDVyMHZFNUJBbXVhTlo1Q2h5L1hOMzNBZXVyamxVdUxBazBUMnZyclRZZmE0?=
+ =?gb2312?B?d3dERCtiS0NSVCtFZDkvU1FsZTV3WVNmY3dLTVJvNFIrRE1WUEJuemZSdzIv?=
+ =?gb2312?B?eDY5VGRaUnN5TitJa1dzMHBPdkRZRHhWSTBYRDE1Qnd5N0hmdE50WkNjMVpm?=
+ =?gb2312?B?bnFnSXFhcFF3SXZYTEl3THdUVld2c2JyN0UrS3VIR2pDM3JZZWFHeUt1WS9R?=
+ =?gb2312?B?NGFDeWs2c3BHYTRwRU1ldTVYUzF4WWNtaHBTUHNzMVJDVmF2TVNKaXBmQXAr?=
+ =?gb2312?B?LzNmVG4xa2hXOHN4S0VDcnVjQVYzUEIrK3RrT3VlTVpHV29qc0M4YnZQb3hS?=
+ =?gb2312?B?VHczTkFPNEJTdXBDdEhoKy91QkFMaXZCOHBtdk9zVjE4TllkeHNBNDNOMVYr?=
+ =?gb2312?B?WXU2OE1LVTJuUkJzLy9GM2hKL3BXVjBuK0c5WURKR3hoZXJ2R0owT2l6SFAx?=
+ =?gb2312?Q?Zur29Fx1MID/aIMCFEPIVb9rK3xS6WjBoZzXJB+?=
+Content-Type: text/plain; charset="gb2312"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR11MB4024.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6cdd3dc-f3ea-41c2-2908-08d9114adecd
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2021 11:25:51.1136
+X-MS-Exchange-CrossTenant-AuthSource: DB7PR04MB5017.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eb6dd04c-1b96-409d-86e7-08d9114af759
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2021 11:26:32.3478
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gG1s+U+B9gBITKFCkPbIwQdjZ0NHHTdrG0Mq4Px6NkNY9LkKxFgnRjCiHvOxxH13DDLB1mzNg5JD4tlWAQnZmA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR11MB4069
-X-OriginatorOrg: cisco.com
-X-Outbound-SMTP-Client: 173.37.102.18, xbe-rcd-003.cisco.com
-X-Outbound-Node: rcdn-core-7.cisco.com
+X-MS-Exchange-CrossTenant-userprincipalname: DEAkTydiwlTDlT9maQHxlEmdGtnEx0ErVt6KCRMMN7jujfz7Gl2oAhXua0wxIhxfv24P9b7W1SXdSR+rxWkrLw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2422
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>  int test__python_use(struct test *test __maybe_unused, int subtest __ma=
-ybe_unused)
->>  {
->>        char *cmd;
->>        int ret;
->> +     char *exec_path;
->> +     char *pythonpath;
->> +     struct stat sb;
->> +
->> +     exec_path =3D perf_exe_path();
->> +     if (exec_path =3D=3D NULL)
->> +             return -1;
->
-> should we return TEST_SKIP in here?
-
-I'm not sure how it differs from a case where asprintf returns -1
-
->> +     buf =3D perf_exe(buf, PATH_MAX);
->> +
->> +     for (i =3D strlen(buf) - 1; i !=3D 0 && buf[i] !=3D '/'; i--)
->> +             ;
->
-> could we call dirname for this?
-
-Yes
-
-Thanks,
-Denys
-
-________________________________________
-From: Jiri Olsa <jolsa@redhat.com>
-Sent: 06 May 2021 17:40
-To: Denys Zagorui -X (dzagorui - GLOBALLOGIC INC at Cisco)
-Cc: linux-kernel@vger.kernel.org; peterz@infradead.org; mingo@redhat.com; a=
-cme@kernel.org; mark.rutland@arm.com; alexander.shishkin@linux.intel.com; n=
-amhyung@kernel.org
-Subject: Re: [PATCH v4 2/3] perf tests: avoid storing an absolute path in p=
-erf binary
-
-On Fri, Apr 30, 2021 at 06:33:49AM -0700, Denys Zagorui wrote:
-> python binding test uses PYTHONPATH definition to find python/perf.so
-> library. This definition is an absolute path that makes perf binary
-> unreproducible. This path can be found during runtime execution.
->
-> Signed-off-by: Denys Zagorui <dzagorui@cisco.com>
-> ---
->  tools/perf/tests/Build        |  2 +-
->  tools/perf/tests/python-use.c | 19 ++++++++++++++++++-
->  tools/perf/util/util.c        | 21 +++++++++++++++++++++
->  tools/perf/util/util.h        |  2 ++
->  4 files changed, 42 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/tests/Build b/tools/perf/tests/Build
-> index 650aec19d490..a20098dcdbc4 100644
-> --- a/tools/perf/tests/Build
-> +++ b/tools/perf/tests/Build
-> @@ -98,5 +98,5 @@ perf-$(CONFIG_DWARF_UNWIND) +=3D dwarf-unwind.o
->  endif
->
->  CFLAGS_attr.o         +=3D -DBINDIR=3D"BUILD_STR($(bindir_SQ))" -DPYTHON=
-=3D"BUILD_STR($(PYTHON_WORD))"
-> -CFLAGS_python-use.o   +=3D -DPYTHONPATH=3D"BUILD_STR($(OUTPUT)python)" -=
-DPYTHON=3D"BUILD_STR($(PYTHON_WORD))"
-> +CFLAGS_python-use.o   +=3D -DPYTHON=3D"BUILD_STR($(PYTHON_WORD))"
->  CFLAGS_dwarf-unwind.o +=3D -fno-optimize-sibling-calls
-> diff --git a/tools/perf/tests/python-use.c b/tools/perf/tests/python-use.=
-c
-> index 98c6d474aa6f..c7a0c9b5366f 100644
-> --- a/tools/perf/tests/python-use.c
-> +++ b/tools/perf/tests/python-use.c
-> @@ -8,18 +8,35 @@
->  #include <linux/compiler.h>
->  #include "tests.h"
->  #include "util/debug.h"
-> +#include "util/util.h"
-> +#include <sys/stat.h>
->
->  int test__python_use(struct test *test __maybe_unused, int subtest __may=
-be_unused)
->  {
->       char *cmd;
->       int ret;
-> +     char *exec_path;
-> +     char *pythonpath;
-> +     struct stat sb;
-> +
-> +     exec_path =3D perf_exe_path();
-> +     if (exec_path =3D=3D NULL)
-> +             return -1;
-
-should we return TEST_SKIP in here?
-
-> +
-> +     if (asprintf(&pythonpath, "%spython", exec_path) < 0)
-> +             return -1;
-
-leaking exec_path
-
-> +
-> +     if (stat(pythonpath, &sb) || !S_ISDIR(sb.st_mode))
-> +             pythonpath[0] =3D 0;
->
->       if (asprintf(&cmd, "echo \"import sys ; sys.path.append('%s'); impo=
-rt perf\" | %s %s",
-> -                  PYTHONPATH, PYTHON, verbose > 0 ? "" : "2> /dev/null")=
- < 0)
-> +                  pythonpath, PYTHON, verbose > 0 ? "" : "2> /dev/null")=
- < 0)
->               return -1;
-
-leaking exec_path and pythonpath
-
->
->       pr_debug("python usage test: \"%s\"\n", cmd);
->       ret =3D system(cmd) ? -1 : 0;
->       free(cmd);
-> +     free(exec_path);
-> +     free(pythonpath);
->       return ret;
->  }
-> diff --git a/tools/perf/util/util.c b/tools/perf/util/util.c
-> index 3bba74e431ed..54e80452887c 100644
-> --- a/tools/perf/util/util.c
-> +++ b/tools/perf/util/util.c
-> @@ -388,3 +388,24 @@ char *perf_exe(char *buf, int len)
->       }
->       return strcpy(buf, "perf");
->  }
-> +
-> +char *perf_exe_path(void)
-> +{
-> +     int i;
-> +     char *buf;
-> +
-> +     buf =3D malloc(PATH_MAX);
-
-need to check buf !=3D NULL
-
-> +     buf =3D perf_exe(buf, PATH_MAX);
-> +
-> +     for (i =3D strlen(buf) - 1; i !=3D 0 && buf[i] !=3D '/'; i--)
-> +             ;
-
-could we call dirname for this?
-
-thanks,
-jirka
-
-> +
-> +     if (!i) {
-> +             free(buf);
-> +             return NULL;
-> +     }
-> +
-> +     buf[i + 1] =3D 0;
-> +
-> +     return buf;
-> +}
-> diff --git a/tools/perf/util/util.h b/tools/perf/util/util.h
-> index 80b194ee6c7d..4e871e890ef8 100644
-> --- a/tools/perf/util/util.h
-> +++ b/tools/perf/util/util.h
-> @@ -49,6 +49,8 @@ void perf_set_singlethreaded(void);
->  void perf_set_multithreaded(void);
->
->  char *perf_exe(char *buf, int len);
-> +/* perf_exe_path return malloc'd string on success, caller must free it =
-*/
-> +char *perf_exe_path(void);
->
->  #ifndef O_CLOEXEC
->  #ifdef __sparc__
-> --
-> 2.26.2.Cisco
->
-
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBUb2JpYXMgV2FsZGVrcmFueiA8
+dG9iaWFzQHdhbGRla3JhbnouY29tPg0KPiBTZW50OiAyMDIxxOo01MIyOcjVIDQ6MzANCj4gVG86
+IFkuYi4gTHUgPHlhbmdiby5sdUBueHAuY29tPjsgbmV0ZGV2QHZnZXIua2VybmVsLm9yZw0KPiBD
+YzogWS5iLiBMdSA8eWFuZ2JvLmx1QG54cC5jb20+OyBSaWNoYXJkIENvY2hyYW4NCj4gPHJpY2hh
+cmRjb2NocmFuQGdtYWlsLmNvbT47IFZsYWRpbWlyIE9sdGVhbiA8dmxhZGltaXIub2x0ZWFuQG54
+cC5jb20+Ow0KPiBEYXZpZCBTIC4gTWlsbGVyIDxkYXZlbUBkYXZlbWxvZnQubmV0PjsgSmFrdWIg
+S2ljaW5za2kgPGt1YmFAa2VybmVsLm9yZz47DQo+IEpvbmF0aGFuIENvcmJldCA8Y29yYmV0QGx3
+bi5uZXQ+OyBLdXJ0IEthbnplbmJhY2ggPGt1cnRAbGludXRyb25peC5kZT47DQo+IEFuZHJldyBM
+dW5uIDxhbmRyZXdAbHVubi5jaD47IFZpdmllbiBEaWRlbG90IDx2aXZpZW4uZGlkZWxvdEBnbWFp
+bC5jb20+Ow0KPiBGbG9yaWFuIEZhaW5lbGxpIDxmLmZhaW5lbGxpQGdtYWlsLmNvbT47IENsYXVk
+aXUgTWFub2lsDQo+IDxjbGF1ZGl1Lm1hbm9pbEBueHAuY29tPjsgQWxleGFuZHJlIEJlbGxvbmkN
+Cj4gPGFsZXhhbmRyZS5iZWxsb25pQGJvb3RsaW4uY29tPjsgVU5HTGludXhEcml2ZXJAbWljcm9j
+aGlwLmNvbTsNCj4gbGludXgtZG9jQHZnZXIua2VybmVsLm9yZzsgbGludXgta2VybmVsQHZnZXIu
+a2VybmVsLm9yZw0KPiBTdWJqZWN0OiBSZTogW25ldC1uZXh0LCB2MiwgMy83XSBuZXQ6IGRzYTog
+ZnJlZSBza2ItPmNiIHVzYWdlIGluIGNvcmUgZHJpdmVyDQo+IA0KPiBPbiBNb24sIEFwciAyNiwg
+MjAyMSBhdCAxNzozNywgWWFuZ2JvIEx1IDx5YW5nYm8ubHVAbnhwLmNvbT4gd3JvdGU6DQo+ID4g
+RnJlZSBza2ItPmNiIHVzYWdlIGluIGNvcmUgZHJpdmVyIGFuZCBsZXQgZGV2aWNlIGRyaXZlcnMg
+ZGVjaWRlIHRvIHVzZQ0KPiA+IG9yIG5vdC4gVGhlIHJlYXNvbiBoYXZpbmcgYSBEU0FfU0tCX0NC
+KHNrYiktPmNsb25lIHdhcyBiZWNhdXNlDQo+ID4gZHNhX3NrYl90eF90aW1lc3RhbXAoKSB3aGlj
+aCBtYXkgc2V0IHRoZSBjbG9uZSBwb2ludGVyIHdhcyBjYWxsZWQNCj4gPiBiZWZvcmUgcC0+eG1p
+dCgpIHdoaWNoIHdvdWxkIHVzZSB0aGUgY2xvbmUgaWYgYW55LCBhbmQgdGhlIGRldmljZQ0KPiA+
+IGRyaXZlciBoYXMgbm8gd2F5IHRvIGluaXRpYWxpemUgdGhlIGNsb25lIHBvaW50ZXIuDQo+ID4N
+Cj4gPiBBbHRob3VnaCBmb3Igbm93IHB1dHRpbmcgbWVtc2V0KHNrYi0+Y2IsIDAsIDQ4KSBhdCBi
+ZWdpbm5pbmcgb2YNCj4gPiBkc2Ffc2xhdmVfeG1pdCgpIGJ5IHRoaXMgcGF0Y2ggaXMgbm90IHZl
+cnkgZ29vZCwgdGhlcmUgaXMgc3RpbGwgd2F5IHRvDQo+ID4gaW1wcm92ZSB0aGlzLiBPdGhlcndp
+c2UsIHNvbWUgb3RoZXIgbmV3IGZlYXR1cmVzLCBsaWtlIG9uZS1zdGVwDQo+IA0KPiBDb3VsZCB5
+b3UgcGxlYXNlIGV4cGFuZCBvbiB0aGlzIGltcHJvdmVtZW50Pw0KPiANCj4gVGhpcyBtZW1zZXQg
+bWFrZXMgaXQgaW1wb3NzaWJsZSB0byBjYXJyeSBjb250cm9sIGJ1ZmZlciBpbmZvcm1hdGlvbiBm
+cm9tDQo+IGRyaXZlciBjYWxsYmFja3MgdGhhdCBydW4gYmVmb3JlIC5uZG9fc3RhcnRfeG1pdCwg
+Zm9yDQo+IGV4YW1wbGUgLm5kb19zZWxlY3RfcXVldWUsIHRvIGEgdGFnZ2VyJ3MgLnhtaXQuDQo+
+IA0KPiBJdCBzZWVtcyB0byBtZSB0aGF0IGlmIHRoZSBkcml2ZXJzIGFyZSB0byBoYW5kbGUgdGhl
+IENCIGludGVybmFsbHkgZnJvbSBub3cgb24sDQo+IHRoYXQgc2hvdWxkIGdvIGZvciBib3RoIHNl
+dHRpbmcgYW5kIGNsZWFyaW5nIG9mIHRoZSByZXF1aXJlZCBmaWVsZHMuDQo+IA0KDQpGb3IgdGhl
+IHRpbWVzdGFtcGluZyBjYXNlLCBkc2Ffc2tiX3R4X3RpbWVzdGFtcCBtYXkgbm90IHRvdWNoIC5w
+b3J0X3R4dHN0YW1wIGNhbGxiYWNrLCBzbyB3ZSBoYWQgdG8gcHV0IHNrYi0+Y2IgaW5pdGlhbGl6
+YXRpb24gYXQgYmVnaW5uaW5nIG9mIGRzYV9zbGF2ZV94bWl0Lg0KVG8gYXZvaWQgYnJlYWtpbmcg
+ZnV0dXJlIHNrYi0+Y2IgdXNhZ2UgeW91IG1lbnRpb25lZCwgZG8geW91IHRoaW5rIHdlIGNhbiBi
+YWNrIHRvIFZsYWRpbWlyJ3MgaWRlYSBpbml0aWFsaXppbmcgb25seSBmaWVsZCByZXF1aXJlZCwg
+b3IgZXZlbiBqdXN0IGFkZCBhIGNhbGxiYWNrIGZvciBjYiBpbml0aWFsaXphdGlvbiBmb3IgdGlt
+ZXN0YW1waW5nPw0KDQpUaGFua3MuDQoNCg0KPiA+IHRpbWVzdGFtcCB3aGljaCBuZWVkcyBhIGZs
+YWcgb2Ygc2tiIG1hcmtlZCBpbiBkc2Ffc2tiX3R4X3RpbWVzdGFtcCgpLA0KPiA+IGFuZCBoYW5k
+bGVzIGFzIG9uZS1zdGVwIHRpbWVzdGFtcCBpbiBwLT54bWl0KCkgd2lsbCBmYWNlIHNhbWUNCj4g
+PiBzaXR1YXRpb24uDQo+ID4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBZYW5nYm8gTHUgPHlhbmdiby5s
+dUBueHAuY29tPg0KDQo=
