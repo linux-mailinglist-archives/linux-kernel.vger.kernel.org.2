@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E83A3761B5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:09:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B98D73761B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:10:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235994AbhEGIKt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 04:10:49 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:45725 "EHLO
+        id S236005AbhEGILF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 04:11:05 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51455 "EHLO
         new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235320AbhEGIKq (ORCPT
+        by vger.kernel.org with ESMTP id S235320AbhEGILC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 04:10:46 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 41F6058123D;
-        Fri,  7 May 2021 04:09:46 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Fri, 07 May 2021 04:09:46 -0400
+        Fri, 7 May 2021 04:11:02 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.nyi.internal (Postfix) with ESMTP id AE58E5811AC;
+        Fri,  7 May 2021 04:10:02 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Fri, 07 May 2021 04:10:02 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=W1CZtGGfJPRYLuVe9lYsOpidBYI
-        J9lZUWGVXHC3ow7U=; b=AC2k3XX//H84MBeRQqNs8q5xtCxn3+uPKx4tY6/wn3t
-        YOjdYSH+avurYGjZJ+R5YL1KkyzlmHDXrFYU7G80gCcC6g8nUEbFazUuhZpw+Hnj
-        HNTiYmUZbgzAwYIfLkq2z1B8zfZh1vVfPZBR6Os/C5O+N3u/A29QwlWlAo4XVS7W
-        HLM5CS1adsytTjV277ttb2JZQcqNuxwwu89IVVDWqROl6LsyqisUuo+PodZe7NI6
-        MX3guHyMP2w35SSVykytK6H44wTpQuPiOCfChdaECthy0XbvwIbLw1XIOU14GP7B
-        v/57ldjmIFjDYvfqFm4A7rWMnO5zA8ccuGo/edO0qyw==
+        :content-type:in-reply-to; s=fm2; bh=N4E8u8LxBn6a+FLyFAp3MXCbX0H
+        3BB0OfCxhAb7eG20=; b=JLT6zkTrnBLlrdM7F3lLgjU3UkNwLU70uIif/hpBRLc
+        1ua8VgfE8AKvtMIR8tszSmgUQ3mCS1Ou6RDBxvy/OND8BrzgnOGptuJ4iK9W2xRO
+        GItkh96hs9LBPlbJUEqhnv6LJ26NC6+cbeJ+QKK20IaYn5GvL3BEkB+OmoifDKmK
+        yNhEgWLoKWyFlZvDzK6oeaQN1gKQ5r9S6rAM9tAsd1tF/9SmMq5AGJul8o6JWaNi
+        2aeBalQWgvwzDLz0CSknhGi7WDIsl4eJ4497cTcphCpeIfaNWLJq0q2rhKhuhKtN
+        Q2lEZ4lh13eKmFdH2Oh96wk+ZzF309xkpLFx/4IjpHQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=W1CZtG
-        GfJPRYLuVe9lYsOpidBYIJ9lZUWGVXHC3ow7U=; b=Jm75Z1jomnWRHmfILmh/8A
-        J/QW11u3AjUI2HWfRknakvz5iKeZ9qqSVftiefND8301nDCQqLnBxp7rtDovQE2p
-        XHwfqPF9xYas2JqgU0sR7FuWkU+t1PS0i6qJ1gdkGw026T0bUo1o/FcPreAgpaZ2
-        sFYIx3tbbkVlzmvy05pIiZ4ZUA+XivkLBdTTIYUXPLRXF4PIOO7APyWaFv6z7Q+z
-        SrkEsxW9smnYUeXHPcWZxvVaAVS7JUYC2stEgg1/FHxg8KiBwq96OW+wMXSR05pU
-        uCC8D0uHBzkm4rMkWrqrApTJVxQ9ZcSTRUEtQ2v78Qus++2nIKwLpbDMWn4TCwBQ
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=N4E8u8
+        LxBn6a+FLyFAp3MXCbX0H3BB0OfCxhAb7eG20=; b=QfwZMtHzTVjm9ge/yj7Bg8
+        5Lm50oz74UF+wb04KdSOsn4XSaBemVQ/KnwT1ttgnKGSS9ulsV46TZncGclrcHN/
+        G1mriT/s5x7yKmFWr+JoWeJEm5UoRDoKRLLJYfFeeow5xl4pfaEX83axCY6QyO/d
+        cVYE0b3RHoBlSOG4aaElne3HUWmWdVAUVVyWoe1jC8iW3xV8knOlPZJI5lpcPS6O
+        J2j+8uE6669PZyAexRk29hjwpoD/f1AbTZh6MySqG/xIojtG4evvsbkm9fVJzAN4
+        3nVZ6JpmndLauuWEyG1jMiLnv8vrZpl3BdhCVg8v2D95fHi8XAusbespDJzJVG+Q
         ==
-X-ME-Sender: <xms:yPWUYDNI4MxBq0XGSqkSHtzmAoujiluf5SopazEDTZLnUWpwp_zG4w>
-    <xme:yPWUYN-rVs0jgH_E43pMgET88_AYW5CWMG79xDFOnmg6r9eiYdGJ0x8T206GmnxXH
-    Wy6FF02WmEZ-vn053c>
+X-ME-Sender: <xms:2fWUYJLlj8PggRjMV-G_4dFjy9Fh_Jf3tFNvVeEnEygE-FYVAvaqlg>
+    <xme:2fWUYFIHFBOgXCmGrLWVu7L4mlTOha4f2H0k9enK8Xa8LUhGO9VBPoFJ4NN_-0Hkr
+    FV0Y2PaWHVbZt08XG0>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeguddguddvudcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
     necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
@@ -48,14 +48,14 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeguddguddvudcutefuodetgg
     htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
     heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
     curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:yPWUYCTgRRc8_7QL6LopK3Q1hA3rbO81OMd5tXGHzQIRwiKTEyC4jQ>
-    <xmx:yPWUYHszNM4ftu2Yy-9Xp9_P0X_xZhnA-1mGlTq-IBBIF0jitXbgaA>
-    <xmx:yPWUYLcxIg5binSnUuaWgIg-0Zf6oNWsvj2tpY1mtcyUtV6w_gyeww>
-    <xmx:yvWUYP4oeVQW_PYHXszOJ_cJFfazAiSgWkbhvZkCpXjkDX0c5Zt-Og>
+X-ME-Proxy: <xmx:2fWUYBsiE_FROdcKBg8XBFFx-i_25CmXUgRg8l5Pz9itlKgGoBBwpw>
+    <xmx:2fWUYKYzkfXL-13Ez_tU3lkAyL-xnY5GZ7NW0sMcGQEEk7L8u8kcMA>
+    <xmx:2fWUYAbmhdDOC0Zfr_Q2iaDfdzl3pY8-Z9YJLvlX4NrQOd7sxJzISA>
+    <xmx:2vWUYGPHCig_IY1bK2kLs-Kks2E2xaKLDUSfMEvAoRgLjjBtpu2zlQ>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
         by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri,  7 May 2021 04:09:44 -0400 (EDT)
-Date:   Fri, 7 May 2021 10:09:42 +0200
+        Fri,  7 May 2021 04:10:00 -0400 (EDT)
+Date:   Fri, 7 May 2021 10:09:58 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Samuel Holland <samuel@sholland.org>
 Cc:     Chen-Yu Tsai <wens@csie.org>,
@@ -64,73 +64,49 @@ Cc:     Chen-Yu Tsai <wens@csie.org>,
         Mark Brown <broonie@kernel.org>,
         Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
         devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
-        Arnaud Ferraris <arnaud.ferraris@collabora.com>
-Subject: Re: [PATCH v3 7/7] arm64: dts: allwinner: pinephone: Set audio card
- name
-Message-ID: <20210507080942.lxysxdbrviv3ys7m@gilmour>
+        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/7] PinePhone BT audio bringup
+Message-ID: <20210507080958.3ue4xfov5k5dnatl@gilmour>
 References: <20210430035859.3487-1-samuel@sholland.org>
- <20210430035859.3487-8-samuel@sholland.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ihzax2lsrfyfzrwp"
+        protocol="application/pgp-signature"; boundary="56i3cns3wstz6rhi"
 Content-Disposition: inline
-In-Reply-To: <20210430035859.3487-8-samuel@sholland.org>
+In-Reply-To: <20210430035859.3487-1-samuel@sholland.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---ihzax2lsrfyfzrwp
+--56i3cns3wstz6rhi
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Thu, Apr 29, 2021 at 10:58:52PM -0500, Samuel Holland wrote:
+> This series uses the additional DAIs added to the sun8i-codec driver to
+> add hardware routing for BT SCO (headset) audio on the PinePhone.
+>=20
+> The BT audio connection is represented by the "dummy" bt-sco codec. The
+> connection to the Quectel EG-25G modem via AIF2 works as well, but I do
+> not include it here because there is no appropriate codec driver in
+> tree. We have been using an out-of-tree "dummy" codec driver for the
+> modem similar to bt-sco, and I'm not sure if such a driver would be
+> desired upstream.
 
-On Thu, Apr 29, 2021 at 10:58:59PM -0500, Samuel Holland wrote:
-> From: Arnaud Ferraris <arnaud.ferraris@collabora.com>
->=20
-> Add the "PinePhone" name to the sound card: this will make
-> upstreaming an ALSA UCM config easier as we can use a unique name.
->=20
-> It also avoids an issue where the default card name is truncated.
->=20
-> Signed-off-by: Arnaud Ferraris <arnaud.ferraris@collabora.com>
-> [Samuel: Split out change, updated commit message]
-> Signed-off-by: Samuel Holland <samuel@sholland.org>
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi | 1 +
->  1 file changed, 1 insertion(+)
->=20
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi b/ar=
-ch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> index 51cbfdc12936..02712f85f6bd 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-pinephone.dtsi
-> @@ -433,6 +433,7 @@ &reg_rtc_ldo {
-> =20
->  &sound {
->  	status =3D "okay";
-> +	simple-audio-card,name =3D "PinePhone";
->  	simple-audio-card,aux-devs =3D <&codec_analog>, <&speaker_amp>;
->  	simple-audio-card,widgets =3D "Microphone", "Headset Microphone",
->  				    "Microphone", "Internal Microphone",
-
-Isn't that reported to the userspace? I'm not sure we can just change it
-without breaking it.
+I've applied patches 1-6
 
 Maxime
 
---ihzax2lsrfyfzrwp
+--56i3cns3wstz6rhi
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYJT1xgAKCRDj7w1vZxhR
-xSN6AQD3KXo1qhUktSUrwtB6Jar0ZYG1x/hRV26hfMJERuIbsAD9Fu05Zz34S5pC
-FTlOdQdVY1o8ms2ebETiDcmOOEJolww=
-=Eg+P
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYJT11gAKCRDj7w1vZxhR
+xcH4AP9T2WUlgJIme8t1Ebj6AH7EiETOtA4asPtzoInpH93PsgD/RfOXEXYbcEG9
+omJFQb7MNOHox4nDTKMXaKAfro5B+wE=
+=uw2K
 -----END PGP SIGNATURE-----
 
---ihzax2lsrfyfzrwp--
+--56i3cns3wstz6rhi--
