@@ -2,171 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 995493766F9
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:18:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BB1376705
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237571AbhEGOTk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 10:19:40 -0400
-Received: from mx0a-001ae601.pphosted.com ([67.231.149.25]:49928 "EHLO
-        mx0b-001ae601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233715AbhEGOTi (ORCPT
+        id S237647AbhEGO1A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 10:27:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235948AbhEGO07 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 10:19:38 -0400
-Received: from pps.filterd (m0077473.ppops.net [127.0.0.1])
-        by mx0a-001ae601.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 147EGFvM021020;
-        Fri, 7 May 2021 09:17:52 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cirrus.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=PODMain02222019;
- bh=SZBo2PyY6+f1NclI68uT3I38iQFKaDyMG1kSzhG7sfk=;
- b=ZzIfIczvZCs/JSZF0LFvDlBmx7wV1OaB+RXUMt2NMo5qa35b/valPdB8xHDb1SnkA6PD
- 7MjsRAMoc0ZKMYlf+BSZm7FCnEh8hQ33EtlzsYxmQcgvtv2URp0xY5s1KqFhgeRovZNL
- Krm65g59vSOwjn14nWoPA/JYeAwV22TfhEHMKA53KWAzGpOhzitCht1ZCJ+BrDhtu/qo
- uV2MY2WBAlMbmmkyyuhHKl3fC1fhHqNIGKDoHWv698KwYLRjoqG5DbukqYhlTg5mN30W
- uv2/fnkfcwBlhn+6meMzLz2OvCGPgy+Zni1bkowGqzTBqEEleDReNJ3j3ssh2Pkufbzf og== 
-Received: from ediex01.ad.cirrus.com ([87.246.76.36])
-        by mx0a-001ae601.pphosted.com with ESMTP id 38csprgv0f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Fri, 07 May 2021 09:17:51 -0500
-Received: from EDIEX01.ad.cirrus.com (198.61.84.80) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2242.4; Fri, 7 May 2021
- 15:17:49 +0100
-Received: from ediswmail.ad.cirrus.com (198.61.86.93) by EDIEX01.ad.cirrus.com
- (198.61.84.80) with Microsoft SMTP Server id 15.1.2242.4 via Frontend
- Transport; Fri, 7 May 2021 15:17:49 +0100
-Received: from aryzen.ad.cirrus.com (unknown [198.61.65.123])
-        by ediswmail.ad.cirrus.com (Postfix) with ESMTP id 4ACDC11CF;
-        Fri,  7 May 2021 14:17:49 +0000 (UTC)
-From:   Lucas Tanure <tanureal@opensource.cirrus.com>
-To:     James Schulman <james.schulman@cirrus.com>,
-        David Rhodes <david.rhodes@cirrus.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-CC:     <alsa-devel@alsa-project.org>, <patches@opensource.cirrus.com>,
-        <linux-kernel@vger.kernel.org>,
-        Vitaly Rodionov <vitalyr@opensource.cirrus.com>,
-        Lucas Tanure <tanureal@opensource.cirrus.com>
-Subject: [PATCH] ASoC: cs42l42: make HSBIAS_SENSE_EN optional
-Date:   Fri, 7 May 2021 15:17:48 +0100
-Message-ID: <20210507141748.742037-1-tanureal@opensource.cirrus.com>
-X-Mailer: git-send-email 2.31.1
+        Fri, 7 May 2021 10:26:59 -0400
+Received: from ustc.edu.cn (email6.ustc.edu.cn [IPv6:2001:da8:d800::8])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 87221C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 07:25:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mail.ustc.edu.cn; s=dkim; h=Received:Date:From:To:Cc:Subject:
+        Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding;
+        bh=M9VvS8e9uZJKj3MO0SwqDdKf35V5JGIaFIP2nALz/jg=; b=H38Gs9Zw3OgBa
+        Li1eGnNy9a5Rsg+JMnP7ee052GW4mWrLV3JNxl9ojDTewrNw79RntahEIc5U+zi6
+        UWLiEcdEZJWMYwHbiC4qy/Mhf2HEt6vlii14tItnKbReQ/w+X+H+cceFSPvGVuMV
+        clIu5ZRjQasWBLRxLi8WUa6KMAQBbs=
+Received: from xhacker (unknown [101.86.20.15])
+        by newmailweb.ustc.edu.cn (Coremail) with SMTP id LkAmygDHzprLTZVgPsubAA--.61735S2;
+        Fri, 07 May 2021 22:25:15 +0800 (CST)
+Date:   Fri, 7 May 2021 22:19:59 +0800
+From:   Jisheng Zhang <jszhang3@mail.ustc.edu.cn>
+To:     Paul Walmsley <paul.walmsley@sifive.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Albert Ou <aou@eecs.berkeley.edu>
+Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] riscv: mm: Remove setup_zero_page()
+Message-ID: <20210507221959.2db29936@xhacker>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: r_Oko66ia9opLrF_fz7gfqozAPiifelm
-X-Proofpoint-GUID: r_Oko66ia9opLrF_fz7gfqozAPiifelm
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 mlxscore=0
- mlxlogscore=999 malwarescore=0 spamscore=0 suspectscore=0 phishscore=0
- priorityscore=1501 clxscore=1015 bulkscore=0 adultscore=0 impostorscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105070098
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID: LkAmygDHzprLTZVgPsubAA--.61735S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ar1rCr4Utr1kAr17JrW7CFg_yoW8GF1xpr
+        WrGa48urW3Jrs7GFZ2yryqvr18JFn3K34SqryUCwn8Za17Zrn2qr95Kw1rZryqkr4ruayF
+        ka4xJ34S93WUAa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDU0xBIdaVrnRJUUUyFb7Iv0xC_Kw4lb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I2
+        0VC2zVCF04k26cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rw
+        A2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xII
+        jxv20xvEc7CjxVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I
+        8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI
+        64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8Jw
+        Am72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E
+        4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGV
+        WUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_
+        Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rV
+        WrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_
+        GrUvcSsGvfC2KfnxnUUI43ZEXa7IU5PpnJUUUUU==
+X-CM-SenderInfo: xmv2xttqjtqzxdloh3xvwfhvlgxou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
+The empty_zero_page sits at .bss..page_aligned section, so will be
+cleared to zero during clearing bss, we don't need to clear it again.
 
-HSBIAS_SENSE_EN configures HSBIAS output current sense through
-the external 2.21-k resistor. HSBIAS_SENSE is hardware feature to reduce
-the potential pop noise during the headset plug out slowly. But on some
-platforms ESD voltage will affect it causing test to fail, especially
-with CTIA headset type. For different hardware setups, a designer might
-want to tweak default behavior.
-
-Signed-off-by: Vitaly Rodionov <vitalyr@opensource.cirrus.com>
-Signed-off-by: Lucas Tanure <tanureal@opensource.cirrus.com>
+Signed-off-by: Jisheng Zhang <jszhang@kernel.org>
+Reviewed-by: Anup Patel <anup@brainfault.org>
 ---
- .../devicetree/bindings/sound/cs42l42.txt     | 10 ++++++++++
- include/dt-bindings/sound/cs42l42.h           |  3 +++
- sound/soc/codecs/cs42l42.c                    | 20 ++++++++++++++++++-
- sound/soc/codecs/cs42l42.h                    |  1 +
- 4 files changed, 33 insertions(+), 1 deletion(-)
 
-diff --git a/Documentation/devicetree/bindings/sound/cs42l42.txt b/Documentation/devicetree/bindings/sound/cs42l42.txt
-index 7dfaa2ab906f..e75f191d2945 100644
---- a/Documentation/devicetree/bindings/sound/cs42l42.txt
-+++ b/Documentation/devicetree/bindings/sound/cs42l42.txt
-@@ -81,6 +81,16 @@ Optional properties:
-   < x1 x2 x3 x4 >
-   Default = < 15 8 4 1>
- 
-+  - cirrus,hs-bias-sense-en: Configures HSBIAS output current sense through
-+  the external 2.21-k resistor. HSBIAS_SENSE is hardware feature to reduce
-+  the potential pop noise during the headset plug out slowly. But on some
-+  platforms ESD voltage will affect it causing test to fail, especially
-+  with CTIA headset type. For different hardware setups, a designer might
-+  want to tweak default behavior.
-+
-+  0 - disabled
-+  1 - enabled
-+  Default = 1
- 
- Example:
- 
-diff --git a/include/dt-bindings/sound/cs42l42.h b/include/dt-bindings/sound/cs42l42.h
-index f25d83c6188b..788e1598b15f 100644
---- a/include/dt-bindings/sound/cs42l42.h
-+++ b/include/dt-bindings/sound/cs42l42.h
-@@ -66,4 +66,7 @@
- #define CS42L42_HSBIAS_RAMP_TIME2			90
- #define CS42L42_HSBIAS_RAMP_TIME3			170
- 
-+#define CS42L42_HSBIAS_SENSE_ON  1
-+#define CS42L42_HSBIAS_SENSE_OFF 0
-+
- #endif /* __DT_CS42L42_H */
-diff --git a/sound/soc/codecs/cs42l42.c b/sound/soc/codecs/cs42l42.c
-index d9f8da7a68d0..139245c6b720 100644
---- a/sound/soc/codecs/cs42l42.c
-+++ b/sound/soc/codecs/cs42l42.c
-@@ -1032,7 +1032,7 @@ static void cs42l42_process_hs_type_detect(struct cs42l42_private *cs42l42)
- 			CS42L42_AUTO_HSBIAS_HIZ_MASK |
- 			CS42L42_TIP_SENSE_EN_MASK |
- 			CS42L42_HSBIAS_SENSE_TRIP_MASK,
--			(1 << CS42L42_HSBIAS_SENSE_EN_SHIFT) |
-+			(cs42l42->hs_bias_sense_en << CS42L42_HSBIAS_SENSE_EN_SHIFT) |
- 			(1 << CS42L42_AUTO_HSBIAS_HIZ_SHIFT) |
- 			(0 << CS42L42_TIP_SENSE_EN_SHIFT) |
- 			(3 << CS42L42_HSBIAS_SENSE_TRIP_SHIFT));
-@@ -1807,6 +1807,24 @@ static int cs42l42_handle_device_data(struct device *dev,
- 			(cs42l42->hs_bias_ramp_rate <<
- 			CS42L42_HSBIAS_RAMP_SHIFT));
- 
-+	ret = device_property_read_u32(dev, "cirrus,hs-bias-sense-en", &val);
-+	if (!ret) {
-+		switch (val) {
-+		case CS42L42_HSBIAS_SENSE_OFF:
-+		case CS42L42_HSBIAS_SENSE_ON:
-+			cs42l42->hs_bias_sense_en = val;
-+			break;
-+		default:
-+			dev_err(dev,
-+				"Wrong cirrus,hs-bias-sense-en DT value %d\n",
-+				val);
-+			cs42l42->hs_bias_sense_en = CS42L42_HSBIAS_SENSE_ON;
-+			break;
-+		}
-+	} else {
-+		cs42l42->hs_bias_sense_en = CS42L42_HSBIAS_SENSE_ON;
-+	}
-+
- 	return 0;
+Hi Palmer,
+
+This patch was one of v3 series of "riscv: improve self-protection"
+and acked by Anup. I checked Linus tree this tonight, it seems the v2 or
+v1 was merged, this patch is missing, so I rebased and sent out this patch.
+If it's late for linux-5.13, then I can rebase again once linux-5.13-rc1
+is released.
+
+Thanks in advance
+
+ arch/riscv/mm/init.c | 6 ------
+ 1 file changed, 6 deletions(-)
+
+diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+index dfb5e4f7a670..4a68b029e3d2 100644
+--- a/arch/riscv/mm/init.c
++++ b/arch/riscv/mm/init.c
+@@ -67,11 +67,6 @@ static void __init zone_sizes_init(void)
+ 	free_area_init(max_zone_pfns);
  }
  
-diff --git a/sound/soc/codecs/cs42l42.h b/sound/soc/codecs/cs42l42.h
-index 2e0d3836bd7e..24f7be228d5f 100644
---- a/sound/soc/codecs/cs42l42.h
-+++ b/sound/soc/codecs/cs42l42.h
-@@ -787,6 +787,7 @@ struct  cs42l42_private {
- 	u8 bias_thresholds[CS42L42_NUM_BIASES];
- 	u8 hs_bias_ramp_rate;
- 	u8 hs_bias_ramp_time;
-+	u8 hs_bias_sense_en;
- 	u8 stream_use;
- };
+-static void __init setup_zero_page(void)
+-{
+-	memset((void *)empty_zero_page, 0, PAGE_SIZE);
+-}
+-
+ #if defined(CONFIG_MMU) && defined(CONFIG_DEBUG_VM)
+ static inline void print_mlk(char *name, unsigned long b, unsigned long t)
+ {
+@@ -862,7 +857,6 @@ RESERVEDMEM_OF_DECLARE(elfcorehdr, "linux,elfcorehdr", elfcore_hdr_setup);
+ void __init paging_init(void)
+ {
+ 	setup_vm_final();
+-	setup_zero_page();
+ }
  
+ void __init misc_mem_init(void)
 -- 
-2.31.1
+2.31.0
+
 
