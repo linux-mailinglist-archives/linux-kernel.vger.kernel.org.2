@@ -2,157 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AEC81376914
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:53:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D771376921
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:56:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238452AbhEGQyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 12:54:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49062 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236947AbhEGQyG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 12:54:06 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 279ED6145D;
-        Fri,  7 May 2021 16:53:03 +0000 (UTC)
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Will Deacon <will@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] arm64 updates for 5.13-rc1 (2nd set)
-Date:   Fri,  7 May 2021 17:53:02 +0100
-Message-Id: <20210507165302.1626-1-catalin.marinas@arm.com>
-X-Mailer: git-send-email 2.20.1
+        id S238443AbhEGQ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 12:57:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237138AbhEGQ51 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 12:57:27 -0400
+Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEA3C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 09:56:27 -0700 (PDT)
+Received: from [192.168.1.101] (83.6.168.154.neoplus.adsl.tpnet.pl [83.6.168.154])
+        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        (No client certificate requested)
+        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 7851C1F680;
+        Fri,  7 May 2021 18:56:23 +0200 (CEST)
+Subject: Re: [PATCH 1/3] remoteproc: qcom: pas: Use the same init resources
+ for MSM8996 and MSM8998
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+        Yassine Oudjana <y.oudjana@protonmail.com>
+Cc:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ~postmarketos/upstreaming@lists.sr.ht
+References: <zbAB2sceYHmsYeraZUi4YUKL7lgFMu13w3vHQQYUQ4@cp3-web-020.plabs.ch>
+ <20210507164045.GA3622@thinkpad>
+From:   Konrad Dybcio <konrad.dybcio@somainline.org>
+Message-ID: <22accfef-a629-b483-f93f-820030ff5189@somainline.org>
+Date:   Fri, 7 May 2021 18:56:22 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210507164045.GA3622@thinkpad>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Hi,
 
-Please pull the arm64 updates below. They contain a mix of fixes and
-clean-ups that turned up too late for the first pull request this
-merging window. There is a trivial conflict in alternative.c, my
-resolution is at the end of this email.
 
-Thanks.
+> NACK.
+>
+> I see that the "slpi_resource_init" and "msm8998_{slpi/adsp}_resource" are
+> completely different, even the firmware name. How can you get it to work?
 
-The following changes since commit a27a8816568964fcef62a3ae5f9d2228ec1ebc68:
+one of us must be looking at some knock-off source code, as they are identical say for the presence or absence of proxy_pd_names, which are required for 8996 and weren't really an exposed thing on old SoCs like 8974.
 
-  Merge branch 'for-next/pac-set-get-enabled-keys' into for-next/core (2021-04-15 14:00:48 +0100)
 
-are available in the Git repository at:
+Konrad
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux tags/arm64-fixes
-
-for you to fetch changes up to c76fba33467b96b8234a1bbef852cd257c0dca69:
-
-  arm64: kernel: Update the stale comment (2021-05-06 12:26:26 +0100)
-
-----------------------------------------------------------------
-Assorted arm64 fixes and clean-ups, the most important:
-
-- Restore terminal stack frame records. Their previous removal caused
-  traces which cross secondary_start_kernel to terminate one entry too
-  late, with a spurious "0" entry.
-
-- Fix boot warning with pseudo-NMI due to the way we manipulate the PMR
-  register.
-
-- ACPI fixes: avoid corruption of interrupt mappings on watchdog probe
-  failure (GTDT), prevent unregistering of GIC SGIs.
-
-- Force SPARSEMEM_VMEMMAP as the only memory model, it saves with having
-  to test all the other combinations.
-
-- Documentation fixes and updates: tagged address ABI exceptions on
-  brk/mmap/mremap(), event stream frequency, update booting requirements
-  on the configuration of traps.
-
-----------------------------------------------------------------
-Bill Wendling (1):
-      arm64/vdso: Discard .note.gnu.property sections in vDSO
-
-Catalin Marinas (3):
-      arm64: Force SPARSEMEM_VMEMMAP as the only memory management model
-      arm64: doc: Add brk/mmap/mremap() to the Tagged Address ABI Exceptions
-      arm64: Fix the documented event stream frequency
-
-Jisheng Zhang (1):
-      arm64: remove HAVE_DEBUG_BUGVERBOSE
-
-Marc Zyngier (2):
-      ACPI: GTDT: Don't corrupt interrupt mappings on watchdow probe failure
-      ACPI: irq: Prevent unregistering of GIC SGIs
-
-Mark Brown (3):
-      arm64: Relax booting requirements for configuration of traps
-      arm64: Explicitly require that FPSIMD instructions do not trap
-      arm64: Explicitly document boot requirements for SVE
-
-Mark Rutland (3):
-      arm64: alternative: simplify passing alt_region
-      arm64: stacktrace: restore terminal records
-      arm64: entry: always set GIC_PRIO_PSR_I_SET during entry
-
-Matthew Wilcox (Oracle) (1):
-      arm64: Show three registers per line
-
-Nick Desaulniers (1):
-      arm64: vdso32: drop -no-integrated-as flag
-
-Shaokun Zhang (1):
-      arm64: kernel: Update the stale comment
-
-Yang Li (1):
-      psci: Remove unneeded semicolon
-
-kernel test robot (1):
-      arm64: cpufeatures: use min and max
-
- Documentation/arm64/booting.rst            | 33 +++++++++++++++++++++++++++++-
- Documentation/arm64/elf_hwcaps.rst         |  2 +-
- Documentation/arm64/tagged-address-abi.rst |  6 ++++++
- arch/arm64/Kconfig                         | 11 +---------
- arch/arm64/include/asm/daifflags.h         |  3 +++
- arch/arm64/include/asm/kernel-pgtable.h    |  2 +-
- arch/arm64/include/asm/memory.h            |  4 ++--
- arch/arm64/include/asm/sparsemem.h         |  3 ---
- arch/arm64/kernel/alternative.c            |  3 +--
- arch/arm64/kernel/cpufeature.c             |  5 +++--
- arch/arm64/kernel/cpuidle.c                |  2 +-
- arch/arm64/kernel/entry-common.c           | 17 ---------------
- arch/arm64/kernel/entry.S                  | 21 +++++--------------
- arch/arm64/kernel/process.c                |  9 +++-----
- arch/arm64/kernel/stacktrace.c             | 10 +++++----
- arch/arm64/kernel/vdso/vdso.lds.S          |  8 +++++++-
- arch/arm64/kernel/vdso32/Makefile          |  8 --------
- arch/arm64/mm/init.c                       |  8 ++------
- arch/arm64/mm/mmu.c                        |  2 --
- arch/arm64/mm/ptdump.c                     |  2 --
- drivers/acpi/arm64/gtdt.c                  | 10 +++++----
- drivers/acpi/irq.c                         |  6 +++++-
- drivers/firmware/psci/psci.c               |  2 +-
- 23 files changed, 86 insertions(+), 91 deletions(-)
-
-Conflict with current mainline (a48b0872e694):
-
--------------------8<--------------------------
-diff --cc arch/arm64/kernel/alternative.c
-index abc84636af07,f6fd16185040..f6aa38436f56
---- a/arch/arm64/kernel/alternative.c
-+++ b/arch/arm64/kernel/alternative.c
-@@@ -133,11 -133,10 +133,10 @@@ static void clean_dcache_range_nopatch(
-  	} while (cur += d_size, cur < end);
-  }
-  
-- static void __nocfi __apply_alternatives(void *alt_region,  bool is_module,
- -static void __apply_alternatives(struct alt_region *region, bool is_module,
- -				 unsigned long *feature_mask)
-++static void __nocfi __apply_alternatives(struct alt_region *region, bool is_module,
- +					 unsigned long *feature_mask)
-  {
-  	struct alt_instr *alt;
-- 	struct alt_region *region = alt_region;
-  	__le32 *origptr, *updptr;
-  	alternative_cb_t alt_cb;
-  
