@@ -2,111 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED37375F2C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 05:31:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8900B375F34
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 05:37:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231349AbhEGDcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 23:32:33 -0400
-Received: from twspam01.aspeedtech.com ([211.20.114.71]:56577 "EHLO
-        twspam01.aspeedtech.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230376AbhEGDcb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 23:32:31 -0400
-Received: from mail.aspeedtech.com ([192.168.0.24])
-        by twspam01.aspeedtech.com with ESMTP id 1473IbOq021620;
-        Fri, 7 May 2021 11:18:37 +0800 (GMT-8)
-        (envelope-from steven_lee@aspeedtech.com)
-Received: from aspeedtech.com (192.168.100.253) by TWMBX02.aspeed.com
- (192.168.0.24) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 7 May
- 2021 11:30:28 +0800
-Date:   Fri, 7 May 2021 11:30:21 +0800
-From:   Steven Lee <steven_lee@aspeedtech.com>
-To:     Andrew Jeffery <andrew@aj.id.au>
-CC:     Ulf Hansson <ulf.hansson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Ryan Chen <ryanchen.aspeed@gmail.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>,
-        Hongwei Zhang <Hongweiz@ami.com>
-Subject: Re: [PATCH v3 2/5] ARM: dts: aspeed: ast2600evb: Add comment for
- gpio regulator of sdhci
-Message-ID: <20210507033021.GB23749@aspeedtech.com>
-References: <20210506100312.1638-1-steven_lee@aspeedtech.com>
- <20210506100312.1638-3-steven_lee@aspeedtech.com>
- <8611c4a7-8c65-4d7d-90d5-37c80faa3142@www.fastmail.com>
+        id S231907AbhEGDih convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 6 May 2021 23:38:37 -0400
+Received: from mga01.intel.com ([192.55.52.88]:56341 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S231216AbhEGDid (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 23:38:33 -0400
+IronPort-SDR: 7UkBPj4RSztBsGXCu6rFnoXN00aChrYZT/mdeWoDRgYPt0+r02By0y+OIEfh1ZBllaK/b1WzQY
+ BB/ecmjUbk0g==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="219534430"
+X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
+   d="scan'208";a="219534430"
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 20:37:09 -0700
+IronPort-SDR: cfN6Sy07CfqCatK41hnuA7++xRgh/JFuZAkP50YGi2BgMUxK8u15H5GdTDRgKxczfaxPG45k5b
+ iifFInFc/cRw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
+   d="scan'208";a="428842951"
+Received: from fmsmsx605.amr.corp.intel.com ([10.18.126.85])
+  by orsmga007.jf.intel.com with ESMTP; 06 May 2021 20:37:08 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx605.amr.corp.intel.com (10.18.126.85) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 6 May 2021 20:37:08 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Thu, 6 May 2021 20:37:08 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Thu, 6 May 2021 20:37:08 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Aili Yao <yaoaili@kingsoft.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Naoya Horiguchi <naoya.horiguchi@nec.com>,
+        Jue Wang <juew@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH v3 0/3] mm,hwpoison: fix sending SIGBUS for Action
+ Required MCE
+Thread-Topic: [PATCH v3 0/3] mm,hwpoison: fix sending SIGBUS for Action
+ Required MCE
+Thread-Index: AQHXNklUtDziI1+1ZUqZsXGvSliLyarXX3UAgAAW4VA=
+Date:   Fri, 7 May 2021 03:37:07 +0000
+Message-ID: <87ba79daaba1416589b203118be096cb@intel.com>
+References: <20210421005728.1994268-1-nao.horiguchi@gmail.com>
+ <d09f178272df4c82b8c090ba79d222b5@intel.com>
+In-Reply-To: <d09f178272df4c82b8c090ba79d222b5@intel.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <8611c4a7-8c65-4d7d-90d5-37c80faa3142@www.fastmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Originating-IP: [192.168.100.253]
-X-ClientProxiedBy: TWMBX02.aspeed.com (192.168.0.24) To TWMBX02.aspeed.com
- (192.168.0.24)
-X-DNSRBL: 
-X-MAIL: twspam01.aspeedtech.com 1473IbOq021620
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 05/07/2021 09:40, Andrew Jeffery wrote:
-> 
-> 
-> On Thu, 6 May 2021, at 19:33, Steven Lee wrote:
-> > Add the description for describing the AST2600-A2 EVB reference design of
-> > GPIO regulators.
-> > 
-> > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > ---
-> >  arch/arm/boot/dts/aspeed-ast2600-evb.dts | 15 +++++++++++++++
-> >  1 file changed, 15 insertions(+)
-> > 
-> > diff --git a/arch/arm/boot/dts/aspeed-ast2600-evb.dts 
-> > b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-> > index 2772796e215e..1ae0facc3d5f 100644
-> > --- a/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-> > +++ b/arch/arm/boot/dts/aspeed-ast2600-evb.dts
-> > @@ -104,6 +104,21 @@
-> >  	status = "okay";
-> >  };
-> >  
-> > +/*
-> > + * The signal voltage of sdhci0 and sdhci1 on AST2600-A2 EVB is able to be
-> > + * toggled by GPIO pins.
-> > + * In the reference design, GPIOV0 of AST2600-A2 EVB is connected to the
-> > + * power load switch that providing 3.3v to sdhci0 vdd, GPIOV1 is connected to
-> > + * a 1.8v and a 3.3v power load switch that providing signal voltage to
-> > + * sdhci0 bus.
-> > + * If GPIOV0 is active high, sdhci0 is enabled, otherwise, sdhci0 is disabled.
-> > + * If GPIOV1 is active high, 3.3v power load switch is enabled, sdhci0 signal
-> > + * voltage is 3.3v, otherwise, 1.8v power load switch will be enabled,
-> > + * sdhci0 signal voltage becomes 1.8v.
-> > + * AST2600-A2 EVB also support toggling signal voltage for sdhci1.
-> > + * The design is the same as sdhci0, it uses GPIOV2 as power-gpio and GPIOV3
-> > + * as power-switch-gpio.
-> > + */
-> 
-> Okay, I think the comment is in the right place, but I feel this patch 
-> should also add the regulator nodes and hook them up to the SDHCIs.
-> 
-> Given Rob isn't super keen on a second example in the binding document 
-> I think you can just cut the example out and paste it in here.
-> 
+>> I updated the series based on previous feedbacks/discussions.
+>
+> Tested-by: Tony Luck <tony.luck@intel.com>
 
-Hi Andrew,
+Maybe this series should get a "Cc: stable" tag too?
 
-Since AST2600-A0 and AST2600-A1 don't have regulators, do you mean cut
-the example from dt-binding and paste it to aspeed-ast2600-evb.dts but
-comment out the example?
+I don't have a specific commit to provide for Fixes:, but it deals
+with an issue where sometimes processes return from the machine
+check handler and hit the same machine check again.
 
-> Andrew
+It's hard[1] to hit in v5.8, but somehow gets progressively easier in
+newer versions.
+
+-Tony
+
+[1] Initially I thought it didn't happen at all in v5.8. Then wasted a bunch
+of time trying to bisect. But my "git bisect good" responses turned out to
+be randomly assigned when I just hadn't tried enough times to make the
+problem show up.
