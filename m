@@ -2,211 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDA0376A24
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:46:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6604B376A26
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:48:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbhEGSq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 14:46:56 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58975 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229470AbhEGSq4 (ORCPT
+        id S229591AbhEGStk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 14:49:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57402 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhEGSti (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 14:46:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620413155;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=aPyyKeBrRkA4WE3QwL0dVJXd+S/rMEeW0hm96iAtu2c=;
-        b=gFun/DhjEmkdhc/B1Dg2kgagl0hbv3uEO4xI/MDTNvH3fAyWbYr4+HoIGVujfQt8HUtn6m
-        SX4ZEmSOatPQLjEcd+mVQctHs4wYn0Py9n1PbveM+FAAw+CH4CAN3c1za0WfaQVp4E5VFE
-        9Q5Mt1oFXoGGq4FF/T2ZRjmoElmssik=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-400-cK1kjhgBPsWmZnT3ivvKWA-1; Fri, 07 May 2021 14:45:54 -0400
-X-MC-Unique: cK1kjhgBPsWmZnT3ivvKWA-1
-Received: by mail-qv1-f71.google.com with SMTP id a6-20020a0ce3460000b02901c4f39aa36aso7261977qvm.21
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 11:45:54 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=aPyyKeBrRkA4WE3QwL0dVJXd+S/rMEeW0hm96iAtu2c=;
-        b=aBEFy+JLD1WTpNFPmdvUvAt4sWFYF9k51qCyu9+hFknh/xNj6u+uot0AH8IRRpIADu
-         R9Mi3BgwavsbYAi+Bw31bhflEHJ1sjI2zM6vnm4C+KI7BGg9bSs13vBqvcs+szqg1+Y/
-         KtPNa+Wilo0BgEHB7y/3AXx72wO7GzZZGZGj/KGib3pFqTppfu05NpFuXXKkjupHYNes
-         jLNLQ24wQVOYYBTwaIxNXwj0UHm+3VkxMUPWgRlFcvQ0M/qCgHCwQH+0LX1eAHaazUxl
-         afOe4J3f0FbfnJHU5NOVZbDJRZYbf7SkXvbH0KBixvsHLjWpHXjSHF0/qWs27VYsZrru
-         nQ1Q==
-X-Gm-Message-State: AOAM533h7WG8V6bWalACwBPXSPqqOS0tqatgo0D/xcUyiYrVGxkFw2Qm
-        D4c1LiDhvQJ35e2fJIM9BCpyqQZo4ryh1LflZYCRySoE4+EbXPz8JrxIZ3RfKiDyuAglExfXy5n
-        HtnpM1kaLeVvHI6C+0QoyHawx
-X-Received: by 2002:a37:ae02:: with SMTP id x2mr10946086qke.335.1620413151343;
-        Fri, 07 May 2021 11:45:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzQ49EhrBr2VleaOQs5O+9EB+F+312dF6kA9HU6bvLJ0TwDuEEYlFpnBnivl0VUz4k5rpNUrA==
-X-Received: by 2002:a37:ae02:: with SMTP id x2mr10946050qke.335.1620413151104;
-        Fri, 07 May 2021 11:45:51 -0700 (PDT)
-Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
-        by smtp.gmail.com with ESMTPSA id x13sm5553045qtf.32.2021.05.07.11.45.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 May 2021 11:45:50 -0700 (PDT)
-From:   Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH v4 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
- caches
-To:     Vlastimil Babka <vbabka@suse.cz>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Fri, 7 May 2021 14:49:38 -0400
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9414C061574;
+        Fri,  7 May 2021 11:48:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=nlmrWt3RdCjxd40aRkl4OMBCYBjOlN6FJnUkKCOtyzg=; b=C30Z4AOZ9HjHYWUODHEmdtm1vz
+        HUNCxLCSeALzbf2821w5LxTsKsra21lnzVi2Q0HLc5wUGgrrTfUYKvgATfK6PFzsT+TQjeq65G+hn
+        hY3crME0FDfqNNCJVET0G0z7QOLr9dHs/R6CGHYl+mxwY2gmQO+3EkWKZb+yOY2yezyveWGSGNQid
+        aMEJjGQcYc3wY3qkPusNpsbxDPnIiIktPnj2u6HsjH++fNPldVUgifKYfuwYV14Alud/xhlWun3Un
+        OEz1o31+d80VtBWP7kIUD/O9RWxrKBC0q/lWj+UxvXRsokrRexzyife8TeTTw9BFWYPmgXNjkWyEt
+        2Wa8/yMw==;
+Received: from [2601:1c0:6280:3f0::7376] (helo=bombadil.infradead.org)
+        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1lf5Wf-0076tv-Qg; Fri, 07 May 2021 18:48:37 +0000
+From:   Randy Dunlap <rdunlap@infradead.org>
+To:     linux-kernel@vger.kernel.org
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
         Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@linux.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        David Rientjes <rientjes@google.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>
-Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20210505200610.13943-1-longman@redhat.com>
- <20210505200610.13943-3-longman@redhat.com>
- <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
-Message-ID: <d1fb7f38-1a4e-5819-6ccb-691346c7b2a1@redhat.com>
-Date:   Fri, 7 May 2021 14:45:48 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.0
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-ia64@vger.kernel.org
+Subject: [PATCH v2] ia64: headers: drop duplicated words
+Date:   Fri,  7 May 2021 11:48:37 -0700
+Message-Id: <20210507184837.10754-1-rdunlap@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/6/21 12:00 PM, Vlastimil Babka wrote:
-> On 5/5/21 10:06 PM, Waiman Long wrote:
->> There are currently two problems in the way the objcg pointer array
->> (memcg_data) in the page structure is being allocated and freed.
->>
->> On its allocation, it is possible that the allocated objcg pointer
->> array comes from the same slab that requires memory accounting. If this
->> happens, the slab will never become empty again as there is at least
->> one object left (the obj_cgroup array) in the slab.
->>
->> When it is freed, the objcg pointer array object may be the last one
->> in its slab and hence causes kfree() to be called again. With the
->> right workload, the slab cache may be set up in a way that allows the
->> recursive kfree() calling loop to nest deep enough to cause a kernel
->> stack overflow and panic the system.
->>
->> One way to solve this problem is to split the kmalloc-<n> caches
->> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
->> (KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
->> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
->> the other caches can still allow a mix of accounted and unaccounted
->> objects.
->>
->> With this change, all the objcg pointer array objects will come from
->> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
->> both the recursive kfree() problem and non-freeable slab problem are
->> gone.
->>
->> Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
->> mixed accounted and unaccounted objects, this will slightly reduce the
->> number of objcg pointer arrays that need to be allocated and save a bit
->> of memory. On the other hand, creating a new set of kmalloc caches does
->> have the effect of reducing cache utilization. So it is properly a wash.
->>
->> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
->> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
->> will include the newly added caches without change.
->>
->> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
->> Signed-off-by: Waiman Long <longman@redhat.com>
->> Reviewed-by: Shakeel Butt <shakeelb@google.com>
-> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
->
-> I still believe the cgroup.memory=nokmem parameter should be respected,
-> otherwise the caches are not only created, but also used. I offer this followup
-> for squashing into your patch if you and Andrew agree:
->
-> ----8<----
->  From c87378d437d9a59b8757033485431b4721c74173 Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Thu, 6 May 2021 17:53:21 +0200
-> Subject: [PATCH] mm: memcg/slab: don't create kmalloc-cg caches with
->   cgroup.memory=nokmem
->
-> The caches should not be created when kmemcg is disabled on boot, otherwise
-> they are also filled by kmalloc(__GFP_ACCOUNT) allocations. When booted with
-> cgroup.memory=nokmem, link the kmalloc_caches[KMALLOC_CGROUP] entries to
-> KMALLOC_NORMAL entries instead.
->
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> ---
->   mm/internal.h    | 5 +++++
->   mm/memcontrol.c  | 2 +-
->   mm/slab_common.c | 9 +++++++--
->   3 files changed, 13 insertions(+), 3 deletions(-)
->
-> diff --git a/mm/internal.h b/mm/internal.h
-> index ef5f336f59bd..b2d60b3403c7 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -135,6 +135,11 @@ extern void putback_lru_page(struct page *page);
->    */
->   extern pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address);
->   
-> +/*
-> + * in mm/memcontrol.c:
-> + */
-> +extern bool cgroup_memory_nokmem;
-> +
->   /*
->    * in mm/page_alloc.c
->    */
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 5e3b4f23b830..b9ec01f2b4f6 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -83,7 +83,7 @@ DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
->   static bool cgroup_memory_nosocket;
->   
->   /* Kernel memory accounting disabled? */
-> -static bool cgroup_memory_nokmem;
-> +bool cgroup_memory_nokmem;
->   
->   /* Whether the swap controller is active */
->   #ifdef CONFIG_MEMCG_SWAP
-> diff --git a/mm/slab_common.c b/mm/slab_common.c
-> index bbaf41a7c77e..363f90215401 100644
-> --- a/mm/slab_common.c
-> +++ b/mm/slab_common.c
-> @@ -832,10 +832,15 @@ void __init setup_kmalloc_cache_index_table(void)
->   static void __init
->   new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
->   {
-> -	if (type == KMALLOC_RECLAIM)
-> +	if (type == KMALLOC_RECLAIM) {
->   		flags |= SLAB_RECLAIM_ACCOUNT;
-> -	else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP))
-> +	} else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP)) {
-> +		if (cgroup_memory_nokmem) {
-> +			kmalloc_caches[type][idx] = kmalloc_caches[KMALLOC_NORMAL][idx];
-> +			return;
-> +		}
->   		flags |= SLAB_ACCOUNT;
-> +	}
->   
->   	kmalloc_caches[type][idx] = create_kmalloc_cache(
->   					kmalloc_info[idx].name[type],
+Delete the repeated words "to" and "the".
 
-Thanks, the patch looks good to me.
+Signed-off-by: Randy Dunlap <rdunlap@infradead.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Tony Luck <tony.luck@intel.com>
+Cc: Fenghua Yu <fenghua.yu@intel.com>
+Cc: linux-ia64@vger.kernel.org
+---
+v2: combine 3 patches; drop previous perfmon patches (files have been
+    removed); rebase & resend
 
-Acked-by: Waiman Long <longman@redhat.com>
+ arch/ia64/include/asm/pal.h       |    2 +-
+ arch/ia64/include/asm/spinlock.h  |    2 +-
+ arch/ia64/include/asm/uv/uv_hub.h |    2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Cheers,
-Longman
-
+--- linux-next-20210507.orig/arch/ia64/include/asm/pal.h
++++ linux-next-20210507/arch/ia64/include/asm/pal.h
+@@ -1086,7 +1086,7 @@ static inline long ia64_pal_freq_base(un
+ 
+ /*
+  * Get the ratios for processor frequency, bus frequency and interval timer to
+- * to base frequency of the platform
++ * the base frequency of the platform
+  */
+ static inline s64
+ ia64_pal_freq_ratios (struct pal_freq_ratio *proc_ratio, struct pal_freq_ratio *bus_ratio,
+--- linux-next-20210507.orig/arch/ia64/include/asm/spinlock.h
++++ linux-next-20210507/arch/ia64/include/asm/spinlock.h
+@@ -26,7 +26,7 @@
+  * the queue, and the other indicating the current tail. The lock is acquired
+  * by atomically noting the tail and incrementing it by one (thus adding
+  * ourself to the queue and noting our position), then waiting until the head
+- * becomes equal to the the initial value of the tail.
++ * becomes equal to the initial value of the tail.
+  * The pad bits in the middle are used to prevent the next_ticket number
+  * overflowing into the now_serving number.
+  *
+--- linux-next-20210507.orig/arch/ia64/include/asm/uv/uv_hub.h
++++ linux-next-20210507/arch/ia64/include/asm/uv/uv_hub.h
+@@ -257,7 +257,7 @@ static inline int uv_numa_blade_id(void)
+ 	return 0;
+ }
+ 
+-/* Convert a cpu number to the the UV blade number */
++/* Convert a cpu number to the UV blade number */
+ static inline int uv_cpu_to_blade_id(int cpu)
+ {
+ 	return 0;
