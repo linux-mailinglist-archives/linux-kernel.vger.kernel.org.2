@@ -2,127 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D2781376892
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:21:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0D00B37689E
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:24:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238106AbhEGQWk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 12:22:40 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:51221 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238089AbhEGQWh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 12:22:37 -0400
-Received: from mail-qt1-f200.google.com ([209.85.160.200])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1lf3EP-0008A0-0J
-        for linux-kernel@vger.kernel.org; Fri, 07 May 2021 16:21:37 +0000
-Received: by mail-qt1-f200.google.com with SMTP id g21-20020ac858150000b02901ba6163708bso6074863qtg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 09:21:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=+dB8otcToZ0kaQ8XLwm4gKZh/Gvp55gjgN8Q4hQT5d4=;
-        b=M89DyeA32vnwqLJkQzUCEMHhGhQkbuBVeqN+g+s1EFudNGt2wdBzw69pzU7IDZvjyn
-         I18QmMGZfYbEbiN5BymiEL0ZkLsqYCSwuWYcHtYsmvfcRiuLdhOymOrxLoom4v6BcUvm
-         bDO0wxKOCvsxhTFBo0G0bCMezp44SCrk0kEW5+VgXWyqEi4FkYLsyKdIlb7+sbdpkoks
-         JnTJmgsi8EBlnT4XDCpPpUsq/etPhI2thaTuPkm/xme5LRdvMqNMuqLSl6YGqvhdwpUn
-         v6NEUrvDXAGMI9uKOcFLaZ6jNUp3DUx1FXAHZTH2ko8sy9pJDod/0ZhoMlZ5CYeemfWe
-         tdXg==
-X-Gm-Message-State: AOAM5314IZxcve7mBfTrBuW254899gCgrN97rlPKCeOwsvFYjBHmjgVt
-        vrDycZxuKmEAPuDJPTeZ29ZzaP8h/IT96FFmU1Pyk6gorSN5EyfUW/F1S35HwO1qXIwUg7xvCig
-        b1LU6w0Kap9gEZ+LP8cA4rxKAyVRImvIKcgNVkYK6mw==
-X-Received: by 2002:a05:622a:387:: with SMTP id j7mr10053745qtx.255.1620404496173;
-        Fri, 07 May 2021 09:21:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJztpOdmGOzbTTrf1BhbXzYpMKN6SwOt8oXJJTpBqWJY5h4B6QG8KwlYu67S3yPqWVtZnYvBRA==
-X-Received: by 2002:a05:622a:387:: with SMTP id j7mr10053736qtx.255.1620404496012;
-        Fri, 07 May 2021 09:21:36 -0700 (PDT)
-Received: from localhost.localdomain ([45.237.49.1])
-        by smtp.gmail.com with ESMTPSA id i5sm4991869qki.115.2021.05.07.09.21.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 09:21:35 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Sebastian Reichel <sre@kernel.org>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org
-Cc:     Iskren Chernev <iskren.chernev@gmail.com>,
-        Jonathan Bakker <xc-racer2@live.ca>,
-        Matheus Castello <matheus@castello.eng.br>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: [RFT PATCH 3/3] power: supply: max17040: drop unused platform data support
-Date:   Fri,  7 May 2021 12:19:27 -0400
-Message-Id: <20210507161927.105862-3-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210507161927.105862-1-krzysztof.kozlowski@canonical.com>
-References: <20210507161927.105862-1-krzysztof.kozlowski@canonical.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S238108AbhEGQZe convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 May 2021 12:25:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47628 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S236719AbhEGQZ2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 12:25:28 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 275BB6144F;
+        Fri,  7 May 2021 16:24:28 +0000 (UTC)
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=why.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <maz@kernel.org>)
+        id 1lf3H7-00BUnl-VB; Fri, 07 May 2021 17:24:26 +0100
+Date:   Fri, 07 May 2021 17:24:25 +0100
+Message-ID: <875yzupl52.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Pali =?UTF-8?B?Um9ow6Fy?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Marek =?UTF-8?B?QmVow7pu?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 17/42] PCI: aardvark: Fix support for MSI interrupts
+In-Reply-To: <20210507144420.24aess56cc7ie2x2@pali>
+References: <20210506153153.30454-1-pali@kernel.org>
+        <20210506153153.30454-18-pali@kernel.org>
+        <87czu2q25h.wl-maz@kernel.org>
+        <20210507144420.24aess56cc7ie2x2@pali>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/27.1
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: pali@kernel.org, lorenzo.pieralisi@arm.com, thomas.petazzoni@bootlin.com, robh@kernel.org, bhelgaas@google.com, rmk+kernel@armlinux.org.uk, kabel@kernel.org, repk@triplefau.lt, contact@xogium.me, tmn505@gmail.com, linux-pci@vger.kernel.org, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are no platforms using the driver with platform data (no board
-files with the driver), so the dead code can be dropped.
+On Fri, 07 May 2021 15:44:20 +0100,
+Pali Rohár <pali@kernel.org> wrote:
+> 
+> On Friday 07 May 2021 11:16:58 Marc Zyngier wrote:
+> > On Thu, 06 May 2021 16:31:28 +0100,
+> > Pali Rohár <pali@kernel.org> wrote:
+> > > 
+> > > MSI domain callback .alloc (implemented by advk_msi_irq_domain_alloc()
+> > > function) should return zero on success. Returning non-zero value indicates
+> > > failure. Fix return value of this function as in many cases it now returns
+> > > failure while allocating IRQs.
+> > > 
+> > > Aardvark hardware supports Multi-MSI and MSI_FLAG_MULTI_PCI_MSI is already
+> > > set. But when allocating MSI interrupt numbers for Multi-MSI, they need to
+> > > be properly aligned, otherwise endpoint devices send MSI interrupt with
+> > > incorrect numbers. Fix this issue by using function bitmap_find_free_region()
+> > > instead of bitmap_find_next_zero_area().
+> > > 
+> > > To ensure that aligned MSI interrupt numbers are used by endpoint devices,
+> > > we cannot use Linux virtual irq numbers (as they are random and not
+> > > properly aligned). So use hwirq numbers allocated by the function
+> > > bitmap_find_free_region(), which are aligned. This needs an update in
+> > > advk_msi_irq_compose_msi_msg() and advk_pcie_handle_msi() functions to do
+> > > proper mapping between Linux virtual irq numbers and hwirq MSI inner domain
+> > > numbers.
+> > > 
+> > > Also the whole 16-bit MSI number is stored in the PCIE_MSI_PAYLOAD_REG
+> > > register, not only lower 8 bits. Fix reading content of this register.
+> > > 
+> > > This change fixes receiving MSI interrupts on Armada 3720 boards and allows
+> > > using NVMe disks which use Multi-MSI feature with 3 interrupts.
+> > > 
+> > > Without this change, NVMe disks just freeze booting Linux on Armada 3720
+> > > boards as linux nvme-core.c driver is waiting 60s for an interrupt.
+> > > 
+> > > Signed-off-by: Pali Rohár <pali@kernel.org>
+> > > Reviewed-by: Marek Behún <kabel@kernel.org>
+> > > Cc: stable@vger.kernel.org # f21a8b1b6837 ("PCI: aardvark: Move to MSI handling using generic MSI support")
+> > > ---
+> > >  drivers/pci/controller/pci-aardvark.c | 32 ++++++++++++++++-----------
+> > >  1 file changed, 19 insertions(+), 13 deletions(-)
+> > > 
+> > > diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> > > index 366d7480bc1b..498810c00b6d 100644
+> > > --- a/drivers/pci/controller/pci-aardvark.c
+> > > +++ b/drivers/pci/controller/pci-aardvark.c
+> > > @@ -118,6 +118,7 @@
+> > >  #define PCIE_MSI_STATUS_REG			(CONTROL_BASE_ADDR + 0x58)
+> > >  #define PCIE_MSI_MASK_REG			(CONTROL_BASE_ADDR + 0x5C)
+> > >  #define PCIE_MSI_PAYLOAD_REG			(CONTROL_BASE_ADDR + 0x9C)
+> > > +#define     PCIE_MSI_DATA_MASK			GENMASK(15, 0)
+> > 
+> > See my comment below about this addition.
+> > 
+> > >  /* LMI registers base address and register offsets */
+> > >  #define LMI_BASE_ADDR				0x6000
+> > > @@ -861,7 +862,7 @@ static void advk_msi_irq_compose_msi_msg(struct irq_data *data,
+> > >  
+> > >  	msg->address_lo = lower_32_bits(msi_msg);
+> > >  	msg->address_hi = upper_32_bits(msi_msg);
+> > > -	msg->data = data->irq;
+> > > +	msg->data = data->hwirq;
+> > >  }
+> > >  
+> > >  static int advk_msi_set_affinity(struct irq_data *irq_data,
+> > > @@ -878,15 +879,11 @@ static int advk_msi_irq_domain_alloc(struct irq_domain *domain,
+> > >  	int hwirq, i;
+> > >  
+> > >  	mutex_lock(&pcie->msi_used_lock);
+> > > -	hwirq = bitmap_find_next_zero_area(pcie->msi_used, MSI_IRQ_NUM,
+> > > -					   0, nr_irqs, 0);
+> > > -	if (hwirq >= MSI_IRQ_NUM) {
+> > > -		mutex_unlock(&pcie->msi_used_lock);
+> > > -		return -ENOSPC;
+> > > -	}
+> > > -
+> > > -	bitmap_set(pcie->msi_used, hwirq, nr_irqs);
+> > > +	hwirq = bitmap_find_free_region(pcie->msi_used, MSI_IRQ_NUM,
+> > > +					order_base_2(nr_irqs));
+> > >  	mutex_unlock(&pcie->msi_used_lock);
+> > > +	if (hwirq < 0)
+> > > +		return -ENOSPC;
+> > >  
+> > >  	for (i = 0; i < nr_irqs; i++)
+> > >  		irq_domain_set_info(domain, virq + i, hwirq + i,
+> > > @@ -894,7 +891,7 @@ static int advk_msi_irq_domain_alloc(struct irq_domain *domain,
+> > >  				    domain->host_data, handle_simple_irq,
+> > >  				    NULL, NULL);
+> > >  
+> > > -	return hwirq;
+> > > +	return 0;
+> > >  }
+> > >  
+> > >  static void advk_msi_irq_domain_free(struct irq_domain *domain,
+> > > @@ -904,7 +901,7 @@ static void advk_msi_irq_domain_free(struct irq_domain *domain,
+> > >  	struct advk_pcie *pcie = domain->host_data;
+> > >  
+> > >  	mutex_lock(&pcie->msi_used_lock);
+> > > -	bitmap_clear(pcie->msi_used, d->hwirq, nr_irqs);
+> > > +	bitmap_release_region(pcie->msi_used, d->hwirq, order_base_2(nr_irqs));
+> > >  	mutex_unlock(&pcie->msi_used_lock);
+> > >  }
+> > >  
+> > > @@ -1048,6 +1045,7 @@ static void advk_pcie_handle_msi(struct advk_pcie *pcie)
+> > >  {
+> > >  	u32 msi_val, msi_mask, msi_status, msi_idx;
+> > >  	u16 msi_data;
+> > > +	int virq;
+> > >  
+> > >  	msi_mask = advk_readl(pcie, PCIE_MSI_MASK_REG);
+> > >  	msi_val = advk_readl(pcie, PCIE_MSI_STATUS_REG);
+> > > @@ -1057,9 +1055,17 @@ static void advk_pcie_handle_msi(struct advk_pcie *pcie)
+> > >  		if (!(BIT(msi_idx) & msi_status))
+> > >  			continue;
+> > >  
+> > > +		/*
+> > > +		 * msi_idx contains bits [4:0] of the msi_data and msi_data
+> > > +		 * contains 16bit MSI interrupt number from MSI inner domain
+> > > +		 */
+> > >  		advk_writel(pcie, BIT(msi_idx), PCIE_MSI_STATUS_REG);
+> > > -		msi_data = advk_readl(pcie, PCIE_MSI_PAYLOAD_REG) & 0xFF;
+> > > -		generic_handle_irq(msi_data);
+> > > +		msi_data = advk_readl(pcie, PCIE_MSI_PAYLOAD_REG) & PCIE_MSI_DATA_MASK;
+> > 
+> > Can this be moved to a separate patch? It seems like this patch should
+> > only focus on correctly dealing with the irq/hwirq issues.
+> 
+> Well, hwirq is read from PCIE_MSI_PAYLOAD_REG register and it is 16-bit.
+> That is why I included this change in this patch, to fix also reading
+> IRQ number, not only setting IRQ number.
 
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/power/supply/max17040_battery.c |  3 ---
- include/linux/max17040_battery.h        | 16 ----------------
- 2 files changed, 19 deletions(-)
- delete mode 100644 include/linux/max17040_battery.h
+But this irq number still is a 5 bit quantity at this stage, and the
+support for more than 32 MSIs only come in 3 patches later.
 
-diff --git a/drivers/power/supply/max17040_battery.c b/drivers/power/supply/max17040_battery.c
-index d51c3443d732..a8ba2c305034 100644
---- a/drivers/power/supply/max17040_battery.c
-+++ b/drivers/power/supply/max17040_battery.c
-@@ -16,7 +16,6 @@
- #include <linux/interrupt.h>
- #include <linux/power_supply.h>
- #include <linux/of_device.h>
--#include <linux/max17040_battery.h>
- #include <linux/regmap.h>
- #include <linux/slab.h>
- 
-@@ -142,7 +141,6 @@ struct max17040_chip {
- 	struct regmap			*regmap;
- 	struct delayed_work		work;
- 	struct power_supply		*battery;
--	struct max17040_platform_data	*pdata;
- 	struct chip_data		data;
- 
- 	/* battery capacity */
-@@ -453,7 +451,6 @@ static int max17040_probe(struct i2c_client *client,
- 
- 	chip->client = client;
- 	chip->regmap = devm_regmap_init_i2c(client, &max17040_regmap);
--	chip->pdata = client->dev.platform_data;
- 	chip_id = (enum chip_id) id->driver_data;
- 	if (client->dev.of_node) {
- 		ret = max17040_get_of_data(chip);
-diff --git a/include/linux/max17040_battery.h b/include/linux/max17040_battery.h
-deleted file mode 100644
-index 593602fc9317..000000000000
---- a/include/linux/max17040_battery.h
-+++ /dev/null
-@@ -1,16 +0,0 @@
--/* SPDX-License-Identifier: GPL-2.0-only */
--/*
-- *  Copyright (C) 2009 Samsung Electronics
-- *  Minkyu Kang <mk7.kang@samsung.com>
-- */
--
--#ifndef __MAX17040_BATTERY_H_
--#define __MAX17040_BATTERY_H_
--
--struct max17040_platform_data {
--	int (*battery_online)(void);
--	int (*charger_online)(void);
--	int (*charger_enable)(void);
--};
--
--#endif
+So this doesn't fix anything in this patch, and should be moved to
+patch 20.
+
+Thanks,
+
+	M.
+
 -- 
-2.25.1
-
+Without deviation from the norm, progress is not possible.
