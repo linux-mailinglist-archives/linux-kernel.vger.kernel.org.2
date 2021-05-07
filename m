@@ -2,163 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6906A375FAB
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:22:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F4010375FAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:25:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233771AbhEGFWx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 01:22:53 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:52810 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhEGFWv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 01:22:51 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1475IeFq009406;
-        Fri, 7 May 2021 05:21:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : mime-version : content-type : in-reply-to;
- s=corp-2020-01-29; bh=m82Tiv3N8EyLayqOU7hdwku4RkRAu25qOSv0k1M7AEg=;
- b=fBe3qzh1ZTH7lIHkvNdevlu3sSq1gqVCaYoK+3Xsu0w/5E2d5tnQTf/it1cg6UMj9ZQv
- B6sXxaQJ+CbvwbRlLgQTyTpAQb8oDXaFMywtOwLd47TDiY0IVmjF0V2SNmnbIGoMV8ni
- VRK70eankEcPQipBSN3XoSNFCiDhr7BlbZuXrlNJxmOIk0cz6yJpRLj/5BRdU2L3rDk0
- ST3PFHUeJ+A8h+JawsA/oxxYNao2bRDUFzkcoLG9lCArg8zYWyVN9m8nmQifYYySNwLX
- 6RCwNM5Kj+YMNzY/NRsIbm5f7u9yE8k8noRLHrhGt5rmNznxXvscz8RL5LHYMB9vtbvj kA== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 38csqvgdch-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 07 May 2021 05:21:33 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1475LMUu109621;
-        Fri, 7 May 2021 05:21:33 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3030.oracle.com with ESMTP id 38css8567s-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 07 May 2021 05:21:32 +0000
-Received: from userp3030.oracle.com (userp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1475LVbG111523;
-        Fri, 7 May 2021 05:21:31 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3030.oracle.com with ESMTP id 38css85674-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 07 May 2021 05:21:31 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1475LSpa010458;
-        Fri, 7 May 2021 05:21:29 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 06 May 2021 22:21:28 -0700
-Date:   Fri, 7 May 2021 08:21:20 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     kbuild@lists.01.org, Faiyaz Mohammed <faiyazm@codeaurora.org>,
-        cl@linux.com, penberg@kernel.org, rientjes@google.com,
-        iamjoonsoo.kim@lge.com, akpm@linux-foundation.org, vbabka@suse.cz,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org, glittao@gmail.com
-Cc:     lkp@intel.com, kbuild-all@lists.01.org, vinmenon@codeaurora.org
-Subject: Re: [PATCH v5] mm: slub: move sysfs slab alloc/free interfaces to
- debugfs
-Message-ID: <202105070253.GuJL1RPR-lkp@intel.com>
+        id S233800AbhEGFZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 01:25:24 -0400
+Received: from mail-eopbgr1400078.outbound.protection.outlook.com ([40.107.140.78]:41376
+        "EHLO JPN01-TY1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S229666AbhEGFZX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 01:25:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=hlpl2l2xHWHKJWQnKX2ImgMMELnKkqrqnQJidyFcP2TDAb9UyMK0DN6lcHP+QA35jJIYBzPVvMQDtTxOqZfCYoVWQTnQt3qOPJL43gcVkdv+dfctclGBx/N6aZPq9LsckAR8X0F8u6b6Wd4asUDlNN2OE7geiKw2xd2HNJRI18aBjYhMVUL5TpjsEW7NLEQEgRgSOebxC9JiEjT5wD3rvE1HQcTHzoaq3yc/ugk3+21ga3xMnmQj0yTgv9NFoPO+IIuzVlcoGAobo1QVoscy0axBJOnKiS71Nwg6+eiotN7Dmk3rLXuQH9ISzJk0SNhnLpTcVb4iEf9kKjc81JMECA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a/jgmgzjsS3owDxUKV8+kbM8NTT26FeJA09q0I41Nbo=;
+ b=h3AW3jQX5OYhE5kC9vpZx/zLohtbutqoMp70jHxuIqGofLA+GzEFX+N2dE9zHjx5sqjZC7+SXumSAiw5JEESXa6Kj1s/X18I9VKisEnNIVo3g+8QE95brOsIwzA9uHma39Xs/wR79uD00bZW4MQ6KFplcrsrJvbgJOhKHk2jHcGstwJKQ2a9QKWgW0c90nHRuIsLJA9QC2damhaupf7GLaduFua8gvzZ3DikBU3YCQLnVKZrZm1qxhv+F0B7rcvzKMrU1uqt9Mr+ODIefcWjml39TEK0H8L/Ei7DteoKzpFdlE3mT115UBYQ8Wl0ygyP9nQmuyTYiq1GzNNZYSvfqQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nec.com; dmarc=pass action=none header.from=nec.com; dkim=pass
+ header.d=nec.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nec.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=a/jgmgzjsS3owDxUKV8+kbM8NTT26FeJA09q0I41Nbo=;
+ b=UffiR1I1zFT9l+7JzTOa3m1fu7HCyHxCTWuSgQoMLmoOlPFxCRPE0KfMynoQAAbyFTspxBZHTrTcQy/2kfkK2XaspwkL2Kp3z7fwEJId6FHroOgQh4RGstomzgbbh5Tw5A6/44W6CFLT44ouwoXG1fFapWgJ0g0kPRiOBHoY6Uc=
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com (2603:1096:403:8::12)
+ by TYAPR01MB5482.jpnprd01.prod.outlook.com (2603:1096:404:8034::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Fri, 7 May
+ 2021 05:24:22 +0000
+Received: from TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72]) by TY1PR01MB1852.jpnprd01.prod.outlook.com
+ ([fe80::1552:1791:e07c:1f72%7]) with mapi id 15.20.4065.039; Fri, 7 May 2021
+ 05:24:22 +0000
+From:   =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+To:     "Luck, Tony" <tony.luck@intel.com>
+CC:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Aili Yao <yaoaili@kingsoft.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Oscar Salvador <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>, Jue Wang <juew@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v3 0/3] mm,hwpoison: fix sending SIGBUS for Action
+ Required MCE
+Thread-Topic: [PATCH v3 0/3] mm,hwpoison: fix sending SIGBUS for Action
+ Required MCE
+Thread-Index: AQHXQuY21tdoe528FUCsWFgD12p5WqrXXrWAgAAd9wA=
+Date:   Fri, 7 May 2021 05:24:22 +0000
+Message-ID: <20210507052422.GB2158342@hori.linux.bs1.fc.nec.co.jp>
+References: <20210421005728.1994268-1-nao.horiguchi@gmail.com>
+ <d09f178272df4c82b8c090ba79d222b5@intel.com>
+ <87ba79daaba1416589b203118be096cb@intel.com>
+In-Reply-To: <87ba79daaba1416589b203118be096cb@intel.com>
+Accept-Language: ja-JP, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: intel.com; dkim=none (message not signed)
+ header.d=none;intel.com; dmarc=none action=none header.from=nec.com;
+x-originating-ip: [165.225.97.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: e7b63d6e-bf35-4b4b-5fb1-08d911185f80
+x-ms-traffictypediagnostic: TYAPR01MB5482:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <TYAPR01MB54820E8F11E3EE4CD23CDC34E7579@TYAPR01MB5482.jpnprd01.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:475;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 0LukdB48M3szYIAKJoJs3AT5/0AWo/uD9uag6Z8vEJkBmX4BtAP+MJPUH9Y+XpkS2vd4+2yFoQ+dV1KYmlxYfbdWG6x7qi07sIr2frJS9c8Uv3oT2q6GVRbt16ON2APGaKLealoW4X3XmGl/rCppHIuHq20JOevAdAPsk4RaUw1qjWL9DrDjlFXzUBofEtBY+g0XJ6qFcAsdaYpZOk3FOHL0ImV89s5e7UkauFj1I5/Q32ADtesYqUP/Ysh6T5mZqVagzruD2XSsbuquD38+nEZH9zexPms3ysZaXC6sSDnnET3T+Yk6sZkDeNzFHAdgLBsWOPELrTbSdW0ybK6qzRPD+C6mjc6PP4q5qY/qT9CGDlck5ck0wD+ucGnnn7afPbw0LFENYOCmA9QNU0lJkbTzvJsqtAep7N2qgK9w2MqSmAbmxSRRPhhgvI0ap9tJFhxwrP3HAUDL/6hlY7zbECE8NtuLD0rlPwC7TlMClKZemTMC1b77WQepoiBqmiPAx2I/cui2a05j4s++h1EFGaTv4o37yWbLuTyg65lIhUel1O3+DLdBRQiH6k/+RrevWgsR2poi13I+hqRBN/6dHsM3jjthaUu3S59JknQpmVk=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TY1PR01MB1852.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(396003)(376002)(366004)(136003)(2906002)(7416002)(186003)(26005)(55236004)(71200400001)(83380400001)(478600001)(66556008)(66476007)(6486002)(6916009)(8936002)(1076003)(66446008)(8676002)(316002)(64756008)(66946007)(54906003)(33656002)(76116006)(6512007)(122000001)(6506007)(9686003)(4326008)(38100700002)(86362001)(5660300002)(85182001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?utf-8?B?azlDQ2lFWDlhMHEzb0Y4YVU5Ty9mOTlhTlVlQjg1OVBMS1pYUE84cmF0N0cz?=
+ =?utf-8?B?d3VkaUN6bkVVM1FwKzF0NHFEU01Camg4NDRrV1B4djBZSi9UWUJuOUFIYmZk?=
+ =?utf-8?B?ZXBlVHVqbEJHWDBOSEMybVU5QXUzSGgrUXVoUExQOTU5WG9BUDNoUHJtckd5?=
+ =?utf-8?B?TUNxRDducitjSk02SVhqTFk0cVhMSHdrMVdpMGpWeGpIN3FxTk54d1E2R05D?=
+ =?utf-8?B?QVhTVk9NU1FLODN4MVUwcnVvVUhPaTI5V0tPemhOZEwxZ1JrQTVlOWphUnd5?=
+ =?utf-8?B?OFdpb3JDNEZxUUZWN0JYZSswdm5kN3AxT0N1MTYrZXorSHhJVXhzcllKK3lW?=
+ =?utf-8?B?dDlXWjhLR3lSS3JWbG51dWEzNENaTjUzYkNLMDRtck1IQVAxWXZSZ3c1UFg2?=
+ =?utf-8?B?eFpoNyt6WkdJcjF4ZXowT1d3K2dtbFhMbGFrdWFRMlJjeVBMNks0NlZIb2JT?=
+ =?utf-8?B?a1lxTVV0aWJBbnlqN09PZkY5ZFh2WWo2d3A5NnkyU28weFpEbGFveVBua0Qy?=
+ =?utf-8?B?RTRNSDlqM0s0MWk3WHRkTG1LQWM2Rk0wSDRCRk5xWTdwa1U2SWpYdEhrUVdT?=
+ =?utf-8?B?TUxoSTJlNmpXblFhRXAydU5sN1AzTjdGbXhZanhjSGpCNXNFOW1wNGllMUor?=
+ =?utf-8?B?Nm9wbmZjNWFYREt3SDltV2JlZC8zOWdtTWVEMlhISnNiVTZKTmU1MTlEbEZ5?=
+ =?utf-8?B?QTloalZVd1dZUjBJOHBBeGN3NE9LNFdKQVNTdDNhRjV5Y0lZMTU1K3NBSTFF?=
+ =?utf-8?B?YUtNS0V1Z1h5MHRQcDNXaFVucC9XT29MNnpBUVF1K2VhRlhjZ3VsZkh2RUFO?=
+ =?utf-8?B?NXdSVHJJdnlVSjVoVHQyMlFySit6OTNJb3UxWXV5d3hZZTZmT1h3QVJjTmNE?=
+ =?utf-8?B?R3E2MjJKUHFOcnhnay80N2dOWnNQZ2MvdXZQeHFQUjdqSTJWRGI2dkxKYWkv?=
+ =?utf-8?B?azNGVURQYlBPN0xyUUlqT0NIaXYweW5yZE9IMXB6SWljc2w4aTNqMHhWbndh?=
+ =?utf-8?B?STROb2t6ME83aThqNjh2RnNOdWNvZkZBVWR1cHdOT3ZiSzAwUEVXVWFkNDR3?=
+ =?utf-8?B?NjBQanR3UEJoZ3FjNTBIcnJpQ0ticFB2a3FMb3BINXFoTlpVSDBjZ0RoZm1R?=
+ =?utf-8?B?Mjd4U09OTS9JQ2RLOE00MzVCdE56N09lNDdSSlBQczVqT0lqUWlYMXcyL2xQ?=
+ =?utf-8?B?bVFyZ2pnejIxVkNVUVdiUzViV0Zpc2pGU3dnT0x1TzkxSVhYTWk3MDh2bkE0?=
+ =?utf-8?B?bkpyeUt0Mko3TWZaLzZuNTN2TThpQm5SOGR5S0JpQmI5TGpoeGQ5bGVjSGhz?=
+ =?utf-8?B?a2dORE1PTkloT3pSR1lReWZMNjI5UFVXczRvT3hSRjNJUUxPSS9YYTlDSTM5?=
+ =?utf-8?B?cFQ5cnJDa1VvWXE0YjlGc05VVmc5YlJkRXdueG1sN2JtdmdUTllaNlpzSk5S?=
+ =?utf-8?B?bjU3MGRwa1RSbDArWkY1cmQ2L0Z2Y0dEOUFsRFB0b2wwSnVubHJIYTIrVnVR?=
+ =?utf-8?B?ZXZiWVp5SjJzamNpQkhGd012Ti81K1NHejRvTm1XQ2lVNU5tNHZiNXVYUHh4?=
+ =?utf-8?B?RzV6QkVvcWJOakFhVkdLeUJ6b3hvTmgzZlY0WDRqRzRtaFFCU3VoQ29MdUow?=
+ =?utf-8?B?VnNhaUxNK1JLZzhFc2tCMW1JMmJReTZCQWlJdUNsR3lKYmxJaEswbnRBUXNZ?=
+ =?utf-8?B?bDRhWjNhQ0hRUC9KMnViUFBjdjV6QjZKZE1BMzdPcnBDY2VBWlVGN0FKZXpw?=
+ =?utf-8?Q?bhREnYehiobtlnvWIT51IOOTGc0IuZZ0IoR9vee?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <6512465AF567F64990D7244173D141F6@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620296523-21922-1-git-send-email-faiyazm@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: HMNtw0v1W_3vSp9qDEmtn0meStVYKtoz
-X-Proofpoint-GUID: HMNtw0v1W_3vSp9qDEmtn0meStVYKtoz
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9976 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 malwarescore=0
- priorityscore=1501 bulkscore=0 adultscore=0 suspectscore=0 spamscore=0
- impostorscore=0 phishscore=0 clxscore=1011 mlxscore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105070038
+X-OriginatorOrg: nec.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TY1PR01MB1852.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e7b63d6e-bf35-4b4b-5fb1-08d911185f80
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2021 05:24:22.7802
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: e67df547-9d0d-4f4d-9161-51c6ed1f7d11
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: krxJwZxlGVNBmYGuKZ/PfvG8H8kcLN9OnRmibk1fQyu6myR/yK0o0kEuDW4Nvu0g0Jia36B9V0zwH68YwnI+NA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYAPR01MB5482
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Faiyaz,
-
-url:    https://github.com/0day-ci/linux/commits/Faiyaz-Mohammed/mm-slub-move-sysfs-slab-alloc-free-interfaces-to-debugfs/20210506-182420
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 8404c9fbc84b741f66cff7d4934a25dd2c344452
-config: i386-randconfig-m021-20210506 (attached as .config)
-compiler: gcc-9 (Debian 9.3.0-22) 9.3.0
-
-If you fix the issue, kindly add following tag as appropriate
-Reported-by: kernel test robot <lkp@intel.com>
-Reported-by: Dan Carpenter <dan.carpenter@oracle.com>
-
-smatch warnings:
-mm/slub.c:5891 slab_debugfs_start() warn: possible memory leak of 'spos'
-
-vim +/spos +5891 mm/slub.c
-
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5877  static void *slab_debugfs_start(struct seq_file *seq, loff_t *ppos)
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5878  {
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5879  	struct kmem_cache_node *n;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5880  	struct kmem_cache *s;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5881  	enum track_item alloc;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5882  	int node;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5883  	loff_t *spos = kmalloc(sizeof(loff_t), GFP_KERNEL);
-                                                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Generally avoid putting functions which can fail in the declaration
-block.  Allocations inside the declaration block are a tiny percent of
-declarations over all but they are an outsize source of static checker
-bugs.
-
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5884  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5885  	s = seq->file->f_inode->i_private;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5886  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5887  	if (!spos)
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5888  		return NULL;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5889  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5890  	if (!(s->flags & SLAB_STORE_USER))
-88e180b99466c1 Faiyaz Mohammed 2021-05-06 @5891  		return ERR_PTR(-EOPNOTSUPP);
-
-"spos" is leaked.
-
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5892  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5893  	if (*ppos == 0) {
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5894  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5895  		t.count = 0;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5896  		t.max = 0;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5897  		t.loc = NULL;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5898  		if (strcmp(seq->file->f_path.dentry->d_name.name, "alloc_traces") == 0)
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5899  			alloc =  TRACK_ALLOC;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5900  		else
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5901  			alloc =  TRACK_FREE;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5902  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5903  		if (!alloc_loc_track(&t, PAGE_SIZE / sizeof(struct location),
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5904  			     GFP_KERNEL)) {
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5905  			seq_puts(seq, "Out of memory\n");
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5906  			return ERR_PTR(-ENOMEM);
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5907  		}
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5908  		/* Push back cpu slabs */
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5909  		flush_all(s);
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5910  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5911  		for_each_kmem_cache_node(s, node, n) {
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5912  			unsigned long flags;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5913  			struct page *page;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5914  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5915  			if (!atomic_long_read(&n->nr_slabs))
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5916  				continue;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5917  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5918  			spin_lock_irqsave(&n->list_lock, flags);
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5919  			list_for_each_entry(page, &n->partial, slab_list)
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5920  				process_slab(&t, s, page, alloc);
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5921  			list_for_each_entry(page, &n->full, slab_list)
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5922  				process_slab(&t, s, page, alloc);
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5923  			spin_unlock_irqrestore(&n->list_lock, flags);
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5924  		}
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5925  	}
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5926  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5927  	if (*ppos < t.count) {
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5928  		*spos = *ppos;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5929  		return spos;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5930  	}
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5931  
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5932  	kfree(spos);
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5933  	return NULL;
-88e180b99466c1 Faiyaz Mohammed 2021-05-06  5934  }
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
-
+T24gRnJpLCBNYXkgMDcsIDIwMjEgYXQgMDM6Mzc6MDdBTSArMDAwMCwgTHVjaywgVG9ueSB3cm90
+ZToNCj4gPj4gSSB1cGRhdGVkIHRoZSBzZXJpZXMgYmFzZWQgb24gcHJldmlvdXMgZmVlZGJhY2tz
+L2Rpc2N1c3Npb25zLg0KPiA+DQo+ID4gVGVzdGVkLWJ5OiBUb255IEx1Y2sgPHRvbnkubHVja0Bp
+bnRlbC5jb20+DQo+IA0KPiBNYXliZSB0aGlzIHNlcmllcyBzaG91bGQgZ2V0IGEgIkNjOiBzdGFi
+bGUiIHRhZyB0b28/DQoNClRoZSBzZWNvbmQgcGF0Y2ggKEkgc3F1YXNoZWQgMi8zIGFuZCAzLzMg
+aW50byBvbmUgaW4gdjQpIGlzIGEgbGl0dGxlDQp0b28gbGFyZ2UgKG1vcmUgdGhhbiAxMDAgbGlu
+ZXMgb2YgY2hhbmdlKSwgd2hpY2ggZG9lc24ndCBtZWV0IHN0YWJsZSBydWxlLg0KQnV0IHRoZSBm
+aXJzdCBwYXRjaCBsb29rcyBzdWl0YWJsZSB0byBtZSBmb3Igc3RhYmxlLg0KDQo+IA0KPiBJIGRv
+bid0IGhhdmUgYSBzcGVjaWZpYyBjb21taXQgdG8gcHJvdmlkZSBmb3IgRml4ZXM6LCBidXQgaXQg
+ZGVhbHMNCj4gd2l0aCBhbiBpc3N1ZSB3aGVyZSBzb21ldGltZXMgcHJvY2Vzc2VzIHJldHVybiBm
+cm9tIHRoZSBtYWNoaW5lDQo+IGNoZWNrIGhhbmRsZXIgYW5kIGhpdCB0aGUgc2FtZSBtYWNoaW5l
+IGNoZWNrIGFnYWluLg0KDQpJZiB3ZSBjb25zaWRlciB0aGF0IHRoaXMgaXNzdWUgaXMgdmlzaWJs
+ZSBhZnRlciBMTUNFIGlzIHN1cHBvcnRlZCwNCnRoZSBmb2xsb3dpbmcgY29tbWl0IGNvdWxkIGJl
+IHRoZSB0YXJnZXQgb2YgRml4ZXMgdGFnLg0KDQogICAgY29tbWl0IDI0M2Q2NTdlYWY1NDBkYjg4
+MmY3MzQ5NzA2MGRhNWE0ZjdkODZhOTANCiAgICBBdXRob3I6IEFzaG9rIFJhaiA8YXNob2sucmFq
+QGludGVsLmNvbT4NCiAgICBEYXRlOiAgIFRodSBKdW4gNCAxODo1NToyNCAyMDE1ICswMjAwDQoN
+CiAgICAgICAgeDg2L21jZTogSGFuZGxlIExvY2FsIE1DRSBldmVudHMNCg0KYnV0IGFjY29yZGlu
+ZyB0byB5b3VyIHRlc3QgcmVzdWx0LCBhbnkgb3RoZXIgZmFjdG9yIG1pZ2h0IGFmZmVjdCB3aGVu
+DQp0aGUgaXNzdWUgYWN0dWFsbHkgZ290IHJlcHJvZHVjaWJsZS4NCg0KPiANCj4gSXQncyBoYXJk
+WzFdIHRvIGhpdCBpbiB2NS44LCBidXQgc29tZWhvdyBnZXRzIHByb2dyZXNzaXZlbHkgZWFzaWVy
+IGluDQo+IG5ld2VyIHZlcnNpb25zLg0KPiANCj4gLVRvbnkNCj4gDQo+IFsxXSBJbml0aWFsbHkg
+SSB0aG91Z2h0IGl0IGRpZG4ndCBoYXBwZW4gYXQgYWxsIGluIHY1LjguIFRoZW4gd2FzdGVkIGEg
+YnVuY2gNCj4gb2YgdGltZSB0cnlpbmcgdG8gYmlzZWN0LiBCdXQgbXkgImdpdCBiaXNlY3QgZ29v
+ZCIgcmVzcG9uc2VzIHR1cm5lZCBvdXQgdG8NCj4gYmUgcmFuZG9tbHkgYXNzaWduZWQgd2hlbiBJ
+IGp1c3QgaGFkbid0IHRyaWVkIGVub3VnaCB0aW1lcyB0byBtYWtlIHRoZQ0KPiBwcm9ibGVtIHNo
+b3cgdXAuDQoNClRoYW5rcyBmb3IgdGltZSBhbmQgZWZmb3J0IGZvciB0ZXN0aW5nLg0KDQotIE5h
+b3lh
