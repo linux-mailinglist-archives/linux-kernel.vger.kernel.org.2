@@ -2,157 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 048BE376D8E
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 01:58:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 554FA376D96
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 02:05:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230213AbhEGX7G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 19:59:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40850 "EHLO
+        id S230235AbhEHAAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 20:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41104 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229920AbhEGX7A (ORCPT
+        with ESMTP id S229812AbhEHAAI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 19:59:00 -0400
-Received: from mail-pj1-x1032.google.com (mail-pj1-x1032.google.com [IPv6:2607:f8b0:4864:20::1032])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E6E1C0613ED
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 16:57:59 -0700 (PDT)
-Received: by mail-pj1-x1032.google.com with SMTP id lp4so6106256pjb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 16:57:58 -0700 (PDT)
+        Fri, 7 May 2021 20:00:08 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D205BC061574;
+        Fri,  7 May 2021 16:59:07 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id gj14so6107768pjb.5;
+        Fri, 07 May 2021 16:59:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2iQQvEB0+fCpb/rAB5HWawShZb8qZlIcaFuxaSL0oes=;
-        b=EqhSZy45d2y8OQQwraWGhlD9n54vClwPwSn7UuK9xZviJIBJseEIUX0aF36GebrTNP
-         3Y9esEq2VEVMdpYAd+09juu7yIqSSNYhNNt+rVs1po+n6QlJ3kc6cbxhUV5wUfFprLGx
-         TjvIY1CeOIbcMr4b7WQIEnR9bfI+n///RODlA=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yVnKEv/GTFWoZTHVwSWln+PoeZZjAnooQp33wJOZnTc=;
+        b=dxZu9dNW5j8GiQu00tG20My3QSXGPqb5ryb0Pl2eePoY/70VvqTk5QVrBPhEWjvMOZ
+         CK3cX0QmNxFHR7vBzY57pMVfdK+HoUWARpPJxfpZSBrnIjGstBqOspZKfeIDkw/TBeLc
+         uIFMCC1LcGdBK99XeVApNwDXQ/+eLC75oT8sU0RlMhhwwFitaOcgizGsw9E2Pe7T6QVl
+         HZG0mG7UybOwkcEC6oIvK0cBow+kJHOi2tD0aDHk0aLFOT/IvBCzkIIIi3hf6OFTCY31
+         tYSHxjTCehq5P538St6aVCVgKjGgsTIeZc3bWiGOBex2qL61VgfPtaXAYNuQwLEsjSg6
+         fRUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2iQQvEB0+fCpb/rAB5HWawShZb8qZlIcaFuxaSL0oes=;
-        b=sYUb4YfSeuKhtoWFWF+O/0dqncw/YOL69ypIGZNPrZDIqEwNsFaCKKi+c+DE2aAyzu
-         jA98o+2G94BBkMZZCWsJScP3hNy25w4G7dFRbF9AnvGCjvcDto5h+FK5rgEnOlGprrs4
-         NDNXDUtJDDVX0xURZ5u+gpyviF0d8xP6/UNOvbb1hiTIKxFSjPAtrlM1ksGkLXmXq9Lk
-         aYI/pQjZ1F71KTfZA/O3+cOu2sLHGCty2HzdX0RqAP5HETgXu7aFQ7LbdXSt6IgS1kaP
-         C9wjzTF0rZAp9zXk2kyiaNtq4jqIpQMFrqrb8SFLxUpuOpWfE/NTXfE2I7aXalNwrevT
-         46WQ==
-X-Gm-Message-State: AOAM5312+ZP576tW4ptJi9eN+8/s/oOSLzaqkEbJ28L1PEvS1niH+Fpq
-        UPxIuYpA4rvjnICa9f5chqLJWA==
-X-Google-Smtp-Source: ABdhPJwW5et97Z//abVIXmo2gBu5V8/Vzg230KpxBawys34RoMW6n/H4x7d7dTWApKrw1+7V8ZstIg==
-X-Received: by 2002:a17:902:ff09:b029:ed:3b29:ff43 with SMTP id f9-20020a170902ff09b02900ed3b29ff43mr12583115plj.14.1620431878548;
-        Fri, 07 May 2021 16:57:58 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id ha14sm5011198pjb.40.2021.05.07.16.57.56
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=yVnKEv/GTFWoZTHVwSWln+PoeZZjAnooQp33wJOZnTc=;
+        b=Hn051xSKJt+t7oB0FkP24v1f2q2ZS0TvLNNdRxQPSdpTsdQvUZRAcGwLZq1sb5CwJF
+         DnY+D6oQqviZBU70AjZ7UwFy9Rq+Vt71cOX6HV3zRoqdEworBDqlsvTF9MglKUf36Xd1
+         /33qwmeeTd7nXxCa7rzfc6y3FAwMu5f71yDEx4dmNWYsbEDDMhIbAdeJ3uf3avWsQtYm
+         Ypkpfmuupu2BfRlxFQup8a6RJjiAaIfH0ieYEWG0enzf1qkoc6nNzz9bfu06j8LBn3Ta
+         NPovenlw8eGc4OwxwwwCBJjd7CIM89CR21SK4DAF6GY/XnvMLdaEdowcBJLcXO4W/cbB
+         mrPw==
+X-Gm-Message-State: AOAM530M2wLbSRTh8X7STbc++0GrNyASpO8cKPOV6RwO3ZzQ3VEh1msk
+        Pl+22kbrGhv9z/YYkTRt2Hw=
+X-Google-Smtp-Source: ABdhPJyarzGBJ1FknJAWoWlpxYkHDLxfaDi4+aPL1Ns/IxPNDAdoaOQZFwRgkc6/gGdZpvXI2JOthQ==
+X-Received: by 2002:a17:90a:20b:: with SMTP id c11mr12868350pjc.44.1620431947379;
+        Fri, 07 May 2021 16:59:07 -0700 (PDT)
+Received: from WRT-WX9.. ([141.164.41.4])
+        by smtp.gmail.com with ESMTPSA id g18sm5700449pfb.178.2021.05.07.16.58.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 16:57:56 -0700 (PDT)
-Date:   Fri, 7 May 2021 16:57:55 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     James Bottomley <jejb@linux.ibm.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Andy Lutomirski <luto@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Christopher Lameter <cl@linux.com>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Elena Reshetova <elena.reshetova@intel.com>,
-        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
-        "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Matthew Wilcox <willy@infradead.org>,
-        Matthew Garrett <mjg59@srcf.ucam.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Mike Rapoport <rppt@linux.ibm.com>,
-        Michael Kerrisk <mtk.manpages@gmail.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Rick Edgecombe <rick.p.edgecombe@intel.com>,
-        Roman Gushchin <guro@fb.com>,
-        Shakeel Butt <shakeelb@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
-        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to create
- "secret" memory areas
-Message-ID: <202105071620.E834B1FA92@keescook>
-References: <20210303162209.8609-1-rppt@kernel.org>
- <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
- <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
- <202105060916.ECDEC21@keescook>
- <9e1953a1412fad06a9f7988a280d2d9a74ab0464.camel@linux.ibm.com>
+        Fri, 07 May 2021 16:59:06 -0700 (PDT)
+From:   Changbin Du <changbin.du@gmail.com>
+To:     Eric Van Hensbergen <ericvh@gmail.com>,
+        Latchesar Ionkov <lucho@ionkov.net>,
+        Dominique Martinet <asmadeus@codewreck.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, v9fs-developer@lists.sourceforge.net,
+        "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        Changbin Du <changbin.du@gmail.com>
+Subject: [PATCH v2 0/3] 9p: add support for root file systems
+Date:   Sat,  8 May 2021 07:58:39 +0800
+Message-Id: <20210507235842.16796-1-changbin.du@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9e1953a1412fad06a9f7988a280d2d9a74ab0464.camel@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 11:47:47AM -0700, James Bottomley wrote:
-> On Thu, 2021-05-06 at 10:33 -0700, Kees Cook wrote:
-> > On Thu, May 06, 2021 at 08:26:41AM -0700, James Bottomley wrote:
-> [...]
-> > > > I think that a very complete description of the threats which
-> > > > this feature addresses would be helpful.  
-> > > 
-> > > It's designed to protect against three different threats:
-> > > 
-> > >    1. Detection of user secret memory mismanagement
-> > 
-> > I would say "cross-process secret userspace memory exposures" (via a
-> > number of common interfaces by blocking it at the GUP level).
-> > 
-> > >    2. significant protection against privilege escalation
-> > 
-> > I don't see how this series protects against privilege escalation.
-> > (It protects against exfiltration.) Maybe you mean include this in
-> > the first bullet point (i.e. "cross-process secret userspace memory
-> > exposures, even in the face of privileged processes")?
-> 
-> It doesn't prevent privilege escalation from happening in the first
-> place, but once the escalation has happened it protects against
-> exfiltration by the newly minted root attacker.
+Just like cifs and nfs, this short series enables rootfs support for 9p.
+Bellow is an example which mounts v9fs with tag 'r' as rootfs in qemu
+guest via virtio transport.
 
-So, after thinking a bit more about this, I don't think there is
-protection here against privileged execution. This feature kind of helps
-against cross-process read/write attempts, but it doesn't help with
-sufficiently privileged (i.e. ptraced) execution, since we can just ask
-the process itself to do the reading:
+  $ qemu-system-x86_64 -enable-kvm -cpu host -m 1024 \
+        -virtfs local,path=$rootfs_dir,mount_tag=r,security_model=passthrough,id=r \
+        -kernel /path/to/linux/arch/x86/boot/bzImage -nographic \
+        -append "root=/dev/v9fs v9fsroot=r,trans=virtio rw console=ttyS0 3"
 
-$ gdb ./memfd_secret
-...
-ready: 0x7ffff7ffb000
-Breakpoint 1, ...
-(gdb) compile code unsigned long addr = 0x7ffff7ffb000UL; printf("%016lx\n", *((unsigned long *)addr));
-55555555555555555
+v2:
+  o use pr_err instead of printk.
+  o ROOT_DEV is only set after checking.
+  o cleanup DEFAULT_MNT_OPTS.
+  o do not retry mount for fd and virtio transport.
 
-And since process_vm_readv() requires PTRACE_ATTACH, there's very little
-difference in effort between process_vm_readv() and the above.
+Changbin Du (3):
+  9p: add support for root file systems
+  9p: doc: move to a new dedicated folder
+  9p: doc: add v9fsroot description
 
-So, what other paths through GUP exist that aren't covered by
-PTRACE_ATTACH? And if none, then should this actually just be done by
-setting the process undumpable? (This is already what things like gnupg
-do.)
-
-So, the user-space side of this doesn't seem to really help. The kernel
-side protection is interesting for kernel read/write flaws, though, in
-the sense that the process is likely not being attacked from "current",
-so a kernel-side attack would need to either walk the page tables and
-create new ones, or spawn a new userspace process to do the ptracing.
-
-So, while I like the idea of this stuff, and I see how it provides
-certain coverages, I'm curious to learn more about the threat model to
-make sure it's actually providing meaningful hurdles to attacks.
+ Documentation/filesystems/index.rst         |  2 +-
+ Documentation/filesystems/{ => v9fs}/9p.rst |  0
+ Documentation/filesystems/v9fs/index.rst    | 12 ++++
+ Documentation/filesystems/v9fs/v9fsroot.rst | 52 +++++++++++++++++
+ MAINTAINERS                                 |  8 ++-
+ fs/9p/Kconfig                               |  6 ++
+ fs/9p/Makefile                              |  1 +
+ fs/9p/v9fsroot.c                            | 64 +++++++++++++++++++++
+ include/linux/root_dev.h                    |  1 +
+ init/do_mounts.c                            | 54 +++++++++++++++++
+ 10 files changed, 198 insertions(+), 2 deletions(-)
+ rename Documentation/filesystems/{ => v9fs}/9p.rst (100%)
+ create mode 100644 Documentation/filesystems/v9fs/index.rst
+ create mode 100644 Documentation/filesystems/v9fs/v9fsroot.rst
+ create mode 100644 fs/9p/v9fsroot.c
 
 -- 
-Kees Cook
+2.30.2
+
