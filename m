@@ -2,177 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA96737616C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3126C37616D
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:48:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235707AbhEGHse (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:48:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58532 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235565AbhEGHsC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:48:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620373622;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=MjTfOWRFplHW4qhrQ7zOMVBfSNAJ5R+pkXcG3p+0xi0=;
-        b=KaHU0o2CaTdtt545qUKhcPaJTv/qc4egjVWQqsUi1P7Hh4fHZdnkitz8VnMmNnmfmFoMrf
-        5Yer1mK2lYkVRqcJxn8uv0eZ2xtEvN4FAMooFu268Xu0xHuHRdU5bLmDKlVV4WMuDLcdfd
-        wYumEAWHD6saxKQRcaHo51jUhcyXrvE=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-141-Z_9rBPtSMhigZahJU86eEA-1; Fri, 07 May 2021 03:47:00 -0400
-X-MC-Unique: Z_9rBPtSMhigZahJU86eEA-1
-Received: by mail-wm1-f72.google.com with SMTP id w21-20020a7bc1150000b029014a850581efso1942717wmi.6
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:46:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=MjTfOWRFplHW4qhrQ7zOMVBfSNAJ5R+pkXcG3p+0xi0=;
-        b=IoFs9XMfuYDqn7CfcS2pN1DCi8pFAhba8bjFMY9hAYY52/HhVpeN9tSt8iBSGBoF2R
-         arQsXYl5D5MvS9j0OvalLMa4oQGjN1xWu7AXPmsVibqcmqdKJwUshIGQMCN15pZsAEdT
-         e574PoIN7xs0kyES6PGZSiY+WNTkyV8mYLJowZnaZU2Iol6f0w+zlGlPeQQGYZyXndjv
-         S8nqjTQ8NTn2QEdfURRh5D+C34hYgdAfpe3SgrNQP/9v49b1kntVNACR2ix0pzRYvUcW
-         CWPy3ZwPINBrUo7KtAWBBOs6SnOCft6qFC8giRF2hnK81Ra5MjPC03UBbN/vM6gEZsv+
-         qkFQ==
-X-Gm-Message-State: AOAM533Nwgn6kvsyAj3FVwLTXzrjNLRleeIRsgynXbBHFUq5301xg04o
-        wXQa+djGzvkQWsRkuiUTRl8fZltkKFU4a+a34KwgwZk3UFWCwKtcYl5G7k0tnb/2hzn1JR+6sDU
-        40Tx9mrT4UPEXUDMsiIPOT28Q
-X-Received: by 2002:a7b:cf3a:: with SMTP id m26mr8536948wmg.49.1620373618863;
-        Fri, 07 May 2021 00:46:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy3ABXXREF6G0BEptIn/dlgqnNGYgI3mMFUWhMtILgC74LuGx9M/WBEq0+EnJc/mDur6Bezew==
-X-Received: by 2002:a7b:cf3a:: with SMTP id m26mr8536923wmg.49.1620373618604;
-        Fri, 07 May 2021 00:46:58 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c63c0.dip0.t-ipconnect.de. [91.12.99.192])
-        by smtp.gmail.com with ESMTPSA id x4sm12287407wmj.17.2021.05.07.00.46.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 May 2021 00:46:58 -0700 (PDT)
-Subject: Re: [PATCH v3 2/8] KVM: x86/mmu: Factor out allocating memslot rmap
-To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-References: <20210506184241.618958-1-bgardon@google.com>
- <20210506184241.618958-3-bgardon@google.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <97d085a0-185d-2546-f32e-ea1c55579ba0@redhat.com>
-Date:   Fri, 7 May 2021 09:46:57 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        id S235742AbhEGHsf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:48:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35326 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235710AbhEGHsc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 03:48:32 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 5350661132;
+        Fri,  7 May 2021 07:47:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620373640;
+        bh=XFqW5/0INXkY7fiA03jYF2gDpE6cWawWuPSZmXlC8s0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VqiXPuGjge0oMUa49t2d0omFSMtna+bT91ylp6Oqkyx2pRb9umJaFAZe4WlPT6gfD
+         eud1JN3+NvEHqOoiyi9w5K3l7icH4HGodFnB2z1hRJFjTSLKHW5F+EMJq3FklvMStz
+         0C4JjTcjpc9tsScwQYCF7lXu9oHA1dTB2fGF5z1EchN8EPkIbRSJMJ9s1hs87PHYv0
+         Yml3/2bm8UmFHXa5QedKYc9/Qe0NVPDpsWyJ0m9+KALHB3YGN7UOofdLRDSyJLnizK
+         ehLfohPefUL0qNRHhki4CfdIiHW02h3tRJDjNs6PBKXqoUYtgnRK5eZEG2NFXQ1MgV
+         pT7vGXQ9Iga3Q==
+Date:   Fri, 7 May 2021 00:47:14 -0700
+From:   Nathan Chancellor <nathan@kernel.org>
+To:     Alexander Lobakin <alobakin@pm.me>
+Cc:     clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Subject: Re: [BUG mips llvm] MIPS: malformed R_MIPS_{HI16,LO16} with LLVM
+Message-ID: <YJTwglbUOb67r733@archlinux-ax161>
+References: <20210109171058.497636-1-alobakin@pm.me>
 MIME-Version: 1.0
-In-Reply-To: <20210506184241.618958-3-bgardon@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210109171058.497636-1-alobakin@pm.me>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06.05.21 20:42, Ben Gardon wrote:
-> Small refactor to facilitate allocating rmaps for all memslots at once.
+On Sat, Jan 09, 2021 at 05:11:18PM +0000, Alexander Lobakin wrote:
+> Machine: MIPS32 R2 Big Endian (interAptiv (multi))
 > 
-> No functional change expected.
+> While testing MIPS with LLVM, I found a weird and very rare bug with
+> MIPS relocs that LLVM emits into kernel modules. It happens on both
+> 11.0.0 and latest git snapshot and applies, as I can see, only to
+> references to static symbols.
 > 
-> Signed-off-by: Ben Gardon <bgardon@google.com>
-> ---
->   arch/x86/kvm/x86.c | 41 ++++++++++++++++++++++++++++++++---------
->   1 file changed, 32 insertions(+), 9 deletions(-)
+> When the kernel loads the module, it allocates a space for every
+> section and then manually apply the relocations relative to the
+> new address.
 > 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 5bcf07465c47..fc32a7dbe4c4 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -10842,10 +10842,37 @@ void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
->   	kvm_page_track_free_memslot(slot);
->   }
->   
-> +static int alloc_memslot_rmap(struct kvm_memory_slot *slot,
-> +			      unsigned long npages)
-
-I'd have called the functions memslot_rmap_alloc() and memslot_rmap_free()
-
-
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-> +		int lpages;
-> +		int level = i + 1;
-> +
-> +		lpages = gfn_to_index(slot->base_gfn + npages - 1,
-> +				      slot->base_gfn, level) + 1;
-> +
-> +		slot->arch.rmap[i] =
-> +			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
-> +				 GFP_KERNEL_ACCOUNT);
-> +		if (!slot->arch.rmap[i])
-> +			goto out_free;
-
-you can just avoid the goto here and do the free_memslot_rmap() right away.
-
-> +	}
-> +
-> +	return 0;
-> +
-> +out_free:
-> +	free_memslot_rmap(slot);
-> +	return -ENOMEM;
-> +}
-> +
->   static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->   				      unsigned long npages)
->   {
->   	int i;
-> +	int r;
->   
->   	/*
->   	 * Clear out the previous array pointers for the KVM_MR_MOVE case.  The
-> @@ -10854,7 +10881,11 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->   	 */
->   	memset(&slot->arch, 0, sizeof(slot->arch));
->   
-> -	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
-> +	r = alloc_memslot_rmap(slot, npages);
-> +	if (r)
-> +		return r;
-> +
-> +	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
->   		struct kvm_lpage_info *linfo;
->   		unsigned long ugfn;
->   		int lpages;
-> @@ -10863,14 +10894,6 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
->   		lpages = gfn_to_index(slot->base_gfn + npages - 1,
->   				      slot->base_gfn, level) + 1;
->   
-> -		slot->arch.rmap[i] =
-> -			kvcalloc(lpages, sizeof(*slot->arch.rmap[i]),
-> -				 GFP_KERNEL_ACCOUNT);
-> -		if (!slot->arch.rmap[i])
-> -			goto out_free;
-> -		if (i == 0)
-> -			continue;
-> -
->   		linfo = kvcalloc(lpages, sizeof(*linfo), GFP_KERNEL_ACCOUNT);
->   		if (!linfo)
->   			goto out_free;
+> Let's say we have a function phy_probe() in drivers/net/phy/libphy.ko.
+> It's static and referenced only in phy_register_driver(), where it's
+> used to fill callback pointer in a structure.
+> 
+> The real function address after module loading is 0xc06c1444, that
+> is observed in its ELF st_value field.
+> There are two relocs related to this usage in phy_register_driver():
+> 
+> R_MIPS_HI16 refers to 0x3c010000
+> R_MIPS_LO16 refers to 0x24339444
+> 
+> The address of .text is 0xc06b8000. So the destination is calculated
+> as follows:
+> 
+> 0x00000000 from hi16;
+> 0xffff9444 from lo16 (sign extend as it's always treated as signed);
+> 0xc06b8000 from base.
+> 
+> = 0xc06b1444. The value is lower than the real phy_probe() address
+> (0xc06c1444) by 0x10000 and is lower than the base address of
+> module's .text, so it's 100% incorrect.
+> 
+> This results in:
+> 
+> [    2.204022] CPU 3 Unable to handle kernel paging request at virtual
+> address c06b1444, epc == c06b1444, ra == 803f1090
+> 
+> The correct instructions should be:
+> 
+> R_MIPS_HI16 0x3c010001
+> R_MIPS_LO16 0x24339444
+> 
+> so there'll be 0x00010000 from hi16.
+> 
+> I tried to catch those bugs in arch/mips/kernel/module.c (by checking
+> if the destination is lower than the base address, which should never
+> happen), and seems like I have only 3 such places in libphy.ko (and
+> one in nf_tables.ko).
+> I don't think it should be handled somehow in mentioned source code
+> as it would look rather ugly and may break kernels build with GNU
+> stack, which seems to not produce such bad codes.
+> 
+> If I should report this to any other resources, please let me know.
+> I chose clang-built-linux and LKML as it may not happen with userland
+> (didn't tried to catch).
+> 
+> Thanks,
+> Al
 > 
 
-apart from that LGTM
+Hi Alexander,
 
--- 
-Thanks,
+Doubling back around to this as I was browsing through the LLVM 12.0.1
+blockers on LLVM's bug tracker and I noticed a commit that could resolve
+this? It refers to the same relocations that you reference here.
 
-David / dhildenb
+https://bugs.llvm.org/show_bug.cgi?id=49821
 
+http://github.com/llvm/llvm-project/commit/7e83a7f1fdfcc2edde61f0a535f9d7a56f531db9
+
+I think that Debian's apt.llvm.org repository should have a build
+available with that commit in it. Otherwise, building it from source is
+not too complicated with my script:
+
+https://github.com/ClangBuiltLinux/tc-build
+
+$ ./build-llvm.py --build-stage1-only --install-stage1-only --projects "clang;lld" --targets "Mips;X86"
+
+would get you a working toolchain relatively quickly.
+
+Cheers,
+Nathan
