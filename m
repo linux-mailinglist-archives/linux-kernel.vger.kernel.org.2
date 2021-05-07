@@ -2,246 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4220D376132
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B33A0376139
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:35:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235352AbhEGHgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:36:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48946 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233280AbhEGHgT (ORCPT
+        id S235390AbhEGHgy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:36:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:58472 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235365AbhEGHgv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:36:19 -0400
-Received: from ssl.serverraum.org (ssl.serverraum.org [IPv6:2a01:4f8:151:8464::1:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7EB23C061574;
-        Fri,  7 May 2021 00:35:19 -0700 (PDT)
-Received: from ssl.serverraum.org (web.serverraum.org [172.16.0.2])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ssl.serverraum.org (Postfix) with ESMTPSA id D20BA2224B;
-        Fri,  7 May 2021 09:35:12 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=walle.cc; s=mail2016061301;
-        t=1620372915;
+        Fri, 7 May 2021 03:36:51 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620372951;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=xxzUiiFuJ/9Edm/UU/hesO2aF750sfl0VQkiGiRSOrM=;
-        b=ARtBpiG2s/alm7WolB54kzz7ze/VXFEy11dW09cq102bbar3Vu/JhnMAK8M9YJE86/yOui
-        zJvCvYD/UGiouodhZYpW+dJ+IhWBA3zDKkGmEu48zBvb20ii8889ejTS23ajWZvLU/f4WT
-        JB4n9mPb9PT9oOqW76C+D7K1q+yYlnM=
+        bh=YRLhFcul/s0bAb0h6pwheuix10YVXJYp5em6Jk4RpTY=;
+        b=LKQ8IWaBht40hQ37zGhiXWlx+x+Dj6an1dgqmq+UDQ3Msuggv1C2b3TezDAWLG/j28CUxx
+        SYtxDjtmTeLa6lateTlt99a9Vpwn/iZBxnYdboXBfMzDsZa4lqARUwn76xIegra1nQR16K
+        nHeDtHsZAN4JgiRXzfUjQ3eqptexoS4=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-207-z-pPCGMoMGWPcAb9gz833A-1; Fri, 07 May 2021 03:35:49 -0400
+X-MC-Unique: z-pPCGMoMGWPcAb9gz833A-1
+Received: by mail-ed1-f71.google.com with SMTP id u30-20020a50a41e0000b0290385504d6e4eso4017179edb.7
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:35:49 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:organization:subject
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=YRLhFcul/s0bAb0h6pwheuix10YVXJYp5em6Jk4RpTY=;
+        b=QP5mTomZ8qLxtwh49++0789jis7psApAzTHYBXpShuSdmKL0erxiZk/SS+7VyTYlXa
+         JovVzlV3wiMk6xRLlOcNBH8is2DP42aM3m3Pv/PVQiNP9kilxwB50u+/6OmJWwdRPZFj
+         tdlZa/GDBwVJB/bcXklDnT9jGxP7d9r7wDsUjN3z40x4tj0UpdIDV//gtIowX25XMGVe
+         XB+fzIgLMUqk1aTgdvflgs69ERiQvAKsVJY4NUTQZmqx8MHUOZGwsWwtCgaV+d473OE4
+         Jco8NsdJJQ8QuAQyPElh7qC4jDD+9Lwof2MykfB+zUuSa08hkGfNL6OBvZ7E8mpmOPNL
+         Q+oQ==
+X-Gm-Message-State: AOAM5311dwhpYgeyq6VTFJyGl8zQ/OSgP+HiyPeCGEMTSlE2vzc5NRXG
+        ImnWqH4/A3dB1r+ZRkpf0UgsUtMlpXs3c1bNbUlIcMWRHNAJZV9NnGs48zl8qRwMKEaZlBUPw9O
+        TKzKyebcPK8nIrY0Dn6MUzd2E
+X-Received: by 2002:a17:907:174a:: with SMTP id lf10mr8861617ejc.433.1620372948262;
+        Fri, 07 May 2021 00:35:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5XI2zKUbsKazvcW2Vr5jvMDeiB+dtOEKTtfzbIqz37aYae3i7ugq6B0OmfMhiabycSZroRA==
+X-Received: by 2002:a17:907:174a:: with SMTP id lf10mr8861569ejc.433.1620372947917;
+        Fri, 07 May 2021 00:35:47 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c63c0.dip0.t-ipconnect.de. [91.12.99.192])
+        by smtp.gmail.com with ESMTPSA id l17sm2925176ejk.22.2021.05.07.00.35.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 May 2021 00:35:47 -0700 (PDT)
+To:     Nick Kossifidis <mick@ics.forth.gr>, jejb@linux.ibm.com
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Matthew Garrett <mjg59@srcf.ucam.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+References: <20210303162209.8609-1-rppt@kernel.org>
+ <20210505120806.abfd4ee657ccabf2f221a0eb@linux-foundation.org>
+ <de27bfae0f4fdcbb0bb4ad17ec5aeffcd774c44b.camel@linux.ibm.com>
+ <996dbc29-e79c-9c31-1e47-cbf20db2937d@redhat.com>
+ <8eb933f921c9dfe4c9b1b304e8f8fa4fbc249d84.camel@linux.ibm.com>
+ <77fe28bd940b2c1afd69d65b6d349352@mailhost.ics.forth.gr>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Subject: Re: [PATCH v18 0/9] mm: introduce memfd_secret system call to create
+ "secret" memory areas
+Message-ID: <5232c8a7-8a05-9d0f-69ff-3dba2b04e784@redhat.com>
+Date:   Fri, 7 May 2021 09:35:45 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Fri, 07 May 2021 09:35:12 +0200
-From:   Michael Walle <michael@walle.cc>
-To:     Xiaoliang Yang <xiaoliang.yang_1@nxp.com>
-Cc:     Vladimir Oltean <vladimir.oltean@nxp.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        UNGLinuxDriver@microchip.com, alexandre.belloni@bootlin.com,
-        allan.nielsen@microchip.com,
-        Claudiu Manoil <claudiu.manoil@nxp.com>, davem@davemloft.net,
-        idosch@mellanox.com, joergen.andreasen@microchip.com,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Po Liu <po.liu@nxp.com>, vinicius.gomes@intel.com
-Subject: Re: [EXT] Re: [net-next] net: dsa: felix: disable always guard band
- bit for TAS config
-In-Reply-To: <DB8PR04MB5785A6A773FEA4F3E0E77698F0579@DB8PR04MB5785.eurprd04.prod.outlook.com>
-References: <20210419102530.20361-1-xiaoliang.yang_1@nxp.com>
- <20210504170514.10729-1-michael@walle.cc>
- <20210504181833.w2pecbp2qpuiactv@skbuf>
- <c7618025da6723418c56a54fe4683bd7@walle.cc>
- <20210504185040.ftkub3ropuacmyel@skbuf>
- <ccb40b7fd18b51ecfc3f849a47378c54@walle.cc>
- <20210504191739.73oejybqb6z7dlxr@skbuf>
- <d933eef300cb1e1db7d36ca2cb876ef6@walle.cc>
- <20210504213259.l5rbnyhxrrbkykyg@skbuf>
- <efe5ac03ceddc8ff472144b5fe9fd046@walle.cc>
- <DB8PR04MB5785A6A773FEA4F3E0E77698F0579@DB8PR04MB5785.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.11
-Message-ID: <2898c3ae1319756e13b95da2b74ccacc@walle.cc>
-X-Sender: michael@walle.cc
+In-Reply-To: <77fe28bd940b2c1afd69d65b6d349352@mailhost.ics.forth.gr>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Xiaoliang,
+On 07.05.21 01:16, Nick Kossifidis wrote:
+> Στις 2021-05-06 20:05, James Bottomley έγραψε:
+>> On Thu, 2021-05-06 at 18:45 +0200, David Hildenbrand wrote:
+>>>
+>>> Also, there is a way to still read that memory when root by
+>>>
+>>> 1. Having kdump active (which would often be the case, but maybe not
+>>> to dump user pages )
+>>> 2. Triggering a kernel crash (easy via proc as root)
+>>> 3. Waiting for the reboot after kump() created the dump and then
+>>> reading the content from disk.
+>>
+>> Anything that can leave physical memory intact but boot to a kernel
+>> where the missing direct map entry is restored could theoretically
+>> extract the secret.  However, it's not exactly going to be a stealthy
+>> extraction ...
+>>
+>>> Or, as an attacker, load a custom kexec() kernel and read memory
+>>> from the new environment. Of course, the latter two are advanced
+>>> mechanisms, but they are possible when root. We might be able to
+>>> mitigate, for example, by zeroing out secretmem pages before booting
+>>> into the kexec kernel, if we care :)
+>>
+>> I think we could handle it by marking the region, yes, and a zero on
+>> shutdown might be useful ... it would prevent all warm reboot type
+>> attacks.
+>>
+> 
+> I had similar concerns about recovering secrets with kdump, and
+> considered cleaning up keyrings before jumping to the new kernel. The
+> problem is we can't provide guarantees in that case, once the kernel has
+> crashed and we are on our way to run crashkernel, we can't be sure we
+> can reliably zero-out anything, the more code we add to that path the
 
-Am 2021-05-07 09:16, schrieb Xiaoliang Yang:
-> On 2021-05-06 21:25, Michael Walle <michael@walle.cc> wrote:
->> Am 2021-05-04 23:33, schrieb Vladimir Oltean:
->> > [ trimmed the CC list, as this is most likely spam for most people ]
->> >
->> > On Tue, May 04, 2021 at 10:23:11PM +0200, Michael Walle wrote:
->> >> Am 2021-05-04 21:17, schrieb Vladimir Oltean:
->> >> > On Tue, May 04, 2021 at 09:08:00PM +0200, Michael Walle wrote:
->> >> > > > > > > As explained in another mail in this thread, all queues
->> >> > > > > > > are marked as scheduled. So this is actually a no-op,
->> >> > > > > > > correct? It doesn't matter if it set or not set for now. Dunno why
->> we even care for this bit then.
->> >> > > > > >
->> >> > > > > > It matters because ALWAYS_GUARD_BAND_SCH_Q reduces the
->> >> > > > > > available throughput when set.
->> >> > > > >
->> >> > > > > Ahh, I see now. All queues are "scheduled" but the guard band
->> >> > > > > only applies for "non-scheduled" -> "scheduled" transitions.
->> >> > > > > So the guard band is never applied, right? Is that really
->> >> > > > > what we want?
->> >> > > >
->> >> > > > Xiaoliang explained that yes, this is what we want. If the end
->> >> > > > user wants a guard band they can explicitly add a "sched-entry
->> >> > > > 00" in the tc-taprio config.
->> >> > >
->> >> > > You're disabling the guard band, then. I figured, but isn't that
->> >> > > suprising for the user? Who else implements taprio? Do they do it
->> >> > > in the same way? I mean this behavior is passed right to the
->> >> > > userspace and have a direct impact on how it is configured. Of
->> >> > > course a user can add it manually, but I'm not sure that is what
->> >> > > we want here. At least it needs to be documented somewhere. Or
->> >> > > maybe it should be a switchable option.
->> >> > >
->> >> > > Consider the following:
->> >> > > sched-entry S 01 25000
->> >> > > sched-entry S fe 175000
->> >> > > basetime 0
->> >> > >
->> >> > > Doesn't guarantee, that queue 0 is available at the beginning of
->> >> > > the cycle, in the worst case it takes up to <begin of cycle> +
->> >> > > ~12.5us until the frame makes it through (given gigabit and 1518b
->> >> > > frames).
->> >> > >
->> >> > > Btw. there are also other implementations which don't need a
->> >> > > guard band (because they are store-and-forward and cound the
->> >> > > remaining bytes). So yes, using a guard band and scheduling is
->> >> > > degrading the performance.
->> >> >
->> >> > What is surprising for the user, and I mentioned this already in
->> >> > another thread on this patch, is that the Felix switch overruns the
->> >> > time gate (a packet taking 2 us to transmit will start transmission
->> >> > even if there is only 1 us left of its time slot, delaying the
->> >> > packets from the next time slot by 1 us). I guess that this is why
->> >> > the ALWAYS_GUARD_BAND_SCH_Q bit exists, as a way to avoid these
->> >> > overruns, but it is a bit of a poor tool for that job. Anyway,
->> >> > right now we disable it and live with the overruns.
->> >>
->> >> We are talking about the same thing here. Why is that a poor tool?
->> >
->> > It is a poor tool because it revolves around the idea of "scheduled
->> > queues" and "non-scheduled queues".
->> >
->> > Consider the following tc-taprio schedule:
->> >
->> >       sched-entry S 81 2000 # TC 7 and 0 open, all others closed
->> >       sched-entry S 82 2000 # TC 7 and 1 open, all others closed
->> >       sched-entry S 84 2000 # TC 7 and 2 open, all others closed
->> >       sched-entry S 88 2000 # TC 7 and 3 open, all others closed
->> >       sched-entry S 90 2000 # TC 7 and 4 open, all others closed
->> >       sched-entry S a0 2000 # TC 7 and 5 open, all others closed
->> >       sched-entry S c0 2000 # TC 7 and 6 open, all others closed
->> >
->> > Otherwise said, traffic class 7 should be able to send any time it
->> > wishes.
->> 
->> What is the use case behind that? TC7 (with the highest priority) may 
->> always
->> take precedence of the other TCs, thus what is the point of having a 
->> dedicated
->> window for the others.
->> 
->> Anyway, I've tried it and there are no hiccups. I've meassured the 
->> delta
->> between the start of successive packets and they are always ~12370ns 
->> for a
->> 1518b frame. TC7 is open all the time, which makes sense. It only 
->> happens if
->> you actually close the gate, eg. you have a sched-entry where a TC7 
->> bit is not
->> set. In this case, I can see a difference between 
->> ALWAYS_GUARD_BAND_SCH_Q
->> set and not set. If it is set, there is up to a ~12.5us delay added 
->> (of course it
->> depends on when the former frame was scheduled).
->> 
->> It seems that also needs to be 1->0 transition.
->> 
->> You've already mentioned that the switch violates the Qbv standard.
->> What makes you think so? IMHO before that patch, it wasn't violated.
->> Now it likely is (still have to confirm that). How can this be 
->> reasonable?
->> 
->> If you have a look at the initial commit message, it is about making 
->> it possible
->> to have a smaller gate window, but that is not possible because of the 
->> current
->> guard band of ~12.5us. It seems to be a shortcut for not having the 
->> MAXSDU
->> (and thus the length of the guard band) configurable. Yes (static) 
->> guard bands
->> will have a performance impact, also described in [1]. You are trading 
->> the
->> correctness of the TAS for performance. And it is the sole purpose of 
->> Qbv to
->> have a determisitc way (in terms of timing) of sending the frames.
->> 
->> And telling the user, hey, we know we violate the Qbv standard, please 
->> insert
->> the guard bands yourself if you really need them is not a real 
->> solution. As
->> already mentioned, (1) it is not documented anywhere, (2) can't be 
->> shared
->> among other switches (unless they do the same workaround) and (3) what 
->> am
->> I supposed to do for TSN compliance testing. Modifying the schedule 
->> that is
->> about to be checked (and thus given by the compliance suite)?
->> 
-> I disable the always guard band bit because each gate control list
-> needs to reserve a guard band slot, which affects performance. The
-> user does not need to set a guard band for each queue transmission.
-> For example, "sched-entry S 01 2000 sched-entry S fe 98000". Queue 0
-> is protected traffic and has smaller frames, so there is no need to
-> reserve a guard band during the open time of queue 0. The user can add
-> the following guard band before protected traffic: "sched-entry S 00
-> 25000 sched-entry S 01 2000 sched-entry S fe 73000"
+Well, I think it depends. Assume we do the following
 
-Again, you're passing the handling of the guard band to the user,
-which is an implementation detail for this switch (unless there is
-a new switch for it on the qdisc IMHO). And (1), (2) and (3) from
-above is still valid.
+1) Zero out any secretmem pages when handing them back to the buddy. 
+(alternative: init_on_free=1) -- if not already done, I didn't check the 
+code.
 
-Consider the entry
-  sched-entry S 01 2000
-  sched-entry S 02 20000
+2) On kdump(), zero out all allocated secretmem. It'd be easier if we'd 
+just allocated from a fixed physical memory area; otherwise we have to 
+walk process page tables or use a PFN walker. And zeroing out secretmem 
+pages without a direct mapping is a different challenge.
 
-A user assumes that TC0 is open for 2us. But with your change
-it is bascially open for 2us + 12.5us. And even worse, it is not
-deterministic. A frame in the subsequent queue (ie TC1) can be
-scheduled anywhere beteeen 0us and 12.5us after opening the gate,
-depending on wether there is still a frame transmitting on TC0.
+Now, during 2) it can happen that
 
-> I checked other devices such as ENETC and it can calculate how long
-> the frame transmission will take and determine whether to transmit
-> before the gate is closed. The VSC9959 device does not have this
-> hardware function. If we implement guard bands on each queue, we need
-> to reserve a 12.5us guard band for each GCL, even if it only needs to
-> send a small packet. This confuses customers.
+a) We crash in our clearing code (e.g., something is seriously messed 
+up) and fail to start the kdump kernel. That's actually good, instead of 
+leaking data we fail hard.
 
-How about getting it right and working on how we can set the MAXSDU
-per queue and thus making the guard band smaller?
+b) We don't find all secretmem pages, for example, because process page 
+tables are messed up or something messed up our memmap (if we'd use that 
+to identify secretmem pages via a PFN walker somehow)
 
-> actually, I'm not sure if this will violate the Qbv standard. I looked
-> up the Qbv standard spec, and found it only introduce the guard band
-> before protected window (Annex Q (informative)Traffic scheduling). It
-> allows to design the schedule to accommodate the intended pattern of
-> transmission without overrunning the next gate-close event for the
-> traffic classes concerned.
 
-Vladimir already quoted "IEEE 802.1Q-2018 clause 8.6.8.4". I didn't
-check it, though.
+But for the simple cases (e.g., malicious root tries to crash the kernel 
+via /proc/sysrq-trigger) both a) and b) wouldn't apply.
 
-A static guard band is one of the options you have to fulfill that.
-Granted, it is not that efficient, but it is how the switch handles
-it.
+Obviously, if an admin would want to mitigate right now, he would want 
+to disable kdump completely, meaning any attempt to load a crashkernel 
+would fail and cannot be enabled again for that kernel (also not via 
+cmdline an attacker could modify to reboot into a system with the option 
+for a crashkernel). Disabling kdump in the kernel when secretmem pages 
+are allocated is one approach, although sub-optimal.
 
--michael
+> more risky it gets. However during reboot/normal kexec() we should do
+> some cleanup, it makes sense and secretmem can indeed be useful in that
+> case. Regarding loading custom kexec() kernels, we mitigate this with
+> the kexec file-based API where we can verify the signature of the loaded
+> kimage (assuming the system runs a kernel provided by a trusted 3rd
+> party and we 've maintained a chain of trust since booting).
+
+For example in VMs (like QEMU), we often don't clear physical memory 
+during a reboot. So if an attacker manages to load a kernel that you can 
+trick into reading random physical memory areas, we can leak secretmem 
+data I think.
+
+And there might be ways to achieve that just using the cmdline, not 
+necessarily loading a different kernel. For example if you limit the 
+kernel footprint ("mem=256M") and disable strict_iomem_checks 
+("strict_iomem_checks=relaxed") you can just extract that memory via 
+/dev/mem if I am not wrong.
+
+So as an attacker, modify the (grub) cmdline to "mem=256M 
+strict_iomem_checks=relaxed", reboot, and read all memory via /dev/mem. 
+Or load a signed kexec kernel with that cmdline and boot into it.
+
+Interesting problem :)
+
+-- 
+Thanks,
+
+David / dhildenb
+
