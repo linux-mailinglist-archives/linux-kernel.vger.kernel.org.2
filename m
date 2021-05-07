@@ -2,196 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47CFD376667
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:50:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C25ED376674
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:55:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237304AbhEGNvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 09:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47904 "EHLO
+        id S237312AbhEGN4e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 09:56:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48952 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233394AbhEGNvk (ORCPT
+        with ESMTP id S235973AbhEGN4d (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 09:51:40 -0400
-Received: from mail-qv1-xf2e.google.com (mail-qv1-xf2e.google.com [IPv6:2607:f8b0:4864:20::f2e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C8F7C061574;
-        Fri,  7 May 2021 06:50:40 -0700 (PDT)
-Received: by mail-qv1-xf2e.google.com with SMTP id z1so4809432qvo.4;
-        Fri, 07 May 2021 06:50:40 -0700 (PDT)
+        Fri, 7 May 2021 09:56:33 -0400
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 813FAC061574;
+        Fri,  7 May 2021 06:55:33 -0700 (PDT)
+Received: by mail-ot1-x32b.google.com with SMTP id d3-20020a9d29030000b029027e8019067fso7934975otb.13;
+        Fri, 07 May 2021 06:55:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Ug6/WueshmXOGl23GbAx0pDE7wn9vqsVPBFBKmBVLGM=;
-        b=TDS9bgz8iVDh71rpYkpw/zfCPFhq3A+fFAI2QTq4JgMhyjDx+KlWcsMH0UeSM3b2zS
-         rjCTkRJCLue0lWWw9Ht+krun3eIPgB9SljgwdOQ9qBWqtRmGKBYme0f1sIXlWkS8RfbX
-         4Yi25c+oirAD0GyEOz3ijfu8Ezd1iKX7MRR2eFpFPAf1VfErVLFGHQSjV3ud5JSk3th2
-         hTvO0F9wO1qPKgVwhFiny9RLdG5EGa5/zXtyQUZyR+3mWXy2xydd6i+rGdo4HL7JeDbg
-         B4Pc18tb1asguAghjMs3MG5/ggP8Z5M2Q+k0BD3JaKd/fNwKFPGyAGxGFsBHIxQ+8MUz
-         GRvw==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=XT21upDZji9LhSYRJTIVSeDu/233THjF0dPxwam1G2g=;
+        b=eNfNVPwDfnWwpfz0CnPV0woX6+pUwKXKWCcsTE9SRT+mdVgpWxJhnIsHkyA8Gv/ujJ
+         1AwX5Ote0o2MBHmHYNNnbDyv3+HxB1qc41E/FepvYXaxtJ9NYhEBP4KTLLmE9tt14XgS
+         +zL3/2bmxLvIGkh/rVEozJh9326+3cLMOo6o3YeuXl3IJUt8UDnTp1/j3ZWo2r0+21g9
+         brqujEKMWqHmvU0kXbJ2yyVLpCBfbOTmaQaOhgGsufQD8jQIhKo4CaJPOOFSt3dHeHP1
+         oDXQcXnyrJKVMM4BlAL6NyOMeAq/pZPO+bZjMj3nVG3mk+NH5qlmhy8XGzfVuwykel3J
+         02Yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Ug6/WueshmXOGl23GbAx0pDE7wn9vqsVPBFBKmBVLGM=;
-        b=qDITt285cVEiZ3eXjLm2qliAuKjlOJvgruC9lmmEnRc3f9+RWU/VoAvloe90WulD0R
-         LJId8/ulI5RlJrtEBw2rwahPZdxf//f0WkFxmKl5O961NbjuyTWsy18Ab4rLGMRAGt6k
-         GgXKxIvnWp59ZATVJwpYQehqBxm/Ew8TLEyxCuwu419boy/joxJ2uVOt+KanbcdpwKMX
-         wsAL3W5B4Evi7AfWtuBrOHcDPagNiuda9XlRjeLI08MC66+tcxKDQ7t3z30JAocalaN3
-         7UbrzcdSWEdF+gGynDF3ceiGb4B8V4nM8VpXdKHS3TQXuSysaV2VY5UnOfQAieeuX2wJ
-         AIiw==
-X-Gm-Message-State: AOAM533QrMVLzeECOfEU32JJiHmv0b/F5+s2e4I2RrzLJMKT9rHNiDGK
-        0FjIAv1CGf3bLVVvc3IEGFIDd1UR2tBCNgWDNJg=
-X-Google-Smtp-Source: ABdhPJyIERFuH5ORTuocCeqxAS8ubtAt1zYF5HaS9YLJ2GibN5VGNQXk08DgbZPELGXPj9HvmGe7K22cNQjfShlxRgo=
-X-Received: by 2002:a0c:f18a:: with SMTP id m10mr10195834qvl.22.1620395439724;
- Fri, 07 May 2021 06:50:39 -0700 (PDT)
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=XT21upDZji9LhSYRJTIVSeDu/233THjF0dPxwam1G2g=;
+        b=uNZuxxgBtXdKPhSCf5hBWYtUXu0FYRRgJQNqJfcb8C1i8Sl6rmOPsK/jKQ5FkX5jj2
+         LnmPeVesXKjp6DdmQK33Q7wEBHMdVGjTWX2tk3aRvzHqdL+qc1yfAl3UDevwYHW7Ykbk
+         XQln5gs1Bol+h7seoLPGd2ZJbED0s9Z2+pGOGOLwC73aIH5nma+WTPStj0UNGIniwwcd
+         m1fpTS/iVYCJ1wKL4Nxk26W+gfGG2X/PlI7VIqDQSu1NzoarY9RfjNvI0jXO4831BxjK
+         yYjLeVMjFAgOQFVbxaVJTCVxQd50JipFZcO4WTO1uWUjGHgM75xaBN0f8+7m0tYnSSRJ
+         NZtQ==
+X-Gm-Message-State: AOAM533PGfrhlCgUkrwKphQ3dSBK7yuLIvevPGflWfFKqNxooXYd4GtE
+        XU4KiMzBj8McGqEbgWLSLCY=
+X-Google-Smtp-Source: ABdhPJzM0C6biYW4Nsodlh0zfEkGWfCwGKlnubHG5AS4ZFoN0kjuaBGpe8CQ5WWuJ79Y4v8MGQyDwA==
+X-Received: by 2002:a9d:5a10:: with SMTP id v16mr8275144oth.187.1620395732816;
+        Fri, 07 May 2021 06:55:32 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id 16sm1197586otu.79.2021.05.07.06.55.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 06:55:32 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 7 May 2021 06:55:30 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Kyle Tso <kyletso@google.com>
+Cc:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org,
+        badhri@google.com, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/2] usb: typec: tcpm: Fix wrong handling for
+ Not_Supported in VDM AMS
+Message-ID: <20210507135530.GA1458134@roeck-us.net>
+References: <20210507062300.1945009-1-kyletso@google.com>
+ <20210507062300.1945009-3-kyletso@google.com>
 MIME-Version: 1.0
-References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
- <1619690903-1138-1-git-send-email-dseok.yi@samsung.com> <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
- <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com> <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
- <02c801d7421f$65287a90$2f796fb0$@samsung.com> <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
- <001801d742db$68ab8060$3a028120$@samsung.com> <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
- <436dbc62-451b-9b29-178d-9da28f47ef24@huawei.com> <CAF=yD-+d0QYj+812joeuEx1HKPzDyhMpkZP5aP=yNBzrQT5usw@mail.gmail.com>
- <007001d7431a$96281960$c2784c20$@samsung.com>
-In-Reply-To: <007001d7431a$96281960$c2784c20$@samsung.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Fri, 7 May 2021 09:50:03 -0400
-Message-ID: <CAF=yD-L9pxAFoT+c1Xk5YS42ZaJ+YLVQVnV+fvtqn-gLxq9ENg@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
- to 4
-To:     Dongseok Yi <dseok.yi@samsung.com>
-Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Martin KaFai Lau <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210507062300.1945009-3-kyletso@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 4:25 AM Dongseok Yi <dseok.yi@samsung.com> wrote:
->
-> On Thu, May 06, 2021 at 09:53:45PM -0400, Willem de Bruijn wrote:
-> > On Thu, May 6, 2021 at 9:45 PM Yunsheng Lin <linyunsheng@huawei.com> wrote:
-> > >
-> > > On 2021/5/7 9:25, Willem de Bruijn wrote:
-> > > >>>> head_skb's data_len is the sum of skb_gro_len for each skb of the frags.
-> > > >>>> data_len could be 8 if server sent a small size packet and it is GROed
-> > > >>>> to head_skb.
-> > > >>>>
-> > > >>>> Please let me know if I am missing something.
-> > > >>>
-> > > >>> This is my understanding of the data path. This is a forwarding path
-> > > >>> for TCP traffic.
-> > > >>>
-> > > >>> GRO is enabled and will coalesce multiple segments into a single large
-> > > >>> packet. In bad cases, the coalesced packet payload is > MSS, but < MSS
-> > > >>> + 20.
-> > > >>>
-> > > >>> Somewhere between GRO and GSO you have a BPF program that converts the
-> > > >>> IPv6 address to IPv4.
-> > > >>
-> > > >> Your understanding is right. The data path is GRO -> BPF 6 to 4 ->
-> > > >> GSO.
-> > > >>
-> > > >>>
-> > > >>> There is no concept of head_skb at the time of this BPF program. It is
-> > > >>> a single SKB, with an skb linear part and multiple data items in the
-> > > >>> frags (no frag_list).
-> > > >>
-> > > >> Sorry for the confusion. head_skb what I mentioned was a skb linear
-> > > >> part. I'm considering a single SKB with frags too.
-> > > >>
-> > > >>>
-> > > >>> When entering the GSO stack, this single skb now has a payload length
-> > > >>> < MSS. So it would just make a valid TCP packet on its own?
-> > > >>>
-> > > >>> skb_gro_len is only relevant inside the GRO stack. It internally casts
-> > > >>> the skb->cb[] to NAPI_GRO_CB. This field is a scratch area that may be
-> > > >>> reused for other purposes later by other layers of the datapath. It is
-> > > >>> not safe to read this inside bpf_skb_proto_6_to_4.
-> > > >>
-> > > >> The condition what I made uses skb->data_len not skb_gro_len. Does
-> > > >> skb->data_len have a different meaning on each layer? As I know,
-> > > >> data_len indicates the amount of frags or frag_list. skb->data_len
-> > > >> should be > 20 in the sample case because the payload size of the skb
-> > > >> linear part is the same with mss.
-> > > >
-> > > > Ah, got it.
-> > > >
-> > > > data_len is the length of the skb minus the length in the skb linear
-> > > > section (as seen in skb_headlen).
-> > > >
-> > > > So this gso skb consists of two segments, the first one entirely
-> > > > linear, the payload of the second is in skb_shinfo(skb)->frags[0].
-> > > >
-> > > > It is not guaranteed that gso skbs built from two individual skbs end
-> > > > up looking like that. Only protocol headers in the linear segment and
-> > > > the payload of both in frags is common.
-> > > >
-> > > >> We can modify netif_needs_gso as another option to hit
-> > > >> skb_needs_linearize in validate_xmit_skb. But I think we should compare
-> > > >> skb->gso_size and skb->data_len too to check if mss exceed a payload
-> > > >> size.
-> > > >
-> > > > The rest of the stack does not build such gso packets with payload len
-> > > > < mss, so we should not have to add workarounds in the gso hot path
-> > > > for this.
-> > > >
-> > > > Also no need to linearize this skb. I think that if the bpf program
-> > > > would just clear the gso type, the packet would be sent correctly.
-> > > > Unless I'm missing something.
-> > >
-> > > Does the checksum/len field in ip and tcp/udp header need adjusting
-> > > before clearing gso type as the packet has became bigger?
-> >
-> > gro takes care of this. see for instance inet_gro_complete for updates
-> > to the ip header.
->
-> I think clearing the gso type will get an error at tcp4_gso_segment
-> because netif_needs_gso returns true in validate_xmit_skb.
+On Fri, May 07, 2021 at 02:23:00PM +0800, Kyle Tso wrote:
+> Not_Supported Message is acceptable in VDM AMS. Redirect the VDM state
+> machine to VDM_STATE_DONE when receiving Not_Supported and finish the
+> VDM AMS.
+> 
+> Also, after the loop in vdm_state_machine_work, add more conditions of
+> VDM states to clear the vdm_sm_running flag because those are all
+> stopping states when leaving the loop.
+> 
+> In addition, finish the VDM AMS if the port partner responds BUSY.
+> 
+> Fixes: 8dea75e11380 ("usb: typec: tcpm: Protocol Error handling")
+> Fixes: 8d3a0578ad1a ("usb: typec: tcpm: Respond Wait if VDM state machine is running")
+> Signed-off-by: Kyle Tso <kyletso@google.com>
 
-Oh right. Whether a packet is gso is defined by gso_size being
-non-zero, not by gso_type.
+Reviewed-by: Guenter Roeck <linux@roeck-us.net>
 
-> >
-> > > Also, instead of testing skb->data_len, may test the skb->len?
-> > >
-> > > skb->len - (mac header + ip/ipv6 header + udp/tcp header) > mss + len_diff
-> >
-> > Yes. Essentially doing the same calculation as the gso code that is
-> > causing the packet to be dropped.
->
-> BPF program is usually out of control. Can we take a general approach?
-> The below 2 cases has no issue when mss upgrading.
-> 1) skb->data_len > mss + 20
-> 2) skb->data_len < mss && skb->data_len > 20
-> The corner case is when
-> 3) skb->data_len > mss && skb->data_len < mss + 20
-
-Again, you cannot use skb->data_len alone to make inferences about the
-size of the second packet.
-
->
-> But to cover #3 case, we should check the condition Yunsheng Lin said.
-> What if we do mss upgrading for both #1 and #2 cases only?
->
-> +               unsigned short off_len = skb->data_len > shinfo->gso_size ?
-> +                       shinfo->gso_size : 0;
-> [...]
->                 /* Due to IPv4 header, MSS can be upgraded. */
-> -               skb_increase_gso_size(shinfo, len_diff);
-> +               if (skb->data_len - off_len > len_diff)
-> +                       skb_increase_gso_size(shinfo, len_diff);
-
-That generates TCP packets with different MSS within the same stream.
-
-My suggestion remains to just not change MSS at all. But this has to
-be a new flag to avoid changing established behavior.
+> ---
+> Changes since v2:
+> - no changes
+> 
+>  drivers/usb/typec/tcpm/tcpm.c | 14 ++++++++++++--
+>  1 file changed, 12 insertions(+), 2 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/tcpm/tcpm.c b/drivers/usb/typec/tcpm/tcpm.c
+> index 07a449f0e8fa..bf97db232f09 100644
+> --- a/drivers/usb/typec/tcpm/tcpm.c
+> +++ b/drivers/usb/typec/tcpm/tcpm.c
+> @@ -1897,7 +1897,6 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+>  
+>  			if (res < 0) {
+>  				port->vdm_state = VDM_STATE_ERR_BUSY;
+> -				port->vdm_sm_running = false;
+>  				return;
+>  			}
+>  		}
+> @@ -1913,6 +1912,7 @@ static void vdm_run_state_machine(struct tcpm_port *port)
+>  		port->vdo_data[0] = port->vdo_retry;
+>  		port->vdo_count = 1;
+>  		port->vdm_state = VDM_STATE_READY;
+> +		tcpm_ams_finish(port);
+>  		break;
+>  	case VDM_STATE_BUSY:
+>  		port->vdm_state = VDM_STATE_ERR_TMOUT;
+> @@ -1978,7 +1978,7 @@ static void vdm_state_machine_work(struct kthread_work *work)
+>  		 port->vdm_state != VDM_STATE_BUSY &&
+>  		 port->vdm_state != VDM_STATE_SEND_MESSAGE);
+>  
+> -	if (port->vdm_state == VDM_STATE_ERR_TMOUT)
+> +	if (port->vdm_state < VDM_STATE_READY)
+>  		port->vdm_sm_running = false;
+>  
+>  	mutex_unlock(&port->lock);
+> @@ -2569,6 +2569,16 @@ static void tcpm_pd_ctrl_request(struct tcpm_port *port,
+>  			port->sink_cap_done = true;
+>  			tcpm_set_state(port, ready_state(port), 0);
+>  			break;
+> +		case SRC_READY:
+> +		case SNK_READY:
+> +			if (port->vdm_state > VDM_STATE_READY) {
+> +				port->vdm_state = VDM_STATE_DONE;
+> +				if (tcpm_vdm_ams(port))
+> +					tcpm_ams_finish(port);
+> +				mod_vdm_delayed_work(port, 0);
+> +				break;
+> +			}
+> +			fallthrough;
+>  		default:
+>  			tcpm_pd_handle_state(port,
+>  					     port->pwr_role == TYPEC_SOURCE ?
+> -- 
+> 2.31.1.527.g47e6f16901-goog
+> 
