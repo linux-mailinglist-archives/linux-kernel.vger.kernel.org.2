@@ -2,125 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4585737671D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:40:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD920376720
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:40:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237665AbhEGOlV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 10:41:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54474 "EHLO mail.kernel.org"
+        id S237683AbhEGOll (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 10:41:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54714 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233545AbhEGOlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 10:41:18 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 322E0610F7;
-        Fri,  7 May 2021 14:40:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620398418;
-        bh=KToNCzZXzXdchEQsEBlcFIELZRGxK0NDfDbS3vEU1zU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=UWBF9Sa2APLDTc4h69FihPS3COm5y/y5+453SRjoKq1z2orGhlz/IPBmosvduHEEk
-         OcgtmPo/uy76a8MtMEgpYJrDm7h856eqV4kMsPYFIg54dbmV72K5v4hY4BekkZNvli
-         1m0ZKnt6lDbN5TBiMQLOxKK0d+Hle7Wtnuk04qlgWa8t2qLILOQoo9ZDDMZ7k+4XEg
-         00tsYPTVI58Jm6G2wbgM1kMqv61nY3CFhBnHzFPbmpjGNMpgUq3ZEv80I2GRyFjuM1
-         H2wPu8csrdzJAdD2gN7TXJLkRX4aBmsNKiaNriZbOLLKrCM5QIBTiYFu4UPLJ3JfrB
-         J8e/NLp77VU+g==
-Received: by pali.im (Postfix)
-        id 500C07E0; Fri,  7 May 2021 16:40:15 +0200 (CEST)
-Date:   Fri, 7 May 2021 16:40:15 +0200
-From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
-To:     Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Marek =?utf-8?B?QmVow7pu?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 05/42] PCI: pci-bridge-emul: Add PCIe Root Capabilities
- Register
-Message-ID: <20210507144015.bol3qeqsdoo7nmju@pali>
-References: <20210506153153.30454-6-pali@kernel.org>
- <20210506231009.GA1444269@bjorn-Precision-5520>
+        id S233545AbhEGOlj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 10:41:39 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 622A361157;
+        Fri,  7 May 2021 14:40:38 +0000 (UTC)
+Date:   Fri, 7 May 2021 10:40:36 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Stefano Garzarella <sgarzare@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        Joel Fernandes <joelaf@google.com>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [RFC][PATCH] vhost/vsock: Add vsock_list file to map cid with
+ vhost tasks
+Message-ID: <20210507104036.711b0b10@gandalf.local.home>
+In-Reply-To: <20210507141120.ot6xztl4h5zyav2c@steredhat>
+References: <20210505163855.32dad8e7@gandalf.local.home>
+        <20210507141120.ot6xztl4h5zyav2c@steredhat>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506231009.GA1444269@bjorn-Precision-5520>
-User-Agent: NeoMutt/20180716
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday 06 May 2021 18:10:09 Bjorn Helgaas wrote:
-> On Thu, May 06, 2021 at 05:31:16PM +0200, Pali Rohár wrote:
-> > This is 16-bit register at offset 0x1E. Rename current 'rsvd' struct member
-> > to 'rootcap'.
-> 
-> "The 16-bit Root Capabilities register is at offset 0x1e in the PCIe
-> Capability."
-> 
-> Please make the commit log complete in itself.  In some contexts, the
-> subject line is not visible at the same time.  It's fine to repeat the
-> subject in the commit log.
-> 
-> > Signed-off-by: Pali Rohár <pali@kernel.org>
-> > Reviewed-by: Marek Behún <kabel@kernel.org>
-> > Fixes: 23a5fba4d941 ("PCI: Introduce PCI bridge emulated config space common logic")
-> > Cc: stable@vger.kernel.org # e0d9d30b7354 ("PCI: pci-bridge-emul: Fix big-endian support")
-> 
-> I'm not sure how people would deal with *two* SHA1s.
+On Fri, 7 May 2021 16:11:20 +0200
+Stefano Garzarella <sgarzare@redhat.com> wrote:
 
-I guess that this is fine per stable document as it mention such example:
-https://www.kernel.org/doc/html/latest/process/stable-kernel-rules.html
-
-I have already in past sent patches with Fixes:hash1 and CC:stable/hash2
-and were taken correctly.
-
-> This patch adds functionality, so it's not really fixing a bug in
-> 23a5fba4d941.
-
-I'm not sure what is the correct meaning of Fixes tag. I included it to
-easily determinate in which commit was introduced member name "rsvd"
-which should have been named "rootcap".
-
-Submitting patches document is not fully clear for me as I understood it
-that Fixes and CC:stable are two different things. E.g. it mention
-"Attaching a Fixes: tag does not subvert ... the requirement to Cc:
-stable@vger.kernel.org on all stable patch candidates." which I
-understood that patch for backporting needs to have Cc:stable:
-https://www.kernel.org/doc/html/latest/process/submitting-patches.html
-
-But I will change it as needed. Just I did not know what is "the correct
-way".
-
-> I see that e0d9d30b7354 came along later and did
-> "s/u16 rsvd/__le16 rsvd/".
+> Hi Steven,
 > 
-> But it seems like a lot to expect for distros and stable kernel
-> maintainers to interpret this.
+> On Wed, May 05, 2021 at 04:38:55PM -0400, Steven Rostedt wrote:
+> >The new trace-cmd 3.0 (which is almost ready to be released) allows for
+> >tracing between host and guests with timestamp synchronization such that
+> >the events on the host and the guest can be interleaved in the proper order
+> >that they occur. KernelShark now has a plugin that visualizes this
+> >interaction.
+> >
+> >The implementation requires that the guest has a vsock CID assigned, and on
+> >the guest a "trace-cmd agent" is running, that will listen on a port for
+> >the CID. The on the host a "trace-cmd record -A guest@cid:port -e events"
+> >can be called and the host will connect to the guest agent through the
+> >cid/port pair and have the agent enable tracing on behalf of the host and
+> >send the trace data back down to it.
+> >
+> >The problem is that there is no sure fire way to find the CID for a guest.
+> >Currently, the user must know the cid, or we have a hack that looks for the
+> >qemu process and parses the --guest-cid parameter from it. But this is
+> >prone to error and does not work on other implementation (was told that
+> >crosvm does not use qemu).  
 > 
-> Personally I think I would omit both Fixes: and the stable tag since
-> these two patches (05 and 06) are just adding functionality.
+> For debug I think could be useful to link the vhost-vsock kthread to the 
+> CID, but for the user point of view, maybe is better to query the VM 
+> management layer, for example if you're using libvirt, you can easily do:
 > 
-> > ---
-> >  drivers/pci/pci-bridge-emul.h | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/pci/pci-bridge-emul.h b/drivers/pci/pci-bridge-emul.h
-> > index b31883022a8e..49bbd37ee318 100644
-> > --- a/drivers/pci/pci-bridge-emul.h
-> > +++ b/drivers/pci/pci-bridge-emul.h
-> > @@ -54,7 +54,7 @@ struct pci_bridge_emul_pcie_conf {
-> >  	__le16 slotctl;
-> >  	__le16 slotsta;
-> >  	__le16 rootctl;
-> > -	__le16 rsvd;
-> > +	__le16 rootcap;
-> >  	__le32 rootsta;
-> >  	__le32 devcap2;
-> >  	__le16 devctl2;
-> > -- 
-> > 2.20.1
-> > 
+> $ virsh dumpxml fedora34 | grep cid
+>      <cid auto='yes' address='3'/>
+
+We looked into going this route, but then that means trace-cmd host/guest
+tracing needs a way to handle every layer, as some people use libvirt
+(myself included), some people use straight qemu, some people us Xen, and
+some people use crosvm. We need to support all of them. Which is why I'm
+looking at doing this from the lowest common denominator, and since vsock
+is a requirement from trace-cmd to do this tracing, getting the thread
+that's related to the vsock is that lowest denominator.
+
+> 
+> >
+> >As I can not find a way to discover CIDs assigned to guests via any kernel
+> >interface, I decided to create this one. Note, I'm not attached to it. If
+> >there's a better way to do this, I would love to have it. But since I'm not
+> >an expert in the networking layer nor virtio, I decided to stick to what I
+> >know and add a debugfs interface that simply lists all the registered 
+> >CIDs
+> >and the worker task that they are associated with. The worker task at
+> >least has the PID of the task it represents.  
+> 
+> I honestly don't know if it's the best interface, like I said maybe for 
+> debugging it's fine, but if we want to expose it to the user in some 
+> way, we could support devlink/netlink to provide information about the 
+> vsock devices currently in use.
+
+Ideally, a devlink/netlink is the right approach. I just had no idea on how
+to implement that ;-)  So I went with what I know, which is debugfs files!
+
+
+
+> >Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+> >---
+> >diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+> >index 5e78fb719602..4f03b25b23c1 100644
+> >--- a/drivers/vhost/vsock.c
+> >+++ b/drivers/vhost/vsock.c
+> >@@ -15,6 +15,7 @@
+> > #include <linux/virtio_vsock.h>
+> > #include <linux/vhost.h>
+> > #include <linux/hashtable.h>
+> >+#include <linux/debugfs.h>
+> >
+> > #include <net/af_vsock.h>
+> > #include "vhost.h"
+> >@@ -900,6 +901,128 @@ static struct miscdevice vhost_vsock_misc = {
+> > 	.fops = &vhost_vsock_fops,
+> > };
+> >
+> >+static struct dentry *vsock_file;
+> >+
+> >+struct vsock_file_iter {
+> >+	struct hlist_node	*node;
+> >+	int			index;
+> >+};
+> >+
+> >+
+> >+static void *vsock_next(struct seq_file *m, void *v, loff_t *pos)
+> >+{
+> >+	struct vsock_file_iter *iter = v;
+> >+	struct vhost_vsock *vsock;
+> >+
+> >+	if (pos)
+> >+		(*pos)++;
+> >+
+> >+	if (iter->index >= (int)HASH_SIZE(vhost_vsock_hash))
+> >+		return NULL;
+> >+
+> >+	if (iter->node)
+> >+		iter->node = rcu_dereference_raw(hlist_next_rcu(iter->node));
+> >+
+> >+	for (;;) {
+> >+		if (iter->node) {
+> >+			vsock = hlist_entry_safe(rcu_dereference_raw(iter->node),
+> >+						 struct vhost_vsock, hash);
+> >+			if (vsock->guest_cid)
+> >+				break;
+> >+			iter->node = rcu_dereference_raw(hlist_next_rcu(iter->node));
+> >+			continue;
+> >+		}
+> >+		iter->index++;
+> >+		if (iter->index >= HASH_SIZE(vhost_vsock_hash))
+> >+			return NULL;
+> >+
+> >+		iter->node = rcu_dereference_raw(hlist_first_rcu(&vhost_vsock_hash[iter->index]));
+> >+	}
+> >+	return iter;
+> >+}
+> >+
+> >+static void *vsock_start(struct seq_file *m, loff_t *pos)
+> >+{
+> >+	struct vsock_file_iter *iter = m->private;
+> >+	loff_t l = 0;
+> >+	void *t;
+> >+
+> >+	rcu_read_lock();  
+> 
+> Instead of keeping this rcu lock between vsock_start() and vsock_stop(), 
+> maybe it's better to make a dump here of the bindings (pid/cid), save it 
+> in an array, and iterate it in vsock_next().
+
+The start/stop of a seq_file() is made for taking locks. I do this with all
+my code in ftrace. Yeah, there's a while loop between the two, but that's
+just to fill the buffer. It's not that long and it never goes to userspace
+between the two. You can even use this for spin locks (but I wouldn't
+recommend doing it for raw ones).
+
+> 
+> >+
+> >+	iter->index = -1;
+> >+	iter->node = NULL;
+> >+	t = vsock_next(m, iter, NULL);
+> >+
+> >+	for (; iter->index < HASH_SIZE(vhost_vsock_hash) && l < *pos;
+> >+	     t = vsock_next(m, iter, &l))
+> >+		;  
+> 
+> A while() maybe was more readable...
+
+Again, I just cut and pasted from my other code.
+
+If you have a good idea on how to implement this with netlink (something
+that ss or netstat can dislpay), I think that's the best way to go.
+
+Thanks for looking at this!
+
+-- Steve
