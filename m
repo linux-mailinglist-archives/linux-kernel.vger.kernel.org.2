@@ -2,77 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BFD5376B4B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:48:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68246376B52
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:55:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230200AbhEGUtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 16:49:15 -0400
-Received: from mail-oi1-f182.google.com ([209.85.167.182]:42605 "EHLO
-        mail-oi1-f182.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230185AbhEGUtM (ORCPT
+        id S230169AbhEGU4k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 16:56:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56974 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhEGU4h (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 16:49:12 -0400
-Received: by mail-oi1-f182.google.com with SMTP id v24so9869663oiv.9;
-        Fri, 07 May 2021 13:48:12 -0700 (PDT)
+        Fri, 7 May 2021 16:56:37 -0400
+Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F8A5C061761
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 13:55:36 -0700 (PDT)
+Received: by mail-pl1-x62f.google.com with SMTP id s20so5877717plr.13
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 13:55:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RPwYxQ/G3rhOoLfwIgiJmY5QnE9mrhjUeAyG7fqUPTY=;
+        b=LNxZxepW+UC0Y1XBj2dy4y1rp1H6OzGzwlDR5/k47T6tyxD79Y/i4yJwV5N0lZ+VFZ
+         a8Xu/wG2Tm7gtc0rRRA8uUCmZHCDoCL9NS9Sm2WL7Qh6S0U++r1/xl0A2IeMQkpThR5W
+         LaAH+0LietCJ7G1AT7P3w0Joc/JNVwQhcV8P8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HU+cc6QB3f1fPnYktuf5XnUl4ynjpynUl2t6lVOEa5M=;
-        b=l8/bcf+nK5g9EqOijMPA3yCTADX9MILg7fwXx6ihYpiQlOA8WXm99jE9hhC68vKkF9
-         JThrckHorJbhR0p3BCq/sk7/3lQWiRhG5RWC9TVQTHqqCdn81CVExA7/uOa7RQm8rErW
-         f7F7ansFG2cgZHzwuN84xhMphFaRmvHuVQ6g/83VapxiMRGPeNjTYMsbbD9HOXJ20Go3
-         JjEmhd1hg0dkJcZQj2+TU2wT7HdcaKnsI8ktQ+OlP0F4u4624xn51ljFAOfvnV/qh2Qt
-         wyWDat2iO1zgHFqmOZvw6POC4lxzFR1jAuQYBQMVw93Sih92vkyOwQtAVAVKGl/Y7mzt
-         N9zA==
-X-Gm-Message-State: AOAM531T3fcYmWOfiMYsrE42a7SgQZ2EUiM18IATAvh1ZOsTZCS4UxTz
-        FSxhomytY5f6isj3qHy9wU71lSZXvg==
-X-Google-Smtp-Source: ABdhPJxsDYwiJwIh4yaHta4SS11PTmwCu05WiwyrFfAqWHDIsc+5n85jx0lFK7+D6RTXRfkE0h1OeQ==
-X-Received: by 2002:aca:c30f:: with SMTP id t15mr8519964oif.145.1620420491792;
-        Fri, 07 May 2021 13:48:11 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id z6sm246025oiz.39.2021.05.07.13.48.10
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=RPwYxQ/G3rhOoLfwIgiJmY5QnE9mrhjUeAyG7fqUPTY=;
+        b=ufMPqF9pfBNTrmBiwrhBntz1724mb35tgt0pu3D2hyPL4vqkn9ahccLQRcJM1AmTO+
+         WywUncXkNVyBb57FIE1qzRELqUQZ+vkxupxwGDciL/P6Q7IEzeLTUIblU0yZmTvdH1Rv
+         K9a2E92+gM8x6QXkr1qt7T7zVKU7BUEGPWF5qduXLsauaLIhrvh4DYnJU1e2X/g+Oku2
+         aebOYD5qlo5Gd8+TMWK2C2hajfYF6UJB8PFr6aHFNzv/pV034SW+g781tNVflCVx4dei
+         ANdO9btS4iIPO8FhqCkr+EEAvXpaekkswtlWZ3IRQZwBW0SibHdTUjtltYyieJ8w904V
+         AzYw==
+X-Gm-Message-State: AOAM533U6AFhFo0zqKWdWIEpdjNgDHC2do8z3gdiBtSMJmIXaqvdolo8
+        MHhvs+Bkac4j4DTr3Y5S7L/HjQ==
+X-Google-Smtp-Source: ABdhPJzk5q+RqqaeU/dImKZTUfx8BnrHWZjv79jeHRGyFTZRMB87eu1vtuUpAfgd2ErT3+E0DOME3g==
+X-Received: by 2002:a17:90a:c087:: with SMTP id o7mr12769919pjs.65.1620420935943;
+        Fri, 07 May 2021 13:55:35 -0700 (PDT)
+Received: from tictac2.mtv.corp.google.com ([2620:15c:202:201:3c7e:d35:3a19:632f])
+        by smtp.gmail.com with ESMTPSA id ge4sm13161565pjb.49.2021.05.07.13.55.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 13:48:10 -0700 (PDT)
-Received: (nullmailer pid 2856423 invoked by uid 1000);
-        Fri, 07 May 2021 20:48:09 -0000
-Date:   Fri, 7 May 2021 15:48:09 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     cl@rock-chips.com, jay.xu@rock-chips.com,
-        linux-arm-kernel@lists.infradead.org, bgolaszewski@baylibre.com,
-        linux-kernel@vger.kernel.org, zhangqing@rock-chips.com,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        huangtao@rock-chips.com, linux-gpio@vger.kernel.org,
-        linus.walleij@linaro.org, david.wu@rock-chips.com,
-        robh+dt@kernel.org, shawn.lin@rock-chips.com, heiko@sntech.de
-Subject: Re: [PATCH v2 1/4] dt-bindings: gpio: convert rk3328-grf-gpio.txt to
- YAML
-Message-ID: <20210507204809.GA2856332@robh.at.kernel.org>
-References: <20210505134028.13431-1-jbx6244@gmail.com>
- <20210505134028.13431-2-jbx6244@gmail.com>
+        Fri, 07 May 2021 13:55:35 -0700 (PDT)
+From:   Douglas Anderson <dianders@chromium.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Nick Desaulniers <ndesaulniers@google.com>,
+        Seth LaForge <sethml@google.com>,
+        Ricky Liang <jcliang@chromium.org>,
+        Douglas Anderson <dianders@chromium.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, Jiri Olsa <jolsa@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Nathan Chancellor <nathan@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        clang-built-linux@googlegroups.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-perf-users@vger.kernel.org
+Subject: [PATCH 0/3] arm64: perf: Make compat tracing better
+Date:   Fri,  7 May 2021 13:55:10 -0700
+Message-Id: <20210507205513.640780-1-dianders@chromium.org>
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505134028.13431-2-jbx6244@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 05 May 2021 15:40:25 +0200, Johan Jonker wrote:
-> Current dts files with RK3328 GRF 'gpio' nodes are manually verified.
-> In order to automate this process rk3328-grf-gpio.txt has to be
-> converted to YAML.
-> 
-> Rename 'grf-gpio' nodename to 'gpio'.
-> 
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
-> ---
->  .../bindings/gpio/rockchip,rk3328-grf-gpio.txt     | 32 --------------
->  .../bindings/gpio/rockchip,rk3328-grf-gpio.yaml    | 51 ++++++++++++++++++++++
->  2 files changed, 51 insertions(+), 32 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.txt
->  create mode 100644 Documentation/devicetree/bindings/gpio/rockchip,rk3328-grf-gpio.yaml
-> 
+The goal for this series is to improve "perf" behavior when 32-bit
+userspace code is involved. This turns out to be fairly important for
+Chrome OS which still runs 32-bit userspace for the time being (long
+story there).
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+I won't repeat everything said in the individual patches since since
+they are wordy enough as it is.
+
+Please enjoy and I hope this isn't too ugly/hacky for inclusion in
+mainline.
+
+Thanks to Nick Desaulniers for his early review of these patches and
+to Ricky for the super early prototype that some of this is based on.
+
+
+Douglas Anderson (3):
+  arm64: perf: perf_callchain_user() compat support for
+    clang/non-APCS-gcc-arm
+  arm64: perf: Improve compat perf_callchain_user() for clang leaf
+    functions
+  arm64: perf: Add a config option saying 32-bit thumb code uses R11 for
+    FP
+
+ arch/arm64/Kconfig                 |  12 ++
+ arch/arm64/kernel/perf_callchain.c | 329 +++++++++++++++++++++++++----
+ 2 files changed, 305 insertions(+), 36 deletions(-)
+
+-- 
+2.31.1.607.g51e8a6a459-goog
+
