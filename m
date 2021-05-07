@@ -2,151 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B0343769C1
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B8E1F3769C7
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229603AbhEGR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 13:59:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
+        id S229560AbhEGSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 14:03:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhEGR7R (ORCPT
+        with ESMTP id S229461AbhEGSDS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 13:59:17 -0400
-Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA02C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 10:58:14 -0700 (PDT)
-Received: by mail-pl1-x62d.google.com with SMTP id p17so5498785plf.12
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 10:58:14 -0700 (PDT)
+        Fri, 7 May 2021 14:03:18 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0A7C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 11:02:18 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id e14so8364281ils.12
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 11:02:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=7b05HQwQFJbiC5hEzCCygGe/UudPuvMm6AH3d8lkYuo=;
-        b=KYOZ2sJKADhfuZ/uHMMrB7Yz4pjkf+WtoJEvVJeLQAI9RAcsyiddelzeYpgeq/WBRf
-         aYbEM6iM2YzK07SC+oosCVwJBCI1UdqnphuM+V9hK8PeM5SJyF3N1k9UbJSaoW0Iqd+G
-         SXr8hLPVtRDKqwh8waGJhlnzYj+7ZWnb45KzLXh4dDbIxRKVegBZXC9njBPFtj6qOHSF
-         oHCkSGUDqH3uc4QH4u+yj95GJanLrZdcpWxl4Irl0QPl4rBsU48qszWvPraQRjub2pLL
-         iMPaWawIKjMH7c9YyQocMUFO8/Po/Z4fmRlR+s9laHvYUbfUQkyUdvXfcqN/6AHFnBe5
-         xWdA==
+        d=joelfernandes.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OiFf1NwwUvud1mnDtuQmtDxIGqR5e/nfJ7NM5Is87sw=;
+        b=oYfD4vzTCc927EwqeTaZUZiVyk6EYM8Vnm//QRL1AumSWt6cAtSBlStkF+BcohKFM3
+         +tKacLNbJX9Z+qo+ajJsgGRlRm7ZxV9lO6bAAfyg37DxOD/qpn4p/JgkCkQ863/V2aPa
+         BbTv/2NoY8ZFFBzKNxjTu5e7HAVcd42icZW18=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=7b05HQwQFJbiC5hEzCCygGe/UudPuvMm6AH3d8lkYuo=;
-        b=F9iBpDkLYgbTtenuBs7yz8VnIaoDXKPX7x7Y+eroyC/TwbuYmf0VZE9glcEm83JIQb
-         Pge5JInx3jRkIli4qsm29rozIjbc5+z+KZgy3IdLNEYQURIGd3fXoMRpUfC+HdGYb6S3
-         QlEybM2jO4rY4xxOGwMjl8IKQjzzHzYmdyI0zw3+7FQlD/KelxORggDTt3mQcZtTPWbq
-         LuHqcqYsjUgl+L2M8hDTdg925L+NzZpBC0RIytLOs7v4VlgnOWdAAfW73RprrlZ0F1PX
-         1UDBDUyLMedMe7tZujdZ8rB7wefWuMaTyLpYIDYDrhC2N/MdeRQkUx3SdMmc826sy3g0
-         ID/w==
-X-Gm-Message-State: AOAM53106NzfWuUWb8RHJL3fj7kx6MD4PZ7+l6aESb4CVyP/kCGQxxe5
-        aShDBHgTnRI9VQWpX9NP7uvFWg==
-X-Google-Smtp-Source: ABdhPJwD2CO9NKfxU5WpcWIllCqKoM1ASKfW7Uz7zvc9BLuit6NQMTeRMxVNBgjQlKWm/XUN11ik5g==
-X-Received: by 2002:a17:902:b20a:b029:ef:463:365a with SMTP id t10-20020a170902b20ab02900ef0463365amr5403349plr.17.1620410294246;
-        Fri, 07 May 2021 10:58:14 -0700 (PDT)
-Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
-        by smtp.gmail.com with ESMTPSA id q7sm3220941pfq.172.2021.05.07.10.58.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 10:58:13 -0700 (PDT)
-Date:   Fri, 7 May 2021 17:58:09 +0000
-From:   Sean Christopherson <seanjc@google.com>
-To:     Venkatesh Srinivas <venkateshs@chromium.org>
-Cc:     Jon Kohler <jon@nutanix.com>, Paolo Bonzini <pbonzini@redhat.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] KVM: x86: use X86_FEATURE_RSB_CTXSW for RSB stuffing in
- vmexit
-Message-ID: <YJV/sZvgA8uN/23k@google.com>
-References: <20210507150636.94389-1-jon@nutanix.com>
- <CAA0tLEoyy_ogDc11r_1T907Rp5CwgM64hFwRt5SX40THp2+C3A@mail.gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OiFf1NwwUvud1mnDtuQmtDxIGqR5e/nfJ7NM5Is87sw=;
+        b=VXNOx0ypuF9bcNgGRhciBYB69xihOa2k09KchH5MChmaNtzAR1I6HK1Uxgx31ihtre
+         1778eQVzTzy7OuFZKNF6HpgMH4bIkg1rxDZb+zwdbPLPfSUUSg2fBo2AvpHrtk1foDpj
+         a0ExsMWIhsSae7TY7OqjpKT4YNkhPmTKopVBdFjwmDAgIHp0qOz+aQ6b+GZLjBiV1oLE
+         j4zTFQI+22Mkq5HTlfO01+jMUVwGUtPJ2kGGraPg/J3dIkfr+QoijJ2CYbId27/LhjkN
+         2l0Lsw9u4fr5rugghPlGlpCAhBKR6zPWJvGh+P09raLTQ8xRTZgze9ZDx6kALO5sJ7Qo
+         i+Qw==
+X-Gm-Message-State: AOAM531gi9l741XfLaSo2NdFshdIDxPaESuFv7IPNI6ST7nR2I/eDd5p
+        qPzncEX7ZpbmBh53x8qqqIuTYa3FLT1daFrfydav+A==
+X-Google-Smtp-Source: ABdhPJzN5HWpa8Abi1V1uTyBqqXUgx1GSkjd39fpUWTlxDTnlmS25VaHCKz9+XKlEVlcRVRQ4oFIfNWsE+JI0TGAP3I=
+X-Received: by 2002:a05:6e02:5d1:: with SMTP id l17mr9847706ils.78.1620410537552;
+ Fri, 07 May 2021 11:02:17 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAA0tLEoyy_ogDc11r_1T907Rp5CwgM64hFwRt5SX40THp2+C3A@mail.gmail.com>
+References: <20210422120459.447350175@infradead.org>
+In-Reply-To: <20210422120459.447350175@infradead.org>
+From:   Joel Fernandes <joel@joelfernandes.org>
+Date:   Fri, 7 May 2021 14:02:06 -0400
+Message-ID: <CAEXW_YT5AoRwS7XZreX-_2OAzoQNVUeaOH3nJFvV65T0zDaP5g@mail.gmail.com>
+Subject: Re: [PATCH 00/19] sched: Core Scheduling
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Hyser,Chris" <chris.hyser@oracle.com>,
+        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Thomas Glexiner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021, Venkatesh Srinivas wrote:
-> On Fri, May 7, 2021 at 8:08 AM Jon Kohler <jon@nutanix.com> wrote:
-> >
-> > cpufeatures.h defines X86_FEATURE_RSB_CTXSW as "Fill RSB on context
-> > switches" which seems more accurate than using X86_FEATURE_RETPOLINE
-> > in the vmxexit path for RSB stuffing.
-> >
-> > X86_FEATURE_RSB_CTXSW is used for FILL_RETURN_BUFFER in
-> > arch/x86/entry/entry_{32|64}.S. This change makes KVM vmx and svm
-> > follow that same pattern. This pairs up nicely with the language in
-> > bugs.c, where this cpu_cap is enabled, which indicates that RSB
-> > stuffing should be unconditional with spectrev2 enabled.
-> >         /*
-> >          * If spectre v2 protection has been enabled, unconditionally fill
-> >          * RSB during a context switch; this protects against two independent
-> >          * issues:
-> >          *
-> >          *      - RSB underflow (and switch to BTB) on Skylake+
-> >          *      - SpectreRSB variant of spectre v2 on X86_BUG_SPECTRE_V2 CPUs
-> >          */
-> >         setup_force_cpu_cap(X86_FEATURE_RSB_CTXSW);
-> >
-> > Furthermore, on X86_FEATURE_IBRS_ENHANCED CPUs && SPECTRE_V2_CMD_AUTO,
-> > we're bypassing setting X86_FEATURE_RETPOLINE, where as far as I could
-> > find, we should still be doing RSB stuffing no matter what when
-> > CONFIG_RETPOLINE is enabled and spectrev2 is set to auto.
-> 
-> If I'm reading https://software.intel.com/security-software-guidance/deep-dives/deep-dive-indirect-branch-restricted-speculation
-> correctly, I don't think an RSB fill sequence is required on VMExit on
-> processors w/ Enhanced IBRS. Specifically:
-> """
-> On processors with enhanced IBRS, an RSB overwrite sequence may not
-> suffice to prevent the predicted target of a near return from using an
-> RSB entry created in a less privileged predictor mode.  Software can
-> prevent this by enabling SMEP (for transitions from user mode to
-> supervisor mode) and by having IA32_SPEC_CTRL.IBRS set during VM exits
-> """
-> On Enhanced IBRS processors, it looks like SPEC_CTRL.IBRS is set
-> across all #VMExits via x86_virt_spec_ctrl in kvm.
-> 
-> So is this patch needed?
+On Thu, Apr 22, 2021 at 8:36 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> Hai,
+>
+> This is an agressive fold of all the core-scheduling work so far. I've stripped
+> a whole bunch of tags along the way (hopefully not too many, please yell if you
+> feel I made a mistake), including tested-by. Please retest.
+>
+> Changes since the last partial post is dropping all the cgroup stuff and
+> PR_SCHED_CORE_CLEAR as well as that exec() behaviour in order to later resolve
+> the cgroup issue.
+>
+> Since we're really rather late for the coming merge window, my plan was to
+> merge the lot right after the merge window.
+>
+> Again, please test.
 
-Venkatesh belatedly pointed out (off list) that KVM VMX stops intercepting
-MSR_IA32_SPEC_CTRL after the first (successful) write by the guest.  But, I 
-believe that's a non-issue for ENHANCED_IBRS because of this blurb in Intel's
-documentation[*]:
+Thanks Peter, I uploaded this set to our ChromeOS 5.10 kernel tree
+with minor changes to make it apply, to:
+https://chromium-review.googlesource.com/q/topic:cs510
+Let me know if anything looks weird, but it does build. I will be
+testing it further in the coming days.
 
-  Processors with enhanced IBRS still support the usage model where IBRS is set
-  only in the OS/VMM for OSes that enable SMEP. To do this, such processors will
-  ensure that guest behavior cannot control the RSB after a VM exit once IBRS is
-  set, even if IBRS was not set at the time of the VM exit.
+Of course product kernels slightly lag upstream but such is life <:-)
 
-The code and changelog for commit 706d51681d63 ("x86/speculation: Support
-Enhanced IBRS on future CPUs") is more than a little confusing:
+ - Joel
 
-  spectre_v2_select_mitigation():
-	if (boot_cpu_has(X86_FEATURE_IBRS_ENHANCED)) {
-		mode = SPECTRE_V2_IBRS_ENHANCED;
-		/* Force it so VMEXIT will restore correctly */
-		x86_spec_ctrl_base |= SPEC_CTRL_IBRS;
-		wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_base);
-		goto specv2_set_mode;
-	}
-
-
-  changelog:
-	Kernel also has to make sure that IBRS bit remains set after
-	VMEXIT because the guest might have cleared the bit. This is already
-	covered by the existing x86_spec_ctrl_set_guest() and
-	x86_spec_ctrl_restore_host() speculation control functions.
-
-but I _think_ that is simply saying that MSR_IA32_SPEC_CTRL.IBRS needs to be
-restored in order to keep the mitigations active in the host.   I don't think it
-contradicts the documentation that says VM-Exit is automagically mitigated if
-IBRS has _ever_ been set.
-
-[*] https://software.intel.com/security-software-guidance/deep-dives/deep-dive-indirect-branch-restricted-speculation
+>
+> These patches should shortly be available in my queue.git.
+>
+> ---
+>  b/kernel/sched/core_sched.c                     |  229 ++++++
+>  b/tools/testing/selftests/sched/.gitignore      |    1
+>  b/tools/testing/selftests/sched/Makefile        |   14
+>  b/tools/testing/selftests/sched/config          |    1
+>  b/tools/testing/selftests/sched/cs_prctl_test.c |  338 +++++++++
+>  include/linux/sched.h                           |   19
+>  include/uapi/linux/prctl.h                      |    8
+>  kernel/Kconfig.preempt                          |    6
+>  kernel/fork.c                                   |    4
+>  kernel/sched/Makefile                           |    1
+>  kernel/sched/core.c                             |  858 ++++++++++++++++++++++--
+>  kernel/sched/cpuacct.c                          |   12
+>  kernel/sched/deadline.c                         |   38 -
+>  kernel/sched/debug.c                            |    4
+>  kernel/sched/fair.c                             |  276 +++++--
+>  kernel/sched/idle.c                             |   13
+>  kernel/sched/pelt.h                             |    2
+>  kernel/sched/rt.c                               |   31
+>  kernel/sched/sched.h                            |  393 ++++++++--
+>  kernel/sched/stop_task.c                        |   14
+>  kernel/sched/topology.c                         |    4
+>  kernel/sys.c                                    |    5
+>  tools/include/uapi/linux/prctl.h                |    8
+>  23 files changed, 2057 insertions(+), 222 deletions(-)
+>
