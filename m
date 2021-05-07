@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C7102376751
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:57:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E20D376754
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:58:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237715AbhEGO6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 10:58:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34514 "EHLO
+        id S237723AbhEGO7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 10:59:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234601AbhEGO6L (ORCPT
+        with ESMTP id S234601AbhEGO7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 10:58:11 -0400
-Received: from mail-ed1-x535.google.com (mail-ed1-x535.google.com [IPv6:2a00:1450:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A777C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 07:57:08 -0700 (PDT)
-Received: by mail-ed1-x535.google.com with SMTP id h10so10550912edt.13
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 07:57:08 -0700 (PDT)
+        Fri, 7 May 2021 10:59:41 -0400
+Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B8FC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 07:58:41 -0700 (PDT)
+Received: by mail-ed1-x531.google.com with SMTP id c22so10573641edn.7
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 07:58:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=dz08TtZQHN8WysDf1KSSv+J846ggMOVj0kzY1pDn55Y=;
-        b=mevx2O5womNc6xFIEoqxVhmtxLhxKExcqHGouY3g4xlRa9Uz+e16jEau8C2tB07iEv
-         Z50S/FXyPhQM76QElomJRreMwiozfL5ad6pkIjk+ll6pGw2xXrS2JAmjXY0/53BDkBoU
-         Db9S3af17hp9zHcT5GroAXRG5YmFKfICZN/AcwUahxHvLQWLgSfa7MNj0MbhDWpmrGQs
-         jU+H6WBUA/mvnTkB07AMea3TmW/8j5n9jkoEfiVroxHk1kfwAiyWu1RRuCtH34D+fnkO
-         riVFuD+I0fg00s1KAAkVymZiHA5brIMVB7v9IuJ2nqhcLDEFIFkLz6y5JThHunskwrUx
-         FYXw==
+        bh=CJHBifJjuAiUBB1fcY/7U2kOYy2ASja8+o2PqKZoRWE=;
+        b=XNEPPEBhgMHMMsT4kse0qA8u5ggbNQ9EE3NN4Lfs+z6ha71Hchom0V+YsQgDt3374B
+         UhX9hZXqoUY1i+Jmd3ueYBBXaJSi9jQMQonYfGwYp6ED3fCShZobGpP6aljtWvs9vbe2
+         /7L1fJjh56JN1EbxZY01WGSjDx5pLk0cvVsbGiWkKpgDaV4fMQSuJ2cEI2g0MGwD15sM
+         QZ99gEFOcCd9ypUYjXH4aJGHfKaomx0lni4YIi19FpQOvS3n9p6TV66hPzoSSzBBbA2Y
+         7fJkLl8Qi9nlhU+iJLDveOHDabm38b4F0KGc0VGjVVrXANFmRZe4U6j/c07reOFgJ6Hy
+         Y6tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=dz08TtZQHN8WysDf1KSSv+J846ggMOVj0kzY1pDn55Y=;
-        b=IibZ5bRie6BO89KlVoHOzppcHY09qa/OiVjcDke6NPB3Bmz966Xe+7+iM0kEUFfucg
-         Qh/s/hJabyApcxHDFLzzzM4p2WpmXZPCGnsALqcqRqOMPRSJlzWjZTv32zEKNE1rgxHD
-         h5MP3Iw6QuD70cdK9ReETDS3y2bABx6l/N6fkZmOUDWCWXkHuiD3NjU9FoWRjM760Puq
-         DGBapbsUwjnQZKjiHZXyvpDBjFfAp32+DmrDI19K029eBx1sKFmsv5I8itR9PO6qbB2h
-         IoGIRARkoOgndtLPR4P9HFcGKAZWbXIM4unAzHww/z5WvQFHJLjJw0J42P6sDGhtQCJJ
-         fyWg==
-X-Gm-Message-State: AOAM531toagm1lw8iyNL8Rr6naKopeCsFl1tmSQB5CRVU0rIQntg8HQR
-        oq+5jBo6/E6KCEc/Ry+j5Y7Q8Y+ZTFHTvA==
-X-Google-Smtp-Source: ABdhPJyjUSVgdPFic/P8Et5E9RwW1l1qkvgy2QTFo4YpaB/kfDIXpAjAt064eXJjGY0LpZQutU0pmQ==
-X-Received: by 2002:a05:6402:416:: with SMTP id q22mr11927096edv.204.1620399427010;
-        Fri, 07 May 2021 07:57:07 -0700 (PDT)
+        bh=CJHBifJjuAiUBB1fcY/7U2kOYy2ASja8+o2PqKZoRWE=;
+        b=ARrqVX36EaX5unf6AGMYQ7XSeDluKuDMRMf35o5AuMH2mX4vVZcc9IW7J8B1k+HzNx
+         r5DRlM+6Z3EQcNBDKhrl2jtMTtSJ4JwUoGkCDG/E2OKETKy6tCU2LMYs1+q+Qcj09myG
+         Ldg//+8qtn5r8Rw7nO0FVMZdEbx3sbnCDHp8I+hhi6NYhHqqf9OcCxaKlJP7xgpiaVnd
+         6mUrSMDpSyZhNHQ8l401icPaj6v0e9Jq51lWA0bGM01t1sEtO5fqiHLKSTTRyZlkb2hc
+         1n4T6UWDY4AY1vEWXZw7NsnJAw7V953x47HBrleVZPc15Ac4+ERv7aXE7BLkdNmhNy8U
+         Ywcg==
+X-Gm-Message-State: AOAM533dt5TaB65lH7fo2ccR7OUnQfEUPjQipOLEtSTtZ0iW7nw8z1Sa
+        j0GHacFqflouQTjIu4y7BnQ=
+X-Google-Smtp-Source: ABdhPJwKTBoHHEGsXmBsKTt/zAlEpVBQULdCoEKocsz8PQ3XbcWNFsWC2MfypygtKruT+f+OYBtAdQ==
+X-Received: by 2002:a05:6402:798:: with SMTP id d24mr11757288edy.275.1620399520090;
+        Fri, 07 May 2021 07:58:40 -0700 (PDT)
 Received: from jernej-laptop.localnet (cpe-86-58-17-133.cable.triera.net. [86.58.17.133])
-        by smtp.gmail.com with ESMTPSA id h4sm3325354edv.97.2021.05.07.07.57.05
+        by smtp.gmail.com with ESMTPSA id cf10sm4308872edb.21.2021.05.07.07.58.38
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 07:57:06 -0700 (PDT)
+        Fri, 07 May 2021 07:58:39 -0700 (PDT)
 From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
 To:     dri-devel@lists.freedesktop.org,
         Daniel Vetter <daniel.vetter@intel.com>,
@@ -70,11 +70,11 @@ Cc:     Tim Gover <tim.gover@raspberrypi.com>,
         Robert Foss <robert.foss@linaro.org>,
         Alex Deucher <alexander.deucher@amd.com>,
         Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [v3,4/5] drm/connector: Add a helper to attach the colorspace property
-Date:   Fri, 07 May 2021 16:57:04 +0200
-Message-ID: <2190160.Z2YBaczauS@jernej-laptop>
-In-Reply-To: <20210430094451.2145002-4-maxime@cerno.tech>
-References: <20210430094451.2145002-4-maxime@cerno.tech>
+Subject: Re: [v3,5/5] drm/vc4: hdmi: Signal the proper colorimetry info in the infoframe
+Date:   Fri, 07 May 2021 16:58:38 +0200
+Message-ID: <3819038.KMkRtCgjlg@jernej-laptop>
+In-Reply-To: <20210430094451.2145002-5-maxime@cerno.tech>
+References: <20210430094451.2145002-5-maxime@cerno.tech>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
@@ -84,10 +84,12 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 Hi!
 
-Dne petek, 30. april 2021 ob 11:44:50 CEST je Maxime Ripard napisal(a):
-> The intel driver uses the same logic to attach the Colorspace property
-> in multiple places and we'll need it in vc4 too. Let's move that common
-> code in a helper.
+Dne petek, 30. april 2021 ob 11:44:51 CEST je Maxime Ripard napisal(a):
+> Our driver while supporting HDR didn't send the proper colorimetry info
+> in the AVI infoframe.
+> 
+> Let's add the property needed so that the userspace can let us know what
+> the colorspace is supposed to be.
 > 
 > Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 > ---
@@ -97,7 +99,6 @@ Dne petek, 30. april 2021 ob 11:44:50 CEST je Maxime Ripard napisal(a):
 > 
 > Changes from v1:
 >   - New patch
-> ---
 
 Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
 
