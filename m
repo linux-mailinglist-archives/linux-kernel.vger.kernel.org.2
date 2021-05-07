@@ -2,117 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAEFC37612D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:32:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E59BD37612E
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:33:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235342AbhEGHdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48282 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233366AbhEGHdR (ORCPT
+        id S234911AbhEGHep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:34:45 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17141 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229849AbhEGHef (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:33:17 -0400
-Received: from mail-vs1-xe2b.google.com (mail-vs1-xe2b.google.com [IPv6:2607:f8b0:4864:20::e2b])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EC415C061763
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:32:16 -0700 (PDT)
-Received: by mail-vs1-xe2b.google.com with SMTP id j128so4251760vsc.5
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:32:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=ISEXijb9zAgrvpvMxtfDW4VYLgxl60uo+zvkmzN/jGE=;
-        b=pXhFA1jEqZJaRIZVlnRs0aUOrebek2H8j845n+HDFcVCw5vGyKpYYB+QFcL9wukt/C
-         B9qNi4HcSR+oT3ZfK3bzN9u5rwU6AUMGA3L7xYfXTLdUPWJKzuhdGIMSZ2iRWc5AHVvb
-         E6twcSMxbDPdf3jo4szNAq1kHmobM3cyE5XKWvfCVGej1ROstVdxPV7jAVC2C3Hdn1TL
-         B7nUtisJ2lQJOFkpeuvwYmxtkbwmSBBV4+usU4lV2WCF3kw4H1PUuvPh+kOeggh3c2IO
-         asWop5e/apV8/5IJlMysgfNTIeIF2SpwffIUpDk2R9XlnVLehZjrmswrCMbB+2AKCP0E
-         MYyQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=ISEXijb9zAgrvpvMxtfDW4VYLgxl60uo+zvkmzN/jGE=;
-        b=giZgJED8F/7ABOJKpKWhkV1DAFr7+xaaOSjHHao1yLsnxagCFTgW0mk0WU5wmpz//F
-         JUeTxdaY6cyWApVD44wXBI4edd0zyPhOXul82b6FdjdUFhT0jtpuctKF09Wj4pCjt2iD
-         EcopvXk7JTBTVRnefytx7frCb93y6391HkSIRuvj2J3+wXavfJXT7Rc67haZEfH0wo4R
-         QPKnESkgQ8ejdG1fLQtcuJm37zdELI5seeU6TQlPX3SeGN5G0X5iBx41a6LzRLOx4Go1
-         LkNs5lMx07Fyes/yj2rYcoOkrujTO5ki2w+vIdxoXDXiylAGNzwVIDED5appA5/Jjsdx
-         r3/w==
-X-Gm-Message-State: AOAM531pz6xFKQ8o9rNZoO0T6jGMVD77mWmErSPCJH9rhp8nJhXSYUdG
-        HjXlv2D+vNcxCHmiWE8BjC9ZHGqfeIp2eaS+0ECKSLA9ntHKQg==
-X-Google-Smtp-Source: ABdhPJwLuWMccR2AOfG9xSWs0t4E/w5MuX7GyZjU0lUjJwUaV2uz7yjaF801ZDGaifxU9CR+3Remi0hA4aEYUcsnuQs=
-X-Received: by 2002:a05:6102:7c1:: with SMTP id y1mr7177715vsg.34.1620372736198;
- Fri, 07 May 2021 00:32:16 -0700 (PDT)
+        Fri, 7 May 2021 03:34:35 -0400
+Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fc2Cs5wXVzqSqW;
+        Fri,  7 May 2021 15:30:17 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS409-HUB.china.huawei.com
+ (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Fri, 7 May 2021
+ 15:33:26 +0800
+Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
+ prb
+To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Petr Mladek <pmladek@suse.com>
+CC:     <sergey.senozhatsky@gmail.com>, <rostedt@goodmis.org>,
+        <john.ogness@linutronix.de>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, <bobo.shaobowang@huawei.com>
+References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
+ <YJPxj83F1sBjHHAE@alley> <YJP4F1UIt/eRZ96s@google.com>
+ <YJP5MnkJ8pJevXM6@google.com>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <72443c6d-b70b-0e36-bab0-87705a1d8019@huawei.com>
+Date:   Fri, 7 May 2021 15:33:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-References: <20210504161222.101536-1-ulf.hansson@linaro.org> <DM6PR04MB65750A91FDC869FD3ABFE27AFC579@DM6PR04MB6575.namprd04.prod.outlook.com>
-In-Reply-To: <DM6PR04MB65750A91FDC869FD3ABFE27AFC579@DM6PR04MB6575.namprd04.prod.outlook.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 7 May 2021 09:31:39 +0200
-Message-ID: <CAPDyKFoifq5Dv1HiHpF2QcfO8ZTuf+OL0Uyo7fGr1gDVfdw+Tw@mail.gmail.com>
-Subject: Re: [PATCH 00/11] Initital support for new power/perf features for SD cards
-To:     Avri Altman <Avri.Altman@wdc.com>
-Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <YJP5MnkJ8pJevXM6@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021 at 08:44, Avri Altman <Avri.Altman@wdc.com> wrote:
+
+On 2021/5/6 22:12, Sergey Senozhatsky wrote:
+> On (21/05/06 23:07), Sergey Senozhatsky wrote:
+>> Can we count the number of lines that we print from the `current` context
+>> in console_unlock() and if after N messages there is no console_lock waiter
+>> waiting for the `current` to handover console lock ownership, then create
+>> one: schedule IRQ work that will become a console lock owner, spin on
+>> console lock and call console_unlock() once it acquired the ownership.
+>> That 'artificial' console lock owner will do the same - print N
+>> messages, if nothing wants to become a console lock owner then it'll
+>> queue another IRQ work.
+> Or even simpler
 >
-> >
-> > In the SD spec v4.x the SD function extension registers were introduced=
-,
-> > together with a new set of commands (CMD48/49 and CMD58/59) to read
-> > and write
-> > to them.
-> >
-> > Moreover, in v4.x a new standard function for power management features
-> > were
-> > added, while in v6.x a new standard function for performance
-> > enhancements
-> > features were added.
-> >
-> > This series implement the basics to add support for these new features =
-(and
-> > includes some additional preparations in patch 1->7), by adding support=
- for
-> > reading and parsing these new SD registers. In the final patch we add
-> > support
-> > for the SD poweroff notification feature, which also add a function to =
-write
-> > to
-> > these registers.
-> >
-> > Note that, there are no HW updates need for the host to support
-> > reading/parsing
-> > of the these new SD registers. This has been tested with a 64GB Sandisk
-> > Extreme
-> > PRO UHS-I A2 card.
-> >
-> > Tests and reviews are of course greatly appreciated!
-> Echoing an internal discussion about this series:
-> "...
-> That is very good that there will be a support of the extension registers=
- of SD spec .   It may allow existing and future features to be very easily=
- supported by hosts (like existing power off control and future TCG/RPMB re=
-lated spec which is currently under definition and is going to use those re=
-gisters as well..).
+> console_unlock()
+> {
+> 	...
+>
+> 	if (printed_messages > limit && !console_lock_spinning_disable_and_check()) {
+> 		printk_safe_exit_irqrestore(flags);
+>
+> 		console_locked = 0;
+> 		up_console_sem();
+>
+> 		defer_console_output();
+> 		return;
+> 	}
 
-Thanks for sharing. I am happy to help!
 
-> ..."
-> Therefore for entire series: Acked-by: Avri Altman <avri.altman@wdc.com>
+Hi,  Sergey, I test this,  it works.
 
-Thanks for reviewing!
 
-Kind regards
-Uffe
+But, I have a doubt. If the log buffer exceeds limit, we can schedule 
+IRQ work to become the console lock owner and let current context return.
+
+So why not just let the IRQ work process the console output without 
+limit? To be clear, driver call printk() only care about the correct 
+sequence of timestamps
+
+and does not care when the print is output. Actually, I wonder if the 
+driver can only cache the print and queue the output tasks to a 
+workqueue to return, and then return directly?
+
+
+I don't know if this is a stupid idea, because I'm not familiar with printk.
+
+
+Thanks
+
+Jiaxing
+
+
+> 	...
+> }
+>
+> .
+>
+
