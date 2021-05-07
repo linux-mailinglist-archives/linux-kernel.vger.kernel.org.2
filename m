@@ -2,84 +2,358 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1499337613A
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:36:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC78137613B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:36:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235405AbhEGHhD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:37:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49114 "EHLO
+        id S235430AbhEGHhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235365AbhEGHhC (ORCPT
+        with ESMTP id S235365AbhEGHhF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:37:02 -0400
-Received: from mail-wm1-x336.google.com (mail-wm1-x336.google.com [IPv6:2a00:1450:4864:20::336])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3D4DBC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:36:03 -0700 (PDT)
-Received: by mail-wm1-x336.google.com with SMTP id k4-20020a7bc4040000b02901331d89fb83so4294590wmi.5
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:36:03 -0700 (PDT)
+        Fri, 7 May 2021 03:37:05 -0400
+Received: from mail-wm1-x32c.google.com (mail-wm1-x32c.google.com [IPv6:2a00:1450:4864:20::32c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13DD4C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:36:05 -0700 (PDT)
+Received: by mail-wm1-x32c.google.com with SMTP id o26-20020a1c4d1a0000b0290146e1feccdaso5988947wmh.0
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:36:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UpLXPBEca00X1jt2BN5Po39enJc5MfLPxoMSCRbIJjs=;
-        b=lkCNWke4nt4qvL/3A89p2+OV9OrOjUnPpf2JQBWj6b5CaqFLacdUCysNuSmH860Hsi
-         eie4XrwdgPinHZmI8RtAU/y11UJW6fnkB/0nwz02q1VW1AdBbsjECL9YYpMIZ2sGuiLI
-         se3HcC5hyu2q7/32q+lFAei+IETcbhmp7XiJVRP1Pb26iY6mGJVjLA0BdoZk36UmlUtA
-         DpO34NbNBAlEl5+9wsAQo+aqkeaSm51vTAB84eeeRGb5K20U+87Y3lsZvZd0BQvFbKJB
-         cvvD6a92uJgsYb9rmQL2NpG56YaNST4HCBvg/nSuSc9tKArdP9KyovYnkdombgMeTgOe
-         53JQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=8pojIoOGDp7UMpHuD8mhxaMyRcBT7SO3nodgyejV4AQ=;
+        b=dsYmsifR0qT6eXkF1B+AyQ6X76tGFgwHpSD1MvpkgDUtPJbI6QxpyKedH2OORIsc4Q
+         N99TSNmsdp3y+wmfBdAE4t+u6NIpXLWqb7yqLcioRui59YZHy6Gyt2+1NULOoOVfobRL
+         jJuJCVzgBzwHM6HbIERxyfb7Dc257nWzL12kcbOprIOBpL8nB/ctexlAAl1TcO97TVVD
+         QBEc534ZPKkeHI/H7EzNxyfV0lorMpKOOmjhcapPPAywRFwEWEkRxcgWwlhJz9o2T5O2
+         iQh0aHKsgIe80aYIo6gMcKcGIg/E2nt065cLW9aq5hU09PA2pTitvZVTqge2EIWoR05p
+         qIlQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UpLXPBEca00X1jt2BN5Po39enJc5MfLPxoMSCRbIJjs=;
-        b=s7FFxac2nH4tswbJSmdsu49QYBwDa4q5vt56rc7fKjrrtHwwSfNWEzIaAfvvH3ddp4
-         CFEky1xim3HHwZk4/g0M24Ji9NypmVimb14zT6T0IL5KeQ5g+fWs6ewMsmQf3VEAT6F2
-         nou/xvRYNPcHi6jSbYwlfq0wd45Eb7InhefgJBvzoi6NhU+C+q9O2ylAsJ0A6KaYckLo
-         4ket5DKGKQ+EHs5o4HbKYhkScb1jJII0qXfoenHaTFmsELng/5ZHdYQ40Lb+1gj9z6Cd
-         NjHNZdzZ9KYGcbl3WWfte1G2+zyfklnllAbjAY/5JxN0vatAEzpi1PitcqwRFCDhNNsP
-         ZDZg==
-X-Gm-Message-State: AOAM530JptMj1OOZMrBc+blTAJqfuzuQpzfJIFr26PqbYQRbuwMtwSgi
-        kAa8SIT7bNYRjsR4ZIMVX02QYo4BFGaXdg==
-X-Google-Smtp-Source: ABdhPJz8hfgogAayHw7HZWMvEcBVvaI+9+Lyyn81eann3OdlIChYSmWCJv+OrbtB4J4bpIJdKs3Qjg==
-X-Received: by 2002:a05:600c:9:: with SMTP id g9mr8564603wmc.134.1620372961805;
-        Fri, 07 May 2021 00:36:01 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=8pojIoOGDp7UMpHuD8mhxaMyRcBT7SO3nodgyejV4AQ=;
+        b=beEZTQLyTjBPDWWlbY3815fr7B0nhZPKU9FkAXQKMygT7JI1zpj5oeBDk5qX1IoRyY
+         GEuwO+7JKL7rJLPGx9AxmOFhpmGDYGvGczaMy6T2WCcamjFqSJZLADGlqfDnvkIgVjwy
+         X1W8VAymk2Nf76JLvaZb3zHHdncKsN/I0u3wPn1R0b1N3/lf3hgsB5i5SbgqX8Z4EWKX
+         nnWNoHs+G5+I9ukcdB4z5lnvIAh1ju142dtoXLuAlSutfx4o/GuTcVdwNVGAsNkk+C1Q
+         aw1Jjjbv/zEvWaYkIb6nurfZ0Lvo5IPFqFSMAtp2CMMjsAyl4CaZ3Nd9V7PXzy2SCJKp
+         DfDA==
+X-Gm-Message-State: AOAM533CQLfzxVh6LR4og6A3RKlNBHVXJTe8LU3WwONZkBMJNccDPM4Q
+        CPtBS4Y7VnPFVI10EYbF1jgyxE737J62zQ==
+X-Google-Smtp-Source: ABdhPJx7Lg9+BPC6ATs4SOPwDix7s17bY9Ns8+Gfr58ma/1icFKmBte2JCJBuStpNljeIlg73w7ieA==
+X-Received: by 2002:a1c:b60b:: with SMTP id g11mr19803197wmf.68.1620372963296;
+        Fri, 07 May 2021 00:36:03 -0700 (PDT)
 Received: from agape ([5.171.80.53])
-        by smtp.gmail.com with ESMTPSA id c5sm7561883wrs.73.2021.05.07.00.36.01
+        by smtp.gmail.com with ESMTPSA id x4sm12264620wmj.17.2021.05.07.00.36.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 00:36:01 -0700 (PDT)
+        Fri, 07 May 2021 00:36:03 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 0/4] staging: rtl8723bs: rtw_security.* clean up
-Date:   Fri,  7 May 2021 09:35:56 +0200
-Message-Id: <cover.1620372584.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 1/4] staging: rtl8723bs: remove unused macros, arrays and an inline function def
+Date:   Fri,  7 May 2021 09:35:57 +0200
+Message-Id: <ada64bfc622dbfe6d4ff03c46dff48b25ebc641e.1620372584.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
+In-Reply-To: <cover.1620372584.git.fabioaiuto83@gmail.com>
+References: <cover.1620372584.git.fabioaiuto83@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset remove some unused macros in include/rtw_security.h,
-most of them tyed to old private AES encryption.
+remove unused macros, arrays and a function definition.
+Many of these facilities were used in removed private
+aes encryption.
 
-It also replaces private arc4 encryption implementation with
-the in-kernel one.
+Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
+---
+ drivers/staging/rtl8723bs/core/rtw_security.c | 175 ------------------
+ .../staging/rtl8723bs/include/rtw_security.h  |  84 ---------
+ 2 files changed, 259 deletions(-)
 
-NOT tested.
-
-Fabio Aiuto (4):
-  staging: rtl8723bs: remove unused macros, arrays and an inline
-    function def
-  staging: rtl8723bs: remove more unused encryption macros
-  staging: rtl8723bs: remove unused symbolic constant _AES_IV_LEN_
-  staging: rtl8723bs: replace private arc4 encryption with in-kernel one
-
- drivers/staging/rtl8723bs/core/rtw_security.c | 276 ++----------------
- .../staging/rtl8723bs/include/rtw_security.h  | 101 -------
- 2 files changed, 21 insertions(+), 356 deletions(-)
-
+diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
+index 4b816cfb9eaf..bd723c80192a 100644
+--- a/drivers/staging/rtl8723bs/core/rtw_security.c
++++ b/drivers/staging/rtl8723bs/core/rtw_security.c
+@@ -1555,181 +1555,6 @@ u32 rtw_BIP_verify(struct adapter *padapter, u8 *precvframe)
+ 	return res;
+ }
+ 
+-/* AES tables*/
+-const u32 Te0[256] = {
+-	0xc66363a5U, 0xf87c7c84U, 0xee777799U, 0xf67b7b8dU,
+-	0xfff2f20dU, 0xd66b6bbdU, 0xde6f6fb1U, 0x91c5c554U,
+-	0x60303050U, 0x02010103U, 0xce6767a9U, 0x562b2b7dU,
+-	0xe7fefe19U, 0xb5d7d762U, 0x4dababe6U, 0xec76769aU,
+-	0x8fcaca45U, 0x1f82829dU, 0x89c9c940U, 0xfa7d7d87U,
+-	0xeffafa15U, 0xb25959ebU, 0x8e4747c9U, 0xfbf0f00bU,
+-	0x41adadecU, 0xb3d4d467U, 0x5fa2a2fdU, 0x45afafeaU,
+-	0x239c9cbfU, 0x53a4a4f7U, 0xe4727296U, 0x9bc0c05bU,
+-	0x75b7b7c2U, 0xe1fdfd1cU, 0x3d9393aeU, 0x4c26266aU,
+-	0x6c36365aU, 0x7e3f3f41U, 0xf5f7f702U, 0x83cccc4fU,
+-	0x6834345cU, 0x51a5a5f4U, 0xd1e5e534U, 0xf9f1f108U,
+-	0xe2717193U, 0xabd8d873U, 0x62313153U, 0x2a15153fU,
+-	0x0804040cU, 0x95c7c752U, 0x46232365U, 0x9dc3c35eU,
+-	0x30181828U, 0x379696a1U, 0x0a05050fU, 0x2f9a9ab5U,
+-	0x0e070709U, 0x24121236U, 0x1b80809bU, 0xdfe2e23dU,
+-	0xcdebeb26U, 0x4e272769U, 0x7fb2b2cdU, 0xea75759fU,
+-	0x1209091bU, 0x1d83839eU, 0x582c2c74U, 0x341a1a2eU,
+-	0x361b1b2dU, 0xdc6e6eb2U, 0xb45a5aeeU, 0x5ba0a0fbU,
+-	0xa45252f6U, 0x763b3b4dU, 0xb7d6d661U, 0x7db3b3ceU,
+-	0x5229297bU, 0xdde3e33eU, 0x5e2f2f71U, 0x13848497U,
+-	0xa65353f5U, 0xb9d1d168U, 0x00000000U, 0xc1eded2cU,
+-	0x40202060U, 0xe3fcfc1fU, 0x79b1b1c8U, 0xb65b5bedU,
+-	0xd46a6abeU, 0x8dcbcb46U, 0x67bebed9U, 0x7239394bU,
+-	0x944a4adeU, 0x984c4cd4U, 0xb05858e8U, 0x85cfcf4aU,
+-	0xbbd0d06bU, 0xc5efef2aU, 0x4faaaae5U, 0xedfbfb16U,
+-	0x864343c5U, 0x9a4d4dd7U, 0x66333355U, 0x11858594U,
+-	0x8a4545cfU, 0xe9f9f910U, 0x04020206U, 0xfe7f7f81U,
+-	0xa05050f0U, 0x783c3c44U, 0x259f9fbaU, 0x4ba8a8e3U,
+-	0xa25151f3U, 0x5da3a3feU, 0x804040c0U, 0x058f8f8aU,
+-	0x3f9292adU, 0x219d9dbcU, 0x70383848U, 0xf1f5f504U,
+-	0x63bcbcdfU, 0x77b6b6c1U, 0xafdada75U, 0x42212163U,
+-	0x20101030U, 0xe5ffff1aU, 0xfdf3f30eU, 0xbfd2d26dU,
+-	0x81cdcd4cU, 0x180c0c14U, 0x26131335U, 0xc3ecec2fU,
+-	0xbe5f5fe1U, 0x359797a2U, 0x884444ccU, 0x2e171739U,
+-	0x93c4c457U, 0x55a7a7f2U, 0xfc7e7e82U, 0x7a3d3d47U,
+-	0xc86464acU, 0xba5d5de7U, 0x3219192bU, 0xe6737395U,
+-	0xc06060a0U, 0x19818198U, 0x9e4f4fd1U, 0xa3dcdc7fU,
+-	0x44222266U, 0x542a2a7eU, 0x3b9090abU, 0x0b888883U,
+-	0x8c4646caU, 0xc7eeee29U, 0x6bb8b8d3U, 0x2814143cU,
+-	0xa7dede79U, 0xbc5e5ee2U, 0x160b0b1dU, 0xaddbdb76U,
+-	0xdbe0e03bU, 0x64323256U, 0x743a3a4eU, 0x140a0a1eU,
+-	0x924949dbU, 0x0c06060aU, 0x4824246cU, 0xb85c5ce4U,
+-	0x9fc2c25dU, 0xbdd3d36eU, 0x43acacefU, 0xc46262a6U,
+-	0x399191a8U, 0x319595a4U, 0xd3e4e437U, 0xf279798bU,
+-	0xd5e7e732U, 0x8bc8c843U, 0x6e373759U, 0xda6d6db7U,
+-	0x018d8d8cU, 0xb1d5d564U, 0x9c4e4ed2U, 0x49a9a9e0U,
+-	0xd86c6cb4U, 0xac5656faU, 0xf3f4f407U, 0xcfeaea25U,
+-	0xca6565afU, 0xf47a7a8eU, 0x47aeaee9U, 0x10080818U,
+-	0x6fbabad5U, 0xf0787888U, 0x4a25256fU, 0x5c2e2e72U,
+-	0x381c1c24U, 0x57a6a6f1U, 0x73b4b4c7U, 0x97c6c651U,
+-	0xcbe8e823U, 0xa1dddd7cU, 0xe874749cU, 0x3e1f1f21U,
+-	0x964b4bddU, 0x61bdbddcU, 0x0d8b8b86U, 0x0f8a8a85U,
+-	0xe0707090U, 0x7c3e3e42U, 0x71b5b5c4U, 0xcc6666aaU,
+-	0x904848d8U, 0x06030305U, 0xf7f6f601U, 0x1c0e0e12U,
+-	0xc26161a3U, 0x6a35355fU, 0xae5757f9U, 0x69b9b9d0U,
+-	0x17868691U, 0x99c1c158U, 0x3a1d1d27U, 0x279e9eb9U,
+-	0xd9e1e138U, 0xebf8f813U, 0x2b9898b3U, 0x22111133U,
+-	0xd26969bbU, 0xa9d9d970U, 0x078e8e89U, 0x339494a7U,
+-	0x2d9b9bb6U, 0x3c1e1e22U, 0x15878792U, 0xc9e9e920U,
+-	0x87cece49U, 0xaa5555ffU, 0x50282878U, 0xa5dfdf7aU,
+-	0x038c8c8fU, 0x59a1a1f8U, 0x09898980U, 0x1a0d0d17U,
+-	0x65bfbfdaU, 0xd7e6e631U, 0x844242c6U, 0xd06868b8U,
+-	0x824141c3U, 0x299999b0U, 0x5a2d2d77U, 0x1e0f0f11U,
+-	0x7bb0b0cbU, 0xa85454fcU, 0x6dbbbbd6U, 0x2c16163aU,
+-};
+-
+-const u32 Td0[256] = {
+-	0x51f4a750U, 0x7e416553U, 0x1a17a4c3U, 0x3a275e96U,
+-	0x3bab6bcbU, 0x1f9d45f1U, 0xacfa58abU, 0x4be30393U,
+-	0x2030fa55U, 0xad766df6U, 0x88cc7691U, 0xf5024c25U,
+-	0x4fe5d7fcU, 0xc52acbd7U, 0x26354480U, 0xb562a38fU,
+-	0xdeb15a49U, 0x25ba1b67U, 0x45ea0e98U, 0x5dfec0e1U,
+-	0xc32f7502U, 0x814cf012U, 0x8d4697a3U, 0x6bd3f9c6U,
+-	0x038f5fe7U, 0x15929c95U, 0xbf6d7aebU, 0x955259daU,
+-	0xd4be832dU, 0x587421d3U, 0x49e06929U, 0x8ec9c844U,
+-	0x75c2896aU, 0xf48e7978U, 0x99583e6bU, 0x27b971ddU,
+-	0xbee14fb6U, 0xf088ad17U, 0xc920ac66U, 0x7dce3ab4U,
+-	0x63df4a18U, 0xe51a3182U, 0x97513360U, 0x62537f45U,
+-	0xb16477e0U, 0xbb6bae84U, 0xfe81a01cU, 0xf9082b94U,
+-	0x70486858U, 0x8f45fd19U, 0x94de6c87U, 0x527bf8b7U,
+-	0xab73d323U, 0x724b02e2U, 0xe31f8f57U, 0x6655ab2aU,
+-	0xb2eb2807U, 0x2fb5c203U, 0x86c57b9aU, 0xd33708a5U,
+-	0x302887f2U, 0x23bfa5b2U, 0x02036abaU, 0xed16825cU,
+-	0x8acf1c2bU, 0xa779b492U, 0xf307f2f0U, 0x4e69e2a1U,
+-	0x65daf4cdU, 0x0605bed5U, 0xd134621fU, 0xc4a6fe8aU,
+-	0x342e539dU, 0xa2f355a0U, 0x058ae132U, 0xa4f6eb75U,
+-	0x0b83ec39U, 0x4060efaaU, 0x5e719f06U, 0xbd6e1051U,
+-	0x3e218af9U, 0x96dd063dU, 0xdd3e05aeU, 0x4de6bd46U,
+-	0x91548db5U, 0x71c45d05U, 0x0406d46fU, 0x605015ffU,
+-	0x1998fb24U, 0xd6bde997U, 0x894043ccU, 0x67d99e77U,
+-	0xb0e842bdU, 0x07898b88U, 0xe7195b38U, 0x79c8eedbU,
+-	0xa17c0a47U, 0x7c420fe9U, 0xf8841ec9U, 0x00000000U,
+-	0x09808683U, 0x322bed48U, 0x1e1170acU, 0x6c5a724eU,
+-	0xfd0efffbU, 0x0f853856U, 0x3daed51eU, 0x362d3927U,
+-	0x0a0fd964U, 0x685ca621U, 0x9b5b54d1U, 0x24362e3aU,
+-	0x0c0a67b1U, 0x9357e70fU, 0xb4ee96d2U, 0x1b9b919eU,
+-	0x80c0c54fU, 0x61dc20a2U, 0x5a774b69U, 0x1c121a16U,
+-	0xe293ba0aU, 0xc0a02ae5U, 0x3c22e043U, 0x121b171dU,
+-	0x0e090d0bU, 0xf28bc7adU, 0x2db6a8b9U, 0x141ea9c8U,
+-	0x57f11985U, 0xaf75074cU, 0xee99ddbbU, 0xa37f60fdU,
+-	0xf701269fU, 0x5c72f5bcU, 0x44663bc5U, 0x5bfb7e34U,
+-	0x8b432976U, 0xcb23c6dcU, 0xb6edfc68U, 0xb8e4f163U,
+-	0xd731dccaU, 0x42638510U, 0x13972240U, 0x84c61120U,
+-	0x854a247dU, 0xd2bb3df8U, 0xaef93211U, 0xc729a16dU,
+-	0x1d9e2f4bU, 0xdcb230f3U, 0x0d8652ecU, 0x77c1e3d0U,
+-	0x2bb3166cU, 0xa970b999U, 0x119448faU, 0x47e96422U,
+-	0xa8fc8cc4U, 0xa0f03f1aU, 0x567d2cd8U, 0x223390efU,
+-	0x87494ec7U, 0xd938d1c1U, 0x8ccaa2feU, 0x98d40b36U,
+-	0xa6f581cfU, 0xa57ade28U, 0xdab78e26U, 0x3fadbfa4U,
+-	0x2c3a9de4U, 0x5078920dU, 0x6a5fcc9bU, 0x547e4662U,
+-	0xf68d13c2U, 0x90d8b8e8U, 0x2e39f75eU, 0x82c3aff5U,
+-	0x9f5d80beU, 0x69d0937cU, 0x6fd52da9U, 0xcf2512b3U,
+-	0xc8ac993bU, 0x10187da7U, 0xe89c636eU, 0xdb3bbb7bU,
+-	0xcd267809U, 0x6e5918f4U, 0xec9ab701U, 0x834f9aa8U,
+-	0xe6956e65U, 0xaaffe67eU, 0x21bccf08U, 0xef15e8e6U,
+-	0xbae79bd9U, 0x4a6f36ceU, 0xea9f09d4U, 0x29b07cd6U,
+-	0x31a4b2afU, 0x2a3f2331U, 0xc6a59430U, 0x35a266c0U,
+-	0x744ebc37U, 0xfc82caa6U, 0xe090d0b0U, 0x33a7d815U,
+-	0xf104984aU, 0x41ecdaf7U, 0x7fcd500eU, 0x1791f62fU,
+-	0x764dd68dU, 0x43efb04dU, 0xccaa4d54U, 0xe49604dfU,
+-	0x9ed1b5e3U, 0x4c6a881bU, 0xc12c1fb8U, 0x4665517fU,
+-	0x9d5eea04U, 0x018c355dU, 0xfa877473U, 0xfb0b412eU,
+-	0xb3671d5aU, 0x92dbd252U, 0xe9105633U, 0x6dd64713U,
+-	0x9ad7618cU, 0x37a10c7aU, 0x59f8148eU, 0xeb133c89U,
+-	0xcea927eeU, 0xb761c935U, 0xe11ce5edU, 0x7a47b13cU,
+-	0x9cd2df59U, 0x55f2733fU, 0x1814ce79U, 0x73c737bfU,
+-	0x53f7cdeaU, 0x5ffdaa5bU, 0xdf3d6f14U, 0x7844db86U,
+-	0xcaaff381U, 0xb968c43eU, 0x3824342cU, 0xc2a3405fU,
+-	0x161dc372U, 0xbce2250cU, 0x283c498bU, 0xff0d9541U,
+-	0x39a80171U, 0x080cb3deU, 0xd8b4e49cU, 0x6456c190U,
+-	0x7bcb8461U, 0xd532b670U, 0x486c5c74U, 0xd0b85742U,
+-};
+-
+-const u8 Td4s[256] = {
+-	0x52U, 0x09U, 0x6aU, 0xd5U, 0x30U, 0x36U, 0xa5U, 0x38U,
+-	0xbfU, 0x40U, 0xa3U, 0x9eU, 0x81U, 0xf3U, 0xd7U, 0xfbU,
+-	0x7cU, 0xe3U, 0x39U, 0x82U, 0x9bU, 0x2fU, 0xffU, 0x87U,
+-	0x34U, 0x8eU, 0x43U, 0x44U, 0xc4U, 0xdeU, 0xe9U, 0xcbU,
+-	0x54U, 0x7bU, 0x94U, 0x32U, 0xa6U, 0xc2U, 0x23U, 0x3dU,
+-	0xeeU, 0x4cU, 0x95U, 0x0bU, 0x42U, 0xfaU, 0xc3U, 0x4eU,
+-	0x08U, 0x2eU, 0xa1U, 0x66U, 0x28U, 0xd9U, 0x24U, 0xb2U,
+-	0x76U, 0x5bU, 0xa2U, 0x49U, 0x6dU, 0x8bU, 0xd1U, 0x25U,
+-	0x72U, 0xf8U, 0xf6U, 0x64U, 0x86U, 0x68U, 0x98U, 0x16U,
+-	0xd4U, 0xa4U, 0x5cU, 0xccU, 0x5dU, 0x65U, 0xb6U, 0x92U,
+-	0x6cU, 0x70U, 0x48U, 0x50U, 0xfdU, 0xedU, 0xb9U, 0xdaU,
+-	0x5eU, 0x15U, 0x46U, 0x57U, 0xa7U, 0x8dU, 0x9dU, 0x84U,
+-	0x90U, 0xd8U, 0xabU, 0x00U, 0x8cU, 0xbcU, 0xd3U, 0x0aU,
+-	0xf7U, 0xe4U, 0x58U, 0x05U, 0xb8U, 0xb3U, 0x45U, 0x06U,
+-	0xd0U, 0x2cU, 0x1eU, 0x8fU, 0xcaU, 0x3fU, 0x0fU, 0x02U,
+-	0xc1U, 0xafU, 0xbdU, 0x03U, 0x01U, 0x13U, 0x8aU, 0x6bU,
+-	0x3aU, 0x91U, 0x11U, 0x41U, 0x4fU, 0x67U, 0xdcU, 0xeaU,
+-	0x97U, 0xf2U, 0xcfU, 0xceU, 0xf0U, 0xb4U, 0xe6U, 0x73U,
+-	0x96U, 0xacU, 0x74U, 0x22U, 0xe7U, 0xadU, 0x35U, 0x85U,
+-	0xe2U, 0xf9U, 0x37U, 0xe8U, 0x1cU, 0x75U, 0xdfU, 0x6eU,
+-	0x47U, 0xf1U, 0x1aU, 0x71U, 0x1dU, 0x29U, 0xc5U, 0x89U,
+-	0x6fU, 0xb7U, 0x62U, 0x0eU, 0xaaU, 0x18U, 0xbeU, 0x1bU,
+-	0xfcU, 0x56U, 0x3eU, 0x4bU, 0xc6U, 0xd2U, 0x79U, 0x20U,
+-	0x9aU, 0xdbU, 0xc0U, 0xfeU, 0x78U, 0xcdU, 0x5aU, 0xf4U,
+-	0x1fU, 0xddU, 0xa8U, 0x33U, 0x88U, 0x07U, 0xc7U, 0x31U,
+-	0xb1U, 0x12U, 0x10U, 0x59U, 0x27U, 0x80U, 0xecU, 0x5fU,
+-	0x60U, 0x51U, 0x7fU, 0xa9U, 0x19U, 0xb5U, 0x4aU, 0x0dU,
+-	0x2dU, 0xe5U, 0x7aU, 0x9fU, 0x93U, 0xc9U, 0x9cU, 0xefU,
+-	0xa0U, 0xe0U, 0x3bU, 0x4dU, 0xaeU, 0x2aU, 0xf5U, 0xb0U,
+-	0xc8U, 0xebU, 0xbbU, 0x3cU, 0x83U, 0x53U, 0x99U, 0x61U,
+-	0x17U, 0x2bU, 0x04U, 0x7eU, 0xbaU, 0x77U, 0xd6U, 0x26U,
+-	0xe1U, 0x69U, 0x14U, 0x63U, 0x55U, 0x21U, 0x0cU, 0x7dU,
+-};
+-
+-const u8 rcons[] = {
+-	0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36
+-	/* for 128-bit blocks, Rijndael never uses more than 10 rcon values */
+-};
+-
+ static void gf_mulx(u8 *pad)
+ {
+ 	int i, carry;
+diff --git a/drivers/staging/rtl8723bs/include/rtw_security.h b/drivers/staging/rtl8723bs/include/rtw_security.h
+index 5c787e999aab..619d2fa4e8f2 100644
+--- a/drivers/staging/rtl8723bs/include/rtw_security.h
++++ b/drivers/staging/rtl8723bs/include/rtw_security.h
+@@ -243,90 +243,6 @@ struct mic_data {
+ 	u32     nBytesInM;      /*  # bytes in M */
+ };
+ 
+-extern const u32 Te0[256];
+-extern const u32 Te1[256];
+-extern const u32 Te2[256];
+-extern const u32 Te3[256];
+-extern const u32 Te4[256];
+-extern const u32 Td0[256];
+-extern const u32 Td1[256];
+-extern const u32 Td2[256];
+-extern const u32 Td3[256];
+-extern const u32 Td4[256];
+-extern const u32 rcon[10];
+-extern const u8 Td4s[256];
+-extern const u8 rcons[10];
+-
+-#define RCON(i) (rcons[(i)] << 24)
+-
+-static inline u32 rotr(u32 val, int bits)
+-{
+-	return (val >> bits) | (val << (32 - bits));
+-}
+-
+-#define TE0(i) Te0[((i) >> 24) & 0xff]
+-#define TE1(i) rotr(Te0[((i) >> 16) & 0xff], 8)
+-#define TE2(i) rotr(Te0[((i) >> 8) & 0xff], 16)
+-#define TE3(i) rotr(Te0[(i) & 0xff], 24)
+-#define TE41(i) ((Te0[((i) >> 24) & 0xff] << 8) & 0xff000000)
+-#define TE42(i) (Te0[((i) >> 16) & 0xff] & 0x00ff0000)
+-#define TE43(i) (Te0[((i) >> 8) & 0xff] & 0x0000ff00)
+-#define TE44(i) ((Te0[(i) & 0xff] >> 8) & 0x000000ff)
+-#define TE421(i) ((Te0[((i) >> 16) & 0xff] << 8) & 0xff000000)
+-#define TE432(i) (Te0[((i) >> 8) & 0xff] & 0x00ff0000)
+-#define TE443(i) (Te0[(i) & 0xff] & 0x0000ff00)
+-#define TE414(i) ((Te0[((i) >> 24) & 0xff] >> 8) & 0x000000ff)
+-#define TE4(i) ((Te0[(i)] >> 8) & 0x000000ff)
+-
+-#define TD0(i) Td0[((i) >> 24) & 0xff]
+-#define TD1(i) rotr(Td0[((i) >> 16) & 0xff], 8)
+-#define TD2(i) rotr(Td0[((i) >> 8) & 0xff], 16)
+-#define TD3(i) rotr(Td0[(i) & 0xff], 24)
+-#define TD41(i) (Td4s[((i) >> 24) & 0xff] << 24)
+-#define TD42(i) (Td4s[((i) >> 16) & 0xff] << 16)
+-#define TD43(i) (Td4s[((i) >> 8) & 0xff] << 8)
+-#define TD44(i) (Td4s[(i) & 0xff])
+-#define TD0_(i) Td0[(i) & 0xff]
+-#define TD1_(i) rotr(Td0[(i) & 0xff], 8)
+-#define TD2_(i) rotr(Td0[(i) & 0xff], 16)
+-#define TD3_(i) rotr(Td0[(i) & 0xff], 24)
+-
+-#define GETU32(pt) (((u32)(pt)[0] << 24) ^ ((u32)(pt)[1] << 16) ^ \
+-			((u32)(pt)[2] <<  8) ^ ((u32)(pt)[3]))
+-
+-#define PUTU32(ct, st) { \
+-(ct)[0] = (u8)((st) >> 24); (ct)[1] = (u8)((st) >> 16); \
+-(ct)[2] = (u8)((st) >>  8); (ct)[3] = (u8)(st); }
+-
+-#define WPA_GET_BE32(a) ((((u32) (a)[0]) << 24) | (((u32) (a)[1]) << 16) | \
+-			 (((u32) (a)[2]) << 8) | ((u32) (a)[3]))
+-
+-#define WPA_PUT_LE16(a, val)			\
+-	do {					\
+-		(a)[1] = ((u16) (val)) >> 8;	\
+-		(a)[0] = ((u16) (val)) & 0xff;	\
+-	} while (0)
+-
+-#define WPA_PUT_BE32(a, val)					\
+-	do {							\
+-		(a)[0] = (u8) ((((u32) (val)) >> 24) & 0xff);	\
+-		(a)[1] = (u8) ((((u32) (val)) >> 16) & 0xff);	\
+-		(a)[2] = (u8) ((((u32) (val)) >> 8) & 0xff);	\
+-		(a)[3] = (u8) (((u32) (val)) & 0xff);		\
+-	} while (0)
+-
+-#define WPA_PUT_BE64(a, val)				\
+-	do {						\
+-		(a)[0] = (u8) (((u64) (val)) >> 56);	\
+-		(a)[1] = (u8) (((u64) (val)) >> 48);	\
+-		(a)[2] = (u8) (((u64) (val)) >> 40);	\
+-		(a)[3] = (u8) (((u64) (val)) >> 32);	\
+-		(a)[4] = (u8) (((u64) (val)) >> 24);	\
+-		(a)[5] = (u8) (((u64) (val)) >> 16);	\
+-		(a)[6] = (u8) (((u64) (val)) >> 8);	\
+-		(a)[7] = (u8) (((u64) (val)) & 0xff);	\
+-	} while (0)
+-
+ /* ===== start - public domain SHA256 implementation ===== */
+ 
+ /* This is based on SHA256 implementation in LibTomCrypt that was released into
 -- 
 2.20.1
 
