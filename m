@@ -2,97 +2,390 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 59C05376B38
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:41:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 299B1376B46
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230183AbhEGUl5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 16:41:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhEGUlz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 16:41:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B5F4961451;
-        Fri,  7 May 2021 20:40:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620420055;
-        bh=kuhZl1cpux8KIahaPtnjkqBK3+KnZu5S/hlyXMn3NGc=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FXyiiYiJ3Y5BsCajBgft+PmS4Sv/U1tkuNTGEOAmHEdLN2eIxz/oXUGnyRGMOijek
-         2NMdcNZ61cvlDUiTXbvmXD4jAaY5/KMbMLmW0Gm1koVkPRZSlTsZuSTxoXo9KvCVSX
-         LoJ6l0sKfEiCTunEuPdi9xn1lbCbTCS0kwutB5y9hMeGGsIpy5qML37ZjICfOaUcLw
-         fX+zGhgGFccCV1y5IUTbkjrfaKNvyhWl2LmE39iYiazXBG637hrBrwkUwsMcYpFmi+
-         kyn9qm5nc+YIUuPG2fVSJ7/EIib3uFzqUGKXLYJKeMpzJKn1OoB2qZBmVAzV7Fasrc
-         xuW3pK2UPyxYQ==
-Date:   Fri, 7 May 2021 13:40:52 -0700
-From:   Keith Busch <kbusch@kernel.org>
-To:     Sagi Grimberg <sagi@grimberg.me>
-Cc:     Hannes Reinecke <hare@suse.de>,
-        "Ewan D. Milne" <emilne@redhat.com>,
-        Daniel Wagner <dwagner@suse.de>,
-        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
- processing it
-Message-ID: <20210507204052.GA1485586@dhcp-10-100-145-180.wdc.com>
-References: <20210301175601.116405-1-dwagner@suse.de>
- <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
- <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
- <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
- <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
- <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
- <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
- <756aef10-e693-276f-82ac-514a2832b07f@grimberg.me>
- <492b8393-fc35-f58a-3768-94632a083c93@suse.de>
- <3156c563-94a4-4278-3835-b1f56f71869a@grimberg.me>
+        id S230184AbhEGUsq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 16:48:46 -0400
+Received: from mail-oo1-f42.google.com ([209.85.161.42]:39934 "EHLO
+        mail-oo1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229675AbhEGUsq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 16:48:46 -0400
+Received: by mail-oo1-f42.google.com with SMTP id t17-20020a4a3e110000b02901fab2f46a48so2239734oot.6;
+        Fri, 07 May 2021 13:47:44 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ItyeI4oA0lCjgmNOSmQd55OCetN3+iDGkX/UtCXQN2I=;
+        b=jwy2xX5iWGI1XmWqUnpMG5ktTKx4QGaVdlF6US0vLUwq0EyUwA9k0F5rNeATjayMuM
+         OE8r81fDebHxmPaG6M5tFf+VdRWy8461bKf20JcdiZ6VkvXyWMPY3qMNYmuDvbp5LkEH
+         YivLkxL4Ez0W158yBuBW6xwj3w6OPGyh09MnH6DQd9I0i7lJML3UrgR3awpJsP2zYo5a
+         su0bdpmgJkFgtUZJWttZyL8+7kpYNaw57r/7f+Dnpfz2OgEEGE6ztyJ3fAQXyLa6SD6Z
+         NUI+pOUDojqWEGZ4MU4+we7ECyaenvZkmGWCbsLqiEuh8FR45LV/raO9zAeSUtOQxS21
+         zNFg==
+X-Gm-Message-State: AOAM532a4xMbPADI/HM9NGbMAHh9LVAeJVQap7S/BRAjfEn2KzzZOFcO
+        3XVaGnTGx6h2qDtPBXO77Fbkc9ZA9Q==
+X-Google-Smtp-Source: ABdhPJyV6f2KSOJGMZheEOrH5nN5E3Ns/i1wFHqioqk26FOeWj2dpLJ5bggrMZfKHAbI0UVzJsm+Ow==
+X-Received: by 2002:a4a:ae47:: with SMTP id a7mr6712078oon.23.1620420464568;
+        Fri, 07 May 2021 13:47:44 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h184sm1203084oia.1.2021.05.07.13.47.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 13:47:43 -0700 (PDT)
+Received: (nullmailer pid 2855625 invoked by uid 1000);
+        Fri, 07 May 2021 20:47:41 -0000
+Date:   Fri, 7 May 2021 15:47:41 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     heiko@sntech.de, linus.walleij@linaro.org,
+        bgolaszewski@baylibre.com, jay.xu@rock-chips.com,
+        shawn.lin@rock-chips.com, david.wu@rock-chips.com,
+        zhangqing@rock-chips.com, huangtao@rock-chips.com,
+        cl@rock-chips.com, linux-gpio@vger.kernel.org,
+        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/4] dt-bindings: soc: rockchip: convert grf.txt to
+ YAML
+Message-ID: <20210507204741.GA2842589@robh.at.kernel.org>
+References: <20210505134028.13431-1-jbx6244@gmail.com>
+ <20210505134028.13431-3-jbx6244@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3156c563-94a4-4278-3835-b1f56f71869a@grimberg.me>
+In-Reply-To: <20210505134028.13431-3-jbx6244@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 01:26:11PM -0700, Sagi Grimberg wrote:
+On Wed, May 05, 2021 at 03:40:26PM +0200, Johan Jonker wrote:
+> Current dts files with 'grf' nodes are manually verified.
+> In order to automate this process grf.txt has to be
+> converted to YAML.
 > 
-> > > > > I would also mention, that a crash is not even the scariest issue that
-> > > > > we can see here, because if the request happened to be reused we are
-> > > > > in the silent data corruption realm...
-> > > > 
-> > > > If this does happen, I think we have to come up with some way to
-> > > > mitigate it. We're not utilizing the full 16 bits of the command_id, so
-> > > > maybe we can append something like a generation sequence number that can
-> > > > be checked for validity.
-> > > 
-> > > That's actually a great idea. scsi needs unique tags so it encodes the
-> > > hwq in the upper 16 bits giving the actual tag the lower 16 bits which
-> > > is more than enough for a single queue. We can do the same with
-> > > a gencnt that will increment in both submission and completion and we
-> > > can validate against it.
-> > > 
-> > > This will be useful for all transports, so maintaining it in
-> > > nvme_req(rq)->genctr and introducing a helper like:
-> > > rq = nvme_find_tag(tagset, cqe->command_id)
-> > > That will filter genctr, locate the request.
-> > > 
-> > > Also:
-> > > nvme_validate_request_gen(rq, cqe->command_id) that would
-> > > compare against it.
-> > > 
-> > > 
-> > > And then a helper to set the command_id like:
-> > > cmd->common.command_id = nvme_request_command_id(rq)
-> > > that will both increment the genctr and build a command_id
-> > > from it.
-> > > 
-> > > Thoughts?
-> > > 
-> > 
-> > Well, that would require a modification to the CQE specification, no?
-> > fmds was not amused when I proposed that :-(
+> Most compatibility strings are in use with "simple-mfd" added.
 > 
-> Why would that require a modification to the CQE? it's just using say
-> 4 msbits of the command_id to a running sequence...
+> Add description already in use:
+> "rockchip,rv1108-pmugrf", "syscon"
+> 
+> Add new descriptions for:
+> "rockchip,rk3568-grf", "syscon", "simple-mfd"
+> "rockchip,rk3568-pmugrf", "syscon", "simple-mfd"
+> 
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+> ---
+> Changed V2:
+>   add rockchip,rk3328-grf-gpio.yaml
+>   rename grf-gpio nodename
+> ---
+>  .../devicetree/bindings/soc/rockchip/grf.txt       |  61 -----
+>  .../devicetree/bindings/soc/rockchip/grf.yaml      | 280 +++++++++++++++++++++
+>  2 files changed, 280 insertions(+), 61 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.txt
+>  create mode 100644 Documentation/devicetree/bindings/soc/rockchip/grf.yaml
 
-I think Hannes was under the impression that the counter proposal wasn't
-part of the "command_id". The host can encode whatever it wants in that
-value, and the controller just has to return the same value.
+
+> diff --git a/Documentation/devicetree/bindings/soc/rockchip/grf.yaml b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> new file mode 100644
+> index 000000000..c7916beb4
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/soc/rockchip/grf.yaml
+> @@ -0,0 +1,280 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/soc/rockchip/grf.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Rockchip General Register Files (GRF)
+> +
+> +maintainers:
+> +  - Heiko Stuebner <heiko@sntech.de>
+> +
+> +select:
+> +  properties:
+> +    compatible:
+> +      contains:
+> +        enum:
+> +          - rockchip,px30-grf
+> +          - rockchip,px30-pmugrf
+> +          - rockchip,px30-usb2phy-grf
+> +          - rockchip,rk3036-grf
+> +          - rockchip,rk3066-grf
+> +          - rockchip,rk3188-grf
+> +          - rockchip,rk3228-grf
+> +          - rockchip,rk3288-grf
+> +          - rockchip,rk3288-sgrf
+> +          - rockchip,rk3308-core-grf
+> +          - rockchip,rk3308-detect-grf
+> +          - rockchip,rk3308-grf
+> +          - rockchip,rk3328-grf
+> +          - rockchip,rk3328-usb2phy-grf
+> +          - rockchip,rk3368-grf
+> +          - rockchip,rk3368-pmugrf
+> +          - rockchip,rk3399-grf
+> +          - rockchip,rk3399-pmugrf
+> +          - rockchip,rk3568-grf
+> +          - rockchip,rk3568-pmugrf
+> +          - rockchip,rv1108-grf
+> +          - rockchip,rv1108-pmugrf
+> +          - rockchip,rv1108-usbgrf
+> +
+> +  required:
+> +    - compatible
+
+You shouldn't need 'select' here. The tools handle not matching every 
+syscon or simple-mfd.
+
+> +
+> +properties:
+> +  compatible:
+> +    oneOf:
+> +      - items:
+> +          - enum:
+> +              - rockchip,rk3066-grf
+> +              - rockchip,rk3188-grf
+> +              - rockchip,rk3288-sgrf
+> +              - rockchip,rv1108-pmugrf
+> +              - rockchip,rv1108-usbgrf
+> +          - const: syscon
+> +      - items:
+> +          - enum:
+> +              - rockchip,px30-grf
+> +              - rockchip,px30-pmugrf
+> +              - rockchip,px30-usb2phy-grf
+> +              - rockchip,rk3036-grf
+> +              - rockchip,rk3228-grf
+> +              - rockchip,rk3288-grf
+> +              - rockchip,rk3308-core-grf
+> +              - rockchip,rk3308-detect-grf
+> +              - rockchip,rk3308-grf
+> +              - rockchip,rk3328-grf
+> +              - rockchip,rk3328-usb2phy-grf
+> +              - rockchip,rk3368-grf
+> +              - rockchip,rk3368-pmugrf
+> +              - rockchip,rk3399-grf
+> +              - rockchip,rk3399-pmugrf
+> +              - rockchip,rk3568-grf
+> +              - rockchip,rk3568-pmugrf
+> +              - rockchip,rv1108-grf
+> +          - const: syscon
+> +          - const: simple-mfd
+> +
+> +  reg:
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +additionalProperties: true
+
+Never correct for a schema defining a whole node (IOW, only correct for 
+collections of shared properties).
+
+unevaluatedProperties: false
+
+> +
+> +allOf:
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,px30-grf
+> +
+> +    then:
+> +      properties:
+> +        lvds:
+> +          description:
+> +            Documentation/devicetree/bindings/display/rockchip/rockchip-lvds.txt
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3288-grf
+> +
+> +    then:
+> +      properties:
+> +        edp-phy:
+> +          description:
+> +            Documentation/devicetree/bindings/phy/rockchip-dp-phy.txt
+> +
+> +        usbphy:
+> +          description:
+> +            Documentation/devicetree/bindings/phy/rockchip-usb-phy.txt
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3328-grf
+> +
+> +    then:
+> +      properties:
+> +        gpio:
+> +          type: object
+> +
+> +          $ref: "/schemas/gpio/rockchip,rk3328-grf-gpio.yaml#"
+> +
+> +          unevaluatedProperties: false
+> +
+> +        power-controller:
+> +          type: object
+> +
+> +          $ref: "/schemas/power/rockchip,power-controller.yaml#"
+> +
+> +          unevaluatedProperties: false
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            const: rockchip,rk3399-grf
+> +
+> +    then:
+> +      properties:
+> +        mipi-dphy-rx0:
+> +          type: object
+> +
+> +          $ref: "/schemas/phy/rockchip-mipi-dphy-rx0.yaml#"
+> +
+> +          unevaluatedProperties: false
+> +
+> +        pcie-phy:
+> +          description:
+> +            Documentation/devicetree/bindings/phy/rockchip-pcie-phy.txt
+> +
+> +      patternProperties:
+> +        "phy@[0-9a-f]+$":
+> +          description:
+> +            Documentation/devicetree/bindings/phy/rockchip-emmc-phy.txt
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - rockchip,px30-pmugrf
+> +              - rockchip,rk3036-grf
+> +              - rockchip,rk3308-grf
+> +              - rockchip,rk3368-pmugrf
+> +
+> +    then:
+> +      properties:
+> +        reboot-mode:
+> +          type: object
+> +
+> +          $ref: "/schemas/power/reset/syscon-reboot-mode.yaml#"
+> +
+> +          unevaluatedProperties: false
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - rockchip,px30-usb2phy-grf
+> +              - rockchip,rk3228-grf
+> +              - rockchip,rk3328-usb2phy-grf
+> +              - rockchip,rk3399-grf
+> +              - rockchip,rv1108-grf
+> +
+> +    then:
+> +      properties:
+> +        "#address-cells":
+> +          const: 1
+> +
+> +        "#size-cells":
+> +          const: 1
+> +
+> +      required:
+> +        - "#address-cells"
+> +        - "#size-cells"
+> +
+> +      patternProperties:
+> +        "usb2-phy@[0-9a-f]+$":
+> +          type: object
+> +
+> +          $ref: "/schemas/phy/phy-rockchip-inno-usb2.yaml#"
+> +
+> +          unevaluatedProperties: false
+> +
+> +  - if:
+> +      properties:
+> +        compatible:
+> +          contains:
+> +            enum:
+> +              - rockchip,px30-pmugrf
+> +              - rockchip,px30-grf
+> +              - rockchip,rk3228-grf
+> +              - rockchip,rk3288-grf
+> +              - rockchip,rk3328-grf
+> +              - rockchip,rk3368-pmugrf
+> +              - rockchip,rk3368-grf
+> +              - rockchip,rk3399-pmugrf
+> +              - rockchip,rk3399-grf
+> +
+> +    then:
+> +      properties:
+> +        io-domains:
+> +          description:
+> +            Documentation/devicetree/bindings/power/rockchip-io-domain.txt
+> +
+> +          unevaluatedProperties: false
+
+These 'if' sections are probably a sign that this should be separate 
+schemas for each 'if' subset. But fine to leave as-is.
+
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/clock/rk3399-cru.h>
+> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
+> +    #include <dt-bindings/power/rk3399-power.h>
+> +    grf: syscon@ff770000 {
+> +      compatible = "rockchip,rk3399-grf", "syscon", "simple-mfd";
+> +      reg = <0xff770000 0x10000>;
+> +      #address-cells = <1>;
+> +      #size-cells = <1>;
+> +
+> +      mipi_dphy_rx0: mipi-dphy-rx0 {
+> +        compatible = "rockchip,rk3399-mipi-dphy-rx0";
+> +        clocks = <&cru SCLK_MIPIDPHY_REF>,
+> +                 <&cru SCLK_DPHY_RX0_CFG>,
+> +                 <&cru PCLK_VIO_GRF>;
+> +        clock-names = "dphy-ref", "dphy-cfg", "grf";
+> +        power-domains = <&power RK3399_PD_VIO>;
+> +        #phy-cells = <0>;
+> +      };
+> +
+> +      u2phy0: usb2-phy@e450 {
+> +        compatible = "rockchip,rk3399-usb2phy";
+> +        reg = <0xe450 0x10>;
+> +        clocks = <&cru SCLK_USB2PHY0_REF>;
+> +        clock-names = "phyclk";
+> +        #clock-cells = <0>;
+> +        clock-output-names = "clk_usbphy0_480m";
+> +        #phy-cells = <0>;
+> +
+> +        u2phy0_host: host-port {
+> +          #phy-cells = <0>;
+> +          interrupts = <GIC_SPI 27 IRQ_TYPE_LEVEL_HIGH 0>;
+> +          interrupt-names = "linestate";
+> +         };
+> +
+> +        u2phy0_otg: otg-port {
+> +          #phy-cells = <0>;
+> +          interrupts = <GIC_SPI 103 IRQ_TYPE_LEVEL_HIGH 0>,
+> +                       <GIC_SPI 104 IRQ_TYPE_LEVEL_HIGH 0>,
+> +                       <GIC_SPI 106 IRQ_TYPE_LEVEL_HIGH 0>;
+> +          interrupt-names = "otg-bvalid", "otg-id",
+> +                            "linestate";
+> +        };
+> +      };
+> +    };
+> -- 
+> 2.11.0
+> 
