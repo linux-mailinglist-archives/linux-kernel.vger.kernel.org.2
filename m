@@ -2,298 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8437C37652C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:31:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 66A0B376531
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:31:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236946AbhEGMcO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:32:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:46852 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236689AbhEGMcF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:32:05 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 72F20B18B;
-        Fri,  7 May 2021 12:31:04 +0000 (UTC)
-From:   Daniel Wagner <dwagner@suse.de>
-To:     linux-scsi@vger.kernel.org
-Cc:     GR-QLogic-Storage-Upstream@marvell.com,
-        linux-kernel@vger.kernel.org, Nilesh Javali <njavali@marvell.com>,
-        Arun Easi <aeasi@marvell.com>, Daniel Wagner <dwagner@suse.de>
-Subject: [RFC 2/2] qla2xxx: Do not free resource to early in qla24xx_async_gpsc_sp_done()
-Date:   Fri,  7 May 2021 14:31:03 +0200
-Message-Id: <20210507123103.10265-4-dwagner@suse.de>
-X-Mailer: git-send-email 2.29.2
-In-Reply-To: <20210507123103.10265-1-dwagner@suse.de>
-References: <20210507123103.10265-1-dwagner@suse.de>
+        id S236998AbhEGMcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:32:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:48862 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236687AbhEGMcq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 08:32:46 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620390706;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=8ZWnxuhYP/znADIXvr0zXi06seVsXloJf8ocVnr0GQY=;
+        b=e/yzdViAJXmkfLPTJqevDnaxATAOU3TmHinOvXet2LnpBRNRM8zXzUSKcYpNJVdK/qZUAT
+        YgJttQoWHRWOTpONhcjzyDj3KkXfBWlkr+5jDbtH5t1ipeET1sCtdeg4UAdApdWa03W2Bx
+        f91sZODyHQVmIBylyJmE2NNhKJs88J0=
+Received: from mail-yb1-f199.google.com (mail-yb1-f199.google.com
+ [209.85.219.199]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-404-wD25ZkV2O--1cqsI80aIjw-1; Fri, 07 May 2021 08:31:42 -0400
+X-MC-Unique: wD25ZkV2O--1cqsI80aIjw-1
+Received: by mail-yb1-f199.google.com with SMTP id u3-20020a2509430000b02904e7f1a30cffso9833262ybm.8
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 05:31:42 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8ZWnxuhYP/znADIXvr0zXi06seVsXloJf8ocVnr0GQY=;
+        b=LmAEP1VljgjpNtKio67NzxGd5iNpLY+ypvWApgBma5G7AjHjP7BncA3vwLiiOoEDLu
+         RPfbxHXfHLHtDsUJZgdLhWwJvj9AlqzH2qyF+QH5FV6WNTJObDGvRi5rtH8pTc+X1+K7
+         2xkAToDMtuHwkVzjm6l9MNcCYAwXwcnZAASsxyH7WQnCpIK/GiqvvMKggFG/J6bj1336
+         Tirs8+l3jFIvEieH3LytzlD//e2lCwG1Rp28Er+wca35l5DDQGZHCHRaSlem02Du2WcY
+         Ol7otvQh8E8sT4wLT+TlT6OEl1XZ9T+4sPxPq/zcLoVRL/UDxuNz/l24S7+OcH/7zL4F
+         YMpg==
+X-Gm-Message-State: AOAM533dr1wWeCt/YihfaM/XTESW5WLgK2XdkrX5wygEIf/E5cmBlAxn
+        RdmyqLy147727AVjh3tEkwTuiJT2nhdjzmNX35arryVZWwm1go+4KkdRctpAFIALdztLqP+EbLa
+        m2Bvc1MsNIuN5a61WLIaHB4IRf57c1bSiIPZ/CMGF
+X-Received: by 2002:a25:6886:: with SMTP id d128mr13040351ybc.227.1620390702163;
+        Fri, 07 May 2021 05:31:42 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwgn4lRmwCmgddYwQNaNYZ2/6Vqav0rPUA4Ui4HFMkUNwr3mrG/13QWjAo8m5vsDj7kbtEXN6LAeyuL1i2iASc=
+X-Received: by 2002:a25:6886:: with SMTP id d128mr13040312ybc.227.1620390701899;
+ Fri, 07 May 2021 05:31:41 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20210506091859.6961-1-maxime.coquelin@redhat.com>
+ <20210506155004.7e214d8f@redhat.com> <CAFqZXNswPM4nEoRwKjLY=zpnqXLF8SRAWWkhj1EL3CoODYB-=w@mail.gmail.com>
+ <ee4b4bdb-79c1-b91c-2181-2e849cc77ef3@redhat.com>
+In-Reply-To: <ee4b4bdb-79c1-b91c-2181-2e849cc77ef3@redhat.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Fri, 7 May 2021 14:31:28 +0200
+Message-ID: <CAFqZXNsDGS-MOqkg1xc47D2RwSmOiekY4Thz84ZM=rJUJCXTBA@mail.gmail.com>
+Subject: Re: [PATCH] vfio: Lock down no-IOMMU mode when kernel is locked down
+To:     Maxime Coquelin <maxime.coquelin@redhat.com>
+Cc:     Alex Williamson <alex.williamson@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>, kvm@vger.kernel.org,
+        mjg59@srcf.ucam.org, Kees Cook <keescook@chromium.org>,
+        Cornelia Huck <cohuck@redhat.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        SElinux list <selinux@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The timeout handler and done function are racing. When
-qla2x00_async_iocb_timeout() starts to run it can be preempted by the
-normal response path (via the firmware?). qla24xx_async_gpsc_sp_done()
-releases the SRB unconditionally. When scheduling back to
-qla2x00_async_iocb_timeout() qla24xx_async_abort_cmd() will access an
-freed sp->qpair pointer:
+(Adding the SELinux list, Paul, and Stephen to Cc)
 
-  qla2xxx [0000:83:00.0]-2871:0: Async-gpsc timeout - hdl=63d portid=234500 50:06:0e:80:08:77:b6:21.
-  qla2xxx [0000:83:00.0]-2853:0: Async done-gpsc res 0, WWPN 50:06:0e:80:08:77:b6:21
-  qla2xxx [0000:83:00.0]-2854:0: Async-gpsc OUT WWPN 20:45:00:27:f8:75:33:00 speeds=2c00 speed=0400.
-  qla2xxx [0000:83:00.0]-28d8:0: qla24xx_handle_gpsc_event 50:06:0e:80:08:77:b6:21 DS 7 LS 6 rc 0 login 1|1 rscn 1|0 lid 5
-  BUG: unable to handle kernel NULL pointer dereference at 0000000000000004
-  IP: qla24xx_async_abort_cmd+0x1b/0x1c0 [qla2xxx]
+On Fri, May 7, 2021 at 11:11 AM Maxime Coquelin
+<maxime.coquelin@redhat.com> wrote:
+> On 5/7/21 10:37 AM, Ondrej Mosnacek wrote:
+> > On Thu, May 6, 2021 at 11:50 PM Alex Williamson
+> > <alex.williamson@redhat.com> wrote:
+> >> On Thu,  6 May 2021 11:18:59 +0200
+> >> Maxime Coquelin <maxime.coquelin@redhat.com> wrote:
+> >>
+> >>> When no-IOMMU mode is enabled, VFIO is as unsafe as accessing
+> >>> the PCI BARs via the device's sysfs, which is locked down when
+> >>> the kernel is locked down.
+> >>>
+> >>> Indeed, it is possible for an attacker to craft DMA requests
+> >>> to modify kernel's code or leak secrets stored in the kernel,
+> >>> since the device is not isolated by an IOMMU.
+> >>>
+> >>> This patch introduces a new integrity lockdown reason for the
+> >>> unsafe VFIO no-iommu mode.
+> >>
+> >> I'm hoping security folks will chime in here as I'm not familiar with
+> >> the standard practices for new lockdown reasons.  The vfio no-iommu
+> >> backend is clearly an integrity risk, which is why it's already hidden
+> >> behind a separate Kconfig option, requires RAWIO capabilities, and
+> >> taints the kernel if it's used, but I agree that preventing it during
+> >> lockdown seems like a good additional step.
+> >>
+> >> Is it generally advised to create specific reasons, like done here, or
+> >> should we aim to create a more generic reason related to unrestricted
+> >> userspace DMA?
+>
+> I am fine with a more generic reason. I'm also not sure what is the best
+> thing to do in term of granularity.
+>
+> >> I understand we don't want to re-use PCI_ACCESS because the vfio
+> >> no-iommu backend is device agnostic, it can be used for both PCI and
+> >> non-PCI devices.
+>
+> Right, that's why I created a new reason.
+>
+> >>> Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
+> >>> ---
+> >>>  drivers/vfio/vfio.c      | 13 +++++++++----
+> >>>  include/linux/security.h |  1 +
+> >>>  security/security.c      |  1 +
+> >>>  3 files changed, 11 insertions(+), 4 deletions(-)
+> >>>
+> >>> diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+> >>> index 5e631c359ef2..fe466d6ea5d8 100644
+> >>> --- a/drivers/vfio/vfio.c
+> >>> +++ b/drivers/vfio/vfio.c
+> >>> @@ -25,6 +25,7 @@
+> >>>  #include <linux/pci.h>
+> >>>  #include <linux/rwsem.h>
+> >>>  #include <linux/sched.h>
+> >>> +#include <linux/security.h>
+> >>>  #include <linux/slab.h>
+> >>>  #include <linux/stat.h>
+> >>>  #include <linux/string.h>
+> >>> @@ -165,7 +166,8 @@ static void *vfio_noiommu_open(unsigned long arg)
+> >>>  {
+> >>>       if (arg != VFIO_NOIOMMU_IOMMU)
+> >>>               return ERR_PTR(-EINVAL);
+> >>> -     if (!capable(CAP_SYS_RAWIO))
+> >>> +     if (!capable(CAP_SYS_RAWIO) ||
+> >>> +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU))
+> >>>               return ERR_PTR(-EPERM);
+> >>>
+> >>>       return NULL;
+> >>> @@ -1280,7 +1282,8 @@ static int vfio_group_set_container(struct vfio_group *group, int container_fd)
+> >>>       if (atomic_read(&group->container_users))
+> >>>               return -EINVAL;
+> >>>
+> >>> -     if (group->noiommu && !capable(CAP_SYS_RAWIO))
+> >>> +     if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
+> >>> +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU)))
+> >>>               return -EPERM;
+> >>>
+> >>>       f = fdget(container_fd);
+> >>> @@ -1362,7 +1365,8 @@ static int vfio_group_get_device_fd(struct vfio_group *group, char *buf)
+> >>>           !group->container->iommu_driver || !vfio_group_viable(group))
+> >>>               return -EINVAL;
+> >>>
+> >>> -     if (group->noiommu && !capable(CAP_SYS_RAWIO))
+> >>> +     if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
+> >>> +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU)))
+> >>>               return -EPERM;
+> >>>
+> >>>       device = vfio_device_get_from_name(group, buf);
+> >>> @@ -1490,7 +1494,8 @@ static int vfio_group_fops_open(struct inode *inode, struct file *filep)
+> >>>       if (!group)
+> >>>               return -ENODEV;
+> >>>
+> >>> -     if (group->noiommu && !capable(CAP_SYS_RAWIO)) {
+> >>> +     if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
+> >>> +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU))) {
+> >>>               vfio_group_put(group);
+> >>>               return -EPERM;
+> >>>       }
+> >>
+> >> In these cases where we're testing RAWIO, the idea is to raise the
+> >> barrier of passing file descriptors to unprivileged users.  Is lockdown
+> >> sufficiently static that we might really only need the test on open?
+> >> The latter three cases here only make sense if the user were able to
+> >> open a no-iommu context when lockdown is not enabled, then lockdown is
+> >> later enabled preventing them from doing anything with that context...
+> >> but not preventing ongoing unsafe usage that might already exist.  I
+> >> suspect for that reason that lockdown is static and we really only need
+> >> the test on open.  Thanks,
+> >
+> > Note that SELinux now also implements the locked_down hook and that
+> > implementation is not static like the Lockdown LSM's. It checks
+> > whether the current task's SELinux domain has either integrity or
+> > confidentiality permission granted by the policy, so for SELinux it
+> > makes sense to have the lockdown hook called in these other places as
+> > well.
+> >
+>
+> Thanks Ondrej for the insights, is there any plan for selinux to support
+> finer granularity than integrity and confidentiality? I'm not sure it
+> makes sense, but it might help to understand if we should choose between
+> a "VFIO no-iommu mode" reason and a more generic userspace DMA one.
 
-An obvious solution to this is to introduce a reference counter. One
-reference is taken for the normal code path (the 'good case') and one
-for the timeout path. As we always race between the normal good case
-and the timeout/abort handler we need to serialize it. Also we cannot
-assume any order between the handlers. Since this is slow path we can
-use proper synchronization via locks.
+Looking at the ML discussion under the original patch posting [1],
+having a finer granularity was preferred, but there was a concern that
+the list of reasons would change too much, making the kernel <->
+policy interface too unstable. Looking at the git log, the list of
+lockdown reasons hasn't changed much since the original SELinux
+implementation was added (there was just one addition, not counting
+this patch), so it looks like switching SELinux to finer granularity
+would be viable now.
 
-When we are able to cancel a timer (del_timer returns 1) we know there
-can't be any error handling in progress because the timeout handler
-hasn't expired yet, thus we can safely decrement the refcounter by one.
+I'm not sure whether the less or more generic variant would be better
+here... Perhaps Stephen or Paul will have an opinion.
 
-If we are not able to cancel the timer, we know an abort handler is
-running. We have to make sure we call sp->done() in the abort handlers
-before calling kref_put().
+[1] https://lore.kernel.org/selinux/365ca063-6efd-8051-8d4b-5c8aef0d2e12@tycho.nsa.gov/T/
 
-Signed-off-by: Daniel Wagner <dwagner@suse.de>
----
- drivers/scsi/qla2xxx/qla_def.h  |  5 +++++
- drivers/scsi/qla2xxx/qla_gbl.h  |  1 +
- drivers/scsi/qla2xxx/qla_gs.c   | 16 +++++++---------
- drivers/scsi/qla2xxx/qla_init.c | 19 +++++++++++++++----
- drivers/scsi/qla2xxx/qla_iocb.c | 27 +++++++++++++++++++++++++--
- 5 files changed, 53 insertions(+), 15 deletions(-)
-
-diff --git a/drivers/scsi/qla2xxx/qla_def.h b/drivers/scsi/qla2xxx/qla_def.h
-index def4d99f80e9..4bff1ae42d73 100644
---- a/drivers/scsi/qla2xxx/qla_def.h
-+++ b/drivers/scsi/qla2xxx/qla_def.h
-@@ -676,6 +676,11 @@ typedef struct srb {
- 	 * code.
- 	 */
- 	void (*put_fn)(struct kref *kref);
-+	/*
-+	 * Report completition for asynchronous commands.
-+	 */
-+	void (*async_done)(struct srb *sp, int res);
-+	spinlock_t lock;
- } srb_t;
- 
- #define GET_CMD_SP(sp) (sp->u.scmd.cmd)
-diff --git a/drivers/scsi/qla2xxx/qla_gbl.h b/drivers/scsi/qla2xxx/qla_gbl.h
-index 15e6a61905c9..74fed0c46ac4 100644
---- a/drivers/scsi/qla2xxx/qla_gbl.h
-+++ b/drivers/scsi/qla2xxx/qla_gbl.h
-@@ -313,6 +313,7 @@ extern int qla24xx_walk_and_build_prot_sglist(struct qla_hw_data *, srb_t *,
- 	struct dsd64 *, uint16_t, struct qla_tgt_cmd *);
- extern int qla24xx_get_one_block_sg(uint32_t, struct qla2_sgx *, uint32_t *);
- extern int qla24xx_configure_prot_mode(srb_t *, uint16_t *);
-+void qla2x00_sp_release(struct kref *kref);
- 
- /*
-  * Global Function Prototypes in qla_mbx.c source file.
-diff --git a/drivers/scsi/qla2xxx/qla_gs.c b/drivers/scsi/qla2xxx/qla_gs.c
-index 1784ebfacfab..e1b2474f0f65 100644
---- a/drivers/scsi/qla2xxx/qla_gs.c
-+++ b/drivers/scsi/qla2xxx/qla_gs.c
-@@ -529,7 +529,6 @@ static void qla2x00_async_sns_sp_done(srb_t *sp, int rc)
- 		if (!e)
- 			goto err2;
- 
--		del_timer(&sp->u.iocb_cmd.timer);
- 		e->u.iosb.sp = sp;
- 		qla2x00_post_work(vha, e);
- 		return;
-@@ -556,7 +555,7 @@ static void qla2x00_async_sns_sp_done(srb_t *sp, int rc)
- 			sp->u.iocb_cmd.u.ctarg.rsp = NULL;
- 		}
- 
--		sp->free(sp);
-+		kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- 
- 		return;
- 	}
-@@ -2982,7 +2981,7 @@ void qla24xx_sp_unmap(scsi_qla_host_t *vha, srb_t *sp)
- 		break;
- 	}
- 
--	sp->free(sp);
-+	kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- }
- 
- void qla24xx_handle_gpnid_event(scsi_qla_host_t *vha, struct event_arg *ea)
-@@ -3121,13 +3120,13 @@ static void qla2x00_async_gpnid_sp_done(srb_t *sp, int res)
- 	if (res) {
- 		if (res == QLA_FUNCTION_TIMEOUT) {
- 			qla24xx_post_gpnid_work(sp->vha, &ea.id);
--			sp->free(sp);
-+			kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- 			return;
- 		}
- 	} else if (sp->gen1) {
- 		/* There was another RSCN for this Nport ID */
- 		qla24xx_post_gpnid_work(sp->vha, &ea.id);
--		sp->free(sp);
-+		kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- 		return;
- 	}
- 
-@@ -3148,7 +3147,7 @@ static void qla2x00_async_gpnid_sp_done(srb_t *sp, int res)
- 				  sp->u.iocb_cmd.u.ctarg.rsp_dma);
- 		sp->u.iocb_cmd.u.ctarg.rsp = NULL;
- 
--		sp->free(sp);
-+		kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- 		return;
- 	}
- 
-@@ -3739,7 +3738,6 @@ static void qla2x00_async_gpnft_gnnft_sp_done(srb_t *sp, int res)
- 	    "Async done-%s res %x FC4Type %x\n",
- 	    sp->name, res, sp->gen2);
- 
--	del_timer(&sp->u.iocb_cmd.timer);
- 	sp->rc = res;
- 	if (res) {
- 		unsigned long flags;
-@@ -4133,7 +4131,7 @@ static void qla2x00_async_gnnid_sp_done(srb_t *sp, int res)
- 
- 	qla24xx_handle_gnnid_event(vha, &ea);
- 
--	sp->free(sp);
-+	kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- }
- 
- int qla24xx_async_gnnid(scsi_qla_host_t *vha, fc_port_t *fcport)
-@@ -4260,7 +4258,7 @@ static void qla2x00_async_gfpnid_sp_done(srb_t *sp, int res)
- 
- 	qla24xx_handle_gfpnid_event(vha, &ea);
- 
--	sp->free(sp);
-+	kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- }
- 
- int qla24xx_async_gfpnid(scsi_qla_host_t *vha, fc_port_t *fcport)
-diff --git a/drivers/scsi/qla2xxx/qla_init.c b/drivers/scsi/qla2xxx/qla_init.c
-index 6497bf405d82..be85109fd850 100644
---- a/drivers/scsi/qla2xxx/qla_init.c
-+++ b/drivers/scsi/qla2xxx/qla_init.c
-@@ -126,11 +126,14 @@ static void qla24xx_abort_iocb_timeout(void *data)
- 	}
- 	spin_unlock_irqrestore(qpair->qp_lock_ptr, flags);
- 
--	if (sp->cmd_sp)
-+	if (sp->cmd_sp) {
- 		sp->cmd_sp->done(sp->cmd_sp, QLA_OS_TIMER_EXPIRED);
-+		kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
-+	}
- 
- 	abt->u.abt.comp_status = cpu_to_le16(CS_TIMEOUT);
- 	sp->done(sp, QLA_OS_TIMER_EXPIRED);
-+	kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- }
- 
- static void qla24xx_abort_sp_done(srb_t *sp, int res)
-@@ -141,11 +144,17 @@ static void qla24xx_abort_sp_done(srb_t *sp, int res)
- 	if (orig_sp)
- 		qla_wait_nvme_release_cmd_kref(orig_sp);
- 
--	del_timer(&sp->u.iocb_cmd.timer);
-+	if (sp->cmd_sp) {
-+		sp->cmd_sp->done(sp->cmd_sp, QLA_OS_TIMER_EXPIRED);
-+		kref_put_lock(&sp->cmd_sp->cmd_kref,
-+			      qla2x00_sp_release,
-+			      &sp->cmd_sp->lock);
-+	}
-+
- 	if (sp->flags & SRB_WAKEUP_ON_COMP)
- 		complete(&abt->u.abt.comp);
- 	else
--		sp->free(sp);
-+		kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- }
- 
- int qla24xx_async_abort_cmd(srb_t *cmd_sp, bool wait)
-@@ -190,7 +199,7 @@ int qla24xx_async_abort_cmd(srb_t *cmd_sp, bool wait)
- 		wait_for_completion(&abt_iocb->u.abt.comp);
- 		rval = abt_iocb->u.abt.comp_status == CS_COMPLETE ?
- 			QLA_SUCCESS : QLA_FUNCTION_FAILED;
--		sp->free(sp);
-+		kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- 	}
- 
- 	return rval;
-@@ -237,6 +246,7 @@ qla2x00_async_iocb_timeout(void *data)
- 			}
- 			spin_unlock_irqrestore(sp->qpair->qp_lock_ptr, flags);
- 			sp->done(sp, QLA_FUNCTION_TIMEOUT);
-+			kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- 		}
- 		break;
- 	case SRB_LOGOUT_CMD:
-@@ -261,6 +271,7 @@ qla2x00_async_iocb_timeout(void *data)
- 			}
- 			spin_unlock_irqrestore(sp->qpair->qp_lock_ptr, flags);
- 			sp->done(sp, QLA_FUNCTION_TIMEOUT);
-+			kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock);
- 		}
- 		break;
- 	}
-diff --git a/drivers/scsi/qla2xxx/qla_iocb.c b/drivers/scsi/qla2xxx/qla_iocb.c
-index 1e848ded06a4..619e39580aa6 100644
---- a/drivers/scsi/qla2xxx/qla_iocb.c
-+++ b/drivers/scsi/qla2xxx/qla_iocb.c
-@@ -2597,12 +2597,36 @@ qla24xx_tm_iocb(srb_t *sp, struct tsk_mgmt_entry *tsk)
- 	}
- }
- 
-+static void
-+qla2x00_async_done(struct srb *sp, int res)
-+{
-+	if (del_timer(&sp->u.iocb_cmd.timer)) {
-+		/* Succcesfully cancelled the timeout handler */
-+		if (kref_put_lock(&sp->cmd_kref, qla2x00_sp_release, &sp->lock))
-+                       return;
-+	}
-+
-+	sp->async_done(sp, res);
-+}
-+
-+void
-+qla2x00_sp_release(struct kref *kref)
-+{
-+	struct srb *sp = container_of(kref, struct srb, cmd_kref);
-+
-+	sp->free(sp);
-+}
-+
- void
- qla2x00_init_async_sp(srb_t *sp, unsigned long tmo,
- 		      void (*done)(struct srb *sp, int res))
- {
- 	timer_setup(&sp->u.iocb_cmd.timer, qla2x00_sp_timeout, 0);
--	sp->done = done;
-+	kref_init(&sp->cmd_kref); /* normal control flow */
-+	kref_get(&sp->cmd_kref);  /* timeout control flow */
-+	spin_lock_init(&sp->lock);
-+	sp->done = qla2x00_async_done;
-+	sp->async_done = done;
- 	sp->free = qla2x00_sp_free;
- 	sp->u.iocb_cmd.timeout = qla2x00_async_iocb_timeout;
- 	sp->u.iocb_cmd.timer.expires = jiffies + tmo * HZ;
-@@ -2889,7 +2913,6 @@ static void qla2x00_els_dcmd2_sp_done(srb_t *sp, int res)
- 	    sp->name, res, sp->handle, fcport->d_id.b24, fcport->port_name);
- 
- 	fcport->flags &= ~(FCF_ASYNC_SENT|FCF_ASYNC_ACTIVE);
--	del_timer(&sp->u.iocb_cmd.timer);
- 
- 	if (sp->flags & SRB_WAKEUP_ON_COMP)
- 		complete(&lio->u.els_plogi.comp);
--- 
-2.29.2
+--
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
