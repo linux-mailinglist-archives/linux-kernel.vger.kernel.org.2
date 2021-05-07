@@ -2,86 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBC45376BB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:26:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44041376BBC
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:28:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229819AbhEGV1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:27:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEGV1X (ORCPT
+        id S229699AbhEGV3M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:29:12 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:44078 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229470AbhEGV3K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:27:23 -0400
-Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC93C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 14:26:22 -0700 (PDT)
-Received: by mail-lj1-x235.google.com with SMTP id f12so750400ljp.2
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:26:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=XG0TLyszi1cmh23fmH0mhN2WgCliBgRLG2x6Fui/g3w=;
-        b=hodjiOCfhaug0X3p4IQrL+WcbBvdiThSPchin6eJxMJ2dt0+Me5jQvoBuO67weHHYO
-         fBwbLAHWSc9YUyFTQBloGw9B711VjCdTmpXZuh+/yia7xVM6xvl3x2mDefdrS3xYtcO1
-         oIetrSG0llXe8YfcymcicYd6DR4droaELRHIVQbG6772pm9JUeoevm+ZO0H1yUzrt5HW
-         rnOFfBTK72QJF83XqkEEv2/X8bCQzubEAFkLHQwwbVWpETkA3QYN3MmHGCN2KEYdhjBT
-         AfAbjC9daNgoeNwLXGtKfJOeza28WvCd2mk4UQ+0d2i6U3BNsJ7zrcX5TmU3Tl+hAWUi
-         nyRA==
+        Fri, 7 May 2021 17:29:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620422890;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=pVNjq4cwxRpZVEM9G+ZCz6caWZiQ6FKaXq/9liRlvVI=;
+        b=hXBuxzLQgTQbJFjx4bBmYLDzBZEb1mzg7YWNVI4nMDHEcoa3cQ0tqImCAcXxoZAtqEGNtp
+        uWYDY2s20iOX/Zop418X0pdr/iHYw2Rii0SiOYRmoEdgK02h2TFhOzJ9YIVoQOiszdLz6t
+        lGANg3i3uOGBictOQeRoyh/WG8GbCyU=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-284-SZHAzaX6MNKcxCosRygqOQ-1; Fri, 07 May 2021 17:28:06 -0400
+X-MC-Unique: SZHAzaX6MNKcxCosRygqOQ-1
+Received: by mail-qv1-f71.google.com with SMTP id l5-20020a0ce0850000b02901c37c281207so7575935qvk.11
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:28:06 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=XG0TLyszi1cmh23fmH0mhN2WgCliBgRLG2x6Fui/g3w=;
-        b=MANEFA+jMWYJimtfXqYL+WbjvS71Ab9m4oDDDW8rhAVyj49kgp1q6+8JQwsbiMmLeW
-         6YkN7ZDZIZi4GLAo9tPIHJ2bb7P/Wi+fV5wPdojHK9p+AcvKSvFMitCOJPTunngSb8C0
-         c4HkBRUwx7aXfqwUxSreoM99InJrNWeT6bcOsByFTuL/3E0Kos/OmwJgagL0X0TyypO3
-         Hqd4pBVgmtYE5Lc0n9QnVog2r97qPKPNotR/lLHkqn3SCsYvx+DeXkeHZ4Jdy13ic9T+
-         Ri9pMtP0rpyVbKv/v6cdA9VPQY/axQzKib1PmXQRXN08pek48HSjZd64haMCsOWMvZW8
-         Ag0g==
-X-Gm-Message-State: AOAM531jOn/GOAlnh4YpoJg+DMeTcopDpdcQJ4drRwQLUqKBzXeHvzW8
-        LrngUVzAm3uA8ZQ5S4Ypsrr2X0xxYw9lNHdzvKUr3A==
-X-Google-Smtp-Source: ABdhPJy3z0qWS5Sneh44i6pk2oO3OOciepj+d38iIgI70000KRkNiArXJwFb6hKxgj5G3aVCUF/o8itqFyKwsM+AULo=
-X-Received: by 2002:a2e:2e12:: with SMTP id u18mr9286103lju.200.1620422781142;
- Fri, 07 May 2021 14:26:21 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210505134028.13431-1-jbx6244@gmail.com> <20210505134028.13431-2-jbx6244@gmail.com>
-In-Reply-To: <20210505134028.13431-2-jbx6244@gmail.com>
-From:   Linus Walleij <linus.walleij@linaro.org>
-Date:   Fri, 7 May 2021 23:26:09 +0200
-Message-ID: <CACRpkdZZ-FZn6Q3w6g=FayOzpUW4ZfenQ9Oxe0+Co2RyYpTZLA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: gpio: convert rk3328-grf-gpio.txt to YAML
-To:     Johan Jonker <jbx6244@gmail.com>
-Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Jianqun Xu <jay.xu@rock-chips.com>,
-        Shawn Lin <shawn.lin@rock-chips.com>,
-        David Wu <david.wu@rock-chips.com>,
-        Elaine Zhang <zhangqing@rock-chips.com>,
-        Tao Huang <huangtao@rock-chips.com>, cl@rock-chips.com,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=pVNjq4cwxRpZVEM9G+ZCz6caWZiQ6FKaXq/9liRlvVI=;
+        b=D5/u9p4X3lKO190VpqsG8I1WrKJ5dLKJITys9P+JPursSug8F/v0/SvKPP75hjL1Z+
+         5J9dVAWPyC7/OU0tbHiMVo5iweBSlmijkYQvCEaV62HUziqPh0rVXBez5t4hpqSObHh+
+         N+Q/PHW2rXza7Zn4Gxvi0FS5lgyWsM4PTMMeENeVT+LCsVViMghTIc4EQhZTIe4TZfBJ
+         LHmN0MNDrIaJ1bZa2t9qcZnkj2vDJ9+2jw08bXWsWE+EtiH9gnnXaQ9Hisnx5SC3agF+
+         Kcdm8yTkTkU4vFZ/h1jbaV3AQCDZ21VZ8fhyPhetuAC/q3zYLyEOoG1wdApeIB+UCJ5Y
+         sqLw==
+X-Gm-Message-State: AOAM5314Y53o03qMwt+X6WDWG7acxiv8GA5rVt0LIBdo/kzZwiVxbPNI
+        MGInCt+2aZuB6OS3ivgJl4KwEOs4RGDVEJLVFLh4pwEYbbbhajHvFfeU2/giR/iQ/jme87/RGk0
+        1WT2PetqzVz8b6PvuNTAKWRcO
+X-Received: by 2002:ac8:109a:: with SMTP id a26mr11012770qtj.156.1620422885845;
+        Fri, 07 May 2021 14:28:05 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx4umG7ULJ2428gNNMYBy++wm63s5NWc12Pht4FLFgn8RWxeg/DGz3zuQqldKEj2lf9x+1nFA==
+X-Received: by 2002:ac8:109a:: with SMTP id a26mr11012759qtj.156.1620422885691;
+        Fri, 07 May 2021 14:28:05 -0700 (PDT)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id v18sm1635624qkv.34.2021.05.07.14.28.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 14:28:05 -0700 (PDT)
+Message-ID: <cbbd22463a3af9efa7f12dc90b74231dc0ae5771.camel@redhat.com>
+Subject: Re: [Intel-gfx] [PATCH 2/2] drm/dp: Drop open-coded
+ drm_dp_is_branch() in drm_dp_read_downstream_info()
+From:   Lyude Paul <lyude@redhat.com>
+To:     Ville =?ISO-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+Cc:     intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        open list <linux-kernel@vger.kernel.org>,
+        Maxime Ripard <mripard@kernel.org>
+Date:   Fri, 07 May 2021 17:28:03 -0400
+In-Reply-To: <YI9otSh/ftvLqMxb@intel.com>
+References: <20210430223428.10514-1-lyude@redhat.com>
+         <20210430223428.10514-2-lyude@redhat.com> <YI9otSh/ftvLqMxb@intel.com>
+Organization: Red Hat
 Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 5, 2021 at 3:40 PM Johan Jonker <jbx6244@gmail.com> wrote:
+On Mon, 2021-05-03 at 06:06 +0300, Ville Syrjälä wrote:
+> On Fri, Apr 30, 2021 at 06:34:28PM -0400, Lyude Paul wrote:
+> > Noticed this while fixing another issue in drm_dp_read_downstream_info(),
+> > the open coded DP_DOWNSTREAMPORT_PRESENT check here just duplicates what
+> > we
+> > already do in drm_dp_is_branch(), so just get rid of it.
+> > 
+> > Signed-off-by: Lyude Paul <lyude@redhat.com>
+> > ---
+> >  drivers/gpu/drm/drm_dp_helper.c | 4 +---
+> >  1 file changed, 1 insertion(+), 3 deletions(-)
+> > 
+> > diff --git a/drivers/gpu/drm/drm_dp_helper.c
+> > b/drivers/gpu/drm/drm_dp_helper.c
+> > index 27c8c5bdf7d9..0f84df8798ab 100644
+> > --- a/drivers/gpu/drm/drm_dp_helper.c
+> > +++ b/drivers/gpu/drm/drm_dp_helper.c
+> > @@ -677,9 +677,7 @@ int drm_dp_read_downstream_info(struct drm_dp_aux
+> > *aux,
+> >         memset(downstream_ports, 0, DP_MAX_DOWNSTREAM_PORTS);
+> >  
+> >         /* No downstream info to read */
+> > -       if (!drm_dp_is_branch(dpcd) ||
+> > -           dpcd[DP_DPCD_REV] < DP_DPCD_REV_10 ||
+> > -           !(dpcd[DP_DOWNSTREAMPORT_PRESENT] & DP_DWN_STRM_PORT_PRESENT))
+> > +       if (!drm_dp_is_branch(dpcd) || dpcd[DP_DPCD_REV] < DP_DPCD_REV_10)
+> 
+> BTW that DPCD_REV check looks rather wrong.
+> 
+> Reviewed-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
 
-> Current dts files with RK3328 GRF 'gpio' nodes are manually verified.
-> In order to automate this process rk3328-grf-gpio.txt has to be
-> converted to YAML.
->
-> Rename 'grf-gpio' nodename to 'gpio'.
->
-> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
+I'll send out a separate fix for this in just a moment, thanks for pointing it
+out!
 
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+> 
+> >                 return 0;
+> >  
+> >         /* Some branches advertise having 0 downstream ports, despite also
+> > advertising they have a
+> > -- 
+> > 2.30.2
+> > 
+> > _______________________________________________
+> > Intel-gfx mailing list
+> > Intel-gfx@lists.freedesktop.org
+> > https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+> 
 
-Yours,
-Linus Walleij
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
