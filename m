@@ -2,254 +2,248 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4165375E83
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:45:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AB02C375E86
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233952AbhEGBqK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 21:46:10 -0400
-Received: from szxga02-in.huawei.com ([45.249.212.188]:3984 "EHLO
-        szxga02-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhEGBqI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 21:46:08 -0400
-Received: from dggeml709-chm.china.huawei.com (unknown [172.30.72.57])
-        by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4FbtVq3ll3zYhss;
-        Fri,  7 May 2021 09:42:43 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggeml709-chm.china.huawei.com (10.3.17.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 7 May 2021 09:45:07 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 7 May 2021
- 09:45:07 +0800
-Subject: Re: [PATCH bpf] bpf: check for data_len before upgrading mss when 6
- to 4
-To:     Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Dongseok Yi <dseok.yi@samsung.com>
-CC:     Daniel Borkmann <daniel@iogearbox.net>, bpf <bpf@vger.kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        "Martin KaFai Lau" <kafai@fb.com>,
-        Song Liu <songliubraving@fb.com>, Yonghong Song <yhs@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-References: <CGME20210429102143epcas2p4c8747c09a9de28f003c20389c050394a@epcas2p4.samsung.com>
- <1619690903-1138-1-git-send-email-dseok.yi@samsung.com>
- <8c2ea41a-3fc5-d560-16e5-bf706949d857@iogearbox.net>
- <02bf01d74211$0ff4aed0$2fde0c70$@samsung.com>
- <CA+FuTScC96R5o24c-sbY-CEV4EYOVFepFR85O4uGtCLwOjnzEw@mail.gmail.com>
- <02c801d7421f$65287a90$2f796fb0$@samsung.com>
- <CA+FuTScUJwqEpYim0hG27k39p_yEyzuW2A8RFKuBndctgKjWZw@mail.gmail.com>
- <001801d742db$68ab8060$3a028120$@samsung.com>
- <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <436dbc62-451b-9b29-178d-9da28f47ef24@huawei.com>
-Date:   Fri, 7 May 2021 09:45:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
+        id S234053AbhEGBsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 21:48:33 -0400
+Received: from mga14.intel.com ([192.55.52.115]:1130 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229801AbhEGBsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 21:48:30 -0400
+IronPort-SDR: BZATXBAqY3ZxUsdxtqVa7Ot7shifU4T5NywS7xylGhXnu83BvfG0qz7Gmx40hu2JuMrM1OJ8G5
+ eFIAQkblYhAg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="198270855"
+X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
+   d="scan'208";a="198270855"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 18:47:31 -0700
+IronPort-SDR: Vbxsh18j6iczcjDk55LYzWilx/D6ai55apQeVRSO39ls1QhW7ZZi4+sSvakWzMgDfWJrl1kWTo
+ KcpSmsiLogRg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
+   d="scan'208";a="397446126"
+Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
+  by fmsmga007.fm.intel.com with ESMTP; 06 May 2021 18:47:30 -0700
+Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1lepaT-000Ay8-I0; Fri, 07 May 2021 01:47:29 +0000
+Date:   Fri, 07 May 2021 09:46:46 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     "x86-ml" <x86@kernel.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [tip:sched/urgent] BUILD SUCCESS
+ 0258bdfaff5bd13c4d2383150b7097aecd6b6d82
+Message-ID: <60949c06.qAI/ktMeDh/Wv40Z%lkp@intel.com>
+User-Agent: Heirloom mailx 12.5 6/20/10
 MIME-Version: 1.0
-In-Reply-To: <CAF=yD-KtJvyjHgGVwscoQpFX3e+DmQCYeO_HVGwyGAp3ote00A@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/7 9:25, Willem de Bruijn wrote:
->>>> head_skb's data_len is the sum of skb_gro_len for each skb of the frags.
->>>> data_len could be 8 if server sent a small size packet and it is GROed
->>>> to head_skb.
->>>>
->>>> Please let me know if I am missing something.
->>>
->>> This is my understanding of the data path. This is a forwarding path
->>> for TCP traffic.
->>>
->>> GRO is enabled and will coalesce multiple segments into a single large
->>> packet. In bad cases, the coalesced packet payload is > MSS, but < MSS
->>> + 20.
->>>
->>> Somewhere between GRO and GSO you have a BPF program that converts the
->>> IPv6 address to IPv4.
->>
->> Your understanding is right. The data path is GRO -> BPF 6 to 4 ->
->> GSO.
->>
->>>
->>> There is no concept of head_skb at the time of this BPF program. It is
->>> a single SKB, with an skb linear part and multiple data items in the
->>> frags (no frag_list).
->>
->> Sorry for the confusion. head_skb what I mentioned was a skb linear
->> part. I'm considering a single SKB with frags too.
->>
->>>
->>> When entering the GSO stack, this single skb now has a payload length
->>> < MSS. So it would just make a valid TCP packet on its own?
->>>
->>> skb_gro_len is only relevant inside the GRO stack. It internally casts
->>> the skb->cb[] to NAPI_GRO_CB. This field is a scratch area that may be
->>> reused for other purposes later by other layers of the datapath. It is
->>> not safe to read this inside bpf_skb_proto_6_to_4.
->>
->> The condition what I made uses skb->data_len not skb_gro_len. Does
->> skb->data_len have a different meaning on each layer? As I know,
->> data_len indicates the amount of frags or frag_list. skb->data_len
->> should be > 20 in the sample case because the payload size of the skb
->> linear part is the same with mss.
-> 
-> Ah, got it.
-> 
-> data_len is the length of the skb minus the length in the skb linear
-> section (as seen in skb_headlen).
-> 
-> So this gso skb consists of two segments, the first one entirely
-> linear, the payload of the second is in skb_shinfo(skb)->frags[0].
-> 
-> It is not guaranteed that gso skbs built from two individual skbs end
-> up looking like that. Only protocol headers in the linear segment and
-> the payload of both in frags is common.
-> 
->> We can modify netif_needs_gso as another option to hit
->> skb_needs_linearize in validate_xmit_skb. But I think we should compare
->> skb->gso_size and skb->data_len too to check if mss exceed a payload
->> size.
-> 
-> The rest of the stack does not build such gso packets with payload len
-> < mss, so we should not have to add workarounds in the gso hot path
-> for this.
-> 
-> Also no need to linearize this skb. I think that if the bpf program
-> would just clear the gso type, the packet would be sent correctly.
-> Unless I'm missing something.
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/urgent
+branch HEAD: 0258bdfaff5bd13c4d2383150b7097aecd6b6d82  sched/fair: Fix unfairness caused by missing load decay
 
-Does the checksum/len field in ip and tcp/udp header need adjusting
-before clearing gso type as the packet has became bigger?
+elapsed time: 729m
 
-Also, instead of testing skb->data_len, may test the skb->len?
+configs tested: 186
+configs skipped: 3
 
-skb->len - (mac header + ip/ipv6 header + udp/tcp header) > mss + len_diff
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> 
-> But I don't mean to argue that it should do that in production.
-> Instead, not playing mss games would solve this and stay close to the
-> original datapath if no bpf program had been present. Including
-> maintaining the GSO invariant of sending out the same chain of packets
-> as received (bar the IPv6 to IPv4 change).
-> 
-> This could be achieved by adding support for the flag
-> BPF_F_ADJ_ROOM_FIXED_GSO in the flags field of bpf_skb_change_proto.
-> And similar to bpf_skb_net_shrink:
-> 
->                 /* Due to header shrink, MSS can be upgraded. */
->                 if (!(flags & BPF_F_ADJ_ROOM_FIXED_GSO))
->                         skb_increase_gso_size(shinfo, len_diff);
-> 
-> The other case, from IPv4 to IPv6 is more difficult to address, as not
-> reducing the MSS will result in packets exceeding MTU. That calls for
-> workarounds like MSS clamping. Anyway, that is out of scope here.
-> 
-> 
-> 
->>>
->>>
->>>>>
->>>>> One simple solution if this packet no longer needs to be segmented
->>>>> might be to reset the gso_type completely.
->>>>
->>>> I am not sure gso_type can be cleared even when GSO is needed.
->>>>
->>>>>
->>>>> In general, I would advocate using BPF_F_ADJ_ROOM_FIXED_GSO. When
->>>>> converting from IPv6 to IPv4, fixed gso will end up building packets
->>>>> that are slightly below the MTU. That opportunity cost is negligible
->>>>> (especially with TSO). Unfortunately, I see that that flag is
->>>>> available for bpf_skb_adjust_room but not for bpf_skb_proto_6_to_4.
->>>>>
->>>>>
->>>>>>>> would increse the gso_size to 1392. tcp_gso_segment will get an error
->>>>>>>> with 1380 <= 1392.
->>>>>>>>
->>>>>>>> Check for the size of GROed payload if it is really bigger than target
->>>>>>>> mss when increase mss.
->>>>>>>>
->>>>>>>> Fixes: 6578171a7ff0 (bpf: add bpf_skb_change_proto helper)
->>>>>>>> Signed-off-by: Dongseok Yi <dseok.yi@samsung.com>
->>>>>>>> ---
->>>>>>>>   net/core/filter.c | 4 +++-
->>>>>>>>   1 file changed, 3 insertions(+), 1 deletion(-)
->>>>>>>>
->>>>>>>> diff --git a/net/core/filter.c b/net/core/filter.c
->>>>>>>> index 9323d34..3f79e3c 100644
->>>>>>>> --- a/net/core/filter.c
->>>>>>>> +++ b/net/core/filter.c
->>>>>>>> @@ -3308,7 +3308,9 @@ static int bpf_skb_proto_6_to_4(struct sk_buff *skb)
->>>>>>>>             }
->>>>>>>>
->>>>>>>>             /* Due to IPv4 header, MSS can be upgraded. */
->>>>>>>> -           skb_increase_gso_size(shinfo, len_diff);
->>>>>>>> +           if (skb->data_len > len_diff)
->>>>>>>
->>>>>>> Could you elaborate some more on what this has to do with data_len specifically
->>>>>>> here? I'm not sure I follow exactly your above commit description. Are you saying
->>>>>>> that you're hitting in tcp_gso_segment():
->>>>>>>
->>>>>>>          [...]
->>>>>>>          mss = skb_shinfo(skb)->gso_size;
->>>>>>>          if (unlikely(skb->len <= mss))
->>>>>>>                  goto out;
->>>>>>>          [...]
->>>>>>
->>>>>> Yes, right
->>>>>>
->>>>>>>
->>>>>>> Please provide more context on the bug, thanks!
->>>>>>
->>>>>> tcp_gso_segment():
->>>>>>         [...]
->>>>>>         __skb_pull(skb, thlen);
->>>>>>
->>>>>>         mss = skb_shinfo(skb)->gso_size;
->>>>>>         if (unlikely(skb->len <= mss))
->>>>>>         [...]
->>>>>>
->>>>>> skb->len will have total GROed TCP payload size after __skb_pull.
->>>>>> skb->len <= mss will not be happened in a normal GROed situation. But
->>>>>> bpf_skb_proto_6_to_4 would upgrade MSS by increasing gso_size, it can
->>>>>> hit an error condition.
->>>>>>
->>>>>> We should ensure the following condition.
->>>>>> total GROed TCP payload > the original mss + (IPv6 size - IPv4 size)
->>>>>>
->>>>>> Due to
->>>>>> total GROed TCP payload = the original mss + skb->data_len
->>>>>> IPv6 size - IPv4 size = len_diff
->>>>>>
->>>>>> Finally, we can get the condition.
->>>>>> skb->data_len > len_diff
->>>>>>
->>>>>>>
->>>>>>>> +                   skb_increase_gso_size(shinfo, len_diff);
->>>>>>>> +
->>>>>>>>             /* Header must be checked, and gso_segs recomputed. */
->>>>>>>>             shinfo->gso_type |= SKB_GSO_DODGY;
->>>>>>>>             shinfo->gso_segs = 0;
->>>>>>>>
->>>>>>
->>>>>>
->>>>
->>
-> 
-> .
-> 
+gcc tested configs:
+arm                                 defconfig
+arm64                            allyesconfig
+arm64                               defconfig
+arm                              allyesconfig
+arm                              allmodconfig
+x86_64                           allyesconfig
+riscv                            allmodconfig
+i386                             allyesconfig
+riscv                            allyesconfig
+arm                       mainstone_defconfig
+powerpc                     pq2fads_defconfig
+sparc                       sparc64_defconfig
+arm                        keystone_defconfig
+um                               alldefconfig
+s390                                defconfig
+mips                          rb532_defconfig
+arm                             ezx_defconfig
+riscv             nommu_k210_sdcard_defconfig
+mips                      maltasmvp_defconfig
+arm                         cm_x300_defconfig
+arm                         hackkit_defconfig
+arm                     eseries_pxa_defconfig
+sparc                               defconfig
+powerpc                        fsp2_defconfig
+arm                            zeus_defconfig
+openrisc                  or1klitex_defconfig
+arm                        spear6xx_defconfig
+powerpc                     ep8248e_defconfig
+arm                         orion5x_defconfig
+arm                        multi_v7_defconfig
+powerpc                      ep88xc_defconfig
+powerpc                    amigaone_defconfig
+m68k                            q40_defconfig
+powerpc                      acadia_defconfig
+powerpc                mpc7448_hpc2_defconfig
+powerpc                    ge_imp3a_defconfig
+sh                          rsk7203_defconfig
+sh                          polaris_defconfig
+arm                        shmobile_defconfig
+mips                        nlm_xlr_defconfig
+arm                          lpd270_defconfig
+mips                         bigsur_defconfig
+arm                           sama5_defconfig
+m68k                       m5249evb_defconfig
+arm                      integrator_defconfig
+s390                          debug_defconfig
+mips                      malta_kvm_defconfig
+h8300                    h8300h-sim_defconfig
+powerpc                        cell_defconfig
+powerpc                     tqm8560_defconfig
+sh                      rts7751r2d1_defconfig
+mips                     loongson1c_defconfig
+sparc64                          alldefconfig
+mips                        omega2p_defconfig
+sh                     sh7710voipgw_defconfig
+m68k                          multi_defconfig
+sh                          lboxre2_defconfig
+mips                           gcw0_defconfig
+powerpc                 mpc8272_ads_defconfig
+powerpc                      mgcoge_defconfig
+mips                           mtx1_defconfig
+m68k                            mac_defconfig
+sh                           se7751_defconfig
+riscv                            alldefconfig
+powerpc                      ppc40x_defconfig
+mips                          ath25_defconfig
+sh                   sh7724_generic_defconfig
+mips                           jazz_defconfig
+m68k                         amcore_defconfig
+powerpc                 mpc834x_mds_defconfig
+arm                        oxnas_v6_defconfig
+arm                         nhk8815_defconfig
+powerpc                 mpc832x_rdb_defconfig
+m68k                             allyesconfig
+powerpc                     redwood_defconfig
+arm                       cns3420vb_defconfig
+arm                         mv78xx0_defconfig
+sparc                       sparc32_defconfig
+sh                                  defconfig
+arc                        vdk_hs38_defconfig
+arm                          moxart_defconfig
+powerpc                      obs600_defconfig
+arm                       imx_v6_v7_defconfig
+ia64                        generic_defconfig
+mips                        bcm47xx_defconfig
+arm                          exynos_defconfig
+m68k                                defconfig
+x86_64                              defconfig
+mips                       bmips_be_defconfig
+arc                              alldefconfig
+m68k                        m5272c3_defconfig
+arc                        nsimosci_defconfig
+powerpc                     powernv_defconfig
+powerpc                     asp8347_defconfig
+mips                        jmr3927_defconfig
+mips                      loongson3_defconfig
+mips                     cu1830-neo_defconfig
+arc                            hsdk_defconfig
+arm                        realview_defconfig
+m68k                       m5275evb_defconfig
+arm                       multi_v4t_defconfig
+powerpc                     akebono_defconfig
+arm                       aspeed_g5_defconfig
+arm                        mvebu_v7_defconfig
+arm                          simpad_defconfig
+arm                      jornada720_defconfig
+riscv                    nommu_k210_defconfig
+mips                        nlm_xlp_defconfig
+powerpc                 mpc8315_rdb_defconfig
+powerpc                    sam440ep_defconfig
+sh                 kfr2r09-romimage_defconfig
+mips                         cobalt_defconfig
+mips                           ip22_defconfig
+arm                              alldefconfig
+xtensa                generic_kc705_defconfig
+powerpc                   currituck_defconfig
+powerpc                     stx_gp3_defconfig
+um                            kunit_defconfig
+powerpc                     rainier_defconfig
+mips                         mpc30x_defconfig
+powerpc                 mpc837x_mds_defconfig
+sh                              ul2_defconfig
+x86_64                            allnoconfig
+ia64                             allmodconfig
+ia64                                defconfig
+ia64                             allyesconfig
+m68k                             allmodconfig
+nios2                               defconfig
+arc                              allyesconfig
+nds32                             allnoconfig
+nds32                               defconfig
+nios2                            allyesconfig
+csky                                defconfig
+alpha                               defconfig
+alpha                            allyesconfig
+xtensa                           allyesconfig
+h8300                            allyesconfig
+arc                                 defconfig
+sh                               allmodconfig
+parisc                              defconfig
+s390                             allyesconfig
+s390                             allmodconfig
+parisc                           allyesconfig
+sparc                            allyesconfig
+i386                                defconfig
+mips                             allyesconfig
+mips                             allmodconfig
+powerpc                          allyesconfig
+powerpc                          allmodconfig
+powerpc                           allnoconfig
+i386                 randconfig-a003-20210506
+i386                 randconfig-a006-20210506
+i386                 randconfig-a001-20210506
+i386                 randconfig-a005-20210506
+i386                 randconfig-a004-20210506
+i386                 randconfig-a002-20210506
+x86_64               randconfig-a014-20210506
+x86_64               randconfig-a015-20210506
+x86_64               randconfig-a012-20210506
+x86_64               randconfig-a013-20210506
+x86_64               randconfig-a011-20210506
+x86_64               randconfig-a016-20210506
+i386                 randconfig-a015-20210506
+i386                 randconfig-a013-20210506
+i386                 randconfig-a016-20210506
+i386                 randconfig-a014-20210506
+i386                 randconfig-a012-20210506
+i386                 randconfig-a011-20210506
+riscv                    nommu_virt_defconfig
+riscv                             allnoconfig
+riscv                               defconfig
+riscv                          rv32_defconfig
+um                               allmodconfig
+um                                allnoconfig
+um                               allyesconfig
+um                                  defconfig
+x86_64                    rhel-8.3-kselftests
+x86_64                               rhel-8.3
+x86_64                      rhel-8.3-kbuiltin
+x86_64                                  kexec
 
+clang tested configs:
+x86_64               randconfig-a001-20210506
+x86_64               randconfig-a003-20210506
+x86_64               randconfig-a005-20210506
+x86_64               randconfig-a002-20210506
+x86_64               randconfig-a006-20210506
+x86_64               randconfig-a004-20210506
+
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
