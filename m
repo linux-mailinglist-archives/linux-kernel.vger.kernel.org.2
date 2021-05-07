@@ -2,113 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08544376584
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:50:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11A51376593
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:51:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237086AbhEGMvL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:51:11 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17151 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230092AbhEGMvI (ORCPT
+        id S237104AbhEGMwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:52:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237052AbhEGMwf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:51:08 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fc9F52jrqzqTDj;
-        Fri,  7 May 2021 20:46:49 +0800 (CST)
-Received: from huawei.com (10.174.185.226) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 7 May 2021
- 20:50:00 +0800
-From:   Wang Xingang <wangxingang5@huawei.com>
-To:     <will@kernel.org>, <joro@8bytes.org>
-CC:     <bhelgaas@google.com>, <gregkh@linuxfoundation.org>,
-        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
-        <linux-pci@vger.kernel.org>, <xieyingtai@huawei.com>,
-        <wangxingang5@huawei.com>
-Subject: [PATCH 1/1] iommu/of: Fix request and enable ACS for of_iommu_configure
-Date:   Fri, 7 May 2021 12:49:53 +0000
-Message-ID: <1620391793-18744-2-git-send-email-wangxingang5@huawei.com>
-X-Mailer: git-send-email 2.6.4.windows.1
-In-Reply-To: <1620391793-18744-1-git-send-email-wangxingang5@huawei.com>
-References: <1620391793-18744-1-git-send-email-wangxingang5@huawei.com>
+        Fri, 7 May 2021 08:52:35 -0400
+Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA76FC061574;
+        Fri,  7 May 2021 05:51:35 -0700 (PDT)
+Received: by mail-lj1-x230.google.com with SMTP id w15so11392176ljo.10;
+        Fri, 07 May 2021 05:51:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=k/DtSPUDkSbuRZ0BQAVzillf2V45Xj8sjRcVKiI789k=;
+        b=YhPg6AH5PtgAMazNsAKtBLkIFFyi/lLcNbGXD/g/e8XWc1gzAKu4/ROVfOFGP/sSvW
+         J6Gff1bXStGxePc2OB9iCyKXLGhJ0NKUTi7EBB4AIzwaE9DRFgCnbl99Tgtq0ofCLGxA
+         7MgtRCGxqdpOOUd3DqxMZaRfG0TbYyCTKQp1Y40AqE8DfsVVI3eqoVPC/dhiEememOCt
+         rOnfBLcbaPYk3y+h3XLDgTIA7Xt1i5idIxTM3YJIj0nvepd48uq8k1PMBUFEuiw+nZT7
+         p33w2gce7dwKnUXGuQyKPPvUjBOHu9zmwTLkpARht0GoyTn3qH7FEQyRfJrGBjTz2S7W
+         u1Rg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=k/DtSPUDkSbuRZ0BQAVzillf2V45Xj8sjRcVKiI789k=;
+        b=sq8r0Ebe5S2tXYP4dilfR2MrYwCqyBRkhlCKgu2JlcPbosfrVTmXLAxnGM0QRzR6N4
+         dLzACpZDJb8YzEFGx4AjEaOBI4aOb9HmqugsHGNDwDOSusdMkdal9/5rpQHaWhmd55/J
+         ghrJr6JT+3l6sLNYfyk6zLF+CW8Dai+epu32hCpKP67OVm3QZob9QswRbG5DOCA93vnN
+         pWOYNcKzFzxyobGC+c1P9k/cdj1CMWCZ8QubACyZWRXWyNRdPAIEjChf1/yCwA7Jb+JY
+         KSICkLnuDfp/s5qdomm5GqivYjB7Vpd+0SmTOYunRyhQtyGMSkvz4Qt3ImXbCv2oC/op
+         znzg==
+X-Gm-Message-State: AOAM531ucQorKYcl6py7NwJTEFneZcpBH1Z3Xd9jQy+efGwMfEyDIjcL
+        qFnX3UnREp8glThi269G32A=
+X-Google-Smtp-Source: ABdhPJz3y7Xr3Nw+3mhxe7PhcWEzINPKHvxkvwn5fmRb0vNJZIxc+vO3M+pwHzrBmO/w1sXeQgp/cQ==
+X-Received: by 2002:a2e:8e9a:: with SMTP id z26mr783712ljk.301.1620391894189;
+        Fri, 07 May 2021 05:51:34 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.84])
+        by smtp.gmail.com with ESMTPSA id r9sm1887855ljp.79.2021.05.07.05.51.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 05:51:33 -0700 (PDT)
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     mkrufky@linuxtv.org, mchehab@kernel.org
+Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org,
+        syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com
+Subject: [PATCH v2] media: dvb-usb: fix wrong definition
+Date:   Fri,  7 May 2021 15:50:43 +0300
+Message-Id: <20210507125043.29825-1-paskripkin@gmail.com>
+X-Mailer: git-send-email 2.31.1
+In-Reply-To: <20210506121211.8556-1-paskripkin@gmail.com>
+References: <20210506121211.8556-1-paskripkin@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.185.226]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xingang Wang <wangxingang5@huawei.com>
+syzbot reported WARNING in vmalloc. The problem
+was in zero size passed to vmalloc.
 
-When request ACS for PCI device in of_iommu_configure, the pci device
-has already been scanned and added with 'pci_acs_enable=0'. So the
-pci_request_acs() in current procedure does not work for enabling ACS.
-Besides, the ACS should be enabled only if there's an IOMMU in system.
-So this fix the call of pci_request_acs() and call pci_enable_acs() to
-make sure ACS is enabled for the pci_device.
+The root case was in wrong cxusb_bluebird_lgz201_properties
+definition. adapter array has only 1 entry, but num_adapters was
+2.
 
-Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
-configuring IOMMU linkage")
-Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
+Call Trace:
+ __vmalloc_node mm/vmalloc.c:2963 [inline]
+ vmalloc+0x67/0x80 mm/vmalloc.c:2996
+ dvb_dmx_init+0xe4/0xb90 drivers/media/dvb-core/dvb_demux.c:1251
+ dvb_usb_adapter_dvb_init+0x564/0x860 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:184
+ dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:86 [inline]
+ dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:184 [inline]
+ dvb_usb_device_init.cold+0xc94/0x146e drivers/media/usb/dvb-usb/dvb-usb-init.c:308
+ cxusb_probe+0x159/0x5e0 drivers/media/usb/dvb-usb/cxusb.c:1634
+
+Fixes: 4d43e13f723e ("V4L/DVB (4643): Multi-input patch for DVB-USB device")
+Cc: stable@vger.kernel.org
+Reported-by: syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com
+Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+----
+
+Changes in v2:
+
+ Added Fixes tag.
+ Fixed typos in commit message
+
 ---
- drivers/iommu/of_iommu.c | 10 +++++++++-
- drivers/pci/pci.c        |  2 +-
- include/linux/pci.h      |  1 +
- 3 files changed, 11 insertions(+), 2 deletions(-)
+ drivers/media/usb/dvb-usb/cxusb.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-index a9d2df001149..dc621861ae72 100644
---- a/drivers/iommu/of_iommu.c
-+++ b/drivers/iommu/of_iommu.c
-@@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
- 			.np = master_np,
- 		};
+diff --git a/drivers/media/usb/dvb-usb/cxusb.c b/drivers/media/usb/dvb-usb/cxusb.c
+index 761992ad05e2..7707de7bae7c 100644
+--- a/drivers/media/usb/dvb-usb/cxusb.c
++++ b/drivers/media/usb/dvb-usb/cxusb.c
+@@ -1947,7 +1947,7 @@ static struct dvb_usb_device_properties cxusb_bluebird_lgz201_properties = {
  
--		pci_request_acs();
- 		err = pci_for_each_dma_alias(to_pci_dev(dev),
- 					     of_pci_iommu_init, &info);
- 	} else {
-@@ -222,6 +221,15 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
- 		/* The fwspec pointer changed, read it again */
- 		fwspec = dev_iommu_fwspec_get(dev);
- 		ops    = fwspec->ops;
-+
-+		/*
-+		 * If we found an IOMMU and the device is pci,
-+		 * make sure we enable ACS.
-+		 */
-+		if (dev_is_pci(dev)) {
-+			pci_request_acs();
-+			pci_enable_acs(to_pci_dev(dev));
-+		}
- 	}
- 	/*
- 	 * If we have reason to believe the IOMMU driver missed the initial
-diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-index b717680377a9..4e4f98ee2870 100644
---- a/drivers/pci/pci.c
-+++ b/drivers/pci/pci.c
-@@ -926,7 +926,7 @@ static void pci_std_enable_acs(struct pci_dev *dev)
-  * pci_enable_acs - enable ACS if hardware support it
-  * @dev: the PCI device
-  */
--static void pci_enable_acs(struct pci_dev *dev)
-+void pci_enable_acs(struct pci_dev *dev)
- {
- 	if (!pci_acs_enable)
- 		goto disable_acs_redir;
-diff --git a/include/linux/pci.h b/include/linux/pci.h
-index c20211e59a57..e6a8bfbc9c98 100644
---- a/include/linux/pci.h
-+++ b/include/linux/pci.h
-@@ -2223,6 +2223,7 @@ static inline struct pci_dev *pcie_find_root_port(struct pci_dev *dev)
- }
+ 	.size_of_priv     = sizeof(struct cxusb_state),
  
- void pci_request_acs(void);
-+void pci_enable_acs(struct pci_dev *dev);
- bool pci_acs_enabled(struct pci_dev *pdev, u16 acs_flags);
- bool pci_acs_path_enabled(struct pci_dev *start,
- 			  struct pci_dev *end, u16 acs_flags);
+-	.num_adapters = 2,
++	.num_adapters = 1,
+ 	.adapter = {
+ 		{
+ 		.num_frontends = 1,
 -- 
-2.19.1
+2.31.1
 
