@@ -2,327 +2,143 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 25998375F44
+	by mail.lfdr.de (Postfix) with ESMTP id 93323375F45
 	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 05:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233614AbhEGDyl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 23:54:41 -0400
-Received: from mga11.intel.com ([192.55.52.93]:56144 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231401AbhEGDyd (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 23:54:33 -0400
-IronPort-SDR: nQzmLFj9vVXTnWRrdl2nRnJpxeBzVoltKKqE5RMULzfMmiHwJY8RHwjXGPy9rqGBOxzXYYm59f
- 73PMLDWcpaqw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="195525860"
-X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="195525860"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 20:53:34 -0700
-IronPort-SDR: jXr5xGDTIIh25e6aZ73E+8tIL7E30J62+08mpWG1bWoq4FRwYsuO3hdAgSrWfqeMNLbhQtzCP9
- hIQSyhpGf7cw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="533309724"
-Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 06 May 2021 20:53:32 -0700
-From:   Jin Yao <yao.jin@linux.intel.com>
-To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
-        mingo@redhat.com, alexander.shishkin@linux.intel.com
-Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
-        kan.liang@intel.com, yao.jin@intel.com,
-        Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 3/3] perf header: Process hybrid CPU_PMU_CAPS
-Date:   Fri,  7 May 2021 11:52:30 +0800
-Message-Id: <20210507035230.3079-4-yao.jin@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20210507035230.3079-1-yao.jin@linux.intel.com>
-References: <20210507035230.3079-1-yao.jin@linux.intel.com>
+        id S233632AbhEGDzg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 23:55:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54434 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S231401AbhEGDz3 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 23:55:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620359669;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Lym5IFcdXaDbeNnwtDKPcjOJJiR6vNqk+E2fR7F7mjk=;
+        b=cFqveQV1ng3OlFXRK7tWEottiv9aNO1jwpXWQ3lZdHhfD6te9aN8UkKP1sk9vGAeFosKR2
+        TCbDg95iQY2O5Qv1Aoqiuxp0emEHlDzn9pzI8wV0P/v1QiUNBMuVyVom177yhc9+VvuHG8
+        XBa4fTnnZevSAfBhfho3YVXyVu87aaE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-165-Y4bpuEWqNZi42SO4pjFObA-1; Thu, 06 May 2021 23:54:26 -0400
+X-MC-Unique: Y4bpuEWqNZi42SO4pjFObA-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 92B53107ACCD;
+        Fri,  7 May 2021 03:54:24 +0000 (UTC)
+Received: from localhost (ovpn-13-30.pek2.redhat.com [10.72.13.30])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id B48D81A870;
+        Fri,  7 May 2021 03:54:20 +0000 (UTC)
+Date:   Fri, 7 May 2021 11:54:18 +0800
+From:   Baoquan He <bhe@redhat.com>
+To:     Stephen Boyd <swboyd@chromium.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Jessica Yu <jeyu@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Dave Young <dyoung@redhat.com>,
+        Vivek Goyal <vgoyal@redhat.com>, kexec@lists.infradead.org
+Subject: Re: [PATCH v5 13/13] kdump: Use vmlinux_build_id to simplify
+Message-ID: <20210507035418.GA23668@MiWiFi-R3L-srv>
+References: <20210420215003.3510247-1-swboyd@chromium.org>
+ <20210420215003.3510247-14-swboyd@chromium.org>
+ <20210428101355.GB8374@localhost.localdomain>
+ <CAE-0n517ZDD8ySTqT2GvKv-KNf1DFP2qmaqt3Pc=-AEndLTevg@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE-0n517ZDD8ySTqT2GvKv-KNf1DFP2qmaqt3Pc=-AEndLTevg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-For CPU_PMU_CAPS feature, the layout is extended to:
+On 04/29/21 at 01:14am, Stephen Boyd wrote:
+> Quoting Baoquan He (2021-04-28 03:13:55)
+> > On 04/20/21 at 02:50pm, Stephen Boyd wrote:
+> > > We can use the vmlinux_build_id array here now instead of open coding
+> > > it. This mostly consolidates code.
+> > >
+> > > Cc: Jiri Olsa <jolsa@kernel.org>
+> > > Cc: Alexei Starovoitov <ast@kernel.org>
+> > > Cc: Jessica Yu <jeyu@kernel.org>
+> > > Cc: Evan Green <evgreen@chromium.org>
+> > > Cc: Hsin-Yi Wang <hsinyi@chromium.org>
+> > > Cc: Dave Young <dyoung@redhat.com>
+> > > Cc: Baoquan He <bhe@redhat.com>
+> > > Cc: Vivek Goyal <vgoyal@redhat.com>
+> > > Cc: <kexec@lists.infradead.org>
+> > > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > > ---
+> > >  include/linux/crash_core.h | 12 ++++-----
+> > >  kernel/crash_core.c        | 50 ++------------------------------------
+> > >  2 files changed, 8 insertions(+), 54 deletions(-)
+> > >
+> > > diff --git a/include/linux/crash_core.h b/include/linux/crash_core.h
+> > > index 206bde8308b2..de62a722431e 100644
+> > > --- a/include/linux/crash_core.h
+> > > +++ b/include/linux/crash_core.h
+> > > @@ -38,8 +38,12 @@ phys_addr_t paddr_vmcoreinfo_note(void);
+> > >
+> > >  #define VMCOREINFO_OSRELEASE(value) \
+> > >       vmcoreinfo_append_str("OSRELEASE=%s\n", value)
+> > > -#define VMCOREINFO_BUILD_ID(value) \
+> > > -     vmcoreinfo_append_str("BUILD-ID=%s\n", value)
+> > > +#define VMCOREINFO_BUILD_ID()                                                \
+> > > +     ({                                                              \
+> > > +             static_assert(sizeof(vmlinux_build_id) == 20);          \
+> > > +             vmcoreinfo_append_str("BUILD-ID=%20phN\n", vmlinux_build_id); \
+> >
+> > Since there has been static_assert at above, can we remove the magic
+> > number '20'?
+> >
+> > And I checked format_decode(), didn't find which type corresponds to
+> > 'N', could you tell?
+> 
+> It is documented in Documentation/core-api/printk-formats.rst (see "Raw
+> buffer as a hex string") where the '20' replaces the '*' to specify a
+> fixed size buffer to format. We could pass the 20 as an argument instead
+> of encoding it in the format, but then it would still be there twice. We
+> could use a #define but then it would have to be passed as an argument.
 
-<pmu1 caps nr>
-<caps string 1>
-<caps string 2>
-<caps string N>
-<pmu1 name>
-<nr of rest pmus to process>
-<pmu2 caps nr>
-<caps string 1>
-<caps string 2>
-<caps string N>
-<pmu2 name>
-<nr of rest pmus to process>
+Thanks for telling, I can see 'phN' is used in many places, but haven't
+figured out how it's parsed, e.g in format_decode() it's not related.
+Anyway, I may need dig further or search to get it.
 
-When we see '0' at 'nr of rest pmus to process', we know all the
-pmu have been processed yet.
+> 
+> I don't know of a good way to enforce in printk that the buffer is the
+> size that matches the format size. Maybe it shouldn't be an option to
+> have a size in the format string if it's a problem to put the size of
+> the buffer in there.
 
-With this patch, some examples,
+Oh, I meant that we may not need to enforce that because the size of
+vmlinux_build_id can be guaranteed, always 20, we do not need to specify
+the '20'? Afaik, we usually specify the format size when the string size
+is variable, and we want to add '0' to make the width of printing is
+fixed. Anyway, this dones't matter much.
 
-New perf tool with new perf.data
-(new perf.data is generated on hybrid platform):
+Acked-by: Baoquan He <bhe@redhat.com>
 
-  root@otcpl-adl-s-2:~# perf report --header-only -I
-  ...
-  # cpu_core pmu capabilities: branches=32, max_precise=3, pmu_name=alderlake_hybrid
-  # cpu_atom pmu capabilities: branches=32, max_precise=3, pmu_name=alderlake_hybrid
+Thanks
+Baoquan
 
-New perf tool with new perf.data
-(new perf.data is generated on non-hybrid platform):
-
-  root@kbl-ppc:~# perf report --header-only -I
-  ...
-  # cpu pmu capabilities: branches=32, max_precise=3, pmu_name=skylake
-
-New perf tool with old perf.data
-(old perf.data is generated by old perf tool on non-hybrid platform):
-
-  root@kbl-ppc:~# perf report --header-only -I
-  ...
-  # cpu pmu capabilities: branches=32, max_precise=3, pmu_name=skylake
-
-Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
----
- tools/perf/util/env.c    |   6 +++
- tools/perf/util/env.h    |  11 +++-
- tools/perf/util/header.c | 114 ++++++++++++++++++++++++++++++++++-----
- 3 files changed, 115 insertions(+), 16 deletions(-)
-
-diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
-index 744ae87b5bfa..ea952ec507da 100644
---- a/tools/perf/util/env.c
-+++ b/tools/perf/util/env.c
-@@ -208,6 +208,12 @@ void perf_env__exit(struct perf_env *env)
- 		zfree(&env->hybrid_nodes[i].cpus);
- 	}
- 	zfree(&env->hybrid_nodes);
-+
-+	for (i = 0; i < env->nr_cpu_pmu_caps_nodes; i++) {
-+		zfree(&env->cpu_pmu_caps_nodes[i].cpu_pmu_caps);
-+		zfree(&env->cpu_pmu_caps_nodes[i].pmu_name);
-+	}
-+	zfree(&env->cpu_pmu_caps_nodes);
- }
- 
- void perf_env__init(struct perf_env *env __maybe_unused)
-diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
-index e5e5deebe68d..5885c055b63e 100644
---- a/tools/perf/util/env.h
-+++ b/tools/perf/util/env.h
-@@ -42,6 +42,13 @@ struct hybrid_node {
- 	char	*cpus;
- };
- 
-+struct cpu_pmu_caps_node {
-+	int		nr_cpu_pmu_caps;
-+	unsigned int	max_branches;
-+	char		*cpu_pmu_caps;
-+	char		*pmu_name;
-+};
-+
- struct perf_env {
- 	char			*hostname;
- 	char			*os_release;
-@@ -63,15 +70,14 @@ struct perf_env {
- 	int			nr_memory_nodes;
- 	int			nr_pmu_mappings;
- 	int			nr_groups;
--	int			nr_cpu_pmu_caps;
- 	int			nr_hybrid_nodes;
-+	int			nr_cpu_pmu_caps_nodes;
- 	char			*cmdline;
- 	const char		**cmdline_argv;
- 	char			*sibling_cores;
- 	char			*sibling_dies;
- 	char			*sibling_threads;
- 	char			*pmu_mappings;
--	char			*cpu_pmu_caps;
- 	struct cpu_topology_map	*cpu;
- 	struct cpu_cache_level	*caches;
- 	int			 caches_cnt;
-@@ -84,6 +90,7 @@ struct perf_env {
- 	struct memory_node	*memory_nodes;
- 	unsigned long long	 memory_bsize;
- 	struct hybrid_node	*hybrid_nodes;
-+	struct cpu_pmu_caps_node	*cpu_pmu_caps_nodes;
- #ifdef HAVE_LIBBPF_SUPPORT
- 	/*
- 	 * bpf_info_lock protects bpf rbtrees. This is needed because the
-diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
-index 578f37655cc9..37e9e3ba16f2 100644
---- a/tools/perf/util/header.c
-+++ b/tools/perf/util/header.c
-@@ -2014,18 +2014,28 @@ static void print_compressed(struct feat_fd *ff, FILE *fp)
- 		ff->ph->env.comp_level, ff->ph->env.comp_ratio);
- }
- 
--static void print_cpu_pmu_caps(struct feat_fd *ff, FILE *fp)
-+static void print_per_cpu_pmu_caps(FILE *fp, struct cpu_pmu_caps_node *n)
- {
--	const char *delimiter = "# cpu pmu capabilities: ";
--	u32 nr_caps = ff->ph->env.nr_cpu_pmu_caps;
--	char *str;
-+	const char *delimiter;
-+	u32 nr_caps = n->nr_cpu_pmu_caps;
-+	char *str, buf[128];
- 
- 	if (!nr_caps) {
--		fprintf(fp, "# cpu pmu capabilities: not available\n");
-+		if (!n->pmu_name)
-+			fprintf(fp, "# cpu pmu capabilities: not available\n");
-+		else
-+			fprintf(fp, "# %s pmu capabilities: not available\n", n->pmu_name);
- 		return;
- 	}
- 
--	str = ff->ph->env.cpu_pmu_caps;
-+	if (!n->pmu_name)
-+		scnprintf(buf, sizeof(buf), "# cpu pmu capabilities: ");
-+	else
-+		scnprintf(buf, sizeof(buf), "# %s pmu capabilities: ", n->pmu_name);
-+
-+	delimiter = buf;
-+
-+	str = n->cpu_pmu_caps;
- 	while (nr_caps--) {
- 		fprintf(fp, "%s%s", delimiter, str);
- 		delimiter = ", ";
-@@ -2035,6 +2045,17 @@ static void print_cpu_pmu_caps(struct feat_fd *ff, FILE *fp)
- 	fprintf(fp, "\n");
- }
- 
-+static void print_cpu_pmu_caps(struct feat_fd *ff, FILE *fp)
-+{
-+	struct cpu_pmu_caps_node *n;
-+	int i;
-+
-+	for (i = 0; i < ff->ph->env.nr_cpu_pmu_caps_nodes; i++) {
-+		n = &ff->ph->env.cpu_pmu_caps_nodes[i];
-+		print_per_cpu_pmu_caps(fp, n);
-+	}
-+}
-+
- static void print_pmu_mappings(struct feat_fd *ff, FILE *fp)
- {
- 	const char *delimiter = "# pmu mappings: ";
-@@ -3140,13 +3161,14 @@ static int process_compressed(struct feat_fd *ff,
- 	return 0;
- }
- 
--static int process_cpu_pmu_caps(struct feat_fd *ff,
--				void *data __maybe_unused)
-+static int process_cpu_pmu_caps_node(struct feat_fd *ff,
-+				     struct cpu_pmu_caps_node *n, bool *end)
- {
--	char *name, *value;
-+	char *name, *value, *pmu_name;
- 	struct strbuf sb;
--	u32 nr_caps;
-+	u32 nr_caps, nr;
- 
-+	*end = false;
- 	if (do_read_u32(ff, &nr_caps))
- 		return -1;
- 
-@@ -3155,7 +3177,7 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
- 		return 0;
- 	}
- 
--	ff->ph->env.nr_cpu_pmu_caps = nr_caps;
-+	n->nr_cpu_pmu_caps = nr_caps;
- 
- 	if (strbuf_init(&sb, 128) < 0)
- 		return -1;
-@@ -3176,13 +3198,33 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
- 		if (strbuf_add(&sb, "", 1) < 0)
- 			goto free_value;
- 
--		if (!strcmp(name, "branches"))
--			ff->ph->env.max_branches = atoi(value);
-+		if (!strcmp(name, "branches")) {
-+			n->max_branches = atoi(value);
-+			if (n->max_branches > ff->ph->env.max_branches)
-+				ff->ph->env.max_branches = n->max_branches;
-+		}
- 
- 		free(value);
- 		free(name);
- 	}
--	ff->ph->env.cpu_pmu_caps = strbuf_detach(&sb, NULL);
-+
-+	/*
-+	 * Old perf.data may not have pmu_name,
-+	 */
-+	pmu_name = do_read_string(ff);
-+	if (!pmu_name || strncmp(pmu_name, "cpu_", 4)) {
-+		*end = true;
-+		goto out;
-+	}
-+
-+	if (do_read_u32(ff, &nr))
-+		return -1;
-+
-+	if (nr == 0)
-+		*end = true;
-+out:
-+	n->cpu_pmu_caps = strbuf_detach(&sb, NULL);
-+	n->pmu_name = pmu_name;
- 	return 0;
- 
- free_value:
-@@ -3194,6 +3236,50 @@ static int process_cpu_pmu_caps(struct feat_fd *ff,
- 	return -1;
- }
- 
-+static int process_cpu_pmu_caps(struct feat_fd *ff,
-+				void *data __maybe_unused)
-+{
-+	struct cpu_pmu_caps_node *nodes = NULL, *tmp;
-+	int ret, i, nr_alloc = 1, nr_used = 0;
-+	bool end;
-+
-+	while (1) {
-+		if (nr_used == nr_alloc || !nodes) {
-+			nr_alloc *= 2;
-+			tmp = realloc(nodes, sizeof(*nodes) * nr_alloc);
-+			if (!tmp)
-+				return -ENOMEM;
-+			memset(tmp + nr_used, 0,
-+			       sizeof(*nodes) * (nr_alloc - nr_used));
-+			nodes = tmp;
-+		}
-+
-+		ret = process_cpu_pmu_caps_node(ff, &nodes[nr_used], &end);
-+		if (ret) {
-+			if (nr_used)
-+				break;
-+			goto err;
-+		}
-+
-+		nr_used++;
-+		if (end)
-+			break;
-+	}
-+
-+	ff->ph->env.nr_cpu_pmu_caps_nodes = (u32)nr_used;
-+	ff->ph->env.cpu_pmu_caps_nodes = nodes;
-+	return 0;
-+
-+err:
-+	for (i = 0; i < nr_used; i++) {
-+		free(nodes[i].cpu_pmu_caps);
-+		free(nodes[i].pmu_name);
-+	}
-+
-+	free(nodes);
-+	return ret;
-+}
-+
- #define FEAT_OPR(n, func, __full_only) \
- 	[HEADER_##n] = {					\
- 		.name	    = __stringify(n),			\
--- 
-2.17.1
+> 
+> >
+> > Other than these, this patch looks good to me, thanks for the effort.
+> >
+> 
+> Thanks.
+> 
+> _______________________________________________
+> kexec mailing list
+> kexec@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/kexec
+> 
 
