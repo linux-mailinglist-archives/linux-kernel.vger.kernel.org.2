@@ -2,192 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D117376930
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:00:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C87376933
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:02:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238486AbhEGRBE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 13:01:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33642 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238462AbhEGRA7 (ORCPT
+        id S236740AbhEGRDb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 13:03:31 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:41138 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232963AbhEGRDO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 13:00:59 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 89457C06138A
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 09:59:58 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id a3-20020a2580430000b02904f7a1a09012so10744898ybn.3
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 09:59:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=reply-to:date:in-reply-to:message-id:mime-version:references
-         :subject:from:to:cc;
-        bh=nXbsQzZRKADxmz3jPQyGk2mwipulmK8ydHFPEpTQQXY=;
-        b=cZAvPBhNqujbaGxJlK4D8mIW+Swf1BC4L7PwZB3GQ7JVWWxdeAIL3qOpHbD1N7+IDP
-         tlcRAsw/mMjLviNrHz0tBXTi1JaNLfNk8c+7bk9+0nD6VUhcdBo88t7lHPuldYqc+OP0
-         U17N9Sf8vPB2ez0F3tKHgHTGKEuCK5D6KPo26i3BaiXYrC9bKDjH76kSLoXyWhJOB5BR
-         Y0vh1d9xhzxQLAnuh6E9lnuowGCPTtBhYd5K7Nbu7a10Nq8InGHZVUwUzrTcxak9TjPW
-         YCa1Cy35GJsLR09nU0UHI+GD9Vf3JnTOxzrSetvQ3vn0dWxX03VZvc2vsqlz2az75D6r
-         LERw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:reply-to:date:in-reply-to:message-id
-         :mime-version:references:subject:from:to:cc;
-        bh=nXbsQzZRKADxmz3jPQyGk2mwipulmK8ydHFPEpTQQXY=;
-        b=RsEKU0ehBvPj3maXx6s8RnIhxgPSBeqEyzFbO/KJCYWlhDcomuoGwaWe7Pbxl5xdfp
-         IOBXCWU2INnO8288IkTjJN3D19P8w+c4i6UGZK/jGMIPQIHQmvVvONLgW+qiYUDNYbJJ
-         Wmh3EzttRDNDTC8LW45VjRiJFfhm379k9mW9fXLFgRDt2JQBxnrkt5N8w/L48PtRZaQW
-         w6flW5c6dLCE5PuNubPAtyi/opilh8Q5N4joNJVYvhe+K7c3nL8GDfJKtHqtEjUN/LgN
-         HmJV9Q0O4Od+Z2BN27digM9hOW0ibJhfTBs8z7mXPEQkUSPE5qH2gTsKPoioWQJKG3wF
-         Dn7Q==
-X-Gm-Message-State: AOAM531HJsxXKH2Yj2nEVRt3lB5UBRhyPWgUcx+Ogu+f6BXgOeMqfUIv
-        fl72fMDqXSJx1+PyT96qKgyWZ174rnA=
-X-Google-Smtp-Source: ABdhPJxTl5XVJuekxZhnDVHK/OX5tlB0XW7XCBsx4xJY6H7vJRWejR56oTeCAQd64J3MY/dfJjlgiNulBOs=
-X-Received: from seanjc798194.pdx.corp.google.com ([2620:15c:f:10:7352:5279:7518:418f])
- (user=seanjc job=sendgmr) by 2002:a25:30d5:: with SMTP id w204mr14454275ybw.416.1620406797719;
- Fri, 07 May 2021 09:59:57 -0700 (PDT)
-Reply-To: Sean Christopherson <seanjc@google.com>
-Date:   Fri,  7 May 2021 09:59:47 -0700
-In-Reply-To: <20210507165947.2502412-1-seanjc@google.com>
-Message-Id: <20210507165947.2502412-3-seanjc@google.com>
-Mime-Version: 1.0
-References: <20210507165947.2502412-1-seanjc@google.com>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH 2/2] KVM: x86: Allow userspace to update tracked sregs for
- protected guests
-From:   Sean Christopherson <seanjc@google.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 7 May 2021 13:03:14 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 147H22iv059092;
+        Fri, 7 May 2021 12:02:02 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620406922;
+        bh=M9uXcU0z2Uxrjv02IUufwWOXXNfDJkZ+Xvp1k7QuVUU=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=AUua5s/LQ1EJd6xUjnDciG57BGBLGpfZtpDVZNXA609FISiorrefrKPLA/HrswyXM
+         f305tnc5NA87K79DSE1K8VoYVq07FPvw+nwVT7wa/SyWIWkui8yBTb6VrAanNkXBf0
+         3SeLujy+6ljaAn94moYhtcRCYUWh1IcP8lM72M/0=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 147H21X6009412
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 7 May 2021 12:02:02 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 7 May
+ 2021 12:02:01 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 7 May 2021 12:02:01 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 147H21ba064377;
+        Fri, 7 May 2021 12:02:01 -0500
+Date:   Fri, 7 May 2021 22:32:00 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     Michael Walle <michael@walle.cc>
+CC:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mark Brown <broonie@kernel.org>,
+        <linux-mtd@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>
+Subject: Re: [PATCH 6/6] mtd: spi-nor: core; avoid odd length/address writes
+ in 8D-8D-8D mode
+Message-ID: <20210507170158.s76lebxn7v2wyvfy@ti.com>
+References: <20210506191829.8271-1-p.yadav@ti.com>
+ <20210506191829.8271-7-p.yadav@ti.com>
+ <497da81bb1531b085941ea2e711cf9b6@walle.cc>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <497da81bb1531b085941ea2e711cf9b6@walle.cc>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Allow userspace to set CR0, CR4, CR8, and EFER via KVM_SET_SREGS for
-protected guests, e.g. for SEV-ES guests with an encrypted VMSA.  KVM
-tracks the aforementioned registers by trapping guest writes, and also
-exposes the values to userspace via KVM_GET_SREGS.  Skipping the regs
-in KVM_SET_SREGS prevents userspace from updating KVM's CPU model to
-match the known hardware state.
+On 07/05/21 05:56PM, Michael Walle wrote:
+> Am 2021-05-06 21:18, schrieb Pratyush Yadav:
+> > On Octal DTR capable flashes like Micron Xcella the writes cannot start
+> > or end at an odd address in Octal DTR mode. Extra 0xff bytes need to be
+> > appended or prepended to make sure the start address and end address are
+> > even. 0xff is used because on NOR flashes a program operation can only
+> > flip bits from 1 to 0, not the other way round. 0 to 1 flip needs to
+> > happen via erases.
+> > 
+> > Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
+> > 
+> > ---
+> > 
+> >  drivers/mtd/spi-nor/core.c | 72 +++++++++++++++++++++++++++++++++++++-
+> >  1 file changed, 71 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/drivers/mtd/spi-nor/core.c b/drivers/mtd/spi-nor/core.c
+> > index 3d66cc34af4d..265d8b25fc7f 100644
+> > --- a/drivers/mtd/spi-nor/core.c
+> > +++ b/drivers/mtd/spi-nor/core.c
+> > @@ -2022,6 +2022,71 @@ static int spi_nor_read(struct mtd_info *mtd,
+> > loff_t from, size_t len,
+> >  	return ret;
+> >  }
+> > 
+> > +/*
+> > + * On Octal DTR capable flashes like Micron Xcella the writes cannot
+> > start or
+> > + * end at an odd address in Octal DTR mode. Extra 0xff bytes need to
+> > be appended
+> > + * or prepended to make sure the start address and end address are
+> > even. 0xff is
+> > + * used because on NOR flashes a program operation can only flip bits
+> > from 1 to
+> > + * 0, not the other way round. 0 to 1 flip needs to happen via erases.
+> > + */
+> > +static int spi_nor_octal_dtr_write(struct spi_nor *nor, loff_t to,
+> > size_t len,
+> > +				   const u8 *buf)
+> > +{
+> > +	u8 *tmp_buf;
+> > +	size_t bytes_written;
+> > +	loff_t start, end;
+> > +	int ret;
+> > +
+> > +	if (IS_ALIGNED(to, 2) && IS_ALIGNED(len, 2))
+> > +		return spi_nor_write_data(nor, to, len, buf);
+> > +
+> > +	tmp_buf = kmalloc(nor->page_size, GFP_KERNEL);
+> > +	if (!tmp_buf)
+> > +		return -ENOMEM;
+> > +
+> > +	memset(tmp_buf, 0xff, nor->page_size);
+> 
+> This could be replaced by just setting the first and the
+> last byte to 0xff. But this might be easier to read. I am
+> fine with both.
 
-Fixes: 5265713a0737 ("KVM: x86: Update __get_sregs() / __set_sregs() to support SEV-ES")
-Reported-by: Peter Gonda <pgonda@google.com>
-Cc: stable@vger.kernel.org
-Cc: Maxim Levitsky <mlevitsk@redhat.com>
-Signed-off-by: Sean Christopherson <seanjc@google.com>
----
- arch/x86/kvm/x86.c | 73 ++++++++++++++++++++++++++--------------------
- 1 file changed, 42 insertions(+), 31 deletions(-)
+First, yes. Not the last. The buffer is allocated to nor->page_size for 
+simplicity but the write could be smaller than nor->page_size. So you'd 
+need to calculate the position of the other 0xff byte. It is much 
+simpler to just initialize the whole buffer. It will be around 256 or 
+512 bytes so not a big overhead.
 
-diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-index 3bf52ba5f2bb..1b7d0e97c82b 100644
---- a/arch/x86/kvm/x86.c
-+++ b/arch/x86/kvm/x86.c
-@@ -9963,21 +9963,25 @@ static int __set_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
- 	if (kvm_set_apic_base(vcpu, &apic_base_msr))
- 		goto out;
- 
--	if (vcpu->arch.guest_state_protected)
--		goto skip_protected_regs;
-+	if (!vcpu->arch.guest_state_protected) {
-+		dt.size = sregs->idt.limit;
-+		dt.address = sregs->idt.base;
-+		static_call(kvm_x86_set_idt)(vcpu, &dt);
-+		dt.size = sregs->gdt.limit;
-+		dt.address = sregs->gdt.base;
-+		static_call(kvm_x86_set_gdt)(vcpu, &dt);
- 
--	dt.size = sregs->idt.limit;
--	dt.address = sregs->idt.base;
--	static_call(kvm_x86_set_idt)(vcpu, &dt);
--	dt.size = sregs->gdt.limit;
--	dt.address = sregs->gdt.base;
--	static_call(kvm_x86_set_gdt)(vcpu, &dt);
--
--	vcpu->arch.cr2 = sregs->cr2;
--	mmu_reset_needed |= kvm_read_cr3(vcpu) != sregs->cr3;
--	vcpu->arch.cr3 = sregs->cr3;
--	kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
-+		vcpu->arch.cr2 = sregs->cr2;
-+		mmu_reset_needed |= kvm_read_cr3(vcpu) != sregs->cr3;
-+		vcpu->arch.cr3 = sregs->cr3;
-+		kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
-+	}
- 
-+	/*
-+	 * Writes to CR0, CR4, CR8, and EFER are trapped (after the instruction
-+	 * completes) for SEV-EV guests, thus userspace is allowed to set them
-+	 * so that KVM's model can be updated to mirror hardware state.
-+	 */
- 	kvm_set_cr8(vcpu, sregs->cr8);
- 
- 	mmu_reset_needed |= vcpu->arch.efer != sregs->efer;
-@@ -9990,35 +9994,42 @@ static int __set_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
- 	mmu_reset_needed |= kvm_read_cr4(vcpu) != sregs->cr4;
- 	static_call(kvm_x86_set_cr4)(vcpu, sregs->cr4);
- 
--	idx = srcu_read_lock(&vcpu->kvm->srcu);
--	if (is_pae_paging(vcpu)) {
-+	/*
-+	 * PDPTEs, like regular PTEs, are always encrypted, thus reading them
-+	 * will return garbage.  Shadow paging, including nested NPT, isn't
-+	 * compatible with protected guests, so ignoring the PDPTEs is a-ok.
-+	 */
-+	if (!vcpu->arch.guest_state_protected && is_pae_paging(vcpu)) {
-+		idx = srcu_read_lock(&vcpu->kvm->srcu);
- 		load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu));
-+		srcu_read_unlock(&vcpu->kvm->srcu, idx);
-+
- 		mmu_reset_needed = 1;
- 	}
--	srcu_read_unlock(&vcpu->kvm->srcu, idx);
- 
- 	if (mmu_reset_needed)
- 		kvm_mmu_reset_context(vcpu);
- 
--	kvm_set_segment(vcpu, &sregs->cs, VCPU_SREG_CS);
--	kvm_set_segment(vcpu, &sregs->ds, VCPU_SREG_DS);
--	kvm_set_segment(vcpu, &sregs->es, VCPU_SREG_ES);
--	kvm_set_segment(vcpu, &sregs->fs, VCPU_SREG_FS);
--	kvm_set_segment(vcpu, &sregs->gs, VCPU_SREG_GS);
--	kvm_set_segment(vcpu, &sregs->ss, VCPU_SREG_SS);
-+	if (!vcpu->arch.guest_state_protected) {
-+		kvm_set_segment(vcpu, &sregs->cs, VCPU_SREG_CS);
-+		kvm_set_segment(vcpu, &sregs->ds, VCPU_SREG_DS);
-+		kvm_set_segment(vcpu, &sregs->es, VCPU_SREG_ES);
-+		kvm_set_segment(vcpu, &sregs->fs, VCPU_SREG_FS);
-+		kvm_set_segment(vcpu, &sregs->gs, VCPU_SREG_GS);
-+		kvm_set_segment(vcpu, &sregs->ss, VCPU_SREG_SS);
- 
--	kvm_set_segment(vcpu, &sregs->tr, VCPU_SREG_TR);
--	kvm_set_segment(vcpu, &sregs->ldt, VCPU_SREG_LDTR);
-+		kvm_set_segment(vcpu, &sregs->tr, VCPU_SREG_TR);
-+		kvm_set_segment(vcpu, &sregs->ldt, VCPU_SREG_LDTR);
- 
--	update_cr8_intercept(vcpu);
-+		update_cr8_intercept(vcpu);
- 
--	/* Older userspace won't unhalt the vcpu on reset. */
--	if (kvm_vcpu_is_bsp(vcpu) && kvm_rip_read(vcpu) == 0xfff0 &&
--	    sregs->cs.selector == 0xf000 && sregs->cs.base == 0xffff0000 &&
--	    !is_protmode(vcpu))
--		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
-+		/* Older userspace won't unhalt the vcpu on reset. */
-+		if (kvm_vcpu_is_bsp(vcpu) && kvm_rip_read(vcpu) == 0xfff0 &&
-+		    sregs->cs.selector == 0xf000 &&
-+		    sregs->cs.base == 0xffff0000 && !is_protmode(vcpu))
-+			vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
-+	}
- 
--skip_protected_regs:
- 	max_bits = KVM_NR_INTERRUPTS;
- 	pending_vec = find_first_bit(
- 		(const unsigned long *)sregs->interrupt_bitmap, max_bits);
+> 
+> > +
+> > +	start = round_down(to, 2);
+> > +	end = round_up(to + len, 2);
+> > +
+> > +	memcpy(tmp_buf + (to - start), buf, len);
+> > +
+> > +	ret = spi_nor_write_data(nor, start, end - start, tmp_buf);
+> > +	if (ret == 0) {
+> > +		ret = -EIO;
+> > +		goto out;
+> > +	}
+> else if ? I've missed this in the other patch.
+
+Following the style used in spi_nor_read(). Anyway, I've seen 
+conflicting advice on which style to be used. Some people don't like 
+else if when the if ends in a return since it is effectively an else if. 
+Others like it the other way round. Dunno...
+
+> 
+> > +	if (ret < 0)
+> > +		goto out;
+> > +
+> > +	/*
+> > +	 * More bytes are written than actually requested, but that number
+> > can't
+> > +	 * be reported to the calling function or it will confuse its
+> > +	 * calculations. Calculate how many of the _requested_ bytes were
+> > +	 * written.
+> > +	 */
+> > +	bytes_written = ret;
+> > +
+> > +	if (to != start)
+> > +		ret -= to - start;
+> > +
+> > +	/*
+> > +	 * Only account for extra bytes at the end if they were actually
+> > +	 * written. For example, if for some reason the controller could only
+> > +	 * complete a partial write then the adjustment for the extra bytes at
+> > +	 * the end is not needed.
+> > +	 */
+> > +	if (start + bytes_written == end)
+> > +		ret -= end - (to + len);
+> > +
+> > +	if (ret < 0)
+> > +		ret = -EIO;
+> 
+> can this happen?
+
+I don't think so. IIRC this is left over from when I tried a different 
+approach. Maybe I should change it to WARN_ON() to catch future 
+programming errors? Though I don't mind if we drop it entirely.
+
+> 
+> > +
+> > +out:
+> > +	kfree(tmp_buf);
+> > +	return ret;
+> > +}
+> > +
+> >  /*
+> >   * Write an address range to the nor chip.  Data must be written in
+> >   * FLASH_PAGESIZE chunks.  The address range may be any size provided
+> > @@ -2066,7 +2131,12 @@ static int spi_nor_write(struct mtd_info *mtd,
+> > loff_t to, size_t len,
+> >  		if (ret)
+> >  			goto write_err;
+> > 
+> > -		ret = spi_nor_write_data(nor, addr, page_remain, buf + i);
+> > +		if (nor->write_proto == SNOR_PROTO_8_8_8_DTR)
+> > +			ret = spi_nor_octal_dtr_write(nor, addr, page_remain,
+> > +						      buf + i);
+> > +		else
+> > +			ret = spi_nor_write_data(nor, addr, page_remain,
+> > +						 buf + i);
+> >  		if (ret < 0)
+> >  			goto write_err;
+> >  		written = ret;
+> 
+> -michael
+
+Thanks for reviewing.
+
 -- 
-2.31.1.607.g51e8a6a459-goog
-
+Regards,
+Pratyush Yadav
+Texas Instruments Inc.
