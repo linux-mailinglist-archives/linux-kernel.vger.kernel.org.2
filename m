@@ -2,52 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAA5F375FA0
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:09:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 41F89375FA2
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:09:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233179AbhEGFKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 01:10:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
+        id S233369AbhEGFKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 01:10:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbhEGFKW (ORCPT
+        with ESMTP id S233240AbhEGFKb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 01:10:22 -0400
-Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0D4C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 22:09:20 -0700 (PDT)
-Received: by mail-yb1-xb49.google.com with SMTP id v12-20020a25848c0000b02904f30b36aebfso8826152ybk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 22:09:20 -0700 (PDT)
+        Fri, 7 May 2021 01:10:31 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF63C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 22:09:32 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id l9-20020a5b0b890000b02904f7fb53ca12so8772917ybq.15
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 22:09:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
-        h=date:message-id:mime-version:subject:from:to:cc;
-        bh=jSTI64CJ1fjEq5OTPDv3eN3+6glJnRm4XHS+PKPJDqQ=;
-        b=JVIXRhcjz7NCzpFAcvQ+vpKLDHmL3+gV0tpn3h+3lYDO6SgFnmFaCx5Aa8B8YGhYQL
-         XYbXHEpkJ2BastYVJE5UxO5ocwv+ghKnd6Y5sO6OcjMzAwRGdkvZ19A7NCWJyHTnzsR5
-         7Muwz5cO+4J0doAO4LKM/W6Pkd31Emd19Kj/TIINVihz7ASMCUo55GwyPWFxEG1TL9Ce
-         DXUxq49XNginaHoHcdFrIMxf8LpSO5TbrSuE9Lnjg28YgClK98Q5V/RYkK0W5jl4tWMX
-         Gp+iw9aBR6SZ35PZLiB7tQlwhPLPR5NSVZfed9scnvw81usR4vm1G8RZGcBoGeubfzOj
-         WRDA==
+        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+         :cc;
+        bh=HRBAR21u7PRZM/8/eMSlewl7NCMmiIJxdjUH7mvZekY=;
+        b=DhGNJidwdrI3KXAJXGCmwGs1p7rL6egOFnrxLtNMmdergPEvrfY5NzHibtJacZfh8c
+         VdjMv+Gx6FvB0wDZfPIidP3RVhGOJgz87g/tHu4bf0CSo6lr9cuey2az4gb0JHDkIKTU
+         Wuz5yC9bRlYmf4g+9ZReAKGIR6hIMyw7rD76FXyy8BuWJsz3Sk56KbXQtPdWruz+D2c1
+         GbWPtcXtLzA5+iPIx5fu508twhW3F0oxlcXJDaMd2CDs68G9Db+u+XFFME6dK9rMhsQS
+         v31gn4PQLWvAg7ecWh4KXdeWVDA4dTn4TJtd5IkFEs0WqTbhAdh5i3pDlqT9gnCItcwA
+         7ohQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
-        bh=jSTI64CJ1fjEq5OTPDv3eN3+6glJnRm4XHS+PKPJDqQ=;
-        b=bN7Gv9bOPz+4HtT+EzrfjgO0pQ2e2SCr3MHjNhTDXfRg2GqbdTd2qF+ZsnbtrVdh/n
-         CQkAYaZm1/XQV0A1A/nPkWbPVsXpnHRCqLDoqlhXU5Ep5EAlibOTqedvbMYaASoEpSZ7
-         IkbvojjuqyIioL3qR4oREzdahn7n2aFVVv/3W9khhJhJnQkBlFD+UOjZKWOcDi4igHvd
-         ZLZ+uUrk56FITDP6EXtH8kUBit9XhAltdVcgw8QCmccvXHdej9Iy5mnFKaFAUSqvJhz2
-         dfhc6/37yLIjfF9DsIO5Sk2rZ3WC+B4NuC0nwBiF5Ghx7AkJiEqHzxRCbyKn/4We5P9o
-         +OmA==
-X-Gm-Message-State: AOAM533vO8v/V54dsa11Y85968DLF0vtobavkAs9wPz5VU6TKuRhL2y8
-        xUBKp+HJFJZWuxOUYat7LnsgI9oH0c0usA==
-X-Google-Smtp-Source: ABdhPJy9tq8jPJY+ebhUXAl3EcvJ1PKeKQVZ9aWvrBWOFDSB3qbryOjP9jS6yOfytiqDVbXjWXm6HbciSaRB5A==
+        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
+         :references:subject:from:to:cc;
+        bh=HRBAR21u7PRZM/8/eMSlewl7NCMmiIJxdjUH7mvZekY=;
+        b=j99DsV/1DPw/8wgWjrkrc6KZwCn7JRW5FzyNh2DJ0c8bVTodl9g/1BwjLwaPtt+fjg
+         g9PqG+J64XIKtQHJ1NlvqFKs1kcNnkakUlTt+l7bnX5uQ8TZI6VgJF3hAj4NBnemyiXY
+         Ja4wCWLqCWzG5kD2y2pgDe1JR+L6YfMBEvvGN6UBhJvLA7sDGznBLJ5vkm8ut+ircMYv
+         usNuwI9JtNLvohgZpqsxZd4oGvyrIT4psqn6yqflFwn+ZvDAo6tei9rqlNcE0IsdRSAL
+         +C8Ze0z9avolVHEnAOKHjrbBA1RPgx0re9SjB372eANWpv/FBNUZX0YFd14r6lRa8E0u
+         q5aA==
+X-Gm-Message-State: AOAM531qqQm/iHzd1NAj9Xbrtn4R+LoqsfruBdP/g9AkMWQOmLTpM3wK
+        CFnf4LHxw75yKEuXze8o8lRiPEQhMy/XAg==
+X-Google-Smtp-Source: ABdhPJw+CbtEFdF9Vkfc06hXM/f6APOThaXd1KaFsU9TTsm45ExcEMGJ2t9r92IcHQyFQdvPpXwXO4kIrKKuhw==
 X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:7a7f:ce22:a6af:49e5])
- (user=davidgow job=sendgmr) by 2002:a25:cacd:: with SMTP id
- a196mr11407255ybg.296.1620364159507; Thu, 06 May 2021 22:09:19 -0700 (PDT)
-Date:   Thu,  6 May 2021 22:09:07 -0700
-Message-Id: <20210507050908.1008686-1-davidgow@google.com>
+ (user=davidgow job=sendgmr) by 2002:a25:bd50:: with SMTP id
+ p16mr11249160ybm.290.1620364171642; Thu, 06 May 2021 22:09:31 -0700 (PDT)
+Date:   Thu,  6 May 2021 22:09:08 -0700
+In-Reply-To: <20210507050908.1008686-1-davidgow@google.com>
+Message-Id: <20210507050908.1008686-2-davidgow@google.com>
 Mime-Version: 1.0
+References: <20210507050908.1008686-1-davidgow@google.com>
 X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH 1/2] kunit: Do not typecheck binary assertions
+Subject: [PATCH 2/2] kunit: Assign strings to 'const char*' in STREQ assertions
 From:   David Gow <davidgow@google.com>
 To:     Brendan Higgins <brendanhiggins@google.com>,
         Daniel Latypov <dlatypov@google.com>,
@@ -59,49 +63,39 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The use of typecheck() in KUNIT_EXPECT_EQ() and friends is causing more
-problems than I think it's worth. Things like enums need to have their
-values explicitly cast, and literals all need to be very precisely typed
-for the code to compile.
+Currently, the KUNIT_EXPECT_STREQ() and related macros assign both
+string arguments to variables of their own type (via typeof()). This
+seems to be to prevent the macro argument from being evaluated multiple
+times.
 
-While typechecking does have its uses, the additional overhead of having
-lots of needless casts -- combined with the awkward error messages which
-don't mention which types are involved -- makes tests less readable and
-more difficult to write.
+However, yhis doesn't work if one of these is a fixed-length character
+array, rather than a character pointer, as (for example) char[16] will
+always allocate a new string.
 
-By removing the typecheck() call, the two arguments still need to be of
-compatible types, but don't need to be of exactly the same time, which
-seems a less confusing and more useful compromise.
+By always using 'const char*' (the type strcmp expects), we're always
+just taking a pointer to the string, which works even with character
+arrays.
 
 Signed-off-by: David Gow <davidgow@google.com>
 ---
-
-I appreciate that this is probably a bit controversial (and, indeed, I
-was a bit hesitant about sending it out myself), but after sitting on it
-for a few days, I still think this is probably an improvement overall.
-
-The second patch does fix what I think is an actual bug, though, so even
-if this isn't determined to be a good idea, it (or some equivalent)
-should probably go through.
-
-Cheers,
--- David
-
- include/kunit/test.h | 1 -
- 1 file changed, 1 deletion(-)
+ include/kunit/test.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 49601c4b98b8..4c56ffcb7403 100644
+index 4c56ffcb7403..b68c61348121 100644
 --- a/include/kunit/test.h
 +++ b/include/kunit/test.h
-@@ -775,7 +775,6 @@ void kunit_do_assertion(struct kunit *test,
+@@ -1128,8 +1128,8 @@ do {									       \
+ 				   fmt,					       \
+ 				   ...)					       \
  do {									       \
- 	typeof(left) __left = (left);					       \
- 	typeof(right) __right = (right);				       \
--	((void)__typecheck(__left, __right));				       \
+-	typeof(left) __left = (left);					       \
+-	typeof(right) __right = (right);				       \
++	const char *__left = (left);					       \
++	const char *__right = (right);				       \
  									       \
  	KUNIT_ASSERTION(test,						       \
- 			__left op __right,				       \
+ 			strcmp(__left, __right) op 0,			       \
 -- 
 2.31.1.607.g51e8a6a459-goog
 
