@@ -2,73 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B2BA3765CE
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:11:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DE3D3765DE
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:14:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235999AbhEGNM2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 09:12:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229492AbhEGNM1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 09:12:27 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 621456145D;
-        Fri,  7 May 2021 13:11:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620393087;
-        bh=VfeTFWw7uZ8S4bmM3XXEsiPGWbAXgMYpwIb2sL8BkEQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AKKCCt9c0NLZf7sExnj7tzZj4smPLHDpPyKLcrbztii2u+lNzGln0AnSM/JmvjYm+
-         JHKpN7B/LKX08QmBBnGV9VKUlkwH5+jipa84JafAehvccMXDyuP4S8KWfvnlDg2Wyd
-         kVDLZAzjutHIgSNV7O1qJHEDbTwPk0T4qqVi8ZH48+DdCONgMq4uM3IG/zVhLHCD7+
-         OLp+OL6qSnDwib2nahWdAVw0B9Gz0MCuSLPyeC/RIQePrJjnUhr/4LckauK+c3suWD
-         4ZRtiL87gJUpjirmtHGmy6+sXUKMfnyiZeZ1VpUhStWQ84+5s/WU3j2Jcu1IVSTYhs
-         LHjID8+FQWp5Q==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lf0GW-0004qE-CC; Fri, 07 May 2021 15:11:37 +0200
-Date:   Fri, 7 May 2021 15:11:36 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Pavel Skripkin <paskripkin@gmail.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bluetooth: fix potential gfp
-Message-ID: <YJU8iP+O9aSYwYp/@hovoldconsulting.com>
-References: <20210501150445.4055-1-paskripkin@gmail.com>
- <9A08CBDA-3501-48F6-9F7A-60958C5CF888@holtmann.org>
+        id S237161AbhEGNP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 09:15:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39856 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237129AbhEGNPN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 09:15:13 -0400
+Received: from mail-pj1-x1030.google.com (mail-pj1-x1030.google.com [IPv6:2607:f8b0:4864:20::1030])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B8F2C061763
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 06:14:12 -0700 (PDT)
+Received: by mail-pj1-x1030.google.com with SMTP id b14-20020a17090a6e0eb0290155c7f6a356so4595339pjk.0
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 06:14:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sCOlyOIFiZk09QTc1wpSf9iIiwmNKJWxQ3gP9jIAbQE=;
+        b=mSpLQhA/xa8vnl35yPqcyaIJv5x2iKpQ79RnozczBUFtCog64lxWk+cW6iEUvnFZR5
+         lXSMgIKXAE+diRkzI4rU8zgP6i0MQrZOM4NA32+kAechGNEOToZDzav/4bI5gQVttTG+
+         v8FkMm6GIZHzU8+QlMXwDkCy0gAB50XFsATUM=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=sCOlyOIFiZk09QTc1wpSf9iIiwmNKJWxQ3gP9jIAbQE=;
+        b=Rr1M7lBvpM5VSlACMQrrmUvz2oAVxvlNntnB7uNou3LDp4dUWM6VHY+szCJoNBmgYu
+         AGHuwb7m2yCM2SW4mvwe4TkIKq1+8q1B5ZMFrXYpvYDoSiBVgXetsixtiRMh53xJbI04
+         KImIafCl0dDRZHRq8qFNWYYiJX5sY/Pi1qp/QH5Jgehzg7XNrGDnqBtWEP3Q975Xf3Tf
+         juduTT+KtjrGcQdCEjdU86KbnoLknRzV9G3K7zefL/eKpF/6amXqKp2W/X+jZ5Qokx+N
+         2VDJUaTVUhByuQKtHy5yCE7ygm9VU3+k5veMayUTbz78S8rMqN2JYsVTEJryBTIEObpd
+         zHrg==
+X-Gm-Message-State: AOAM531LngF4pAyNFGq+GFknFGXgPKW9+B2BS1ANDQZDu7U2pR3JVciM
+        p4amSMlJpFYGrfIw+ximA+dq0g==
+X-Google-Smtp-Source: ABdhPJy9qeTIxg0nqdJ7guKT0auSMto/VTPsSqmgPnb9RJpyRnb5vWAaDpYKTMsGNe7bTpd2JRQCJQ==
+X-Received: by 2002:a17:90a:a589:: with SMTP id b9mr10307171pjq.80.1620393251736;
+        Fri, 07 May 2021 06:14:11 -0700 (PDT)
+Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:711f:8553:a124:a19])
+        by smtp.gmail.com with ESMTPSA id z29sm4656539pga.52.2021.05.07.06.14.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 06:14:11 -0700 (PDT)
+From:   Hsin-Yi Wang <hsinyi@chromium.org>
+To:     Wolfram Sang <wsa@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown <broonie@kernel.org>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Arnd Bergmann <arnd@arndb.de>
+Subject: [PATCH v21 0/5] add power control in i2c
+Date:   Fri,  7 May 2021 21:14:01 +0800
+Message-Id: <20210507131406.2224177-1-hsinyi@chromium.org>
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9A08CBDA-3501-48F6-9F7A-60958C5CF888@holtmann.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 10:27:39AM +0200, Marcel Holtmann wrote:
-> Hi Pavel,
-> 
-> > In qca_power_shutdown() qcadev local variable is
-> > initialized by hu->serdev.dev private data, but
-> > hu->serdev can be NULL and there is a check for it.
-> > 
-> > Since, qcadev is not used before
-> > 
-> > 	if (!hu->serdev)
-> > 		return;
-> > 
-> > we can move its initialization after this "if" to
-> > prevent gfp.
-> > 
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> > ---
-> > drivers/bluetooth/hci_qca.c | 4 ++--
-> > 1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> patch has been applied to bluetooth-next tree.
+Although in the most platforms, the power of eeprom
+and i2c are alway on, some platforms disable the
+eeprom and i2c power in order to meet low power request.
 
-Why did you pick the v1 when it is clear from thread that a v2 has been
-posted?
+This patch add the pm_runtime ops to control power to
+support all platforms.
 
-Johan
+Changes since v20:
+ - fix regulator check logic in suspend/resume.
+
+Changes since v19:
+ - resend v19 with fix tag added.
+
+Changes since v18:
+ - Fix a function name conflict with drivers/gpu/drm/i915/selftests/i915_gem.c
+
+Changes since v17:
+ - Add a patch to fix unbalanced regulator disabling.
+ - Add dts patch.
+
+Changes since v16:
+ - request regulator in device instead of in the core.
+ - control regulator only if it's provided.
+
+Changes since v15:
+ - Squash the fix[1] for v15.
+[1] https://patchwork.ozlabs.org/project/linux-i2c/patch/20200522101327.13456-1-m.szyprowski@samsung.com/
+
+Changes since v14:
+ - change the return value in normal condition
+ - access the variable after NULL pointer checking
+ - add ack tag
+
+Changes since v13:
+ - fixup some logic error
+
+Changes since v12:
+ - rebase onto v5.7-rc1
+ - change the property description in binding
+
+Changes since v11:
+ - use suspend_late/resume_early instead of suspend/resume
+ - rebase onto v5.6-rc1
+
+Changes since v10:
+ - fixup some worng codes
+
+Changes since v9:
+ - fixup build error
+ - remove redundant code
+
+Changes since v8:
+ - fixup some wrong code
+ - remove redundant message
+
+[... snip ...]
+
+
+Bibby Hsieh (1):
+  i2c: core: support bus regulator controlling in adapter
+
+Hsin-Yi Wang (4):
+  dt-binding: i2c: mt65xx: add vbus-supply property
+  i2c: mediatek: mt65xx: add optional vbus-supply
+  misc: eeprom: at24: check suspend status before disable regulator
+  arm64: dts: mt8183: add supply name for eeprom
+
+ .../devicetree/bindings/i2c/i2c-mt65xx.txt    |  1 +
+ .../dts/mediatek/mt8183-kukui-kakadu.dtsi     |  4 +
+ .../dts/mediatek/mt8183-kukui-kodama.dtsi     |  4 +
+ .../boot/dts/mediatek/mt8183-kukui-krane.dtsi |  4 +
+ drivers/i2c/busses/i2c-mt65xx.c               |  7 ++
+ drivers/i2c/i2c-core-base.c                   | 95 +++++++++++++++++++
+ drivers/misc/eeprom/at24.c                    |  6 +-
+ include/linux/i2c.h                           |  2 +
+ 8 files changed, 121 insertions(+), 2 deletions(-)
+
+-- 
+2.31.1.607.g51e8a6a459-goog
+
