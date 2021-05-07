@@ -2,75 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 49B2C376182
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:54:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47656376185
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:55:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235856AbhEGHyw convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 May 2021 03:54:52 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:48433 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234951AbhEGHym (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:54:42 -0400
-Received: from smtpclient.apple (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
-        by mail.holtmann.org (Postfix) with ESMTPSA id 8CB8BCECD9;
-        Fri,  7 May 2021 10:01:26 +0200 (CEST)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH v3 3/5] Bluetooth: btqca: Moved extracting rom version
- info to common place
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <1620322392-27148-4-git-send-email-gubbaven@codeaurora.org>
-Date:   Fri, 7 May 2021 09:53:35 +0200
-Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
-        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>,
-        Hemantg <hemantg@codeaurora.org>,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
-        Rocky Liao <rjliao@codeaurora.org>, hbandi@codeaurora.org,
-        abhishekpandit@chromium.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <A9592AB3-EE71-4A1A-8CE4-AC209A98BDE5@holtmann.org>
-References: <1620322392-27148-1-git-send-email-gubbaven@codeaurora.org>
- <1620322392-27148-4-git-send-email-gubbaven@codeaurora.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        id S234951AbhEGH4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:56:06 -0400
+Received: from mga04.intel.com ([192.55.52.120]:15520 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229936AbhEGH4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 03:56:04 -0400
+IronPort-SDR: JOQIFHLG2QcBQ9Ao0YDfAoUZGJM7756Hi8njoLBUfTUETdsnb/3+88gBQPCSKqPY9ul01Do1LV
+ 69TaqQ05IGFw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="196657145"
+X-IronPort-AV: E=Sophos;i="5.82,280,1613462400"; 
+   d="scan'208";a="196657145"
+Received: from orsmga008.jf.intel.com ([10.7.209.65])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 00:55:02 -0700
+IronPort-SDR: WaY1sNv/ukokJjPp8wct3T3eaLAIYMWYD6XbFJeXqKJmH6FT51vPPZIZ65FQsn0dz9oIjA2NDd
+ i49gApZFjxbg==
+X-IronPort-AV: E=Sophos;i="5.82,280,1613462400"; 
+   d="scan'208";a="434799232"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 00:55:00 -0700
+Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
+        by paasikivi.fi.intel.com (Postfix) with SMTP id 63DEC203BC;
+        Fri,  7 May 2021 10:54:58 +0300 (EEST)
+Date:   Fri, 7 May 2021 10:54:58 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
+        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] staging: media: atomisp: remove useless breaks
+Message-ID: <20210507075458.GB3@paasikivi.fi.intel.com>
+References: <20210506200956.16593-1-paskripkin@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210506200956.16593-1-paskripkin@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Venkata,
+Hi Pavel,
 
-> Moved extracting rom version info to common place as this code is
-> common in all if else ladder in qca_uart_setup.
+On Thu, May 06, 2021 at 11:09:56PM +0300, Pavel Skripkin wrote:
+> Breaks are not useful after a return, they can
+> simply be removed.
 > 
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
 > ---
-> drivers/bluetooth/btqca.c | 15 ++++++---------
-> 1 file changed, 6 insertions(+), 9 deletions(-)
+>  .../pci/hive_isp_css_common/host/input_system.c       | 11 -----------
+>  1 file changed, 11 deletions(-)
 > 
-> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-> index 320c555..658fd8e4 100644
-> --- a/drivers/bluetooth/btqca.c
-> +++ b/drivers/bluetooth/btqca.c
-> @@ -533,24 +533,21 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
-> 
-> 	config.user_baud_rate = baudrate;
-> 
-> +	/* Firmware files to download are based on ROM version.
-> +	 * ROM version is derived from last two bytes of soc_ver.
-> +	 */
-> +	rom_ver = ((soc_ver & 0x00000f00) >> 0x04) |
-> +		    (soc_ver & 0x0000000f);
-> +
+> diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> index 0f5a231672a8..fd82997b11cc 100644
+> --- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
+> @@ -904,16 +904,12 @@ static input_system_err_t input_system_configure_channel(
+>  			break;
+>  		case INPUT_SYSTEM_SOURCE_TPG:
+>  			return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -			break;
+>  		case INPUT_SYSTEM_SOURCE_PRBS:
+>  			return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -			break;
+>  		case INPUT_SYSTEM_SOURCE_FIFO:
+>  			return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
 
-please try to align this properly.
+While at it, you could drop the individual return statements, too. There
+seems to be another such location at the end of the patch.
 
-Regards
+> -			break;
+>  		default:
+>  			return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -			break;
+>  		}
+>  
+>  		if (error != INPUT_SYSTEM_ERR_NO_ERROR) return error;
+> @@ -995,7 +991,6 @@ static input_system_err_t input_buffer_configuration(void)
+>  			default:
+>  				config.csi_buffer_flags[port] |= INPUT_SYSTEM_CFG_FLAG_CONFLICT;
+>  				return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -				break;
+>  			}
+>  
+>  			// Check acquisition buffer specified but set it later since it has to be unique.
+> @@ -1032,7 +1027,6 @@ static input_system_err_t input_buffer_configuration(void)
+>  
+>  			default:
+>  				return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -				break;
+>  			}
+>  		} else {
+>  			config.csi_buffer_flags[port] = INPUT_SYSTEM_CFG_FLAG_BLOCKED;
+> @@ -1319,7 +1313,6 @@ static input_system_err_t configuration_to_registers(void)
+>  
+>  	default:
+>  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -		break;
+>  
+>  	} // end of switch (source_type)
+>  
+> @@ -1696,16 +1689,12 @@ static input_system_err_t input_system_configure_channel_sensor(
+>  		break;
+>  	case INPUT_SYSTEM_FIFO_CAPTURE_WITH_COUNTING:
+>  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -		break;
+>  	case INPUT_SYSTEM_XMEM_CAPTURE:
+>  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -		break;
+>  	case INPUT_SYSTEM_XMEM_ACQUIRE:
+>  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -		break;
+>  	default:
+>  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
+> -		break;
+>  	}
+>  	return INPUT_SYSTEM_ERR_NO_ERROR;
+>  }
 
-Marcel
+-- 
+Regards,
 
+Sakari Ailus
