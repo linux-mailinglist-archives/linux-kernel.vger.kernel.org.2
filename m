@@ -2,91 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10DEB3760FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:11:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E1DB376109
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:15:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235171AbhEGHMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:12:24 -0400
-Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:21552 "EHLO
-        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234992AbhEGHMV (ORCPT
+        id S235202AbhEGHQG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:16:06 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:11259 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232796AbhEGHQF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:12:21 -0400
-Received: from [192.168.1.18] ([86.243.172.93])
-        by mwinf5d51 with ME
-        id 1jBK2500L21Fzsu03jBKw6; Fri, 07 May 2021 09:11:21 +0200
-X-ME-Helo: [192.168.1.18]
-X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
-X-ME-Date: Fri, 07 May 2021 09:11:21 +0200
-X-ME-IP: 86.243.172.93
-Subject: Re: [PATCH] video: fbdev: imxfb: Fix an error message
-To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
-Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, shawnguo@kernel.org,
-        festevam@gmail.com, linux-imx@nxp.com, j.beisert@pengutronix.de,
-        krzysztof.h1@poczta.fm, linux-fbdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-References: <d7b25026f82659da3c6f7159eea480faa9d738be.1620327302.git.christophe.jaillet@wanadoo.fr>
- <20210507050503.iwrcis2xzhjjthmp@pengutronix.de>
-From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Message-ID: <5cd9c8de-acd9-9594-38a0-62ecf5734c10@wanadoo.fr>
-Date:   Fri, 7 May 2021 09:11:19 +0200
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
-MIME-Version: 1.0
-In-Reply-To: <20210507050503.iwrcis2xzhjjthmp@pengutronix.de>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+        Fri, 7 May 2021 03:16:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1620371705; x=1651907705;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=V4qZ7PEXZtJmEgdK7tUr0Mfzd9d3L+PBPYeKQDTFxf8=;
+  b=U4rHa2/vqKjW/sJsYbo20ro6BUNFX83pdIxGJwqoUw4eIFTUsdO1vrry
+   IIx0OY4MGLIIRCM0BnR+R4mGuWThJojVDz6rsgZOa/IGDWFgP+qFyw7PI
+   PLfZbtsjLqz6Y3a4h99kF21nlAtcF7PvyUZDRK19D60hz6LDylWk3u+2X
+   1tU1WCAZQTH3AiqnTSwBJuESITDs/4KqZ0wSLRTQ9pQwk7YafZeJ01Vf5
+   Dy7aWNadm8xHCXQjmSVuFq1o6TV9Ozcnowy4w4wkQCmWjKb8KVfpH/tep
+   NAZSa9Abb4IVA0j7h54p5eoP+J9DwSKBNYZSwdiZ5HuwpXRWsZJXPOiSq
+   g==;
+IronPort-SDR: G8zddCuyIAS/oboqsnZcWQalvJWnjEH99oI9wg3ALILyayX36EcjpTZwgQ+fWTprLXH5fKW/Uy
+ eTXFTy672W3pgaH5+0qKfXrDnW2T0vpd6aVmInt95/fWGKwHHbUsj88IhIgb5cN0a1HvT89/kd
+ 74CR/tUwDOqp37CS+dDb2/Z/VQ/ErjbkDh39KhsngmIy8PvmEx1qK8JFJlG/4LwXofAoigIVPf
+ hCfE/clwrJL0Kd8FuT7xy7uCDDgGJSYYiQVZnl3C5OapD4PTzJUC9oxAy4uNO7bKVIU+vCvZwK
+ gn4=
+X-IronPort-AV: E=Sophos;i="5.82,280,1613404800"; 
+   d="scan'208";a="278526468"
+Received: from mail-bn1nam07lp2045.outbound.protection.outlook.com (HELO NAM02-BN1-obe.outbound.protection.outlook.com) ([104.47.51.45])
+  by ob1.hgst.iphmx.com with ESMTP; 07 May 2021 15:15:04 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VvPKAX9bAcaehRXeklpMp6RuxDEGdQU3HE+TlPaVyr/ptJtDLDLFITbcSW+PzIdCYXKnPXU8WINgNX8JP+JCqRgzFYMtgxgPSBWqVQDrzPjgVly+nrka2sl6v1PudihCp5lEQqCXm1sIYh5wxfDww7F5vqtP8vbLAurXrH6K7j9EhjQjv7f2YKvb2TqcYCcl+Y2O6d2tGFTveJUodxDQ52AQ44FA/UvDw7m+qB943BwhqJKwcbGT2Bp4pK6PmvuziP6W3zaHHpkhfMKsRO/vpS0FF17EcMfonWJhLFlpPvCXNSl6DGArgXEdfITK90s98gG+K67/kOUnfa6E7193Bw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V4qZ7PEXZtJmEgdK7tUr0Mfzd9d3L+PBPYeKQDTFxf8=;
+ b=YEVqJ//X261LCfwC5XX73Osei2p95cZLMO4pNNMZdxT6kXYb67RzL/PYJ1xX428qtzCLYfBVuWp1GoOxju4Etg0eMEAlPE6WYBsFoHvTFQI1UWqw3w48f/2zrRGmNOk/iUL1tKIPLXXCgUSZQA3moGj+RDjaem/CmZdyYOAhtsgTju8Rjn8XkNvEJ0hp4R12GmDp7aGM0qMJsoDR34VsFzE6hevZaAXIZFfrW38FkD7FCS0UAIg1uetCaMQHnZGx7BAEvFyZW0eF7kIbgdN0IUUPz+Va67jYfEDhmiFlE4pIpjsJgCeqV+LAGJzdAOUmr9+T8NFgj8SlHdMPmJdSGA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=V4qZ7PEXZtJmEgdK7tUr0Mfzd9d3L+PBPYeKQDTFxf8=;
+ b=e0ABuLA57cj5qdfY24YL38nD7mokNTJF+fCEe108JfLoNF9Htgc4y2KHkoJYLYs1Zldva2KELXnFTHZxBUFTbCvVxf2SCVuObhY3PBRgJg3LUVTZ4/W6oMoALkTtyvG/2jqGZ4Wu1vVubiRUwbzRpilxJmshxULiM6LMRZcfHAs=
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com (2603:10b6:5:1b7::7) by
+ DM6PR04MB5017.namprd04.prod.outlook.com (2603:10b6:5:fd::17) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.4087.44; Fri, 7 May 2021 07:15:03 +0000
+Received: from DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966]) by DM6PR04MB6575.namprd04.prod.outlook.com
+ ([fe80::ed2d:4ccc:f42b:9966%7]) with mapi id 15.20.4108.029; Fri, 7 May 2021
+ 07:15:03 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Ulf Hansson <ulf.hansson@linaro.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>
+CC:     Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH 1/2] mmc: core: Move eMMC cache flushing to a new bus_ops
+ callback
+Thread-Topic: [PATCH 1/2] mmc: core: Move eMMC cache flushing to a new bus_ops
+ callback
+Thread-Index: AQHXQohQbU2t6knJJ0ekC7MrgMeyk6rXm8yg
+Date:   Fri, 7 May 2021 07:15:02 +0000
+Message-ID: <DM6PR04MB6575F19B881A75752E23F6B6FC579@DM6PR04MB6575.namprd04.prod.outlook.com>
+References: <20210506145829.198823-1-ulf.hansson@linaro.org>
+ <20210506145829.198823-2-ulf.hansson@linaro.org>
+In-Reply-To: <20210506145829.198823-2-ulf.hansson@linaro.org>
+Accept-Language: en-US
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: linaro.org; dkim=none (message not signed)
+ header.d=none;linaro.org; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [77.138.4.172]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: ce751744-5eae-47bc-8359-08d91127d565
+x-ms-traffictypediagnostic: DM6PR04MB5017:
+x-microsoft-antispam-prvs: <DM6PR04MB5017F205F53EB0D555782160FC579@DM6PR04MB5017.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:5236;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 50XmpE/tarfFT2xvaasMDtZSjt2lkJBS0f3ypQkYYyE8B5ur3xF/rhvjLQv83qOYfqe7FxG+X1xGysNxgZEL8AX3q7ov//ZnRQA8jtYc+m2or4HyxiYEB711nFcBhpW8zd/kqGo7TlYeO2if0XTsAI/NUpXsBLDCqCXhFuykE1Td9/00FoiFvdzHm+fjYdg8Z8YCJmQS24FXihGwgfQyo3K8wYr+nChorbDjPjLkPAiDye6vEhTOVRaECzl3Ena7riY6xdFn9J8c2mjnbFBnM5GzS+bQV5vYrlFd2fwPiES6KEZ9b6QlDJg/aBe6SWx+YVgQxD4u/DPaWraFp1d1E/BGswqkk2hInadzaFLlmIWPmnY4PoAlk8pW90EIglExwrr3IGdPx3iatFVhHWKemTGKo+UuZ+p0NDHUMUeZBHXnJt1w5PSlSH7K5NzZpFVeswT6b4cueZrRTqG1oONn/P3d/6menFf+uHTQetN89T3tGqxv7gmc+Yq9uEp26HJ21rNsCIvaUq5mmcebLvkxY5hYDuM+v5Y0+uEW8eSg/z6pu1MMgdf6KQfRWXTLk3gBabg12t1ygkVP8z2aBiCZ/pHPb7YKtIocRafCWRI5510=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR04MB6575.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(376002)(366004)(346002)(39860400002)(396003)(5660300002)(86362001)(55016002)(38100700002)(9686003)(66946007)(66476007)(54906003)(26005)(33656002)(316002)(478600001)(122000001)(52536014)(76116006)(66446008)(8936002)(110136005)(186003)(71200400001)(8676002)(64756008)(4326008)(4744005)(6506007)(2906002)(66556008)(7696005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?omCnzepxAOQNz5sm8Dpvhg6n7/BjVIwhqKE1sDyhnZOtEhVlOgG/BZ9GrOap?=
+ =?us-ascii?Q?co8cNMwY1L4dNPJoZ3Uw+spq2TIh7Hn+E9NlnscxAWzowDSDn9we+dSKzHXr?=
+ =?us-ascii?Q?DFOzf+RMsezQz0dkO+KIbxLjGxCXzhNzNieMqU1az0cm+tCYND7rrNSvYubj?=
+ =?us-ascii?Q?b1e2cdGpwRe4R7YHDi1602z1Ky+3BAtrPr37SrGG17tcs/NOX51Ybon5WJun?=
+ =?us-ascii?Q?a4tizITLcBbo9A5qmFdrqJa2Qh8n9bjlRtF+qS6tGItBHlnDl0kQxEp4w/MT?=
+ =?us-ascii?Q?lj+MNe4w40JGnlm6si+lQ/6brM+OVq/K+t+/TrdGuRJLCaLMmmweIg/Aqa1u?=
+ =?us-ascii?Q?qzRatXGvlyv1yLmDioQ/58f9q0gcp7PqW8TlkTxPPzKLUoFMGIZjPAF7XyBr?=
+ =?us-ascii?Q?adhJJNZJ1T8k+i/uc+eWLEXm1FnK0d5/Ta88pEulZDpsSAekAHL63fE63j5U?=
+ =?us-ascii?Q?a2rmtloAlhBcLOYN8UpSUgCmSy6lMAQjTFmp76yF0bmz4fdlw4x2PwdKLJea?=
+ =?us-ascii?Q?FDo/YIhBFkksqRJ9uRo36n+hHIQ79LsLtCPcIjuXqCp0vipy7Jm9Ie/nO+h3?=
+ =?us-ascii?Q?9Vmr7D2zkjHQ679f7BNW0vnT9juYyAdm7QoORevNJOEuq6DRMwWxgw4oO2AF?=
+ =?us-ascii?Q?UbR6UzlruCOP8xs0F1FJaBSx1/bAgTSEiGpAAjQhxTjxHZugoop9c5ZfaRsD?=
+ =?us-ascii?Q?9dvYmS4XYgjPHU5/8jIzHN4/ByMq8tcJsb2nuaNUSgjs97kJKgK1osJn+od8?=
+ =?us-ascii?Q?EsczaVnUiNVBYAbcEo1NufSqGJugVZVlWvIypt7EXoHkHM36wh8EshxjU6iN?=
+ =?us-ascii?Q?VyesCb4fBl0dPuHA+oBLAJ/epnkSFHdGSp6UkQOeVnOqfJaoq8Z6Utevwkgm?=
+ =?us-ascii?Q?9AZNEVhbcO8MaMC66cp12H3al1yMWdWsw7k5waIJR4j4Oe8XjOWWEcuD+pgZ?=
+ =?us-ascii?Q?oy2iQAQ13j02iKk2iz3gVgdfsEMn0G/AjkAEbTQY8snTlF68NAVgqJP/yZBZ?=
+ =?us-ascii?Q?71X7Afh9dMvExlYwLdNVertBO1HdjwUSesI2HEwQZmZCrp6voWTfzRGOc3jE?=
+ =?us-ascii?Q?zQ64c4okHUfbQnur3Zq13uvoYrSew9jmN4XwGI7/Fhf2u3WfKA7BKsA9DALA?=
+ =?us-ascii?Q?cJtxwl5a0kBOt2iA34jCuntGGssYBm86SVQ8f2xL/xJRuXvhCABmkhFh09gM?=
+ =?us-ascii?Q?pHkgfudlg08ZpP0CNoNvr8wMLB3T3XvNdXr0OQFH2wEkUS0e1kIfHtbCXGar?=
+ =?us-ascii?Q?JMIvz/E7yc6DbAWpA4oVOcuEVVSMkb3Z2qMasMkQv6z+rdh3tF6vcSKKhtcF?=
+ =?us-ascii?Q?pKk=3D?=
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR04MB6575.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: ce751744-5eae-47bc-8359-08d91127d565
+X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2021 07:15:02.9753
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: VGxVDroOPVal6vv5Wao1GjkU2Kbq21jqZCiTm+VBpRKNRvahnmgMf5pS0N3Xxhf2IWZUHtao1qn2zwggcVUbCw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR04MB5017
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 07/05/2021 à 07:05, Uwe Kleine-König a écrit :
-> Hello Christophe,
-> 
-> On Thu, May 06, 2021 at 08:57:05PM +0200, Christophe JAILLET wrote:
->> 'ret' is known to be 0 here.
->> No error code is available, so just remove it from the error message.
->>
->> Fixes: 72330b0eeefc ("i.MX Framebuffer: Use readl/writel instead of direct pointer deref")
->> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
->> ---
->>   drivers/video/fbdev/imxfb.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/drivers/video/fbdev/imxfb.c b/drivers/video/fbdev/imxfb.c
->> index 7f8debd2da06..ad598257ab38 100644
->> --- a/drivers/video/fbdev/imxfb.c
->> +++ b/drivers/video/fbdev/imxfb.c
->> @@ -992,7 +992,7 @@ static int imxfb_probe(struct platform_device *pdev)
->>   	info->screen_buffer = dma_alloc_wc(&pdev->dev, fbi->map_size,
->>   					   &fbi->map_dma, GFP_KERNEL);
->>   	if (!info->screen_buffer) {
->> -		dev_err(&pdev->dev, "Failed to allocate video RAM: %d\n", ret);
->> +		dev_err(&pdev->dev, "Failed to allocate video RAM\n");
->>   		ret = -ENOMEM;
->>   		goto failed_map;
->>   	}
-> 
-> Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> 
-> Are you using this driver, or did you find that problem using some
-> static checker?
-> 
-
-No, I'm not using this driver AFAIK.
-
-It has been spotted by coccinelle with a hand-made script which tries to 
-find places where error code is used before being initialized.
-
-The script in it-self is not really interesting. It is easy to write and 
-my own version trigger way to much false positives.
-
-CJ
-
-> Best regards
-> Uwe
-> 
-
+>=20
+> To prepare to add internal cache management for SD cards, let's start by
+> moving the eMMC specific code into a new ->flush_cache() bus_ops
+> callback.
+>=20
+> In this way, it becomes straight forward to add the SD specific parts,
+> as subsequent changes are about to show.
+>=20
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Reviewed-by: Avri Altman <avri.altman@wdc.com>
