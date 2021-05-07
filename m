@@ -2,168 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 733AB376D09
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 00:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0618376D18
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 00:59:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230248AbhEGWxH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 18:53:07 -0400
-Received: from mga05.intel.com ([192.55.52.43]:33183 "EHLO mga05.intel.com"
+        id S230019AbhEGXAE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 19:00:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55356 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230099AbhEGWxE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 18:53:04 -0400
-IronPort-SDR: 7RDnDXHSQcdh0tofuQsEkU/IN5kxPnej1jCVYWxv0/RDTWo/Jf6A+YpwMDaY8wSwM24eT/1G8Q
- mYZBmyjBLaHw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="284290023"
-X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="scan'208";a="284290023"
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 15:52:04 -0700
-IronPort-SDR: FeJlpeY3CRjRO5ViQBB6nJ6Cd1Q2PdnSs3BBGVDNM0nOq006Aw8R3EpHvIiX9aRpl2zFD4+Nrl
- vRd4ZPVTICBg==
-X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="scan'208";a="459953572"
-Received: from dwillia2-desk3.jf.intel.com (HELO dwillia2-desk3.amr.corp.intel.com) ([10.54.39.25])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 15:52:04 -0700
-Subject: [PATCH 8/8] cxl/acpi: Add module parameters to stand in for ACPI
- tables
-From:   Dan Williams <dan.j.williams@intel.com>
-To:     linux-cxl@vger.kernel.org
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-acpi@vger.kernel.org
-Date:   Fri, 07 May 2021 15:52:03 -0700
-Message-ID: <162042792370.1202325.11876776878497740843.stgit@dwillia2-desk3.amr.corp.intel.com>
-In-Reply-To: <162042787450.1202325.5718541949681409566.stgit@dwillia2-desk3.amr.corp.intel.com>
-References: <162042787450.1202325.5718541949681409566.stgit@dwillia2-desk3.amr.corp.intel.com>
-User-Agent: StGit/0.18-3-g996c
+        id S229470AbhEGXAC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 19:00:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 49D8B610F7;
+        Fri,  7 May 2021 22:59:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620428341;
+        bh=EjaHRROIeemYNbn77Pcte5aTCvn8P3OM7tTx1UAOp1M=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=tvJcBkMrJuu5FYbRT36vJ1S/10S5qy3WqKCjXuvnD4TKkkJA36b+qP8AXbb8a0P7y
+         BgdPGsIj0WX9zA/34AgtdcSNMHlcTE+1xhFJBcSJQB3cibdxL6BNA27p+WeyBDNkDV
+         +LDAs7aZgRWE9NXXUEBiCZwk6OgWngAvb1cW3vxr+bH7x/8ILoQE6rhGmg3uzLheBl
+         g5WuX9TCyDrxLNzVGPLNuPh3y2dKqjSL8ocSH6kvbFv/Nmbh5e5lu4DDTrqII4rMtf
+         uC4LR226PoqOBE2OgmiJBHRtXHFqlGO+ukX5Ib0qwGmWcjk7HzX/09AQQ0re/NceLB
+         akI8YPuTeWUCA==
+Date:   Fri, 7 May 2021 15:59:00 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     meijusan <meijusan@163.com>
+Cc:     davem@davemloft.net, yoshfuji@linux-ipv6.org, dsahern@kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net/ipv4/ip_fragment:fix missing Flags reserved bit set
+ in iphdr
+Message-ID: <20210507155900.43cd8200@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <20210506145905.3884-1-meijusan@163.com>
+References: <20210506145905.3884-1-meijusan@163.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-[debug / to-be-replaced / not-for-upstream]
+On Thu,  6 May 2021 22:59:05 +0800 meijusan wrote:
+> ip frag with the iphdr flags reserved bit set,via router,ip frag reasm or
+> fragment,causing the reserved bit is reset to zero.
+> 
+> Keep reserved bit set is not modified in ip frag  defrag or fragment.
+> 
+> Signed-off-by: meijusan <meijusan@163.com>
 
-Given ACPICA support is needed before drivers can integrate ACPI
-functionality add some module parameters as proxies.
----
- drivers/cxl/acpi.c |   81 +++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 79 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/cxl/acpi.c b/drivers/cxl/acpi.c
-index bc2a35ae880b..2a48a728f3e0 100644
---- a/drivers/cxl/acpi.c
-+++ b/drivers/cxl/acpi.c
-@@ -4,10 +4,84 @@
- #include <linux/module.h>
- #include <linux/device.h>
- #include <linux/kernel.h>
-+#include <linux/range.h>
- #include <linux/acpi.h>
- #include <linux/pci.h>
- #include "cxl.h"
- 
-+/*
-+ * TODO: Replace all of the below module parameters with ACPI CXL
-+ * resource descriptions once ACPICA makes them available.
-+ */
-+static unsigned long chbcr[4];
-+module_param_named(chbcr0, chbcr[0], ulong, 0400);
-+module_param_named(chbcr1, chbcr[1], ulong, 0400);
-+module_param_named(chbcr2, chbcr[2], ulong, 0400);
-+module_param_named(chbcr3, chbcr[3], ulong, 0400);
-+
-+/* TODO: cross-bridge interleave */
-+static struct cxl_address_space cxl_space[] = {
-+	[0] = { .range = { 0, -1 }, .targets = 0x1, },
-+	[1] = { .range = { 0, -1 }, .targets = 0x1, },
-+	[2] = { .range = { 0, -1 }, .targets = 0x1, },
-+	[3] = { .range = { 0, -1 }, .targets = 0x1, },
-+};
-+
-+static int set_range(const char *val, const struct kernel_param *kp)
-+{
-+	unsigned long long size, base;
-+	struct cxl_address_space *space;
-+	unsigned long flags;
-+	char *p;
-+	int rc;
-+
-+	size = memparse(val, &p);
-+	if (*p != '@')
-+		return -EINVAL;
-+
-+	base = memparse(p + 1, &p);
-+	if (*p != ':')
-+		return -EINVAL;
-+
-+	rc = kstrtoul(p + 1, 0, &flags);
-+	if (rc)
-+		return rc;
-+	if (!flags || flags > CXL_ADDRSPACE_MASK)
-+		return rc;
-+
-+	space = kp->arg;
-+	*space = (struct cxl_address_space) {
-+		.range = {
-+			.start = base,
-+			.end = base + size - 1,
-+		},
-+		.flags = flags,
-+	};
-+
-+	return 0;
-+}
-+
-+static int get_range(char *buf, const struct kernel_param *kp)
-+{
-+	struct cxl_address_space *space = kp->arg;
-+
-+	if (!range_len(&space->range))
-+		return -EINVAL;
-+
-+	return sysfs_emit(buf, "%#llx@%#llx :%s%s%s%s\n",
-+			  (unsigned long long)range_len(&space->range),
-+			  (unsigned long long)space->range.start,
-+			  space->flags & CXL_ADDRSPACE_RAM ? " ram" : "",
-+			  space->flags & CXL_ADDRSPACE_PMEM ? " pmem" : "",
-+			  space->flags & CXL_ADDRSPACE_TYPE2 ? " type2" : "",
-+			  space->flags & CXL_ADDRSPACE_TYPE3 ? " type3" : "");
-+}
-+
-+module_param_call(range0, set_range, get_range, &cxl_space[0], 0400);
-+module_param_call(range1, set_range, get_range, &cxl_space[1], 0400);
-+module_param_call(range2, set_range, get_range, &cxl_space[2], 0400);
-+module_param_call(range3, set_range, get_range, &cxl_space[3], 0400);
-+
- static int match_ACPI0016(struct device *dev, const void *host)
- {
- 	struct acpi_device *adev = to_acpi_device(dev);
-@@ -67,13 +141,16 @@ static int cxl_acpi_register_ports(struct device *dev, struct acpi_device *root,
- 				   struct cxl_port *port, int idx)
- {
- 	struct acpi_pci_root *pci_root = acpi_pci_find_root(root->handle);
-+	resource_size_t chbcr_base = ~0ULL;
- 	struct cxl_walk_context ctx;
- 
- 	if (!pci_root)
- 		return -ENXIO;
- 
- 	/* TODO: fold in CEDT.CHBS retrieval */
--	port = devm_cxl_add_port(dev, port, &root->dev, idx, ~0ULL);
-+	if (idx < ARRAY_SIZE(chbcr))
-+		chbcr_base = chbcr[idx];
-+	port = devm_cxl_add_port(dev, port, &root->dev, idx, chbcr_base);
- 	if (IS_ERR(port))
- 		return PTR_ERR(port);
- 	dev_dbg(dev, "%s: register: %s\n", dev_name(&root->dev),
-@@ -99,7 +176,7 @@ static int cxl_acpi_probe(struct platform_device *pdev)
- 	struct cxl_root *cxl_root;
- 	int rc, i = 0;
- 
--	cxl_root = devm_cxl_add_root(dev, NULL, 0);
-+	cxl_root = devm_cxl_add_root(dev, cxl_space, ARRAY_SIZE(cxl_space));
- 	if (IS_ERR(cxl_root))
- 		return PTR_ERR(cxl_root);
- 	dev_dbg(dev, "register: %s\n", dev_name(&cxl_root->port.dev));
-
+Could you please provide more background on why we'd want to do this?
+Preferably with references to relevant (non-April Fools' Day) RFCs.
