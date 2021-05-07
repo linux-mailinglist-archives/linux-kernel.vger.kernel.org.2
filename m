@@ -2,257 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9B0537613E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:36:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EC75376148
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:39:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235470AbhEGHhP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:37:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235429AbhEGHhI (ORCPT
+        id S235202AbhEGHkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:40:04 -0400
+Received: from new2-smtp.messagingengine.com ([66.111.4.224]:58445 "EHLO
+        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234520AbhEGHjF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:37:08 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A9C7C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:36:09 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id m9so8119985wrx.3
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:36:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=oHOjqEF6UVlzjeZHb+7Vr9m86VChb9YZwhcDczJQmlc=;
-        b=sWv4uexfwDvY6fm7ndIjaaIlTcmNxN/OSciwOvOLqs+UT+9fk3wMVxXpYZHBtDORC8
-         VNB06FVeMeaNoJP44/Z/B2I4Fb/I+FJf5JoW4KnGdVEpYXXfTw9BAUN8dD2azXO/a/ad
-         usLq7R2wFRklKaxcZwmwrlay3ZnN4PxYkD52wOpySCpVzpd+l40JwW3JyvlXYNWH3X8T
-         IjXUmAlxYTV4bYDZwxHbJ9Mn5fGWgVGLZIiNmtPwIwDkiNxYg/Eb7zVh/upsayYxhYG6
-         701PqkDdx3dJc/8aMO92F7RCiMyRbXl//Ahgw60GoL/1RPWeR4USGiMUdtOWXDvc9Trt
-         8jnw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=oHOjqEF6UVlzjeZHb+7Vr9m86VChb9YZwhcDczJQmlc=;
-        b=VB0YSxkg3ea+uQKvg1teecGGuP8CSkfoDLq136QS6+kP0XKdeeedwg+fL6djnF9rgv
-         HyYgaQOicsSuIFvwg4GfS/+rGuNo3iW7YS9zlR1Aeecpyl2NRtO3E5HOLsks7XD92q1O
-         8eM68jodMOKtUZ3iwQCLH66irXcx1Sf7QDUoYsxNubCsbh28ofnots50QkpM2XKR5eG7
-         PT25bCuKrwoPtsgn1lzi7xgDJ0Q4iu9WFmd+PbQl92L3MD1Q6/o9vfQysxDQDbTEJipm
-         1x+T80tfue3wb5uyN+8IIuzHnoM6Ao8i7lmc5AnXeysHZbI4x6VOBtZ0RMr6JxI5m/hB
-         nJGQ==
-X-Gm-Message-State: AOAM533tda2Dl56U0jbJbE+T1/WjWrjT639xADA+vYb261RwtzSyvw9q
-        U2JeYwc6QL3ThLdNaqXsJbuPEyeYkqaDuQ==
-X-Google-Smtp-Source: ABdhPJzNDGyER8rNz2g2QXh7wNbazrsEwgzVtoSp6niDJmysDoLcjEcf19nlCemPn3bYtjesaRxbDg==
-X-Received: by 2002:adf:d0cd:: with SMTP id z13mr10479375wrh.373.1620372967794;
-        Fri, 07 May 2021 00:36:07 -0700 (PDT)
-Received: from agape ([5.171.80.53])
-        by smtp.gmail.com with ESMTPSA id u5sm7618459wrt.38.2021.05.07.00.36.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 00:36:07 -0700 (PDT)
-From:   Fabio Aiuto <fabioaiuto83@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 4/4] staging: rtl8723bs: replace private arc4 encryption with in-kernel one
-Date:   Fri,  7 May 2021 09:36:00 +0200
-Message-Id: <af960dc728f039d64f4fb28fcece3ca92d24fbe4.1620372584.git.fabioaiuto83@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <cover.1620372584.git.fabioaiuto83@gmail.com>
-References: <cover.1620372584.git.fabioaiuto83@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Fri, 7 May 2021 03:39:05 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id D34245808CD;
+        Fri,  7 May 2021 03:38:05 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Fri, 07 May 2021 03:38:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm2; bh=dQDOTzcqfOQiIceNESDpDeh6eU3HFDK
+        OGe/G/Fvd6ss=; b=G0CwoqHvNi6AqWjcFA79Hiy0clV7wq2v+N4xhwwBCgQAOSH
+        15qhvR1wEzXsEUv9gOGoP0ARWg+0Pgusa/R/f+i1hAq26LYr5XOXQ/zAAmU0Pgz7
+        XOgEUg0gByOgeTiKyRYuMcLphcm1b6hrjzxgJvqYrlXZ9FJPu8YwPSYz7v2K8Y/v
+        aIfmfxXqBsNozUZCyylXIOEkR5Rw9GgAMQh0szpbmoqZU/p4lBP4MuB0VZDzs/cE
+        wSDJGS8VmXbn88kAzhMJ98uI2dqcXq4iO+ZyAlnUcVViqOxhF99pfpig7AGpbeX7
+        5sNkk5yZHiV/5NPJ4IQE4Nl9nilH2cydovlw1Ew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=dQDOTz
+        cqfOQiIceNESDpDeh6eU3HFDKOGe/G/Fvd6ss=; b=eScBRXAxM+mJSzqH2fGjez
+        5hfDRIafMYhgx9aIB94L0gsYXDbY9Nsxl1ABKcSFdkkOPi4eot4Aj4//BGv1TxZB
+        HuLfRYJLPKi2UobdoOR6A6xawAYPhbwa2sjmoB6mCx75xMIbCE4MoSRj5ahM5f6B
+        jWrB6Rz5OlV/RHlu3Svikp/Y8QmjhjEGsPMM3nTFb7bP1WTY/m84L19AHiXMqioT
+        s6CF2YkVAFqDn7lcTn5yAlOAO6V5GXnD5jEHJbsZGfGqmLM76I/VUfRtg+wd1iot
+        5X3OgFP26BO5CmUApZB/U1M3oH0/j5B52H5/CFYTElqR1TP20pJ6wCTokGRdFRtw
+        ==
+X-ME-Sender: <xms:XO6UYK6LHVKbEDBv-YocshXGJOuPe4ZpfKyU5D5gDmWNmtqb6CXN-g>
+    <xme:XO6UYD7pcHK1WSfnSwwFIThFallfPLa1u4o_POD4b3mikhvwro8F4w78St58nTzAj
+    6fOEPaGok6rRj_XOA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeguddgudduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
+    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderreejnecuhfhrohhmpedftehn
+    ughrvgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtf
+    frrghtthgvrhhnpeduhedttdelkeetvdefiedtleejkeevleekgedvhfdtjeehgfeftdef
+    vdejjeeltdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuih
+    iivgeptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgr
+    uh
+X-ME-Proxy: <xmx:XO6UYJdbKexbk8yCVKvO8lr41gDyZXItCml2Xdr0j8tc_cWU5V8IGg>
+    <xmx:XO6UYHIV_VtlEfoyS5cclBKnlCnQEMLfge2lMs1ktdUOJI9tNFfdEg>
+    <xmx:XO6UYOJRYmluXW-HZXIktMZnAR9kxngwoyJy6SfKHn7rVSc1IVxYsA>
+    <xmx:Xe6UYJbC0Ld-red-CUnEujuNIVraR3RiJMOPHPxfaU7l4y83cXsbuA>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id BBCA1A00079; Fri,  7 May 2021 03:38:04 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.5.0-alpha0-448-gae190416c7-fm-20210505.004-gae190416
+Mime-Version: 1.0
+Message-Id: <2a339218-19d7-4eea-a734-8053dd553dbb@www.fastmail.com>
+In-Reply-To: <20210507062416.GD23749@aspeedtech.com>
+References: <20210506100312.1638-1-steven_lee@aspeedtech.com>
+ <20210506100312.1638-6-steven_lee@aspeedtech.com>
+ <20210506102458.GA20777@pengutronix.de>
+ <19a81e25-dfa1-4ad3-9628-19f43f4230d2@www.fastmail.com>
+ <20210507062416.GD23749@aspeedtech.com>
+Date:   Fri, 07 May 2021 17:06:19 +0930
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Steven Lee" <steven_lee@aspeedtech.com>
+Cc:     "Philipp Zabel" <p.zabel@pengutronix.de>,
+        "Ulf Hansson" <ulf.hansson@linaro.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Joel Stanley" <joel@jms.id.au>,
+        "Adrian Hunter" <adrian.hunter@intel.com>,
+        "Ryan Chen" <ryanchen.aspeed@gmail.com>,
+        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
+        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
+        linux-mmc <linux-mmc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "open list" <linux-kernel@vger.kernel.org>,
+        "Hongwei Zhang" <Hongweiz@ami.com>,
+        "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Chin-Ting Kuo" <chin-ting_kuo@aspeedtech.com>
+Subject: =?UTF-8?Q?Re:_[PATCH_v3_5/5]_mmc:_sdhci-of-aspeed:_Assert/Deassert_reset?=
+ =?UTF-8?Q?_signal_before_probing_eMMC?=
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-replace private arc4 encryption with in-kernel one.
 
-Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
----
- drivers/staging/rtl8723bs/core/rtw_security.c | 101 ++++--------------
- 1 file changed, 21 insertions(+), 80 deletions(-)
 
-diff --git a/drivers/staging/rtl8723bs/core/rtw_security.c b/drivers/staging/rtl8723bs/core/rtw_security.c
-index bd723c80192a..19f96025aea6 100644
---- a/drivers/staging/rtl8723bs/core/rtw_security.c
-+++ b/drivers/staging/rtl8723bs/core/rtw_security.c
-@@ -8,6 +8,7 @@
- #include <drv_types.h>
- #include <rtw_debug.h>
- #include <crypto/aes.h>
-+#include <crypto/arc4.h>
- 
- static const char * const _security_type_str[] = {
- 	"N/A",
-@@ -30,66 +31,6 @@ const char *security_type_str(u8 value)
- 
- /* WEP related ===== */
- 
--struct arc4context {
--	u32 x;
--	u32 y;
--	u8 state[256];
--};
--
--
--static void arcfour_init(struct arc4context	*parc4ctx, u8 *key, u32 key_len)
--{
--	u32 t, u;
--	u32 keyindex;
--	u32 stateindex;
--	u8 *state;
--	u32 counter;
--
--	state = parc4ctx->state;
--	parc4ctx->x = 0;
--	parc4ctx->y = 0;
--	for (counter = 0; counter < 256; counter++)
--		state[counter] = (u8)counter;
--	keyindex = 0;
--	stateindex = 0;
--	for (counter = 0; counter < 256; counter++) {
--		t = state[counter];
--		stateindex = (stateindex + key[keyindex] + t) & 0xff;
--		u = state[stateindex];
--		state[stateindex] = (u8)t;
--		state[counter] = (u8)u;
--		if (++keyindex >= key_len)
--			keyindex = 0;
--	}
--}
--
--static u32 arcfour_byte(struct arc4context	*parc4ctx)
--{
--	u32 x;
--	u32 y;
--	u32 sx, sy;
--	u8 *state;
--
--	state = parc4ctx->state;
--	x = (parc4ctx->x + 1) & 0xff;
--	sx = state[x];
--	y = (sx + parc4ctx->y) & 0xff;
--	sy = state[y];
--	parc4ctx->x = x;
--	parc4ctx->y = y;
--	state[y] = (u8)sx;
--	state[x] = (u8)sy;
--	return state[(sx + sy) & 0xff];
--}
--
--static void arcfour_encrypt(struct arc4context *parc4ctx, u8 *dest, u8 *src, u32 len)
--{
--	u32 i;
--
--	for (i = 0; i < len; i++)
--		dest[i] = src[i] ^ (unsigned char)arcfour_byte(parc4ctx);
--}
--
- static signed int bcrc32initialized;
- static u32 crc32_table[256];
- 
-@@ -149,7 +90,7 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
- {																	/*  exclude ICV */
- 
- 	unsigned char crc[4];
--	struct arc4context	 mycontext;
-+	struct arc4_ctx	mycontext;
- 
- 	signed int	curfragnum, length;
- 	u32 keylength;
-@@ -183,16 +124,16 @@ void rtw_wep_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 
- 				*((__le32 *)crc) = getcrc32(payload, length);
- 
--				arcfour_init(&mycontext, wepkey, 3+keylength);
--				arcfour_encrypt(&mycontext, payload, payload, length);
--				arcfour_encrypt(&mycontext, payload+length, crc, 4);
-+				arc4_setkey(&mycontext, wepkey, 3 + keylength);
-+				arc4_crypt(&mycontext, payload, payload, length);
-+				arc4_crypt(&mycontext, payload + length, crc, 4);
- 
- 			} else {
- 				length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
- 				*((__le32 *)crc) = getcrc32(payload, length);
--				arcfour_init(&mycontext, wepkey, 3+keylength);
--				arcfour_encrypt(&mycontext, payload, payload, length);
--				arcfour_encrypt(&mycontext, payload+length, crc, 4);
-+				arc4_setkey(&mycontext, wepkey, 3 + keylength);
-+				arc4_crypt(&mycontext, payload, payload, length);
-+				arc4_crypt(&mycontext, payload + length, crc, 4);
- 
- 				pframe += pxmitpriv->frag_len;
- 				pframe = (u8 *)round_up((SIZE_PTR)(pframe), 4);
-@@ -205,7 +146,7 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
- {
- 	/*  exclude ICV */
- 	u8 crc[4];
--	struct arc4context	 mycontext;
-+	struct arc4_ctx	 mycontext;
- 	signed int	length;
- 	u32 keylength;
- 	u8 *pframe, *payload, *iv, wepkey[16];
-@@ -229,8 +170,8 @@ void rtw_wep_decrypt(struct adapter  *padapter, u8 *precvframe)
- 		payload = pframe+prxattrib->iv_len+prxattrib->hdrlen;
- 
- 		/* decrypt payload include icv */
--		arcfour_init(&mycontext, wepkey, 3+keylength);
--		arcfour_encrypt(&mycontext, payload, payload,  length);
-+		arc4_setkey(&mycontext, wepkey, 3 + keylength);
-+		arc4_crypt(&mycontext, payload, payload,  length);
- 
- 		/* calculate icv and compare the icv */
- 		*((u32 *)crc) = le32_to_cpu(getcrc32(payload, length-4));
-@@ -578,7 +519,7 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 	u8   ttkey[16];
- 	u8 crc[4];
- 	u8   hw_hdr_offset = 0;
--	struct arc4context mycontext;
-+	struct arc4_ctx mycontext;
- 	signed int			curfragnum, length;
- 
- 	u8 *pframe, *payload, *iv, *prwskey;
-@@ -620,16 +561,16 @@ u32 rtw_tkip_encrypt(struct adapter *padapter, u8 *pxmitframe)
- 					length = pattrib->last_txcmdsz-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
- 					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
- 
--					arcfour_init(&mycontext, rc4key, 16);
--					arcfour_encrypt(&mycontext, payload, payload, length);
--					arcfour_encrypt(&mycontext, payload+length, crc, 4);
-+					arc4_setkey(&mycontext, rc4key, 16);
-+					arc4_crypt(&mycontext, payload, payload, length);
-+					arc4_crypt(&mycontext, payload + length, crc, 4);
- 
- 				} else {
- 					length = pxmitpriv->frag_len-pattrib->hdrlen-pattrib->iv_len-pattrib->icv_len;
- 					*((__le32 *)crc) = getcrc32(payload, length);/* modified by Amy*/
--					arcfour_init(&mycontext, rc4key, 16);
--					arcfour_encrypt(&mycontext, payload, payload, length);
--					arcfour_encrypt(&mycontext, payload+length, crc, 4);
-+					arc4_setkey(&mycontext, rc4key, 16);
-+					arc4_crypt(&mycontext, payload, payload, length);
-+					arc4_crypt(&mycontext, payload + length, crc, 4);
- 
- 					pframe += pxmitpriv->frag_len;
- 					pframe = (u8 *)round_up((SIZE_PTR)(pframe), 4);
-@@ -649,7 +590,7 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
- 	u8   rc4key[16];
- 	u8   ttkey[16];
- 	u8 crc[4];
--	struct arc4context mycontext;
-+	struct arc4_ctx mycontext;
- 	signed int			length;
- 
- 	u8 *pframe, *payload, *iv, *prwskey;
-@@ -726,8 +667,8 @@ u32 rtw_tkip_decrypt(struct adapter *padapter, u8 *precvframe)
- 
- 			/* 4 decrypt payload include icv */
- 
--			arcfour_init(&mycontext, rc4key, 16);
--			arcfour_encrypt(&mycontext, payload, payload, length);
-+			arc4_setkey(&mycontext, rc4key, 16);
-+			arc4_crypt(&mycontext, payload, payload, length);
- 
- 			*((u32 *)crc) = le32_to_cpu(getcrc32(payload, length-4));
- 
--- 
-2.20.1
+On Fri, 7 May 2021, at 15:54, Steven Lee wrote:
+> The 05/07/2021 09:32, Andrew Jeffery wrote:
+> > 
+> > 
+> > On Thu, 6 May 2021, at 19:54, Philipp Zabel wrote:
+> > > Hi Steven,
+> > > 
+> > > On Thu, May 06, 2021 at 06:03:12PM +0800, Steven Lee wrote:
+> > > > +	if (info) {
+> > > > +		if (info->flag & PROBE_AFTER_ASSET_DEASSERT) {
+> > > > +			sdc->rst = devm_reset_control_get(&pdev->dev, NULL);
+> > > 
+> > > Please use devm_reset_control_get_exclusive() or
+> > > devm_reset_control_get_optional_exclusive().
+> > > 
+> > > > +			if (!IS_ERR(sdc->rst)) {
+> > > 
+> > > Please just return errors here instead of ignoring them.
+> > > The reset_control_get_optional variants return NULL in case the
+> > > device node doesn't contain a resets phandle, in case you really
+> > > consider this reset to be optional even though the flag is set?
+> > 
+> > It feels like we should get rid of the flag and leave it to the 
+> > devicetree.
+> > 
+> 
+> Do you mean adding a flag, for instance, "mmc-reset" in the
+> device tree and call of_property_read_bool() in aspeed_sdc_probe()?
+> 
+> > I'm still kind of surprised it's not something we want to do for the 
+> > 2400 and 2500 as well.
+> > 
+> 
+> Per discussion with the chip designer, AST2400 and AST2500 doesn't need
+> this implementation since the chip design is different to AST2600.
 
+So digging a bit more deeply on this, it looks like the reset is 
+already taken care of by drivers/clk/clk-ast2600.c in the 
+clk_prepare_enable() path.
+
+clk-ast2600 handles resets when enabling the clock for most peripherals:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n276
+
+and this is true for both the SD controller and the eMMC controller:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n94
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/clk/clk-ast2600.c?h=v5.12#n88
+
+If this weren't the case you'd specify a reset property in the SD/eMMC 
+devicetree nodes for the 2600 and then use 
+devm_reset_control_get_optional_exclusive() as Philipp suggested. See 
+the reset binding here:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/reset/reset.txt?h=v5.12
+
+So on the surface it seems the reset handling in this patch is 
+unnecessary. Have you observed an issue with the SoC that means it's 
+required?
+
+Andrew
