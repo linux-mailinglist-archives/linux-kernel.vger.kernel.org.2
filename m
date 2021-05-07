@@ -2,251 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D8A56375DD6
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 02:17:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F857375DDF
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 02:19:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233543AbhEGASf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 20:18:35 -0400
-Received: from mga03.intel.com ([134.134.136.65]:5088 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233434AbhEGAS3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 20:18:29 -0400
-IronPort-SDR: w36HUhuNdqgB+g90VIX57qTzs0+/BIWNQtTNhLJdH5U5PaKgi2KNQnsm2Fcr7284+9NPdrg6mT
- lyfM6JIZv/5g==
-X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="198664257"
-X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="198664257"
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 17:17:29 -0700
-IronPort-SDR: ZffrWFgAxorwApVwU33UEufS15gv1agqlbgSIOrdFQGh+uOjOJkPkBP+sVHtcUK7c2awvGNSPq
- IbLNrGK9tAuA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="540145443"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by orsmga004.jf.intel.com with ESMTP; 06 May 2021 17:17:26 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1leoBK-000Aw1-7i; Fri, 07 May 2021 00:17:26 +0000
-Date:   Fri, 07 May 2021 08:17:10 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:x86/urgent] BUILD SUCCESS
- bc908e091b3264672889162733020048901021fb
-Message-ID: <60948706.jSkAlAKDZsKMJsKi%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S233582AbhEGAUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 20:20:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233539AbhEGAUv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 20:20:51 -0400
+Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E0BC061574;
+        Thu,  6 May 2021 17:19:52 -0700 (PDT)
+Received: by mail-wr1-x429.google.com with SMTP id l13so7344922wru.11;
+        Thu, 06 May 2021 17:19:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=6Ly8LRPF0H1aWdKEb+5WRQF77SY7lze0cxVlaDbFegM=;
+        b=Vifuxsq8ikahBtP4UaxvPzuwVbrtZJO8ayF/h1nNURzvnZdT8RPR598yvD2VRY86DC
+         2dIgcOeWx45v5fLlZFs3uEqbpxUX2BWPvhu1YtNokLX3Cuov1UBRAHZxlN04hg3sY6nl
+         0gFrYDP8GjGLvQ4CfaAiebk3uugXlJbho7TmenFZqi9pElZKW0Qr15ybfTpFsHb5eu70
+         devYrpJDnGEXZzRW9HaJCaHSnfJuAYdhfGqwikoIBScINq5f4M7e7LxIvw7ViEpm67s4
+         rlrOSNGVoH+Zvq23nUWnjHCRZsOM1MeYbAvJO4lo/zI2sm1tC1v37TQIFvcJBmANzYW2
+         nR7Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=6Ly8LRPF0H1aWdKEb+5WRQF77SY7lze0cxVlaDbFegM=;
+        b=YuDbgO7FNkADnyw236e5fLuDWEsZUvLuxmMOJ1apzbU98jAUblwxvLWwB94X9+Cqnz
+         Ijvc1Ew87l0fqlxb+oHERsz/D+GeMyGM2JIrvHhHmr9vEqf8IKkWeXOjctLFohBZgj2w
+         eD7E9veQ7Q5K0tWZfmT21bcjUQCUxaQXpeVteQwBN8UGJJW4eOXq/3mcQwTtdtS604Eu
+         bwhjPnT1O0GvSiujDbBJSAhCD8mZXUi5KLlnt6cEGEu1bB/xzvrOmWMcqAiE+NYuTA0R
+         0ApnHxw4+bvZUKXjYWquoz/eRLNGsPfUfFDd28HV25fwE+5o4vB6lW67gxGf9lIeZnYd
+         WjkQ==
+X-Gm-Message-State: AOAM530uPAVxU6FaAiiD3zUtK0P0hT3/N9fv7bBPbtgYBkPc06+biSHR
+        S2gC/loTHnrRmCiJ/80ovbOZTxKs/GIAxsu1Wxs=
+X-Google-Smtp-Source: ABdhPJwApwq00cS0zUI9fX5pkWZKlLTrCmBiM6HCuq5FMtpKcHyw3B+qomvmNznEzUh2vYSRLKLwyBvpWhWLWX4hTgg=
+X-Received: by 2002:a5d:64cf:: with SMTP id f15mr8260301wri.327.1620346791614;
+ Thu, 06 May 2021 17:19:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+References: <1619048258-8717-1-git-send-email-khsieh@codeaurora.org>
+In-Reply-To: <1619048258-8717-1-git-send-email-khsieh@codeaurora.org>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Thu, 6 May 2021 17:23:32 -0700
+Message-ID: <CAF6AEGvJEThHFvMt34fAnOVhHkHxwtDyC8=g3CFEd16A4p8W8g@mail.gmail.com>
+Subject: Re: [PATCH v4 0/4] check sink_count before update is_connected status
+To:     Kuogee Hsieh <khsieh@codeaurora.org>
+Cc:     Sean Paul <sean@poorly.run>, Stephen Boyd <swboyd@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        aravindh@codeaurora.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86/urgent
-branch HEAD: bc908e091b3264672889162733020048901021fb  KVM: x86: Consolidate guest enter/exit logic to common helpers
+On Wed, Apr 21, 2021 at 4:38 PM Kuogee Hsieh <khsieh@codeaurora.org> wrote:
+>
+> 1) check sink_count before update is_connected status
+> 2) initialize audio_comp when audio starts
+> 3) check main link status before start aux read
+> 4) dp_link_parse_sink_count() return immediately if aux read failed
+>
+> Kuogee Hsieh (4):
+>   drm/msm/dp: check sink_count before update is_connected status
+>   drm/msm/dp: initialize audio_comp when audio starts
+>   drm/msm/dp: check main link status before start aux read
+>   drm/msm/dp: dp_link_parse_sink_count() return immediately if aux read
+>     failed
 
-elapsed time: 723m
+I've picked up these two in msm-next for an upcoming -fixes pull req:
 
-configs tested: 189
-configs skipped: 3
+  drm/msm/dp: initialize audio_comp when audio starts
+  drm/msm/dp: check sink_count before update is_connected status
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+BR,
+-R
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-riscv                            allmodconfig
-x86_64                           allyesconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                       mainstone_defconfig
-powerpc                     pq2fads_defconfig
-sparc                       sparc64_defconfig
-arm                        keystone_defconfig
-um                               alldefconfig
-s390                                defconfig
-ia64                             allmodconfig
-mips                          rb532_defconfig
-arm                             ezx_defconfig
-riscv             nommu_k210_sdcard_defconfig
-mips                      maltasmvp_defconfig
-arm                         cm_x300_defconfig
-arm                         hackkit_defconfig
-arm                     eseries_pxa_defconfig
-sparc                               defconfig
-powerpc                        fsp2_defconfig
-arm                            zeus_defconfig
-openrisc                  or1klitex_defconfig
-arm                        spear6xx_defconfig
-powerpc                     ep8248e_defconfig
-arm                         orion5x_defconfig
-arm                        multi_v7_defconfig
-h8300                            allyesconfig
-xtensa                    xip_kc705_defconfig
-arm                        realview_defconfig
-arm                        neponset_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                          rsk7203_defconfig
-sh                          polaris_defconfig
-arm                        shmobile_defconfig
-mips                        nlm_xlr_defconfig
-arm                          lpd270_defconfig
-mips                         bigsur_defconfig
-arm                           sama5_defconfig
-m68k                       m5249evb_defconfig
-arm                      integrator_defconfig
-s390                          debug_defconfig
-mips                      malta_kvm_defconfig
-h8300                    h8300h-sim_defconfig
-powerpc                        cell_defconfig
-powerpc                     tqm8560_defconfig
-openrisc                         alldefconfig
-powerpc                     powernv_defconfig
-sh                          r7780mp_defconfig
-ia64                          tiger_defconfig
-mips                        omega2p_defconfig
-sh                     sh7710voipgw_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-mips                           gcw0_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                      mgcoge_defconfig
-mips                           mtx1_defconfig
-m68k                            mac_defconfig
-s390                       zfcpdump_defconfig
-powerpc                      pasemi_defconfig
-powerpc                 mpc8540_ads_defconfig
-powerpc                     sbc8548_defconfig
-sh                           se7343_defconfig
-sh                      rts7751r2d1_defconfig
-powerpc                 mpc832x_rdb_defconfig
-mips                           jazz_defconfig
-m68k                             allyesconfig
-powerpc                     redwood_defconfig
-arm                       cns3420vb_defconfig
-arm                         mv78xx0_defconfig
-arm                          exynos_defconfig
-sparc                       sparc32_defconfig
-powerpc                       ebony_defconfig
-mips                     decstation_defconfig
-arm                           u8500_defconfig
-arm                           tegra_defconfig
-arm                        trizeps4_defconfig
-powerpc                          allyesconfig
-arc                         haps_hs_defconfig
-sh                           se7712_defconfig
-m68k                         amcore_defconfig
-sh                              ul2_defconfig
-mips                         cobalt_defconfig
-powerpc                     tqm8541_defconfig
-powerpc                     taishan_defconfig
-powerpc                     ksi8560_defconfig
-x86_64                              defconfig
-mips                       bmips_be_defconfig
-arc                              alldefconfig
-m68k                        m5272c3_defconfig
-arc                        nsimosci_defconfig
-powerpc                     asp8347_defconfig
-mips                        jmr3927_defconfig
-mips                      loongson3_defconfig
-mips                     cu1830-neo_defconfig
-arc                            hsdk_defconfig
-m68k                       m5275evb_defconfig
-arm                       multi_v4t_defconfig
-um                               allmodconfig
-powerpc                     akebono_defconfig
-arm                       aspeed_g5_defconfig
-arm                        mvebu_v7_defconfig
-arm                          simpad_defconfig
-arm                      jornada720_defconfig
-mips                         tb0219_defconfig
-mips                malta_qemu_32r6_defconfig
-mips                        bcm47xx_defconfig
-mips                       lemote2f_defconfig
-sh                   rts7751r2dplus_defconfig
-sh                           se7751_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                    sam440ep_defconfig
-sh                 kfr2r09-romimage_defconfig
-mips                           ip22_defconfig
-arm                              alldefconfig
-sh                           sh2007_defconfig
-arm                       spear13xx_defconfig
-xtensa                generic_kc705_defconfig
-powerpc                   currituck_defconfig
-powerpc                     stx_gp3_defconfig
-um                            kunit_defconfig
-x86_64                            allnoconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210506
-i386                 randconfig-a006-20210506
-i386                 randconfig-a001-20210506
-i386                 randconfig-a005-20210506
-i386                 randconfig-a004-20210506
-i386                 randconfig-a002-20210506
-x86_64               randconfig-a014-20210506
-x86_64               randconfig-a015-20210506
-x86_64               randconfig-a012-20210506
-x86_64               randconfig-a013-20210506
-x86_64               randconfig-a011-20210506
-x86_64               randconfig-a016-20210506
-i386                 randconfig-a015-20210506
-i386                 randconfig-a013-20210506
-i386                 randconfig-a016-20210506
-i386                 randconfig-a014-20210506
-i386                 randconfig-a012-20210506
-i386                 randconfig-a011-20210506
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
 
-clang tested configs:
-x86_64               randconfig-a001-20210506
-x86_64               randconfig-a003-20210506
-x86_64               randconfig-a005-20210506
-x86_64               randconfig-a002-20210506
-x86_64               randconfig-a006-20210506
-x86_64               randconfig-a004-20210506
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+>
+>  drivers/gpu/drm/msm/dp/dp_audio.c   |  1 +
+>  drivers/gpu/drm/msm/dp/dp_aux.c     |  5 +++++
+>  drivers/gpu/drm/msm/dp/dp_display.c | 38 +++++++++++++++++++++++++------------
+>  drivers/gpu/drm/msm/dp/dp_display.h |  1 +
+>  drivers/gpu/drm/msm/dp/dp_link.c    | 20 ++++++++++++++-----
+>  5 files changed, 48 insertions(+), 17 deletions(-)
+>
+> --
+> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+> a Linux Foundation Collaborative Project
+>
