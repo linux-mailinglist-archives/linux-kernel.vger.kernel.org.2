@@ -2,81 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F555376977
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:23:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 224EF37697E
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:25:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233169AbhEGRYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 13:24:04 -0400
-Received: from alln-iport-8.cisco.com ([173.37.142.95]:10917 "EHLO
-        alln-iport-8.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhEGRYC (ORCPT
+        id S234367AbhEGR0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 13:26:22 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:45282 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232915AbhEGR0T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 13:24:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=@cisco.com; l=1096; q=dns/txt; s=iport;
-  t=1620408182; x=1621617782;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=KjImhc2JK0NRVqEqrRGVolZxLwQomaHya3mNXQjmMGo=;
-  b=dQCFVg/eqYv8pjjKqIavNABvoz+rxTjzsNsrBPCqHBgdVrPdD0ZKGaAC
-   Y8uvTEpwWZjLtPORqbw6twTcDDY/X6LLQckKMbnIkwD7XWxlThd/3/8yJ
-   1bDDWXlHCkEW6mOncNGlauKYyP4BK0Xq+VeJhOvusUlLnvzlN0BBiiGQy
-   s=;
-X-IronPort-AV: E=Sophos;i="5.82,281,1613433600"; 
-   d="scan'208";a="708116664"
-Received: from rcdn-core-9.cisco.com ([173.37.93.145])
-  by alln-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 07 May 2021 17:23:01 +0000
-Received: from zorba.cisco.com ([10.24.22.254])
-        by rcdn-core-9.cisco.com (8.15.2/8.15.2) with ESMTP id 147HN07c022761;
-        Fri, 7 May 2021 17:23:00 GMT
-From:   Daniel Walker <danielwa@cisco.com>
-To:     Alan Stern <stern@rowland.harvard.edu>
-Cc:     HEMANT RAMDASI <hramdasi@cisco.com>,
-        Christian Engelmayer <christian.engelmayer@frequentis.com>,
-        Gopalakrishnan Santhanam <gsanthan@cisco.com>,
-        xe-linux-external@cisco.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] fsl-usb: add need_oc_pp_cycle flag for 85xx also
-Date:   Fri,  7 May 2021 10:23:00 -0700
-Message-Id: <20210507172300.3075939-1-danielwa@cisco.com>
-X-Mailer: git-send-email 2.25.1
+        Fri, 7 May 2021 13:26:19 -0400
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 147HPA4M066732;
+        Fri, 7 May 2021 12:25:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1620408310;
+        bh=Mfe3VzxO5eVTgpcrjkbuWFbFY3AOvc+A6TkDDBQODfw=;
+        h=Subject:To:CC:References:From:Date:In-Reply-To;
+        b=wxkOJ9i3ToJ/P/tUmQgTIBndTsX7BGuoRHm4aSOLU+yK2W8nJ4qHCB3Z4w3SHGjFB
+         0QSBLPalZP6KnIZyQ/qHWY/8vl2ZPezMEGJ65dJtpqQuwphIBOQrWcTbk6VqXqSRc2
+         rWc8kFZ+sULQooEDGjtm3FepemCYpNf7wVlRKckU=
+Received: from DFLE113.ent.ti.com (dfle113.ent.ti.com [10.64.6.34])
+        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 147HPAlJ042114
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 7 May 2021 12:25:10 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE113.ent.ti.com
+ (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2; Fri, 7 May
+ 2021 12:25:10 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2176.2 via
+ Frontend Transport; Fri, 7 May 2021 12:25:09 -0500
+Received: from [10.250.100.73] (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 147HP62T106353;
+        Fri, 7 May 2021 12:25:06 -0500
+Subject: Re: [PATCH v2] dt-bindings: i2c: Move i2c-omap.txt to YAML format
+To:     Andreas Kemnade <andreas@kemnade.info>,
+        Vignesh Raghavendra <vigneshr@ti.com>
+CC:     Rob Herring <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>
+References: <20210506140026.31254-1-vigneshr@ti.com>
+ <f7570cb4-8c21-2fa5-bd26-1388f2a4bd6b@ti.com>
+ <429a740a-c2b9-1cf8-ed2b-0fb7b1bea422@ti.com> <20210507163602.219894f4@aktux>
+From:   Grygorii Strashko <grygorii.strashko@ti.com>
+Message-ID: <1ef076ac-e0de-a0df-a918-aeb8ed6c5956@ti.com>
+Date:   Fri, 7 May 2021 20:24:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Auto-Response-Suppress: DR, OOF, AutoReply
-X-Outbound-SMTP-Client: 10.24.22.254, [10.24.22.254]
-X-Outbound-Node: rcdn-core-9.cisco.com
+In-Reply-To: <20210507163602.219894f4@aktux>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gopalakrishnan Santhanam <gsanthan@cisco.com>
 
-Commit e6604a7fd71f9 ("EHCI: Quirk flag for port power handling on overcurrent.")
-activated the quirks handling (flag need_oc_pp_cycle) for Freescale 83xx
-based boards.
-Activate same for 85xx based boards as well.
 
-Cc: xe-linux-external@cisco.com
-Signed-off-by: Gopalakrishnan Santhanam <gsanthan@cisco.com>
-Signed-off-by: Daniel Walker <danielwa@cisco.com>
----
- drivers/usb/host/ehci-fsl.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On 07/05/2021 17:36, Andreas Kemnade wrote:
+> On Fri, 7 May 2021 19:45:45 +0530
+> Vignesh Raghavendra <vigneshr@ti.com> wrote:
+> 
+>> On 5/7/21 12:24 PM, Grygorii Strashko wrote:
+>>>
+>>>
+>>> On 06/05/2021 17:00, Vignesh Raghavendra wrote:
+>>>> Convert i2c-omap.txt to YAML schema for better checks and documentation.
+>>>>
+>>>> Following properties were used in DT but were not documented in txt
+>>>> bindings and has been included in YAML schema:
+>>>> 1. Include ti,am4372-i2c compatible
+>>>> 2. Include dmas property used in few OMAP dts files
+>>>
+>>> The DMA is not supported by i2c-omap driver, so wouldn't be better to
+>>> just drop dmas from DTBs to avoid confusions?
+>>> It can be added later.
+>>>    
+>>
+>> Will do.. I will also send patches dropping dmas from dts that currently
+>> have them populated.
+>>
+> hmm, we have
+> - DO attempt to make bindings complete even if a driver doesn't support some
+>    features. For example, if a device has an interrupt, then include the
+>    'interrupts' property even if the driver is only polled mode.
+> 
+> in Documentation/devicetree/bindings/writing-bindings.rst
+> Shouln't the dma stay there if the hardware supports it? Devicetree
+> should describe the hardware not the driver if I understood things
+> right.
 
-diff --git a/drivers/usb/host/ehci-fsl.c b/drivers/usb/host/ehci-fsl.c
-index 6f7bd6641694..c7d74c1a23f5 100644
---- a/drivers/usb/host/ehci-fsl.c
-+++ b/drivers/usb/host/ehci-fsl.c
-@@ -387,7 +387,7 @@ static int ehci_fsl_setup(struct usb_hcd *hcd)
- 	/* EHCI registers start at offset 0x100 */
- 	ehci->caps = hcd->regs + 0x100;
- 
--#ifdef CONFIG_PPC_83xx
-+#if defined(CONFIG_PPC_83xx) || defined(CONFIG_PPC_85xx)
- 	/*
- 	 * Deal with MPC834X that need port power to be cycled after the power
- 	 * fault condition is removed. Otherwise the state machine does not
+True.  But my above statement is also valid - it introduces confusion from user point of view.
+More over, 'dmas' is not part of original binding and were randomly added to some SoCs.
+And it's much more easy to extend binding (in the future) then remove something after.
+
+I leave it to Vignesh, Tony to decide.
+
 -- 
-2.25.1
-
+Best regards,
+grygorii
