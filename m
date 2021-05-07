@@ -2,121 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5038E37625F
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:49:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5717E376266
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:51:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236526AbhEGIuV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 04:50:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37548 "EHLO
+        id S235301AbhEGIwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 04:52:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236481AbhEGIuP (ORCPT
+        with ESMTP id S233079AbhEGIwR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 04:50:15 -0400
-Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 826F2C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 01:49:15 -0700 (PDT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by srv6.fidu.org (Postfix) with ESMTP id 1E384C800B2;
-        Fri,  7 May 2021 10:49:14 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
-Received: from srv6.fidu.org ([127.0.0.1])
-        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
-        with LMTP id xMR939HFgnDh; Fri,  7 May 2021 10:49:13 +0200 (CEST)
-Received: from wsembach-tuxedo.fritz.box (p200300E37f12F200FD3bB57523c33F70.dip0.t-ipconnect.de [IPv6:2003:e3:7f12:f200:fd3b:b575:23c3:3f70])
-        (Authenticated sender: wse@tuxedocomputers.com)
-        by srv6.fidu.org (Postfix) with ESMTPA id CE809C800AA;
-        Fri,  7 May 2021 10:49:13 +0200 (CEST)
-From:   Werner Sembach <wse@tuxedocomputers.com>
-To:     ville.syrjala@linux.intel.com, airlied@linux.ie, daniel@ffwll.ch,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        Fri, 7 May 2021 04:52:17 -0400
+Received: from mail-ed1-x532.google.com (mail-ed1-x532.google.com [IPv6:2a00:1450:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A10CC061574;
+        Fri,  7 May 2021 01:51:15 -0700 (PDT)
+Received: by mail-ed1-x532.google.com with SMTP id l7so9317567edb.1;
+        Fri, 07 May 2021 01:51:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v4OVEHXIUJUnnRCVPZ5jVMDub0uFCijk3eqlvzXzNlY=;
+        b=N6IZWL7Tbl94Vsl0PYuGQu/0sKDx4Pkmbomo6tG5UzG311S4hlTLbjSYmqYGylVDo7
+         mZfZAxHqXKLgf1TC19okBc1BCKUhb/u6/JNf8tJW1uF8vnY4C4qck8O68vX6eyLoMYGc
+         osl1VjLsabDopM7o/LOh+7RrF1Y/0xu4pjP93Q2QWjz31PUMOeEB/pP5Bq+Nd4VvTaP5
+         lWm6SFEKjtTT9WzkOTH2/SJQSfxl3hPDRoVMVw1zKOI+2qsPTuqtmaRppWR97+JDhpLt
+         4bXsL+nudck+tyVv192w0uuGokArwRUkfvG0/B631uy9/7JYgjpUvimiabHw23ZTu7rE
+         IlBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v4OVEHXIUJUnnRCVPZ5jVMDub0uFCijk3eqlvzXzNlY=;
+        b=R4WTyyHk/UjXPF0h7dzv8ino+mplwg+QLmmIJgpJlncHi0auWQztWq+/35f1SP7YdD
+         0ZzK1lK4C8o56RrsiZ2iYEuqGAaLQBlw3uj5viNj2Y80OlpM/lwQcH/MRukDNXuyWrfL
+         DgmPTg9khllGjo363S9oR8PN2VfRMnoggGWqo9niOT0vwU4/1AZm0U9UQLw+TIOmTwa7
+         D43002Cz+f4iwEJ6PvPr87PyBkxPVct7yMph5QZv5JbAtAumY5p3rcPXQoLFjAcL3sbS
+         uMy6FOgDCqmDHXDZniLnGBjb6waQE2mKUetkm/q9w55GMHaHjw+RVqdK3rQ7nXW4fiFI
+         zHEw==
+X-Gm-Message-State: AOAM530oqP2ObdWC4Iqf8NaF3x5lLCEwHGEBeesmS0LLQFqL9MCtmPXD
+        xfb3f3762w7hh/eKtusWyVg=
+X-Google-Smtp-Source: ABdhPJyAGzROKPTYcwlX/l6VKfiBPpjvoz7F0zgguQwZLfbIMdvFffJ9jTsiwUw8tvcBLznZCso22w==
+X-Received: by 2002:a05:6402:6d4:: with SMTP id n20mr9895289edy.134.1620377473679;
+        Fri, 07 May 2021 01:51:13 -0700 (PDT)
+Received: from skbuf ([86.127.41.210])
+        by smtp.gmail.com with ESMTPSA id x7sm3030115ejc.116.2021.05.07.01.51.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 01:51:13 -0700 (PDT)
+Date:   Fri, 7 May 2021 11:51:12 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Ansuel Smith <ansuelsmth@gmail.com>
+Cc:     Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Cc:     Werner Sembach <wse@tuxedocomputers.com>
-Subject: [PATCH v6 3/3] drm/i915/display: Use YCbCr420 as fallback when RGB fails
-Date:   Fri,  7 May 2021 10:49:03 +0200
-Message-Id: <20210507084903.28877-4-wse@tuxedocomputers.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20210507084903.28877-1-wse@tuxedocomputers.com>
-References: <20210506172325.1995964-1-wse@tuxedocomputers.com>
- <20210507084903.28877-1-wse@tuxedocomputers.com>
+Subject: Re: [RFC PATCH net-next v3 13/20] net: dsa: qca8k: make rgmii delay
+ configurable
+Message-ID: <20210507085112.2n4dx5phgbjczc4r@skbuf>
+References: <20210504222915.17206-1-ansuelsmth@gmail.com>
+ <20210504222915.17206-13-ansuelsmth@gmail.com>
+ <20210506111033.w4v4jj3amwhyj4r3@skbuf>
+ <YJRlYAOtFHaaIguW@Ansuel-xps.localdomain>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <YJRlYAOtFHaaIguW@Ansuel-xps.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When encoder validation of a display mode fails, retry with less bandwidth
-heavy YCbCr420 color mode, if available. This enables some HDMI 1.4 setups
-to support 4k60Hz output, which previously failed silently.
+On Thu, May 06, 2021 at 11:53:36PM +0200, Ansuel Smith wrote:
+> On Thu, May 06, 2021 at 02:10:33PM +0300, Vladimir Oltean wrote:
+> > On Wed, May 05, 2021 at 12:29:07AM +0200, Ansuel Smith wrote:
+> > > The legacy qsdk code used a different delay instead of the max value.
+> > > Qsdk use 1 ps for rx and 2 ps for tx. Make these values configurable
+> > > using the standard rx/tx-internal-delay-ps ethernet binding and apply
+> > > qsdk values by default. The connected gmac doesn't add any delay so no
+> > > additional delay is added to tx/rx.
+> > > 
+> > > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
+> > > ---
+> > >  drivers/net/dsa/qca8k.c | 51 +++++++++++++++++++++++++++++++++++++++--
+> > >  drivers/net/dsa/qca8k.h | 11 +++++----
+> > >  2 files changed, 55 insertions(+), 7 deletions(-)
+> > > 
+> > > diff --git a/drivers/net/dsa/qca8k.c b/drivers/net/dsa/qca8k.c
+> > > index 22334d416f53..cb9b44769e92 100644
+> > > --- a/drivers/net/dsa/qca8k.c
+> > > +++ b/drivers/net/dsa/qca8k.c
+> > > @@ -779,6 +779,47 @@ qca8k_setup_mdio_bus(struct qca8k_priv *priv)
+> > >  	return 0;
+> > >  }
+> > >  
+> > > +static int
+> > > +qca8k_setup_of_rgmii_delay(struct qca8k_priv *priv)
+> > > +{
+> > > +	struct device_node *ports, *port;
+> > > +	u32 val;
+> > > +
+> > > +	ports = of_get_child_by_name(priv->dev->of_node, "ports");
+> > 
+> > Consider falling back to searching for the "ethernet-ports" name too,
+> > DSA should now support both.
+> >
+> 
+> The function qca8k_setup_mdio_bus also checks for ports node. Should I
+> also there the fallback correct?
 
-AMDGPU had nearly the exact same issue. This problem description is
-therefore copied from my commit message of the AMDGPU patch.
-
-On some setups, while the monitor and the gpu support display modes with
-pixel clocks of up to 600MHz, the link encoder might not. This prevents
-YCbCr444 and RGB encoding for 4k60Hz, but YCbCr420 encoding might still be
-possible. However, which color mode is used is decided before the link
-encoder capabilities are checked. This patch fixes the problem by retrying
-to find a display mode with YCbCr420 enforced and using it, if it is
-valid.
-
-Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
----
- drivers/gpu/drm/i915/display/intel_hdmi.c | 25 ++++++++++++++++++++---
- 1 file changed, 22 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_hdmi.c b/drivers/gpu/drm/i915/display/intel_hdmi.c
-index 9f3da72dabee..3c4d7a3e0969 100644
---- a/drivers/gpu/drm/i915/display/intel_hdmi.c
-+++ b/drivers/gpu/drm/i915/display/intel_hdmi.c
-@@ -1897,6 +1897,7 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 	int clock = mode->clock;
- 	int max_dotclk = to_i915(connector->dev)->max_dotclk_freq;
- 	bool has_hdmi_sink = intel_has_hdmi_sink(hdmi, connector->state);
-+	bool ycbcr_420_only;
- 
- 	if (mode->flags & DRM_MODE_FLAG_DBLSCAN)
- 		return MODE_NO_DBLESCAN;
-@@ -1913,12 +1914,22 @@ intel_hdmi_mode_valid(struct drm_connector *connector,
- 		clock *= 2;
- 	}
- 
--	if (drm_mode_is_420_only(&connector->display_info, mode))
-+	ycbcr_420_only = drm_mode_is_420_only(&connector->display_info, mode);
-+	if (ycbcr_420_only)
- 		clock /= 2;
- 
- 	status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
--	if (status != MODE_OK)
--		return status;
-+	if (status != MODE_OK) {
-+		if (ycbcr_420_only ||
-+		    !connector->ycbcr_420_allowed ||
-+		    !drm_mode_is_420_also(&connector->display_info, mode))
-+			return status;
-+
-+		clock /= 2;
-+		status = intel_hdmi_mode_clock_valid(hdmi, clock, has_hdmi_sink);
-+		if (status != MODE_OK)
-+			return status;
-+	}
- 
- 	return intel_mode_valid_max_plane_size(dev_priv, mode, false);
- }
-@@ -2125,6 +2136,14 @@ static int intel_hdmi_compute_output_format(struct intel_encoder *encoder,
- 	}
- 
- 	ret = intel_hdmi_compute_clock(encoder, crtc_state);
-+	if (ret) {
-+		if (crtc_state->output_format != INTEL_OUTPUT_FORMAT_YCBCR420 &&
-+		    connector->ycbcr_420_allowed &&
-+		    drm_mode_is_420_also(&connector->display_info, adjusted_mode)) {
-+			crtc_state->output_format = INTEL_OUTPUT_FORMAT_YCBCR420;
-+			ret = intel_hdmi_compute_clock(encoder, crtc_state);
-+		}
-+	}
- 
- 	return ret;
- }
--- 
-2.25.1
-
+Yes, ideally the entire driver should work fine with "ethernet-ports"
+and not just pieces of it.
