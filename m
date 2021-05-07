@@ -2,209 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15354376578
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:48:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C472A376579
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:48:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237052AbhEGMtV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:49:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237061AbhEGMtO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:49:14 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 403D9C061574;
-        Fri,  7 May 2021 05:48:14 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id a11so7873222ioo.0;
-        Fri, 07 May 2021 05:48:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=mk4EwzrekJZrdSAA7EbqIo9alX7xTMwjff4rEUAGw50=;
-        b=Q+p27H7liWtdNveghjWE4M0JYMGXpH47R+z4/yQCnRlaSbWVvTGUZ4dGRKTpfMkgkJ
-         0TNxI1IkOh3c/zFKmN68NMr5M6wGzERUGEVhY9iSis0kFsHgOqcUwaoPM4mXZyB179I9
-         4LS1gEvsFKPzjJgiWqFQrYLDAxkq7Ytpx211WmYK2pKkLzPRRxjRQut6Wbaz7w+BM9mK
-         uzaT8WeoFp58S9BTgchEvOjmd1HqO1hid3xhRepnwtLNVa5hwxuyRVFVbq8KJO4Qp6B4
-         Ya1/YE/F/VXyJusi3VR5QGtEhyTUUlKzVIqTJdC60o9YmOtHTeqMv/X3srQRkVAtDAbz
-         QYLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=mk4EwzrekJZrdSAA7EbqIo9alX7xTMwjff4rEUAGw50=;
-        b=N2+DuVxbJWS4uMT/e1K6+qINHBctwL4aaDswJHovSdwN0wiGSO+x9fdfrNycHJ8Ur+
-         7rOoztyNbk/xFdBWFWgg/S8L7qcI5RBkmMxFWMzcVh0LImWSf8Q88Nc5XFfMb4NURZrN
-         +k6lWIY46vLAJinoMFc9PSXDHQxahLCOVzHsYpiT/zc6vMfVXBXwv5bG1z84vY4IyyPD
-         syD/Pwwh9z4crgC1Bs7QLZQ2iiZziAP7LFLTnSJcRTzDJYaI9NTjuVx9AYiZpmL63ido
-         H5gJfXXS4ml9gT3qOhK8A8jTVkf77h8gMO7zg7H1GG98Mx4tswiZ1nVDFH3gNnB7I7ss
-         JCaQ==
-X-Gm-Message-State: AOAM530s/dg5EVdoAOjYEw5lEMzeTxARjJPopaha9A6IuFQ0VYRM71AO
-        Et5bD7CFV+xsQUf60BUe0gZO/17uR0PSfj0shLM=
-X-Google-Smtp-Source: ABdhPJwPbvjWHr01saa83aWFkZY7Vk+QdkcFUYqD4XswGLnZ95C0ePucQ4gCrb9TGnOkg+xXFhE6UzvQ5plsvMYlmPA=
-X-Received: by 2002:a6b:7944:: with SMTP id j4mr7561028iop.60.1620391693706;
- Fri, 07 May 2021 05:48:13 -0700 (PDT)
+        id S237060AbhEGMtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:49:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35368 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S237043AbhEGMtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 08:49:47 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AE5046143F;
+        Fri,  7 May 2021 12:48:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620391728;
+        bh=vaBF2uHP43lFyzQwMbdbFEMpn4rQ8hW21O3qLxQS5Ak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=iI9XS9nv67rnDiBHeuSryQolG8PeQYxzxPdHrDmq9vP05gI46DB/f/n6kIMO4DKod
+         vNmA1K1fye00nnZ7EeAGHG0zy4LL5wwZHhgQGl9NSocHP7jXvQLU3T7gVQlsQRYpI0
+         Cw7gF01oC9+5IXOOEHSwvRdTj7aeTIeJ43wNVsPiKZHrExqmi/URQk7bj5nncex8cj
+         tyTkktZVOyTlwVjzIDxVkjHr3wpfMgP8qSmTPsOxFcVzXIOXe0CneIRKrBng1uzmCt
+         znJocDSdswSCf7hNwkhIuFVXrOdC0KRrW4UTjyGOKndKUia6Rq92b5Sj1k4IVNPDZH
+         iy+EbcMxByCHg==
+Date:   Fri, 7 May 2021 14:48:42 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: module: treat exit sections the same as init
+ sections when !CONFIG_MODULE_UNLOAD
+Message-ID: <YJU3KrZzSRYNH6Zt@gunter>
+References: <20210507121322.6441-1-jeyu@kernel.org>
+ <20210507123054.GD1336@shell.armlinux.org.uk>
 MIME-Version: 1.0
-References: <1591709203-12106-1-git-send-email-dillon.minfei@gmail.com>
- <1591709203-12106-5-git-send-email-dillon.minfei@gmail.com>
- <CAL9mu0LJPnxA0JSmV3mogvPA5xRRYCO_4=P7pqpAO7R=YaJX5g@mail.gmail.com>
- <20210315130050.GD1182@ninjato> <CAL9mu0LnHAUSMXmQpZK78QAccqrc58cyFC2GD4cBkTNW41rvKA@mail.gmail.com>
- <ff2bc09d-1a17-50d4-d3ee-16fd3a86d7f1@foss.st.com>
-In-Reply-To: <ff2bc09d-1a17-50d4-d3ee-16fd3a86d7f1@foss.st.com>
-From:   dillon min <dillon.minfei@gmail.com>
-Date:   Fri, 7 May 2021 20:47:37 +0800
-Message-ID: <CAL9mu0KGkwbdj+KVddgXooS0=oBWohf+xHEgnYoHzu+9wQjjpg@mail.gmail.com>
-Subject: Re: [Linux-stm32] [PATCH v4 4/4] i2c: stm32f4: Fix stmpe811 get xyz
- data timeout issue
-To:     Patrice CHOTARD <patrice.chotard@foss.st.com>
-Cc:     Wolfram Sang <wsa@kernel.org>, pierre-yves.mordret@foss.st.com,
-        alain.volmat@foss.st.com,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <Alexandre.torgue@foss.st.com>,
-        pierre-yves.mordret@st.com,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Rob Herring <robh+dt@kernel.org>, linux-i2c@vger.kernel.org,
-        p.zabel@pengutronix.de, linux-stm32@st-md-mailman.stormreply.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210507123054.GD1336@shell.armlinux.org.uk>
+X-OS:   Linux gunter 5.11.16-1-default x86_64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Patrice
-
-Thanks for the reply.
-
-On Fri, May 7, 2021 at 8:29 PM Patrice CHOTARD
-<patrice.chotard@foss.st.com> wrote:
++++ Russell King - ARM Linux admin [07/05/21 13:30 +0100]:
+>On Fri, May 07, 2021 at 02:13:22PM +0200, Jessica Yu wrote:
+>> Dynamic code patching (alternatives, jump_label and static_call) can
+>> have sites in __exit code, even if __exit is never executed. Therefore
+>> __exit must be present at runtime, at least for as long as __init code is.
+>...
+>> Previously, the module loader never loaded the exit sections in the first
+>> place when CONFIG_MODULE_UNLOAD=n. Commit 33121347fb1c ("module: treat exit
+>> sections the same as init sections when !CONFIG_MODULE_UNLOAD") addressed
+>> the issue by having the module loader load the exit sections and then making
+>> __exit identify as __init for !MODULE_UNLOAD. Then, since they are treated
+>> like init sections, they will be also discarded after init.
+>>
+>> That commit satisfied the above requirements for jump_labels and
+>> static_calls by modifying the checks in the core module_init_section()
+>> function in kernel/module.c to include exit sections. However, ARM
+>> overrides these and implements their own module_{init,exit}_section()
+>> functions. Add a similar check for exit sections to ARM's
+>> module_init_section() function so that all arches are on the same page.
 >
-> Hi Dillon
+>Shouldn't the module core code itself be doing:
 >
-> In order to test this patch, it's tricky to make a recent kernel running
-> on stm32f429-disco as this board embeds only 8MB of SDRAM and 2MB of flash.
+>	module_init_section(name) || module_exit_section(name)
 >
-> Can you indicates us which kernel version you are using and also the kernel config please ?
+>itself when CONFIG_MODULE_UNLOAD is not set, rather than pushing this
+>logic down into every module_init_section() implementation?
 
-Since this patch was submitted in last year, might it be 5.0?  not for sure
-Anyway, I will resubmit it in the recent kernel version with the kernel config
-and a detailed test step for you.
+Yeah, that sounds better. Originally, I had wanted to keep the #ifndef
+in one place to keep the churn to a minimum.
 
-Thanks for your time.
+But seeing that we have to patch up ARM too, it's probably the less
+ugly option now. Let me cook up an alternative patch and resend.
 
->
-> Thanks
->
-> Patrice
->
-> On 5/7/21 4:54 AM, dillon min wrote:
-> > Hi Pierre-Yves, Alain
-> >
-> > Could you help to take a look?
-> > i really appreciate it.
-> >
-> > Thanks,
-> >
-> > Best Regards
-> > Dillon
-> >
-> > On Mon, Mar 15, 2021 at 9:00 PM Wolfram Sang <wsa@kernel.org> wrote:
-> >>
-> >> On Mon, Mar 15, 2021 at 08:43:54PM +0800, dillon min wrote:
-> >>> Hi All,
-> >>>
-> >>> Just a gentle ping.
-> >>
-> >> Pierre-Yves?
-> >>
-> >>>
-> >>> Regards.
-> >>>
-> >>> On Tue, Jun 9, 2020 at 9:27 PM <dillon.minfei@gmail.com> wrote:
-> >>>>
-> >>>> From: dillon min <dillon.minfei@gmail.com>
-> >>>>
-> >>>> as stm32f429's internal flash is 2Mbytes and compiled kernel
-> >>>> image bigger than 2Mbytes, so we have to load kernel image
-> >>>> to sdram on stm32f429-disco board which has 8Mbytes sdram space.
-> >>>>
-> >>>> based on above context, as you knows kernel running on external
-> >>>> sdram is more slower than internal flash. besides, we need read 4
-> >>>> bytes to get touch screen xyz(x, y, pressure) coordinate data in
-> >>>> stmpe811 interrupt.
-> >>>>
-> >>>> so, in stm32f4_i2c_handle_rx_done, as i2c read slower than running
-> >>>> in xip mode, have to adjust 'STOP/START bit set position' from last
-> >>>> two bytes to last one bytes. else, will get i2c timeout in reading
-> >>>> touch screen coordinate.
-> >>>>
-> >>>> to not take side effect, introduce IIC_LAST_BYTE_POS to support xip
-> >>>> kernel or has mmu platform.
-> >>>>
-> >>>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
-> >>>> ---
-> >>>>
-> >>>> V4: indroduce 'IIC_LAST_BYTE_POS' to compatible with xipkernel boot
-> >>>>
-> >>>>  drivers/i2c/busses/i2c-stm32f4.c | 12 +++++++++---
-> >>>>  1 file changed, 9 insertions(+), 3 deletions(-)
-> >>>>
-> >>>> diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
-> >>>> index d6a69dfcac3f..97cf42ae7fa0 100644
-> >>>> --- a/drivers/i2c/busses/i2c-stm32f4.c
-> >>>> +++ b/drivers/i2c/busses/i2c-stm32f4.c
-> >>>> @@ -93,6 +93,12 @@
-> >>>>  #define STM32F4_I2C_MAX_FREQ           46U
-> >>>>  #define HZ_TO_MHZ                      1000000
-> >>>>
-> >>>> +#if !defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
-> >>>> +#define IIC_LAST_BYTE_POS 1
-> >>>> +#else
-> >>>> +#define IIC_LAST_BYTE_POS 2
-> >>>> +#endif
-> >>>> +
-> >>>>  /**
-> >>>>   * struct stm32f4_i2c_msg - client specific data
-> >>>>   * @addr: 8-bit slave addr, including r/w bit
-> >>>> @@ -439,7 +445,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
-> >>>>         int i;
-> >>>>
-> >>>>         switch (msg->count) {
-> >>>> -       case 2:
-> >>>> +       case IIC_LAST_BYTE_POS:
-> >>>>                 /*
-> >>>>                  * In order to correctly send the Stop or Repeated Start
-> >>>>                  * condition on the I2C bus, the STOP/START bit has to be set
-> >>>> @@ -454,7 +460,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
-> >>>>                 else
-> >>>>                         stm32f4_i2c_set_bits(reg, STM32F4_I2C_CR1_START);
-> >>>>
-> >>>> -               for (i = 2; i > 0; i--)
-> >>>> +               for (i = IIC_LAST_BYTE_POS; i > 0; i--)
-> >>>>                         stm32f4_i2c_read_msg(i2c_dev);
-> >>>>
-> >>>>                 reg = i2c_dev->base + STM32F4_I2C_CR2;
-> >>>> @@ -463,7 +469,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
-> >>>>
-> >>>>                 complete(&i2c_dev->complete);
-> >>>>                 break;
-> >>>> -       case 3:
-> >>>> +       case (IIC_LAST_BYTE_POS+1):
-> >>>>                 /*
-> >>>>                  * In order to correctly generate the NACK pulse after the last
-> >>>>                  * received data byte, we have to enable NACK before reading N-2
-> >>>> --
-> >>>> 2.7.4
-> >>>>
-> > _______________________________________________
-> > Linux-stm32 mailing list
-> > Linux-stm32@st-md-mailman.stormreply.com
-> > https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
-> >
+Thanks,
 
----
-Best regards
-Dillon,
+Jessica
