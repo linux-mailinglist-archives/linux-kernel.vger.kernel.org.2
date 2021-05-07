@@ -2,111 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AED14376BB5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CBC45376BB9
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:26:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229747AbhEGV1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:27:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35558 "EHLO
+        id S229819AbhEGV1Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:27:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEGV1S (ORCPT
+        with ESMTP id S229470AbhEGV1X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:27:18 -0400
-Received: from mail-io1-xd35.google.com (mail-io1-xd35.google.com [IPv6:2607:f8b0:4864:20::d35])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D5F1DC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 14:26:16 -0700 (PDT)
-Received: by mail-io1-xd35.google.com with SMTP id z24so9282970ioi.3
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:26:16 -0700 (PDT)
+        Fri, 7 May 2021 17:27:23 -0400
+Received: from mail-lj1-x235.google.com (mail-lj1-x235.google.com [IPv6:2a00:1450:4864:20::235])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9FC93C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 14:26:22 -0700 (PDT)
+Received: by mail-lj1-x235.google.com with SMTP id f12so750400ljp.2
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:26:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=konsulko.com; s=google;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=STKiO9AWpCH39xgVyEDHDKCth0FNOrDqcymI0L9meSo=;
-        b=WARh69Kczqdp+LQIYesVKz6ExULo6eoSYeI7iIW/Q+OO6F+Zl5OkQNgdNgi3Jt4I8W
-         c44rh4RqJQSf3jvfLzNFUDGlTH2SVWAWW5ahnXhhWlUCBacsApAEp8p+PvhlxjwEHKuU
-         Gxgcpb8oh5wu5pVWwQi3ILcI5ZRmabNvZkT/M=
+        bh=XG0TLyszi1cmh23fmH0mhN2WgCliBgRLG2x6Fui/g3w=;
+        b=hodjiOCfhaug0X3p4IQrL+WcbBvdiThSPchin6eJxMJ2dt0+Me5jQvoBuO67weHHYO
+         fBwbLAHWSc9YUyFTQBloGw9B711VjCdTmpXZuh+/yia7xVM6xvl3x2mDefdrS3xYtcO1
+         oIetrSG0llXe8YfcymcicYd6DR4droaELRHIVQbG6772pm9JUeoevm+ZO0H1yUzrt5HW
+         rnOFfBTK72QJF83XqkEEv2/X8bCQzubEAFkLHQwwbVWpETkA3QYN3MmHGCN2KEYdhjBT
+         AfAbjC9daNgoeNwLXGtKfJOeza28WvCd2mk4UQ+0d2i6U3BNsJ7zrcX5TmU3Tl+hAWUi
+         nyRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=STKiO9AWpCH39xgVyEDHDKCth0FNOrDqcymI0L9meSo=;
-        b=fM+NRQVbUlq3KwOAT3gOPT1Uzrgbp6Xl07bzIhxOQTDqJOjqSCUjLcpoVWaDOmEoHD
-         MPjp7jr0G4dUKl07HjNKSE86bAOGXHqOCoJ9fftWikTBtfcT0t3nAWonaxc4POML1WaE
-         nbT9VasibudPkG7Tz0Hi0d1KJ8bQ9RuKtNQIMM62Tm3s8baw/u+HPIzbfq4SD+xQVMPA
-         Simotmy/uo1fUxejD8RuH0hoX6+K7ej46ALjA/PKx08xLN68unQHqjIEovWgAn5T+qYx
-         ikXLJJCtBzemIXyZ9+RTfogMLWwruwjCJLYxZL4bS5cUYFsbsNaQpaxVxc4yVBXXeyod
-         j/bw==
-X-Gm-Message-State: AOAM532/nmVEfyZao5VPL6NiMvW5HEw8vZ77r91ituw28oSWMZW3MdLS
-        nWc97F1XYRxBukhgxFskvApUZCjOY4mQPEtV57uzUg==
-X-Google-Smtp-Source: ABdhPJxEvAGnj2AJE+vvIJ2GGQoEcb6+aGVGE/J72s4ZVmpvaQAUKg/kHn3pW4/LwiH8dI51b1se5InfpZo3BeRnJ8s=
-X-Received: by 2002:a6b:cdc6:: with SMTP id d189mr8797891iog.46.1620422776360;
- Fri, 07 May 2021 14:26:16 -0700 (PDT)
+        bh=XG0TLyszi1cmh23fmH0mhN2WgCliBgRLG2x6Fui/g3w=;
+        b=MANEFA+jMWYJimtfXqYL+WbjvS71Ab9m4oDDDW8rhAVyj49kgp1q6+8JQwsbiMmLeW
+         6YkN7ZDZIZi4GLAo9tPIHJ2bb7P/Wi+fV5wPdojHK9p+AcvKSvFMitCOJPTunngSb8C0
+         c4HkBRUwx7aXfqwUxSreoM99InJrNWeT6bcOsByFTuL/3E0Kos/OmwJgagL0X0TyypO3
+         Hqd4pBVgmtYE5Lc0n9QnVog2r97qPKPNotR/lLHkqn3SCsYvx+DeXkeHZ4Jdy13ic9T+
+         Ri9pMtP0rpyVbKv/v6cdA9VPQY/axQzKib1PmXQRXN08pek48HSjZd64haMCsOWMvZW8
+         Ag0g==
+X-Gm-Message-State: AOAM531jOn/GOAlnh4YpoJg+DMeTcopDpdcQJ4drRwQLUqKBzXeHvzW8
+        LrngUVzAm3uA8ZQ5S4Ypsrr2X0xxYw9lNHdzvKUr3A==
+X-Google-Smtp-Source: ABdhPJy3z0qWS5Sneh44i6pk2oO3OOciepj+d38iIgI70000KRkNiArXJwFb6hKxgj5G3aVCUF/o8itqFyKwsM+AULo=
+X-Received: by 2002:a2e:2e12:: with SMTP id u18mr9286103lju.200.1620422781142;
+ Fri, 07 May 2021 14:26:21 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1620314098.git.mchehab+huawei@kernel.org> <f6efc87d96826e3d2067b874e034b5edf73bb593.1620314098.git.mchehab+huawei@kernel.org>
-In-Reply-To: <f6efc87d96826e3d2067b874e034b5edf73bb593.1620314098.git.mchehab+huawei@kernel.org>
-From:   Matt Ranostay <matt.ranostay@konsulko.com>
-Date:   Fri, 7 May 2021 14:26:05 -0700
-Message-ID: <CAJCx=gnP0oK2YqmffH=CfeWQbCcAa4hS_QRXwu49tdG3kW8TWQ@mail.gmail.com>
-Subject: Re: [PATCH v5 29/30] media: i2c: video-i2c: use pm_runtime_resume_and_get()
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>
+References: <20210505134028.13431-1-jbx6244@gmail.com> <20210505134028.13431-2-jbx6244@gmail.com>
+In-Reply-To: <20210505134028.13431-2-jbx6244@gmail.com>
+From:   Linus Walleij <linus.walleij@linaro.org>
+Date:   Fri, 7 May 2021 23:26:09 +0200
+Message-ID: <CACRpkdZZ-FZn6Q3w6g=FayOzpUW4ZfenQ9Oxe0+Co2RyYpTZLA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: gpio: convert rk3328-grf-gpio.txt to YAML
+To:     Johan Jonker <jbx6244@gmail.com>
+Cc:     =?UTF-8?Q?Heiko_St=C3=BCbner?= <heiko@sntech.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Jianqun Xu <jay.xu@rock-chips.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        David Wu <david.wu@rock-chips.com>,
+        Elaine Zhang <zhangqing@rock-chips.com>,
+        Tao Huang <huangtao@rock-chips.com>, cl@rock-chips.com,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 8:23 AM Mauro Carvalho Chehab
-<mchehab+huawei@kernel.org> wrote:
->
-> Commit dd8088d5a896 ("PM: runtime: Add pm_runtime_resume_and_get to deal with usage counter")
-> added pm_runtime_resume_and_get() in order to automatically handle
-> dev->power.usage_count decrement on errors.
->
-> Use the new API, in order to cleanup the error check logic.
->
+On Wed, May 5, 2021 at 3:40 PM Johan Jonker <jbx6244@gmail.com> wrote:
 
-Acked-by: Matt Ranostay <matt.ranostay@konsulko.com>
+> Current dts files with RK3328 GRF 'gpio' nodes are manually verified.
+> In order to automate this process rk3328-grf-gpio.txt has to be
+> converted to YAML.
+>
+> Rename 'grf-gpio' nodename to 'gpio'.
+>
+> Signed-off-by: Johan Jonker <jbx6244@gmail.com>
 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/media/i2c/video-i2c.c | 12 ++++--------
->  1 file changed, 4 insertions(+), 8 deletions(-)
->
-> diff --git a/drivers/media/i2c/video-i2c.c b/drivers/media/i2c/video-i2c.c
-> index 0465832a4090..de12f38f347c 100644
-> --- a/drivers/media/i2c/video-i2c.c
-> +++ b/drivers/media/i2c/video-i2c.c
-> @@ -286,11 +286,9 @@ static int amg88xx_read(struct device *dev, enum hwmon_sensor_types type,
->         __le16 buf;
->         int tmp;
->
-> -       tmp = pm_runtime_get_sync(regmap_get_device(data->regmap));
-> -       if (tmp < 0) {
-> -               pm_runtime_put_noidle(regmap_get_device(data->regmap));
-> +       tmp = pm_runtime_resume_and_get(regmap_get_device(data->regmap));
-> +       if (tmp < 0)
->                 return tmp;
-> -       }
->
->         tmp = regmap_bulk_read(data->regmap, AMG88XX_REG_TTHL, &buf, 2);
->         pm_runtime_mark_last_busy(regmap_get_device(data->regmap));
-> @@ -512,11 +510,9 @@ static int start_streaming(struct vb2_queue *vq, unsigned int count)
->         if (data->kthread_vid_cap)
->                 return 0;
->
-> -       ret = pm_runtime_get_sync(dev);
-> -       if (ret < 0) {
-> -               pm_runtime_put_noidle(dev);
-> +       ret = pm_runtime_resume_and_get(dev);
-> +       if (ret < 0)
->                 goto error_del_list;
-> -       }
->
->         ret = data->chip->setup(data);
->         if (ret)
-> --
-> 2.30.2
->
+Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
+
+Yours,
+Linus Walleij
