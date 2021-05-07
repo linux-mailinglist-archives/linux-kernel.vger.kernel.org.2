@@ -2,91 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA2CC37639F
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:24:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A30E3763A3
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:24:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236433AbhEGKYy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 06:24:54 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:18349 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236037AbhEGKYR (ORCPT
+        id S236914AbhEGKZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 06:25:22 -0400
+Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:40418 "EHLO
+        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236084AbhEGKYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 06:24:17 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Fc5zw4Fn0zCr6W;
-        Fri,  7 May 2021 18:20:12 +0800 (CST)
-Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.224) by
- DGGEMS408-HUB.china.huawei.com (10.3.19.208) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 7 May 2021 18:22:42 +0800
-From:   Keqian Zhu <zhukeqian1@huawei.com>
-To:     <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <iommu@lists.linux-foundation.org>,
-        Robin Murphy <robin.murphy@arm.com>,
-        "Will Deacon" <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
-        "Jean-Philippe Brucker" <jean-philippe@linaro.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        "Yi Sun" <yi.y.sun@linux.intel.com>,
-        Tian Kevin <kevin.tian@intel.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        Kirti Wankhede <kwankhede@nvidia.com>,
-        Cornelia Huck <cohuck@redhat.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
-        <yuzenghui@huawei.com>, <lushenming@huawei.com>
-Subject: [RFC PATCH v4 13/13] iommu/arm-smmu-v3: Realize support_dirty_log iommu ops
-Date:   Fri, 7 May 2021 18:22:11 +0800
-Message-ID: <20210507102211.8836-14-zhukeqian1@huawei.com>
-X-Mailer: git-send-email 2.8.4.windows.1
-In-Reply-To: <20210507102211.8836-1-zhukeqian1@huawei.com>
-References: <20210507102211.8836-1-zhukeqian1@huawei.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.174.187.224]
-X-CFilter-Loop: Reflected
+        Fri, 7 May 2021 06:24:19 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UY2Duau_1620382963;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UY2Duau_1620382963)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 07 May 2021 18:22:50 +0800
+From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+To:     yishaih@nvidia.com
+Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] RDMA/mlx4: Remove unnessesary check in mlx4_ib_modify_wq()
+Date:   Fri,  7 May 2021 18:22:41 +0800
+Message-Id: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Kunkun Jiang <jiangkunkun@huawei.com>
+cur_state and new_state are enums and when GCC considers
+them as unsigned, the conditions are never met.
 
-We have implemented these interfaces required to support iommu
-dirty log tracking. The last step is reporting this feature to
-upper user, then the user can perform higher policy base on it.
-For arm smmuv3, it is equal to ARM_SMMU_FEAT_HD.
+Clean up the following smatch warning:
 
-Co-developed-by: Keqian Zhu <zhukeqian1@huawei.com>
-Signed-off-by: Kunkun Jiang <jiangkunkun@huawei.com>
+drivers/infiniband/hw/mlx4/qp.c:4258 mlx4_ib_modify_wq() warn: unsigned
+'cur_state' is never less than zero.
+
+Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/infiniband/hw/mlx4/qp.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-index 9b4739247dbb..59d11f084199 100644
---- a/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-+++ b/drivers/iommu/arm/arm-smmu-v3/arm-smmu-v3.c
-@@ -2684,6 +2684,13 @@ static int arm_smmu_merge_page(struct iommu_domain *domain, unsigned long iova,
- 	return ret;
- }
+diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
+index 92ddbcc..162aa59 100644
+--- a/drivers/infiniband/hw/mlx4/qp.c
++++ b/drivers/infiniband/hw/mlx4/qp.c
+@@ -4255,8 +4255,7 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
+ 						     ibwq->state;
+ 	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
  
-+static bool arm_smmu_support_dirty_log(struct iommu_domain *domain)
-+{
-+	struct arm_smmu_domain *smmu_domain = to_smmu_domain(domain);
-+
-+	return !!(smmu_domain->smmu->features & ARM_SMMU_FEAT_HD);
-+}
-+
- static int arm_smmu_switch_dirty_log(struct iommu_domain *domain, bool enable,
- 				     unsigned long iova, size_t size, int prot)
- {
-@@ -2872,6 +2879,7 @@ static struct iommu_ops arm_smmu_ops = {
- 	.release_device		= arm_smmu_release_device,
- 	.device_group		= arm_smmu_device_group,
- 	.enable_nesting		= arm_smmu_enable_nesting,
-+	.support_dirty_log	= arm_smmu_support_dirty_log,
- 	.switch_dirty_log	= arm_smmu_switch_dirty_log,
- 	.sync_dirty_log		= arm_smmu_sync_dirty_log,
- 	.clear_dirty_log	= arm_smmu_clear_dirty_log,
+-	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
+-	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
++	if (cur_state > IB_WQS_ERR || new_state > IB_WQS_ERR)
+ 		return -EINVAL;
+ 
+ 	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
 -- 
-2.19.1
+1.8.3.1
 
