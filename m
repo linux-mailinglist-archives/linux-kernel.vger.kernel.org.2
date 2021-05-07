@@ -2,250 +2,306 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A536376D3B
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 01:21:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69EC9376D3F
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 01:22:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230089AbhEGXWn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 19:22:43 -0400
-Received: from mail-dm6nam11on2054.outbound.protection.outlook.com ([40.107.223.54]:26081
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229812AbhEGXWn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 19:22:43 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ncIC5wIw5JqgsDYvSYn0swhD4+nj5E0zkUbN1u8M0p4fUWjiiwdG412Q97/l1/onB/mY0TtJ1scSmiEWkMh27sDGSkV2j5kMHmLwL3d6GATkbP4G0NB45TGR6nRo2ok7V8dssychK6VD2sj9UPtiGypRogG7FnFXPiEgRr9Yf5YeMUgmbOftXuXQQyLbH79z+c0fPvI/XVFQeNEC/nAHsWnOI7kCYLSgcbvyOW873uHcOIhQAbd4CUK29zPxVvve6blFZEHPz18jcyCp/Zu9dWkEbwk9qF5aktr2yCSzAg3ZvOrNcejDD1YVWMsmrde9KBBF1DPljVkG4yab9V7Hbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X8W9B3uDaFECd4s8PzCISfRMD2frNlmTPTk0xjnV8ow=;
- b=G034+ShCcXl2uuQwLaE0+/9M1VgiaI84zJYRB30leJ2OX/BVMqMRxJqIuuKN0YmnaLujMEK/uGk2xzS+fJ4jbms4G1z5RTD5De8naZ786tLfud8kNXNeU9SGMmQKECQ0+0w8Ungk9bWxrUUUP+hTDsYjzEmxtcFX7/fv6aPdO9sdMU6KcEYAM2HldWPiAeDM8H+NfWwZFwsBwepSPQW87qAmmc0WTZEJoPOEU9f+YVx0HUVJecv+8k4J5HDCn90M7q23nd92K3/2usQm1zoFDc4a/TP+PKNntp/59NjNZqIBupVYlMWhqo6iJ6bmWC7qG67fAZPlAyh1NYYljS9NBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=X8W9B3uDaFECd4s8PzCISfRMD2frNlmTPTk0xjnV8ow=;
- b=W8wl1mEUGkSkCbuBW1YOZPSkXVty7eLphofJPJDKKKtnKOfB1ovJIq0wZ3dpl+lBxZNS9aeo5CN8RHRhfgMzDYJtUGshex168iPjpnsErcEZEY0UL3cPEp45dlG4z+7pVGGUhjYtZU5/PCay8RBxAarArLxcxkvDrEAL+cCYFRo=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM6PR12MB3465.namprd12.prod.outlook.com (2603:10b6:5:3a::20) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4087.39; Fri, 7 May 2021 23:21:40 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4108.026; Fri, 7 May 2021
- 23:21:40 +0000
-Subject: Re: [PATCH 2/2] KVM: x86: Allow userspace to update tracked sregs for
- protected guests
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210507165947.2502412-1-seanjc@google.com>
- <20210507165947.2502412-3-seanjc@google.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <5f084672-5c0d-a6f3-6dcf-38dd76e0bde0@amd.com>
-Date:   Fri, 7 May 2021 18:21:37 -0500
+        id S230076AbhEGXXl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 19:23:41 -0400
+Received: from mail-wr1-f53.google.com ([209.85.221.53]:44545 "EHLO
+        mail-wr1-f53.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229812AbhEGXXh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 19:23:37 -0400
+Received: by mail-wr1-f53.google.com with SMTP id l13so10747295wru.11
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 16:22:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=AeMAgGMTkDgLFETy4/5ZhdU7A3yaAgfsfiIqjLKnijw=;
+        b=TNp/mukCwz4cBEwvg7gE5+KhZFsbrM3aW9/5szEz9TNHor8kodKzhYhS6P81ASwNY4
+         Xf1n40Zrplb+44l4CmhuoCfGoiJzypDf6E/kaPG2AqSmYCAum24WTUyouUuLWBfPM5Uy
+         +hXMseB3YaHx+IBscWSf5ENb63UTDwHmFJ5DMZLt4y4gVXbpfQUNJMepzQd65ifnphJd
+         tEughT0BWIFX0uYlv5gzYXByotsrLiWlhH6tMMCE495trA/fXUe2F9A2NsQDQ+0GNUrX
+         y3iutO8nTu/B6tGV5vy4TLWoTeZnhF8K2YSodHDu66iez7b9IyPTrptbNH9j7o3qlOJU
+         fV9g==
+X-Gm-Message-State: AOAM533pKyU9LDRdAC/sAeoqIe7HS6HOl2wR+m0ulEiOFAvaw18LODHb
+        A2+H00xxGSCwP/wI/QAMz0U=
+X-Google-Smtp-Source: ABdhPJy2p4vW4Ry9KxdXZerkIqNmXSbHpniiWGU+uZG0+Cs4IUGrqeWKmnZuBI6p8BPp1iPFggxxuQ==
+X-Received: by 2002:adf:9bd0:: with SMTP id e16mr15534517wrc.346.1620429756228;
+        Fri, 07 May 2021 16:22:36 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:d07b:68ce:2d70:258f? ([2601:647:4802:9070:d07b:68ce:2d70:258f])
+        by smtp.gmail.com with ESMTPSA id y17sm11296111wrw.90.2021.05.07.16.22.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 May 2021 16:22:35 -0700 (PDT)
+Subject: Re: [PATCH v2] nvme-tcp: Check if request has started before
+ processing it
+To:     Keith Busch <kbusch@kernel.org>
+Cc:     Hannes Reinecke <hare@suse.de>,
+        "Ewan D. Milne" <emilne@redhat.com>,
+        Daniel Wagner <dwagner@suse.de>,
+        linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Jens Axboe <axboe@fb.com>, Christoph Hellwig <hch@lst.de>
+References: <20210301175601.116405-1-dwagner@suse.de>
+ <6b51a989-5551-e243-abda-5872411ec3ff@grimberg.me>
+ <20210311094345.ogm2lxqfuszktuhp@beryllium.lan>
+ <70af5b02-10c1-ab0b-1dfc-5906216871b4@grimberg.me>
+ <2fc7a320c86f75507584453dd2fbd744de5c170d.camel@redhat.com>
+ <ed3ccac0-79ed-fe10-89eb-d403820b4c6a@grimberg.me>
+ <20210330232813.GA1935968@dhcp-10-100-145-180.wdc.com>
+ <756aef10-e693-276f-82ac-514a2832b07f@grimberg.me>
+ <492b8393-fc35-f58a-3768-94632a083c93@suse.de>
+ <3156c563-94a4-4278-3835-b1f56f71869a@grimberg.me>
+ <20210507204052.GA1485586@dhcp-10-100-145-180.wdc.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <7a45dd7f-842b-4282-909b-082b501abcdc@grimberg.me>
+Date:   Fri, 7 May 2021 16:22:30 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.7.1
-In-Reply-To: <20210507165947.2502412-3-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8
+MIME-Version: 1.0
+In-Reply-To: <20210507204052.GA1485586@dhcp-10-100-145-180.wdc.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SA0PR11CA0188.namprd11.prod.outlook.com
- (2603:10b6:806:1bc::13) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-linux.texastahm.com (67.79.209.213) by SA0PR11CA0188.namprd11.prod.outlook.com (2603:10b6:806:1bc::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend Transport; Fri, 7 May 2021 23:21:39 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 491bfd5b-afdc-4180-289d-08d911aede8c
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3465:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3465BBCE801A29FB8DB629E7EC579@DM6PR12MB3465.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:129;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: zUPGdyrv4e0+HAI0tVCy0fS/buohOtOT0F6ppFLHjtMmF4Ng0hsNW29h7mlVgI2qiuF/n0Bluh0awQ59ZNjUBdWuXfiufesd30uOdtVhyFn3ZzNndNfMVdbYW5Utu3wGKaJJvZPggoV0f+dSozRIbRTHHqgsVdnVRkAC1GgOrDiobBKIvSyC/dS6b9Z1W1khREhXSGHkWcVZnZ0z++twFJTQTRyS4s8nywH2e4pKM4poPE1nf+LgH1RTUFInapZocTJinbD70WxIFQ7NuPq/9rmI19d8vEh0YjBSXatjVbQd0UbXJGlhT6NZKyPi5aKDlun3vQmk+gdtdgbr9LcxRxr7O1n3QhXRcmzqF2JszQ4QBILHKxEVTNN/h8Wo9CN9d7dYt1wSP3f91mrGd94y2NdkxdPjl6EtWQUS1tCN2MyZbcqsw4wB/7ksQwvHQfJ83IIfV3GvWPfBFqP4hTik48PYwCaxG34zE+2vRiZrHzJ926ihuK0HoV01MeaCeqRRrpLltia7IDqrFsRTjHwhuMoqvspDtk6majgwfRF6OJGZOO4bwvbRBWEdozGE7qA610jRkYAh6QYrrNJueXfalAZKdavkJKO3UwsLB+b5txjy4Uzd68nvzIU9rXSC9vrMVAcY1KOVWaNC3fK7TMqwURKNEbjaM7Ppt21l0dFW2jKBeN7evP+q2JnbQEOTT0L1
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(39860400002)(346002)(376002)(366004)(136003)(15650500001)(316002)(86362001)(4326008)(66946007)(186003)(66556008)(6512007)(7416002)(31696002)(478600001)(16526019)(31686004)(54906003)(2616005)(110136005)(2906002)(38100700002)(6486002)(5660300002)(36756003)(8676002)(53546011)(26005)(8936002)(66476007)(6506007)(956004)(83380400001)(43740500002)(45980500001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?UmJ2SXdTb1gwelA0T2g0Q0R5NlAxeE1LNVA1TVAxK1JEVVpZK1dLZWZWdmVh?=
- =?utf-8?B?VWFZUFVzbjZ0ZlVvaGNWWmQ0OWlqSGVVZHdQR24xOFBFdVY3Z0RFNGZWZk52?=
- =?utf-8?B?L2xnMjBIWUZGai9xK0p4S2VQSS9vMHNKQlFjNkFoR0l5ckZ2eUZCakZwV09l?=
- =?utf-8?B?WEdLbWs4Ky9zTDN2OWZpbWtmTWVhMVVscm9HWFlwajVJSXFjaTVJbWNBcUR5?=
- =?utf-8?B?MW5IM2V6MU5sSmptZnU4a1hXK283SGpMMldqNlJRK3U0bnEzdjdIeDFiNSsv?=
- =?utf-8?B?TVo4dU16cEl0aWgyRjZEdTRzRHpJZWxnR0o1TGp6VHdHeTRNTmhTUVBrUnQ4?=
- =?utf-8?B?RUM2M0VJMWVVNU8rbG5lcXpwaEZiWW5hZlQxU0lJWHZDMWVLaVF4ZkxXcWQv?=
- =?utf-8?B?azFNUCtQOVBCLzJhT1hLbWYzK1Z0Y2RoblpBQXRWMEVJVUZCejJ6MlRhdjJB?=
- =?utf-8?B?RkxsemdyQU5XZjRoZTFKcWZ3TVprSGErMG4vRGdEUUN6ZHo4Q1hTRnhjQi9C?=
- =?utf-8?B?OHpYbW05eUFld25uMVZubTZ5b2w3aGcrQzV1c2xyTUNWSy9RbC8vVXVreUxP?=
- =?utf-8?B?Sm5uN1hERE1Ia01IanJvb3BPTk1XU0tiTjB3Wm9UbkxpVGhWTnI1YzNMV2RN?=
- =?utf-8?B?R0dPdXFmU25WaVpsc2NFZnZPRnQrRkw0djljSk01ZUNFK1I3V0NkUVlZaFFw?=
- =?utf-8?B?UEJxWUtNQ0xkN1dPeEk4TEpnMFRpNmE1ZVYrNEt2R3dKREIva3ZUZGJVbEJR?=
- =?utf-8?B?ZHVhMWQ2SC81cVVCWU5NTkVITExyaGJCK1JBaFUrMGpteVhpYkg2WTVESzhl?=
- =?utf-8?B?bmFic1V6a3ZISTNsc0FHbXdyL1IrYWFLb25IMGlRZ2tHcHpDYjY1TDkyRnFF?=
- =?utf-8?B?RHo0QVl4TGxCRm9jbDBldytvRDg2N282bHl3SFI4QWtvaFhoUjNJemROUFhK?=
- =?utf-8?B?T3VDQ0wzR3FnVzVtcGVHaVora1doUFRzdnhFa01aaU1CRG9pRDdaTmtHK1FW?=
- =?utf-8?B?eVhNQUl2V2ZHOHRPeWRjZGJpRFltTUVoZ2FuR01INHcwMVZqRW5LcVE2R0Jp?=
- =?utf-8?B?RUJpc1RkbHJFdFV3MVlrY1RRVjZtamY5LzBncS82OWUxZ2N3bmpiZjliVGY3?=
- =?utf-8?B?TlZYcm1qNU5oQjV5UDZyam5hMjgzczNhVnJQVVBrTlNVSnBDb2FjUFVldEdx?=
- =?utf-8?B?bmE4bDZzaTZ5akQ4dVpFTVl1OHp5L1UxSFRVZkVKc3NBOENybnU3Mkx4TGRs?=
- =?utf-8?B?YVpLM0RHODQwS0xwaFdUWHdKRkFEcXhPUTVXSjU2TTBVbmFWM3F2MERnOGlE?=
- =?utf-8?B?OUkzTWdqd0ZCNVBreCtqTDQzMm4wNTdFOHRxVk95Nllnd2lQcXZSNllGeUIy?=
- =?utf-8?B?d3daelIxQzd1blFCamhiTHVPVDRrbVRNRVJHUmpPRHhMNklkRFVyazErMFlK?=
- =?utf-8?B?bXhoQVoxVDJtWVlnQ0FTYWVmNTV1WVp4RjFQbm1oWkFTNXdSdEJIM1VORlpu?=
- =?utf-8?B?TXhUMk0xSzhwQlYrNlA5RC9FODllTjNQcGZwckladTYrTU1VTUpXbExEOWJP?=
- =?utf-8?B?Vmk0SDJtWjZscjlreUJzSG9vTE9BSitaZnM1OUo1MXBNZnVZNzhLclRHa3BW?=
- =?utf-8?B?NDhySVlIUXY0SnZTblUxSWU5bVd2Q3RpTWlSYXZmMkZsNEwyUWpjMlI1RVZM?=
- =?utf-8?B?ZjFSVGdpRkQwa09nUk04dnBsZlQ3bzBORjBmVHlCVmFzZ0Q2OWFUSUkzV2hP?=
- =?utf-8?Q?/C3yEd30BCUzVs6K8nReXX69Nk/LWGVIySw+q+9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 491bfd5b-afdc-4180-289d-08d911aede8c
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2021 23:21:40.6644
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: P7fIfeEouxuWEWD/jTeHeprsdL06e9nmy3RlFRaYRUzFIi4sqLT63uNVptQxJxwIU/CZjgoCIbd5KZ7AjbZXZQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3465
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/7/21 11:59 AM, Sean Christopherson wrote:
-> Allow userspace to set CR0, CR4, CR8, and EFER via KVM_SET_SREGS for
-> protected guests, e.g. for SEV-ES guests with an encrypted VMSA.  KVM
-> tracks the aforementioned registers by trapping guest writes, and also
-> exposes the values to userspace via KVM_GET_SREGS.  Skipping the regs
-> in KVM_SET_SREGS prevents userspace from updating KVM's CPU model to
-> match the known hardware state.
 
-This is very similar to the original patch I had proposed that you were
-against :)
-
-I'm assuming it's meant to make live migration a bit easier?
-
+>>> Well, that would require a modification to the CQE specification, no?
+>>> fmds was not amused when I proposed that :-(
+>>
+>> Why would that require a modification to the CQE? it's just using say
+>> 4 msbits of the command_id to a running sequence...
 > 
-> Fixes: 5265713a0737 ("KVM: x86: Update __get_sregs() / __set_sregs() to support SEV-ES")
-> Reported-by: Peter Gonda <pgonda@google.com>
-> Cc: stable@vger.kernel.org
-> Cc: Maxim Levitsky <mlevitsk@redhat.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> I think Hannes was under the impression that the counter proposal wasn't
+> part of the "command_id". The host can encode whatever it wants in that
+> value, and the controller just has to return the same value.
 
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+Yea, maybe something like this?
+--
+diff --git a/drivers/nvme/host/core.c b/drivers/nvme/host/core.c
+index e6612971f4eb..7af48827ea56 100644
+--- a/drivers/nvme/host/core.c
++++ b/drivers/nvme/host/core.c
+@@ -1006,7 +1006,7 @@ blk_status_t nvme_setup_cmd(struct nvme_ns *ns, 
+struct request *req)
+                 return BLK_STS_IOERR;
+         }
 
-> ---
->  arch/x86/kvm/x86.c | 73 ++++++++++++++++++++++++++--------------------
->  1 file changed, 42 insertions(+), 31 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index 3bf52ba5f2bb..1b7d0e97c82b 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -9963,21 +9963,25 @@ static int __set_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
->  	if (kvm_set_apic_base(vcpu, &apic_base_msr))
->  		goto out;
->  
-> -	if (vcpu->arch.guest_state_protected)
-> -		goto skip_protected_regs;
-> +	if (!vcpu->arch.guest_state_protected) {
-> +		dt.size = sregs->idt.limit;
-> +		dt.address = sregs->idt.base;
-> +		static_call(kvm_x86_set_idt)(vcpu, &dt);
-> +		dt.size = sregs->gdt.limit;
-> +		dt.address = sregs->gdt.base;
-> +		static_call(kvm_x86_set_gdt)(vcpu, &dt);
->  
-> -	dt.size = sregs->idt.limit;
-> -	dt.address = sregs->idt.base;
-> -	static_call(kvm_x86_set_idt)(vcpu, &dt);
-> -	dt.size = sregs->gdt.limit;
-> -	dt.address = sregs->gdt.base;
-> -	static_call(kvm_x86_set_gdt)(vcpu, &dt);
-> -
-> -	vcpu->arch.cr2 = sregs->cr2;
-> -	mmu_reset_needed |= kvm_read_cr3(vcpu) != sregs->cr3;
-> -	vcpu->arch.cr3 = sregs->cr3;
-> -	kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
-> +		vcpu->arch.cr2 = sregs->cr2;
-> +		mmu_reset_needed |= kvm_read_cr3(vcpu) != sregs->cr3;
-> +		vcpu->arch.cr3 = sregs->cr3;
-> +		kvm_register_mark_available(vcpu, VCPU_EXREG_CR3);
-> +	}
->  
-> +	/*
-> +	 * Writes to CR0, CR4, CR8, and EFER are trapped (after the instruction
-> +	 * completes) for SEV-EV guests, thus userspace is allowed to set them
-> +	 * so that KVM's model can be updated to mirror hardware state.
-> +	 */
->  	kvm_set_cr8(vcpu, sregs->cr8);
->  
->  	mmu_reset_needed |= vcpu->arch.efer != sregs->efer;
-> @@ -9990,35 +9994,42 @@ static int __set_sregs(struct kvm_vcpu *vcpu, struct kvm_sregs *sregs)
->  	mmu_reset_needed |= kvm_read_cr4(vcpu) != sregs->cr4;
->  	static_call(kvm_x86_set_cr4)(vcpu, sregs->cr4);
->  
-> -	idx = srcu_read_lock(&vcpu->kvm->srcu);
-> -	if (is_pae_paging(vcpu)) {
-> +	/*
-> +	 * PDPTEs, like regular PTEs, are always encrypted, thus reading them
-> +	 * will return garbage.  Shadow paging, including nested NPT, isn't
-> +	 * compatible with protected guests, so ignoring the PDPTEs is a-ok.
-> +	 */
-> +	if (!vcpu->arch.guest_state_protected && is_pae_paging(vcpu)) {
-> +		idx = srcu_read_lock(&vcpu->kvm->srcu);
->  		load_pdptrs(vcpu, vcpu->arch.walk_mmu, kvm_read_cr3(vcpu));
-> +		srcu_read_unlock(&vcpu->kvm->srcu, idx);
-> +
->  		mmu_reset_needed = 1;
->  	}
-> -	srcu_read_unlock(&vcpu->kvm->srcu, idx);
->  
->  	if (mmu_reset_needed)
->  		kvm_mmu_reset_context(vcpu);
->  
-> -	kvm_set_segment(vcpu, &sregs->cs, VCPU_SREG_CS);
-> -	kvm_set_segment(vcpu, &sregs->ds, VCPU_SREG_DS);
-> -	kvm_set_segment(vcpu, &sregs->es, VCPU_SREG_ES);
-> -	kvm_set_segment(vcpu, &sregs->fs, VCPU_SREG_FS);
-> -	kvm_set_segment(vcpu, &sregs->gs, VCPU_SREG_GS);
-> -	kvm_set_segment(vcpu, &sregs->ss, VCPU_SREG_SS);
-> +	if (!vcpu->arch.guest_state_protected) {
-> +		kvm_set_segment(vcpu, &sregs->cs, VCPU_SREG_CS);
-> +		kvm_set_segment(vcpu, &sregs->ds, VCPU_SREG_DS);
-> +		kvm_set_segment(vcpu, &sregs->es, VCPU_SREG_ES);
-> +		kvm_set_segment(vcpu, &sregs->fs, VCPU_SREG_FS);
-> +		kvm_set_segment(vcpu, &sregs->gs, VCPU_SREG_GS);
-> +		kvm_set_segment(vcpu, &sregs->ss, VCPU_SREG_SS);
->  
-> -	kvm_set_segment(vcpu, &sregs->tr, VCPU_SREG_TR);
-> -	kvm_set_segment(vcpu, &sregs->ldt, VCPU_SREG_LDTR);
-> +		kvm_set_segment(vcpu, &sregs->tr, VCPU_SREG_TR);
-> +		kvm_set_segment(vcpu, &sregs->ldt, VCPU_SREG_LDTR);
->  
-> -	update_cr8_intercept(vcpu);
-> +		update_cr8_intercept(vcpu);
->  
-> -	/* Older userspace won't unhalt the vcpu on reset. */
-> -	if (kvm_vcpu_is_bsp(vcpu) && kvm_rip_read(vcpu) == 0xfff0 &&
-> -	    sregs->cs.selector == 0xf000 && sregs->cs.base == 0xffff0000 &&
-> -	    !is_protmode(vcpu))
-> -		vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
-> +		/* Older userspace won't unhalt the vcpu on reset. */
-> +		if (kvm_vcpu_is_bsp(vcpu) && kvm_rip_read(vcpu) == 0xfff0 &&
-> +		    sregs->cs.selector == 0xf000 &&
-> +		    sregs->cs.base == 0xffff0000 && !is_protmode(vcpu))
-> +			vcpu->arch.mp_state = KVM_MP_STATE_RUNNABLE;
-> +	}
->  
-> -skip_protected_regs:
->  	max_bits = KVM_NR_INTERRUPTS;
->  	pending_vec = find_first_bit(
->  		(const unsigned long *)sregs->interrupt_bitmap, max_bits);
-> 
+-       cmd->common.command_id = req->tag;
++       cmd->common.command_id = nvme_cid(req);
+         trace_nvme_setup_cmd(req, cmd);
+         return ret;
+  }
+diff --git a/drivers/nvme/host/nvme.h b/drivers/nvme/host/nvme.h
+index 05f31a2c64bb..96abfb0e2ddd 100644
+--- a/drivers/nvme/host/nvme.h
++++ b/drivers/nvme/host/nvme.h
+@@ -158,6 +158,7 @@ enum nvme_quirks {
+  struct nvme_request {
+         struct nvme_command     *cmd;
+         union nvme_result       result;
++       u8                      genctr;
+         u8                      retries;
+         u8                      flags;
+         u16                     status;
+@@ -497,6 +498,48 @@ struct nvme_ctrl_ops {
+         int (*get_address)(struct nvme_ctrl *ctrl, char *buf, int size);
+  };
+
++/*
++ * nvme command_id is constructed as such:
++ * | xxxx | xxxxxxxxxxxx |
++ *   gen    request tag
++ */
++#define nvme_cid_install_genctr(gen)           ((gen & 0xf) << 12)
++#define nvme_genctr_from_cid(cid)              ((cid & 0xf000) >> 12)
++#define nvme_tag_from_cid(cid)                 (cid & 0xfff)
++
++static inline u16 nvme_cid(struct request *rq)
++{
++       return nvme_cid_install_genctr(nvme_req(rq)->genctr++) | rq->tag;
++}
++
++static inline struct request *nvme_find_rq(struct blk_mq_tags *tags,
++               u16 command_id)
++{
++       u8 genctr = nvme_genctr_from_cid(command_id);
++       u16 tag = nvme_tag_from_cid(command_id);
++       struct request *rq;
++
++       rq = blk_mq_tag_to_rq(tags, tag);
++       if (unlikely(!rq)) {
++               pr_err("could not locate request for tag %#x\n",
++                       tag);
++               return NULL;
++       }
++       if (unlikely(nvme_req(rq)->genctr != genctr)) {
++               dev_err(nvme_req(rq)->ctrl->device,
++                       "request %#x genctr mismatch (got %#x expected 
+%#x)\n",
++                       tag, nvme_req(rq)->genctr, genctr);
++               return NULL;
++       }
++       return rq;
++}
++
++static inline struct request *nvme_cid_to_rq(struct blk_mq_tags *tags,
++                u16 command_id)
++{
++       return blk_mq_tag_to_rq(tags, nvme_tag_from_cid(command_id));
++}
++
+  #ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
+  void nvme_fault_inject_init(struct nvme_fault_inject *fault_inj,
+                             const char *dev_name);
+@@ -594,7 +637,8 @@ static inline void nvme_put_ctrl(struct nvme_ctrl *ctrl)
+
+  static inline bool nvme_is_aen_req(u16 qid, __u16 command_id)
+  {
+-       return !qid && command_id >= NVME_AQ_BLK_MQ_DEPTH;
++       return !qid &&
++               nvme_tag_from_cid(command_id) >= NVME_AQ_BLK_MQ_DEPTH;
+  }
+
+  void nvme_complete_rq(struct request *req);
+diff --git a/drivers/nvme/host/pci.c b/drivers/nvme/host/pci.c
+index a29b170701fc..92e03f15c9f6 100644
+--- a/drivers/nvme/host/pci.c
++++ b/drivers/nvme/host/pci.c
+@@ -1017,7 +1017,7 @@ static inline void nvme_handle_cqe(struct 
+nvme_queue *nvmeq, u16 idx)
+                 return;
+         }
+
+-       req = blk_mq_tag_to_rq(nvme_queue_tagset(nvmeq), command_id);
++       req = nvme_find_rq(nvme_queue_tagset(nvmeq), command_id);
+         if (unlikely(!req)) {
+                 dev_warn(nvmeq->dev->ctrl.device,
+                         "invalid id %d completed on queue %d\n",
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 203b47a8ec92..ab5b7d175488 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -1727,10 +1727,10 @@ static void nvme_rdma_process_nvme_rsp(struct 
+nvme_rdma_queue *queue,
+         struct request *rq;
+         struct nvme_rdma_request *req;
+
+-       rq = blk_mq_tag_to_rq(nvme_rdma_tagset(queue), cqe->command_id);
++       rq = nvme_find_rq(nvme_rdma_tagset(queue), cqe->command_id);
+         if (!rq) {
+                 dev_err(queue->ctrl->ctrl.device,
+-                       "tag 0x%x on QP %#x not found\n",
++                       "got bad command_id %#x on QP %#x\n",
+                         cqe->command_id, queue->qp->qp_num);
+                 nvme_rdma_error_recovery(queue->ctrl);
+                 return;
+diff --git a/drivers/nvme/host/tcp.c b/drivers/nvme/host/tcp.c
+index 919f6fe69cb3..c51b70aec6dd 100644
+--- a/drivers/nvme/host/tcp.c
++++ b/drivers/nvme/host/tcp.c
+@@ -488,11 +488,11 @@ static int nvme_tcp_process_nvme_cqe(struct 
+nvme_tcp_queue *queue,
+  {
+         struct request *rq;
+
+-       rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), cqe->command_id);
++       rq = nvme_find_rq(nvme_tcp_tagset(queue), cqe->command_id);
+         if (!rq) {
+                 dev_err(queue->ctrl->ctrl.device,
+-                       "queue %d tag 0x%x not found\n",
+-                       nvme_tcp_queue_id(queue), cqe->command_id);
++                       "got bad cqe.command_id %#x on queue %d\n",
++                       cqe->command_id, nvme_tcp_queue_id(queue));
+                 nvme_tcp_error_recovery(&queue->ctrl->ctrl);
+                 return -EINVAL;
+         }
+@@ -509,11 +509,11 @@ static int nvme_tcp_handle_c2h_data(struct 
+nvme_tcp_queue *queue,
+  {
+         struct request *rq;
+
+-       rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
++       rq = nvme_find_rq(nvme_tcp_tagset(queue), pdu->command_id);
+         if (!rq) {
+                 dev_err(queue->ctrl->ctrl.device,
+-                       "queue %d tag %#x not found\n",
+-                       nvme_tcp_queue_id(queue), pdu->command_id);
++                       "got bad c2hdata.command_id %#x on queue %d\n",
++                       pdu->command_id, nvme_tcp_queue_id(queue));
+                 return -ENOENT;
+         }
+
+@@ -600,7 +600,7 @@ static int nvme_tcp_setup_h2c_data_pdu(struct 
+nvme_tcp_request *req,
+         data->hdr.plen =
+                 cpu_to_le32(data->hdr.hlen + hdgst + req->pdu_len + ddgst);
+         data->ttag = pdu->ttag;
+-       data->command_id = rq->tag;
++       data->command_id = nvme_cid(rq);
+         data->data_offset = cpu_to_le32(req->data_sent);
+         data->data_length = cpu_to_le32(req->pdu_len);
+         return 0;
+@@ -613,11 +613,11 @@ static int nvme_tcp_handle_r2t(struct 
+nvme_tcp_queue *queue,
+         struct request *rq;
+         int ret;
+
+-       rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
++       rq = nvme_find_rq(nvme_tcp_tagset(queue), pdu->command_id);
+         if (!rq) {
+                 dev_err(queue->ctrl->ctrl.device,
+-                       "queue %d tag %#x not found\n",
+-                       nvme_tcp_queue_id(queue), pdu->command_id);
++                       "got bad r2t.command_id %#x on queue %d\n",
++                       pdu->command_id, nvme_tcp_queue_id(queue));
+                 return -ENOENT;
+         }
+         req = blk_mq_rq_to_pdu(rq);
+@@ -699,7 +699,7 @@ static int nvme_tcp_recv_data(struct nvme_tcp_queue 
+*queue, struct sk_buff *skb,
+         struct nvme_tcp_request *req;
+         struct request *rq;
+
+-       rq = blk_mq_tag_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
++       rq = nvme_cid_to_rq(nvme_tcp_tagset(queue), pdu->command_id);
+         req = blk_mq_rq_to_pdu(rq);
+
+         while (true) {
+@@ -794,8 +794,8 @@ static int nvme_tcp_recv_ddgst(struct nvme_tcp_queue 
+*queue,
+         }
+
+         if (pdu->hdr.flags & NVME_TCP_F_DATA_SUCCESS) {
+-               struct request *rq = 
+blk_mq_tag_to_rq(nvme_tcp_tagset(queue),
+-                                               pdu->command_id);
++               struct request *rq = nvme_cid_to_rq(nvme_tcp_tagset(queue),
++                                       pdu->command_id);
+
+                 nvme_tcp_end_request(rq, NVME_SC_SUCCESS);
+                 queue->nr_cqe++;
+diff --git a/drivers/nvme/target/loop.c b/drivers/nvme/target/loop.c
+index 1b89a6bb819a..9f1f5d572960 100644
+--- a/drivers/nvme/target/loop.c
++++ b/drivers/nvme/target/loop.c
+@@ -107,10 +107,10 @@ static void nvme_loop_queue_response(struct 
+nvmet_req *req)
+         } else {
+                 struct request *rq;
+
+-               rq = blk_mq_tag_to_rq(nvme_loop_tagset(queue), 
+cqe->command_id);
++               rq = nvme_find_rq(nvme_loop_tagset(queue), cqe->command_id);
+                 if (!rq) {
+                         dev_err(queue->ctrl->ctrl.device,
+-                               "tag 0x%x on queue %d not found\n",
++                               "got bad command_id %#x on queue %d\n",
+                                 cqe->command_id, 
+nvme_loop_queue_idx(queue));
+                         return;
+                 }
+--
