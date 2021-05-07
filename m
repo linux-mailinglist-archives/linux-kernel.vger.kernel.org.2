@@ -2,95 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 570AD376188
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:55:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D068637618F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:58:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235091AbhEGH4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232997AbhEGH4n (ORCPT
+        id S230366AbhEGH7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:59:51 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17142 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236269AbhEGH7k (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:56:43 -0400
-Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6509C061574;
-        Fri,  7 May 2021 00:55:43 -0700 (PDT)
-Received: by mail-lf1-x133.google.com with SMTP id x20so11545127lfu.6;
-        Fri, 07 May 2021 00:55:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=d1FrNuovi6qchn9VoSrH/ZZcEV9n4ZW2UXgmvYmjE+g=;
-        b=u/fBwS9p8+ZJ1uzUyj9xWfncK+l0n+O3W0A4tJwhN9+RVhbt/VxvDgu1xrwj2TQchS
-         T/WPQv24Xe7/GAMWEocVZZ+VeKuAueYMPejrAQ4dHHkQAaQ0f9lWCavmcbn4ZeuMHtyd
-         G0q3a5q2xnS7zV2HZgTnSwnhjlmYBHQujJe9LsIZ5vndhGoSOKiL7mXJZ78Qr6SDkgkk
-         I2yUR6lRzrz7o/PcVSpNT+6WPcHUdg3M6VcLyoKjuCE8zy3empFn+fAyPxxgJbGbFFzG
-         gedCmZnjFIIrU9ayPlv9omPusy40prB3L31vMgUr0/mQKWtGrPNBiYiQJ67pkAMJZj0h
-         Oj5g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=d1FrNuovi6qchn9VoSrH/ZZcEV9n4ZW2UXgmvYmjE+g=;
-        b=S4jjChb7VfoOXGWuSGGLjN0ctrXjdmQsi2c3RpxgOJ9DnpFSGdR5csKQIWnt7HHacm
-         j53FQJy7qwDcrSbQQGArPEtsLT2tXBZsuY77UcwTR0lXkkUaD2HJsvouzCzPuNMlUDRH
-         M2POHPHdhlrTJJbq/sR69YCCj0NGdkRc0iW9jnOZKTEHFjwFaan0RmJO+uKxfqwrerhc
-         p+75yGl7vqt71cH/B7B9Tjd6/t7+zihcBwkaI2VqIBLESkZHR72tAypzSyhZ2Oer4uKR
-         atv+zqOAW99oYHJFwiLv4IwUYHa2tiB0nii/5rnSTVdqUSiPFDY/5vY3lLzX3lMa5t24
-         83sQ==
-X-Gm-Message-State: AOAM531OqDFSmh5KvB81OKTcewmtrGJLjalhqx+pIwhka0jUTtBKepXn
-        5EUl6qh9AGrR8XHnRKj/9q8CBncOzlB1Qjh63M0=
-X-Google-Smtp-Source: ABdhPJxmOfmHUfXXyaTbU88iBMHRGJL5QKoxgPRItgy6u662XlJ1CgzE8LYRu4JF7W41BVjOUogeB1Zoj1BFMzNjYeM=
-X-Received: by 2002:a05:6512:3f27:: with SMTP id y39mr5490221lfa.166.1620374142511;
- Fri, 07 May 2021 00:55:42 -0700 (PDT)
+        Fri, 7 May 2021 03:59:40 -0400
+Received: from DGGEMS410-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fc2mp4Z99zqT4T;
+        Fri,  7 May 2021 15:55:22 +0800 (CST)
+Received: from [127.0.0.1] (10.40.192.131) by DGGEMS410-HUB.china.huawei.com
+ (10.3.19.210) with Microsoft SMTP Server id 14.3.498.0; Fri, 7 May 2021
+ 15:58:31 +0800
+Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
+ prb
+To:     John Ogness <john.ogness@linutronix.de>,
+        Sergey Senozhatsky <senozhatsky@chromium.org>,
+        Petr Mladek <pmladek@suse.com>
+CC:     <sergey.senozhatsky@gmail.com>, <rostedt@goodmis.org>,
+        <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>,
+        <bobo.shaobowang@huawei.com>
+References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
+ <YJPxj83F1sBjHHAE@alley> <YJP4F1UIt/eRZ96s@google.com>
+ <YJP5MnkJ8pJevXM6@google.com> <87h7jfzygr.fsf@jogness.linutronix.de>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <962e67ff-12e3-9de9-9f2f-75d48bc729b1@huawei.com>
+Date:   Fri, 7 May 2021 15:58:31 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-References: <20210429062130.29403-1-dqfext@gmail.com> <20210429.170815.956010543291313915.davem@davemloft.net>
- <20210430023839.246447-1-dqfext@gmail.com> <YIv28APpOP9tnuO+@lunn.ch>
- <trinity-843c99ce-952a-434e-95e4-4ece3ba6b9bd-1619786236765@3c-app-gmx-bap03>
- <YIv7w8Wy81fmU5A+@lunn.ch> <trinity-611ff023-c337-4148-a215-98fd5604eac2-1619787382934@3c-app-gmx-bap03>
- <YIwCliT5NZT713WD@lunn.ch> <trinity-c45bbeec-5b7c-43a2-8e86-7cb22ad61558-1619794787680@3c-app-gmx-bap03>
- <YIwxpYD1jnFMPQz+@lunn.ch> <fc962daf8b7babc22b043b2b0878a206780b55f3.camel@mediatek.com>
- <CALW65ja5mRPoNM2EZsONMh8Kda5OgQg79R=Xp71CaQcp4cprnQ@mail.gmail.com> <f3f5167f60b7897b952f5fff7bcaef976c3c6531.camel@mediatek.com>
-In-Reply-To: <f3f5167f60b7897b952f5fff7bcaef976c3c6531.camel@mediatek.com>
-From:   DENG Qingfang <dqfext@gmail.com>
-Date:   Fri, 7 May 2021 15:55:31 +0800
-Message-ID: <CALW65jaPO52vX02KGqEooE2LRUMNMgFoHYMfyXUtOa7SPS-jqg@mail.gmail.com>
-Subject: Re: Re: Re: Re: [PATCH net-next 0/4] MT7530 interrupt support
-To:     Landen Chao <landen.chao@mediatek.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Frank Wunderlich <frank-w@public-files.de>,
-        David Miller <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
-        Sean Wang <sean.wang@mediatek.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        linux-staging@lists.linux.dev,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
-        Weijie Gao <weijie.gao@mediatek.com>,
-        Chuanhong Guo <gch981213@gmail.com>,
-        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Marc Zyngier <maz@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87h7jfzygr.fsf@jogness.linutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Originating-IP: [10.40.192.131]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 8:54 PM Landen Chao <landen.chao@mediatek.com> wrote:
-> MT7620's FE PHY HW is different from MT753x's GE PHY. Vendor registers
-> of these two PHY are totally different.
 
-Okay. So if the FE PHY is added later, it can be named mediatek-fe.c.
+On 2021/5/6 23:14, John Ogness wrote:
+> On 2021-05-06, Sergey Senozhatsky <senozhatsky@chromium.org> wrote:
+>>> Can we count the number of lines that we print from the `current` context
+>>> in console_unlock() and if after N messages there is no console_lock waiter
+>>> waiting for the `current` to handover console lock ownership, then create
+>>> one: schedule IRQ work that will become a console lock owner, spin on
+>>> console lock and call console_unlock() once it acquired the ownership.
+>>> That 'artificial' console lock owner will do the same - print N
+>>> messages, if nothing wants to become a console lock owner then it'll
+>>> queue another IRQ work.
+>> Or even simpler
+>>
+>> console_unlock()
+>> {
+>> 	...
+>>
+>> 	if (printed_messages > limit && !console_lock_spinning_disable_and_check()) {
+>> 		printk_safe_exit_irqrestore(flags);
+>>
+>> 		console_locked = 0;
+>> 		up_console_sem();
+>>
+>> 		defer_console_output();
+>> 		return;
+>> 	}
+>>
+>> 	...
+>> }
+> Or instead to keep it suspend/resume related maybe...
+>
+>   void resume_console(void)
+>   {
+>           if (!console_suspend_enabled)
+>                   return;
+>           down_console_sem();
+>           console_suspended = 0;
+> -        console_unlock();
+> +        console_locked = 0;
+> +        up_console_sem();
+> +        defer_console_output();
+
+
+Hi, john, I test this and found a calltrace below:
+
+[  467.670366] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  467.670367] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  467.670368] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  467.670369] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  467.670370] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  467.670371] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  468.297467] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  489.298709] rcu: INFO: rcu_preempt self-detected stall on CPU
+[  489.298712] rcu:     44-....: (4324 ticks this GP) 
+idle=e6e/1/0x4000000000000002 softirq=1212/1212 fqs=2625
+[  489.298722]  (t=5250 jiffies g=3285 q=1820)
+[  489.298725] Task dump for CPU 44:
+[  489.298726] task:bash            state:R  running task stack:    0 
+pid:16937 ppid: 16935 flags:0x00000206
+[  489.298731] Call trace:
+[  489.298732]  dump_backtrace+0x0/0x1a4
+[  489.298738]  show_stack+0x24/0x40
+[  489.298740]  sched_show_task+0x148/0x170
+[  489.298744]  dump_cpu_task+0x50/0x60
+[  489.298748]  rcu_dump_cpu_stacks+0x10c/0x154
+[  489.298751]  rcu_sched_clock_irq+0x8d4/0xd94
+[  489.298755]  update_process_times+0xa8/0xf4
+[  489.298758]  tick_sched_handle+0x38/0x74
+[  489.298760]  tick_sched_timer+0x58/0xb0
+[  489.298762]  __hrtimer_run_queues+0x18c/0x3a0
+[  489.298764]  hrtimer_interrupt+0xf4/0x2cc
+[  489.298767]  arch_timer_handler_phys+0x40/0x50
+[  489.298771]  handle_percpu_devid_irq+0x94/0x280
+[  489.298775]  __handle_domain_irq+0x88/0xf0
+[  489.298777]  gic_handle_irq+0xd8/0x2c0
+[  489.298779]  el1_irq+0xbc/0x180
+[  489.298780]  console_unlock+0x390/0x580
+[  489.298782]  vprintk_emit+0x104/0x280
+[  489.298784]  dev_vprintk_emit+0x14c/0x184
+[  489.298787]  dev_printk_emit+0x64/0x8c
+[  489.298789]  __dev_printk+0x60/0x84
+[  489.298792]  _dev_info+0x6c/0x94
+[  489.298794]  debugfs_test_if_1_write+0xc0/0x14c [hisi_sas_v3_hw]
+[  489.298801]  full_proxy_write+0x6c/0xc0
+[  489.298804]  vfs_write+0xfc/0x2b0
+[  489.298807]  ksys_write+0x74/0x100
+[  489.298809]  __arm64_sys_write+0x28/0x34
+[  489.298812]  el0_svc_common.constprop.0+0x70/0x1a4
+[  489.298815]  do_el0_svc+0x28/0x3c
+[  489.298817]  el0_svc+0x2c/0x70
+[  489.298820]  el0_sync_handler+0x1a4/0x1b0
+[  489.298822]  el0_sync+0x170/0x180
+[  492.474266] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  492.479137] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  492.483996] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  492.488857] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  492.493716] hisi_sas_v3_hw 0000:b4:02.0: print test
+[  492.498574] hisi_sas_v3_hw 0000:b4:02.0: print test
+
+
+My test method is as follows: Use a kernel thread to make the console 
+enter suspend, sleep for 10 seconds, and then resume.
+
+At the same time, another thread repeatedly calls printk() for output.
+
+
+Thanks
+
+Jiaxing
+
+
+>   }
+>
+> John Ogness
+>
+> .
+>
+
