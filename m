@@ -2,194 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D574376524
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 605ED37651F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:30:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236662AbhEGMbG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:31:06 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:44948 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S233468AbhEGMbF (ORCPT
+        id S236615AbhEGMbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:31:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233468AbhEGMbA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:31:05 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 147CRH1T009277;
-        Fri, 7 May 2021 14:29:41 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=selector1;
- bh=jII+K+gNDTx+89b4wj12HRtrpKjsgBKJ3myLEsIFnbg=;
- b=JkLZmEhrSmvkUYlXI4kkl9wE/bqTpzVGvQzo1u2GdrODbjcilgcS6uHa+fFUYvaLy85l
- NYGYvte9tsZ/C/UcClxjyig+NOtwuJMmLqFBA1KHHEKCxPLecqwO5ZHUmPhGEmq6U8g4
- 5WYPZjLqhVWt5ZLOgdmEfuzeQ30cLINu5gJaoozKNVDkMz/nCNlxcAdhRcP+ZYh5dfXu
- myNzx3ny1pbL0dLkoapCaZ4hUD04okH7N8I0kn6BsDQ7YJMLHnNMdAYjqr/dSqukcg28
- zrzMGxqcHpBJyhpvKYF0Ghg9LgF74JAUnJ6I9VquT03EiYv4hlYNCysQV1DsaYAQKLmH qg== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 38csqbux09-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 07 May 2021 14:29:41 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D711810002A;
-        Fri,  7 May 2021 14:29:39 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id C02C7221050;
-        Fri,  7 May 2021 14:29:39 +0200 (CEST)
-Received: from lmecxl0573.lme.st.com (10.75.127.46) by SFHDAG2NODE3.st.com
- (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 7 May
- 2021 14:29:38 +0200
-Subject: Re: [Linux-stm32] [PATCH v4 4/4] i2c: stm32f4: Fix stmpe811 get xyz
- data timeout issue
-To:     dillon min <dillon.minfei@gmail.com>,
-        Wolfram Sang <wsa@kernel.org>,
-        <pierre-yves.mordret@foss.st.com>, <alain.volmat@foss.st.com>
-CC:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <Alexandre.torgue@foss.st.com>,
-        <pierre-yves.mordret@st.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Rob Herring <robh+dt@kernel.org>, <linux-i2c@vger.kernel.org>,
-        <p.zabel@pengutronix.de>,
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Alexandre Torgue <alexandre.torgue@st.com>
-References: <1591709203-12106-1-git-send-email-dillon.minfei@gmail.com>
- <1591709203-12106-5-git-send-email-dillon.minfei@gmail.com>
- <CAL9mu0LJPnxA0JSmV3mogvPA5xRRYCO_4=P7pqpAO7R=YaJX5g@mail.gmail.com>
- <20210315130050.GD1182@ninjato>
- <CAL9mu0LnHAUSMXmQpZK78QAccqrc58cyFC2GD4cBkTNW41rvKA@mail.gmail.com>
-From:   Patrice CHOTARD <patrice.chotard@foss.st.com>
-Message-ID: <ff2bc09d-1a17-50d4-d3ee-16fd3a86d7f1@foss.st.com>
-Date:   Fri, 7 May 2021 14:29:38 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 7 May 2021 08:31:00 -0400
+Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBCAC061574;
+        Fri,  7 May 2021 05:29:59 -0700 (PDT)
+Received: by mail-wm1-x32e.google.com with SMTP id b11-20020a7bc24b0000b0290148da0694ffso7074538wmj.2;
+        Fri, 07 May 2021 05:29:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=1t5cr263LZN2aTz3Al7pSQM5qBRuIroNjq3vIPHmzy4=;
+        b=Lo6uQ7JDFIVlslQKRS3aOJnfHCNdHfs+0WiECvpQ/qLb1QPV8hmm2HH6Y71Rjk2mZt
+         mXLABihur0oidXcXwI2LIKID5vvOjNtA80d/k05UHXIV/wjHHhfUQlu/dp4R8JfGrGwS
+         OWUR//5Dyfep2vZF2V5t407O+G3yzVV+mq8vD7/s08++8qNsqSidYuJ0JBMddbnmbQ77
+         xgrm2UYaT+cYp64E7HWr3vfxDPdlLW8ap0oPpqVQnc/zLjs1XzD0Trw8jj1M/kR72xQQ
+         +p6YK08NS+fraT0bEvFmCJaW/+3XYSnveeYGcpvPEPwvg9aYO/ld2z7mL1x4FcfdRb2t
+         lIOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=1t5cr263LZN2aTz3Al7pSQM5qBRuIroNjq3vIPHmzy4=;
+        b=bQRGVQNWQ+fVCO/jxEtdKrn13wZjwIEt1/e1HxEouTc9xoscRYINyy8ypXOe2k9PJ5
+         NgnMnGXdCkYdeVnOS88qFh5J+UsPTpQJo/k2UdL8M/otqfbvWW5CVo+zyBNYz5pE4b4c
+         E4SC0p1B7PahxfaFu5GhW4X6oGnwg6qWeus7fKtA/iSkSWqjd3fYNRZfvYyP+DFplnDa
+         JLZC9hjGNiNcZUvNulHewrVUx4n38h8dyBeHSaLjv2V7DNF0IhQVEddrGrM5d9Ahoayf
+         jhLgVyukpKgzJ2uk0+2Vt7soiR01unVEk/uZMYwEhC04gb9csr/1rXKMHc4kpETpflId
+         fAWQ==
+X-Gm-Message-State: AOAM531n7HkiTBthmmkEV7GyJER/i8B9uVU4SbsyMd0E+GOmrY8hFxBM
+        oylB1yM+zDZPlrqQn+oFiao=
+X-Google-Smtp-Source: ABdhPJwzla/fwihJbSMelTOqfKPOh4LnvMl0F1s0oOIMkXc8xz2ROg6oJ+XtfzbiXO7XF3kjk2WacA==
+X-Received: by 2002:a7b:c041:: with SMTP id u1mr9558018wmc.95.1620390598465;
+        Fri, 07 May 2021 05:29:58 -0700 (PDT)
+Received: from localhost.localdomain ([94.103.226.84])
+        by smtp.gmail.com with ESMTPSA id u2sm8813393wmm.5.2021.05.07.05.29.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 05:29:58 -0700 (PDT)
+Date:   Fri, 7 May 2021 15:29:54 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-usb@vger.kernel.org,
+        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] WARNING in __vmalloc_node_range
+Message-ID: <20210507152954.5773592a@gmail.com>
+In-Reply-To: <20210507080435.GF1922@kadam>
+References: <000000000000fdc0be05c1a6d68f@google.com>
+        <20210506142210.GA37570@pc638.lan>
+        <20210506145722.GC1955@kadam>
+        <20210506180053.4770f495@gmail.com>
+        <20210507080435.GF1922@kadam>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <CAL9mu0LnHAUSMXmQpZK78QAccqrc58cyFC2GD4cBkTNW41rvKA@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.75.127.46]
-X-ClientProxiedBy: SFHDAG2NODE2.st.com (10.75.127.5) To SFHDAG2NODE3.st.com
- (10.75.127.6)
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
- definitions=2021-05-07_04:2021-05-06,2021-05-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dillon
+On Fri, 7 May 2021 11:04:36 +0300
+Dan Carpenter <dan.carpenter@oracle.com> wrote:
 
-In order to test this patch, it's tricky to make a recent kernel running 
-on stm32f429-disco as this board embeds only 8MB of SDRAM and 2MB of flash.
+> On Thu, May 06, 2021 at 06:00:53PM +0300, Pavel Skripkin wrote:
+> > 
+> > Hi!
+> > 
+> > I've already sent the patch:
+> > https://patchwork.linuxtv.org/project/linux-media/patch/20210506121211.8556-1-paskripkin@gmail.com/ 
+> > 
+> 
+> Please, always add a Fixes tag.
+> 
+> Fixes: 4d43e13f723e ("V4L/DVB (4643): Multi-input patch for DVB-USB
+> device")
+> 
+> regards,
+> dan carpenter
+> 
 
-Can you indicates us which kernel version you are using and also the kernel config please ?
+oh..., that's one thing I always forget about. Thanks for pointing it
+out, I'll send v2 soon 
 
-Thanks
 
-Patrice
-
-On 5/7/21 4:54 AM, dillon min wrote:
-> Hi Pierre-Yves, Alain
-> 
-> Could you help to take a look?
-> i really appreciate it.
-> 
-> Thanks,
-> 
-> Best Regards
-> Dillon
-> 
-> On Mon, Mar 15, 2021 at 9:00 PM Wolfram Sang <wsa@kernel.org> wrote:
->>
->> On Mon, Mar 15, 2021 at 08:43:54PM +0800, dillon min wrote:
->>> Hi All,
->>>
->>> Just a gentle ping.
->>
->> Pierre-Yves?
->>
->>>
->>> Regards.
->>>
->>> On Tue, Jun 9, 2020 at 9:27 PM <dillon.minfei@gmail.com> wrote:
->>>>
->>>> From: dillon min <dillon.minfei@gmail.com>
->>>>
->>>> as stm32f429's internal flash is 2Mbytes and compiled kernel
->>>> image bigger than 2Mbytes, so we have to load kernel image
->>>> to sdram on stm32f429-disco board which has 8Mbytes sdram space.
->>>>
->>>> based on above context, as you knows kernel running on external
->>>> sdram is more slower than internal flash. besides, we need read 4
->>>> bytes to get touch screen xyz(x, y, pressure) coordinate data in
->>>> stmpe811 interrupt.
->>>>
->>>> so, in stm32f4_i2c_handle_rx_done, as i2c read slower than running
->>>> in xip mode, have to adjust 'STOP/START bit set position' from last
->>>> two bytes to last one bytes. else, will get i2c timeout in reading
->>>> touch screen coordinate.
->>>>
->>>> to not take side effect, introduce IIC_LAST_BYTE_POS to support xip
->>>> kernel or has mmu platform.
->>>>
->>>> Signed-off-by: dillon min <dillon.minfei@gmail.com>
->>>> ---
->>>>
->>>> V4: indroduce 'IIC_LAST_BYTE_POS' to compatible with xipkernel boot
->>>>
->>>>  drivers/i2c/busses/i2c-stm32f4.c | 12 +++++++++---
->>>>  1 file changed, 9 insertions(+), 3 deletions(-)
->>>>
->>>> diff --git a/drivers/i2c/busses/i2c-stm32f4.c b/drivers/i2c/busses/i2c-stm32f4.c
->>>> index d6a69dfcac3f..97cf42ae7fa0 100644
->>>> --- a/drivers/i2c/busses/i2c-stm32f4.c
->>>> +++ b/drivers/i2c/busses/i2c-stm32f4.c
->>>> @@ -93,6 +93,12 @@
->>>>  #define STM32F4_I2C_MAX_FREQ           46U
->>>>  #define HZ_TO_MHZ                      1000000
->>>>
->>>> +#if !defined(CONFIG_MMU) && !defined(CONFIG_XIP_KERNEL)
->>>> +#define IIC_LAST_BYTE_POS 1
->>>> +#else
->>>> +#define IIC_LAST_BYTE_POS 2
->>>> +#endif
->>>> +
->>>>  /**
->>>>   * struct stm32f4_i2c_msg - client specific data
->>>>   * @addr: 8-bit slave addr, including r/w bit
->>>> @@ -439,7 +445,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
->>>>         int i;
->>>>
->>>>         switch (msg->count) {
->>>> -       case 2:
->>>> +       case IIC_LAST_BYTE_POS:
->>>>                 /*
->>>>                  * In order to correctly send the Stop or Repeated Start
->>>>                  * condition on the I2C bus, the STOP/START bit has to be set
->>>> @@ -454,7 +460,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
->>>>                 else
->>>>                         stm32f4_i2c_set_bits(reg, STM32F4_I2C_CR1_START);
->>>>
->>>> -               for (i = 2; i > 0; i--)
->>>> +               for (i = IIC_LAST_BYTE_POS; i > 0; i--)
->>>>                         stm32f4_i2c_read_msg(i2c_dev);
->>>>
->>>>                 reg = i2c_dev->base + STM32F4_I2C_CR2;
->>>> @@ -463,7 +469,7 @@ static void stm32f4_i2c_handle_rx_done(struct stm32f4_i2c_dev *i2c_dev)
->>>>
->>>>                 complete(&i2c_dev->complete);
->>>>                 break;
->>>> -       case 3:
->>>> +       case (IIC_LAST_BYTE_POS+1):
->>>>                 /*
->>>>                  * In order to correctly generate the NACK pulse after the last
->>>>                  * received data byte, we have to enable NACK before reading N-2
->>>> --
->>>> 2.7.4
->>>>
-> _______________________________________________
-> Linux-stm32 mailing list
-> Linux-stm32@st-md-mailman.stormreply.com
-> https://st-md-mailman.stormreply.com/mailman/listinfo/linux-stm32
-> 
+With regards,
+Pavel Skripkin
