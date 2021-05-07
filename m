@@ -2,107 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EA89376173
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:50:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2A69D376175
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:50:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234807AbhEGHu5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:50:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52364 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230015AbhEGHu4 (ORCPT
+        id S235776AbhEGHvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:51:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50939 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230015AbhEGHvf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:50:56 -0400
-Received: from mail-pg1-x536.google.com (mail-pg1-x536.google.com [IPv6:2607:f8b0:4864:20::536])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF51BC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:49:56 -0700 (PDT)
-Received: by mail-pg1-x536.google.com with SMTP id q15so2337106pgg.12
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:49:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=+0fS9Ofyt4z9zGeEKjhWeFm0HcZLxb/OqAMO5PCmH2Q=;
-        b=Q7ZH28CMbsGZDs0NLDg6SLiYSwcIODvFeSm0569dm4hcmwFHm1yw2mepk9GOOJYWgc
-         CpxJ4HD0sf9su6Q/1vdgCpDZIikIwMZ7tmoneMHakalYZ17iiY0JlOXzecKhYP+wWJ5o
-         ubAUe3ysArldb/tocZi+iQUOcno7nZn3JfPk0=
+        Fri, 7 May 2021 03:51:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620373835;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/MLkuRSzZa79r/jh4LUnA9iSS0QIvpenC9jHadUk+SM=;
+        b=UiYYN/AZ4eQijG+I/X6hBXeTiO2u0/NcPmBRSvsKoBC1RJSzdfdVAawxM7MfvWPwfX4yhB
+        b12Y0sxXbUF/PDzHs1O/BYoS1IFYD6ZvTBifA5p5BQxZWTtaQtl7AiuYvFj3jCc1cCSKZD
+        vRXo3cAGwAVJ352gELlBtOooqE9CQVk=
+Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
+ [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-63-JJjFtE-wMsCB9ekMWElucQ-1; Fri, 07 May 2021 03:50:34 -0400
+X-MC-Unique: JJjFtE-wMsCB9ekMWElucQ-1
+Received: by mail-wm1-f72.google.com with SMTP id 7-20020a05600c2307b02901432673350dso1946306wmo.9
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:50:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=+0fS9Ofyt4z9zGeEKjhWeFm0HcZLxb/OqAMO5PCmH2Q=;
-        b=TG5+wnsYU7moS0DcccyL6hvgse7mkWvNfuKBpQNhAkQWa+Ha6sifdxpNFOq8ar/DaO
-         wkPNRuJKgAEuVn9N6UCj2iBxI1GYHBCmrvHjahekw9nKaZ9osKe2V944fKLfumZyquqM
-         TfNyXai3ZbZF0qMTRnMIr4uyGkLxk/qQYnciw6pHKTV4VKEenPQJqacUON1K+gJMEqbp
-         lfk7BOES2CZTfOMKaKQyLja/60V4N6XZ48veoec711aiu6f3psfxeMxUUrYtiKFG8yVp
-         x0Q2OW229FzDEynhR+rcW9ltON4VDa7OTPkVQjZdKsukiEA4odh5m/9i2TXgp70tbyRt
-         hdcA==
-X-Gm-Message-State: AOAM532qb+5V6tUQ2cpdHu6imxJGp3TuXFwLd31i5CqtNzdpHz4r6Jeq
-        7AwC2zJhY0Ihvh+oqj+vp5VwEA==
-X-Google-Smtp-Source: ABdhPJxQ4Ns4bSmDO+hh2dReALewq8WvrjRFObZJbFiODqf0//sGaDKH4o31Fb7CMJ4r+0ARLlYTFQ==
-X-Received: by 2002:aa7:946b:0:b029:28e:d912:6be7 with SMTP id t11-20020aa7946b0000b029028ed9126be7mr9075697pfq.26.1620373796567;
-        Fri, 07 May 2021 00:49:56 -0700 (PDT)
-Received: from google.com ([2409:10:2e40:5100:35fb:b226:abe6:6928])
-        by smtp.gmail.com with ESMTPSA id z65sm4196434pfb.13.2021.05.07.00.49.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 00:49:56 -0700 (PDT)
-Date:   Fri, 7 May 2021 16:49:51 +0900
-From:   Sergey Senozhatsky <senozhatsky@chromium.org>
-To:     luojiaxing <luojiaxing@huawei.com>
-Cc:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Petr Mladek <pmladek@suse.com>, sergey.senozhatsky@gmail.com,
-        rostedt@goodmis.org, john.ogness@linutronix.de,
-        linux-kernel@vger.kernel.org, linuxarm@huawei.com,
-        bobo.shaobowang@huawei.com
-Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
- prb
-Message-ID: <YJTxH/VsUEIR7rL5@google.com>
-References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
- <YJPxj83F1sBjHHAE@alley>
- <YJP4F1UIt/eRZ96s@google.com>
- <YJP5MnkJ8pJevXM6@google.com>
- <72443c6d-b70b-0e36-bab0-87705a1d8019@huawei.com>
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=/MLkuRSzZa79r/jh4LUnA9iSS0QIvpenC9jHadUk+SM=;
+        b=LCUYKLCwtIrjuEu2mw/MaE0jN0GMHXVjnoWtguBjt/GRPC77Up+BON213/ioAlzViT
+         8Dsf8ED2/6SEUM+1ToA1QIPvzkif3CjRvhjtEc4Z5GVQLBJsEIdpMkKNg0dW169jhN0I
+         nrQKmSH2xhGyGTxJVl50mfGLoPt7CM+tEPGl+MUj6iCe9LTWCeoh5mHcEkcR9q4Rc/84
+         D3r+sUYn2NGBW8CBBOL8xN2YsMhYCzBiqztRRiwoUZazz+tkv09m30NIhdlMoF84/X+2
+         ti4ttDKwSnMTL/jlqpLo7hqQZixqodv8CVl/PWNtqGAVZ/Xg9TTa71lJdGngnZICDRPK
+         rZbg==
+X-Gm-Message-State: AOAM533CMUza4lYn1B2CA41HME/NMgpajj1Kc5NF5kxEE3Mmnls+rFYQ
+        D7gIH+8Jkak/6W2txCC2RuCKDNgYaq46XqiRcjcIiXSkIjrRfRMWPWWOHhBuyqtsEDooh1T2BjG
+        EnJS93arTcOTbPFRfEVtYJAXs
+X-Received: by 2002:a1c:55ca:: with SMTP id j193mr19277938wmb.58.1620373832864;
+        Fri, 07 May 2021 00:50:32 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwxCnRshAj7tpewpbmOreXpvpcKBTwP6IHiJ0n2zPF8T3D2mFujI//9V2uu4vWU/BzHkuhqZg==
+X-Received: by 2002:a1c:55ca:: with SMTP id j193mr19277904wmb.58.1620373832595;
+        Fri, 07 May 2021 00:50:32 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c63c0.dip0.t-ipconnect.de. [91.12.99.192])
+        by smtp.gmail.com with ESMTPSA id i11sm7271122wrp.56.2021.05.07.00.50.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 May 2021 00:50:32 -0700 (PDT)
+Subject: Re: [PATCH v3 5/8] KVM: x86/mmu: Add a field to control memslot rmap
+ allocation
+To:     Ben Gardon <bgardon@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+References: <20210506184241.618958-1-bgardon@google.com>
+ <20210506184241.618958-6-bgardon@google.com>
+ <CANgfPd-eJsHRYARTa0tm4EUVQyXvdQxGQfGfj=qLi5vkLTG6pw@mail.gmail.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <67c6af98-4e3b-fec5-9521-5288a10dce58@redhat.com>
+Date:   Fri, 7 May 2021 09:50:31 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <72443c6d-b70b-0e36-bab0-87705a1d8019@huawei.com>
+In-Reply-To: <CANgfPd-eJsHRYARTa0tm4EUVQyXvdQxGQfGfj=qLi5vkLTG6pw@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (21/05/07 15:33), luojiaxing wrote:
-> > console_unlock()
-> > {
-> > 	...
-> > 
-> > 	if (printed_messages > limit && !console_lock_spinning_disable_and_check()) {
-> > 		printk_safe_exit_irqrestore(flags);
-> > 
-> > 		console_locked = 0;
-> > 		up_console_sem();
-> > 
-> > 		defer_console_output();
-> > 		return;
-> > 	}
+On 07.05.21 01:44, Ben Gardon wrote:
+> On Thu, May 6, 2021 at 11:43 AM Ben Gardon <bgardon@google.com> wrote:
+>>
+>> Add a field to control whether new memslots should have rmaps allocated
+>> for them. As of this change, it's not safe to skip allocating rmaps, so
+>> the field is always set to allocate rmaps. Future changes will make it
+>> safe to operate without rmaps, using the TDP MMU. Then further changes
+>> will allow the rmaps to be allocated lazily when needed for nested
+>> oprtation.
+>>
+>> No functional change expected.
+>>
+>> Signed-off-by: Ben Gardon <bgardon@google.com>
+>> ---
+>>   arch/x86/include/asm/kvm_host.h |  8 ++++++++
+>>   arch/x86/kvm/mmu/mmu.c          |  2 ++
+>>   arch/x86/kvm/x86.c              | 18 +++++++++++++-----
+>>   3 files changed, 23 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
+>> index ad22d4839bcc..00065f9bbc5e 100644
+>> --- a/arch/x86/include/asm/kvm_host.h
+>> +++ b/arch/x86/include/asm/kvm_host.h
+>> @@ -1122,6 +1122,12 @@ struct kvm_arch {
+>>           */
+>>          spinlock_t tdp_mmu_pages_lock;
+>>   #endif /* CONFIG_X86_64 */
+>> +
+>> +       /*
+>> +        * If set, rmaps have been allocated for all memslots and should be
+>> +        * allocated for any newly created or modified memslots.
+>> +        */
+>> +       bool memslots_have_rmaps;
+>>   };
+>>
+>>   struct kvm_vm_stat {
+>> @@ -1853,4 +1859,6 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
+>>
+>>   int kvm_cpu_dirty_log_size(void);
+>>
+>> +inline bool kvm_memslots_have_rmaps(struct kvm *kvm);
 > 
-> 
-> Hi,  Sergey, I test this,  it works.
-> 
-> 
-> But, I have a doubt. If the log buffer exceeds limit, we can schedule IRQ
-> work to become the console lock owner and let current context return.
-> 
-> So why not just let the IRQ work process the console output without limit?
+> Woops, this shouldn't be marked inline as it creates build problems
+> for the next patch with some configs.
 
-log buffer can be several tenth of megabytes in size which IRQ work
-will have to print to a potentially slow serial console, which will
-trigger watchdogs on the CPU that IRQ is running on.
+With that fixed
 
-> I wonder if the driver can only cache the print and queue the output tasks
-> to a workqueue to return
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Work queue task is preemptible, which did cause problems in the past:
-huge printing delays under memory pressure. So, ideally, what we want
-from a console lock owner is be non-preemptible and to either print
-pending messages or handover the lock to another task.
+
+-- 
+Thanks,
+
+David / dhildenb
+
