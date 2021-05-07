@@ -2,96 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C5C7937627D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:00:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D460C376286
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:02:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236541AbhEGJBD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 05:01:03 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3034 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236530AbhEGJBB (ORCPT
+        id S236552AbhEGJDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 05:03:44 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:50372 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233500AbhEGJDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 05:01:01 -0400
-Received: from fraeml707-chm.china.huawei.com (unknown [172.18.147.206])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Fc44d3ChRz6rnCk;
-        Fri,  7 May 2021 16:54:09 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml707-chm.china.huawei.com (10.206.15.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 7 May 2021 11:00:00 +0200
-Received: from [10.47.82.108] (10.47.82.108) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 7 May 2021
- 09:59:59 +0100
-Subject: Re: [PATCH] perf jevents: Silence warning for ArchStd files
-To:     Ian Rogers <irogers@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20210506225640.1461000-1-irogers@google.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <4f9a4f20-82ac-dd68-4aee-b560396755f2@huawei.com>
-Date:   Fri, 7 May 2021 09:59:30 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        Fri, 7 May 2021 05:03:42 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: benjamin.gaignard)
+        with ESMTPSA id 5E1021F43295
+From:   Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To:     joro@8bytes.org, will@kernel.org, robh+dt@kernel.org,
+        heiko@sntech.de, xxm@rock-chips.com
+Cc:     iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel@collabora.com,
+        Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v4 0/6] Add IOMMU driver for rk356x
+Date:   Fri,  7 May 2021 11:02:26 +0200
+Message-Id: <20210507090232.233049-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <20210506225640.1461000-1-irogers@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.82.108]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 06/05/2021 23:56, Ian Rogers wrote:
-> json files in the level 1 directory are used for ArchStd events (see
-> preprocess_arch_std_files), as such they shouldn't be warned about.
-> 
-> Signed-off-by: Ian Rogers <irogers@google.com>
-> ---
->   tools/perf/pmu-events/jevents.c | 6 ++++--
->   1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-> index ed4f0bd72e5a..7422b0ea8790 100644
-> --- a/tools/perf/pmu-events/jevents.c
-> +++ b/tools/perf/pmu-events/jevents.c
-> @@ -1123,8 +1123,10 @@ static int process_one_file(const char *fpath, const struct stat *sb,
->   			mapfile = strdup(fpath);
->   			return 0;
->   		}
-> -
-> -		pr_info("%s: Ignoring file %s\n", prog, fpath);
-> +		if (is_json_file(bname))
-> +			pr_debug("%s: ArchStd json is preprocessed %s\n", prog, fpath)
-We could get more elaborate and add the same first debug print in 
-process_one_file() to preprocess_arch_std_file() to give the allusion 
-that they are preprocessed, and change the logic not print that for arch 
-std files (in process_one_file()). But not sure it's worth it.
+This series adds the IOMMU driver for rk356x SoC.
+Since a new compatible is needed to distinguish this second version of 
+IOMMU hardware block from the first one, it is an opportunity to convert
+the binding to DT schema.
 
-Or else we could also just omit any print here for archstd files here.
+version 4:
+ - Add description for reg items
+ - Remove useless interrupt-names properties
+ - Add description for interrupts items
+ - Remove interrupt-names properties from DST files
 
-But I suppose what you are doing is ok...
+version 3:
+ - Rename compatible with soc prefix
+ - Rebase on v5.12 tag
 
-Thanks,
-John
+version 2:
+ - Fix iommu-cells typo in rk322x.dtsi
+ - Change maintainer
+ - Change reg maxItems
+ - Add power-domains property
+ 
+Benjamin Gaignard (5):
+  dt-bindings: iommu: rockchip: Convert IOMMU to DT schema
+  dt-bindings: iommu: rockchip: Add compatible for v2
+  ARM: dts: rockchip: rk322x: Fix IOMMU nodes properties
+  ARM: dts: rockchip: rk3036: Remove useless interrupt-names on IOMMU
+    node
+  ARM64: dts: rockchip: rk3036: Remove useless interrupt-names
+    properties
 
-> +		else
-> +			pr_info("%s: Ignoring file %s\n", prog, fpath);
->   		return 0;
->   	}
->   
-> 
+Simon Xue (1):
+  iommu: rockchip: Add support iommu v2
+
+ .../bindings/iommu/rockchip,iommu.txt         |  38 --
+ .../bindings/iommu/rockchip,iommu.yaml        |  85 ++++
+ arch/arm/boot/dts/rk3036.dtsi                 |   1 -
+ arch/arm/boot/dts/rk322x.dtsi                 |  10 +-
+ arch/arm64/boot/dts/rockchip/px30.dtsi        |   2 -
+ drivers/iommu/rockchip-iommu.c                | 422 +++++++++++++++++-
+ 6 files changed, 494 insertions(+), 64 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/iommu/rockchip,iommu.txt
+ create mode 100644 Documentation/devicetree/bindings/iommu/rockchip,iommu.yaml
+
+-- 
+2.25.1
 
