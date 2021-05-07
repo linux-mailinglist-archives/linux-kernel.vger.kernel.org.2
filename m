@@ -2,118 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8E1F3769C7
+	by mail.lfdr.de (Postfix) with ESMTP id 4C5EC3769C6
 	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:02:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229560AbhEGSDT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 14:03:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47366 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229461AbhEGSDS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 14:03:18 -0400
-Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E0A7C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 11:02:18 -0700 (PDT)
-Received: by mail-il1-x12c.google.com with SMTP id e14so8364281ils.12
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 11:02:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=OiFf1NwwUvud1mnDtuQmtDxIGqR5e/nfJ7NM5Is87sw=;
-        b=oYfD4vzTCc927EwqeTaZUZiVyk6EYM8Vnm//QRL1AumSWt6cAtSBlStkF+BcohKFM3
-         +tKacLNbJX9Z+qo+ajJsgGRlRm7ZxV9lO6bAAfyg37DxOD/qpn4p/JgkCkQ863/V2aPa
-         BbTv/2NoY8ZFFBzKNxjTu5e7HAVcd42icZW18=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=OiFf1NwwUvud1mnDtuQmtDxIGqR5e/nfJ7NM5Is87sw=;
-        b=VXNOx0ypuF9bcNgGRhciBYB69xihOa2k09KchH5MChmaNtzAR1I6HK1Uxgx31ihtre
-         1778eQVzTzy7OuFZKNF6HpgMH4bIkg1rxDZb+zwdbPLPfSUUSg2fBo2AvpHrtk1foDpj
-         a0ExsMWIhsSae7TY7OqjpKT4YNkhPmTKopVBdFjwmDAgIHp0qOz+aQ6b+GZLjBiV1oLE
-         j4zTFQI+22Mkq5HTlfO01+jMUVwGUtPJ2kGGraPg/J3dIkfr+QoijJ2CYbId27/LhjkN
-         2l0Lsw9u4fr5rugghPlGlpCAhBKR6zPWJvGh+P09raLTQ8xRTZgze9ZDx6kALO5sJ7Qo
-         i+Qw==
-X-Gm-Message-State: AOAM531gi9l741XfLaSo2NdFshdIDxPaESuFv7IPNI6ST7nR2I/eDd5p
-        qPzncEX7ZpbmBh53x8qqqIuTYa3FLT1daFrfydav+A==
-X-Google-Smtp-Source: ABdhPJzN5HWpa8Abi1V1uTyBqqXUgx1GSkjd39fpUWTlxDTnlmS25VaHCKz9+XKlEVlcRVRQ4oFIfNWsE+JI0TGAP3I=
-X-Received: by 2002:a05:6e02:5d1:: with SMTP id l17mr9847706ils.78.1620410537552;
- Fri, 07 May 2021 11:02:17 -0700 (PDT)
+        id S229512AbhEGSDQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 14:03:16 -0400
+Received: from mga12.intel.com ([192.55.52.136]:60518 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229461AbhEGSDP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 14:03:15 -0400
+IronPort-SDR: ZQlsik2nannmJZD/3wRMAYkIXw3+YsTGV8RPQkIXSTT20YmEEVmRs0/sp5z11L5m7dFJ5FcR+s
+ LFK+BWgp1ttw==
+X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="178346740"
+X-IronPort-AV: E=Sophos;i="5.82,281,1613462400"; 
+   d="scan'208";a="178346740"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 11:02:14 -0700
+IronPort-SDR: /NklHU5Xjn1sFGCMrq9gHWtcLEiE6yT4LbsngQZzS5qLfCCb+dVKXk/my+2j7MnwsaXV4bllwt
+ ciYnYUb7hhUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,281,1613462400"; 
+   d="scan'208";a="397812967"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by fmsmga007.fm.intel.com with ESMTP; 07 May 2021 11:02:14 -0700
+Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 7 May 2021 11:02:13 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2106.2; Fri, 7 May 2021 11:02:13 -0700
+Received: from fmsmsx610.amr.corp.intel.com ([10.18.126.90]) by
+ fmsmsx610.amr.corp.intel.com ([10.18.126.90]) with mapi id 15.01.2106.013;
+ Fri, 7 May 2021 11:02:13 -0700
+From:   "Luck, Tony" <tony.luck@intel.com>
+To:     Aili Yao <yaoaili@kingsoft.com>,
+        =?utf-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPo+OAgOebtOS5nyk=?= 
+        <naoya.horiguchi@nec.com>
+CC:     Naoya Horiguchi <nao.horiguchi@gmail.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Oscar Salvador" <osalvador@suse.de>,
+        David Hildenbrand <david@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>, Jue Wang <juew@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "yaoaili126@gmail.com" <yaoaili126@gmail.com>
+Subject: RE: [PATCH v3 0/3] mm,hwpoison: fix sending SIGBUS for Action
+ Required MCE
+Thread-Topic: [PATCH v3 0/3] mm,hwpoison: fix sending SIGBUS for Action
+ Required MCE
+Thread-Index: AQHXNklUtDziI1+1ZUqZsXGvSliLyarXX3UAgAAW4VCAAJTpAIAAYa8A///72gA=
+Date:   Fri, 7 May 2021 18:02:13 +0000
+Message-ID: <e6577ace06ca4ce9bbfb8195d7a2bfb7@intel.com>
+References: <20210421005728.1994268-1-nao.horiguchi@gmail.com>
+        <d09f178272df4c82b8c090ba79d222b5@intel.com>
+        <87ba79daaba1416589b203118be096cb@intel.com>
+        <20210507052422.GB2158342@hori.linux.bs1.fc.nec.co.jp>
+ <20210507191400.6258dee6@alex-virtual-machine>
+In-Reply-To: <20210507191400.6258dee6@alex-virtual-machine>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [10.1.200.100]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-References: <20210422120459.447350175@infradead.org>
-In-Reply-To: <20210422120459.447350175@infradead.org>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Fri, 7 May 2021 14:02:06 -0400
-Message-ID: <CAEXW_YT5AoRwS7XZreX-_2OAzoQNVUeaOH3nJFvV65T0zDaP5g@mail.gmail.com>
-Subject: Re: [PATCH 00/19] sched: Core Scheduling
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     "Hyser,Chris" <chris.hyser@oracle.com>,
-        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@suse.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Thomas Glexiner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Apr 22, 2021 at 8:36 AM Peter Zijlstra <peterz@infradead.org> wrote:
->
-> Hai,
->
-> This is an agressive fold of all the core-scheduling work so far. I've stripped
-> a whole bunch of tags along the way (hopefully not too many, please yell if you
-> feel I made a mistake), including tested-by. Please retest.
->
-> Changes since the last partial post is dropping all the cgroup stuff and
-> PR_SCHED_CORE_CLEAR as well as that exec() behaviour in order to later resolve
-> the cgroup issue.
->
-> Since we're really rather late for the coming merge window, my plan was to
-> merge the lot right after the merge window.
->
-> Again, please test.
-
-Thanks Peter, I uploaded this set to our ChromeOS 5.10 kernel tree
-with minor changes to make it apply, to:
-https://chromium-review.googlesource.com/q/topic:cs510
-Let me know if anything looks weird, but it does build. I will be
-testing it further in the coming days.
-
-Of course product kernels slightly lag upstream but such is life <:-)
-
- - Joel
-
->
-> These patches should shortly be available in my queue.git.
->
-> ---
->  b/kernel/sched/core_sched.c                     |  229 ++++++
->  b/tools/testing/selftests/sched/.gitignore      |    1
->  b/tools/testing/selftests/sched/Makefile        |   14
->  b/tools/testing/selftests/sched/config          |    1
->  b/tools/testing/selftests/sched/cs_prctl_test.c |  338 +++++++++
->  include/linux/sched.h                           |   19
->  include/uapi/linux/prctl.h                      |    8
->  kernel/Kconfig.preempt                          |    6
->  kernel/fork.c                                   |    4
->  kernel/sched/Makefile                           |    1
->  kernel/sched/core.c                             |  858 ++++++++++++++++++++++--
->  kernel/sched/cpuacct.c                          |   12
->  kernel/sched/deadline.c                         |   38 -
->  kernel/sched/debug.c                            |    4
->  kernel/sched/fair.c                             |  276 +++++--
->  kernel/sched/idle.c                             |   13
->  kernel/sched/pelt.h                             |    2
->  kernel/sched/rt.c                               |   31
->  kernel/sched/sched.h                            |  393 ++++++++--
->  kernel/sched/stop_task.c                        |   14
->  kernel/sched/topology.c                         |    4
->  kernel/sys.c                                    |    5
->  tools/include/uapi/linux/prctl.h                |    8
->  23 files changed, 2057 insertions(+), 222 deletions(-)
->
+PiBCZWZvcmUgY2M6c3RhYmxlLCB3b3VsZCB5b3UgcGxlYXNlIGRvIG9uZSBzdHJlc3MgdGVzdCBm
+aXJzdD8NCj4gSXQgZmFpbGVkIGluIG15IHNlcnZlciwgYnV0IEkgZGlkbid0IGRpZyBpbnRvIGl0
+LCBtYXliZSB0aGUgZmFpbCBpcyBtZWFuaW5nbGVzcy4NCj4gSnVzdCBhIHNtYWxsIHN1Z2dlc3Rp
+b24uDQoNClVwc3RyZWFtIHBsdXMgdGhlc2UgdGhyZWUgcGF0Y2hlcyBwYXNzZWQgYW4gb3Zlcm5p
+Z2h0IDgtaG91ciBzdHJlc3MgdGVzdA0Kb24gZm91ciBtYWNoaW5lcyBoZXJlIChydW5uaW5nIGEg
+dGVzdCB0aGF0J3MgYmVlbiBmYWlsaW5nIHdpdGggaHVuZyBrZXJuZWxzDQphbmQga2VybmVsIGNy
+YXNoZXMgdy9vIHRoZXNlIHBhdGNoZXMpLg0KDQpXaGF0IHdlcmUgdGhlIHN5bXB0b21zIG9mIHlv
+dXIgZmFpbGVkIHNlcnZlcj8NCg0KLVRvbnkNCg==
