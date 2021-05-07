@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2B6037613C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:36:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CDCE37613D
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:36:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235423AbhEGHhM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:37:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49132 "EHLO
+        id S235433AbhEGHhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:37:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235413AbhEGHhG (ORCPT
+        with ESMTP id S235427AbhEGHhH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:37:06 -0400
-Received: from mail-wr1-x42d.google.com (mail-wr1-x42d.google.com [IPv6:2a00:1450:4864:20::42d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51FF1C061761
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:36:06 -0700 (PDT)
-Received: by mail-wr1-x42d.google.com with SMTP id v12so8100486wrq.6
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:36:06 -0700 (PDT)
+        Fri, 7 May 2021 03:37:07 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2E09C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:36:07 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id m9so8119901wrx.3
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:36:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=76eipqNBNkUeHiS93+YHHFtGscmZKFfCQ8YQ1j3cNTU=;
-        b=Lp5tJK11a9FTGaLMTD9ul8YPRKxgIgK86X2OoLVUcHX0egMsSuFHDeGCJLT/dEFI3x
-         qfhU8pRl1mVAqFuFygzXasRJw17qjKOI8NucX7vpaE5osxVLHRXNH/QxMLgsDAq0ofwZ
-         ypRGheW5b+14yA2RqOpzgzETLSG0bVMiMbyUjAEY6ZbO5YR3P0QVX6LaLDDal1qZPdft
-         djgB7vStPHLpP/mdIaxZOZB0SyCoIvBLxpKOLOu2goE0TSTsGCsaQ49Q0OyK52ixugeR
-         FNZHS+GYkgEUaL0o742PQQmDcnlS3v4jU816rrgb79URq93+hc99UVM3cyqwakL5YKZo
-         KRrw==
+        bh=65d8j8KxAbaBeXVMozPvqbc0VGuCAIdxy/SojbfesRI=;
+        b=uxX35QF4aly4LTSsErimFGWmK2vKDX96V0zb23tscREHRcZZgNpOvFDFMDQN/47VkQ
+         0wp8QoTQbbQw1c9mGL32g9wl/WMue34hdX6ZvblqWmg4eIGAQbSwlQ44eXdanb0uLWKo
+         F/PZ/gTrey6F3SvBhYfSMbqvBU/VN0xIoN1pnooHBS0jKz4dgU0v/2mZFZcDpqS0aeS0
+         olBOvqSIe0CTT51oq7nKzEsfSPLwhj67d6AciWghUbSw9nNYUcBZDAx0KEVmqyZ/LuU4
+         /3kda48hI/3WOEB/omg1Rul404oIDJQ4/TC0vvxzhX/gSUxHs6UmAXrJoSY6GPrELNhR
+         /L0g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=76eipqNBNkUeHiS93+YHHFtGscmZKFfCQ8YQ1j3cNTU=;
-        b=OEgUxPjnlc49b0j+k1wQTmsr13Wo8YAXRZhGdlxgx5bSkNlExEZQSVAbcSr1ogFZU1
-         595a7qCvWWFhcK+6QVITZWKIGwPUXdUdg7ZSY/aaPhmG0BNsI+EV3ieNYLM/KeGeuUav
-         AI0g4HJDtuQ3H8Kyv23/GXIT3YzTNt6CBYwu7zWy7BH/mF4+2cMDjKR8qVxZq0+TCdIR
-         26A0FR/kbjQEv2wqYBw0+1abbGjS8S1yA5LnPKnz0KcNESdrEDBBOKz4Y2DN9mcMCOEV
-         pg3Y2njSqcuMdS9QoKE63PUhAwPWz+pNleYVhC2qsikq+cCiQqEypE49rGu1EUHnIud1
-         +ROw==
-X-Gm-Message-State: AOAM5324qxE28t8eAM7yIhAaZK+ckH6tZY2jffOHUKm8+GyhaSJQ7pRY
-        qbauHQ1f5gTepF1Lj5prqeT5pt96lFHm9A==
-X-Google-Smtp-Source: ABdhPJyATMMme9Y67980v46V1wsRCyau+7Wu3bjgWREiYmcGU8zmpGQ/AQ5P1mSd/sMGujyoomNkQw==
-X-Received: by 2002:a5d:4fd2:: with SMTP id h18mr10281204wrw.95.1620372964845;
-        Fri, 07 May 2021 00:36:04 -0700 (PDT)
+        bh=65d8j8KxAbaBeXVMozPvqbc0VGuCAIdxy/SojbfesRI=;
+        b=aQwGVa3Qe+O0YDYDzLsyHN/NdSS1JDGiLRPLi/uw73dKwPES4L9nvOe9OzuJSNlbdW
+         aHDQBqKRCrJQ8fAZt1MA+k8l0wL68cwwLGsLDpxsOOALkIqNoyFLkbOp0R2+eNx56bpE
+         CPI7KFtyqZJLtiTiHUadVRvd5F7CCOsPmzeY/WeayeZY884eSADx6YkjJFHRtFqTlLGO
+         ROLLka3oMVRXOPKoy5mc6cDKblXTjWyCHH8S+kciJkMMcj/UOmOkUY/rtAnz4+UnIfcz
+         xLP1jeOGa0Hkbn/In++shKLr8//1VhHiTRqBm9Uby1YxGSrK60llQYa50g69ak26T0jS
+         TkYQ==
+X-Gm-Message-State: AOAM5308+tn8gzGK74ws08VbKhGRWOQv1XJ5GH41Z+4LmwVFzIqRN4RA
+        zVYG7YIvm1dMTqkL5nddy31kvK8ZB5jMXA==
+X-Google-Smtp-Source: ABdhPJwUcYDdHrWzz6wgkE1dlZla1lAW+KgE3ewuO9V8Hh+cYTI+Crs4EG18DlZw2WT+QdZv2qrPPQ==
+X-Received: by 2002:adf:e947:: with SMTP id m7mr10842029wrn.70.1620372966347;
+        Fri, 07 May 2021 00:36:06 -0700 (PDT)
 Received: from agape ([5.171.80.53])
-        by smtp.gmail.com with ESMTPSA id q10sm6077462wmc.31.2021.05.07.00.36.04
+        by smtp.gmail.com with ESMTPSA id l12sm8363863wrq.36.2021.05.07.00.36.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 00:36:04 -0700 (PDT)
+        Fri, 07 May 2021 00:36:06 -0700 (PDT)
 From:   Fabio Aiuto <fabioaiuto83@gmail.com>
 To:     gregkh@linuxfoundation.org
 Cc:     linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/4] staging: rtl8723bs: remove more unused encryption macros
-Date:   Fri,  7 May 2021 09:35:58 +0200
-Message-Id: <c65d2b2dd06c52c3e0418d8a927521d05109849c.1620372584.git.fabioaiuto83@gmail.com>
+Subject: [PATCH 3/4] staging: rtl8723bs: remove unused symbolic constant _AES_IV_LEN_
+Date:   Fri,  7 May 2021 09:35:59 +0200
+Message-Id: <ac3f5a400dcb61f46db259cca6979ec41f98feae.1620372584.git.fabioaiuto83@gmail.com>
 X-Mailer: git-send-email 2.20.1
 In-Reply-To: <cover.1620372584.git.fabioaiuto83@gmail.com>
 References: <cover.1620372584.git.fabioaiuto83@gmail.com>
@@ -63,40 +63,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-remove more unused logical macros used in removed
-private aes encryption.
+remove unused symbolic constant _AES_IV_LEN_
 
 Signed-off-by: Fabio Aiuto <fabioaiuto83@gmail.com>
 ---
- drivers/staging/rtl8723bs/include/rtw_security.h | 15 ---------------
- 1 file changed, 15 deletions(-)
+ drivers/staging/rtl8723bs/include/rtw_security.h | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/drivers/staging/rtl8723bs/include/rtw_security.h b/drivers/staging/rtl8723bs/include/rtw_security.h
-index 619d2fa4e8f2..76076c4f0763 100644
+index 76076c4f0763..83b711c5df0b 100644
 --- a/drivers/staging/rtl8723bs/include/rtw_security.h
 +++ b/drivers/staging/rtl8723bs/include/rtw_security.h
-@@ -248,21 +248,6 @@ struct mic_data {
- /* This is based on SHA256 implementation in LibTomCrypt that was released into
-  * public domain by Tom St Denis. */
+@@ -191,8 +191,6 @@ do {\
+ 	} \
+ } while (0)
  
--/* Various logical functions */
--#define RORc(x, y) \
--(((((unsigned long) (x) & 0xFFFFFFFFUL) >> (unsigned long) ((y) & 31)) | \
--   ((unsigned long) (x) << (unsigned long) (32 - ((y) & 31)))) & 0xFFFFFFFFUL)
--#define Ch(x, y, z)       (z ^ (x & (y ^ z)))
--#define Maj(x, y, z)      (((x | y) & z) | (x & y))
--#define S(x, n)         RORc((x), (n))
--#define R(x, n)         (((x)&0xFFFFFFFFUL)>>(n))
--#define Sigma0(x)       (S(x, 2) ^ S(x, 13) ^ S(x, 22))
--#define Sigma1(x)       (S(x, 6) ^ S(x, 11) ^ S(x, 25))
--#define Gamma0(x)       (S(x, 7) ^ S(x, 18) ^ R(x, 3))
--#define Gamma1(x)       (S(x, 17) ^ S(x, 19) ^ R(x, 10))
--#ifndef MIN
--#define MIN(x, y) (((x) < (y)) ? (x) : (y))
--#endif
- int omac1_aes_128(u8 *key, u8 *data, size_t data_len, u8 *mac);
- void rtw_secmicsetkey(struct mic_data *pmicdata, u8 *key);
- void rtw_secmicappendbyte(struct mic_data *pmicdata, u8 b);
+-#define _AES_IV_LEN_ 8
+-
+ #define SET_ICE_IV_LEN(iv_len, icv_len, encrypt)\
+ do {\
+ 	switch (encrypt)\
 -- 
 2.20.1
 
