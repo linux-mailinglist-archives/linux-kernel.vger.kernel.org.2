@@ -2,106 +2,253 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4D76376B8A
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDBC0376B93
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:18:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229731AbhEGVRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:17:25 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:38826 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEGVRX (ORCPT
+        id S229542AbhEGVTq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:19:46 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38240 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229482AbhEGVTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:17:23 -0400
-Received: by mail-ot1-f44.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so9098270oth.5;
-        Fri, 07 May 2021 14:16:22 -0700 (PDT)
+        Fri, 7 May 2021 17:19:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620422318;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=h69xFeijQcIIQwN+KpkbH+8q4ZpDpGmwjDACTpEty9k=;
+        b=FbTdCC9RRsTJypgYPj6TweFzj8TUAYcrlrSs2mS+3J+3TS02gPmyVdcP9PAA+HrFdcNp99
+        TxvgukTfxN041ZbBNTzwUFAqUnTLkyphpZmY/0WSIxIW0TR/x4IQQKsTtr7AMbywvrABT9
+        0Ydk3hG95wmvBsKYxtjg83SeRjrgOhg=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-44CDvdh1PXmr8uU7E2Gcww-1; Fri, 07 May 2021 17:18:35 -0400
+X-MC-Unique: 44CDvdh1PXmr8uU7E2Gcww-1
+Received: by mail-qv1-f69.google.com with SMTP id p20-20020a0ce1940000b02901be3272e620so7569182qvl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:18:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/5D7ZT5Lu0YStgy8faRmpqxBSv65B/x5VGdmWREBghE=;
-        b=PX9giO3KOMvodoyTZJBTwy5fgJhkr03NIzfb70FKLmGVNlox8WnopeZ4mT+uJFKlnO
-         8+g7O0Enl2bqafT9oZx8aW4V5O10uCyBILj1OVAnPdkCEZb32pAHnMes3luuWopuobuJ
-         76HuWdwAm05mt/b2plx5QkTOvnoztCrttsky0wQ7YcGc1lZ4iulbqwYfJqkWBRYHzLPH
-         bxGjRG8S45qw7TfhFlKl/m1ZsK0j3euLa/hp6nvALRQbOGKx6BhmwQXiE/2TtoKlfBE2
-         b4DVj3VBa1EOv7CG5pZvvLjIX3zEAhyG63U9V/ii79Bl6PgbqRVMo9646Z5Iv1BN+4dz
-         9Zqg==
-X-Gm-Message-State: AOAM531EgepdV2KbUzTYkDVR0pwJxBC6IJemK8uBtqs2ER7vVi+H5zFj
-        TOOBuoljRbH3QJDyOSBzaw==
-X-Google-Smtp-Source: ABdhPJykObAS8JsXFLdzmqv6KmJ1UzMdUyE9FJqsiPOL6ZcDskiGKl/Bhkm8EP1lRu9jT7rBYb42MQ==
-X-Received: by 2002:a9d:728b:: with SMTP id t11mr5710529otj.230.1620422182286;
-        Fri, 07 May 2021 14:16:22 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id s85sm1312704oos.4.2021.05.07.14.16.19
+        h=x-gm-message-state:message-id:subject:from:to:cc:date:in-reply-to
+         :references:organization:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=h69xFeijQcIIQwN+KpkbH+8q4ZpDpGmwjDACTpEty9k=;
+        b=FPC2RGh5N73ElYl+RSxqplYlDPyvcgqjHPRI2khYiscuP+UTwDzdG0a3Ww/c8UPEHv
+         JSlw3Rj1vyzQbY1yiZmLFSg9QABSYYcuwIF1DgOMqNwHXO/ExgvnrMc1wWKgNyFdlaoa
+         /aEjt2Ktob6o3EWX35Q+Kkh1T0wngIuDqNdDiwNHn+9V1RDiAKozuoEV/p4eevEk66o7
+         FEVZsbLHlrvNrzaQWTk3LNqUrw2H6FV7kWTuCoqU2Wp14/b26Li2Gv5eQn4e3IK9ZhB7
+         /aqFy0i+WCVptklg8yVVyVWYpP00O1AAis0erHwNtFUjdK/FWeS/5mpW5PKsVk1qDK3C
+         4uvw==
+X-Gm-Message-State: AOAM530GxZI2tGLfK/WMm3HYnC/atkofM5Xz/LDBpOU3nR0hFQ4aoRDG
+        le6WvJyuZhmzu4JLCX4OuapED3ronHru2r6RZ337ne1EBs8DUtQAibBKGIVyCLkDUIpdmXmTqTx
+        NxrnVSYFNdFLV3c7rFv/RXjuD
+X-Received: by 2002:a37:a8cb:: with SMTP id r194mr12177986qke.349.1620422315174;
+        Fri, 07 May 2021 14:18:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzBWLZBXRB/xfQD+GxRV/Eh4eGw4fJ1tp1D9K7eJc5hSczf3mZHlXsF4pzBv0Ropy/az8Nxzg==
+X-Received: by 2002:a37:a8cb:: with SMTP id r194mr12177967qke.349.1620422314904;
+        Fri, 07 May 2021 14:18:34 -0700 (PDT)
+Received: from Ruby.lyude.net (pool-108-49-102-102.bstnma.fios.verizon.net. [108.49.102.102])
+        by smtp.gmail.com with ESMTPSA id r81sm5950514qka.82.2021.05.07.14.18.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 14:16:21 -0700 (PDT)
-Received: (nullmailer pid 2900641 invoked by uid 1000);
-        Fri, 07 May 2021 21:16:19 -0000
-Date:   Fri, 7 May 2021 16:16:19 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Frieder Schrempf <frieder.schrempf@kontron.de>
-Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, shawnguo@kernel.org,
-        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
-        linux-imx@nxp.com, p.zabel@pengutronix.de, l.stach@pengutronix.de,
-        krzk@kernel.org, agx@sigxcpu.org, marex@denx.de,
-        andrew.smirnov@gmail.com, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        ping.bai@nxp.com, aford173@gmail.com, abel.vesa@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH V2 08/13] dt-bindings: imx: gpcv2: add support for
- optional resets
-Message-ID: <20210507211619.GA2899069@robh.at.kernel.org>
-References: <20210506010440.7016-1-peng.fan@oss.nxp.com>
- <20210506010440.7016-9-peng.fan@oss.nxp.com>
- <a6554ae1-75d4-e471-6371-d9ad2246599f@kontron.de>
+        Fri, 07 May 2021 14:18:34 -0700 (PDT)
+Message-ID: <8eedeb02dc56ecaed5d2f3cb8d929a3675b2c3da.camel@redhat.com>
+Subject: Re: [PATCH v6 2/5] drm/dp: Allow an early call to register DDC i2c
+ bus
+From:   Lyude Paul <lyude@redhat.com>
+To:     Douglas Anderson <dianders@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Sam Ravnborg <sam@ravnborg.org>, Wolfram Sang <wsa@kernel.org>,
+        Ville Syrjala <ville.syrjala@intel.com>
+Cc:     Steev Klimaszewski <steev@kali.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org,
+        Stanislav Lisovskiy <stanislav.lisovskiy@intel.com>,
+        Linus W <linus.walleij@linaro.org>, robdclark@chromium.org,
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thierry Reding <treding@nvidia.com>, linux-i2c@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 07 May 2021 17:18:32 -0400
+In-Reply-To: <20210503145750.v6.2.Iff8f2957d86af40f2bfcfb5a7163928481fccea4@changeid>
+References: <20210503215844.2996320-1-dianders@chromium.org>
+         <20210503145750.v6.2.Iff8f2957d86af40f2bfcfb5a7163928481fccea4@changeid>
+Organization: Red Hat
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.38.4 (3.38.4-1.fc33) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6554ae1-75d4-e471-6371-d9ad2246599f@kontron.de>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 08:43:17AM +0200, Frieder Schrempf wrote:
-> On 06.05.21 03:04, Peng Fan (OSS) wrote:
-> > From: Lucas Stach <l.stach@pengutronix.de>
-> > 
-> > For some domains the resets of the devices in the domain are not
-> > automatically triggered. Add an optional resets property to allow
-> > the GPC driver to trigger those resets explicitly.
-> > 
-> > The resets belong to devices located inside the power domain,
-> > which need to be held in reset across the power-up sequence. So we
-> > have no means to specify what each reset is in a generic power-domain
-> > binding. Same situation as with the clocks in this binding actually.
-> 
-> My understanding was that Rob wanted this explanation to be contained in the binding docs itself and not only in the commit message, but I might be wrong.
+Adding ville from Intel to also get their take on this.
 
-Yes, that would be better.
+In general we've been trying to move DRM to a design where we don't expose any
+devices until everything is ready. That's pretty much the main reason that we
+register things during bridge attach time. Note though that even before the
+DDC bus is registered it should still be usable, just things like get_device()
+won't work.
 
+This isn't the first time we've run into a problem like the one you're trying
+to solve though, Tegra currently has a similar issue. Something we discussed
+as a possible long-term solution for this was splitting i2c_add_adapter() into
+a minimal initialization function and a registration function. Linux's device
+core already allows for this (device_initialize() and device_add(), which are
+called together when device_register() is called). Would this be a solution
+that might work for you (and even better, would you possibly be willing to
+write the patches? :)
+
+On Mon, 2021-05-03 at 14:58 -0700, Douglas Anderson wrote:
+> It can be helpful to fully register the AUX channel as an i2c bus even
+> before the bridge is created. Let's optionally allow bridges to do
+> that.
 > 
-> > 
-> > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >  Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml | 7 +++++++
-> >  1 file changed, 7 insertions(+)
-> > 
-> > diff --git a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
-> > index a96e6dbf1858..4330c73a2c30 100644
-> > --- a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
-> > +++ b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
-> > @@ -66,6 +66,13 @@ properties:
-> >  
-> >            power-supply: true
-> >  
-> > +          resets:
-> > +            description: |
-> > +              A number of phandles to resets that need to be asserted during
-> > +              power-up sequencing of the domain.
-> > +            minItems: 1
-> > +            maxItems: 4
-> > +
-> >          required:
-> >            - '#power-domain-cells'
-> >            - reg
-> > 
+> Specifically the case we're running into:
+> - The panel driver wants to get its DDC bus at probe time.
+> - The ti-sn65dsi86 MIPI-to-eDP bridge code, which provides the DDC
+>   bus, wants to get the panel at probe time.
+> 
+> The next patches ("drm/bridge: ti-sn65dsi86: Promote the AUX channel
+> to its own sub-dev") solves the chicken-and-egg problem by breaking
+> the ti-sn65dsi86 driver into sub-devices, but in order for it to
+> actually work we need the i2c bus to get registered at probe time and
+> not in bridge attach time.
+> 
+> Cc: Lyude Paul <lyude@redhat.com>
+> Cc: Thierry Reding <treding@nvidia.com>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> 
+> Changes in v6:
+> - ("drm/dp: Allow an early call to register DDC i2c bus") new for v6.
+> 
+>  drivers/gpu/drm/drm_dp_helper.c | 67 +++++++++++++++++++++++++++------
+>  include/drm/drm_dp_helper.h     |  2 +
+>  2 files changed, 57 insertions(+), 12 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/drm_dp_helper.c
+> b/drivers/gpu/drm/drm_dp_helper.c
+> index cb56d74e9d38..830294f0b341 100644
+> --- a/drivers/gpu/drm/drm_dp_helper.c
+> +++ b/drivers/gpu/drm/drm_dp_helper.c
+> @@ -1757,6 +1757,49 @@ void drm_dp_aux_init(struct drm_dp_aux *aux)
+>  }
+>  EXPORT_SYMBOL(drm_dp_aux_init);
+>  
+> +/**
+> + * drm_dp_aux_register_ddc() - register the DDC parts of the aux channel
+> + * @aux: DisplayPort AUX channel
+> + *
+> + * This can be called after drm_dp_aux_init() to fully register the ddc bus
+> + * as an i2c adapter with the rest of Linux.
+> + *
+> + * If you don't explicitly call this function it will be done implicitly as
+> + * part of drm_dp_aux_register().
+> + *
+> + * Returns 0 on success or a negative error code on failure.
+> + */
+> +int drm_dp_aux_register_ddc(struct drm_dp_aux *aux)
+> +{
+> +       WARN_ON_ONCE(!aux->dev);
+> +
+> +       aux->ddc.class = I2C_CLASS_DDC;
+> +       aux->ddc.owner = THIS_MODULE;
+> +       aux->ddc.dev.parent = aux->dev;
+> +
+> +       strlcpy(aux->ddc.name, aux->name ? aux->name : dev_name(aux->dev),
+> +               sizeof(aux->ddc.name));
+> +
+> +       return i2c_add_adapter(&aux->ddc);
+> +}
+> +EXPORT_SYMBOL(drm_dp_aux_register_ddc);
+> +
+> +/**
+> + * drm_dp_aux_unregister_ddc() - unregister the DDC parts of the aux
+> channel
+> + *
+> + * This is useful if you called drm_dp_aux_register_ddc(). If you let
+> + * drm_dp_aux_register() implicitly register the DDC for you then you don't
+> + * need to worry about calling this yourself.
+> + *
+> + * @aux: DisplayPort AUX channel
+> + */
+> +void drm_dp_aux_unregister_ddc(struct drm_dp_aux *aux)
+> +{
+> +       i2c_del_adapter(&aux->ddc);
+> +       aux->ddc.dev.parent = NULL;
+> +}
+> +EXPORT_SYMBOL(drm_dp_aux_unregister_ddc);
+> +
+>  /**
+>   * drm_dp_aux_register() - initialise and register aux channel
+>   * @aux: DisplayPort AUX channel
+> @@ -1793,20 +1836,19 @@ int drm_dp_aux_register(struct drm_dp_aux *aux)
+>         if (!aux->ddc.algo)
+>                 drm_dp_aux_init(aux);
+>  
+> -       aux->ddc.class = I2C_CLASS_DDC;
+> -       aux->ddc.owner = THIS_MODULE;
+> -       aux->ddc.dev.parent = aux->dev;
+> -
+> -       strlcpy(aux->ddc.name, aux->name ? aux->name : dev_name(aux->dev),
+> -               sizeof(aux->ddc.name));
+> +       /*
+> +        * Implicitly register if drm_dp_aux_register_ddc() wasn't already
+> +        * called (as evidenced by a NULL parent pointer).
+> +        */
+> +       if (!aux->ddc.dev.parent) {
+> +               ret = drm_dp_aux_register_ddc(aux);
+> +               if (ret)
+> +                       return ret;
+> +       }
+>  
+>         ret = drm_dp_aux_register_devnode(aux);
+> -       if (ret)
+> -               return ret;
+> -
+> -       ret = i2c_add_adapter(&aux->ddc);
+>         if (ret) {
+> -               drm_dp_aux_unregister_devnode(aux);
+> +               drm_dp_aux_unregister_ddc(aux);
+>                 return ret;
+>         }
+>  
+> @@ -1821,7 +1863,8 @@ EXPORT_SYMBOL(drm_dp_aux_register);
+>  void drm_dp_aux_unregister(struct drm_dp_aux *aux)
+>  {
+>         drm_dp_aux_unregister_devnode(aux);
+> -       i2c_del_adapter(&aux->ddc);
+> +       if (aux->ddc.dev.parent)
+> +               drm_dp_aux_unregister_ddc(aux);
+>  }
+>  EXPORT_SYMBOL(drm_dp_aux_unregister);
+>  
+> diff --git a/include/drm/drm_dp_helper.h b/include/drm/drm_dp_helper.h
+> index e932b2c40095..d4d2d5e25bb7 100644
+> --- a/include/drm/drm_dp_helper.h
+> +++ b/include/drm/drm_dp_helper.h
+> @@ -2021,6 +2021,8 @@ bool drm_dp_lttpr_pre_emphasis_level_3_supported(const
+> u8 caps[DP_LTTPR_PHY_CAP_
+>  
+>  void drm_dp_remote_aux_init(struct drm_dp_aux *aux);
+>  void drm_dp_aux_init(struct drm_dp_aux *aux);
+> +int drm_dp_aux_register_ddc(struct drm_dp_aux *aux);
+> +void drm_dp_aux_unregister_ddc(struct drm_dp_aux *aux);
+>  int drm_dp_aux_register(struct drm_dp_aux *aux);
+>  void drm_dp_aux_unregister(struct drm_dp_aux *aux);
+>  
+
+-- 
+Cheers,
+ Lyude Paul (she/her)
+ Software Engineer at Red Hat
+
