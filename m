@@ -2,114 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11A51376593
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:51:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCB637659F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237104AbhEGMwh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:52:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34902 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237052AbhEGMwf (ORCPT
+        id S235836AbhEGMyk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:54:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:32671 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236580AbhEGMyM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:52:35 -0400
-Received: from mail-lj1-x230.google.com (mail-lj1-x230.google.com [IPv6:2a00:1450:4864:20::230])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EA76FC061574;
-        Fri,  7 May 2021 05:51:35 -0700 (PDT)
-Received: by mail-lj1-x230.google.com with SMTP id w15so11392176ljo.10;
-        Fri, 07 May 2021 05:51:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=k/DtSPUDkSbuRZ0BQAVzillf2V45Xj8sjRcVKiI789k=;
-        b=YhPg6AH5PtgAMazNsAKtBLkIFFyi/lLcNbGXD/g/e8XWc1gzAKu4/ROVfOFGP/sSvW
-         J6Gff1bXStGxePc2OB9iCyKXLGhJ0NKUTi7EBB4AIzwaE9DRFgCnbl99Tgtq0ofCLGxA
-         7MgtRCGxqdpOOUd3DqxMZaRfG0TbYyCTKQp1Y40AqE8DfsVVI3eqoVPC/dhiEememOCt
-         rOnfBLcbaPYk3y+h3XLDgTIA7Xt1i5idIxTM3YJIj0nvepd48uq8k1PMBUFEuiw+nZT7
-         p33w2gce7dwKnUXGuQyKPPvUjBOHu9zmwTLkpARht0GoyTn3qH7FEQyRfJrGBjTz2S7W
-         u1Rg==
+        Fri, 7 May 2021 08:54:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620391992;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=Ekkd3oyzogIptalBe2cpy9zc9ReWtKldN7D44gkdUnI=;
+        b=FeeqIKQUJ5oDBp/JRTcOr+LSGe4ow5VsWwzx+If8zMACjpxMVsLtywSGQTiZlMILLkSyFx
+        oqyU0+XKxbwKgfiQ0ewpqFFPXeBaatj0PoY0TXgMYlRdhAedwi+zLbPYWL++Cn9i2Sg66q
+        KYqZqPTIefzylh3jkB6RQad2ElD6FOA=
+Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
+ [209.85.218.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-22-y3Vh0Uu8MhGnmR9qcGsMpA-1; Fri, 07 May 2021 08:53:10 -0400
+X-MC-Unique: y3Vh0Uu8MhGnmR9qcGsMpA-1
+Received: by mail-ej1-f70.google.com with SMTP id f8-20020a1709068248b02903a8adf1f5c2so1884086ejx.19
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 05:53:10 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=k/DtSPUDkSbuRZ0BQAVzillf2V45Xj8sjRcVKiI789k=;
-        b=sq8r0Ebe5S2tXYP4dilfR2MrYwCqyBRkhlCKgu2JlcPbosfrVTmXLAxnGM0QRzR6N4
-         dLzACpZDJb8YzEFGx4AjEaOBI4aOb9HmqugsHGNDwDOSusdMkdal9/5rpQHaWhmd55/J
-         ghrJr6JT+3l6sLNYfyk6zLF+CW8Dai+epu32hCpKP67OVm3QZob9QswRbG5DOCA93vnN
-         pWOYNcKzFzxyobGC+c1P9k/cdj1CMWCZ8QubACyZWRXWyNRdPAIEjChf1/yCwA7Jb+JY
-         KSICkLnuDfp/s5qdomm5GqivYjB7Vpd+0SmTOYunRyhQtyGMSkvz4Qt3ImXbCv2oC/op
-         znzg==
-X-Gm-Message-State: AOAM531ucQorKYcl6py7NwJTEFneZcpBH1Z3Xd9jQy+efGwMfEyDIjcL
-        qFnX3UnREp8glThi269G32A=
-X-Google-Smtp-Source: ABdhPJz3y7Xr3Nw+3mhxe7PhcWEzINPKHvxkvwn5fmRb0vNJZIxc+vO3M+pwHzrBmO/w1sXeQgp/cQ==
-X-Received: by 2002:a2e:8e9a:: with SMTP id z26mr783712ljk.301.1620391894189;
-        Fri, 07 May 2021 05:51:34 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.226.84])
-        by smtp.gmail.com with ESMTPSA id r9sm1887855ljp.79.2021.05.07.05.51.33
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Ekkd3oyzogIptalBe2cpy9zc9ReWtKldN7D44gkdUnI=;
+        b=sLNyJV9o5MkG0I4+xVXgqBPvRiQ2dxjF6l/9U4CkL1tI1zn1wyNPBkDEAyCyqoqvXr
+         RqAqtdzQaB8OPTlHhC41vyhZ6jK7SgzFX7ytuq0SdsP2lV7EbVm+/H5QqQ2eRuqwGhAR
+         MLn02MDFPNaJwkOmkLlNeNHIL29LXymNvsv5mRv0BNusTffFJjupmib/0FoN8elNMdn+
+         taeCgPPQZqqAm6lfb40TVnBQWasxkAWNR4/y3/bD4f/65BAvP2aQLmWXb+FSLOwobfTs
+         wAeALLr4zW3n8jwqXlH+wYSBsiU9bxMIpvfl1gJmTVulQAkVhrZoA6BzsKdUdhRtnzez
+         GWQw==
+X-Gm-Message-State: AOAM531Pj/wdzBkjkmArq1u6q+wHv2op4s5w9rnFaC/nhGmFaYaZ6SCz
+        m5oRsi/orXG6JFRQqshCppCvNeYTtRLmXHOAlWdXzfpBk23IGb0v0xCweTirbxHlV052dMorVjf
+        JymPjpC5tv+UWxRUzpw8TUgpO
+X-Received: by 2002:a17:906:2511:: with SMTP id i17mr9662197ejb.198.1620391989174;
+        Fri, 07 May 2021 05:53:09 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzx3Z+9lizDuJOODp1PHOn4ynHaHjZttKyHDznmtmt2QFV4vRXq1H+M273vfCF/TzadAicR/g==
+X-Received: by 2002:a17:906:2511:: with SMTP id i17mr9662180ejb.198.1620391988967;
+        Fri, 07 May 2021 05:53:08 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8308:b105:dd00:277b:6436:24db:9466])
+        by smtp.gmail.com with ESMTPSA id qh12sm3415986ejb.109.2021.05.07.05.53.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 05:51:33 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     mkrufky@linuxtv.org, mchehab@kernel.org
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Pavel Skripkin <paskripkin@gmail.com>, stable@vger.kernel.org,
-        syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com
-Subject: [PATCH v2] media: dvb-usb: fix wrong definition
-Date:   Fri,  7 May 2021 15:50:43 +0300
-Message-Id: <20210507125043.29825-1-paskripkin@gmail.com>
+        Fri, 07 May 2021 05:53:08 -0700 (PDT)
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v2] debugfs: fix security_locked_down() call for SELinux
+Date:   Fri,  7 May 2021 14:53:04 +0200
+Message-Id: <20210507125304.144394-1-omosnace@redhat.com>
 X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210506121211.8556-1-paskripkin@gmail.com>
-References: <20210506121211.8556-1-paskripkin@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot reported WARNING in vmalloc. The problem
-was in zero size passed to vmalloc.
+When (ia->ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID)) is zero, then
+the SELinux implementation of the locked_down hook might report a denial
+even though the operation would actually be allowed.
 
-The root case was in wrong cxusb_bluebird_lgz201_properties
-definition. adapter array has only 1 entry, but num_adapters was
-2.
+To fix this, make sure that security_locked_down() is called only when
+the return value will be taken into account (i.e. when changing one of
+the problematic attributes).
 
-Call Trace:
- __vmalloc_node mm/vmalloc.c:2963 [inline]
- vmalloc+0x67/0x80 mm/vmalloc.c:2996
- dvb_dmx_init+0xe4/0xb90 drivers/media/dvb-core/dvb_demux.c:1251
- dvb_usb_adapter_dvb_init+0x564/0x860 drivers/media/usb/dvb-usb/dvb-usb-dvb.c:184
- dvb_usb_adapter_init drivers/media/usb/dvb-usb/dvb-usb-init.c:86 [inline]
- dvb_usb_init drivers/media/usb/dvb-usb/dvb-usb-init.c:184 [inline]
- dvb_usb_device_init.cold+0xc94/0x146e drivers/media/usb/dvb-usb/dvb-usb-init.c:308
- cxusb_probe+0x159/0x5e0 drivers/media/usb/dvb-usb/cxusb.c:1634
+Note: this was introduced by commit 5496197f9b08 ("debugfs: Restrict
+debugfs when the kernel is locked down"), but it didn't matter at that
+time, as the SELinux support came in later.
 
-Fixes: 4d43e13f723e ("V4L/DVB (4643): Multi-input patch for DVB-USB device")
-Cc: stable@vger.kernel.org
-Reported-by: syzbot+7336195c02c1bd2f64e1@syzkaller.appspotmail.com
-Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-----
-
-Changes in v2:
-
- Added Fixes tag.
- Fixed typos in commit message
-
+Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
 ---
- drivers/media/usb/dvb-usb/cxusb.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/media/usb/dvb-usb/cxusb.c b/drivers/media/usb/dvb-usb/cxusb.c
-index 761992ad05e2..7707de7bae7c 100644
---- a/drivers/media/usb/dvb-usb/cxusb.c
-+++ b/drivers/media/usb/dvb-usb/cxusb.c
-@@ -1947,7 +1947,7 @@ static struct dvb_usb_device_properties cxusb_bluebird_lgz201_properties = {
+v2: try to explain the problem better in the description
+
+ fs/debugfs/inode.c | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/fs/debugfs/inode.c b/fs/debugfs/inode.c
+index 22e86ae4dd5a..bbfc7898c1aa 100644
+--- a/fs/debugfs/inode.c
++++ b/fs/debugfs/inode.c
+@@ -45,10 +45,13 @@ static unsigned int debugfs_allow = DEFAULT_DEBUGFS_ALLOW_BITS;
+ static int debugfs_setattr(struct user_namespace *mnt_userns,
+ 			   struct dentry *dentry, struct iattr *ia)
+ {
+-	int ret = security_locked_down(LOCKDOWN_DEBUGFS);
++	int ret;
  
- 	.size_of_priv     = sizeof(struct cxusb_state),
+-	if (ret && (ia->ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID)))
+-		return ret;
++	if (ia->ia_valid & (ATTR_MODE | ATTR_UID | ATTR_GID)) {
++		ret = security_locked_down(LOCKDOWN_DEBUGFS);
++		if (ret)
++			return ret;
++	}
+ 	return simple_setattr(&init_user_ns, dentry, ia);
+ }
  
--	.num_adapters = 2,
-+	.num_adapters = 1,
- 	.adapter = {
- 		{
- 		.num_frontends = 1,
 -- 
 2.31.1
 
