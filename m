@@ -2,248 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB02C375E86
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:47:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9BFB375E84
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:46:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234053AbhEGBsd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 21:48:33 -0400
-Received: from mga14.intel.com ([192.55.52.115]:1130 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229801AbhEGBsa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 21:48:30 -0400
-IronPort-SDR: BZATXBAqY3ZxUsdxtqVa7Ot7shifU4T5NywS7xylGhXnu83BvfG0qz7Gmx40hu2JuMrM1OJ8G5
- eFIAQkblYhAg==
-X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="198270855"
-X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="198270855"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 18:47:31 -0700
-IronPort-SDR: Vbxsh18j6iczcjDk55LYzWilx/D6ai55apQeVRSO39ls1QhW7ZZi4+sSvakWzMgDfWJrl1kWTo
- KcpSmsiLogRg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="397446126"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by fmsmga007.fm.intel.com with ESMTP; 06 May 2021 18:47:30 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lepaT-000Ay8-I0; Fri, 07 May 2021 01:47:29 +0000
-Date:   Fri, 07 May 2021 09:46:46 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:sched/urgent] BUILD SUCCESS
- 0258bdfaff5bd13c4d2383150b7097aecd6b6d82
-Message-ID: <60949c06.qAI/ktMeDh/Wv40Z%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S234025AbhEGBrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 21:47:51 -0400
+Received: from mail-m121142.qiye.163.com ([115.236.121.142]:51120 "EHLO
+        mail-m121142.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229801AbhEGBru (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 21:47:50 -0400
+Received: from [0.0.0.0] (unknown [14.154.28.254])
+        by mail-m121142.qiye.163.com (Hmail) with ESMTPA id 3CD6580324;
+        Fri,  7 May 2021 09:46:49 +0800 (CST)
+Subject: Re: [RFC PATCH] mm/page_alloc: fix counting of free pages after take
+ off from buddy
+To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
+        <naoya.horiguchi@nec.com>
+Cc:     David Hildenbrand <david@redhat.com>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        "osalvador@suse.de" <osalvador@suse.de>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <20210421020426.5914-1-dinghui@sangfor.com.cn>
+ <dd242708-e3f5-ab9f-64d4-9efe3b7168ce@redhat.com>
+ <20210506024943.GA1777607@hori.linux.bs1.fc.nec.co.jp>
+ <33be44ea-f377-c049-03ff-3b45289ab5f7@sangfor.com.cn>
+ <20210506073055.GA1848917@hori.linux.bs1.fc.nec.co.jp>
+From:   Ding Hui <dinghui@sangfor.com.cn>
+Message-ID: <6af291a0-41fa-8112-5297-6a4cdf2337b6@sangfor.com.cn>
+Date:   Fri, 7 May 2021 09:46:46 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <20210506073055.GA1848917@hori.linux.bs1.fc.nec.co.jp>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGkwdTlZKTEJCTE4aHUsaGk9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        9ISVVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kyo6Ihw*Vj8QATohDDcXEEM1
+        KyEKCktVSlVKTUlLSE5JS0tCQ0xOVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
+        QVlKT1VKTk9VSUNVSU5PWVdZCAFZQUxCTko3Bg++
+X-HM-Tid: 0a794481851db037kuuu3cd6580324
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/peterz/queue.git sched/urgent
-branch HEAD: 0258bdfaff5bd13c4d2383150b7097aecd6b6d82  sched/fair: Fix unfairness caused by missing load decay
+On 2021/5/6 15:30, HORIGUCHI NAOYA(堀口 直也) wrote:
+> On Thu, May 06, 2021 at 12:01:34PM +0800, Ding Hui wrote:
+>> On 2021/5/6 10:49, HORIGUCHI NAOYA(堀口 直也) wrote:
+>>> On Wed, Apr 28, 2021 at 04:54:59PM +0200, David Hildenbrand wrote:
+>>>> On 21.04.21 04:04, Ding Hui wrote:
+>>>>> Recently we found there is a lot MemFree left in /proc/meminfo after
+>>>>> do a lot of pages soft offline.
+>>>>>
+>>>>> I think it's incorrect since NR_FREE_PAGES should not contain HWPoison pages.
+>>>>> After take_page_off_buddy, the page is no longer belong to buddy
+>>>>> allocator, and will not be used any more, but we maybe missed accounting
+>>>>> NR_FREE_PAGES in this situation.
+>>>>>
+>>>>> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
+>>>>> ---
+>>>>>     mm/page_alloc.c | 1 +
+>>>>>     1 file changed, 1 insertion(+)
+>>>>>
+>>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+>>>>> index cfc72873961d..8d65b62784d8 100644
+>>>>> --- a/mm/page_alloc.c
+>>>>> +++ b/mm/page_alloc.c
+>>>>> @@ -8947,6 +8947,7 @@ bool take_page_off_buddy(struct page *page)
+>>>>>     			del_page_from_free_list(page_head, zone, page_order);
+>>>>>     			break_down_buddy_pages(zone, page_head, page, 0,
+>>>>>     						page_order, migratetype);
+>>>>> +			__mod_zone_page_state(zone, NR_FREE_PAGES, -1);
+>>>>>     			ret = true;
+>>>>>     			break;
+>>>>>     		}
+>>>>>
+>>>>
+>>>> Should this use __mod_zone_freepage_state() instead?
+>>>
+>>> Yes, __mod_zone_freepage_state() looks better to me.
+>>>
+>>> And I think that maybe an additional __mod_zone_freepage_state() in
+>>> unpoison_memory() is necessary to cancel the decrement.  I thought of the
+>>> following, but it doesn't build because get_pfnblock_migratetype() is
+>>> available only in mm/page_alloc.c, so you might want to add a small exported
+>>> routine in mm/page_alloc.c and let it called from unpoison_memory().
+>>>
+>>>     @@ -1899,8 +1899,12 @@ int unpoison_memory(unsigned long pfn)
+>>>             }
+>>>             if (!get_hwpoison_page(p, flags, 0)) {
+>>>     -               if (TestClearPageHWPoison(p))
+>>>     +               if (TestClearPageHWPoison(p)) {
+>>>     +                       int migratetype = get_pfnblock_migratetype(p, pfn);
+>>>     +
+>>>                             num_poisoned_pages_dec();
+>>>     +                       __mod_zone_freepage_state(page_zone(p), 1, migratetype);
+>>>     +               }
+>>>                     unpoison_pr_info("Unpoison: Software-unpoisoned free page %#lx\n",
+>>>                                      pfn, &unpoison_rs);
+>>>                     return 0;
+>>>
+>>
+>> I think there is another problem:
+>> In normal case, we keep the last refcount of the hwpoison page, so
+>> get_hwpoison_page should return 1. The NR_FREE_PAGES will be adjusted when
+>> call put_page.
+> 
+> I think that take_page_off_buddy() should not be called for this case
+> (the error page have remaining refcount).  So it seems that no need to
+> update NR_FREE_PAGES ?
+> 
 
-elapsed time: 729m
+Yes, take_page_off_buddy() only used for free pages, but we will call 
+page_ref_inc() after that, on the other hand for in used pages, we 
+increased the refcount by get_any_page(), so in both cases, the 
+hwpoisoned pages have refcount great than zero.
 
-configs tested: 186
-configs skipped: 3
+I think there is no need to update NR_FREE_PAGES explicitly in 
+unpoison_memory(), the put_page() will help us to update NR_FREE_PAGES 
+and put the page back to buddy.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+>> At race condition, we maybe leak the page because we does not put it back to
+>> buddy in unpoison_memory, however the HWPoison flag, num_poisoned_pages,
+>> NR_FREE_PAGES is adjusted correctly.
+>>
+>> CPU0                        CPU1
+>>
+>> soft_offline_page
+>>    soft_offline_free_page
+>>      page_handle_poison
+>>        take_page_off_buddy
+>>        SetPageHWPoison
+>>                              unpoison_memory
+>>                                if (!get_hwpoison_page(p))
+>>                                  TestClearPageHWPoison
+>>                                    num_poisoned_pages_dec
+>>                                  __mod_zone_freepage_state
+>>                                  return 0
+>>                                  /* miss put the page back to buddy */
+>>        page_ref_inc
+>>        num_poisoned_pages_inc
+> 
+> Thanks for checking this, unpoison_memory() is racy.  Recently we are suggesting
+> to introduce mf_mutex by [1].  Although this patch is not merged to mainline yet,
+> but it could be used to prevent the above race too.
+> 
+> [1] https://lore.kernel.org/linux-mm/20210427062953.2080293-2-nao.horiguchi@gmail.com/
+> 
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-arm                       mainstone_defconfig
-powerpc                     pq2fads_defconfig
-sparc                       sparc64_defconfig
-arm                        keystone_defconfig
-um                               alldefconfig
-s390                                defconfig
-mips                          rb532_defconfig
-arm                             ezx_defconfig
-riscv             nommu_k210_sdcard_defconfig
-mips                      maltasmvp_defconfig
-arm                         cm_x300_defconfig
-arm                         hackkit_defconfig
-arm                     eseries_pxa_defconfig
-sparc                               defconfig
-powerpc                        fsp2_defconfig
-arm                            zeus_defconfig
-openrisc                  or1klitex_defconfig
-arm                        spear6xx_defconfig
-powerpc                     ep8248e_defconfig
-arm                         orion5x_defconfig
-arm                        multi_v7_defconfig
-powerpc                      ep88xc_defconfig
-powerpc                    amigaone_defconfig
-m68k                            q40_defconfig
-powerpc                      acadia_defconfig
-powerpc                mpc7448_hpc2_defconfig
-powerpc                    ge_imp3a_defconfig
-sh                          rsk7203_defconfig
-sh                          polaris_defconfig
-arm                        shmobile_defconfig
-mips                        nlm_xlr_defconfig
-arm                          lpd270_defconfig
-mips                         bigsur_defconfig
-arm                           sama5_defconfig
-m68k                       m5249evb_defconfig
-arm                      integrator_defconfig
-s390                          debug_defconfig
-mips                      malta_kvm_defconfig
-h8300                    h8300h-sim_defconfig
-powerpc                        cell_defconfig
-powerpc                     tqm8560_defconfig
-sh                      rts7751r2d1_defconfig
-mips                     loongson1c_defconfig
-sparc64                          alldefconfig
-mips                        omega2p_defconfig
-sh                     sh7710voipgw_defconfig
-m68k                          multi_defconfig
-sh                          lboxre2_defconfig
-mips                           gcw0_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                      mgcoge_defconfig
-mips                           mtx1_defconfig
-m68k                            mac_defconfig
-sh                           se7751_defconfig
-riscv                            alldefconfig
-powerpc                      ppc40x_defconfig
-mips                          ath25_defconfig
-sh                   sh7724_generic_defconfig
-mips                           jazz_defconfig
-m68k                         amcore_defconfig
-powerpc                 mpc834x_mds_defconfig
-arm                        oxnas_v6_defconfig
-arm                         nhk8815_defconfig
-powerpc                 mpc832x_rdb_defconfig
-m68k                             allyesconfig
-powerpc                     redwood_defconfig
-arm                       cns3420vb_defconfig
-arm                         mv78xx0_defconfig
-sparc                       sparc32_defconfig
-sh                                  defconfig
-arc                        vdk_hs38_defconfig
-arm                          moxart_defconfig
-powerpc                      obs600_defconfig
-arm                       imx_v6_v7_defconfig
-ia64                        generic_defconfig
-mips                        bcm47xx_defconfig
-arm                          exynos_defconfig
-m68k                                defconfig
-x86_64                              defconfig
-mips                       bmips_be_defconfig
-arc                              alldefconfig
-m68k                        m5272c3_defconfig
-arc                        nsimosci_defconfig
-powerpc                     powernv_defconfig
-powerpc                     asp8347_defconfig
-mips                        jmr3927_defconfig
-mips                      loongson3_defconfig
-mips                     cu1830-neo_defconfig
-arc                            hsdk_defconfig
-arm                        realview_defconfig
-m68k                       m5275evb_defconfig
-arm                       multi_v4t_defconfig
-powerpc                     akebono_defconfig
-arm                       aspeed_g5_defconfig
-arm                        mvebu_v7_defconfig
-arm                          simpad_defconfig
-arm                      jornada720_defconfig
-riscv                    nommu_k210_defconfig
-mips                        nlm_xlp_defconfig
-powerpc                 mpc8315_rdb_defconfig
-powerpc                    sam440ep_defconfig
-sh                 kfr2r09-romimage_defconfig
-mips                         cobalt_defconfig
-mips                           ip22_defconfig
-arm                              alldefconfig
-xtensa                generic_kc705_defconfig
-powerpc                   currituck_defconfig
-powerpc                     stx_gp3_defconfig
-um                            kunit_defconfig
-powerpc                     rainier_defconfig
-mips                         mpc30x_defconfig
-powerpc                 mpc837x_mds_defconfig
-sh                              ul2_defconfig
-x86_64                            allnoconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-sparc                            allyesconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210506
-i386                 randconfig-a006-20210506
-i386                 randconfig-a001-20210506
-i386                 randconfig-a005-20210506
-i386                 randconfig-a004-20210506
-i386                 randconfig-a002-20210506
-x86_64               randconfig-a014-20210506
-x86_64               randconfig-a015-20210506
-x86_64               randconfig-a012-20210506
-x86_64               randconfig-a013-20210506
-x86_64               randconfig-a011-20210506
-x86_64               randconfig-a016-20210506
-i386                 randconfig-a015-20210506
-i386                 randconfig-a013-20210506
-i386                 randconfig-a016-20210506
-i386                 randconfig-a014-20210506
-i386                 randconfig-a012-20210506
-i386                 randconfig-a011-20210506
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+I'll look forward to it, thanks.
 
-clang tested configs:
-x86_64               randconfig-a001-20210506
-x86_64               randconfig-a003-20210506
-x86_64               randconfig-a005-20210506
-x86_64               randconfig-a002-20210506
-x86_64               randconfig-a006-20210506
-x86_64               randconfig-a004-20210506
+>>
+>> How about do nothing and return -EBUSY (so the caller can retry) if unpoison
+>> a zero refcount page , or return 0 like 230ac719c500 ("mm/hwpoison: don't
+>> try to unpoison containment-failed pages") does ?
+>>
+>>    @@ -1736,11 +1736,9 @@ int unpoison_memory(unsigned long pfn)
+>>      }
+>>
+>>      if (!get_hwpoison_page(p, flags, 0)) {
+>>    -       if (TestClearPageHWPoison(p))
+>>    -           num_poisoned_pages_dec();
+>>    -       unpoison_pr_info("Unpoison: Software-unpoisoned free page %#lx\n",
+>>    +       unpoison_pr_info("Unpoison: Software-unpoisoned zero refcount page
+>> %#lx\n",
+>>    				 pfn, &unpoison_rs);
+>>    -       return 0;
+>>    +       return -EBUSY;
+> 
+> Currently unpoison_memory() does not work as reverse operation of take_page_off_buddy()
+> (it's simply broken), so implementing it at one time would be better.
+> I'll take time to fix unpoison_memory().
+> 
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+Thanks for your work.
+Actually, I'm not sure about the exactly meaning of "broken", it seems 
+that the basic function of unpoison_memory() is ok if not considered the 
+race conditions.
+
+
+-- 
+Thanks,
+- Ding Hui
