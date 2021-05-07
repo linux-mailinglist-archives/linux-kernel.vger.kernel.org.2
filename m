@@ -2,97 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 605ED37651F
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:30:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3108E376525
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:31:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236615AbhEGMbB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:31:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
+        id S236685AbhEGMcC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:32:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58472 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233468AbhEGMbA (ORCPT
+        with ESMTP id S233468AbhEGMcB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:31:00 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BFBCAC061574;
-        Fri,  7 May 2021 05:29:59 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id b11-20020a7bc24b0000b0290148da0694ffso7074538wmj.2;
-        Fri, 07 May 2021 05:29:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=1t5cr263LZN2aTz3Al7pSQM5qBRuIroNjq3vIPHmzy4=;
-        b=Lo6uQ7JDFIVlslQKRS3aOJnfHCNdHfs+0WiECvpQ/qLb1QPV8hmm2HH6Y71Rjk2mZt
-         mXLABihur0oidXcXwI2LIKID5vvOjNtA80d/k05UHXIV/wjHHhfUQlu/dp4R8JfGrGwS
-         OWUR//5Dyfep2vZF2V5t407O+G3yzVV+mq8vD7/s08++8qNsqSidYuJ0JBMddbnmbQ77
-         xgrm2UYaT+cYp64E7HWr3vfxDPdlLW8ap0oPpqVQnc/zLjs1XzD0Trw8jj1M/kR72xQQ
-         +p6YK08NS+fraT0bEvFmCJaW/+3XYSnveeYGcpvPEPwvg9aYO/ld2z7mL1x4FcfdRb2t
-         lIOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=1t5cr263LZN2aTz3Al7pSQM5qBRuIroNjq3vIPHmzy4=;
-        b=bQRGVQNWQ+fVCO/jxEtdKrn13wZjwIEt1/e1HxEouTc9xoscRYINyy8ypXOe2k9PJ5
-         NgnMnGXdCkYdeVnOS88qFh5J+UsPTpQJo/k2UdL8M/otqfbvWW5CVo+zyBNYz5pE4b4c
-         E4SC0p1B7PahxfaFu5GhW4X6oGnwg6qWeus7fKtA/iSkSWqjd3fYNRZfvYyP+DFplnDa
-         JLZC9hjGNiNcZUvNulHewrVUx4n38h8dyBeHSaLjv2V7DNF0IhQVEddrGrM5d9Ahoayf
-         jhLgVyukpKgzJ2uk0+2Vt7soiR01unVEk/uZMYwEhC04gb9csr/1rXKMHc4kpETpflId
-         fAWQ==
-X-Gm-Message-State: AOAM531n7HkiTBthmmkEV7GyJER/i8B9uVU4SbsyMd0E+GOmrY8hFxBM
-        oylB1yM+zDZPlrqQn+oFiao=
-X-Google-Smtp-Source: ABdhPJwzla/fwihJbSMelTOqfKPOh4LnvMl0F1s0oOIMkXc8xz2ROg6oJ+XtfzbiXO7XF3kjk2WacA==
-X-Received: by 2002:a7b:c041:: with SMTP id u1mr9558018wmc.95.1620390598465;
-        Fri, 07 May 2021 05:29:58 -0700 (PDT)
-Received: from localhost.localdomain ([94.103.226.84])
-        by smtp.gmail.com with ESMTPSA id u2sm8813393wmm.5.2021.05.07.05.29.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 05:29:58 -0700 (PDT)
-Date:   Fri, 7 May 2021 15:29:54 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Uladzislau Rezki <urezki@gmail.com>, linux-usb@vger.kernel.org,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        mchehab@kernel.org, syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] WARNING in __vmalloc_node_range
-Message-ID: <20210507152954.5773592a@gmail.com>
-In-Reply-To: <20210507080435.GF1922@kadam>
-References: <000000000000fdc0be05c1a6d68f@google.com>
-        <20210506142210.GA37570@pc638.lan>
-        <20210506145722.GC1955@kadam>
-        <20210506180053.4770f495@gmail.com>
-        <20210507080435.GF1922@kadam>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        Fri, 7 May 2021 08:32:01 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48F82C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 05:31:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=B4OtqkGn285R60YiVqH6q3onTS7Lt7KKKKLOjRmOeV4=; b=ZVM8/wMyekdiVYbyNXTg1uy4i
+        Jl9IXPuzvxmeenmYLQI3/GzdtqOmodJRHf3id3FjDcg0GLbXtEyCBabEt7NX8KPj1fc3wRhfdH7/b
+        pDaOUqdSLBtQ6Hc+sESBUbdYJYuIIwCBjv39DEa8RxSA51brI5orDHfPHCVTGPuQ/H+dEgfhfyJ+s
+        cOvWVc6JVxK6B85MVUKbK9YrNll44QU623fa3W3oYDP97SzMAUoBe9VciVWx4RSPWRCX2vgc2z5yV
+        faklLezAiSxTrdHCXSGc22xLy5WZtprqEgqqdnUx3QVJLiekKU+0B/MFqp7iQK1GHnFSdbxcoY/MT
+        zuuAASpAg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43756)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1lezdA-0003iW-2O; Fri, 07 May 2021 13:30:56 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1lezd9-0005lq-GX; Fri, 07 May 2021 13:30:55 +0100
+Date:   Fri, 7 May 2021 13:30:55 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Jessica Yu <jeyu@kernel.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ARM: module: treat exit sections the same as init
+ sections when !CONFIG_MODULE_UNLOAD
+Message-ID: <20210507123054.GD1336@shell.armlinux.org.uk>
+References: <20210507121322.6441-1-jeyu@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210507121322.6441-1-jeyu@kernel.org>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 7 May 2021 11:04:36 +0300
-Dan Carpenter <dan.carpenter@oracle.com> wrote:
-
-> On Thu, May 06, 2021 at 06:00:53PM +0300, Pavel Skripkin wrote:
-> > 
-> > Hi!
-> > 
-> > I've already sent the patch:
-> > https://patchwork.linuxtv.org/project/linux-media/patch/20210506121211.8556-1-paskripkin@gmail.com/ 
-> > 
+On Fri, May 07, 2021 at 02:13:22PM +0200, Jessica Yu wrote:
+> Dynamic code patching (alternatives, jump_label and static_call) can
+> have sites in __exit code, even if __exit is never executed. Therefore
+> __exit must be present at runtime, at least for as long as __init code is.
+...
+> Previously, the module loader never loaded the exit sections in the first
+> place when CONFIG_MODULE_UNLOAD=n. Commit 33121347fb1c ("module: treat exit
+> sections the same as init sections when !CONFIG_MODULE_UNLOAD") addressed
+> the issue by having the module loader load the exit sections and then making
+> __exit identify as __init for !MODULE_UNLOAD. Then, since they are treated
+> like init sections, they will be also discarded after init.
 > 
-> Please, always add a Fixes tag.
-> 
-> Fixes: 4d43e13f723e ("V4L/DVB (4643): Multi-input patch for DVB-USB
-> device")
-> 
-> regards,
-> dan carpenter
-> 
+> That commit satisfied the above requirements for jump_labels and
+> static_calls by modifying the checks in the core module_init_section()
+> function in kernel/module.c to include exit sections. However, ARM
+> overrides these and implements their own module_{init,exit}_section()
+> functions. Add a similar check for exit sections to ARM's
+> module_init_section() function so that all arches are on the same page.
 
-oh..., that's one thing I always forget about. Thanks for pointing it
-out, I'll send v2 soon 
+Shouldn't the module core code itself be doing:
 
+	module_init_section(name) || module_exit_section(name)
 
-With regards,
-Pavel Skripkin
+itself when CONFIG_MODULE_UNLOAD is not set, rather than pushing this
+logic down into every module_init_section() implementation?
+
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
