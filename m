@@ -2,202 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D4763761FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:28:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F4AA376203
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:31:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236263AbhEGI3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 04:29:41 -0400
-Received: from szxga03-in.huawei.com ([45.249.212.189]:3857 "EHLO
-        szxga03-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236210AbhEGI3e (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 04:29:34 -0400
-Received: from dggeml718-chm.china.huawei.com (unknown [172.30.72.54])
-        by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Fc3RH1fqYz5yRQ;
-        Fri,  7 May 2021 16:25:15 +0800 (CST)
-Received: from dggpemm500005.china.huawei.com (7.185.36.74) by
- dggeml718-chm.china.huawei.com (10.3.17.129) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
- 15.1.2176.2; Fri, 7 May 2021 16:28:32 +0800
-Received: from [127.0.0.1] (10.69.30.204) by dggpemm500005.china.huawei.com
- (7.185.36.74) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.2176.2; Fri, 7 May 2021
- 16:28:31 +0800
-Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
-To:     Ilias Apalodimas <ilias.apalodimas@linaro.org>
-CC:     Matteo Croce <mcroce@linux.microsoft.com>,
-        <netdev@vger.kernel.org>, <linux-mm@kvack.org>,
-        Ayush Sawal <ayush.sawal@chelsio.com>,
-        "Vinay Kumar Yadav" <vinay.yadav@chelsio.com>,
-        Rohit Maheshwari <rohitm@chelsio.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Marcin Wojtas <mw@semihalf.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Mirko Lindner <mlindner@marvell.com>,
-        Stephen Hemminger <stephen@networkplumber.org>,
-        "Tariq Toukan" <tariqt@nvidia.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        "Alexei Starovoitov" <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "John Fastabend" <john.fastabend@gmail.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
-        Will Deacon <will@kernel.org>,
-        Michel Lespinasse <walken@google.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
-        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
-        Jonathan Lemon <jonathan.lemon@gmail.com>,
-        Alexander Lobakin <alobakin@pm.me>,
-        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
-        Kevin Hao <haokexin@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>,
-        Jakub Sitnicki <jakub@cloudflare.com>,
-        Marco Elver <elver@google.com>,
-        Willem de Bruijn <willemb@google.com>,
-        Miaohe Lin <linmiaohe@huawei.com>,
-        Guillaume Nault <gnault@redhat.com>,
-        <linux-kernel@vger.kernel.org>, <linux-rdma@vger.kernel.org>,
-        <bpf@vger.kernel.org>, Matthew Wilcox <willy@infradead.org>,
-        Eric Dumazet <edumazet@google.com>,
-        David Ahern <dsahern@gmail.com>,
-        Lorenzo Bianconi <lorenzo@kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
-References: <20210409223801.104657-1-mcroce@linux.microsoft.com>
- <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
- <YIsAIzecktXXBlxn@apalos.home>
- <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
- <YIwvI5/ygBvZG5sy@apalos.home>
- <33b02220-cc50-f6b2-c436-f4ec041d6bc4@huawei.com>
- <YJPn5t2mdZKC//dp@apalos.home>
- <75a332fa-74e4-7b7b-553e-3a1a6cb85dff@huawei.com>
- <YJTm4uhvqCy2lJH8@apalos.home>
-From:   Yunsheng Lin <linyunsheng@huawei.com>
-Message-ID: <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
-Date:   Fri, 7 May 2021 16:28:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.2.0
-MIME-Version: 1.0
-In-Reply-To: <YJTm4uhvqCy2lJH8@apalos.home>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+        id S236244AbhEGIcJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 04:32:09 -0400
+Received: from mail-bn8nam11on2078.outbound.protection.outlook.com ([40.107.236.78]:45952
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S231675AbhEGIcI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 04:32:08 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QdMdMuyP8S47tH5pY8Xu7P2eDl+c7BIxbFplTEt0EFKi8G/lII/YIkYK2ov+guLKfyqJ9kry0EgoAl+IDMvOue00B0jAPkdq7O4L6yICVcTwccIV99WLNWuoZqh3f3/Hmzlz9hx8IxtXdYymwTFTY90OR9TXXrDTacVSTVxLFTw+rXEnpDCQ9HFdTr0da2yWLvmnbgRwbIuEICNfx6xXteDQiIBRRPIqU388fRb0tnTTCNPpe7z6+PGGyXPOJ17t4DJ6mjapXjhatHY6/DXmGS/pKF/DlL0hg592E8J6jgMOtffMuyxlivhgB+EzSHb0uGJ5lZ1dWXet3NJ7Tg/+lA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lMthCu/pg8E/LDQbuM/qKz+CyYAwOOcCPiuvVCV7ItU=;
+ b=DHGAQmUWVJxIE6DwCyh3uzllAfu1TDWqdABDVAn6HIIA3KYwd8dyUh7aw59hMQRaLdmGGLCdX0EIC31MQt+RIj8fZpazX+APdMW0qdlprqoyecupCKbVQYINY8JxEdhbZVAGl/JZ5vAFsRP7CZsk/Ufocv5O/Or2yk2ae0NPraebKETQ/j2URrFOtR3esvcQjuG9MvVsFCLTlK26nn7crOdUP+fcn1yYYk5AUHFUk52hiWO2ab1/R9q4bNyEGXJPx/BjeVdGKqt5fPo4JgPQVl0XN4yiXzGlTAG4Oq6AGuxGO6v9cOosCH1+BZAWf2yfO3glbYm0O79kT+GqOP1n5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=lMthCu/pg8E/LDQbuM/qKz+CyYAwOOcCPiuvVCV7ItU=;
+ b=lDV24BYhuBAWRAB+KTgH5z3yY+i15T/+Y7YCMRcn4VI7MCFo/qz8F+PybHaSjZlCGS9cYMBJ/YMEcPKeGc9JAVquwErijBG24HGZ4Qg536nikzAoP4Q6NSbHTeuKjch6L9fcdhlf7Yguwo/zJnqtMRNDOToTEmg7rLle07VVnhE=
+Authentication-Results: vger.kernel.org; dkim=none (message not signed)
+ header.d=none;vger.kernel.org; dmarc=none action=none
+ header.from=windriver.com;
+Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
+ (2603:10b6:300:74::18) by MW3PR11MB4524.namprd11.prod.outlook.com
+ (2603:10b6:303:2c::13) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Fri, 7 May
+ 2021 08:31:07 +0000
+Received: from MWHPR1101MB2351.namprd11.prod.outlook.com
+ ([fe80::c156:455d:860e:ba87]) by MWHPR1101MB2351.namprd11.prod.outlook.com
+ ([fe80::c156:455d:860e:ba87%4]) with mapi id 15.20.4108.029; Fri, 7 May 2021
+ 08:31:07 +0000
+To:     rth@twiddle.net, ink@jurassic.park.msu.ru, mattst88@gmail.com,
+        linux-alpha@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+From:   He Zhe <zhe.he@windriver.com>
+Subject: Concern about arch/alpha/kernel/smc37c669.c
+Message-ID: <7b314145-cbb9-b491-ccf5-d6021a574339@windriver.com>
+Date:   Fri, 7 May 2021 16:30:59 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.69.30.204]
-X-ClientProxiedBy: dggeme711-chm.china.huawei.com (10.1.199.107) To
- dggpemm500005.china.huawei.com (7.185.36.74)
-X-CFilter-Loop: Reflected
+Content-Language: en-US
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR06CA0005.apcprd06.prod.outlook.com
+ (2603:1096:202:2e::17) To MWHPR1101MB2351.namprd11.prod.outlook.com
+ (2603:10b6:300:74::18)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [128.224.162.175] (60.247.85.82) by HK2PR06CA0005.apcprd06.prod.outlook.com (2603:1096:202:2e::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 7 May 2021 08:31:05 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 87bf450b-dc34-43cb-a68e-08d9113275a9
+X-MS-TrafficTypeDiagnostic: MW3PR11MB4524:
+X-Microsoft-Antispam-PRVS: <MW3PR11MB4524A13A8759C038AC8A78C08F579@MW3PR11MB4524.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: NfSZGdBm+AChjytyOU5Dtfjrxkn83yY3bspUEsX1yn4/jmrcxrm5QV6PquI3wwzj2V1J7bEGAwh7izbm83ZHBHNl7LcgWNLFvJ2KaT5oZ2PMIOpEVqPVr24GtNw/bBILDdOEk3mOxPvurF52zWNZlIYyiguumVTR/G1n0mAvuuOaINta47ZHx+uC0KqTNX31ZYFBSr2Ff4yj8bcFxsKSZ5frC/RD6ljoWh48rpck5iMkYfr2Wriiuwdh9Zko0G4BrehPTEIlfeYhXUmoVgGZWgjZi0VI7LlKCqaN7K+8tg55d/KLsMzzwyGWnFGe9k4i/UiyMN7AiwqjZjb+5euZ1tbxXsVjfLEVtBY6COddgEPBoqExl3vCnAn03aKU6lFNr54VJ1x8EiLye0n4n84azXaYYsi6rEl7zwgfqK3+fKtFYRjnCCtLJ8xn+a+9xdth9LkDdfilskhsIV8v8koazmm2FFBv3abj5jzGC1sJmsiuMiG/PIBt5giqPZheMY8B+C2WNhujOKhPgjImCfkgX5QSNeJY8PwD9dmBQxiRg1a0Llg6RSo6wrI+a1mUqAfZiO2aLUQsYzNVuzvrB3Keiw9mZj+FShOuBKhvVL5h6jy7P9Hga+OpdFyA1T/mMWhnIspnMNUHsnkOxxXrABzlUNtUiYF5+ckJHMsp3jqqF294wz86k+l7vluyDwNUSK1etNpv7LRlKWkbAhJFL2NioeXw8rVoIXqAhuit3b4X3rw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR1101MB2351.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(396003)(366004)(136003)(346002)(376002)(6486002)(6916009)(186003)(86362001)(36756003)(6666004)(4744005)(8676002)(2616005)(5660300002)(956004)(16526019)(38100700002)(66556008)(66476007)(16576012)(52116002)(38350700002)(31696002)(2906002)(8936002)(478600001)(316002)(31686004)(66946007)(26005)(6706004)(78286007)(43740500002)(45980500001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?N3NHNzRjY25jZktjM3hWdVpWTUdPUlNpWmhXWmE3NER2a01KN05pekRKM3JC?=
+ =?utf-8?B?YUxueWhZVHhXM0Vob2t3WkFhYldWcUJMeEwrMGhaNDl2WXY1c1ptNWlNMjdv?=
+ =?utf-8?B?QXBTNjkyU0JHT2NqQTJHOXJGaDFUWVp5WHNVVTNid1FNNWM0V2M5bUFQS0Qv?=
+ =?utf-8?B?RVFuTitaRVlCQ2RULzNYY0YxUXdwUzlKOVpITWlKbGxzbFhYYlQ0SElWY3R3?=
+ =?utf-8?B?ZjhjeGlia0RHL2g4TTNRYWdKcktIM2QwMGxlazROb2RsYnhrM09LU3JjbU11?=
+ =?utf-8?B?VlFpL1ZGZjhReTJCNnN3K0NDWThnTVlTTXozdW4veXFQM2NrOWpkTWtIR29s?=
+ =?utf-8?B?ODY4eHpvOTZLSzVtTlhwbUhyQzdyRjI5NG9sWnl2eW42YkxWR0lwSXJNQWpj?=
+ =?utf-8?B?T0lIRFhVZWhLM0pOdkFJSkhDSkpTQmVvZnZJSDBzUFFzajJKdUhaN3l3RTQz?=
+ =?utf-8?B?WERkQ0NJdHhZZkQ2c29aazNqV3FrSnNsSmNhSVM5Y0dyUDVzcWNFNVErMUY5?=
+ =?utf-8?B?dUdkTERnbnR0QUtQeExYVG5NS09XTnVsdzg3QmwwMWxjUlhtNWxWaWlCTlVU?=
+ =?utf-8?B?N1dUMlEwdWxOSkRaTmx1M0dVMXhOcFhkbzVWR1hmMktnUlczZ0xQZ3c4VnpS?=
+ =?utf-8?B?WTZZWTBWaSthTHBnQ3RJbnVDWmZtRURRMFp2MWI3QTdtS0FSaTNUaS94RFhU?=
+ =?utf-8?B?KzY5VEpDb0x0bFJNaW0xbTljOTY0cGFKdDBISnFsV21EOUdqamVUL0RMQU5R?=
+ =?utf-8?B?UTdCTzQzUDFYS2lrbkkyUFY5dWJXVEs2ajNXNnBkZ21wM3dYNmVQd083d0g4?=
+ =?utf-8?B?Vk9GNkVpZHdRRmdJUnJKUEZYOWNEb2pESVVxbWRjRFdlVkUzTXM5emRoZHpK?=
+ =?utf-8?B?aHp1Ykk3czFqWEZlNmZtVmJMb1pucU5iSm1xU1hDM21QQlVpZ05CdXVzMTQ1?=
+ =?utf-8?B?WXpRb0pRckprbi9DSHljbVplejJFR2RUZzl0bEY3MFNVZGhYK1YxRXRPK21Y?=
+ =?utf-8?B?YU92ZWxGN0ljTm9sVjdvK1VBbVZqZE1qSzFFRTByRHN2QWliSUdzclh0S3VZ?=
+ =?utf-8?B?RVRqd013aVBBMXRWMk9vZVpJU1Ywek5GbXNxb3k2TS93RzJvY25YM3hsdFhJ?=
+ =?utf-8?B?QXZaTnU5UWdYUk41VDRxVW9JbDM1eU9PTzlsWDF2Z1IvcW9idWZIczBaZGtO?=
+ =?utf-8?B?QzU2YU1jVW1OaXVZQlZvUDBGcldwUVE1RmxUTm5QZzFRbXkxV1J0K25lWmNH?=
+ =?utf-8?B?bkZ6Z3NyTWpkeCtSNEs5VTZSNWJ2ZHZKMmt5bEQ0L3Bqd1RqeUNoVU94R213?=
+ =?utf-8?B?anRtTWpUUVBPSHVKZXBMSURDcC9mSHFCbGxJRDVIL0NVNkxTUTRjYS9hTVpS?=
+ =?utf-8?B?ZHVOR0tWOGhiVXFpQWNLUE9OK0x4YnVGekxBU0xJWllBV3RrV1RZSTA1MnlF?=
+ =?utf-8?B?U1g1anJScU0rTk9qSkR2VWJjTDh2YUtuYmlLSDhJWFJpdXF4YmE0akxKTEo5?=
+ =?utf-8?B?Mlo3ZWxCNiszSmpvbTBtY3h0NjJjZUtCUjFOSTZ0SHlMSlp4eVAxVEQxU2xO?=
+ =?utf-8?B?L2NsVUN6T0NGekFNQ01ibWIvYVpFMXgzdGJDaDlad3JibHpaY0txNFFwSTQ3?=
+ =?utf-8?B?N3RjNHFmWXMwMVNpalBTakJKT3Q3eEhKc21ocE1VczhRK2NLcVpCQmpNZVVp?=
+ =?utf-8?B?aFNWcU9pSkZVa0xsMXFaVHhLN3phSVBYQ1hFVlRWcG9Xdi9TOVFPNjBZWTdC?=
+ =?utf-8?Q?OIUtxU6YiGjXRRL5z+urdsIqH/xBoaGivIqH1A2?=
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 87bf450b-dc34-43cb-a68e-08d9113275a9
+X-MS-Exchange-CrossTenant-AuthSource: MWHPR1101MB2351.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2021 08:31:07.1475
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Sd/WlNLv5XBO1qJLJKz984Y+FTyAH7mmktEehSOsBo2MHkBegDjz3iYYoqtEoY+UhfZWMBRDq6UaigwIQNr0/Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR11MB4524
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/7 15:06, Ilias Apalodimas wrote:
-> On Fri, May 07, 2021 at 11:23:28AM +0800, Yunsheng Lin wrote:
->> On 2021/5/6 20:58, Ilias Apalodimas wrote:
->>>>>>
->>>>>
->>>>> Not really, the opposite is happening here. If the pp_recycle bit is set we
->>>>> will always call page_pool_return_skb_page().  If the page signature matches
->>>>> the 'magic' set by page pool we will always call xdp_return_skb_frame() will
->>>>> end up calling __page_pool_put_page(). If the refcnt is 1 we'll try
->>>>> to recycle the page.  If it's not we'll release it from page_pool (releasing
->>>>> some internal references we keep) unmap the buffer and decrement the refcnt.
->>>>
->>>> Yes, I understood the above is what the page pool do now.
->>>>
->>>> But the question is who is still holding an extral reference to the page when
->>>> kfree_skb()? Perhaps a cloned and pskb_expand_head()'ed skb is holding an extral
->>>> reference to the same page? So why not just do a page_ref_dec() if the orginal skb
->>>> is freed first, and call __page_pool_put_page() when the cloned skb is freed later?
->>>> So that we can always reuse the recyclable page from a recyclable skb. This may
->>>> make the page_pool_destroy() process delays longer than before, I am supposed the
->>>> page_pool_destroy() delaying for cloned skb case does not really matters here.
->>>>
->>>> If the above works, I think the samiliar handling can be added to RX zerocopy if
->>>> the RX zerocopy also hold extral references to the recyclable page from a recyclable
->>>> skb too?
->>>>
->>>
->>> Right, this sounds doable, but I'll have to go back code it and see if it
->>> really makes sense.  However I'd still prefer the support to go in as-is
->>> (including the struct xdp_mem_info in struct page, instead of a page_pool
->>> pointer).
->>>
->>> There's a couple of reasons for that.  If we keep the struct xdp_mem_info we
->>> can in the future recycle different kind of buffers using __xdp_return().
->>> And this is a non intrusive change if we choose to store the page pool address
->>> directly in the future.  It just affects the internal contract between the
->>> page_pool code and struct page.  So it won't affect any drivers that already
->>> use the feature.
->>
->> This patchset has embeded a signature field in "struct page", and xdp_mem_info
->> is stored in page_private(), which seems not considering the case for associating
->> the page pool with "struct page" directly yet? 
-> 
-> Correct
-> 
->> Is the page pool also stored in
->> page_private() and a different signature is used to indicate that?
-> 
-> No only struct xdp_mem_info as you mentioned before
-> 
->>
->> I am not saying we have to do it in this patchset, but we have to consider it
->> while we are adding new signature field to "struct page", right?
-> 
-> We won't need a new signature.  The signature in both cases is there to 
-> guarantee the page you are trying to recycle was indeed allocated by page_pool.
-> 
-> Basically we got two design choices here: 
-> - We store the page_pool ptr address directly in page->private and then,
->   we call into page_pool APIs directly to do the recycling.
->   That would eliminate the lookup through xdp_mem_info and the
->   XDP helpers to locate page pool pointer (through __xdp_return).
-> - You store the xdp_mem_info on page_private.  In that case you need to go
->   through __xdp_return()  to locate the page_pool pointer. Although we might
->   loose some performance that would allow us to recycle additional memory types
->   and not only MEM_TYPE_PAGE_POOL (in case we ever need it).
+Hello maintainers,
 
-So the signature field  in "struct page" is used to only indicate a page is
-from a page pool, then how do we tell the content of page_private() if both of
-the above choices are needed, we might still need an extra indicator to tell
-page_private() is page_pool ptr or xdp_mem_info.
+There is no "SPDX-License-Identifier: GPL-2.0" in arch/alpha/kernel/smc37c669.c
+and the following copyright is found.
+"
+Copyright (C) 1997 by
+Digital Equipment Corporation, Maynard, Massachusetts.
+All rights reserved.
+"
 
-It seems storing the page pool ptr in page_private() is clear for recyclable
-page from a recyclable skb use case, and the use case for storing xdp_mem_info
-in page_private() is unclear yet? As XDP seems to have the xdp_mem_info in the
-"struct xdp_frame", so it does not need the xdp_mem_info from page_private().
+Does this conflict with GPLv2? Anything else we need to know when using this as opensource software?
 
-If the above is true, what does not really makes sense to me here is that:
-why do we first implement a unclear use case for storing xdp_mem_info in
-page_private(), why not implement the clear use case for storing page pool ptr
-in page_private() first?
-
-> 
-> 
-> I think both choices are sane.  What I am trying to explain here, is
-> regardless of what we choose now, we can change it in the future without
-> affecting the API consumers at all.  What will change internally is the way we
-> lookup the page pool pointer we are trying to recycle.
-
-It seems the below API need changing?
-+static inline void skb_mark_for_recycle(struct sk_buff *skb, struct page *page,
-+					struct xdp_mem_info *mem)
-
-
-> 
-> [...]
-> 
-> 
-> Cheers
-> /Ilias
-> 
-> .
-> 
-
+Thanks,
+Zhe
