@@ -2,90 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F229A376473
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33B59376475
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:28:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233907AbhEGL3K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 07:29:10 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:42282 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233772AbhEGL3I (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 07:29:08 -0400
-Received: from mail-qk1-f197.google.com ([209.85.222.197])
-        by youngberry.canonical.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.93)
-        (envelope-from <krzysztof.kozlowski@canonical.com>)
-        id 1leyeN-0006rO-Is
-        for linux-kernel@vger.kernel.org; Fri, 07 May 2021 11:28:07 +0000
-Received: by mail-qk1-f197.google.com with SMTP id i141-20020a379f930000b02902e94f6d938dso5821285qke.5
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 04:28:07 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Nvs/ClTYmViTVvVdTUIxxDVB5ynPNHL5ImJxUphB3LE=;
-        b=KZQxWMdmsdeRMt2etGAlXK+RQ/64gLjjUwJIMFS/gk2cdXormqf2M3GHYKCCNLCW12
-         K9v5LsaI6Z1+XnH52R2xGgDpFgamhg82g6IgKgUZp6pTS4F463n50VbVIhvWBobtDtnw
-         8qNaU2Q4qAuJM499MaargyvkqmDAUXkeG2blp9PFw/xgcnkMlnCI6Yw3ERxvuXx/oxEH
-         IbfYjD2Xbs6GASmOHI7N4NJRFRXZD7QP+6PmbyB4jEWGW0YRam5B7yeKXNqi/ux+qEDN
-         6QY4UCALwuw6cOYRPLnqHY3Z1pmnK8k6le+aR5GPVZqK2jB55NMZpkN+VmygIMJHtv2r
-         kP/Q==
-X-Gm-Message-State: AOAM530i6PGT9mQ3rG9wOYma12OxJO62d7zPxfeTeaFEEob58+3qt/WM
-        q0vk1xtwfKkfoQ7ZPyjS2DpbxwoFBTlRkFCPI5eE3L8ZBojfk8a0EtF29ivec5oEPqyQcYJVO4a
-        R8lHb6gPr94zPINWFio4bTLJSeR2tTbmmC+hVdfev+w==
-X-Received: by 2002:ad4:5c68:: with SMTP id i8mr9292119qvh.53.1620386886756;
-        Fri, 07 May 2021 04:28:06 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxrkQV2V+1r0D6RUCLE65m0mi6+3ZTeG/IsJ0FUNXfad49nVUfaO+dm1EKUCC1juOtFTefkGg==
-X-Received: by 2002:ad4:5c68:: with SMTP id i8mr9292104qvh.53.1620386886587;
-        Fri, 07 May 2021 04:28:06 -0700 (PDT)
-Received: from localhost.localdomain ([45.237.49.2])
-        by smtp.gmail.com with ESMTPSA id a21sm4549293qkk.45.2021.05.07.04.28.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 04:28:06 -0700 (PDT)
-From:   Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
-To:     Thor Thayer <thor.thayer@linux.intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-kernel@vger.kernel.org
-Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
-        kernel test robot <lkp@intel.com>
-Subject: [PATCH] reset: a10sr: add missing of_match_table reference
-Date:   Fri,  7 May 2021 07:28:03 -0400
-Message-Id: <20210507112803.20012-1-krzysztof.kozlowski@canonical.com>
-X-Mailer: git-send-email 2.25.1
+        id S234018AbhEGL3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 07:29:33 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43976 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233369AbhEGL3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 07:29:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 287B9B14A;
+        Fri,  7 May 2021 11:28:30 +0000 (UTC)
+Subject: Re: [PATCH Part2 RFC v2 08/37] x86/sev: Split the physmap when adding
+ the page in RMP table
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Brijesh Singh <brijesh.singh@amd.com>
+Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, Joerg Roedel <jroedel@suse.de>,
+        Tom Lendacky <thomas.lendacky@amd.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        David Rientjes <rientjes@google.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>
+References: <20210430123822.13825-1-brijesh.singh@amd.com>
+ <20210430123822.13825-9-brijesh.singh@amd.com>
+ <CALCETrXsUW3S_9ZUPXT5HEv_ki2VxEUQMe-uzerG1xnbcgYNtw@mail.gmail.com>
+ <c1e9573e-9be4-ee85-9363-73b9c60db315@intel.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <5c07ff2c-efb4-5f7b-0ad6-d52d985e5c46@suse.cz>
+Date:   Fri, 7 May 2021 13:28:28 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <c1e9573e-9be4-ee85-9363-73b9c60db315@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver defined of_device_id table but did not use it with
-of_match_table.  This prevents usual matching via devicetree and causes
-a W=1 warning:
+On 5/3/21 5:41 PM, Dave Hansen wrote:
+> On 5/3/21 8:15 AM, Andy Lutomirski wrote:
+>> How much performance do we get back if we add a requirement that only
+>> 2M pages (hugetlbfs, etc) may be used for private guest memory?
+> 
+> Are you generally asking about the performance overhead of using 4k
+> pages instead of 2M for the direct map?  We looked at that recently and
+> pulled together some data:
 
-  drivers/reset/reset-a10sr.c:111:34: warning:
-    ‘a10sr_reset_of_match’ defined but not used [-Wunused-const-variable=]
+IIUC using 2M for private guest memory wouldn't be itself sufficient, as the
+guest would also have to share pages with host with 2MB granularity, and that
+might be too restrictive?
 
-Reported-by: kernel test robot <lkp@intel.com>
-Fixes: 627006820268 ("reset: Add Altera Arria10 SR Reset Controller")
-Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
----
- drivers/reset/reset-a10sr.c | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/drivers/reset/reset-a10sr.c b/drivers/reset/reset-a10sr.c
-index 7eacc89382f8..99b3bc8382f3 100644
---- a/drivers/reset/reset-a10sr.c
-+++ b/drivers/reset/reset-a10sr.c
-@@ -118,6 +118,7 @@ static struct platform_driver a10sr_reset_driver = {
- 	.probe	= a10sr_reset_probe,
- 	.driver = {
- 		.name		= "altr_a10sr_reset",
-+		.of_match_table	= a10sr_reset_of_match,
- 	},
- };
- module_platform_driver(a10sr_reset_driver);
--- 
-2.25.1
+>> https://lore.kernel.org/lkml/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
+> 
 
