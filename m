@@ -2,162 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23A82376D34
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 01:16:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93909376D37
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 01:18:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230056AbhEGXQ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 19:16:58 -0400
-Received: from mail-eopbgr770040.outbound.protection.outlook.com ([40.107.77.40]:34821
-        "EHLO NAM02-SN1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S229880AbhEGXQ4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 19:16:56 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Eir4NxQjqRDiCo1aCtGy+f6Z1Q18agd4JNomtgzmkcVFa3x5X67r6RJuTrnN4VRm8Ic5Ridwx3FXOoDV45KYVHuwjSVL/fKfNG9WGyHY4+SKzyXdydyr0pLyLliBF9ErTHY/8Xt4nGjLgsQ0EurcZ2sG/3T4n69SRsF55A82QF14Nt6eQydh6S1sos/JhFSLDFHZfgnrXL2LJFIgidJezBRzivtwA9zR0TOMUcrh7HjIZ7FvNWwDal/KEv+VelXBBdFcDLMkbTpTY0NbVC4xZOkYiF9MGlcC+V4bC422LuB3EmHIhB7Fk9hSj6qwU67w1ThHStrrC0Y8mdfaVXGW6w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MNmdB3QzOgzY3iql7UXrxJA/DfBgJIaSCT81V7taAaY=;
- b=iS17qh+3Y4rkNn2ZskaVsAxQD0dzPOVSJcQea8n767l7bes4l2NoYP28dN6Clvrt0s6wjHC8brtpcsn1OYoaM0qIZ/Vzc/1nzZDjl7uuEEvmc7+leYIYQBhyGLt2DyAK5a5GRIsSPzk/pgxuQ7l50YCKiL13GT7/8sRKdEffiFZw7Mstwn/WOOgZ/GNRFR0AtHGFUMvGfHnBJsUXnINfAqjp7relANCn5gqbaHLopKb+velH8DEPo7Q+J/26ZvbanMUVb3qKBTrGQFmQ/q1Lj+M+0MhT9nQhrwHq1IVhr0ne9CUMv+HQISeqeZvHky6pwmELstmHOwH5/9BBXnEWrg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MNmdB3QzOgzY3iql7UXrxJA/DfBgJIaSCT81V7taAaY=;
- b=pzsygmXXrq9FqnmoxFEY8BKedJ7loO2x+K3A0yUhNdoYJdwi9OqxSP7KSDGGDiuw5ChrnoSMAXX/DPzDGlPw8R+VDxvQBDxTt72dYqEpHkVJXbe+Jz5XqGNA1P+meNn+E3+yDk1QNNwsrWkwhGirzsORmHzq8Jm+ZlnJTRgS7q4=
-Authentication-Results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=amd.com;
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com (2603:10b6:3:6e::7) by
- DM6PR12MB3577.namprd12.prod.outlook.com (2603:10b6:5:3a::26) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.4108.29; Fri, 7 May 2021 23:15:50 +0000
-Received: from DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9]) by DM5PR12MB1355.namprd12.prod.outlook.com
- ([fe80::b914:4704:ad6f:aba9%12]) with mapi id 15.20.4108.026; Fri, 7 May 2021
- 23:15:50 +0000
-Subject: Re: [PATCH 1/2] KVM: SVM: Update EFER software model on CR0 trap for
- SEV-ES
-To:     Sean Christopherson <seanjc@google.com>,
-        Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Peter Gonda <pgonda@google.com>,
-        Maxim Levitsky <mlevitsk@redhat.com>
-References: <20210507165947.2502412-1-seanjc@google.com>
- <20210507165947.2502412-2-seanjc@google.com>
-From:   Tom Lendacky <thomas.lendacky@amd.com>
-Message-ID: <f2a78f56-9742-6092-523c-1e81131bb020@amd.com>
-Date:   Fri, 7 May 2021 18:15:48 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
-In-Reply-To: <20210507165947.2502412-2-seanjc@google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [67.79.209.213]
-X-ClientProxiedBy: SN4PR0701CA0032.namprd07.prod.outlook.com
- (2603:10b6:803:2d::12) To DM5PR12MB1355.namprd12.prod.outlook.com
- (2603:10b6:3:6e::7)
+        id S230071AbhEGXTh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 19:19:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60472 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229959AbhEGXTg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 19:19:36 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 246DCC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 16:18:36 -0700 (PDT)
+Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lf9js-0007eI-RW; Sat, 08 May 2021 01:18:32 +0200
+Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1lf9js-00072L-3R; Sat, 08 May 2021 01:18:32 +0200
+Date:   Sat, 8 May 2021 01:18:31 +0200
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     Clemens Gruber <clemens.gruber@pqgruber.com>
+Cc:     linux-pwm@vger.kernel.org,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, kernel@pengutronix.de,
+        Sven Van Asbroeck <TheSven73@gmail.com>
+Subject: Re: [PATCH 1/4] pwm: core: Support new usage_power setting in PWM
+ state
+Message-ID: <20210507231831.zmvyspcq7xhm25y4@pengutronix.de>
+References: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
+ <20210507150317.bnluhqrqepde4xjm@pengutronix.de>
+ <YJVhLrkeNXBp6M1p@workstation.tuxnet>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from office-linux.texastahm.com (67.79.209.213) by SN4PR0701CA0032.namprd07.prod.outlook.com (2603:10b6:803:2d::12) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25 via Frontend Transport; Fri, 7 May 2021 23:15:49 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: aedac384-4a47-41f5-e9ce-08d911ae0da6
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3577:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB3577C42C4F812948EE12417BEC579@DM6PR12MB3577.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:813;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: z5B8JLpy5OctjQgCI7Ti8wqlBTrmJ45DAhgDttwWjFsSGflutW68fRjbRsxoFXYCcKGXd5+RFNxZ6+RlOIhmcXpOcZ8Z1Ts9LMrnuUYOdqkurtIL/m2iqgOi0Y1CXS10OWFMWdrstk8kyCSJ8f96W26/XrHFcjUK9Xl3RU8gJ/r6DXNPxdQlKj1yyecUy2DqdAFg/zV0jrnYmsgcT/jwT/fVf2UM7/i4N9EdRJLdBxtpAbAlY0tVpY4R1Uio00uKOqpycy3XUg9PydBdq0jlm/yW9/Oh10OXR+DSVprkmAA9Q0P/LkmF1MiKtrTNSSTfs9bWdDbzLR1M7WwIz9b24Fc8IAVROOISkTSufO/J1sguWDn0Z13fLyfg95NryBr/Lz7zlH61ryZAkTznydhPoLpYjGwkx2gBC6hFcVnOsVJFfx6M3tZV679PFzrZucTjw/11yqMpYCT2exuVdLO2xdcmtqRk79cESbKH7c6vGg0aIBuWNXTjH4X9viJmXOio4Vh0TkL1HQRaD9PdnOUzMT5ScHY4/go4ut9hrZxvEgc/Fo0Qy9bs2VoS5L1C7p2pqHquViewdiOuyR/ZYpVMwAFplDx9TJdDlpATOTgmtY/K5z8oShBuPK/WaiH6WEKBkhJ3P/BLH8KwV/r2e1ZOlT4DpOyEGb8bi7f4ZSZ8QQZnPS8xmc285rPDFlZBfm7Q
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR12MB1355.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(396003)(136003)(376002)(366004)(39860400002)(83380400001)(6506007)(53546011)(2906002)(7416002)(38100700002)(4326008)(5660300002)(110136005)(54906003)(186003)(15650500001)(956004)(2616005)(36756003)(16526019)(31686004)(31696002)(6486002)(6512007)(86362001)(26005)(66476007)(66946007)(66556008)(8936002)(316002)(478600001)(8676002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: =?utf-8?B?RVNrT1ZVVkExYmQ5WnQ3M3o1NUNGOFhubnBqNFFTUG0zbjVCWFQ2cERGL3Zy?=
- =?utf-8?B?R1JUd1A2MCtwK0FwTUdGVE4xcjZCcTVwekx2SStIRHdzNHFHcERiZlRueTFm?=
- =?utf-8?B?TlRjeVJzTktrSk5RWTc1eEpDanpiMWJGM0hBSFV3UGMyRzFXN2Q4UTMwLyt0?=
- =?utf-8?B?aXVuVVNGVkxUUXhUd0xXUUF3b2w1WXZyWTNvSmc1Z1AzZGpZcm5UdmhCOXV0?=
- =?utf-8?B?Q2hrdnQvbTYyU3JsaFcxV3BRSVNSTXhlclFhaDlSMzlJSEpvVkVOZDNwcFRi?=
- =?utf-8?B?QVlWT2pkQTFNeW41YlJCRG9DUm9naklWdDRKaDNLOUQ1dFJydDdRRWhkam5l?=
- =?utf-8?B?dFladzZEeGlPczBSa1VXRFNOQlVsbVdOS1c3U1NaQkRCemlPNmlWaXdhNHBh?=
- =?utf-8?B?d2Q0OVY5RVlVOXZ3WWgzNGFKdmR0Yys5U3ViZXBPUWpsaW9nejhQOWFSdVJz?=
- =?utf-8?B?SlpINE9FZ3NUVzAzZEdlM3ZPUEVYUVV5YUphR0ZhTEpQMFhibHdZL1FZMTVo?=
- =?utf-8?B?eWlXdmRRZVlwN0lmcnFTTEZhWElNYVp3K09YalBHSFQzN1BXSi9tbmxXRTY5?=
- =?utf-8?B?Q3lKK3E4Z1lDMmJaaFFLNVFKS3lNY2V4ZlVaQlNQUEFqVFZPc2g4aDFXUitR?=
- =?utf-8?B?MzRFWnBZRjAxeXEvUGJpd0ZjUHhFYUZhblkzUml0NVBNSnNLRE55Y2NGK3FO?=
- =?utf-8?B?ak8vSktkaXJBTS9PUDNOeENsMzVtNTdPTTZrSTExRUFJTkVsWmhDY2JvcVZp?=
- =?utf-8?B?VkxPK2FidUQ3QnZXMzlqblV3cmxEcVY4UnZVQi9CVWlwaGxibUVrQWl6SjZR?=
- =?utf-8?B?dXVRWlc5cENxYlFxSmRuY3FFWXVTUjJBNmtSQ1Y5cnRsai90NmRBbWtPKy9l?=
- =?utf-8?B?eFJ4d2VZaW0yMnJFNXdVbmRIaTlZOEcrdU5VTW8zYlZ3UWgweWlkaEZvNXMr?=
- =?utf-8?B?OFBDbE1SMnBkWWxBejZMY1EzNHU1bHB2bERqZTNKM29remdvR2c0WFk0cGdu?=
- =?utf-8?B?K2QzYmNPbzNLcWxmZFBLajc1OUxMSFMweEFYL093QzlVUUNSKzd5VzRpY2dX?=
- =?utf-8?B?OXEwL2p0c01ZSkZJU1F0OWFZR2VIdmVzczhkdTFpTGUyUE9FcEl3cWp6RjB6?=
- =?utf-8?B?SU14bEZ3TDZmeEhpUEZ2SUZGb05vU1hhV1hjbHZPYXIzN20zSGJUWTQvalcv?=
- =?utf-8?B?NnQrVVpBQW1KRVcvOURMQTZUNlArYzN4OEZzL2tlSnVTNWZjbWMrV2srVjRX?=
- =?utf-8?B?eGVUeEVaN0QxbnppVklTTmV0MEZIdmtuakxla0tUanorTjk3OUFwZ1JHMGwy?=
- =?utf-8?B?K0JyUW13cDNsbFBqWGJGWmx1RTFMY3dKQ1F6UVRpYjJINUlsQzc1ckFxQklw?=
- =?utf-8?B?TUlDMDNKVU02emZxTEZSa2hjNW14YUFETi9yOGQxREdUV3J6WFNNb2F4ajNU?=
- =?utf-8?B?aUkwTXoxaUFxY05CR3ZUVVE4TnJINGZVbDd4andCM3dteFBiZlRGejRkVmFy?=
- =?utf-8?B?VmYrcGNzQ29UekJaalZ2aXU1Z1htNmRhMm12QUJRQ2JZb3RlQTJ4YTJTdnF2?=
- =?utf-8?B?WGlUVXE3MTRiSWNyYmo2dnFzbGRVajd1QlhhdXc5K3lsdU01SEJHUUhDQkVM?=
- =?utf-8?B?WUZkem1DNXNCVTRhZFNDUkhPWVRuaUQ0VjduMTdabGp4elJ4Nkl5RWJsaU9F?=
- =?utf-8?B?aEFSY3VsWk16dEFxUFFXTEVFaXliaG85aVdYUzJHTm4zNjd2UnljblN4TjRP?=
- =?utf-8?Q?qiAkCcnEKq8/fYEn8c4N35V+e0u6CgdlXBpA1Q7?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: aedac384-4a47-41f5-e9ce-08d911ae0da6
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR12MB1355.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2021 23:15:50.2519
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 23mLgVOMv8NZIprW4QV7Vh9fb5lloCQHGANRXQcdLIOL9diLpyDGL11WlLJhyXqraMnflCpjBc5Z+XxI4LnpXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3577
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="ksziii7f32ahf4ic"
+Content-Disposition: inline
+In-Reply-To: <YJVhLrkeNXBp6M1p@workstation.tuxnet>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/7/21 11:59 AM, Sean Christopherson wrote:
-> For protected guests, a.k.a. SEV-ES guests, update KVM's model of EFER
-> when processing the side effect of the CPU entering long mode when paging
-> is enabled.  The whole point of intercepting CR0/CR4/EFER is to keep
-> KVM's software model up-to-date.
-> 
-> Fixes: f1c6366e3043 ("KVM: SVM: Add required changes to support intercepts under SEV-ES")
-> Reported-by: Peter Gonda <pgonda@google.com>
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
 
-Acked-by: Tom Lendacky <thomas.lendacky@amd.com>
+--ksziii7f32ahf4ic
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-> ---
->  arch/x86/kvm/svm/svm.c | 8 +++++---
->  1 file changed, 5 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index a7271f31df47..d271fe8e58de 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -1696,15 +1696,17 @@ void svm_set_cr0(struct kvm_vcpu *vcpu, unsigned long cr0)
->  	u64 hcr0 = cr0;
->  
->  #ifdef CONFIG_X86_64
-> -	if (vcpu->arch.efer & EFER_LME && !vcpu->arch.guest_state_protected) {
-> +	if (vcpu->arch.efer & EFER_LME) {
->  		if (!is_paging(vcpu) && (cr0 & X86_CR0_PG)) {
->  			vcpu->arch.efer |= EFER_LMA;
-> -			svm->vmcb->save.efer |= EFER_LMA | EFER_LME;
-> +			if (!vcpu->arch.guest_state_protected)
-> +				svm->vmcb->save.efer |= EFER_LMA | EFER_LME;
->  		}
->  
->  		if (is_paging(vcpu) && !(cr0 & X86_CR0_PG)) {
->  			vcpu->arch.efer &= ~EFER_LMA;
-> -			svm->vmcb->save.efer &= ~(EFER_LMA | EFER_LME);
-> +			if (!vcpu->arch.guest_state_protected)
-> +				svm->vmcb->save.efer &= ~(EFER_LMA | EFER_LME);
->  		}
->  	}
->  #endif
-> 
+Hello Clemens,
+
+On Fri, May 07, 2021 at 05:47:58PM +0200, Clemens Gruber wrote:
+> On Fri, May 07, 2021 at 05:03:17PM +0200, Uwe Kleine-K=F6nig wrote:
+> > On Fri, May 07, 2021 at 03:18:42PM +0200, Clemens Gruber wrote:
+> > > diff --git a/include/linux/pwm.h b/include/linux/pwm.h
+> > > index 5bb90af4997e..5a73251d28e3 100644
+> > > --- a/include/linux/pwm.h
+> > > +++ b/include/linux/pwm.h
+> > > @@ -54,12 +54,17 @@ enum {
+> > >   * @duty_cycle: PWM duty cycle (in nanoseconds)
+> > >   * @polarity: PWM polarity
+> > >   * @enabled: PWM enabled status
+> > > + * @usage_power: If set, the PWM driver is only required to maintain=
+ the power
+> > > + *               output but has more freedom regarding signal form.
+> > > + *               If supported, the signal can be optimized, for exam=
+ple to
+> > > + *               improve EMI by phase shifting individual channels.
+> > >   */
+> > >  struct pwm_state {
+> > >  	u64 period;
+> > >  	u64 duty_cycle;
+> > >  	enum pwm_polarity polarity;
+> > >  	bool enabled;
+> > > +	bool usage_power;
+> > >  };
+> > > =20
+> > >  /**
+> >=20
+> > If we really want to support this usecase, I would prefer to not have it
+> > in pwm_state because this concept is not a property of the wave form. So
+> > for a driver it doesn't really make sense to set this flag in
+> > .get_state().
+>=20
+> It is related to the wave form in so far as it allows the driver to
+> change the wave form as long as the power output remains the same.
+
+Yes, the thing I wanted to express is: usage_power is a software thing.
+Just from reading the hardware registers you can never know if
+usage_power is set or not. So it is conceptually slightly different than
+the other members of pwm_state which all are represented 1:1 in
+hardware.
+
+> > Maybe it makes more sense to put this in a separate argument for a
+> > variant of pwm_apply_state? something like:
+> >=20
+> > 	int pwm_apply_state_transition(struct pwm_device *pwm, const struct pw=
+m_state *state, const struct pwm_state_transition *transition);
+> >=20
+> > and pwm_state_transition can then contain something like this usage
+> > power concept and maybe also a sync flag that requests that the call
+> > should only return when the new setting is active and maybe also a
+> > complete_period flag that requests that the currently running period
+> > must be completed before the requested setting is implemented.
+> >=20
+> > OTOH the information "I only care about the relative duty cycle" is
+> > relevant longer than during the transition to a new setting. (So if
+> > there are two consumers and one specified to be only interested in the
+> > relative duty cycle, the other might be allowed to change the common
+> > period.)
+>=20
+> As you said, usage_power does not only apply to one state transition.
+>=20
+> > Having said that, I don't like the proposed names. Neither "usage_power"
+> > nor "pwm_apply_state_transition".
+> >=20
+> > In a non-representative survey among two hardware engineers and one
+> > software engineer who already contributed to PWM (!=3D me) I found out
+> > that these three have an intuitive right understanding of
+> > "allow-phase-shift" but have no idea what "usage-power" could mean.
+>=20
+> One advantage of usage_power is that it is not limited to phase
+> shifting. Drivers could do other optimizations as long as the power
+> output remains the same.
+
+Freedom you give to the lowlevel driver might be a burden to the
+consumer. I think it makes sense to split the concept into:
+
+	PWM_ALLOW_PHASE_SHIFT		1
+	PWM_SET_RELATIVE_DUTY		2
+	PWM_SET_POWER			(PWM_ALLOW_PHASE_SHIFT | PWM_SET_RELATIVE_DUTY)
+
+This way a consumer (e.g. a clock driver) who doesn't care about the
+phase shift but wants a fixed period can specify that, and if a consumer
+really only cares about the emitted power that's possible, too.
+
+And given that your driver actually only implements a phase shift I
+suggest not to generalize more than necessary here; also because the
+semantic of usage-power isn't well defined. So this is something where I
+agree to Thierry: Let's not solve a problem we don't have. (Though he
+comes to a different conclusion here.)
+
+> > On a side note: The hardware guys noted that it might make sense to
+> > align the shifted phases. i.e. instead of shifting channel i by i *
+> > period/16, it might be better to let the 2nd channel get active when the
+> > first gets inactive. (i.e. try to keep the count of active channels
+> > constant).
+>=20
+> I am not sure what you mean exactly, because the duty cycles of the
+> 16 outputs are not necessarily the same and can all be active at the
+> same time. The idea is to spread the edges out as evenly as possible.
+> Shifting them by period/16 is the best way to smoothen the current
+> spikes in my opinion and the implementation is also very simple.
+
+Yes, the algorithm needed to satisfy this wish is more complicated. And
+maybe it even isn't possible to implement it in a sane way, I didn't
+think about it much. I just believed them that if you have two channels
+that run at 50% it's better to have a phase shift of 50% between them
+than 6.25%. Maybe it makes sense to align the start of channel #i+1 (if
+allowed) to the end of channel #i to already get a better behaviour on
+average than the fixed offset depending on the channel number.
+
+> > And as already mentioned earlier I still think we should define the
+> > concept of "usage power" better. It should be clearly defined for a
+> > driver author which setting they should pick for a given request. This
+> > removes surprises for consumers and guessing for lowlevel driver
+> > authors. Also a uniform policy brings conflicts better to light.
+> > (Something like driver A does the right thing for consumer C and driver
+> > B makes it right for D. But once D tries to use A things break. (And
+> > then maybe A is changed to fit D, and C doesn't object because they
+> > don't read the pwm list resulting in a breakage for C later.))
+>=20
+> I added documentation and comments to the header file as a first step
+> but we can always improve them.
+
+In my book the documentation is inadequate because it doesn't define how
+a driver should behave and so doesn't define what the consumer can
+expect. With your description all settings I suggested in
+https://lore.kernel.org/r/20210413175631.pwbynvwmnn7oog4m@pengutronix.de
+are allowed. I don't think this is a good idea.
+
+And given that all people I talked to about "usage-power" were unable to
+correctly guess its semantic, I'm convinced that we need a better name.
+This is something you cannot outweigh with documentation -- most people
+won't read it anyway.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--ksziii7f32ahf4ic
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCVyr4ACgkQwfwUeK3K
+7An7xgf/cvnetFcNEugQ1gDLUwbuovGmtfiiynpfiUf/6ep8keswBQgXVyf2HWu9
+LlcXst0Row5G8etH201tgPFu5cbf5T9Mi50ckDhbruSIvl1B7vyjPCMiclsXPe3Q
+8WqHTbchvgHVVYbjU+gXtMoSQmEmcRYjB1Wdv13c6r/aPkX461nQD5faYSq6ewDd
+QPgFZjryqHYbXrQsD5LNUkaDbIkHE+gdaS120z0AyUW0WD4M9S1iVJLE4k39NcVS
+jPnB3MzylA/oGN3k0eIdZqptjNlVrhPcVtazB3cXCsXqJhFCrWwynQmQ+4KA/XqF
+HqvW4UYmHwJgqEP7Wg+bzR6sva9ykQ==
+=KaxH
+-----END PGP SIGNATURE-----
+
+--ksziii7f32ahf4ic--
