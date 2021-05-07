@@ -2,109 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32D05376A1E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:42:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D37EB376A22
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:44:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229606AbhEGSnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 14:43:17 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:51116 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229488AbhEGSnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 14:43:16 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620412936; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=HQvRcgen55XyLhCmkgqh4NWsC/x1Aeob2B92iMmCx7M=; b=JDKilQJ/BcdpJQhFa011739YnayjXIRT/yapiEHZ6PBF0M6Y05o/3e5lHQACkNJhOMsnVc7D
- wvGsFckvVsLTEWlvaTSxTJFZqxsn73xpuTNg0shMrjyigh1hXl3f63LF9ChFKiin7284lQV/
- ij+knuokyXutCxxJ8c7XMvxNoS4=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 60958a018807bcde1dd48ea3 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 07 May 2021 18:42:09
- GMT
-Sender: wcheng=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 33C89C43147; Fri,  7 May 2021 18:42:09 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: wcheng)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0EE20C4338A;
-        Fri,  7 May 2021 18:42:07 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0EE20C4338A
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
-From:   Wesley Cheng <wcheng@codeaurora.org>
-To:     balbi@kernel.org, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, Wesley Cheng <wcheng@codeaurora.org>
-Subject: [PATCH] usb: dwc3: gadget: Replace list_for_each_entry_safe() if using giveback
-Date:   Fri,  7 May 2021 11:42:03 -0700
-Message-Id: <1620412923-11990-1-git-send-email-wcheng@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S229611AbhEGSpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 14:45:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhEGSpG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 14:45:06 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8280AC061574;
+        Fri,  7 May 2021 11:44:06 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620413042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n7rJ0dlFmG2nBfHC2MLUNYWbqEOUVFlJXYjrKpA8y4U=;
+        b=ERXnZvWfiwqAMqFp6VAA1kNnf+uuuYuSr+8nEiIcCK13DKl8wnHmpA6HzRHMCMvJCWvVyZ
+        WjOCCNlSx4bMEpEXx3i+KyNMKMtSsDPmbrSGutRNcOkCmNASVxTl778jtVA1PxWywvkcVs
+        8236SBDHXrN/2jNOEnZV6aC5g7MWZAM15NZyw1JbdLGs7egeG6AkjfBLVL+2ZqUcmj753g
+        3/PRmdZIMKygWfTg9nyriqKSGkm6OOq7eURrtQ3wx6+FwgDu+mBWAY9Q66++tFOIBZMSgp
+        S4NgF1Oyxg5UM36Ce9/rExtoFsFQtHbUoD92frrrsgBQBWAmDQO2vpzUHpMvSQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620413042;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=n7rJ0dlFmG2nBfHC2MLUNYWbqEOUVFlJXYjrKpA8y4U=;
+        b=+3YcQRLt0Hifq5eZj4aSejW5/SSBEi1Gr3EAqhWloe7lXnBWPI8zsit6up03b/va7agqdI
+        02kHDiNiezLmd4Dg==
+To:     Dave Hansen <dave.hansen@intel.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Len Brown <lenb@kernel.org>
+Cc:     Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
+        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        linux-abi@vger.kernel.org,
+        "libc-alpha\@sourceware.org" <libc-alpha@sourceware.org>,
+        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
+        Keno Fischer <keno@juliacomputing.com>
+Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
+In-Reply-To: <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com>
+References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu> <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com> <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com> <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com> <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com> <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com> <87bl9s8kfb.fsf@oldenburg.str.redhat.com> <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com>
+Date:   Fri, 07 May 2021 20:44:02 +0200
+Message-ID: <87o8dmmljh.ffs@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The list_for_each_entry_safe() macro saves the current item (n) and
-the item after (n+1), so that n can be safely removed without
-corrupting the list.  However, when traversing the list and removing
-items using gadget giveback, the DWC3 lock is briefly released,
-allowing other routines to execute.  There is a situation where while
-items are being removed from the cancelled_list using
-dwc3_gadget_ep_cleanup_cancelled_requests(), the pullup disable
-routine is running in parallel (due to UDC unbind).  As the cleanup
-routine removes n, and the pullup disable removes n+1, once the
-cleanup retakes the DWC3 lock, it references a request who was already
-removed/handled.  With list debug enabled, this leads to a panic.
-Ensure all instances of the macro are replaced where gadget giveback
-is used.
+On Mon, May 03 2021 at 06:43, Dave Hansen wrote:
+> On 5/2/21 10:18 PM, Florian Weimer wrote:
+>>> 5. If the feature is enabled in XCR0, the user happily uses it.
+>>>
+>>>     For AMX, Linux implements "transparent first use"
+>>>     so that it doesn't have to allocate 8KB context switch
+>>>     buffers for tasks that don't actually use AMX.
+>>>     It does this by arming XFD for all tasks, and taking a #NM
+>>>     to allocate a context switch buffer only for those tasks
+>>>     that actually execute AMX instructions.
+>> What happens if the kernel cannot allocate that additional context
+>> switch buffer?
+>
+> Well, it's vmalloc()'d and currently smaller that the kernel stack,
+> which is also vmalloc()'d.  While it can theoretically fail, if it
+> happens you have bigger problems on your hands.
 
-Fixes: d4f1afe5e896 ("usb: dwc3: gadget: move requests to cancelled_list")
-Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
----
- drivers/usb/dwc3/gadget.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Such a buffer allocation might also exceed a per process/cgroup
+limitation. Anything else which is accounted happens in syscall context
+which then returns an error on which the application can react.
 
-diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
-index dd80e5c..efa939b 100644
---- a/drivers/usb/dwc3/gadget.c
-+++ b/drivers/usb/dwc3/gadget.c
-@@ -1737,10 +1737,10 @@ static void dwc3_gadget_ep_skip_trbs(struct dwc3_ep *dep, struct dwc3_request *r
- static void dwc3_gadget_ep_cleanup_cancelled_requests(struct dwc3_ep *dep)
- {
- 	struct dwc3_request		*req;
--	struct dwc3_request		*tmp;
- 	struct dwc3			*dwc = dep->dwc;
- 
--	list_for_each_entry_safe(req, tmp, &dep->cancelled_list, list) {
-+	while (!list_empty(&dep->cancelled_list)) {
-+		req = next_request(&dep->cancelled_list);
- 		dwc3_gadget_ep_skip_trbs(dep, req);
- 		switch (req->status) {
- 		case DWC3_REQUEST_STATUS_DISCONNECTED:
-@@ -2935,11 +2935,11 @@ static void dwc3_gadget_ep_cleanup_completed_requests(struct dwc3_ep *dep,
- 		const struct dwc3_event_depevt *event, int status)
- {
- 	struct dwc3_request	*req;
--	struct dwc3_request	*tmp;
- 
--	list_for_each_entry_safe(req, tmp, &dep->started_list, list) {
-+	while (!list_empty(&dep->started_list)) {
- 		int ret;
- 
-+		req = next_request(&dep->started_list);
- 		ret = dwc3_gadget_ep_cleanup_completed_request(dep, event,
- 				req, status);
- 		if (ret)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+So what's the consequence when the allocation fails? Kill it right away
+from #NM? Kill it on the first signal? Do nothing and see what happens?
+
+Thanks,
+
+        tglx
+
 
