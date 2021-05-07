@@ -2,84 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CF4C37622B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:36:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A801376236
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:37:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236344AbhEGIhA convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 May 2021 04:37:00 -0400
-Received: from coyote.holtmann.net ([212.227.132.17]:40403 "EHLO
-        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230215AbhEGIg5 (ORCPT
+        id S236382AbhEGIiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 04:38:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31515 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233340AbhEGIiU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 04:36:57 -0400
-Received: from smtpclient.apple (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
-        by mail.holtmann.org (Postfix) with ESMTPSA id CF60CCECDB;
-        Fri,  7 May 2021 10:43:46 +0200 (CEST)
-Content-Type: text/plain;
-        charset=utf-8
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
-Subject: Re: [PATCH v2 2/2] Bluetooth: Support the vendor specific debug
- events
-From:   Marcel Holtmann <marcel@holtmann.org>
-In-Reply-To: <20210413074521.264802-2-josephsih@chromium.org>
-Date:   Fri, 7 May 2021 10:35:55 +0200
-Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
-        josephsih@google.com, chromeos-bluetooth-upstreaming@chromium.org,
-        Chethan Tumkur Narayan 
-        <chethan.tumkur.narayan@intel.corp-partner.google.com>,
-        Kiran Krishnappa <kiran.k@intel.corp-partner.google.com>,
-        Miao-chen Chou <mcchou@chromium.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Content-Transfer-Encoding: 8BIT
-Message-Id: <A5D0DBF6-7C55-49E2-80EA-B1C6D44F14A8@holtmann.org>
-References: <20210413074521.264802-1-josephsih@chromium.org>
- <20210413074521.264802-2-josephsih@chromium.org>
-To:     Joseph Hwang <josephsih@chromium.org>
-X-Mailer: Apple Mail (2.3654.80.0.2.43)
+        Fri, 7 May 2021 04:38:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620376640;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=G4FGrNimJhV01IK3zZ0JL4RVVApImUVGYjkgoM4AFN0=;
+        b=Y2HNdQlbgbxH2vQVugjm+WOuSYybEMSzpeo/904eTqrgVMcPHi6MKJ6MwzsUoXJxJXNBwR
+        bo9eBc+7cq1ytvn0HB9Me+X3v1D5XHBjgctcsFrkHunNgQxj5/ETYrXPNoY/tJwvmrwoSk
+        GdT1C5JplCQUBN16zN+JEM4+1weVP2Q=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-285-lOwuKfpEMsWu-_g1xditSA-1; Fri, 07 May 2021 04:37:19 -0400
+X-MC-Unique: lOwuKfpEMsWu-_g1xditSA-1
+Received: by mail-yb1-f200.google.com with SMTP id o12-20020a5b050c0000b02904f4a117bd74so9228177ybp.17
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 01:37:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=G4FGrNimJhV01IK3zZ0JL4RVVApImUVGYjkgoM4AFN0=;
+        b=htzIYNoVXKD3vvURGMZKieiPoYKmGMe/7IGnqfLa3RoSWCFVLcoAgoh7+fcRs3XLv/
+         g5Eygzes+KK27ABum5xnLHYqKFZo0BA6YuwU8LR1W52jUnHxD+KykXaBgE/NPszH7ZtC
+         hIk0Y8I0sCzWpUhHq4gp+JW9SovuPUE4x1RBeZscCxt60Zh9K3/EZsU/mPPUaGMl/57t
+         W2BbI5eCGrgNX4LgkbTg1KsUmal14spA0Q+8NBVcoao97ThV0z2trrwZv3kIJ+b5iLqR
+         yp3GzgrEnyaY1SVNouhuFs5wSW+P5VceyuLZdkw48aZifb5GdEusFygn0Eqor6cC7uTu
+         eMYg==
+X-Gm-Message-State: AOAM533v6MigWmh2agfLPLC5hoCjw6TMhooFJeTBhePGAHlsyOoToyuv
+        R6QH7K7O5OQvcTguOgNHI1vKQ6j8pEtn+QuKdzLt0kppYuJX4so4Vnlvio2/grps6LaBe65Wrcb
+        mNkn+6PKJ830k1IWGKdF9ffGzkinUI9oYWG9z1d6J
+X-Received: by 2002:a25:cccd:: with SMTP id l196mr12372291ybf.26.1620376638471;
+        Fri, 07 May 2021 01:37:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxewIyOv51q5Ji9x8dEqFP2aSx4Up03TrbmnULK/VTdw16ioRy22PBDlbvyRSw6NJNCizaj7Ckva55HsAkki/w=
+X-Received: by 2002:a25:cccd:: with SMTP id l196mr12372264ybf.26.1620376638189;
+ Fri, 07 May 2021 01:37:18 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210506091859.6961-1-maxime.coquelin@redhat.com> <20210506155004.7e214d8f@redhat.com>
+In-Reply-To: <20210506155004.7e214d8f@redhat.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Fri, 7 May 2021 10:37:04 +0200
+Message-ID: <CAFqZXNswPM4nEoRwKjLY=zpnqXLF8SRAWWkhj1EL3CoODYB-=w@mail.gmail.com>
+Subject: Re: [PATCH] vfio: Lock down no-IOMMU mode when kernel is locked down
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     Maxime Coquelin <maxime.coquelin@redhat.com>,
+        James Morris <jmorris@namei.org>,
+        David Howells <dhowells@redhat.com>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>, kvm@vger.kernel.org,
+        mjg59@srcf.ucam.org, Kees Cook <keescook@chromium.org>,
+        Cornelia Huck <cohuck@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Joseph,
+On Thu, May 6, 2021 at 11:50 PM Alex Williamson
+<alex.williamson@redhat.com> wrote:
+> On Thu,  6 May 2021 11:18:59 +0200
+> Maxime Coquelin <maxime.coquelin@redhat.com> wrote:
+>
+> > When no-IOMMU mode is enabled, VFIO is as unsafe as accessing
+> > the PCI BARs via the device's sysfs, which is locked down when
+> > the kernel is locked down.
+> >
+> > Indeed, it is possible for an attacker to craft DMA requests
+> > to modify kernel's code or leak secrets stored in the kernel,
+> > since the device is not isolated by an IOMMU.
+> >
+> > This patch introduces a new integrity lockdown reason for the
+> > unsafe VFIO no-iommu mode.
+>
+> I'm hoping security folks will chime in here as I'm not familiar with
+> the standard practices for new lockdown reasons.  The vfio no-iommu
+> backend is clearly an integrity risk, which is why it's already hidden
+> behind a separate Kconfig option, requires RAWIO capabilities, and
+> taints the kernel if it's used, but I agree that preventing it during
+> lockdown seems like a good additional step.
+>
+> Is it generally advised to create specific reasons, like done here, or
+> should we aim to create a more generic reason related to unrestricted
+> userspace DMA?
+>
+> I understand we don't want to re-use PCI_ACCESS because the vfio
+> no-iommu backend is device agnostic, it can be used for both PCI and
+> non-PCI devices.
+>
+> > Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
+> > ---
+> >  drivers/vfio/vfio.c      | 13 +++++++++----
+> >  include/linux/security.h |  1 +
+> >  security/security.c      |  1 +
+> >  3 files changed, 11 insertions(+), 4 deletions(-)
+> >
+> > diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
+> > index 5e631c359ef2..fe466d6ea5d8 100644
+> > --- a/drivers/vfio/vfio.c
+> > +++ b/drivers/vfio/vfio.c
+> > @@ -25,6 +25,7 @@
+> >  #include <linux/pci.h>
+> >  #include <linux/rwsem.h>
+> >  #include <linux/sched.h>
+> > +#include <linux/security.h>
+> >  #include <linux/slab.h>
+> >  #include <linux/stat.h>
+> >  #include <linux/string.h>
+> > @@ -165,7 +166,8 @@ static void *vfio_noiommu_open(unsigned long arg)
+> >  {
+> >       if (arg != VFIO_NOIOMMU_IOMMU)
+> >               return ERR_PTR(-EINVAL);
+> > -     if (!capable(CAP_SYS_RAWIO))
+> > +     if (!capable(CAP_SYS_RAWIO) ||
+> > +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU))
+> >               return ERR_PTR(-EPERM);
+> >
+> >       return NULL;
+> > @@ -1280,7 +1282,8 @@ static int vfio_group_set_container(struct vfio_group *group, int container_fd)
+> >       if (atomic_read(&group->container_users))
+> >               return -EINVAL;
+> >
+> > -     if (group->noiommu && !capable(CAP_SYS_RAWIO))
+> > +     if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
+> > +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU)))
+> >               return -EPERM;
+> >
+> >       f = fdget(container_fd);
+> > @@ -1362,7 +1365,8 @@ static int vfio_group_get_device_fd(struct vfio_group *group, char *buf)
+> >           !group->container->iommu_driver || !vfio_group_viable(group))
+> >               return -EINVAL;
+> >
+> > -     if (group->noiommu && !capable(CAP_SYS_RAWIO))
+> > +     if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
+> > +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU)))
+> >               return -EPERM;
+> >
+> >       device = vfio_device_get_from_name(group, buf);
+> > @@ -1490,7 +1494,8 @@ static int vfio_group_fops_open(struct inode *inode, struct file *filep)
+> >       if (!group)
+> >               return -ENODEV;
+> >
+> > -     if (group->noiommu && !capable(CAP_SYS_RAWIO)) {
+> > +     if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
+> > +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU))) {
+> >               vfio_group_put(group);
+> >               return -EPERM;
+> >       }
+>
+> In these cases where we're testing RAWIO, the idea is to raise the
+> barrier of passing file descriptors to unprivileged users.  Is lockdown
+> sufficiently static that we might really only need the test on open?
+> The latter three cases here only make sense if the user were able to
+> open a no-iommu context when lockdown is not enabled, then lockdown is
+> later enabled preventing them from doing anything with that context...
+> but not preventing ongoing unsafe usage that might already exist.  I
+> suspect for that reason that lockdown is static and we really only need
+> the test on open.  Thanks,
 
-> This patch allows a user space process to enable/disable the vendor
-> specific (vs) debug events dynamically through the set experimental
-> feature mgmt interface if CONFIG_BT_FEATURE_VS_DBG_EVT is enabled.
-> 
-> Since the debug event feature needs to invoke the callback function
-> provided by the driver, i.e., hdev->set_vs_dbg_evt, a valid controller
-> index is required.
-> 
-> For generic Linux machines, the vendor specific debug events are
-> disabled by default.
-> 
-> Reviewed-by: Chethan Tumkur Narayan <chethan.tumkur.narayan@intel.corp-partner.google.com>
-> Reviewed-by: Kiran Krishnappa <kiran.k@intel.corp-partner.google.com>
-> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
-> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
-> ---
-> 
-> (no changes since v1)
-> 
-> drivers/bluetooth/btintel.c      |  73 ++++++++++++++++++++-
-> drivers/bluetooth/btintel.h      |  13 ++++
-> drivers/bluetooth/btusb.c        |  16 +++++
-> include/net/bluetooth/hci.h      |   4 ++
-> include/net/bluetooth/hci_core.h |  10 +++
-> net/bluetooth/Kconfig            |  10 +++
-> net/bluetooth/mgmt.c             | 108 ++++++++++++++++++++++++++++++-
-> 7 files changed, 232 insertions(+), 2 deletions(-)
+Note that SELinux now also implements the locked_down hook and that
+implementation is not static like the Lockdown LSM's. It checks
+whether the current task's SELinux domain has either integrity or
+confidentiality permission granted by the policy, so for SELinux it
+makes sense to have the lockdown hook called in these other places as
+well.
 
-maybe I forgot to mention this, we don’t intermix core changes with driver changes to support it.
-
-You first need to introduce the core feature and then patch the driver to support it.
-
-Regards
-
-Marcel
+-- 
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
