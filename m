@@ -2,83 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABFEA376514
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:26:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3A0376519
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:27:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236519AbhEGM0k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:26:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
+        id S236522AbhEGM2W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:28:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54554 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233468AbhEGM0i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:26:38 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 070056144F;
-        Fri,  7 May 2021 12:25:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620390338;
-        bh=KuVLhEfV0ciN/BcCKW+Oyow/J6rlhH733GXNmUgWCio=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=r6fXq83TVESWco0XzXwtE1O8JQlHpg2HQdMYMqc6IQqYnhgXg8qNAoj1AjQI/cwJr
-         nHUxUYJVOwkmk8iuP8CTU6CNOsexeH/PX4rtbtw0ima1eJ6SaqhnPf/wZnKwEfxzWe
-         iT6Eei8emZJx9kZah3YEEhWEcXMGkTWhN53VWXjkJFjWl091e8cU3vJiW0LtM3PV++
-         9Tu8MwV4Rvh6sCGSOEpt7ZnHf9Y+2H6fXFfrGRvZQkWhxT2eFYbbPJfsc5PXiUZy5j
-         kl872pIG1xqSWg/PZFO3o9chP+khHxWGKWgc9Xhtq5Cdn3nXFy2e2pXev1MNLqZIvV
-         vt9PYpGYnc+FA==
-Message-ID: <0064b4356a556c52c6d6dcf685fc837275ad55b3.camel@kernel.org>
-Subject: Re: [GIT PULL] Ceph updates for 5.13-rc1
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Ilya Dryomov <idryomov@gmail.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Ceph Development <ceph-devel@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Date:   Fri, 07 May 2021 08:25:36 -0400
-In-Reply-To: <CAOi1vP-iB1vjemw_WsRFEycdm94B8Trg73sPWAxUt+1ZAzPkzg@mail.gmail.com>
-References: <20210506143312.22281-1-idryomov@gmail.com>
-         <CAHk-=wgjQgUYrMD_tTm5M1BqeN5Z7h_z5EkU65RXAnEevsTDLA@mail.gmail.com>
-         <CAOi1vP-iB1vjemw_WsRFEycdm94B8Trg73sPWAxUt+1ZAzPkzg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.40.1 (3.40.1-1.fc34) 
+        id S233468AbhEGM2U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 08:28:20 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id EB0566145D;
+        Fri,  7 May 2021 12:27:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620390440;
+        bh=lHRE9JXgDKU9qUnQDDKQaDp6aEcA34kwR1z9u6Fuyak=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rCOimIwut6DOuOjoh8E37kjHgxSWf3y0Y96ZpFT/zuz9Gie5ehgEPtT87zouAz3HK
+         Mu6cprjw+29uhikMWAE59cfqOvvcxdigBWwXaRRL1zlSNCWMiX+SGbUDcESzVkPPgl
+         Hs16dL6VNmW3HZHADLbz+ZyG8bu0+UCXyxIkK2/o=
+Date:   Fri, 7 May 2021 14:27:17 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Ondrej Mosnacek <omosnace@redhat.com>
+Cc:     linux-serial@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jiri Slaby <jirislaby@kernel.org>, selinux@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] serial: core: fix suspicious security_locked_down() call
+Message-ID: <YJUyJcNT9RDaJc4P@kroah.com>
+References: <20210507115719.140799-1-omosnace@redhat.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210507115719.140799-1-omosnace@redhat.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2021-05-07 at 11:03 +0200, Ilya Dryomov wrote:
-> On Thu, May 6, 2021 at 7:51 PM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> > 
-> > On Thu, May 6, 2021 at 7:33 AM Ilya Dryomov <idryomov@gmail.com> wrote:
-> > > 
-> > > There is a merge conflict in fs/ceph/dir.c because Jeff's inode
-> > > type handling patch went through the vfs tree together with Al's
-> > > inode_wrong_type() helper.  for-linus-merged has the resolution.
-> > 
-> > Actually, the linux-next resolution looks wrong - or at least
-> > unnecessary - to me.
-> > 
-> > The conversion to d_splice_alias() means that the IS_ERR() test is now
-> > pointless, because d_splice_alias() handles an error-pointer natively,
-> > and just returns the error back with ERR_CAST().
-> > 
-> > So the proper resolution seems to be to just drop the IS_ERR().
-> > 
-> > Adding Jeff and Al just as a heads-up.
+On Fri, May 07, 2021 at 01:57:19PM +0200, Ondrej Mosnacek wrote:
+> The commit that added this check did so in a very strange way - first
+> security_locked_down() is called, its value stored into retval, and if
+> it's nonzero, then an additional check is made for (change_irq ||
+> change_port), and if this is true, the function returns. However, if
+> the goto exit branch is not taken, the code keeps the retval value and
+> continues executing the function. Then, depending on whether
+> uport->ops->verify_port is set, the retval value may or may not be reset
+> to zero and eventually the error value from security_locked_down() may
+> abort the function a few lines below.
 > 
-> I did it mechanically and then cross-checked against Jeff's patch:
-> 
-> https://lore.kernel.org/ceph-devel/20210316203919.102346-1-jlayton@kernel.org/T/#u
-> 
-> I guess neither Jeff nor I noticed that ERR_CAST() is redundant
-> because previously ceph_get_snapdir() didn't have any error handling
-> and the explicit check (which Jeff added in another patch that went
-> through Al's tree) felt "precious".
-> 
+> I will go out on a limb and assume that this isn't the intended behavior
+> and that an error value from security_locked_down() was supposed to
+> abort the function only in case (change_irq || change_port) is true.
 
-Yep, I missed that special error handling too. The final fixup looks
-fine.
+Are you _sure_ about this?
 
-Cheers,
--- 
-Jeff Layton <jlayton@kernel.org>
+Verification from the authors and users of this odd feature might be
+good to have, as I am loath to change how this works without them
+weighing in here.
 
+thanks,
+
+greg k-h
