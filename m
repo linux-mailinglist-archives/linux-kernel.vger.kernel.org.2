@@ -2,79 +2,427 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1048F375F41
+	by mail.lfdr.de (Postfix) with ESMTP id 880B5375F42
 	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 05:55:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233001AbhEGDye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 23:54:34 -0400
-Received: from mga11.intel.com ([192.55.52.93]:56141 "EHLO mga11.intel.com"
+        id S233259AbhEGDyf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 23:54:35 -0400
+Received: from mga11.intel.com ([192.55.52.93]:56144 "EHLO mga11.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S231261AbhEGDyc (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 23:54:32 -0400
-IronPort-SDR: sP3tJYGby6W4EfvslXFCUhk+0dvxSmleAVsUnhGUsOonZ/8QKblSxXX1IeGHWwJyPk42gGoIg+
- In3mGr9MY4kQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="195525854"
+        id S231283AbhEGDyd (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 23:54:33 -0400
+IronPort-SDR: Q8e5iL3tunMsCPMYS2nITeZZa0RMrp4EgpJUoGp4i2riWGK09+dVh/9XCvAxoDhP4lAmDqVcfg
+ JWViI7wXQhGA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="195525857"
 X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="195525854"
+   d="scan'208";a="195525857"
 Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 20:53:27 -0700
-IronPort-SDR: ulFlYVvfhr7ikU75t+xb0GZr5Z5LybosSUPIXTyHhUAo3UV4toDYnsCTpceDw1sXjm3fAnv3Pi
- bmIj27Hj9rsQ==
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 May 2021 20:53:29 -0700
+IronPort-SDR: g+/3zMDLQmIyosOf9S47VmWoGjqQT2dn4VPzvQ2JiYVYhxhfiqzQRKIfFL5J2ReFGLThK+QOzx
+ AgYvp8wW67dg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.82,279,1613462400"; 
-   d="scan'208";a="533309694"
+   d="scan'208";a="533309701"
 Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
-  by fmsmga001.fm.intel.com with ESMTP; 06 May 2021 20:53:25 -0700
+  by fmsmga001.fm.intel.com with ESMTP; 06 May 2021 20:53:27 -0700
 From:   Jin Yao <yao.jin@linux.intel.com>
 To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
         mingo@redhat.com, alexander.shishkin@linux.intel.com
 Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
         kan.liang@intel.com, yao.jin@intel.com,
         Jin Yao <yao.jin@linux.intel.com>
-Subject: [PATCH v2 0/3] perf header: Support HYBRID_TOPOLOGY and hybrid CPU_PMU_CAPS
-Date:   Fri,  7 May 2021 11:52:27 +0800
-Message-Id: <20210507035230.3079-1-yao.jin@linux.intel.com>
+Subject: [PATCH v2 1/3] perf header: Support HYBRID_TOPOLOGY feature
+Date:   Fri,  7 May 2021 11:52:28 +0800
+Message-Id: <20210507035230.3079-2-yao.jin@linux.intel.com>
 X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20210507035230.3079-1-yao.jin@linux.intel.com>
+References: <20210507035230.3079-1-yao.jin@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-AlderLake uses a hybrid architecture utilizing Golden Cove cores
-(core cpu) and Gracemont cores (atom cpu). It would be useful to let user
-know the hybrid topology, the HYBRID_TOPOLOGY feature in header indicates
-which cpus are core cpus, and which cpus are atom cpus.
+It would be useful to let user know the hybrid topology.
+Adding HYBRID_TOPOLOGY feature in header to indicate the
+core cpus and the atom cpus.
 
-On hybrid platform, it may have several cpu pmus, such as, "cpu_core" and
-"cpu_atom". The CPU_PMU_CAPS feature in perf header is improved to support
-multiple cpu pmus.
+With this patch,
 
-v2:
+For the perf.data generated on hybrid platform,
+reports the hybrid cpu list.
+
+  root@otcpl-adl-s-2:~# perf report --header-only -I
+  ...
+  # hybrid cpu system:
+  # cpu_core cpu list : 0-15
+  # cpu_atom cpu list : 16-23
+
+For the perf.data generated on non-hybrid platform,
+reports the message that HYBRID_TOPOLOGY is missing.
+
+  root@kbl-ppc:~# perf report --header-only -I
+  ...
+  # missing features: TRACING_DATA BRANCH_STACK GROUP_DESC AUXTRACE STAT CLOCKID DIR_FORMAT COMPRESSED CLOCK_DATA HYBRID_TOPOLOGY
+
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
 ---
-- In "perf header: Support HYBRID_TOPOLOGY feature", don't use the n->map
-  to print the cpu list, just use n->cpus.
+ .../Documentation/perf.data-file-format.txt   | 14 +++
+ tools/perf/util/cputopo.c                     | 80 +++++++++++++++++
+ tools/perf/util/cputopo.h                     | 13 +++
+ tools/perf/util/env.c                         |  6 ++
+ tools/perf/util/env.h                         |  7 ++
+ tools/perf/util/header.c                      | 87 +++++++++++++++++++
+ tools/perf/util/header.h                      |  1 +
+ tools/perf/util/pmu-hybrid.h                  | 11 +++
+ 8 files changed, 219 insertions(+)
 
-- Separate hybrid CPU_PMU_CAPS support into two patches:
-  perf header: Write hybrid CPU_PMU_CAPS
-  perf header: Process hybrid CPU_PMU_CAPS
-
-- Add some words to perf.data-file-format.txt for HYBRID_TOPOLOGY and
-  hybrid CPU_PMU_CAPS.
-
-Jin Yao (3):
-  perf header: Support HYBRID_TOPOLOGY feature
-  perf header: Write hybrid CPU_PMU_CAPS
-  perf header: Process hybrid CPU_PMU_CAPS
-
- .../Documentation/perf.data-file-format.txt   |  20 ++
- tools/perf/util/cputopo.c                     |  80 ++++++
- tools/perf/util/cputopo.h                     |  13 +
- tools/perf/util/env.c                         |  12 +
- tools/perf/util/env.h                         |  18 +-
- tools/perf/util/header.c                      | 269 ++++++++++++++++--
- tools/perf/util/header.h                      |   1 +
- tools/perf/util/pmu-hybrid.h                  |  11 +
- 8 files changed, 400 insertions(+), 24 deletions(-)
-
+diff --git a/tools/perf/Documentation/perf.data-file-format.txt b/tools/perf/Documentation/perf.data-file-format.txt
+index 9ee96640744e..d9d82ca8aeb7 100644
+--- a/tools/perf/Documentation/perf.data-file-format.txt
++++ b/tools/perf/Documentation/perf.data-file-format.txt
+@@ -402,6 +402,20 @@ struct {
+ 	u64 clockid_time_ns;
+ };
+ 
++	HEADER_HYBRID_TOPOLOGY = 30,
++
++Indicate the hybrid CPUs. The format of data is as below.
++
++struct {
++	char *pmu_name;
++	char *cpus;
++};
++
++Example:
++  hybrid cpu system:
++  cpu_core cpu list : 0-15
++  cpu_atom cpu list : 16-23
++
+ 	other bits are reserved and should ignored for now
+ 	HEADER_FEAT_BITS	= 256,
+ 
+diff --git a/tools/perf/util/cputopo.c b/tools/perf/util/cputopo.c
+index 1b52402a8923..ec77e2a7b3ca 100644
+--- a/tools/perf/util/cputopo.c
++++ b/tools/perf/util/cputopo.c
+@@ -12,6 +12,7 @@
+ #include "cpumap.h"
+ #include "debug.h"
+ #include "env.h"
++#include "pmu-hybrid.h"
+ 
+ #define CORE_SIB_FMT \
+ 	"%s/devices/system/cpu/cpu%d/topology/core_siblings_list"
+@@ -351,3 +352,82 @@ void numa_topology__delete(struct numa_topology *tp)
+ 
+ 	free(tp);
+ }
++
++static int load_hybrid_node(struct hybrid_topology_node *node,
++			    struct perf_pmu *pmu)
++{
++	const char *sysfs;
++	char path[PATH_MAX];
++	char *buf = NULL, *p;
++	FILE *fp;
++	size_t len = 0;
++
++	node->pmu_name = strdup(pmu->name);
++	if (!node->pmu_name)
++		return -1;
++
++	sysfs = sysfs__mountpoint();
++	if (!sysfs)
++		goto err;
++
++	snprintf(path, PATH_MAX, CPUS_TEMPLATE_CPU, sysfs, pmu->name);
++	fp = fopen(path, "r");
++	if (!fp)
++		goto err;
++
++	if (getline(&buf, &len, fp) <= 0) {
++		fclose(fp);
++		goto err;
++	}
++
++	p = strchr(buf, '\n');
++	if (p)
++		*p = '\0';
++
++	fclose(fp);
++	node->cpus = buf;
++	return 0;
++
++err:
++	zfree(&node->pmu_name);
++	free(buf);
++	return -1;
++}
++
++struct hybrid_topology *hybrid_topology__new(void)
++{
++	struct perf_pmu *pmu;
++	struct hybrid_topology *tp = NULL;
++	u32 nr, i = 0;
++
++	nr = perf_pmu__hybrid_pmu_num();
++	if (nr == 0)
++		return NULL;
++
++	tp = zalloc(sizeof(*tp) + sizeof(tp->nodes[0]) * nr);
++	if (!tp)
++		return NULL;
++
++	tp->nr = nr;
++	perf_pmu__for_each_hybrid_pmu(pmu) {
++		if (load_hybrid_node(&tp->nodes[i], pmu)) {
++			hybrid_topology__delete(tp);
++			return NULL;
++		}
++		i++;
++	}
++
++	return tp;
++}
++
++void hybrid_topology__delete(struct hybrid_topology *tp)
++{
++	u32 i;
++
++	for (i = 0; i < tp->nr; i++) {
++		zfree(&tp->nodes[i].pmu_name);
++		zfree(&tp->nodes[i].cpus);
++	}
++
++	free(tp);
++}
+diff --git a/tools/perf/util/cputopo.h b/tools/perf/util/cputopo.h
+index 6201c3790d86..d9af97177068 100644
+--- a/tools/perf/util/cputopo.h
++++ b/tools/perf/util/cputopo.h
+@@ -25,10 +25,23 @@ struct numa_topology {
+ 	struct numa_topology_node	nodes[];
+ };
+ 
++struct hybrid_topology_node {
++	char		*pmu_name;
++	char		*cpus;
++};
++
++struct hybrid_topology {
++	u32				nr;
++	struct hybrid_topology_node	nodes[];
++};
++
+ struct cpu_topology *cpu_topology__new(void);
+ void cpu_topology__delete(struct cpu_topology *tp);
+ 
+ struct numa_topology *numa_topology__new(void);
+ void numa_topology__delete(struct numa_topology *tp);
+ 
++struct hybrid_topology *hybrid_topology__new(void);
++void hybrid_topology__delete(struct hybrid_topology *tp);
++
+ #endif /* __PERF_CPUTOPO_H */
+diff --git a/tools/perf/util/env.c b/tools/perf/util/env.c
+index 9130f6fad8d5..744ae87b5bfa 100644
+--- a/tools/perf/util/env.c
++++ b/tools/perf/util/env.c
+@@ -202,6 +202,12 @@ void perf_env__exit(struct perf_env *env)
+ 	for (i = 0; i < env->nr_memory_nodes; i++)
+ 		zfree(&env->memory_nodes[i].set);
+ 	zfree(&env->memory_nodes);
++
++	for (i = 0; i < env->nr_hybrid_nodes; i++) {
++		zfree(&env->hybrid_nodes[i].pmu_name);
++		zfree(&env->hybrid_nodes[i].cpus);
++	}
++	zfree(&env->hybrid_nodes);
+ }
+ 
+ void perf_env__init(struct perf_env *env __maybe_unused)
+diff --git a/tools/perf/util/env.h b/tools/perf/util/env.h
+index ca249bf5e984..e5e5deebe68d 100644
+--- a/tools/perf/util/env.h
++++ b/tools/perf/util/env.h
+@@ -37,6 +37,11 @@ struct memory_node {
+ 	unsigned long	*set;
+ };
+ 
++struct hybrid_node {
++	char	*pmu_name;
++	char	*cpus;
++};
++
+ struct perf_env {
+ 	char			*hostname;
+ 	char			*os_release;
+@@ -59,6 +64,7 @@ struct perf_env {
+ 	int			nr_pmu_mappings;
+ 	int			nr_groups;
+ 	int			nr_cpu_pmu_caps;
++	int			nr_hybrid_nodes;
+ 	char			*cmdline;
+ 	const char		**cmdline_argv;
+ 	char			*sibling_cores;
+@@ -77,6 +83,7 @@ struct perf_env {
+ 	struct numa_node	*numa_nodes;
+ 	struct memory_node	*memory_nodes;
+ 	unsigned long long	 memory_bsize;
++	struct hybrid_node	*hybrid_nodes;
+ #ifdef HAVE_LIBBPF_SUPPORT
+ 	/*
+ 	 * bpf_info_lock protects bpf rbtrees. This is needed because the
+diff --git a/tools/perf/util/header.c b/tools/perf/util/header.c
+index 02b13c7a23be..72568ec3acf6 100644
+--- a/tools/perf/util/header.c
++++ b/tools/perf/util/header.c
+@@ -932,6 +932,40 @@ static int write_clock_data(struct feat_fd *ff,
+ 	return do_write(ff, data64, sizeof(*data64));
+ }
+ 
++static int write_hybrid_topology(struct feat_fd *ff,
++				 struct evlist *evlist __maybe_unused)
++{
++	struct hybrid_topology *tp;
++	int ret;
++	u32 i;
++
++	tp = hybrid_topology__new();
++	if (!tp)
++		return -1;
++
++	ret = do_write(ff, &tp->nr, sizeof(u32));
++	if (ret < 0)
++		goto err;
++
++	for (i = 0; i < tp->nr; i++) {
++		struct hybrid_topology_node *n = &tp->nodes[i];
++
++		ret = do_write_string(ff, n->pmu_name);
++		if (ret < 0)
++			goto err;
++
++		ret = do_write_string(ff, n->cpus);
++		if (ret < 0)
++			goto err;
++	}
++
++	ret = 0;
++
++err:
++	hybrid_topology__delete(tp);
++	return ret;
++}
++
+ static int write_dir_format(struct feat_fd *ff,
+ 			    struct evlist *evlist __maybe_unused)
+ {
+@@ -1623,6 +1657,18 @@ static void print_clock_data(struct feat_fd *ff, FILE *fp)
+ 		    clockid_name(clockid));
+ }
+ 
++static void print_hybrid_topology(struct feat_fd *ff, FILE *fp)
++{
++	int i;
++	struct hybrid_node *n;
++
++	fprintf(fp, "# hybrid cpu system:\n");
++	for (i = 0; i < ff->ph->env.nr_hybrid_nodes; i++) {
++		n = &ff->ph->env.hybrid_nodes[i];
++		fprintf(fp, "# %s cpu list : %s\n", n->pmu_name, n->cpus);
++	}
++}
++
+ static void print_dir_format(struct feat_fd *ff, FILE *fp)
+ {
+ 	struct perf_session *session;
+@@ -2849,6 +2895,46 @@ static int process_clock_data(struct feat_fd *ff,
+ 	return 0;
+ }
+ 
++static int process_hybrid_topology(struct feat_fd *ff,
++				   void *data __maybe_unused)
++{
++	struct hybrid_node *nodes, *n;
++	u32 nr, i;
++
++	/* nr nodes */
++	if (do_read_u32(ff, &nr))
++		return -1;
++
++	nodes = zalloc(sizeof(*nodes) * nr);
++	if (!nodes)
++		return -ENOMEM;
++
++	for (i = 0; i < nr; i++) {
++		n = &nodes[i];
++
++		n->pmu_name = do_read_string(ff);
++		if (!n->pmu_name)
++			goto error;
++
++		n->cpus = do_read_string(ff);
++		if (!n->cpus)
++			goto error;
++	}
++
++	ff->ph->env.nr_hybrid_nodes = nr;
++	ff->ph->env.hybrid_nodes = nodes;
++	return 0;
++
++error:
++	for (i = 0; i < nr; i++) {
++		free(nodes[i].pmu_name);
++		free(nodes[i].cpus);
++	}
++
++	free(nodes);
++	return -1;
++}
++
+ static int process_dir_format(struct feat_fd *ff,
+ 			      void *_data __maybe_unused)
+ {
+@@ -3117,6 +3203,7 @@ const struct perf_header_feature_ops feat_ops[HEADER_LAST_FEATURE] = {
+ 	FEAT_OPR(COMPRESSED,	compressed,	false),
+ 	FEAT_OPR(CPU_PMU_CAPS,	cpu_pmu_caps,	false),
+ 	FEAT_OPR(CLOCK_DATA,	clock_data,	false),
++	FEAT_OPN(HYBRID_TOPOLOGY,	hybrid_topology,	true),
+ };
+ 
+ struct header_print_data {
+diff --git a/tools/perf/util/header.h b/tools/perf/util/header.h
+index 2aca71763ecf..3f12ec0eb84e 100644
+--- a/tools/perf/util/header.h
++++ b/tools/perf/util/header.h
+@@ -45,6 +45,7 @@ enum {
+ 	HEADER_COMPRESSED,
+ 	HEADER_CPU_PMU_CAPS,
+ 	HEADER_CLOCK_DATA,
++	HEADER_HYBRID_TOPOLOGY,
+ 	HEADER_LAST_FEATURE,
+ 	HEADER_FEAT_BITS	= 256,
+ };
+diff --git a/tools/perf/util/pmu-hybrid.h b/tools/perf/util/pmu-hybrid.h
+index d0fa7bc50a76..2b186c26a43e 100644
+--- a/tools/perf/util/pmu-hybrid.h
++++ b/tools/perf/util/pmu-hybrid.h
+@@ -19,4 +19,15 @@ struct perf_pmu *perf_pmu__find_hybrid_pmu(const char *name);
+ bool perf_pmu__is_hybrid(const char *name);
+ char *perf_pmu__hybrid_type_to_pmu(const char *type);
+ 
++static inline int perf_pmu__hybrid_pmu_num(void)
++{
++	struct perf_pmu *pmu;
++	int num = 0;
++
++	perf_pmu__for_each_hybrid_pmu(pmu)
++		num++;
++
++	return num;
++}
++
+ #endif /* __PMU_HYBRID_H */
 -- 
 2.17.1
 
