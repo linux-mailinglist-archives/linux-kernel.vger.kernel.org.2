@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A30E3763A3
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:24:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF563763A4
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:24:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236914AbhEGKZW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 06:25:22 -0400
-Received: from out30-56.freemail.mail.aliyun.com ([115.124.30.56]:40418 "EHLO
-        out30-56.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236084AbhEGKYT (ORCPT
+        id S236238AbhEGKZm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 06:25:42 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:53988 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236541AbhEGKY6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 06:24:19 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R171e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04394;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0UY2Duau_1620382963;
-Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UY2Duau_1620382963)
+        Fri, 7 May 2021 06:24:58 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R121e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04423;MF=jiapeng.chong@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UY2uhFV_1620383032;
+Received: from j63c13417.sqa.eu95.tbsite.net(mailfrom:jiapeng.chong@linux.alibaba.com fp:SMTPD_---0UY2uhFV_1620383032)
           by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 07 May 2021 18:22:50 +0800
+          Fri, 07 May 2021 18:23:57 +0800
 From:   Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-To:     yishaih@nvidia.com
-Cc:     dledford@redhat.com, jgg@ziepe.ca, linux-rdma@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
+To:     rostedt@goodmis.org
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org,
         Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Subject: [PATCH] RDMA/mlx4: Remove unnessesary check in mlx4_ib_modify_wq()
-Date:   Fri,  7 May 2021 18:22:41 +0800
-Message-Id: <1620382961-69701-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+Subject: [PATCH] tracing: Remove redundant assignment to event_var
+Date:   Fri,  7 May 2021 18:23:50 +0800
+Message-Id: <1620383030-70462-1-git-send-email-jiapeng.chong@linux.alibaba.com>
 X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-cur_state and new_state are enums and when GCC considers
-them as unsigned, the conditions are never met.
+Variable event_var is set to 'ERR_PTR(-EINVAL)', but this value
+is never read as it is overwritten or not used later on, hence
+it is a redundant assignment and can be removed.
 
-Clean up the following smatch warning:
+Clean up the following clang-analyzer warning:
 
-drivers/infiniband/hw/mlx4/qp.c:4258 mlx4_ib_modify_wq() warn: unsigned
-'cur_state' is never less than zero.
+kernel/trace/trace_events_hist.c:2437:21: warning: Value stored to
+'event_var' during its initialization is never read
+[clang-analyzer-deadcode.DeadStores].
 
 Reported-by: Abaci Robot <abaci@linux.alibaba.com>
 Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
 ---
- drivers/infiniband/hw/mlx4/qp.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ kernel/trace/trace_events_hist.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/infiniband/hw/mlx4/qp.c b/drivers/infiniband/hw/mlx4/qp.c
-index 92ddbcc..162aa59 100644
---- a/drivers/infiniband/hw/mlx4/qp.c
-+++ b/drivers/infiniband/hw/mlx4/qp.c
-@@ -4255,8 +4255,7 @@ int mlx4_ib_modify_wq(struct ib_wq *ibwq, struct ib_wq_attr *wq_attr,
- 						     ibwq->state;
- 	new_state = wq_attr_mask & IB_WQ_STATE ? wq_attr->wq_state : cur_state;
- 
--	if (cur_state  < IB_WQS_RESET || cur_state  > IB_WQS_ERR ||
--	    new_state < IB_WQS_RESET || new_state > IB_WQS_ERR)
-+	if (cur_state > IB_WQS_ERR || new_state > IB_WQS_ERR)
- 		return -EINVAL;
- 
- 	if ((new_state == IB_WQS_RDY) && (cur_state == IB_WQS_ERR))
+diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+index c1abd63..b37342c 100644
+--- a/kernel/trace/trace_events_hist.c
++++ b/kernel/trace/trace_events_hist.c
+@@ -2434,7 +2434,7 @@ static struct trace_event_file *event_file(struct trace_array *tr,
+ 		      char *subsys_name, char *event_name, char *field_name)
+ {
+ 	struct trace_array *tr = target_hist_data->event_file->tr;
+-	struct hist_field *event_var = ERR_PTR(-EINVAL);
++	struct hist_field *event_var;
+ 	struct hist_trigger_data *hist_data;
+ 	unsigned int i, n, first = true;
+ 	struct field_var_hist *var_hist;
 -- 
 1.8.3.1
 
