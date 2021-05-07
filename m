@@ -2,30 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 899D5376BF1
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:54:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B21A376BF2
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229758AbhEGVzW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:55:22 -0400
-Received: from mga12.intel.com ([192.55.52.136]:12787 "EHLO mga12.intel.com"
+        id S229732AbhEGV5A (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:57:00 -0400
+Received: from mga01.intel.com ([192.55.52.88]:49641 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229482AbhEGVzU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:55:20 -0400
-IronPort-SDR: A6J+5rueivxWn6YOTeigiy+mUP2aKnvXB6BjiOj9EpvKbdQ0PCHQ1I+oZvbTJyZOtts07zNWNW
- fodLJdM6mbaQ==
-X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="178383883"
+        id S229470AbhEGV47 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 17:56:59 -0400
+IronPort-SDR: YpYUlll/eBngY5nvve49spznt+7V31uG6auOdAidBkQ70kTRVM9iQ/ZAVqWy7922fPwwhHj9oX
+ OGOIteRkNHtQ==
+X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="219728214"
 X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="scan'208";a="178383883"
+   d="scan'208";a="219728214"
 Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 14:54:20 -0700
-IronPort-SDR: BLeRinuJrn26cVwXA7B8r5xsV2zWIgpGchsBQG9XCrQxbNWp1XQrtqzjK20m7pvOSOGGQ0b6gz
- dstBSuLjHFGQ==
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 14:55:59 -0700
+IronPort-SDR: Bx0buzq70BukxjOnu7Yvo91AnCWBo0mqEaKc1aQC99QjnfxNEUyHF/LppMovU7VqJJ+HbQH6wm
+ qfuwXwPIxUwA==
 X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="scan'208";a="431679720"
+   d="scan'208";a="431680085"
 Received: from msandrid-mobl.amr.corp.intel.com (HELO [10.212.134.124]) ([10.212.134.124])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 14:54:19 -0700
-Subject: Re: [RFC v2 26/32] x86/mm: Move force_dma_unencrypted() to common
- code
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 14:55:58 -0700
+Subject: Re: [RFC v2 28/32] x86/tdx: Make pages shared in ioremap()
 To:     Kuppuswamy Sathyanarayanan 
         <sathyanarayanan.kuppuswamy@linux.intel.com>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -39,7 +38,7 @@ Cc:     Andi Kleen <ak@linux.intel.com>,
         Sean Christopherson <seanjc@google.com>,
         linux-kernel@vger.kernel.org
 References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
- <7c5adf75d69ea327b22b404b7c37b29712d73640.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 From:   Dave Hansen <dave.hansen@intel.com>
 Autocrypt: addr=dave.hansen@intel.com; keydata=
  xsFNBE6HMP0BEADIMA3XYkQfF3dwHlj58Yjsc4E5y5G67cfbt8dvaUq2fx1lR0K9h1bOI6fC
@@ -84,46 +83,27 @@ Autocrypt: addr=dave.hansen@intel.com; keydata=
  OPsw5tV/LmQ5GXH0JQ/TZXWygyRFyyI2FqNTx4WHqUn3yFj8rwTAU1tluRUYyeLy0ayUlKBH
  ybj0N71vWO936MqP6haFERzuPAIpxj2ezwu0xb1GjTk4ynna6h5GjnKgdfOWoRtoWndMZxbA
  z5cecg==
-Message-ID: <5536639a-918d-de8d-ff32-934a13902a03@intel.com>
-Date:   Fri, 7 May 2021 14:54:19 -0700
+Message-ID: <b884067a-19d6-105f-9f8c-28feb3b43446@intel.com>
+Date:   Fri, 7 May 2021 14:55:58 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <7c5adf75d69ea327b22b404b7c37b29712d73640.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+In-Reply-To: <eaaa692ce1ed897f66f864bbfa2df8683768d79e.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +++ b/arch/x86/mm/mem_encrypt_common.c
-...
-> +/* Override for DMA direct allocation check - ARCH_HAS_FORCE_DMA_UNENCRYPTED */
-> +bool force_dma_unencrypted(struct device *dev)
-> +{
-> +	/*
-> +	 * For SEV, all DMA must be to unencrypted/shared addresses.
-> +	 */
-> +	if (sev_active())
-> +		return true;
-> +
-> +	/*
-> +	 * For SME, all DMA must be to unencrypted addresses if the
-> +	 * device does not support DMA to addresses that include the
-> +	 * encryption mask.
-> +	 */
-> +	if (sme_active()) {
-> +		u64 dma_enc_mask = DMA_BIT_MASK(__ffs64(sme_me_mask));
-> +		u64 dma_dev_mask = min_not_zero(dev->coherent_dma_mask,
-> +						dev->bus_dma_limit);
-> +
-> +		if (dma_dev_mask <= dma_enc_mask)
-> +			return true;
-> +	}
-> +
-> +	return false;
-> +}
+On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
+>  static unsigned int __ioremap_check_encrypted(struct resource *res)
+>  {
+> -	if (!sev_active())
+> +	if (!sev_active() && !is_tdx_guest())
+>  		return 0;
 
-This doesn't seem much like common code to me.  It seems like 100% SEV
-code.  Is this really where we want to move it?
+I think it's time to come up with a real name for all of the code that's
+under: (sev_active() || is_tdx_guest()).
+
+"encrypted" isn't it, for sure.
