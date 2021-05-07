@@ -2,101 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F857375DDF
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 02:19:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C1CA4375DE7
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 02:32:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233582AbhEGAUy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 20:20:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37970 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233539AbhEGAUv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 20:20:51 -0400
-Received: from mail-wr1-x429.google.com (mail-wr1-x429.google.com [IPv6:2a00:1450:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6E0BC061574;
-        Thu,  6 May 2021 17:19:52 -0700 (PDT)
-Received: by mail-wr1-x429.google.com with SMTP id l13so7344922wru.11;
-        Thu, 06 May 2021 17:19:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=6Ly8LRPF0H1aWdKEb+5WRQF77SY7lze0cxVlaDbFegM=;
-        b=Vifuxsq8ikahBtP4UaxvPzuwVbrtZJO8ayF/h1nNURzvnZdT8RPR598yvD2VRY86DC
-         2dIgcOeWx45v5fLlZFs3uEqbpxUX2BWPvhu1YtNokLX3Cuov1UBRAHZxlN04hg3sY6nl
-         0gFrYDP8GjGLvQ4CfaAiebk3uugXlJbho7TmenFZqi9pElZKW0Qr15ybfTpFsHb5eu70
-         devYrpJDnGEXZzRW9HaJCaHSnfJuAYdhfGqwikoIBScINq5f4M7e7LxIvw7ViEpm67s4
-         rlrOSNGVoH+Zvq23nUWnjHCRZsOM1MeYbAvJO4lo/zI2sm1tC1v37TQIFvcJBmANzYW2
-         nR7Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=6Ly8LRPF0H1aWdKEb+5WRQF77SY7lze0cxVlaDbFegM=;
-        b=YuDbgO7FNkADnyw236e5fLuDWEsZUvLuxmMOJ1apzbU98jAUblwxvLWwB94X9+Cqnz
-         Ijvc1Ew87l0fqlxb+oHERsz/D+GeMyGM2JIrvHhHmr9vEqf8IKkWeXOjctLFohBZgj2w
-         eD7E9veQ7Q5K0tWZfmT21bcjUQCUxaQXpeVteQwBN8UGJJW4eOXq/3mcQwTtdtS604Eu
-         bwhjPnT1O0GvSiujDbBJSAhCD8mZXUi5KLlnt6cEGEu1bB/xzvrOmWMcqAiE+NYuTA0R
-         0ApnHxw4+bvZUKXjYWquoz/eRLNGsPfUfFDd28HV25fwE+5o4vB6lW67gxGf9lIeZnYd
-         WjkQ==
-X-Gm-Message-State: AOAM530uPAVxU6FaAiiD3zUtK0P0hT3/N9fv7bBPbtgYBkPc06+biSHR
-        S2gC/loTHnrRmCiJ/80ovbOZTxKs/GIAxsu1Wxs=
-X-Google-Smtp-Source: ABdhPJwApwq00cS0zUI9fX5pkWZKlLTrCmBiM6HCuq5FMtpKcHyw3B+qomvmNznEzUh2vYSRLKLwyBvpWhWLWX4hTgg=
-X-Received: by 2002:a5d:64cf:: with SMTP id f15mr8260301wri.327.1620346791614;
- Thu, 06 May 2021 17:19:51 -0700 (PDT)
+        id S233663AbhEGAdo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 20:33:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44370 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233539AbhEGAdn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 20:33:43 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 2544E610FA;
+        Fri,  7 May 2021 00:32:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620347564;
+        bh=4gAFmIq38uaBj2IJ15SPVZYv1uvzYNSTPMlW8/M6ADI=;
+        h=Date:From:To:Cc:Subject:From;
+        b=mcBeHU6UlJ3QGZQhBDCTXnoqxsnoQzpvZ2Ha0LYOV4103bTyAXQNXU+Y26WqzgV86
+         QkwYytbG5lGmJl8I1DnMQAx/GoveotbPL1r9kBywy8ZPWj4fSErdc9Z3wnWIQOQEAd
+         xJd3EjaqsoUPTHHaOjV1GAiX/RfuyiUz/8dbGAXJMNtswK9+XRuZO1wCNM0Mc+Ly4U
+         BOUj2YXTwhIsRrnIa0IUbhaReCGa1jO+EbL2fErd6mmLTEZm0He1p/LT2TCY7fZmTY
+         mw0FzfNNTlf1Q7jABhKuI0Z0FF12o5xMGi4VhuNO3uhaAoT0xOWraPN1UYdaTGeB/3
+         Vv6dL04A4Zc2w==
+Date:   Thu, 6 May 2021 17:32:44 -0700
+From:   "Darrick J. Wong" <djwong@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
+Subject: [GIT PULL] xfs: more new code for 5.13
+Message-ID: <20210507003244.GF8582@magnolia>
 MIME-Version: 1.0
-References: <1619048258-8717-1-git-send-email-khsieh@codeaurora.org>
-In-Reply-To: <1619048258-8717-1-git-send-email-khsieh@codeaurora.org>
-From:   Rob Clark <robdclark@gmail.com>
-Date:   Thu, 6 May 2021 17:23:32 -0700
-Message-ID: <CAF6AEGvJEThHFvMt34fAnOVhHkHxwtDyC8=g3CFEd16A4p8W8g@mail.gmail.com>
-Subject: Re: [PATCH v4 0/4] check sink_count before update is_connected status
-To:     Kuogee Hsieh <khsieh@codeaurora.org>
-Cc:     Sean Paul <sean@poorly.run>, Stephen Boyd <swboyd@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        aravindh@codeaurora.org, David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 21, 2021 at 4:38 PM Kuogee Hsieh <khsieh@codeaurora.org> wrote:
->
-> 1) check sink_count before update is_connected status
-> 2) initialize audio_comp when audio starts
-> 3) check main link status before start aux read
-> 4) dp_link_parse_sink_count() return immediately if aux read failed
->
-> Kuogee Hsieh (4):
->   drm/msm/dp: check sink_count before update is_connected status
->   drm/msm/dp: initialize audio_comp when audio starts
->   drm/msm/dp: check main link status before start aux read
->   drm/msm/dp: dp_link_parse_sink_count() return immediately if aux read
->     failed
+Hi Linus,
 
-I've picked up these two in msm-next for an upcoming -fixes pull req:
+Please pull this second branch containing new xfs code for 5.13.  Except
+for the timestamp struct renaming patches, everything else in here are
+bug fixes for 5.13-rc1.
 
-  drm/msm/dp: initialize audio_comp when audio starts
-  drm/msm/dp: check sink_count before update is_connected status
+The branch merges cleanly against upstream as of a few minutes ago.
+Please let me know if anything else strange happens during the merge
+process.
 
-BR,
--R
+--D
 
+The following changes since commit 76adf92a30f3b92a7f91bb00b28ea80efccd0f01:
 
->
->  drivers/gpu/drm/msm/dp/dp_audio.c   |  1 +
->  drivers/gpu/drm/msm/dp/dp_aux.c     |  5 +++++
->  drivers/gpu/drm/msm/dp/dp_display.c | 38 +++++++++++++++++++++++++------------
->  drivers/gpu/drm/msm/dp/dp_display.h |  1 +
->  drivers/gpu/drm/msm/dp/dp_link.c    | 20 ++++++++++++++-----
->  5 files changed, 48 insertions(+), 17 deletions(-)
->
-> --
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
->
+  xfs: remove xfs_quiesce_attr declaration (2021-04-16 08:28:36 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.13-merge-5
+
+for you to fetch changes up to 8e9800f9f2b89e1efe2a5993361fae4d618a6c26:
+
+  xfs: don't allow log writes if the data device is readonly (2021-05-04 08:43:27 -0700)
+
+----------------------------------------------------------------
+More new code for 5.13:
+- Rename the log timestamp struct.
+- Remove broken transaction counter debugging that wasn't working
+  correctly on very old filesystems.
+- Various fixes to make pre-lazysbcount filesystems work properly again.
+- Fix a free space accounting problem where we neglected to consider
+  free space btree blocks that track metadata reservation space when
+  deciding whether or not to allow caller to reserve space for
+  a metadata update.
+- Fix incorrect pagecache clearing behavior during FUNSHARE ops.
+- Don't allow log writes if the data device is readonly.
+
+----------------------------------------------------------------
+Brian Foster (3):
+      xfs: unconditionally read all AGFs on mounts with perag reservation
+      xfs: introduce in-core global counter of allocbt blocks
+      xfs: set aside allocation btree blocks from block reservation
+
+Christoph Hellwig (2):
+      xfs: rename xfs_ictimestamp_t
+      xfs: rename struct xfs_legacy_ictimestamp
+
+Darrick J. Wong (5):
+      xfs: remove obsolete AGF counter debugging
+      xfs: don't check agf_btreeblks on pre-lazysbcount filesystems
+      xfs: count free space btree blocks when scrubbing pre-lazysbcount fses
+      xfs: fix xfs_reflink_unshare usage of filemap_write_and_wait_range
+      xfs: don't allow log writes if the data device is readonly
+
+Dave Chinner (1):
+      xfs: update superblock counters correctly for !lazysbcount
+
+ fs/xfs/libxfs/xfs_ag_resv.c     | 34 +++++++++++++++++++++++-----------
+ fs/xfs/libxfs/xfs_alloc.c       | 17 ++++++++++++++---
+ fs/xfs/libxfs/xfs_alloc_btree.c |  4 ++--
+ fs/xfs/libxfs/xfs_log_format.h  | 12 ++++++------
+ fs/xfs/libxfs/xfs_rmap_btree.c  |  2 --
+ fs/xfs/libxfs/xfs_sb.c          | 16 +++++++++++++---
+ fs/xfs/scrub/agheader.c         |  7 ++++++-
+ fs/xfs/scrub/fscounters.c       | 40 +++++++++++++++++++++++++++++++++++++++-
+ fs/xfs/xfs_fsops.c              |  2 --
+ fs/xfs/xfs_inode_item.c         |  8 ++++----
+ fs/xfs/xfs_inode_item_recover.c |  6 +++---
+ fs/xfs/xfs_log.c                | 10 ++++++----
+ fs/xfs/xfs_mount.c              | 15 ++++++++++++++-
+ fs/xfs/xfs_mount.h              |  6 ++++++
+ fs/xfs/xfs_ondisk.h             |  4 ++--
+ fs/xfs/xfs_reflink.c            |  3 ++-
+ fs/xfs/xfs_trans.c              | 10 +++-------
+ fs/xfs/xfs_trans.h              | 15 ---------------
+ 18 files changed, 143 insertions(+), 68 deletions(-)
