@@ -2,100 +2,247 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0273C376149
+	by mail.lfdr.de (Postfix) with ESMTP id 6E60537614A
 	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235489AbhEGHkH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:40:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21591 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235441AbhEGHjg (ORCPT
+        id S235501AbhEGHkJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:40:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49782 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235498AbhEGHj4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:39:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620373117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=kBTtRECuFmb5m6BraCZy4PnJHFx6r0vEiT/8u2tqtfA=;
-        b=SOYM0f/PIHFsGBhy/bL8/mmUDaFPz6itaZ2p5msGjChiW0e9o9pGDNleT7hx0MShANLoHb
-        +rZYXO2inKRDAYYGn4XfuPjDuxI5rqsMJTtXfAsVE5KRM+2ZHXvxfX0D2VVkGF4xZ9NaWl
-        4p4QHeCSZXSg2V2Q/+d2R5c2ypWfp80=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-185-e3uRNAmpOAO2lTO7idJ0Fg-1; Fri, 07 May 2021 03:38:35 -0400
-X-MC-Unique: e3uRNAmpOAO2lTO7idJ0Fg-1
-Received: by mail-ed1-f70.google.com with SMTP id y15-20020aa7d50f0000b02903885ee98723so3983855edq.16
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:38:35 -0700 (PDT)
+        Fri, 7 May 2021 03:39:56 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 635EAC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:38:55 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id l7so9095194edb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:38:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=references:user-agent:from:to:cc:subject:in-reply-to:message-id
+         :date:mime-version;
+        bh=FVGhI0piG/ZT4z3Zm+F7e5QmKPHr5hT6fO27OeIGutE=;
+        b=z+XBo5R6JvT8Y/3Vvp7a8IhFg5DOTNiOhZHUOfwNW9F9cvzxk9e0JfqlXSNTMVs4iS
+         ijaqMc/rM87W50WuKQS9+5xQvvqJymy9S94wGVw43B3hp/zogfm9SUDw/9fiq12EpX4K
+         l5WEsUo5LwRC9awZm8SMSMiPwxj/YDUSepflwnOGZGi30uBuEBfkJmcz8zIZ+1hF+zdU
+         Fb4YWgcpA4T6fi48UadwBMhnCVi1cIHHOXRBuuxRTFOCV2vgoC6HwCF0QH0wsAPC/XCX
+         p+lHNmqpLAzaEBDFDzE80+MU+iY7/xXHlOFIlS1qnZizA5qJSRT3ynHacFWCgqIlNvue
+         kN3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kBTtRECuFmb5m6BraCZy4PnJHFx6r0vEiT/8u2tqtfA=;
-        b=sXs1vguPRaP29mIVcOktWeykM4Wh7AXOOoSXfN3YAiLVdnHzSJNn/oq/dTjtv6YC87
-         bsr/cf2ZT9Snm2UOiny2qMIimg4LByFusbTreZjxRX9OMXLuLLboLdNoCQdSnn8gSoYT
-         pqAbGIUuthod8rj09c/Vtym5qLSILFNKAPFFI6sQzG/VqVVZgqb6aBTe2fpa1HgQASHd
-         Pty/Z/XzsQVFoL785vu2MjCViHzK2AKGVfM3vboAcX6oVTiVucOze5VASCGUZRw722B4
-         WxhhvK4ZwADTZXT91/yRXth9r6hY1ts/lQ1n3D3z54GyuFIZPebj+F97lb+IdGIhlA/G
-         rAAQ==
-X-Gm-Message-State: AOAM5315JW2bLKctYNL0/NLHbBp4hdq41rZL5fOHT5OLA37EkB9fzIf+
-        r8QkYfA+c44/vPyuneml0TwNr2oENyxnVn/Ui47zn+CCOsAk4yrOZtrrwibNRLfDsV7BVZpFKDh
-        kOc50cCiovzBkkyDxJHNXkdRx
-X-Received: by 2002:a50:f113:: with SMTP id w19mr9452785edl.46.1620373114228;
-        Fri, 07 May 2021 00:38:34 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxZ/7NeEWb2qccaD0eVmBCiON3TssIhzQVJAFOZqHaDOCDkzBZRc3Wwakszx3Ihk+lqfismtw==
-X-Received: by 2002:a50:f113:: with SMTP id w19mr9452775edl.46.1620373114038;
-        Fri, 07 May 2021 00:38:34 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id p14sm3448567eds.28.2021.05.07.00.38.32
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 May 2021 00:38:33 -0700 (PDT)
-Subject: Re: [PATCH 21/24] KVM: x86/mmu: Tweak auditing WARN for A/D bits to
- !PRESENT (was MMIO)
-To:     Matteo Croce <mcroce@linux.microsoft.com>,
-        Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Ben Gardon <bgardon@google.com>
-References: <20210225204749.1512652-1-seanjc@google.com>
- <20210225204749.1512652-22-seanjc@google.com>
- <20210507010518.26aa74f0@linux.microsoft.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <3c33b99f-7a8c-a897-9c3e-d5e71d1e2e25@redhat.com>
-Date:   Fri, 7 May 2021 09:38:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        h=x-gm-message-state:references:user-agent:from:to:cc:subject
+         :in-reply-to:message-id:date:mime-version;
+        bh=FVGhI0piG/ZT4z3Zm+F7e5QmKPHr5hT6fO27OeIGutE=;
+        b=k+ezQXTPHN2nYgLptbCjGWcCl17KmP1OEiU4PHfTATd0+mzUTZtVEOOVYT1lXTLh/D
+         cMUn3boztm+ZMSleFmqtDQEU06Vs1XPPS/wUv4NhPtEMw/2mTWOUWsG4kcWx04T3Ac+a
+         3AU8HxwfBh/Rr4x3ATuoU+tiAbefrBH2TJzfekk7fTf4+7myHYCc4iVmJKMBhz0Zk+SE
+         ycSmXKOGWRq6wTBvHPFiBcWNIcvl6K0Foctm+waihAxzxTcPDQhsA+TGDSysocjCOEY1
+         a2N/k0/v3djxZQhdS+tkA/UbRVyy//yqY9/edHo/mLIAuzkv5J0fAaxOhrP31o38Eq4r
+         e7Ow==
+X-Gm-Message-State: AOAM532o71K8S2u9rOJcVuL+qV1XGBgcgzIHiGENX34x2yZRzKaKQWd3
+        3f7m/r7i5itHt9okPxf59ha825qjxV/wFQ==
+X-Google-Smtp-Source: ABdhPJwE+ezx2yC0r4CH7hMLFtjAihL3CrKtolxdfolsVVIOXdRsuDjuDzxRm1PvXc020O7Vl7sSTA==
+X-Received: by 2002:a05:6402:268f:: with SMTP id w15mr9534035edd.321.1620373134041;
+        Fri, 07 May 2021 00:38:54 -0700 (PDT)
+Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
+        by smtp.gmail.com with ESMTPSA id b12sm3549997eds.23.2021.05.07.00.38.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 00:38:53 -0700 (PDT)
+References: <20210505072607.3815442-1-narmstrong@baylibre.com>
+ <20210505072607.3815442-4-narmstrong@baylibre.com>
+ <a2d7df9e-5fb7-0c86-b0b0-2a5cdfab8823@baylibre.com>
+User-agent: mu4e 1.4.15; emacs 27.1
+From:   Jerome Brunet <jbrunet@baylibre.com>
+To:     Neil Armstrong <narmstrong@baylibre.com>, broonie@kernel.org
+Cc:     alsa-devel@alsa-project.org, linux-amlogic@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/2] sound: meson: g12a-toacodec: add support for SM1
+ TOACODEC
+In-reply-to: <a2d7df9e-5fb7-0c86-b0b0-2a5cdfab8823@baylibre.com>
+Message-ID: <1jlf8rngc3.fsf@starbuckisacylon.baylibre.com>
+Date:   Fri, 07 May 2021 09:38:52 +0200
 MIME-Version: 1.0
-In-Reply-To: <20210507010518.26aa74f0@linux.microsoft.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/21 01:05, Matteo Croce wrote:
-> On Thu, 25 Feb 2021 12:47:46 -0800
-> Sean Christopherson <seanjc@google.com> wrote:
-> 
->> Tweak the MMU_WARN that guards against weirdness when querying A/D
->> status to fire on a !MMU_PRESENT SPTE, as opposed to a MMIO SPTE.
->> Attempting to query A/D status on any kind of !MMU_PRESENT SPTE, MMIO
->> or otherwise, indicates a KVM bug.  Case in point, several now-fixed
->> bugs were identified by enabling this new WARN.
->>
->> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> 
-> You made the 1.000.000th commit, congrats!
-> 
-> $ git log --oneline --reverse |sed '1000000!d'
-> 8f366ae6d8c5 KVM: x86/mmu: Tweak auditing WARN for A/D bits to !PRESENT (was MMIO)
 
-🦀🦀🦀
+On Wed 05 May 2021 at 09:27, Neil Armstrong <narmstrong@baylibre.com> wrote:
 
-Paolo
+> On 05/05/2021 09:26, Neil Armstrong wrote:
+>> This adds support for the TOACODEC found in Amlogic SM1 SoCs.
+>> 
+>> The bits are shifted for more selection of clock sources, so this only
+>> maps the same support for G12A to the SM1 bits.
+>> 
+>> Signed-off-by: Neil Armstrong <narmstrong@baylibre.com>
+>> ---
+>>  sound/soc/meson/g12a-toacodec.c | 64 ++++++++++++++++++++++++++++++++-
+>>  1 file changed, 63 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/sound/soc/meson/g12a-toacodec.c b/sound/soc/meson/g12a-toacodec.c
+>> index 2084c9542c9c..5437ecba9c47 100644
+>> --- a/sound/soc/meson/g12a-toacodec.c
+>> +++ b/sound/soc/meson/g12a-toacodec.c
+>> @@ -21,13 +21,22 @@
+>>  
+>>  #define TOACODEC_CTRL0			0x0
+>>  #define  CTRL0_ENABLE_SHIFT		31
+>> +#define  CTRL0_DAT_SEL_SM1_MSB		19
+>> +#define  CTRL0_DAT_SEL_SM1_LSB		18
+>>  #define  CTRL0_DAT_SEL_MSB		15
+>>  #define  CTRL0_DAT_SEL_LSB		14
+>> +#define  CTRL0_LANE_SEL_SM1		16
+>>  #define  CTRL0_LANE_SEL			12
+>> +#define  CTRL0_LRCLK_SEL_SM1_MSB	14
+>> +#define  CTRL0_LRCLK_SEL_SM1_LSB	12
+>>  #define  CTRL0_LRCLK_SEL_MSB		9
+>>  #define  CTRL0_LRCLK_SEL_LSB		8
+>> +#define  CTRL0_LRCLK_INV_SM1		BIT(10)
+>> +#define  CTRL0_BLK_CAP_INV_SM1		BIT(9)
+>>  #define  CTRL0_BLK_CAP_INV		BIT(7)
+>> +#define  CTRL0_BCLK_O_INV_SM1		BIT(8)
+>>  #define  CTRL0_BCLK_O_INV		BIT(6)
+>> +#define  CTRL0_BCLK_SEL_SM1_MSB		6
+>>  #define  CTRL0_BCLK_SEL_MSB		5
+>>  #define  CTRL0_BCLK_SEL_LSB		4
+>>  #define  CTRL0_MCLK_SEL			GENMASK(2, 0)
+>> @@ -41,6 +50,7 @@ struct g12a_toacodec {
+>>  };
+>>  
+>>  struct g12a_toacodec_match_data {
+>> +	const struct snd_soc_component_driver *component_drv;
+>>  	struct reg_field field_dat_sel;
+>>  	struct reg_field field_lrclk_sel;
+>>  	struct reg_field field_bclk_sel;
+>> @@ -98,11 +108,20 @@ static SOC_ENUM_SINGLE_DECL(g12a_toacodec_mux_enum, TOACODEC_CTRL0,
+>>  			    CTRL0_DAT_SEL_LSB,
+>>  			    g12a_toacodec_mux_texts);
+>>  
+>> +static SOC_ENUM_SINGLE_DECL(sm1_toacodec_mux_enum, TOACODEC_CTRL0,
+>> +			    CTRL0_DAT_SEL_SM1_LSB,
+>> +			    g12a_toacodec_mux_texts);
+>> +
+>>  static const struct snd_kcontrol_new g12a_toacodec_mux =
+>>  	SOC_DAPM_ENUM_EXT("Source", g12a_toacodec_mux_enum,
+>>  			  snd_soc_dapm_get_enum_double,
+>>  			  g12a_toacodec_mux_put_enum);
+>>  
+>> +static const struct snd_kcontrol_new sm1_toacodec_mux =
+>> +	SOC_DAPM_ENUM_EXT("Source", sm1_toacodec_mux_enum,
+>> +			  snd_soc_dapm_get_enum_double,
+>> +			  g12a_toacodec_mux_put_enum);
+>> +
+>>  static const struct snd_kcontrol_new g12a_toacodec_out_enable =
+>>  	SOC_DAPM_SINGLE_AUTODISABLE("Switch", TOACODEC_CTRL0,
+>>  				    CTRL0_ENABLE_SHIFT, 1, 0);
+>> @@ -114,6 +133,13 @@ static const struct snd_soc_dapm_widget g12a_toacodec_widgets[] = {
+>>  			    &g12a_toacodec_out_enable),
+>>  };
+>>  
+>> +static const struct snd_soc_dapm_widget sm1_toacodec_widgets[] = {
+>> +	SND_SOC_DAPM_MUX("SRC", SND_SOC_NOPM, 0, 0,
+>> +			 &sm1_toacodec_mux),
+>> +	SND_SOC_DAPM_SWITCH("OUT EN", SND_SOC_NOPM, 0, 0,
+>> +			    &g12a_toacodec_out_enable),
+>> +};
+>> +
+>>  static int g12a_toacodec_input_hw_params(struct snd_pcm_substream *substream,
+>>  					 struct snd_pcm_hw_params *params,
+>>  					 struct snd_soc_dai *dai)
+>> @@ -184,6 +210,13 @@ static int g12a_toacodec_component_probe(struct snd_soc_component *c)
+>>  				       CTRL0_BLK_CAP_INV);
+>>  }
+>>  
+>> +static int sm1_toacodec_component_probe(struct snd_soc_component *c)
+>> +{
+>> +	/* Initialize the static clock parameters */
+>> +	return snd_soc_component_write(c, TOACODEC_CTRL0,
+>> +				       CTRL0_BLK_CAP_INV_SM1);
+>> +}
+>> +
+>>  static const struct snd_soc_dapm_route g12a_toacodec_routes[] = {
+>>  	{ "SRC", "I2S A", "IN A Playback" },
+>>  	{ "SRC", "I2S B", "IN B Playback" },
+>> @@ -196,6 +229,10 @@ static const struct snd_kcontrol_new g12a_toacodec_controls[] = {
+>>  	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL, 3, 0),
+>>  };
+>>  
+>> +static const struct snd_kcontrol_new sm1_toacodec_controls[] = {
+>> +	SOC_SINGLE("Lane Select", TOACODEC_CTRL0, CTRL0_LANE_SEL_SM1, 3, 0),
+>> +};
+>> +
+>>  static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
+>>  	.probe			= g12a_toacodec_component_probe,
+>>  	.controls		= g12a_toacodec_controls,
+>> @@ -208,6 +245,18 @@ static const struct snd_soc_component_driver g12a_toacodec_component_drv = {
+>>  	.non_legacy_dai_naming	= 1,
+>>  };
+>>  
+>> +static const struct snd_soc_component_driver sm1_toacodec_component_drv = {
+>> +	.probe			= sm1_toacodec_component_probe,
+>> +	.controls		= sm1_toacodec_controls,
+>> +	.num_controls		= ARRAY_SIZE(sm1_toacodec_controls),
+>> +	.dapm_widgets		= sm1_toacodec_widgets,
+>> +	.num_dapm_widgets	= ARRAY_SIZE(sm1_toacodec_widgets),
+>> +	.dapm_routes		= g12a_toacodec_routes,
+>> +	.num_dapm_routes	= ARRAY_SIZE(g12a_toacodec_routes),
+>> +	.endianness		= 1,
+>> +	.non_legacy_dai_naming	= 1,
+>> +};
+>> +
+>>  static const struct regmap_config g12a_toacodec_regmap_cfg = {
+>>  	.reg_bits	= 32,
+>>  	.val_bits	= 32,
+>> @@ -215,16 +264,29 @@ static const struct regmap_config g12a_toacodec_regmap_cfg = {
+>>  };
+>>  
+>>  static const struct g12a_toacodec_match_data g12a_toacodec_match_data = {
+>> +	.component_drv	= &g12a_toacodec_component_drv,
+>>  	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_LSB, CTRL0_DAT_SEL_MSB),
+>>  	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_LSB, CTRL0_LRCLK_SEL_MSB),
+>>  	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_BCLK_SEL_LSB, CTRL0_BCLK_SEL_MSB),
+>>  };
+>>  
+>> +static const struct g12a_toacodec_match_data sm1_toacodec_match_data = {
+>> +	.component_drv	= &sm1_toacodec_component_drv,
+>> +	.field_dat_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_DAT_SEL_SM1_LSB, CTRL0_DAT_SEL_SM1_MSB),
+>> +	.field_lrclk_sel = REG_FIELD(TOACODEC_CTRL0, CTRL0_LRCLK_SEL_SM1_LSB,
+>> +				     CTRL0_LRCLK_SEL_SM1_MSB),
+>> +	.field_bclk_sel	= REG_FIELD(TOACODEC_CTRL0, CTRL0_BCLK_SEL_LSB, CTRL0_BCLK_SEL_SM1_MSB),
+>> +};
+
+If you make another round, the LSB/MSB defines don't really help
+readability here (and in the other patch)
+
+Feel free to put the values directly.
+
+>> +
+>>  static const struct of_device_id g12a_toacodec_of_match[] = {
+>>  	{
+>>  		.compatible = "amlogic,g12a-toacodec",
+>>  		.data = &g12a_toacodec_match_data,
+>>  	},
+>> +	{
+>> +		.compatible = "amlogic,sm1-toacodec",
+>> +		.data = &sm1_toacodec_match_data,
+>> +	},
+>>  	{}
+>>  };
+>>  MODULE_DEVICE_TABLE(of, g12a_toacodec_of_match);
+>> @@ -278,7 +340,7 @@ static int g12a_toacodec_probe(struct platform_device *pdev)
+>>  		return PTR_ERR(priv->field_bclk_sel);
+>>  
+>>  	return devm_snd_soc_register_component(dev,
+>> -			&g12a_toacodec_component_drv, g12a_toacodec_dai_drv,
+>> +			data->component_drv, g12a_toacodec_dai_drv,
+>>  			ARRAY_SIZE(g12a_toacodec_dai_drv));
+>>  }
+>>  
+>> 
+>
+> Oops, spurious one, please ignore it.
+>
+> Neil
 
