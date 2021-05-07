@@ -2,148 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B4A376110
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:17:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3129D376119
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:25:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235270AbhEGHSO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:18:14 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17140 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231272AbhEGHSM (ORCPT
+        id S235275AbhEGH0p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:26:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46580 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230022AbhEGH0o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:18:12 -0400
-Received: from DGGEMS403-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fc1rx60N9zqT3T;
-        Fri,  7 May 2021 15:13:53 +0800 (CST)
-Received: from [10.174.177.243] (10.174.177.243) by
- DGGEMS403-HUB.china.huawei.com (10.3.19.203) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 7 May 2021 15:17:08 +0800
-Subject: Re: arm32: panic in move_freepages (Was [PATCH v2 0/4] arm64: drop
- pfn_valid_within() and simplify pfn_valid())
-From:   Kefeng Wang <wangkefeng.wang@huawei.com>
-To:     Mike Rapoport <rppt@kernel.org>,
-        David Hildenbrand <david@redhat.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        "Mike Rapoport" <rppt@linux.ibm.com>,
-        Will Deacon <will@kernel.org>, <kvmarm@lists.cs.columbia.edu>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>
-References: <YIet5X7lgygD9rpZ@kernel.org>
- <259d14df-a713-72e7-4ccb-c06a8ee31e13@huawei.com>
- <YIj5zcbHBHt7CC8B@kernel.org>
- <6ad2956c-70ae-c423-ed7d-88e94c88060f@huawei.com>
- <YIpY8TXCSc7Lfa2Z@kernel.org>
- <0cb013e4-1157-f2fa-96ec-e69e60833f72@huawei.com>
- <YIvTM5Yqit8AB4W8@kernel.org>
- <ca5b00bd-1312-0c69-ab69-a1bd749f51b6@huawei.com>
- <YI+XrAg4KOzOyt7c@kernel.org>
- <24b37c01-fc75-d459-6e61-d67e8f0cf043@redhat.com>
- <YI+32ocTbec5Rm4e@kernel.org>
- <82cfbb7f-dd4f-12d8-dc76-847f06172200@huawei.com>
-Message-ID: <b077916e-d3f7-ec6c-8c80-b5b642ee111f@huawei.com>
-Date:   Fri, 7 May 2021 15:17:08 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.7.0
+        Fri, 7 May 2021 03:26:44 -0400
+Received: from mail-ej1-x62f.google.com (mail-ej1-x62f.google.com [IPv6:2a00:1450:4864:20::62f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D2B3DC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:25:44 -0700 (PDT)
+Received: by mail-ej1-x62f.google.com with SMTP id u21so12041586ejo.13
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:25:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=eTcOiJuUBe4mwErRjR9sk/Dc+yGEFwaWB4ssf73sgvI=;
+        b=SrVWIbP2AUGIHpQoE5kpkyBzA8SAVtCVKnIgW34Ds8KCO5uqfbMI7yjAm5hWES23b2
+         Yz1iZPCrCSrugSkoibyQ2++4q5cBe52pVGr/qRa7SKeE/hIrseHXUj7APD0aW4+E/npV
+         bJepwV8ztZhu/TRjbd9SYhDHChguZiINkL1G1WxtAqX4BFdkLpvi5t4zSbaP9kPOlU9w
+         jVwHqmo2YziO3XdxAezNS62/ft1yM5AtRt123yE+4IxulhQt4DLYVuWLqbT2neL4p3Uo
+         Gn70glTXdFKL5P038nLTPFZYIj0qZ5EFQBwIdqsopfIddNEbudpWJSX2KmIws5akSewY
+         y00Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=eTcOiJuUBe4mwErRjR9sk/Dc+yGEFwaWB4ssf73sgvI=;
+        b=Zz2mqw4MNA3EQ8alE+9qzjV6QDZH/4oEJKfAXDrLMtkhiCdZSyck0r4ZuKnMr4JlFw
+         XNws6AxZvFbjSkJmZ8jkWeQMiw7MPxqa+8gnZpzQapDo0Q3z/U4TYgwYCBNGedZvXyLm
+         YcrWTqaK54+MKJrSvG5yDDt+Q724pCWbYNRH06CYEF68eaAYp4RnzkVfcuBJ1LCMAB+B
+         CmuOvSDq/t3bMoA0zSvDgbusGqoUclfx9SyXQZO3/Fp9CGjBIYQfH9WTxQa1WsO/pKHo
+         sk80siiacyAotyjqTkdiYPCIi2YCnuDBX07LyVr3sQKr40UqGbnPwyMKYViPKEaHOfwR
+         WxnQ==
+X-Gm-Message-State: AOAM533QEfysWoQFBO7uOhSPaGoUmb2P/wwiQH/kvZlZG5vx6+QZc/0F
+        G8roLqEy0H3Wn89CQpqKPspw7UMjAi7mxHpisPWtng==
+X-Google-Smtp-Source: ABdhPJyu8GA+H4PSMjHEiEswlBTm9mTDBQOIbjb/Cdl4U1P8ljwsaYvPMqaWo60UhqJEfuu3YqDlY6D194iK/XP86Qg=
+X-Received: by 2002:a17:906:d0c8:: with SMTP id bq8mr8247577ejb.423.1620372343322;
+ Fri, 07 May 2021 00:25:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <82cfbb7f-dd4f-12d8-dc76-847f06172200@huawei.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.174.177.243]
-X-CFilter-Loop: Reflected
+References: <20210507050908.1008686-1-davidgow@google.com>
+In-Reply-To: <20210507050908.1008686-1-davidgow@google.com>
+From:   Daniel Latypov <dlatypov@google.com>
+Date:   Fri, 7 May 2021 00:25:32 -0700
+Message-ID: <CAGS_qxoqt3ui13HKNv4iQkOB2Bo1m189sRngR3EzOOHM2jnY-A@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kunit: Do not typecheck binary assertions
+To:     David Gow <davidgow@google.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 6, 2021 at 10:09 PM David Gow <davidgow@google.com> wrote:
+>
+> The use of typecheck() in KUNIT_EXPECT_EQ() and friends is causing more
+> problems than I think it's worth. Things like enums need to have their
+> values explicitly cast, and literals all need to be very precisely typed
+> for the code to compile.
+>
+> While typechecking does have its uses, the additional overhead of having
+> lots of needless casts -- combined with the awkward error messages which
+> don't mention which types are involved -- makes tests less readable and
+> more difficult to write.
+>
+> By removing the typecheck() call, the two arguments still need to be of
+> compatible types, but don't need to be of exactly the same time, which
+> seems a less confusing and more useful compromise.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
+> ---
+>
+> I appreciate that this is probably a bit controversial (and, indeed, I
+> was a bit hesitant about sending it out myself), but after sitting on it
+> for a few days, I still think this is probably an improvement overall.
+
+I'm in favor.
+The absolute worst part of the status quo is that the types involved
+might not get shown at all in the GCC error output!
+It's an incredible pain and probably has wasted a good deal of other
+people's time as well.
+(Maybe clang is better in this regard).
+
+Here's a few examples where things get a bit weird:
+    KUNIT_EXPECT_EQ(test, 1 + 1, 2.5);
+     Expected 1 + 1 == 2.5, but
+         1 + 1 == 2
+         2.5 == 2
+
+Along similar lines:
+  KUNIT_EXPECT_EQ(test, 0xffffffff, ~0);
+  KUNIT_EXPECT_EQ(test, 0xffffffffffffffff, ~0);
+  KUNIT_EXPECT_EQ(test, 0xfffffffffffffffe, ~1);
+  KUNIT_EXPECT_EQ(test, 0xfffffffe, ~0); //fails
+The failure message on the last might make one wonder how the first ones worked.
+    Expected 0xfffffffe == ~0, but
+         0xfffffffe == 4294967294
+         ~0 == -1
+
+Explanation: when evaluating the assertion, we compare __left/__right
+directly which maintain their types.
+But struct kunit_binary_assert stores them as `long long`, hence the
+truncation of 2.5 to 2.
+
+I was nervous about ~0, as it should be an int, i.e. this passes:
+  KUNIT_EXPECT_EQ(test, sizeof(~0), sizeof(int))
+But it all works as expected, e.g. we don't have implicit narrowing
+going on and causing us to say that 0xfffffffffffffffe = 0.
 
 
-On 2021/5/6 20:47, Kefeng Wang wrote:
-> 
-> 
->>>>> no, the CONFIG_ARM_LPAE is not set, and yes with same panic at
->>>>> move_freepages at
->>>>>
->>>>> start_pfn/end_pfn [de600, de7ff], [de600000, de7ff000] :  pfn 
->>>>> =de600, page
->>>>> =ef3cc000, page-flags = ffffffff,  pfn2phy = de600000
->>>>>
->>>>>>> __free_memory_core, range: 0xb0200000 - 0xc0000000, pfn: b0200 - 
->>>>>>> b0200
->>>>>>> __free_memory_core, range: 0xcc000000 - 0xdca00000, pfn: cc000 - 
->>>>>>> b0200
->>>>>>> __free_memory_core, range: 0xde700000 - 0xdea00000, pfn: de700 - 
->>>>>>> b0200
->>>>
->>>> Hmm, [de600, de7ff] is not added to the free lists which is correct. 
->>>> But
->>>> then it's unclear how the page for de600 gets to move_freepages()...
->>>>
->>>> Can't say I have any bright ideas to try here...
->>>
->>> Are we missing some checks (e.g., PageReserved()) that 
->>> pfn_valid_within()
->>> would have "caught" before?
->>
->> Unless I'm missing something the crash happens in __rmqueue_fallback():
->>
->> do_steal:
->>     page = get_page_from_free_area(area, fallback_mt);
->>
->>     steal_suitable_fallback(zone, page, alloc_flags, start_migratetype,
->>                                 can_steal);
->>         -> move_freepages()
->>             -> BUG()
->>
->> So a page from free area should be sane as the freed range was never 
->> added
->> it to the free lists.
-> 
-> Sorry for the late response due to the vacation.
-> 
-> The pfn in range [de600, de7ff] won't be added into the free lists via 
-> __free_memory_core(), but the pfn could be added into freelists via 
-> free_highmem_page()
-> 
-> I add some debug[1] in add_to_free_list(), we could see the calltrace
-> 
-> free_highpages, range_pfn [b0200, c0000], range_addr [b0200000, c0000000]
-> free_highpages, range_pfn [cc000, dca00], range_addr [cc000000, dca00000]
-> free_highpages, range_pfn [de700, dea00], range_addr [de700000, dea00000]
-> add_to_free_list, ===> pfn = de700
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 0 at mm/page_alloc.c:900 add_to_free_list+0x8c/0xec
-> pfn = de700
-> Modules linked in:
-> CPU: 0 PID: 0 Comm: swapper Not tainted 5.10.0+ #48
-> Hardware name: Hisilicon A9
-> [<c010a600>] (show_stack) from [<c04b21c4>] (dump_stack+0x9c/0xc0)
-> [<c04b21c4>] (dump_stack) from [<c011c708>] (__warn+0xc0/0xec)
-> [<c011c708>] (__warn) from [<c011c7a8>] (warn_slowpath_fmt+0x74/0xa4)
-> [<c011c7a8>] (warn_slowpath_fmt) from [<c023721c>] 
-> (add_to_free_list+0x8c/0xec)
-> [<c023721c>] (add_to_free_list) from [<c0237e00>] 
-> (free_pcppages_bulk+0x200/0x278)
-> [<c0237e00>] (free_pcppages_bulk) from [<c0238d14>] 
-> (free_unref_page+0x58/0x68)
-> [<c0238d14>] (free_unref_page) from [<c023bb54>] 
-> (free_highmem_page+0xc/0x50)
-> [<c023bb54>] (free_highmem_page) from [<c070620c>] (mem_init+0x21c/0x254)
-> [<c070620c>] (mem_init) from [<c0700b38>] (start_kernel+0x258/0x5c0)
-> [<c0700b38>] (start_kernel) from [<00000000>] (0x0)
-> 
-> so any idea?
+Stuff like
+  KUNIT_EXPECT_EQ(test, 0, NULL);
+will compile, but with warnings
+../include/kunit/test.h:805:15: warning: comparison between pointer and integer
+  805 |         left, ==, right,          \
+      |               ^~
 
-If pfn = 0xde700, due to the pageblock_nr_pages = 0x200, then the 
-start_pfn,end_pfn passed to move_freepages() will be [de600, de7ff],
-but the range of [de600,de700] without ‘struct page' will lead to
-this panic when pfn_valid_within not enabled if no HOLES_IN_ZONE,
-and the same issue will occurred in isolate_freepages_block(), maybe
-there are some scene, so I select HOLES_IN_ZONE in ARCH_HISI(ARM) to 
-solve this issue in our 5.10, should we select HOLES_IN_ZONE in all ARM 
-or only in ARCH_HISI, any better solution?  Thanks.
+So I generally think that we can rely on compiler warnings to protect
+us from some misuse.
 
+Reviewed-by: Daniel Latypov <dlatypov@google.com>
+
+
+>
+> The second patch does fix what I think is an actual bug, though, so even
+> if this isn't determined to be a good idea, it (or some equivalent)
+> should probably go through.
+>
+> Cheers,
+> -- David
+>
+>  include/kunit/test.h | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index 49601c4b98b8..4c56ffcb7403 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -775,7 +775,6 @@ void kunit_do_assertion(struct kunit *test,
+>  do {                                                                          \
+>         typeof(left) __left = (left);                                          \
+>         typeof(right) __right = (right);                                       \
+> -       ((void)__typecheck(__left, __right));                                  \
+>                                                                                \
+>         KUNIT_ASSERTION(test,                                                  \
+>                         __left op __right,                                     \
+> --
+> 2.31.1.607.g51e8a6a459-goog
+>
