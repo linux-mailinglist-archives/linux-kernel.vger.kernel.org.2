@@ -2,128 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47656376185
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:55:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 570AD376188
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:55:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234951AbhEGH4G (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:56:06 -0400
-Received: from mga04.intel.com ([192.55.52.120]:15520 "EHLO mga04.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229936AbhEGH4E (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:56:04 -0400
-IronPort-SDR: JOQIFHLG2QcBQ9Ao0YDfAoUZGJM7756Hi8njoLBUfTUETdsnb/3+88gBQPCSKqPY9ul01Do1LV
- 69TaqQ05IGFw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9976"; a="196657145"
-X-IronPort-AV: E=Sophos;i="5.82,280,1613462400"; 
-   d="scan'208";a="196657145"
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 00:55:02 -0700
-IronPort-SDR: WaY1sNv/ukokJjPp8wct3T3eaLAIYMWYD6XbFJeXqKJmH6FT51vPPZIZ65FQsn0dz9oIjA2NDd
- i49gApZFjxbg==
-X-IronPort-AV: E=Sophos;i="5.82,280,1613462400"; 
-   d="scan'208";a="434799232"
-Received: from paasikivi.fi.intel.com ([10.237.72.42])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 00:55:00 -0700
-Received: from paasikivi.fi.intel.com (localhost [127.0.0.1])
-        by paasikivi.fi.intel.com (Postfix) with SMTP id 63DEC203BC;
-        Fri,  7 May 2021 10:54:58 +0300 (EEST)
-Date:   Fri, 7 May 2021 10:54:58 +0300
-From:   Sakari Ailus <sakari.ailus@linux.intel.com>
-To:     Pavel Skripkin <paskripkin@gmail.com>
-Cc:     mchehab@kernel.org, gregkh@linuxfoundation.org,
-        linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] staging: media: atomisp: remove useless breaks
-Message-ID: <20210507075458.GB3@paasikivi.fi.intel.com>
-References: <20210506200956.16593-1-paskripkin@gmail.com>
+        id S235091AbhEGH4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:56:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53654 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232997AbhEGH4n (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 03:56:43 -0400
+Received: from mail-lf1-x133.google.com (mail-lf1-x133.google.com [IPv6:2a00:1450:4864:20::133])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6509C061574;
+        Fri,  7 May 2021 00:55:43 -0700 (PDT)
+Received: by mail-lf1-x133.google.com with SMTP id x20so11545127lfu.6;
+        Fri, 07 May 2021 00:55:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=d1FrNuovi6qchn9VoSrH/ZZcEV9n4ZW2UXgmvYmjE+g=;
+        b=u/fBwS9p8+ZJ1uzUyj9xWfncK+l0n+O3W0A4tJwhN9+RVhbt/VxvDgu1xrwj2TQchS
+         T/WPQv24Xe7/GAMWEocVZZ+VeKuAueYMPejrAQ4dHHkQAaQ0f9lWCavmcbn4ZeuMHtyd
+         G0q3a5q2xnS7zV2HZgTnSwnhjlmYBHQujJe9LsIZ5vndhGoSOKiL7mXJZ78Qr6SDkgkk
+         I2yUR6lRzrz7o/PcVSpNT+6WPcHUdg3M6VcLyoKjuCE8zy3empFn+fAyPxxgJbGbFFzG
+         gedCmZnjFIIrU9ayPlv9omPusy40prB3L31vMgUr0/mQKWtGrPNBiYiQJ67pkAMJZj0h
+         Oj5g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=d1FrNuovi6qchn9VoSrH/ZZcEV9n4ZW2UXgmvYmjE+g=;
+        b=S4jjChb7VfoOXGWuSGGLjN0ctrXjdmQsi2c3RpxgOJ9DnpFSGdR5csKQIWnt7HHacm
+         j53FQJy7qwDcrSbQQGArPEtsLT2tXBZsuY77UcwTR0lXkkUaD2HJsvouzCzPuNMlUDRH
+         M2POHPHdhlrTJJbq/sR69YCCj0NGdkRc0iW9jnOZKTEHFjwFaan0RmJO+uKxfqwrerhc
+         p+75yGl7vqt71cH/B7B9Tjd6/t7+zihcBwkaI2VqIBLESkZHR72tAypzSyhZ2Oer4uKR
+         atv+zqOAW99oYHJFwiLv4IwUYHa2tiB0nii/5rnSTVdqUSiPFDY/5vY3lLzX3lMa5t24
+         83sQ==
+X-Gm-Message-State: AOAM531OqDFSmh5KvB81OKTcewmtrGJLjalhqx+pIwhka0jUTtBKepXn
+        5EUl6qh9AGrR8XHnRKj/9q8CBncOzlB1Qjh63M0=
+X-Google-Smtp-Source: ABdhPJxmOfmHUfXXyaTbU88iBMHRGJL5QKoxgPRItgy6u662XlJ1CgzE8LYRu4JF7W41BVjOUogeB1Zoj1BFMzNjYeM=
+X-Received: by 2002:a05:6512:3f27:: with SMTP id y39mr5490221lfa.166.1620374142511;
+ Fri, 07 May 2021 00:55:42 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506200956.16593-1-paskripkin@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210429062130.29403-1-dqfext@gmail.com> <20210429.170815.956010543291313915.davem@davemloft.net>
+ <20210430023839.246447-1-dqfext@gmail.com> <YIv28APpOP9tnuO+@lunn.ch>
+ <trinity-843c99ce-952a-434e-95e4-4ece3ba6b9bd-1619786236765@3c-app-gmx-bap03>
+ <YIv7w8Wy81fmU5A+@lunn.ch> <trinity-611ff023-c337-4148-a215-98fd5604eac2-1619787382934@3c-app-gmx-bap03>
+ <YIwCliT5NZT713WD@lunn.ch> <trinity-c45bbeec-5b7c-43a2-8e86-7cb22ad61558-1619794787680@3c-app-gmx-bap03>
+ <YIwxpYD1jnFMPQz+@lunn.ch> <fc962daf8b7babc22b043b2b0878a206780b55f3.camel@mediatek.com>
+ <CALW65ja5mRPoNM2EZsONMh8Kda5OgQg79R=Xp71CaQcp4cprnQ@mail.gmail.com> <f3f5167f60b7897b952f5fff7bcaef976c3c6531.camel@mediatek.com>
+In-Reply-To: <f3f5167f60b7897b952f5fff7bcaef976c3c6531.camel@mediatek.com>
+From:   DENG Qingfang <dqfext@gmail.com>
+Date:   Fri, 7 May 2021 15:55:31 +0800
+Message-ID: <CALW65jaPO52vX02KGqEooE2LRUMNMgFoHYMfyXUtOa7SPS-jqg@mail.gmail.com>
+Subject: Re: Re: Re: Re: [PATCH net-next 0/4] MT7530 interrupt support
+To:     Landen Chao <landen.chao@mediatek.com>
+Cc:     Andrew Lunn <andrew@lunn.ch>,
+        Frank Wunderlich <frank-w@public-files.de>,
+        David Miller <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Russell King - ARM Linux admin <linux@armlinux.org.uk>,
+        Sean Wang <sean.wang@mediatek.com>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Vladimir Oltean <olteanv@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        linux-staging@lists.linux.dev,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, netdev <netdev@vger.kernel.org>,
+        Weijie Gao <weijie.gao@mediatek.com>,
+        Chuanhong Guo <gch981213@gmail.com>,
+        =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Marc Zyngier <maz@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Pavel,
+On Thu, May 6, 2021 at 8:54 PM Landen Chao <landen.chao@mediatek.com> wrote:
+> MT7620's FE PHY HW is different from MT753x's GE PHY. Vendor registers
+> of these two PHY are totally different.
 
-On Thu, May 06, 2021 at 11:09:56PM +0300, Pavel Skripkin wrote:
-> Breaks are not useful after a return, they can
-> simply be removed.
-> 
-> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> ---
->  .../pci/hive_isp_css_common/host/input_system.c       | 11 -----------
->  1 file changed, 11 deletions(-)
-> 
-> diff --git a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-> index 0f5a231672a8..fd82997b11cc 100644
-> --- a/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-> +++ b/drivers/staging/media/atomisp/pci/hive_isp_css_common/host/input_system.c
-> @@ -904,16 +904,12 @@ static input_system_err_t input_system_configure_channel(
->  			break;
->  		case INPUT_SYSTEM_SOURCE_TPG:
->  			return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -			break;
->  		case INPUT_SYSTEM_SOURCE_PRBS:
->  			return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -			break;
->  		case INPUT_SYSTEM_SOURCE_FIFO:
->  			return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-
-While at it, you could drop the individual return statements, too. There
-seems to be another such location at the end of the patch.
-
-> -			break;
->  		default:
->  			return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -			break;
->  		}
->  
->  		if (error != INPUT_SYSTEM_ERR_NO_ERROR) return error;
-> @@ -995,7 +991,6 @@ static input_system_err_t input_buffer_configuration(void)
->  			default:
->  				config.csi_buffer_flags[port] |= INPUT_SYSTEM_CFG_FLAG_CONFLICT;
->  				return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -				break;
->  			}
->  
->  			// Check acquisition buffer specified but set it later since it has to be unique.
-> @@ -1032,7 +1027,6 @@ static input_system_err_t input_buffer_configuration(void)
->  
->  			default:
->  				return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -				break;
->  			}
->  		} else {
->  			config.csi_buffer_flags[port] = INPUT_SYSTEM_CFG_FLAG_BLOCKED;
-> @@ -1319,7 +1313,6 @@ static input_system_err_t configuration_to_registers(void)
->  
->  	default:
->  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -		break;
->  
->  	} // end of switch (source_type)
->  
-> @@ -1696,16 +1689,12 @@ static input_system_err_t input_system_configure_channel_sensor(
->  		break;
->  	case INPUT_SYSTEM_FIFO_CAPTURE_WITH_COUNTING:
->  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -		break;
->  	case INPUT_SYSTEM_XMEM_CAPTURE:
->  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -		break;
->  	case INPUT_SYSTEM_XMEM_ACQUIRE:
->  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -		break;
->  	default:
->  		return INPUT_SYSTEM_ERR_PARAMETER_NOT_SUPPORTED;
-> -		break;
->  	}
->  	return INPUT_SYSTEM_ERR_NO_ERROR;
->  }
-
--- 
-Regards,
-
-Sakari Ailus
+Okay. So if the FE PHY is added later, it can be named mediatek-fe.c.
