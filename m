@@ -2,59 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A6B37617D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:51:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 49B2C376182
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:54:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235815AbhEGHwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:52:44 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39866 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235799AbhEGHwn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:52:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id AA22961431;
-        Fri,  7 May 2021 07:51:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620373903;
-        bh=54w0k5sqcPlMUtrAtS0ClNSU/LGrv7FQXtkFcE2NjJ0=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=gMvVlCp6UXUsqAU3zHP00uxb82LLFe+i/pnRLnmF1q6lGf8YPqrxx4OoJs2v5ss3y
-         zii/pPsOn8MW6ExWDvqaF5GjW4H/XVmmcbTpb5UtRtnR1UaYsQ05M6GEIyTWo/Wcok
-         QRw07c8By52SbEiiF0CRo+AUeC5D/7ZCe8za0Ns/DBEO86N8BO7EnOfB4TtEOoag9L
-         031iaV+LtxL1aHAdWyQOeMmwCi9Jx2dQAOc1G5ZuKPL9f0UUwbe+AYgO20utju+7Xj
-         +49tnkSMrtNyEhx8/+86GXKhG7S62FUfVr4Ct9Pd4Rb884raqSKbwk1yHEvw+g9dJZ
-         57OqeQl/P3Onw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id A489C609AC;
-        Fri,  7 May 2021 07:51:43 +0000 (UTC)
-Subject: Re: [git pull] Input updates for v5.13-rc0
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <YJRsc3LxpkFNTknm@google.com>
-References: <YJRsc3LxpkFNTknm@google.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <YJRsc3LxpkFNTknm@google.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
-X-PR-Tracked-Commit-Id: 05665cef4b745cb46b1d1b8e96deaa25464092d3
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: aef511fb91b6efb2d355c2704cf979f3202d310a
-Message-Id: <162037390366.26493.3264925485074967088.pr-tracker-bot@kernel.org>
-Date:   Fri, 07 May 2021 07:51:43 +0000
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+        id S235856AbhEGHyw convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 May 2021 03:54:52 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:48433 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234951AbhEGHym (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 03:54:42 -0400
+Received: from smtpclient.apple (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
+        by mail.holtmann.org (Postfix) with ESMTPSA id 8CB8BCECD9;
+        Fri,  7 May 2021 10:01:26 +0200 (CEST)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: [PATCH v3 3/5] Bluetooth: btqca: Moved extracting rom version
+ info to common place
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <1620322392-27148-4-git-send-email-gubbaven@codeaurora.org>
+Date:   Fri, 7 May 2021 09:53:35 +0200
+Cc:     Johan Hedberg <johan.hedberg@gmail.com>,
+        devicetree@vger.kernel.org, Matthias Kaehlcke <mka@chromium.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Bluetooth Kernel Mailing List 
+        <linux-bluetooth@vger.kernel.org>,
+        Hemantg <hemantg@codeaurora.org>,
+        MSM <linux-arm-msm@vger.kernel.org>,
+        Balakrishna Godavarthi <bgodavar@codeaurora.org>,
+        Rocky Liao <rjliao@codeaurora.org>, hbandi@codeaurora.org,
+        abhishekpandit@chromium.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <A9592AB3-EE71-4A1A-8CE4-AC209A98BDE5@holtmann.org>
+References: <1620322392-27148-1-git-send-email-gubbaven@codeaurora.org>
+ <1620322392-27148-4-git-send-email-gubbaven@codeaurora.org>
+To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 6 May 2021 15:23:47 -0700:
+Hi Venkata,
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+> Moved extracting rom version info to common place as this code is
+> common in all if else ladder in qca_uart_setup.
+> 
+> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
+> ---
+> drivers/bluetooth/btqca.c | 15 ++++++---------
+> 1 file changed, 6 insertions(+), 9 deletions(-)
+> 
+> diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+> index 320c555..658fd8e4 100644
+> --- a/drivers/bluetooth/btqca.c
+> +++ b/drivers/bluetooth/btqca.c
+> @@ -533,24 +533,21 @@ int qca_uart_setup(struct hci_dev *hdev, uint8_t baudrate,
+> 
+> 	config.user_baud_rate = baudrate;
+> 
+> +	/* Firmware files to download are based on ROM version.
+> +	 * ROM version is derived from last two bytes of soc_ver.
+> +	 */
+> +	rom_ver = ((soc_ver & 0x00000f00) >> 0x04) |
+> +		    (soc_ver & 0x0000000f);
+> +
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/aef511fb91b6efb2d355c2704cf979f3202d310a
+please try to align this properly.
 
-Thank you!
+Regards
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Marcel
+
