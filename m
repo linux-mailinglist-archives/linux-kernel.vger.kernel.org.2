@@ -2,146 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E55F376842
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B26376845
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:48:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234878AbhEGPtC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 11:49:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45870 "EHLO
+        id S236953AbhEGPtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 11:49:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229558AbhEGPtB (ORCPT
+        with ESMTP id S235180AbhEGPtS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 11:49:01 -0400
-Received: from mail.pqgruber.com (mail.pqgruber.com [IPv6:2a05:d014:575:f70b:4f2c:8f1d:40c4:b13e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 182FAC061574;
-        Fri,  7 May 2021 08:48:00 -0700 (PDT)
-Received: from workstation.tuxnet (213-47-165-233.cable.dynamic.surfer.at [213.47.165.233])
-        by mail.pqgruber.com (Postfix) with ESMTPSA id 83B16C7C83F;
-        Fri,  7 May 2021 17:47:59 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pqgruber.com;
-        s=mail; t=1620402479;
-        bh=D78XQuP9OmKTktvVwykbFr4BP1uaTHL4s+99yRdIE0U=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=lsXeHsM1DFRUM6MB4n48XeOl470Vi59GlqpwGEf7/wjatHf5xhlpErJgVIuBbvSS/
-         98JVtRL7oUl8kZd33r8Xt+gEdcFPU7Qa2oXshAN139IiZw/sbSBT5bCIKuZSFZZHmM
-         J+u/A6+//+qFxfqb+ndtY9gDFbraNpBUr47374xE=
-Date:   Fri, 7 May 2021 17:47:58 +0200
-From:   Clemens Gruber <clemens.gruber@pqgruber.com>
-To:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH 1/4] pwm: core: Support new usage_power setting in PWM
- state
-Message-ID: <YJVhLrkeNXBp6M1p@workstation.tuxnet>
-References: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
- <20210507150317.bnluhqrqepde4xjm@pengutronix.de>
+        Fri, 7 May 2021 11:49:18 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925D1C061574;
+        Fri,  7 May 2021 08:48:18 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620402497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u8xnyANDKNSkvt5YrG1NH2QAtW1TH6g1ROBYf6y7AZU=;
+        b=IZYl6+DJTBqwM43/24DZhOJZSwEFcEfUhKM6FcsIN2N3Gk6uIWqGcGYantoO7ZsywhadY4
+        QntLGZZ9KefJF1aULowbN95fV067yAfjBEvPZc1JZUtis3JPVcY4HhSDcv+Gglr4MXgsob
+        RXct+DIHg4eK9JuRGNmGIcO8MEcf8dZw/b8e/4OBMje7mRHo5kfkXF361SAWNlT0iO0xeJ
+        q3gpBwhQ+A21e8sqFBoxHX1kplK20F7uct9wMpi4QrKmGKoQLgfauZlaPkLXGFFp/zrPJa
+        yS4UlVZyRnDu7+YywDDvBWEHcD91eUuPnbQlK49RunI2QAA8AR8BC6moMImJqQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620402497;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=u8xnyANDKNSkvt5YrG1NH2QAtW1TH6g1ROBYf6y7AZU=;
+        b=srWkvOdm1PfhZYesjT3FoEpAkq2deSBQJg0/rXJc39X1HwHUPeF25zYNpoLy3rRcgs5DTU
+        tEB8NhbpI3GmgJCQ==
+To:     Vasily Averin <vvs@virtuozzo.com>, cgroups@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>
+Cc:     Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4 12/16] memcg: enable accounting for posix_timers_cache slab
+In-Reply-To: <41e1ebc8-4f95-4a3f-3665-3fe139786d8e@virtuozzo.com>
+References: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com> <41e1ebc8-4f95-4a3f-3665-3fe139786d8e@virtuozzo.com>
+Date:   Fri, 07 May 2021 17:48:16 +0200
+Message-ID: <87r1iimtof.ffs@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210507150317.bnluhqrqepde4xjm@pengutronix.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Uwe,
+On Wed, Apr 28 2021 at 09:53, Vasily Averin wrote:
 
-On Fri, May 07, 2021 at 05:03:17PM +0200, Uwe Kleine-König wrote:
-> Hello,
-> 
-> On Fri, May 07, 2021 at 03:18:42PM +0200, Clemens Gruber wrote:
-> > diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-> > index 5bb90af4997e..5a73251d28e3 100644
-> > --- a/include/linux/pwm.h
-> > +++ b/include/linux/pwm.h
-> > @@ -54,12 +54,17 @@ enum {
-> >   * @duty_cycle: PWM duty cycle (in nanoseconds)
-> >   * @polarity: PWM polarity
-> >   * @enabled: PWM enabled status
-> > + * @usage_power: If set, the PWM driver is only required to maintain the power
-> > + *               output but has more freedom regarding signal form.
-> > + *               If supported, the signal can be optimized, for example to
-> > + *               improve EMI by phase shifting individual channels.
-> >   */
-> >  struct pwm_state {
-> >  	u64 period;
-> >  	u64 duty_cycle;
-> >  	enum pwm_polarity polarity;
-> >  	bool enabled;
-> > +	bool usage_power;
-> >  };
-> >  
-> >  /**
-> 
-> If we really want to support this usecase, I would prefer to not have it
-> in pwm_state because this concept is not a property of the wave form. So
-> for a driver it doesn't really make sense to set this flag in
-> .get_state().
+> A program may create multiple interval timers using timer_create().
+> For each timer the kernel preallocates a "queued real-time signal",
+> Consequently, the number of timers is limited by the RLIMIT_SIGPENDING
+> resource limit. The allocated object is quite small, ~250 bytes,
+> but even the default signal limits allow to consume up to 100 megabytes
+> per user.
+>
+> It makes sense to account for them to limit the host's memory consumption
+> from inside the memcg-limited container.
+>
+> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 
-It is related to the wave form in so far as it allows the driver to
-change the wave form as long as the power output remains the same.
-
-> Maybe it makes more sense to put this in a separate argument for a
-> variant of pwm_apply_state? something like:
-> 
-> 	int pwm_apply_state_transition(struct pwm_device *pwm, const struct pwm_state *state, const struct pwm_state_transition *transition);
-> 
-> and pwm_state_transition can then contain something like this usage
-> power concept and maybe also a sync flag that requests that the call
-> should only return when the new setting is active and maybe also a
-> complete_period flag that requests that the currently running period
-> must be completed before the requested setting is implemented.
-> 
-> OTOH the information "I only care about the relative duty cycle" is
-> relevant longer than during the transition to a new setting. (So if
-> there are two consumers and one specified to be only interested in the
-> relative duty cycle, the other might be allowed to change the common
-> period.)
-
-As you said, usage_power does not only apply to one state transition.
-
-
-> Having said that, I don't like the proposed names. Neither "usage_power"
-> nor "pwm_apply_state_transition".
-> 
-> In a non-representative survey among two hardware engineers and one
-> software engineer who already contributed to PWM (!= me) I found out
-> that these three have an intuitive right understanding of
-> "allow-phase-shift" but have no idea what "usage-power" could mean.
-
-One advantage of usage_power is that it is not limited to phase
-shifting. Drivers could do other optimizations as long as the power
-output remains the same.
-
-
-> On a side note: The hardware guys noted that it might make sense to
-> align the shifted phases. i.e. instead of shifting channel i by i *
-> period/16, it might be better to let the 2nd channel get active when the
-> first gets inactive. (i.e. try to keep the count of active channels
-> constant).
-
-I am not sure what you mean exactly, because the duty cycles of the
-16 outputs are not necessarily the same and can all be active at the
-same time. The idea is to spread the edges out as evenly as possible.
-Shifting them by period/16 is the best way to smoothen the current
-spikes in my opinion and the implementation is also very simple.
-
-
-> And as already mentioned earlier I still think we should define the
-> concept of "usage power" better. It should be clearly defined for a
-> driver author which setting they should pick for a given request. This
-> removes surprises for consumers and guessing for lowlevel driver
-> authors. Also a uniform policy brings conflicts better to light.
-> (Something like driver A does the right thing for consumer C and driver
-> B makes it right for D. But once D tries to use A things break. (And
-> then maybe A is changed to fit D, and C doesn't object because they
-> don't read the pwm list resulting in a breakage for C later.))
-
-I added documentation and comments to the header file as a first step
-but we can always improve them.
-
-Thanks,
-Clemens
+Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
