@@ -2,144 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AA523765B4
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:03:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9313B3765B7
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:04:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236800AbhEGNEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 09:04:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S235836AbhEGNEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 09:04:08 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AF6C46143F;
-        Fri,  7 May 2021 13:03:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620392589;
-        bh=D6tlwEAZ7eCBlX2hF7kas98mcfOt8qkO9WqLf5nvISw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=Qh5hEKGA1AtUF3SJIVptuc3lTAGNuwd8uyuDNNQLtDHsxiJdQi06lDyRRR+bunggf
-         whyACVAcqrk2cFycZwtAO5JqX1OROu1a69+GBd7ifMooXxM59fpBo6pODO+w/9TRGn
-         VbDkqD1dWbpzQCQUcKvT1RkMdajBpDh4O31BKdeiTKhS2hW09O18mQOFsbh2aTxJcK
-         GYCbOc7D9noT6HQ0HwyW2Bc/Un66Y7LHP3LfqUKK35YIONJ+2icr11xYOtaHI+yjR2
-         Bqa1uHeftLLv1I9sjrTd+A/kDXNMAK3mUHueaUNJLr2Ohe1FwA1AvmFmnyZK8mztN+
-         K4co8ETz9d0vw==
-Date:   Fri, 7 May 2021 08:03:07 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
-Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Rob Herring <robh@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Russell King <rmk+kernel@armlinux.org.uk>,
-        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
-        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
-        Tomasz Maciej Nowak <tmn505@gmail.com>,
-        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 06/42] PCI: aardvark: Fix reporting CRS Software
- Visibility on emulated bridge
-Message-ID: <20210507130307.GA1448097@bjorn-Precision-5520>
+        id S237104AbhEGNFV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 09:05:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37652 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235836AbhEGNFO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 09:05:14 -0400
+Received: from mail-pj1-x1029.google.com (mail-pj1-x1029.google.com [IPv6:2607:f8b0:4864:20::1029])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 52C4FC061574;
+        Fri,  7 May 2021 06:04:13 -0700 (PDT)
+Received: by mail-pj1-x1029.google.com with SMTP id h14-20020a17090aea8eb02901553e1cc649so5217036pjz.0;
+        Fri, 07 May 2021 06:04:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kz0YcBrq8g2OohZvohzHvN3l1WC2jeNvxaP5PqjYa+Y=;
+        b=VPVtMyn5YHM6qV4qxLN6rf1oQzfo1JIe40WUL8WLjZDOpLAMlNYkgH5rbVH93iAqcQ
+         iEX99Z+7nmQ3+jbGQmwTOLk4tI8yOptKVbLvRYKaq3SuKc6L7hc+ULTURy5arRPy9dB4
+         BTqTJU/tWiO5WWoz4ufJdRXRx5VMdG3/88C/t977RuGCS/Ewi33OPqFSCldOxpKMwqZa
+         ihJUdwYxe45g35vmvZMvj8fDcjrIcjK53D+uyS4qQuEQGUQJ0gRBjtFH8oTtE+PBozUO
+         98jei2Z81U5Pqv/dj4pdonB4FfPsYNhcvbGN1xNPs+2bvfoUE6pBWIyUfW0KO/RIWySr
+         0nuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Kz0YcBrq8g2OohZvohzHvN3l1WC2jeNvxaP5PqjYa+Y=;
+        b=O9h6dT70Bkvua9A2KlFuLj73kOnDj5oHySbBSt+Cyd9imZgyJJYOJo9n2L5DjNVpd+
+         E9XZ5nB5LYg/w4pvplOBkGbkQ/3JW6FSvSEv+hqn/cOSr9QGrhEdtDv7Ph2NHxUlp43l
+         vMdvBKNf9+h/y2hAk+pULgzzAjY+hJO3pCb9qdGIUVV3r8mio8MdR/DuXrQJeWmc2iq1
+         2z3RHqwAPNahGyahrm+Ve9Zm9hAfXF+qMPa1qL2zoo7ghsv+qBOR9rO2DciBwEJ3QBX5
+         oYkHZKJq7MsaGTimPryphVEiTKnzbfGFA2k8xkAJH2FidYmS0QtwwAILDmlCl4BaXrcU
+         JhPQ==
+X-Gm-Message-State: AOAM533ctjMa4SC4IiSvm523N5s5lJXYVK/QYhHWXTP+pjE3eBSXC8Un
+        mHXuanQp5IvkR9o/OWSnouYBFYZT+jQb31Buym4=
+X-Google-Smtp-Source: ABdhPJzRPyQdhTffaiZilwPaQruhJVqcfkCGdJ9wk5anWmYpkEaHPoWl5raUrCfR53ukLMHgX6KGLQ==
+X-Received: by 2002:a17:90a:b290:: with SMTP id c16mr10131933pjr.81.1620392652461;
+        Fri, 07 May 2021 06:04:12 -0700 (PDT)
+Received: from localhost.localdomain (host-219-71-67-82.dynamic.kbtelecom.net. [219.71.67.82])
+        by smtp.gmail.com with ESMTPSA id d26sm4843295pfq.215.2021.05.07.06.04.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 06:04:12 -0700 (PDT)
+From:   Wei Ming Chen <jj251510319013@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     gregkh@linuxfoundation.org, linux-serial@vger.kernel.org,
+        Wei Ming Chen <jj251510319013@gmail.com>
+Subject: [PATCH] serial: 8250_pci: Use fallthrough pseudo-keyword
+Date:   Fri,  7 May 2021 21:04:03 +0800
+Message-Id: <20210507130403.11144-1-jj251510319013@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20210506153153.30454-7-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 05:31:17PM +0200, Pali Rohár wrote:
-> CRS Software Visibility is supported and always enabled by PIO.
-> Correctly report this information via emulated root bridge.
+Add pseudo-keyword macro fallthrough[1]
 
-Maybe spell out "Configuration Request Retry Status (CRS) Software
-Visibility" once.
+[1] https://www.kernel.org/doc/html/latest/process/deprecated.html?highlight=fallthrough#implicit-switch-case-fall-through
 
-I'm guessing the aardvark hardware spec is proprietary, but can you at
-least include a reference to the section that says CRSVIS is
-supported and CRSSVE is enabled?
+Signed-off-by: Wei Ming Chen <jj251510319013@gmail.com>
+---
+ drivers/tty/serial/8250/8250_pci.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-What is PIO?  I assume this is something other than "programmed I/O"?
+diff --git a/drivers/tty/serial/8250/8250_pci.c b/drivers/tty/serial/8250/8250_pci.c
+index 689d8227f95f..4158f06de4d5 100644
+--- a/drivers/tty/serial/8250/8250_pci.c
++++ b/drivers/tty/serial/8250/8250_pci.c
+@@ -847,8 +847,11 @@ static int pci_netmos_init(struct pci_dev *dev)
+ 
+ 	switch (dev->device) { /* FALLTHROUGH on all */
+ 	case PCI_DEVICE_ID_NETMOS_9904:
++		fallthrough;
+ 	case PCI_DEVICE_ID_NETMOS_9912:
++		fallthrough;
+ 	case PCI_DEVICE_ID_NETMOS_9922:
++		fallthrough;
+ 	case PCI_DEVICE_ID_NETMOS_9900:
+ 		num_serial = pci_netmos_9900_numports(dev);
+ 		break;
+-- 
+2.25.1
 
-I'd like the commit log to say something about the effect of this
-change, i.e., why are we doing it?
-
-For one thing, I expect lspci will now show "RootCtl: ... CRSVisible+"
-and "RootCap: CRSVisible+".
-
-With PCI_EXP_RTCAP_CRSVIS set, pci_enable_crs() should now try to set
-PCI_EXP_RTCTL_CRSSVE (which I think is a no-op since
-advk_pci_bridge_emul_pcie_conf_write() doesn't do anything with
-PCI_EXP_RTCTL_CRSSVE).
-
-So AFAICT this has zero effect on the kernel.  Possibly we *should*
-base some kernel behavior on whether PCI_EXP_RTCTL_CRSSVE is set, but
-I don't think we do today.
-
-> Signed-off-by: Pali Rohár <pali@kernel.org>
-> Reviewed-by: Marek Behún <kabel@kernel.org>
-> Fixes: 8a3ebd8de328 ("PCI: aardvark: Implement emulated root PCI bridge config space")
-> Cc: stable@vger.kernel.org
-
-Again, I think this just adds functionality and doesn't fix something
-that used to be broken.
-
-Per [1], patches for the stable kernel should be for serious issues
-like an oops, hang, data corruption, etc.  I know stable kernel
-maintainers pick up all sorts of other stuff, but that's up to them.
-I try to limit stable tags to reduce the risk of regressing.
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/stable-kernel-rules.rst?id=v5.11
-
-> ---
->  drivers/pci/controller/pci-aardvark.c | 14 +++++++++++++-
->  1 file changed, 13 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
-> index 3f3c72927afb..e297ec9ec390 100644
-> --- a/drivers/pci/controller/pci-aardvark.c
-> +++ b/drivers/pci/controller/pci-aardvark.c
-> @@ -578,6 +578,8 @@ advk_pci_bridge_emul_pcie_conf_read(struct pci_bridge_emul *bridge,
->  	case PCI_EXP_RTCTL: {
->  		u32 val = advk_readl(pcie, PCIE_ISR0_MASK_REG);
->  		*value = (val & PCIE_MSG_PM_PME_MASK) ? 0 : PCI_EXP_RTCTL_PMEIE;
-> +		*value |= PCI_EXP_RTCTL_CRSSVE;
-> +		*value |= PCI_EXP_RTCAP_CRSVIS << 16;
->  		return PCI_BRIDGE_EMUL_HANDLED;
->  	}
->  
-> @@ -659,6 +661,7 @@ static struct pci_bridge_emul_ops advk_pci_bridge_emul_ops = {
->  static int advk_sw_pci_bridge_init(struct advk_pcie *pcie)
->  {
->  	struct pci_bridge_emul *bridge = &pcie->bridge;
-> +	int ret;
->  
->  	bridge->conf.vendor =
->  		cpu_to_le16(advk_readl(pcie, PCIE_CORE_DEV_ID_REG) & 0xffff);
-> @@ -682,7 +685,16 @@ static int advk_sw_pci_bridge_init(struct advk_pcie *pcie)
->  	bridge->data = pcie;
->  	bridge->ops = &advk_pci_bridge_emul_ops;
->  
-> -	return pci_bridge_emul_init(bridge, 0);
-> +	/* PCIe config space can be initialized after pci_bridge_emul_init() */
-> +	ret = pci_bridge_emul_init(bridge, 0);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	/* Completion Retry Status is supported and always enabled by PIO */
-
-"CRS Software Visibility", not "Completion Retry Status".
-
-The CRSSVE bit is *supposed* to be RW, per spec.  Is it RO on this
-hardware?
-
-> +	bridge->pcie_conf.rootctl = cpu_to_le16(PCI_EXP_RTCTL_CRSSVE);
-> +	bridge->pcie_conf.rootcap = cpu_to_le16(PCI_EXP_RTCAP_CRSVIS);
-> +
-> +	return 0;
->  }
->  
->  static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
-> -- 
-> 2.20.1
-> 
