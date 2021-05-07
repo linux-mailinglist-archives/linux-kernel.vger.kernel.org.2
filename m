@@ -2,91 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A775837647F
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:30:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81B8C376484
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:32:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234457AbhEGLbE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 07:31:04 -0400
-Received: from bhuna.collabora.co.uk ([46.235.227.227]:52890 "EHLO
-        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhEGLa7 (ORCPT
+        id S234466AbhEGLdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 07:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45482 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhEGLdC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 07:30:59 -0400
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-        (Authenticated sender: sre)
-        with ESMTPSA id 11BD61F43F80
-Received: by earth.universe (Postfix, from userid 1000)
-        id 44EFD3C0C96; Fri,  7 May 2021 13:29:56 +0200 (CEST)
-Date:   Fri, 7 May 2021 13:29:56 +0200
-From:   Sebastian Reichel <sebastian.reichel@collabora.com>
-To:     skakit@codeaurora.org
-Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
-        Vinod Koul <vkoul@kernel.org>,
-        Courtney Cavin <courtney.cavin@sonymobile.com>,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pm@vger.kernel.org
-Subject: Re: [PATCH V2 3/4] dt-bindings: power: reset: qcom-pon: Convert qcom
- PON binding to yaml
-Message-ID: <20210507112956.3ibzuinvzd6d5rku@earth.universe>
-References: <1617881469-31965-1-git-send-email-skakit@codeaurora.org>
- <1617881469-31965-4-git-send-email-skakit@codeaurora.org>
- <20210408130001.k3qbq3vvwkiyykzv@earth.universe>
- <0cb9b3503000ac7206f4a3ef5fd16c17@codeaurora.org>
- <322cbdbb022fec3f43c1cbe13c532dd3@codeaurora.org>
- <20210427083721.heavcdadeb4ajkk2@earth.universe>
- <a190e414c53af3ea094548f5011c3a04@codeaurora.org>
- <be3573974d76d7e464048b34854416ad@codeaurora.org>
+        Fri, 7 May 2021 07:33:02 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CC974C061574;
+        Fri,  7 May 2021 04:32:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=mqQ6WGNGTBB2lnr8xs2cVbAkboIvHY3B9yP2k6r/7BQ=; b=f6ykX4K7reSNXFrRdITQ40GQnb
+        cod4J1zm4FoD1YjnZgbiW1MGn9zNJyEnP87o4aADEtb0shEux2NYiyyt0+zQzLE1lLbqJ18/LBkiW
+        lUxshDjNsfU++qZ1zIKr9TmVfFoDihiaKqncnRzoJo8C1zF7uAZQTPeoGSHE+42EB3BGa3YClEZ/j
+        Ff9QQIfW0UTMyLzFzNRegam3xS0JNZb5BRNHK4PRN5/HvIA5KVfBwaCmbcrNg++fq9zMZrWcdAZ17
+        4gR0Kdz8PsnqLD972vomwgfAb5BBfPDMkKTucoVliyrPGMHte7pYXq46ovkfElYSvfH70c8By09Wd
+        1PJpV0tg==;
+Received: from hch by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
+        id 1leyhL-0037xM-KZ; Fri, 07 May 2021 11:31:16 +0000
+Date:   Fri, 7 May 2021 12:31:11 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Jesper Dangaard Brouer <brouer@redhat.com>
+Cc:     Yunsheng Lin <linyunsheng@huawei.com>,
+        Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+        Matteo Croce <mcroce@linux.microsoft.com>,
+        netdev@vger.kernel.org, linux-mm@kvack.org,
+        Ayush Sawal <ayush.sawal@chelsio.com>,
+        Vinay Kumar Yadav <vinay.yadav@chelsio.com>,
+        Rohit Maheshwari <rohitm@chelsio.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Marcin Wojtas <mw@semihalf.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Mirko Lindner <mlindner@marvell.com>,
+        Stephen Hemminger <stephen@networkplumber.org>,
+        Tariq Toukan <tariqt@nvidia.com>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        John Fastabend <john.fastabend@gmail.com>,
+        Boris Pismenny <borisp@nvidia.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Vlastimil Babka <vbabka@suse.cz>, Yu Zhao <yuzhao@google.com>,
+        Will Deacon <will@kernel.org>,
+        Michel Lespinasse <walken@google.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Roman Gushchin <guro@fb.com>, Hugh Dickins <hughd@google.com>,
+        Peter Xu <peterx@redhat.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jonathan Lemon <jonathan.lemon@gmail.com>,
+        Alexander Lobakin <alobakin@pm.me>,
+        Cong Wang <cong.wang@bytedance.com>, wenxu <wenxu@ucloud.cn>,
+        Kevin Hao <haokexin@gmail.com>,
+        Aleksandr Nogikh <nogikh@google.com>,
+        Jakub Sitnicki <jakub@cloudflare.com>,
+        Marco Elver <elver@google.com>,
+        Willem de Bruijn <willemb@google.com>,
+        Miaohe Lin <linmiaohe@huawei.com>,
+        Guillaume Nault <gnault@redhat.com>,
+        linux-kernel@vger.kernel.org, linux-rdma@vger.kernel.org,
+        bpf@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+        Eric Dumazet <edumazet@google.com>,
+        David Ahern <dsahern@gmail.com>,
+        Lorenzo Bianconi <lorenzo@kernel.org>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        Andrew Lunn <andrew@lunn.ch>, Paolo Abeni <pabeni@redhat.com>
+Subject: Re: [PATCH net-next v3 0/5] page_pool: recycle buffers
+Message-ID: <YJUk/40MoIxwa1hr@infradead.org>
+References: <e873c16e-8f49-6e70-1f56-21a69e2e37ce@huawei.com>
+ <YIsAIzecktXXBlxn@apalos.home>
+ <9bf7c5b3-c3cf-e669-051f-247aa8df5c5a@huawei.com>
+ <YIwvI5/ygBvZG5sy@apalos.home>
+ <33b02220-cc50-f6b2-c436-f4ec041d6bc4@huawei.com>
+ <YJPn5t2mdZKC//dp@apalos.home>
+ <75a332fa-74e4-7b7b-553e-3a1a6cb85dff@huawei.com>
+ <YJTm4uhvqCy2lJH8@apalos.home>
+ <bdd97ac5-f932-beec-109e-ace9cd62f661@huawei.com>
+ <20210507121953.59e22aa8@carbon>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="ix4wlrl34amaeftv"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <be3573974d76d7e464048b34854416ad@codeaurora.org>
+In-Reply-To: <20210507121953.59e22aa8@carbon>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 07, 2021 at 12:19:53PM +0200, Jesper Dangaard Brouer wrote:
+> Nvidia[2] being involved which I think was unfair).  The general idea
+> behind NetGPU makes sense to me,
 
---ix4wlrl34amaeftv
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi,
-
-On Fri, May 07, 2021 at 03:15:55PM +0530, skakit@codeaurora.org wrote:
-> Seems like I have to make 'additionalProperties' as true in reboot-mode.yaml
-> I have checked other yaml binding docs where allOf is used, and they have
-> 'additionalProperties' as true in the file which is being referred. Please
-> let me know if this is not correct way to do it.
-
-Yes, reboot-mode.yaml should have additionalProperties = true. I
-think Rob missed, that the binding is a generic one when he added
-it in f84e2c5c528d.
-
--- Sebastian
-
---ix4wlrl34amaeftv
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE72YNB0Y/i3JqeVQT2O7X88g7+poFAmCVJKoACgkQ2O7X88g7
-+pqZqg//bAl15lpGbh5wgVjf5oRwoIJT0FsA2CjTDNeaNO9xiVJhMfQBPWzqmAhB
-hKN6XC4DSemLD7BKsPgIWYTsJvNyQi7wEZKLO6G3+R6Q+bEp4Ry30Cf/heTXw76y
-41udUW+UvPXY1p/v36Xyhidirt4gPfIHTTKEyQ9WEHlDI+J4TjPrH9CaU3a8FwAc
-a5/73gv5OZn4tSLEfbK/VLC7OOMkGrv4zzm+GZeDfeAhv51psVGXUTp1g2UtI70j
-1IlxeMNUus/dSNHqPVUmUndKWhFRAcm4xpjzz3ArGOGYcAXjG5uZzc7hdl5x3APf
-Fj56H//aEn/ERAt0zVJMY+tmenq/XA3hBFZZ7Y9qewz96ep7QUkOSeYe2m5xm8pr
-5ChL1RuwsXdVomwpLKx6q975+9RZi7d+HtM4GymzBQ0CJaWekE2nDPhZKnZL6aoF
-/BS0Il/mVhHLVzhHel9tUGOU0JiyqvcaoZI/nKTqs7mLAFk+J0v1ya3djKo5/yFT
-/VlW892Rie5Prj+c8PUpCgNDBLzrBhdlsrfQZDCob81OaC6sn5KJiNnsZGXuux3n
-ZzIVQXWvsoBSU8vCKwh3hIfmfnKQfR02WdAP6TDac0TB6dOKgzz05oQ56sQ8+CSM
-rCE6/07o9NePc9lvoYdS6IFWLnIwLoix125kXkmVLYfOgQX4c8E=
-=szSx
------END PGP SIGNATURE-----
-
---ix4wlrl34amaeftv--
+Sorry, but that is utter bullshit.  It was rejected because it did
+nothing but injecting hooks for an out of tree module while ignoring the
+existing kernel infrastructure for much of what it tries to archive.
