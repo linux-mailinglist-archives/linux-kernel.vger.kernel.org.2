@@ -2,101 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF34A3762FF
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:44:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ECE25376306
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:46:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236812AbhEGJpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 05:45:45 -0400
-Received: from foss.arm.com ([217.140.110.172]:52474 "EHLO foss.arm.com"
+        id S236809AbhEGJru (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 05:47:50 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:32708 "EHLO m43-7.mailgun.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234506AbhEGJpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 05:45:40 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF03C106F;
-        Fri,  7 May 2021 02:44:40 -0700 (PDT)
-Received: from [192.168.1.179] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 534693F718;
-        Fri,  7 May 2021 02:44:38 -0700 (PDT)
-Subject: Re: [PATCH v11 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
-To:     Catalin Marinas <catalin.marinas@arm.com>
-Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
-        James Morse <james.morse@arm.com>,
-        Julien Thierry <julien.thierry.kdev@gmail.com>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
-        Juan Quintela <quintela@redhat.com>,
-        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
-        Richard Henderson <richard.henderson@linaro.org>,
-        Peter Maydell <peter.maydell@linaro.org>,
-        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
-References: <20210416154309.22129-1-steven.price@arm.com>
- <20210416154309.22129-6-steven.price@arm.com>
- <20210427175844.GB17872@arm.com>
- <340d35c2-46ed-35ea-43fa-e5cb64c27230@arm.com> <YJGIBTor+blelKKT@arm.com>
-From:   Steven Price <steven.price@arm.com>
-Message-ID: <25c85740-0119-549e-6ddb-aea69c5efc76@arm.com>
-Date:   Fri, 7 May 2021 10:44:33 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.7.1
+        id S236465AbhEGJrs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 05:47:48 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620380809; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=NDnAzeydRGMYjrqIWykUo4zSO+l0CqzR1v62gJWLZJQ=;
+ b=S/Urf+IWg8wimpOvG6jLPPHq+WCFGKNJ5JaYDRczFezoAlWVMhLHRMkI6Y2DFDiTKuOBZ0O+
+ UCHRdQxCO823p32s4kB89aszCAmrOSX3KGb9DiD4n8TYKtKeEqYU4BwJfKjtMnsjA3VBq4T2
+ Anv++Prc8BDlLUFt0x0PrSmYa1M=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n07.prod.us-west-2.postgun.com with SMTP id
+ 60950c5455b14811b4ef03ff (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 07 May 2021 09:45:56
+ GMT
+Sender: skakit=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 03C67C43147; Fri,  7 May 2021 09:45:56 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: skakit)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 48001C4338A;
+        Fri,  7 May 2021 09:45:55 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <YJGIBTor+blelKKT@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
+Date:   Fri, 07 May 2021 15:15:55 +0530
+From:   skakit@codeaurora.org
+To:     Sebastian Reichel <sebastian.reichel@collabora.com>
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        David Collins <collinsd@codeaurora.org>, kgunda@codeaurora.org,
+        Vinod Koul <vkoul@kernel.org>,
+        Courtney Cavin <courtney.cavin@sonymobile.com>,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pm@vger.kernel.org
+Subject: Re: [PATCH V2 3/4] dt-bindings: power: reset: qcom-pon: Convert qcom
+ PON binding to yaml
+In-Reply-To: <a190e414c53af3ea094548f5011c3a04@codeaurora.org>
+References: <1617881469-31965-1-git-send-email-skakit@codeaurora.org>
+ <1617881469-31965-4-git-send-email-skakit@codeaurora.org>
+ <20210408130001.k3qbq3vvwkiyykzv@earth.universe>
+ <0cb9b3503000ac7206f4a3ef5fd16c17@codeaurora.org>
+ <322cbdbb022fec3f43c1cbe13c532dd3@codeaurora.org>
+ <20210427083721.heavcdadeb4ajkk2@earth.universe>
+ <a190e414c53af3ea094548f5011c3a04@codeaurora.org>
+Message-ID: <be3573974d76d7e464048b34854416ad@codeaurora.org>
+X-Sender: skakit@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 04/05/2021 18:44, Catalin Marinas wrote:
-> On Thu, Apr 29, 2021 at 05:06:07PM +0100, Steven Price wrote:
->> On 27/04/2021 18:58, Catalin Marinas wrote:
->>> On Fri, Apr 16, 2021 at 04:43:08PM +0100, Steven Price wrote:
->>>> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
->>>> index 24223adae150..2b85a047c37d 100644
->>>> --- a/arch/arm64/include/uapi/asm/kvm.h
->>>> +++ b/arch/arm64/include/uapi/asm/kvm.h
->>>> @@ -184,6 +184,20 @@ struct kvm_vcpu_events {
->>>>    	__u32 reserved[12];
->>>>    };
->>>> +struct kvm_arm_copy_mte_tags {
->>>> +	__u64 guest_ipa;
->>>> +	__u64 length;
->>>> +	union {
->>>> +		void __user *addr;
->>>> +		__u64 padding;
->>>> +	};
->>>> +	__u64 flags;
->>>> +	__u64 reserved[2];
->>>> +};
-> [...]
->>> Maybe add the two reserved
->>> values to the union in case we want to store something else in the
->>> future.
->>
->> I'm not sure what you mean here. What would the reserved fields be unioned
->> with? And surely they are no longer reserved in that case?
+Hi,
+[...]
+>>> > > > +
+>>> > > > +required:
+>>> > > > +  - compatible
+>>> > > > +  - reg
+>>> > > > +
+>>> > > > +additionalProperties: true
+>>> > >
+>>> > > Instead of allowing arbitrary properties, only valid modes
+>>> > > should be allowed. So drop additionalProperties and do this
+>>> > > instead:
+>>> > >
+>>> > > allOf:
+>>> > >   - $ref: reboot-mode.yaml#
+>>> > >
+>>> > > unevaluatedProperties: false
+>>> > >
+>>> >
+>>> > Okay.
+>>> 
+>>> I am not able to use 'allOf' to refer reboot-mode.yaml as some of the
+>>> properties do not match with reboot-mode.yaml properties. Can we use 
+>>> oneOf
+>>> like below?
+>>> 
+>>> oneOf:
+>>>   - $ref: "reboot-mode.yaml#"
+>>>   - $ref: "../../input/qcom,pm8941-pwrkey.yaml#"
+>> 
+>> That does not make sense.
+>> 
+>> The reference to reboot-mode.yaml is needed because it adds valid
+>> mode properties, so that you can set unevaluatedProperties to false.
+>> You need it at the root of the PON binding. They are not added to
+>> the required list, so it's fine if not all of them are used. Also
+>> there can (and usually is) more than one mode, so using oneOf is not
+>> ok.
+>> 
 > 
-> In case you want to keep the structure size the same for future
-> expansion and the expansion only happens via the union, you'd add some
-> padding in there just in case. We do this for struct siginfo with an
-> _si_pad[] array in the union.
+> Okay, but I am getting errors like below during make dtbs_check.
+> 
+> kernel/arch/arm64/boot/dts/qcom/sdm630-sony-xperia-ganges-kirin.dt.yaml:
+> pon@800: 'compatible', 'pwrkey', 'reg' do not match any of the
+> regexes: '^mode-.*$', 'pinctrl-[0-9]+'
 > 
 
-Ah I see what you mean. In this case "padding" is just a sizer to ensure 
-that flags is always the same alignment - it's not intended to be used. 
-As I noted previously though it's completely pointless as this only on 
-arm64 and even 32 bit Arm would naturally align the following __u64.
+Seems like I have to make 'additionalProperties' as true in 
+reboot-mode.yaml
+I have checked other yaml binding docs where allOf is used, and they 
+have 'additionalProperties' as true in the file which is being referred. 
+Please let me know if this is not correct way to do it.
 
-reserved[] is for expansion and I guess we could have a union over the 
-whole struct (like siginfo) but I think it's generally clearer to just 
-spell out the reserved fields at the end of the struct.
-
-TLDR; the union will be gone along with "padding" in the next version. 
-"reserved" remains at the end of the struct for future use.
+> As suggested I have added
+> 
+> allOf:
+>  - $ref: reboot-mode.yaml#
+> 
+> at the root of binding and also added unevaluatedProperties: false
+> 
+>> Last but not least the pwrkey reference is needed to describe
+>> specific nodes (resin, pwrkey) and should not appear at the root
+>> of the PON binding.
+>> 
+>>> Also, If I drop additionalProperties I am getting below error.
+>>> 
+>>> kernel/Documentation/devicetree/bindings/power/reset/qcom,pon.yaml:
+>>> 'additionalProperties' is a required property
+>> 
+>> You need to add 'unevaluatedProperties: false'. It is basically
+>> the same as 'additionalProperties: false', but also accepts
+>> properties from the referenced bindings.
+>> 
+>> Thanks,
+>> 
+>> -- Sebastian
 
 Thanks,
-
-Steve
+Satya Priya
