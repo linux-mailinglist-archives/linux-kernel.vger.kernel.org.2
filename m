@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 782583765AE
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:58:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AA523765B4
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:03:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236779AbhEGM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:59:41 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34309 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236731AbhEGM7j (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:59:39 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620392319;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=GLhWfHwcaV8aKPVU7+Ft0vYJAChyhrhw9hcFw4aRmbo=;
-        b=irasaOWxzwPAiNVGanYXsDHtcf9sY2z7n1v37Sjs3pfuQ77zfuc10TPb24hlpF8uPkVjGn
-        lZPcZFJtF87vGiYgU5j8XIc9KdKev/8gZZFCGNIZQQaLtPl93H9tE1AG9j2gHfnBthk5NY
-        kAe7iNPgxHUVlH26LTDMPrc0lxHv6a0=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-191-QroS9fnvNQitpBCZk8-TBg-1; Fri, 07 May 2021 08:58:37 -0400
-X-MC-Unique: QroS9fnvNQitpBCZk8-TBg-1
-Received: by mail-yb1-f200.google.com with SMTP id d89-20020a25a3620000b02904dc8d0450c6so9888965ybi.2
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 05:58:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GLhWfHwcaV8aKPVU7+Ft0vYJAChyhrhw9hcFw4aRmbo=;
-        b=hjOfhsWd5zHcCkCOXGKDrCJAOeuXpshJrtnx6+g5J6D5fTez0HkEFFDVj6TJ5woI0f
-         BhAxP+j1++QU60S6G3KaloUlKHxYXgHlMoWxjefzmo0WBX1ePVkZBg4u31SjL3GaxqlT
-         QkTG13E44KKM5wXhCKLehlwB9NA6+xwW7Srf1z7doAFpP38rkHUHUZ79/szMbnAFFqO6
-         XZmPRjsKopMFMidcegDwFrBHz1MeviyHjO0Cw8hWdp/KpAj6Kj+RcfcKBuY12V3045tZ
-         ZTmHQdu90tRYSN6Vcx9ic8XPdb+lpeD5ofQXiSvEs1Dw6umWadgi3MtS2jn8nTeNQTbr
-         ZJ/Q==
-X-Gm-Message-State: AOAM530iax3hY8ju94Sa5EqEl74mQLJ48Pg+NRLlF9gS7DSFLiy2h77f
-        KcNVKR1+/QSohVyhpNIkn3PZ0aMDMJy6rELfGfnBE6fPEcS1RV93jTpEw9uxS+fathLp5pbdNuw
-        25dVHtjO/MnTKfBtnH/udtXQq+mHO46bkj8y2kdwf
-X-Received: by 2002:a25:640f:: with SMTP id y15mr13270245ybb.436.1620392317283;
-        Fri, 07 May 2021 05:58:37 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyCaqVgj5WYApshEXCI32XAMx1PCeGQdEs8AyQjiRY6Qh9gAQzI/YAbyK/y3MYqZ6+seWa1q04tEmUBWR4cF20=
-X-Received: by 2002:a25:640f:: with SMTP id y15mr13270200ybb.436.1620392316934;
- Fri, 07 May 2021 05:58:36 -0700 (PDT)
+        id S236800AbhEGNEK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 09:04:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42292 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235836AbhEGNEI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 09:04:08 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id AF6C46143F;
+        Fri,  7 May 2021 13:03:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620392589;
+        bh=D6tlwEAZ7eCBlX2hF7kas98mcfOt8qkO9WqLf5nvISw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Qh5hEKGA1AtUF3SJIVptuc3lTAGNuwd8uyuDNNQLtDHsxiJdQi06lDyRRR+bunggf
+         whyACVAcqrk2cFycZwtAO5JqX1OROu1a69+GBd7ifMooXxM59fpBo6pODO+w/9TRGn
+         VbDkqD1dWbpzQCQUcKvT1RkMdajBpDh4O31BKdeiTKhS2hW09O18mQOFsbh2aTxJcK
+         GYCbOc7D9noT6HQ0HwyW2Bc/Un66Y7LHP3LfqUKK35YIONJ+2icr11xYOtaHI+yjR2
+         Bqa1uHeftLLv1I9sjrTd+A/kDXNMAK3mUHueaUNJLr2Ohe1FwA1AvmFmnyZK8mztN+
+         K4co8ETz9d0vw==
+Date:   Fri, 7 May 2021 08:03:07 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Rob Herring <robh@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Russell King <rmk+kernel@armlinux.org.uk>,
+        Marek =?iso-8859-1?Q?Beh=FAn?= <kabel@kernel.org>,
+        Remi Pommarel <repk@triplefau.lt>, Xogium <contact@xogium.me>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Marc Zyngier <maz@kernel.org>, linux-pci@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/42] PCI: aardvark: Fix reporting CRS Software
+ Visibility on emulated bridge
+Message-ID: <20210507130307.GA1448097@bjorn-Precision-5520>
 MIME-Version: 1.0
-References: <20210507115719.140799-1-omosnace@redhat.com> <YJUyJcNT9RDaJc4P@kroah.com>
-In-Reply-To: <YJUyJcNT9RDaJc4P@kroah.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Fri, 7 May 2021 14:58:23 +0200
-Message-ID: <CAFqZXNudm1F4pPfhf+tVVikYpY_RPL9z816LS0tKc-4Vs2vjPA@mail.gmail.com>
-Subject: Re: [PATCH] serial: core: fix suspicious security_locked_down() call
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-serial@vger.kernel.org, David Howells <dhowells@redhat.com>,
-        Matthew Garrett <mjg59@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20210506153153.30454-7-pali@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 2:27 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Fri, May 07, 2021 at 01:57:19PM +0200, Ondrej Mosnacek wrote:
-> > The commit that added this check did so in a very strange way - first
-> > security_locked_down() is called, its value stored into retval, and if
-> > it's nonzero, then an additional check is made for (change_irq ||
-> > change_port), and if this is true, the function returns. However, if
-> > the goto exit branch is not taken, the code keeps the retval value and
-> > continues executing the function. Then, depending on whether
-> > uport->ops->verify_port is set, the retval value may or may not be reset
-> > to zero and eventually the error value from security_locked_down() may
-> > abort the function a few lines below.
-> >
-> > I will go out on a limb and assume that this isn't the intended behavior
-> > and that an error value from security_locked_down() was supposed to
-> > abort the function only in case (change_irq || change_port) is true.
->
-> Are you _sure_ about this?
->
-> Verification from the authors and users of this odd feature might be
-> good to have, as I am loath to change how this works without them
-> weighing in here.
+On Thu, May 06, 2021 at 05:31:17PM +0200, Pali Rohár wrote:
+> CRS Software Visibility is supported and always enabled by PIO.
+> Correctly report this information via emulated root bridge.
 
-I'm not completely sure and I'm with you on not merging this without
-feedback from people involved in the original patch and/or whoever
-understands the logic in said function.
+Maybe spell out "Configuration Request Retry Status (CRS) Software
+Visibility" once.
 
--- 
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
+I'm guessing the aardvark hardware spec is proprietary, but can you at
+least include a reference to the section that says CRSVIS is
+supported and CRSSVE is enabled?
 
+What is PIO?  I assume this is something other than "programmed I/O"?
+
+I'd like the commit log to say something about the effect of this
+change, i.e., why are we doing it?
+
+For one thing, I expect lspci will now show "RootCtl: ... CRSVisible+"
+and "RootCap: CRSVisible+".
+
+With PCI_EXP_RTCAP_CRSVIS set, pci_enable_crs() should now try to set
+PCI_EXP_RTCTL_CRSSVE (which I think is a no-op since
+advk_pci_bridge_emul_pcie_conf_write() doesn't do anything with
+PCI_EXP_RTCTL_CRSSVE).
+
+So AFAICT this has zero effect on the kernel.  Possibly we *should*
+base some kernel behavior on whether PCI_EXP_RTCTL_CRSSVE is set, but
+I don't think we do today.
+
+> Signed-off-by: Pali Rohár <pali@kernel.org>
+> Reviewed-by: Marek Behún <kabel@kernel.org>
+> Fixes: 8a3ebd8de328 ("PCI: aardvark: Implement emulated root PCI bridge config space")
+> Cc: stable@vger.kernel.org
+
+Again, I think this just adds functionality and doesn't fix something
+that used to be broken.
+
+Per [1], patches for the stable kernel should be for serious issues
+like an oops, hang, data corruption, etc.  I know stable kernel
+maintainers pick up all sorts of other stuff, but that's up to them.
+I try to limit stable tags to reduce the risk of regressing.
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/stable-kernel-rules.rst?id=v5.11
+
+> ---
+>  drivers/pci/controller/pci-aardvark.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/pci/controller/pci-aardvark.c b/drivers/pci/controller/pci-aardvark.c
+> index 3f3c72927afb..e297ec9ec390 100644
+> --- a/drivers/pci/controller/pci-aardvark.c
+> +++ b/drivers/pci/controller/pci-aardvark.c
+> @@ -578,6 +578,8 @@ advk_pci_bridge_emul_pcie_conf_read(struct pci_bridge_emul *bridge,
+>  	case PCI_EXP_RTCTL: {
+>  		u32 val = advk_readl(pcie, PCIE_ISR0_MASK_REG);
+>  		*value = (val & PCIE_MSG_PM_PME_MASK) ? 0 : PCI_EXP_RTCTL_PMEIE;
+> +		*value |= PCI_EXP_RTCTL_CRSSVE;
+> +		*value |= PCI_EXP_RTCAP_CRSVIS << 16;
+>  		return PCI_BRIDGE_EMUL_HANDLED;
+>  	}
+>  
+> @@ -659,6 +661,7 @@ static struct pci_bridge_emul_ops advk_pci_bridge_emul_ops = {
+>  static int advk_sw_pci_bridge_init(struct advk_pcie *pcie)
+>  {
+>  	struct pci_bridge_emul *bridge = &pcie->bridge;
+> +	int ret;
+>  
+>  	bridge->conf.vendor =
+>  		cpu_to_le16(advk_readl(pcie, PCIE_CORE_DEV_ID_REG) & 0xffff);
+> @@ -682,7 +685,16 @@ static int advk_sw_pci_bridge_init(struct advk_pcie *pcie)
+>  	bridge->data = pcie;
+>  	bridge->ops = &advk_pci_bridge_emul_ops;
+>  
+> -	return pci_bridge_emul_init(bridge, 0);
+> +	/* PCIe config space can be initialized after pci_bridge_emul_init() */
+> +	ret = pci_bridge_emul_init(bridge, 0);
+> +	if (ret < 0)
+> +		return ret;
+> +
+> +	/* Completion Retry Status is supported and always enabled by PIO */
+
+"CRS Software Visibility", not "Completion Retry Status".
+
+The CRSSVE bit is *supposed* to be RW, per spec.  Is it RO on this
+hardware?
+
+> +	bridge->pcie_conf.rootctl = cpu_to_le16(PCI_EXP_RTCTL_CRSSVE);
+> +	bridge->pcie_conf.rootcap = cpu_to_le16(PCI_EXP_RTCAP_CRSVIS);
+> +
+> +	return 0;
+>  }
+>  
+>  static bool advk_pcie_valid_device(struct advk_pcie *pcie, struct pci_bus *bus,
+> -- 
+> 2.20.1
+> 
