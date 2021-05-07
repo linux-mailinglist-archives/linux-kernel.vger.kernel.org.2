@@ -2,98 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 893393760FB
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10DEB3760FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235147AbhEGHLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:11:11 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46011 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235142AbhEGHK7 (ORCPT
+        id S235171AbhEGHMY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:12:24 -0400
+Received: from smtp04.smtpout.orange.fr ([80.12.242.126]:21552 "EHLO
+        smtp.smtpout.orange.fr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S234992AbhEGHMV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:10:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620371400;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mHFmcONkXExZESpq4UoLZEwTMca0lsijd9NH0tbhjEQ=;
-        b=YG/OQ0FYKVUHhw42GnjO0zgLIIpu9DhLpkkx4awuvxJlXGU7D76oPScrEr0ZXukopEyWPC
-        gM6nIYUhrOUTxf4osLbP4cj4lVZMFyvh6LJWgr+moFZhgPaldHeUmV/Lf6DrMvnTI3lCxy
-        tBqlaksmyzweH2RwRCE6O+yKCX6YZ+k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-408-m_5erc8tN4OfX8b4AaS8ng-1; Fri, 07 May 2021 03:09:56 -0400
-X-MC-Unique: m_5erc8tN4OfX8b4AaS8ng-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 485B31008060;
-        Fri,  7 May 2021 07:09:54 +0000 (UTC)
-Received: from oldenburg.str.redhat.com (ovpn-112-137.ams2.redhat.com [10.36.112.137])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6449E10016F9;
-        Fri,  7 May 2021 07:09:45 +0000 (UTC)
-From:   Florian Weimer <fweimer@redhat.com>
-To:     Jiri Slaby <jirislaby@kernel.org>
-Cc:     Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
-        Jiri Olsa <jolsa@redhat.com>, Yonghong Song <yhs@fb.com>,
-        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        David Ahern <dsahern@kernel.org>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
-        Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: linux-next failing build due to missing cubictcp_state symbol
-References: <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
-        <20210423175528.GF6564@kitsune.suse.cz>
-        <20210425111545.GL15381@kitsune.suse.cz>
-        <20210426113215.GM15381@kitsune.suse.cz>
-        <20210426121220.GN15381@kitsune.suse.cz>
-        <20210426121401.GO15381@kitsune.suse.cz>
-        <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
-        <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
-        <20210430174723.GP15381@kitsune.suse.cz>
-        <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
-        <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
-Date:   Fri, 07 May 2021 09:10:05 +0200
-In-Reply-To: <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org> (Jiri Slaby's
-        message of "Mon, 3 May 2021 08:11:50 +0200")
-Message-ID: <87lf8rf29e.fsf@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
+        Fri, 7 May 2021 03:12:21 -0400
+Received: from [192.168.1.18] ([86.243.172.93])
+        by mwinf5d51 with ME
+        id 1jBK2500L21Fzsu03jBKw6; Fri, 07 May 2021 09:11:21 +0200
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Fri, 07 May 2021 09:11:21 +0200
+X-ME-IP: 86.243.172.93
+Subject: Re: [PATCH] video: fbdev: imxfb: Fix an error message
+To:     =?UTF-8?Q?Uwe_Kleine-K=c3=b6nig?= <u.kleine-koenig@pengutronix.de>
+Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, shawnguo@kernel.org,
+        festevam@gmail.com, linux-imx@nxp.com, j.beisert@pengutronix.de,
+        krzysztof.h1@poczta.fm, linux-fbdev@vger.kernel.org,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
+        dri-devel@lists.freedesktop.org,
+        linux-arm-kernel@lists.infradead.org
+References: <d7b25026f82659da3c6f7159eea480faa9d738be.1620327302.git.christophe.jaillet@wanadoo.fr>
+ <20210507050503.iwrcis2xzhjjthmp@pengutronix.de>
+From:   Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Message-ID: <5cd9c8de-acd9-9594-38a0-62ecf5734c10@wanadoo.fr>
+Date:   Fri, 7 May 2021 09:11:19 +0200
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+In-Reply-To: <20210507050503.iwrcis2xzhjjthmp@pengutronix.de>
+Content-Type: text/plain; charset=windows-1252; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-* Jiri Slaby:
+Le 07/05/2021 à 07:05, Uwe Kleine-König a écrit :
+> Hello Christophe,
+> 
+> On Thu, May 06, 2021 at 08:57:05PM +0200, Christophe JAILLET wrote:
+>> 'ret' is known to be 0 here.
+>> No error code is available, so just remove it from the error message.
+>>
+>> Fixes: 72330b0eeefc ("i.MX Framebuffer: Use readl/writel instead of direct pointer deref")
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   drivers/video/fbdev/imxfb.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/video/fbdev/imxfb.c b/drivers/video/fbdev/imxfb.c
+>> index 7f8debd2da06..ad598257ab38 100644
+>> --- a/drivers/video/fbdev/imxfb.c
+>> +++ b/drivers/video/fbdev/imxfb.c
+>> @@ -992,7 +992,7 @@ static int imxfb_probe(struct platform_device *pdev)
+>>   	info->screen_buffer = dma_alloc_wc(&pdev->dev, fbi->map_size,
+>>   					   &fbi->map_dma, GFP_KERNEL);
+>>   	if (!info->screen_buffer) {
+>> -		dev_err(&pdev->dev, "Failed to allocate video RAM: %d\n", ret);
+>> +		dev_err(&pdev->dev, "Failed to allocate video RAM\n");
+>>   		ret = -ENOMEM;
+>>   		goto failed_map;
+>>   	}
+> 
+> Reviewed-by: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> 
+> Are you using this driver, or did you find that problem using some
+> static checker?
+> 
 
-> The dot makes the difference, of course. The question is why is it
-> there? I keep looking into it. Only if someone has an immediate
-> idea...
+No, I'm not using this driver AFAIK.
 
-We see the failure on aarch64 as well, with 8404c9fbc84b741
-(from Linus' tree).
+It has been spotted by coccinelle with a hand-made script which tries to 
+find places where error code is used before being initialized.
 
-As far as I can tell, the core issue is that BTF_ID is applied to a
-symbol which is defined as static on the C side (and even in a different
-translation unit, but this aspect doesn't really matter).  The compiler
-can and will change symbol names, calling conventions and data layout
-for static functions/variables, so this is never going to work reliably.
-It is possible to inhibit these optimizations by using __attribute__
-((used)).  But I'm pretty sure that BTF generation fails to work
-properly if there are symbol name collisions, so I think it's better to
-drop the static and rely on duplicate symbol checks from the linker
-(which of course does not happen for C entities declared static).
+The script in it-self is not really interesting. It is easy to write and 
+my own version trigger way to much false positives.
 
-Thanks,
-Florian
+CJ
+
+> Best regards
+> Uwe
+> 
 
