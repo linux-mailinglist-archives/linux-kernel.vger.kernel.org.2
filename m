@@ -2,101 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183203764B3
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:53:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D99783764B9
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:53:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235255AbhEGLyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 07:54:05 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:52252 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230412AbhEGLyE (ORCPT
+        id S235507AbhEGLyj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 07:54:39 -0400
+Received: from aclms3.advantech.com.tw ([125.252.70.86]:64313 "EHLO
+        aclms3.advantech.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230412AbhEGLyh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 07:54:04 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 7065D1C0B76; Fri,  7 May 2021 13:53:03 +0200 (CEST)
-Date:   Fri, 7 May 2021 13:53:02 +0200
-From:   Pavel Machek <pavel@denx.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Hans de Goede <hdegoede@redhat.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Paul Menzel <paulepanter@users.sourceforge.net>,
-        Jacek Anaszewski <jacek.anaszewski@gmail.com>,
-        Pavel Machek <pavel@denx.de>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Jonathan Cameron <jic23@kernel.org>,
-        linux-iio <linux-iio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-Subject: Re: [PATCH] iio: bme680_i2c: Make bme680_acpi_match depend on
- CONFIG_ACPI
-Message-ID: <20210507115302.GA20751@amd>
-References: <20210504174019.2134652-1-linux@roeck-us.net>
- <CAHp75Vd-iTkA5Y6tEHtfcqLxxmHaaU8nLQSL7eWb-gaa-c8AJg@mail.gmail.com>
- <8f8b6f33-4308-bfda-2238-9a54e19c3f9f@roeck-us.net>
- <20210505093235.00007c38@Huawei.com>
- <20210505093438.00005238@Huawei.com>
- <CAHp75VezSD_TcbQ_OBZXPo-szTr-qwOT9oU+7h7W6nk65ZLBhA@mail.gmail.com>
+        Fri, 7 May 2021 07:54:37 -0400
+Received: from taipei09.ADVANTECH.CORP (unverified [172.20.0.236]) by ACLMS4.ADVANTECH.CORP
+ (Clearswift SMTPRS 5.6.0) with ESMTP id <Te654cd0384ac14110e2488@ACLMS4.ADVANTECH.CORP>;
+ Fri, 7 May 2021 19:53:20 +0800
+Received: from localhost (172.16.13.205) by taipei09.ADVANTECH.CORP
+ (172.20.0.236) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 7 May
+ 2021 19:53:19 +0800
+From:   Campion Kang <campion.kang@advantech.com.tw>
+To:     <hdegoede@redhat.com>
+CC:     <andy.shevchenko@gmail.com>, <campion.kang@advantech.com.tw>,
+        <chia-lin.kao@canonical.com>, <corbet@lwn.net>,
+        <devicetree@vger.kernel.org>, <jdelvare@suse.com>,
+        <lee.jones@linaro.org>, <linux-doc@vger.kernel.org>,
+        <linux-hwmon@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-watchdog@vger.kernel.org>, <linux@roeck-us.net>,
+        <mgross@linux.intel.com>, <platform-driver-x86@vger.kernel.org>,
+        <robh+dt@kernel.org>, <wim@linux-watchdog.org>
+Subject: Re: [PATCH v7 1/7] MAINTAINERS: Add Advantech AHC1EC0 embedded controller entry
+Date:   Fri, 7 May 2021 19:53:19 +0800
+Message-ID: <20210507115319.22109-1-campion.kang@advantech.com.tw>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <cf181436-152c-7cd8-76cf-350705cd2bcb@redhat.com>
+References: <cf181436-152c-7cd8-76cf-350705cd2bcb@redhat.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="sdtB3X0nJg68CQEu"
-Content-Disposition: inline
-In-Reply-To: <CAHp75VezSD_TcbQ_OBZXPo-szTr-qwOT9oU+7h7W6nk65ZLBhA@mail.gmail.com>
-User-Agent: Mutt/1.5.23 (2014-03-12)
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [172.16.13.205]
+X-ClientProxiedBy: ACLCAS4.ADVANTECH.CORP (172.20.2.20) To
+ taipei09.ADVANTECH.CORP (172.20.0.236)
+X-TM-SNTS-SMTP: 4B8C7CD8814247C1F67AD58EF2BF9FAF5F4E7C8A84C91213BA7094E79A2771972000:8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi, Very thanks your time for reviewing.
 
---sdtB3X0nJg68CQEu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+>-----Original Message-----
+>From: Hans de Goede <hdegoede@redhat.com>
+>Sent: Thursday, May 6, 2021 5:39 PM
+>Subject: Re: [PATCH v7 1/7] MAINTAINERS: Add Advantech AHC1EC0 embedded
+>controller entry
+>
+>Hi,
+>
+>On 5/6/21 11:23 AM, Andy Shevchenko wrote:
+>> On Thu, May 6, 2021 at 11:48 AM Hans de Goede <hdegoede@redhat.com>
+>wrote:
+>>> I'm replying here since this series has no cover-letter, for
+>>> the next version for a series touching so many different
+>>> sub-systems it would be good to start with a cover-letter
+>>> providing some background info on the series.
+>>>
 
-Hi!
-On Wed 2021-05-05 16:22:07, Andy Shevchenko wrote:
-> On Wed, May 5, 2021 at 11:36 AM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> > On Wed, 5 May 2021 09:32:35 +0100
-> > Jonathan Cameron <Jonathan.Cameron@Huawei.com> wrote:
-> > > On Tue, 4 May 2021 11:00:52 -0700
-> > > Guenter Roeck <linux@roeck-us.net> wrote:
->=20
-> +Cc: Paul (I hope you are related to coreboot somehow and can
-> communicate this further), Pavel and Jacek (LED subsystem suffered
-> with this as well), Hans, Rafael and linux-acpi@
+Sorry about that, i will study what is cover-letter and its content.
+Would you kindly provide me a good reference?
+Can I resend a [Patch v7 0/7] for these patch or provide it in next version?
 
-Thanks for Cc. I prefer @ucw.cz address for the LED work.
 
-> > > Dropping the ones we are fairly sure are spurious is even better!
-> >
-> > If I get bored I'll just do a scrub of all the instances of this that
-> > you haven't already cleaned up.  It's worth noting that we do
-> > know some highly suspicious looking entries are out there in the wild.
->=20
-> I have counted ~60 users of acpi_device_id in IIO. Brief looking at
-> the IDs themselves rings an alarm about half of them.
+>>> I see this is binding to an ACPI device, yet it is also using
+>>> devicetree bindings and properties.
+>>>
+>>> So I take it this means that your ACPI tables are using the
+>>> optional capability of embedded device-tree blobs inside the
+>>> ACPI tables ?
+>>>
+>>> That is an unusual combination on a x86 device, note it is
+>>> not wrong
+>>
+>> It's actually not okay. We have agreed at some point with DT people,
+>> that ACPI should not use non-native variants of natively supported
+>> things. For example, it shouldn't use "interrupt" property for IOxAPIC
+>> (or xIC) provided interrupts, rather Interrupt() has to be used and so
+>> on.
 
-As far as I can tell, this means asking "is this real ID or did you
-just invent it" at patch submission. Okay...
+In our experience, most risc platforms are using devicetree, and x86/64 platforms
+are using ACPI table or grub configure for their specific settings in different HW paltform.
+In this case, EC chip is a LPC interface that can be integrated in whenever risc or x86/64.
+So in my understand, I think it is not conflict.
+(please correct me if i am misunderstanding, i will try to describe more)
 
-Best regards,
-								Pavel
---=20
-DENX Software Engineering GmbH,      Managing Director: Wolfgang Denk
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+If the EC chip is connected to the risc processor, we will bind its properties in the device-tree without modifing the source.
+If the EC chip is connected to the X86/64 processor, we bind its the properties in the ACPI table and also without modifing the source.
+Why do we need to bind the properties in ACPI or in the device-tree? Because it is an LPC interface, it cannot automatically load the driver like a USB or PCI device.
+In the early days, we had to install the EC driver module in our HW platform and manually load it at every boot. Different Advantech HW platforms have different properties for HWMON and others sub-systems. This causes the EC source to be a bit dirty. It is necessary to obtain the hardware platform name from the BIOS DMI table and determine its attributes according to its platform name.
+Now bind the attributes to ACPI table or device-tree, the EC source is more clear and universal for Advantech devices, and it is important that if the ACPI table matches, it can be automatically loaded.
 
---sdtB3X0nJg68CQEu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
+>
+>Right, but that is not the case here, they are using 2 device-tree
+>properties (1), from patch 3/7:
+>
+>+properties:
+>+  compatible:
+>+    const: advantech,ahc1ec0
+>+
+>+  advantech,hwmon-profile:
+>+    description:
+>+      The number of sub-devices specified in the platform. Defines for the
+>+      hwmon profiles can found in dt-bindings/mfd/ahc1ec0-dt.
+>+    $ref: /schemas/types.yaml#/definitions/uint32
+>+    maxItems: 1
+>+
+>+  advantech,has-watchdog:
+>+    description:
+>+      Some implementations of the EC include a watchdog used to monitor
+>the
+>+      system. This boolean flag is used to specify whether this watchdog is
+>+      present or not. Default is true, otherwise set to false.
+>+    type: boolean
+>
+>
+>>> but AFAIK you are the first to do this on x86.
+>>
+>> No, not the first. Once Intel tried to invent the pin control
+>> configuration and muxing properties in ACPI, it was luckily rejected
+>> (ACPI 6.x OTOH provides a set of special resources for that).
+>>
+>> So, NAK from me, *if* it's really the case. ACPI tables must be revisited.
+>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+I am not sure it supports vendor self-defined attributes for ACPI table?
 
-iEYEARECAAYFAmCVKh4ACgkQMOfwapXb+vJBQwCfSfvfA+ps5soco8nk8PpfuIwM
-NOAAn213eI5AaFWPZd77hSIYq4qpARxm
-=WbSs
------END PGP SIGNATURE-----
+>AFAIK Advantech are not defining things for which an ACPI standard exists,
+>although these 2 properties might just as well may be 2 simple ACPI integer
+>methods, which would actually make things a bit simpler (.e.g it would
+>allow dropping patch 2/7 and 3/7 from the set).
+>
+>Campion, any reason why you went this route; and can the ACPI tables
+>still be changed?
+>
 
---sdtB3X0nJg68CQEu--
+If patches 2/7 and 3/7 are removed, it will be even simpler.
+This means that there is no device-tree binding designed, in fact, the EC chip only be integrated in the x86/64 platform at present.
+Sorry, ACPI table now is integrated in the BIOS for Advantech UNO device, 
+it may be revert to previous rule, that is, there is no ACPI table binding and manually loaded the EC driver. If you have any suggestons I would be very grateful.
+
+>Regards,
+>
+>Hans
