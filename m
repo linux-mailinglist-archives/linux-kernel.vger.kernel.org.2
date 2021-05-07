@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 021A1376BFF
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 00:03:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE413376C03
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 00:03:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229791AbhEGWEO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 18:04:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50848 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229470AbhEGWEL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 18:04:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 89DA061057;
-        Fri,  7 May 2021 22:03:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620424991;
-        bh=sA09KIpzJKWdrqUAHqp2pecsUq/VpgCkrBtpk2n2z5k=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=qfZaF/u/tDgFEvGNxz8ZgmCCa7/RHm5wUtmr64NFEwsmyJUzqbztWeyD+UPe6rVEn
-         01+wFrnzLSUP0HmyDD+yJOGY6AZ+hqwKO4ESfOLt2p8noqH5sUNSBcWzxkK1CgEgPp
-         pRXm131EczNg3m6D5sh6bTYKJ2Idodf+tC17Tk7F2Lu26TEQL/ASJn/ORJIpC//N4p
-         U1bFs84qmAY2OFJYdMpR1RLN7e62p6LTNbR70Wl54+g9FOpak4Y6sRUd5Ci+LS1dMa
-         ZEJ+AYXX0OTdPftT7F1yvjmqvfiQGNFbhTvuAt4m9ZG0PfxP72Adgid0pnMtPIDNgm
-         klFvmEACdyi4w==
-Date:   Sat, 8 May 2021 00:02:57 +0200
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Rob Herring <robh@kernel.org>
-Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>
-Subject: Re: [PATCH v2] dt-bindings: i2c: Move i2c-omap.txt to YAML format
-Message-ID: <20210507220257.GA1612@kunai>
-Mail-Followup-To: Wolfram Sang <wsa@kernel.org>,
-        Rob Herring <robh@kernel.org>,
-        Grygorii Strashko <grygorii.strashko@ti.com>,
-        Andreas Kemnade <andreas@kemnade.info>,
-        Vignesh Raghavendra <vigneshr@ti.com>, linux-omap@vger.kernel.org,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
-        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>
-References: <20210506140026.31254-1-vigneshr@ti.com>
- <f7570cb4-8c21-2fa5-bd26-1388f2a4bd6b@ti.com>
- <429a740a-c2b9-1cf8-ed2b-0fb7b1bea422@ti.com>
- <20210507163602.219894f4@aktux>
- <1ef076ac-e0de-a0df-a918-aeb8ed6c5956@ti.com>
- <20210507214323.GB2902038@robh.at.kernel.org>
+        id S229839AbhEGWEZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 18:04:25 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:39447 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhEGWEX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 18:04:23 -0400
+Received: by mail-ot1-f44.google.com with SMTP id 65-20020a9d03470000b02902808b4aec6dso9186182otv.6;
+        Fri, 07 May 2021 15:03:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=mNMOdckcod4Dgitnzjw7d0BqAxjha7UnOjwSDctI1AM=;
+        b=ABiq0ZgvVVVOjtITsLjleYkTiTuRxiztcchiPD4QyagJdNUiWVUo3RhatrawfybiyY
+         SlX4c4POsA0otwr0YCnkzgly+as3rT3RUMNaz3VkdklQtLzBqhfO0KGfWqK1hyIVJzAI
+         roc2quTPdN9CATyuHMNzI6u4AORIXhiCyNuiEAUL+vWBg+uLXY9V4ya7cddPnorXkjwJ
+         d+cbRAoZ2sEGCAlUtu7cN1EBhd/UuxKKjHkx732y+QZfO6mvEQAkz6kS/71iVeWVfMwU
+         SfHcw5BNMEuVOLZYyqEsXBDDnKstzdR89MscBFerODcWfZN97AFSf31TXP8vmslCfQbl
+         Zt1g==
+X-Gm-Message-State: AOAM53165vN/Agy+Emr11POPCBqxZFJGsn0IfOe7IJedtHg0oy1VQFlV
+        UYVLiUGqM+T92W80NiPRvQ==
+X-Google-Smtp-Source: ABdhPJz1syXNnkXnZ+hGra/92ic0AYgw7gFdFo60L0inBs8aYbe9sCqtTzN0b6E/53yIEafw2uhhtg==
+X-Received: by 2002:a9d:12b5:: with SMTP id g50mr10148829otg.97.1620425002783;
+        Fri, 07 May 2021 15:03:22 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id r9sm1442164otn.64.2021.05.07.15.03.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 15:03:22 -0700 (PDT)
+Received: (nullmailer pid 2974175 invoked by uid 1000);
+        Fri, 07 May 2021 22:03:21 -0000
+Date:   Fri, 7 May 2021 17:03:21 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc:     bjorn.andersson@linaro.org, linux-kernel@vger.kernel.org,
+        ohad@wizery.com, robh+dt@kernel.org,
+        linux-remoteproc@vger.kernel.org, pillair@codeaurora.org,
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: remoteproc: qcom: pas: Convert binding to
+ YAML
+Message-ID: <20210507220321.GA2974133@robh.at.kernel.org>
+References: <20210505082200.32635-1-manivannan.sadhasivam@linaro.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="OgqxwSJOaUobr8KG"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210507214323.GB2902038@robh.at.kernel.org>
+In-Reply-To: <20210505082200.32635-1-manivannan.sadhasivam@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, 05 May 2021 13:52:00 +0530, Manivannan Sadhasivam wrote:
+> Convert Qualcomm ADSP Remoteproc devicetree binding to YAML.
+> 
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  .../bindings/remoteproc/qcom,adsp.txt         | 228 --------
+>  .../bindings/remoteproc/qcom,adsp.yaml        | 534 ++++++++++++++++++
+>  2 files changed, 534 insertions(+), 228 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,adsp.txt
+>  create mode 100644 Documentation/devicetree/bindings/remoteproc/qcom,adsp.yaml
+> 
 
---OgqxwSJOaUobr8KG
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-
-> Actually, for DMA with I2C I'd like to see someone show a usecase=20
-> and data where it's actually beneficial.=20
-
-The usecase I mostly hear is transferring firmware from/to the i2c
-client. Something up to 1MB sent in 64KB chunks. Haven't had this myself
-on the desk, though.
-
-
---OgqxwSJOaUobr8KG
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmCVuQ0ACgkQFA3kzBSg
-Kbba4A/5AfdaUQZPGIpeBJPNSHBbtu2x9jxNjT5pOpFqTvuykgjLisJKu648RXZd
-fd76I6c4D24T1ja4q0yc0Kh7CGh/xvCduubH0QKrVCaUeB4BX0RVcaPwjE2FEUhg
-Ba6xyo2oo8uuQgGmp0VxyroH2l4X9IKTq6zgtnO3Z9gDfsLw0AFVDephvQpxPve+
-dFE7wgIcmf5tDk/JwlT6o8z9Rxu0UXWcRX96dni0B4vbQx9QdiORhaz8TRROQ5nY
-h15gqfLbaXvTft7qukXey3/obSMXN88bWz68LIrxnyB4NOON0nveOgBApkGTazp3
-p9knylPF80vdxSJn6tf+p9RwEEHaNnsR4hUPss0F9Elr6sP5udyFPX5QQ4xDZIg1
-5JXRKC3xpuvpuSZXmkbpVyTJ8prACg32lGcPyPnP1TSmxd6jKbWoeC7Q4JHh8Lvi
-2QqLBCHTD32XQyd5IHmqQgq1wOKMJ3PyuExqgz+/JY2Mp3LR/sPlXWRA1YNr5+ow
-e5aZuzyK3HaN1h+xyeeL1BCeybX+bYc9WbyEu6tWcZLHfGebdUFTckuxPVsUnM8l
-fmCXn8A7Z6NFephRBwE1DIaT+fJ53HpvpV8vefJH5DW7Sr+3TACl9OIrR8ZnZB4A
-n4WUHN3nn5mlWvyJysmxiADWliCGcZQxCuOc5QMey3z8u0q6mU0=
-=w0SW
------END PGP SIGNATURE-----
-
---OgqxwSJOaUobr8KG--
+Reviewed-by: Rob Herring <robh@kernel.org>
