@@ -2,87 +2,211 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37EB376A22
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:44:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4EDA0376A24
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 20:46:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229611AbhEGSpH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 14:45:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56412 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEGSpG (ORCPT
+        id S229645AbhEGSq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 14:46:56 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:58975 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229470AbhEGSq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 14:45:06 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8280AC061574;
-        Fri,  7 May 2021 11:44:06 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620413042;
+        Fri, 7 May 2021 14:46:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620413155;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=n7rJ0dlFmG2nBfHC2MLUNYWbqEOUVFlJXYjrKpA8y4U=;
-        b=ERXnZvWfiwqAMqFp6VAA1kNnf+uuuYuSr+8nEiIcCK13DKl8wnHmpA6HzRHMCMvJCWvVyZ
-        WjOCCNlSx4bMEpEXx3i+KyNMKMtSsDPmbrSGutRNcOkCmNASVxTl778jtVA1PxWywvkcVs
-        8236SBDHXrN/2jNOEnZV6aC5g7MWZAM15NZyw1JbdLGs7egeG6AkjfBLVL+2ZqUcmj753g
-        3/PRmdZIMKygWfTg9nyriqKSGkm6OOq7eURrtQ3wx6+FwgDu+mBWAY9Q66++tFOIBZMSgp
-        S4NgF1Oyxg5UM36Ce9/rExtoFsFQtHbUoD92frrrsgBQBWAmDQO2vpzUHpMvSQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620413042;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=n7rJ0dlFmG2nBfHC2MLUNYWbqEOUVFlJXYjrKpA8y4U=;
-        b=+3YcQRLt0Hifq5eZj4aSejW5/SSBEi1Gr3EAqhWloe7lXnBWPI8zsit6up03b/va7agqdI
-        02kHDiNiezLmd4Dg==
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Len Brown <lenb@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, Willy Tarreau <w@1wt.eu>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Bae\, Chang Seok" <chang.seok.bae@intel.com>,
-        X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        linux-abi@vger.kernel.org,
-        "libc-alpha\@sourceware.org" <libc-alpha@sourceware.org>,
-        Rich Felker <dalias@libc.org>, Kyle Huey <me@kylehuey.com>,
-        Keno Fischer <keno@juliacomputing.com>
-Subject: Re: Candidate Linux ABI for Intel AMX and hypothetical new related features
-In-Reply-To: <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com>
-References: <20210415044258.GA6318@zn.tnic> <20210415052938.GA2325@1wt.eu> <20210415054713.GB6318@zn.tnic> <CAJvTdKnjzAMh3N_c7KP3kA=e0LgYHgCANg44oJp3LcSm7dtbSQ@mail.gmail.com> <20210419141454.GE9093@zn.tnic> <CAJvTdK=p8mgO3xw9sRxu0c7NTNTG109M442b3UZh8TqLLfkC1Q@mail.gmail.com> <20210419191539.GH9093@zn.tnic> <CAJvTdK=VnG94ECcRVoUi8HrCbVEKc8X4_JmRTkqe+vTttf0Wsg@mail.gmail.com> <20210419215809.GJ9093@zn.tnic> <CAJvTdKn6JHo02karEs0e5g+6SimS5VUcXKjCkX35WY+xkgAgxw@mail.gmail.com> <YIMmwhEr46VPAZa4@zn.tnic> <CAJvTdKnhXnynybS4eNEF_EtF26auyb-mhKLNd1D9_zvCrchZsw@mail.gmail.com> <87bl9s8kfb.fsf@oldenburg.str.redhat.com> <5d3d513b-77d6-e2e2-779e-ff3ea33deba3@intel.com>
-Date:   Fri, 07 May 2021 20:44:02 +0200
-Message-ID: <87o8dmmljh.ffs@nanos.tec.linutronix.de>
+        bh=aPyyKeBrRkA4WE3QwL0dVJXd+S/rMEeW0hm96iAtu2c=;
+        b=gFun/DhjEmkdhc/B1Dg2kgagl0hbv3uEO4xI/MDTNvH3fAyWbYr4+HoIGVujfQt8HUtn6m
+        SX4ZEmSOatPQLjEcd+mVQctHs4wYn0Py9n1PbveM+FAAw+CH4CAN3c1za0WfaQVp4E5VFE
+        9Q5Mt1oFXoGGq4FF/T2ZRjmoElmssik=
+Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
+ [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-400-cK1kjhgBPsWmZnT3ivvKWA-1; Fri, 07 May 2021 14:45:54 -0400
+X-MC-Unique: cK1kjhgBPsWmZnT3ivvKWA-1
+Received: by mail-qv1-f71.google.com with SMTP id a6-20020a0ce3460000b02901c4f39aa36aso7261977qvm.21
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 11:45:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:subject:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=aPyyKeBrRkA4WE3QwL0dVJXd+S/rMEeW0hm96iAtu2c=;
+        b=aBEFy+JLD1WTpNFPmdvUvAt4sWFYF9k51qCyu9+hFknh/xNj6u+uot0AH8IRRpIADu
+         R9Mi3BgwavsbYAi+Bw31bhflEHJ1sjI2zM6vnm4C+KI7BGg9bSs13vBqvcs+szqg1+Y/
+         KtPNa+Wilo0BgEHB7y/3AXx72wO7GzZZGZGj/KGib3pFqTppfu05NpFuXXKkjupHYNes
+         jLNLQ24wQVOYYBTwaIxNXwj0UHm+3VkxMUPWgRlFcvQ0M/qCgHCwQH+0LX1eAHaazUxl
+         afOe4J3f0FbfnJHU5NOVZbDJRZYbf7SkXvbH0KBixvsHLjWpHXjSHF0/qWs27VYsZrru
+         nQ1Q==
+X-Gm-Message-State: AOAM533h7WG8V6bWalACwBPXSPqqOS0tqatgo0D/xcUyiYrVGxkFw2Qm
+        D4c1LiDhvQJ35e2fJIM9BCpyqQZo4ryh1LflZYCRySoE4+EbXPz8JrxIZ3RfKiDyuAglExfXy5n
+        HtnpM1kaLeVvHI6C+0QoyHawx
+X-Received: by 2002:a37:ae02:: with SMTP id x2mr10946086qke.335.1620413151343;
+        Fri, 07 May 2021 11:45:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzQ49EhrBr2VleaOQs5O+9EB+F+312dF6kA9HU6bvLJ0TwDuEEYlFpnBnivl0VUz4k5rpNUrA==
+X-Received: by 2002:a37:ae02:: with SMTP id x2mr10946050qke.335.1620413151104;
+        Fri, 07 May 2021 11:45:51 -0700 (PDT)
+Received: from llong.remote.csb ([2601:191:8500:76c0::cdbc])
+        by smtp.gmail.com with ESMTPSA id x13sm5553045qtf.32.2021.05.07.11.45.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 May 2021 11:45:50 -0700 (PDT)
+From:   Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH v4 2/3] mm: memcg/slab: Create a new set of kmalloc-cg-<n>
+ caches
+To:     Vlastimil Babka <vbabka@suse.cz>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Michal Hocko <mhocko@kernel.org>,
+        Vladimir Davydov <vdavydov.dev@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        David Rientjes <rientjes@google.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Roman Gushchin <guro@fb.com>,
+        Shakeel Butt <shakeelb@google.com>
+Cc:     linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20210505200610.13943-1-longman@redhat.com>
+ <20210505200610.13943-3-longman@redhat.com>
+ <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
+Message-ID: <d1fb7f38-1a4e-5819-6ccb-691346c7b2a1@redhat.com>
+Date:   Fri, 7 May 2021 14:45:48 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.9.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <3344a04c-0cff-b997-f357-2ffc8e3de242@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, May 03 2021 at 06:43, Dave Hansen wrote:
-> On 5/2/21 10:18 PM, Florian Weimer wrote:
->>> 5. If the feature is enabled in XCR0, the user happily uses it.
->>>
->>>     For AMX, Linux implements "transparent first use"
->>>     so that it doesn't have to allocate 8KB context switch
->>>     buffers for tasks that don't actually use AMX.
->>>     It does this by arming XFD for all tasks, and taking a #NM
->>>     to allocate a context switch buffer only for those tasks
->>>     that actually execute AMX instructions.
->> What happens if the kernel cannot allocate that additional context
->> switch buffer?
+On 5/6/21 12:00 PM, Vlastimil Babka wrote:
+> On 5/5/21 10:06 PM, Waiman Long wrote:
+>> There are currently two problems in the way the objcg pointer array
+>> (memcg_data) in the page structure is being allocated and freed.
+>>
+>> On its allocation, it is possible that the allocated objcg pointer
+>> array comes from the same slab that requires memory accounting. If this
+>> happens, the slab will never become empty again as there is at least
+>> one object left (the obj_cgroup array) in the slab.
+>>
+>> When it is freed, the objcg pointer array object may be the last one
+>> in its slab and hence causes kfree() to be called again. With the
+>> right workload, the slab cache may be set up in a way that allows the
+>> recursive kfree() calling loop to nest deep enough to cause a kernel
+>> stack overflow and panic the system.
+>>
+>> One way to solve this problem is to split the kmalloc-<n> caches
+>> (KMALLOC_NORMAL) into two separate sets - a new set of kmalloc-<n>
+>> (KMALLOC_NORMAL) caches for unaccounted objects only and a new set of
+>> kmalloc-cg-<n> (KMALLOC_CGROUP) caches for accounted objects only. All
+>> the other caches can still allow a mix of accounted and unaccounted
+>> objects.
+>>
+>> With this change, all the objcg pointer array objects will come from
+>> KMALLOC_NORMAL caches which won't have their objcg pointer arrays. So
+>> both the recursive kfree() problem and non-freeable slab problem are
+>> gone.
+>>
+>> Since both the KMALLOC_NORMAL and KMALLOC_CGROUP caches no longer have
+>> mixed accounted and unaccounted objects, this will slightly reduce the
+>> number of objcg pointer arrays that need to be allocated and save a bit
+>> of memory. On the other hand, creating a new set of kmalloc caches does
+>> have the effect of reducing cache utilization. So it is properly a wash.
+>>
+>> The new KMALLOC_CGROUP is added between KMALLOC_NORMAL and
+>> KMALLOC_RECLAIM so that the first for loop in create_kmalloc_caches()
+>> will include the newly added caches without change.
+>>
+>> Suggested-by: Vlastimil Babka <vbabka@suse.cz>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> Reviewed-by: Shakeel Butt <shakeelb@google.com>
+> Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
 >
-> Well, it's vmalloc()'d and currently smaller that the kernel stack,
-> which is also vmalloc()'d.  While it can theoretically fail, if it
-> happens you have bigger problems on your hands.
+> I still believe the cgroup.memory=nokmem parameter should be respected,
+> otherwise the caches are not only created, but also used. I offer this followup
+> for squashing into your patch if you and Andrew agree:
+>
+> ----8<----
+>  From c87378d437d9a59b8757033485431b4721c74173 Mon Sep 17 00:00:00 2001
+> From: Vlastimil Babka <vbabka@suse.cz>
+> Date: Thu, 6 May 2021 17:53:21 +0200
+> Subject: [PATCH] mm: memcg/slab: don't create kmalloc-cg caches with
+>   cgroup.memory=nokmem
+>
+> The caches should not be created when kmemcg is disabled on boot, otherwise
+> they are also filled by kmalloc(__GFP_ACCOUNT) allocations. When booted with
+> cgroup.memory=nokmem, link the kmalloc_caches[KMALLOC_CGROUP] entries to
+> KMALLOC_NORMAL entries instead.
+>
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> ---
+>   mm/internal.h    | 5 +++++
+>   mm/memcontrol.c  | 2 +-
+>   mm/slab_common.c | 9 +++++++--
+>   3 files changed, 13 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/internal.h b/mm/internal.h
+> index ef5f336f59bd..b2d60b3403c7 100644
+> --- a/mm/internal.h
+> +++ b/mm/internal.h
+> @@ -135,6 +135,11 @@ extern void putback_lru_page(struct page *page);
+>    */
+>   extern pmd_t *mm_find_pmd(struct mm_struct *mm, unsigned long address);
+>   
+> +/*
+> + * in mm/memcontrol.c:
+> + */
+> +extern bool cgroup_memory_nokmem;
+> +
+>   /*
+>    * in mm/page_alloc.c
+>    */
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 5e3b4f23b830..b9ec01f2b4f6 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -83,7 +83,7 @@ DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
+>   static bool cgroup_memory_nosocket;
+>   
+>   /* Kernel memory accounting disabled? */
+> -static bool cgroup_memory_nokmem;
+> +bool cgroup_memory_nokmem;
+>   
+>   /* Whether the swap controller is active */
+>   #ifdef CONFIG_MEMCG_SWAP
+> diff --git a/mm/slab_common.c b/mm/slab_common.c
+> index bbaf41a7c77e..363f90215401 100644
+> --- a/mm/slab_common.c
+> +++ b/mm/slab_common.c
+> @@ -832,10 +832,15 @@ void __init setup_kmalloc_cache_index_table(void)
+>   static void __init
+>   new_kmalloc_cache(int idx, enum kmalloc_cache_type type, slab_flags_t flags)
+>   {
+> -	if (type == KMALLOC_RECLAIM)
+> +	if (type == KMALLOC_RECLAIM) {
+>   		flags |= SLAB_RECLAIM_ACCOUNT;
+> -	else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP))
+> +	} else if (IS_ENABLED(CONFIG_MEMCG_KMEM) && (type == KMALLOC_CGROUP)) {
+> +		if (cgroup_memory_nokmem) {
+> +			kmalloc_caches[type][idx] = kmalloc_caches[KMALLOC_NORMAL][idx];
+> +			return;
+> +		}
+>   		flags |= SLAB_ACCOUNT;
+> +	}
+>   
+>   	kmalloc_caches[type][idx] = create_kmalloc_cache(
+>   					kmalloc_info[idx].name[type],
 
-Such a buffer allocation might also exceed a per process/cgroup
-limitation. Anything else which is accounted happens in syscall context
-which then returns an error on which the application can react.
+Thanks, the patch looks good to me.
 
-So what's the consequence when the allocation fails? Kill it right away
-from #NM? Kill it on the first signal? Do nothing and see what happens?
+Acked-by: Waiman Long <longman@redhat.com>
 
-Thanks,
-
-        tglx
-
+Cheers,
+Longman
 
