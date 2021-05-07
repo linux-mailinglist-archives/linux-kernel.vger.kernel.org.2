@@ -2,232 +2,373 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BC11B376074
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 08:36:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1013376079
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 08:37:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232958AbhEGGg4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 02:36:56 -0400
-Received: from mail-bn7nam10on2047.outbound.protection.outlook.com ([40.107.92.47]:13024
-        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S231263AbhEGGgw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 02:36:52 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YYydbPvJoKyftEPBPotX80tzs6JJ7MkYLfMReDdybzmRasjnTFt+yICMCIIrtiRMx8uRCpSCilao4Xef/EvPjjErr14R52hnD8DGSg1FziwlP5fEZb6wde4X+2ymdnmeRQ4HwY54ozUqNb68V+lC3f4Ks/oJDXCb0zx/VNToG5OiwkVbsBKpbbToyCSBdL/jPXk0EctOnX1Iia4y+ORT8xly8TNhy8Fx0WxVol31l2vIQnpQ6Bmnd2pPb603tufQnHiUdikbF5v3APTlexYDjsKGUPqumjMGVnC8c8Za4Dg8P/3Rk3eiIUXnBZkHAk4MRjycGf2bK5s8i1O0vMIIng==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kMMlV6sW7W6SS3KLLyX0pD6pTu9NbLGjxhalxaN4gk8=;
- b=JEx6MExQF+jH0CgmHemllGNSyUjk2ulGTnFTGKxhQZAMCJ18J6JcVNbH2zwNVVz/e5+IU98VVxnuTw7yESwH2K/qqEfaK4alrTI4LfnOJMjROGIrdZcVBVbFfdZDjAM6GJOKM/fyYNt5eREpeyeuQp95Y+wf5gbwmnsEk7BXzEuzvvKp6E1jwq+eQwcU6mdl+xWFrZc6Y7xlPrB8rGsJ2JJHczDHJ0gH2Koqb7uuWA7N1pWSx9ekdRdoAitDa4ORCWrLAoncOhTMdcNt80Il07eOP5QYNcBGW+LwqF0TVLRZsN2FPP1IAe5u9MfSs9kZKyGrEvlOjp6QVHkLNo7AbA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 149.199.62.198) smtp.rcpttodomain=hazent.com smtp.mailfrom=xilinx.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=xilinx.com;
- dkim=none (message not signed); arc=none
+        id S233340AbhEGGiz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 02:38:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230007AbhEGGix (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 02:38:53 -0400
+Received: from mail-pj1-x1031.google.com (mail-pj1-x1031.google.com [IPv6:2607:f8b0:4864:20::1031])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DFD32C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 23:37:53 -0700 (PDT)
+Received: by mail-pj1-x1031.google.com with SMTP id k3-20020a17090ad083b0290155b934a295so4760640pju.2
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 23:37:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=xilinx.onmicrosoft.com; s=selector2-xilinx-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kMMlV6sW7W6SS3KLLyX0pD6pTu9NbLGjxhalxaN4gk8=;
- b=JFmHmgS9sRBfJeplZjg98m3RpDyuhhWWnus7vissDz236JWDgL5sn2eHaVWDPX7+UDD+KOuM2zizcY+dUZ/2H08vjojs6PrnKlFRfiUP5J+A/d//eg8uNSrdtPNAlz9ol/7M0KMUnLyPG1dcP9TnEKd//ydI11vuCyFodgHxZw0=
-Received: from DS7PR03CA0178.namprd03.prod.outlook.com (2603:10b6:5:3b2::33)
- by BL0PR02MB4467.namprd02.prod.outlook.com (2603:10b6:208:48::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Fri, 7 May
- 2021 06:35:51 +0000
-Received: from DM3NAM02FT026.eop-nam02.prod.protection.outlook.com
- (2603:10b6:5:3b2:cafe::a5) by DS7PR03CA0178.outlook.office365.com
- (2603:10b6:5:3b2::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.24 via Frontend
- Transport; Fri, 7 May 2021 06:35:51 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 149.199.62.198)
- smtp.mailfrom=xilinx.com; hazent.com; dkim=none (message not signed)
- header.d=none;hazent.com; dmarc=pass action=none header.from=xilinx.com;
-Received-SPF: Pass (protection.outlook.com: domain of xilinx.com designates
- 149.199.62.198 as permitted sender) receiver=protection.outlook.com;
- client-ip=149.199.62.198; helo=xsj-pvapexch01.xlnx.xilinx.com;
-Received: from xsj-pvapexch01.xlnx.xilinx.com (149.199.62.198) by
- DM3NAM02FT026.mail.protection.outlook.com (10.13.5.129) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.4065.21 via Frontend Transport; Fri, 7 May 2021 06:35:50 +0000
-Received: from xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) by
- xsj-pvapexch01.xlnx.xilinx.com (172.19.86.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Thu, 6 May 2021 23:35:50 -0700
-Received: from smtp.xilinx.com (172.19.127.95) by
- xsj-pvapexch02.xlnx.xilinx.com (172.19.86.41) with Microsoft SMTP Server id
- 15.1.2176.2 via Frontend Transport; Thu, 6 May 2021 23:35:50 -0700
-Envelope-to: alvaro.gamez@hazent.com,
- linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org,
- devicetree@vger.kernel.org,
- linux-pwm@vger.kernel.org,
- robh@kernel.org,
- sean.anderson@seco.com
-Received: from [172.30.17.109] (port=38944)
-        by smtp.xilinx.com with esmtp (Exim 4.90)
-        (envelope-from <michal.simek@xilinx.com>)
-        id 1leu5V-0001KM-UL; Thu, 06 May 2021 23:35:50 -0700
-Subject: Re: [PATCH v2 1/2] dt-bindings: pwm: Add Xilinx AXI Timer
-To:     Sean Anderson <sean.anderson@seco.com>,
-        Rob Herring <robh@kernel.org>
-CC:     <linux-pwm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <michal.simek@xilinx.com>,
-        Alvaro Gamez <alvaro.gamez@hazent.com>
-References: <20210504184925.3399934-1-sean.anderson@seco.com>
- <20210506210527.GA789155@robh.at.kernel.org>
- <b736d78f-4eaa-1057-71bf-02c3b44ec51e@seco.com>
-From:   Michal Simek <michal.simek@xilinx.com>
-Message-ID: <eb3a9e61-c474-696f-4d81-e655ce058082@xilinx.com>
-Date:   Fri, 7 May 2021 08:35:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vaXy2JHrBxaYnwLyYH5HyUVs0F4XBdNV67c88m2iH3U=;
+        b=iqHj1wWBR2w+PKWJzc7bFOcWn9lY0PCpSl3c8GrsmL4DbRau4Z9aIbXTHv4G0eqnBm
+         JliY2NYI80upo/JdrYmvEzX9MewYx22TvkJa5n/x5fSX7n8Eep419s4Qa9QQElFFH+CN
+         jSkxhUU5K/0S7Ehc5g0L/h5bRYOzyIcDBpKxA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=vaXy2JHrBxaYnwLyYH5HyUVs0F4XBdNV67c88m2iH3U=;
+        b=RK/jFmF62zc/ZWsH45ViAMOO1uXCFLV0FG4N0RFvHAunCHzvxrYqqmdIjtqyQQcJXF
+         uPBS5+EbBj+o5LxrRXYfBa+TTaN8VQSbuR8a19b6C5fMxBruP0CW69aavBVNwY6tScaS
+         I5TqIQFXhOkBsGU4koKgkoaUS9oyKgyCmPeMz7oqhpn9RYbHyyahlH1/TYZJDEqzfuoL
+         yBzruSp/7DO8yUEPsJIVmu4MLMJ1RrSTERTBUjGPFM2+lijlfPn3Al8vcgs502T2Bv0o
+         RuvadF+a5ZOxu09oJh2smMd0ihSunbKPpGWFsQSHSqWHTaWsflf4smciPz89vRbzCgxP
+         Tq/w==
+X-Gm-Message-State: AOAM533Rv3zcAV8AgQRvbXKh95nN95nLHpQUWnpC8zzPnfH4UvhqLD68
+        mgbo6XxqhLEwYmk+whAkuMLibg==
+X-Google-Smtp-Source: ABdhPJxhBWiBeTxygAX2edAC+Bd58rixGrcB3WjwLgKLzGYH7tHoh0AWGp11Ex0MxAzqYoJ6hp4fLg==
+X-Received: by 2002:a17:90a:d582:: with SMTP id v2mr9358680pju.88.1620369473423;
+        Thu, 06 May 2021 23:37:53 -0700 (PDT)
+Received: from kafuu-chino.c.googlers.com.com (105.219.229.35.bc.googleusercontent.com. [35.229.219.105])
+        by smtp.googlemail.com with ESMTPSA id d16sm3713345pgk.34.2021.05.06.23.37.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 06 May 2021 23:37:52 -0700 (PDT)
+From:   Pi-Hsun Shih <pihsun@chromium.org>
+Cc:     Pi-Hsun Shih <pihsun@chromium.org>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Robert Foss <robert.foss@linaro.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>, Xin Ji <xji@analogixsemi.com>,
+        Hsin-Yi Wang <hsinyi@chromium.org>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        dri-devel@lists.freedesktop.org (open list:DRM DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] drm/bridge: anx7625: refactor power control to use runtime PM framework
+Date:   Fri,  7 May 2021 14:35:47 +0800
+Message-Id: <20210507063620.390280-1-pihsun@chromium.org>
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
 MIME-Version: 1.0
-In-Reply-To: <b736d78f-4eaa-1057-71bf-02c3b44ec51e@seco.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 6aab2917-864c-45bb-1613-08d911225b60
-X-MS-TrafficTypeDiagnostic: BL0PR02MB4467:
-X-Microsoft-Antispam-PRVS: <BL0PR02MB44677CD55AE3EC82E5B71616C6579@BL0PR02MB4467.namprd02.prod.outlook.com>
-X-Auto-Response-Suppress: DR, RN, NRN, OOF, AutoReply
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ecOIzo1x995njpKYbhYKNRhTJkspFuyhayaZOa8MT6bkIAzaCy3kSk0k/9U5DbQxF9fEEDm0uPa6YeAwviOVmpguUUw+1cRoqwsfjxHCEPFMRH06TMXuN0NEoDzLVR8bLdmtFSiWxwesk8j0WT+ZUhaMisTP7BrOPG/gY/55UJUdbIavl+e7/uVyVePX340vdTKABV3yECIHF295ytLBFF2gTFDYsEv4G8kot8YSbTxWckuCA+nWN4omLL8QpmipEJbOUPZlcmNgG6Yf6LYpZRN9Bb4C4SPKf+enzmJ46zXgTEw78wKs59YC46fYb6Sv3Jj8yerqHQCl2KNwySnslbTaGif0Kcf6EiKpeSZ2lW3MSNHNnWXdt4gik7MYAXVwnBiw0sg+S3CyGQntdAdY4/+1Zlz4ijLKWuvRFFfB0TD1th0LDYa4TtTZkubr9zj/JFVVB2RW8/oI1KkpVuB6RnAZtL72vpw17gVKynr4N9qpD5RVZXnzz/1C1ZSracmxcs3SS9LAKnyLcdnKqF5dHmk45BiZ7COuUPS5HVbA3rc1L7BTpTDDNI0JC5sEOFQZWueVEF6g7EVcadeZ2akeDH4UL4j+fdwFClr2JcZzH2oVC0wsCyGKlENbcPqnjIM2RmDF+Pz7wUOCXbb+7NH4Hdcl7yFUqCLFmx5RYKVSKG93Ch1icV4VTyrALGtgHbGxPqgpnpI0pIbZ/8YfkcNsd7fhqyKizcdxv1olf02xMf6uAvdQsUzSuNBH0NTDTNgCtkiCaxt6cwXnY4/KrAI6h6WcdpcwM6d6quQra0hW/A8=
-X-Forefront-Antispam-Report: CIP:149.199.62.198;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:xsj-pvapexch01.xlnx.xilinx.com;PTR:unknown-62-198.xilinx.com;CAT:NONE;SFS:(4636009)(136003)(346002)(39860400002)(396003)(376002)(46966006)(36840700001)(478600001)(4326008)(6666004)(2906002)(2616005)(31686004)(70206006)(44832011)(47076005)(70586007)(336012)(82310400003)(36860700001)(83380400001)(53546011)(26005)(186003)(36906005)(110136005)(9786002)(36756003)(54906003)(966005)(5660300002)(8676002)(356005)(7636003)(82740400003)(316002)(31696002)(426003)(8936002)(50156003)(43740500002);DIR:OUT;SFP:1101;
-X-OriginatorOrg: xilinx.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 07 May 2021 06:35:50.8310
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6aab2917-864c-45bb-1613-08d911225b60
-X-MS-Exchange-CrossTenant-Id: 657af505-d5df-48d0-8300-c31994686c5c
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=657af505-d5df-48d0-8300-c31994686c5c;Ip=[149.199.62.198];Helo=[xsj-pvapexch01.xlnx.xilinx.com]
-X-MS-Exchange-CrossTenant-AuthSource: DM3NAM02FT026.eop-nam02.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL0PR02MB4467
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The driver originally use an atomic_t for keep track of the power
+status, which makes the driver more complicated than needed, and has
+some race condition as it's possible to have the power on and power off
+sequence going at the same time.
 
+This patch remove the usage of the atomic_t power_status, and use the
+kernel runtime power management framework instead.
 
-On 5/6/21 11:10 PM, Sean Anderson wrote:
-> 
-> 
-> On 5/6/21 5:05 PM, Rob Herring wrote:
->> On Tue, May 04, 2021 at 02:49:24PM -0400, Sean Anderson wrote:
->>> This adds a binding for the Xilinx LogiCORE IP AXI Timer. This device is
->>> a "soft" block, so it has many parameters which would not be
->>> configurable in most hardware. This binding is usually automatically
->>> generated by Xilinx's tools, so the names and values of properties
->>> must be kept as they are.
->>>
->>> Signed-off-by: Sean Anderson <sean.anderson@seco.com>
->>> ---
->>>
->>> Changes in v2:
->>> - Use 32-bit addresses for example binding
->>>
->>>   .../bindings/pwm/xlnx,axi-timer.yaml          | 91 +++++++++++++++++++
->>>   1 file changed, 91 insertions(+)
->>>   create mode 100644
-> Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
->>>
->>> diff --git
-> a/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
-> b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
->>> new file mode 100644
->>> index 000000000000..bd014134c322
->>> --- /dev/null
->>> +++ b/Documentation/devicetree/bindings/pwm/xlnx,axi-timer.yaml
->>> @@ -0,0 +1,91 @@
->>> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
->>> +%YAML 1.2
->>> +---
->>> +$id: http://devicetree.org/schemas/pwm/xlnx,axi-timer.yaml#
->>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->>> +
->>> +title: Xilinx LogiCORE IP AXI Timer Device Tree Binding
->>> +
->>> +maintainers:
->>> +  - Sean Anderson <sean.anderson@seco.com>
->>> +
->>> +properties:
->>> +  compatible:
->>> +    items:
->>> +      - const: xlnx,axi-timer-2.0
->>> +      - const: xlnx,xps-timer-1.00.a
->>> +
->>> +  clocks:
->>> +    maxItems: 1
->>> +
->>> +  clock-names:
->>> +    const: s_axi_aclk
->>> +
->>> +  reg:
->>> +    maxItems: 1
->>> +
->>> +  xlnx,count-width:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    minimum: 8
->>> +    maximum: 32
->>> +    description:
->>> +      The width of the counters, in bits.
->>> +
->>> +  xlnx,gen0-assert:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    enum: [ 0, 1 ]
->>> +    description:
->>> +      The polarity of the generateout0 signal. 0 for active-low, 1
-> for active-high.
->>> +
->>> +  xlnx,gen1-assert:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    enum: [ 0, 1 ]
->>> +    description:
->>> +      The polarity of the generateout1 signal. 0 for active-low, 1
-> for active-high.
->>> +
->>> +  xlnx,one-timer-only:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    enum: [ 0, 1 ]
->>> +    description:
->>> +      Whether only one timer is present in this block.
->>> +
->>> +  xlnx,trig0-assert:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    enum: [ 0, 1 ]
->>> +    description:
->>> +      The polarity of the capturetrig0 signal. 0 for active-low, 1
-> for active-high.
->>> +
->>> +  xlnx,trig1-assert:
->>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>> +    enum: [ 0, 1 ]
->>> +    description:
->>> +      The polarity of the capturetrig1 signal. 0 for active-low, 1
-> for active-high.
->>
->> Can't all these be boolean?
-> 
-> They could, but
-> 
->> This binding is usually automatically generated by Xilinx's tools, so
->> the names and values of properties must be kept as they are.
-> 
-> Because this is a soft device, the binding may be (very conveniently)
-> auto-generated. I am not opposed to adding additional properties which
-> could be used by new code, but we should still accept this auto-generated
-> output.
+Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+Change-Id: I58e19680b6d9ffb04be2a90f458400a1433925aa
+---
+ drivers/gpu/drm/bridge/analogix/anx7625.c | 147 +++++++++-------------
+ drivers/gpu/drm/bridge/analogix/anx7625.h |   1 -
+ 2 files changed, 62 insertions(+), 86 deletions(-)
 
-I think in this case you should described what it is used by current
-driver in Microblaze and these options are required. The rest are by
-design optional.
-If you want to change them to different value then current binding
-should be deprecated and have any transition time with code alignment.
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.c b/drivers/gpu/drm/bridge/analogix/anx7625.c
+index 23283ba0c4f9..0d90cd63fc27 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.c
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.c
+@@ -11,6 +11,7 @@
+ #include <linux/kernel.h>
+ #include <linux/module.h>
+ #include <linux/mutex.h>
++#include <linux/pm_runtime.h>
+ #include <linux/regulator/consumer.h>
+ #include <linux/slab.h>
+ #include <linux/types.h>
+@@ -1005,33 +1006,6 @@ static void anx7625_power_on_init(struct anx7625_data *ctx)
+ 	}
+ }
+ 
+-static void anx7625_chip_control(struct anx7625_data *ctx, int state)
+-{
+-	struct device *dev = &ctx->client->dev;
+-
+-	DRM_DEV_DEBUG_DRIVER(dev, "before set, power_state(%d).\n",
+-			     atomic_read(&ctx->power_status));
+-
+-	if (!ctx->pdata.low_power_mode)
+-		return;
+-
+-	if (state) {
+-		atomic_inc(&ctx->power_status);
+-		if (atomic_read(&ctx->power_status) == 1)
+-			anx7625_power_on_init(ctx);
+-	} else {
+-		if (atomic_read(&ctx->power_status)) {
+-			atomic_dec(&ctx->power_status);
+-
+-			if (atomic_read(&ctx->power_status) == 0)
+-				anx7625_power_standby(ctx);
+-		}
+-	}
+-
+-	DRM_DEV_DEBUG_DRIVER(dev, "after set, power_state(%d).\n",
+-			     atomic_read(&ctx->power_status));
+-}
+-
+ static void anx7625_init_gpio(struct anx7625_data *platform)
+ {
+ 	struct device *dev = &platform->client->dev;
+@@ -1061,9 +1035,6 @@ static void anx7625_stop_dp_work(struct anx7625_data *ctx)
+ 	ctx->hpd_status = 0;
+ 	ctx->hpd_high_cnt = 0;
+ 	ctx->display_timing_valid = 0;
+-
+-	if (ctx->pdata.low_power_mode == 0)
+-		anx7625_disable_pd_protocol(ctx);
+ }
+ 
+ static void anx7625_start_dp_work(struct anx7625_data *ctx)
+@@ -1105,49 +1076,26 @@ static void anx7625_hpd_polling(struct anx7625_data *ctx)
+ 	int ret, val;
+ 	struct device *dev = &ctx->client->dev;
+ 
+-	if (atomic_read(&ctx->power_status) != 1) {
+-		DRM_DEV_DEBUG_DRIVER(dev, "No need to poling HPD status.\n");
+-		return;
+-	}
+-
+ 	ret = readx_poll_timeout(anx7625_read_hpd_status_p0,
+ 				 ctx, val,
+ 				 ((val & HPD_STATUS) || (val < 0)),
+ 				 5000,
+ 				 5000 * 100);
+ 	if (ret) {
+-		DRM_DEV_ERROR(dev, "HPD polling timeout!\n");
+-	} else {
+-		DRM_DEV_DEBUG_DRIVER(dev, "HPD raise up.\n");
+-		anx7625_reg_write(ctx, ctx->i2c.tcpc_client,
+-				  INTR_ALERT_1, 0xFF);
+-		anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
+-				  INTERFACE_CHANGE_INT, 0);
++		DRM_DEV_ERROR(dev, "no hpd.\n");
++		return;
+ 	}
+ 
+-	anx7625_start_dp_work(ctx);
+-}
+-
+-static void anx7625_disconnect_check(struct anx7625_data *ctx)
+-{
+-	if (atomic_read(&ctx->power_status) == 0)
+-		anx7625_stop_dp_work(ctx);
+-}
+-
+-static void anx7625_low_power_mode_check(struct anx7625_data *ctx,
+-					 int state)
+-{
+-	struct device *dev = &ctx->client->dev;
++	DRM_DEV_DEBUG_DRIVER(dev, "system status: 0x%x. HPD raise up.\n", val);
++	anx7625_reg_write(ctx, ctx->i2c.tcpc_client,
++			  INTR_ALERT_1, 0xFF);
++	anx7625_reg_write(ctx, ctx->i2c.rx_p0_client,
++			  INTERFACE_CHANGE_INT, 0);
+ 
+-	DRM_DEV_DEBUG_DRIVER(dev, "low power mode check, state(%d).\n", state);
++	anx7625_start_dp_work(ctx);
+ 
+-	if (ctx->pdata.low_power_mode) {
+-		anx7625_chip_control(ctx, state);
+-		if (state)
+-			anx7625_hpd_polling(ctx);
+-		else
+-			anx7625_disconnect_check(ctx);
+-	}
++	if (!ctx->pdata.panel_bridge && ctx->bridge_attached)
++		drm_helper_hpd_irq_event(ctx->bridge.dev);
+ }
+ 
+ static void anx7625_remove_edid(struct anx7625_data *ctx)
+@@ -1180,9 +1128,6 @@ static int anx7625_hpd_change_detect(struct anx7625_data *ctx)
+ 	int intr_vector, status;
+ 	struct device *dev = &ctx->client->dev;
+ 
+-	DRM_DEV_DEBUG_DRIVER(dev, "power_status=%d\n",
+-			     (u32)atomic_read(&ctx->power_status));
+-
+ 	status = anx7625_reg_write(ctx, ctx->i2c.tcpc_client,
+ 				   INTR_ALERT_1, 0xFF);
+ 	if (status < 0) {
+@@ -1228,22 +1173,25 @@ static void anx7625_work_func(struct work_struct *work)
+ 						struct anx7625_data, work);
+ 
+ 	mutex_lock(&ctx->lock);
++
++	if (pm_runtime_suspended(&ctx->client->dev))
++		goto unlock;
++
+ 	event = anx7625_hpd_change_detect(ctx);
+-	mutex_unlock(&ctx->lock);
+ 	if (event < 0)
+-		return;
++		goto unlock;
+ 
+ 	if (ctx->bridge_attached)
+ 		drm_helper_hpd_irq_event(ctx->bridge.dev);
++
++unlock:
++	mutex_unlock(&ctx->lock);
+ }
+ 
+ static irqreturn_t anx7625_intr_hpd_isr(int irq, void *data)
+ {
+ 	struct anx7625_data *ctx = (struct anx7625_data *)data;
+ 
+-	if (atomic_read(&ctx->power_status) != 1)
+-		return IRQ_NONE;
+-
+ 	queue_work(ctx->workqueue, &ctx->work);
+ 
+ 	return IRQ_HANDLED;
+@@ -1305,9 +1253,9 @@ static struct edid *anx7625_get_edid(struct anx7625_data *ctx)
+ 		return (struct edid *)edid;
+ 	}
+ 
+-	anx7625_low_power_mode_check(ctx, 1);
++	pm_runtime_get_sync(dev);
+ 	edid_num = sp_tx_edid_read(ctx, p_edid->edid_raw_data);
+-	anx7625_low_power_mode_check(ctx, 0);
++	pm_runtime_put(dev);
+ 
+ 	if (edid_num < 1) {
+ 		DRM_DEV_ERROR(dev, "Fail to read EDID: %d\n", edid_num);
+@@ -1611,10 +1559,7 @@ static void anx7625_bridge_enable(struct drm_bridge *bridge)
+ 
+ 	DRM_DEV_DEBUG_DRIVER(dev, "drm enable\n");
+ 
+-	anx7625_low_power_mode_check(ctx, 1);
+-
+-	if (WARN_ON(!atomic_read(&ctx->power_status)))
+-		return;
++	pm_runtime_get_sync(dev);
+ 
+ 	anx7625_dp_start(ctx);
+ }
+@@ -1624,14 +1569,11 @@ static void anx7625_bridge_disable(struct drm_bridge *bridge)
+ 	struct anx7625_data *ctx = bridge_to_anx7625(bridge);
+ 	struct device *dev = &ctx->client->dev;
+ 
+-	if (WARN_ON(!atomic_read(&ctx->power_status)))
+-		return;
+-
+ 	DRM_DEV_DEBUG_DRIVER(dev, "drm disable\n");
+ 
+ 	anx7625_dp_stop(ctx);
+ 
+-	anx7625_low_power_mode_check(ctx, 0);
++	pm_runtime_put(dev);
+ }
+ 
+ static enum drm_connector_status
+@@ -1735,6 +1677,38 @@ static void anx7625_unregister_i2c_dummy_clients(struct anx7625_data *ctx)
+ 	i2c_unregister_device(ctx->i2c.tcpc_client);
+ }
+ 
++static int __maybe_unused anx7625_runtime_pm_suspend(struct device *dev)
++{
++	struct anx7625_data *ctx = dev_get_drvdata(dev);
++
++	mutex_lock(&ctx->lock);
++
++	anx7625_stop_dp_work(ctx);
++	anx7625_power_standby(ctx);
++
++	mutex_unlock(&ctx->lock);
++
++	return 0;
++}
++
++static int __maybe_unused anx7625_runtime_pm_resume(struct device *dev)
++{
++	struct anx7625_data *ctx = dev_get_drvdata(dev);
++
++	mutex_lock(&ctx->lock);
++
++	anx7625_power_on_init(ctx);
++	anx7625_hpd_polling(ctx);
++
++	mutex_unlock(&ctx->lock);
++
++	return 0;
++}
++
++static const struct dev_pm_ops anx7625_pm_ops = {
++	SET_RUNTIME_PM_OPS(anx7625_runtime_pm_suspend, anx7625_runtime_pm_resume, NULL)
++};
++
+ static int anx7625_i2c_probe(struct i2c_client *client,
+ 			     const struct i2c_device_id *id)
+ {
+@@ -1778,8 +1752,6 @@ static int anx7625_i2c_probe(struct i2c_client *client,
+ 	}
+ 	anx7625_init_gpio(platform);
+ 
+-	atomic_set(&platform->power_status, 0);
+-
+ 	mutex_init(&platform->lock);
+ 
+ 	platform->pdata.intp_irq = client->irq;
+@@ -1809,9 +1781,11 @@ static int anx7625_i2c_probe(struct i2c_client *client,
+ 		goto free_wq;
+ 	}
+ 
+-	if (platform->pdata.low_power_mode == 0) {
++	pm_runtime_enable(dev);
++
++	if (!platform->pdata.low_power_mode) {
+ 		anx7625_disable_pd_protocol(platform);
+-		atomic_set(&platform->power_status, 1);
++		pm_runtime_get_sync(dev);
+ 	}
+ 
+ 	/* Add work function */
+@@ -1847,6 +1821,9 @@ static int anx7625_i2c_remove(struct i2c_client *client)
+ 	if (platform->pdata.intp_irq)
+ 		destroy_workqueue(platform->workqueue);
+ 
++	if (!platform->pdata.low_power_mode)
++		pm_runtime_put_sync_suspend(&client->dev);
++
+ 	anx7625_unregister_i2c_dummy_clients(platform);
+ 
+ 	kfree(platform);
+diff --git a/drivers/gpu/drm/bridge/analogix/anx7625.h b/drivers/gpu/drm/bridge/analogix/anx7625.h
+index e4a086b3a3d7..034c3840028f 100644
+--- a/drivers/gpu/drm/bridge/analogix/anx7625.h
++++ b/drivers/gpu/drm/bridge/analogix/anx7625.h
+@@ -369,7 +369,6 @@ struct anx7625_i2c_client {
+ 
+ struct anx7625_data {
+ 	struct anx7625_platform_data pdata;
+-	atomic_t power_status;
+ 	int hpd_status;
+ 	int hpd_high_cnt;
+ 	/* Lock for work queue */
 
-Thanks,
-Michal
+base-commit: e48661230cc35b3d0f4367eddfc19f86463ab917
+-- 
+2.31.1.607.g51e8a6a459-goog
 
