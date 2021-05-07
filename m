@@ -2,131 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8999E376970
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 932B3376975
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232617AbhEGRXA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 13:23:00 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50750 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230046AbhEGRW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 13:22:59 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 1D44C61468;
-        Fri,  7 May 2021 17:21:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620408119;
-        bh=tAp8HMPCWwh+NHuRDeCEmS0cp+aQxiTRacpv+7HZQaA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=jMWuPbnOx6U5JZ6lRhEBYIFqNUnKAwzdc5WQfVuFRGqAC2rekeI9FxYRtfcVBjKuM
-         97WoLmGZ1f1xezdG2Mm7GDXQkdgtPie37cHlyxL9E/d3wzas81leEO2jGQJfrcrRhb
-         KMnBTLrq4TULos6RHk2OFJ8hDdyR7n71XyrFno4m3EGZkyLY2UtBu6XtEZYVn/YFIs
-         qSdkZX5JN5kVDZCJS+nczGgDSWspBE1R0IFRCuHst3zdUpb/WuylLIZmfWww8BVmvf
-         gZmhsm6y0H/21HbZdM+/lpZu4oq+aFbW0Neda4grx0UZ4qNgcsshKrMsuDKlwCUkqe
-         3dlNkERzA9Iww==
-Received: by mail-ej1-f54.google.com with SMTP id zg3so14734578ejb.8;
-        Fri, 07 May 2021 10:21:59 -0700 (PDT)
-X-Gm-Message-State: AOAM530dUcU8tJvGu6A6BR8DKMZbvx6yS9b7b8DE4zNzjlpO77kd/M8q
-        2b+oTGn9SCLkXhoY+XUMadMlALZx5iBxHvPcpw==
-X-Google-Smtp-Source: ABdhPJxlHzBX1kiOwdryT4JxLp1ZW5TdkQ+pgCxGNOoI/UqgbP1iECA3RgBAMWk0XjgD5TeZd/KBEkXxO5L1SMOtnxE=
-X-Received: by 2002:a17:906:a0c6:: with SMTP id bh6mr11119997ejb.359.1620408117401;
- Fri, 07 May 2021 10:21:57 -0700 (PDT)
+        id S233422AbhEGRXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 13:23:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhEGRXi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 13:23:38 -0400
+Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4959CC061761
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 10:22:38 -0700 (PDT)
+Received: by mail-ot1-x334.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so2224185oth.8
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 10:22:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gQ3ipQxbX73bGU2SXA3y2Bzh59V5vke4f329EGQixvg=;
+        b=KH8GL3iNV6Z/uD3TMYgD+CrCfLVaUDeAs0zqsk9jCpnDJJCpW0QyHmMSjWWmSLhvJ1
+         FDtdqZsKLe2uoN2TDpAYLCOrimwhcklk1sSa42lMZ/jWzznAXKuD2WvTNhdBcUnJy88h
+         Q+lub5DzGRR83dIb2AC9agASP4rw1QyRLhGkA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gQ3ipQxbX73bGU2SXA3y2Bzh59V5vke4f329EGQixvg=;
+        b=p7Pn4OxWIpA2qMUftSJPSlOF+UOI7S8vnGmF9snAruk9WR3u6OwDBLethfgzFRM30e
+         F6FadThgwi+H+V8n2cv0XDERlgOO5jAP2QX+ov2eOP51JWm3DX5kj+7KjMhkZD4du/a9
+         wA9LKU+8Nt4WPgRMzbHqukLKGxkERtgjHELxEK7UqNdp6NJjl7zqdtpwB6tgl7oRSWF6
+         qiyfwUEI4QKIUB39m6POjWNHXdjBGVfcTfVjUfALFx6fy+x7CzSZ6jE+5nQjHQLv0xAv
+         A0HXw2B1IeHPf3yp6mIFwx0Z6RVo2GE1VKwlzZJ6MeJuJIi/0ORK3u46s64/pRjW2Eq+
+         bJFA==
+X-Gm-Message-State: AOAM532qT3AHmg8cLz8/56wXTRbhmk00SrLYaW1yJXyi1AXbmELZjZSH
+        nsON++VhFqg+V1B8uvhGKxEKi4y+RAssabec5UCBZQ==
+X-Google-Smtp-Source: ABdhPJxDU02k2Jf2AhhsznQct+cAPyxL7BbEYKFvu6VMh4FAxQjvUIGiWjfmwnilcwXbYXtl5qcWmP5bc5q29/lz1jM=
+X-Received: by 2002:a9d:764f:: with SMTP id o15mr9279052otl.164.1620408157620;
+ Fri, 07 May 2021 10:22:37 -0700 (PDT)
 MIME-Version: 1.0
-References: <20210506100312.1638-1-steven_lee@aspeedtech.com>
- <20210506100312.1638-2-steven_lee@aspeedtech.com> <20210507011324.GA1119409@robh.at.kernel.org>
- <20210507031348.GA23749@aspeedtech.com>
-In-Reply-To: <20210507031348.GA23749@aspeedtech.com>
-From:   Rob Herring <robh@kernel.org>
-Date:   Fri, 7 May 2021 12:21:45 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLywL6J_uVVquhOMevb6Geed-A2o7fzHQPKvVQxe4gscA@mail.gmail.com>
-Message-ID: <CAL_JsqLywL6J_uVVquhOMevb6Geed-A2o7fzHQPKvVQxe4gscA@mail.gmail.com>
-Subject: Re: [PATCH v3 1/5] dt-bindings: mmc: sdhci-of-aspeed: Add an example
- for AST2600-A2 EVB
-To:     Steven Lee <steven_lee@aspeedtech.com>
-Cc:     Andrew Jeffery <andrew@aj.id.au>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Joel Stanley <joel@jms.id.au>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Ryan Chen <ryanchen.aspeed@gmail.com>,
-        "moderated list:ASPEED SD/MMC DRIVER" <linux-aspeed@lists.ozlabs.org>,
-        "moderated list:ASPEED SD/MMC DRIVER" <openbmc@lists.ozlabs.org>,
-        "open list:ASPEED SD/MMC DRIVER" <linux-mmc@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:ARM/ASPEED MACHINE SUPPORT" 
-        <linux-arm-kernel@lists.infradead.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        "Hongweiz@ami.com" <Hongweiz@ami.com>,
-        Ryan Chen <ryan_chen@aspeedtech.com>,
-        Chin-Ting Kuo <chin-ting_kuo@aspeedtech.com>
+References: <20210507150636.94389-1-jon@nutanix.com>
+In-Reply-To: <20210507150636.94389-1-jon@nutanix.com>
+From:   Venkatesh Srinivas <venkateshs@chromium.org>
+Date:   Fri, 7 May 2021 10:22:25 -0700
+Message-ID: <CAA0tLEoyy_ogDc11r_1T907Rp5CwgM64hFwRt5SX40THp2+C3A@mail.gmail.com>
+Subject: Re: [PATCH] KVM: x86: use X86_FEATURE_RSB_CTXSW for RSB stuffing in vmexit
+To:     Jon Kohler <jon@nutanix.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 10:14 PM Steven Lee <steven_lee@aspeedtech.com> wrote:
+On Fri, May 7, 2021 at 8:08 AM Jon Kohler <jon@nutanix.com> wrote:
 >
-> The 05/07/2021 09:13, Rob Herring wrote:
-> > On Thu, May 06, 2021 at 06:03:08PM +0800, Steven Lee wrote:
-> > > AST2600-A2 EVB has the reference design for enabling SD bus
-> > > power and toggling SD bus signal voltage by GPIO pins.
-> > >
-> > > In the reference design, GPIOV0 of AST2600-A2 EVB is connected to
-> > > power load switch that providing 3.3v to SD1 bus vdd. GPIOV1 is
-> > > connected to a 1.8v and a 3.3v power load switch that providing
-> > > signal voltage to
-> > > SD1 bus.
-> > >
-> > > If GPIOV0 is active high, SD1 bus is enabled. Otherwise, SD1 bus is
-> > > disabled.
-> > > If GPIOV1 is active high, 3.3v power load switch is enabled, SD1
-> > > signal voltage is 3.3v. Otherwise, 1.8v power load switch will be
-> > > enabled, SD1 signal voltage becomes 1.8v.
-> > >
-> > > AST2600-A2 EVB also support toggling signal voltage for SD2 bus.
-> > > The design is the same as SD1 bus. It uses GPIOV2 as power-gpio and
-> > > GPIOV3 as power-switch-gpio.
-> > >
-> > > Signed-off-by: Steven Lee <steven_lee@aspeedtech.com>
-> > > ---
-> > >  .../devicetree/bindings/mmc/aspeed,sdhci.yaml | 101 +++++++++++++++++-
-> > >  1 file changed, 97 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> > > index 987b287f3bff..de7e61b3d37a 100644
-> > > --- a/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> > > +++ b/Documentation/devicetree/bindings/mmc/aspeed,sdhci.yaml
-> > > @@ -45,10 +45,16 @@ patternProperties:
-> > >
-> > >      properties:
-> > >        compatible:
-> > > -        enum:
-> > > -          - aspeed,ast2400-sdhci
-> > > -          - aspeed,ast2500-sdhci
-> > > -          - aspeed,ast2600-sdhci
-> > > +        oneOf:
-> > > +          - items:
-> > > +              - enum:
-> > > +                  - aspeed,ast2400-sdhci
-> > > +                  - aspeed,ast2500-sdhci
-> > > +                  - aspeed,ast2600-sdhci
-> > > +          - items:
-> > > +              - enum:
-> > > +                  - aspeed,ast2600-sdhci
-> > > +              - const: sdhci
-> >
-> > Why are you adding 'sdhci'. That's not useful as a compatible given how
-> > many quirks different implementations have.
-> >
-> >
+> cpufeatures.h defines X86_FEATURE_RSB_CTXSW as "Fill RSB on context
+> switches" which seems more accurate than using X86_FEATURE_RETPOLINE
+> in the vmxexit path for RSB stuffing.
 >
-> It is for passing the dtbs_check of the second example.
-> Without this definition, many device trees have the following
-> error:
+> X86_FEATURE_RSB_CTXSW is used for FILL_RETURN_BUFFER in
+> arch/x86/entry/entry_{32|64}.S. This change makes KVM vmx and svm
+> follow that same pattern. This pairs up nicely with the language in
+> bugs.c, where this cpu_cap is enabled, which indicates that RSB
+> stuffing should be unconditional with spectrev2 enabled.
+>         /*
+>          * If spectre v2 protection has been enabled, unconditionally fill
+>          * RSB during a context switch; this protects against two independent
+>          * issues:
+>          *
+>          *      - RSB underflow (and switch to BTB) on Skylake+
+>          *      - SpectreRSB variant of spectre v2 on X86_BUG_SPECTRE_V2 CPUs
+>          */
+>         setup_force_cpu_cap(X86_FEATURE_RSB_CTXSW);
 >
-> ['aspeed,ast2600-sdhci', 'sdhci'] is too long
-> Additional items are not allowed ('sdhci' was unexpected)
+> Furthermore, on X86_FEATURE_IBRS_ENHANCED CPUs && SPECTRE_V2_CMD_AUTO,
+> we're bypassing setting X86_FEATURE_RETPOLINE, where as far as I could
+> find, we should still be doing RSB stuffing no matter what when
+> CONFIG_RETPOLINE is enabled and spectrev2 is set to auto.
 
-I would probably fix the dts files then. Does anything depend on 'sdhci'?
+If I'm reading https://software.intel.com/security-software-guidance/deep-dives/deep-dive-indirect-branch-restricted-speculation
+correctly, I don't think an RSB fill sequence is required on VMExit on
+processors w/ Enhanced IBRS. Specifically:
+"""
+On processors with enhanced IBRS, an RSB overwrite sequence may not
+suffice to prevent the predicted target of a near return from using an
+RSB entry created in a less privileged predictor mode.  Software can
+prevent this by enabling SMEP (for transitions from user mode to
+supervisor mode) and by having IA32_SPEC_CTRL.IBRS set during VM exits
+"""
+On Enhanced IBRS processors, it looks like SPEC_CTRL.IBRS is set
+across all #VMExits via x86_virt_spec_ctrl in kvm.
 
-Rob
+So is this patch needed?
+
+Thanks,
+-- vs;
