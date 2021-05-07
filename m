@@ -2,231 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D1E9837644C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DCD376450
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235609AbhEGLKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 07:10:31 -0400
-Received: from www262.sakura.ne.jp ([202.181.97.72]:54543 "EHLO
-        www262.sakura.ne.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234581AbhEGLK2 (ORCPT
+        id S237010AbhEGLKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 07:10:48 -0400
+Received: from mailout3.samsung.com ([203.254.224.33]:21785 "EHLO
+        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236994AbhEGLKh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 07:10:28 -0400
-Received: from fsav108.sakura.ne.jp (fsav108.sakura.ne.jp [27.133.134.235])
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTP id 147B9Rqu023432;
-        Fri, 7 May 2021 20:09:27 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Received: from www262.sakura.ne.jp (202.181.97.72)
- by fsav108.sakura.ne.jp (F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp);
- Fri, 07 May 2021 20:09:27 +0900 (JST)
-X-Virus-Status: clean(F-Secure/fsigk_smtp/550/fsav108.sakura.ne.jp)
-Received: from [192.168.1.9] (M106072142033.v4.enabler.ne.jp [106.72.142.33])
-        (authenticated bits=0)
-        by www262.sakura.ne.jp (8.15.2/8.15.2) with ESMTPSA id 147B9RAW023427
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=NO);
-        Fri, 7 May 2021 20:09:27 +0900 (JST)
-        (envelope-from penguin-kernel@i-love.sakura.ne.jp)
-Subject: Re: [syzbot] BUG: unable to handle kernel paging request in
- vga16fb_imageblit (2)
-From:   Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>
-To:     syzbot <syzbot+1f29e126cf461c4de3b3@syzkaller.appspotmail.com>,
-        b.zolnierkie@samsung.com, colin.king@canonical.com,
-        daniel.vetter@ffwll.ch, dri-devel@lists.freedesktop.org,
-        gregkh@linuxfoundation.org, jani.nikula@intel.com,
-        jirislaby@kernel.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        "Maciej W. Rozycki" <macro@orcam.me.uk>,
-        "Antonino A. Daplas" <adaplas@gmail.com>
-References: <0000000000006bbd0c05c14f1b09@google.com>
- <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
-Message-ID: <87d928e4-b2b9-ad30-f3f0-1dfb8e4e03ed@i-love.sakura.ne.jp>
-Date:   Fri, 7 May 2021 20:09:26 +0900
-User-Agent: Mozilla/5.0 (Windows NT 6.3; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.1
+        Fri, 7 May 2021 07:10:37 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20210507110936epoutp03310f103f1a64ba740f2510ad492e2b0f~8xEc5kaYA0968509685epoutp03U
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 11:09:36 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20210507110936epoutp03310f103f1a64ba740f2510ad492e2b0f~8xEc5kaYA0968509685epoutp03U
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1620385776;
+        bh=l2PO2O1mNCyWTDvw4ULpOWi9veFuk56983ljENJwuV8=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=Yx43/NENLsmTLjY1d3rA7md8s6X/5sMG9sugo6+8gMGfRfA1JeQsh1QE4kFf5la4G
+         RLc8T0GG2Op3CdtfjTpVVRLbCVwBOAVSzj0KA7ACZG83nKN+xU10daF/gn62BQleNw
+         XVp9ayVsuZrCM7UjB8KjGa8gBfZG44qSi3zewgBA=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
+        20210507110932epcas1p3f5a6385a9354a179a22147a6ad3a21f9~8xEZDreD00277802778epcas1p3P;
+        Fri,  7 May 2021 11:09:32 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.158]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4Fc74n3tYnz4x9Ps; Fri,  7 May
+        2021 11:09:29 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B9.AA.09701.9EF15906; Fri,  7 May 2021 20:09:29 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20210507110917epcas1p13e027d5e0319629c255524c8c6f6461b~8xELpN04e1582315823epcas1p1E;
+        Fri,  7 May 2021 11:09:17 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20210507110917epsmtrp1859932ca66496b70432e520acdaef19a~8xELonzHm2530025300epsmtrp1X;
+        Fri,  7 May 2021 11:09:17 +0000 (GMT)
+X-AuditID: b6c32a36-647ff700000025e5-13-60951fe979f1
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        D9.DD.08163.DDF15906; Fri,  7 May 2021 20:09:17 +0900 (KST)
+Received: from localhost.localdomain (unknown [10.113.221.223]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20210507110917epsmtip2e5d823a447628681de0f92045ff3dd74~8xELatYnb2768827688epsmtip25;
+        Fri,  7 May 2021 11:09:17 +0000 (GMT)
+From:   Seung-Woo Kim <sw0312.kim@samsung.com>
+To:     jaegeuk@kernel.org, linux-f2fs-devel@lists.sourceforge.net
+Cc:     linux-kernel@vger.kernel.org, chao@kernel.org,
+        sw0312.kim@samsung.com
+Subject: [RESEND][PATCH 1/2] resize.f2fs: fix memory leak caused by
+ migrate_nat()
+Date:   Fri,  7 May 2021 20:12:23 +0900
+Message-Id: <20210507111224.29887-1-sw0312.kim@samsung.com>
+X-Mailer: git-send-email 2.19.2
 MIME-Version: 1.0
-In-Reply-To: <6e21483c-06f6-404b-4018-e00ee85c456c@i-love.sakura.ne.jp>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFvrAKsWRmVeSWpSXmKPExsWy7bCmge5L+akJBic6pS1OTz3LZPFk/Sxm
+        i0uL3C0u75rDZjFj8ks2B1aPTas62Tx2L/jM5NG3ZRWjx+dNcgEsUdk2GamJKalFCql5yfkp
+        mXnptkrewfHO8aZmBoa6hpYW5koKeYm5qbZKLj4Bum6ZOUBrlRTKEnNKgUIBicXFSvp2NkX5
+        pSWpChn5xSW2SqkFKTkFlgV6xYm5xaV56XrJ+blWhgYGRqZAhQnZGQf3TmAueMNSseHuB+YG
+        xh/MXYycHBICJhIfL69j6WLk4hAS2MEocejdBkYI5xOjxJ/V36Aynxkl9je+ZYVpObf4MRtE
+        YhejxPqXR6GcL4wSD759YQOpYhPQkdi/5DdYh4iAncSMC8eA4hwczAKeEgsmRYCEhQWCJW7s
+        XcIIYrMIqEq8at/BAmLzClhLtB25CHWfvMSFDbdYIeKCEidnPgGrYQaKN2+dzQyyV0JgE7vE
+        lOtPoK5zkZizfTcjhC0s8er4FnYIW0riZX8bO0RDM6PE0iW/WCCcHkaJOYtuQ3UbS+xfOpkJ
+        4lJNifW79CHCihI7f89lhNjMJ/Huaw8rSImEAK9ER5sQRImKxM6jk9ggwlISszYEQ4Q9JP78
+        vgH2i5BArMSkH1NZJzDKz0Lyziwk78xC2LuAkXkVo1hqQXFuemqxYYERcqxuYgQnPS2zHYyT
+        3n7QO8TIxMF4iFGCg1lJhPf0oskJQrwpiZVVqUX58UWlOanFhxhNgQE8kVlKNDkfmHbzSuIN
+        TY2MjY0tTAzNTA0NlcR5052rE4QE0hNLUrNTUwtSi2D6mDg4pRqYtJ5MXTvz+nz2f7e7he/U
+        LF1i4ao70fFQakTdopPSN2dlR+1brr9Q7lBtziJu2UntlYcvVwjyarA8W5/61yZAakPl/nOb
+        xEK4Hj5O982tzWw+kFb5b+7qn1ufJ73gPD79fYZHRsOlOcmnBOvC/kTp1nId/xg276GnUtRm
+        W02N4oXfw9v13Ze1Tf2WKBS2uXHp8TAGKeFv2zkc2/L1tk64eXPKu9V7Q7Y6CtjsijzYJTBN
+        Ztnb7Dj2X2e/t5s+DlMLyzM/4BA99epr5j8W1bkTfl2fW/j7p/LKww9XpAbPE5ducuv9+OLS
+        xGN/svVLF9ucVAxbnq9QE3MsycZedl3SmSPTeEv9nv671sRyY6FeqhJLcUaioRZzUXEiAIbF
+        cssDBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprDLMWRmVeSWpSXmKPExsWy7bCSvO5d+akJBrtuyFmcnnqWyeLJ+lnM
+        FpcWuVtc3jWHzWLG5JdsDqwem1Z1snnsXvCZyaNvyypGj8+b5AJYorhsUlJzMstSi/TtErgy
+        Du6dwFzwhqViw90PzA2MP5i7GDk5JARMJM4tfswGYgsJ7GCUuDAxAyIuJTH323bGLkYOIFtY
+        4vDhYoiST4wS66YLgdhsAjoS+5f8ZgWxRQQcJFZs28ICYjML+EpMe7oSbKSwQKBE76tpTCA2
+        i4CqxKv2HWA1vALWEm1HLkKdIC9xYcMtVoi4oMTJmU+g5shLNG+dzTyBkW8WktQsJKkFjEyr
+        GCVTC4pz03OLDQuM8lLL9YoTc4tL89L1kvNzNzGCA1BLawfjnlUf9A4xMnEwHmKU4GBWEuE9
+        vWhyghBvSmJlVWpRfnxRaU5q8SFGaQ4WJXHeC10n44UE0hNLUrNTUwtSi2CyTBycUg1MpUe+
+        uhx+/Wg907uPzXPn/m8w/8Ax1bLivXgA3xR9/ZarbSLPunP//219xuSx+MQDG67mMzWLNxob
+        Cz4PKn4htFiQP/VhZOFypqlf3+qf9eD9KPOZ90zUxgQLywPffiyTmjW7e5PBsv3/HiZ5bFc0
+        W99hca/rycYlsosOrZ/luaVxWbVUZIu+/TN1tp2cpV2r6u/xuilE7xZUiOlgjU1nbDxXeMAi
+        JnCpYsv17MiVrZFOrXwNmpzruNbb6nBuZF+//WPVj2bDxds6c7/vqt9mVXcwe6ndrQliggtL
+        LfQvrtGu75soFJtv3Nbg3vHZpehuanhlfONl2TV/d051VXgvtXbCr787lb+acIvr3pmoxFKc
+        kWioxVxUnAgAbX8FrK8CAAA=
+X-CMS-MailID: 20210507110917epcas1p13e027d5e0319629c255524c8c6f6461b
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20210507110917epcas1p13e027d5e0319629c255524c8c6f6461b
+References: <CGME20210507110917epcas1p13e027d5e0319629c255524c8c6f6461b@epcas1p1.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/05/03 22:41, Tetsuo Handa wrote:
-> Therefore, I guess that the problem is that fbcon_putcs() from do_update_region() from
-> redraw_screen() from vt_kdsetmode(KD_TEXT) from ioctl(fd, KDSETMODE, KD_TEXT) tries to
-> redraw 2 x 16640 despite memory amount allocated for actual screen is only 80 x 30.
-> 
-> I don't know how to fix this problem...
-> 
+Alloced nat_block doesn't freed from migrate_nat(). Fix to free
+nat_block.
 
-Daniel Vetter suggested me that parameter validation is missing/wrong somewhere, for
-resize requests that don't fit should be rejected. Thus, I'm thinking how to add
-parameter validation.
+Signed-off-by: Seung-Woo Kim <sw0312.kim@samsung.com>
+---
+ fsck/resize.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-Like a diff shown bottom, adding a hook for validating whether rows / columns are
-small enough (VGA_FB_PHYS_LEN bytes starting from VGA_FB_PHYS ?) survives the
-
-----------
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <sys/ioctl.h>
-#include <linux/kd.h>
-#include <linux/vt.h>
-
-int main(int argc, char *argv[])
-{
-        const int fd = open("/dev/char/4:1", O_RDWR);
-        struct vt_sizes vt = { 0x4100, 2 };
-
-        ioctl(fd, KDSETMODE, KD_GRAPHICS);
-        ioctl(fd, VT_RESIZE, &vt);
-        ioctl(fd, KDSETMODE, KD_TEXT);
-        return 0;
-}
-----------
-
-reproducer. But I don't know how to calculate upper boundary values for vga16fb_tty_resize(),
-for I even don't know where these values are derived from...
-
-Also, currently resize_screen() calls vc->vc_sw->con_resize() only if vc->vc_mode != KD_GRAPHICS.
-But we need to unconditionally call vga16fb_tty_resize() in order to survive the reproducer; we
-need to prevent vc->vc_{rows,cols} from exceeding the upper boundary values regardless of current
-vc->vc_mode setting. The "vc->vc_mode != KD_GRAPHICS" check predates the git history, and I don't
-know the side effect of removing this check...
-
-----------
-e400b6ec4ede4 drivers/char/vt.c   (Antonino A. Daplas   2007-10-16 01:29:35 -0700 1168) static inline int resize_screen(struct vc_data *vc, int width, int height,
-e400b6ec4ede4 drivers/char/vt.c   (Antonino A. Daplas   2007-10-16 01:29:35 -0700 1169)                                 int user)
-^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds       2005-04-16 15:20:36 -0700 1170) {
-^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds       2005-04-16 15:20:36 -0700 1171)         /* Resizes the resolution of the display adapater */
-^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds       2005-04-16 15:20:36 -0700 1172)         int err = 0;
-^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds       2005-04-16 15:20:36 -0700 1173)
-^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds       2005-04-16 15:20:36 -0700 1174)         if (vc->vc_mode != KD_GRAPHICS && vc->vc_sw->con_resize)
-e400b6ec4ede4 drivers/char/vt.c   (Antonino A. Daplas   2007-10-16 01:29:35 -0700 1175)                 err = vc->vc_sw->con_resize(vc, width, height, user);
-e400b6ec4ede4 drivers/char/vt.c   (Antonino A. Daplas   2007-10-16 01:29:35 -0700 1176)
-^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds       2005-04-16 15:20:36 -0700 1177)         return err;
-^1da177e4c3f4 drivers/char/vt.c   (Linus Torvalds       2005-04-16 15:20:36 -0700 1178) }
-----------
-
-I need more help from those who know this area.
-
- drivers/tty/vt/vt.c              |    2 +-
- drivers/video/fbdev/core/fbcon.c |    7 +++++++
- drivers/video/fbdev/vga16fb.c    |    8 ++++++++
- include/linux/fb.h               |    3 +++
- 4 files changed, 19 insertions(+), 1 deletion(-)
-
-----------
-diff --git a/include/linux/fb.h b/include/linux/fb.h
-index a8dccd23c249..870384afb5e9 100644
---- a/include/linux/fb.h
-+++ b/include/linux/fb.h
-@@ -289,14 +289,17 @@ struct fb_ops {
- 
- 	/* teardown any resources to do with this framebuffer */
- 	void (*fb_destroy)(struct fb_info *info);
- 
- 	/* called at KDB enter and leave time to prepare the console */
- 	int (*fb_debug_enter)(struct fb_info *info);
- 	int (*fb_debug_leave)(struct fb_info *info);
-+
-+	/* Check if resizing TTY to these sizes is safe. */
-+	int (*fb_tty_resize)(struct fb_info *info, unsigned int cols, unsigned int rows);
- };
- 
- #ifdef CONFIG_FB_TILEBLITTING
- #define FB_TILE_CURSOR_NONE        0
- #define FB_TILE_CURSOR_UNDERLINE   1
- #define FB_TILE_CURSOR_LOWER_THIRD 2
- #define FB_TILE_CURSOR_LOWER_HALF  3
-diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
-index 1e8a38a7967d..54aa6a99b09c 100644
---- a/drivers/video/fbdev/vga16fb.c
-+++ b/drivers/video/fbdev/vga16fb.c
-@@ -1266,27 +1266,35 @@ static void vga16fb_destroy(struct fb_info *info)
- {
- 	iounmap(info->screen_base);
- 	fb_dealloc_cmap(&info->cmap);
- 	/* XXX unshare VGA regions */
- 	framebuffer_release(info);
- }
- 
-+static int vga16fb_tty_resize(struct fb_info *info, unsigned int cols, unsigned int rows)
-+{
-+	if (cols <= 80 && rows <= 30)
-+		return 0;
-+	return -EINVAL;
-+}
-+
- static const struct fb_ops vga16fb_ops = {
- 	.owner		= THIS_MODULE,
- 	.fb_open        = vga16fb_open,
- 	.fb_release     = vga16fb_release,
- 	.fb_destroy	= vga16fb_destroy,
- 	.fb_check_var	= vga16fb_check_var,
- 	.fb_set_par	= vga16fb_set_par,
- 	.fb_setcolreg 	= vga16fb_setcolreg,
- 	.fb_pan_display = vga16fb_pan_display,
- 	.fb_blank 	= vga16fb_blank,
- 	.fb_fillrect	= vga16fb_fillrect,
- 	.fb_copyarea	= vga16fb_copyarea,
- 	.fb_imageblit	= vga16fb_imageblit,
-+	.fb_tty_resize  = vga16fb_tty_resize,
- };
- 
- #ifndef MODULE
- static int __init vga16fb_setup(char *options)
- {
- 	char *this_opt;
- 	
-diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
-index 3406067985b1..c0eac87a2a56 100644
---- a/drivers/video/fbdev/core/fbcon.c
-+++ b/drivers/video/fbdev/core/fbcon.c
-@@ -1990,14 +1990,21 @@ static int fbcon_resize(struct vc_data *vc, unsigned int width,
- 		if (pitch <= 0)
- 			return -EINVAL;
- 		size = CALC_FONTSZ(vc->vc_font.height, pitch, vc->vc_font.charcount);
- 		if (size > FNTSIZE(vc->vc_font.data))
- 			return -EINVAL;
+diff --git a/fsck/resize.c b/fsck/resize.c
+index b043cd984dc6..78d578ec2cc1 100644
+--- a/fsck/resize.c
++++ b/fsck/resize.c
+@@ -383,6 +383,7 @@ static void migrate_nat(struct f2fs_sb_info *sbi,
+ 		ASSERT(ret >= 0);
+ 		DBG(3, "Write NAT: %lx\n", block_addr);
  	}
- 
-+	if (info->fbops && info->fbops->fb_tty_resize) {
-+		int err = info->fbops->fb_tty_resize(info, width, height);
-+
-+		if (err)
-+			return err;
-+	}
-+
- 	virt_w = FBCON_SWAP(ops->rotate, width, height);
- 	virt_h = FBCON_SWAP(ops->rotate, height, width);
- 	virt_fw = FBCON_SWAP(ops->rotate, vc->vc_font.width,
- 				 vc->vc_font.height);
- 	virt_fh = FBCON_SWAP(ops->rotate, vc->vc_font.height,
- 				 vc->vc_font.width);
- 	var.xres = virt_w * virt_fw;
-diff --git a/drivers/tty/vt/vt.c b/drivers/tty/vt/vt.c
-index 01645e87b3d5..fa1548d4f94b 100644
---- a/drivers/tty/vt/vt.c
-+++ b/drivers/tty/vt/vt.c
-@@ -1167,15 +1167,15 @@ int vc_allocate(unsigned int currcons)	/* return 0 on success */
- 
- static inline int resize_screen(struct vc_data *vc, int width, int height,
- 				int user)
- {
- 	/* Resizes the resolution of the display adapater */
- 	int err = 0;
- 
--	if (vc->vc_mode != KD_GRAPHICS && vc->vc_sw->con_resize)
-+	if (vc->vc_sw->con_resize)
- 		err = vc->vc_sw->con_resize(vc, width, height, user);
- 
- 	return err;
++	free(nat_block);
+ 	DBG(0, "Info: Done to migrate NAT blocks: nat_blkaddr = 0x%x -> 0x%x\n",
+ 			old_nat_blkaddr, new_nat_blkaddr);
  }
- 
- /**
-  *	vc_do_resize	-	resizing method for the tty
-----------
+-- 
+2.19.2
 
