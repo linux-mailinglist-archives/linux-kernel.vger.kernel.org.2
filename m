@@ -2,129 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 01D9C3766C4
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:06:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1493737669C
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237480AbhEGOG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 10:06:58 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:60957 "EHLO
-        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237434AbhEGOGu (ORCPT
+        id S236183AbhEGOFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 10:05:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53759 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S233689AbhEGOFS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 10:06:50 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id D8D07FE2;
-        Fri,  7 May 2021 10:05:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 07 May 2021 10:05:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=1Y/6ibLlSr8pw
-        II8mTAg1YDwMKwUM98nwretj7QAvbA=; b=SCJjwuJAiFT3COu62reNPC6HBe6NG
-        2pQmxeyQ3cslLYKSi+YN4uvGJN2lxgJtR3dGgzcfHhGhH2QXfgzy4B9C4+UiYyDP
-        RRytUs/zyTEWUzjEp9oraOY7bu+8FkouHSwXXXGCLiUWgJqtxalyy6+dPOoV3R+i
-        YUesci7Ob5/pese7lICDtpUheWbUuo57u/akV1hTH43oVha0KDPtnbSmYz55sPkp
-        hGaWCc+83hWJjh8OVYBvWUoWNg6hGqDjV3epsRYrpNV9FdAvojL+R6GNSqYhQHZN
-        SW/lQme0KrkUY80em9Ou6RsDzfBkOkdvGF47YySCS0r9945BIau4UcmSg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:date:from
-        :in-reply-to:message-id:mime-version:references:subject:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=1Y/6ibLlSr8pwII8mTAg1YDwMKwUM98nwretj7QAvbA=; b=AyEv4al1
-        k/00FANxirR6KuKDveL1t2xTS2v9DdbGZ+r3opG1NJ6pAdF12y6i1Ad25PWh8zZ3
-        zNO1Uct17Q8AAYMSbYJ5AfqHWEj5QuUWu2QNbcob11Bwuy7O3IWo/YrI3VSn/poM
-        rfqHWY7UwHyeeJ+EDIRhR3rHnyNHfOY5SYgPOQIXOCKfkXmLC0VKJ5VT17ymUTtS
-        7Jcp0BmQF/nrqqOAS5QWlsg51ctBSTkvpR1VeGP02sFz/bACBI1n98Wqt2/1sgzA
-        +OF/zIUwoOxT582kK4YetsM6CmJks/qloHa7XGs1i3qsM5xrlVip21gCh9/X4XGx
-        QjED8BwlMDSqnQ==
-X-ME-Sender: <xms:OkmVYGQ6_YQFvg2OQMwGZmZtOOUSBcHrdsrrwIiBdvW1nmrxm1mr-w>
-    <xme:OkmVYLzQbfY2stP1piv0sWrpyM-rkYZMjmLDYs4qT8WqzmFpeTU-Igzkr-YTEQZmp
-    1mG9B5YQG9QVI-I_ds>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegvddgjedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:OkmVYD0g-wLcT-LOqVIa1dF2VpJYomCTN6eErnZfm8pufkBcdOhTGw>
-    <xmx:OkmVYCD0AscbqTWgXaOmWaW1SOkLjmGYrIBYQwvP6Y3C63ahSR-R4w>
-    <xmx:OkmVYPh1Wm1ShEqHYfmZ7V4f2nJbvegfG2ImJM7f4pgbNhGLnt-WeQ>
-    <xmx:PEmVYLTOdVxETl46RmjLubofxfb24KSmyzbfzjO0YNJLqLmAXJQQGBuXZSo>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri,  7 May 2021 10:05:46 -0400 (EDT)
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
-        alsa-devel@alsa-project.org, bcm-kernel-feedback-list@broadcom.com,
-        linux-arm-kernel@lists.infradead.org,
-        Maxime Ripard <mripard@kernel.org>,
-        linux-kernel@vger.kernel.org,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Tim Gover <tim.gover@raspberrypi.com>,
-        Dom Cobley <dom@raspberrypi.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-rpi-kernel@lists.infradead.org,
-        Eric Anholt <eric@anholt.net>,
-        Dom Cobley <popcornmix@gmail.com>
-Subject: [PATCH 11/11] ARM: dts: bcm2711: Tune DMA parameters for HDMI audio
-Date:   Fri,  7 May 2021 16:03:34 +0200
-Message-Id: <20210507140334.204865-12-maxime@cerno.tech>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210507140334.204865-1-maxime@cerno.tech>
-References: <20210507140334.204865-1-maxime@cerno.tech>
+        Fri, 7 May 2021 10:05:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620396258;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cBC+Gvt3dKL/d3xZzU0Jm6gFzpZLfTG7TS3XvNjDT8I=;
+        b=EhOOP8liF2fPZIo7i+vXuAGPlrnNj0KgC9Lc4EgGY+wzUf0Vkfu3wwOpMbK9nWZVcfgzZc
+        CCY+QWQ4w7OZGQJRKYy3eG9saTm1u6sMtKrAhHTzyiZUFlUpYm5nzptWyhm2oPEEVG9PKL
+        W8CZ2APr8IGKhuIBqQ5Gh8C1SvCUZiI=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-18-sUyLBJgcOSaLvw9o4r6QYA-1; Fri, 07 May 2021 10:04:16 -0400
+X-MC-Unique: sUyLBJgcOSaLvw9o4r6QYA-1
+Received: by mail-qk1-f197.google.com with SMTP id h15-20020a37de0f0000b029029a8ada2e18so6172081qkj.11
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 07:04:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=cBC+Gvt3dKL/d3xZzU0Jm6gFzpZLfTG7TS3XvNjDT8I=;
+        b=cyy50W8qpk+poXPuGwoNDt1/LJJ7WqnUAwVlTVhAY+vlH/uOB3G6z4wN0CMpwbYVok
+         p4/tg7192WpxzaC5EmeGfN15/gvBbOuEei6RRjWNTzhN9WbAjVkZkchIGLoKAGEDEGHh
+         y+o2FwbtE7Nl3zcCtxvhcLKnNvrubXy79FLWOgld8YupOfpGzlIQNzq9xthIV7zNxqA5
+         5Bc6rjTDVWiZKPqiII2vbKINNiuqSCO3PJMEzS5c0hsLOZCfOnjJGxWyL3hkH6xmvE9e
+         j2pDlng+8+PcmzGyRsHXX4bc63Nqoe9/DVE5Fg+e1CkrBZ6kp3v3v/i59kQxIaiWLI0B
+         tJ1w==
+X-Gm-Message-State: AOAM532ORJn6WbTlMFPjzORomIWijGnLU13d+tSesDkVkx7D9tCs1IbD
+        A9l4XPEeX6XB7ynYimHahH+9bgbaHq7Y6YJFY4ZK0UtyOQ5NVJO4O3KCrmHnd5X3RKQNwqbe3P4
+        lNW1B9Mn3wcacivibjd2M5/OA
+X-Received: by 2002:a0c:a404:: with SMTP id w4mr10394303qvw.45.1620396256075;
+        Fri, 07 May 2021 07:04:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyOU6EDGLDyPbm7YRcFnuUL8IbLs3W/+/YQMxJsr1/Qu8M9wehAyCoyxry7oCtPzmn1uD1nuw==
+X-Received: by 2002:a0c:a404:: with SMTP id w4mr10394272qvw.45.1620396255835;
+        Fri, 07 May 2021 07:04:15 -0700 (PDT)
+Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
+        by smtp.gmail.com with ESMTPSA id q7sm4857441qki.17.2021.05.07.07.04.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 07:04:15 -0700 (PDT)
+Date:   Fri, 7 May 2021 10:04:13 -0400
+From:   Peter Xu <peterx@redhat.com>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Subject: Re: [PATCH 1/3] mm/gup_benchmark: Support threading
+Message-ID: <YJVI3QAqT2TruTjq@t490s>
+References: <20210506232537.165788-1-peterx@redhat.com>
+ <20210506232537.165788-2-peterx@redhat.com>
+ <a631bb81-a8a7-0423-4e7c-e0cf213e932b@nvidia.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <a631bb81-a8a7-0423-4e7c-e0cf213e932b@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dom Cobley <popcornmix@gmail.com>
+On Thu, May 06, 2021 at 09:37:37PM -0700, John Hubbard wrote:
+> On 5/6/21 4:25 PM, Peter Xu wrote:
+> > Add a new parameter "-j N" to support concurrent gup test.
+> 
+> I had a long-standing personal TODO item that said, "decide if it's
+> worth it, to add pthread support to gup_test". So now, at least one
+> other person has decided that it *is* worth it, and you've also written
+> the patch. OK, then. Sweet! :)
+> 
+> This looks correct to me. I have a couple of minor comments below, but
+> either way you can add:
 
-Enable NO_WAIT_RESP, DMA_WIDE_SOURCE, DMA_WIDE_DEST, and bump the DMA
-panic and AXI priorities to avoid any DMA transfer error with HBR audio
-(8 channel, 192Hz).
+I'll address them.
 
-Signed-off-by: Dom Cobley <popcornmix@gmail.com>
-Signed-off-by: Maxime Ripard <maxime@cerno.tech>
----
- arch/arm/boot/dts/bcm2711.dtsi | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 
-diff --git a/arch/arm/boot/dts/bcm2711.dtsi b/arch/arm/boot/dts/bcm2711.dtsi
-index 462b1dfb0385..8a7350cfcd9c 100644
---- a/arch/arm/boot/dts/bcm2711.dtsi
-+++ b/arch/arm/boot/dts/bcm2711.dtsi
-@@ -352,7 +352,7 @@ hdmi0: hdmi@7ef00700 {
- 			interrupt-names = "cec-tx", "cec-rx", "cec-low",
- 					  "wakeup", "hpd-connected", "hpd-removed";
- 			ddc = <&ddc0>;
--			dmas = <&dma 10>;
-+			dmas = <&dma (10 | (1 << 27) | (1 << 24)| (15 << 20) | (10 << 16))>;
- 			dma-names = "audio-rx";
- 			status = "disabled";
- 		};
-@@ -395,7 +395,7 @@ hdmi1: hdmi@7ef05700 {
- 				     <9>, <10>, <11>;
- 			interrupt-names = "cec-tx", "cec-rx", "cec-low",
- 					  "wakeup", "hpd-connected", "hpd-removed";
--			dmas = <&dma 17>;
-+			dmas = <&dma (17 | (1 << 27) | (1 << 24)| (15 << 20) | (10 << 16))>;
- 			dma-names = "audio-rx";
- 			status = "disabled";
- 		};
+Thanks!
+
 -- 
-2.31.1
+Peter Xu
 
