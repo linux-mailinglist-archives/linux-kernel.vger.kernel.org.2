@@ -2,138 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A69D376175
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:50:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DDFD37617A
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:51:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235776AbhEGHvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:51:38 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:50939 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230015AbhEGHvf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:51:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620373835;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/MLkuRSzZa79r/jh4LUnA9iSS0QIvpenC9jHadUk+SM=;
-        b=UiYYN/AZ4eQijG+I/X6hBXeTiO2u0/NcPmBRSvsKoBC1RJSzdfdVAawxM7MfvWPwfX4yhB
-        b12Y0sxXbUF/PDzHs1O/BYoS1IFYD6ZvTBifA5p5BQxZWTtaQtl7AiuYvFj3jCc1cCSKZD
-        vRXo3cAGwAVJ352gELlBtOooqE9CQVk=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-63-JJjFtE-wMsCB9ekMWElucQ-1; Fri, 07 May 2021 03:50:34 -0400
-X-MC-Unique: JJjFtE-wMsCB9ekMWElucQ-1
-Received: by mail-wm1-f72.google.com with SMTP id 7-20020a05600c2307b02901432673350dso1946306wmo.9
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:50:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:organization
-         :message-id:date:user-agent:mime-version:in-reply-to
-         :content-language:content-transfer-encoding;
-        bh=/MLkuRSzZa79r/jh4LUnA9iSS0QIvpenC9jHadUk+SM=;
-        b=LCUYKLCwtIrjuEu2mw/MaE0jN0GMHXVjnoWtguBjt/GRPC77Up+BON213/ioAlzViT
-         8Dsf8ED2/6SEUM+1ToA1QIPvzkif3CjRvhjtEc4Z5GVQLBJsEIdpMkKNg0dW169jhN0I
-         nrQKmSH2xhGyGTxJVl50mfGLoPt7CM+tEPGl+MUj6iCe9LTWCeoh5mHcEkcR9q4Rc/84
-         D3r+sUYn2NGBW8CBBOL8xN2YsMhYCzBiqztRRiwoUZazz+tkv09m30NIhdlMoF84/X+2
-         ti4ttDKwSnMTL/jlqpLo7hqQZixqodv8CVl/PWNtqGAVZ/Xg9TTa71lJdGngnZICDRPK
-         rZbg==
-X-Gm-Message-State: AOAM533CMUza4lYn1B2CA41HME/NMgpajj1Kc5NF5kxEE3Mmnls+rFYQ
-        D7gIH+8Jkak/6W2txCC2RuCKDNgYaq46XqiRcjcIiXSkIjrRfRMWPWWOHhBuyqtsEDooh1T2BjG
-        EnJS93arTcOTbPFRfEVtYJAXs
-X-Received: by 2002:a1c:55ca:: with SMTP id j193mr19277938wmb.58.1620373832864;
-        Fri, 07 May 2021 00:50:32 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwxCnRshAj7tpewpbmOreXpvpcKBTwP6IHiJ0n2zPF8T3D2mFujI//9V2uu4vWU/BzHkuhqZg==
-X-Received: by 2002:a1c:55ca:: with SMTP id j193mr19277904wmb.58.1620373832595;
-        Fri, 07 May 2021 00:50:32 -0700 (PDT)
-Received: from [192.168.3.132] (p5b0c63c0.dip0.t-ipconnect.de. [91.12.99.192])
-        by smtp.gmail.com with ESMTPSA id i11sm7271122wrp.56.2021.05.07.00.50.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 May 2021 00:50:32 -0700 (PDT)
-Subject: Re: [PATCH v3 5/8] KVM: x86/mmu: Add a field to control memslot rmap
- allocation
-To:     Ben Gardon <bgardon@google.com>,
-        LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Shier <pshier@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
-        Kai Huang <kai.huang@intel.com>,
-        Keqian Zhu <zhukeqian1@huawei.com>
-References: <20210506184241.618958-1-bgardon@google.com>
- <20210506184241.618958-6-bgardon@google.com>
- <CANgfPd-eJsHRYARTa0tm4EUVQyXvdQxGQfGfj=qLi5vkLTG6pw@mail.gmail.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat
-Message-ID: <67c6af98-4e3b-fec5-9521-5288a10dce58@redhat.com>
-Date:   Fri, 7 May 2021 09:50:31 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
-MIME-Version: 1.0
-In-Reply-To: <CANgfPd-eJsHRYARTa0tm4EUVQyXvdQxGQfGfj=qLi5vkLTG6pw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S235782AbhEGHwi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:52:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39606 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229683AbhEGHwg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 03:52:36 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id A3B956142D;
+        Fri,  7 May 2021 07:51:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620373896;
+        bh=L1b//wzCAaqR+ZiUyqrchEVNRjM7avOj6aEkhyDIfC4=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=AlB1vZljzYz+JPGdwDJChLE61ivFIcE80i6oEJ9x7+EZD7vcXjhAqDH9rV+AXBorh
+         +V1u3ANU5ytPoUSilQaZzmEug8dvS+Aqh09RoQlDQwmt5kNIpcXKvAbHbrS39MTUcV
+         hdOEUcNPZuKvlwlyqQKxy6k9HJ7Uyu0gtUeWItNjap1rftEujGg8nC1bhWaJeJ8Mvh
+         LvBGdMxMC3dms9IuBNxBAjz4wnJNzs/bCYe9J6lEWyzHTiXNEdEQyyQbcIIn4RL0Ke
+         HzcYt3dUDVviiqWOq/36w2CM3tZUrS6GbH1t+5T0izibOvdG/ytUJXmcur9Fc2hYGj
+         8QwJgIStqROHQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 8E673609AC;
+        Fri,  7 May 2021 07:51:36 +0000 (UTC)
+Subject: Re: [GIT PULL] xfs: more new code for 5.13
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20210507003244.GF8582@magnolia>
+References: <20210507003244.GF8582@magnolia>
+X-PR-Tracked-List-Id: <linux-xfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20210507003244.GF8582@magnolia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.13-merge-5
+X-PR-Tracked-Commit-Id: 8e9800f9f2b89e1efe2a5993361fae4d618a6c26
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: af120709b1fb7227f18653a95c457b36d8a5e4d8
+Message-Id: <162037389652.26493.11092818693927608843.pr-tracker-bot@kernel.org>
+Date:   Fri, 07 May 2021 07:51:36 +0000
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        david@fromorbit.com, linux-kernel@vger.kernel.org,
+        sandeen@sandeen.net, hch@lst.de
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07.05.21 01:44, Ben Gardon wrote:
-> On Thu, May 6, 2021 at 11:43 AM Ben Gardon <bgardon@google.com> wrote:
->>
->> Add a field to control whether new memslots should have rmaps allocated
->> for them. As of this change, it's not safe to skip allocating rmaps, so
->> the field is always set to allocate rmaps. Future changes will make it
->> safe to operate without rmaps, using the TDP MMU. Then further changes
->> will allow the rmaps to be allocated lazily when needed for nested
->> oprtation.
->>
->> No functional change expected.
->>
->> Signed-off-by: Ben Gardon <bgardon@google.com>
->> ---
->>   arch/x86/include/asm/kvm_host.h |  8 ++++++++
->>   arch/x86/kvm/mmu/mmu.c          |  2 ++
->>   arch/x86/kvm/x86.c              | 18 +++++++++++++-----
->>   3 files changed, 23 insertions(+), 5 deletions(-)
->>
->> diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
->> index ad22d4839bcc..00065f9bbc5e 100644
->> --- a/arch/x86/include/asm/kvm_host.h
->> +++ b/arch/x86/include/asm/kvm_host.h
->> @@ -1122,6 +1122,12 @@ struct kvm_arch {
->>           */
->>          spinlock_t tdp_mmu_pages_lock;
->>   #endif /* CONFIG_X86_64 */
->> +
->> +       /*
->> +        * If set, rmaps have been allocated for all memslots and should be
->> +        * allocated for any newly created or modified memslots.
->> +        */
->> +       bool memslots_have_rmaps;
->>   };
->>
->>   struct kvm_vm_stat {
->> @@ -1853,4 +1859,6 @@ static inline int kvm_cpu_get_apicid(int mps_cpu)
->>
->>   int kvm_cpu_dirty_log_size(void);
->>
->> +inline bool kvm_memslots_have_rmaps(struct kvm *kvm);
-> 
-> Woops, this shouldn't be marked inline as it creates build problems
-> for the next patch with some configs.
+The pull request you sent on Thu, 6 May 2021 17:32:44 -0700:
 
-With that fixed
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.13-merge-5
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/af120709b1fb7227f18653a95c457b36d8a5e4d8
 
+Thank you!
 
 -- 
-Thanks,
-
-David / dhildenb
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
