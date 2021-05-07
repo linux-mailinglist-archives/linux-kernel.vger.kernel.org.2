@@ -2,115 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADE69376124
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:30:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 549C6376128
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:30:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233883AbhEGHbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:31:13 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17592 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbhEGHbL (ORCPT
+        id S235337AbhEGHbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:31:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S232268AbhEGHbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:31:11 -0400
-Received: from DGGEMS402-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fc28k5WWvz1BJpP;
-        Fri,  7 May 2021 15:27:34 +0800 (CST)
-Received: from [10.67.110.136] (10.67.110.136) by
- DGGEMS402-HUB.china.huawei.com (10.3.19.202) with Microsoft SMTP Server id
- 14.3.498.0; Fri, 7 May 2021 15:30:06 +0800
-Subject: Re: [PATCH v3 03/16] arm64: Allow IPIs to be handled as normal
- interrupts
-To:     Marc Zyngier <maz@kernel.org>
-CC:     <vincent.guittot@linaro.org>, <Valentin.Schneider@arm.com>,
-        <andrew@lunn.ch>, <catalin.marinas@arm.com>,
-        <f.fainelli@gmail.com>, <gregory.clement@bootlin.com>,
-        <jason@lakedaemon.net>, <kernel-team@android.com>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <linux@arm.linux.org.uk>,
-        <saravanak@google.com>, <sumit.garg@linaro.org>,
-        <tglx@linutronix.de>, <will@kernel.org>
-References: <CAKfTPtD3GkTd+qQvyCmyU7Atu1ictDQ82YbPRdY9a+Kkr2DjvA@mail.gmail.com>
- <c66367b0-e8a0-2b7b-13c3-c9413462357c@huawei.com>
- <87pmy4qe7e.wl-maz@kernel.org>
-From:   He Ying <heying24@huawei.com>
-Message-ID: <d6936b80-25ad-5e06-5fcc-c211adb70ceb@huawei.com>
-Date:   Fri, 7 May 2021 15:30:06 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Fri, 7 May 2021 03:31:46 -0400
+Received: from mail-vs1-xe2d.google.com (mail-vs1-xe2d.google.com [IPv6:2607:f8b0:4864:20::e2d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19FC4C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 00:30:46 -0700 (PDT)
+Received: by mail-vs1-xe2d.google.com with SMTP id s15so1418214vsi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:30:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mvrcjht1/ZDjZntlokA/5UTumpWo8GtiALSkNCm95ck=;
+        b=sVmWM06agL2q7iV+PrscrJpJ4RWX2ZLaGuM8I7wLPWmsPbzWeJkUjZ4PuAnIGNRSjn
+         7ZD/V+47EHcOW3Bu+ogYDAVJ1d3HMNTk5eaXMvB6LFoZJZZ4pPg+iyUQPHsdy2JPZE3K
+         pHQj6+2bh5+OZTYYXIjbvhT0g9S64kKvTMKAmgMwV/sDyoivDcBY1YBixszkQbNEqaEi
+         v+LWw62YydidKx67qtFimKSQqKYcLcttGDrbhp2nnW/4cmRiDeviCNza/zzCf3n8knA4
+         lRzhjUUg112FDP062mmlNLrLUdqrdtgE2TvuuETGa48alWoWhN/O03p1JpLJot2JABf1
+         pzkw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mvrcjht1/ZDjZntlokA/5UTumpWo8GtiALSkNCm95ck=;
+        b=hTQxPQ8dYPnwUcTF+pXXUVB5JXdhd1LFBld91mjJu2kHdkgd6Zs+1TGYVtTG0SY8ap
+         LvsNkL2fQzTovoR1l/qp6+uGaa/ec/TYRkwSp2tYZIsubSiHKfrd5PoDvB8wr/jnmnwv
+         yrhfoTzOouzHrWqNSzBW+BUPfGMLKD+65IfW/+irr/Em7oyOhnQFYq5ijUVKKPQfVS7Y
+         zGPZTL8eNR8shhsP2Kj/g/iCxcpgukZxUGH0J3LU/zHeDKfDN0kokBQcx1jmpzmRfFDu
+         dMjW9cQFBMPR7E78feav34xmeDcDYfr3qeqBtXnCKKQLrVnGDAc7ASRDOzBkWuqWnSO3
+         r0nA==
+X-Gm-Message-State: AOAM533zDxlnvNAen7mJl7q0vKtu4FjN7Uq3OtYm6Mclg8EW83ce52Ms
+        MbObXKt+5yX5MAsW3Y1IeWQTULmaaWRqjpBCyXm1kQ==
+X-Google-Smtp-Source: ABdhPJzqsWTLzX8DpmPbA8dxO3PTs2XgbM4cmuBt0cLXfmbGhqm5calOMygFAWSLucTkM9uoqUlMCqZH+WMaZhtvxPQ=
+X-Received: by 2002:a67:64c5:: with SMTP id y188mr6598056vsb.19.1620372644882;
+ Fri, 07 May 2021 00:30:44 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <87pmy4qe7e.wl-maz@kernel.org>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.67.110.136]
-X-CFilter-Loop: Reflected
+References: <20210504161222.101536-1-ulf.hansson@linaro.org>
+ <20210504161222.101536-7-ulf.hansson@linaro.org> <CACRpkdZUWP5hOCLpVvOSfR3YNXF6HC4GaO5ptYify2_EPa=wOQ@mail.gmail.com>
+In-Reply-To: <CACRpkdZUWP5hOCLpVvOSfR3YNXF6HC4GaO5ptYify2_EPa=wOQ@mail.gmail.com>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 7 May 2021 09:30:08 +0200
+Message-ID: <CAPDyKFqq7DZJA8KRhNR_b069ef0+4RCf3GVbsPFYB+kiTg+Log@mail.gmail.com>
+Subject: Re: [PATCH 06/11] mmc: core: Prepare mmc_send_cxd_data() to be
+ re-used for additional cmds
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Shawn Lin <shawn.lin@rock-chips.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-block <linux-block@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-ÔÚ 2021/5/6 19:44, Marc Zyngier Ð´µÀ:
-> On Thu, 06 May 2021 08:50:42 +0100,
-> He Ying <heying24@huawei.com> wrote:
->> Hello Marc,
->>
->> We have faced a performance regression for handling ipis since this
->> commit. I think it's the same issue reported by Vincent.
-> Can you share more details on what regression you have observed?
-> What's the workload, the system, the performance drop?
-
-OK. We have just calculated the pmu cycles from the entry of gic_handle_irq
-
-to the entry of do_handle_ipi. Here is some more information about our test:
-
-CPU: Hisilicon hip05-d02
-
-Applying the patch series: 1115 cycles
-
-Reverting the patch series: 599 cycles
-
+On Thu, 6 May 2021 at 15:00, Linus Walleij <linus.walleij@linaro.org> wrote:
 >
->> I found you pointed out the possible two causes:
->>
->> (1) irq_enter/exit on the rescheduling IPI means we reschedule much
->> more often.
-> It turned out to be a red herring. We don't reschedule more often, but
-> we instead suffer from the overhead of irq_enter()/irq_exit().
-> However, this only matters for silly benchmarks, and no real-life
-> workload showed any significant regression. Have you identified such
-> realistic workload?
-
-I'm afraid not. We just run some benchmarks and calculated pmu cycle 
-counters.
-
-But we have observed running time from the entry of gic_handle_irq to 
-the entry
-
-of do_handle_ipi almost doubles. Doesn't it affect realistic workload?
-
+> On Tue, May 4, 2021 at 6:12 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
 >
->> (2) irq_domain lookups add some overhead.
-> While this is also a potential source of overhead, it turned out not
-> to be the case.
-OK.
+> >   * NOTE: void *buf, caller for the buf is required to use DMA-capable
+> >   * buffer or on-stack buffer (with some overhead in callee).
+> >   */
+> > -static int
+> > -mmc_send_cxd_data(struct mmc_card *card, struct mmc_host *host,
+> > -               u32 opcode, void *buf, unsigned len)
+> > +int mmc_send_adtc_data(struct mmc_card *card, struct mmc_host *host, u32 opcode,
+> > +                      u32 args, void *buf, unsigned len)
 >
->> But I don't see any following patches in mainline. So, are you still
->> working on this issue?  Looking forward to your reply.
-> See [1]. However, there is probably better things to do than this
-> low-level specialisation of IPIs, and Thomas outlined what needs to be
-> done (see v1 of the patch series).
-
-OK. I see the patch series. Would it be applied to the mainline someday? 
-I notice
-
-that more than 5 months have passed since you sent the patch series.
-
-
-Thanks.
-
+> Just a note here (the change is good)
 >
-> Thanks,
->
-> 	M.
->
-> [1] https://lore.kernel.org/lkml/20201124141449.572446-1-maz@kernel.org/
->
+> When applying please add some kerneldoc above mmc_send_adtc_data()
+> and expand the ADTC acronym and add some info explaining what it
+> is maybe a small protocol ref or so, so readers of the code get an
+> intuitive feeling for what this function does and what ADTC is.
+
+Thanks for the suggestion and the reviews, I look into this!
+
+Kind  regards
+Uffe
