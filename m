@@ -2,185 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ABAB537682C
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:38:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB186376837
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:43:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237992AbhEGPju (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 11:39:50 -0400
-Received: from mail-dm3nam07on2062.outbound.protection.outlook.com ([40.107.95.62]:24801
-        "EHLO NAM02-DM3-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S237951AbhEGPjp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 11:39:45 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=AjOuDrrVxbo0xiAAcsFApyCJyvyzbUli8GqklWyK6dYahNFQxzaAmu6VizBaGV2r62zgP/S7UFPtCUkxyEmZH77X12BSqVMjVKXqRZ4D1Ych8DFqqrKH/FqpNrbguUzMe5U1aTyjwkX4XNUf471MWz+9XbFTE/1WDI8nFcYrQMtA1Wb5J3rx8OiT44pfDuZmd5MrMQ+khnA9iJk8vSE7OXIx3ntnfFsvgnNCk1W9HqdjI/oHshsQD+sT3Z1zT3cF7UfxZLPf7IXYzwnOTeTqvRVvbk5R1UaAVlv7mASUtAaqiMxKMMRL06MuiYhUY0mUUOlTNtGBvXwA5t1mGWhpOw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=49fV9V4ii53To7kF+6pdv9N/QuOT/Z6gr0QLV5fVLSk=;
- b=m14rSTNLmfxReJG4sh9M3BSIOSSVAK7iT6UVF5i5JjZQAxilzLTNgKasJGGX69OLeCC48ZsAZ+fMsrKiKx/s/TJpMssTlFL/Rjdug99ufoEUy8et3WQ/Ij6mqowj4hnwaV0fOhxGs9zRuEhY7uQCiivbDpqoebrkSCh8gJgqmKFbvbq1fpGznE140DnmLvPmrbHTzif9XZpreKI5QVaIZO6DhxCADvjghYzKiPBkooyvyQZZL0KAr/eS+/kGzt75vnd6vkdObDPISPwTx/UkSOxaJ578u/BaghWx/QsfkPTI2lvMbfom1JSaNJLBU7GK7LHSHOHM2UL4mSPFkEcGLQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=49fV9V4ii53To7kF+6pdv9N/QuOT/Z6gr0QLV5fVLSk=;
- b=uE3e4aTF1emtnwX+IlE07bNoXSIQWWSFFHVOiJ5ceBS6HSle1VLB+6haBLU0UTdeKssogbUqwkhZvaxv//opG8CKVOfrFEoPCnNmVomTa9dwBSdBrm5cA7qQX8wGLzNXJNIK4v0DOV7UoVpO7CrYVnC0z9xkKJ5k8CxzlGFHy8jPL1FKWpXISjyhSZ0GtMS8dWuDNZ+zP5msdqp57h41UcQ31vMryKWg6Gu2HvpAaZOY17sfamk3wiGj2hwyd4VQAzRhpNi2LTzuNToZ9wTP5vswh3nTX9uV8DVSCafUxM6HVHfAIqgkLJlWXy6WAtKNRXxJi9Fux3W8/JEslcqbSw==
-Received: from DM6PR12MB3898.namprd12.prod.outlook.com (2603:10b6:5:1c6::18)
- by DM6PR12MB3290.namprd12.prod.outlook.com (2603:10b6:5:189::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4087.44; Fri, 7 May
- 2021 15:38:43 +0000
-Received: from DM6PR12MB3898.namprd12.prod.outlook.com
- ([fe80::dce6:427d:df17:3974]) by DM6PR12MB3898.namprd12.prod.outlook.com
- ([fe80::dce6:427d:df17:3974%5]) with mapi id 15.20.4108.029; Fri, 7 May 2021
- 15:38:43 +0000
-From:   Vadim Pasternak <vadimp@nvidia.com>
-To:     Liming Sun <limings@nvidia.com>,
-        Andy Shevchenko <andy@infradead.org>,
-        Darren Hart <dvhart@infradead.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>
-Subject: RE: [PATCH v1 1/1] platform/mellanox: mlxbf-tmfifo: Fix a memory
- barrier issue
-Thread-Topic: [PATCH v1 1/1] platform/mellanox: mlxbf-tmfifo: Fix a memory
- barrier issue
-Thread-Index: AQHXQ1RdUjtajmzQJUmA3Sb603ZA9qrYJvVA
-Date:   Fri, 7 May 2021 15:38:43 +0000
-Message-ID: <DM6PR12MB389868EDF9F7B1607E6E1BF0AF579@DM6PR12MB3898.namprd12.prod.outlook.com>
-References: <177d12443460bc613aa495fbdbabbbeef43ba7ff.1620400475.git.limings@nvidia.com>
-In-Reply-To: <177d12443460bc613aa495fbdbabbbeef43ba7ff.1620400475.git.limings@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
-x-originating-ip: [46.117.116.151]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 83b85837-2dd3-43e7-88fa-08d9116e31fa
-x-ms-traffictypediagnostic: DM6PR12MB3290:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR12MB32902F99ADC9B42CEBFDA6CEAF579@DM6PR12MB3290.namprd12.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:913;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: RXBqkgy1/PXiDRNVEPCWVPe6eKOaddJBoba2WVKnE/3Bk4fJiX65MCs1afCbL02JnEq6WSuIVPyy0V0XKg4aoSx4Wdr3MVMvAU5CuhH6aJ/KUhydmEUtb76waZhySWUYQKz1zz0ChtxrPBfNQgphS/QpGeYR2jQZYvxFXY47gGwZPOt2N6M7bhgUn2Fd/yJH0tyBpReqbG50xYwPczDENO6Sl40wQl1d6zPnOGX3m6/wpzQhQPKZA69AEO1dfEysoJ0zGREfqq6u697OXeJZWYTW8UAuu+voN9GrzITeeN1TPO6XfS2F4z+6eS2AU7bOcZJMY7XLrBcjsNJnD8QkQVAC5YlMOGBEaaQEAAHrE9luJlGLMb8wKuOmrfxHdMWvPMtqy5d/9b+E74odvV5Rh+i9bLSLbx4I27Va4ynaUTFfA3oySjoeEpFBj++LXQ8AH1gx79/yDsFhcAoriEMIL5eRWLbkV+aL91HpIb0ZMjsF1inTlVK8jl9f1nB7+4uuoAWpr34KNm5DJQK3Oi2kzv9W4Dkl7Qmz1QOEsAgTNoR++1Zsd7MUypUi0Av/CIdnF06l3zA001/ocThIvD8OUXotCJeMMSnu1E1VMru6/qA=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3898.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(366004)(376002)(396003)(346002)(33656002)(8676002)(71200400001)(316002)(83380400001)(66946007)(5660300002)(6506007)(53546011)(9686003)(4326008)(66446008)(8936002)(2906002)(26005)(55016002)(52536014)(478600001)(186003)(66556008)(86362001)(54906003)(38100700002)(66476007)(64756008)(7696005)(76116006)(110136005)(122000001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: =?us-ascii?Q?/ET1p4dnSWx5iFgjUqQBjhA1itkVL2LHlaqOydhW8ni4SmBDI6e+kC+Tgjh1?=
- =?us-ascii?Q?d5Ww+PjjtJlyLOL2ZoSLTj0ViM6P/UxDMqqZrRf7s2Mhl0C4SKlV7RxOMJju?=
- =?us-ascii?Q?cuhVQnwU0wDmaIcIG0JO7ralVHZbPfB4FlE4XTmqOJKTWgZeesktTbwuHe//?=
- =?us-ascii?Q?OcS29FeEyb9IG1FRafTsnsadQAtX+Ky/QYn0PCRvwPrjVVSUPgw0L7gaYdaY?=
- =?us-ascii?Q?Ifvjspy0wZK0X0nshixn1lGccrFvtAxD5ZFfsTTRhQ6TxBZ31pl9ZRnLIXXu?=
- =?us-ascii?Q?83x+4lWkwplixDwudkdfm5rr0bBkXgA2HluEA3qLKDdAlIK2WePqqurdu0JF?=
- =?us-ascii?Q?JGgFj3zuVHcsSQhTCOduH3ercBePCrqth6SDMzB3qQdMLvLrId+RnZM8sA7W?=
- =?us-ascii?Q?Lvd7uUV4nZ6QdHZJVpZbMhY7b8QKDJT6eRtIDVY/IYIyIVKR62/zM4cer9id?=
- =?us-ascii?Q?VhGtNiGbL8BTg07yghJ4L0zjpwS/5z8W/hbnIKpHE3HuzpEJN0rn47dIYDIX?=
- =?us-ascii?Q?r7MufKeEkSwg3CgUoSdWnulAdKfi3bFCKtiaZBvSP+yHVEVKFLInv3pXlzwM?=
- =?us-ascii?Q?J43k5kSH883FGMc2oTMaBjiV/lKNuqnNKU0hi6mp1EAkkd3SfeZObhsV+Rhq?=
- =?us-ascii?Q?t0hR3q2bvlRT2zXEVPGxCTbf2RZ/bUWVUrK0jv8MrxDPQgw6gSXPmNsgtbsC?=
- =?us-ascii?Q?GTX2DdYlUS/8OuikujgIf6nx7+i4u/6ZLGNPbrLj54TSUPVFy+gm0UlUQz5x?=
- =?us-ascii?Q?uKLXlOaHsqRUBPvhXaXfNjfzP2zzSiNlNcjOqTWtAzUNPVrEhLK5v1r6BpZY?=
- =?us-ascii?Q?oODGYpO3VbUQ3yJEHeVbpP4QglV7VIiGh+bU4hoZ1KXJ0EmJhJ/dtHEarC4h?=
- =?us-ascii?Q?MiavrkxQTakF+tUGwKbdrCIdyJwkQVMw7QIU/Ez2Z1kBBiOjOcxZRzb+gKnd?=
- =?us-ascii?Q?7QTOA+elODemJZQ5+EbFmYf8uX6W9W83CVf5EkBHJ1Ba/mG28PNCx8AlPMiC?=
- =?us-ascii?Q?w++ViNsAyS8EWHAaESfE2aqh18IG/tdsN+uQvJUWGkpoQocre2d3zgSd5MNy?=
- =?us-ascii?Q?Yrzsom88+xXAKofYUAp5NjLxbZfW+taM2OKw2F3W+SP3D5KGQY0t5xW7IAq7?=
- =?us-ascii?Q?8gxDtQzG6cKPgADjWoRsHBExGsFn3dt4k/I5tPTLSuPgT/891nwCZv8GnBvc?=
- =?us-ascii?Q?1AotxzT2bq5mxrH4atEK2VaHXjNF9baYUoe//QE1769VbckSH+8yfjFSmGIu?=
- =?us-ascii?Q?1adGPiuIK4rfgvt1qLwBhlMzGEUmC9mSRk5AtVJ6Teqq7UFqX+Ekok1o5+65?=
- =?us-ascii?Q?gI9oMYRdPorW7Rhq44EK8ZAE?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S237998AbhEGPom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 11:44:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:30393 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236443AbhEGPok (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 11:44:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620402220;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=igWUiltl+YCLkoRgKhfdDwlU7m05eUi8sttV6ydTSnQ=;
+        b=a1u08mdH45GJU3fyobN5cwT5CHJsuY5dey8mPZV0vTLLBEXrtzKpaC52WBxWGVWzfh0Dla
+        3DFimdpzjfnAUE4oPmTxG1QEsmwHC823T5XX7mIYuXejvTXpvW+Z7mCHDlexplK9u9g5/n
+        Fm8vwW1Sghw3+3KR0+8+5BmBV4USB+s=
+Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
+ [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-582-_S5z54yCPp2YLYIX3r4PTg-1; Fri, 07 May 2021 11:43:36 -0400
+X-MC-Unique: _S5z54yCPp2YLYIX3r4PTg-1
+Received: by mail-ed1-f72.google.com with SMTP id z12-20020aa7d40c0000b0290388179cc8bfso4623741edq.21
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 08:43:36 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=igWUiltl+YCLkoRgKhfdDwlU7m05eUi8sttV6ydTSnQ=;
+        b=GL4h1XkSZfDN9EyWi9b0R0iaC7KCWEe2UZ3d6aEGQEnD+N7l7NXIPT7UunfxTnPaLn
+         E4MJlPeUgIOzMWjxQ0K19jwig1WW8KK2dhYRwYCX0mc5RgVsRoLpHjrivPkNV84jz+Ex
+         vnPEjfKI/m3Y387OljxLzL7TE/UxgaZ4WeF3jeZAhr3NKlYJBOJOYBNEnS1n12N6EsAL
+         S/5tbR/+1oYnXfpFRlM5ONtcMNcZX1/PE0+0IKgAEEmoZtN7ENXpbc9Y4qISm7Ei23hl
+         2Ae987qP1W1NFBeivWZQVrqn55gDHqDup2mu8MmxhyMXFZ1qOzjnRtDl5uyaW2zS0zrm
+         kWmw==
+X-Gm-Message-State: AOAM532jxULBVbv4sOZNZ+QQdxs4c1CVAuIW0085DFd2bU4HvsyjiAgO
+        dpCZA3IYvXcF9Tnyktx/nXWMw1DYvceb7Ngm2uvnNQ/DT2Tj+DOwpCTI8xib48L7RVRGYU9vwBz
+        3hOpdJ6XXI6UOBGPAvJ+dK4TO
+X-Received: by 2002:a17:906:2a16:: with SMTP id j22mr10671848eje.397.1620402215569;
+        Fri, 07 May 2021 08:43:35 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwhqzGQ5WsonJAUm+Gaadfs9rV2/KnHZzLpkGO2HPjKexzKbktOUtpSyXiW4IJSVMBDZ+ZOdw==
+X-Received: by 2002:a17:906:2a16:: with SMTP id j22mr10671832eje.397.1620402215376;
+        Fri, 07 May 2021 08:43:35 -0700 (PDT)
+Received: from steredhat (host-79-18-148-79.retail.telecomitalia.it. [79.18.148.79])
+        by smtp.gmail.com with ESMTPSA id b21sm3660039ejg.80.2021.05.07.08.43.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 08:43:34 -0700 (PDT)
+Date:   Fri, 7 May 2021 17:43:32 +0200
+From:   Stefano Garzarella <sgarzare@redhat.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Stefan Hajnoczi <stefanha@redhat.com>,
+        "Michael S. Tsirkin" <mst@redhat.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, kvm@vger.kernel.org,
+        virtualization@lists.linux-foundation.org, netdev@vger.kernel.org,
+        Joel Fernandes <joelaf@google.com>,
+        Linux Trace Devel <linux-trace-devel@vger.kernel.org>
+Subject: Re: [RFC][PATCH] vhost/vsock: Add vsock_list file to map cid with
+ vhost tasks
+Message-ID: <20210507154332.hiblsd6ot5wzwkdj@steredhat>
+References: <20210505163855.32dad8e7@gandalf.local.home>
+ <20210507141120.ot6xztl4h5zyav2c@steredhat>
+ <20210507104036.711b0b10@gandalf.local.home>
 MIME-Version: 1.0
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3898.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 83b85837-2dd3-43e7-88fa-08d9116e31fa
-X-MS-Exchange-CrossTenant-originalarrivaltime: 07 May 2021 15:38:43.1083
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: itpSmblLuWTpR9uE4azZAPEuZw3ZPtwOF07yhddOo3SPLTVsOy2mnU41bNG4/4Ypzw/txRwoVMFcW3qVDVdb+A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3290
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20210507104036.711b0b10@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 07, 2021 at 10:40:36AM -0400, Steven Rostedt wrote:
+>On Fri, 7 May 2021 16:11:20 +0200
+>Stefano Garzarella <sgarzare@redhat.com> wrote:
+>
+>> Hi Steven,
+>>
+>> On Wed, May 05, 2021 at 04:38:55PM -0400, Steven Rostedt wrote:
+>> >The new trace-cmd 3.0 (which is almost ready to be released) allows for
+>> >tracing between host and guests with timestamp synchronization such that
+>> >the events on the host and the guest can be interleaved in the proper order
+>> >that they occur. KernelShark now has a plugin that visualizes this
+>> >interaction.
+>> >
+>> >The implementation requires that the guest has a vsock CID assigned, and on
+>> >the guest a "trace-cmd agent" is running, that will listen on a port for
+>> >the CID. The on the host a "trace-cmd record -A guest@cid:port -e events"
+>> >can be called and the host will connect to the guest agent through the
+>> >cid/port pair and have the agent enable tracing on behalf of the host and
+>> >send the trace data back down to it.
+>> >
+>> >The problem is that there is no sure fire way to find the CID for a guest.
+>> >Currently, the user must know the cid, or we have a hack that looks for the
+>> >qemu process and parses the --guest-cid parameter from it. But this is
+>> >prone to error and does not work on other implementation (was told that
+>> >crosvm does not use qemu).
+>>
+>> For debug I think could be useful to link the vhost-vsock kthread to the
+>> CID, but for the user point of view, maybe is better to query the VM
+>> management layer, for example if you're using libvirt, you can easily do:
+>>
+>> $ virsh dumpxml fedora34 | grep cid
+>>      <cid auto='yes' address='3'/>
+>
+>We looked into going this route, but then that means trace-cmd host/guest
+>tracing needs a way to handle every layer, as some people use libvirt
+>(myself included), some people use straight qemu, some people us Xen, and
+>some people use crosvm. We need to support all of them. Which is why I'm
+>looking at doing this from the lowest common denominator, and since vsock
+>is a requirement from trace-cmd to do this tracing, getting the thread
+>that's related to the vsock is that lowest denominator.
 
+Makes sense.
+Just a note, there are some VMMs, like Firecracker, Cloud Hypervisor, or 
+QEMU with vhost-user-vsock, that don't use vhost-vsock in the host, but 
+they implements an hybrid vsock over Unix Domain Socket:
+https://github.com/firecracker-microvm/firecracker/blob/main/docs/vsock.md
 
-> -----Original Message-----
-> From: Liming Sun <limings@nvidia.com>
-> Sent: Friday, May 7, 2021 6:19 PM
-> To: Andy Shevchenko <andy@infradead.org>; Darren Hart
-> <dvhart@infradead.org>; Vadim Pasternak <vadimp@nvidia.com>
-> Cc: Liming Sun <limings@nvidia.com>; linux-kernel@vger.kernel.org;
-> platform-driver-x86@vger.kernel.org
-> Subject: [PATCH v1 1/1] platform/mellanox: mlxbf-tmfifo: Fix a memory
-> barrier issue
->=20
-> The virtio framework uses wmb() when updating avail->idx. It guarantees
-> the write order, but not necessarily loading order for the code accessing=
- the
-> memory. This commit adds a load barrier after reading the avail->idx to m=
-ake
-> sure all the data in the descriptor is visible. It also adds a barrier wh=
-en
-> returning the packet to virtio framework to make sure read/writes are vis=
-ible
-> to the virtio code.
+So in that case this approach or netlink/devlink, would not work, but 
+the application in the host can't use a vsock socket, so maybe isn't a 
+problem.
 
-I suppose it should be sent as Bugfix?
+>
+>>
+>> >
+>> >As I can not find a way to discover CIDs assigned to guests via any kernel
+>> >interface, I decided to create this one. Note, I'm not attached to it. If
+>> >there's a better way to do this, I would love to have it. But since I'm not
+>> >an expert in the networking layer nor virtio, I decided to stick to what I
+>> >know and add a debugfs interface that simply lists all the 
+>> >registered
+>> >CIDs
+>> >and the worker task that they are associated with. The worker task at
+>> >least has the PID of the task it represents.
+>>
+>> I honestly don't know if it's the best interface, like I said maybe for
+>> debugging it's fine, but if we want to expose it to the user in some
+>> way, we could support devlink/netlink to provide information about the
+>> vsock devices currently in use.
+>
+>Ideally, a devlink/netlink is the right approach. I just had no idea on how
+>to implement that ;-)  So I went with what I know, which is debugfs files!
+>
+>
+>
+>> >Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+>> >---
+>> >diff --git a/drivers/vhost/vsock.c b/drivers/vhost/vsock.c
+>> >index 5e78fb719602..4f03b25b23c1 100644
+>> >--- a/drivers/vhost/vsock.c
+>> >+++ b/drivers/vhost/vsock.c
+>> >@@ -15,6 +15,7 @@
+>> > #include <linux/virtio_vsock.h>
+>> > #include <linux/vhost.h>
+>> > #include <linux/hashtable.h>
+>> >+#include <linux/debugfs.h>
+>> >
+>> > #include <net/af_vsock.h>
+>> > #include "vhost.h"
+>> >@@ -900,6 +901,128 @@ static struct miscdevice vhost_vsock_misc = {
+>> > 	.fops = &vhost_vsock_fops,
+>> > };
+>> >
+>> >+static struct dentry *vsock_file;
+>> >+
+>> >+struct vsock_file_iter {
+>> >+	struct hlist_node	*node;
+>> >+	int			index;
+>> >+};
+>> >+
+>> >+
+>> >+static void *vsock_next(struct seq_file *m, void *v, loff_t *pos)
+>> >+{
+>> >+	struct vsock_file_iter *iter = v;
+>> >+	struct vhost_vsock *vsock;
+>> >+
+>> >+	if (pos)
+>> >+		(*pos)++;
+>> >+
+>> >+	if (iter->index >= (int)HASH_SIZE(vhost_vsock_hash))
+>> >+		return NULL;
+>> >+
+>> >+	if (iter->node)
+>> >+		iter->node = rcu_dereference_raw(hlist_next_rcu(iter->node));
+>> >+
+>> >+	for (;;) {
+>> >+		if (iter->node) {
+>> >+			vsock = hlist_entry_safe(rcu_dereference_raw(iter->node),
+>> >+						 struct vhost_vsock, hash);
+>> >+			if (vsock->guest_cid)
+>> >+				break;
+>> >+			iter->node = 
+>> >rcu_dereference_raw(hlist_next_rcu(iter->node));
+>> >+			continue;
+>> >+		}
+>> >+		iter->index++;
+>> >+		if (iter->index >= HASH_SIZE(vhost_vsock_hash))
+>> >+			return NULL;
+>> >+
+>> >+		iter->node = rcu_dereference_raw(hlist_first_rcu(&vhost_vsock_hash[iter->index]));
+>> >+	}
+>> >+	return iter;
+>> >+}
+>> >+
+>> >+static void *vsock_start(struct seq_file *m, loff_t *pos)
+>> >+{
+>> >+	struct vsock_file_iter *iter = m->private;
+>> >+	loff_t l = 0;
+>> >+	void *t;
+>> >+
+>> >+	rcu_read_lock();
+>>
+>> Instead of keeping this rcu lock between vsock_start() and vsock_stop(),
+>> maybe it's better to make a dump here of the bindings (pid/cid), save it
+>> in an array, and iterate it in vsock_next().
+>
+>The start/stop of a seq_file() is made for taking locks. I do this with all
+>my code in ftrace. Yeah, there's a while loop between the two, but that's
+>just to fill the buffer. It's not that long and it never goes to userspace
+>between the two. You can even use this for spin locks (but I wouldn't
+>recommend doing it for raw ones).
 
->=20
-> Signed-off-by: Liming Sun <limings@nvidia.com>
-> ---
->  drivers/platform/mellanox/mlxbf-tmfifo.c | 11 ++++++++++-
->  1 file changed, 10 insertions(+), 1 deletion(-)
->=20
-> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c
-> b/drivers/platform/mellanox/mlxbf-tmfifo.c
-> index bbc4e71..38800e8 100644
-> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
-> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
-> @@ -294,6 +294,9 @@ static irqreturn_t mlxbf_tmfifo_irq_handler(int irq,
-> void *arg)
->  	if (vring->next_avail =3D=3D virtio16_to_cpu(vdev, vr->avail->idx))
->  		return NULL;
->=20
-> +	/* Make sure 'avail->idx' is visible already. */
-> +	virtio_rmb(false);
-> +
->  	idx =3D vring->next_avail % vr->num;
->  	head =3D virtio16_to_cpu(vdev, vr->avail->ring[idx]);
->  	if (WARN_ON(head >=3D vr->num))
-> @@ -322,7 +325,7 @@ static void mlxbf_tmfifo_release_desc(struct
-> mlxbf_tmfifo_vring *vring,
->  	 * done or not. Add a memory barrier here to make sure the update
-> above
->  	 * completes before updating the idx.
->  	 */
-> -	mb();
-> +	virtio_mb(false);
->  	vr->used->idx =3D cpu_to_virtio16(vdev, vr_idx + 1);  }
->=20
-> @@ -733,6 +736,12 @@ static bool mlxbf_tmfifo_rxtx_one_desc(struct
-> mlxbf_tmfifo_vring *vring,
->  		desc =3D NULL;
->  		fifo->vring[is_rx] =3D NULL;
->=20
-> +		/*
-> +		 * Make sure the load/store are in order before
-> +		 * returning back to virtio.
-> +		 */
-> +		virtio_mb(false);
-> +
->  		/* Notify upper layer that packet is done. */
->  		spin_lock_irqsave(&fifo->spin_lock[is_rx], flags);
->  		vring_interrupt(0, vring->vq);
-> --
-> 1.8.3.1
+Ah okay, thanks for the clarification!
+
+I was worried because building with `make C=2` I had these warnings:
+
+../drivers/vhost/vsock.c:944:13: warning: context imbalance in 'vsock_start' - wrong count at exit
+../drivers/vhost/vsock.c:963:13: warning: context imbalance in 'vsock_stop' - unexpected unlock
+
+Maybe we need to annotate the functions somehow.
+
+>
+>>
+>> >+
+>> >+	iter->index = -1;
+>> >+	iter->node = NULL;
+>> >+	t = vsock_next(m, iter, NULL);
+>> >+
+>> >+	for (; iter->index < HASH_SIZE(vhost_vsock_hash) && l < *pos;
+>> >+	     t = vsock_next(m, iter, &l))
+>> >+		;
+>>
+>> A while() maybe was more readable...
+>
+>Again, I just cut and pasted from my other code.
+>
+>If you have a good idea on how to implement this with netlink (something
+>that ss or netstat can dislpay), I think that's the best way to go.
+
+Okay, I'll take a look and get back to you.
+If it's too complicated, we can go ahead with this patch.
+
+Thanks,
+Stefano
 
