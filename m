@@ -2,179 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 247753765E5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:14:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAB143765EA
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:16:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237190AbhEGNPf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 09:15:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237134AbhEGNP0 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 09:15:26 -0400
-Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B701CC06138A
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 06:14:25 -0700 (PDT)
-Received: by mail-pf1-x429.google.com with SMTP id c17so7588253pfn.6
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 06:14:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=/iQHjQJIEusNn1tquHlPyPfKvKOnU6uAD3LtZICkSiM=;
-        b=Ntg96WjpZ1VistrBYqL1M+HK91mFEC+3LlO4WcHsmMOyYoAslkXmmt2h1ClxsM3Apb
-         W0RPjQkzmRQ6pAeshLswDxYI/yHhuHUvntGs7ECONjXx5tt/ikILaFPgozqnrKsSfYSK
-         y0Z3sfhDiGGkMJ4FClXIiU33vLsL8BM++f2IY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=/iQHjQJIEusNn1tquHlPyPfKvKOnU6uAD3LtZICkSiM=;
-        b=p9mLMzvxpVmvtQfJTnfggN1Sv1J8axRmCbT+RbJL6TGxHzKq8N5ZfmfVy4XsgvMrog
-         iWe+NqwGRNsxGGkyCkUjbIVZss/UE+OcjZvkxepDI/ehoR/LA7VIkmRU/f47Mqr+TQxV
-         PaZvasEFAvxrgLWwXYUefeDKAfhag0fcFUaNs2QzychSIwpl9IyxNxcqF//DDFBINgrn
-         N2j17BmkWub7cKTxP6bsU+X0+jIoLjFJwtScVlQTQcykekqL4BRU3jfJPF82RNhi3+58
-         ic+0evmZNcvDefbixPn7PpLUfFjTej9hvrd0fnnn3Ojr6t+VvtxmIK13mvE7f7dSynEH
-         XwdA==
-X-Gm-Message-State: AOAM533t1B8oWztHNT/FpNpE31dweaJfoGaPkf4cP8BcKK74zGtakLii
-        hqzOojy8V/BxYAVSBZJjMPuDGw==
-X-Google-Smtp-Source: ABdhPJweownY6VlR0g3o1Ae3IqbU2FAY+KMj3UbN7XuWvnzt3rtaswXISD0Xy/yW7E2bmE0y6nb0Ow==
-X-Received: by 2002:aa7:9191:0:b029:256:898f:150 with SMTP id x17-20020aa791910000b0290256898f0150mr10411116pfa.74.1620393265252;
-        Fri, 07 May 2021 06:14:25 -0700 (PDT)
-Received: from hsinyi-z840.tpe.corp.google.com ([2401:fa00:1:10:711f:8553:a124:a19])
-        by smtp.gmail.com with ESMTPSA id z29sm4656539pga.52.2021.05.07.06.14.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 06:14:24 -0700 (PDT)
-From:   Hsin-Yi Wang <hsinyi@chromium.org>
-To:     Wolfram Sang <wsa@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     linux-i2c@vger.kernel.org, Qii Wang <qii.wang@mediatek.com>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-mediatek@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown <broonie@kernel.org>,
-        Marek Szyprowski <m.szyprowski@samsung.com>,
-        Bibby Hsieh <bibby.hsieh@mediatek.com>,
-        Arnd Bergmann <arnd@arndb.de>
-Subject: [PATCH v21 5/5] arm64: dts: mt8183: add supply name for eeprom
-Date:   Fri,  7 May 2021 21:14:06 +0800
-Message-Id: <20210507131406.2224177-6-hsinyi@chromium.org>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-In-Reply-To: <20210507131406.2224177-1-hsinyi@chromium.org>
-References: <20210507131406.2224177-1-hsinyi@chromium.org>
+        id S233655AbhEGNRa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 09:17:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46352 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229886AbhEGNR1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 09:17:27 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E5AB61468;
+        Fri,  7 May 2021 13:16:27 +0000 (UTC)
+Date:   Fri, 7 May 2021 09:16:25 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+Cc:     mingo@redhat.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] tracing: Remove redundant assignment to event_var
+Message-ID: <20210507091625.0bcccf43@gandalf.local.home>
+In-Reply-To: <1620383030-70462-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <1620383030-70462-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add supplies for eeprom for mt8183 boards.
+On Fri,  7 May 2021 18:23:50 +0800
+Jiapeng Chong <jiapeng.chong@linux.alibaba.com> wrote:
 
-Signed-off-by: Hsin-Yi Wang <hsinyi@chromium.org>
----
- arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi | 4 ++++
- arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi  | 4 ++++
- 3 files changed, 12 insertions(+)
+> Variable event_var is set to 'ERR_PTR(-EINVAL)', but this value
+> is never read as it is overwritten or not used later on, hence
+> it is a redundant assignment and can be removed.
+> 
+> Clean up the following clang-analyzer warning:
+> 
+> kernel/trace/trace_events_hist.c:2437:21: warning: Value stored to
+> 'event_var' during its initialization is never read
+> [clang-analyzer-deadcode.DeadStores].
+> 
+> Reported-by: Abaci Robot <abaci@linux.alibaba.com>
+> Signed-off-by: Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
+> ---
+>  kernel/trace/trace_events_hist.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/kernel/trace/trace_events_hist.c b/kernel/trace/trace_events_hist.c
+> index c1abd63..b37342c 100644
+> --- a/kernel/trace/trace_events_hist.c
+> +++ b/kernel/trace/trace_events_hist.c
+> @@ -2434,7 +2434,7 @@ static struct trace_event_file *event_file(struct trace_array *tr,
+>  		      char *subsys_name, char *event_name, char *field_name)
+>  {
+>  	struct trace_array *tr = target_hist_data->event_file->tr;
+> -	struct hist_field *event_var = ERR_PTR(-EINVAL);
+> +	struct hist_field *event_var;
+>  	struct hist_trigger_data *hist_data;
+>  	unsigned int i, n, first = true;
+>  	struct field_var_hist *var_hist;
 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-index b442e38a3156..28966a65391b 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kakadu.dtsi
-@@ -88,11 +88,13 @@ &i2c2 {
- 	pinctrl-0 = <&i2c2_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcamio_reg>;
- 
- 	eeprom@58 {
- 		compatible = "atmel,24c32";
- 		reg = <0x58>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcama2_reg>;
- 	};
- };
- 
-@@ -101,11 +103,13 @@ &i2c4 {
- 	pinctrl-0 = <&i2c4_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcn18_reg>;
- 
- 	eeprom@54 {
- 		compatible = "atmel,24c32";
- 		reg = <0x54>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcn18_reg>;
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-index 2f5234a16ead..3aa79403c0c2 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-kodama.dtsi
-@@ -62,11 +62,13 @@ &i2c2 {
- 	pinctrl-0 = <&i2c2_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcamio_reg>;
- 
- 	eeprom@58 {
- 		compatible = "atmel,24c64";
- 		reg = <0x58>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcamio_reg>;
- 	};
- };
- 
-@@ -75,11 +77,13 @@ &i2c4 {
- 	pinctrl-0 = <&i2c4_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcn18_reg>;
- 
- 	eeprom@54 {
- 		compatible = "atmel,24c64";
- 		reg = <0x54>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcn18_reg>;
- 	};
- };
- 
-diff --git a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-index fbc471ccf805..30c183c96a54 100644
---- a/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-+++ b/arch/arm64/boot/dts/mediatek/mt8183-kukui-krane.dtsi
-@@ -71,11 +71,13 @@ &i2c2 {
- 	pinctrl-0 = <&i2c2_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcamio_reg>;
- 
- 	eeprom@58 {
- 		compatible = "atmel,24c32";
- 		reg = <0x58>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcama2_reg>;
- 	};
- };
- 
-@@ -84,11 +86,13 @@ &i2c4 {
- 	pinctrl-0 = <&i2c4_pins>;
- 	status = "okay";
- 	clock-frequency = <400000>;
-+	vbus-supply = <&mt6358_vcn18_reg>;
- 
- 	eeprom@54 {
- 		compatible = "atmel,24c32";
- 		reg = <0x54>;
- 		pagesize = <32>;
-+		vcc-supply = <&mt6358_vcn18_reg>;
- 	};
- };
- 
--- 
-2.31.1.607.g51e8a6a459-goog
+Thanks, but if you are going to make this change, please move the
+declaration of event_var below (or above) key_field, as their names are
+both the same size in length and are of the same type. This keeps the
+"upside-down x-mas tree" look of the declarations.
 
+-- Steve
