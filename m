@@ -2,113 +2,272 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F28AC376490
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4BDC376497
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234744AbhEGLka (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 07:40:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47108 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234661AbhEGLk3 (ORCPT
+        id S234844AbhEGLl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 07:41:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55079 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234518AbhEGLlz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 07:40:29 -0400
-Received: from mail-ua1-x936.google.com (mail-ua1-x936.google.com [IPv6:2607:f8b0:4864:20::936])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D414EC061761
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 04:39:26 -0700 (PDT)
-Received: by mail-ua1-x936.google.com with SMTP id i5so2724210uap.5
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 04:39:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=BOAvVsXjzC/DT4HN7XbmniRbk3KgKOLcZddilQid+b0=;
-        b=PIIl0qvKO5RPmusfE2bol16/Pw5JNmuoSs6hZn2V8OtFm8K00HUNIlb56tUbCe2DUN
-         uacoBtystMHLIu5IE7HyUfteV7sK/CNfe5YIgTjovwItZpo4aUC86HTTm0f0Xx6dome+
-         CyFTEVncVeg0q9INUbd3q7ggxq5nam6V2peNOG5wIYO2Fgsy2Fru1gntgi9EgclVg2g7
-         N+rb1m8fdWRTgd/ixqLAiNiuFNt4xvx+AWHWf0UhI3aHqkluLylcw1LJUmu/0M1WJOCa
-         wtyEr2NHbQsmJLc6heN4B9r+XQdjDKMJS0zqg3zpVYN3W41jMm1Yj5R9jyHQR4KcXrCi
-         /UrA==
+        Fri, 7 May 2021 07:41:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620387656;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=LspZM+MkqQ3DiGR0xkhvj8Q5WxoRLe1cqgKeSBtf40g=;
+        b=DJtBG7rSmTFZoUwLGRZaXuQxLalkB90R63In9pnNz9UnWpwJcTqQDqdmm/eCfKTyL5otiX
+        Jh23u23aRv/VllkudIUKKq/XME6SeL1czvROJ83hScixc7ynuFOeJubdZk76bcKjJooiuV
+        5tqAKfVwYoVRKG4cWZXhyGd78uKM1o0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-419-dHIHh6itMBGYao3NHNi-wQ-1; Fri, 07 May 2021 07:40:54 -0400
+X-MC-Unique: dHIHh6itMBGYao3NHNi-wQ-1
+Received: by mail-ed1-f69.google.com with SMTP id d6-20020a0564020786b0290387927a37e2so4282897edy.10
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 04:40:54 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=BOAvVsXjzC/DT4HN7XbmniRbk3KgKOLcZddilQid+b0=;
-        b=nWttWnVN0yU6tNI6XO+DuilAkj2noXTKaLhmCdqeNBoeg+I6oSxHQJHKSoftJeeRR7
-         LTR2/iie+zMj4enUYKhzmBX9/6fRJ7Ppq6krhR/Rsz9PCAyhAK0e9ERoHFWwHoV5aSJQ
-         qaAvEfWHdgKQRWvSk3HAyrf3W+p2cyrO0OXrxrdnERaguhpXQsmlt/5d7+W84oX2tx/O
-         M6oOZgK1wmtbxYEKpN5DJ4JirryHUCFULE+03ekMSrHaRwMelZ6U0ChHhwtugpGF6oV7
-         CFLoXGYscwEDnG7NrU3pDlDtZOdlQDW2dC5jhivxTHq4QzWBpMAMNOW/ko0ylZZGXWXo
-         N9Hg==
-X-Gm-Message-State: AOAM530g0HfJlsfyddGCclmwyzPKBxsnh7bMe47uRrReNVPMBHInvvAp
-        UB11FaJopASQTqbUCrvgtPmWRwiuiz+iItW2kJ056A==
-X-Google-Smtp-Source: ABdhPJwTeUB+QWASRpKFyQIvFIFoIUX4/chhdSv+mIuPXh7ytxq6tKVBBGmRl9/fY6ULg5uqL6Gmuu4oJlD5MWew6ms=
-X-Received: by 2002:ab0:5fdb:: with SMTP id g27mr8005163uaj.15.1620387565882;
- Fri, 07 May 2021 04:39:25 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LspZM+MkqQ3DiGR0xkhvj8Q5WxoRLe1cqgKeSBtf40g=;
+        b=Yi0umKEXqVFy7u0OWfPkJ8MHEZAXigQ/WtOhBRjz9NaJIEwrVTa/JvSGWc6ZNxDCc7
+         bqYXhjFaG0AIgQI9VqNHMDCwj9uZIrSFwfcLorgEY4uBC1uG62Hah9VZCtrmWcBJbhFn
+         mdr5+YvdooBdAznsBp6gOrOMJrrLhlM5vdL9OFznVAOCgMmYUuP1GWU+alPWe4+8M0/3
+         qcghIWsB6yq7Wa18TXD1Pb9G5EsxiLQuft0D31w/b1LxlVt2r2ZTurtfEGRO8t7LfUnX
+         HzZiI7fjxNf+1VH+/0lCluV5I71L7GPm3HTlBOdz7zeDexnbiebGfHS7wX1R8gTwJ9rd
+         OKSQ==
+X-Gm-Message-State: AOAM532Pogdw+zZN3T2qnjnTpD0q8bl/AVBInPWdCUeLQkoIFbTc5fOh
+        v1G+tDxL7Lh3gm+JqNXTpM/DQXUe+AXJ6EH5bmuoa7M+faNzIgCtej91DjW/Fk7LLIvM4G25ayf
+        UqPg8v8oFUBTs0w8SWNGKekbz
+X-Received: by 2002:a17:906:a103:: with SMTP id t3mr9641307ejy.334.1620387653028;
+        Fri, 07 May 2021 04:40:53 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJywdR6MRssJqrq0gs7f9Bj2ljf47LHUQteWxO5byrxHZ0BFN+xLVaNVcjuKxvdjBE/ZCBSWWw==
+X-Received: by 2002:a17:906:a103:: with SMTP id t3mr9641289ejy.334.1620387652773;
+        Fri, 07 May 2021 04:40:52 -0700 (PDT)
+Received: from localhost.localdomain ([2a02:8308:b105:dd00:277b:6436:24db:9466])
+        by smtp.gmail.com with ESMTPSA id l26sm3349312ejz.27.2021.05.07.04.40.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 04:40:52 -0700 (PDT)
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+To:     linux-security-module@vger.kernel.org,
+        James Morris <jmorris@namei.org>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        selinux@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-fsdevel@vger.kernel.org, bpf@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] lockdown,selinux: fix bogus SELinux lockdown permission checks
+Date:   Fri,  7 May 2021 13:40:48 +0200
+Message-Id: <20210507114048.138933-1-omosnace@redhat.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-References: <20210320045720.11872-1-chgokhl@gmail.com> <CAPDyKFqXtKPngfnQZXXaF=rvqw0=nWzDc7P++QxNHPwGHHSxUA@mail.gmail.com>
- <CAMjpFAW0D12vxNSYLcwSWxf-zB+toT5cmiQ8mtUUE+nzWMJZ3g@mail.gmail.com> <CAPDyKFqqRY3rj9zzzDvPTCO68abfQ+G-siAJVgdPuESUwko28A@mail.gmail.com>
-In-Reply-To: <CAPDyKFqqRY3rj9zzzDvPTCO68abfQ+G-siAJVgdPuESUwko28A@mail.gmail.com>
-From:   Ulf Hansson <ulf.hansson@linaro.org>
-Date:   Fri, 7 May 2021 13:38:49 +0200
-Message-ID: <CAPDyKFoAQX3xe0=LYhbScx-bs97imGgnVJCpzvTirxszcUY03w@mail.gmail.com>
-Subject: Re: [PATCH] mmc: core: Mark mmc_host device with pm_runtime_no_callbacks
-To:     chgokhl@163.com
-Cc:     linux-mmc <linux-mmc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        kehuanlin@fishsemi.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 23 Mar 2021 at 15:00, Ulf Hansson <ulf.hansson@linaro.org> wrote:
->
-> On Tue, 23 Mar 2021 at 11:49, hieagle <chgokhl@gmail.com> wrote:
-> >
-> > We encounter a resume issue in our device sometimes. The mmc device's
-> > parent list is
-> > mmc0:0001->mmc_host mmc0->fa630000.mmc->soc in our soc. We found in the blow
-> > case with mmc0->power.disable_depth=0 the mmc_runtime_resume will be skipped,
-> > which cause subsequent mmc command fail.
-> >
-> > mmc_get_card(mmc0:0001)->pm_runtime_get_sync->rpm_resume(mmc0:0001)->rpm_resume(mmc0)
-> > The rpm_resume(mmc0) return -ENOSYS due to no callback and
-> > mmc0->power.runtime_status
-> > keep RPM_SUSPENDED. This lead to rpm_resume(mmc0:0001) return -EBUSY and skip
-> > rpm_callback which call mmc_runtime_resume, the mmc is still in
-> > suspended and the
-> > subsequent mmc command fail.
-> >
-> > [  198.856157] Call trace:
-> > [  198.858917] [<ffffff800808bd9c>] dump_backtrace+0x0/0x1cc
-> > [  198.864966] [<ffffff800808bf7c>] show_stack+0x14/0x1c
-> > [  198.870627] [<ffffff8008400e88>] dump_stack+0xa8/0xe0
-> > [  198.876288] [<ffffff800854d38c>] rpm_resume+0x850/0x938
-> > [  198.882141] [<ffffff800854cd8c>] rpm_resume+0x250/0x938
-> > [  198.887994] [<ffffff800854d4c4>] __pm_runtime_resume+0x50/0x74
-> > [  198.894530] [<ffffff80087b9e64>] mmc_get_card+0x3c/0xb8
-> > [  198.900388] [<ffffff80087cd2e0>] mmc_blk_issue_rq+0x2b0/0x4d8
-> > [  198.906824] [<ffffff80087cd5e4>] mmc_queue_thread+0xdc/0x198
-> > [  198.913165] [<ffffff80080d4b2c>] kthread+0xec/0x100
-> > [  198.918632] [<ffffff8008083890>] ret_from_fork+0x10/0x40
-> > [  198.924582] mmc0  callback           (null)
-> > [  198.935837] mmcblk mmc0:0001: __pm_runtime_resume ret -16
-> >
-> > Mark mmc_host device with pm_runtime_no_callbacks will solve the issue.
-> > Thanks.
-> > Huanlin Ke
->
-> Thanks for sharing more details! I have to admit, that this sounds
-> quite weird to me. I wonder if this is a problem that deserves to be
-> fixed in the runtime PM core....
->
-> Let me have a closer look a get back to you again. Please be patient
-> though, I have a busy week in front of me.
+Commit 59438b46471a ("security,lockdown,selinux: implement SELinux
+lockdown") added an implementation of the locked_down LSM hook to
+SELinux, with the aim to restrict which domains are allowed to perform
+operations that would breach lockdown.
 
-Just wanted to notify you that I haven't forgotten. I will look into
-this beginning of the next week.
+However, in several places the security_locked_down() hook is called in
+situations where the current task isn't doing any action that would
+directly breach lockdown, leading to SELinux checks that are basically
+bogus.
 
-[...]
+Since in most of these situations converting the callers such that
+security_locked_down() is called in a context where the current task
+would be meaningful for SELinux is impossible or very non-trivial (and
+could lead to TOCTOU issues for the classic Lockdown LSM
+implementation), fix this by adding a separate hook
+security_locked_down_globally() that is to be used in such situations
+and convert all these problematic callers to call this hook instead. The
+new hook is then left unimplemented in SELinux and in Lockdown LSM it is
+backed by the same implementation as the locked_down hook.
 
-Kind regards
-Uffe
+The callers migrated to the new hook are:
+1. arch/powerpc/xmon/xmon.c
+     Here the hook seems to be called from non-task context and is only
+     used for redacting some sensitive values from output sent to
+     userspace.
+2. fs/tracefs/inode.c:tracefs_create_file()
+     Here the call is used to prevent creating new tracefs entries when
+     the kernel is locked down. Assumes that locking down is one-way -
+     i.e. if the hook returns non-zero once, it will never return zero
+     again, thus no point in creating these files.
+3. kernel/trace/bpf_trace.c:bpf_probe_read_kernel{,_str}_common()
+     Called when a BPF program calls a helper that could leak kernel
+     memory. The task context is not relevant here, since the program
+     may very well be run in the context of a different task than the
+     consumer of the data.
+     See: https://bugzilla.redhat.com/show_bug.cgi?id=1955585
+4. net/xfrm/xfrm_user.c:copy_to_user_*()
+     Here a cryptographic secret is redacted based on the value returned
+     from the hook. There are two possible actions that may lead here:
+     a) A netlink message XFRM_MSG_GETSA with NLM_F_DUMP set - here the
+        task context is relevant, since the dumped data is sent back to
+        the current task.
+     b) When deleting an SA via XFRM_MSG_DELSA, the dumped SAs are
+        broadcasted to tasks subscribed to XFRM events - here the
+        SELinux check is not meningful as the current task's creds do
+        not represent the tasks that could potentially see the secret.
+     It really doesn't seem worth it to try to preserve the check in the
+     a) case, since the eventual leak can be circumvented anyway via b),
+     plus there is no way for the task to indicate that it doesn't care
+     about the actual key value, so the check could generate a lot of
+     noise.
+
+Fixes: 59438b46471a ("security,lockdown,selinux: implement SELinux lockdown")
+Signed-off-by: Ondrej Mosnacek <omosnace@redhat.com>
+---
+ arch/powerpc/xmon/xmon.c      | 4 ++--
+ fs/tracefs/inode.c            | 2 +-
+ include/linux/lsm_hook_defs.h | 1 +
+ include/linux/security.h      | 5 +++++
+ kernel/trace/bpf_trace.c      | 4 ++--
+ net/xfrm/xfrm_user.c          | 2 +-
+ security/lockdown/lockdown.c  | 1 +
+ security/security.c           | 6 ++++++
+ 8 files changed, 19 insertions(+), 6 deletions(-)
+
+diff --git a/arch/powerpc/xmon/xmon.c b/arch/powerpc/xmon/xmon.c
+index 3fe37495f63d..a4bad825d424 100644
+--- a/arch/powerpc/xmon/xmon.c
++++ b/arch/powerpc/xmon/xmon.c
+@@ -298,7 +298,7 @@ static bool xmon_is_locked_down(void)
+ 	static bool lockdown;
+ 
+ 	if (!lockdown) {
+-		lockdown = !!security_locked_down(LOCKDOWN_XMON_RW);
++		lockdown = !!security_locked_down_globally(LOCKDOWN_XMON_RW);
+ 		if (lockdown) {
+ 			printf("xmon: Disabled due to kernel lockdown\n");
+ 			xmon_is_ro = true;
+@@ -306,7 +306,7 @@ static bool xmon_is_locked_down(void)
+ 	}
+ 
+ 	if (!xmon_is_ro) {
+-		xmon_is_ro = !!security_locked_down(LOCKDOWN_XMON_WR);
++		xmon_is_ro = !!security_locked_down_globally(LOCKDOWN_XMON_WR);
+ 		if (xmon_is_ro)
+ 			printf("xmon: Read-only due to kernel lockdown\n");
+ 	}
+diff --git a/fs/tracefs/inode.c b/fs/tracefs/inode.c
+index 4b83cbded559..07241435efec 100644
+--- a/fs/tracefs/inode.c
++++ b/fs/tracefs/inode.c
+@@ -396,7 +396,7 @@ struct dentry *tracefs_create_file(const char *name, umode_t mode,
+ 	struct dentry *dentry;
+ 	struct inode *inode;
+ 
+-	if (security_locked_down(LOCKDOWN_TRACEFS))
++	if (security_locked_down_globally(LOCKDOWN_TRACEFS))
+ 		return NULL;
+ 
+ 	if (!(mode & S_IFMT))
+diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
+index 477a597db013..d6e2a6b59277 100644
+--- a/include/linux/lsm_hook_defs.h
++++ b/include/linux/lsm_hook_defs.h
+@@ -390,6 +390,7 @@ LSM_HOOK(void, LSM_RET_VOID, bpf_prog_free_security, struct bpf_prog_aux *aux)
+ #endif /* CONFIG_BPF_SYSCALL */
+ 
+ LSM_HOOK(int, 0, locked_down, enum lockdown_reason what)
++LSM_HOOK(int, 0, locked_down_globally, enum lockdown_reason what)
+ 
+ #ifdef CONFIG_PERF_EVENTS
+ LSM_HOOK(int, 0, perf_event_open, struct perf_event_attr *attr, int type)
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 8aeebd6646dc..e683dee84f46 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -468,6 +468,7 @@ int security_inode_notifysecctx(struct inode *inode, void *ctx, u32 ctxlen);
+ int security_inode_setsecctx(struct dentry *dentry, void *ctx, u32 ctxlen);
+ int security_inode_getsecctx(struct inode *inode, void **ctx, u32 *ctxlen);
+ int security_locked_down(enum lockdown_reason what);
++int security_locked_down_globally(enum lockdown_reason what);
+ #else /* CONFIG_SECURITY */
+ 
+ static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
+@@ -1329,6 +1330,10 @@ static inline int security_locked_down(enum lockdown_reason what)
+ {
+ 	return 0;
+ }
++static inline int security_locked_down_globally(enum lockdown_reason what)
++{
++	return 0;
++}
+ #endif	/* CONFIG_SECURITY */
+ 
+ #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
+diff --git a/kernel/trace/bpf_trace.c b/kernel/trace/bpf_trace.c
+index b0c45d923f0f..f43bca95b261 100644
+--- a/kernel/trace/bpf_trace.c
++++ b/kernel/trace/bpf_trace.c
+@@ -215,7 +215,7 @@ const struct bpf_func_proto bpf_probe_read_user_str_proto = {
+ static __always_inline int
+ bpf_probe_read_kernel_common(void *dst, u32 size, const void *unsafe_ptr)
+ {
+-	int ret = security_locked_down(LOCKDOWN_BPF_READ);
++	int ret = security_locked_down_globally(LOCKDOWN_BPF_READ);
+ 
+ 	if (unlikely(ret < 0))
+ 		goto fail;
+@@ -246,7 +246,7 @@ const struct bpf_func_proto bpf_probe_read_kernel_proto = {
+ static __always_inline int
+ bpf_probe_read_kernel_str_common(void *dst, u32 size, const void *unsafe_ptr)
+ {
+-	int ret = security_locked_down(LOCKDOWN_BPF_READ);
++	int ret = security_locked_down_globally(LOCKDOWN_BPF_READ);
+ 
+ 	if (unlikely(ret < 0))
+ 		goto fail;
+diff --git a/net/xfrm/xfrm_user.c b/net/xfrm/xfrm_user.c
+index 5a0ef4361e43..5a56f74262d8 100644
+--- a/net/xfrm/xfrm_user.c
++++ b/net/xfrm/xfrm_user.c
+@@ -851,7 +851,7 @@ static int copy_user_offload(struct xfrm_state_offload *xso, struct sk_buff *skb
+ static bool xfrm_redact(void)
+ {
+ 	return IS_ENABLED(CONFIG_SECURITY) &&
+-		security_locked_down(LOCKDOWN_XFRM_SECRET);
++		security_locked_down_globally(LOCKDOWN_XFRM_SECRET);
+ }
+ 
+ static int copy_to_user_auth(struct xfrm_algo_auth *auth, struct sk_buff *skb)
+diff --git a/security/lockdown/lockdown.c b/security/lockdown/lockdown.c
+index 87cbdc64d272..4ac172eaa4b7 100644
+--- a/security/lockdown/lockdown.c
++++ b/security/lockdown/lockdown.c
+@@ -73,6 +73,7 @@ static int lockdown_is_locked_down(enum lockdown_reason what)
+ 
+ static struct security_hook_list lockdown_hooks[] __lsm_ro_after_init = {
+ 	LSM_HOOK_INIT(locked_down, lockdown_is_locked_down),
++	LSM_HOOK_INIT(locked_down_globally, lockdown_is_locked_down),
+ };
+ 
+ static int __init lockdown_lsm_init(void)
+diff --git a/security/security.c b/security/security.c
+index 5ac96b16f8fa..b9b990681ae9 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -2547,6 +2547,12 @@ int security_locked_down(enum lockdown_reason what)
+ }
+ EXPORT_SYMBOL(security_locked_down);
+ 
++int security_locked_down_globally(enum lockdown_reason what)
++{
++	return call_int_hook(locked_down_globally, 0, what);
++}
++EXPORT_SYMBOL(security_locked_down_globally);
++
+ #ifdef CONFIG_PERF_EVENTS
+ int security_perf_event_open(struct perf_event_attr *attr, int type)
+ {
+-- 
+2.31.1
+
