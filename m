@@ -2,168 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5351B37665D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1254A376660
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 15:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237280AbhEGNqb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 09:46:31 -0400
-Received: from mail.hallyn.com ([178.63.66.53]:54666 "EHLO mail.hallyn.com"
+        id S235973AbhEGNsI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 09:48:08 -0400
+Received: from foss.arm.com ([217.140.110.172]:59764 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234951AbhEGNqa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 09:46:30 -0400
-Received: by mail.hallyn.com (Postfix, from userid 1001)
-        id D61B0A52; Fri,  7 May 2021 08:45:28 -0500 (CDT)
-Date:   Fri, 7 May 2021 08:45:28 -0500
-From:   "Serge E. Hallyn" <serge@hallyn.com>
-To:     Vasily Averin <vvs@virtuozzo.com>
-Cc:     cgroups@vger.kernel.org, Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>,
-        Roman Gushchin <guro@fb.com>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Tejun Heo <tj@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Zefan Li <lizefan.x@bytedance.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Serge Hallyn <serge@hallyn.com>,
-        Andrei Vagin <avagin@gmail.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 07/16] memcg: enable accounting for new namesapces and
- struct nsproxy
-Message-ID: <20210507134528.GA22665@mail.hallyn.com>
-References: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com>
- <fcec18da-0e46-a29e-0a67-26bd024146b1@virtuozzo.com>
+        id S234951AbhEGNsG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 09:48:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CFFFF106F;
+        Fri,  7 May 2021 06:47:05 -0700 (PDT)
+Received: from e113632-lin (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5F8413F73B;
+        Fri,  7 May 2021 06:47:04 -0700 (PDT)
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Morten Rasmussen <morten.rasmussen@arm.com>,
+        Qais Yousef <qais.yousef@arm.com>,
+        Quentin Perret <qperret@google.com>,
+        Pavan Kondeti <pkondeti@codeaurora.org>,
+        Rik van Riel <riel@surriel.com>,
+        Lingutla Chandrasekhar <clingutla@codeaurora.org>
+Subject: Re: [PATCH 2/2] sched/fair: Relax task_hot() for misfit tasks
+In-Reply-To: <CAKfTPtA+w1Euepw+MP0o1EGYhoohpQm3jJP+WFQrmZ6Zet+F3g@mail.gmail.com>
+References: <20210415175846.494385-1-valentin.schneider@arm.com> <20210415175846.494385-3-valentin.schneider@arm.com> <20210416135113.GA16445@vingu-book> <87blaakxji.mognet@arm.com> <CAKfTPtCLNeSzMLO_7uhj13k6CgtzAMhcW5aXJTYUOSYJZi220w@mail.gmail.com> <878s5bvrij.mognet@arm.com> <CAKfTPtA+w1Euepw+MP0o1EGYhoohpQm3jJP+WFQrmZ6Zet+F3g@mail.gmail.com>
+Date:   Fri, 07 May 2021 14:46:59 +0100
+Message-ID: <87y2cqirl8.mognet@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <fcec18da-0e46-a29e-0a67-26bd024146b1@virtuozzo.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28, 2021 at 09:52:43AM +0300, Vasily Averin wrote:
-> Container admin can create new namespaces and force kernel to allocate
-> up to several pages of memory for the namespaces and its associated
-> structures.
-> Net and uts namespaces have enabled accounting for such allocations.
-> It makes sense to account for rest ones to restrict the host's memory
-> consumption from inside the memcg-limited container.
-> 
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
 
-makes sense.
+Hi Vincent, apologies for the belated reply
 
-Acked-by: Serge Hallyn <serge@hallyn.com>
+On 30/04/21 08:58, Vincent Guittot wrote:
+> On Wed, 21 Apr 2021 at 12:52, Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>> On 20/04/21 16:33, Vincent Guittot wrote:
+>> > Is it something that happens often or just a sporadic/transient state
+>> > ? I mean does it really worth the extra complexity and do you see
+>> > performance improvement ?
+>> >
+>>
+>> "Unfortunately" yes, this is a relatively common scenario when running "1
+>> big task per CPU" types of workloads. The expected behaviour for big.LITTLE
+>> systems is to upmigrate tasks stuck on the LITTLE CPUs as soon as a big CPU
+>> becomes free, usually via newidle balance (which, since they process work
+>> faster than the LITTLEs, is bound to happen), and an extra task being
+>> enqueued at "the wrong time" can prevent this from happening.
+>>
+>> This usually means a misfit task can take a few dozen extra ms than it
+>
+> A few dozens is quite long. With a big core being idle, it should try
+> every 8ms on a quad x quad system and I suspect the next try will be
+> during the next tick. Would be good to understand why it has to wait
+> so much
+>
 
-> ---
->  fs/namespace.c            | 2 +-
->  ipc/namespace.c           | 2 +-
->  kernel/cgroup/namespace.c | 2 +-
->  kernel/nsproxy.c          | 2 +-
->  kernel/pid_namespace.c    | 2 +-
->  kernel/time/namespace.c   | 4 ++--
->  kernel/user_namespace.c   | 2 +-
->  7 files changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/namespace.c b/fs/namespace.c
-> index 56bb5a5..5ecfa349 100644
-> --- a/fs/namespace.c
-> +++ b/fs/namespace.c
-> @@ -3286,7 +3286,7 @@ static struct mnt_namespace *alloc_mnt_ns(struct user_namespace *user_ns, bool a
->  	if (!ucounts)
->  		return ERR_PTR(-ENOSPC);
->  
-> -	new_ns = kzalloc(sizeof(struct mnt_namespace), GFP_KERNEL);
-> +	new_ns = kzalloc(sizeof(struct mnt_namespace), GFP_KERNEL_ACCOUNT);
->  	if (!new_ns) {
->  		dec_mnt_namespaces(ucounts);
->  		return ERR_PTR(-ENOMEM);
-> diff --git a/ipc/namespace.c b/ipc/namespace.c
-> index 7bd0766..ae83f0f 100644
-> --- a/ipc/namespace.c
-> +++ b/ipc/namespace.c
-> @@ -42,7 +42,7 @@ static struct ipc_namespace *create_ipc_ns(struct user_namespace *user_ns,
->  		goto fail;
->  
->  	err = -ENOMEM;
-> -	ns = kzalloc(sizeof(struct ipc_namespace), GFP_KERNEL);
-> +	ns = kzalloc(sizeof(struct ipc_namespace), GFP_KERNEL_ACCOUNT);
->  	if (ns == NULL)
->  		goto fail_dec;
->  
-> diff --git a/kernel/cgroup/namespace.c b/kernel/cgroup/namespace.c
-> index f5e8828..0d5c298 100644
-> --- a/kernel/cgroup/namespace.c
-> +++ b/kernel/cgroup/namespace.c
-> @@ -24,7 +24,7 @@ static struct cgroup_namespace *alloc_cgroup_ns(void)
->  	struct cgroup_namespace *new_ns;
->  	int ret;
->  
-> -	new_ns = kzalloc(sizeof(struct cgroup_namespace), GFP_KERNEL);
-> +	new_ns = kzalloc(sizeof(struct cgroup_namespace), GFP_KERNEL_ACCOUNT);
->  	if (!new_ns)
->  		return ERR_PTR(-ENOMEM);
->  	ret = ns_alloc_inum(&new_ns->ns);
-> diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
-> index abc01fc..eec72ca 100644
-> --- a/kernel/nsproxy.c
-> +++ b/kernel/nsproxy.c
-> @@ -568,6 +568,6 @@ static void commit_nsset(struct nsset *nsset)
->  
->  int __init nsproxy_cache_init(void)
->  {
-> -	nsproxy_cachep = KMEM_CACHE(nsproxy, SLAB_PANIC);
-> +	nsproxy_cachep = KMEM_CACHE(nsproxy, SLAB_PANIC|SLAB_ACCOUNT);
->  	return 0;
->  }
-> diff --git a/kernel/pid_namespace.c b/kernel/pid_namespace.c
-> index ca43239..6cd6715 100644
-> --- a/kernel/pid_namespace.c
-> +++ b/kernel/pid_namespace.c
-> @@ -449,7 +449,7 @@ static struct user_namespace *pidns_owner(struct ns_common *ns)
->  
->  static __init int pid_namespaces_init(void)
->  {
-> -	pid_ns_cachep = KMEM_CACHE(pid_namespace, SLAB_PANIC);
-> +	pid_ns_cachep = KMEM_CACHE(pid_namespace, SLAB_PANIC | SLAB_ACCOUNT);
->  
->  #ifdef CONFIG_CHECKPOINT_RESTORE
->  	register_sysctl_paths(kern_path, pid_ns_ctl_table);
-> diff --git a/kernel/time/namespace.c b/kernel/time/namespace.c
-> index 12eab0d..aec8328 100644
-> --- a/kernel/time/namespace.c
-> +++ b/kernel/time/namespace.c
-> @@ -88,13 +88,13 @@ static struct time_namespace *clone_time_ns(struct user_namespace *user_ns,
->  		goto fail;
->  
->  	err = -ENOMEM;
-> -	ns = kmalloc(sizeof(*ns), GFP_KERNEL);
-> +	ns = kmalloc(sizeof(*ns), GFP_KERNEL_ACCOUNT);
->  	if (!ns)
->  		goto fail_dec;
->  
->  	refcount_set(&ns->ns.count, 1);
->  
-> -	ns->vvar_page = alloc_page(GFP_KERNEL | __GFP_ZERO);
-> +	ns->vvar_page = alloc_page(GFP_KERNEL_ACCOUNT | __GFP_ZERO);
->  	if (!ns->vvar_page)
->  		goto fail_free;
->  
-> diff --git a/kernel/user_namespace.c b/kernel/user_namespace.c
-> index 9a4b980..9c6a42b 100644
-> --- a/kernel/user_namespace.c
-> +++ b/kernel/user_namespace.c
-> @@ -1378,7 +1378,7 @@ static struct user_namespace *userns_owner(struct ns_common *ns)
->  
->  static __init int user_namespaces_init(void)
->  {
-> -	user_ns_cachep = KMEM_CACHE(user_namespace, SLAB_PANIC);
-> +	user_ns_cachep = KMEM_CACHE(user_namespace, SLAB_PANIC | SLAB_ACCOUNT);
->  	return 0;
->  }
->  subsys_initcall(user_namespaces_init);
-> -- 
-> 1.8.3.1
+True, IIRC this was mostly due to a compound effect of the different issues
+I've described in that thread (and the previous one). Now that
+
+  9bcb959d05ee ("sched/fair: Ignore percpu threads for imbalance pulls")
+
+is in, I'll re-run some tests against upstream and see how we fare.
