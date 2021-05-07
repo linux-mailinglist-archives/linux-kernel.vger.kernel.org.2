@@ -2,24 +2,24 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B606C375EBB
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 04:11:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4ED97375EB8
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 04:11:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234349AbhEGCMl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 22:12:41 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:59263 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S232420AbhEGCMg (ORCPT
+        id S234315AbhEGCMh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 22:12:37 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:40264 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S233728AbhEGCMe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 22:12:36 -0400
-X-UUID: 66ec45a462de4c40beea95eed277a073-20210507
-X-UUID: 66ec45a462de4c40beea95eed277a073-20210507
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
+        Thu, 6 May 2021 22:12:34 -0400
+X-UUID: 6a980f108d9b4e22b1ca27b4896adfda-20210507
+X-UUID: 6a980f108d9b4e22b1ca27b4896adfda-20210507
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
         (envelope-from <chunfeng.yun@mediatek.com>)
-        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 425345166; Fri, 07 May 2021 10:11:30 +0800
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 2097861120; Fri, 07 May 2021 10:11:31 +0800
 Received: from mtkcas11.mediatek.inc (172.21.101.40) by
- mtkmbs06n1.mediatek.inc (172.21.101.129) with Microsoft SMTP Server (TLS) id
+ mtkmbs06n2.mediatek.inc (172.21.101.130) with Microsoft SMTP Server (TLS) id
  15.0.1497.2; Fri, 7 May 2021 10:11:29 +0800
 Received: from mtkslt301.mediatek.inc (10.21.14.114) by mtkcas11.mediatek.inc
  (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
@@ -35,58 +35,44 @@ CC:     Chunfeng Yun <chunfeng.yun@mediatek.com>,
         <linux-kernel@vger.kernel.org>, Ikjoon Jang <ikjn@chromium.org>,
         Eddie Hung <eddie.hung@mediatek.com>,
         Sergei Shtylyov <sergei.shtylyov@gmail.com>
-Subject: [PATCH v3 1/4] usb: xhci-mtk: use bitfield instead of bool
-Date:   Fri, 7 May 2021 10:11:24 +0800
-Message-ID: <20210507021127.54717-1-chunfeng.yun@mediatek.com>
+Subject: [PATCH v3 2/4] usb: xhci-mtk: remove unnecessary setting of has_ippc
+Date:   Fri, 7 May 2021 10:11:25 +0800
+Message-ID: <20210507021127.54717-2-chunfeng.yun@mediatek.com>
 X-Mailer: git-send-email 2.18.0
+In-Reply-To: <20210507021127.54717-1-chunfeng.yun@mediatek.com>
+References: <20210507021127.54717-1-chunfeng.yun@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain
+X-TM-SNTS-SMTP: EDB69650B5819A47EFB3C763348CDA24389B7BFCA6749B257CB08F83C37B88772000:8
 X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use bitfield instead of bool in struct
-
-Refer to coding-style.rst 17) Using bool:
-"If a structure has many true/false values, consider consolidating
-them into a bitfield with 1 bit members, or using an appropriate
-fixed width type, such as u8."
+Due to @has_ippc's default value is 0, no need set it again if fail
+to get ippc base address
 
 Signed-off-by: Chunfeng Yun <chunfeng.yun@mediatek.com>
 ---
-v3: split @has_ippc out into anather patch suggested by Greg
-v2: add more changelog suggested by Greg
+v3: new patch suggested by Greg
+    fix typo suggested by Sergei
 ---
- drivers/usb/host/xhci-mtk.h | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ drivers/usb/host/xhci-mtk.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-diff --git a/drivers/usb/host/xhci-mtk.h b/drivers/usb/host/xhci-mtk.h
-index cd3a37bb73e6..94a59b3d178f 100644
---- a/drivers/usb/host/xhci-mtk.h
-+++ b/drivers/usb/host/xhci-mtk.h
-@@ -138,17 +138,17 @@ struct xhci_hcd_mtk {
- 	struct mu3h_sch_bw_info *sch_array;
- 	struct list_head bw_ep_chk_list;
- 	struct mu3c_ippc_regs __iomem *ippc_regs;
--	bool has_ippc;
- 	int num_u2_ports;
- 	int num_u3_ports;
- 	int u3p_dis_msk;
- 	struct regulator *vusb33;
- 	struct regulator *vbus;
- 	struct clk_bulk_data clks[BULK_CLKS_NUM];
--	bool lpm_support;
--	bool u2_lpm_disable;
-+	unsigned int has_ippc:1;
-+	unsigned int lpm_support:1;
-+	unsigned int u2_lpm_disable:1;
- 	/* usb remote wakeup */
--	bool uwk_en;
-+	unsigned int uwk_en:1;
- 	struct regmap *uwk;
- 	u32 uwk_reg_base;
- 	u32 uwk_vers;
+diff --git a/drivers/usb/host/xhci-mtk.c b/drivers/usb/host/xhci-mtk.c
+index b2058b3bc834..2548976bcf05 100644
+--- a/drivers/usb/host/xhci-mtk.c
++++ b/drivers/usb/host/xhci-mtk.c
+@@ -495,8 +495,6 @@ static int xhci_mtk_probe(struct platform_device *pdev)
+ 			goto put_usb2_hcd;
+ 		}
+ 		mtk->has_ippc = true;
+-	} else {
+-		mtk->has_ippc = false;
+ 	}
+ 
+ 	device_init_wakeup(dev, true);
 -- 
 2.18.0
 
