@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DF6B37655D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:41:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671A137655F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:42:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237012AbhEGMmh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:42:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:45383 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S236866AbhEGMmd (ORCPT
+        id S237027AbhEGMnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:43:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236866AbhEGMnQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:42:33 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620391293;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=+pizb5T4wXio4s+BKjaVq1oW2LlYLV5RKkN72d3SlPY=;
-        b=cckZ1Ib//ahxUVuQY9soR+faNHz1L7JCA6Yt6hUss0V0u34i+scOiCCQtLsgUWN347O2pP
-        tu84pjcIRX2uF0q9chCLm17V8u10jHuPIuKuhF2/6W4RMkBAoJZrIini6KFou4Y9WIFwWz
-        UfQLwxAMGQcR7zwBFBp0cKySiXiqoOA=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-185-LSXvocD9Nx6LA7KH5IoJiA-1; Fri, 07 May 2021 08:41:30 -0400
-X-MC-Unique: LSXvocD9Nx6LA7KH5IoJiA-1
-Received: by mail-yb1-f200.google.com with SMTP id g27-20020a25b11b0000b02904f8641ec14cso4016616ybj.12
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 05:41:30 -0700 (PDT)
+        Fri, 7 May 2021 08:43:16 -0400
+Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81F7C061574;
+        Fri,  7 May 2021 05:42:16 -0700 (PDT)
+Received: by mail-pf1-x42c.google.com with SMTP id b21so429085pft.10;
+        Fri, 07 May 2021 05:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=r343sYYX3gjN34sl7yfwkl65nAO5cMLx9O8W6LxV6Nc=;
+        b=evv0J+LZlt/VQzYYuIj0rgKwkQS/VtXVdS02h5ttTfvb1bX/ktG8vkIu9N+6IsHOmI
+         SS8cqRonUFMi6Kc0T1vVQNDrKqyVeZiI3CND7gXrj9UjtlLwDtdWnM50mXwmX/yuY4ba
+         Q5zVO0F4jF3YacJ/Hd7QZx9IqvImXN0lDnK4v9zD9+bS+CFiQD9BszPTpDOv8+st0xsC
+         Xry647hK3VMEkBRm4BSzpJktrJeC+MnJaPdcjVT3V69abts0fe44EdLYeuyxR/Rx+QHT
+         rafpZqkdFt8jB2UYfbifJ0uT0eGPGJwVswJLSpmRQAg6dq5fEd3LHBUttNkJNshIksvl
+         9W8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+pizb5T4wXio4s+BKjaVq1oW2LlYLV5RKkN72d3SlPY=;
-        b=d0PxEqso26HXoFS0rpKzHEb7a18hD2HtK8HMX1cM5AFq5gYwujxP2BmKNBay7XeSS2
-         CDeYVp8R0IsYGGHWtv2klf+cc1naTgZqXNqtZYEoF/C01/Y3P3R41Wpii5kiZbSJNEFj
-         cNc/oLVKNjvCKDXd3SaCZE/z/hdC6TFP87GrqdVaDqumH/lH+X9Vx1hG668faLMniLsP
-         3+7X87u0YycRqtGBeqBWkL9T0tflXrTqkKK+apK2YWFPe5JFyMA6aWxyi15dMv6QbxZ8
-         P+rbz/rJKW5KQdqIPZHHAilFFHgfRlMOx9aKd7ROlsrlte7BUFLGFtquxVM7uIQk+91D
-         ou+A==
-X-Gm-Message-State: AOAM533feLE8DF8eKoukPr+SSFHmpK6+YCfEdmJ9PFT08jfLmDMbqi3v
-        xxq3puNwWddY3puaKN1z8IF7PFQpmHHmImHzvLu5oy6NjZSbHLYqyHLWzcwNEg8JXbTzk3NZH9B
-        9pyS0CCB+bcvchhIS/PYIwK2qp3pyxIozz/prLE4U
-X-Received: by 2002:a25:640f:: with SMTP id y15mr13170138ybb.436.1620391290264;
-        Fri, 07 May 2021 05:41:30 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJy22p09PEHUGb5fAA49wspHdow+4OHN0qicl6JIPF5XwcGlunbrNF+orAljsopKKKqw1oReB57xfDS4LkuZvuE=
-X-Received: by 2002:a25:640f:: with SMTP id y15mr13170115ybb.436.1620391290086;
- Fri, 07 May 2021 05:41:30 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=r343sYYX3gjN34sl7yfwkl65nAO5cMLx9O8W6LxV6Nc=;
+        b=go087+mmW5MLW38oZ6hpl+fq6CKwN7WQRVZDctgdnah2CODXQWZl9DISVPY/bJpa3C
+         h/h0VjrwtBFM9gT5ZOjwQWeb2+B9zM+C7AaSat9Il45YMK/dAJ1HrNXDlKJZrSu9HZ6Q
+         Ze0w+zH/EMT8Ez1L7jLyKsqkviRxAql8M49gAA403s5Jg9UD7ACuC97Q1Ss8B1syo3qH
+         qNBQmpbxpRtnB7KmjOINkSafUgflCAKsCMg9Xn1eH3prIjO8GwEqXWdukNqffd6K38e6
+         DXrkGkX0QZQ0MB28FZCPGRlbYfqGQJFPPQH9aFtYnORWpOjC2Kty/vsEyFVGuNONntYP
+         Yk5g==
+X-Gm-Message-State: AOAM532TBxrxNRCRZXelCK33RYEvwjHQVCrr/DOFXQTLssc8pu+28qLS
+        vpdG+wmnVn0/p1gP3O7kZ5Y=
+X-Google-Smtp-Source: ABdhPJzM2zFMU9YP7Gehcxa4p+2nJPHQJOWmhaYM/aumwLmSuF04zaSgJBWlb8j+UKRVSUC1WI4Azw==
+X-Received: by 2002:aa7:8d03:0:b029:259:f2ed:1849 with SMTP id j3-20020aa78d030000b0290259f2ed1849mr10504817pfe.30.1620391336346;
+        Fri, 07 May 2021 05:42:16 -0700 (PDT)
+Received: from localhost ([203.87.99.126])
+        by smtp.gmail.com with ESMTPSA id y14sm4642676pfm.123.2021.05.07.05.42.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 05:42:12 -0700 (PDT)
+Date:   Fri, 7 May 2021 22:42:09 +1000
+From:   Balbir Singh <bsingharora@gmail.com>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, pbonzini@redhat.com, maz@kernel.org,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+        riel@surriel.com, hannes@cmpxchg.org
+Subject: Re: [PATCH 4/6] kvm: Select SCHED_INFO instead of TASK_DELAY_ACCT
+Message-ID: <20210507124209.GD4236@balbir-desktop>
+References: <20210505105940.190490250@infradead.org>
+ <20210505111525.187225172@infradead.org>
 MIME-Version: 1.0
-References: <20210507114150.139102-1-omosnace@redhat.com> <YJUseJLHBdvKYEOK@kroah.com>
- <YJUuoiKFjM8Jdx6U@casper.infradead.org> <YJUvhGV5EW0tsIpP@kroah.com>
-In-Reply-To: <YJUvhGV5EW0tsIpP@kroah.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Fri, 7 May 2021 14:41:16 +0200
-Message-ID: <CAFqZXNv_WWQZPHVhN5oqHVYanxKcXFqu6r=S9=ZTHKf7UNsiKA@mail.gmail.com>
-Subject: Re: [PATCH] debugfs: fix security_locked_down() call for SELinux
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Matthew Wilcox <willy@infradead.org>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        SElinux list <selinux@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>,
-        James Morris <jmorris@namei.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20210505111525.187225172@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 2:16 PM Greg Kroah-Hartman
-<gregkh@linuxfoundation.org> wrote:
-> On Fri, May 07, 2021 at 01:12:18PM +0100, Matthew Wilcox wrote:
-> > On Fri, May 07, 2021 at 02:03:04PM +0200, Greg Kroah-Hartman wrote:
-> > > On Fri, May 07, 2021 at 01:41:50PM +0200, Ondrej Mosnacek wrote:
-> > > > Make sure that security_locked_down() is checked last so that a bogus
-> > > > denial is not reported by SELinux when (ia->ia_valid & (ATTR_MODE |
-> > > > ATTR_UID | ATTR_GID)) is zero.
-> > >
-> > > Why would this be "bogus"?
-> >
-> > I presume selinux is logging a denial ... but we don't then actually
-> > deny the operation.
->
-> That would be nice to note here...
+On Wed, May 05, 2021 at 12:59:44PM +0200, Peter Zijlstra wrote:
+> AFAICT KVM only relies on SCHED_INFO. Nothing uses the p->delays data
+> that belongs to TASK_DELAY_ACCT.
+> 
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> ---
 
-Granted, I didn't do a good job of describing the issue in the patch
-description... I'll send a v2 with hopefully a better description.
-
--- 
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
-
+Acked-by: Balbir Singh <bsingharora@gmail.com>
