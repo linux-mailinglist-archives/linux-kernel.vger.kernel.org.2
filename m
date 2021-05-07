@@ -2,75 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85DC4376153
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:41:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 056DD376156
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:42:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235568AbhEGHmB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:42:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:55052 "EHLO
+        id S235589AbhEGHnv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:43:51 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:53515 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233523AbhEGHl7 (ORCPT
+        by vger.kernel.org with ESMTP id S231165AbhEGHnu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:41:59 -0400
+        Fri, 7 May 2021 03:43:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620373259;
+        s=mimecast20190719; t=1620373371;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=2epZ2nUOx96a/509EcQy2qQ0oq17gDoVWNxT6qATfiY=;
-        b=WF2GZaXw20mWmJZ6Xw3CfeHNEjL6k9Bfk5nJNgWPX2m8Uck5W5zKEEdcJeF2sbCYROrUdl
-        cZ2fQaUp7PfNwBubUql2p0Cqoal44G8iJqZ24kQPfRBkvcJt9utpmSoBGYDFjAYjctBCpB
-        7yKYk+3wki5PHNktf4lSp589RDtEgNA=
+        bh=vsa8eoRAU/op3poaE3LMiG1JCafOvgbDI+OB1GR9vsw=;
+        b=SpNUf/P3VvlfEwkxirfYSL1UM4kdac8Jr9n/i9oezfvKJpsrHjKXCX7ebUwyHjyu57wYN4
+        7TpyscWE02tyFpGdvOtltrOI86UOIgET9hxoKttqeE4vS94iYl36lgTQwyoYpjXj6EA+Ma
+        Sxg7bSzmsg6tk14tHbyg5+keu4Tr+/Y=
 Received: from mail-ed1-f72.google.com (mail-ed1-f72.google.com
  [209.85.208.72]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-UqXnfP-2NwOogltIDenCOA-1; Fri, 07 May 2021 03:40:58 -0400
-X-MC-Unique: UqXnfP-2NwOogltIDenCOA-1
-Received: by mail-ed1-f72.google.com with SMTP id y15-20020aa7d50f0000b02903885ee98723so3986688edq.16
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:40:57 -0700 (PDT)
+ us-mta-556-a_Ebj5S_P7ue2LrKqdRDiA-1; Fri, 07 May 2021 03:42:49 -0400
+X-MC-Unique: a_Ebj5S_P7ue2LrKqdRDiA-1
+Received: by mail-ed1-f72.google.com with SMTP id g17-20020aa7dd910000b029038843570b67so4011663edv.9
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 00:42:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=2epZ2nUOx96a/509EcQy2qQ0oq17gDoVWNxT6qATfiY=;
-        b=lUS6fQKpqkjsrDOPDdj245pWJvyS/Ju/snIwkNfT0IAmD9DUqRdcpf0TjAAEexJFdI
-         iLGaG+eHsqfmsLW+c/j4waCL82JS1UTT3J9KWxN/iEyoYAEUIijdHOMBB3SQ0M2YYftp
-         zSQcFxU/R/5/7av3o6Qpv5hPjYUKQ8FwozeHd3htJqVJCMtscC7wQfEzDlpMAcFxEeqj
-         uO5Lmydpcmk87v6Rnpw/sx0+2ZU+xNFnNr1foc3WOS/kQVrnfTTLvUZ3NfcPW57jsUjX
-         vYjTR4nc6xdf15c67G30n9+GUFy3x/l/mnjtyWpKViSjo2pgax1YGbGllaiRU1DGU539
-         qizw==
-X-Gm-Message-State: AOAM5333XLf3yHPqzLZUb+/D22moFdMNTC8G7FmztfZ2ND4mRenv9ZYL
-        XH9BvStQ+XnP2TYosEGbPKM8wVs7Z92t8hv/Ifv1C3LWm05ZiIxCrUft/36xaxbbnQVQB+/ZSJG
-        0z4W4shKLGf54KnE39160eBwe
-X-Received: by 2002:a05:6402:430e:: with SMTP id m14mr9958692edc.308.1620373256929;
-        Fri, 07 May 2021 00:40:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz55jU7yEJ+wE3P0zZA9dMMi2B9lZBUVdKrFk+Wbwos/coyARDHUdjx2QUEjymy9DpGmmP2Ig==
-X-Received: by 2002:a05:6402:430e:: with SMTP id m14mr9958676edc.308.1620373256781;
-        Fri, 07 May 2021 00:40:56 -0700 (PDT)
-Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
-        by smtp.gmail.com with ESMTPSA id j4sm2935157ejk.37.2021.05.07.00.40.55
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=vsa8eoRAU/op3poaE3LMiG1JCafOvgbDI+OB1GR9vsw=;
+        b=Dga4ZxJmY2g4WqfXuInrN9yDXm2PSBIbMlvdeyxgmpJyPOm9cHu2iQWEN1KdvocZuQ
+         DHVTPdLsnJyiYptsbCOCWPVEq8rsBL1czVmwbQxt9x3zSs865yeec2WGtOdrZIzp+cUA
+         ZT+IcNkZYK2WbnV7S4YLPi4hxgj0v65yEZZJf1znpKTq0dU8IE+hWIHd9tcsD0+6Ax4W
+         0a0KCs0j0jVdOSl034X3JbNs/SkBJNOr0AO6PbWDP+sM6UWSdnqFfkByXSqd7qNb0Snl
+         CB1q6I2KlaB+Ok5YmAXhCvKdfn0BmwysDgygLVd1U28wwZoqo3gDG6p06vNxb8GykIlA
+         cHpA==
+X-Gm-Message-State: AOAM5310Ktz1w1BqEMRtVrRrvAvEtyKI7+5NjO4IyTJ92Ood0O2yKdbI
+        iVItRNGVo+aA+BJkipHxSlWi/E5xGhkYOw648OGixHwHqKnQtu+piZqtBeU85MacGUq5+7ubDjS
+        kNjH2B8b+4o0DAT42A1RhRdfn
+X-Received: by 2002:aa7:ccc4:: with SMTP id y4mr9565499edt.171.1620373368586;
+        Fri, 07 May 2021 00:42:48 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJy4lQAaBrROI5moPobb0YQwseMCoxa7a0OaL+tWl07rMAc+ZBwZGj8pu8eJHfR3ilJxTw0IZQ==
+X-Received: by 2002:aa7:ccc4:: with SMTP id y4mr9565484edt.171.1620373368429;
+        Fri, 07 May 2021 00:42:48 -0700 (PDT)
+Received: from [192.168.3.132] (p5b0c63c0.dip0.t-ipconnect.de. [91.12.99.192])
+        by smtp.gmail.com with ESMTPSA id r16sm3555325edq.87.2021.05.07.00.42.47
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 07 May 2021 00:40:56 -0700 (PDT)
-Subject: Re: [PATCH] KVM: SVM: Invert user pointer casting in SEV {en,de}crypt
- helpers
-To:     Sean Christopherson <seanjc@google.com>
-Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        Brijesh Singh <brijesh.singh@amd.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Ashish Kalra <ashish.kalra@amd.com>
-References: <20210506231542.2331138-1-seanjc@google.com>
-From:   Paolo Bonzini <pbonzini@redhat.com>
-Message-ID: <38d86d4c-6578-18f6-067c-a6386c5c8005@redhat.com>
-Date:   Fri, 7 May 2021 09:40:54 +0200
+        Fri, 07 May 2021 00:42:48 -0700 (PDT)
+Subject: Re: [PATCH v3 1/8] KVM: x86/mmu: Deduplicate rmap freeing
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+References: <20210506184241.618958-1-bgardon@google.com>
+ <20210506184241.618958-2-bgardon@google.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat
+Message-ID: <97d6a7da-2777-293a-4dab-668fe16dc2e9@redhat.com>
+Date:   Fri, 7 May 2021 09:42:47 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
  Thunderbird/78.8.1
 MIME-Version: 1.0
-In-Reply-To: <20210506231542.2331138-1-seanjc@google.com>
+In-Reply-To: <20210506184241.618958-2-bgardon@google.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -78,114 +80,66 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/21 01:15, Sean Christopherson wrote:
-> Invert the user pointer params for SEV's helpers for encrypting and
-> decrypting guest memory so that they take a pointer and cast to an
-> unsigned long as necessary, as opposed to doing the opposite.  Tagging a
-> non-pointer as __user is confusing and weird since a cast of some form
-> needs to occur to actually access the user data.  This also fixes Sparse
-> warnings triggered by directly consuming the unsigned longs, which are
-> "noderef" due to the __user tag.
+On 06.05.21 20:42, Ben Gardon wrote:
+> Small code deduplication. No functional change expected.
 > 
-> Cc: Brijesh Singh <brijesh.singh@amd.com>
-> Cc: Tom Lendacky <thomas.lendacky@amd.com>
-> Cc: Ashish Kalra <ashish.kalra@amd.com>
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> Signed-off-by: Ben Gardon <bgardon@google.com>
 > ---
->   arch/x86/kvm/svm/sev.c | 24 +++++++++++-------------
->   1 file changed, 11 insertions(+), 13 deletions(-)
+>   arch/x86/kvm/x86.c | 19 +++++++++++--------
+>   1 file changed, 11 insertions(+), 8 deletions(-)
 > 
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index a9d8d6aafdb8..bba4544fbaba 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -763,7 +763,7 @@ static int __sev_dbg_decrypt(struct kvm *kvm, unsigned long src_paddr,
+> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
+> index cf3b67679cf0..5bcf07465c47 100644
+> --- a/arch/x86/kvm/x86.c
+> +++ b/arch/x86/kvm/x86.c
+> @@ -10818,17 +10818,23 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
+>   	kvm_hv_destroy_vm(kvm);
 >   }
 >   
->   static int __sev_dbg_decrypt_user(struct kvm *kvm, unsigned long paddr,
-> -				  unsigned long __user dst_uaddr,
-> +				  void __user *dst_uaddr,
->   				  unsigned long dst_paddr,
->   				  int size, int *err)
+> -void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+> +static void free_memslot_rmap(struct kvm_memory_slot *slot)
 >   {
-> @@ -787,8 +787,7 @@ static int __sev_dbg_decrypt_user(struct kvm *kvm, unsigned long paddr,
+>   	int i;
 >   
->   	if (tpage) {
->   		offset = paddr & 15;
-> -		if (copy_to_user((void __user *)(uintptr_t)dst_uaddr,
-> -				 page_address(tpage) + offset, size))
-> +		if (copy_to_user(dst_uaddr, page_address(tpage) + offset, size))
->   			ret = -EFAULT;
+>   	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+>   		kvfree(slot->arch.rmap[i]);
+>   		slot->arch.rmap[i] = NULL;
+> +	}
+> +}
+>   
+> -		if (i == 0)
+> -			continue;
+> +void kvm_arch_free_memslot(struct kvm *kvm, struct kvm_memory_slot *slot)
+> +{
+> +	int i;
+> +
+> +	free_memslot_rmap(slot);
+>   
+> +	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
+>   		kvfree(slot->arch.lpage_info[i - 1]);
+>   		slot->arch.lpage_info[i - 1] = NULL;
 >   	}
+> @@ -10894,12 +10900,9 @@ static int kvm_alloc_memslot_metadata(struct kvm_memory_slot *slot,
+>   	return 0;
 >   
-> @@ -800,9 +799,9 @@ static int __sev_dbg_decrypt_user(struct kvm *kvm, unsigned long paddr,
->   }
+>   out_free:
+> -	for (i = 0; i < KVM_NR_PAGE_SIZES; ++i) {
+> -		kvfree(slot->arch.rmap[i]);
+> -		slot->arch.rmap[i] = NULL;
+> -		if (i == 0)
+> -			continue;
+> +	free_memslot_rmap(slot);
 >   
->   static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
-> -				  unsigned long __user vaddr,
-> +				  void __user *vaddr,
->   				  unsigned long dst_paddr,
-> -				  unsigned long __user dst_vaddr,
-> +				  void __user *dst_vaddr,
->   				  int size, int *error)
->   {
->   	struct page *src_tpage = NULL;
-> @@ -810,13 +809,12 @@ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
->   	int ret, len = size;
->   
->   	/* If source buffer is not aligned then use an intermediate buffer */
-> -	if (!IS_ALIGNED(vaddr, 16)) {
-> +	if (!IS_ALIGNED((unsigned long)vaddr, 16)) {
->   		src_tpage = alloc_page(GFP_KERNEL);
->   		if (!src_tpage)
->   			return -ENOMEM;
->   
-> -		if (copy_from_user(page_address(src_tpage),
-> -				(void __user *)(uintptr_t)vaddr, size)) {
-> +		if (copy_from_user(page_address(src_tpage), vaddr, size)) {
->   			__free_page(src_tpage);
->   			return -EFAULT;
->   		}
-> @@ -830,7 +828,7 @@ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
->   	 *   - copy the source buffer in an intermediate buffer
->   	 *   - use the intermediate buffer as source buffer
->   	 */
-> -	if (!IS_ALIGNED(dst_vaddr, 16) || !IS_ALIGNED(size, 16)) {
-> +	if (!IS_ALIGNED((unsigned long)dst_vaddr, 16) || !IS_ALIGNED(size, 16)) {
->   		int dst_offset;
->   
->   		dst_tpage = alloc_page(GFP_KERNEL);
-> @@ -855,7 +853,7 @@ static int __sev_dbg_encrypt_user(struct kvm *kvm, unsigned long paddr,
->   			       page_address(src_tpage), size);
->   		else {
->   			if (copy_from_user(page_address(dst_tpage) + dst_offset,
-> -					   (void __user *)(uintptr_t)vaddr, size)) {
-> +					   vaddr, size)) {
->   				ret = -EFAULT;
->   				goto e_free;
->   			}
-> @@ -935,15 +933,15 @@ static int sev_dbg_crypt(struct kvm *kvm, struct kvm_sev_cmd *argp, bool dec)
->   		if (dec)
->   			ret = __sev_dbg_decrypt_user(kvm,
->   						     __sme_page_pa(src_p[0]) + s_off,
-> -						     dst_vaddr,
-> +						     (void __user *)dst_vaddr,
->   						     __sme_page_pa(dst_p[0]) + d_off,
->   						     len, &argp->error);
->   		else
->   			ret = __sev_dbg_encrypt_user(kvm,
->   						     __sme_page_pa(src_p[0]) + s_off,
-> -						     vaddr,
-> +						     (void __user *)vaddr,
->   						     __sme_page_pa(dst_p[0]) + d_off,
-> -						     dst_vaddr,
-> +						     (void __user *)dst_vaddr,
->   						     len, &argp->error);
->   
->   		sev_unpin_memory(kvm, src_p, n);
+> +	for (i = 1; i < KVM_NR_PAGE_SIZES; ++i) {
+>   		kvfree(slot->arch.lpage_info[i - 1]);
+>   		slot->arch.lpage_info[i - 1] = NULL;
+>   	}
 > 
 
-Queued, thnaks.
+Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Paolo
+-- 
+Thanks,
+
+David / dhildenb
 
