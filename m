@@ -2,86 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 93D54376237
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:38:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D42D6376247
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:42:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233418AbhEGIjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 04:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230349AbhEGIjI (ORCPT
+        id S235025AbhEGInZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 04:43:25 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:27317 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234506AbhEGInX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 04:39:08 -0400
-Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B668FC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 01:38:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=8iWwj0c2S4fs9qTVYrOAhonBn4hHg/AIb29EFxEvgU8=; b=fJkaMMQZeBVYr5RtkyX7/AblOO
-        pAni7osUVlCkkgOpG8a2uA5cif/P+ho0kaCLsS37BdKWU+/H2yIDYTU/VnY6JZ/nUTs1bEtOhI3y8
-        Zv6f3obnAR5PcUDLYvnbww3OuSsyr56vfGsqTCM+8mtSxANbAKaOxYoEwOFKr61TvBGieLOunNwjl
-        xqYRGe10ofVaMy/YOSQzfGPUhU7KUGmQG8py7CtdnHnxIIvTgjSNLf+cgpT5RKYn5n1iK+nmZX3TB
-        f838PHrpbDm1PRy+b016d3am15BBAIgcciCnHGIqiwt2YOt3kgoqWlwx7s0pdQEsd9qgH4ugkTgvL
-        se+baTkg==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1levzi-006W5W-C5; Fri, 07 May 2021 08:37:58 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EB6D4300103;
-        Fri,  7 May 2021 10:37:56 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id C88DF2028F038; Fri,  7 May 2021 10:37:56 +0200 (CEST)
-Date:   Fri, 7 May 2021 10:37:56 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     syzbot <syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com>
-Cc:     axboe@kernel.dk, christian@brauner.io, ebiederm@xmission.com,
-        linux-kernel@vger.kernel.org, oleg@redhat.com, pcc@google.com,
-        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
-        Paul McKenney <paulmck@kernel.org>
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_signal
-Message-ID: <YJT8ZPM5YGzX8Jtk@hirez.programming.kicks-ass.net>
-References: <0000000000006540d705c1b013b5@google.com>
+        Fri, 7 May 2021 04:43:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620376944;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xfCXoiSRUf8EHAREMqARq69JqzDyk9XVPqTBvkTg9rI=;
+        b=gVXu3HtBW746PzK5QEAJ6LcGT94mF1scIFBKDJN3KUOnvf57yzYyECOOakQqDMQS9UfhOa
+        mJBCAfO7sSEdeHssy8zXg9RJH3Pa97uf3yjq4u/JgYg8ihSmX7phxHGpoR+Qjqr1YZQPpp
+        YdLhXM0C7Sff084CZi/2KheHANc58vw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-157-s14pUELRP_uo8pwHCI0oqA-1; Fri, 07 May 2021 04:42:22 -0400
+X-MC-Unique: s14pUELRP_uo8pwHCI0oqA-1
+Received: by mail-wr1-f69.google.com with SMTP id a7-20020adfc4470000b029010d875c66edso3265514wrg.23
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 01:42:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=xfCXoiSRUf8EHAREMqARq69JqzDyk9XVPqTBvkTg9rI=;
+        b=AqBCt2OsY4nx48a41uXLXkFnGe++pBiJgJj1LKTYViU3lqAQZVpLog5rdHfZQ8AqEZ
+         +ZIhNtKhkr/IfLPX7PpheFvBbLbXWH8a9YQPfF1XcWdlRSJT/4WXOIdqt2CV7wxUF11+
+         Oh2jSqE7z8ZlKS5S7I0/FlWapou0Ltg2OptRRAc3wbrQ+HHZdIzZ9jNbZJlMP0DFYby6
+         hFIpckdxoePBZ3/wRIqvP9LzvvBBCkhtzmCEa5h2XrDvKYYxBx5A07ODG9nzgTAeDxyG
+         5m+5qs4HRVMZhcRPdm8T3guUdO4XXfE6uO6z7PUF4QJL6xabwj2APARYMkxz7YKhQsK5
+         jHyg==
+X-Gm-Message-State: AOAM532rzlwjzjnrkrYE8vGNhlvvP0RoP6paCwnUjSBsQAFklAs+EKN7
+        uewwol34/vX7GtnZqlati16JVAr1thPiSuupDbVA0R/SFoU6S+JSyL3kmD/C5qAsQxB4b+Zosr1
+        327EHOFm6+2bRjWC3aBgJnQXm
+X-Received: by 2002:a5d:400f:: with SMTP id n15mr6846893wrp.274.1620376941329;
+        Fri, 07 May 2021 01:42:21 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJwoFMyEIZk1TCndnag6cii3qK499Zt0/XLGrLq/Nt25lWx4sb8T0QrY1Xct3knS7xGtliLwCw==
+X-Received: by 2002:a5d:400f:: with SMTP id n15mr6846875wrp.274.1620376941115;
+        Fri, 07 May 2021 01:42:21 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e? ([2001:b07:6468:f312:5e2c:eb9a:a8b6:fd3e])
+        by smtp.gmail.com with ESMTPSA id n10sm7744773wrw.37.2021.05.07.01.42.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 May 2021 01:42:20 -0700 (PDT)
+To:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <seanjc@google.com>,
+        Peter Shier <pshier@google.com>,
+        Yulei Zhang <yulei.kernel@gmail.com>,
+        Wanpeng Li <kernellwp@gmail.com>,
+        Xiao Guangrong <xiaoguangrong.eric@gmail.com>,
+        Kai Huang <kai.huang@intel.com>,
+        Keqian Zhu <zhukeqian1@huawei.com>
+References: <20210506184241.618958-1-bgardon@google.com>
+ <20210506184241.618958-8-bgardon@google.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3 7/8] KVM: x86/mmu: Protect rmaps independently with
+ SRCU
+Message-ID: <e2e73709-f247-1a60-4835-f3fad37ab736@redhat.com>
+Date:   Fri, 7 May 2021 10:42:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000006540d705c1b013b5@google.com>
+In-Reply-To: <20210506184241.618958-8-bgardon@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 02:34:27PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=123a56a5d00000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
-> dashboard link: https://syzkaller.appspot.com/bug?extid=37fc8b84ffa2279d636d
-> userspace arch: i386
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com
-> 
-> =============================
-> WARNING: suspicious RCU usage
-> 5.12.0-syzkaller #0 Not tainted
-> -----------------------------
-> kernel/sched/core.c:8304 Illegal context switch in RCU-sched read-side critical section!
-> 
-> other info that might help us debug this:
-> 
-> 
-> rcu_scheduler_active = 2, debug_locks = 0
-> no locks held by syz-executor.4/10430.
+On 06/05/21 20:42, Ben Gardon wrote:
+> In preparation for lazily allocating the rmaps when the TDP MMU is in
+> use, protect the rmaps with SRCU. Unfortunately, this requires
+> propagating a pointer to struct kvm around to several functions.
 
-Looks like this is a concurrent fail?, if !debug_locks (as per the above)
-then RCU_LOCKDEP_WARN() should not trigger.
+Thinking more about it, this is not needed because all reads of the rmap 
+array are guarded by the load-acquire of kvm->arch.memslots_have_rmaps. 
+  That is, the pattern is always
+
+	if (!load-acquire(memslot_have_rmaps))
+		return;
+	... = __gfn_to_rmap(...)
+
+				slots->arch.rmap[x] = ...
+				store-release(memslot_have_rmaps, true)
+
+where the load-acquire/store-release have the same role that 
+srcu_dereference/rcu_assign_pointer had before this patch.
+
+We also know that any read that misses the check has the potential for a 
+NULL pointer dereference, so it *has* to be like that.
+
+That said, srcu_dereference has zero cost unless debugging options are 
+enabled, and it *is* true that the rmap can disappear if kvm->srcu is 
+not held, so I lean towards keeping this change and just changing the 
+commit message like this:
+
+---------
+Currently, rmaps are always allocated and published together with a new 
+memslot, so the srcu_dereference for the memslots array already ensures 
+that the memory pointed to by slots->arch.rmap is zero at the time 
+slots->arch.rmap.  However, they still need to be accessed in an SRCU 
+read-side critical section, as the whole memslot can be deleted outside 
+SRCU.
+--------
+
+Thanks,
+
+Paolo
+
+> 
+> Suggested-by: Paolo Bonzini<pbonzini@redhat.com>
+> Signed-off-by: Ben Gardon<bgardon@google.com>
+> ---
+>   arch/x86/kvm/mmu/mmu.c | 57 +++++++++++++++++++++++++-----------------
+>   arch/x86/kvm/x86.c     |  6 ++---
+>   2 files changed, 37 insertions(+), 26 deletions(-)
+
