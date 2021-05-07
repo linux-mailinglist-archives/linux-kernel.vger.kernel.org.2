@@ -2,181 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A801376236
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:37:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93D54376237
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236382AbhEGIiW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 04:38:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31515 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S233340AbhEGIiU (ORCPT
+        id S233418AbhEGIjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 04:39:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35068 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230349AbhEGIjI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 04:38:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620376640;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=G4FGrNimJhV01IK3zZ0JL4RVVApImUVGYjkgoM4AFN0=;
-        b=Y2HNdQlbgbxH2vQVugjm+WOuSYybEMSzpeo/904eTqrgVMcPHi6MKJ6MwzsUoXJxJXNBwR
-        bo9eBc+7cq1ytvn0HB9Me+X3v1D5XHBjgctcsFrkHunNgQxj5/ETYrXPNoY/tJwvmrwoSk
-        GdT1C5JplCQUBN16zN+JEM4+1weVP2Q=
-Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
- [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-285-lOwuKfpEMsWu-_g1xditSA-1; Fri, 07 May 2021 04:37:19 -0400
-X-MC-Unique: lOwuKfpEMsWu-_g1xditSA-1
-Received: by mail-yb1-f200.google.com with SMTP id o12-20020a5b050c0000b02904f4a117bd74so9228177ybp.17
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 01:37:19 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=G4FGrNimJhV01IK3zZ0JL4RVVApImUVGYjkgoM4AFN0=;
-        b=htzIYNoVXKD3vvURGMZKieiPoYKmGMe/7IGnqfLa3RoSWCFVLcoAgoh7+fcRs3XLv/
-         g5Eygzes+KK27ABum5xnLHYqKFZo0BA6YuwU8LR1W52jUnHxD+KykXaBgE/NPszH7ZtC
-         hIk0Y8I0sCzWpUhHq4gp+JW9SovuPUE4x1RBeZscCxt60Zh9K3/EZsU/mPPUaGMl/57t
-         W2BbI5eCGrgNX4LgkbTg1KsUmal14spA0Q+8NBVcoao97ThV0z2trrwZv3kIJ+b5iLqR
-         yp3GzgrEnyaY1SVNouhuFs5wSW+P5VceyuLZdkw48aZifb5GdEusFygn0Eqor6cC7uTu
-         eMYg==
-X-Gm-Message-State: AOAM533v6MigWmh2agfLPLC5hoCjw6TMhooFJeTBhePGAHlsyOoToyuv
-        R6QH7K7O5OQvcTguOgNHI1vKQ6j8pEtn+QuKdzLt0kppYuJX4so4Vnlvio2/grps6LaBe65Wrcb
-        mNkn+6PKJ830k1IWGKdF9ffGzkinUI9oYWG9z1d6J
-X-Received: by 2002:a25:cccd:: with SMTP id l196mr12372291ybf.26.1620376638471;
-        Fri, 07 May 2021 01:37:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxewIyOv51q5Ji9x8dEqFP2aSx4Up03TrbmnULK/VTdw16ioRy22PBDlbvyRSw6NJNCizaj7Ckva55HsAkki/w=
-X-Received: by 2002:a25:cccd:: with SMTP id l196mr12372264ybf.26.1620376638189;
- Fri, 07 May 2021 01:37:18 -0700 (PDT)
+        Fri, 7 May 2021 04:39:08 -0400
+Received: from desiato.infradead.org (desiato.infradead.org [IPv6:2001:8b0:10b:1:d65d:64ff:fe57:4e05])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B668FC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 01:38:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8iWwj0c2S4fs9qTVYrOAhonBn4hHg/AIb29EFxEvgU8=; b=fJkaMMQZeBVYr5RtkyX7/AblOO
+        pAni7osUVlCkkgOpG8a2uA5cif/P+ho0kaCLsS37BdKWU+/H2yIDYTU/VnY6JZ/nUTs1bEtOhI3y8
+        Zv6f3obnAR5PcUDLYvnbww3OuSsyr56vfGsqTCM+8mtSxANbAKaOxYoEwOFKr61TvBGieLOunNwjl
+        xqYRGe10ofVaMy/YOSQzfGPUhU7KUGmQG8py7CtdnHnxIIvTgjSNLf+cgpT5RKYn5n1iK+nmZX3TB
+        f838PHrpbDm1PRy+b016d3am15BBAIgcciCnHGIqiwt2YOt3kgoqWlwx7s0pdQEsd9qgH4ugkTgvL
+        se+baTkg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by desiato.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
+        id 1levzi-006W5W-C5; Fri, 07 May 2021 08:37:58 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange X25519 server-signature RSA-PSS (2048 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EB6D4300103;
+        Fri,  7 May 2021 10:37:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C88DF2028F038; Fri,  7 May 2021 10:37:56 +0200 (CEST)
+Date:   Fri, 7 May 2021 10:37:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     syzbot <syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com>
+Cc:     axboe@kernel.dk, christian@brauner.io, ebiederm@xmission.com,
+        linux-kernel@vger.kernel.org, oleg@redhat.com, pcc@google.com,
+        syzkaller-bugs@googlegroups.com, tglx@linutronix.de,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_signal
+Message-ID: <YJT8ZPM5YGzX8Jtk@hirez.programming.kicks-ass.net>
+References: <0000000000006540d705c1b013b5@google.com>
 MIME-Version: 1.0
-References: <20210506091859.6961-1-maxime.coquelin@redhat.com> <20210506155004.7e214d8f@redhat.com>
-In-Reply-To: <20210506155004.7e214d8f@redhat.com>
-From:   Ondrej Mosnacek <omosnace@redhat.com>
-Date:   Fri, 7 May 2021 10:37:04 +0200
-Message-ID: <CAFqZXNswPM4nEoRwKjLY=zpnqXLF8SRAWWkhj1EL3CoODYB-=w@mail.gmail.com>
-Subject: Re: [PATCH] vfio: Lock down no-IOMMU mode when kernel is locked down
-To:     Alex Williamson <alex.williamson@redhat.com>
-Cc:     Maxime Coquelin <maxime.coquelin@redhat.com>,
-        James Morris <jmorris@namei.org>,
-        David Howells <dhowells@redhat.com>,
-        Linux kernel mailing list <linux-kernel@vger.kernel.org>,
-        Linux Security Module list 
-        <linux-security-module@vger.kernel.org>, kvm@vger.kernel.org,
-        mjg59@srcf.ucam.org, Kees Cook <keescook@chromium.org>,
-        Cornelia Huck <cohuck@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0000000000006540d705c1b013b5@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 11:50 PM Alex Williamson
-<alex.williamson@redhat.com> wrote:
-> On Thu,  6 May 2021 11:18:59 +0200
-> Maxime Coquelin <maxime.coquelin@redhat.com> wrote:
->
-> > When no-IOMMU mode is enabled, VFIO is as unsafe as accessing
-> > the PCI BARs via the device's sysfs, which is locked down when
-> > the kernel is locked down.
-> >
-> > Indeed, it is possible for an attacker to craft DMA requests
-> > to modify kernel's code or leak secrets stored in the kernel,
-> > since the device is not isolated by an IOMMU.
-> >
-> > This patch introduces a new integrity lockdown reason for the
-> > unsafe VFIO no-iommu mode.
->
-> I'm hoping security folks will chime in here as I'm not familiar with
-> the standard practices for new lockdown reasons.  The vfio no-iommu
-> backend is clearly an integrity risk, which is why it's already hidden
-> behind a separate Kconfig option, requires RAWIO capabilities, and
-> taints the kernel if it's used, but I agree that preventing it during
-> lockdown seems like a good additional step.
->
-> Is it generally advised to create specific reasons, like done here, or
-> should we aim to create a more generic reason related to unrestricted
-> userspace DMA?
->
-> I understand we don't want to re-use PCI_ACCESS because the vfio
-> no-iommu backend is device agnostic, it can be used for both PCI and
-> non-PCI devices.
->
-> > Signed-off-by: Maxime Coquelin <maxime.coquelin@redhat.com>
-> > ---
-> >  drivers/vfio/vfio.c      | 13 +++++++++----
-> >  include/linux/security.h |  1 +
-> >  security/security.c      |  1 +
-> >  3 files changed, 11 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/vfio/vfio.c b/drivers/vfio/vfio.c
-> > index 5e631c359ef2..fe466d6ea5d8 100644
-> > --- a/drivers/vfio/vfio.c
-> > +++ b/drivers/vfio/vfio.c
-> > @@ -25,6 +25,7 @@
-> >  #include <linux/pci.h>
-> >  #include <linux/rwsem.h>
-> >  #include <linux/sched.h>
-> > +#include <linux/security.h>
-> >  #include <linux/slab.h>
-> >  #include <linux/stat.h>
-> >  #include <linux/string.h>
-> > @@ -165,7 +166,8 @@ static void *vfio_noiommu_open(unsigned long arg)
-> >  {
-> >       if (arg != VFIO_NOIOMMU_IOMMU)
-> >               return ERR_PTR(-EINVAL);
-> > -     if (!capable(CAP_SYS_RAWIO))
-> > +     if (!capable(CAP_SYS_RAWIO) ||
-> > +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU))
-> >               return ERR_PTR(-EPERM);
-> >
-> >       return NULL;
-> > @@ -1280,7 +1282,8 @@ static int vfio_group_set_container(struct vfio_group *group, int container_fd)
-> >       if (atomic_read(&group->container_users))
-> >               return -EINVAL;
-> >
-> > -     if (group->noiommu && !capable(CAP_SYS_RAWIO))
-> > +     if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
-> > +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU)))
-> >               return -EPERM;
-> >
-> >       f = fdget(container_fd);
-> > @@ -1362,7 +1365,8 @@ static int vfio_group_get_device_fd(struct vfio_group *group, char *buf)
-> >           !group->container->iommu_driver || !vfio_group_viable(group))
-> >               return -EINVAL;
-> >
-> > -     if (group->noiommu && !capable(CAP_SYS_RAWIO))
-> > +     if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
-> > +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU)))
-> >               return -EPERM;
-> >
-> >       device = vfio_device_get_from_name(group, buf);
-> > @@ -1490,7 +1494,8 @@ static int vfio_group_fops_open(struct inode *inode, struct file *filep)
-> >       if (!group)
-> >               return -ENODEV;
-> >
-> > -     if (group->noiommu && !capable(CAP_SYS_RAWIO)) {
-> > +     if (group->noiommu && (!capable(CAP_SYS_RAWIO) ||
-> > +                     security_locked_down(LOCKDOWN_VFIO_NOIOMMU))) {
-> >               vfio_group_put(group);
-> >               return -EPERM;
-> >       }
->
-> In these cases where we're testing RAWIO, the idea is to raise the
-> barrier of passing file descriptors to unprivileged users.  Is lockdown
-> sufficiently static that we might really only need the test on open?
-> The latter three cases here only make sense if the user were able to
-> open a no-iommu context when lockdown is not enabled, then lockdown is
-> later enabled preventing them from doing anything with that context...
-> but not preventing ongoing unsafe usage that might already exist.  I
-> suspect for that reason that lockdown is static and we really only need
-> the test on open.  Thanks,
+On Thu, May 06, 2021 at 02:34:27PM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=123a56a5d00000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
+> dashboard link: https://syzkaller.appspot.com/bug?extid=37fc8b84ffa2279d636d
+> userspace arch: i386
+> 
+> Unfortunately, I don't have any reproducer for this issue yet.
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com
+> 
+> =============================
+> WARNING: suspicious RCU usage
+> 5.12.0-syzkaller #0 Not tainted
+> -----------------------------
+> kernel/sched/core.c:8304 Illegal context switch in RCU-sched read-side critical section!
+> 
+> other info that might help us debug this:
+> 
+> 
+> rcu_scheduler_active = 2, debug_locks = 0
+> no locks held by syz-executor.4/10430.
 
-Note that SELinux now also implements the locked_down hook and that
-implementation is not static like the Lockdown LSM's. It checks
-whether the current task's SELinux domain has either integrity or
-confidentiality permission granted by the policy, so for SELinux it
-makes sense to have the lockdown hook called in these other places as
-well.
-
--- 
-Ondrej Mosnacek
-Software Engineer, Linux Security - SELinux kernel
-Red Hat, Inc.
-
+Looks like this is a concurrent fail?, if !debug_locks (as per the above)
+then RCU_LOCKDEP_WARN() should not trigger.
