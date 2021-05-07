@@ -2,229 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5CCEE3762C0
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:23:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51C793762C2
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:24:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235816AbhEGJYf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 05:24:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235202AbhEGJY3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 05:24:29 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4B26C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 02:23:29 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id z6so8448464wrm.4
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 02:23:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=1NrtzblskDmypPHj4A25OmtWsJ/DvkriA2Ugy8KdxgU=;
-        b=eSfp+MpJTjME6cTK89Sr9FlKhYaGXGoiEXqd05QNgjJLTLYvmDDCfoDyuWxm6TGc7O
-         QU38CUXuqLaSXUAej4OeQqTFzcZ/vMmXhKpBGdZksJ1OrBfqhGf173c8Ul7GsloGgxup
-         41DeFt+3ZNbTj82hQ0f7biWmjZyhJm78ZySkZwlEzXCrlzkDeK0xoh3RGTPhaLsZW7I/
-         2ZYkgTXQ9zIs6i3aYZPdZA4XcxIvY65G3K49Pcl6NUhEtjlkJoZKO2S0XBnTkjflQ5yy
-         COw5amuZi0NOrXiJcko9pwXAseJ9Uk+9c5p1F8AWJpB1NuaH9HYwTcAkKxMayU6kXNmV
-         KMrg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=1NrtzblskDmypPHj4A25OmtWsJ/DvkriA2Ugy8KdxgU=;
-        b=DbkL9kxmo8FZ5PvNg0tT2LNkIIBg+/vwUQ7zgQdrKiN/ZOiS3X0BbegBFMbLLpK6wR
-         BwSkGy+8jc5B4qhWlmT/YGuzrWv4Rihq2ikbdqgRFwrLsFwrkhZz8r8/2RR4qjGSBikt
-         xF2Tp/kddKdgPwa1yryuBBOlk5GhDpHXdfKVq2oNqUXIUqDfm4ZsZRMcEFLuUj4PvhT8
-         WchY2GTNNOMgRkWwLo0lQaYzOccFEPhIMrKc0+IYIG3uCkykv4/Xw2GvSM/x65743WZI
-         HAvOKSVgzGrN9mfmSs2Xt7aXqrpb4KgYtr0IB0GW3Tb69d1jpB3A+uX2dKRhhNpkBS4B
-         ys6g==
-X-Gm-Message-State: AOAM5339KrpHHBLE+AH0YKPKz7JvMh4S7JCjOxN68EIM4ixIkF+nkTQD
-        9KBcxklpdDpzTmOimFqFTPic1v/5mtI2e7ZKVh5aXg==
-X-Google-Smtp-Source: ABdhPJwFaDFvQFVmMVX0S+BA4Fw9u1p+5zWZai/DiZHCnos7ssX3dl1i2vKS2v8z3m9s3ShdqZH0474mh30v8Lc/YuY=
-X-Received: by 2002:a05:6000:136b:: with SMTP id q11mr10903086wrz.350.1620379408310;
- Fri, 07 May 2021 02:23:28 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210225090610.242623-1-allen.lkml@gmail.com> <20210507035816.426585-1-tyhicks@linux.microsoft.com>
- <720CDF03-42F9-43C3-B3B3-999E4A5E2864@linux.microsoft.com>
-In-Reply-To: <720CDF03-42F9-43C3-B3B3-999E4A5E2864@linux.microsoft.com>
-From:   Jens Wiklander <jens.wiklander@linaro.org>
-Date:   Fri, 7 May 2021 11:23:17 +0200
-Message-ID: <CAHUa44FHo2_EUzFzHnakkm3o7H-Nn+k4hgqT2WNFezZO6D8mxA@mail.gmail.com>
-Subject: Re: [PATCH] optee: Disable shm cache when booting the crash kernel
-To:     Allen Pais <apais@linux.microsoft.com>
-Cc:     Tyler Hicks <tyhicks@linux.microsoft.com>, zajec5@gmail.com,
-        Allen Pais <allen.lkml@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        OP-TEE TrustedFirmware <op-tee@lists.trustedfirmware.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S235912AbhEGJZH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 05:25:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56006 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S235202AbhEGJZF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 05:25:05 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1A6F8AC3E;
+        Fri,  7 May 2021 09:24:05 +0000 (UTC)
+Date:   Fri, 07 May 2021 11:24:04 +0200
+Message-ID: <s5hfsyyj3rf.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     =?UTF-8?B?0J/QvtC00LPQvtGA0L3Ri9C5INCQ0LvQtdC60YHQtdC5INCe0LvQtdCz0L4=?=
+         =?UTF-8?B?0LLQuNGH?= <s02190176@gse.cs.msu.ru>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Leon Romanovsky <leon@kernel.org>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Alexey Khoroshilov <khoroshilov@ispras.ru>,
+        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        ldv-project@linuxtesting.org
+Subject: Re: [BUG] ALSA: korg1212: Potential NULL pointer dereference in snd_korg1212_interrupt()
+In-Reply-To: <CAA5EkfcVXC4MwMj=2GsfyLDjPsnT1nxgNk5XhdE346MuLFwMVQ@mail.gmail.com>
+References: <CAA5EkfcVXC4MwMj=2GsfyLDjPsnT1nxgNk5XhdE346MuLFwMVQ@mail.gmail.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 9:00 AM Allen Pais <apais@linux.microsoft.com> wrote=
-:
->
->
->
-> > On 07-May-2021, at 9:28 AM, Tyler Hicks <tyhicks@linux.microsoft.com> w=
-rote:
-> >
-> > The .shutdown hook is not called after a kernel crash when a kdump
-> > kernel is pre-loaded. A kexec into the kdump kernel takes place as
-> > quickly as possible without allowing drivers to clean up.
-> >
-> > That means that the OP-TEE shared memory cache, which was initialized b=
-y
-> > the kernel that crashed, is still in place when the kdump kernel is
-> > booted. As the kdump kernel is shutdown, the .shutdown hook is called,
-> > which calls optee_disable_shm_cache(), and OP-TEE's
-> > OPTEE_SMC_DISABLE_SHM_CACHE API returns virtual addresses that are not
-> > mapped for the kdump kernel since the cache was set up by the previous
-> > kernel. Trying to dereference the tee_shm pointer or otherwise translat=
-e
-> > the address results in a fault that cannot be handled:
-> >
-> > Unable to handle kernel paging request at virtual address ffff4317b9c09=
-744
-> > Mem abort info:
-> >   ESR =3D 0x96000004
-> >   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> >   SET =3D 0, FnV =3D 0
-> >   EA =3D 0, S1PTW =3D 0
-> > Data abort info:
-> >   ISV =3D 0, ISS =3D 0x00000004
-> >   CM =3D 0, WnR =3D 0
-> > swapper pgtable: 4k pages, 48-bit VAs, pgdp=3D0000000970b1e000
-> > [ffff4317b9c09744] pgd=3D0000000000000000, p4d=3D0000000000000000
-> > Internal error: Oops: 96000004 [#1] SMP
-> > Modules linked in: bnxt_en pcie_iproc_platform pcie_iproc diagbe(O)
-> > CPU: 4 PID: 1 Comm: systemd-shutdow Tainted: G           O      5.10.19=
-.8 #1
-> > Hardware name: Redacted (DT)
-> > pstate: 60400005 (nZCv daif +PAN -UAO -TCO BTYPE=3D--)
-> > pc : tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
-> > lr : optee_disable_shm_cache (/usr/src/kernel/drivers/tee/optee/call.c:=
-441)
-> > sp : ffff80001005bb70
-> > x29: ffff80001005bb70 x28: ffff608e74648e00
-> > x27: ffff80001005bb98 x26: dead000000000100
-> > x25: ffff80001005bbb8 x24: aaaaaaaaaaaaaaaa
-> > x23: ffff608e74cf8818 x22: ffff608e738be600
-> > x21: ffff80001005bbc8 x20: ffff608e738be638
-> > x19: ffff4317b9c09700 x18: ffffffffffffffff
-> > x17: 0000000000000041 x16: ffffba61b5171764
-> > x15: 0000000000000004 x14: 0000000000000fff
-> > x13: ffffba61b5c9dfc8 x12: 0000000000000003
-> > x11: 0000000000000000 x10: 0000000000000000
-> > x9 : ffffba61b5413824 x8 : 00000000ffff4317
-> > x7 : 0000000000000000 x6 : 0000000000000000
-> > x5 : 0000000000000000 x4 : 0000000000000000
-> > x3 : 0000000000000000 x2 : ffff4317b9c09700
-> > x1 : 00000000ffff4317 x0 : ffff4317b9c09700
-> > Call trace:
-> > tee_shm_free (/usr/src/kernel/drivers/tee/tee_shm.c:363)
-> > optee_disable_shm_cache (/usr/src/kernel/drivers/tee/optee/call.c:441)
-> > optee_shutdown (/usr/src/kernel/drivers/tee/optee/core.c:636)
-> > platform_drv_shutdown (/usr/src/kernel/drivers/base/platform.c:800)
-> > device_shutdown (/usr/src/kernel/include/linux/device.h:758 /usr/src/ke=
-rnel/drivers/base/core.c:4078)
-> > kernel_restart (/usr/src/kernel/kernel/reboot.c:221 /usr/src/kernel/ker=
-nel/reboot.c:248)
-> > __arm64_sys_reboot (/usr/src/kernel/kernel/reboot.c:349 /usr/src/kernel=
-/kernel/reboot.c:312 /usr/src/kernel/kernel/reboot.c:312)
-> > do_el0_svc (/usr/src/kernel/arch/arm64/kernel/syscall.c:56 /usr/src/ker=
-nel/arch/arm64/kernel/syscall.c:158 /usr/src/kernel/arch/arm64/kernel/sysca=
-ll.c:197)
-> > el0_svc (/usr/src/kernel/arch/arm64/kernel/entry-common.c:368)
-> > el0_sync_handler (/usr/src/kernel/arch/arm64/kernel/entry-common.c:428)
-> > el0_sync (/usr/src/kernel/arch/arm64/kernel/entry.S:671)
-> > Code: aa0003f3 b5000060 12800003 14000002 (b9404663)
-> >
-> > When booting the kdump kernel, drain the shared memory cache while bein=
-g
-> > careful to not translate the addresses returned from
-> > OPTEE_SMC_DISABLE_SHM_CACHE. Once the invalid cache objects are drained
-> > and the cache is disabled, proceed with re-enabling the cache so that w=
-e
-> > aren't dealing with invalid addresses while shutting down the kdump
-> > kernel.
-> >
-> > Signed-off-by: Tyler Hicks <tyhicks@linux.microsoft.com>
-> > ---
-> >
-> > This patch fixes a crash introduced by "optee: fix tee out of memory
-> > failure seen during kexec reboot"[1]. However, I don't think that the
-> > original two patch series[2] plus this patch is the full solution to
-> > properly handling OP-TEE shared memory across kexec.
-> >
-> > While testing this fix, I did about 10 kexec reboots and then triggered
-> > a kernel crash by writing 'c' to /proc/sysrq-trigger. The kdump kernel
-> > became unresponsive during boot while steadily streaming the following
-> > errors to the serial console:
-> >
-> > arm-smmu 64000000.mmu: Blocked unknown Stream ID 0x2000; boot with "arm=
--smmu.disable_bypass=3D0" to allow, but this may have security implications
-> > arm-smmu 64000000.mmu:     GFSR 0x00000002, GFSYNR0 0x00000002, GFSYNR1=
- 0x00002000, GFSYNR2 0x00000000
-> >
-> > I suspect that this is related to the problems of OP-TEE shared memory
-> > handling across kexec. My current hunch is that while we've disabled th=
-e
-> > shared memory cache with this patch, we haven't unregistered all of the
-> > addresses that the previous kernel (which crashed) had registered with
-> > OP-TEE and that perhaps OP-TEE OS is still trying to make use those
-> > addresses?
-> >
-> > I'm still pretty early in investigating that assumption and
-> > I'm learning about OP-TEE as I go but I wanted to get this initial
-> > fix-of-the-fix out so that it was clear that the v2 of the series[2] is
-> > not complete.
-> >
-> > [1] https://lore.kernel.org/lkml/20210225090610.242623-2-allen.lkml@gma=
-il.com/
-> > [2] https://lore.kernel.org/lkml/20210225090610.242623-1-allen.lkml@gma=
-il.com/#t
-> >
-> > drivers/tee/optee/call.c          | 11 ++++++++++-
-> > drivers/tee/optee/core.c          | 13 +++++++++++--
-> > drivers/tee/optee/optee_private.h |  2 +-
-> > 3 files changed, 22 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/drivers/tee/optee/call.c b/drivers/tee/optee/call.c
-> > index 6132cc8d014c..799e84bec63d 100644
-> > --- a/drivers/tee/optee/call.c
-> > +++ b/drivers/tee/optee/call.c
-> > @@ -417,8 +417,10 @@ void optee_enable_shm_cache(struct optee *optee)
-> >  * optee_disable_shm_cache() - Disables caching of some shared memory a=
-llocation
-> >  *                          in OP-TEE
-> >  * @optee:    main service struct
-> > + * @is_mapped:       true if the cached shared memory addresses were m=
-apped by this
-> > + *           kernel, are safe to dereference, and should be freed
-> >  */
-> > -void optee_disable_shm_cache(struct optee *optee)
-> > +void optee_disable_shm_cache(struct optee *optee, bool is_mapped)
-> > {
-> >       struct optee_call_waiter w;
-> >
-> > @@ -437,6 +439,13 @@ void optee_disable_shm_cache(struct optee *optee)
-> >               if (res.result.status =3D=3D OPTEE_SMC_RETURN_OK) {
-> >                       struct tee_shm *shm;
-> >
->
->  Thanks Tyler.
->  From what I understand from my email exchange with Jens, I don=E2=80=99t
-> Think we want to touch optee_disable_shm_cache(), I could be wrong too,
-> @Jens, comments?
+On Fri, 07 May 2021 11:18:56 +0200,
+Подгорный Алексей Олегович wrote:
+> 
+> snd_korg1212_create() makes the following steps during initialization
+> of the card:
+> 1) registers an interrupt handler (lines 2230-2232)
+> 2) allocates and initializes korg1212->sharedBufferPtr (lines 2280-2287)
+> 3) reboots the card via snd_korg1212_Send1212Command() (line 2358)
+> 
+> 2145    static int snd_korg1212_create(struct snd_card *card, struct
+>                                  pci_dev *pci, struct snd_korg1212 **rchip)
+> 2147    {
+>                 ...
+> 2230            err = request_irq(pci->irq, snd_korg1212_interrupt,
+> 2231                                        IRQF_SHARED,
+> 2232                                        KBUILD_MODNAME, korg1212);
+>                 ...
+> 2280            if (snd_dma_alloc_pages(SNDRV_DMA_TYPE_DEV, &pci->dev,
+> 2281            sizeof(struct KorgSharedBuffer), &korg1212->dma_shared) < 0){
+> 
+> 2282                         snd_printk(KERN_ERR "korg1212: can not
+>                                  allocate shared buffer memory (%zdbytes)\n",
+>                                  sizeof(struct KorgSharedBuffer));
+> 
+> 2283                         snd_korg1212_free(korg1212);
+> 2284                         return -ENOMEM;
+> 2285            }
+> 2286            korg1212->sharedBufferPtr =
+>                         (struct KorgSharedBuffer*)korg1212->dma_shared.area;
+> 2287            korg1212->sharedBufferPhy = korg1212->dma_shared.addr;
+>                 ...
+> 2358            rc = snd_korg1212_Send1212Command(korg1212,
+>                         K1212_DB_RebootCard, 0, 0, 0, 0);
+>                 ...
+> 2412    }
+> 
+> But if interrupt happens when snd_korg1212_create() is still within
+> lines 2233-2286,
+> snd_korg1212_interrupt() may dereference korg1212->sharedBufferPtr before
+> it was initialized without any checks (line 1149):
+> 
+> 1098    static irqreturn_t snd_korg1212_interrupt(int irq, void *dev_id)
+> 1099    {
+>                 ...
+> 1116            switch (doorbellValue) {
+>                 ...
+> 1145                        case K1212_DB_CARDSTOPPED:
+> 1146                            K1212_DEBUG_PRINTK_VERBOSE("K1212_DEBUG: IRQ
+>                                         CSTP count - %ld, %x, [%s].\n",
+> 1147                                korg1212->irqcount, doorbellValue,
+> 1148                                stateName[korg1212->cardState]);
+> 1149                        korg1212->sharedBufferPtr->cardCommand = 0;
+>                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 1150                        break;
+>                 ...
+> 1185    }
+> 
+> Should we be sure that such interrupt cannot happen or
+> should we move the registration of the interrupt handler after
+> korg1212->sharedBufferPtr is initialized?
 
-Changing optee_disable_shm_cache() is fine. Bear in mind that there
-are other times where we can't recover from a kernel crash. For
-instance if a thread is executing in OP-TEE in secure world.
+Yes, in general the IRQ handler should be registered at the end.
+Could you submit a fix patch?
 
-Cheers,
-Jens
+
+thanks,
+
+Takashi
