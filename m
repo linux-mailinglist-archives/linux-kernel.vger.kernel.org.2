@@ -2,79 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C472A376579
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:48:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EA4D237657E
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:49:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237060AbhEGMtt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:49:49 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35368 "EHLO mail.kernel.org"
+        id S237083AbhEGMuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:50:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35702 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237043AbhEGMtr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:49:47 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id AE5046143F;
-        Fri,  7 May 2021 12:48:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620391728;
-        bh=vaBF2uHP43lFyzQwMbdbFEMpn4rQ8hW21O3qLxQS5Ak=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=iI9XS9nv67rnDiBHeuSryQolG8PeQYxzxPdHrDmq9vP05gI46DB/f/n6kIMO4DKod
-         vNmA1K1fye00nnZ7EeAGHG0zy4LL5wwZHhgQGl9NSocHP7jXvQLU3T7gVQlsQRYpI0
-         Cw7gF01oC9+5IXOOEHSwvRdTj7aeTIeJ43wNVsPiKZHrExqmi/URQk7bj5nncex8cj
-         tyTkktZVOyTlwVjzIDxVkjHr3wpfMgP8qSmTPsOxFcVzXIOXe0CneIRKrBng1uzmCt
-         znJocDSdswSCf7hNwkhIuFVXrOdC0KRrW4UTjyGOKndKUia6Rq92b5Sj1k4IVNPDZH
-         iy+EbcMxByCHg==
-Date:   Fri, 7 May 2021 14:48:42 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ARM: module: treat exit sections the same as init
- sections when !CONFIG_MODULE_UNLOAD
-Message-ID: <YJU3KrZzSRYNH6Zt@gunter>
-References: <20210507121322.6441-1-jeyu@kernel.org>
- <20210507123054.GD1336@shell.armlinux.org.uk>
+        id S237068AbhEGMuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 08:50:18 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 7D06B6143F;
+        Fri,  7 May 2021 12:49:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+        s=korg; t=1620391757;
+        bh=SoY6AMPFWW9wH8Y+E/2kVSrNsQNERQ76Um/dBHPGoOs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=ZZThocKIbcW6qYlaYh/VwT7smWCQ0xAB8i/rr0jZEJ1lqkAqH59lYAfsUNyVJ6a7l
+         wbSAEFYaEcXlJVLPaeWEInQ756n51SRiiBToIgGwW1wOAsXlm/bzLiO+I2E4wxxDoZ
+         pNeNdmgTPqGJCpdjSsqJGYKYRc+Vie6CkdoFLji4=
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
+        torvalds@linux-foundation.org, stable@vger.kernel.org
+Cc:     lwn@lwn.net, jslaby@suse.cz,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Linux 5.12.2
+Date:   Fri,  7 May 2021 14:49:09 +0200
+Message-Id: <162039174226118@kroah.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20210507123054.GD1336@shell.armlinux.org.uk>
-X-OS:   Linux gunter 5.11.16-1-default x86_64
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+++ Russell King - ARM Linux admin [07/05/21 13:30 +0100]:
->On Fri, May 07, 2021 at 02:13:22PM +0200, Jessica Yu wrote:
->> Dynamic code patching (alternatives, jump_label and static_call) can
->> have sites in __exit code, even if __exit is never executed. Therefore
->> __exit must be present at runtime, at least for as long as __init code is.
->...
->> Previously, the module loader never loaded the exit sections in the first
->> place when CONFIG_MODULE_UNLOAD=n. Commit 33121347fb1c ("module: treat exit
->> sections the same as init sections when !CONFIG_MODULE_UNLOAD") addressed
->> the issue by having the module loader load the exit sections and then making
->> __exit identify as __init for !MODULE_UNLOAD. Then, since they are treated
->> like init sections, they will be also discarded after init.
->>
->> That commit satisfied the above requirements for jump_labels and
->> static_calls by modifying the checks in the core module_init_section()
->> function in kernel/module.c to include exit sections. However, ARM
->> overrides these and implements their own module_{init,exit}_section()
->> functions. Add a similar check for exit sections to ARM's
->> module_init_section() function so that all arches are on the same page.
->
->Shouldn't the module core code itself be doing:
->
->	module_init_section(name) || module_exit_section(name)
->
->itself when CONFIG_MODULE_UNLOAD is not set, rather than pushing this
->logic down into every module_init_section() implementation?
+I'm announcing the release of the 5.12.2 kernel.
 
-Yeah, that sounds better. Originally, I had wanted to keep the #ifndef
-in one place to keep the churn to a minimum.
+All users of the 5.12 kernel series must upgrade.
 
-But seeing that we have to patch up ARM too, it's probably the less
-ugly option now. Let me cook up an alternative patch and resend.
+The updated 5.12.y git tree can be found at:
+	git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-5.12.y
+and can be browsed at the normal kernel.org git web browser:
+	https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
 
-Thanks,
+thanks,
 
-Jessica
+greg k-h
+
+------------
+
+ Makefile                                  |    2 -
+ arch/mips/include/asm/vdso/gettimeofday.h |   26 +++++++++++++++++++----
+ drivers/gpu/drm/i915/i915_drv.c           |   10 +++++++++
+ drivers/net/usb/ax88179_178a.c            |    6 +++--
+ drivers/platform/x86/thinkpad_acpi.c      |   31 ++++++++++++++++++++--------
+ drivers/usb/core/quirks.c                 |    4 +++
+ fs/overlayfs/namei.c                      |    1 
+ fs/overlayfs/super.c                      |   12 ++++++----
+ include/linux/bpf_verifier.h              |    5 ++--
+ kernel/bpf/verifier.c                     |   33 ++++++++++++++++--------------
+ kernel/events/core.c                      |   12 +++++-----
+ net/netfilter/nf_conntrack_standalone.c   |   10 +--------
+ net/qrtr/mhi.c                            |    8 ++++---
+ sound/usb/endpoint.c                      |    8 +++----
+ sound/usb/quirks-table.h                  |   10 +++++++++
+ 15 files changed, 118 insertions(+), 60 deletions(-)
+
+Bjorn Andersson (1):
+      net: qrtr: Avoid potential use after free in MHI send
+
+Chris Chiu (1):
+      USB: Add reset-resume quirk for WD19's Realtek Hub
+
+Daniel Borkmann (2):
+      bpf: Fix masking negation logic upon negative dst register
+      bpf: Fix leakage of uninitialized bpf stack under speculation
+
+Greg Kroah-Hartman (1):
+      Linux 5.12.2
+
+Imre Deak (1):
+      drm/i915: Disable runtime power management during shutdown
+
+Jonathon Reinhart (1):
+      netfilter: conntrack: Make global sysctls readonly in non-init netns
+
+Kai-Heng Feng (1):
+      USB: Add LPM quirk for Lenovo ThinkPad USB-C Dock Gen2 Ethernet
+
+Mark Pearson (1):
+      platform/x86: thinkpad_acpi: Correct thermal sensor allocation
+
+Mickaël Salaün (1):
+      ovl: fix leaked dentry
+
+Miklos Szeredi (1):
+      ovl: allow upperdir inside lowerdir
+
+Ondrej Mosnacek (1):
+      perf/core: Fix unconditional security_locked_down() call
+
+Phillip Potter (1):
+      net: usb: ax88179_178a: initialize local variables before use
+
+Romain Naour (1):
+      mips: Do not include hi and lo in clobber list for R6
+
+Takashi Iwai (2):
+      ALSA: usb-audio: Add MIDI quirk for Vox ToneLab EX
+      ALSA: usb-audio: Fix implicit sync clearance at stopping stream
+
