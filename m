@@ -2,157 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67B8937677B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 792A1376788
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:05:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237752AbhEGPEf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 11:04:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35912 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237744AbhEGPEY (ORCPT
+        id S237773AbhEGPGa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 11:06:30 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:53911 "EHLO
+        wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234841AbhEGPG1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 11:04:24 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADFB7C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 08:03:23 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lf20c-0000O7-MC; Fri, 07 May 2021 17:03:18 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lf20b-0002zp-Vp; Fri, 07 May 2021 17:03:17 +0200
-Date:   Fri, 7 May 2021 17:03:17 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Clemens Gruber <clemens.gruber@pqgruber.com>
-Cc:     linux-pwm@vger.kernel.org,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Sven Van Asbroeck <TheSven73@gmail.com>,
-        linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Subject: Re: [PATCH 1/4] pwm: core: Support new usage_power setting in PWM
- state
-Message-ID: <20210507150317.bnluhqrqepde4xjm@pengutronix.de>
-References: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
+        Fri, 7 May 2021 11:06:27 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id B220C13A0;
+        Fri,  7 May 2021 11:05:23 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute1.internal (MEProxy); Fri, 07 May 2021 11:05:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        from:to:cc:subject:date:message-id:content-type:mime-version
+        :content-transfer-encoding; s=fm2; bh=2uFNi/3TthaFiv4+GYmmbBcULi
+        A6PkSxR3lwy0Cdm48=; b=iHasEh8lcj/FihZBVh0gBI3gIsUL0br7vswjXf1ZPd
+        Yq/w7VZOTONDUtcHDk34VoeF99DdybXMS0mid6qE6NITE1S9BJOpsl3JWDISWV4Q
+        RZ3MCFHtVO9Zq5+xjAAZuP2Q8wDoQS9P7Ufy4SV5+8GnmXUlBPkRV3bM7dKe0UHU
+        QxQ8yBpE59067mUYeB5DBxnyB8wr/GJiP5CgxGBfzgjTzW5TYxwcDImZLYxIp7VV
+        MhWHs9cnMPg7FScqz1EedRy5JIKTqrOPYwsKpRM60YJ9h/iC7bGNw7G0hKmnjxAD
+        YjN9HGpIjSoauz6WFqTQWci1Qx3g7TTpWN7ubDYui4RA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:message-id:mime-version:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=2uFNi/
+        3TthaFiv4+GYmmbBcULiA6PkSxR3lwy0Cdm48=; b=kYdZFYfj+mR8s7Rt8B95/m
+        tO3AUGHj06c+SHrdWDCJYmGXFaJGyjRdJBOdqs+SZr/kFSAMzDMVV2oZj5fqBbqM
+        FkkzhYSY2fhgWfIh/nmSrh95TERL0jh2PWhg0EG6ilYXUaIILB1EZdjas8MXkJOP
+        Uq+2YoG+B8SMrY3VqwTOz/z3b3MLfgecLD0KYBMEHKp+JE6a2FqKgzwX0Ki3cXeV
+        YZYrPhFSwhmZEaQ3bi2iKhisT2Sl5u/V7i6PnIAG8zeoZoip0JqXkkh+uqfE/3l6
+        tjK99JHifUymC7Ud0H9fRtw6VstkfhJ2LK/qU/rFNkLhaJHKPRUYuqsu7fP/OcYg
+        ==
+X-ME-Sender: <xms:MFeVYEW9mIk6oOF9vGuEZWGhhweweZC_3Q7YHN76V6PxOr2sqBMYYA>
+    <xme:MFeVYImwpmlRlWlHtF8MzgCkIYZeVCeCX4JwDFVTc9QwQGK3-0yQSNYiksjnNQfmU
+    8GJwqrU_5WV4S3PHFg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegvddgkeegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhephffvufffkffotggggfesthhqredtredtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeetieekgfffkeegkeeltdehudetteejgfekueevhffhteegudfgkedtueegfffg
+    feenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:MFeVYIaYQEJRmY22z7ulT774Is0nWh9TqT50bfJzCmfAV90--6Ngaw>
+    <xmx:MFeVYDXB9FJU6zt69Vn64iTL9XhZ4aH2DMAlFC-vIotzva8Jsoa4wg>
+    <xmx:MFeVYOml64ZDuVln_z1W12yqGafHziCLcs_hvUBeuFDdbe51GKthLA>
+    <xmx:M1eVYJ-13ABSgN_KNgv2zz_em1C2nCJpEi3ZwaB9qgTj3VF1wlQnmUb-dB0>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA;
+        Fri,  7 May 2021 11:05:19 -0400 (EDT)
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Maxime Ripard <maxime@cerno.tech>,
+        dri-devel@lists.freedesktop.org,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        David Airlie <airlied@linux.ie>
+Cc:     Eric Anholt <eric@anholt.net>,
+        Nicolas Saenz Julienne <nsaenz@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-rpi-kernel@lists.infradead.org,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Phil Elwell <phil@raspberrypi.com>,
+        Tim Gover <tim.gover@raspberrypi.com>,
+        Dom Cobley <dom@raspberrypi.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 00/12] drm/vc4: hdmi: Support the 4k @ 60Hz modes
+Date:   Fri,  7 May 2021 17:05:03 +0200
+Message-Id: <20210507150515.257424-1-maxime@cerno.tech>
+X-Mailer: git-send-email 2.31.1
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="r5l7l24l74cfsloy"
-Content-Disposition: inline
-In-Reply-To: <20210507131845.37605-1-clemens.gruber@pqgruber.com>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
---r5l7l24l74cfsloy
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-On Fri, May 07, 2021 at 03:18:42PM +0200, Clemens Gruber wrote:
-> diff --git a/include/linux/pwm.h b/include/linux/pwm.h
-> index 5bb90af4997e..5a73251d28e3 100644
-> --- a/include/linux/pwm.h
-> +++ b/include/linux/pwm.h
-> @@ -54,12 +54,17 @@ enum {
->   * @duty_cycle: PWM duty cycle (in nanoseconds)
->   * @polarity: PWM polarity
->   * @enabled: PWM enabled status
-> + * @usage_power: If set, the PWM driver is only required to maintain the=
- power
-> + *               output but has more freedom regarding signal form.
-> + *               If supported, the signal can be optimized, for example =
-to
-> + *               improve EMI by phase shifting individual channels.
->   */
->  struct pwm_state {
->  	u64 period;
->  	u64 duty_cycle;
->  	enum pwm_polarity polarity;
->  	bool enabled;
-> +	bool usage_power;
->  };
-> =20
->  /**
-
-If we really want to support this usecase, I would prefer to not have it
-in pwm_state because this concept is not a property of the wave form. So
-for a driver it doesn't really make sense to set this flag in
-=2Eget_state().
-
-Maybe it makes more sense to put this in a separate argument for a
-variant of pwm_apply_state? something like:
-
-	int pwm_apply_state_transition(struct pwm_device *pwm, const struct pwm_st=
-ate *state, const struct pwm_state_transition *transition);
-
-and pwm_state_transition can then contain something like this usage
-power concept and maybe also a sync flag that requests that the call
-should only return when the new setting is active and maybe also a
-complete_period flag that requests that the currently running period
-must be completed before the requested setting is implemented.
-
-OTOH the information "I only care about the relative duty cycle" is
-relevant longer than during the transition to a new setting. (So if
-there are two consumers and one specified to be only interested in the
-relative duty cycle, the other might be allowed to change the common
-period.)
-
-Having said that, I don't like the proposed names. Neither "usage_power"
-nor "pwm_apply_state_transition".
-
-In a non-representative survey among two hardware engineers and one
-software engineer who already contributed to PWM (!=3D me) I found out
-that these three have an intuitive right understanding of
-"allow-phase-shift" but have no idea what "usage-power" could mean.
-
-On a side note: The hardware guys noted that it might make sense to
-align the shifted phases. i.e. instead of shifting channel i by i *
-period/16, it might be better to let the 2nd channel get active when the
-first gets inactive. (i.e. try to keep the count of active channels
-constant).
-
-And as already mentioned earlier I still think we should define the
-concept of "usage power" better. It should be clearly defined for a
-driver author which setting they should pick for a given request. This
-removes surprises for consumers and guessing for lowlevel driver
-authors. Also a uniform policy brings conflicts better to light.
-(Something like driver A does the right thing for consumer C and driver
-B makes it right for D. But once D tries to use A things break. (And
-then maybe A is changed to fit D, and C doesn't object because they
-don't read the pwm list resulting in a breakage for C later.))
-
-So in sum: I think this concept is too inchoate and we shouldn't apply
-these patches. I would prefer to go for allow-phase-shift (if at all)
-for now. There the concept is clear what is allowed (for a lowlevel
-driver) resp. can be expected (for a consumer).
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---r5l7l24l74cfsloy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCVVq0ACgkQwfwUeK3K
-7AnTuwgAhP667IaX+Z5p2hqnp++5ZCSeUJr7CCWWn4FPrv/YvY+6Hmb124IHkyN4
-7ve3JPC3uk+3b79IlihpbTQsv1X1oUw3ZtdaD2wHoBrzBkloTBk2bP8X4+AXNg1i
-XgrQmcJ2j10RI8m9KFXvsnjEcGxL15Lcondxt/iJkhISpW9Adz1fcg8bsaFPySww
-C/6UUpB8wet/hHeCFSqgOepoYmibkgYbr7HIHNO2aSnNJuTu1z9wS5WfqoSFARw9
-1f4P0JP+Ouz1OV6nwgAP0HfpKSmoc4nCdeKOtlxLEBpQX6pEVABSXtqIvF7v2N2l
-+bG+a2Sk1XpAGdkuLhGmo9NHF+NrWg==
-=Y7ZD
------END PGP SIGNATURE-----
-
---r5l7l24l74cfsloy--
+Hi,=0D
+=0D
+Here is a series that enables the higher resolutions on the HDMI0 Controlle=
+r=0D
+found in the BCM2711 (RPi4).=0D
+=0D
+In order to work it needs a few adjustments to config.txt, most notably to=
+=0D
+enable the enable_hdmi_4kp60 option.=0D
+=0D
+Let me know what you think,=0D
+Maxime=0D
+=0D
+---=0D
+=0D
+Changes from v3:=0D
+  - Rework the encoder retrieval code that was broken on the RPi3 and older=
+=0D
+  - Fix a scrambling enabling issue on some display=0D
+=0D
+Changes from v2:=0D
+  - Gathered the various tags=0D
+  - Added Cc stable when relevant=0D
+  - Split out the check to test whether the scrambler is required into=0D
+    an helper=0D
+  - Fixed a bug where the scrambler state wouldn't be tracked properly=0D
+    if it was enabled at boot=0D
+=0D
+Changes from v1:=0D
+  - Dropped the range accessors=0D
+  - Drop the mention of force_turbo=0D
+  - Reordered the SCRAMBLER_CTL register to match the offset=0D
+  - Removed duplicate HDMI_14_MAX_TMDS_CLK define=0D
+  - Warn about enable_hdmi_4kp60 only if there's some modes that can't be r=
+eached=0D
+  - Rework the BVB clock computation=0D
+=0D
+Maxime Ripard (12):=0D
+  drm/vc4: txp: Properly set the possible_crtcs mask=0D
+  drm/vc4: crtc: Skip the TXP=0D
+  drm/vc4: crtc: Pass the drm_atomic_state to config_pv=0D
+  drm/vc4: crtc: Fix vc4_get_crtc_encoder logic=0D
+  drm/vc4: crtc: Lookup the encoder from the register at boot=0D
+  drm/vc4: hdmi: Prevent clock unbalance=0D
+  drm/vc4: hvs: Make the HVS bind first=0D
+  drm/vc4: hdmi: Properly compute the BVB clock rate=0D
+  drm/vc4: hdmi: Check and warn if we can't reach 4kp60 frequencies=0D
+  drm/vc4: hdmi: Enable the scrambler=0D
+  drm/vc4: hdmi: Add a workqueue to set scrambling=0D
+  drm/vc4: hdmi: Raise the maximum clock rate=0D
+=0D
+ drivers/gpu/drm/vc4/vc4_crtc.c      |  66 ++++++++++---=0D
+ drivers/gpu/drm/vc4/vc4_drv.c       |  11 ++-=0D
+ drivers/gpu/drm/vc4/vc4_hdmi.c      | 147 ++++++++++++++++++++++++++--=0D
+ drivers/gpu/drm/vc4/vc4_hdmi.h      |  10 ++=0D
+ drivers/gpu/drm/vc4/vc4_hdmi_regs.h |   3 +=0D
+ drivers/gpu/drm/vc4/vc4_txp.c       |   2 +-=0D
+ 6 files changed, 217 insertions(+), 22 deletions(-)=0D
+=0D
+-- =0D
+2.31.1=0D
+=0D
