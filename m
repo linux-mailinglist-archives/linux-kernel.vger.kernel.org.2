@@ -2,256 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58D9D376230
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CF4C37622B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236384AbhEGIhO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 04:37:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35292 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S236347AbhEGIhF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 04:37:05 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 023D760FDC;
-        Fri,  7 May 2021 08:36:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620376565;
-        bh=I+qN+0aqIyLTx4KBomCn8E0G7kBDY8z+bAk62yK5pIY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cmH+prl+5ntKjNuny4tzsesY56MjuDqD0wKQ1rjtaes53SQhgF800YP0AVyUiT7Yt
-         Jp2T92BQC2mOp5TgfXyZ/0gaqDB33GejHBJ2QN4k7B+AKYG+9xuKyQ3KtY3Pblaxvo
-         Naz79bv9DOeJAnvyHZy04hMTMGKFBFNUiSJ2ZSksmqDuPwhnYxwJf1lw05hyD2YEk/
-         VdMH5adblafLzNAuDyUYEOHN1jLKRxLCh4M8lARvYktOAr6S0y9czGCSveyeczB9VF
-         6uGoVGHTeamNxM0BeAU+YhngPkAuFKlsdn2v8DMkl8+kedighCLbg1qazytO2ikQgz
-         GRqGHiEhbhpxA==
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Shuah Khan <shuah@kernel.org>
-Cc:     linux-sgx@vger.kernel.org, dave.hansen@intel.com,
-        Jarkko Sakkinen <jarkko@kernel.org>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 2/2] selftests/sgx: Migrate to kselftest harness
-Date:   Fri,  7 May 2021 11:35:52 +0300
-Message-Id: <20210507083552.6832-2-jarkko@kernel.org>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20210507083552.6832-1-jarkko@kernel.org>
-References: <20210507083552.6832-1-jarkko@kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S236344AbhEGIhA convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 7 May 2021 04:37:00 -0400
+Received: from coyote.holtmann.net ([212.227.132.17]:40403 "EHLO
+        mail.holtmann.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230215AbhEGIg5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 04:36:57 -0400
+Received: from smtpclient.apple (p4fefc624.dip0.t-ipconnect.de [79.239.198.36])
+        by mail.holtmann.org (Postfix) with ESMTPSA id CF60CCECDB;
+        Fri,  7 May 2021 10:43:46 +0200 (CEST)
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.80.0.2.43\))
+Subject: Re: [PATCH v2 2/2] Bluetooth: Support the vendor specific debug
+ events
+From:   Marcel Holtmann <marcel@holtmann.org>
+In-Reply-To: <20210413074521.264802-2-josephsih@chromium.org>
+Date:   Fri, 7 May 2021 10:35:55 +0200
+Cc:     Bluetooth Kernel Mailing List <linux-bluetooth@vger.kernel.org>,
+        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+        =?utf-8?Q?Pali_Roh=C3=A1r?= <pali@kernel.org>,
+        josephsih@google.com, chromeos-bluetooth-upstreaming@chromium.org,
+        Chethan Tumkur Narayan 
+        <chethan.tumkur.narayan@intel.corp-partner.google.com>,
+        Kiran Krishnappa <kiran.k@intel.corp-partner.google.com>,
+        Miao-chen Chou <mcchou@chromium.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Message-Id: <A5D0DBF6-7C55-49E2-80EA-B1C6D44F14A8@holtmann.org>
+References: <20210413074521.264802-1-josephsih@chromium.org>
+ <20210413074521.264802-2-josephsih@chromium.org>
+To:     Joseph Hwang <josephsih@chromium.org>
+X-Mailer: Apple Mail (2.3654.80.0.2.43)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Migrate to kselftest harness so that the kselftest framework can probably
-count and report passed and failed tests.
+Hi Joseph,
 
-Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
----
+> This patch allows a user space process to enable/disable the vendor
+> specific (vs) debug events dynamically through the set experimental
+> feature mgmt interface if CONFIG_BT_FEATURE_VS_DBG_EVT is enabled.
+> 
+> Since the debug event feature needs to invoke the callback function
+> provided by the driver, i.e., hdev->set_vs_dbg_evt, a valid controller
+> index is required.
+> 
+> For generic Linux machines, the vendor specific debug events are
+> disabled by default.
+> 
+> Reviewed-by: Chethan Tumkur Narayan <chethan.tumkur.narayan@intel.corp-partner.google.com>
+> Reviewed-by: Kiran Krishnappa <kiran.k@intel.corp-partner.google.com>
+> Reviewed-by: Miao-chen Chou <mcchou@chromium.org>
+> Signed-off-by: Joseph Hwang <josephsih@chromium.org>
+> ---
+> 
+> (no changes since v1)
+> 
+> drivers/bluetooth/btintel.c      |  73 ++++++++++++++++++++-
+> drivers/bluetooth/btintel.h      |  13 ++++
+> drivers/bluetooth/btusb.c        |  16 +++++
+> include/net/bluetooth/hci.h      |   4 ++
+> include/net/bluetooth/hci_core.h |  10 +++
+> net/bluetooth/Kconfig            |  10 +++
+> net/bluetooth/mgmt.c             | 108 ++++++++++++++++++++++++++++++-
+> 7 files changed, 232 insertions(+), 2 deletions(-)
 
-v3:
-* Use helper macros.
-v2:
-* Add the missing string argument to ksft_test_result_pass() and
-  ksft_test_result_fail() calls.
+maybe I forgot to mention this, we don’t intermix core changes with driver changes to support it.
 
- tools/testing/selftests/sgx/main.c | 120 +++++++++++++++++------------
- 1 file changed, 71 insertions(+), 49 deletions(-)
+You first need to introduce the core feature and then patch the driver to support it.
 
-diff --git a/tools/testing/selftests/sgx/main.c b/tools/testing/selftests/sgx/main.c
-index 43da68388e25..4622dedcd290 100644
---- a/tools/testing/selftests/sgx/main.c
-+++ b/tools/testing/selftests/sgx/main.c
-@@ -18,7 +18,7 @@
- #include <sys/auxv.h>
- #include "defines.h"
- #include "main.h"
--#include "../kselftest.h"
-+#include "../kselftest_harness.h"
- 
- static const uint64_t MAGIC = 0x1122334455667788ULL;
- vdso_sgx_enter_enclave_t vdso_sgx_enter_enclave;
-@@ -107,31 +107,27 @@ static Elf64_Sym *vdso_symtab_get(struct vdso_symtab *symtab, const char *name)
- 	return NULL;
- }
- 
--bool report_results(struct sgx_enclave_run *run, int ret, uint64_t result,
--		  const char *test)
-+bool is_test_passed(struct sgx_enclave_run *run, int ret, uint64_t result)
- {
- 	bool valid = true;
- 
- 	if (ret) {
--		printf("FAIL: %s() returned: %d\n", test, ret);
-+		ksft_print_msg("ret = %d\n", ret);
- 		valid = false;
- 	}
- 
- 	if (run->function != EEXIT) {
--		printf("FAIL: %s() function, expected: %u, got: %u\n", test, EEXIT,
--		       run->function);
-+		ksft_print_msg("run->function: expected: %u, got: %u\n", EEXIT, run->function);
- 		valid = false;
- 	}
- 
- 	if (result != MAGIC) {
--		printf("FAIL: %s(), expected: 0x%lx, got: 0x%lx\n", test, MAGIC,
--		       result);
-+		ksft_print_msg("result: expected: 0x%lx, got: 0x%lx\n", MAGIC, result);
- 		valid = false;
- 	}
- 
- 	if (run->user_data) {
--		printf("FAIL: %s() user data, expected: 0x0, got: 0x%llx\n",
--		       test, run->user_data);
-+		ksft_print_msg("run->user_data:expected: 0x0, got: 0x%llx\n", run->user_data);
- 		valid = false;
- 	}
- 
-@@ -145,47 +141,42 @@ static int user_handler(long rdi, long rsi, long rdx, long ursp, long r8, long r
- 	return 0;
- }
- 
--int main(int argc, char *argv[])
-+FIXTURE(enclave) {
-+	struct encl encl;
-+};
-+
-+FIXTURE_SETUP(enclave)
- {
--	struct sgx_enclave_run run;
-+	Elf64_Sym *sgx_enter_enclave_sym = NULL;
- 	struct vdso_symtab symtab;
--	Elf64_Sym *sgx_enter_enclave_sym;
--	uint64_t result = 0;
--	struct encl encl;
- 	unsigned int i;
- 	void *addr;
--	int ret;
- 
--	memset(&run, 0, sizeof(run));
--
--	if (!encl_load("test_encl.elf", &encl)) {
--		encl_delete(&encl);
-+	if (!encl_load("test_encl.elf", &self->encl)) {
-+		encl_delete(&self->encl);
- 		ksft_exit_skip("cannot load enclaves\n");
- 	}
- 
--	if (!encl_measure(&encl))
-+	if (!encl_measure(&self->encl))
- 		goto err;
- 
--	if (!encl_build(&encl))
-+	if (!encl_build(&self->encl))
- 		goto err;
- 
- 	/*
- 	 * An enclave consumer only must do this.
- 	 */
--	for (i = 0; i < encl.nr_segments; i++) {
--		struct encl_segment *seg = &encl.segment_tbl[i];
-+	for (i = 0; i < self->encl.nr_segments; i++) {
-+		struct encl_segment *seg = &self->encl.segment_tbl[i];
- 
--		addr = mmap((void *)encl.encl_base + seg->offset, seg->size,
--			    seg->prot, MAP_SHARED | MAP_FIXED, encl.fd, 0);
-+		addr = mmap((void *)self->encl.encl_base + seg->offset, seg->size,
-+			    seg->prot, MAP_SHARED | MAP_FIXED, self->encl.fd, 0);
- 		if (addr == MAP_FAILED) {
--			perror("mmap() segment failed");
--			exit(KSFT_FAIL);
-+			ksft_print_msg("mmap() segment: %s", strerror(errno));
-+			goto err;
- 		}
- 	}
- 
--	memset(&run, 0, sizeof(run));
--	run.tcs = encl.encl_base;
--
- 	/* Get vDSO base address */
- 	addr = (void *)getauxval(AT_SYSINFO_EHDR);
- 	if (!addr)
-@@ -200,32 +191,63 @@ int main(int argc, char *argv[])
- 
- 	vdso_sgx_enter_enclave = addr + sgx_enter_enclave_sym->st_value;
- 
--	ret = sgx_enter_enclave((void *)&MAGIC, &result, 0, EENTER,
--					    NULL, NULL, &run);
--	if (!report_results(&run, ret, result, "sgx_enter_enclave_unclobbered"))
--		goto err;
-+err:
-+	if (!sgx_enter_enclave_sym)
-+		encl_delete(&self->encl);
-+
-+	ASSERT_NE(sgx_enter_enclave_sym, NULL);
-+}
-+
-+FIXTURE_TEARDOWN(enclave)
-+{
-+	encl_delete(&self->encl);
-+	vdso_sgx_enter_enclave = NULL;
-+}
-+
-+
-+TEST_F(enclave, unclobbered_vdso)
-+{
-+	struct sgx_enclave_run run;
-+	uint64_t result = 0;
-+	int ret;
-+
-+	memset(&run, 0, sizeof(run));
-+
-+	ret = sgx_enter_enclave((void *)&MAGIC, &result, 0, EENTER, NULL, NULL, &run);
- 
-+	ASSERT_EQ(true, is_test_passed(&run, ret, result));
-+}
-+
-+TEST_F(enclave, clobbered_vdso)
-+{
-+	struct sgx_enclave_run run;
-+	uint64_t result = 0;
-+	int ret;
-+
-+	memset(&run, 0, sizeof(run));
- 
--	/* Invoke the vDSO directly. */
--	result = 0;
- 	ret = vdso_sgx_enter_enclave((unsigned long)&MAGIC, (unsigned long)&result,
- 				     0, EENTER, 0, 0, &run);
--	if (!report_results(&run, ret, result, "sgx_enter_enclave"))
--		goto err;
- 
--	/* And with an exit handler. */
-+
-+	ASSERT_EQ(true, is_test_passed(&run, ret, result));
-+}
-+
-+TEST_F(enclave, clobbered_vdso_and_user_function)
-+{
-+	struct sgx_enclave_run run;
-+	uint64_t result = 0;
-+	int ret;
-+
-+	memset(&run, 0, sizeof(run));
-+
- 	run.user_handler = (__u64)user_handler;
- 	run.user_data = 0xdeadbeef;
-+
- 	ret = vdso_sgx_enter_enclave((unsigned long)&MAGIC, (unsigned long)&result,
- 				     0, EENTER, 0, 0, &run);
--	if (!report_results(&run, ret, result, "user_handler"))
--		goto err;
- 
--	printf("SUCCESS\n");
--	encl_delete(&encl);
--	exit(KSFT_PASS);
--
--err:
--	encl_delete(&encl);
--	exit(KSFT_FAIL);
-+	ASSERT_EQ(true, is_test_passed(&run, ret, result));
- }
-+
-+TEST_HARNESS_MAIN
--- 
-2.31.1
+Regards
+
+Marcel
 
