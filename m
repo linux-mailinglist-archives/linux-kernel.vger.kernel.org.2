@@ -2,142 +2,218 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B43F5376B33
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:37:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FAF7376B35
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230155AbhEGUin (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 16:38:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50966 "EHLO mail.kernel.org"
+        id S230167AbhEGUjZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 16:39:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51118 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhEGUin (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 16:38:43 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id BDC7F61451;
-        Fri,  7 May 2021 20:37:42 +0000 (UTC)
+        id S229675AbhEGUjW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 16:39:22 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E02B16145D;
+        Fri,  7 May 2021 20:38:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620419862;
-        bh=o7qoeXp3Duh7oduSzFAji7xb5/NEdV/naHbsxLhjKms=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=dcDEXaIb1KxiZd7XuVJBKLMMszJ6W/TOYVdqo4q8FmriTA+K4OyVRskHHCqRSkwiM
-         EL+WgpuB7jjuIwIa4Fn6Zi/TiX0ttd2Zud75RDiuj7eqtqk0BpSOFAWa4FoULtOCbM
-         /p68BZKw/6Qtq+BFJSR225Rr8XImLzw9Wn75nvicsCpHK+HnW2oz+Y+lS1fcCLTiqb
-         fN9GEOQ601AMvMe4WtKgRN3/My1aQ7PZTwivdKpiIlkQEtz2RatTGo4y24DQu4zPhX
-         vnJcq3IQYu7pxTPpJ4uqtWtBFZSOQbWXMZYlPHIeIsUxtiOlEWbghkMpTvccgD1F8p
-         NNO3JXXsKh4qA==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 502E55C0293; Fri,  7 May 2021 13:37:42 -0700 (PDT)
-Date:   Fri, 7 May 2021 13:37:42 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 3/3] torture: Update bare metal advices to latest kvm.sh
- options
-Message-ID: <20210507203742.GA975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <20210506131510.51488-1-frederic@kernel.org>
- <20210506131510.51488-4-frederic@kernel.org>
+        s=k20201202; t=1620419901;
+        bh=hrASAZVkDIioAhyyZHzYMy82DUnmzBHVMSMsTq9DZDI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Qhu8eOmlNMPNt0j8M+fceDp3tnr4Igi6V3mz/8EXDE9KP0T0XLWVpsr6AsoYcNjI8
+         /2h8QlI2iYgU4T3g059W5l7F/8apnG9FB/liShmdepuuLcYgENyq1h5XL4FHdZKOmD
+         TzraDNO8XrZjHq3nSLwLUvOHU8mW2kCT/N0RIdcLQh7yl1OIOU4wRexyKJscBDOI+r
+         MRfthXYOE70qXJDiar0/cQGP8A78w1O03WfYjzmi4bdK/FOWzQdB7iQ4z3Ir+uYza6
+         EztulOAVBYrarWAxczRp5UxLjt7d74LlIQT8snxspiK6b2kPl9DDJfrdL155rt+34P
+         LbTQVl0kFy6sA==
+Received: by mail-ed1-f53.google.com with SMTP id c22so11662110edn.7;
+        Fri, 07 May 2021 13:38:21 -0700 (PDT)
+X-Gm-Message-State: AOAM530vd5EskaALiVjGK0co8E3ge0gwQrr/O65NFFWTTr2uy3oA1cUW
+        OLxMb1iHRgLOgUlH/hrAytsdblFJGDu0aaI7eg==
+X-Google-Smtp-Source: ABdhPJyu5zyoW++LFChadj09PU067WEsO1tO6y0xSQtqkyLhEyRkrOv9bZmfaSKjm168r7xXYWnk8Y5pCt8CLvaXiaY=
+X-Received: by 2002:a05:6402:c7:: with SMTP id i7mr14008405edu.194.1620419900275;
+ Fri, 07 May 2021 13:38:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210506131510.51488-4-frederic@kernel.org>
+References: <20210501133647.14350-1-sergio.paracuellos@gmail.com>
+ <20210506151839.GA322729@robh.at.kernel.org> <CAMhs-H_Ae4Erx06j2fGSiZXpGo9UWRAkSPPQhFGnZ1D8=NM8cg@mail.gmail.com>
+In-Reply-To: <CAMhs-H_Ae4Erx06j2fGSiZXpGo9UWRAkSPPQhFGnZ1D8=NM8cg@mail.gmail.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Fri, 7 May 2021 15:38:08 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKBH=QK8V+fv-ehQZ_+cL1+Da-9PLEbwPzqR4LodKw3aw@mail.gmail.com>
+Message-ID: <CAL_JsqKBH=QK8V+fv-ehQZ_+cL1+Da-9PLEbwPzqR4LodKw3aw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: staging: mt7621-pci: PCIe binding
+ documentation for MT76721 SoCs
+To:     Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-staging@lists.linux.dev,
+        Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 03:15:10PM +0200, Frederic Weisbecker wrote:
-> kvm.sh is perfectly able to build a new kernel config from an existing
-> one instead of using a defconfig. All we need to do is to pass:
-> 
-> 	--defconfig oldconfig
-> 
-> This is much easier than manually modifying a .config from a
-> ConfigFragment file.
-> 
-> Then with the latest parameters that got added on kvm.sh, it's now
-> easy to build a bare metal .config for a cross target for example:
-> 
-> 	./kvm.sh --configs "TREE01" --defconfig oldconfig --configonly
-> 		--cmdline-to-config --kmake-arg ARCH=arm64 --no-initrd
-> 
-> After that all we need to do is to build the updated .config and run
-> the resulting image.
-> 
-> Update bare metal advices to propose that.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+On Thu, May 6, 2021 at 11:41 AM Sergio Paracuellos
+<sergio.paracuellos@gmail.com> wrote:
+>
+> Hi Rob,
+>
+> Thanks for the review.
+>
+> On Thu, May 6, 2021 at 5:18 PM Rob Herring <robh@kernel.org> wrote:
+> >
+> > On Sat, May 01, 2021 at 03:36:46PM +0200, Sergio Paracuellos wrote:
+> > > Add device tree binding documentation for PCIe in MT7621 SoCs.
+> > >
+> > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > ---
+> > >
+> > > Hi Rob,
+> > >
+> > > Some concerns here. I was not be able to found any case similar to
+> > > this binding where sub-nodes describing each pcie port interface
+> > > are needed. I added them to the 'examples' directly without saying
+> > > anything about properties in any other place since its properties
+> > > seems to be covered in 'pci-bus.yaml' schema definition. I don't
+> > > know if this is the way, I have checked against schema and I noticed
+> > > I am forced to add 'device_type' property in each subnode because
+> > > schema checker complains that this is mandatory. So I have added
+> > > it and schema is properly being validated:
+> > >
+> > > Before add the 'device_type' in each subnode:
+> > > /home/sergio/staging/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml: pcie@0,0: 'device_type' is a required property
+> > > >From schema: /home/sergio/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
+> > > /home/sergio/staging/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml: pcie@1,0: 'device_type' is a required property
+> > > >From schema: /home/sergio/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
+> > > /home/sergio/staging/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml: pcie@2,0: 'device_type' is a required property
+> > > >From schema: /home/sergio/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
+> >
+> > Each port is a PCI bridge, right? If so, then 'pcie' for the node name
+> > and 'device_type = "pci";' are correct.
+>
+> Yes it is, thanks for clarification.
+>
+> >
+> > >
+> > > After adding it:
+> > > CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+> >
+> > Validates all the schema
+> >
+> > > SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+> >
+> > Preprocesses all the schema
+> >
+> > > DTEX    Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dts
+> >
+> > Extracts the example to dts file
+> >
+> > > DTC     Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml
+> >
+> > Converts the example to yaml
+> >
+> > > CHECK   Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml
+> >
+> > Runs the checks.
+> >
+> > >
+> > > Looks a bit redundant and maybe I am doing something wrong...
+>
+> I meant redundant the 'device_type=pci' in all of the child nodes, not
+> the messages I got when check against the schema but thanks also for
+> explanation :).
+>
+> > >
+> > > Thanks in advance for clarification.
+> > >
+> > > Best regards,
+> > >     Sergio Paracuellos
+> > >
+> > >
+> > >  .../bindings/pci/mediatek,mt7621-pci.yaml     | 144 ++++++++++++++++++
+> > >  .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 -------------
+> > >  2 files changed, 144 insertions(+), 104 deletions(-)
+> > >  create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > >  delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > > new file mode 100644
+> > > index 000000000000..9c1d05d929a2
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > > @@ -0,0 +1,144 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/pci/mediatek,mt7621-pci.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: MediaTek MT7621 PCIe controller
+> > > +
+> > > +maintainers:
+> > > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > +
+> > > +description: |+
+> > > +  MediaTek MT7621 PCIe subsys supports single Root complex (RC)
+> > > +  with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link
+> > > +
+> > > +allOf:
+> > > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    const: mediatek,mt7621-pci
+> > > +
+> > > +  reg:
+> > > +    items:
+> > > +      - description: host-pci bridge registers
+> > > +      - description: pcie port 0 RC control registers
+> > > +      - description: pcie port 1 RC control registers
+> > > +      - description: pcie port 2 RC control registers
+> >
+> > Are these config space registers or MT7621 specific?
+>
+> All of them are MT7621 specific.
+>
+> >
+> > > +
+> > > +  ranges:
+> > > +    maxItems: 2
+> > > +
+> > > +  interrupts:
+> > > +    maxItems: 3
+> >
+> > What are the 3 interrupts?
+>
+> These are one interrupt per root port. In next version this will
+> change in favour of using interrupt-map and interrupt-map-mask instead
+> of use interrupts and a custom 'map_irq' callback in driver code.
+> Please see:
+>
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=aed0b711cc791d075e716c397ff6b26bf50345a6
+> https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=3e278e3064511b1606d406db0e26b2fee593fb55
+>
+> This is the way used in mt7623 already mainlined binding.
+>
+> > > +
+> > > +  resets:
+> > > +    items:
+> > > +      - description: pcie port 0 reset.
+> > > +      - description: pcie port 1 reset.
+> > > +      - description: pcie port 2 reset.
+> >
+> > This and clocks should perhaps be in each child node.
+>
+> I followed here style in mt7623 already mainlined bindings which are
+> in the main node. Is there a strong reason to be changed into child
+> nodes or can I maintain this as it is?
 
-I am inclined to let you take the lead on this part of the file given
-that I take other approaches to bare-metal rcutorture runs.
+Okay, I had no idea because you didn't mention it. Why are you
+creating a new binding then? Looks like they are pretty similar. At
+least don't invent new *-names.
 
-A few comments below, mostly wordsmithing.
+However, you should be aware of this pending change:
 
-							Thanx, Paul
+https://lore.kernel.org/linux-pci/20210406034410.24381-1-chuanjia.liu@mediatek.com/
 
-> ---
->  .../rcutorture/bin/kvm-test-1-run.sh          | 21 ++++++++++---------
->  1 file changed, 11 insertions(+), 10 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-> index 6df9efc77469..47d69668ab37 100755
-> --- a/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-> +++ b/tools/testing/selftests/rcutorture/bin/kvm-test-1-run.sh
-> @@ -190,27 +190,28 @@ echo To run this scenario on bare metal: >> $resdir/bare-metal
->  echo >> $resdir/bare-metal
->  echo " 1." Set your bare-metal build tree to the state shown in this file: >> $resdir/bare-metal
->  echo "   " $testid_txt >> $resdir/bare-metal
-> -echo " 2." Update your bare-metal build tree"'"s .config based on this file: >> $resdir/bare-metal
-> -echo "   " $resdir/ConfigFragment >> $resdir/bare-metal
-> -echo " 3." Make the bare-metal kernel"'"s build system aware of your .config updates: >> $resdir/bare-metal
-> -echo "   " $ 'yes "" | make oldconfig' >> $resdir/bare-metal
-> -echo " 4." Build your bare-metal kernel. >> $resdir/bare-metal
-> +echo " 2." Prepare your bare-metal build tree"'"s .config on your root kernel directory >> $resdir/bare-metal
-> +echo " 3." Run this scenario with "'--defconfig oldconfig --configonly --no-initrd'" >> $resdir/bare-metal
-> +echo " 4." If you"'"re cross compiling then append the appropriate make arguments >> $resdir/bare-metal
+So perhaps mt7621 should follow that?
 
-In this case, I think that "you are" is going to be nicer than the fun
-with quoting quotes.  ;-)
-
-> +echo "   " eg: "'--kmake-arg ARCH=arm64'" >> $resdir/bare-metal
->  echo " 5." Boot your bare-metal kernel with the following parameters: >> $resdir/bare-metal
->  echo "   " $kboot_args >> $resdir/bare-metal
->  echo " 6." Start the test with the following command: >> $resdir/bare-metal
->  echo "   " $ modprobe $TORTURE_MOD $modprobe_args >> $resdir/bare-metal
->  echo " 7." After some time, end the test with the following command: >> $resdir/bare-metal
->  echo "   " $ rmmod $TORTURE_MOD >> $resdir/bare-metal
-> -echo " 8." Copy your bare-metal kernel"'"s .config file, overwriting this file: >> $resdir/bare-metal
-> +echo " 8." Alternatively if you run rcutorture in a built-in fashion and your kernel arguments are already >> $resdir/bare-metal
-
-"Alternatively,"
-
-Also "if you run rcutorture built in" should work.
-
-> +echo "   " hardcoded in the kernel config, skip the previous 5/6/7 steps and append to kvm.sh arguments: >> $resdir/bare-metal
-
-I suggest letting them know before step 5 that they might be able to skip
-step 5.  ;-)
-
-For example, something like: "5. If you run rcutorture as a module,
-do steps 6-8, otherwise skip to step 9."
-
-> +echo "   " --cmdline-to-config >> $resdir/bare-metal
-> +echo "   " Then simply boot your kernel and wait for the end of the tests >> $resdir/bare-metal
-> +echo " 9." Copy your bare-metal kernel"'"s .config file, overwriting this file: >> $resdir/bare-metal
->  echo "   " $resdir/.config >> $resdir/bare-metal
-> -echo " 9." Copy the console output from just before the modprobe to just after >> $resdir/bare-metal
-> +echo "10." Copy the console output from just before the modprobe to just after >> $resdir/bare-metal
->  echo "   " the rmmod into this file: >> $resdir/bare-metal
-
-But if running built-in, we need the entire console output, correct?
-
->  echo "   " $resdir/console.log >> $resdir/bare-metal
-> -echo "10." Check for runtime errors using the following command: >> $resdir/bare-metal
-> +echo "11." Check for runtime errors using the following command: >> $resdir/bare-metal
->  echo "   " $ tools/testing/selftests/rcutorture/bin/kvm-recheck.sh `dirname $resdir` >> $resdir/bare-metal
->  echo >> $resdir/bare-metal
-> -echo Some of the above steps may be skipped if you build your bare-metal >> $resdir/bare-metal
-> -echo kernel here: `head -n 1 $testid_txt | sed -e 's/^Build directory: //'`  >> $resdir/bare-metal
->  
->  echo $QEMU $qemu_args -m $TORTURE_QEMU_MEM -kernel $KERNEL -append \"$qemu_append $boot_args\" $TORTURE_QEMU_GDB_ARG > $resdir/qemu-cmd
->  echo "# TORTURE_SHUTDOWN_GRACE=$TORTURE_SHUTDOWN_GRACE" >> $resdir/qemu-cmd
-> -- 
-> 2.25.1
-> 
+Rob
