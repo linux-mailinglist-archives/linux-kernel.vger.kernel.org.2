@@ -2,163 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE971376BC0
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:30:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80C53376BC5
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229652AbhEGVbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:31:42 -0400
-Received: from mga02.intel.com ([134.134.136.20]:45476 "EHLO mga02.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229470AbhEGVbl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:31:41 -0400
-IronPort-SDR: OPSN2vFQ88J1W6GMS5vXjxbOPecXT9+fRmFE7dvlEZATV4WpTtDkSr30VkSpiEA+HsMABAH6MR
- w18en3aCvEZw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="185947419"
-X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="scan'208";a="185947419"
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 14:30:40 -0700
-IronPort-SDR: tqA1mL7jroLZ4Eh7M1vu/lfOYCGD6U1FZpuUDoLoCdGNlKEPC9pUBuBcJHJRts9PdRORE9+EbA
- sbiNyyuTeRyg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="scan'208";a="431674395"
-Received: from lkp-server01.sh.intel.com (HELO a48ff7ddd223) ([10.239.97.150])
-  by fmsmga008.fm.intel.com with ESMTP; 07 May 2021 14:30:39 -0700
-Received: from kbuild by a48ff7ddd223 with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1lf83S-000BPX-G8; Fri, 07 May 2021 21:30:38 +0000
-Date:   Sat, 08 May 2021 05:29:57 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 89415891e947d7cf834778ace844ee3e8850ef0a
-Message-ID: <6095b155.LTEfMmMqRe1Op8YC%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+        id S229779AbhEGVcc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:32:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36714 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229681AbhEGVcb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 17:32:31 -0400
+Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C25BC061763
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 14:31:31 -0700 (PDT)
+Received: by mail-yb1-xb4a.google.com with SMTP id v12-20020a25848c0000b02904f30b36aebfso11760822ybk.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:31:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=cQaK7keE0QRM0e4/CjmvDPViL+K1rpJ0LQ0dw+WC038=;
+        b=dmpwqmI+QNSidbhJ4KlBhhjHMA/XLMoX4551oMz4YuRiLwKYQ4kyNztcr7FP+TxdNm
+         6UMyxG4lt3swikmwV1K+XjayREeQH60E6UnD6qL4zjO1yU+CGggvPzWM+CTzITeB42nV
+         xbKPtNhTf/5tW84bsIguhK0RjUjVIf9E9xD34vzKluZaWOqYguVw5UMwqwl6XdpACpO6
+         w7EwmW4xPbVpsJtiNjKDJMJOjpDeOd/nnBN5Yiw8qgS8DnVQv7zBO2ZBYNX8gRj1t4RY
+         eWitCrJczy+bp1dq1mjTdqpQxiB7Fj+xxOoIscAk1Gjk/tUSRPE/+mTwfdDt+Hv669p9
+         SWBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=cQaK7keE0QRM0e4/CjmvDPViL+K1rpJ0LQ0dw+WC038=;
+        b=KH68eFlZS8FOFVKIUfVRxoZvbrp0eHzQgQlAkTZPSL4/HW2LLsYhWZXts4a7xZpUy0
+         sdBBSytFWzeA/WTPIvLknQdtGyMxUmgdQt6oB+wrmrGuKsLy1V09JTj3KWHGe87G2XwE
+         6qF/N9rMEMV0yfb5HoCi7Gk6AI4mGvS3aCCDMW4O4fXaivExRF1tVxc/DrtZQdPrETw6
+         CSZtfhZuZLXl28kdb1ccAPrOhqwSUyfJBU8lw8XUAmpVqMtor4g+sa4YjGU5IHev0Ehj
+         GMd/Q+mMNfqSIDFNhQT6nvYOnpA7p98F7m1uUZt2XVv5S/h4fehN3RAgdIsFDlG6blFM
+         ugGA==
+X-Gm-Message-State: AOAM533R0U55tQ+3fXZZspQ6SglDk2YJ6wa6fzXIi8DFUxHs37tI4NZk
+        Hx+D9fBBW2DEYfMeJsvTtUSNy2KZA/23XLWXmBSWew==
+X-Google-Smtp-Source: ABdhPJw04MjOEIGjcdEhEjiyjvznn6dnzusSglnmDUp3y5c7FjnTyuOyWeSrKMe2H5uzSZflWys2THpyshdaXtJkxvY6mQ==
+X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:201:8b7:10d:a11b:ba0c])
+ (user=brendanhiggins job=sendgmr) by 2002:a25:d04f:: with SMTP id
+ h76mr12140487ybg.261.1620423090124; Fri, 07 May 2021 14:31:30 -0700 (PDT)
+Date:   Fri,  7 May 2021 14:31:06 -0700
+Message-Id: <20210507213110.155492-1-brendanhiggins@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+Subject: [PATCH v1 0/4] kunit: tool: add support for QEMU
+From:   Brendan Higgins <brendanhiggins@google.com>
+To:     shuah@kernel.org, davidgow@google.com
+Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org, corbet@lwn.net,
+        linux-doc@vger.kernel.org, sboyd@kernel.org, keescook@chromium.org,
+        frowand.list@gmail.com, dlatypov@google.com,
+        Brendan Higgins <brendanhiggins@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
-branch HEAD: 89415891e947d7cf834778ace844ee3e8850ef0a  Merge branch 'linus'
+TL;DR: Add support to kunit_tool to dispatch tests via QEMU. Also add
+support to immediately shutdown a kernel after running KUnit tests.
 
-elapsed time: 724m
+Background
+----------
 
-configs tested: 101
-configs skipped: 3
+KUnit has supported running on all architectures for quite some time;
+however, kunit_tool - the script commonly used to invoke KUnit tests -
+has only fully supported KUnit run on UML. Its functionality has been
+broken up for some time to separate the configure, build, run, and parse
+phases making it possible to be used in part on other architectures to a
+small extent. Nevertheless, kunit_tool has not supported running tests
+on other architectures.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+What this patchset does
+-----------------------
 
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-x86_64                           allyesconfig
-riscv                            allmodconfig
-i386                             allyesconfig
-riscv                            allyesconfig
-powerpc                         ps3_defconfig
-sparc                       sparc64_defconfig
-x86_64                            allnoconfig
-arc                     nsimosci_hs_defconfig
-mips                           ip22_defconfig
-mips                           gcw0_defconfig
-powerpc                 mpc8272_ads_defconfig
-powerpc                      mgcoge_defconfig
-mips                           mtx1_defconfig
-m68k                            mac_defconfig
-sh                      rts7751r2d1_defconfig
-arm                         hackkit_defconfig
-arm                        shmobile_defconfig
-powerpc                 mpc832x_rdb_defconfig
-mips                           jazz_defconfig
-m68k                             allyesconfig
-sh                                  defconfig
-arc                        vdk_hs38_defconfig
-arm                          moxart_defconfig
-powerpc                      obs600_defconfig
-arm                       imx_v6_v7_defconfig
-ia64                        generic_defconfig
-mips                        bcm47xx_defconfig
-arm                          exynos_defconfig
-m68k                                defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-s390                             allyesconfig
-s390                             allmodconfig
-parisc                           allyesconfig
-s390                                defconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a003-20210507
-i386                 randconfig-a006-20210507
-i386                 randconfig-a001-20210507
-i386                 randconfig-a005-20210507
-i386                 randconfig-a004-20210507
-i386                 randconfig-a002-20210507
-i386                 randconfig-a015-20210506
-i386                 randconfig-a013-20210506
-i386                 randconfig-a016-20210506
-i386                 randconfig-a014-20210506
-i386                 randconfig-a012-20210506
-i386                 randconfig-a011-20210506
-x86_64               randconfig-a001-20210507
-x86_64               randconfig-a003-20210507
-x86_64               randconfig-a005-20210507
-x86_64               randconfig-a002-20210507
-x86_64               randconfig-a006-20210507
-x86_64               randconfig-a004-20210507
-riscv                    nommu_k210_defconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-um                               allmodconfig
-um                                allnoconfig
-um                               allyesconfig
-um                                  defconfig
-x86_64                    rhel-8.3-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                      rhel-8.3-kbuiltin
-x86_64                                  kexec
+This patchset introduces first class support to kunit_tool for KUnit to
+be run on many popular architectures via QEMU. It does this by adding
+two new flags: `--arch` and `--cross_compile`.
 
-clang tested configs:
-x86_64               randconfig-a014-20210507
-x86_64               randconfig-a015-20210507
-x86_64               randconfig-a012-20210507
-x86_64               randconfig-a013-20210507
-x86_64               randconfig-a011-20210507
-x86_64               randconfig-a016-20210507
+`--arch` allows an architecture to be specified by the name the
+architecture is given in `arch/`. It uses the specified architecture to
+select a minimal amount of Kconfigs and QEMU configs needed for the
+architecture to run in QEMU and provide a console from which KTAP
+results can be scraped.
 
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+`--cross_compile` allows a toolchain prefix to be specified to make
+similar to how `CROSS_COMPILE` is used.
+
+Additionally, this patchset revives the previously considered "kunit:
+tool: add support for QEMU"[1] patchs. The motivation for this new
+kernel command line flags, `kunit_shutdown`, is to better support
+running KUnit tests inside of QEMU. For most popular architectures, QEMU
+can be made to terminate when the Linux kernel that is being run is
+reboted, halted, or powered off. As Kees pointed out in a previous
+discussion[2], it is possible to make a kernel initrd that can reboot
+the kernel immediately, doing this for every architecture would likely
+be infeasible. Instead, just having an option for the kernel to shutdown
+when it is done with testing seems a lot simpler, especially since it is
+an option which would only available in testing configurations of the
+kernel anyway.
+
+Changes since last revision
+---------------------------
+
+Mostly fixed lots of minor issues suggested/poited out by David and
+Daniel. Also reworked how qemu_configs are loaded: Now each config is in
+its own Python file and is loaded dynamically. Given the number of
+improvements that address the biggest concerns I had in the last RFC, I
+decided to promote this to a normal patch set.
+
+What discussion remains for this patchset?
+------------------------------------------
+
+I am still hoping to see some discussion regarding the kunit_shutdown
+patch: I want to make sure with the added context of QEMU running under
+kunit_tool that this is now a reasonable approach. Nevertheless, I am
+pretty happy with this patchset as is, and I did not get any negative
+feedback on the previous revision, so I think we can probably just move
+forward as is.
+
+Brendan Higgins (3):
+  Documentation: Add kunit_shutdown to kernel-parameters.txt
+  kunit: tool: add support for QEMU
+  Documentation: kunit: document support for QEMU in kunit_tool
+
+David Gow (1):
+  kunit: Add 'kunit_shutdown' option
+
+ .../admin-guide/kernel-parameters.txt         |   8 +
+ Documentation/dev-tools/kunit/usage.rst       |  37 +++-
+ lib/kunit/executor.c                          |  20 ++
+ tools/testing/kunit/kunit.py                  |  57 +++++-
+ tools/testing/kunit/kunit_config.py           |   7 +-
+ tools/testing/kunit/kunit_kernel.py           | 172 +++++++++++++++---
+ tools/testing/kunit/kunit_parser.py           |   2 +-
+ tools/testing/kunit/kunit_tool_test.py        |  18 +-
+ tools/testing/kunit/qemu_config.py            |  17 ++
+ tools/testing/kunit/qemu_configs/alpha.py     |  10 +
+ tools/testing/kunit/qemu_configs/arm.py       |  13 ++
+ tools/testing/kunit/qemu_configs/arm64.py     |  12 ++
+ tools/testing/kunit/qemu_configs/i386.py      |  10 +
+ tools/testing/kunit/qemu_configs/powerpc.py   |  12 ++
+ tools/testing/kunit/qemu_configs/riscv.py     |  31 ++++
+ tools/testing/kunit/qemu_configs/s390.py      |  14 ++
+ tools/testing/kunit/qemu_configs/sparc.py     |  10 +
+ tools/testing/kunit/qemu_configs/x86_64.py    |  10 +
+ 18 files changed, 411 insertions(+), 49 deletions(-)
+ create mode 100644 tools/testing/kunit/qemu_config.py
+ create mode 100644 tools/testing/kunit/qemu_configs/alpha.py
+ create mode 100644 tools/testing/kunit/qemu_configs/arm.py
+ create mode 100644 tools/testing/kunit/qemu_configs/arm64.py
+ create mode 100644 tools/testing/kunit/qemu_configs/i386.py
+ create mode 100644 tools/testing/kunit/qemu_configs/powerpc.py
+ create mode 100644 tools/testing/kunit/qemu_configs/riscv.py
+ create mode 100644 tools/testing/kunit/qemu_configs/s390.py
+ create mode 100644 tools/testing/kunit/qemu_configs/sparc.py
+ create mode 100644 tools/testing/kunit/qemu_configs/x86_64.py
+
+
+base-commit: 38182162b50aa4e970e5997df0a0c4288147a153
+-- 
+2.31.1.607.g51e8a6a459-goog
+
