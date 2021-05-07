@@ -2,108 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 932B3376975
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:22:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F555376977
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:23:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhEGRXk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 13:23:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38666 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229612AbhEGRXi (ORCPT
+        id S233169AbhEGRYE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 13:24:04 -0400
+Received: from alln-iport-8.cisco.com ([173.37.142.95]:10917 "EHLO
+        alln-iport-8.cisco.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229612AbhEGRYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 13:23:38 -0400
-Received: from mail-ot1-x334.google.com (mail-ot1-x334.google.com [IPv6:2607:f8b0:4864:20::334])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4959CC061761
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 10:22:38 -0700 (PDT)
-Received: by mail-ot1-x334.google.com with SMTP id 36-20020a9d0ba70000b02902e0a0a8fe36so2224185oth.8
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 10:22:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gQ3ipQxbX73bGU2SXA3y2Bzh59V5vke4f329EGQixvg=;
-        b=KH8GL3iNV6Z/uD3TMYgD+CrCfLVaUDeAs0zqsk9jCpnDJJCpW0QyHmMSjWWmSLhvJ1
-         FDtdqZsKLe2uoN2TDpAYLCOrimwhcklk1sSa42lMZ/jWzznAXKuD2WvTNhdBcUnJy88h
-         Q+lub5DzGRR83dIb2AC9agASP4rw1QyRLhGkA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gQ3ipQxbX73bGU2SXA3y2Bzh59V5vke4f329EGQixvg=;
-        b=p7Pn4OxWIpA2qMUftSJPSlOF+UOI7S8vnGmF9snAruk9WR3u6OwDBLethfgzFRM30e
-         F6FadThgwi+H+V8n2cv0XDERlgOO5jAP2QX+ov2eOP51JWm3DX5kj+7KjMhkZD4du/a9
-         wA9LKU+8Nt4WPgRMzbHqukLKGxkERtgjHELxEK7UqNdp6NJjl7zqdtpwB6tgl7oRSWF6
-         qiyfwUEI4QKIUB39m6POjWNHXdjBGVfcTfVjUfALFx6fy+x7CzSZ6jE+5nQjHQLv0xAv
-         A0HXw2B1IeHPf3yp6mIFwx0Z6RVo2GE1VKwlzZJ6MeJuJIi/0ORK3u46s64/pRjW2Eq+
-         bJFA==
-X-Gm-Message-State: AOAM532qT3AHmg8cLz8/56wXTRbhmk00SrLYaW1yJXyi1AXbmELZjZSH
-        nsON++VhFqg+V1B8uvhGKxEKi4y+RAssabec5UCBZQ==
-X-Google-Smtp-Source: ABdhPJxDU02k2Jf2AhhsznQct+cAPyxL7BbEYKFvu6VMh4FAxQjvUIGiWjfmwnilcwXbYXtl5qcWmP5bc5q29/lz1jM=
-X-Received: by 2002:a9d:764f:: with SMTP id o15mr9279052otl.164.1620408157620;
- Fri, 07 May 2021 10:22:37 -0700 (PDT)
+        Fri, 7 May 2021 13:24:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=cisco.com; i=@cisco.com; l=1096; q=dns/txt; s=iport;
+  t=1620408182; x=1621617782;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=KjImhc2JK0NRVqEqrRGVolZxLwQomaHya3mNXQjmMGo=;
+  b=dQCFVg/eqYv8pjjKqIavNABvoz+rxTjzsNsrBPCqHBgdVrPdD0ZKGaAC
+   Y8uvTEpwWZjLtPORqbw6twTcDDY/X6LLQckKMbnIkwD7XWxlThd/3/8yJ
+   1bDDWXlHCkEW6mOncNGlauKYyP4BK0Xq+VeJhOvusUlLnvzlN0BBiiGQy
+   s=;
+X-IronPort-AV: E=Sophos;i="5.82,281,1613433600"; 
+   d="scan'208";a="708116664"
+Received: from rcdn-core-9.cisco.com ([173.37.93.145])
+  by alln-iport-8.cisco.com with ESMTP/TLS/DHE-RSA-SEED-SHA; 07 May 2021 17:23:01 +0000
+Received: from zorba.cisco.com ([10.24.22.254])
+        by rcdn-core-9.cisco.com (8.15.2/8.15.2) with ESMTP id 147HN07c022761;
+        Fri, 7 May 2021 17:23:00 GMT
+From:   Daniel Walker <danielwa@cisco.com>
+To:     Alan Stern <stern@rowland.harvard.edu>
+Cc:     HEMANT RAMDASI <hramdasi@cisco.com>,
+        Christian Engelmayer <christian.engelmayer@frequentis.com>,
+        Gopalakrishnan Santhanam <gsanthan@cisco.com>,
+        xe-linux-external@cisco.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] fsl-usb: add need_oc_pp_cycle flag for 85xx also
+Date:   Fri,  7 May 2021 10:23:00 -0700
+Message-Id: <20210507172300.3075939-1-danielwa@cisco.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <20210507150636.94389-1-jon@nutanix.com>
-In-Reply-To: <20210507150636.94389-1-jon@nutanix.com>
-From:   Venkatesh Srinivas <venkateshs@chromium.org>
-Date:   Fri, 7 May 2021 10:22:25 -0700
-Message-ID: <CAA0tLEoyy_ogDc11r_1T907Rp5CwgM64hFwRt5SX40THp2+C3A@mail.gmail.com>
-Subject: Re: [PATCH] KVM: x86: use X86_FEATURE_RSB_CTXSW for RSB stuffing in vmexit
-To:     Jon Kohler <jon@nutanix.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Auto-Response-Suppress: DR, OOF, AutoReply
+X-Outbound-SMTP-Client: 10.24.22.254, [10.24.22.254]
+X-Outbound-Node: rcdn-core-9.cisco.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 7, 2021 at 8:08 AM Jon Kohler <jon@nutanix.com> wrote:
->
-> cpufeatures.h defines X86_FEATURE_RSB_CTXSW as "Fill RSB on context
-> switches" which seems more accurate than using X86_FEATURE_RETPOLINE
-> in the vmxexit path for RSB stuffing.
->
-> X86_FEATURE_RSB_CTXSW is used for FILL_RETURN_BUFFER in
-> arch/x86/entry/entry_{32|64}.S. This change makes KVM vmx and svm
-> follow that same pattern. This pairs up nicely with the language in
-> bugs.c, where this cpu_cap is enabled, which indicates that RSB
-> stuffing should be unconditional with spectrev2 enabled.
->         /*
->          * If spectre v2 protection has been enabled, unconditionally fill
->          * RSB during a context switch; this protects against two independent
->          * issues:
->          *
->          *      - RSB underflow (and switch to BTB) on Skylake+
->          *      - SpectreRSB variant of spectre v2 on X86_BUG_SPECTRE_V2 CPUs
->          */
->         setup_force_cpu_cap(X86_FEATURE_RSB_CTXSW);
->
-> Furthermore, on X86_FEATURE_IBRS_ENHANCED CPUs && SPECTRE_V2_CMD_AUTO,
-> we're bypassing setting X86_FEATURE_RETPOLINE, where as far as I could
-> find, we should still be doing RSB stuffing no matter what when
-> CONFIG_RETPOLINE is enabled and spectrev2 is set to auto.
+From: Gopalakrishnan Santhanam <gsanthan@cisco.com>
 
-If I'm reading https://software.intel.com/security-software-guidance/deep-dives/deep-dive-indirect-branch-restricted-speculation
-correctly, I don't think an RSB fill sequence is required on VMExit on
-processors w/ Enhanced IBRS. Specifically:
-"""
-On processors with enhanced IBRS, an RSB overwrite sequence may not
-suffice to prevent the predicted target of a near return from using an
-RSB entry created in a less privileged predictor mode.  Software can
-prevent this by enabling SMEP (for transitions from user mode to
-supervisor mode) and by having IA32_SPEC_CTRL.IBRS set during VM exits
-"""
-On Enhanced IBRS processors, it looks like SPEC_CTRL.IBRS is set
-across all #VMExits via x86_virt_spec_ctrl in kvm.
+Commit e6604a7fd71f9 ("EHCI: Quirk flag for port power handling on overcurrent.")
+activated the quirks handling (flag need_oc_pp_cycle) for Freescale 83xx
+based boards.
+Activate same for 85xx based boards as well.
 
-So is this patch needed?
+Cc: xe-linux-external@cisco.com
+Signed-off-by: Gopalakrishnan Santhanam <gsanthan@cisco.com>
+Signed-off-by: Daniel Walker <danielwa@cisco.com>
+---
+ drivers/usb/host/ehci-fsl.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Thanks,
--- vs;
+diff --git a/drivers/usb/host/ehci-fsl.c b/drivers/usb/host/ehci-fsl.c
+index 6f7bd6641694..c7d74c1a23f5 100644
+--- a/drivers/usb/host/ehci-fsl.c
++++ b/drivers/usb/host/ehci-fsl.c
+@@ -387,7 +387,7 @@ static int ehci_fsl_setup(struct usb_hcd *hcd)
+ 	/* EHCI registers start at offset 0x100 */
+ 	ehci->caps = hcd->regs + 0x100;
+ 
+-#ifdef CONFIG_PPC_83xx
++#if defined(CONFIG_PPC_83xx) || defined(CONFIG_PPC_85xx)
+ 	/*
+ 	 * Deal with MPC834X that need port power to be cycled after the power
+ 	 * fault condition is removed. Otherwise the state machine does not
+-- 
+2.25.1
+
