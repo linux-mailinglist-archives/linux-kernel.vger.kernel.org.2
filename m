@@ -2,125 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51650376BD2
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 68AB0376BD6
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:32:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229839AbhEGVco (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:32:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36756 "EHLO
+        id S229847AbhEGVdZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:33:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36964 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229893AbhEGVcj (ORCPT
+        with ESMTP id S229488AbhEGVdY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:32:39 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EFD5C061344
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 14:31:38 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id b6-20020ac85bc60000b02901c2752ed3d4so6577260qtb.15
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:31:38 -0700 (PDT)
+        Fri, 7 May 2021 17:33:24 -0400
+Received: from mail-qk1-x72c.google.com (mail-qk1-x72c.google.com [IPv6:2607:f8b0:4864:20::72c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4ED1AC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 14:32:22 -0700 (PDT)
+Received: by mail-qk1-x72c.google.com with SMTP id o27so9990423qkj.9
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:32:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=OULdAB7SkAEJ6rQEHGBEyfNQUuilr1kpehp6Rww8NCA=;
-        b=me5mS3gfsyZF7xaGkikl8wftRuuZ2OGeAKpzgUbMG/qsFra0W0N8S1KODa6Y6brGSh
-         WNnA7TmrDbCabXXI8LZ5E41NAN5pNRNwDSUZcEdq9LoeDSlPWHxFqM8DDjmyngwqFJeb
-         Qd/LsL1B+87lenOTJVGd3dIFeR0hJAb6m7yKHz6Ff7KNudGql7/B2VGuog25apXTCqnk
-         701ebfMb4CuF1CVSuYBrBOpouUpboiIkW/Fa+1bvRVzIg/Yjla8YBFB+UgXkVowK+lcK
-         uST+GIeh4l9btt3gkyCzCyIkikPepD0zoahHPGO1sj2aTXavSt3B/+TB7zhSWhIRlPsO
-         +bEA==
+        bh=8fK7eHKUxmepqVXRuH1Me+N6pEGrLKxF0Gw1bBJBEhM=;
+        b=azyvyBbnB2N43FTbvrcjr+9F6cdhdryHKabro99427Dv96ts5IO815JB0iUXTr+ExI
+         07gW+3w12L5iHMy4slmAEbPI048w1An/TnsrjGxk6eFmt/rjGx3mXxeVzi1VJ4+1kT+v
+         sJ60cc7kyGi+lUUBgFQ16Y2GNGCbjC0TRQjBY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=OULdAB7SkAEJ6rQEHGBEyfNQUuilr1kpehp6Rww8NCA=;
-        b=sD2i9FFezJZHLyHNEa8YJIH6gZchr726nm4tlAlfDTLhxeSjU0/uJiU4hoB7sU192n
-         7TAlBoMm/weOqJhmBBDVT77LbHwC9jjvWBTI8G4ui94wJZieAc+Y/WlvjGivz5nuPDEU
-         4WHbqz+KZEaQDHR2cV1J80Y09D+ICC2RcZ0uK+hkueT0cGC8c4u8erM39Xo1tCj/tRae
-         lWvOjWu6OlxZ8aUV7NcQAco6dF7nJ9hVxMWP7VmQ3IHfDVb/SOfHS0J9HfohhwSbhtzC
-         rUbs9bi9V1pGeznjRufLPuqmVm+XEf81jkUrU000tA4YNEx9MrSHy5iW+eJxdJ/e1FQE
-         E0ww==
-X-Gm-Message-State: AOAM531BNLlzvG7vgv7nDNaRctXfcDrBA5ALSuEa6JxGrxW7nnMjW7C5
-        jjHFq6tEt4DfNqmQNxAcr31c8Kr14p+4dOSgQW9IyA==
-X-Google-Smtp-Source: ABdhPJwd63PkgSe6ku7lXnqxyN58PmTRRyHarAj8aC3AIuHh7xaK+l2IwwFYYBvTOCikWgPsZmwm0YSUR1eyHN7JtT9K1Q==
-X-Received: from mactruck.svl.corp.google.com ([2620:15c:2cb:201:8b7:10d:a11b:ba0c])
- (user=brendanhiggins job=sendgmr) by 2002:a0c:e54c:: with SMTP id
- n12mr11957692qvm.25.1620423097425; Fri, 07 May 2021 14:31:37 -0700 (PDT)
-Date:   Fri,  7 May 2021 14:31:10 -0700
-In-Reply-To: <20210507213110.155492-1-brendanhiggins@google.com>
-Message-Id: <20210507213110.155492-5-brendanhiggins@google.com>
-Mime-Version: 1.0
-References: <20210507213110.155492-1-brendanhiggins@google.com>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH v1 4/4] Documentation: kunit: document support for QEMU in kunit_tool
-From:   Brendan Higgins <brendanhiggins@google.com>
-To:     shuah@kernel.org, davidgow@google.com
-Cc:     linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, corbet@lwn.net,
-        linux-doc@vger.kernel.org, sboyd@kernel.org, keescook@chromium.org,
-        frowand.list@gmail.com, dlatypov@google.com,
-        Brendan Higgins <brendanhiggins@google.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=8fK7eHKUxmepqVXRuH1Me+N6pEGrLKxF0Gw1bBJBEhM=;
+        b=DNzdTJlXZBXUBSrrq3tNBQyTkVM6d2YDsvCBJrt07VjZ5OQsTdqgtpIe6Wjl4kjrxw
+         WVJOlUDGJtQpV0/tmmCLIJW4MGodn31lB/R8sIU4py74crrK3N9LLmyIIaftjTxjqVbF
+         jCAKnfSql6O0MM0FUPC/VT30KaUHvOXZSK6xQWEA/RloUtTO5b6yvpIXj0EXgU2uWFck
+         fhGgSgcI85S4PmuOZGeGmE3x9SL+wH70kf/ReuCENBjp25MBejQqSb8KFmKYLG4U3ugZ
+         PQH/CET15rAfeplQzieuZ8LPeY0hpPuz0Wz+i+289bavFipS3S/V+xLltqqdwcfE8Kkm
+         iOig==
+X-Gm-Message-State: AOAM530tYGpl4hrD/rbTpgPCKGQSZdoUb1oTrcH8r6EaDr1cm045IGMB
+        ilChrSj+PFw+XNI7hXM23wiUUFH5skUFXQ==
+X-Google-Smtp-Source: ABdhPJxgMwjO9UclW9N1HIQAuC5b8FcNNvF9yxgKVI1XSSgDNrXVhexrPbFGhKehNyC47+uefofIDw==
+X-Received: by 2002:a37:6606:: with SMTP id a6mr8169809qkc.444.1620423141421;
+        Fri, 07 May 2021 14:32:21 -0700 (PDT)
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com. [209.85.219.177])
+        by smtp.gmail.com with ESMTPSA id m124sm5872267qkc.70.2021.05.07.14.32.19
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 07 May 2021 14:32:19 -0700 (PDT)
+Received: by mail-yb1-f177.google.com with SMTP id v188so13728097ybe.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 14:32:19 -0700 (PDT)
+X-Received: by 2002:a25:d70e:: with SMTP id o14mr15904531ybg.79.1620423139099;
+ Fri, 07 May 2021 14:32:19 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201102181144.3469197-1-swboyd@chromium.org> <20201102181144.3469197-4-swboyd@chromium.org>
+ <YFKc23MwUQAosCs8@pendragon.ideasonboard.com> <161646947526.2972785.6883720652669260316@swboyd.mtv.corp.google.com>
+ <CAD=FV=U+-spmAxFeDNxhCuB6O=gUvO_==ozg-OGn=2vkUWgL4Q@mail.gmail.com> <YFpG+hK7W+4bpp0A@pendragon.ideasonboard.com>
+In-Reply-To: <YFpG+hK7W+4bpp0A@pendragon.ideasonboard.com>
+From:   Doug Anderson <dianders@chromium.org>
+Date:   Fri, 7 May 2021 14:32:07 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=WfrZz4PsDcEeLkvsFa6p9LOo1G-3e00NzoVLZ713xNpg@mail.gmail.com>
+Message-ID: <CAD=FV=WfrZz4PsDcEeLkvsFa6p9LOo1G-3e00NzoVLZ713xNpg@mail.gmail.com>
+Subject: Re: [PATCH v3 3/4] drm/bridge: ti-sn65dsi86: Read EDID blob over DDC
+To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Andrzej Hajda <a.hajda@samsung.com>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Sean Paul <seanpaul@chromium.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Document QEMU support, what it does, and how to use it in kunit_tool.
+Hi,
 
-Signed-off-by: Brendan Higgins <brendanhiggins@google.com>
----
- Documentation/dev-tools/kunit/usage.rst | 37 +++++++++++++++++++++----
- 1 file changed, 31 insertions(+), 6 deletions(-)
+On Tue, Mar 23, 2021 at 12:53 PM Laurent Pinchart
+<laurent.pinchart@ideasonboard.com> wrote:
+>
+> Hi Doug,
+>
+> On Tue, Mar 23, 2021 at 12:07:27PM -0700, Doug Anderson wrote:
+> > On Mon, Mar 22, 2021 at 8:17 PM Stephen Boyd <swboyd@chromium.org> wrote:
+> > >
+> > > Quoting Laurent Pinchart (2021-03-17 17:20:43)
+> > > > Hi Stephen,
+> > > >
+> > > > Reviving a bit of an old thread, for a question.
+> > > >
+> > > > On Mon, Nov 02, 2020 at 10:11:43AM -0800, Stephen Boyd wrote:
+> > > > > @@ -265,6 +267,23 @@ connector_to_ti_sn_bridge(struct drm_connector *connector)
+> > > > >  static int ti_sn_bridge_connector_get_modes(struct drm_connector *connector)
+> > > > >  {
+> > > > >       struct ti_sn_bridge *pdata = connector_to_ti_sn_bridge(connector);
+> > > > > +     struct edid *edid = pdata->edid;
+> > > > > +     int num, ret;
+> > > > > +
+> > > > > +     if (!edid) {
+> > > > > +             pm_runtime_get_sync(pdata->dev);
+> > > > > +             edid = pdata->edid = drm_get_edid(connector, &pdata->aux.ddc);
+> > > > > +             pm_runtime_put(pdata->dev);
+> > > >
+> > > > Is there any specific reason to use the indirect access method, compared
+> > > > to the direct method that translates access to an I2C ancillary address
+> > > > to an I2C-over-AUX transaction (see page 20 of SLLSEH2B) ? The direct
+> > > > method seems it would be more efficient.
+> > >
+> > > No I don't think it matters. I was just using the existing support code
+> > > that Sean wrote instead of digging into the details. Maybe Sean ran into
+> > > something earlier and abandoned that approach?
+> >
+> > From reading the docs, it sounds as if there _could_ be a reason to
+> > use the indirect method. Specifically if the i2c host that the bridge
+> > is on doesn't support clock stretching then the direct method wouldn't
+> > work according to the docs. Is that something that we'd have to
+> > reasonably worry about?
+>
+> I'm not sure. I'm going through BSP code that uses the direct method,
+> and I was wondering if it was just an implementation detail. Once I get
+> the display working on this board, I'll try to find time to compare the
+> two methods, to see if there's a significatant performance improvement
+> from the direct method. If there isn't, I won't bother.
 
-diff --git a/Documentation/dev-tools/kunit/usage.rst b/Documentation/dev-tools/kunit/usage.rst
-index 650f99590df57..b74bd7c87cc20 100644
---- a/Documentation/dev-tools/kunit/usage.rst
-+++ b/Documentation/dev-tools/kunit/usage.rst
-@@ -612,14 +612,39 @@ only things to be aware of when doing so.
- The biggest impediment will likely be that certain KUnit features and
- infrastructure may not support your target environment. For example, at this
- time the KUnit Wrapper (``tools/testing/kunit/kunit.py``) does not work outside
--of UML. Unfortunately, there is no way around this. Using UML (or even just a
--particular architecture) allows us to make a lot of assumptions that make it
--possible to do things which might otherwise be impossible.
-+of UML and QEMU. Unfortunately, there is no way around this. Using UML and QEMU
-+(or even just a particular architecture) allows us to make a lot of assumptions
-+that make it possible to do things which might otherwise be impossible.
- 
- Nevertheless, all core KUnit framework features are fully supported on all
--architectures, and using them is straightforward: all you need to do is to take
--your kunitconfig, your Kconfig options for the tests you would like to run, and
--merge them into whatever config your are using for your platform. That's it!
-+architectures, and using them is straightforward: Most popular architectures
-+are supported directly in the KUnit Wrapper via QEMU.  Currently, supported
-+architectures on QEMU include:
-+
-+*   i386
-+*   x86_64
-+*   arm
-+*   arm64
-+*   alpha
-+*   powerpc
-+*   riscv
-+*   s390
-+*   sparc
-+
-+In order to run KUnit tests on one of these architectures via QEMU with the
-+KUnit wrapper, all you need to do is specify the flags ``--arch`` and
-+``--cross_compile`` when invoking the KUnit Wrapper. For example, we could run
-+the default KUnit tests on ARM in the following manner (assuming we have an ARM
-+toolchain installed):
-+
-+.. code-block:: bash
-+
-+	tools/testing/kunit/kunit.py run --timeout=60 --jobs=12 --arch=arm --cross_compile=arm-linux-gnueabihf-
-+
-+Alternatively, if you want to run your tests on real hardware or in some other
-+emulation environment, all you need to do is to take your kunitconfig, your
-+Kconfig options for the tests you would like to run, and merge them into
-+whatever config your are using for your platform. That's it!
- 
- For example, let's say you have the following kunitconfig:
- 
--- 
-2.31.1.607.g51e8a6a459-goog
+To follow-up here:
 
+We'd actually been using the "direct" method in the BIOS (coreboot)
+and just found a problem. We're now switching coreboot to the
+"indirect" mode. Specifically we found that, at least on one panel,
+the last byte of the extension block (which should have been a CRC)
+was coming back as 0 when using the "direct" mode. See:
+
+https://review.coreboot.org/c/coreboot/+/52959
+
+In addition I was thinking about how to use "direct" mode (ignoring
+the above problem) and realized that handling the power sequencing at
+the right time would be hard. Maybe not a problem for you since your
+bridge is always powered, but I wouldn't know how to model this in
+general. Specifically if you want to talk over the i2c bus to the
+panel you've got to power the bridge but I don't think the bridge gets
+called in the normal code paths.
+
+-Doug
