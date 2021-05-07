@@ -2,88 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4DFAE3765A4
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:56:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 782583765AE
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:58:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236623AbhEGM5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39800 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S234398AbhEGM5L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:57:11 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8E43D6145D;
-        Fri,  7 May 2021 12:56:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620392171;
-        bh=y32fV8IFsyNahCaWCck8Bgsb71MrZYwbNZlgtBX60W8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=FIdbOw5mDlCaJq1WudfCM96/pMNiqnxJI0g3Y7ecuhXwxekGLGwhhPFiETS7smMia
-         oAYKfCnDnK2zLIqSMWwoAl2nAmvC2iHkVwmbEBf8NQeWNNtKnPEQKQ8fuPiiQc0NsK
-         NchlyUHjMTDhy3Ujt+ANC/3tMnpv98l1BkU2wSAdXowwjhSH1+KPBkR2zyMQ7FyJ0R
-         RzPUgqtW8DMteVCpZb/lX1Jxj1B8p4fvA5zIXoyd0uOkRi9RLp50KzQQIKD43UY1LG
-         AlE/2ODqzBT/3aTDKjkGXyRcWBjaIIhj83Acik+3IJBv9LhLIGeNbroSdhNSPipNUn
-         DEIKilL/ZyyGA==
-Date:   Fri, 7 May 2021 13:55:33 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
-        Michael Walle <michael@walle.cc>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-spi@vger.kernel.org
-Subject: Re: [PATCH 4/6] spi: spi-mem: reject partial cycle transfers in
- 8D-8D-8D mode
-Message-ID: <20210507125533.GA6383@sirena.org.uk>
-References: <20210506191829.8271-1-p.yadav@ti.com>
- <20210506191829.8271-5-p.yadav@ti.com>
+        id S236779AbhEGM7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:59:41 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:34309 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S236731AbhEGM7j (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 08:59:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620392319;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=GLhWfHwcaV8aKPVU7+Ft0vYJAChyhrhw9hcFw4aRmbo=;
+        b=irasaOWxzwPAiNVGanYXsDHtcf9sY2z7n1v37Sjs3pfuQ77zfuc10TPb24hlpF8uPkVjGn
+        lZPcZFJtF87vGiYgU5j8XIc9KdKev/8gZZFCGNIZQQaLtPl93H9tE1AG9j2gHfnBthk5NY
+        kAe7iNPgxHUVlH26LTDMPrc0lxHv6a0=
+Received: from mail-yb1-f200.google.com (mail-yb1-f200.google.com
+ [209.85.219.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-191-QroS9fnvNQitpBCZk8-TBg-1; Fri, 07 May 2021 08:58:37 -0400
+X-MC-Unique: QroS9fnvNQitpBCZk8-TBg-1
+Received: by mail-yb1-f200.google.com with SMTP id d89-20020a25a3620000b02904dc8d0450c6so9888965ybi.2
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 05:58:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GLhWfHwcaV8aKPVU7+Ft0vYJAChyhrhw9hcFw4aRmbo=;
+        b=hjOfhsWd5zHcCkCOXGKDrCJAOeuXpshJrtnx6+g5J6D5fTez0HkEFFDVj6TJ5woI0f
+         BhAxP+j1++QU60S6G3KaloUlKHxYXgHlMoWxjefzmo0WBX1ePVkZBg4u31SjL3GaxqlT
+         QkTG13E44KKM5wXhCKLehlwB9NA6+xwW7Srf1z7doAFpP38rkHUHUZ79/szMbnAFFqO6
+         XZmPRjsKopMFMidcegDwFrBHz1MeviyHjO0Cw8hWdp/KpAj6Kj+RcfcKBuY12V3045tZ
+         ZTmHQdu90tRYSN6Vcx9ic8XPdb+lpeD5ofQXiSvEs1Dw6umWadgi3MtS2jn8nTeNQTbr
+         ZJ/Q==
+X-Gm-Message-State: AOAM530iax3hY8ju94Sa5EqEl74mQLJ48Pg+NRLlF9gS7DSFLiy2h77f
+        KcNVKR1+/QSohVyhpNIkn3PZ0aMDMJy6rELfGfnBE6fPEcS1RV93jTpEw9uxS+fathLp5pbdNuw
+        25dVHtjO/MnTKfBtnH/udtXQq+mHO46bkj8y2kdwf
+X-Received: by 2002:a25:640f:: with SMTP id y15mr13270245ybb.436.1620392317283;
+        Fri, 07 May 2021 05:58:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCaqVgj5WYApshEXCI32XAMx1PCeGQdEs8AyQjiRY6Qh9gAQzI/YAbyK/y3MYqZ6+seWa1q04tEmUBWR4cF20=
+X-Received: by 2002:a25:640f:: with SMTP id y15mr13270200ybb.436.1620392316934;
+ Fri, 07 May 2021 05:58:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="x+6KMIRAuhnl3hBn"
-Content-Disposition: inline
-In-Reply-To: <20210506191829.8271-5-p.yadav@ti.com>
-X-Cookie: Postage will be paid by addressee.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20210507115719.140799-1-omosnace@redhat.com> <YJUyJcNT9RDaJc4P@kroah.com>
+In-Reply-To: <YJUyJcNT9RDaJc4P@kroah.com>
+From:   Ondrej Mosnacek <omosnace@redhat.com>
+Date:   Fri, 7 May 2021 14:58:23 +0200
+Message-ID: <CAFqZXNudm1F4pPfhf+tVVikYpY_RPL9z816LS0tKc-4Vs2vjPA@mail.gmail.com>
+Subject: Re: [PATCH] serial: core: fix suspicious security_locked_down() call
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-serial@vger.kernel.org, David Howells <dhowells@redhat.com>,
+        Matthew Garrett <mjg59@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Linux Security Module list 
+        <linux-security-module@vger.kernel.org>,
+        James Morris <jmorris@namei.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        Linux kernel mailing list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, May 7, 2021 at 2:27 PM Greg Kroah-Hartman
+<gregkh@linuxfoundation.org> wrote:
+> On Fri, May 07, 2021 at 01:57:19PM +0200, Ondrej Mosnacek wrote:
+> > The commit that added this check did so in a very strange way - first
+> > security_locked_down() is called, its value stored into retval, and if
+> > it's nonzero, then an additional check is made for (change_irq ||
+> > change_port), and if this is true, the function returns. However, if
+> > the goto exit branch is not taken, the code keeps the retval value and
+> > continues executing the function. Then, depending on whether
+> > uport->ops->verify_port is set, the retval value may or may not be reset
+> > to zero and eventually the error value from security_locked_down() may
+> > abort the function a few lines below.
+> >
+> > I will go out on a limb and assume that this isn't the intended behavior
+> > and that an error value from security_locked_down() was supposed to
+> > abort the function only in case (change_irq || change_port) is true.
+>
+> Are you _sure_ about this?
+>
+> Verification from the authors and users of this odd feature might be
+> good to have, as I am loath to change how this works without them
+> weighing in here.
 
---x+6KMIRAuhnl3hBn
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm not completely sure and I'm with you on not merging this without
+feedback from people involved in the original patch and/or whoever
+understands the logic in said function.
 
-On Fri, May 07, 2021 at 12:48:27AM +0530, Pratyush Yadav wrote:
-> In 8D-8D-8D mode two bytes are transferred per cycle. So an odd number
-> of bytes cannot be transferred because it would leave a residual half
-> cycle at the end. Consider such a transfer invalid and reject it.
->=20
-> Signed-off-by: Pratyush Yadav <p.yadav@ti.com>
->=20
-> ---
-> This patch should go through the SPI tree but I have included it in this
-> series because if it goes in before patches 1-3, Micron MT35XU and
-> Cypress S28HS flashes will stop working correctly.
+-- 
+Ondrej Mosnacek
+Software Engineer, Linux Security - SELinux kernel
+Red Hat, Inc.
 
-It seems like this should probably even go in as a fix even if nothing
-is broken with mainline right now, it's the sort of thing some out of
-tree patch could easily trigger.  Unless anyone objects I'll do that.
-
---x+6KMIRAuhnl3hBn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCVOMQACgkQJNaLcl1U
-h9C9uQf9F7iIYJsr5r7vlcQFtN6JRxQBAT7SQrYpZGKtFrmxVr0ct5rCpwPxCDm6
-TihuJQd9vVim/gn+GfjZvLLrbgf+QpDE8dR8l3kcUFqDBbG2LpxNBkAKvrDhc0O6
-jX89AjpNdoI772ZaEFXSyexyN8jOLn3dZoWX+G+fVGaIpbbYDDn+T3CC1TPPs3hG
-05o0WvEsUF/Sdl4O2GoqV7EeLIoa7ViZuhzGyzMFTGMyPvjte3ZK6lne164UZGax
-lSnLoTCki6lRxiqhwsfuCRsH9VA3U9rZvAR0Slly7EkmDhkgQDgR4AkKZwK7wB9X
-fTQrLj2BgqbZWIkih68wRH9AxHo6ig==
-=YstS
------END PGP SIGNATURE-----
-
---x+6KMIRAuhnl3hBn--
