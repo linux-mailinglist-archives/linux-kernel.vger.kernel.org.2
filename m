@@ -2,110 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F81B375F9D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:05:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAA5F375FA0
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:09:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233131AbhEGFGU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 01:06:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43748 "EHLO
+        id S233179AbhEGFKX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 01:10:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44610 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232410AbhEGFGS (ORCPT
+        with ESMTP id S232410AbhEGFKW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 01:06:18 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB9EAC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 22:05:18 -0700 (PDT)
-Received: from ptx.hi.pengutronix.de ([2001:67c:670:100:1d::c0])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lesfi-0003g4-Cs; Fri, 07 May 2021 07:05:06 +0200
-Received: from ukl by ptx.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1lesff-0007eK-8B; Fri, 07 May 2021 07:05:03 +0200
-Date:   Fri, 7 May 2021 07:05:03 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc:     s.hauer@pengutronix.de, kernel@pengutronix.de, shawnguo@kernel.org,
-        festevam@gmail.com, linux-imx@nxp.com, j.beisert@pengutronix.de,
-        krzysztof.h1@poczta.fm, linux-fbdev@vger.kernel.org,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] video: fbdev: imxfb: Fix an error message
-Message-ID: <20210507050503.iwrcis2xzhjjthmp@pengutronix.de>
-References: <d7b25026f82659da3c6f7159eea480faa9d738be.1620327302.git.christophe.jaillet@wanadoo.fr>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="fchy7hv2sjxcax73"
-Content-Disposition: inline
-In-Reply-To: <d7b25026f82659da3c6f7159eea480faa9d738be.1620327302.git.christophe.jaillet@wanadoo.fr>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c0
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Fri, 7 May 2021 01:10:22 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5E0D4C061761
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 22:09:20 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id v12-20020a25848c0000b02904f30b36aebfso8826152ybk.1
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 22:09:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:message-id:mime-version:subject:from:to:cc;
+        bh=jSTI64CJ1fjEq5OTPDv3eN3+6glJnRm4XHS+PKPJDqQ=;
+        b=JVIXRhcjz7NCzpFAcvQ+vpKLDHmL3+gV0tpn3h+3lYDO6SgFnmFaCx5Aa8B8YGhYQL
+         XYbXHEpkJ2BastYVJE5UxO5ocwv+ghKnd6Y5sO6OcjMzAwRGdkvZ19A7NCWJyHTnzsR5
+         7Muwz5cO+4J0doAO4LKM/W6Pkd31Emd19Kj/TIINVihz7ASMCUo55GwyPWFxEG1TL9Ce
+         DXUxq49XNginaHoHcdFrIMxf8LpSO5TbrSuE9Lnjg28YgClK98Q5V/RYkK0W5jl4tWMX
+         Gp+iw9aBR6SZ35PZLiB7tQlwhPLPR5NSVZfed9scnvw81usR4vm1G8RZGcBoGeubfzOj
+         WRDA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:message-id:mime-version:subject:from:to:cc;
+        bh=jSTI64CJ1fjEq5OTPDv3eN3+6glJnRm4XHS+PKPJDqQ=;
+        b=bN7Gv9bOPz+4HtT+EzrfjgO0pQ2e2SCr3MHjNhTDXfRg2GqbdTd2qF+ZsnbtrVdh/n
+         CQkAYaZm1/XQV0A1A/nPkWbPVsXpnHRCqLDoqlhXU5Ep5EAlibOTqedvbMYaASoEpSZ7
+         IkbvojjuqyIioL3qR4oREzdahn7n2aFVVv/3W9khhJhJnQkBlFD+UOjZKWOcDi4igHvd
+         ZLZ+uUrk56FITDP6EXtH8kUBit9XhAltdVcgw8QCmccvXHdej9Iy5mnFKaFAUSqvJhz2
+         dfhc6/37yLIjfF9DsIO5Sk2rZ3WC+B4NuC0nwBiF5Ghx7AkJiEqHzxRCbyKn/4We5P9o
+         +OmA==
+X-Gm-Message-State: AOAM533vO8v/V54dsa11Y85968DLF0vtobavkAs9wPz5VU6TKuRhL2y8
+        xUBKp+HJFJZWuxOUYat7LnsgI9oH0c0usA==
+X-Google-Smtp-Source: ABdhPJy9tq8jPJY+ebhUXAl3EcvJ1PKeKQVZ9aWvrBWOFDSB3qbryOjP9jS6yOfytiqDVbXjWXm6HbciSaRB5A==
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:7a7f:ce22:a6af:49e5])
+ (user=davidgow job=sendgmr) by 2002:a25:cacd:: with SMTP id
+ a196mr11407255ybg.296.1620364159507; Thu, 06 May 2021 22:09:19 -0700 (PDT)
+Date:   Thu,  6 May 2021 22:09:07 -0700
+Message-Id: <20210507050908.1008686-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
+Subject: [PATCH 1/2] kunit: Do not typecheck binary assertions
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The use of typecheck() in KUNIT_EXPECT_EQ() and friends is causing more
+problems than I think it's worth. Things like enums need to have their
+values explicitly cast, and literals all need to be very precisely typed
+for the code to compile.
 
---fchy7hv2sjxcax73
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+While typechecking does have its uses, the additional overhead of having
+lots of needless casts -- combined with the awkward error messages which
+don't mention which types are involved -- makes tests less readable and
+more difficult to write.
 
-Hello Christophe,
+By removing the typecheck() call, the two arguments still need to be of
+compatible types, but don't need to be of exactly the same time, which
+seems a less confusing and more useful compromise.
 
-On Thu, May 06, 2021 at 08:57:05PM +0200, Christophe JAILLET wrote:
-> 'ret' is known to be 0 here.
-> No error code is available, so just remove it from the error message.
->=20
-> Fixes: 72330b0eeefc ("i.MX Framebuffer: Use readl/writel instead of direc=
-t pointer deref")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
->  drivers/video/fbdev/imxfb.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/video/fbdev/imxfb.c b/drivers/video/fbdev/imxfb.c
-> index 7f8debd2da06..ad598257ab38 100644
-> --- a/drivers/video/fbdev/imxfb.c
-> +++ b/drivers/video/fbdev/imxfb.c
-> @@ -992,7 +992,7 @@ static int imxfb_probe(struct platform_device *pdev)
->  	info->screen_buffer =3D dma_alloc_wc(&pdev->dev, fbi->map_size,
->  					   &fbi->map_dma, GFP_KERNEL);
->  	if (!info->screen_buffer) {
-> -		dev_err(&pdev->dev, "Failed to allocate video RAM: %d\n", ret);
-> +		dev_err(&pdev->dev, "Failed to allocate video RAM\n");
->  		ret =3D -ENOMEM;
->  		goto failed_map;
->  	}
+Signed-off-by: David Gow <davidgow@google.com>
+---
 
-Reviewed-by: Uwe Kleine-K=F6nig <u.kleine-koenig@pengutronix.de>
+I appreciate that this is probably a bit controversial (and, indeed, I
+was a bit hesitant about sending it out myself), but after sitting on it
+for a few days, I still think this is probably an improvement overall.
 
-Are you using this driver, or did you find that problem using some
-static checker?
+The second patch does fix what I think is an actual bug, though, so even
+if this isn't determined to be a good idea, it (or some equivalent)
+should probably go through.
 
-Best regards
-Uwe
+Cheers,
+-- David
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+ include/kunit/test.h | 1 -
+ 1 file changed, 1 deletion(-)
 
---fchy7hv2sjxcax73
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/include/kunit/test.h b/include/kunit/test.h
+index 49601c4b98b8..4c56ffcb7403 100644
+--- a/include/kunit/test.h
++++ b/include/kunit/test.h
+@@ -775,7 +775,6 @@ void kunit_do_assertion(struct kunit *test,
+ do {									       \
+ 	typeof(left) __left = (left);					       \
+ 	typeof(right) __right = (right);				       \
+-	((void)__typecheck(__left, __right));				       \
+ 									       \
+ 	KUNIT_ASSERTION(test,						       \
+ 			__left op __right,				       \
+-- 
+2.31.1.607.g51e8a6a459-goog
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAmCUynsACgkQwfwUeK3K
-7Akw+QgAibPO6IbkA1icCBx3pbmkEnH1NGD7B1YrSwgKWeQlnCqqfv67hRrjvs1u
-s2PTr3bd7cE3G7YnWnWWLEC9/7xew8nNKv89KFGSQa1pzRFBc/FGpaeTMDvkO8PK
-miGiZbBAl240AtvS87ODzAIDqB2vQkJ6UzinynVbHTN4j+1FKjwnmag05qugFDvx
-nYGaNPop0x4BzwcBVVKGTwCnHjmoWdz+HGw+udY9AnO/N5A+Ms6WGsx2yf6d1Z4f
-9i9UwA7LoOM/i8+bEwtgZRnn7CXBhYWPFhNMtU+nKAqeGryeAr4UsO/8Y/O9kN/5
-F+yqk+jOjwAAnNq5cNzXm6wxrxN88Q==
-=KRUx
------END PGP SIGNATURE-----
-
---fchy7hv2sjxcax73--
