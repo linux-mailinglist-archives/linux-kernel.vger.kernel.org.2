@@ -2,88 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B06A376BDC
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:42:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F484376BE1
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:43:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229699AbhEGVn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:43:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:35534 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229482AbhEGVn1 (ORCPT
+        id S229754AbhEGVo3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:44:29 -0400
+Received: from mail-ot1-f45.google.com ([209.85.210.45]:38579 "EHLO
+        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229482AbhEGVo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:43:27 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620423746;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=ZoTcHkNvjmIdSHWRw1A3T95KgNRdw8mZxQhxd84MX8M=;
-        b=M/nCoSNNFxhgcR6kM2h+oPf6MA1roa34aBjp+PpBofM4LGqm7VIMhLdAdpTaWuwLXTd5Lh
-        kZXOYqEMGowpp6cszZQfaK2rjL+vtPF2sUcsLQo0ebf25ZToc8kmeqw6LmX8nUUccgs32P
-        QT1xPr8JFHUV/MLeq5dzYVkX+TXGBwM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-bjLmcu3kO4GejKlhh4TTGA-1; Fri, 07 May 2021 17:42:25 -0400
-X-MC-Unique: bjLmcu3kO4GejKlhh4TTGA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C9253107ACCA;
-        Fri,  7 May 2021 21:42:23 +0000 (UTC)
-Received: from Ruby.redhat.com (ovpn-112-131.rdu2.redhat.com [10.10.112.131])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 288C563B8C;
-        Fri,  7 May 2021 21:42:21 +0000 (UTC)
-From:   Lyude Paul <lyude@redhat.com>
-To:     dri-devel@lists.freedesktop.org
-Cc:     =?UTF-8?q?Ville=20Syrj=C3=A4l=C3=A4?= 
-        <ville.syrjala@linux.intel.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] drm/dp: Fix bogus DPCD version check in drm_dp_read_downstream_info()
-Date:   Fri,  7 May 2021 17:42:09 -0400
-Message-Id: <20210507214209.554866-1-lyude@redhat.com>
+        Fri, 7 May 2021 17:44:27 -0400
+Received: by mail-ot1-f45.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so9151555oth.5;
+        Fri, 07 May 2021 14:43:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=1jPYaiJ3mpOsE5i/q/eUuwCFtgMQJcQzg5PuBr/sjHs=;
+        b=HfIj4r8ONjBXYl30I1cj8QvuoHjTvW5VbZTCSml/fskrofCabVCmzBJD1EHEZU+x+6
+         kMZqkC9NDbFsNVnAgiytMlp1VJ7a+CkGsC+4lapjJFkfhVq6wmaafqLo1QUwQpOTGxmV
+         uvR4rc2mwI1pQWQ4mCucArGjgxYif6E+HGcldA1qCq24CB+J5X1RRV0D6fhIi3CmHwb7
+         a5mAVbsg+uinkbMYMY/29I5SGmqVAEUOW5fUzQHE3kYtJehXqtKUw5w+wTZR7g9YvvkA
+         8ZJF7qE1UnYnXLGy9bJMkeXSP9O5AftrXFkAwqRe5HdUnEihOhH66UWihiDkogvSjMlo
+         7G9A==
+X-Gm-Message-State: AOAM532ZOQh/fbLmp6cDYTYQfvK6ZZAUFli1RHVrfgXKLVWThmZwtDIy
+        lWGDC8d00ViizBTdZqss7Vx36OLGvQ==
+X-Google-Smtp-Source: ABdhPJyTQdRZg+46DJaHovSc+DGA9RXAMHaPE7FDnBU2Ww/Sph47kxo0hyCvh1ofVKV3FbagEmTENQ==
+X-Received: by 2002:a05:6830:1450:: with SMTP id w16mr9903118otp.305.1620423805659;
+        Fri, 07 May 2021 14:43:25 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id c65sm1202316oia.47.2021.05.07.14.43.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 14:43:24 -0700 (PDT)
+Received: (nullmailer pid 2942658 invoked by uid 1000);
+        Fri, 07 May 2021 21:43:23 -0000
+Date:   Fri, 7 May 2021 16:43:23 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Grygorii Strashko <grygorii.strashko@ti.com>
+Cc:     Andreas Kemnade <andreas@kemnade.info>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-omap@vger.kernel.org, linux-i2c@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>
+Subject: Re: [PATCH v2] dt-bindings: i2c: Move i2c-omap.txt to YAML format
+Message-ID: <20210507214323.GB2902038@robh.at.kernel.org>
+References: <20210506140026.31254-1-vigneshr@ti.com>
+ <f7570cb4-8c21-2fa5-bd26-1388f2a4bd6b@ti.com>
+ <429a740a-c2b9-1cf8-ed2b-0fb7b1bea422@ti.com>
+ <20210507163602.219894f4@aktux>
+ <1ef076ac-e0de-a0df-a918-aeb8ed6c5956@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1ef076ac-e0de-a0df-a918-aeb8ed6c5956@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Ville pointed this out to me when fixing some issues in
-drm_dp_read_downstream_info() - the DPCD version check here is bogus as
-there's no DisplayPort versions prior to 1.0. The original code from i915
-that this was extracted from actually did:
+On Fri, May 07, 2021 at 08:24:59PM +0300, Grygorii Strashko wrote:
+> 
+> 
+> On 07/05/2021 17:36, Andreas Kemnade wrote:
+> > On Fri, 7 May 2021 19:45:45 +0530
+> > Vignesh Raghavendra <vigneshr@ti.com> wrote:
+> > 
+> > > On 5/7/21 12:24 PM, Grygorii Strashko wrote:
+> > > > 
+> > > > 
+> > > > On 06/05/2021 17:00, Vignesh Raghavendra wrote:
+> > > > > Convert i2c-omap.txt to YAML schema for better checks and documentation.
+> > > > > 
+> > > > > Following properties were used in DT but were not documented in txt
+> > > > > bindings and has been included in YAML schema:
+> > > > > 1. Include ti,am4372-i2c compatible
+> > > > > 2. Include dmas property used in few OMAP dts files
+> > > > 
+> > > > The DMA is not supported by i2c-omap driver, so wouldn't be better to
+> > > > just drop dmas from DTBs to avoid confusions?
+> > > > It can be added later.
+> > > 
+> > > Will do.. I will also send patches dropping dmas from dts that currently
+> > > have them populated.
+> > > 
+> > hmm, we have
+> > - DO attempt to make bindings complete even if a driver doesn't support some
+> >    features. For example, if a device has an interrupt, then include the
+> >    'interrupts' property even if the driver is only polled mode.
+> > 
+> > in Documentation/devicetree/bindings/writing-bindings.rst
+> > Shouln't the dma stay there if the hardware supports it? Devicetree
+> > should describe the hardware not the driver if I understood things
+> > right.
+> 
+> True.  But my above statement is also valid - it introduces confusion from user point of view.
 
-  dpcd[DP_DPCD_REV] == DP_DPCD_REV_10
+In my OS, 'robOS', the driver supports DMA.
 
-Which is correct, and somehow got missed when extracting this function. So
-let's fix this. Note that as far as I'm aware, I don't think this fixes any
-actual issues users are hitting.
+> More over, 'dmas' is not part of original binding and were randomly added to some SoCs.
+> And it's much more easy to extend binding (in the future) then remove something after.
 
-Signed-off-by: Lyude Paul <lyude@redhat.com>
-Cc: Ville Syrjälä <ville.syrjala@linux.intel.com>
----
- drivers/gpu/drm/drm_dp_helper.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+In this case, probably given that how it would be extended is already 
+known, but it depends how you extend a binding. My above statement was 
+born out of incomplete MFD and system controller bindings for the most 
+part.
 
-diff --git a/drivers/gpu/drm/drm_dp_helper.c b/drivers/gpu/drm/drm_dp_helper.c
-index 0f84df8798ab..55b53df6ce34 100644
---- a/drivers/gpu/drm/drm_dp_helper.c
-+++ b/drivers/gpu/drm/drm_dp_helper.c
-@@ -677,7 +677,7 @@ int drm_dp_read_downstream_info(struct drm_dp_aux *aux,
- 	memset(downstream_ports, 0, DP_MAX_DOWNSTREAM_PORTS);
- 
- 	/* No downstream info to read */
--	if (!drm_dp_is_branch(dpcd) || dpcd[DP_DPCD_REV] < DP_DPCD_REV_10)
-+	if (!drm_dp_is_branch(dpcd) || dpcd[DP_DPCD_REV] == DP_DPCD_REV_10)
- 		return 0;
- 
- 	/* Some branches advertise having 0 downstream ports, despite also advertising they have a
--- 
-2.30.2
+> I leave it to Vignesh, Tony to decide.
 
+Fine with me.
+
+Actually, for DMA with I2C I'd like to see someone show a usecase 
+and data where it's actually beneficial. 
+
+Rob
