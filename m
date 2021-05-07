@@ -2,189 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9BFB375E84
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:46:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E47FF375E8B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234025AbhEGBrv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 21:47:51 -0400
-Received: from mail-m121142.qiye.163.com ([115.236.121.142]:51120 "EHLO
-        mail-m121142.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229801AbhEGBru (ORCPT
+        id S234078AbhEGBth (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 21:49:37 -0400
+Received: from regular1.263xmail.com ([211.150.70.195]:38524 "EHLO
+        regular1.263xmail.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229801AbhEGBtg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 21:47:50 -0400
-Received: from [0.0.0.0] (unknown [14.154.28.254])
-        by mail-m121142.qiye.163.com (Hmail) with ESMTPA id 3CD6580324;
-        Fri,  7 May 2021 09:46:49 +0800 (CST)
-Subject: Re: [RFC PATCH] mm/page_alloc: fix counting of free pages after take
- off from buddy
-To:     =?UTF-8?B?SE9SSUdVQ0hJIE5BT1lBKOWggOWPoyDnm7TkuZ8p?= 
-        <naoya.horiguchi@nec.com>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "osalvador@suse.de" <osalvador@suse.de>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20210421020426.5914-1-dinghui@sangfor.com.cn>
- <dd242708-e3f5-ab9f-64d4-9efe3b7168ce@redhat.com>
- <20210506024943.GA1777607@hori.linux.bs1.fc.nec.co.jp>
- <33be44ea-f377-c049-03ff-3b45289ab5f7@sangfor.com.cn>
- <20210506073055.GA1848917@hori.linux.bs1.fc.nec.co.jp>
-From:   Ding Hui <dinghui@sangfor.com.cn>
-Message-ID: <6af291a0-41fa-8112-5297-6a4cdf2337b6@sangfor.com.cn>
-Date:   Fri, 7 May 2021 09:46:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        Thu, 6 May 2021 21:49:36 -0400
+Received: from localhost (unknown [192.168.167.235])
+        by regular1.263xmail.com (Postfix) with ESMTP id EB0821BD6;
+        Fri,  7 May 2021 09:48:35 +0800 (CST)
+X-MAIL-GRAY: 0
+X-MAIL-DELIVERY: 1
+X-ADDR-CHECKED4: 1
+X-ANTISPAM-LEVEL: 2
+X-SKE-CHECKED: 1
+X-ABS-CHECKED: 1
+Received: from [172.16.12.64] (unknown [58.22.7.114])
+        by smtp.263.net (postfix) whith ESMTP id P2749T140649028380416S1620352112258338_;
+        Fri, 07 May 2021 09:48:34 +0800 (CST)
+X-IP-DOMAINF: 1
+X-UNIQUE-TAG: <3ec0d0c4447b4275db45ae7c2348390a>
+X-RL-SENDER: shawn.lin@rock-chips.com
+X-SENDER: lintao@rock-chips.com
+X-LOGIN-NAME: shawn.lin@rock-chips.com
+X-FST-TO: linux-kernel@vger.kernel.org
+X-RCPT-COUNT: 10
+X-SENDER-IP: 58.22.7.114
+X-ATTACHMENT-NUM: 0
+X-System-Flag: 0
+Message-ID: <d16537da-8256-f7ed-677d-011654c62bd4@rock-chips.com>
+Date:   Fri, 7 May 2021 09:48:32 +0800
 MIME-Version: 1.0
-In-Reply-To: <20210506073055.GA1848917@hori.linux.bs1.fc.nec.co.jp>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
-        oVCBIfWUFZGkwdTlZKTEJCTE4aHUsaGk9VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
-        9ISVVLWQY+
-X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6Kyo6Ihw*Vj8QATohDDcXEEM1
-        KyEKCktVSlVKTUlLSE5JS0tCQ0xOVTMWGhIXVR8SFRwTDhI7CBoVHB0UCVUYFBZVGBVFWVdZEgtZ
-        QVlKT1VKTk9VSUNVSU5PWVdZCAFZQUxCTko3Bg++
-X-HM-Tid: 0a794481851db037kuuu3cd6580324
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:87.0) Gecko/20100101
+ Thunderbird/87.0
+Cc:     shawn.lin@rock-chips.com, Linus Walleij <linus.walleij@linaro.org>,
+        Wolfram Sang <wsa+renesas@sang-engineering.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        Masami Hiramatsu <masami.hiramatsu@linaro.org>,
+        linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 03/11] mmc: core: Re-structure some code in
+ __mmc_poll_for_busy()
+To:     Ulf Hansson <ulf.hansson@linaro.org>, linux-mmc@vger.kernel.org,
+        Adrian Hunter <adrian.hunter@intel.com>
+References: <20210504161222.101536-1-ulf.hansson@linaro.org>
+ <20210504161222.101536-4-ulf.hansson@linaro.org>
+From:   Shawn Lin <shawn.lin@rock-chips.com>
+In-Reply-To: <20210504161222.101536-4-ulf.hansson@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/6 15:30, HORIGUCHI NAOYA(堀口 直也) wrote:
-> On Thu, May 06, 2021 at 12:01:34PM +0800, Ding Hui wrote:
->> On 2021/5/6 10:49, HORIGUCHI NAOYA(堀口 直也) wrote:
->>> On Wed, Apr 28, 2021 at 04:54:59PM +0200, David Hildenbrand wrote:
->>>> On 21.04.21 04:04, Ding Hui wrote:
->>>>> Recently we found there is a lot MemFree left in /proc/meminfo after
->>>>> do a lot of pages soft offline.
->>>>>
->>>>> I think it's incorrect since NR_FREE_PAGES should not contain HWPoison pages.
->>>>> After take_page_off_buddy, the page is no longer belong to buddy
->>>>> allocator, and will not be used any more, but we maybe missed accounting
->>>>> NR_FREE_PAGES in this situation.
->>>>>
->>>>> Signed-off-by: Ding Hui <dinghui@sangfor.com.cn>
->>>>> ---
->>>>>     mm/page_alloc.c | 1 +
->>>>>     1 file changed, 1 insertion(+)
->>>>>
->>>>> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
->>>>> index cfc72873961d..8d65b62784d8 100644
->>>>> --- a/mm/page_alloc.c
->>>>> +++ b/mm/page_alloc.c
->>>>> @@ -8947,6 +8947,7 @@ bool take_page_off_buddy(struct page *page)
->>>>>     			del_page_from_free_list(page_head, zone, page_order);
->>>>>     			break_down_buddy_pages(zone, page_head, page, 0,
->>>>>     						page_order, migratetype);
->>>>> +			__mod_zone_page_state(zone, NR_FREE_PAGES, -1);
->>>>>     			ret = true;
->>>>>     			break;
->>>>>     		}
->>>>>
->>>>
->>>> Should this use __mod_zone_freepage_state() instead?
->>>
->>> Yes, __mod_zone_freepage_state() looks better to me.
->>>
->>> And I think that maybe an additional __mod_zone_freepage_state() in
->>> unpoison_memory() is necessary to cancel the decrement.  I thought of the
->>> following, but it doesn't build because get_pfnblock_migratetype() is
->>> available only in mm/page_alloc.c, so you might want to add a small exported
->>> routine in mm/page_alloc.c and let it called from unpoison_memory().
->>>
->>>     @@ -1899,8 +1899,12 @@ int unpoison_memory(unsigned long pfn)
->>>             }
->>>             if (!get_hwpoison_page(p, flags, 0)) {
->>>     -               if (TestClearPageHWPoison(p))
->>>     +               if (TestClearPageHWPoison(p)) {
->>>     +                       int migratetype = get_pfnblock_migratetype(p, pfn);
->>>     +
->>>                             num_poisoned_pages_dec();
->>>     +                       __mod_zone_freepage_state(page_zone(p), 1, migratetype);
->>>     +               }
->>>                     unpoison_pr_info("Unpoison: Software-unpoisoned free page %#lx\n",
->>>                                      pfn, &unpoison_rs);
->>>                     return 0;
->>>
->>
->> I think there is another problem:
->> In normal case, we keep the last refcount of the hwpoison page, so
->> get_hwpoison_page should return 1. The NR_FREE_PAGES will be adjusted when
->> call put_page.
-> 
-> I think that take_page_off_buddy() should not be called for this case
-> (the error page have remaining refcount).  So it seems that no need to
-> update NR_FREE_PAGES ?
-> 
+On 2021/5/5 0:12, Ulf Hansson wrote:
+> To make the code a bit more understandable, let's move the check about
+> whether polling is allowed or not, out to the caller instead. In this way,
+> we can also drop the send_status in-parameter, so let's do that.
 
-Yes, take_page_off_buddy() only used for free pages, but we will call 
-page_ref_inc() after that, on the other hand for in used pages, we 
-increased the refcount by get_any_page(), so in both cases, the 
-hwpoisoned pages have refcount great than zero.
+Everytime I check the parameters for busy polling, I have to look very
+closely to make sure what the true or false stands for. So reducing the
+parameters here make sense.
 
-I think there is no need to update NR_FREE_PAGES explicitly in 
-unpoison_memory(), the put_page() will help us to update NR_FREE_PAGES 
-and put the page back to buddy.
+Reviewed-by: Shawn Lin <shawn.lin@rock-chips.com>
 
->> At race condition, we maybe leak the page because we does not put it back to
->> buddy in unpoison_memory, however the HWPoison flag, num_poisoned_pages,
->> NR_FREE_PAGES is adjusted correctly.
->>
->> CPU0                        CPU1
->>
->> soft_offline_page
->>    soft_offline_free_page
->>      page_handle_poison
->>        take_page_off_buddy
->>        SetPageHWPoison
->>                              unpoison_memory
->>                                if (!get_hwpoison_page(p))
->>                                  TestClearPageHWPoison
->>                                    num_poisoned_pages_dec
->>                                  __mod_zone_freepage_state
->>                                  return 0
->>                                  /* miss put the page back to buddy */
->>        page_ref_inc
->>        num_poisoned_pages_inc
 > 
-> Thanks for checking this, unpoison_memory() is racy.  Recently we are suggesting
-> to introduce mf_mutex by [1].  Although this patch is not merged to mainline yet,
-> but it could be used to prevent the above race too.
+> Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+> ---
+>   drivers/mmc/core/mmc_ops.c | 27 +++++++++++++--------------
+>   1 file changed, 13 insertions(+), 14 deletions(-)
 > 
-> [1] https://lore.kernel.org/linux-mm/20210427062953.2080293-2-nao.horiguchi@gmail.com/
+> diff --git a/drivers/mmc/core/mmc_ops.c b/drivers/mmc/core/mmc_ops.c
+> index 66ae699a410f..ccaee1cb7ff5 100644
+> --- a/drivers/mmc/core/mmc_ops.c
+> +++ b/drivers/mmc/core/mmc_ops.c
+> @@ -465,8 +465,7 @@ static int mmc_busy_status(struct mmc_card *card, bool retry_crc_err,
+>   }
+>   
+>   static int __mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
+> -			       bool send_status, bool retry_crc_err,
+> -			       enum mmc_busy_cmd busy_cmd)
+> +			       bool retry_crc_err, enum mmc_busy_cmd busy_cmd)
+>   {
+>   	struct mmc_host *host = card->host;
+>   	int err;
+> @@ -475,16 +474,6 @@ static int __mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
+>   	bool expired = false;
+>   	bool busy = false;
+>   
+> -	/*
+> -	 * In cases when not allowed to poll by using CMD13 or because we aren't
+> -	 * capable of polling by using ->card_busy(), then rely on waiting the
+> -	 * stated timeout to be sufficient.
+> -	 */
+> -	if (!send_status && !host->ops->card_busy) {
+> -		mmc_delay(timeout_ms);
+> -		return 0;
+> -	}
+> -
+>   	timeout = jiffies + msecs_to_jiffies(timeout_ms) + 1;
+>   	do {
+>   		/*
+> @@ -518,7 +507,7 @@ static int __mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
+>   int mmc_poll_for_busy(struct mmc_card *card, unsigned int timeout_ms,
+>   		      enum mmc_busy_cmd busy_cmd)
+>   {
+> -	return __mmc_poll_for_busy(card, timeout_ms, true, false, busy_cmd);
+> +	return __mmc_poll_for_busy(card, timeout_ms, false, busy_cmd);
+>   }
+>   
+>   bool mmc_prepare_busy_cmd(struct mmc_host *host, struct mmc_command *cmd,
+> @@ -591,8 +580,18 @@ int __mmc_switch(struct mmc_card *card, u8 set, u8 index, u8 value,
+>   		mmc_host_is_spi(host))
+>   		goto out_tim;
+>   
+> +	/*
+> +	 * If the host doesn't support HW polling via the ->card_busy() ops and
+> +	 * when it's not allowed to poll by using CMD13, then we need to rely on
+> +	 * waiting the stated timeout to be sufficient.
+> +	 */
+> +	if (!send_status && !host->ops->card_busy) {
+> +		mmc_delay(timeout_ms);
+> +		goto out_tim;
+> +	}
+> +
+>   	/* Let's try to poll to find out when the command is completed. */
+> -	err = __mmc_poll_for_busy(card, timeout_ms, send_status, retry_crc_err,
+> +	err = __mmc_poll_for_busy(card, timeout_ms, retry_crc_err,
+>   				  MMC_BUSY_CMD6);
+>   	if (err)
+>   		goto out;
 > 
 
-I'll look forward to it, thanks.
 
->>
->> How about do nothing and return -EBUSY (so the caller can retry) if unpoison
->> a zero refcount page , or return 0 like 230ac719c500 ("mm/hwpoison: don't
->> try to unpoison containment-failed pages") does ?
->>
->>    @@ -1736,11 +1736,9 @@ int unpoison_memory(unsigned long pfn)
->>      }
->>
->>      if (!get_hwpoison_page(p, flags, 0)) {
->>    -       if (TestClearPageHWPoison(p))
->>    -           num_poisoned_pages_dec();
->>    -       unpoison_pr_info("Unpoison: Software-unpoisoned free page %#lx\n",
->>    +       unpoison_pr_info("Unpoison: Software-unpoisoned zero refcount page
->> %#lx\n",
->>    				 pfn, &unpoison_rs);
->>    -       return 0;
->>    +       return -EBUSY;
-> 
-> Currently unpoison_memory() does not work as reverse operation of take_page_off_buddy()
-> (it's simply broken), so implementing it at one time would be better.
-> I'll take time to fix unpoison_memory().
-> 
-
-Thanks for your work.
-Actually, I'm not sure about the exactly meaning of "broken", it seems 
-that the basic function of unpoison_memory() is ok if not considered the 
-race conditions.
-
-
--- 
-Thanks,
-- Ding Hui
