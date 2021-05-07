@@ -2,102 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E59BD37612E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:33:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 47074376154
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:41:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234911AbhEGHep (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:34:45 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:17141 "EHLO
-        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229849AbhEGHef (ORCPT
+        id S235576AbhEGHmz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:42:55 -0400
+Received: from mail-m176238.qiye.163.com ([59.111.176.238]:14192 "EHLO
+        mail-m176238.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S231165AbhEGHmy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:34:35 -0400
-Received: from DGGEMS409-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fc2Cs5wXVzqSqW;
-        Fri,  7 May 2021 15:30:17 +0800 (CST)
-Received: from [127.0.0.1] (10.40.192.131) by DGGEMS409-HUB.china.huawei.com
- (10.3.19.209) with Microsoft SMTP Server id 14.3.498.0; Fri, 7 May 2021
- 15:33:26 +0800
-Subject: Re: [PATCH] printk: stop spining waiter when console resume to flush
- prb
-To:     Sergey Senozhatsky <senozhatsky@chromium.org>,
-        Petr Mladek <pmladek@suse.com>
-CC:     <sergey.senozhatsky@gmail.com>, <rostedt@goodmis.org>,
-        <john.ogness@linutronix.de>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, <bobo.shaobowang@huawei.com>
-References: <1620288026-5373-1-git-send-email-luojiaxing@huawei.com>
- <YJPxj83F1sBjHHAE@alley> <YJP4F1UIt/eRZ96s@google.com>
- <YJP5MnkJ8pJevXM6@google.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <72443c6d-b70b-0e36-bab0-87705a1d8019@huawei.com>
-Date:   Fri, 7 May 2021 15:33:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        Fri, 7 May 2021 03:42:54 -0400
+X-Greylist: delayed 374 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 May 2021 03:42:53 EDT
+Received: from vivo.com (localhost [127.0.0.1])
+        by mail-m176238.qiye.163.com (Hmail) with ESMTP id 45985F60165;
+        Fri,  7 May 2021 15:35:06 +0800 (CST)
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
+Message-ID: <AL2APQB8DsrABpe7MxMMyqq4.3.1620372906272.Hmail.bernard@vivo.com>
+To:     Daniel Vetter <daniel@ffwll.ch>
+Cc:     kernel test robot <lkp@intel.com>,
+        Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kbuild-all@lists.01.org
+Subject: =?UTF-8?B?UmU6UmU6IFtQQVRDSF0gZHJtL2k5MTU6IFVzZSBtaWdodF9hbGxvYygp?=
+X-Priority: 3
+X-Mailer: HMail Webmail Server V2.0 Copyright (c) 2016-163.com
+X-Originating-IP: 36.152.145.181
+In-Reply-To: <YIxBfNnwA/7nEenj@phenom.ffwll.local>
 MIME-Version: 1.0
-In-Reply-To: <YJP5MnkJ8pJevXM6@google.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.40.192.131]
-X-CFilter-Loop: Reflected
+Received: from bernard@vivo.com( [36.152.145.181) ] by ajax-webmail ( [127.0.0.1] ) ; Fri, 7 May 2021 15:35:06 +0800 (GMT+08:00)
+From:   Bernard <bernard@vivo.com>
+Date:   Fri, 7 May 2021 15:35:06 +0800 (GMT+08:00)
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZGUodGVZCTkxIHUgYSExLTk5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWUFZT0tIVUpKS0
+        hKQ1VLWQY+
+X-HM-Sender-Digest: e1kJHlYWEh9ZQU1ISU1MTk9MSk5NN1dZDB4ZWUEPCQ4eV1kSHx4VD1lB
+        WUc6N0k6Kyo5Qz8ICTo5Cx5MNgM2NgIKCk9VSFVKTUlLSExJQktNTkNKVTMWGhIXVRkeCRUaCR87
+        DRINFFUYFBZFWVdZEgtZQVlITVVKTklVSk9OVUpDSllXWQgBWUFDTkhMNwY+
+X-HM-Tid: 0a7945c06134d9b0kuws45985f60165
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On 2021/5/6 22:12, Sergey Senozhatsky wrote:
-> On (21/05/06 23:07), Sergey Senozhatsky wrote:
->> Can we count the number of lines that we print from the `current` context
->> in console_unlock() and if after N messages there is no console_lock waiter
->> waiting for the `current` to handover console lock ownership, then create
->> one: schedule IRQ work that will become a console lock owner, spin on
->> console lock and call console_unlock() once it acquired the ownership.
->> That 'artificial' console lock owner will do the same - print N
->> messages, if nothing wants to become a console lock owner then it'll
->> queue another IRQ work.
-> Or even simpler
->
-> console_unlock()
-> {
-> 	...
->
-> 	if (printed_messages > limit && !console_lock_spinning_disable_and_check()) {
-> 		printk_safe_exit_irqrestore(flags);
->
-> 		console_locked = 0;
-> 		up_console_sem();
->
-> 		defer_console_output();
-> 		return;
-> 	}
-
-
-Hi,  Sergey, I test this,  it works.
-
-
-But, I have a doubt. If the log buffer exceeds limit, we can schedule 
-IRQ work to become the console lock owner and let current context return.
-
-So why not just let the IRQ work process the console output without 
-limit? To be clear, driver call printk() only care about the correct 
-sequence of timestamps
-
-and does not care when the print is output. Actually, I wonder if the 
-driver can only cache the print and queue the output tasks to a 
-workqueue to return, and then return directly?
-
-
-I don't know if this is a stupid idea, because I'm not familiar with printk.
-
-
-Thanks
-
-Jiaxing
-
-
-> 	...
-> }
->
-> .
->
-
+CkZyb206IERhbmllbCBWZXR0ZXIgPGRhbmllbEBmZndsbC5jaD4KRGF0ZTogMjAyMS0wNS0wMSAw
+MTo0MjoyMApUbzogIGtlcm5lbCB0ZXN0IHJvYm90IDxsa3BAaW50ZWwuY29tPgpDYzogIEJlcm5h
+cmQgWmhhbyA8YmVybmFyZEB2aXZvLmNvbT4sSmFuaSBOaWt1bGEgPGphbmkubmlrdWxhQGxpbnV4
+LmludGVsLmNvbT4sSm9vbmFzIExhaHRpbmVuIDxqb29uYXMubGFodGluZW5AbGludXguaW50ZWwu
+Y29tPixSb2RyaWdvIFZpdmkgPHJvZHJpZ28udml2aUBpbnRlbC5jb20+LERhdmlkIEFpcmxpZSA8
+YWlybGllZEBsaW51eC5pZT4sRGFuaWVsIFZldHRlciA8ZGFuaWVsQGZmd2xsLmNoPixpbnRlbC1n
+ZnhAbGlzdHMuZnJlZWRlc2t0b3Aub3JnLGRyaS1kZXZlbEBsaXN0cy5mcmVlZGVza3RvcC5vcmcs
+bGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZyxrYnVpbGQtYWxsQGxpc3RzLjAxLm9yZwpTdWJq
+ZWN0OiBSZTogW1BBVENIXSBkcm0vaTkxNTogVXNlIG1pZ2h0X2FsbG9jKCk+T24gRnJpLCBBcHIg
+MzAsIDIwMjEgYXQgMTI6MzE6MjdBTSArMDgwMCwga2VybmVsIHRlc3Qgcm9ib3Qgd3JvdGU6Cj4+
+IEhpIEJlcm5hcmQsCj4+IAo+PiBUaGFuayB5b3UgZm9yIHRoZSBwYXRjaCEgWWV0IHNvbWV0aGlu
+ZyB0byBpbXByb3ZlOgo+PiAKPj4gW2F1dG8gYnVpbGQgdGVzdCBFUlJPUiBvbiBkcm0taW50ZWwv
+Zm9yLWxpbnV4LW5leHRdCj4+IFthbHNvIGJ1aWxkIHRlc3QgRVJST1Igb24gdjUuMTIgbmV4dC0y
+MDIxMDQyOV0KPj4gW0lmIHlvdXIgcGF0Y2ggaXMgYXBwbGllZCB0byB0aGUgd3JvbmcgZ2l0IHRy
+ZWUsIGtpbmRseSBkcm9wIHVzIGEgbm90ZS4KPj4gQW5kIHdoZW4gc3VibWl0dGluZyBwYXRjaCwg
+d2Ugc3VnZ2VzdCB0byB1c2UgJy0tYmFzZScgYXMgZG9jdW1lbnRlZCBpbgo+PiBodHRwczovL2dp
+dC1zY20uY29tL2RvY3MvZ2l0LWZvcm1hdC1wYXRjaF0KPj4gCj4+IHVybDogICAgaHR0cHM6Ly9n
+aXRodWIuY29tLzBkYXktY2kvbGludXgvY29tbWl0cy9CZXJuYXJkLVpoYW8vZHJtLWk5MTUtVXNl
+LW1pZ2h0X2FsbG9jLzIwMjEwNDI5LTEwNDUxNgo+PiBiYXNlOiAgIGdpdDovL2Fub25naXQuZnJl
+ZWRlc2t0b3Aub3JnL2RybS1pbnRlbCBmb3ItbGludXgtbmV4dAo+PiBjb25maWc6IHg4Nl82NC1y
+aGVsLTguMy1rc2VsZnRlc3RzIChhdHRhY2hlZCBhcyAuY29uZmlnKQo+PiBjb21waWxlcjogZ2Nj
+LTkgKERlYmlhbiA5LjMuMC0yMikgOS4zLjAKPj4gcmVwcm9kdWNlICh0aGlzIGlzIGEgVz0xIGJ1
+aWxkKToKPj4gICAgICAgICAjIGh0dHBzOi8vZ2l0aHViLmNvbS8wZGF5LWNpL2xpbnV4L2NvbW1p
+dC85ZmJkMGMxNzQxY2UwNjI0MTEwNWQ3NTNmZjM0MzJhYjU1ZjNlOTRhCj4+ICAgICAgICAgZ2l0
+IHJlbW90ZSBhZGQgbGludXgtcmV2aWV3IGh0dHBzOi8vZ2l0aHViLmNvbS8wZGF5LWNpL2xpbnV4
+Cj4+ICAgICAgICAgZ2l0IGZldGNoIC0tbm8tdGFncyBsaW51eC1yZXZpZXcgQmVybmFyZC1aaGFv
+L2RybS1pOTE1LVVzZS1taWdodF9hbGxvYy8yMDIxMDQyOS0xMDQ1MTYKPj4gICAgICAgICBnaXQg
+Y2hlY2tvdXQgOWZiZDBjMTc0MWNlMDYyNDExMDVkNzUzZmYzNDMyYWI1NWYzZTk0YQo+PiAgICAg
+ICAgICMgc2F2ZSB0aGUgYXR0YWNoZWQgLmNvbmZpZyB0byBsaW51eCBidWlsZCB0cmVlCj4+ICAg
+ICAgICAgbWFrZSBXPTEgVz0xIEFSQ0g9eDg2XzY0IAo+PiAKPj4gSWYgeW91IGZpeCB0aGUgaXNz
+dWUsIGtpbmRseSBhZGQgZm9sbG93aW5nIHRhZyBhcyBhcHByb3ByaWF0ZQo+PiBSZXBvcnRlZC1i
+eToga2VybmVsIHRlc3Qgcm9ib3QgPGxrcEBpbnRlbC5jb20+Cj4+IAo+PiBBbGwgZXJyb3JzIChu
+ZXcgb25lcyBwcmVmaXhlZCBieSA+Pik6Cj4+IAo+PiAgICBkcml2ZXJzL2dwdS9kcm0vaTkxNS9p
+OTE1X3N3X2ZlbmNlLmM6IEluIGZ1bmN0aW9uICdfX2k5MTVfc3dfZmVuY2VfYXdhaXRfc3dfZmVu
+Y2UnOgo+PiA+PiBkcml2ZXJzL2dwdS9kcm0vaTkxNS9pOTE1X3N3X2ZlbmNlLmM6MzQ0OjI6IGVy
+cm9yOiBpbXBsaWNpdCBkZWNsYXJhdGlvbiBvZiBmdW5jdGlvbiAnbWlnaHRfYWxsb2MnOyBkaWQg
+eW91IG1lYW4gJ21pZ2h0X2xvY2snPyBbLVdlcnJvcj1pbXBsaWNpdC1mdW5jdGlvbi1kZWNsYXJh
+dGlvbl0KPj4gICAgICAzNDQgfCAgbWlnaHRfYWxsb2MoZ2ZwKTsKPj4gICAgICAgICAgfCAgXn5+
+fn5+fn5+fn4KPj4gICAgICAgICAgfCAgbWlnaHRfbG9jawo+PiAgICBjYzE6IHNvbWUgd2Fybmlu
+Z3MgYmVpbmcgdHJlYXRlZCBhcyBlcnJvcnMKPgo+SSB0aGluayB5b3UncmUgbWlzc2luZyBhbiBp
+bmNsdWRlIG9yIHNvbWV0aGluZy4gVGhlIG90aGVyIHBhdGNoIHlvdSd2ZQo+ZG9uZSBzZWVtcyBn
+b29kLCBJIHF1ZXVlZCB0aGF0IHVwIGluIGRybS1pbnRlbC1ndC1uZXh0IGZvciA1LjE0Lgo+Cj5U
+aGFua3MsIERhbmllbAoKSGkKSXQgbG9va3MgbGlrZSBJIGRpZCBub3QgaW5jbHVkZSB0aGUgaGVh
+ZGVyIGZpbGUgPGxpbnV4L3NjaGVkL21tLmg+Ckkgd2lsbCByZXN1Ym1pdCBvbmUgcGF0Y2gsIHRo
+YW5rcyEKQlIvL0Jlcm5hcmQKCj4+IAo+PiAKPj4gdmltICszNDQgZHJpdmVycy9ncHUvZHJtL2k5
+MTUvaTkxNV9zd19mZW5jZS5jCj4+IAo+PiAgICAzMzUJCj4+ICAgIDMzNglzdGF0aWMgaW50IF9f
+aTkxNV9zd19mZW5jZV9hd2FpdF9zd19mZW5jZShzdHJ1Y3QgaTkxNV9zd19mZW5jZSAqZmVuY2Us
+Cj4+ICAgIDMzNwkJCQkJCSAgc3RydWN0IGk5MTVfc3dfZmVuY2UgKnNpZ25hbGVyLAo+PiAgICAz
+MzgJCQkJCQkgIHdhaXRfcXVldWVfZW50cnlfdCAqd3EsIGdmcF90IGdmcCkKPj4gICAgMzM5CXsK
+Pj4gICAgMzQwCQl1bnNpZ25lZCBpbnQgcGVuZGluZzsKPj4gICAgMzQxCQl1bnNpZ25lZCBsb25n
+IGZsYWdzOwo+PiAgICAzNDIJCj4+ICAgIDM0MwkJZGVidWdfZmVuY2VfYXNzZXJ0KGZlbmNlKTsK
+Pj4gID4gMzQ0CQltaWdodF9hbGxvYyhnZnApOwo+PiAgICAzNDUJCj4+ICAgIDM0NgkJaWYgKGk5
+MTVfc3dfZmVuY2VfZG9uZShzaWduYWxlcikpIHsKPj4gICAgMzQ3CQkJaTkxNV9zd19mZW5jZV9z
+ZXRfZXJyb3Jfb25jZShmZW5jZSwgc2lnbmFsZXItPmVycm9yKTsKPj4gICAgMzQ4CQkJcmV0dXJu
+IDA7Cj4+ICAgIDM0OQkJfQo+PiAgICAzNTAJCj4+ICAgIDM1MQkJZGVidWdfZmVuY2VfYXNzZXJ0
+KHNpZ25hbGVyKTsKPj4gICAgMzUyCQo+PiAgICAzNTMJCS8qIFRoZSBkZXBlbmRlbmN5IGdyYXBo
+IG11c3QgYmUgYWN5Y2xpYy4gKi8KPj4gICAgMzU0CQlpZiAodW5saWtlbHkoaTkxNV9zd19mZW5j
+ZV9jaGVja19pZl9hZnRlcihmZW5jZSwgc2lnbmFsZXIpKSkKPj4gICAgMzU1CQkJcmV0dXJuIC1F
+SU5WQUw7Cj4+ICAgIDM1NgkKPj4gICAgMzU3CQlwZW5kaW5nID0gSTkxNV9TV19GRU5DRV9GTEFH
+X0ZFTkNFOwo+PiAgICAzNTgJCWlmICghd3EpIHsKPj4gICAgMzU5CQkJd3EgPSBrbWFsbG9jKHNp
+emVvZigqd3EpLCBnZnApOwo+PiAgICAzNjAJCQlpZiAoIXdxKSB7Cj4+ICAgIDM2MQkJCQlpZiAo
+IWdmcGZsYWdzX2FsbG93X2Jsb2NraW5nKGdmcCkpCj4+ICAgIDM2MgkJCQkJcmV0dXJuIC1FTk9N
+RU07Cj4+ICAgIDM2MwkKPj4gICAgMzY0CQkJCWk5MTVfc3dfZmVuY2Vfd2FpdChzaWduYWxlcik7
+Cj4+ICAgIDM2NQkJCQlpOTE1X3N3X2ZlbmNlX3NldF9lcnJvcl9vbmNlKGZlbmNlLCBzaWduYWxl
+ci0+ZXJyb3IpOwo+PiAgICAzNjYJCQkJcmV0dXJuIDA7Cj4+ICAgIDM2NwkJCX0KPj4gICAgMzY4
+CQo+PiAgICAzNjkJCQlwZW5kaW5nIHw9IEk5MTVfU1dfRkVOQ0VfRkxBR19BTExPQzsKPj4gICAg
+MzcwCQl9Cj4+ICAgIDM3MQkKPj4gICAgMzcyCQlJTklUX0xJU1RfSEVBRCgmd3EtPmVudHJ5KTsK
+Pj4gICAgMzczCQl3cS0+ZmxhZ3MgPSBwZW5kaW5nOwo+PiAgICAzNzQJCXdxLT5mdW5jID0gaTkx
+NV9zd19mZW5jZV93YWtlOwo+PiAgICAzNzUJCXdxLT5wcml2YXRlID0gZmVuY2U7Cj4+ICAgIDM3
+NgkKPj4gICAgMzc3CQlpOTE1X3N3X2ZlbmNlX2F3YWl0KGZlbmNlKTsKPj4gICAgMzc4CQo+PiAg
+ICAzNzkJCXNwaW5fbG9ja19pcnFzYXZlKCZzaWduYWxlci0+d2FpdC5sb2NrLCBmbGFncyk7Cj4+
+ICAgIDM4MAkJaWYgKGxpa2VseSghaTkxNV9zd19mZW5jZV9kb25lKHNpZ25hbGVyKSkpIHsKPj4g
+ICAgMzgxCQkJX19hZGRfd2FpdF9xdWV1ZV9lbnRyeV90YWlsKCZzaWduYWxlci0+d2FpdCwgd3Ep
+Owo+PiAgICAzODIJCQlwZW5kaW5nID0gMTsKPj4gICAgMzgzCQl9IGVsc2Ugewo+PiAgICAzODQJ
+CQlpOTE1X3N3X2ZlbmNlX3dha2Uod3EsIDAsIHNpZ25hbGVyLT5lcnJvciwgTlVMTCk7Cj4+ICAg
+IDM4NQkJCXBlbmRpbmcgPSAwOwo+PiAgICAzODYJCX0KPj4gICAgMzg3CQlzcGluX3VubG9ja19p
+cnFyZXN0b3JlKCZzaWduYWxlci0+d2FpdC5sb2NrLCBmbGFncyk7Cj4+ICAgIDM4OAkKPj4gICAg
+Mzg5CQlyZXR1cm4gcGVuZGluZzsKPj4gICAgMzkwCX0KPj4gICAgMzkxCQo+PiAKPj4gLS0tCj4+
+IDAtREFZIENJIEtlcm5lbCBUZXN0IFNlcnZpY2UsIEludGVsIENvcnBvcmF0aW9uCj4+IGh0dHBz
+Oi8vbGlzdHMuMDEub3JnL2h5cGVya2l0dHkvbGlzdC9rYnVpbGQtYWxsQGxpc3RzLjAxLm9yZwo+
+Cj4KPgo+LS0gCj5EYW5pZWwgVmV0dGVyCj5Tb2Z0d2FyZSBFbmdpbmVlciwgSW50ZWwgQ29ycG9y
+YXRpb24KPmh0dHA6Ly9ibG9nLmZmd2xsLmNoCg0KDQo=
