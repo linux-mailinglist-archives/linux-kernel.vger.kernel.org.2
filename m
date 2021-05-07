@@ -2,107 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E20D376754
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:58:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D4AD23767FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:30:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237723AbhEGO7m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 10:59:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234601AbhEGO7l (ORCPT
+        id S237830AbhEGPbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 11:31:39 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50200 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237016AbhEGPbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 10:59:41 -0400
-Received: from mail-ed1-x531.google.com (mail-ed1-x531.google.com [IPv6:2a00:1450:4864:20::531])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53B8FC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 07:58:41 -0700 (PDT)
-Received: by mail-ed1-x531.google.com with SMTP id c22so10573641edn.7
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 07:58:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=CJHBifJjuAiUBB1fcY/7U2kOYy2ASja8+o2PqKZoRWE=;
-        b=XNEPPEBhgMHMMsT4kse0qA8u5ggbNQ9EE3NN4Lfs+z6ha71Hchom0V+YsQgDt3374B
-         UhX9hZXqoUY1i+Jmd3ueYBBXaJSi9jQMQonYfGwYp6ED3fCShZobGpP6aljtWvs9vbe2
-         /7L1fJjh56JN1EbxZY01WGSjDx5pLk0cvVsbGiWkKpgDaV4fMQSuJ2cEI2g0MGwD15sM
-         QZ99gEFOcCd9ypUYjXH4aJGHfKaomx0lni4YIi19FpQOvS3n9p6TV66hPzoSSzBBbA2Y
-         7fJkLl8Qi9nlhU+iJLDveOHDabm38b4F0KGc0VGjVVrXANFmRZe4U6j/c07reOFgJ6Hy
-         Y6tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=CJHBifJjuAiUBB1fcY/7U2kOYy2ASja8+o2PqKZoRWE=;
-        b=ARrqVX36EaX5unf6AGMYQ7XSeDluKuDMRMf35o5AuMH2mX4vVZcc9IW7J8B1k+HzNx
-         r5DRlM+6Z3EQcNBDKhrl2jtMTtSJ4JwUoGkCDG/E2OKETKy6tCU2LMYs1+q+Qcj09myG
-         Ldg//+8qtn5r8Rw7nO0FVMZdEbx3sbnCDHp8I+hhi6NYhHqqf9OcCxaKlJP7xgpiaVnd
-         6mUrSMDpSyZhNHQ8l401icPaj6v0e9Jq51lWA0bGM01t1sEtO5fqiHLKSTTRyZlkb2hc
-         1n4T6UWDY4AY1vEWXZw7NsnJAw7V953x47HBrleVZPc15Ac4+ERv7aXE7BLkdNmhNy8U
-         Ywcg==
-X-Gm-Message-State: AOAM533dt5TaB65lH7fo2ccR7OUnQfEUPjQipOLEtSTtZ0iW7nw8z1Sa
-        j0GHacFqflouQTjIu4y7BnQ=
-X-Google-Smtp-Source: ABdhPJwKTBoHHEGsXmBsKTt/zAlEpVBQULdCoEKocsz8PQ3XbcWNFsWC2MfypygtKruT+f+OYBtAdQ==
-X-Received: by 2002:a05:6402:798:: with SMTP id d24mr11757288edy.275.1620399520090;
-        Fri, 07 May 2021 07:58:40 -0700 (PDT)
-Received: from jernej-laptop.localnet (cpe-86-58-17-133.cable.triera.net. [86.58.17.133])
-        by smtp.gmail.com with ESMTPSA id cf10sm4308872edb.21.2021.05.07.07.58.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 07:58:39 -0700 (PDT)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
-To:     dri-devel@lists.freedesktop.org,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Maxime Ripard <maxime@cerno.tech>,
-        Maxime Ripard <maxime@cerno.tech>
-Cc:     Tim Gover <tim.gover@raspberrypi.com>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
-        Phil Elwell <phil@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        amd-gfx@lists.freedesktop.org, Jonas Karlman <jonas@kwiboo.se>,
-        Leo Li <sunpeng.li@amd.com>, intel-gfx@lists.freedesktop.org,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Dom Cobley <dom@raspberrypi.com>, linux-kernel@vger.kernel.org,
-        Robert Foss <robert.foss@linaro.org>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Christian =?ISO-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Subject: Re: [v3,5/5] drm/vc4: hdmi: Signal the proper colorimetry info in the infoframe
-Date:   Fri, 07 May 2021 16:58:38 +0200
-Message-ID: <3819038.KMkRtCgjlg@jernej-laptop>
-In-Reply-To: <20210430094451.2145002-5-maxime@cerno.tech>
-References: <20210430094451.2145002-5-maxime@cerno.tech>
+        Fri, 7 May 2021 11:31:38 -0400
+Message-Id: <20210507110210.147106915@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1620401437;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7MvJgcbH4KVTmaIxlWmRkqiZpRWthdIm4TIk5RLHd3o=;
+        b=P9y6omIsoDZZZFukY799nrWfc9XF1Ul99AeMmhg/qITtwI5CkgFeXsQ8vh5iNdXQJHby4Q
+        oh3LPC+1YvgbyVTBLOUD85W2Y+P7BOQtBzYWC8dnV5Q6jk4mjOUwUVmcYTfQ8LkqFXu1xQ
+        RKsW6rWi5EQpHqF1HGcMShxlq7PHuN1IEpkDQwAQ3+BkW9j7tBK8tUXHzrAn3CNx1FZhHJ
+        tkbEZv9RkRWcISsJt45Kg25NFi7bBOkgZPxcDhKLBtGdPWU2nR076d2i25YcynQJIZY9aN
+        b7wMDXT4ocs/q5TNpxnr+AnEdDV2q80C0bI46hk8Avivt1PGqFeTSgW3QNfT5A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1620401437;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=7MvJgcbH4KVTmaIxlWmRkqiZpRWthdIm4TIk5RLHd3o=;
+        b=4ayGtwuqjo1e8eGH/kdk/+yIKJr4Mz/qqZbFqp0eDOyJ7oqB2f7phts9GryXGUMo+l9heC
+        ij9P7RHuBRF/0FDg==
+Date:   Fri, 07 May 2021 13:02:10 +0200
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     LKML <linux-kernel@vger.kernel.org>
+Cc:     x86@kernel.org, Lai Jiangshan <laijs@linux.alibaba.com>,
+        Joerg Roedel <joro@8bytes.org>, Borislav Petkov <bp@suse.de>
+Subject: [patch 0/2] x86/idt: Consolidate IDT/TSS setup
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi!
-
-Dne petek, 30. april 2021 ob 11:44:51 CEST je Maxime Ripard napisal(a):
-> Our driver while supporting HDR didn't send the proper colorimetry info
-> in the AVI infoframe.
-> 
-> Let's add the property needed so that the userspace can let us know what
-> the colorspace is supposed to be.
-> 
-> Signed-off-by: Maxime Ripard <maxime@cerno.tech>
-> ---
-> 
-> Changes from v2:
->   - Rebased on current drm-misc-next
-> 
-> Changes from v1:
->   - New patch
-
-Reviewed-by: Jernej Skrabec <jernej.skrabec@gmail.com>
-
-Best regards,
-Jernej
-
-
+VGhlIElEVC9UU1Mgc2V0dXAgZm9yIHRoZSBib290IENQVSBvbiA2NC1iaXQgaXMgc3BsaXQgaW50
+byB0d28gcGFydHM6CgogIDEpIFNldHVwIElEVCB3aXRob3V0IElTVCBiZWZvcmUgY3B1X2luaXQo
+KQogIDIpIFNldHVwIElEVCB3aXRoIElTVCBhZnRlciBjcHVfaW5pdCgpCgpMYWkgbm90aWNlZCBb
+MV0gdGhhdCB0aGUgTk1JIHNldHVwIGluICMxIGlzIHdyb25nIGJlY2F1c2UgaXQgdXNlcyB0aGUg
+SVNUIGF3YXJlCmVudHJ5IHBvaW50IGJ1dCBpZiBhbiBOTUkgaGFwcGVucyB0aGVyZSBpdCB3b3Vs
+ZCBydW4gb24gdGhlIGtlcm5lbCBzdGFjawp3aGljaCBjYW4gY2F1c2UgdGhlIElTVCBhd2FyZSBj
+b2RlIHRvIG1hbGZ1bmN0aW9uLgoKVGhhdCdzIG5vdCBhIHJlYWwgcHJvYmxlbSBiZWNhdXNlIGEg
+Tk1JIGhpdHRpbmcgZHVyaW5nIGVhcmx5IGJvb3QgYmVmb3JlCnRoZSBJRFQgaXMgZnVsbHkgc2V0
+IHVwIGlzIGZhdGFsIGFueXdheS4gVGhlIGludGVybWVkaWF0ZSBpc3N1ZSB3aXRoIHRoZQpzcGxp
+dCBzZXR1cCBpcyBqdXN0IG1ha2luZyB0aGF0IHdpbmRvdyBtYXJnaW5hbGx5IHdpZGVyLiBUaG91
+Z2ggdGhlIHNldHVwCmxvZ2ljIGlzIG1vcmUgY29udm9sdXRlZCB0aGFuIG5lY2Vzc2FyeS4KClRo
+ZXJlIGlzIGFub3RoZXIgb2RkaXR5IHJlZ2FyZGluZyBzZWNvbmRhcnkgQ1BVcy4gVGhlIHJlY2Vu
+dGx5IGFkZGVkIFNFVgpzdXBwb3J0IHJlcXVpcmVzICNWQyB0byBiZSBmdW5jdGlvbmFsIHdoZW4g
+aW52b2tpbmcgY3B1X2luaXQoKSBhbmQKdGhlcmVmb3JlIGFkZGVkIGEgc2VwYXJhdGUgZnVuY3Rp
+b24gd2hpY2ggaW5pdGlhbGl6ZXMgVFNTIGJlZm9yZSB0aGF0LgoKTm93IGNwdV9pbml0KCkgaXRz
+ZWxmIGRvZXMgdGhlIHNhbWUgaW5pdGlhbGl6YXRpb24gYWdhaW4sIHdoaWNoIGlzCnBvaW50bGVz
+cyBhbmQgY29uZnVzaW5nIGF0IGJlc3QuCgpCb3Jpc2xhdiBwb3N0ZWQgYSBwYXRjaCBbMl0gd2hp
+Y2ggbW92ZXMgdGhlIFRTUyBpbml0aWFsaXphdGlvbiB0byB0aGUgc3RhcnQgb2YKY3B1X2luaXQo
+KSwgYnV0IHdoZW4gbG9va2luZyBhdCB0aGUgYm9vdCBDUFUgc2V0dXAsIHRoaXMgaXMgbm90IGhl
+bHBmdWwuCgpTbyBJIGtlcHQgdGhlIHNlcGFyYXRlIGZ1bmN0aW9uIGFuZCBtYWRlIHVzZSBvZiBp
+dCBpbiB0cmFwX2luaXQoKSBzbyB0aGF0CnRoZSBvcmRlcmluZyBpcyBub3cgVFNTIHNldHVwLCBJ
+RFQgc2V0dXAsIGNwdV9pbml0KCkuIFRoYXQgYWxsb3dzIHRvIGdldApyaWQgb2YgdGhlIHNlcGFy
+YXRlIElTVCBzZXR1cCBzdGVwIGFuZCBtYWtlcyB0aGUgb3ZlcmFsbCBjb2RlIHNpbXBsZXIuCgpU
+aGFua3MsCgoJdGdseAoKWzFdIGh0dHBzOi8vbG9yZS5rZXJuZWwub3JnL3IvMjAyMTA0MjYyMzA5
+NDkuMzU2MS0zLWppYW5nc2hhbmxhaUBnbWFpbC5jb20KWzJdIGh0dHBzOi8vbG9yZS5rZXJuZWwu
+b3JnL3IvMjAyMTA1MDQxNzE3NDUuMjI0OS0xLWJwQGFsaWVuOC5kZQotLS0KIGluY2x1ZGUvYXNt
+L2Rlc2MuaCAgICAgIHwgICAgMiAtLQogaW5jbHVkZS9hc20vcHJvY2Vzc29yLmggfCAgICAxICsK
+IGtlcm5lbC9jcHUvY29tbW9uLmMgICAgIHwgICAyNCArKysrKysrKysrKy0tLS0tLS0tLS0tLS0K
+IGtlcm5lbC9pZHQuYyAgICAgICAgICAgIHwgICA0MCArKysrKysrKysrKystLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tCiBrZXJuZWwvdHJhcHMuYyAgICAgICAgICB8ICAgIDkgKysrLS0tLS0t
+CiA1IGZpbGVzIGNoYW5nZWQsIDI3IGluc2VydGlvbnMoKyksIDQ5IGRlbGV0aW9ucygtKQoKCgoK
