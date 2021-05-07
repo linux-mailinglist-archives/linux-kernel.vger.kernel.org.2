@@ -2,70 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51CF9375E53
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:19:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D62375E56
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 03:24:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234253AbhEGBUT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 21:20:19 -0400
-Received: from mail-ot1-f45.google.com ([209.85.210.45]:44005 "EHLO
-        mail-ot1-f45.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233027AbhEGBUO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 21:20:14 -0400
-Received: by mail-ot1-f45.google.com with SMTP id u19-20020a0568302493b02902d61b0d29adso5830700ots.10;
-        Thu, 06 May 2021 18:19:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iTRiEv/+c31w1knsIgiLTIV+1F0Vw0ef9aNvXKYG0/M=;
-        b=pkouxRVbkiG9cirC0aqotu3NAIOlNAoqaUscfy2FXBEwDnq8HOzoCFl429IoTxDA4e
-         oNk+oETH9N3Un+7Kw27TNWuMK5XBVBHfiE7bJ8XcMiogaNfQ7a4j+Uk+i6VUXJHVWUDN
-         4qkwEN2TS1T6dEWbAcbVrNe7HFbSA+BT4r+L825t5Vow2B4aAkPHDRa7w5FpAI0LEMfR
-         M6w/PO/fFgbB00lwQZft5OsPh9V4uo4O/BzgwuUeunfYLKYmJhKnQg47nvzkyn+Mgm8F
-         S3RsVlfSw9DrPt4UIZ/NogV0EReyu3n3xgYqyvPIGi98/0Srs4sA9tZ3VltssiJo5sGz
-         ttcg==
-X-Gm-Message-State: AOAM532oBnOE5K5/vK1MSz5DmlNREn/rG/NYmAFlYRrxcsbCLXgWHl3N
-        nTnP+gQ0ufA2gzDX+Tag3g==
-X-Google-Smtp-Source: ABdhPJwPMNVgkYoUMeIdVLdofJLqZe2HJ2aWT28cmU2/jeNKZAqSuKtsNJ/sYxzF5visBCFJ01x8lg==
-X-Received: by 2002:a9d:543:: with SMTP id 61mr2637297otw.287.1620350354494;
-        Thu, 06 May 2021 18:19:14 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id o6sm731687oih.44.2021.05.06.18.19.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 06 May 2021 18:19:13 -0700 (PDT)
-Received: (nullmailer pid 1133400 invoked by uid 1000);
-        Fri, 07 May 2021 01:19:12 -0000
-Date:   Thu, 6 May 2021 20:19:12 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-Cc:     rjliao@codeaurora.org, abhishekpandit@chromium.org,
-        hbandi@codeaurora.org, bgodavar@codeaurora.org,
-        devicetree@vger.kernel.org, johan.hedberg@gmail.com,
-        linux-bluetooth@vger.kernel.org, marcel@holtmann.org,
-        mka@chromium.org, hemantg@codeaurora.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org
-Subject: Re: [PATCH v3 5/5] dt-bindings: net: bluetooth: Add device tree
- bindings for QTI chip wcn6750
-Message-ID: <20210507011912.GA1133328@robh.at.kernel.org>
-References: <1620322392-27148-1-git-send-email-gubbaven@codeaurora.org>
- <1620322392-27148-6-git-send-email-gubbaven@codeaurora.org>
+        id S233294AbhEGBZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 21:25:35 -0400
+Received: from ozlabs.org ([203.11.71.1]:32903 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233027AbhEGBZe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 21:25:34 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4Fbt5m6vdWz9sVt;
+        Fri,  7 May 2021 11:24:28 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620350671;
+        bh=ETRnR5fHuW4jXaXVrrh+RNqMvm8+yUBWnkNZMYrRX9k=;
+        h=Date:From:To:Cc:Subject:From;
+        b=d5qsfMe7EOXptXMIO7xOVBJd7606ezmrOmFBnaOWGZSXoRoP1Xvs/hbJcJOuU4NWp
+         DB19T0Nwg9PcfbgcB/zCcUrGm3kUDcFupCB0XmA4T2wnCl0q56jfzyBF2HcKlMI++B
+         N2gcqdfxFm7PoWjcAkLs4+2R6ImnqyX+jzjL2HXmnCxOtnAm67eraBGemTvW5n2LEU
+         9Ho6FYcm18Rd7ejzorQnj50/x0JaT0aRkSCmU1xE/xC9d5kRFQ86E39yU2Omqy/96b
+         mMlEggM8fYWWamhdbvvSUg87QLthnsWA0leEp3IfW8Xgc/1sk2x7P/Sthn3tOqcFoy
+         rodL/xCgfFMfw==
+Date:   Fri, 7 May 2021 11:24:26 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul@pwsan.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>
+Subject: linux-next: manual merge of the akpm tree with the risc-v tree
+Message-ID: <20210507112426.7ed1f439@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620322392-27148-6-git-send-email-gubbaven@codeaurora.org>
+Content-Type: multipart/signed; boundary="Sig_/mNohuNOr67vozaVCaGFNX6B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 06 May 2021 23:03:12 +0530, Venkata Lakshmi Narayana Gubba wrote:
-> This patch enables regulators and gpios for the Qualcomm Bluetooth wcn6750
-> controller.
-> 
-> Signed-off-by: Venkata Lakshmi Narayana Gubba <gubbaven@codeaurora.org>
-> ---
->  .../bindings/net/qualcomm-bluetooth.yaml           | 71 ++++++++++++++++++++++
->  1 file changed, 71 insertions(+)
-> 
+--Sig_/mNohuNOr67vozaVCaGFNX6B
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+Hi all,
+
+Today's linux-next merge of the akpm tree got a conflict in:
+
+  arch/riscv/include/asm/set_memory.h
+
+between commit:
+
+  8d91b0973358 ("riscv: Consistify protect_kernel_linear_mapping_text_rodat=
+a() use")
+
+from the risc-v tree and commit:
+
+  e022d55b4d97 ("set_memory: allow set_direct_map_*_noflush() for multiple =
+pages")
+
+from the akpm tree.
+
+I fixed it up (see below) and can carry the fix as necessary. This
+is now fixed as far as linux-next is concerned, but any non trivial
+conflicts should be mentioned to your upstream maintainer when your tree
+is submitted for merging.  You may also want to consider cooperating
+with the maintainer of the conflicting tree to minimise any particularly
+complex conflicts.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+diff --cc arch/riscv/include/asm/set_memory.h
+index 086f757e8ba3,b766f2ccd9de..000000000000
+--- a/arch/riscv/include/asm/set_memory.h
++++ b/arch/riscv/include/asm/set_memory.h
+@@@ -26,14 -27,8 +26,14 @@@ static inline void protect_kernel_text_
+  static inline int set_memory_rw_nx(unsigned long addr, int numpages) { re=
+turn 0; }
+  #endif
+ =20
+ +#if defined(CONFIG_64BIT) && defined(CONFIG_STRICT_KERNEL_RWX)
+ +void protect_kernel_linear_mapping_text_rodata(void);
+ +#else
+ +static inline void protect_kernel_linear_mapping_text_rodata(void) {}
+ +#endif
+ +
+- int set_direct_map_invalid_noflush(struct page *page);
+- int set_direct_map_default_noflush(struct page *page);
++ int set_direct_map_invalid_noflush(struct page *page, int numpages);
++ int set_direct_map_default_noflush(struct page *page, int numpages);
+  bool kernel_page_present(struct page *page);
+ =20
+  #endif /* __ASSEMBLY__ */
+
+--Sig_/mNohuNOr67vozaVCaGFNX6B
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCUlsoACgkQAVBC80lX
+0GycTQf9HKnM/AgbrDacAaMiDLvfZatmWOgYfncJ6c+h1iGcG5jRzzul1GboWDD6
+OUF4HwbGFZrKjUZ9VlqqlceC0KXc0Pr3qu/feDd9w4nPocHTOPUVO/42q1zMMZm1
+fOc4p6Zp6PpKzf32tr2RFcB67WfjLiISnON7QgX+KJpVGRjwm9fx58hC9JHkxcQs
+svk8OszgnQqUDRcr9+2cD55ZsMPC9H1MysWhQPR/HalzuneO2thoKvO6tHaOPQbm
+sORc0eeFn49hFUIFZbR5QYElLV3DDRBWDI943JmRnwYzbE0Al5eercRpGPPJrefS
+2uaFujx20Xc6H3Y2I2rwZOaQ14r5tg==
+=JLAQ
+-----END PGP SIGNATURE-----
+
+--Sig_/mNohuNOr67vozaVCaGFNX6B--
