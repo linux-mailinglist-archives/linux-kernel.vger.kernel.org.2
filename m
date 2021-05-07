@@ -2,86 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 093E1376BEB
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:49:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 494B4376BED
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:52:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229748AbhEGVuj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:50:39 -0400
-Received: from mail-ot1-f44.google.com ([209.85.210.44]:44672 "EHLO
-        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229470AbhEGVuj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:50:39 -0400
-Received: by mail-ot1-f44.google.com with SMTP id r26-20020a056830121ab02902a5ff1c9b81so9142646otp.11;
-        Fri, 07 May 2021 14:49:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=PjEtFCe5+lrFxZTe/Zi9n6poa77xUGPKZ2g66tXrfzo=;
-        b=F6O0xFmByoNTvtoO5AlV2pR0fMHloVdjm8lunjtVKiBe0r4DIG7L8OLlp29bfsDm9+
-         g6lOgWb4hmCTnKDS2zlhwSbcj+xQuwTIj0mDEVE0HZQcy6M3kbdGllMcHuOxWj/t4Nbr
-         z0D9/4VTb0L3DMhQ8HKHw/HNf1IPyRntM0xXXF8WqM9I8hnJIbQHn7E1T0Wbi7OX8CfV
-         eDsd1S9sJyP0RZb0ZUf01jqmESqSMj4SCGRcB9E40PusiIgg29BBc2Tgn3m33Ity+Q5E
-         BK6T5CGAa3v8bS8HyH7huim4ADuyqlMPGEvjbK6wRdXxuZPiuBXPoJ/KZIC5cJV0eZZI
-         SJ1Q==
-X-Gm-Message-State: AOAM531g9lqAFvZVoD/8uLXbszOK14yqZ6NYG7MyEmtK/+Hlx0EKxL4X
-        l1XTcp/AnVeWmrmD9wSzsQ==
-X-Google-Smtp-Source: ABdhPJyQMXenAYcP+muUQjeAoJD82VnM0IixSPbaYREYvzrhdcxF/iI6pg2O2zAGiUqHjjdXcDhQXg==
-X-Received: by 2002:a9d:4115:: with SMTP id o21mr10002087ote.52.1620424178375;
-        Fri, 07 May 2021 14:49:38 -0700 (PDT)
-Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id 65sm1423105otj.17.2021.05.07.14.49.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 14:49:37 -0700 (PDT)
-Received: (nullmailer pid 2952512 invoked by uid 1000);
-        Fri, 07 May 2021 21:49:36 -0000
-Date:   Fri, 7 May 2021 16:49:36 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
-Cc:     wsa@kernel.org, andriy.shevchenko@linux.intel.com,
-        andy.shevchenko@gmail.com, mpe@ellerman.id.au,
-        linux-i2c@vger.kernel.org, devicetree@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/3] dt-bindings: i2c: mpc: Add
- fsl,i2c-erratum-a004447 flag
-Message-ID: <20210507214936.GA2944698@robh.at.kernel.org>
-References: <20210507004047.4454-1-chris.packham@alliedtelesis.co.nz>
- <20210507004047.4454-2-chris.packham@alliedtelesis.co.nz>
+        id S229713AbhEGVxZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:53:25 -0400
+Received: from mga07.intel.com ([134.134.136.100]:60249 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229470AbhEGVxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 17:53:24 -0400
+IronPort-SDR: QFrrQXSUhwGEnRc2qt6lh09nGWqUGLqz+Nnfbj+C1VCR9Q7r1Vgagu/uKzedBKocrY1oZH3KLn
+ bbaECuKd7cxA==
+X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="262757894"
+X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
+   d="scan'208";a="262757894"
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 14:52:24 -0700
+IronPort-SDR: DXwnKmF2N0/E3L3nPr1tpvCL0lDLEf/KmkBp+/z+nqXxxXWnaA7+T2DLpVZYBfECRcdyIxcNGx
+ MQoVtsTFOM5A==
+X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
+   d="scan'208";a="431679354"
+Received: from msandrid-mobl.amr.corp.intel.com (HELO [10.212.134.124]) ([10.212.134.124])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 14:52:23 -0700
+Subject: Re: [RFC v2 15/32] x86/tdx: Handle in-kernel MMIO
+To:     Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Tony Luck <tony.luck@intel.com>
+Cc:     Andi Kleen <ak@linux.intel.com>,
+        Kirill Shutemov <kirill.shutemov@linux.intel.com>,
+        Kuppuswamy Sathyanarayanan <knsathya@kernel.org>,
+        Raj Ashok <ashok.raj@intel.com>,
+        Sean Christopherson <seanjc@google.com>,
+        linux-kernel@vger.kernel.org
+References: <cover.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+ <38eb0c5dce2e2ff6bdab4dffbead09780ec86e50.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <3e9a26c3-8eee-88f5-f8e2-8a2dd2c028ea@intel.com>
+Date:   Fri, 7 May 2021 14:52:21 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210507004047.4454-2-chris.packham@alliedtelesis.co.nz>
+In-Reply-To: <38eb0c5dce2e2ff6bdab4dffbead09780ec86e50.1619458733.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 12:40:45PM +1200, Chris Packham wrote:
-> Document the fsl,i2c-erratum-a004447 flag which indicates the presence
-> of an i2c erratum on some QorIQ SoCs.
-> 
-> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
-> ---
->  Documentation/devicetree/bindings/i2c/i2c-mpc.yaml | 7 +++++++
->  1 file changed, 7 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml b/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> index 7b553d559c83..98c6fcf7bf26 100644
-> --- a/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> +++ b/Documentation/devicetree/bindings/i2c/i2c-mpc.yaml
-> @@ -46,6 +46,13 @@ properties:
->      description: |
->        I2C bus timeout in microseconds
->  
-> +  fsl,i2c-erratum-a004447:
-> +    $ref: /schemas/types.yaml#/definitions/flag
-> +    description: |
-> +      Indicates the presence of QorIQ erratum A-004447, which
-> +      says that the standard i2c recovery scheme mechanism does
-> +      not work and an alternate implementation is needed.
+On 4/26/21 11:01 AM, Kuppuswamy Sathyanarayanan wrote:
+> Handle #VE due to MMIO operations. MMIO triggers #VE with EPT_VIOLATION
+> exit reason.
 
-The problem with adding a property for an errata is you have to update 
-the dtb. If you use the compatible string, then only an OS update is 
-needed. That assumes you have specific enough compatible strings.
+This needs a bit of a history lesson.  "In traditional VMs, MMIO tends
+to be implemented by giving a guest access to an mapping which will
+cause a VMEXIT on access.  That's not possible in a TDX guest..."
 
-Rob
+> For now we only handle subset of instruction that kernel uses for MMIO
+> oerations. User-space access triggers SIGBUS.
+
+I still don't think that TDX guests should be doing things that they
+*KNOW* will cause #VE, including MMIO.  I really want to hear a more
+discrete story about why this is the *best* way to do this for Linux
+instead of just a hack from the Windows binary driver ecosystem that
+seemed expedient.
