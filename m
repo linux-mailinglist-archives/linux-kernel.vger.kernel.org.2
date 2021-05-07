@@ -2,82 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBCA93767FA
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:30:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBDEB376810
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:32:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236966AbhEGPbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 11:31:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54070 "EHLO mail.kernel.org"
+        id S237909AbhEGPdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 11:33:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56106 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233625AbhEGPbg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 11:31:36 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 639F6613F0;
-        Fri,  7 May 2021 15:30:35 +0000 (UTC)
+        id S237859AbhEGPdK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 11:33:10 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id E3F4B61460;
+        Fri,  7 May 2021 15:32:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620401435;
-        bh=GAr1KH9Y7/MpM8hHmDSAod/Z5TUK0Ud72T77n7e9CZs=;
+        s=k20201202; t=1620401530;
+        bh=O3zHx8gGy8AU49D+Cnr2TBWRAoXneuMN59DU/Ks3vhs=;
         h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=WvWq41CgSPALqsyCZFHGIGyhcZi546wgk+0iwMTcIvUcggZXGKD8OrmIJ3PAjuNep
-         yQuCsTgHm/RixsnYAKvw/7/LgHYU3FO+QGMyrdD7ND0IWRIlX12PFHPLCiA6oMOBiG
-         SavuCZ8T0aXq3z3mpjHME1RznXffIYbAhpSLsy4ohMMCLB8ZevkEWGQVpXSRK36yvJ
-         suVzryCHDkufLiv8vOidgjq3GX/3vaT26iRtulGFWEgYfdHopaQLS/Dkx0G/1/5rYi
-         mmKqnS8BLoP1bKT5XqPHnPbfY4ey9Y0neSrjl5Dij+U8On4zM8OShzfBoI+5RlM4DK
-         QNevWwx59zoCw==
-Received: from johan by xi.lan with local (Exim 4.94.2)
-        (envelope-from <johan@kernel.org>)
-        id 1lf2RA-0006Tk-Kq; Fri, 07 May 2021 17:30:45 +0200
-Date:   Fri, 7 May 2021 17:30:44 +0200
-From:   Johan Hovold <johan@kernel.org>
-To:     Marcel Holtmann <marcel@holtmann.org>
-Cc:     Pavel Skripkin <paskripkin@gmail.com>,
-        Johan Hedberg <johan.hedberg@gmail.com>,
-        Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-        Bluetooth Kernel Mailing List 
-        <linux-bluetooth@vger.kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] bluetooth: fix potential gfp
-Message-ID: <YJVdJEMKz6YcnwOW@hovoldconsulting.com>
-References: <20210501150445.4055-1-paskripkin@gmail.com>
- <9A08CBDA-3501-48F6-9F7A-60958C5CF888@holtmann.org>
- <YJU8iP+O9aSYwYp/@hovoldconsulting.com>
- <CDE30B55-E91B-4513-80E4-2198F8A32217@holtmann.org>
+        b=RjOYIsvAC5gLtDgOeipF0F06gxKKV6y4oHApV4eIapZor+2Jwj5gHQ1ya1MhHIyme
+         bn61u5vsDc+ZcuMPSOH8v51zHMySSD8emcgVya6okdgrrzXFEwxxa//ImRHWGV1gJl
+         sHauyc5dg4V1lXYoUc+almVuAt38m/6XSH8ERigfRMQ7VQWrj8BibB6n8Q5FsVZ/cm
+         kvZ+evUd1a3JB8VP9Zh54XD9EHXQxm4XwVvCPMJ7P1rOOdwGkb7AAM04G8tAH2OFlK
+         0eu0oPZlAUEz/mqY+wnHxXUmeLJj3RCmP9mID3ZsScJvArFw7MoNkFYFTMyEy+EEP3
+         QZZHlc+e1zE9A==
+Date:   Fri, 7 May 2021 16:31:32 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH 4/6] spi: spi-mem: reject partial cycle transfers in
+ 8D-8D-8D mode
+Message-ID: <20210507153132.GC6383@sirena.org.uk>
+References: <20210506191829.8271-1-p.yadav@ti.com>
+ <20210506191829.8271-5-p.yadav@ti.com>
+ <20210507125533.GA6383@sirena.org.uk>
+ <20210507135631.maue7gorfzsv4qpk@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="/e2eDi0V/xtL+Mc8"
 Content-Disposition: inline
-In-Reply-To: <CDE30B55-E91B-4513-80E4-2198F8A32217@holtmann.org>
+In-Reply-To: <20210507135631.maue7gorfzsv4qpk@ti.com>
+X-Cookie: Postage will be paid by addressee.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 05:20:11PM +0200, Marcel Holtmann wrote:
-> Hi Johan,
-> 
-> >>> In qca_power_shutdown() qcadev local variable is
-> >>> initialized by hu->serdev.dev private data, but
-> >>> hu->serdev can be NULL and there is a check for it.
-> >>> 
-> >>> Since, qcadev is not used before
-> >>> 
-> >>> 	if (!hu->serdev)
-> >>> 		return;
-> >>> 
-> >>> we can move its initialization after this "if" to
-> >>> prevent gfp.
-> >>> 
-> >>> Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> >>> ---
-> >>> drivers/bluetooth/hci_qca.c | 4 ++--
-> >>> 1 file changed, 2 insertions(+), 2 deletions(-)
-> >> 
-> >> patch has been applied to bluetooth-next tree.
-> > 
-> > Why did you pick the v1 when it is clear from thread that a v2 has been
-> > posted?
-> 
-> because I only saw that email after I applied the patch and the v2 is
-> nowhere in sight as it seems. If it shows up, I replace this one then.
 
-Here it is
+--/e2eDi0V/xtL+Mc8
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	https://lore.kernel.org/lkml/20210503100605.5223-1-paskripkin@gmail.com/
+On Fri, May 07, 2021 at 07:26:33PM +0530, Pratyush Yadav wrote:
 
-Johan
+> Patches 2 and 3 are a slightly different matter. They add an extra=20
+> register write. But most controllers I've come across don't support=20
+> 1-byte writes in 8D mode. It is likely that they are sending=20
+> bogus/undefined values in the second byte and deasserting CS only after=
+=20
+> the cycle is done. So they should _in theory_ change undefined behaviour=
+=20
+> to defined behaviour.
+
+> Still, they introduce an extra register write. I'm not sure how=20
+> risk-tolerant you want to be for stable backports. I will leave the=20
+> judgement to you or Tudor or Vignesh.
+
+Ah, given that if nobody's seeing any issues I'd probably just hold off
+there TBH.
+
+--/e2eDi0V/xtL+Mc8
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCVXVQACgkQJNaLcl1U
+h9B8HAf9GZh6wXoQyIjqchDq4kgwLgCdMTMAnT1LjmrcRaeTiLr30MVfyjO+eLan
+tCZYatA9w4eVKm2NbXI1G0JqZ+ZlmuGlgFEb1kRrSdWn/A6rUF0fHlCjygq6wQTR
+GBqZ4wWImXKcry+Wc8GsZWggtV7XCkQYE3bp4l2QfXkhFtASgPkSYtLfYbOOKjOP
+1Xpc4kqpfpaZIRDPJKqwTykeJaeTxY+T3Lfz/IUjFUa9mtr0RC6FjnA5+ekboY4C
+pEMICHbnrt2WDRAk6HXqypb5N+HJ2V84XLi3Q/uMjFlgC4+2lLe/OEIkgzGDJns3
+8/2LTp0aNJ+CgvTMYbnSmdorhvF2wA==
+=+ofb
+-----END PGP SIGNATURE-----
+
+--/e2eDi0V/xtL+Mc8--
