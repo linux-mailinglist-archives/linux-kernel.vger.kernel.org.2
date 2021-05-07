@@ -2,68 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D7B26376845
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:48:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA0E376847
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:49:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236953AbhEGPtT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 11:49:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45932 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235180AbhEGPtS (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 11:49:18 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 925D1C061574;
-        Fri,  7 May 2021 08:48:18 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620402497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u8xnyANDKNSkvt5YrG1NH2QAtW1TH6g1ROBYf6y7AZU=;
-        b=IZYl6+DJTBqwM43/24DZhOJZSwEFcEfUhKM6FcsIN2N3Gk6uIWqGcGYantoO7ZsywhadY4
-        QntLGZZ9KefJF1aULowbN95fV067yAfjBEvPZc1JZUtis3JPVcY4HhSDcv+Gglr4MXgsob
-        RXct+DIHg4eK9JuRGNmGIcO8MEcf8dZw/b8e/4OBMje7mRHo5kfkXF361SAWNlT0iO0xeJ
-        q3gpBwhQ+A21e8sqFBoxHX1kplK20F7uct9wMpi4QrKmGKoQLgfauZlaPkLXGFFp/zrPJa
-        yS4UlVZyRnDu7+YywDDvBWEHcD91eUuPnbQlK49RunI2QAA8AR8BC6moMImJqQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620402497;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=u8xnyANDKNSkvt5YrG1NH2QAtW1TH6g1ROBYf6y7AZU=;
-        b=srWkvOdm1PfhZYesjT3FoEpAkq2deSBQJg0/rXJc39X1HwHUPeF25zYNpoLy3rRcgs5DTU
-        tEB8NhbpI3GmgJCQ==
-To:     Vasily Averin <vvs@virtuozzo.com>, cgroups@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Vladimir Davydov <vdavydov.dev@gmail.com>
-Cc:     Roman Gushchin <guro@fb.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 12/16] memcg: enable accounting for posix_timers_cache slab
-In-Reply-To: <41e1ebc8-4f95-4a3f-3665-3fe139786d8e@virtuozzo.com>
-References: <8664122a-99d3-7199-869a-781b21b7e712@virtuozzo.com> <41e1ebc8-4f95-4a3f-3665-3fe139786d8e@virtuozzo.com>
-Date:   Fri, 07 May 2021 17:48:16 +0200
-Message-ID: <87r1iimtof.ffs@nanos.tec.linutronix.de>
+        id S237006AbhEGPuG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 11:50:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229558AbhEGPuC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 11:50:02 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 35869610E7;
+        Fri,  7 May 2021 15:49:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620402542;
+        bh=zo5ZaLSYcdR5moJLPq+dp/uSFCyN6+28ysDvX0t73as=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=HYH4zmKqXK7asr2NCrAehDy7TJy4roOiA59dsBYIB3Y1rS3DLCAPQ1EIfdXmJlmIG
+         Lt31BDaF66DRiGb7F59boyJ6YvUqskTClejh8D9H+trDNsjE0g2pnHIwp9in4wZTvv
+         TggzLHr2yvnEYtCjj+6IxiB2fL8ladoShAtn4iuUwgGcxZ2xFOszRLhGbKVl0s4Fdi
+         F9Ld2SS6TAFQJr7WBBIyO0jBXXkcPIxN71xl5G1XF1YwdjrpT1zodVRK0QbSfb1uoT
+         hooQlM3yoTtHQsb5WQI/PIsTGEmPPRwcKQ/pcsNuRwjfnOf/h8VWNC193S5rfTPCJy
+         aG20rwLR+AOBg==
+Date:   Fri, 7 May 2021 16:48:25 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Pratyush Yadav <p.yadav@ti.com>
+Cc:     Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Michael Walle <michael@walle.cc>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        linux-mtd@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-spi@vger.kernel.org
+Subject: Re: [PATCH 4/6] spi: spi-mem: reject partial cycle transfers in
+ 8D-8D-8D mode
+Message-ID: <20210507154825.GE6383@sirena.org.uk>
+References: <20210506191829.8271-1-p.yadav@ti.com>
+ <20210506191829.8271-5-p.yadav@ti.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="Ns7jmDPpOpCD+GE/"
+Content-Disposition: inline
+In-Reply-To: <20210506191829.8271-5-p.yadav@ti.com>
+X-Cookie: Postage will be paid by addressee.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Apr 28 2021 at 09:53, Vasily Averin wrote:
 
-> A program may create multiple interval timers using timer_create().
-> For each timer the kernel preallocates a "queued real-time signal",
-> Consequently, the number of timers is limited by the RLIMIT_SIGPENDING
-> resource limit. The allocated object is quite small, ~250 bytes,
-> but even the default signal limits allow to consume up to 100 megabytes
-> per user.
->
-> It makes sense to account for them to limit the host's memory consumption
-> from inside the memcg-limited container.
->
-> Signed-off-by: Vasily Averin <vvs@virtuozzo.com>
+--Ns7jmDPpOpCD+GE/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
+On Fri, May 07, 2021 at 12:48:27AM +0530, Pratyush Yadav wrote:
+> In 8D-8D-8D mode two bytes are transferred per cycle. So an odd number
+> of bytes cannot be transferred because it would leave a residual half
+> cycle at the end. Consider such a transfer invalid and reject it.
+
+Reviwed-by: Mark Brown <broonie@kernel.org>
+
+--Ns7jmDPpOpCD+GE/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmCVYUgACgkQJNaLcl1U
+h9D6iAf/X83wkW3EXwEG5bkyXGYvMLHjg2mUnr/2c7Sz3BjRF3mdrCLzBrI4He6j
+ndjUdq1s6d+AHEc34fMt1bamADb8ZeIlb8UNoJn/RpyZdtDIpNjnBey1jEGBsKBA
+a7gOkAiauV+IsanHu1ams3Ox8kcc3FLTsGF3DKc9RAo0HvjnWaxbdAG5Ygck+5GJ
+IsbAlJ2PxbIDI4wQwwJxRzUUZpCbPkMAQmG9H2KhyVcLZPXDDyrz81+eLlwBvhlp
+qJYYtL6RU5UNpMWEDMFPyMOHoKSNOihKZ4LUItsEMH91DYxcJDmbJncFy8Fh4hJg
+ey6Urvm1TTwaQfCxkaIPjVimR84ODQ==
+=nP+B
+-----END PGP SIGNATURE-----
+
+--Ns7jmDPpOpCD+GE/--
