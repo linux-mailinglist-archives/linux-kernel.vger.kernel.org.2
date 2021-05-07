@@ -2,125 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D8B33760F5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:10:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 893393760FB
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:10:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235117AbhEGHKo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 03:10:44 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:37244 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231649AbhEGHKn (ORCPT
+        id S235147AbhEGHLL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:11:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:46011 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S235142AbhEGHK7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 03:10:43 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1476iwlH036349;
-        Fri, 7 May 2021 07:09:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=/dWssVvW+OYhyXRH8CslM4h4dts36Wl65nMFcErQWHk=;
- b=tLInDZH+S3h9oaiJHi+kOoynlSDH0vaVS89ZviS+JhCvIzKYv2qEJBlp+5pzbvq36ToU
- TSLlEGf7e5SNFysjPS7nU0zmrv5g6Ry2V/wyN4AwA9Z02Ads9z2R1rRPFNi+QS7b29Ab
- zeYM9pHQZ/q/qtzMWJ+JqVnlEusothq2VJTGZ5lGrKO0tYKPi+apI6Wwy90d2MiqaEK0
- 7pbE8sr04iOMy54jEDivdDPjpym0XSQP4ePEqakaojtAqnTvPv0JQnRoEj31U1hSUlZD
- QzMFoQKshoFDB9tpez76jVhLLbvL4q288JRCYarzOzY0Qk+zmaZy/5C1wj425L/u6Uqz DQ== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 38ctjv0hqt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 07 May 2021 07:09:09 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14775hcw169282;
-        Fri, 7 May 2021 07:09:09 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by userp3020.oracle.com with ESMTP id 38csrgjk6n-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 07 May 2021 07:09:09 +0000
-Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 147798fr182448;
-        Fri, 7 May 2021 07:09:08 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 38csrgjk59-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 07 May 2021 07:09:08 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 147793LM016898;
-        Fri, 7 May 2021 07:09:03 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 07 May 2021 00:09:02 -0700
-Date:   Fri, 7 May 2021 10:08:43 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Chunfeng Yun <chunfeng.yun@mediatek.com>
-Cc:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        gregkh@linuxfoundation.org, shubhankarvk@gmail.com,
-        lee.jones@linaro.org, gustavoars@kernel.org, vulab@iscas.ac.cn,
-        john453@faraday-tech.com, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] usb: fotg210-hcd: Fix an error message
-Message-ID: <20210507070843.GG1955@kadam>
-References: <94531bcff98e46d4f9c20183a90b7f47f699126c.1620333419.git.christophe.jaillet@wanadoo.fr>
- <1620354030.10796.6.camel@mhfsdcap03>
+        Fri, 7 May 2021 03:10:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620371400;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=mHFmcONkXExZESpq4UoLZEwTMca0lsijd9NH0tbhjEQ=;
+        b=YG/OQ0FYKVUHhw42GnjO0zgLIIpu9DhLpkkx4awuvxJlXGU7D76oPScrEr0ZXukopEyWPC
+        gM6nIYUhrOUTxf4osLbP4cj4lVZMFyvh6LJWgr+moFZhgPaldHeUmV/Lf6DrMvnTI3lCxy
+        tBqlaksmyzweH2RwRCE6O+yKCX6YZ+k=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-408-m_5erc8tN4OfX8b4AaS8ng-1; Fri, 07 May 2021 03:09:56 -0400
+X-MC-Unique: m_5erc8tN4OfX8b4AaS8ng-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 485B31008060;
+        Fri,  7 May 2021 07:09:54 +0000 (UTC)
+Received: from oldenburg.str.redhat.com (ovpn-112-137.ams2.redhat.com [10.36.112.137])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 6449E10016F9;
+        Fri,  7 May 2021 07:09:45 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     Michal =?utf-8?Q?Such=C3=A1nek?= <msuchanek@suse.de>,
+        Jiri Olsa <jolsa@redhat.com>, Yonghong Song <yhs@fb.com>,
+        linux-kernel@vger.kernel.org, Martin KaFai Lau <kafai@fb.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        David Ahern <dsahern@kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andrii Nakryiko <andrii@kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        John Fastabend <john.fastabend@gmail.com>,
+        KP Singh <kpsingh@kernel.org>, netdev@vger.kernel.org,
+        bpf@vger.kernel.org, Jiri Olsa <jolsa@kernel.org>,
+        Jesper Dangaard Brouer <brouer@redhat.com>
+Subject: Re: linux-next failing build due to missing cubictcp_state symbol
+References: <316e86f9-35cc-36b0-1594-00a09631c736@fb.com>
+        <20210423175528.GF6564@kitsune.suse.cz>
+        <20210425111545.GL15381@kitsune.suse.cz>
+        <20210426113215.GM15381@kitsune.suse.cz>
+        <20210426121220.GN15381@kitsune.suse.cz>
+        <20210426121401.GO15381@kitsune.suse.cz>
+        <49f84147-bf32-dc59-48e0-f89241cf6264@fb.com> <YIbkR6z6mxdNSzGO@krava>
+        <YIcRlHQWWKbOlcXr@krava> <20210427121237.GK6564@kitsune.suse.cz>
+        <20210430174723.GP15381@kitsune.suse.cz>
+        <3d148516-0472-8f0a-085b-94d68c5cc0d5@suse.com>
+        <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org>
+Date:   Fri, 07 May 2021 09:10:05 +0200
+In-Reply-To: <6c14f3c8-7474-9f3f-b4a6-2966cb19e1ed@kernel.org> (Jiri Slaby's
+        message of "Mon, 3 May 2021 08:11:50 +0200")
+Message-ID: <87lf8rf29e.fsf@oldenburg.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.2 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620354030.10796.6.camel@mhfsdcap03>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: ER7NlGwMOivUgjwtyF4Q5Z87RSE5Wp3_
-X-Proofpoint-GUID: ER7NlGwMOivUgjwtyF4Q5Z87RSE5Wp3_
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9976 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 impostorscore=0 mlxlogscore=999
- malwarescore=0 phishscore=0 mlxscore=0 clxscore=1011 priorityscore=1501
- bulkscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105070048
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 10:20:30AM +0800, Chunfeng Yun wrote:
-> On Thu, 2021-05-06 at 22:39 +0200, Christophe JAILLET wrote:
-> > 'retval' is known to be -ENODEV here.
-> > This is a hard-coded default error code which is not useful in the error
-> > message. Moreover, another error message is printed at the end of the
-> > error handling path. The corresponding error code (-ENOMEM) is more
-> > informative.
-> > 
-> > So remove simplify the first error message.
-> > 
-> > While at it, also remove the useless initialization of 'retval'.
-> > 
-> > Fixes: 7d50195f6c50 ("usb: host: Faraday fotg210-hcd driver")
-> > Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> > ---
-> >  drivers/usb/host/fotg210-hcd.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/drivers/usb/host/fotg210-hcd.c b/drivers/usb/host/fotg210-hcd.c
-> > index 6cac642520fc..9c2eda0918e1 100644
-> > --- a/drivers/usb/host/fotg210-hcd.c
-> > +++ b/drivers/usb/host/fotg210-hcd.c
-> > @@ -5568,7 +5568,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
-> >  	struct usb_hcd *hcd;
-> >  	struct resource *res;
-> >  	int irq;
-> > -	int retval = -ENODEV;
-> > +	int retval;
-> >  	struct fotg210_hcd *fotg210;
-> >  
-> >  	if (usb_disabled())
-> > @@ -5588,7 +5588,7 @@ static int fotg210_hcd_probe(struct platform_device *pdev)
-> >  	hcd = usb_create_hcd(&fotg210_fotg210_hc_driver, dev,
-> >  			dev_name(dev));
-> >  	if (!hcd) {
-> > -		dev_err(dev, "failed to create hcd with err %d\n", retval);
-> > +		dev_err(dev, "failed to create hcd\n");
-> >  		retval = -ENOMEM;
-> How about moving this line before dev_err()? then could keep error log
-> unchanged.
+* Jiri Slaby:
 
-Then the error message would print misleading information.  The
-usb_create_hcd() does not return -ENOMEM, it returns NULL.
+> The dot makes the difference, of course. The question is why is it
+> there? I keep looking into it. Only if someone has an immediate
+> idea...
 
-regards,
-dan carpenter
+We see the failure on aarch64 as well, with 8404c9fbc84b741
+(from Linus' tree).
+
+As far as I can tell, the core issue is that BTF_ID is applied to a
+symbol which is defined as static on the C side (and even in a different
+translation unit, but this aspect doesn't really matter).  The compiler
+can and will change symbol names, calling conventions and data layout
+for static functions/variables, so this is never going to work reliably.
+It is possible to inhibit these optimizations by using __attribute__
+((used)).  But I'm pretty sure that BTF generation fails to work
+properly if there are symbol name collisions, so I think it's better to
+drop the static and rely on duplicate symbol checks from the linker
+(which of course does not happen for C entities declared static).
+
+Thanks,
+Florian
 
