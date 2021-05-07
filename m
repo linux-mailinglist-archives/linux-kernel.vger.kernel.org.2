@@ -2,173 +2,74 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E13D73763FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:39:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0280337640F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:47:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232831AbhEGKku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 06:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34060 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232268AbhEGKks (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 06:40:48 -0400
-Received: from mail-io1-xd2c.google.com (mail-io1-xd2c.google.com [IPv6:2607:f8b0:4864:20::d2c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C08B3C061763
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 03:39:24 -0700 (PDT)
-Received: by mail-io1-xd2c.google.com with SMTP id k25so7551341iob.6
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 03:39:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=+820bBEEqqhQYCq8XGwExxSwhxuLHxIq3wsvTuPIL5o=;
-        b=ZPB8NlE/FMef4Xaw1s3C6uH4LFcb50rHrXtJpOqJRc/8pFPgmHj9MiQ7/VeuQZCIu6
-         gkF47/dS8JKUlJxqIfk6nAPXcV486GBACGeB+qVE98Vo3Zysz7a4sOMcv7tKS+tO8au+
-         G1t/XuRGEAVqdj/IwuAUWyDHUn0nFWrRaXcYA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=+820bBEEqqhQYCq8XGwExxSwhxuLHxIq3wsvTuPIL5o=;
-        b=bY9FOUqCzOsJS+NrawFlFhI8ER4ceMdGtNoPCCVtKzSpT7cSwHx2lRpGTCKy79UAvC
-         2YN7nMTpMKY3mMQoIgS8Ug6I1rKXwhhLvCYl/GisCwrxjf2MVu/3QfTSCyPD8PRolxj0
-         GNUGtrMC80A+dJEJ5nwphG/T6phqy3ZFwgim3F8COLRauy2NqfsdQLy/pMqqiFZSsoFR
-         0VEdTBYAhf+yKjZ83dxUdql+k1xQ6gb+oXtIJ403JvyW2x/oNUs45rCoDTckNVzepHvY
-         ZpSF5QsHCU2cOqQUePuspTiw4pRL0XTauR1FlrzcVU7QqQ3iEodO39fPf31Cd9N/aoGx
-         0BAQ==
-X-Gm-Message-State: AOAM533u7j55wzSHYVvou5Po/2Jry2m0vdyFElJH0o1oMSDwz8v0J5rN
-        ezM9DmpMIQWxncETwRkUbBrWPNgTz/hxCFMQN5uPyw==
-X-Google-Smtp-Source: ABdhPJxsC68RQ71unoY16kEk0t28ZWGtRUaJK9KkAIhneOywMiEv12Ya/P+uGWQ6OR29fOHLs1+66l0Ez3uUsmvCioE=
-X-Received: by 2002:a05:6638:f0e:: with SMTP id h14mr8347035jas.32.1620383963958;
- Fri, 07 May 2021 03:39:23 -0700 (PDT)
+        id S235578AbhEGKsJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 06:48:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37774 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229789AbhEGKsH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 06:48:07 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPSA id 56A4160FF3;
+        Fri,  7 May 2021 10:47:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620384427;
+        bh=S0rvvScdZKxAg0+2tEM6w30RvKAINDq/z7sm3Q1UkI8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=lpeJq149XjIYdUzimS63IIti4Zwixko3R7qBWQ8kpSnWLrAIcsvYizaP4A3NqdNfP
+         pd92+5mgnkmWYpZ7MoUQzF3Vcb5+REI0F3AgyUg5cL8Y8SnlAwN9ixt5QLDwIi3opY
+         qfN5rBa78ZgADQlLUnaECk2RzeF7fyD6tXCf/VAdPaXg/p0pTn1KcA8BM1rIaqRUNy
+         u4WfdaMFXCQMvb0pbnYwYWrD7LQQjZxpbfd+/GvPTvWhLs6A9sNYMYAf7O5ME/QoVQ
+         V2+IlJvrKwYLrkedOYFQB9+Q3nYa/A3+pvcN7DxcUWyhCJlm02GKq0CSocYK8XZBfJ
+         kfD67R8gWJLcw==
+Date:   Fri, 7 May 2021 06:47:06 -0400
+From:   Sasha Levin <sashal@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+        Thinh Nguyen <Thinh.Nguyen@synopsys.com>,
+        linux-usb@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 5.12 16/79] usb: dwc3: gadget: Remove invalid
+ low-speed setting
+Message-ID: <YJUaqq0ZMVn2989b@sashalap>
+References: <20210502140316.2718705-1-sashal@kernel.org>
+ <20210502140316.2718705-16-sashal@kernel.org>
+ <YI69i5JE3NdIx4Sb@kroah.com>
 MIME-Version: 1.0
-References: <20210505162307.2545061-1-revest@chromium.org> <CAEf4BzZiK1ncN7RzeJ-62e=itekn34VuFf7WNhUF=9OoznMP6Q@mail.gmail.com>
- <fe37ff8f-ebf0-25ec-4f3c-df3373944efa@iogearbox.net> <CAEf4BzYsAXQ1t6GUJ4f8c0qGLdnO4NLDVJLRMhAY2oaiarDd6g@mail.gmail.com>
- <CAEf4BzYqUxgj28p7e1ng_5gfebXdVdrCVyPK4bjA31O4wgppeA@mail.gmail.com>
- <CABRcYmJBxY5AQMzO2vuuhVN7hs=1h+ursEnVAXpCPJ3DrkRrUA@mail.gmail.com>
- <CAEf4BzY4a6R-apnS0AZsb_Mtht2N8be1HvEN9hD9aSByoD1EHQ@mail.gmail.com>
- <CABRcYm+3AjHa3zO5AHSk6SbyFK6o6dLd8Fbz_sOznchWL2dumQ@mail.gmail.com> <875174b0-c0f1-8a41-ef00-3f0fe0396288@iogearbox.net>
-In-Reply-To: <875174b0-c0f1-8a41-ef00-3f0fe0396288@iogearbox.net>
-From:   Florent Revest <revest@chromium.org>
-Date:   Fri, 7 May 2021 12:39:13 +0200
-Message-ID: <CABRcYmJxfgmuOPnLNCqGJpRSmYLf+v5=ZSaRL6O7QbuhjfeZiQ@mail.gmail.com>
-Subject: Re: [PATCH bpf] bpf: Don't WARN_ON_ONCE in bpf_bprintf_prepare
-To:     Daniel Borkmann <daniel@iogearbox.net>
-Cc:     Andrii Nakryiko <andrii.nakryiko@gmail.com>,
-        bpf <bpf@vger.kernel.org>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andrii@kernel.org>,
-        KP Singh <kpsingh@kernel.org>,
-        Brendan Jackman <jackmanb@google.com>,
-        Stanislav Fomichev <sdf@google.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        syzbot <syzbot@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <YI69i5JE3NdIx4Sb@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 11:38 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
+On Sun, May 02, 2021 at 04:56:11PM +0200, Greg Kroah-Hartman wrote:
+>On Sun, May 02, 2021 at 10:02:13AM -0400, Sasha Levin wrote:
+>> From: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+>>
+>> [ Upstream commit 0c59f678fcfc6dd53ba493915794636a230bc4cc ]
+>>
+>> None of the DWC_usb3x IPs (and all their versions) supports low-speed
+>> setting in device mode. In the early days, our "Early Adopter Edition"
+>> DWC_usb3 databook shows that the controller may be configured to operate
+>> in low-speed, but it was revised on release. Let's remove this invalid
+>> speed setting to avoid any confusion.
+>>
+>> Signed-off-by: Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+>> Link: https://lore.kernel.org/r/258b1c7fbb966454f4c4c2c1367508998498fc30.1615509438.git.Thinh.Nguyen@synopsys.com
+>> Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+>> Signed-off-by: Sasha Levin <sashal@kernel.org>
+>> ---
+>>  drivers/usb/dwc3/core.c   | 1 -
+>>  drivers/usb/dwc3/core.h   | 2 --
+>>  drivers/usb/dwc3/gadget.c | 8 --------
+>>  3 files changed, 11 deletions(-)
 >
-> On 5/6/21 10:17 PM, Florent Revest wrote:
-> > On Thu, May 6, 2021 at 8:52 PM Andrii Nakryiko
-> > <andrii.nakryiko@gmail.com> wrote:
-> >> On Wed, May 5, 2021 at 3:29 PM Florent Revest <revest@chromium.org> wrote:
-> >>> On Wed, May 5, 2021 at 10:52 PM Andrii Nakryiko
-> >>> <andrii.nakryiko@gmail.com> wrote:
-> >>>> On Wed, May 5, 2021 at 1:48 PM Andrii Nakryiko
-> >>>> <andrii.nakryiko@gmail.com> wrote:
-> >>>>> On Wed, May 5, 2021 at 1:00 PM Daniel Borkmann <daniel@iogearbox.net> wrote:
-> >>>>>> On 5/5/21 8:55 PM, Andrii Nakryiko wrote:
-> >>>>>>> On Wed, May 5, 2021 at 9:23 AM Florent Revest <revest@chromium.org> wrote:
-> >>>>>>>>
-> >>>>>>>> The bpf_seq_printf, bpf_trace_printk and bpf_snprintf helpers share one
-> >>>>>>>> per-cpu buffer that they use to store temporary data (arguments to
-> >>>>>>>> bprintf). They "get" that buffer with try_get_fmt_tmp_buf and "put" it
-> >>>>>>>> by the end of their scope with bpf_bprintf_cleanup.
-> >>>>>>>>
-> >>>>>>>> If one of these helpers gets called within the scope of one of these
-> >>>>>>>> helpers, for example: a first bpf program gets called, uses
-> >>>>>>>
-> >>>>>>> Can we afford having few struct bpf_printf_bufs? They are just 512
-> >>>>>>> bytes, so can we have 3-5 of them? Tracing low-level stuff isn't the
-> >>>>>>> only situation where this can occur, right? If someone is doing
-> >>>>>>> bpf_snprintf() and interrupt occurs and we run another BPF program, it
-> >>>>>>> will be impossible to do bpf_snprintf() or bpf_trace_printk() from the
-> >>>>>>> second BPF program, etc. We can't eliminate the probability, but
-> >>>>>>> having a small stack of buffers would make the probability so
-> >>>>>>> miniscule as to not worry about it at all.
-> >>>>>>>
-> >>>>>>> Good thing is that try_get_fmt_tmp_buf() abstracts all the details, so
-> >>>>>>> the changes are minimal. Nestedness property is preserved for
-> >>>>>>> non-sleepable BPF programs, right? If we want this to work for
-> >>>>>>> sleepable we'd need to either: 1) disable migration or 2) instead of
-> >>>>>
-> >>>>> oh wait, we already disable migration for sleepable BPF progs, so it
-> >>>>> should be good to do nestedness level only
-> >>>>
-> >>>> actually, migrate_disable() might not be enough. Unless it is
-> >>>> impossible for some reason I miss, worst case it could be that two
-> >>>> sleepable programs (A and B) can be intermixed on the same CPU: A
-> >>>> starts&sleeps - B starts&sleeps - A continues&returns - B continues
-> >>>> and nestedness doesn't work anymore. So something like "reserving a
-> >>>> slot" would work better.
-> >>>
-> >>> Iiuc try_get_fmt_tmp_buf does preempt_enable to avoid that situation ?
-> >>>
-> >>>>>>> assuming a stack of buffers, do a loop to find unused one. Should be
-> >>>>>>> acceptable performance-wise, as it's not the fastest code anyway
-> >>>>>>> (printf'ing in general).
-> >>>>>>>
-> >>>>>>> In any case, re-using the same buffer for sort-of-optional-to-work
-> >>>>>>> bpf_trace_printk() and probably-important-to-work bpf_snprintf() is
-> >>>>>>> suboptimal, so seems worth fixing this.
-> >>>>>>>
-> >>>>>>> Thoughts?
-> >>>>>>
-> >>>>>> Yes, agree, it would otherwise be really hard to debug. I had the same
-> >>>>>> thought on why not allowing nesting here given users very likely expect
-> >>>>>> these helpers to just work for all the contexts.
-> >>>>>>
-> >>>>>> Thanks,
-> >>>>>> Daniel
-> >>>
-> >>> What would you think of just letting the helpers own these 512 bytes
-> >>> buffers as local variables on their stacks ? Then bpf_prepare_bprintf
-> >>> would only need to write there, there would be no acquire semantic
-> >>> (like try_get_fmt_tmp_buf) and the stack frame would just be freed on
-> >>> the helper return so there would be no bpf_printf_cleanup either. We
-> >>> would also not pre-reserve static memory for all CPUs and it becomes
-> >>> trivial to handle re-entrant helper calls.
-> >>>
-> >>> I inherited this per-cpu buffer from the pre-existing bpf_seq_printf
-> >>> code but I've not been convinced of its necessity.
-> >>
-> >> I got the impression that extra 512 bytes on the kernel stack is quite
-> >> a lot and that's why we have per-cpu buffers. Especially that
-> >> bpf_trace_printk() can be called from any context, including NMI.
-> >
-> > Ok, I understand.
-> >
-> > What about having one buffer per helper, synchronized with a spinlock?
-> > Actually, bpf_trace_printk already has that, not for the bprintf
-> > arguments but for the bprintf output so this wouldn't change much to
-> > the performance of the helpers anyway:
-> > https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git/tree/kernel/trace/bpf_trace.c?id=9d31d2338950293ec19d9b095fbaa9030899dcb4#n385
-> >
-> > These helpers are not performance sensitive so a per-cpu stack of
-> > buffers feels over-engineered to me (and is also complexity I feel a
-> > bit uncomfortable with).
->
-> But wouldn't this have same potential of causing a deadlock? Simple example
-> would be if you have a tracing prog attached to bstr_printf(), and one of
-> the other helpers using the same lock called from a non-tracing prog. If
+>This is a "cleanup only" and does not fix or solve anything, so it can
+>be dropped from all of the kernels it has been "autoselected" for.
 
-Ah, right, I see :/
+Dropped, thanks!
 
-> it can be avoided fairly easily, I'd also opt for per-cpu buffers as Andrii
-> mentioned earlier. We've had few prior examples with similar issues [0].
->
->    [0] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=9594dc3c7e71b9f52bee1d7852eb3d4e3aea9e99
-
-Ok it's not as bad as I imagined, thank you Daniel :) I'll look into
-it beginning of next week.
+-- 
+Thanks,
+Sasha
