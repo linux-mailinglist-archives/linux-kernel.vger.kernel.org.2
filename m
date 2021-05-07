@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41F89375FA2
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:09:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB359375FA6
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:14:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233369AbhEGFKc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 01:10:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44660 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233240AbhEGFKb (ORCPT
+        id S233369AbhEGFPI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 01:15:08 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:34926 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229666AbhEGFPF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 01:10:31 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AF63C061761
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 22:09:32 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id l9-20020a5b0b890000b02904f7fb53ca12so8772917ybq.15
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 22:09:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:in-reply-to:message-id:mime-version:references:subject:from:to
-         :cc;
-        bh=HRBAR21u7PRZM/8/eMSlewl7NCMmiIJxdjUH7mvZekY=;
-        b=DhGNJidwdrI3KXAJXGCmwGs1p7rL6egOFnrxLtNMmdergPEvrfY5NzHibtJacZfh8c
-         VdjMv+Gx6FvB0wDZfPIidP3RVhGOJgz87g/tHu4bf0CSo6lr9cuey2az4gb0JHDkIKTU
-         Wuz5yC9bRlYmf4g+9ZReAKGIR6hIMyw7rD76FXyy8BuWJsz3Sk56KbXQtPdWruz+D2c1
-         GbWPtcXtLzA5+iPIx5fu508twhW3F0oxlcXJDaMd2CDs68G9Db+u+XFFME6dK9rMhsQS
-         v31gn4PQLWvAg7ecWh4KXdeWVDA4dTn4TJtd5IkFEs0WqTbhAdh5i3pDlqT9gnCItcwA
-         7ohQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=HRBAR21u7PRZM/8/eMSlewl7NCMmiIJxdjUH7mvZekY=;
-        b=j99DsV/1DPw/8wgWjrkrc6KZwCn7JRW5FzyNh2DJ0c8bVTodl9g/1BwjLwaPtt+fjg
-         g9PqG+J64XIKtQHJ1NlvqFKs1kcNnkakUlTt+l7bnX5uQ8TZI6VgJF3hAj4NBnemyiXY
-         Ja4wCWLqCWzG5kD2y2pgDe1JR+L6YfMBEvvGN6UBhJvLA7sDGznBLJ5vkm8ut+ircMYv
-         usNuwI9JtNLvohgZpqsxZd4oGvyrIT4psqn6yqflFwn+ZvDAo6tei9rqlNcE0IsdRSAL
-         +C8Ze0z9avolVHEnAOKHjrbBA1RPgx0re9SjB372eANWpv/FBNUZX0YFd14r6lRa8E0u
-         q5aA==
-X-Gm-Message-State: AOAM531qqQm/iHzd1NAj9Xbrtn4R+LoqsfruBdP/g9AkMWQOmLTpM3wK
-        CFnf4LHxw75yKEuXze8o8lRiPEQhMy/XAg==
-X-Google-Smtp-Source: ABdhPJw+CbtEFdF9Vkfc06hXM/f6APOThaXd1KaFsU9TTsm45ExcEMGJ2t9r92IcHQyFQdvPpXwXO4kIrKKuhw==
-X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:7a7f:ce22:a6af:49e5])
- (user=davidgow job=sendgmr) by 2002:a25:bd50:: with SMTP id
- p16mr11249160ybm.290.1620364171642; Thu, 06 May 2021 22:09:31 -0700 (PDT)
-Date:   Thu,  6 May 2021 22:09:08 -0700
-In-Reply-To: <20210507050908.1008686-1-davidgow@google.com>
-Message-Id: <20210507050908.1008686-2-davidgow@google.com>
-Mime-Version: 1.0
-References: <20210507050908.1008686-1-davidgow@google.com>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-Subject: [PATCH 2/2] kunit: Assign strings to 'const char*' in STREQ assertions
-From:   David Gow <davidgow@google.com>
-To:     Brendan Higgins <brendanhiggins@google.com>,
-        Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Cc:     David Gow <davidgow@google.com>, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+        Fri, 7 May 2021 01:15:05 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1475Dm3E123155;
+        Fri, 7 May 2021 05:13:48 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=rZzXsWAp82UhBV/cokkkVpE7UbqBBMYmOiymy5YiT88=;
+ b=NZCHB4ER1d7tCmdyBNmnlZaokeLVMXDXMhzbTttoTIO2F6G5e0Di4+rVq/c407EHvQMW
+ wSKyki6XtDEHFFVp8hDtDNIDxCXH7m0t98J2pex3qJaDCrzb7oDsYXe7uY8Ea1oZ3put
+ 1pFj10Zgtm1KVYOjYWIpBVUTV+qJLy7MpS809/v3sJyBlDKT6ES+xPUAWnz0MRyjpmWY
+ JdsJ+bqX7WUAmduTfQdeuCoS08L6xOPx38MkBXOLXIHd18gPomUayRqQ49Zq4r6R0nMG
+ EcLmbNtTA2Dvz9DyzTo8DCWLC9vzToeas5W/z7e0wpjtiZyD7FnesIB5gdzmEupIC7Jb DA== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 38csrd8d4s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 07 May 2021 05:13:47 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 14759hms174669;
+        Fri, 7 May 2021 05:13:47 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by userp3020.oracle.com with ESMTP id 38csrgd545-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 07 May 2021 05:13:47 +0000
+Received: from userp3020.oracle.com (userp3020.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1475DkAZ002799;
+        Fri, 7 May 2021 05:13:46 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3020.oracle.com with ESMTP id 38csrgd53x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 07 May 2021 05:13:46 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 1475DibK031033;
+        Fri, 7 May 2021 05:13:44 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 06 May 2021 22:13:43 -0700
+Date:   Fri, 7 May 2021 08:13:33 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     linuxarm@huawei.com, mauro.chehab@huawei.com,
+        Dmitry Osipenko <digetx@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-tegra@vger.kernel.org
+Subject: Re: [PATCH v5 05/25] staging: media: tegra-vde: use
+ pm_runtime_resume_and_get()
+Message-ID: <20210507051333.GE1955@kadam>
+References: <cover.1620314616.git.mchehab+huawei@kernel.org>
+ <a1230241a83a6abcd27b91edcafee1685232f81e.1620314616.git.mchehab+huawei@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1230241a83a6abcd27b91edcafee1685232f81e.1620314616.git.mchehab+huawei@kernel.org>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: DEXyVdiDsR6x8uVn6eHnJuSxhy2rmyHO
+X-Proofpoint-GUID: DEXyVdiDsR6x8uVn6eHnJuSxhy2rmyHO
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9976 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 clxscore=1015
+ malwarescore=0 adultscore=0 mlxlogscore=999 impostorscore=0 phishscore=0
+ lowpriorityscore=0 bulkscore=0 priorityscore=1501 mlxscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105070037
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, the KUNIT_EXPECT_STREQ() and related macros assign both
-string arguments to variables of their own type (via typeof()). This
-seems to be to prevent the macro argument from being evaluated multiple
-times.
+On Thu, May 06, 2021 at 05:25:43PM +0200, Mauro Carvalho Chehab wrote:
+> @@ -1069,11 +1071,19 @@ static int tegra_vde_probe(struct platform_device *pdev)
+>  	 * power-cycle it in order to put hardware into a predictable lower
+>  	 * power state.
+>  	 */
+> -	pm_runtime_get_sync(dev);
+> +	if (pm_runtime_resume_and_get(dev) < 0)
+> +		goto err_pm_runtime;
 
-However, yhis doesn't work if one of these is a fixed-length character
-array, rather than a character pointer, as (for example) char[16] will
-always allocate a new string.
+Needs an error code on this path.  These days the kbuild bot will send
+a warning for this eventually.
 
-By always using 'const char*' (the type strcmp expects), we're always
-just taking a pointer to the string, which works even with character
-arrays.
+> +
+>  	pm_runtime_put(dev);
+>  
+>  	return 0;
+>  
+> +err_pm_runtime:
+> +	misc_deregister(&vde->miscdev);
+> +
+> +	pm_runtime_dont_use_autosuspend(dev);
+> +	pm_runtime_disable(dev);
+> +
+>  err_deinit_iommu:
+>  	tegra_vde_iommu_deinit(vde);
+>  
 
-Signed-off-by: David Gow <davidgow@google.com>
----
- include/kunit/test.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/include/kunit/test.h b/include/kunit/test.h
-index 4c56ffcb7403..b68c61348121 100644
---- a/include/kunit/test.h
-+++ b/include/kunit/test.h
-@@ -1128,8 +1128,8 @@ do {									       \
- 				   fmt,					       \
- 				   ...)					       \
- do {									       \
--	typeof(left) __left = (left);					       \
--	typeof(right) __right = (right);				       \
-+	const char *__left = (left);					       \
-+	const char *__right = (right);				       \
- 									       \
- 	KUNIT_ASSERTION(test,						       \
- 			strcmp(__left, __right) op 0,			       \
--- 
-2.31.1.607.g51e8a6a459-goog
-
+regards,
+dan carpenter
