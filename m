@@ -2,60 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C773E376471
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:28:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6CAC9376477
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:29:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233562AbhEGL27 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 07:28:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44532 "EHLO
+        id S234306AbhEGLaK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 07:30:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44690 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S232081AbhEGL25 (ORCPT
+        with ESMTP id S234336AbhEGL3j (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 07:28:57 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8243C061574;
-        Fri,  7 May 2021 04:27:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=h6CvEcH6lldBrL2qLaHVXZy3e+T1NuPGpyfPejetds0=; b=Qw4zqJpFLXiQznZE5OIje3iLqG
-        CbDZq8d/AP6HJwb5i1uHSBYY4f2FopWSLv7vnxc3M8sKVrirNyrWLLRoIVUcOqsV4iQsCO9Jj9Rva
-        p4eHXt3DK25broDK4Leypw5Au9ahUm28GiF8Q4kVaH5zREKLrpIEs/jQ1d6ucXey7hliD9B2shx83
-        fMUVNtyPXpke6wjcNhi6bD3/+zIQnWvlLFHjHqwr7/L/vCXWLGK7sXEFzNUdxDXXeSPFj6sLoRC0l
-        AlxeY2gTzTg56w8av0PKdjgnTeTPg4Pj3A4AWybav1cH7va74YPYqgr1ma2tLIZaep2xFvz8xauBq
-        H+pzBdRA==;
-Received: from willy by casper.infradead.org with local (Exim 4.94 #2 (Red Hat Linux))
-        id 1leycw-0037m0-6f; Fri, 07 May 2021 11:26:41 +0000
-Date:   Fri, 7 May 2021 12:26:38 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Jiapeng Chong <jiapeng.chong@linux.alibaba.com>
-Cc:     mcgrof@kernel.org, keescook@chromium.org, yzaikin@google.com,
-        ast@kernel.org, daniel@iogearbox.net, andrii@kernel.org,
-        kafai@fb.com, songliubraving@fb.com, yhs@fb.com,
-        john.fastabend@gmail.com, kpsingh@kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org
-Subject: Re: [PATCH] sysctl: Remove redundant assignment to first
-Message-ID: <YJUj7glesit6HnF6@casper.infradead.org>
-References: <1620382554-62511-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+        Fri, 7 May 2021 07:29:39 -0400
+Received: from mail-vs1-xe33.google.com (mail-vs1-xe33.google.com [IPv6:2607:f8b0:4864:20::e33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD63DC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 04:28:35 -0700 (PDT)
+Received: by mail-vs1-xe33.google.com with SMTP id j128so4517452vsc.5
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 04:28:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oeCXuynOU5/nueZeAhSxiOqvtvTDZN1GezJx4N+SP5Y=;
+        b=Sc6Kx3Bq8NZR2LLjLN69C7kmPQwIg+Pw5FF2SI4xm0J/8FXustQJ0wswlmc5qhn2Rm
+         CtoPxRq+NR3NkdAe4uT2y84gEvatGzUT3OEAIQfW5RnBQcGHaOBKBB/ePsBduE+cq770
+         q8GbnkyfmQ63gnhf7i+0N8+s/r8vyab32+KU6r+Ug0n9vzZOA5jGF6H+Jt9pjdIHWZWN
+         CiSseKvJdfPsxRAjQn8CMLhYSMz+0dpDf3X5R1KD/GknyNX+CqyWqF55WT5DzUJERz0s
+         JhpA73elzjKL4dI+5N7VpXjEwuF+L95AnIT076J33cthIb+gbuVK604AWz2zMjRHbwZE
+         Uk4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oeCXuynOU5/nueZeAhSxiOqvtvTDZN1GezJx4N+SP5Y=;
+        b=O9ay9CSGU+WlpqES21xFuPR5xWE4ki33OJQZgKEqrObMHK3uhLWOkIMbYZrdNyaJ03
+         mr1XYxLSkX46gayKXJWyLoGqqJF6rwQwrqzgPhp5cvMM5D2aHp419GiXhAuMJ7TRQ+zz
+         z1O4kxmxcUu0ZFGkBqqf9JaAZIQwNCmmMbBhiPv3EnrrRJEF43ULe3/DHdTTkZxKCFsw
+         atrbHCJ9fMISRZsXc4A0hagogjuyiQWERkFPTifTHmJ1Xf2KbPFJZyL4v4alXVNltUMv
+         X96/diCj2J+Orgi8v8e2J+x1qxOcOqeKhTiFy/bxX40m/QgeyiIjuQRmduMo3BDNs40Q
+         LAfA==
+X-Gm-Message-State: AOAM5320tOX5Dwcto4Dl0x/F05HlQyg01idlwL8//UCY8MAR6f/kJgeD
+        p+dLlMQnonjBHVxRcl8nfzqWWGTrZRL9mLPOf/c5Ur0l/SOhBg==
+X-Google-Smtp-Source: ABdhPJyrRjbYfbEH+gitFsy/NzamJybijwKorLqRs4OhSdm/1MD6yw1F4Ca3Ien29T+xvHRZRTg2N9+IdpEys401Xf8=
+X-Received: by 2002:a67:2c03:: with SMTP id s3mr7864810vss.42.1620386915110;
+ Fri, 07 May 2021 04:28:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1620382554-62511-1-git-send-email-jiapeng.chong@linux.alibaba.com>
+References: <20210421135723.3601743-1-arnd@kernel.org>
+In-Reply-To: <20210421135723.3601743-1-arnd@kernel.org>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 7 May 2021 13:27:58 +0200
+Message-ID: <CAPDyKFomx+B5MJqW46fKuq_vrV8tLtG5n91eu1pOpvDkcSJJag@mail.gmail.com>
+Subject: Re: [PATCH] cpuidle: qcom_scm: fix Kconfig dependencies again
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        He Ying <heying24@huawei.com>, Arnd Bergmann <arnd@arndb.de>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Stephan Gerhold <stephan@gerhold.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 06:15:54PM +0800, Jiapeng Chong wrote:
-> Variable first is set to '0', but this value is never read as it is
-> not used later on, hence it is a redundant assignment and can be
-> removed.
-> 
-> Clean up the following clang-analyzer warning:
-> 
-> kernel/sysctl.c:1562:4: warning: Value stored to 'first' is never read
-> [clang-analyzer-deadcode.DeadStores].
+On Wed, 21 Apr 2021 at 15:57, Arnd Bergmann <arnd@kernel.org> wrote:
+>
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> The previous compile time fix was incomplete and still results in
+> warnings like:
+>
+> WARNING: unmet direct dependencies detected for ARM_CPU_SUSPEND
+>   Depends on [n]: ARCH_SUSPEND_POSSIBLE [=n]
+>   Selected by [y]:
+>   - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
+>
+> WARNING: unmet direct dependencies detected for QCOM_SCM
+>   Depends on [n]: (ARM [=y] || ARM64) && HAVE_ARM_SMCCC [=n]
+>   Selected by [y]:
+>   - ARM_QCOM_SPM_CPUIDLE [=y] && CPU_IDLE [=y] && (ARM [=y] || ARM64) && (ARCH_QCOM [=n] || COMPILE_TEST [=y]) && !ARM64 && MMU [=y]
+>
+> Use a dependency on ARCH_SUSPEND_POSSIBLE as a prerequisite for
+> selecting ARM_CPU_SUSPEND, and a dependency on HAVE_ARM_SMCCC
+> for QCOM_SCM.
+>
+> Fixes: 498ba2a8a275 ("cpuidle: Fix ARM_QCOM_SPM_CPUIDLE configuration")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 
-While this is true, it is incomplete.  The 'first' declaration should be
-moved into the 'else' arm of the 'if (write)' conditional.
+Looks like this isn't applied yet, feel free to add:
+
+Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
+
+Kind regards
+Uffe
+
+> ---
+>  drivers/cpuidle/Kconfig.arm | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/cpuidle/Kconfig.arm b/drivers/cpuidle/Kconfig.arm
+> index 334f83e56120..fc596494251c 100644
+> --- a/drivers/cpuidle/Kconfig.arm
+> +++ b/drivers/cpuidle/Kconfig.arm
+> @@ -107,7 +107,8 @@ config ARM_TEGRA_CPUIDLE
+>
+>  config ARM_QCOM_SPM_CPUIDLE
+>         bool "CPU Idle Driver for Qualcomm Subsystem Power Manager (SPM)"
+> -       depends on (ARCH_QCOM || COMPILE_TEST) && !ARM64 && MMU
+> +       depends on ARCH_QCOM || (ARCH_SUSPEND_POSSIBLE && COMPILE_TEST)
+> +       depends on ARM && HAVE_ARM_SMCCC
+>         select ARM_CPU_SUSPEND
+>         select CPU_IDLE_MULTIPLE_DRIVERS
+>         select DT_IDLE_STATES
+> --
+> 2.29.2
+>
