@@ -2,162 +2,216 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D5CF376AA7
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 21:23:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133F4376AAE
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 21:27:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229879AbhEGTYa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 15:24:30 -0400
-Received: from mga06.intel.com ([134.134.136.31]:14862 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229675AbhEGTY2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 15:24:28 -0400
-IronPort-SDR: Aae5xii9ZaTXAAms2OtuMlRey0iGQ9pesGwCMc3SgrDvsFFDBFHC5Awe5pfVfo6U0SFmD69our
- Qp51jGGdYMmw==
-X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="260071989"
-X-IronPort-AV: E=Sophos;i="5.82,281,1613462400"; 
-   d="scan'208";a="260071989"
-Received: from orsmga002.jf.intel.com ([10.7.209.21])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 12:23:27 -0700
-IronPort-SDR: owknbHpIZ3mF/ie4r0R2rDOtoOSVpmTFhlXS/Dz3/RJ0W25pNZmjgimvjqKRfcf2tNEO9hhmvH
- gFAZrLHfFCRg==
-X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="scan'208";a="407536474"
-Received: from otc-nc-03.jf.intel.com (HELO otc-nc-03) ([10.54.39.36])
-  by orsmga002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 12:23:27 -0700
-Date:   Fri, 7 May 2021 12:23:25 -0700
-From:   "Raj, Ashok" <ashok.raj@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-Cc:     Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        "Tian, Kevin" <kevin.tian@intel.com>,
-        Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>,
-        Ashok Raj <ashok.raj@intel.com>
-Subject: Re: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Message-ID: <20210507192325.GB73499@otc-nc-03>
-References: <20210504231530.GE1370958@nvidia.com>
- <20210505102259.044cafdf@jacob-builder>
- <20210505180023.GJ1370958@nvidia.com>
- <20210505130446.3ee2fccd@jacob-builder>
- <YJOZhPGheTSlHtQc@myrica>
- <20210506122730.GQ1370958@nvidia.com>
- <20210506163240.GA9058@otc-nc-03>
- <20210507172051.GW1370958@nvidia.com>
- <20210507181458.GA73499@otc-nc-03>
- <20210507182050.GX1370958@nvidia.com>
+        id S229800AbhEGT2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 15:28:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37702 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229606AbhEGT2d (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 15:28:33 -0400
+Received: from srv6.fidu.org (srv6.fidu.org [IPv6:2a01:4f8:231:de0::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4785C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 12:27:31 -0700 (PDT)
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by srv6.fidu.org (Postfix) with ESMTP id 00C4CC800A2;
+        Fri,  7 May 2021 21:27:29 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at srv6.fidu.org
+Received: from srv6.fidu.org ([127.0.0.1])
+        by localhost (srv6.fidu.org [127.0.0.1]) (amavisd-new, port 10026)
+        with LMTP id vPSkiOcuewgT; Fri,  7 May 2021 21:27:28 +0200 (CEST)
+Received: from wsembach-tuxedo.fritz.box (p200300E37F12f200d51BE97DB8e423B2.dip0.t-ipconnect.de [IPv6:2003:e3:7f12:f200:d51b:e97d:b8e4:23b2])
+        (Authenticated sender: wse@tuxedocomputers.com)
+        by srv6.fidu.org (Postfix) with ESMTPA id 704D3C800A1;
+        Fri,  7 May 2021 21:27:28 +0200 (CEST)
+From:   Werner Sembach <wse@tuxedocomputers.com>
+To:     alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, harry.wentland@amd.com,
+        sunpeng.li@amd.com, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     Werner Sembach <wse@tuxedocomputers.com>
+Subject: [PATCH] drm/amd/display: Expose active display color configurations to userspace
+Date:   Fri,  7 May 2021 21:27:18 +0200
+Message-Id: <20210507192718.35314-1-wse@tuxedocomputers.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210507182050.GX1370958@nvidia.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jason
+xrandr --prop and other userspace info tools have currently no way of
+telling which color configuration is used on HDMI and DP ports.
 
-- Removed lizefan's email due to bounces... 
+The ongoing transsition from HDMI 1.4 to 2.0 and the different bandwidth
+requirements of YCbCr 4:2:0 and RGB color format raise different
+incompatibilities. Having these configuration information readily
+available is a useful tool in debuging washed out colors, color artefacts
+on small fonts and missing refreshrate options.
 
-On Fri, May 07, 2021 at 03:20:50PM -0300, Jason Gunthorpe wrote:
-> On Fri, May 07, 2021 at 11:14:58AM -0700, Raj, Ashok wrote:
-> > On Fri, May 07, 2021 at 02:20:51PM -0300, Jason Gunthorpe wrote:
-> > > On Thu, May 06, 2021 at 09:32:40AM -0700, Raj, Ashok wrote:
-> > > 
-> > > > For platforms that support ENQCMD, it is required to mandate PASIDs are
-> > > > global across the entire system. Maybe its better to call them gPASID for
-> > > > guest and hPASID for host. Short reason being gPASID->hPASID is a guest
-> > > > wide mapping for ENQCMD and not a per-RID based mapping. (We covered that
-> > > > in earlier responses)
-> > > 
-> > > I don't think it is actually ENQCMD that forces this, ENQCMD can use a
-> > > per-RID PASID in the translation table as well.
-> > 
-> > When using ENQCMD the PASID that needs to be sent on the wire is picked
-> > from an MSR setup by kernel. This is context switched along with the
-> > process. So each process has only 1 PASID that can go out when using
-> > ENQCMD. ENQCMD takes one mmio address specific to the acclerator and a
-> > source for the descriptor.
-> 
-> Oh. I forgot this also globally locked the PASID to a single
-> MSR. Sigh. That makes the whole mechanism useless for anything except
-> whole process SVA.
+Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_display.c   | 58 +++++++++++++++++++
+ drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h      |  4 ++
+ .../gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c | 36 ++++++++++++
+ 3 files changed, 98 insertions(+)
 
-Is there another kind of SVA? Our mapping from that each process requires a
-single mm, and PASID for SVM was a direct map from that. 
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+index f753e04fee99..c0404bcda31b 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_display.c
+@@ -986,6 +986,40 @@ static const struct drm_prop_enum_list amdgpu_dither_enum_list[] =
+ 	{ AMDGPU_FMT_DITHER_ENABLE, "on" },
+ };
+ 
++static const struct drm_prop_enum_list amdgpu_active_pixel_encoding_enum_list[] = {
++	{ PIXEL_ENCODING_UNDEFINED, "undefined" },
++	{ PIXEL_ENCODING_RGB, "RGB" },
++	{ PIXEL_ENCODING_YCBCR422, "YCbCr 4:2:2" },
++	{ PIXEL_ENCODING_YCBCR444, "YCbCr 4:4:4" },
++	{ PIXEL_ENCODING_YCBCR420, "YCbCr 4:2:0" },
++};
++
++static const struct drm_prop_enum_list amdgpu_active_display_color_depth_enum_list[] = {
++	{ COLOR_DEPTH_UNDEFINED, "undefined" },
++	{ COLOR_DEPTH_666, "6 bit" },
++	{ COLOR_DEPTH_888, "8 bit" },
++	{ COLOR_DEPTH_101010, "10 bit" },
++	{ COLOR_DEPTH_121212, "12 bit" },
++	{ COLOR_DEPTH_141414, "14 bit" },
++	{ COLOR_DEPTH_161616, "16 bit" },
++	{ COLOR_DEPTH_999, "9 bit" },
++	{ COLOR_DEPTH_111111, "11 bit" },
++};
++
++static const struct drm_prop_enum_list amdgpu_active_output_color_space_enum_list[] = {
++	{ COLOR_SPACE_UNKNOWN, "unknown" },
++	{ COLOR_SPACE_SRGB, "sRGB" },
++	{ COLOR_SPACE_SRGB_LIMITED, "sRGB limited" },
++	{ COLOR_SPACE_YCBCR601, "YCbCr 601" },
++	{ COLOR_SPACE_YCBCR709, "YCbCr 709" },
++	{ COLOR_SPACE_YCBCR601_LIMITED, "YCbCr 601 limited" },
++	{ COLOR_SPACE_YCBCR709_LIMITED, "YCbCr 709 limited" },
++	{ COLOR_SPACE_2020_RGB_FULLRANGE, "RGB 2020" },
++	{ COLOR_SPACE_2020_RGB_LIMITEDRANGE, "RGB 2020 limited" },
++	{ COLOR_SPACE_2020_YCBCR, "YCbCr 2020" },
++	{ COLOR_SPACE_ADOBERGB, "Adobe RGB" },
++};
++
+ int amdgpu_display_modeset_create_props(struct amdgpu_device *adev)
+ {
+ 	int sz;
+@@ -1038,6 +1072,30 @@ int amdgpu_display_modeset_create_props(struct amdgpu_device *adev)
+ 						  "abm level", 0, 4);
+ 		if (!adev->mode_info.abm_level_property)
+ 			return -ENOMEM;
++
++		sz = ARRAY_SIZE(amdgpu_active_pixel_encoding_enum_list);
++		adev->mode_info.active_pixel_encoding_property =
++			drm_property_create_enum(adev_to_drm(adev), 0,
++				"active pixel encoding",
++				amdgpu_active_pixel_encoding_enum_list, sz);
++		if (!adev->mode_info.active_pixel_encoding_property)
++			return -ENOMEM;
++
++		sz = ARRAY_SIZE(amdgpu_active_display_color_depth_enum_list);
++		adev->mode_info.active_display_color_depth_property =
++			drm_property_create_enum(adev_to_drm(adev), 0,
++				"active display color depth",
++				amdgpu_active_display_color_depth_enum_list, sz);
++		if (!adev->mode_info.active_display_color_depth_property)
++			return -ENOMEM;
++
++		sz = ARRAY_SIZE(amdgpu_active_output_color_space_enum_list);
++		adev->mode_info.active_output_color_space_property =
++			drm_property_create_enum(adev_to_drm(adev), 0,
++				"active output color space",
++				amdgpu_active_output_color_space_enum_list, sz);
++		if (!adev->mode_info.active_output_color_space_property)
++			return -ENOMEM;
+ 	}
+ 
+ 	return 0;
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+index 319cb19e1b99..ad43af6a878d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_mode.h
+@@ -337,6 +337,10 @@ struct amdgpu_mode_info {
+ 	struct drm_property *dither_property;
+ 	/* Adaptive Backlight Modulation (power feature) */
+ 	struct drm_property *abm_level_property;
++	/* Color settings */
++	struct drm_property *active_pixel_encoding_property;
++	struct drm_property *active_display_color_depth_property;
++	struct drm_property *active_output_color_space_property;
+ 	/* hardcoded DFP edid from BIOS */
+ 	struct edid *bios_hardcoded_edid;
+ 	int bios_hardcoded_edid_size;
+diff --git a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+index d699a5cf6c11..89465f74ca59 100644
+--- a/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
++++ b/drivers/gpu/drm/amd/display/amdgpu_dm/amdgpu_dm.c
+@@ -5592,8 +5592,13 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
+ 	struct amdgpu_device *adev = drm_to_adev(dev);
+ 	struct dm_connector_state *dm_state =
+ 		to_dm_connector_state(state);
++	struct dm_crtc_state *dm_crtc_state = NULL;
+ 	int ret = -EINVAL;
+ 
++	if (state->crtc != NULL && state->crtc->state != NULL) {
++		dm_crtc_state = to_dm_crtc_state(state->crtc->state);
++	}
++
+ 	if (property == dev->mode_config.scaling_mode_property) {
+ 		switch (dm_state->scaling) {
+ 		case RMX_CENTER:
+@@ -5623,6 +5628,21 @@ int amdgpu_dm_connector_atomic_get_property(struct drm_connector *connector,
+ 	} else if (property == adev->mode_info.abm_level_property) {
+ 		*val = dm_state->abm_level;
+ 		ret = 0;
++	} else if (property == adev->mode_info.active_pixel_encoding_property) {
++		*val = PIXEL_ENCODING_UNDEFINED;
++		if (dm_crtc_state != NULL && dm_crtc_state->stream != NULL)
++			*val = dm_crtc_state->stream->timing.pixel_encoding;
++		ret = 0;
++	} else if (property == adev->mode_info.active_display_color_depth_property) {
++		*val = COLOR_DEPTH_UNDEFINED;
++		if (dm_crtc_state != NULL && dm_crtc_state->stream != NULL)
++			*val = dm_crtc_state->stream->timing.display_color_depth;
++		ret = 0;
++	} else if (property == adev->mode_info.active_output_color_space_property) {
++		*val = COLOR_SPACE_UNKNOWN;
++		if (dm_crtc_state != NULL && dm_crtc_state->stream != NULL)
++			*val = dm_crtc_state->stream->output_color_space;
++		ret = 0;
+ 	}
+ 
+ 	return ret;
+@@ -7083,6 +7103,22 @@ void amdgpu_dm_connector_init_helper(struct amdgpu_display_manager *dm,
+ 			drm_connector_attach_content_protection_property(&aconnector->base, true);
+ #endif
+ 	}
++
++	if (adev->mode_info.active_pixel_encoding_property) {
++		drm_object_attach_property(&aconnector->base.base,
++			adev->mode_info.active_pixel_encoding_property, 0);
++		DRM_DEBUG_DRIVER("amdgpu: attached active pixel encoding drm property");
++	}
++	if (adev->mode_info.active_display_color_depth_property) {
++		drm_object_attach_property(&aconnector->base.base,
++			adev->mode_info.active_display_color_depth_property, 0);
++		DRM_DEBUG_DRIVER("amdgpu: attached active color depth drm property");
++	}
++	if (adev->mode_info.active_output_color_space_property) {
++		drm_object_attach_property(&aconnector->base.base,
++			adev->mode_info.active_output_color_space_property, 0);
++		DRM_DEBUG_DRIVER("amdgpu: attached active output color space drm property");
++	}
+ }
+ 
+ static int amdgpu_dm_i2c_xfer(struct i2c_adapter *i2c_adap,
+-- 
+2.25.1
 
-> 
-> It also make it a general kernel problem and not just related to the
-> vIOMMU scenario.
-> 
-> > > I think at the uAPI level the callpaths that require allocating a
-> > > PASID from a group of RIDs should be explicit in their intention and
-> > > not implicitly rely on a certain allocator behavior.
-> > 
-> > The difficult part I see is, when one application establishes a path
-> > to one acclerator, we have no knowledge if its going to connect to a
-> > second, third or such. I don't see how this can work reasonably
-> > well. What if PASIDx is allocated for one, but the second RID its
-> > trying to attach already has this PASID allocated?
-> 
-> You mean like some kind of vIOMMU hot plug?
-
-Not vIOMMU hot plug. but an application opens accel1, does a bind to
-allocate a PASID. What i meant was kernel has no information if this needs
-to be a per-RID PASID, or a global PASID. Keeping this global solves the
-other problems or more complex mechanisms to say "Reserve this PASID on all
-accelerators" which seems pretty complicated to implement.
-
-Now are we loosing anything by keeping the PASIDs global? 
-
-As we discussed there is no security issue since the PASID table that hosts 
-these PASIDs for SVM are still per-RID.  For e.g.
-
-app establishes connection to accl1, allocates PASID-X
-   RID for accel1 now has PASID-X and the process mm plummed 
-later app also connects with accl2, now the PASID-X is plummed in for RID
-of accel2.
-
-
-> 
-> > > If you want to get a PASID that can be used with every RID on in your
-> > > /dev/ioasid then ask for that exactly.
-> > 
-> > Correct, but how does guest through vIOMMU driver communicate that intent so uAPI
-> > plumbing can do this? I mean architecturally via IOMMU interfaces? 
-> 
-> I would have to ask for a PASID that has the property it needs. You
-> are saying the property is even bigger than "usable on a group of
-> RIDs" but is actually "global for every RID and IOMMU in the system so
-> it can go into a MSR". Gross, but fine, ask for that explicitly when
-> allocating the PASID.
-
-If one process has a single mm, is that also gross? :-) So a single process
-having a PASID is just an identifier for IOMMU. It just seems like what a
-mm is for a process == PASID for SVM-IOMMU support.
-
-The unanswered question is how do we plumb from vIOMMU without a custom
-allocator to get a system wide PASID? 
-
-The way it works today is if we have a custom allocator registered, that's
-the mechanics to get PASIDs allocated. for Intel vIOMMU it happens to be a
-global unique allocation. If a particular vIOMMU doesn't require, it does
-not have vIOMMU interface, and those naturally get a guest local PASID name
-space. (Im not sure if that's how the allocator works today, but I guess its
-extensible to accomplish a RID local PASID if that's exactly what is
-required)
-
-Cheers,
-Ashok
