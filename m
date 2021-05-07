@@ -2,350 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16105375FB9
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:35:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD6F5375FD3
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 07:42:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231440AbhEGFgW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 01:36:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50214 "EHLO
+        id S233521AbhEGFnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 01:43:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51792 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229666AbhEGFgR (ORCPT
+        with ESMTP id S231649AbhEGFnL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 01:36:17 -0400
-Received: from mail-wr1-x42a.google.com (mail-wr1-x42a.google.com [IPv6:2a00:1450:4864:20::42a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACF25C061574;
-        Thu,  6 May 2021 22:35:05 -0700 (PDT)
-Received: by mail-wr1-x42a.google.com with SMTP id t18so7829695wry.1;
-        Thu, 06 May 2021 22:35:05 -0700 (PDT)
+        Fri, 7 May 2021 01:43:11 -0400
+Received: from mail-lf1-x134.google.com (mail-lf1-x134.google.com [IPv6:2a00:1450:4864:20::134])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3C8AAC061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 22:42:12 -0700 (PDT)
+Received: by mail-lf1-x134.google.com with SMTP id j10so11065856lfb.12
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 22:42:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jz/TlbprL0h8nikAm0l4AeI/5/NdOVeovwtsF+UVjsg=;
-        b=R1VByBYby8ZhBt1AjzhA8YgIb4mM1bP0i/0qJy0c2GtwaYjYIRVAipP8fI+oM+WEff
-         vvMXHeMlSzgTo8oXdWpwB2GkbEpa19goWoXEbxG4K+wspdQojIqzk3aYAiT5aiTCHxnB
-         ZyZitlDtwu6GgPLjS+bURYjH/OhrJy+CVmqQHKPhjlqLNIXYt8X9LXZiJCyEDV/QZbPg
-         csZrAxmI8MRpqDm9sNySUA6axwt+AU8N22/18x69VttKlHVbsnO7Ov8d860tH62awkez
-         VqLb0Woaid3l4Irg2GmnrjS6ySF8W0bCFt0/1FAP7kbMtUMtGnmYblSXgGR+FHB7jiqU
-         jxJQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uUwArXt1iCdXIwHhFgryf7iwp6cge2eaeiWsAF4dcRo=;
+        b=Uk4nH6KS+LeFUC6YRrxgumdVC1SGPzSFqA20jxE/bTyDxq4csREcr4Y+AqI61VtKAi
+         vfPNPB1YSENtEnCfhH1XU/zOIqJpN6mRAw5Q0xGsO2DxvhEbRxbo5UGxRIMe0pgToyzA
+         WHpeMvgwN0hOXM0VUS2AjwVoTX5kAKBCnlvFCIc/4ZmsYVP+AfVhHgjpGo9CU2OScGAI
+         cqNCqW/gq4yrlcWrzgozxZ18SErsQnemoKw8XFeXPIzTcZBZq+yVA1vpItln38T2OQpX
+         9aLG/V1m16W9UxiXhr2wXx5fIiDgrqqF/LdnJp+YU/A4Zf4vtxib9jDD9ODdHGaGOMc4
+         etuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Jz/TlbprL0h8nikAm0l4AeI/5/NdOVeovwtsF+UVjsg=;
-        b=nCM0wyCm7SfCujBClcsWn5mtSdmo4m0PIT0ng/nJ1+1wWLJ3fzbkD5m3G6nR2PxxT5
-         cEpI/tMNr1LXvnl9qf10eN7w9YheXlmnQDTc3wokNckr5gZ1Ew6BBVcuu8ba0HQMUijM
-         AbTIYbgeQBDCuahPuKbsr7q/T70DFeAqaBpiSfr3ZmxgnJN5PlEHyULWQTzrjYoQmw35
-         1so6EEGsSyGgNSLif3T8vf0HvIRSxIFqm/lIF9XPvwjk7dEl75+VO/uFQIOXjK/1vUJ6
-         9esqKlhBWrtoVTzOwpJk9JqntAPe1oDfSFNLbVr4iAwJL9k4GHh1qpyIdD+Uf1EbFAj/
-         pxPQ==
-X-Gm-Message-State: AOAM5306IuGowOtr34Z5Ph0aHPeuVtJn+vg4StmLk7CZdhd+WLOjmF9t
-        3MHjMTWIfL4+XEzXHuuoZZtZItpwxGZT4g==
-X-Google-Smtp-Source: ABdhPJxNxV1DHn3HIxZydfofC32SRqSmyJkrSc0/jdc/4t7zbT667zB+yR8qb8A+RnfZUwnxXopDjg==
-X-Received: by 2002:a05:6000:18a:: with SMTP id p10mr9948479wrx.345.1620365703981;
-        Thu, 06 May 2021 22:35:03 -0700 (PDT)
-Received: from localhost.localdomain (231.red-83-51-243.dynamicip.rima-tde.net. [83.51.243.231])
-        by smtp.gmail.com with ESMTPSA id p5sm5807727wma.45.2021.05.06.22.35.02
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 06 May 2021 22:35:03 -0700 (PDT)
-From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
-To:     devicetree@vger.kernel.org
-Cc:     robh+dt@kernel.org, linux-staging@lists.linux.dev,
-        gregkh@linuxfoundation.org, neil@brown.name,
-        ilya.lipnitskiy@gmail.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] dt-bindings: staging: mt7621-pci: PCIe binding documentation for MT76721 SoCs
-Date:   Fri,  7 May 2021 07:35:01 +0200
-Message-Id: <20210507053501.24180-1-sergio.paracuellos@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uUwArXt1iCdXIwHhFgryf7iwp6cge2eaeiWsAF4dcRo=;
+        b=PWvNE0sRvHTs1E0JRJTmRPq0dlRi7OhJk3ca3fw5TF/p3K8qdmB1Cq5iGdedlxBlx0
+         5sCOnZuBF4gTEpdPitBJv+BCp8CvYGTpu98Qj5IWDtuij7GGhDyVZ1VFja1v7DM8zoFl
+         RGqQBHiJ6qljBfTnVA6fN/0wmYdc5d5cKtEgX8chGbAr5SUjHRySrh5Zx6RyuVCRZX3p
+         4MRRiDnmcWxGztlvFPH/WIBmt3sORWzUFA2LfM+fCYEQVGME3+xditd7YxY+EzEQmv4X
+         sePT4Yo98xNeqO51tCKfCu6Eh3ez27q9h0v4zg0XVaDfPpmeHkjvmlfTn8sBQbHyd0er
+         qRCg==
+X-Gm-Message-State: AOAM5317m5zsSCxpHf0t+p0hRQrc6x1Gta2C7oZoRHMuGtvQ/JuYGuHy
+        2LgAPDSizVkroBMSozKOHnop0ciq9AJ82cXc2sg=
+X-Google-Smtp-Source: ABdhPJyDk0FNvTIUXdXE+nCjY54cKktl1JwQNERc3u38PcT+xPgRYthrW2MW/Cdr8sgKiTAWkUpW9t09PCHGGLwhKuk=
+X-Received: by 2002:a05:6512:5d6:: with SMTP id o22mr5343267lfo.587.1620366130789;
+ Thu, 06 May 2021 22:42:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1619491400-1904-1-git-send-email-sxwjean@me.com>
+ <20210427025358.GV235567@casper.infradead.org> <CAEVVKH_wZJvNAgFEF1OxThxN3AC4mopZ+Pu2GC0Hn_-2JOfC5Q@mail.gmail.com>
+ <20210427033632.GW235567@casper.infradead.org> <CAEVVKH8ZOt3XSPy1VA1n+MKmqucgcnxjusfhoTbwkitOkErrrw@mail.gmail.com>
+ <CAEVVKH-7qRVRKsFmzc9NnhS8Lae5Yq=WhSparOmR3dZmD3PkAw@mail.gmail.com>
+ <20210427112527.GX235567@casper.infradead.org> <CAEVVKH8AFMqwEcpp=7h7k-_BYqwU+gutoUMNM93pnGPiW=u+gg@mail.gmail.com>
+ <c08e5e63-f66c-211c-5a9b-03ea12ee10bf@suse.cz>
+In-Reply-To: <c08e5e63-f66c-211c-5a9b-03ea12ee10bf@suse.cz>
+From:   Xiongwei Song <sxwjean@gmail.com>
+Date:   Fri, 7 May 2021 13:41:44 +0800
+Message-ID: <CAEVVKH_4zDY8umsM+7B0GXbCTqipGwBmA92akPeum-kBZfrD8g@mail.gmail.com>
+Subject: Re: [PATCH] mm: append __GFP_COMP flag for trace_malloc
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        Xiongwei Song <sxwjean@me.com>, cl@linux.com,
+        penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com,
+        akpm@linux-foundation.org, linux-mm@kvack.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add device tree binding documentation for PCIe in MT7621 SoCs.
+On Mon, May 3, 2021 at 8:35 PM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 4/28/21 5:05 AM, Xiongwei Song wrote:
+> > On Tue, Apr 27, 2021 at 7:26 PM Matthew Wilcox <willy@infradead.org> wrote:
+> >>
+> >> On Tue, Apr 27, 2021 at 01:30:48PM +0800, Xiongwei Song wrote:
+> >> > Hi Mattew,
+> >> >
+> >> > One more thing I should explain, the kmalloc_order() appends the
+> >> > __GFP_COMP flags,
+> >> > not by the caller.
+> >> >
+> >> > void *kmalloc_order(size_t size, gfp_t flags, unsigned int order)
+> >> > {
+> >> > ...........................................................
+> >> >
+> >> > flags |= __GFP_COMP;
+> >> > page = alloc_pages(flags, order);
+> >> > ...........................................................
+> >> > return ret;
+> >> > }
+> >> > EXPORT_SYMBOL(kmalloc_order);
+> >> >
+> >> > #ifdef CONFIG_TRACING
+> >> > void *kmalloc_order_trace(size_t size, gfp_t flags, unsigned int order)
+> >> > {
+> >> > void *ret = kmalloc_order(size, flags, order);
+> >> > trace_kmalloc(_RET_IP_, ret, size, PAGE_SIZE << order, flags);
+> >> > return ret;
+> >> > }
+> >> > EXPORT_SYMBOL(kmalloc_order_trace);
+> >> > #endif
+> >>
+> >> Yes, I understood that.  What I don't understand is why appending the
+> >> __GFP_COMP to the trace would have been less confusing for you.
+> >>
+> >> Suppose I have some code which calls:
+> >>
+> >>         kmalloc(10 * 1024, GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC);
+> >>
+> >> and I see in my logs
+> >>
+> >>      0.08%  call_site=ffffffff851d0cb0 ptr=0xffff8c04a4ca0000 bytes_req=10176 bytes_alloc=16384 gfp_flags=GFP_ATOMIC|__GFP_NOWARN|__GFP_NOMEMALLOC|__GFP_COMP
+> >>
+> >> That seems to me _more_ confusing because I would wonder "Where did that
+> >> __GFP_COMP come from?"
+> >
+> > Thank you for the comments. But I disagree.
+>
+> FTR, I agree with Matthew. This is a tracepoint for kmalloc() so I would expect
+> to see what flags were passed to kmalloc().
+> If I wanted to see how the flags translated to page allocator's flags, I would
+> have used a page allocator's tracepoint which would show me that.
 
-Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
----
+Make sense. Thank you.
 
-Changes in v3:
-    - Make use of 'interrupt-map' and 'interrupt-map-mask'
-    - Remove bus-range from parent and child nodes
-
-Changes in v2:
-    - fix SoC name from subject line
-
- .../bindings/pci/mediatek,mt7621-pci.yaml     | 149 ++++++++++++++++++
- .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 ------------
- 2 files changed, 149 insertions(+), 104 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
- delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
-
-diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-new file mode 100644
-index 000000000000..7f5f9d583032
---- /dev/null
-+++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
-@@ -0,0 +1,149 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/pci/mediatek,mt7621-pci.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: MediaTek MT7621 PCIe controller
-+
-+maintainers:
-+  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
-+
-+description: |+
-+  MediaTek MT7621 PCIe subsys supports single Root complex (RC)
-+  with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link
-+
-+allOf:
-+  - $ref: /schemas/pci/pci-bus.yaml#
-+
-+properties:
-+  compatible:
-+    const: mediatek,mt7621-pci
-+
-+  reg:
-+    items:
-+      - description: host-pci bridge registers
-+      - description: pcie port 0 RC control registers
-+      - description: pcie port 1 RC control registers
-+      - description: pcie port 2 RC control registers
-+
-+  ranges:
-+    maxItems: 2
-+
-+  resets:
-+    items:
-+      - description: pcie port 0 reset.
-+      - description: pcie port 1 reset.
-+      - description: pcie port 2 reset.
-+
-+  reset-names:
-+    items:
-+      - const: pcie0
-+      - const: pcie1
-+      - const: pcie2
-+
-+  clocks:
-+    items:
-+      - description: pcie port 0 clock.
-+      - description: pcie port 1 clock.
-+      - description: pcie port 2 clock.
-+
-+  clock-names:
-+    items:
-+      - const: pcie0
-+      - const: pcie1
-+      - const: pcie2
-+
-+  phys:
-+    items:
-+      - description: Dual-ported phy for pcie port 0 and 1.
-+      - description: Phy for pcie port 2.
-+
-+  phy-names:
-+    items:
-+      - const: pcie-phy0
-+      - const: pcie-phy2
-+
-+required:
-+  - compatible
-+  - reg
-+  - ranges
-+  - "#interrupt-cells"
-+  - interrupt-map-mask
-+  - interrupt-map
-+  - resets
-+  - reset-names
-+  - clocks
-+  - clock-names
-+  - phys
-+  - phy-names
-+  - reset-gpios
-+
-+unevaluatedProperties: false
-+
-+examples:
-+  - |
-+    #include <dt-bindings/gpio/gpio.h>
-+    #include <dt-bindings/interrupt-controller/mips-gic.h>
-+
-+    pcie: pcie@1e140000 {
-+        compatible = "mediatek,mt7621-pci";
-+        reg = <0x1e140000 0x100>,
-+              <0x1e142000 0x100>,
-+              <0x1e143000 0x100>,
-+              <0x1e144000 0x100>;
-+
-+        #address-cells = <3>;
-+        #size-cells = <2>;
-+        pinctrl-names = "default";
-+        pinctrl-0 = <&pcie_pins>;
-+        device_type = "pci";
-+        ranges = <0x02000000 0 0x00000000 0x60000000 0 0x10000000>,  /* pci memory */
-+                 <0x01000000 0 0x00000000 0x1e160000 0 0x00010000>;  /* io space */
-+        #interrupt-cells = <1>;
-+        interrupt-map-mask = <0xF800 0 0 0>;
-+        interrupt-map = <0x0000 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x0800 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>,
-+                        <0x1000 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
-+        resets = <&rstctrl 24>, <&rstctrl 25>, <&rstctrl 26>;
-+        reset-names = "pcie0", "pcie1", "pcie2";
-+        clocks = <&clkctrl 24>, <&clkctrl 25>, <&clkctrl 26>;
-+        clock-names = "pcie0", "pcie1", "pcie2";
-+        phys = <&pcie0_phy 1>, <&pcie2_phy 0>;
-+        phy-names = "pcie-phy0", "pcie-phy2";
-+        reset-gpios = <&gpio 19 GPIO_ACTIVE_LOW>;
-+
-+        pcie@0,0 {
-+            reg = <0x0000 0 0 0 0>;
-+            #address-cells = <3>;
-+            #size-cells = <2>;
-+            device_type = "pci";
-+            #interrupt-cells = <1>;
-+            interrupt-map-mask = <0 0 0 0>;
-+            interrupt-map = <0 0 0 0 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>;
-+            ranges;
-+        };
-+
-+        pcie@1,0 {
-+            reg = <0x0800 0 0 0 0>;
-+            #address-cells = <3>;
-+            #size-cells = <2>;
-+            device_type = "pci";
-+            #interrupt-cells = <1>;
-+            interrupt-map-mask = <0 0 0 0>;
-+            interrupt-map = <0 0 0 0 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>;
-+            ranges;
-+        };
-+
-+        pcie@2,0 {
-+            reg = <0x1000 0 0 0 0>;
-+            #address-cells = <3>;
-+            #size-cells = <2>;
-+            device_type = "pci";
-+            #interrupt-cells = <1>;
-+            interrupt-map-mask = <0 0 0 0>;
-+            interrupt-map = <0 0 0 0 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
-+            ranges;
-+        };
-+    };
-+...
-diff --git a/drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt b/drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
-deleted file mode 100644
-index 327a68267309..000000000000
---- a/drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
-+++ /dev/null
-@@ -1,104 +0,0 @@
--MediaTek MT7621 PCIe controller
--
--Required properties:
--- compatible: "mediatek,mt7621-pci"
--- device_type: Must be "pci"
--- reg: Base addresses and lengths of the PCIe subsys and root ports.
--- bus-range: Range of bus numbers associated with this controller.
--- #address-cells: Address representation for root ports (must be 3)
--- pinctrl-names : The pin control state names.
--- pinctrl-0: The "default" pinctrl state.
--- #size-cells: Size representation for root ports (must be 2)
--- ranges: Ranges for the PCI memory and I/O regions.
--- #interrupt-cells: Must be 1
--- interrupt-map-mask and interrupt-map: Standard PCI IRQ mapping properties.
--  Please refer to the standard PCI bus binding document for a more detailed
--  explanation.
--- status: either "disabled" or "okay".
--- resets: Must contain an entry for each entry in reset-names.
--  See ../reset/reset.txt for details.
--- reset-names: Must be "pcie0", "pcie1", "pcieN"... based on the number of
--  root ports.
--- clocks: Must contain an entry for each entry in clock-names.
--  See ../clocks/clock-bindings.txt for details.
--- clock-names: Must be "pcie0", "pcie1", "pcieN"... based on the number of
--  root ports.
--- reset-gpios: GPIO specs for the reset pins.
--
--In addition, the device tree node must have sub-nodes describing each PCIe port
--interface, having the following mandatory properties:
--
--Required properties:
--- reg: Only the first four bytes are used to refer to the correct bus number
--      and device number.
--- #address-cells: Must be 3
--- #size-cells: Must be 2
--- ranges: Sub-ranges distributed from the PCIe controller node. An empty
--  property is sufficient.
--- bus-range: Range of bus numbers associated with this port.
--
--Example for MT7621:
--
--	pcie: pcie@1e140000 {
--		compatible = "mediatek,mt7621-pci";
--        reg = <0x1e140000 0x100    /* host-pci bridge registers */
--               0x1e142000 0x100    /* pcie port 0 RC control registers */
--               0x1e143000 0x100    /* pcie port 1 RC control registers */
--               0x1e144000 0x100>;  /* pcie port 2 RC control registers */
--
--		#address-cells = <3>;
--		#size-cells = <2>;
--
--		pinctrl-names = "default";
--		pinctrl-0 = <&pcie_pins>;
--
--		device_type = "pci";
--
--		bus-range = <0 255>;
--		ranges = <
--			0x02000000 0 0x00000000 0x60000000 0 0x10000000 /* pci memory */
--			0x01000000 0 0x00000000 0x1e160000 0 0x00010000 /* io space */
--		>;
--
--		#interrupt-cells = <1>;
--		interrupt-map-mask = <0xF0000 0 0 1>;
--		interrupt-map = <0x10000 0 0 1 &gic GIC_SHARED 4 IRQ_TYPE_LEVEL_HIGH>,
--				<0x20000 0 0 1 &gic GIC_SHARED 24 IRQ_TYPE_LEVEL_HIGH>,
--				<0x30000 0 0 1 &gic GIC_SHARED 25 IRQ_TYPE_LEVEL_HIGH>;
--
--		status = "disabled";
--
--		resets = <&rstctrl 24 &rstctrl 25 &rstctrl 26>;
--		reset-names = "pcie0", "pcie1", "pcie2";
--		clocks = <&clkctrl 24 &clkctrl 25 &clkctrl 26>;
--		clock-names = "pcie0", "pcie1", "pcie2";
--
--		reset-gpios = <&gpio 19 GPIO_ACTIVE_LOW>,
--				<&gpio 8 GPIO_ACTIVE_LOW>,
--				<&gpio 7 GPIO_ACTIVE_LOW>;
--
--		pcie@0,0 {
--			reg = <0x0000 0 0 0 0>;
--			#address-cells = <3>;
--			#size-cells = <2>;
--			ranges;
--			bus-range = <0x00 0xff>;
--		};
--
--		pcie@1,0 {
--			reg = <0x0800 0 0 0 0>;
--			#address-cells = <3>;
--			#size-cells = <2>;
--			ranges;
--			bus-range = <0x00 0xff>;
--		};
--
--		pcie@2,0 {
--			reg = <0x1000 0 0 0 0>;
--			#address-cells = <3>;
--			#size-cells = <2>;
--			ranges;
--			bus-range = <0x00 0xff>;
--		};
--	};
--
--- 
-2.25.1
-
+> > When I use trace, I hope I can get the precise data rather than something
+> > changed that I don't know , then I can get the correct conclusion or
+> > direction on my issue.
+>
+> It's precise from the point of the caller.
+>
+> > Here my question is what the trace events are for if they don't provide the
+> > real situation? I think that's not graceful and friendly.
+> >
+> > From my perspective, it'd be better to know my flags changed before checking
+> > code lines one by one. In other words, I need a warning to reminder me on this,
+> > then I can know quickly my process might do some incorrect things.
+>
+> Your process should not care about __GFP_COMP if you use properly
+> kmalloc()+kfree(). Once you start caring about __GFP_COMP, you should be using
+> page allocator's API, not kmalloc().
+>
+> > Regards,
+> > Xiongwei
+> >
+>
