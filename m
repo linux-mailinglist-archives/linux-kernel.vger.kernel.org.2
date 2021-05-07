@@ -2,97 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97AF9375ED8
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 04:34:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B4D375EE3
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 04:53:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234061AbhEGCf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 22:35:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233714AbhEGCf1 (ORCPT
+        id S234104AbhEGCyt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 22:54:49 -0400
+Received: from mailgw02.mediatek.com ([210.61.82.184]:44095 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229663AbhEGCyr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 22:35:27 -0400
-Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4375C061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 19:34:26 -0700 (PDT)
-Received: by mail-lj1-x22d.google.com with SMTP id u20so9605404lja.13
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 19:34:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=v5T1rycNE4HG9oZUkYXvP5llXs2aWf6PeX0NDr3FT7o=;
-        b=g8wIE8bJtPt/5As/LkKG+NNYK+6QslXCgx/RIl27/cKjeAPerak5tfmzD1KDmSxsw+
-         NB+H/eAsLHWDUSIxBapdT4cpjnTRn+ggi5kWlTPnx7QEnMOcG82cBcukDZXrVcPvkxSW
-         s7hdCOAKGTPKgRkbKO3HZt1mLv5NflNScJwJE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=v5T1rycNE4HG9oZUkYXvP5llXs2aWf6PeX0NDr3FT7o=;
-        b=g5wqgdJ0SidfkCrb+1ZkUJhkfxUKzq91sSlSKWSVNOK5rXDdfw8LSYM7Gg0J4j0pM6
-         TXAfgE1ReBE19PiXYtkq2m6uLF5IuUgO7RmmNtYLrXrHfKqzcGe2Ywh1x9IWBjRVt7tC
-         HiZ3e1Zl3pQZs2dsr7uuBPxxipwlLo6vYzZIVSoY9bKkEu5lFwhH9pNym9Cddd2ZSXbt
-         092woySu1w/AthPAaWzq0sJVJko9Fzhsvq+nr00vuQvsC9GQW56P/XFNnNsXmZ1F8GhI
-         tgaHe4sW044gUulj2WsHr8H+RxyD93p2XS2o36FUEOHx1NG9wcdeBTDbCDYqGjQeahRN
-         nqFQ==
-X-Gm-Message-State: AOAM531oiWxKLRYcoZlG0Wk0VNFk2vfVFh3gAO3cFMhnZWnP3RWMDr2e
-        PCHCV9HQ6NtLN6IxBBP2XuEPC+QyCsOcj2ni
-X-Google-Smtp-Source: ABdhPJxS9Fk9ISkwUCzCU64ga8KMeGe5erA2m2A0+aKdZeIL9XYPUsuHjx+C8SJeWFSLAxLRVB9pzQ==
-X-Received: by 2002:a2e:bb9e:: with SMTP id y30mr2437134lje.135.1620354865313;
-        Thu, 06 May 2021 19:34:25 -0700 (PDT)
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
-        by smtp.gmail.com with ESMTPSA id y22sm1111704lfl.36.2021.05.06.19.34.23
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 19:34:24 -0700 (PDT)
-Received: by mail-lj1-f174.google.com with SMTP id e12so9650774ljn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 19:34:23 -0700 (PDT)
-X-Received: by 2002:a2e:954a:: with SMTP id t10mr5646469ljh.411.1620354863575;
- Thu, 06 May 2021 19:34:23 -0700 (PDT)
+        Thu, 6 May 2021 22:54:47 -0400
+X-UUID: 85cb6e1275724f86bd0e99d5a0625899-20210507
+X-UUID: 85cb6e1275724f86bd0e99d5a0625899-20210507
+Received: from mtkmbs10n1.mediatek.inc [(172.21.101.34)] by mailgw02.mediatek.com
+        (envelope-from <john.wei@mediatek.com>)
+        (Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+        with ESMTP id 1295018239; Fri, 07 May 2021 10:53:46 +0800
+Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Fri, 7 May 2021 10:53:44 +0800
+Received: from mtkswgap22.mediatek.inc (172.21.77.33) by MTKCAS06.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Fri, 7 May 2021 10:53:44 +0800
+From:   <john.wei@mediatek.com>
+To:     <john.wei@mediatek.com>, <louis.kuo@mediak.com>,
+        <mchehab@kernel.org>, <matthias.bgg@gmail.com>
+CC:     <linux-media@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>
+Subject: [RFC PATCH V0 0/2] media: v4l2: extend framework to support advanced feature of Mediatek Camsys driver
+Date:   Fri, 7 May 2021 10:53:35 +0800
+Message-ID: <1620356017-26486-1-git-send-email-john.wei@mediatek.com>
+X-Mailer: git-send-email 1.7.9.5
 MIME-Version: 1.0
-References: <20210506232537.165788-1-peterx@redhat.com> <20210506232537.165788-3-peterx@redhat.com>
-In-Reply-To: <20210506232537.165788-3-peterx@redhat.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 6 May 2021 19:34:07 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiNwNz33SEdZixX62XyEx4ZPPbkkNw+V4nn+9=YLc2Acw@mail.gmail.com>
-Message-ID: <CAHk-=wiNwNz33SEdZixX62XyEx4ZPPbkkNw+V4nn+9=YLc2Acw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] mm: gup: allow FOLL_PIN to scale in SMP
-To:     Peter Xu <peterx@redhat.com>
-Cc:     Linux-MM <linux-mm@kvack.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Hugh Dickins <hughd@google.com>,
-        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 4:25 PM Peter Xu <peterx@redhat.com> wrote:
->
-> +       if (flags & FOLL_PIN && !atomic_read(&mm->has_pinned))
+Hello,
 
-Please add parentheses to clarify code like this and make the grouping
-much more visually obvious.
+This is the first version of the RFC patch series to v4l2 and media framework
+to support virtual channel (an advanced feature of MIPI CSI). Virtual channel
+was used commonly among modern image sensor. It was used to transfer
+metadata of an image such as statistical data of AE or AF.Some advanced
+features of camera such as HDR (High dynamic range), PDAF (Phase Detection
+Auto Focus) were achieved by virtual channel. Medaitek made some modification
+to frame descriptor based on https://patchwork.kernel.org/patch/10875875/ and
+https://patchwork.kernel.org/patch/10875875/.We extend the struct
+v4l2_mbus_frame_desc_entry by add enable, hsize, vsize and user_data_desc.
+With this modification, frame descriptor are now more powerful to meet all
+kinds of need among different applications. Here is an example that we use
+frame descriptor to describe all data streams in a frame output by a
+ stagger sensor.
 
-Yes, yes, '&' has higher precedence than '&&'. This is not about the
-compiler, this is about the humans reading it. So please write it as
+static struct v4l2_mbus_frame_desc_entry frame_desc_cus1[] = {
+        {
+                .bus.csi2 = {
+                        .channel = 0,
+                        .data_type = 0x2b,
+                        .enable = 1,
+                        .hsize = 0xF00,
+                        .vsize = 0x870,
+                        .user_data_desc = V4L2_MBUS_CSI2_USER_DEFINED_DATA_DESC_HDR_LE,
+                },
+        },
+        {
+                .bus.csi2 = {
+                        .channel = 1,
+                        .data_type = 0x2b,
+                        .enable = 1,
+                        .hsize = 0xF00,
+                        .vsize = 0x870,
+                        .user_data_desc = V4L2_MBUS_CSI2_USER_DEFINED_DATA_DESC_HDR_SE,
+                },
+        },
+};
 
-        if ((flags & FOLL_PIN) && !atomic_read(&mm->has_pinned))
+The first data stream, data for long exposure was transfer by channel 0 with
+data type 0x2b and the resolution was 0xF00 by horizontal and 0x870 by vertical.
+The second data stream, data for short exposure was transfer by channel 1
+with data type 0x2b and the resolution was also 0xF00 by horizontal and 0x870
+by vertical. Both long exposure and short exposure data will be fused in ISP
+stage to output a HDR image.
 
-instead (this problem remains - and the fix is the same - in the 3/3 patch).
+  media: v4l2: Add fields to frame descriptors
+  media: v4l2-ctrl: Add user defined base for ISP user control
 
-Otherwise the series looks fine to me (although admittedly I do find
-the commit message to be ridiculously verbose for such a trivial patch
-- at some point the actual _point_ if it all gets hidden in the long
-commit message).
+ include/media/v4l2-subdev.h        |   25 ++++++++++++++++++++++++-
+ include/uapi/linux/v4l2-controls.h |   10 ++++++++++
+ 2 files changed, 34 insertions(+), 1 deletion(-)
 
-             Linus
