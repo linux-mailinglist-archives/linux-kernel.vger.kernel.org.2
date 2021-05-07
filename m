@@ -2,134 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BCCF37606D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 08:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08BC537606F
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 08:34:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230410AbhEGGft (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 02:35:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229758AbhEGGfr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 02:35:47 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8422CC061574
-        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 23:34:47 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id n138so11276000lfa.3
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 23:34:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=P1t6g0zGx4VeNDuDUeIRnnzjEVtINE776QR3EkBQN80=;
-        b=Bxg/Jsg363PqjZUUYaniGWlIExcV/R7L4z1GtfR/+XZpDv+bOqMxyyPg1B6ckjzcDB
-         SwoW3LgtjtdyP82Tk4B1OmFdoISOu6P/knk8iViNNsawmufe+EqVqwpSHGjoEZ34G2/U
-         JiIZJqnP3JRs9S+F5jvLR6sQJX4GzWr9pZ14k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=P1t6g0zGx4VeNDuDUeIRnnzjEVtINE776QR3EkBQN80=;
-        b=TOhLBOR2EO2lrkPL1/eVfHbnC/UlFhXnPXB+7ZnmuawZ4dhDg3lo6Fy5GMuIpaFMTG
-         Ym4yI/DL9y4kEbP3tm0UmnGGyxBsPyr7/80gIeHm1+iKqUYxEkuJOEkhiUGlDI3K1sBZ
-         Za0xyA8Rj1YRmgD4/wOjoHeCL3q3LSkKR4TzWwM04lxkqKiGjGptncyP9i4xkmqh3TMf
-         EaIDavMb1UR2w9LvMDvYiX8/phrTYu/cwPMiDSP+x0vUi/g48sr/zfGNY8AqOhle9R8A
-         5V6dtII7wmUUTzSr4R3WMdVxAhy9NoN3yQIGd9gkxk1kJtu4B2ZhneyvwDlxo4A8ewU1
-         b/9A==
-X-Gm-Message-State: AOAM532tny4gH1U299fDhEd/jGelNNbtFQoE9K1gApJ/OSaRU4G+QfQu
-        1Y05iLbWcg86r156xal3gNqNVNhag2I3ExSdFhk=
-X-Google-Smtp-Source: ABdhPJxCZ+luUxaG3Uw4blEH1Uugs/2IQarkF7AV+BHji9VTWAALfFaRCxldTKpY+yzpya2/+u0t8g==
-X-Received: by 2002:a05:6512:219:: with SMTP id a25mr5314928lfo.504.1620369285788;
-        Thu, 06 May 2021 23:34:45 -0700 (PDT)
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com. [209.85.208.177])
-        by smtp.gmail.com with ESMTPSA id z11sm1716830ljc.121.2021.05.06.23.34.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 06 May 2021 23:34:44 -0700 (PDT)
-Received: by mail-lj1-f177.google.com with SMTP id e12so10175438ljn.2
-        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 23:34:44 -0700 (PDT)
-X-Received: by 2002:a05:651c:1311:: with SMTP id u17mr6262874lja.48.1620369284513;
- Thu, 06 May 2021 23:34:44 -0700 (PDT)
-MIME-Version: 1.0
-References: <20210506180126.03e1baee7ca52bedb6cc6003@linux-foundation.org>
- <20210507010213.V8MhqooKS%akpm@linux-foundation.org> <CAHk-=wjKQZczi-J0rEUoPS+=Q6gCSpr3UmWzh-L8Qs9WGGUHuA@mail.gmail.com>
- <YJTPEXsvTs7QXIBx@localhost.localdomain>
-In-Reply-To: <YJTPEXsvTs7QXIBx@localhost.localdomain>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Thu, 6 May 2021 23:34:28 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgd4eiWFC=Lxi1cMyLNGPZUQsWSJfVyCf6h8gnFr-ekgQ@mail.gmail.com>
-Message-ID: <CAHk-=wgd4eiWFC=Lxi1cMyLNGPZUQsWSJfVyCf6h8gnFr-ekgQ@mail.gmail.com>
-Subject: Re: [patch 04/91] proc: save LOC in __xlate_proc_name()
-To:     Alexey Dobriyan <adobriyan@gmail.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S232974AbhEGGfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 02:35:54 -0400
+Received: from m43-7.mailgun.net ([69.72.43.7]:14810 "EHLO m43-7.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229758AbhEGGfx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 02:35:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620369294; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=r8Izzb0AxTyu35PXx43nBPtJjj5UDakJZVnGgFYktPY=; b=GXJAHBYF8tVC5yOnsLlutTD46qrXNfZ7+nIUjMAFjX2/zrfEzFIB3ig1viNvVo5WCkIOUG03
+ CgxQ/WZS6UmaGhGrTyLWwzvFQHzVJkHvD1KGo3iaFbg73/eeE4hhbzg0kFEkHnZJvI1LKBXw
+ ZFpb7Y32sLMXGPRMw8vcrSWspo0=
+X-Mailgun-Sending-Ip: 69.72.43.7
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 6094df8b03cfff345240e6bb (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 07 May 2021 06:34:51
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C4032C43143; Fri,  7 May 2021 06:34:50 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from wcheng-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03685C4338A;
+        Fri,  7 May 2021 06:34:49 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 03685C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+From:   Wesley Cheng <wcheng@codeaurora.org>
+To:     balbi@kernel.org, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thinh.Nguyen@synopsys.com, jackp@codeaurora.org,
+        Wesley Cheng <wcheng@codeaurora.org>
+Subject: [PATCH] usb: dwc3: gadget: Return success always for kick transfer in ep queue
+Date:   Thu,  6 May 2021 23:34:47 -0700
+Message-Id: <1620369287-27492-1-git-send-email-wcheng@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 10:24 PM Alexey Dobriyan <adobriyan@gmail.com> wrote:
->
-> On Thu, May 06, 2021 at 07:24:36PM -0700, Linus Torvalds wrote:
-> > ..
-> > > +       while ((next = strchr(cp, '/'))) {
-> >
-> > Please don't do this.
->
-> It is actually how it should be done.
+If an error is received when issuing a start or update transfer
+command, the error handler will stop all active requests (including
+the current USB request), and call dwc3_gadget_giveback() to notify
+function drivers of the requests which have been stopped.  Avoid
+returning an error for kick transfer during EP queue, to remove
+duplicate cleanup operations on the request being queued.
 
-No, Alexey, it really isn't.
+Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+---
+Changes in v1:
+ - Renamed commit title due to new implementation
+ - Return success always for kick transfer during ep queue
 
-> Kernel has such code in other places
+Previous patchset:
+https://lore.kernel.org/linux-usb/875yzxibur.fsf@kernel.org/T/#t
 
-.. and then you show that you do not understand the problem at all.
+ drivers/usb/dwc3/gadget.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
 
-It's the unacceptable "double parentheses" disease I'm talking about.
-The "other places" you bring up DO NOT DO THAT.
+diff --git a/drivers/usb/dwc3/gadget.c b/drivers/usb/dwc3/gadget.c
+index dd80e5c..a5b7fd9 100644
+--- a/drivers/usb/dwc3/gadget.c
++++ b/drivers/usb/dwc3/gadget.c
+@@ -1684,7 +1684,9 @@ static int __dwc3_gadget_ep_queue(struct dwc3_ep *dep, struct dwc3_request *req)
+ 		}
+ 	}
+ 
+-	return __dwc3_gadget_kick_transfer(dep);
++	__dwc3_gadget_kick_transfer(dep);
++
++	return 0;
+ }
+ 
+ static int dwc3_gadget_ep_queue(struct usb_ep *ep, struct usb_request *request,
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> "while" loop is no different.
-
-This is not at all about the while loop. Comprende?
-
-We don't do
-
-   if ((a = b)) ..
-
-or
-
-   while ((a = b)) ..
-
-or anything like that.
-
-Why? Because that is pure and utter crazy garbage. The above syntax is
-just insane.
-
-> I never saw this warning. I just wrote double parenth knowing the
-> warning will be emitted. It's an old warning.
-
-Yes, and you picked the wrong solution for it. You picked the "write
-bad code just to make the warning go away".
-
-We don't make warnings go away by writing insane and bad code. We
-write sane code.
-
-So I repeat:
-
-> > The proper way to write this is
-> >
-> >           while ((next = strchr(cp, '/')) != NULL) {
-
-Notice the difference?
-
-Because the "hide a warning by adding random parentheses" is not the
-way we do things in the kernel.
-
-So yes, we also write
-
-    while (next) {..
-
-and you are correct that this case doesn't need the " != NULL".
-
-But notice how it also doesn't need the crazy extra parentheses?
-
-           Linus
