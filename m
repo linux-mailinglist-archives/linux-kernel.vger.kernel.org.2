@@ -2,203 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 909313767BD
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:13:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725553767D4
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:20:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234345AbhEGPOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 11:14:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38264 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233959AbhEGPOg (ORCPT
+        id S235405AbhEGPVi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 11:21:38 -0400
+Received: from mx08-00178001.pphosted.com ([91.207.212.93]:45832 "EHLO
+        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S234057AbhEGPVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 11:14:36 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA8BCC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 08:13:36 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1620400413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DLZLSWlcOKN7FzT4MMQSgEtnpKbrHYc0tKz+8iP5Taw=;
-        b=QIzM1sz3UM6oWI5XhrR+vR7pvVI23nABQn/2cspSbKghmEe4Ss6cc6nNwShvsw/MCbhwSj
-        OB2qD7Ge+fuySto663rHhQ1/PVIXaifkFSOG4gbMBKAVow8g6tsVK67mTGgvGn/+7SzJrC
-        dIhyTyWJ9vmVG/FUZJSkneZxsGnmKgpRo0VOu6ynJUHxlFRxuAr70g5K4BhDtKLHEW2JUY
-        7tRvOKBr1ynE2JoLw989uHMpbuFIdOtzuqHfawezSFs73PlUj0Zlw8VBm2VzT28qjqVo6p
-        B/lm+vj5it6337WmMWdir7A9IohcRksiUvUfYVL39Q+qqc/hXdUMfYdCPaUorQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1620400413;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=DLZLSWlcOKN7FzT4MMQSgEtnpKbrHYc0tKz+8iP5Taw=;
-        b=rxz4a7WkZvo8qQ0exe2xV4aVB30RepQyqcZJW6V1kgg7l4st1i7AB9SIumvSEFRs3pex8y
-        Kj7hpmcUGEBjA6Bg==
-To:     Ramakrishna Saripalli <rsaripal@amd.com>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org, mingo@redhat.com,
-        bp@alien8.de, hpa@zytor.com, Jonathan Corbet <corbet@lwn.net>,
-        bsd@redhat.com, rsaripal@amd.com,
-        Josh Poimboeuf <jpoimboe@redhat.com>
-Subject: Re: [PATCH v5 1/1] x86/cpufeatures: Implement Predictive Store Forwarding control.
-In-Reply-To: <20210505190923.276051-2-rsaripal@amd.com>
-References: <20210505190923.276051-1-rsaripal@amd.com> <20210505190923.276051-2-rsaripal@amd.com>
-Date:   Fri, 07 May 2021 17:13:33 +0200
-Message-ID: <87wnsamvaa.ffs@nanos.tec.linutronix.de>
+        Fri, 7 May 2021 11:21:32 -0400
+Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
+        by mx07-00178001.pphosted.com (8.16.0.43/8.16.0.43) with SMTP id 147FDCsu005115;
+        Fri, 7 May 2021 17:20:10 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foss.st.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=selector1;
+ bh=ZkGeTUEAKBO08rb9KF3t1bgdoda2RV7ah1ty+Jk5bMg=;
+ b=wQxmP3g3Q/kGPs8FlI/MoDyQrPMbAxqIggmGeMPWoSCbtjTKPBx/HWQR/Fnbu0JR9adO
+ lllu4GbanYSd+MBa5xO9LoJIBmhk91ccrvh6fQ3Qn8gRG/HldBaHaYgRV49YzKmcFbkU
+ nRbjgpW1Vm096elOMSu4LOYDiw2/7dwN4mKy9UK0xYGdkXE/EEI6c8e6jeeRKzqJjyyi
+ vWPgODyz6wMKUE9khgYy0sTc5acElgYN0+6m3u76vAivHMlUnznku4aCJPu3HNXYJJD5
+ gNooGZb8NTRHS1G71gncugwLnd/0MsVkadardp3jJ2elZzb5ehSnDwCB/aAdtnhUOZwq 9Q== 
+Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
+        by mx07-00178001.pphosted.com with ESMTP id 38csqbw15d-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 07 May 2021 17:20:10 +0200
+Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
+        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id D7D7A1000D7;
+        Fri,  7 May 2021 17:15:22 +0200 (CEST)
+Received: from Webmail-eu.st.com (sfhdag2node3.st.com [10.75.127.6])
+        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id 9072422B9D7;
+        Fri,  7 May 2021 17:15:22 +0200 (CEST)
+Received: from lmecxl0912.lme.st.com (10.75.127.51) by SFHDAG2NODE3.st.com
+ (10.75.127.6) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Fri, 7 May
+ 2021 17:15:21 +0200
+Subject: Re: [v5.4 stable] arm: stm32: Regression observed on "no-map"
+ reserved memory region
+To:     Quentin Perret <qperret@google.com>,
+        Florian Fainelli <f.fainelli@gmail.com>
+CC:     Ard Biesheuvel <ardb@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>,
+        stable <stable@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        KarimAllah Ahmed <karahmed@amazon.de>,
+        Android Kernel Team <kernel-team@android.com>,
+        Architecture Mailman List <boot-architecture@lists.linaro.org>,
+        Frank Rowand <frowand.list@gmail.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
+References: <4a4734d6-49df-677b-71d3-b926c44d89a9@foss.st.com>
+ <CAL_JsqKGG8E9Y53+az+5qAOOGiZRAA-aD-1tKB-hcOp+m3CJYw@mail.gmail.com>
+ <001f8550-b625-17d2-85a6-98a483557c70@foss.st.com>
+ <CAL_Jsq+LUPZFhXd+j-xM67rZB=pvEvZM+1sfckip0Lqq02PkZQ@mail.gmail.com>
+ <CAMj1kXE2Mgr9CsAMnKXff+96xhDaE5OLeNhypHvpN815vZGZhQ@mail.gmail.com>
+ <d7f9607a-9fcb-7ba2-6e39-03030da2deb0@gmail.com>
+ <YH/ixPnHMxNo08mJ@google.com>
+ <cc8f96a4-6c85-b869-d3cf-5dc543982054@gmail.com>
+ <YIFzMkW+tXonTf0K@google.com>
+From:   Alexandre TORGUE <alexandre.torgue@foss.st.com>
+Message-ID: <ad90b2bb-0fab-9f06-28dd-038e8005490b@foss.st.com>
+Date:   Fri, 7 May 2021 17:15:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <YIFzMkW+tXonTf0K@google.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.75.127.51]
+X-ClientProxiedBy: SFHDAG2NODE3.st.com (10.75.127.6) To SFHDAG2NODE3.st.com
+ (10.75.127.6)
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.391,18.0.761
+ definitions=2021-05-07_06:2021-05-06,2021-05-07 signatures=0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05 2021 at 14:09, Ramakrishna Saripalli wrote:
-> From: Ramakrishna Saripalli <rk.saripalli@amd.com>
->
-> Certain AMD processors feature a new technology called Predictive Store
-> Forwarding (PSF).
->
-> PSF is a micro-architectural optimization designed to improve the
-> performance of code execution by predicting dependencies between
-> loads and stores.
->
-> Incorrect PSF predictions can occur due to two reasons.
->
-> - It is possible that the load/store pair may have had dependency for
->   a while but the dependency has stopped because the address in the
->   load/store pair has changed.
->
-> - Second source of incorrect PSF prediction can occur because of an alias
->   in the PSF predictor structure stored in the microarchitectural state.
->   PSF predictor tracks load/store pair based on portions of instruction
->   pointer. It is possible that a load/store pair which does have a
->   dependency may be aliased by another load/store pair which does not have
->   the same dependency. This can result in incorrect speculation.
->
->   Software may be able to detect this aliasing and perform side-channel
->   attacks.
+Hi Quentin
 
-So this is the new post spectre/meltdown/.../ world order.
+On 4/22/21 2:59 PM, Quentin Perret wrote:
+> On Wednesday 21 Apr 2021 at 07:33:52 (-0700), Florian Fainelli wrote:
+>> It is not, otherwise I would have noticed earlier, can you try the same
+>> thing that happens on my platform with a reserved region (without
+>> no-map) adjacent to a reserved region with 'no-map'?
+> 
+> I just tried, but still no luck. FTR, I tried to reproduce your setup
+> with the following DT:
+> 
+>          memory@40000000 {
+>                  reg = <0x00 0x40000000 0x01 0x00>;
+>                  device_type = "memory";
+>          };
+> 
+>          reserved-memory {
+>                  #address-cells = <2>;
+>                  #size-cells = <2>;
+>                  ranges;
+> 
+>                  foo@fdfff000{
+>                          reg = <0x00 0xfdfff000 0x0 0x1000>;
+>                  };
+>                  bar@fe000000{
+>                          reg = <0x00 0xfe000000 0x0 0x2000000>;
+>                          no-map;
+>                  };
+>          };
+> 
+> And with 5.4.102 and 5.10.31 I get the following in /proc/iomem
+> 
+> <...>
+> 40000000-fdffffff : System RAM
+>    40080000-412cffff : Kernel code
+>    412d0000-417affff : reserved
+>    417b0000-419f8fff : Kernel data
+>    48000000-48008fff : reserved
+>    f7c00000-fdbfffff : reserved
+>    fdfff000-fdffffff : reserved
+> fe000000-ffffffff : reserved
+> 100000000-13fffffff : System RAM
+> <...>
+> 
+> which looks about right. I'll keep trying a few other things.
 
-What would have been considered a potential speculative side channel bug
-two years ago is now sold a feature which is by default enabled.
+Did you get time to continue some tests on this issue ?
 
-Just to be clear. From a security POV this is just yet another
-default enabled speculative vulnerability. The difference to the others
-is that this is communicated upfront and comes with a knob to turn it
-off right away.
+On my side this DT is not working:
 
-There is also interaction with SSB and the SSB mitigation which is
-described in the cover letter, but not in the changelog and is not
-detectable from user space.
+memory@c0000000 {
+         reg = <0xc0000000 0x20000000>;
+};
 
-I know that you had it implemented that way in your first attempt, but I
-was busy with other things and missed the discussion which resulted in
-this being treated as a feature.
+reserved-memory {
+         #address-cells = <1>;
+         #size-cells = <1>;
+         ranges;
 
-TBH, I'm not really happy about this because that's inconsistent with
-how we treat the other speculation related issues and there is no way
-for user space to actually check this like the other one via /sys/....
+         gpu_reserved: gpu@d4000000 {
+                 reg = <0xd4000000 0x4000000>;
+                 no-map;
+         };
+};
 
-> +++ b/arch/x86/kernel/cpu/amd.c
-> @@ -1170,3 +1170,22 @@ void set_dr_addr_mask(unsigned long mask, int dr)
->  		break;
->  	}
->  }
-> +
-> +static int __init psf_cmdline(char *str)
-> +{
-> +	if (!boot_cpu_has(X86_FEATURE_PSFD))
-> +		return 0;
-> +
-> +	if (!str)
-> +		return -EINVAL;
-> +
-> +	if (!strcmp(str, "off")) {
-> +		set_cpu_cap(&boot_cpu_data, X86_FEATURE_MSR_SPEC_CTRL);
+Let me know if I can help.
 
-What? Why is this setting this feature here and why is this not done in
-init_speculation_control() as for all the other speculation misfeatures?
+regards
+Alex
 
-> +		x86_spec_ctrl_base |= SPEC_CTRL_PSFD;
-
-What? See below.
-
-> +		msr_set_bit(MSR_IA32_SPEC_CTRL, SPEC_CTRL_PSFD_SHIFT);
-> +	}
-> +
-> +	return 0;
-
-So any parameter is treated as valid here. That's interesting at best.
-
-> --- a/arch/x86/kernel/cpu/bugs.c
-> +++ b/arch/x86/kernel/cpu/bugs.c
-> @@ -78,6 +78,8 @@ EXPORT_SYMBOL_GPL(mds_idle_clear);
->  
->  void __init check_bugs(void)
->  {
-> +	u64 tmp = 0;
-> +
->  	identify_boot_cpu();
->  
->  	/*
-> @@ -97,7 +99,9 @@ void __init check_bugs(void)
->  	 * init code as it is not enumerated and depends on the family.
->  	 */
->  	if (boot_cpu_has(X86_FEATURE_MSR_SPEC_CTRL))
-> -		rdmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_base);
-> +		rdmsrl(MSR_IA32_SPEC_CTRL, tmp);
-> +
-> +	x86_spec_ctrl_base |= tmp;
-
-How is anyone supposed to understand that logic?
-
-Just because x86_spec_ctrl_base is a global variable does not justify
-this hackery at all. It's just a matter of time that someone reads this:
-
-u64 x86_spec_ctrl_base;
-
-void __init check_bugs(void)
-{
-	u64 tmp = 0;
-
-        ...
-
-  	if (boot_cpu_has(X86_FEATURE_MSR_SPEC_CTRL))
-		rdmsrl(MSR_IA32_SPEC_CTRL, tmp);
-
-	x86_spec_ctrl_base |= tmp;
-
-and figures that this is a pointless exercise and reverts that hunk.
-
-What's wrong with just treating this in the same way in which we treat
-all other speculative vulnerabilities and provide a consistent picture
-to the user?
-
-Something like the below. You get the idea.
-
-Thanks,
-
-        tglx
----
---- a/arch/x86/kernel/cpu/bugs.c
-+++ b/arch/x86/kernel/cpu/bugs.c
-@@ -111,6 +111,7 @@ void __init check_bugs(void)
- 	mds_select_mitigation();
- 	taa_select_mitigation();
- 	srbds_select_mitigation();
-+	psf_select_mitigation();
- 
- 	/*
- 	 * As MDS and TAA mitigations are inter-related, print MDS
---- a/arch/x86/kernel/cpu/common.c
-+++ b/arch/x86/kernel/cpu/common.c
-@@ -891,6 +891,9 @@ static void init_speculation_control(str
- 		set_cpu_cap(c, X86_FEATURE_MSR_SPEC_CTRL);
- 		clear_cpu_cap(c, X86_FEATURE_VIRT_SSBD);
- 	}
-+
-+	if (!boot_cpu_has(X86_FEATURE_PSFD))
-+		set_cpu_cap(c, X86_FEATURE_MSR_SPEC_CTRL);
- }
- 
- void get_cpu_cap(struct cpuinfo_x86 *c)
+> Thanks,
+> Quentin
+> 
