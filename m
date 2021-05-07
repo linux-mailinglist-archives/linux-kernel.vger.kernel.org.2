@@ -2,147 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E440376B87
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:14:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B4D76376B8A
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 23:16:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229713AbhEGVP5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 17:15:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41206 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229470AbhEGVP4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 17:15:56 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id B9A00611ED;
-        Fri,  7 May 2021 21:14:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620422096;
-        bh=EJHAtYwT3QjDp7/8mwWtXV3pJ7lbc25j/slwrHC70yk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:From;
-        b=HfkllBZTxO/p9w6l+754P3bQ2nJ+J32Wywu5CnnDoVc7nEp+pRxZXSgE9CnOgSuY7
-         dqFwM+GwC5mYWXBiYYr97o4Z+VUVuPsQtV4xR8YcBmK505Evm4lGL50/cwQr//e1+k
-         94hrtuKk6W4UyVW/J02QTS+ZURwQcHo1g29Vg05b3ptiqXH3F9ZCPQmSC8bdm2wdat
-         F+MfVQ2lsbfy+qEwcoYDHVlmJiKIOfvc8hGMRQ+PNldu57RR+6yt1u23V0Qt/zwFGk
-         f2Jw4AG64Gx4YHufgQLZslSuKKKETXq1CKV+wEXV5KgS2Lmq8WYuHOIf25b9WUVgJO
-         Q5Ey852xJ6KJw==
-Date:   Fri, 7 May 2021 16:14:54 -0500
-From:   Bjorn Helgaas <helgaas@kernel.org>
-To:     Wang Xingang <wangxingang5@huawei.com>
-Cc:     will@kernel.org, joro@8bytes.org, bhelgaas@google.com,
-        gregkh@linuxfoundation.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        xieyingtai@huawei.com
-Subject: Re: [PATCH 1/1] iommu/of: Fix request and enable ACS for
- of_iommu_configure
-Message-ID: <20210507211454.GA1518899@bjorn-Precision-5520>
+        id S229731AbhEGVRZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 17:17:25 -0400
+Received: from mail-ot1-f44.google.com ([209.85.210.44]:38826 "EHLO
+        mail-ot1-f44.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229470AbhEGVRX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 17:17:23 -0400
+Received: by mail-ot1-f44.google.com with SMTP id q7-20020a9d57870000b02902a5c2bd8c17so9098270oth.5;
+        Fri, 07 May 2021 14:16:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/5D7ZT5Lu0YStgy8faRmpqxBSv65B/x5VGdmWREBghE=;
+        b=PX9giO3KOMvodoyTZJBTwy5fgJhkr03NIzfb70FKLmGVNlox8WnopeZ4mT+uJFKlnO
+         8+g7O0Enl2bqafT9oZx8aW4V5O10uCyBILj1OVAnPdkCEZb32pAHnMes3luuWopuobuJ
+         76HuWdwAm05mt/b2plx5QkTOvnoztCrttsky0wQ7YcGc1lZ4iulbqwYfJqkWBRYHzLPH
+         bxGjRG8S45qw7TfhFlKl/m1ZsK0j3euLa/hp6nvALRQbOGKx6BhmwQXiE/2TtoKlfBE2
+         b4DVj3VBa1EOv7CG5pZvvLjIX3zEAhyG63U9V/ii79Bl6PgbqRVMo9646Z5Iv1BN+4dz
+         9Zqg==
+X-Gm-Message-State: AOAM531EgepdV2KbUzTYkDVR0pwJxBC6IJemK8uBtqs2ER7vVi+H5zFj
+        TOOBuoljRbH3QJDyOSBzaw==
+X-Google-Smtp-Source: ABdhPJykObAS8JsXFLdzmqv6KmJ1UzMdUyE9FJqsiPOL6ZcDskiGKl/Bhkm8EP1lRu9jT7rBYb42MQ==
+X-Received: by 2002:a9d:728b:: with SMTP id t11mr5710529otj.230.1620422182286;
+        Fri, 07 May 2021 14:16:22 -0700 (PDT)
+Received: from robh.at.kernel.org (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id s85sm1312704oos.4.2021.05.07.14.16.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 14:16:21 -0700 (PDT)
+Received: (nullmailer pid 2900641 invoked by uid 1000);
+        Fri, 07 May 2021 21:16:19 -0000
+Date:   Fri, 7 May 2021 16:16:19 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Frieder Schrempf <frieder.schrempf@kontron.de>
+Cc:     "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, shawnguo@kernel.org,
+        s.hauer@pengutronix.de, kernel@pengutronix.de, festevam@gmail.com,
+        linux-imx@nxp.com, p.zabel@pengutronix.de, l.stach@pengutronix.de,
+        krzk@kernel.org, agx@sigxcpu.org, marex@denx.de,
+        andrew.smirnov@gmail.com, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        ping.bai@nxp.com, aford173@gmail.com, abel.vesa@nxp.com,
+        Peng Fan <peng.fan@nxp.com>
+Subject: Re: [PATCH V2 08/13] dt-bindings: imx: gpcv2: add support for
+ optional resets
+Message-ID: <20210507211619.GA2899069@robh.at.kernel.org>
+References: <20210506010440.7016-1-peng.fan@oss.nxp.com>
+ <20210506010440.7016-9-peng.fan@oss.nxp.com>
+ <a6554ae1-75d4-e471-6371-d9ad2246599f@kontron.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1620391793-18744-2-git-send-email-wangxingang5@huawei.com>
+In-Reply-To: <a6554ae1-75d4-e471-6371-d9ad2246599f@kontron.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 12:49:53PM +0000, Wang Xingang wrote:
-> From: Xingang Wang <wangxingang5@huawei.com>
+On Thu, May 06, 2021 at 08:43:17AM +0200, Frieder Schrempf wrote:
+> On 06.05.21 03:04, Peng Fan (OSS) wrote:
+> > From: Lucas Stach <l.stach@pengutronix.de>
+> > 
+> > For some domains the resets of the devices in the domain are not
+> > automatically triggered. Add an optional resets property to allow
+> > the GPC driver to trigger those resets explicitly.
+> > 
+> > The resets belong to devices located inside the power domain,
+> > which need to be held in reset across the power-up sequence. So we
+> > have no means to specify what each reset is in a generic power-domain
+> > binding. Same situation as with the clocks in this binding actually.
 > 
-> When request ACS for PCI device in of_iommu_configure, the pci device
-> has already been scanned and added with 'pci_acs_enable=0'. So the
-> pci_request_acs() in current procedure does not work for enabling ACS.
-> Besides, the ACS should be enabled only if there's an IOMMU in system.
-> So this fix the call of pci_request_acs() and call pci_enable_acs() to
-> make sure ACS is enabled for the pci_device.
+> My understanding was that Rob wanted this explanation to be contained in the binding docs itself and not only in the commit message, but I might be wrong.
 
-For consistency:
+Yes, that would be better.
 
-  s/of_iommu_configure/of_iommu_configure()/
-  s/pci device/PCI device/
-  s/pci_device/PCI device/
-
-But I'm confused about what problem this fixes.  On x86, I think we
-*do* set pci_acs_enable=1 in this path:
-
-  start_kernel
-    mm_init
-      mem_init
-        pci_iommu_alloc
-          p->detect()
-            detect_intel_iommu       # IOMMU_INIT_POST(detect_intel_iommu)
-              pci_request_acs
-                pci_acs_enable = 1
-
-before enumerating any PCI devices.
-
-But you mentioned pci_host_common_probe(), which I think is mostly
-used on non-x86 architectures, and I'm guessing those arches detect
-the IOMMU differently.
-
-So my question is, can we figure out how to detect IOMMUs the same way
-across all arches?
-
-> Fixes: 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core when
-> configuring IOMMU linkage")
-> Signed-off-by: Xingang Wang <wangxingang5@huawei.com>
-> ---
->  drivers/iommu/of_iommu.c | 10 +++++++++-
->  drivers/pci/pci.c        |  2 +-
->  include/linux/pci.h      |  1 +
->  3 files changed, 11 insertions(+), 2 deletions(-)
 > 
-> diff --git a/drivers/iommu/of_iommu.c b/drivers/iommu/of_iommu.c
-> index a9d2df001149..dc621861ae72 100644
-> --- a/drivers/iommu/of_iommu.c
-> +++ b/drivers/iommu/of_iommu.c
-> @@ -205,7 +205,6 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
->  			.np = master_np,
->  		};
->  
-> -		pci_request_acs();
->  		err = pci_for_each_dma_alias(to_pci_dev(dev),
->  					     of_pci_iommu_init, &info);
->  	} else {
-> @@ -222,6 +221,15 @@ const struct iommu_ops *of_iommu_configure(struct device *dev,
->  		/* The fwspec pointer changed, read it again */
->  		fwspec = dev_iommu_fwspec_get(dev);
->  		ops    = fwspec->ops;
-> +
-> +		/*
-> +		 * If we found an IOMMU and the device is pci,
-> +		 * make sure we enable ACS.
-
-s/pci/PCI/ for consistency.
-
-> +		 */
-> +		if (dev_is_pci(dev)) {
-> +			pci_request_acs();
-> +			pci_enable_acs(to_pci_dev(dev));
-> +		}
->  	}
->  	/*
->  	 * If we have reason to believe the IOMMU driver missed the initial
-> diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
-> index b717680377a9..4e4f98ee2870 100644
-> --- a/drivers/pci/pci.c
-> +++ b/drivers/pci/pci.c
-> @@ -926,7 +926,7 @@ static void pci_std_enable_acs(struct pci_dev *dev)
->   * pci_enable_acs - enable ACS if hardware support it
->   * @dev: the PCI device
->   */
-> -static void pci_enable_acs(struct pci_dev *dev)
-> +void pci_enable_acs(struct pci_dev *dev)
->  {
->  	if (!pci_acs_enable)
->  		goto disable_acs_redir;
-> diff --git a/include/linux/pci.h b/include/linux/pci.h
-> index c20211e59a57..e6a8bfbc9c98 100644
-> --- a/include/linux/pci.h
-> +++ b/include/linux/pci.h
-> @@ -2223,6 +2223,7 @@ static inline struct pci_dev *pcie_find_root_port(struct pci_dev *dev)
->  }
->  
->  void pci_request_acs(void);
-> +void pci_enable_acs(struct pci_dev *dev);
->  bool pci_acs_enabled(struct pci_dev *pdev, u16 acs_flags);
->  bool pci_acs_path_enabled(struct pci_dev *start,
->  			  struct pci_dev *end, u16 acs_flags);
-> -- 
-> 2.19.1
-> 
+> > 
+> > Signed-off-by: Lucas Stach <l.stach@pengutronix.de>
+> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> > ---
+> >  Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml | 7 +++++++
+> >  1 file changed, 7 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
+> > index a96e6dbf1858..4330c73a2c30 100644
+> > --- a/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
+> > +++ b/Documentation/devicetree/bindings/power/fsl,imx-gpcv2.yaml
+> > @@ -66,6 +66,13 @@ properties:
+> >  
+> >            power-supply: true
+> >  
+> > +          resets:
+> > +            description: |
+> > +              A number of phandles to resets that need to be asserted during
+> > +              power-up sequencing of the domain.
+> > +            minItems: 1
+> > +            maxItems: 4
+> > +
+> >          required:
+> >            - '#power-domain-cells'
+> >            - reg
+> > 
