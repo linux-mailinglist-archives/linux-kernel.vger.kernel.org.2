@@ -2,122 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A00E4376B11
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:09:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05C6376B0B
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:08:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230146AbhEGUKb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 16:10:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41912 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230114AbhEGUKa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 16:10:30 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id EAB7F613ED;
-        Fri,  7 May 2021 20:09:29 +0000 (UTC)
-From:   Clark Williams <williams@redhat.com>
-Subject: [ANNOUNCE] 4.19.190-rt79
-Date:   Fri, 07 May 2021 20:06:55 -0000
-Message-ID: <162041801544.443223.1510428885860989541@puck.lan>
-To:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <daniel.wagner@suse.com>,
-        Tom Zanussi <tom.zanussi@linux.intel.com>,
-        Clark Williams <williams@redhat.com>,
-        Pavel Machek <pavel@denx.de>
+        id S230092AbhEGUIm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 16:08:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46526 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229952AbhEGUIl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 16:08:41 -0400
+Received: from mail-pf1-x431.google.com (mail-pf1-x431.google.com [IPv6:2607:f8b0:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53C58C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 13:07:41 -0700 (PDT)
+Received: by mail-pf1-x431.google.com with SMTP id b21so1565986pft.10
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 13:07:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=YrDqJx93OwdWCfFkXfyEoTQC8negd4/G/SopvOQHRnA=;
+        b=Ljvql2B1pthM67CXVupOIxAd4PFlEjAG7Pu1s/nfesxhIUrpDmA9WLsAC/Y3bUo89g
+         L/ffu8tDadfJ+pxidn0DVYDIwFBhXtSReZRTWroN+u3PhkNwNVTXhAH3sTK0Vm+2a0cy
+         W5eEohTjs00P6IN84pcyoz+qPDTHRCv0pINXFVh6whjkUtKZBscI/ZFkKDBIFWPJ704G
+         WT+6V90c0iJ5r4KzivNgjybA6tuK2SztLgLIufQhkGbJAOucXLb2x/7GEEPhPXiryx8P
+         cSOx8FmuoQ8Unp9GRkbXh/ngSaNhviDcjeY2MP/OUTHI7Lp6FVj5aIKS0AxY5L54uUk5
+         VNyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=YrDqJx93OwdWCfFkXfyEoTQC8negd4/G/SopvOQHRnA=;
+        b=pXFwK8buRQNn4eIyBipK1M5HW3KmwOgkNr52bLg3bOb39dpJOyULlrRh6LZuDHRM/m
+         Il6Dg4CPVJeyPS1LPRYZXsTp8YM/q1DAu9/Sxmmh3Y65Vi3HflE1rfmsGA4srR2rqRdF
+         3SqOkjpB1JbMl447+l8d6mnnWUKVQ7IuDXW1vHqBJVuPVciy6q9wFm/Yy8bi+lcRUeck
+         sc9mHpPL8+Tumfr6AAlM9h622pX2ELbv55bLY+/zMpq/cRG0n6DQ7xzScs9+CA2G/wmj
+         dt2dI+TtUQfkPqabpNki6wM7sDSFl9jvvK+Spp2ISgOKe6/4m21PeotuQzjdPpCZEk/v
+         0Orw==
+X-Gm-Message-State: AOAM53327MeVFT+aIHdhA1Wwkz/Cf/vt5t2UByu9y96A2zZgaHeqmM36
+        zH8/SlL6OHNMKwVhNnTIDE1GNSQC8JzJk90bPa/dXg==
+X-Google-Smtp-Source: ABdhPJzT1xB3lzIA3Cm3XMfODY+rxABey2UGk2x5NFeuPpU8S2XsIfS2S3qp0oopN7quK7JnoLOGgAhPmWRj87DEBTA=
+X-Received: by 2002:a63:cc11:: with SMTP id x17mr11654985pgf.159.1620418060779;
+ Fri, 07 May 2021 13:07:40 -0700 (PDT)
+MIME-Version: 1.0
+References: <20210507050908.1008686-1-davidgow@google.com> <20210507050908.1008686-2-davidgow@google.com>
+In-Reply-To: <20210507050908.1008686-2-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 7 May 2021 13:07:29 -0700
+Message-ID: <CAFd5g47NR_OKQfxDxc_PnXKCbkKNUeUH49Q6k6m=70C4uhQ0xQ@mail.gmail.com>
+Subject: Re: [PATCH 2/2] kunit: Assign strings to 'const char*' in STREQ assertions
+To:     David Gow <davidgow@google.com>
+Cc:     Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello RT-list!
+On Thu, May 6, 2021 at 10:09 PM David Gow <davidgow@google.com> wrote:
+>
+> Currently, the KUNIT_EXPECT_STREQ() and related macros assign both
+> string arguments to variables of their own type (via typeof()). This
+> seems to be to prevent the macro argument from being evaluated multiple
+> times.
+>
+> However, yhis doesn't work if one of these is a fixed-length character
+> array, rather than a character pointer, as (for example) char[16] will
+> always allocate a new string.
+>
+> By always using 'const char*' (the type strcmp expects), we're always
+> just taking a pointer to the string, which works even with character
+> arrays.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-I'm pleased to announce the 4.19.190-rt79 stable release.
+Aside from the nit that Daniel pointed out, this looks good to me.
 
-You can get this release via the git tree at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-stable-rt.git
-
-  branch: v4.19-rt
-  Head SHA1: 484b86536efcc0cc4ff43f5528f3ebf19cc9550e
-
-Or to build 4.19.190-rt79 directly, the following patches should be applied:
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/linux-4.19.tar.xz
-
-  https://www.kernel.org/pub/linux/kernel/v4.x/patch-4.19.190.xz
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/patch-4.19.190-rt79.patch.xz
-
-
-You can also build from 4.19.189-rt78 by applying the incremental patch:
-
-  https://www.kernel.org/pub/linux/kernel/projects/rt/4.19/incr/patch-4.19.189-rt78-rt79.patch.xz
-
-Enjoy!
-Clark
-
-Changes from v4.19.189-rt78:
----
-
-Chris Chiu (1):
-      USB: Add reset-resume quirk for WD19's Realtek Hub
-
-Clark Williams (2):
-      Merge tag 'v4.19.190' into v4.19-rt
-      Linux 4.19.190-rt79
-
-Daniel Borkmann (1):
-      bpf: Fix masking negation logic upon negative dst register
-
-Gao Xiang (1):
-      erofs: fix extended inode could cross boundary
-
-Greg Kroah-Hartman (1):
-      Linux 4.19.190
-
-Jiri Kosina (2):
-      iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_enqueue_hcmd()
-      iwlwifi: Fix softirq/hardirq disabling in iwl_pcie_gen2_enqueue_hcmd()
-
-Kai-Heng Feng (1):
-      USB: Add LPM quirk for Lenovo ThinkPad USB-C Dock Gen2 Ethernet
-
-Mark Pearson (1):
-      platform/x86: thinkpad_acpi: Correct thermal sensor allocation
-
-Miklos Szeredi (1):
-      ovl: allow upperdir inside lowerdir
-
-Phillip Potter (1):
-      net: usb: ax88179_178a: initialize local variables before use
-
-Rafael J. Wysocki (2):
-      ACPI: tables: x86: Reserve memory occupied by ACPI tables
-      ACPI: x86: Call acpi_boot_table_init() after acpi_table_upgrade()
-
-Romain Naour (1):
-      mips: Do not include hi and lo in clobber list for R6
-
-Takashi Iwai (1):
-      ALSA: usb-audio: Add MIDI quirk for Vox ToneLab EX
----
-Makefile                                          |   2 +-
- arch/mips/vdso/gettimeofday.c                     |  14 ++-
- arch/x86/kernel/acpi/boot.c                       |  25 ++--
- arch/x86/kernel/setup.c                           |   7 +-
- drivers/acpi/tables.c                             |  42 ++++++-
- drivers/net/usb/ax88179_178a.c                    |   4 +-
- drivers/net/wireless/intel/iwlwifi/pcie/tx-gen2.c |   7 +-
- drivers/net/wireless/intel/iwlwifi/pcie/tx.c      |   7 +-
- drivers/platform/x86/thinkpad_acpi.c              |  31 +++--
- drivers/staging/erofs/inode.c                     | 135 ++++++++++++++--------
- drivers/usb/core/quirks.c                         |   4 +
- fs/overlayfs/super.c                              |  12 +-
- include/linux/acpi.h                              |   9 +-
- kernel/bpf/verifier.c                             |  12 +-
- localversion-rt                                   |   2 +-
- sound/usb/quirks-table.h                          |  10 ++
- 16 files changed, 222 insertions(+), 101 deletions(-)
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
