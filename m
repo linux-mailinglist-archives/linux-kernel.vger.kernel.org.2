@@ -2,96 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E642E3768CA
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:29:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BEF13768D9
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:32:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238181AbhEGQal (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 12:30:41 -0400
-Received: from frasgout.his.huawei.com ([185.176.79.56]:3042 "EHLO
-        frasgout.his.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S238172AbhEGQak (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 12:30:40 -0400
-Received: from fraeml737-chm.china.huawei.com (unknown [172.18.147.207])
-        by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4FcG0p4DLpz6snrx;
-        Sat,  8 May 2021 00:21:30 +0800 (CST)
-Received: from lhreml724-chm.china.huawei.com (10.201.108.75) by
- fraeml737-chm.china.huawei.com (10.206.15.218) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2176.2; Fri, 7 May 2021 18:29:37 +0200
-Received: from [10.47.82.108] (10.47.82.108) by lhreml724-chm.china.huawei.com
- (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2176.2; Fri, 7 May 2021
- 17:29:36 +0100
-Subject: Re: [PATCH] perf jevents: Silence warning for ArchStd files
-To:     Ian Rogers <irogers@google.com>
-CC:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        "Namhyung Kim" <namhyung@kernel.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Kim Phillips <kim.phillips@amd.com>,
-        linux-perf-users <linux-perf-users@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20210506225640.1461000-1-irogers@google.com>
- <4f9a4f20-82ac-dd68-4aee-b560396755f2@huawei.com>
- <CAP-5=fUGRU+vi5NfYLBV9dXgZcG0WY45srsi3Q75T7pPLBLnMQ@mail.gmail.com>
-From:   John Garry <john.garry@huawei.com>
-Message-ID: <946c888e-7918-3692-ecdd-9f4706cbc764@huawei.com>
-Date:   Fri, 7 May 2021 17:29:06 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.1.2
+        id S238216AbhEGQd1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 12:33:27 -0400
+Received: from p3plsmtp18-04-2.prod.phx3.secureserver.net ([173.201.193.188]:42154
+        "EHLO p3plwbeout18-04.prod.phx3.secureserver.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S238212AbhEGQdY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 12:33:24 -0400
+X-Greylist: delayed 470 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 May 2021 12:33:24 EDT
+Received: from mailex.mailcore.me ([94.136.40.145])
+        by :WBEOUT: with ESMTP
+        id f3HClA8MoYVy3f3HDlTMr6; Fri, 07 May 2021 09:24:31 -0700
+X-CMAE-Analysis: v=2.4 cv=dv8et3s4 c=1 sm=1 tr=0 ts=609569bf
+ a=7e6w4QD8YWtpVJ/7+iiidw==:117 a=84ok6UeoqCVsigPHarzEiQ==:17
+ a=ggZhUymU-5wA:10 a=5FLXtPjwQuUA:10 a=FXvPX3liAAAA:8 a=hSkVLCK3AAAA:8
+ a=VwQbUJbxAAAA:8 a=mRSd3HlHm2GdjYksQScA:9 a=UObqyxdv-6Yh2QiB9mM_:22
+ a=cQPPKAXgyycSBL8etih5:22 a=AjGcO6oz07-iQ99wixmX:22
+X-SECURESERVER-ACCT: phillip@squashfs.org.uk
+X-SID:  f3HClA8MoYVy3
+Received: from 82-69-79-175.dsl.in-addr.zen.co.uk ([82.69.79.175] helo=phoenix.fritz.box)
+        by smtp05.mailcore.me with esmtpa (Exim 4.92.3)
+        (envelope-from <phillip@squashfs.org.uk>)
+        id 1lf3HB-0003rf-Sg; Fri, 07 May 2021 17:24:30 +0100
+From:   Phillip Lougher <phillip@squashfs.org.uk>
+To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org
+Subject: [PATCH] squashfs: fix divide error in calculate_skip()
+Date:   Fri,  7 May 2021 16:26:18 +0100
+Message-Id: <20210507152618.9447-1-phillip@squashfs.org.uk>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <CAP-5=fUGRU+vi5NfYLBV9dXgZcG0WY45srsi3Q75T7pPLBLnMQ@mail.gmail.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.47.82.108]
-X-ClientProxiedBy: lhreml719-chm.china.huawei.com (10.201.108.70) To
- lhreml724-chm.china.huawei.com (10.201.108.75)
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Mailcore-Auth: 439999529
+X-Mailcore-Domain: 1394945
+X-122-reg-Authenticated: 439999529
+X-Originating-IP: 82.69.79.175
+X-CMAE-Envelope: MS4xfKDegQQ4GkAAUAUcaUUEz458Vib1J34Pqok97818qdu5N9POvuo3qbZFxbbiEELlF88QTPll/BoHYl1I+KYuCxyZgqLMr4dbxbfNklEmuVFXUVa3HR2f
+ qQzf/QwJqM/BvPC0zrHAY29pvvgWjvyIGNp8iUnh6r6y4zwZjY86N57resL4Lb9DCByuq5v2LkpRwYvl3aV2rFZPXYeKiVz3z24=
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 07/05/2021 16:46, Ian Rogers wrote:
-> On Fri, May 7, 2021 at 2:00 AM John Garry<john.garry@huawei.com>  wrote:
->> On 06/05/2021 23:56, Ian Rogers wrote:
->>> json files in the level 1 directory are used for ArchStd events (see
->>> preprocess_arch_std_files), as such they shouldn't be warned about.
->>>
->>> Signed-off-by: Ian Rogers<irogers@google.com>
->>> ---
->>>    tools/perf/pmu-events/jevents.c | 6 ++++--
->>>    1 file changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
->>> index ed4f0bd72e5a..7422b0ea8790 100644
->>> --- a/tools/perf/pmu-events/jevents.c
->>> +++ b/tools/perf/pmu-events/jevents.c
->>> @@ -1123,8 +1123,10 @@ static int process_one_file(const char *fpath, const struct stat *sb,
->>>                        mapfile = strdup(fpath);
->>>                        return 0;
->>>                }
->>> -
->>> -             pr_info("%s: Ignoring file %s\n", prog, fpath);
->>> +             if (is_json_file(bname))
->>> +                     pr_debug("%s: ArchStd json is preprocessed %s\n", prog, fpath)
->> We could get more elaborate and add the same first debug print in
->> process_one_file() to preprocess_arch_std_file() to give the allusion
->> that they are preprocessed, and change the logic not print that for arch
->> std files (in process_one_file()). But not sure it's worth it.
->>
->> Or else we could also just omit any print here for archstd files here.
-> I thought about just dropping the print in the json case but then a
-> comment would be nice, the pr_debug is a comment and is somewhat
-> intention revealing. If you think it is overkill then it is ok to
-> change.
+Sysbot has reported a "divide error" which has been
+identified as being caused by a corrupted file_size
+value within the file inode.  This value has been
+corrupted to a much larger value than expected.
 
-I don't think it's a big deal either way.
+Calculate_skip() is passed i_size_read(inode) >> msblk->block_log.
+Due to the file_size value corruption this overflows
+the int argument/variable in that function, leading
+to the divide error.
 
-Reviewed-by: John Garry <john.garry@huawei.com>
+This patch changes the function to use u64.  This will
+accommodate any unexpectedly large values due to
+corruption.
+
+The value returned from calculate_skip() is clamped to
+be never more than SQUASHFS_CACHED_BLKS - 1, or 7.
+So file_size corruption does not lead to an unexpectedly
+large return result here.
+
+Signed-off-by: Phillip Lougher <phillip@squashfs.org.uk>
+Reported-by: syzbot+e8f781243ce16ac2f962@syzkaller.appspotmail.com
+Reported-by: syzbot+7b98870d4fec9447b951@syzkaller.appspotmail.com
+Cc: <stable@vger.kernel.org>
+---
+ fs/squashfs/file.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/fs/squashfs/file.c b/fs/squashfs/file.c
+index 7b1128398976..89d492916dea 100644
+--- a/fs/squashfs/file.c
++++ b/fs/squashfs/file.c
+@@ -211,11 +211,11 @@ static long long read_indexes(struct super_block *sb, int n,
+  * If the skip factor is limited in this way then the file will use multiple
+  * slots.
+  */
+-static inline int calculate_skip(int blocks)
++static inline int calculate_skip(u64 blocks)
+ {
+-	int skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
++	u64 skip = blocks / ((SQUASHFS_META_ENTRIES + 1)
+ 		 * SQUASHFS_META_INDEXES);
+-	return min(SQUASHFS_CACHED_BLKS - 1, skip + 1);
++	return min((u64) SQUASHFS_CACHED_BLKS - 1, skip + 1);
+ }
+ 
+ 
+-- 
+2.31.1
+
