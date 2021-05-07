@@ -2,59 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3F3B3767A1
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:06:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 821903767A5
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 17:06:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237864AbhEGPHZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 11:07:25 -0400
-Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:57033 "EHLO
+        id S234931AbhEGPHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 11:07:43 -0400
+Received: from wnew4-smtp.messagingengine.com ([64.147.123.18]:44371 "EHLO
         wnew4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S237821AbhEGPHE (ORCPT
+        by vger.kernel.org with ESMTP id S237835AbhEGPHK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 11:07:04 -0400
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.42])
-        by mailnew.west.internal (Postfix) with ESMTP id 5C8EE45D;
-        Fri,  7 May 2021 11:06:03 -0400 (EDT)
+        Fri, 7 May 2021 11:07:10 -0400
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+        by mailnew.west.internal (Postfix) with ESMTP id 6FCA513F4;
+        Fri,  7 May 2021 11:06:09 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Fri, 07 May 2021 11:06:04 -0400
+  by compute1.internal (MEProxy); Fri, 07 May 2021 11:06:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         from:to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm2; bh=96379yQnsIehT
-        01GQXKJhvZ6Q4y1tsFGCN7qprHXy5o=; b=aKRNwiYwytTmg6us6c2YqmK3DbMMQ
-        imt97QJ73i/Y5fhJqkaasTjdM6+kJPucgk3ZkXKpnUv0I8YnEgT1u8hD+B1dF4Eq
-        zp+mAACX8y+ZQQ7qzdf7ELaglz1KqmF9q7YWCGO03pzo/PGNK9rBOmWpggSt0wtb
-        GcqEOddyLVNxJNsGquZMR3yZyDdTawy+CUh1I9LO/J6Erblic009KPKakuh1oVNq
-        Fr4UQ1x502uEuijl1M9njQK9MXbdUSRB3aHfhpRGRP1rCD2ZgNitVkmVlJ0U6wAl
-        xKUlK6KDAKT7TnEOu0N08q8xlSXcA9qXeDCnBHkneGwzojZwTw4Z5BWaQ==
+        :mime-version:content-transfer-encoding; s=fm2; bh=JyD5t6WMst8Bq
+        zCSoV9Z3JsakQ2ZIXpXMQ4jgAIt2oQ=; b=YzIWYS/7nsIMbwYecrk5YfEX+hIxk
+        kk2AJomAFymwIqmEGkgto/a5dN0qu5s1sBEvqgoqJNIqgNWyhA3SuE9OTKrz0cyw
+        rOk2tgfe3LKurHsAdomo+Dvql1+JfhzLQ3dY8tO+mcfLdv5mF47ZWMEB/oaKfKwt
+        JSeicsLRO29PJ+6NjY6fSseC9ax0ouhDywj0nWk1h3Qx3xA6024KLfmk6wwnc+RL
+        t4XImxCHv6OEot1Aq8gWikchZ+yplsfcGWwXATYC1El1kkzDtm65PZ3pzAHhjIgA
+        RPInU6gpnVGqx9w12Oe27dOictsMMjqC+6P5JmAxOWiK8pTrnKSiIdC0w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm2; bh=96379yQnsIehT01GQXKJhvZ6Q4y1tsFGCN7qprHXy5o=; b=HnLmjPIQ
-        xQPS8chMTxbW3gKCQNKi51h7rUeEA/m/sali+GLSIqqEKbLD8K99nVpx+lAuTdnQ
-        zM68unSZWGPYaqHfZICaM838iwtFCNST4eWIRMrfH2voBb4UQqukaHkYGLONiwRz
-        +ep2K1jV59oaoXTRuspvKIhVCWa36AxQPwNhPAbSn4vWmvuQTgqraZ7kprR2fW9h
-        RzZM1eniyYXhUgCH759yjCWz5hAwYi+xxg4nksrhAbzeEv3IWGNh8+C2zo5OWK9B
-        sY0x16M1Ei+cNH3cFepOyW7XsHZf11/TjH6HWKHztGcLwzwUNzkZTiPQTNOvLPXr
-        nGveZsPvHjOHxQ==
-X-ME-Sender: <xms:WVeVYJOyi3cv5t_jwQRZKzv0gSlcYNU4mfGFaYah5CK5VvBcKnn0XQ>
-    <xme:WVeVYL82Zcqfnbq5fiSiO44oZ_-p815Se0N6BM5VfWJqjFPoA67OOwEDAAEqgeT9r
-    _eWqMb8Pyz_S5mj9nI>
+        fm2; bh=JyD5t6WMst8BqzCSoV9Z3JsakQ2ZIXpXMQ4jgAIt2oQ=; b=gLNOBXp4
+        6PELVWvfDslU4mLUkLiIuq9OhHnhMNScaoeLjq9SO3PFYoI6OZHtUk94n7iAz6VO
+        +buw0uUK1EGkvY6eOsmnHTwPT78ncxkpeU6gAJbCOJuKy7NAhmJAeUujIuFZS+ts
+        d1OqWy0TK4La5NbFHBtwIu2ZXmNOwAsXuJ7fKxWThWKhAcrEtWVfh5ifyIcXrLDl
+        g539NQdvOz1KmGLHgEYO9MKoWgtRyDxwEmpIaCQS6Dz8M8O66aLkXGFEttqUQsSw
+        04Dbphe1GsmJQ0cse5Ay7Ramo7n+vXKSNZH494lwbqNVg0444CZftYAOqf+U0VqU
+        918nVIqNTcMifg==
+X-ME-Sender: <xms:XleVYFh2SwAwQLZN78HtyV9aY4dHAPIUVja5701B8O0f4JSu9cLwpg>
+    <xme:XleVYKCPip1se6ms21yO1JIIrqk03eOtFBE4pF_9R9SgYHGXhNmBase5GeSsegi2W
+    PrdEXNSajGzCzaHKNU>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdegvddgkeegucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhephffvufffkffojghfggfgsedtkeertdertddtnecuhfhrohhmpeforgigihhm
     vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
     htvghrnhepvdekleevfeffkeejhfffueelteelfeduieefheduudfggffhhfffheevveeh
-    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    hedvnecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgepgeenuc
     frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:WVeVYIRBvC2MtsABwYumrPALrWGE4rhdedQ_zRIFiBrqhv-7mrPfDA>
-    <xmx:WVeVYFvpl74kaPiAD4GG3zH5SKLPu2qNQWFrJekhAMS5jO3WKRc7Dw>
-    <xmx:WVeVYBfifegzFkcs25vKMGO56lA19sNhLMLxVTMdZA4e4OPKODkjYw>
-    <xmx:WleVYP2jHeA40nGXL1bjqpjlqq0CKDg4PCkeMZgKb9ZfixIcOFa4LKuxgn0>
+X-ME-Proxy: <xmx:XleVYFE_6a-cuvbdusynkSUCbq0aG8X7-BU8noR3Uwd8gZCdit_LwQ>
+    <xmx:XleVYKQnwlZ9sevLVQ40NydmzgyDvFOtuFD39pb6O-uOlu6X3SYwwg>
+    <xmx:XleVYCz9u1-Hfia3BS9wvhmPJEYjn-C5aUYcVG2afYzeohRr9siQGA>
+    <xmx:YVeVYNoygNZ8h1KcsmNsq7e0IYHCNJZuXU5pFATYZj6GxGFAX_HYwX5JetY>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
         by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri,  7 May 2021 11:06:01 -0400 (EDT)
+        Fri,  7 May 2021 11:06:06 -0400 (EDT)
 From:   Maxime Ripard <maxime@cerno.tech>
 To:     Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
         Thomas Zimmermann <tzimmermann@suse.de>,
@@ -70,9 +70,9 @@ Cc:     Eric Anholt <eric@anholt.net>,
         Phil Elwell <phil@raspberrypi.com>,
         Tim Gover <tim.gover@raspberrypi.com>,
         Dom Cobley <dom@raspberrypi.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH v4 08/12] drm/vc4: hdmi: Properly compute the BVB clock rate
-Date:   Fri,  7 May 2021 17:05:11 +0200
-Message-Id: <20210507150515.257424-9-maxime@cerno.tech>
+Subject: [PATCH v4 09/12] drm/vc4: hdmi: Check and warn if we can't reach 4kp60 frequencies
+Date:   Fri,  7 May 2021 17:05:12 +0200
+Message-Id: <20210507150515.257424-10-maxime@cerno.tech>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20210507150515.257424-1-maxime@cerno.tech>
 References: <20210507150515.257424-1-maxime@cerno.tech>
@@ -82,58 +82,110 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The BVB clock rate computation doesn't take into account a mode clock of
-594MHz that we're going to need to support 4k60.
+In order to reach the frequencies needed to output at 594MHz, the
+firmware needs to be configured with the appropriate parameters in the
+config.txt file (enable_hdmi_4kp60 and force_turbo).
+
+Let's detect it at bind time, warn the user if we can't, and filter out
+the relevant modes.
 
 Acked-by: Thomas Zimmermann <tzimmermann@suse.de>
 Reviewed-by: Dave Stevenson <dave.stevenson@raspberrypi.com>
 Signed-off-by: Maxime Ripard <maxime@cerno.tech>
 ---
- drivers/gpu/drm/vc4/vc4_hdmi.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ drivers/gpu/drm/vc4/vc4_hdmi.c | 31 +++++++++++++++++++++++++++++++
+ drivers/gpu/drm/vc4/vc4_hdmi.h |  8 ++++++++
+ 2 files changed, 39 insertions(+)
 
 diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.c b/drivers/gpu/drm/vc4/vc4_hdmi.c
-index 9c919472ae84..c50dc5a59b2f 100644
+index c50dc5a59b2f..01d24ce8a795 100644
 --- a/drivers/gpu/drm/vc4/vc4_hdmi.c
 +++ b/drivers/gpu/drm/vc4/vc4_hdmi.c
-@@ -91,7 +91,6 @@
- # define VC4_HD_M_ENABLE			BIT(0)
- 
- #define CEC_CLOCK_FREQ 40000
--#define VC4_HSM_MID_CLOCK 149985000
+@@ -94,6 +94,11 @@
  
  #define HDMI_14_MAX_TMDS_CLK   (340 * 1000 * 1000)
  
-@@ -739,7 +738,7 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
- 		conn_state_to_vc4_hdmi_conn_state(conn_state);
- 	struct drm_display_mode *mode = &encoder->crtc->state->adjusted_mode;
- 	struct vc4_hdmi *vc4_hdmi = encoder_to_vc4_hdmi(encoder);
--	unsigned long pixel_rate, hsm_rate;
-+	unsigned long bvb_rate, pixel_rate, hsm_rate;
- 	int ret;
- 
- 	ret = pm_runtime_get_sync(&vc4_hdmi->pdev->dev);
-@@ -793,12 +792,14 @@ static void vc4_hdmi_encoder_pre_crtc_configure(struct drm_encoder *encoder,
- 
- 	vc4_hdmi_cec_update_clk_div(vc4_hdmi);
- 
--	/*
--	 * FIXME: When the pixel freq is 594MHz (4k60), this needs to be setup
--	 * at 300MHz.
--	 */
--	ret = clk_set_min_rate(vc4_hdmi->pixel_bvb_clock,
--			       (hsm_rate > VC4_HSM_MID_CLOCK ? 150000000 : 75000000));
-+	if (pixel_rate > 297000000)
-+		bvb_rate = 300000000;
-+	else if (pixel_rate > 148500000)
-+		bvb_rate = 150000000;
-+	else
-+		bvb_rate = 75000000;
++static bool vc4_hdmi_mode_needs_scrambling(const struct drm_display_mode *mode)
++{
++	return (mode->clock * 1000) > HDMI_14_MAX_TMDS_CLK;
++}
 +
-+	ret = clk_set_min_rate(vc4_hdmi->pixel_bvb_clock, bvb_rate);
- 	if (ret) {
- 		DRM_ERROR("Failed to set pixel bvb clock rate: %d\n", ret);
- 		clk_disable_unprepare(vc4_hdmi->hsm_clock);
+ static int vc4_hdmi_debugfs_regs(struct seq_file *m, void *unused)
+ {
+ 	struct drm_info_node *node = (struct drm_info_node *)m->private;
+@@ -210,6 +215,18 @@ static int vc4_hdmi_connector_get_modes(struct drm_connector *connector)
+ 	ret = drm_add_edid_modes(connector, edid);
+ 	kfree(edid);
+ 
++	if (vc4_hdmi->disable_4kp60) {
++		struct drm_device *drm = connector->dev;
++		struct drm_display_mode *mode;
++
++		list_for_each_entry(mode, &connector->probed_modes, head) {
++			if (vc4_hdmi_mode_needs_scrambling(mode)) {
++				drm_warn_once(drm, "The core clock cannot reach frequencies high enough to support 4k @ 60Hz.");
++				drm_warn_once(drm, "Please change your config.txt file to add hdmi_enable_4kp60.");
++			}
++		}
++	}
++
+ 	return ret;
+ }
+ 
+@@ -959,6 +976,9 @@ static int vc4_hdmi_encoder_atomic_check(struct drm_encoder *encoder,
+ 	if (pixel_rate > vc4_hdmi->variant->max_pixel_clock)
+ 		return -EINVAL;
+ 
++	if (vc4_hdmi->disable_4kp60 && (pixel_rate > HDMI_14_MAX_TMDS_CLK))
++		return -EINVAL;
++
+ 	vc4_state->pixel_rate = pixel_rate;
+ 
+ 	return 0;
+@@ -978,6 +998,9 @@ vc4_hdmi_encoder_mode_valid(struct drm_encoder *encoder,
+ 	if ((mode->clock * 1000) > vc4_hdmi->variant->max_pixel_clock)
+ 		return MODE_CLOCK_HIGH;
+ 
++	if (vc4_hdmi->disable_4kp60 && vc4_hdmi_mode_needs_scrambling(mode))
++		return MODE_CLOCK_HIGH;
++
+ 	return MODE_OK;
+ }
+ 
+@@ -1993,6 +2016,14 @@ static int vc4_hdmi_bind(struct device *dev, struct device *master, void *data)
+ 	vc4_hdmi->disable_wifi_frequencies =
+ 		of_property_read_bool(dev->of_node, "wifi-2.4ghz-coexistence");
+ 
++	if (variant->max_pixel_clock == 600000000) {
++		struct vc4_dev *vc4 = to_vc4_dev(drm);
++		long max_rate = clk_round_rate(vc4->hvs->core_clk, 550000000);
++
++		if (max_rate < 550000000)
++			vc4_hdmi->disable_4kp60 = true;
++	}
++
+ 	if (vc4_hdmi->variant->reset)
+ 		vc4_hdmi->variant->reset(vc4_hdmi);
+ 
+diff --git a/drivers/gpu/drm/vc4/vc4_hdmi.h b/drivers/gpu/drm/vc4/vc4_hdmi.h
+index 3cebd1fd00fc..3cd021136402 100644
+--- a/drivers/gpu/drm/vc4/vc4_hdmi.h
++++ b/drivers/gpu/drm/vc4/vc4_hdmi.h
+@@ -154,6 +154,14 @@ struct vc4_hdmi {
+ 	 */
+ 	bool disable_wifi_frequencies;
+ 
++	/*
++	 * Even if HDMI0 on the RPi4 can output modes requiring a pixel
++	 * rate higher than 297MHz, it needs some adjustments in the
++	 * config.txt file to be able to do so and thus won't always be
++	 * available.
++	 */
++	bool disable_4kp60;
++
+ 	struct cec_adapter *cec_adap;
+ 	struct cec_msg cec_rx_msg;
+ 	bool cec_tx_ok;
 -- 
 2.31.1
 
