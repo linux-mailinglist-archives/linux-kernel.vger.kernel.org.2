@@ -2,100 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B1BD3763E8
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:35:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9423763F2
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 12:37:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234711AbhEGKg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 06:36:28 -0400
-Received: from mail-yb1-f177.google.com ([209.85.219.177]:36600 "EHLO
-        mail-yb1-f177.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S234057AbhEGKgZ (ORCPT
+        id S236945AbhEGKh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 06:37:58 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:18009 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S236915AbhEGKh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 06:36:25 -0400
-Received: by mail-yb1-f177.google.com with SMTP id m9so11340629ybm.3;
-        Fri, 07 May 2021 03:35:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Yslg7vEBym6PVgYau7ulcdvMRd5JUNvV93PwWncFI8g=;
-        b=sZWgeqAT93ImrlAJKPS4BY5rSLh5oWMZM9ELqm6vp0aPCsofAvvWLlNm2ZjlMtG4FX
-         4uPKTc0/A582S1GsqeFUeknqtmjw9PRKDv7qFuFsTfEeeLrPF8/6UbCl0x3KliQiCrhz
-         V3orwaHemyPu7LO5/AM2AXedkR/yTTW5pnlLTcTCdajHDNUGuLG5pvGmsbvl5XyX/dNJ
-         7fDaloH95M9F4fZGGBIu4rro1WFVXLyMW46v4S/1Lqjbtp4O4xrofyIonA9Lw7H1i2AL
-         GZxeY5o4FSEuU6xa+RWrtuA3xTfbHTWsUDPCK7yMBU7Qy/FdjOTsQ7wsp7tYqBKMpOA5
-         Ea/w==
-X-Gm-Message-State: AOAM533a3FO1D3C1GfH4XV9ljOW0sd7rG6/a/3hpuSxob+5jwzZMvFb5
-        1BNkrb1zNxu7DRrT6PnhFwB0G6aUEOJyxNmiYcv8kDhwB/c=
-X-Google-Smtp-Source: ABdhPJyu2QYYWeFVD/sK/TxxJTSyYebJub9VNO4EBWsiDWURGYT1ClwQdNiIsEXSGG3rQ/QnDslzXYPYSDiM6ow3JYc=
-X-Received: by 2002:a25:7a02:: with SMTP id v2mr12118642ybc.514.1620383725249;
- Fri, 07 May 2021 03:35:25 -0700 (PDT)
+        Fri, 7 May 2021 06:37:56 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.58])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Fc6HP36dszQkLN;
+        Fri,  7 May 2021 18:33:37 +0800 (CST)
+Received: from DESKTOP-5IS4806.china.huawei.com (10.174.187.224) by
+ DGGEMS406-HUB.china.huawei.com (10.3.19.206) with Microsoft SMTP Server id
+ 14.3.498.0; Fri, 7 May 2021 18:36:49 +0800
+From:   Keqian Zhu <zhukeqian1@huawei.com>
+To:     <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Kirti Wankhede <kwankhede@nvidia.com>,
+        "Cornelia Huck" <cohuck@redhat.com>,
+        Yi Sun <yi.y.sun@linux.intel.com>,
+        Tian Kevin <kevin.tian@intel.com>
+CC:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Will Deacon <will@kernel.org>, Joerg Roedel <joro@8bytes.org>,
+        Jean-Philippe Brucker <jean-philippe@linaro.org>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        <wanghaibin.wang@huawei.com>, <jiangkunkun@huawei.com>,
+        <yuzenghui@huawei.com>, <lushenming@huawei.com>
+Subject: [RFC PATCH v2 0/3] vfio/iommu_type1: Implement dirty log tracking based on IOMMU HWDBM
+Date:   Fri, 7 May 2021 18:36:05 +0800
+Message-ID: <20210507103608.39440-1-zhukeqian1@huawei.com>
+X-Mailer: git-send-email 2.8.4.windows.1
 MIME-Version: 1.0
-References: <20210506112007.1666738-1-mailhol.vincent@wanadoo.fr>
- <20210506112007.1666738-2-mailhol.vincent@wanadoo.fr> <20210506085035.2fc33bf3@hermes.local>
-In-Reply-To: <20210506085035.2fc33bf3@hermes.local>
-From:   Vincent MAILHOL <mailhol.vincent@wanadoo.fr>
-Date:   Fri, 7 May 2021 19:35:14 +0900
-Message-ID: <CAMZ6RqLcbF2riaMiOPHD4T-A0yQmrr--4moPT1iLz11h2yf3xA@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 1/1] iplink_can: add new CAN FD bittiming
- parameters: Transmitter Delay Compensation (TDC)
-To:     Stephen Hemminger <stephen@networkplumber.org>
-Cc:     Marc Kleine-Budde <mkl@pengutronix.de>,
-        linux-can <linux-can@vger.kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        netdev <netdev@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-Originating-IP: [10.174.187.224]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri. 7 Mai 2021 at 00:50, Stephen Hemminger
-<stephen@networkplumber.org> wrote:
-> On Thu,  6 May 2021 20:20:07 +0900
-> Vincent Mailhol <mailhol.vincent@wanadoo.fr> wrote:
->
-> > +     if (tb[IFLA_CAN_TDC_TDCV] && tb[IFLA_CAN_TDC_TDCO] &&
-> > +         tb[IFLA_CAN_TDC_TDCF]) {
-> > +             __u32 *tdcv = RTA_DATA(tb[IFLA_CAN_TDC_TDCV]);
-> > +             __u32 *tdco = RTA_DATA(tb[IFLA_CAN_TDC_TDCO]);
-> > +             __u32 *tdcf = RTA_DATA(tb[IFLA_CAN_TDC_TDCF]);
-> > +
-> > +             if (is_json_context()) {
-> > +                     open_json_object("tdc");
-> > +                     print_int(PRINT_JSON, "tdcv", NULL, *tdcv);
-> > +                     print_int(PRINT_JSON, "tdco", NULL, *tdco);
-> > +                     print_int(PRINT_JSON, "tdcf", NULL, *tdcf);
-> > +                     close_json_object();
-> > +             } else {
-> > +                     fprintf(f, "\n    tdcv %d tdco %d tdcf %d",
-> > +                             *tdcv, *tdco, *tdcf);
-> > +             }
-> > +     }
-> > +
->
-> The most common pattern in iproute2 is to let json/non-json be decided
-> inside the print routine.  I search for all instances of fprintf as
-> indication of broken code. Also these are not signed values so please
-> print unsigned.  The code should use print_nl() to handle the single line
-> case. Also, there is helper to handle
+Hi Alex and everyone,
 
-Thanks for pointing out the issues!  For my defence, all the
-existing code of ip/iplink_can.c shares the exact same issues and
-I just repeated those without using my brain...
+This patch series implement vfio dma dirty log tracking based on IOMMU HWDBM (hardware
+dirty bit management, such as SMMU with HTTU or intel IOMMU with SLADE).
 
-I just sent a new v2 which fixes your remarks on both the
-existing code and the new code introduced in my patch.
+This patch series is split from the series[1] that containes both IOMMU part and
+VFIO part. Please refer the new IOMMU part v4[2] to review or test.
 
-> Something like:
->               __u32 tdc = rte_getattr_u32(tb[IFLA_CAN_TDC_TDCV]);
->
->                 open_json_object("tdc");
->                 print_nl();
->                 print_u32(PRINT_ANY, "tdcv", "    tdcv %u", tdcv);
+Changelog:
 
-There is no print_u32 in iproute2. I guess you meant print_uint(). :)
+v2:
+ - Use separate ioctl to get dirty log without clear it automatically. (Alex)
+ - Implement based on new iommu dirty tracking framework.
+ - Track hwdbm status at domain level.
+ - Bugfix: When get_no_clear, we should recover dirty bitmap too.
+ - Bugfix: When switch from full dirty policy to iommu hwdbm policy, we should populate full dirty.
+
+Intention:
+
+As we know, vfio live migration is an important and valuable feature, but there
+are still many hurdles to solve, including migration of interrupt, device state,
+DMA dirty log tracking, and etc.
+
+For now, the only dirty log tracking interface is pinning. It has some drawbacks:
+1. Only smart vendor drivers are aware of this.
+2. It's coarse-grained, the pinned-scope is generally bigger than what the device actually access.
+3. It can't track dirty continuously and precisely, vfio populates all pinned-scope as dirty.
+   So it doesn't work well with iteratively dirty log handling.
+
+About this series:
+
+Implement a new dirty log tracking method for vfio based on iommu hwdbm. A new
+ioctl operation named VFIO_DIRTY_LOG_MANUAL_CLEAR is added, which can eliminate
+some redundant dirty handling of userspace.   
+   
+Optimizations Todo:
+
+1. We recognized that each smmu_domain (a vfio_container may has several smmu_domain) has its
+   own stage1 mapping, and we must scan all these mapping to sync dirty state. We plan to refactor
+   smmu_domain to support more than one smmu in one smmu_domain, then these smmus can share a same
+   stage1 mapping.
+2. We also recognized that scan TTD is a hotspot of performance. Recently, I have implement a
+   SW/HW conbined dirty log tracking at MMU side[3], which can effectively solve this problem.
+   This idea can be applied to smmu side too.
+
+Thanks,
+Keqian
+
+[1] https://lore.kernel.org/linux-iommu/20210310090614.26668-1-zhukeqian1@huawei.com/
+[2] https://lore.kernel.org/linux-iommu/20210507102211.8836-1-zhukeqian1@huawei.com/ 
+[3] https://lore.kernel.org/linux-arm-kernel/20210126124444.27136-1-zhukeqian1@huawei.com/
 
 
-Yours sincerely,
-Vincent
+Kunkun Jiang (3):
+  vfio/iommu_type1: Add HWDBM status maintenance
+  vfio/iommu_type1: Optimize dirty bitmap population based on iommu
+    HWDBM
+  vfio/iommu_type1: Add support for manual dirty log clear
+
+ drivers/vfio/vfio_iommu_type1.c | 315 ++++++++++++++++++++++++++++++--
+ include/uapi/linux/vfio.h       |  36 +++-
+ 2 files changed, 337 insertions(+), 14 deletions(-)
+
+-- 
+2.19.1
+
