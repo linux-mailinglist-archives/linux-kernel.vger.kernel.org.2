@@ -2,227 +2,276 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9F46737609E
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 08:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 958F23760D3
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 09:03:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S235010AbhEGGnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 02:43:07 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:47287 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S234842AbhEGGmv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 02:42:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620369712;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=JCCYPy+isCh+H1SX9xBPytDkVDyjBNBJAhFZksFryQM=;
-        b=h2wMEljZQbeSJ3qeZ52wh4ynEYVv91KgZxsR8Xun7JefZ9PFSVgXAyTKu0Aj5DSfnPzkxB
-        MWRu6jHfV/LSMpC4ywz/AsaByjOHA/ehsKHfUjB+FWxu0DAMkqtG01JHbaHBuFjIj/65KY
-        gukMOm9XDPSBueEg0fEf6+e1vnVFyWs=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-579-kojwK4LqNwWcaYi7ZtQqtg-1; Fri, 07 May 2021 02:41:48 -0400
-X-MC-Unique: kojwK4LqNwWcaYi7ZtQqtg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0AD80802938;
-        Fri,  7 May 2021 06:41:47 +0000 (UTC)
-Received: from gshan.redhat.com (vpn2-54-42.bne.redhat.com [10.64.54.42])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 713E95C276;
-        Fri,  7 May 2021 06:41:44 +0000 (UTC)
-From:   Gavin Shan <gshan@redhat.com>
-To:     kvmarm@lists.cs.columbia.edu
-Cc:     linux-kernel@vger.kernel.org, maz@kernel.org, will@kernel.org,
-        pbonzini@redhat.com, james.morse@arm.com, mark.rutland@arm.com,
-        Jonathan.Cameron@huawei.com, shan.gavin@gmail.com
-Subject: [PATCH v3 15/15] KVM: arm64: Add async PF document
-Date:   Fri,  7 May 2021 16:40:53 +0800
-Message-Id: <20210507084053.44407-16-gshan@redhat.com>
-In-Reply-To: <20210507084053.44407-1-gshan@redhat.com>
-References: <20210507084053.44407-1-gshan@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+        id S233380AbhEGHET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 03:04:19 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:46429 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229463AbhEGHEO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 03:04:14 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4Fc1cd4WxFz9sZS;
+        Fri,  7 May 2021 09:03:13 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id wMZTNxvu6BM1; Fri,  7 May 2021 09:03:13 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4Fc1cd39dTz9sZQ;
+        Fri,  7 May 2021 09:03:13 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id E584E8B764;
+        Fri,  7 May 2021 09:03:12 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id viMKpTybTuHA; Fri,  7 May 2021 09:03:12 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 407528B81A;
+        Fri,  7 May 2021 09:03:12 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id 1930864909; Fri,  7 May 2021 07:03:12 +0000 (UTC)
+Message-Id: <9c5f23642ac5900c8e83da795afac7041bf87cf6.1620370984.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH v2 1/5] powerpc/nohash: Refactor update of BDI2000 pointers in
+ switch_mmu_context()
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Fri,  7 May 2021 07:03:12 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This adds document to explain the interface for asynchronous page
-fault and how it works in general.
+Instead of duplicating the update of BDI2000 pointers in
+set_context(), do it directly from switch_mmu_context().
 
-Signed-off-by: Gavin Shan <gshan@redhat.com>
+Define a helper in mmu.h that can be re-used later by book3s/32.
+
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
 ---
- Documentation/virt/kvm/arm/apf.rst   | 143 +++++++++++++++++++++++++++
- Documentation/virt/kvm/arm/index.rst |   1 +
- 2 files changed, 144 insertions(+)
- create mode 100644 Documentation/virt/kvm/arm/apf.rst
+ arch/powerpc/include/asm/mmu.h       |  8 ++++++++
+ arch/powerpc/kernel/head_40x.S       | 14 --------------
+ arch/powerpc/kernel/head_44x.S       | 16 ----------------
+ arch/powerpc/kernel/head_8xx.S       |  7 -------
+ arch/powerpc/kernel/head_book3s_32.S |  6 ------
+ arch/powerpc/kernel/head_fsl_booke.S | 16 ----------------
+ arch/powerpc/mm/nohash/8xx.c         |  6 ------
+ arch/powerpc/mm/nohash/mmu_context.c |  1 +
+ arch/powerpc/mm/nohash/tlb_low.S     |  8 --------
+ arch/powerpc/mm/pgtable_32.c         |  6 ++++++
+ 10 files changed, 15 insertions(+), 73 deletions(-)
 
-diff --git a/Documentation/virt/kvm/arm/apf.rst b/Documentation/virt/kvm/arm/apf.rst
-new file mode 100644
-index 000000000000..4f5c01b6699f
---- /dev/null
-+++ b/Documentation/virt/kvm/arm/apf.rst
-@@ -0,0 +1,143 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+Asynchronous Page Fault Support for arm64
-+=========================================
-+
-+There are two stages of page faults when KVM module is enabled as accelerator
-+to the guest. The guest is responsible for handling the stage-1 page faults,
-+while the host handles the stage-2 page faults. During the period of handling
-+the stage-2 page faults, the guest is suspended until the requested page is
-+ready. It could take several milliseconds, even hundreds of milliseconds in
-+extreme situations because I/O might be required to move the requested page
-+from disk to DRAM. The guest does not do any work when it is suspended. The
-+feature (Asynchronous Page Fault) is introduced to take advantage of the
-+suspending period and to improve the overall performance.
-+
-+There are two paths in order to fulfil the asynchronous page fault, called
-+as control path and data path. The control path allows the VMM or guest to
-+configure the functionality, while the notifications are delivered in data
-+path. The notifications are classified into page-not-present and page-ready
-+notifications.
-+
-+Data Path
-+---------
-+
-+There are two types of notifications delivered from host to guest in the
-+data path: page-not-present and page-ready notification. They are delivered
-+through SDEI event and (PPI) interrupt separately. Besides, there is a shared
-+buffer between host and guest to indicate the reason and sequential token,
-+which is used to identify the asynchronous page fault. The reason and token
-+resident in the shared buffer is written by host, read and cleared by guest.
-+An asynchronous page fault is delivered and completed as below.
-+
-+(1) When an asynchronous page fault starts, a (workqueue) worker is created
-+    and queued to the vCPU's pending queue. The worker makes the requested
-+    page ready and resident to DRAM in the background. The shared buffer is
-+    updated with reason and sequential token. After that, SDEI event is sent
-+    to guest as page-not-present notification.
-+
-+(2) When the SDEI event is received on guest, the current process is tagged
-+    with TIF_ASYNC_PF and associated with a wait queue. The process is ready
-+    to keep rescheduling itself on switching from kernel to user mode. After
-+    that, a reschedule IPI is sent to current CPU and the received SDEI event
-+    is acknowledged. Note that the IPI is delivered when the acknowledgment
-+    on the SDEI event is received on host.
-+
-+(3) On the host, the worker is dequeued from the vCPU's pending queue and
-+    enqueued to its completion queue when the requested page becomes ready.
-+    In the mean while, KVM_REQ_ASYNC_PF request is sent the vCPU if the
-+    worker is the first element enqueued to the completion queue.
-+
-+(4) With pending KVM_REQ_ASYNC_PF request, the first worker in the completion
-+    queue is dequeued and destroyed. In the mean while, a (PPI) interrupt is
-+    sent to guest with updated reason and token in the shared buffer.
-+
-+(5) When the (PPI) interrupt is received on guest, the affected process is
-+    located using the token and waken up after its TIF_ASYNC_PF tag is cleared.
-+    After that, the interrupt is acknowledged through SMCCC interface. The
-+    workers in the completion queue is dequeued and destroyed if any workers
-+    exist, and another (PPI) interrupt is sent to the guest.
-+
-+Control Path
-+------------
-+
-+The configurations are passed through SMCCC or ioctl interface. The SDEI
-+event and (PPI) interrupt are owned by VMM, so the SDEI event and interrupt
-+numbers are configured through ioctl command on per-vCPU basis. Besides,
-+the functionality might be enabled and configured through ioctl interface
-+by VMM during migration:
-+
-+   * KVM_ARM_ASYNC_PF_CMD_GET_VERSION
-+
-+     Returns the current version of the feature, supported by the host. It is
-+     made up of major, minor and revision fields. Each field is one byte in
-+     length.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_GET_SDEI:
-+
-+     Retrieve the SDEI event number, used for page-not-present notification,
-+     so that it can be configured on destination VM in the scenario of
-+     migration.
-+
-+   * KVM_ARM_ASYNC_PF_GET_IRQ:
-+
-+     Retrieve the IRQ (PPI) number, used for page-ready notification, so that
-+     it can be configured on destination VM in the scenario of migration.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_GET_CONTROL
-+
-+     Retrieve the address of control block, so that it can be configured on
-+     destination VM in the scenario of migration.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_SET_SDEI:
-+
-+     Used by VMM to configure number of SDEI event, which is used to deliver
-+     page-not-present notification by host. This is used when VM is started
-+     or migrated.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_SET_IRQ
-+
-+     Used by VMM to configure number of (PPI) interrupt, which is used to
-+     deliver page-ready notification by host. This is used when VM is started
-+     or migrated.
-+
-+   * KVM_ARM_ASYNC_PF_CMD_SET_CONTROL
-+
-+     Set the control block on the destination VM in the scenario of migration.
-+
-+The other configurations are passed through SMCCC interface. The host exports
-+the capability through KVM vendor specific service, which is identified by
-+ARM_SMCCC_KVM_FUNC_ASYNC_PF_FUNC_ID. There are several functions defined for
-+this:
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_VERSION
-+
-+     Returns the current version of the feature, supported by the host. It is
-+     made up of major, minor and revision fields. Each field is one byte in
-+     length.
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_SLOTS
-+
-+     Returns the size of the hashed GFN table. It is used by guest to set up
-+     the capacity of waiting process table.
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_SDEI
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ
-+
-+     Used by the guest to retrieve the SDEI event and (PPI) interrupt number
-+     that are configured by VMM.
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_ENABLE
-+
-+     Used by the guest to enable or disable the feature on the specific vCPU.
-+     The argument is made up of shared buffer and flags. The shared buffer
-+     is written by host to indicate the reason about the delivered asynchronous
-+     page fault and token (sequence number) to identify that. There are two
-+     flags are supported: KVM_ASYNC_PF_ENABLED is used to enable or disable
-+     the feature. KVM_ASYNC_PF_SEND_ALWAYS allows to deliver page-not-present
-+     notification regardless of the guest's state. Otherwise, the notification
-+     is delivered only when the guest is in user mode.
-+
-+   * ARM_SMCCC_KVM_FUNC_ASYNC_PF_IRQ_ACK
-+
-+     Used by the guest to acknowledge the completion of page-ready notification.
-diff --git a/Documentation/virt/kvm/arm/index.rst b/Documentation/virt/kvm/arm/index.rst
-index 78a9b670aafe..f43b5fe25f61 100644
---- a/Documentation/virt/kvm/arm/index.rst
-+++ b/Documentation/virt/kvm/arm/index.rst
-@@ -7,6 +7,7 @@ ARM
- .. toctree::
-    :maxdepth: 2
+diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
+index 998fe01dd1a8..c37bfe7695d9 100644
+--- a/arch/powerpc/include/asm/mmu.h
++++ b/arch/powerpc/include/asm/mmu.h
+@@ -401,6 +401,14 @@ static inline void mmu_early_init_devtree(void) { }
+ static inline void pkey_early_init_devtree(void) {}
  
-+   apf
-    hyp-abi
-    psci
-    pvtime
+ extern void *abatron_pteptrs[2];
++
++/* Context switch the PTE pointer for the Abatron BDI2000. */
++static inline void switch_abatron_pteptrs(pgd_t *pgd)
++{
++	if (IS_ENABLED(CONFIG_BDI_SWITCH))
++		abatron_pteptrs[1] = pgd;
++}
++
+ #endif /* __ASSEMBLY__ */
+ #endif
+ 
+diff --git a/arch/powerpc/kernel/head_40x.S b/arch/powerpc/kernel/head_40x.S
+index e1360b88b6cb..7ef1bbc23bed 100644
+--- a/arch/powerpc/kernel/head_40x.S
++++ b/arch/powerpc/kernel/head_40x.S
+@@ -703,14 +703,6 @@ _GLOBAL(abort)
+         mtspr   SPRN_DBCR0,r13
+ 
+ _GLOBAL(set_context)
+-
+-#ifdef CONFIG_BDI_SWITCH
+-	/* Context switch the PTE pointer for the Abatron BDI2000.
+-	 * The PGDIR is the second parameter.
+-	 */
+-	lis	r5, abatron_pteptrs@ha
+-	stw	r4, abatron_pteptrs@l + 0x4(r5)
+-#endif
+ 	sync
+ 	mtspr	SPRN_PID,r3
+ 	isync				/* Need an isync to flush shadow */
+@@ -731,9 +723,3 @@ EXPORT_SYMBOL(empty_zero_page)
+ 	.globl	swapper_pg_dir
+ swapper_pg_dir:
+ 	.space	PGD_TABLE_SIZE
+-
+-/* Room for two PTE pointers, usually the kernel and current user pointers
+- * to their respective root page table.
+- */
+-abatron_pteptrs:
+-	.space	8
+diff --git a/arch/powerpc/kernel/head_44x.S b/arch/powerpc/kernel/head_44x.S
+index 5c106ac36626..57509d90e409 100644
+--- a/arch/powerpc/kernel/head_44x.S
++++ b/arch/powerpc/kernel/head_44x.S
+@@ -781,15 +781,6 @@ _GLOBAL(__fixup_440A_mcheck)
+ 	blr
+ 
+ _GLOBAL(set_context)
+-
+-#ifdef CONFIG_BDI_SWITCH
+-	/* Context switch the PTE pointer for the Abatron BDI2000.
+-	 * The PGDIR is the second parameter.
+-	 */
+-	lis	r5, abatron_pteptrs@h
+-	ori	r5, r5, abatron_pteptrs@l
+-	stw	r4, 0x4(r5)
+-#endif
+ 	mtspr	SPRN_PID,r3
+ 	isync			/* Force context change */
+ 	blr
+@@ -1259,13 +1250,6 @@ EXPORT_SYMBOL(empty_zero_page)
+ swapper_pg_dir:
+ 	.space	PGD_TABLE_SIZE
+ 
+-/*
+- * Room for two PTE pointers, usually the kernel and current user pointers
+- * to their respective root page table.
+- */
+-abatron_pteptrs:
+-	.space	8
+-
+ #ifdef CONFIG_SMP
+ 	.align	12
+ temp_boot_stack:
+diff --git a/arch/powerpc/kernel/head_8xx.S b/arch/powerpc/kernel/head_8xx.S
+index 7d445e4342c0..817df9fe7fb3 100644
+--- a/arch/powerpc/kernel/head_8xx.S
++++ b/arch/powerpc/kernel/head_8xx.S
+@@ -804,10 +804,3 @@ EXPORT_SYMBOL(empty_zero_page)
+ 	.globl	swapper_pg_dir
+ swapper_pg_dir:
+ 	.space	PGD_TABLE_SIZE
+-
+-/* Room for two PTE table pointers, usually the kernel and current user
+- * pointer to their respective root page table (pgdir).
+- */
+-	.globl	abatron_pteptrs
+-abatron_pteptrs:
+-	.space	8
+diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
+index 326262030279..32c27dac9b80 100644
+--- a/arch/powerpc/kernel/head_book3s_32.S
++++ b/arch/powerpc/kernel/head_book3s_32.S
+@@ -1282,9 +1282,3 @@ EXPORT_SYMBOL(empty_zero_page)
+ 	.globl	swapper_pg_dir
+ swapper_pg_dir:
+ 	.space	PGD_TABLE_SIZE
+-
+-/* Room for two PTE pointers, usually the kernel and current user pointers
+- * to their respective root page table.
+- */
+-abatron_pteptrs:
+-	.space	8
+diff --git a/arch/powerpc/kernel/head_fsl_booke.S b/arch/powerpc/kernel/head_fsl_booke.S
+index a1a5c3f10dc4..590f34cc5bb2 100644
+--- a/arch/powerpc/kernel/head_fsl_booke.S
++++ b/arch/powerpc/kernel/head_fsl_booke.S
+@@ -986,15 +986,6 @@ _GLOBAL(abort)
+ 	isync
+ 
+ _GLOBAL(set_context)
+-
+-#ifdef CONFIG_BDI_SWITCH
+-	/* Context switch the PTE pointer for the Abatron BDI2000.
+-	 * The PGDIR is the second parameter.
+-	 */
+-	lis	r5, abatron_pteptrs@h
+-	ori	r5, r5, abatron_pteptrs@l
+-	stw	r4, 0x4(r5)
+-#endif
+ 	mtspr	SPRN_PID,r3
+ 	isync			/* Force context change */
+ 	blr
+@@ -1242,10 +1233,3 @@ EXPORT_SYMBOL(empty_zero_page)
+ 	.globl	swapper_pg_dir
+ swapper_pg_dir:
+ 	.space	PGD_TABLE_SIZE
+-
+-/*
+- * Room for two PTE pointers, usually the kernel and current user pointers
+- * to their respective root page table.
+- */
+-abatron_pteptrs:
+-	.space	8
+diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
+index 71bfdbedacee..f749acba5473 100644
+--- a/arch/powerpc/mm/nohash/8xx.c
++++ b/arch/powerpc/mm/nohash/8xx.c
+@@ -224,12 +224,6 @@ void set_context(unsigned long id, pgd_t *pgd)
+ {
+ 	s16 offset = (s16)(__pa(swapper_pg_dir));
+ 
+-	/* Context switch the PTE pointer for the Abatron BDI2000.
+-	 * The PGDIR is passed as second argument.
+-	 */
+-	if (IS_ENABLED(CONFIG_BDI_SWITCH))
+-		abatron_pteptrs[1] = pgd;
+-
+ 	/* Register M_TWB will contain base address of level 1 table minus the
+ 	 * lower part of the kernel PGDIR base address, so that all accesses to
+ 	 * level 1 table are done relative to lower part of kernel PGDIR base
+diff --git a/arch/powerpc/mm/nohash/mmu_context.c b/arch/powerpc/mm/nohash/mmu_context.c
+index aac81c9f84a5..5d9758e1d95f 100644
+--- a/arch/powerpc/mm/nohash/mmu_context.c
++++ b/arch/powerpc/mm/nohash/mmu_context.c
+@@ -357,6 +357,7 @@ void switch_mmu_context(struct mm_struct *prev, struct mm_struct *next,
+ 
+ 	/* Flick the MMU and release lock */
+ 	pr_hardcont(" -> %d\n", id);
++	switch_abatron_pteptrs(next->pgd);
+ 	set_context(id, next->pgd);
+ 	raw_spin_unlock(&context_lock);
+ }
+diff --git a/arch/powerpc/mm/nohash/tlb_low.S b/arch/powerpc/mm/nohash/tlb_low.S
+index 68797e072f55..b3d0f0127828 100644
+--- a/arch/powerpc/mm/nohash/tlb_low.S
++++ b/arch/powerpc/mm/nohash/tlb_low.S
+@@ -362,14 +362,6 @@ _GLOBAL(_tlbivax_bcast)
+ 	blr
+ 
+ _GLOBAL(set_context)
+-#ifdef CONFIG_BDI_SWITCH
+-	/* Context switch the PTE pointer for the Abatron BDI2000.
+-	 * The PGDIR is the second parameter.
+-	 */
+-	lis	r5, abatron_pteptrs@h
+-	ori	r5, r5, abatron_pteptrs@l
+-	stw	r4, 0x4(r5)
+-#endif
+ 	mtspr	SPRN_PID,r3
+ 	isync			/* Force context change */
+ 	blr
+diff --git a/arch/powerpc/mm/pgtable_32.c b/arch/powerpc/mm/pgtable_32.c
+index e0ec67a16887..42251ef3a2b4 100644
+--- a/arch/powerpc/mm/pgtable_32.c
++++ b/arch/powerpc/mm/pgtable_32.c
+@@ -36,6 +36,12 @@ extern char etext[], _stext[], _sinittext[], _einittext[];
+ 
+ static u8 early_fixmap_pagetable[FIXMAP_PTE_SIZE] __page_aligned_data;
+ 
++/*
++ * Room for two PTE table pointers, usually the kernel and current user
++ * pointer to their respective root page table (pgdir).
++ */
++void *abatron_pteptrs[2];
++
+ notrace void __init early_ioremap_init(void)
+ {
+ 	unsigned long addr = ALIGN_DOWN(FIXADDR_START, PGDIR_SIZE);
 -- 
-2.23.0
+2.25.0
 
