@@ -2,85 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 311E9375ED5
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 04:33:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97AF9375ED8
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 04:34:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233978AbhEGCeW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 6 May 2021 22:34:22 -0400
-Received: from m43-7.mailgun.net ([69.72.43.7]:15526 "EHLO m43-7.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229909AbhEGCeU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 6 May 2021 22:34:20 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1620354801; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=8laHLxpGeb7o6Scw5WGknuXL88+X8velIbUvuC+eLbs=; b=S7L/ijb8Hs+xAZAOoy2CyCS+wz+boOo2pnQ3J+7DQhlRMT8nsJdCfzfIbfeo040NpI9POmHM
- ehppNMjQuY7wzJhVJm8wep8vL1kle91d5wryDkRzsJe3LObpcitQ7R14uAsL+dWNY2ozbII+
- q2KNKlxb30AUVqHqLEl8Dykc8Ss=
-X-Mailgun-Sending-Ip: 69.72.43.7
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 6094a6f1e0e9c9a6b601e82d (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 07 May 2021 02:33:21
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3EA25C433D3; Fri,  7 May 2021 02:33:21 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
-        version=3.4.0
-Received: from [10.46.162.249] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 0EEFEC433D3;
-        Fri,  7 May 2021 02:33:19 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 0EEFEC433D3
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-Subject: Re: [PATCH v4 6/6] bus: mhi: core: Add range checks for BHI and BHIe
-To:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, jhugo@codeaurora.org,
-        linux-kernel@vger.kernel.org, loic.poulain@linaro.org,
-        linux-wireless@vger.kernel.org, kvalo@codeaurora.org,
-        ath11k@lists.infradead.org
-References: <1620330705-40192-1-git-send-email-bbhatt@codeaurora.org>
- <1620330705-40192-7-git-send-email-bbhatt@codeaurora.org>
-From:   Hemant Kumar <hemantk@codeaurora.org>
-Message-ID: <860e3d9d-91dc-7fd6-68f6-e8f099cc4555@codeaurora.org>
-Date:   Thu, 6 May 2021 19:33:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S234061AbhEGCf2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 6 May 2021 22:35:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233714AbhEGCf1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 6 May 2021 22:35:27 -0400
+Received: from mail-lj1-x22d.google.com (mail-lj1-x22d.google.com [IPv6:2a00:1450:4864:20::22d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4375C061574
+        for <linux-kernel@vger.kernel.org>; Thu,  6 May 2021 19:34:26 -0700 (PDT)
+Received: by mail-lj1-x22d.google.com with SMTP id u20so9605404lja.13
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 19:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=v5T1rycNE4HG9oZUkYXvP5llXs2aWf6PeX0NDr3FT7o=;
+        b=g8wIE8bJtPt/5As/LkKG+NNYK+6QslXCgx/RIl27/cKjeAPerak5tfmzD1KDmSxsw+
+         NB+H/eAsLHWDUSIxBapdT4cpjnTRn+ggi5kWlTPnx7QEnMOcG82cBcukDZXrVcPvkxSW
+         s7hdCOAKGTPKgRkbKO3HZt1mLv5NflNScJwJE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=v5T1rycNE4HG9oZUkYXvP5llXs2aWf6PeX0NDr3FT7o=;
+        b=g5wqgdJ0SidfkCrb+1ZkUJhkfxUKzq91sSlSKWSVNOK5rXDdfw8LSYM7Gg0J4j0pM6
+         TXAfgE1ReBE19PiXYtkq2m6uLF5IuUgO7RmmNtYLrXrHfKqzcGe2Ywh1x9IWBjRVt7tC
+         HiZ3e1Zl3pQZs2dsr7uuBPxxipwlLo6vYzZIVSoY9bKkEu5lFwhH9pNym9Cddd2ZSXbt
+         092woySu1w/AthPAaWzq0sJVJko9Fzhsvq+nr00vuQvsC9GQW56P/XFNnNsXmZ1F8GhI
+         tgaHe4sW044gUulj2WsHr8H+RxyD93p2XS2o36FUEOHx1NG9wcdeBTDbCDYqGjQeahRN
+         nqFQ==
+X-Gm-Message-State: AOAM531oiWxKLRYcoZlG0Wk0VNFk2vfVFh3gAO3cFMhnZWnP3RWMDr2e
+        PCHCV9HQ6NtLN6IxBBP2XuEPC+QyCsOcj2ni
+X-Google-Smtp-Source: ABdhPJxS9Fk9ISkwUCzCU64ga8KMeGe5erA2m2A0+aKdZeIL9XYPUsuHjx+C8SJeWFSLAxLRVB9pzQ==
+X-Received: by 2002:a2e:bb9e:: with SMTP id y30mr2437134lje.135.1620354865313;
+        Thu, 06 May 2021 19:34:25 -0700 (PDT)
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com. [209.85.208.174])
+        by smtp.gmail.com with ESMTPSA id y22sm1111704lfl.36.2021.05.06.19.34.23
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 May 2021 19:34:24 -0700 (PDT)
+Received: by mail-lj1-f174.google.com with SMTP id e12so9650774ljn.2
+        for <linux-kernel@vger.kernel.org>; Thu, 06 May 2021 19:34:23 -0700 (PDT)
+X-Received: by 2002:a2e:954a:: with SMTP id t10mr5646469ljh.411.1620354863575;
+ Thu, 06 May 2021 19:34:23 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1620330705-40192-7-git-send-email-bbhatt@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20210506232537.165788-1-peterx@redhat.com> <20210506232537.165788-3-peterx@redhat.com>
+In-Reply-To: <20210506232537.165788-3-peterx@redhat.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 6 May 2021 19:34:07 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiNwNz33SEdZixX62XyEx4ZPPbkkNw+V4nn+9=YLc2Acw@mail.gmail.com>
+Message-ID: <CAHk-=wiNwNz33SEdZixX62XyEx4ZPPbkkNw+V4nn+9=YLc2Acw@mail.gmail.com>
+Subject: Re: [PATCH 2/3] mm: gup: allow FOLL_PIN to scale in SMP
+To:     Peter Xu <peterx@redhat.com>
+Cc:     Linux-MM <linux-mm@kvack.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Hugh Dickins <hughd@google.com>,
+        John Hubbard <jhubbard@nvidia.com>, Jan Kara <jack@suse.cz>,
+        Kirill Shutemov <kirill@shutemov.name>,
+        Jason Gunthorpe <jgg@nvidia.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Kirill Tkhai <ktkhai@virtuozzo.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Andrea Arcangeli <aarcange@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, May 6, 2021 at 4:25 PM Peter Xu <peterx@redhat.com> wrote:
+>
+> +       if (flags & FOLL_PIN && !atomic_read(&mm->has_pinned))
 
+Please add parentheses to clarify code like this and make the grouping
+much more visually obvious.
 
-On 5/6/21 12:51 PM, Bhaumik Bhatt wrote:
-> When obtaining the BHI or BHIe offsets during the power up
-> preparation phase, range checks are missing. These can help
-> controller drivers avoid accessing any address outside of the
-> MMIO region. Ensure that mhi_cntrl->reg_len is set before MHI
-> registration as it is a required field and range checks will
-> fail without it.
-> 
-> Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-> Reviewed-by: Jeffrey Hugo <quic_jhugo@quicinc.com>
+Yes, yes, '&' has higher precedence than '&&'. This is not about the
+compiler, this is about the humans reading it. So please write it as
 
-Reviewed-by: Hemant Kumar <hemantk@codeaurora.org>
+        if ((flags & FOLL_PIN) && !atomic_read(&mm->has_pinned))
 
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+instead (this problem remains - and the fix is the same - in the 3/3 patch).
+
+Otherwise the series looks fine to me (although admittedly I do find
+the commit message to be ridiculously verbose for such a trivial patch
+- at some point the actual _point_ if it all gets hidden in the long
+commit message).
+
+             Linus
