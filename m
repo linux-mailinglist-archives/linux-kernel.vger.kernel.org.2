@@ -2,543 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F14E137657D
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:49:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 560EC376585
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237065AbhEGMuT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:50:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35660 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S237043AbhEGMuO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:50:14 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 8230E6145D;
-        Fri,  7 May 2021 12:49:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-        s=korg; t=1620391754;
-        bh=whxbeBHyB5lf6REtCsSj8E6P6kjxon/iJ6DfNAZQ2ec=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=dhBoN77baZExI3BMbrSsLEyl2rSXzsLY4OXq47YWP29nXJQIHAmeTpLYmP/Lj4JZ9
-         60P3yyGHyX6FV+VTlxVO1dGZ0qtwLr4ZIwhWRl8vyP+upA6LABmCgvBLhF1YS/RcDy
-         B2kPqV1jbWt5n7kiQgC0yIaRKrPu/RavllxiKSyg=
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
-        torvalds@linux-foundation.org, stable@vger.kernel.org
-Cc:     lwn@lwn.net, jslaby@suse.cz,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: Linux 5.12.2
-Date:   Fri,  7 May 2021 14:49:10 +0200
-Message-Id: <1620391742241167@kroah.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <162039174226118@kroah.com>
-References: <162039174226118@kroah.com>
+        id S237098AbhEGMvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:51:14 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17152 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S237051AbhEGMvI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 08:51:08 -0400
+Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Fc9F52R6VzqTD8;
+        Fri,  7 May 2021 20:46:49 +0800 (CST)
+Received: from huawei.com (10.174.185.226) by DGGEMS401-HUB.china.huawei.com
+ (10.3.19.201) with Microsoft SMTP Server id 14.3.498.0; Fri, 7 May 2021
+ 20:50:00 +0800
+From:   Wang Xingang <wangxingang5@huawei.com>
+To:     <will@kernel.org>, <joro@8bytes.org>
+CC:     <bhelgaas@google.com>, <gregkh@linuxfoundation.org>,
+        <iommu@lists.linux-foundation.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pci@vger.kernel.org>, <xieyingtai@huawei.com>,
+        <wangxingang5@huawei.com>
+Subject: [PATCH 0/1] iommu/of: Fix request and enable ACS for of_iommu_configure
+Date:   Fri, 7 May 2021 12:49:52 +0000
+Message-ID: <1620391793-18744-1-git-send-email-wangxingang5@huawei.com>
+X-Mailer: git-send-email 2.6.4.windows.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.174.185.226]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-diff --git a/Makefile b/Makefile
-index 78b0941f0de4..5077411a1874 100644
---- a/Makefile
-+++ b/Makefile
-@@ -1,7 +1,7 @@
- # SPDX-License-Identifier: GPL-2.0
- VERSION = 5
- PATCHLEVEL = 12
--SUBLEVEL = 1
-+SUBLEVEL = 2
- EXTRAVERSION =
- NAME = Frozen Wasteland
- 
-diff --git a/arch/mips/include/asm/vdso/gettimeofday.h b/arch/mips/include/asm/vdso/gettimeofday.h
-index 2203e2d0ae2a..44a45f3fa4b0 100644
---- a/arch/mips/include/asm/vdso/gettimeofday.h
-+++ b/arch/mips/include/asm/vdso/gettimeofday.h
-@@ -20,6 +20,12 @@
- 
- #define VDSO_HAS_CLOCK_GETRES		1
- 
-+#if MIPS_ISA_REV < 6
-+#define VDSO_SYSCALL_CLOBBERS "hi", "lo",
-+#else
-+#define VDSO_SYSCALL_CLOBBERS
-+#endif
-+
- static __always_inline long gettimeofday_fallback(
- 				struct __kernel_old_timeval *_tv,
- 				struct timezone *_tz)
-@@ -35,7 +41,9 @@ static __always_inline long gettimeofday_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (tv), "r" (tz), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -59,7 +67,9 @@ static __always_inline long clock_gettime_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -83,7 +93,9 @@ static __always_inline int clock_getres_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -105,7 +117,9 @@ static __always_inline long clock_gettime32_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-@@ -125,7 +139,9 @@ static __always_inline int clock_getres32_fallback(
- 	: "=r" (ret), "=r" (error)
- 	: "r" (clkid), "r" (ts), "r" (nr)
- 	: "$1", "$3", "$8", "$9", "$10", "$11", "$12", "$13",
--	  "$14", "$15", "$24", "$25", "hi", "lo", "memory");
-+	  "$14", "$15", "$24", "$25",
-+	  VDSO_SYSCALL_CLOBBERS
-+	  "memory");
- 
- 	return error ? -ret : ret;
- }
-diff --git a/drivers/gpu/drm/i915/i915_drv.c b/drivers/gpu/drm/i915/i915_drv.c
-index 8e9cb44e66e5..4ecb813c9bc7 100644
---- a/drivers/gpu/drm/i915/i915_drv.c
-+++ b/drivers/gpu/drm/i915/i915_drv.c
-@@ -1049,6 +1049,8 @@ static void intel_shutdown_encoders(struct drm_i915_private *dev_priv)
- void i915_driver_shutdown(struct drm_i915_private *i915)
- {
- 	disable_rpm_wakeref_asserts(&i915->runtime_pm);
-+	intel_runtime_pm_disable(&i915->runtime_pm);
-+	intel_power_domains_disable(i915);
- 
- 	i915_gem_suspend(i915);
- 
-@@ -1064,7 +1066,15 @@ void i915_driver_shutdown(struct drm_i915_private *i915)
- 	intel_suspend_encoders(i915);
- 	intel_shutdown_encoders(i915);
- 
-+	/*
-+	 * The only requirement is to reboot with display DC states disabled,
-+	 * for now leaving all display power wells in the INIT power domain
-+	 * enabled matching the driver reload sequence.
-+	 */
-+	intel_power_domains_driver_remove(i915);
- 	enable_rpm_wakeref_asserts(&i915->runtime_pm);
-+
-+	intel_runtime_pm_driver_release(&i915->runtime_pm);
- }
- 
- static bool suspend_to_idle(struct drm_i915_private *dev_priv)
-diff --git a/drivers/net/usb/ax88179_178a.c b/drivers/net/usb/ax88179_178a.c
-index d650b39b6e5d..c1316718304d 100644
---- a/drivers/net/usb/ax88179_178a.c
-+++ b/drivers/net/usb/ax88179_178a.c
-@@ -296,12 +296,12 @@ static int ax88179_read_cmd(struct usbnet *dev, u8 cmd, u16 value, u16 index,
- 	int ret;
- 
- 	if (2 == size) {
--		u16 buf;
-+		u16 buf = 0;
- 		ret = __ax88179_read_cmd(dev, cmd, value, index, size, &buf, 0);
- 		le16_to_cpus(&buf);
- 		*((u16 *)data) = buf;
- 	} else if (4 == size) {
--		u32 buf;
-+		u32 buf = 0;
- 		ret = __ax88179_read_cmd(dev, cmd, value, index, size, &buf, 0);
- 		le32_to_cpus(&buf);
- 		*((u32 *)data) = buf;
-@@ -1296,6 +1296,8 @@ static void ax88179_get_mac_addr(struct usbnet *dev)
- {
- 	u8 mac[ETH_ALEN];
- 
-+	memset(mac, 0, sizeof(mac));
-+
- 	/* Maybe the boot loader passed the MAC address via device tree */
- 	if (!eth_platform_get_mac_address(&dev->udev->dev, mac)) {
- 		netif_dbg(dev, ifup, dev->net,
-diff --git a/drivers/platform/x86/thinkpad_acpi.c b/drivers/platform/x86/thinkpad_acpi.c
-index 0d9e2ddbf904..61f1c91c62de 100644
---- a/drivers/platform/x86/thinkpad_acpi.c
-+++ b/drivers/platform/x86/thinkpad_acpi.c
-@@ -6260,6 +6260,7 @@ enum thermal_access_mode {
- enum { /* TPACPI_THERMAL_TPEC_* */
- 	TP_EC_THERMAL_TMP0 = 0x78,	/* ACPI EC regs TMP 0..7 */
- 	TP_EC_THERMAL_TMP8 = 0xC0,	/* ACPI EC regs TMP 8..15 */
-+	TP_EC_FUNCREV      = 0xEF,      /* ACPI EC Functional revision */
- 	TP_EC_THERMAL_TMP_NA = -128,	/* ACPI EC sensor not available */
- 
- 	TPACPI_THERMAL_SENSOR_NA = -128000, /* Sensor not available */
-@@ -6458,7 +6459,7 @@ static const struct attribute_group thermal_temp_input8_group = {
- 
- static int __init thermal_init(struct ibm_init_struct *iibm)
- {
--	u8 t, ta1, ta2;
-+	u8 t, ta1, ta2, ver = 0;
- 	int i;
- 	int acpi_tmp7;
- 	int res;
-@@ -6473,7 +6474,14 @@ static int __init thermal_init(struct ibm_init_struct *iibm)
- 		 * 0x78-0x7F, 0xC0-0xC7.  Registers return 0x00 for
- 		 * non-implemented, thermal sensors return 0x80 when
- 		 * not available
-+		 * The above rule is unfortunately flawed. This has been seen with
-+		 * 0xC2 (power supply ID) causing thermal control problems.
-+		 * The EC version can be determined by offset 0xEF and at least for
-+		 * version 3 the Lenovo firmware team confirmed that registers 0xC0-0xC7
-+		 * are not thermal registers.
- 		 */
-+		if (!acpi_ec_read(TP_EC_FUNCREV, &ver))
-+			pr_warn("Thinkpad ACPI EC unable to access EC version\n");
- 
- 		ta1 = ta2 = 0;
- 		for (i = 0; i < 8; i++) {
-@@ -6483,11 +6491,13 @@ static int __init thermal_init(struct ibm_init_struct *iibm)
- 				ta1 = 0;
- 				break;
- 			}
--			if (acpi_ec_read(TP_EC_THERMAL_TMP8 + i, &t)) {
--				ta2 |= t;
--			} else {
--				ta1 = 0;
--				break;
-+			if (ver < 3) {
-+				if (acpi_ec_read(TP_EC_THERMAL_TMP8 + i, &t)) {
-+					ta2 |= t;
-+				} else {
-+					ta1 = 0;
-+					break;
-+				}
- 			}
- 		}
- 		if (ta1 == 0) {
-@@ -6500,9 +6510,12 @@ static int __init thermal_init(struct ibm_init_struct *iibm)
- 				thermal_read_mode = TPACPI_THERMAL_NONE;
- 			}
- 		} else {
--			thermal_read_mode =
--			    (ta2 != 0) ?
--			    TPACPI_THERMAL_TPEC_16 : TPACPI_THERMAL_TPEC_8;
-+			if (ver >= 3)
-+				thermal_read_mode = TPACPI_THERMAL_TPEC_8;
-+			else
-+				thermal_read_mode =
-+					(ta2 != 0) ?
-+					TPACPI_THERMAL_TPEC_16 : TPACPI_THERMAL_TPEC_8;
- 		}
- 	} else if (acpi_tmp7) {
- 		if (tpacpi_is_ibm() &&
-diff --git a/drivers/usb/core/quirks.c b/drivers/usb/core/quirks.c
-index 76ac5d6555ae..21e7522655ac 100644
---- a/drivers/usb/core/quirks.c
-+++ b/drivers/usb/core/quirks.c
-@@ -406,6 +406,7 @@ static const struct usb_device_id usb_quirk_list[] = {
- 
- 	/* Realtek hub in Dell WD19 (Type-C) */
- 	{ USB_DEVICE(0x0bda, 0x0487), .driver_info = USB_QUIRK_NO_LPM },
-+	{ USB_DEVICE(0x0bda, 0x5487), .driver_info = USB_QUIRK_RESET_RESUME },
- 
- 	/* Generic RTL8153 based ethernet adapters */
- 	{ USB_DEVICE(0x0bda, 0x8153), .driver_info = USB_QUIRK_NO_LPM },
-@@ -438,6 +439,9 @@ static const struct usb_device_id usb_quirk_list[] = {
- 	{ USB_DEVICE(0x17ef, 0xa012), .driver_info =
- 			USB_QUIRK_DISCONNECT_SUSPEND },
- 
-+	/* Lenovo ThinkPad USB-C Dock Gen2 Ethernet (RTL8153 GigE) */
-+	{ USB_DEVICE(0x17ef, 0xa387), .driver_info = USB_QUIRK_NO_LPM },
-+
- 	/* BUILDWIN Photo Frame */
- 	{ USB_DEVICE(0x1908, 0x1315), .driver_info =
- 			USB_QUIRK_HONOR_BNUMINTERFACES },
-diff --git a/fs/overlayfs/namei.c b/fs/overlayfs/namei.c
-index 3fe05fb5d145..71e264e2f16b 100644
---- a/fs/overlayfs/namei.c
-+++ b/fs/overlayfs/namei.c
-@@ -919,6 +919,7 @@ struct dentry *ovl_lookup(struct inode *dir, struct dentry *dentry,
- 			continue;
- 
- 		if ((uppermetacopy || d.metacopy) && !ofs->config.metacopy) {
-+			dput(this);
- 			err = -EPERM;
- 			pr_warn_ratelimited("refusing to follow metacopy origin for (%pd2)\n", dentry);
- 			goto out_put;
-diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-index fdd72f1a9c5e..8cf343335029 100644
---- a/fs/overlayfs/super.c
-+++ b/fs/overlayfs/super.c
-@@ -1826,7 +1826,8 @@ static struct ovl_entry *ovl_get_lowerstack(struct super_block *sb,
-  * - upper/work dir of any overlayfs instance
-  */
- static int ovl_check_layer(struct super_block *sb, struct ovl_fs *ofs,
--			   struct dentry *dentry, const char *name)
-+			   struct dentry *dentry, const char *name,
-+			   bool is_lower)
- {
- 	struct dentry *next = dentry, *parent;
- 	int err = 0;
-@@ -1838,7 +1839,7 @@ static int ovl_check_layer(struct super_block *sb, struct ovl_fs *ofs,
- 
- 	/* Walk back ancestors to root (inclusive) looking for traps */
- 	while (!err && parent != next) {
--		if (ovl_lookup_trap_inode(sb, parent)) {
-+		if (is_lower && ovl_lookup_trap_inode(sb, parent)) {
- 			err = -ELOOP;
- 			pr_err("overlapping %s path\n", name);
- 		} else if (ovl_is_inuse(parent)) {
-@@ -1864,7 +1865,7 @@ static int ovl_check_overlapping_layers(struct super_block *sb,
- 
- 	if (ovl_upper_mnt(ofs)) {
- 		err = ovl_check_layer(sb, ofs, ovl_upper_mnt(ofs)->mnt_root,
--				      "upperdir");
-+				      "upperdir", false);
- 		if (err)
- 			return err;
- 
-@@ -1875,7 +1876,8 @@ static int ovl_check_overlapping_layers(struct super_block *sb,
- 		 * workbasedir.  In that case, we already have their traps in
- 		 * inode cache and we will catch that case on lookup.
- 		 */
--		err = ovl_check_layer(sb, ofs, ofs->workbasedir, "workdir");
-+		err = ovl_check_layer(sb, ofs, ofs->workbasedir, "workdir",
-+				      false);
- 		if (err)
- 			return err;
- 	}
-@@ -1883,7 +1885,7 @@ static int ovl_check_overlapping_layers(struct super_block *sb,
- 	for (i = 1; i < ofs->numlayer; i++) {
- 		err = ovl_check_layer(sb, ofs,
- 				      ofs->layers[i].mnt->mnt_root,
--				      "lowerdir");
-+				      "lowerdir", true);
- 		if (err)
- 			return err;
- 	}
-diff --git a/include/linux/bpf_verifier.h b/include/linux/bpf_verifier.h
-index 971b33aca13d..99bc82342ca0 100644
---- a/include/linux/bpf_verifier.h
-+++ b/include/linux/bpf_verifier.h
-@@ -299,10 +299,11 @@ struct bpf_verifier_state_list {
- };
- 
- /* Possible states for alu_state member. */
--#define BPF_ALU_SANITIZE_SRC		1U
--#define BPF_ALU_SANITIZE_DST		2U
-+#define BPF_ALU_SANITIZE_SRC		(1U << 0)
-+#define BPF_ALU_SANITIZE_DST		(1U << 1)
- #define BPF_ALU_NEG_VALUE		(1U << 2)
- #define BPF_ALU_NON_POINTER		(1U << 3)
-+#define BPF_ALU_IMMEDIATE		(1U << 4)
- #define BPF_ALU_SANITIZE		(BPF_ALU_SANITIZE_SRC | \
- 					 BPF_ALU_SANITIZE_DST)
- 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 0399ac092b36..a2ed7a7e27e2 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5952,6 +5952,7 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- {
- 	struct bpf_insn_aux_data *aux = commit_window ? cur_aux(env) : tmp_aux;
- 	struct bpf_verifier_state *vstate = env->cur_state;
-+	bool off_is_imm = tnum_is_const(off_reg->var_off);
- 	bool off_is_neg = off_reg->smin_value < 0;
- 	bool ptr_is_dst_reg = ptr_reg == dst_reg;
- 	u8 opcode = BPF_OP(insn->code);
-@@ -5982,6 +5983,7 @@ static int sanitize_ptr_alu(struct bpf_verifier_env *env,
- 		alu_limit = abs(tmp_aux->alu_limit - alu_limit);
- 	} else {
- 		alu_state  = off_is_neg ? BPF_ALU_NEG_VALUE : 0;
-+		alu_state |= off_is_imm ? BPF_ALU_IMMEDIATE : 0;
- 		alu_state |= ptr_is_dst_reg ?
- 			     BPF_ALU_SANITIZE_SRC : BPF_ALU_SANITIZE_DST;
- 	}
-@@ -11740,7 +11742,7 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
- 			const u8 code_sub = BPF_ALU64 | BPF_SUB | BPF_X;
- 			struct bpf_insn insn_buf[16];
- 			struct bpf_insn *patch = &insn_buf[0];
--			bool issrc, isneg;
-+			bool issrc, isneg, isimm;
- 			u32 off_reg;
- 
- 			aux = &env->insn_aux_data[i + delta];
-@@ -11751,28 +11753,29 @@ static int fixup_bpf_calls(struct bpf_verifier_env *env)
- 			isneg = aux->alu_state & BPF_ALU_NEG_VALUE;
- 			issrc = (aux->alu_state & BPF_ALU_SANITIZE) ==
- 				BPF_ALU_SANITIZE_SRC;
-+			isimm = aux->alu_state & BPF_ALU_IMMEDIATE;
- 
- 			off_reg = issrc ? insn->src_reg : insn->dst_reg;
--			if (isneg)
--				*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
--			*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
--			*patch++ = BPF_ALU64_REG(BPF_SUB, BPF_REG_AX, off_reg);
--			*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
--			*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
--			*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
--			if (issrc) {
--				*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX,
--							 off_reg);
--				insn->src_reg = BPF_REG_AX;
-+			if (isimm) {
-+				*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
- 			} else {
--				*patch++ = BPF_ALU64_REG(BPF_AND, off_reg,
--							 BPF_REG_AX);
-+				if (isneg)
-+					*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
-+				*patch++ = BPF_MOV32_IMM(BPF_REG_AX, aux->alu_limit);
-+				*patch++ = BPF_ALU64_REG(BPF_SUB, BPF_REG_AX, off_reg);
-+				*patch++ = BPF_ALU64_REG(BPF_OR, BPF_REG_AX, off_reg);
-+				*patch++ = BPF_ALU64_IMM(BPF_NEG, BPF_REG_AX, 0);
-+				*patch++ = BPF_ALU64_IMM(BPF_ARSH, BPF_REG_AX, 63);
-+				*patch++ = BPF_ALU64_REG(BPF_AND, BPF_REG_AX, off_reg);
- 			}
-+			if (!issrc)
-+				*patch++ = BPF_MOV64_REG(insn->dst_reg, insn->src_reg);
-+			insn->src_reg = BPF_REG_AX;
- 			if (isneg)
- 				insn->code = insn->code == code_add ?
- 					     code_sub : code_add;
- 			*patch++ = *insn;
--			if (issrc && isneg)
-+			if (issrc && isneg && !isimm)
- 				*patch++ = BPF_ALU64_IMM(BPF_MUL, off_reg, -1);
- 			cnt = patch - insn_buf;
- 
-diff --git a/kernel/events/core.c b/kernel/events/core.c
-index 03db40f6cba9..43ceb8dae264 100644
---- a/kernel/events/core.c
-+++ b/kernel/events/core.c
-@@ -11829,12 +11829,12 @@ SYSCALL_DEFINE5(perf_event_open,
- 			return err;
- 	}
- 
--	err = security_locked_down(LOCKDOWN_PERF);
--	if (err && (attr.sample_type & PERF_SAMPLE_REGS_INTR))
--		/* REGS_INTR can leak data, lockdown must prevent this */
--		return err;
--
--	err = 0;
-+	/* REGS_INTR can leak data, lockdown must prevent this */
-+	if (attr.sample_type & PERF_SAMPLE_REGS_INTR) {
-+		err = security_locked_down(LOCKDOWN_PERF);
-+		if (err)
-+			return err;
-+	}
- 
- 	/*
- 	 * In cgroup mode, the pid argument is used to pass the fd
-diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
-index c6c0cb465664..313d1c8ff066 100644
---- a/net/netfilter/nf_conntrack_standalone.c
-+++ b/net/netfilter/nf_conntrack_standalone.c
-@@ -1060,16 +1060,10 @@ static int nf_conntrack_standalone_init_sysctl(struct net *net)
- 	nf_conntrack_standalone_init_dccp_sysctl(net, table);
- 	nf_conntrack_standalone_init_gre_sysctl(net, table);
- 
--	/* Don't allow unprivileged users to alter certain sysctls */
--	if (net->user_ns != &init_user_ns) {
-+	/* Don't allow non-init_net ns to alter global sysctls */
-+	if (!net_eq(&init_net, net)) {
- 		table[NF_SYSCTL_CT_MAX].mode = 0444;
- 		table[NF_SYSCTL_CT_EXPECT_MAX].mode = 0444;
--		table[NF_SYSCTL_CT_HELPER].mode = 0444;
--#ifdef CONFIG_NF_CONNTRACK_EVENTS
--		table[NF_SYSCTL_CT_EVENTS].mode = 0444;
--#endif
--		table[NF_SYSCTL_CT_BUCKETS].mode = 0444;
--	} else if (!net_eq(&init_net, net)) {
- 		table[NF_SYSCTL_CT_BUCKETS].mode = 0444;
- 	}
- 
-diff --git a/net/qrtr/mhi.c b/net/qrtr/mhi.c
-index 2bf2b1943e61..fa611678af05 100644
---- a/net/qrtr/mhi.c
-+++ b/net/qrtr/mhi.c
-@@ -50,6 +50,9 @@ static int qcom_mhi_qrtr_send(struct qrtr_endpoint *ep, struct sk_buff *skb)
- 	struct qrtr_mhi_dev *qdev = container_of(ep, struct qrtr_mhi_dev, ep);
- 	int rc;
- 
-+	if (skb->sk)
-+		sock_hold(skb->sk);
-+
- 	rc = skb_linearize(skb);
- 	if (rc)
- 		goto free_skb;
-@@ -59,12 +62,11 @@ static int qcom_mhi_qrtr_send(struct qrtr_endpoint *ep, struct sk_buff *skb)
- 	if (rc)
- 		goto free_skb;
- 
--	if (skb->sk)
--		sock_hold(skb->sk);
--
- 	return rc;
- 
- free_skb:
-+	if (skb->sk)
-+		sock_put(skb->sk);
- 	kfree_skb(skb);
- 
- 	return rc;
-diff --git a/sound/usb/endpoint.c b/sound/usb/endpoint.c
-index 102d53515a76..933586a895e7 100644
---- a/sound/usb/endpoint.c
-+++ b/sound/usb/endpoint.c
-@@ -1442,11 +1442,11 @@ void snd_usb_endpoint_stop(struct snd_usb_endpoint *ep)
- 	if (snd_BUG_ON(!atomic_read(&ep->running)))
- 		return;
- 
--	if (ep->sync_source)
--		WRITE_ONCE(ep->sync_source->sync_sink, NULL);
--
--	if (!atomic_dec_return(&ep->running))
-+	if (!atomic_dec_return(&ep->running)) {
-+		if (ep->sync_source)
-+			WRITE_ONCE(ep->sync_source->sync_sink, NULL);
- 		stop_urbs(ep, false);
-+	}
- }
- 
- /**
-diff --git a/sound/usb/quirks-table.h b/sound/usb/quirks-table.h
-index 1165a5ac60f2..48facd262658 100644
---- a/sound/usb/quirks-table.h
-+++ b/sound/usb/quirks-table.h
-@@ -2376,6 +2376,16 @@ YAMAHA_DEVICE(0x7010, "UB99"),
- 	}
- },
- 
-+{
-+	USB_DEVICE_VENDOR_SPEC(0x0944, 0x0204),
-+	.driver_info = (unsigned long) & (const struct snd_usb_audio_quirk) {
-+		.vendor_name = "KORG, Inc.",
-+		/* .product_name = "ToneLab EX", */
-+		.ifnum = 3,
-+		.type = QUIRK_MIDI_STANDARD_INTERFACE,
-+	}
-+},
-+
- /* AKAI devices */
- {
- 	USB_DEVICE(0x09e8, 0x0062),
+From: Xingang Wang <wangxingang5@huawei.com>
+
+When request ACS in of_iommu_configure, the pci_acs_init procedure has
+already been called. The pci device probe procedure is like the following:
+pci_host_common_probe
+    pci_device_add
+        pci_acs_init
+of_iommu_configure
+    pci_request_acs
+
+The pci_request_acs() does not work because the pci_acs_init and
+pci_enable_acs procedure has already finished, so the ACS is not
+enabled as expected.  Besides, the ACS is enabled only if IOMMU is
+detected and the device is pci.
+
+So this fix 6bf6c24720d33 ("iommu/of: Request ACS from the PCI core
+when configuring IOMMU linkage"), add pci_enable_acs() and IOMMU check
+to make sure ACS is enabled for the pci_device.
+
+Xingang Wang (1):
+  iommu/of: Fix request and enable ACS for of_iommu_configure
+
+ drivers/iommu/of_iommu.c | 10 +++++++++-
+ drivers/pci/pci.c        |  2 +-
+ include/linux/pci.h      |  1 +
+ 3 files changed, 11 insertions(+), 2 deletions(-)
+
+-- 
+2.19.1
+
