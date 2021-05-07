@@ -2,117 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46580376714
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:35:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0445B376719
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 16:36:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237656AbhEGOgC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 10:36:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:40588 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235979AbhEGOgB (ORCPT
+        id S237662AbhEGOhI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 10:37:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S235979AbhEGOhG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 10:36:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620398101;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=rgJM7rcwdpqiWcKrLGLGEmzPVdrTnOgLXsD7YCtl+rM=;
-        b=fPVP9M4EW18Zh5VLBFw4BYFI7grp0Qu9Pb14sZN9nXHN0lC/xHrygQfSZ+kQwY47A9m7/B
-        zbvEwgxoMolqPpvAPMeOaDP7HAAkjYO6jV/7DvsI9TsL5plq4lJiC8BUUHLCmkwSUCJ1Yb
-        wctQ2RmJuu/Eef1LpLmXebgwadmPdAo=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-334-g-pFlMhXOhSD-fdqUzKT7Q-1; Fri, 07 May 2021 10:34:59 -0400
-X-MC-Unique: g-pFlMhXOhSD-fdqUzKT7Q-1
-Received: by mail-qv1-f71.google.com with SMTP id x6-20020a0cda060000b02901c4b3f7d3d9so6789917qvj.0
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 07:34:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=rgJM7rcwdpqiWcKrLGLGEmzPVdrTnOgLXsD7YCtl+rM=;
-        b=HC/sGXeZy2yRVxvTnFxofDAM0obdN054QuG190bYUmh5nc/7txdOoSsMdb3dfmiPzG
-         UxYAQ9bMsgMc4/4n90EPtjmcAqw/kQSJ+l7XQcbgpQnfJx0A8a2RbCP3DCbxNggpkgnE
-         tliU8Y8unrxG31cUccrER52JpaBO/U3ygPyNfVLD2oCGe3j6l4QyCS734vyrEBmrymnc
-         vIFLlmX7EyjTYacs7AxeKh2C5qSjaSpW04m1WjaNdiGGnv3yvWBH0xt+xATdTEfjR+Nh
-         FsatQm0z+n/LS9SnCxzVLsXQW8ssLJsGRw6FXdhSVBrebTymBPEKSevqy+dOYj86LEeE
-         Ll+A==
-X-Gm-Message-State: AOAM530tcIIlFlO10oHjD6Rlt8DeOqKqekrYc09vFTd27dNv113nABLw
-        aH2ziC/UfEPblMjVUYl9wCLDPPhRXm9vllyUm12X8plcDMIVTT0S3Ouz+sVFgxdAMCY8rqjlK29
-        QE9MXDSValutKyZyYdnkzN8VT
-X-Received: by 2002:a05:6214:486:: with SMTP id ay6mr9888773qvb.18.1620398098776;
-        Fri, 07 May 2021 07:34:58 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx/F5OaDko+vZfUHXfSJhKl5aMCi2Pl+T2EqSPFraTJjI2uArYbRY1NZZFlC9bDPNCS/RWtDQ==
-X-Received: by 2002:a05:6214:486:: with SMTP id ay6mr9888747qvb.18.1620398098551;
-        Fri, 07 May 2021 07:34:58 -0700 (PDT)
-Received: from t490s (bras-base-toroon474qw-grc-72-184-145-4-219.dsl.bell.ca. [184.145.4.219])
-        by smtp.gmail.com with ESMTPSA id 67sm4999948qtf.54.2021.05.07.07.34.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 07:34:57 -0700 (PDT)
-Date:   Fri, 7 May 2021 10:34:56 -0400
-From:   Peter Xu <peterx@redhat.com>
-To:     John Hubbard <jhubbard@nvidia.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Jason Gunthorpe <jgg@nvidia.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>, Jann Horn <jannh@google.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Andrea Arcangeli <aarcange@redhat.com>
-Subject: Re: [PATCH 3/3] mm: gup: pack has_pinned in MMF_HAS_PINNED
-Message-ID: <YJVQEGSLil7wYhEe@t490s>
-References: <20210506232537.165788-1-peterx@redhat.com>
- <20210506232537.165788-4-peterx@redhat.com>
- <69055843-185d-20ea-213b-10494a2f7246@nvidia.com>
+        Fri, 7 May 2021 10:37:06 -0400
+Received: from mail.andi.de1.cc (mail.andi.de1.cc [IPv6:2a01:238:4321:8900:456f:ecd6:43e:202c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93F10C061574;
+        Fri,  7 May 2021 07:36:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=kemnade.info; s=20180802; h=Content-Transfer-Encoding:Content-Type:
+        MIME-Version:References:In-Reply-To:Message-ID:Subject:Cc:To:From:Date:Sender
+        :Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
+        Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
+        List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=6dJeir0IllpcdJngtcLUhx28M8f0bZ1rEecS6mnPMAs=; b=XsIzQqwqFhMZf7LU5FDeojUy7k
+        8llJzvi5yXUosajW6swvsE/Jso1PgUkwgSGJT3Pgii9lJzxYCi9QezFuDr9xgBCOjV+SLVWDIa2F0
+        Ob0snjTJFualyIE4AVggR8HWxgGKGTn1H/aH0bWugFp15lfcp2anetHR06IXSjsfE89w=;
+Received: from p200300ccff0fc8001a3da2fffebfd33a.dip0.t-ipconnect.de ([2003:cc:ff0f:c800:1a3d:a2ff:febf:d33a] helo=aktux)
+        by mail.andi.de1.cc with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <andreas@kemnade.info>)
+        id 1lf1aF-0004Wz-57; Fri, 07 May 2021 16:36:03 +0200
+Date:   Fri, 7 May 2021 16:36:02 +0200
+From:   Andreas Kemnade <andreas@kemnade.info>
+To:     Vignesh Raghavendra <vigneshr@ti.com>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        Rob Herring <robh+dt@kernel.org>, <linux-omap@vger.kernel.org>,
+        <linux-i2c@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Linux ARM Mailing List <linux-arm-kernel@lists.infradead.org>,
+        Tony Lindgren <tony@atomide.com>, Nishanth Menon <nm@ti.com>
+Subject: Re: [PATCH v2] dt-bindings: i2c: Move i2c-omap.txt to YAML format
+Message-ID: <20210507163602.219894f4@aktux>
+In-Reply-To: <429a740a-c2b9-1cf8-ed2b-0fb7b1bea422@ti.com>
+References: <20210506140026.31254-1-vigneshr@ti.com>
+        <f7570cb4-8c21-2fa5-bd26-1388f2a4bd6b@ti.com>
+        <429a740a-c2b9-1cf8-ed2b-0fb7b1bea422@ti.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <69055843-185d-20ea-213b-10494a2f7246@nvidia.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -1.0 (-)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 06, 2021 at 11:42:59PM -0700, John Hubbard wrote:
-> > +#define MMF_HAS_PINNED		28	/* FOLL_PIN has run, never cleared */
+On Fri, 7 May 2021 19:45:45 +0530
+Vignesh Raghavendra <vigneshr@ti.com> wrote:
+
+> On 5/7/21 12:24 PM, Grygorii Strashko wrote:
+> > 
+> > 
+> > On 06/05/2021 17:00, Vignesh Raghavendra wrote:  
+> >> Convert i2c-omap.txt to YAML schema for better checks and documentation.
+> >>
+> >> Following properties were used in DT but were not documented in txt
+> >> bindings and has been included in YAML schema:
+> >> 1. Include ti,am4372-i2c compatible
+> >> 2. Include dmas property used in few OMAP dts files  
+> > 
+> > The DMA is not supported by i2c-omap driver, so wouldn't be better to
+> > just drop dmas from DTBs to avoid confusions?
+> > It can be added later.
+> >   
 > 
-> How about this instead, so that we effectively retain the comment block
-> that is otherwise being deleted from mm.h:
+> Will do.. I will also send patches dropping dmas from dts that currently
+> have them populated.
 > 
-> /*
->  * MMF_HAS_PINNED: Whether this mm has pinned any pages.  This can be either
->  * replaced in the future by mm.pinned_vm when it becomes stable, or grow into a
->  * counter on its own. We're aggresive on this bit for now: even if the pinned
->  * pages were unpinned later on, we'll still keep this bit set for the lifecycle
->  * of this mm, just for simplicity.
->  */
-> #define MMF_HAS_PINNED		28	/* FOLL_PIN ran. Never cleared. */
+hmm, we have
+- DO attempt to make bindings complete even if a driver doesn't support some
+  features. For example, if a device has an interrupt, then include the
+  'interrupts' property even if the driver is only polled mode.
 
-Sure, good to know the comment is still valid!
+in Documentation/devicetree/bindings/writing-bindings.rst
+Shouln't the dma stay there if the hardware supports it? Devicetree
+should describe the hardware not the driver if I understood things
+right.
 
-> > @@ -1292,8 +1292,8 @@ static __always_inline long __get_user_pages_locked(struct mm_struct *mm,
-> >   		BUG_ON(*locked != 1);
-> >   	}
-> > -	if (flags & FOLL_PIN && !atomic_read(&mm->has_pinned))
-> > -		atomic_set(&mm->has_pinned, 1);
-> > +	if (flags & FOLL_PIN && !test_bit(MMF_HAS_PINNED, &mm->flags))
-> > +		set_bit(MMF_HAS_PINNED, &mm->flags);
-> 
-> I expect this suggestion to be controversial, but I'm going to float it
-> anyway. The above is a little less clear than it used to be, *and* it is
-> in two places so far, so how about factoring out a tiny subroutine, like this:
-
-Definitely less "controversial" than expected, isn't it? ;)
-
-Thanks for the suggestion, it looks much better indeed.  Also I'll rename the
-helper to mm_set_has_pinned_flag() as suggested by Matthew.
-
--- 
-Peter Xu
-
+Regards,
+Andreas
