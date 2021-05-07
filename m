@@ -2,104 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F23F13769BF
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:57:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0343769C1
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:58:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229586AbhEGR5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 13:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46132 "EHLO
+        id S229603AbhEGR7S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 13:59:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46490 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229476AbhEGR5k (ORCPT
+        with ESMTP id S229476AbhEGR7R (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 13:57:40 -0400
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:e::133])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 429CEC061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 10:56:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-        Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:
-        Subject:Sender:Reply-To:Content-ID:Content-Description;
-        bh=CBcWZHqzaGgz7lsbjdL7nRqUtTSFr2Wq5t9BDXCRpfE=; b=DNoyHoiYuAGlKKpvGmvu1VsqtI
-        wNZiM3SfXAiE0xS4pvYR0CjZr3OE2COsF8LL9QfPdeVw8PbKPMdQBUBKQ0CaP/lo0dEAsTlq+1teb
-        gBGqQueY5FfJCzsRxrKb2eQfX6llI2Ok55eKpyjqKxYdMh4Y/G/HuiUEFJ5Cbu6nEBM2QNtubr5/H
-        qo3pynSZ/LT6cOmBNnCZK6RZ/vi6oDoJQ1Pfx/JrGOEwoemOC53Jv+mekzs0PSto/jnJ0XwEmSj5w
-        BvHIukLNPLe9bIz/aAeaLMOmJwg68EGNIS/H/CsXjetTOKmn6MAfB9YaIih8P5mBLdNH58gdovPTo
-        eQYHe0KA==;
-Received: from [2601:1c0:6280:3f0::7376]
-        by bombadil.infradead.org with esmtpsa (Exim 4.94 #2 (Red Hat Linux))
-        id 1lf4iK-0073Xx-I5; Fri, 07 May 2021 17:56:36 +0000
-Subject: Re: [PATCH v6 2/3] drm/i915/display: Restructure output format
- computation for better expandability
-To:     =?UTF-8?B?VmlsbGUgU3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Werner Sembach <wse@tuxedocomputers.com>
-Cc:     airlied@linux.ie, daniel@ffwll.ch, intel-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-References: <20210506172325.1995964-1-wse@tuxedocomputers.com>
- <20210507084903.28877-1-wse@tuxedocomputers.com>
- <20210507084903.28877-3-wse@tuxedocomputers.com> <YJV+Xr59xyK2yLXT@intel.com>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <0d88cd48-a91f-bf0a-e298-a9d66bf0562b@infradead.org>
-Date:   Fri, 7 May 2021 10:56:34 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.9.1
+        Fri, 7 May 2021 13:59:17 -0400
+Received: from mail-pl1-x62d.google.com (mail-pl1-x62d.google.com [IPv6:2607:f8b0:4864:20::62d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DAA02C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 10:58:14 -0700 (PDT)
+Received: by mail-pl1-x62d.google.com with SMTP id p17so5498785plf.12
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 10:58:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=7b05HQwQFJbiC5hEzCCygGe/UudPuvMm6AH3d8lkYuo=;
+        b=KYOZ2sJKADhfuZ/uHMMrB7Yz4pjkf+WtoJEvVJeLQAI9RAcsyiddelzeYpgeq/WBRf
+         aYbEM6iM2YzK07SC+oosCVwJBCI1UdqnphuM+V9hK8PeM5SJyF3N1k9UbJSaoW0Iqd+G
+         SXr8hLPVtRDKqwh8waGJhlnzYj+7ZWnb45KzLXh4dDbIxRKVegBZXC9njBPFtj6qOHSF
+         oHCkSGUDqH3uc4QH4u+yj95GJanLrZdcpWxl4Irl0QPl4rBsU48qszWvPraQRjub2pLL
+         iMPaWawIKjMH7c9YyQocMUFO8/Po/Z4fmRlR+s9laHvYUbfUQkyUdvXfcqN/6AHFnBe5
+         xWdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7b05HQwQFJbiC5hEzCCygGe/UudPuvMm6AH3d8lkYuo=;
+        b=F9iBpDkLYgbTtenuBs7yz8VnIaoDXKPX7x7Y+eroyC/TwbuYmf0VZE9glcEm83JIQb
+         Pge5JInx3jRkIli4qsm29rozIjbc5+z+KZgy3IdLNEYQURIGd3fXoMRpUfC+HdGYb6S3
+         QlEybM2jO4rY4xxOGwMjl8IKQjzzHzYmdyI0zw3+7FQlD/KelxORggDTt3mQcZtTPWbq
+         LuHqcqYsjUgl+L2M8hDTdg925L+NzZpBC0RIytLOs7v4VlgnOWdAAfW73RprrlZ0F1PX
+         1UDBDUyLMedMe7tZujdZ8rB7wefWuMaTyLpYIDYDrhC2N/MdeRQkUx3SdMmc826sy3g0
+         ID/w==
+X-Gm-Message-State: AOAM53106NzfWuUWb8RHJL3fj7kx6MD4PZ7+l6aESb4CVyP/kCGQxxe5
+        aShDBHgTnRI9VQWpX9NP7uvFWg==
+X-Google-Smtp-Source: ABdhPJwD2CO9NKfxU5WpcWIllCqKoM1ASKfW7Uz7zvc9BLuit6NQMTeRMxVNBgjQlKWm/XUN11ik5g==
+X-Received: by 2002:a17:902:b20a:b029:ef:463:365a with SMTP id t10-20020a170902b20ab02900ef0463365amr5403349plr.17.1620410294246;
+        Fri, 07 May 2021 10:58:14 -0700 (PDT)
+Received: from google.com (240.111.247.35.bc.googleusercontent.com. [35.247.111.240])
+        by smtp.gmail.com with ESMTPSA id q7sm3220941pfq.172.2021.05.07.10.58.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 10:58:13 -0700 (PDT)
+Date:   Fri, 7 May 2021 17:58:09 +0000
+From:   Sean Christopherson <seanjc@google.com>
+To:     Venkatesh Srinivas <venkateshs@chromium.org>
+Cc:     Jon Kohler <jon@nutanix.com>, Paolo Bonzini <pbonzini@redhat.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] KVM: x86: use X86_FEATURE_RSB_CTXSW for RSB stuffing in
+ vmexit
+Message-ID: <YJV/sZvgA8uN/23k@google.com>
+References: <20210507150636.94389-1-jon@nutanix.com>
+ <CAA0tLEoyy_ogDc11r_1T907Rp5CwgM64hFwRt5SX40THp2+C3A@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <YJV+Xr59xyK2yLXT@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAA0tLEoyy_ogDc11r_1T907Rp5CwgM64hFwRt5SX40THp2+C3A@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/7/21 10:52 AM, Ville Syrjälä wrote:
-> On Fri, May 07, 2021 at 10:49:02AM +0200, Werner Sembach wrote:
->> Couples the decission between RGB and YCbCr420 mode and the check if the
->> port clock can archive the required frequency. Other checks and
->> configuration steps that where previously done in between can also be done
->> before or after.
->>
->> This allows for are cleaner implementation of retrying different color
->> encodings.
->>
->> A slight change in behaviour occurs with this patch: If YCbCr420 is not
->> allowed but display is YCbCr420 only it no longer fails, but just prints
->> an error and tries to fallback on RGB.
->>
->> Signed-off-by: Werner Sembach <wse@tuxedocomputers.com>
->> ---
->>  drivers/gpu/drm/i915/display/intel_hdmi.c | 65 ++++++++++++-----------
->>  1 file changed, 34 insertions(+), 31 deletions(-)
->>
-
+On Fri, May 07, 2021, Venkatesh Srinivas wrote:
+> On Fri, May 7, 2021 at 8:08 AM Jon Kohler <jon@nutanix.com> wrote:
+> >
+> > cpufeatures.h defines X86_FEATURE_RSB_CTXSW as "Fill RSB on context
+> > switches" which seems more accurate than using X86_FEATURE_RETPOLINE
+> > in the vmxexit path for RSB stuffing.
+> >
+> > X86_FEATURE_RSB_CTXSW is used for FILL_RETURN_BUFFER in
+> > arch/x86/entry/entry_{32|64}.S. This change makes KVM vmx and svm
+> > follow that same pattern. This pairs up nicely with the language in
+> > bugs.c, where this cpu_cap is enabled, which indicates that RSB
+> > stuffing should be unconditional with spectrev2 enabled.
+> >         /*
+> >          * If spectre v2 protection has been enabled, unconditionally fill
+> >          * RSB during a context switch; this protects against two independent
+> >          * issues:
+> >          *
+> >          *      - RSB underflow (and switch to BTB) on Skylake+
+> >          *      - SpectreRSB variant of spectre v2 on X86_BUG_SPECTRE_V2 CPUs
+> >          */
+> >         setup_force_cpu_cap(X86_FEATURE_RSB_CTXSW);
+> >
+> > Furthermore, on X86_FEATURE_IBRS_ENHANCED CPUs && SPECTRE_V2_CMD_AUTO,
+> > we're bypassing setting X86_FEATURE_RETPOLINE, where as far as I could
+> > find, we should still be doing RSB stuffing no matter what when
+> > CONFIG_RETPOLINE is enabled and spectrev2 is set to auto.
 > 
-> We can't let the user spam dmesg with errors freely. So this needs
-> to be a drm_dbg_kms(). Also a bit long, so going to annoyingly wrap
-> always. Could maybe shorten a bit to something like:
-> "YCbCr 4:2:0 mode but YCbCr 4:2:0 output not possible. Falling back to RGB."
+> If I'm reading https://software.intel.com/security-software-guidance/deep-dives/deep-dive-indirect-branch-restricted-speculation
+> correctly, I don't think an RSB fill sequence is required on VMExit on
+> processors w/ Enhanced IBRS. Specifically:
+> """
+> On processors with enhanced IBRS, an RSB overwrite sequence may not
+> suffice to prevent the predicted target of a near return from using an
+> RSB entry created in a less privileged predictor mode.  Software can
+> prevent this by enabling SMEP (for transitions from user mode to
+> supervisor mode) and by having IA32_SPEC_CTRL.IBRS set during VM exits
+> """
+> On Enhanced IBRS processors, it looks like SPEC_CTRL.IBRS is set
+> across all #VMExits via x86_virt_spec_ctrl in kvm.
 > 
-> With that sorted, and the intel_hdmi_port_clock() stuff restored,
-> I believe this series is good to go.
-> 
-> I think you confused our CI by replying to the old patch with a whole
-> new series. It can generally deal with a whole new series as a new
-> thread or replies to individual patches with updated versions of
-> exactly that patch, but not full series as a reply to a patch.
-> So I suggest just posting the final versions as a new series. Thanks.
-> 
+> So is this patch needed?
 
-Yeah, we try to say "don't do that," but maybe we need to say that more
-strongly. See Documentation/process/submitting-patches.rst:
+Venkatesh belatedly pointed out (off list) that KVM VMX stops intercepting
+MSR_IA32_SPEC_CTRL after the first (successful) write by the guest.  But, I 
+believe that's a non-issue for ENHANCED_IBRS because of this blurb in Intel's
+documentation[*]:
 
-<<<
-However, for a multi-patch series, it is generally
-best to avoid using In-Reply-To: to link to older versions of the
-series.  This way multiple versions of the patch don't become an
-unmanageable forest of references in email clients.  If a link is
-helpful, you can use the https://lkml.kernel.org/ redirector (e.g., in
-the cover email text) to link to an earlier version of the patch series.
->>>
+  Processors with enhanced IBRS still support the usage model where IBRS is set
+  only in the OS/VMM for OSes that enable SMEP. To do this, such processors will
+  ensure that guest behavior cannot control the RSB after a VM exit once IBRS is
+  set, even if IBRS was not set at the time of the VM exit.
+
+The code and changelog for commit 706d51681d63 ("x86/speculation: Support
+Enhanced IBRS on future CPUs") is more than a little confusing:
+
+  spectre_v2_select_mitigation():
+	if (boot_cpu_has(X86_FEATURE_IBRS_ENHANCED)) {
+		mode = SPECTRE_V2_IBRS_ENHANCED;
+		/* Force it so VMEXIT will restore correctly */
+		x86_spec_ctrl_base |= SPEC_CTRL_IBRS;
+		wrmsrl(MSR_IA32_SPEC_CTRL, x86_spec_ctrl_base);
+		goto specv2_set_mode;
+	}
 
 
--- 
-~Randy
+  changelog:
+	Kernel also has to make sure that IBRS bit remains set after
+	VMEXIT because the guest might have cleared the bit. This is already
+	covered by the existing x86_spec_ctrl_set_guest() and
+	x86_spec_ctrl_restore_host() speculation control functions.
 
+but I _think_ that is simply saying that MSR_IA32_SPEC_CTRL.IBRS needs to be
+restored in order to keep the mitigations active in the host.   I don't think it
+contradicts the documentation that says VM-Exit is automagically mitigated if
+IBRS has _ever_ been set.
+
+[*] https://software.intel.com/security-software-guidance/deep-dives/deep-dive-indirect-branch-restricted-speculation
