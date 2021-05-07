@@ -2,78 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671A137655F
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:42:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5BF7376562
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 14:42:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S237027AbhEGMnR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 08:43:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32800 "EHLO
+        id S237043AbhEGMn1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 08:43:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S236866AbhEGMnQ (ORCPT
+        with ESMTP id S237030AbhEGMn0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 08:43:16 -0400
-Received: from mail-pf1-x42c.google.com (mail-pf1-x42c.google.com [IPv6:2607:f8b0:4864:20::42c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C81F7C061574;
-        Fri,  7 May 2021 05:42:16 -0700 (PDT)
-Received: by mail-pf1-x42c.google.com with SMTP id b21so429085pft.10;
-        Fri, 07 May 2021 05:42:16 -0700 (PDT)
+        Fri, 7 May 2021 08:43:26 -0400
+Received: from mail-ej1-x62e.google.com (mail-ej1-x62e.google.com [IPv6:2a00:1450:4864:20::62e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AAF0AC061574;
+        Fri,  7 May 2021 05:42:26 -0700 (PDT)
+Received: by mail-ej1-x62e.google.com with SMTP id f24so13375894ejc.6;
+        Fri, 07 May 2021 05:42:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=r343sYYX3gjN34sl7yfwkl65nAO5cMLx9O8W6LxV6Nc=;
-        b=evv0J+LZlt/VQzYYuIj0rgKwkQS/VtXVdS02h5ttTfvb1bX/ktG8vkIu9N+6IsHOmI
-         SS8cqRonUFMi6Kc0T1vVQNDrKqyVeZiI3CND7gXrj9UjtlLwDtdWnM50mXwmX/yuY4ba
-         Q5zVO0F4jF3YacJ/Hd7QZx9IqvImXN0lDnK4v9zD9+bS+CFiQD9BszPTpDOv8+st0xsC
-         Xry647hK3VMEkBRm4BSzpJktrJeC+MnJaPdcjVT3V69abts0fe44EdLYeuyxR/Rx+QHT
-         rafpZqkdFt8jB2UYfbifJ0uT0eGPGJwVswJLSpmRQAg6dq5fEd3LHBUttNkJNshIksvl
-         9W8g==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=0R0NE03VSFB7HX1ygMNh9PKJJ5aeG+pro1kBGtfO3Vg=;
+        b=oUUN0s6uGwRXDsVKCcnyFTES/GSwTC4RI5d2soZfOlbDxh4o1UqebSB958UxlKtfBv
+         X7M6V5ZaND0OcqD2fOiWfeT/mTuH1gQZeopG2969Eza2hNyS71r1DfYo+50wh70EM76V
+         El8g2whwGfp+HnV5LtisbwPzKGHHFqaVqF0H+7BBrIkt1gMBoMu8pwmurnwgp6dNidpS
+         Khu3R2EyW0+NXSZmp1S9eWSO/nqrG6yWcaprJsm+oaEU/NNA/tRrmLatcyt+V8eEpVYq
+         2FYLMHYoceVt+Sqmr1tbXxj6sNwOjIJa+8dR0H7DbxogebZNZj8cmFrgkJOMoNDVvaSR
+         pHHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=r343sYYX3gjN34sl7yfwkl65nAO5cMLx9O8W6LxV6Nc=;
-        b=go087+mmW5MLW38oZ6hpl+fq6CKwN7WQRVZDctgdnah2CODXQWZl9DISVPY/bJpa3C
-         h/h0VjrwtBFM9gT5ZOjwQWeb2+B9zM+C7AaSat9Il45YMK/dAJ1HrNXDlKJZrSu9HZ6Q
-         Ze0w+zH/EMT8Ez1L7jLyKsqkviRxAql8M49gAA403s5Jg9UD7ACuC97Q1Ss8B1syo3qH
-         qNBQmpbxpRtnB7KmjOINkSafUgflCAKsCMg9Xn1eH3prIjO8GwEqXWdukNqffd6K38e6
-         DXrkGkX0QZQ0MB28FZCPGRlbYfqGQJFPPQH9aFtYnORWpOjC2Kty/vsEyFVGuNONntYP
-         Yk5g==
-X-Gm-Message-State: AOAM532TBxrxNRCRZXelCK33RYEvwjHQVCrr/DOFXQTLssc8pu+28qLS
-        vpdG+wmnVn0/p1gP3O7kZ5Y=
-X-Google-Smtp-Source: ABdhPJzM2zFMU9YP7Gehcxa4p+2nJPHQJOWmhaYM/aumwLmSuF04zaSgJBWlb8j+UKRVSUC1WI4Azw==
-X-Received: by 2002:aa7:8d03:0:b029:259:f2ed:1849 with SMTP id j3-20020aa78d030000b0290259f2ed1849mr10504817pfe.30.1620391336346;
-        Fri, 07 May 2021 05:42:16 -0700 (PDT)
-Received: from localhost ([203.87.99.126])
-        by smtp.gmail.com with ESMTPSA id y14sm4642676pfm.123.2021.05.07.05.42.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 May 2021 05:42:12 -0700 (PDT)
-Date:   Fri, 7 May 2021 22:42:09 +1000
-From:   Balbir Singh <bsingharora@gmail.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     tglx@linutronix.de, mingo@kernel.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        bristot@redhat.com, pbonzini@redhat.com, maz@kernel.org,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
-        riel@surriel.com, hannes@cmpxchg.org
-Subject: Re: [PATCH 4/6] kvm: Select SCHED_INFO instead of TASK_DELAY_ACCT
-Message-ID: <20210507124209.GD4236@balbir-desktop>
-References: <20210505105940.190490250@infradead.org>
- <20210505111525.187225172@infradead.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=0R0NE03VSFB7HX1ygMNh9PKJJ5aeG+pro1kBGtfO3Vg=;
+        b=YxvPslydoRdKiaHt5XM51WpasHMfuF8sY0ZuBQv5ama6VE5gwY2GFqDTfP1a4mAQCy
+         kOnMU5nqm6oCa0c+p+fz47TSY64qmLH0cpAPbQpykkSD59aE2Yi2OpTguGIeXLvUkW/9
+         +cEnaFcXyHxBPvC1e2Y86iqYdsD7pI4neVgqz93oGZHvoARKx8T+rOl2pmE/BpGepmg+
+         gVLLsygD4/094sVNPy0Re7w2WRbMcERSBHBAOXQUnIvZ2bWCB8YQPyNSPH/pBCcYK+nw
+         GOvyikXTbaiPqDc2roAfJCzxaG1EyOqfylgVuTy0fsmf7ZyLTtqEwn8i+KaUIwfRof7x
+         sv5A==
+X-Gm-Message-State: AOAM5304tyKsRXqMZT4ka1l/cvaQVKexjzmi5uXle2fIc62Q5QNapxIg
+        cMg3PeXr3zq2QPSwpLIWAlkG8ElhZdsXKxTZx6B7NV1p5NjxBy8l
+X-Google-Smtp-Source: ABdhPJxeHUUpsTyMp6KSLIely965QHdDUcWj5edfhK8VzZYU6CHJEP5ZjrJ3904hGpuZIganO/ao2vdkla5WC7/z644=
+X-Received: by 2002:a17:906:7fd2:: with SMTP id r18mr5965382ejs.78.1620391345382;
+ Fri, 07 May 2021 05:42:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210505111525.187225172@infradead.org>
+References: <000000000000fdc0be05c1a6d68f@google.com> <20210506142210.GA37570@pc638.lan>
+ <20210506145722.GC1955@kadam> <20210506180053.4770f495@gmail.com>
+ <20210507080435.GF1922@kadam> <20210507152954.5773592a@gmail.com>
+In-Reply-To: <20210507152954.5773592a@gmail.com>
+From:   Uladzislau Rezki <urezki@gmail.com>
+Date:   Fri, 7 May 2021 14:42:14 +0200
+Message-ID: <CA+KHdyWuf8iDvrmGfapVy3pRie4FOwdasbtRij39MmXr0Wpzuw@mail.gmail.com>
+Subject: Re: [syzbot] WARNING in __vmalloc_node_range
+To:     Pavel Skripkin <paskripkin@gmail.com>
+Cc:     Dan Carpenter <dan.carpenter@oracle.com>,
+        linux-usb@vger.kernel.org, linux-media@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>, mchehab@kernel.org,
+        syzkaller-bugs <syzkaller-bugs@googlegroups.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 12:59:44PM +0200, Peter Zijlstra wrote:
-> AFAICT KVM only relies on SCHED_INFO. Nothing uses the p->delays data
-> that belongs to TASK_DELAY_ACCT.
-> 
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-> ---
+Hello, Pavel.
 
-Acked-by: Balbir Singh <bsingharora@gmail.com>
+Also in the commit message i see a type.
+
+<snip>
+syzbot reported WARNING in vmalloc. The problem
+was in sizo size passed to vmalloc.
+<snip>
+
+Should it be "...zero size passed to vmalloc"?
+
+--
+Vlad Rezki
+
+
+On Fri, May 7, 2021 at 2:29 PM Pavel Skripkin <paskripkin@gmail.com> wrote:
+>
+> On Fri, 7 May 2021 11:04:36 +0300
+> Dan Carpenter <dan.carpenter@oracle.com> wrote:
+>
+> > On Thu, May 06, 2021 at 06:00:53PM +0300, Pavel Skripkin wrote:
+> > >
+> > > Hi!
+> > >
+> > > I've already sent the patch:
+> > > https://patchwork.linuxtv.org/project/linux-media/patch/20210506121211.8556-1-paskripkin@gmail.com/
+> > >
+> >
+> > Please, always add a Fixes tag.
+> >
+> > Fixes: 4d43e13f723e ("V4L/DVB (4643): Multi-input patch for DVB-USB
+> > device")
+> >
+> > regards,
+> > dan carpenter
+> >
+>
+> oh..., that's one thing I always forget about. Thanks for pointing it
+> out, I'll send v2 soon
+>
+>
+> With regards,
+> Pavel Skripkin
+
+
+
+-- 
+Uladzislau Rezki
