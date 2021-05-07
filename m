@@ -2,72 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D10C376B1B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:16:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8BA9376B1E
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:20:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230142AbhEGURE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 16:17:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44498 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230021AbhEGURD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 16:17:03 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 9156861451;
-        Fri,  7 May 2021 20:16:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620418563;
-        bh=hW8BhI6/ilAGYrQpT8jNIDf24wBxHiG1Opwd9jIHan4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=IlESx7c3UgT7TwzAn5Qw4/rUW+Y2MowooSLrsuoZNA8IbWTpy8hXmfe3X4WvBK/Hb
-         KsEKUpSzmS2QSYy9fQy7QNF5VHT9KvRXF8E8otrIU6AcOT3tpj10ZYMVuRYN3SDovX
-         ijBHdj8WDcJeeMwhwpjhVrPMuj80e7tyFwc+514XjwhvSSZ7Gz0ou2xXLbbX3OFxKI
-         j7MdGgrRP0tDdl1nzudb2X7vYvi7fxPDwArTp3MauLspOY1TswPhbxGmYB0Stp2pWt
-         uJ9vK52y/mTdzfvA7yNkJIX3VZUMsf0d2GHjyVLZ4E9AIzRZd2fprp1puFw1jxhsje
-         qLCnO0B0xAEnA==
-Date:   Fri, 7 May 2021 22:16:00 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     linux-kernel@vger.kernel.org, Phil Auld <pauld@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>
-Subject: Re: [PATCH] Revert "isolcpus: Affine unbound kernel threads to
- housekeeping cpus"
-Message-ID: <20210507201600.GA66223@lothringen>
-References: <20210507165710.GA429056@fuller.cnet>
+        id S230128AbhEGUVk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 16:21:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49362 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229986AbhEGUVj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 16:21:39 -0400
+Received: from mail-qk1-x72d.google.com (mail-qk1-x72d.google.com [IPv6:2607:f8b0:4864:20::72d])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40D6CC061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 13:20:38 -0700 (PDT)
+Received: by mail-qk1-x72d.google.com with SMTP id a22so9232809qkl.10
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 13:20:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:mime-version;
+        bh=IBj/oZGsokAaKHrJmMkspt5KMjTgwL9D5Zw2L25XmNk=;
+        b=Hg1rtZXFeW6k0VRLwuyxYAG198xLkQPyq0rq2h1n9KGeAISifksU5Jqqfcuf5OEE37
+         46cb7gU2WIcCR6fPIba4AOAB/ebM3SAwW3qwcUNcKIQei8juISKEqcVJPflc1ZQ9o7yd
+         5u7tPIdp5UB0K4AfMUgXdauaUtlJhLIQn9Ut9pT/jEIFUiz5tkNXY7NBKmd8gXQdGd3/
+         Ihhbjhx1BOn5rtrw6cchNsqmopDheG9DVRvbAP/IyZcVd5nI5CDj1U2zxTUIUIG6Oce+
+         ueDV+oM5bTPNH3ARStg4Bqzw82+ddJ6rMpopg9J+9kQEUc9rQ50ZehwVqIrIMv53ulrE
+         IrOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version;
+        bh=IBj/oZGsokAaKHrJmMkspt5KMjTgwL9D5Zw2L25XmNk=;
+        b=PoUzj6vAMCl81pdCGbYLPzylT2aIRat1uPR3v8574l6A3TIbJUQiMj2PRiq/NJ0vDh
+         g1uyVvgODPi4PUeyAUJ0RcGln62X1/Ye/QTm3OgY3WcJ+5gSi7IO/xzBAz6fZTfWWjGn
+         VV0tsPrmDSNAoD81vsjOSdY13YjmdGSvUpveU8qqUazenkSPoF/THbOw2nYhwSvTB3ZM
+         7hrjWfyBfKOZudYh0GIfUavCI7Gqb5tI8LSzEqayilpYJQmBcKHI7sGs9NIZk0pCYemZ
+         yOUsVRJssElUXy0HmLo9fSO2g3jJTarAQYguyvkms+QC8rgzcsOofXEhHUrYCBdLjgOg
+         KIRA==
+X-Gm-Message-State: AOAM533V7Iycpb0lh98/z+VKQ5IFTMz+fdW9qDRWO75wLDtunvSkt/Zm
+        880kO9swW1zD7bMvUsFQ6nyJtgJ1KHqGpOe3
+X-Google-Smtp-Source: ABdhPJwus0Ph9xG7MvqxFxPk9LK37uTs096ZLwxIn0l0Ix59WRUCyLGpRDMDo618OkJJVrzzFytLjg==
+X-Received: by 2002:a37:8906:: with SMTP id l6mr12145662qkd.198.1620418837280;
+        Fri, 07 May 2021 13:20:37 -0700 (PDT)
+Received: from xanadu.home (modemcable076.50-203-24.mc.videotron.ca. [24.203.50.76])
+        by smtp.gmail.com with ESMTPSA id g13sm5320343qtp.31.2021.05.07.13.20.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 May 2021 13:20:36 -0700 (PDT)
+Date:   Fri, 7 May 2021 16:20:36 -0400 (EDT)
+From:   Nicolas Pitre <npitre@baylibre.com>
+To:     Sudeep Holla <sudeep.holla@arm.com>,
+        Cristian Marussi <cristian.marussi@arm.com>
+cc:     Dien Pham <dien.pham.ry@renesas.com>,
+        Gaku Inami <gaku.inami.xh@renesas.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] firmware: arm_scmi: add clock management to the SCMI power
+ domain
+Message-ID: <5q88n947-pon-4940-3or6-s54o4r361o5s@onlyvoer.pbz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210507165710.GA429056@fuller.cnet>
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 01:57:10PM -0300, Marcelo Tosatti wrote:
-> 
-> 
-> commit 9cc5b8656892a72438ee7deb introduced a new housekeeping flag,
-> HK_FLAG_KTHREAD, that when enabled sets the CPU affinity for the 
-> kthreadd process (therefore all unbounded kernel threads created
-> from that point on will use the housekeeping cpumask).
-> 
-> This is not necessary, since its possible to control placement of
-> kthreadd from userspace:
-> 
-> # taskset -c -p 0 `pgrep kthreadd`
-> pid 2's current affinity list: 1
-> pid 2's new affinity list: 0
-> 
-> Unbounded kernel threads started from that point on will inherit
-> the kthreadd cpumask.
+Clocks requiring non-atomic contexts are supported by the generic clock
+PM layer since commit 0bfa0820c274 ("PM: clk: make PM clock layer
+compatible with clocks that must sleep"). That means we can have
+SCMI-based clocks be managed by the SCMI power domain now.
 
-Hmm, but look below:
+Signed-off-by: Nicolas Pitre <npitre@baylibre.com>
+Tested-by: Dien Pham <dien.pham.ry@renesas.com>
+Reviewed-by: Gaku Inami <gaku.inami.xh@renesas.com>
 
-> @@ -405,8 +404,7 @@ struct task_struct *__kthread_create_on_
->  		 * The kernel thread should not inherit these properties.
->  		 */
->  		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
-> -		set_cpus_allowed_ptr(task,
-> -				     housekeeping_cpumask(HK_FLAG_KTHREAD));
-> +		set_cpus_allowed_ptr(task, cpu_possible_mask);
-
-That inheritance is then overriden, right?
-
-Thanks.
+diff --git a/drivers/firmware/arm_scmi/scmi_pm_domain.c b/drivers/firmware/arm_scmi/scmi_pm_domain.c
+index 9d36d5c062..4371fdcd5a 100644
+--- a/drivers/firmware/arm_scmi/scmi_pm_domain.c
++++ b/drivers/firmware/arm_scmi/scmi_pm_domain.c
+@@ -8,6 +8,7 @@
+ #include <linux/err.h>
+ #include <linux/io.h>
+ #include <linux/module.h>
++#include <linux/pm_clock.h>
+ #include <linux/pm_domain.h>
+ #include <linux/scmi_protocol.h>
+ 
+@@ -52,6 +53,27 @@ static int scmi_pd_power_off(struct generic_pm_domain *domain)
+ 	return scmi_pd_power(domain, false);
+ }
+ 
++static int scmi_pd_attach_dev(struct generic_pm_domain *pd, struct device *dev)
++{
++	int ret;
++
++	ret = pm_clk_create(dev);
++	if (ret)
++		return ret;
++
++	ret = of_pm_clk_add_clks(dev);
++	if (ret >= 0)
++		return 0;
++
++	pm_clk_destroy(dev);
++	return ret;
++}
++
++static void scmi_pd_detach_dev(struct generic_pm_domain *pd, struct device *dev)
++{
++	pm_clk_destroy(dev);
++}
++
+ static int scmi_pm_domain_probe(struct scmi_device *sdev)
+ {
+ 	int num_domains, i;
+@@ -102,6 +124,10 @@ static int scmi_pm_domain_probe(struct scmi_device *sdev)
+ 		scmi_pd->genpd.name = scmi_pd->name;
+ 		scmi_pd->genpd.power_off = scmi_pd_power_off;
+ 		scmi_pd->genpd.power_on = scmi_pd_power_on;
++		scmi_pd->genpd.attach_dev = scmi_pd_attach_dev;
++		scmi_pd->genpd.detach_dev = scmi_pd_detach_dev;
++		scmi_pd->genpd.flags = GENPD_FLAG_PM_CLK |
++				       GENPD_FLAG_ACTIVE_WAKEUP;
+ 
+ 		pm_genpd_init(&scmi_pd->genpd, NULL,
+ 			      state == SCMI_POWER_STATE_GENERIC_OFF);
