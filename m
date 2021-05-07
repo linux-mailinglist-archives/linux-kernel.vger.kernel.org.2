@@ -2,111 +2,189 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B98D73761B7
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:10:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 698FC3761D7
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 10:26:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236005AbhEGILF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 04:11:05 -0400
-Received: from new2-smtp.messagingengine.com ([66.111.4.224]:51455 "EHLO
-        new2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S235320AbhEGILC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 04:11:02 -0400
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-        by mailnew.nyi.internal (Postfix) with ESMTP id AE58E5811AC;
-        Fri,  7 May 2021 04:10:02 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Fri, 07 May 2021 04:10:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm2; bh=N4E8u8LxBn6a+FLyFAp3MXCbX0H
-        3BB0OfCxhAb7eG20=; b=JLT6zkTrnBLlrdM7F3lLgjU3UkNwLU70uIif/hpBRLc
-        1ua8VgfE8AKvtMIR8tszSmgUQ3mCS1Ou6RDBxvy/OND8BrzgnOGptuJ4iK9W2xRO
-        GItkh96hs9LBPlbJUEqhnv6LJ26NC6+cbeJ+QKK20IaYn5GvL3BEkB+OmoifDKmK
-        yNhEgWLoKWyFlZvDzK6oeaQN1gKQ5r9S6rAM9tAsd1tF/9SmMq5AGJul8o6JWaNi
-        2aeBalQWgvwzDLz0CSknhGi7WDIsl4eJ4497cTcphCpeIfaNWLJq0q2rhKhuhKtN
-        Q2lEZ4lh13eKmFdH2Oh96wk+ZzF309xkpLFx/4IjpHQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; bh=N4E8u8
-        LxBn6a+FLyFAp3MXCbX0H3BB0OfCxhAb7eG20=; b=QfwZMtHzTVjm9ge/yj7Bg8
-        5Lm50oz74UF+wb04KdSOsn4XSaBemVQ/KnwT1ttgnKGSS9ulsV46TZncGclrcHN/
-        G1mriT/s5x7yKmFWr+JoWeJEm5UoRDoKRLLJYfFeeow5xl4pfaEX83axCY6QyO/d
-        cVYE0b3RHoBlSOG4aaElne3HUWmWdVAUVVyWoe1jC8iW3xV8knOlPZJI5lpcPS6O
-        J2j+8uE6669PZyAexRk29hjwpoD/f1AbTZh6MySqG/xIojtG4evvsbkm9fVJzAN4
-        3nVZ6JpmndLauuWEyG1jMiLnv8vrZpl3BdhCVg8v2D95fHi8XAusbespDJzJVG+Q
-        ==
-X-ME-Sender: <xms:2fWUYJLlj8PggRjMV-G_4dFjy9Fh_Jf3tFNvVeEnEygE-FYVAvaqlg>
-    <xme:2fWUYFIHFBOgXCmGrLWVu7L4mlTOha4f2H0k9enK8Xa8LUhGO9VBPoFJ4NN_-0Hkr
-    FV0Y2PaWHVbZt08XG0>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeduledrvdeguddguddvudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihi
-    mhgvucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrg
-    htthgvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheei
-    heegudenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtne
-    curfgrrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:2fWUYBsiE_FROdcKBg8XBFFx-i_25CmXUgRg8l5Pz9itlKgGoBBwpw>
-    <xmx:2fWUYKYzkfXL-13Ez_tU3lkAyL-xnY5GZ7NW0sMcGQEEk7L8u8kcMA>
-    <xmx:2fWUYAbmhdDOC0Zfr_Q2iaDfdzl3pY8-Z9YJLvlX4NrQOd7sxJzISA>
-    <xmx:2vWUYGPHCig_IY1bK2kLs-Kks2E2xaKLDUSfMEvAoRgLjjBtpu2zlQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA;
-        Fri,  7 May 2021 04:10:00 -0400 (EDT)
-Date:   Fri, 7 May 2021 10:09:58 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Samuel Holland <samuel@sholland.org>
-Cc:     Chen-Yu Tsai <wens@csie.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, alsa-devel@alsa-project.org,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/7] PinePhone BT audio bringup
-Message-ID: <20210507080958.3ue4xfov5k5dnatl@gilmour>
-References: <20210430035859.3487-1-samuel@sholland.org>
+        id S234390AbhEGI0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 04:26:13 -0400
+Received: from mail.iot.bzh ([51.75.236.24]:5167 "EHLO mail.iot.bzh"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S233681AbhEGI0I (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 04:26:08 -0400
+X-Greylist: delayed 478 seconds by postgrey-1.27 at vger.kernel.org; Fri, 07 May 2021 04:26:07 EDT
+Received: from localhost.localdomain (lfbn-ren-1-2120-93.w92-167.abo.wanadoo.fr [92.167.199.93])
+        by mail.iot.bzh (Postfix) with ESMTPSA id 540E740081;
+        Fri,  7 May 2021 10:17:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iot.bzh; s=20180822;
+        t=1620375426;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vOiL5pdW+tmoprAzmKiGDKcT8zd1nbKFMEsR8wuMcZ4=;
+        b=b67B7clEPcGra/TVXtB6WSPhKHJINHZKOL/7vq1MudpY/sQhF20KzEuTJuJkNF8TckPE2k
+        spgfXtNgc6phm0Veo3iAukOmLpyEJFBSY6ss8d29hH/eZ8P2SRGEWUYrks/CVRkLaAkmQS
+        do5vKtX606hkdhCvyQIcfzGfGxfHBoUR6lBiPwR25r7/FiVw7SMqLg2+n9HKXznmCPuSu8
+        5COZHzxko+DHD2+BMuS/JAkRgB3rk7MBeB2pGd9Cxb8TCVtPlBfIs+L0nEwllfMAzWOmI7
+        GyUmhR6ycZoWVxSFxzqN5Hug7UFeFtJYreCPEIo+YyoIsjYwE4iwX19PKlrQJQ==
+Subject: Re: [PATCH v3 5/6] rpmsg: char: Introduce a rpmsg driver for the
+ rpmsg char device
+To:     Arnaud POULIQUEN <arnaud.pouliquen@foss.st.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com
+References: <20210429135507.8264-1-arnaud.pouliquen@foss.st.com>
+ <20210429135507.8264-6-arnaud.pouliquen@foss.st.com>
+ <20210505164159.GB1766375@xps15>
+ <5a41e653-4d75-c5d5-a8e3-e247a50507f3@foss.st.com>
+From:   Julien Massot <julien.massot@iot.bzh>
+Message-ID: <d840a1dc-c908-1be1-8354-ddd404045df6@iot.bzh>
+Date:   Fri, 7 May 2021 10:17:12 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="56i3cns3wstz6rhi"
-Content-Disposition: inline
-In-Reply-To: <20210430035859.3487-1-samuel@sholland.org>
+In-Reply-To: <5a41e653-4d75-c5d5-a8e3-e247a50507f3@foss.st.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Mathieu, Arnaud,
 
---56i3cns3wstz6rhi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 5/5/21 8:25 PM, Arnaud POULIQUEN wrote:
+> Hi Mathieu,
+> 
+> On 5/5/21 6:41 PM, Mathieu Poirier wrote:
+>> Hi Arnaud,
+>>
+>> On Thu, Apr 29, 2021 at 03:55:06PM +0200, Arnaud Pouliquen wrote:
+>>> A rpmsg char device allows to probe the endpoint device on a remote name
+>>> service announcement.
+>>>
+>>> With this patch the /dev/rpmsgX interface is created either by a user
+>>> application or by the remote firmware.
+>>>
+>>> Signed-off-by: Arnaud Pouliquen <arnaud.pouliquen@foss.st.com>
+>>>
+>>> ---
+>>> update from V1:
+>>>
+>>>   - add missing unregister_rpmsg_driver call on module exit.
+>>> ---
+>>>   drivers/rpmsg/rpmsg_char.c | 53 +++++++++++++++++++++++++++++++++++++-
+>>>   1 file changed, 52 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/drivers/rpmsg/rpmsg_char.c b/drivers/rpmsg/rpmsg_char.c
+>>> index 5c6a7da6e4d7..9166454c1310 100644
+>>> --- a/drivers/rpmsg/rpmsg_char.c
+>>> +++ b/drivers/rpmsg/rpmsg_char.c
+>>> @@ -18,6 +18,8 @@
+>>>   
+>>>   #include "rpmsg_char.h"
+>>>   
+>>> +#define RPMSG_CHAR_DEVNAME "rpmsg-raw"
+>>> +
+>>>   static dev_t rpmsg_major;
+>>>   static struct class *rpmsg_class;
+>>>   
+>>> @@ -413,6 +415,40 @@ int rpmsg_chrdev_eptdev_create(struct rpmsg_device *rpdev, struct device *parent
+>>>   }
+>>>   EXPORT_SYMBOL(rpmsg_chrdev_eptdev_create);
+>>>   
+>>> +static int rpmsg_chrdev_probe(struct rpmsg_device *rpdev)
+>>> +{
+>>> +	struct rpmsg_channel_info chinfo;
+>>> +
+>>> +	memcpy(chinfo.name, RPMSG_CHAR_DEVNAME, sizeof(RPMSG_CHAR_DEVNAME));
+>>> +	chinfo.src = rpdev->src;
+>>> +	chinfo.dst = rpdev->dst;
+>>> +
+>>> +	return __rpmsg_chrdev_eptdev_create(rpdev, &rpdev->dev, chinfo, true);
+>>> +}
+>>> +
+>>> +static void rpmsg_chrdev_remove(struct rpmsg_device *rpdev)
+>>> +{
+>>> +	int ret;
+>>> +
+>>> +	ret = device_for_each_child(&rpdev->dev, NULL, rpmsg_chrdev_eptdev_destroy);
+>>> +	if (ret)
+>>> +		dev_warn(&rpdev->dev, "failed to destroy endpoints: %d\n", ret);
+>>> +}
+>>> +
+>>> +static struct rpmsg_device_id rpmsg_chrdev_id_table[] = {
+>>> +	{ .name	= RPMSG_CHAR_DEVNAME },
+>>> +	{ },
+>>> +};
+>>> +
+>>> +static struct rpmsg_driver rpmsg_chrdev_driver = {
+>>> +	.probe = rpmsg_chrdev_probe,
+>>> +	.remove = rpmsg_chrdev_remove,
+>>> +	.id_table = rpmsg_chrdev_id_table,
+>>> +	.drv = {
+>>> +		.name = "rpmsg_chrdev",
+>>> +	},
+>>> +};
+>>
+>> The sole purpose of doing this is to create instances of rpmsg_chrdevs from the
+>> name service - but is it really needed?  Up to now and aside from GLINK and SMD,
+>> there asn't been other users of it so I'm wondering if it is worth going through
+>> all this trouble.
+> 
+> It is a good point.
+> 
+> Just as a reminder, the need of ST and, I assume, some other companies, is to
+> have a basic/generic communication channel to control a remote processor
+> application.
+> 
+> Nothing generic exists today for a virtio transport based implementation.
+> Companies have to create their own driver.
+> 
+> The purpose of my work is to allow our customer to use RPMsg without developing
+> a specific driver to control remote applications.
+> 
+> The rpmsg_chrdev char is a good candidate for this. No protocol, just a simple
+> inter-processor link to send and receive data. The rpmsg_tty is another one.
+> 
+> Focusing on the rpmsg_chrdev:
+> We did a part of the work with the first patch set that would be in 5.13.
+> But is it simple to use it for virtio transport based platforms?
+> If we don't implement the NS announcement support in rpmsg_chrdev, using
+> rpmsg_chrdev for a user application seems rather tricky.
+> How to instantiate the communication?
+> The application will probably has to scan the /sys/bus/rpmsg/devices/ folder to
+> determine the services and associated remote address.
+> 
+> I don't think the QCOM drivers have the same problem because they seems to
+> initiate the communication and work directly with the RPMsg endpoints ( new
+> channel creation on endpoint creation) while Virtio works with the RPMsg channel.
+> 
+> By introducing the ability to instantiate rpmsg_chrdevs through the NS
+> announcement, we make this easy for applications to use.
+> 
+> And without rpmsg_chrdevs instantiation, It also means that we can't create an
+> RPMsg channel for the rpmsg_chrdevs using a new RPMSG_CREATE_DEV_IOCTL control,
+> right?
+> 
+> That said, If we consider that the aim was only to extract the rpmsg_ctrl part,
+> I'm not against leaving the rpmsg_char in this state and switching to the
+> rpmsg_tty driver upstream including the work on the rpmsg_ctrl to create rpmsg
+> channels.
+> 
+> We could come back on this if requested by someone else.
 
-On Thu, Apr 29, 2021 at 10:58:52PM -0500, Samuel Holland wrote:
-> This series uses the additional DAIs added to the sun8i-codec driver to
-> add hardware routing for BT SCO (headset) audio on the PinePhone.
->=20
-> The BT audio connection is represented by the "dummy" bt-sco codec. The
-> connection to the Quectel EG-25G modem via AIF2 works as well, but I do
-> not include it here because there is no appropriate codec driver in
-> tree. We have been using an out-of-tree "dummy" codec driver for the
-> modem similar to bt-sco, and I'm not sure if such a driver would be
-> desired upstream.
+I'm personnaly following this thread, our project is to be able to do RPC call
+from Linux to an RTOS (Zephyr). Our plan is to do that in userspace using the nameservice
+announcement from virtio/rpmsg.
 
-I've applied patches 1-6
+We did an hackish patch to do that internally:
+https://github.com/iotbzh/meta-rcar-zephyr/blob/master/recipes-kernel/linux/linux-renesas/0001-Add-device-driver-for-rcar-r7-
+rpmsg.patch
 
-Maxime
+That we will be really happy to drop by any cleaner solution.
 
---56i3cns3wstz6rhi
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCYJT11gAKCRDj7w1vZxhR
-xcH4AP9T2WUlgJIme8t1Ebj6AH7EiETOtA4asPtzoInpH93PsgD/RfOXEXYbcEG9
-omJFQb7MNOHox4nDTKMXaKAfro5B+wE=
-=uw2K
------END PGP SIGNATURE-----
-
---56i3cns3wstz6rhi--
+Thanks for your work !
+Julien
