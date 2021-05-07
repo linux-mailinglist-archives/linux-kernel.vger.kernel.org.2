@@ -2,102 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 662C4376B04
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:05:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1BD43376B08
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230096AbhEGUG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 16:06:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        id S230124AbhEGUHf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 16:07:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46260 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230102AbhEGUG1 (ORCPT
+        with ESMTP id S229952AbhEGUHe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 16:06:27 -0400
-Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15935C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 13:05:24 -0700 (PDT)
-Received: by mail-pg1-x532.google.com with SMTP id z16so8189878pga.1
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 13:05:24 -0700 (PDT)
+        Fri, 7 May 2021 16:07:34 -0400
+Received: from mail-ot1-x329.google.com (mail-ot1-x329.google.com [IPv6:2607:f8b0:4864:20::329])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 18061C0613ED
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 13:06:33 -0700 (PDT)
+Received: by mail-ot1-x329.google.com with SMTP id n32-20020a9d1ea30000b02902a53d6ad4bdso8928023otn.3
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 13:06:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=c3juDObqVzsjpQ4zt+KRVnMaIqtk76tzs1eXGfnrfq0=;
-        b=FqxuI7G4lXRX59JzUWXtHjI8iQkPShk8Z9b5qVLOOQTKRkJJVOSKDxSKCaiK5vMORh
-         5E7bzyvNmy2OKHKKEpIVkjxi0I9yNEYuMvobYYLlvn1+EUmrmvOi45s7Otq2Wnjw2CFR
-         lQ5ZUBZvYJPnGH1bvPaqEW5vOXIAAhArW5+S+oSH4603z+3lViWx1mgQWPdBtSv223uf
-         3ProgKg0seuTL7ZpI0eRv1cEom3fx2mUQe2bWucvPpMTyJwqnBgVDchau2mnHWjQ1RU8
-         3Q0774OP9a2CS103Y6+0MBQ02OXsUOjW/6qwkqXoDFNWZagNjp6UN1L9xOd2qGvx2pgF
-         Hv2Q==
+        d=chromium.org; s=google;
+        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
+         :subject:to:cc;
+        bh=3WDj5ByVzdBRKZ0K+GqLVQS/4o6OnrEylJSHdlEZ+hM=;
+        b=mp4xUFLSixbyfl+Qu1nsppkLvWWnJ7zGe/JkzCWNj7B4l+wzPO6GlbBXQPEIUugYAq
+         7AFiF2v83Iv4sxboZBOaxsA3AuCTFQwXP2+2jUEgqnGXqAqlJ5BEDusKsWKtZeIBIKLb
+         UPgwaYD/JnaDCbieW2t14TnSL0lOPRSaYIrVU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=c3juDObqVzsjpQ4zt+KRVnMaIqtk76tzs1eXGfnrfq0=;
-        b=etmqX8TgzJOvakYlfhTrgfn0/xglPgI/IUaogJ3rfU8KsSqcizJYDZS+T/21WHab0m
-         UlRfAD/9XUqBzmJs4TQFtcVzp1KKZ90v6/dMOupOt6KYCZVsYzr/5bUDqg4MCvI5xVUt
-         Mm/M7JvnG7edLmTq14J8HEHSR2LJoC0YktV0S7tvByydxsqf9UYctEq9mJmyAxhXqgy4
-         cd+7v1j2OEbHGIZyGoU0WYuBWj4NqDxYZsEUXfG7JGcsCmxJlxxu4iqwrZp8GnN5aUIa
-         i1xR6CquJLY4BeAvFzjewjzqCDrVWthbXRFoT0qOvsMkzG8Yp3oaSpKS1qPt/UQrMMtw
-         Nm8g==
-X-Gm-Message-State: AOAM531xmlYrU2AU6968hShSteUoDmPFjMOhAYqHQt5i1pirtTDwG21z
-        eTh01Yza6EjPRQKhNtv2qmbzQ1+wQMPWskwYzgABQA==
-X-Google-Smtp-Source: ABdhPJxbbTlEFkChr0nHAB3mp77sGw2yE5ONf0urDq7scY1p99hozFwPpv481/wBo3CN8/V3MuRITc5PKYMM00W7RIk=
-X-Received: by 2002:a63:cc11:: with SMTP id x17mr11645132pgf.159.1620417923430;
- Fri, 07 May 2021 13:05:23 -0700 (PDT)
+        h=x-gm-message-state:mime-version:in-reply-to:references:from
+         :user-agent:date:message-id:subject:to:cc;
+        bh=3WDj5ByVzdBRKZ0K+GqLVQS/4o6OnrEylJSHdlEZ+hM=;
+        b=KOg3lzjoJ35QxW9ZyFOPeqzlPiBYNdv8P9l6a7yVFWiOvhresZcZzMRfulcKh5KXF3
+         O/P7tYlOjZvucdvXHfJapZXcXb9IlN1Xcfde4JreYW4+opsLhXO13SAzMY3AblfZOGGo
+         G/VX32/zgsDf2hteLCe5bgnLAcQWv9x/NbAXcyrK559KRcQP/guHBxzNuCxgHRnT4okA
+         xyaWMKlNUEZgEmAPyuZxGzHWixGSlbKs5DTPy7bz4M0sVgLEKT/g9WTlBV1lbfubpgNq
+         kJEcTF7XTE6rSz+Rbq/GSD06IRN5w1Ub52blHtNWx5kVfpBSD2obFPEOujGn3PEQBUpT
+         yDhQ==
+X-Gm-Message-State: AOAM5308mDGihNmFeGQCUySuaSXKi7Sj6A5tscp40UXt7CaxVGhOFEMj
+        eiYrAyY1btZjwcLhg+DNfk3PBERizs4ImHD0cJ/Nwg==
+X-Google-Smtp-Source: ABdhPJzBoH4ZO59EfoG2eOJx+S58pk5bWUbPkAYehwWXAFkrILAtchBdOqaZJDQMbz4Lxtbw4xEwQHFXlTAY+ZOqXT8=
+X-Received: by 2002:a9d:425:: with SMTP id 34mr9741568otc.25.1620417992319;
+ Fri, 07 May 2021 13:06:32 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Fri, 7 May 2021 13:06:31 -0700
 MIME-Version: 1.0
-References: <20210507050908.1008686-1-davidgow@google.com>
-In-Reply-To: <20210507050908.1008686-1-davidgow@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Fri, 7 May 2021 13:05:12 -0700
-Message-ID: <CAFd5g44bot7S-Ya7s7QxnKfXHcy8WxUcNPsZuw_qWMaAQbqLCg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kunit: Do not typecheck binary assertions
-To:     David Gow <davidgow@google.com>
-Cc:     Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org
+In-Reply-To: <1620382648-17395-3-git-send-email-pmaliset@codeaurora.org>
+References: <1620382648-17395-1-git-send-email-pmaliset@codeaurora.org> <1620382648-17395-3-git-send-email-pmaliset@codeaurora.org>
+From:   Stephen Boyd <swboyd@chromium.org>
+User-Agent: alot/0.9.1
+Date:   Fri, 7 May 2021 13:06:31 -0700
+Message-ID: <CAE-0n530bSPupOHVDzwpd_JVVN0tOfrAOm9dAt1ZGj7zaXOZ6A@mail.gmail.com>
+Subject: Re: [PATCH 2/3] arm64: dts: qcom: sc7280: Add PCIe and PHY related nodes
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Prasad Malisetty <pmaliset@codeaurora.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        mgautam@codeaurora.org, dianders@chromium.org, mka@chromium.org
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, May 6, 2021 at 10:09 PM David Gow <davidgow@google.com> wrote:
+Quoting Prasad Malisetty (2021-05-07 03:17:27)
+> Add PCIe controller and PHY nodes for sc7280 SOC.
 >
-> The use of typecheck() in KUNIT_EXPECT_EQ() and friends is causing more
-> problems than I think it's worth. Things like enums need to have their
-> values explicitly cast, and literals all need to be very precisely typed
-> for the code to compile.
-
-nit: I have not had the typecheck() call prevent any code from
-compiling, just generating warnings. I guess you can have a build set
-to cause any warning to be promoted to an error; still, I think this
-statement is misleading.
-
-> While typechecking does have its uses, the additional overhead of having
-> lots of needless casts -- combined with the awkward error messages which
-> don't mention which types are involved -- makes tests less readable and
-> more difficult to write.
->
-> By removing the typecheck() call, the two arguments still need to be of
-> compatible types, but don't need to be of exactly the same time, which
-> seems a less confusing and more useful compromise.
->
-> Signed-off-by: David Gow <davidgow@google.com>
-
-Looks good to me.
-
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-
+> Signed-off-by: Prasad Malisetty <pmaliset@codeaurora.org>
 > ---
+>  arch/arm64/boot/dts/qcom/sc7280.dtsi | 138 +++++++++++++++++++++++++++++++++++
+>  1 file changed, 138 insertions(+)
 >
-> I appreciate that this is probably a bit controversial (and, indeed, I
-> was a bit hesitant about sending it out myself), but after sitting on it
-> for a few days, I still think this is probably an improvement overall.
+> diff --git a/arch/arm64/boot/dts/qcom/sc7280.dtsi b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> index 2cc4785..a9f25fc1 100644
+> --- a/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> +++ b/arch/arm64/boot/dts/qcom/sc7280.dtsi
+> @@ -12,6 +12,7 @@
+>  #include <dt-bindings/power/qcom-aoss-qmp.h>
+>  #include <dt-bindings/power/qcom-rpmpd.h>
+>  #include <dt-bindings/soc/qcom,rpmh-rsc.h>
+> +#include <dt-bindings/gpio/gpio.h>
 >
-> The second patch does fix what I think is an actual bug, though, so even
-> if this isn't determined to be a good idea, it (or some equivalent)
-> should probably go through.
+>  / {
+>         interrupt-parent = <&intc>;
+> @@ -316,6 +317,118 @@
+>                         };
+>                 };
+>
+[...]
+> +
+> +               pcie1_phy: phy@1c0e000 {
+> +                       compatible = "qcom,sm8250-qmp-gen3x2-pcie-phy";
+> +                       reg = <0 0x01c0e000 0 0x1c0>;
+> +                       #address-cells = <2>;
+> +                       #size-cells = <2>;
+> +                       ranges;
+> +                       clocks = <&gcc GCC_PCIE_1_AUX_CLK>,
+> +                                <&gcc GCC_PCIE_1_CFG_AHB_CLK>,
+> +                                <&gcc GCC_PCIE_CLKREF_EN>,
+> +                                <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+> +                       clock-names = "aux", "cfg_ahb", "ref", "refgen";
+> +
+> +                       resets = <&gcc GCC_PCIE_1_PHY_BCR>;
+> +                       reset-names = "phy";
+> +
+> +                       assigned-clocks = <&gcc GCC_PCIE1_PHY_RCHNG_CLK>;
+> +                       assigned-clock-rates = <100000000>;
+> +
+> +                       status = "disabled";
 
-I don't remember being a huge fan of the typecheck when it was asked
-for either. I think I am a little bit more indifferent than you;
-nevertheless, I support this change.
+I think the style is to put status disabled close to the compatible?
+
+> +
+> +                       pcie1_lane: lanes@1c0e200 {
+> +                               reg = <0 0x1c0e200 0 0x170>, /* tx0 */
+
+Please pad reg addresses to 8 characters.
+
+> +                                     <0 0x1c0e400 0 0x200>, /* rx0 */
+> +                                     <0 0x1c0ea00 0 0x1f0>, /* pcs */
+> +                                     <0 0x1c0e600 0 0x170>, /* tx1 */
+> +                                     <0 0x1c0e800 0 0x200>, /* rx1 */
+> +                                     <0 0x1c0ee00 0 0xf4>; /* "pcs_com" same as pcs_misc? */
+
+Is this a TODO? I'd prefer all the comments on the reg properties to be
+removed.
+
+> +                               clocks = <&rpmhcc RPMH_CXO_CLK>;
+> +                               clock-names = "pipe0";
+> +
+> +                               #phy-cells = <0>;
+> +                               #clock-cells = <1>;
+> +                               clock-output-names = "pcie_1_pipe_clk";
+> +                       };
+> +               };
+> +
+>                 stm@6002000 {
+>                         compatible = "arm,coresight-stm", "arm,primecell";
+>                         reg = <0 0x06002000 0 0x1000>,
+> @@ -871,6 +984,31 @@
+>                                 pins = "gpio46", "gpio47";
+>                                 function = "qup13";
+>                         };
+> +
+> +                       pcie1_default_state: pcie1-default {
+> +                               clkreq {
+> +                                       pins = "gpio79";
+> +                                       function = "pcie1_clkreqn";
+> +                                       bias-pull-up;
+
+Move this bias-pull-up to the idp file?
+
+> +                               };
+> +
+> +                               reset-n {
+> +                                       pins = "gpio2";
+> +                                       function = "gpio";
+> +
+> +                                       drive-strength = <16>;
+> +                                       output-low;
+> +                                       bias-disable;
+> +                               };
+> +
+> +                               wake-n {
+> +                                       pins = "gpio3";
+> +                                       function = "gpio";
+> +
+> +                                       drive-strength = <2>;
+> +                                       bias-pull-up;
+> +                               };
+
+These last two nodes with the pull-up and drive-strength settings should
+be in the board files, like the idp one, instead of here in the SoC
+file. That way board designers can take the SoC and connect the pcie to
+an external device using these pins and set the configuration they want
+on these pins, or choose not to connect them to the SoC at all and use
+those pins for something else.
+
+In addition, it looks like the reset could be a reset-gpios property
+instead of an output-low config.
+
+> +                       };
+>                 };
+>
