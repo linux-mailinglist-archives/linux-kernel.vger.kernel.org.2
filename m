@@ -2,79 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0013D376AF3
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:03:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662C4376B04
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 22:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229997AbhEGUE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 16:04:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38064 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229905AbhEGUE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 16:04:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B202961432;
-        Fri,  7 May 2021 20:03:23 +0000 (UTC)
-Date:   Fri, 7 May 2021 16:03:21 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     "Bajjuri, Praneeth" <praneeth@ti.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Carsten Emde <C.Emde@osadl.org>,
-        John Kacur <jkacur@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Daniel Wagner <wagi@monom.org>,
-        Tom Zanussi <zanussi@kernel.org>,
-        "Srivatsa S. Bhat" <srivatsa@csail.mit.edu>
-Subject: Re: [ANNOUNCE] 5.10.30-rt37
-Message-ID: <20210507160321.56164c3c@gandalf.local.home>
-In-Reply-To: <c3b8a530-2ade-5876-5c93-7f83286796b8@ti.com>
-References: <20210419184731.246fa474@gandalf.local.home>
-        <c3b8a530-2ade-5876-5c93-7f83286796b8@ti.com>
-X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+        id S230096AbhEGUG2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 16:06:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45996 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230102AbhEGUG1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 16:06:27 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15935C061574
+        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 13:05:24 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id z16so8189878pga.1
+        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 13:05:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=c3juDObqVzsjpQ4zt+KRVnMaIqtk76tzs1eXGfnrfq0=;
+        b=FqxuI7G4lXRX59JzUWXtHjI8iQkPShk8Z9b5qVLOOQTKRkJJVOSKDxSKCaiK5vMORh
+         5E7bzyvNmy2OKHKKEpIVkjxi0I9yNEYuMvobYYLlvn1+EUmrmvOi45s7Otq2Wnjw2CFR
+         lQ5ZUBZvYJPnGH1bvPaqEW5vOXIAAhArW5+S+oSH4603z+3lViWx1mgQWPdBtSv223uf
+         3ProgKg0seuTL7ZpI0eRv1cEom3fx2mUQe2bWucvPpMTyJwqnBgVDchau2mnHWjQ1RU8
+         3Q0774OP9a2CS103Y6+0MBQ02OXsUOjW/6qwkqXoDFNWZagNjp6UN1L9xOd2qGvx2pgF
+         Hv2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=c3juDObqVzsjpQ4zt+KRVnMaIqtk76tzs1eXGfnrfq0=;
+        b=etmqX8TgzJOvakYlfhTrgfn0/xglPgI/IUaogJ3rfU8KsSqcizJYDZS+T/21WHab0m
+         UlRfAD/9XUqBzmJs4TQFtcVzp1KKZ90v6/dMOupOt6KYCZVsYzr/5bUDqg4MCvI5xVUt
+         Mm/M7JvnG7edLmTq14J8HEHSR2LJoC0YktV0S7tvByydxsqf9UYctEq9mJmyAxhXqgy4
+         cd+7v1j2OEbHGIZyGoU0WYuBWj4NqDxYZsEUXfG7JGcsCmxJlxxu4iqwrZp8GnN5aUIa
+         i1xR6CquJLY4BeAvFzjewjzqCDrVWthbXRFoT0qOvsMkzG8Yp3oaSpKS1qPt/UQrMMtw
+         Nm8g==
+X-Gm-Message-State: AOAM531xmlYrU2AU6968hShSteUoDmPFjMOhAYqHQt5i1pirtTDwG21z
+        eTh01Yza6EjPRQKhNtv2qmbzQ1+wQMPWskwYzgABQA==
+X-Google-Smtp-Source: ABdhPJxbbTlEFkChr0nHAB3mp77sGw2yE5ONf0urDq7scY1p99hozFwPpv481/wBo3CN8/V3MuRITc5PKYMM00W7RIk=
+X-Received: by 2002:a63:cc11:: with SMTP id x17mr11645132pgf.159.1620417923430;
+ Fri, 07 May 2021 13:05:23 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20210507050908.1008686-1-davidgow@google.com>
+In-Reply-To: <20210507050908.1008686-1-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Fri, 7 May 2021 13:05:12 -0700
+Message-ID: <CAFd5g44bot7S-Ya7s7QxnKfXHcy8WxUcNPsZuw_qWMaAQbqLCg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] kunit: Do not typecheck binary assertions
+To:     David Gow <davidgow@google.com>
+Cc:     Daniel Latypov <dlatypov@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 3 May 2021 15:39:19 -0500
-"Bajjuri, Praneeth" <praneeth@ti.com> wrote:
+On Thu, May 6, 2021 at 10:09 PM David Gow <davidgow@google.com> wrote:
+>
+> The use of typecheck() in KUNIT_EXPECT_EQ() and friends is causing more
+> problems than I think it's worth. Things like enums need to have their
+> values explicitly cast, and literals all need to be very precisely typed
+> for the code to compile.
 
-> On 4/19/2021 5:47 PM, Steven Rostedt wrote:
-> > On Tue, Apr 20, 2021,ycollette.nospam@free.fr  wrote:  
-> >> net/xfrm/xfrm_state.c: In function 'xfrm_state_init':
-> >> ./include/linux/seqlock.h:178:36: error: initialization of 'seqcount_spinlock_t *' {aka 'struct seqcount_spinlock *'} from incompatible pointer type 'seqcount_t *' {aka 'struct seqcount *'} [-Werror=incompatible-pointer-types]
-> >>    178 |   seqcount_##lockname##_t *____s = (s);   \
-> >>        |                                    ^  
-> > ...  
-> >> net/xfrm/xfrm_state.c:2666:2: note: in expansion of macro 'seqcount_spinlock_init'
-> >>   2666 |  seqcount_spinlock_init(&net->xfrm.xfrm_state_hash_generation,
-> >>        |  ^~~~~~~~~~~~~~~~~~~~~~  
-> > There is a rebase error at:
-> > 
-> >    247560698349 ("Merge tag 'v5.10.30' into v5.10-rt")
-> > 
-> > Cherry-pick mainline's commit:
-> > 
-> >    bc8e0adff343 ("net: xfrm: Use sequence counter with associated spinlock")  
-> 
-> Thanks for this fix, Cherry-pick resolved rt stable integration issue 
-> that i was seeing.
-> 
-> Is this fix going to be posted for v5.10-rt too ?
-> 
-> > 
-> > and your compilation issue will be fixed.  
+nit: I have not had the typecheck() call prevent any code from
+compiling, just generating warnings. I guess you can have a build set
+to cause any warning to be promoted to an error; still, I think this
+statement is misleading.
 
-Yes, I'm pulling it in now (sorry for the delay).
+> While typechecking does have its uses, the additional overhead of having
+> lots of needless casts -- combined with the awkward error messages which
+> don't mention which types are involved -- makes tests less readable and
+> more difficult to write.
+>
+> By removing the typecheck() call, the two arguments still need to be of
+> compatible types, but don't need to be of exactly the same time, which
+> seems a less confusing and more useful compromise.
+>
+> Signed-off-by: David Gow <davidgow@google.com>
 
-For some reason, Yann's email never made it into my INBOX :-/
+Looks good to me.
 
-But cherry picking that commit appears to do the job. I'll pull that in,
-and then start bringing 5.10 to the latest release.
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 
--- Steve
+> ---
+>
+> I appreciate that this is probably a bit controversial (and, indeed, I
+> was a bit hesitant about sending it out myself), but after sitting on it
+> for a few days, I still think this is probably an improvement overall.
+>
+> The second patch does fix what I think is an actual bug, though, so even
+> if this isn't determined to be a good idea, it (or some equivalent)
+> should probably go through.
+
+I don't remember being a huge fan of the typecheck when it was asked
+for either. I think I am a little bit more indifferent than you;
+nevertheless, I support this change.
