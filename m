@@ -2,66 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B59376475
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:28:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE1EC376479
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 13:29:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S234018AbhEGL3d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 07:29:33 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43976 "EHLO mx2.suse.de"
+        id S234341AbhEGLah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 07:30:37 -0400
+Received: from muru.com ([72.249.23.125]:52780 "EHLO muru.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S233369AbhEGL3b (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 07:29:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 287B9B14A;
-        Fri,  7 May 2021 11:28:30 +0000 (UTC)
-Subject: Re: [PATCH Part2 RFC v2 08/37] x86/sev: Split the physmap when adding
- the page in RMP table
-To:     Dave Hansen <dave.hansen@intel.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Brijesh Singh <brijesh.singh@amd.com>
-Cc:     X86 ML <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-        kvm list <kvm@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, Joerg Roedel <jroedel@suse.de>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        Sean Christopherson <seanjc@google.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "H. Peter Anvin" <hpa@zytor.com>, Tony Luck <tony.luck@intel.com>
-References: <20210430123822.13825-1-brijesh.singh@amd.com>
- <20210430123822.13825-9-brijesh.singh@amd.com>
- <CALCETrXsUW3S_9ZUPXT5HEv_ki2VxEUQMe-uzerG1xnbcgYNtw@mail.gmail.com>
- <c1e9573e-9be4-ee85-9363-73b9c60db315@intel.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <5c07ff2c-efb4-5f7b-0ad6-d52d985e5c46@suse.cz>
-Date:   Fri, 7 May 2021 13:28:28 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        id S232519AbhEGLaR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 7 May 2021 07:30:17 -0400
+Received: from hillo.muru.com (localhost [127.0.0.1])
+        by muru.com (Postfix) with ESMTP id 7289680E0;
+        Fri,  7 May 2021 11:29:18 +0000 (UTC)
+From:   Tony Lindgren <tony@atomide.com>
+To:     linux-omap@vger.kernel.org
+Cc:     Dave Gerlach <d-gerlach@ti.com>, Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Suman Anna <s-anna@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Naresh Kamboju <naresh.kamboju@linaro.org>
+Subject: [PATCHv2] bus: ti-sysc: Fix missing quirk flags for sata
+Date:   Fri,  7 May 2021 14:28:57 +0300
+Message-Id: <20210507112857.12753-1-tony@atomide.com>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-In-Reply-To: <c1e9573e-9be4-ee85-9363-73b9c60db315@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 5/3/21 5:41 PM, Dave Hansen wrote:
-> On 5/3/21 8:15 AM, Andy Lutomirski wrote:
->> How much performance do we get back if we add a requirement that only
->> 2M pages (hugetlbfs, etc) may be used for private guest memory?
-> 
-> Are you generally asking about the performance overhead of using 4k
-> pages instead of 2M for the direct map?  We looked at that recently and
-> pulled together some data:
+Naresh Kamboju <naresh.kamboju@linaro.org> reported that Beaglebone-X15
+does not detect sata drives any longer after dra7 was flipped to boot with
+device tree data only. Turns out we are now missing the sata related quirk
+flags in ti-sysc that we used to have earlier.
 
-IIUC using 2M for private guest memory wouldn't be itself sufficient, as the
-guest would also have to share pages with host with 2MB granularity, and that
-might be too restrictive?
+Fixes: 98feab31ac49 ("ARM: OMAP2+: Drop legacy platform data for dra7 sata")
+Fixes: 21206c8f2cb5 ("ARM: OMAP2+: Drop legacy platform data for omap5 sata")
+Link: https://lore.kernel.org/regressions/CA+G9fYtTN6ug3eBAW3wMcDeESUo+ebj7L5HBe5_fj4uqDExFQg@mail.gmail.com/
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+Signed-off-by: Tony Lindgren <tony@atomide.com>
+---
 
->> https://lore.kernel.org/lkml/213b4567-46ce-f116-9cdf-bbd0c884eb3c@linux.intel.com/
-> 
+Changes since v1:
+- Added back the missing part of the patch I hosed after applying on
+  wrong kernel version
 
+---
+ drivers/bus/ti-sysc.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/bus/ti-sysc.c b/drivers/bus/ti-sysc.c
+--- a/drivers/bus/ti-sysc.c
++++ b/drivers/bus/ti-sysc.c
+@@ -1459,6 +1459,8 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
+ 	SYSC_QUIRK("tptc", 0, 0, -ENODEV, -ENODEV, 0x40007c00, 0xffffffff,
+ 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
++	SYSC_QUIRK("sata", 0, 0xfc, 0x1100, -ENODEV, 0x5e412000, 0xffffffff,
++		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
+ 	SYSC_QUIRK("usb_host_hs", 0, 0, 0x10, 0x14, 0x50700100, 0xffffffff,
+ 		   SYSC_QUIRK_SWSUP_SIDLE | SYSC_QUIRK_SWSUP_MSTANDBY),
+ 	SYSC_QUIRK("usb_host_hs", 0, 0, 0x10, -ENODEV, 0x50700101, 0xffffffff,
+@@ -1524,7 +1526,6 @@ static const struct sysc_revision_quirk sysc_revision_quirks[] = {
+ 	SYSC_QUIRK("prcm", 0, 0, -ENODEV, -ENODEV, 0x40000400, 0xffffffff, 0),
+ 	SYSC_QUIRK("rfbi", 0x4832a800, 0, 0x10, 0x14, 0x00000010, 0xffffffff, 0),
+ 	SYSC_QUIRK("rfbi", 0x58002000, 0, 0x10, 0x14, 0x00000010, 0xffffffff, 0),
+-	SYSC_QUIRK("sata", 0, 0xfc, 0x1100, -ENODEV, 0x5e412000, 0xffffffff, 0),
+ 	SYSC_QUIRK("scm", 0, 0, 0x10, -ENODEV, 0x40000900, 0xffffffff, 0),
+ 	SYSC_QUIRK("scm", 0, 0, -ENODEV, -ENODEV, 0x4e8b0100, 0xffffffff, 0),
+ 	SYSC_QUIRK("scm", 0, 0, -ENODEV, -ENODEV, 0x4f000100, 0xffffffff, 0),
+-- 
+2.31.1
