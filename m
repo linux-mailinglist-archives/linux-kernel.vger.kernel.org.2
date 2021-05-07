@@ -2,97 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4AA1A3762FD
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:44:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF34A3762FF
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 11:44:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S236790AbhEGJpl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 05:45:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49802 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231753AbhEGJpk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S236812AbhEGJpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 05:45:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:52474 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S234506AbhEGJpk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 7 May 2021 05:45:40 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 324D1C061574;
-        Fri,  7 May 2021 02:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=YrH9BkDUf5uJUgqQ0KIi4R1B1HVNthp2JZogOagcDqU=; b=TJcFWHc0DcJH7ZXGQ1IXEDZS1
-        gQgomF5rhfpOdQJArJRwxu7Vz/bDRPXAaLNC7S397y4dSR0IlSbNshzuWTL0Ap2PMW4ER09jRH1Nk
-        5dhQqftcHZlSVIUwWuYftbUrE8g8f34PqB7RLd6p4b/y+qRtIixZDvbKQndRpT00h5ArqOzqBkV5W
-        22u4JEmGKD8XZt7oq882xAYCZMY10zodYYndiu29XyTOvXBZlWIuk4VXhSRnN35HqkI4TxAI4Lvhw
-        BGokVuB7ko7ljsKPQVCLUop8+ba3Jjgz7x2zZ2yee/e46znD0JUQYRUAA4kL+g15OEijo7trl2FcE
-        H8awfqe3Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:43750)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1lex20-0003LA-IZ; Fri, 07 May 2021 10:44:24 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1lex1z-0005do-Ad; Fri, 07 May 2021 10:44:23 +0100
-Date:   Fri, 7 May 2021 10:44:23 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v3 19/20] net: dsa: qca8k: pass
- switch_revision info to phy dev_flags
-Message-ID: <20210507094423.GC1336@shell.armlinux.org.uk>
-References: <20210504222915.17206-1-ansuelsmth@gmail.com>
- <20210504222915.17206-19-ansuelsmth@gmail.com>
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CF03C106F;
+        Fri,  7 May 2021 02:44:40 -0700 (PDT)
+Received: from [192.168.1.179] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 534693F718;
+        Fri,  7 May 2021 02:44:38 -0700 (PDT)
+Subject: Re: [PATCH v11 5/6] KVM: arm64: ioctl to fetch/store tags in a guest
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Marc Zyngier <maz@kernel.org>, Will Deacon <will@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Julien Thierry <julien.thierry.kdev@gmail.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        kvmarm@lists.cs.columbia.edu, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>, qemu-devel@nongnu.org,
+        Juan Quintela <quintela@redhat.com>,
+        "Dr. David Alan Gilbert" <dgilbert@redhat.com>,
+        Richard Henderson <richard.henderson@linaro.org>,
+        Peter Maydell <peter.maydell@linaro.org>,
+        Haibo Xu <Haibo.Xu@arm.com>, Andrew Jones <drjones@redhat.com>
+References: <20210416154309.22129-1-steven.price@arm.com>
+ <20210416154309.22129-6-steven.price@arm.com>
+ <20210427175844.GB17872@arm.com>
+ <340d35c2-46ed-35ea-43fa-e5cb64c27230@arm.com> <YJGIBTor+blelKKT@arm.com>
+From:   Steven Price <steven.price@arm.com>
+Message-ID: <25c85740-0119-549e-6ddb-aea69c5efc76@arm.com>
+Date:   Fri, 7 May 2021 10:44:33 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210504222915.17206-19-ansuelsmth@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <YJGIBTor+blelKKT@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, May 05, 2021 at 12:29:13AM +0200, Ansuel Smith wrote:
-> +static u32 qca8k_get_phy_flags(struct dsa_switch *ds, int port)
-> +{
-> +	struct qca8k_priv *priv = ds->priv;
-> +
-> +	pr_info("revision from phy %d", priv->switch_revision);
+On 04/05/2021 18:44, Catalin Marinas wrote:
+> On Thu, Apr 29, 2021 at 05:06:07PM +0100, Steven Price wrote:
+>> On 27/04/2021 18:58, Catalin Marinas wrote:
+>>> On Fri, Apr 16, 2021 at 04:43:08PM +0100, Steven Price wrote:
+>>>> diff --git a/arch/arm64/include/uapi/asm/kvm.h b/arch/arm64/include/uapi/asm/kvm.h
+>>>> index 24223adae150..2b85a047c37d 100644
+>>>> --- a/arch/arm64/include/uapi/asm/kvm.h
+>>>> +++ b/arch/arm64/include/uapi/asm/kvm.h
+>>>> @@ -184,6 +184,20 @@ struct kvm_vcpu_events {
+>>>>    	__u32 reserved[12];
+>>>>    };
+>>>> +struct kvm_arm_copy_mte_tags {
+>>>> +	__u64 guest_ipa;
+>>>> +	__u64 length;
+>>>> +	union {
+>>>> +		void __user *addr;
+>>>> +		__u64 padding;
+>>>> +	};
+>>>> +	__u64 flags;
+>>>> +	__u64 reserved[2];
+>>>> +};
+> [...]
+>>> Maybe add the two reserved
+>>> values to the union in case we want to store something else in the
+>>> future.
+>>
+>> I'm not sure what you mean here. What would the reserved fields be unioned
+>> with? And surely they are no longer reserved in that case?
+> 
+> In case you want to keep the structure size the same for future
+> expansion and the expansion only happens via the union, you'd add some
+> padding in there just in case. We do this for struct siginfo with an
+> _si_pad[] array in the union.
+> 
 
-Should this be a "pr_info" ?
+Ah I see what you mean. In this case "padding" is just a sizer to ensure 
+that flags is always the same alignment - it's not intended to be used. 
+As I noted previously though it's completely pointless as this only on 
+arm64 and even 32 bit Arm would naturally align the following __u64.
 
-> +
-> +	/* Communicate to the phy internal driver the switch revision.
-> +	 * Based on the switch revision different values needs to be
-> +	 * set to the dbg and mmd reg on the phy.
-> +	 * The first 2 bit are used to communicate the switch revision
-> +	 * to the phy driver.
-> +	 */
-> +	if (port > 0 && port < 6)
-> +		return priv->switch_revision;
+reserved[] is for expansion and I guess we could have a union over the 
+whole struct (like siginfo) but I think it's generally clearer to just 
+spell out the reserved fields at the end of the struct.
 
-We had some discussion back in February about the PHY flags argument
-("Rework of phydev->dev_flags") as there is a need to generically
-identify whether a PHY is on a SFP module or not. This discussion
-hasn't progressed to any changes (yet) but some of the points remain
-valid: if we do go down the route of needing to have generic PHY flags
-in dev_flags, then we need vendor specific stuff to avoid those bits.
-So, rather than introduce a new case of passing some undefined data
-through the flags argument, can we come up with some sort of proposal
-for this.
+TLDR; the union will be gone along with "padding" in the next version. 
+"reserved" remains at the end of the struct for future use.
 
-It may also be a good idea if we document it. Maybe something like
-"low 16 bits are free for driver use, upper 16 bits are reserved
-for generic use"?
+Thanks,
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Steve
