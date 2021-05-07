@@ -2,63 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D771376921
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:56:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D20D5376924
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 18:57:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S238443AbhEGQ52 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 12:57:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32832 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S237138AbhEGQ51 (ORCPT
+        id S237120AbhEGQ62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 12:58:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:41415 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S234440AbhEGQ6Y (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 12:57:27 -0400
-Received: from m-r1.th.seeweb.it (m-r1.th.seeweb.it [IPv6:2001:4b7a:2000:18::170])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6CEA3C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 09:56:27 -0700 (PDT)
-Received: from [192.168.1.101] (83.6.168.154.neoplus.adsl.tpnet.pl [83.6.168.154])
-        (using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-         key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+        Fri, 7 May 2021 12:58:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1620406643;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+        bh=h4E6LMUOwxUgdkNVzwo77vN2ykIjCnu70MVW4GN+mng=;
+        b=fN/K9B0D8rNGmMa28UsqcsWJ7m4NYL+fGuZ0FoSy/zHYR81WzcsO/pHBC09edZ7i5EmTWb
+        gBzn1sCBN8CQ2QrX5JXRbHP5LLzTfa1Bxl31MnDFimgBqTDNTv3ne6HtLpYUNQJFg44vDk
+        cJ1QmTBEKFVW4rYUc43qtd33D0B92jU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-448-HbI4XHsCMXOk_FajH5--7Q-1; Fri, 07 May 2021 12:57:20 -0400
+X-MC-Unique: HbI4XHsCMXOk_FajH5--7Q-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by m-r1.th.seeweb.it (Postfix) with ESMTPSA id 7851C1F680;
-        Fri,  7 May 2021 18:56:23 +0200 (CEST)
-Subject: Re: [PATCH 1/3] remoteproc: qcom: pas: Use the same init resources
- for MSM8996 and MSM8998
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Yassine Oudjana <y.oudjana@protonmail.com>
-Cc:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-remoteproc@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ~postmarketos/upstreaming@lists.sr.ht
-References: <zbAB2sceYHmsYeraZUi4YUKL7lgFMu13w3vHQQYUQ4@cp3-web-020.plabs.ch>
- <20210507164045.GA3622@thinkpad>
-From:   Konrad Dybcio <konrad.dybcio@somainline.org>
-Message-ID: <22accfef-a629-b483-f93f-820030ff5189@somainline.org>
-Date:   Fri, 7 May 2021 18:56:22 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.10.0
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 76C2E1854E24;
+        Fri,  7 May 2021 16:57:19 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-4.gru2.redhat.com [10.97.112.4])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2CF2D36E0;
+        Fri,  7 May 2021 16:57:19 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id EB3C741887F4; Fri,  7 May 2021 13:57:10 -0300 (-03)
+Date:   Fri, 7 May 2021 13:57:10 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     Frederic Weisbecker <frederic@kernel.org>,
+        Phil Auld <pauld@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH] Revert "isolcpus: Affine unbound kernel threads to
+ housekeeping cpus"
+Message-ID: <20210507165710.GA429056@fuller.cnet>
 MIME-Version: 1.0
-In-Reply-To: <20210507164045.GA3622@thinkpad>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
 
-> NACK.
->
-> I see that the "slpi_resource_init" and "msm8998_{slpi/adsp}_resource" are
-> completely different, even the firmware name. How can you get it to work?
+commit 9cc5b8656892a72438ee7deb introduced a new housekeeping flag,
+HK_FLAG_KTHREAD, that when enabled sets the CPU affinity for the 
+kthreadd process (therefore all unbounded kernel threads created
+from that point on will use the housekeeping cpumask).
 
-one of us must be looking at some knock-off source code, as they are identical say for the presence or absence of proxy_pd_names, which are required for 8996 and weren't really an exposed thing on old SoCs like 8974.
+This is not necessary, since its possible to control placement of
+kthreadd from userspace:
 
+# taskset -c -p 0 `pgrep kthreadd`
+pid 2's current affinity list: 1
+pid 2's new affinity list: 0
 
-Konrad
+Unbounded kernel threads started from that point on will inherit
+the kthreadd cpumask.
+
+Signed-off-by: Marcelo Tosatti <mtosatti@redhat.com>
+
+Index: linux-2.6/include/linux/sched/isolation.h
+===================================================================
+--- linux-2.6.orig/include/linux/sched/isolation.h
++++ linux-2.6/include/linux/sched/isolation.h
+@@ -14,7 +14,6 @@ enum hk_flags {
+ 	HK_FLAG_DOMAIN		= (1 << 5),
+ 	HK_FLAG_WQ		= (1 << 6),
+ 	HK_FLAG_MANAGED_IRQ	= (1 << 7),
+-	HK_FLAG_KTHREAD		= (1 << 8),
+ };
+ 
+ #ifdef CONFIG_CPU_ISOLATION
+Index: linux-2.6/kernel/kthread.c
+===================================================================
+--- linux-2.6.orig/kernel/kthread.c
++++ linux-2.6/kernel/kthread.c
+@@ -27,7 +27,6 @@
+ #include <linux/ptrace.h>
+ #include <linux/uaccess.h>
+ #include <linux/numa.h>
+-#include <linux/sched/isolation.h>
+ #include <trace/events/sched.h>
+ 
+ 
+@@ -405,8 +404,7 @@ struct task_struct *__kthread_create_on_
+ 		 * The kernel thread should not inherit these properties.
+ 		 */
+ 		sched_setscheduler_nocheck(task, SCHED_NORMAL, &param);
+-		set_cpus_allowed_ptr(task,
+-				     housekeeping_cpumask(HK_FLAG_KTHREAD));
++		set_cpus_allowed_ptr(task, cpu_possible_mask);
+ 	}
+ 	kfree(create);
+ 	return task;
+@@ -655,7 +653,7 @@ int kthreadd(void *unused)
+ 	/* Setup a clean context for our children to inherit. */
+ 	set_task_comm(tsk, "kthreadd");
+ 	ignore_signals(tsk);
+-	set_cpus_allowed_ptr(tsk, housekeeping_cpumask(HK_FLAG_KTHREAD));
++	set_cpus_allowed_ptr(tsk, cpu_possible_mask);
+ 	set_mems_allowed(node_states[N_MEMORY]);
+ 
+ 	current->flags |= PF_NOFREEZE;
+Index: linux-2.6/kernel/sched/isolation.c
+===================================================================
+--- linux-2.6.orig/kernel/sched/isolation.c
++++ linux-2.6/kernel/sched/isolation.c
+@@ -140,8 +140,7 @@ static int __init housekeeping_nohz_full
+ {
+ 	unsigned int flags;
+ 
+-	flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU |
+-		HK_FLAG_MISC | HK_FLAG_KTHREAD;
++	flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU | HK_FLAG_MISC;
+ 
+ 	return housekeeping_setup(str, flags);
+ }
 
