@@ -2,72 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 072AF37698B
-	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:37:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3D93376991
+	for <lists+linux-kernel@lfdr.de>; Fri,  7 May 2021 19:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233422AbhEGRiB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 13:38:01 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:44615 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S231745AbhEGRiA (ORCPT
+        id S234014AbhEGRkR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 13:40:17 -0400
+Received: from so254-9.mailgun.net ([198.61.254.9]:46749 "EHLO
+        so254-9.mailgun.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S233722AbhEGRkN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 13:38:00 -0400
-Received: (qmail 784164 invoked by uid 1000); 7 May 2021 13:36:59 -0400
-Date:   Fri, 7 May 2021 13:36:59 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     Daniel Walker <danielwa@cisco.com>
-Cc:     HEMANT RAMDASI <hramdasi@cisco.com>,
-        Christian Engelmayer <christian.engelmayer@frequentis.com>,
-        Gopalakrishnan Santhanam <gsanthan@cisco.com>,
-        xe-linux-external@cisco.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] fsl-usb: add need_oc_pp_cycle flag for 85xx also
-Message-ID: <20210507173659.GA784066@rowland.harvard.edu>
-References: <20210507172300.3075939-1-danielwa@cisco.com>
+        Fri, 7 May 2021 13:40:13 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1620409153; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=clkC5swQRcI9z/5st3tJgs7VjrvjMlMixVkfgmUs6Q0=; b=vJGNaSMe9OL2utaxyclA11XxLuBDNFQUwog1gT6s/7pABjYV5uQnAmqzLDjb/wyovAvNKh2v
+ 07xlN5b4bYBvHdYTMpjyqgxhfJCz/5g5lM959EISzX2zclGXidjeylUdMxplqJkHBJ/DcTQK
+ UkRsBTCF+NKMIPrF46li2apZeAY=
+X-Mailgun-Sending-Ip: 198.61.254.9
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 60957b35febcffa80f4e3af3 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 07 May 2021 17:39:01
+ GMT
+Sender: wcheng=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 171A0C43143; Fri,  7 May 2021 17:39:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.0
+Received: from [10.110.11.176] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: wcheng)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id D1131C4338A;
+        Fri,  7 May 2021 17:38:48 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org D1131C4338A
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=wcheng@codeaurora.org
+Subject: Re: [PATCH] usb: dwc3: gadget: Return success always for kick
+ transfer in ep queue
+To:     Felipe Balbi <balbi@kernel.org>, gregkh@linuxfoundation.org
+Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Thinh.Nguyen@synopsys.com, jackp@codeaurora.org
+References: <1620369287-27492-1-git-send-email-wcheng@codeaurora.org>
+ <87bl9mhgee.fsf@kernel.org>
+From:   Wesley Cheng <wcheng@codeaurora.org>
+Message-ID: <bb9d37e3-dce4-7b71-4dcd-97e2916be7de@codeaurora.org>
+Date:   Fri, 7 May 2021 10:38:48 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210507172300.3075939-1-danielwa@cisco.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <87bl9mhgee.fsf@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 10:23:00AM -0700, Daniel Walker wrote:
-> From: Gopalakrishnan Santhanam <gsanthan@cisco.com>
-> 
-> Commit e6604a7fd71f9 ("EHCI: Quirk flag for port power handling on overcurrent.")
-> activated the quirks handling (flag need_oc_pp_cycle) for Freescale 83xx
-> based boards.
-> Activate same for 85xx based boards as well.
-> 
-> Cc: xe-linux-external@cisco.com
-> Signed-off-by: Gopalakrishnan Santhanam <gsanthan@cisco.com>
-> Signed-off-by: Daniel Walker <danielwa@cisco.com>
-> ---
->  drivers/usb/host/ehci-fsl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/usb/host/ehci-fsl.c b/drivers/usb/host/ehci-fsl.c
-> index 6f7bd6641694..c7d74c1a23f5 100644
-> --- a/drivers/usb/host/ehci-fsl.c
-> +++ b/drivers/usb/host/ehci-fsl.c
-> @@ -387,7 +387,7 @@ static int ehci_fsl_setup(struct usb_hcd *hcd)
->  	/* EHCI registers start at offset 0x100 */
->  	ehci->caps = hcd->regs + 0x100;
->  
-> -#ifdef CONFIG_PPC_83xx
-> +#if defined(CONFIG_PPC_83xx) || defined(CONFIG_PPC_85xx)
->  	/*
->  	 * Deal with MPC834X that need port power to be cycled after the power
--------------------------^
 
-Shouldn't this comment be changed as well?
 
-Alan Stern
-
->  	 * fault condition is removed. Otherwise the state machine does not
-> -- 
-> 2.25.1
+On 5/7/2021 5:34 AM, Felipe Balbi wrote:
+> Wesley Cheng <wcheng@codeaurora.org> writes:
 > 
+>> If an error is received when issuing a start or update transfer
+>> command, the error handler will stop all active requests (including
+>> the current USB request), and call dwc3_gadget_giveback() to notify
+>> function drivers of the requests which have been stopped.  Avoid
+>> returning an error for kick transfer during EP queue, to remove
+>> duplicate cleanup operations on the request being queued.
+>>
+>> Signed-off-by: Wesley Cheng <wcheng@codeaurora.org>
+
+Hi Felipe,
+> 
+> do you want to add a Fixes here? :-)
+> 
+Sure, will do!
+
+> We should probably Cc stable too.
+> 
+Got it.
+
+Thanks
+Wesley Cheng
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
