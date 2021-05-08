@@ -2,138 +2,274 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBF57377089
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 09:58:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD385377097
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 10:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230111AbhEHH7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 03:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59922 "EHLO
+        id S229869AbhEHIIy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 04:08:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33758 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhEHH7O (ORCPT
+        with ESMTP id S229583AbhEHIIx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 03:59:14 -0400
-Received: from mail-oi1-x231.google.com (mail-oi1-x231.google.com [IPv6:2607:f8b0:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD961C061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 00:58:13 -0700 (PDT)
-Received: by mail-oi1-x231.google.com with SMTP id l6so10995440oii.1
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 00:58:13 -0700 (PDT)
+        Sat, 8 May 2021 04:08:53 -0400
+Received: from mail-lj1-x22b.google.com (mail-lj1-x22b.google.com [IPv6:2a00:1450:4864:20::22b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23A15C061574
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 01:07:49 -0700 (PDT)
+Received: by mail-lj1-x22b.google.com with SMTP id p12so14530646ljg.1
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 01:07:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:in-reply-to:references:from:user-agent:date:message-id
-         :subject:to;
-        bh=Uw9Olfn2D8yzVfU3MJmVflzhzFabExtk1M2ft9XYJsU=;
-        b=ODWfTkzhtdY+iO1STfLTqoWZo1FgeWy/Rh+y88jZXZOuUKRyhbe10GSJvCa//KzEG6
-         oq4Y/yFABv678zU21xy2Sv8WfudBkEnCN+Jz+CoVy2jYLU3m5juKT7bn2CbPODwg/RiA
-         JjAKRoZkexVzG2VEOb8nxJlTl4N5fwDQsW5jI=
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UiD0RndLunCz11cH/1AcDoRAlAd7QlgiJNfMkRGjhj0=;
+        b=bBRv4fLGGy+pvV1/Th7e5HKTp8sRS1i9yZ+ygwaqrkuc7eOIheLr/C0h7XUY6VH+KN
+         SWOk9ZPAVOMUjJzN0Wh803THFtrjR4fPMDnUxBbxEuaHs0DEryMrSI2ix2BGYbMqb3U4
+         /ETkFv2E+Fton1CF41yRoclhrYv68faEKYxb8aXfwkC2uUUov5GIjK5tJ114c8ZEW45B
+         ICHaRAn2lziccHTnuFtuPESqSPNSuE4Xn8uBnHTpEPfC3UCRvyGxAlHFuS6JUM6O4wR3
+         ODu+sWFkN5QqI3P21SJHl60shBo05CX8FBGI4mXc08lNW/Foj9zuDGwEp+Rb62c2ErHB
+         wa2g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:in-reply-to:references:from
-         :user-agent:date:message-id:subject:to;
-        bh=Uw9Olfn2D8yzVfU3MJmVflzhzFabExtk1M2ft9XYJsU=;
-        b=fIqOy55TA46Khzk1xN81Epm6oeokZmpJSWIon+l8+seQ+8UBbTPg3/E9j+zohc4d8I
-         2deKCCuW5GaoJ3gWu9Tr4B969kuACPayQB6/rEh+qRqX/AVYj36OuAvXN5Py348pSOGH
-         VpMX3OBXx+aW4zJ4Sj91p9rXK0A65dEf38xWD0nDRiG3YWhJMSmX3i0iQmFrJ53Dd3fs
-         UFPASg+J6Bc4uGNt/vHWYcNTFZrlI+YZohzba9EiFQ170NrGhgqcBxrGZ53MsBuHV/yv
-         g/hmRfq03gS5EVym33MVTjDyHiDqBP47pU8OGEjkUBwjEiqFsj93P2AtuYG2+BCKPaz5
-         dVaA==
-X-Gm-Message-State: AOAM5326rm24YIEgJv6Bew/fpdRC2JK9/5QnEuf2LVNHG46ubSDOPce1
-        IK5k1N2KXkztkkcceEb5TsjlfHe9+wF4TLC+46fszg==
-X-Google-Smtp-Source: ABdhPJzrNGN1d3ArMyBqXNzK81NAUjTSujijWd+FBZXWmyAwv5ebCgCLG+Xb0meYDyj+0NecXnNTw7K8ngzlJGc3SWE=
-X-Received: by 2002:aca:654d:: with SMTP id j13mr17878718oiw.125.1620460693146;
- Sat, 08 May 2021 00:58:13 -0700 (PDT)
-Received: from 753933720722 named unknown by gmailapi.google.com with
- HTTPREST; Sat, 8 May 2021 03:58:12 -0400
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UiD0RndLunCz11cH/1AcDoRAlAd7QlgiJNfMkRGjhj0=;
+        b=S/btpggldQkobmQRhFEPCZZ3iX+dnTnx2caG2+Uz1JJSR9fAerSsnX7XOiZv1EHf+5
+         1snMDN8E6nfy4yxBMtvZP5oMLOloaiITtf4dtRODZh2QmCE2YoiiJCI7pl6kulkJg+bl
+         O3XP7DVm5Jccri0AmeRJSqTw7uOMB72MNJf3XOt76doAwKHCYpNNwGoYkkMvbxbrVXcf
+         lY7bFDz5DwcRxFWwKMHp39cuhne26IAMxx3MzQsLjsH6tZtr710RjbSzrJg/MGBGApvu
+         7kDfpw/ViOwUm64651+6bzxiBXdoa6yqX81r9LmFbATHhBM5bCBugOxes6tc+qjbRiRb
+         kvvQ==
+X-Gm-Message-State: AOAM532ooBYjknEluqd0czdZlAOkqYmDXEv7un8ff/oUKpaPRr52fRGW
+        nbndYIZV/hGzI55GEE90EQsD7m6KBpl3fOYlw+Q=
+X-Google-Smtp-Source: ABdhPJxjazVcTDhq1m9ErkRUqK1I4eLq+dmxfm+VnnC+T64/DvtKChxZMBEi7uCGljgLo7qrYXebBSpmQBhxslNvW7Y=
+X-Received: by 2002:a05:651c:3db:: with SMTP id f27mr11121023ljp.241.1620461267135;
+ Sat, 08 May 2021 01:07:47 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <4f6ab4db-958d-c2c5-7879-aa9a0d3b87ae@huawei.com>
-References: <20210508024254.1877-1-thunder.leizhen@huawei.com>
- <CAE-0n51owL8RGJyz_5BUCTjrUW5m0X-DTKUx=mqRL=-4i-tMDA@mail.gmail.com> <4f6ab4db-958d-c2c5-7879-aa9a0d3b87ae@huawei.com>
-From:   Stephen Boyd <swboyd@chromium.org>
-User-Agent: alot/0.9.1
-Date:   Sat, 8 May 2021 03:58:12 -0400
-Message-ID: <CAE-0n51bPtbw4gx4EOTd2wNq6gcH9yCuR_e8kqBo0-+7unUz5A@mail.gmail.com>
-Subject: Re: [PATCH 1/1] drm/msm/dpu: Fix error return code in dpu_mdss_init()
-To:     Daniel Vetter <daniel@ffwll.ch>, David Airlie <airlied@linux.ie>,
-        Leizhen <thunder.leizhen@huawei.com>,
-        Rob Clark <robdclark@gmail.com>, Sean Paul <sean@poorly.run>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        freedreno <freedreno@lists.freedesktop.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20210422120459.447350175@infradead.org> <20210422123308.196692074@infradead.org>
+ <YJUNY0dmrJMD/BIm@hirez.programming.kicks-ass.net>
+In-Reply-To: <YJUNY0dmrJMD/BIm@hirez.programming.kicks-ass.net>
+From:   Aubrey Li <aubrey.intel@gmail.com>
+Date:   Sat, 8 May 2021 16:07:35 +0800
+Message-ID: <CAERHkrvBdFHWxXu=iHAPMe=1dB0qtG_HTMtUbvVviv7_7kc97Q@mail.gmail.com>
+Subject: Re: [PATCH v2 04/19] sched: Prepare for Core-wide rq->lock
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Josh Don <joshdon@google.com>, Ingo Molnar <mingo@kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Linux List Kernel Mailing <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Leizhen (ThunderTown) (2021-05-08 00:55:04)
+On Fri, May 7, 2021 at 8:34 PM Peter Zijlstra <peterz@infradead.org> wrote:
 >
 >
-> On 2021/5/8 14:09, Stephen Boyd wrote:
-> > Quoting Zhen Lei (2021-05-07 19:42:54)
-> >> Fix to return a negative error code from the error handling case instead
-> >> of 0, as done elsewhere in this function.
-> >>
-> >> Fixes: 070e64dc1bbc ("drm/msm/dpu: Convert to a chained irq chip")
-> >> Reported-by: Hulk Robot <hulkci@huawei.com>
-> >> Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
-> >> ---
-> >>  drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c | 4 +++-
-> >>  1 file changed, 3 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> >> index 06b56fec04e0..1b6c9fb500a1 100644
-> >> --- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> >> +++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-> >> @@ -253,8 +253,10 @@ int dpu_mdss_init(struct drm_device *dev)
-> >>                 goto irq_domain_error;
-> >>
-> >>         irq = platform_get_irq(pdev, 0);
-> >> -       if (irq < 0)
-> >> +       if (irq < 0) {
-> >> +               ret = irq;
-> >>                 goto irq_error;
-> >> +       }
-> >
-> > It would be even better if ret wasn't assigned to 0 at the start of this
-> > function.
+> When switching on core-sched, CPUs need to agree which lock to use for
+> their RQ.
 >
-> The returned error code is not unique.
+> The new rule will be that rq->core_enabled will be toggled while
+> holding all rq->__locks that belong to a core. This means we need to
+> double check the rq->core_enabled value after each lock acquire and
+> retry if it changed.
 >
+> This also has implications for those sites that take multiple RQ
+> locks, they need to be careful that the second lock doesn't end up
+> being the first lock.
+>
+> Verify the lock pointer after acquiring the first lock, because if
+> they're on the same core, holding any of the rq->__lock instances will
+> pin the core state.
+>
+> While there, change the rq->__lock order to CPU number, instead of rq
+> address, this greatly simplifies the next patch.
+>
+> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> Tested-by: Don Hiatt <dhiatt@digitalocean.com>
+> Tested-by: Hongyu Ning <hongyu.ning@linux.intel.com>
+> ---
+>  kernel/sched/core.c  |   48 ++++++++++++++++++++++++++++++++++++++++++++++--
+>  kernel/sched/sched.h |   48 +++++++++++++++++-------------------------------
+>  2 files changed, 63 insertions(+), 33 deletions(-)
+>
+> --- a/kernel/sched/core.c
+> +++ b/kernel/sched/core.c
+> @@ -186,12 +186,37 @@ int sysctl_sched_rt_runtime = 950000;
+>
+>  void raw_spin_rq_lock_nested(struct rq *rq, int subclass)
+>  {
+> -       raw_spin_lock_nested(rq_lockp(rq), subclass);
+> +       raw_spinlock_t *lock;
+> +
+> +       if (sched_core_disabled()) {
+> +               raw_spin_lock_nested(&rq->__lock, subclass);
+> +               return;
+> +       }
+> +
+> +       for (;;) {
+> +               lock = rq_lockp(rq);
+> +               raw_spin_lock_nested(lock, subclass);
+> +               if (likely(lock == rq_lockp(rq)))
+> +                       return;
+> +               raw_spin_unlock(lock);
+> +       }
+>  }
+>
+>  bool raw_spin_rq_trylock(struct rq *rq)
+>  {
+> -       return raw_spin_trylock(rq_lockp(rq));
+> +       raw_spinlock_t *lock;
+> +       bool ret;
+> +
+> +       if (sched_core_disabled())
+> +               return raw_spin_trylock(&rq->__lock);
+> +
+> +       for (;;) {
+> +               lock = rq_lockp(rq);
+> +               ret = raw_spin_trylock(lock);
+> +               if (!ret || (likely(lock == rq_lockp(rq))))
+> +                       return ret;
+> +               raw_spin_unlock(lock);
+> +       }
+>  }
+>
+>  void raw_spin_rq_unlock(struct rq *rq)
+> @@ -199,6 +224,25 @@ void raw_spin_rq_unlock(struct rq *rq)
+>         raw_spin_unlock(rq_lockp(rq));
+>  }
+>
+> +#ifdef CONFIG_SMP
+> +/*
+> + * double_rq_lock - safely lock two runqueues
+> + */
+> +void double_rq_lock(struct rq *rq1, struct rq *rq2)
 
-What does it mean? I was saying this
+Do we need the static lock checking here?
+        __acquires(rq1->lock)
+        __acquires(rq2->lock)
 
-----8<----
-diff --git a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-index cd4078807db1..0fcf190f6322 100644
---- a/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-+++ b/drivers/gpu/drm/msm/disp/dpu1/dpu_mdss.c
-@@ -263,7 +263,7 @@ int dpu_mdss_init(struct drm_device *dev)
- 	struct msm_drm_private *priv = dev->dev_private;
- 	struct dpu_mdss *dpu_mdss;
- 	struct dss_module_power *mp;
--	int ret = 0;
-+	int ret;
- 	int irq;
+> +{
+> +       lockdep_assert_irqs_disabled();
+> +
+> +       if (rq_order_less(rq2, rq1))
+> +               swap(rq1, rq2);
+> +
+> +       raw_spin_rq_lock(rq1);
+> +       if (rq_lockp(rq1) == rq_lockp(rq2)) {
 
- 	dpu_mdss = devm_kzalloc(dev->dev, sizeof(*dpu_mdss), GFP_KERNEL);
-@@ -297,8 +297,10 @@ int dpu_mdss_init(struct drm_device *dev)
- 		goto irq_domain_error;
+And here?
+                __acquire(rq2->lock);
 
- 	irq = platform_get_irq(pdev, 0);
--	if (irq < 0)
-+	if (irq < 0) {
-+		ret = irq;
- 		goto irq_error;
-+	}
+> +               return;
+}
+> +
+> +       raw_spin_rq_lock_nested(rq2, SINGLE_DEPTH_NESTING);
+> +}
+> +#endif
+> +
+>  /*
+>   * __task_rq_lock - lock the rq @p resides on.
+>   */
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1113,6 +1113,11 @@ static inline bool is_migration_disabled
+>  #endif
+>  }
+>
+> +static inline bool sched_core_disabled(void)
+> +{
+> +       return true;
+> +}
+> +
+>  static inline raw_spinlock_t *rq_lockp(struct rq *rq)
+>  {
+>         return &rq->__lock;
+> @@ -2231,10 +2236,17 @@ unsigned long arch_scale_freq_capacity(i
+>  }
+>  #endif
+>
+> +
+>  #ifdef CONFIG_SMP
+> -#ifdef CONFIG_PREEMPTION
+>
+> -static inline void double_rq_lock(struct rq *rq1, struct rq *rq2);
+> +static inline bool rq_order_less(struct rq *rq1, struct rq *rq2)
+> +{
+> +       return rq1->cpu < rq2->cpu;
+> +}
+> +
+> +extern void double_rq_lock(struct rq *rq1, struct rq *rq2);
+> +
+> +#ifdef CONFIG_PREEMPTION
+>
+>  /*
+>   * fair double_lock_balance: Safely acquires both rq->locks in a fair
+> @@ -2274,14 +2286,13 @@ static inline int _double_lock_balance(s
+>         if (likely(raw_spin_rq_trylock(busiest)))
+>                 return 0;
+>
+> -       if (rq_lockp(busiest) >= rq_lockp(this_rq)) {
+> +       if (rq_order_less(this_rq, busiest)) {
+>                 raw_spin_rq_lock_nested(busiest, SINGLE_DEPTH_NESTING);
+>                 return 0;
+>         }
+>
+>         raw_spin_rq_unlock(this_rq);
+> -       raw_spin_rq_lock(busiest);
+> -       raw_spin_rq_lock_nested(this_rq, SINGLE_DEPTH_NESTING);
+> +       double_rq_lock(this_rq, busiest);
+>
+>         return 1;
+>  }
+> @@ -2334,31 +2345,6 @@ static inline void double_raw_lock(raw_s
+>  }
+>
+>  /*
+> - * double_rq_lock - safely lock two runqueues
+> - *
+> - * Note this does not disable interrupts like task_rq_lock,
+> - * you need to do so manually before calling.
+> - */
+> -static inline void double_rq_lock(struct rq *rq1, struct rq *rq2)
+> -       __acquires(rq1->lock)
+> -       __acquires(rq2->lock)
+> -{
+> -       BUG_ON(!irqs_disabled());
+> -       if (rq_lockp(rq1) == rq_lockp(rq2)) {
+> -               raw_spin_rq_lock(rq1);
+> -               __acquire(rq2->lock);   /* Fake it out ;) */
+> -       } else {
+> -               if (rq_lockp(rq1) < rq_lockp(rq2)) {
+> -                       raw_spin_rq_lock(rq1);
+> -                       raw_spin_rq_lock_nested(rq2, SINGLE_DEPTH_NESTING);
+> -               } else {
+> -                       raw_spin_rq_lock(rq2);
+> -                       raw_spin_rq_lock_nested(rq1, SINGLE_DEPTH_NESTING);
+> -               }
+> -       }
+> -}
+> -
+> -/*
+>   * double_rq_unlock - safely unlock two runqueues
+>   *
+>   * Note this does not restore interrupts like task_rq_unlock,
+> @@ -2368,11 +2354,11 @@ static inline void double_rq_unlock(stru
+>         __releases(rq1->lock)
+>         __releases(rq2->lock)
+>  {
+> -       raw_spin_rq_unlock(rq1);
+>         if (rq_lockp(rq1) != rq_lockp(rq2))
+>                 raw_spin_rq_unlock(rq2);
+>         else
+>                 __release(rq2->lock);
+> +       raw_spin_rq_unlock(rq1);
 
- 	irq_set_chained_handler_and_data(irq, dpu_mdss_irq,
- 					 dpu_mdss);
-@@ -309,7 +311,7 @@ int dpu_mdss_init(struct drm_device *dev)
+This change seems not necessary, as the softlockup root cause is not
+the misorder lock release.
 
- 	dpu_mdss_icc_request_bw(priv->mdss);
-
--	return ret;
-+	return 0;
-
- irq_error:
- 	_dpu_mdss_irq_domain_fini(dpu_mdss);
+Thanks,
+-Aubrey
