@@ -2,170 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44BBC377245
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 16:03:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 09C40377252
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 16:17:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229619AbhEHOE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 10:04:27 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:48993 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhEHOEW (ORCPT
+        id S229603AbhEHOSc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 10:18:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56966 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhEHOS3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 10:04:22 -0400
-Received: by mail-il1-f199.google.com with SMTP id h4-20020a926c040000b0290192f4fa4c3bso9605388ilc.15
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 07:03:16 -0700 (PDT)
+        Sat, 8 May 2021 10:18:29 -0400
+Received: from mail-wr1-x430.google.com (mail-wr1-x430.google.com [IPv6:2a00:1450:4864:20::430])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34CDDC061574;
+        Sat,  8 May 2021 07:17:27 -0700 (PDT)
+Received: by mail-wr1-x430.google.com with SMTP id z6so12043191wrm.4;
+        Sat, 08 May 2021 07:17:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-language:content-transfer-encoding;
+        bh=H3c5ec7McH5Zt4hIpHC+Y3YBw9oxk9RjSdvboac24Mk=;
+        b=cI9frh2jqh7zWEi4uhTuc4yKutnoTEH+9cpqpZbeqkuzr4YHNyxvur0Wm1h+hOlxIB
+         GdjfrTA0xoeOvMyML0J41fabzDhp66p0ckS+RHFDNDdJ6H3ZcV8J+1uoYwrS0L0jRlrC
+         4kzSuSU4egJLjzrIZ+ItBsSWHczvYcoiYbmy3KYEMPOp5e+z4OpAMz/MNkxMn1YH7+Uy
+         sPYu9AudF8DtmK6+Zvgbv1zA0Oh9ZRWe8r1+PtUWm3diPfzfdiXfm3KpMfx7ogI/AsCh
+         8BzgqY4Cx5OrCjWfVvkvkmXEnJQh3cEytOgFJGdOHkKuCSXfG+KHfvAGt3gVGnVG1oxM
+         3fgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=v1mqmsdKbpYWWWC/cunBC+D1Q4CtmOHwBOPxbId+Re0=;
-        b=emGC9Sp184pOJfUi3um3pWz2XH2bZOgQhOFSaqBRurb6/5ZoQz4IOf8bgYvJzEeVnI
-         WAQvchBjcpEVgBcLghF8abkMoePCwQZZ74Xc+MypY+jJyWKX1IE3EQrlhG1d7bgIIdzk
-         09xuaaHNWlC5r1SO6Hwzl/DIDgBKXVq47XFZSr6gwY3mO6o7cKSChMoM99RjgK8V5H4+
-         5TPu3qicKHDKdjqJuYGL4tgbUY7VHZLB/8LwbGaDBRM+9V5Rp2SrRNygQGjThatrw2sL
-         k/PFQA7ZQlPTJ/JqrXeQJAFAlgIYyifGa3Gb8jQEGrP3nZyHliGNK6U4yDfK+Cjws1O0
-         5i0g==
-X-Gm-Message-State: AOAM5325MZJ8eX5iolYBGkpQbrr7mJ8OYy1lx6etQRSKqUvzzL9PBw1a
-        6L8JbIwcm/MNYJ6QPKduAnUjqr8B0KXcbKlSwksq4FfkWWgJ
-X-Google-Smtp-Source: ABdhPJxa4e5I+ObeT8L8aldFFpOLFXprETEe3QqaftUenSZxrsFVObvfrTqAnkB64XOQtEjT0gvSu9pZRY5A/uSvSTqG/BYS7UVH
+        h=x-gm-message-state:subject:to:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=H3c5ec7McH5Zt4hIpHC+Y3YBw9oxk9RjSdvboac24Mk=;
+        b=IKS+Cut80tnonXJOt7hWj1jE8o3tLJ6jiX5C6qAd0amE+lw3+hHFIAAbxjJzGnQBou
+         F9xk7k1PYjZTXA+4/WE3ILsel9Lk3m3r5K/25Fs7f6X4Yc0pvw/mD16tBEqCmU2nYrO4
+         l/KxMDnx4Hn0PZC8uGX6ojT2GUb6hd/vWj5BVZhVR9TEROQ9sA8yZYtPA8hs4Ozz2YkW
+         hhv0zyeUeDw4M0Uexx0319FVHCqgYRauk1A54iQGLBUvb5z3euixLl88M1aEJ4ES6lib
+         NQJF4XQw6BcEh6y1iudqmZm9rLtd0pEZblexJMpQErewa4W1rDEDGII9ZlWPM3fO0Auj
+         SS0w==
+X-Gm-Message-State: AOAM531e40olD6DOGJHttoGT0sd2mYsLDKN77s15HD+N3Ro5pU+K5zro
+        c8RKi1gZJHKQStIQ4XwLRlk=
+X-Google-Smtp-Source: ABdhPJyLdig4xicDV+GKZswgYqckgYoB7vw2Ow/WK44uKVYYamhRUA9+gdBrs/5G2QKJCc+xwFoRcQ==
+X-Received: by 2002:a5d:660c:: with SMTP id n12mr19405903wru.87.1620483445776;
+        Sat, 08 May 2021 07:17:25 -0700 (PDT)
+Received: from [192.168.8.197] ([148.252.132.80])
+        by smtp.gmail.com with ESMTPSA id f25sm13693750wrd.67.2021.05.08.07.17.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 08 May 2021 07:17:25 -0700 (PDT)
+Subject: Re: [syzbot] INFO: task hung in __io_uring_cancel
+To:     syzbot <syzbot+47fc00967b06a3019bd2@syzkaller.appspotmail.com>,
+        axboe@kernel.dk, io-uring@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <00000000000004f05705c1c86547@google.com>
+From:   Pavel Begunkov <asml.silence@gmail.com>
+Message-ID: <c2bba1fe-a091-e08f-2e0e-cfe7759e3f72@gmail.com>
+Date:   Sat, 8 May 2021 15:17:19 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.10.0
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:3414:: with SMTP id n20mr11332248ioz.43.1620482596426;
- Sat, 08 May 2021 07:03:16 -0700 (PDT)
-Date:   Sat, 08 May 2021 07:03:16 -0700
-In-Reply-To: <000000000000cc615405c13e4dfe@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000086605105c1d201bc@google.com>
-Subject: Re: [syzbot] KASAN: use-after-free Read in nfc_llcp_put_ssap
-From:   syzbot <syzbot+e4689b43d2ed2ed63611@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <00000000000004f05705c1c86547@google.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On 5/8/21 3:35 AM, syzbot wrote:
+> Hello,
+> 
+> syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+> 
+> Reported-and-tested-by: syzbot+47fc00967b06a3019bd2@syzkaller.appspotmail.com
+> 
+> Tested on:
+> 
+> commit:         50b7b6f2 x86/process: setup io_threads more like normal us..
+> git tree:       git://git.kernel.dk/linux-block io_uring-5.13
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=5e1cf8ad694ca2e1
+> dashboard link: https://syzkaller.appspot.com/bug?extid=47fc00967b06a3019bd2
+> compiler:       
+> 
+> Note: testing is done by a robot and is best-effort only.
+> 
 
-HEAD commit:    95aafe91 net: ethernet: ixp4xx: Support device tree probing
-git tree:       net-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=15a8c01dd00000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7668018815a66138
-dashboard link: https://syzkaller.appspot.com/bug?extid=e4689b43d2ed2ed63611
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15ed2663d00000
+#syz fix: io_uring: fix work_exit sqpoll cancellations
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+e4689b43d2ed2ed63611@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KASAN: use-after-free in __mutex_lock_common kernel/locking/mutex.c:931 [inline]
-BUG: KASAN: use-after-free in __mutex_lock+0x1034/0x1120 kernel/locking/mutex.c:1096
-Read of size 8 at addr ffff888143d92080 by task syz-executor.5/9920
-
-CPU: 0 PID: 9920 Comm: syz-executor.5 Not tainted 5.12.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:79 [inline]
- dump_stack+0x141/0x1d7 lib/dump_stack.c:120
- print_address_description.constprop.0.cold+0x5b/0x2f8 mm/kasan/report.c:232
- __kasan_report mm/kasan/report.c:399 [inline]
- kasan_report.cold+0x7c/0xd8 mm/kasan/report.c:416
- __mutex_lock_common kernel/locking/mutex.c:931 [inline]
- __mutex_lock+0x1034/0x1120 kernel/locking/mutex.c:1096
- nfc_llcp_put_ssap+0x49/0x2e0 net/nfc/llcp_core.c:492
- llcp_sock_release+0x1d2/0x580 net/nfc/llcp_sock.c:626
- __sock_release+0xcd/0x280 net/socket.c:599
- sock_close+0x18/0x20 net/socket.c:1258
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
- exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-RIP: 0033:0x41940b
-Code: 0f 05 48 3d 00 f0 ff ff 77 45 c3 0f 1f 40 00 48 83 ec 18 89 7c 24 0c e8 63 fc ff ff 8b 7c 24 0c 41 89 c0 b8 03 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 35 44 89 c7 89 44 24 0c e8 a1 fc ff ff 8b 44
-RSP: 002b:00007ffcfd298030 EFLAGS: 00000293 ORIG_RAX: 0000000000000003
-RAX: 0000000000000000 RBX: 0000000000000005 RCX: 000000000041940b
-RDX: ffffffffffffffbc RSI: 0000000000000001 RDI: 0000000000000004
-RBP: 0000000000000001 R08: 0000000000000000 R09: 0000001b325200c4
-R10: 00007ffcfd298120 R11: 0000000000000293 R12: 00000000000158d7
-R13: 00000000000003e8 R14: 000000000056bf60 R15: 00000000000158c2
-
-Allocated by task 1:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track mm/kasan/common.c:46 [inline]
- set_alloc_info mm/kasan/common.c:427 [inline]
- ____kasan_kmalloc mm/kasan/common.c:506 [inline]
- ____kasan_kmalloc mm/kasan/common.c:465 [inline]
- __kasan_kmalloc+0x99/0xc0 mm/kasan/common.c:515
- kmalloc include/linux/slab.h:554 [inline]
- kzalloc include/linux/slab.h:684 [inline]
- nfc_llcp_register_device+0x45/0x9d0 net/nfc/llcp_core.c:1572
- nfc_register_device+0x6d/0x360 net/nfc/core.c:1124
- nfcsim_device_new+0x345/0x5c1 drivers/nfc/nfcsim.c:408
- nfcsim_init+0x71/0x14d drivers/nfc/nfcsim.c:455
- do_one_initcall+0x103/0x650 init/main.c:1226
- do_initcall_level init/main.c:1299 [inline]
- do_initcalls init/main.c:1315 [inline]
- do_basic_setup init/main.c:1335 [inline]
- kernel_init_freeable+0x63e/0x6c2 init/main.c:1537
- kernel_init+0xd/0x1b8 init/main.c:1424
- ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:294
-
-Freed by task 9921:
- kasan_save_stack+0x1b/0x40 mm/kasan/common.c:38
- kasan_set_track+0x1c/0x30 mm/kasan/common.c:46
- kasan_set_free_info+0x20/0x30 mm/kasan/generic.c:357
- ____kasan_slab_free mm/kasan/common.c:360 [inline]
- ____kasan_slab_free mm/kasan/common.c:325 [inline]
- __kasan_slab_free+0xf5/0x130 mm/kasan/common.c:367
- kasan_slab_free include/linux/kasan.h:199 [inline]
- slab_free_hook mm/slub.c:1562 [inline]
- slab_free_freelist_hook+0x92/0x210 mm/slub.c:1600
- slab_free mm/slub.c:3161 [inline]
- kfree+0xe5/0x7f0 mm/slub.c:4213
- local_release net/nfc/llcp_core.c:175 [inline]
- kref_put include/linux/kref.h:65 [inline]
- nfc_llcp_local_put net/nfc/llcp_core.c:183 [inline]
- nfc_llcp_local_put+0x194/0x200 net/nfc/llcp_core.c:178
- llcp_sock_destruct+0x81/0x150 net/nfc/llcp_sock.c:950
- __sk_destruct+0x4b/0x900 net/core/sock.c:1795
- sk_destruct+0xbd/0xe0 net/core/sock.c:1839
- __sk_free+0xef/0x3d0 net/core/sock.c:1850
- sk_free+0x78/0xa0 net/core/sock.c:1861
- sock_put include/net/sock.h:1813 [inline]
- llcp_sock_release+0x3c9/0x580 net/nfc/llcp_sock.c:644
- __sock_release+0xcd/0x280 net/socket.c:599
- sock_close+0x18/0x20 net/socket.c:1258
- __fput+0x288/0x920 fs/file_table.c:280
- task_work_run+0xdd/0x1a0 kernel/task_work.c:140
- tracehook_notify_resume include/linux/tracehook.h:189 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:174 [inline]
- exit_to_user_mode_prepare+0x249/0x250 kernel/entry/common.c:208
- __syscall_exit_to_user_mode_work kernel/entry/common.c:290 [inline]
- syscall_exit_to_user_mode+0x19/0x60 kernel/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x44/0xae
-
-The buggy address belongs to the object at ffff888143d92000
- which belongs to the cache kmalloc-2k of size 2048
-The buggy address is located 128 bytes inside of
- 2048-byte region [ffff888143d92000, ffff888143d92800)
-The buggy address belongs to the page:
-page:ffffea00050f6400 refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x143d90
-head:ffffea00050f6400 order:3 compound_mapcount:0 compound_pincount:0
-flags: 0x57ff00000010200(slab|head)
-raw: 057ff00000010200 dead000000000100 dead000000000122 ffff888010842000
-raw: 0000000000000000 0000000000080008 00000001ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-
-Memory state around the buggy address:
- ffff888143d91f80: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
- ffff888143d92000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888143d92080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                   ^
- ffff888143d92100: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
- ffff888143d92180: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-==================================================================
-
+-- 
+Pavel Begunkov
