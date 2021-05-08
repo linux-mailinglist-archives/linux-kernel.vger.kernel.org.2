@@ -2,58 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B3E637714F
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 13:03:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3791D377153
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 13:03:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230438AbhEHLEB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 07:04:01 -0400
-Received: from inva021.nxp.com ([92.121.34.21]:60528 "EHLO inva021.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S230257AbhEHLD6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 07:03:58 -0400
-Received: from inva021.nxp.com (localhost [127.0.0.1])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 86A80201F1A;
-        Sat,  8 May 2021 13:02:55 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id DE47D201F1E;
-        Sat,  8 May 2021 13:02:52 +0200 (CEST)
-Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9F90B4030B;
-        Sat,  8 May 2021 13:02:49 +0200 (CEST)
-From:   Shengjiu Wang <shengjiu.wang@nxp.com>
-To:     lgirdwood@gmail.com, broonie@kernel.org, perex@perex.cz,
-        tiwai@suse.com, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ASoC: ak5558: Correct the dai name for ak5552
-Date:   Sat,  8 May 2021 18:46:47 +0800
-Message-Id: <1620470807-12056-1-git-send-email-shengjiu.wang@nxp.com>
-X-Mailer: git-send-email 2.7.4
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S230463AbhEHLEc convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 8 May 2021 07:04:32 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:24759 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S230421AbhEHLEb (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 07:04:31 -0400
+Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-191-OEKsvDw3MEKmKE6L22NZbQ-1; Sat, 08 May 2021 12:03:22 +0100
+X-MC-Unique: OEKsvDw3MEKmKE6L22NZbQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
+ Server (TLS) id 15.0.1497.2; Sat, 8 May 2021 12:03:20 +0100
+Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
+ AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
+ 15.00.1497.015; Sat, 8 May 2021 12:03:20 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>
+CC:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vineet Gupta <vgupta@synopsys.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [RFC 12/12] asm-generic: simplify asm/unaligned.h
+Thread-Topic: [RFC 12/12] asm-generic: simplify asm/unaligned.h
+Thread-Index: AQHXQ44THJRTTBSqUkSVDsewAlm13qrZaWdA
+Date:   Sat, 8 May 2021 11:03:20 +0000
+Message-ID: <0b599cc80612436bb8d688fa2ad1dc34@AcuMS.aculab.com>
+References: <20210507220813.365382-1-arnd@kernel.org>
+ <20210507220813.365382-13-arnd@kernel.org>
+In-Reply-To: <20210507220813.365382-13-arnd@kernel.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Correct the dai name for ak5552. The name should be "ak5552-aif".
+From: Arnd Bergmann
+> Sent: 07 May 2021 23:08
+> 
+> The get_unaligned()/put_unaligned() implementations are much more complex
+> than necessary, now that all architectures use the same code.
+> 
+...
+> +#define __get_unaligned_t(type, ptr) ({						\
+> +	const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);	\
+> +	__pptr->x; 								\
+> +})
 
-Fixes: d8c5c82e4e5b ("ASoC: ak5558: Add support for ak5552")
-Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
----
- sound/soc/codecs/ak5558.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I thought gcc was likely to track through the alignment of the
+variable holding the source pointer (through any (void *) casts
+implied by inlined function calls) through to the pointer used
+for the actual access - so it would tend to issue a single
+instruction that assumed an aligned address.
 
-diff --git a/sound/soc/codecs/ak5558.c b/sound/soc/codecs/ak5558.c
-index 34aed80db0eb..37d4600b6f2c 100644
---- a/sound/soc/codecs/ak5558.c
-+++ b/sound/soc/codecs/ak5558.c
-@@ -307,7 +307,7 @@ static struct snd_soc_dai_driver ak5558_dai = {
- };
- 
- static struct snd_soc_dai_driver ak5552_dai = {
--	.name = "ak5558-aif",
-+	.name = "ak5552-aif",
- 	.capture = {
- 		.stream_name = "Capture",
- 		.channels_min = 1,
--- 
-2.27.0
+I know that has caused grief trying to copy unaligned data
+to an aligned structure.
+
+Possibly adding:
+	asm ("" :: "+r" (__pptr)) );
+in the middle stops that assumption without generating any code.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
