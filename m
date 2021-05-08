@@ -2,86 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 530293771A0
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:21:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C4273771A2
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 14:21:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230499AbhEHMW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 08:22:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60102 "EHLO
+        id S231127AbhEHMWh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 08:22:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60144 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230419AbhEHMW0 (ORCPT
+        with ESMTP id S230419AbhEHMWf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 08:22:26 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 565F0C061574;
-        Sat,  8 May 2021 05:21:24 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id c11so16564927lfi.9;
-        Sat, 08 May 2021 05:21:24 -0700 (PDT)
+        Sat, 8 May 2021 08:22:35 -0400
+Received: from mail-ed1-x52e.google.com (mail-ed1-x52e.google.com [IPv6:2a00:1450:4864:20::52e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8940BC061574;
+        Sat,  8 May 2021 05:21:34 -0700 (PDT)
+Received: by mail-ed1-x52e.google.com with SMTP id bf4so13354838edb.11;
+        Sat, 08 May 2021 05:21:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=04cgrkWh50flqZpRh37baQFAIaC4WlfO0T6oXLED7ks=;
-        b=mExExvHoG8jNOehgnXXg0lQ2Y7jCePctD8KnPz4fksYeeg24T0xXYp1+pCQAbXbMJ6
-         dbGpEJBUECwthAvx3d9YIH6KPvL3vGBUo/NWc1baxesdpdqoUNc3rwDBH455x0nMJRbH
-         ngGDI+EUMZUVRO+UCj/msTEoPTXv7t6fSHC9jdRP/qaF2GJdBQWiUSG/UTrUbETJaOZS
-         bxitWoIWcfIF0qhJOiZrgcS+mmjxvSGckcP68D6B6yJqNZ9HYBtU9ZobBguRHdjAEMZp
-         O8Jt6kdK58fvWL0mfcDSKtnMm0gAgOkJD+JauC1TvPLDQPQS5BjydGWx2uTHIssG1DzQ
-         eybA==
+        h=sender:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=uifGGALbd64vKa+6VH1gTKAaHjCszIAApvtYp7NtBKI=;
+        b=AYh2Wxg2uElTEfhkThiAV6IK3p5C3DFx6wX+5Yv5xiQwazloMMCHSI5pXFcOKFkJdh
+         PzDlbeWnBLwfGQJcsfCFOqvnsOifNeP3gPKEbwTJi2nmtf15NxpjiIu3m5aeGzrVcOMi
+         JsBoMO1TSupwEPWIDwv/C8Umuaq2MDFFDReqTTqm7lLf9TVOexT8Pf/XYrvW0t0rWF/+
+         YSSlVPxOAqvgUBcxb7SpVoLkxHUYAZvBBQYIWJKxfbcmqu4Okg1qXVVI/Iforg/xtLUh
+         DeU7bXxn2HU3vr76Z+GZq2hfz5PaKBVYWzl4AuA7H1W2HdROPcKpo9SXbHV3lD3gJMPq
+         TrZg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=04cgrkWh50flqZpRh37baQFAIaC4WlfO0T6oXLED7ks=;
-        b=W9KJidtIwwIi5dcPoorVTSF0fG5BJzgBytMrLcQq39BDLjrUm697HK1/fqTIZmJcXo
-         AbFczEmrVqWDj8lrEa4/XyLQnILwZ6tMkSwlay8kMCFCjcJYpHAY9S+xQ8DioqhaFSB3
-         tj1rTfPvRmCvWua0Fu4r/bPEbQJwZdlRRVa8nUEVXfnSYSnxxX6t7fGIiAi6eMfw+o5m
-         bMoD+cASrWDcUHdvN+UtHtetUv40JUiR/VEo2wAXWK5c5iEIkiu2RH0xUKp3pnX+dZ8i
-         goBrzlAPIhVNJnA67Y0DpTx7t/bcJAJrmKjim6JzVzm+LNPsHcKUPjkz4WDBztTgIoj3
-         QHTA==
-X-Gm-Message-State: AOAM530YY09yi70JE6wIMluLyzXnHr7WOmkeU8pm0E1lqXgS2PAd/wup
-        aWxu9BC3/jOunuy/G7CXZe4=
-X-Google-Smtp-Source: ABdhPJzPNFgLMWYqVx205XcNshsO4fb+1wFy+XgJ4uRekQG1wGH6SIr+SADaI6l/hmdiIF/ZNgCruQ==
-X-Received: by 2002:ac2:5497:: with SMTP id t23mr9953657lfk.52.1620476482679;
-        Sat, 08 May 2021 05:21:22 -0700 (PDT)
-Received: from localhost.localdomain ([185.215.60.119])
-        by smtp.gmail.com with ESMTPSA id u5sm1627354lfk.237.2021.05.08.05.21.21
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :mime-version:content-disposition;
+        bh=uifGGALbd64vKa+6VH1gTKAaHjCszIAApvtYp7NtBKI=;
+        b=LyEKb1meOwBVpis34wNkK50z3KGOQNrbTRTpSA5JOfwRt9YVqPZLNLitQZj1nAs5QK
+         VTFSKnAHu7Ts5MOz1NuUVtM2bzHXOWAdBnV5/MFjGp/Utzpo/yPIS7QzV/JEj3B9+Q2E
+         +G58d9WOLQov96atLqfmGWTldw7cAt9gZKI0TxryxI6ng6B3TM49eO4RQ9TR2ecRzbyk
+         HgufJ/B1UdPsqubV6L689vC9ZfFxvXMW7O5jgJ/7iF3u49HNNs0ZJ+kMuH+aWS3AbIyD
+         5iG/m7BmRwNonXpLayI3VgFg7cIRvXGkYLHAKo4O9iyzXCMuSNiReEa3fotL6AjWv/YI
+         X1RA==
+X-Gm-Message-State: AOAM53186ysBvZBKUqEDJqryJSVD2ewAABYjZzg2S5LewNfu+nGlp0xT
+        IxYIYtjy3vHI31kww9gbZfpqPcTBjha2qOAP
+X-Google-Smtp-Source: ABdhPJwuVxzwGCg1Z5LEkNxpcw/AcLUHyMFpJaqtKjpfvdG7hm9f+m15qt3b0XG4LAfli62iPZnDeg==
+X-Received: by 2002:aa7:c510:: with SMTP id o16mr17552331edq.310.1620476493325;
+        Sat, 08 May 2021 05:21:33 -0700 (PDT)
+Received: from eldamar (80-218-24-251.dclient.hispeed.ch. [80.218.24.251])
+        by smtp.gmail.com with ESMTPSA id s2sm6408210edu.89.2021.05.08.05.21.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 05:21:22 -0700 (PDT)
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org
-Cc:     linux-media@vger.kernel.org, linux-staging@lists.linux.dev,
-        linux-kernel@vger.kernel.org, Pavel Skripkin <paskripkin@gmail.com>
-Subject: [PATCH v3 0/3] staging: media: atomisp: code clean up
-Date:   Sat,  8 May 2021 15:21:16 +0300
-Message-Id: <cover.1620475909.git.paskripkin@gmail.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <YJZuviLa3SRLWASk@kroah.com>
-References: <YJZuviLa3SRLWASk@kroah.com>
+        Sat, 08 May 2021 05:21:32 -0700 (PDT)
+Sender: Salvatore Bonaccorso <salvatore.bonaccorso@gmail.com>
+Date:   Sat, 8 May 2021 14:21:31 +0200
+From:   Salvatore Bonaccorso <carnil@debian.org>
+To:     coproscefalo@gmail.com, hdegoede@redhat.com, mgross@linux.intel.com
+Cc:     platform-driver-x86@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: platform/x86: toshiba_haps: Missing newline after debug printing of
+ received event
+Message-ID: <YJaCS9otCKFOHqJc@eldamar.lan>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series includes code clean up for input_system.c.
+Hi
 
-Changes from v3:
-  Removed returns at the end of void functions
-  Split all changes into 3 patches
+A verly long time ago in Debian it was reported that in the
+toshiba_haps driver, there is a missing newline in the printing of the
+recieved events. See https://bugs.debian.org/799193
 
-Changes from v2:
-  Removed useless returns
+In baae5f91577a ("platform/x86: toshiba_haps: Change logging level
+from info to debug") the logging level was changed from info to debug,
+and so less to hit. But looking from the code we still have:
 
-Pavel Skripkin (3):
-  staging: media: atomisp: remove useless breaks
-  staging: media: atomisp: remove dublicate code
-  staging: media: atomisp: remove useless returns
+    pr_debug("Received event: 0x%x", event);
 
- .../hive_isp_css_common/host/input_system.c   | 62 -------------------
- 1 file changed, 62 deletions(-)
+in the toshiba_haps_notify function.
 
--- 
-2.31.1
-
+Regards,
+Salvatore
