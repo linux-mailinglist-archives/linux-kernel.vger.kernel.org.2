@@ -2,81 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3E3F37734E
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 19:01:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02DC2377350
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 19:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbhEHRCU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 13:02:20 -0400
-Received: from smtprelay0127.hostedemail.com ([216.40.44.127]:50022 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229552AbhEHRCT (ORCPT
+        id S229666AbhEHREx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 13:04:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36916 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229544AbhEHREw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 13:02:19 -0400
-Received: from omf19.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id C92D2837F24A;
-        Sat,  8 May 2021 17:01:16 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf19.hostedemail.com (Postfix) with ESMTPA id 442CA20D758;
-        Sat,  8 May 2021 17:01:15 +0000 (UTC)
-Message-ID: <1eb0428d352be2498739de71eb65746309c90f4c.camel@perches.com>
-Subject: Re: [PATCH] iio: tsl2583: Fix division by a zero lux_val
-From:   Joe Perches <joe@perches.com>
-To:     Jonathan Cameron <jic23@kernel.org>,
-        Colin King <colin.king@canonical.com>
-Cc:     Lars-Peter Clausen <lars@metafoo.de>,
-        Nathan Chancellor <nathan@kernel.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Jon Brenner <jbrenner@taosinc.com>, linux-iio@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Sat, 08 May 2021 10:01:14 -0700
-In-Reply-To: <20210508171258.2ef71a70@jic23-huawei>
-References: <20210507183041.115864-1-colin.king@canonical.com>
-         <20210508171258.2ef71a70@jic23-huawei>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sat, 8 May 2021 13:04:52 -0400
+Received: from mail-pf1-x429.google.com (mail-pf1-x429.google.com [IPv6:2607:f8b0:4864:20::429])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AD517C061574;
+        Sat,  8 May 2021 10:03:49 -0700 (PDT)
+Received: by mail-pf1-x429.google.com with SMTP id x188so10213733pfd.7;
+        Sat, 08 May 2021 10:03:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OycDK6KPVRb8//ZVPv/9u6PQEVkLayHxqAb9uY3wxwM=;
+        b=fzkHYQBi002p+fXFrGA9M5xSlHEKSUdWqVIIEUG8v+TUNcyNg8JDTRgVkTplcC3f9P
+         cV3gyEFz93fJVqhKyAnX+g/M4yVbLXzPRiyDb6qAPVFy9lvkGIaI4VCFSnK/xVI06oAx
+         3GzTaBB2TkvVD+NheiKMekK9m1/xJ4RgPEm9spvHYI3jpQ7lB6B2pHjjZhnVPkTZNFOi
+         U8kqZ1kJX4WDiC/7le4seGI/GYbw08Zlq46lAYcqV7ooHit9OzewvWl54YyVZal0IF9z
+         vj1fEqhJIgnROo71prH3mI8BYaJbBMVn/pRwXek4B/r02pkMk3LvlIuPZIhjtGpnabVe
+         Vssg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=OycDK6KPVRb8//ZVPv/9u6PQEVkLayHxqAb9uY3wxwM=;
+        b=VQ3W1cwc7pe3g2AdSUgYCGqFcA764Bhl7h2llrw7D+dKOuw97sUfvx1+dWDyLsPL7w
+         Odl+HxTuU5xEwrDqpHI80avPnc+GmMybibWayUGj8VCfPUrHD2ae7zYFi2mHB9ouzkxg
+         mJo/J2KWsCwwEKQuFIaMWN3bSkswWUm3Ylm+Jz8cUsuQrfa74Kp/aJioxfpS4dQTH1zm
+         JW4/UqeyFu4zVmDhW8n5IGYNUoNKB1Qolgud6/F7cswN0MoH1HfS0VLCI6t++P+PNXY6
+         9IunLgPDRSKvVfwvUIyfxoEMWBTxv7BkzHUXSZ8oT12TcCW5aiO1SFTXw6la88Dmr350
+         l9BQ==
+X-Gm-Message-State: AOAM532K/nWUtaV6bIc5RdDPrFwpPkxFofWoDi2Ua7bggqiaQ4WR5g3H
+        V7/4Mo6SUUZGdGwL2Kb2Am2Uw3NwUpo7Pg==
+X-Google-Smtp-Source: ABdhPJw2rSrpCfMqQngV4D+Aw+dxWU+rMTvoRot+Rk20vI0fb9ATLhDow1uqrAvT1FMkLVoyQXGRMA==
+X-Received: by 2002:a63:fe53:: with SMTP id x19mr16011394pgj.372.1620493429173;
+        Sat, 08 May 2021 10:03:49 -0700 (PDT)
+Received: from localhost.localdomain ([2001:4490:4409:357e:ddc0:965d:2b13:8892])
+        by smtp.gmail.com with ESMTPSA id g190sm1674468pfb.60.2021.05.08.10.03.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 May 2021 10:03:48 -0700 (PDT)
+From:   Saurav Girepunje <saurav.girepunje@gmail.com>
+To:     b-liu@ti.com, gregkh@linuxfoundation.org,
+        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Saurav Girepunje <saurav.girepunje@gmail.com>
+Subject: [PATCH 0/2] Remove unused variable in musb_host.c
+Date:   Sat,  8 May 2021 22:33:15 +0530
+Message-Id: <20210508170317.24403-1-saurav.girepunje@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Status: No, score=-2.90
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 442CA20D758
-X-Stat-Signature: wnkp43btcie7ymskkaw68ca5r135z3t9
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX1+/qTRbq/tfWb64s6ZzCDbmjtWe8vVdDaM=
-X-HE-Tag: 1620493275-211571
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-05-08 at 17:12 +0100, Jonathan Cameron wrote:
-> On Fri,  7 May 2021 19:30:41 +0100 Colin King <colin.king@canonical.com> wrote:
-[]
-> > The lux_val returned from tsl2583_get_lux can potentially be zero,
-> > so check for this to avoid a division by zero and an overflowed
-> > gain_trim_val.
-[]
-> > Fixes: ac4f6eee8fe8 ("staging: iio: TAOS tsl258x: Device driver")
-> > Signed-off-by: Colin Ian King <colin.king@canonical.com>
-> Definitely looks like it could happen so applied to the fixes-togreg branch of
-> iio.git and marked for stable.
-[]
-> > diff --git a/drivers/iio/light/tsl2583.c b/drivers/iio/light/tsl2583.c
-[]
-> > @@ -341,6 +341,14 @@ static int tsl2583_als_calibrate(struct iio_dev *indio_dev)
-> >  		return lux_val;
-> >  	}
-> > 
-> > +	/* Avoid division by zero of lux_value later on */
-> > +	if (lux_val == 0) {
-> > +		dev_err(&chip->client->dev,
-> > +			"%s: lux_val of 0 will produce out of range trim_value\n",
-> > +			__func__);
-> > +		return -ENODATA;
-> > +	}
-> > +
-> >  	gain_trim_val = (unsigned int)(((chip->als_settings.als_cal_target)
-> >  			* chip->als_settings.als_gain_trim) / lux_val);
+This series contains 2 patches to remove unused local variable
+from function musb_tx_dma_set_mode_cppi_tusb and function
+musb_tx_dma_set_mode_mentor in musb_host.c file.
 
-Is a multiplication overflow possible here?
-There are also unnecessary parentheses.
+Saurav Girepunje (2):
+  usb: musb: Remove unused local variable dma, urb, offset
+  usb: musb: Remove unused function argument dma, qh, offset, length
 
+ drivers/usb/musb/musb_host.c | 18 ++++++------------
+ 1 file changed, 6 insertions(+), 12 deletions(-)
+
+--
+2.25.1
 
