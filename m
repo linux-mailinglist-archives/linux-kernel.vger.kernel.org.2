@@ -2,129 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C8237747B
-	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 00:59:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF820377483
+	for <lists+linux-kernel@lfdr.de>; Sun,  9 May 2021 01:02:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229648AbhEHXAz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 19:00:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51124 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229522AbhEHXAz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 19:00:55 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 57138613EE;
-        Sat,  8 May 2021 22:59:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620514793;
-        bh=6cLcIISfVMA39dZyMddgsuL+j0rAWjSSyewRfGwaabw=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=l417ed8xvJmvP1uLYwmq8IaKFdf6HCf/06vwtp8MhPpy5S5mrZfM/wU0HUyy6KM/w
-         Iugw313A4/ifeTEKgbSlUJhZEpYEVZr7ERhPCJN3+UmIODxQSFGYT6aMmRnipSDP6b
-         o3XdXJOX2BlqgBuMgc3oh5dL3j80Z1UWwJwappT9NLlrGuF8HkX1oNfT9qleS9Geg5
-         m5Ervx8uoWRB4/Yys2nqQy91jhlNq/VVzTaOYnf8DRkwjlWuf//dWfg+htcSBYFJxX
-         rl2to4bLA2Z2sVOG5WD5+ioXNEpcw3pjCvOP2JCGeiN4ving3ZcHWCczHdrMuNWCJP
-         GMZWqRUGNlOuw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-        id 141415C013E; Sat,  8 May 2021 15:59:53 -0700 (PDT)
-Date:   Sat, 8 May 2021 15:59:53 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Dmitry Vyukov <dvyukov@google.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        syzbot <syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com>,
-        Jens Axboe <axboe@kernel.dk>,
-        Christian Brauner <christian@brauner.io>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Oleg Nesterov <oleg@redhat.com>,
-        Peter Collingbourne <pcc@google.com>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [syzbot] WARNING: suspicious RCU usage in get_signal
-Message-ID: <20210508225953.GB975577@paulmck-ThinkPad-P17-Gen-1>
-Reply-To: paulmck@kernel.org
-References: <0000000000006540d705c1b013b5@google.com>
- <YJT8ZPM5YGzX8Jtk@hirez.programming.kicks-ass.net>
- <CACT4Y+aaGyfiEgbKca-6gourQjtwVMHuwUcb30QJPOF1LhLcxQ@mail.gmail.com>
- <20210507171901.GV975577@paulmck-ThinkPad-P17-Gen-1>
- <CACT4Y+Ydu6Dcmx1tXe-1aOw-hAcHgjwncrSmWuEr_8tfq02Dtg@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACT4Y+Ydu6Dcmx1tXe-1aOw-hAcHgjwncrSmWuEr_8tfq02Dtg@mail.gmail.com>
+        id S229660AbhEHXDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 19:03:41 -0400
+Received: from sibelius.xs4all.nl ([83.163.83.176]:64334 "EHLO
+        sibelius.xs4all.nl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229549AbhEHXDi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 19:03:38 -0400
+Received: from localhost (bloch.sibelius.xs4all.nl [local])
+        by bloch.sibelius.xs4all.nl (OpenSMTPD) with ESMTPA id c9fdf47c;
+        Sun, 9 May 2021 01:02:34 +0200 (CEST)
+Date:   Sun, 9 May 2021 01:02:33 +0200 (CEST)
+From:   Mark Kettenis <mark.kettenis@xs4all.nl>
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     kettenis@openbsd.org, krzk@kernel.org, tomasz.figa@gmail.com,
+        maz@kernel.org, devicetree@vger.kernel.org, marcan@marcan.st,
+        robh+dt@kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bgolaszewski@baylibre.com, sven@svenpeter.dev
+In-Reply-To: <CACRpkdbUNs_FFv9RteWKUrxBdRuiXU2Fkt-oY4=Phke4gNBoaQ@mail.gmail.com>
+        (message from Linus Walleij on Sat, 8 May 2021 23:09:55 +0200)
+Subject: Re: [PATCH 1/2] dt-bindings: pinctrl: Add DT bindings for apple,pinctrl
+References: <20210508142000.85116-1-kettenis@openbsd.org> <20210508142000.85116-2-kettenis@openbsd.org> <CACRpkdbUNs_FFv9RteWKUrxBdRuiXU2Fkt-oY4=Phke4gNBoaQ@mail.gmail.com>
+Message-ID: <c1bd678c5dc81db8@bloch.sibelius.xs4all.nl>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 07:03:51AM +0200, Dmitry Vyukov wrote:
-> On Fri, May 7, 2021 at 7:19 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Fri, May 07, 2021 at 10:42:48AM +0200, Dmitry Vyukov wrote:
-> > > On Fri, May 7, 2021 at 10:38 AM Peter Zijlstra <peterz@infradead.org> wrote:
-> > > >
-> > > > On Thu, May 06, 2021 at 02:34:27PM -0700, syzbot wrote:
-> > > > > Hello,
-> > > > >
-> > > > > syzbot found the following issue on:
-> > > > >
-> > > > > HEAD commit:    d2b6f8a1 Merge tag 'xfs-5.13-merge-3' of git://git.kernel...
-> > > > > git tree:       upstream
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=123a56a5d00000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=65c207250bba4efe
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=37fc8b84ffa2279d636d
-> > > > > userspace arch: i386
-> > > > >
-> > > > > Unfortunately, I don't have any reproducer for this issue yet.
-> > > > >
-> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > Reported-by: syzbot+37fc8b84ffa2279d636d@syzkaller.appspotmail.com
-> > > > >
-> > > > > =============================
-> > > > > WARNING: suspicious RCU usage
-> > > > > 5.12.0-syzkaller #0 Not tainted
-> > > > > -----------------------------
-> > > > > kernel/sched/core.c:8304 Illegal context switch in RCU-sched read-side critical section!
-> > > > >
-> > > > > other info that might help us debug this:
-> > > > >
-> > > > >
-> > > > > rcu_scheduler_active = 2, debug_locks = 0
-> > > > > no locks held by syz-executor.4/10430.
-> > > >
-> > > > Looks like this is a concurrent fail?, if !debug_locks (as per the above)
-> > > > then RCU_LOCKDEP_WARN() should not trigger.
-> > >
-> > > FTR the log is here:
-> > > https://syzkaller.appspot.com/text?tag=CrashLog&x=123a56a5d00000
-> > >
-> > > It contains 2 intermixed reports:
-> > >
-> > > [  289.896033][T10430] =============================
-> > > [  289.896039][T10430] WARNING: suspicious RCU usage
-> > > [  289.896046][T10430] 5.12.0-syzkaller #0 Not tainted
-> > > [  289.898388][T13493] ======================================================
-> > > [  289.898401][T13493] WARNING: possible circular locking dependency detected
-> > > [  289.898410][T13493] 5.12.0-syzkaller #0 Not tainted
-> > > [  289.898424][T13493] ------------------------------------------------------
-> > > [  289.898432][T13493] syz-executor.0/13493 is trying to acquire lock:
-> > > [  289.898448][T13493] ffff888019065ca0 (&bdev->bd_mutex){+.+.}-{3:3},
-> > > at: del_gendisk+0x250/0x9e0
-> >
-> > This "suspicious RCU usage" false positive looks to be addressed by this
-> > commit in -rcu, slated for the v5.14 merge window:
-> >
-> > 81a5e05455d4 ("rcu: Reject RCU_LOCKDEP_WARN() false positives")
-> >
-> > So I suggest ignoring the "suspicious RCU usage" report in favor of the
-> > "possible circular locking dependency detected" report.
+> From: Linus Walleij <linus.walleij@linaro.org>
+> Date: Sat, 8 May 2021 23:09:55 +0200
 > 
-> Oh, I see, it's not merged yet.
-> In my memory we discussed it so long ago that I assumed it is fixed already.
-
-It was a bit too late to make my pull request.  I won't lose it.  ;-)
-
-							Thanx, Paul
-
-> Let's mark it as fixed then:
+> On Sat, May 8, 2021 at 4:20 PM Mark Kettenis <kettenis@openbsd.org> wrote:
 > 
-> #syz fix: rcu: Reject RCU_LOCKDEP_WARN() false positives
+> > The Apple GPIO controller is a simple combined pin and GPIO conroller
+> > present on Apple ARM SoC platforms, including various iPhone and iPad
+> > devices and the "Apple Silicon" Macs.
+> >
+> > Signed-off-by: Mark Kettenis <kettenis@openbsd.org>
+
+Hi Linus,
+
+Thanks for taking a look.
+
+> I knew this was coming! I saw an earlier version of the Linux
+> pin control driver in some tree somewhere.
+
+That may have been the initial Corellium port.  I'm working with the
+Asahi Linux folks to get something that is a bit more upstreamable and
+something that works for U-Boot and other OSes too.  So these proposed
+DT bindings deviate a little bit from what Corellium did.
+
+> I see we're only discussing bindings right now, but it would be
+> great to also take a look at the U-Boot driver and scratch Linux
+> driver (which I bet both exist) for a deeper understanding.
+> Git tree web links are fine.
+
+My U-Boot driver is here:
+
+https://github.com/kettenis/u-boot/blob/apple-m1-m1n1-gpio/drivers/pinctrl/pinctrl-apple.c
+
+Not yet submitted upstream since that is a bit pointless without an
+agreed upon binding; typically U-Boot requires a binding that is
+accepted by the Linux devlopers before accepting patches.
+
+Sven Peter may have a draft Linux driver somewhere as he has been
+working on support for the type-C USB ports, but I haven't seen that
+part of his code yet.
+
+> > +description: |
+> > +  The Apple GPIO controller is a simple combined pin and GPIO controller
 > 
-> Thanks for double checking.
+> spelling
+
+Not sure I'm seeing a spelling mistake here.  Do you want a comma
+inserted somewhere?
+
+> 
+> > +  present on Apple ARM SoC platforms, including various iPhone and iPad
+> > +  devices and the "Apple Silicon" Macs.
+> 
+> > +properties:
+> > +  compatible:
+> > +    items:
+> > +      - const: apple,t8103-pinctrl
+> > +      - const: apple,pinctrl
+> 
+> So is this an entirely Apple thing now, and not based on some Samsung
+> block from S3C like what we have seen before?
+
+As far as I can tell, yes.  This Apple controller has a single
+register per pin that controls the muxing and gpio functions, whereas
+the S3C controller seems to have 4 registers per pin.
+
+In the Apple device tree this controller has a "gpio,t8101" compatible
+property which suggests that this particular incarnation was
+introduced with the the T8101 SoC (marketed as A14 and found in the
+iPhone 12).  Of course that's just an educated guess.
+
+> It'd be great if Krzysztof or Tomasz who have experience with the
+> Samsung hardware could have a look at the registers etc in the
+> drivers and confirm or clear any relationship to Samsung hardware.
+> 
+> This would partly involve trying to keep the pin control bindings
+> similar to Samsungs if there is a relationship.
+> 
+> If there is no relationship, then we invent something new.
+> 
+> All looks pretty good, but I am suspicious about this:
+> 
+> > +  interrupts:
+> > +    minItems: 1
+> > +    maxItems: 7
+> 
+> Which is used like that.
+> 
+> > +        interrupt-controller;
+> > +        interrupt-parent = <&aic>;
+> > +        interrupts = <AIC_IRQ 16 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 17 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 18 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 19 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 20 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 21 IRQ_TYPE_LEVEL_HIGH>,
+> > +                     <AIC_IRQ 22 IRQ_TYPE_LEVEL_HIGH>;
+> 
+> First it is really odd with 7 of something as in all computer
+> science but I guess there is some explanation for that.
+
+No kidding.  But all 4 controllers present on the SoC have 7
+interrupts assigned to them in the Apple device tree.
+
+> What I am really wondering is if these interrupts are hierarchical,
+> i.e. that they match 1-to-1 to a GPIO line.
+
+They don't match 1-1.  The GPIOs can be assigned to one of
+(apparently) 7 interrupt groups.  I haven't looked to closely at this
+yet since U-Boot doesn't need/use the interrupt capability.  But I
+suspect that pins don't have to be assigned to a interrupt group and
+that explains why there are only 7 interrupt groups as the 8th state
+is reserved for "unasigned".  The number of pins per controller
+varies, but one of them has 212 pins.
+
+> We only (ideally) define the interrupts when it is used by the
+> GPIO block itself, such as when it spawns a cascaded interrupt
+> controller (i.e. you need to read status bits inside the GPIO
+> controller to figure out which line was fired).
+
+Multiple pins can be assigned to the same interrupt group as far as I
+can tell.  So in that case the driver will have to look at status
+bits.
+
+> If the interrupt has a 1-to-1 mapping between GPIO lines and
+> the parent interrupt controller we usually do not define these
+> interrupts in the device tree at all.
+> 
+> In those cases the interrupt is considered hierarchical and we
+> rely on the compatible for the block to define how the
+> interrupt lines are routed to the parent interrupt controller
+> (in this case AIC).
+> 
+> In the Linux case, the GPIO driver has a hardcoded table
+> of mappings from the GPIO irq line offset and the corresponding
+> index on the parent interrupt controller (AIC).
+> 
+> This is reflected in this IRQ routing information missing
+> from the bindings.
+> 
+> Marc Zyngier can probably tell the story of why it is handled
+> like this,
+
+Ok, hopefully Marc can say something sensible here, but I'd say the
+interrupts on this hardware are cascaded.
+
+> There is some info on hierarchical IRQ handling in the
+> Linux GPIO driver docs:
+> https://www.kernel.org/doc/html/latest/driver-api/gpio/driver.html
+> Section "GPIO drivers providing IRQs"
+> 
+> Yours,
+> Linus Walleij
+> 
