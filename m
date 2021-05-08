@@ -2,68 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F841376E5E
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 04:04:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FBCD376E6E
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 04:13:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230229AbhEHCFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 22:05:33 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:18792 "EHLO
-        szxga07-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229775AbhEHCFc (ORCPT
+        id S230289AbhEHCOi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 22:14:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41962 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhEHCOf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 22:05:32 -0400
-Received: from DGGEMS405-HUB.china.huawei.com (unknown [172.30.72.59])
-        by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4FcVtS4gN8zCqwT;
-        Sat,  8 May 2021 10:01:52 +0800 (CST)
-Received: from thunder-town.china.huawei.com (10.174.177.72) by
- DGGEMS405-HUB.china.huawei.com (10.3.19.205) with Microsoft SMTP Server id
- 14.3.498.0; Sat, 8 May 2021 10:03:37 +0800
-From:   Zhen Lei <thunder.leizhen@huawei.com>
-To:     Jesper Nilsson <jesper.nilsson@axis.com>,
-        Lars Persson <lars.persson@axis.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        "Guennadi Liakhovetski" <g.liakhovetski@gmx.de>,
-        Chris Ball <chris@printf.net>,
-        linux-arm-kernel <linux-arm-kernel@axis.com>,
-        linux-mmc <linux-mmc@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-CC:     Zhen Lei <thunder.leizhen@huawei.com>
-Subject: [PATCH 1/1] mmc: usdhi6rol0: fix error return code in usdhi6_probe()
-Date:   Sat, 8 May 2021 10:03:21 +0800
-Message-ID: <20210508020321.1677-1-thunder.leizhen@huawei.com>
-X-Mailer: git-send-email 2.26.0.windows.1
+        Fri, 7 May 2021 22:14:35 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0D955C061574;
+        Fri,  7 May 2021 19:13:35 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FcW7w6nY5z9sRK;
+        Sat,  8 May 2021 12:13:32 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620440013;
+        bh=tbzyelWpY5/vilZ3aU7P2W2D80K9KNwdyzH255J6UcE=;
+        h=Date:From:To:Cc:Subject:From;
+        b=G+qgOseQJUnYswUTwCS8gTfptDCnBbBbp+8K6Uq9KMXJ6jEDBRaAuioXFDjxwhXTC
+         Byh1qw1GhPPm5PSv30peVnL8ZNLYtfbzCsa/NCIBFSWbERHBR9/84JsXYqGTKzLa3e
+         eml7PynXu6KClAKPY1slfvzZ7w73DgrAGoYZc4FgNiW5NYfPCcW4zNleQkqarLY5us
+         qpehXsEUfubB87DH/oKf14d9K810uw6TWA5OfaCNONLuSFQmoLDyrgZf6W2hQrtl1/
+         vaei1xHaNUtO/uN0tErM3ll/QXGwa8gZSgiVIX1KVwWxRWJB+PX/bUP6EggIA/L07x
+         UYV07J04nRBNw==
+Date:   Sat, 8 May 2021 12:13:31 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Marcel Holtmann <marcel@holtmann.org>,
+        Johan Hedberg <johan.hedberg@gmail.com>
+Cc:     Connor Abbott <cwabbott0@gmail.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the bluetooth tree
+Message-ID: <20210508121331.5c186528@canb.auug.org.au>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.177.72]
-X-CFilter-Loop: Reflected
+Content-Type: multipart/signed; boundary="Sig_/LIpzQHEyCAhT4lQx7y0ABxv";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Fix to return a negative error code from the error handling case instead
-of 0, as done elsewhere in this function.
+--Sig_/LIpzQHEyCAhT4lQx7y0ABxv
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Fixes: 75fa9ea6e3c0 ("mmc: add a driver for the Renesas usdhi6rol0 SD/SDIO host controller")
-Reported-by: Hulk Robot <hulkci@huawei.com>
-Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
----
- drivers/mmc/host/usdhi6rol0.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi all,
 
-diff --git a/drivers/mmc/host/usdhi6rol0.c b/drivers/mmc/host/usdhi6rol0.c
-index 615f3d008af1..b9b79b1089a0 100644
---- a/drivers/mmc/host/usdhi6rol0.c
-+++ b/drivers/mmc/host/usdhi6rol0.c
-@@ -1801,6 +1801,7 @@ static int usdhi6_probe(struct platform_device *pdev)
- 
- 	version = usdhi6_read(host, USDHI6_VERSION);
- 	if ((version & 0xfff) != 0xa0d) {
-+		ret = -EPERM;
- 		dev_err(dev, "Version not recognized %x\n", version);
- 		goto e_clk_off;
- 	}
--- 
-2.25.1
+In commit
 
+  da68ad722e54 ("Bluetooth: btqca: Don't modify firmware contents in-place")
 
+Fixes tag
+
+  Fixes: 83e8196 ("Bluetooth: btqca: Introduce generic QCA ROME support")
+
+has these problem(s):
+
+  - SHA1 should be at least 12 digits long
+    Can be fixed by setting core.abbrev to 12 (or more) or (for git v2.11
+    or later) just making sure it is not set (or set to "auto").
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/LIpzQHEyCAhT4lQx7y0ABxv
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCV88sACgkQAVBC80lX
+0GzrzAf+PT1/hVMTseOWi9QPYt6EA2CUnOeXKV7kb2KMeOKALdYK0dh5hL/8Ibqb
+/pPJYbID7mEUVbJoPARy6iNcqozKQLlPMCjnbgDTNXGP87Cpws7fylwJHWac/qQu
+IkSGctbYyRWq2Z13SVvmbD8bwdTvee9rH+EVmd4qlvhWPdNf9yH7qa4zeLSmQQUt
+j9Bf7glIATTLuXsdRV9wfhMKPoQX/fwZdMet85XBdD6HGJy5SXaeih3rxw9jqRXL
+PzHfd/vz76zpwZbD0rdkbrAI3DmwNpZeTr1FQh5y+rS8sytWxMn1aRUQ7ON5X71A
+iv25PKGoyHf0TlZM9uk/FdqzwbQL9w==
+=NGdK
+-----END PGP SIGNATURE-----
+
+--Sig_/LIpzQHEyCAhT4lQx7y0ABxv--
