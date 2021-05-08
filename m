@@ -2,106 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB2D537728B
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:16:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDA8F37728A
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:15:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229631AbhEHPQ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 11:16:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51870 "EHLO mail.kernel.org"
+        id S229586AbhEHPQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 11:16:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51762 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhEHPQy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 11:16:54 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPSA id 3969F6141D;
-        Sat,  8 May 2021 15:15:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620486953;
-        bh=Sgq70qU/onynKPpWMpEi2Z7PKmV25AfeplhuLwk1LM0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=oOli2pVOIo5aByrJNtI/blSsYE14nBNMJ1M7nVXjfvjNfOuAWzdcrQ+qrX28rcvMa
-         uKZeQv5N+W9FXYwGxkHPcgwmAMbBv80yucSowuLps1khomqIjGcuw2BSIJ2neV7wRS
-         6WSIRVR5YFb9n6QOVzLVITsDq68mFboVwMpAAFVLFOQ1v73pdyT2EXzm/34MVWAFn0
-         3TFny9vremhxcuTA7F3fTZmIwzeIZwl8EHv9JqNH53mBZ9J85SYG4jF7NJfgWFkocw
-         xo97lgQIT7HLAcPiVxQNYgpWGEMF+2uLKhz9lD003UtwJ4FxRtKRIEYfnax8HXxcjf
-         el1hwJ9qGnMnw==
-Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
-        id A30F34034C; Sat,  8 May 2021 12:15:49 -0300 (-03)
-Date:   Sat, 8 May 2021 12:15:49 -0300
-From:   Arnaldo Carvalho de Melo <acme@kernel.org>
-To:     Jiri Olsa <jolsa@redhat.com>
-Cc:     Dmitry Koshelev <karaghiozis@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Leo Yan <leo.yan@linaro.org>, linux-perf-users@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] perf: Fix swapping of cpu_map and stat_config records
-Message-ID: <YJarJWbjlhizmt5A@kernel.org>
-References: <20210506131244.13328-1-karaghiozis@gmail.com>
- <YJPv2u6NBuYX9FUX@krava>
+        id S229500AbhEHPQt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 11:16:49 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5A0B2613F2;
+        Sat,  8 May 2021 15:15:45 +0000 (UTC)
+Date:   Sat, 8 May 2021 16:16:43 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Alexandru Ardelean <aardelean@deviqon.com>
+Cc:     linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lars@metafoo.de, Linus Walleij <linus.walleij@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Nuno Sa <nuno.sa@analog.com>
+Subject: Re: [PATCH] iio: core: return ENODEV if ioctl is unknown
+Message-ID: <20210508161643.5990ec15@jic23-huawei>
+In-Reply-To: <20210503144350.7496-1-aardelean@deviqon.com>
+References: <20210503144350.7496-1-aardelean@deviqon.com>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <YJPv2u6NBuYX9FUX@krava>
-X-Url:  http://acmel.wordpress.com
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Thu, May 06, 2021 at 03:32:10PM +0200, Jiri Olsa escreveu:
-> On Thu, May 06, 2021 at 01:11:49PM +0000, Dmitry Koshelev wrote:
-> > 'data' field in perf_record_cpu_map_data struct is 16-bit
-> > wide and so should be swapped using bswap_16().
-> > 
-> > 'nr' field in perf_record_stat_config struct should be
-> > swapped before being used for size calculation.
-> > 
-> > Signed-off-by: Dmitry Koshelev <karaghiozis@gmail.com>
+On Mon,  3 May 2021 17:43:50 +0300
+Alexandru Ardelean <aardelean@deviqon.com> wrote:
+
+> When the ioctl() mechanism was introduced in IIO core to centralize the
+> registration of all ioctls in one place via commit 8dedcc3eee3ac ("iio:
+> core: centralize ioctl() calls to the main chardev"), the return code was
+> changed from ENODEV to EINVAL, when the ioctl code isn't known.
 > 
-> Acked-by: Jiri Olsa <jolsa@redhat.com>
-
-Thanks, applied.
-
-- Arnaldo
-
- 
-> thanks,
-> jirka
+> This was done by accident.
 > 
-> > ---
-> >  tools/perf/util/session.c | 4 ++--
-> >  1 file changed, 2 insertions(+), 2 deletions(-)
-> > 
-> > diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> > index a12cf4f0e97a..106b3d60881a 100644
-> > --- a/tools/perf/util/session.c
-> > +++ b/tools/perf/util/session.c
-> > @@ -904,7 +904,7 @@ static void perf_event__cpu_map_swap(union perf_event *event,
-> >  	struct perf_record_record_cpu_map *mask;
-> >  	unsigned i;
-> >  
-> > -	data->type = bswap_64(data->type);
-> > +	data->type = bswap_16(data->type);
-> >  
-> >  	switch (data->type) {
-> >  	case PERF_CPU_MAP__CPUS:
-> > @@ -937,7 +937,7 @@ static void perf_event__stat_config_swap(union perf_event *event,
-> >  {
-> >  	u64 size;
-> >  
-> > -	size  = event->stat_config.nr * sizeof(event->stat_config.data[0]);
-> > +	size  = bswap_64(event->stat_config.nr) * sizeof(event->stat_config.data[0]);
-> >  	size += 1; /* nr item itself */
-> >  	mem_bswap_64(&event->stat_config.nr, size);
-> >  }
-> > -- 
-> > 2.25.1
-> > 
+> This change reverts back to the old behavior, where if the ioctl() code
+> isn't known, ENODEV is returned (vs EINVAL).
 > 
+> This was brought into perspective by this patch:
+>   https://lore.kernel.org/linux-iio/20210428150815.136150-1-paul@crapouillou.net/
+> 
+> Fixes: 8dedcc3eee3ac ("iio: core: centralize ioctl() calls to the main chardev")
+> Cc: Linus Walleij <linus.walleij@linaro.org>
+> Cc: Paul Cercueil <paul@crapouillou.net>
+> Cc: Nuno Sa <nuno.sa@analog.com>
+> Signed-off-by: Alexandru Ardelean <aardelean@deviqon.com>
 
--- 
+This is going to be a little messy to apply as lots of churn in that file.
+What I've done for now is pulled the fixes-togreg branch forwards onto
+current staging/staging-linus but I'll do that again after
+staging/staging-linus moves onto an rc1 or similar base.
 
-- Arnaldo
+Anyhow, applied to that tree which is going to have more than it's
+normal share of rebases this cycle.
+
+Thanks,
+
+Jonathan
+
+> ---
+>  drivers/iio/industrialio-core.c | 3 +--
+>  1 file changed, 1 insertion(+), 2 deletions(-)
+> 
+> diff --git a/drivers/iio/industrialio-core.c b/drivers/iio/industrialio-core.c
+> index efb4cf91c9e4..9a3a83211a90 100644
+> --- a/drivers/iio/industrialio-core.c
+> +++ b/drivers/iio/industrialio-core.c
+> @@ -1803,7 +1803,6 @@ static long iio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  	if (!indio_dev->info)
+>  		goto out_unlock;
+>  
+> -	ret = -EINVAL;
+>  	list_for_each_entry(h, &iio_dev_opaque->ioctl_handlers, entry) {
+>  		ret = h->ioctl(indio_dev, filp, cmd, arg);
+>  		if (ret != IIO_IOCTL_UNHANDLED)
+> @@ -1811,7 +1810,7 @@ static long iio_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+>  	}
+>  
+>  	if (ret == IIO_IOCTL_UNHANDLED)
+> -		ret = -EINVAL;
+> +		ret = -ENODEV;
+>  
+>  out_unlock:
+>  	mutex_unlock(&iio_dev_opaque->info_exist_lock);
+
