@@ -2,91 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F31377295
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:23:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3DCE6377299
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:25:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229658AbhEHPYu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 11:24:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42976 "EHLO
+        id S229689AbhEHPZ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 11:25:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43222 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229559AbhEHPYs (ORCPT
+        with ESMTP id S229657AbhEHPZz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 11:24:48 -0400
-Received: from mail-lj1-x231.google.com (mail-lj1-x231.google.com [IPv6:2a00:1450:4864:20::231])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C985C061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 08:23:46 -0700 (PDT)
-Received: by mail-lj1-x231.google.com with SMTP id e11so1769278ljn.13
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 08:23:46 -0700 (PDT)
+        Sat, 8 May 2021 11:25:55 -0400
+Received: from mail-ot1-x32e.google.com (mail-ot1-x32e.google.com [IPv6:2607:f8b0:4864:20::32e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47BF4C061574;
+        Sat,  8 May 2021 08:24:51 -0700 (PDT)
+Received: by mail-ot1-x32e.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso10529931otg.9;
+        Sat, 08 May 2021 08:24:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LA1s7H8iJNlnGDJOvq18ISrXAvebu3dTqmmAHQk0eXA=;
-        b=GY8IBu+m+3oUOVWXByoeS1RqLfBljlxVoPUO1aOBONw/W07fMf6agecd8aDLxdwOd1
-         3nY23XwejNO4BDe6uUc6gc5TIl5KmHHzgM8kd80MEqMLfPLKYvYzuPjuevyTVI9cpP47
-         Kot8+lOIrEr77RreB4ghtv0EkSpqGsJgtN0WE=
+        d=gmail.com; s=20161025;
+        h=sender:to:cc:references:from:subject:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=CQrb2ccioAuJwkBkkjkm5++a5tjwhsHDADyhrpZzW54=;
+        b=t07xTn2HoLS9AeU1/ytNJoAPweLLNw954qEeA9gzfDz6O5k7lG48JLPMp1Vp+riTdf
+         vWKbEqMesrhHs2YG4UMSg8WyGQvbrXbe2cwJjAwttIvVjG8GYmAuaW4Etf0Ai0Xtf1tb
+         /YvfnVAywgDwjMhbgUMdv70rb/mtHgkkZjaRkRuzNhXsIGaVrLLdeJruaMGrFu/kp4kn
+         cnka4RB6ya+6G1YOeD7UE2KHtHUcDsWi+yLMKBR4J/a8tPckQYKWk4tLVjOfSAtpVIMA
+         r9ha3jLB06Qe1mAdOIu5/GhXlkjK6vNODwPVGptDq5ueByaux3lyKlqP1+Mpvys/khj1
+         l+2A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LA1s7H8iJNlnGDJOvq18ISrXAvebu3dTqmmAHQk0eXA=;
-        b=DrnP9sfqNXlZyQOTeI2S47WKmLSDQSNzcnCfZKNL6/oQe7pMoMdzj1aygD2t/1pscp
-         0+0JxglI5NId2wn2+oDM7pWI0Ag1yUE0OXn9IPoKH7iuDBOhoWdqVeERQU0qP1CIDPdM
-         jWPAhCCvV/qABocaouBHh9YHbIrN84dOLcHYdjeCNpp46NNboz9gxzf9ndUIZebP8Kl3
-         bd9kvXeNeyQ3oilgu+AF/GyruKcunXTQy/rKo4KiloF+LeQhMEZvjfo+YcLJwyHldc5M
-         e+6mwn2KRHgs9enNDfP0u1LdNyTsUml0HSY0nDEC/vR5HaZ98fqP+8GGT0uvewtwKnNG
-         S5YQ==
-X-Gm-Message-State: AOAM530AsKjuuwloylhFOGUv1Ooa7oCeV2a0eM+DHfW+o1SqaAQxiiKS
-        zZ98JQFrGs7wjaW3TAUTQxVkOMnc9yBihoL6
-X-Google-Smtp-Source: ABdhPJwKPmczlIVzpCQ0MLHsh+U3YAzXqtpCLCCZgNr7eMia8QZboLHf6XdqoWTtf37uLlnE1RYhOA==
-X-Received: by 2002:a2e:b5b0:: with SMTP id f16mr12588929ljn.52.1620487424857;
-        Sat, 08 May 2021 08:23:44 -0700 (PDT)
-Received: from mail-lj1-f181.google.com (mail-lj1-f181.google.com. [209.85.208.181])
-        by smtp.gmail.com with ESMTPSA id k18sm1657363lfg.200.2021.05.08.08.23.43
-        for <linux-kernel@vger.kernel.org>
+        h=x-gm-message-state:sender:to:cc:references:from:subject:message-id
+         :date:user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=CQrb2ccioAuJwkBkkjkm5++a5tjwhsHDADyhrpZzW54=;
+        b=R5JFn49g5LmY6sk7DHFlezze2rI6NSSf/H0DUaQkpsGyx/P+XgsxbDuSWXjjdzwpzV
+         MOW/Gsb8mpYfXjJlysJwaCB2DgrwJQ/fT4jT1Xz5aaMyDjcK0F4GbHA78Fawnfa+EbJf
+         W16uLW+Gd+5KPz2FOQOBC3x54t3aaPL9i9YFF5IKbxwfJ2XYGu13q6xHzWkreCwpsxfg
+         6vg3w57SychHy0/1fkCSUZi2Bd2GgcFHJBwt7ExLNXWD1+060+FnocdZ5n4ISWnoYRvE
+         7CHJY5IWMPTaEiQNPpvELkuJZYK/VkR41BBZbcMM+koTXDWBop/zJYUV0AC6g5RD9HmR
+         J5nw==
+X-Gm-Message-State: AOAM531MyP6ybOx0VCSylf9vzYXNZcjmPiUoYpvjLXWoh5sf7bt2WBQU
+        kHEvjIVFxslA+G6HcqK6N9U=
+X-Google-Smtp-Source: ABdhPJyr8ffp31pRO2niJ3tEPlem8Q6Wl/yZRlGmOHegbe6pcD/Ot79LBlaTTtZ61eDK3uWi1gMzmQ==
+X-Received: by 2002:a05:6830:1505:: with SMTP id k5mr13714612otp.45.1620487490738;
+        Sat, 08 May 2021 08:24:50 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id r10sm1053663oic.4.2021.05.08.08.24.49
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 May 2021 08:23:44 -0700 (PDT)
-Received: by mail-lj1-f181.google.com with SMTP id w4so15321803ljw.9
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 08:23:43 -0700 (PDT)
-X-Received: by 2002:a05:651c:33a:: with SMTP id b26mr12695518ljp.220.1620487423720;
- Sat, 08 May 2021 08:23:43 -0700 (PDT)
+        Sat, 08 May 2021 08:24:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Jonathan Cameron <jic23@kernel.org>,
+        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kernel test robot <lkp@intel.com>,
+        Hans de Goede <hdegoede@redhat.com>
+References: <20210506034332.752263-1-linux@roeck-us.net>
+ <20210507103154.00006763@Huawei.com> <20210508030936.GA3879276@roeck-us.net>
+ <CAHp75Vfa3GT9bnimxw7EJsJyRF8HZP3PGsUNikSScuNiU4qArg@mail.gmail.com>
+From:   Guenter Roeck <linux@roeck-us.net>
+Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
+Message-ID: <27cdac1a-6df8-6650-17fb-7dcdeaed66c5@roeck-us.net>
+Date:   Sat, 8 May 2021 08:24:48 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.7.1
 MIME-Version: 1.0
-References: <20210507220813.365382-1-arnd@kernel.org> <20210507220813.365382-13-arnd@kernel.org>
- <CAHk-=wiqLPZbiWFZ3rDNCY0fm=dFR3SSDONvrVNVbkOQmQS1vw@mail.gmail.com> <CAK8P3a3sxfYG4WReXPe6fg33K7tQaP4K-F53yBcTfyEXv0W22A@mail.gmail.com>
-In-Reply-To: <CAK8P3a3sxfYG4WReXPe6fg33K7tQaP4K-F53yBcTfyEXv0W22A@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Sat, 8 May 2021 08:23:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjZvroqVj0+R+Eg_OAjk1DkvP9AVzQn81E+BZeoWR5AFQ@mail.gmail.com>
-Message-ID: <CAHk-=wjZvroqVj0+R+Eg_OAjk1DkvP9AVzQn81E+BZeoWR5AFQ@mail.gmail.com>
-Subject: Re: [RFC 12/12] asm-generic: simplify asm/unaligned.h
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     linux-arch <linux-arch@vger.kernel.org>,
-        Vineet Gupta <vgupta@synopsys.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <CAHp75Vfa3GT9bnimxw7EJsJyRF8HZP3PGsUNikSScuNiU4qArg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 8, 2021 at 2:29 AM Arnd Bergmann <arnd@kernel.org> wrote:
->
-> On Sat, May 8, 2021 at 1:54 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> >
-> >   #define get_unaligned(ptr) \
-> >         __get_unaligned_t(typeof(*__ptr), __ptr)
+On 5/8/21 12:48 AM, Andy Shevchenko wrote:
+[ ... ]
+> 
+>     If you like I'll be happy to send you the coccinelle script I wrote
+>     to play with.
+> 
+> 
+> Please share (maybe even thru GH gist or so?)
+> 
 
-That's missing a set of parentheses around that __ptr thing ('*__ptr'
-should be '*(__ptr)'), btw, so don't use that as-is.
+https://github.com/groeck/coccinelle-patches, subdirectory 'acpi'.
 
-> Both versions are equally correct, I picked the __auto_type version
-> because this tends to produce smaller preprocessor output when you have
-> multiple layers of nested macros with 'ptr' expanding to something
-> complicated,
+With "MODE=patch", it "only" touches 258 files in the kernel,
+and 43 files in drivers/iio.
 
-Ahh.
+ From the other comments it looks like we would need another csv based
+match table, something like
 
-Yeah, that's probably not a problem for get_unaligned(), but it might
-happen in other situations.
+ID, "valid" | "invalid"
 
-              Linus
+to override the results from the published ID tables.
+
+Guenter
