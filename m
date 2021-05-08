@@ -2,63 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B543772E4
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 18:10:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD7DA3772E7
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 18:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229744AbhEHQKz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 12:10:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229500AbhEHQKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 12:10:53 -0400
-Received: by mail.kernel.org (Postfix) with ESMTPS id ECF3061448;
-        Sat,  8 May 2021 16:09:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=k20201202; t=1620490192;
-        bh=3O5IDpKDY83jcoMzg8ba634383UgeT4Y+6bHxHaUleM=;
-        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-        b=iSgIC9lXV8hwX1YtZq0SKTCx9a8bTA9kexWQtuMTo6XZM/KCMrtjlQFDqsIekjtV4
-         dR+E1cGB6R5FpWfM46g7zzEf/91QXzwRDe+e2vYeviJM8QQNlD3eRXTc0XDH472d38
-         K0Wj2L/RSUvwM7ZX9/jW6ecJ6qStDHlKLCNLskjmiBVwbN3Zhw0vLkmnp0m7XoQBmx
-         JxwmnRjTz/rp1hW3sz5wg3U5QrqsUIhUPn+2H3BFV32YhtEEbUcShB/dfVc0Mxt+E7
-         anD1nb/KBTPWVtF0wxMEjSi20JdB2lX7i2AuXgHru3bu/ORCpsyNkgiDkbOOWav7fW
-         sqe1ZezVkUolw==
-Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id E5AD960A01;
-        Sat,  8 May 2021 16:09:51 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-5.13-2 tag
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <87y2cpxrir.fsf@mpe.ellerman.id.au>
-References: <87y2cpxrir.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <87y2cpxrir.fsf@mpe.ellerman.id.au>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.13-2
-X-PR-Tracked-Commit-Id: f96271cefe6dfd1cb04195b76f4a33e185cd7f92
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: ab159ac569fddf812c0a217d6dbffaa5d93ef88f
-Message-Id: <162049019193.24889.5964565284286637928.pr-tracker-bot@kernel.org>
-Date:   Sat, 08 May 2021 16:09:51 +0000
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        christophe.leroy@csgroup.eu, gregkh@linuxfoundation.org,
-        hch@lst.de, linux-kernel@vger.kernel.org,
-        linuxppc-dev@lists.ozlabs.org, npiggin@gmail.com,
-        sandipan@linux.ibm.com, sourabhjain@linux.ibm.com,
-        Paolo Bonzini <pbonzini@redhat.com>
+        id S229742AbhEHQMr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 12:12:47 -0400
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:47560 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229500AbhEHQMq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 12:12:46 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id F33B5128018F;
+        Sat,  8 May 2021 09:11:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1620490304;
+        bh=lfDNqkmmUk0mztWdw1x9HPyihAABVH2qlsRo0i0jE3s=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=RLSShdV1XmEaUD+S3no020RcXLE8eTF1aJrMtr1QDJvwPDNfm4kogbOTDWeEweaNY
+         qqCY0k0XgEiAApGoEB96bJbObX6zcvlS+NPWPDljkz5KGEXz5GUcyIXT0+6NhsVN/d
+         6puL5JHdVivokzpXooDKXq/PcivxcZRYDBitxdyw=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id bG-fE-hKwZR5; Sat,  8 May 2021 09:11:44 -0700 (PDT)
+Received: from jarvis (unknown [216.116.7.47])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 4CD47128017C;
+        Sat,  8 May 2021 09:11:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+        d=hansenpartnership.com; s=20151216; t=1620490304;
+        bh=lfDNqkmmUk0mztWdw1x9HPyihAABVH2qlsRo0i0jE3s=;
+        h=Message-ID:Subject:From:To:Date:From;
+        b=RLSShdV1XmEaUD+S3no020RcXLE8eTF1aJrMtr1QDJvwPDNfm4kogbOTDWeEweaNY
+         qqCY0k0XgEiAApGoEB96bJbObX6zcvlS+NPWPDljkz5KGEXz5GUcyIXT0+6NhsVN/d
+         6puL5JHdVivokzpXooDKXq/PcivxcZRYDBitxdyw=
+Message-ID: <85c07f003e2fd2885cd69af41f64c5c4d66c7860.camel@HansenPartnership.com>
+Subject: [GIT PULL] final round of SCSI updates for the 5.12+ merge window
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Sat, 08 May 2021 09:11:43 -0700
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 08 May 2021 23:51:40 +1000:
+This is a set of minor fixes in various drivers (qla2xxx, ufs,
+scsi_debug, lpfc) one doc fix and a fairly large update to the fnic
+driver to remove the open coded iteration functions in favour of the
+scsi provided ones.
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-5.13-2
+The patch is available here:
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/ab159ac569fddf812c0a217d6dbffaa5d93ef88f
+git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
 
-Thank you!
+And the short changelog is:
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Anastasia Kovaleva (1):
+      scsi: qla2xxx: Prevent PRLI in target mode
+
+Bikash Hazarika (1):
+      scsi: qla2xxx: Add marginal path handling support
+
+Bodo Stroesser (1):
+      scsi: target: tcmu: Return from tcmu_handle_completions() if cmd_id not found
+
+Can Guo (3):
+      scsi: ufs: core: Narrow down fast path in system suspend path
+      scsi: ufs: core: Cancel rpm_dev_flush_recheck_work during system suspend
+      scsi: ufs: core: Do not put UFS power into LPM if link is broken
+
+Douglas Gilbert (1):
+      scsi: scsi_debug: Fix cmd_per_lun, set to max_queue
+
+Hannes Reinecke (2):
+      scsi: fnic: Use scsi_host_busy_iter() to traverse commands
+      scsi: fnic: Kill 'exclude_id' argument to fnic_cleanup_io()
+
+James Smart (3):
+      scsi: lpfc: Fix bad memory access during VPD DUMP mailbox command
+      scsi: lpfc: Fix DMA virtual address ptr assignment in bsg
+      scsi: lpfc: Fix illegal memory access on Abort IOCBs
+
+Keoseong Park (1):
+      scsi: ufs: core: Fix a typo in ufs-sysfs.c
+
+Ming Lei (1):
+      scsi: blk-mq: Fix build warning when making htmldocs
+
+with the diffstat:
+
+ drivers/scsi/fnic/fnic_scsi.c     | 828 +++++++++++++++++---------------------
+ drivers/scsi/lpfc/lpfc_bsg.c      |   2 +-
+ drivers/scsi/lpfc/lpfc_init.c     |  12 +-
+ drivers/scsi/lpfc/lpfc_sli.c      |  26 +-
+ drivers/scsi/qla2xxx/qla_init.c   |   3 +
+ drivers/scsi/qla2xxx/qla_os.c     |   1 +
+ drivers/scsi/scsi_debug.c         |  24 +-
+ drivers/scsi/ufs/ufs-sysfs.c      |  12 +-
+ drivers/scsi/ufs/ufshcd.c         |   7 +-
+ drivers/target/target_core_user.c |   4 +-
+ include/linux/blk-mq.h            |   8 +-
+ 11 files changed, 438 insertions(+), 489 deletions(-)
+
+James
+
+
