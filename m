@@ -2,190 +2,264 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E303C376FCE
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 07:46:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE494376FD1
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 07:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229701AbhEHFrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 01:47:17 -0400
-Received: from mga18.intel.com ([134.134.136.126]:46291 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229473AbhEHFrP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 01:47:15 -0400
-IronPort-SDR: 4cFWoE6RKjxjOCa7HjfUutuA9ciYFfreJeJV6JhRLtShcly/B1xC7nl6aJVdStsn5M8s5VoBZD
- U5q2yy99NWPA==
-X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="186322301"
-X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="scan'208";a="186322301"
-Received: from orsmga003.jf.intel.com ([10.7.209.27])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 22:46:14 -0700
-IronPort-SDR: gSxN5uXElMsj2qT+yR8CJ4BcwHoUOxd83fYjg+j23bIb2uqUXHiws+hkDqagEo06tt+SJUNHZs
- QWhqiXmqxGPw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
-   d="scan'208";a="390289653"
-Received: from orsmsx604.amr.corp.intel.com ([10.22.229.17])
-  by orsmga003.jf.intel.com with ESMTP; 07 May 2021 22:46:14 -0700
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX604.amr.corp.intel.com (10.22.229.17) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Fri, 7 May 2021 22:46:14 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2106.2
- via Frontend Transport; Fri, 7 May 2021 22:46:14 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.106)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2106.2; Fri, 7 May 2021 22:46:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=U9lKDO2O9Ot1iksWU6k9V8RP5bpY7YX4Zml6h+btvax0tTfJRxi53Msht38aCjJDwhbevL1iL6t+W8fKn63LzDUJLZ5SVYvzTJvzg/S5FkEQCI1wf59MtljpKZoYjnxLpGrzZ2peADiNdPdm6rD8LukdP7q7wntYRPRLfROdSd3URjZ2JuwBR/H2wzHNDJhIyMezY6HOFJweM8t6Gp5IWhWoIC/voIt8hxsjnFKrPM+VV6UuRdtEpKlFYuOIEeUf5/MFbcRUmajUHMXo9McI2m8JvRmPHmEGc2CBKVIMIEQUCFGKPJtecMNW6upEGXeSLag5a6NDWw9miwST/WCBBQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QifxiqKM68aD+Y4zhQAHqfPHngOrU7xs8nSqzNmvdjk=;
- b=BIbrcw+4F1bvOUfuXmfCIvn92IBiLa6TeBngjx5SsvKqQ7u64xT4Ck6CJ8K61nxD8jYdwGmmKak0p46HdNnKdjIhethPg2ySCRirK5UzV3CV/lypwqnMCxlO3+UAF/84XVipEntHaAVFTItzu/9jPIbIRQWP9TTVRyiLB98UuBWLrdLirV7QjWHaqHnWDjz4nI5bZJuBi+CzrcV5iDHB36SHTHpeB7GP04uxT0g82PFz+l2De0K2j6gZFPaIf9OtfHKhpknKnJPljpPV+L7Gq6PBXAAp74gLAMt6QHscvS+BmeWhXdJXNnjRxBXBpmoqhXtTMBmk6bnaJQkqnUDfyw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
- s=selector2-intel-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QifxiqKM68aD+Y4zhQAHqfPHngOrU7xs8nSqzNmvdjk=;
- b=zMlZqR5yg1Z2aN2Va6OSrmGUVJggjdgzdD8HCMMSwO7CFO0XHtqq109N5y2rgOc0/XIzvnbe4Mr+PRqCxVXwab6AHnuIdIhjbEMNAaUshDkKjBEaL3J1U+ZZU5tpOyRQk6pL8uqVbxVURgGRbdalQbQWCNqOBRUSyyM5DCEniwU=
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com (2603:10b6:300:110::9)
- by MWHPR11MB1935.namprd11.prod.outlook.com (2603:10b6:300:10c::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.25; Sat, 8 May
- 2021 05:46:09 +0000
-Received: from MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::75b0:a8e9:60cb:7a29]) by MWHPR11MB1886.namprd11.prod.outlook.com
- ([fe80::75b0:a8e9:60cb:7a29%9]) with mapi id 15.20.4108.030; Sat, 8 May 2021
- 05:46:09 +0000
-From:   "Tian, Kevin" <kevin.tian@intel.com>
-To:     Jason Gunthorpe <jgg@nvidia.com>
-CC:     Alex Williamson <alex.williamson@redhat.com>,
-        "Liu, Yi L" <yi.l.liu@intel.com>,
-        Jacob Pan <jacob.jun.pan@linux.intel.com>,
-        Auger Eric <eric.auger@redhat.com>,
-        Jean-Philippe Brucker <jean-philippe@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Joerg Roedel <joro@8bytes.org>,
-        Lu Baolu <baolu.lu@linux.intel.com>,
-        David Woodhouse <dwmw2@infradead.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "cgroups@vger.kernel.org" <cgroups@vger.kernel.org>,
-        Tejun Heo <tj@kernel.org>, Li Zefan <lizefan@huawei.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Jean-Philippe Brucker <jean-philippe@linaro.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        "Raj, Ashok" <ashok.raj@intel.com>, "Wu, Hao" <hao.wu@intel.com>,
-        "Jiang, Dave" <dave.jiang@intel.com>
-Subject: RE: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and allocation
- APIs
-Thread-Topic: [PATCH V4 05/18] iommu/ioasid: Redefine IOASID set and
- allocation APIs
-Thread-Index: AQHXDZub0CDG82VGXUmLEYgvMuPs4KqKkLIAgACg94CAAC72gIAAD04AgAADogCAAErUgIAETQEAgAOaswCAB7C3gIAAhxQwgADYDACAATCSAIAAVGMAgAELsQCAACiXgIAAVBgAgAAaMwCAAAESAIAABy2AgAAgOYCAFdCAgIAAppUAgADsNgCAACqygIAHsmaAgAAzsYCAAAjdgIAAD/yAgAAcQgCAADqggIAAk6nQgABIUACAASsnkIAAYWwAgALs9qCAAdeZgIACip7wgAEiVwCADrrawA==
-Date:   Sat, 8 May 2021 05:46:09 +0000
-Message-ID: <MWHPR11MB18861BF1CEA9AEA0B8CB2B0C8C569@MWHPR11MB1886.namprd11.prod.outlook.com>
-References: <20210421175203.GN1370958@nvidia.com>
- <20210421133312.15307c44@redhat.com> <20210421230301.GP1370958@nvidia.com>
- <MWHPR11MB1886188698A6E20338196F788C469@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210422121020.GT1370958@nvidia.com>
- <MWHPR11MB1886E688D2128C98A1F240B18C459@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210423114944.GF1370958@nvidia.com>
- <MWHPR11MB18861FE6982D73AFBF173E048C439@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210426123817.GQ1370958@nvidia.com>
- <MWHPR11MB188625137D5B7423822396C88C409@MWHPR11MB1886.namprd11.prod.outlook.com>
- <20210428204606.GX1370958@nvidia.com>
-In-Reply-To: <20210428204606.GX1370958@nvidia.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-version: 11.5.1.3
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-authentication-results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=intel.com;
-x-originating-ip: [101.80.65.46]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 04fb36bc-af60-4673-e5cd-08d911e494e7
-x-ms-traffictypediagnostic: MWHPR11MB1935:
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <MWHPR11MB19352275E4B23ADD601143BF8C569@MWHPR11MB1935.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:7219;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: oqac7lqgG0g0apDgAsNyM5IkIAoLB/fhAPSsHHSk/MSXSDE2OTVLg8ogpGdytWVEKZs0Zqgyu/bU08lEnKU4NTjKiyn6JbJLWpdqFFtrIwfT1ZowNIi0nCnWWMJP5o/7YwGclnMgEufWvcbBxDGtsGPsi67/D5L6zGggx9oP3x3Pn+alrSuilB+plWXIJhPSUEagZ0epwPbaDWJWIdya7yONgSVnYWTKqz7HCzVpTcKI7pFYXFfeL1mP0tZxOqtjolbakCZzW+s0ygxCK+xGI+rOLiv5oX4MgbPWMfk0bPh78/vRmbhvpm8aORr0jvDWaCXao1azuVsFR6uq+u6jMLRWp+6SndUYw2hpsIimlDFmNlS+FtmTv/XNQpRB9AyYPoZjCinZhmLYaixmoOoxZDtFbmkeokv9XNAfS6Mzk3JU8vmrbFAY3KL4IT17lDWMZrr7ankQGcdKOeAiCCJP4uxR2KXMKMVtNSz9FgQ/3vSOyG04VsaHvoce6yMxuBHRd02y7HX5Ysjte3rvtlrQeyY1jijT3nCOSmb8asWYpgewkhl2ijQTXBqcIRF6z1XMXLyYwIIESdGpZRPralSDeCfIvQLE3aCj4C3vmoogSM0=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MWHPR11MB1886.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(39860400002)(376002)(136003)(346002)(366004)(8676002)(7696005)(6916009)(6506007)(9686003)(66476007)(64756008)(71200400001)(66946007)(76116006)(66556008)(5660300002)(55016002)(4326008)(2906002)(8936002)(86362001)(7416002)(186003)(478600001)(33656002)(38100700002)(26005)(122000001)(54906003)(66446008)(316002)(52536014);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: =?utf-8?B?NUpYbnc0UHkyMlhNbmxmVkpwVURpL0VoN3pMN0FjejhjYnFCTEJ0cEd5ejVR?=
- =?utf-8?B?TndsbnFlN1MzdlJ0UUlpUll4cGQxcXhIbzFmMjZuRm5aWDA0UnNSZWxkSUdR?=
- =?utf-8?B?cWkrVFgyKzF0SzNVcGNmT0NvWHl2bTN0K3VLdVRidTRxVGRsV1puK2ZKeTYy?=
- =?utf-8?B?MWVkVE55VTIrZ01KV1NZdSt1RzZFVU1oZjdxcnkwOVh1ZGVxOERDVmkvOHhW?=
- =?utf-8?B?Y3VqYWE1YzBkd3F4WFRpak1MOHkxL0pHUlFGSDFZTHV0blpLZUhKUjBTOVQv?=
- =?utf-8?B?TFNGa3h6eHc2aW9Tb3g1MTVFMkQwU2djNGY4eHlMeXJreWRTc0EycXN3MWdF?=
- =?utf-8?B?WWtRaFc3VzUyVHIrWkpRdU9weXF5aEZ3eldBQUF0WFBmSTI3aWlDS0htOThR?=
- =?utf-8?B?SFhyOWRwMkFobDQrSTkzYkQxaXlyMWZIRW1DbEJOcHYwYmdIUGhadzd1d0Fo?=
- =?utf-8?B?aTZZaUw4S0tvdm1mNGtWR3lIY2hZUCttREZ2RTd5enpoRU1WMGo3MGk0ak1Q?=
- =?utf-8?B?cE0rZVk1S1V4QWpCcXYxSHFJNVBITlVGcVB2L3hqNEk2L2d3aWtkWTZLYlNK?=
- =?utf-8?B?enBXSnJwdUxRQ1Fta1Y1VllLaEdRaUdjeXRsZmxnaXJQVlFwdzRza044anlv?=
- =?utf-8?B?dGtFTEtoZGRLVnYyOVVaZEJ2cXJxSE9tL0Uva2xUSkRlZDFuRzkyK1ZvNzVL?=
- =?utf-8?B?MDVBSndFcmlvU0krMDMzY1hWM2xNT2Y5K1ZvVy9YbEdnZlFEWXIvK1Y4Zzhn?=
- =?utf-8?B?TGFmUGlreWQyZGlTempScVI4U2ZNSnRqTUlTZHduMm5wQTNNSUZSMGhjMWhu?=
- =?utf-8?B?a0IraUV5a2ZTN3JadG5OTUgvakVRNEQ5bnRZck9vY2RKa0JqNzFGRW1lcGpQ?=
- =?utf-8?B?NERUdGx3bXE0VnRBbzh6cTFyM3o4N2hEVUx1OVVkdWtMNEhwQmNVckhiV0Nr?=
- =?utf-8?B?N0ducFhzb3pnaDY2RVdXWDFFWklER0lvQThxV085N3hJS2RiZDV0bFAzWU10?=
- =?utf-8?B?ZWQxL0xlV3B2R0hyTE95NnViZWRNcG9tRzl1TVBCbUNVT0FwdjU2Y3orWmxw?=
- =?utf-8?B?aU15bis0Vk5Sb2VGZXhjVC9xT0lNNFBtL2w0ZEY5Y1RCL05HcTFHOFljeEdV?=
- =?utf-8?B?TjVQMDVIQ3gvSFZ5ekU2eStITDM0aDNWZXFkNC9oZGtBT0JoTlovNnFWcEla?=
- =?utf-8?B?TlpIc3BuM0E3L3BJRVNQd1NVNjdNVkFmN3ZZN0tYdDBOZ0Q4a2ZNNUFlUFhr?=
- =?utf-8?B?VTlNby9nbnVSeDExYXhNOHd2cU92M1VzUnpDalNNeWgwdk1KSU5HTnBuSGk1?=
- =?utf-8?B?aWxiTFRKYUMreTd6SnJicytHdVlwY05CYlNEVWhnVGRMV0dSNDk0eFlINDNh?=
- =?utf-8?B?S0pwNnFjZWw3YWMyVVlzR2czRDBxRjJBNHJqUkw0dHlsSDJybjE5am5mWWtQ?=
- =?utf-8?B?dXNPL1JoN3pVMlRFYWp5V3htajUzd2pZRkc5czBteUZ6NUpzNk9MWTF0dEZG?=
- =?utf-8?B?Y3lqQjVoUmdsaUM4ZTNNRzVCdzNhMVlmUHFjSHRQbnBJMHZBdHlkckc4dm14?=
- =?utf-8?B?T1dBWnE3T2xBdHV4eDFEc0xBR0lTamdxTmlONlZ5QjMrQnFFSjRIYms3T0pt?=
- =?utf-8?B?OXZ5NktRR3Q1d1ppbnJ6T2xoOGluQ2gyTHdycmsveUpnWC81WTA5OUl4aTRK?=
- =?utf-8?B?ektLcmRnVWR1UjcvSXB2Q2tlbGhDN1ZySlkvcW1HYnRlb1IxL2ZDYkpMa2dw?=
- =?utf-8?Q?xTVa/PX/sy/l9peDFE=3D?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        id S229732AbhEHFsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 01:48:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59810 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229473AbhEHFsA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 01:48:00 -0400
+Received: from mail-ot1-x330.google.com (mail-ot1-x330.google.com [IPv6:2607:f8b0:4864:20::330])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7D45C061574;
+        Fri,  7 May 2021 22:46:59 -0700 (PDT)
+Received: by mail-ot1-x330.google.com with SMTP id b5-20020a9d5d050000b02902a5883b0f4bso9842609oti.2;
+        Fri, 07 May 2021 22:46:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=nFqC/lz4MJmYxRW+AODc04kNcj15ywFtCaqr13k7NSk=;
+        b=bsCCpEwLcgWKOfyMDuHgb346sTQ1ATb3ebGQ1BkOY9bozcq1rJX75LwzKdWQi+oW/x
+         TdE+v8boZI/2oQb86aqeCaZki4dg4faKgBMVOWOB8ui+t67BfxxUSNsNerMOfw3QQoff
+         CeQQ4WYgpE9c3Y+CpvEZHIjQ4wvzX9a1JJCdSq2qZGNDPdhwSoN6LLyr+qCtvKpm2h42
+         zLyaK7Cja8bMGubOpqJbPCftl24uN5pWkLgy75u5HuQ2HbLLHhS9iyo0MANqQ0ycUjgT
+         XAhkyCksgdHc8WXwFSvfIe3jH2KIDms/VCUOWx6mYjPjPtdN9geeiMofEL5aVVbo57IP
+         AnmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=nFqC/lz4MJmYxRW+AODc04kNcj15ywFtCaqr13k7NSk=;
+        b=gKVGALieyY/oD8OgSkmeAc7uWq/VgdE3hkUUVs0SMVemcrSp8/d658CoTIDmOgsPW/
+         YstOKSWl+uGrXtmdy5cIPjhmn2nz+pHNswaSjS0atNriDXgJLoq/PKKXNm7PewA4DVtB
+         /WQj2TPH/PIKnQcpziNHGUiQoHETgEJ7G8wFhSmBSklJp+lvUjJuwN1/k3htUVj5xRzn
+         dqC82NVCJyDqOHksOv0s8/E1UWm0sYiQh7ZdKTswJLcdeU5U2x7YZiJYt1a1z6jDB0v+
+         W3Go4tXb7TDX2/4wvSb1RIEFsMNdAFgRpPht1QPMxNSBNZXWcLpCmixaHslxjfzXqpep
+         c0vw==
+X-Gm-Message-State: AOAM5314JOAjkMm0RB9v+kyjQXBIelqsD2hPTvQxiCqNnMxC2D2kcxgK
+        LeLWay0SLdQDGh/QmEWk3Me/Q0rUqfEMVzOdSeafZwMFlE0HPMLH
+X-Google-Smtp-Source: ABdhPJyxUQqAiSH7i4Fm9pDs/qU7EWQVrEgubwEgLHgZzLHkiU0JhFUWHJe4FMA6DFtyS/bjXcvFV/7NduvnRHmB8qo=
+X-Received: by 2002:a9d:4e9a:: with SMTP id v26mr11460488otk.74.1620452818925;
+ Fri, 07 May 2021 22:46:58 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MWHPR11MB1886.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04fb36bc-af60-4673-e5cd-08d911e494e7
-X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2021 05:46:09.6837
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: xEEsZJIo0fI5e2LwB26M/BIcV8Ty9zxvVQTNqiC2o20JmqJMtMDMbQxPjAeDYoMycv4RjVlDAPdgub3h/crbFQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MWHPR11MB1935
-X-OriginatorOrg: intel.com
+References: <20210501133647.14350-1-sergio.paracuellos@gmail.com>
+ <20210506151839.GA322729@robh.at.kernel.org> <CAMhs-H_Ae4Erx06j2fGSiZXpGo9UWRAkSPPQhFGnZ1D8=NM8cg@mail.gmail.com>
+ <CAL_JsqKBH=QK8V+fv-ehQZ_+cL1+Da-9PLEbwPzqR4LodKw3aw@mail.gmail.com>
+In-Reply-To: <CAL_JsqKBH=QK8V+fv-ehQZ_+cL1+Da-9PLEbwPzqR4LodKw3aw@mail.gmail.com>
+From:   Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date:   Sat, 8 May 2021 07:46:48 +0200
+Message-ID: <CAMhs-H-DO9CkAnq=w3DSi2u6GFoQ5K8OPw110d36KZKOrq0aOQ@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: staging: mt7621-pci: PCIe binding
+ documentation for MT76721 SoCs
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>, linux-staging@lists.linux.dev,
+        Greg KH <gregkh@linuxfoundation.org>,
+        NeilBrown <neil@brown.name>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBGcm9tOiBKYXNvbiBHdW50aG9ycGUgPGpnZ0BudmlkaWEuY29tPg0KPiBTZW50OiBUaHVyc2Rh
-eSwgQXByaWwgMjksIDIwMjEgNDo0NiBBTQ0KPiANCj4gPiA+IEkgdGhpbmsgdGhlIG5hbWUgSU9B
-U0lEIGlzIGZpbmUgZm9yIHRoZSB1QVBJLCB0aGUga2VybmVsIHZlcnNpb24gY2FuDQo+ID4gPiBi
-ZSBjYWxsZWQgaW9hc2lkX2lkIG9yIHNvbWV0aGluZy4NCj4gPg0KPiA+IGlvYXNpZCBpcyBhbHJl
-YWR5IGFuIGlkIGFuZCB0aGVuIGlvYXNpZF9pZCBqdXN0IGFkZHMgY29uZnVzaW9uLiBBbm90aGVy
-DQo+ID4gcG9pbnQgaXMgdGhhdCBpb2FzaWQgaXMgY3VycmVudGx5IHVzZWQgdG8gcmVwcmVzZW50
-IGJvdGggUENJIFBBU0lEIGFuZA0KPiA+IEFSTSBzdWJzdHJlYW0gSUQgaW4gdGhlIGtlcm5lbC4g
-SXQgaW1wbGllcyB0aGF0IGlmIHdlIHdhbnQgdG8gc2VwYXJhdGUNCj4gPiBpb2FzaWQgYW5kIHBh
-c2lkIGluIHRoZSB1QVBJIHRoZSAncGFzaWQnIGFsc28gbmVlZHMgdG8gYmUgcmVwbGFjZWQgd2l0
-aA0KPiA+IGFub3RoZXIgZ2VuZXJhbCB0ZXJtIHVzYWJsZSBmb3Igc3Vic3RyZWFtIElELiBBcmUg
-d2UgbWFraW5nIHRoZQ0KPiA+IHRlcm1zIHRvbyBjb25mdXNpbmcgaGVyZT8NCj4gDQo+IFRoaXMg
-aXMgd2h5IEkgYWxzbyBhbSBub3Qgc28gc3VyZSBhYm91dCBleHBvc2luZyB0aGUgUEFTSUQgaW4g
-dGhlIEFQSQ0KPiBiZWNhdXNlIGl0IGlzIHVsdGltYXRlbHkgYSBIVyBzcGVjaWZpYyBpdGVtLg0K
-PiANCj4gQXMgSSBzYWlkIHRvIERhdmlkLCBvbmUgYXZlbnVlIGlzIHRvIGhhdmUgc29tZSBnZW5l
-cmljIHVBUEkgdGhhdCBpcw0KPiB2ZXJ5IGdlbmVyYWwgYW5kIGtlZXAgYWxsIHRoaXMgZGVlcGx5
-IGRldGFpbGVkIHN0dWZmLCB0aGF0IHJlYWxseSBvbmx5DQo+IG1hdHRlcnMgZm9yIHFlbXUsIGFz
-IHBhcnQgb2YgYSBtb3JlIEhXIHNwZWNpZmljIHZJT01NVSBkcml2ZXINCj4gaW50ZXJmYWNlLg0K
-PiANCg0KT0ssIHNvIHRoZSBnZW5lcmFsIHVBUEkgd2lsbCBub3QgZXhwb3NlIGh3X2lkIGFuZCBq
-dXN0IHByb3ZpZGUgZXZlcnl0aGluZw0KZ2VuZXJpYyBmb3IgbWFuYWdpbmcgSS9PIHBhZ2UgdGFi
-bGUgKG1hcC91bm1hcCwgbmVzdGluZywgZXRjLikgdGhyb3VnaCANCklPQVNJRCBhbmQgdGhlbiBz
-cGVjaWZpYyB1QVBJIGlzIHByb3ZpZGVkIHRvIGhhbmRsZSBwbGF0Zm9ybSBzcGVjaWZpYw0KcmVx
-dWlyZW1lbnRzIChod19pZCwgaW92YSB3aW5kb3dzLCBldGMuKQ0KDQpUaGFua3MNCktldmluDQo=
+Hi Rob,
+
+On Fri, May 7, 2021 at 10:38 PM Rob Herring <robh@kernel.org> wrote:
+>
+> On Thu, May 6, 2021 at 11:41 AM Sergio Paracuellos
+> <sergio.paracuellos@gmail.com> wrote:
+> >
+> > Hi Rob,
+> >
+> > Thanks for the review.
+> >
+> > On Thu, May 6, 2021 at 5:18 PM Rob Herring <robh@kernel.org> wrote:
+> > >
+> > > On Sat, May 01, 2021 at 03:36:46PM +0200, Sergio Paracuellos wrote:
+> > > > Add device tree binding documentation for PCIe in MT7621 SoCs.
+> > > >
+> > > > Signed-off-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > > ---
+> > > >
+> > > > Hi Rob,
+> > > >
+> > > > Some concerns here. I was not be able to found any case similar to
+> > > > this binding where sub-nodes describing each pcie port interface
+> > > > are needed. I added them to the 'examples' directly without saying
+> > > > anything about properties in any other place since its properties
+> > > > seems to be covered in 'pci-bus.yaml' schema definition. I don't
+> > > > know if this is the way, I have checked against schema and I noticed
+> > > > I am forced to add 'device_type' property in each subnode because
+> > > > schema checker complains that this is mandatory. So I have added
+> > > > it and schema is properly being validated:
+> > > >
+> > > > Before add the 'device_type' in each subnode:
+> > > > /home/sergio/staging/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml: pcie@0,0: 'device_type' is a required property
+> > > > >From schema: /home/sergio/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
+> > > > /home/sergio/staging/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml: pcie@1,0: 'device_type' is a required property
+> > > > >From schema: /home/sergio/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
+> > > > /home/sergio/staging/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml: pcie@2,0: 'device_type' is a required property
+> > > > >From schema: /home/sergio/.local/lib/python3.9/site-packages/dtschema/schemas/pci/pci-bus.yaml
+> > >
+> > > Each port is a PCI bridge, right? If so, then 'pcie' for the node name
+> > > and 'device_type = "pci";' are correct.
+> >
+> > Yes it is, thanks for clarification.
+> >
+> > >
+> > > >
+> > > > After adding it:
+> > > > CHKDT   Documentation/devicetree/bindings/processed-schema-examples.json
+> > >
+> > > Validates all the schema
+> > >
+> > > > SCHEMA  Documentation/devicetree/bindings/processed-schema-examples.json
+> > >
+> > > Preprocesses all the schema
+> > >
+> > > > DTEX    Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dts
+> > >
+> > > Extracts the example to dts file
+> > >
+> > > > DTC     Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml
+> > >
+> > > Converts the example to yaml
+> > >
+> > > > CHECK   Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.example.dt.yaml
+> > >
+> > > Runs the checks.
+> > >
+> > > >
+> > > > Looks a bit redundant and maybe I am doing something wrong...
+> >
+> > I meant redundant the 'device_type=pci' in all of the child nodes, not
+> > the messages I got when check against the schema but thanks also for
+> > explanation :).
+> >
+> > > >
+> > > > Thanks in advance for clarification.
+> > > >
+> > > > Best regards,
+> > > >     Sergio Paracuellos
+> > > >
+> > > >
+> > > >  .../bindings/pci/mediatek,mt7621-pci.yaml     | 144 ++++++++++++++++++
+> > > >  .../mt7621-pci/mediatek,mt7621-pci.txt        | 104 -------------
+> > > >  2 files changed, 144 insertions(+), 104 deletions(-)
+> > > >  create mode 100644 Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > > >  delete mode 100644 drivers/staging/mt7621-pci/mediatek,mt7621-pci.txt
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > > > new file mode 100644
+> > > > index 000000000000..9c1d05d929a2
+> > > > --- /dev/null
+> > > > +++ b/Documentation/devicetree/bindings/pci/mediatek,mt7621-pci.yaml
+> > > > @@ -0,0 +1,144 @@
+> > > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > > +%YAML 1.2
+> > > > +---
+> > > > +$id: http://devicetree.org/schemas/pci/mediatek,mt7621-pci.yaml#
+> > > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > > +
+> > > > +title: MediaTek MT7621 PCIe controller
+> > > > +
+> > > > +maintainers:
+> > > > +  - Sergio Paracuellos <sergio.paracuellos@gmail.com>
+> > > > +
+> > > > +description: |+
+> > > > +  MediaTek MT7621 PCIe subsys supports single Root complex (RC)
+> > > > +  with 3 Root Ports. Each Root Ports supports a Gen1 1-lane Link
+> > > > +
+> > > > +allOf:
+> > > > +  - $ref: /schemas/pci/pci-bus.yaml#
+> > > > +
+> > > > +properties:
+> > > > +  compatible:
+> > > > +    const: mediatek,mt7621-pci
+> > > > +
+> > > > +  reg:
+> > > > +    items:
+> > > > +      - description: host-pci bridge registers
+> > > > +      - description: pcie port 0 RC control registers
+> > > > +      - description: pcie port 1 RC control registers
+> > > > +      - description: pcie port 2 RC control registers
+> > >
+> > > Are these config space registers or MT7621 specific?
+> >
+> > All of them are MT7621 specific.
+> >
+> > >
+> > > > +
+> > > > +  ranges:
+> > > > +    maxItems: 2
+> > > > +
+> > > > +  interrupts:
+> > > > +    maxItems: 3
+> > >
+> > > What are the 3 interrupts?
+> >
+> > These are one interrupt per root port. In next version this will
+> > change in favour of using interrupt-map and interrupt-map-mask instead
+> > of use interrupts and a custom 'map_irq' callback in driver code.
+> > Please see:
+> >
+> > https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=aed0b711cc791d075e716c397ff6b26bf50345a6
+> > https://git.kernel.org/pub/scm/linux/kernel/git/gregkh/staging.git/commit/?h=staging-testing&id=3e278e3064511b1606d406db0e26b2fee593fb55
+> >
+> > This is the way used in mt7623 already mainlined binding.
+> >
+> > > > +
+> > > > +  resets:
+> > > > +    items:
+> > > > +      - description: pcie port 0 reset.
+> > > > +      - description: pcie port 1 reset.
+> > > > +      - description: pcie port 2 reset.
+> > >
+> > > This and clocks should perhaps be in each child node.
+> >
+> > I followed here style in mt7623 already mainlined bindings which are
+> > in the main node. Is there a strong reason to be changed into child
+> > nodes or can I maintain this as it is?
+>
+> Okay, I had no idea because you didn't mention it. Why are you
+> creating a new binding then? Looks like they are pretty similar. At
+> least don't invent new *-names.
+
+Old ramips based SoCs like mt7621 are not really maintained by
+mediatek. They are focused in arm-based stuff (like mentioned mt7623
+SoC). Ramips drivers and so on normally comes from openwrt community
+based on SDK driver code. Until now (near to three years?) no comments
+from mediatek have come from any of my changes and new drivers for
+this SoC (like the clock one I recently be able to mainline) I am
+trying to maintain. That is why if there is not a real problem I do
+think is better this to have its own binding.
+
+What do you mean with "don't invent new *-names" part?
+
+>
+> However, you should be aware of this pending change:
+>
+> https://lore.kernel.org/linux-pci/20210406034410.24381-1-chuanjia.liu@mediatek.com/
+>
+> So perhaps mt7621 should follow that?
+
+Thanks for the link. Because there is no documentation at all for the
+Pcie in MT7621 SoCs, and old drivers I have been cleaning and
+maintaining from a while now had nothing MSI related I think I cannot
+suppose anything and don't really know if mt7621 should follow that.
+Both Mt7622 and Mt7612 SocS seem to be arm64 based architectures. All
+the ramips stuff and this kind of SoCs are not really maintained,
+AFAICT, but are supported because of openwrt people use them a lot.
+
+
+
+>
+> Rob
+
+Thanks for the review and comments.
+
+Best regards,
+    Sergio Paracuellos
