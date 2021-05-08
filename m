@@ -2,67 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2183A377371
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 19:46:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97EBE377374
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 19:46:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229610AbhEHRrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 13:47:10 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:59486 "EHLO vps0.lunn.ch"
+        id S229656AbhEHRrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 13:47:45 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55854 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229523AbhEHRrJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 13:47:09 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
-        (envelope-from <andrew@lunn.ch>)
-        id 1lfR1f-003Hxv-42; Sat, 08 May 2021 19:46:03 +0200
-Date:   Sat, 8 May 2021 19:46:03 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Ansuel Smith <ansuelsmth@gmail.com>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v4 08/28] net: dsa: qca8k: handle error with
- qca8k_read operation
-Message-ID: <YJbOWw3q6rYG/wcV@lunn.ch>
-References: <20210508002920.19945-1-ansuelsmth@gmail.com>
- <20210508002920.19945-8-ansuelsmth@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210508002920.19945-8-ansuelsmth@gmail.com>
+        id S229523AbhEHRro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 13:47:44 -0400
+Received: by mail.kernel.org (Postfix) with ESMTPS id 8D080610FA;
+        Sat,  8 May 2021 17:46:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=k20201202; t=1620496002;
+        bh=UEkS8R/dVeycfD+3I3h7jbQbwlU+pYwK7vy7xNnZ0is=;
+        h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+        b=sdnn9wNGFT9WOExSUWq/XVTwZ9zmRyzH+jIRo0afVck7cXO+Z9a2F21MKpBBs2Jgk
+         tcMWNxScEEfNUhWXCb/5wjELny9A/Y2fguNxHDBBb2bty6hcdRTeKMCO3xP3y7nxpa
+         +VDjItGinX/6CrjDft/RIxwGG3H5IgusaTDz4XFH229sLQVdIyiKGzxGltS2AX5Gcp
+         VvDHop5nidV+F3w0blWjltbw7MEhw4J/mxW+1DlVO3sHf0KHLxKl8urg+eXi+orUwu
+         1Ex5lpJCcTyTd7vS1l2AOAz+SRpuZjN+E98/0T0v47vZXB/4MfGQyrS2a5JnLhsY0T
+         NEidDsWWHZ0sQ==
+Received: from pdx-korg-docbuild-2.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+        by pdx-korg-docbuild-2.ci.codeaurora.org (Postfix) with ESMTP id 7A93860A0C;
+        Sat,  8 May 2021 17:46:42 +0000 (UTC)
+Subject: Re: [GIT PULL] More Kbuild updates for v5.13-rc1
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <CAK7LNASYmL1E9r7as1xGccKFUg0TiVMxe1jzDazfDO_V4rzDKA@mail.gmail.com>
+References: <CAK7LNASYmL1E9r7as1xGccKFUg0TiVMxe1jzDazfDO_V4rzDKA@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAK7LNASYmL1E9r7as1xGccKFUg0TiVMxe1jzDazfDO_V4rzDKA@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.13-2
+X-PR-Tracked-Commit-Id: 0ab1438bad43d95877f848b7df551bd431680270
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 0f979d815cd52084b99e9f6b367e79488850df2e
+Message-Id: <162049600244.344.16570295681799960631.pr-tracker-bot@kernel.org>
+Date:   Sat, 08 May 2021 17:46:42 +0000
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->  static int
->  qca8k_fdb_next(struct qca8k_priv *priv, struct qca8k_fdb *fdb, int port)
->  {
-> -	int ret;
-> +	int ret, ret_read;
->  
->  	qca8k_fdb_write(priv, fdb->vid, fdb->port_mask, fdb->mac, fdb->aging);
->  	ret = qca8k_fdb_access(priv, QCA8K_FDB_NEXT, port);
-> -	if (ret >= 0)
-> -		qca8k_fdb_read(priv, fdb);
-> +	if (ret >= 0) {
-> +		ret_read = qca8k_fdb_read(priv, fdb);
-> +		if (ret_read < 0)
-> +			return ret_read;
-> +	}
+The pull request you sent on Sun, 9 May 2021 01:00:34 +0900:
 
-This is O.K, but it is a bit of an odd structure. How about
+> git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git tags/kbuild-v5.13-2
 
-  	qca8k_fdb_write(priv, fdb->vid, fdb->port_mask, fdb->mac, fdb->aging);
-	ret = qca8k_fdb_access(priv, QCA8K_FDB_NEXT, port);
-	if (ret < 0)
-		return ret;
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/0f979d815cd52084b99e9f6b367e79488850df2e
 
-	return qca8k_fdb_read(priv, fdb);
-}
+Thank you!
 
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
