@@ -2,52 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4E437701C
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 08:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7614337701F
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 08:36:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229925AbhEHGcV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 02:32:21 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:17482 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhEHGcP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 02:32:15 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FccpD5q5dzkX9C;
-        Sat,  8 May 2021 14:28:36 +0800 (CST)
-Received: from [10.136.110.154] (10.136.110.154) by smtp.huawei.com
- (10.3.19.208) with Microsoft SMTP Server (TLS) id 14.3.498.0; Sat, 8 May 2021
- 14:31:12 +0800
-Subject: Re: [f2fs-dev] [RESEND][PATCH 2/2] mkfs.f2fs: fix memory leak in not
- enough segments error path
-To:     Seung-Woo Kim <sw0312.kim@samsung.com>, <jaegeuk@kernel.org>,
-        <linux-f2fs-devel@lists.sourceforge.net>
-CC:     <linux-kernel@vger.kernel.org>
-References: <20210507111224.29887-1-sw0312.kim@samsung.com>
- <CGME20210507110917epcas1p4a2d7ebd7e2fd8cc630fdf627ad73a003@epcas1p4.samsung.com>
- <20210507111224.29887-2-sw0312.kim@samsung.com>
-From:   Chao Yu <yuchao0@huawei.com>
-Message-ID: <37005c84-d93e-fd0b-af16-ce9f1260c0f2@huawei.com>
-Date:   Sat, 8 May 2021 14:31:11 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.9.1
-MIME-Version: 1.0
-In-Reply-To: <20210507111224.29887-2-sw0312.kim@samsung.com>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.136.110.154]
-X-CFilter-Loop: Reflected
+        id S229841AbhEHGh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 02:37:27 -0400
+Received: from pegase2.c-s.fr ([93.17.235.10]:47645 "EHLO pegase2.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229481AbhEHGhZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 02:37:25 -0400
+Received: from localhost (mailhub3.si.c-s.fr [172.26.127.67])
+        by localhost (Postfix) with ESMTP id 4FcczB5JQCz9sbc;
+        Sat,  8 May 2021 08:36:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from pegase2.c-s.fr ([172.26.127.65])
+        by localhost (pegase2.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id dY9LIrX_eqFv; Sat,  8 May 2021 08:36:22 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase2.c-s.fr (Postfix) with ESMTP id 4FcczB4NYRz9sbC;
+        Sat,  8 May 2021 08:36:22 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 75EEB8B774;
+        Sat,  8 May 2021 08:36:22 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id P8c3zfm0TPmD; Sat,  8 May 2021 08:36:22 +0200 (CEST)
+Received: from po15610vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 36C838B76B;
+        Sat,  8 May 2021 08:36:22 +0200 (CEST)
+Received: by po15610vm.idsi0.si.c-s.fr (Postfix, from userid 0)
+        id ED3396492C; Sat,  8 May 2021 06:36:21 +0000 (UTC)
+Message-Id: <d5e3c8e66bad3725d7d48d0e45c4b7eb7c02631d.1620455671.git.christophe.leroy@csgroup.eu>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Subject: [PATCH] powerpc/legacy_serial: Fix UBSAN: array-index-out-of-bounds
+To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>, pmenzel@molgen.mpg.de
+Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
+Date:   Sat,  8 May 2021 06:36:21 +0000 (UTC)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021/5/7 19:12, Seung-Woo Kim wrote:
-> In not enough segements error path of f2fs_write_check_point_pack(),
-> cp_payload is not freed. Fix the error path.
-> 
-> Signed-off-by: Seung-Woo Kim <sw0312.kim@samsung.com>
+UBSAN complains when a pointer is calculated with invalid
+'legacy_serial_console' index, allthough the index is verified
+before dereferencing the pointer.
 
-Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Fix it by checking 'legacy_serial_console' validity before
+calculating pointers.
 
-Thanks,
+Fixes: 0bd3f9e953bd ("powerpc/legacy_serial: Use early_ioremap()")
+Reported-by: Paul Menzel <pmenzel@molgen.mpg.de>
+Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+---
+ arch/powerpc/kernel/legacy_serial.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/arch/powerpc/kernel/legacy_serial.c b/arch/powerpc/kernel/legacy_serial.c
+index 8b2c1a8553a0..1c2e09e1d59b 100644
+--- a/arch/powerpc/kernel/legacy_serial.c
++++ b/arch/powerpc/kernel/legacy_serial.c
+@@ -354,15 +354,12 @@ static void __init setup_legacy_serial_console(int console)
+ 	udbg_uart_setup(info->speed, info->clock);
+ }
+ 
+-static int __init ioremap_legacy_serial_console(void)
++static int __init do_ioremap_legacy_serial_console(int console)
+ {
+-	struct legacy_serial_info *info = &legacy_serial_infos[legacy_serial_console];
+-	struct plat_serial8250_port *port = &legacy_serial_ports[legacy_serial_console];
++	struct legacy_serial_info *info = &legacy_serial_infos[console];
++	struct plat_serial8250_port *port = &legacy_serial_ports[console];
+ 	void __iomem *vaddr;
+ 
+-	if (legacy_serial_console < 0)
+-		return 0;
+-
+ 	if (!info->early_addr)
+ 		return 0;
+ 
+@@ -376,6 +373,13 @@ static int __init ioremap_legacy_serial_console(void)
+ 
+ 	return 0;
+ }
++
++static int __init ioremap_legacy_serial_console(void)
++{
++	if (legacy_serial_console < 0)
++		return 0;
++	return do_ioremap_legacy_serial_console(legacy_serial_console);
++}
+ early_initcall(ioremap_legacy_serial_console);
+ 
+ /*
+-- 
+2.25.0
+
