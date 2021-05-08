@@ -2,94 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A5E0E3772F4
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 18:29:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F9293772F9
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 18:30:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229741AbhEHQab (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 12:30:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57330 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229544AbhEHQa1 (ORCPT
+        id S229768AbhEHQbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 12:31:02 -0400
+Received: from mail-40136.protonmail.ch ([185.70.40.136]:13578 "EHLO
+        mail-40136.protonmail.ch" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229749AbhEHQay (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 12:30:27 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40B36C061574;
-        Sat,  8 May 2021 09:29:25 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id b11-20020a7bc24b0000b0290148da0694ffso8770245wmj.2;
-        Sat, 08 May 2021 09:29:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bVRDKdENJWxwkNST3ljV2kIRILcgjQXziV66z6KKgCY=;
-        b=ZiI/JOTvEn+ecPiFOfso3KJEoQOEah2HHuaCQ/ocWmQA0WS4aGN/8Ta+Da0l9C+zid
-         u7hKI57zWP+miStmYdLrtHkszi5lzWOjsKGODIVAZ3fUF71FFFXEU6O4uAryxTVAmFkV
-         RiOP6cQsQ7JEZ6ulT93eBEfWP5iXGHHoDvhiAfQU95LiHv/TL+GcQG3ud3vnSFXxz3gv
-         k1Q3Ul3nwdcoJXrg9zEMwWRE+fJZeXLWM1eVOSbBnck6nmuxEaHBNYSbuUAYPtyXof+j
-         azK60STmJx6S66G4XlGO5KBc/yrLdPKn6RNS8nNKdNTIl52+dR1F9u80b8o5RN90PLND
-         YPyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bVRDKdENJWxwkNST3ljV2kIRILcgjQXziV66z6KKgCY=;
-        b=GfxNK+IRZ/QK8FcpxnLfrF40cx7Fvb37h4MO4/HN+Xr3Tp3rgRbxOISE972pqdArGH
-         ZVZ7rBPVGEmUfwaWcibuANWGb/Vs3NVP2O9FYFYnYz5AxLKpHlV5BKapWI06X5QiAxaP
-         03cca1+MtteHoxdjzOnb3tL3qmml+4/nvlWdv54wKOZdbsFg8psMUiR7ZozaInAFJB2y
-         RjWQdW3LwT2ZFCx98Dm48t/NKbQCF/Y5GY+ryYhefqBpLXf5Pjola2BydMRzrb1CpsPk
-         tBdwYshdCBcta7W8Oc7DSc2bqbXj3R7W2iIAF36l+LCPzit0/P1nt3rukm+1J/QuJ/Zt
-         KR3A==
-X-Gm-Message-State: AOAM5312P4+IsMtpc8/6M+dswi3XXaDelu7CyNwU2ASqO2xZ44ky2bah
-        +S6aQThwJFW9gBxU6X9LfvtqzoFxqF4Eeg==
-X-Google-Smtp-Source: ABdhPJyve22KTNe+xKecFcC1Wj1YJLJ4a5qZ3nPGVsQdQkAh/HS6W7HyK4pDYuHNk82evR1pl0gihQ==
-X-Received: by 2002:a1c:1f8d:: with SMTP id f135mr13689499wmf.109.1620491363779;
-        Sat, 08 May 2021 09:29:23 -0700 (PDT)
-Received: from Ansuel-xps.localdomain (93-35-189-2.ip56.fastwebnet.it. [93.35.189.2])
-        by smtp.gmail.com with ESMTPSA id k6sm17802377wmi.42.2021.05.08.09.29.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 09:29:23 -0700 (PDT)
-Date:   Sat, 8 May 2021 18:29:21 +0200
-From:   Ansuel Smith <ansuelsmth@gmail.com>
-To:     Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v4 26/28] net: dsa: permit driver to provide
- custom phy_mii_mask for slave mdiobus
-Message-ID: <YJa8YYSA21gUYhIl@Ansuel-xps.localdomain>
-References: <20210508002920.19945-1-ansuelsmth@gmail.com>
- <20210508002920.19945-26-ansuelsmth@gmail.com>
- <086f92b8-8c91-f618-f5cb-9df18f890f13@gmail.com>
+        Sat, 8 May 2021 12:30:54 -0400
+Date:   Sat, 08 May 2021 16:29:33 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pm.me; s=protonmail;
+        t=1620491388; bh=5rNl+kAanqy5Ow6PHG0Nk/iTcHfaHO7mTi0wPOmmCc0=;
+        h=Date:To:From:Cc:Reply-To:Subject:In-Reply-To:References:From;
+        b=WyD5ez/5my30NXYcWHdga/2UTQhj3s1Mai4b6T2yCM7pXPFqSIyVDLZr44wTS1Sz6
+         9JnHA0T8xPqHDnBBEngpRZ9z/HlmGq5WdFMsxgIQyE6HZQi/WcWkpStY4jdMmBFZ03
+         QmWx1tyQKZv31lXLsZOPWM/yc3JUTdeIzzNZZ0YuWUrQPIe41RMeeFT1ZOQu5EPlQX
+         eeNtYz6tMydBuvU/l1YDzPcaWpKbnohxfwvDNkRMAKXeILIBtFlCwdW0UFvOHYfEB5
+         TLfd8iAn6ysn8OTtXLzEE5aHuj0aWwGlEnLwHk+Lfn9UG2BhGfJRD4BAXwsPqHGwlQ
+         liOPHHS4GgHVQ==
+To:     Nathan Chancellor <nathan@kernel.org>
+From:   Alexander Lobakin <alobakin@pm.me>
+Cc:     clang-built-linux@googlegroups.com, linux-mips@vger.kernel.org,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Kees Cook <keescook@chromium.org>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Fangrui Song <maskray@google.com>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Ralf Baechle <ralf@linux-mips.org>,
+        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org
+Reply-To: Alexander Lobakin <alobakin@pm.me>
+Subject: Re: [BUG mips llvm] MIPS: malformed R_MIPS_{HI16,LO16} with LLVM
+Message-ID: <s6F4SDP26btK3zHEtGxYELVAR2oXYQu1JaXYCbCj4VyBigG5ROOk2JTLIw4Gs8fVC6SALoV7tgH7uJ7_fg0cQdpJ9TXJZmQSychOLMczMC4=@pm.me>
+In-Reply-To: <YJTwglbUOb67r733@archlinux-ax161>
+References: <20210109171058.497636-1-alobakin@pm.me> <YJTwglbUOb67r733@archlinux-ax161>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <086f92b8-8c91-f618-f5cb-9df18f890f13@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Spam-Status: No, score=-1.2 required=10.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF shortcircuit=no
+        autolearn=disabled version=3.4.4
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on
+        mailout.protonmail.ch
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 08:52:03AM -0700, Florian Fainelli wrote:
-> 
-> 
-> On 5/7/2021 5:29 PM, Ansuel Smith wrote:
-> > Some switch doesn't have a 1:1 map phy to port. Permit driver to provide
-> > a custom phy_mii_mask so the internal mdiobus can correctly use the
-> > provided phy reg as it can differ from the port reg.
-> > The qca8k driver is provided as a first user of this function.
-> 
-> Why not have qca8k be in charge of allocating its internal MDIO bus like
-> what mv88e6xxx or bcm_sf2 do? That would allow you to do all sorts of
-> customization there and you could skip having patches 23 and 24.
+From: Nathan Chancellor <nathan@kernel.org>
+Date: Fri, 7 May 2021 00:47:14 -0700
 
-Oh ok, I will implement the internal MDIO bus directly in the qca8k
-driver. Was thinking... Should I keep the extra mdio node and move the
-documentation to qca8k or should I handle all of that internally?
-To me it looks cleaner the direct definition in the devicetree than the 
-port_to_phy function in the driver but as you can see extra checks are
-required to handle the new implementation and still supports the old
-one.
+> On Sat, Jan 09, 2021 at 05:11:18PM +0000, Alexander Lobakin wrote:
+> > Machine: MIPS32 R2 Big Endian (interAptiv (multi))
+> >
+> > While testing MIPS with LLVM, I found a weird and very rare bug with
+> > MIPS relocs that LLVM emits into kernel modules. It happens on both
+> > 11.0.0 and latest git snapshot and applies, as I can see, only to
+> > references to static symbols.
+> >
+> > When the kernel loads the module, it allocates a space for every
+> > section and then manually apply the relocations relative to the
+> > new address.
+> >
+> > Let's say we have a function phy_probe() in drivers/net/phy/libphy.ko.
+> > It's static and referenced only in phy_register_driver(), where it's
+> > used to fill callback pointer in a structure.
+> >
+> > The real function address after module loading is 0xc06c1444, that
+> > is observed in its ELF st_value field.
+> > There are two relocs related to this usage in phy_register_driver():
+> >
+> > R_MIPS_HI16 refers to 0x3c010000
+> > R_MIPS_LO16 refers to 0x24339444
+> >
+> > The address of .text is 0xc06b8000. So the destination is calculated
+> > as follows:
+> >
+> > 0x00000000 from hi16;
+> > 0xffff9444 from lo16 (sign extend as it's always treated as signed);
+> > 0xc06b8000 from base.
+> >
+> > =3D3D 0xc06b1444. The value is lower than the real phy_probe() address
+> > (0xc06c1444) by 0x10000 and is lower than the base address of
+> > module's .text, so it's 100% incorrect.
+> >
+> > This results in:
+> >
+> > [    2.204022] CPU 3 Unable to handle kernel paging request at virtual
+> > address c06b1444, epc =3D3D=3D3D c06b1444, ra =3D3D=3D3D 803f1090
+> >
+> > The correct instructions should be:
+> >
+> > R_MIPS_HI16 0x3c010001
+> > R_MIPS_LO16 0x24339444
+> >
+> > so there'll be 0x00010000 from hi16.
+> >
+> > I tried to catch those bugs in arch/mips/kernel/module.c (by checking
+> > if the destination is lower than the base address, which should never
+> > happen), and seems like I have only 3 such places in libphy.ko (and
+> > one in nf_tables.ko).
+> > I don't think it should be handled somehow in mentioned source code
+> > as it would look rather ugly and may break kernels build with GNU
+> > stack, which seems to not produce such bad codes.
+> >
+> > If I should report this to any other resources, please let me know.
+> > I chose clang-built-linux and LKML as it may not happen with userland
+> > (didn't tried to catch).
+> >
+> > Thanks,
+> > Al
+> >
+>
+> Hi Alexander,
 
+Hi!
+
+> Doubling back around to this as I was browsing through the LLVM 12.0.1
+> blockers on LLVM's bug tracker and I noticed a commit that could resolve
+> this? It refers to the same relocations that you reference here.
+>
+> https://bugs.llvm.org/show_bug.cgi?id=3D3D49821
+>
+> http://github.com/llvm/llvm-project/commit/7e83a7f1fdfcc2edde61f0a535f9d7=
+a=3D
+> 56f531db9
+
+This really seems very related to the bug I encountered.
+Currently I don't have a MIPS setup to try since I've moved to
+another country, but I should "deploy" it again soon. So I'll
+definitely take a look a bit later, thanks for pointing on this
+commit!
+
+> I think that Debian's apt.llvm.org repository should have a build
+> available with that commit in it. Otherwise, building it from source is
+> not too complicated with my script:
+>
+> https://github.com/ClangBuiltLinux/tc-build
+>
+> $ ./build-llvm.py --build-stage1-only --install-stage1-only --projects "c=
+l=3D
+> ang;lld" --targets "Mips;X86"
+>
+> would get you a working toolchain relatively quickly.
+
+I could just build llvm-git from Arch Linux User Repository :) I did
+that last time when was checking if the latest snapshot also suffers
+from the bug, and I think it didn't take much time to build.
+
+> Cheers,
+> Nathan
+
+Thanks,
+Al
