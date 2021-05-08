@@ -2,177 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4AFA377109
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:47:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9B137710C
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230326AbhEHJs3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 05:48:29 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41355 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229583AbhEHJs0 (ORCPT
+        id S230397AbhEHJsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 05:48:53 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:53096 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229583AbhEHJsw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 05:48:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620467244;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=dY53Nc61o60Wf+/qIK7zrnU7eZ4qBKGUvPeJZm3EV6A=;
-        b=HCoAoLgVkEzVTYI700GwgGNqaCnvJPhBWTHmZqNl4m2Nkxdywizpuu2WxwDxu/+g234NPW
-        dBnVJ2IVKKgnogkHAdOhquETFFUCsobP4UR91P/ZAfjAZbJg+MlWmB3DxV3DM3BzKLZwXk
-        p0JCp9wBmStYSdjQ9cXjiamoAqNfWKU=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-423-l7dZXd_aO-KVALj4ZjTWOA-1; Sat, 08 May 2021 05:47:22 -0400
-X-MC-Unique: l7dZXd_aO-KVALj4ZjTWOA-1
-Received: by mail-ed1-f70.google.com with SMTP id d13-20020a056402144db0290387e63c95d8so5881601edx.11
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 02:47:22 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=dY53Nc61o60Wf+/qIK7zrnU7eZ4qBKGUvPeJZm3EV6A=;
-        b=axn2Yu42ZdtN4af4GmAwEeTXNlfPmdTvD2lhstaHrRD265MmuLdGlH2gxS5+JNtWjB
-         t4xIkobd1/H61bH2SQmiZOPnTtMTMbskKskS12HngioaMsYHt+Y2Z0/tsik6lv+jyCGy
-         sHK39ps683w+yaD37BRlUmcHxXiWEVThPEQoPMFklJa8H3N/WNOybSO/nK2aZc5CQU0K
-         JM63ftKWYKrAQ5Zd2szyaXZ5bMLA36hfFNu+7hAvCE/iv9TMBZgALW0M60b2VPyJ1kuz
-         CXYss5TeDObo9Nu2+IReQcbfDkcFjW3atgDYD18kAhG9849RKyWgzApFBvQa/dNAdAG6
-         nI+g==
-X-Gm-Message-State: AOAM530ElE4ux8pU41a4FMpOnWUUJuL27ee0DV1ksAdUCS3imGyXKuOv
-        QXZt4htsr0Zj2MpiQG9Z/az0vTYub/b8/KnEPk33uRlOfkpQEbNItFP7ZvcIUbZtVKsKIDGuxEx
-        05oOC6E2BNzEJuSZmZ5ItS9f9
-X-Received: by 2002:a17:906:bce7:: with SMTP id op7mr14525563ejb.398.1620467241399;
-        Sat, 08 May 2021 02:47:21 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJx5g/ZxbF3Bn2THc67O9ehSeDI4fFZDU2mECrKYvoo2ZFwCec9D8uaMkTFhb/PHqSdRHT8mmQ==
-X-Received: by 2002:a17:906:bce7:: with SMTP id op7mr14525551ejb.398.1620467241204;
-        Sat, 08 May 2021 02:47:21 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c1e-bf00-1054-9d19-e0f0-8214.cable.dynamic.v6.ziggo.nl. [2001:1c00:c1e:bf00:1054:9d19:e0f0:8214])
-        by smtp.gmail.com with ESMTPSA id c8sm6070712edy.63.2021.05.08.02.47.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 08 May 2021 02:47:20 -0700 (PDT)
-Subject: Re: [PATCH v2] iio: bme680_i2c: Remove ACPI support
-From:   Hans de Goede <hdegoede@redhat.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>
-Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Jonathan Cameron <jic23@kernel.org>,
-        "linux-iio@vger.kernel.org" <linux-iio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        kernel test robot <lkp@intel.com>
-References: <20210506034332.752263-1-linux@roeck-us.net>
- <20210507103154.00006763@Huawei.com> <20210508030936.GA3879276@roeck-us.net>
- <CAHp75Vfa3GT9bnimxw7EJsJyRF8HZP3PGsUNikSScuNiU4qArg@mail.gmail.com>
- <294dacb7-aef3-ede0-e46d-5c8fd91e9c17@redhat.com>
-Message-ID: <0627cf17-c902-02a7-40d7-2f4b6fb4754e@redhat.com>
-Date:   Sat, 8 May 2021 11:47:20 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.8.1
+        Sat, 8 May 2021 05:48:52 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1489jPa3086509;
+        Sat, 8 May 2021 09:47:38 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=IQqVHs76XhjtZDzkptDb3pKsbswt7BT6LhPyiwkXRzY=;
+ b=Szlf795MhekMLmqLTpRi1aHzINq40fW+DrpUVcZtyrCsGT0FIPwt7zBXCT1lrogPt0cW
+ 6Ldiqb4czEKF4SgwR4E5jF0moi/rxGGB/p/n3hXPZfTLEyo4e3Nv1EgkkBHDa6opf24D
+ ZeT7DVYA/0ayaZ1Lnlg92zvHw37Ko4BTasONnWCP4CfJ8fUlVMqxiqnj8ql+tjxW45V2
+ PuK7TBD6s/HvA5HV+2p7w2Vx/5LC2esuwHizhUfUFWhLp4yHj3Qk80+K6gc7Ebd+w2/9
+ 0JLeBtoevoShaqEZAT2e08NA406mqch+xTSHF4XwdSPkqIfDKxqSq58jxLFLdnssHG3D Ow== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 38dk9n89tc-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 08 May 2021 09:47:38 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1489jeEe141687;
+        Sat, 8 May 2021 09:47:37 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+        by aserp3030.oracle.com with ESMTP id 38dgpcfekn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 08 May 2021 09:47:37 +0000
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1489la0j145113;
+        Sat, 8 May 2021 09:47:37 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 38dgpcfej4-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 08 May 2021 09:47:36 +0000
+Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1489lalM007047;
+        Sat, 8 May 2021 09:47:36 GMT
+Received: from kadam (/102.36.221.92)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 08 May 2021 02:47:35 -0700
+Date:   Sat, 8 May 2021 12:47:29 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Pavle Rohalj <pavle.rohalj@gmail.com>
+Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
+        gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 08/49]  staging: sm750fb: Update enum values in dpms
+ to snake case
+Message-ID: <20210508094729.GK1955@kadam>
+References: <cover.1617776878.git.pavle.rohalj@gmail.com>
+ <16693e7cc62f84ea1ec34b7d5cbd77c4cd1965e8.1617776878.git.pavle.rohalj@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <294dacb7-aef3-ede0-e46d-5c8fd91e9c17@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <16693e7cc62f84ea1ec34b7d5cbd77c4cd1965e8.1617776878.git.pavle.rohalj@gmail.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-ORIG-GUID: v8H7VetVFFfdHibY98cHgUyDGo6SaQDX
+X-Proofpoint-GUID: v8H7VetVFFfdHibY98cHgUyDGo6SaQDX
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9977 signatures=668683
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
+ adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
+ malwarescore=0 priorityscore=1501 clxscore=1015 bulkscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
+ definitions=main-2105080070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi again,
-
-On 5/8/21 11:41 AM, Hans de Goede wrote:
-> Hi,
+On Tue, Apr 06, 2021 at 11:36:16PM -0700, Pavle Rohalj wrote:
+> Fix "Avoid CamelCase" checkpatch.pl checks for values in
+> enum dpms.
 > 
-> On 5/8/21 9:48 AM, Andy Shevchenko wrote:
->>
->>
->> On Saturday, May 8, 2021, Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>> wrote:
->>
->>     On Fri, May 07, 2021 at 10:31:54AM +0100, Jonathan Cameron wrote:
->>     > On Wed,  5 May 2021 20:43:32 -0700
->>     > Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>> wrote:
->>     >
->>     > > With CONFIG_ACPI=n and -Werror, 0-day reports:
->>     > >
->>     > > drivers/iio/chemical/bme680_i2c.c:46:36: error:
->>     > >     'bme680_acpi_match' defined but not used
->>     > >
->>     > > Apparently BME0680 is not a valid ACPI ID. Remove it and with it
->>     > > ACPI support from the bme680_i2c driver.
->>     > >
->>     > > Reported-by: kernel test robot <lkp@intel.com <mailto:lkp@intel.com>>
->>     > > Cc: Andy Shevchenko <andy.shevchenko@gmail.com <mailto:andy.shevchenko@gmail.com>>
->>     > > Cc: Hans de Goede <hdegoede@redhat.com <mailto:hdegoede@redhat.com>>
->>     > > Signed-off-by: Guenter Roeck <linux@roeck-us.net <mailto:linux@roeck-us.net>>
->>     >
->>     > A note for these is that I'll change the patch titles when applying.
->>     > We aren't removing ACPI support from the drivers, we are simply
->>     > removing the ACPI ID table entries.  For most of these PRP0001 magic
->>     > will work just fine with the OF table.  That's probably the
->>     > right way for small companies etc to use these in products without
->>     > having to jump through the hoops of getting an ACPI ID.
->>     >
->>
->>     Below is what Coccinelle tells me about ACPI IDs in drivers/iio.
->>     The script (tries) to do a prefix match of all ACPI IDs it finds against
->>     the PNP and ACPI ID databases from https://uefi.org/PNP_ACPI_Registry <https://uefi.org/PNP_ACPI_Registry>.
->>
->>     Andy, Hans, does that look about right ?
->>
->>
->>
->> The result looks nice for the first step!
->>  
->>
->>
->>     Next question is what to do with the mismatches and with false
->>     negatives such as:
->>
->>     drivers/iio/accel/stk8312.c
->>       STK8312: match (prefix) against STK (SANTAK CORP.)
->>     drivers/iio/light/isl29018.c
->>       ISL29018: match (prefix) against ISL (Isolation Systems)
->>       ISL29023: match (prefix) against ISL (Isolation Systems)
->>       ISL29035: match (prefix) against ISL (Isolation Systems)
->>     drivers/iio/gyro/bmg160_i2c.c
->>
->>
->>  
->>
->>       BMI055B: match (prefix) against BMI (Benson Medical Instruments Company)
->>       BMI088B: match (prefix) against BMI (Benson Medical Instruments Company)
->>
->>
->> These I think the real ones from the existing devices.
+> Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
+> ---
+>  drivers/staging/sm750fb/ddk750_power.h | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 > 
-> No that is wrong, these are Bosch sensors, so the BOSC0200 entry for
-> the companion accelerometer is the only entry using the official company
-> prefix. At least "BMA" ("BMA250E") and "BSG" ("BSG1160", "BSG2150") are
-> also know to be used as prefixes for ACPI HIDs which are in active
-> use for Bosch sensors :|
-> 
-> And Benson Medical Instruments Company has nothing to do with these
-> sensors :|
+> diff --git a/drivers/staging/sm750fb/ddk750_power.h b/drivers/staging/sm750fb/ddk750_power.h
+> index 7002567a47d2..4756db1ccb9c 100644
+> --- a/drivers/staging/sm750fb/ddk750_power.h
+> +++ b/drivers/staging/sm750fb/ddk750_power.h
+> @@ -3,10 +3,10 @@
+>  #define DDK750_POWER_H__
+>  
+>  enum dpms {
+> -	crtDPMS_ON = 0x0,
+> -	crtDPMS_STANDBY = 0x1,
+> -	crtDPMS_SUSPEND = 0x2,
+> -	crtDPMS_OFF = 0x3,
+> +	CRT_DPMS_ON = 0x0,
+> +	CRT_DPMS_STANDBY = 0x1,
+> +	CRT_DPMS_SUSPEND = 0x2,
+> +	CRT_DPMS_OFF = 0x3,
+>  };
 
-p.s.
+These must be unused.  Delete.
 
-And there also is the Lenovo Yoga 300 11IBR convertible laptop which has
-2 Bosch accelerometers, 1 in the display and 1 in the base/keyboard
-described in a single ACPI "Device (ACC1) {}" ACPI fwnode (so not 1 fwnode
-per sensor), and this single node to describe 2 separate I2C connected
-ICs has a ACPI HID of "DUAL250E" (*), how is that for sticking to the HID
-naming spec ?
-
-I really have the feeling that the naming spec is not worth much more
-then the paper it is written on, it is really really easy to find a ton
-of examples out in the field which don't adhere to it.
-
-Regards,
-
-Hans
-
-
-
-*) I recently got my hands on one of these and I still need to add support
-for this to the kernel
+regards,
+dan carpenter
 
