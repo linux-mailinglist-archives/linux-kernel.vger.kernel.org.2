@@ -2,134 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A3F1377268
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 16:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EBEE377275
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 16:38:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbhEHOav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 10:30:51 -0400
-Received: from netrider.rowland.org ([192.131.102.5]:45905 "HELO
-        netrider.rowland.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with SMTP id S229586AbhEHOat (ORCPT
+        id S229617AbhEHOjs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 10:39:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33332 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229500AbhEHOjq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 10:30:49 -0400
-Received: (qmail 811116 invoked by uid 1000); 8 May 2021 10:29:47 -0400
-Date:   Sat, 8 May 2021 10:29:47 -0400
-From:   Alan Stern <stern@rowland.harvard.edu>
-To:     dave penkler <dpenkler@gmail.com>
-Cc:     Guido Kiener <Guido.Kiener@rohde-schwarz.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        syzbot <syzbot+e2eae5639e7203360018@syzkaller.appspotmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "lee.jones@linaro.org" <lee.jones@linaro.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        "bp@alien8.de" <bp@alien8.de>,
-        "dwmw@amazon.co.uk" <dwmw@amazon.co.uk>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "x86@kernel.org" <x86@kernel.org>
-Subject: Re: Re: Re: Re: Re: [syzbot] INFO: rcu detected stall in tx
-Message-ID: <20210508142947.GB810516@rowland.harvard.edu>
-References: <6cffd7eebba54ed8acd043d51d212ec1@rohde-schwarz.com>
- <CAL=kjP0xOQ32xLytyVm9=d+9rnKzV2dW2VJQ6c8MAwTK7rg2Kw@mail.gmail.com>
+        Sat, 8 May 2021 10:39:46 -0400
+Received: from mail-il1-x12c.google.com (mail-il1-x12c.google.com [IPv6:2607:f8b0:4864:20::12c])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FCAC061574;
+        Sat,  8 May 2021 07:38:44 -0700 (PDT)
+Received: by mail-il1-x12c.google.com with SMTP id l19so10201653ilk.13;
+        Sat, 08 May 2021 07:38:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=MZYaBypPGzWypcDz+RJ/92Ib8rkc/cBWvMxSsGfkW+k=;
+        b=D3/aQyfp8t7ogWUaX4DRE6YvqooLIvoM/ckyPIoqkrZHNXcM2EqOXu1QAHjTG7fVIf
+         kmhqXdpkUYYyz9TuB6QdQj2kfPmeLEVp1f/8X0S5OIYcuy03pTC6MP2haGf6MztfCB8R
+         TfjhBHaC69s0fEsdoImJki0XbAaFl7XYDkm6JrlIMD5JwU8scWrfnZ1X5SeoQzzhK7+I
+         CliwvA2Dwtxo9fpzoYIMeOr2O1ZQrIXE7Ktw6lJ7iP252PKUH3NtokoJ6xAyNfQN0RKU
+         a4+rj1F2+dax6kIn+QjT59BuDO/UN3QajHe1w1DkCsQ2o64fKqSHMhJwin7YdOlCrTu/
+         cu3w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=MZYaBypPGzWypcDz+RJ/92Ib8rkc/cBWvMxSsGfkW+k=;
+        b=NuEvFvpBOQBOfp5en2z/tpr9JkwQFuFKrpW1UCu1tpMhDLmOVMGtsmaRmesLHA/pxz
+         Mn4YHYpsSYyYmWsxBX8rJ8JyXkE4gu9ZxXddZjdeRuYZk/smZQ/qNcNMJsXG3Pl1O6Ag
+         cDnlCorp5FQz2qTFA4aylutMr4M2+6ixMdPsOF5kvrT1XjIQv6UrurHWLGHq9fYtFxvn
+         mM4DpZH/5H3fXM8mZxXOzLDQ3t70aN4KKgBFcaFY2clMIeRkdQEKa0fdzAZA18Zn/1nS
+         LTgTJ2IEcwMLF2p1rbInvBvwA3OQmdThas/d9v57Ud4JVN5+4vroS8SYAxPTEaKvN3Ow
+         V1gA==
+X-Gm-Message-State: AOAM533dVu9IvLCEnFnxRXAS8JNcFghSeg6NLyhAt5CjxRWKl5tT7Ze0
+        tpKr2Q9We2wClevwPuY4bc/Z3rFZxAenIS2KVZj480w9oezOJQ==
+X-Google-Smtp-Source: ABdhPJwUvA3thyatHn3dd/9MJu3e1ABd2WdkeQ/tylIxI6HW7OQPWyI0vfmU59iDWaxLTYwuUHC8WS0qVtt6CNawyhg=
+X-Received: by 2002:a05:6e02:20ce:: with SMTP id 14mr14078108ilq.102.1620484723400;
+ Sat, 08 May 2021 07:38:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL=kjP0xOQ32xLytyVm9=d+9rnKzV2dW2VJQ6c8MAwTK7rg2Kw@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <a6b23ee8d3ea78f62d3fda0b53aa273718f14c6d.1620452523.git.christophe.jaillet@wanadoo.fr>
+In-Reply-To: <a6b23ee8d3ea78f62d3fda0b53aa273718f14c6d.1620452523.git.christophe.jaillet@wanadoo.fr>
+From:   Edmundo Carmona Antoranz <eantoranz@gmail.com>
+Date:   Sat, 8 May 2021 08:38:32 -0600
+Message-ID: <CAOc6etaUPtJqoH9DBDE72nDW7s7iEZHnaJRpKx9zFow02WOZig@mail.gmail.com>
+Subject: Re: [PATCH] rtc: max77686: Remove some dead code
+To:     Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+Cc:     cw00.choi@samsung.com, krzysztof.kozlowski@canonical.com,
+        b.zolnierkie@samsung.com, a.zummo@towertech.it,
+        alexandre.belloni@bootlin.com, linux-rtc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 10:14:41AM +0200, dave penkler wrote:
-> On Thu, 6 May 2021 at 22:31, Guido Kiener
-> <Guido.Kiener@rohde-schwarz.com> wrote:
-> >
-> > > -----Original Message-----
-> > > From: Alan Stern
-> > > Sent: Thursday, May 6, 2021 8:32 PM
-> > > To: Kiener Guido 14DS1
-> > >
-> > > On Thu, May 06, 2021 at 05:44:55PM +0000, Guido Kiener wrote:
-> > > > > -----Original Message-----
-> > > > > From: Alan Stern
-> > > > > Sent: Thursday, May 6, 2021 3:49 PM
-> > > > > To: Kiener Guido 14DS1 <Guido.Kiener@rohde-schwarz.com>
-> > > > > >
-> > > > > > Thanks for your assessment. I agree with the general feeling. I
-> > > > > > counted about hundred specific usb drivers, so wouldn't it be
-> > > > > > better to fix the
-> > > > > problem in some of the host drivers (e.g. urb.c)?
-> > > > > > We could return an error when calling usb_submit_urb() on an erroneous
-> > > pipe.
-> > > > > > I cannot estimate the side effects and we need to check all
-> > > > > > drivers again how they deal with the error situation. Maybe there
-> > > > > > are some special driver
-> > > > > that need a specialized error handling.
-> > > > > > In this case these drivers could reset the (new?) error flag to
-> > > > > > allow calling usb_submit_urb() again without error. This could work, isn't it?
-> > > > >
-> > > > > That is feasible, although it would be an awkward approach.  As you
-> > > > > said, the side effects aren't clear.  But it might work.
-> > > >
-> > > > Otherwise I see only the other approach to change hundred drivers and
-> > > > add the cases EPROTO, EILSEQ and ETIME in each callback handler. The
-> > > > usbtmc driver already respects the EILSEQ and ETIME, and only EPROTO is
-> > > missing.
-> > > > The rest should be more a management task.
-> > > > BTW do you assume it is only a problem for INT pipes or is it also a
-> > > > problem for isochronous and bulk transfers?
-> > >
-> > > All of them.  Control too.
-> > >
-> > > > > Will you be able to test patches?
-> > > >
-> > > > I only can test the USBTMC function in some different PCs. I do not
-> > > > have automated regression tests for USB drivers or Linux kernels.
-> > > > Maybe there is company who could do that.
-> > >
-> > > Well then, if I do find time to write a patch, I'll ask you to try it out with the usbtmc
-> > > driver.
-> >
-> > You mean that you will do a patch in urb.c or a host driver? Or just add a line in usbtmc.c?
-> > Anyhow there is no hurry. On May 20 I will send you a mail if I'm able to
-> > provoke one of these hardware errors EPROTO, EILSQ, or ETIME. Otherwise
-> > it doesn't make sense to test it.
-> >
-> > -Guido
-> 
-> EPROTO is a link level issue and needs to be handled by the host driver.
+On Fri, May 7, 2021 at 11:43 PM Christophe JAILLET
+<christophe.jaillet@wanadoo.fr> wrote:
+>         if (IS_ERR(info->rtc_dev)) {
+>                 ret = PTR_ERR(info->rtc_dev);
+>                 dev_err(&pdev->dev, "Failed to register RTC device: %d\n", ret);
 
-Are you referring to the host controller driver, or to the class device 
-driver running on the host?  The host controller driver is responsible 
-for creating the -EPROTO error code in the first place.  The class 
-device driver is responsible for taking an appropriate action in 
-response.
+Following the recent conversations, I think it might make sense to do
+dev_err(&pdev->dev, "Failed to register RTC device: %pe\n", info->rtc_dev);
 
-> When the host driver detects a protocol error while processing an URB
-> it completes the URB with EPROTO status and marks the endpoint as
-> halted.
-
-Not true.  It does not mark the endpoint as halted, not unless it 
-receives a STALL handshake from the device.  A STALL is not a protocol 
-error.
-
-> When the class driver resubmits the URB and the if the host driver
-> finds the endpoint still marked as halted it should return EPIPE
-> status on the resubmitted URB
-
-Irrelevant.
-
-> When the class driver and usbtmc in particular receives an URB with
-> EPIPE status it cleans up and does not resubmit.
-> Can someone from syzbot land please confirm whether usbtmc running on
-> the xhci host driver causes an RCU stall to be detected ?
-
-That is not an easy thing to test, and syzbot is not capable of testing 
-it.  You would need a USB device which could deliberately be set to 
-create a protocol error; I don't know of any devices like that.
-
-Alan Stern
+Is that right?
