@@ -2,73 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F4853772D7
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:57:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EBCB43772DA
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 17:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229645AbhEHP6y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 11:58:54 -0400
-Received: from smtprelay0118.hostedemail.com ([216.40.44.118]:56922 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S229500AbhEHP6v (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 11:58:51 -0400
-Received: from omf05.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay01.hostedemail.com (Postfix) with ESMTP id 120E2100E7B45;
-        Sat,  8 May 2021 15:57:49 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: joe@perches.com) by omf05.hostedemail.com (Postfix) with ESMTPA id 91409B2793;
-        Sat,  8 May 2021 15:57:47 +0000 (UTC)
-Message-ID: <6ea0773df765ec4d261e5e3434060622ce48d8f1.camel@perches.com>
-Subject: Re: [RFC PATCH net-next v4 01/28] net: mdio: ipq8064: clean
- whitespaces in define
-From:   Joe Perches <joe@perches.com>
-To:     Ansuel Smith <ansuelsmth@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Date:   Sat, 08 May 2021 08:57:46 -0700
-In-Reply-To: <20210508002920.19945-1-ansuelsmth@gmail.com>
-References: <20210508002920.19945-1-ansuelsmth@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S229696AbhEHP7v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 11:59:51 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47010 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S229500AbhEHP7t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 11:59:49 -0400
+Received: from jic23-huawei (cpc108967-cmbg20-2-0-cust86.5-4.cable.virginm.net [81.101.6.87])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DE5C660FE9;
+        Sat,  8 May 2021 15:58:45 +0000 (UTC)
+Date:   Sat, 8 May 2021 16:59:44 +0100
+From:   Jonathan Cameron <jic23@kernel.org>
+To:     Peter Rosin <peda@axentia.se>
+Cc:     Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>,
+        Lars-Peter Clausen <lars@metafoo.de>,
+        Rob Herring <robh+dt@kernel.org>, linux-iio@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] dt-bindings: iio: afe: current-sense-shunt: add
+ io-channel-cells
+Message-ID: <20210508165944.2e3d8d91@jic23-huawei>
+In-Reply-To: <0e68ca18-7d8c-12ab-59b1-56404b29be77@axentia.se>
+References: <20210506150637.35288-1-krzysztof.kozlowski@canonical.com>
+        <0e68ca18-7d8c-12ab-59b1-56404b29be77@axentia.se>
+X-Mailer: Claws Mail 3.17.8 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-X-Spam-Status: No, score=-1.40
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: 91409B2793
-X-Stat-Signature: 1h3gjuode6wyq67r57fp99bcyqmajug7
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Session-ID: U2FsdGVkX19KSTGJVGvmPqzwYwCMA96QBCKLxc9d+d0=
-X-HE-Tag: 1620489467-53897
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2021-05-08 at 02:28 +0200, Ansuel Smith wrote:
-> Fix mixed whitespace and tab for define spacing.
+On Sat, 8 May 2021 00:44:58 +0200
+Peter Rosin <peda@axentia.se> wrote:
 
-Incomplete commit message here.
+> Hi!
+> 
+> On 2021-05-06 17:06, Krzysztof Kozlowski wrote:
+> > The current-sense-shunt is an IIO provider thus can be referenced by IIO
+> > consumers (via "io-channels" property in consumer device node).
+> > Such provider is required to describe number of cells used in phandle
+> > lookup with "io-channel-cells" property.  This also fixes dtbs_check
+> > warnings like:
+> > 
+> >   arch/arm/boot/dts/s5pv210-fascinate4g.dt.yaml: current-sense-shunt:
+> >     '#io-channel-cells' does not match any of the regexes: 'pinctrl-[0-9]+'
+> > 
+> > Fixes: ce66e52b6c16 ("dt-bindings:iio:afe:current-sense-shunt: txt to yaml conversion.")
+> > Signed-off-by: Krzysztof Kozlowski <krzysztof.kozlowski@canonical.com>
+> > ---
+> >  .../devicetree/bindings/iio/afe/current-sense-shunt.yaml     | 5 +++++
+> >  1 file changed, 5 insertions(+)
+> > 
+> > diff --git a/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml b/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
+> > index 90439a8dc785..05166d8a3124 100644
+> > --- a/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
+> > +++ b/Documentation/devicetree/bindings/iio/afe/current-sense-shunt.yaml
+> > @@ -24,12 +24,16 @@ properties:
+> >      description: |
+> >        Channel node of a voltage io-channel.
+> >  
+> > +  "#io-channel-cells":
+> > +    const: 0
+> > +
+> >    shunt-resistor-micro-ohms:
+> >      description: The shunt resistance.
+> >  
+> >  required:
+> >    - compatible
+> >    - io-channels
+> > +  - "#io-channel-cells"
+> >    - shunt-resistor-micro-ohms  
+> 
+> I know I'm listed as maintainer and all, but I have not kept up with the yaml
+> conversion. Sorry. So, given that I might very well fundamentally misunderstand
+> something, it does not sound correct that #io-channel-cells is now "required".
+> I regard it as optional, and only needed if some other in-kernel driver is
+> consuming the sensed current. What am I missing?
+> 
 
-> diff --git a/drivers/net/mdio/mdio-ipq8064.c b/drivers/net/mdio/mdio-ipq8064.c
-[]
-> -#define MII_CLKRANGE_60_100M                    (0 << 2)
-> -#define MII_CLKRANGE_100_150M                   (1 << 2)
-> -#define MII_CLKRANGE_20_35M                     (2 << 2)
-> -#define MII_CLKRANGE_35_60M                     (3 << 2)
-> -#define MII_CLKRANGE_150_250M                   (4 << 2)
-> -#define MII_CLKRANGE_250_300M                   (5 << 2)
-[]
-> +#define MII_CLKRANGE(x)				((x) << 2)
-> +#define MII_CLKRANGE_60_100M			MII_CLKRANGE(0)
-> +#define MII_CLKRANGE_100_150M			MII_CLKRANGE(1)
-> +#define MII_CLKRANGE_20_35M			MII_CLKRANGE(2)
-> +#define MII_CLKRANGE_35_60M			MII_CLKRANGE(3)
-> +#define MII_CLKRANGE_150_250M			MII_CLKRANGE(4)
-> +#define MII_CLKRANGE_250_300M			MII_CLKRANGE(5)
+Agreed. This should be optional and I have deliberately not introduced it
+into all the bindings that could in theory support being used as providers.
 
-Adding a define and using it isn't just whitespace.
+So far I've not pushed it out in a blanket fashion into existing bindings
+even as optional.
 
+> Also, whatever is done in this binding should preferably also be done in the
+> two "sister" afe bindings, i.e. current-sense-amplifier and voltage-divider.
+
+This particular case is squashing an error, so whilst I'm happy to have those
+gain the binding addition, I would like to see them in a separate patch as
+less likely they'd get back ported.
+
+If Kryysztof is fine with me just dropping the required I can pick up this patch.
+
+Thanks,
+
+Jonathan
+
+> 
+> Cheers,
+> Peter
+> 
+> >  additionalProperties: false
+> > @@ -57,6 +61,7 @@ examples:
+> >      sysi {
+> >          compatible = "current-sense-shunt";
+> >          io-channels = <&tiadc 0>;
+> > +        #io-channel-cells = <0>;
+> >  
+> >          /* Divide the voltage by 3300000/1000000 (or 3.3) for the current. */
+> >          shunt-resistor-micro-ohms = <3300000>;
+> >   
 
