@@ -2,195 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30DBC37715E
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 13:14:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46E92377168
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 13:22:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230457AbhEHLPt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 07:15:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45836 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230234AbhEHLPr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 07:15:47 -0400
-Received: from mail-qt1-x833.google.com (mail-qt1-x833.google.com [IPv6:2607:f8b0:4864:20::833])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A83EC061574;
-        Sat,  8 May 2021 04:14:45 -0700 (PDT)
-Received: by mail-qt1-x833.google.com with SMTP id n22so8525050qtk.9;
-        Sat, 08 May 2021 04:14:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pXbSQAyhG6W2ZQ5ums5vjGpNRe3vyzAhG3D2OB6FJtA=;
-        b=MEaQk6XPhXourlRG1ktFxx9flPigPi5AhTwrHElyyTSb6GnddHT2NBqQzAk7pfHBGh
-         bxeC3+pH57tIvA67Zb42zGAcZKXFca8aAOfP6/GgJwC3zsVMuMFVYGKdHUVUh9x9fxRz
-         AuqV344d7kd4prNGA6D5wBzbTIUZfWhDs1A7RiMm+8zxj1b5bv6/VA94Lmp2cEaF8qvP
-         brtOwOdEzI1+3uPAV2G4hmFqWHImm3SpA7dyouODAAP8Mjio6LclJl4ZGBtVrPq4Fi8p
-         0+/pQsi16Tp9y3Q1qRTOfWp4qnx2ADsyVbfSyZmqK613n4bOlpNGMAeYOsMaUVGML0CG
-         kQOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pXbSQAyhG6W2ZQ5ums5vjGpNRe3vyzAhG3D2OB6FJtA=;
-        b=JJHtas3aGMk4TFx1FUTXiJBRW2v4iih10ddOdcUwDMwRRimPBN1ZV4Hk0jObKtdmsq
-         fDBtT7WS8CMJeze04+yrbR11Y4mX9s6yl+o1F6mHSHN9BN/oYXYKIA/6Hb9vqheXwEH9
-         h5XqvMVLvSiEXpUpYIBV2zh2f/TIMqUk5n1FcCsHhSQ2sO0ojdL3ATCTt06ELYc7oBBN
-         Es5nZGaPPwb1FpU4oNA4OYjCFJeddK4uLy71ehYL5wCnrVLjQd8BybsycCU5tU9YMvbT
-         lrdez/DvaiXMY+tH/Pkhl+koH3aspz4H+sqN1xv4lNH2fhprfKviJPe9H47JGLKMisJ+
-         bg2w==
-X-Gm-Message-State: AOAM531fRBa963ZuppC8VORmcWAkm95Dl/OefizmvO+pjFAcE1dnJTxL
-        h50/bCKQrGIZqeigW3y4dXJSvonrZae9uAx3SrY=
-X-Google-Smtp-Source: ABdhPJyRCbYhCpRfDI8+hasLkF4yP7yMUxLuTdvAzoQoMJyQJahYYgoI6qqRk4w4Lw9Mgcet1WmcDyaHhNNKa/rS4Jc=
-X-Received: by 2002:ac8:47da:: with SMTP id d26mr13187735qtr.292.1620472484696;
- Sat, 08 May 2021 04:14:44 -0700 (PDT)
+        id S230449AbhEHLXr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 07:23:47 -0400
+Received: from mail-mw2nam12on2073.outbound.protection.outlook.com ([40.107.244.73]:36896
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230234AbhEHLXq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 07:23:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OeOD+0Ij8HzrScElGEXqjU5lsQnl33+Ip+a7/lDwyHK9jAQRDL4uUI/bPEeFIMVar1q76Z4rscD47tqZVqAgn90N19sAvqksRATLTkIqUdvcSnYb7DATuD66mJTCIP0SPtgNq96ts6eKAwXaknSN/hH/c9XQjnUPAKJtAqv4xurFx3uIaAQpUNYasZTlgTUeFXiTitCJmaPUqidKZyKlcKeIAi9/hQt6MUSdSpi5V3o1biBSqAEa68Rq+SYKCtwWaS6XuZehAX11F4kxr0t8cMMSiqXu6AfqhfDqbCk1LfaI4x4VLkPwdCYNYkkBR0cQ8Y1tAPhxAYGTWBaYJ1HWxA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m8ooCUj3ZAR8cZ48Xy94q+clt1Ia4IqpqbGNJ82WrcI=;
+ b=YVZXoByJjKc48EFPpcOyaKd5KiGLBSDMta29hc8IKx48BzHM8HX0zpC1QYL6eFoVqYCIxJVrsi4ciF6EghgzJPI1xcu3OTgw6m8bCRcoHddkYgEWBt83KDRvw5pTf3VFxs318yqah8gWrnwDX+Ys2r7hKnaFFPfe4oziEvFXm2NfnZ4tAV3hzyJlV2ifN11YWyJRtg4p5+6e654t4M+SriyJb0yWaaU3fkZO5TWEiDOshPJhjDpXUomIAKNRAQzljk0QLwzaiwSV4S40fwhV16TL4asJijZFBeQUp5oIgjVfMaCqwF1P4b2Z35/u6Cmrd1qpkTUYcXKqIiTAQDx7eA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=m8ooCUj3ZAR8cZ48Xy94q+clt1Ia4IqpqbGNJ82WrcI=;
+ b=g1f876EmWJLRJac70s2POnW7TRalMCqvX2SqIUnD59dG8HJMvW7WaRRg4BlTWbGlwdurJ47TqZrnX2nQrGHClKppEbBHatIyeT56xvye7da+S/3SgwllhMhUwLksr0Ai/we+YKO5GQStV5ML0PoTUlVli6Y/eEvZiUaDxI+agqOgI8W6zsfHoypmRuLQicANyyRB/bq9/aA13sBvL2DjdCfu/453bVuQMd6cyq8V/e2UYhQrMMTVMQZhfRHTXHypcToL4Hscp+0NxDaYHbrh+n4D0lEJQ6Ff0oLHXwmQuN+mN5od0diV7AQaY9wqLamIKM2v/30dVdZ3k5aQyGwfCA==
+Received: from DM6PR12MB3898.namprd12.prod.outlook.com (2603:10b6:5:1c6::18)
+ by DM5PR12MB2536.namprd12.prod.outlook.com (2603:10b6:4:b3::36) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.4108.26; Sat, 8 May
+ 2021 11:22:43 +0000
+Received: from DM6PR12MB3898.namprd12.prod.outlook.com
+ ([fe80::dce6:427d:df17:3974]) by DM6PR12MB3898.namprd12.prod.outlook.com
+ ([fe80::dce6:427d:df17:3974%5]) with mapi id 15.20.4108.029; Sat, 8 May 2021
+ 11:22:43 +0000
+From:   Vadim Pasternak <vadimp@nvidia.com>
+To:     Liming Sun <limings@nvidia.com>,
+        Andy Shevchenko <andy@infradead.org>,
+        Darren Hart <dvhart@infradead.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>
+Subject: RE: [PATCH v2] platform/mellanox: mlxbf-tmfifo: Fix a memory barrier
+ issue
+Thread-Topic: [PATCH v2] platform/mellanox: mlxbf-tmfifo: Fix a memory barrier
+ issue
+Thread-Index: AQHXQ6FYEXJKkcU5D0+EAyr87e3wUKrZcIGQ
+Date:   Sat, 8 May 2021 11:22:43 +0000
+Message-ID: <DM6PR12MB3898873FD11A71E9D30032BFAF569@DM6PR12MB3898.namprd12.prod.outlook.com>
+References: <177d12443460bc613aa495fbdbabbbeef43ba7ff.1620400475.git.limings@nvidia.com>
+ <1620433812-17911-1-git-send-email-limings@nvidia.com>
+In-Reply-To: <1620433812-17911-1-git-send-email-limings@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [46.117.116.151]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 584ba631-215d-4998-76ef-08d912139976
+x-ms-traffictypediagnostic: DM5PR12MB2536:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM5PR12MB2536945A44FAC87935C92638AF569@DM5PR12MB2536.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:751;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: nqKP7SUHwt4B1Sixr7eWSSBJ/QnwgJNfWIiuKpJ8KYUBFucesvGiiwkcEb14qcschxoTae5cztEuCEjjLHstH9TofItDJZS+bG6x2rahjyHGdW5QU2JiMrNYs4qmHrWfcBObcQ4OaZO2G0QJqD3sqcsZ9MSRxZvDCcOhjZfljK1H9IUB49PN1+oi5UXHoLsgdAxX5z4AwZpmjGzerspi6Gk4sav5HQqyhtELstKV22ypeR/8ReQx5kcWNVJTsC9J13IBev9inFp8zs4/b2eLvWEYX/BeM3vZr9xF6ZBbZ/egPnumYwvbJ34l3BFKKy/RzuALF9TFl50cGQqp98WcOLvqdLKdFpaWHJRT101fHmfkhVyASDYCQly+3JHx/nvIJaK8VTYAmRvLXrzGE3aaB1vameby7vbhnr3XNEi8Bas9x7CDKUPCxBkYgDHUOExQAFCs9lt7NzJ+LE/0bpEoxcRpvh9/heBeiAYfhuWTlzSEb9m+Kd+1lQHOiW9QiuUyUvL+iph2BKv5tnakVsq9j5l09s6DDgbunSQoBAqxRjLNMTbYOvZpxfNFJj2+LHOne0nAVb/uFVRG7Z8BYy/4Jyu/PBYP+JMyYY07i3h4ikI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3898.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(136003)(376002)(366004)(346002)(396003)(54906003)(110136005)(26005)(316002)(71200400001)(186003)(76116006)(7696005)(53546011)(66556008)(6506007)(8676002)(86362001)(478600001)(64756008)(66446008)(38100700002)(122000001)(8936002)(66946007)(66476007)(52536014)(2906002)(33656002)(4326008)(9686003)(5660300002)(55016002)(83380400001);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: =?us-ascii?Q?pSiCpxaKS3JFRW8ztneUPIFx2xrXC+9/R7BW5LcjiBGJ8mQ3tNEdUXfXWm5P?=
+ =?us-ascii?Q?Mr7DiXN9OWnc/j1OXNT8K6T0KjcgOeGxqXGWgEErG1HaUYWltKl8/vK40RuI?=
+ =?us-ascii?Q?zMlvFKAlI2R/N5K63uCbX+6vXoTk9Qtrw1WPra6raLq40ySYy0pc3PaFJzhs?=
+ =?us-ascii?Q?AAP/HMeim6b2CsjOKKtQ+mGtzYTCU5C6n1IBydLGZPdvvtnH7zwZ4yHHIkxt?=
+ =?us-ascii?Q?W85kSzxInjhKHttJF4vfoVDHHx80kvPXKXuea2G1jLZhCOPJxaEdwNK7mPqt?=
+ =?us-ascii?Q?tpG+wzrZ3fqjLxA159Yio+0pwdQq+NgZdKmpuKFsjRRVcyC0eeIf2ikP1sdu?=
+ =?us-ascii?Q?RTcTv3UfWLMfrs3nzFIUEHvrNsIJ3+a80vQ2yT12jQvA5iup1vAeN8vAZSgh?=
+ =?us-ascii?Q?byC1nkoiAiLQrC7HdyfDvVqhc3kRZKMzRQLbbkjVbNePpfcWbEeoOJisechJ?=
+ =?us-ascii?Q?G6h+kiaoY7zKqoZapwUIAuj4xcOtOrQCrW1jtwxErQUDuuQNyEci6hUNENbW?=
+ =?us-ascii?Q?9W9RYajfOFY+Ol/4LSbvDZVaSei8Nr0BuTKLRbXBkmSqDSOk3FaO2JAjn6Ze?=
+ =?us-ascii?Q?i23dppRXeemMkrYuHpg+8gMzkCJjkg24lluaRfc8shEpYMtwGolZMMfWTE/4?=
+ =?us-ascii?Q?o/vNiTo9U+GrIh4ng1XhuS5t6K407KPM6Sk028k4TJt+W0Rp+ToX7MtGV3k/?=
+ =?us-ascii?Q?kcg+QIrPYEZ/Hvstr/cEVF7P6ANwrcWW7XycJvMoftdSHSetZT15FOH5M5yQ?=
+ =?us-ascii?Q?/A68nlGCRRsd0L8RC/Z+rds2Av0XdPjNLM+MP3Pkt+rkZLz937OhcHOViRHV?=
+ =?us-ascii?Q?PMDFHn/RxKK/l/UMiNIka+pd1SOjxu6BHHrtd6uocH70pN+mAdvMgaYDu95v?=
+ =?us-ascii?Q?CVmyiB1PinPxB43nYScWzEc+FRt374o2Dtp/WCseJSPzMEeZyYmz4Z6jBTT7?=
+ =?us-ascii?Q?C4kUHmQ3yEMRpI8Axytq/OI5R2iV6Bn45rqJ+pQhwhQK8pX32H+l1j2tYbeS?=
+ =?us-ascii?Q?Sg3MV0Js57aPnmpSKfC/7XlizTz5nT6CPfLxxu+Ct9sIlWakjbor4VAwVJ49?=
+ =?us-ascii?Q?tQvi1Qqe6UDJnHhoXTpr24uJ95NPXl3XwnC/w8TbGUcNY2KIF3n6oJd3DBgN?=
+ =?us-ascii?Q?qbMl8mVvQ6qWQolgEpC2jY63pkQ0EM8SuXFNufDldXOjIBr93v27FZLXg9Vh?=
+ =?us-ascii?Q?1+FX5Vp0nfTQzShdOIGSGVY3qbrE9s96NrmTfVZuMEhYhMHu+pdCn+teinbP?=
+ =?us-ascii?Q?RpCqW4QZrkEQGghPLJwPIRVyuidL/auGdFkofPW+YiJ/CUKwzWVYAsSBnudn?=
+ =?us-ascii?Q?t2QrGOIdcaYA3MIGqLRml2Ia?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-References: <1619157107-3734-1-git-send-email-shengjiu.wang@nxp.com>
- <1619157107-3734-2-git-send-email-shengjiu.wang@nxp.com> <20210503170030.GA1987906@robh.at.kernel.org>
-In-Reply-To: <20210503170030.GA1987906@robh.at.kernel.org>
-From:   Shengjiu Wang <shengjiu.wang@gmail.com>
-Date:   Sat, 8 May 2021 19:14:33 +0800
-Message-ID: <CAA+D8ANFmegm2CgOs8u5+FCrR0gGyA_tQHcPCrh3Sikcm_g47Q@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ASoC: dt-bindings: imx-akcodec: Add binding doc for
- akcodec machine driver
-To:     Rob Herring <robh@kernel.org>
-Cc:     Shengjiu Wang <shengjiu.wang@nxp.com>,
-        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>, alsa-devel@alsa-project.org,
-        Timur Tabi <timur@kernel.org>, Xiubo Li <Xiubo.Lee@gmail.com>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
-        Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Nicolin Chen <nicoleotsuka@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Sascha Hauer <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3898.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 584ba631-215d-4998-76ef-08d912139976
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 May 2021 11:22:43.6782
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 4COXynrZ2wcuS2XX4kYL8uV/cS7y0BRbNW8T7+WxUONYVFNrUBTZNk2FsjdByCC6YkqyIaLnq0BWX72m+NbFrg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR12MB2536
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
-On Tue, May 4, 2021 at 1:01 AM Rob Herring <robh@kernel.org> wrote:
->
-> On Fri, Apr 23, 2021 at 01:51:47PM +0800, Shengjiu Wang wrote:
-> > Imx-akcodec is a new added machine driver for supporting
-> > ak4458/ak5558/ak5552/ak4497 codec on i.MX platforms.
-> >
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> > ---
-> >  .../bindings/sound/imx-audio-akcodec.yaml     | 60 +++++++++++++++++++
-> >  1 file changed, 60 insertions(+)
-> >  create mode 100644 Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-> >
-> > diff --git a/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-> > new file mode 100644
-> > index 000000000000..7419bf7224e9
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/sound/imx-audio-akcodec.yaml
-> > @@ -0,0 +1,60 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > +%YAML 1.2
-> > +---
-> > +$id: http://devicetree.org/schemas/sound/imx-audio-akcodec.yaml#
-> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > +
-> > +title: NXP i.MX audio complex with AK4458/AK5558/AK5552/AK4497 codec
->
-> Looks like the existing fsl-asoc-card.txt? You should convert to schema
-> and use that. Otherwise, my comments are based on this all being 'new'.
 
-Ok, let's treat it as 'new'
+> -----Original Message-----
+> From: Liming Sun <limings@nvidia.com>
+> Sent: Saturday, May 8, 2021 3:30 AM
+> To: Andy Shevchenko <andy@infradead.org>; Darren Hart
+> <dvhart@infradead.org>; Vadim Pasternak <vadimp@nvidia.com>
+> Cc: Liming Sun <limings@nvidia.com>; linux-kernel@vger.kernel.org;
+> platform-driver-x86@vger.kernel.org
+> Subject: [PATCH v2] platform/mellanox: mlxbf-tmfifo: Fix a memory barrier
+> issue
+>=20
+> The virtio framework uses wmb() when updating avail->idx. It guarantees
+> the write order, but not necessarily loading order for the code accessing=
+ the
+> memory. This commit adds a load barrier after reading the avail->idx to m=
+ake
+> sure all the data in the descriptor is visible. It also adds a barrier wh=
+en
+> returning the packet to virtio framework to make sure read/writes are vis=
+ible
+> to the virtio code.
+>=20
+> Fixes: 1357dfd7261f ("platform/mellanox: Add TmFifo driver for Mellanox
+> BlueField Soc")
+> Signed-off-by: Liming Sun <limings@nvidia.com>
 
->
-> > +
-> > +maintainers:
-> > +  - Shengjiu Wang <shengjiu.wang@nxp.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    enum:
-> > +      - fsl,imx8mq-audio-ak4458
-> > +      - fsl,imx8mq-audio-ak4497
-> > +      - fsl,imx8mq-audio-ak5558
-> > +      - fsl,imx-audio-ak4497
-> > +      - fsl,imx-audio-ak4458
-> > +      - fsl,imx-audio-ak5558
-> > +      - fsl,imx-audio-ak5552
->
-> I continue to not understand why audio bindings need the codec(s) in the
-> compatible strings. Can't you look up the codec thru the audio-codec
-> property?
+Reviewed-by: Vadim Pasternak <vadimp@nvidia.com>
 
-I will try to remove the codecs type from the compatible string and check
-the codec type in driver.
+Liming,
+Please, next time send patch to upstream after getting official approval fr=
+om
+our internal review.
+In this case notes v1 -> v2 and version"v2" will be useless.
 
->
-> > +
-> > +  model:
-> > +    $ref: /schemas/types.yaml#/definitions/string
-> > +    description: User specified audio sound card name
-> > +
-> > +  audio-cpu:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description: The phandle of a CPU DAI controller
-> > +
-> > +  audio-codec:
-> > +    description: The phandle of Codec DAI controllers, there are two
-> > +                 controllers maximum.
->
-> We have the common 'sound-dai' property. See the simple-card.yaml
-> binding.
+Thanks,
+Vadim.
 
-ok, will use sound-dai.
+> ---
+> v1->v2:
+>   Updates for Vadim's comments:
+>   - Add the 'Fixes' field in the commit message.
+> v1: Initial version
+> ---
+>  drivers/platform/mellanox/mlxbf-tmfifo.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> index bbc4e71..38800e8 100644
+> --- a/drivers/platform/mellanox/mlxbf-tmfifo.c
+> +++ b/drivers/platform/mellanox/mlxbf-tmfifo.c
+> @@ -294,6 +294,9 @@ static irqreturn_t mlxbf_tmfifo_irq_handler(int irq,
+> void *arg)
+>  	if (vring->next_avail =3D=3D virtio16_to_cpu(vdev, vr->avail->idx))
+>  		return NULL;
+>=20
+> +	/* Make sure 'avail->idx' is visible already. */
+> +	virtio_rmb(false);
+> +
+>  	idx =3D vring->next_avail % vr->num;
+>  	head =3D virtio16_to_cpu(vdev, vr->avail->ring[idx]);
+>  	if (WARN_ON(head >=3D vr->num))
+> @@ -322,7 +325,7 @@ static void mlxbf_tmfifo_release_desc(struct
+> mlxbf_tmfifo_vring *vring,
+>  	 * done or not. Add a memory barrier here to make sure the update
+> above
+>  	 * completes before updating the idx.
+>  	 */
+> -	mb();
+> +	virtio_mb(false);
+>  	vr->used->idx =3D cpu_to_virtio16(vdev, vr_idx + 1);  }
+>=20
+> @@ -733,6 +736,12 @@ static bool mlxbf_tmfifo_rxtx_one_desc(struct
+> mlxbf_tmfifo_vring *vring,
+>  		desc =3D NULL;
+>  		fifo->vring[is_rx] =3D NULL;
+>=20
+> +		/*
+> +		 * Make sure the load/store are in order before
+> +		 * returning back to virtio.
+> +		 */
+> +		virtio_mb(false);
+> +
+>  		/* Notify upper layer that packet is done. */
+>  		spin_lock_irqsave(&fifo->spin_lock[is_rx], flags);
+>  		vring_interrupt(0, vring->vq);
+> --
+> 1.8.3.1
 
->
-> > +
-> > +  audio-asrc:
-> > +    $ref: /schemas/types.yaml#/definitions/phandle
-> > +    description: The phandle of ASRC. It can be absent if there's no
-> > +                 need to add ASRC support via DPCM.
->
-> Needs a vendor prefix.
-
-ok,  can be removed in the next version.
-
->
-> > +
-> > +  fsl,tdm:
-> > +    $ref: /schemas/types.yaml#/definitions/flag
-> > +    description: |
-> > +      This is a boolean property. If present, the TDM mode is enabled.
->
-> But this one seems like something that could or should be common.
-
-Ok, I will use the common one in the next version.
-
->
-> > +
-> > +required:
-> > +  - compatible
-> > +  - model
-> > +  - audio-cpu
-> > +  - audio-codec
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    sound-ak4458 {
-> > +        compatible = "fsl,imx-audio-ak4458";
-> > +        model = "ak4458-audio";
-> > +        audio-cpu = <&sai1>;
-> > +        audio-codec = <&ak4458_1>, <&ak4458_2>;
-> > +    };
-> > --
-> > 2.17.1
-> >
