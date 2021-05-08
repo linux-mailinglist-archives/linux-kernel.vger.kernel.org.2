@@ -2,119 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3CD77376FE5
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 07:57:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDA43376FF0
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 08:02:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229726AbhEHF6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 01:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33738 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229473AbhEHF6H (ORCPT
+        id S229749AbhEHGDh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 02:03:37 -0400
+Received: from Mailgw01.mediatek.com ([1.203.163.78]:28806 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S229473AbhEHGDg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 01:58:07 -0400
-Received: from mail-wr1-x436.google.com (mail-wr1-x436.google.com [IPv6:2a00:1450:4864:20::436])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65949C061574
-        for <linux-kernel@vger.kernel.org>; Fri,  7 May 2021 22:57:05 -0700 (PDT)
-Received: by mail-wr1-x436.google.com with SMTP id s8so11272653wrw.10
-        for <linux-kernel@vger.kernel.org>; Fri, 07 May 2021 22:57:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vosraxFkn00s8YK0Ok8yeIjfxvEi7SrAy1o6wfrSSnU=;
-        b=nAW/nrD06ohhWs8zI0KsLLNcIpeVty0/9GEIig5WDBi4rrd0p0X3mInaOSV0zXIcrG
-         K9dbja5C6Lx3QXIT9oH0H2FMmIAlWyjFEX4qD+d6LCISNAC51p4vuoyTtU8lT0d/Z7h5
-         krPTTMy8zml1kdXqnQWQzV3CQvNhg5ibSkr+2fJ0WSAH1Eaeh0sFOyqCFFEUQL1plWKB
-         QK/X5ZAm9n1ZFnOJCdbRYT3NgnZsr+0yInot8xT5q0zGvll57nLBPn1Al+SV7F4a29VZ
-         m26kM5D86/u74/mQuf1TrZMz2QWP4iogT/vcD78s4HelLZ1a8q58hZQwXWSb5BjJoXAD
-         1oUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vosraxFkn00s8YK0Ok8yeIjfxvEi7SrAy1o6wfrSSnU=;
-        b=BWiZTT6Y3Q2q6cKjvRXpJugIiWs210C4i9lLfbyOZkA8im0CcBJi/fakJi4fD2AV6U
-         hXVXLkLJPWVj9u35c+HlweLx36I6iPwWRDWfaGyhITj+yelHrlmAds3kHwt4wiTGvshw
-         xdh+jrhdZXUbEJx4UtXfivxmfLKNfHQr229VmZSvz9RU99fs+BsbaszetIe/C2PQqMOI
-         D6ChFq2HhxLNxP/4DiCZaNJOwZKOQowJqzbxfBVoWiy40Ot0JuXkOob7z5WUwoi/ovF6
-         wM2Vs7iskVZq4CD87v2AokuibK7M2KkkedKs7re1vf3IvnLTPiyE3qZ+XAmZlHrNFnK9
-         i/eA==
-X-Gm-Message-State: AOAM533Ej0IjGxqaPumvU/aXtbmDLeY+kBuiXoXh2Zn3ULit08hgeCzd
-        ZIQ4ULN3aJrGjgmkj5YT8+CfUOkBN292kpCVY1FRrQ==
-X-Google-Smtp-Source: ABdhPJw1sm3eSZALh4c0ZqcmKFgKLX+1a6hLOFAC/EixbZFOyNLgbw899NRDtJ8wjjcMUmHxbz85UOQihwvU+6yRd00=
-X-Received: by 2002:a5d:500d:: with SMTP id e13mr17131455wrt.39.1620453423849;
- Fri, 07 May 2021 22:57:03 -0700 (PDT)
+        Sat, 8 May 2021 02:03:36 -0400
+X-UUID: 943db313235c48f4ab6d6ade246fc35c-20210508
+X-UUID: 943db313235c48f4ab6d6ade246fc35c-20210508
+Received: from mtkcas32.mediatek.inc [(172.27.4.253)] by mailgw01.mediatek.com
+        (envelope-from <leilk.liu@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1994536755; Sat, 08 May 2021 14:02:31 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ MTKMBS31N1.mediatek.inc (172.27.4.69) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Sat, 8 May 2021 14:02:20 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Sat, 8 May 2021 14:02:19 +0800
+From:   Leilk Liu <leilk.liu@mediatek.com>
+To:     Mark Brown <broonie@kernel.org>
+CC:     Mark Rutland <mark.rutland@arm.com>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-spi@vger.kernel.org>, <linux-mediatek@lists.infradead.org>,
+        Leilk Liu <leilk.liu@mediatek.com>
+Subject: [PATCH] spi: take the SPI IO-mutex in the spi_set_cs_timing method
+Date:   Sat, 8 May 2021 14:02:14 +0800
+Message-ID: <20210508060214.1485-1-leilk.liu@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-References: <20210507050908.1008686-1-davidgow@google.com> <CAFd5g44bot7S-Ya7s7QxnKfXHcy8WxUcNPsZuw_qWMaAQbqLCg@mail.gmail.com>
-In-Reply-To: <CAFd5g44bot7S-Ya7s7QxnKfXHcy8WxUcNPsZuw_qWMaAQbqLCg@mail.gmail.com>
-From:   David Gow <davidgow@google.com>
-Date:   Sat, 8 May 2021 13:56:52 +0800
-Message-ID: <CABVgOSn6pUE1XaeG_==VdaNQ3BopEtFdtw1jPDfKFK9iPeXk5A@mail.gmail.com>
-Subject: Re: [PATCH 1/2] kunit: Do not typecheck binary assertions
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     Daniel Latypov <dlatypov@google.com>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
+X-TM-SNTS-SMTP: BC75931E69A775349CBFFC250E38064680A523688CABCE0898A061ACCED4A45F2000:8
+X-MTK:  N
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 8, 2021 at 4:05 AM 'Brendan Higgins' via KUnit Development
-<kunit-dev@googlegroups.com> wrote:
->
-> On Thu, May 6, 2021 at 10:09 PM David Gow <davidgow@google.com> wrote:
-> >
-> > The use of typecheck() in KUNIT_EXPECT_EQ() and friends is causing more
-> > problems than I think it's worth. Things like enums need to have their
-> > values explicitly cast, and literals all need to be very precisely typed
-> > for the code to compile.
->
-> nit: I have not had the typecheck() call prevent any code from
-> compiling, just generating warnings. I guess you can have a build set
-> to cause any warning to be promoted to an error; still, I think this
-> statement is misleading.
->
+this patch takes the io_mutex to prevent an unprotected HW
+register modification in the set_cs_timing callback.
 
-Whoops -- it was the issue in patch 2 that was causing the error. This
-is indeed just a warning.
+Fixes: 4cea6b8cc34e ("spi: add power control when set_cs_timing")
+Signed-off-by: Leilk Liu <leilk.liu@mediatek.com>
+---
+ drivers/spi/spi.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-I'll send out a second version with a more accurate description next
-week, assuming no further issues appear.
+diff --git a/drivers/spi/spi.c b/drivers/spi/spi.c
+index 2350d131871b..6bda471b9621 100644
+--- a/drivers/spi/spi.c
++++ b/drivers/spi/spi.c
+@@ -3459,9 +3459,12 @@ int spi_set_cs_timing(struct spi_device *spi, struct spi_delay *setup,
+ 
+ 	if (spi->controller->set_cs_timing &&
+ 	    !(spi->cs_gpiod || gpio_is_valid(spi->cs_gpio))) {
++		mutex_lock(&spi->controller->io_mutex);
++
+ 		if (spi->controller->auto_runtime_pm) {
+ 			status = pm_runtime_get_sync(parent);
+ 			if (status < 0) {
++				mutex_unlock(&spi->controller->io_mutex);
+ 				pm_runtime_put_noidle(parent);
+ 				dev_err(&spi->controller->dev, "Failed to power device: %d\n",
+ 					status);
+@@ -3472,11 +3475,13 @@ int spi_set_cs_timing(struct spi_device *spi, struct spi_delay *setup,
+ 								hold, inactive);
+ 			pm_runtime_mark_last_busy(parent);
+ 			pm_runtime_put_autosuspend(parent);
+-			return status;
+ 		} else {
+-			return spi->controller->set_cs_timing(spi, setup, hold,
++			status = spi->controller->set_cs_timing(spi, setup, hold,
+ 							      inactive);
+ 		}
++
++		mutex_unlock(&spi->controller->io_mutex);
++		return status;
+ 	}
+ 
+ 	if ((setup && setup->unit == SPI_DELAY_UNIT_SCK) ||
+-- 
+2.18.0
 
-> > While typechecking does have its uses, the additional overhead of having
-> > lots of needless casts -- combined with the awkward error messages which
-> > don't mention which types are involved -- makes tests less readable and
-> > more difficult to write.
-> >
-> > By removing the typecheck() call, the two arguments still need to be of
-> > compatible types, but don't need to be of exactly the same time, which
-> > seems a less confusing and more useful compromise.
-> >
-> > Signed-off-by: David Gow <davidgow@google.com>
->
-> Looks good to me.
->
-> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
->
-> > ---
-> >
-> > I appreciate that this is probably a bit controversial (and, indeed, I
-> > was a bit hesitant about sending it out myself), but after sitting on it
-> > for a few days, I still think this is probably an improvement overall.
-> >
-> > The second patch does fix what I think is an actual bug, though, so even
-> > if this isn't determined to be a good idea, it (or some equivalent)
-> > should probably go through.
->
-> I don't remember being a huge fan of the typecheck when it was asked
-> for either. I think I am a little bit more indifferent than you;
-> nevertheless, I support this change.
->
-> --
-> You received this message because you are subscribed to the Google Groups "KUnit Development" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to kunit-dev+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/kunit-dev/CAFd5g44bot7S-Ya7s7QxnKfXHcy8WxUcNPsZuw_qWMaAQbqLCg%40mail.gmail.com.
