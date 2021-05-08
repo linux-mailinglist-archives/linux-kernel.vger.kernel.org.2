@@ -2,19 +2,19 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB42C37736A
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 19:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F19837736D
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 19:40:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhEHRkm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 13:40:42 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:59462 "EHLO vps0.lunn.ch"
+        id S229647AbhEHRlr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 13:41:47 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:59474 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229602AbhEHRkj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 13:40:39 -0400
+        id S229523AbhEHRlq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 13:41:46 -0400
 Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
         (envelope-from <andrew@lunn.ch>)
-        id 1lfQvN-003Hv1-Si; Sat, 08 May 2021 19:39:33 +0200
-Date:   Sat, 8 May 2021 19:39:33 +0200
+        id 1lfQwS-003Hvz-TV; Sat, 08 May 2021 19:40:40 +0200
+Date:   Sat, 8 May 2021 19:40:40 +0200
 From:   Andrew Lunn <andrew@lunn.ch>
 To:     Ansuel Smith <ansuelsmth@gmail.com>
 Cc:     Florian Fainelli <f.fainelli@gmail.com>,
@@ -24,21 +24,23 @@ Cc:     Florian Fainelli <f.fainelli@gmail.com>,
         Jakub Kicinski <kuba@kernel.org>,
         Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next v4 06/28] net: dsa: qca8k: improve qca8k
- read/write/rmw bus access
-Message-ID: <YJbM1XQiyEPlujV5@lunn.ch>
+Subject: Re: [RFC PATCH net-next v4 07/28] net: dsa: qca8k: handle
+ qca8k_set_page errors
+Message-ID: <YJbNGNHNk1PxieDS@lunn.ch>
 References: <20210508002920.19945-1-ansuelsmth@gmail.com>
- <20210508002920.19945-6-ansuelsmth@gmail.com>
+ <20210508002920.19945-7-ansuelsmth@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20210508002920.19945-6-ansuelsmth@gmail.com>
+In-Reply-To: <20210508002920.19945-7-ansuelsmth@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 08, 2021 at 02:28:56AM +0200, Ansuel Smith wrote:
-> Put bus in local variable to improve faster access to the mdio bus.
+On Sat, May 08, 2021 at 02:28:57AM +0200, Ansuel Smith wrote:
+> With a remote possibility, the set_page function can fail. Since this is
+> a critical part of the write/read qca8k regs, propagate the error and
+> terminate any read/write operation.
 > 
 > Signed-off-by: Ansuel Smith <ansuelsmth@gmail.com>
 
