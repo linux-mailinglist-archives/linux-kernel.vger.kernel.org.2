@@ -2,61 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7B913773D4
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 21:35:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3B173773D6
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 21:38:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229660AbhEHTem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 15:34:42 -0400
-Received: from mxmail.comune.corciano.pg.it ([80.17.45.36]:50226 "EHLO
-        mxmail.comune.corciano.pg.it" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229549AbhEHTek (ORCPT
+        id S229664AbhEHTiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 15:38:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41686 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229546AbhEHTiF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 15:34:40 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mxmail.comune.corciano.pg.it (Postfix) with ESMTP id A485F587F5B;
-        Sat,  8 May 2021 15:17:25 +0200 (CEST)
-Received: from mxmail.comune.corciano.pg.it ([127.0.0.1])
-        by localhost (mxmail.comune.corciano.pg.it [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Vq1H11rytlwy; Sat,  8 May 2021 15:17:24 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mxmail.comune.corciano.pg.it (Postfix) with ESMTP id 59D0C587AC9;
-        Sat,  8 May 2021 15:09:21 +0200 (CEST)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mxmail.comune.corciano.pg.it 59D0C587AC9
+        Sat, 8 May 2021 15:38:05 -0400
+Received: from mail-wr1-x433.google.com (mail-wr1-x433.google.com [IPv6:2a00:1450:4864:20::433])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED812C06175F
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 12:37:02 -0700 (PDT)
+Received: by mail-wr1-x433.google.com with SMTP id h4so12508733wrt.12
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 12:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=comune.corciano.pg.it; s=B145A10E-A644-11EA-8540-33F2ACFD456F;
-        t=1620479362; bh=dijFRTw3X4+/PEU+IGYIubYGo/xNtgGuGTbqm+balwg=;
-        h=MIME-Version:To:From:Date:Message-Id;
-        b=tR21cH5cKt9HCqeRIHM9GOjkHFIvH6eqbOnllK/EjjNU7d56t/08pvJAl0FukGwoX
-         PKVifDNXkQ+6v2BPan6gYKs0sXs6Qo4w+VYYfKX9dyWiw7Sgt9Qar78AGJ1VSFoGzF
-         dLnlzpaIOpZW7G6DWdQUX9hMSvllE1GR3isiG4MDDvrO06eOqaxw/cLQlbc6vJqLRe
-         +7ATFo22W6cKBpdglvu/plrUwkYOVGRyYJne4HkPLOn+MnT2HOG//MsluWfHL9uluO
-         xYIdyth7+61mwVlOPHTcYCaVe24d/p3yj8TIR38F4yT7cMxKSyKTMVrSve34ETRrVQ
-         qQ70AVXI0rfDA==
-X-Virus-Scanned: amavisd-new at mxmail.comune.corciano.pg.it
-Received: from mxmail.comune.corciano.pg.it ([127.0.0.1])
-        by localhost (mxmail.comune.corciano.pg.it [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id jzsTk6GwiG_y; Sat,  8 May 2021 15:09:20 +0200 (CEST)
-Received: from [172.20.10.12] (unknown [197.234.223.233])
-        by mxmail.comune.corciano.pg.it (Postfix) with ESMTPSA id 14B22586B0F;
-        Sat,  8 May 2021 15:04:10 +0200 (CEST)
-Content-Type: text/plain; charset="iso-8859-1"
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LEo0WAuiIGyJ5CDvk1ac5Tqyo04Cf0hE7j39nrK35ys=;
+        b=fbzelkrk+0TTa3pkBv+dmQukTIsG34G6gIOgLD9fM16pJReJ5509oS/ze0+taLVGHg
+         sr3H6Vof07wXK6xREBCpXvkXzuJXYT5O2c04N6xyxnQemJZO/rWxemo2YMFBJpJemePp
+         dsUOYWCnsgb5Xq7J//kEVTpsZZEY3jUgMUPg7g8gaXoV/szcPMJt9/+70JtBY7hp5JB1
+         6kd62WwQbjnh5AUmaabRRNPNF0kMYFwQcu9sS+FUUmrOQTiZn0nH8Dpu+ICjOWaI7KD2
+         wQOoosqWFSWBe6ybTHL4TgxN7E1kD4mI0D91e7/OWXVM9U+30HXzp1KmsKt4zPTe0th6
+         DOog==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LEo0WAuiIGyJ5CDvk1ac5Tqyo04Cf0hE7j39nrK35ys=;
+        b=fMQrL29U4QqMpJnqtyCOIKvI2pB75WFluHTbS1dJnsFXGdLWWBA4drDxzpenlINxZz
+         PMAsYBdgr3d8eZcWQ9OLiRXk6rBtkTufooLeIarOc89jlJwjdlp/NRcNz34YHleQI/CB
+         aKRMfgj06Z804vCJQnUaIQtiJ53Z2DWZj79Q7uGg2n4hrJEk/52Q/4qZN9YthWyF7r4T
+         1onANpqzQZ/o/pRsOgVPs7FLgYff4PC1uqZN59saAUFKCtDq5Bx5p1kBnrtUp4nHGaGj
+         V437g4vK9LEZxSgARbkPUvrq3oVMbQVQTW7cPkFqDEnnQjEW3yyGqlMJOAtX6PX6dM7i
+         1A4g==
+X-Gm-Message-State: AOAM533AMZCaKuZchLKWvdURR9nZ+pLw97JRxnRXGzZ7c7c2AjrsaHuW
+        jKImRuecfFF3cGHS/dMWsQQQTQ==
+X-Google-Smtp-Source: ABdhPJyAy4aO1WA2QMWfEWlZ/iqi7IGUZe4FseS4cZeOyWdfkoVWW1cwchcgObR4s+Jc3sTtDAWWFg==
+X-Received: by 2002:a5d:694c:: with SMTP id r12mr20747795wrw.224.1620502621566;
+        Sat, 08 May 2021 12:37:01 -0700 (PDT)
+Received: from localhost.localdomain (laubervilliers-658-1-213-31.w90-63.abo.wanadoo.fr. [90.63.244.31])
+        by smtp.googlemail.com with ESMTPSA id k10sm45356028wmf.0.2021.05.08.12.36.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 May 2021 12:37:00 -0700 (PDT)
+From:   Corentin Labbe <clabbe@baylibre.com>
+To:     pavel@ucw.cz, robh+dt@kernel.org, jacek.anaszewski@gmail.com,
+        linus.walleij@linaro.org
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-leds@vger.kernel.org, Corentin Labbe <clabbe@baylibre.com>
+Subject: [PATCH] dt-bindings: leds: common: add disk write/read and usb-host
+Date:   Sat,  8 May 2021 19:36:54 +0000
+Message-Id: <20210508193654.2596119-1-clabbe@baylibre.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Description: Mail message body
-Subject: RE
-To:     Recipients <biblioteca@comune.corciano.pg.it>
-From:   "Sheng li Hung" <biblioteca@comune.corciano.pg.it>
-Date:   Sat, 08 May 2021 01:03:24 -1200
-Reply-To: shengli0019@outlook.com
-Message-Id: <20210508130411.14B22586B0F@mxmail.comune.corciano.pg.it>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I have a business deal for you worth $11 million
+The triggers enum misses 3 cases used by gemini DT.
+usb-host was added via commit 0cfbd328d60f ("usb: Add LED triggers for USB activity")
+so we add also as valid trigger usb-gadget which was added along in this
+commit.
 
+disk-read/disk-write were added by commit d1ed7c558612 ("leds: Extends disk trigger for reads and writes")
 
+Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+---
+ Documentation/devicetree/bindings/leds/common.yaml | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-
-
+diff --git a/Documentation/devicetree/bindings/leds/common.yaml b/Documentation/devicetree/bindings/leds/common.yaml
+index b1f363747a62..a9b8c21779e3 100644
+--- a/Documentation/devicetree/bindings/leds/common.yaml
++++ b/Documentation/devicetree/bindings/leds/common.yaml
+@@ -89,6 +89,8 @@ properties:
+       - heartbeat
+         # LED indicates disk activity
+       - disk-activity
++      - disk-read
++      - disk-write
+         # LED indicates IDE disk activity (deprecated), in new implementations
+         # use "disk-activity"
+       - ide-disk
+@@ -97,6 +99,8 @@ properties:
+         # LED alters the brightness for the specified duration with one software
+         # timer (requires "led-pattern" property)
+       - pattern
++      - usb-gadget
++      - usb-host
+ 
+   led-pattern:
+     description: |
+-- 
+2.26.3
 
