@@ -2,97 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE72A3771F9
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 15:05:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CD863771FB
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 15:07:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231185AbhEHNGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 09:06:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230449AbhEHNGI (ORCPT
+        id S231193AbhEHNIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 09:08:23 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:35463 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230449AbhEHNIW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 09:06:08 -0400
-Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC167C061574;
-        Sat,  8 May 2021 06:05:06 -0700 (PDT)
-Received: by mail-lf1-x129.google.com with SMTP id 124so16683710lff.5;
-        Sat, 08 May 2021 06:05:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=pU8gI7Fhg5vMbPInmCnZKwtrd65h+MuB8P+XOEMgKko=;
-        b=ZM29bqJ6kYpm0fLSuvktOsbfdC4h5lgf161k4aIeM/EPc8ZJpoou+JsMd3Y+c/V7T3
-         uI8SFK5sdjPGs7ORaj9ohIo8F67/c8i/vzhz6q+ZFXlhIaMGkD9u6vTFD5UkYhzlqWAG
-         xL49nlOUhR9wbTw8DleTik8ey18eylchbtieW5PriIM4/mL6GEeW4J42pdG/nop/A3u+
-         IwQZdh9NdJzC/3sYShnh+hR+FuuZ61cNBG35XXgqZpeGkVicq1/WF8swgiZDPE7k/bAi
-         8MzOW3P3rUJWj0fjj5swNkKaWJ+kAZ/zPIIcnDesOB4vMKkhbW1to7QhFTJaFoxkx2N+
-         NG5w==
+        Sat, 8 May 2021 09:08:22 -0400
+Received: by mail-il1-f197.google.com with SMTP id x7-20020a056e021ca7b029016344dffb7bso9549234ill.2
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 06:07:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=pU8gI7Fhg5vMbPInmCnZKwtrd65h+MuB8P+XOEMgKko=;
-        b=rAe4J3wCBXByySW6GzIux1KrVsDLHA/SQzud+x8Ewy6+CghvfdFXtdO3AuiBmeNFZE
-         2TjANhchY1un93M9kkSN8i/KoOBqNPzIYQzRpW/uLYQq/K4g93tL5Iv72N5CDw1lLG8I
-         mwDDBtnvlKer50jSk7nfhPzO9EzUGVddulPw5RmfM3XLQ0odINZm13cUoqgtASI7SS4t
-         sVj377IhCMJ5jk/4V4gHeSX6bp6kNbOVVbIu87YDdQce04eHKIDJduG7BXCRjxT35h8V
-         bGI+WOPzCWajeke+am4kfUE/T16jlubg+E0CR9OHNVdHUwKXXpirUZOAWPURIk4V3UgF
-         qrjA==
-X-Gm-Message-State: AOAM530QWmlCMtLYMlhgrWgEAliNpOfoG52CA9bYp33eIjT0RYWc3SJe
-        h8N0jNrk7GSoy0lC9GhGZ4E=
-X-Google-Smtp-Source: ABdhPJxgzmfkeR0Eon3JSFovc8AyusdEt6Jwf2Ug0EYW7kgSAq6sXvm4+awTcLinU6jrvi3BHIqkAQ==
-X-Received: by 2002:a05:6512:3619:: with SMTP id f25mr7780342lfs.399.1620479104028;
-        Sat, 08 May 2021 06:05:04 -0700 (PDT)
-Received: from localhost.localdomain ([185.215.60.119])
-        by smtp.gmail.com with ESMTPSA id a7sm1628386lff.39.2021.05.08.06.05.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 06:05:03 -0700 (PDT)
-Date:   Sat, 8 May 2021 16:05:01 +0300
-From:   Pavel Skripkin <paskripkin@gmail.com>
-To:     Fabio Aiuto <fabioaiuto83@gmail.com>
-Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
-        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 3/3] staging: media: atomisp: remove useless returns
-Message-ID: <20210508160501.4f49d57b@gmail.com>
-In-Reply-To: <20210508124334.GA1403@agape.jhs>
-References: <cover.1620475909.git.paskripkin@gmail.com>
-        <f5b8abd8a92fcdd9b0ec49902d4363bc35c86218.1620475909.git.paskripkin@gmail.com>
-        <20210508124334.GA1403@agape.jhs>
-X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=Hql9TVq6OPSMTMoFG3sFcDAWlXsoJAmMRkpUPWkkuqY=;
+        b=HNTwMuEo4JlKmnuAYMyBDVmmRZktoCkB1uuva67UO5/jDwugZU1cqjCF/1WdNwtsjO
+         5uJEaEfm92PvwGliXKfyQVqMt3x0196y+zINDRcv47e3NHZzZd/JzBWuOOdGaqi8aiiR
+         Yr9STfJGS86OGXaigsEU9kx62qGX/peUYhc7k6mRfdjimQrTi4Zv6CK2JbBQbORF/H0s
+         b0g01v3gRwQFMZR/JIpSle/T03zCjjIHtvCrjID8XGe+wViMaZm8bxaXD+nJtmltdsre
+         xNtIHlRC0QtjIa2qvtRZU4l0weSrm/O47Tauanjx4oEx1RO2q0BUaiWU0qYK4Bu3QaAE
+         W33g==
+X-Gm-Message-State: AOAM533tH6lsHZmTTvmBw1f1kakhIxAfrSnAbc6HwvGFm3KTX+eMEfM8
+        uL8S2I7iJ21dUmh1W7r5Uf3/ebdOwHO3kJ52eSKxnG9Zgs1I
+X-Google-Smtp-Source: ABdhPJwL9N5sYzC+7Sk3Cm2Uvyr1SYweBLtkLnOJr9Z7AaYajELdY3/lTnjIIdsP3h886VHH8tNxdq31FeDMkyXJwiiYJQxswxa5
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a02:6654:: with SMTP id l20mr13454172jaf.55.1620479238784;
+ Sat, 08 May 2021 06:07:18 -0700 (PDT)
+Date:   Sat, 08 May 2021 06:07:18 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000064cde105c1d1397b@google.com>
+Subject: [syzbot] possible deadlock in pipe_lock (4)
+From:   syzbot <syzbot+86cae0697c35c6294c32@syzkaller.appspotmail.com>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Fabio!
+Hello,
 
-On Sat, 8 May 2021 14:43:35 +0200
-Fabio Aiuto <fabioaiuto83@gmail.com> wrote:
+syzbot found the following issue on:
 
-> Hi Pavel,
-> 
-> On Sat, May 08, 2021 at 03:21:52PM +0300, Pavel Skripkin wrote:
-> > Breaks are not useful at the end of void function,
-> > they can simply be removed.
-> 
-> this commit description is not really describing the changes that
-> have been made
-> 
+HEAD commit:    9a9aa07a Add linux-next specific files for 20210504
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12ec3fa9d00000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=acf3aa1c9f3e62f8
+dashboard link: https://syzkaller.appspot.com/bug?extid=86cae0697c35c6294c32
 
-oh..., it's copy-paste error. Thank you for pointing it out :)
-Will fix it in v4 
+Unfortunately, I don't have any reproducer for this issue yet.
 
-> > 
-> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
-> 
-> thank you,
-> 
-> fabio
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+86cae0697c35c6294c32@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+5.12.0-next-20210504-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor.4/12393 is trying to acquire lock:
+ffff88801f433068 (&pipe->mutex/1){+.+.}-{3:3}, at: pipe_lock_nested fs/pipe.c:66 [inline]
+ffff88801f433068 (&pipe->mutex/1){+.+.}-{3:3}, at: pipe_lock+0x5a/0x70 fs/pipe.c:74
+
+but task is already holding lock:
+ffff8881448a8460 (sb_writers#5){.+.+}-{0:0}, at: __do_splice+0x134/0x250 fs/splice.c:1144
+
+which lock already depends on the new lock.
 
 
-With regards,
-Pavel Skripkin
+the existing dependency chain (in reverse order) is:
+
+-> #2 (sb_writers#5){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1763 [inline]
+       sb_start_write include/linux/fs.h:1833 [inline]
+       mnt_want_write+0x6e/0x3e0 fs/namespace.c:375
+       ovl_setattr+0x63/0x860 fs/overlayfs/inode.c:31
+       notify_change+0xb28/0x10f0 fs/attr.c:398
+       do_truncate+0x13c/0x200 fs/open.c:64
+       handle_truncate fs/namei.c:3017 [inline]
+       do_open fs/namei.c:3365 [inline]
+       path_openat+0x20e4/0x27e0 fs/namei.c:3494
+       do_filp_open+0x190/0x3d0 fs/namei.c:3521
+       do_sys_openat2+0x16d/0x420 fs/open.c:1187
+       do_sys_open fs/open.c:1203 [inline]
+       __do_sys_openat fs/open.c:1219 [inline]
+       __se_sys_openat fs/open.c:1214 [inline]
+       __x64_sys_openat+0x13f/0x1f0 fs/open.c:1214
+       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #1 (&ovl_i_mutex_key[depth]){+.+.}-{3:3}:
+       down_write+0x92/0x150 kernel/locking/rwsem.c:1406
+       inode_lock include/linux/fs.h:774 [inline]
+       ovl_write_iter+0x17d/0x17f0 fs/overlayfs/file.c:341
+       call_write_iter include/linux/fs.h:2114 [inline]
+       do_iter_readv_writev+0x46f/0x740 fs/read_write.c:740
+       do_iter_write+0x188/0x670 fs/read_write.c:866
+       vfs_iter_write+0x70/0xa0 fs/read_write.c:907
+       iter_file_splice_write+0x723/0xc70 fs/splice.c:689
+       do_splice_from fs/splice.c:767 [inline]
+       do_splice+0xb7e/0x1940 fs/splice.c:1079
+       __do_splice+0x134/0x250 fs/splice.c:1144
+       __do_sys_splice fs/splice.c:1350 [inline]
+       __se_sys_splice fs/splice.c:1332 [inline]
+       __x64_sys_splice+0x198/0x250 fs/splice.c:1332
+       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+-> #0 (&pipe->mutex/1){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2938 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3061 [inline]
+       validate_chain kernel/locking/lockdep.c:3676 [inline]
+       __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
+       lock_acquire kernel/locking/lockdep.c:5512 [inline]
+       lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+       __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+       __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+       pipe_lock_nested fs/pipe.c:66 [inline]
+       pipe_lock+0x5a/0x70 fs/pipe.c:74
+       iter_file_splice_write+0x183/0xc70 fs/splice.c:635
+       do_splice_from fs/splice.c:767 [inline]
+       do_splice+0xb7e/0x1940 fs/splice.c:1079
+       __do_splice+0x134/0x250 fs/splice.c:1144
+       __do_sys_splice fs/splice.c:1350 [inline]
+       __se_sys_splice fs/splice.c:1332 [inline]
+       __x64_sys_splice+0x198/0x250 fs/splice.c:1332
+       do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+       entry_SYSCALL_64_after_hwframe+0x44/0xae
+
+other info that might help us debug this:
+
+Chain exists of:
+  &pipe->mutex/1 --> &ovl_i_mutex_key[depth] --> sb_writers#5
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(sb_writers#5);
+                               lock(&ovl_i_mutex_key[depth]);
+                               lock(sb_writers#5);
+  lock(&pipe->mutex/1);
+
+ *** DEADLOCK ***
+
+1 lock held by syz-executor.4/12393:
+ #0: ffff8881448a8460 (sb_writers#5){.+.+}-{0:0}, at: __do_splice+0x134/0x250 fs/splice.c:1144
+
+stack backtrace:
+CPU: 0 PID: 12393 Comm: syz-executor.4 Not tainted 5.12.0-next-20210504-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Call Trace:
+ __dump_stack lib/dump_stack.c:79 [inline]
+ dump_stack+0x141/0x1d7 lib/dump_stack.c:120
+ check_noncircular+0x25f/0x2e0 kernel/locking/lockdep.c:2129
+ check_prev_add kernel/locking/lockdep.c:2938 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3061 [inline]
+ validate_chain kernel/locking/lockdep.c:3676 [inline]
+ __lock_acquire+0x2a17/0x5230 kernel/locking/lockdep.c:4902
+ lock_acquire kernel/locking/lockdep.c:5512 [inline]
+ lock_acquire+0x1ab/0x740 kernel/locking/lockdep.c:5477
+ __mutex_lock_common kernel/locking/mutex.c:949 [inline]
+ __mutex_lock+0x139/0x1120 kernel/locking/mutex.c:1096
+ pipe_lock_nested fs/pipe.c:66 [inline]
+ pipe_lock+0x5a/0x70 fs/pipe.c:74
+ iter_file_splice_write+0x183/0xc70 fs/splice.c:635
+ do_splice_from fs/splice.c:767 [inline]
+ do_splice+0xb7e/0x1940 fs/splice.c:1079
+ __do_splice+0x134/0x250 fs/splice.c:1144
+ __do_sys_splice fs/splice.c:1350 [inline]
+ __se_sys_splice fs/splice.c:1332 [inline]
+ __x64_sys_splice+0x198/0x250 fs/splice.c:1332
+ do_syscall_64+0x3a/0xb0 arch/x86/entry/common.c:47
+ entry_SYSCALL_64_after_hwframe+0x44/0xae
+RIP: 0033:0x4665f9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 bc ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fd13741d188 EFLAGS: 00000246 ORIG_RAX: 0000000000000113
+RAX: ffffffffffffffda RBX: 000000000056bf60 RCX: 00000000004665f9
+RDX: 0000000000000006 RSI: 0000000000000000 RDI: 0000000000000004
+RBP: 00000000004bfce1 R08: 00000000088000cc R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 000000000056bf60
+R13: 00007ffcaf06e7ef R14: 00007fd13741d300 R15: 0000000000022000
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
