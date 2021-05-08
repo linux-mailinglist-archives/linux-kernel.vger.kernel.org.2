@@ -2,88 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3A073770B7
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 10:46:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E36023770B9
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 10:47:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhEHIrp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 04:47:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42132 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229797AbhEHIrn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 04:47:43 -0400
-Received: from mail-ot1-x32a.google.com (mail-ot1-x32a.google.com [IPv6:2607:f8b0:4864:20::32a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0028DC061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 01:46:41 -0700 (PDT)
-Received: by mail-ot1-x32a.google.com with SMTP id g15-20020a9d128f0000b02902a7d7a7bb6eso10010042otg.9
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 01:46:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8bf+5azIpNWanXXRSeQo4/lOG18bGwqj/1u27OCylOk=;
-        b=rcNfdulbXK0kvOjXJmkEvMAhyNXiCOVWWisbCipHfhmI4CvdHhTDGAUU0ryXiY8D1T
-         NwgImXjXyV6lX1IM0I9z6mWpbL0g+1hXKFdACVjnYm/VOExaFCKdK0ulOhbx2KNU3Ku2
-         OGJUVvW9SANDZDQqfq5SefOrQn6qYw/8speoJYvrUugI2LLbfvIR/tJ0KuPietglZLMu
-         Rw0e4IcYz9rlgIfX9jWx4dw/FJbre1xZZNzE1RPLgke2pEXRyQS5kTLbue4ESMjDBiuI
-         0yVYpsAY4myuhToSFhIkzfbC8rPREBpbUwLNXmJVgHmhEacT26VJsOjpEnJ0gYVfCsfV
-         bH3Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8bf+5azIpNWanXXRSeQo4/lOG18bGwqj/1u27OCylOk=;
-        b=tD0n+x1DkadwKRStO47Fl+68dSn7jlIoB+ulAfr9IF6lA/ta+J+KcvU6Jpf5q+4m8N
-         FqQ9R0QEr1HjEuFLiB3Vq8R89s5afhoCAc6vXdrQ4FuH3VatHf9dbbsglNd/Ie40OJ6r
-         10dM/RizsjXHGWjk05m4sv2+vvxe0vE01AXjX6JCl4Ry/7lBDJo0LYiVrIHqd24fkPbV
-         an7rd0VFXXY37Wyo+YYZpAHOsrWhG5ajEBwFHOoweDlFm2KXosrYEXt4o6kArZGwX0RJ
-         nWOrIyA5w9QmYYq2A0ucinMCbc0+dyX4AmBpcPhwDgDkNuHmqIQjJitz1iOFbJlSieHN
-         MLrw==
-X-Gm-Message-State: AOAM5338q1f3KtZop8Zx4Ayus3mDuGXnfkgi4/hrwZUVlAAj9Lxk+mmR
-        VG0Hk3VH/AiZRW/LxoplvOibg/Tf6xrWhICUvh0=
-X-Google-Smtp-Source: ABdhPJwzqXcw+uYkYEhf/9G2Ztmh6N0urZDRvljvibBdLRv6qQcSJj0Va1ISoG6b02z91gADfWtXAC8SgnlaamBcyEE=
-X-Received: by 2002:a05:6830:45a:: with SMTP id d26mr2637596otc.339.1620463601384;
- Sat, 08 May 2021 01:46:41 -0700 (PDT)
+        id S230234AbhEHIsA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 04:48:00 -0400
+Received: from m32-153.88.com ([43.250.32.153]:19073 "EHLO email.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S230129AbhEHIsA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 04:48:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cn;
+        s=dkim; h=Date:From:To; bh=h3OFUOuA8+n+jaPT6okhGKXPY7/eXNUsIvJvd
+        SizbAU=; b=W6wER3Qzy+AfABKaHaI+WD+Dic6dlIQ/xAt84opLKnxtMJvK/KYy1
+        nEJHpWZ4KuhxWUDvaA4mO203mfLLl2y3w+UCac+l6aK7+TzRmW/jVqRBbHfrFPZp
+        II5yXFfKTfp9e+1u9SS8SQ5Fpcy1LL6cC6UkPE9bp3P85ti7CZAa8g=
+Received: from bobwxc.top (unknown [120.238.248.9])
+        by v_coremail2-frontend-2 (Coremail) with SMTP id GiKnCgAXZlj9T5Zg9JokAA--.27828S2;
+        Sat, 08 May 2021 16:46:55 +0800 (CST)
+Date:   Sat, 8 May 2021 16:46:53 +0800
+From:   "Wu X.C." <bobwxc@email.cn>
+To:     Wan Jiabing <wanjiabing@vivo.com>
+Cc:     Alex Shi <alexs@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kael_w@yeah.net
+Subject: Re: [PATCH] docs/zh_CN: Remove obsolete translation file
+Message-ID: <20210508084653.GA10159@bobwxc.top>
+References: <20210508030741.82655-1-wanjiabing@vivo.com>
 MIME-Version: 1.0
-References: <20210508083931.GA21544@CORE.localdomain> <YJZPCMnB7/sktOF1@kroah.com>
-In-Reply-To: <YJZPCMnB7/sktOF1@kroah.com>
-From:   Oded Gabbay <oded.gabbay@gmail.com>
-Date:   Sat, 8 May 2021 11:46:14 +0300
-Message-ID: <CAFCwf11uA7PscSpkQ7BD+FW7+dFy1_GoeaPJSLDS_VnQKhoa6g@mail.gmail.com>
-Subject: Re: [git pull] habanalabs fixes for 5.13-rc2
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Oded Gabbay <ogabbay@kernel.org>,
-        "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20210508030741.82655-1-wanjiabing@vivo.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-CM-TRANSID: GiKnCgAXZlj9T5Zg9JokAA--.27828S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrJrWUXF17JFW5Kr1DAFWfAFb_yoWxWrXEva
+        4kJF40yF4UAryrGa1xCFs5AF1q93y0g34kGrs8t3yUA39rAwsxWwnrXwsYvFyfXF4akr45
+        CFZ7Ca4UGr97WjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbnkYjsxI4VWxJwAYFVCjjxCrM7CY07I20VC2zVCF04k26cxKx2IY
+        s7xG6rWj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI
+        8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1l84ACjcxK6I8E
+        87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AKxVW8Jr0_Cr1UM2AIxVAIcx
+        kEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6x8ErcxFaVAv8VWx
+        Jr1UJwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l42
+        xK82IY6x8ErcxFaVAv8VWxJr1UJwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
+        14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIx
+        kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAF
+        wI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r
+        4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0zR_Oz3U
+        UUUU=
+X-Originating-IP: [120.238.248.9]
+X-CM-SenderInfo: pere453f6hztlloou0/
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, May 8, 2021 at 11:42 AM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Sat, May 08, 2021 at 11:39:31AM +0300, Oded Gabbay wrote:
-> > Hi Greg,
-> >
-> > This pull request contains a number of important fixes for 5.13-rc2.
-> > Mainly fixes to support our new F/W with enhanced security features,
-> > but also additional bugs.
-> > See details in the tag message below.
->
-> Does this include the stuff in your previous pull request?  Should I
-> drop that one from my queue or do both?
->
-> I will be waiting until after 5.13-rc1 before I can take any of these...
->
-> thanks,
->
-> greg k-h
+On Sat, May 08, 2021 at 11:07:33AM +0800, Wan Jiabing wrote:
+> This translation file was replaced by 
+>    Documentation/translations/zh_CN/admin-guide/security-bugs.rst
+> which was created in commit 2d153571003b ("docs/zh_CN: Add
+> zh_CN/admin-guide/security-bugs.rst").
+> This is a translation left over from history. Remove it.
+> 
+> Signed-off-by: Wan Jiabing <wanjiabing@vivo.com>
 
-Yes, it includes that one. For some reason, lkml didn't show me that
-the previous email was sent so I thought there was again a problem in
-the mail server.
-And therefore, I've sent this one again with 1 additional fix compared
-to the previous one.
-So you can drop the previous one.
+Acked-by: Wu XiangCheng <bobwxc@email.cn>
 
-Thanks,
-Oded
+> ---
+>  Documentation/translations/zh_CN/SecurityBugs | 50 -------------------
+>  1 file changed, 50 deletions(-)
+>  delete mode 100644 Documentation/translations/zh_CN/SecurityBugs
+> 
+
