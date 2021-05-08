@@ -2,98 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A324377255
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 16:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 347C437725F
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 16:27:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229640AbhEHOUI convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 8 May 2021 10:20:08 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:33801 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S229617AbhEHOUD (ORCPT
+        id S229634AbhEHO2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 10:28:39 -0400
+Received: from lb3-smtp-cloud7.xs4all.net ([194.109.24.31]:49577 "EHLO
+        lb3-smtp-cloud7.xs4all.net" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S229500AbhEHO2i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 10:20:03 -0400
-Received: from AcuMS.aculab.com (156.67.243.121 [156.67.243.121]) (Using
- TLS) by relay.mimecast.com with ESMTP id uk-mta-7-Y7zwXQ6EN4uScP4hg-f8Eg-1;
- Sat, 08 May 2021 15:18:58 +0100
-X-MC-Unique: Y7zwXQ6EN4uScP4hg-f8Eg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:994c:f5c2:35d6:9b65) with Microsoft SMTP
- Server (TLS) id 15.0.1497.2; Sat, 8 May 2021 15:18:56 +0100
-Received: from AcuMS.Aculab.com ([fe80::994c:f5c2:35d6:9b65]) by
- AcuMS.aculab.com ([fe80::994c:f5c2:35d6:9b65%12]) with mapi id
- 15.00.1497.015; Sat, 8 May 2021 15:18:56 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arnd Bergmann' <arnd@kernel.org>,
-        "'linux-arch@vger.kernel.org'" <linux-arch@vger.kernel.org>
-CC:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        'Vineet Gupta' <vgupta@synopsys.com>,
-        'Arnd Bergmann' <arnd@arndb.de>,
-        "'linux-kernel@vger.kernel.org'" <linux-kernel@vger.kernel.org>
-Subject: RE: [RFC 12/12] asm-generic: simplify asm/unaligned.h
-Thread-Topic: [RFC 12/12] asm-generic: simplify asm/unaligned.h
-Thread-Index: AQHXQ44THJRTTBSqUkSVDsewAlm13qrZaWdAgAA4mTA=
-Date:   Sat, 8 May 2021 14:18:56 +0000
-Message-ID: <98e7af705bf54b88a99dfec46308bb7a@AcuMS.aculab.com>
-References: <20210507220813.365382-1-arnd@kernel.org>
- <20210507220813.365382-13-arnd@kernel.org>
- <0b599cc80612436bb8d688fa2ad1dc34@AcuMS.aculab.com>
-In-Reply-To: <0b599cc80612436bb8d688fa2ad1dc34@AcuMS.aculab.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sat, 8 May 2021 10:28:38 -0400
+X-Greylist: delayed 428 seconds by postgrey-1.27 at vger.kernel.org; Sat, 08 May 2021 10:28:35 EDT
+Received: from copland.sibelius.xs4all.nl ([83.163.83.176])
+        by smtp-cloud7.xs4all.net with ESMTP
+        id fNoalDe3DyEWwfNoblAKIZ; Sat, 08 May 2021 16:20:23 +0200
+From:   Mark Kettenis <kettenis@openbsd.org>
+To:     devicetree@vger.kernel.org
+Cc:     Mark Kettenis <kettenis@openbsd.org>,
+        Hector Martin <marcan@marcan.st>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-gpio@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] Apple M1 pinctrl DT bindings
+Date:   Sat,  8 May 2021 16:19:54 +0200
+Message-Id: <20210508142000.85116-1-kettenis@openbsd.org>
+X-Mailer: git-send-email 2.31.1
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
+X-CMAE-Envelope: MS4xfIi7mPy78jdujl4nZfljyb1v4wn9r4x1+IWMab6Nj9gHNxx7RaGVinDGSRw/qYZhY8oTrwtr4gmXafz43ConQ2CCgsoMy3B6bsK8zY+PmnDv7SAI6oD2
+ xp+Ai1/X+pA+VVMISo9JGnqCRg0bzjBSKhwmWHyKrcfeywiQox6nAa/zchlxJJDFIBzmPxPpF6cqhRxLUm4R1/+BHicUF9wz87m/bGwlvAcxlkb/3d8tJgfz
+ 65tLrGmHW0u3Zhn8wMqbbTa6NbaMj1wxmlr6l2A8tB41mZbOQG5erlk3dcrXszL4b0SBpjIU5x3Sk4Zodj15q3Dsx8+ZUXu2cOqfHkjW8YM6WWRPscxDcUlb
+ JJRpXJDgnzo13++Rp1ZqaTSw/ngX/ODFhFJXGuJVL0kHNVhxVPrczFPiHGGIoIHnGWa5FwTVldZUzai8O9OiPdBrMw/BkM4lgnxELRYkZmnqctohn8ShKc3b
+ Za0LtCILuV7puZm6
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Laight
-> Sent: 08 May 2021 12:03
-> 
-> From: Arnd Bergmann
-> > Sent: 07 May 2021 23:08
-> >
-> > The get_unaligned()/put_unaligned() implementations are much more complex
-> > than necessary, now that all architectures use the same code.
-> >
-> ...
-> > +#define __get_unaligned_t(type, ptr) ({						\
-> > +	const struct { type x; } __packed *__pptr = (typeof(__pptr))(ptr);	\
-> > +	__pptr->x; 								\
-> > +})
-> 
-> I thought gcc was likely to track through the alignment of the
-> variable holding the source pointer (through any (void *) casts
-> implied by inlined function calls) through to the pointer used
-> for the actual access - so it would tend to issue a single
-> instruction that assumed an aligned address.
-> 
-> I know that has caused grief trying to copy unaligned data
-> to an aligned structure.
-> 
-> Possibly adding:
-> 	asm ("" :: "+r" (__pptr)) );
-> in the middle stops that assumption without generating any code.
+This small series adds bindings for the pin and GPIO controller found
+on the Apple M1 SoC.
 
-That is the wrong asm.
-You need the one where an input operand and output operand
-share the same register and use it for the assignment.
+At this point, the primary consumer for these bindings is U-Boot.
+With the help of these bindings U-Boot can bring up the PCIe root
+complex into a state where the OS use it without having to deal with
+the GPIO pins.  A Linux driver may be implemented later to support
+power management and/or other devices that need GPIO control.  Since
+the binding is based on standard pinmux node bindings this should be
+relatively easy.
 
-I've been trying to get godbolt to do something useful.
-But it seems to be stuck in C++ mode and is missing something like
-sparc which definitely doesn't do misaligned accesses.
 
-	David
+Mark Kettenis (2):
+  dt-bindings: pinctrl: Add DT bindings for apple,pinctrl
+  arm64: apple: Add pinctrl nodes
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+ .../bindings/pinctrl/apple,pinctrl.yaml       | 103 ++++++++++++++++++
+ MAINTAINERS                                   |   2 +
+ arch/arm64/boot/dts/apple/t8103.dtsi          |  83 ++++++++++++++
+ include/dt-bindings/pinctrl/apple.h           |  13 +++
+ 4 files changed, 201 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/pinctrl/apple,pinctrl.yaml
+ create mode 100644 include/dt-bindings/pinctrl/apple.h
+
+-- 
+2.31.1
 
