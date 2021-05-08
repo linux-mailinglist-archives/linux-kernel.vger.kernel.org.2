@@ -2,109 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E9B137710C
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80AA937710F
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 11:49:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230397AbhEHJsx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 05:48:53 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:53096 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229583AbhEHJsw (ORCPT
+        id S230356AbhEHJun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 05:50:43 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:18015 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229797AbhEHJum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 05:48:52 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1489jPa3086509;
-        Sat, 8 May 2021 09:47:38 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=IQqVHs76XhjtZDzkptDb3pKsbswt7BT6LhPyiwkXRzY=;
- b=Szlf795MhekMLmqLTpRi1aHzINq40fW+DrpUVcZtyrCsGT0FIPwt7zBXCT1lrogPt0cW
- 6Ldiqb4czEKF4SgwR4E5jF0moi/rxGGB/p/n3hXPZfTLEyo4e3Nv1EgkkBHDa6opf24D
- ZeT7DVYA/0ayaZ1Lnlg92zvHw37Ko4BTasONnWCP4CfJ8fUlVMqxiqnj8ql+tjxW45V2
- PuK7TBD6s/HvA5HV+2p7w2Vx/5LC2esuwHizhUfUFWhLp4yHj3Qk80+K6gc7Ebd+w2/9
- 0JLeBtoevoShaqEZAT2e08NA406mqch+xTSHF4XwdSPkqIfDKxqSq58jxLFLdnssHG3D Ow== 
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
-        by userp2120.oracle.com with ESMTP id 38dk9n89tc-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 May 2021 09:47:38 +0000
-Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
-        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 1489jeEe141687;
-        Sat, 8 May 2021 09:47:37 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3030.oracle.com with ESMTP id 38dgpcfekn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 May 2021 09:47:37 +0000
-Received: from aserp3030.oracle.com (aserp3030.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 1489la0j145113;
-        Sat, 8 May 2021 09:47:37 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3030.oracle.com with ESMTP id 38dgpcfej4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 08 May 2021 09:47:36 +0000
-Received: from abhmp0005.oracle.com (abhmp0005.oracle.com [141.146.116.11])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 1489lalM007047;
-        Sat, 8 May 2021 09:47:36 GMT
-Received: from kadam (/102.36.221.92)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 08 May 2021 02:47:35 -0700
-Date:   Sat, 8 May 2021 12:47:29 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Pavle Rohalj <pavle.rohalj@gmail.com>
-Cc:     sudipm.mukherjee@gmail.com, teddy.wang@siliconmotion.com,
-        gregkh@linuxfoundation.org, linux-fbdev@vger.kernel.org,
-        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 08/49]  staging: sm750fb: Update enum values in dpms
- to snake case
-Message-ID: <20210508094729.GK1955@kadam>
-References: <cover.1617776878.git.pavle.rohalj@gmail.com>
- <16693e7cc62f84ea1ec34b7d5cbd77c4cd1965e8.1617776878.git.pavle.rohalj@gmail.com>
+        Sat, 8 May 2021 05:50:42 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4FcjBP4SgYzQjyC;
+        Sat,  8 May 2021 17:46:21 +0800 (CST)
+Received: from thunder-town.china.huawei.com (10.174.177.72) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 8 May 2021 17:49:31 +0800
+From:   Zhen Lei <thunder.leizhen@huawei.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+CC:     Zhen Lei <thunder.leizhen@huawei.com>
+Subject: [PATCH 1/1] lib: decompress_bunzip2: Remove an unneeded semicolon
+Date:   Sat, 8 May 2021 17:49:26 +0800
+Message-ID: <20210508094926.2889-1-thunder.leizhen@huawei.com>
+X-Mailer: git-send-email 2.26.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <16693e7cc62f84ea1ec34b7d5cbd77c4cd1965e8.1617776878.git.pavle.rohalj@gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-ORIG-GUID: v8H7VetVFFfdHibY98cHgUyDGo6SaQDX
-X-Proofpoint-GUID: v8H7VetVFFfdHibY98cHgUyDGo6SaQDX
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=9977 signatures=668683
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 phishscore=0
- adultscore=0 mlxscore=0 impostorscore=0 mlxlogscore=999 lowpriorityscore=0
- malwarescore=0 priorityscore=1501 clxscore=1015 bulkscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2104190000
- definitions=main-2105080070
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.177.72]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Apr 06, 2021 at 11:36:16PM -0700, Pavle Rohalj wrote:
-> Fix "Avoid CamelCase" checkpatch.pl checks for values in
-> enum dpms.
-> 
-> Signed-off-by: Pavle Rohalj <pavle.rohalj@gmail.com>
-> ---
->  drivers/staging/sm750fb/ddk750_power.h | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/staging/sm750fb/ddk750_power.h b/drivers/staging/sm750fb/ddk750_power.h
-> index 7002567a47d2..4756db1ccb9c 100644
-> --- a/drivers/staging/sm750fb/ddk750_power.h
-> +++ b/drivers/staging/sm750fb/ddk750_power.h
-> @@ -3,10 +3,10 @@
->  #define DDK750_POWER_H__
->  
->  enum dpms {
-> -	crtDPMS_ON = 0x0,
-> -	crtDPMS_STANDBY = 0x1,
-> -	crtDPMS_SUSPEND = 0x2,
-> -	crtDPMS_OFF = 0x3,
-> +	CRT_DPMS_ON = 0x0,
-> +	CRT_DPMS_STANDBY = 0x1,
-> +	CRT_DPMS_SUSPEND = 0x2,
-> +	CRT_DPMS_OFF = 0x3,
->  };
+The semicolon immediately following '}' is unneeded.
 
-These must be unused.  Delete.
+Signed-off-by: Zhen Lei <thunder.leizhen@huawei.com>
+---
+ lib/decompress_bunzip2.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-regards,
-dan carpenter
+diff --git a/lib/decompress_bunzip2.c b/lib/decompress_bunzip2.c
+index c72c865032fabe5..0d619cc129dd1de 100644
+--- a/lib/decompress_bunzip2.c
++++ b/lib/decompress_bunzip2.c
+@@ -385,7 +385,7 @@ static int INIT get_next_block(struct bunzip_data *bd)
+ 			bd->inbufBits =
+ 				(bd->inbufBits << 8)|bd->inbuf[bd->inbufPos++];
+ 			bd->inbufBitCount += 8;
+-		};
++		}
+ 		bd->inbufBitCount -= hufGroup->maxLen;
+ 		j = (bd->inbufBits >> bd->inbufBitCount)&
+ 			((1 << hufGroup->maxLen)-1);
+-- 
+2.26.0.106.g9fadedd
+
 
