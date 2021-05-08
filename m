@@ -2,115 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7FA0377078
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 09:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11C73377079
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 09:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230102AbhEHHw5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 03:52:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58516 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229726AbhEHHwz (ORCPT
+        id S230182AbhEHHxi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 03:53:38 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:17159 "EHLO
+        szxga04-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229726AbhEHHxh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 03:52:55 -0400
-Received: from mail-pj1-x102e.google.com (mail-pj1-x102e.google.com [IPv6:2607:f8b0:4864:20::102e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AAE1C061574
-        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 00:51:54 -0700 (PDT)
-Received: by mail-pj1-x102e.google.com with SMTP id gc22-20020a17090b3116b02901558435aec1so6836413pjb.4
-        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 00:51:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=7+LUtwfRs66K7/usQVNOuvgUZ6bVUtHjhJJe+YZ0tm4=;
-        b=XzbrTyXsIlZx9V9LAzHOxJrO+jh9aLJKwppP2Nt9laYQ+LNhzh6wrB57Cj+dGr7deP
-         XHxqWIA8tICdBbMisUzEyQiWjL1X5ClxrOJk49vSLdo3Bbsh10Ly36w56q+cWMdXMWa0
-         wM5WTHq1uoDYuKILe1IFvWycmLPNy314FE8QQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=7+LUtwfRs66K7/usQVNOuvgUZ6bVUtHjhJJe+YZ0tm4=;
-        b=NfcBFBfetzEIiCMKH8yqjcosjJAN8iw9V6GMIY78PhAoRYGq8IXspqVBKXZHG4tI/o
-         HpCd6yu0RSrCYwD/j24AYGmvp0qT0Oyk5KGX7D2EXriFl0RaNgppwBj7ZYcyNAC+ec7C
-         boKz6z48M1aES+uruVGpfqVPCCnz+TC3azdVyp9vlvZU2jqKihWjKjg51Ct5LLPmd7o8
-         EERkJeFPu6f1UBw0p5JQ6Yme5B41OetibN5VrY1QAmZigHaH1Ah0/jXQqL6ULQAX8IA3
-         WXsc9S2+nd08Id0OACniyukzvjz2PXE5Bp5p7uUV4WHNEpGqE2zGv/t//ufoUiwgtz6m
-         ghEA==
-X-Gm-Message-State: AOAM5327bRYwmm7eDywDtpLs5Nbot3YynsLXHH84teRP067uzs9164vv
-        kPoPmmI/3zoEdrtperMXBNYagg==
-X-Google-Smtp-Source: ABdhPJw1M68FCMCBHQWrUE9x47jK+e4cOkD+yJZlFNG2fSj5vu+SjSzR2lLT81gpnUIqLeunnKxQUw==
-X-Received: by 2002:a17:90a:b78d:: with SMTP id m13mr29138284pjr.47.1620460314132;
-        Sat, 08 May 2021 00:51:54 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:ab8b:4a3d:46ab:361c])
-        by smtp.gmail.com with ESMTPSA id b65sm6345091pga.83.2021.05.08.00.51.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 00:51:53 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-        Jairaj Arava <jairaj.arava@intel.com>,
-        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
-        Pierre-Louis Bossart <pierre-louis.bossart@intel.com>,
-        Shuming Fan <shumingf@realtek.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Subject: [RFC/PATCH 2/2] ASoC: rt5682: Implement remove callback
-Date:   Sat,  8 May 2021 00:51:51 -0700
-Message-Id: <20210508075151.1626903-2-swboyd@chromium.org>
-X-Mailer: git-send-email 2.31.1.607.g51e8a6a459-goog
-In-Reply-To: <20210508075151.1626903-1-swboyd@chromium.org>
-References: <20210508075151.1626903-1-swboyd@chromium.org>
+        Sat, 8 May 2021 03:53:37 -0400
+Received: from DGGEMS414-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4FcfbJ3r6jzncJJ;
+        Sat,  8 May 2021 15:49:16 +0800 (CST)
+Received: from [10.67.110.238] (10.67.110.238) by
+ DGGEMS414-HUB.china.huawei.com (10.3.19.214) with Microsoft SMTP Server id
+ 14.3.498.0; Sat, 8 May 2021 15:52:25 +0800
+Subject: Re: Virtio-scsi multiqueue irq affinity
+To:     Ming Lei <ming.lei@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>
+CC:     Peter Xu <peterx@redhat.com>, Christoph Hellwig <hch@lst.de>,
+        Jason Wang <jasowang@redhat.com>,
+        Luiz Capitulino <lcapitulino@redhat.com>,
+        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
+        "Michael S. Tsirkin" <mst@redhat.com>, <minlei@redhat.com>,
+        <liaochang1@huawei.com>
+References: <20190318062150.GC6654@xz-x1>
+ <alpine.DEB.2.21.1903231805310.1798@nanos.tec.linutronix.de>
+ <20190325050213.GH9149@xz-x1> <20190325070616.GA9642@ming.t460p>
+ <alpine.DEB.2.21.1903250948490.1798@nanos.tec.linutronix.de>
+ <20190325095011.GA23225@ming.t460p>
+From:   xuyihang <xuyihang@huawei.com>
+Message-ID: <0f6c8a5f-ad33-1199-f313-53fe9187a672@huawei.com>
+Date:   Sat, 8 May 2021 15:52:26 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.8.1
 MIME-Version: 1.0
+In-Reply-To: <20190325095011.GA23225@ming.t460p>
+Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.67.110.238]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Let's implement a remove callback for this driver that's similar to the
-shutdown hook, but also disables the regulators before they're put by
-devm code.
 
-Cc: Jairaj Arava <jairaj.arava@intel.com>
-Cc: Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>
-Cc: Pierre-Louis Bossart <pierre-louis.bossart@intel.com>
-Cc: Shuming Fan <shumingf@realtek.com>
-Cc: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
+ÔÚ 2019/3/25 17:50, Ming Lei Ð´µÀ:
+> On Mon, Mar 25, 2019 at 09:53:28AM +0100, Thomas Gleixner wrote:
+>> Ming,
+>>
+>> On Mon, 25 Mar 2019, Ming Lei wrote:
+>>> On Mon, Mar 25, 2019 at 01:02:13PM +0800, Peter Xu wrote:
+>>>> One thing I can think of is the real-time scenario where "isolcpus="
+>>>> is provided, then logically we should not allow any isolated CPUs to
+>>>> be bound to any of the multi-queue IRQs.  Though Ming Lei and I had a
+>>> So far, this behaviour is made by user-space.
+>>>
+>>> >From my understanding, IRQ subsystem doesn't handle "isolcpus=", even
+>>> though the Kconfig help doesn't mention irq affinity affect:
+>>>
+>>>            Make sure that CPUs running critical tasks are not disturbed by
+>>>            any source of "noise" such as unbound workqueues, timers, kthreads...
+>>>            Unbound jobs get offloaded to housekeeping CPUs. This is driven by
+>>>            the "isolcpus=" boot parameter.
+>> isolcpus has no effect on the interupts. That's what 'irqaffinity=' is for.
+> Indeed.
+>
+> irq_default_affinity is built from 'irqaffinity=', however, we don't
+> consider irq_default_affinity for managed IRQ affinity.
+>
+> Looks Peter wants to exclude some CPUs from the spread on managed IRQ.
 
-This is totally untested, but sending it in case anyone is interested.
 
- sound/soc/codecs/rt5682-i2c.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
+Hi Ming and Thomas,
 
-diff --git a/sound/soc/codecs/rt5682-i2c.c b/sound/soc/codecs/rt5682-i2c.c
-index 8265b537ff4f..52a6fc56a232 100644
---- a/sound/soc/codecs/rt5682-i2c.c
-+++ b/sound/soc/codecs/rt5682-i2c.c
-@@ -280,6 +280,16 @@ static void rt5682_i2c_shutdown(struct i2c_client *client)
- 	rt5682_reset(rt5682);
- }
- 
-+static int rt5682_i2c_remove(struct i2c_client *client)
-+{
-+	struct rt5682_priv *rt5682 = i2c_get_clientdata(client);
-+
-+	rt5682_i2c_shutdown(client);
-+	regulator_bulk_disable(ARRAY_SIZE(rt5682->supplies), rt5682->supplies);
-+
-+	return 0;
-+}
-+
- static const struct of_device_id rt5682_of_match[] = {
- 	{.compatible = "realtek,rt5682i"},
- 	{},
-@@ -306,6 +316,7 @@ static struct i2c_driver rt5682_i2c_driver = {
- 		.probe_type = PROBE_PREFER_ASYNCHRONOUS,
- 	},
- 	.probe = rt5682_i2c_probe,
-+	.remove = rt5682_i2c_remove,
- 	.shutdown = rt5682_i2c_shutdown,
- 	.id_table = rt5682_i2c_id,
- };
--- 
-https://chromeos.dev
+
+We are dealing with a scenario which may need to assign a default 
+irqaffinity
+
+for managed IRQ.
+
+
+Assume we have a full CPU usage RT thread running binded to a specific CPU.
+
+In the mean while, interrupt handler registered by a device which is 
+ksoftirqd
+
+may never have a chance to run. (And we don't want to use isolate CPU)
+
+
+There could be a couple way to deal with this problem:
+
+1. Adjust priority of ksoftirqd or RT thread, so the interrupt handler 
+could preempt
+
+RT thread. However, I am not sure whether it could have some side 
+effects or not.
+
+2. Adjust interrupt CPU affinity or RT thread affinity. But managed IRQ 
+seems
+
+design to forbid user from manipulating interrupt affinity.
+
+
+It seems managed IRQ is coupled with user side application to me.
+
+Would you share your thoughts about this issue please?
+
+
+Thanks,
+
+Yihang
 
