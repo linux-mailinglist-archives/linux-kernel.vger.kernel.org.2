@@ -2,87 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1471376F9E
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 06:50:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BF146376FB2
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 07:08:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230114AbhEHEut (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 00:50:49 -0400
-Received: from mout.gmx.net ([212.227.15.19]:41333 "EHLO mout.gmx.net"
+        id S230526AbhEHFJy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 01:09:54 -0400
+Received: from mga05.intel.com ([192.55.52.43]:44649 "EHLO mga05.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S229467AbhEHEuk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 00:50:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620449376;
-        bh=KzuuQYXMRN9pGQUEfYDu1hLgq9anV9jI1ipQxWyUX6s=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=Mg6EP/zhpgZmIQKoDOAe2fNlc4H3kR3RpT++oTLMbpqT+2Qynz9nRCVpyDg0bSh8w
-         chFjUkOdpuypbGrX/MYIluPDr+W/pNFTYgufw+FP94hmuQcYwh0WD+a/4skWpyQVgj
-         QXNV9jUrQgUJhjbOah9JPNvtEuwOJ8CgJJTu/cQA=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.fritz.box ([185.221.148.35]) by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1Ma20k-1m0ECK2tVc-00W0du; Sat, 08
- May 2021 06:49:36 +0200
-Message-ID: <abe6426476d4e87bd3977079380bc7c3f508328d.camel@gmx.de>
-Subject: Re: block, bfq: NULL pointer dereference in bfq_rq_pos_tree_lookup()
-From:   Mike Galbraith <efault@gmx.de>
-To:     Paolo Valente <paolo.valente@linaro.org>
-Cc:     lkml <linux-kernel@vger.kernel.org>,
-        linux-block <linux-block@vger.kernel.org>
-Date:   Sat, 08 May 2021 06:49:36 +0200
-In-Reply-To: <e0ece2e6349e92adc3da6d8c2ae6ff8a4172e4ad.camel@gmx.de>
-References: <8c38408d27f1032f2a664838e523376c5da09a80.camel@gmx.de>
-         <9732EA9F-E15B-48E1-9B92-2D74F75C6331@linaro.org>
-         <e0ece2e6349e92adc3da6d8c2ae6ff8a4172e4ad.camel@gmx.de>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S229841AbhEHFJw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 8 May 2021 01:09:52 -0400
+IronPort-SDR: PV/luzZuE82VIC9b1M9LifUL7iKLG6C5D846ri5UNlEBF/+7VtdzUPdCRZBejh38UV83ns7JAu
+ jZpiswjunfYg==
+X-IronPort-AV: E=McAfee;i="6200,9189,9977"; a="284333992"
+X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
+   d="asc'?scan'208";a="284333992"
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 May 2021 22:08:52 -0700
+IronPort-SDR: Dv3dGDws6GEtevLyQTECKkR1AuLUReLH1KTJFez646MGA6b4ixaiVRy+90+G3n+Xr5SvbCm8K9
+ suwx2W96fVUQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.82,282,1613462400"; 
+   d="asc'?scan'208";a="460405312"
+Received: from zhen-hp.sh.intel.com (HELO zhen-hp) ([10.239.160.147])
+  by FMSMGA003.fm.intel.com with ESMTP; 07 May 2021 22:08:50 -0700
+Date:   Sat, 8 May 2021 12:50:04 +0800
+From:   Zhenyu Wang <zhenyuw@linux.intel.com>
+To:     Alex Williamson <alex.williamson@redhat.com>
+Cc:     tkffaul@outlook.com, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] vfio/pci: Sanity check IGD OpRegion Size
+Message-ID: <20210508045004.GH4589@zhen-hp.sh.intel.com>
+Reply-To: Zhenyu Wang <zhenyuw@linux.intel.com>
+References: <162041357421.21800.16214130780777455390.stgit@omen>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Hiulkvk5AR0k+cntRjFfaxlhKy6nafnzwfNg8bhenzOedJVougr
- 84p/ewm2NIT59zJ0gqaKVaED71Blg19ueNsFb63k5IQOoftlO7/A/ZSGzFbSr1Tt6uPh+E2
- nAfDlUFieerjJIQBlSRolzsWBdCGB9ib1dk1NpyyyeJvmIqGFHFC93QDd9iIygYgUgC02xe
- tULcC6aM/SwgOFXTruWiA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:tQ6UyAdQFSE=:FX1DpQyzbaXkyLfHVt4l4h
- RULzuWDWj4Gldg2+/AohMjdABSAboLCtC88xN5//gaLO6/BCjHraAM4pbduV1GzHHsTzZm1Sg
- ZCczDYzhTc/rd3407dneoTEBGzxVtlaF6DqBPtAMiVVscdwpFwQ70B06mBfrCa8dAPUY512nc
- dpHSphYi3+m2kzraVvsp7o2mlp5k0933FP0ecld/8vRmeWRV7tISwsRISUagb6xhnN5YUWTWt
- nXU3OJUpgxgqcmqCHCHlhAObClea6B3h2/RBiGfyfz01qKmnSfRdmvbX/9kZ5oTJozDhQg/6g
- npP3Nvba0iwblvHwkobA+M5K7ocGuVOfj304CH5ScpUqBhHnW1z1KSMss/0W2CIJjT12YKN8A
- ScYxccQRHdbr0keBs/uVfADjHn+MlASMJy91c4Ca1GF4IrCbNhJjRXN33rYRftoDU1r6xKhzC
- 7UJKpUqKUt56MU9quB0xf7R74hbhnJ8EVs4ipKlwFJvl4YnKtACeex1agHrqlSHmno4h/Iqrx
- NkhJlRCC1hDRxtGI8yTQgr+ClxH4It4i227+efbzxiEBjcLZiSLpXFNvRl8OGdoCTMlBcNo8X
- l+lm+Nh8obgrnE+IxMTy1qioBhvazTpWlnp1niif+p9gE1/siWIaaENkHq1y2PiW1jIh9430O
- jtAVL/CBHDrFM78Hp5HjqF9NqDFmrf3CxU1Uc9s2Ol8reBYj+zrcEw68r3FdznlVvrsVqMfOg
- zUzEAWa6naQ4qFVtEsM0bemvUfHYKJsAtd+M2HGipP1XZcSYt7TPHcfrAMJz6GL3i1dSvR9Bj
- 5Ee6gR0YFQLLC/aWOPXl4TpOdT0f26TjbLE3ioalbRkw2Q66PAWWAZ+GJdRwy5fGSPOR3PyWK
- BiyK0Wb6YPSwVfpNLYdH+CWnmn9cTHxnT+XNxODnFkN7ehIs5/Ia7MIQW42pLhNC6ZXLTSb7s
- tdGbaAbPNxSGrduN+kVLN8QGdRdXO6l/w/0Herf1fDp9HV5mP/Nyh2vD1008wYvifbhg6+W4L
- 0WEcFrhsD7aYsYjOm7OlVaSUI7wlzgIu03eBtpHK1Ick62zWdyaRYW55OQ2U4tX9fKWLFvkmw
- 4l0E3M6U09fSXNAI8g42h8lN9xF0UkZg4d40BW4BEfLvdVhhnNvCIGniLqY7W4t1CIvxRtPhI
- Ezy1tNRqEfiRz9vyu20tHnOlDv14pUhCf4TSapkOJaGSk8kWRAxDg0pZbwHNQ9KssHo8c=
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="KFztAG8eRSV9hGtP"
+Content-Disposition: inline
+In-Reply-To: <162041357421.21800.16214130780777455390.stgit@omen>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2021-05-03 at 14:41 +0200, Mike Galbraith wrote:
-> On Mon, 2021-05-03 at 11:52 +0200, Paolo Valente wrote:
-> > Hi Mike,
-> > I've waited a little bit before replying, because I've worked on a dev
-> > patch series, for debugging another crash. I'd like to use
-> > this series for your failure too, as the OOPS you report
-> > unfortunately does not ring any bell :(
-> >
-> > So, could you please try to apply this patch series?  If it doesn't
-> > apply, I'll rebase it.
->
-> This bug isn't deterministic, but I can wedge your set into my devel
-> trees, and see if anything falls out.
 
-What fell out was not the least bit useful.  After days of box working
-just fine despite bug being given ample enticement, it didn't take the
-bait.  I then build master sans patch set, which exploded on its very
-first distro build, after which bug (snickered mightily and) went back
-to into hiding.
+--KFztAG8eRSV9hGtP
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-	-Mike
+On 2021.05.07 12:53:17 -0600, Alex Williamson wrote:
+> The size field of the IGD OpRegion table is supposed to indicate table
+> size in KB, but we've seen at least one report of a BIOS that appears
+> to incorrectly report size in bytes.  The default size is 8 (*1024 =3D
+> 8KB), but an incorrect implementation may report 8192 (*1024 =3D 8MB)
+> and can cause a variety of mapping errors.
+>=20
+> It's believed that 8MB would be an implausible, if not absurd, actual
+> size, so we can probably be pretty safe in assuming this is a BIOS bug
+> where the intended size is likely 8KB.
+>=20
+> Reported-by: Travis Faulhaber <tkffaul@outlook.com>
+> Tested-by: Travis Faulhaber <tkffaul@outlook.com>
+> Signed-off-by: Alex Williamson <alex.williamson@redhat.com>
+> ---
+>  drivers/vfio/pci/vfio_pci_igd.c |   11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/vfio/pci/vfio_pci_igd.c b/drivers/vfio/pci/vfio_pci_=
+igd.c
+> index 228df565e9bc..c89a4797cd18 100644
+> --- a/drivers/vfio/pci/vfio_pci_igd.c
+> +++ b/drivers/vfio/pci/vfio_pci_igd.c
+> @@ -86,7 +86,16 @@ static int vfio_pci_igd_opregion_init(struct vfio_pci_=
+device *vdev)
+>  		return -EINVAL;
+>  	}
+> =20
+> -	size *=3D 1024; /* In KB */
+> +	/*
+> +	 * The OpRegion size field is specified as size in KB, but there have b=
+een
+> +	 * user reports where this field appears to report size in bytes.  If we
+> +	 * read 8192, assume this is the case.
+> +	 */
+> +	if (size =3D=3D OPREGION_SIZE)
+> +		pci_warn(vdev->pdev,
+> +			 "BIOS Bug, IGD OpRegion reports invalid size, assuming default 8KB\n=
+");
+> +	else
+> +		size *=3D 1024; /* In KB */
+> =20
+>  	/*
+>  	 * Support opregion v2.1+
+>=20
 
+Reviewed-by: Zhenyu Wang <zhenyuw@linux.intel.com>
+
+thanks
+
+--KFztAG8eRSV9hGtP
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EARECAB0WIQTXuabgHDW6LPt9CICxBBozTXgYJwUCYJYYcwAKCRCxBBozTXgY
+J9gLAJ9WZQAELAZanHt41Fm37Zpywbd/5wCgnfwh7QDlG6+zsX/eLRycHAm9RmY=
+=mQOk
+-----END PGP SIGNATURE-----
+
+--KFztAG8eRSV9hGtP--
