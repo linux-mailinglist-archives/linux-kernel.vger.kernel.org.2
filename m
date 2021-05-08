@@ -2,69 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9373773E1
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 21:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 39D033773E2
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 21:53:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229661AbhEHTyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 15:54:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
+        id S229697AbhEHTyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 15:54:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45146 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229549AbhEHTx7 (ORCPT
+        with ESMTP id S229549AbhEHTyB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 15:53:59 -0400
-Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B53C061574;
-        Sat,  8 May 2021 12:52:57 -0700 (PDT)
-Received: by mail-pg1-x535.google.com with SMTP id t1so1412403pgl.4;
-        Sat, 08 May 2021 12:52:57 -0700 (PDT)
+        Sat, 8 May 2021 15:54:01 -0400
+Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C6E4FC061574
+        for <linux-kernel@vger.kernel.org>; Sat,  8 May 2021 12:52:59 -0700 (PDT)
+Received: by mail-pg1-x529.google.com with SMTP id m12so10275169pgr.9
+        for <linux-kernel@vger.kernel.org>; Sat, 08 May 2021 12:52:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=52/BODVej/sAPj1HAsVHhcFR3RxERy74g5pEGd5eMWs=;
-        b=Lckz/cwvu9w/BaykBLqzfMjsL/UzQqsU+MmTCjOI6K9UxxSYmFuzeX2FoFWqqSHg+2
-         InT7fyulz7rhUb0jU3JAmCtfarUKA4v4x09Z1Ka70powvuTaJSSwjiO36xdDagFCSTxK
-         6moDnOuYz2a4wG6eP8UTr+7SDYQ6BmDSavDu/a1BxvZjD7DyMMVVrP5XU5ebIoIKab04
-         s6Efs7s2NKzeKkIK8mloBupy3sUVKI2dmWS92vY+h60yKMmM7J4hFoSeZQObY8twiX4u
-         YfOXkgLjEjPe3WMYhn/0p31S9ihmVQXjBH42wAq7j7QoeR9vcBFQY+j99ayowT/2hv8q
-         pLMg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=OBsK6dWp5skNfFIzG+9Owffi0WswqdNNRuWbcPljwx4=;
+        b=ZJ9IHRTafnvjESVpofVZbajXd0g/0aiRJOCf0yg83Nd7stLc8cvrc1xywNOPZAyPIq
+         oU4x5sET3dK0qUNJNxQ4Q/6TaLD04bdtrekXTFVwVJfDK2PLLCFVh9R9mBuKX/KBhRhC
+         DJ6XFqvgZYcNh6QamqJttii1hodqp9cOR3fZFz7QdsuFHhbpJscNv+xOnPXA9472d9wm
+         KoDQmGARa5YkBuaP16+grXzuNQ6Xi3lDo6Ma8hFLLgHPvFCqp+UrZyoYOW3RIJP1e9S+
+         zZC6IhZK/B2Stk4woMbjILKijrJEeLmm6NE6VcvzwKTi99YopSWYDg3lzNkWGYnorJFG
+         7dJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=52/BODVej/sAPj1HAsVHhcFR3RxERy74g5pEGd5eMWs=;
-        b=evT75cc2CJL1uxCI1k6xDZrbIMN73DjMwB6RACXmOWV9YblUKVqSY6Sti2blULjkve
-         ZRhIMR4djAQA70ULkr0p6xZwvedaX38N8DE6SwxiADl0DRT8+1rnANITAGd/0DTPsBv0
-         tjMTaFwssD95JLqx4rlcSLZWxhFWRmNTHaYHHomMaY1MZ3ep8mXCovkAHReNZhHiL8Hd
-         vAToXn0DQvykALzSUuIRpkqt79f3xVyv2Is975vpOS5sJvsd4QcAZTyEJ2CXjzWeZCcS
-         JJQzjH/Pfur9GIKJ4jMC1HAg3nAO/wMCxhQ5q0YTFxHKKsmk6FZkAJZZLhAl9MblNH54
-         rn+w==
-X-Gm-Message-State: AOAM531ycSwE+NWDOuWCiA19LHQrGMTMoo6C/dinnAfOuAOHK84r+Gw3
-        e1Bo9r1H1/jVZqXiasgYM97bporu5hqL2A==
-X-Google-Smtp-Source: ABdhPJzShZqZ9yJXLeSXzV96pkdUxCEhyW3PchhSSkpkvoHPAOi4i4qCubtWTJgzZb+0BE3AedNzcw==
-X-Received: by 2002:a62:8208:0:b029:289:112f:d43d with SMTP id w8-20020a6282080000b0290289112fd43dmr16583052pfd.61.1620503576956;
-        Sat, 08 May 2021 12:52:56 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=OBsK6dWp5skNfFIzG+9Owffi0WswqdNNRuWbcPljwx4=;
+        b=ZU9FCN73yT2MWCqcyseI2bWWbh+of8VSmEnseTZX45BvoeBfB33+tuXFRU1D8lvygE
+         65Gp8ntL05HrxRKOxnOPjzpyVlWv+yeAlL/ev4RcUlbl80STMgg+z+guHrcLcdEbbJsp
+         JfmTWvtOUnZuHIG8xhIGGG40r2FSb8PvrYPjds6ZAns/bFEjHQ66xoLYghz10BZOAUsn
+         +CN9oqJAdhtS5tw/BKdNr9t6JTYWqp3iu3tlqK4fae6ynh6vVkiYsBeyotYIb63WLZp8
+         MaVr6iEwm6YIT6Jh95i7K98DI2JIqECaWflauCF3un3GY9xwI/wgWm+kkCTwi+IvKElF
+         gOOw==
+X-Gm-Message-State: AOAM530/CkhO5JYkrjzh2lYD528FBndxCIhlwPira9ORY5jcsb5Z2HDL
+        U5ljg0WoXRjHb7GKdAbTbcc=
+X-Google-Smtp-Source: ABdhPJxLZGpE+T5z69LFABcJUtb/z3YZRyWlRRfvZxgGDGJ5WhVgR3JBhTe/zsTCMHQnxQTIgldqcA==
+X-Received: by 2002:a05:6a00:ccd:b029:28e:d682:cc66 with SMTP id b13-20020a056a000ccdb029028ed682cc66mr16730988pfv.53.1620503579375;
+        Sat, 08 May 2021 12:52:59 -0700 (PDT)
 Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
-        by smtp.gmail.com with ESMTPSA id u1sm7543017pgh.80.2021.05.08.12.52.54
+        by smtp.gmail.com with ESMTPSA id j7sm7087347pfc.164.2021.05.08.12.52.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 12:52:55 -0700 (PDT)
+        Sat, 08 May 2021 12:52:58 -0700 (PDT)
 From:   Rob Clark <robdclark@gmail.com>
 To:     dri-devel@lists.freedesktop.org
 Cc:     Rob Clark <robdclark@chromium.org>,
-        Abhinav Kumar <abhinavk@codeaurora.org>,
-        Bernard <bernard@vivo.com>,
-        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
-        GPU), Hongbo Yao <yaohongbo@huawei.com>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
-        linux-kernel@vger.kernel.org (open list),
-        Maxime Ripard <maxime@cerno.tech>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Stephen Boyd <swboyd@chromium.org>
-Subject: [PATCH 0/2] drm: Fix atomic helper dirtyfb stalls
-Date:   Sat,  8 May 2021 12:56:37 -0700
-Message-Id: <20210508195641.397198-1-robdclark@gmail.com>
+        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/2] drm: Fix dirtyfb stalls
+Date:   Sat,  8 May 2021 12:56:38 -0700
+Message-Id: <20210508195641.397198-2-robdclark@gmail.com>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20210508195641.397198-1-robdclark@gmail.com>
+References: <20210508195641.397198-1-robdclark@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
@@ -73,29 +71,68 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Rob Clark <robdclark@chromium.org>
 
-Someone on IRC once asked an innocent enough sounding question:  Why
-with xf86-video-modesetting is es2gears limited at 120fps.
+drm_atomic_helper_dirtyfb() will end up stalling for vblank on "video
+mode" type displays, which is pointless and unnecessary.  Add an
+optional helper vfunc to determine if a plane is attached to a CRTC
+that actually needs dirtyfb, and skip over them.
 
-So I broke out the perfetto tracing mesa MR and took a look.  It turns
-out the problem was drm_atomic_helper_dirtyfb(), which would end up
-waiting for vblank.. es2gears would rapidly push two frames to Xorg,
-which would blit them to screen and in idle hook (I assume) call the
-DIRTYFB ioctl.  Which in turn would do an atomic update to flush the
-dirty rects, which would stall until the next vblank.  And then the
-whole process would repeat.
-
-But this is a bit silly, we only need dirtyfb for command mode DSI
-panels.  So lets just skip it otherwise.
-
-Rob Clark (2):
-  drm: Fix dirtyfb stalls
-  drm/msm/dpu: Wire up needs_dirtyfb
-
+Signed-off-by: Rob Clark <robdclark@chromium.org>
+---
  drivers/gpu/drm/drm_damage_helper.c      |  8 ++++++++
- drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 14 ++++++++++++++
  include/drm/drm_modeset_helper_vtables.h | 14 ++++++++++++++
- 3 files changed, 36 insertions(+)
+ 2 files changed, 22 insertions(+)
 
+diff --git a/drivers/gpu/drm/drm_damage_helper.c b/drivers/gpu/drm/drm_damage_helper.c
+index 3a4126dc2520..a0bed1a2c2dc 100644
+--- a/drivers/gpu/drm/drm_damage_helper.c
++++ b/drivers/gpu/drm/drm_damage_helper.c
+@@ -211,6 +211,7 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
+ retry:
+ 	drm_for_each_plane(plane, fb->dev) {
+ 		struct drm_plane_state *plane_state;
++		struct drm_crtc *crtc;
+ 
+ 		ret = drm_modeset_lock(&plane->mutex, state->acquire_ctx);
+ 		if (ret)
+@@ -221,6 +222,13 @@ int drm_atomic_helper_dirtyfb(struct drm_framebuffer *fb,
+ 			continue;
+ 		}
+ 
++		crtc = plane->state->crtc;
++		if (crtc->helper_private->needs_dirtyfb &&
++				!crtc->helper_private->needs_dirtyfb(crtc)) {
++			drm_modeset_unlock(&plane->mutex);
++			continue;
++		}
++
+ 		plane_state = drm_atomic_get_plane_state(state, plane);
+ 		if (IS_ERR(plane_state)) {
+ 			ret = PTR_ERR(plane_state);
+diff --git a/include/drm/drm_modeset_helper_vtables.h b/include/drm/drm_modeset_helper_vtables.h
+index eb706342861d..afa8ec5754e7 100644
+--- a/include/drm/drm_modeset_helper_vtables.h
++++ b/include/drm/drm_modeset_helper_vtables.h
+@@ -487,6 +487,20 @@ struct drm_crtc_helper_funcs {
+ 				     bool in_vblank_irq, int *vpos, int *hpos,
+ 				     ktime_t *stime, ktime_t *etime,
+ 				     const struct drm_display_mode *mode);
++
++	/**
++	 * @needs_dirtyfb
++	 *
++	 * Optional callback used by damage helpers to determine if fb_damage_clips
++	 * update is needed.
++	 *
++	 * Returns:
++	 *
++	 * True if fb_damage_clips update is needed to handle DIRTYFB, False
++	 * otherwise.  If this callback is not implemented, then True is
++	 * assumed.
++	 */
++	bool (*needs_dirtyfb)(struct drm_crtc *crtc);
+ };
+ 
+ /**
 -- 
 2.30.2
 
