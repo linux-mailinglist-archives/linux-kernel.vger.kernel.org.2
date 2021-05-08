@@ -2,176 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 090173773DD
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 21:39:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9373773E1
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 21:53:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229694AbhEHTku (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 15:40:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42294 "EHLO
+        id S229661AbhEHTyA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 15:54:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45138 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229546AbhEHTkt (ORCPT
+        with ESMTP id S229549AbhEHTx7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 15:40:49 -0400
-Received: from mail-wm1-x32e.google.com (mail-wm1-x32e.google.com [IPv6:2a00:1450:4864:20::32e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1683C061574;
-        Sat,  8 May 2021 12:39:47 -0700 (PDT)
-Received: by mail-wm1-x32e.google.com with SMTP id o6-20020a05600c4fc6b029015ec06d5269so263590wmq.0;
-        Sat, 08 May 2021 12:39:47 -0700 (PDT)
+        Sat, 8 May 2021 15:53:59 -0400
+Received: from mail-pg1-x535.google.com (mail-pg1-x535.google.com [IPv6:2607:f8b0:4864:20::535])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8B53C061574;
+        Sat,  8 May 2021 12:52:57 -0700 (PDT)
+Received: by mail-pg1-x535.google.com with SMTP id t1so1412403pgl.4;
+        Sat, 08 May 2021 12:52:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=/aT2AFj/W6pt+Y3HFn5Q+rY7c1xeC8Z2fMPQBVN+RjI=;
-        b=S3ej4r8Wmp0240zqQhmNsHAcsH5gByygrKd1YQd6wNG9zlPJaYkHCWWWNcfHQkIWY5
-         2KwNDcmYIfKy3qAgjLmeZw/YlI6t1E5OjY06XmhKiHbwuTjS02SOh0WUcQ8cYHCZg05P
-         +a7LkBZZJDGOyUHuY0Rw8002AK6qc/V6I7QmGzbxnAuZjJxiRaAlONwu7/eRTmSZcxHk
-         hGI1i0MFgDrET1zhnEn/ztqetpdbowmKh1SWYo9UwZeupiH445Mycnyq4w5l/Z8omqs5
-         vb9iMnGOYQkgjZ52ma3/SYCeKMtMh2tnetJCKBxSJwBqQO2eqP4lzj1s4yRvA4MGulev
-         YeYQ==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=52/BODVej/sAPj1HAsVHhcFR3RxERy74g5pEGd5eMWs=;
+        b=Lckz/cwvu9w/BaykBLqzfMjsL/UzQqsU+MmTCjOI6K9UxxSYmFuzeX2FoFWqqSHg+2
+         InT7fyulz7rhUb0jU3JAmCtfarUKA4v4x09Z1Ka70powvuTaJSSwjiO36xdDagFCSTxK
+         6moDnOuYz2a4wG6eP8UTr+7SDYQ6BmDSavDu/a1BxvZjD7DyMMVVrP5XU5ebIoIKab04
+         s6Efs7s2NKzeKkIK8mloBupy3sUVKI2dmWS92vY+h60yKMmM7J4hFoSeZQObY8twiX4u
+         YfOXkgLjEjPe3WMYhn/0p31S9ihmVQXjBH42wAq7j7QoeR9vcBFQY+j99ayowT/2hv8q
+         pLMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=/aT2AFj/W6pt+Y3HFn5Q+rY7c1xeC8Z2fMPQBVN+RjI=;
-        b=J5RMs/6TfhJbwX5isQc+ZJjOH0Lg1lx5xU9M+INaoVDxAFNd+ODnJ1V06E8Ox/mgww
-         2lXiYrqWfR2iFRHduOp79zA34TUu/a924nunkGz8ZEDj3CBBn317BBu+Iw0Jl+iBLpV2
-         jfRMD9MXj0VwHj0nuUDDmIFakOPQPQT0gdOBUWQzRnZvvq5fj3CZ0hbjf+d4e5etqko1
-         4ZrR/o9gMOg7FnI0wQ7Y4AQj3pVmUkYevTYGRV53/j6Zi7JD/SmHoxLiLWwBSEXJEz/X
-         n/hFgPy5vX77i2WMH0hLTOR5/xw7ugf6qcAWSSleiVO8aKfG5ECQJk489fJ1l8HcoVtq
-         8jhw==
-X-Gm-Message-State: AOAM5311/zde8/KzH6ejgSx8v3lI6g3mn/BjZRV0kXmp4n/DOVI3rSje
-        +rfdIYg7r9SDAeQTwHdtQsP7X0k/pk47dQ==
-X-Google-Smtp-Source: ABdhPJwFwC43on281PSVJ9/z+oV3EVuqNO4OKfwmHJwMU2KxkyH+ddQmClfeBUPVbt5B0Z8GGcR2DQ==
-X-Received: by 2002:a1c:b38b:: with SMTP id c133mr4649652wmf.8.1620502786282;
-        Sat, 08 May 2021 12:39:46 -0700 (PDT)
-Received: from michael-VirtualBox (cbl217-132-244-50.bb.netvision.net.il. [217.132.244.50])
-        by smtp.gmail.com with ESMTPSA id d3sm1000822wrs.41.2021.05.08.12.39.44
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=52/BODVej/sAPj1HAsVHhcFR3RxERy74g5pEGd5eMWs=;
+        b=evT75cc2CJL1uxCI1k6xDZrbIMN73DjMwB6RACXmOWV9YblUKVqSY6Sti2blULjkve
+         ZRhIMR4djAQA70ULkr0p6xZwvedaX38N8DE6SwxiADl0DRT8+1rnANITAGd/0DTPsBv0
+         tjMTaFwssD95JLqx4rlcSLZWxhFWRmNTHaYHHomMaY1MZ3ep8mXCovkAHReNZhHiL8Hd
+         vAToXn0DQvykALzSUuIRpkqt79f3xVyv2Is975vpOS5sJvsd4QcAZTyEJ2CXjzWeZCcS
+         JJQzjH/Pfur9GIKJ4jMC1HAg3nAO/wMCxhQ5q0YTFxHKKsmk6FZkAJZZLhAl9MblNH54
+         rn+w==
+X-Gm-Message-State: AOAM531ycSwE+NWDOuWCiA19LHQrGMTMoo6C/dinnAfOuAOHK84r+Gw3
+        e1Bo9r1H1/jVZqXiasgYM97bporu5hqL2A==
+X-Google-Smtp-Source: ABdhPJzShZqZ9yJXLeSXzV96pkdUxCEhyW3PchhSSkpkvoHPAOi4i4qCubtWTJgzZb+0BE3AedNzcw==
+X-Received: by 2002:a62:8208:0:b029:289:112f:d43d with SMTP id w8-20020a6282080000b0290289112fd43dmr16583052pfd.61.1620503576956;
+        Sat, 08 May 2021 12:52:56 -0700 (PDT)
+Received: from localhost (c-73-25-156-94.hsd1.or.comcast.net. [73.25.156.94])
+        by smtp.gmail.com with ESMTPSA id u1sm7543017pgh.80.2021.05.08.12.52.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 08 May 2021 12:39:45 -0700 (PDT)
-Date:   Sat, 8 May 2021 22:39:43 +0300
-From:   Michael Zaidman <michael.zaidman@gmail.com>
-To:     trix@redhat.com
-Cc:     jikos@kernel.org, benjamin.tissoires@redhat.com,
-        linux-i2c@vger.kernel.org, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, michael.zaidman@gmail.com
-Subject: Re: [PATCH] HID: ft260: improve error handling of
- ft260_hid_feature_report_get()
-Message-ID: <20210508193943.GA1581@michael-VirtualBox>
-References: <20210507183757.68810-1-trix@redhat.com>
+        Sat, 08 May 2021 12:52:55 -0700 (PDT)
+From:   Rob Clark <robdclark@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     Rob Clark <robdclark@chromium.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        Bernard <bernard@vivo.com>,
+        freedreno@lists.freedesktop.org (open list:DRM DRIVER FOR MSM ADRENO
+        GPU), Hongbo Yao <yaohongbo@huawei.com>,
+        Kalyan Thota <kalyan_t@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org (open list:DRM DRIVER FOR MSM ADRENO GPU),
+        linux-kernel@vger.kernel.org (open list),
+        Maxime Ripard <maxime@cerno.tech>,
+        Qinglang Miao <miaoqinglang@huawei.com>,
+        Stephen Boyd <swboyd@chromium.org>
+Subject: [PATCH 0/2] drm: Fix atomic helper dirtyfb stalls
+Date:   Sat,  8 May 2021 12:56:37 -0700
+Message-Id: <20210508195641.397198-1-robdclark@gmail.com>
+X-Mailer: git-send-email 2.30.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20210507183757.68810-1-trix@redhat.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, May 07, 2021 at 11:37:57AM -0700, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
-> 
-> Static analysis reports this representative problem
-> 
-> hid-ft260.c:787:9: warning: 4th function call argument is an
->   uninitialized value
->         return scnprintf(buf, PAGE_SIZE, "%hi\n", *field);
->                ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> 
-> Uses of ft260_hid_feature_report_get() check if the return size matches
-> the requested size.  But the function can also fail with at least -ENOMEM.
-> Add the < 0 checks.
+From: Rob Clark <robdclark@chromium.org>
 
-Hi Tom, thanks for catching and fixing it!
+Someone on IRC once asked an innocent enough sounding question:  Why
+with xf86-video-modesetting is es2gears limited at 120fps.
 
-I applied the patch, built the driver, and run some tests on my HW setup -
-no regression so far. But I think the fix can be improved even more, by
-reducing the number of questions to one in the successful case where the
-performance matters. Please see the proposal below inline.
+So I broke out the perfetto tracing mesa MR and took a look.  It turns
+out the problem was drm_atomic_helper_dirtyfb(), which would end up
+waiting for vblank.. es2gears would rapidly push two frames to Xorg,
+which would blit them to screen and in idle hook (I assume) call the
+DIRTYFB ioctl.  Which in turn would do an atomic update to flush the
+dirty rects, which would stall until the next vblank.  And then the
+whole process would repeat.
 
-> 
-> In ft260_hid_feature_report_get(), do not do the memcpy to the caller's
-> buffer if there is an error.
-> 
-> Fixes: 6a82582d9fa4 ("HID: ft260: add usb hid to i2c host bridge driver")
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/hid/hid-ft260.c | 19 +++++++++++++++----
->  1 file changed, 15 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/hid/hid-ft260.c b/drivers/hid/hid-ft260.c
-> index 7a9ba984a75a..628fa664a10b 100644
-> --- a/drivers/hid/hid-ft260.c
-> +++ b/drivers/hid/hid-ft260.c
-> @@ -249,7 +249,8 @@ static int ft260_hid_feature_report_get(struct hid_device *hdev,
->  
->  	ret = hid_hw_raw_request(hdev, report_id, buf, len, HID_FEATURE_REPORT,
->  				 HID_REQ_GET_REPORT);
-> -	memcpy(data, buf, len);
-> +	if (ret == len)
-> +		memcpy(data, buf, len);
->  	kfree(buf);
->  	return ret;
->  }
-> @@ -295,12 +296,16 @@ static int ft260_xfer_status(struct ft260_device *dev)
->  	struct hid_device *hdev = dev->hdev;
->  	struct ft260_get_i2c_status_report report;
->  	int ret;
-> +	int len = sizeof(report);
->  
->  	ret = ft260_hid_feature_report_get(hdev, FT260_I2C_STATUS,
-> -					   (u8 *)&report, sizeof(report));
-> -	if (ret < 0) {
-> +					   (u8 *)&report, len);
-> +	if (ret != len) {
->  		hid_err(hdev, "failed to retrieve status: %d\n", ret);
-> -		return ret;
-> +		if (ret >= 0)
-> +			return -EIO;
-> +		else
-> +			return ret;
->  	}
->  
->  	dev->clock = le16_to_cpu(report.clock);
-> @@ -728,6 +733,8 @@ static int ft260_get_system_config(struct hid_device *hdev,
->  		hid_err(hdev, "failed to retrieve system status\n");
->  		if (ret >= 0)
->  			return -EIO;
-> +		else
-> +			return ret;
->  	}
->  	return 0;
->  }
-> @@ -782,6 +789,8 @@ static int ft260_byte_show(struct hid_device *hdev, int id, u8 *cfg, int len,
->  	ret = ft260_hid_feature_report_get(hdev, id, cfg, len);
->  	if (ret != len && ret >= 0)
->  		return -EIO;
-> +	else if (ret < 0)
-> +		return  ret;
+But this is a bit silly, we only need dirtyfb for command mode DSI
+panels.  So lets just skip it otherwise.
 
-Please consider the below code to reduce the number of questions to one in the "likely" case
-and two in the worst-case scenario.
+Rob Clark (2):
+  drm: Fix dirtyfb stalls
+  drm/msm/dpu: Wire up needs_dirtyfb
 
-	if (ret != len) {
-	        if (ret >= 0)
-                        return -EIO;
-                else
-                        return ret;
-        }
+ drivers/gpu/drm/drm_damage_helper.c      |  8 ++++++++
+ drivers/gpu/drm/msm/disp/dpu1/dpu_crtc.c | 14 ++++++++++++++
+ include/drm/drm_modeset_helper_vtables.h | 14 ++++++++++++++
+ 3 files changed, 36 insertions(+)
 
->  
->  	return scnprintf(buf, PAGE_SIZE, "%hi\n", *field);
->  }
-> @@ -794,6 +803,8 @@ static int ft260_word_show(struct hid_device *hdev, int id, u8 *cfg, int len,
->  	ret = ft260_hid_feature_report_get(hdev, id, cfg, len);
->  	if (ret != len && ret >= 0)
->  		return -EIO;
-> +	else if (ret < 0)
-> +		return ret;
+-- 
+2.30.2
 
-The same.
-
->  
->  	return scnprintf(buf, PAGE_SIZE, "%hi\n", le16_to_cpu(*field));
->  }
-> -- 
-> 2.26.3
-> 
