@@ -2,186 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DE9E3771F7
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 15:04:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CE72A3771F9
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 15:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231163AbhEHNFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 8 May 2021 09:05:48 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([170.10.133.124]:38392 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S231152AbhEHNFk (ORCPT
+        id S231185AbhEHNGK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 8 May 2021 09:06:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41462 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S230449AbhEHNGI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 8 May 2021 09:05:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620479079;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=skQAYTO3lrX6st7yGY+MvBv6eqI3dj5Prs9fSDNzCCg=;
-        b=LKDanSx4cbrwOx4luiA2djUfPWSAfhiIW9g+lPhmP/MQ1Su0DAfzRXprWCGz5mojfaUKAT
-        5izqHm71f2d0uRW9vWeEizBHo0Cdtu5osQzH18Tu84BPbffXCHKiJl4f5oB0liTyGGRprE
-        EKWFY18/LzxRdfVmOHxquMxmd+A+KNY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-586-WRSs63fKMX20D1OlcrG1zw-1; Sat, 08 May 2021 09:04:37 -0400
-X-MC-Unique: WRSs63fKMX20D1OlcrG1zw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6C39C10066E7;
-        Sat,  8 May 2021 13:04:36 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 29499E16B;
-        Sat,  8 May 2021 13:04:36 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: [GIT PULL] Second batch of KVM changes for Linux 5.13
-Date:   Sat,  8 May 2021 09:04:35 -0400
-Message-Id: <20210508130435.201020-1-pbonzini@redhat.com>
+        Sat, 8 May 2021 09:06:08 -0400
+Received: from mail-lf1-x129.google.com (mail-lf1-x129.google.com [IPv6:2a00:1450:4864:20::129])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DC167C061574;
+        Sat,  8 May 2021 06:05:06 -0700 (PDT)
+Received: by mail-lf1-x129.google.com with SMTP id 124so16683710lff.5;
+        Sat, 08 May 2021 06:05:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=pU8gI7Fhg5vMbPInmCnZKwtrd65h+MuB8P+XOEMgKko=;
+        b=ZM29bqJ6kYpm0fLSuvktOsbfdC4h5lgf161k4aIeM/EPc8ZJpoou+JsMd3Y+c/V7T3
+         uI8SFK5sdjPGs7ORaj9ohIo8F67/c8i/vzhz6q+ZFXlhIaMGkD9u6vTFD5UkYhzlqWAG
+         xL49nlOUhR9wbTw8DleTik8ey18eylchbtieW5PriIM4/mL6GEeW4J42pdG/nop/A3u+
+         IwQZdh9NdJzC/3sYShnh+hR+FuuZ61cNBG35XXgqZpeGkVicq1/WF8swgiZDPE7k/bAi
+         8MzOW3P3rUJWj0fjj5swNkKaWJ+kAZ/zPIIcnDesOB4vMKkhbW1to7QhFTJaFoxkx2N+
+         NG5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=pU8gI7Fhg5vMbPInmCnZKwtrd65h+MuB8P+XOEMgKko=;
+        b=rAe4J3wCBXByySW6GzIux1KrVsDLHA/SQzud+x8Ewy6+CghvfdFXtdO3AuiBmeNFZE
+         2TjANhchY1un93M9kkSN8i/KoOBqNPzIYQzRpW/uLYQq/K4g93tL5Iv72N5CDw1lLG8I
+         mwDDBtnvlKer50jSk7nfhPzO9EzUGVddulPw5RmfM3XLQ0odINZm13cUoqgtASI7SS4t
+         sVj377IhCMJ5jk/4V4gHeSX6bp6kNbOVVbIu87YDdQce04eHKIDJduG7BXCRjxT35h8V
+         bGI+WOPzCWajeke+am4kfUE/T16jlubg+E0CR9OHNVdHUwKXXpirUZOAWPURIk4V3UgF
+         qrjA==
+X-Gm-Message-State: AOAM530QWmlCMtLYMlhgrWgEAliNpOfoG52CA9bYp33eIjT0RYWc3SJe
+        h8N0jNrk7GSoy0lC9GhGZ4E=
+X-Google-Smtp-Source: ABdhPJxgzmfkeR0Eon3JSFovc8AyusdEt6Jwf2Ug0EYW7kgSAq6sXvm4+awTcLinU6jrvi3BHIqkAQ==
+X-Received: by 2002:a05:6512:3619:: with SMTP id f25mr7780342lfs.399.1620479104028;
+        Sat, 08 May 2021 06:05:04 -0700 (PDT)
+Received: from localhost.localdomain ([185.215.60.119])
+        by smtp.gmail.com with ESMTPSA id a7sm1628386lff.39.2021.05.08.06.05.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 08 May 2021 06:05:03 -0700 (PDT)
+Date:   Sat, 8 May 2021 16:05:01 +0300
+From:   Pavel Skripkin <paskripkin@gmail.com>
+To:     Fabio Aiuto <fabioaiuto83@gmail.com>
+Cc:     mchehab@kernel.org, sakari.ailus@linux.intel.com,
+        gregkh@linuxfoundation.org, linux-media@vger.kernel.org,
+        linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/3] staging: media: atomisp: remove useless returns
+Message-ID: <20210508160501.4f49d57b@gmail.com>
+In-Reply-To: <20210508124334.GA1403@agape.jhs>
+References: <cover.1620475909.git.paskripkin@gmail.com>
+        <f5b8abd8a92fcdd9b0ec49902d4363bc35c86218.1620475909.git.paskripkin@gmail.com>
+        <20210508124334.GA1403@agape.jhs>
+X-Mailer: Claws Mail 3.17.8git77 (GTK+ 2.24.33; x86_64-suse-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Hi, Fabio!
 
-The following changes since commit 9ccce092fc64d19504fa54de4fd659e279cc92e7:
+On Sat, 8 May 2021 14:43:35 +0200
+Fabio Aiuto <fabioaiuto83@gmail.com> wrote:
 
-  Merge tag 'for-linus-5.13-ofs-1' of git://git.kernel.org/pub/scm/linux/kernel/git/hubcap/linux (2021-05-02 14:13:46 -0700)
+> Hi Pavel,
+> 
+> On Sat, May 08, 2021 at 03:21:52PM +0300, Pavel Skripkin wrote:
+> > Breaks are not useful at the end of void function,
+> > they can simply be removed.
+> 
+> this commit description is not really describing the changes that
+> have been made
+> 
 
-are available in the Git repository at:
+oh..., it's copy-paste error. Thank you for pointing it out :)
+Will fix it in v4 
 
-  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+> > 
+> > Signed-off-by: Pavel Skripkin <paskripkin@gmail.com>
+> 
+> thank you,
+> 
+> fabio
 
-for you to fetch changes up to ce7ea0cfdc2e9ff31d12da31c3226deddb9644f5:
 
-  KVM: SVM: Move GHCB unmapping to fix RCU warning (2021-05-07 06:06:23 -0400)
-
-----------------------------------------------------------------
-* Lots of bug fixes.
-
-* Fix virtualization of RDPID
-
-* Virtualization of DR6_BUS_LOCK
-
-* More nested virtualization migration fixes (nSVM and eVMCS)
-
-* Fix for KVM guest hibernation
-
-* Fix for warning in SEV-ES SRCU usage
-
-----------------------------------------------------------------
-Benjamin Segall (1):
-      kvm: exit halt polling on need_resched() as well
-
-Bill Wendling (1):
-      selftests: kvm: remove reassignment of non-absolute variables
-
-Chenyi Qiang (1):
-      KVM: X86: Add support for the emulation of DR6_BUS_LOCK bit
-
-Colin Ian King (1):
-      KVM: x86: Fix potential fput on a null source_kvm_file
-
-David Matlack (1):
-      kvm: Cap halt polling at kvm->max_halt_poll_ns
-
-Kai Huang (2):
-      KVM: x86/mmu: Avoid unnecessary page table allocation in kvm_tdp_mmu_map()
-      KVM: x86/mmu: Fix kdoc of __handle_changed_spte
-
-Maxim Levitsky (5):
-      KVM: nSVM: fix a typo in svm_leave_nested
-      KVM: nSVM: fix few bugs in the vmcb02 caching logic
-      KVM: nSVM: leave the guest mode prior to loading a nested state
-      KVM: nSVM: always restore the L1's GIF on migration
-      KVM: nSVM: remove a warning about vmcb01 VM exit reason
-
-Nicholas Piggin (1):
-      KVM: PPC: Book3S HV: Fix conversion to gfn-based MMU notifier callbacks
-
-Paolo Bonzini (1):
-      KVM: X86: Expose bus lock debug exception to guest
-
-Sean Christopherson (17):
-      KVM: VMX: Do not advertise RDPID if ENABLE_RDTSCP control is unsupported
-      KVM: x86: Emulate RDPID only if RDTSCP is supported
-      KVM: SVM: Inject #UD on RDTSCP when it should be disabled in the guest
-      KVM: x86: Move RDPID emulation intercept to its own enum
-      KVM: VMX: Disable preemption when probing user return MSRs
-      KVM: SVM: Probe and load MSR_TSC_AUX regardless of RDTSCP support in host
-      KVM: x86: Add support for RDPID without RDTSCP
-      KVM: VMX: Configure list of user return MSRs at module init
-      KVM: VMX: Use flag to indicate "active" uret MSRs instead of sorting list
-      KVM: VMX: Use common x86's uret MSR list as the one true list
-      KVM: VMX: Disable loading of TSX_CTRL MSR the more conventional way
-      KVM: x86: Export the number of uret MSRs to vendor modules
-      KVM: x86: Move uret MSR slot management to common x86
-      KVM: x86: Tie Intel and AMD behavior for MSR_TSC_AUX to guest CPU model
-      KVM: x86: Hide RDTSCP and RDPID if MSR_TSC_AUX probing failed
-      KVM: x86: Prevent KVM SVM from loading on kernels with 5-level paging
-      KVM: SVM: Invert user pointer casting in SEV {en,de}crypt helpers
-
-Shahin, Md Shahadat Hossain (1):
-      kvm/x86: Fix 'lpages' kvm stat for TDM MMU
-
-Siddharth Chandrasekaran (2):
-      doc/kvm: Fix wrong entry for KVM_CAP_X86_MSR_FILTER
-      KVM: x86: Hoist input checks in kvm_add_msr_filter()
-
-Stefan Raspl (1):
-      tools/kvm_stat: Fix documentation typo
-
-Thomas Gleixner (2):
-      KVM: x86: Cancel pvclock_gtod_work on module removal
-      KVM: x86: Prevent deadlock against tk_core.seq
-
-Tom Lendacky (1):
-      KVM: SVM: Move GHCB unmapping to fix RCU warning
-
-Vitaly Kuznetsov (9):
-      x86/kvm: Fix pr_info() for async PF setup/teardown
-      x86/kvm: Teardown PV features on boot CPU as well
-      x86/kvm: Disable kvmclock on all CPUs on shutdown
-      x86/kvm: Disable all PV features on crash
-      x86/kvm: Unify kvm_pv_guest_cpu_reboot() with kvm_guest_cpu_offline()
-      KVM: nVMX: Always make an attempt to map eVMCS after migration
-      KVM: selftests: evmcs_test: Check that VMLAUNCH with bogus EVMPTR is causing #UD
-      KVM: selftests: evmcs_test: Check that VMCS12 is alway properly synced to eVMCS after restore
-      KVM: nVMX: Properly pad 'struct kvm_vmx_nested_state_hdr'
-
-Wanpeng Li (1):
-      KVM: LAPIC: Accurately guarantee busy wait for timer to expire when using hv_timer
-
- Documentation/virt/kvm/api.rst                    |   4 +-
- arch/powerpc/include/asm/kvm_book3s.h             |   2 +-
- arch/powerpc/kvm/book3s_64_mmu_hv.c               |  46 +++--
- arch/powerpc/kvm/book3s_64_mmu_radix.c            |   5 +-
- arch/x86/include/asm/kvm_host.h                   |  15 +-
- arch/x86/include/asm/kvm_para.h                   |  10 +-
- arch/x86/include/uapi/asm/kvm.h                   |   2 +
- arch/x86/kernel/kvm.c                             | 129 ++++++++-----
- arch/x86/kernel/kvmclock.c                        |  26 +--
- arch/x86/kvm/cpuid.c                              |  20 +-
- arch/x86/kvm/emulate.c                            |   2 +-
- arch/x86/kvm/kvm_emulate.h                        |   1 +
- arch/x86/kvm/lapic.c                              |   2 +-
- arch/x86/kvm/mmu/mmu.c                            |  20 +-
- arch/x86/kvm/mmu/tdp_mmu.c                        |  17 +-
- arch/x86/kvm/svm/nested.c                         |  23 ++-
- arch/x86/kvm/svm/sev.c                            |  32 ++--
- arch/x86/kvm/svm/svm.c                            |  62 +++---
- arch/x86/kvm/svm/svm.h                            |   1 +
- arch/x86/kvm/vmx/capabilities.h                   |   3 +
- arch/x86/kvm/vmx/nested.c                         |  29 ++-
- arch/x86/kvm/vmx/vmx.c                            | 220 +++++++++++-----------
- arch/x86/kvm/vmx/vmx.h                            |  12 +-
- arch/x86/kvm/x86.c                                | 153 +++++++++++----
- tools/kvm/kvm_stat/kvm_stat.txt                   |   2 +-
- tools/testing/selftests/kvm/lib/x86_64/handlers.S |   4 +-
- tools/testing/selftests/kvm/x86_64/evmcs_test.c   |  88 +++++++--
- virt/kvm/kvm_main.c                               |   7 +-
- 28 files changed, 578 insertions(+), 359 deletions(-)
-
+With regards,
+Pavel Skripkin
