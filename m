@@ -2,317 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725D9376E44
-	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 03:55:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F303376E4F
+	for <lists+linux-kernel@lfdr.de>; Sat,  8 May 2021 04:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230300AbhEHB4D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 7 May 2021 21:56:03 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26223 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S230238AbhEHB4C (ORCPT
+        id S230165AbhEHCBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 7 May 2021 22:01:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39010 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S229775AbhEHCA7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 7 May 2021 21:56:02 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1620438900;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=4xgvKloKo8xH8kQEQgRk3xvhIaRGzhsk0FfbaOWFA/Y=;
-        b=VCNOgzcZO2uexGt4WgzAquy4gPWeGnT4vBlxPVg8m4uCVK+xwFjcQZbG2f9X5bUDus3vCD
-        4lLek+jDxrBcrvHiZLuTpd1589WRIH2uBCvG4mHGRN7d8R/SYgJZ5OhMvUzo842T8VYV1d
-        DDyUP2GcbLNUy8H41scWn3duV1b6Rcw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-599-p96gcelHP9WF0B04-1H-sQ-1; Fri, 07 May 2021 21:54:55 -0400
-X-MC-Unique: p96gcelHP9WF0B04-1H-sQ-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        Fri, 7 May 2021 22:00:59 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 101A5C061574;
+        Fri,  7 May 2021 18:59:52 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6E238801B12;
-        Sat,  8 May 2021 01:54:54 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.3.128.45])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 0F47F19D61;
-        Sat,  8 May 2021 01:54:45 +0000 (UTC)
-Date:   Fri, 7 May 2021 21:54:43 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Casey Schaufler <casey@schaufler-ca.com>
-Cc:     Linux-Audit Mailing List <linux-audit@redhat.com>,
-        linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        Eric Paris <eparis@parisplace.org>, sgrubb@redhat.com
-Subject: Re: [PATCH V1] audit: log xattr args not covered by syscall record
-Message-ID: <20210508015443.GA447005@madcap2.tricolour.ca>
-References: <604ceafd516b0785fea120f552d6336054d196af.1620414949.git.rgb@redhat.com>
- <7ee601c2-4009-b354-1899-3c8f582bf6ae@schaufler-ca.com>
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4FcVr04Pwkz9sWl;
+        Sat,  8 May 2021 11:59:44 +1000 (AEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1620439189;
+        bh=J1/aeu6sDDZIxeY9gaohtta3/N8SRl0zHtNQvaH+PpQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=I9gp/TJIY+lJ1c7LxCn+pN7YNs4Yv3uC16F4Pe5ltIpkFdTGHQuQlKUcpUbbS7MtM
+         mWQL4ObXzJ3cYvSCfk9aT6E12hIV2fl3x1l3uEEowlTtWSwYBgi+QhoF0yaHEh4C8A
+         9PsT2pKb2w3ruzjdWg7LFh+sLBwbtPzrM4su+XjtEDB5kG/m/PrAJeakOjzvKo8M2Y
+         TKJdUh/BP4MlwMC518r2pDwi7q0GoseCEimfwsbkx5ySiCADfwBoOGgu7fOVDRm5n2
+         H8IGmId3I4haetbYJxgY7jzck6aJagIAlh3wpYLQe93gsv3m+dPCqQwI0Qt2xB9xN9
+         SVEUca8Hq1SDg==
+Date:   Sat, 8 May 2021 11:59:43 +1000
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     linux-kbuild@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Kars Mulder <kerneldev@karsmulder.nl>,
+        Kees Cook <keescook@chromium.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Paul Cercueil <paul@crapouillou.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>, chao <chao@eero.com>,
+        linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org
+Subject: Re: [PATCH v2] linux/kconfig.h: replace IF_ENABLED() with PTR_IF()
+ in <linux/kernel.h>
+Message-ID: <20210508115943.5dbf76f2@canb.auug.org.au>
+In-Reply-To: <20210505174515.87565-1-masahiroy@kernel.org>
+References: <20210505174515.87565-1-masahiroy@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ee601c2-4009-b354-1899-3c8f582bf6ae@schaufler-ca.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Type: multipart/signed; boundary="Sig_/pKT.L0/u5p+I2wWxtmkAky6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2021-05-07 14:03, Casey Schaufler wrote:
-> On 5/7/2021 12:55 PM, Richard Guy Briggs wrote:
-> > The *setxattr syscalls take 5 arguments.  The SYSCALL record only lists
-> > four arguments and only lists pointers of string values.  The xattr name
-> > string, value string and flags (5th arg) are needed by audit given the
-> > syscall's main purpose.
-> >
-> > Add the auxiliary record AUDIT_XATTR (1336) to record the details not
-> > available in the SYSCALL record including the name string, value string
-> > and flags.
-> >
-> > Notes about field names:
-> > - name is too generic, use xattr precedent from ima
-> > - val is already generic value field name
-> > - flags used by mmap, xflags new name
-> >
-> > Sample event with new record:
-> > type=PROCTITLE msg=audit(05/07/2021 12:58:42.176:189) : proctitle=filecap /tmp/ls dac_override
-> > type=PATH msg=audit(05/07/2021 12:58:42.176:189) : item=0 name=(null) inode=25 dev=00:1e mode=file,755 ouid=root ogid=root rdev=00:00 obj=unconfined_u:object_r:user_tmp_t:s0 nametype=NORMAL cap_fp=none cap_fi=none cap_fe=0 cap_fver=0 cap_frootid=0
-> > type=CWD msg=audit(05/07/2021 12:58:42.176:189) : cwd=/root
-> > type=XATTR msg=audit(05/07/2021 12:58:42.176:189) : xattr="security.capability" val=01 xflags=0x0
-> 
-> Would it be sensible to break out the namespace from the attribute?
-> 
-> 	attrspace="security" attrname="capability"
+--Sig_/pKT.L0/u5p+I2wWxtmkAky6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Do xattrs always follow this nomenclature?  Or only the ones we care
-about?
+Hi Masahiro,
 
-> Why isn't val= quoted?
+On Thu,  6 May 2021 02:45:15 +0900 Masahiro Yamada <masahiroy@kernel.org> w=
+rote:
+>
+> <linux/kconfig.h> is included from all the kernel-space source files,
+> including C, assembly, linker scripts. It is intended to contain a
+> minimal set of macros to evaluate CONFIG options.
+>=20
+> IF_ENABLED() is an intruder here because (x ? y : z) is C code, which
+> should not be included from assembly files or linker scripts.
 
-Good question.  I guessed it should have been since it used
-audit_log_untrustedstring(), but even the raw output is unquoted unless
-it was converted by auditd to unquoted before being stored to disk due
-to nothing offensive found in it since audit_log_n_string() does add
-quotes.  (hmmm, bit of a run-on sentence there...)
+Except it doesn't matter unless IF_ENABLED() is used by one of those.
 
-> The attribute value can be a .jpg or worse. I could even see it being an eBPF
-> program (although That Would Be Wrong) so including it in an audit record could
-> be a bit of a problem.
+> Also, <linux/kconfig.h> is no longer self-contained because NULL is
+> defined in <linux/stddef.h>.
 
-In these cases it would almost certainly get caught by the control
-character test audit_string_contains_control() in
-audit_log_n_untrustedstring() called from audit_log_untrustedstring()
-and deliver it as hex.
+Again, it doesn't matter unless IF_ENABLED() is used.
 
-> It seems that you might want to leave it up to the LSMs to determine which xattr
-> values are audited. An SELinux system may want to see "security.selinux" values,
-> but it probably doesn't care about "security.SMACK64TRANSMUTE" values.
+> Move IF_ENABLED() out to <linux/kernel.h> as PTR_IF(). PTF_IF()
+> takes the general boolean expression instead of a CONFIG option
+> so that it fits better in <linux/kernel.h>.
+>=20
+> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+> ---
+>=20
+> Changes in v2:
+>   - Keep PTF_IF macro in pinctrl-ingenic.c
+>=20
+>  drivers/pinctrl/pinctrl-ingenic.c | 2 ++
+>  include/linux/kconfig.h           | 6 ------
+>  include/linux/kernel.h            | 2 ++
+>  3 files changed, 4 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/drivers/pinctrl/pinctrl-ingenic.c b/drivers/pinctrl/pinctrl-=
+ingenic.c
+> index 651a36b9dcc0..0ee69f8e20b2 100644
+> --- a/drivers/pinctrl/pinctrl-ingenic.c
+> +++ b/drivers/pinctrl/pinctrl-ingenic.c
+> @@ -3854,6 +3854,8 @@ static int __init ingenic_pinctrl_probe(struct plat=
+form_device *pdev)
+>  	return 0;
+>  }
+> =20
+> +#define IF_ENABLED(cfg, ptr)	PTR_IF(IS_ENABLED(cfg), (ptr))
+> +
+>  static const struct of_device_id ingenic_pinctrl_of_match[] =3D {
+>  	{
+>  		.compatible =3D "ingenic,jz4730-pinctrl",
 
-Are you suggesting that any that don't follow this nomenclature are
-irrelevant or harmless at best and are not worth recording?
+You also need to include linux/kernel.h in
+drivers/pinctrl/pinctrl-ingenic.c (for completeness).
 
-This sounds like you are thinking about your LSM stacking patchset that
-issues a new record for each LSM attribute if there is more than one.
-And any system that has multiple LSMs active should be able to indicate
-all of interest.
+Also, I don't understand why the use of IF_ENABLED doesn't produce
+"defined but not used" warnings (if the function "ptr" is not marked as
+__maybe_unused) ...
 
-> > type=SYSCALL msg=audit(05/07/2021 12:58:42.176:189) : arch=x86_64 syscall=fsetxattr success=yes exit=0 a0=0x3 a1=0x7fc2f055905f a2=0x7ffebd58ebb0 a3=0x14 items=1 ppid=526 pid=554 auid=root uid=root gid=root euid=root suid=root fsuid=root egid=root sgid=root fsgid=root tty=ttyS0 ses=1 comm=filecap exe=/usr/bin/filecap subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=cap-test
-> >
-> > Link: https://github.com/linux-audit/audit-kernel/issues/39
-> > Link: https://lore.kernel.org/r/604ceafd516b0785fea120f552d6336054d196af.1620414949.git.rgb@redhat.com
-> > Suggested-by: Steve Grubb <sgrubb@redhat.com>
-> > Signed-off-by: Richard Guy Briggs <rgb@redhat.com>
-> > ---
-> >  fs/xattr.c                 |  2 ++
-> >  include/linux/audit.h      | 10 +++++++++
-> >  include/uapi/linux/audit.h |  1 +
-> >  kernel/audit.h             |  5 +++++
-> >  kernel/auditsc.c           | 45 ++++++++++++++++++++++++++++++++++++++
-> >  5 files changed, 63 insertions(+)
-> >
-> > diff --git a/fs/xattr.c b/fs/xattr.c
-> > index b3444e06cded..f2b6af1719fd 100644
-> > --- a/fs/xattr.c
-> > +++ b/fs/xattr.c
-> > @@ -570,6 +570,7 @@ setxattr(struct user_namespace *mnt_userns, struct dentry *d,
-> >  			posix_acl_fix_xattr_from_user(mnt_userns, kvalue, size);
-> >  	}
-> >  
-> > +	audit_xattr(name, value, flags);
-> >  	error = vfs_setxattr(mnt_userns, d, kname, kvalue, size, flags);
-> >  out:
-> >  	kvfree(kvalue);
-> > @@ -816,6 +817,7 @@ removexattr(struct user_namespace *mnt_userns, struct dentry *d,
-> >  	if (error < 0)
-> >  		return error;
-> >  
-> > +	audit_xattr(name, "(null)", 0);
-> >  	return vfs_removexattr(mnt_userns, d, kname);
-> >  }
-> >  
-> > diff --git a/include/linux/audit.h b/include/linux/audit.h
-> > index 82b7c1116a85..784d34888c8a 100644
-> > --- a/include/linux/audit.h
-> > +++ b/include/linux/audit.h
-> > @@ -404,6 +404,7 @@ extern void __audit_tk_injoffset(struct timespec64 offset);
-> >  extern void __audit_ntp_log(const struct audit_ntp_data *ad);
-> >  extern void __audit_log_nfcfg(const char *name, u8 af, unsigned int nentries,
-> >  			      enum audit_nfcfgop op, gfp_t gfp);
-> > +extern void __audit_xattr(const char *name, const char *value, int flags);
-> >  
-> >  static inline void audit_ipc_obj(struct kern_ipc_perm *ipcp)
-> >  {
-> > @@ -547,6 +548,12 @@ static inline void audit_log_nfcfg(const char *name, u8 af,
-> >  		__audit_log_nfcfg(name, af, nentries, op, gfp);
-> >  }
-> >  
-> > +static inline void audit_xattr(const char *name, const char *value, int flags)
-> > +{
-> > +	if (!audit_dummy_context())
-> > +		__audit_xattr(name, value, flags);
-> > +}
-> > +
-> >  extern int audit_n_rules;
-> >  extern int audit_signals;
-> >  #else /* CONFIG_AUDITSYSCALL */
-> > @@ -677,6 +684,9 @@ static inline void audit_log_nfcfg(const char *name, u8 af,
-> >  				   enum audit_nfcfgop op, gfp_t gfp)
-> >  { }
-> >  
-> > +static inline void audit_xattr(const char *name, const char *value, int flags)
-> > +{ }
-> > +
-> >  #define audit_n_rules 0
-> >  #define audit_signals 0
-> >  #endif /* CONFIG_AUDITSYSCALL */
-> > diff --git a/include/uapi/linux/audit.h b/include/uapi/linux/audit.h
-> > index cd2d8279a5e4..4477ff80a24d 100644
-> > --- a/include/uapi/linux/audit.h
-> > +++ b/include/uapi/linux/audit.h
-> > @@ -118,6 +118,7 @@
-> >  #define AUDIT_TIME_ADJNTPVAL	1333	/* NTP value adjustment */
-> >  #define AUDIT_BPF		1334	/* BPF subsystem */
-> >  #define AUDIT_EVENT_LISTENER	1335	/* Task joined multicast read socket */
-> > +#define AUDIT_XATTR		1336	/* xattr arguments */
-> >  
-> >  #define AUDIT_AVC		1400	/* SE Linux avc denial or grant */
-> >  #define AUDIT_SELINUX_ERR	1401	/* Internal SE Linux Errors */
-> > diff --git a/kernel/audit.h b/kernel/audit.h
-> > index 1522e100fd17..9544284fce57 100644
-> > --- a/kernel/audit.h
-> > +++ b/kernel/audit.h
-> > @@ -191,6 +191,11 @@ struct audit_context {
-> >  		struct {
-> >  			char			*name;
-> >  		} module;
-> > +		struct {
-> > +			char			*name;
-> > +			char			*value;
-> > +			int			flags;
-> > +		} xattr;
-> >  	};
-> >  	int fds[2];
-> >  	struct audit_proctitle proctitle;
-> > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
-> > index 8bb9ac84d2fb..7f2b56136fa4 100644
-> > --- a/kernel/auditsc.c
-> > +++ b/kernel/auditsc.c
-> > @@ -884,6 +884,7 @@ static inline void audit_free_module(struct audit_context *context)
-> >  		context->module.name = NULL;
-> >  	}
-> >  }
-> > +
-> >  static inline void audit_free_names(struct audit_context *context)
-> >  {
-> >  	struct audit_names *n, *next;
-> > @@ -915,6 +916,16 @@ static inline void audit_free_aux(struct audit_context *context)
-> >  	}
-> >  }
-> >  
-> > +static inline void audit_free_xattr(struct audit_context *context)
-> > +{
-> > +	if (context->type == AUDIT_XATTR) {
-> > +		kfree(context->xattr.name);
-> > +		context->xattr.name = NULL;
-> > +		kfree(context->xattr.value);
-> > +		context->xattr.value = NULL;
-> > +	}
-> > +}
-> > +
-> >  static inline struct audit_context *audit_alloc_context(enum audit_state state)
-> >  {
-> >  	struct audit_context *context;
-> > @@ -969,6 +980,7 @@ int audit_alloc(struct task_struct *tsk)
-> >  
-> >  static inline void audit_free_context(struct audit_context *context)
-> >  {
-> > +	audit_free_xattr(context);
-> >  	audit_free_module(context);
-> >  	audit_free_names(context);
-> >  	unroll_tree_refs(context, NULL, 0);
-> > @@ -1317,6 +1329,20 @@ static void show_special(struct audit_context *context, int *call_panic)
-> >  		} else
-> >  			audit_log_format(ab, "(null)");
-> >  
-> > +		break;
-> > +	case AUDIT_XATTR:
-> > +		audit_log_format(ab, "xattr=");
-> > +		if (context->xattr.name)
-> > +			audit_log_untrustedstring(ab, context->xattr.name);
-> > +		else
-> > +			audit_log_format(ab, "(null)");
-> > +		audit_log_format(ab, " val=");
-> > +		if (context->xattr.value)
-> > +			audit_log_untrustedstring(ab, context->xattr.value);
-> > +		else
-> > +			audit_log_format(ab, "(null)");
-> > +		audit_log_format(ab, " xflags=0x%x", context->xattr.flags);
-> > +
-> >  		break;
-> >  	}
-> >  	audit_log_end(ab);
-> > @@ -1742,6 +1768,7 @@ void __audit_syscall_exit(int success, long return_code)
-> >  	context->in_syscall = 0;
-> >  	context->prio = context->state == AUDIT_RECORD_CONTEXT ? ~0ULL : 0;
-> >  
-> > +	audit_free_xattr(context);
-> >  	audit_free_module(context);
-> >  	audit_free_names(context);
-> >  	unroll_tree_refs(context, NULL, 0);
-> > @@ -2536,6 +2563,24 @@ void __audit_log_kern_module(char *name)
-> >  	context->type = AUDIT_KERN_MODULE;
-> >  }
-> >  
-> > +void __audit_xattr(const char *name, const char *value, int flags)
-> > +{
-> > +	struct audit_context *context = audit_context();
-> > +
-> > +	context->type = AUDIT_XATTR;
-> > +	context->xattr.flags = flags;
-> > +	context->xattr.name = kstrdup(name, GFP_KERNEL);
-> > +	if (!context->xattr.name)
-> > +		goto out;
-> > +	context->xattr.value = kstrdup(value, GFP_KERNEL);
-> > +	if (!context->xattr.value)
-> > +		goto out;
-> > +	return;
-> > +out:
-> > +	kfree(context->xattr.name);
-> > +	audit_log_lost("out of memory in __audit_xattr");
-> > +}
-> > +
-> >  void __audit_fanotify(unsigned int response)
-> >  {
-> >  	audit_log(audit_context(), GFP_KERNEL,
-> 
-> 
-> --
-> Linux-audit mailing list
-> Linux-audit@redhat.com
-> https://listman.redhat.com/mailman/listinfo/linux-audit
+Also, if there is only one user of IF_ENABLED (and therefore PTR_IF),
+why not just put it in that file and save me rebuilding the world again
+every day because kernel.h is changed (again).  I guess that is going
+to happen just because kconfig.h is being changed and that is also
+included by everything :-(
 
-- RGB
+Also, is anyone else ever going to use PTR_IF() without having to also
+use IS_ENABLED()?
 
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
+So, in case it is not obvious, I consider this patch unnecessary churn
+(as was probably the patch that introduced IF_ENABLED in the first
+place).
 
+As an aside, this should not have been added to the kbuild tree in
+linux-next until after -rc1 was released ...
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/pKT.L0/u5p+I2wWxtmkAky6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmCV8I8ACgkQAVBC80lX
+0GxIUAgAmYisSa9XcG17XA+g98W0dtVKy/JJn4n2mhLiY3zKt1d3bWR6LzvjTuCq
+W/dQxkpBb/DmNI3to2qfoZR8SRDzu97O9TFxjwsLb9mtbI7OkUx3N5PBrJdF4Ci5
+0EstJ/raOnEm0/wctC4Cf14Rqd77/k4FLM3alzsMGq62/ntSNr+ugRiLhs0RWSjp
+e7U/tuffHWtBgqqZYW6u/7LJyEK3k9+IVqimPQb/pD6HS0fZMyaATM7nGc+6Nf/x
+RB1YgKKxSQw2OevdbGFeEwvD6hILR4RwpjY5MV4aMMpsDHZtuqdUA6snElFw0Rt8
+X/je7ntGKOoFhwJE/D5r8X9j28aJ3Q==
+=E5Ka
+-----END PGP SIGNATURE-----
+
+--Sig_/pKT.L0/u5p+I2wWxtmkAky6--
